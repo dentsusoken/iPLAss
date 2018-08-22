@@ -1,0 +1,212 @@
+<?xml version="1.0" ?>
+<taglib xmlns="http://java.sun.com/xml/ns/javaee"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-jsptaglibrary_2_1.xsd"
+	version="2.1">
+
+	<tlib-version>2.0</tlib-version>
+	<short-name>mtp</short-name>
+	<uri>http://iplass.org/tags/mtp</uri>
+	<tag>
+		<name>bind</name>
+		<tag-class>org.iplass.mtp.web.template.tags.BindTag</tag-class>
+		<body-content>JSP</body-content>
+		<attribute>
+			<name>bean</name>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>mappingResult</name>
+			<rtexprvalue>true</rtexprvalue>
+			<type>org.iplass.mtp.command.beanmapper.MappingResult</type>
+		</attribute>
+		<attribute>
+			<name>prefix</name>
+			<rtexprvalue>true</rtexprvalue>
+			<type>java.lang.String</type>
+		</attribute>
+		<attribute>
+			<name>prop</name>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>beanVariableName</name>
+		</attribute>
+		<attribute>
+			<name>mappingResultVariableName</name>
+		</attribute>
+		<attribute>
+			<name>propertyNameVariableName</name>
+		</attribute>
+		<attribute>
+			<name>propertyValueVariableName</name>
+		</attribute>
+		<attribute>
+			<name>propertyRawValueVariableName</name>
+		</attribute>
+		<attribute>
+			<name>propertyErrorValueVariableName</name>
+		</attribute>
+		<attribute>
+			<name>errorsVariableName</name>
+		</attribute>
+		<attribute>
+			<name>propertyDelimiter</name>
+		</attribute>
+		<attribute>
+			<name>indexPrefix</name>
+		</attribute>
+		<attribute>
+			<name>indexPostfix</name>
+		</attribute>
+		<attribute>
+			<name>autoDetectErrors</name>
+		</attribute>
+		<attribute>
+			<name>htmlEscape</name>
+		</attribute>
+		<attribute>
+			<name>formatter</name>
+			<rtexprvalue>true</rtexprvalue>
+			<type>org.iplass.mtp.web.template.tags.ValueFormatter</type>
+		</attribute>
+	</tag>
+	<tag>
+		<name>errors</name>
+		<tag-class>org.iplass.mtp.web.template.tags.ErrorsTag</tag-class>
+		<body-content>JSP</body-content>
+		<attribute>
+			<name>errors</name>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>delimiter</name>
+		</attribute>
+		<attribute>
+			<name>header</name>
+		</attribute>
+		<attribute>
+			<name>footer</name>
+		</attribute>
+		<attribute>
+			<name>errorsVariableName</name>
+		</attribute>
+		<attribute>
+			<name>htmlEscape</name>
+		</attribute>
+	</tag>
+	<tag>
+		<name>include</name>
+		<tag-class>org.iplass.mtp.web.template.tags.IncludeTag</tag-class>
+		<body-content>scriptless</body-content>
+		<attribute>
+			<name>action</name>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>template</name>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+	</tag>
+	<tag>
+		<name>renderContent</name>
+		<tag-class>org.iplass.mtp.web.template.tags.RenderContentTag</tag-class>
+		<body-content>scriptless</body-content>
+	</tag>
+	<tag>
+		<name>auth</name>
+		<tag-class>org.iplass.mtp.web.template.tags.AuthTag</tag-class>
+		<body-content>JSP</body-content>
+		<attribute>
+			<name>privileged</name>
+			<rtexprvalue>true</rtexprvalue>
+			<type>java.lang.Boolean</type>
+		</attribute>
+		<attribute>
+			<name>role</name>
+			<rtexprvalue>true</rtexprvalue>
+			<type>java.lang.String</type>
+		</attribute>
+		<attribute>
+			<name>permission</name>
+			<rtexprvalue>true</rtexprvalue>
+			<type>org.iplass.mtp.auth.Permission</type>
+		</attribute>
+	</tag>
+	<function>
+		<name>rc</name>
+		<function-class>org.iplass.mtp.web.template.ELFunctions</function-class>
+		<function-signature>org.iplass.mtp.command.RequestContext rc()</function-signature>
+	</function>
+	<function>
+		<name>tcPath</name>
+		<function-class>org.iplass.mtp.web.template.ELFunctions</function-class>
+		<function-signature>java.lang.String tcPath()</function-signature>
+	</function>
+	<function>
+		<name>msg</name>
+		<function-class>org.iplass.mtp.web.template.ELFunctions</function-class>
+		<function-signature>java.lang.String msg(java.lang.String, java.lang.String)</function-signature>
+	</function>
+	<function>
+		<name>msgp</name>
+		<function-class>org.iplass.mtp.web.template.ELFunctions</function-class>
+		<function-signature>java.lang.String msgp(java.lang.String, java.lang.String, java.lang.Object)</function-signature>
+	</function>
+	<function>
+		<name>escJs</name>
+		<function-class>org.iplass.mtp.web.template.ELFunctions</function-class>
+		<function-signature>java.lang.String escJs(java.lang.String)</function-signature>
+	</function>
+	<function>
+		<name>escXml</name>
+		<function-class>org.iplass.mtp.web.template.ELFunctions</function-class>
+		<function-signature>java.lang.String escXml(java.lang.String)</function-signature>
+	</function>
+	<function>
+		<name>esc</name>
+		<function-class>org.iplass.mtp.web.template.ELFunctions</function-class>
+		<function-signature>java.lang.String esc(java.lang.String)</function-signature>
+	</function>
+	<function>
+		<name>outputToken</name>
+		<function-class>org.iplass.mtp.web.template.ELFunctions</function-class>
+		<function-signature>java.lang.String outputToken(java.lang.Object, boolean)</function-signature>
+	</function>
+	<function>
+		<name>token</name>
+		<function-class>org.iplass.mtp.web.template.ELFunctions</function-class>
+		<function-signature>java.lang.String token()</function-signature>
+	</function>
+	<function>
+		<name>fixToken</name>
+		<function-class>org.iplass.mtp.web.template.ELFunctions</function-class>
+		<function-signature>java.lang.String fixToken()</function-signature>
+	</function>
+	<function>
+		<name>prefs</name>
+		<function-class>org.iplass.mtp.web.template.ELFunctions</function-class>
+		<function-signature>java.lang.Object prefs(java.lang.String)</function-signature>
+	</function>
+	<function>
+		<name>fmt</name>
+		<function-class>org.iplass.mtp.web.template.ELFunctions</function-class>
+		<function-signature>java.lang.String fmt(java.lang.Object, java.lang.String)</function-signature>
+	</function>
+	<function>
+		<name>nvl</name>
+		<function-class>org.iplass.mtp.web.template.ELFunctions</function-class>
+		<function-signature>java.lang.Object nvl(java.lang.Object, java.lang.Object)</function-signature>
+	</function>
+	<function>
+		<name>rs</name>
+		<function-class>org.iplass.mtp.web.template.ELFunctions</function-class>
+		<function-signature>java.lang.String rs(java.lang.String, java.lang.String)</function-signature>
+	</function>
+	<function>
+		<name>rsp</name>
+		<function-class>org.iplass.mtp.web.template.ELFunctions</function-class>
+		<function-signature>java.lang.String rsp(java.lang.String, java.lang.String, java.lang.Object)</function-signature>
+	</function>
+
+</taglib>

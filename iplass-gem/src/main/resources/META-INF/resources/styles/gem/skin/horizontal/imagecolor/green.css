@@ -1,0 +1,82 @@
+/*
+ * Copyright (C) 2018 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
+ *
+ * Unless you have purchased a commercial license,
+ * the following license terms apply:
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+.hgroup-01 span.imgclr_green svg {
+  color: #b9e15c; }
+
+#nav.sub-popup > ul.nav-wrap > li.bg-green.hover > p > a {
+  color: #dcf0aa; }
+
+#nav.sub-popup > ul.nav-wrap > li.bg-green.hover > p > span.curicon {
+  background: url(../../../../../images/gem/skin/horizontal/bg-navgreen-01.png) no-repeat; }
+
+#nav.sub-popup > ul.nav-wrap > li.bg-green.selected > p > a {
+  color: #dcf0aa; }
+
+#nav.sub-popup > ul.nav-wrap > li.bg-green > ul.nav-detail {
+  border-bottom: 1px solid #a4b476;
+  background: #c5d79b;
+  background: linear-gradient(#c5d79b 0, #dcf0aa 100%); }
+  #nav.sub-popup > ul.nav-wrap > li.bg-green > ul.nav-detail > li > a:hover {
+    background: #6c9120;
+    background: linear-gradient(#6c9120 0, #8eae4b 100%); }
+  #nav.sub-popup > ul.nav-wrap > li.bg-green > ul.nav-detail > li.selected > a {
+    background: #6c9120;
+    background: linear-gradient(#6c9120 0, #8eae4b 100%); }
+  #nav.sub-popup > ul.nav-wrap > li.bg-green > ul.nav-detail > li.subMenuRoot > ul.subMenuList li:hover {
+    background: #f3f9e4; }
+  #nav.sub-popup > ul.nav-wrap > li.bg-green > ul.nav-detail > li.subMenuRoot > ul.subMenuList li.selected {
+    background: #f3f9e4; }
+  #nav.sub-popup > ul.nav-wrap > li.bg-green > ul.nav-detail > li.subMenuRoot > ul.subMenuList li.menu-action.selected {
+    background: url(../../../../../images/gem/skin/horizontal/icon-navgreen-02.png) no-repeat 7px 7px #f3f9e4; }
+  #nav.sub-popup > ul.nav-wrap > li.bg-green > ul.nav-detail > li.subMenuRoot > ul.subMenuList li.menu-entity.selected {
+    background: url(../../../../../images/gem/skin/horizontal/icon-navgreen-02.png) no-repeat 7px 7px #f3f9e4; }
+
+#nav.sub-droplist > ul.nav-wrap > li.bg-green ul {
+  background: #f3f9e4; }
+  #nav.sub-droplist > ul.nav-wrap > li.bg-green ul > li:hover {
+    background: #c5d79b; }
+  #nav.sub-droplist > ul.nav-wrap > li.bg-green ul > li.selected {
+    background: #c5d79b; }
+  #nav.sub-droplist > ul.nav-wrap > li.bg-green ul > li.menu-action.selected {
+    background: url(../../../../../images/gem/skin/horizontal/icon-navgreen-02.png) no-repeat scroll 7px 7px #c5d79b; }
+  #nav.sub-droplist > ul.nav-wrap > li.bg-green ul > li.menu-entity.selected {
+    background: url(../../../../../images/gem/skin/horizontal/icon-navgreen-02.png) no-repeat scroll 7px 7px #c5d79b; }
+
+#nav.sub-droplist > ul.nav-wrap > li.bg-green:hover > p {
+  background: #6c9120; }
+
+#nav.sub-droplist > ul.nav-wrap > li.bg-green.selected > p {
+  background: #6c9120; }
+
+#nav.sub-droplist > ul.nav-wrap > li.bg-green.menu-action.selected > p {
+  background: url(../../../../../images/gem/skin/horizontal/icon-navgreen-02.png) no-repeat scroll 2px 8px #6c9120; }
+
+#nav.sub-droplist > ul.nav-wrap > li.bg-green.menu-entity.selected > p {
+  background: url(../../../../../images/gem/skin/horizontal/icon-navgreen-02.png) no-repeat scroll 2px 8px #6c9120; }
+
+#nav.sub-droplist > ul.nav-wrap > li.bg-green.menu-node.hover > p {
+  background: #f3f9e4;
+  border-color: #b8cf7a; }
+
+#nav.sub-droplist > ul.nav-wrap > li.bg-green.menu-node.hover > ul {
+  border-color: #b8cf7a; }
+
+#nav.sub-droplist > ul.nav-wrap li.bg-green ul li:hover > ul {
+  border-color: #b8cf7a; }

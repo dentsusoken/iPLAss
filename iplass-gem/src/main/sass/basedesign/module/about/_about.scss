@@ -1,0 +1,13 @@
+.about-title {
+    padding-bottom: 4px;
+	border-bottom: 2px solid #d5d5d5;
+}
+.about-contents {
+	margin-bottom: 20px;
+	width: 100%;
+	.about-content {
+		padding: 3px 7px;
+		vertical-align: middle;
+		overflow: hidden;
+	}
+}

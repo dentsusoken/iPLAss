@@ -1,0 +1,25 @@
+//colors -> color/_colors.scss
+// $color_pattens_blue_approx: #dfeffc;
+
+//fonts
+$font_pjt0: arial;
+
+ul.jqtree-tree {
+	margin-left: 12px;
+	.jqtree-toggler {
+		font-family: $font_pjt0;
+		left: -1.5em;
+		line-height: 12px;
+		position: absolute;
+		top: 30%;
+	}
+	.jqtree-title {
+		margin-left: inherit;
+	}
+	li.jqtree-selected > .jqtree-element {
+		background: $color_pattens_blue_approx !important;
+		&:hover {
+			background: $color_pattens_blue_approx !important;
+		}
+	}
+}

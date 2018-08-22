@@ -1,0 +1,115 @@
+//colors
+// $COLOR_IMAGE_COLOR: #b9e15c;
+// $COLOR_LINK_COLOR: #dcf0aa;
+// $COLOR_NAVDETAIL_BORDER_BOTTOM: #a4b476;
+// $COLOR_NAVDETAIL_BACKGROUND: #c5d79b;
+// $COLOR_NAVDETAIL_BACKGROUND_LINER_GRADIENT1: #c5d79b;
+// $COLOR_NAVDETAIL_BACKGROUND_LINER_GRADIENT2: #dcf0aa;
+// $COLOR_NAVDETAIL_ITEM_HOVER_BACKGROUND: #f3f9e4;
+// $COLOR_NAVDETAIL_LINK_HOVER_BACKGROUND: #6c9120;
+// $COLOR_NAVDETAIL_LINK_HOVER_BACKGROUND_LINER_GRADIENT: #8eae4b;
+// $COLOR_NAVWRAP_HOVER_BACKGROUND: #6c9120;
+// $COLOR_NAVWRAP_LIST_BACKGROUND: #f3f9e4;
+// $COLOR_NAVWRAP_ITEM_HOVER_BACKGROUND: #c5d79b;
+// $COLOR_MENU_NODE_HOVER_BORDER: #b8cf7a;
+// $COLOR_MENU_NODE_HOVER_BACKGROUND: #f3f9e4;
+//
+//urls
+// $url_imagecolor_01: url(../../../../images/gem/skin/horizontal/bg-navgreen-01.png);
+// $url_imagecolor_02: url(../../../../images/gem/skin/horizontal/icon-navgreen-02.png);
+//
+// $color_name: green
+
+.hgroup-01 span.imgclr_#{$color_name} svg {
+	color: $COLOR_IMAGE_COLOR;
+}
+
+#nav {
+	&.sub-popup > ul.nav-wrap > li.bg-#{$color_name} {
+		&.hover > p {
+			> a {
+				color: $COLOR_LINK_COLOR;
+			}
+			> span.curicon {
+				background: $url_imagecolor_01 no-repeat;
+			}
+		}
+		&.selected > p > a {
+			color: $COLOR_LINK_COLOR;
+		}
+		> ul.nav-detail {
+			border-bottom: 1px solid $COLOR_NAVDETAIL_BORDER_BOTTOM;
+			background: $COLOR_NAVDETAIL_BACKGROUND;
+			background: linear-gradient($COLOR_NAVDETAIL_BACKGROUND_LINER_GRADIENT1 0, $COLOR_NAVDETAIL_BACKGROUND_LINER_GRADIENT2 100%);
+			> li {
+				> a:hover {
+					background: $COLOR_NAVDETAIL_LINK_HOVER_BACKGROUND;
+					background: linear-gradient($COLOR_NAVDETAIL_LINK_HOVER_BACKGROUND 0, $COLOR_NAVDETAIL_LINK_HOVER_BACKGROUND_LINER_GRADIENT 100%);
+				}
+				&.selected > a {
+					background: $COLOR_NAVDETAIL_LINK_HOVER_BACKGROUND;
+					background: linear-gradient($COLOR_NAVDETAIL_LINK_HOVER_BACKGROUND 0, $COLOR_NAVDETAIL_LINK_HOVER_BACKGROUND_LINER_GRADIENT 100%);
+				}
+				&.subMenuRoot > ul.subMenuList li {
+					&:hover {
+						background: $COLOR_NAVDETAIL_ITEM_HOVER_BACKGROUND;
+					}
+					&.selected {
+						background: $COLOR_NAVDETAIL_ITEM_HOVER_BACKGROUND;
+					}
+					&.menu-action.selected {
+						background: $url_imagecolor_02 no-repeat 7px 7px $COLOR_NAVDETAIL_ITEM_HOVER_BACKGROUND;
+					}
+					&.menu-entity.selected {
+						background: $url_imagecolor_02 no-repeat 7px 7px $COLOR_NAVDETAIL_ITEM_HOVER_BACKGROUND;
+					}
+				}
+			}
+		}
+	}
+	&.sub-droplist > ul.nav-wrap {
+		> li.bg-#{$color_name} {
+			ul {
+				background: $COLOR_NAVWRAP_LIST_BACKGROUND;
+				> li {
+					&:hover {
+						background: $COLOR_NAVWRAP_ITEM_HOVER_BACKGROUND;
+					}
+					&.selected {
+						background: $COLOR_NAVWRAP_ITEM_HOVER_BACKGROUND;
+					}
+					&.menu-action.selected {
+						background: $url_imagecolor_02 no-repeat scroll 7px 7px $COLOR_NAVWRAP_ITEM_HOVER_BACKGROUND;
+					}
+					&.menu-entity.selected {
+						background: $url_imagecolor_02 no-repeat scroll 7px 7px $COLOR_NAVWRAP_ITEM_HOVER_BACKGROUND;
+					}
+				}
+			}
+			&:hover > p {
+				background: $COLOR_NAVWRAP_HOVER_BACKGROUND;
+			}
+			&.selected > p {
+				background: $COLOR_NAVWRAP_HOVER_BACKGROUND;
+			}
+			&.menu-action.selected > p {
+				background: $url_imagecolor_02 no-repeat scroll 2px 8px $COLOR_NAVWRAP_HOVER_BACKGROUND;
+			}
+			&.menu-entity.selected > p {
+				background: $url_imagecolor_02 no-repeat scroll 2px 8px $COLOR_NAVWRAP_HOVER_BACKGROUND;
+			}
+			&.menu-node.hover {
+				> p {
+					background: $COLOR_MENU_NODE_HOVER_BACKGROUND;
+					border-color: $COLOR_MENU_NODE_HOVER_BORDER;
+				}
+				> ul {
+					border-color: $COLOR_MENU_NODE_HOVER_BORDER;
+				}
+			}
+		}
+		li.bg-#{$color_name} ul li:hover > ul {
+			border-color: $COLOR_MENU_NODE_HOVER_BORDER;
+		}
+	}
+}

@@ -1,0 +1,109 @@
+//colors
+// $color_pink_swan_approx: #b8b8b8;
+// $color_mercury_approx: #e7e7e7;
+// $color_mine_shaft_approx: #333333;
+// $white: #ffffff;
+// $color_gallery_approx: #ededed;
+// $color_link_water_approx: #dde9f5;
+// $color_alto_approx: #ddd;
+
+//urls
+// $url_ff_1: url(../../../../images/gem/skin/flat/icon-arrow-07.png);
+// $url_ff_2: url(../../../../images/gem/skin/flat/icon-arrow-07_o.png);
+
+.fulltext-search-inner {
+	display: block;
+	float: left;
+	width: 100%;
+	font-size: 1rem;
+	.ui-dropdownchecklist {
+		border-top: 1px solid $color_pink_swan_approx;
+		border-right: 1px solid $color_mercury_approx;
+		border-bottom: 1px solid $color_mercury_approx;
+		border-left: 1px solid $color_mercury_approx;
+		//Instead of the line below you could use @include border-radius($radius, $vertical-radius)
+		border-radius: 3px;
+		width: 151px;
+		height: 25px;
+		background: $url_ff_1 no-repeat 130px 3px;
+		color: $color_mine_shaft_approx;
+		margin-right: 20px;
+		&:hover {
+			background: $url_ff_2 no-repeat 130px 3px;
+		}
+	}
+	.ui-dropdownchecklist-selector {
+		border: 0;
+		padding-bottom: 8px;
+	}
+	.ui-dropdownchecklist-text {
+		padding: 1px;
+		font-size: small;
+		line-height: 1.5;
+	}
+	.ui-dropdownchecklist-dropcontainer {
+		border: 1px solid $color_mercury_approx !important;
+		background: $white;
+		//Instead of the line below you could use @include box-shadow($shadow-1, $shadow-2, $shadow-3, $shadow-4, $shadow-5, $shadow-6, $shadow-7, $shadow-8, $shadow-9, $shadow-10)
+		box-shadow: 2px 5px 6px $color_gallery_approx;
+		overflow-x: hidden;
+	}
+	.ui-dropdownchecklist-item {
+		border: 0;
+		padding: 5px;
+		&:hover {
+			text-decoration: none;
+			color: $color_mine_shaft_approx;
+			background: $color_link_water_approx;
+		}
+	}
+	.message-block {
+		margin-bottom: 10px;
+	}
+	.searching {
+		margin-bottom: 10px;
+	}
+	#fulltext {
+		font-size: 1rem;
+		//Instead of the line below you could use @include box-sizing($bs)
+		box-sizing: border-box;
+		border: 1px solid $color_alto_approx;
+		height: 25px;
+		padding: 2px 5px;
+	}
+	.result-data {
+		background: none;
+		padding: 0;
+	}
+	.entity-result {
+		display: block;
+		float: left;
+		width: 100%;
+		padding: 20px;
+		margin-bottom: 20px;
+		background: $white;
+		//Instead of the line below you could use @include box-sizing($bs)
+		box-sizing: border-box;
+		&:last-child {
+			margin-bottom: 0;
+		}
+	}
+	.result-title {
+		display: block;
+		float: left;
+		width: 100%;
+		h3 {
+			width: auto;
+		}
+	}
+	.crawl-date {
+		float: right;
+		position: relative;
+		top: 10px;
+	}
+}
+.fulltext-search-block {
+	padding: 20px;
+	margin-bottom: 10px;
+	background: $white;
+}

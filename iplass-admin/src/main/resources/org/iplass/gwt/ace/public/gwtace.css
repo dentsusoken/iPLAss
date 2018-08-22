@@ -1,0 +1,30 @@
+@charset "UTF-8";
+
+/**
+--------------------------
+Ace Editor
+--------------------------
+*/
+
+.gwt_ace_editor_container {
+	position:absolute;
+	top:0;
+	right: 0;
+	bottom:0;
+	left: 0;
+	width:100%;
+	height:100%;
+}
+
+/**
+ * override [ext-language_tools.js] setting.
+ *
+ * css style class [.ace_autocomplete]'s z-index is change.
+ * original value = 200000, custom value = 2147483647
+ *
+ * because smartclient dialog's z-index is auto caluculate and too large.
+ */
+.ace_editor.ace_autocomplete {
+	/* z-index: 200000; */
+	z-index: 2147483647 !important;
+}

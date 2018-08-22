@@ -1,0 +1,599 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!DOCTYPE metaDataList>
+<metaDataList>
+<contextPath name="/entity">
+<metaDataEntry name="/entity/mtp/auth/ActionPermission" overwritable="false" sharable="true" dataSharable="false" permissionSharable="false">
+    <metaData xsi:type="metaEntity" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+        <description>Actionに対する権限定義です。</description>
+        <displayName>Action権限</displayName>
+        <id>E0008</id>
+        <localizedDisplayNameList>
+            <localeName>ja</localeName>
+            <stringValue>Action権限</stringValue>
+        </localizedDisplayNameList>
+        <localizedDisplayNameList>
+            <localeName>en</localeName>
+            <stringValue>Action Permission</stringValue>
+        </localizedDisplayNameList>
+        <localizedDisplayNameList>
+            <localeName>zh-CN</localeName>
+            <stringValue>Action权限</stringValue>
+        </localizedDisplayNameList>
+        <localizedDisplayNameList>
+            <localeName>zh-TW</localeName>
+            <stringValue>Action權限</stringValue>
+        </localizedDisplayNameList>
+        <localizedDisplayNameList>
+            <localeName>th</localeName>
+            <stringValue>การอนุญาตสำหรับ Action</stringValue>
+        </localizedDisplayNameList>
+        <name>mtp.auth.ActionPermission</name>
+        <auditLog>false</auditLog>
+        <crawl>false</crawl>
+        <declaredPropertyList xsi:type="metaPrimitiveProperty">
+            <displayName>対象Action</displayName>
+            <entityStoreProperty xsi:type="metaGRdbPropertyStore">
+                <pageNo>0</pageNo>
+                <columnName>STR_1</columnName>
+                <isNative>false</isNative>
+                <externalIndex>false</externalIndex>
+                <indexPageNo>0</indexPageNo>
+                <indexColumnNo>1</indexColumnNo>
+            </entityStoreProperty>
+            <id>1</id>
+            <indexType>NON_UNIQUE</indexType>
+            <localizedDisplayNameList>
+                <localeName>ja</localeName>
+                <stringValue>対象Action</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>en</localeName>
+                <stringValue>Target Action</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>zh-CN</localeName>
+                <stringValue>目标Action</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>zh-TW</localeName>
+                <stringValue>目標Action</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>th</localeName>
+                <stringValue>เป้าหมายของ Action</stringValue>
+            </localizedDisplayNameList>
+            <multiplicity>1</multiplicity>
+            <name>targetAction</name>
+            <updatable>true</updatable>
+            <validations xsi:type="metaValidationNotNull">
+                <messageCategory>mtp/validation</messageCategory>
+                <messageId>NotNull</messageId>
+            </validations>
+            <type xsi:type="stringType"/>
+        </declaredPropertyList>
+        <declaredPropertyList xsi:type="metaPrimitiveProperty">
+            <displayName>許可条件</displayName>
+            <entityStoreProperty xsi:type="metaGRdbPropertyStore">
+                <pageNo>0</pageNo>
+                <columnName>STR_2</columnName>
+                <isNative>false</isNative>
+            </entityStoreProperty>
+            <id>2</id>
+            <indexType>NON_INDEXED</indexType>
+            <localizedDisplayNameList>
+                <localeName>ja</localeName>
+                <stringValue>許可条件</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>en</localeName>
+                <stringValue>Authorization Condition</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>zh-CN</localeName>
+                <stringValue>授权条件</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>zh-TW</localeName>
+                <stringValue>授權條件</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>th</localeName>
+                <stringValue>เงื่อนไขที่อนุญาต</stringValue>
+            </localizedDisplayNameList>
+            <multiplicity>1</multiplicity>
+            <name>conditionExpression</name>
+            <updatable>true</updatable>
+            <type xsi:type="stringType"/>
+        </declaredPropertyList>
+        <declaredPropertyList xsi:type="metaReferenceProperty">
+            <displayName>ロール</displayName>
+            <id>REF_1</id>
+            <indexType>NON_INDEXED</indexType>
+            <localizedDisplayNameList>
+                <localeName>ja</localeName>
+                <stringValue>ロール</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>en</localeName>
+                <stringValue>Role</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>zh-CN</localeName>
+                <stringValue>角色</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>zh-TW</localeName>
+                <stringValue>角色</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>th</localeName>
+                <stringValue>บท</stringValue>
+            </localizedDisplayNameList>
+            <multiplicity>1</multiplicity>
+            <name>role</name>
+            <updatable>true</updatable>
+            <validations xsi:type="metaValidationNotNull">
+                <messageCategory>mtp/validation</messageCategory>
+                <messageId>NotNull</messageId>
+            </validations>
+            <auditLogMappedBy>false</auditLogMappedBy>
+            <referenceEntityMetaDataId>E0003</referenceEntityMetaDataId>
+            <referenceType>ASSOCIATION</referenceType>
+            <versionControlType>CURRENT_BASE</versionControlType>
+        </declaredPropertyList>
+        <entityStoreDefinition xsi:type="metaGRdbEntityStore">
+            <tableNamePostfix>MTP</tableNamePostfix>
+            <maxVarchar>
+                <columnNo>2</columnNo>
+                <pageNo>0</pageNo>
+            </maxVarchar>
+            <maxIndexedVarchar>
+                <columnNo>1</columnNo>
+                <pageNo>0</pageNo>
+            </maxIndexedVarchar>
+            <version>0</version>
+        </entityStoreDefinition>
+        <eventListenerList xsi:type="metaJavaClassEventListener">
+            <withoutMappedByReference>false</withoutMappedByReference>
+            <className>org.iplass.mtp.impl.auth.authorize.builtin.action.ActionPermissionEntityEventListener</className>
+        </eventListenerList>
+        <storeMapping xsi:type="metaSchemalessRdbStoreMapping">
+            <storageSpace>mtp</storageSpace>
+        </storeMapping>
+        <inheritedEntityMetaDataId>/entity/Entity</inheritedEntityMetaDataId>
+        <versionControlType>NONE</versionControlType>
+    </metaData>
+</metaDataEntry>
+<metaDataEntry name="/entity/mtp/auth/Role" overwritable="false" sharable="true" dataSharable="false" permissionSharable="false">
+    <metaData xsi:type="metaEntity" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+        <description>権限設定時に利用するロール定義です。
+ロール条件を利用して対象範囲を定義します。</description>
+        <displayName>ロール</displayName>
+        <id>E0003</id>
+        <localizedDisplayNameList>
+            <localeName>ja</localeName>
+            <stringValue>ロール</stringValue>
+        </localizedDisplayNameList>
+        <localizedDisplayNameList>
+            <localeName>en</localeName>
+            <stringValue>Role</stringValue>
+        </localizedDisplayNameList>
+        <localizedDisplayNameList>
+            <localeName>zh-CN</localeName>
+            <stringValue>角色</stringValue>
+        </localizedDisplayNameList>
+        <localizedDisplayNameList>
+            <localeName>zh-TW</localeName>
+            <stringValue>角色</stringValue>
+        </localizedDisplayNameList>
+        <localizedDisplayNameList>
+            <localeName>th</localeName>
+            <stringValue>บท</stringValue>
+        </localizedDisplayNameList>
+        <name>mtp.auth.Role</name>
+        <auditLog>false</auditLog>
+        <crawl>false</crawl>
+        <queryCache>true</queryCache>
+        <declaredPropertyList xsi:type="metaPrimitiveProperty">
+            <displayName>ロールコード</displayName>
+            <entityStoreProperty xsi:type="metaGRdbPropertyStore">
+                <pageNo>0</pageNo>
+                <columnName>STR_1</columnName>
+                <isNative>false</isNative>
+                <externalIndex>false</externalIndex>
+                <indexPageNo>0</indexPageNo>
+                <indexColumnNo>1</indexColumnNo>
+            </entityStoreProperty>
+            <id>1</id>
+            <indexType>UNIQUE</indexType>
+            <localizedDisplayNameList>
+                <localeName>ja</localeName>
+                <stringValue>ロールコード</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>en</localeName>
+                <stringValue>Role Code</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>zh-CN</localeName>
+                <stringValue>角色代码</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>zh-TW</localeName>
+                <stringValue>角色代碼</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>th</localeName>
+                <stringValue>โค๊ดบท</stringValue>
+            </localizedDisplayNameList>
+            <multiplicity>1</multiplicity>
+            <name>code</name>
+            <updatable>true</updatable>
+            <validations xsi:type="metaValidationNotNull">
+                <messageCategory>mtp/validation</messageCategory>
+                <messageId>NotNull</messageId>
+            </validations>
+            <type xsi:type="stringType"/>
+        </declaredPropertyList>
+        <declaredPropertyList xsi:type="metaPrimitiveProperty">
+            <displayName>優先順位</displayName>
+            <entityStoreProperty xsi:type="metaGRdbPropertyStore">
+                <pageNo>0</pageNo>
+                <columnName>NUM_1</columnName>
+                <isNative>false</isNative>
+            </entityStoreProperty>
+            <id>2</id>
+            <indexType>NON_INDEXED</indexType>
+            <localizedDisplayNameList>
+                <localeName>ja</localeName>
+                <stringValue>優先順位</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>en</localeName>
+                <stringValue>Priority</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>zh-CN</localeName>
+                <stringValue>优先顺序</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>zh-TW</localeName>
+                <stringValue>優先順序</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>th</localeName>
+                <stringValue>ลำดับความสำคัญ</stringValue>
+            </localizedDisplayNameList>
+            <multiplicity>1</multiplicity>
+            <name>priority</name>
+            <updatable>true</updatable>
+            <validations xsi:type="metaValidationRange">
+                <messageCategory>mtp/validation</messageCategory>
+                <messageId>NumMin</messageId>
+                <maxValueExcluded>false</maxValueExcluded>
+                <min>1</min>
+                <minValueExcluded>false</minValueExcluded>
+            </validations>
+            <type xsi:type="integerType"/>
+        </declaredPropertyList>
+        <declaredPropertyList xsi:type="metaReferenceProperty">
+            <displayName>ロール条件</displayName>
+            <id>REF_2</id>
+            <indexType>NON_INDEXED</indexType>
+            <localizedDisplayNameList>
+                <localeName>ja</localeName>
+                <stringValue>ロール条件</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>en</localeName>
+                <stringValue>Role Conditions</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>zh-CN</localeName>
+                <stringValue>角色条件</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>zh-TW</localeName>
+                <stringValue>角色條件</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>th</localeName>
+                <stringValue>เงื่อนไขบท</stringValue>
+            </localizedDisplayNameList>
+            <multiplicity>-1</multiplicity>
+            <name>condition</name>
+            <updatable>true</updatable>
+            <auditLogMappedBy>false</auditLogMappedBy>
+            <mappedByPropertyMetaDataId>REF_3</mappedByPropertyMetaDataId>
+            <referenceEntityMetaDataId>E0004</referenceEntityMetaDataId>
+            <referenceType>COMPOSITION</referenceType>
+        </declaredPropertyList>
+        <declaredPropertyList xsi:type="metaReferenceProperty">
+            <displayName>Action権限</displayName>
+            <id>REF_3</id>
+            <indexType>NON_INDEXED</indexType>
+            <localizedDisplayNameList>
+                <localeName>ja</localeName>
+                <stringValue>Action権限</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>en</localeName>
+                <stringValue>Action Permission</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>zh-CN</localeName>
+                <stringValue>Action权限</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>zh-TW</localeName>
+                <stringValue>Action權限</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>th</localeName>
+                <stringValue>การอนุญาตสำหรับ Action</stringValue>
+            </localizedDisplayNameList>
+            <multiplicity>-1</multiplicity>
+            <name>actionPermission</name>
+            <updatable>true</updatable>
+            <auditLogMappedBy>false</auditLogMappedBy>
+            <mappedByPropertyMetaDataId>REF_1</mappedByPropertyMetaDataId>
+            <referenceEntityMetaDataId>E0008</referenceEntityMetaDataId>
+            <referenceType>COMPOSITION</referenceType>
+        </declaredPropertyList>
+        <declaredPropertyList xsi:type="metaReferenceProperty">
+            <displayName>Entity権限</displayName>
+            <id>REF_4</id>
+            <indexType>NON_INDEXED</indexType>
+            <localizedDisplayNameList>
+                <localeName>ja</localeName>
+                <stringValue>Entity権限</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>en</localeName>
+                <stringValue>Entity Permission</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>zh-CN</localeName>
+                <stringValue>Entity权限</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>zh-TW</localeName>
+                <stringValue>Entity權限</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>th</localeName>
+                <stringValue>การอนุญาตสำหรับ Entity</stringValue>
+            </localizedDisplayNameList>
+            <multiplicity>-1</multiplicity>
+            <name>entityPermission</name>
+            <updatable>true</updatable>
+            <auditLogMappedBy>false</auditLogMappedBy>
+            <mappedByPropertyMetaDataId>8dcaa991-68da-45b5-a3ef-3622f9344643</mappedByPropertyMetaDataId>
+            <referenceEntityMetaDataId>E0009</referenceEntityMetaDataId>
+            <referenceType>COMPOSITION</referenceType>
+        </declaredPropertyList>
+        <declaredPropertyList xsi:type="metaReferenceProperty">
+            <displayName>WebApi権限</displayName>
+            <id>REF_5</id>
+            <indexType>NON_INDEXED</indexType>
+            <localizedDisplayNameList>
+                <localeName>ja</localeName>
+                <stringValue>WebApi権限</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>en</localeName>
+                <stringValue>WebApi Permission</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>zh-CN</localeName>
+                <stringValue>WebApi权限</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>zh-TW</localeName>
+                <stringValue>WebApi權限</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>th</localeName>
+                <stringValue>การอนุญาตสำหรับ WebApi</stringValue>
+            </localizedDisplayNameList>
+            <multiplicity>-1</multiplicity>
+            <name>webapiPermission</name>
+            <updatable>true</updatable>
+            <auditLogMappedBy>false</auditLogMappedBy>
+            <mappedByPropertyMetaDataId>REF_1</mappedByPropertyMetaDataId>
+            <referenceEntityMetaDataId>E0010</referenceEntityMetaDataId>
+            <referenceType>COMPOSITION</referenceType>
+        </declaredPropertyList>
+        <entityStoreDefinition xsi:type="metaGRdbEntityStore">
+            <tableNamePostfix>MTP</tableNamePostfix>
+            <maxVarchar>
+                <columnNo>1</columnNo>
+                <pageNo>0</pageNo>
+            </maxVarchar>
+            <maxDecimal>
+                <columnNo>1</columnNo>
+                <pageNo>0</pageNo>
+            </maxDecimal>
+            <maxUniqueIndexedVarchar>
+                <columnNo>1</columnNo>
+                <pageNo>0</pageNo>
+            </maxUniqueIndexedVarchar>
+            <version>0</version>
+        </entityStoreDefinition>
+        <eventListenerList xsi:type="metaJavaClassEventListener">
+            <withoutMappedByReference>false</withoutMappedByReference>
+            <className>org.iplass.mtp.impl.auth.authorize.builtin.role.RoleEntityEventListener</className>
+        </eventListenerList>
+        <storeMapping xsi:type="metaSchemalessRdbStoreMapping">
+            <storageSpace>mtp</storageSpace>
+        </storeMapping>
+        <inheritedEntityMetaDataId>/entity/Entity</inheritedEntityMetaDataId>
+    </metaData>
+</metaDataEntry>
+
+<metaDataEntry name="/entity/mtp/auth/WebApiPermission" overwritable="false" sharable="true" dataSharable="false" permissionSharable="false">
+    <metaData xsi:type="metaEntity" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+        <description>WebApiに対する権限定義です。</description>
+        <displayName>WebApi権限</displayName>
+        <id>E0010</id>
+        <localizedDisplayNameList>
+            <localeName>ja</localeName>
+            <stringValue>WebApi権限</stringValue>
+        </localizedDisplayNameList>
+        <localizedDisplayNameList>
+            <localeName>en</localeName>
+            <stringValue>WebApi Permission</stringValue>
+        </localizedDisplayNameList>
+        <localizedDisplayNameList>
+            <localeName>zh-CN</localeName>
+            <stringValue>WebApi权限</stringValue>
+        </localizedDisplayNameList>
+        <localizedDisplayNameList>
+            <localeName>zh-TW</localeName>
+            <stringValue>WebApi權限</stringValue>
+        </localizedDisplayNameList>
+        <localizedDisplayNameList>
+            <localeName>th</localeName>
+            <stringValue>การอนุญาตสำหรับ WebApi</stringValue>
+        </localizedDisplayNameList>
+        <name>mtp.auth.WebApiPermission</name>
+        <auditLog>false</auditLog>
+        <crawl>false</crawl>
+        <declaredPropertyList xsi:type="metaPrimitiveProperty">
+            <displayName>対象WebApi</displayName>
+            <entityStoreProperty xsi:type="metaGRdbPropertyStore">
+                <pageNo>0</pageNo>
+                <columnName>STR_1</columnName>
+                <isNative>false</isNative>
+                <externalIndex>false</externalIndex>
+                <indexPageNo>0</indexPageNo>
+                <indexColumnNo>1</indexColumnNo>
+            </entityStoreProperty>
+            <id>1</id>
+            <indexType>NON_UNIQUE</indexType>
+            <localizedDisplayNameList>
+                <localeName>ja</localeName>
+                <stringValue>対象WebApi</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>en</localeName>
+                <stringValue>Target WebApi</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>zh-CN</localeName>
+                <stringValue>目标WebApi</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>zh-TW</localeName>
+                <stringValue>目標WebApi</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>th</localeName>
+                <stringValue>เป้าหมายของ WebApi</stringValue>
+            </localizedDisplayNameList>
+            <multiplicity>1</multiplicity>
+            <name>targetWebApi</name>
+            <updatable>true</updatable>
+            <validations xsi:type="metaValidationNotNull">
+                <messageCategory>mtp/validation</messageCategory>
+                <messageId>NotNull</messageId>
+            </validations>
+            <type xsi:type="stringType"/>
+        </declaredPropertyList>
+        <declaredPropertyList xsi:type="metaPrimitiveProperty">
+            <displayName>許可条件</displayName>
+            <entityStoreProperty xsi:type="metaGRdbPropertyStore">
+                <pageNo>0</pageNo>
+                <columnName>STR_2</columnName>
+                <isNative>false</isNative>
+            </entityStoreProperty>
+            <id>2</id>
+            <indexType>NON_INDEXED</indexType>
+            <localizedDisplayNameList>
+                <localeName>ja</localeName>
+                <stringValue>許可条件</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>en</localeName>
+                <stringValue>Authorization Condition</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>zh-CN</localeName>
+                <stringValue>授权条件</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>zh-TW</localeName>
+                <stringValue>授權條件</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>th</localeName>
+                <stringValue>เงื่อนไขที่ได้รับอนุญาต</stringValue>
+            </localizedDisplayNameList>
+            <multiplicity>1</multiplicity>
+            <name>conditionExpression</name>
+            <updatable>true</updatable>
+            <type xsi:type="stringType"/>
+        </declaredPropertyList>
+        <declaredPropertyList xsi:type="metaReferenceProperty">
+            <displayName>ロール</displayName>
+            <id>REF_1</id>
+            <indexType>NON_INDEXED</indexType>
+            <localizedDisplayNameList>
+                <localeName>ja</localeName>
+                <stringValue>ロール</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>en</localeName>
+                <stringValue>Role</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>zh-CN</localeName>
+                <stringValue>角色</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>zh-TW</localeName>
+                <stringValue>角色</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>th</localeName>
+                <stringValue>บท</stringValue>
+            </localizedDisplayNameList>
+            <multiplicity>1</multiplicity>
+            <name>role</name>
+            <updatable>true</updatable>
+            <validations xsi:type="metaValidationNotNull">
+                <messageCategory>mtp/validation</messageCategory>
+                <messageId>NotNull</messageId>
+            </validations>
+            <auditLogMappedBy>false</auditLogMappedBy>
+            <referenceEntityMetaDataId>E0003</referenceEntityMetaDataId>
+            <referenceType>ASSOCIATION</referenceType>
+            <versionControlType>CURRENT_BASE</versionControlType>
+        </declaredPropertyList>
+        <entityStoreDefinition xsi:type="metaGRdbEntityStore">
+            <tableNamePostfix>MTP</tableNamePostfix>
+            <maxVarchar>
+                <columnNo>2</columnNo>
+                <pageNo>0</pageNo>
+            </maxVarchar>
+            <maxIndexedVarchar>
+                <columnNo>1</columnNo>
+                <pageNo>0</pageNo>
+            </maxIndexedVarchar>
+            <version>0</version>
+        </entityStoreDefinition>
+        <eventListenerList xsi:type="metaJavaClassEventListener">
+            <withoutMappedByReference>false</withoutMappedByReference>
+            <className>org.iplass.mtp.impl.auth.authorize.builtin.webapi.WebApiPermissionEntityEventListener</className>
+        </eventListenerList>
+        <storeMapping xsi:type="metaSchemalessRdbStoreMapping">
+            <storageSpace>mtp</storageSpace>
+        </storeMapping>
+        <inheritedEntityMetaDataId>/entity/Entity</inheritedEntityMetaDataId>
+        <versionControlType>NONE</versionControlType>
+    </metaData>
+</metaDataEntry>
+</contextPath>
+
+
+</metaDataList>

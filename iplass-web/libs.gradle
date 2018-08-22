@@ -1,0 +1,23 @@
+dependencies {
+
+	//apache POI
+	compile(group: 'org.apache.poi', name: 'poi-ooxml', version:'3.16') {
+		//java8 include stax-api
+		exclude(group: 'stax', module: 'stax-api')
+    }
+
+	//jasper reports
+	compile(group: 'net.sf.jasperreports', name: 'jasperreports', version:'6.5.1') {
+		//define minimum dependency
+		exclude(group: 'org.codehaus.castor', module: 'castor-xml')
+		exclude(group: 'org.eclipse.jdt.core.compiler', module: 'ecj')
+		exclude(group: 'org.jfree', module: 'jcommon')
+		exclude(group: 'org.jfree', module: 'jfreechart')
+		exclude(group: 'org.olap4j', module: 'olap4j')
+		//use jcl-over-slf4j
+		exclude(group: 'commons-logging', module: 'commons-logging')
+	}
+
+	compile(group: 'commons-fileupload', name: 'commons-fileupload', version:'1.3.2')
+
+}

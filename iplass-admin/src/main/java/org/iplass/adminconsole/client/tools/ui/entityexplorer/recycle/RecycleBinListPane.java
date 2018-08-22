@@ -1,0 +1,291 @@
+package org.iplass.adminconsole.client.tools.ui.entityexplorer.recycle;
+
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
+import org.iplass.adminconsole.client.base.ui.widget.GridActionImgButton;
+import org.iplass.adminconsole.client.base.ui.widget.MessageTabSet;
+import org.iplass.adminconsole.client.base.ui.widget.MetaDataViewGridButton;
+import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
+import org.iplass.adminconsole.client.tools.data.entityexplorer.RecycleBinEntityInfoDS;
+import org.iplass.mtp.entity.definition.EntityDefinition;
+
+import com.smartgwt.client.types.SelectionAppearance;
+import com.smartgwt.client.types.SelectionStyle;
+import com.smartgwt.client.types.VerticalAlignment;
+import com.smartgwt.client.util.BooleanCallback;
+import com.smartgwt.client.util.SC;
+import com.smartgwt.client.widgets.Canvas;
+import com.smartgwt.client.widgets.Label;
+import com.smartgwt.client.widgets.events.ClickEvent;
+import com.smartgwt.client.widgets.events.ClickHandler;
+import com.smartgwt.client.widgets.form.fields.CheckboxItem;
+import com.smartgwt.client.widgets.form.fields.DateItem;
+import com.smartgwt.client.widgets.form.fields.events.ChangedEvent;
+import com.smartgwt.client.widgets.form.fields.events.ChangedHandler;
+import com.smartgwt.client.widgets.grid.ListGrid;
+import com.smartgwt.client.widgets.grid.ListGridField;
+import com.smartgwt.client.widgets.grid.ListGridRecord;
+import com.smartgwt.client.widgets.grid.events.DataArrivedEvent;
+import com.smartgwt.client.widgets.grid.events.DataArrivedHandler;
+import com.smartgwt.client.widgets.layout.VLayout;
+import com.smartgwt.client.widgets.toolbar.ToolStrip;
+import com.smartgwt.client.widgets.toolbar.ToolStripButton;
+
+public class RecycleBinListPane extends VLayout {
+
+	private static final String RESOURCE_PREFIX = "ui_tools_entityexplorer_RecycleBinListPane_";
+
+	private static final String CLEAN_ICON = "[SKIN]/actions/remove.png";
+	private static final String REFRESH_ICON = "[SKIN]/actions/refresh.png";
+	private static final String ERROR_ICON = "[SKINIMG]/actions/exclamation.png";
+
+	private DateItem purgeTargetDateItem;
+	private CheckboxItem showCountItem;
+	private Label countLabel;
+	private ListGrid grid;
+
+	private MessageTabSet messageTabSet;
+
+	public RecycleBinListPane(RecycleBinMainPane mainPane) {
+		// レイアウト設定
+		setWidth100();
+		setHeight100();
+
+		ToolStrip toolStrip = new ToolStrip();
+		toolStrip.setWidth100();
+		toolStrip.setMembersMargin(5);
+		toolStrip.setAlign(VerticalAlignment.BOTTOM);
+
+		purgeTargetDateItem = SmartGWTUtil.createDateItem();
+		purgeTargetDateItem.setValue(new Timestamp(System.currentTimeMillis()));
+		purgeTargetDateItem.setTitle("Purge target date");
+		purgeTargetDateItem.setWrapTitle(false);
+		toolStrip.addFormItem(purgeTargetDateItem);
+
+		final ToolStripButton cleanButton = new ToolStripButton();
+		cleanButton.setIcon(CLEAN_ICON);
+		cleanButton.setTitle("Clean");
+		cleanButton.setTooltip(SmartGWTUtil.getHoverString(AdminClientMessageUtil.getString(RESOURCE_PREFIX + "cleanTooltip")));
+		cleanButton.addClickHandler(new ClickHandler() {
+
+			@Override
+			public void onClick(ClickEvent event) {
+				clean();
+			}
+		});
+		toolStrip.addButton(cleanButton);
+
+		toolStrip.addSeparator();
+
+		showCountItem = new CheckboxItem();
+		showCountItem.setTitle("Get Data Count");
+		showCountItem.setTooltip(SmartGWTUtil.getHoverString(AdminClientMessageUtil.getString(RESOURCE_PREFIX + "dataNumOften")));
+		showCountItem.addChangedHandler(new ChangedHandler() {
+
+			@Override
+			public void onChanged(ChangedEvent event) {
+				refreshGrid();
+			}
+		});
+		toolStrip.addFormItem(showCountItem);
+
+		toolStrip.addFill();
+
+		countLabel = new Label();
+		countLabel.setWrap(false);
+		countLabel.setAutoWidth();
+		setRecordCount(0);
+		toolStrip.addMember(countLabel);
+
+		final ToolStripButton refreshButton = new ToolStripButton();
+		refreshButton.setIcon(REFRESH_ICON);
+		refreshButton.setTooltip(SmartGWTUtil.getHoverString(AdminClientMessageUtil.getString(RESOURCE_PREFIX + "refreshList")));
+		refreshButton.addClickHandler(new ClickHandler() {
+
+			@Override
+			public void onClick(ClickEvent event) {
+				refreshGrid();
+			}
+		});
+		toolStrip.addButton(refreshButton);
+
+		grid = new ListGrid() {
+			@Override
+			protected Canvas createRecordComponent(final ListGridRecord record, Integer colNum) {
+				final String fieldName = this.getFieldName(colNum);
+				if ("explorerButton".equals(fieldName)) {
+					if (!record.getAttributeAsBoolean("isError")) {
+						MetaDataViewGridButton button = new MetaDataViewGridButton(EntityDefinition.class.getName());
+						button.setActionButtonPrompt(SmartGWTUtil.getHoverString(AdminClientMessageUtil.getString(RESOURCE_PREFIX + "showMetaDataEditScreen")));
+						button.setMetaDataShowClickHandler(new MetaDataViewGridButton.MetaDataShowClickHandler() {
+							@Override
+							public String targetDefinitionName() {
+								return record.getAttributeAsString("name");
+							}
+						});
+						return button;
+					}
+				} else if ("error".equals(fieldName)) {
+					if (record.getAttributeAsBoolean("isError")) {
+						record.setEnabled(false);
+						GridActionImgButton recordCanvas = new GridActionImgButton();
+						recordCanvas.setActionButtonSrc(ERROR_ICON);
+						recordCanvas.setActionButtonPrompt(record.getAttributeAsString("errorMessage"));
+						return recordCanvas;
+					}
+				}
+				return null;
+			}
+		};
+
+		grid.setWidth100();
+		grid.setHeight100();
+		// grid.setShowAllRecords(true); //これをtrueにすると件数が多い場合に全て表示されない不具合発生
+		grid.setLeaveScrollbarGap(false); // falseで縦スクロールバー領域が自動表示制御される
+		grid.setShowRowNumbers(true); // 行番号表示
+
+		grid.setCanFreezeFields(false);
+		grid.setShowSelectedStyle(false);
+		grid.setCanGroupBy(false);
+		grid.setCanPickFields(false);
+
+		grid.setCanDragSelectText(true); // セルの値をドラッグで選択可能（コピー用）にする
+
+		// CheckBox選択設定
+		grid.setSelectionType(SelectionStyle.SIMPLE);
+		grid.setSelectionAppearance(SelectionAppearance.CHECKBOX);
+
+		// この２つを指定することでcreateRecordComponentが有効
+		grid.setShowRecordComponents(true);
+		grid.setShowRecordComponentsByCell(true);
+
+		grid.addDataArrivedHandler(new DataArrivedHandler() {
+
+			@Override
+			public void onDataArrived(DataArrivedEvent event) {
+				setRecordCount(grid.getTotalRows());
+				finishClean();
+			}
+		});
+		grid.setShowResizeBar(true); // リサイズ可能
+		grid.setResizeBarTarget("next"); // リサイズバーをダブルクリックした際、下を収縮
+
+		messageTabSet = new MessageTabSet();
+		messageTabSet.setHeight(120);
+
+		addMember(toolStrip);
+		addMember(grid);
+		addMember(messageTabSet);
+
+		refreshGrid();
+	}
+
+	public void refresh() {
+		refreshGrid();
+	}
+
+	private void setRecordCount(long count) {
+		countLabel.setContents("Total Count：" + count);
+	}
+
+	public void setRecordCount() {
+
+	}
+
+	public void startCallback() {
+		startClean();
+	}
+
+	public void finishCallback() {
+		finishClean();
+	}
+
+	public void executeStatusCallback(List<String> messages) {
+		messageTabSet.addMessage(messages);
+	}
+
+	public void executeErrorCallback(List<String> messages) {
+		messageTabSet.addErrorMessage(messages);
+	}
+
+	private void clean() {
+		ListGridRecord[] records = grid.getSelectedRecords();
+		if (records == null || records.length == 0) {
+			SC.say(AdminClientMessageUtil.getString(RESOURCE_PREFIX + "selectEntityTarget"));
+			return;
+		}
+
+		final List<String> defNames = new ArrayList<String>();
+		for (ListGridRecord record : records) {
+			defNames.add(record.getAttributeAsString("name"));
+		}
+
+		Date purgeTimeDate = SmartGWTUtil.getDateTimeValue(purgeTargetDateItem.getValueAsDate(), null, false, "00:00", "00", "000");
+		if (purgeTimeDate == null) {
+			SC.say(AdminClientMessageUtil.getString(RESOURCE_PREFIX + "specifyPurgeTargetDate"));
+			return;
+		}
+		final Timestamp ts = new Timestamp(purgeTimeDate.getTime());
+
+		SC.ask(AdminClientMessageUtil.getString(RESOURCE_PREFIX + "confirmTitle"), AdminClientMessageUtil.getString(RESOURCE_PREFIX + "cleanConfirm"), new BooleanCallback() {
+
+			@Override
+			public void execute(Boolean value) {
+
+				if (value) {
+					RecycleBinCleanProgressDialog dialog = new RecycleBinCleanProgressDialog(RecycleBinListPane.this, defNames, ts);
+					dialog.show();
+				}
+			}
+		});
+	}
+
+	private void refreshGrid() {
+
+		Date purgeTimeDate = SmartGWTUtil.getDateTimeValue(purgeTargetDateItem.getValueAsDate(), null, false, "00:00", "00", "000");
+		if (purgeTimeDate == null) {
+			SC.say(AdminClientMessageUtil.getString(RESOURCE_PREFIX + "specifyPurgeTargetDate"));
+			return;
+		}
+
+		startClean();
+
+		Timestamp ts = new Timestamp(purgeTimeDate.getTime());
+		boolean isGetDataCount = showCountItem.getValueAsBoolean();
+		RecycleBinEntityInfoDS ds = RecycleBinEntityInfoDS.getInstance(ts, isGetDataCount);
+		grid.setDataSource(ds);
+
+		// （参考）setFieldsは、setDataSource後に指定しないと効かない
+
+		// ボタンを表示したいためListGridFieldを指定
+		ListGridField explorerField = new ListGridField("explorerButton", " ");
+		explorerField.setWidth(25);
+		ListGridField errorField = new ListGridField("error", " ");
+		errorField.setWidth(25);
+		ListGridField nameField = new ListGridField("name", "Name");
+		ListGridField displayNameField = new ListGridField("dispName", "Display Name");
+		ListGridField countField = new ListGridField("count", "Data Count");
+		countField.setWidth(70);
+
+		grid.setFields(explorerField, errorField, nameField, displayNameField, countField);
+
+		grid.fetchData();
+	}
+
+	private void startClean() {
+		if (messageTabSet != null) {
+			messageTabSet.clearMessage();
+			messageTabSet.setTabTitleProgress();
+		}
+	}
+
+	private void finishClean() {
+		if (messageTabSet != null) {
+			messageTabSet.setTabTitleNormal();
+		}
+	}
+}

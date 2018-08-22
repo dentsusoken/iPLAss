@@ -1,0 +1,105 @@
+/* replace keyword to color
+$COLOR_IMAGE_COLOR: #66aced
+$COLOR_LINK_COLOR: #b9d5f0
+$COLOR_NAV_DETAIL_BORDER: #97c1ea
+$COLOR_NAV_DETAIL_BACKGROUND: #bbd8f2
+$COLOR_NAV_DETAIL_BACKGROUND_GRADIENT: #d4e8fa
+$COLOR_NAV_DETAIL_HOVER_BACKGROUND: #376fa3
+$COLOR_NAV_DETAIL_HOVER_BACKGROUND_GRADIENT: #4488c8
+$COLOR_NAV_WRAP_HOVER_BACKGROUND: #bbd8f2
+$COLOR_NAV_WRAP_SUBMENU_HOVER_BACKGROUND: #eff6fd
+$COLOR_NAV_WRAP_LIST_HOVER_BACKGROUND: #eff6fd
+$COLOR_NAV_WRAP_NODE_HOVER_BACKGROUND: #eff6fd
+$COLOR_NAV_WRAP_ITEM_HOVER_BACKGROUND: #376fa3
+$COLOR_NAV_WRAP_ITEM_HOVER_BORDER: #97c1ea
+$URL_CURRENT_NAVI_ICON: ../../../../../images/gem/skin/horizontal/bg-navblue-01.png
+$URL_SELECTED_NAVI_ICON: ../../../../../images/gem/skin/horizontal/icon-navblue-02.png
+$COLOR_NAME: blue
+*/
+
+.hgroup-01 span.imgclr_blue svg {
+  color: $COLOR_IMAGE_COLOR;
+}
+
+#nav.sub-popup > ul.nav-wrap > li.bg-$COLOR_NAME.hover > p > a {
+  color: $COLOR_LINK_COLOR;
+}
+
+#nav.sub-popup > ul.nav-wrap > li.bg-$COLOR_NAME.hover > p > span.curicon {
+  background: url($URL_CURRENT_NAVI_ICON) no-repeat;
+}
+
+#nav.sub-popup > ul.nav-wrap > li.bg-$COLOR_NAME.selected > p > a {
+  color: $COLOR_LINK_COLOR;
+}
+
+#nav.sub-popup > ul.nav-wrap > li.bg-$COLOR_NAME > ul.nav-detail {
+  border-bottom: 1px solid $COLOR_NAV_DETAIL_BORDER;
+  background: $COLOR_NAV_DETAIL_BACKGROUND;
+  background: linear-gradient($COLOR_NAV_DETAIL_BACKGROUND 0, $COLOR_NAV_DETAIL_BACKGROUND_GRADIENT 100%);
+}
+#nav.sub-popup > ul.nav-wrap > li.bg-$COLOR_NAME > ul.nav-detail > li > a:hover {
+  background: $COLOR_NAV_WRAP_HOVER_BACKGROUND;
+  background: linear-gradient($COLOR_NAV_WRAP_HOVER_BACKGROUND 0, #$COLOR_NAV_DETAIL_HOVER_BACKGROUND_GRADIENT 100%);
+}
+#nav.sub-popup > ul.nav-wrap > li.bg-$COLOR_NAME > ul.nav-detail > li.selected > a {
+  background: $COLOR_NAV_WRAP_HOVER_BACKGROUND;
+  background: linear-gradient($COLOR_NAV_WRAP_HOVER_BACKGROUND 0, #$COLOR_NAV_DETAIL_HOVER_BACKGROUND_GRADIENT 100%);
+}
+#nav.sub-popup > ul.nav-wrap > li.bg-$COLOR_NAME > ul.nav-detail > li.subMenuRoot > ul.subMenuList li:hover {
+  background: $COLOR_NAV_WRAP_SUBMENU_HOVER_BACKGROUND;
+}
+#nav.sub-popup > ul.nav-wrap > li.bg-$COLOR_NAME > ul.nav-detail > li.subMenuRoot > ul.subMenuList li.selected {
+  background: $COLOR_NAV_WRAP_SUBMENU_HOVER_BACKGROUND;
+}
+#nav.sub-popup > ul.nav-wrap > li.bg-$COLOR_NAME > ul.nav-detail > li.subMenuRoot > ul.subMenuList li.menu-action.selected {
+  background: url($URL_SELECTED_NAVI_ICON) no-repeat 7px 7px $COLOR_NAV_WRAP_SUBMENU_HOVER_BACKGROUND;
+}
+#nav.sub-popup > ul.nav-wrap > li.bg-$COLOR_NAME > ul.nav-detail > li.subMenuRoot > ul.subMenuList li.menu-entity.selected {
+  background: url($URL_SELECTED_NAVI_ICON) no-repeat 7px 7px $COLOR_NAV_WRAP_SUBMENU_HOVER_BACKGROUND;
+}
+
+#nav.sub-droplist > ul.nav-wrap > li.bg-$COLOR_NAME ul {
+  background: $COLOR_NAV_WRAP_LIST_HOVER_BACKGROUND;
+}
+#nav.sub-droplist > ul.nav-wrap > li.bg-$COLOR_NAME ul > li:hover {
+  background: $COLOR_NAV_WRAP_HOVER_BACKGROUND;
+}
+#nav.sub-droplist > ul.nav-wrap > li.bg-$COLOR_NAME ul > li.selected {
+  background: $COLOR_NAV_WRAP_HOVER_BACKGROUND;
+}
+#nav.sub-droplist > ul.nav-wrap > li.bg-$COLOR_NAME ul > li.menu-action.selected {
+  background: url($URL_SELECTED_NAVI_ICON) no-repeat scroll 7px 7px $COLOR_NAV_WRAP_HOVER_BACKGROUND;
+}
+#nav.sub-droplist > ul.nav-wrap > li.bg-$COLOR_NAME ul > li.menu-entity.selected {
+  background: url($URL_SELECTED_NAVI_ICON) no-repeat scroll 7px 7px $COLOR_NAV_WRAP_HOVER_BACKGROUND;
+}
+
+#nav.sub-droplist > ul.nav-wrap > li.bg-$COLOR_NAME:hover > p {
+  background: $COLOR_NAV_WRAP_ITEM_HOVER_BACKGROUND;
+}
+
+#nav.sub-droplist > ul.nav-wrap > li.bg-$COLOR_NAME.selected > p {
+  background: $COLOR_NAV_WRAP_ITEM_HOVER_BACKGROUND;
+}
+
+#nav.sub-droplist > ul.nav-wrap > li.bg-$COLOR_NAME.menu-action.selected > p {
+  background: url($URL_SELECTED_NAVI_ICON) no-repeat scroll 2px 8px $COLOR_NAV_WRAP_ITEM_HOVER_BACKGROUND;
+}
+
+#nav.sub-droplist > ul.nav-wrap > li.bg-$COLOR_NAME.menu-entity.selected > p {
+  background: url($URL_SELECTED_NAVI_ICON) no-repeat scroll 2px 8px $COLOR_NAV_WRAP_ITEM_HOVER_BACKGROUND;
+}
+
+#nav.sub-droplist > ul.nav-wrap > li.bg-$COLOR_NAME.menu-node.hover > p {
+  background: $COLOR_NAV_WRAP_NODE_HOVER_BACKGROUND;
+  border-color: $COLOR_NAV_WRAP_ITEM_HOVER_BORDER;
+}
+
+#nav.sub-droplist > ul.nav-wrap > li.bg-$COLOR_NAME.menu-node.hover > ul {
+  border-color: $COLOR_NAV_WRAP_ITEM_HOVER_BORDER;
+}
+
+#nav.sub-droplist > ul.nav-wrap li.bg-$COLOR_NAME ul li:hover > ul {
+  border-color: $COLOR_NAV_WRAP_ITEM_HOVER_BORDER;
+}

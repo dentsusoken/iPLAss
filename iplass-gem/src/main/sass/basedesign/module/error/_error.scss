@@ -1,0 +1,26 @@
+//colors -> color/_colors.scss
+// $color_quill_gray_approx: #d5d5d5;
+// $color_scarlet_approx: #eb1717;
+
+.error-block .hgroup-01 svg {
+	color: $color_sunglo_approx;
+}
+
+//予期せぬエラー
+.tbl-error {
+	border: 1px solid $color_quill_gray_approx;
+	width: 100%;
+	table-layout: fixed;
+	td {
+		padding: 9px 7px;
+		vertical-align: middle;
+	}
+}
+//エラーメッセージ
+.error {
+	color: $color_scarlet_approx;
+	font-weight: bold;
+}
+.nomenu-layout .error-block {
+	padding: 15px;
+}

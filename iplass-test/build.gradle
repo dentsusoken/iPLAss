@@ -1,0 +1,13 @@
+apply from: '../javaeewebapis.gradle'
+apply from: 'libs.gradle'
+
+apply plugin: 'groovy'
+
+dependencies {
+	compile project(':iplass-core')
+	compile project(':iplass-web')
+}
+sourceSets {
+	demo
+}
+

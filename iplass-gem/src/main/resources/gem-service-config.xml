@@ -1,0 +1,294 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!DOCTYPE serviceDefinition>
+<serviceDefinition>
+	<service>
+		<interface>org.iplass.mtp.impl.core.ManagerFactory</interface>
+		<property name="org.iplass.mtp.view.calendar.EntityCalendarManager" value="org.iplass.mtp.impl.view.calendar.EntityCalendarManagerImpl" additional="true" />
+		<property name="org.iplass.mtp.view.filter.EntityFilterManager" value="org.iplass.mtp.impl.view.filter.EntityFilterManagerImpl" additional="true" />
+		<property name="org.iplass.mtp.view.generic.EntityViewManager" value="org.iplass.mtp.impl.view.generic.EntityViewManagerImpl" additional="true" />
+		<property name="org.iplass.mtp.view.menu.MenuItemManager" value="org.iplass.mtp.impl.view.menu.MenuItemManagerImpl" additional="true" />
+		<property name="org.iplass.mtp.view.menu.MenuTreeManager" value="org.iplass.mtp.impl.view.menu.MenuTreeManagerImpl" additional="true" />
+		<property name="org.iplass.mtp.view.top.TopViewDefinitionManager" value="org.iplass.mtp.impl.view.top.TopViewDefinitionManagerImpl" additional="true" />
+		<property name="org.iplass.mtp.view.treeview.TreeViewManager" value="org.iplass.mtp.impl.view.treeview.TreeViewManagerImpl" additional="true" />
+	</service>
+
+	<!-- MetaData JAXB configuration -->
+	<service>
+		<interface>org.iplass.mtp.impl.metadata.MetaDataJAXBService</interface>
+		<property name="classToBeBound" value="org.iplass.mtp.impl.metadata.refs.view.ViewRootMetaDatas" additional="true" />
+	</service>
+
+	<!-- MetaData Repository configuration -->
+	<service>
+		<interface>org.iplass.mtp.impl.metadata.MetaDataRepository</interface>
+		<property name="annotatedClass" value="org.iplass.gem.command.MetaDataRefs" additional="true" />
+		<property name="resourcePath" value="/gem-metadata.xml" additional="true" />
+ 	</service>
+
+	<!-- Definition Service -->
+	<service>
+		<interface>org.iplass.mtp.impl.definition.DefinitionService</interface>
+		<property name="typeMap" value="org.iplass.mtp.impl.view.calendar.EntityCalendarService$TypeMap" additional="true" />
+		<property name="typeMap" value="org.iplass.mtp.impl.view.filter.EntityFilterService$TypeMap" additional="true" />
+		<property name="typeMap" value="org.iplass.mtp.impl.view.generic.EntityViewService$TypeMap" additional="true" />
+		<property name="typeMap" value="org.iplass.mtp.impl.view.menu.MenuItemService$TypeMap" additional="true" />
+		<property name="typeMap" value="org.iplass.mtp.impl.view.top.TopViewDefinitionService$TypeMap" additional="true" />
+		<property name="typeMap" value="org.iplass.mtp.impl.view.treeview.TreeViewService$TypeMap" additional="true" />
+		<property name="typeMap" value="org.iplass.mtp.impl.view.menu.MenuTreeService$TypeMap" additional="true" />
+	</service>
+
+	<!-- Tenant関連 -->
+	<service>
+		<interface>org.iplass.mtp.impl.tenant.MetaTenantService</interface>
+
+		<!-- tenant config type map -->
+		<property name="configType" additional="true">
+			<property name="definitionClass" value="org.iplass.mtp.tenant.gem.TenantGemInfo" />
+			<property name="metadataClass" value="org.iplass.mtp.impl.tenant.gem.MetaTenantGemInfo" />
+			<property name="scriptBindingName" value="tenantGemInfo" />
+		</property>
+	</service>
+
+	<!-- Web関連 -->
+	<service>
+		<interface>org.iplass.mtp.impl.web.WebFrontendService</interface>
+		<!-- ログアウト時にキックするURL -->
+		<property name="logoutUrl" value="logout" />
+		<!-- エラーページの設定 -->
+		<property name="errorUrlSelector" class="org.iplass.gem.GemErrorUrlSelector" />
+		<!-- ログインページの設定 -->
+		<property name="loginUrlSelector" class="org.iplass.gem.GemLoginUrlSelector" />
+	</service>
+
+	<!-- WebApiのJAXBでの変換対象のクラス定義 -->
+	<service>
+		<interface>org.iplass.mtp.impl.webapi.jaxb.WebApiJaxbService</interface>
+		<!-- view definition -->
+		<!-- if use DefinitionApi, add below to classToBeBound
+		<property name="classToBeBound" value="org.iplass.mtp.view.calendar.EntityCalendar" additional="true" />
+		<property name="classToBeBound" value="org.iplass.mtp.view.filter.EntityFilter" additional="true" />
+		<property name="classToBeBound" value="org.iplass.mtp.view.generic.EntityView" additional="true" />
+		<property name="classToBeBound" value="org.iplass.mtp.view.menu.MenuItem" additional="true" />
+		<property name="classToBeBound" value="org.iplass.mtp.view.menu.MenuTree" additional="true" />
+		<property name="classToBeBound" value="org.iplass.mtp.view.top.TopViewDefinition" additional="true" />
+		<property name="classToBeBound" value="org.iplass.mtp.view.treeview.TreeView" additional="true" />
+		<property name="classToBeBound" value="org.iplass.mtp.tenant.gem.TenantGemInfo" additional="true" />
+		-->
+	</service>
+
+	<!-- gem全般の設定 -->
+	<service>
+		<interface>org.iplass.gem.GemConfigService</interface>
+		<class>org.iplass.gem.GemConfigService</class>
+		<property name="loadWithReference" value="false" />
+		<property name="formatNumberWithComma" value="true" />
+
+		<!-- CSVダウンロード件数上限値 -->
+		<property name="csvDownloadMaxCount" value="65535" />
+
+		<!-- CSVダウンロード文字コード -->
+		<property name="csvDownloadCharacterCode" value="UTF-8"/>
+
+		<!-- CSVダウンロード常時ダブルクォート出力 -->
+		<property name="csvDownloadQuoteAll" value="true"/>
+
+		<!-- CSVダウンロード参照項目バージョン出力 -->
+		<property name="csvDownloadReferenceVersion" value="true"/>
+
+		<!-- CSVアップロードコミット単位 -->
+		<property name="csvUploadCommitCount" value="1000"/>
+
+		<!-- CSVダウンロード時User名取得のための検索内部キャッシュサイズ -->
+		<property name="searchResultCacheLimit" value="300" />
+
+		<!-- 編集画面でキャンセル時に確認ダイアログを表示するか -->
+		<property name="confirmEditCancel" value="true"/>
+
+		<!-- 検索画面でリセットボタンを表示するか -->
+		<property name="showSeachCondResetButton" value="true"/>
+
+		<!-- 検索処理のインターバル、無期限(0)/指定ミリ秒(1以上) -->
+		<property name="searchInterval" value="60000"/>
+
+		<!-- CSVダウンロードのインターバル、無期限(0)/指定ミリ秒(1以上) -->
+		<property name="csvDownloadInterval" value="60000"/>
+
+		<!-- 汎用検索のCSVダウンロードでフッターを出力するか -->
+		<property name="csvDownloadWithFooter" value="false"/>
+
+		<!-- 汎用検索のCSVダウンロードのフッター文言 -->
+		<property name="csvDownloadFooter" value=""/>
+
+		<!-- CSVアップロード非同期設定 -->
+		<!-- true(非同期)を設定する場合は、 RdbQueueServiceのuseQueueプロパティをtrueに設定してください。 -->
+		<property name="csvUploadAsync" value="false"/>
+
+		<!-- CSVアップロードステータスポーリングのインターバル、指定ミリ秒 -->
+		<property name="csvUploadStatusPollingInterval" value="10000"/>
+
+		<!-- プルダウンの「選択してください」を表示するか -->
+		<property name="showPulldownPleaseSelectLabel" value="true" />
+
+		<!-- ゴミ箱の表示件数上限値 (-1は無制限) -->
+		<property name="recycleBinMaxCount" value="100" />
+
+		<property name="binaryDownloadLoggingTargetProperty">
+			<property name="entityName" value="mtp.maintenance.Package" />
+			<property name="propertyName" value="archive" />
+		</property>
+
+		<!-- 汎用画面、メニュー用のイメージカラー設定 -->
+		<property name="imageColors">
+			<property name="colorName" value="blue" />
+			<property name="cssSettings">
+				<property name="skinName" value="flat" />
+				<property name="cssPath" value="/styles/gem/skin/flat/imagecolor/blue.css" />
+			</property>
+			<property name="cssSettings">
+				<property name="skinName" value="horizontal" />
+				<property name="cssPath" value="/styles/gem/skin/horizontal/imagecolor/blue.css" />
+			</property>
+			<property name="cssSettings">
+				<property name="skinName" value="vertical" />
+				<property name="cssPath" value="/styles/gem/skin/vertical/imagecolor/blue.css" />
+			</property>
+		</property>
+		<property name="imageColors">
+			<property name="colorName" value="green" />
+			<property name="cssSettings">
+				<property name="skinName" value="flat" />
+				<property name="cssPath" value="/styles/gem/skin/flat/imagecolor/green.css" />
+			</property>
+			<property name="cssSettings">
+				<property name="skinName" value="horizontal" />
+				<property name="cssPath" value="/styles/gem/skin/horizontal/imagecolor/green.css" />
+			</property>
+			<property name="cssSettings">
+				<property name="skinName" value="vertical" />
+				<property name="cssPath" value="/styles/gem/skin/vertical/imagecolor/green.css" />
+			</property>
+		</property>
+		<property name="imageColors">
+			<property name="colorName" value="red" />
+			<property name="cssSettings">
+				<property name="skinName" value="flat" />
+				<property name="cssPath" value="/styles/gem/skin/flat/imagecolor/red.css" />
+			</property>
+			<property name="cssSettings">
+				<property name="skinName" value="horizontal" />
+				<property name="cssPath" value="/styles/gem/skin/horizontal/imagecolor/red.css" />
+			</property>
+			<property name="cssSettings">
+				<property name="skinName" value="vertical" />
+				<property name="cssPath" value="/styles/gem/skin/vertical/imagecolor/red.css" />
+			</property>
+		</property>
+		<property name="imageColors">
+			<property name="colorName" value="yellow" />
+			<property name="cssSettings">
+				<property name="skinName" value="flat" />
+				<property name="cssPath" value="/styles/gem/skin/flat/imagecolor/yellow.css" />
+			</property>
+			<property name="cssSettings">
+				<property name="skinName" value="horizontal" />
+				<property name="cssPath" value="/styles/gem/skin/horizontal/imagecolor/yellow.css" />
+			</property>
+			<property name="cssSettings">
+				<property name="skinName" value="vertical" />
+				<property name="cssPath" value="/styles/gem/skin/vertical/imagecolor/yellow.css" />
+			</property>
+		</property>
+
+		<!-- スキン定義 -->
+		<property name="skins" class="org.iplass.gem.Skin">
+			<property name="skinName" value="flat" />
+			<property name="displayName" value="フラット" />
+			<property name="pageSkinName" value="flat" />
+			<property name="menuSkinName" value="sub-popup" />
+		</property>
+		<property name="skins" class="org.iplass.gem.Skin">
+			<property name="skinName" value="vertical" />
+			<property name="displayName" value="垂直メニュー" />
+			<property name="pageSkinName" value="vertical" />
+			<property name="menuSkinName" value="sub-popup" />
+		</property>
+		<property name="skins" class="org.iplass.gem.Skin">
+			<property name="skinName" value="horizontal" />
+			<property name="displayName" value="水平メニュー" />
+			<property name="pageSkinName" value="horizontal" />
+			<property name="menuSkinName" value="sub-popup" />
+		</property>
+		<property name="skins" class="org.iplass.gem.Skin">
+			<property name="skinName" value="horizontal_droplist" />
+			<property name="displayName" value="水平メニュー(ドロップリストメニュー)" />
+			<property name="pageSkinName" value="horizontal" />
+			<property name="menuSkinName" value="sub-droplist" />
+		</property>
+
+		<!-- テーマ定義 -->
+		<property name="themes" class="org.iplass.gem.Theme">
+			<property name="themeName" value="black" />
+			<property name="displayName" value="黒" />
+		</property>
+		<property name="themes" class="org.iplass.gem.Theme">
+			<property name="themeName" value="red" />
+			<property name="displayName" value="赤" />
+		</property>
+		<property name="themes" class="org.iplass.gem.Theme">
+			<property name="themeName" value="green" />
+			<property name="displayName" value="緑" />
+		</property>
+		<property name="themes" class="org.iplass.gem.Theme">
+			<property name="themeName" value="blue" />
+			<property name="displayName" value="青" />
+		</property>
+		<property name="themes" class="org.iplass.gem.Theme">
+			<property name="themeName" value="lightred" />
+			<property name="displayName" value="明赤" />
+		</property>
+		<property name="themes" class="org.iplass.gem.Theme">
+			<property name="themeName" value="lightgreen" />
+			<property name="displayName" value="明緑" />
+		</property>
+		<property name="themes" class="org.iplass.gem.Theme">
+			<property name="themeName" value="lightblue" />
+			<property name="displayName" value="明青" />
+		</property>
+		<property name="themes" class="org.iplass.gem.Theme">
+			<property name="themeName" value="orange" />
+			<property name="displayName" value="橙" />
+		</property>
+		<property name="entityViewHelper" class="org.iplass.gem.EntityViewHelperImpl" />
+	</service>
+
+	<service>
+		<interface>org.iplass.mtp.impl.view.generic.EntityViewService</interface>
+		<class>org.iplass.mtp.impl.view.generic.EntityViewService</class>
+		<!-- EntityViewを編集する際にプロパティの絞り込みを有効にするか -->
+		<property name ="filterSettingProperty" value="true" />
+	</service>
+	<service final="true">
+		<interface>org.iplass.mtp.impl.view.filter.EntityFilterService</interface>
+		<class>org.iplass.mtp.impl.view.filter.EntityFilterService</class>
+	</service>
+	<service final="true">
+		<interface>org.iplass.mtp.impl.view.menu.MenuTreeService</interface>
+		<class>org.iplass.mtp.impl.view.menu.MenuTreeService</class>
+	</service>
+	<service final="true">
+		<interface>org.iplass.mtp.impl.view.menu.MenuItemService</interface>
+		<class>org.iplass.mtp.impl.view.menu.MenuItemService</class>
+	</service>
+	<service final="true">
+		<interface>org.iplass.mtp.impl.view.treeview.TreeViewService</interface>
+		<class>org.iplass.mtp.impl.view.treeview.TreeViewService</class>
+	</service>
+	<service final="true">
+		<interface>org.iplass.mtp.impl.view.calendar.EntityCalendarService</interface>
+		<class>org.iplass.mtp.impl.view.calendar.EntityCalendarService</class>
+	</service>
+	<service final="true">
+		<interface>org.iplass.mtp.impl.view.top.TopViewDefinitionService</interface>
+		<class>org.iplass.mtp.impl.view.top.TopViewDefinitionService</class>
+	</service>
+</serviceDefinition>

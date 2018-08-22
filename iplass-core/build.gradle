@@ -1,0 +1,2 @@
+apply from: '../javaeecoreapis.gradle'
+apply from: 'libs.gradle'

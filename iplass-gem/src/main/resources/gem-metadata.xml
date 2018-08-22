@@ -1,0 +1,3968 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!DOCTYPE metaDataList>
+<metaDataList>
+	<!-- EntityView -->
+	<contextPath name="/view/generic">
+		<!-- User -->
+		<metaDataEntry name="/view/generic/mtp/auth/User">
+			<metaData xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+				xsi:type="metaEntityView">
+				<id>VG0001</id>
+				<name>mtp.auth.User</name>
+				<definitionId>E0001</definitionId>
+				<views xsi:type="metaDetailFormView">
+					<sections xsi:type="metaDefaultSection">
+						<dispFlag>true</dispFlag>
+						<expandable>true</expandable>
+						<title>ユーザー情報</title>
+						<localizedTitleList>
+							<localeName>ja</localeName>
+							<stringValue>ユーザー情報</stringValue>
+						</localizedTitleList>
+						<localizedTitleList>
+							<localeName>en</localeName>
+							<stringValue>User Information</stringValue>
+						</localizedTitleList>
+						<localizedTitleList>
+							<localeName>zh-CN</localeName>
+							<stringValue>用户信息</stringValue>
+						</localizedTitleList>
+						<localizedTitleList>
+							<localeName>zh-TW</localeName>
+							<stringValue>用戶信息</stringValue>
+						</localizedTitleList>
+						<localizedTitleList>
+							<localeName>th</localeName>
+							<stringValue>ข้อมูลผู้ใช้งาน</stringValue>
+						</localizedTitleList>
+						<colNum>1</colNum>
+						<elements xsi:type="metaPropertyItem">
+							<!-- ユーザID -->
+							<dispFlag>true</dispFlag>
+							<propertyId>2</propertyId>
+							<isSystemProperty>false</isSystemProperty>
+							<editor xsi:type="metaStringPropertyEditor">
+								<displayType>Text</displayType>
+							</editor>
+						</elements>
+						<elements xsi:type="metaPropertyItem">
+							<!-- 姓 -->
+							<dispFlag>true</dispFlag>
+							<propertyId>4</propertyId>
+							<isSystemProperty>false</isSystemProperty>
+							<editor xsi:type="metaStringPropertyEditor">
+								<displayType>Text</displayType>
+							</editor>
+						</elements>
+						<elements xsi:type="metaPropertyItem">
+							<!-- 姓（カナ） -->
+							<dispFlag>true</dispFlag>
+							<propertyId>12</propertyId>
+							<isSystemProperty>false</isSystemProperty>
+							<editor xsi:type="metaStringPropertyEditor">
+								<displayType>Text</displayType>
+							</editor>
+						</elements>
+						<elements xsi:type="metaPropertyItem">
+							<!-- 名 -->
+							<dispFlag>true</dispFlag>
+							<propertyId>3</propertyId>
+							<isSystemProperty>false</isSystemProperty>
+							<editor xsi:type="metaStringPropertyEditor">
+								<displayType>Text</displayType>
+							</editor>
+						</elements>
+						<elements xsi:type="metaPropertyItem">
+							<!-- 名（カナ） -->
+							<dispFlag>true</dispFlag>
+							<propertyId>11</propertyId>
+							<isSystemProperty>false</isSystemProperty>
+							<editor xsi:type="metaStringPropertyEditor">
+								<displayType>Text</displayType>
+							</editor>
+						</elements>
+						<elements xsi:type="metaPropertyItem">
+							<!-- メールアドレス -->
+							<dispFlag>true</dispFlag>
+							<propertyId>5</propertyId>
+							<isSystemProperty>false</isSystemProperty>
+							<editor xsi:type="metaStringPropertyEditor">
+								<displayType>Text</displayType>
+							</editor>
+						</elements>
+						<elements xsi:type="metaPropertyItem">
+							<!-- 言語 -->
+							<dispFlag>true</dispFlag>
+							<propertyId>8</propertyId>
+							<isSystemProperty>false</isSystemProperty>
+							<editor xsi:type="metaStringPropertyEditor">
+								<displayType>Text</displayType>
+							</editor>
+						</elements>
+						<elements xsi:type="metaPropertyItem">
+							<!-- 有効開始日 -->
+							<dispFlag>true</dispFlag>
+							<propertyId>startDate</propertyId>
+							<isSystemProperty>false</isSystemProperty>
+							<editor xsi:type="metaTimestampPropertyEditor">
+								<displayType>DateTime</displayType>
+							</editor>
+						</elements>
+						<elements xsi:type="metaPropertyItem">
+							<!-- 有効終了日 -->
+							<dispFlag>true</dispFlag>
+							<propertyId>endDate</propertyId>
+							<isSystemProperty>false</isSystemProperty>
+							<editor xsi:type="metaTimestampPropertyEditor">
+								<displayType>DateTime</displayType>
+							</editor>
+						</elements>
+						<elements xsi:type="metaPropertyItem">
+							<!-- 所属グループ -->
+							<dispFlag>true</dispFlag>
+							<propertyId>REF5</propertyId>
+							<isSystemProperty>false</isSystemProperty>
+							<editor xsi:type="metaReferencePropertyEditor">
+								<displayType>Link</displayType>
+								<objectId>E0006</objectId>
+								<urlParameter><![CDATA[es=t]]></urlParameter>
+							</editor>
+						</elements>
+						<elements xsi:type="metaPropertyItem">
+							<!-- 所属ランク -->
+							<dispFlag>true</dispFlag>
+							<propertyId>REF6</propertyId>
+							<isSystemProperty>false</isSystemProperty>
+							<editor xsi:type="metaReferencePropertyEditor">
+								<displayType>Select</displayType>
+								<objectId>E0002</objectId>
+							</editor>
+						</elements>
+						<elements xsi:type="metaPropertyItem">
+							<!-- 認証ポリシー -->
+							<dispFlag>true</dispFlag>
+							<propertyId>17</propertyId>
+							<editor xsi:type="metaTemplatePropertyEditor">
+								<templateName>gem/generic/editor/AuthenticationPolicySelectPropertyEditorJsp</templateName>
+							</editor>
+							<hideNormalCondition>false</hideNormalCondition>
+							<hideDetailCondition>false</hideDetailCondition>
+							<hideDetail>false</hideDetail>
+							<hideView>false</hideView>
+							<isBlank>false</isBlank>
+							<requiredNormal>false</requiredNormal>
+							<requiredDetail>false</requiredDetail>
+						</elements>
+					</sections>
+					<buttons>
+						<dispFlag>true</dispFlag>
+						<customDisplayTypeScript><![CDATA[
+if (!org.iplass.mtp.view.generic.OutputType.EDIT.equals(outputType)) {
+	return false;
+}
+
+if (entity == null || entity.getOid() == null || entity.getOid().isEmpty()) {
+	return false;
+}
+
+def am = org.iplass.mtp.ManagerLocator.getInstance().getManager(org.iplass.mtp.auth.AuthManager.class);
+def auth = org.iplass.mtp.auth.AuthContext.getCurrentContext();
+def tenant = auth.tenant;
+
+if (am.canResetCredential()) {
+	if (user.admin) {
+		return true;
+	} else {
+		// ユーザ管理が可能なロールを持っているか
+	    if (tenant.tenantAuthInfo.userAdminRoles != null) {
+	        for (def role: tenant.tenantAuthInfo.userAdminRoles) {
+	            if (auth.userInRole(role)) {
+	                return true;
+	            }
+	        }
+	    }
+	}
+}
+return false;
+]]></customDisplayTypeScript>
+						<displayLabel>パスワードリセット</displayLabel>
+						<displayType>Custom</displayType>
+						<localizedDisplayLabelList>
+							<localeName>ja</localeName>
+							<stringValue>パスワードリセット</stringValue>
+						</localizedDisplayLabelList>
+						<localizedDisplayLabelList>
+							<localeName>en</localeName>
+							<stringValue>Password Reset</stringValue>
+						</localizedDisplayLabelList>
+						<localizedDisplayLabelList>
+							<localeName>zh-CN</localeName>
+							<stringValue>重设密码</stringValue>
+						</localizedDisplayLabelList>
+						<localizedDisplayLabelList>
+							<localeName>zh-TW</localeName>
+							<stringValue>重設密碼</stringValue>
+						</localizedDisplayLabelList>
+						<localizedDisplayLabelList>
+							<localeName>th</localeName>
+							<stringValue>รีเซ็ตพาสเวิร์ด</stringValue>
+						</localizedDisplayLabelList>
+						<onclickEvent>resetPassword()</onclickEvent>
+						<style>gr-btn gr-size-02</style>
+					</buttons>
+					<javaScript><![CDATA[
+function resetPassword() {
+	if(window.confirm(scriptContext.locale.passResetConfirm)) {
+		if (typeof dType === "undefined") dType = "";
+		var action = "/auth/password/reset";
+		if ($("body").is(".modal-body")) {
+			action = "/auth/password/ref/reset";
+			$("<input />").attr({type:"hidden", name:"refEdit", value:true}).appendTo($("#detailForm"));
+		}
+		$("#detailForm").attr("action", contextPath + dType + action).submit();
+	}
+}
+]]></javaScript>
+				</views>
+				<views xsi:type="metaDetailFormView">
+					<name>admin</name>
+					<sections xsi:type="metaDefaultSection">
+						<dispFlag>true</dispFlag>
+						<expandable>true</expandable>
+						<title>ユーザ情報</title>
+						<localizedTitleList>
+							<localeName>ja</localeName>
+							<stringValue>ユーザー情報</stringValue>
+						</localizedTitleList>
+						<localizedTitleList>
+							<localeName>en</localeName>
+							<stringValue>User Information</stringValue>
+						</localizedTitleList>
+						<localizedTitleList>
+							<localeName>zh-CN</localeName>
+							<stringValue>用户信息</stringValue>
+						</localizedTitleList>
+						<localizedTitleList>
+							<localeName>zh-TW</localeName>
+							<stringValue>用戶信息</stringValue>
+						</localizedTitleList>
+						<localizedTitleList>
+							<localeName>th</localeName>
+							<stringValue>ข้อมูลผู้ใช้งาน</stringValue>
+						</localizedTitleList>
+						<colNum>1</colNum>
+						<elements xsi:type="metaPropertyItem">
+							<!-- ユーザID -->
+							<dispFlag>true</dispFlag>
+							<propertyId>2</propertyId>
+							<isSystemProperty>false</isSystemProperty>
+							<editor xsi:type="metaStringPropertyEditor">
+								<displayType>Text</displayType>
+							</editor>
+						</elements>
+						<elements xsi:type="metaPropertyItem">
+							<!-- 姓 -->
+							<dispFlag>true</dispFlag>
+							<propertyId>4</propertyId>
+							<isSystemProperty>false</isSystemProperty>
+							<editor xsi:type="metaStringPropertyEditor">
+								<displayType>Text</displayType>
+							</editor>
+						</elements>
+						<elements xsi:type="metaPropertyItem">
+							<!-- 姓（カナ） -->
+							<dispFlag>true</dispFlag>
+							<propertyId>12</propertyId>
+							<isSystemProperty>false</isSystemProperty>
+							<editor xsi:type="metaStringPropertyEditor">
+								<displayType>Text</displayType>
+							</editor>
+						</elements>
+						<elements xsi:type="metaPropertyItem">
+							<!-- 名 -->
+							<dispFlag>true</dispFlag>
+							<propertyId>3</propertyId>
+							<isSystemProperty>false</isSystemProperty>
+							<editor xsi:type="metaStringPropertyEditor">
+								<displayType>Text</displayType>
+							</editor>
+						</elements>
+						<elements xsi:type="metaPropertyItem">
+							<!-- 名（カナ） -->
+							<dispFlag>true</dispFlag>
+							<propertyId>11</propertyId>
+							<isSystemProperty>false</isSystemProperty>
+							<editor xsi:type="metaStringPropertyEditor">
+								<displayType>Text</displayType>
+							</editor>
+						</elements>
+						<elements xsi:type="metaPropertyItem">
+							<!-- メールアドレス -->
+							<dispFlag>true</dispFlag>
+							<propertyId>5</propertyId>
+							<isSystemProperty>false</isSystemProperty>
+							<editor xsi:type="metaStringPropertyEditor">
+								<displayType>Text</displayType>
+							</editor>
+						</elements>
+						<elements xsi:type="metaPropertyItem">
+							<!-- 言語 -->
+							<dispFlag>true</dispFlag>
+							<propertyId>8</propertyId>
+							<isSystemProperty>false</isSystemProperty>
+							<editor xsi:type="metaStringPropertyEditor">
+								<displayType>Text</displayType>
+							</editor>
+						</elements>
+						<elements xsi:type="metaPropertyItem">
+							<!-- 有効開始日 -->
+							<dispFlag>true</dispFlag>
+							<propertyId>startDate</propertyId>
+							<isSystemProperty>false</isSystemProperty>
+							<editor xsi:type="metaTimestampPropertyEditor">
+								<displayType>DateTime</displayType>
+							</editor>
+						</elements>
+						<elements xsi:type="metaPropertyItem">
+							<!-- 有効終了日 -->
+							<dispFlag>true</dispFlag>
+							<propertyId>endDate</propertyId>
+							<isSystemProperty>false</isSystemProperty>
+							<editor xsi:type="metaTimestampPropertyEditor">
+								<displayType>DateTime</displayType>
+							</editor>
+						</elements>
+						<elements xsi:type="metaPropertyItem">
+							<!-- 所属グループ -->
+							<dispFlag>true</dispFlag>
+							<propertyId>REF5</propertyId>
+							<isSystemProperty>false</isSystemProperty>
+							<editor xsi:type="metaReferencePropertyEditor">
+								<displayType>Link</displayType>
+								<objectId>E0006</objectId>
+								<urlParameter><![CDATA[es=t]]></urlParameter>
+							</editor>
+						</elements>
+						<elements xsi:type="metaPropertyItem">
+							<!-- 所属ランク -->
+							<dispFlag>true</dispFlag>
+							<propertyId>REF6</propertyId>
+							<isSystemProperty>false</isSystemProperty>
+							<editor xsi:type="metaReferencePropertyEditor">
+								<displayType>Select</displayType>
+								<objectId>E0002</objectId>
+							</editor>
+						</elements>
+						<elements xsi:type="metaPropertyItem">
+							<!-- 認証ポリシー -->
+							<dispFlag>true</dispFlag>
+							<propertyId>17</propertyId>
+							<editor xsi:type="metaTemplatePropertyEditor">
+								<templateName>gem/generic/editor/AuthenticationPolicySelectPropertyEditorJsp</templateName>
+							</editor>
+							<hideNormalCondition>false</hideNormalCondition>
+							<hideDetailCondition>false</hideDetailCondition>
+							<hideDetail>false</hideDetail>
+							<hideView>false</hideView>
+							<isBlank>false</isBlank>
+							<requiredNormal>false</requiredNormal>
+							<requiredDetail>false</requiredDetail>
+						</elements>
+					</sections>
+					<sections xsi:type="metaDefaultSection">
+						<dispFlag>true</dispFlag>
+						<expandable>true</expandable>
+						<title>管理者設定</title>
+						<localizedTitleList>
+							<localeName>ja</localeName>
+							<stringValue>管理者設定</stringValue>
+						</localizedTitleList>
+						<localizedTitleList>
+							<localeName>en</localeName>
+							<stringValue>Administrator Settings</stringValue>
+						</localizedTitleList>
+						<localizedTitleList>
+							<localeName>zh-CN</localeName>
+							<stringValue>管理员设置</stringValue>
+						</localizedTitleList>
+						<localizedTitleList>
+							<localeName>zh-TW</localeName>
+							<stringValue>管理員設置</stringValue>
+						</localizedTitleList>
+						<localizedTitleList>
+							<localeName>th</localeName>
+							<stringValue>การตั้งค่าของผู้ดูแลระบบ</stringValue>
+						</localizedTitleList>
+						<colNum>1</colNum>
+						<elements xsi:type="metaPropertyItem">
+							<!-- 管理者 -->
+							<dispFlag>true</dispFlag>
+							<propertyId>14</propertyId>
+							<isSystemProperty>false</isSystemProperty>
+							<editor xsi:type="metaBooleanPropertyEditor">
+								<displayType>Radio</displayType>
+								<falseLabel>無効</falseLabel>
+								<trueLabel>有効</trueLabel>
+								<localizedTrueLabelList>
+									<localeName>ja</localeName>
+									<stringValue>有効</stringValue>
+								</localizedTrueLabelList>
+								<localizedTrueLabelList>
+									<localeName>en</localeName>
+									<stringValue>Valid</stringValue>
+								</localizedTrueLabelList>
+								<localizedTrueLabelList>
+									<localeName>zh-CN</localeName>
+									<stringValue>有效</stringValue>
+								</localizedTrueLabelList>
+								<localizedTrueLabelList>
+									<localeName>zh-TW</localeName>
+									<stringValue>有效</stringValue>
+								</localizedTrueLabelList>
+								<localizedTrueLabelList>
+									<localeName>th</localeName>
+									<stringValue>สามารถ</stringValue>
+								</localizedTrueLabelList>
+								<localizedFalseLabelList>
+									<localeName>ja</localeName>
+									<stringValue>無効</stringValue>
+								</localizedFalseLabelList>
+								<localizedFalseLabelList>
+									<localeName>en</localeName>
+									<stringValue>Invalid</stringValue>
+								</localizedFalseLabelList>
+								<localizedFalseLabelList>
+									<localeName>zh-CN</localeName>
+									<stringValue>无效</stringValue>
+								</localizedFalseLabelList>
+								<localizedFalseLabelList>
+									<localeName>zh-TW</localeName>
+									<stringValue>無效</stringValue>
+								</localizedFalseLabelList>
+								<localizedFalseLabelList>
+									<localeName>th</localeName>
+									<stringValue>ไม่สามารถ</stringValue>
+								</localizedFalseLabelList>
+							</editor>
+						</elements>
+					</sections>
+					<buttons>
+						<dispFlag>true</dispFlag>
+						<customDisplayTypeScript><![CDATA[
+if (!org.iplass.mtp.view.generic.OutputType.EDIT.equals(outputType)) {
+	return false;
+}
+
+if (entity == null || entity.getOid() == null || entity.getOid().isEmpty()) {
+	return false;
+}
+
+def am = org.iplass.mtp.ManagerLocator.getInstance().getManager(org.iplass.mtp.auth.AuthManager.class);
+def auth = org.iplass.mtp.auth.AuthContext.getCurrentContext();
+def tenant = auth.tenant;
+
+if (am.canResetCredential()) {
+	if (user.admin) {
+		return true;
+	} else {
+		// ユーザ管理が可能なロールを持っているか
+	    if (tenant.tenantAuthInfo.userAdminRoles != null) {
+	        for (def role: tenant.tenantAuthInfo.userAdminRoles) {
+	            if (auth.userInRole(role)) {
+	                return true;
+	            }
+	        }
+	    }
+	}
+}
+return false;
+]]></customDisplayTypeScript>
+						<displayLabel>パスワードリセット</displayLabel>
+						<displayType>Custom</displayType>
+						<localizedDisplayLabelList>
+							<localeName>ja</localeName>
+							<stringValue>パスワードリセット</stringValue>
+						</localizedDisplayLabelList>
+						<localizedDisplayLabelList>
+							<localeName>en</localeName>
+							<stringValue>Password Reset</stringValue>
+						</localizedDisplayLabelList>
+						<localizedDisplayLabelList>
+							<localeName>zh-CN</localeName>
+							<stringValue>重设密码</stringValue>
+						</localizedDisplayLabelList>
+						<localizedDisplayLabelList>
+							<localeName>zh-TW</localeName>
+							<stringValue>重設密碼</stringValue>
+						</localizedDisplayLabelList>
+						<localizedDisplayLabelList>
+							<localeName>th</localeName>
+							<stringValue>รีเซ็ตพาสเวิร์ด</stringValue>
+						</localizedDisplayLabelList>
+						<onclickEvent>resetPassword()</onclickEvent>
+						<style>gr-btn gr-size-02</style>
+					</buttons>
+					<javaScript><![CDATA[
+function resetPassword() {
+	if(window.confirm(scriptContext.locale.passResetConfirm)) {
+		if (typeof dType === "undefined") dType = "";
+		var action = "/auth/password/reset/admin";
+		if ($("body").is(".modal-body")) {
+			action = "/auth/password/ref/reset/admin";
+			$("<input />").attr({type:"hidden", name:"refEdit", value:true}).appendTo($("#detailForm"));
+		}
+		$("#detailForm").attr("action", contextPath + dType + action).submit();
+	}
+}
+]]></javaScript>
+				</views>
+				<views xsi:type="metaDetailFormView">
+					<name>maintenance</name>
+					<sections xsi:type="metaDefaultSection">
+						<dispFlag>true</dispFlag>
+						<expandable>true</expandable>
+						<title>ユーザ情報</title>
+						<localizedTitleList>
+							<localeName>ja</localeName>
+							<stringValue>ユーザ情報</stringValue>
+						</localizedTitleList>
+						<localizedTitleList>
+							<localeName>en</localeName>
+							<stringValue>User Information</stringValue>
+						</localizedTitleList>
+						<localizedTitleList>
+							<localeName>zh-CN</localeName>
+							<stringValue>用户信息</stringValue>
+						</localizedTitleList>
+						<localizedTitleList>
+							<localeName>zh-TW</localeName>
+							<stringValue>用戶信息</stringValue>
+						</localizedTitleList>
+						<localizedTitleList>
+							<localeName>th</localeName>
+							<stringValue>ข้อมูลผู้ใช้งาน</stringValue>
+						</localizedTitleList>
+						<colNum>1</colNum>
+						<elements xsi:type="metaPropertyItem">
+							<!-- 姓 -->
+							<dispFlag>true</dispFlag>
+							<propertyId>4</propertyId>
+							<isSystemProperty>false</isSystemProperty>
+							<editor xsi:type="metaStringPropertyEditor">
+								<displayType>Text</displayType>
+							</editor>
+						</elements>
+						<elements xsi:type="metaPropertyItem">
+							<!-- 姓（カナ） -->
+							<dispFlag>true</dispFlag>
+							<propertyId>12</propertyId>
+							<isSystemProperty>false</isSystemProperty>
+							<editor xsi:type="metaStringPropertyEditor">
+								<displayType>Text</displayType>
+							</editor>
+						</elements>
+						<elements xsi:type="metaPropertyItem">
+							<!-- 名 -->
+							<dispFlag>true</dispFlag>
+							<propertyId>3</propertyId>
+							<isSystemProperty>false</isSystemProperty>
+							<editor xsi:type="metaStringPropertyEditor">
+								<displayType>Text</displayType>
+							</editor>
+						</elements>
+						<elements xsi:type="metaPropertyItem">
+							<!-- 名（カナ） -->
+							<dispFlag>true</dispFlag>
+							<propertyId>11</propertyId>
+							<isSystemProperty>false</isSystemProperty>
+							<editor xsi:type="metaStringPropertyEditor">
+								<displayType>Text</displayType>
+							</editor>
+						</elements>
+						<elements xsi:type="metaPropertyItem">
+							<!-- メールアドレス -->
+							<dispFlag>true</dispFlag>
+							<propertyId>5</propertyId>
+							<isSystemProperty>false</isSystemProperty>
+							<editor xsi:type="metaStringPropertyEditor">
+								<displayType>Text</displayType>
+							</editor>
+						</elements>
+					</sections>
+				</views>
+				<views xsi:type="metaSearchFormView">
+					<name>admin</name>
+					<sections xsi:type="metaSearchConditionSection">
+						<dispFlag>true</dispFlag>
+						<expandable>false</expandable>
+						<title>検索条件</title>
+						<localizedTitleList>
+							<localeName>ja</localeName>
+							<stringValue>検索条件</stringValue>
+						</localizedTitleList>
+						<localizedTitleList>
+							<localeName>en</localeName>
+							<stringValue>Search Condition</stringValue>
+						</localizedTitleList>
+						<localizedTitleList>
+							<localeName>zh-CN</localeName>
+							<stringValue>搜索条件</stringValue>
+						</localizedTitleList>
+						<localizedTitleList>
+							<localeName>zh-TW</localeName>
+							<stringValue>搜索條件</stringValue>
+						</localizedTitleList>
+						<localizedTitleList>
+							<localeName>th</localeName>
+							<stringValue>เงื่อนไขการค้นหา</stringValue>
+						</localizedTitleList>
+						<conditionDispCount>5</conditionDispCount>
+						<elements xsi:type="metaPropertyItem">
+							<!-- ユーザID -->
+							<dispFlag>true</dispFlag>
+							<propertyId>2</propertyId>
+							<isSystemProperty>false</isSystemProperty>
+							<editor xsi:type="metaStringPropertyEditor">
+								<displayType>Text</displayType>
+							</editor>
+						</elements>
+						<elements xsi:type="metaPropertyItem">
+							<!-- 姓 -->
+							<dispFlag>true</dispFlag>
+							<propertyId>4</propertyId>
+							<isSystemProperty>false</isSystemProperty>
+							<editor xsi:type="metaStringPropertyEditor">
+								<displayType>Text</displayType>
+							</editor>
+						</elements>
+						<elements xsi:type="metaPropertyItem">
+							<!-- 姓（カナ） -->
+							<dispFlag>true</dispFlag>
+							<propertyId>12</propertyId>
+							<isSystemProperty>false</isSystemProperty>
+							<editor xsi:type="metaStringPropertyEditor">
+								<displayType>Text</displayType>
+							</editor>
+						</elements>
+						<elements xsi:type="metaPropertyItem">
+							<!-- 名 -->
+							<dispFlag>true</dispFlag>
+							<propertyId>3</propertyId>
+							<isSystemProperty>false</isSystemProperty>
+							<editor xsi:type="metaStringPropertyEditor">
+								<displayType>Text</displayType>
+							</editor>
+						</elements>
+						<elements xsi:type="metaPropertyItem">
+							<!-- 名（カナ） -->
+							<dispFlag>true</dispFlag>
+							<propertyId>11</propertyId>
+							<isSystemProperty>false</isSystemProperty>
+							<editor xsi:type="metaStringPropertyEditor">
+								<displayType>Text</displayType>
+							</editor>
+						</elements>
+						<elements xsi:type="metaPropertyItem">
+							<!-- 管理者 -->
+							<dispFlag>true</dispFlag>
+							<propertyId>14</propertyId>
+							<isSystemProperty>false</isSystemProperty>
+							<editor xsi:type="metaBooleanPropertyEditor">
+								<displayType>Checkbox</displayType>
+								<falseLabel>無効</falseLabel>
+								<trueLabel>有効</trueLabel>
+								<localizedTrueLabelList>
+									<localeName>ja</localeName>
+									<stringValue>有効</stringValue>
+								</localizedTrueLabelList>
+								<localizedTrueLabelList>
+									<localeName>en</localeName>
+									<stringValue>Valid</stringValue>
+								</localizedTrueLabelList>
+								<localizedTrueLabelList>
+									<localeName>zh-CN</localeName>
+									<stringValue>有效</stringValue>
+								</localizedTrueLabelList>
+								<localizedTrueLabelList>
+									<localeName>zh-TW</localeName>
+									<stringValue>有效</stringValue>
+								</localizedTrueLabelList>
+								<localizedTrueLabelList>
+									<localeName>th</localeName>
+									<stringValue>สามารถ</stringValue>
+								</localizedTrueLabelList>
+								<localizedFalseLabelList>
+									<localeName>ja</localeName>
+									<stringValue>無効</stringValue>
+								</localizedFalseLabelList>
+								<localizedFalseLabelList>
+									<localeName>en</localeName>
+									<stringValue>Invalid</stringValue>
+								</localizedFalseLabelList>
+								<localizedFalseLabelList>
+									<localeName>zh-CN</localeName>
+									<stringValue>无效</stringValue>
+								</localizedFalseLabelList>
+								<localizedFalseLabelList>
+									<localeName>zh-TW</localeName>
+									<stringValue>無效</stringValue>
+								</localizedFalseLabelList>
+								<localizedFalseLabelList>
+									<localeName>th</localeName>
+									<stringValue>ไม่สามารถ</stringValue>
+								</localizedFalseLabelList>
+							</editor>
+						</elements>
+						<elements xsi:type="metaPropertyItem">
+							<!-- 一時ログインユーザ -->
+							<dispFlag>true</dispFlag>
+							<propertyId>16</propertyId>
+							<isSystemProperty>false</isSystemProperty>
+							<editor xsi:type="metaBooleanPropertyEditor">
+								<displayType>Checkbox</displayType>
+								<falseLabel>無効</falseLabel>
+								<trueLabel>有効</trueLabel>
+								<localizedTrueLabelList>
+									<localeName>ja</localeName>
+									<stringValue>有効</stringValue>
+								</localizedTrueLabelList>
+								<localizedTrueLabelList>
+									<localeName>en</localeName>
+									<stringValue>Valid</stringValue>
+								</localizedTrueLabelList>
+								<localizedTrueLabelList>
+									<localeName>zh-CN</localeName>
+									<stringValue>有效</stringValue>
+								</localizedTrueLabelList>
+								<localizedTrueLabelList>
+									<localeName>zh-TW</localeName>
+									<stringValue>有效</stringValue>
+								</localizedTrueLabelList>
+								<localizedTrueLabelList>
+									<localeName>th</localeName>
+									<stringValue>สามารถ</stringValue>
+								</localizedTrueLabelList>
+								<localizedFalseLabelList>
+									<localeName>ja</localeName>
+									<stringValue>無効</stringValue>
+								</localizedFalseLabelList>
+								<localizedFalseLabelList>
+									<localeName>en</localeName>
+									<stringValue>Invalid</stringValue>
+								</localizedFalseLabelList>
+								<localizedFalseLabelList>
+									<localeName>zh-CN</localeName>
+									<stringValue>无效</stringValue>
+								</localizedFalseLabelList>
+								<localizedFalseLabelList>
+									<localeName>zh-TW</localeName>
+									<stringValue>無效</stringValue>
+								</localizedFalseLabelList>
+								<localizedFalseLabelList>
+									<localeName>th</localeName>
+									<stringValue>ไม่สามารถ</stringValue>
+								</localizedFalseLabelList>
+							</editor>
+						</elements>
+						<elements xsi:type="metaPropertyItem">
+							<!-- 認証ポリシー -->
+							<dispFlag>true</dispFlag>
+							<propertyId>17</propertyId>
+							<isSystemProperty>false</isSystemProperty>
+							<editor xsi:type="metaTemplatePropertyEditor">
+								<templateName>gem/generic/editor/AuthenticationPolicySelectPropertyEditorJsp</templateName>
+							</editor>
+						</elements>
+					</sections>
+					<sections xsi:type="metaSearchResultSection">
+						<dispFlag>true</dispFlag>
+						<expandable>false</expandable>
+						<title>検索結果一覧</title>
+						<localizedTitleList>
+							<localeName>ja</localeName>
+							<stringValue>検索結果一覧</stringValue>
+						</localizedTitleList>
+						<localizedTitleList>
+							<localeName>en</localeName>
+							<stringValue>Search Result List</stringValue>
+						</localizedTitleList>
+						<localizedTitleList>
+							<localeName>zh-CN</localeName>
+							<stringValue>搜索结果列表</stringValue>
+						</localizedTitleList>
+						<localizedTitleList>
+							<localeName>zh-TW</localeName>
+							<stringValue>搜索結果列表</stringValue>
+						</localizedTitleList>
+						<localizedTitleList>
+							<localeName>th</localeName>
+							<stringValue>ค้นหาผลลัพธ์</stringValue>
+						</localizedTitleList>
+						<dispRowCount>20</dispRowCount>
+						<elements xsi:type="metaPropertyColumn">
+							<!-- ユーザID -->
+							<dispFlag>true</dispFlag>
+							<propertyId>2</propertyId>
+							<isSystemProperty>false</isSystemProperty>
+							<editor xsi:type="metaStringPropertyEditor">
+								<displayType>Text</displayType>
+							</editor>
+						</elements>
+						<elements xsi:type="metaPropertyColumn">
+							<!-- 姓 -->
+							<dispFlag>true</dispFlag>
+							<propertyId>4</propertyId>
+							<isSystemProperty>false</isSystemProperty>
+							<editor xsi:type="metaStringPropertyEditor">
+								<displayType>Text</displayType>
+							</editor>
+						</elements>
+						<elements xsi:type="metaPropertyColumn">
+							<!-- 名 -->
+							<dispFlag>true</dispFlag>
+							<propertyId>3</propertyId>
+							<isSystemProperty>false</isSystemProperty>
+							<editor xsi:type="metaStringPropertyEditor">
+								<displayType>Text</displayType>
+							</editor>
+						</elements>
+						<elements xsi:type="metaPropertyColumn">
+							<!-- メールアドレス -->
+							<dispFlag>true</dispFlag>
+							<propertyId>5</propertyId>
+							<isSystemProperty>false</isSystemProperty>
+							<editor xsi:type="metaStringPropertyEditor">
+								<displayType>Text</displayType>
+							</editor>
+						</elements>
+						<elements xsi:type="metaPropertyColumn">
+							<!-- 有効開始日 -->
+							<dispFlag>true</dispFlag>
+							<propertyId>startDate</propertyId>
+							<isSystemProperty>false</isSystemProperty>
+							<editor xsi:type="metaTimestampPropertyEditor">
+								<displayType>DateTime</displayType>
+							</editor>
+						</elements>
+						<elements xsi:type="metaPropertyColumn">
+							<!-- 有効終了日 -->
+							<dispFlag>true</dispFlag>
+							<propertyId>endDate</propertyId>
+							<isSystemProperty>false</isSystemProperty>
+							<editor xsi:type="metaTimestampPropertyEditor">
+								<displayType>DateTime</displayType>
+							</editor>
+						</elements>
+						<elements xsi:type="metaPropertyColumn">
+							<!-- 所属グループ -->
+							<dispFlag>true</dispFlag>
+							<propertyId>REF5</propertyId>
+							<isSystemProperty>false</isSystemProperty>
+							<editor xsi:type="metaReferencePropertyEditor">
+								<displayType>Link</displayType>
+								<objectId>E0006</objectId>
+							</editor>
+						</elements>
+						<elements xsi:type="metaPropertyColumn">
+							<!-- 所属ランク -->
+							<dispFlag>true</dispFlag>
+							<propertyId>REF6</propertyId>
+							<isSystemProperty>false</isSystemProperty>
+							<editor xsi:type="metaReferencePropertyEditor">
+								<displayType>Link</displayType>
+								<objectId>E0002</objectId>
+							</editor>
+						</elements>
+						<elements xsi:type="metaPropertyColumn">
+							<!-- 管理者 -->
+							<dispFlag>true</dispFlag>
+							<propertyId>14</propertyId>
+							<isSystemProperty>false</isSystemProperty>
+							<editor xsi:type="metaBooleanPropertyEditor">
+								<displayType>Checkbox</displayType>
+								<trueLabel>管理者</trueLabel>
+								<localizedTrueLabelList>
+									<localeName>ja</localeName>
+									<stringValue>管理者</stringValue>
+								</localizedTrueLabelList>
+								<localizedTrueLabelList>
+									<localeName>en</localeName>
+									<stringValue>Administrator</stringValue>
+								</localizedTrueLabelList>
+								<localizedTrueLabelList>
+									<localeName>zh-CN</localeName>
+									<stringValue>管理员</stringValue>
+								</localizedTrueLabelList>
+								<localizedTrueLabelList>
+									<localeName>zh-TW</localeName>
+									<stringValue>管理員</stringValue>
+								</localizedTrueLabelList>
+								<localizedTrueLabelList>
+									<localeName>th</localeName>
+									<stringValue>ผู้ดูแล</stringValue>
+								</localizedTrueLabelList>
+							</editor>
+						</elements>
+						<elements xsi:type="metaPropertyColumn">
+							<!-- 一時ログインユーザ -->
+							<dispFlag>true</dispFlag>
+							<propertyId>16</propertyId>
+							<isSystemProperty>false</isSystemProperty>
+							<editor xsi:type="metaBooleanPropertyEditor">
+								<displayType>Checkbox</displayType>
+								<trueLabel>一時ログインユーザ</trueLabel>
+								<localizedTrueLabelList>
+									<localeName>ja</localeName>
+									<stringValue>一時ログインユーザ</stringValue>
+								</localizedTrueLabelList>
+								<localizedTrueLabelList>
+									<localeName>en</localeName>
+									<stringValue>Temporary User</stringValue>
+								</localizedTrueLabelList>
+								<localizedTrueLabelList>
+									<localeName>zh-CN</localeName>
+									<stringValue>临时用户</stringValue>
+								</localizedTrueLabelList>
+								<localizedTrueLabelList>
+									<localeName>zh-TW</localeName>
+									<stringValue>臨時用戶</stringValue>
+								</localizedTrueLabelList>
+								<localizedTrueLabelList>
+									<localeName>th</localeName>
+									<stringValue>ผู้ใช้งานชั่วคราว</stringValue>
+								</localizedTrueLabelList>
+							</editor>
+						</elements>
+						<elements xsi:type="metaPropertyColumn">
+							<!-- 認証ポリシー -->
+							<dispFlag>true</dispFlag>
+							<propertyId>17</propertyId>
+							<isSystemProperty>false</isSystemProperty>
+							<editor xsi:type="metaTemplatePropertyEditor">
+								<templateName>gem/generic/editor/AuthenticationPolicySelectPropertyEditorJsp</templateName>
+							</editor>
+						</elements>
+					</sections>
+				</views>
+				<views xsi:type="metaSearchFormView">
+					<sections xsi:type="metaSearchConditionSection">
+						<dispFlag>true</dispFlag>
+						<expandable>false</expandable>
+						<title>検索条件</title>
+						<localizedTitleList>
+							<localeName>ja</localeName>
+							<stringValue>検索条件</stringValue>
+						</localizedTitleList>
+						<localizedTitleList>
+							<localeName>en</localeName>
+							<stringValue>Search Condition</stringValue>
+						</localizedTitleList>
+						<localizedTitleList>
+							<localeName>zh-CN</localeName>
+							<stringValue>搜索条件</stringValue>
+						</localizedTitleList>
+						<localizedTitleList>
+							<localeName>zh-TW</localeName>
+							<stringValue>搜索條件</stringValue>
+						</localizedTitleList>
+						<localizedTitleList>
+							<localeName>th</localeName>
+							<stringValue>เงื่อนไขการค้นหา</stringValue>
+						</localizedTitleList>
+						<conditionDispCount>5</conditionDispCount>
+						<elements xsi:type="metaPropertyItem">
+							<!-- ユーザID -->
+							<dispFlag>true</dispFlag>
+							<propertyId>2</propertyId>
+							<isSystemProperty>false</isSystemProperty>
+							<editor xsi:type="metaStringPropertyEditor">
+								<displayType>Text</displayType>
+							</editor>
+						</elements>
+						<elements xsi:type="metaPropertyItem">
+							<!-- 姓 -->
+							<dispFlag>true</dispFlag>
+							<propertyId>4</propertyId>
+							<isSystemProperty>false</isSystemProperty>
+							<editor xsi:type="metaStringPropertyEditor">
+								<displayType>Text</displayType>
+							</editor>
+						</elements>
+						<elements xsi:type="metaPropertyItem">
+							<!-- 姓（カナ） -->
+							<dispFlag>true</dispFlag>
+							<propertyId>12</propertyId>
+							<isSystemProperty>false</isSystemProperty>
+							<editor xsi:type="metaStringPropertyEditor">
+								<displayType>Text</displayType>
+							</editor>
+						</elements>
+						<elements xsi:type="metaPropertyItem">
+							<!-- 名 -->
+							<dispFlag>true</dispFlag>
+							<propertyId>3</propertyId>
+							<isSystemProperty>false</isSystemProperty>
+							<editor xsi:type="metaStringPropertyEditor">
+								<displayType>Text</displayType>
+							</editor>
+						</elements>
+						<elements xsi:type="metaPropertyItem">
+							<!-- 名（カナ） -->
+							<dispFlag>true</dispFlag>
+							<propertyId>11</propertyId>
+							<isSystemProperty>false</isSystemProperty>
+							<editor xsi:type="metaStringPropertyEditor">
+								<displayType>Text</displayType>
+							</editor>
+						</elements>
+					</sections>
+					<sections xsi:type="metaSearchResultSection">
+						<dispFlag>true</dispFlag>
+						<expandable>false</expandable>
+						<title>検索結果一覧</title>
+						<localizedTitleList>
+							<localeName>ja</localeName>
+							<stringValue>検索結果一覧</stringValue>
+						</localizedTitleList>
+						<localizedTitleList>
+							<localeName>en</localeName>
+							<stringValue>Search Result List</stringValue>
+						</localizedTitleList>
+						<localizedTitleList>
+							<localeName>zh-CN</localeName>
+							<stringValue>搜索结果列表</stringValue>
+						</localizedTitleList>
+						<localizedTitleList>
+							<localeName>zh-TW</localeName>
+							<stringValue>搜索結果列表</stringValue>
+						</localizedTitleList>
+						<localizedTitleList>
+							<localeName>th</localeName>
+							<stringValue>ค้นหาผลลัพธ์</stringValue>
+						</localizedTitleList>
+						<dispRowCount>20</dispRowCount>
+						<elements xsi:type="metaPropertyColumn">
+							<!-- ユーザID -->
+							<dispFlag>true</dispFlag>
+							<propertyId>2</propertyId>
+							<isSystemProperty>false</isSystemProperty>
+							<editor xsi:type="metaStringPropertyEditor">
+								<displayType>Text</displayType>
+							</editor>
+						</elements>
+						<elements xsi:type="metaPropertyColumn">
+							<!-- 姓 -->
+							<dispFlag>true</dispFlag>
+							<propertyId>4</propertyId>
+							<isSystemProperty>false</isSystemProperty>
+							<editor xsi:type="metaStringPropertyEditor">
+								<displayType>Text</displayType>
+							</editor>
+						</elements>
+						<elements xsi:type="metaPropertyColumn">
+							<!-- 名 -->
+							<dispFlag>true</dispFlag>
+							<propertyId>3</propertyId>
+							<isSystemProperty>false</isSystemProperty>
+							<editor xsi:type="metaStringPropertyEditor">
+								<displayType>Text</displayType>
+							</editor>
+						</elements>
+						<elements xsi:type="metaPropertyColumn">
+							<!-- メールアドレス -->
+							<dispFlag>true</dispFlag>
+							<propertyId>5</propertyId>
+							<isSystemProperty>false</isSystemProperty>
+							<editor xsi:type="metaStringPropertyEditor">
+								<displayType>Text</displayType>
+							</editor>
+						</elements>
+						<elements xsi:type="metaPropertyColumn">
+							<!-- 有効開始日 -->
+							<dispFlag>true</dispFlag>
+							<propertyId>startDate</propertyId>
+							<isSystemProperty>false</isSystemProperty>
+							<editor xsi:type="metaTimestampPropertyEditor">
+								<displayType>DateTime</displayType>
+							</editor>
+						</elements>
+						<elements xsi:type="metaPropertyColumn">
+							<!-- 有効終了日 -->
+							<dispFlag>true</dispFlag>
+							<propertyId>endDate</propertyId>
+							<isSystemProperty>false</isSystemProperty>
+							<editor xsi:type="metaTimestampPropertyEditor">
+								<displayType>DateTime</displayType>
+							</editor>
+						</elements>
+						<elements xsi:type="metaPropertyColumn">
+							<!-- 所属グループ -->
+							<dispFlag>true</dispFlag>
+							<propertyId>REF5</propertyId>
+							<isSystemProperty>false</isSystemProperty>
+							<editor xsi:type="metaReferencePropertyEditor">
+								<displayType>Link</displayType>
+								<objectId>E0006</objectId>
+							</editor>
+						</elements>
+						<elements xsi:type="metaPropertyColumn">
+							<!-- 所属ランク -->
+							<dispFlag>true</dispFlag>
+							<propertyId>REF6</propertyId>
+							<isSystemProperty>false</isSystemProperty>
+							<editor xsi:type="metaReferencePropertyEditor">
+								<displayType>Link</displayType>
+								<objectId>E0002</objectId>
+							</editor>
+						</elements>
+					</sections>
+				</views>
+			</metaData>
+		</metaDataEntry>
+
+		<!-- Action Permission -->
+		<metaDataEntry name="/view/generic/mtp/auth/ActionPermission">
+			<metaData xsi:type="metaEntityView" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+				<id>VG0008</id>
+				<name>mtp.auth.ActionPermission</name>
+				<definitionId>E0008</definitionId>
+				<views xsi:type="metaDetailFormView">
+					<name></name>
+					<isPurge>false</isPurge>
+					<localizationData>false</localizationData>
+					<dialogMaximize>false</dialogMaximize>
+					<sections xsi:type="metaDefaultSection">
+						<dispFlag>true</dispFlag>
+						<colNum>1</colNum>
+						<elements xsi:type="metaPropertyItem">
+							<dispFlag>true</dispFlag>
+							<propertyId>name</propertyId>
+							<editor xsi:type="metaStringPropertyEditor">
+								<allowedContent>false</allowedContent>
+								<displayType>Text</displayType>
+								<maxlength>0</maxlength>
+								<searchExactMatchCondition>false</searchExactMatchCondition>
+							</editor>
+							<hideNormalCondition>false</hideNormalCondition>
+							<hideDetailCondition>false</hideDetailCondition>
+							<hideDetail>false</hideDetail>
+							<hideView>false</hideView>
+							<isBlank>false</isBlank>
+							<requiredNormal>false</requiredNormal>
+							<requiredDetail>false</requiredDetail>
+						</elements>
+						<elements xsi:type="metaPropertyItem">
+							<dispFlag>true</dispFlag>
+							<propertyId>1</propertyId>
+							<editor xsi:type="metaStringPropertyEditor">
+								<allowedContent>false</allowedContent>
+								<displayType>Text</displayType>
+								<maxlength>0</maxlength>
+								<searchExactMatchCondition>false</searchExactMatchCondition>
+							</editor>
+							<hideNormalCondition>false</hideNormalCondition>
+							<hideDetailCondition>false</hideDetailCondition>
+							<hideDetail>false</hideDetail>
+							<hideView>false</hideView>
+							<isBlank>false</isBlank>
+							<requiredNormal>false</requiredNormal>
+							<requiredDetail>false</requiredDetail>
+						</elements>
+						<elements xsi:type="metaPropertyItem">
+							<dispFlag>true</dispFlag>
+							<propertyId>REF_1</propertyId>
+							<editor xsi:type="metaReferencePropertyEditor">
+								<displayType>Link</displayType>
+								<editableReference>false</editableReference>
+								<getNameAtOnce>false</getNameAtOnce>
+								<hideDeleteButton>false</hideDeleteButton>
+								<hideRegistButton>false</hideRegistButton>
+								<hideSelectButton>false</hideSelectButton>
+								<objectId>E0003</objectId>
+								<permitConditionSelectAll>true</permitConditionSelectAll>
+								<referenceFromObjectId>E0008</referenceFromObjectId>
+								<showRefComboParent>false</showRefComboParent>
+								<singleSelect>false</singleSelect>
+								<useNestConditionWithProperty>false</useNestConditionWithProperty>
+								<useSearchDialog>false</useSearchDialog>
+							</editor>
+							<hideNormalCondition>false</hideNormalCondition>
+							<hideDetailCondition>false</hideDetailCondition>
+							<hideDetail>false</hideDetail>
+							<hideView>false</hideView>
+							<isBlank>false</isBlank>
+							<requiredNormal>false</requiredNormal>
+							<requiredDetail>false</requiredDetail>
+						</elements>
+						<expandable>true</expandable>
+						<hideDetail>false</hideDetail>
+						<hideView>false</hideView>
+						<showLink>false</showLink>
+						<localizedTitleList>
+							<localeName>ja</localeName>
+							<stringValue>権限の対象</stringValue>
+						</localizedTitleList>
+						<localizedTitleList>
+							<localeName>en</localeName>
+							<stringValue>Target Of The Permissions</stringValue>
+						</localizedTitleList>
+						<localizedTitleList>
+							<localeName>zh-CN</localeName>
+							<stringValue>权限的对象</stringValue>
+						</localizedTitleList>
+						<localizedTitleList>
+							<localeName>zh-TW</localeName>
+							<stringValue>權限的對象</stringValue>
+						</localizedTitleList>
+						<localizedTitleList>
+							<localeName>th</localeName>
+							<stringValue>เป้าหมายของการสิทธิ์</stringValue>
+						</localizedTitleList>
+						<title>権限の対象</title>
+					</sections>
+					<sections xsi:type="metaDefaultSection">
+						<dispFlag>true</dispFlag>
+						<colNum>1</colNum>
+						<elements xsi:type="metaPropertyItem">
+							<dispFlag>true</dispFlag>
+							<propertyId>2</propertyId>
+							<editor xsi:type="metaStringPropertyEditor">
+								<allowedContent>false</allowedContent>
+								<displayType>TextArea</displayType>
+								<maxlength>0</maxlength>
+								<searchExactMatchCondition>false</searchExactMatchCondition>
+							</editor>
+							<hideNormalCondition>false</hideNormalCondition>
+							<hideDetailCondition>false</hideDetailCondition>
+							<hideDetail>false</hideDetail>
+							<hideView>false</hideView>
+							<isBlank>false</isBlank>
+							<requiredNormal>false</requiredNormal>
+							<requiredDetail>false</requiredDetail>
+						</elements>
+						<expandable>true</expandable>
+						<hideDetail>false</hideDetail>
+						<hideView>false</hideView>
+						<localizedTitleList>
+							<localeName>ja</localeName>
+							<stringValue>実行権限</stringValue>
+						</localizedTitleList>
+						<localizedTitleList>
+							<localeName>en</localeName>
+							<stringValue>Execution Authority</stringValue>
+						</localizedTitleList>
+						<localizedTitleList>
+							<localeName>zh-CN</localeName>
+							<stringValue>执行机构</stringValue>
+						</localizedTitleList>
+						<localizedTitleList>
+							<localeName>zh-TW</localeName>
+							<stringValue>執行機構</stringValue>
+						</localizedTitleList>
+						<localizedTitleList>
+							<localeName>th</localeName>
+							<stringValue>ผู้ดำเนินการ</stringValue>
+						</localizedTitleList>
+						<showLink>false</showLink>
+						<title>実行権限</title>
+					</sections>
+					<validJavascriptDetailPage>false</validJavascriptDetailPage>
+					<validJavascriptViewPage>false</validJavascriptViewPage>
+					<hideDetail>false</hideDetail>
+					<hideLock>false</hideLock>
+					<isNoneDispCopyButton>false</isNoneDispCopyButton>
+					<hideDelete>false</hideDelete>
+					<purgeCompositionedEntity>false</purgeCompositionedEntity>
+					<loadDefinedReferenceProperty>true</loadDefinedReferenceProperty>
+				</views>
+				<views xsi:type="metaSearchFormView">
+					<name></name>
+					<isPurge>false</isPurge>
+					<localizationData>false</localizationData>
+					<dialogMaximize>false</dialogMaximize>
+					<sections xsi:type="metaSearchConditionSection">
+						<dispFlag>false</dispFlag>
+						<colNum>1</colNum>
+						<conditionDispCount>5</conditionDispCount>
+						<csvUploadTransactionType>ONCE</csvUploadTransactionType>
+						<distinct>false</distinct>
+						<elements xsi:type="metaPropertyItem">
+							<dispFlag>true</dispFlag>
+							<propertyId>name</propertyId>
+							<editor xsi:type="metaStringPropertyEditor">
+								<allowedContent>false</allowedContent>
+								<displayType>Text</displayType>
+								<maxlength>0</maxlength>
+								<searchExactMatchCondition>false</searchExactMatchCondition>
+							</editor>
+							<hideNormalCondition>false</hideNormalCondition>
+							<hideDetailCondition>false</hideDetailCondition>
+							<hideDetail>false</hideDetail>
+							<hideView>false</hideView>
+							<isBlank>false</isBlank>
+							<requiredNormal>false</requiredNormal>
+							<requiredDetail>false</requiredDetail>
+						</elements>
+						<elements xsi:type="metaPropertyItem">
+							<dispFlag>true</dispFlag>
+							<propertyId>1</propertyId>
+							<editor xsi:type="metaStringPropertyEditor">
+								<allowedContent>false</allowedContent>
+								<displayType>Text</displayType>
+								<maxlength>0</maxlength>
+								<searchExactMatchCondition>false</searchExactMatchCondition>
+							</editor>
+							<hideNormalCondition>false</hideNormalCondition>
+							<hideDetailCondition>false</hideDetailCondition>
+							<hideDetail>false</hideDetail>
+							<hideView>false</hideView>
+							<isBlank>false</isBlank>
+							<requiredNormal>false</requiredNormal>
+							<requiredDetail>false</requiredDetail>
+						</elements>
+						<elements xsi:type="metaPropertyItem">
+							<dispFlag>true</dispFlag>
+							<propertyId>REF_1</propertyId>
+							<editor xsi:type="metaReferencePropertyEditor">
+								<displayType>Link</displayType>
+								<editableReference>false</editableReference>
+								<getNameAtOnce>false</getNameAtOnce>
+								<hideDeleteButton>false</hideDeleteButton>
+								<hideRegistButton>false</hideRegistButton>
+								<hideSelectButton>false</hideSelectButton>
+								<objectId>E0003</objectId>
+								<permitConditionSelectAll>true</permitConditionSelectAll>
+								<referenceFromObjectId>E0008</referenceFromObjectId>
+								<showRefComboParent>false</showRefComboParent>
+								<singleSelect>false</singleSelect>
+								<useNestConditionWithProperty>false</useNestConditionWithProperty>
+								<useSearchDialog>true</useSearchDialog>
+							</editor>
+							<hideNormalCondition>false</hideNormalCondition>
+							<hideDetailCondition>false</hideDetailCondition>
+							<hideDetail>false</hideDetail>
+							<hideView>false</hideView>
+							<isBlank>false</isBlank>
+							<requiredNormal>false</requiredNormal>
+							<requiredDetail>false</requiredDetail>
+						</elements>
+						<elements xsi:type="metaPropertyItem">
+							<dispFlag>true</dispFlag>
+							<propertyId>2</propertyId>
+							<editor xsi:type="metaStringPropertyEditor">
+								<allowedContent>false</allowedContent>
+								<displayType>Text</displayType>
+								<maxlength>0</maxlength>
+								<searchExactMatchCondition>false</searchExactMatchCondition>
+							</editor>
+							<hideNormalCondition>false</hideNormalCondition>
+							<hideDetailCondition>false</hideDetailCondition>
+							<hideDetail>false</hideDetail>
+							<hideView>false</hideView>
+							<isBlank>false</isBlank>
+							<requiredNormal>false</requiredNormal>
+							<requiredDetail>false</requiredDetail>
+						</elements>
+						<hideCsvUpload>false</hideCsvUpload>
+						<hideCsvdownload>false</hideCsvdownload>
+						<hideCsvdownloadDialog>false</hideCsvdownloadDialog>
+						<hideDetailCondition>false</hideDetailCondition>
+						<hideFixedCondition>false</hideFixedCondition>
+						<nonOutputBinaryRef>false</nonOutputBinaryRef>
+						<nonOutputOid>false</nonOutputOid>
+						<nonOutputReference>false</nonOutputReference>
+						<specifyCharacterCode>NONE</specifyCharacterCode>
+						<unsorted>false</unsorted>
+						<useDefaultConditionWithFilterDefinition>false</useDefaultConditionWithFilterDefinition>
+					</sections>
+					<sections xsi:type="metaSearchResultSection">
+						<dispFlag>false</dispFlag>
+						<dispRowCount>10</dispRowCount>
+						<elements xsi:type="metaPropertyColumn">
+							<dispFlag>true</dispFlag>
+							<propertyId>name</propertyId>
+							<editor xsi:type="metaStringPropertyEditor">
+								<allowedContent>false</allowedContent>
+								<displayType>Text</displayType>
+								<maxlength>0</maxlength>
+								<searchExactMatchCondition>false</searchExactMatchCondition>
+							</editor>
+							<width>0</width>
+						</elements>
+						<elements xsi:type="metaPropertyColumn">
+							<dispFlag>true</dispFlag>
+							<propertyId>1</propertyId>
+							<editor xsi:type="metaStringPropertyEditor">
+								<allowedContent>false</allowedContent>
+								<displayType>Text</displayType>
+								<maxlength>0</maxlength>
+								<searchExactMatchCondition>false</searchExactMatchCondition>
+							</editor>
+							<width>0</width>
+						</elements>
+						<elements xsi:type="metaPropertyColumn">
+							<dispFlag>true</dispFlag>
+							<propertyId>REF_1</propertyId>
+							<editor xsi:type="metaReferencePropertyEditor">
+								<displayType>Link</displayType>
+								<editableReference>false</editableReference>
+								<getNameAtOnce>false</getNameAtOnce>
+								<hideDeleteButton>false</hideDeleteButton>
+								<hideRegistButton>false</hideRegistButton>
+								<hideSelectButton>false</hideSelectButton>
+								<objectId>E0003</objectId>
+								<permitConditionSelectAll>true</permitConditionSelectAll>
+								<referenceFromObjectId>E0008</referenceFromObjectId>
+								<showRefComboParent>false</showRefComboParent>
+								<singleSelect>false</singleSelect>
+								<useNestConditionWithProperty>false</useNestConditionWithProperty>
+								<useSearchDialog>false</useSearchDialog>
+							</editor>
+							<width>0</width>
+						</elements>
+						<elements xsi:type="metaPropertyColumn">
+							<dispFlag>true</dispFlag>
+							<propertyId>2</propertyId>
+							<editor xsi:type="metaStringPropertyEditor">
+								<allowedContent>false</allowedContent>
+								<displayType>Text</displayType>
+								<maxlength>0</maxlength>
+								<searchExactMatchCondition>false</searchExactMatchCondition>
+							</editor>
+							<width>0</width>
+						</elements>
+						<hideCount>false</hideCount>
+						<hideDelete>false</hideDelete>
+						<hideDetailLink>false</hideDetailLink>
+						<hidePageJump>false</hidePageJump>
+						<hidePageLink>false</hidePageLink>
+						<hidePaging>false</hidePaging>
+					</sections>
+					<hideTrash>false</hideTrash>
+					<allowTrashOperationToRecycleBy>false</allowTrashOperationToRecycleBy>
+					<hideNew>false</hideNew>
+					<useInterrupterForCsvDownload>false</useInterrupterForCsvDownload>
+				</views>
+			</metaData>
+		</metaDataEntry>
+
+		<!-- Entity Permission -->
+		<metaDataEntry name="/view/generic/mtp/auth/EntityPermission">
+			<metaData xsi:type="metaEntityView" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+				<id>VG0009</id>
+				<name>mtp.auth.EntityPermission</name>
+				<definitionId>E0009</definitionId>
+				<views xsi:type="metaDetailFormView">
+					<isPurge>false</isPurge>
+					<localizationData>false</localizationData>
+					<dialogMaximize>false</dialogMaximize>
+					<sections xsi:type="metaDefaultSection">
+						<dispFlag>true</dispFlag>
+						<colNum>1</colNum>
+						<elements xsi:type="metaPropertyItem">
+							<dispFlag>true</dispFlag>
+							<propertyId>name</propertyId>
+							<editor xsi:type="metaStringPropertyEditor">
+								<allowedContent>false</allowedContent>
+								<displayType>Text</displayType>
+								<maxlength>0</maxlength>
+								<searchExactMatchCondition>false</searchExactMatchCondition>
+							</editor>
+							<hideNormalCondition>false</hideNormalCondition>
+							<hideDetailCondition>false</hideDetailCondition>
+							<hideDetail>false</hideDetail>
+							<hideView>false</hideView>
+							<isBlank>false</isBlank>
+							<requiredNormal>false</requiredNormal>
+							<requiredDetail>false</requiredDetail>
+						</elements>
+						<elements xsi:type="metaPropertyItem">
+							<dispFlag>true</dispFlag>
+							<propertyId>537db673-8bfb-4fa3-b512-3dddc0a17cb0</propertyId>
+							<editor xsi:type="metaTemplatePropertyEditor">
+								<templateName>gem/generic/editor/EntitySelectPropertyEditorJsp</templateName>
+							</editor>
+							<hideNormalCondition>false</hideNormalCondition>
+							<hideDetailCondition>false</hideDetailCondition>
+							<hideDetail>false</hideDetail>
+							<hideView>false</hideView>
+							<isBlank>false</isBlank>
+							<requiredNormal>false</requiredNormal>
+							<requiredDetail>false</requiredDetail>
+						</elements>
+						<elements xsi:type="metaPropertyItem">
+							<dispFlag>true</dispFlag>
+							<propertyId>8dcaa991-68da-45b5-a3ef-3622f9344643</propertyId>
+							<editor xsi:type="metaReferencePropertyEditor">
+								<displayType>Link</displayType>
+								<editableReference>false</editableReference>
+								<getNameAtOnce>false</getNameAtOnce>
+								<hideDeleteButton>false</hideDeleteButton>
+								<hideRegistButton>false</hideRegistButton>
+								<hideSelectButton>false</hideSelectButton>
+								<objectId>E0003</objectId>
+								<permitConditionSelectAll>true</permitConditionSelectAll>
+								<referenceFromObjectId>E0009</referenceFromObjectId>
+								<showRefComboParent>false</showRefComboParent>
+								<singleSelect>false</singleSelect>
+								<useNestConditionWithProperty>false</useNestConditionWithProperty>
+								<useSearchDialog>false</useSearchDialog>
+							</editor>
+							<hideNormalCondition>false</hideNormalCondition>
+							<hideDetailCondition>false</hideDetailCondition>
+							<hideDetail>false</hideDetail>
+							<hideView>false</hideView>
+							<isBlank>false</isBlank>
+							<requiredNormal>false</requiredNormal>
+							<requiredDetail>false</requiredDetail>
+						</elements>
+						<expandable>true</expandable>
+						<hideDetail>false</hideDetail>
+						<hideView>false</hideView>
+						<localizedTitleList>
+							<localeName>ja</localeName>
+							<stringValue>権限の対象</stringValue>
+						</localizedTitleList>
+						<localizedTitleList>
+							<localeName>en</localeName>
+							<stringValue>Target Of The Permissions</stringValue>
+						</localizedTitleList>
+						<localizedTitleList>
+							<localeName>zh-CN</localeName>
+							<stringValue>权限的对象</stringValue>
+						</localizedTitleList>
+						<localizedTitleList>
+							<localeName>zh-TW</localeName>
+							<stringValue>權限的對象</stringValue>
+						</localizedTitleList>
+						<localizedTitleList>
+							<localeName>th</localeName>
+							<stringValue>เป้าหมายของการสิทธิ์</stringValue>
+						</localizedTitleList>
+						<showLink>false</showLink>
+						<title>権限の対象</title>
+					</sections>
+					<sections xsi:type="metaDefaultSection">
+						<dispFlag>true</dispFlag>
+						<colNum>1</colNum>
+						<elements xsi:type="metaPropertyItem">
+							<dispFlag>true</dispFlag>
+							<propertyId>91d26847-080d-4df1-b56b-ab811b90ec18</propertyId>
+							<editor xsi:type="metaBooleanPropertyEditor">
+								<defaultValue>false</defaultValue>
+								<displayType>Radio</displayType>
+								<falseLabel>不許可</falseLabel>
+								<localizedFalseLabelList>
+									<localeName>ja</localeName>
+									<stringValue>不許可</stringValue>
+								</localizedFalseLabelList>
+								<localizedFalseLabelList>
+									<localeName>en</localeName>
+									<stringValue>No Permit</stringValue>
+								</localizedFalseLabelList>
+								<localizedFalseLabelList>
+									<localeName>zh-CN</localeName>
+									<stringValue>不允许</stringValue>
+								</localizedFalseLabelList>
+								<localizedFalseLabelList>
+									<localeName>zh-TW</localeName>
+									<stringValue>不允許</stringValue>
+								</localizedFalseLabelList>
+								<localizedFalseLabelList>
+									<localeName>th</localeName>
+									<stringValue>ไม่อนุญาต</stringValue>
+								</localizedFalseLabelList>
+								<localizedTrueLabelList>
+									<localeName>ja</localeName>
+									<stringValue>許可</stringValue>
+								</localizedTrueLabelList>
+								<localizedTrueLabelList>
+									<localeName>en</localeName>
+									<stringValue>Permit</stringValue>
+								</localizedTrueLabelList>
+								<localizedTrueLabelList>
+									<localeName>zh-CN</localeName>
+									<stringValue>允许</stringValue>
+								</localizedTrueLabelList>
+								<localizedTrueLabelList>
+									<localeName>zh-TW</localeName>
+									<stringValue>允許</stringValue>
+								</localizedTrueLabelList>
+								<localizedTrueLabelList>
+									<localeName>th</localeName>
+									<stringValue>อนุณาต</stringValue>
+								</localizedTrueLabelList>
+								<trueLabel>許可</trueLabel>
+							</editor>
+							<hideNormalCondition>false</hideNormalCondition>
+							<hideDetailCondition>false</hideDetailCondition>
+							<hideDetail>false</hideDetail>
+							<hideView>false</hideView>
+							<isBlank>false</isBlank>
+							<requiredNormal>false</requiredNormal>
+							<requiredDetail>false</requiredDetail>
+						</elements>
+						<elements xsi:type="metaPropertyItem">
+							<dispFlag>true</dispFlag>
+							<propertyId>38a31b9c-1f06-40ed-b290-e6137a68fc2c</propertyId>
+							<editor xsi:type="metaStringPropertyEditor">
+								<allowedContent>false</allowedContent>
+								<displayType>TextArea</displayType>
+								<maxlength>0</maxlength>
+								<searchExactMatchCondition>false</searchExactMatchCondition>
+							</editor>
+							<hideNormalCondition>false</hideNormalCondition>
+							<hideDetailCondition>false</hideDetailCondition>
+							<hideDetail>false</hideDetail>
+							<hideView>false</hideView>
+							<isBlank>false</isBlank>
+							<requiredNormal>false</requiredNormal>
+							<requiredDetail>false</requiredDetail>
+						</elements>
+						<elements xsi:type="metaPropertyItem">
+							<dispFlag>true</dispFlag>
+							<propertyId>91a5b15d-8374-49fd-bbcf-0e6df8ae8da8</propertyId>
+							<editor xsi:type="metaSelectPropertyEditor">
+								<displayType>Select</displayType>
+								<sortCsvOutputValue>false</sortCsvOutputValue>
+								<values>
+									<label>以下のプロパティを参照可とする</label>
+									<localizedLabelList>
+										<localeName>ja</localeName>
+										<stringValue>以下のプロパティを参照可とする</stringValue>
+									</localizedLabelList>
+									<localizedLabelList>
+										<localeName>en</localeName>
+										<stringValue>Allow the following properties to be referred:</stringValue>
+									</localizedLabelList>
+									<localizedLabelList>
+										<localeName>zh-CN</localeName>
+										<stringValue>允许以下属性的查看</stringValue>
+									</localizedLabelList>
+									<localizedLabelList>
+										<localeName>zh-TW</localeName>
+										<stringValue>允許以下屬性的查看</stringValue>
+									</localizedLabelList>
+									<localizedLabelList>
+										<localeName>th</localeName>
+										<stringValue>อนุญาตให้คุณสมบัติต่อไปนี้จะเรียก</stringValue>
+									</localizedLabelList>
+									<value>E</value>
+								</values>
+								<values>
+									<label>以下のプロパティを参照不可とする</label>
+									<localizedLabelList>
+										<localeName>ja</localeName>
+										<stringValue>以下のプロパティを参照不可とする</stringValue>
+									</localizedLabelList>
+									<localizedLabelList>
+										<localeName>en</localeName>
+										<stringValue>Not allow the following properties to be referred:</stringValue>
+									</localizedLabelList>
+									<localizedLabelList>
+										<localeName>zh-CN</localeName>
+										<stringValue>不允许以下属性的查看</stringValue>
+									</localizedLabelList>
+									<localizedLabelList>
+										<localeName>zh-TW</localeName>
+										<stringValue>不允許以下屬性的查看</stringValue>
+									</localizedLabelList>
+									<localizedLabelList>
+										<localeName>th</localeName>
+										<stringValue>ไม่อนุญาตให้มีคุณสมบัติต่อไปนี้จะเรียก</stringValue>
+									</localizedLabelList>
+									<value>D</value>
+								</values>
+							</editor>
+							<hideNormalCondition>false</hideNormalCondition>
+							<hideDetailCondition>false</hideDetailCondition>
+							<hideDetail>false</hideDetail>
+							<hideView>false</hideView>
+							<isBlank>false</isBlank>
+							<requiredNormal>false</requiredNormal>
+							<requiredDetail>false</requiredDetail>
+						</elements>
+						<elements xsi:type="metaPropertyItem">
+							<dispFlag>true</dispFlag>
+							<propertyId>bad5412c-62ad-4833-810d-12a8cb149584</propertyId>
+							<editor xsi:type="metaStringPropertyEditor">
+								<allowedContent>false</allowedContent>
+								<displayType>TextArea</displayType>
+								<maxlength>0</maxlength>
+								<searchExactMatchCondition>false</searchExactMatchCondition>
+							</editor>
+							<hideNormalCondition>false</hideNormalCondition>
+							<hideDetailCondition>false</hideDetailCondition>
+							<hideDetail>false</hideDetail>
+							<hideView>false</hideView>
+							<isBlank>false</isBlank>
+							<requiredNormal>false</requiredNormal>
+							<requiredDetail>false</requiredDetail>
+						</elements>
+						<expandable>true</expandable>
+						<hideDetail>false</hideDetail>
+						<hideView>false</hideView>
+						<localizedTitleList>
+							<localeName>ja</localeName>
+							<stringValue>参照権限</stringValue>
+						</localizedTitleList>
+						<localizedTitleList>
+							<localeName>en</localeName>
+							<stringValue>Reference Authority</stringValue>
+						</localizedTitleList>
+						<localizedTitleList>
+							<localeName>zh-CN</localeName>
+							<stringValue>查看权限</stringValue>
+						</localizedTitleList>
+						<localizedTitleList>
+							<localeName>zh-TW</localeName>
+							<stringValue>查看權限</stringValue>
+						</localizedTitleList>
+						<localizedTitleList>
+							<localeName>th</localeName>
+							<stringValue>ผู้มีอำนาจในการอ้างอิง</stringValue>
+						</localizedTitleList>
+						<showLink>false</showLink>
+						<title>参照権限</title>
+					</sections>
+					<sections xsi:type="metaDefaultSection">
+						<dispFlag>true</dispFlag>
+						<colNum>1</colNum>
+						<elements xsi:type="metaPropertyItem">
+							<dispFlag>true</dispFlag>
+							<propertyId>6ebf69fc-10a9-4529-a419-83f628480cb8</propertyId>
+							<editor xsi:type="metaBooleanPropertyEditor">
+								<defaultValue>false</defaultValue>
+								<displayType>Radio</displayType>
+								<falseLabel>不許可</falseLabel>
+								<localizedFalseLabelList>
+									<localeName>ja</localeName>
+									<stringValue>不許可</stringValue>
+								</localizedFalseLabelList>
+								<localizedFalseLabelList>
+									<localeName>en</localeName>
+									<stringValue>No Permit</stringValue>
+								</localizedFalseLabelList>
+								<localizedFalseLabelList>
+									<localeName>zh-CN</localeName>
+									<stringValue>不允许</stringValue>
+								</localizedFalseLabelList>
+								<localizedFalseLabelList>
+									<localeName>zh-TW</localeName>
+									<stringValue>不允許</stringValue>
+								</localizedFalseLabelList>
+								<localizedFalseLabelList>
+									<localeName>th</localeName>
+									<stringValue>ไม่อนุญาต</stringValue>
+								</localizedFalseLabelList>
+								<localizedTrueLabelList>
+									<localeName>ja</localeName>
+									<stringValue>許可</stringValue>
+								</localizedTrueLabelList>
+								<localizedTrueLabelList>
+									<localeName>en</localeName>
+									<stringValue>Permit</stringValue>
+								</localizedTrueLabelList>
+								<localizedTrueLabelList>
+									<localeName>zh-CN</localeName>
+									<stringValue>允许</stringValue>
+								</localizedTrueLabelList>
+								<localizedTrueLabelList>
+									<localeName>zh-TW</localeName>
+									<stringValue>允許</stringValue>
+								</localizedTrueLabelList>
+								<localizedTrueLabelList>
+									<localeName>th</localeName>
+									<stringValue>อนุณาต</stringValue>
+								</localizedTrueLabelList>
+								<trueLabel>許可</trueLabel>
+							</editor>
+							<hideNormalCondition>false</hideNormalCondition>
+							<hideDetailCondition>false</hideDetailCondition>
+							<hideDetail>false</hideDetail>
+							<hideView>false</hideView>
+							<isBlank>false</isBlank>
+							<requiredNormal>false</requiredNormal>
+							<requiredDetail>false</requiredDetail>
+						</elements>
+						<elements xsi:type="metaPropertyItem">
+							<dispFlag>true</dispFlag>
+							<propertyId>1e27c294-135a-4347-865b-db62f4d8fd62</propertyId>
+							<editor xsi:type="metaStringPropertyEditor">
+								<allowedContent>false</allowedContent>
+								<displayType>TextArea</displayType>
+								<maxlength>0</maxlength>
+								<searchExactMatchCondition>false</searchExactMatchCondition>
+							</editor>
+							<hideNormalCondition>false</hideNormalCondition>
+							<hideDetailCondition>false</hideDetailCondition>
+							<hideDetail>false</hideDetail>
+							<hideView>false</hideView>
+							<isBlank>false</isBlank>
+							<requiredNormal>false</requiredNormal>
+							<requiredDetail>false</requiredDetail>
+						</elements>
+						<elements xsi:type="metaPropertyItem">
+							<dispFlag>true</dispFlag>
+							<propertyId>375bec04-43dd-4527-b8fe-6d79f3db00a8</propertyId>
+							<editor xsi:type="metaSelectPropertyEditor">
+								<displayType>Select</displayType>
+								<sortCsvOutputValue>false</sortCsvOutputValue>
+								<values>
+									<label>以下のプロパティを登録可とする</label>
+									<localizedLabelList>
+										<localeName>ja</localeName>
+										<stringValue>以下のプロパティを登録可とする</stringValue>
+									</localizedLabelList>
+									<localizedLabelList>
+										<localeName>en</localeName>
+										<stringValue>Allow the following properties to be registered:</stringValue>
+									</localizedLabelList>
+									<localizedLabelList>
+										<localeName>zh-CN</localeName>
+										<stringValue>允许以下属性的新建</stringValue>
+									</localizedLabelList>
+									<localizedLabelList>
+										<localeName>zh-TW</localeName>
+										<stringValue>允許以下屬性的新建</stringValue>
+									</localizedLabelList>
+									<localizedLabelList>
+										<localeName>th</localeName>
+										<stringValue>อนุญาตให้คุณสมบัติต่อไปนี้จะต้องลงทะเบียน</stringValue>
+									</localizedLabelList>
+									<value>E</value>
+								</values>
+								<values>
+									<label>以下のプロパティを登録不可とする</label>
+									<localizedLabelList>
+										<localeName>ja</localeName>
+										<stringValue>以下のプロパティを登録不可とする</stringValue>
+									</localizedLabelList>
+									<localizedLabelList>
+										<localeName>en</localeName>
+										<stringValue>Not allow the following properties to be
+											registered:</stringValue>
+									</localizedLabelList>
+									<localizedLabelList>
+										<localeName>zh-CN</localeName>
+										<stringValue>不允许以下属性的新建</stringValue>
+									</localizedLabelList>
+									<localizedLabelList>
+										<localeName>zh-TW</localeName>
+										<stringValue>不允許以下屬性的新建</stringValue>
+									</localizedLabelList>
+									<localizedLabelList>
+										<localeName>th</localeName>
+										<stringValue>ไม่อนุญาตให้มีคุณสมบัติดังต่อไปนี้ได้รับการจดทะเบียน</stringValue>
+									</localizedLabelList>
+									<value>D</value>
+								</values>
+							</editor>
+							<hideNormalCondition>false</hideNormalCondition>
+							<hideDetailCondition>false</hideDetailCondition>
+							<hideDetail>false</hideDetail>
+							<hideView>false</hideView>
+							<isBlank>false</isBlank>
+							<requiredNormal>false</requiredNormal>
+							<requiredDetail>false</requiredDetail>
+						</elements>
+						<elements xsi:type="metaPropertyItem">
+							<dispFlag>true</dispFlag>
+							<propertyId>102981b7-1285-4797-9fb5-8bf004f7e4c3</propertyId>
+							<editor xsi:type="metaStringPropertyEditor">
+								<allowedContent>false</allowedContent>
+								<displayType>TextArea</displayType>
+								<maxlength>0</maxlength>
+								<searchExactMatchCondition>false</searchExactMatchCondition>
+							</editor>
+							<hideNormalCondition>false</hideNormalCondition>
+							<hideDetailCondition>false</hideDetailCondition>
+							<hideDetail>false</hideDetail>
+							<hideView>false</hideView>
+							<isBlank>false</isBlank>
+							<requiredNormal>false</requiredNormal>
+							<requiredDetail>false</requiredDetail>
+						</elements>
+						<expandable>true</expandable>
+						<hideDetail>false</hideDetail>
+						<hideView>false</hideView>
+						<localizedTitleList>
+							<localeName>ja</localeName>
+							<stringValue>登録権限</stringValue>
+						</localizedTitleList>
+						<localizedTitleList>
+							<localeName>en</localeName>
+							<stringValue>Registration Authority</stringValue>
+						</localizedTitleList>
+						<localizedTitleList>
+							<localeName>zh-CN</localeName>
+							<stringValue>新建权限</stringValue>
+						</localizedTitleList>
+						<localizedTitleList>
+							<localeName>zh-TW</localeName>
+							<stringValue>新建權限</stringValue>
+						</localizedTitleList>
+						<localizedTitleList>
+							<localeName>th</localeName>
+							<stringValue>ผู้มีอำนาจในการลงทะเบียน</stringValue>
+						</localizedTitleList>
+						<showLink>false</showLink>
+						<title>登録権限</title>
+					</sections>
+					<sections xsi:type="metaDefaultSection">
+						<dispFlag>true</dispFlag>
+						<colNum>1</colNum>
+						<elements xsi:type="metaPropertyItem">
+							<dispFlag>true</dispFlag>
+							<propertyId>bb3dec0d-9eab-4eac-90c3-8faf0650ffeb</propertyId>
+							<editor xsi:type="metaBooleanPropertyEditor">
+								<defaultValue>false</defaultValue>
+								<displayType>Radio</displayType>
+								<falseLabel>不許可</falseLabel>
+								<localizedFalseLabelList>
+									<localeName>ja</localeName>
+									<stringValue>不許可</stringValue>
+								</localizedFalseLabelList>
+								<localizedFalseLabelList>
+									<localeName>en</localeName>
+									<stringValue>No Permit</stringValue>
+								</localizedFalseLabelList>
+								<localizedFalseLabelList>
+									<localeName>zh-CN</localeName>
+									<stringValue>不允许</stringValue>
+								</localizedFalseLabelList>
+								<localizedFalseLabelList>
+									<localeName>zh-TW</localeName>
+									<stringValue>不允許</stringValue>
+								</localizedFalseLabelList>
+								<localizedFalseLabelList>
+									<localeName>th</localeName>
+									<stringValue>ไม่อนุญาต</stringValue>
+								</localizedFalseLabelList>
+								<localizedTrueLabelList>
+									<localeName>ja</localeName>
+									<stringValue>許可</stringValue>
+								</localizedTrueLabelList>
+								<localizedTrueLabelList>
+									<localeName>en</localeName>
+									<stringValue>Permit</stringValue>
+								</localizedTrueLabelList>
+								<localizedTrueLabelList>
+									<localeName>zh-CN</localeName>
+									<stringValue>允许</stringValue>
+								</localizedTrueLabelList>
+								<localizedTrueLabelList>
+									<localeName>zh-TW</localeName>
+									<stringValue>允許</stringValue>
+								</localizedTrueLabelList>
+								<localizedTrueLabelList>
+									<localeName>th</localeName>
+									<stringValue>อนุณาต</stringValue>
+								</localizedTrueLabelList>
+								<trueLabel>許可</trueLabel>
+							</editor>
+							<hideNormalCondition>false</hideNormalCondition>
+							<hideDetailCondition>false</hideDetailCondition>
+							<hideDetail>false</hideDetail>
+							<hideView>false</hideView>
+							<isBlank>false</isBlank>
+							<requiredNormal>false</requiredNormal>
+							<requiredDetail>false</requiredDetail>
+						</elements>
+						<elements xsi:type="metaPropertyItem">
+							<dispFlag>true</dispFlag>
+							<propertyId>361cc191-dfa5-4ea7-bf06-9bf77b37c374</propertyId>
+							<editor xsi:type="metaStringPropertyEditor">
+								<allowedContent>false</allowedContent>
+								<displayType>TextArea</displayType>
+								<maxlength>0</maxlength>
+								<searchExactMatchCondition>false</searchExactMatchCondition>
+							</editor>
+							<hideNormalCondition>false</hideNormalCondition>
+							<hideDetailCondition>false</hideDetailCondition>
+							<hideDetail>false</hideDetail>
+							<hideView>false</hideView>
+							<isBlank>false</isBlank>
+							<requiredNormal>false</requiredNormal>
+							<requiredDetail>false</requiredDetail>
+						</elements>
+						<elements xsi:type="metaPropertyItem">
+							<dispFlag>true</dispFlag>
+							<propertyId>1eeb5e64-18f6-4acd-bc59-41c289305fa0</propertyId>
+							<editor xsi:type="metaSelectPropertyEditor">
+								<displayType>Select</displayType>
+								<sortCsvOutputValue>false</sortCsvOutputValue>
+								<values>
+									<label>以下のプロパティを更新可とする</label>
+									<localizedLabelList>
+										<localeName>ja</localeName>
+										<stringValue>以下のプロパティを更新可とする</stringValue>
+									</localizedLabelList>
+									<localizedLabelList>
+										<localeName>en</localeName>
+										<stringValue>Allow the following properties to be updated:</stringValue>
+									</localizedLabelList>
+									<localizedLabelList>
+										<localeName>zh-CN</localeName>
+										<stringValue>允许以下属性的更新</stringValue>
+									</localizedLabelList>
+									<localizedLabelList>
+										<localeName>zh-TW</localeName>
+										<stringValue>允許以下屬性的更新</stringValue>
+									</localizedLabelList>
+									<localizedLabelList>
+										<localeName>th</localeName>
+										<stringValue>อนุญาตให้คุณสมบัติต่อไปนี้ได้รับการปรับปรุง</stringValue>
+									</localizedLabelList>
+									<value>E</value>
+								</values>
+								<values>
+									<label>以下のプロパティを更新不可とする</label>
+									<localizedLabelList>
+										<localeName>ja</localeName>
+										<stringValue>以下のプロパティを更新不可とする</stringValue>
+									</localizedLabelList>
+									<localizedLabelList>
+										<localeName>en</localeName>
+										<stringValue>Not allow the following properties to be updated:</stringValue>
+									</localizedLabelList>
+									<localizedLabelList>
+										<localeName>zh-CN</localeName>
+										<stringValue>不允许以下属性的更新</stringValue>
+									</localizedLabelList>
+									<localizedLabelList>
+										<localeName>zh-TW</localeName>
+										<stringValue>不允許以下屬性的更新</stringValue>
+									</localizedLabelList>
+									<localizedLabelList>
+										<localeName>th</localeName>
+										<stringValue>ไม่อนุญาตให้มีคุณสมบัติดังต่อไปนี้ได้รับการปรับปรุง</stringValue>
+									</localizedLabelList>
+									<value>D</value>
+								</values>
+							</editor>
+							<hideNormalCondition>false</hideNormalCondition>
+							<hideDetailCondition>false</hideDetailCondition>
+							<hideDetail>false</hideDetail>
+							<hideView>false</hideView>
+							<isBlank>false</isBlank>
+							<requiredNormal>false</requiredNormal>
+							<requiredDetail>false</requiredDetail>
+						</elements>
+						<elements xsi:type="metaPropertyItem">
+							<dispFlag>true</dispFlag>
+							<propertyId>7c3a91fe-8513-4da5-b6a7-378d97511cad</propertyId>
+							<editor xsi:type="metaStringPropertyEditor">
+								<allowedContent>false</allowedContent>
+								<displayType>TextArea</displayType>
+								<maxlength>0</maxlength>
+								<searchExactMatchCondition>false</searchExactMatchCondition>
+							</editor>
+							<hideNormalCondition>false</hideNormalCondition>
+							<hideDetailCondition>false</hideDetailCondition>
+							<hideDetail>false</hideDetail>
+							<hideView>false</hideView>
+							<isBlank>false</isBlank>
+							<requiredNormal>false</requiredNormal>
+							<requiredDetail>false</requiredDetail>
+						</elements>
+						<expandable>true</expandable>
+						<hideDetail>false</hideDetail>
+						<hideView>false</hideView>
+						<localizedTitleList>
+							<localeName>ja</localeName>
+							<stringValue>更新権限</stringValue>
+						</localizedTitleList>
+						<localizedTitleList>
+							<localeName>en</localeName>
+							<stringValue>Update Authority</stringValue>
+						</localizedTitleList>
+						<localizedTitleList>
+							<localeName>zh-CN</localeName>
+							<stringValue>更新权限</stringValue>
+						</localizedTitleList>
+						<localizedTitleList>
+							<localeName>zh-TW</localeName>
+							<stringValue>更新權限</stringValue>
+						</localizedTitleList>
+						<localizedTitleList>
+							<localeName>th</localeName>
+							<stringValue>ผู้มีอำนาจในการปรับปรุง</stringValue>
+						</localizedTitleList>
+						<showLink>false</showLink>
+						<title>更新権限</title>
+					</sections>
+					<sections xsi:type="metaDefaultSection">
+						<dispFlag>true</dispFlag>
+						<colNum>1</colNum>
+						<elements xsi:type="metaPropertyItem">
+							<dispFlag>true</dispFlag>
+							<propertyId>4dfa0e21-41a0-4c0e-98f4-f1df8487ba6f</propertyId>
+							<editor xsi:type="metaBooleanPropertyEditor">
+								<defaultValue>false</defaultValue>
+								<displayType>Radio</displayType>
+								<falseLabel>不許可</falseLabel>
+								<localizedFalseLabelList>
+									<localeName>ja</localeName>
+									<stringValue>不許可</stringValue>
+								</localizedFalseLabelList>
+								<localizedFalseLabelList>
+									<localeName>en</localeName>
+									<stringValue>No Permit</stringValue>
+								</localizedFalseLabelList>
+								<localizedFalseLabelList>
+									<localeName>zh-CN</localeName>
+									<stringValue>不允许</stringValue>
+								</localizedFalseLabelList>
+								<localizedFalseLabelList>
+									<localeName>zh-TW</localeName>
+									<stringValue>不允許</stringValue>
+								</localizedFalseLabelList>
+								<localizedFalseLabelList>
+									<localeName>th</localeName>
+									<stringValue>ไม่อนุญาต</stringValue>
+								</localizedFalseLabelList>
+								<localizedTrueLabelList>
+									<localeName>ja</localeName>
+									<stringValue>許可</stringValue>
+								</localizedTrueLabelList>
+								<localizedTrueLabelList>
+									<localeName>en</localeName>
+									<stringValue>Permit</stringValue>
+								</localizedTrueLabelList>
+								<localizedTrueLabelList>
+									<localeName>zh-CN</localeName>
+									<stringValue>允许</stringValue>
+								</localizedTrueLabelList>
+								<localizedTrueLabelList>
+									<localeName>zh-TW</localeName>
+									<stringValue>允許</stringValue>
+								</localizedTrueLabelList>
+								<localizedTrueLabelList>
+									<localeName>th</localeName>
+									<stringValue>อนุณาต</stringValue>
+								</localizedTrueLabelList>
+								<trueLabel>許可</trueLabel>
+							</editor>
+							<hideNormalCondition>false</hideNormalCondition>
+							<hideDetailCondition>false</hideDetailCondition>
+							<hideDetail>false</hideDetail>
+							<hideView>false</hideView>
+							<isBlank>false</isBlank>
+							<requiredNormal>false</requiredNormal>
+							<requiredDetail>false</requiredDetail>
+						</elements>
+						<elements xsi:type="metaPropertyItem">
+							<dispFlag>true</dispFlag>
+							<propertyId>c84ec713-870a-4831-9b49-3242f86f5f19</propertyId>
+							<editor xsi:type="metaStringPropertyEditor">
+								<allowedContent>false</allowedContent>
+								<displayType>TextArea</displayType>
+								<maxlength>0</maxlength>
+								<searchExactMatchCondition>false</searchExactMatchCondition>
+							</editor>
+							<hideNormalCondition>false</hideNormalCondition>
+							<hideDetailCondition>false</hideDetailCondition>
+							<hideDetail>false</hideDetail>
+							<hideView>false</hideView>
+							<isBlank>false</isBlank>
+							<requiredNormal>false</requiredNormal>
+							<requiredDetail>false</requiredDetail>
+						</elements>
+						<expandable>true</expandable>
+						<hideDetail>false</hideDetail>
+						<hideView>false</hideView>
+						<localizedTitleList>
+							<localeName>ja</localeName>
+							<stringValue>削除権限</stringValue>
+						</localizedTitleList>
+						<localizedTitleList>
+							<localeName>en</localeName>
+							<stringValue>Delete Authority</stringValue>
+						</localizedTitleList>
+						<localizedTitleList>
+							<localeName>zh-CN</localeName>
+							<stringValue>删除权限</stringValue>
+						</localizedTitleList>
+						<localizedTitleList>
+							<localeName>zh-TW</localeName>
+							<stringValue>刪除權限</stringValue>
+						</localizedTitleList>
+						<localizedTitleList>
+							<localeName>th</localeName>
+							<stringValue>ลบผู้มีอำนาจ</stringValue>
+						</localizedTitleList>
+						<showLink>false</showLink>
+						<title>削除権限</title>
+					</sections>
+					<validJavascriptDetailPage>true</validJavascriptDetailPage>
+					<validJavascriptViewPage>false</validJavascriptViewPage>
+					<hideDetail>false</hideDetail>
+					<hideLock>false</hideLock>
+					<isNoneDispCopyButton>false</isNoneDispCopyButton>
+					<hideDelete>false</hideDelete>
+					<purgeCompositionedEntity>false</purgeCompositionedEntity>
+					<loadDefinedReferenceProperty>false</loadDefinedReferenceProperty>
+				</views>
+				<views xsi:type="metaSearchFormView">
+					<isPurge>false</isPurge>
+					<localizationData>false</localizationData>
+					<dialogMaximize>false</dialogMaximize>
+					<sections xsi:type="metaSearchConditionSection">
+						<dispFlag>true</dispFlag>
+						<colNum>1</colNum>
+						<conditionDispCount>5</conditionDispCount>
+						<csvUploadTransactionType>ONCE</csvUploadTransactionType>
+						<distinct>false</distinct>
+						<elements xsi:type="metaPropertyItem">
+							<dispFlag>true</dispFlag>
+							<propertyId>name</propertyId>
+							<editor xsi:type="metaStringPropertyEditor">
+								<allowedContent>false</allowedContent>
+								<displayType>Text</displayType>
+								<maxlength>0</maxlength>
+								<searchExactMatchCondition>false</searchExactMatchCondition>
+							</editor>
+							<hideNormalCondition>false</hideNormalCondition>
+							<hideDetailCondition>false</hideDetailCondition>
+							<hideDetail>false</hideDetail>
+							<hideView>false</hideView>
+							<isBlank>false</isBlank>
+							<requiredNormal>false</requiredNormal>
+							<requiredDetail>false</requiredDetail>
+						</elements>
+						<elements xsi:type="metaPropertyItem">
+							<dispFlag>true</dispFlag>
+							<propertyId>537db673-8bfb-4fa3-b512-3dddc0a17cb0</propertyId>
+							<editor xsi:type="metaTemplatePropertyEditor">
+								<templateName>gem/generic/editor/EntitySelectPropertyEditorJsp</templateName>
+							</editor>
+							<hideNormalCondition>false</hideNormalCondition>
+							<hideDetailCondition>false</hideDetailCondition>
+							<hideDetail>false</hideDetail>
+							<hideView>false</hideView>
+							<isBlank>false</isBlank>
+							<requiredNormal>false</requiredNormal>
+							<requiredDetail>false</requiredDetail>
+						</elements>
+						<elements xsi:type="metaPropertyItem">
+							<dispFlag>true</dispFlag>
+							<propertyId>8dcaa991-68da-45b5-a3ef-3622f9344643</propertyId>
+							<editor xsi:type="metaReferencePropertyEditor">
+								<displayType>Link</displayType>
+								<editableReference>false</editableReference>
+								<getNameAtOnce>false</getNameAtOnce>
+								<hideDeleteButton>false</hideDeleteButton>
+								<hideRegistButton>false</hideRegistButton>
+								<hideSelectButton>false</hideSelectButton>
+								<objectId>E0003</objectId>
+								<permitConditionSelectAll>true</permitConditionSelectAll>
+								<referenceFromObjectId>E0009</referenceFromObjectId>
+								<showRefComboParent>false</showRefComboParent>
+								<singleSelect>false</singleSelect>
+								<useNestConditionWithProperty>false</useNestConditionWithProperty>
+								<useSearchDialog>true</useSearchDialog>
+							</editor>
+							<hideNormalCondition>false</hideNormalCondition>
+							<hideDetailCondition>false</hideDetailCondition>
+							<hideDetail>false</hideDetail>
+							<hideView>false</hideView>
+							<isBlank>false</isBlank>
+							<requiredNormal>false</requiredNormal>
+							<requiredDetail>false</requiredDetail>
+						</elements>
+						<elements xsi:type="metaPropertyItem">
+							<dispFlag>true</dispFlag>
+							<propertyId>91d26847-080d-4df1-b56b-ab811b90ec18</propertyId>
+							<editor xsi:type="metaBooleanPropertyEditor">
+								<displayType>Radio</displayType>
+								<falseLabel>不許可</falseLabel>
+								<localizedFalseLabelList>
+									<localeName>ja</localeName>
+									<stringValue>不許可</stringValue>
+								</localizedFalseLabelList>
+								<localizedFalseLabelList>
+									<localeName>en</localeName>
+									<stringValue>No Permit</stringValue>
+								</localizedFalseLabelList>
+								<localizedFalseLabelList>
+									<localeName>zh-CN</localeName>
+									<stringValue>不允许</stringValue>
+								</localizedFalseLabelList>
+								<localizedFalseLabelList>
+									<localeName>zh-TW</localeName>
+									<stringValue>不允許</stringValue>
+								</localizedFalseLabelList>
+								<localizedFalseLabelList>
+									<localeName>th</localeName>
+									<stringValue>ไม่อนุญาต</stringValue>
+								</localizedFalseLabelList>
+								<localizedTrueLabelList>
+									<localeName>ja</localeName>
+									<stringValue>許可</stringValue>
+								</localizedTrueLabelList>
+								<localizedTrueLabelList>
+									<localeName>en</localeName>
+									<stringValue>Permit</stringValue>
+								</localizedTrueLabelList>
+								<localizedTrueLabelList>
+									<localeName>zh-CN</localeName>
+									<stringValue>允许</stringValue>
+								</localizedTrueLabelList>
+								<localizedTrueLabelList>
+									<localeName>zh-TW</localeName>
+									<stringValue>允許</stringValue>
+								</localizedTrueLabelList>
+								<localizedTrueLabelList>
+									<localeName>th</localeName>
+									<stringValue>อนุณาต</stringValue>
+								</localizedTrueLabelList>
+								<trueLabel>許可</trueLabel>
+							</editor>
+							<hideNormalCondition>false</hideNormalCondition>
+							<hideDetailCondition>false</hideDetailCondition>
+							<hideDetail>false</hideDetail>
+							<hideView>false</hideView>
+							<isBlank>false</isBlank>
+							<requiredNormal>false</requiredNormal>
+							<requiredDetail>false</requiredDetail>
+						</elements>
+						<elements xsi:type="metaPropertyItem">
+							<dispFlag>true</dispFlag>
+							<propertyId>6ebf69fc-10a9-4529-a419-83f628480cb8</propertyId>
+							<editor xsi:type="metaBooleanPropertyEditor">
+								<displayType>Radio</displayType>
+								<falseLabel>不許可</falseLabel>
+								<localizedFalseLabelList>
+									<localeName>ja</localeName>
+									<stringValue>不許可</stringValue>
+								</localizedFalseLabelList>
+								<localizedFalseLabelList>
+									<localeName>en</localeName>
+									<stringValue>No Permit</stringValue>
+								</localizedFalseLabelList>
+								<localizedFalseLabelList>
+									<localeName>zh-CN</localeName>
+									<stringValue>不允许</stringValue>
+								</localizedFalseLabelList>
+								<localizedFalseLabelList>
+									<localeName>zh-TW</localeName>
+									<stringValue>不允許</stringValue>
+								</localizedFalseLabelList>
+								<localizedFalseLabelList>
+									<localeName>th</localeName>
+									<stringValue>ไม่อนุญาต</stringValue>
+								</localizedFalseLabelList>
+								<localizedTrueLabelList>
+									<localeName>ja</localeName>
+									<stringValue>許可</stringValue>
+								</localizedTrueLabelList>
+								<localizedTrueLabelList>
+									<localeName>en</localeName>
+									<stringValue>Permit</stringValue>
+								</localizedTrueLabelList>
+								<localizedTrueLabelList>
+									<localeName>zh-CN</localeName>
+									<stringValue>允许</stringValue>
+								</localizedTrueLabelList>
+								<localizedTrueLabelList>
+									<localeName>zh-TW</localeName>
+									<stringValue>允許</stringValue>
+								</localizedTrueLabelList>
+								<localizedTrueLabelList>
+									<localeName>th</localeName>
+									<stringValue>อนุณาต</stringValue>
+								</localizedTrueLabelList>
+								<trueLabel>許可</trueLabel>
+							</editor>
+							<hideNormalCondition>false</hideNormalCondition>
+							<hideDetailCondition>false</hideDetailCondition>
+							<hideDetail>false</hideDetail>
+							<hideView>false</hideView>
+							<isBlank>false</isBlank>
+							<requiredNormal>false</requiredNormal>
+							<requiredDetail>false</requiredDetail>
+						</elements>
+						<elements xsi:type="metaPropertyItem">
+							<dispFlag>true</dispFlag>
+							<propertyId>bb3dec0d-9eab-4eac-90c3-8faf0650ffeb</propertyId>
+							<editor xsi:type="metaBooleanPropertyEditor">
+								<displayType>Radio</displayType>
+								<falseLabel>不許可</falseLabel>
+								<localizedFalseLabelList>
+									<localeName>ja</localeName>
+									<stringValue>不許可</stringValue>
+								</localizedFalseLabelList>
+								<localizedFalseLabelList>
+									<localeName>en</localeName>
+									<stringValue>No Permit</stringValue>
+								</localizedFalseLabelList>
+								<localizedFalseLabelList>
+									<localeName>zh-CN</localeName>
+									<stringValue>不允许</stringValue>
+								</localizedFalseLabelList>
+								<localizedFalseLabelList>
+									<localeName>zh-TW</localeName>
+									<stringValue>不允許</stringValue>
+								</localizedFalseLabelList>
+								<localizedFalseLabelList>
+									<localeName>th</localeName>
+									<stringValue>ไม่อนุญาต</stringValue>
+								</localizedFalseLabelList>
+								<localizedTrueLabelList>
+									<localeName>ja</localeName>
+									<stringValue>許可</stringValue>
+								</localizedTrueLabelList>
+								<localizedTrueLabelList>
+									<localeName>en</localeName>
+									<stringValue>Permit</stringValue>
+								</localizedTrueLabelList>
+								<localizedTrueLabelList>
+									<localeName>zh-CN</localeName>
+									<stringValue>允许</stringValue>
+								</localizedTrueLabelList>
+								<localizedTrueLabelList>
+									<localeName>zh-TW</localeName>
+									<stringValue>允許</stringValue>
+								</localizedTrueLabelList>
+								<localizedTrueLabelList>
+									<localeName>th</localeName>
+									<stringValue>อนุณาต</stringValue>
+								</localizedTrueLabelList>
+								<trueLabel>許可</trueLabel>
+							</editor>
+							<hideNormalCondition>false</hideNormalCondition>
+							<hideDetailCondition>false</hideDetailCondition>
+							<hideDetail>false</hideDetail>
+							<hideView>false</hideView>
+							<isBlank>false</isBlank>
+							<requiredNormal>false</requiredNormal>
+							<requiredDetail>false</requiredDetail>
+						</elements>
+						<elements xsi:type="metaPropertyItem">
+							<dispFlag>true</dispFlag>
+							<propertyId>4dfa0e21-41a0-4c0e-98f4-f1df8487ba6f</propertyId>
+							<editor xsi:type="metaBooleanPropertyEditor">
+								<displayType>Radio</displayType>
+								<falseLabel>不許可</falseLabel>
+								<localizedFalseLabelList>
+									<localeName>ja</localeName>
+									<stringValue>不許可</stringValue>
+								</localizedFalseLabelList>
+								<localizedFalseLabelList>
+									<localeName>en</localeName>
+									<stringValue>No Permit</stringValue>
+								</localizedFalseLabelList>
+								<localizedFalseLabelList>
+									<localeName>zh-CN</localeName>
+									<stringValue>不允许</stringValue>
+								</localizedFalseLabelList>
+								<localizedFalseLabelList>
+									<localeName>zh-TW</localeName>
+									<stringValue>不允許</stringValue>
+								</localizedFalseLabelList>
+								<localizedFalseLabelList>
+									<localeName>th</localeName>
+									<stringValue>ไม่อนุญาต</stringValue>
+								</localizedFalseLabelList>
+								<localizedTrueLabelList>
+									<localeName>ja</localeName>
+									<stringValue>許可</stringValue>
+								</localizedTrueLabelList>
+								<localizedTrueLabelList>
+									<localeName>en</localeName>
+									<stringValue>Permit</stringValue>
+								</localizedTrueLabelList>
+								<localizedTrueLabelList>
+									<localeName>zh-CN</localeName>
+									<stringValue>允许</stringValue>
+								</localizedTrueLabelList>
+								<localizedTrueLabelList>
+									<localeName>zh-TW</localeName>
+									<stringValue>允許</stringValue>
+								</localizedTrueLabelList>
+								<localizedTrueLabelList>
+									<localeName>th</localeName>
+									<stringValue>อนุณาต</stringValue>
+								</localizedTrueLabelList>
+								<trueLabel>許可</trueLabel>
+							</editor>
+							<hideNormalCondition>false</hideNormalCondition>
+							<hideDetailCondition>false</hideDetailCondition>
+							<hideDetail>false</hideDetail>
+							<hideView>false</hideView>
+							<isBlank>false</isBlank>
+							<requiredNormal>false</requiredNormal>
+							<requiredDetail>false</requiredDetail>
+						</elements>
+						<hideCsvUpload>false</hideCsvUpload>
+						<hideCsvdownload>false</hideCsvdownload>
+						<hideCsvdownloadDialog>false</hideCsvdownloadDialog>
+						<hideDetailCondition>false</hideDetailCondition>
+						<hideFixedCondition>false</hideFixedCondition>
+						<nonOutputBinaryRef>false</nonOutputBinaryRef>
+						<nonOutputOid>false</nonOutputOid>
+						<nonOutputReference>false</nonOutputReference>
+						<specifyCharacterCode>NONE</specifyCharacterCode>
+						<unsorted>false</unsorted>
+						<useDefaultConditionWithFilterDefinition>false</useDefaultConditionWithFilterDefinition>
+					</sections>
+					<sections xsi:type="metaSearchResultSection">
+						<dispFlag>true</dispFlag>
+						<dispRowCount>10</dispRowCount>
+						<elements xsi:type="metaPropertyColumn">
+							<dispFlag>true</dispFlag>
+							<propertyId>name</propertyId>
+							<editor xsi:type="metaStringPropertyEditor">
+								<allowedContent>false</allowedContent>
+								<displayType>Text</displayType>
+								<maxlength>0</maxlength>
+								<searchExactMatchCondition>false</searchExactMatchCondition>
+							</editor>
+							<width>0</width>
+						</elements>
+						<elements xsi:type="metaPropertyColumn">
+							<dispFlag>true</dispFlag>
+							<propertyId>537db673-8bfb-4fa3-b512-3dddc0a17cb0</propertyId>
+							<editor xsi:type="metaTemplatePropertyEditor">
+								<templateName>gem/generic/editor/EntitySelectPropertyEditorJsp</templateName>
+							</editor>
+							<width>0</width>
+						</elements>
+						<elements xsi:type="metaPropertyColumn">
+							<dispFlag>true</dispFlag>
+							<propertyId>8dcaa991-68da-45b5-a3ef-3622f9344643</propertyId>
+							<editor xsi:type="metaReferencePropertyEditor">
+								<displayType>Link</displayType>
+								<editableReference>false</editableReference>
+								<getNameAtOnce>false</getNameAtOnce>
+								<hideDeleteButton>false</hideDeleteButton>
+								<hideRegistButton>false</hideRegistButton>
+								<hideSelectButton>false</hideSelectButton>
+								<objectId>E0003</objectId>
+								<permitConditionSelectAll>true</permitConditionSelectAll>
+								<referenceFromObjectId>E0009</referenceFromObjectId>
+								<showRefComboParent>false</showRefComboParent>
+								<singleSelect>false</singleSelect>
+								<useNestConditionWithProperty>false</useNestConditionWithProperty>
+								<useSearchDialog>false</useSearchDialog>
+							</editor>
+							<width>0</width>
+						</elements>
+						<elements xsi:type="metaPropertyColumn">
+							<dispFlag>true</dispFlag>
+							<propertyId>91d26847-080d-4df1-b56b-ab811b90ec18</propertyId>
+							<editor xsi:type="metaBooleanPropertyEditor">
+								<displayType>Radio</displayType>
+								<falseLabel>×</falseLabel>
+								<trueLabel>○</trueLabel>
+							</editor>
+							<width>0</width>
+						</elements>
+						<elements xsi:type="metaPropertyColumn">
+							<dispFlag>true</dispFlag>
+							<propertyId>6ebf69fc-10a9-4529-a419-83f628480cb8</propertyId>
+							<editor xsi:type="metaBooleanPropertyEditor">
+								<displayType>Radio</displayType>
+								<falseLabel>×</falseLabel>
+								<trueLabel>○</trueLabel>
+							</editor>
+							<width>0</width>
+						</elements>
+						<elements xsi:type="metaPropertyColumn">
+							<dispFlag>true</dispFlag>
+							<propertyId>bb3dec0d-9eab-4eac-90c3-8faf0650ffeb</propertyId>
+							<editor xsi:type="metaBooleanPropertyEditor">
+								<displayType>Radio</displayType>
+								<falseLabel>×</falseLabel>
+								<trueLabel>○</trueLabel>
+							</editor>
+							<width>0</width>
+						</elements>
+						<elements xsi:type="metaPropertyColumn">
+							<dispFlag>true</dispFlag>
+							<propertyId>4dfa0e21-41a0-4c0e-98f4-f1df8487ba6f</propertyId>
+							<editor xsi:type="metaBooleanPropertyEditor">
+								<displayType>Radio</displayType>
+								<falseLabel>×</falseLabel>
+								<trueLabel>○</trueLabel>
+							</editor>
+							<width>0</width>
+						</elements>
+						<hideCount>false</hideCount>
+						<hideDelete>false</hideDelete>
+						<hideDetailLink>false</hideDetailLink>
+						<hidePageJump>false</hidePageJump>
+						<hidePageLink>false</hidePageLink>
+						<hidePaging>false</hidePaging>
+					</sections>
+					<hideTrash>false</hideTrash>
+					<allowTrashOperationToRecycleBy>false</allowTrashOperationToRecycleBy>
+					<hideNew>false</hideNew>
+					<useInterrupterForCsvDownload>false</useInterrupterForCsvDownload>
+				</views>
+			</metaData>
+		</metaDataEntry>
+
+		<!-- WebApi Permission -->
+		<metaDataEntry name="/view/generic/mtp/auth/WebApiPermission">
+			<metaData xsi:type="metaEntityView" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+				<id>VG0010</id>
+				<name>mtp.auth.WebApiPermission</name>
+				<definitionId>E0010</definitionId>
+				<views xsi:type="metaDetailFormView">
+					<name></name>
+					<isPurge>false</isPurge>
+					<localizationData>false</localizationData>
+					<dialogMaximize>false</dialogMaximize>
+					<sections xsi:type="metaDefaultSection">
+						<dispFlag>true</dispFlag>
+						<colNum>1</colNum>
+						<elements xsi:type="metaPropertyItem">
+							<dispFlag>true</dispFlag>
+							<propertyId>name</propertyId>
+							<editor xsi:type="metaStringPropertyEditor">
+								<allowedContent>false</allowedContent>
+								<displayType>Text</displayType>
+								<maxlength>0</maxlength>
+								<searchExactMatchCondition>false</searchExactMatchCondition>
+							</editor>
+							<hideNormalCondition>false</hideNormalCondition>
+							<hideDetailCondition>false</hideDetailCondition>
+							<hideDetail>false</hideDetail>
+							<hideView>false</hideView>
+							<isBlank>false</isBlank>
+							<requiredNormal>false</requiredNormal>
+							<requiredDetail>false</requiredDetail>
+						</elements>
+						<elements xsi:type="metaPropertyItem">
+							<dispFlag>true</dispFlag>
+							<propertyId>1</propertyId>
+							<editor xsi:type="metaStringPropertyEditor">
+								<allowedContent>false</allowedContent>
+								<displayType>Text</displayType>
+								<maxlength>0</maxlength>
+								<searchExactMatchCondition>false</searchExactMatchCondition>
+							</editor>
+							<hideNormalCondition>false</hideNormalCondition>
+							<hideDetailCondition>false</hideDetailCondition>
+							<hideDetail>false</hideDetail>
+							<hideView>false</hideView>
+							<isBlank>false</isBlank>
+							<requiredNormal>false</requiredNormal>
+							<requiredDetail>false</requiredDetail>
+						</elements>
+						<elements xsi:type="metaPropertyItem">
+							<dispFlag>true</dispFlag>
+							<propertyId>REF_1</propertyId>
+							<editor xsi:type="metaReferencePropertyEditor">
+								<displayType>Link</displayType>
+								<editableReference>false</editableReference>
+								<getNameAtOnce>false</getNameAtOnce>
+								<hideDeleteButton>false</hideDeleteButton>
+								<hideRegistButton>false</hideRegistButton>
+								<hideSelectButton>false</hideSelectButton>
+								<objectId>E0003</objectId>
+								<permitConditionSelectAll>true</permitConditionSelectAll>
+								<referenceFromObjectId>E0010</referenceFromObjectId>
+								<showRefComboParent>false</showRefComboParent>
+								<singleSelect>false</singleSelect>
+								<useNestConditionWithProperty>false</useNestConditionWithProperty>
+								<useSearchDialog>false</useSearchDialog>
+							</editor>
+							<hideNormalCondition>false</hideNormalCondition>
+							<hideDetailCondition>false</hideDetailCondition>
+							<hideDetail>false</hideDetail>
+							<hideView>false</hideView>
+							<isBlank>false</isBlank>
+							<requiredNormal>false</requiredNormal>
+							<requiredDetail>false</requiredDetail>
+						</elements>
+						<expandable>true</expandable>
+						<hideDetail>false</hideDetail>
+						<hideView>false</hideView>
+						<localizedTitleList>
+							<localeName>ja</localeName>
+							<stringValue>権限の対象</stringValue>
+						</localizedTitleList>
+						<localizedTitleList>
+							<localeName>en</localeName>
+							<stringValue>Target Of The Permissions</stringValue>
+						</localizedTitleList>
+						<localizedTitleList>
+							<localeName>zh-CN</localeName>
+							<stringValue>权限的对象</stringValue>
+						</localizedTitleList>
+						<localizedTitleList>
+							<localeName>zh-TW</localeName>
+							<stringValue>權限的對象</stringValue>
+						</localizedTitleList>
+						<localizedTitleList>
+							<localeName>th</localeName>
+							<stringValue>เป้าหมายของการสิทธิ์</stringValue>
+						</localizedTitleList>
+						<showLink>false</showLink>
+						<title>権限の対象</title>
+					</sections>
+					<sections xsi:type="metaDefaultSection">
+						<dispFlag>true</dispFlag>
+						<colNum>1</colNum>
+						<elements xsi:type="metaPropertyItem">
+							<dispFlag>true</dispFlag>
+							<propertyId>2</propertyId>
+							<editor xsi:type="metaStringPropertyEditor">
+								<allowedContent>false</allowedContent>
+								<displayType>TextArea</displayType>
+								<maxlength>0</maxlength>
+								<searchExactMatchCondition>false</searchExactMatchCondition>
+							</editor>
+							<hideNormalCondition>false</hideNormalCondition>
+							<hideDetailCondition>false</hideDetailCondition>
+							<hideDetail>false</hideDetail>
+							<hideView>false</hideView>
+							<isBlank>false</isBlank>
+							<requiredNormal>false</requiredNormal>
+							<requiredDetail>false</requiredDetail>
+						</elements>
+						<expandable>true</expandable>
+						<hideDetail>false</hideDetail>
+						<hideView>false</hideView>
+						<localizedTitleList>
+							<localeName>ja</localeName>
+							<stringValue>実行権限</stringValue>
+						</localizedTitleList>
+						<localizedTitleList>
+							<localeName>en</localeName>
+							<stringValue>Execution Authority</stringValue>
+						</localizedTitleList>
+						<localizedTitleList>
+							<localeName>zh-CN</localeName>
+							<stringValue>执行机构</stringValue>
+						</localizedTitleList>
+						<localizedTitleList>
+							<localeName>zh-TW</localeName>
+							<stringValue>執行機構</stringValue>
+						</localizedTitleList>
+						<localizedTitleList>
+							<localeName>th</localeName>
+							<stringValue>ผู้ดำเนินการ</stringValue>
+						</localizedTitleList>
+						<showLink>false</showLink>
+						<title>実行権限</title>
+					</sections>
+					<validJavascriptDetailPage>false</validJavascriptDetailPage>
+					<validJavascriptViewPage>false</validJavascriptViewPage>
+					<hideDetail>false</hideDetail>
+					<hideLock>false</hideLock>
+					<isNoneDispCopyButton>false</isNoneDispCopyButton>
+					<hideDelete>false</hideDelete>
+					<purgeCompositionedEntity>false</purgeCompositionedEntity>
+					<loadDefinedReferenceProperty>true</loadDefinedReferenceProperty>
+				</views>
+				<views xsi:type="metaSearchFormView">
+					<name></name>
+					<isPurge>false</isPurge>
+					<localizationData>false</localizationData>
+					<dialogMaximize>false</dialogMaximize>
+					<sections xsi:type="metaSearchConditionSection">
+						<dispFlag>false</dispFlag>
+						<colNum>1</colNum>
+						<conditionDispCount>5</conditionDispCount>
+						<csvUploadTransactionType>ONCE</csvUploadTransactionType>
+						<distinct>false</distinct>
+						<elements xsi:type="metaPropertyItem">
+							<dispFlag>true</dispFlag>
+							<propertyId>name</propertyId>
+							<editor xsi:type="metaStringPropertyEditor">
+								<allowedContent>false</allowedContent>
+								<displayType>Text</displayType>
+								<maxlength>0</maxlength>
+								<searchExactMatchCondition>false</searchExactMatchCondition>
+							</editor>
+							<hideNormalCondition>false</hideNormalCondition>
+							<hideDetailCondition>false</hideDetailCondition>
+							<hideDetail>false</hideDetail>
+							<hideView>false</hideView>
+							<isBlank>false</isBlank>
+							<requiredNormal>false</requiredNormal>
+							<requiredDetail>false</requiredDetail>
+						</elements>
+						<elements xsi:type="metaPropertyItem">
+							<dispFlag>true</dispFlag>
+							<propertyId>1</propertyId>
+							<editor xsi:type="metaStringPropertyEditor">
+								<allowedContent>false</allowedContent>
+								<displayType>Text</displayType>
+								<maxlength>0</maxlength>
+								<searchExactMatchCondition>false</searchExactMatchCondition>
+							</editor>
+							<hideNormalCondition>false</hideNormalCondition>
+							<hideDetailCondition>false</hideDetailCondition>
+							<hideDetail>false</hideDetail>
+							<hideView>false</hideView>
+							<isBlank>false</isBlank>
+							<requiredNormal>false</requiredNormal>
+							<requiredDetail>false</requiredDetail>
+						</elements>
+						<elements xsi:type="metaPropertyItem">
+							<dispFlag>true</dispFlag>
+							<propertyId>REF_1</propertyId>
+							<editor xsi:type="metaReferencePropertyEditor">
+								<displayType>Link</displayType>
+								<editableReference>false</editableReference>
+								<getNameAtOnce>false</getNameAtOnce>
+								<hideDeleteButton>false</hideDeleteButton>
+								<hideRegistButton>false</hideRegistButton>
+								<hideSelectButton>false</hideSelectButton>
+								<objectId>E0003</objectId>
+								<permitConditionSelectAll>true</permitConditionSelectAll>
+								<referenceFromObjectId>E0010</referenceFromObjectId>
+								<showRefComboParent>false</showRefComboParent>
+								<singleSelect>false</singleSelect>
+								<useNestConditionWithProperty>false</useNestConditionWithProperty>
+								<useSearchDialog>true</useSearchDialog>
+							</editor>
+							<hideNormalCondition>false</hideNormalCondition>
+							<hideDetailCondition>false</hideDetailCondition>
+							<hideDetail>false</hideDetail>
+							<hideView>false</hideView>
+							<isBlank>false</isBlank>
+							<requiredNormal>false</requiredNormal>
+							<requiredDetail>false</requiredDetail>
+						</elements>
+						<elements xsi:type="metaPropertyItem">
+							<dispFlag>true</dispFlag>
+							<propertyId>2</propertyId>
+							<editor xsi:type="metaStringPropertyEditor">
+								<allowedContent>false</allowedContent>
+								<displayType>Text</displayType>
+								<maxlength>0</maxlength>
+								<searchExactMatchCondition>false</searchExactMatchCondition>
+							</editor>
+							<hideNormalCondition>false</hideNormalCondition>
+							<hideDetailCondition>false</hideDetailCondition>
+							<hideDetail>false</hideDetail>
+							<hideView>false</hideView>
+							<isBlank>false</isBlank>
+							<requiredNormal>false</requiredNormal>
+							<requiredDetail>false</requiredDetail>
+						</elements>
+						<hideCsvUpload>false</hideCsvUpload>
+						<hideCsvdownload>false</hideCsvdownload>
+						<hideCsvdownloadDialog>false</hideCsvdownloadDialog>
+						<hideDetailCondition>false</hideDetailCondition>
+						<hideFixedCondition>false</hideFixedCondition>
+						<nonOutputBinaryRef>false</nonOutputBinaryRef>
+						<nonOutputOid>false</nonOutputOid>
+						<nonOutputReference>false</nonOutputReference>
+						<specifyCharacterCode>NONE</specifyCharacterCode>
+						<unsorted>false</unsorted>
+						<useDefaultConditionWithFilterDefinition>false</useDefaultConditionWithFilterDefinition>
+					</sections>
+					<sections xsi:type="metaSearchResultSection">
+						<dispFlag>false</dispFlag>
+						<dispRowCount>10</dispRowCount>
+						<elements xsi:type="metaPropertyColumn">
+							<dispFlag>true</dispFlag>
+							<propertyId>name</propertyId>
+							<editor xsi:type="metaStringPropertyEditor">
+								<allowedContent>false</allowedContent>
+								<displayType>Text</displayType>
+								<maxlength>0</maxlength>
+								<searchExactMatchCondition>false</searchExactMatchCondition>
+							</editor>
+							<width>0</width>
+						</elements>
+						<elements xsi:type="metaPropertyColumn">
+							<dispFlag>true</dispFlag>
+							<propertyId>1</propertyId>
+							<editor xsi:type="metaStringPropertyEditor">
+								<allowedContent>false</allowedContent>
+								<displayType>Text</displayType>
+								<maxlength>0</maxlength>
+								<searchExactMatchCondition>false</searchExactMatchCondition>
+							</editor>
+							<width>0</width>
+						</elements>
+						<elements xsi:type="metaPropertyColumn">
+							<dispFlag>true</dispFlag>
+							<propertyId>REF_1</propertyId>
+							<editor xsi:type="metaReferencePropertyEditor">
+								<displayType>Link</displayType>
+								<editableReference>false</editableReference>
+								<getNameAtOnce>false</getNameAtOnce>
+								<hideDeleteButton>false</hideDeleteButton>
+								<hideRegistButton>false</hideRegistButton>
+								<hideSelectButton>false</hideSelectButton>
+								<objectId>E0003</objectId>
+								<permitConditionSelectAll>true</permitConditionSelectAll>
+								<referenceFromObjectId>E0010</referenceFromObjectId>
+								<showRefComboParent>false</showRefComboParent>
+								<singleSelect>false</singleSelect>
+								<useNestConditionWithProperty>false</useNestConditionWithProperty>
+								<useSearchDialog>false</useSearchDialog>
+							</editor>
+							<width>0</width>
+						</elements>
+						<elements xsi:type="metaPropertyColumn">
+							<dispFlag>true</dispFlag>
+							<propertyId>2</propertyId>
+							<editor xsi:type="metaStringPropertyEditor">
+								<allowedContent>false</allowedContent>
+								<displayType>Text</displayType>
+								<maxlength>0</maxlength>
+								<searchExactMatchCondition>false</searchExactMatchCondition>
+							</editor>
+							<width>0</width>
+						</elements>
+						<hideCount>false</hideCount>
+						<hideDelete>false</hideDelete>
+						<hideDetailLink>false</hideDetailLink>
+						<hidePageJump>false</hidePageJump>
+						<hidePageLink>false</hidePageLink>
+						<hidePaging>false</hidePaging>
+					</sections>
+					<hideTrash>false</hideTrash>
+					<allowTrashOperationToRecycleBy>false</allowTrashOperationToRecycleBy>
+					<hideNew>false</hideNew>
+					<useInterrupterForCsvDownload>false</useInterrupterForCsvDownload>
+				</views>
+			</metaData>
+		</metaDataEntry>
+
+		<!-- Rank View定義 -->
+		<metaDataEntry name="/view/generic/mtp/auth/Rank">
+			<metaData xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+				xsi:type="metaEntityView">
+				<id>VG0002</id>
+				<name>mtp.auth.Rank</name>
+				<definitionId>E0002</definitionId>
+				<views xsi:type="metaDetailFormView">
+					<sections xsi:type="metaDefaultSection">
+						<dispFlag>true</dispFlag>
+						<expandable>true</expandable>
+						<title>ランク情報</title>
+						<localizedTitleList>
+							<localeName>ja</localeName>
+							<stringValue>ランク情報</stringValue>
+						</localizedTitleList>
+						<localizedTitleList>
+							<localeName>en</localeName>
+							<stringValue>Rank Information</stringValue>
+						</localizedTitleList>
+						<localizedTitleList>
+							<localeName>zh-CN</localeName>
+							<stringValue>级别信息</stringValue>
+						</localizedTitleList>
+						<localizedTitleList>
+							<localeName>zh-TW</localeName>
+							<stringValue>級別信息</stringValue>
+						</localizedTitleList>
+						<localizedTitleList>
+							<localeName>th</localeName>
+							<stringValue>ข้อมูลอันดับ</stringValue>
+						</localizedTitleList>
+						<colNum>1</colNum>
+						<elements xsi:type="metaPropertyItem">
+							<!-- ランクコード -->
+							<dispFlag>true</dispFlag>
+							<propertyId>1</propertyId>
+							<isSystemProperty>false</isSystemProperty>
+							<editor xsi:type="metaStringPropertyEditor">
+								<displayType>Text</displayType>
+							</editor>
+						</elements>
+						<elements xsi:type="metaPropertyItem">
+							<!-- 名前 -->
+							<dispFlag>true</dispFlag>
+							<propertyId>name</propertyId>
+							<isSystemProperty>true</isSystemProperty>
+							<editor xsi:type="metaStringPropertyEditor">
+								<displayType>Text</displayType>
+							</editor>
+						</elements>
+						<elements xsi:type="metaPropertyItem">
+							<!-- ランクレベル -->
+							<dispFlag>true</dispFlag>
+							<propertyId>2</propertyId>
+							<isSystemProperty>false</isSystemProperty>
+							<editor xsi:type="metaIntegerPropertyEditor">
+								<displayType>Text</displayType>
+							</editor>
+						</elements>
+						<elements xsi:type="metaPropertyItem">
+							<!-- 説明 -->
+							<dispFlag>true</dispFlag>
+							<propertyId>description</propertyId>
+							<isSystemProperty>true</isSystemProperty>
+							<editor xsi:type="metaStringPropertyEditor">
+								<displayType>TextArea</displayType>
+							</editor>
+						</elements>
+					</sections>
+				</views>
+				<views xsi:type="metaSearchFormView">
+					<sections xsi:type="metaSearchConditionSection">
+						<dispFlag>true</dispFlag>
+						<expandable>false</expandable>
+						<title>検索条件</title>
+						<localizedTitleList>
+							<localeName>ja</localeName>
+							<stringValue>検索条件</stringValue>
+						</localizedTitleList>
+						<localizedTitleList>
+							<localeName>en</localeName>
+							<stringValue>Search Condition</stringValue>
+						</localizedTitleList>
+						<localizedTitleList>
+							<localeName>zh-CN</localeName>
+							<stringValue>搜索条件</stringValue>
+						</localizedTitleList>
+						<localizedTitleList>
+							<localeName>zh-TW</localeName>
+							<stringValue>搜索條件</stringValue>
+						</localizedTitleList>
+						<localizedTitleList>
+							<localeName>th</localeName>
+							<stringValue>เงื่อนไขการค้นหา</stringValue>
+						</localizedTitleList>
+						<conditionDispCount>5</conditionDispCount>
+						<elements xsi:type="metaPropertyItem">
+							<!-- ランクコード -->
+							<dispFlag>true</dispFlag>
+							<propertyId>1</propertyId>
+							<isSystemProperty>false</isSystemProperty>
+							<editor xsi:type="metaStringPropertyEditor">
+								<displayType>Text</displayType>
+							</editor>
+						</elements>
+						<elements xsi:type="metaPropertyItem">
+							<!-- 名前 -->
+							<dispFlag>true</dispFlag>
+							<propertyId>name</propertyId>
+							<isSystemProperty>true</isSystemProperty>
+							<editor xsi:type="metaStringPropertyEditor">
+								<displayType>Text</displayType>
+							</editor>
+						</elements>
+						<elements xsi:type="metaPropertyItem">
+							<!-- ランクレベル -->
+							<dispFlag>true</dispFlag>
+							<propertyId>2</propertyId>
+							<isSystemProperty>false</isSystemProperty>
+							<editor xsi:type="metaIntegerPropertyEditor">
+								<displayType>Text</displayType>
+							</editor>
+						</elements>
+					</sections>
+					<sections xsi:type="metaSearchResultSection">
+						<dispFlag>true</dispFlag>
+						<expandable>false</expandable>
+						<title>検索結果一覧</title>
+						<localizedTitleList>
+							<localeName>ja</localeName>
+							<stringValue>検索結果一覧</stringValue>
+						</localizedTitleList>
+						<localizedTitleList>
+							<localeName>en</localeName>
+							<stringValue>Search Result List</stringValue>
+						</localizedTitleList>
+						<localizedTitleList>
+							<localeName>zh-CN</localeName>
+							<stringValue>搜索结果列表</stringValue>
+						</localizedTitleList>
+						<localizedTitleList>
+							<localeName>zh-TW</localeName>
+							<stringValue>搜索結果列表</stringValue>
+						</localizedTitleList>
+						<localizedTitleList>
+							<localeName>th</localeName>
+							<stringValue>ค้นหาผลลัพธ์</stringValue>
+						</localizedTitleList>
+						<dispRowCount>20</dispRowCount>
+						<elements xsi:type="metaPropertyColumn">
+							<!-- ランクコード -->
+							<dispFlag>true</dispFlag>
+							<propertyId>1</propertyId>
+							<isSystemProperty>false</isSystemProperty>
+							<editor xsi:type="metaStringPropertyEditor">
+								<displayType>Text</displayType>
+							</editor>
+						</elements>
+						<elements xsi:type="metaPropertyColumn">
+							<!-- 名前 -->
+							<dispFlag>true</dispFlag>
+							<propertyId>name</propertyId>
+							<isSystemProperty>true</isSystemProperty>
+							<editor xsi:type="metaStringPropertyEditor">
+								<displayType>Text</displayType>
+							</editor>
+						</elements>
+						<elements xsi:type="metaPropertyColumn">
+							<!-- ランクレベル -->
+							<dispFlag>true</dispFlag>
+							<propertyId>2</propertyId>
+							<isSystemProperty>false</isSystemProperty>
+							<editor xsi:type="metaIntegerPropertyEditor">
+								<displayType>Text</displayType>
+							</editor>
+						</elements>
+					</sections>
+				</views>
+			</metaData>
+		</metaDataEntry>
+		<!-- Role -->
+		<metaDataEntry name="/view/generic/mtp/auth/Role">
+			<metaData xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="metaEntityView">
+				<id>VG0003</id>
+				<name>mtp.auth.Role</name>
+				<definitionId>E0003</definitionId>
+				<views xsi:type="metaDetailFormView">
+					<copyTarget>Deep</copyTarget>
+					<sections xsi:type="metaDefaultSection">
+						<dispFlag>true</dispFlag>
+						<colNum>1</colNum>
+						<elements xsi:type="metaPropertyItem">
+							<!-- ロールコード -->
+							<dispFlag>true</dispFlag>
+							<propertyId>1</propertyId>
+							<editor xsi:type="metaStringPropertyEditor">
+								<displayType>Text</displayType>
+							</editor>
+							<hideNormalCondition>false</hideNormalCondition>
+							<hideDetailCondition>false</hideDetailCondition>
+						</elements>
+						<elements xsi:type="metaPropertyItem">
+							<!-- 名前 -->
+							<dispFlag>true</dispFlag>
+							<propertyId>name</propertyId>
+							<editor xsi:type="metaStringPropertyEditor">
+								<displayType>Text</displayType>
+							</editor>
+							<hideNormalCondition>false</hideNormalCondition>
+							<hideDetailCondition>false</hideDetailCondition>
+						</elements>
+						<elements xsi:type="metaPropertyItem">
+							<!-- 優先順位 -->
+							<dispFlag>true</dispFlag>
+							<propertyId>2</propertyId>
+							<editor xsi:type="metaIntegerPropertyEditor">
+								<displayType>Text</displayType>
+							</editor>
+							<hideNormalCondition>false</hideNormalCondition>
+							<hideDetailCondition>false</hideDetailCondition>
+						</elements>
+						<elements xsi:type="metaPropertyItem">
+							<!-- 説明 -->
+							<dispFlag>true</dispFlag>
+							<propertyId>description</propertyId>
+							<editor xsi:type="metaStringPropertyEditor">
+								<displayType>TextArea</displayType>
+							</editor>
+							<hideNormalCondition>false</hideNormalCondition>
+							<hideDetailCondition>false</hideDetailCondition>
+						</elements>
+						<elements xsi:type="metaPropertyItem">
+							<!-- ロール条件 -->
+							<dispFlag>true</dispFlag>
+							<propertyId>REF_2</propertyId>
+							<editor xsi:type="metaReferencePropertyEditor">
+								<displayType>NestTable</displayType>
+								<hideDeleteButton>false</hideDeleteButton>
+								<hideRegistButton>false</hideRegistButton>
+								<insertType>Bottom</insertType>
+								<mappedBy>A_R_COND_ROLE</mappedBy>
+								<nestProperties>
+									<editor xsi:type="metaStringPropertyEditor">
+										<displayType>Text</displayType>
+									</editor>
+									<propertyId>name</propertyId>
+								</nestProperties>
+								<nestProperties>
+									<editor xsi:type="metaStringPropertyEditor">
+										<displayType>TextArea</displayType>
+									</editor>
+									<propertyId>1</propertyId>
+								</nestProperties>
+								<objectId>E0004</objectId>
+							</editor>
+							<hideNormalCondition>false</hideNormalCondition>
+							<hideDetailCondition>false</hideDetailCondition>
+						</elements>
+						<elements xsi:type="metaPropertyItem">
+							<!-- Action権限 -->
+							<dispFlag>true</dispFlag>
+							<propertyId>REF_3</propertyId>
+							<editor xsi:type="metaReferencePropertyEditor">
+								<displayType>Link</displayType>
+								<mappedBy>role</mappedBy>
+								<objectId>E0008</objectId>
+							</editor>
+							<hideNormalCondition>false</hideNormalCondition>
+							<hideDetailCondition>false</hideDetailCondition>
+						</elements>
+						<elements xsi:type="metaPropertyItem">
+							<!-- Entity権限 -->
+							<dispFlag>true</dispFlag>
+							<propertyId>REF_4</propertyId>
+							<editor xsi:type="metaReferencePropertyEditor">
+								<displayType>Link</displayType>
+								<mappedBy>role</mappedBy>
+								<objectId>E0009</objectId>
+							</editor>
+							<hideNormalCondition>false</hideNormalCondition>
+							<hideDetailCondition>false</hideDetailCondition>
+						</elements>
+						<elements xsi:type="metaPropertyItem">
+							<!-- WebAPI権限 -->
+							<dispFlag>true</dispFlag>
+							<propertyId>REF_5</propertyId>
+							<editor xsi:type="metaReferencePropertyEditor">
+								<displayType>Link</displayType>
+								<mappedBy>role</mappedBy>
+								<objectId>E0010</objectId>
+							</editor>
+							<hideNormalCondition>false</hideNormalCondition>
+							<hideDetailCondition>false</hideDetailCondition>
+						</elements>
+						<expandable>true</expandable>
+						<title>ロール</title>
+						<localizedTitleList>
+							<localeName>ja</localeName>
+							<stringValue>ロール</stringValue>
+						</localizedTitleList>
+						<localizedTitleList>
+							<localeName>en</localeName>
+							<stringValue>Role</stringValue>
+						</localizedTitleList>
+						<localizedTitleList>
+							<localeName>zh-CN</localeName>
+							<stringValue>角色</stringValue>
+						</localizedTitleList>
+						<localizedTitleList>
+							<localeName>zh-TW</localeName>
+							<stringValue>角色</stringValue>
+						</localizedTitleList>
+						<localizedTitleList>
+							<localeName>th</localeName>
+							<stringValue>บท</stringValue>
+						</localizedTitleList>
+					</sections>
+				</views>
+				<views xsi:type="metaSearchFormView">
+					<sections xsi:type="metaSearchConditionSection">
+						<dispFlag>true</dispFlag>
+						<conditionDispCount>5</conditionDispCount>
+						<hideCsvdownload>false</hideCsvdownload>
+						<hideDetailCondition>false</hideDetailCondition>
+						<elements xsi:type="metaPropertyItem">
+							<!-- ロールコード -->
+							<dispFlag>true</dispFlag>
+							<propertyId>1</propertyId>
+							<editor xsi:type="metaStringPropertyEditor">
+								<displayType>Text</displayType>
+							</editor>
+							<hideNormalCondition>false</hideNormalCondition>
+							<hideDetailCondition>false</hideDetailCondition>
+						</elements>
+						<elements xsi:type="metaPropertyItem">
+							<!-- 名前 -->
+							<dispFlag>true</dispFlag>
+							<propertyId>name</propertyId>
+							<editor xsi:type="metaStringPropertyEditor">
+								<displayType>Text</displayType>
+							</editor>
+							<hideNormalCondition>false</hideNormalCondition>
+							<hideDetailCondition>false</hideDetailCondition>
+						</elements>
+					</sections>
+					<sections xsi:type="metaSearchResultSection">
+						<dispFlag>true</dispFlag>
+						<dispRowCount>20</dispRowCount>
+						<elements xsi:type="metaPropertyColumn">
+							<!-- ロールコード -->
+							<dispFlag>true</dispFlag>
+							<propertyId>1</propertyId>
+							<editor xsi:type="metaStringPropertyEditor">
+								<displayType>Text</displayType>
+							</editor>
+						</elements>
+						<elements xsi:type="metaPropertyColumn">
+							<!-- 名前 -->
+							<dispFlag>true</dispFlag>
+							<propertyId>name</propertyId>
+							<editor xsi:type="metaStringPropertyEditor">
+								<displayType>Text</displayType>
+							</editor>
+						</elements>
+						<elements xsi:type="metaPropertyColumn">
+							<!-- 優先順位 -->
+							<dispFlag>true</dispFlag>
+							<propertyId>2</propertyId>
+							<editor xsi:type="metaIntegerPropertyEditor">
+								<displayType>Text</displayType>
+							</editor>
+						</elements>
+					</sections>
+				</views>
+			</metaData>
+		</metaDataEntry>
+		<!-- Role 条件 -->
+		<metaDataEntry name="/view/generic/mtp/auth/RoleCondition">
+			<metaData xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="metaEntityView">
+				<id>VG0004</id>
+				<name>mtp.auth.RoleCondition</name>
+				<definitionId>E0004</definitionId>
+				<views xsi:type="metaSearchFormView">
+					<sections xsi:type="metaSearchConditionSection">
+						<dispFlag>true</dispFlag>
+						<expandable>false</expandable>
+						<title>検索条件</title>
+						<localizedTitleList>
+							<localeName>ja</localeName>
+							<stringValue>検索条件</stringValue>
+						</localizedTitleList>
+						<localizedTitleList>
+							<localeName>en</localeName>
+							<stringValue>Search condition</stringValue>
+						</localizedTitleList>
+						<localizedTitleList>
+							<localeName>zh-CN</localeName>
+							<stringValue>搜索条件</stringValue>
+						</localizedTitleList>
+						<localizedTitleList>
+							<localeName>zh-TW</localeName>
+							<stringValue>搜索條件</stringValue>
+						</localizedTitleList>
+						<localizedTitleList>
+							<localeName>th</localeName>
+							<stringValue>เงื่อนไขการค้นหา</stringValue>
+						</localizedTitleList>
+						<conditionDispCount>5</conditionDispCount>
+						<elements xsi:type="metaPropertyItem">
+							<!-- 名前 -->
+							<dispFlag>true</dispFlag>
+							<propertyId>name</propertyId>
+							<isSystemProperty>true</isSystemProperty>
+							<editor xsi:type="metaStringPropertyEditor">
+								<displayType>Text</displayType>
+							</editor>
+						</elements>
+						<elements xsi:type="metaPropertyItem">
+							<!-- 条件 -->
+							<dispFlag>true</dispFlag>
+							<propertyId>1</propertyId>
+							<isSystemProperty>false</isSystemProperty>
+							<editor xsi:type="metaStringPropertyEditor">
+								<displayType>Text</displayType>
+							</editor>
+						</elements>
+						<elements xsi:type="metaPropertyItem">
+							<!-- ロール -->
+							<dispFlag>true</dispFlag>
+							<propertyId>REF_3</propertyId>
+							<isSystemProperty>false</isSystemProperty>
+							<editor xsi:type="metaReferencePropertyEditor">
+								<displayType>Link</displayType>
+								<objectId>E0003</objectId>
+							</editor>
+						</elements>
+					</sections>
+					<sections xsi:type="metaSearchResultSection">
+						<dispFlag>true</dispFlag>
+						<expandable>false</expandable>
+						<title>検索結果一覧</title>
+						<localizedTitleList>
+							<localeName>ja</localeName>
+							<stringValue>検索結果一覧</stringValue>
+						</localizedTitleList>
+						<localizedTitleList>
+							<localeName>en</localeName>
+							<stringValue>Search Result List</stringValue>
+						</localizedTitleList>
+						<localizedTitleList>
+							<localeName>zh-CN</localeName>
+							<stringValue>搜索结果列表</stringValue>
+						</localizedTitleList>
+						<localizedTitleList>
+							<localeName>zh-TW</localeName>
+							<stringValue>搜索結果列表</stringValue>
+						</localizedTitleList>
+						<localizedTitleList>
+							<localeName>th</localeName>
+							<stringValue>ค้นหาผลลัพธ์</stringValue>
+						</localizedTitleList>
+						<dispRowCount>10</dispRowCount>
+						<elements xsi:type="metaPropertyColumn">
+							<!-- 名前 -->
+							<dispFlag>true</dispFlag>
+							<propertyId>name</propertyId>
+							<isSystemProperty>true</isSystemProperty>
+							<editor xsi:type="metaStringPropertyEditor">
+								<displayType>Text</displayType>
+							</editor>
+						</elements>
+						<elements xsi:type="metaPropertyColumn">
+							<!-- 条件 -->
+							<dispFlag>true</dispFlag>
+							<propertyId>1</propertyId>
+							<isSystemProperty>false</isSystemProperty>
+							<editor xsi:type="metaStringPropertyEditor">
+								<displayType>Text</displayType>
+							</editor>
+						</elements>
+						<elements xsi:type="metaPropertyColumn">
+							<!-- ロール -->
+							<dispFlag>true</dispFlag>
+							<propertyId>REF_3</propertyId>
+							<isSystemProperty>false</isSystemProperty>
+							<editor xsi:type="metaReferencePropertyEditor">
+								<displayType>Link</displayType>
+								<objectId>E0003</objectId>
+							</editor>
+						</elements>
+					</sections>
+				</views>
+				<views xsi:type="metaDetailFormView">
+					<sections xsi:type="metaDefaultSection">
+						<dispFlag>true</dispFlag>
+						<expandable>true</expandable>
+						<title>ロール条件</title>
+						<localizedTitleList>
+							<localeName>ja</localeName>
+							<stringValue>ロール条件</stringValue>
+						</localizedTitleList>
+						<localizedTitleList>
+							<localeName>en</localeName>
+							<stringValue>Role Conditions</stringValue>
+						</localizedTitleList>
+						<localizedTitleList>
+							<localeName>zh-CN</localeName>
+							<stringValue>作用条件</stringValue>
+						</localizedTitleList>
+						<localizedTitleList>
+							<localeName>zh-TW</localeName>
+							<stringValue>作用條件</stringValue>
+						</localizedTitleList>
+						<localizedTitleList>
+							<localeName>th</localeName>
+							<stringValue>เงื่อนไขบท</stringValue>
+						</localizedTitleList>
+						<colNum>1</colNum>
+						<elements xsi:type="metaPropertyItem">
+							<!-- 名前 -->
+							<dispFlag>true</dispFlag>
+							<propertyId>name</propertyId>
+							<isSystemProperty>true</isSystemProperty>
+							<editor xsi:type="metaStringPropertyEditor">
+								<displayType>Text</displayType>
+							</editor>
+							<type>Property</type>
+						</elements>
+						<elements xsi:type="metaPropertyItem">
+							<!-- 条件 -->
+							<dispFlag>true</dispFlag>
+							<propertyId>1</propertyId>
+							<isSystemProperty>false</isSystemProperty>
+							<editor xsi:type="metaStringPropertyEditor">
+								<displayType>Text</displayType>
+							</editor>
+							<type>Property</type>
+						</elements>
+						<elements xsi:type="metaPropertyItem">
+							<!-- 説明 -->
+							<dispFlag>true</dispFlag>
+							<propertyId>description</propertyId>
+							<isSystemProperty>true</isSystemProperty>
+							<editor xsi:type="metaStringPropertyEditor">
+								<displayType>TextArea</displayType>
+							</editor>
+							<type>Property</type>
+						</elements>
+						<elements xsi:type="metaPropertyItem">
+							<!-- ロール -->
+							<dispFlag>true</dispFlag>
+							<propertyId>REF_3</propertyId>
+							<isSystemProperty>false</isSystemProperty>
+							<editor xsi:type="metaReferencePropertyEditor">
+								<displayType>Link</displayType>
+								<objectId>E0003</objectId>
+							</editor>
+							<type>Property</type>
+						</elements>
+
+					</sections>
+				</views>
+			</metaData>
+		</metaDataEntry>
+
+		<!-- グループ View定義 -->
+		<metaDataEntry name="/view/generic/mtp/auth/Group">
+			<metaData xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+				xsi:type="metaEntityView">
+				<id>VG0006</id>
+				<name>mtp.auth.Group</name>
+				<definitionId>E0006</definitionId>
+				<views xsi:type="metaDetailFormView">
+					<sections xsi:type="metaDefaultSection">
+						<title>グループ情報</title>
+						<localizedTitleList>
+							<localeName>ja</localeName>
+							<stringValue>グループ情報</stringValue>
+						</localizedTitleList>
+						<localizedTitleList>
+							<localeName>en</localeName>
+							<stringValue>Group Information</stringValue>
+						</localizedTitleList>
+						<localizedTitleList>
+							<localeName>zh-CN</localeName>
+							<stringValue>组信息</stringValue>
+						</localizedTitleList>
+						<localizedTitleList>
+							<localeName>zh-TW</localeName>
+							<stringValue>組信息</stringValue>
+						</localizedTitleList>
+						<localizedTitleList>
+							<localeName>th</localeName>
+							<stringValue>ข้อมูลกลุ่ม</stringValue>
+						</localizedTitleList>
+						<dispFlag>true</dispFlag>
+						<colNum>1</colNum>
+						<elements xsi:type="metaPropertyItem">
+							<!-- コード -->
+							<dispFlag>true</dispFlag>
+							<propertyId>3</propertyId>
+							<editor xsi:type="metaStringPropertyEditor">
+								<displayType>Text</displayType>
+							</editor>
+							<hideNormalCondition>false</hideNormalCondition>
+							<hideDetailCondition>false</hideDetailCondition>
+						</elements>
+						<elements xsi:type="metaPropertyItem">
+							<!-- 名前 -->
+							<dispFlag>true</dispFlag>
+							<propertyId>name</propertyId>
+							<editor xsi:type="metaStringPropertyEditor">
+								<displayType>Text</displayType>
+							</editor>
+							<hideNormalCondition>false</hideNormalCondition>
+							<hideDetailCondition>false</hideDetailCondition>
+						</elements>
+						<elements xsi:type="metaPropertyItem">
+							<!-- 親グループ -->
+							<dispFlag>true</dispFlag>
+							<propertyId>a11c5176-444f-41e6-a60d-f64b044a0cae</propertyId>
+							<editor xsi:type="metaReferencePropertyEditor">
+								<displayType>Link</displayType>
+								<objectId>E0006</objectId>
+							</editor>
+							<hideNormalCondition>false</hideNormalCondition>
+							<hideDetailCondition>false</hideDetailCondition>
+						</elements>
+						<elements xsi:type="metaPropertyItem">
+							<!-- 説明 -->
+							<dispFlag>true</dispFlag>
+							<propertyId>description</propertyId>
+							<editor xsi:type="metaStringPropertyEditor">
+								<displayType>TextArea</displayType>
+							</editor>
+							<hideNormalCondition>false</hideNormalCondition>
+							<hideDetailCondition>false</hideDetailCondition>
+						</elements>
+						<elements xsi:type="metaPropertyItem">
+							<!-- 子グループ -->
+							<dispFlag>true</dispFlag>
+							<propertyId>09df3dd2-3e36-42f8-b1f5-1f00bb48a419</propertyId>
+							<editor xsi:type="metaReferencePropertyEditor">
+								<displayType>Link</displayType>
+								<hideDeleteButton>false</hideDeleteButton>
+								<hideRegistButton>false</hideRegistButton>
+								<mappedBy>parent</mappedBy>
+								<objectId>E0006</objectId>
+							</editor>
+							<hideNormalCondition>false</hideNormalCondition>
+							<hideDetailCondition>false</hideDetailCondition>
+						</elements>
+						<expandable>true</expandable>
+					</sections>
+				</views>
+				<views xsi:type="metaSearchFormView">
+					<sections xsi:type="metaSearchConditionSection">
+						<dispFlag>true</dispFlag>
+						<expandable>false</expandable>
+						<title>検索条件</title>
+						<localizedTitleList>
+							<localeName>ja</localeName>
+							<stringValue>検索条件</stringValue>
+						</localizedTitleList>
+						<localizedTitleList>
+							<localeName>en</localeName>
+							<stringValue>Search Condition</stringValue>
+						</localizedTitleList>
+						<localizedTitleList>
+							<localeName>zh-CN</localeName>
+							<stringValue>搜索条件</stringValue>
+						</localizedTitleList>
+						<localizedTitleList>
+							<localeName>zh-TW</localeName>
+							<stringValue>搜索條件</stringValue>
+						</localizedTitleList>
+						<localizedTitleList>
+							<localeName>th</localeName>
+							<stringValue>เงื่อนไขการค้นหา</stringValue>
+						</localizedTitleList>
+						<conditionDispCount>5</conditionDispCount>
+						<elements xsi:type="metaPropertyItem">
+							<!-- コード -->
+							<dispFlag>true</dispFlag>
+							<propertyId>3</propertyId>
+							<isSystemProperty>false</isSystemProperty>
+							<editor xsi:type="metaStringPropertyEditor">
+								<displayType>Text</displayType>
+							</editor>
+						</elements>
+						<elements xsi:type="metaPropertyItem">
+							<!-- 名前 -->
+							<dispFlag>true</dispFlag>
+							<propertyId>name</propertyId>
+							<isSystemProperty>true</isSystemProperty>
+							<editor xsi:type="metaStringPropertyEditor">
+								<displayType>Text</displayType>
+							</editor>
+						</elements>
+						<elements xsi:type="metaPropertyItem">
+							<!-- 親グループ -->
+							<dispFlag>true</dispFlag>
+							<propertyId>a11c5176-444f-41e6-a60d-f64b044a0cae</propertyId>
+							<isSystemProperty>false</isSystemProperty>
+							<editor xsi:type="metaReferencePropertyEditor">
+								<displayType>Link</displayType>
+								<objectId>E0006</objectId>
+							</editor>
+						</elements>
+						<sortKey>3</sortKey>
+						<sortType>ASC</sortType>
+					</sections>
+					<sections xsi:type="metaSearchResultSection">
+						<dispFlag>true</dispFlag>
+						<expandable>false</expandable>
+						<title>検索結果一覧</title>
+						<localizedTitleList>
+							<localeName>ja</localeName>
+							<stringValue>検索結果一覧</stringValue>
+						</localizedTitleList>
+						<localizedTitleList>
+							<localeName>en</localeName>
+							<stringValue>Search Result List</stringValue>
+						</localizedTitleList>
+						<localizedTitleList>
+							<localeName>zh-CN</localeName>
+							<stringValue>搜索结果列表</stringValue>
+						</localizedTitleList>
+						<localizedTitleList>
+							<localeName>zh-TW</localeName>
+							<stringValue>搜索結果列表</stringValue>
+						</localizedTitleList>
+						<localizedTitleList>
+							<localeName>th</localeName>
+							<stringValue>ค้นหาผลลัพธ์</stringValue>
+						</localizedTitleList>
+						<dispRowCount>20</dispRowCount>
+						<elements xsi:type="metaPropertyColumn">
+							<!-- コード -->
+							<dispFlag>true</dispFlag>
+							<propertyId>3</propertyId>
+							<isSystemProperty>false</isSystemProperty>
+							<editor xsi:type="metaStringPropertyEditor">
+								<displayType>Text</displayType>
+							</editor>
+						</elements>
+						<elements xsi:type="metaPropertyColumn">
+							<!-- 名前 -->
+							<dispFlag>true</dispFlag>
+							<propertyId>name</propertyId>
+							<isSystemProperty>true</isSystemProperty>
+							<editor xsi:type="metaStringPropertyEditor">
+								<displayType>Text</displayType>
+							</editor>
+						</elements>
+						<elements xsi:type="metaPropertyColumn">
+							<!-- 親グループ -->
+							<dispFlag>true</dispFlag>
+							<propertyId>a11c5176-444f-41e6-a60d-f64b044a0cae</propertyId>
+							<isSystemProperty>false</isSystemProperty>
+							<editor xsi:type="metaReferencePropertyEditor">
+								<displayType>Link</displayType>
+								<objectId>E0006</objectId>
+							</editor>
+						</elements>
+					</sections>
+				</views>
+			</metaData>
+		</metaDataEntry>
+		<!-- お知らせ情報 -->
+		<metaDataEntry name="/view/generic/mtp/Information">
+			<metaData xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="metaEntityView">
+				<definitionId>E0007</definitionId>
+				<id>VG0007</id>
+				<name>mtp.Information</name>
+				<views xsi:type="metaDetailFormView">
+					<sections xsi:type="metaDefaultSection">
+						<dispFlag>true</dispFlag>
+						<colNum>1</colNum>
+						<elements xsi:type="metaPropertyItem">
+							<!-- 名前 -->
+							<dispFlag>true</dispFlag>
+							<propertyId>name</propertyId>
+							<editor xsi:type="metaStringPropertyEditor">
+								<displayType>Text</displayType>
+							</editor>
+							<hideNormalCondition>false</hideNormalCondition>
+							<hideDetailCondition>false</hideDetailCondition>
+						</elements>
+						<elements xsi:type="metaPropertyItem">
+							<!-- 有効開始日 -->
+							<dispFlag>true</dispFlag>
+							<propertyId>startDate</propertyId>
+							<editor xsi:type="metaTimestampPropertyEditor">
+								<displayType>DateTime</displayType>
+							</editor>
+							<hideNormalCondition>false</hideNormalCondition>
+							<hideDetailCondition>false</hideDetailCondition>
+						</elements>
+						<elements xsi:type="metaPropertyItem">
+							<!-- 有効終了日 -->
+							<dispFlag>true</dispFlag>
+							<propertyId>endDate</propertyId>
+							<editor xsi:type="metaTimestampPropertyEditor">
+								<displayType>DateTime</displayType>
+							</editor>
+							<hideNormalCondition>false</hideNormalCondition>
+							<hideDetailCondition>false</hideDetailCondition>
+						</elements>
+						<elements xsi:type="metaPropertyItem">
+							<!-- お知らせ内容 -->
+							<dispFlag>true</dispFlag>
+							<propertyId>3</propertyId>
+							<editor xsi:type="metaLongTextPropertyEditor">
+								<displayType>TextArea</displayType>
+							</editor>
+							<hideNormalCondition>false</hideNormalCondition>
+							<hideDetailCondition>false</hideDetailCondition>
+						</elements>
+						<expandable>true</expandable>
+						<title>お知らせ情報</title>
+						<localizedTitleList>
+							<localeName>ja</localeName>
+							<stringValue>お知らせ情報</stringValue>
+						</localizedTitleList>
+						<localizedTitleList>
+							<localeName>en</localeName>
+							<stringValue>Information Notice</stringValue>
+						</localizedTitleList>
+						<localizedTitleList>
+							<localeName>zh-CN</localeName>
+							<stringValue>通知信息</stringValue>
+						</localizedTitleList>
+						<localizedTitleList>
+							<localeName>zh-TW</localeName>
+							<stringValue>通知信息</stringValue>
+						</localizedTitleList>
+						<localizedTitleList>
+							<localeName>th</localeName>
+							<stringValue>ประกาศ</stringValue>
+						</localizedTitleList>
+					</sections>
+				</views>
+				<views xsi:type="metaSearchFormView">
+					<sections xsi:type="metaSearchConditionSection">
+						<dispFlag>true</dispFlag>
+						<conditionDispCount>5</conditionDispCount>
+						<hideDetailCondition>false</hideDetailCondition>
+						<elements xsi:type="metaPropertyItem">
+							<!-- 名前 -->
+							<dispFlag>true</dispFlag>
+							<propertyId>name</propertyId>
+							<editor xsi:type="metaStringPropertyEditor">
+								<displayType>Text</displayType>
+							</editor>
+							<hideNormalCondition>false</hideNormalCondition>
+							<hideDetailCondition>false</hideDetailCondition>
+						</elements>
+						<elements xsi:type="metaPropertyItem">
+							<!-- 有効開始日 -->
+							<dispFlag>true</dispFlag>
+							<propertyId>startDate</propertyId>
+							<editor xsi:type="metaTimestampPropertyEditor">
+								<displayType>DateTime</displayType>
+							</editor>
+							<hideNormalCondition>false</hideNormalCondition>
+							<hideDetailCondition>false</hideDetailCondition>
+						</elements>
+						<elements xsi:type="metaPropertyItem">
+							<!-- 有効終了日 -->
+							<dispFlag>true</dispFlag>
+							<propertyId>endDate</propertyId>
+							<editor xsi:type="metaTimestampPropertyEditor">
+								<displayType>DateTime</displayType>
+							</editor>
+							<hideNormalCondition>false</hideNormalCondition>
+							<hideDetailCondition>false</hideDetailCondition>
+						</elements>
+					</sections>
+					<sections xsi:type="metaSearchResultSection">
+						<dispFlag>true</dispFlag>
+						<dispRowCount>5</dispRowCount>
+						<elements xsi:type="metaPropertyColumn">
+							<!-- 名前 -->
+							<dispFlag>true</dispFlag>
+							<propertyId>name</propertyId>
+							<editor xsi:type="metaStringPropertyEditor">
+								<displayType>Text</displayType>
+							</editor>
+						</elements>
+						<elements xsi:type="metaPropertyColumn">
+							<!-- 有効開始日 -->
+							<dispFlag>true</dispFlag>
+							<propertyId>startDate</propertyId>
+							<editor xsi:type="metaTimestampPropertyEditor">
+								<displayType>DateTime</displayType>
+							</editor>
+						</elements>
+						<elements xsi:type="metaPropertyColumn">
+							<!-- 有効終了日 -->
+							<dispFlag>true</dispFlag>
+							<propertyId>endDate</propertyId>
+							<editor xsi:type="metaTimestampPropertyEditor">
+								<displayType>DateTime</displayType>
+							</editor>
+						</elements>
+					</sections>
+				</views>
+			</metaData>
+		</metaDataEntry>
+	</contextPath>
+
+	<!-- MenuItem -->
+	<contextPath name="/view/menu/item">
+		<metaDataEntry>
+		    <metaData xsi:type="metaEntityMenu" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+		        <description>desc</description>
+		        <id>VMI0008</id>
+		        <name>mtp/auth/ActionPermission</name>
+		        <definitionId>E0008</definitionId>
+		    </metaData>
+		</metaDataEntry>
+		<metaDataEntry>
+		    <metaData xsi:type="metaEntityMenu" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+		        <description>desc</description>
+		        <id>VMI0009</id>
+		        <name>mtp/auth/EntityPermission</name>
+		        <definitionId>E0009</definitionId>
+		    </metaData>
+		</metaDataEntry>
+		<metaDataEntry>
+		    <metaData xsi:type="metaEntityMenu" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+		        <description>desc</description>
+		        <id>VMI0006</id>
+		        <name>mtp/auth/Group</name>
+		        <definitionId>E0006</definitionId>
+		    </metaData>
+		</metaDataEntry>
+		<metaDataEntry>
+		    <metaData xsi:type="metaEntityMenu" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+		        <description>desc</description>
+		        <id>VMI0002</id>
+		        <name>mtp/auth/Rank</name>
+		        <definitionId>E0002</definitionId>
+		    </metaData>
+		</metaDataEntry>
+		<metaDataEntry>
+		    <metaData xsi:type="metaEntityMenu" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+		        <description>desc</description>
+		        <id>VMI0003</id>
+		        <name>mtp/auth/Role</name>
+		        <definitionId>E0003</definitionId>
+		    </metaData>
+		</metaDataEntry>
+		<metaDataEntry>
+		    <metaData xsi:type="metaEntityMenu" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+		        <description>desc</description>
+		        <id>VMI0001</id>
+		        <name>mtp/auth/User</name>
+		        <definitionId>E0001</definitionId>
+		    </metaData>
+		</metaDataEntry>
+		<metaDataEntry>
+		    <metaData xsi:type="metaEntityMenu" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+		        <description>desc</description>
+		        <id>VMI0010</id>
+		        <name>mtp/auth/WebApiPermission</name>
+		        <definitionId>E0010</definitionId>
+		    </metaData>
+		</metaDataEntry>
+		<metaDataEntry>
+		    <metaData xsi:type="metaEntityMenu" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+		        <description></description>
+		        <id>VMI0007</id>
+		        <name>mtp/Information</name>
+		        <definitionId>E0007</definitionId>
+		    </metaData>
+		</metaDataEntry>
+		<metaDataEntry>
+		    <metaData xsi:type="metaNodeMenu" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+		        <displayName>基本情報</displayName>
+		        <id>VMIN001</id>
+		        <localizedDisplayNameList>
+		            <localeName>ja</localeName>
+		            <stringValue>基本情報</stringValue>
+		        </localizedDisplayNameList>
+		        <localizedDisplayNameList>
+		            <localeName>en</localeName>
+		            <stringValue>Basic Information</stringValue>
+		        </localizedDisplayNameList>
+		        <localizedDisplayNameList>
+		            <localeName>zh-CN</localeName>
+		            <stringValue>基本信息</stringValue>
+		        </localizedDisplayNameList>
+		        <localizedDisplayNameList>
+		            <localeName>zh-TW</localeName>
+		            <stringValue>基本信息</stringValue>
+		        </localizedDisplayNameList>
+		        <localizedDisplayNameList>
+		            <localeName>th</localeName>
+		            <stringValue>ข้อมูลพื้นฐาน</stringValue>
+		        </localizedDisplayNameList>
+		        <name>standard_node</name>
+		    </metaData>
+		</metaDataEntry>
+		<metaDataEntry>
+		    <metaData xsi:type="metaNodeMenu" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+		        <displayName>権限情報</displayName>
+		        <id>VMIN002</id>
+		        <localizedDisplayNameList>
+		            <localeName>ja</localeName>
+		            <stringValue>権限情報</stringValue>
+		        </localizedDisplayNameList>
+		        <localizedDisplayNameList>
+		            <localeName>en</localeName>
+		            <stringValue>Permission Information</stringValue>
+		        </localizedDisplayNameList>
+		        <localizedDisplayNameList>
+		            <localeName>zh-CN</localeName>
+		            <stringValue>权限信息</stringValue>
+		        </localizedDisplayNameList>
+		        <localizedDisplayNameList>
+		            <localeName>zh-TW</localeName>
+		            <stringValue>權限信息</stringValue>
+		        </localizedDisplayNameList>
+		        <localizedDisplayNameList>
+		            <localeName>th</localeName>
+		            <stringValue>ข้อมูลที่ได้รับอนุญาต</stringValue>
+		        </localizedDisplayNameList>
+		        <name>permission_node</name>
+		    </metaData>
+		</metaDataEntry>
+	</contextPath>
+
+</metaDataList>

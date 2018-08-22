@@ -1,0 +1,27 @@
+#content-inner {
+	margin-left: -217px;
+	padding: 15px 0 0;
+	padding: 0;
+	float: right;
+	width: 100%;
+}
+#main {
+	padding-bottom: 40px;
+	float: left;
+	width: 100%;
+}
+#main-inner {
+	margin-left: 217px;
+	margin-right: 15px;
+	padding-top: 10px;
+	padding-bottom: 30px;
+	position: relative;
+	z-index: 40;
+}
+*:first-child + html #main {
+	zoom: 1;
+	width: 100%;
+}
+#content.hover #main-inner {
+	z-index: 43;
+}

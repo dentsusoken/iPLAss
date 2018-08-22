@@ -1,0 +1,27 @@
+== basedesign
+
+標準デザイン向けSCSS +
+horizontal、vertical共通で、それぞれからimportする形で利用 +
+module及びthemeについては差分は画像のURLのみ
+
+== horizontal
+
+標準デザインの水平レイアウト
+
+== vertical
+
+標準デザインの垂直レイアウト
+
+== falt
+
+フラットデザイン +
+basedesingには依存しない
+
+== build
+
+scssのビルドはプロジェクトのルート(/iPLAss)から以下のコマンドを実行する。
+
+gradlew iplass-gem:buildSass
+
+node.jsのインストールが必要。 +
+環境変数のpathにnode.jsのbinディレクトリを指定しておくこと。

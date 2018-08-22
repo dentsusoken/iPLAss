@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE module PUBLIC "-//Google Inc.//DTD Google Web Toolkit 2.8.2//EN" "http://gwtproject.org/doctype/2.8.2/gwt-module.dtd">
+<module>
+
+	<!-- Inherit the core Web Toolkit stuff. -->
+	<inherits name='com.google.gwt.user.User' />
+	<inherits name="com.google.gwt.core.Core" />
+	<inherits name="com.google.gwt.user.History" />
+	<inherits name="com.google.gwt.i18n.I18N" />
+
+	<inherits name="com.google.gwt.http.HTTP" />
+	<inherits name='com.google.gwt.json.JSON' />
+
+	<!-- Other module inherits -->
+
+	<!-- for smartgwt -->
+	<inherits name="com.smartgwt.SmartGwtNoScript" />
+	<inherits name="com.smartgwt.DrawingNoScript" />
+	<inherits name="com.smartgwt.tools.SmartGwtTools" />
+
+	<inherits name="com.smartgwt.SmartGwtNoScriptNoTheme" />
+	<inherits name="com.smartclient.theme.enterprise.EnterpriseResources" />
+	<!--
+	<inherits name="com.smartclient.theme.graphite.GraphiteResources"/>
+	<inherits name="com.smartclient.theme.simplicity.SimplicityResources"/>
+	<inherits name="com.smartclient.theme.enterpriseblue.EnterpriseBlueResources"/>
+	<inherits name="com.smartclient.theme.obsidian.ObsidianResources"/>
+	<inherits name="com.smartclient.theme.stratus.StratusResources"/>
+	<inherits name="com.smartclient.theme.fleet.FleetResources"/>
+	<inherits name="com.smartclient.theme.treefrog.TreeFrogResources"/>
+	<inherits name="com.smartclient.theme.blackops.BlackOpsResources"/>
+	<inherits name="com.smartclient.theme.silverwave.SilverWaveResources"/>
+	<inherits name="com.smartclient.theme.tahoe.Tahoe"/>
+	-->
+
+	<!-- for gwt-upload -->
+	<inherits name="gwtupload.GWTUpload" />
+
+	<!-- for ace -->
+	<inherits name="org.iplass.gwt.ace.GwtAce" />
+
+	<!-- Load dinamically predefined styles in the library when the application starts -->
+	<stylesheet src="mtpadmin.css" />
+
+	<!-- com.google.gwt.useragent.UserAgent.gwt -->
+	<!-- Browser-sensitive code should use the 'user.agent' property -->
+	<!--
+	<define-property name="user.agent" values="ie8" />
+	<extend-property name="user.agent" values="gecko1_8" />
+	<extend-property name="user.agent" values="safari" />
+	<extend-property name="user.agent" values="ie9" fallback-value="ie8" />
+	<extend-property name="user.agent" values="ie10" />
+	-->
+
+	<set-property name="user.agent" value="gecko1_8,safari,ie10" />
+
+	<!-- Internationalization support. Uncomment to enable i18n to these locales -->
+	<extend-property name="locale" values="ja" />
+	<extend-property name="locale" values="en" />
+	<set-property-fallback name="locale" value="ja" />
+
+	<!-- Specify the paths for translatable code -->
+	<source path="client" />
+	<source path="shared" />
+
+	<super-source path="trans" />
+
+</module>

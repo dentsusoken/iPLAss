@@ -1,0 +1,87 @@
+//colors -> color/_colors.scss
+// $black: #000000;
+// $white: #ffffff;
+
+//urls
+// $url_cm1: url(../../../../images/gem/skin/vertical/icon-close-01.gif);
+// $url_cm2: url(../../../../images/gem/skin/vertical/icon-maximize-01.gif);
+// $url_cm3: url(../../../../images/gem/skin/vertical/icon-restore-01.gif);
+
+.modal-overlay {
+	position: absolute;
+	left: 0;
+	top: 0;
+	opacity: 0.8;
+	filter: alpha(opacity=75);
+	background: $black;
+}
+.modal-inner {
+	padding: 20px 15px;
+	opacity: 1;
+	position: absolute;
+	left: 0;
+	top: 0;
+	width: 750px;
+	background: $white;
+	display: none;
+	overflow: hidden;
+	iframe {
+		height: 686px;
+		width: 100%;
+		border: none;
+	}
+	&.fullWindow {
+		.modal-maximize {
+			display: none;
+		}
+		.modal-restore {
+			display: block;
+		}
+	}
+	&.unresizable {
+		.modal-maximize {
+			display: none;
+		}
+		.modal-restore {
+			display: none;
+		}
+	}
+}
+.modal-close {
+	padding-left: 18px;
+	position: absolute;
+	right: 15px;
+	top: 15px;
+	cursor: pointer;
+	background: $url_cm1 no-repeat left center;
+}
+.modal-maximize {
+	padding-left: 18px;
+	position: absolute;
+	right: 80px;
+	top: 15px;
+	cursor: pointer;
+	background: $url_cm2 no-repeat left center;
+	display: block;
+}
+.modal-restore {
+	padding-left: 18px;
+	position: absolute;
+	right: 80px;
+	top: 15px;
+	cursor: pointer;
+	background: $url_cm3 no-repeat left center;
+	display: none;
+}
+body.modal-body {
+	p.trash {
+		display: none;
+	}
+	input.btn-csv-01 {
+		display: none;
+	}
+}
+
+#dialog_parent {
+	position: relative;
+}

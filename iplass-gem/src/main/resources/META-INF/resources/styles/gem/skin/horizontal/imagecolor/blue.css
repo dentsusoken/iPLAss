@@ -1,0 +1,82 @@
+/*
+ * Copyright (C) 2018 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
+ *
+ * Unless you have purchased a commercial license,
+ * the following license terms apply:
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+.hgroup-01 span.imgclr_blue svg {
+  color: #66aced; }
+
+#nav.sub-popup > ul.nav-wrap > li.bg-blue.hover > p > a {
+  color: #b9d5f0; }
+
+#nav.sub-popup > ul.nav-wrap > li.bg-blue.hover > p > span.curicon {
+  background: url(../../../../../images/gem/skin/horizontal/bg-navblue-01.png) no-repeat; }
+
+#nav.sub-popup > ul.nav-wrap > li.bg-blue.selected > p > a {
+  color: #b9d5f0; }
+
+#nav.sub-popup > ul.nav-wrap > li.bg-blue > ul.nav-detail {
+  border-bottom: 1px solid #97c1ea;
+  background: #bbd8f2;
+  background: linear-gradient(#bbd8f2 0, #d4e8fa 100%); }
+  #nav.sub-popup > ul.nav-wrap > li.bg-blue > ul.nav-detail > li > a:hover {
+    background: #376fa3;
+    background: linear-gradient(#376fa3 0, #4488c8 100%); }
+  #nav.sub-popup > ul.nav-wrap > li.bg-blue > ul.nav-detail > li.selected > a {
+    background: #376fa3;
+    background: linear-gradient(#376fa3 0, #4488c8 100%); }
+  #nav.sub-popup > ul.nav-wrap > li.bg-blue > ul.nav-detail > li.subMenuRoot > ul.subMenuList li:hover {
+    background: #eff6fd; }
+  #nav.sub-popup > ul.nav-wrap > li.bg-blue > ul.nav-detail > li.subMenuRoot > ul.subMenuList li.selected {
+    background: #eff6fd; }
+  #nav.sub-popup > ul.nav-wrap > li.bg-blue > ul.nav-detail > li.subMenuRoot > ul.subMenuList li.menu-action.selected {
+    background: url(../../../../../images/gem/skin/horizontal/icon-navblue-02.png) no-repeat 7px 7px #eff6fd; }
+  #nav.sub-popup > ul.nav-wrap > li.bg-blue > ul.nav-detail > li.subMenuRoot > ul.subMenuList li.menu-entity.selected {
+    background: url(../../../../../images/gem/skin/horizontal/icon-navblue-02.png) no-repeat 7px 7px #eff6fd; }
+
+#nav.sub-droplist > ul.nav-wrap > li.bg-blue ul {
+  background: #eff6fd; }
+  #nav.sub-droplist > ul.nav-wrap > li.bg-blue ul > li:hover {
+    background: #bbd8f2; }
+  #nav.sub-droplist > ul.nav-wrap > li.bg-blue ul > li.selected {
+    background: #bbd8f2; }
+  #nav.sub-droplist > ul.nav-wrap > li.bg-blue ul > li.menu-action.selected {
+    background: url(../../../../../images/gem/skin/horizontal/icon-navblue-02.png) no-repeat scroll 7px 7px #bbd8f2; }
+  #nav.sub-droplist > ul.nav-wrap > li.bg-blue ul > li.menu-entity.selected {
+    background: url(../../../../../images/gem/skin/horizontal/icon-navblue-02.png) no-repeat scroll 7px 7px #bbd8f2; }
+
+#nav.sub-droplist > ul.nav-wrap > li.bg-blue:hover > p {
+  background: #376fa3; }
+
+#nav.sub-droplist > ul.nav-wrap > li.bg-blue.selected > p {
+  background: #376fa3; }
+
+#nav.sub-droplist > ul.nav-wrap > li.bg-blue.menu-action.selected > p {
+  background: url(../../../../../images/gem/skin/horizontal/icon-navblue-02.png) no-repeat scroll 2px 8px #376fa3; }
+
+#nav.sub-droplist > ul.nav-wrap > li.bg-blue.menu-entity.selected > p {
+  background: url(../../../../../images/gem/skin/horizontal/icon-navblue-02.png) no-repeat scroll 2px 8px #376fa3; }
+
+#nav.sub-droplist > ul.nav-wrap > li.bg-blue.menu-node.hover > p {
+  background: #eff6fd;
+  border-color: #97c1ea; }
+
+#nav.sub-droplist > ul.nav-wrap > li.bg-blue.menu-node.hover > ul {
+  border-color: #97c1ea; }
+
+#nav.sub-droplist > ul.nav-wrap li.bg-blue ul li:hover > ul {
+  border-color: #97c1ea; }

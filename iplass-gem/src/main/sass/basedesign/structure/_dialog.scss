@@ -1,0 +1,21 @@
+.ui-widget-overlay {
+	background: none repeat scroll 0 0 $black;
+	left: 0;
+	opacity: 0.8;
+	position: absolute;
+	top: 0;
+	z-index: 52;
+}
+body.modal-body {
+	#container {
+		min-width: 100%;
+	}
+	#main {
+		height: 686px;
+		padding-bottom: 0;
+	}
+	#main-inner {
+		margin-left: 0;
+		padding-bottom: 0;
+	}
+}

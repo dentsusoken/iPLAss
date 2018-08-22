@@ -1,0 +1,17 @@
+//provided JavaEE7 apis
+dependencies {
+	//Servlet
+	compileOnly 'javax.servlet:javax.servlet-api:3.1.0'
+	//JSP
+	compileOnly 'javax.servlet.jsp:javax.servlet.jsp-api:2.3.2-b02'
+	//Expression Language
+	compileOnly 'javax.el:javax.el-api:3.0.1-b04'
+	//jstl
+	compileOnly 'javax.servlet.jsp.jstl:javax.servlet.jsp.jstl-api:1.2.1'
+	//for jstl tld file resolve
+	compileOnly group: 'org.glassfish.web', name: 'javax.servlet.jsp.jstl', version: '1.2.3', transitive : false
+	//JAX-RS
+	compileOnly 'javax.ws.rs:javax.ws.rs-api:2.0.1'
+	//Common Annotations for the Java Platform
+	compileOnly 'javax.annotation:javax.annotation-api:1.2'
+}

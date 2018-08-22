@@ -1,0 +1,34 @@
+/* drop/create OBJ_REF */
+DROP TABLE IF EXISTS `mtdb`.`obj_ref${tableNamePostfix}`;
+CREATE TABLE `mtdb`.`obj_ref${tableNamePostfix}` (
+  `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `tenant_id` INT(7) NOT NULL,
+  `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
+  `ref_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
+  `obj_id` VARCHAR(64) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
+  `obj_ver` BIGINT(10) DEFAULT 0 NOT NULL,
+  `target_obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
+  `target_obj_id` VARCHAR(64) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
+  `target_obj_ver` BIGINT(10) DEFAULT 0 NOT NULL,
+  PRIMARY KEY (`r_id`, `tenant_id`, `obj_def_id`),
+  INDEX `obj_ref${tableNamePostfix}_index1` (`tenant_id`, `obj_def_id`(128), `obj_id`(64)),
+  INDEX `obj_ref${tableNamePostfix}_index2` (`tenant_id`, `target_obj_def_id`(128), `target_obj_id`(64))
+)
+ENGINE = INNODB ROW_FORMAT=DYNAMIC
+
+<%if (partition) {
+%>PARTITION BY RANGE( `tenant_id` )
+    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
+        PARTITION obj_ref${tableNamePostfix}_0 VALUES LESS THAN (1) (
+            SUBPARTITION obj_ref${tableNamePostfix}_0_0,
+            SUBPARTITION obj_ref${tableNamePostfix}_0_1,
+            SUBPARTITION obj_ref${tableNamePostfix}_0_2,
+            SUBPARTITION obj_ref${tableNamePostfix}_0_3,
+            SUBPARTITION obj_ref${tableNamePostfix}_0_4,
+            SUBPARTITION obj_ref${tableNamePostfix}_0_5,
+            SUBPARTITION obj_ref${tableNamePostfix}_0_6,
+            SUBPARTITION obj_ref${tableNamePostfix}_0_7
+        )
+    )
+<%}%>
+;

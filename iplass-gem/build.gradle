@@ -1,0 +1,86 @@
+buildscript {
+	repositories {
+		maven {
+			url "https://plugins.gradle.org/m2/"
+		}
+	}
+	dependencies {
+		classpath "com.moowork.gradle:gradle-node-plugin:1.2.0"
+	}
+}
+
+// sassのコンパイルにgradle-node-pluginを使用
+plugins {
+	id "com.moowork.node" version "1.2.0"
+}
+
+apply from: '../javaeewebapis.gradle'
+apply from: 'libs.gradle'
+dependencies {
+	compile project(':iplass-core')
+	compile project(':iplass-web')
+}
+
+task buildSass(type: NpmTask) {
+	//package.jsonで定義したタスクを実行
+	args = ['run', 'sass:build'];
+}
+
+task buildSassImageColor(type: NpmTask) {
+	//package.jsonで定義したタスクを実行
+	args = ['run', 'sass:buildImageColor'];
+}
+
+task copyStaticResources(type: Sync) {
+	dependsOn('processResources')
+
+	//静的リソースをコピー
+	from 'build/resources/main/'
+	//jar内のwebjarsフォルダ配下をコピー
+	from (configurations.wjRuntime.collect {it.isDirectory() ? it : zipTree(it)}) {
+		exclude 'META-INF/maven/'
+		exclude 'META-INF/MANIFEST.MF'
+	}
+	into 'build/tmp/staticresources'
+	includeEmptyDirs = false
+}
+
+task archiveStaticResources(type: Zip) {
+	dependsOn('copyStaticResources')
+
+	archiveName = "iplass-staticresources-${version}.zip"
+
+	//META-INF/resourcesをZIP圧縮
+	from ('build/tmp/staticresources/META-INF/resources') {
+		exclude 'jsp'
+	}
+}
+
+/*
+ * jspのコンパイルチェック
+ */
+task compileJsp(dependsOn: ["compileJava"]) {
+	doLast {
+		def taskName = "compileJsp"
+		ant.echo(message: "jsp compile check")
+		ant.taskdef(classname: "org.apache.jasper.JspC", name: taskName) {
+			classpath {
+				pathelement(path: configurations.jasper.asPath)
+				pathelement(path: files(configurations.compile.files.findAll{it.name != 'note.txt'}).asPath)
+				pathelement(path: sourceSets.main.output.classesDir)
+			}
+		}
+		def outDir = "${buildDir}/deploy/gem/classes"
+		ant."${taskName}"(
+				uriRoot: "src/main/resources",
+				outputDir: outDir,
+				javaencoding: "utf-8",
+				compilersourcevm: "1.8",
+				compilertargetvm: "1.8",
+				compile: "true",
+				verbose: "1")
+	}
+}
+classes {
+	dependsOn('compileJsp')
+}

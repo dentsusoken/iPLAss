@@ -1,0 +1,434 @@
+buildscript {
+	repositories {
+		jcenter()
+	}
+	dependencies {
+		classpath 'de.richsource.gradle.plugins:gwt-gradle-plugin:0.6'
+	}
+}
+
+apply from: '../javaeewebapis.gradle'
+apply from: 'libs.gradle'
+dependencies {
+	compile (project(':iplass-core')) {
+		//exclude validation-api version 1.1.0.Final. Currently, GWT can only compile with 1.0.0.GA.
+		exclude (group: 'javax.validation')
+	}
+	compile (project(':iplass-web')) {
+		exclude(group: 'org.glassfish.jersey.containers')
+		exclude(group: 'org.glassfish.jersey.core')
+		exclude (group: 'javax.validation')
+	}
+	compile(project(':iplass-gem')) {
+		exclude(group: 'org.glassfish.jersey.containers')
+		exclude(group: 'org.glassfish.jersey.core')
+		exclude (group: 'javax.validation')
+	}
+	compile(project(':iplass-tools')) {
+		exclude(group: 'org.glassfish.jersey.containers')
+		exclude(group: 'org.glassfish.jersey.core')
+		exclude (group: 'javax.validation')
+	}
+}
+
+apply plugin: 'gwt-compiler'
+
+sourceSets {
+	main {
+		java {
+			exclude 'org/iplass/adminconsole/trans/**'
+		}
+	}
+}
+
+compileJava {
+	//compile時はclient系のファイルを除外
+	source = fileTree('src/main/java') {
+		exclude 'org/iplass/adminconsole/client/**'
+		exclude 'org/iplass/adminconsole/trans/**'
+		exclude 'edu/ycp/cs/dh/acegwt/client/**'
+	}
+}
+
+processResources {
+	//compile時はclient系のファイルを除外
+	from 'src/main/resources'
+	exclude 'org/iplass/adminconsole/**/*.gwt.xml'
+	exclude 'org/iplass/adminconsole/public/**'
+	exclude 'edu/ycp/cs/dh/acegwt/**/*.gwt.xml'
+	exclude 'edu/ycp/cs/dh/acegwt/public/**'
+}
+
+gwt {
+	src = files("${buildDir}/src/gwt")
+	gwtVersion=gwtVersion
+	modules 'org.iplass.adminconsole.AdminConsole'
+	minHeapSize = '32M'
+	maxHeapSize = '2048M'
+	logLevel = 'INFO'
+	sourceLevel = '1.8'
+	compiler {
+		strict = true;
+	}
+}
+
+jar {
+	dependsOn('compileGwt')
+
+	includeEmptyDirs = false;
+
+	// META-INF配下にgwtコンパイル結果をコピー
+	into('META-INF/resources/admin/mtpadmin') { from("${buildDir}/gwt/out/mtpadmin") }
+
+}
+
+task processGwtResources(type: Sync) {
+	dependsOn('copyGwtTransSrc')
+
+	//GWTの対象からserverを除外
+	from ('src/main/java') {
+		exclude 'org/iplass/adminconsole/server/**'
+	}
+	from ('src/main/resources') {
+		exclude 'META-INF/**'
+		exclude 'gwtupload/server/**'
+	}
+	from ("${buildDir}/src/gwt-trans")
+	into "${buildDir}/src/gwt"
+}
+tasks.compileGwt.dependsOn processGwtResources
+
+task copyGwtTransSrc(type: Sync) {
+
+	from ('../iplass-core/src/main/java/org/iplass') {
+
+		include 'mtp/ApplicationException.java'
+		include 'mtp/MtpException.java'
+		include 'mtp/SystemException.java'
+
+		include 'mtp/definition/Definition.java'
+		include 'mtp/definition/DefinitionEntry.java'
+		include 'mtp/definition/DefinitionInfo.java'
+		include 'mtp/definition/DefinitionModifyResult.java'
+		include 'mtp/definition/DefinitionSummary.java'
+		include 'mtp/definition/LocalizedStringDefinition.java'
+		include 'mtp/definition/SharedConfig.java'
+		include 'mtp/definition/TimeUnit.java'
+		include 'mtp/definition/VersionHistory.java'
+		include 'mtp/definition/binary/BinaryDefinition.java'
+
+		include 'adminconsole/annotation/MultiLang.java'
+
+		include 'mtp/async/AsyncTaskInfo.java'
+		include 'mtp/async/AsyncTaskInfoSearchCondtion.java'
+		include 'mtp/async/ExceptionHandlingMode.java'
+		include 'mtp/async/TaskStatus.java'
+
+		include 'mtp/auth/login/Credential.java'
+
+		include 'mtp/auth/policy/definition/AccountLockoutPolicyDefinition.java'
+		include 'mtp/auth/policy/definition/AccountNotificationListenerDefinition.java'
+		include 'mtp/auth/policy/definition/AuthenticationPolicyDefinition.java'
+		include 'mtp/auth/policy/definition/NotificationType.java'
+		include 'mtp/auth/policy/definition/PasswordPolicyDefinition.java'
+		include 'mtp/auth/policy/definition/RememberMePolicyDefinition.java'
+
+		include 'mtp/auth/policy/definition/listeners/JavaClassAccountNotificationListenerDefinition.java'
+		include 'mtp/auth/policy/definition/listeners/MailAccountNotificationListenerDefinition.java'
+		include 'mtp/auth/policy/definition/listeners/ScriptingAccountNotificationListenerDefinition.java'
+
+		include 'mtp/command/async/definition/AsyncCommandDefinition.java'
+
+		include 'mtp/command/definition/CommandDefinition.java'
+		include 'mtp/command/definition/CommandDefinitionModifyResult.java'
+		include 'mtp/command/definition/JavaClassCommandDefinition.java'
+		include 'mtp/command/definition/ScriptingCommandDefinition.java'
+
+		include 'mtp/command/definition/config/CommandConfig.java'
+		include 'mtp/command/definition/config/CompositeCommandConfig.java'
+		include 'mtp/command/definition/config/SingleCommandConfig.java'
+
+		include 'mtp/entity/BinaryReference.java'
+		include 'mtp/entity/Entity.java'
+		include 'mtp/entity/EntityEventContext.java'
+		include 'mtp/entity/EntityEventListener.java'
+		include 'mtp/entity/EntityRuntimeException.java'
+		//include 'mtp/entity/GenericEntity.java'
+		include 'mtp/entity/SearchResult.java'
+		include 'mtp/entity/SelectValue.java'
+
+		include 'mtp/entity/definition/DataLocalizationStrategy.java'
+		include 'mtp/entity/definition/EntityDefinition.java'
+		include 'mtp/entity/definition/EntityDefinitionModifyResult.java'
+		include 'mtp/entity/definition/EntityMapping.java'
+		include 'mtp/entity/definition/EventListenerDefinition.java'
+		include 'mtp/entity/definition/IndexType.java'
+		include 'mtp/entity/definition/LocalizedSelectValueDefinition.java'
+		include 'mtp/entity/definition/PropertyDefinition.java'
+		include 'mtp/entity/definition/PropertyDefinitionType.java'
+		include 'mtp/entity/definition/StoreDefinition.java'
+		include 'mtp/entity/definition/ValidationDefinition.java'
+		include 'mtp/entity/definition/VersionControlType.java'
+
+		include 'mtp/entity/definition/l10n/EachInstanceDataLocalizationStrategy.java'
+		include 'mtp/entity/definition/l10n/EachPropertyDataLocalizationStrategy.java'
+
+		include 'mtp/entity/definition/listeners/EventType.java'
+		include 'mtp/entity/definition/listeners/JavaClassEventListenerDefinition.java'
+		include 'mtp/entity/definition/listeners/ScriptingEventListenerDefinition.java'
+
+		include 'mtp/entity/definition/properties/AutoNumberProperty.java'
+		include 'mtp/entity/definition/properties/BinaryProperty.java'
+		include 'mtp/entity/definition/properties/BooleanProperty.java'
+		include 'mtp/entity/definition/properties/DateProperty.java'
+		include 'mtp/entity/definition/properties/DateTimeProperty.java'
+		include 'mtp/entity/definition/properties/DecimalProperty.java'
+		include 'mtp/entity/definition/properties/ExpressionProperty.java'
+		include 'mtp/entity/definition/properties/FloatProperty.java'
+		include 'mtp/entity/definition/properties/IntegerProperty.java'
+		include 'mtp/entity/definition/properties/LongTextProperty.java'
+		include 'mtp/entity/definition/properties/NumberingType.java'
+		include 'mtp/entity/definition/properties/ReferenceProperty.java'
+		include 'mtp/entity/definition/properties/ReferenceType.java'
+		include 'mtp/entity/definition/properties/RoundingMode.java'
+		include 'mtp/entity/definition/properties/SelectProperty.java'
+		include 'mtp/entity/definition/properties/StringProperty.java'
+		include 'mtp/entity/definition/properties/TimeProperty.java'
+		include 'mtp/entity/definition/properties/VersionControlReferenceType.java'
+		include 'mtp/entity/definition/properties/selectvalue/SelectValueDefinition.java'
+
+		include 'mtp/entity/definition/stores/ColumnMapping.java'
+		include 'mtp/entity/definition/stores/SchemalessRdbStore.java'
+
+		include 'mtp/entity/definition/validations/BinarySizeValidation.java'
+		include 'mtp/entity/definition/validations/BinaryTypeValidation.java'
+		include 'mtp/entity/definition/validations/LengthValidation.java'
+		include 'mtp/entity/definition/validations/NotNullValidation.java'
+		include 'mtp/entity/definition/validations/RangeValidation.java'
+		include 'mtp/entity/definition/validations/RegexValidation.java'
+		include 'mtp/entity/definition/validations/ScriptingValidation.java'
+
+		include 'mtp/mail/template/definition/HtmlBodyPart.java'
+		include 'mtp/mail/template/definition/LocalizedMailTemplateDefinition.java'
+		include 'mtp/mail/template/definition/MailTemplateDefinition.java'
+		include 'mtp/mail/template/definition/MailTemplateDefinitionModifyResult.java'
+		include 'mtp/mail/template/definition/PlainTextBodyPart.java'
+
+		include 'mtp/message/MessageCategory.java'
+		include 'mtp/message/MessageItem.java'
+
+		include 'mtp/prefs/Preference.java'
+		include 'mtp/prefs/PreferenceAware.java'
+		include 'mtp/prefs/PreferenceSet.java'
+
+		include 'mtp/pushnotification/template/definition/LocalizedNotificationDefinition.java'
+		include 'mtp/pushnotification/template/definition/PushNotificationTemplateDefinition.java'
+
+
+		include 'mtp/sms/template/definition/LocalizedSmsMailTemplateDefinition.java'
+		include 'mtp/sms/template/definition/SmsMailTemplateDefinition.java'
+
+		include 'mtp/tenant/Tenant.java'
+		include 'mtp/tenant/TenantAuthInfo.java'
+		include 'mtp/tenant/TenantMailInfo.java'
+		include 'mtp/tenant/TenantI18nInfo.java'
+		include 'mtp/tenant/TenantConfig.java'
+
+		include 'mtp/transaction/Propagation.java'
+
+		include 'mtp/utilityclass/definition/UtilityClassDefinition.java'
+
+	}
+
+	from ('../iplass-web/src/main/java/org/iplass') {
+
+		include 'mtp/web/actionmapping/definition/ActionMappingDefinition.java'
+		include 'mtp/web/actionmapping/definition/ActionMappingDefinitionModifyResult.java'
+		include 'mtp/web/actionmapping/definition/ClientCacheType.java'
+		include 'mtp/web/actionmapping/definition/HttpMethodType.java'
+		include 'mtp/web/actionmapping/definition/ParamMapDefinition.java'
+		include 'mtp/web/actionmapping/definition/TokenCheck.java'
+
+		include 'mtp/web/actionmapping/definition/cache/CacheCriteriaDefinition.java'
+		include 'mtp/web/actionmapping/definition/cache/CacheRelatedEntityDefinition.java'
+		include 'mtp/web/actionmapping/definition/cache/JavaClassCacheCriteriaDefinition.java'
+		include 'mtp/web/actionmapping/definition/cache/ParameterMatchCacheCriteriaDefinition.java'
+		include 'mtp/web/actionmapping/definition/cache/RelatedEntityType.java'
+		include 'mtp/web/actionmapping/definition/cache/ScriptingCacheCriteriaDefinition.java'
+
+		include 'mtp/web/actionmapping/definition/result/ContentDispositionType.java'
+		include 'mtp/web/actionmapping/definition/result/DynamicTemplateResultDefinition.java'
+		include 'mtp/web/actionmapping/definition/result/RedirectResultDefinition.java'
+		include 'mtp/web/actionmapping/definition/result/ResultDefinition.java'
+		include 'mtp/web/actionmapping/definition/result/StaticResourceResultDefinition.java'
+		include 'mtp/web/actionmapping/definition/result/StreamResultDefinition.java'
+		include 'mtp/web/actionmapping/definition/result/TemplateResultDefinition.java'
+
+		include 'mtp/web/staticresource/EntryPathTranslator.java'
+
+		include 'mtp/web/staticresource/definition/EntryPathTranslatorDefinition.java'
+		include 'mtp/web/staticresource/definition/JavaClassEntryPathTranslatorDefinition.java'
+		include 'mtp/web/staticresource/definition/LocalizedStaticResourceDefinition.java'
+		include 'mtp/web/staticresource/definition/MimeTypeMappingDefinition.java'
+		include 'mtp/web/staticresource/definition/PrefixEntryPathTranslatorDefinition.java'
+		include 'mtp/web/staticresource/definition/ScriptingEntryPathTranslatorDefinition.java'
+		include 'mtp/web/staticresource/definition/StaticResourceDefinition.java'
+		include 'mtp/web/staticresource/definition/StaticResourceDefinitionModifyResult.java'
+
+		include 'mtp/web/template/definition/BinaryTemplateDefinition.java'
+		include 'mtp/web/template/definition/GroovyTemplateDefinition.java'
+		include 'mtp/web/template/definition/HtmlTemplateDefinition.java'
+		include 'mtp/web/template/definition/JspTemplateDefinition.java'
+		include 'mtp/web/template/definition/LocalizedBinaryDefinition.java'
+		include 'mtp/web/template/definition/TemplateDefinition.java'
+		include 'mtp/web/template/definition/TemplateDefinitionModifyResult.java'
+
+		include 'mtp/web/template/report/definition/GroovyReportOutputLogicDefinition.java'
+		include 'mtp/web/template/report/definition/JasperReportType.java'
+		include 'mtp/web/template/report/definition/JavaClassReportOutputLogicDefinition.java'
+		include 'mtp/web/template/report/definition/LocalizedReportDefinition.java'
+		include 'mtp/web/template/report/definition/OutputFileType.java'
+		include 'mtp/web/template/report/definition/PoiReportType.java'
+		include 'mtp/web/template/report/definition/ReportOutputLogicDefinition.java'
+		include 'mtp/web/template/report/definition/ReportParamMapDefinition.java'
+		include 'mtp/web/template/report/definition/ReportTemplateDefinition.java'
+		include 'mtp/web/template/report/definition/ReportType.java'
+
+		include 'mtp/webapi/definition/RequestType.java'
+		include 'mtp/webapi/definition/EntityWebApiDefinition.java'
+		include 'mtp/webapi/definition/MethodType.java'
+		include 'mtp/webapi/definition/StateType.java'
+		include 'mtp/webapi/definition/WebApiDefinition.java'
+		include 'mtp/webapi/definition/WebApiDefinitionModifyResult.java'
+		include 'mtp/webapi/definition/WebApiTokenCheck.java'
+
+		include 'mtp/tenant/web/TenantWebInfo.java'
+	}
+
+	from ('../iplass-gem/src/main/java/org/iplass') {
+
+		include 'adminconsole/view/annotation/IgnoreField.java.java'
+		include 'adminconsole/view/annotation/MetaFieldInfo.java'
+		include 'adminconsole/view/annotation/InputType.java'
+		include 'adminconsole/view/annotation/Refrectable.java'
+		include 'adminconsole/view/annotation/generic/FieldReferenceType.java'
+
+		include 'gem/Skin.java'
+		include 'gem/Theme.java'
+
+		include 'mtp/tenant/gem/TenantGemInfo.java'
+
+		include 'mtp/view/calendar/EntityCalendar.java'
+		include 'mtp/view/calendar/EntityCalendarItem.java'
+
+		include 'mtp/view/filter/EntityFilter.java'
+		include 'mtp/view/filter/EntityFilterItem.java'
+
+		include 'mtp/view/generic/DetailFormView.java'
+		include 'mtp/view/generic/EntityView.java'
+		include 'mtp/view/generic/FormView.java'
+		include 'mtp/view/generic/NullOrderType.java'
+		include 'mtp/view/generic/PagingPosition.java'
+		include 'mtp/view/generic/RequiredDisplayType.java'
+		include 'mtp/view/generic/SearchFormView.java'
+		include 'mtp/view/generic/TextAlign.java'
+		include 'mtp/view/generic/ViewControlSetting.java'
+
+		include 'mtp/view/generic/common/AutocompletionProperty.java'
+		include 'mtp/view/generic/common/AutocompletionSetting.java'
+		include 'mtp/view/generic/common/JavascriptAutocompletionSetting.java'
+		include 'mtp/view/generic/common/WebApiAutocompletionSetting.java'
+
+		include 'mtp/view/generic/editor/AutoNumberPropertyEditor.java'
+		include 'mtp/view/generic/editor/BinaryPropertyEditor.java'
+		include 'mtp/view/generic/editor/BooleanPropertyEditor.java'
+		include 'mtp/view/generic/editor/CustomPropertyEditor.java'
+		include 'mtp/view/generic/editor/DatePropertyEditor.java'
+		include 'mtp/view/generic/editor/DateRangePropertyEditor.java'
+		include 'mtp/view/generic/editor/DateTimePropertyEditor.java'
+		include 'mtp/view/generic/editor/DecimalPropertyEditor.java'
+		include 'mtp/view/generic/editor/EditorValue.java'
+		include 'mtp/view/generic/editor/ExpressionPropertyEditor.java'
+		include 'mtp/view/generic/editor/FloatPropertyEditor.java'
+		include 'mtp/view/generic/editor/IntegerPropertyEditor.java'
+		include 'mtp/view/generic/editor/JoinPropertyEditor.java'
+		include 'mtp/view/generic/editor/LinkProperty.java'
+		include 'mtp/view/generic/editor/LongTextPropertyEditor.java'
+		include 'mtp/view/generic/editor/NestProperty.java'
+		include 'mtp/view/generic/editor/NumberPropertyEditor.java'
+		include 'mtp/view/generic/editor/PrimitivePropertyEditor.java'
+		include 'mtp/view/generic/editor/PropertyEditor.java'
+		include 'mtp/view/generic/editor/ReferenceComboSetting.java'
+		include 'mtp/view/generic/editor/ReferencePropertyEditor.java'
+		include 'mtp/view/generic/editor/ReferenceRecursiveTreeSetting.java'
+		include 'mtp/view/generic/editor/SelectPropertyEditor.java'
+		include 'mtp/view/generic/editor/StringPropertyEditor.java'
+		include 'mtp/view/generic/editor/TemplatePropertyEditor.java'
+		include 'mtp/view/generic/editor/TimePropertyEditor.java'
+		include 'mtp/view/generic/editor/TimestampPropertyEditor.java'
+		include 'mtp/view/generic/editor/UserPropertyEditor.java'
+
+		include 'mtp/view/generic/element/BlankSpace.java'
+		include 'mtp/view/generic/element/Button.java'
+		include 'mtp/view/generic/element/DisplayType.java'
+		include 'mtp/view/generic/element/Element.java'
+		include 'mtp/view/generic/element/Link.java'
+		include 'mtp/view/generic/element/ScriptingElement.java'
+		include 'mtp/view/generic/element/TemplateElement.java'
+		include 'mtp/view/generic/element/VirtualPropertyItem.java'
+
+		include 'mtp/view/generic/element/property/PropertyBase.java'
+		include 'mtp/view/generic/element/property/PropertyColumn.java'
+		include 'mtp/view/generic/element/property/PropertyItem.java'
+
+		include 'mtp/view/generic/element/property/validation/PropertyValidationCondition.java'
+		include 'mtp/view/generic/element/property/validation/RequiresAtLeastOneFieldValidator.java'
+		include 'mtp/view/generic/element/property/validation/ViewValidatorBase.java'
+
+		include 'mtp/view/generic/element/section/DefaultSection.java'
+		include 'mtp/view/generic/element/section/FilterSetting.java'
+		include 'mtp/view/generic/element/section/MassReferenceSection.java'
+		include 'mtp/view/generic/element/section/ReferenceSection.java'
+		include 'mtp/view/generic/element/section/ScriptingSection.java'
+		include 'mtp/view/generic/element/section/SearchConditionSection.java'
+		include 'mtp/view/generic/element/section/SearchResultSection.java'
+		include 'mtp/view/generic/element/section/Section.java'
+		include 'mtp/view/generic/element/section/SortSetting.java'
+		include 'mtp/view/generic/element/section/TemplateSection.java'
+		include 'mtp/view/generic/element/section/VersionSection.java'
+
+		include 'mtp/view/menu/ActionMenuItem.java'
+		include 'mtp/view/menu/EntityMenuItem.java'
+		include 'mtp/view/menu/MenuItem.java'
+		include 'mtp/view/menu/MenuItemVisitor.java'
+		include 'mtp/view/menu/MenuTree.java'
+		include 'mtp/view/menu/NodeMenuItem.java'
+		include 'mtp/view/menu/UrlMenuItem.java'
+
+		include 'mtp/view/top/TopViewDefinition.java'
+		include 'mtp/view/top/TopViewDefinitionModifyResult.java'
+		include 'mtp/view/top/parts/ActionParts.java'
+		include 'mtp/view/top/parts/CalendarParts.java'
+		include 'mtp/view/top/parts/CsvDownloadSettingsParts.java'
+		include 'mtp/view/top/parts/EntityListParts.java'
+		include 'mtp/view/top/parts/FulltextSearchViewParts.java'
+		include 'mtp/view/top/parts/InformationParts.java'
+		include 'mtp/view/top/parts/LastLoginParts.java'
+		include 'mtp/view/top/parts/ScriptParts.java'
+		include 'mtp/view/top/parts/SeparatorParts.java'
+		include 'mtp/view/top/parts/TemplateParts.java'
+		include 'mtp/view/top/parts/TopViewParts.java'
+		include 'mtp/view/top/parts/TreeViewParts.java'
+		include 'mtp/view/top/parts/UserImpersonationParts.java'
+		include 'mtp/view/top/parts/UserMaintenanceParts.java'
+
+		include 'mtp/view/treeview/EntityTreeViewItem.java'
+		include 'mtp/view/treeview/ReferenceTreeViewItem.java'
+		include 'mtp/view/treeview/TreeView.java'
+		include 'mtp/view/treeview/TreeViewGridColModel.java'
+		include 'mtp/view/treeview/TreeViewGridColModelMapping.java'
+		include 'mtp/view/treeview/TreeViewItem.java'
+	}
+
+	into "${buildDir}/src/gwt-trans/org/iplass/adminconsole/trans/org/iplass"
+}

@@ -1,0 +1,277 @@
+//colors
+// $white: #fff;
+// $color_alto_approx: #ddd;
+// $color_gallery_approx: #ededed;
+// $color_silver_chalice_approx: #aaaaaa;
+// $color_celeste_approx: #cccccc;
+// $color_log_cabin_approx: #222222;
+// $color_venice_blue_approx: #115d85;
+// $color_quill_gray_approx: #d4d4d4;
+// $color_cod_gray_approx: #080808;
+// $color_pattens_blue_approx: #dfeffc;
+// $color_storm_dust_approx: #666666;
+// $color_atlantis_approx: #92cc42;
+
+//urls
+// $url_pjg_1: url(../../../../images/gem/skin/flat/icon-ascend.png);
+// $url_pjg_2: url(../../../../images/gem/skin/flat/icon-descend.png);
+
+//@extend-elements
+//original selectors
+//.ui-jqgrid .ui-jqgrid-htable th, .ui-jqgrid .ui-jqgrid-htable td
+%extend_pjg_1 {
+	line-height: 40px;
+	padding: 0;
+	font-size: 0.92857rem;
+	//Instead of the line below you could use @include box-sizing($bs)
+	box-sizing: border-box;
+}
+
+//original selectors
+//.ui-jqgrid .ui-jqgrid-htable th .s-ico .ui-icon-asc::before, .ui-jqgrid .ui-jqgrid-htable th .s-ico .ui-icon-desc::before
+%extend_pjg_2 {
+	content: '';
+	display: block;
+	position: absolute;
+	top: 0;
+	left: 0;
+	height: 15px;
+	width: 15px;
+	background: center center no-repeat;
+}
+
+//original selectors
+//.ui-jqgrid .jqgh_cbox, .ui-jqgrid .td_cbox
+%extend_pjg_3 {
+	width: 40px !important;
+	padding: 0 !important;
+	white-space: normal !important;
+}
+
+//original selectors
+//.ui-jqgrid .ui-state-hover td, .ui-jqgrid .ui-widget-content .ui-state-hover td, .ui-jqgrid .ui-state-focus td, .ui-jqgrid .ui-widget-content .ui-state-focus td, .ui-jqgrid .ui-state-highlight td, .ui-jqgrid .ui-widget-content .ui-state-highlight td, .ui-jqgrid .ui-widget-header .ui-state-highlight td
+%extend_pjg_4 {
+	background-color: $color_pattens_blue_approx !important;
+	background-image: none;
+	color: $color_storm_dust_approx;
+}
+
+//original selectors
+//.modal-body .ui-jqgrid .ui-jqgrid-bdiv tr >th.sel_radio, .modal-body .ui-jqgrid .ui-jqgrid-bdiv tr >td.sel_radio
+%extend_pjg_5 {
+	padding: 0;
+	width: 40px !important;
+	text-align: center;
+}
+
+
+.ui-jqgrid {
+	display: block;
+	float: left;
+	overflow: auto;
+	width: 100% !important;
+	border: 0 !important;
+	//Instead of the line below you could use @include border-radius($radius, $vertical-radius)
+	border-radius: 0;
+	background: $white;
+	.ui-jqgrid-htable {
+		.ui-jqgrid-resize {
+			position: absolute !important;
+			height: 40px !important;
+			width: 4px !important;
+			right: 0;
+			margin-top: 0;
+		}
+		.ui-jqgrid-resize-mark {
+			border: 1px solid $color_silver_chalice_approx !important;
+			background-color: $color_celeste_approx !important;
+			color: $color_log_cabin_approx !important;
+			font-weight: bold !important;
+		}
+		th {
+			@extend %extend_pjg_1;
+			background: $color_gallery_approx;
+			color: $color_venice_blue_approx;
+			//Instead of the line below you could use @include transition($transition-1, $transition-2, $transition-3, $transition-4, $transition-5, $transition-6, $transition-7, $transition-8, $transition-9, $transition-10)
+			transition: background 300ms;
+			border-right: 1px solid $white !important;
+			position: relative;
+			div {
+				margin: 0 !important;
+				position: static !important;
+				&.ui-jqgrid-sortable {
+					&.asc {
+						margin-right: 20px !important;
+					}
+					&.desc {
+						margin-right: 20px !important;
+					}
+				}
+			}
+			p {
+				line-height: 40px;
+				text-align: left;
+			}
+			&.ui-state-hover {
+				background: $color_quill_gray_approx;
+			}
+			.s-ico {
+				position: absolute;
+				top: 0;
+				right: 10px;
+				height: 40px;
+				width: 15px;
+				margin: 0;
+				span {
+					display: block;
+					position: absolute;
+					top: 50% !important;
+					margin-left: 0 !important;
+					margin-top: -7px !important;
+					height: 15px;
+					width: 15px !important;
+					text-indent: 0;
+				}
+				.ui-icon-asc {
+					background: none;
+				}
+				.ui-icon-desc {
+					background: none;
+				}
+				.ui-icon-asc::before {
+					@extend %extend_pjg_2;
+					background-image: $url_pjg_1;
+				}
+				.ui-icon-desc::before {
+					@extend %extend_pjg_2;
+					background-image: $url_pjg_2;
+				}
+			}
+			&:not(.jqgh_cbox) {
+				padding: 0 10px !important;
+			}
+		}
+		td {
+			@extend %extend_pjg_1;
+			color: $color_cod_gray_approx;
+			padding: 0 20px;
+			border: 1px solid $color_alto_approx;
+			border-top: 0;
+		}
+		.ui-jqgrid-labels .jqgh_cbox > div {
+			padding: 0 13.5px;
+		}
+	}
+	.ui-widget-header {
+		display: none;
+		.ui-state-highlight td {
+			@extend %extend_pjg_4;
+		}
+	}
+	.ui-jqgrid-hdiv {
+		//Instead of the line below you could use @include border-radius($radius, $vertical-radius)
+		border-radius: 0;
+		border-bottom: 0;
+		background: $color_gallery_approx;
+		width: auto !important;
+		&.frozen-div {
+			> div {
+				width: 101px !important;
+			}
+			.ui-jqgrid-htable {
+				position: absolute;
+				top: 0;
+			}
+		}
+		th[rowspan] {
+			vertical-align: middle;
+		}
+	}
+	.ui-jqgrid-view {
+		width: auto !important;
+	}
+	.ui-jqgrid-bdiv {
+		width: auto !important;
+		th {
+			white-space: normal !important;
+		}
+		td {
+			white-space: normal !important;
+			vertical-align: middle;
+		}
+		tr.ui-row-ltr > td.jqgrid_select_cell {
+			background-color: $color_atlantis_approx !important;
+		}
+	}
+	.ui-jqgrid-pager {
+		width: auto !important;
+	}
+	.jqgh_cbox {
+		@extend %extend_pjg_3;
+	}
+	.td_cbox {
+		@extend %extend_pjg_3;
+	}
+	.ui-widget-content {
+		.ui-state-hover td {
+			@extend %extend_pjg_4;
+		}
+		.ui-state-focus td {
+			@extend %extend_pjg_4;
+		}
+		.ui-state-highlight td {
+			@extend %extend_pjg_4;
+		}
+	}
+	.cell-wrapperleaf {
+		display: inline;
+	}
+	.cell-wrapper {
+		display: inline;
+	}
+	.frozen-div.ui-jqgrid-hdiv th.ui-th-column:last-child {
+		border-bottom: $white 1px solid;
+	}
+	.frozen-bdiv.ui-jqgrid-bdiv tr.ui-row-ltr {
+		> td {
+			background: $color_gallery_approx !important;
+			color: $color_venice_blue_approx;
+		}
+		&:not(:last-child) > td {
+			border-bottom: 1px solid $white !important;
+		}
+	}
+	.ui-state-hover td {
+		@extend %extend_pjg_4;
+	}
+	.ui-state-focus td {
+		@extend %extend_pjg_4;
+	}
+	.ui-state-highlight td {
+		@extend %extend_pjg_4;
+	}
+}
+.ui-jqgrid-view {
+	border: 1px solid $color_alto_approx;
+}
+.ui-jqgrid-jquery-ui.ui-jqgrid .ui-jqgrid-bdiv tr.ui-row-ltr {
+	> td {
+		padding: 10px;
+		background: $white;
+		border-color: $color_alto_approx;
+		&:first-child {
+			border-left: 1px solid $color_alto_approx !important;
+		}
+	}
+	&.jqgfirstrow > td {
+		padding: 0;
+	}
+}
+.modal-body .ui-jqgrid {
+	.ui-jqgrid-hdiv tr > th.sel_radio {
+		@extend %extend_pjg_5;
+	}
+	.ui-jqgrid-bdiv tr > td.sel_radio {
+		@extend %extend_pjg_5;
+	}
+}

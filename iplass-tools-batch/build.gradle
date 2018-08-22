@@ -1,0 +1,7 @@
+dependencies {
+	compile project(':iplass-core')
+	compile project(':iplass-web')
+	compile project(':iplass-gem')
+	compile project(':iplass-tools')
+}
+

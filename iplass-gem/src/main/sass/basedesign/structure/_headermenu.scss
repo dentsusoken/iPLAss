@@ -1,0 +1,300 @@
+//@extend-elements
+//original selectors
+//#header #user-nav >li.hed-pull.open >ul >li >a, #header #user-nav >li.hed-pull.open >ul >li >span
+%extend_hm_1 {
+	padding: 3px 24px 4px 15px;
+	display: block;
+	color: $color_chicago_approx;
+}
+
+
+a {
+	&.sctble_display {
+		display: inline-block;
+		*display: inline;
+		zoom: 1;
+		color: $color_shark_approx;
+		text-decoration: none;
+		cursor: default;
+		span {
+			display: block;
+			width: 5em;
+			cursor: default;
+		}
+	}
+	&.disabled {
+		opacity: .5;
+		filter: alpha(opacity=50);
+	}
+}
+div {
+	&.pulldown {
+		border: 1px solid $color_mercury_approx;
+		border-top: none;
+		width: 116px;
+		position: absolute;
+		left: -1px;
+		top: 24px;
+		background: $white;
+		//Instead of the line below you could use @include box-shadow($shadow-1, $shadow-2, $shadow-3, $shadow-4, $shadow-5, $shadow-6, $shadow-7, $shadow-8, $shadow-9, $shadow-10)
+		box-shadow: 2px 5px 6px $color_gallery_approx;
+		z-index: 50;
+		display: none;
+		a {
+			padding: 5px;
+			display: block;
+			text-align: left;
+			color: $color_chicago_approx;
+			&:hover {
+				color: $color_chicago_approx;
+				background: $color_link_water_approx;
+				text-decoration: none;
+			}
+			&.selected {
+				color: $color_mine_shaft_approx;
+				text-decoration: none;
+				cursor: default;
+				background: $color_link_water_approx;
+			}
+		}
+	}
+	&#undefined_mat {
+		//Instead of the line below you could use @include box-shadow($shadow-1, $shadow-2, $shadow-3, $shadow-4, $shadow-5, $shadow-6, $shadow-7, $shadow-8, $shadow-9, $shadow-10)
+		box-shadow: 2px 5px 6px $color_gallery_approx;
+	}
+	&.sctble_mat.nooptgroup div.body {
+		border: 1px solid $color_mercury_approx;
+		border-top: 0;
+		width: 116px;
+	}
+}
+#header #user-nav {
+	float: right;
+	li {
+		float: left;
+		position: relative;
+		&.hed-pull:hover span.name {
+			background: $url_hm_3 no-repeat right center;
+		}
+	}
+	> li {
+		top: 10px;
+		padding-right: 0;
+		position: relative;
+		z-index: 50;
+		cursor: pointer;
+		&.divider {
+			top: 10px;
+			background: $url_hm_1 no-repeat 4px 0;
+			height: 10px;
+			width: 10px;
+			cursor: default;
+		}
+		&.hed-pull {
+			> p {
+				line-height: 1.2;
+				padding: 0 13px;
+				> span.name {
+					padding-right: 14px;
+					background: $url_hm_2 no-repeat right center;
+					display: block;
+					cursor: pointer;
+				}
+			}
+			&.open {
+				top: 4px;
+				background: none;
+				//Instead of the line below you could use @include box-shadow($shadow-1, $shadow-2, $shadow-3, $shadow-4, $shadow-5, $shadow-6, $shadow-7, $shadow-8, $shadow-9, $shadow-10)
+				box-shadow: 0 1px 5px $color_celeste_approx;
+				> p {
+					margin-bottom: 0;
+					padding: 5px 12px 6px;
+					border: 1px solid $color_mountain_mist_approx;
+					border-bottom: none;
+					position: relative;
+					z-index: 10;
+					background-color: $white;
+				}
+				> ul {
+					border: 1px solid $color_mountain_mist_approx;
+					//Instead of the line below you could use @include box-shadow($shadow-1, $shadow-2, $shadow-3, $shadow-4, $shadow-5, $shadow-6, $shadow-7, $shadow-8, $shadow-9, $shadow-10)
+					box-shadow: 2px 2px 8px $color_quill_gray_approx;
+					> li {
+						height: 100%;
+						overflow: visible;
+						> a {
+							@extend %extend_hm_1;
+							&:hover {
+								text-decoration: none;
+							}
+						}
+						> span {
+							@extend %extend_hm_1;
+						}
+						&.change-area {
+							> span {
+								&.txt {
+									cursor: pointer;
+								}
+								&.node-cursor {
+									position: absolute;
+									padding: 0;
+									right: 10px;
+									top: 8px;
+									background: $url_hm_4 no-repeat;
+									width: 5px;
+									height: 7px;
+								}
+							}
+							&:hover > ul {
+								border: 1px solid $color_mountain_mist_approx;
+								//Instead of the line below you could use @include box-shadow($shadow-1, $shadow-2, $shadow-3, $shadow-4, $shadow-5, $shadow-6, $shadow-7, $shadow-8, $shadow-9, $shadow-10)
+								box-shadow: 2px 2px 8px $color_quill_gray_approx;
+								> li {
+									height: 100%;
+									overflow: visible;
+								}
+							}
+						}
+					}
+				}
+				&:hover > p {
+					color: $color_mine_shaft_approx;
+					background-color: $white;
+					> span.name {
+						background: $url_hm_2 no-repeat right center;
+					}
+				}
+			}
+			ul {
+				position: absolute;
+				top: 25px;
+				min-width: 142px;
+				z-index: 5;
+				background: $white;
+				li {
+					height: 0;
+					overflow: hidden;
+					width: 100%;
+					float: none;
+					margin: 0;
+					padding: 0;
+					white-space: nowrap;
+					&:hover {
+						background: $color_link_water_approx;
+					}
+				}
+			}
+			&:hover > p {
+				color: $color_storm_dust_approx;
+			}
+			> ul > li.change-area > ul {
+				top: 0;
+				left: 100%;
+				> li > span {
+					padding: 3px 5px 4px 25px;
+					display: block;
+					color: $color_chicago_approx;
+					&.txt {
+						cursor: pointer;
+					}
+					&.icon {
+						position: absolute;
+						padding: 0;
+						left: 4px;
+						top: 4px;
+						background: $url_hm_5 no-repeat;
+						width: 15px;
+						height: 15px;
+					}
+				}
+			}
+		}
+		&#account-01 {
+			> p {
+				padding-left: 24px;
+				background: $url_hm_6 no-repeat 8px 2px;
+			}
+			&:hover > p {
+				background: $url_hm_7 no-repeat 8px 2px;
+			}
+			&.open > p {
+				padding-left: 27px;
+				background: $url_hm_6 no-repeat 11px 0.6em;
+				background-color: $white;
+			}
+		}
+		&#setting {
+		}
+		&#search {
+			z-index: 45;
+			> div.fullsearch {
+				margin-top: -7px;
+				padding: 0 5px 0 10px;
+			}
+		}
+	}
+	.selectbox {
+		position: relative;
+		z-index: 51;
+		border-top: 1px solid $color_pink_swan_approx;
+		border-right: 1px solid $color_mercury_approx;
+		border-bottm: 1px solid $color_mercury_approx;
+		border-left: 1px solid $color_mercury_approx;
+		//Instead of the line below you could use @include border-radius($radius, $vertical-radius)
+		border-radius: 3px;
+		float: left;
+		width: 116px;
+		background: $white;
+		a {
+			text-decoration: none;
+			color: $color_mine_shaft_approx;
+		}
+		span {
+			padding: 4px 5px 3px 7px;
+			display: block;
+			cursor: pointer;
+			width: 103px;
+			background: $url_hm_8 no-repeat 95px 0.25em;
+		}
+		&:hover span {
+			background: $url_hm_9 no-repeat 95px 0.25em;
+		}
+		.select.select_focus span {
+			background: $url_hm_9 no-repeat 95px 0.25em;
+		}
+	}
+	.search-text {
+		left: 5px;
+		border-top: 1px solid $color_pink_swan_approx;
+		border-right: 1px solid $color_mercury_approx;
+		border-bottm: 1px solid $color_mercury_approx;
+		border-left: 1px solid $color_mercury_approx;
+		//Instead of the line below you could use @include border-radius($radius, $vertical-radius)
+		border-radius: 3px;
+		float: left;
+		position: relative;
+		width: 192px;
+		background: $white;
+		.text {
+			padding: 3px 5px 2px;
+			background: none;
+			border: none;
+			width: 155px;
+		}
+	}
+	.search-submit {
+		border: none;
+		position: absolute;
+		right: 2px;
+		top: 2px;
+		width: 22px;
+		height: 21px;
+		cursor: pointer;
+		text-indent: -9999px;
+		background: $url_hm_10 no-repeat left top;
+		&:hover {
+			background: $url_hm_11 no-repeat left top;
+		}
+	}
+}

@@ -1,0 +1,54 @@
+//colors -> utils/_colors.scss
+// $color_celeste_approx: #cdcdcd;
+// $color_mercury_approx: #e6e6e6;
+
+//urls
+$url_tw1: url(../../../../images/gem/skin/vertical/icon-arrow-08.png);
+
+//ウィジェット共通
+.topview-widget {
+    margin-bottom: 10px;
+    display: block;
+}
+.lyt-shortcut-01 {
+	margin: 0 auto 15px;
+	border: 1px solid $color_celeste_approx;
+	//Instead of the line below you could use @include border-radius($radius, $vertical-radius)
+	border-radius: 4px;
+	width: 175px;
+	position: relative;
+	i {
+		position: absolute;
+		top: 4px;
+		left: 8px;
+		&.fa-2x {
+			font-size: 1.5em;
+			top: 2px;
+		}
+		&.fa-3x {
+			font-size: 1.5em;
+			top: 2px;
+		}
+	}
+	.title {
+		padding: 2px;
+		background: $color_mercury_approx;
+		background: linear-gradient($color_mercury_approx 0, $color_celeste_approx 95%);
+		text-align: center;
+	}
+}
+.widget-contents {
+	padding: 5px 5px 2px;
+	font-size: 92%;
+}
+.link-widget {
+  text-align: right;
+  font-size: 92%;
+  a {
+		padding-left: 12px;
+		background: $url_tw1 no-repeat left 0.45em;
+	}
+  .list-view {
+    padding-right: 12px;
+  }
+}

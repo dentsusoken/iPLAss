@@ -1,0 +1,40 @@
+configurations {
+	wjRuntime
+	jasper
+
+	// ビルドパスが競合してエラーになるのでnpmとbowerのものは除外
+	all*.exclude group: 'org.webjars.npm', module: 'jquery'
+	all*.exclude group: 'org.webjars.bower', module: 'jquery'
+	all*.exclude group: 'org.webjars.bower', module: 'moment'
+}
+
+dependencies {
+	//js
+	wjRuntime 'org.webjars:jquery:3.2.1'
+	wjRuntime 'org.webjars:jquery-ui:1.12.1'
+	wjRuntime 'org.webjars:jquery-ui-src:1.11.4' //datepickerの多言語ファイル
+	wjRuntime 'org.webjars:pdf-js:1.9.426'
+	wjRuntime 'org.webjars:ckeditor:4.7.3'
+	wjRuntime 'org.webjars:select2:4.0.3'
+	wjRuntime 'org.webjars:jquery-blockui:2.70'
+	wjRuntime 'org.webjars:jQuery-Timepicker-Addon:1.6.3'
+	wjRuntime 'org.webjars:momentjs:2.18.1'
+
+	wjRuntime 'org.webjars.npm:free-jqgrid:4.14.1'
+	wjRuntime 'org.webjars.npm:jqtree:1.4.2'
+
+	wjRuntime 'org.webjars.bower:blueimp-file-upload:9.19.1'
+	wjRuntime 'org.webjars.bower:fullcalendar:3.5.1'
+	wjRuntime 'org.webjars.bower:jQuery-contextMenu:2.6.2'
+	wjRuntime 'org.webjars.bower:mediaelement:4.2.5'
+
+	//css
+	wjRuntime 'org.webjars:font-awesome:5.0.9'
+
+	runtime configurations.wjRuntime
+
+	//jsp
+	jasper 'org.apache.tomcat:tomcat-jasper:8.5.24'
+	jasper 'javax.servlet.jsp.jstl:javax.servlet.jsp.jstl-api:1.2.1'
+	jasper group: 'org.glassfish.web', name: 'javax.servlet.jsp.jstl', version: '1.2.3', transitive : false
+}

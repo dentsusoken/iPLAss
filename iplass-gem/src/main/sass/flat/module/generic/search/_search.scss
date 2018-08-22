@@ -1,0 +1,227 @@
+//colors
+// $white: #fff;
+// $color_gallery_approx: #ededed;
+// $color_alto_approx: #ddd;
+// $color_venice_blue_approx: #115d85;
+// $color_quill_gray_approx: #d4d4d4;
+
+//urls
+// $url_gss_1: url(../../../../images/gem/skin/flat/icon-trash.png);
+// $url_gss_2: url(../../../../images/gem/skin/flat/icon-pencil.png);
+
+//@extend-elements
+//original selectors
+//.tbl-search-01 th, .tbl-search-01 td
+%extend_gss_1 {
+	height: 40px;
+	//Instead of the line below you could use @include box-sizing($bs)
+	box-sizing: border-box;
+	border-bottom: 1px solid $color_alto_approx;
+}
+
+
+.tab-wrap {
+	display: block;
+	float: left;
+	width: 100%;
+	margin-bottom: 20px;
+}
+.tabList-search-01 {
+	display: block;
+	float: left;
+	width: 100%;
+	background: $white;
+	border-bottom: 1px solid $color_gallery_approx;
+	.trash {
+		display: block;
+		float: right;
+		height: 43px;
+		width: 43px;
+		text-indent: -9999px;
+		padding-right: 10px;
+		a {
+			display: block;
+			float: left;
+			height: 100%;
+			width: 100%;
+			background: $url_gss_1 center center no-repeat;
+			opacity: 0.5;
+			//Instead of the line below you could use @include transition($transition-1, $transition-2, $transition-3, $transition-4, $transition-5, $transition-6, $transition-7, $transition-8, $transition-9, $transition-10)
+			transition: opacity 300ms;
+			&:hover {
+				opacity: 1;
+			}
+		}
+	}
+}
+.box-search-01 {
+	display: block;
+	float: left;
+	width: 100%;
+	.tab-panel {
+		display: block;
+		float: left;
+		width: 100%;
+		background: $white;
+		padding: 20px;
+		//Instead of the line below you could use @include box-sizing($bs)
+		box-sizing: border-box;
+	}
+}
+.tbl-search-01 {
+	line-height: 70px;
+	border: 1px solid $color_alto_approx;
+	border-bottom: 0;
+	padding: 0;
+	//Instead of the line below you could use @include box-sizing($bs)
+	box-sizing: content-box;
+	tbody {
+		//Instead of the line below you could use @include box-sizing($bs)
+		box-sizing: content-box;
+	}
+	th {
+		@extend %extend_gss_1;
+		padding: 12px 10px;
+		background: $color_gallery_approx;
+		width: 150px;
+		clear: left;
+	}
+	td {
+		@extend %extend_gss_1;
+		padding: 8px 10px;
+		background: $white;
+		width: 350px;
+	}
+	.col1 {
+		width: 20px;
+	}
+	.col5 {
+		width: 20px;
+	}
+	select {
+		width: 100%;
+		height: 24px;
+		margin: 2px 0;
+	}
+	.submit-area {
+		th {
+			background: none;
+		}
+		&:not(.submit-criteria) {
+			td {
+				text-align: center;
+			}
+			input[type=button] {
+				margin: 0 10px;
+			}
+			span {
+				display: none;
+			}
+		}
+	}
+	.btn-toggle-01 {
+		text-align: center;
+	}
+	input {
+		//Instead of the line below you could use @include box-sizing($bs)
+		box-sizing: border-box;
+		border: 1px solid $color_alto_approx;
+		&.form-size-04 {
+			width: 100%;
+		}
+	}
+	input[type=text] {
+		font-size: 1rem;
+		padding: 2px 5px;
+		margin: 2px 0;
+		&.form-size.inpbr {
+			width: 100%;
+		}
+	}
+	input[type=number] {
+		font-size: 1rem;
+		padding: 2px 5px;
+		margin: 2px 0;
+		&.form-size.inpbr {
+			width: 100%;
+		}
+	}
+	&:not([colnum="1"]) td {
+		width: auto;
+	}
+}
+.result-block {
+	display: block;
+	float: left;
+	width: 100%;
+	.list-bin {
+		margin-bottom: 0;
+		width: 100%;
+	}
+}
+.result-data {
+	display: block;
+	float: left;
+	width: 100%;
+	background: $white;
+	//Instead of the line below you could use @include box-sizing($bs)
+	box-sizing: border-box;
+	padding: 20px;
+	.result-nav {
+		margin-bottom: 20px;
+		&.mb15 {
+			margin-top: 20px;
+		}
+	}
+}
+.data-fixed-search .tbl-search-01 .list-radio-01 li {
+	display: block;
+	padding: 5px 0;
+}
+.ui-jqgrid .ui-jqgrid-bdiv td.detail-links {
+	padding: 0 !important;
+	vertical-align: middle;
+	a {
+		color: $color_venice_blue_approx;
+		&:hover {
+			text-decoration: underline;
+		}
+		&.detailLink {
+			font-size: 13px;
+		}
+		&.editLink {
+			display: inline-block;
+			position: relative;
+			vertical-align: middle;
+			height: 20px;
+			width: 20px;
+			overflow: hidden;
+			font-size: 0;
+			color: $color_gallery_approx;
+			background: $color_gallery_approx;
+			//Instead of the line below you could use @include border-radius($radius, $vertical-radius)
+			border-radius: 50%;
+			//Instead of the line below you could use @include transition($transition-1, $transition-2, $transition-3, $transition-4, $transition-5, $transition-6, $transition-7, $transition-8, $transition-9, $transition-10)
+			transition: background 300ms;
+			margin-left: 12px;
+			&:hover {
+				background: $color_quill_gray_approx;
+			}
+		}
+		&.editLink::before {
+			content: '';
+			display: block;
+			position: absolute;
+			top: 0;
+			left: 0;
+			height: 20px;
+			width: 20px;
+			background: $url_gss_2 center center no-repeat;
+		}
+	}
+}
+#csv-download-dialog fieldset {
+	text-align: left;
+	width: 100%;
+	padding: 0 0 5px 5px;
+}

@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!DOCTYPE serviceDefinition>
+<serviceDefinition>
+	<inherits>/mtp-core-service-config.xml</inherits>
+
+	<!-- Rdb Connection Settings -->
+	<service>
+		<interface>org.iplass.mtp.impl.rdb.connection.ConnectionFactory</interface>
+		<!-- Driver Managed Connection -->
+		<!--
+		<class>org.iplass.mtp.impl.rdb.connection.DriverManagerConnectionFactory</class>
+		<property name="url" value="jdbc:mysql://[host]:[port]/[schema]" />
+		<property name="user" value="[user]" />
+		<property name="password" value="[password]" />
+		<property name="driver" value="com.mysql.cj.jdbc.Driver" />
+		-->
+
+		<!-- DataSource Connection -->
+		<!--
+		<class>org.iplass.mtp.impl.rdb.connection.DataSourceConnectionFactory</class>
+		<property name="dataSourceName" value="java:comp/env/jdbc/defaultDS" />
+		-->
+
+		<!-- If change transaction isolation level on create connection, set below. -->
+		<!--
+		<property name="transactionIsolationLevel" value="READ_COMMITTED" />
+		 -->
+
+		<property name="warnLogThreshold" value="0" />
+	</service>
+	<service>
+		<interface>org.iplass.mtp.impl.rdb.adapter.RdbAdapterService</interface>
+
+		<!--
+			for mysql
+			::configable property::
+				timestampMethod :
+					 タイムスタンプ取得関数。（Aws RDSインスタンスの場合 日付がUTC固定のため変換処理を組み込む）
+					 設定例
+					<property name="timestampMethod" value="CONVERT_TZ(NOW(),'+00:00','+09:00')" />
+				supportOptimizerHint :
+					mysql5.7から利用可能なOptimizer Hintsを利用する場合trueを設定
+				localTemporaryTableManageOutsideTransaction :
+					ローカル一時テーブルの管理をトランザクションの外で行う場合trueを設定
+					mysql5.6.5から利用可能なGTIDを利用する場合trueを設定する必要あり
+					但し、localTemporaryTableCreatedByDataSourceにtrueを設定する場合は不要
+				localTemporaryTableCreatedByDataSource :
+					ローカル一時テーブルがデータソースで作成される場合はtrueを設定
+		-->
+		<property name="adapter" class="org.iplass.mtp.impl.rdb.mysql.MysqlRdbAdaptor" inherit="false">
+			<property name="timestampMethod" value="NOW(3)" />
+			<property name="defaultQueryTimeout" value="0" />
+			<property name="supportOptimizerHint" value="true" />
+			<property name="localTemporaryTableManageOutsideTransaction" value="false" />
+			<property name="localTemporaryTableCreatedByDataSource" value="false" />
+		</property>
+	</service>
+
+	<!-- oid counter -->
+	<service name="OidCounter">
+		<interface>org.iplass.mtp.impl.counter.CounterService</interface>
+		<class>org.iplass.mtp.impl.counter.CachableRdbTableCounterService</class>
+		<depend>org.iplass.mtp.impl.rdb.adapter.RdbAdapterService</depend>
+		<depend>org.iplass.mtp.impl.cache.CacheService</depend>
+		<property name="counterTypeName" value="OidCounter" />
+		<property name="cacheSize" value="20" />
+		<property name="retryCount" value="3" />
+	</service>
+
+	<!-- Entity Store Settings -->
+	<service>
+		<interface>org.iplass.mtp.impl.datastore.StoreService</interface>
+		<property name="dataStore" class="org.iplass.mtp.impl.datastore.grdb.GRdbDataStore" inherit="false">
+			<!-- If enable string type's length limitation on query result, specify this.-->
+			<!-- 
+			<property name="stringTypeLengthOnQuery" value="256" />
+			 -->
+			<property name="useCounterService" value="true" />
+			<property name="storageSpace">
+				<property name="storageSpaceName" value="default" />
+				<property name="varcharColumns" value="64" />
+				<property name="decimalColumns" value="32" />
+				<property name="timestampColumns" value="32" />
+				<property name="doubleColumns" value="16" />
+				<property name="indexedVarcharColumns" value="5" />
+				<property name="indexedDecimalColumns" value="4" />
+				<property name="indexedTimestampColumns" value="4" />
+				<property name="indexedDoubleColumns" value="4" />
+				<property name="uniqueIndexedVarcharColumns" value="2" />
+				<property name="uniqueIndexedDecimalColumns" value="2" />
+				<property name="uniqueIndexedTimestampColumns" value="2" />
+				<property name="uniqueIndexedDoubleColumns" value="2" />
+			</property>
+			<property name="storageSpace">
+				<property name="storageSpaceName" value="mtp" />
+				<property name="tableNamePostfix" value="MTP" />
+				<property name="varcharColumns" value="64" />
+				<property name="decimalColumns" value="32" />
+				<property name="timestampColumns" value="32" />
+				<property name="doubleColumns" value="16" />
+				<property name="indexedVarcharColumns" value="5" />
+				<property name="indexedDecimalColumns" value="4" />
+				<property name="indexedTimestampColumns" value="4" />
+				<property name="indexedDoubleColumns" value="4" />
+				<property name="uniqueIndexedVarcharColumns" value="2" />
+				<property name="uniqueIndexedDecimalColumns" value="2" />
+				<property name="uniqueIndexedTimestampColumns" value="2" />
+				<property name="uniqueIndexedDoubleColumns" value="2" />
+			</property>
+			<property name="storageSpace">
+				<property name="storageSpaceName" value="user" />
+				<property name="tableNamePostfix" value="USER" />
+				<property name="varcharColumns" value="64" />
+				<property name="decimalColumns" value="32" />
+				<property name="timestampColumns" value="32" />
+				<property name="doubleColumns" value="16" />
+				<property name="indexedVarcharColumns" value="5" />
+				<property name="indexedDecimalColumns" value="4" />
+				<property name="indexedTimestampColumns" value="4" />
+				<property name="indexedDoubleColumns" value="4" />
+				<property name="uniqueIndexedVarcharColumns" value="2" />
+				<property name="uniqueIndexedDecimalColumns" value="2" />
+				<property name="uniqueIndexedTimestampColumns" value="2" />
+				<property name="uniqueIndexedDoubleColumns" value="2" />
+			</property>
+		</property>
+ 	</service>
+
+	<!-- Lob Store Settings -->
+	<service>
+		<interface>org.iplass.mtp.impl.lob.LobStoreService</interface>
+		<!-- We recommend to use FileLobStore because mysql jdbc driver cannot handle binary data by streaming. -->
+		<property name="binaryStore" class="org.iplass.mtp.impl.lob.lobstore.file.FileLobStore">
+			<property name="rootDir" value="[setYourBinaryFileStoreRootPath]" />
+			<property name="overwriteFile" value="false" />
+		</property>
+	</service>
+</serviceDefinition>

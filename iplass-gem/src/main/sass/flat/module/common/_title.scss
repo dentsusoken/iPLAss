@@ -1,0 +1,61 @@
+//colors
+// $color_apple_approx: #4caf50;
+// $color_amber_approx: #ffc107;
+// $color_red_orange_approx: #f44336;
+// $color_dodger_blue_approx: #2196f3;
+// $color_silver_chalice_approx: #aaa;
+// $color_dell_approx: #3c5e06;
+
+//@extend-elements
+//original selectors
+//h2, h3
+%extend_cti_1 {
+	display: block;
+	float: left;
+	width: 100%;
+	font-weight: normal;
+	font-size: 1.78571rem;
+	letter-spacing: 0.21429rem;
+	margin-bottom: 20px;
+}
+
+h2 {
+	@extend %extend_cti_1;
+}
+h3 {
+	@extend %extend_cti_1;
+	&.hgroup-02-01::before {
+		content: '';
+		display: block;
+		position: absolute;
+		top: 0;
+		left: 0;
+		height: 100%;
+		width: 5px;
+		background: $color_dell_approx;
+	}
+}
+.hgroup-01 {
+	.default-icon {
+		display: none;
+	}
+}
+.hgroup-02-01 {
+	font-size: 1.42857rem;
+	font-weight: bold;
+	position: relative;
+	padding-left: 20px;
+	width: calc(100% - 20px);
+}
+h5 {
+	font-weight: normal;
+	font-size: 1.42857rem;
+	letter-spacing: 0.21429rem;
+	margin-bottom: 15px;
+}
+.hgroup-02 span {
+	font-size: 1rem;
+	letter-spacing: 0.07143rem;
+	margin-left: 20px;
+	color: $color_silver_chalice_approx;
+}

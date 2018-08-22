@@ -1,0 +1,44 @@
+#footer {
+	border-top: 1px solid $color_silver_approx;
+	clear: both;
+	width: 100%;
+	height: 55px;
+	background: $white;
+	z-index: 40;
+	#footer-inner {
+		padding: 0 15px;
+		overflow: hidden;
+	}
+	#pagetop {
+		position: fixed;
+		right: 15px;
+		bottom: 0;
+		z-index: 41;
+		a {
+			padding: 6px 2px 4px 25px;
+			//Instead of the line below you could use @include border-top-left-radius($radius)
+			border-top-left-radius: 5px;
+			//Instead of the line below you could use @include border-top-right-radius($radius)
+			border-top-right-radius: 5px;
+			display: block;
+			width: 98px;
+			color: $white;
+			//Instead of the line below you could use @include text-shadow($shadow-1, $shadow-2, $shadow-3, $shadow-4, $shadow-5, $shadow-6, $shadow-7, $shadow-8, $shadow-9, $shadow-10)
+			text-shadow: -1px -1px 0 $color_gravel_approx;
+			background: $color_tapa_approx $url_ft_1 no-repeat 11px center;
+			&:hover {
+				background: $color_stack_approx $url_ft_1 no-repeat 11px center;
+				text-decoration: none;
+			}
+			span {
+				position: relative;
+				top: 2px;
+				font-size: 12px;
+			}
+		}
+	}
+}
+#copyright {
+	padding: 20px 0;
+	font-size: 83%;
+}

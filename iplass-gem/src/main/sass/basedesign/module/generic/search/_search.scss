@@ -1,0 +1,278 @@
+//colors -> color/_colors.scss
+// $color_pink_swan_approx: #b8b8b8;
+// $color_celeste_approx: #cdcdcd;
+// $color_mercury_approx: #e7e7e7;
+// $gallery: #efefef;
+// $color_tuatara_approx: #383838;
+// $color_gallery_approx: #ededed;
+// $color_quill_gray_approx: #d5d5d5;
+// $color_black_haze_approx: #f6f6f6;
+// $color_log_cabin_approx: #222222;
+// $color_tapa_approx: #777777;
+
+//urls
+// $url_gss1: url(../../../../images/gem/skin/vertical/icon-trash-01.png);
+
+//@extend-elements
+//original selectors
+//.tabList-search-01 li:first-child a, .tabList-search-01 li.current:first-child a
+%extend_1 {
+	padding-left: 5px;
+	//Instead of the line below you could use @include border-top-left-radius($radius)
+	border-top-left-radius: 5px;
+	border-left: none;
+}
+
+//original selectors
+//.chagne-condition, .searching
+%extend_2 {
+	margin-left: 15px;
+	color: $color_tapa_approx;
+	font-size: 81%;
+}
+
+//検索画面
+.tabList-search-01 {
+	border: 1px solid $color_pink_swan_approx;
+	//Instead of the line below you could use @include border-top-left-radius($radius)
+	border-top-left-radius: 5px;
+	//Instead of the line below you could use @include border-top-right-radius($radius)
+	border-top-right-radius: 5px;
+	overflow: hidden;
+	width: 100%;
+	background: $color_celeste_approx;
+	background: linear-gradient($color_mercury_approx 0, $color_celeste_approx 100%) repeat 0 0;
+	&.contract {
+		//Instead of the line below you could use @include border-bottom-left-radius($radius)
+		border-bottom-left-radius: 5px;
+		//Instead of the line below you could use @include border-bottom-right-radius($radius)
+		border-bottom-right-radius: 5px;
+	}
+	ul {
+		float: left;
+		overflow: hidden;
+		min-width: 300px;
+	}
+	li {
+		float: left;
+		font-size: 109%;
+		//Instead of the line below you could use @include text-shadow($shadow-1, $shadow-2, $shadow-3, $shadow-4, $shadow-5, $shadow-6, $shadow-7, $shadow-8, $shadow-9, $shadow-10)
+		text-shadow: 1px 1px 0 $gallery;
+		a {
+			padding: 8px 5px 6px;
+			display: block;
+			min-width: 77px;
+			color: $color_tuatara_approx;
+			border-right: 1px solid $color_pink_swan_approx;
+			border-left: 1px solid $color_gallery_approx;
+			text-align: center;
+		}
+		&:first-child a {
+			@extend %extend_1;
+		}
+		&.current:first-child a {
+			@extend %extend_1;
+		}
+	}
+	p.trash {
+		padding: 9px 10px 0 17px;
+		float: right;
+		background: $url_gss1 no-repeat left 0.95em;
+		//Instead of the line below you could use @include text-shadow($shadow-1, $shadow-2, $shadow-3, $shadow-4, $shadow-5, $shadow-6, $shadow-7, $shadow-8, $shadow-9, $shadow-10)
+		text-shadow: 1px 1px 0 $gallery;
+		a {
+			color: $color_tuatara_approx;
+		}
+	}
+}
+//検索条件
+.box-search-01 {
+	padding: 10px 0 0;
+	border: 1px solid $color_quill_gray_approx;
+	border-top: 0;
+	//Instead of the line below you could use @include border-bottom-left-radius($radius)
+	border-bottom-left-radius: 10px;
+	//Instead of the line below you could use @include border-bottom-right-radius($radius)
+	border-bottom-right-radius: 10px;
+	width: 100%;
+	background: $color_black_haze_approx;
+	.tbl-search-01 {
+		width: 100%;
+		th {
+			padding-bottom: 10px;
+			//Instead of the line below you could use @include text-shadow($shadow-1, $shadow-2, $shadow-3, $shadow-4, $shadow-5, $shadow-6, $shadow-7, $shadow-8, $shadow-9, $shadow-10)
+			text-shadow: 1px 1px 0 $gallery;
+			text-align: left;
+		}
+		td {
+			padding-bottom: 10px;
+			overflow: hidden;
+		}
+	}
+	.submit-area {
+		border-top: 1px dotted $color_quill_gray_approx;
+		p {
+			padding-top: 10px;
+		}
+	}
+}
+//通常検索
+.data-search {
+	input {
+		padding: 2px;
+	}
+	select {
+		padding: 1px;
+	}
+	table {
+    //複数列対応
+		&.multi-col {
+			table-layout: fixed;
+			.col2 input.inpbr {
+				width: 90%;
+			}
+			.col3 input.inpbr {
+				width: 90%;
+			}
+			.col4 input.inpbr {
+				width: 90%;
+			}
+			.col5 input.inpbr {
+				width: 90%;
+			}
+			> tbody > tr {
+				> th {
+					width: 15%;
+				}
+				> td {
+					width: 85%;
+				}
+				&.col2 {
+					> th {
+						width: 15%;
+					}
+					> td {
+						width: 35%;
+					}
+				}
+				&.col3 {
+					> th {
+						width: 15%;
+					}
+					> td {
+						width: 18%;
+					}
+				}
+				&.col4 {
+					> th {
+						width: 10%;
+					}
+					> td {
+						width: 15%;
+					}
+				}
+				&.col5 {
+					> th {
+						width: 8%;
+					}
+					> td {
+						width: 12%;
+					}
+				}
+			}
+		}
+		> tbody > tr {
+			> th {
+				padding: 0 10px 8px;
+				width: 15%;
+			}
+			> td {
+				width: 85%;
+			}
+		}
+	}
+}
+//詳細検索
+.data-deep-search {
+	input {
+		padding: 2px;
+		&.form-size {
+			width: 97%;
+		}
+	}
+	select {
+		padding: 2px;
+		&.form-size {
+			width: 97%;
+		}
+	}
+	th {
+		padding: 0 0 12px 7px;
+		color: $color_log_cabin_approx;
+		font-size: 109%;
+		&.col1 {
+			width: 2%;
+		}
+		&.col2 {
+			width: 30%;
+		}
+		&.col3 {
+			width: 30%;
+		}
+		&.col4 {
+			width: 32%;
+		}
+		&.col5 {
+			width: 6%;
+		}
+	}
+	td {
+		padding: 0 0 8px 7px;
+	}
+	.list-radio-01 {
+		padding-top: 10px;
+	}
+}
+//定型検索
+.data-fixed-search {
+	input {
+		padding: 3px;
+		&.form-size {
+			width: 99%;
+		}
+	}
+	select {
+		padding: 3px;
+		&.form-size {
+			width: 99%;
+		}
+	}
+	th {
+		padding: 0 0 12px 7px;
+		color: $color_log_cabin_approx;
+		font-size: 109%;
+	}
+	td {
+		padding: 0 0 8px 10px;
+	}
+	.list-radio-01 {
+		input {
+			margin: 0 3px 0 0;
+			vertical-align: middle;
+		}
+		li {
+			display: block;
+			margin-bottom: 5px;
+		}
+	}
+}
+//検索結果
+.singleRowSelect {
+	margin-left: 4px;
+}
+.chagne-condition {
+	@extend %extend_2;
+}
+.searching {
+	@extend %extend_2;
+}

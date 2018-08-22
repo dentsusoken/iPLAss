@@ -1,0 +1,304 @@
+/*
+ * Copyright (C) 2015 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
+ * 
+ * Unless you have purchased a commercial license,
+ * the following license terms apply:
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ * 
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
+package org.iplass.adminconsole.client.tools.ui.permissionexplorer;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.iplass.adminconsole.client.base.event.DataChangedEvent;
+import org.iplass.adminconsole.client.base.event.DataChangedHandler;
+import org.iplass.adminconsole.client.tools.data.permissionexplorer.PermissionTreeGridDS;
+import org.iplass.adminconsole.client.tools.data.permissionexplorer.PermissionTreeGridDS.PermissionTreeNode;
+
+import com.smartgwt.client.widgets.grid.ListGridRecord;
+import com.smartgwt.client.widgets.grid.events.CellContextClickEvent;
+import com.smartgwt.client.widgets.grid.events.CellContextClickHandler;
+import com.smartgwt.client.widgets.grid.events.CellDoubleClickEvent;
+import com.smartgwt.client.widgets.grid.events.CellDoubleClickHandler;
+import com.smartgwt.client.widgets.menu.Menu;
+import com.smartgwt.client.widgets.menu.MenuItem;
+import com.smartgwt.client.widgets.menu.events.MenuItemClickEvent;
+import com.smartgwt.client.widgets.tree.TreeGrid;
+import com.smartgwt.client.widgets.tree.TreeNode;
+
+public abstract class PermissionTreeGrid extends TreeGrid implements PermissionGrid {
+
+	private PermissionTreeGridDS ds;
+
+	/**
+	 * <p>全Permission削除処理</p>
+	 *
+	 * @param record 対象Record
+	 * @param rowNum 行番号
+	 * @param defName 対象Definition名
+	 */
+	protected abstract void removeAllDefinitionPermission(PermissionTreeNode record, int rowNum, String defName);
+
+	/**
+	 * <p>ロールPermission削除処理</p>
+	 *
+	 * @param record 対象Record
+	 * @param rowNum 行番号
+	 * @param colNum 列番号
+	 * @param defName 対象Definition名
+	 * @param roleCode 対象ロールコード
+	 * @param roleIndex 対象ロールIndex
+	 */
+	protected abstract void removeRolePermission(PermissionTreeNode record, int rowNum, int colNum, String defName, String roleCode, int roleIndex);
+
+	/**
+	 * <p>Permission編集ダイアログ表示処理</p>
+	 *
+	 * <p>ダイアログを開く際に呼び出されます。
+	 * ダイアログに対してPermissionEditPaneを設定し、showしてください。<p>
+	 *
+	 * @param record 対象Record
+	 * @param defName 対象Definition名
+	 * @param roleCode 対象ロールコード
+	 * @param roleIndex 対象ロールIndex
+	 * @param dialog ダイアログ
+	 */
+	protected abstract void showRolePermissionEditDialog(PermissionTreeNode record, String defName, String roleCode, int roleIndex, PermissionEditDialog dialog);
+
+	/**
+	 * <p>Permission編集ダイアログ結果反映処理</p>
+	 *
+	 * <p>編集ダイアログでOKされた際に呼び出されます。</p>
+	 *
+	 * @param record 対象Record
+	 * @param rowNum 行番号
+	 * @param colNum 列番号
+	 * @param defName 対象Definition名
+	 * @param roleCode 対象ロールコード
+	 * @param roleIndex 対象ロールIndex
+	 * @param event 変更イベント
+	 */
+	protected abstract void applyEditRolePermission(PermissionTreeNode record, int rowNum, int colNum, String defName, String roleCode, int roleIndex, DataChangedEvent event);
+
+
+	public PermissionTreeGrid(PermissionTreeGridDS ds, final Menu contextMenu) {
+		this.ds = ds;
+
+		setWidth100();
+		setHeight100();
+
+		setShowAllRecords(true);
+		setLeaveScrollbarGap(false);
+		setShowSelectedStyle(false);
+
+		setCanFreezeFields(false);
+		setCanGroupBy(false);
+		setCanPickFields(false);
+		setCanSort(false);
+		setCanAutoFitFields(false);
+		setCanDragSelectText(true);	//セルの値をドラッグで選択可能（コピー用）にする
+		setCanSelectCells(true);
+
+		addCellContextClickHandler(new CellContextClickHandler() {
+
+			@Override
+			public void onCellContextClick(CellContextClickEvent event) {
+				int rowNum = event.getRowNum();
+				int colNum = event.getColNum();
+
+				final PermissionTreeNode record = (PermissionTreeNode)event.getRecord();
+
+				if (colNum == 0) {
+					//名前選択(全ロール対象)
+					contextMenu.setItems(new MenuItem[]{createDefinitionContextMenu(record, rowNum)});
+
+				} else {
+					//個別ロール選択
+					contextMenu.setItems(createRoleContextMenu(record, rowNum, colNum));
+				}
+			}
+		});
+
+		addCellDoubleClickHandler(new CellDoubleClickHandler() {
+
+			@Override
+			public void onCellDoubleClick(CellDoubleClickEvent event) {
+				int rowNum = event.getRowNum();
+				int colNum = event.getColNum();
+
+				//名前列は無視
+				if (colNum < 1) {
+					event.cancel();
+					return;
+				}
+
+				//編集処理
+				PermissionTreeNode record = (PermissionTreeNode)event.getRecord();
+				editPermission(record, rowNum, colNum);
+			}
+		});
+
+		setDataSource(ds);
+
+		setHeaderSpans(ds.getHeaderSpan());
+		setHeaderHeight(44);	//デフォルト × 2
+
+		setFields(ds.getTreeGridField());
+
+	}
+
+	public void expandRoot() {
+		getTree().closeAll();
+		getTree().openFolders(getTree().getChildren(getTree().getRoot()));
+	}
+
+	public TreeNode[] getOpenFolders() {
+		return getTree().getOpenList(getTree().getRoot());
+	}
+
+	public void openFolders(TreeNode[] folders) {
+		//単純にopenFoldersしただけだと展開されない(Nodeを作り直しているから？)
+		//getTree().openFolders(folders);
+
+		if (folders == null || folders.length == 0) {
+			expandRoot();
+		} else {
+			List<String> openDefNameList = new ArrayList<String>();
+			for (TreeNode node : folders) {
+				PermissionTreeNode record = (PermissionTreeNode)node;
+				openDefNameList.add(record.getDefinitionName());
+			}
+
+			for (TreeNode node : getTree().getAllNodes()) {
+				PermissionTreeNode record = (PermissionTreeNode)node;
+				if (openDefNameList.contains(record.getDefinitionName())) {
+					//展開されているフォルダの親を展開
+					getTree().openFolder(getTree().getParent(node));
+				}
+			}
+		}
+	}
+
+	@Override
+    protected String getBaseStyle(ListGridRecord record, int rowNum, int colNum) {
+		// grid.setBaseStyleだとセルの高さが不安定になる為ここで指定。
+
+		//名前列は無視
+		if (colNum < 1) {
+			return CELL_STYLE_DEFAULT;
+		}
+
+		PermissionTreeNode precord = (PermissionTreeNode)record;
+		int roleIndex = ds.getColRoleCodeIndex(colNum);
+
+		if (ds.isDeletingPermission(precord, roleIndex)) {
+			return CELL_STYLE_DELETING;
+		} else if (ds.isEditingPermission(precord, roleIndex)) {
+			return CELL_STYLE_EDITING;
+		} else if (ds.isConfiguredPermission(precord, roleIndex)) {
+			return CELL_STYLE_CONFIGURED;
+		} else {
+			return CELL_STYLE_DEFAULT;
+		}
+	}
+
+	/**
+	 * <p>名前列に対するコンテキストメニューを生成します。</p>
+	 *
+	 * @param record 対象レコード
+	 * @param rowNum 行番号
+	 *
+	 * @return コンテキストメニューアイテム
+	 */
+	private MenuItem createDefinitionContextMenu(final PermissionTreeNode record, final int rowNum) {
+
+		final String defName = record.getDefinitionName();
+
+		MenuItem delAllPermissionMenu = new MenuItem("Delete All Permission", "[SKINIMG]/MultiUploadItem/icon_remove_files.png");
+		delAllPermissionMenu.addClickHandler(new com.smartgwt.client.widgets.menu.events.ClickHandler() {
+			@Override
+			public void onClick(MenuItemClickEvent event) {
+				removeAllDefinitionPermission(record, rowNum, defName);
+			}
+		});
+		delAllPermissionMenu.setEnabled(ds.canDeleteAllPermission(record));
+
+		return delAllPermissionMenu;
+	}
+
+	/**
+	 * <p>Role列に対するコンテキストメニューを生成します。</p>
+	 *
+	 * @param record 対象レコード
+	 * @param rowNum 行番号
+	 * @param colNum 列番号
+	 * @return コンテキストメニューアイテム
+	 */
+	private MenuItem[] createRoleContextMenu(final PermissionTreeNode record, final int rowNum, final int colNum) {
+
+		final String defName = record.getDefinitionName();
+		final String roleCode = ds.getColRoleCode(colNum);
+		final int roleIndex = ds.getColRoleCodeIndex(colNum);
+
+		MenuItem editPermissionMenu = new MenuItem("Edit Permission", "[SKINIMG]/MultiUploadItem/icon_add_files.png");
+		editPermissionMenu.addClickHandler(new com.smartgwt.client.widgets.menu.events.ClickHandler() {
+			@Override
+			public void onClick(MenuItemClickEvent event) {
+				editPermission(record, rowNum, colNum);
+			}
+
+		});
+
+		MenuItem delPermissionMenu = new MenuItem("Delete Permission", "[SKINIMG]/MultiUploadItem/icon_remove_files.png");
+		delPermissionMenu.addClickHandler(new com.smartgwt.client.widgets.menu.events.ClickHandler() {
+			@Override
+			public void onClick(MenuItemClickEvent event) {
+				removeRolePermission(record, rowNum, colNum, defName, roleCode, roleIndex);
+			}
+
+		});
+		delPermissionMenu.setEnabled(ds.canDeletePermission(record, roleIndex));
+
+		return new MenuItem[]{editPermissionMenu, delPermissionMenu};
+	}
+
+	/**
+	 * <p>Permissionの編集を行います。</p>
+	 *
+	 * <p>コンテキストメニュー、またはセルダブルクリック時に呼び出します。</p>
+	 *
+	 * @param record 対象レコード
+	 * @param rowNum 行番号
+	 * @param colNum 列番号
+	 */
+	private void editPermission(final PermissionTreeNode record, final int rowNum, final int colNum) {
+
+		final String defName = record.getDefinitionName();
+		final String roleCode = ds.getColRoleCode(colNum);
+		final int roleIndex = ds.getColRoleCodeIndex(colNum);
+
+		final PermissionEditDialog dialog = new PermissionEditDialog();
+		dialog.addDataChangeHandler(new DataChangedHandler() {
+
+			@Override
+			public void onDataChanged(DataChangedEvent event) {
+				applyEditRolePermission(record, rowNum, colNum, defName, roleCode, roleIndex, event);
+			}
+		});
+
+		showRolePermissionEditDialog(record, defName, roleCode, roleIndex, dialog);
+	}
+}

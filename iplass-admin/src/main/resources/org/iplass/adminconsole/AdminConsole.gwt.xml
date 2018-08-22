@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE module PUBLIC "-//Google Inc.//DTD Google Web Toolkit 2.8.2//EN" "http://gwtproject.org/doctype/2.8.2/gwt-module.dtd">
+<module rename-to='mtpadmin'>
+
+	<inherits name="org.iplass.adminconsole.AdminConsoleBase"/>
+
+	<!-- http://www.gwtproject.org/doc/latest/DevGuideLogging.html -->
+	<!-- https://gwt.googlesource.com/gwt/+/2.6.0-rc1/samples/logexample/src/com/google/gwt/sample/logexample/client/LogExample.java -->
+	<inherits name="com.google.gwt.logging.Logging" />
+	<set-property name="gwt.logging.enabled" value="FALSE"/>
+
+	<!-- switch metadata plugins -->
+	<replace-with class="org.iplass.adminconsole.client.metadata.ui.MetaDataPluginControllerImpl">
+		<when-type-is class="org.iplass.adminconsole.client.metadata.ui.MetaDataPluginController"/>
+	</replace-with>
+
+	<!-- switch metadata sharable controll -->
+	<replace-with class="org.iplass.adminconsole.client.metadata.ui.common.MetaDataSharableControllerImpl">
+		<when-type-is class="org.iplass.adminconsole.client.metadata.ui.common.MetaDataSharableController"/>
+	</replace-with>
+
+	<!-- switch tenant controll -->
+	<replace-with class="org.iplass.adminconsole.client.metadata.ui.tenant.TenantPluginControllerImpl">
+		<when-type-is class="org.iplass.adminconsole.client.metadata.ui.tenant.TenantPluginController"/>
+	</replace-with>
+
+	<!-- switch auth policy attribute controll -->
+	<replace-with class="org.iplass.adminconsole.client.metadata.ui.auth.AuthenticationPolicyAttributeControllerImpl">
+		<when-type-is class="org.iplass.adminconsole.client.metadata.ui.auth.AuthenticationPolicyAttributeController"/>
+	</replace-with>
+
+	<!-- switch entity attribute controll -->
+	<replace-with class="org.iplass.adminconsole.client.metadata.ui.entity.EntityAttributePaneControllerImpl">
+		<when-type-is class="org.iplass.adminconsole.client.metadata.ui.entity.EntityAttributePaneController"/>
+	</replace-with>
+
+	<!-- switch entity property common attribute controll -->
+	<replace-with class="org.iplass.adminconsole.client.metadata.ui.entity.property.common.PropertyCommonAttributeControllerImpl">
+		<when-type-is class="org.iplass.adminconsole.client.metadata.ui.entity.property.common.PropertyCommonAttributeController"/>
+	</replace-with>
+
+	<!-- switch entity property type attribute controll -->
+	<replace-with class="org.iplass.adminconsole.client.metadata.ui.entity.property.type.PropertyTypeAttributeControllerImpl">
+		<when-type-is class="org.iplass.adminconsole.client.metadata.ui.entity.property.type.PropertyTypeAttributeController"/>
+	</replace-with>
+
+	<!-- switch entity related widget -->
+	<replace-with class="org.iplass.adminconsole.client.metadata.ui.entity.layout.SearchLayoutPanelImpl">
+		<when-type-is class="org.iplass.adminconsole.client.metadata.ui.entity.layout.SearchLayoutPanel"/>
+	</replace-with>
+	<replace-with class="org.iplass.adminconsole.client.metadata.ui.entity.layout.DetailLayoutPanelImpl">
+		<when-type-is class="org.iplass.adminconsole.client.metadata.ui.entity.layout.DetailLayoutPanel"/>
+	</replace-with>
+	<replace-with class="org.iplass.adminconsole.client.metadata.ui.entity.viewcontrol.ViewControlPanelImpl">
+		<when-type-is class="org.iplass.adminconsole.client.metadata.ui.entity.viewcontrol.ViewControlPanel"/>
+	</replace-with>
+	<replace-with class="org.iplass.adminconsole.client.metadata.ui.entity.filter.FilterEditPanelImpl">
+		<when-type-is class="org.iplass.adminconsole.client.metadata.ui.entity.filter.FilterEditPanel"/>
+	</replace-with>
+	<replace-with class="org.iplass.adminconsole.client.metadata.ui.entity.webapi.EntityWebApiEditPanelImpl">
+		<when-type-is class="org.iplass.adminconsole.client.metadata.ui.entity.webapi.EntityWebApiEditPanel"/>
+	</replace-with>
+
+	<!-- switch entity view section controll -->
+	<replace-with class="org.iplass.adminconsole.client.metadata.ui.entity.layout.item.element.section.SectionWindowControllerImpl">
+		<when-type-is class="org.iplass.adminconsole.client.metadata.ui.entity.layout.item.element.section.SectionWindowController"/>
+	</replace-with>
+	<!-- switch entity view MetaFieldSettingParts controll -->
+	<replace-with class="org.iplass.adminconsole.client.metadata.ui.entity.layout.metafield.MetaFieldSettingPartsControllerImpl">
+		<when-type-is class="org.iplass.adminconsole.client.metadata.ui.entity.layout.metafield.MetaFieldSettingPartsController"/>
+	</replace-with>
+
+	<!-- switch top view parts controll -->
+	<replace-with class="org.iplass.adminconsole.client.metadata.ui.top.PartsControllerImpl">
+		<when-type-is class="org.iplass.adminconsole.client.metadata.ui.top.PartsController"/>
+	</replace-with>
+	<!-- switch top view CsvDownloadSettingsParts controll -->
+	<replace-with class="org.iplass.adminconsole.client.metadata.ui.top.item.CsvDownloadSettingsItem.CsvDownloadSettingsPartsFormControllerImpl">
+		<when-type-is class="org.iplass.adminconsole.client.metadata.ui.top.item.CsvDownloadSettingsItem.CsvDownloadSettingsPartsFormController"/>
+	</replace-with>
+	<!-- switch top view ToolbarNodeManager -->
+	<replace-with class="org.iplass.adminconsole.client.metadata.ui.top.node.ToolbarNodeManager.ToolbarNodeManagerControllerImpl">
+		<when-type-is class="org.iplass.adminconsole.client.metadata.ui.top.node.ToolbarNodeManager.ToolbarNodeManagerController"/>
+	</replace-with>
+
+	<!-- switch tools plugins -->
+	<replace-with class="org.iplass.adminconsole.client.tools.ui.ToolsPluginControllerImpl">
+		<when-type-is class="org.iplass.adminconsole.client.tools.ui.ToolsPluginController"/>
+	</replace-with>
+
+	<!-- switch lang explorer setting controll -->
+	<replace-with class="org.iplass.adminconsole.client.tools.ui.langexplorer.LangExplorerSettingControllerImpl">
+		<when-type-is class="org.iplass.adminconsole.client.tools.ui.langexplorer.LangExplorerSettingController"/>
+	</replace-with>
+
+	<!-- switch entity explorer main controll -->
+	<replace-with class="org.iplass.adminconsole.client.tools.ui.entityexplorer.EntityExplorerMainPaneControllerImpl">
+		<when-type-is class="org.iplass.adminconsole.client.tools.ui.entityexplorer.EntityExplorerMainPaneController"/>
+	</replace-with>
+
+	<!-- switch permission explorer main controll -->
+	<replace-with class="org.iplass.adminconsole.client.tools.ui.permissionexplorer.PermissionExplorerMainPaneControllerImpl">
+		<when-type-is class="org.iplass.adminconsole.client.tools.ui.permissionexplorer.PermissionExplorerMainPaneController"/>
+	</replace-with>
+
+	<!-- Specify the app entry point class.                         -->
+	<entry-point class='org.iplass.adminconsole.client.AdminConsole'/>
+
+</module>

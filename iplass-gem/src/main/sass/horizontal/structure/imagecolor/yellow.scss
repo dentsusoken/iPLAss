@@ -1,0 +1,43 @@
+/*
+ * Copyright (C) 2018 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
+ *
+ * Unless you have purchased a commercial license,
+ * the following license terms apply:
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
+//colors
+$COLOR_IMAGE_COLOR: #f0bb4a;
+$COLOR_LINK_COLOR: #f7dfab;
+$COLOR_NAVDETAIL_BORDER_BOTTOM: #e8ca89;
+$COLOR_NAVDETAIL_BACKGROUND: #e8ca89;
+$COLOR_NAVDETAIL_BACKGROUND_LINER_GRADIENT1: #e8ca89;
+$COLOR_NAVDETAIL_BACKGROUND_LINER_GRADIENT2: #f7e5bc;
+$COLOR_NAVDETAIL_ITEM_HOVER_BACKGROUND: #fff6e4;
+$COLOR_NAVDETAIL_LINK_HOVER_BACKGROUND: #b08427;
+$COLOR_NAVDETAIL_LINK_HOVER_BACKGROUND_LINER_GRADIENT: #d5a642;
+$COLOR_NAVWRAP_HOVER_BACKGROUND: #b08427;
+$COLOR_NAVWRAP_LIST_BACKGROUND: #fff6e4;
+$COLOR_NAVWRAP_ITEM_HOVER_BACKGROUND: #e8ca89;
+$COLOR_MENU_NODE_HOVER_BORDER: #f0bf58;
+$COLOR_MENU_NODE_HOVER_BACKGROUND: #fff6e4;
+
+//urls
+$url_imagecolor_01: url(../../../../../images/gem/skin/horizontal/bg-navyellow-01.png);
+$url_imagecolor_02: url(../../../../../images/gem/skin/horizontal/icon-navyellow-02.png);
+
+$color_name: yellow;
+
+@import "imagecolor";

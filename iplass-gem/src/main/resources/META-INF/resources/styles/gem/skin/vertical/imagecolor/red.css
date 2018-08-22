@@ -1,0 +1,63 @@
+/*
+ * Copyright (C) 2018 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
+ *
+ * Unless you have purchased a commercial license,
+ * the following license terms apply:
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+#nav li.bg-red.menu-action.selected p a, #nav li.bg-red.menu-entity.selected p a {
+  background: url(../../../../../images/gem/skin/vertical/icon-navred-02.png), #ffb9b7;
+  background: url(../../../../../images/gem/skin/vertical/icon-navred-02.png), linear-gradient(#f3dbd9 0, #f6bab8 51%, #f6bab8 51%, #ffb9b7 54%, #ffb9b7 100%);
+  background-repeat: no-repeat;
+  background-position: 5% 50%; }
+
+.hgroup-01 span.imgclr_red svg {
+  color: #ed6f6b; }
+
+#nav li.bg-red.menu-action p a:hover {
+  background: #ffb9b7;
+  background: linear-gradient(#f3dbd9 0, #f6bab8 51%, #f6bab8 51%, #ffb9b7 54%, #ffb9b7 100%); }
+
+#nav li.bg-red.menu-entity p a:hover {
+  background: #ffb9b7;
+  background: linear-gradient(#f3dbd9 0, #f6bab8 51%, #f6bab8 51%, #ffb9b7 54%, #ffb9b7 100%); }
+
+#nav li.bg-red.hover ul.nav-detail {
+  border-color: #ed6f6b; }
+  #nav li.bg-red.hover ul.nav-detail li.current a {
+    background: #fff2f1;
+    font-weight: bold; }
+  #nav li.bg-red.hover ul.nav-detail li.menu-node.selected > a {
+    background: #fff2f1; }
+  #nav li.bg-red.hover ul.nav-detail li.menu-action.selected > a {
+    background: url(../../../../../images/gem/skin/vertical/icon-navred-02.png) no-repeat scroll 5% 50% #fff2f1; }
+  #nav li.bg-red.hover ul.nav-detail li.menu-entity.selected > a {
+    background: url(../../../../../images/gem/skin/vertical/icon-navred-02.png) no-repeat scroll 5% 50% #fff2f1; }
+  #nav li.bg-red.hover ul.nav-detail a:hover {
+    background: #fff2f1; }
+
+#nav li.bg-red.hover ul.subMenuList li:hover {
+  background: #fff2f1; }
+
+#nav li.bg-red.hover p a {
+  background: #ffb9b7;
+  background: linear-gradient(#f3dbd9 0, #f6bab8 51%, #f6bab8 51%, #ffb9b7 54%, #ffb9b7 100%);
+  border: 1px solid #ed6f6b;
+  border-bottom: none; }
+
+#nav li.bg-red p a {
+  background: #f6bab8;
+  background: linear-gradient(#fce4e2 0, #f7c5c3 51%, #f7c5c3 51%, #f6bab8 54%, #f3a19f 100%);
+  border: 1px solid #ed6f6b; }

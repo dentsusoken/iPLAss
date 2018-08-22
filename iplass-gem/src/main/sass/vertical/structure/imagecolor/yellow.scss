@@ -1,0 +1,39 @@
+/*
+ * Copyright (C) 2018 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
+ *
+ * Unless you have purchased a commercial license,
+ * the following license terms apply:
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
+//colors
+$COLOR_IMAGE_COLOR: #f0bb4a;
+$COLOR_LINK_HOVER_BACKGROUND: #f6da9e;
+$COLOR_LINK_HOVER_BACKGROUND_LINER_GRADIENT1: #f3ebd8;
+$COLOR_LINK_HOVER_BACKGROUND_LINER_GRADIENT2: #fae4b3;
+$COLOR_NAVDETAIL_BORDER: #f0bb4a;
+$COLOR_NAVDETAIL_HOVER_BACKGROUND: #fff6e4;
+$COLOR_LINK_BORDER: #f0bb4a;
+$COLOR_LINK_BACKGROUND: #f6da9e;
+$COLOR_LINK_BACKGROUND_LINER_GRADIENT1: #fcf4e1;
+$COLOR_LINK_BACKGROUND_LINER_GRADIENT2: #f7e1b0;
+$COLOR_LINK_BACKGROUND_LINER_GRADIENT3: #f2cc7a;
+
+//urls
+$url_imagecolor_01: url(../../../../../images/gem/skin/vertical/icon-navyellow-02.png);
+
+$color_name: yellow;
+
+@import "imagecolor";

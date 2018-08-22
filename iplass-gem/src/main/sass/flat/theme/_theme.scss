@@ -1,0 +1,70 @@
+.ui-widget-header {
+	background: $base_color;
+}
+.flat-block-top {
+	border-top: 2px solid $base_color;
+}
+.ui-accordion {
+	.ui-state-active {
+		border: 1px solid $base_color;
+	}
+	.ui-widget-content .ui-state-active {
+		border: 1px solid $base_color;
+		&.ui-state-hover {
+			border: 1px solid $base_color;
+		}
+	}
+	.ui-widget-header .ui-state-active {
+		border: 1px solid $base_color;
+		&.ui-state-hover {
+			border: 1px solid $base_color;
+		}
+	}
+}
+.tabList {
+	border-top: 2px solid $base_color;
+	.tab-menu {
+		li::after {
+			border-top: 11px solid $base_color;
+		}
+		li.current {
+			background: $base_color;
+			a {
+				background: $base_color;
+			}
+		}
+	}
+}
+.formArchive {
+	border-top: 2px solid $base_color;
+}
+input[type=button].gr-btn {
+	background-color: $base_color;
+	&:hover {
+		background-color: $button_hover_color;
+	}
+}
+input[type=submit].gr-btn {
+	background-color: $base_color;
+	&:hover {
+		background-color: $button_hover_color;
+	}
+}
+ul.jqtree-tree li.jqtree-selected > .jqtree-element {
+	background: $selection_color;
+	&:hover {
+		background: $selection_color;
+	}
+}
+.ui-jqgrid .ui-jqgrid-bdiv tr.ui-row-ltr > td.jqgrid_select_cell {
+	background-color: $selection_color !important;
+}
+#header-container #header {
+	background: $base_color;
+}
+body.nomenu-layout #header-container .cms-title {
+	background-color: $base_color;
+}
+h3.hgroup-02-01::before {
+	background: $header_color;
+}

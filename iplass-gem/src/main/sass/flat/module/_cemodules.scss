@@ -1,0 +1,64 @@
+@import "vars/urls";
+@import "vars/colors";
+@import "vars/fonts";
+
+/*--------
+ 共通
+--------*/
+@import "common/base";
+@import "common/etc";
+@import "common/input";
+@import "common/tooltip";
+@import "common/operation";
+@import "common/title";
+@import "common/tabs";
+@import "common/modal";
+
+@import "error/error";
+
+/* jquery plugins */
+@import "plugins/jqueryui";
+@import "plugins/jqgrid";
+@import "plugins/jqtree";
+
+/*--------------------------*/
+/* topview */
+/*--------------------------*/
+@import "topview/parts";
+@import "topview/separator";
+@import "topview/widget";
+
+/*--------------------------*/
+/* contents */
+/*--------------------------*/
+
+/* 認証系 */
+@import "auth/lastlogin";
+@import "auth/maintenance";
+
+/* お知らせ */
+@import "information/list";
+@import "information/view";
+
+/* 汎用画面 */
+@import "generic/common";
+@import "generic/search/search";
+@import "generic/search/csvupload";
+@import "generic/search/trash";
+@import "generic/search/parts";
+@import "generic/search/widget";
+@import "generic/detail/detail";
+
+/* カレンダー */
+@import "calendar/calendar";
+@import "calendar/widget";
+
+/* ツリービュー */
+@import "treeview/parts";
+
+/* 全文検索 */
+@import "fulltextsearch/fulltextsearch";
+
+/* About */
+@import "about/about";
+

@@ -1,0 +1,43 @@
+/*
+ * Copyright (C) 2018 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
+ *
+ * Unless you have purchased a commercial license,
+ * the following license terms apply:
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
+//colors
+$COLOR_IMAGE_COLOR: #b9e15c;
+$COLOR_LINK_COLOR: #dcf0aa;
+$COLOR_NAVDETAIL_BORDER_BOTTOM: #a4b476;
+$COLOR_NAVDETAIL_BACKGROUND: #c5d79b;
+$COLOR_NAVDETAIL_BACKGROUND_LINER_GRADIENT1: #c5d79b;
+$COLOR_NAVDETAIL_BACKGROUND_LINER_GRADIENT2: #dcf0aa;
+$COLOR_NAVDETAIL_ITEM_HOVER_BACKGROUND: #f3f9e4;
+$COLOR_NAVDETAIL_LINK_HOVER_BACKGROUND: #6c9120;
+$COLOR_NAVDETAIL_LINK_HOVER_BACKGROUND_LINER_GRADIENT: #8eae4b;
+$COLOR_NAVWRAP_HOVER_BACKGROUND: #6c9120;
+$COLOR_NAVWRAP_LIST_BACKGROUND: #f3f9e4;
+$COLOR_NAVWRAP_ITEM_HOVER_BACKGROUND: #c5d79b;
+$COLOR_MENU_NODE_HOVER_BORDER: #b8cf7a;
+$COLOR_MENU_NODE_HOVER_BACKGROUND: #f3f9e4;
+
+//urls
+$url_imagecolor_01: url(../../../../../images/gem/skin/horizontal/bg-navgreen-01.png);
+$url_imagecolor_02: url(../../../../../images/gem/skin/horizontal/icon-navgreen-02.png);
+
+$color_name: green;
+
+@import "imagecolor";

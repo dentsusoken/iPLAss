@@ -1,0 +1,63 @@
+/*
+ * Copyright (C) 2018 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
+ *
+ * Unless you have purchased a commercial license,
+ * the following license terms apply:
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+#nav li.bg-yellow.menu-action.selected p a, #nav li.bg-yellow.menu-entity.selected p a {
+  background: url(../../../../../images/gem/skin/vertical/icon-navyellow-02.png), #f6da9e;
+  background: url(../../../../../images/gem/skin/vertical/icon-navyellow-02.png), linear-gradient(#f3ebd8 0, #fae4b3 51%, #fae4b3 51%, #f6da9e 54%, #f6da9e 100%);
+  background-repeat: no-repeat;
+  background-position: 5% 50%; }
+
+.hgroup-01 span.imgclr_yellow svg {
+  color: #f0bb4a; }
+
+#nav li.bg-yellow.menu-action p a:hover {
+  background: #f6da9e;
+  background: linear-gradient(#f3ebd8 0, #fae4b3 51%, #fae4b3 51%, #f6da9e 54%, #f6da9e 100%); }
+
+#nav li.bg-yellow.menu-entity p a:hover {
+  background: #f6da9e;
+  background: linear-gradient(#f3ebd8 0, #fae4b3 51%, #fae4b3 51%, #f6da9e 54%, #f6da9e 100%); }
+
+#nav li.bg-yellow.hover ul.nav-detail {
+  border-color: #f0bb4a; }
+  #nav li.bg-yellow.hover ul.nav-detail li.current a {
+    background: #fff6e4;
+    font-weight: bold; }
+  #nav li.bg-yellow.hover ul.nav-detail li.menu-node.selected > a {
+    background: #fff6e4; }
+  #nav li.bg-yellow.hover ul.nav-detail li.menu-action.selected > a {
+    background: url(../../../../../images/gem/skin/vertical/icon-navyellow-02.png) no-repeat scroll 5% 50% #fff6e4; }
+  #nav li.bg-yellow.hover ul.nav-detail li.menu-entity.selected > a {
+    background: url(../../../../../images/gem/skin/vertical/icon-navyellow-02.png) no-repeat scroll 5% 50% #fff6e4; }
+  #nav li.bg-yellow.hover ul.nav-detail a:hover {
+    background: #fff6e4; }
+
+#nav li.bg-yellow.hover ul.subMenuList li:hover {
+  background: #fff6e4; }
+
+#nav li.bg-yellow.hover p a {
+  background: #f6da9e;
+  background: linear-gradient(#f3ebd8 0, #fae4b3 51%, #fae4b3 51%, #f6da9e 54%, #f6da9e 100%);
+  border: 1px solid #f0bb4a;
+  border-bottom: none; }
+
+#nav li.bg-yellow p a {
+  background: #f6da9e;
+  background: linear-gradient(#fcf4e1 0, #f7e1b0 51%, #f7e1b0 51%, #f6da9e 54%, #f2cc7a 100%);
+  border: 1px solid #f0bb4a; }

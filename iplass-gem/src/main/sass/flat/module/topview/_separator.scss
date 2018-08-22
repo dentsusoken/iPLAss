@@ -1,0 +1,34 @@
+//colors
+//$color_quill_gray_approx: #d4d4d4;
+
+.col2-wrap {
+	display: block;
+	float: left;
+	width: 100%;
+	margin-bottom: 20px;
+	.col-left {
+		display: block;
+		float: left;
+		width: 50%;
+		min-height: 1px;
+		//Instead of the line below you could use @include box-sizing($bs)
+		box-sizing: border-box;
+		padding-right: 20px;
+		border-right: 1px solid $color_quill_gray_approx;
+	}
+	.col-right {
+		display: block;
+		float: left;
+		width: 50%;
+		min-height: 1px;
+		//Instead of the line below you could use @include box-sizing($bs)
+		box-sizing: border-box;
+		padding-left: 20px;
+		border-left: 1px solid $color_quill_gray_approx;
+		position: relative;
+		left: -1px;
+		> div + div {
+			margin-top: 20px !important;
+		}
+	}
+}

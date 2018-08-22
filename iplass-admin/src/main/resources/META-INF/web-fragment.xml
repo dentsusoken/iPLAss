@@ -1,0 +1,340 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-fragment
+	xmlns="http://java.sun.com/xml/ns/javaee"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-fragment_3_0.xsd"
+	version="3.0" >
+
+	<name>mtp_admin</name>
+
+	<display-name>mtp admin web-fragment</display-name>
+
+	<distributable/>
+
+	<!-- for adminConsole (gwt) -->
+
+	<!-- gwt XSRF security -->
+	<servlet>
+		<servlet-name>xsrf</servlet-name>
+		<servlet-class>com.google.gwt.user.server.rpc.XsrfTokenServiceServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>xsrf</servlet-name>
+		<url-pattern>/admin/mtpadmin/xsrf</url-pattern>
+	</servlet-mapping>
+
+	<context-param>
+		<!-- set session cookie name -->
+		<param-name>gwt.xsrf.session_cookie_name</param-name>
+		<param-value>JSESSIONID</param-value>
+	</context-param>
+
+	<!-- comunity edition -->
+
+	<servlet>
+		<servlet-name>adminMetaDataService</servlet-name>
+		<servlet-class>org.iplass.adminconsole.server.metadata.rpc.MetaDataServiceImpl</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>adminMetaDataService</servlet-name>
+		<url-pattern>/admin/mtpadmin/service/metaData</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>adminRefrectionService</servlet-name>
+		<servlet-class>org.iplass.adminconsole.server.metadata.rpc.refrect.RefrectionServiceImpl</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>adminRefrectionService</servlet-name>
+		<url-pattern>/admin/mtpadmin/service/refrection</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>adminTenantService</servlet-name>
+		<servlet-class>org.iplass.adminconsole.server.base.rpc.tenant.TenantServiceImpl</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>adminTenantService</servlet-name>
+		<url-pattern>/admin/mtpadmin/service/tenant</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>adminEqlService</servlet-name>
+		<servlet-class>org.iplass.adminconsole.server.base.rpc.entity.EqlServiceImpl</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>adminEqlService</servlet-name>
+		<url-pattern>/admin/mtpadmin/service/eql</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>adminEntityExplorerService</servlet-name>
+		<servlet-class>org.iplass.adminconsole.server.tools.rpc.entityexplorer.EntityExplorerServiceImpl</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>adminEntityExplorerService</servlet-name>
+		<url-pattern>/admin/mtpadmin/service/entityexplorer</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>adminEntityCsvDownloadService</servlet-name>
+		<servlet-class>org.iplass.adminconsole.server.tools.rpc.entityexplorer.EntityCsvDownloadServiceImpl</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>adminEntityCsvDownloadService</servlet-name>
+		<url-pattern>/admin/mtpadmin/service/entitydownload</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>adminEntityCsvUploadService</servlet-name>
+		<servlet-class>org.iplass.adminconsole.server.tools.rpc.entityexplorer.EntityCsvUploadServiceImpl</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>adminEntityCsvUploadService</servlet-name>
+		<url-pattern>/admin/mtpadmin/service/entityupload</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>adminEntityConfigDownloadService</servlet-name>
+		<servlet-class>org.iplass.adminconsole.server.tools.rpc.entityexplorer.EntityConfigDownloadServiceImpl</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>adminEntityConfigDownloadService</servlet-name>
+		<url-pattern>/admin/mtpadmin/service/entityconfigdownload</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>adminMetaDataExplorerService</servlet-name>
+		<servlet-class>org.iplass.adminconsole.server.tools.rpc.metaexplorer.MetaDataExplorerServiceImpl</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>adminMetaDataExplorerService</servlet-name>
+		<url-pattern>/admin/mtpadmin/service/metaexplorer</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>adminMetaDataConfigDownloadService</servlet-name>
+		<servlet-class>org.iplass.adminconsole.server.tools.rpc.metaexplorer.MetaDataConfigDownloadServiceImpl</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>adminMetaDataConfigDownloadService</servlet-name>
+		<url-pattern>/admin/mtpadmin/service/metaconfigdownload</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>adminMetaDataConfigUploadService</servlet-name>
+		<servlet-class>org.iplass.adminconsole.server.tools.rpc.metaexplorer.MetaDataConfigUploadServiceImpl</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>adminMetaDataConfigUploadService</servlet-name>
+		<url-pattern>/admin/mtpadmin/service/metaconfigupload</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>adminMetaDataNameListDownloadService</servlet-name>
+		<servlet-class>org.iplass.adminconsole.server.tools.rpc.metaexplorer.MetaDataNameListDownloadServiceImpl</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>adminMetaDataNameListDownloadService</servlet-name>
+		<url-pattern>/admin/mtpadmin/service/metanamelistdownload</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>adminLogExplorerService</servlet-name>
+		<servlet-class>org.iplass.adminconsole.server.tools.rpc.logexplorer.LogExplorerServiceImpl</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>adminLogExplorerService</servlet-name>
+		<url-pattern>/admin/mtpadmin/service/logexplorer</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>adminLogFileDownloadService</servlet-name>
+		<servlet-class>org.iplass.adminconsole.server.tools.rpc.logexplorer.LogFileDownloadServiceImpl</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>adminLogFileDownloadService</servlet-name>
+		<url-pattern>/admin/mtpadmin/service/logfiledownload</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>adminBinaryTemplateUploadService</servlet-name>
+		<servlet-class>org.iplass.adminconsole.server.metadata.rpc.template.BinaryTemplateUploadServiceImpl</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>adminBinaryTemplateUploadService</servlet-name>
+		<url-pattern>/admin/mtpadmin/service/binarytemplateupload</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>adminBinaryTemplateDownloadService</servlet-name>
+		<servlet-class>org.iplass.adminconsole.server.metadata.rpc.template.BinaryTemplateDownloadServiceImpl</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>adminBinaryTemplateDownloadService</servlet-name>
+		<url-pattern>/admin/mtpadmin/service/binarytemplatedownload</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>adminReportTemplateUploadService</servlet-name>
+		<servlet-class>org.iplass.adminconsole.server.metadata.rpc.template.ReportTemplateUploadServiceImpl</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>adminReportTemplateUploadService</servlet-name>
+		<url-pattern>/admin/mtpadmin/service/reporttemplateupload</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>adminReportTemplateDownloadService</servlet-name>
+		<servlet-class>org.iplass.adminconsole.server.metadata.rpc.template.ReportTemplateDownloadServiceImpl</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>adminReportTemplateDownloadService</servlet-name>
+		<url-pattern>/admin/mtpadmin/service/reporttemplatedownload</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>adminMessageItemCsvDownloadService</servlet-name>
+		<servlet-class>org.iplass.adminconsole.server.metadata.rpc.message.MessageItemCsvDownloadServiceImpl</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>adminMessageItemCsvDownloadService</servlet-name>
+		<url-pattern>/admin/mtpadmin/service/messagedownload</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>adminMessageItemCsvUploadService</servlet-name>
+		<servlet-class>org.iplass.adminconsole.server.metadata.rpc.message.MessageItemCsvUploadServiceImpl</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>adminMessageItemCsvUploadService</servlet-name>
+		<url-pattern>/admin/mtpadmin/service/messageupload</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>adminPackageRpcService</servlet-name>
+		<servlet-class>org.iplass.adminconsole.server.tools.rpc.pack.PackageRpcServiceImpl</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>adminPackageRpcService</servlet-name>
+		<url-pattern>/admin/mtpadmin/service/packageservice</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>adminPackageUploadService</servlet-name>
+		<servlet-class>org.iplass.adminconsole.server.tools.rpc.pack.PackageUploadServiceImpl</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>adminPackageUploadService</servlet-name>
+		<url-pattern>/admin/mtpadmin/service/packageupload</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>adminPackageDownloadService</servlet-name>
+		<servlet-class>org.iplass.adminconsole.server.tools.rpc.pack.PackageDownloadServiceImpl</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>adminPackageDownloadService</servlet-name>
+		<url-pattern>/admin/mtpadmin/service/packagedownload</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>adminEntityJavaClassDownloadService</servlet-name>
+		<servlet-class>org.iplass.adminconsole.server.metadata.rpc.entity.EntityJavaMappingClassDownloadServiceImpl</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>adminEntityJavaClassDownloadService</servlet-name>
+		<url-pattern>/admin/mtpadmin/service/entityjavadownload</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>adminEqlCsvDownloadService</servlet-name>
+		<servlet-class>org.iplass.adminconsole.server.tools.rpc.eql.EqlCsvDownloadServiceImpl</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>adminEqlCsvDownloadService</servlet-name>
+		<url-pattern>/admin/mtpadmin/service/eqldownload</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>adminBuiltinAuthExplorerService</servlet-name>
+		<servlet-class>org.iplass.adminconsole.server.tools.rpc.auth.builtin.BuiltinAuthExplorerServiceImpl</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>adminBuiltinAuthExplorerService</servlet-name>
+		<url-pattern>/admin/mtpadmin/service/authexplorer</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>adminBuiltinAuthUserCsvDownloadService</servlet-name>
+		<servlet-class>org.iplass.adminconsole.server.tools.rpc.auth.builtin.BuiltinAuthUserCsvDownloadServiceImpl</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>adminBuiltinAuthUserCsvDownloadService</servlet-name>
+		<url-pattern>/admin/mtpadmin/service/userdownload</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>adminI18nService</servlet-name>
+		<servlet-class>org.iplass.adminconsole.server.base.rpc.i18n.I18nServiceImpl</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>adminI18nService</servlet-name>
+		<url-pattern>/admin/mtpadmin/service/i18n</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>adminMetaDataHistoryConfigDownloadService</servlet-name>
+		<servlet-class>org.iplass.adminconsole.server.metadata.rpc.MetaDataHistoryConfigDownloadServiceImpl</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>adminMetaDataHistoryConfigDownloadService</servlet-name>
+		<url-pattern>/admin/mtpadmin/service/metadatahistoryconfigdownload</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>adminLangCsvDownloadService</servlet-name>
+		<servlet-class>org.iplass.adminconsole.server.tools.rpc.langexplorer.LangCsvDownloadServiceImpl</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>adminLangCsvDownloadService</servlet-name>
+		<url-pattern>/admin/mtpadmin/service/langdownload</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>adminLangCsvUploadService</servlet-name>
+		<servlet-class>org.iplass.adminconsole.server.tools.rpc.langexplorer.LangCsvUploadServiceImpl</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>adminLangCsvUploadService</servlet-name>
+		<url-pattern>/admin/mtpadmin/service/langupload</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>adminPermissionExplorerService</servlet-name>
+		<servlet-class>org.iplass.adminconsole.server.tools.rpc.permissionexplorer.PermissionExplorerServiceImpl</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>adminPermissionExplorerService</servlet-name>
+		<url-pattern>/admin/mtpadmin/service/permissionexplorer</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>adminStaticResourceUploadService</servlet-name>
+		<servlet-class>org.iplass.adminconsole.server.metadata.rpc.staticresource.StaticResourceUploadServiceImpl</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>adminStaticResourceUploadService</servlet-name>
+		<url-pattern>/admin/mtpadmin/service/staticresourceupload</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>adminStaticResourceDownloadService</servlet-name>
+		<servlet-class>org.iplass.adminconsole.server.metadata.rpc.staticresource.StaticResourceDownloadServiceImpl</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>adminStaticResourceDownloadService</servlet-name>
+		<url-pattern>/admin/mtpadmin/service/staticresourcedownload</url-pattern>
+	</servlet-mapping>
+
+</web-fragment>

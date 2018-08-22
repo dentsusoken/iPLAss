@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!DOCTYPE serviceDefinition>
+<serviceDefinition>
+	<!--
+	    Mixin service definition of infinispan module.
+	    To use this file, include on main serviceDefinition file.
+	 -->
+	<service>
+		<interface>org.iplass.mtp.impl.infinispan.InfinispanService</interface>
+			<property name="configurationFile" value="infinispan.xml" />
+	</service>
+
+	<service>
+		<interface>org.iplass.mtp.impl.cluster.ClusterService</interface>
+		<depend>org.iplass.mtp.impl.infinispan.InfinispanService</depend>
+		<property name="messageChannel" class="org.iplass.mtp.impl.infinispan.cluster.channel.InfinispanMessageChannel">
+			<property name="sync" value="false" />
+		</property>
+	</service>
+	
+	<service>
+		<interface>org.iplass.mtp.impl.cache.CacheService</interface>
+		<depend>org.iplass.mtp.impl.infinispan.InfinispanService</depend>
+
+		<!-- cubeのキャッシュ -->
+		<property name="cubeStatus" class="org.iplass.mtp.impl.infinispan.cache.store.InfinispanCacheStoreFactory">
+			<property name="createOnStartup" value="true" />
+		</property>
+		<property name="cubeFactData" class="org.iplass.mtp.impl.infinispan.cache.store.InfinispanCacheStoreFactory">
+			<property name="createOnStartup" value="true" />
+			<property name="cacheConfigrationName" value="cubedata" />
+		</property>
+	</service>
+
+</serviceDefinition>

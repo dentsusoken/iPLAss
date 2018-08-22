@@ -1,0 +1,64 @@
+//colors -> color/_colors.scss
+// $color_mercury_approx: #e6e6e6;
+
+//urls
+// $url_gsw1: url(../../../../images/gem/skin/vertical/icon-bullet-01.gif);
+// $url_gsw2: url(../../../../images/gem/skin/vertical/icon-arrow-08.png);
+
+//Entity一覧
+.lyt-shortcut-01 .list-entity-name li {
+	padding: 3px 5px 3px 13px;
+	border-top: 1px dotted $color_mercury_approx;
+	background: $url_gsw1 no-repeat 5px 0.8em;
+	line-height: 1.4;
+	&:first-child {
+		border-top: none;
+	}
+}
+.entity-list-widget {
+	.list-paging {
+		float: left;
+		padding-left: 12px;
+		a {
+			background: no-repeat left 0.45em;
+			padding-left: 0;
+		}
+	}
+}
+
+
+.link-list-01 {
+	&.entity-list {
+		li.list-paging {
+			float: left;
+			a {
+				background: no-repeat left 0.45em;
+				padding-left: 0;
+			}
+		}
+	}
+	a {
+		padding-left: 12px;
+		background: $url_gsw2 no-repeat left 0.45em;
+	}
+}
+
+//FIXME なんか色々なところが見てるっぽい
+.link-list-01 {
+	text-align: right;
+	&.entity-list {
+		margin-bottom: 20px;
+		font-size: 92%;
+		li.list-paging {
+			float: left;
+			a {
+				background: no-repeat left 0.45em;
+				padding-left: 0;
+			}
+		}
+	}
+	a {
+		padding-left: 12px;
+		background: $url_gsw2 no-repeat left 0.45em;
+	}
+}

@@ -1,0 +1,3230 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!DOCTYPE metaDataList>
+<metaDataList>
+<contextPath name="/entity">
+<metaDataEntry name="/entity/Entity" overwritable="false" sharable="true" dataSharable="false" permissionSharable="false">
+    <metaData xsi:type="metaEntity" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+        <id>/entity/Entity</id>
+        <name>Entity</name>
+        <auditLog>false</auditLog>
+        <crawl>false</crawl>
+        <declaredPropertyList xsi:type="metaPrimitiveProperty">
+            <entityStoreProperty xsi:type="metaGRdbPropertyStore">
+                <columnName>OBJ_ID</columnName>
+                <isNative>true</isNative>
+            </entityStoreProperty>
+            <id>oid</id>
+            <multiplicity>1</multiplicity>
+            <updatable>false</updatable>
+            <name>oid</name>
+            <displayName>オブジェクトID</displayName>
+            <localizedDisplayNameList>
+                <localeName>ja</localeName>
+                <stringValue>オブジェクトID</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>en</localeName>
+                <stringValue>OID</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>zh-CN</localeName>
+                <stringValue>OID</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>zh-TW</localeName>
+                <stringValue>OID</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>th</localeName>
+                <stringValue>ออบเจ็คไอดี</stringValue>
+            </localizedDisplayNameList>
+            <type xsi:type="stringType"/>
+        </declaredPropertyList>
+        <declaredPropertyList xsi:type="metaPrimitiveProperty">
+            <entityStoreProperty xsi:type="metaGRdbPropertyStore">
+                <columnName>OBJ_NAME</columnName>
+                <isNative>true</isNative>
+            </entityStoreProperty>
+            <id>name</id>
+            <displayName>名前</displayName>
+            <localizedDisplayNameList>
+                <localeName>ja</localeName>
+                <stringValue>名前</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>en</localeName>
+                <stringValue>Name</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>zh-CN</localeName>
+                <stringValue>名称</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>zh-TW</localeName>
+                <stringValue>名稱</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>th</localeName>
+                <stringValue>ชื่อ</stringValue>
+            </localizedDisplayNameList>
+            <multiplicity>1</multiplicity>
+            <name>name</name>
+            <updatable>true</updatable>
+            <validations xsi:type="metaValidationNotNull">
+                <messageCategory>mtp/validation</messageCategory>
+                <messageId>NotNull</messageId>
+            </validations>
+            <type xsi:type="stringType"/>
+        </declaredPropertyList>
+        <declaredPropertyList xsi:type="metaPrimitiveProperty">
+            <entityStoreProperty xsi:type="metaGRdbPropertyStore">
+                <columnName>OBJ_DESC</columnName>
+                <isNative>true</isNative>
+            </entityStoreProperty>
+            <id>description</id>
+            <displayName>説明</displayName>
+            <localizedDisplayNameList>
+                <localeName>ja</localeName>
+                <stringValue>説明</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>en</localeName>
+                <stringValue>Description</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>zh-CN</localeName>
+                <stringValue>描述</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>zh-TW</localeName>
+                <stringValue>描述</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>th</localeName>
+                <stringValue>คำอธิบาย</stringValue>
+            </localizedDisplayNameList>
+            <multiplicity>1</multiplicity>
+            <name>description</name>
+            <updatable>true</updatable>
+            <type xsi:type="stringType"/>
+        </declaredPropertyList>
+        <declaredPropertyList xsi:type="metaPrimitiveProperty">
+            <displayName>バージョン</displayName>
+            <entityStoreProperty xsi:type="metaGRdbPropertyStore">
+                <columnName>OBJ_VER</columnName>
+                <isNative>true</isNative>
+            </entityStoreProperty>
+            <id>version</id>
+            <localizedDisplayNameList>
+                <localeName>ja</localeName>
+                <stringValue>バージョン</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>en</localeName>
+                <stringValue>Version</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>zh-CN</localeName>
+                <stringValue>版本</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>zh-TW</localeName>
+                <stringValue>版本</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>th</localeName>
+                <stringValue>รุ่น</stringValue>
+            </localizedDisplayNameList>
+            <multiplicity>1</multiplicity>
+            <name>version</name>
+            <updatable>false</updatable>
+            <type xsi:type="integerType"/>
+        </declaredPropertyList>
+        <declaredPropertyList xsi:type="metaPrimitiveProperty">
+            <displayName>ステータス</displayName>
+            <entityStoreProperty xsi:type="metaGRdbPropertyStore">
+                <columnName>STATUS</columnName>
+                <isNative>true</isNative>
+            </entityStoreProperty>
+            <id>state</id>
+            <localizedDisplayNameList>
+                <localeName>ja</localeName>
+                <stringValue>ステータス</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>en</localeName>
+                <stringValue>Status</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>zh-CN</localeName>
+                <stringValue>状态</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>zh-TW</localeName>
+                <stringValue>狀態</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>th</localeName>
+                <stringValue>สถานะ</stringValue>
+            </localizedDisplayNameList>
+            <multiplicity>1</multiplicity>
+            <name>state</name>
+            <updatable>true</updatable>
+            <type xsi:type="selectType">
+                <values>
+                    <value>V</value>
+                    <displayName>有効</displayName>
+                    <localizedDisplayNameList>
+                        <localeName>ja</localeName>
+                        <stringValue>有効</stringValue>
+                    </localizedDisplayNameList>
+                    <localizedDisplayNameList>
+                        <localeName>en</localeName>
+                        <stringValue>Valid</stringValue>
+                    </localizedDisplayNameList>
+                    <localizedDisplayNameList>
+                        <localeName>zh-CN</localeName>
+                        <stringValue>有效</stringValue>
+                    </localizedDisplayNameList>
+                    <localizedDisplayNameList>
+                        <localeName>zh-TW</localeName>
+                        <stringValue>有效</stringValue>
+                    </localizedDisplayNameList>
+                    <localizedDisplayNameList>
+                        <localeName>th</localeName>
+                        <stringValue>สามารถ</stringValue>
+                    </localizedDisplayNameList>
+                </values>
+                <values>
+                    <value>I</value>
+                    <displayName>無効</displayName>
+                    <localizedDisplayNameList>
+                        <localeName>ja</localeName>
+                        <stringValue>無効</stringValue>
+                    </localizedDisplayNameList>
+                    <localizedDisplayNameList>
+                        <localeName>en</localeName>
+                        <stringValue>Invalid</stringValue>
+                    </localizedDisplayNameList>
+                    <localizedDisplayNameList>
+                        <localeName>zh-CN</localeName>
+                        <stringValue>无效</stringValue>
+                    </localizedDisplayNameList>
+                    <localizedDisplayNameList>
+                        <localeName>zh-TW</localeName>
+                        <stringValue>無效</stringValue>
+                    </localizedDisplayNameList>
+                    <localizedDisplayNameList>
+                        <localeName>th</localeName>
+                        <stringValue>ไม่สามารถ</stringValue>
+                    </localizedDisplayNameList>
+                </values>
+            </type>
+        </declaredPropertyList>
+        <declaredPropertyList xsi:type="metaPrimitiveProperty">
+            <displayName>有効開始日</displayName>
+            <entityStoreProperty xsi:type="metaGRdbPropertyStore">
+                <columnName>S_DATE</columnName>
+                <isNative>true</isNative>
+            </entityStoreProperty>
+            <id>startDate</id>
+            <localizedDisplayNameList>
+                <localeName>ja</localeName>
+                <stringValue>有効開始日</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>en</localeName>
+                <stringValue>Start Date</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>zh-CN</localeName>
+                <stringValue>开始日期</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>zh-TW</localeName>
+                <stringValue>开始日期</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>th</localeName>
+                <stringValue>วันเริ่มต้น</stringValue>
+            </localizedDisplayNameList>
+            <multiplicity>1</multiplicity>
+            <name>startDate</name>
+            <updatable>true</updatable>
+            <validations xsi:type="metaValidationScripting">
+                <errorMessage>有効開始日、有効終了日が逆転しています。</errorMessage>
+                <localizedErrorMessageList>
+                    <localeName>ja</localeName>
+                    <stringValue>有効開始日、有効終了日が逆転しています。</stringValue>
+                </localizedErrorMessageList>
+                <localizedErrorMessageList>
+                    <localeName>en</localeName>
+                    <stringValue>Effective start, effective end is reversed.</stringValue>
+                </localizedErrorMessageList>
+                <localizedErrorMessageList>
+                    <localeName>zh-CN</localeName>
+                    <stringValue>有效开始日期和有效结束日期是相反的。</stringValue>
+                </localizedErrorMessageList>
+                <localizedErrorMessageList>
+                    <localeName>zh-TW</localeName>
+                    <stringValue>有效開始日期和有效結束日期是相反的。</stringValue>
+                </localizedErrorMessageList>
+                <localizedErrorMessageList>
+                    <localeName>th</localeName>
+                    <stringValue>วันเริ่มต้นและวันจบสลับกันอยู่</stringValue>
+                </localizedErrorMessageList>
+                <script>from = (Date)entity.getStartDate()
+to = (Date)entity.getEndDate()
+if (from != null &amp;&amp; to != null &amp;&amp; from.after(to)) return false
+return true</script>
+            </validations>
+            <type xsi:type="dateTimeType"/>
+        </declaredPropertyList>
+        <declaredPropertyList xsi:type="metaPrimitiveProperty">
+            <displayName>有効終了日</displayName>
+            <entityStoreProperty xsi:type="metaGRdbPropertyStore">
+                <columnName>E_DATE</columnName>
+                <isNative>true</isNative>
+            </entityStoreProperty>
+            <id>endDate</id>
+            <localizedDisplayNameList>
+                <localeName>ja</localeName>
+                <stringValue>有効終了日</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>en</localeName>
+                <stringValue>End Date</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>zh-CN</localeName>
+                <stringValue>结束日期</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>zh-TW</localeName>
+                <stringValue>結束日期</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>th</localeName>
+                <stringValue>วันจบ</stringValue>
+            </localizedDisplayNameList>
+            <multiplicity>1</multiplicity>
+            <name>endDate</name>
+            <updatable>true</updatable>
+            <type xsi:type="dateTimeType"/>
+        </declaredPropertyList>
+        <declaredPropertyList xsi:type="metaPrimitiveProperty">
+            <displayName>作成日</displayName>
+            <entityStoreProperty xsi:type="metaGRdbPropertyStore">
+                <columnName>CRE_DATE</columnName>
+                <isNative>true</isNative>
+            </entityStoreProperty>
+            <id>createDate</id>
+            <localizedDisplayNameList>
+                <localeName>ja</localeName>
+                <stringValue>作成日</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>en</localeName>
+                <stringValue>Create Date</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>zh-CN</localeName>
+                <stringValue>创建日期</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>zh-TW</localeName>
+                <stringValue>創建日期</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>th</localeName>
+                <stringValue>สร้างวัน</stringValue>
+            </localizedDisplayNameList>
+            <multiplicity>1</multiplicity>
+            <name>createDate</name>
+            <updatable>false</updatable>
+            <type xsi:type="dateTimeType"/>
+        </declaredPropertyList>
+        <declaredPropertyList xsi:type="metaPrimitiveProperty">
+            <displayName>更新日</displayName>
+            <entityStoreProperty xsi:type="metaGRdbPropertyStore">
+                <columnName>UP_DATE</columnName>
+                <isNative>true</isNative>
+            </entityStoreProperty>
+            <id>updateDate</id>
+            <localizedDisplayNameList>
+                <localeName>ja</localeName>
+                <stringValue>更新日</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>en</localeName>
+                <stringValue>Update Date</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>zh-CN</localeName>
+                <stringValue>更新日期</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>zh-TW</localeName>
+                <stringValue>更新日期</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>th</localeName>
+                <stringValue>อัพเดทวัน</stringValue>
+            </localizedDisplayNameList>
+            <multiplicity>1</multiplicity>
+            <name>updateDate</name>
+            <updatable>false</updatable>
+            <type xsi:type="dateTimeType"/>
+        </declaredPropertyList>
+        <declaredPropertyList xsi:type="metaPrimitiveProperty">
+            <displayName>作成者</displayName>
+            <entityStoreProperty xsi:type="metaGRdbPropertyStore">
+                <columnName>CRE_USER</columnName>
+                <isNative>true</isNative>
+            </entityStoreProperty>
+            <id>createBy</id>
+            <localizedDisplayNameList>
+                <localeName>ja</localeName>
+                <stringValue>作成者</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>en</localeName>
+                <stringValue>Create User</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>zh-CN</localeName>
+                <stringValue>创建用户</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>zh-TW</localeName>
+                <stringValue>創建用戶</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>th</localeName>
+                <stringValue>ผู้สร้าง</stringValue>
+            </localizedDisplayNameList>
+            <multiplicity>1</multiplicity>
+            <name>createBy</name>
+            <updatable>false</updatable>
+            <type xsi:type="stringType"/>
+        </declaredPropertyList>
+        <declaredPropertyList xsi:type="metaPrimitiveProperty">
+            <displayName>更新者</displayName>
+            <entityStoreProperty xsi:type="metaGRdbPropertyStore">
+                <columnName>UP_USER</columnName>
+                <isNative>true</isNative>
+            </entityStoreProperty>
+            <id>updateBy</id>
+            <localizedDisplayNameList>
+                <localeName>ja</localeName>
+                <stringValue>更新者</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>en</localeName>
+                <stringValue>Update User</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>zh-CN</localeName>
+                <stringValue>更新用户</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>zh-TW</localeName>
+                <stringValue>更新用戶</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>th</localeName>
+                <stringValue>อัพเดทผู้ใช้งาน</stringValue>
+            </localizedDisplayNameList>
+            <multiplicity>1</multiplicity>
+            <name>updateBy</name>
+            <updatable>false</updatable>
+            <type xsi:type="stringType"/>
+        </declaredPropertyList>
+        <declaredPropertyList xsi:type="metaPrimitiveProperty">
+            <displayName>ロックユーザ</displayName>
+            <entityStoreProperty xsi:type="metaGRdbPropertyStore">
+                <columnName>LOCK_USER</columnName>
+                <isNative>true</isNative>
+            </entityStoreProperty>
+            <id>lockedBy</id>
+            <localizedDisplayNameList>
+                <localeName>ja</localeName>
+                <stringValue>ロックユーザ</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>en</localeName>
+                <stringValue>Lock User</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>zh-CN</localeName>
+                <stringValue>锁定用户</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>zh-TW</localeName>
+                <stringValue>鎖定用戶</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>th</localeName>
+                <stringValue>ล็อคยูสเซอร์</stringValue>
+            </localizedDisplayNameList>
+            <multiplicity>1</multiplicity>
+            <name>lockedBy</name>
+            <updatable>true</updatable>
+            <type xsi:type="stringType"/>
+        </declaredPropertyList>
+    </metaData>
+</metaDataEntry>
+<metaDataEntry name="/entity/mtp/Information" overwritable="true" sharable="true" dataSharable="false" permissionSharable="false">
+    <metaData xsi:type="metaEntity" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+        <description>ニュースなどのコンテンツ定義です。</description>
+        <displayName>お知らせ情報</displayName>
+        <id>E0007</id>
+        <localizedDisplayNameList>
+            <localeName>ja</localeName>
+            <stringValue>お知らせ情報</stringValue>
+        </localizedDisplayNameList>
+        <localizedDisplayNameList>
+            <localeName>en</localeName>
+            <stringValue>Information Notice</stringValue>
+        </localizedDisplayNameList>
+        <localizedDisplayNameList>
+            <localeName>zh-CN</localeName>
+            <stringValue>通知信息</stringValue>
+        </localizedDisplayNameList>
+        <localizedDisplayNameList>
+            <localeName>zh-TW</localeName>
+            <stringValue>通知信息</stringValue>
+        </localizedDisplayNameList>
+        <localizedDisplayNameList>
+            <localeName>th</localeName>
+            <stringValue>ประกาศ</stringValue>
+        </localizedDisplayNameList>
+        <name>mtp.Information</name>
+        <auditLog>false</auditLog>
+        <crawl>false</crawl>
+        <declaredPropertyList xsi:type="metaPrimitiveProperty">
+            <displayName>お知らせ内容</displayName>
+            <entityStoreProperty xsi:type="metaGRdbPropertyStore">
+                <pageNo>0</pageNo>
+                <columnName>STR_1</columnName>
+                <isNative>false</isNative>
+            </entityStoreProperty>
+            <id>3</id>
+            <indexType>NON_INDEXED</indexType>
+            <localizedDisplayNameList>
+                <localeName>ja</localeName>
+                <stringValue>お知らせ内容</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>en</localeName>
+                <stringValue>Contents Of Announcement</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>zh-CN</localeName>
+                <stringValue>通知内容</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>zh-TW</localeName>
+                <stringValue>通知內容</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>th</localeName>
+                <stringValue>เนื้อหาที่ประกาศ</stringValue>
+            </localizedDisplayNameList>
+            <multiplicity>1</multiplicity>
+            <name>content</name>
+            <updatable>true</updatable>
+            <type xsi:type="longTextType"/>
+        </declaredPropertyList>
+        <entityStoreDefinition xsi:type="metaGRdbEntityStore">
+            <tableNamePostfix>MTP</tableNamePostfix>
+            <maxVarchar>
+                <columnNo>1</columnNo>
+                <pageNo>0</pageNo>
+            </maxVarchar>
+            <version>0</version>
+        </entityStoreDefinition>
+        <storeMapping xsi:type="metaSchemalessRdbStoreMapping">
+            <storageSpace>mtp</storageSpace>
+        </storeMapping>
+        <inheritedEntityMetaDataId>/entity/Entity</inheritedEntityMetaDataId>
+    </metaData>
+</metaDataEntry>
+<metaDataEntry name="/entity/mtp/auth/EntityPermission" overwritable="false" sharable="true" dataSharable="false" permissionSharable="false">
+    <metaData xsi:type="metaEntity" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+        <description>Entityに対する権限定義です。</description>
+        <displayName>Entity権限</displayName>
+        <id>E0009</id>
+        <localizedDisplayNameList>
+            <localeName>ja</localeName>
+            <stringValue>Entity権限</stringValue>
+        </localizedDisplayNameList>
+        <localizedDisplayNameList>
+            <localeName>en</localeName>
+            <stringValue>Entity Permission</stringValue>
+        </localizedDisplayNameList>
+        <localizedDisplayNameList>
+            <localeName>zh-CN</localeName>
+            <stringValue>Entity权限</stringValue>
+        </localizedDisplayNameList>
+        <localizedDisplayNameList>
+            <localeName>zh-TW</localeName>
+            <stringValue>Entity權限</stringValue>
+        </localizedDisplayNameList>
+        <localizedDisplayNameList>
+            <localeName>th</localeName>
+            <stringValue>การอนุญาตสำหรับ Entity</stringValue>
+        </localizedDisplayNameList>
+        <name>mtp.auth.EntityPermission</name>
+        <auditLog>false</auditLog>
+        <crawl>false</crawl>
+        <declaredPropertyList xsi:type="metaPrimitiveProperty">
+            <displayName>対象Entity</displayName>
+            <entityStoreProperty xsi:type="metaGRdbPropertyStore">
+                <pageNo>0</pageNo>
+                <columnName>STR_1</columnName>
+                <isNative>false</isNative>
+                <externalIndex>false</externalIndex>
+                <indexPageNo>0</indexPageNo>
+                <indexColumnNo>1</indexColumnNo>
+            </entityStoreProperty>
+            <id>537db673-8bfb-4fa3-b512-3dddc0a17cb0</id>
+            <indexType>NON_UNIQUE</indexType>
+            <localizedDisplayNameList>
+                <localeName>ja</localeName>
+                <stringValue>対象Entity</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>en</localeName>
+                <stringValue>Target Entity</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>zh-CN</localeName>
+                <stringValue>目标Entity</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>zh-TW</localeName>
+                <stringValue>目標Entity</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>th</localeName>
+                <stringValue>เป้าหมายของ Entity</stringValue>
+            </localizedDisplayNameList>
+            <multiplicity>1</multiplicity>
+            <name>targetEntity</name>
+            <updatable>true</updatable>
+            <validations xsi:type="metaValidationNotNull">
+                <messageCategory>mtp/validation</messageCategory>
+                <messageId>NotNull</messageId>
+            </validations>
+            <type xsi:type="stringType"/>
+        </declaredPropertyList>
+        <declaredPropertyList xsi:type="metaReferenceProperty">
+            <displayName>ロール</displayName>
+            <id>8dcaa991-68da-45b5-a3ef-3622f9344643</id>
+            <indexType>NON_INDEXED</indexType>
+            <localizedDisplayNameList>
+                <localeName>ja</localeName>
+                <stringValue>ロール</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>en</localeName>
+                <stringValue>Role</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>zh-CN</localeName>
+                <stringValue>角色</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>zh-TW</localeName>
+                <stringValue>角色</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>th</localeName>
+                <stringValue>บท</stringValue>
+            </localizedDisplayNameList>
+            <multiplicity>1</multiplicity>
+            <name>role</name>
+            <updatable>true</updatable>
+            <validations xsi:type="metaValidationNotNull">
+                <messageCategory>mtp/validation</messageCategory>
+                <messageId>NotNull</messageId>
+            </validations>
+            <auditLogMappedBy>false</auditLogMappedBy>
+            <referenceEntityMetaDataId>E0003</referenceEntityMetaDataId>
+            <referenceType>ASSOCIATION</referenceType>
+            <versionControlType>CURRENT_BASE</versionControlType>
+        </declaredPropertyList>
+        <declaredPropertyList xsi:type="metaPrimitiveProperty">
+            <displayName>登録</displayName>
+            <entityStoreProperty xsi:type="metaGRdbPropertyStore">
+                <pageNo>0</pageNo>
+                <columnName>STR_2</columnName>
+                <isNative>false</isNative>
+            </entityStoreProperty>
+            <id>6ebf69fc-10a9-4529-a419-83f628480cb8</id>
+            <indexType>NON_INDEXED</indexType>
+            <localizedDisplayNameList>
+                <localeName>ja</localeName>
+                <stringValue>登録</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>en</localeName>
+                <stringValue>Regist</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>zh-CN</localeName>
+                <stringValue>新建</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>zh-TW</localeName>
+                <stringValue>新建</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>th</localeName>
+                <stringValue>ลงทะเบียน</stringValue>
+            </localizedDisplayNameList>
+            <multiplicity>1</multiplicity>
+            <name>canCreate</name>
+            <updatable>true</updatable>
+            <validations xsi:type="metaValidationNotNull">
+                <messageCategory>mtp/validation</messageCategory>
+                <messageId>NotNull</messageId>
+            </validations>
+            <type xsi:type="booleanType"/>
+        </declaredPropertyList>
+        <declaredPropertyList xsi:type="metaPrimitiveProperty">
+            <displayName>登録可能範囲条件</displayName>
+            <entityStoreProperty xsi:type="metaGRdbPropertyStore">
+                <pageNo>0</pageNo>
+                <columnName>STR_3</columnName>
+                <isNative>false</isNative>
+            </entityStoreProperty>
+            <id>1e27c294-135a-4347-865b-db62f4d8fd62</id>
+            <indexType>NON_INDEXED</indexType>
+            <localizedDisplayNameList>
+                <localeName>ja</localeName>
+                <stringValue>登録可能範囲条件</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>en</localeName>
+                <stringValue>Registerable Condition</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>zh-CN</localeName>
+                <stringValue>可新建的条件</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>zh-TW</localeName>
+                <stringValue>可新建的條件</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>th</localeName>
+                <stringValue>เงื่อนไขขอบเขตการลงทะเบียน</stringValue>
+            </localizedDisplayNameList>
+            <multiplicity>1</multiplicity>
+            <name>createCondition</name>
+            <updatable>true</updatable>
+            <type xsi:type="stringType"/>
+        </declaredPropertyList>
+        <declaredPropertyList xsi:type="metaPrimitiveProperty">
+            <displayName>登録プロパティの制御</displayName>
+            <entityStoreProperty xsi:type="metaGRdbPropertyStore">
+                <pageNo>0</pageNo>
+                <columnName>STR_4</columnName>
+                <isNative>false</isNative>
+            </entityStoreProperty>
+            <id>375bec04-43dd-4527-b8fe-6d79f3db00a8</id>
+            <indexType>NON_INDEXED</indexType>
+            <localizedDisplayNameList>
+                <localeName>ja</localeName>
+                <stringValue>登録プロパティの制御</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>en</localeName>
+                <stringValue>Control Type</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>zh-CN</localeName>
+                <stringValue>新建属性的控制</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>zh-TW</localeName>
+                <stringValue>新建屬性的控制</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>th</localeName>
+                <stringValue>ควบคุมพร็อพเพอตี้การลงทะเบียน</stringValue>
+            </localizedDisplayNameList>
+            <multiplicity>1</multiplicity>
+            <name>createPropertyControlType</name>
+            <updatable>true</updatable>
+            <type xsi:type="selectType">
+                <values>
+                    <value>E</value>
+                    <displayName>登録可</displayName>
+                    <localizedDisplayNameList>
+                        <localeName>ja</localeName>
+                        <stringValue>登録可</stringValue>
+                    </localizedDisplayNameList>
+                    <localizedDisplayNameList>
+                        <localeName>en</localeName>
+                        <stringValue>Can be registered</stringValue>
+                    </localizedDisplayNameList>
+                    <localizedDisplayNameList>
+                        <localeName>zh-CN</localeName>
+                        <stringValue>可新建</stringValue>
+                    </localizedDisplayNameList>
+                    <localizedDisplayNameList>
+                        <localeName>zh-TW</localeName>
+                        <stringValue>可新建</stringValue>
+                    </localizedDisplayNameList>
+                    <localizedDisplayNameList>
+                        <localeName>th</localeName>
+                        <stringValue>ลงทะเบียนได้</stringValue>
+                    </localizedDisplayNameList>
+                </values>
+                <values>
+                    <value>D</value>
+                    <displayName>登録不可</displayName>
+                    <localizedDisplayNameList>
+                        <localeName>ja</localeName>
+                        <stringValue>登録不可</stringValue>
+                    </localizedDisplayNameList>
+                    <localizedDisplayNameList>
+                        <localeName>en</localeName>
+                        <stringValue>Not be registered</stringValue>
+                    </localizedDisplayNameList>
+                    <localizedDisplayNameList>
+                        <localeName>zh-CN</localeName>
+                        <stringValue>不可新建</stringValue>
+                    </localizedDisplayNameList>
+                    <localizedDisplayNameList>
+                        <localeName>zh-TW</localeName>
+                        <stringValue>不可新建</stringValue>
+                    </localizedDisplayNameList>
+                    <localizedDisplayNameList>
+                        <localeName>th</localeName>
+                        <stringValue>ลงทะเบียนไม่ได้</stringValue>
+                    </localizedDisplayNameList>
+                </values>
+            </type>
+        </declaredPropertyList>
+        <declaredPropertyList xsi:type="metaPrimitiveProperty">
+            <displayName>登録プロパティのリスト</displayName>
+            <entityStoreProperty xsi:type="metaGRdbPropertyStore">
+                <pageNo>0</pageNo>
+                <columnName>STR_5</columnName>
+                <isNative>false</isNative>
+            </entityStoreProperty>
+            <id>102981b7-1285-4797-9fb5-8bf004f7e4c3</id>
+            <indexType>NON_INDEXED</indexType>
+            <localizedDisplayNameList>
+                <localeName>ja</localeName>
+                <stringValue>登録プロパティのリスト</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>en</localeName>
+                <stringValue>Registration Properties</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>zh-CN</localeName>
+                <stringValue>新建属性的列表</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>zh-TW</localeName>
+                <stringValue>新建屬性的列表</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>th</localeName>
+                <stringValue>รายการพร็อพเพอตี้ลงทะเบียน</stringValue>
+            </localizedDisplayNameList>
+            <multiplicity>1</multiplicity>
+            <name>createPropertyList</name>
+            <updatable>true</updatable>
+            <type xsi:type="stringType"/>
+        </declaredPropertyList>
+        <declaredPropertyList xsi:type="metaPrimitiveProperty">
+            <displayName>参照</displayName>
+            <entityStoreProperty xsi:type="metaGRdbPropertyStore">
+                <pageNo>0</pageNo>
+                <columnName>STR_6</columnName>
+                <isNative>false</isNative>
+            </entityStoreProperty>
+            <id>91d26847-080d-4df1-b56b-ab811b90ec18</id>
+            <indexType>NON_INDEXED</indexType>
+            <localizedDisplayNameList>
+                <localeName>ja</localeName>
+                <stringValue>参照</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>en</localeName>
+                <stringValue>Reference</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>zh-CN</localeName>
+                <stringValue>查看</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>zh-TW</localeName>
+                <stringValue>查看</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>th</localeName>
+                <stringValue>อ้างอิง</stringValue>
+            </localizedDisplayNameList>
+            <multiplicity>1</multiplicity>
+            <name>canReference</name>
+            <updatable>true</updatable>
+            <validations xsi:type="metaValidationNotNull">
+                <messageCategory>mtp/validation</messageCategory>
+                <messageId>NotNull</messageId>
+            </validations>
+            <type xsi:type="booleanType"/>
+        </declaredPropertyList>
+        <declaredPropertyList xsi:type="metaPrimitiveProperty">
+            <displayName>参照可能範囲条件</displayName>
+            <entityStoreProperty xsi:type="metaGRdbPropertyStore">
+                <pageNo>0</pageNo>
+                <columnName>STR_7</columnName>
+                <isNative>false</isNative>
+            </entityStoreProperty>
+            <id>38a31b9c-1f06-40ed-b290-e6137a68fc2c</id>
+            <indexType>NON_INDEXED</indexType>
+            <localizedDisplayNameList>
+                <localeName>ja</localeName>
+                <stringValue>参照可能範囲条件</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>en</localeName>
+                <stringValue>Referencable Condition</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>zh-CN</localeName>
+                <stringValue>可查看的条件</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>zh-TW</localeName>
+                <stringValue>可查看的條件</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>th</localeName>
+                <stringValue>เงื่อนไขขอบเขตการอ้างอิง</stringValue>
+            </localizedDisplayNameList>
+            <multiplicity>1</multiplicity>
+            <name>referenceCondition</name>
+            <updatable>true</updatable>
+            <type xsi:type="stringType"/>
+        </declaredPropertyList>
+        <declaredPropertyList xsi:type="metaPrimitiveProperty">
+            <displayName>参照プロパティの制御</displayName>
+            <entityStoreProperty xsi:type="metaGRdbPropertyStore">
+                <pageNo>0</pageNo>
+                <columnName>STR_8</columnName>
+                <isNative>false</isNative>
+            </entityStoreProperty>
+            <id>91a5b15d-8374-49fd-bbcf-0e6df8ae8da8</id>
+            <indexType>NON_INDEXED</indexType>
+            <localizedDisplayNameList>
+                <localeName>ja</localeName>
+                <stringValue>参照プロパティの制御</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>en</localeName>
+                <stringValue>Control Type</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>zh-CN</localeName>
+                <stringValue>查看属性的控制</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>zh-TW</localeName>
+                <stringValue>查看屬性的控制</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>th</localeName>
+                <stringValue>ควบคุมพร็อพเพอตี้อ้างอิง</stringValue>
+            </localizedDisplayNameList>
+            <multiplicity>1</multiplicity>
+            <name>referencePropertyControlType</name>
+            <updatable>true</updatable>
+            <type xsi:type="selectType">
+                <values>
+                    <value>E</value>
+                    <displayName>参照可</displayName>
+                    <localizedDisplayNameList>
+                        <localeName>ja</localeName>
+                        <stringValue>参照可</stringValue>
+                    </localizedDisplayNameList>
+                    <localizedDisplayNameList>
+                        <localeName>en</localeName>
+                        <stringValue>Be referred</stringValue>
+                    </localizedDisplayNameList>
+                    <localizedDisplayNameList>
+                        <localeName>zh-CN</localeName>
+                        <stringValue>可查看</stringValue>
+                    </localizedDisplayNameList>
+                    <localizedDisplayNameList>
+                        <localeName>zh-TW</localeName>
+                        <stringValue>可查看</stringValue>
+                    </localizedDisplayNameList>
+                    <localizedDisplayNameList>
+                        <localeName>th</localeName>
+                        <stringValue>อ้างอิงได้</stringValue>
+                    </localizedDisplayNameList>
+                </values>
+                <values>
+                    <value>D</value>
+                    <displayName>参照不可</displayName>
+                    <localizedDisplayNameList>
+                        <localeName>ja</localeName>
+                        <stringValue>参照不可</stringValue>
+                    </localizedDisplayNameList>
+                    <localizedDisplayNameList>
+                        <localeName>en</localeName>
+                        <stringValue>No reference</stringValue>
+                    </localizedDisplayNameList>
+                    <localizedDisplayNameList>
+                        <localeName>zh-CN</localeName>
+                        <stringValue>不可查看</stringValue>
+                    </localizedDisplayNameList>
+                    <localizedDisplayNameList>
+                        <localeName>zh-TW</localeName>
+                        <stringValue>不可查看</stringValue>
+                    </localizedDisplayNameList>
+                    <localizedDisplayNameList>
+                        <localeName>th</localeName>
+                        <stringValue>อ้างอิงไม่ได้</stringValue>
+                    </localizedDisplayNameList>
+                </values>
+            </type>
+        </declaredPropertyList>
+        <declaredPropertyList xsi:type="metaPrimitiveProperty">
+            <displayName>参照プロパティのリスト</displayName>
+            <entityStoreProperty xsi:type="metaGRdbPropertyStore">
+                <pageNo>0</pageNo>
+                <columnName>STR_9</columnName>
+                <isNative>false</isNative>
+            </entityStoreProperty>
+            <id>bad5412c-62ad-4833-810d-12a8cb149584</id>
+            <indexType>NON_INDEXED</indexType>
+            <localizedDisplayNameList>
+                <localeName>ja</localeName>
+                <stringValue>参照プロパティのリスト</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>en</localeName>
+                <stringValue>Reference Properties</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>zh-CN</localeName>
+                <stringValue>查看属性的列表</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>zh-TW</localeName>
+                <stringValue>查看屬性的列表</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>th</localeName>
+                <stringValue>รายการพร็อพเพอตี้อ้างอิง</stringValue>
+            </localizedDisplayNameList>
+            <multiplicity>1</multiplicity>
+            <name>referencePropertyList</name>
+            <updatable>true</updatable>
+            <type xsi:type="stringType"/>
+        </declaredPropertyList>
+        <declaredPropertyList xsi:type="metaPrimitiveProperty">
+            <displayName>更新</displayName>
+            <entityStoreProperty xsi:type="metaGRdbPropertyStore">
+                <pageNo>0</pageNo>
+                <columnName>STR_10</columnName>
+                <isNative>false</isNative>
+            </entityStoreProperty>
+            <id>bb3dec0d-9eab-4eac-90c3-8faf0650ffeb</id>
+            <indexType>NON_INDEXED</indexType>
+            <localizedDisplayNameList>
+                <localeName>ja</localeName>
+                <stringValue>更新</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>en</localeName>
+                <stringValue>Update</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>zh-CN</localeName>
+                <stringValue>更新</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>zh-TW</localeName>
+                <stringValue>更新</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>th</localeName>
+                <stringValue>อัพเดท</stringValue>
+            </localizedDisplayNameList>
+            <multiplicity>1</multiplicity>
+            <name>canUpdate</name>
+            <updatable>true</updatable>
+            <validations xsi:type="metaValidationNotNull">
+                <messageCategory>mtp/validation</messageCategory>
+                <messageId>NotNull</messageId>
+            </validations>
+            <type xsi:type="booleanType"/>
+        </declaredPropertyList>
+        <declaredPropertyList xsi:type="metaPrimitiveProperty">
+            <displayName>更新可能範囲条件</displayName>
+            <entityStoreProperty xsi:type="metaGRdbPropertyStore">
+                <pageNo>0</pageNo>
+                <columnName>STR_11</columnName>
+                <isNative>false</isNative>
+            </entityStoreProperty>
+            <id>361cc191-dfa5-4ea7-bf06-9bf77b37c374</id>
+            <indexType>NON_INDEXED</indexType>
+            <localizedDisplayNameList>
+                <localeName>ja</localeName>
+                <stringValue>更新可能範囲条件</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>en</localeName>
+                <stringValue>Updatable Condition</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>zh-CN</localeName>
+                <stringValue>可更新的条件</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>zh-TW</localeName>
+                <stringValue>可更新的條件</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>th</localeName>
+                <stringValue>เงื่อนไขขอบเขตการอัพเดท</stringValue>
+            </localizedDisplayNameList>
+            <multiplicity>1</multiplicity>
+            <name>updateCondition</name>
+            <updatable>true</updatable>
+            <type xsi:type="stringType"/>
+        </declaredPropertyList>
+        <declaredPropertyList xsi:type="metaPrimitiveProperty">
+            <displayName>更新プロパティの制御</displayName>
+            <entityStoreProperty xsi:type="metaGRdbPropertyStore">
+                <pageNo>0</pageNo>
+                <columnName>STR_12</columnName>
+                <isNative>false</isNative>
+            </entityStoreProperty>
+            <id>1eeb5e64-18f6-4acd-bc59-41c289305fa0</id>
+            <indexType>NON_INDEXED</indexType>
+            <localizedDisplayNameList>
+                <localeName>ja</localeName>
+                <stringValue>更新プロパティの制御</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>en</localeName>
+                <stringValue>Control Type</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>zh-CN</localeName>
+                <stringValue>更新属性的控制</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>zh-TW</localeName>
+                <stringValue>更新屬性的控制</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>th</localeName>
+                <stringValue>ควบคุมอัพเดทพร็อพเพอตี้</stringValue>
+            </localizedDisplayNameList>
+            <multiplicity>1</multiplicity>
+            <name>updatePropertyControlType</name>
+            <updatable>true</updatable>
+            <type xsi:type="selectType">
+                <values>
+                    <value>E</value>
+                    <displayName>更新可</displayName>
+                    <localizedDisplayNameList>
+                        <localeName>ja</localeName>
+                        <stringValue>更新可</stringValue>
+                    </localizedDisplayNameList>
+                    <localizedDisplayNameList>
+                        <localeName>en</localeName>
+                        <stringValue>Updatable</stringValue>
+                    </localizedDisplayNameList>
+                    <localizedDisplayNameList>
+                        <localeName>zh-CN</localeName>
+                        <stringValue>可更新</stringValue>
+                    </localizedDisplayNameList>
+                    <localizedDisplayNameList>
+                        <localeName>zh-TW</localeName>
+                        <stringValue>可更新</stringValue>
+                    </localizedDisplayNameList>
+                    <localizedDisplayNameList>
+                        <localeName>th</localeName>
+                        <stringValue>อัพเดทได้</stringValue>
+                    </localizedDisplayNameList>
+                </values>
+                <values>
+                    <value>D</value>
+                    <displayName>更新不可</displayName>
+                    <localizedDisplayNameList>
+                        <localeName>ja</localeName>
+                        <stringValue>更新不可</stringValue>
+                    </localizedDisplayNameList>
+                    <localizedDisplayNameList>
+                        <localeName>en</localeName>
+                        <stringValue>Can not be updated</stringValue>
+                    </localizedDisplayNameList>
+                    <localizedDisplayNameList>
+                        <localeName>zh-CN</localeName>
+                        <stringValue>不可更新</stringValue>
+                    </localizedDisplayNameList>
+                    <localizedDisplayNameList>
+                        <localeName>zh-TW</localeName>
+                        <stringValue>不可更新</stringValue>
+                    </localizedDisplayNameList>
+                    <localizedDisplayNameList>
+                        <localeName>th</localeName>
+                        <stringValue>อัพเดทไม่ได้</stringValue>
+                    </localizedDisplayNameList>
+                </values>
+            </type>
+        </declaredPropertyList>
+        <declaredPropertyList xsi:type="metaPrimitiveProperty">
+            <displayName>更新プロパティのリスト</displayName>
+            <entityStoreProperty xsi:type="metaGRdbPropertyStore">
+                <pageNo>0</pageNo>
+                <columnName>STR_13</columnName>
+                <isNative>false</isNative>
+            </entityStoreProperty>
+            <id>7c3a91fe-8513-4da5-b6a7-378d97511cad</id>
+            <indexType>NON_INDEXED</indexType>
+            <localizedDisplayNameList>
+                <localeName>ja</localeName>
+                <stringValue>更新プロパティのリスト</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>en</localeName>
+                <stringValue>Update Properties</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>zh-CN</localeName>
+                <stringValue>更新属性的列表</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>zh-TW</localeName>
+                <stringValue>更新屬性的列表</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>th</localeName>
+                <stringValue>รายการอัพเดทพร็อพเพอตี้</stringValue>
+            </localizedDisplayNameList>
+            <multiplicity>1</multiplicity>
+            <name>updatePropertyList</name>
+            <updatable>true</updatable>
+            <type xsi:type="stringType"/>
+        </declaredPropertyList>
+        <declaredPropertyList xsi:type="metaPrimitiveProperty">
+            <displayName>削除</displayName>
+            <entityStoreProperty xsi:type="metaGRdbPropertyStore">
+                <pageNo>0</pageNo>
+                <columnName>STR_14</columnName>
+                <isNative>false</isNative>
+            </entityStoreProperty>
+            <id>4dfa0e21-41a0-4c0e-98f4-f1df8487ba6f</id>
+            <indexType>NON_INDEXED</indexType>
+            <localizedDisplayNameList>
+                <localeName>ja</localeName>
+                <stringValue>削除</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>en</localeName>
+                <stringValue>Delete</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>zh-CN</localeName>
+                <stringValue>删除</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>zh-TW</localeName>
+                <stringValue>刪除</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>th</localeName>
+                <stringValue>ลบ</stringValue>
+            </localizedDisplayNameList>
+            <multiplicity>1</multiplicity>
+            <name>canDelete</name>
+            <updatable>true</updatable>
+            <validations xsi:type="metaValidationNotNull">
+                <messageCategory>mtp/validation</messageCategory>
+                <messageId>NotNull</messageId>
+            </validations>
+            <type xsi:type="booleanType"/>
+        </declaredPropertyList>
+        <declaredPropertyList xsi:type="metaPrimitiveProperty">
+            <displayName>削除可能範囲条件</displayName>
+            <entityStoreProperty xsi:type="metaGRdbPropertyStore">
+                <pageNo>0</pageNo>
+                <columnName>STR_15</columnName>
+                <isNative>false</isNative>
+            </entityStoreProperty>
+            <id>c84ec713-870a-4831-9b49-3242f86f5f19</id>
+            <indexType>NON_INDEXED</indexType>
+            <localizedDisplayNameList>
+                <localeName>ja</localeName>
+                <stringValue>削除可能範囲条件</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>en</localeName>
+                <stringValue>Deletable Condition</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>zh-CN</localeName>
+                <stringValue>可删除的条件</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>zh-TW</localeName>
+                <stringValue>可刪除的條件</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>th</localeName>
+                <stringValue>เงื่อนไขขอบเขตการลบ</stringValue>
+            </localizedDisplayNameList>
+            <multiplicity>1</multiplicity>
+            <name>deleteCondition</name>
+            <updatable>true</updatable>
+            <type xsi:type="stringType"/>
+        </declaredPropertyList>
+        <entityStoreDefinition xsi:type="metaGRdbEntityStore">
+            <tableNamePostfix>MTP</tableNamePostfix>
+            <maxVarchar>
+                <columnNo>15</columnNo>
+                <pageNo>0</pageNo>
+            </maxVarchar>
+            <maxIndexedVarchar>
+                <columnNo>1</columnNo>
+                <pageNo>0</pageNo>
+            </maxIndexedVarchar>
+            <version>0</version>
+        </entityStoreDefinition>
+        <eventListenerList xsi:type="metaJavaClassEventListener">
+            <withoutMappedByReference>false</withoutMappedByReference>
+            <className>org.iplass.mtp.impl.auth.authorize.builtin.entity.EntityPermissionEntityEventListener</className>
+        </eventListenerList>
+        <storeMapping xsi:type="metaSchemalessRdbStoreMapping">
+            <storageSpace>mtp</storageSpace>
+        </storeMapping>
+        <inheritedEntityMetaDataId>/entity/Entity</inheritedEntityMetaDataId>
+        <versionControlType>NONE</versionControlType>
+    </metaData>
+</metaDataEntry>
+<metaDataEntry name="/entity/mtp/auth/Group" overwritable="true" sharable="true" dataSharable="false" permissionSharable="false">
+    <metaData xsi:type="metaEntity" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+        <description>ユーザに設定可能なグループ定義です。
+階層化することも可能です。</description>
+        <displayName>グループ情報</displayName>
+        <id>E0006</id>
+        <localizedDisplayNameList>
+            <localeName>ja</localeName>
+            <stringValue>グループ情報</stringValue>
+        </localizedDisplayNameList>
+        <localizedDisplayNameList>
+            <localeName>en</localeName>
+            <stringValue>Group Information</stringValue>
+        </localizedDisplayNameList>
+        <localizedDisplayNameList>
+            <localeName>zh-CN</localeName>
+            <stringValue>组信息</stringValue>
+        </localizedDisplayNameList>
+        <localizedDisplayNameList>
+            <localeName>zh-TW</localeName>
+            <stringValue>組信息</stringValue>
+        </localizedDisplayNameList>
+        <localizedDisplayNameList>
+            <localeName>th</localeName>
+            <stringValue>ข้อมูลกลุ่ม</stringValue>
+        </localizedDisplayNameList>
+        <name>mtp.auth.Group</name>
+        <auditLog>false</auditLog>
+        <crawl>false</crawl>
+        <declaredPropertyList xsi:type="metaPrimitiveProperty">
+            <displayName>グループコード</displayName>
+            <entityStoreProperty xsi:type="metaGRdbPropertyStore">
+                <pageNo>0</pageNo>
+                <columnName>STR_1</columnName>
+                <isNative>false</isNative>
+                <externalIndex>false</externalIndex>
+                <indexPageNo>0</indexPageNo>
+                <indexColumnNo>1</indexColumnNo>
+            </entityStoreProperty>
+            <id>3</id>
+            <indexType>UNIQUE</indexType>
+            <localizedDisplayNameList>
+                <localeName>ja</localeName>
+                <stringValue>グループコード</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>en</localeName>
+                <stringValue>Group Code</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>zh-CN</localeName>
+                <stringValue>组代码</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>zh-TW</localeName>
+                <stringValue>組代碼</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>th</localeName>
+                <stringValue>โค๊ดกลุ่ม</stringValue>
+            </localizedDisplayNameList>
+            <multiplicity>1</multiplicity>
+            <name>code</name>
+            <updatable>true</updatable>
+            <validations xsi:type="metaValidationNotNull">
+                <messageCategory>mtp/validation</messageCategory>
+                <messageId>NotNull</messageId>
+            </validations>
+            <type xsi:type="stringType"/>
+        </declaredPropertyList>
+        <declaredPropertyList xsi:type="metaReferenceProperty">
+            <displayName>親グループ</displayName>
+            <id>a11c5176-444f-41e6-a60d-f64b044a0cae</id>
+            <indexType>NON_INDEXED</indexType>
+            <localizedDisplayNameList>
+                <localeName>ja</localeName>
+                <stringValue>親グループ</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>en</localeName>
+                <stringValue>Parent Group</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>zh-CN</localeName>
+                <stringValue>父组</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>zh-TW</localeName>
+                <stringValue>父組</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>th</localeName>
+                <stringValue>กลุ่มพ่อ</stringValue>
+            </localizedDisplayNameList>
+            <multiplicity>1</multiplicity>
+            <name>parent</name>
+            <updatable>true</updatable>
+            <auditLogMappedBy>false</auditLogMappedBy>
+            <referenceEntityMetaDataId>E0006</referenceEntityMetaDataId>
+            <referenceType>ASSOCIATION</referenceType>
+        </declaredPropertyList>
+        <declaredPropertyList xsi:type="metaReferenceProperty">
+            <displayName>子グループ</displayName>
+            <id>09df3dd2-3e36-42f8-b1f5-1f00bb48a419</id>
+            <indexType>NON_INDEXED</indexType>
+            <localizedDisplayNameList>
+                <localeName>ja</localeName>
+                <stringValue>子グループ</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>en</localeName>
+                <stringValue>Child Group</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>zh-CN</localeName>
+                <stringValue>子组</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>zh-TW</localeName>
+                <stringValue>子組</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>th</localeName>
+                <stringValue>กลุ่มลูก</stringValue>
+            </localizedDisplayNameList>
+            <multiplicity>-1</multiplicity>
+            <name>children</name>
+            <updatable>true</updatable>
+            <auditLogMappedBy>false</auditLogMappedBy>
+            <mappedByPropertyMetaDataId>a11c5176-444f-41e6-a60d-f64b044a0cae</mappedByPropertyMetaDataId>
+            <referenceEntityMetaDataId>E0006</referenceEntityMetaDataId>
+            <referenceType>ASSOCIATION</referenceType>
+        </declaredPropertyList>
+        <entityStoreDefinition xsi:type="metaGRdbEntityStore">
+            <tableNamePostfix>MTP</tableNamePostfix>
+            <maxVarchar>
+                <columnNo>1</columnNo>
+                <pageNo>0</pageNo>
+            </maxVarchar>
+            <maxUniqueIndexedVarchar>
+                <columnNo>1</columnNo>
+                <pageNo>0</pageNo>
+            </maxUniqueIndexedVarchar>
+            <version>1</version>
+        </entityStoreDefinition>
+        <eventListenerList xsi:type="metaJavaClassEventListener">
+            <withoutMappedByReference>false</withoutMappedByReference>
+            <className>org.iplass.mtp.impl.auth.authorize.builtin.group.GroupEntityEventListener</className>
+        </eventListenerList>
+        <storeMapping xsi:type="metaSchemalessRdbStoreMapping">
+            <storageSpace>mtp</storageSpace>
+        </storeMapping>
+        <inheritedEntityMetaDataId>/entity/Entity</inheritedEntityMetaDataId>
+        <mapping>
+            <mappingClass>org.iplass.mtp.auth.Group</mappingClass>
+        </mapping>
+    </metaData>
+</metaDataEntry>
+<metaDataEntry name="/entity/mtp/auth/Rank" overwritable="true" sharable="true" dataSharable="false" permissionSharable="false">
+    <metaData xsi:type="metaEntity" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+        <description>ユーザに設定可能なランク定義です。</description>
+        <displayName>ランク情報</displayName>
+        <id>E0002</id>
+        <localizedDisplayNameList>
+            <localeName>ja</localeName>
+            <stringValue>ランク情報</stringValue>
+        </localizedDisplayNameList>
+        <localizedDisplayNameList>
+            <localeName>en</localeName>
+            <stringValue>Rank Information</stringValue>
+        </localizedDisplayNameList>
+        <localizedDisplayNameList>
+            <localeName>zh-CN</localeName>
+            <stringValue>级别信息</stringValue>
+        </localizedDisplayNameList>
+        <localizedDisplayNameList>
+            <localeName>zh-TW</localeName>
+            <stringValue>級別信息</stringValue>
+        </localizedDisplayNameList>
+        <localizedDisplayNameList>
+            <localeName>th</localeName>
+            <stringValue>ข้อมูลอันดับ</stringValue>
+        </localizedDisplayNameList>
+        <name>mtp.auth.Rank</name>
+        <auditLog>false</auditLog>
+        <crawl>false</crawl>
+        <declaredPropertyList xsi:type="metaPrimitiveProperty">
+            <displayName>ランクコード</displayName>
+            <entityStoreProperty xsi:type="metaGRdbPropertyStore">
+                <pageNo>0</pageNo>
+                <columnName>STR_1</columnName>
+                <isNative>false</isNative>
+                <externalIndex>false</externalIndex>
+                <indexPageNo>0</indexPageNo>
+                <indexColumnNo>1</indexColumnNo>
+            </entityStoreProperty>
+            <id>1</id>
+            <indexType>UNIQUE</indexType>
+            <localizedDisplayNameList>
+                <localeName>ja</localeName>
+                <stringValue>ランクコード</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>en</localeName>
+                <stringValue>Rank Code</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>zh-CN</localeName>
+                <stringValue>级别代码</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>zh-TW</localeName>
+                <stringValue>級別代碼</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>th</localeName>
+                <stringValue>โค๊ดอันดับ</stringValue>
+            </localizedDisplayNameList>
+            <multiplicity>1</multiplicity>
+            <name>code</name>
+            <updatable>true</updatable>
+            <validations xsi:type="metaValidationNotNull">
+                <messageCategory>mtp/validation</messageCategory>
+                <messageId>NotNull</messageId>
+            </validations>
+            <type xsi:type="stringType"/>
+        </declaredPropertyList>
+        <declaredPropertyList xsi:type="metaPrimitiveProperty">
+            <displayName>ランクレベル</displayName>
+            <entityStoreProperty xsi:type="metaGRdbPropertyStore">
+                <pageNo>0</pageNo>
+                <columnName>NUM_1</columnName>
+                <isNative>false</isNative>
+                <externalIndex>false</externalIndex>
+                <indexPageNo>0</indexPageNo>
+                <indexColumnNo>1</indexColumnNo>
+            </entityStoreProperty>
+            <id>2</id>
+            <indexType>NON_UNIQUE</indexType>
+            <localizedDisplayNameList>
+                <localeName>ja</localeName>
+                <stringValue>ランクレベル</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>en</localeName>
+                <stringValue>Rank level</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>zh-CN</localeName>
+                <stringValue>级别水平</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>zh-TW</localeName>
+                <stringValue>級別水平</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>th</localeName>
+                <stringValue>ระดับอันดับ</stringValue>
+            </localizedDisplayNameList>
+            <multiplicity>1</multiplicity>
+            <name>level</name>
+            <updatable>true</updatable>
+            <validations xsi:type="metaValidationNotNull">
+                <messageCategory>mtp/validation</messageCategory>
+                <messageId>NotNull</messageId>
+            </validations>
+            <type xsi:type="integerType"/>
+        </declaredPropertyList>
+        <entityStoreDefinition xsi:type="metaGRdbEntityStore">
+            <tableNamePostfix>MTP</tableNamePostfix>
+            <maxVarchar>
+                <columnNo>1</columnNo>
+                <pageNo>0</pageNo>
+            </maxVarchar>
+            <maxDecimal>
+                <columnNo>1</columnNo>
+                <pageNo>0</pageNo>
+            </maxDecimal>
+            <maxUniqueIndexedVarchar>
+                <columnNo>1</columnNo>
+                <pageNo>0</pageNo>
+            </maxUniqueIndexedVarchar>
+            <maxIndexedDecimal>
+                <columnNo>1</columnNo>
+                <pageNo>0</pageNo>
+            </maxIndexedDecimal>
+            <version>1</version>
+        </entityStoreDefinition>
+        <storeMapping xsi:type="metaSchemalessRdbStoreMapping">
+            <storageSpace>mtp</storageSpace>
+        </storeMapping>
+        <inheritedEntityMetaDataId>/entity/Entity</inheritedEntityMetaDataId>
+        <mapping>
+            <mappingClass>org.iplass.mtp.auth.Rank</mappingClass>
+        </mapping>
+    </metaData>
+</metaDataEntry>
+<metaDataEntry name="/entity/mtp/auth/Role" overwritable="false" sharable="true" dataSharable="false" permissionSharable="false">
+    <metaData xsi:type="metaEntity" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+        <description>権限設定時に利用するロール定義です。
+ロール条件を利用して対象範囲を定義します。</description>
+        <displayName>ロール</displayName>
+        <id>E0003</id>
+        <localizedDisplayNameList>
+            <localeName>ja</localeName>
+            <stringValue>ロール</stringValue>
+        </localizedDisplayNameList>
+        <localizedDisplayNameList>
+            <localeName>en</localeName>
+            <stringValue>Role</stringValue>
+        </localizedDisplayNameList>
+        <localizedDisplayNameList>
+            <localeName>zh-CN</localeName>
+            <stringValue>角色</stringValue>
+        </localizedDisplayNameList>
+        <localizedDisplayNameList>
+            <localeName>zh-TW</localeName>
+            <stringValue>角色</stringValue>
+        </localizedDisplayNameList>
+        <localizedDisplayNameList>
+            <localeName>th</localeName>
+            <stringValue>บท</stringValue>
+        </localizedDisplayNameList>
+        <name>mtp.auth.Role</name>
+        <auditLog>false</auditLog>
+        <crawl>false</crawl>
+        <queryCache>true</queryCache>
+        <declaredPropertyList xsi:type="metaPrimitiveProperty">
+            <displayName>ロールコード</displayName>
+            <entityStoreProperty xsi:type="metaGRdbPropertyStore">
+                <pageNo>0</pageNo>
+                <columnName>STR_1</columnName>
+                <isNative>false</isNative>
+                <externalIndex>false</externalIndex>
+                <indexPageNo>0</indexPageNo>
+                <indexColumnNo>1</indexColumnNo>
+            </entityStoreProperty>
+            <id>1</id>
+            <indexType>UNIQUE</indexType>
+            <localizedDisplayNameList>
+                <localeName>ja</localeName>
+                <stringValue>ロールコード</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>en</localeName>
+                <stringValue>Role Code</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>zh-CN</localeName>
+                <stringValue>角色代码</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>zh-TW</localeName>
+                <stringValue>角色代碼</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>th</localeName>
+                <stringValue>โค๊ดบท</stringValue>
+            </localizedDisplayNameList>
+            <multiplicity>1</multiplicity>
+            <name>code</name>
+            <updatable>true</updatable>
+            <validations xsi:type="metaValidationNotNull">
+                <messageCategory>mtp/validation</messageCategory>
+                <messageId>NotNull</messageId>
+            </validations>
+            <type xsi:type="stringType"/>
+        </declaredPropertyList>
+        <declaredPropertyList xsi:type="metaPrimitiveProperty">
+            <displayName>優先順位</displayName>
+            <entityStoreProperty xsi:type="metaGRdbPropertyStore">
+                <pageNo>0</pageNo>
+                <columnName>NUM_1</columnName>
+                <isNative>false</isNative>
+            </entityStoreProperty>
+            <id>2</id>
+            <indexType>NON_INDEXED</indexType>
+            <localizedDisplayNameList>
+                <localeName>ja</localeName>
+                <stringValue>優先順位</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>en</localeName>
+                <stringValue>Priority</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>zh-CN</localeName>
+                <stringValue>优先顺序</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>zh-TW</localeName>
+                <stringValue>優先順序</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>th</localeName>
+                <stringValue>ลำดับความสำคัญ</stringValue>
+            </localizedDisplayNameList>
+            <multiplicity>1</multiplicity>
+            <name>priority</name>
+            <updatable>true</updatable>
+            <validations xsi:type="metaValidationRange">
+                <messageCategory>mtp/validation</messageCategory>
+                <messageId>NumMin</messageId>
+                <maxValueExcluded>false</maxValueExcluded>
+                <min>1</min>
+                <minValueExcluded>false</minValueExcluded>
+            </validations>
+            <type xsi:type="integerType"/>
+        </declaredPropertyList>
+        <declaredPropertyList xsi:type="metaReferenceProperty">
+            <displayName>ロール条件</displayName>
+            <id>REF_2</id>
+            <indexType>NON_INDEXED</indexType>
+            <localizedDisplayNameList>
+                <localeName>ja</localeName>
+                <stringValue>ロール条件</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>en</localeName>
+                <stringValue>Role Conditions</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>zh-CN</localeName>
+                <stringValue>角色条件</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>zh-TW</localeName>
+                <stringValue>角色條件</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>th</localeName>
+                <stringValue>เงื่อนไขบท</stringValue>
+            </localizedDisplayNameList>
+            <multiplicity>-1</multiplicity>
+            <name>condition</name>
+            <updatable>true</updatable>
+            <auditLogMappedBy>false</auditLogMappedBy>
+            <mappedByPropertyMetaDataId>REF_3</mappedByPropertyMetaDataId>
+            <referenceEntityMetaDataId>E0004</referenceEntityMetaDataId>
+            <referenceType>COMPOSITION</referenceType>
+        </declaredPropertyList>
+        <declaredPropertyList xsi:type="metaReferenceProperty">
+            <displayName>Entity権限</displayName>
+            <id>REF_4</id>
+            <indexType>NON_INDEXED</indexType>
+            <localizedDisplayNameList>
+                <localeName>ja</localeName>
+                <stringValue>Entity権限</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>en</localeName>
+                <stringValue>Entity Permission</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>zh-CN</localeName>
+                <stringValue>Entity权限</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>zh-TW</localeName>
+                <stringValue>Entity權限</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>th</localeName>
+                <stringValue>การอนุญาตสำหรับ Entity</stringValue>
+            </localizedDisplayNameList>
+            <multiplicity>-1</multiplicity>
+            <name>entityPermission</name>
+            <updatable>true</updatable>
+            <auditLogMappedBy>false</auditLogMappedBy>
+            <mappedByPropertyMetaDataId>8dcaa991-68da-45b5-a3ef-3622f9344643</mappedByPropertyMetaDataId>
+            <referenceEntityMetaDataId>E0009</referenceEntityMetaDataId>
+            <referenceType>COMPOSITION</referenceType>
+        </declaredPropertyList>
+        <entityStoreDefinition xsi:type="metaGRdbEntityStore">
+            <tableNamePostfix>MTP</tableNamePostfix>
+            <maxVarchar>
+                <columnNo>1</columnNo>
+                <pageNo>0</pageNo>
+            </maxVarchar>
+            <maxDecimal>
+                <columnNo>1</columnNo>
+                <pageNo>0</pageNo>
+            </maxDecimal>
+            <maxUniqueIndexedVarchar>
+                <columnNo>1</columnNo>
+                <pageNo>0</pageNo>
+            </maxUniqueIndexedVarchar>
+            <version>0</version>
+        </entityStoreDefinition>
+        <eventListenerList xsi:type="metaJavaClassEventListener">
+            <withoutMappedByReference>false</withoutMappedByReference>
+            <className>org.iplass.mtp.impl.auth.authorize.builtin.role.RoleEntityEventListener</className>
+        </eventListenerList>
+        <storeMapping xsi:type="metaSchemalessRdbStoreMapping">
+            <storageSpace>mtp</storageSpace>
+        </storeMapping>
+        <inheritedEntityMetaDataId>/entity/Entity</inheritedEntityMetaDataId>
+    </metaData>
+</metaDataEntry>
+<metaDataEntry name="/entity/mtp/auth/RoleCondition" overwritable="false" sharable="true" dataSharable="false" permissionSharable="false">
+    <metaData xsi:type="metaEntity" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+        <description>ロールに適用する条件定義です。</description>
+        <displayName>ロール条件</displayName>
+        <id>E0004</id>
+        <localizedDisplayNameList>
+            <localeName>ja</localeName>
+            <stringValue>ロール条件</stringValue>
+        </localizedDisplayNameList>
+        <localizedDisplayNameList>
+            <localeName>en</localeName>
+            <stringValue>Role Conditions</stringValue>
+        </localizedDisplayNameList>
+        <localizedDisplayNameList>
+            <localeName>zh-CN</localeName>
+            <stringValue>角色条件</stringValue>
+        </localizedDisplayNameList>
+        <localizedDisplayNameList>
+            <localeName>zh-TW</localeName>
+            <stringValue>角色條件</stringValue>
+        </localizedDisplayNameList>
+        <localizedDisplayNameList>
+            <localeName>th</localeName>
+            <stringValue>เงื่อนไขบท</stringValue>
+        </localizedDisplayNameList>
+        <name>mtp.auth.RoleCondition</name>
+        <auditLog>false</auditLog>
+        <crawl>false</crawl>
+        <declaredPropertyList xsi:type="metaPrimitiveProperty">
+            <displayName>条件</displayName>
+            <entityStoreProperty xsi:type="metaGRdbPropertyStore">
+                <pageNo>0</pageNo>
+                <columnName>STR_1</columnName>
+                <isNative>false</isNative>
+                <externalIndex>false</externalIndex>
+                <indexPageNo>0</indexPageNo>
+                <indexColumnNo>1</indexColumnNo>
+            </entityStoreProperty>
+            <id>1</id>
+            <indexType>NON_UNIQUE</indexType>
+            <localizedDisplayNameList>
+                <localeName>ja</localeName>
+                <stringValue>条件</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>en</localeName>
+                <stringValue>Conditions</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>zh-CN</localeName>
+                <stringValue>条件</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>zh-TW</localeName>
+                <stringValue>條件</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>th</localeName>
+                <stringValue>เงื่อนไข</stringValue>
+            </localizedDisplayNameList>
+            <multiplicity>1</multiplicity>
+            <name>expression</name>
+            <updatable>true</updatable>
+            <validations xsi:type="metaValidationNotNull">
+                <messageCategory>mtp/validation</messageCategory>
+                <messageId>NotNull</messageId>
+            </validations>
+            <type xsi:type="stringType"/>
+        </declaredPropertyList>
+        <declaredPropertyList xsi:type="metaReferenceProperty">
+            <displayName>ロール</displayName>
+            <id>REF_3</id>
+            <indexType>NON_INDEXED</indexType>
+            <localizedDisplayNameList>
+                <localeName>ja</localeName>
+                <stringValue>ロール</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>en</localeName>
+                <stringValue>Role</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>zh-CN</localeName>
+                <stringValue>角色</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>zh-TW</localeName>
+                <stringValue>角色</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>th</localeName>
+                <stringValue>บท</stringValue>
+            </localizedDisplayNameList>
+            <multiplicity>1</multiplicity>
+            <name>role</name>
+            <updatable>true</updatable>
+            <validations xsi:type="metaValidationNotNull">
+                <messageCategory>mtp/validation</messageCategory>
+                <messageId>NotNull</messageId>
+            </validations>
+            <auditLogMappedBy>false</auditLogMappedBy>
+            <referenceEntityMetaDataId>E0003</referenceEntityMetaDataId>
+            <referenceType>ASSOCIATION</referenceType>
+        </declaredPropertyList>
+        <entityStoreDefinition xsi:type="metaGRdbEntityStore">
+            <tableNamePostfix>MTP</tableNamePostfix>
+            <maxVarchar>
+                <columnNo>1</columnNo>
+                <pageNo>0</pageNo>
+            </maxVarchar>
+            <maxIndexedVarchar>
+                <columnNo>1</columnNo>
+                <pageNo>0</pageNo>
+            </maxIndexedVarchar>
+            <version>0</version>
+        </entityStoreDefinition>
+        <eventListenerList xsi:type="metaJavaClassEventListener">
+            <withoutMappedByReference>false</withoutMappedByReference>
+            <className>org.iplass.mtp.impl.auth.authorize.builtin.role.RoleConditionEntityEventListener</className>
+        </eventListenerList>
+        <storeMapping xsi:type="metaSchemalessRdbStoreMapping">
+            <storageSpace>mtp</storageSpace>
+        </storeMapping>
+        <inheritedEntityMetaDataId>/entity/Entity</inheritedEntityMetaDataId>
+    </metaData>
+</metaDataEntry>
+<metaDataEntry name="/entity/mtp/auth/User" overwritable="true" sharable="true" dataSharable="false" permissionSharable="false">
+    <metaData xsi:type="metaEntity" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+        <description>ユーザ定義です。</description>
+        <displayName>ユーザー情報</displayName>
+        <id>E0001</id>
+        <localizedDisplayNameList>
+            <localeName>ja</localeName>
+            <stringValue>ユーザー情報</stringValue>
+        </localizedDisplayNameList>
+        <localizedDisplayNameList>
+            <localeName>en</localeName>
+            <stringValue>User Information</stringValue>
+        </localizedDisplayNameList>
+        <localizedDisplayNameList>
+            <localeName>zh-CN</localeName>
+            <stringValue>用户信息</stringValue>
+        </localizedDisplayNameList>
+        <localizedDisplayNameList>
+            <localeName>zh-TW</localeName>
+            <stringValue>用戶信息</stringValue>
+        </localizedDisplayNameList>
+        <localizedDisplayNameList>
+            <localeName>th</localeName>
+            <stringValue>ข้อมูลผู้ใช้งาน</stringValue>
+        </localizedDisplayNameList>
+        <name>mtp.auth.User</name>
+        <auditLog>false</auditLog>
+        <crawl>false</crawl>
+        <declaredPropertyList xsi:type="metaPrimitiveProperty">
+            <displayName>ユーザID</displayName>
+            <entityStoreProperty xsi:type="metaGRdbPropertyStore">
+                <pageNo>0</pageNo>
+                <columnName>STR_1</columnName>
+                <isNative>false</isNative>
+                <externalIndex>false</externalIndex>
+                <indexPageNo>0</indexPageNo>
+                <indexColumnNo>1</indexColumnNo>
+            </entityStoreProperty>
+            <id>2</id>
+            <indexType>UNIQUE</indexType>
+            <localizedDisplayNameList>
+                <localeName>ja</localeName>
+                <stringValue>ユーザID</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>en</localeName>
+                <stringValue>User Id</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>zh-CN</localeName>
+                <stringValue>用户ID</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>zh-TW</localeName>
+                <stringValue>用戶ID</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>th</localeName>
+                <stringValue>ไอดีผู้ใช้งาน</stringValue>
+            </localizedDisplayNameList>
+            <multiplicity>1</multiplicity>
+            <name>accountId</name>
+            <updatable>true</updatable>
+            <validations xsi:type="metaValidationNotNull">
+                <messageCategory>mtp/validation</messageCategory>
+                <messageId>NotNull</messageId>
+            </validations>
+            <validations xsi:type="metaValidationLength">
+                <messageCategory>mtp/validation</messageCategory>
+                <messageId>Length</messageId>
+                <checkBytes>false</checkBytes>
+                <max>128</max>
+                <min>4</min>
+            </validations>
+            <validations xsi:type="metaValidationRegex">
+                <errorMessage>ユーザIDには「英数字」および「-」(マイナス)「@」「_」「.」(ピリオド)のみ利用可能です。</errorMessage>
+                <localizedErrorMessageList>
+                    <localeName>ja</localeName>
+                    <stringValue>ユーザIDには「英数字」および「-」(マイナス)「@」「_」「.」(ピリオド)のみ利用可能です。</stringValue>
+                </localizedErrorMessageList>
+                <localizedErrorMessageList>
+                    <localeName>en</localeName>
+                    <stringValue>And "alphanumeric" to the user ID is "-"(Minus), "."(period), "@", "_" is only available.</stringValue>
+                </localizedErrorMessageList>
+                <localizedErrorMessageList>
+                    <localeName>zh-CN</localeName>
+                    <stringValue>用户ID中只能使用英文，数字，-，@，_，和.。</stringValue>
+                </localizedErrorMessageList>
+                <localizedErrorMessageList>
+                    <localeName>zh-TW</localeName>
+                    <stringValue>用戶ID中只能使用英文，數字，-，@，_，和.。</stringValue>
+                </localizedErrorMessageList>
+                <localizedErrorMessageList>
+                    <localeName>th</localeName>
+                    <stringValue>ไอดีผู้ใช้งานสามารถใช้ได้เพียง "ตัวอักษรภาษาอังกฤษ", "-"(Minus), "."(period), "@", "_" เท่านัน้</stringValue>
+                </localizedErrorMessageList>
+                <pattern>[-\w@.]*</pattern>
+            </validations>
+            <type xsi:type="stringType"/>
+        </declaredPropertyList>
+        <declaredPropertyList xsi:type="metaPrimitiveProperty">
+            <displayName>名</displayName>
+            <entityStoreProperty xsi:type="metaGRdbPropertyStore">
+                <pageNo>0</pageNo>
+                <columnName>STR_2</columnName>
+                <isNative>false</isNative>
+            </entityStoreProperty>
+            <id>3</id>
+            <indexType>NON_INDEXED</indexType>
+            <localizedDisplayNameList>
+                <localeName>ja</localeName>
+                <stringValue>名</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>en</localeName>
+                <stringValue>First Name</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>zh-CN</localeName>
+                <stringValue>名</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>zh-TW</localeName>
+                <stringValue>名</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>th</localeName>
+                <stringValue>ชื่อ</stringValue>
+            </localizedDisplayNameList>
+            <multiplicity>1</multiplicity>
+            <name>firstName</name>
+            <updatable>true</updatable>
+            <type xsi:type="stringType"/>
+        </declaredPropertyList>
+        <declaredPropertyList xsi:type="metaPrimitiveProperty">
+            <displayName>姓</displayName>
+            <entityStoreProperty xsi:type="metaGRdbPropertyStore">
+                <pageNo>0</pageNo>
+                <columnName>STR_3</columnName>
+                <isNative>false</isNative>
+            </entityStoreProperty>
+            <id>4</id>
+            <indexType>NON_INDEXED</indexType>
+            <localizedDisplayNameList>
+                <localeName>ja</localeName>
+                <stringValue>姓</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>en</localeName>
+                <stringValue>Last Name</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>zh-CN</localeName>
+                <stringValue>姓</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>zh-TW</localeName>
+                <stringValue>姓</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>th</localeName>
+                <stringValue>นามสกุล</stringValue>
+            </localizedDisplayNameList>
+            <multiplicity>1</multiplicity>
+            <name>lastName</name>
+            <updatable>true</updatable>
+            <validations xsi:type="metaValidationNotNull">
+                <messageCategory>mtp/validation</messageCategory>
+                <messageId>NotNull</messageId>
+            </validations>
+            <type xsi:type="stringType"/>
+        </declaredPropertyList>
+        <declaredPropertyList xsi:type="metaPrimitiveProperty">
+            <displayName>メールアドレス</displayName>
+            <entityStoreProperty xsi:type="metaGRdbPropertyStore">
+                <pageNo>0</pageNo>
+                <columnName>STR_4</columnName>
+                <isNative>false</isNative>
+            </entityStoreProperty>
+            <id>5</id>
+            <indexType>NON_INDEXED</indexType>
+            <localizedDisplayNameList>
+                <localeName>ja</localeName>
+                <stringValue>メールアドレス</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>en</localeName>
+                <stringValue>Mail Address</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>zh-CN</localeName>
+                <stringValue>邮箱</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>zh-TW</localeName>
+                <stringValue>郵箱</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>th</localeName>
+                <stringValue>อีเมลแอดเดรส</stringValue>
+            </localizedDisplayNameList>
+            <multiplicity>1</multiplicity>
+            <name>mail</name>
+            <updatable>true</updatable>
+            <validations xsi:type="metaValidationRegex">
+                <errorMessage>メールアドレスをご確認ください。</errorMessage>
+                <localizedErrorMessageList>
+                    <localeName>ja</localeName>
+                    <stringValue>メールアドレスをご確認ください。</stringValue>
+                </localizedErrorMessageList>
+                <localizedErrorMessageList>
+                    <localeName>en</localeName>
+                    <stringValue>Please check your e-mail address.</stringValue>
+                </localizedErrorMessageList>
+                <localizedErrorMessageList>
+                    <localeName>zh-CN</localeName>
+                    <stringValue>请检查您的邮箱。</stringValue>
+                </localizedErrorMessageList>
+                <localizedErrorMessageList>
+                    <localeName>zh-TW</localeName>
+                    <stringValue>請檢查您的郵箱。</stringValue>
+                </localizedErrorMessageList>
+                <localizedErrorMessageList>
+                    <localeName>th</localeName>
+                    <stringValue>กรุณาใส่อีเมลแอดเดรส</stringValue>
+                </localizedErrorMessageList>
+                <pattern>|^(?:(?:(?:(?:[a-zA-Z0-9_!#\$\%&amp;'*+/=?\^`{}~|\-]+)(?:\.(?:[a-zA-Z0-9_!#\$\%&amp;'*+/=?\^`{}~|\-]+))*)|(?:"(?:\\[^\r\n]|[^\\"])*")))\@(?:(?:(?:(?:[a-zA-Z0-9_!#\$\%&amp;'*+/=?\^`{}~|\-]+)(?:\.(?:[a-zA-Z0-9_!#\$\%&amp;'*+/=?\^`{}~|\-]+))*)|(?:\[(?:\\\S|[\x21-\x5a\x5e-\x7e])*\])))$</pattern>
+            </validations>
+            <type xsi:type="stringType"/>
+        </declaredPropertyList>
+        <declaredPropertyList xsi:type="metaPrimitiveProperty">
+            <displayName>言語</displayName>
+            <entityStoreProperty xsi:type="metaGRdbPropertyStore">
+                <pageNo>0</pageNo>
+                <columnName>STR_5</columnName>
+                <isNative>false</isNative>
+            </entityStoreProperty>
+            <id>8</id>
+            <indexType>NON_INDEXED</indexType>
+            <localizedDisplayNameList>
+                <localeName>ja</localeName>
+                <stringValue>言語</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>en</localeName>
+                <stringValue>Language</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>zh-CN</localeName>
+                <stringValue>语言</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>zh-TW</localeName>
+                <stringValue>語言</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>th</localeName>
+                <stringValue>ภาษา</stringValue>
+            </localizedDisplayNameList>
+            <multiplicity>1</multiplicity>
+            <name>language</name>
+            <updatable>true</updatable>
+            <type xsi:type="stringType"/>
+        </declaredPropertyList>
+        <declaredPropertyList xsi:type="metaPrimitiveProperty">
+            <displayName>名（カナ）</displayName>
+            <entityStoreProperty xsi:type="metaGRdbPropertyStore">
+                <pageNo>0</pageNo>
+                <columnName>STR_6</columnName>
+                <isNative>false</isNative>
+            </entityStoreProperty>
+            <id>11</id>
+            <indexType>NON_INDEXED</indexType>
+            <localizedDisplayNameList>
+                <localeName>ja</localeName>
+                <stringValue>名（カナ）</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>en</localeName>
+                <stringValue>First Name (Kana)</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>zh-CN</localeName>
+                <stringValue>名（日语假名）</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>zh-TW</localeName>
+                <stringValue>名（日語假名）</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>th</localeName>
+                <stringValue>ชื่อ (คาตาคานะ)</stringValue>
+            </localizedDisplayNameList>
+            <multiplicity>1</multiplicity>
+            <name>firstNameKana</name>
+            <updatable>true</updatable>
+            <validations xsi:type="metaValidationRegex">
+                <errorMessage>名（カナ）は全角カナで入力してください。</errorMessage>
+                <localizedErrorMessageList>
+                    <localeName>ja</localeName>
+                    <stringValue>名（カナ）は全角カナで入力してください。</stringValue>
+                </localizedErrorMessageList>
+                <localizedErrorMessageList>
+                    <localeName>en</localeName>
+                    <stringValue>(Kana) Please enter name in Cana em.</stringValue>
+                </localizedErrorMessageList>
+                <localizedErrorMessageList>
+                    <localeName>zh-CN</localeName>
+                    <stringValue>请用全角的日语假名来输入您的名。</stringValue>
+                </localizedErrorMessageList>
+                <localizedErrorMessageList>
+                    <localeName>zh-TW</localeName>
+                    <stringValue>請用全角的日語假名來輸入您的名。</stringValue>
+                </localizedErrorMessageList>
+                <localizedErrorMessageList>
+                    <localeName>th</localeName>
+                    <stringValue>กรุณาใส่ชื่อด้วยตัวคาตาคานะ</stringValue>
+                </localizedErrorMessageList>
+                <pattern>|^[\u30A1-\u30FC\u3000\u0020\\s　]++</pattern>
+            </validations>
+            <type xsi:type="stringType"/>
+        </declaredPropertyList>
+        <declaredPropertyList xsi:type="metaPrimitiveProperty">
+            <displayName>姓（カナ）</displayName>
+            <entityStoreProperty xsi:type="metaGRdbPropertyStore">
+                <pageNo>0</pageNo>
+                <columnName>STR_7</columnName>
+                <isNative>false</isNative>
+            </entityStoreProperty>
+            <id>12</id>
+            <indexType>NON_INDEXED</indexType>
+            <localizedDisplayNameList>
+                <localeName>ja</localeName>
+                <stringValue>姓（カナ）</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>en</localeName>
+                <stringValue>Last Name (Kana)</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>zh-CN</localeName>
+                <stringValue>姓（假名）</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>zh-TW</localeName>
+                <stringValue>姓（假名）</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>th</localeName>
+                <stringValue>นามสกุล (คาตาคานะ)</stringValue>
+            </localizedDisplayNameList>
+            <multiplicity>1</multiplicity>
+            <name>lastNameKana</name>
+            <updatable>true</updatable>
+            <validations xsi:type="metaValidationRegex">
+                <errorMessage>姓（カナ）は全角カナで入力してください。</errorMessage>
+                <localizedErrorMessageList>
+                    <localeName>ja</localeName>
+                    <stringValue>姓（カナ）は全角カナで入力してください。</stringValue>
+                </localizedErrorMessageList>
+                <localizedErrorMessageList>
+                    <localeName>en</localeName>
+                    <stringValue>(Kana) Please enter last name em in Cana.</stringValue>
+                </localizedErrorMessageList>
+                <localizedErrorMessageList>
+                    <localeName>zh-CN</localeName>
+                    <stringValue>请用全角的日语假名来输入您的姓。</stringValue>
+                </localizedErrorMessageList>
+                <localizedErrorMessageList>
+                    <localeName>zh-TW</localeName>
+                    <stringValue>請用全角的日語假名來輸入您的姓。</stringValue>
+                </localizedErrorMessageList>
+                <localizedErrorMessageList>
+                    <localeName>th</localeName>
+                    <stringValue>กรุณาใส่นามสกุลด้วยตัวคาตาคานะ</stringValue>
+                </localizedErrorMessageList>
+                <pattern>^[\u30A1-\u30FC\u3000\u0020\\s　]++</pattern>
+            </validations>
+            <type xsi:type="stringType"/>
+        </declaredPropertyList>
+        <declaredPropertyList xsi:type="metaPrimitiveProperty">
+            <displayName>管理者</displayName>
+            <entityStoreProperty xsi:type="metaGRdbPropertyStore">
+                <pageNo>0</pageNo>
+                <columnName>STR_8</columnName>
+                <isNative>false</isNative>
+            </entityStoreProperty>
+            <id>14</id>
+            <localizedDisplayNameList>
+                <localeName>ja</localeName>
+                <stringValue>管理者</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>en</localeName>
+                <stringValue>Administrator</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>zh-CN</localeName>
+                <stringValue>管理员</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>zh-TW</localeName>
+                <stringValue>管理員</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>th</localeName>
+                <stringValue>ผู้ดูแล</stringValue>
+            </localizedDisplayNameList>
+            <multiplicity>1</multiplicity>
+            <name>admin</name>
+            <updatable>true</updatable>
+            <type xsi:type="booleanType"/>
+        </declaredPropertyList>
+        <declaredPropertyList xsi:type="metaPrimitiveProperty">
+            <displayName>一時ログインユーザ</displayName>
+            <entityStoreProperty xsi:type="metaGRdbPropertyStore">
+                <pageNo>0</pageNo>
+                <columnName>STR_9</columnName>
+                <isNative>false</isNative>
+            </entityStoreProperty>
+            <id>16</id>
+            <localizedDisplayNameList>
+                <localeName>ja</localeName>
+                <stringValue>一時ログインユーザ</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>en</localeName>
+                <stringValue>Temporary User</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>zh-CN</localeName>
+                <stringValue>临时用户</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>zh-TW</localeName>
+                <stringValue>臨時用戶</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>th</localeName>
+                <stringValue>ผู้ใช้งานชั่วคราว</stringValue>
+            </localizedDisplayNameList>
+            <multiplicity>1</multiplicity>
+            <name>temporary</name>
+            <updatable>true</updatable>
+            <type xsi:type="booleanType"/>
+        </declaredPropertyList>
+        <declaredPropertyList xsi:type="metaPrimitiveProperty">
+            <displayName>アカウントポリシー</displayName>
+            <entityStoreProperty xsi:type="metaGRdbPropertyStore">
+                <pageNo>0</pageNo>
+                <columnName>STR_10</columnName>
+                <isNative>false</isNative>
+            </entityStoreProperty>
+            <id>17</id>
+            <indexType>NON_INDEXED</indexType>
+            <localizedDisplayNameList>
+                <localeName>ja</localeName>
+                <stringValue>アカウントポリシー</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>en</localeName>
+                <stringValue>Account Policy</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>zh-CN</localeName>
+                <stringValue>帐户策略</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>zh-TW</localeName>
+                <stringValue>帳戶策略</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>th</localeName>
+                <stringValue>นโยบายความปลอดภัย</stringValue>
+            </localizedDisplayNameList>
+            <multiplicity>1</multiplicity>
+            <name>accountPolicy</name>
+            <updatable>true</updatable>
+            <validations xsi:type="metaValidationScripting">
+                <errorMessage>指定のポリシー定義は存在しません。</errorMessage>
+                <localizedErrorMessageList>
+                    <localeName>ja</localeName>
+                    <stringValue>指定のポリシー定義は存在しません。</stringValue>
+                </localizedErrorMessageList>
+                <localizedErrorMessageList>
+                    <localeName>en</localeName>
+                    <stringValue>Specified policy does not exist.</stringValue>
+                </localizedErrorMessageList>
+                <localizedErrorMessageList>
+                    <localeName>zh-CN</localeName>
+                    <stringValue>指定的策略不存在。</stringValue>
+                </localizedErrorMessageList>
+                <localizedErrorMessageList>
+                    <localeName>zh-TW</localeName>
+                    <stringValue>指定的策略不存在。</stringValue>
+                </localizedErrorMessageList>
+                <localizedErrorMessageList>
+                    <localeName>th</localeName>
+                    <stringValue>นโยบายที่ระบุไม่ปรากฏ</stringValue>
+                </localizedErrorMessageList>
+                <script>import org.iplass.mtp.*;
+import org.iplass.mtp.auth.policy.definition.*;
+
+if (value != null) {
+    AuthenticationPolicyDefinition apd = ManagerLocator.instance.getManager(AuthenticationPolicyDefinitionManager.class).get(value);
+    if (apd == null) {
+        return false;
+    }
+}
+return true;</script>
+            </validations>
+            <type xsi:type="stringType"/>
+        </declaredPropertyList>
+        <declaredPropertyList xsi:type="metaPrimitiveProperty">
+            <displayName>IPアドレス履歴</displayName>
+            <entityStoreProperty xsi:type="metaGRdbPropertyStore">
+                <pageNo>0</pageNo>
+                <columnName>STR_11</columnName>
+                <isNative>false</isNative>
+            </entityStoreProperty>
+            <id>18</id>
+            <indexType>NON_INDEXED</indexType>
+            <localizedDisplayNameList>
+                <localeName>ja</localeName>
+                <stringValue>IPアドレス履歴</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>en</localeName>
+                <stringValue>IP Address History</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>zh-CN</localeName>
+                <stringValue>IP地址历史</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>zh-TW</localeName>
+                <stringValue>IP地址歷史</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>th</localeName>
+                <stringValue>ประวัติ IP Address</stringValue>
+            </localizedDisplayNameList>
+            <multiplicity>1</multiplicity>
+            <name>ipAddressHistory</name>
+            <updatable>true</updatable>
+            <type xsi:type="stringType"/>
+        </declaredPropertyList>
+        <declaredPropertyList xsi:type="metaReferenceProperty">
+            <displayName>所属グループ</displayName>
+            <id>REF5</id>
+            <indexType>NON_INDEXED</indexType>
+            <localizedDisplayNameList>
+                <localeName>ja</localeName>
+                <stringValue>所属グループ</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>en</localeName>
+                <stringValue>Member Of</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>zh-CN</localeName>
+                <stringValue>所属组</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>zh-TW</localeName>
+                <stringValue>所屬組</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>th</localeName>
+                <stringValue>สมาชิกของ</stringValue>
+            </localizedDisplayNameList>
+            <multiplicity>-1</multiplicity>
+            <name>groups</name>
+            <updatable>true</updatable>
+            <auditLogMappedBy>false</auditLogMappedBy>
+            <referenceEntityMetaDataId>E0006</referenceEntityMetaDataId>
+            <referenceType>ASSOCIATION</referenceType>
+        </declaredPropertyList>
+        <declaredPropertyList xsi:type="metaReferenceProperty">
+            <displayName>所属ランク</displayName>
+            <id>REF6</id>
+            <indexType>NON_INDEXED</indexType>
+            <localizedDisplayNameList>
+                <localeName>ja</localeName>
+                <stringValue>所属ランク</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>en</localeName>
+                <stringValue>Rank Affiliation</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>zh-CN</localeName>
+                <stringValue>所属级别</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>zh-TW</localeName>
+                <stringValue>所屬級別</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>th</localeName>
+                <stringValue>อันดับของ</stringValue>
+            </localizedDisplayNameList>
+            <multiplicity>1</multiplicity>
+            <name>rank</name>
+            <updatable>true</updatable>
+            <auditLogMappedBy>false</auditLogMappedBy>
+            <referenceEntityMetaDataId>E0002</referenceEntityMetaDataId>
+            <referenceType>ASSOCIATION</referenceType>
+        </declaredPropertyList>
+        <entityStoreDefinition xsi:type="metaGRdbEntityStore">
+            <tableNamePostfix>USER</tableNamePostfix>
+            <maxVarchar>
+                <columnNo>11</columnNo>
+                <pageNo>0</pageNo>
+            </maxVarchar>
+            <maxUniqueIndexedVarchar>
+                <columnNo>1</columnNo>
+                <pageNo>0</pageNo>
+            </maxUniqueIndexedVarchar>
+            <version>0</version>
+        </entityStoreDefinition>
+        <eventListenerList xsi:type="metaJavaClassEventListener">
+            <withoutMappedByReference>false</withoutMappedByReference>
+            <className>org.iplass.mtp.impl.auth.UserEntityEventListener</className>
+        </eventListenerList>
+        <storeMapping xsi:type="metaSchemalessRdbStoreMapping">
+            <storageSpace>user</storageSpace>
+        </storeMapping>
+        <inheritedEntityMetaDataId>/entity/Entity</inheritedEntityMetaDataId>
+        <mapping>
+            <mappingClass>org.iplass.mtp.auth.User</mappingClass>
+        </mapping>
+    </metaData>
+</metaDataEntry>
+</contextPath>
+
+<contextPath name="/mail/template">
+<metaDataEntry>
+    <metaData xsi:type="metaMailTemplate" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+        <id>MT0001</id>
+        <name>mtp/auth/UserCreateMail</name>
+        <displayName>ユーザ登録通知メール</displayName>
+        <description>標準メール通知リスナーBuiltinMailNotificationListnerのユーザ登録時に通知するメールメッセージ定義です。
+メッセージ生成時に以下のバインド変数を渡します。
+tenant(api.tenant.Tenant)、user(api.auth.User)、newPassword(String)</description>
+        <subject>【${tenant.displayName}】ユーザ登録のお知らせ</subject>
+        <message>
+            <content>${user.name}様
+
+${tenant.displayName}に「${user.name}」様のユーザ登録が行われました。
+
+ユーザIDと仮パスワードが発行されましたので、下記URLから${tenant.displayName}にアクセスし、
+パスワードの登録作業を実施して下さい。
+
+   URL: XXXXXXXX
+   ユーザID: ${user.accountId}
+   ユーザ名: ${user.name}
+   仮パスワード: ${newPassword}
+
+=====================================================================
+□ 本メールにお心当たりが無い方へ
+
+本メールは、${tenant.displayName}にてユーザー登録を頂いたお客様にお送りしています。
+このメールにお心当たりのない場合は、お手数ですが下記、アドレス
+(送信元アドレス)までご連絡下さい。
+   ${tenant.displayName}事務局
+   ${tenant.tenantMailInfo.mailReply}
+=====================================================================
+
+送信元：株式会社 電通国際情報サービス
+COPYRIGHT 2011 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. ALL RIGHTS RESERVED.</content>
+        </message>
+        <htmlMessage>
+            <content></content>
+        </htmlMessage>
+    </metaData>
+</metaDataEntry>
+<metaDataEntry>
+    <metaData xsi:type="metaMailTemplate" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+        <id>MT0002</id>
+        <name>mtp/auth/CredentialResetMail</name>
+        <displayName>パスワードリセット通知メール</displayName>
+        <description>標準メール通知リスナーBuiltinMailNotificationListnerのパスワードリセット時に通知するメールメッセージ定義です。
+メッセージ生成時に以下のバインド変数を渡します。
+tenant(api.tenant.Tenant)、user(api.auth.User)、newPassword(String)</description>
+        <subject>【${tenant.displayName}】ユーザ情報パスワードリセットのお知らせ</subject>
+        <message>
+            <content>${user.name}様
+
+（ユーザID：${user.accountId}）のパスワードがリセットされました。
+
+仮パスワードが発行されましたので、下記URLから${tenant.displayName}にアクセスし、
+パスワードの登録作業を実施して下さい。
+
+   URL: XXXXXXXX
+   仮パスワード: ${newPassword}
+
+=====================================================================
+□ 本メールにお心当たりが無い方へ
+
+本メールは、${tenant.displayName}にてユーザー登録を頂いたお客様にお送りしています。
+このメールにお心当たりのない場合は、お手数ですが下記、アドレス
+(送信元アドレス)までご連絡下さい。
+   ${tenant.displayName}事務局
+   ${tenant.tenantMailInfo.mailReply}
+=====================================================================
+
+送信元：株式会社 電通国際情報サービス
+COPYRIGHT 2011 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. ALL RIGHTS RESERVED.</content>
+        </message>
+        <htmlMessage>
+            <content></content>
+        </htmlMessage>
+    </metaData>
+</metaDataEntry>
+</contextPath>
+
+<contextPath name="/authNPolicy">
+<metaDataEntry overwritable="true">
+    <metaData xsi:type="metaAuthenticationPolicy" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+        <id>ANP0001</id>
+        <name>DEFAULT</name>
+        <displayName>標準</displayName>
+        <localizedDisplayNameList>
+            <localeName>ja</localeName>
+            <stringValue>標準</stringValue>
+        </localizedDisplayNameList>
+        <localizedDisplayNameList>
+            <localeName>en</localeName>
+            <stringValue>Standard</stringValue>
+        </localizedDisplayNameList>
+        <localizedDisplayNameList>
+            <localeName>zh-CN</localeName>
+            <stringValue>标准</stringValue>
+        </localizedDisplayNameList>
+        <localizedDisplayNameList>
+            <localeName>zh-TW</localeName>
+            <stringValue>標準</stringValue>
+        </localizedDisplayNameList>
+        <localizedDisplayNameList>
+            <localeName>th</localeName>
+            <stringValue>มาตรฐาน</stringValue>
+        </localizedDisplayNameList>
+        <accountLockoutPolicy>
+            <lockoutDuration>0</lockoutDuration>
+            <lockoutFailureCount>10</lockoutFailureCount>
+            <lockoutFailureExpirationInterval>0</lockoutFailureExpirationInterval>
+        </accountLockoutPolicy>
+        <notificationListener xsi:type="metaMailAccountNotificationListener">
+            <createUserMailTemplate>mtp/auth/UserCreateMail</createUserMailTemplate>
+            <credentialResetMailTemplate>mtp/auth/CredentialResetMail</credentialResetMailTemplate>
+        </notificationListener>
+        <passwordPolicy>
+            <createAccountWithSpecificPassword>false</createAccountWithSpecificPassword>
+            <localizedPasswordPatternErrorMessageList>
+                <localeName>ja</localeName>
+                <stringValue>パスワードは6文字以上の英数字で入力してください。</stringValue>
+            </localizedPasswordPatternErrorMessageList>
+            <localizedPasswordPatternErrorMessageList>
+                <localeName>en</localeName>
+                <stringValue>Password must be 6 or more alphanumeric characters.</stringValue>
+            </localizedPasswordPatternErrorMessageList>
+            <localizedPasswordPatternErrorMessageList>
+                <localeName>zh-CN</localeName>
+                <stringValue>密码必须是6个或更多个字母数字字符。</stringValue>
+            </localizedPasswordPatternErrorMessageList>
+            <localizedPasswordPatternErrorMessageList>
+                <localeName>zh-TW</localeName>
+                <stringValue>密碼必須是6個或更多個字母數字字符。</stringValue>
+            </localizedPasswordPatternErrorMessageList>
+            <localizedPasswordPatternErrorMessageList>
+                <localeName>th</localeName>
+                <stringValue>รหัสผ่านต้องมีอย่างน้อย 6 ตัวอักษรและตัวเลข</stringValue>
+            </localizedPasswordPatternErrorMessageList>
+            <maximumPasswordAge>90</maximumPasswordAge>
+            <minimumPasswordAge>0</minimumPasswordAge>
+            <passwordHistoryCount>0</passwordHistoryCount>
+            <passwordPattern>[a-zA-Z0-9~!#\\$^&amp;*+;:?/|{}\\.=_,-]{6,128}</passwordPattern>
+            <passwordPatternErrorMessage>パスワードは6文字以上の英数字で入力してください。</passwordPatternErrorMessage>
+            <randomPasswordExcludeChars>O01lI</randomPasswordExcludeChars>
+            <randomPasswordIncludeSigns>~!#$^&amp;*+;:?/|{}.=_,-</randomPasswordIncludeSigns>
+            <randomPasswordLength>8</randomPasswordLength>
+        </passwordPolicy>
+        <recordLastLoginDate>true</recordLastLoginDate>
+    </metaData>
+</metaDataEntry>
+</contextPath>
+
+<contextPath name="/message">
+<metaDataEntry overwritable="true">
+    <metaData xsi:type="metaMessageCategory" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+        <id>MSG0001</id>
+        <name>mtp/validation</name>
+        <messages>
+            <entry>
+                <key>NotNull</key>
+                <value>
+                    <localizedMessageList>
+                        <localeName>th</localeName>
+                        <stringValue>จำเป็นต้องใส่</stringValue>
+                    </localizedMessageList>
+                    <localizedMessageList>
+                        <localeName>zh-TW</localeName>
+                        <stringValue>必須輸入</stringValue>
+                    </localizedMessageList>
+                    <localizedMessageList>
+                        <localeName>ja</localeName>
+                        <stringValue>入力が必須です</stringValue>
+                    </localizedMessageList>
+                    <localizedMessageList>
+                        <localeName>en</localeName>
+                        <stringValue>Input is required</stringValue>
+                    </localizedMessageList>
+                    <localizedMessageList>
+                        <localeName>zh-CN</localeName>
+                        <stringValue>必须输入</stringValue>
+                    </localizedMessageList>
+                    <message>入力が必須です</message>
+                    <messageId>NotNull</messageId>
+                </value>
+            </entry>
+            <entry>
+                <key>Length</key>
+                <value>
+                    <localizedMessageList>
+                        <localeName>th</localeName>
+                        <stringValue>ความยาวต้องอยู่ระหว่าง ${min} ถึง ${max}</stringValue>
+                    </localizedMessageList>
+                    <localizedMessageList>
+                        <localeName>zh-TW</localeName>
+                        <stringValue>長度需要在${min}和${max}之間</stringValue>
+                    </localizedMessageList>
+                    <localizedMessageList>
+                        <localeName>ja</localeName>
+                        <stringValue>${min}文字以上${max}文字以下で入力してください</stringValue>
+                    </localizedMessageList>
+                    <localizedMessageList>
+                        <localeName>en</localeName>
+                        <stringValue>length must be between ${min} and ${max}</stringValue>
+                    </localizedMessageList>
+                    <localizedMessageList>
+                        <localeName>zh-CN</localeName>
+                        <stringValue>长度需要在${min}和${max}之间</stringValue>
+                    </localizedMessageList>
+                    <message>${min}文字以上${max}文字以下で入力してください</message>
+                    <messageId>Length</messageId>
+                </value>
+            </entry>
+            <entry>
+                <key>LengthMax</key>
+                <value>
+                    <localizedMessageList>
+                        <localeName>th</localeName>
+                        <stringValue>ความยาวต้องน้อยกว่าหรือเท่ากับ ${max}</stringValue>
+                    </localizedMessageList>
+                    <localizedMessageList>
+                        <localeName>zh-TW</localeName>
+                        <stringValue>長度最大不能超過${max}</stringValue>
+                    </localizedMessageList>
+                    <localizedMessageList>
+                        <localeName>ja</localeName>
+                        <stringValue>${max}文字以下で入力してください</stringValue>
+                    </localizedMessageList>
+                    <localizedMessageList>
+                        <localeName>en</localeName>
+                        <stringValue>length must be less than or equal to ${max}</stringValue>
+                    </localizedMessageList>
+                    <localizedMessageList>
+                        <localeName>zh-CN</localeName>
+                        <stringValue>长度最大不能超过${max}</stringValue>
+                    </localizedMessageList>
+                    <message>${max}文字以下で入力してください</message>
+                    <messageId>LengthMax</messageId>
+                </value>
+            </entry>
+            <entry>
+                <key>LengthMin</key>
+                <value>
+                    <localizedMessageList>
+                        <localeName>th</localeName>
+                        <stringValue>ความยาวต้องมากกว่าหรือเท่ากับ ${min}</stringValue>
+                    </localizedMessageList>
+                    <localizedMessageList>
+                        <localeName>zh-TW</localeName>
+                        <stringValue>長度最小不能小於${min}</stringValue>
+                    </localizedMessageList>
+                    <localizedMessageList>
+                        <localeName>ja</localeName>
+                        <stringValue>${min}文字以上で入力してください</stringValue>
+                    </localizedMessageList>
+                    <localizedMessageList>
+                        <localeName>en</localeName>
+                        <stringValue>length must be greater than or equal to ${min}</stringValue>
+                    </localizedMessageList>
+                    <localizedMessageList>
+                        <localeName>zh-CN</localeName>
+                        <stringValue>长度最小不能小于${min}</stringValue>
+                    </localizedMessageList>
+                    <message>${min}文字以上で入力してください</message>
+                    <messageId>LengthMin</messageId>
+                </value>
+            </entry>
+            <entry>
+                <key>Byte</key>
+                <value>
+                    <localizedMessageList>
+                        <localeName>th</localeName>
+                        <stringValue>ความยาว(ไบต์) ต้องอยู่ระหว่าง ${min} และ ${max}</stringValue>
+                    </localizedMessageList>
+                    <localizedMessageList>
+                        <localeName>zh-TW</localeName>
+                        <stringValue>長度（字節）需要在${min}和${max}之間</stringValue>
+                    </localizedMessageList>
+                    <localizedMessageList>
+                        <localeName>ja</localeName>
+                        <stringValue>${min}バイト以上${max}バイト以下で入力してください</stringValue>
+                    </localizedMessageList>
+                    <localizedMessageList>
+                        <localeName>en</localeName>
+                        <stringValue>length(byte) must be between ${min} and ${max}</stringValue>
+                    </localizedMessageList>
+                    <localizedMessageList>
+                        <localeName>zh-CN</localeName>
+                        <stringValue>长度（字节）需要在${min}和${max}之间</stringValue>
+                    </localizedMessageList>
+                    <message>${min}バイト以上${max}バイト以下で入力してください</message>
+                    <messageId>Byte</messageId>
+                </value>
+            </entry>
+            <entry>
+                <key>ByteMax</key>
+                <value>
+                    <localizedMessageList>
+                        <localeName>th</localeName>
+                        <stringValue>ความยาว(ไบต์) ต้องน้อยกว่าหรือเท่ากับ ${max}</stringValue>
+                    </localizedMessageList>
+                    <localizedMessageList>
+                        <localeName>zh-TW</localeName>
+                        <stringValue>長度（字節）最大不能超過${max}</stringValue>
+                    </localizedMessageList>
+                    <localizedMessageList>
+                        <localeName>ja</localeName>
+                        <stringValue>${max}バイト以下で入力してください</stringValue>
+                    </localizedMessageList>
+                    <localizedMessageList>
+                        <localeName>en</localeName>
+                        <stringValue>length(byte) must be less than or equal to ${max}</stringValue>
+                    </localizedMessageList>
+                    <localizedMessageList>
+                        <localeName>zh-CN</localeName>
+                        <stringValue>长度（字节）最大不能超过${max}</stringValue>
+                    </localizedMessageList>
+                    <message>${max}バイト以下で入力してください</message>
+                    <messageId>ByteMax</messageId>
+                </value>
+            </entry>
+            <entry>
+                <key>ByteMin</key>
+                <value>
+                    <localizedMessageList>
+                        <localeName>th</localeName>
+                        <stringValue>ความยาว (ไบต์) ต้องมากกว่าหรือเท่ากับ ${min}</stringValue>
+                    </localizedMessageList>
+                    <localizedMessageList>
+                        <localeName>zh-TW</localeName>
+                        <stringValue>最小不能小於${min}</stringValue>
+                    </localizedMessageList>
+                    <localizedMessageList>
+                        <localeName>ja</localeName>
+                        <stringValue>${min}バイト以上で入力してください</stringValue>
+                    </localizedMessageList>
+                    <localizedMessageList>
+                        <localeName>en</localeName>
+                        <stringValue>length(byte) must be greater than or equal to ${min}</stringValue>
+                    </localizedMessageList>
+                    <localizedMessageList>
+                        <localeName>zh-CN</localeName>
+                        <stringValue>长度（字节）最小不能小于${min}</stringValue>
+                    </localizedMessageList>
+                    <message>${min}バイト以上で入力してください</message>
+                    <messageId>ByteMin</messageId>
+                </value>
+            </entry>
+            <entry>
+                <key>Num</key>
+                <value>
+                    <localizedMessageList>
+                        <localeName>th</localeName>
+                        <stringValue>ต้องอยู่ระหว่าง ${min} และ ${max}</stringValue>
+                    </localizedMessageList>
+                    <localizedMessageList>
+                        <localeName>zh-TW</localeName>
+                        <stringValue>需要在${min}和${max}之間</stringValue>
+                    </localizedMessageList>
+                    <localizedMessageList>
+                        <localeName>ja</localeName>
+                        <stringValue>${min}以上${max}以下を入力してください</stringValue>
+                    </localizedMessageList>
+                    <localizedMessageList>
+                        <localeName>en</localeName>
+                        <stringValue>must be between ${min} and ${max}</stringValue>
+                    </localizedMessageList>
+                    <localizedMessageList>
+                        <localeName>zh-CN</localeName>
+                        <stringValue>需要在${min}和${max}之间</stringValue>
+                    </localizedMessageList>
+                    <message>${min}以上${max}以下を入力してください</message>
+                    <messageId>Num</messageId>
+                </value>
+            </entry>
+            <entry>
+                <key>NumMax</key>
+                <value>
+                    <localizedMessageList>
+                        <localeName>th</localeName>
+                        <stringValue>ต้องน้อยกว่าหรือเท่ากับ ${max}</stringValue>
+                    </localizedMessageList>
+                    <localizedMessageList>
+                        <localeName>zh-TW</localeName>
+                        <stringValue>最大不能超過${max}</stringValue>
+                    </localizedMessageList>
+                    <localizedMessageList>
+                        <localeName>ja</localeName>
+                        <stringValue>${max}以下を入力してください</stringValue>
+                    </localizedMessageList>
+                    <localizedMessageList>
+                        <localeName>en</localeName>
+                        <stringValue>must be less than or equal to ${max}</stringValue>
+                    </localizedMessageList>
+                    <localizedMessageList>
+                        <localeName>zh-CN</localeName>
+                        <stringValue>最大不能超过${max}</stringValue>
+                    </localizedMessageList>
+                    <message>${max}以下を入力してください</message>
+                    <messageId>NumMax</messageId>
+                </value>
+            </entry>
+            <entry>
+                <key>NumMaxL</key>
+                <value>
+                    <localizedMessageList>
+                        <localeName>th</localeName>
+                        <stringValue>ต้องน้อยกว่า ${max}</stringValue>
+                    </localizedMessageList>
+                    <localizedMessageList>
+                        <localeName>zh-TW</localeName>
+                        <stringValue>需要小於${max}</stringValue>
+                    </localizedMessageList>
+                    <localizedMessageList>
+                        <localeName>ja</localeName>
+                        <stringValue>${max}未満を入力してください</stringValue>
+                    </localizedMessageList>
+                    <localizedMessageList>
+                        <localeName>en</localeName>
+                        <stringValue>must be less than ${max}</stringValue>
+                    </localizedMessageList>
+                    <localizedMessageList>
+                        <localeName>zh-CN</localeName>
+                        <stringValue>需要小于${max}</stringValue>
+                    </localizedMessageList>
+                    <message>${max}未満を入力してください</message>
+                    <messageId>NumMaxL</messageId>
+                </value>
+            </entry>
+            <entry>
+                <key>NumMin</key>
+                <value>
+                    <localizedMessageList>
+                        <localeName>th</localeName>
+                        <stringValue>ต้องมากกว่าหรือเท่ากับ ${min}</stringValue>
+                    </localizedMessageList>
+                    <localizedMessageList>
+                        <localeName>zh-TW</localeName>
+                        <stringValue>最小不能小於${min}</stringValue>
+                    </localizedMessageList>
+                    <localizedMessageList>
+                        <localeName>ja</localeName>
+                        <stringValue>${min}以上を入力してください</stringValue>
+                    </localizedMessageList>
+                    <localizedMessageList>
+                        <localeName>en</localeName>
+                        <stringValue>must be greater than or equal to ${min}</stringValue>
+                    </localizedMessageList>
+                    <localizedMessageList>
+                        <localeName>zh-CN</localeName>
+                        <stringValue>最小不能小于${min}</stringValue>
+                    </localizedMessageList>
+                    <message>${min}以上を入力してください</message>
+                    <messageId>NumMin</messageId>
+                </value>
+            </entry>
+            <entry>
+                <key>NumMinG</key>
+                <value>
+                    <localizedMessageList>
+                        <localeName>th</localeName>
+                        <stringValue>ต้องมากกว่า ${min}</stringValue>
+                    </localizedMessageList>
+                    <localizedMessageList>
+                        <localeName>zh-TW</localeName>
+                        <stringValue>需要大於${min}</stringValue>
+                    </localizedMessageList>
+                    <localizedMessageList>
+                        <localeName>ja</localeName>
+                        <stringValue>${min}より大きい値を入力してください</stringValue>
+                    </localizedMessageList>
+                    <localizedMessageList>
+                        <localeName>en</localeName>
+                        <stringValue>must be greater than ${min}</stringValue>
+                    </localizedMessageList>
+                    <localizedMessageList>
+                        <localeName>zh-CN</localeName>
+                        <stringValue>需要大于${min}</stringValue>
+                    </localizedMessageList>
+                    <message>${min}より大きい値を入力してください</message>
+                    <messageId>NumMinG</messageId>
+                </value>
+            </entry>
+            <entry>
+                <key>NumMinGMax</key>
+                <value>
+                    <localizedMessageList>
+                        <localeName>th</localeName>
+                        <stringValue>ต้องมากกว่า ${min} น้อยกว่าหรือเท่ากับ ${max}</stringValue>
+                    </localizedMessageList>
+                    <localizedMessageList>
+                        <localeName>zh-TW</localeName>
+                        <stringValue>需要大於${min}和最大不能超過${max}</stringValue>
+                    </localizedMessageList>
+                    <localizedMessageList>
+                        <localeName>ja</localeName>
+                        <stringValue>${min}より大きく、${max}以下を入力してください</stringValue>
+                    </localizedMessageList>
+                    <localizedMessageList>
+                        <localeName>en</localeName>
+                        <stringValue>must be greater than ${min},  less than or equal to ${max}</stringValue>
+                    </localizedMessageList>
+                    <localizedMessageList>
+                        <localeName>zh-CN</localeName>
+                        <stringValue>需要大于${min}和最大不能超过${max}</stringValue>
+                    </localizedMessageList>
+                    <message>${min}より大きく、${max}以下を入力してください</message>
+                    <messageId>NumMinGMax</messageId>
+                </value>
+            </entry>
+            <entry>
+                <key>NumMinGMaxL</key>
+                <value>
+                    <localizedMessageList>
+                        <localeName>th</localeName>
+                        <stringValue>ต้องมากกว่า ${min} น้อยกว่า ${max}</stringValue>
+                    </localizedMessageList>
+                    <localizedMessageList>
+                        <localeName>zh-TW</localeName>
+                        <stringValue>需要大於${min}和小於${max}</stringValue>
+                    </localizedMessageList>
+                    <localizedMessageList>
+                        <localeName>ja</localeName>
+                        <stringValue>${min}より大きく、${max}未満を入力してください</stringValue>
+                    </localizedMessageList>
+                    <localizedMessageList>
+                        <localeName>en</localeName>
+                        <stringValue>must be greater than ${min},  less than ${max}</stringValue>
+                    </localizedMessageList>
+                    <localizedMessageList>
+                        <localeName>zh-CN</localeName>
+                        <stringValue>需要大于${min}和小于${max}</stringValue>
+                    </localizedMessageList>
+                    <message>${min}より大きく、${max}未満を入力してください</message>
+                    <messageId>NumMinGMaxL</messageId>
+                </value>
+            </entry>
+            <entry>
+                <key>NumMinMaxL</key>
+                <value>
+                    <localizedMessageList>
+                        <localeName>th</localeName>
+                        <stringValue>ต้องมากกว่าหรือเท่ากับ ${min} น้อยกว่า ${max}</stringValue>
+                    </localizedMessageList>
+                    <localizedMessageList>
+                        <localeName>zh-TW</localeName>
+                        <stringValue>最小不能小於${min}和小於${max}</stringValue>
+                    </localizedMessageList>
+                    <localizedMessageList>
+                        <localeName>ja</localeName>
+                        <stringValue>${min}以上${max}未満を入力してください</stringValue>
+                    </localizedMessageList>
+                    <localizedMessageList>
+                        <localeName>en</localeName>
+                        <stringValue>must be greater than or equal to ${min}, less than ${max}</stringValue>
+                    </localizedMessageList>
+                    <localizedMessageList>
+                        <localeName>zh-CN</localeName>
+                        <stringValue>最小不能小于${min}和小于${max}</stringValue>
+                    </localizedMessageList>
+                    <message>${min}以上${max}未満を入力してください</message>
+                    <messageId>NumMinMaxL</messageId>
+                </value>
+            </entry>
+            <entry>
+                <key>Size</key>
+                <value>
+                    <localizedMessageList>
+                        <localeName>th</localeName>
+                        <stringValue>ขนาดต้องอยู่ระหว่าง ${minSize} ถึง ${maxSize}</stringValue>
+                    </localizedMessageList>
+                    <localizedMessageList>
+                        <localeName>zh-TW</localeName>
+                        <stringValue>大小需要在${minSize}和${maxSize}之間</stringValue>
+                    </localizedMessageList>
+                    <localizedMessageList>
+                        <localeName>ja</localeName>
+                        <stringValue>${minSize}以上${maxSize}以下までしか登録できません</stringValue>
+                    </localizedMessageList>
+                    <localizedMessageList>
+                        <localeName>en</localeName>
+                        <stringValue>size must be between ${minSize} and ${maxSize}</stringValue>
+                    </localizedMessageList>
+                    <localizedMessageList>
+                        <localeName>zh-CN</localeName>
+                        <stringValue>大小需要在${minSize}和${maxSize}之间</stringValue>
+                    </localizedMessageList>
+                    <message>${minSize}以上${maxSize}以下までしか登録できません</message>
+                    <messageId>Size</messageId>
+                </value>
+            </entry>
+            <entry>
+                <key>SizeMax</key>
+                <value>
+                    <localizedMessageList>
+                        <localeName>th</localeName>
+                        <stringValue>ขนาดต้องมีค่าน้อยกว่าหรือเท่ากับ ${maxSize}</stringValue>
+                    </localizedMessageList>
+                    <localizedMessageList>
+                        <localeName>zh-TW</localeName>
+                        <stringValue>大小最大不能超過${max}</stringValue>
+                    </localizedMessageList>
+                    <localizedMessageList>
+                        <localeName>ja</localeName>
+                        <stringValue>${maxSize}以下しか登録できません</stringValue>
+                    </localizedMessageList>
+                    <localizedMessageList>
+                        <localeName>en</localeName>
+                        <stringValue>size must be less than or equal to ${maxSize}</stringValue>
+                    </localizedMessageList>
+                    <localizedMessageList>
+                        <localeName>zh-CN</localeName>
+                        <stringValue>大小最大不能超过${max}</stringValue>
+                    </localizedMessageList>
+                    <message>${maxSize}以下しか登録できません</message>
+                    <messageId>SizeMax</messageId>
+                </value>
+            </entry>
+            <entry>
+                <key>SizeMin</key>
+                <value>
+                    <localizedMessageList>
+                        <localeName>th</localeName>
+                        <stringValue>ขนาดต้องมากกว่าหรือเท่ากับ ${minSize}</stringValue>
+                    </localizedMessageList>
+                    <localizedMessageList>
+                        <localeName>zh-TW</localeName>
+                        <stringValue>大小最小不能小於${min}</stringValue>
+                    </localizedMessageList>
+                    <localizedMessageList>
+                        <localeName>ja</localeName>
+                        <stringValue>${minSize}以上しか登録できません</stringValue>
+                    </localizedMessageList>
+                    <localizedMessageList>
+                        <localeName>en</localeName>
+                        <stringValue>size must be greater than or equal to ${minSize}</stringValue>
+                    </localizedMessageList>
+                    <localizedMessageList>
+                        <localeName>zh-CN</localeName>
+                        <stringValue>大小最小不能小于${min}</stringValue>
+                    </localizedMessageList>
+                    <message>${minSize}以上しか登録できません</message>
+                    <messageId>SizeMin</messageId>
+                </value>
+            </entry>
+        </messages>
+    </metaData>
+</metaDataEntry>
+</contextPath>
+
+</metaDataList>

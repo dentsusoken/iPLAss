@@ -1,0 +1,1035 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!DOCTYPE serviceDefinition>
+<serviceDefinition>
+	<service>
+		<interface>org.iplass.mtp.impl.core.ManagerFactory</interface>
+		<property name="org.iplass.mtp.async.AsyncTaskManager" value="org.iplass.mtp.impl.async.AsyncTaskManagerImpl" />
+		<property name="org.iplass.mtp.auth.AuthManager" value="org.iplass.mtp.impl.auth.AuthManagerImpl" />
+		<property name="org.iplass.mtp.auth.policy.definition.AuthenticationPolicyDefinitionManager" value="org.iplass.mtp.impl.auth.authenticate.builtin.policy.AuthenticationPolicyDefinitionManagerImpl" />
+		<property name="org.iplass.mtp.command.CommandInvoker" value="org.iplass.mtp.impl.command.CommandInvokerImpl" />
+		<property name="org.iplass.mtp.command.async.definition.AsyncCommandDefinitionManager" value="org.iplass.mtp.impl.command.async.AsyncCommandDefinitionManagerImpl" />
+		<property name="org.iplass.mtp.command.definition.CommandDefinitionManager" value="org.iplass.mtp.impl.command.CommandDefinitionManagerImpl" />
+		<property name="org.iplass.mtp.definition.DefinitionManager" value="org.iplass.mtp.impl.definition.DefinitionManagerImpl" />
+		<property name="org.iplass.mtp.entity.EntityManager" value="org.iplass.mtp.impl.entity.EntityManagerImpl" />
+		<property name="org.iplass.mtp.entity.fulltextsearch.FulltextSearchManager" value="org.iplass.mtp.impl.fulltextsearch.FulltextSearchManagerImpl" />
+		<property name="org.iplass.mtp.entity.definition.EntityDefinitionManager" value="org.iplass.mtp.impl.entity.EntityDefinitionManagerImpl" />
+		<property name="org.iplass.mtp.entity.definition.properties.selectvalue.SelectValueDefinitionManager" value="org.iplass.mtp.impl.properties.extend.select.SelectValueDefinitionManagerImpl" />
+		<property name="org.iplass.mtp.mail.MailManager" value="org.iplass.mtp.impl.mail.MailManagerImpl" />
+		<property name="org.iplass.mtp.mail.template.definition.MailTemplateDefinitionManager" value="org.iplass.mtp.impl.mail.template.MailTemplateDefinitionManagerImpl" />
+		<property name="org.iplass.mtp.message.MessageManager" value="org.iplass.mtp.impl.message.MessageManagerImpl" />
+		<property name="org.iplass.mtp.prefs.PreferenceManager" value="org.iplass.mtp.impl.prefs.PreferenceManagerImpl" />
+		<property name="org.iplass.mtp.pushnotification.PushNotificationManager" value="org.iplass.mtp.impl.pushnotification.PushNotificationManagerImpl" />
+		<property name="org.iplass.mtp.pushnotification.template.definition.PushNotificationTemplateDefinitionManager" value="org.iplass.mtp.impl.pushnotification.template.PushNotificationTemplateDefinitionManagerImpl" />
+		<property name="org.iplass.mtp.sms.SmsMailManager" value="org.iplass.mtp.impl.sms.SmsMailManagerImpl" />
+		<property name="org.iplass.mtp.sms.template.definition.SmsMailTemplateDefinitionManager" value="org.iplass.mtp.impl.sms.template.SmsMailTemplateDefinitionManagerImpl" />
+		<property name="org.iplass.mtp.tenant.TenantManager" value="org.iplass.mtp.impl.tenant.TenantManagerImpl" />
+		<property name="org.iplass.mtp.transaction.TransactionManager" class="org.iplass.mtp.impl.transaction.TransactionService$TransactionManagerConstructor" />
+		<property name="org.iplass.mtp.utilityclass.definition.UtilityClassDefinitionManager" value="org.iplass.mtp.impl.script.UtilityClassDefinitionManagerImpl" />
+	</service>
+
+	<service>
+		<interface>org.iplass.mtp.impl.rdb.adapter.RdbAdapterService</interface>
+		<!-- Specify the actual adapter -->
+		<property name="adapter" class="org.iplass.mtp.impl.rdb.adapter.NoopRdbAdapter" />
+	</service>
+
+	<service>
+		<interface>org.iplass.mtp.impl.transaction.TransactionService</interface>
+		<class>org.iplass.mtp.impl.transaction.LocalTransactionService</class>
+	</service>
+
+	<!-- MetaData JAXB configuration -->
+	<service>
+		<interface>org.iplass.mtp.impl.metadata.MetaDataJAXBService</interface>
+		<class>org.iplass.mtp.impl.metadata.MetaDataJAXBService</class>
+		<property name="classToBeBound" value="org.iplass.mtp.impl.metadata.xmlresource.MetaDataEntryList" />
+		<property name="classToBeBound" value="org.iplass.mtp.impl.metadata.MetaDataEntryThinWrapper" />
+		<property name="classToBeBound" value="org.iplass.mtp.impl.metadata.refs.RootMetaDatas" />
+	</service>
+
+	<!-- MetaData Repository configuration -->
+	<service>
+		<interface>org.iplass.mtp.impl.metadata.MetaDataRepository</interface>
+		<depend>org.iplass.mtp.impl.metadata.MetaDataJAXBService</depend>
+		<depend>org.iplass.mtp.impl.core.TenantContextService</depend>
+		<property name="resourcePath" value="/mtp-core-metadata.xml" />
+
+		<!-- shared MetaData config -->
+		<property name="sharedStore" class="org.iplass.mtp.impl.metadata.rdb.RdbMetaDataStore" />
+		<property name="sharedStore" class="org.iplass.mtp.impl.metadata.xmlresource.XmlResourceMetaDataStore" />
+		<property name="sharedStore" class="org.iplass.mtp.impl.metadata.annotation.AnnotationMetaDataStore">
+			<property name="annotatableMetaDataFactory" class="org.iplass.mtp.impl.command.MetaCommandClassFactory" />
+			<property name="annotatableMetaDataFactory" class="org.iplass.mtp.impl.command.async.MetaAsyncCommandFactory" />
+			<property name="annotatableMetaDataFactory" class="org.iplass.mtp.impl.command.async.MetaAsyncCommandsFactory" />
+		</property>
+
+		<property name="tenantLocalStore" class="org.iplass.mtp.impl.metadata.rdb.RdbMetaDataStore" />
+ 	</service>
+
+	<!-- Binary MetaData configuration -->
+	<service>
+		<interface>org.iplass.mtp.impl.metadata.binary.BinaryMetaDataService</interface>
+		<property name="keepInMemoryThreshold" value="65536" />
+		<property name="cacheMemoryThreshold" value="1048576" />
+		<property name="xmlBinaryChunkSize" value="262144" />
+		<property name="deleteTempFileOnDestroy" value="true" />
+		<!-- if temp dir not specified, use "java.io.tmpdir"'s dir -->
+		<!--
+		<property name="tempFileDirPath" value="/tmp" />
+		-->
+	</service>
+
+	<!-- Definition Service -->
+	<service>
+		<interface>org.iplass.mtp.impl.definition.DefinitionService</interface>
+		<property name="typeMap" value="org.iplass.mtp.impl.entity.EntityService$TypeMap" />
+		<property name="typeMap" value="org.iplass.mtp.impl.mail.MailServiceImpl$TypeMap" />
+		<property name="typeMap" value="org.iplass.mtp.impl.sms.SmsServiceBaseImpl$TypeMap" />
+		<property name="typeMap" value="org.iplass.mtp.impl.message.MessageService$TypeMap" />
+		<property name="typeMap" value="org.iplass.mtp.impl.command.CommandService$TypeMap" />
+		<property name="typeMap" value="org.iplass.mtp.impl.tenant.MetaTenantService$TypeMap" />
+		<property name="typeMap" value="org.iplass.mtp.impl.script.GroovyScriptService$TypeMap" />
+		<property name="typeMap" value="org.iplass.mtp.impl.properties.extend.select.SelectValueService$TypeMap" />
+		<property name="typeMap" value="org.iplass.mtp.impl.command.async.AsyncCommandService$TypeMap" />
+		<property name="typeMap" value="org.iplass.mtp.impl.prefs.PreferenceService$TypeMap" />
+		<property name="typeMap" value="org.iplass.mtp.impl.auth.authenticate.builtin.policy.AuthenticationPolicyService$TypeMap" />
+		<property name="typeMap" value="org.iplass.mtp.impl.pushnotification.PushNotificationService$TypeMap" />
+	</service>
+
+	<!-- 認証関連 -->
+	<service>
+		<interface>org.iplass.mtp.impl.auth.AuthService</interface>
+		<class>org.iplass.mtp.impl.auth.AuthService</class>
+		<depend>org.iplass.mtp.impl.session.SessionService</depend>
+		<depend>org.iplass.mtp.impl.auth.authenticate.builtin.policy.AuthenticationPolicyService</depend>
+		<depend>org.iplass.mtp.impl.session.SessionService</depend>
+		<depend>org.iplass.mtp.impl.rdb.adapter.RdbAdapterService</depend>
+		<depend>org.iplass.mtp.impl.auth.log.AuthLoggerService</depend>
+		<property name="authenticationProvider" class="org.iplass.mtp.impl.auth.authenticate.builtin.BuiltinAuthenticationProvider">
+ 			<property name="updatable" value="true" />
+ 			<property name="providerName" value="default" />
+
+ 			<!-- if load custom reference property at login, set userEntityResolver.eagerLoadReferenceProperty -->
+ 			<!--
+ 			<property name="userEntityResolver" class="org.iplass.mtp.impl.auth.authenticate.DefaultUserEntityResolver">
+	 			<property name="eagerLoadReferenceProperty" value="rank" />
+	 			<property name="eagerLoadReferenceProperty" value="groups" />
+	 			<property name="eagerLoadReferenceProperty" value="yourCustomReference" />
+ 			</property>
+ 			 -->
+
+			<property name="passwordHashSettings">
+				<property name="version" value="1" />
+				<property name="passwordHashAlgorithm" value="SHA-256" />
+				<property name="systemSalt" value="iPLAssSystemSalt" />
+				<property name="stretchCount" value="1000" />
+			</property>
+		</property>
+
+		<property name="authorizationProvider" class="org.iplass.mtp.impl.auth.authorize.builtin.BuiltinAuthorizationProvider">
+			<property name="grantAllPermissionsToAdmin" value="true" />
+
+			<property name="authorizationContextHandler" class="org.iplass.mtp.impl.auth.authorize.builtin.entity.EntityAuthContextHandler">
+				<property name="useCorrelatedSubqueryOnEntityLimitCondition" value="true" />
+			</property>
+		</property>
+	</service>
+	<service>
+		<interface>org.iplass.mtp.impl.auth.log.AuthLoggerService</interface>
+		<property name="logger" class="org.iplass.mtp.impl.auth.log.Slf4jAuthLogger">
+			<property name="loggerName" value="default" />
+		</property>
+	</service>
+	<service>
+		<interface>org.iplass.mtp.impl.auth.authenticate.token.AuthTokenService</interface>
+		<property name="storeMap">
+			<property name="default" class="org.iplass.mtp.impl.auth.authenticate.token.RdbAuthTokenStore" />
+		</property>
+		<property name="handler" class="org.iplass.mtp.impl.auth.authenticate.rememberme.RememberMeTokenHandler">
+			<property name="type" value="REMME" />
+			<property name="store" value="default" />
+		</property>
+		<property name="handler" class="org.iplass.mtp.impl.auth.authenticate.simpletoken.SimpleAuthTokenHandler">
+			<property name="type" value="SAT" />
+			<property name="store" value="default" />
+		</property>
+	</service>
+
+	<!-- Mail関連 -->
+	<service>
+		<interface>org.iplass.mtp.impl.mail.MailService</interface>
+		<class>org.iplass.mtp.impl.mail.MailServiceImpl</class>
+
+		<!-- SMTP設定  -->
+		<!-- SMTPサーバホスト -->
+		<property name="mail.smtp.host" value="XXXXXXXX"/>
+		<!-- SMTPサーバポート  通常:25 / サブミッションポート:587 / SSL:465 -->
+		<property name="mail.smtp.port" value="25"/>
+		<!-- タイムアウト設定 -->
+		<property name="mail.smtp.connectiontimeout" value="60000"/>
+		<property name="mail.smtp.timeout" value="60000"/>
+		<!-- SMTPSSL利用要否 true:利用する / true文字以外:利用しない (利用する場合ポートも変更) -->
+		<property name="mail.smtp.ssl" value="false"/>
+
+		<!-- SMTP認証設定  -->
+		<!-- SMTP認証利用要否 true:利用する / true文字以外:利用しない -->
+		<property name="mail.smtp.auth" value="false"/>
+
+		<!-- 以下の設定は mail.smtp.auth がtrueの場合に有効 -->
+		<!-- SMTP認証情報 -->
+		<!--
+		<property name="mail.smtp.auth.id" value="test"/>
+		<property name="mail.smtp.auth.password" value="test"/>
+		-->
+		<!-- SMTP認証方式 (LOGIN / PLAIN / DIGEST-MD5 / NTLM(未対応) -->
+		<!--
+		<property name="mail.smtp.auth.mechanisms" value=""/>
+		 -->
+
+		<!-- POP3設定 -->
+		<!-- 以下の設定は mail.smtp.auth がfalseの場合に有効 -->
+		<!-- PopBeforeSmtp利用要否 true:利用する / true文字以外:利用しない -->
+		<property name="mail.smtp.popbeforesmtp" value="false"/>
+
+		<!-- 以下の設定は mail.smtp.popbeforesmtp がtrueの場合に有効 -->
+		<!-- POP3サーバホスト -->
+		<property name="mail.pop3.host" value="XXXXXXXX"/>
+		<!-- POP3サーバポート 通常:110 / SSL:995  -->
+		<property name="mail.pop3.port" value="110"/>
+        <!-- POP3タイムアウト設定 -->
+		<property name="mail.pop3.connectiontimeout" value="60000"/>
+		<property name="mail.pop3.timeout" value="60000"/>
+		<!-- POP3認証情報  -->
+		<property name="mail.pop3.auth.id" value="XXXXXXXX"/>
+		<property name="mail.pop3.auth.password" value="XXXXXXXX"/>
+		<!-- APOP利用要否 true:利用する / true文字以外:利用しない -->
+		<property name="mail.pop3.apop.enable" value="false" />
+		<!-- POP3SSL利用要否 true:利用する / true文字以外:利用しない (利用する場合ポートも変更) -->
+		<property name="mail.pop3.ssl" value="false"/>
+
+		<!--
+			mail.smtp.hostプロパティはmail.hostプロパティに優先して認識されるため、2つの値が同一ならば、
+			mail.smtp.hostプロパティを設定するだけでもメール送信は可能です。
+			しかし、mail.hostプロパティは内部的にMessage-ID ヘッダを生成するのに利用されます。
+			mail.hostプロパティを明示的に指定していない場合、Message-IDヘッダが正しく生成できない可能性があります。
+		 	元情報 http://www.atmarkit.co.jp/fjava/javatips/123java022.html
+		 -->
+		<property name="mail.host" value="XXXXXXXX"/>
+
+		<!-- デフォルトCharset -->
+		<property name="mail.charset" value="ISO-2022-JP"/>
+
+		<!--
+			Content-Transfer-Encoding
+			これは、一部のケータイメールが quoted-printable を処理できないことへの対策となります。
+			元情報 http://www.igapyon.jp/igapyon/diary/2007/ig070904.html
+		 -->
+		<property name="mail.encoding" value="7bit"/>
+
+		<!-- ■ for develop only (additional="true) ■ -->
+		<!-- 送信メールをデバッグ出力する場合、以下を有効にしてください。 -->
+		<!--
+		<property name="listener" class="org.iplass.mtp.mail.listeners.LoggingSendMailListener" additional="true"/>
+		 -->
+	</service>
+
+	<!-- SMS -->
+	<service>
+		<interface>org.iplass.mtp.impl.sms.SmsService</interface>
+		<class>org.iplass.mtp.impl.sms.SmsServiceBaseImpl</class>
+	</service>
+
+	<!-- Push Notification -->
+	<service>
+		<interface>org.iplass.mtp.impl.pushnotification.PushNotificationService</interface>
+		<class>org.iplass.mtp.impl.pushnotification.PushNotificationService</class>
+
+		<!-- example of FCMPushNotificationService  -->
+		<!--
+		<class>org.iplass.mtp.impl.pushnotification.fcm.FCMPushNotificationService</class>
+		<property name="authorizationKey" value="[your Firebase authorizationKey]" />
+		<property name="dryRun" value="false" />
+		<property name="enableRetry" value="true" />
+		<property name="exponentialBackoff" class="org.iplass.mtp.impl.pushnotification.fcm.ExponentialBackoff">
+			<property name="retryIntervalMillis" value="500" />
+			<property name="randomizationFactor" value="0.5" />
+			<property name="multiplier" value="1.5" />
+			<property name="maxIntervalMillis" value="60000" />
+			<property name="maxElapsedTimeMillis" value="300000" />
+		</property>
+		<property name="httpClientConfig" class="org.iplass.mtp.impl.http.HttpClientConfig">
+			<property name="proxyHost" value="[set proxyHost if needed]" />
+			<property name="proxyPort" value="[set proxyPort if needed]" />
+			<property name="poolingMaxTotal" value="[set poolingMaxTotal if needed]" />
+			<property name="poolingDefaultMaxPerRoute" value="[set poolingDefaultMaxPerRoute if needed]" />
+			<property name="poolingTimeToLive" value="[set poolingTimeToLive if needed]" />
+		</property>
+		<property name="registrationIdHandler" class="org.iplass.mtp.impl.pushnotification.fcm.LoggingRegistrationIdHandler" />
+		 -->
+	</service>
+
+	<!-- Tenant関連 -->
+	<service>
+		<interface>org.iplass.mtp.impl.core.TenantContextService</interface>
+		<depend>org.iplass.mtp.impl.tenant.TenantService</depend>
+		<depend>org.iplass.mtp.impl.cache.CacheService</depend>
+		<property name="tenantResource" value="org.iplass.mtp.impl.auth.authorize.builtin.TenantAuthorizeContext" />
+		<property name="tenantResource" value="org.iplass.mtp.impl.entity.cache.QueryCacheTenantResource" />
+		<property name="tenantResource" value="org.iplass.mtp.impl.validation.bean.BeanValidationResource" />
+
+		<property name="defaultTenantName" value="iPLAss" />
+		<property name="defaultPasswordPatternErrorMessage" value="パスワードは6文字以上の英数字で入力してください。" />
+		<property name="defaultMailFrom" value="notenant@nomail.iplass.org" />
+		<property name="defaultMailFromName" value="NoTenant" />
+		<!-- 共有テナントのid（RDBの場合、このテナントが共有テナントとして利用される。-1は共有テナントなしの意） -->
+		<property name ="sharedTenantId" value="-1" />
+		<!-- 共有テナントを有効にした際、その共有テナントの配下の個別テナントを定義可能。
+			定義されていない場合は、DBに登録されているすべてのテナント（共有テナント除く）を個別テナントとみなす -->
+		<!--
+		<property name ="localTenantIds" value="148" />
+		<property name ="localTenantIds" value="149" />
+		 -->
+	</service>
+
+	<!-- Entity関連 -->
+	<service>
+		<interface>org.iplass.mtp.impl.entity.EntityService</interface>
+		<depend>org.iplass.mtp.impl.async.AsyncTaskService</depend>
+		<depend>org.iplass.mtp.impl.datastore.StoreService</depend>
+		<depend>org.iplass.mtp.impl.entity.auditlog.AuditLoggingService</depend>
+
+		<property name="limitOfReferences" value="1000" />
+
+		<!--
+			ごみ箱データのクリーナー用日付です。日数を指定して下さい。
+			下記の場合、実行時より30日前の日付がクリーナー対象日となります。
+			クリーナー対象日よりも前にごみ箱へ削除されたデータが物理削除されます。
+		<property name="purgeTargetDate" value="30" />
+		-->
+
+		<property name="interceptor" class="org.iplass.mtp.impl.entity.auth.EntityAuthInterceptor" />
+		<property name="interceptor" class="org.iplass.mtp.impl.entity.auditlog.AuditLogInterceptor" />
+		<property name="interceptor" class="org.iplass.mtp.impl.entity.listener.EntityEventListenerInterceptor" />
+		<property name="interceptor" class="org.iplass.mtp.impl.entity.l10n.EntityLocalizationInterceptor" />
+		<property name="interceptor" class="org.iplass.mtp.impl.entity.cache.EntityCacheInterceptor" />
+		<property name="interceptor" class="org.iplass.mtp.impl.entity.fulltextsearch.FulltextSearchInterceptor" />
+
+		<property name="additionalStoreMaintainer" class="org.iplass.mtp.impl.entity.fulltextsearch.FulltextSearchStoreMaintainer" />
+		<property name="additionalStoreMaintainer" class="org.iplass.mtp.impl.lob.LobStoreMaintainer" />
+
+		<property name="extendPropertyAdapterFactory" class="org.iplass.mtp.impl.entity.ExtendPropertyAdapterFactory" />
+
+	</service>
+	<service>
+		<interface>org.iplass.mtp.impl.query.QueryService</interface>
+			<!--
+				if use external hint, set propertyFile path(file path or classpath's resource path) or add inline.
+			 -->
+			 <!--
+			<property name="externalHintFile" value="/externalHint.properties" />
+
+			<property name="externalHints">
+				<property name="hint1" value="native(...)" />
+				<property name="hint2" value="index(...)" />
+			</property>
+			  -->
+	</service>
+	<service>
+		<interface>org.iplass.mtp.impl.datastore.StoreService</interface>
+		<class>org.iplass.mtp.impl.datastore.StoreService</class>
+		<depend>org.iplass.mtp.impl.rdb.adapter.RdbAdapterService</depend>
+		<depend>OidCounter</depend>
+
+		<property name="dataStore" class="org.iplass.mtp.impl.datastore.grdb.GRdbDataStore">
+			<property name="storageSpace">
+				<property name="storageSpaceName" value="default" />
+				<property name="varcharColumns" value="128" />
+				<property name="decimalColumns" value="32" />
+				<property name="timestampColumns" value="32" />
+				<property name="doubleColumns" value="32" />
+				<property name="indexedVarcharColumns" value="8" />
+				<property name="indexedDecimalColumns" value="4" />
+				<property name="indexedTimestampColumns" value="4" />
+				<property name="indexedDoubleColumns" value="4" />
+				<property name="uniqueIndexedVarcharColumns" value="2" />
+				<property name="uniqueIndexedDecimalColumns" value="2" />
+				<property name="uniqueIndexedTimestampColumns" value="2" />
+				<property name="uniqueIndexedDoubleColumns" value="2" />
+			</property>
+			<property name="storageSpace">
+				<property name="storageSpaceName" value="mtp" />
+				<property name="tableNamePostfix" value="MTP" />
+				<property name="varcharColumns" value="128" />
+				<property name="decimalColumns" value="32" />
+				<property name="timestampColumns" value="32" />
+				<property name="doubleColumns" value="32" />
+				<property name="indexedVarcharColumns" value="8" />
+				<property name="indexedDecimalColumns" value="4" />
+				<property name="indexedTimestampColumns" value="4" />
+				<property name="indexedDoubleColumns" value="4" />
+				<property name="uniqueIndexedVarcharColumns" value="2" />
+				<property name="uniqueIndexedDecimalColumns" value="2" />
+				<property name="uniqueIndexedTimestampColumns" value="2" />
+				<property name="uniqueIndexedDoubleColumns" value="2" />
+			</property>
+			<property name="storageSpace">
+				<property name="storageSpaceName" value="user" />
+				<property name="tableNamePostfix" value="USER" />
+				<property name="varcharColumns" value="128" />
+				<property name="decimalColumns" value="32" />
+				<property name="timestampColumns" value="32" />
+				<property name="doubleColumns" value="32" />
+				<property name="indexedVarcharColumns" value="8" />
+				<property name="indexedDecimalColumns" value="4" />
+				<property name="indexedTimestampColumns" value="4" />
+				<property name="indexedDoubleColumns" value="4" />
+				<property name="uniqueIndexedVarcharColumns" value="2" />
+				<property name="uniqueIndexedDecimalColumns" value="2" />
+				<property name="uniqueIndexedTimestampColumns" value="2" />
+				<property name="uniqueIndexedDoubleColumns" value="2" />
+			</property>
+		</property>
+ 	</service>
+ 	<service>
+		<interface>org.iplass.mtp.impl.datastore.grdb.strategy.metadata.ColConverterFactory</interface>
+		<class>org.iplass.mtp.impl.datastore.grdb.strategy.metadata.ColConverterFactory</class>
+ 	</service>
+	<service>
+		<interface>org.iplass.mtp.impl.lob.LobStoreService</interface>
+		<depend>org.iplass.mtp.impl.rdb.adapter.RdbAdapterService</depend>
+		<depend>OidCounter</depend>
+		<property name="lobDao" class="org.iplass.mtp.impl.lob.LobDao" />
+
+		<property name="defaultLobStoreName" value="defaultStore" />
+		<property name="defaultStore" class="org.iplass.mtp.impl.lob.lobstore.rdb.RdbLobStore">
+		</property>
+		<!--
+		<property name="binaryStore" class="org.iplass.mtp.impl.lob.lobstore.file.FileLobStore">
+			<property name="rootDir" value="D:\tmp\fileLobStore" />
+			<property name="overwriteFile" value="false" />
+		</property>
+		<property name="longTextStore" class="org.iplass.mtp.impl.lob.lobstore.rdb.RdbLobStore">
+		</property>
+		 -->
+
+		<!--
+			複数のLobStoreを合わせて単一のLobStoreと設定することが可能。
+			新規追加は先頭に定義されているlobStoreに対して行われる。
+			参照はすべてのlobStoreにから検索する。
+			削除もすべてのlobStoreに対して実行される。
+		 -->
+		<!--
+		<property name="binaryStore" class="org.iplass.mtp.impl.lob.lobstore.multi.AddableMultiLobStore">
+			<property name="lobStore" class="org.iplass.mtp.impl.lob.lobstore.file.FileLobStore">
+				<property name="rootDir" value="D:\tmp\fls2" />
+			</property>
+			<property name="lobStore" class="org.iplass.mtp.impl.lob.lobstore.file.FileLobStore">
+				<property name="rootDir" value="D:\tmp\fls1" />
+			</property>
+			<property name="lobStore" class="org.iplass.mtp.impl.lob.lobstore.rdb.RdbLobStore" />
+		</property>
+		 -->
+
+		 <!--
+			LobサイズをRdb(lob_store)で管理するかを指定する。
+			ver1.5.2でサイズ管理制御のためにlob_storeテーブルのレイアウトを変更。
+			既存システムでlob_storeテーブルが変更できない場合は、falseを指定することで回避可能。 -->
+		<property name="manageLobSizeOnRdb" value="false" />
+	</service>
+	<service name="OidCounter">
+		<interface>org.iplass.mtp.impl.counter.CounterService</interface>
+		<class>org.iplass.mtp.impl.counter.RdbSequenceCounterService</class>
+		<depend>org.iplass.mtp.impl.rdb.adapter.RdbAdapterService</depend>
+		<property name="sequenceNameMap">
+			<property name="oid" value="SEQ_OBJ_ID" />
+			<property name="rbid" value="SEQ_RB_ID" />
+			<property name="lobid" value="SEQ_LOB_ID" />
+		</property>
+	</service>
+	<service name="AutoNumberTypeCounterAcceptSkip">
+		<interface>org.iplass.mtp.impl.counter.CounterService</interface>
+		<!-- without cache RdbTableCounterService -->
+		<!--
+		<class>org.iplass.mtp.impl.counter.RdbTableCounterService</class>
+		<depend>org.iplass.mtp.impl.rdb.adapter.RdbAdapterService</depend>
+		<property name="counterTypeName" value="AutoNumberTypeCounter" />
+		<property name="separateTransaction" value="true" />
+		<property name="retryCount" value="3" />
+		 -->
+		<!-- with cache RdbTableCounterService -->
+		<class>org.iplass.mtp.impl.counter.CachableRdbTableCounterService</class>
+		<depend>org.iplass.mtp.impl.rdb.adapter.RdbAdapterService</depend>
+		<depend>org.iplass.mtp.impl.cache.CacheService</depend>
+		<property name="counterTypeName" value="AutoNumberTypeCounter" />
+		<property name="cacheSize" value="20" />
+		<property name="retryCount" value="3" />
+	</service>
+	<service name="AutoNumberTypeCounterNoSkip">
+		<interface>org.iplass.mtp.impl.counter.CounterService</interface>
+		<class>org.iplass.mtp.impl.counter.RdbTableCounterService</class>
+		<depend>org.iplass.mtp.impl.rdb.adapter.RdbAdapterService</depend>
+		<property name="counterTypeName" value="AutoNumberTypeCounter" />
+		<property name="separateTransaction" value="false" />
+	</service>
+	<service name="TaskIdCounter">
+		<interface>org.iplass.mtp.impl.counter.CounterService</interface>
+		<class>org.iplass.mtp.impl.counter.CachableRdbTableCounterService</class>
+		<depend>org.iplass.mtp.impl.rdb.adapter.RdbAdapterService</depend>
+		<depend>org.iplass.mtp.impl.cache.CacheService</depend>
+		<property name="counterTypeName" value="TaskIdCounter" />
+		<property name="cacheSize" value="20" />
+		<property name="retryCount" value="3" />
+	</service>
+	<service name="TaskIdCounterGrouping">
+		<interface>org.iplass.mtp.impl.counter.CounterService</interface>
+		<class>org.iplass.mtp.impl.counter.RdbTableCounterService</class>
+		<depend>org.iplass.mtp.impl.rdb.adapter.RdbAdapterService</depend>
+		<property name="counterTypeName" value="TaskIdCounter" />
+		<property name="separateTransaction" value="true" />
+		<property name="retryCount" value="3" />
+	</service>
+
+	<!-- Command関連 -->
+	<service>
+		<interface>org.iplass.mtp.impl.command.InterceptorService</interface>
+		<class>org.iplass.mtp.impl.command.InterceptorService</class>
+
+		<property name="invoker" class="org.iplass.mtp.impl.command.interceptors.LoggingInterceptor" />
+		<property name="invoker" class="org.iplass.mtp.impl.command.interceptors.TransactionInterceptor" />
+
+	</service>
+
+	<!-- クラスタ設定 -->
+	<service>
+		<interface>org.iplass.mtp.impl.cluster.ClusterService</interface>
+		<depend>AsyncTaskServiceForHttpMessageChannel</depend>
+		<property name="messageChannel" class="org.iplass.mtp.impl.cluster.channel.http.HttpMessageChannel">
+			<!--
+			<property name="serverUrl" value="http://localhost:18080/mtp/cmcs" />
+			<property name="serverUrl" value="http://localhost:28080/mtp/cmcs" />
+			<property name="serverUrl" value="http://localhost:38080/mtp/cmcs" />
+			<property name="certKey" value="yourOwnCertKey" />
+			<property name="connectionTimeout" value="300000" />
+			<property name="soTimeout" value="300000" />
+			<property name="poolingMaxTotal" value="[set poolingMaxTotal if needed]" />
+			<property name="poolingDefaultMaxPerRoute" value="[set poolingDefaultMaxPerRoute if needed]" />
+			<property name="poolingTimeToLive" value="[set poolingTimeToLive if needed]" />
+			<property name="proxyHost" value="proxy.xxx.xxx" />
+			<property name="proxyPort" value="8080" />
+			 -->
+		</property>
+	</service>
+	<service name="AsyncTaskServiceForHttpMessageChannel">
+		<interface>org.iplass.mtp.impl.async.AsyncTaskService</interface>
+		<class>org.iplass.mtp.impl.async.thread.ThreadingAsyncTaskService</class>
+		<property name="corePoolSize" value="4" />
+		<property name="threadPoolType" value="fixed" />
+	</service>
+
+	<!-- 全文検索で利用するService -->
+	<service>
+		<interface>org.iplass.mtp.impl.fulltextsearch.FulltextSearchService</interface>
+		<depend>org.iplass.mtp.impl.rdb.adapter.RdbAdapterService</depend>
+
+		<property name="useFulltextSearch" value="false" />
+		<property name="maxRows" value="1000" />
+		<property name="highlightPreTag" value="&lt;b style=&quot;background:aquamarine&quot;&gt;" />
+		<property name="highlightPostTag" value="&lt;/b&gt;" />
+		<property name="throwExceptionWhenOverLimit" value="true"/>
+
+		<!-- solr利用 -->
+		<!--
+		<class>org.iplass.mtp.impl.fulltextsearch.FulltextSearchSolrService</class>
+		<property name="solrUrl" value="http://ADDRESS:PORT/solr/coreName/" />
+		 -->
+
+		<!-- lucene利用 -->
+		<class>org.iplass.mtp.impl.fulltextsearch.FulltextSearchLuceneService</class>
+		<property name="directory" value="D:\tmp\lucene" />
+		<property name="defaultOperator" value="AND" />
+		<property name="analyzer" value="org.apache.lucene.analysis.ja.JapaneseAnalyzer" />
+		<property name="indexWriterRAMBufferSizeMB" value="64.0"/>
+		<property name="redundantTimeMinutes" value="10"/>
+		<property name="indexWriterCommitLimit" value="-1"/>
+
+		<!-- BinaryReferenceのParse可能な最大文字数 -->
+		<property name="binaryParseLimitLength" value="100000"/>
+
+		<!--
+			BinaryReference用Parser設定。
+			org.iplass.mtp.impl.fulltextsearch.parser.BinaryReferenceParser
+			を実装したParserを設定可能。
+			BinaryReferenceのタイプに対して対応されているParserを上から順にチェックする。
+		 -->
+
+		<!-- PDF用Parser。tikaのPDFParserを利用して解析する -->
+		<property name="binaryParser" class="org.iplass.mtp.impl.fulltextsearch.parser.BinaryPDFParser" />
+		<!-- OfficeDocument(OOXML形式)用Parser。tikaのOOXMLParserを利用して解析する -->
+		<property name="binaryParser" class="org.iplass.mtp.impl.fulltextsearch.parser.BinaryOOXMLParser" />
+		<!-- OfficeDocument(2003以前の形式)用Parser。tikaのOfficeParserを利用して解析する -->
+		<property name="binaryParser" class="org.iplass.mtp.impl.fulltextsearch.parser.BinaryOfficeParser" />
+		<!-- HTML用Parser。tikaのHtmlParserを利用して解析する -->
+		<property name="binaryParser" class="org.iplass.mtp.impl.fulltextsearch.parser.BinaryHtmlParser" />
+		<!-- PlainText用Parser。tikaのTXTParserを利用して解析する -->
+		<property name="binaryParser" class="org.iplass.mtp.impl.fulltextsearch.parser.BinaryTextParser" />
+		<!-- XML用Parser。tikaのXMLParserを利用して解析する -->
+		<property name="binaryParser" class="org.iplass.mtp.impl.fulltextsearch.parser.BinaryXMLParser" />
+
+		<!-- tikaのAutoDetectParserを利用して全てのタイプを対象に解析する。
+			ただし解析に必要となる依存ライブラリが存在しない場合はスキップされる -->
+		<!--
+		<property name="binaryParser" class="org.iplass.mtp.impl.fulltextsearch.parser.BinaryAutoDetectParser" />
+		-->
+
+		<!-- 全てのバイナリファイルを対象に、nameとtypeのみ返す -->
+		<property name="binaryParser" class="org.iplass.mtp.impl.fulltextsearch.parser.BinaryNameTypeParser" />
+
+	</service>
+
+	<!-- Entity更新ログ定義 -->
+	<service>
+		<interface>org.iplass.mtp.impl.entity.auditlog.AuditLoggingService</interface>
+		<class>org.iplass.mtp.impl.entity.auditlog.LoggerAuditLoggingService</class>
+
+		<!-- logファイルへの出力時、LongTextなど長すぎる文字列を全部出力しない場合（デフォルト256文字まで）はtrue -->
+		<property name="logCompact" value="false" />
+		<!-- if log query, set to true -->
+		<property name="logQuery" value="false" />
+
+		<!-- log出力時、SelectValueのコードとラベルを出力する場合はtrue -->
+		<property name="logSelectValueWithLabel" value="true" />
+		<!-- log出力時、Referenceのoidとnameを出力する場合はtrue -->
+		<property name="logReferenceWithLabel" value="true" />
+
+	</service>
+
+	<service>
+		<interface>org.iplass.mtp.impl.entity.property.PropertyService</interface>
+		<class>org.iplass.mtp.impl.entity.property.PropertyService</class>
+		<property name="longTextInlineStoreMaxLength" value="1024" />
+		<property name="remainInlineText" value="false" />
+	</service>
+	<service>
+		<interface>org.iplass.mtp.impl.util.random.SecureRandomService</interface>
+		<class>org.iplass.mtp.impl.util.random.SecureRandomService</class>
+		<property name="default">
+			<property name="numBitsOfSecureRandomToken" value="128" />
+			<property name="radixOfSecureRandomToken" value="16" />
+			<property name="useStrongSecureRandom" value="false" />
+		</property>
+		<property name="authTokenGenerator">
+			<property name="numBitsOfSecureRandomToken" value="192" />
+			<property name="radixOfSecureRandomToken" value="32" />
+			<property name="useStrongSecureRandom" value="false" />
+		</property>
+	</service>
+
+	<!-- 基盤内部で利用するService群 -->
+	<service>
+		<interface>org.iplass.mtp.impl.async.AsyncTaskService</interface>
+		<class>org.iplass.mtp.impl.async.thread.ThreadingAsyncTaskService</class>
+		<property name="maximumPoolSize" value="256" />
+	</service>
+
+	<service>
+		<interface>org.iplass.mtp.impl.cache.CacheService</interface>
+
+		<!-- Entityのトランザクションローカル用キャッシュ（非共有） -->
+		<property name="entityTransactionLocal" class="org.iplass.mtp.impl.cache.store.builtin.SimpleCacheStoreFactory">
+			<property name="namespace" value="mtp.entity.transactionLocalCache" />
+			<property name="multiThreaded" value="false" />
+			<property name="size" value="32" />
+		</property>
+
+		<!-- Queryのトランザクションローカル用キャッシュ（非共有） -->
+		<property name="queryTransactionLocal" class="org.iplass.mtp.impl.cache.store.builtin.SimpleCacheStoreFactory">
+			<property name="namespace" value="mtp.entity.transactionLocalQueryCache" />
+			<property name="indexCount" value="1" /><!-- index:defName -->
+			<property name="multiThreaded" value="false" />
+			<property name="size" value="32" />
+		</property>
+
+		<!-- 権限チェック結果のキャッシュ（非共有） -->
+		<property name="permissionLocal" class="org.iplass.mtp.impl.cache.store.builtin.SimpleCacheStoreFactory">
+			<property name="namespace" value="mtp.auth.permissionCache" />
+			<property name="multiThreaded" value="false" />
+			<property name="size" value="16" />
+
+		</property>
+
+		<!-- TenantContextキャッシュ -->
+		<property name="tenantContext" class="org.iplass.mtp.impl.cache.store.builtin.TransactionLocalCacheStoreFactory">
+			<property name="namespace" value="mtp.tenant.tenantContext" />
+			<property name="indexCount" value="1" /><!-- index:tenantUrl -->
+			<property name="backendStore" class="org.iplass.mtp.impl.cache.store.builtin.SimpleCacheStoreFactory">
+			</property>
+		</property>
+
+		<!-- CounterServiceのカウンタキャッシュ -->
+		<property name="rdbTableCounter" class="org.iplass.mtp.impl.cache.store.builtin.SyncServerCacheStoreFactory">
+			<property name="namespace" value="mtp.counter.rdbTableCounter" />
+			<property name="cacheKeyResolver" class="org.iplass.mtp.impl.counter.CachableRdbTableCounterService$CounterCacheKeyResolver" />
+			<property name="store" class="org.iplass.mtp.impl.cache.store.builtin.SimpleCacheStoreFactory">
+				<property name="timeToLive" value="-1" />
+				<property name="size" value="1024" />
+			</property>
+		</property>
+
+		<!-- 権限系Entityのキャッシュ -->
+		<property name="authBuiltin" class="org.iplass.mtp.impl.cache.store.builtin.TransactionLocalCacheStoreFactory">
+			<property name="namespacePattern" value="mtp[.]auth[.]builtin[.].*" />
+			<property name="backendStore" class="org.iplass.mtp.impl.cache.store.builtin.SyncServerCacheStoreFactory">
+				<property name="cacheKeyResolver" class="org.iplass.mtp.impl.cache.store.keyresolver.StringCacheKeyResolver" />
+				<property name="store" class="org.iplass.mtp.impl.cache.store.builtin.SimpleCacheStoreFactory">
+					<!-- 6時間有効 -->
+					<property name="timeToLive" value="21600000" />
+				</property>
+			</property>
+		</property>
+
+		<!-- メタデータ（本体）キャッシュ -->
+		<property name="metadata" class="org.iplass.mtp.impl.cache.store.builtin.TransactionLocalCacheStoreFactory">
+			<property name="namespacePattern" value="mtp[.]metadata[.]metaData/.*" />
+			<property name="indexCount" value="1" /><!-- index:path -->
+			<property name="backendStore" class="org.iplass.mtp.impl.cache.store.builtin.SyncServerCacheStoreFactory">
+				<property name="cacheKeyResolver" class="org.iplass.mtp.impl.cache.store.keyresolver.StringCacheKeyResolver" />
+				<property name="cacheIndexResolver" class="org.iplass.mtp.impl.cache.store.keyresolver.StringCacheKeyResolver" />
+				<property name="store" class="org.iplass.mtp.impl.cache.store.builtin.SimpleCacheStoreFactory">
+					<!-- 12時間有効 -->
+					<property name="timeToLive" value="43200000" />
+				</property>
+				<property name="listener" class="org.iplass.mtp.impl.metadata.MetaDataSyncServerCacheListener" />
+			</property>
+		</property>
+
+		<!-- メタデータ（パスに対するリスト）キャッシュ(サーバローカルキャッシュ。メタデータ本体キャッシュのサーバ通知経由でデータの同期) -->
+		<property name="metadataList" class="org.iplass.mtp.impl.cache.store.builtin.TransactionLocalCacheStoreFactory">
+			<property name="namespacePattern" value="mtp[.]metadata[.]metaDataDefList/.*" />
+			<property name="backendStore" class="org.iplass.mtp.impl.cache.store.builtin.SimpleCacheStoreFactory">
+					<!-- 12時間有効 -->
+					<property name="timeToLive" value="43200000" />
+			</property>
+		</property>
+
+		<!-- cubeのキャッシュ -->
+		<property name="cubeStatus" class="org.iplass.mtp.impl.cache.store.builtin.SimpleCacheStoreFactory">
+			<property name="namespace" value="mtp.aggregation.cube.status" />
+		</property>
+		<property name="cubeFactData" class="org.iplass.mtp.impl.cache.store.builtin.SimpleCacheStoreFactory">
+			<property name="namespace" value="mtp.aggregation.cube.factPartition" />
+			<property name="concurrencyLevelOfCacheHandler" value="4" />
+		</property>
+
+		<!-- Queryキャッシュ -->
+		<property name="query" class="org.iplass.mtp.impl.cache.store.builtin.TransactionLocalCacheStoreFactory">
+			<property name="namespacePattern" value="mtp[.]entity[.]queryCache/.*" />
+			<property name="indexCount" value="1" /><!-- index:defName -->
+			<property name="backendStore" class="org.iplass.mtp.impl.cache.store.builtin.SyncServerCacheStoreFactory">
+				<property name="cacheKeyResolver" class="org.iplass.mtp.impl.entity.cache.QueryCacheKeyResolver" />
+				<property name="cacheIndexResolver" class="org.iplass.mtp.impl.cache.store.keyresolver.StringCacheKeyResolver" />
+				<property name="store" class="org.iplass.mtp.impl.cache.store.builtin.SimpleCacheStoreFactory">
+					<!-- 12時間有効 -->
+					<property name="timeToLive" value="43200000" />
+					<!-- 最大128 -->
+					<property name="size" value="128" />
+				</property>
+			</property>
+		</property>
+
+		<!-- 上記namespace以外の場合のデフォルトキャッシュ -->
+		<property name="defaultFactory" class="org.iplass.mtp.impl.cache.store.builtin.SimpleCacheStoreFactory">
+			<property name="namespacePattern" value=".*" />
+			<property name="indexCount" value="5" />
+		</property>
+	</service>
+	<service>
+		<interface>org.iplass.mtp.impl.async.rdb.RdbQueueService</interface>
+		<depend>org.iplass.mtp.impl.rdb.adapter.RdbAdapterService</depend>
+		<depend>TaskIdCounter</depend>
+		<depend>TaskIdCounterGrouping</depend>
+		<property name="useQueue" value="false" />
+		<property name="queue" class="org.iplass.mtp.impl.async.rdb.QueueConfig">
+			<property name="id" value="0" />
+			<property name="name" value="default" />
+			<property name="worker" class="org.iplass.mtp.impl.async.rdb.WorkerConfig">
+				<property name="pollingInterval" value="60000" />
+			</property>
+		</property>
+		<property name="queue" class="org.iplass.mtp.impl.async.rdb.QueueConfig">
+			<property name="id" value="1" />
+			<property name="name" value="csvupload" />
+			<property name="worker" class="org.iplass.mtp.impl.async.rdb.WorkerConfig">
+				<property name="pollingInterval" value="60000" />
+			</property>
+		</property>
+	</service>
+	<service name="DefaultQueueBaseAsyncTaskService">
+		<interface>org.iplass.mtp.impl.async.AsyncTaskService</interface>
+		<class>org.iplass.mtp.impl.async.rdb.RdbAsyncTaskService</class>
+		<depend>org.iplass.mtp.impl.async.rdb.RdbQueueService</depend>
+		<property name="defaultGetResultTimeoutMillis" value="60000" />
+		<property name="initialGetResultIntervalMillis" value="100" />
+	</service>
+
+	<service>
+		<interface>org.iplass.mtp.impl.validation.ValidationService</interface>
+		<class>org.iplass.mtp.impl.validation.ValidationService</class>
+		<property name="beanValidation">
+			<property name="providerClass" value="org.hibernate.validator.HibernateValidator" />
+			<property name="messageInterpolator" class="org.iplass.mtp.impl.validation.bean.TenantContextMessageInterpolator">
+				<property name="messageInterpolatorFactory" class="org.iplass.mtp.impl.validation.bean.hibernate.HibernateMessageInterpolatorFactory">
+					<property name="resourceBundleLocator" class="org.iplass.mtp.impl.validation.bean.hibernate.MessageResourceBundleLocator" />
+					<property name="cachingEnabled" null="true" />
+				</property>
+			</property>
+		</property>
+	</service>
+	<service>
+		<interface>org.iplass.mtp.impl.script.ScriptService</interface>
+		<class>org.iplass.mtp.impl.script.GroovyScriptService</class>
+		<property name="initScript" value="/org/iplass/mtp/impl/script/InitScript.gr" />
+		<property name="staticImport" value="org.iplass.mtp.ManagerLocator.manager" />
+	</service>
+	<service final="true">
+		<interface>org.iplass.mtp.impl.parser.SyntaxService</interface>
+		<class>org.iplass.mtp.impl.parser.SyntaxService</class>
+		<property name="syntaxRegister" value="org.iplass.mtp.impl.query.QuerySyntaxRegister" />
+ 	</service>
+	<service>
+		<interface>org.iplass.mtp.impl.session.SessionService</interface>
+		<class>org.iplass.mtp.impl.session.ExecuteContextSessionService</class>
+	</service>
+	<service final="true">
+		<interface>org.iplass.mtp.impl.command.CommandService</interface>
+		<class>org.iplass.mtp.impl.command.CommandService</class>
+	</service>
+	<service final="true">
+		<interface>org.iplass.mtp.impl.command.async.AsyncCommandService</interface>
+		<class>org.iplass.mtp.impl.command.async.AsyncCommandService</class>
+	</service>
+	<service final="true">
+		<interface>org.iplass.mtp.impl.tenant.TenantService</interface>
+		<class>org.iplass.mtp.impl.tenant.TenantService</class>
+	</service>
+
+	<service>
+		<interface>org.iplass.mtp.impl.tenant.MetaTenantService</interface>
+		<class>org.iplass.mtp.impl.tenant.MetaTenantService</class>
+
+		<!-- tenant config type map -->
+		<property name="configType">
+			<property name="definitionClass" value="org.iplass.mtp.tenant.TenantAuthInfo" />
+			<property name="metadataClass" value="org.iplass.mtp.impl.tenant.MetaTenantAuthInfo" />
+			<property name="scriptBindingName" value="tenantAuthInfo" />
+		</property>
+		<property name="configType">
+			<property name="definitionClass" value="org.iplass.mtp.tenant.TenantMailInfo" />
+			<property name="metadataClass" value="org.iplass.mtp.impl.tenant.MetaTenantMailInfo" />
+			<property name="scriptBindingName" value="tenantMailInfo" />
+		</property>
+		<property name="configType">
+			<property name="definitionClass" value="org.iplass.mtp.tenant.TenantI18nInfo" />
+			<property name="metadataClass" value="org.iplass.mtp.impl.tenant.MetaTenantI18nInfo" />
+			<property name="scriptBindingName" value="tenantI18nInfo" />
+		</property>
+
+	</service>
+
+	<service>
+		<interface>org.iplass.mtp.impl.message.MessageService</interface>
+		<class>org.iplass.mtp.impl.message.MessageService</class>
+		<property name="resourceBundle">
+			<property name="baseBundleNamePattern" value="^org/iplass/.*$" />
+			<property name="formats" value="java.class" />
+			<property name="formats" value="java.properties" />
+			<property name="fallbackToSystemLocale" value="false" />
+		</property>
+		<property name="resourceBundle">
+			<property name="formats" value="mtp.message" />
+			<property name="formats" value="java.class" />
+			<property name="formats" value="java.properties" />
+			<property name="fallbackToSystemLocale" value="false" />
+		</property>
+	</service>
+	<service final="true">
+		<interface>org.iplass.mtp.impl.properties.extend.select.SelectValueService</interface>
+		<class>org.iplass.mtp.impl.properties.extend.select.SelectValueService</class>
+	</service>
+	<service final="true">
+		<interface>org.iplass.mtp.impl.prefs.PreferenceService</interface>
+		<class>org.iplass.mtp.impl.prefs.PreferenceService</class>
+	</service>
+	<service>
+		<interface>org.iplass.mtp.impl.auth.authenticate.builtin.policy.AuthenticationPolicyService</interface>
+		<class>org.iplass.mtp.impl.auth.authenticate.builtin.policy.AuthenticationPolicyService</class>
+	</service>
+
+	<service>
+		<interface>org.iplass.mtp.impl.i18n.I18nService</interface>
+		<class>org.iplass.mtp.impl.i18n.I18nService</class>
+
+		<!-- 設定可能言語 -->
+		<property name="enableLanguages" class="org.iplass.mtp.impl.i18n.EnableLanguages">
+			<property name="languageKey" value="ja" />
+			<property name="languageName" value="日本語" />
+		</property>
+		<property name="enableLanguages" class="org.iplass.mtp.impl.i18n.EnableLanguages">
+			<property name="languageKey" value="en" />
+			<property name="otherLanguageKey" value="en-US" />
+			<property name="languageName" value="English" />
+		</property>
+		<property name="enableLanguages" class="org.iplass.mtp.impl.i18n.EnableLanguages">
+			<property name="languageKey" value="zh-CN" />
+			<property name="otherLanguageKey" value="zh" />
+			<property name="otherLanguageKey" value="zh-SG" />
+			<property name="languageName" value="简体中文" />
+		</property>
+		<property name="enableLanguages" class="org.iplass.mtp.impl.i18n.EnableLanguages">
+			<property name="languageKey" value="zh-TW" />
+			<property name="otherLanguageKey" value="zh-HK" />
+			<property name="languageName" value="繁體中文" />
+		</property>
+		<property name="enableLanguages" class="org.iplass.mtp.impl.i18n.EnableLanguages">
+			<property name="languageKey" value="th" />
+			<property name="otherLanguageKey" value="th-TH" />
+			<property name="languageName" value="ภาษาไทย" />
+		</property>
+
+		<!-- locale format -->
+		<property name="defaultLocaleFormat" class="org.iplass.mtp.impl.i18n.LocaleFormat">
+			<property name="locale" value="ja" />
+			<property name="locale" value="ja_JP" />
+			<property name="locale" value="zh" />
+			<property name="locale" value="zh_CN" />
+			<property name="locale" value="zh_TW" />
+			<property name="locale" value="zh_HK" />
+
+			<!--
+				Formatに指定可能な書式
+					yyyy : full year (four digit)
+					MM   : day of year (two digit)
+					dd   : day of month (two digit)
+					MMM  : month name short (ex. Jan)
+					MMMM : month name long (ex. January)
+					HH   : hour (two digit)
+					mm   : minute (two digit)
+					ss   : second (two digit)
+					SSS  : millisecond (three digit)
+
+				※MMM、MMMMはoutputXXXでのみ利用可能。browserInputDateFormatでは利用不可。
+				　またロケールがen、en_XXの場合のみ正常に動作します。
+
+				※Server系のフォーマットは内部制御があるため変更しないでください。
+				※Time系の入力フォーマットはRange制御があるため変更しないでください。
+			 -->
+
+			<!-- Server側でDateの入力値として受け取る形式(変更不可) -->
+			<property name="serverDateFormat" value="yyyyMMdd" />
+			<!-- Server側でTimeの入力値として受け取る形式(変更不可) -->
+			<property name="serverTimeFormat" value="HHmmssSSS" />
+
+			<!-- ブラウザ上でのDateの入力形式(テナントで個別指定可能) -->
+			<property name="browserInputDateFormat" value="yyyyMMdd" />
+
+			<!-- ブラウザ上でのTimeの入力形式(TimeはRange制御があるので変更不可) -->
+			<property name="browserInputTimeSecFormat" value="HH:mm:ss" />
+			<property name="browserInputTimeMinFormat" value="HH:mm" />
+			<property name="browserInputTimeHourFormat" value="HH" />
+
+			<!-- Date型の出力形式(検索結果やCSVなど。テナントで個別指定可能) -->
+			<property name="outputDateFormat" value="yyyy/MM/dd" />
+			<property name="outputDateWeekdayFormat" value="yyyy/MM/dd EEEE" />
+			<!-- Excelでの日付出力形式 -->
+			<property name="excelDateFormat" value="yyyy/M/d" />
+			<property name="excelTimeFormat" value="H:mm" />
+
+			<!-- Time型の出力形式(検索結果やCSVなど。現状テナントで個別指定不可) -->
+			<property name="outputTimeSecFormat" value="HH:mm:ss" />
+			<property name="outputTimeMinFormat" value="HH:mm" />
+			<property name="outputTimeHourFormat" value="HH" />
+
+			<property name="lastNameIsFirst" value="true" />
+		</property>
+		<property name="localeFormat" class="org.iplass.mtp.impl.i18n.LocaleFormat">
+			<property name="locale" value="en_US" />
+			<property name="locale" value="en" />
+
+			<property name="serverDateFormat" value="yyyyMMdd" />
+			<property name="serverTimeFormat" value="HHmmssSSS" />
+
+			<property name="browserInputDateFormat" value="MM/dd/yyyy" />
+			<property name="browserInputTimeSecFormat" value="HH:mm:ss" />
+			<property name="browserInputTimeMinFormat" value="HH:mm" />
+			<property name="browserInputTimeHourFormat" value="HH" />
+
+			<property name="outputDateFormat" value="MM/dd/yyyy" />
+			<property name="outputDateWeekdayFormat" value="EEEE, MM/dd/yyyy" />
+			<property name="excelDateFormat" value="M/d/yyyy" />
+			<property name="excelTimeFormat" value="H:mm" />
+			<property name="outputTimeSecFormat" value="HH:mm:ss" />
+			<property name="outputTimeMinFormat" value="HH:mm" />
+			<property name="outputTimeHourFormat" value="HH" />
+
+			<property name="lastNameIsFirst" value="false" />
+		</property>
+		<property name="localeFormat" class="org.iplass.mtp.impl.i18n.LocaleFormat">
+			<property name="locale" value="en_SG" />
+			<property name="locale" value="th" />
+			<property name="locale" value="th_TH" />
+
+			<property name="serverDateFormat" value="yyyyMMdd" />
+			<property name="serverTimeFormat" value="HHmmssSSS" />
+
+			<property name="browserInputDateFormat" value="dd/MM/yyyy" />
+			<property name="browserInputTimeSecFormat" value="HH:mm:ss" />
+			<property name="browserInputTimeMinFormat" value="HH:mm" />
+			<property name="browserInputTimeHourFormat" value="HH" />
+
+			<property name="outputDateFormat" value="dd/MM/yyyy" />
+			<property name="outputDateWeekdayFormat" value="EEEE dd/MM/yyyy" />
+			<property name="excelDateFormat" value="d/M/yyyy" />
+			<property name="excelTimeFormat" value="H:mm" />
+			<property name="outputTimeSecFormat" value="HH:mm:ss" />
+			<property name="outputTimeMinFormat" value="HH:mm" />
+			<property name="outputTimeHourFormat" value="HH" />
+
+			<property name="lastNameIsFirst" value="false" />
+		</property>
+
+		<property name="languageFonts" class="org.iplass.mtp.impl.i18n.LanguageFonts">
+			<property name="language" value="ja" />
+			<property name="fonts" value="Meiryo" />
+			<property name="fonts" value="MS PGothic" />
+			<property name="fonts" value="Hiragino Kaku Gothic Pro" />
+			<property name="fonts" value="ヒラギノ角ゴ Pro W3" />
+			<property name="fonts" value="sans-serif" />
+		</property>
+		<property name="languageFonts" class="org.iplass.mtp.impl.i18n.LanguageFonts">
+			<property name="language" value="en" />
+			<property name="fonts" value="Segoe UI" />
+			<property name="fonts" value="Helvetica Neue" />
+			<property name="fonts" value="Arial" />
+			<property name="fonts" value="Helvetica" />
+			<property name="fonts" value="sans-serif" />
+		</property>
+		<property name="languageFonts" class="org.iplass.mtp.impl.i18n.LanguageFonts">
+			<property name="language" value="zh-CN" />
+			<property name="fonts" value="Microsoft Yahei" />
+			<property name="fonts" value="PingHei" />
+			<property name="fonts" value="sans-serif" />
+		</property>
+		<property name="languageFonts" class="org.iplass.mtp.impl.i18n.LanguageFonts">
+			<property name="language" value="zh-TW" />
+			<property name="fonts" value="Microsoft Yahei" />
+			<property name="fonts" value="PingHei" />
+			<property name="fonts" value="sans-serif" />
+		</property>
+		<property name="languageFonts" class="org.iplass.mtp.impl.i18n.LanguageFonts">
+			<property name="language" value="th" />
+			<property name="fonts" value="Leelawadee" />
+			<property name="fonts" value="Tahoma" />
+			<property name="fonts" value="sans-serif" />
+		</property>
+	</service>
+
+</serviceDefinition>

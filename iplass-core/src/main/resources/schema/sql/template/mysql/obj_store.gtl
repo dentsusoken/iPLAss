@@ -1,0 +1,74 @@
+/* drop/create OBJ_STORE */
+DROP TABLE IF EXISTS `mtdb`.`obj_store${tableNamePostfix}`;
+CREATE TABLE `mtdb`.`obj_store${tableNamePostfix}` (
+  `tenant_id` INT(7) NOT NULL,
+  `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
+  `pg_no` INT(2) NOT NULL,
+  `obj_id` VARCHAR(64) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
+  `obj_ver` BIGINT(10) NOT NULL DEFAULT 0,
+  `obj_def_ver` BIGINT(10) NULL,
+  `status` CHAR(1) NULL,
+  `obj_name` VARCHAR(256) NULL,
+  `obj_desc` TEXT NULL,
+  `cre_date` DATETIME(3) NULL,
+  `up_date` DATETIME(3) NULL,
+  `s_date` DATETIME(3) NULL,
+  `e_date` DATETIME(3) NULL,
+  `lock_user` VARCHAR(64) NULL,
+  `cre_user` VARCHAR(64) NULL,
+  `up_user` VARCHAR(64) NULL
+  <%columns.each {
+		switch (it.type) {
+        case "VARCHAR":
+  %>,`${it.prefix + it.no}` TEXT
+  <%		break;
+	    case "DECIMAL":
+  %>,`${it.prefix + it.no}` DECIMAL(22, 0)
+  <%		break;
+        case "TIMESTAMP":
+  %>,`${it.prefix + it.no}` DATETIME(3)
+  <%		break;
+        case "DOUBLE":
+  %>,`${it.prefix + it.no}` DOUBLE
+  <%		break;
+        default:
+			break;
+		}
+
+		if (it.indexType != "NONE") {
+  %>,`${it.prefix + it.no}_TD` VARCHAR(139) CHARACTER SET latin1 COLLATE latin1_bin
+  <%	}
+	}%>
+  ,PRIMARY KEY (`tenant_id`, `obj_def_id`, `obj_id`, `obj_ver`, `pg_no`)
+  <%columns.each {
+	String keyLength = "";
+	switch (it.type) {
+		case "VARCHAR":
+		keyLength = "(255)";
+		break;
+	}
+	if ("INDEX" == it.indexType) {
+%>,INDEX `obj_store${tableNamePostfix}_${it.prefix}index_${it.no}` (`${it.prefix + it.no}`${keyLength}, `${it.prefix + it.no}_TD`(139))
+<%	} else if ("UNIQUE_INDEX" == it.indexType) {
+%>,UNIQUE INDEX `obj_store${tableNamePostfix}_${it.prefix}unique_${it.no}` (`${it.prefix + it.no}_TD`(139), `${it.prefix + it.no}`${keyLength}, `tenant_id`, `obj_def_id`(128))
+<%	}
+}%>
+)
+ENGINE = INNODB ROW_FORMAT=DYNAMIC
+
+<%if (partition) {
+%>PARTITION BY RANGE( `tenant_id` )
+    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
+        PARTITION obj_store${tableNamePostfix}_0 VALUES LESS THAN (1) (
+            SUBPARTITION obj_store${tableNamePostfix}_0_0,
+            SUBPARTITION obj_store${tableNamePostfix}_0_1,
+            SUBPARTITION obj_store${tableNamePostfix}_0_2,
+            SUBPARTITION obj_store${tableNamePostfix}_0_3,
+            SUBPARTITION obj_store${tableNamePostfix}_0_4,
+            SUBPARTITION obj_store${tableNamePostfix}_0_5,
+            SUBPARTITION obj_store${tableNamePostfix}_0_6,
+            SUBPARTITION obj_store${tableNamePostfix}_0_7
+        )
+    )
+<%}%>
+;

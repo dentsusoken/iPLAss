@@ -1,0 +1,136 @@
+/*
+ * Copyright (C) 2012 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
+ *
+ * Unless you have purchased a commercial license,
+ * the following license terms apply:
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
+import org.iplass.mtp.entity.EntityEventContext
+import org.iplass.mtp.entity.GenericEntity
+import org.iplass.mtp.impl.auth.UserBinding
+import org.iplass.mtp.impl.command.SessionBinding
+import org.iplass.mtp.impl.command.RequestContextBinding
+import org.iplass.mtp.command.RequestContext
+import org.iplass.mtp.command.SessionContext
+
+import org.iplass.mtp.tenant.Tenant
+import org.iplass.mtp.impl.tenant.MetaTenantService
+import org.iplass.mtp.spi.ServiceRegistry
+
+//GenericEntityに対する拡張
+GenericEntity.metaClass.getProperty={String name ->
+	MetaProperty metaProperty = GenericEntity.metaClass.getMetaProperty(name);
+	if (metaProperty != null) {
+		return metaProperty.getProperty(delegate);
+	} else {
+		return delegate.getValue(name);
+	}
+}
+GenericEntity.metaClass.setProperty={String name, Object value ->
+	MetaProperty metaProperty = GenericEntity.metaClass.getMetaProperty(name);
+	if (metaProperty != null) {
+		metaProperty.setProperty(delegate, value);
+	} else {
+		delegate.setValue(name, value);
+	}
+}
+
+//EntityEventContextに対する拡張
+EntityEventContext.metaClass.getProperty={String name ->
+	MetaProperty metaProperty = EntityEventContext.metaClass.getMetaProperty(name);
+	if (metaProperty != null) {
+		return metaProperty.getProperty(delegate);
+	} else {
+		return delegate.getAttribute(name);
+	}
+}
+
+//RequestContextBindingに対する拡張
+RequestContextBinding.metaClass.getProperty={String name ->
+	MetaProperty metaProperty = RequestContextBinding.metaClass.getMetaProperty(name);
+	if (metaProperty != null) {
+		return metaProperty.getProperty(delegate);
+	} else {
+		return delegate.getAttribute(name);
+	}
+}
+
+//SessionBindingに対する拡張
+SessionBinding.metaClass.getProperty={String name ->
+	MetaProperty metaProperty = SessionBinding.metaClass.getMetaProperty(name);
+	if (metaProperty != null) {
+		return metaProperty.getProperty(delegate);
+	} else {
+		return delegate.getAttribute(name);
+	}
+}
+
+//UserBindingに対する拡張
+UserBinding.metaClass.getProperty={String name ->
+	MetaProperty metaProperty = UserBinding.metaClass.getMetaProperty(name);
+	if (metaProperty != null) {
+		return metaProperty.getProperty(delegate);
+	} else {
+		return delegate.getAttribute(name);
+	}
+}
+
+//RequestContextに対する拡張
+RequestContext.metaClass.getProperty={String name ->
+	MetaProperty metaProperty = RequestContext.metaClass.getMetaProperty(name);
+	if (metaProperty != null) {
+		return metaProperty.getProperty(delegate);
+	} else {
+		return delegate.getAttribute(name);
+	}
+}
+RequestContext.metaClass.setProperty={String name, Object value ->
+	MetaProperty metaProperty = RequestContext.metaClass.getMetaProperty(name);
+	if (metaProperty != null) {
+		metaProperty.setProperty(delegate, value);
+	} else {
+		delegate.setAttribute(name, value);
+	}
+}
+
+//SessionContextに対する拡張
+SessionContext.metaClass.getProperty={String name ->
+	MetaProperty metaProperty = SessionContext.metaClass.getMetaProperty(name);
+	if (metaProperty != null) {
+		return metaProperty.getProperty(delegate);
+	} else {
+		return delegate.getAttribute(name);
+	}
+}
+SessionContext.metaClass.setProperty={String name, Object value ->
+	MetaProperty metaProperty = SessionContext.metaClass.getMetaProperty(name);
+	if (metaProperty != null) {
+		metaProperty.setProperty(delegate, value);
+	} else {
+		delegate.setAttribute(name, value);
+	}
+}
+
+//Tenantに対する拡張
+Tenant.metaClass.getProperty={String name ->
+	MetaProperty metaProperty = Tenant.metaClass.getMetaProperty(name);
+	if (metaProperty != null) {
+		return metaProperty.getProperty(delegate);
+	} else {
+		MetaTenantService service = ServiceRegistry.getRegistry().getService(MetaTenantService.class);
+		return service.getBindTenantConfig(delegate, name);
+	}
+}

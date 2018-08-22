@@ -1,0 +1,26 @@
+// ckeditor スタイル上書き
+//colors -> color/_colors.scss
+// $gallery: #efefef;
+// $color_desert_storm_approx: #f8f8f8;
+
+.cke_1_dialog {
+	.cke_dialog_contents {
+		background: $gallery !important;
+		background: linear-gradient($color_desert_storm_approx 0, $gallery 100%) !important;
+	}
+	.cke_dialog_footer {
+		background: $gallery !important;
+		background: linear-gradient($color_desert_storm_approx 0, $gallery 100%) !important;
+	}
+	a.cke_dialog_tab {
+		background: $gallery !important;
+		background: linear-gradient($color_desert_storm_approx 0, $gallery 100%) !important;
+	}
+}
+.cke_skin_kama .cke_wrapper {
+	background-image: none !important;
+}
+.cke_1 .cke_wrapper {
+	background: $gallery !important;
+	background: linear-gradient($color_desert_storm_approx 0, $gallery 100%) !important;
+}

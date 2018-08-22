@@ -1,0 +1,426 @@
+@charset "utf-8";
+
+/** Add css rules here for your application. */
+
+/* Custom textItemDisabled */
+.textItemDisabled,
+.selectItemTextDisabled {
+    color:black;				/* default #AAAAAA */
+    background-color:#E6E6E6;	/* default #FFFFFF */
+/*    border:1px solid #A6ABB4; */
+}
+
+/* Custom formTitleDisabled */
+.formTitleDisabled {
+    color:#003168;				/* default #AAAAAA */
+}
+
+/* Top Navi Title base windowHeaderText */
+.adminWindowHeaderText {
+	color: #4D4D4D;
+	font-family: Arial, Verdana, sans-serif;
+	font-weight: bold;
+	padding-bottom: 2px;
+	padding-left: 2px;
+	padding-right: 2px;
+/*	font-size:12px; */
+	font-size:14px;
+}
+
+
+/* Disable Admin */
+.AdminDisabledMessage {
+	position:absolute;
+	z-index:2147483647;
+	left:50px;
+	top:50px;
+	width:600px;
+	color:#FFF;
+	font-family:verdana;
+	text-align:left;
+	font-size:30px;
+	font-weight:bold;
+}
+
+/**
+--------------------------
+Entity Inherited Grid
+--------------------------
+*/
+/* Inherited */
+.entityInheritedPropertyGridRow,
+.entityInheritedPropertyGridRowDark,
+.entityInheritedPropertyGridRowOver,
+.entityInheritedPropertyGridRowOverDark,
+.entityInheritedPropertyGridRowSelected,
+.entityInheritedPropertyGridRowSelectedDark,
+.entityInheritedPropertyGridRowSelectedOver,
+.entityInheritedPropertyGridRowSelectedOverDark,
+.entityInheritedPropertyGridRowDisabled,
+.entityInheritedPropertyGridRowDisabledDark {
+	background-color:#CCFFFF;
+	border-bottom:1px solid #EDEDED;
+	border-top:1px solid #CCFFFF;
+}
+
+/* 削除対象 */
+.entityDeletePropertyGridRow,
+.entityDeletePropertyGridRowDark,
+.entityDeletePropertyGridRowOver,
+.entityDeletePropertyGridRowOverDark,
+.entityDeletePropertyGridRowSelected,
+.entityDeletePropertyGridRowSelectedDark,
+.entityDeletePropertyGridRowSelectedOver,
+.entityDeletePropertyGridRowSelectedOverDark,
+.entityDeletePropertyGridRowDisabled,
+.entityDeletePropertyGridRowDisabledDark {
+	background-color:#E6E6E6;
+	border-bottom:1px solid #EDEDED;
+	border-top:1px solid #FAFAFA;
+}
+
+/**
+--------------------------
+Message Item Grid
+--------------------------
+*/
+/* 削除対象MessageItem */
+.deleteMessageItemGridRow,
+.deleteMessageItemGridRowDark,
+.deleteMessageItemGridRowDisabled,
+.deleteMessageItemGridRowDisabledDark {
+	background-color:#E6E6E6;
+	border-bottom:1px solid #EDEDED;
+	border-top:1px solid #FAFAFA;
+}
+.deleteMessageItemGridRowOver,
+.deleteMessageItemGridRowOverDark,
+.deleteMessageItemGridRowSelected,
+.deleteMessageItemGridRowSelectedDark,
+.deleteMessageItemGridRowSelectedOver,
+.deleteMessageItemGridRowSelectedOverDark {
+	background-color:#d6e8ff;
+	border-bottom:1px dotted #9fb7e9;
+	border-top:1px dotted #9fb7e9;
+}
+
+
+/**
+--------------------------
+Import MetaData Grid
+--------------------------
+*/
+
+.ERRORMessageCanvas {
+	background-color:#FFCCCC;
+}
+.WARNMessageCanvas {
+	background-color:#99CCFF;
+}
+
+.ERRORGridRow,
+.ERRORGridRowDark,
+.ERRORGridRowOver,
+.ERRORGridRowOverDark,
+.ERRORGridRowSelected,
+.ERRORGridRowSelectedDark,
+.ERRORGridRowSelectedOver,
+.ERRORGridRowSelectedOverDark,
+.ERRORGridRowDisabled,
+.ERRORGridRowDisabledDark {
+	background-color:#FFCCCC;
+	border-bottom:1px solid #EDEDED;
+	border-top:1px solid #FFCCCC;
+}
+
+.WARNGridRow,
+.WARNGridRowDark,
+.WARNGridRowOver,
+.WARNGridRowOverDark,
+.WARNGridRowSelected,
+.WARNGridRowSelectedDark,
+.WARNGridRowSelectedOver,
+.WARNGridRowSelectedOverDark,
+.WARNGridRowDisabled,
+.WARNGridRowDisabledDark {
+	background-color:#99CCFF;
+	border-bottom:1px solid #EDEDED;
+	border-top:1px solid #99CCFF;
+}
+
+.importMetaGrid,
+.importMetaGridDark,
+.importMetaGridOver,
+.importMetaGridOverDark,
+.importMetaGridSelected,
+.importMetaGridSelectedDark,
+.importMetaGridSelectedOver,
+.importMetaGridSelectedOverDark,
+.importMetaGridDisabled,
+.importMetaGridDisabledDark {
+	border-bottom:1px solid #EDEDED;
+/*	border-right:1px solid #a0a0a0; */
+}
+
+/**
+--------------------------
+Import Tenant Property Select Grid
+--------------------------
+*/
+/* 差分あり */
+.importTenantPaneGridDiffRow,
+.importTenantPaneGridDiffRowSelected,
+.importTenantPaneGridDiffRowDisabled,
+.importTenantPaneGridDiffRowDark,
+.importTenantPaneGridDiffRowSelectedDark,
+.importTenantPaneGridDiffRowDisabledDark {
+	background-color:#F4D9E3;
+}
+.importTenantPaneGridDiffRowOver,
+.importTenantPaneGridDiffRowOverDark,
+.importTenantPaneGridDiffRowSelectedOver,
+.importTenantPaneGridDiffRowSelectedOverDark {
+/*	background-color:#DBEDFF; */
+}
+
+/**
+--------------------------
+Packaging Grid
+--------------------------
+*/
+/* Active */
+.packActiveGridRow,
+.packActiveGridRowDark,
+.packActiveGridRowOver,
+.packActiveGridRowOverDark,
+.packActiveGridRowSelected,
+.packActiveGridRowSelectedDark,
+.packActiveGridRowSelectedOver,
+.packActiveGridRowSelectedOverDark,
+.packActiveGridRowDisabled,
+.packActiveGridRowDisabledDark {
+	background-color:#CCFFFF;
+	border-bottom:1px solid #EDEDED;
+	border-top:1px solid #CCFFFF;
+}
+/* Completed */
+.packCompletedGridRow,
+.packCompletedGridRowDark,
+.packCompletedGridRowOver,
+.packCompletedGridRowOverDark,
+.packCompletedGridRowSelected,
+.packCompletedGridRowSelectedDark,
+.packCompletedGridRowSelectedOver,
+.packCompletedGridRowSelectedOverDark,
+.packCompletedGridRowDisabled,
+.packCompletedGridRowDisabledDark {
+	background-color:#99CCFF;
+	border-bottom:1px solid #EDEDED;
+	border-top:1px solid #99CCFF;
+}
+/* Error */
+.packErrorGridRow,
+.packErrorGridRowDark,
+.packErrorGridRowOver,
+.packErrorGridRowOverDark,
+.packErrorGridRowSelected,
+.packErrorGridRowSelectedDark,
+.packErrorGridRowSelectedOver,
+.packErrorGridRowSelectedOverDark,
+.packErrorGridRowDisabled,
+.packErrorGridRowDisabledDark {
+	background-color:#FFCCCC;
+	border-bottom:1px solid #EDEDED;
+	border-top:1px solid #FFCCCC;
+}
+
+/**
+--------------------------
+TaskQueue Grid
+--------------------------
+*/
+/* Active */
+.taskActiveGridRow,
+.taskActiveGridRowDark,
+.taskActiveGridRowOver,
+.taskActiveGridRowOverDark,
+.taskActiveGridRowSelected,
+.taskActiveGridRowSelectedDark,
+.taskActiveGridRowSelectedOver,
+.taskActiveGridRowSelectedOverDark,
+.taskActiveGridRowDisabled,
+.taskActiveGridRowDisabledDark {
+	background-color:#CCFFFF;
+	border-bottom:1px solid #EDEDED;
+	border-top:1px solid #CCFFFF;
+}
+/* Completed */
+.taskCompletedGridRow,
+.taskCompletedGridRowDark,
+.taskCompletedGridRowOver,
+.taskCompletedGridRowOverDark,
+.taskCompletedGridRowSelected,
+.taskCompletedGridRowSelectedDark,
+.taskCompletedGridRowSelectedOver,
+.taskCompletedGridRowSelectedOverDark,
+.taskCompletedGridRowDisabled,
+.taskCompletedGridRowDisabledDark {
+	background-color:#99CCFF;
+	border-bottom:1px solid #EDEDED;
+	border-top:1px solid #99CCFF;
+}
+/* Abort */
+.taskAbortGridRow,
+.taskAbortGridRowDark,
+.taskAbortGridRowOver,
+.taskAbortGridRowOverDark,
+.taskAbortGridRowSelected,
+.taskAbortGridRowSelectedDark,
+.taskAbortGridRowSelectedOver,
+.taskAbortGridRowSelectedOverDark,
+.taskAbortGridRowDisabled,
+.taskAbortGridRowDisabledDark {
+	background-color:#FFCCCC;
+	border-bottom:1px solid #EDEDED;
+	border-top:1px solid #FFCCCC;
+}
+
+
+/**
+--------------------------
+PermissionExplorer Grid
+--------------------------
+*/
+
+/* 奇数行 */
+.permissionExplorerGridRow,
+.permissionExplorerGridRowSelected,
+.permissionExplorerGridRowDisabled {
+	border-right: 1px solid #eeeeee;
+	border-bottom:1px solid #EDEDED;
+}
+
+/* 偶数行 */
+.permissionExplorerGridRowDark,
+.permissionExplorerGridRowSelectedDark,
+.permissionExplorerGridRowDisabledDark {
+	background-color:#FAFAFA;
+	border-right: 1px solid #eeeeee;
+	border-bottom:1px solid #EDEDED;
+}
+
+/* カーソルオーバー */
+.permissionExplorerGridRowOver,
+.permissionExplorerGridRowOverDark,
+.permissionExplorerGridRowSelectedOver,
+.permissionExplorerGridRowSelectedOverDark {
+	background-color:#DBEDFF;
+	border-right: 1px solid #eeeeee;
+	border-bottom:1px solid #EDEDED;
+}
+
+/* 定義済み */
+.permissionExplorerGridConfiguredRow,
+.permissionExplorerGridConfiguredRowSelected,
+.permissionExplorerGridConfiguredRowDisabled,
+.permissionExplorerGridConfiguredRowDark,
+.permissionExplorerGridConfiguredRowSelectedDark,
+.permissionExplorerGridConfiguredRowDisabledDark {
+	text-align: center;
+	background-color:#CCFFCC;
+	border-right: 1px solid #eeeeee;
+	border-bottom:1px solid #EDEDED;
+}
+.permissionExplorerGridConfiguredRowOver,
+.permissionExplorerGridConfiguredRowOverDark,
+.permissionExplorerGridConfiguredRowSelectedOver,
+.permissionExplorerGridConfiguredRowSelectedOverDark {
+	text-align: center;
+	background-color:#DBEDFF;
+	border-right: 1px solid #eeeeee;
+	border-bottom:1px solid #EDEDED;
+}
+
+/* 編集中 */
+.permissionExplorerGridEditingRow,
+.permissionExplorerGridEditingRowSelected,
+.permissionExplorerGridEditingRowDisabled,
+.permissionExplorerGridEditingRowDark,
+.permissionExplorerGridEditingRowSelectedDark,
+.permissionExplorerGridEditingRowDisabledDark {
+	text-align: center;
+	background-color:#FFCC99;
+	border-right: 1px solid #eeeeee;
+	border-bottom:1px solid #EDEDED;
+}
+.permissionExplorerGridEditingRowOver,
+.permissionExplorerGridEditingRowOverDark,
+.permissionExplorerGridEditingRowSelectedOver,
+.permissionExplorerGridEditingRowSelectedOverDark {
+	text-align: center;
+	background-color:#DBEDFF;
+	border-right: 1px solid #eeeeee;
+	border-bottom:1px solid #EDEDED;
+}
+
+/* 削除対象 */
+.permissionExplorerGridDeletingRow,
+.permissionExplorerGridDeletingRowSelected,
+.permissionExplorerGridDeletingRowDisabled,
+.permissionExplorerGridDeletingRowDark,
+.permissionExplorerGridDeletingRowSelectedDark,
+.permissionExplorerGridDeletingRowDisabledDark {
+	text-align: center;
+	background-color:#FF9999;
+	border-right: 1px solid #eeeeee;
+	border-bottom:1px solid #EDEDED;
+}
+.permissionExplorerGridDeletingRowOver,
+.permissionExplorerGridDeletingRowOverDark,
+.permissionExplorerGridDeletingRowSelectedOver,
+.permissionExplorerGridDeletingRowSelectedOverDark {
+	text-align: center;
+	background-color:#DBEDFF;
+	border-right: 1px solid #eeeeee;
+	border-bottom:1px solid #EDEDED;
+}
+
+/* Role編集中 */
+.permissionExplorerRoleGridEditingRow,
+.permissionExplorerRoleGridEditingRowSelected,
+.permissionExplorerRoleGridEditingRowDisabled,
+.permissionExplorerRoleGridEditingRowDark,
+.permissionExplorerRoleGridEditingRowSelectedDark,
+.permissionExplorerRoleGridEditingRowDisabledDark {
+	background-color:#FFCC99;
+	border-right: 1px solid #eeeeee;
+	border-bottom:1px solid #EDEDED;
+}
+.permissionExplorerRoleGridEditingRowOver,
+.permissionExplorerRoleGridEditingRowOverDark,
+.permissionExplorerRoleGridEditingRowSelectedOver,
+.permissionExplorerRoleGridEditingRowSelectedOverDark {
+	background-color:#DBEDFF;
+	border-right: 1px solid #eeeeee;
+	border-bottom:1px solid #EDEDED;
+}
+
+/* Role削除対象 */
+.permissionExplorerRoleGridDeletingRow,
+.permissionExplorerRoleGridDeletingRowSelected,
+.permissionExplorerRoleGridDeletingRowDisabled,
+.permissionExplorerRoleGridDeletingRowDark,
+.permissionExplorerRoleGridDeletingRowSelectedDark,
+.permissionExplorerRoleGridDeletingRowDisabledDark {
+	background-color:#FF9999;
+	border-right: 1px solid #eeeeee;
+	border-bottom:1px solid #EDEDED;
+}
+.permissionExplorerRoleGridDeletingRowOver,
+.permissionExplorerRoleGridDeletingRowOverDark,
+.permissionExplorerRoleGridDeletingRowSelectedOver,
+.permissionExplorerRoleGridDeletingRowSelectedOverDark {
+	background-color:#DBEDFF;
+	border-right: 1px solid #eeeeee;
+	border-bottom:1px solid #EDEDED;
+}

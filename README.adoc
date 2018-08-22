@@ -1,0 +1,68 @@
+[link=https://iplass.org/]
+image::https://user-images.githubusercontent.com/22016554/42924803-cc0eb00c-8b66-11e8-8e86-2a13b0609ea5.png[iPLAss]
+
+[.lead]
+エンタープライズクラスのシステム開発における生産性向上を主目的とした、javaベースの開発プラットフォームです。
+
+* https://iplass.org/[iPLAss Website]
+* https://iplass.org/intro/[Getting Started]
+* https://iplass.org/docs/[Document]
+
+## Related repositories
+
+* https://github.com/ISID/iplass-skeleton
+* https://github.com/ISID/iplass-sample-app
+* https://github.com/ISID/iplass-sample-app-vuejs
+* https://github.com/ISID/iplass-eclipse
+
+## License
+https://www.gnu.org/licenses/agpl.html[AGPL-3.0]
+
+商用ライセンスをご希望の方は、 下記リンクよりお問い合わせください。
+
+https://www.isid.co.jp/solution/iPLAss.html
+
+## Build
+gradleでビルドします。
+
+ > gradlew
+
+NOTE: publicなmavenが存在しないサードパーティライブラリを手動でlibディレクトリ以下に格納する必要があります。
+lib/smartgwt/note.txt参照してください。
+
+NOTE: 現状、Java8/JavaEE7ベースです
+
+## Repository overview
+モジュール単位にgradleサブプロジェクトとして構成しています。 
+
+### iplass-core
+iPLAssのコアモジュール
+
+### iplass-web
+web関連機能のモジュール +
+WebFragments形式
+
+### iplass-admin
+adminConsoleのモジュール +
+WebFragments形式 +
+GWT/SmartGWTベース
+
+### iplass-gem
+GEM関連機能のモジュール +
+WebFragments形式
+
+### iplass-test
+Unitテストをサポートするモジュール +
+JUnitベース
+
+### iplass-tools
+管理用機能のモジュール +
+adminConsole、バッチから利用される
+
+### iplass-tools-batch
+バッチプログラム群 +
+
+### iplass-infinispan
+infinispanアドオンモジュール +
+キャッシュストア、クラスタ間通信基盤としてinfinispanを利用することを可能にする
+

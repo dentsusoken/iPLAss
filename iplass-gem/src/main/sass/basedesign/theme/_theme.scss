@@ -1,0 +1,94 @@
+//@extend-elements
+//original selectors
+//.ui-state-active, .ui-widget-content .ui-state-active, .ui-widget-header .ui-state-active
+//#ui-datepicker-div .ui-state-hover, #ui-datepicker-div .ui-widget-content .ui-state-hover, #ui-datepicker-div .ui-state-focus, #ui-datepicker-div .ui-widget-content .ui-state-focus
+%extend_active {
+	background-color: $active_background_color;
+	background-image: none;
+	border-color: $active_border_color;
+	color: $active_color;
+}
+
+//original selectors
+//.ui-state-highlight, .ui-widget-content .ui-state-highlight, .ui-widget-header .ui-state-highlight
+%extend_highlight {
+	background-color: $highlight_background_color;
+	background-image: none;
+	border-color: $highlight_border_color;
+}
+
+#header-container {
+	border-top: 5px solid $header_border_color;
+}
+.ui-state-active {
+	@extend %extend_active;
+}
+.ui-widget-content {
+	.ui-state-active {
+		@extend %extend_active;
+	}
+	.ui-state-highlight {
+		@extend %extend_highlight;
+	}
+}
+.ui-widget-header {
+	.ui-state-active {
+		@extend %extend_active;
+	}
+	.ui-state-highlight {
+		@extend %extend_highlight;
+	}
+}
+#ui-datepicker-div {
+	.ui-state-hover {
+		@extend %extend_active;
+	}
+	.ui-widget-content {
+		.ui-state-hover {
+			@extend %extend_active;
+		}
+		.ui-state-focus {
+			@extend %extend_active;
+		}
+	}
+	.ui-state-focus {
+		@extend %extend_active;
+	}
+}
+.ui-state-highlight {
+	@extend %extend_highlight;
+}
+#nav-menu li.current a {
+	border: none;
+	border-bottom: 1px solid $menu_border_color;
+	border-right: 1px solid $menu_border_color;
+	color: $menu_color;
+	background: $menu_background_color;
+	background: linear-gradient($menu_background_gradient_color_from 0, $menu_background_gradient_color_to 100%);
+}
+#header #user-nav .search-submit {
+	background: $search_img_url no-repeat left top;
+	&:hover {
+		background: $search_hover_img_url no-repeat left top;
+	}
+}
+
+.hgroup-01 svg {
+	color: $icon_title_color;
+}
+
+.tabList .tab-menu li.current a {
+	background: $tab_background_color;
+	background: linear-gradient($tab_background_gradient_color_from 0, $tab_background_gradient_color_to 100%) repeat 0 0;
+	color: $tab_color;
+}
+input.gr-btn {
+	border: 1px solid $btn_border_color;
+	background: $btn_background_color;
+	background: linear-gradient($btn_background_gradient_color_from 0, $btn_background_gradient_color_to 100%);
+	&:hover {
+		border: 1px solid $btn_hover_border_color;
+		background: $btn_hover_background_color;
+		background: linear-gradient($btn_hover_background_gradient_color_from 0, $btn_hover_background_gradient_color_to 100%);
+	}
+}

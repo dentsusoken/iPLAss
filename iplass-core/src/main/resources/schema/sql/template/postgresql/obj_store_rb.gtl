@@ -1,0 +1,48 @@
+/* drop/create OBJ_STORE_RB */
+drop table if exists "obj_store_rb${tableNamePostfix}" cascade;
+
+create table "obj_store_rb${tableNamePostfix}"
+(
+    "rb_id" numeric(16,0) not null,
+    "rb_date" timestamp(3),
+    "rb_user" varchar(64),
+    "tenant_id" numeric(7,0) not null,
+    "obj_def_id" varchar(128) not null,
+    "pg_no" numeric(2,0) not null,
+    "obj_id" varchar(64) not null,
+    "obj_ver" numeric(10,0) default 0 not null,
+    "obj_def_ver" numeric(10,0),
+    "status" char(1),
+    "obj_name" varchar(256),
+    "obj_desc" varchar(1024),
+    "cre_date" timestamp(3),
+    "up_date" timestamp(3),
+    "s_date" timestamp(3),
+    "e_date" timestamp(3),
+    "lock_user" varchar(64),
+    "cre_user" varchar(64),
+    "up_user" varchar(64)
+    <%columns.each {
+		switch (it.type) {
+        case "VARCHAR":
+    %>,"${it.prefix + it.no}" varchar(4000)
+    <%		break;
+	    case "DECIMAL":
+    %>,"${it.prefix + it.no}" numeric
+    <%		break;
+        case "TIMESTAMP":
+    %>,"${it.prefix + it.no}" timestamp(3)
+    <%		break;
+        case "DOUBLE":
+    %>,"${it.prefix + it.no}" double precision
+    <%		break;
+        default:
+			break;
+		}
+		if (it.indexType != "NONE") {
+    %>,"${it.prefix + it.no}_td" varchar(139)
+    <%	}
+	}%>)
+;
+
+create index "obj_store_rb${tableNamePostfix}_index1" on "obj_store_rb${tableNamePostfix}" ("tenant_id", "obj_def_id", "rb_id");

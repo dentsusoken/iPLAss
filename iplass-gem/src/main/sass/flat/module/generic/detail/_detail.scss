@@ -1,0 +1,464 @@
+//colors
+// $white: #fff;
+// $color_green_leaf_approx: #4c7607;
+// $color_alto_approx: #ddd;
+// $color_gallery_approx: #ededed;
+// $color_chicago_approx: #5a5a5a;
+// $color_venice_blue_approx: #115d85;
+// $red: #f00;
+// $color_quill_gray_approx: #d4d4d4;
+
+//urls
+// $url_gdd_1: url(../../../../images/gem/skin/flat/icon-add.png);
+// $url_gdd_2: url(../../../../images/gem/skin/flat/icon-delete.png);
+// $url_gdd_3: url(../../../../images/gem/skin/flat/icon-pencil.png);
+
+//@extend-elements
+//original selectors
+//#detailForm >div, #detailForm .formArchive >div
+%extend_gdd_1 {
+	display: block;
+	float: left;
+	width: 100%;
+}
+
+//original selectors
+//.tbl-section input[type=text], .tbl-section textarea
+%extend_gdd_2 {
+	border: 1px solid $color_alto_approx;
+	font-size: 1rem;
+	width: 100%;
+	padding: 2px 5px;
+	margin: 2px 0;
+	//Instead of the line below you could use @include box-sizing($bs)
+	box-sizing: border-box;
+}
+
+//original selectors
+//.add-btn, input[type=button].add-btn, .del-btn, input[type=button].del-btn
+%extend_gdd_3 {
+	display: inline-block;
+	text-align: right;
+	font-size: 1rem;
+	padding: 0 10px 0 30px;
+	min-width: 70px;
+	height: 27px;
+	line-height: 27px;
+	//Instead of the line below you could use @include box-sizing($bs)
+	box-sizing: border-box;
+	//Instead of the line below you could use @include transition($transition-1, $transition-2, $transition-3, $transition-4, $transition-5, $transition-6, $transition-7, $transition-8, $transition-9, $transition-10)
+	transition: background 300ms;
+	float: left;
+	border: 1px solid $color_alto_approx !important;
+	background: 10px 7px no-repeat transparent;
+}
+
+%extend_gdd_4 {
+	display: inline-block;
+	padding: 2px 0;
+	margin: 2px 15px 2px 0;
+}
+
+%extend_gdd_5 {
+	height: 25px;
+	width: calc(100% - 80px);
+	border: 0 !important;
+}
+
+#detailForm {
+	> div {
+		@extend %extend_gdd_1;
+	}
+	.formArchive > div {
+		@extend %extend_gdd_1;
+	}
+}
+.formArchive {
+	padding: 20px;
+	padding-bottom: 0;
+	margin-bottom: 20px;
+	//Instead of the line below you could use @include box-sizing($bs)
+	box-sizing: border-box;
+	background: $white;
+	border-top: 2px solid $color_green_leaf_approx;
+	h3 {
+		font-size: 1.42857rem;
+	}
+	> div {
+		.sechead {
+			display: block;
+			float: left;
+			width: 100%;
+			border-top: 1px solid $color_alto_approx;
+			padding-top: 20px;
+			position: relative;
+			cursor: pointer;
+			&.disclosure-close::after {
+				margin-top: 3px;
+				//Instead of the line below you could use @include transform($scale, $rotate, $transx, $transy, $skewx, $skewy, $originx, $originy)
+				transform: rotate(45deg);
+			}
+		}
+		.sechead::after {
+			content: '';
+			display: block;
+			height: 10px;
+			width: 10px;
+			position: absolute;
+			right: 4px;
+			margin-top: 6px;
+			//Instead of the line below you could use @include transform($scale, $rotate, $transx, $transy, $skewx, $skewy, $originx, $originy)
+			transform: rotate(-135deg);
+			border-right: 1px solid $color_venice_blue_approx;
+			border-bottom: 1px solid $color_venice_blue_approx;
+			//Instead of the line below you could use @include transition($transition-1, $transition-2, $transition-3, $transition-4, $transition-5, $transition-6, $transition-7, $transition-8, $transition-9, $transition-10)
+			transition: transform 300ms;
+		}
+		&:first-child .sechead {
+			border-top: none;
+			margin-top: 0;
+			padding-top: 0;
+		}
+	}
+	.upload-button {
+		width: 100%;
+		margin: 2px 0;
+	}
+	p.error {
+		clear: both;
+		padding-top: 10px;
+		color: $red;
+		span.error {
+			padding-bottom: 0;
+		}
+	}
+}
+.tbl-section {
+	margin-bottom: 20px;
+	.explanation {
+		display: inline-block;
+		width: 100%;
+		font-size: 0.85714rem;
+		color: $color_chicago_approx;
+		margin-top: 8px;
+	  margin-bottom: 2px;
+	}
+	.box-scroll {
+		overflow-x: auto;
+		margin-bottom: 10px;
+		margin: 2px 0;
+		padding: 2px 0;
+	}
+	input[type=text] {
+		@extend %extend_gdd_2;
+	}
+	textarea {
+		@extend %extend_gdd_2;
+	}
+	select {
+		width: 100%;
+		height: 24px;
+		margin: 2px 0;
+	}
+	select[multiple] {
+		height: auto;
+		padding: 2px 5px;
+	}
+	th.section-data {
+		padding: 12px 10px;
+		border: 1px solid $color_alto_approx;
+		width: 180px;
+		background: $color_gallery_approx;
+		border-right: 0;
+    vertical-align: top;
+	}
+	td.section-data {
+		padding: 12px 10px;
+		border: 1px solid $color_alto_approx;
+		border-left: 0;
+		.list-add {
+			input[type=text] {
+				margin: 0;
+			}
+			input[type=password] {
+				margin: 0;
+			}
+			textarea {
+				margin: 0;
+			}
+		}
+	}
+	.cke {
+		margin: 2px 0;
+	}
+}
+.tbl-reference {
+	th {
+		width: 180px;
+		background: $color_gallery_approx;
+		border: 1px solid $color_alto_approx;
+		padding: 10px;
+		vertical-align: top;
+	}
+	td {
+		border: 1px solid $color_alto_approx;
+		padding: 10px;
+		vertical-align: top;
+	}
+  .sel-btn {
+    padding: 5px 10px;
+    min-width: 70px;
+  }
+  .ins-btn {
+    padding: 5px 10px;
+    min-width: 70px;
+  }
+	.delButton {
+		width: 80px;
+		margin: 2px 0;
+	}
+	.colLink {
+		width: 60px;
+	}
+	.orderCol {
+		width: 20px;
+	}
+	.order-icon {
+		display: block;
+		cursor: pointer;
+		text-align: center;
+	}
+	tr {
+		&:nth-child(2) .order-icon.up-icon {
+			display: none;
+		}
+		&:last-child .order-icon.down-icon {
+			display: none;
+		}
+	}
+	&.view tr {
+		&:nth-child(1) .order-icon.up-icon {
+			display: none;
+		}
+		&:nth-child(2) .order-icon.up-icon {
+			display: block;
+		}
+	}
+	.timestamppicker-field {
+		white-space: nowrap;
+	}
+}
+.detail_edit {
+	.tbl-section {
+		td.section-data {
+			padding: 8px 10px;
+		}
+		.data-label {
+			display: inline-block;
+			padding: 2px 0;
+			margin: 2px 0;
+		}
+	}
+}
+.list-add {
+	border: 1px solid $color_alto_approx;
+	margin-top: 2px;
+	margin-bottom: 8px;
+	> a {
+		line-height: 25px;
+		padding-left: 5px;
+	}
+	input[type=text] {
+		@extend %extend_gdd_5;
+		&.datepicker-form-size-01 ~ .del-btn {
+			float: none;
+			margin-left: 10px;
+		}
+		&.datetimepicker-form-size-01 ~ .del-btn {
+			float: none;
+			margin-left: 10px;
+		}
+		&.timepicker-form-size-01 ~ .del-btn {
+			float: none;
+			margin-left: 10px;
+		}
+	}
+	input[type=password] {
+		@extend %extend_gdd_5;
+	}
+	input[type=button] {
+		float: right;
+		height: 25px;
+		line-height: 25px;
+		border: 0 !important;
+	}
+	.cke {
+	  margin-top: 0;
+	}
+	&.picker-list {
+		border: none;
+		.del-btn {
+			border: 1px solid $color_alto_approx !important;
+		}
+		input {
+			&.datepicker-form-size-01 {
+				border: 1px solid $color_alto_approx !important;
+			}
+			&.datepicker-form-size-02 {
+				border: 1px solid $color_alto_approx !important;
+			}
+			&.datetimepicker-form-size-01 {
+				border: 1px solid $color_alto_approx !important;
+			}
+			&.datetimepicker-form-size-02 {
+				border: 1px solid $color_alto_approx !important;
+			}
+			&.timepicker-form-size-01 {
+				border: 1px solid $color_alto_approx !important;
+			}
+			&.timepicker-form-size-02 {
+				border: 1px solid $color_alto_approx !important;
+			}
+		}
+	}
+	textarea ~ input[type=button] {
+		float: none;
+		border: inherit !important;
+		margin: 2px 0;
+	}
+	.cke ~ input[type=button] {
+		float: none;
+		border: inherit !important;
+		margin: 2px 0;
+	}
+}
+.add-btn {
+	@extend %extend_gdd_3;
+	background-image: $url_gdd_1;
+	&:hover {
+		text-decoration: none;
+		background-color: $color_gallery_approx;
+	}
+}
+input[type=button] {
+	&.add-btn {
+		@extend %extend_gdd_3;
+		margin: 2px 0;
+		background-image: $url_gdd_1;
+		&:hover {
+			text-decoration: none;
+			background-color: $color_gallery_approx;
+		}
+	}
+	&.del-btn {
+		@extend %extend_gdd_3;
+		background-image: $url_gdd_2;
+		&:hover {
+			text-decoration: none;
+			background-color: $color_gallery_approx;
+		}
+	}
+}
+.del-btn {
+	@extend %extend_gdd_3;
+	background-image: $url_gdd_2;
+	&:hover {
+		text-decoration: none;
+		background-color: $color_gallery_approx;
+	}
+}
+.binaryDelete {
+	float: none;
+}
+.list-bin {
+	margin-bottom: 10px;
+	&:last-child {
+		margin-bottom: 0;
+	}
+	p {
+		overflow-x: auto;
+		overflow-y: hidden;
+	}
+}
+.mr-btn {
+	display: block;
+	float: left;
+	margin: 15px 0;
+	input[type=button] {
+		display: block;
+		float: left;
+		margin-left: 10px;
+		&:first-child {
+			margin-left: 0;
+		}
+	}
+}
+.massReference {
+	display: block;
+	float: left;
+	width: 100%;
+	margin-bottom: 20px;
+	.mr-btn {
+		margin-bottom: 0;
+	}
+	.result-nav {
+		margin-bottom: 20px;
+		&:last-child {
+			margin-top: 20px;
+			margin-bottom: 0;
+		}
+	}
+}
+span.error {
+	padding-bottom: 10px;
+	color: $red;
+	font-size: 1rem;
+	display: block;
+}
+a + .binaryDelete {
+	margin-left: 10px;
+}
+.list-check-01 li {
+	@extend %extend_gdd_4;
+}
+.list-radio-01 li {
+	@extend %extend_gdd_4;
+}
+.ui-jqgrid .ui-jqgrid-bdiv td.detail-links a {
+	&.lnk-mr-01 {
+		display: inline-block;
+		position: relative;
+		vertical-align: middle;
+		height: 20px;
+		width: 20px;
+		overflow: hidden;
+		font-size: 0;
+		color: $color_gallery_approx;
+		background: $color_gallery_approx;
+		//Instead of the line below you could use @include border-radius($radius, $vertical-radius)
+		border-radius: 50%;
+		//Instead of the line below you could use @include transition($transition-1, $transition-2, $transition-3, $transition-4, $transition-5, $transition-6, $transition-7, $transition-8, $transition-9, $transition-10)
+		transition: background 300ms;
+		&:hover {
+			background: $color_quill_gray_approx;
+		}
+	}
+	&.lnk-mr-01::before {
+		content: '';
+		display: block;
+		position: absolute;
+		top: 0;
+		left: 0;
+		height: 20px;
+		width: 20px;
+		background: $url_gdd_3 center center no-repeat;
+	}
+}
+.tbl-version {
+	margin-bottom: 20px;
+	td {
+		border: 1px solid $color_alto_approx;
+		padding: 10px;
+		vertical-align: top;
+	}
+}

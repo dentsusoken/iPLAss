@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!DOCTYPE serviceDefinition>
+<serviceDefinition>
+	<inherits>/mtp-core-service-config.xml</inherits>
+
+	<!-- Rdb Connection Settings -->
+	<service>
+		<interface>org.iplass.mtp.impl.rdb.connection.ConnectionFactory</interface>
+		<!-- Driver Managed Connection -->
+		<!--
+		<class>org.iplass.mtp.impl.rdb.connection.DriverManagerConnectionFactory</class>
+		<property name="url" value="jdbc:postgresql://[host]:[port]/[database]" />
+		<property name="user" value="[user]" />
+		<property name="password" value="[password]" />
+		<property name="driver" value="org.postgresql.Driver" />
+		-->
+
+		<!-- DataSource Connection -->
+		<!--
+		<class>org.iplass.mtp.impl.rdb.connection.DataSourceConnectionFactory</class>
+		<property name="dataSourceName" value="java:comp/env/jdbc/defaultDS" />
+		-->
+		<property name="warnLogThreshold" value="0" />
+	</service>
+	<service>
+		<interface>org.iplass.mtp.impl.rdb.adapter.RdbAdapterService</interface>
+
+		<!-- for postgresql -->
+		<property name="adapter" class="org.iplass.mtp.impl.rdb.postgresql.PostgreSQLRdbAdapter" inherit="false">
+			<property name="lockTimeout" value="0" />
+		</property>
+	</service>
+
+	<!-- Lob Store Settings -->
+	<service>
+		<interface>org.iplass.mtp.impl.lob.LobStoreService</interface>
+		<!-- We recommend to use FileLobStore because postgresql jdbc driver cannot handle binary data by streaming. -->
+		<property name="binaryStore" class="org.iplass.mtp.impl.lob.lobstore.file.FileLobStore">
+			<property name="rootDir" value="[setYourBinaryFileStoreRootPath]" />
+			<property name="overwriteFile" value="false" />
+		</property>
+	</service>
+
+</serviceDefinition>

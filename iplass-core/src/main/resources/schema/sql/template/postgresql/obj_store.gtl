@@ -1,0 +1,52 @@
+/* drop/create OBJ_STORE */
+drop table if exists "obj_store${tableNamePostfix}" cascade;
+
+create table "obj_store${tableNamePostfix}"
+(
+    "tenant_id" numeric(7,0) not null,
+    "obj_def_id" varchar(128) not null,
+    "pg_no" numeric(2,0) not null,
+    "obj_id" varchar(64) not null,
+    "obj_ver" numeric(10,0) default 0 not null,
+    "obj_def_ver" numeric(10,0),
+    "status" char(1),
+    "obj_name" varchar(256),
+    "obj_desc" varchar(1024),
+    "cre_date" timestamp(3),
+    "up_date" timestamp(3),
+    "s_date" timestamp(3),
+    "e_date" timestamp(3),
+    "lock_user" varchar(64),
+    "cre_user" varchar(64),
+    "up_user" varchar(64)
+    <%columns.each {
+		switch (it.type) {
+        case "VARCHAR":
+    %>,"${it.prefix + it.no}" varchar(4000)
+    <%		break;
+	    case "DECIMAL":
+    %>,"${it.prefix + it.no}" numeric
+    <%		break;
+        case "TIMESTAMP":
+    %>,"${it.prefix + it.no}" timestamp(3)
+    <%		break;
+        case "DOUBLE":
+    %>,"${it.prefix + it.no}" double precision
+    <%		break;
+        default:
+			break;
+		}
+		if (it.indexType != "NONE") {
+    %>,"${it.prefix + it.no}_td" varchar(139)
+    <%	}
+	}%>,constraint "obj_store${tableNamePostfix}_pk" primary key ("tenant_id", "obj_def_id", "obj_id", "obj_ver", "pg_no")
+)
+;
+
+<%columns.each {
+	if ("INDEX" == it.indexType) {
+%>create index "obj_store${tableNamePostfix}_${it.prefix}index_${it.no}" on "obj_store${tableNamePostfix}" ("${it.prefix + it.no}_td", "${it.prefix + it.no}");
+<%	} else if ("UNIQUE_INDEX" == it.indexType) {
+%>create unique index "obj_store${tableNamePostfix}_${it.prefix}unique_${it.no}" on "obj_store${tableNamePostfix}" ("${it.prefix + it.no}_td", "${it.prefix + it.no}");
+<%	}
+}%>

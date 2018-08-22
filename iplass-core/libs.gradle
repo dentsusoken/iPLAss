@@ -1,0 +1,79 @@
+dependencies {
+
+	//apache commons
+	compile 'commons-io:commons-io:2.6'
+	compile(group: 'commons-beanutils', name: 'commons-beanutils', version:'1.9.3') {
+		//use jcl-over-slf4j
+		exclude(group: 'commons-logging', module: 'commons-logging')
+	}
+	compile 'org.apache.commons:commons-lang3:3.7'
+	compile 'org.apache.commons:commons-text:1.2'
+	compile 'commons-codec:commons-codec:1.11'
+
+	//apache http clients
+	compile(group: 'org.apache.httpcomponents', name: 'httpmime', version:'4.5.2') {
+		//use jcl-over-slf4j
+		exclude(group: 'commons-logging', module: 'commons-logging')
+	}
+
+	//lucene
+	compile(group: 'org.apache.lucene', name: 'lucene-queryparser', version:'7.4.0') {
+		//TODO 必要？？
+		exclude(group: 'org.apache.lucene', module: 'lucene-queries')
+		//TODO 必要？？
+		exclude(group: 'org.apache.lucene', module: 'lucene-sandbox')
+	}
+	compile 'org.apache.lucene:lucene-analyzers-kuromoji:7.4.0'
+	runtime 'org.apache.lucene:lucene-analyzers-smartcn:7.4.0'
+	runtime 'org.apache.lucene:lucene-backward-codecs:7.4.0'
+	runtime(group: 'org.apache.lucene', name: 'lucene-highlighter', version:'7.4.0') {
+		//TODO 必要？？
+		exclude(group: 'org.apache.lucene', module: 'lucene-join')
+		//TODO 必要？？
+		exclude(group: 'org.apache.lucene', module: 'lucene-queries')
+		//TODO 必要？？
+		exclude(group: 'org.apache.lucene', module: 'lucene-memory')
+	}
+
+	//tika(依存関係多いので明示的に指定する)
+	compile group: 'org.apache.tika', name: 'tika-core', version: '1.14', transitive : false
+	compile group: 'org.apache.tika', name: 'tika-parsers', version: '1.14', transitive : false
+	compile group: 'org.apache.commons', name: 'commons-compress', version: '1.12', transitive : false
+	compile group: 'org.apache.pdfbox', name: 'jempbox', version: '1.8.12', transitive : false
+	compile group: 'org.json', name: 'json', version: '20140107', transitive : false
+	compile group: 'org.apache.pdfbox', name: 'pdfbox', version: '2.0.3', transitive : false
+	compile group: 'org.apache.pdfbox', name: 'fontbox', version: '2.0.3', transitive : false
+	compile group: 'org.apache.pdfbox', name: 'pdfbox-tools', version: '2.0.3', transitive : false
+	compile group: 'org.apache.poi', name: 'poi', version: '3.16'
+	compile group: 'org.apache.poi', name: 'poi-scratchpad', version: '3.16'
+	compile(group: 'org.apache.poi', name: 'poi-ooxml', version:'3.16') {
+		//java8 include stax-api
+		exclude(group: 'stax', module: 'stax-api')
+	}
+	compile group: 'org.ccil.cowan.tagsoup', name: 'tagsoup', version: '1.2.1'
+
+	//groovy
+	compile 'org.codehaus.groovy:groovy-all:2.4.10:indy'//classifier:'indy'
+
+	//supercsv
+	compile 'net.sf.supercsv:super-csv:2.4.0'
+
+	// caffeine
+	compile 'com.github.ben-manes.caffeine:caffeine:2.6.2'
+
+	//mapdb
+	compile 'org.mapdb:mapdb:1.0.9'
+
+	//slf4j and logback
+	compile 'org.slf4j:slf4j-api:1.7.21'
+	runtime 'org.slf4j:jcl-over-slf4j:1.7.21'
+	runtime 'ch.qos.logback:logback-classic:1.1.7'
+
+	//jackson
+	compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.8.9'
+	compile group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: '2.8.9'
+	
+	//hibernate validator
+	compile group: 'org.hibernate', name: 'hibernate-validator', version: '5.4.1.Final'
+
+}

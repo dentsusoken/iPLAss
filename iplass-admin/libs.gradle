@@ -1,0 +1,25 @@
+ext {
+	gwtVersion = "2.8.2"
+}
+
+dependencies {
+	//compile -> server（およびclientでも）で使うjar
+	//compileOnly -> clientのみで使うjar
+	//runtime -> serverのみで利用かつcompile時に必要なし
+
+	compile 'com.googlecode.gwtupload:gwtupload:1.0.3'
+	compile 'org.webjars.npm:ace-builds:1.2.9'
+
+	compileOnly "com.google.gwt:gwt-user:${gwtVersion}"
+	compileOnly "com.google.gwt:gwt-dev:${gwtVersion}"
+	//smart gwt has no public maven repository
+	compileOnly fileTree(rootProject.ext.localLibDir) {
+		include 'smartgwt/**'
+	}
+	compileOnly 'com.google.guava:guava-gwt:21.0'
+
+	runtime "com.google.gwt:gwt-servlet:${gwtVersion}"
+	runtime group: 'com.google.code.gson', name: 'gson', version: '2.6.2'
+//	runtime group: 'javax.validation', name: 'validation-api', version: '1.0.0.GA'
+
+}

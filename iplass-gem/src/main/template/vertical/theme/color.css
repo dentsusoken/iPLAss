@@ -1,0 +1,73 @@
+/* replace keyword to color
+$COLOR_IMAGE_COLOR: #66aced
+$COLOR_WIDJET_ACTIVE_BACKGROUND: #ffffff
+$COLOR_WIDJET_ACTIVE_BORDER: #f5b8b8
+$COLOR_WIDJET_ACTIVE_COLOR: #2563b9
+$COLOR_WIDJET_HIGHLIGHT_BACKGROUND: #fce6e6
+$COLOR_WIDJET_HIGHLIGHT_BORDER: #d5d5d5
+$COLOR_BASE_COLOR: #1a4580
+$COLOR_CONTAINER_BORDER: #2563b9
+$COLOR_MENU_BACKGOUND_GRADIENT: #397cd7
+$COLOR_MENU_BORDER: #ffffff
+$COLOR_MENU_COLOR: #ffffff
+$COLOR_INPUT_BORDER: #617897
+$COLOR_NAME: blue
+$URL_SUBMIT_BACKGROUND: ../../../../../../images/gem/skin/vertical/theme/blue/btn-submit-01.png
+$URL_SUBMIT_BACKGROUND_HOVER: ../../../../../../images/gem/skin/vertical/theme/blue/btn-submit-01_o.png
+*/
+
+@charset "UTF-8";
+
+.ui-state-active, .ui-widget-content .ui-state-active, .ui-widget-header .ui-state-active, #ui-datepicker-div .ui-state-hover, #ui-datepicker-div .ui-widget-content .ui-state-hover, #ui-datepicker-div .ui-widget-content .ui-state-focus, #ui-datepicker-div .ui-state-focus {
+  background-color: $COLOR_WIDJET_ACTIVE_BACKGROUND;
+  background-image: none;
+  border-color: $COLOR_WIDJET_ACTIVE_BORDER;
+  color: $COLOR_WIDJET_ACTIVE_COLOR;
+}
+
+.ui-widget-content .ui-state-highlight, .ui-widget-header .ui-state-highlight, .ui-state-highlight {
+  background-color: $COLOR_WIDJET_HIGHLIGHT_BACKGROUND;
+  background-image: none;
+  border-color: $COLOR_WIDJET_HIGHLIGHT_BORDER;
+}
+
+#header-container {
+  border-top: 5px solid $COLOR_CONTAINER_BORDER;
+}
+
+#nav-menu li.current a {
+  border: none;
+  border-bottom: 1px solid $COLOR_MENU_BORDER;
+  border-right: 1px solid $COLOR_MENU_BORDER;
+  color: $COLOR_MENU_COLOR;
+  background: $COLOR_BASE_COLOR;
+  background: linear-gradient($COLOR_BASE_COLOR 0, $COLOR_MENU_BACKGOUND_GRADIENT 100%);
+}
+
+#header #user-nav .search-submit {
+  background: url(../../../../../../images/gem/skin/vertical/theme/blue/btn-submit-01.png) no-repeat left top;
+}
+#header #user-nav .search-submit:hover {
+  background: url(../../../../../../images/gem/skin/vertical/theme/blue/btn-submit-01_o.png) no-repeat left top;
+}
+
+.hgroup-01 svg {
+  color: $COLOR_IMAGE_COLOR;
+}
+
+.tabList .tab-menu li.current a {
+  background: $COLOR_BASE_COLOR;
+  background: linear-gradient($COLOR_BASE_COLOR 0, $COLOR_MENU_BACKGOUND_GRADIENT 100%) repeat 0 0;
+  color: $COLOR_MENU_COLOR;
+}
+
+input.gr-btn {
+  border: 1px solid $COLOR_INPUT_BORDER;
+  background: $COLOR_BASE_COLOR;
+  background: linear-gradient($COLOR_MENU_BACKGOUND_GRADIENT 0, $COLOR_BASE_COLOR 100%);
+}
+input.gr-btn:hover {
+  border: 1px solid $COLOR_INPUT_BORDER;
+  background: $COLOR_BASE_COLOR;
+  background: linear-gradient($COLOR_MENU_BACKGOUND_GRADIENT 0, $COLOR_BASE_COLOR 100%);
+}

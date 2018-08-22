@@ -1,0 +1,102 @@
+//colors -> color/_colors.scss
+// $color_quill_gray_approx: #d5d5d5;
+// $color_gray_nurse_approx: #eaeaea;
+// $color_black_haze_approx: #f6f6f6;
+// $color_pattens_blue_approx: #dfeffc;
+
+//@extend-elements
+//original selectors
+//.tbl-trash thead th, .tbl-trash thead td
+%extend_st1 {
+	padding: 9px 7px;
+	border-top: 1px solid $color_quill_gray_approx;
+	border-left: 1px solid $color_quill_gray_approx;
+	background: $color_gray_nurse_approx;
+	text-align: center;
+	vertical-align: middle;
+}
+
+//original selectors
+//.tbl-trash tbody th, .tbl-trash tbody td
+%extend_st2 {
+	padding: 9px 7px;
+	vertical-align: middle;
+	padding: 5px;
+	text-align: left;
+}
+
+//ゴミ箱
+.tbl-trash {
+	margin-bottom: 20px;
+	border-top: 1px solid $color_quill_gray_approx;
+	border-right: 1px solid $color_quill_gray_approx;
+	border-bottom: 1px solid $color_quill_gray_approx;
+	width: 100%;
+	border-left: 1px solid $color_quill_gray_approx;
+	.col1 {
+		width: 46px;
+	}
+	.col3 {
+		width: 180px;
+	}
+	thead {
+		th {
+			@extend %extend_st1;
+			padding: 5px;
+		}
+		td {
+			@extend %extend_st1;
+		}
+	}
+	tbody {
+		th {
+			border-top: 1px dotted $color_quill_gray_approx;
+			border-left: 1px solid $color_quill_gray_approx;
+			background: $color_black_haze_approx;
+			text-align: center;
+			border-top: none;
+			@extend %extend_st2;
+		}
+		td {
+			border-top: 1px dotted $color_quill_gray_approx;
+			border-left: 1px solid $color_quill_gray_approx;
+			text-align: left;
+			border-top: none;
+			@extend %extend_st2;
+			&.total {
+				background: $color_black_haze_approx;
+			}
+		}
+		.all td {
+			background: $color_black_haze_approx;
+			&.total {
+				background: $color_gray_nurse_approx;
+			}
+		}
+		tr td:first-child {
+			border-right: 1px solid $color_quill_gray_approx;
+		}
+	}
+}
+.selectCheck tr {
+	&:hover {
+		th {
+			background-color: $color_pattens_blue_approx !important;
+			cursor: pointer;
+		}
+		td {
+			background-color: $color_pattens_blue_approx !important;
+			cursor: pointer;
+		}
+	}
+	&.selected {
+		th {
+			background-color: $color_pattens_blue_approx !important;
+			cursor: pointer;
+		}
+		td {
+			background-color: $color_pattens_blue_approx !important;
+			cursor: pointer;
+		}
+	}
+}

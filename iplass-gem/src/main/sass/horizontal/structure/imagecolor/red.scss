@@ -1,0 +1,43 @@
+/*
+ * Copyright (C) 2018 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
+ *
+ * Unless you have purchased a commercial license,
+ * the following license terms apply:
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
+//colors
+$COLOR_IMAGE_COLOR: #ed6f6b;
+$COLOR_LINK_COLOR: #f7c0be;
+$COLOR_NAVDETAIL_BORDER_BOTTOM: #ea9a97;
+$COLOR_NAVDETAIL_BACKGROUND: #f2bdbb;
+$COLOR_NAVDETAIL_BACKGROUND_LINER_GRADIENT1: #f2bdbb;
+$COLOR_NAVDETAIL_BACKGROUND_LINER_GRADIENT2: #fad6d4;
+$COLOR_NAVDETAIL_ITEM_HOVER_BACKGROUND: #fff2f1;
+$COLOR_NAVDETAIL_LINK_HOVER_BACKGROUND: #a43b38;
+$COLOR_NAVDETAIL_LINK_HOVER_BACKGROUND_LINER_GRADIENT: #c84944;
+$COLOR_NAVWRAP_HOVER_BACKGROUND: #a43b38;
+$COLOR_NAVWRAP_LIST_BACKGROUND: #fff2f1;
+$COLOR_NAVWRAP_ITEM_HOVER_BACKGROUND: #f2bdbb;
+$COLOR_MENU_NODE_HOVER_BORDER: #f3a4a1;
+$COLOR_MENU_NODE_HOVER_BACKGROUND: #fff2f1;
+
+//urls
+$url_imagecolor_01: url(../../../../../images/gem/skin/horizontal/bg-navred-01.png);
+$url_imagecolor_02: url(../../../../../images/gem/skin/horizontal/icon-navred-02.png);
+
+$color_name: red;
+
+@import "imagecolor";

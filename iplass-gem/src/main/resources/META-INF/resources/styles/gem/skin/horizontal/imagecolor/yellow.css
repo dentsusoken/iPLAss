@@ -1,0 +1,82 @@
+/*
+ * Copyright (C) 2018 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
+ *
+ * Unless you have purchased a commercial license,
+ * the following license terms apply:
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+.hgroup-01 span.imgclr_yellow svg {
+  color: #f0bb4a; }
+
+#nav.sub-popup > ul.nav-wrap > li.bg-yellow.hover > p > a {
+  color: #f7dfab; }
+
+#nav.sub-popup > ul.nav-wrap > li.bg-yellow.hover > p > span.curicon {
+  background: url(../../../../../images/gem/skin/horizontal/bg-navyellow-01.png) no-repeat; }
+
+#nav.sub-popup > ul.nav-wrap > li.bg-yellow.selected > p > a {
+  color: #f7dfab; }
+
+#nav.sub-popup > ul.nav-wrap > li.bg-yellow > ul.nav-detail {
+  border-bottom: 1px solid #e8ca89;
+  background: #e8ca89;
+  background: linear-gradient(#e8ca89 0, #f7e5bc 100%); }
+  #nav.sub-popup > ul.nav-wrap > li.bg-yellow > ul.nav-detail > li > a:hover {
+    background: #b08427;
+    background: linear-gradient(#b08427 0, #d5a642 100%); }
+  #nav.sub-popup > ul.nav-wrap > li.bg-yellow > ul.nav-detail > li.selected > a {
+    background: #b08427;
+    background: linear-gradient(#b08427 0, #d5a642 100%); }
+  #nav.sub-popup > ul.nav-wrap > li.bg-yellow > ul.nav-detail > li.subMenuRoot > ul.subMenuList li:hover {
+    background: #fff6e4; }
+  #nav.sub-popup > ul.nav-wrap > li.bg-yellow > ul.nav-detail > li.subMenuRoot > ul.subMenuList li.selected {
+    background: #fff6e4; }
+  #nav.sub-popup > ul.nav-wrap > li.bg-yellow > ul.nav-detail > li.subMenuRoot > ul.subMenuList li.menu-action.selected {
+    background: url(../../../../../images/gem/skin/horizontal/icon-navyellow-02.png) no-repeat 7px 7px #fff6e4; }
+  #nav.sub-popup > ul.nav-wrap > li.bg-yellow > ul.nav-detail > li.subMenuRoot > ul.subMenuList li.menu-entity.selected {
+    background: url(../../../../../images/gem/skin/horizontal/icon-navyellow-02.png) no-repeat 7px 7px #fff6e4; }
+
+#nav.sub-droplist > ul.nav-wrap > li.bg-yellow ul {
+  background: #fff6e4; }
+  #nav.sub-droplist > ul.nav-wrap > li.bg-yellow ul > li:hover {
+    background: #e8ca89; }
+  #nav.sub-droplist > ul.nav-wrap > li.bg-yellow ul > li.selected {
+    background: #e8ca89; }
+  #nav.sub-droplist > ul.nav-wrap > li.bg-yellow ul > li.menu-action.selected {
+    background: url(../../../../../images/gem/skin/horizontal/icon-navyellow-02.png) no-repeat scroll 7px 7px #e8ca89; }
+  #nav.sub-droplist > ul.nav-wrap > li.bg-yellow ul > li.menu-entity.selected {
+    background: url(../../../../../images/gem/skin/horizontal/icon-navyellow-02.png) no-repeat scroll 7px 7px #e8ca89; }
+
+#nav.sub-droplist > ul.nav-wrap > li.bg-yellow:hover > p {
+  background: #b08427; }
+
+#nav.sub-droplist > ul.nav-wrap > li.bg-yellow.selected > p {
+  background: #b08427; }
+
+#nav.sub-droplist > ul.nav-wrap > li.bg-yellow.menu-action.selected > p {
+  background: url(../../../../../images/gem/skin/horizontal/icon-navyellow-02.png) no-repeat scroll 2px 8px #b08427; }
+
+#nav.sub-droplist > ul.nav-wrap > li.bg-yellow.menu-entity.selected > p {
+  background: url(../../../../../images/gem/skin/horizontal/icon-navyellow-02.png) no-repeat scroll 2px 8px #b08427; }
+
+#nav.sub-droplist > ul.nav-wrap > li.bg-yellow.menu-node.hover > p {
+  background: #fff6e4;
+  border-color: #f0bf58; }
+
+#nav.sub-droplist > ul.nav-wrap > li.bg-yellow.menu-node.hover > ul {
+  border-color: #f0bf58; }
+
+#nav.sub-droplist > ul.nav-wrap li.bg-yellow ul li:hover > ul {
+  border-color: #f0bf58; }

@@ -1,0 +1,444 @@
+<%--
+ Copyright (C) 2013 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
+
+ Unless you have purchased a commercial license,
+ the following license terms apply:
+
+ This program is free software: you can redistribute it and/or modify
+ it under the terms of the GNU Affero General Public License as
+ published by the Free Software Foundation, either version 3 of the
+ License, or (at your option) any later version.
+
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU Affero General Public License for more details.
+
+ You should have received a copy of the GNU Affero General Public License
+ along with this program. If not, see <https://www.gnu.org/licenses/>.
+ --%>
+
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="m" uri="http://iplass.org/tags/mtp"%>
+<%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8" trimDirectiveWhitespaces="true"%>
+<%@ page import="java.util.ArrayList" %>
+<%@ page import="java.util.Arrays" %>
+<%@ page import="java.util.List" %>
+<%@ page import="org.iplass.mtp.auth.AuthContext"%>
+<%@ page import="org.iplass.mtp.entity.permission.EntityPropertyPermission"%>
+<%@ page import="org.iplass.mtp.entity.Entity"%>
+<%@ page import="org.iplass.mtp.entity.definition.PropertyDefinition"%>
+<%@ page import="org.iplass.mtp.util.StringUtil"%>
+<%@ page import="org.iplass.mtp.view.generic.EntityViewUtil"%>
+<%@ page import="org.iplass.mtp.view.generic.editor.EditorValue" %>
+<%@ page import="org.iplass.mtp.view.generic.editor.StringPropertyEditor" %>
+<%@ page import="org.iplass.mtp.view.generic.editor.StringPropertyEditor.StringDisplayType"%>
+<%@ page import="org.iplass.mtp.web.template.TemplateUtil"%>
+<%@ page import="org.iplass.gem.command.Constants" %>
+<%@ page import="org.iplass.gem.command.GemResourceBundleUtil" %>
+<%@ page import="org.iplass.gem.command.ViewUtil" %>
+
+<%!
+	EditorValue getValue(StringPropertyEditor editor, String value) {
+		if (value == null) return null;
+		for (EditorValue tmp : editor.getValues()) {
+			if (value.equals(tmp.getValue())) {
+				return tmp;
+			}
+		}
+		return null;
+	}
+	List<EditorValue> getValues(StringPropertyEditor editor, Object value, PropertyDefinition pd) {
+		List<EditorValue> values = new ArrayList<EditorValue>();
+		if (pd.getMultiplicity() != 1){
+			String[] array = value instanceof String[] ? (String[]) value : null;
+			if (array != null) {
+				for (String tmp : array) {
+					EditorValue ev = getValue(editor, tmp);
+					if (ev != null) {
+						values.add(ev);
+					}
+				}
+			}
+		} else {
+			String tmp = value instanceof String ? (String) value : null;
+			EditorValue ev = getValue(editor, tmp);
+			if (ev != null) values.add(ev);
+		}
+		return values;
+	}
+	Object getDefaultValue(StringPropertyEditor editor, PropertyDefinition pd) {
+		String defaultValue = editor.getDefaultValue();
+		if (defaultValue != null) {
+			if (pd.getMultiplicity() != 1) {
+				String[] vals = defaultValue.split(",");
+				int length = vals.length > pd.getMultiplicity() ? pd.getMultiplicity() : vals.length;
+				String[] ret = new String[length];
+				for (int i = 0; i < length; i++) {
+					ret[i] = vals[i];
+				}
+				return ret;
+			} else {
+				return defaultValue;
+			}
+		}
+		return null;
+	}
+%>
+<%
+	StringPropertyEditor editor = (StringPropertyEditor) request.getAttribute(Constants.EDITOR_EDITOR);
+
+	Entity entity = request.getAttribute(Constants.ENTITY_DATA) instanceof Entity ? (Entity) request.getAttribute(Constants.ENTITY_DATA) : null;
+	Object propValue = request.getAttribute(Constants.EDITOR_PROP_VALUE);
+
+	String defName = (String)request.getAttribute(Constants.DEF_NAME);
+	String rootDefName = (String)request.getAttribute(Constants.ROOT_DEF_NAME);
+	PropertyDefinition pd = (PropertyDefinition) request.getAttribute(Constants.EDITOR_PROPERTY_DEFINITION);
+	String scriptKey = (String)request.getAttribute(Constants.SECTION_SCRIPT_KEY);
+	String execType = (String) request.getAttribute(Constants.EXEC_TYPE);
+	Integer colNum = (Integer) request.getAttribute(Constants.COL_NUM);
+	Boolean nest = (Boolean) request.getAttribute(Constants.EDITOR_REF_NEST);
+	Boolean nestDummyRow = (Boolean) request.getAttribute(Constants.EDITOR_REF_NEST_DUMMY_ROW);
+
+	Boolean isVirtual = (Boolean) request.getAttribute(Constants.IS_VIRTUAL);
+	if (isVirtual == null) isVirtual = false;
+
+	boolean isInsert = Constants.EXEC_TYPE_INSERT.equals(execType);
+	String propName = editor.getPropertyName();
+	String escapedPropName = StringUtil.escapeJavaScript(propName);
+	AuthContext auth = AuthContext.getCurrentContext();
+	boolean allowedContent = editor.isAllowedContent();
+	boolean isEditable = true;
+	if (isVirtual) {
+		isEditable = true;//仮想プロパティは権限チェック要らない
+	} else {
+		if(isInsert) {
+			isEditable = auth.checkPermission(new EntityPropertyPermission(defName, pd.getName(), EntityPropertyPermission.Action.CREATE));
+		} else {
+			isEditable = auth.checkPermission(new EntityPropertyPermission(defName, pd.getName(), EntityPropertyPermission.Action.UPDATE));
+		}
+	}
+	boolean updatable = ((pd == null || pd.isUpdatable()) || isInsert) && isEditable;
+	if (isInsert && isEditable && propValue == null) propValue = getDefaultValue(editor, pd);
+
+	boolean isMultiple = pd.getMultiplicity() != 1;
+
+	String pleaseSelectLabel = "";
+	if (ViewUtil.isShowPulldownPleaseSelectLabel()) {
+		pleaseSelectLabel = GemResourceBundleUtil.resourceString("generic.editor.string.StringPropertyEditor_Edit.pleaseSelect");
+	}
+
+	//カスタムスタイル
+	String customStyle = "";
+	if (StringUtil.isNotEmpty(editor.getInputCustomStyle())) {
+		customStyle = EntityViewUtil.getCustomStyle(rootDefName, scriptKey, editor.getInputCustomStyleScriptKey(), entity, propValue);
+	}
+
+	if (ViewUtil.isAutocompletionTarget()) {
+		request.setAttribute(Constants.AUTOCOMPLETION_EDITOR, editor);
+		request.setAttribute(Constants.AUTOCOMPLETION_SCRIPT_PATH, "/jsp/gem/generic/editor/string/StringPropertyAutocompletion.jsp");
+	}
+
+	//詳細編集
+	int length = 0;
+	if (editor.getDisplayType() != StringDisplayType.SELECT) {
+		//選択型以外
+
+		String cls = "form-size-01 inpbr";
+		if (nest != null && nest) {
+			//cls = "form-size-08 inpbr";
+		}
+		String maxlength = "";
+		if (editor.getMaxlength() > 0) {
+			maxlength = " maxlength=" + editor.getMaxlength();
+		}
+
+		if (editor.getDisplayType() == StringDisplayType.LABEL || !updatable) {
+			//ラベルor変更不可
+			request.setAttribute(Constants.OUTPUT_HIDDEN, true);
+%>
+<jsp:include page="StringPropertyEditor_View.jsp"></jsp:include>
+<%
+			request.removeAttribute(Constants.OUTPUT_HIDDEN);
+		} else {
+			if (isMultiple) {
+				//複数
+				String ulId = "ul_" + propName;
+				String dummyRowId = "id_li_" + propName + "Dummmy";
+				String selector = null;
+				if (editor.getDisplayType() == StringDisplayType.RICHTEXT && request.getAttribute(Constants.RICHTEXT_LIB_LOADED) == null) {
+					request.setAttribute(Constants.RICHTEXT_LIB_LOADED, true);
+%>
+<%@include file="../../../layout/resource/ckeditorResource.jsp" %>
+<%
+				}
+%>
+<ul id="<c:out value="<%=ulId %>"/>" class="mb05">
+<li id="<c:out value="<%=dummyRowId %>"/>" class="list-add" style="display: none;">
+<%
+				if (editor.getDisplayType() == StringDisplayType.TEXT) {
+					//テキスト
+					selector = ":text";
+%>
+<input type="text" class="<c:out value="<%=cls %>"/>" style="<c:out value="<%=customStyle%>"/>" <c:out value="<%=maxlength%>"/> />
+<%
+				} else if (editor.getDisplayType() == StringDisplayType.TEXTAREA) {
+					//テキストエリア
+					selector = "textarea";
+%>
+<textarea class="form-size-05 inpbr" style="<c:out value="<%=customStyle%>"/>" rows="5" cols="30"></textarea>
+<%
+				} else if (editor.getDisplayType() == StringDisplayType.RICHTEXT) {
+					//リッチテキスト
+					selector = "textarea";
+%>
+<textarea class="" style="<c:out value="<%=customStyle%>"/>" rows="5" cols="30"></textarea>
+<%
+				} else if (editor.getDisplayType() == StringDisplayType.PASSWORD) {
+					//パスワード
+					selector = ":password";
+%>
+<input type="password" class="<c:out value="<%=cls %>"/>" style="<c:out value="<%=customStyle%>"/>"/>
+<%
+				}
+%>
+<input type="button" value="${m:rs('mtp-gem-messages', 'generic.editor.string.StringPropertyEditor_Edit.delete')}" class="gr-btn-02 del-btn" />
+</li>
+<%
+				String[] array = propValue instanceof String[] ? (String[]) propValue : null;
+				if (array != null) {
+					length = array.length;
+					for (int i = 0; i < array.length; i++) {
+						String str = array[i] != null ? array[i] : "";
+						String liId = "li_" + propName + i;
+%>
+<li id="<c:out value="<%=liId %>"/>" class="list-add">
+<%
+						if (editor.getDisplayType() == StringDisplayType.TEXT) {
+							//テキスト
+%>
+<input type="text" name="<c:out value="<%=propName %>"/>" value="<c:out value="<%=str %>"/>" class="<c:out value="<%=cls %>"/>" style="<c:out value="<%=customStyle%>"/>" <c:out value="<%=maxlength%>"/> />
+<%
+						} else if (editor.getDisplayType() == StringDisplayType.TEXTAREA) {
+							//テキストエリア
+%>
+<textarea name="<c:out value="<%=propName %>"/>" class="form-size-05 inpbr" style="<c:out value="<%=customStyle%>"/>" rows="5" cols="30"><c:out value="<%=str %>"/></textarea>
+<%
+						} else if (editor.getDisplayType() == StringDisplayType.RICHTEXT) {
+							//リッチテキスト
+							String textId = "id_" + propName + i;
+%>
+<textarea name="<c:out value="<%=propName %>"/>" style="<c:out value="<%=customStyle%>"/>" rows="5" cols="30" id="<c:out value="<%=textId %>"/>"><c:out value="<%=str %>"/></textarea>
+<script type="text/javascript">
+$(function() {
+<%if (StringUtil.isNotBlank(editor.getRichtextEditorOption())) {%>
+	var opt = <%=editor.getRichtextEditorOption()%>;
+<%} else {%>
+	var opt = { allowedContent:<%=allowedContent%> };
+<%}%>
+	$("textarea[name='<%=escapedPropName%>']").ckeditor(
+		function() {}, opt
+	);
+});
+</script>
+
+<%
+						} else if (editor.getDisplayType() == StringDisplayType.PASSWORD) {
+							//パスワード
+%>
+<input type="password" name="<c:out value="<%=propName %>"/>" class="<c:out value="<%=cls %>"/>" style="<c:out value="<%=customStyle%>"/>" value="<c:out value="<%=str %>"/>" />
+<%
+						}
+%>
+<%
+						if (editor.getDisplayType() == StringDisplayType.RICHTEXT) {
+%>
+ <input type="button" value="${m:rs('mtp-gem-messages', 'generic.editor.string.StringPropertyEditor_Edit.delete')}" class="gr-btn-02 del-btn" onclick="delete_<%=escapedPropName + i %>('<%=StringUtil.escapeJavaScript(liId)%>')" />
+<script type="text/javascript">
+function delete_<%=escapedPropName + i%>(liId) {
+	if (CKEDITOR.instances.id_<%=escapedPropName + i%>) CKEDITOR.instances.id_<%=escapedPropName + i%>.destroy();
+	deleteItem(liId);
+}
+</script>
+<%
+						} else {
+%>
+ <input type="button" value="${m:rs('mtp-gem-messages', 'generic.editor.string.StringPropertyEditor_Edit.delete')}" class="gr-btn-02 del-btn" onclick="deleteItem('<%=StringUtil.escapeJavaScript(liId)%>')" />
+<%
+						}
+%>
+</li>
+<%
+					}
+				}
+%>
+</ul>
+<script type="text/javascript">
+$(function() {
+	$("#id_addBtn_<%=escapedPropName%>").on("click", function() {
+		addTextItem("<%=StringUtil.escapeJavaScript(ulId)%>", <%=(pd.getMultiplicity() + 1)%>, "<%=StringUtil.escapeJavaScript(dummyRowId)%>", "<%=escapedPropName%>"
+				, "id_count_<%=escapedPropName%>", "<%=selector%>"
+<%
+				if (editor.getDisplayType() == StringDisplayType.RICHTEXT) {
+%>
+				, function(elem) {
+					var count = $("#id_count_<%=escapedPropName%>").val();
+					var $delBtn = $(elem).next();
+					$delBtn.off("click");
+					$delBtn.on("click", function() {
+						if (CKEDITOR.instances["id_<%=escapedPropName%>" + count]) CKEDITOR.instances["id_<%=escapedPropName%>" + count].destroy();
+						deleteItem($(this).parent().attr("id"));
+					});
+
+					$(elem).attr("id", "id_<%=escapedPropName%>" + count);
+					$(elem).ckeditor(
+						function() {}, { allowedContent:<%=allowedContent%> }
+					);
+				}
+<%
+				}
+%>
+		);
+	});
+});
+</script>
+<%
+%>
+<input type="button" value="${m:rs('mtp-gem-messages', 'generic.editor.string.StringPropertyEditor_Edit.add')}" class="gr-btn-02 add-btn" id="id_addBtn_<c:out value="<%=propName %>"/>" />
+<input type="hidden" id="id_count_<c:out value="<%=propName %>"/>" value="<c:out value="<%=length %>"/>" />
+<%
+			} else {
+				//単一
+				String str = propValue instanceof String ? (String) propValue : "";
+				if (editor.getDisplayType() == StringDisplayType.TEXT) {
+					//テキスト
+%>
+<input type="text" name="<c:out value="<%=propName%>"/>" value="<c:out value="<%=str %>"/>" class="<c:out value="<%=cls %>"/>" style="<c:out value="<%=customStyle%>"/>" <c:out value="<%=maxlength%>"/> />
+<%
+				} else if (editor.getDisplayType() == StringDisplayType.TEXTAREA) {
+					//テキストエリア
+%>
+<textarea name="<c:out value="<%=propName%>"/>" rows="5" cols="30" class="form-size-05 inpbr" style="<c:out value="<%=customStyle%>"/>"><c:out value="<%=str %>"/></textarea>
+<%
+				} else if (editor.getDisplayType() == StringDisplayType.RICHTEXT) {
+					//リッチテキスト
+%>
+<textarea name="<c:out value="<%=propName%>"/>" style="<c:out value="<%=customStyle%>"/>" rows="5" cols="30" ><c:out value="<%=str %>"/></textarea>
+<%
+					if (request.getAttribute(Constants.RICHTEXT_LIB_LOADED) == null) {
+						request.setAttribute(Constants.RICHTEXT_LIB_LOADED, true);
+%>
+<%@include file="../../../layout/resource/ckeditorResource.jsp" %>
+<%
+					}
+%>
+<script type="text/javascript">
+$(function() {
+<%if (StringUtil.isNotBlank(editor.getRichtextEditorOption())) {%>
+	var opt = <%=editor.getRichtextEditorOption()%>;
+<%} else {%>
+	var opt = { allowedContent:<%=allowedContent%> };
+<%}%>
+	$("textarea[name='<%=escapedPropName%>']").ckeditor(
+		function() {}, opt
+	);
+});
+</script><%
+				} else if (editor.getDisplayType() == StringDisplayType.PASSWORD) {
+					//パスワード
+%>
+<input type="password" name="<c:out value="<%=propName %>"/>" class="<c:out value="<%=cls %>"/>" style="<c:out value="<%=customStyle%>"/>" value="<c:out value="<%=str %>"/>" />
+<%
+				}
+			}
+		}
+	} else {
+		//選択型
+
+		String cls = "form-size-02 inpbr";
+		if (nest != null && nest) {
+			//cls = "form-size-08 inpbr";
+		}
+
+		if (isMultiple) {
+			//複数
+			String[] array = propValue instanceof String[] ? (String[]) propValue : null;
+			if (updatable) {
+				List<String> values = new ArrayList<String>();
+				if (array != null && array.length > 0) values.addAll(Arrays.asList(array));
+%>
+<select name="<c:out value="<%=propName %>"/>" size="6" class="<c:out value="<%=cls %>"/>" style="<c:out value="<%=customStyle%>"/>" multiple>
+<%
+				for (EditorValue tmp : editor.getValues()) {
+					String label = EntityViewUtil.getStringPropertySelectTypeLabel(tmp);
+					String selected = values.contains(tmp.getValue()) ? " selected" : "";
+					String optStyle = tmp.getStyle() != null ? tmp.getStyle() : "";
+%>
+<option class="<c:out value="<%=optStyle %>"/>" title="<c:out value="<%=label %>" />" value="<c:out value="<%=tmp.getValue() %>"/>" <c:out value="<%=selected %>"/>><c:out value="<%=label %>" /></option>
+<%
+				}
+%>
+</select>
+<%
+			} else {
+				//更新不可
+				List<EditorValue> values = getValues(editor, propValue, pd);
+%>
+<ul style="<c:out value="<%=customStyle%>"/>">
+<%
+				for (EditorValue tmp : values) {
+					String optStyle = tmp.getStyle() != null ? tmp.getStyle() : "";
+%>
+<li class="<c:out value="<%=optStyle %>"/>">
+<c:out value="<%=tmp.getLabel() %>" />
+<input type="hidden" name="<c:out value="<%=propName%>"/>" value="<c:out value="<%=tmp.getValue()%>"/>" />
+</li>
+<%
+				}
+%>
+</ul>
+<%
+			}
+		} else {
+			//単一
+			String str = propValue instanceof String ? (String) propValue : "";
+			if (updatable) {
+%>
+<select name="<c:out value="<%=propName %>"/>" size="1" class="<c:out value="<%=cls %>"/>" style="<c:out value="<%=customStyle%>"/>">
+<option value="" title="<%= pleaseSelectLabel %>"><%= pleaseSelectLabel %></option>
+<%
+				for (EditorValue tmp : editor.getValues()) {
+					String label = EntityViewUtil.getStringPropertySelectTypeLabel(tmp);
+					String selected = str.equals(tmp.getValue()) ? " selected" : "";
+					String optStyle = tmp.getStyle() != null ? tmp.getStyle() : "";
+%>
+<option class="<c:out value="<%=optStyle %>"/>" title="<c:out value="<%=label %>" />" value="<c:out value="<%=tmp.getValue() %>"/>" <c:out value="<%=selected %>"/>><c:out value="<%=label %>" /></option>
+<%
+				}
+%>
+</select>
+<%
+			} else {
+				//更新不可
+				EditorValue ev = getValue(editor, str);
+				String label = ev != null ? ev.getLabel() != null ? ev.getLabel() : "" : "";
+				String val = ev != null ? ev.getValue() != null ? ev.getValue() : "" : "";
+
+				if (StringUtil.isNotEmpty(customStyle)) {
+%>
+<span style="<c:out value="<%=customStyle %>"/>">
+<%
+				}
+%>
+<c:out value="<%=label %>"/>
+<input type="hidden" name="<c:out value="<%=propName %>"/>" value="<c:out value="<%=propValue %>"/>" />
+<%
+				if (StringUtil.isNotEmpty(customStyle)) {
+%>
+</span>
+<%
+				}
+			}
+		}
+	}
+%>

@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-fragment
+	xmlns="http://java.sun.com/xml/ns/javaee"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-fragment_3_0.xsd"
+	version="3.0" >
+
+	<name>mtp</name>
+
+	<display-name>mtp web-fragment</display-name>
+
+	<distributable/>
+	
+	<!-- mtp service initializer -->
+	<listener>
+		<listener-class>org.iplass.mtp.impl.web.ApplicationInitializer</listener-class>
+	</listener>
+	<listener>
+        <listener-class>org.iplass.mtp.impl.session.jee.MtpHttpSessionListener</listener-class>
+    </listener>
+
+	<servlet>
+		<servlet-name>ClusterMessageChannelServlet</servlet-name>
+		<servlet-class>org.iplass.mtp.impl.cluster.channel.http.servlet.ClusterMessageChannelServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>ClusterMessageChannelServlet</servlet-name>
+		<url-pattern>/cmcs</url-pattern>
+	</servlet-mapping>
+
+
+	<!-- for main web app filter -->
+	<filter>
+		<filter-name>DispatcherFilter</filter-name>
+		<filter-class>org.iplass.mtp.impl.web.DispatcherFilter</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>DispatcherFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+		<dispatcher>REQUEST</dispatcher>
+	</filter-mapping>
+
+	<!-- for web app status check -->
+	<servlet>
+		<description></description>
+		<display-name>CheckStatusServlet</display-name>
+		<servlet-name>CheckStatusServlet</servlet-name>
+		<servlet-class>org.iplass.mtp.impl.web.CheckStatusServlet</servlet-class>
+		<init-param>
+			<param-name>statusOk</param-name>
+			<param-value>OK</param-value>
+		</init-param>
+		<init-param>
+			<param-name>statusNg</param-name>
+			<param-value>NG</param-value>
+		</init-param>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>CheckStatusServlet</servlet-name>
+		<url-pattern>/checkStatus</url-pattern>
+	</servlet-mapping>
+
+</web-fragment>

@@ -1,0 +1,141 @@
+//colors -> color/_colors.scss
+// $color_quill_gray_approx: #d5d5d5;
+// $color_black_haze_approx: #f6f6f6;
+// $color_gray_nurse_approx: #eaeaea;
+// $color_alabaster_approx: #f9f9f9;
+// $alabaster: #fafafa;
+// $color_celeste_approx: #cecece;
+
+.tbl-version {
+	margin-bottom: 20px;
+	border-top: 1px solid $color_quill_gray_approx;
+	border-right: 1px solid $color_quill_gray_approx;
+	border-left: 1px solid $color_quill_gray_approx;
+	border-bottom: 1px solid $color_quill_gray_approx;
+	width: 100%;
+	table-layout: fixed;
+	td {
+		border-top: none;
+		padding: 9px 7px;
+		vertical-align: middle;
+		overflow: hidden;
+	}
+}
+
+//default,reference section
+.tbl-section {
+	margin-bottom: 20px;
+	border-top: 1px solid $color_quill_gray_approx;
+	border-right: 1px solid $color_quill_gray_approx;
+	border-bottom: 1px solid $color_quill_gray_approx;
+	width: 100%;
+	table-layout: fixed;
+	td {
+		&.section-data {
+			border-top: 1px dotted $color_quill_gray_approx;
+			padding: 9px 7px;
+			vertical-align: middle;
+			overflow: hidden;
+			&.col1 {
+				width: 82%;
+			}
+			&.col2 {
+				width: 32%;
+			}
+			&.col3 {
+				width: 18%;
+			}
+			&.col4 {
+				width: 15%;
+			}
+			&.col5 {
+				width: 12%;
+			}
+		}
+		&.inner-section {
+			border-left: 1px solid $color_quill_gray_approx;
+		}
+	}
+	input {
+		padding: 2px;
+		&.form-btn {
+			padding: 1px 3px;
+		}
+	}
+	select {
+		padding: 2px;
+	}
+	th.section-data {
+		border-top: 1px dotted $color_quill_gray_approx;
+		border-left: 1px solid $color_quill_gray_approx;
+		background: $color_black_haze_approx;
+		text-align: left;
+		padding: 9px 7px;
+		vertical-align: middle;
+		&.col1 {
+			width: 18%;
+		}
+		&.col2 {
+			width: 18%;
+		}
+		&.col3 {
+			width: 15%;
+		}
+		&.col4 {
+			width: 10%;
+		}
+		&.col5 {
+			width: 8%;
+		}
+	}
+}
+//nesttable
+.tbl-reference {
+	border: 1px solid $color_quill_gray_approx;
+	white-space: nowrap;
+	width: 100%;
+	&.view {
+		width: 98%;
+		.delButton {
+			width: 50px;
+		}
+		tbody tr {
+			&:nth-child(1) .orderCol .order-icon.up-icon {
+				display: none;
+			}
+			&:nth-child(2) .orderCol .order-icon.up-icon {
+				display: block;
+			}
+		}
+	}
+	th {
+		border: none;
+		background: $color_gray_nurse_approx;
+		padding: 9px 7px;
+	}
+	td {
+		border: none;
+		padding: 9px 7px;
+	}
+	.colLink {
+		width: 35px;
+	}
+	.delButton {
+		width: 42px;
+	}
+	tr.odd {
+		background: $color_alabaster_approx;
+	}
+	.orderCol .order-icon {
+		display: block;
+		cursor: pointer;
+	}
+	tbody tr {
+		&:nth-child(2) .orderCol .order-icon.up-icon {
+			display: none;
+		}
+		&:last-child .orderCol .order-icon.down-icon {
+			display: none;
+		}
+	}
+}

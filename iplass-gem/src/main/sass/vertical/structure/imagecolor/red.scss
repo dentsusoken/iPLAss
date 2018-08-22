@@ -1,0 +1,39 @@
+/*
+ * Copyright (C) 2018 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
+ *
+ * Unless you have purchased a commercial license,
+ * the following license terms apply:
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
+//colors
+$COLOR_IMAGE_COLOR: #ed6f6b;
+$COLOR_LINK_HOVER_BACKGROUND: #ffb9b7;
+$COLOR_LINK_HOVER_BACKGROUND_LINER_GRADIENT1: #f3dbd9;
+$COLOR_LINK_HOVER_BACKGROUND_LINER_GRADIENT2: #f6bab8;
+$COLOR_NAVDETAIL_BORDER: #ed6f6b;
+$COLOR_NAVDETAIL_HOVER_BACKGROUND: #fff2f1;
+$COLOR_LINK_BORDER: #ed6f6b;
+$COLOR_LINK_BACKGROUND: #f6bab8;
+$COLOR_LINK_BACKGROUND_LINER_GRADIENT1: #fce4e2;
+$COLOR_LINK_BACKGROUND_LINER_GRADIENT2: #f7c5c3;
+$COLOR_LINK_BACKGROUND_LINER_GRADIENT3: #f3a19f;
+
+//urls
+$url_imagecolor_01: url(../../../../../images/gem/skin/vertical/icon-navred-02.png);
+
+$color_name: red;
+
+@import "imagecolor";

@@ -1,0 +1,36 @@
+//colors
+// $white: #fff;
+// $color_quill_gray_approx: #d5d5d5;
+// $color_celeste_approx: #d0d0d0;
+// $color_alto_approx: #ddd;
+// $color_cerulean_approx: #00ace5;
+
+.calendar-block .tbl-calendar {
+	th {
+		padding: 2px;
+		text-align: center;
+		a {
+			color: $white;
+			text-decoration: none;
+		}
+	}
+	td {
+		padding: 2px;
+		text-align: center;
+		border: 1px solid $color_quill_gray_approx;
+		&.today {
+			background: $color_celeste_approx;
+		}
+		a {
+			color: $color_alto_approx;
+			text-decoration: underline;
+		}
+		span.active {
+			text-decoration: underline;
+			&:hover {
+				color: $color_cerulean_approx;
+				cursor: pointer;
+			}
+		}
+	}
+}

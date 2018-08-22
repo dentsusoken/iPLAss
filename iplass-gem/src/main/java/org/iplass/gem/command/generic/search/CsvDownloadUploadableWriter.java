@@ -1,0 +1,117 @@
+/*
+ * Copyright (C) 2018 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
+ *
+ * Unless you have purchased a commercial license,
+ * the following license terms apply:
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
+package org.iplass.gem.command.generic.search;
+
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.iplass.gem.GemConfigService;
+import org.iplass.mtp.entity.definition.EntityDefinition;
+import org.iplass.mtp.entity.definition.properties.SelectProperty;
+import org.iplass.mtp.impl.entity.csv.EntitySearchCsvWriter;
+import org.iplass.mtp.impl.entity.csv.EntityWriteOption;
+import org.iplass.mtp.spi.ServiceRegistry;
+import org.iplass.mtp.view.generic.SearchQueryContext;
+import org.iplass.mtp.view.generic.SearchQueryInterrupter.SearchQueryType;
+import org.iplass.mtp.view.generic.editor.SelectPropertyEditor;
+import org.iplass.mtp.view.generic.element.property.PropertyColumn;
+import org.iplass.mtp.view.generic.element.section.SearchConditionSection;
+import org.iplass.mtp.web.ResultStreamWriter;
+
+/**
+ * <p>EntityのCsvファイル出力クラス。Upload可能な形式で出力を行います。</p>
+ */
+public class CsvDownloadUploadableWriter implements ResultStreamWriter {
+
+	private CsvDownloadSearchContext context;
+
+	private GemConfigService gcs = null;
+
+	public CsvDownloadUploadableWriter(final CsvDownloadSearchContext context) {
+		this.context = context;
+
+		gcs = ServiceRegistry.getRegistry().getService(GemConfigService.class);
+	}
+
+	@Override
+	public void write(final OutputStream out) throws IOException {
+
+		EntityDefinition ed = context.getEntityDefinition();
+		String charset = context.getCharacterCode();
+
+		//Limit
+		int maxCount = gcs.getCsvDownloadMaxCount();
+		SearchConditionSection section = context.getConditionSection();
+		if (section.getCsvdownloadMaxCount() != null) {
+			maxCount = section.getCsvdownloadMaxCount();
+		}
+
+		//Selectプロパティをソート条件保持用
+		final Map<SelectProperty, Boolean> sortMap = new HashMap<>();
+
+		//Interrupter
+		final SearchQueryInterrupterHandler handler = context.getSearchQueryInterrupterHandler(true);
+
+		//Writer生成
+		EntityWriteOption option = new EntityWriteOption()
+				.charset(charset)
+				.quoteAll(gcs.isCsvDownloadQuoteAll())
+				.withReferenceVersion(gcs.isCsvDownloadReferenceVersion())
+				.where(context.getWhere())
+				.orderBy(context.getOrderBy())
+				.limit(maxCount)
+				.columnDisplayName(property -> {
+					if (context.isNoDispName()) {
+						return "";
+					} else {
+						return "(" + context.getDisplayLabel(property.getName()) + ")";
+					}
+				})
+				.sortSelectValue(property -> {
+					//Selectプロパティをソートするか
+					return sortMap.computeIfAbsent(property, select -> {
+						boolean sortValue = false;
+						PropertyColumn pc = context.getPropertyColumn(select.getName());
+						if (pc != null && pc.getEditor() instanceof SelectPropertyEditor) {
+							SelectPropertyEditor spe = (SelectPropertyEditor)pc.getEditor();
+							if (spe.isSortCsvOutputValue()) {
+								sortValue = true;
+							}
+						}
+						return sortValue;
+					});
+				})
+				.beforeSearch(query -> {
+					SearchQueryContext sqc = handler.beforeSearch(query, SearchQueryType.CSV);
+					return sqc.getQuery();
+				})
+				.afterSearch((query, entity) -> {
+					handler.afterSearch(query, entity, SearchQueryType.CSV);
+				});
+
+		try (EntitySearchCsvWriter writer = new EntitySearchCsvWriter(out, ed.getName(), option)) {
+			writer.write();
+		}
+	}
+
+}

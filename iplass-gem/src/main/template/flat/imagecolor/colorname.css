@@ -1,0 +1,8 @@
+/* replace keyword to color
+$COLOR_IMAGE_COLOR: #2196f3
+$COLOR_NAME: blue
+*/
+
+.hgroup-01 .imgclr_$COLOR_NAME svg {
+  color: $COLOR_IMAGE_COLOR;
+ }

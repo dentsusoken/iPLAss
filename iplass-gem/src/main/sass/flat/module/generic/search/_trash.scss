@@ -1,0 +1,57 @@
+//colors
+// $white: #fff;
+// $color_alto_approx: #ddd;
+// $color_gallery_approx: #ededed;
+
+//@extend-elements
+//original selectors
+//.tbl-trash th, .tbl-trash td
+%extend_gst_1 {
+	height: 40px;
+	padding: 10px;
+	//Instead of the line below you could use @include box-sizing($bs)
+	box-sizing: border-box;
+	border-left: 1px solid $color_alto_approx;
+	border-bottom: 1px solid $color_alto_approx;
+	vertical-align: middle;
+	background: $color_gallery_approx;
+	clear: left;
+}
+
+
+.trash {
+	.error {
+		display: block;
+		float: left;
+		width: 100%;
+	}
+	.link-list-01 {
+		padding-top: 20px;
+	}
+	form {
+		float: left;
+		background: $white;
+		padding: 0 20px 20px;
+	}
+}
+.tbl-trash {
+	border: 1px solid $color_alto_approx;
+	th {
+		@extend %extend_gst_1;
+		font-size: 1rem;
+	}
+	td {
+		@extend %extend_gst_1;
+		background: $white;
+	}
+	.col1 {
+		width: 30px;
+		border-left: none;
+	}
+	.col3 {
+		width: 200px;
+	}
+	+ p {
+		padding-top: 20px;
+	}
+}

@@ -1,0 +1,382 @@
+//@extend-elements
+//original selectors
+//#account-01 p span::before, #account-01 p span::after
+%extend_hm_1 {
+	content: '';
+	display: inline-block;
+	vertical-align: middle;
+	position: relative;
+}
+
+
+#user-nav {
+	float: right;
+	display: block;
+	height: 80px;
+	li {
+		float: left;
+		position: relative;
+	}
+	> li {
+		padding-right: 0;
+		z-index: 50;
+		cursor: pointer;
+		top: 0;
+		font-size: 1rem;
+	}
+	.divider {
+		display: none;
+	}
+	#search {
+		z-index: 45;
+		margin-top: 25px;
+		.fullsearch {
+			display: block;
+			width: 300px;
+			height: 30px;
+			padding: 10px;
+			padding-right: 15px;
+			background: $color_mine_shaft_96_approx;
+			position: absolute;
+			top: 45px;
+			right: -20px;
+			//Instead of the line below you could use @include transition($transition-1, $transition-2, $transition-3, $transition-4, $transition-5, $transition-6, $transition-7, $transition-8, $transition-9, $transition-10)
+			transition: opacity 200ms;
+			overflow: hidden;
+			opacity: 0;
+			pointer-events: none;
+			&.open {
+				overflow: visible;
+				opacity: 1;
+				pointer-events: auto;
+			}
+		}
+		.fullsearch::before {
+			content: '';
+			display: block;
+			position: absolute;
+			top: -8px;
+			right: 28px;
+			border-left: 8px solid transparent;
+			border-right: 8px solid transparent;
+			border-bottom: 8px solid $color_mine_shaft_96_approx;
+		}
+		i {
+			display: inline-block;
+			height: 30px;
+			width: 30px;
+			background: $url_hm_5 center center no-repeat $color_cod_gray_20_approx;
+			//Instead of the line below you could use @include border-radius($radius, $vertical-radius)
+			border-radius: 15px;
+			cursor: pointer;
+			//Instead of the line below you could use @include transition($transition-1, $transition-2, $transition-3, $transition-4, $transition-5, $transition-6, $transition-7, $transition-8, $transition-9, $transition-10)
+			transition: background 300ms;
+			&:hover {
+				background-color: $color_cod_gray_36_approx;
+			}
+		}
+	}
+	.selectbox {
+		position: relative;
+		z-index: 51;
+		float: left;
+		border: 0;
+		//Instead of the line below you could use @include border-radius($radius, $vertical-radius)
+		border-radius: 0;
+		background: none;
+		width: 115px;
+		span {
+			display: block;
+			cursor: pointer;
+			position: relative;
+			padding-left: 15px;
+			padding-right: 23px;
+			//Instead of the line below you could use @include box-sizing($bs)
+			box-sizing: border-box;
+			color: $white;
+			//Instead of the line below you could use @include border-radius($radius, $vertical-radius)
+			border-radius: 15px;
+			//Instead of the line below you could use @include transition($transition-1, $transition-2, $transition-3, $transition-4, $transition-5, $transition-6, $transition-7, $transition-8, $transition-9, $transition-10)
+			transition: background 300ms;
+			white-space: nowrap;
+			overflow: hidden;
+			text-overflow: ellipsis;
+		}
+		span::after {
+			content: '';
+			display: block;
+			height: 5px;
+			width: 5px;
+			position: absolute;
+			top: 50%;
+			right: 10px;
+			margin-top: -5px;
+			border-right: 1px solid $white;
+			border-bottom: 1px solid $white;
+			//Instead of the line below you could use @include transform($scale, $rotate, $transx, $transy, $skewx, $skewy, $originx, $originy)
+			transform: rotate(45deg);
+			//Instead of the line below you could use @include transition($transition-1, $transition-2, $transition-3, $transition-4, $transition-5, $transition-6, $transition-7, $transition-8, $transition-9, $transition-10)
+			transition: transform 300ms, margin 300ms;
+		}
+		.pulldown {
+			position: absolute;
+			display: none;
+			top: 50px;
+			background: $color_mine_shaft_96_approx;
+			padding: 10px 0;
+			min-width: 116px;
+		}
+		.pulldown::before {
+			content: '';
+			display: block;
+			position: absolute;
+			top: -8px;
+			left: 50%;
+			margin-left: -8px;
+			border-left: 8px solid transparent;
+			border-right: 8px solid transparent;
+			border-bottom: 8px solid $color_mine_shaft_96_approx;
+		}
+		a {
+			display: block;
+			text-align: left;
+			text-decoration: none;
+			color: $white;
+			padding: 5px 15px;
+			line-height: 1.6em;
+			letter-spacing: 0.07143rem;
+			//Instead of the line below you could use @include transition($transition-1, $transition-2, $transition-3, $transition-4, $transition-5, $transition-6, $transition-7, $transition-8, $transition-9, $transition-10)
+			transition: background 300ms, color 300ms;
+			white-space: nowrap;
+			&:hover {
+				background: $color_cape_cod_approx !important;
+				color: $color_selective_yellow_approx;
+			}
+		}
+		&:hover span {
+			background-color: $color_cod_gray_20_approx;
+		}
+		.select_focus span::after {
+			//Instead of the line below you could use @include transform($scale, $rotate, $transx, $transy, $skewx, $skewy, $originx, $originy)
+			transform: rotate(-135deg);
+			margin-top: -3px;
+		}
+	}
+	.search-text {
+		float: left;
+		position: relative;
+		width: 170px;
+		padding-left: 10px;
+		overflow: hidden;
+		height: 30px;
+		.text {
+			background: none;
+			border: none;
+			height: 100%;
+			font-size: 0.92857rem;
+			width: 115px;
+			color: $white;
+			padding: 0 5px;
+		}
+	}
+	.search-submit {
+		width: auto;
+		min-width: 0;
+		height: 22px;
+		margin-top: 4px;
+		font-size: 0.85714rem;
+		background: $white_25;
+		color: $white;
+		padding: 0 8px;
+		//Instead of the line below you could use @include border-radius($radius, $vertical-radius)
+		border-radius: 5px;
+		//Instead of the line below you could use @include transition($transition-1, $transition-2, $transition-3, $transition-4, $transition-5, $transition-6, $transition-7, $transition-8, $transition-9, $transition-10)
+		transition: background 300ms;
+		&:hover {
+			background: $white_10;
+		}
+	}
+}
+#account-01 {
+	padding-left: 70px;
+	p {
+		margin-top: 15px;
+		span {
+			color: $white;
+			padding: 10px;
+			//Instead of the line below you could use @include box-sizing($bs)
+			box-sizing: border-box;
+			//Instead of the line below you could use @include border-radius($radius, $vertical-radius)
+			border-radius: 25px;
+			//Instead of the line below you could use @include transition($transition-1, $transition-2, $transition-3, $transition-4, $transition-5, $transition-6, $transition-7, $transition-8, $transition-9, $transition-10)
+			transition: background 300ms;
+			display: block;
+			cursor: pointer;
+		}
+		span::before {
+			@extend %extend_hm_1;
+			height: 30px;
+			width: 30px;
+			background: $url_hm_1 center center no-repeat;
+			margin-right: 10px;
+		}
+		span::after {
+			@extend %extend_hm_1;
+			top: -1px;
+			height: 13px;
+			width: 13px;
+			background: $url_hm_2 center center no-repeat;
+			margin-left: 7px;
+		}
+	}
+	&.open {
+		> ul {
+			right: 10px !important;
+			left: auto !important;
+			//Instead of the line below you could use @include box-shadow($shadow-1, $shadow-2, $shadow-3, $shadow-4, $shadow-5, $shadow-6, $shadow-7, $shadow-8, $shadow-9, $shadow-10)
+			box-shadow: none;
+			top: 70px !important;
+			border: 0;
+			background: $color_mine_shaft_96_approx;
+			padding: 10px 0;
+			> li {
+				height: 100%;
+				overflow: visible;
+				> span {
+					padding: 3px 24px 4px 15px;
+					color: $white;
+					display: block;
+				}
+				> a:hover {
+					text-decoration: none;
+				}
+			}
+			li {
+				a {
+					line-height: 1.6em;
+					letter-spacing: 0.07143rem;
+					padding: 5px 15px;
+					color: $white;
+					//Instead of the line below you could use @include transition($transition-1, $transition-2, $transition-3, $transition-4, $transition-5, $transition-6, $transition-7, $transition-8, $transition-9, $transition-10)
+					transition: background 300ms, color 300ms;
+					display: block;
+				}
+				&:hover a {
+					color: $color_selective_yellow_approx;
+				}
+			}
+		}
+		> ul::before {
+			content: '';
+			display: block;
+			position: absolute;
+			top: -8px;
+			left: 50%;
+			margin-left: -8px;
+			border-left: 8px solid transparent;
+			border-right: 8px solid transparent;
+			border-bottom: 8px solid $color_mine_shaft_96_approx;
+		}
+		.change-area {
+			&:hover {
+				ul {
+					background: $color_mine_shaft_85_approx;
+					padding: 8px 0;
+				}
+				> span {
+					color: $color_selective_yellow_approx;
+				}
+				li {
+					height: 100%;
+					overflow: visible;
+				}
+			}
+			> span {
+				&.txt::after {
+					content: '\25B6';
+					display: inline-block;
+					position: absolute;
+					right: 10px;
+				}
+				&.txt {
+					cursor: pointer;
+				}
+			}
+			.node-cursor {
+				position: absolute;
+				padding: 0;
+				right: 10px;
+				top: 8px;
+				width: 5px;
+				height: 7px;
+			}
+		}
+		p span {
+			background: $color_cod_gray_20_approx;
+		}
+	}
+	ul {
+		position: absolute;
+		min-width: 142px;
+		z-index: 5;
+		li {
+			height: 0;
+			overflow: hidden;
+			width: 100%;
+			float: none;
+			margin: 0;
+			padding: 0;
+			white-space: nowrap;
+			//Instead of the line below you could use @include transition($transition-1, $transition-2, $transition-3, $transition-4, $transition-5, $transition-6, $transition-7, $transition-8, $transition-9, $transition-10)
+			transition: background 300ms, color 300ms;
+		}
+	}
+	.change-area li {
+		> span {
+			&.txt {
+				padding: 3px 5px 4px 25px;
+				display: block;
+				cursor: pointer;
+				color: $white;
+			}
+			&.icon {
+				position: absolute;
+				left: 4px;
+				top: 4px;
+				background: $url_hm_3 center center no-repeat;
+				width: 15px;
+				height: 15px;
+			}
+		}
+		&:hover > span {
+			&.txt {
+				color: $color_selective_yellow_approx;
+			}
+			&.icon {
+				background: $url_hm_4 center center no-repeat;
+			}
+		}
+	}
+}
+#account-01::after {
+	content: '';
+	display: block;
+	position: absolute;
+	top: 20px;
+	left: 40px;
+	height: 40px;
+	width: 1px;
+	background: $white;
+}
+#showPreviewDateTimeDialog {
+	font-size: 1rem;
+}
+.cms-title {
+	display: block;
+	float: left;
+	height: 80px;
+	width: 250px;
+	background: $url_hm_6 $color_mine_shaft_approx center center no-repeat;
+	//Instead of the line below you could use @include transition($transition-1, $transition-2, $transition-3, $transition-4, $transition-5, $transition-6, $transition-7, $transition-8, $transition-9, $transition-10)
+	transition: width cubic-bezier(0.645, 0.045, 0.355, 1) 400ms;
+}

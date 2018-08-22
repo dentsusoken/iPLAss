@@ -1,0 +1,68 @@
+/* replace keyword to color
+$COLOR_IMAGE_COLOR: #66aced
+$COLOR_MENU_BACKGROUND: #b0cfee
+$COLOR_MENU_BACKGROUND_GRADIENT1: #e0ecf8
+$COLOR_MENU_BACKGROUND_GRADIENT2: #bfd8f1
+$COLOR_MENU_BORDER: #66aced
+$COLOR_MENU_HOVER_BACKGROUND: #eff6fd
+$COLOR_NAME: blue
+$URL_MENU_SELECTED: $URL_MENU_SELECTED
+*/
+
+#nav li.bg-$COLOR_NAME.menu-action.selected p a, #nav li.bg-$COLOR_NAME.menu-entity.selected p a {
+  background: url($URL_MENU_SELECTED), $COLOR_MENU_BACKGROUND;
+  background: url($URL_MENU_SELECTED), linear-gradient($COLOR_MENU_BACKGROUND_GRADIENT1 0, $COLOR_MENU_BACKGROUND_GRADIENT2 51%, $COLOR_MENU_BACKGROUND_GRADIENT2 51%, $COLOR_MENU_BACKGROUND 54%, $COLOR_MENU_BACKGROUND 100%);
+  background-repeat: no-repeat;
+  background-position: 5% 50%;
+}
+
+.hgroup-01 span.imgclr_$COLOR_NAME svg {
+  color: $COLOR_IMAGE_COLOR;
+}
+
+#nav li.bg-$COLOR_NAME.menu-action p a:hover {
+  background: $COLOR_MENU_BACKGROUND;
+  background: linear-gradient($COLOR_MENU_BACKGROUND_GRADIENT1 0, $COLOR_MENU_BACKGROUND_GRADIENT2 51%, $COLOR_MENU_BACKGROUND_GRADIENT2 51%, $COLOR_MENU_BACKGROUND 54%, $COLOR_MENU_BACKGROUND 100%);
+}
+
+#nav li.bg-$COLOR_NAME.menu-entity p a:hover {
+  background: $COLOR_MENU_BACKGROUND;
+  background: linear-gradient($COLOR_MENU_BACKGROUND_GRADIENT1 0, $COLOR_MENU_BACKGROUND_GRADIENT2 51%, $COLOR_MENU_BACKGROUND_GRADIENT2 51%, $COLOR_MENU_BACKGROUND 54%, $COLOR_MENU_BACKGROUND 100%);
+}
+
+#nav li.bg-$COLOR_NAME.hover ul.nav-detail {
+  border-color: $COLOR_MENU_BORDER;
+}
+#nav li.bg-$COLOR_NAME.hover ul.nav-detail li.current a {
+  background: $COLOR_MENU_HOVER_BACKGROUND;
+  font-weight: bold;
+}
+#nav li.bg-$COLOR_NAME.hover ul.nav-detail li.menu-node.selected > a {
+  background: $COLOR_MENU_HOVER_BACKGROUND;
+}
+#nav li.bg-$COLOR_NAME.hover ul.nav-detail li.menu-action.selected > a {
+  background: url($URL_MENU_SELECTED) no-repeat scroll 5% 50% $COLOR_MENU_HOVER_BACKGROUND;
+}
+#nav li.bg-$COLOR_NAME.hover ul.nav-detail li.menu-entity.selected > a {
+  background: url($URL_MENU_SELECTED) no-repeat scroll 5% 50% $COLOR_MENU_HOVER_BACKGROUND;
+}
+#nav li.bg-$COLOR_NAME.hover ul.nav-detail a:hover {
+  background: $COLOR_MENU_HOVER_BACKGROUND;
+}
+
+#nav li.bg-$COLOR_NAME.hover ul.subMenuList li:hover {
+  background: $COLOR_MENU_HOVER_BACKGROUND;
+}
+
+#nav li.bg-$COLOR_NAME.hover p a {
+  background: $COLOR_MENU_BACKGROUND;
+  background: linear-gradient($COLOR_MENU_BACKGROUND_GRADIENT1 0, $COLOR_MENU_BACKGROUND_GRADIENT2 51%, $COLOR_MENU_BACKGROUND_GRADIENT2 51%, $COLOR_MENU_BACKGROUND 54%, $COLOR_MENU_BACKGROUND 100%);
+  border: 1px solid $COLOR_MENU_BORDER;
+  border-bottom: none;
+}
+
+#nav li.bg-$COLOR_NAME p a {
+  background: $COLOR_MENU_BACKGROUND;
+  background: linear-gradient($COLOR_MENU_BACKGROUND_GRADIENT1 0, $COLOR_MENU_BACKGROUND_GRADIENT2 51%, $COLOR_MENU_BACKGROUND_GRADIENT2 51%, $COLOR_MENU_BACKGROUND 54%, #97c1e9 100%);
+  border: 1px solid $COLOR_MENU_BORDER;
+}

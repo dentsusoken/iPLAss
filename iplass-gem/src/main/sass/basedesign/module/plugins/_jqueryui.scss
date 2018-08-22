@@ -1,0 +1,242 @@
+// jQuery UI
+//colors -> utils/colors.scss
+// $color_storm_dust_approx: #666;
+// $color_alabaster_approx: #f9f9f9;
+// $color_pumice_approx: #c8c8c8;
+// $color_celeste_approx: #cdcdcd;
+// $color_mercury_approx: #e6e6e6;
+// $color_mine_shaft_approx: #333333;
+// $color_log_cabin_approx: #222222;
+// $white: #ffffff;
+// $color_anakiwa_approx: #a2d5fa;
+// $color_pattens_blue_approx: #e0f2ff;
+// $color_matisse_approx: #0f6099;
+
+//fonts -> utils/_fonts.scss
+// $font_0: メイリオ;
+// $font_1: ヒラギノ角ゴ Pro W3;
+// $font_2: Hiragino Kaku Gothic Pro;
+// $font_3: ＭＳ Ｐゴシック;
+// $font_4: sans-serif;
+
+//urls
+$url_pju1: url(../../../../images/gem/skin/vertical/icon-calender-02.png);
+$url_pju2: url(../../../../images/gem/skin/vertical/icon-calender-03.png);
+$url_pju3: url(../../../../images/gem/skin/vertical/icon-calender-02_o.png);
+$url_pju4: url(../../../../images/gem/skin/vertical/icon-calender-03_o.png);
+
+//@extend-elements
+//original selectors
+//.ui-state-default, .ui-widget-content .ui-state-default, .ui-widget-header .ui-state-default, .ui-state-default a, .ui-state-default a:link, .ui-state-default a:visited
+%extend_pju1 {
+	color: $color_log_cabin_approx;
+	font-weight: normal;
+	background: $white;
+}
+
+//original selectors
+//.ui-state-highlight, .ui-widget-content .ui-state-highlight, .ui-widget-header .ui-state-highlight
+%extend_pju2 {
+	border-color: $color_anakiwa_approx;
+	color: $color_mine_shaft_approx;
+	background-color: $color_pattens_blue_approx;
+	background-image: none;
+}
+
+//original selectors
+//.ui-state-active, .ui-widget-content .ui-state-active, .ui-widget-header .ui-state-active
+%extend_pju3 {
+	border-color: $color_anakiwa_approx;
+	color: $color_matisse_approx;
+	background-color: $white;
+	background-image: none;
+}
+
+//original selectors
+//.ui-state-hover, .ui-widget-content .ui-state-hover, .ui-state-focus, .ui-widget-content .ui-state-focus
+%extend_pju4 {
+	border-color: $color_anakiwa_approx;
+	color: $color_matisse_approx;
+	background-color: $white;
+	background-image: none;
+}
+
+//original selectors
+//.ui-widget-header .ui-state-hover, .ui-widget-header .ui-state-focus
+%extend_pju5 {
+	border: none;
+	color: $color_matisse_approx;
+	background: none;
+	background-image: none;
+}
+
+//original selectors
+//.ui-datepicker .ui-datepicker-prev, .ui-datepicker .ui-datepicker-next
+%extend_pju6 {
+	width: 25px;
+	height: 25px;
+	top: 0;
+}
+
+//original selectors
+//.ui-state-hover.ui-datepicker-prev .ui-icon, .ui-state-focus.ui-datepicker-prev .ui-icon
+%extend_pju7 {
+	width: 25px;
+	height: 25px;
+	background: $url_pju3 no-repeat left top;
+}
+
+//original selectors
+//.ui-state-hover.ui-datepicker-next .ui-icon, .ui-state-focus.ui-datepicker-next .ui-icon
+%extend_pju8 {
+	width: 25px;
+	height: 25px;
+	background: $url_pju4 no-repeat left top;
+}
+
+
+#ui-datepicker-div {
+	display: none;
+}
+.ui-widget-content {
+	color: $color_storm_dust_approx;
+	background: $color_alabaster_approx;
+	.ui-state-default {
+		@extend %extend_pju1;
+	}
+	.ui-state-highlight {
+		@extend %extend_pju2;
+	}
+	.ui-state-active {
+		@extend %extend_pju3;
+	}
+	.ui-state-hover {
+		@extend %extend_pju4;
+	}
+	.ui-state-focus {
+		@extend %extend_pju4;
+	}
+}
+.ui-widget {
+	font-family: $font_0, $font_1, $font_2, $font_3, $font_4;
+	font-size: 109%;
+}
+.ui-datepicker {
+	width: 220px;
+	td {
+		span {
+			padding: 3px 3px 2px 2px;
+		}
+		a {
+			padding: 3px 3px 2px 2px;
+		}
+	}
+	.ui-datepicker-prev {
+		@extend %extend_pju6;
+		left: 0;
+		span {
+			margin-left: -11px;
+			margin-top: -11px;
+		}
+	}
+	.ui-datepicker-next {
+		@extend %extend_pju6;
+		right: 7px;
+		span {
+			margin-right: -11px;
+			margin-top: -11px;
+		}
+	}
+}
+.dp-weekday-label {
+	margin-left: 5px;
+	vertical-align: middle;
+}
+
+.ui-widget-header {
+	border: 1px solid $color_pumice_approx;
+	background-image: none;
+	background: $color_celeste_approx;
+	background: linear-gradient($color_mercury_approx 0, $color_celeste_approx 95%);
+	.ui-state-default {
+		@extend %extend_pju1;
+	}
+	.ui-state-highlight {
+		@extend %extend_pju2;
+	}
+	.ui-state-active {
+		@extend %extend_pju3;
+	}
+	.ui-state-hover {
+		@extend %extend_pju5;
+	}
+	.ui-state-focus {
+		@extend %extend_pju5;
+	}
+	.ui-datepicker-prev .ui-icon {
+		background-image: none;
+		background: $url_pju1 no-repeat left top;
+		width: 25px;
+		height: 25px;
+	}
+	.ui-datepicker-next .ui-icon {
+		background-image: none;
+		background: $url_pju2 no-repeat left top;
+		width: 25px;
+		height: 25px;
+	}
+}
+.ui-datepicker-title {
+	color: $color_mine_shaft_approx;
+}
+.ui-state-default {
+	@extend %extend_pju1;
+	a {
+		@extend %extend_pju1;
+		&:link {
+			@extend %extend_pju1;
+		}
+		&:visited {
+			@extend %extend_pju1;
+		}
+	}
+}
+.ui-state-highlight {
+	@extend %extend_pju2;
+}
+.ui-state-active {
+	@extend %extend_pju3;
+}
+.ui-state-hover {
+	@extend %extend_pju4;
+	&.ui-datepicker-prev .ui-icon {
+		@extend %extend_pju7;
+	}
+	&.ui-datepicker-next .ui-icon {
+		@extend %extend_pju8;
+	}
+}
+.ui-state-focus {
+	@extend %extend_pju4;
+	&.ui-datepicker-prev .ui-icon {
+		@extend %extend_pju7;
+	}
+	&.ui-datepicker-next .ui-icon {
+		@extend %extend_pju8;
+	}
+}
+//jQuery UI dialog
+.ui-dialog {
+  label,
+  span,
+  input,
+  textarea,
+  button,
+  select {
+    font-family: $font_0, $font_1, $font_2, $font_3, $font_4;
+  }
+}
+img.ui-datepicker-trigger {
+	margin: 0 5px;
+	vertical-align: middle;
+}

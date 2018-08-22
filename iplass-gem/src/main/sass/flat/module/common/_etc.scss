@@ -1,0 +1,11 @@
+//colors
+// $color_well_read_approx: #bd3031;
+
+.ico-required {
+	display: inline-block;
+	float: right;
+	padding: 0 5px;
+	margin-top: -1px;
+	color: $color_well_read_approx;
+	border: 1px solid $color_well_read_approx;
+}

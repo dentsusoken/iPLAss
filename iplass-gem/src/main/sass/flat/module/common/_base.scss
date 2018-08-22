@@ -1,0 +1,24 @@
+//colors
+// $color_venice_blue_approx: #115d85;
+// $color_green_leaf_approx: #4c7607;
+
+html {
+	font-size: 14px;
+}
+a {
+	color: $color_venice_blue_approx;
+	&:hover {
+		color: $color_venice_blue_approx;
+	}
+}
+table {
+	table-layout: fixed;
+	width: 100%;
+	font-size: 1rem;
+}
+th {
+	text-align: inherit;
+}
+.flat-block-top {
+	border-top: 2px solid $color_green_leaf_approx;
+}

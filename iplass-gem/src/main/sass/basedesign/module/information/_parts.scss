@@ -1,0 +1,66 @@
+//colors -> color/_colors.scss
+// $color_quill_gray_approx: #d5d5d5;
+// $color_alabaster_approx: #f9f9f9;
+// $white: #ffffff;
+
+//@extend-elements
+//original selectors
+//.info-list th, .info-list td
+%extend_ip1 {
+	padding: 7px;
+	background: $color_alabaster_approx;
+	text-align: left;
+}
+
+//お知らせ一覧
+.info-list {
+	.info-block {
+		border: 1px solid $color_quill_gray_approx;
+		overflow-x: hidden;
+		overflow-y: auto;
+	}
+	.tbl-information-list {
+		border: none;
+		width: 100%;
+	}
+	th {
+		@extend %extend_ip1;
+	}
+	td {
+		@extend %extend_ip1;
+	}
+	.odd {
+		th {
+			background: $white;
+		}
+		td {
+			background: $white;
+		}
+	}
+	.sec {
+		width: 140px;
+	}
+	.min {
+		width: 120px;
+	}
+	.hour {
+		width: 100px;
+	}
+	.none {
+		width: 80px;
+	}
+	.pw-warn-area {
+		margin: 2px 0 20px;
+		padding: 7px 0;
+		a {
+			text-decoration: underline;
+		}
+    span {
+      margin: 0 10px 0;
+    }
+	}
+	.pw-warn-mark {
+		margin: 0 7px;
+		float: left;
+	}
+}

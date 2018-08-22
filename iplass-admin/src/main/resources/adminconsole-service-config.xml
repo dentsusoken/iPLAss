@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!DOCTYPE serviceDefinition>
+<serviceDefinition>
+
+	<!-- for Admin Console -->
+
+	<service>
+		<interface>org.iplass.mtp.impl.web.WebFrontendService</interface>
+		<property name="excludePath" value="(/admin/mtpadmin/.*)" additional="true" />
+	</service>
+
+	<!-- リポジトリ関連 -->
+	<service>
+		<interface>org.iplass.mtp.impl.metadata.MetaDataRepository</interface>
+		<property name="annotatedClass" value="org.iplass.adminconsole.server.connect.MetaDataRefs" additional="true" />
+	</service>
+
+	<service>
+		<interface>org.iplass.adminconsole.server.base.service.AdminConsoleService</interface>
+
+		<!-- GWT系JSを取得する際のリソースPrefix -->
+		<property name="resourcePrefixPath" value="/admin" />
+
+		<!-- AdminConsole上で環境情報としてサーバ情報を表示するか -->
+		<property name ="showServerInfo" value="true" />
+
+		<!-- AdminConsoleで参照可能なログの設定 -->
+		<property name="logDownloadConfig" class="org.iplass.adminconsole.server.base.service.LogConfig">
+			<property name="enabled" value="true" />
+
+			<!--
+				ログファイルの格納フォルダを指定
+				${tenantId}:テナントID
+				${tenantName}:テナント名
+				*:任意のフォルダ名
+
+				例1：/logs/${tenantId}/
+					/logs/フォルダ直下にテナントIDのフォルダがあり、それ以降にテナントごとのログがある。
+
+				例2：/logs/*/${tenantId}/
+					/logs/フォルダ直下に任意のフォルダがあり、その下にテナントIDのフォルダ、それ以降にテナントごとのログがある。
+					例えば、複数サーバのログを/logs/ap1/、/logs/ap2/などに配置している場合。
+			-->
+			<property name="logHome" value="/logs/${tenantId}/" />
+
+			<!--
+				ファイル名に対するFilterを指定(正規表現)
+
+				例：.*app\.log.* (== *app.log*)
+			-->
+			<property name="fileFilter" value=".*app\.log.*" />
+		</property>
+
+	</service>
+
+	<service>
+		<interface>org.iplass.adminconsole.server.base.service.auditlog.AdminAuditLoggingService</interface>
+
+		<!-- logファイルへの出力時、LongTextなど長すぎる文字列を全部出力しない場合はtrue -->
+		<property name="logCompact" value="false" />
+		<!-- logCompactがtrueの場合、最大文字数（デフォルト256文字まで） -->
+		<!-- property name="textMaxLength" value="256" / -->
+
+		<!-- if log query, set to true -->
+		<property name="logQuery" value="false" />
+	</service>
+
+</serviceDefinition>

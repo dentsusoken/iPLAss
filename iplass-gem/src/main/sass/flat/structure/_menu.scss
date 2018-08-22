@@ -1,0 +1,488 @@
+//@extend-elements
+//original selectors
+//#nav .sub-open p::before, #nav li:hover p::before
+%extend__mn_1 {
+	content: '';
+	display: block;
+	position: absolute;
+	top: 0;
+	left: 0;
+	height: 100%;
+	width: 4px;
+	background: $color_blue_chill_approx;
+}
+
+//original selectors
+//#nav .navicon, #nav .listicon
+%extend__mn_2 {
+	color: $white;
+	right: initial;
+	left: 21px;
+	top: 18px;
+	font-size: 1rem;
+}
+
+//original selectors
+//#nav .nav-detail .navicon, #nav .nav-detail .listicon
+%extend__mn_3 {
+	top: 7px;
+	left: 55px;
+	font-size: 1rem;
+}
+
+//original selectors
+//#nav .nav-detail .navicon i, #nav .nav-detail .listicon i
+%extend__mn_4 {
+	font-size: 1.33333333em;
+	line-height: .75em;
+	vertical-align: -15%;
+}
+
+//original selectors
+//.nav-closed #nav >ul >li >p >a, .nav-closed #nav .home a
+%extend__mn_5 {
+	width: 60px;
+	overflow: hidden;
+	padding-left: 0;
+	padding-right: 0;
+	text-indent: -9999px;
+}
+
+//original selectors
+//.nav-closed #nav >ul >.menu-action:hover a, .nav-closed #nav >ul >.menu-entity:hover a, .nav-closed #nav >ul >.menu-url:hover a
+%extend__mn_6 {
+	width: 130px;
+	text-indent: 0;
+	padding-left: 90px;
+	padding-right: 60px;
+	display: flex;
+}
+
+
+#snav {
+	float: left;
+	position: absolute;
+	width: 250px;
+	height: auto !important;
+	min-height: 100% !important;
+	background: $color_mine_shaft_approx;
+	overflow: hidden;
+	z-index: 41;
+	//Instead of the line below you could use @include transition($transition-1, $transition-2, $transition-3, $transition-4, $transition-5, $transition-6, $transition-7, $transition-8, $transition-9, $transition-10)
+	transition: width cubic-bezier(0.645, 0.045, 0.355, 1) 400ms;
+}
+#nav-menu {
+	overflow: hidden;
+	display: block;
+	height: 60px;
+	width: 250px;
+	padding: 0;
+	border: 0;
+	background: $color_elm_approx;
+	li {
+		float: left;
+		font-size: 11px;
+		letter-spacing: -0.01em;
+		margin: 0 !important;
+		height: 60px;
+		width: 125px;
+		//Instead of the line below you could use @include transition($transition-1, $transition-2, $transition-3, $transition-4, $transition-5, $transition-6, $transition-7, $transition-8, $transition-9, $transition-10)
+		transition: opacity 300ms;
+		a {
+			display: block;
+			text-align: center;
+			height: 100%;
+			width: 100%;
+			line-height: 60px;
+			color: $white !important;
+			font-size: 1rem;
+			background: $color_plantation_approx;
+			letter-spacing: 0.07143rem;
+			//Instead of the line below you could use @include transition($transition-1, $transition-2, $transition-3, $transition-4, $transition-5, $transition-6, $transition-7, $transition-8, $transition-9, $transition-10)
+			transition: background 300ms;
+			&:hover {
+				text-decoration: none;
+				background: $color_mosque_approx;
+			}
+		}
+		&.current a {
+			background: $color_blue_chill_approx !important;
+		}
+	}
+}
+#nav {
+	li {
+		position: relative;
+		&:hover p::before {
+			@extend %extend__mn_1;
+		}
+	}
+	.home {
+		a {
+			display: flex;
+			float: left;
+			position: relative;
+			padding: 10px 60px;
+			height: 40px;
+			width: 130px;
+			align-items: center;
+			//Instead of the line below you could use @include border-radius($radius, $vertical-radius)
+			border-radius: 0;
+			font-size: 1rem;
+			letter-spacing: 0.14286rem;
+			color: $white;
+		}
+		a::before {
+			content: '';
+			display: block;
+			position: absolute;
+			top: 0;
+			left: 0;
+			height: 60px;
+			width: 60px;
+			background-image: $url__mn_1;
+		}
+		&:hover::before {
+			content: '';
+			display: block;
+			position: absolute;
+			left: 0;
+			top: 0;
+			height: 100%;
+			width: 4px;
+			background: $color_blue_chill_approx;
+			z-index: 1;
+		}
+	}
+	.navicon {
+		position: absolute;
+		@extend %extend__mn_2;
+		svg {
+			font-size: 1.6em;
+		}
+	}
+	.nav-detail {
+		float: left;
+		display: none;
+		width: 100%;
+		border: 0 !important;
+		padding: 10px 0;
+		background: $color_log_cabin_approx;
+		li {
+			display: block;
+			float: left;
+			width: 100%;
+			//Instead of the line below you could use @include box-sizing($bs)
+			box-sizing: border-box;
+			padding-left: 60px;
+		}
+		a {
+			display: block;
+			position: relative;
+			padding: 4px 0 4px 20px;
+			font-size: 1rem;
+			color: $white;
+			&:hover {
+				color: $color_selective_yellow_approx;
+			}
+		}
+		a::before {
+			content: '\25B6';
+			display: inline-block;
+			position: absolute;
+			left: 0;
+			color: $white;
+		}
+		.navicon {
+			@extend %extend__mn_3;
+			svg {
+				@extend %extend__mn_4;
+			}
+		}
+		.listicon {
+			@extend %extend__mn_3;
+			svg {
+				@extend %extend__mn_4;
+			}
+		}
+		.subMenuRoot li {
+			padding-left: 30px;
+		}
+		.subMenuList .listicon {
+			position: absolute;
+			left: 26px;
+		}
+	}
+	.listicon {
+		@extend %extend__mn_2;
+		svg {
+			font-size: 1.6em;
+		}
+	}
+	a:hover {
+		text-decoration: none;
+	}
+	> ul > li {
+		display: block;
+		float: left;
+		margin: 0;
+		border: 0 !important;
+		width: 250px;
+		padding: 0 !important;
+		cursor: pointer;
+		//Instead of the line below you could use @include transition($transition-1, $transition-2, $transition-3, $transition-4, $transition-5, $transition-6, $transition-7, $transition-8, $transition-9, $transition-10)
+		transition: background 300ms;
+		p {
+			display: block;
+			float: left;
+			position: relative;
+			> a {
+				display: flex;
+				float: left;
+				position: relative;
+				padding: 10px 60px;
+				height: 40px;
+				width: 130px;
+				align-items: center;
+				//Instead of the line below you could use @include border-radius($radius, $vertical-radius)
+				border-radius: 0;
+				border: 0 !important;
+				font-size: 1rem;
+				letter-spacing: 0.14286rem;
+				color: $white;
+			}
+			> a::before {
+				content: '';
+				display: block;
+				position: absolute;
+				top: 0;
+				left: 0;
+				height: 60px;
+				width: 60px;
+				background: center center no-repeat;
+			}
+		}
+		> p {
+			> a::before {
+				background-image: $url__mn_2;
+			}
+			> .navicon + a::before {
+				background-image: none;
+			}
+		}
+		&.sub-open {
+			background: $color_cape_cod_approx !important;
+		}
+		&:hover {
+			background: $color_cape_cod_approx !important;
+		}
+		&.selected {
+			background: $color_pacific_blue_15_approx;
+		}
+		&.menu-node > p > a {
+			padding-right: 60px;
+		}
+		ul.nav-detail li {
+			.navicon + a::before {
+				display: none;
+			}
+			.listicon + a::before {
+				display: none;
+			}
+		}
+	}
+	.menu-node > p > a::after {
+		content: '\2026';
+		display: block;
+		position: absolute;
+		top: 0;
+		right: 0;
+		height: 60px;
+		width: 60px;
+		line-height: 60px;
+		text-align: center;
+		font-size: 1.42857rem;
+	}
+	.sub-open p::before {
+		@extend %extend__mn_1;
+	}
+	.selected .nav-detail .selected a {
+		color: $color_blue_chill_approx;
+	}
+	.bg-green > p > .navicon i {
+		color: $color_apple_approx;
+	}
+	.bg-yellow > p > .navicon i {
+		color: $color_amber_approx;
+	}
+	.bg-red > p > .navicon i {
+		color: $color_red_orange_approx;
+	}
+	.bg-blue > p > .navicon i {
+		color: $color_dodger_blue_approx;
+	}
+}
+.nav-closed {
+	.cms-title {
+		background-image: $url__mn_3 !important;
+		width: 60px;
+	}
+	#nav-menu {
+		width: 60px;
+		li {
+			visibility: hidden;
+			opacity: 0;
+			pointer-events: none;
+		}
+	}
+	#nav-menu::before {
+		content: '\2026';
+		display: block;
+		position: absolute;
+		top: 0;
+		left: 0;
+		height: 60px;
+		width: 60px;
+		line-height: 60px;
+		text-align: center;
+		font-size: 1.42857rem;
+		color: $white;
+	}
+	#nav {
+		width: 60px;
+		> ul {
+			width: 60px;
+			> li {
+				width: 60px;
+				p::before {
+					content: none;
+				}
+				&:hover::before {
+					content: '';
+					display: block;
+					position: absolute;
+					top: 0;
+					height: 100%;
+					width: 4px;
+					background: $color_blue_chill_approx;
+				}
+				&.sub-open:hover {
+					background: $color_cape_cod_approx !important;
+				}
+				> p > a {
+					@extend %extend__mn_5;
+					display: block;
+				}
+				&:hover .nav-detail {
+					display: block !important;
+				}
+			}
+			> {
+				.menu-action {
+					//Instead of the line below you could use @include transition($transition-1, $transition-2, $transition-3, $transition-4, $transition-5, $transition-6, $transition-7, $transition-8, $transition-9, $transition-10)
+					transition: background 200ms;
+					&:hover {
+						width: 280px;
+						a {
+							@extend %extend__mn_6;
+						}
+					}
+				}
+				.menu-entity {
+					//Instead of the line below you could use @include transition($transition-1, $transition-2, $transition-3, $transition-4, $transition-5, $transition-6, $transition-7, $transition-8, $transition-9, $transition-10)
+					transition: background 200ms;
+					&:hover {
+						width: 280px;
+						a {
+							@extend %extend__mn_6;
+						}
+					}
+				}
+				.menu-url {
+					//Instead of the line below you could use @include transition($transition-1, $transition-2, $transition-3, $transition-4, $transition-5, $transition-6, $transition-7, $transition-8, $transition-9, $transition-10)
+					transition: background 200ms;
+					&:hover {
+						width: 280px;
+						a {
+							@extend %extend__mn_6;
+						}
+					}
+				}
+			}
+		}
+		.home {
+			a {
+				@extend %extend__mn_5;
+				//Instead of the line below you could use @include transition($transition-1, $transition-2, $transition-3, $transition-4, $transition-5, $transition-6, $transition-7, $transition-8, $transition-9, $transition-10)
+				transition: background 200ms;
+			}
+			&:hover {
+				width: 280px;
+				a {
+					width: 160px;
+					padding: 10px 60px;
+					span {
+						padding-left: 30px;
+						text-indent: 0;
+					}
+				}
+			}
+		}
+		li {
+			ul {
+				&.nav-detail {
+					display: none !important;
+					display: block;
+					position: absolute;
+					background: $color_cod_gray_88_approx;
+					width: 220px;
+					left: 60px;
+					top: 0;
+					padding: 0;
+					li {
+						padding-left: 30px !important;
+						&:last-child {
+							margin-bottom: 20px;
+						}
+						&.subMenuRoot li:last-child {
+							margin-bottom: 0;
+						}
+					}
+				}
+				&.nav-detail::before {
+					content: attr(data-category);
+					display: flex;
+					float: left;
+					width: 100%;
+					padding: 10px 30px;
+					//Instead of the line below you could use @include box-sizing($bs)
+					box-sizing: border-box;
+					font-size: 1.07143rem;
+					color: $white;
+					background: $color_cape_cod_approx;
+					margin-bottom: 20px;
+					height: 60px;
+					align-items: center;
+				}
+			}
+			.nav-detail span {
+				&.navicon {
+					left: 25px;
+				}
+				&.listicon {
+					left: 25px;
+				}
+			}
+		}
+	}
+	#snav {
+		width: 60px;
+		overflow: visible;
+	}
+	#main-inner {
+		margin-left: 90px;
+	}
+	#footer {
+		padding-left: 90px;
+	}
+}

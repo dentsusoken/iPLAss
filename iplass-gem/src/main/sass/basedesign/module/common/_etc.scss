@@ -1,0 +1,36 @@
+//colors -> color/_colors.scss
+// $white: #ffffff;
+// $color_bright_red_approx: #ac0000;
+// $color_tapa_approx: #777777;
+
+//urls
+// $url_ce1: url(../../../../images/gem/skin/vertical/loading.gif);
+
+//必須
+.ico-required {
+	padding: 1px 6px;
+	//Instead of the line below you could use @include border-radius($radius, $vertical-radius)
+	border-radius: 6px;
+	color: $white;
+	background: $color_bright_red_approx;
+	font-size: 84%;
+	white-space: nowrap;
+}
+//説明文
+.explanation {
+	color: $color_tapa_approx;
+	font-size: 84%;
+}
+//ロード画像
+p.loading {
+	background: $url_ce1 no-repeat scroll 0 0 transparent;
+	height: 16px;
+	margin: 2px;
+	width: 16px;
+}
+//横スクロール
+div.box-scroll {
+	overflow-x: auto;
+	overflow-y: hidden;
+	width: 100%;
+}

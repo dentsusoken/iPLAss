@@ -1,0 +1,92 @@
+@import "vars/urls";
+@import "../../basedesign/module/vars/colors";
+@import "../../basedesign/module/vars/fonts";
+
+/*--------
+ 共通
+--------*/
+@import "../../basedesign/module/utils/margin";
+@import "../../basedesign/module/utils/padding";
+@import "../../basedesign/module/utils/align";
+@import "../../basedesign/module/utils/float";
+@import "../../basedesign/module/utils/font";
+
+/* タイトル */
+@import "../../basedesign/module/common/header";
+
+/* タブエリア */
+@import "../../basedesign/module/common/tabs";
+
+/* テーブル */
+@import "../../basedesign/module/common/table";
+
+/* コンポーネント */
+@import "../../basedesign/module/common/input";
+@import "../../basedesign/module/common/modal";
+@import "../../basedesign/module/common/tooltip";
+@import "../../basedesign/module/common/etc";
+@import "../../basedesign/module/common/operation";
+
+@import "../../basedesign/module/error/error";
+
+/*--------
+ プラグイン
+--------*/
+@import "../../basedesign/module/plugins/jqueryui";
+@import "../../basedesign/module/plugins/contextmenu";
+@import "../../basedesign/module/plugins/jqgrid";
+@import "../../basedesign/module/plugins/jqtree";
+@import "../../basedesign/module/plugins/ckeditor";
+
+/*--------
+ パーツ
+--------*/
+@import "../../basedesign/module/information/parts";
+@import "../../basedesign/module/auth/lastlogin";
+@import "../../basedesign/module/topview/separator";
+
+/*--------
+ ウィジェット
+--------*/
+@import "../../basedesign/module/topview/widget";
+@import "../../basedesign/module/calendar/widget";
+@import "../../basedesign/module/generic/search/widget";
+@import "../../basedesign/module/treeview/widget";
+
+/*--------
+ 認証系
+--------*/
+@import "../../basedesign/module/auth/maintenance";
+
+/*--------
+ 汎用画面
+--------*/
+@import "../../basedesign/module/generic/common";
+
+/* 検索画面 */
+@import "../../basedesign/module/generic/search/search";
+@import "../../basedesign/module/generic/search/trash";
+@import "../../basedesign/module/generic/search/upload";
+
+/* 詳細画面 */
+@import "../../basedesign/module/generic/detail/detail";
+
+/*--------
+ お知らせ
+--------*/
+@import "../../basedesign/module/information/detail";
+
+/*--------
+ 全文検索
+--------*/
+@import "../../basedesign/module/fulltextsearch/fulltextsearch";
+
+/*--------
+ カレンダー
+--------*/
+@import "../../basedesign/module/calendar/calendar";
+
+/*--------
+ About
+--------*/
+@import "../../basedesign/module/about/about";

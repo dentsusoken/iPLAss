@@ -1,0 +1,134 @@
+#header-container {
+	margin: 0 auto 0;
+	border-top: 5px solid $black;
+	border-bottom: 1px solid $color_star_dust_approx;
+	width: 100%;
+}
+#header {
+	padding: 9px 15px 11px;
+	border-bottom: 1px solid $white;
+	background: $color_gray_nurse_approx;
+	background: linear-gradient($white 0, $color_gray_nurse_approx 100%) repeat 0 0;
+	zoom: 1;
+	#title {
+		float: left;
+		h1 {
+			font-size: 184%;
+			vertical-align: middle;
+			letter-spacing: -0.02em;
+			span {
+				position: relative;
+				top: 2px;
+				font-weight: bold;
+				font-family: $font_0, $font_1;
+				color: $color_fuscous_gray_approx;
+			}
+			.tenant-mini-image {
+				display: none;
+			}
+		}
+	}
+	div.inner-r {
+		padding: 0 16px 13px;
+		height: 75px;
+	}
+}
+body {
+	&#login {
+		#content {
+			margin: 60px auto;
+		}
+		#main {
+			float: none;
+			margin: 0 auto;
+			width: 335px;
+			h2 {
+				background-image: none;
+				margin-bottom: 20px;
+				padding-left: 0;
+				font-size: 19px;
+				font-weight: bolder;
+				letter-spacing: 3px;
+			}
+		}
+		.login-logo {
+			display: none;
+		}
+	}
+	&#verify2nd {
+		#content {
+			margin: 60px auto;
+		}
+		#main {
+			float: none;
+			margin: 0 auto;
+			height: auto;
+			width: 450px;
+			h2 {
+				background-image: none;
+				margin-bottom: 20px;
+				padding-left: 0;
+				font-size: 19px;
+				font-weight: bolder;
+				letter-spacing: 3px;
+			}
+			.verifyCodeSection {
+				margin-bottom: 20px;
+			}
+			#verifyMethods div {
+				background: inherit;
+				border: inherit;
+			}
+		}
+	}
+}
+p {
+	&.nav-login-01 {
+		margin-top: 10px;
+		text-align: center;
+	}
+	&.nav-login-02 {
+		margin-top: 10px;
+	}
+}
+table {
+	&.tbl-login-01 {
+		th {
+			font-weight: bold;
+			text-align: left;
+			width: 80px;
+		}
+		td {
+			width: 255px;
+		}
+		input {
+			width: 250px;
+		}
+		input[type=checkbox] {
+			width: 20px;
+		}
+	}
+	&.tbl-login-02 {
+		width: 100%;
+		th {
+			font-weight: bold;
+			text-align: left;
+			width: 50%;
+			padding-bottom: 5px;
+		}
+		td {
+			width: 50%;
+			padding-bottom: 5px;
+		}
+		input {
+			width: 90%;
+		}
+		select {
+			width: 90%;
+		}
+	}
+}
+
+.expire {
+	width: 400px;
+}

@@ -1,0 +1,76 @@
+/*
+ * Copyright (C) 2017 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
+ *
+ * Unless you have purchased a commercial license,
+ * the following license terms apply:
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+.ui-widget-header {
+  background: #ff9800; }
+
+.flat-block-top {
+  border-top: 2px solid #ff9800; }
+
+.ui-accordion .ui-state-active {
+  border: 1px solid #ff9800; }
+
+.ui-accordion .ui-widget-content .ui-state-active {
+  border: 1px solid #ff9800; }
+  .ui-accordion .ui-widget-content .ui-state-active.ui-state-hover {
+    border: 1px solid #ff9800; }
+
+.ui-accordion .ui-widget-header .ui-state-active {
+  border: 1px solid #ff9800; }
+  .ui-accordion .ui-widget-header .ui-state-active.ui-state-hover {
+    border: 1px solid #ff9800; }
+
+.tabList {
+  border-top: 2px solid #ff9800; }
+  .tabList .tab-menu li::after {
+    border-top: 11px solid #ff9800; }
+  .tabList .tab-menu li.current {
+    background: #ff9800; }
+    .tabList .tab-menu li.current a {
+      background: #ff9800; }
+
+.formArchive {
+  border-top: 2px solid #ff9800; }
+
+input[type=button].gr-btn {
+  background-color: #ff9800; }
+  input[type=button].gr-btn:hover {
+    background-color: #ff5722; }
+
+input[type=submit].gr-btn {
+  background-color: #ff9800; }
+  input[type=submit].gr-btn:hover {
+    background-color: #ff5722; }
+
+ul.jqtree-tree li.jqtree-selected > .jqtree-element {
+  background: #ffe0b2; }
+  ul.jqtree-tree li.jqtree-selected > .jqtree-element:hover {
+    background: #ffe0b2; }
+
+.ui-jqgrid .ui-jqgrid-bdiv tr.ui-row-ltr > td.jqgrid_select_cell {
+  background-color: #ffe0b2 !important; }
+
+#header-container #header {
+  background: #ff9800; }
+
+body.nomenu-layout #header-container .cms-title {
+  background-color: #ff9800; }
+
+h3.hgroup-02-01::before {
+  background: #f57c00; }

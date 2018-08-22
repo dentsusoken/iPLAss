@@ -1,0 +1,170 @@
+/*
+ * Copyright (C) 2011 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
+ * 
+ * Unless you have purchased a commercial license,
+ * the following license terms apply:
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ * 
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
+package org.iplass.mtp.impl.web.actionmapping;
+
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
+import org.iplass.mtp.impl.web.ParameterValueMap;
+import org.iplass.mtp.impl.web.RequestPath;
+import org.iplass.mtp.impl.web.actionmapping.MetaActionMapping.ActionMappingRuntime;
+import org.iplass.mtp.impl.web.actionmapping.ParamMap.ParamMapRuntime;
+
+
+public class VariableParameterValueMap implements ParameterValueMap {
+
+	private ParameterValueMap wrapped;
+	private ActionMappingRuntime actionMapping;
+	private RequestPath reqPath;
+	
+	private boolean noSubPath;
+	private String subPath;
+	private String[] fullPaths;
+	private String[] subPaths;
+	
+	private Map<String, Object> paramMap;
+
+	public VariableParameterValueMap(ParameterValueMap wrapped, RequestPath reqPath, ActionMappingRuntime actionMapping) {
+		this.reqPath = reqPath;
+		this.wrapped = wrapped;
+		this.actionMapping = actionMapping;
+	}
+	
+	ParameterValueMap getWrapped() {
+		return wrapped;
+	}
+	
+	String getSubPath() {
+		if (noSubPath) {
+			return null;
+		}
+		
+		if (subPath == null) {
+			//Action名除去
+			String path = reqPath.getTargetPath(true);
+			String actionName = actionMapping.getMetaData().getName();
+			if (path.length() > actionName.length()) {
+				subPath = path.substring(actionName.length() + 1);
+			} else {
+				noSubPath = true;
+			}
+		}
+		
+		return subPath;
+	}
+	
+	String[] getFullPaths() {
+		if (fullPaths == null) {
+			String path = reqPath.getTargetPath(true);
+			fullPaths = path.split("/");
+		}
+		return fullPaths;
+	}
+
+	String[] getSubPaths() {
+		if (subPaths == null) {
+			String sp = getSubPath();
+			if (sp == null) {
+				subPaths = new String[0];
+			} else {
+				subPaths = sp.split("/");
+			}
+		}
+		return subPaths;
+	}
+	
+
+	@Override
+	public void cleanTempResource() {
+		wrapped.cleanTempResource();
+	}
+
+	@Override
+	public Object getParam(String name) {
+		Map<String, List<ParamMapRuntime>> map = actionMapping.getParamMapRuntimes();
+		if (map != null) {
+			List<ParamMapRuntime> pmrList = map.get(name);
+			if (pmrList != null) {
+				for (ParamMapRuntime pmr: pmrList) {
+					if (pmr.isTarget(this)) {
+						return pmr.getParam(this);
+					}
+				}
+			}
+		}
+		
+		return wrapped.getParam(name);
+	}
+	
+	@Override
+	public Object[] getParams(String name) {
+		Map<String, List<ParamMapRuntime>> map = actionMapping.getParamMapRuntimes();
+		if (map != null) {
+			List<ParamMapRuntime> pmrList = map.get(name);
+			if (pmrList != null) {
+				for (ParamMapRuntime pmr: pmrList) {
+					if (pmr.isTarget(this)) {
+						return pmr.getParams(this);
+					}
+				}
+			}
+		}
+		
+		return wrapped.getParams(name);
+	}
+
+	@Override
+	public Map<String, Object> getParamMap() {
+		if (paramMap == null) {
+			Map<String, List<ParamMapRuntime>> map = actionMapping.getParamMapRuntimes();
+			if (map == null) {
+				paramMap = wrapped.getParamMap();
+			} else {
+				paramMap = new HashMap<String, Object>(wrapped.getParamMap());
+				for (Map.Entry<String, List<ParamMapRuntime>> e: map.entrySet()) {
+					for (ParamMapRuntime pmr: e.getValue()) {
+						if (pmr.isTarget(this)) {
+							Object[] vals = pmr.getParams(this);
+							if (vals != null) {
+								paramMap.put(e.getKey(), vals);
+							}
+							break;
+						}
+					}
+				}
+			}
+		}
+		
+		return paramMap;
+	}
+
+	@Override
+	public Iterator<String> getParamNames() {
+		return getParamMap().keySet().iterator();
+	}
+	
+	public boolean hasParamMapDefs() {
+		return actionMapping.getParamMapRuntimes() != null;
+	}
+
+}

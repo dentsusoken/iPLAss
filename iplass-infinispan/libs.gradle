@@ -1,0 +1,8 @@
+dependencies {
+	compile (group: 'org.infinispan', name: 'infinispan-core', version: '9.1.6.Final') {
+		exclude(group: 'log4j')//use log4j-over-slf4j
+	}
+	runtime 'org.slf4j:log4j-over-slf4j:1.7.21'
+
+	testCompile 'junit:junit:4.12'
+}

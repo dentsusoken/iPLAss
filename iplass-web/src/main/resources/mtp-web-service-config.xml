@@ -1,0 +1,393 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!DOCTYPE serviceDefinition>
+<serviceDefinition>
+	<service>
+		<interface>org.iplass.mtp.impl.core.ManagerFactory</interface>
+		<property name="org.iplass.mtp.web.actionmapping.definition.ActionMappingDefinitionManager" value="org.iplass.mtp.impl.web.actionmapping.ActionMappingDefinitionManagerImpl" />
+		<property name="org.iplass.mtp.web.staticresource.definition.StaticResourceDefinitionManager" value="org.iplass.mtp.impl.web.staticresource.StaticResourceDefinitionManagerImpl" />
+		<property name="org.iplass.mtp.web.template.definition.TemplateDefinitionManager" value="org.iplass.mtp.impl.web.template.TemplateDefinitionManagerImpl" />
+		<property name="org.iplass.mtp.webapi.definition.EntityWebApiDefinitionManager" value="org.iplass.mtp.impl.webapi.EntityWebApiDefinitionManagerImpl" />
+		<property name="org.iplass.mtp.webapi.definition.WebApiDefinitionManager" value="org.iplass.mtp.impl.webapi.WebApiDefinitionManagerImpl" />
+	</service>
+
+	<!-- MetaData JAXB configuration -->
+	<service>
+		<interface>org.iplass.mtp.impl.metadata.MetaDataJAXBService</interface>
+		<property name="classToBeBound" value="org.iplass.mtp.impl.metadata.refs.web.WebRootMetaDatas" additional="true" />
+	</service>
+
+	<!-- MetaData Repository configuration -->
+	<service>
+		<interface>org.iplass.mtp.impl.metadata.MetaDataRepository</interface>
+		<property name="annotatedClass" value="org.iplass.mtp.impl.webapi.command.MetaDataRefs" additional="true" />
+		<property name="resourcePath" value="/mtp-web-metadata.xml" additional="true" />
+
+		<!-- shared MetaData config -->
+		<property name="sharedStore" class="org.iplass.mtp.impl.metadata.annotation.AnnotationMetaDataStore" additional="true">
+			<property name="annotatableMetaDataFactory" class="org.iplass.mtp.impl.web.actionmapping.MetaActionMappingFactory" />
+			<property name="annotatableMetaDataFactory" class="org.iplass.mtp.impl.web.actionmapping.MetaActionMappingsFactory" />
+			<property name="annotatableMetaDataFactory" class="org.iplass.mtp.impl.web.template.MetaTemplateFactory" />
+			<property name="annotatableMetaDataFactory" class="org.iplass.mtp.impl.web.template.MetaTemplatesFactory" />
+			<property name="annotatableMetaDataFactory" class="org.iplass.mtp.impl.webapi.MetaWebApiFactory" />
+			<property name="annotatableMetaDataFactory" class="org.iplass.mtp.impl.webapi.MetaWebApisFactory" />
+		</property>
+ 	</service>
+
+	<!-- Definition Service -->
+	<service>
+		<interface>org.iplass.mtp.impl.definition.DefinitionService</interface>
+		<property name="typeMap" value="org.iplass.mtp.impl.web.actionmapping.ActionMappingService$TypeMap" additional="true" />
+		<property name="typeMap" value="org.iplass.mtp.impl.webapi.EntityWebApiService$TypeMap" additional="true" />
+		<property name="typeMap" value="org.iplass.mtp.impl.web.template.TemplateService$TypeMap" additional="true" />
+		<property name="typeMap" value="org.iplass.mtp.impl.webapi.WebApiService$TypeMap" additional="true" />
+		<property name="typeMap" value="org.iplass.mtp.impl.web.staticresource.StaticResourceService$TypeMap" additional="true" />
+	</service>
+
+	<!-- Tenant関連 -->
+	<service>
+		<interface>org.iplass.mtp.impl.core.TenantContextService</interface>
+		<property name="tenantResource" value="org.iplass.mtp.impl.web.actionmapping.cache.ContentCacheContext" additional="true" />
+	</service>
+	<service>
+		<interface>org.iplass.mtp.impl.script.ScriptService</interface>
+		<property name="initScript" value="/org/iplass/mtp/impl/script/web/InitScript.gr" additional="true" />
+	</service>
+	<service>
+		<interface>org.iplass.mtp.impl.tenant.MetaTenantService</interface>
+
+		<!-- tenant config type map -->
+		<property name="configType" additional="true">
+			<property name="definitionClass" value="org.iplass.mtp.tenant.web.TenantWebInfo" />
+			<property name="metadataClass" value="org.iplass.mtp.impl.tenant.web.MetaTenantWebInfo" />
+			<property name="scriptBindingName" value="tenantWebInfo" />
+		</property>
+	</service>
+
+	<!-- 認証関連 -->
+	<service>
+		<interface>org.iplass.mtp.impl.auth.AuthService</interface>
+		<property name="authenticationProvider" class="org.iplass.mtp.impl.auth.authenticate.rememberme.RememberMeTokenAuthenticationProvider"  inherit="false">
+			<property name="deleteTokenOnFailure" value="true" />
+			<property name="clientStore" class="org.iplass.mtp.impl.auth.authenticate.token.web.AuthTokenCookieStore">
+				<property name="cookieName" value="iprmtkn" />
+			</property>
+
+			<property name="authenticationProvider" class="org.iplass.mtp.impl.auth.authenticate.builtin.BuiltinAuthenticationProvider">
+	 			<property name="updatable" value="true" />
+	 			<property name="providerName" value="default" />
+
+	 			<!-- if load custom reference property at login, set userEntityResolver.eagerLoadReferenceProperty -->
+	 			<!--
+	 			<property name="userEntityResolver" class="org.iplass.mtp.impl.auth.authenticate.DefaultUserEntityResolver">
+		 			<property name="eagerLoadReferenceProperty" value="rank" />
+		 			<property name="eagerLoadReferenceProperty" value="groups" />
+		 			<property name="eagerLoadReferenceProperty" value="yourCustomReference" />
+	 			</property>
+	 			 -->
+
+				<property name="passwordHashSettings">
+					<property name="version" value="1" />
+					<property name="passwordHashAlgorithm" value="SHA-256" />
+					<property name="systemSalt" value="iPLAssSystemSalt" />
+					<property name="stretchCount" value="1000" />
+				</property>
+			</property>
+		</property>
+
+		<property name="authenticationProvider" class="org.iplass.mtp.impl.auth.authenticate.simpletoken.SimpleAuthTokenAuthenticationProvider" inherit="false">
+ 			<property name="providerName" value="simpleAuthToken" />
+ 			<property name="credentialTypeForTrust" value="org.iplass.mtp.auth.login.IdPasswordCredential" />
+ 			<property name="accountHandleClassForTrust" value="org.iplass.mtp.impl.auth.authenticate.builtin.BuiltinAccountHandle" />
+ 			<property name="autoLoginHandler" class="org.iplass.mtp.impl.auth.authenticate.token.web.BearerTokenAutoLoginHandler" />
+		</property>
+
+		<property name="authorizationProvider" class="org.iplass.mtp.impl.auth.authorize.builtin.BuiltinAuthorizationProvider">
+			<property name="authorizationContextHandler" class="org.iplass.mtp.impl.auth.authorize.builtin.action.ActionAuthContextHandler" additional="true" />
+			<property name="authorizationContextHandler" class="org.iplass.mtp.impl.auth.authorize.builtin.webapi.WebApiAuthContextHandler" additional="true" />
+		</property>
+	</service>
+
+	<!-- Web関連 -->
+	<service>
+		<interface>org.iplass.mtp.impl.web.WebFrontendService</interface>
+		<class>org.iplass.mtp.impl.web.WebFrontendService</class>
+		<!-- welcome file(action) -->
+		<property name="welcomeAction" value="index" />
+		<property name="transactionTokenMaxSize" value="50" />
+		<property name="defaultClientCacheType" value="CACHE" />
+		<!-- DispatcherFilterで処理しないpathの定義 -->
+		<!-- static contents -->
+		<property name="excludePath" value="(/errorhtml/.*)|(/images/.*)|(/scripts/.*)|(/styles/.*)|(/favicon.ico)|(/webjars/.*)" />
+		<!-- servlet implementation -->
+		<property name="excludePath" value="(/checkStatus)|(/cmcs)" />
+
+		<!-- WebAPI(REST)のpathの定義 -->
+		<property name="restPath" value="/api/" />
+		<!-- ログアウト時にキックするURL -->
+		<property name="logoutUrl" value="logout" />
+		<!-- エラーページの設定 -->
+		<!--
+		<property name="errorUrlSelector" class="org.iplass.gem.GemErrorUrlSelector" />
+		-->
+		<!-- ログインページの設定 -->
+		<!--
+		<property name="loginUrlSelector" class="org.iplass.gem.GemLoginUrlSelector" />
+		-->
+		<!-- テンポラリファイル格納パス 未指定時は「javax.servlet.context.tempdir」を使用 -->
+		<!--
+		<property name="tempFileDir" value="/tmp" />
+		-->
+		<!-- ダイレクトアクセスポート このポートの場合テナントのurlForRequest指定は無効 -->
+		<!--
+		<property name="directAccessPort" value="8080" />
+		-->
+
+		<!-- ContentDispositionの出力設定 -->
+		<!-- default -->
+		<property name="contentDispositionPolicy" class="org.iplass.mtp.impl.web.ContentDispositionPolicy">
+			<property name="userAgentKey" value="*" />
+			<property name="contentDispositionTypeName" value="*" />
+			<property name="unescapeCharacter" value="-._~" />
+			<property name="defaultContentDispositionTypeName" value="ATTACHMENT" />
+		</property>
+		<!-- IE11 -->
+		<!-- IE11の場合、INLINEではブランクをエスケープしない -->
+		<property name="contentDispositionPolicy" class="org.iplass.mtp.impl.web.ContentDispositionPolicy">
+			<property name="userAgentKey" value="Trident" />
+			<property name="contentDispositionTypeName" value="INLINE" />
+			<property name="unescapeCharacter" value="-._~ " />
+			<!--
+			<property name="defaultContentDispositionTypeName" value="" />
+			 -->
+		</property>
+		<!--
+			追加する場合、userAgentKey、contentDispositionTypeNameごとにエスケープしない文字を指定。
+			contentDispositionTypeName: * | ATTACHMENT | INLINE
+			unescapeCharacter: アルファベット、数字以外で除外する文字
+		-->
+		<!--
+		<property name="contentDispositionPolicy" class="org.iplass.mtp.impl.web.ContentDispositionPolicy">
+			<property name="userAgentKey" value="XXXX" />
+			<property name="contentDispositionTypeName" value="INLINE" />
+			<property name="unescapeCharacter" value="-._~" />
+		</property>
+		-->
+
+		<!-- ウィルススキャン実行 -->
+		<!--
+		<property name="uploadFileScanner" class="org.iplass.mtp.impl.web.fileupload.DefaultVirusScanner" >
+			<property name="commandPath" value="xxxxx.exe ${file}" />
+			<property name="timeout" value="15" />
+		</property>
+		 -->
+
+		<!-- MagicByteCheck実行 -->
+		<property name="isExecMagicByteCheck" value="true" />
+	</service>
+
+	<!-- Entity関連 -->
+	<service>
+		<interface>org.iplass.mtp.impl.entity.EntityService</interface>
+
+		<property name="interceptor" class="org.iplass.mtp.impl.entity.contentcache.ContentCacheInterceptor"  inherit="false" />
+		<property name="interceptor" class="org.iplass.mtp.impl.entity.auth.EntityAuthInterceptor"  inherit="false" />
+		<property name="interceptor" class="org.iplass.mtp.impl.entity.auditlog.AuditLogInterceptor"  inherit="false" />
+		<property name="interceptor" class="org.iplass.mtp.impl.entity.listener.EntityEventListenerInterceptor"  inherit="false" />
+		<property name="interceptor" class="org.iplass.mtp.impl.entity.l10n.EntityLocalizationInterceptor"  inherit="false" />
+		<property name="interceptor" class="org.iplass.mtp.impl.entity.cache.EntityCacheInterceptor"  inherit="false" />
+		<property name="interceptor" class="org.iplass.mtp.impl.entity.fulltextsearch.FulltextSearchInterceptor"  inherit="false" />
+	</service>
+
+	<!-- Command関連 -->
+	<service>
+		<interface>org.iplass.mtp.impl.command.InterceptorService</interface>
+		<class>org.iplass.mtp.impl.command.InterceptorService</class>
+
+		<property name="web" class="org.iplass.mtp.impl.command.interceptors.LoggingInterceptor" />
+		<property name="web" class="org.iplass.mtp.impl.command.interceptors.TransactionInterceptor" />
+		<property name="web" class="org.iplass.mtp.impl.web.interceptors.TokenInterceptor" />
+
+		<property name="webApi" class="org.iplass.mtp.impl.webapi.interceptors.InitialInterceptor" />
+		<property name="webApi" class="org.iplass.mtp.impl.webapi.interceptors.AuthInterceptor" />
+		<property name="webApi" class="org.iplass.mtp.impl.webapi.interceptors.LoggingInterceptor" />
+		<property name="webApi" class="org.iplass.mtp.impl.command.interceptors.TransactionInterceptor" />
+		<property name="webApi" class="org.iplass.mtp.impl.webapi.interceptors.TokenInterceptor" />
+	</service>
+
+	<!-- 帳票出力サービス -->
+	<service>
+		<interface>org.iplass.mtp.impl.report.ReportingEngineService</interface>
+		<class>org.iplass.mtp.impl.report.ReportingEngineServiceImpl</class>
+		<property name="repotingEngine" class="org.iplass.mtp.impl.report.JasperReportingEngine">
+			<property name="supportFiles" value="PDF"/>
+			<property name="supportFiles" value="XLS"/>
+			<property name="supportFiles" value="XLSX"/>
+		</property>
+		<property name="repotingEngine" class="org.iplass.mtp.impl.report.PoiReportingEngine">
+			<property name="supportFiles" value="XLS_POI"/>
+			<property name="supportFiles" value="XLSX_POI"/>
+			<property name="supportFiles" value="XLSX_SXSSF_POI"/>
+		</property>
+	</service>
+
+	<!-- WebApi Service -->
+	<service>
+		<interface>org.iplass.mtp.impl.webapi.WebApiService</interface>
+		<property name="enableDefinitionApi" value="false" />
+		<property name="enableBinaryApi" value="false" />
+
+		<property name="xRequestedWithMap">
+			<property name="X-Requested-With" value="XMLHttpRequest" />
+		</property>
+		<property name="statusMap">
+			<property name="exception" value="org.iplass.mtp.auth.NoPermissionException" />
+			<property name="status" value="403" />
+		</property>
+		<property name="statusMap">
+			<property name="exception" value="org.iplass.mtp.auth.NeedTrustedAuthenticationException" />
+			<property name="status" value="403" />
+		</property>
+		<property name="statusMap">
+			<property name="exception" value="org.iplass.mtp.ApplicationException" />
+			<property name="status" value="500" />
+		</property>
+		<property name="statusMap">
+			<property name="exception" value="org.iplass.mtp.SystemException" />
+			<property name="status" value="500" />
+		</property>
+	</service>
+	<service>
+		<interface>org.iplass.mtp.impl.webapi.jaxb.WebApiJaxbService</interface>
+		<property name="classToBeBound" value="org.iplass.mtp.impl.webapi.jaxb.Builtins" />
+		<!-- if use DefinitionApi, add BuiltinDefinitions to classToBeBound
+		<property name="classToBeBound" value="org.iplass.mtp.impl.webapi.jaxb.BuiltinDefinitions" additional="true" />
+		 -->
+	</service>
+	<service>
+		<interface>org.iplass.mtp.impl.webapi.jackson.WebApiObjectMapperService</interface>
+		<property name="mixin">
+			<property name="target" value="org.iplass.mtp.entity.GenericEntity" />
+			<property name="mixinSource" value="org.iplass.mtp.impl.webapi.jackson.MixinEntity" />
+		</property>
+		<property name="mixin">
+			<property name="target" value="org.iplass.mtp.entity.Entity" />
+			<property name="mixinSource" value="org.iplass.mtp.impl.webapi.jackson.MixinEntity" />
+		</property>
+		<property name="mixin">
+			<property name="target" value="org.iplass.mtp.definition.binary.BinaryDefinition" />
+			<property name="mixinSource" value="org.iplass.mtp.impl.webapi.jackson.MixinBinaryDefinition" />
+		</property>
+
+		<property name="parameterType">
+			<property name="typeName" value="entity" />
+			<property name="className" value="org.iplass.mtp.entity.GenericEntity" />
+		</property>
+		<property name="parameterType">
+			<property name="typeName" value="decimal" />
+			<property name="className" value="java.math.BigDecimal" />
+		</property>
+		<property name="parameterType">
+			<property name="typeName" value="binary" />
+			<property name="className" value="org.iplass.mtp.entity.BinaryReference" />
+		</property>
+		<property name="parameterType">
+			<property name="typeName" value="select" />
+			<property name="className" value="org.iplass.mtp.entity.SelectValue" />
+		</property>
+		<property name="parameterType">
+			<property name="typeName" value="boolean" />
+			<property name="className" value="java.lang.Boolean" />
+		</property>
+		<property name="parameterType">
+			<property name="typeName" value="date" />
+			<property name="className" value="java.sql.Date" />
+		</property>
+		<property name="parameterType">
+			<property name="typeName" value="dateTime" />
+			<property name="className" value="java.sql.Timestamp" />
+		</property>
+		<property name="parameterType">
+			<property name="typeName" value="float" />
+			<property name="className" value="java.lang.Double" />
+		</property>
+		<property name="parameterType">
+			<property name="typeName" value="integer" />
+			<property name="className" value="java.lang.Long" />
+		</property>
+		<property name="parameterType">
+			<property name="typeName" value="string" />
+			<property name="className" value="java.lang.String" />
+		</property>
+		<property name="parameterType">
+			<property name="typeName" value="time" />
+			<property name="className" value="java.sql.Time" />
+		</property>
+	</service>
+	<service>
+		<interface>org.iplass.mtp.impl.webapi.EntityWebApiService</interface>
+		<property name="maxLimit" value="1000" />
+	</service>
+
+	<service>
+		<interface>org.iplass.mtp.impl.cache.CacheService</interface>
+
+		<!-- ActionContentキャッシュ -->
+		<property name="actionContent" class="org.iplass.mtp.impl.cache.store.builtin.TransactionLocalCacheStoreFactory">
+			<property name="namespacePattern" value="mtp[.]action[.]content[.].*" />
+			<property name="indexCount" value="3" /><!-- index:actionName,entityName;oid, entityName -->
+			<property name="backendStore" class="org.iplass.mtp.impl.cache.store.builtin.SimpleCacheStoreFactory">
+				<property name="size" value="128" />
+			</property>
+		</property>
+
+		<!-- Tenant利用可否のキャッシュ -->
+		<property name="tenantAvailable" class="org.iplass.mtp.impl.cache.store.builtin.TransactionLocalCacheStoreFactory">
+			<property name="namespace" value="mtp.tenant.available.tenant" />
+			<property name="backendStore" class="org.iplass.mtp.impl.cache.store.builtin.SyncServerCacheStoreFactory">
+				<property name="cacheKeyResolver" class="org.iplass.mtp.impl.cache.store.keyresolver.IntegerCacheKeyResolver" />
+				<property name="store" class="org.iplass.mtp.impl.cache.store.builtin.SimpleCacheStoreFactory">
+					<!-- 6時間有効 -->
+					<property name="timeToLive" value="21600000" />
+				</property>
+			</property>
+		</property>
+	</service>
+
+	<service final="true">
+		<interface>org.iplass.mtp.impl.web.template.TemplateService</interface>
+		<class>org.iplass.mtp.impl.web.template.TemplateService</class>
+	</service>
+	<service final="true">
+		<interface>org.iplass.mtp.impl.web.staticresource.StaticResourceService</interface>
+		<class>org.iplass.mtp.impl.web.staticresource.StaticResourceService</class>
+	</service>
+	<service>
+		<interface>org.iplass.mtp.impl.session.SessionService</interface>
+		<class>org.iplass.mtp.impl.session.jee.HttpSessionService</class>
+	</service>
+	<service>
+		<interface>org.iplass.mtp.impl.web.actionmapping.ActionMappingService</interface>
+		<property name="interceptor" class="org.iplass.mtp.impl.web.interceptors.InitialInterceptor" />
+		<property name="interceptor" class="org.iplass.mtp.impl.web.interceptors.AuthInterceptor" />
+		<property name="interceptor" class="org.iplass.mtp.impl.web.interceptors.ExceptionInterceptor">
+			<property name="noHande" value="org.iplass.mtp.auth.NeedTrustedAuthenticationException" />
+			<property name="eliminate" value="org.apache.catalina.connector.ClientAbortException" />
+			<property name="eliminate" value="org.iplass.mtp.impl.web.WebProcessRuntimeException:org.apache.catalina.connector.ClientAbortException" />
+		</property>
+		<property name="interceptor" class="org.iplass.mtp.impl.web.interceptors.LoggingInterceptor">
+			<property name="partsTrace" value="true" />
+			<property name="paramName" value="defName" />
+			<property name="noStackTrace" value="org.apache.catalina.connector.ClientAbortException" />
+			<property name="noStackTrace" value="org.iplass.mtp.impl.web.WebProcessRuntimeException:org.apache.catalina.connector.ClientAbortException" />
+		</property>
+		<property name="interceptor" class="org.iplass.mtp.impl.web.interceptors.ActionCacheInterceptor" />
+	</service>
+
+	<service final="true">
+		<interface>org.iplass.mtp.impl.csv.CsvUploadService</interface>
+		<class>org.iplass.mtp.impl.csv.CsvUploadService</class>
+		<!-- CSVアップロードエラー表示件数上限値 (-1は無制限)  -->
+		<property name="showErrorLimitCount" value="100"/>
+	</service>
+
+</serviceDefinition>

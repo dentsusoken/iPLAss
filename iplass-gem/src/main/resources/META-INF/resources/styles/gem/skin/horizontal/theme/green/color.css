@@ -1,0 +1,64 @@
+@charset "UTF-8";
+/*
+ * Copyright (C) 2013 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
+ *
+ * Unless you have purchased a commercial license,
+ * the following license terms apply:
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+/*緑*/
+.ui-state-active, .ui-widget-content .ui-state-active, .ui-widget-header .ui-state-active, #ui-datepicker-div .ui-state-hover, #ui-datepicker-div .ui-widget-content .ui-state-hover, #ui-datepicker-div .ui-widget-content .ui-state-focus, #ui-datepicker-div .ui-state-focus {
+  background-color: #ffffff;
+  background-image: none;
+  border-color: #f5b8b8;
+  color: #2a7e4f; }
+
+.ui-widget-content .ui-state-highlight, .ui-widget-header .ui-state-highlight, .ui-state-highlight {
+  background-color: #fce6e6;
+  background-image: none;
+  border-color: #d5d5d5; }
+
+#header-container {
+  border-top: 5px solid #2a7e4f; }
+
+#nav-menu li.current a {
+  border: none;
+  border-bottom: 1px solid #ffffff;
+  border-right: 1px solid #ffffff;
+  color: #ffffff;
+  background: #194b2f;
+  background: linear-gradient(#194b2f 0, #37a467 100%); }
+
+#header #user-nav .search-submit {
+  background: url(../../../../../../images/gem/skin/horizontal/theme/green/btn-submit-01.png) no-repeat left top; }
+  #header #user-nav .search-submit:hover {
+    background: url(../../../../../../images/gem/skin/horizontal/theme/green/btn-submit-01_o.png) no-repeat left top; }
+
+.hgroup-01 svg {
+  color: #b9e15c; }
+
+.tabList .tab-menu li.current a {
+  background: #194b2f;
+  background: linear-gradient(#194b2f 0, #37a467 100%) repeat 0 0;
+  color: #ffffff; }
+
+input.gr-btn {
+  border: 1px solid #4e7762;
+  background: #194b2f;
+  background: linear-gradient(#37a467 0, #194b2f 100%); }
+  input.gr-btn:hover {
+    border: 1px solid #4e7762;
+    background: #1d5837;
+    background: linear-gradient(#4bc380 0, #1d5837 100%); }

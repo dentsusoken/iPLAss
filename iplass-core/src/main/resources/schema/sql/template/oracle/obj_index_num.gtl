@@ -1,0 +1,22 @@
+/* drop/create OBJ_INDEX_NUM */
+DROP TABLE "OBJ_INDEX_NUM${tableNamePostfix}" CASCADE CONSTRAINT;
+
+CREATE TABLE "OBJ_INDEX_NUM${tableNamePostfix}" 
+(       "TENANT_ID" NUMBER(7,0) NOT NULL, 
+        "OBJ_DEF_ID" VARCHAR2(128) NOT NULL, 
+        "COL_NAME" VARCHAR2(36) NOT NULL, 
+        "OBJ_ID" VARCHAR2(64) NOT NULL,
+        "OBJ_VER" NUMBER(10,0) DEFAULT 0 NOT NULL,
+        "VAL" NUMBER
+)
+<%if (partition) {
+%>PARTITION BY RANGE (TENANT_ID) INTERVAL(1)
+SUBPARTITION BY HASH (OBJ_DEF_ID) SUBPARTITIONS 8
+(
+    PARTITION OBJ_INDEX_NUM${tableNamePostfix}_0 VALUES LESS THAN (1)
+)
+<%}
+%>;
+
+CREATE INDEX "OBJ_INDEX_NUM${tableNamePostfix}_INDEX1" ON "OBJ_INDEX_NUM${tableNamePostfix}" ("TENANT_ID", "OBJ_DEF_ID", "COL_NAME", "VAL") <%if (partition) {%>LOCAL<%}%>;
+CREATE INDEX "OBJ_INDEX_NUM${tableNamePostfix}_INDEX2" ON "OBJ_INDEX_NUM${tableNamePostfix}" ("TENANT_ID", "OBJ_DEF_ID", "OBJ_ID") <%if (partition) {%>LOCAL<%}%>;

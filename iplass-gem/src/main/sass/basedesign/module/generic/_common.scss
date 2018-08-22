@@ -1,0 +1,99 @@
+//colors
+// $white: #ffffff;
+// $color_celeste_approx: #cdcdcd;
+// $color_cloud_approx: #c5c3c3;
+// $color_suva_gray_approx: #888888;
+// $color_fuscous_gray_approx: #555555;
+
+//urls
+// $url_gc1: url(../../../../images/gem/skin/vertical/icon-arrow-06.png);
+// $url_gc2: url(../../../../images/gem/skin/vertical/icon-arrow-03.png);
+// $url_gc3: url(./images/ui-icons_888888_256x240.png);
+// $url_gc4: url(./images/ui-icons_454545_256x240.png);
+
+// ページャー
+.result-nav {
+	zoom: 1;
+	margin-bottom: 9px;
+	ul {
+		float: left;
+		li {
+			float: left;
+			line-height: 1.2;
+			&.preview {
+				margin-right: 5px;
+				padding-right: 5px;
+				padding-left: 11px;
+				border-right: 1px solid $color_celeste_approx;
+				background: $url_gc1 no-repeat left center;
+				&.dis-border {
+					border-right: none;
+				}
+			}
+			&.next {
+				padding-right: 11px;
+				background: $url_gc2 no-repeat right center;
+			}
+		}
+	}
+	.ui-icon {
+		background-image: $url_gc3;
+		&.hover {
+			background-image: $url_gc4;
+		}
+	}
+	input {
+		font-size: 0.8em;
+		height: 13px;
+	}
+	li {
+		margin-right: 10px;
+		color: $color_suva_gray_approx;
+		&.quick-jump {
+			margin-right: 5px;
+			.last-page {
+				margin-right: 5px;
+			}
+		}
+		&.page-links .current {
+			color: $color_fuscous_gray_approx;
+			font-weight: bold;
+		}
+	}
+	p.result-num {
+		margin-right: 13px;
+		float: left;
+		color: $color_suva_gray_approx;
+		line-height: 1.2;
+	}
+}
+
+//再帰構造ツリー
+div.recursiveTree {
+	text-align: left;
+	.treeContents {
+		background-color: $white;
+		height: 220px;
+		overflow-y: auto;
+		//Instead of the line below you could use @include border-bottom-left-radius($radius)
+		border-bottom-left-radius: 3px;
+		//Instead of the line below you could use @include border-bottom-right-radius($radius)
+		border-bottom-right-radius: 3px;
+		//Instead of the line below you could use @include border-top-left-radius($radius)
+		border-top-left-radius: 3px;
+		//Instead of the line below you could use @include border-top-right-radius($radius)
+		border-top-right-radius: 3px;
+		border-color: $color_cloud_approx;
+		//Instead of the line below you could use @include border-image($value)
+		border-image: none;
+		border-style: solid;
+		border-width: 1px;
+		display: block;
+		padding-left: 10px;
+		li span {
+			white-space: nowrap;
+			display: block;
+			padding: 7px 0 6px;
+		}
+	}
+}

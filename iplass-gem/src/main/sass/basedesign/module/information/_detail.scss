@@ -1,0 +1,13 @@
+//colors -> color/_colors.scss
+// $color_quill_gray_approx: #d5d5d5;
+
+.tbl-information-detail {
+	border: 1px solid $color_quill_gray_approx;
+	width: 100%;
+	table-layout: fixed;
+	td {
+		padding: 9px 7px;
+		vertical-align: middle;
+		overflow: hidden;
+	}
+}

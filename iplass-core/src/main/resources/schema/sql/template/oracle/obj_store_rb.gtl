@@ -1,0 +1,56 @@
+/* drop/create OBJ_STORE_RB */
+DROP TABLE "OBJ_STORE_RB${tableNamePostfix}" CASCADE CONSTRAINT;
+
+CREATE TABLE "OBJ_STORE_RB${tableNamePostfix}" 
+(
+    "RB_ID" NUMBER(16,0) NOT NULL,
+    "RB_DATE" TIMESTAMP(3),
+    "RB_USER" VARCHAR2(64),
+    "TENANT_ID" NUMBER(7,0) NOT NULL, 
+    "OBJ_DEF_ID" VARCHAR2(128) NOT NULL, 
+    "PG_NO" NUMBER(2,0) NOT NULL, 
+    "OBJ_ID" VARCHAR2(64) NOT NULL, 
+    "OBJ_VER" NUMBER(10,0) DEFAULT 0 NOT NULL,
+    "OBJ_DEF_VER" NUMBER(10,0),
+    "STATUS" CHAR(1),
+    "OBJ_NAME" VARCHAR2(256), 
+    "OBJ_DESC" VARCHAR2(1024), 
+    "CRE_DATE" TIMESTAMP (3), 
+    "UP_DATE" TIMESTAMP (3), 
+    "S_DATE" TIMESTAMP(3),
+    "E_DATE" TIMESTAMP(3),
+    "LOCK_USER" VARCHAR2(64),
+    "CRE_USER" VARCHAR2(64), 
+    "UP_USER" VARCHAR2(64)
+    <%columns.each {
+		switch (it.type) {
+        case "VARCHAR":
+    %>,"${it.prefix + it.no}" VARCHAR2(4000 BYTE)
+    <%		break;
+	    case "DECIMAL":
+    %>,"${it.prefix + it.no}" NUMBER
+    <%		break;
+        case "TIMESTAMP":
+    %>,"${it.prefix + it.no}" TIMESTAMP(3)
+    <%		break;
+        case "DOUBLE":
+    %>,"${it.prefix + it.no}" BINARY_DOUBLE
+    <%		break;
+        default:
+			break;
+		}
+		
+		if (it.indexType != "NONE") {
+    %>,"${it.prefix + it.no}_TD" VARCHAR2(139)
+    <%	}
+	}%>)
+<%if (partition) {
+%>PARTITION BY RANGE (TENANT_ID) INTERVAL(1)
+SUBPARTITION BY HASH (OBJ_DEF_ID) SUBPARTITIONS 8
+(
+    PARTITION OBJ_STORE_RB${tableNamePostfix}_0 VALUES LESS THAN (1)
+)
+<%}
+%>;
+
+CREATE INDEX "OBJ_STORE_RB${tableNamePostfix}_INDEX1" ON "OBJ_STORE_RB${tableNamePostfix}" ("TENANT_ID", "OBJ_DEF_ID", "RB_ID") <%if (partition) {%>LOCAL<%}%>;

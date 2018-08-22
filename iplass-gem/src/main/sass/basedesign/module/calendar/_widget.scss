@@ -1,0 +1,72 @@
+//colors
+// $color_quill_gray_approx: #d5d5d5;
+// $color_black_haze_approx: #f6f6f6;
+// $color_log_cabin_approx: #222222;
+// $color_chathams_blue_approx: #19447d;
+// $color_bright_red_approx: #ab0000;
+// $color_link_water_approx: #dce9f5;
+// $color_cerulean_approx: #00ace5;
+
+//@extend-elements
+//original selectors
+//.lyt-shortcut-01 .calendar-block .tbl-calendar td, .lyt-shortcut-01 .calendar-block .tbl-calendar thead th
+%extend_cw1 {
+	padding: 2px;
+	width: 14%;
+	text-align: center;
+}
+
+//カレンダー
+.lyt-shortcut-01 .tbl-calendar {
+	width: 100%;
+	td {
+		@extend %extend_cw1;
+		border-top: 1px solid $color_quill_gray_approx;
+		border-left: 1px solid $color_quill_gray_approx;
+		&:first-child {
+			border-left: none;
+		}
+		a {
+			color: $color_log_cabin_approx;
+			text-decoration: underline;
+		}
+		&.saturday {
+			color: $color_chathams_blue_approx;
+			a {
+				color: $color_chathams_blue_approx;
+			}
+		}
+		&.sunday {
+			color: $color_bright_red_approx;
+			a {
+				color: $color_bright_red_approx;
+			}
+		}
+		&.today {
+			background: $color_link_water_approx;
+		}
+		span.active {
+			text-decoration: underline;
+			&:hover {
+				color: $color_cerulean_approx;
+				cursor: pointer;
+			}
+		}
+	}
+	th {
+		@extend %extend_cw1;
+		background: $color_black_haze_approx;
+		border: none;
+		a {
+			color: $color_log_cabin_approx;
+			text-decoration: none;
+		}
+	}
+}
+.link-list-01.cal {
+	margin-bottom: 10px;
+	font-size: 92%;
+	li {
+		padding-right: 10px;
+	}
+}

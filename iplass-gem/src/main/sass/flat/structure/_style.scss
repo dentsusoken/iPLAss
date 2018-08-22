@@ -1,0 +1,28 @@
+* {
+	margin: 0;
+	padding: 0;
+}
+body {
+	color: $color_mine_shaft_approx;
+	text-align: center;
+}
+a {
+	color: $color_matisse_approx;
+	text-decoration: none;
+	&:hover {
+		color: $color_cerulean_approx;
+		text-decoration: underline;
+	}
+}
+#container {
+	width: 100%;
+	min-width: 900px;
+	margin-left: auto;
+	margin-right: auto;
+	text-align: left;
+	position: relative;
+	z-index: 1;
+	.placeholder {
+		color: $color_mountain_mist_approx;
+	}
+}

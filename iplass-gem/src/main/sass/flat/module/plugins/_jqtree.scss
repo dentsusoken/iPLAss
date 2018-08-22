@@ -1,0 +1,94 @@
+//colors
+// $color_wild_willow_approx: #add866;
+// $color_pattens_blue_approx: #dfeffc;
+// $color_black_haze_approx: #f6f6f6;
+// $white: #fff;
+
+//fonts
+//$font_0: arial;
+
+//urls
+// $url_pjt_1: url(../../../../webjars/jqtree/1.4.2/static/spinner.gif);
+
+//@extend-elements
+//original selectors
+//ul.jqtree-tree li.jqtree-selected >.jqtree-element, ul.jqtree-tree li.jqtree-selected >.jqtree-element:hover
+%extend_pjt_1 {
+	background: $color_wild_willow_approx;
+	background-color: transparent;
+	background-image: none;
+	//Instead of the line below you could use @include text-shadow($shadow-1, $shadow-2, $shadow-3, $shadow-4, $shadow-5, $shadow-6, $shadow-7, $shadow-8, $shadow-9, $shadow-10)
+	text-shadow: none;
+}
+
+ul.jqtree-tree {
+	margin-left: 12px;
+	.jqtree-title {
+		margin-left: inherit;
+	}
+	.jqtree-toggler {
+		font-family: $font_0;
+		left: -1.5em;
+		line-height: 12px;
+		position: absolute;
+		top: 30%;
+	}
+	.jqtree-element {
+		padding: 7px 0 6px;
+		&.hover {
+			background: $color_pattens_blue_approx !important;
+		}
+	}
+	li {
+		&.no-draggable {
+			.jqtree-toggler {
+				cursor: pointer;
+			}
+			> .jqtree-element {
+				cursor: auto;
+			}
+		}
+		&.jqtree-selected > .jqtree-element {
+			@extend %extend_pjt_1;
+			&:hover {
+				@extend %extend_pjt_1;
+			}
+		}
+	}
+	.ui-draggable-dragging {
+		background: $color_black_haze_approx;
+		padding: 5px;
+		min-width: 180px;
+	}
+	.jqtree-loading > div .jqtree-title:after {
+		// content: $url_pjt_1;
+		// margin-left: 8px;
+	}
+}
+span.jqtree_common.jqtree-title.ui-draggable.ui-draggable-dragging {
+	width: auto !important;
+}
+.lyt-shortcut-01 ul.jqtree-tree {
+	margin-left: 0;
+	.jqtree-toggler {
+		left: -25px;
+	}
+	li {
+		position: relative;
+		font-size: 1rem;
+		margin: 0;
+		padding-left: 12px;
+		a {
+			color: $white;
+			&:hover {
+				color: $white;
+			}
+		}
+		span {
+			color: $white;
+		}
+	}
+	> li {
+		padding-left: 47px;
+	}
+}

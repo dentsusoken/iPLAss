@@ -1,0 +1,157 @@
+//colors -> color/_colors.scss
+// $color_bright_red_approx: #ab0000;
+// $color_chathams_blue_approx: #19447d;
+// $color_gray_nurse_approx: #eaeaea;
+// $color_mountain_mist_approx: #999999;
+// $color_black_haze_approx: #f6f6f6;
+// $color_chicago_approx: #565656;
+// $color_quill_gray_approx: #d3d3d3;
+// $white: #ffffff;
+// $black: #000000;
+// $color_cerulean_approx: #00ace5;
+
+//ヘッダ
+.fc-left {
+	h2 {
+		font-size: 117%;
+		margin-right: 14px !important;
+	}
+	> div:first-child > * {
+		display: inline-block;
+	}
+}
+//条件設定/解除
+.filterButtonBlock {
+	clear: both;
+	margin-left: 0 !important;
+	margin-top: 10px;
+	.calendarFilter {
+		margin-right: 10px;
+	}
+}
+//条件部分
+.filterConditionBlock {
+	margin-top: 10px;
+	.sechead {
+		background: none;
+	}
+}
+#filterConditionMassage {
+	clear: both;
+	margin-bottom: 10px;
+	text-align: left;
+}
+.fc-sun {
+	color: $color_bright_red_approx;
+}
+.fc-sat {
+	color: $color_chathams_blue_approx;
+}
+.fc-other-month {
+	background: $color_gray_nurse_approx;
+	color: $color_mountain_mist_approx;
+}
+.fc-day-top {
+	padding: 5px 5px 0 5px !important;
+}
+//追加リスト
+.addList {
+	position: relative;
+	a {
+		padding: 3px 5px;
+		display: block;
+		color: $color_chicago_approx;
+	}
+	li {
+		padding: 3px 5px;
+		display: block;
+		color: $color_chicago_approx;
+	}
+	ul {
+		display: none;
+	}
+	&.open ul {
+		border: 1px solid $color_mountain_mist_approx;
+		position: absolute;
+		right: -1px;
+		z-index: 99;
+		display: block;
+		//Instead of the line below you could use @include box-shadow($shadow-1, $shadow-2, $shadow-3, $shadow-4, $shadow-5, $shadow-6, $shadow-7, $shadow-8, $shadow-9, $shadow-10)
+		box-shadow: 2px 2px 8px $color_quill_gray_approx;
+		min-width: 142px;
+		background: $white;
+		text-align: left;
+		&.day {
+			display: inline;
+			top: inherit;
+			right: inherit;
+		}
+	}
+}
+//イベント設定
+.fc-event {
+	background: $color_quill_gray_approx;
+	color: $black !important;
+	&:hover {
+		color: $color_cerulean_approx !important;
+		text-decoration: underline !important;
+		cursor: pointer;
+	}
+	&.fc-time-grid-event {
+		border: 1px solid $color_quill_gray_approx !important;
+	}
+	.fc-time {
+		display: none;
+	}
+}
+.fc-divider {
+	display: block;
+}
+.fc-widget-header .fc-day-header {
+	background: $color_black_haze_approx;
+	padding: 10px 0;
+}
+.fc-ltr .fc-basic-view .fc-day-top .fc-day-number {
+	float: none !important;
+}
+.fc-day-number .add {
+	float: right;
+	position: relative;
+	top: 3px;
+	right: 5px;
+}
+.fc-day-header .add img {
+	padding-left: 10px;
+	vertical-align: middle;
+}
+.fc-agendaDay-view .fc-day-header .addList.open {
+	margin: 0 auto;
+}
+//週カレンダー、AMPMの高さ調整
+.fc-agendaWeek-view .fc-slats tr {
+	height: 200px;
+}
+//フィルタ
+.tbl-search-01 {
+	.display-none {
+		display: none;
+	}
+	.display-inline {
+		display: inline;
+	}
+}
+.data-deep-search .calendar-filter th.col3 {
+	width: 20%;
+}
+.calendarConditonTitle {
+	font-size: 1rem;
+}
+.excludeCondition {
+	margin-top: 5px;
+	margin-bottom: 5px;
+}
+.calendar-day:hover {
+	color: $color_cerulean_approx;
+	text-decoration: underline;
+	cursor: pointer;
+}

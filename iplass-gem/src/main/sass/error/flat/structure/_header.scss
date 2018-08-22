@@ -1,0 +1,42 @@
+#header-container {
+	margin: 0 auto 0;
+	width: 100%;
+	height: 80px;
+	line-height: 80px;
+}
+#header {
+	zoom: 1;
+	height: 80px;
+	line-height: 80px;
+	padding: 0 20px 0 30px;
+	background: $color_green_leaf_approx;
+}
+
+.nomenu-layout {
+	#header-container .cms-title {
+		// background: $url_header_02 $color_green_leaf_approx center center no-repeat;
+	}
+	#header #title svg {
+		display: none;
+	}
+}
+#header #title {
+	display: inline-block;
+	margin-left: 22px;
+	h1 {
+		vertical-align: middle;
+		letter-spacing: -0.02em;
+		font-size: 1.42857rem;
+		height: 80px;
+		display: flex;
+		align-items: center;
+	}
+	span {
+		position: relative;
+		top: 0;
+		font-family: $font_0, $font_1, $font_2, $font_3, $font_4, $font_5;
+		color: $white;
+		font-weight: normal;
+		letter-spacing: 0.21429rem;
+	}
+}

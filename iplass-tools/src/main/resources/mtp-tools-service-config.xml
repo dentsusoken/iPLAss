@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!DOCTYPE serviceDefinition>
+<serviceDefinition>
+
+	<!-- MetaData Repository configuration -->
+	<service>
+		<interface>org.iplass.mtp.impl.metadata.MetaDataRepository</interface>
+		<property name="resourcePath" value="/mtp-tools-metadata.xml" additional="true" />
+ 	</service>
+
+	<service>
+		<interface>org.iplass.mtp.impl.tools.tenant.TenantToolService</interface>
+		<depend>org.iplass.mtp.impl.rdb.adapter.RdbAdapterService</depend>
+		<depend>org.iplass.mtp.impl.core.TenantContextService</depend>
+		<depend>org.iplass.mtp.impl.tenant.TenantService</depend>
+		<depend>org.iplass.mtp.impl.tenant.MetaTenantService</depend>
+		<depend>org.iplass.mtp.impl.auth.authenticate.builtin.policy.AuthenticationPolicyService</depend>
+		<depend>org.iplass.mtp.impl.auth.AuthService</depend>
+
+		<property name="createProcesses" class="org.iplass.mtp.impl.tools.tenant.create.CreateAdminUserProcess" />
+		<property name="createProcesses" class="org.iplass.mtp.impl.tools.tenant.create.BlankSkipProcess" />
+		<property name="createProcesses" class="org.iplass.mtp.impl.tools.tenant.create.CreateMenuProcess" />
+		<property name="createProcesses" class="org.iplass.mtp.impl.tools.tenant.create.CreateTopViewProcess" />
+		<property name="createProcesses" class="org.iplass.mtp.impl.tools.tenant.create.CreateAppAdminRoleProcess" />
+		<property name="createProcesses" class="org.iplass.mtp.impl.tools.tenant.create.CreateGemUserRoleProcess" />
+		<property name="createProcesses" class="org.iplass.mtp.impl.tools.tenant.create.CreateCompleteProcess" />
+
+	</service>
+
+	<service>
+		<interface>org.iplass.mtp.impl.tools.lang.LangDataPortingService</interface>
+		<depend>org.iplass.mtp.impl.definition.DefinitionService</depend>
+	</service>
+
+	<service>
+		<interface>org.iplass.mtp.impl.tools.metaport.MetaDataPortingService</interface>
+		<class>org.iplass.mtp.impl.tools.metaport.MetaDataPortingServiceImpl</class>
+		<depend>org.iplass.mtp.impl.metadata.MetaDataJAXBService</depend>
+		<depend>org.iplass.mtp.impl.tenant.MetaTenantService</depend>
+		<depend>org.iplass.mtp.impl.core.TenantContextService</depend>
+		<depend>org.iplass.mtp.impl.entity.EntityService</depend>
+
+		<property name="importHandler" class="org.iplass.mtp.impl.tools.metaport.MetaDataImportHandlerImpl" />
+	</service>
+
+	<service>
+		<interface>org.iplass.mtp.impl.tools.entityport.EntityPortingService</interface>
+		<depend>org.iplass.mtp.impl.parser.SyntaxService</depend>
+	</service>
+
+	<service>
+		<interface>org.iplass.mtp.impl.tools.pack.PackageService</interface>
+		<depend>org.iplass.mtp.impl.tools.metaport.MetaDataPortingService</depend>
+		<depend>org.iplass.mtp.impl.tools.entityport.EntityPortingService</depend>
+		<depend>org.iplass.mtp.impl.async.AsyncTaskService</depend>
+	</service>
+
+	<service>
+		<interface>org.iplass.mtp.impl.tools.auth.builtin.BuiltinAuthToolService</interface>
+		<depend>org.iplass.mtp.impl.rdb.adapter.RdbAdapterService</depend>
+	</service>
+
+	<service>
+		<interface>org.iplass.mtp.impl.tools.storagespace.StorageSpaceService</interface>
+		<class>org.iplass.mtp.impl.tools.storagespace.StorageSpaceServiceImpl</class>
+		<depend>org.iplass.mtp.impl.datastore.StoreService</depend>
+		<depend>org.iplass.mtp.impl.rdb.adapter.RdbAdapterService</depend>
+		<depend>org.iplass.mtp.impl.tools.entityport.EntityPortingService</depend>
+
+		<property name="migrateCommitLimit" value="100" />
+		<property name="cleanupCommitLimit" value="1000" />
+	</service>
+
+	<service>
+		<interface>org.iplass.mtp.impl.tools.entity.EntityToolService</interface>
+	</service>
+
+	<service>
+		<interface>org.iplass.mtp.impl.tools.clean.RecycleBinCleanService</interface>
+	</service>
+
+</serviceDefinition>

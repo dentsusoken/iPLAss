@@ -1,0 +1,55 @@
+//colors -> color/_colors.scss
+// $color_quill_gray_approx: #d5d5d5;
+// $color_log_cabin_approx: #222222;
+// $color_conifer_approx: #b9e15c;
+// $color_ronchi_approx: #f0bb4a;
+// $color_sunglo_approx: #ed6f6b;
+// $color_cornflower_blue_approx: #66aced;
+// $color_matisse_approx: #225d97;
+// $white: #ffffff;
+
+//urls
+// $url_ch1: url(../../../../images/gem/skin/vertical/bg-hgroup-01.gif);
+// $url_ch2: url(../../../../images/gem/skin/vertical/icon-arrow-01.png);
+// $url_ch3: url(../../../../images/gem/skin/vertical/icon-arrow-03.png);
+
+.hgroup-01 {
+	margin-bottom: 20px;
+	padding-bottom: 4px;
+	border-bottom: 2px solid $color_quill_gray_approx;
+	font-size: 150%;
+	span {
+		color: $color_log_cabin_approx;
+		font-weight: bold;
+	}
+	svg {
+		color: $color_tapa_approx;
+	}
+}
+.hgroup-02 {
+	margin-bottom: 12px;
+	font-size: 117%;
+	svg{
+		margin-right: 5px;
+	}
+}
+.hgroup-03 {
+	margin-bottom: 10px;
+	color: $color_matisse_approx;
+	background: $url_ch1 repeat-x left center;
+	font-size: 109%;
+	svg {
+		margin-right: 5px;
+	}
+	h3 span {
+		background: $white $url_ch2 no-repeat left 0.6em;
+		font-weight: bold;
+		padding: 0 10px 0 15px;
+	}
+	&.sechead h3 span {
+		cursor: pointer;
+	}
+}
+.disclosure-close.hgroup-03 h3 span {
+	background: $white $url_ch3 no-repeat left 0.55em;
+}

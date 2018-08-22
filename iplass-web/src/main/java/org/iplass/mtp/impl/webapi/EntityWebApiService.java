@@ -1,0 +1,87 @@
+/*
+ * Copyright (C) 2011 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
+ * 
+ * Unless you have purchased a commercial license,
+ * the following license terms apply:
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ * 
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
+package org.iplass.mtp.impl.webapi;
+
+import org.iplass.mtp.ManagerLocator;
+import org.iplass.mtp.definition.TypedDefinitionManager;
+import org.iplass.mtp.impl.definition.AbstractTypedMetaDataService;
+import org.iplass.mtp.impl.definition.DefinitionMetaDataTypeMap;
+import org.iplass.mtp.impl.webapi.MetaEntityWebApi.EntityWebApiHandler;
+import org.iplass.mtp.spi.Config;
+import org.iplass.mtp.spi.Service;
+import org.iplass.mtp.webapi.definition.EntityWebApiDefinition;
+import org.iplass.mtp.webapi.definition.EntityWebApiDefinitionManager;
+
+/**
+ * EntityWebApi定義を扱うサービス
+ * @author lis7gv
+ */
+public class EntityWebApiService extends AbstractTypedMetaDataService<MetaEntityWebApi, EntityWebApiHandler> implements Service {
+	
+	/** メタデータのパス */
+	public static final String META_PATH = "/entityWebapi/";
+
+	public static class TypeMap extends DefinitionMetaDataTypeMap<EntityWebApiDefinition, MetaEntityWebApi> {
+		public TypeMap() {
+			super(getFixedPath(), MetaEntityWebApi.class, EntityWebApiDefinition.class);
+		}
+		@Override
+		public TypedDefinitionManager<EntityWebApiDefinition> typedDefinitionManager() {
+			return ManagerLocator.getInstance().getManager(EntityWebApiDefinitionManager.class);
+		}
+		@Override
+		public String toPath(String defName) {
+			return pathPrefix + defName.replace('.', '/');
+		}
+		@Override
+		public String toDefName(String path) {
+			return path.substring(pathPrefix.length()).replace("/", ".");
+		}
+	}
+	private int maxLimit;
+	
+	public int getMaxLimit() {
+		return maxLimit;
+	}
+
+	@Override
+	public void destroy() {
+	}
+
+	@Override
+	public void init(Config config) {
+		maxLimit = config.getValue("maxLimit", Integer.class, 1000);
+	}
+
+	public static String getFixedPath() {
+		return META_PATH;
+	}
+
+	@Override
+	public Class<MetaEntityWebApi> getMetaDataType() {
+		return MetaEntityWebApi.class;
+	}
+
+	@Override
+	public Class<EntityWebApiHandler> getRuntimeType() {
+		return EntityWebApiHandler.class;
+	}
+}

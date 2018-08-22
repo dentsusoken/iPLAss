@@ -1,0 +1,87 @@
+/* replace keyword to color
+$COLOR_BASE_COLOR: #3f51b5
+$COLOR_TITLE_BACKGROUND: #448aff
+$COLOR_INPUT_HOVER_BACKGROUND: #303f9f
+$COLOR_PLUGIN_BACKGROUND: #c5cae9
+$COLOR_NAME: blue
+*/
+
+.ui-widget-header {
+  background: COLOR_BASE_COLOR;
+}
+
+.flat-block-top {
+  border-top: 2px solid COLOR_BASE_COLOR;
+}
+
+.ui-accordion .ui-state-active {
+  border: 1px solid COLOR_BASE_COLOR;
+}
+
+.ui-accordion .ui-widget-content .ui-state-active {
+  border: 1px solid COLOR_BASE_COLOR;
+}
+.ui-accordion .ui-widget-content .ui-state-active.ui-state-hover {
+  border: 1px solid COLOR_BASE_COLOR;
+}
+
+.ui-accordion .ui-widget-header .ui-state-active {
+  border: 1px solid COLOR_BASE_COLOR;
+}
+.ui-accordion .ui-widget-header .ui-state-active.ui-state-hover {
+  border: 1px solid COLOR_BASE_COLOR;
+}
+
+.tabList {
+  border-top: 2px solid COLOR_BASE_COLOR;
+}
+.tabList .tab-menu li::after {
+  border-top: 11px solid COLOR_BASE_COLOR;
+}
+.tabList .tab-menu li.current {
+  background: COLOR_BASE_COLOR;
+}
+.tabList .tab-menu li.current a {
+  background: COLOR_BASE_COLOR;
+}
+
+.formArchive {
+  border-top: 2px solid COLOR_BASE_COLOR;
+}
+
+input[type=button].gr-btn {
+  background-color: COLOR_BASE_COLOR;
+}
+input[type=button].gr-btn:hover {
+  background-color: $COLOR_INPUT_HOVER_BACKGROUND;
+}
+
+input[type=submit].gr-btn {
+  background-color: COLOR_BASE_COLOR;
+}
+input[type=submit].gr-btn:hover {
+  background-color: $COLOR_INPUT_HOVER_BACKGROUND;
+}
+
+ul.jqtree-tree li.jqtree-selected > .jqtree-element {
+  background: $COLOR_PLUGIN_BACKGROUND;
+}
+ul.jqtree-tree li.jqtree-selected > .jqtree-element:hover {
+  background: $COLOR_PLUGIN_BACKGROUND;
+}
+
+.ui-jqgrid .ui-jqgrid-bdiv tr.ui-row-ltr > td.jqgrid_select_cell {
+  background-color: $COLOR_PLUGIN_BACKGROUND !important;
+}
+
+#header-container #header {
+  background: COLOR_BASE_COLOR;
+}
+
+body.nomenu-layout #header-container .cms-title {
+  background-color: COLOR_BASE_COLOR;
+}
+
+h3.hgroup-02-01::before {
+  background: $COLOR_TITLE_BACKGROUND;
+}

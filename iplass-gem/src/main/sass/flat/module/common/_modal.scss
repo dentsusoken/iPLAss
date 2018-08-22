@@ -1,0 +1,107 @@
+//colors
+// $black: #000000;
+// $color_gallery_approx: #ededed;
+// $color_mine_shaft_approx: #313131;
+
+.modal-overlay {
+	position: absolute;
+	left: 0;
+	top: 0;
+	opacity: 0.8;
+	background: $black;
+}
+.modal-inner {
+	padding: 20px;
+	opacity: 1;
+	position: absolute;
+	left: 0;
+	top: 0;
+	width: 750px;
+	background: $color_gallery_approx;
+	display: none;
+	overflow: hidden;
+	//Instead of the line below you could use @include box-sizing($bs)
+	box-sizing: border-box;
+	&.fullWindow {
+		width: 100% !important;
+		height: 100vh !important;
+		.modal-maximize {
+			display: none;
+		}
+		.modal-restore {
+			display: block;
+		}
+	}
+	> iframe {
+		height: calc(100% - 57px) !important;
+		width: 100%;
+		border: none;
+	}
+	&.unresizable {
+		.modal-maximize {
+			display: none;
+		}
+		.modal-restore {
+			display: none;
+		}
+	}
+	h2.hgroup-01 span {
+		display: block;
+	}
+}
+.modal-close {
+	position: absolute;
+	right: 20px;
+	top: 20px;
+	cursor: pointer;
+	svg {
+		color: $color_mine_shaft_approx;
+		&:hover {
+			color: $black;
+			//Instead of the line below you could use @include transition($transition-1, $transition-2, $transition-3, $transition-4, $transition-5, $transition-6, $transition-7, $transition-8, $transition-9, $transition-10)
+			transition: 300ms;
+		}
+	}
+}
+.modal-maximize {
+	position: absolute;
+	right: 60px;
+	top: 20px;
+	cursor: pointer;
+	display: block;
+	svg {
+		color: $color_mine_shaft_approx;
+		&:hover {
+			color: $black;
+			//Instead of the line below you could use @include transition($transition-1, $transition-2, $transition-3, $transition-4, $transition-5, $transition-6, $transition-7, $transition-8, $transition-9, $transition-10)
+			transition: 300ms;
+		}
+	}
+}
+.modal-restore {
+	position: absolute;
+	right: 60px;
+	top: 20px;
+	cursor: pointer;
+	display: none;
+	svg {
+		color: $color_mine_shaft_approx;
+		&:hover {
+			color: $black;
+			//Instead of the line below you could use @include transition($transition-1, $transition-2, $transition-3, $transition-4, $transition-5, $transition-6, $transition-7, $transition-8, $transition-9, $transition-10)
+			transition: 300ms;
+		}
+	}
+}
+body.modal-body {
+	.result-data {
+		padding-bottom: 0;
+	}
+	input.btn-csv-01 {
+		display: none;
+	}
+}
+
+#dialog_parent {
+	position: relative;
+}

@@ -1,0 +1,22 @@
+//colors -> color/_colors.scss
+// $color_alabaster_approx: #f9f9f9;
+
+//テーブル
+.tableStripe {
+	&.reverse .stripeRow:nth-child(odd) {
+		th {
+			background: $color_alabaster_approx;
+		}
+		td {
+			background: $color_alabaster_approx;
+		}
+	}
+	&:not(.reverse) .stripeRow:nth-child(even) {
+		th {
+			background: $color_alabaster_approx;
+		}
+		td {
+			background: $color_alabaster_approx;
+		}
+	}
+}

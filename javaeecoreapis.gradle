@@ -1,0 +1,9 @@
+//provided JavaEE7 apis
+dependencies {
+	//java mail
+	compileOnly 'javax.mail:javax.mail-api:1.5.6'
+	//Bean validation
+	compileOnly group: 'javax.validation', name: 'validation-api', version: '1.1.0.Final'
+	//Expression Language
+	compileOnly 'javax.el:javax.el-api:3.0.1-b04'
+}

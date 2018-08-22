@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!DOCTYPE serviceDefinition>
+<serviceDefinition>
+	<inherits>/mtp-service-config-oracle.xml</inherits>
+	<!-- If use mysql, inherits mtp-service-config-mysql.xml for convenience. -->
+	<!--
+	<inherits>/mtp-service-config-mysql.xml</inherits>
+	-->
+
+	<!-- Rdb Connection Settings -->
+	<service>
+		<interface>org.iplass.mtp.impl.rdb.connection.ConnectionFactory</interface>
+		<class>org.iplass.mtp.impl.rdb.connection.DriverManagerConnectionFactory</class>
+		<property name="url" value="jdbc:oracle:thin:@[server]:[port]:[sid]" />
+		<property name="user" value="[user]" />
+		<property name="password" value="[password]" />
+		<property name="driver" value="oracle.jdbc.driver.OracleDriver" />
+	</service>
+
+	<!-- XmlResource MetaData and Annotation MetaData Settings -->
+	<service>
+		<interface>org.iplass.mtp.impl.metadata.MetaDataRepository</interface>
+		<property name="resourcePath" value="/testsample/test-sample-metadata.xml" additional="true" />
+		<property name="annotatedClass" value="testsample.command.TestSearchCommand" additional="true" />
+	</service>
+</serviceDefinition>

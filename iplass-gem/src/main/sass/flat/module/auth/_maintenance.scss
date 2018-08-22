@@ -1,0 +1,71 @@
+//colors
+// $color_gallery_approx: #ededed;
+// $color_alto_approx: #ddd;
+
+//@extend-elements
+//original selectors
+//.completePasswordChange, .user-profile div.error
+%extend_am_1 {
+	float: left;
+	width: 100%;
+	padding-bottom: 10px;
+	font-size: 1rem;
+	display: block;
+}
+
+//original selectors
+//.tbl-maintenance input[type=text], .tbl-maintenance textarea
+%extend_am_2 {
+	border: 1px solid $color_alto_approx;
+	font-size: 1rem;
+	padding: 2px 5px;
+	//Instead of the line below you could use @include box-sizing($bs)
+	box-sizing: border-box;
+}
+
+
+.completePasswordChange {
+	@extend %extend_am_1;
+}
+.user-profile {
+	.formArchive {
+		display: block;
+		float: left;
+		width: 100%;
+		+ p {
+			margin-bottom: 20px;
+		}
+	}
+	div.error {
+		@extend %extend_am_1;
+	}
+}
+.tbl-maintenance {
+	margin-bottom: 20px;
+	th {
+		width: 180px;
+		background: $color_gallery_approx;
+		padding: 12px 10px;
+		border: 1px solid $color_alto_approx;
+		border-right: 0;
+		vertical-align: middle;
+	}
+	td {
+		padding: 8px 10px;
+		border: 1px solid $color_alto_approx;
+		border-left: 0;
+		vertical-align: middle;
+	}
+	input[type=text] {
+		@extend %extend_am_2;
+		width: 100%;
+	}
+	input[type=password] {
+		@extend %extend_am_2;
+		width: 160px;
+	}
+	textarea {
+		@extend %extend_am_2;
+		width: 100%;
+	}
+}

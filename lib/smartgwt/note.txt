@@ -1,0 +1,8 @@
+place client library that has no public maven repository here
+
+current client library
+---
+http://www.smartclient.com/builds/SmartGWT/12.0p/LGPL/
+
+smartgwt-skins.jar
+smartgwt.jar

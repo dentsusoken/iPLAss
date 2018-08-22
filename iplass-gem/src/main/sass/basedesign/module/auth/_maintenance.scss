@@ -1,0 +1,49 @@
+//colors -> color/_colors.scss
+// $color_quill_gray_approx: #d5d5d5;
+// $color_gray_nurse_approx: #eaeaea;
+// $color_black_haze_approx: #f6f6f6;
+
+.tbl-maintenance {
+	margin-bottom: 20px;
+	border-top: 1px solid $color_quill_gray_approx;
+	border-right: 1px solid $color_quill_gray_approx;
+	border-bottom: 1px solid $color_quill_gray_approx;
+	width: 100%;
+	table-layout: fixed;
+	tbody {
+		th {
+			border-top: 1px dotted $color_quill_gray_approx;
+			border-left: 1px solid $color_quill_gray_approx;
+			background: $color_black_haze_approx;
+			text-align: left;
+			padding: 9px 7px;
+			vertical-align: middle;
+			width: 18%;
+		}
+		td {
+			border-top: 1px dotted $color_quill_gray_approx;
+			padding: 9px 7px;
+			vertical-align: middle;
+			width: 82%;
+		}
+	}
+	input {
+		padding: 2px;
+		&.form-btn {
+			padding: 1px 3px;
+		}
+	}
+	select {
+		padding: 2px;
+	}
+	thead th {
+		padding: 9px 7px;
+		border-top: 1px dotted $color_quill_gray_approx;
+		background: $color_gray_nurse_approx;
+		text-align: left;
+		vertical-align: middle;
+	}
+}
+table.tbl-maintenance > tbody > tr > td {
+	overflow: hidden;
+}

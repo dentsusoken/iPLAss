@@ -1,0 +1,61 @@
+// $color_quill_gray_approx: #d5d5d5;
+// $color_celeste_approx: #cecece;
+
+//urls
+// $url_co1: url(../../../../images/gem/skin/vertical/bg-user-nav-01.gif);
+// $url_co2: url(../../../../images/gem/skin/vertical/icon-arrow-02.png);
+
+.operation-bar {
+	margin-bottom: 15px;
+	padding: 7px;
+	border: 1px solid $color_quill_gray_approx;
+	overflow: hidden;
+	background: $alabaster;
+	&_top {
+		//Instead of the line below you could use @include border-top-left-radius($radius)
+		border-top-left-radius: 5px;
+		//Instead of the line below you could use @include border-top-right-radius($radius)
+		border-top-right-radius: 5px;
+	}
+	&_bottom {
+		//Instead of the line below you could use @include border-bottom-left-radius($radius)
+		border-bottom-left-radius: 5px;
+		//Instead of the line below you could use @include border-bottom-right-radius($radius)
+		border-bottom-right-radius: 5px;
+	}
+	.list_operation li {
+		margin-right: 10px;
+		float: left;
+	}
+}
+.nav-disc-all {
+	padding-top: 5px;
+	float: right;
+	overflow: hidden;
+	li {
+		float: left;
+		&:first-child {
+			margin-right: 10px;
+			padding-right: 10px;
+			background: $url_co1 repeat-y right 0;
+		}
+	}
+}
+.nav-section {
+	margin-bottom: 24px;
+	overflow: hidden;
+	li {
+		float: left;
+		a {
+			padding: 0 12px 0 26px;
+			border-left: 1px solid $color_celeste_approx;
+			display: block;
+			background: $url_co2 no-repeat 10px 0.5em;
+		}
+		&:first-child a {
+			padding-left: 15px;
+			border: none;
+			background: $url_co2 no-repeat 0 0.5em;
+		}
+	}
+}

@@ -1,0 +1,8 @@
+/.gradle/
+/bin/
+/build/
+.classpath
+.project
+/.settings/
+/gwt-unitCache/
+/war/

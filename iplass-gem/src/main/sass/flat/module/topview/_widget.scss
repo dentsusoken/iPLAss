@@ -1,0 +1,72 @@
+//colors
+// $white: #fff;
+
+//urls
+// $url_tw_1: url(../../../../images/gem/skin/flat/icon-nav-009.png);
+
+.lyt-shortcut-01 {
+	color: $white;
+	font-size: 1rem;
+	svg {
+		height: 60px;
+		line-height: 60px;
+		color: $white;
+		width: 60px;
+		position: relative;
+		text-align: center;
+		vertical-align: 0;
+		font-size: 1.6em;
+		& + .title {
+			display: inline-block;
+			padding-left: 0;
+			&::before {
+				display: none;
+			}
+		}
+	}
+	.title {
+		height: 60px;
+		line-height: 60px;
+		font-size: 1rem;
+		color: $white;
+		padding-left: 60px;
+		position: relative;
+		+ div {
+			margin: 0 5%;
+		}
+	}
+	.title::before {
+		content: '';
+		display: block;
+		position: absolute;
+		top: 0;
+		left: 0;
+		height: 60px;
+		width: 60px;
+		background: $url_tw_1 center center no-repeat;
+	}
+}
+.link-widget {
+	display: block;
+	float: left;
+	width: 100%;
+	padding: 0 5%;
+	//Instead of the line below you could use @include box-sizing($bs)
+	box-sizing: border-box;
+	a {
+		background: inherit;
+		width: inherit;
+		color: $white;
+	}
+}
+.list-view a {
+	display: block;
+	line-height: 30px;
+	height: 30px;
+	font-size: 0.92857rem;
+	text-align: center;
+	float: right;
+}
+#widget > div {
+	clear: both;
+}

@@ -1,0 +1,203 @@
+//colors
+// $color_gallery_approx: #ededed;
+// $color_quill_gray_approx: #d4d4d4;
+// $color_pink_swan_approx: #bababa;
+// $white: #ffffff;
+// $color_cloud_approx: #c5c3c3;
+
+//urls
+$url_gc_1: url(../../../../images/gem/skin/flat/icon-search.png);
+
+//@extend-elements
+//original selectors
+//.result-nav .preview span, .result-nav .next span
+%extend_gc_1 {
+	display: block;
+	float: left;
+	height: 30px;
+	min-width: 120px;
+	background: $color_gallery_approx;
+	font-size: 0.92857rem;
+	text-align: center;
+	line-height: 30px;
+}
+
+//original selectors
+//.result-nav .preview span a, .result-nav .next span a
+%extend_gc_2 {
+	display: block;
+	float: left;
+	height: 100%;
+	width: 100%;
+	//Instead of the line below you could use @include transition($transition-1, $transition-2, $transition-3, $transition-4, $transition-5, $transition-6, $transition-7, $transition-8, $transition-9, $transition-10)
+	transition: background 300ms;
+}
+
+
+.result-nav {
+	display: block;
+	float: left;
+	width: 100%;
+	ul {
+		display: block;
+		float: left;
+	}
+	li {
+		display: block;
+		float: left;
+	}
+	.preview {
+		margin-right: 10px;
+		span {
+			@extend %extend_gc_1;
+			&:hover {
+				background: $color_quill_gray_approx;
+				a {
+					text-decoration: none;
+				}
+			}
+			a {
+				@extend %extend_gc_2;
+			}
+			&.unclickable {
+				pointer-events: none;
+				color: $color_pink_swan_approx;
+			}
+		}
+		.unclickable::before {
+			content: '\00AB';
+			margin-right: 10px;
+		}
+		.clickable a::before {
+			content: '\00AB';
+			margin-right: 10px;
+		}
+	}
+	.next {
+		margin-right: 30px;
+		span {
+			@extend %extend_gc_1;
+			&:hover {
+				background: $color_quill_gray_approx;
+				a {
+					text-decoration: none;
+				}
+			}
+			a {
+				@extend %extend_gc_2;
+			}
+			&.unclickable {
+				pointer-events: none;
+				color: $color_pink_swan_approx;
+			}
+		}
+		.unclickable::after {
+			content: '\00BB';
+			margin-left: 10px;
+		}
+		.clickable a::after {
+			content: '\00BB';
+			margin-left: 10px;
+		}
+	}
+	.quick-jump {
+		font-size: 1rem;
+		input[type=text] {
+			height: 30px;
+			width: 40px;
+			padding: 2px 5px;
+			//Instead of the line below you could use @include box-sizing($bs)
+			box-sizing: border-box;
+		}
+		span {
+			margin-left: 5px;
+		}
+		+ li {
+			height: 30px;
+			width: 30px;
+			cursor: pointer;
+			margin-left: 20px;
+			span {
+				display: block;
+				float: left;
+				position: relative;
+				height: 100%;
+				width: 100%;
+				background: $color_gallery_approx;
+				//Instead of the line below you could use @include border-radius($radius, $vertical-radius)
+				border-radius: 50%;
+				text-indent: 0;
+				//Instead of the line below you could use @include transition($transition-1, $transition-2, $transition-3, $transition-4, $transition-5, $transition-6, $transition-7, $transition-8, $transition-9, $transition-10)
+				transition: background 300ms;
+				margin-top: 0;
+				&:hover {
+					background: $color_quill_gray_approx;
+				}
+			}
+			span::before {
+				content: '';
+				display: block;
+				position: absolute;
+				top: 0;
+				left: 0;
+				height: 30px;
+				width: 30px;
+				background: $url_gc_1 center center no-repeat;
+			}
+		}
+	}
+	.last-page {
+	}
+	.page-links {
+		margin-left: 20px;
+		font-size: 1rem;
+		line-height: 30px !important;
+		* {
+			font-size: 1rem;
+			line-height: 30px !important;
+		}
+		li + li {
+			margin-left: 10px;
+		}
+	}
+	.result-num {
+		margin-left: 20px;
+		font-size: 1rem;
+		line-height: 30px !important;
+		* {
+			font-size: 1rem;
+			line-height: 30px !important;
+		}
+	}
+}
+.recursiveTree {
+	text-align: left;
+	.treeContents {
+		background-color: $white;
+		height: 220px;
+		overflow-y: auto;
+		//Instead of the line below you could use @include border-bottom-left-radius($radius)
+		border-bottom-left-radius: 3px;
+		//Instead of the line below you could use @include border-bottom-right-radius($radius)
+		border-bottom-right-radius: 3px;
+		//Instead of the line below you could use @include border-top-left-radius($radius)
+		border-top-left-radius: 3px;
+		//Instead of the line below you could use @include border-top-right-radius($radius)
+		border-top-right-radius: 3px;
+		border-color: $color_cloud_approx;
+		//Instead of the line below you could use @include border-image($value)
+		border-image: none;
+		border-style: solid;
+		border-width: 1px;
+		display: block;
+		padding-left: 10px;
+		li span {
+			white-space: nowrap;
+			display: block;
+			padding: 7px 0 6px;
+		}
+	}
+}
+.result-block .next {
+	margin-right: 30px;
+}

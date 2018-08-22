@@ -1,0 +1,115 @@
+
+ext.localLibDir = file(localLibDirPath)
+
+allprojects {
+	apply plugin: 'java'
+
+	group "org.iplass"
+
+	repositories {
+		mavenCentral()
+		maven {
+			//for jasper reports
+			url 'http://jaspersoft.jfrog.io/jaspersoft/third-party-ce-artifacts/'
+		}
+	}
+
+	javadoc {
+		options.encoding = 'UTF-8'
+		options.docEncoding = 'UTF-8'
+		options.memberLevel = 'PACKAGE'
+		failOnError = false
+
+		// https://issues.gradle.org/browse/GRADLE-1228
+		if (System.properties['http.proxyHost'] != null ) {
+			options.jFlags(
+				'-Dhttp.proxyHost=' + System.properties['http.proxyHost'],
+				'-Dhttp.proxyPort=' + System.properties['http.proxyPort']
+			)
+		}
+	}
+
+	tasks.withType(AbstractCompile) {
+		options.encoding = 'UTF-8'
+	}
+
+	tasks.withType(GroovyCompile) {
+		options.encoding = 'UTF-8'
+	}
+}
+
+subprojects { subproject ->
+	jar {
+		into('META-INF') {
+			from "$rootDir/LICENSE"
+		}
+		manifest {
+			attributes 'Created-By': "${System.getProperty('java.version')} (${System.getProperty('java.vendor')})"
+			attributes 'Implementation-Title': subproject.name
+			attributes 'Implementation-Version': version
+			attributes 'Implementation-Vendor': vendor
+			attributes 'Build-Date': new Date().format('yyyy/MM/dd HH:mm:ss')
+		}
+	}
+}
+
+//public api
+javadoc {
+
+	source(project(':iplass-core').sourceSets['main'].allJava)
+	source(project(':iplass-web').sourceSets['main'].allJava)
+	exclude('**/impl/**')
+
+	failOnError = false
+
+}
+
+//Release
+buildscript {
+	repositories {
+		maven {
+			url 'https://plugins.gradle.org/m2/'
+		}
+	}
+	dependencies {
+		classpath "net.researchgate:gradle-release:${gradleReleasePluginVersion}"
+	}
+}
+apply plugin: 'net.researchgate.release'
+
+if (project.hasProperty('releaseBranch')) {
+	task releaseBuild {
+		subprojects {
+			dependsOn it.tasks.build
+			dependsOn it.tasks.jar
+			dependsOn it.tasks.javadoc
+		}
+	}
+
+	release {
+		failOnCommitNeeded = true
+		failOnPublishNeeded = true
+		failOnSnapshotDependencies = true
+		failOnUnversionedFiles = true
+		failOnUpdateNeeded = true
+		revertOnFail = true
+		preCommitText = ''
+		preTagCommitMessage = '[Gradle Release Plugin] - pre tag commit: '
+		tagCommitMessage = '[Gradle Release Plugin] - creating tag: '
+		newVersionCommitMessage = '[Gradle Release Plugin] - new version commit: '
+		tagTemplate = '${version}'
+		versionPropertyFile = 'gradle.properties'
+		versionProperties = []
+		buildTasks = ['releaseBuild']
+		scmAdapters = [
+			net.researchgate.release.GitAdapter,
+		]
+
+		git {
+			requireBranch = project.property('releaseBranch')
+			pushToRemote = 'origin'
+			pushToBranchPrefix = ''
+			commitVersionFileOnly = false
+		}
+	}
+}

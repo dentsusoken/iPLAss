@@ -1,0 +1,65 @@
+use mtdb
+GO
+
+/* drop/create OBJ_STORE */
+DROP TABLE OBJ_STORE${tableNamePostfix}
+GO
+
+CREATE TABLE OBJ_STORE${tableNamePostfix}
+(
+    TENANT_ID NUMERIC(7,0) NOT NULL,
+    OBJ_DEF_ID VARCHAR(128) NOT NULL,
+    PG_NO NUMERIC(2,0) NOT NULL,
+    OBJ_ID VARCHAR(64) NOT NULL,
+    OBJ_VER NUMERIC(10,0) DEFAULT 0 NOT NULL,
+    OBJ_DEF_VER NUMERIC(10,0),
+    STATUS CHAR(1),
+    OBJ_NAME NVARCHAR(256),
+    OBJ_DESC NVARCHAR(1024),
+    CRE_DATE DATETIME2(3),
+    UP_DATE DATETIME2(3),
+    S_DATE DATETIME2(3),
+    E_DATE DATETIME2(3),
+    LOCK_USER VARCHAR(64),
+    CRE_USER VARCHAR(64),
+    UP_USER VARCHAR(64)
+    <%columns.each {
+        switch (it.type) {
+        case "VARCHAR":
+            if (it.indexType != "NONE") {
+    %>,${it.prefix + it.no} NVARCHAR(<%if (partition) {%>378<%} else {%>380<%}%>)
+    <%      } else {
+    %>,${it.prefix + it.no} NVARCHAR(4000)
+    <%      }
+			break;
+        case "DECIMAL":
+    %>,${it.prefix + it.no} NUMERIC
+    <%      break;
+        case "TIMESTAMP":
+    %>,${it.prefix + it.no} DATETIME2(3)
+    <%      break;
+        case "DOUBLE":
+    %>,${it.prefix + it.no} FLOAT
+    <%      break;
+        default:
+            break;
+        }
+
+        if (it.indexType != "NONE") {
+    %>,${it.prefix + it.no}_TD VARCHAR(139)
+    <%	}
+    }%>,CONSTRAINT OBJ_STORE${tableNamePostfix}_PK PRIMARY KEY (OBJ_DEF_ID, TENANT_ID, OBJ_ID, OBJ_VER, PG_NO)
+)
+<%if (partition) {
+%>ON PS_MTDB (TENANT_ID)
+<%}%>GO
+
+<%columns.each {
+	if ("INDEX" == it.indexType) {
+%>CREATE INDEX OBJ_STORE${tableNamePostfix}_${it.prefix}INDEX_${it.no} ON OBJ_STORE${tableNamePostfix} (${it.prefix + it.no}_TD, ${it.prefix + it.no})
+GO
+<%	} else if ("UNIQUE_INDEX" == it.indexType) {
+%>CREATE UNIQUE INDEX OBJ_STORE${tableNamePostfix}_${it.prefix}UNIQUE_${it.no} ON OBJ_STORE${tableNamePostfix} (${it.prefix + it.no}_TD, ${it.prefix + it.no}<%if (partition) {%>, TENANT_ID<%}%>) WHERE ${it.prefix + it.no}_TD IS NOT NULL AND ${it.prefix + it.no} IS NOT NULL
+GO
+<%	}
+}%>

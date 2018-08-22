@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!DOCTYPE metaDataList>
+<metaDataList>
+<contextPath name="/commandClass">
+<metaDataEntry overwritable="false" sharable="false" dataSharable="false" permissionSharable="false">
+    <metaData xsi:type="metaMetaScriptingCommand" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+        <id>2b91ecca-f50a-46c1-9d4d-71bb3c7eb8af</id>
+        <name>testsample/command/TestSearchGroovyCommand</name>
+        <newInstancePerRequest>false</newInstancePerRequest>
+        <readOnly>false</readOnly>
+        <script>import org.iplass.mtp.entity.query.*;
+import org.iplass.mtp.util.StringUtil;
+import testsample.TestUtil;
+
+String aid = StringUtil.escapeEql(request.param.accountId);
+request.res = em.searchEntity(
+		new Query("select accountId from mtp.auth.User where accountId='$aid'"));
+
+request.utilClassRes = TestUtil.staticMethedCall();
+
+"OK";
+</script>
+    </metaData>
+</metaDataEntry>
+</contextPath>
+<contextPath name="/utilityClass">
+<metaDataEntry overwritable="false" sharable="false" dataSharable="false" permissionSharable="false">
+    <metaData xsi:type="metaUtilityClass" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+        <id>2bf94091-6785-40b2-9fc9-b7f7cd6ed95a</id>
+        <name>testsample.TestUtil</name>
+        <script>package testsample;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+class TestUtil {
+    static Logger logger = LoggerFactory.getLogger("mtp.testsample.TestUtil");
+    
+    static String staticMethedCall() {
+        logger.debug("call staticMethedCall()");
+        
+        return "stringFromTestUtil";
+    }
+    
+    String strVal;
+    int intVal;
+    
+    TestUtil() {
+    }
+    
+    TestUtil(String strVal) {
+        this.strVal = strVal;
+    }
+    
+    TestUtil(int intVal) {
+        this.intVal = intVal;
+    }
+
+    TestUtil(String strVal, int intVal) {
+        this.strVal = strVal;
+        this.intVal = intVal;
+    }
+    
+    void addIntVal(int addVal) {
+        logger.debug("add $addVal");
+        
+        this.intVal += addVal;
+    }
+}</script>
+    </metaData>
+</metaDataEntry>
+</contextPath>
+</metaDataList>

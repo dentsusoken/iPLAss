@@ -1,0 +1,60 @@
+/* drop/create OBJ_STORE */
+DROP TABLE "OBJ_STORE${tableNamePostfix}" CASCADE CONSTRAINT;
+
+CREATE TABLE "OBJ_STORE${tableNamePostfix}"
+(
+    "TENANT_ID" NUMBER(7,0) NOT NULL,
+    "OBJ_DEF_ID" VARCHAR2(128) NOT NULL,
+    "PG_NO" NUMBER(2,0) NOT NULL,
+    "OBJ_ID" VARCHAR2(64) NOT NULL,
+    "OBJ_VER" NUMBER(10,0) DEFAULT 0 NOT NULL,
+    "OBJ_DEF_VER" NUMBER(10,0),
+    "STATUS" CHAR(1),
+    "OBJ_NAME" VARCHAR2(256),
+    "OBJ_DESC" VARCHAR2(1024),
+    "CRE_DATE" TIMESTAMP (3),
+    "UP_DATE" TIMESTAMP (3),
+    "S_DATE" TIMESTAMP(3),
+    "E_DATE" TIMESTAMP(3),
+    "LOCK_USER" VARCHAR2(64),
+    "CRE_USER" VARCHAR2(64),
+    "UP_USER" VARCHAR2(64)
+    <%columns.each {
+		switch (it.type) {
+        case "VARCHAR":
+    %>,"${it.prefix + it.no}" VARCHAR2(4000 BYTE)
+    <%		break;
+	    case "DECIMAL":
+    %>,"${it.prefix + it.no}" NUMBER
+    <%		break;
+        case "TIMESTAMP":
+    %>,"${it.prefix + it.no}" TIMESTAMP(3)
+    <%		break;
+        case "DOUBLE":
+    %>,"${it.prefix + it.no}" BINARY_DOUBLE
+    <%		break;
+        default:
+			break;
+		}
+
+		if (it.indexType != "NONE") {
+    %>,"${it.prefix + it.no}_TD" VARCHAR2(139)
+    <%	}
+	}%>,CONSTRAINT "OBJ_STORE${tableNamePostfix}_PK" PRIMARY KEY ("OBJ_DEF_ID", "TENANT_ID", "OBJ_ID", "OBJ_VER", "PG_NO") USING INDEX <%if (partition) {%>LOCAL<%}%>
+)
+<%if (partition) {
+%>PARTITION BY RANGE (TENANT_ID) INTERVAL(1)
+SUBPARTITION BY HASH (OBJ_DEF_ID) SUBPARTITIONS 8
+(
+    PARTITION OBJ_STORE${tableNamePostfix}_0 VALUES LESS THAN (1)
+)
+<%}
+%>;
+
+<%columns.each {
+	if ("INDEX" == it.indexType) {
+%>CREATE INDEX "OBJ_STORE${tableNamePostfix}_${it.prefix}INDEX_${it.no}" ON "OBJ_STORE${tableNamePostfix}" ("${it.prefix + it.no}_TD", "${it.prefix + it.no}") <%if (partition) {%>GLOBAL PARTITION BY HASH ("${it.prefix + it.no}_TD") PARTITIONS 256<%}%>;
+<%	} else if ("UNIQUE_INDEX" == it.indexType) {
+%>CREATE UNIQUE INDEX "OBJ_STORE${tableNamePostfix}_${it.prefix}UNIQUE_${it.no}" ON "OBJ_STORE${tableNamePostfix}" ("${it.prefix + it.no}_TD", "${it.prefix + it.no}") <%if (partition) {%>GLOBAL PARTITION BY HASH ("${it.prefix + it.no}_TD") PARTITIONS 256<%}%>;
+<%	}
+}%>

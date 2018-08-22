@@ -1,0 +1,74 @@
+//colors -> color/_colors.scss
+// $color_quill_gray_approx: #d5d5d5;
+// $color_alabaster_approx: #f9f9f9;
+// $color_gray_nurse_approx: #eaeaea;
+
+//CSVアップロード
+.csvupload_description {
+	border: 1px solid $color_quill_gray_approx;
+	margin-bottom: 20px;
+	li {
+		padding: 7px;
+		&:nth-child(odd) {
+			background: $color_alabaster_approx;
+		}
+	}
+}
+
+//CSVアップロード結果
+.csv-upload-result {
+	border-left: 1px solid $color_quill_gray_approx;
+	margin-bottom: 20px;
+	border-top: 1px solid $color_quill_gray_approx;
+	border-right: 1px solid $color_quill_gray_approx;
+	border-bottom: 1px solid $color_quill_gray_approx;
+	width: 100%;
+	table-layout: fixed;
+	th {
+		padding: 9px 7px;
+		border-top: 1px dotted $color_quill_gray_approx;
+		background: $color_gray_nurse_approx;
+		text-align: left;
+		vertical-align: middle;
+	}
+	.file-name {
+		width: 20%;
+	}
+	.upload-date {
+		width: 10%;
+	}
+	.status {
+		width: 10%;
+	}
+	.message {
+		width: 60%;
+	}
+	td {
+		border-top: none;
+		overflow: hidden;
+		padding: 9px 7px;
+		vertical-align: middle;
+	}
+}
+
+.csvupload_csvfile {
+	margin-bottom:15px;
+	li {
+		float: left;
+	}
+}
+
+.csvupload_uniquekey {
+	margin-bottom:15px;
+	li {
+		float: left;
+		margin-right: 10px;
+	}
+	input {
+		margin-right: 5px;
+	}
+}
+
+.generic_search_csvuploadresult .operation-bar {
+	margin-top: 15px;
+}

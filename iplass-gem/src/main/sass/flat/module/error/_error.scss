@@ -1,0 +1,23 @@
+.unexpected-error {
+	#header #title {
+		display: none;
+	}
+}
+.nomenu-layout .error-block {
+	padding: 15px;
+}
+.error-block {
+	float: left;
+	display: block;
+	background: $color_gallery_approx;
+}
+.tbl-error {
+  background: $white;
+  margin-bottom: 20px;
+	td {
+    padding: 20px;
+	}
+	+ p {
+		font-size: 1rem;
+	}
+}

@@ -1,0 +1,48 @@
+//colors
+// $white: #fff;
+
+//@extend-elements
+//original selectors
+//.entity-list-widget .result-nav .preview span, .entity-list-widget .result-nav .next span
+%extend_gsw_1 {
+	display: inherit;
+	float: inherit;
+	height: inherit;
+	width: inherit;
+	min-width: inherit;
+	background: inherit;
+	padding: 0 15px;
+}
+
+
+.list-entity-name {
+	a {
+		display: block;
+		position: relative;
+		padding: 4px 0 4px 40px;
+		font-size: 1rem;
+		color: $white;
+	}
+	a::before {
+		content: '\25B6';
+		display: inline-block;
+		position: absolute;
+		left: 20px;
+	}
+}
+.entity-list-widget {
+	.list-paging {
+		padding-left: 20px;
+	}
+	.result-nav {
+		.next {
+			margin-right: 0;
+			span {
+				@extend %extend_gsw_1;
+			}
+		}
+		.preview span {
+			@extend %extend_gsw_1;
+		}
+	}
+}

@@ -1,0 +1,19 @@
+.clear:after,
+#header:after,
+#header ul.user-function:after,
+#header #user-nav:after,
+#content:after,
+#footer:after,
+div.lay-button-01:after,
+ul.list-input-01:after,
+div.box-search-01 .tabList:after,
+.col2-wrap:after,
+.result-nav:after,
+.result-nav ul:after{
+	display:block;
+	clear:both;
+	height:0;
+	visibility:hidden;
+	content:".";
+	font-size:0;
+}
