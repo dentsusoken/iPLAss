@@ -6,7 +6,7 @@
 # ----------------------------------------------------
 
 # config file name (Please set your service-config file name)
-export SERVICE_CONFIG_NAME=tools-service-config.xml
+export SERVICE_CONFIG_NAME=mtp-service-config.xml
 
 # WebApp HOME directory
 export WEB_APP_HOME=/app/tomcat6/webapps

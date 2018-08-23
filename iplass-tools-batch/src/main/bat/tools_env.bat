@@ -6,7 +6,7 @@ REM (Depend on the situation, please change values)
 REM ----------------------------------------------------
 
 REM config file name (Please set your service-config file name)
-set SERVICE_CONFIG_NAME=tools-service-config.xml
+set SERVICE_CONFIG_NAME=mtp-service-config.xml
 
 REM config file path (Please set the directory that a resource file is stored)
 set MTP_RESOURCE_PATH=.\..\src\main\resources
