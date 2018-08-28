@@ -152,7 +152,7 @@ $(function() {
 	var isloaded = false;
 	colModel.push({name:"orgOid", idnex:"orgOid", sortable:false, hidden:true, frozen:true, label:"oid"});
 	colModel.push({name:"orgVersion", idnex:"orgVersion", sortable:false, hidden:true, frozen:true, label:"version"});
-	colModel.push({name:'_mtpDetailLink', index:'_mtpDetailLink', width:78, sortable:false, align:'center', frozen:true, label:"", classes:"detail-links"});
+	colModel.push({name:'_mtpDetailLink', index:'_mtpDetailLink', width:${m:rs("mtp-gem-messages", "generic.search.list.detailLinkWidth")}, sortable:false, align:'center', frozen:true, label:"", classes:"detail-links"});
 <%
 
 	for (Element element : section.getElements()) {
