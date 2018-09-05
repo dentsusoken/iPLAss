@@ -27,6 +27,7 @@ public interface AuthCommandConstants {
 	public static final String PARAM_BACK_URL = "backurl";
 	public static final String PARAM_NEW_PASSWORD = "newPassword";
 	public static final String PARAM_CONFIRM_PASSWORD = "confirmPassword";
+	public static final String PARAM_RESET_RANDOM_PASSWORD = "resetRandomPassword";
 	
 	public static final String PARAM_REMEMBER_ME = "rememberMe";
 	

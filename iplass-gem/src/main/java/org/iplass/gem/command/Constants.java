@@ -287,6 +287,7 @@ public class Constants {
 	public static final String CMD_RSLT_JSP_LOGIN = "/jsp/gem/auth/Login.jsp";
 	public static final String CMD_RSLT_JSP_REAUTH = "/jsp/gem/auth/ReAuth.jsp";
 	public static final String CMD_RSLT_JSP_UPDATE_PASSWORD = "/jsp/gem/auth/Password.jsp";
+	public static final String CMD_RSLT_JSP_RESET_SPECIFIC_PASSWORD = "/jsp/gem/auth/specificPassword.jsp";
 	public static final String CMD_RSLT_JSP_PASSWORD_EXPIRE = "/jsp/gem/auth/Expire.jsp";
 	public static final String CMD_RSLT_HTML_PDFVIEWER_PATH = "/jsp/gem/binary/pdfviewer.jsp";
 
