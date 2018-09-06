@@ -4,16 +4,23 @@
 
 package org.iplass.mtp.tools.batch.pack;
 
+import static org.iplass.mtp.tools.batch.pack.PackageExportParameter.*;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Properties;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -53,6 +60,9 @@ import org.iplass.mtp.util.StringUtil;
  */
 public class PackageExport extends MtpCuiBase {
 
+	/** Silentモード 設定ファイル名 */
+	public static final String KEY_CONFIG_FILE = "pack.config";
+
 	//実行モード
 	private ExecMode execMode = ExecMode.WIZARD;
 
@@ -62,9 +72,13 @@ public class PackageExport extends MtpCuiBase {
 	private MetaDataPortingService mdps = ServiceRegistry.getRegistry().getService(MetaDataPortingService.class);
 	private EntityService ehs = ServiceRegistry.getRegistry().getService(EntityService.class);
 
+	//テナントID(引数)
+	private Integer tenantId;
+
 	/**
 	 * args[0]・・・execMode
-	 * args[1]・・・language
+	 * args[1]・・・tenantId
+	 * args[2]・・・language
 	 **/
 	public static void main(String[] args) {
 
@@ -81,18 +95,25 @@ public class PackageExport extends MtpCuiBase {
 
 	/**
 	 * args[0]・・・execMode
-	 * args[1]・・・language
+	 * args[1]・・・tenantId
+	 * args[2]・・・language
 	 **/
 	public PackageExport(String... args) {
 
 		if (args != null) {
-			if (args.length > 0) {
-				setExecMode(ExecMode.valueOf(args[0]));
+			if (args.length > 0 && args[0] != null) {
+				setExecMode(ExecMode.valueOf(args[0].toUpperCase()));
 			}
-			if (args.length > 1) {
+			if (args.length > 1 && args[1] != null) {
+				tenantId = Integer.parseInt(args[1]);
+				if (tenantId == -1) {
+					tenantId = null;
+				}
+			}
+			if (args.length > 2 && args[2] != null) {
 				//systemの場合は、JVMのデフォルトを利用
-				if (!"system".equals(args[1])) {
-					setLanguage(args[1]);
+				if (!"system".equals(args[2].toLowerCase())) {
+					setLanguage(args[2]);
 				}
 			}
 		}
@@ -124,11 +145,11 @@ public class PackageExport extends MtpCuiBase {
 			//Wizardの実行
 			return startExportWizard();
 		case SILENT :
-			//TODO Silent版
 			logInfo("■Start Export Silent");
 			logInfo("");
 
-			return false;
+			//Silentの実行
+			return startExportSilent();
 		default :
 			logError("unsupport execute mode : " + getExecMode());
 			return false;
@@ -142,6 +163,10 @@ public class PackageExport extends MtpCuiBase {
 
 	public void setExecMode(ExecMode execMode) {
 		this.execMode = execMode;
+	}
+
+	public void setTenantId(Integer tenantId) {
+		this.tenantId = tenantId;
 	}
 
 	/**
@@ -539,36 +564,47 @@ public class PackageExport extends MtpCuiBase {
 	}
 
 	/**
-	 * Export用のパラメータを生成して、Export処理を実行します。
+	 * Wizard形式でExport用のパラメータを生成して、Export処理を実行します。
 	 *
-	 * @return
+	 * @return 実行結果
 	 */
 	private boolean startExportWizard() {
 
-		//テナントURL
-		String tenantUrl = readConsole(getCommonResourceMessage("inputTenantUrlMsg"));
+		Tenant tenant = null;
+		if (tenantId != null) {
+			//引数でテナントIDが指定されている場合
+			tenant = ts.getTenant(tenantId);
+			if (tenant == null) {
+				logWarn(getCommonResourceMessage("notExistsTenantIdMsg", tenantId));
+				tenantId = null;
+				return startExportWizard();
+			}
+		} else {
+			//テナントURL
+			String tenantUrl = readConsole(getCommonResourceMessage("inputTenantUrlMsg"));
 
-		if (StringUtil.isEmpty(tenantUrl)) {
-			logWarn(getCommonResourceMessage("requiredTenantUrlMsg"));
-			return startExportWizard();
-		}
-		if (tenantUrl.equalsIgnoreCase("-show")) {
-			//一覧を出力
-			showValidTenantList();
-			return startExportWizard();
-		}
-		if (tenantUrl.equalsIgnoreCase("-env")) {
-			//環境情報を出力
-			logEnvironment();
-			return startExportWizard();
-		}
+			if (StringUtil.isEmpty(tenantUrl)) {
+				logWarn(getCommonResourceMessage("requiredTenantUrlMsg"));
+				return startExportWizard();
+			}
+			if (tenantUrl.equalsIgnoreCase("-show")) {
+				//一覧を出力
+				showValidTenantList();
+				return startExportWizard();
+			}
+			if (tenantUrl.equalsIgnoreCase("-env")) {
+				//環境情報を出力
+				logEnvironment();
+				return startExportWizard();
+			}
 
-		//URL存在チェック
-		String key = tenantUrl.startsWith("/") ? tenantUrl : "/" + tenantUrl;
-		Tenant tenant = ts.getTenant(key);
-		if (tenant == null) {
-			logWarn(getCommonResourceMessage("notExistsTenantMsg", key));
-			return startExportWizard();
+			//URL存在チェック
+			String url = tenantUrl.startsWith("/") ? tenantUrl : "/" + tenantUrl;
+			tenant = ts.getTenant(url);
+			if (tenant == null) {
+				logWarn(getCommonResourceMessage("notExistsTenantMsg", tenantUrl));
+				return startExportWizard();
+			}
 		}
 
 		PackageExportParameter param = new PackageExportParameter(tenant.getId(), tenant.getName());
@@ -740,6 +776,177 @@ public class PackageExport extends MtpCuiBase {
 		removeLogListner(consoleLogListner);
 		LogListner loggingListner = getLoggingLogListner();
 		addLogListner(loggingListner);
+
+		//Export処理実行
+		boolean ret = executeExport(param);
+
+		//LogListnerを一度削除
+		removeLogListner(loggingListner);
+
+		return ret;
+	}
+
+	/**
+	 * Propertyファイル形式でExport用のパラメータを生成して、Export処理を実行します。
+	 *
+	 * @return 実行結果
+	 */
+	private boolean startExportSilent() {
+
+		//ConsoleのLogListnerを一度削除してLog出力に切り替え
+		LogListner consoleLogListner = getConsoleLogListner();
+		removeLogListner(consoleLogListner);
+		LogListner loggingListner = getLoggingLogListner();
+		addLogListner(loggingListner);
+
+		//プロパティファイルの取得
+		String configFileName = System.getProperty(KEY_CONFIG_FILE);
+		if (StringUtil.isEmpty(configFileName)) {
+			logError(rs("PackageExport.Silent.requiredConfigFileMsg", KEY_CONFIG_FILE));
+			return false;
+		}
+
+		//プロパティの取得
+		Properties prop = new Properties();
+		try {
+			Path path = Paths.get(configFileName);
+			if (Files.exists(path)) {
+				logDebug("load config file from file path:" + configFileName);
+				try (InputStream is = new FileInputStream(path.toFile());
+					InputStreamReader reader = new InputStreamReader(is, "utf-8");) {
+					prop.load(reader);
+				}
+			} else {
+				logDebug("load config file from classpath:" + configFileName);
+				try (InputStream is = PackageExport.class.getResourceAsStream(configFileName)) {
+					if (is == null) {
+						logError(rs("PackageExport.Silent.notExistsConfigFileMsg", configFileName));
+						return false;
+					}
+					try (InputStreamReader reader = new InputStreamReader(is, "utf-8")) {
+						prop.load(reader);
+					}
+				}
+			}
+		} catch (IOException e) {
+			throw new SystemException(e);
+		}
+
+		//テナントの取得
+		Tenant tenant = null;
+		if (tenantId != null) {
+			//引数でテナントIDが指定されている場合
+			tenant = ts.getTenant(tenantId);
+			if (tenant == null) {
+				logError(getCommonResourceMessage("notExistsTenantIdMsg", tenantId));
+				return false;
+			}
+		} else {
+			//プロパティから取得
+			//ID
+			String propTenantId = prop.getProperty(PROP_TENANT_ID);
+			if (StringUtil.isNotEmpty(propTenantId)) {
+				tenant = ts.getTenant(Integer.parseInt(propTenantId));
+				if (tenant == null) {
+					logError(getCommonResourceMessage("notExistsTenantIdMsg", propTenantId));
+					return false;
+				}
+			}
+			if (tenant == null) {
+				//URL
+				String propTenantUrl = prop.getProperty(PROP_TENANT_URL);
+				if (StringUtil.isNotEmpty(propTenantUrl)) {
+					if (!propTenantUrl.startsWith("/")) {
+						propTenantUrl = "/" + propTenantUrl;
+					}
+					tenant = ts.getTenant(propTenantUrl);
+					if (tenant == null) {
+						logError(getCommonResourceMessage("notExistsTenantMsg", propTenantUrl));
+						return false;
+					}
+				}
+			}
+			if (tenant == null) {
+				logError(getCommonResourceMessage("requiredMsg", PROP_TENANT_ID + " or " + PROP_TENANT_URL));
+				return false;
+			}
+		}
+		logInfo("target tenant:[" + tenant.getId() + "]" + tenant.getName());
+
+		PackageExportParameter param = new PackageExportParameter(tenant.getId(), tenant.getName());
+
+		String exportDir = prop.getProperty(PROP_EXPORT_DIR);
+		if (StringUtil.isNotEmpty(exportDir)) {
+			param.setExportDirName(exportDir);
+
+			//チェック
+			File dir = new File(param.getExportDirName());
+			if (!dir.exists()) {
+				dir.mkdir();
+				logInfo(rs("PackageExport.Wizard.createdInputDirMsg", param.getExportDirName()));
+			}
+			if (!dir.isDirectory()) {
+				logError(rs("PackageExport.Wizard.notDirMsg", param.getExportDirName()));
+				return false;
+			}
+		}
+
+		String packageName = prop.getProperty(PROP_PACKAGE_NAME);
+		if (StringUtil.isNotEmpty(packageName)) {
+			param.setPackageName(packageName);
+		}
+
+		String exportMeta = prop.getProperty(PROP_META_EXPORT);
+		if (StringUtil.isNotEmpty(exportMeta)) {
+			param.setExportMetaData(Boolean.valueOf(exportMeta));
+		}
+		if (param.isExportMetaData()) {
+
+			String localOnly = prop.getProperty(PROP_META_LOCAL_ONLY);
+			if (StringUtil.isNotEmpty(localOnly)) {
+				param.setExportLocalMetaDataOnly(Boolean.valueOf(localOnly));
+			}
+
+			String source = prop.getProperty(PROP_META_SOURCE);
+			if (StringUtil.isEmpty(source)) {
+				//全対象
+				param.setExportAllMetaData(true);
+
+				String excludeTenant = prop.getProperty(PROP_META_EXCLUDE_TENANT);
+				if (StringUtil.isNotEmpty(excludeTenant)) {
+					param.setExportTenantMetaData(!Boolean.valueOf(excludeTenant));
+				}
+
+			} else {
+				param.setExportAllMetaData(false);
+				param.setExportMetaDataPathStr(source);
+			}
+			getMetaDataPathList(param);
+		}
+
+		String exportEntity = prop.getProperty(PROP_ENTITY_EXPORT);
+		if (StringUtil.isNotEmpty(exportEntity)) {
+			param.setExportEntityData(Boolean.valueOf(exportEntity));
+		}
+		if (param.isExportEntityData()) {
+			String source = prop.getProperty(PROP_ENTITY_SOURCE);
+			if (StringUtil.isEmpty(source)) {
+				//全対象
+				param.setExportAllEntityData(true);
+
+				String excludeUser = prop.getProperty(PROP_ENTITY_EXCLUDE_USER);
+				if (StringUtil.isNotEmpty(excludeUser)) {
+					param.setExportUserEntityData(!Boolean.valueOf(excludeUser));
+				}
+			} else {
+				param.setExportAllEntityData(false);
+				param.setExportEntityDataPathStr(source);
+			}
+			getEntityDataPathList(param);
+		}
+
+		//実行情報出力
+		logArguments(param);
 
 		//Export処理実行
 		boolean ret = executeExport(param);

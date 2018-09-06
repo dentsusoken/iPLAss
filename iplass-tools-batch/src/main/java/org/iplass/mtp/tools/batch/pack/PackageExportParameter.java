@@ -11,6 +11,29 @@ import org.iplass.mtp.impl.util.InternalDateUtil;
 
 public class PackageExportParameter {
 
+	/** Silentモード テナントURL */
+	public static final String PROP_TENANT_URL = "tenantUrl";
+	/** Silentモード テナントID */
+	public static final String PROP_TENANT_ID = "tenantId";
+	/** Silentモード 出力先ディレクトリ */
+	public static final String PROP_EXPORT_DIR = "exportDir";
+	/** Silentモード パッケージ名 */
+	public static final String PROP_PACKAGE_NAME = "packageName";
+	/** Silentモード メタデータ 出力 */
+	public static final String PROP_META_EXPORT = "meta.export";
+	/** Silentモード メタデータ ローカルのみ */
+	public static final String PROP_META_LOCAL_ONLY = "meta.localOnly";
+	/** Silentモード メタデータ 対象Path、複数ある場合はカンマ区切り、未指定の場合は全て */
+	public static final String PROP_META_SOURCE = "meta.source";
+	/** Silentモード メタデータ 対象を指定しない場合にテナントメタデータを除外するか */
+	public static final String PROP_META_EXCLUDE_TENANT = "meta.excludeTenant";
+	/** Silentモード Entityデータ 出力 */
+	public static final String PROP_ENTITY_EXPORT = "entity.export";
+	/** Silentモード Entityデータ 対象Name、複数ある場合はカンマ区切り、未指定の場合は全て */
+	public static final String PROP_ENTITY_SOURCE = "entity.source";
+	/** Silentモード Entityデータ 対象を指定しない場合にUserデータを除外するか */
+	public static final String PROP_ENTITY_EXCLUDE_USER = "meta.excludeUser";
+
 	// テナントID
 	private int tenantId;
 

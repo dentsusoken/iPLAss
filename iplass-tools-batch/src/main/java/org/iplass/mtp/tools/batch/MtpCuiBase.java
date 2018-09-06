@@ -102,6 +102,9 @@ public abstract class MtpCuiBase {
 		logMessage.clear();
 	}
 
+	protected void logDebug(String message) {
+		fireDebubLogMessage(message);
+	}
 	protected void logInfo(String message) {
 		fireInfoLogMessage(message);
 		logMessage.add(message);
@@ -255,6 +258,11 @@ public abstract class MtpCuiBase {
 		loggingLogListner = new LogListner() {
 
 			@Override
+			public void debug(String message) {
+				logger.debug(message);
+			}
+
+			@Override
 			public void warn(String message) {
 				logger.warn(message);
 			}
@@ -283,6 +291,7 @@ public abstract class MtpCuiBase {
 			public void error(String message, Throwable e) {
 				logger.error(message, e);
 			}
+
 		};
 
 		return loggingLogListner;
@@ -370,6 +379,11 @@ public abstract class MtpCuiBase {
 		}
 	}
 
+	private void fireDebubLogMessage(String message) {
+		for (LogListner listner : logListners) {
+			listner.debug(message);
+		}
+	}
 	private void fireInfoLogMessage(String message) {
 		for (LogListner listner : logListners) {
 			listner.info(message);
@@ -404,12 +418,13 @@ public abstract class MtpCuiBase {
 	}
 
 	public interface LogListner {
-		public void info(String message);
-		public void info(String message, Throwable e);
-		public void warn(String message);
-		public void warn(String message, Throwable e);
-		public void error(String message);
-		public void error(String message, Throwable e);
+		default void debug(String message) {};
+		void info(String message);
+		void info(String message, Throwable e);
+		void warn(String message);
+		void warn(String message, Throwable e);
+		void error(String message);
+		void error(String message, Throwable e);
 	}
 
 	private class ConsoleLogListner implements LogListner {
@@ -464,6 +479,7 @@ public abstract class MtpCuiBase {
 		public void error(String message, Throwable e) {
 			error(message);
 		}
+
 	}
 
 	protected void setupLanguage() {
