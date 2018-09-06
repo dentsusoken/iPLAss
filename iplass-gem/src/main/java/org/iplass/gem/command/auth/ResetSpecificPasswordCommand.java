@@ -63,7 +63,7 @@ import org.slf4j.LoggerFactory;
 			command={},
 			result=@Result(type=Type.JSP,
 							value=Constants.CMD_RSLT_JSP_RESET_SPECIFIC_PASSWORD,
-							templateName="gem/auth/specificPassword",
+							templateName="gem/auth/SpecificPassword",
 							layoutActionName=Constants.LAYOUT_POPOUT_ACTION)
 	),
 	@ActionMapping(name=ResetSpecificPasswordCommand.ACTION_RESET_SPECIFIC_PASSWORD,
@@ -73,7 +73,7 @@ import org.slf4j.LoggerFactory;
 			command=@CommandConfig(commandClass=ResetSpecificPasswordCommand.class),
 			result=@Result(type=Type.JSP,
 					value=Constants.CMD_RSLT_JSP_RESET_SPECIFIC_PASSWORD,
-					templateName="gem/auth/specificpassword/reset",
+					templateName="gem/auth/SpecificPassword",
 					layoutActionName=Constants.LAYOUT_POPOUT_ACTION),
 			tokenCheck=@TokenCheck
 	)

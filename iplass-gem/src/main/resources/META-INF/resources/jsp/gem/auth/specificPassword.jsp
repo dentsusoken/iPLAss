@@ -73,7 +73,7 @@ $(function () {
 <span>
 <i class="far fa-circle default-icon"></i>
 </span>
-${m:rs("mtp-gem-messages", "auth.Password.changeUserInfo")}</h2>
+${m:rs("mtp-gem-messages", "auth.SpecificPassword.resetPass")}</h2>
 <div class="user-profile">
 <h3 class="hgroup-02 hgroup-02-01">${m:rs("mtp-gem-messages", "auth.Password.enterPass")}</h3>
 <%
@@ -88,7 +88,7 @@ if ("SUCCESS".equals(request.getAttribute(WebRequestConstants.COMMAND_RESULT))) 
 <div class="error" style="color:red;">
 <c:out value="<%=errorMessage%>"/>
 </div>
-<form method="POST" action="${m:tcPath()}/<%=ResetSpecificPasswordCommand.ACTION_RESET_SPECIFIC_PASSWORD%>">
+<form id="resetSpecificPassForm" method="POST" action="${m:tcPath()}/<%=ResetSpecificPasswordCommand.ACTION_RESET_SPECIFIC_PASSWORD%>">
 ${m:outputToken('FORM_XHTML', true)}
 <% if (oid != null) {%>
 <input type="hidden" name="oid" value="<%=oid%>" />
@@ -121,7 +121,7 @@ ${m:outputToken('FORM_XHTML', true)}
 </div>
 <div>
 <ul class="list_operation">
-<li class="btn"><input type="submit" value=${m:rs("mtp-gem-messages", "auth.SpecificPassword.reset")} class="gr-btn" /></li>
+<li class="btn"><input type="submit" value="${m:rs('mtp-gem-messages', 'auth.SpecificPassword.reset')}" class="gr-btn" /></li>
 <li class="mt05 cancel-link"><a href="javascript:void(0)" onclick="cancel();return false;">${m:rs("mtp-gem-messages", "auth.SpecificPassword.cancel")}</a></li>
 </ul>
 </div>
@@ -136,4 +136,12 @@ function cancel() {
 		$("#modal-dialog-" + modalTarget + " .modal-close", parent.document).click();
 	}
 }
+$(function(){
+	$("#resetSpecificPassForm").submit(function(){
+		if(window.confirm(scriptContext.locale.passResetConfirm)) {
+			return true;
+		}
+		return false;
+	})
+})
 </script>

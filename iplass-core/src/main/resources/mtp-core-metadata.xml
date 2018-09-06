@@ -2671,8 +2671,6 @@ tenant(api.tenant.Tenant)、user(api.auth.User)、newPassword(String)</descripti
 
 （ユーザID：${user.accountId}）のパスワードがリセットされました。
 
-パスワードがシステム管理者にリセットされましたので、${tenant.displayName}システム管理者に連絡してください。
-
    URL: XXXXXXXX
    ユーザID: ${user.accountId}
    ユーザ名: ${user.name}
