@@ -597,6 +597,10 @@ public class ConfigImpl implements Config {
 	
 	@SuppressWarnings("unchecked")
 	public <T> T getValue(String name, Class<T> type) {
+		if (type == Object.class) {
+			type = null;
+		}
+		
 		Object value = valueInit(name, type);
 		if (value instanceof List) {
 			return ((List<T>) value).get(0);
@@ -607,6 +611,10 @@ public class ConfigImpl implements Config {
 	
 	@SuppressWarnings("unchecked")
 	public <T> List<T> getValues(String name, Class<T> type) {
+		if (type == Object.class) {
+			type = null;
+		}
+		
 		Object value = valueInit(name, type);
 		if (value == null) {
 			return null;

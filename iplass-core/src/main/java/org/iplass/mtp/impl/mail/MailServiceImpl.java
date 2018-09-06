@@ -22,7 +22,9 @@ package org.iplass.mtp.impl.mail;
 
 import java.io.UnsupportedEncodingException;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 
 import javax.activation.DataHandler;
@@ -37,6 +39,7 @@ import javax.mail.PasswordAuthentication;
 import javax.mail.Session;
 import javax.mail.Store;
 import javax.mail.Transport;
+import javax.mail.internet.HeaderTokenizer;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
@@ -67,8 +70,21 @@ import org.slf4j.LoggerFactory;
 public class MailServiceImpl extends AbstractTypedMetaDataService<MetaMailTemplate, MailTemplateRuntime> implements MailService {
 
 	public static final String MAIL_TEMPLATE_META_PATH = "/mail/template/";
-	public static final String ISO_2022_JP = "ISO-2022-JP";
 
+	//default values
+	public static final String ISO_2022_JP = "ISO-2022-JP";
+	public static final String ENCODING_7BIT = "7bit";
+	public static final String DEFAULT_TIMEOUT_MILLIS = "60000";
+	
+	//custom properties
+	public static final String MAIL_SMTP_POPBEFORESMTP = "mail.smtp.popbeforesmtp";
+	public static final String MAIL_POP3_AUTH_ID ="mail.pop3.auth.id";
+	public static final String MAIL_POP3_AUTH_PASSWORD ="mail.pop3.auth.password";
+	public static final String MAIL_SMTP_AUTH_ID ="mail.smtp.auth.id";
+	public static final String MAIL_SMTP_AUTH_PASSWORD ="mail.smtp.auth.password";
+	public static final String MAIL_CHARSET ="mail.charset";
+	public static final String MAIL_ENCODING ="mail.encoding";
+	
 	private static Logger logger = LoggerFactory.getLogger(MailServiceImpl.class);
 
 	public static class TypeMap extends DefinitionMetaDataTypeMap<MailTemplateDefinition, MetaMailTemplate> {
@@ -81,14 +97,23 @@ public class MailServiceImpl extends AbstractTypedMetaDataService<MetaMailTempla
 		}
 	}
 
-	private boolean debug = false;
+	private boolean debug;
+	private boolean mailSmtpPopbeforesmtp;
+	private boolean mailSmtpAuth;
+	private String mailPop3AuthId;
+	private String mailPop3AuthPassword;
+	private String mailSmtpAuthId;
+	private String mailSmtpAuthPassword;
+	private String mailCharset;
+	private String mailEncoding;
 
-	private MailServerConfig config;
+	private Map<String, Object> sendProperties;
 
 	private List<SendMailListener> listener;
 
 	private long retryIntervalMillis;
 	private int retryCount;
+	
 
 	/**
 	 * コンストラクタ
@@ -96,39 +121,12 @@ public class MailServiceImpl extends AbstractTypedMetaDataService<MetaMailTempla
 	public MailServiceImpl() {
 	}
 
+	public Map<String, Object> getSendProperties() {
+		return sendProperties;
+	}
+
 	public static String getFixedPath() {
 		return MAIL_TEMPLATE_META_PATH;
-	}
-
-	private boolean convBoolean(Config config, String key) {
-		String value = config.getValue(key);
-		return Boolean.valueOf(value);
-	}
-
-	private int getInt(Config config, String key, int defaultValue) {
-		String value = config.getValue(key);
-		try {
-			return Integer.parseInt(value);
-		} catch (NumberFormatException e) {
-		}
-		return defaultValue;
-	}
-
-	private int chkInt(Config config, String key) {
-		String value = chkNan(config, key);
-		try {
-			return Integer.parseInt(value);
-		} catch (NumberFormatException e) {
-			throw new IllegalStateException("Mail configration invalid.Key=" + key + ":value=" + value, e);
-		}
-	}
-
-	private String chkNan(Config config, String key) {
-		String ret = config.getValue(key);
-		if(ret == null || ret.length() == 0) {
-			throw new IllegalStateException("Mail configration invalid.Key=" + key + ":value=" + ret);
-		}
-		return ret;
 	}
 
 	public long getRetryIntervalMillis() {
@@ -147,103 +145,72 @@ public class MailServiceImpl extends AbstractTypedMetaDataService<MetaMailTempla
 	 *
 	 * @see org.iplass.mtp.spi.Service#init(org.iplass.mtp.spi.Config)
 	 */
-	@SuppressWarnings("unchecked")
 	@Override
 	public void init(Config config) {
-		String isDebug = config.getValue("debug");
-		if (isDebug != null && isDebug.equalsIgnoreCase("true")) {
-			debug = true;
-		}
-
-		//FIXME javamailのプロパティの設定の汎用化。他にも設定可能なプロパティがたくさんある。
-
-		MailServerConfig server = new MailServerConfig();
-		// メールサーバアドレス
-		server.setMailSmtpHost(chkNan(config, "mail.smtp.host"));
-		// メールサーバsmtpポート 通常設定: 25 / サブミッションポート:587 / SSL:465
-		server.setMailSmtpPort(chkInt(config, "mail.smtp.port"));
-		// SMTPConnectionタイムアウト設定(ms)
-		server.setMailSmtpConnectiontimeout(getInt(config, "mail.smtp.connectiontimeout", 60000));
-		// SMTPタイムアウト設定(ms)
-		server.setMailSmtpTimeout(getInt(config, "mail.smtp.timeout", 60000));
-		//mail.smtp.from
-		if (config.getValue("mail.smtp.from") != null) {
-			server.setMailSmtpFrom(config.getValue("mail.smtp.from"));
-		}
-
-		// SMTP 認証方式
-		// SMTP認証を利用するか否か
-		server.setMailSmtpAuth(convBoolean(config, "mail.smtp.auth"));
-		if(server.isMailSmtpAuth()) {
-			// SMTP認証ユーザID
-			server.setMailSmtpAuthId(chkNan(config, "mail.smtp.auth.id"));
-			// SMTP認証パスワード
-			server.setMailSmtpAuthPassword(chkNan(config, "mail.smtp.auth.password"));
-			// SMTP認証方式 (LOGIN PLAIN DIGEST-MD5 NTLM(対応していない)
-			server.setMailSmtpAuthMechanisms(config.getValue("mail.smtp.auth.mechanisms"));
-		}
-
-		// SMTP SSL
-		if (config.getValue("mail.smtp.ssl") != null) {
-			server.setMailSmtpSsl(convBoolean(config, "mail.smtp.ssl"));
-		} else {
-			server.setMailSmtpSsl(false);
-		}
-
-		// PopBeforeSmtpの設定 mailSmtpAuthがfalseの場合に有効
-		server.setMailSmtpPopbeforesmtp(convBoolean(config, "mail.smtp.popbeforesmtp"));
-		// POP設定
-		if(!server.isMailSmtpAuth() && server.isMailSmtpPopbeforesmtp()) {
-			// SMTP認証でなく、Pop Before SMTPの場合にPOP3設定を取得する。
-			// popサーバ
-			server.setMailPop3Host(chkNan(config, "mail.pop3.host"));
-			// pop3ポート 通常：110 / ssl 995
-			server.setMailPop3Port(chkInt(config, "mail.pop3.port"));
-			// pop認証設定 */
-			server.setMailPop3AuthId(chkNan(config, "mail.pop3.auth.id"));
-			server.setMailPop3AuthPassword(chkNan(config, "mail.pop3.auth.password"));
-			// APOP を利用するか否か true:利用する/true文字以外:利用しない */
-			server.setMailPop3ApopEnable(convBoolean(config, "mail.pop3.apop.enable"));
-			// Pop3接続タイムアウト設定(ms)
-			server.setMailPop3Connectiontimeout(getInt(config, "mail.pop3.connectiontimeout", 60000));
-			// Pop3タイムアウト設定
-			server.setMailPop3Timeout(getInt(config, "mail.pop3.timeout", 60000));
-
-			// Pop3 SSL
-			if (config.getValue("mail.pop3.ssl") != null) {
-				server.setMailSmtpSsl(convBoolean(config, "mail.pop3.ssl"));
-			} else {
-				server.setMailSmtpSsl(false);
+		
+		listener = config.getValues("listener", SendMailListener.class);
+		retryIntervalMillis = config.getValue("retryIntervalMillis", Long.TYPE, 0L);
+		retryCount = config.getValue("retryCount", Integer.TYPE, 0);
+		debug = config.getValue("debug", Boolean.TYPE, false);
+		
+		sendProperties = new HashMap<>();
+		for (String name: config.getNames()) {
+			switch (name) {
+			case MAIL_SMTP_POPBEFORESMTP:
+				mailSmtpPopbeforesmtp = config.getValue(MAIL_SMTP_POPBEFORESMTP, Boolean.TYPE, false);
+				break;
+			case MAIL_POP3_AUTH_ID:
+				mailPop3AuthId = config.getValue(MAIL_POP3_AUTH_ID);
+				break;
+			case MAIL_POP3_AUTH_PASSWORD:
+				mailPop3AuthPassword = config.getValue(MAIL_POP3_AUTH_PASSWORD);
+				break;
+			case MAIL_SMTP_AUTH_ID:
+				mailSmtpAuthId = config.getValue(MAIL_SMTP_AUTH_ID);
+				break;
+			case MAIL_SMTP_AUTH_PASSWORD:
+				mailSmtpAuthPassword = config.getValue(MAIL_SMTP_AUTH_PASSWORD);
+				break;
+			case MAIL_CHARSET:
+				mailCharset = config.getValue(MAIL_CHARSET);
+				break;
+			case MAIL_ENCODING:
+				mailEncoding = config.getValue(MAIL_ENCODING);
+				break;
+			default:
+				if (name.startsWith("mail.")) {
+					sendProperties.put(name, config.getValue(name));
+				}
+				break;
 			}
 		}
-
-		// MailHost設定
-		server.setMailHost(chkNan(config, "mail.host"));
-		// Charset
-		server.setMailCharset(chkNan(config, "mail.charset"));
-		// Content-Transfer-Encoding
-		// デフォルト "7bit"
-		// 仮対策: 参照元 http://www.igapyon.jp/igapyon/diary/2007/ig070904.html
-		// これは、一部のケータイメールが quoted-printable を処理できないことへの対策となります。
-		String contentTransferEncoding = config.getValue("mail.encoding");
-		if(contentTransferEncoding == null || contentTransferEncoding.length() == 0) {
-			contentTransferEncoding = "7bit";
+		
+		//set default value
+		if (!sendProperties.containsKey("mail.smtp.connectiontimeout")) {
+			sendProperties.put("mail.smtp.connectiontimeout", DEFAULT_TIMEOUT_MILLIS);
 		}
-		server.setContentTransferEncoding(contentTransferEncoding);
-
-		if (config.getBeans("listener") != null) {
-			this.listener = (List<SendMailListener>) config.getBeans("listener");
+		if (!sendProperties.containsKey("mail.smtp.timeout")) {
+			sendProperties.put("mail.smtp.timeout", DEFAULT_TIMEOUT_MILLIS);
 		}
-
-		this.config = server;
-
-		if (config.getValue("retryIntervalMillis") != null) {
-			retryIntervalMillis = Long.parseLong(config.getValue("retryIntervalMillis"));
+		if (!sendProperties.containsKey("mail.smtps.connectiontimeout")) {
+			sendProperties.put("mail.smtps.connectiontimeout", DEFAULT_TIMEOUT_MILLIS);
 		}
-		if (config.getValue("retryCount") != null) {
-			retryCount = Integer.parseInt(config.getValue("retryCount"));
+		if (!sendProperties.containsKey("mail.smtps.timeout")) {
+			sendProperties.put("mail.smtps.timeout", DEFAULT_TIMEOUT_MILLIS);
 		}
-
+		if (!sendProperties.containsKey("mail.pop3.connectiontimeout")) {
+			sendProperties.put("mail.pop3.connectiontimeout", DEFAULT_TIMEOUT_MILLIS);
+		}
+		if (!sendProperties.containsKey("mail.pop3.timeout")) {
+			sendProperties.put("mail.pop3.timeout", DEFAULT_TIMEOUT_MILLIS);
+		}
+		
+		if ("TRUE".equalsIgnoreCase((String) sendProperties.get("mail.smtp.auth"))) {
+			mailSmtpAuth = true;
+		} else {
+			mailSmtpAuth = false;
+		}
+		
 	}
 
 	/**
@@ -257,8 +224,8 @@ public class MailServiceImpl extends AbstractTypedMetaDataService<MetaMailTempla
 	@Override
 	public Mail createMail(Tenant tenant, String charset) {
 		String buf = charset;
-		if(buf == null) {
-			buf = this.config.getMailCharset();
+		if (buf == null) {
+			buf = this.mailCharset;
 		}
 		return new Mail(buf);
 	}
@@ -268,7 +235,7 @@ public class MailServiceImpl extends AbstractTypedMetaDataService<MetaMailTempla
 		try {
 			String charset = mail.getCharset();
 			if(charset == null || charset.length() == 0) {
-				charset = this.config.getMailCharset();
+				charset = this.mailCharset;
 			}
 			boolean isDefault = false;
 			TenantMailInfo tenantMailInfo = tenant.getTenantConfig(TenantMailInfo.class);
@@ -349,11 +316,11 @@ public class MailServiceImpl extends AbstractTypedMetaDataService<MetaMailTempla
 
 		Session session;
 		// PopBeforeSmtpかのチェック
-		if (isPopBeforeSmtp(mail)) {
+		if (mailSmtpPopbeforesmtp) {
 			// 必要なのでPop認証を実行する
 			session = execPopBeforeSmtp(mail, props);
 		} else {
-			session = createSendMailSession(this.config, mail, props);
+			session = createSendMailSession(mail, props);
 		}
 		// デバッグを行います。標準出力にトレースが出ます。
 		if (debug) {
@@ -448,10 +415,10 @@ public class MailServiceImpl extends AbstractTypedMetaDataService<MetaMailTempla
 				if (mail.getMessage() != null && mail.getMessage().length() != 0) {
 					//プレーンテキスト
 					BodyPart plainMessageBodyPart = new MimeBodyPart();
-					plainMessageBodyPart.setContent(handlePlainText(mail.getMessage(), charset), "text/plain; charset=\"" + charset + "\"");
+					plainMessageBodyPart.setContent(handlePlainText(mail.getMessage(), charset), "text/plain; charset=" + charset);
 					multipartMixed.addBodyPart(plainMessageBodyPart);
 					// Content-Transfer-Encoding設定
-					plainMessageBodyPart.setHeader("Content-Transfer-Encoding", config.getContentTransferEncoding());
+					plainMessageBodyPart.setHeader("Content-Transfer-Encoding", mailEncoding);
 				} else {
 					//HTMLメッセージ
 					BodyPart htmlMessageBodyPart = new MimeBodyPart();
@@ -459,7 +426,7 @@ public class MailServiceImpl extends AbstractTypedMetaDataService<MetaMailTempla
 					if (htmlCharset == null) {
 						htmlCharset = charset;
 					}
-					htmlMessageBodyPart.setContent(mail.getHtmlMessage().getContent(), "text/html; charset=\"" + htmlCharset + "\"");
+					htmlMessageBodyPart.setContent(mail.getHtmlMessage().getContent(), "text/html; charset=" + htmlCharset);
 					multipartMixed.addBodyPart(htmlMessageBodyPart);
 				}
 			} else {
@@ -469,10 +436,10 @@ public class MailServiceImpl extends AbstractTypedMetaDataService<MetaMailTempla
 
 				//プレーンテキスト
 				BodyPart plainMessageBodyPart = new MimeBodyPart();
-				plainMessageBodyPart.setContent(handlePlainText(mail.getMessage(), charset), "text/plain; charset=\"" + charset + "\"");
+				plainMessageBodyPart.setContent(handlePlainText(mail.getMessage(), charset), "text/plain; charset=" + charset);
 				multipartAlt.addBodyPart(plainMessageBodyPart);
 				// Content-Transfer-Encoding設定
-				plainMessageBodyPart.setHeader("Content-Transfer-Encoding", config.getContentTransferEncoding());
+				plainMessageBodyPart.setHeader("Content-Transfer-Encoding", mailEncoding);
 
 				//HTMLメッセージ
 				BodyPart htmlMessageBodyPart = new MimeBodyPart();
@@ -480,7 +447,7 @@ public class MailServiceImpl extends AbstractTypedMetaDataService<MetaMailTempla
 				if (htmlCharset == null) {
 					htmlCharset = charset;
 				}
-				htmlMessageBodyPart.setContent(mail.getHtmlMessage().getContent(), "text/html; charset=\"" + htmlCharset + "\"");
+				htmlMessageBodyPart.setContent(mail.getHtmlMessage().getContent(), "text/html; charset=" + htmlCharset);
 				multipartAlt.addBodyPart(htmlMessageBodyPart);
 
 				multipartMixed.addBodyPart(altBodyPart);
@@ -489,7 +456,22 @@ public class MailServiceImpl extends AbstractTypedMetaDataService<MetaMailTempla
 				MimeBodyPart attBodyPart = new MimeBodyPart();
 				attBodyPart.setDataHandler(at);
 				try {
-					attBodyPart.setFileName(MimeUtility.encodeWord(at.getName()));
+					String fileName = at.getName();
+					attBodyPart.setFileName(fileName);
+					
+					//for old outlook
+					String contentType = at.getContentType();
+					if (contentType != null) {
+						String fileNameEnc = MimeUtility.quote(MimeUtility.encodeText(fileName), HeaderTokenizer.MIME);
+						
+						StringBuilder sb = new StringBuilder();
+						sb.append(contentType);
+						sb.append(";\r\n");
+						sb.append(" name=");
+						sb.append(MimeUtility.fold(7, fileNameEnc));
+						attBodyPart.setHeader("Content-Type", sb.toString());
+					}
+					
 				} catch (UnsupportedEncodingException e) {
 					logger.warn("file name cant encoded... cause " + e.getMessage(), e);
 				}
@@ -504,7 +486,7 @@ public class MailServiceImpl extends AbstractTypedMetaDataService<MetaMailTempla
 					//プレーンテキスト
 					message.setText(handlePlainText(mail.getMessage(), charset), charset);
 					// Content-Transfer-Encoding設定
-					message.setHeader("Content-Transfer-Encoding", config.getContentTransferEncoding());
+					message.setHeader("Content-Transfer-Encoding", mailEncoding);
 				} else {
 					//HTMLメッセージ
 					String htmlCharset = mail.getHtmlMessage().getCharset();
@@ -520,7 +502,7 @@ public class MailServiceImpl extends AbstractTypedMetaDataService<MetaMailTempla
 				BodyPart plainMessageBodyPart = new MimeBodyPart();
 				plainMessageBodyPart.setContent(handlePlainText(mail.getMessage(), charset), "text/plain; charset=\"" + charset + "\"");
 				multipart.addBodyPart(plainMessageBodyPart);
-				plainMessageBodyPart.setHeader("Content-Transfer-Encoding", config.getContentTransferEncoding());
+				plainMessageBodyPart.setHeader("Content-Transfer-Encoding", mailEncoding);
 
 				//HTMLメッセージ
 				BodyPart htmlMessageBodyPart = new MimeBodyPart();
@@ -543,7 +525,7 @@ public class MailServiceImpl extends AbstractTypedMetaDataService<MetaMailTempla
 	 *            メール送信情報
 	 */
 	private Session execPopBeforeSmtp(Mail mail, Properties props) {
-		final Session session = createPopSession(this.config, mail, props);
+		final Session session = createPopSession(mail, props);
 		// デバッグを行います。標準出力にトレースが出ます。
 		if (debug) {
 			session.setDebug(true);
@@ -561,44 +543,20 @@ public class MailServiceImpl extends AbstractTypedMetaDataService<MetaMailTempla
 				try {
 					store.close();
 				} catch (MessagingException e) {
-					e.printStackTrace();
+					logger.error("can't close pop3 store:" + e, e);
 				}
 			}
 		}
 		return session;
 	}
 
-	private Session createPopSession(final MailServerConfig mailSeverConfig, Mail mail, Properties props) {
-//		Properties props = new Properties();
-		// 基本情報。
-		props.setProperty("mail.pop3.host", mailSeverConfig.getMailPop3Host());
-		props.setProperty("mail.pop3.port", String.valueOf(mailSeverConfig.getMailPop3Port()));
-		// Apop
-		props.setProperty("mail.pop3.apop.enable", String.valueOf(mailSeverConfig.isMailPop3ApopEnable()));
-		// タイムアウト設定
-		props.setProperty("mail.pop3.connectiontimeout", String.valueOf(mailSeverConfig.getMailPop3Connectiontimeout()));
-		props.setProperty("mail.pop3.timeout", String.valueOf(mailSeverConfig.getMailPop3Timeout()));
-		//SSL設定
-		if(mailSeverConfig.isMailPop3Ssl()) {
-			props.setProperty("mail.pop3.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
-			props.setProperty("mail.pop3.socketFactory.fallback", "false");
-			props.setProperty("mail.pop3.socketFactory.port", String.valueOf(mailSeverConfig.getMailPop3Port()));
-		}
-
+	private Session createPopSession(Mail mail, Properties props) {
 		final Session session = Session.getInstance(props, new Authenticator() {
 			protected PasswordAuthentication getPasswordAuthentication() {
-				return new PasswordAuthentication(mailSeverConfig.getMailPop3AuthId(),
-												mailSeverConfig.getMailPop3AuthPassword());
+				return new PasswordAuthentication(mailPop3AuthId, mailPop3AuthPassword);
 			}
 		});
 		return session;
-	}
-
-	private boolean isPopBeforeSmtp(Mail mail) {
-		if (this.config.isMailSmtpAuth()) {
-			return false;
-		}
-		return this.config.isMailSmtpPopbeforesmtp();
 	}
 
 	/**
@@ -612,14 +570,14 @@ public class MailServiceImpl extends AbstractTypedMetaDataService<MetaMailTempla
 	 *            接続Properties
 	 * @return 作成したSession情報
 	 */
-	private Session createSendMailSession(final MailServerConfig mailServerConfig, Mail mail, Properties props) {
+	private Session createSendMailSession(Mail mail, Properties props) {
 		Authenticator authenticator = null;
-		if (mailServerConfig.isMailSmtpAuth()) {
+		if (mailSmtpAuth) {
 			authenticator = new Authenticator() {
 				protected PasswordAuthentication getPasswordAuthentication() {
 					return new PasswordAuthentication(
-							mailServerConfig.getMailSmtpAuthId(),
-							mailServerConfig.getMailSmtpAuthPassword());
+							mailSmtpAuthId,
+							mailSmtpAuthPassword);
 				}
 			};
 		}
@@ -641,38 +599,16 @@ public class MailServiceImpl extends AbstractTypedMetaDataService<MetaMailTempla
 	 */
 	private Properties createSendMailProperty(Mail mail) {
 		Properties props = new Properties();
-		// 基本情報。
+		props.putAll(sendProperties);
+		
 		//Message-IDでローカルサーバ名/ローカルユーザが出ないように
 		props.setProperty("mail.from", mail.getFromAddress().getAddress());
 
-		if (this.config.getMailHost() != null && this.config.getMailHost().length() != 0) {
-			props.setProperty("mail.host", this.config.getMailHost());
-		}
-		props.setProperty("mail.smtp.host", this.config.getMailSmtpHost());
-		props.setProperty("mail.smtp.port", String.valueOf(this.config.getMailSmtpPort()));
-		// タイムアウト設定
-		props.setProperty("mail.smtp.connectiontimeout", String.valueOf(this.config.getMailSmtpConnectiontimeout()));
-		props.setProperty("mail.smtp.timeout", String.valueOf(this.config.getMailSmtpTimeout()));
 		//mail.smtp.from
 		if (mail.getReturnPath() != null) {
 			props.setProperty("mail.smtp.from", mail.getReturnPath());
-		} else if (this.config.getMailSmtpFrom() != null) {
-			props.setProperty("mail.smtp.from", this.config.getMailSmtpFrom());
 		}
-		// SMTP認証設定
-		if(this.config.isMailSmtpAuth()) {
-			props.setProperty("mail.smtp.auth", "true");
-			if(this.config.getMailSmtpAuthMechanisms() != null) {
-				props.setProperty("mail.smtp.auth.mechanisms", this.config.getMailSmtpAuthMechanisms());
-			}
-		}
-		//SSL設定
-		if(this.config.isMailSmtpSsl()) {
-			props.setProperty("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
-			props.setProperty("mail.smtp.socketFactory.fallback", "false");
-			props.setProperty("mail.smtp.socketFactory.port", String.valueOf(this.config.getMailSmtpPort()));
-		}
-
+		
 		return props;
 	}
 
