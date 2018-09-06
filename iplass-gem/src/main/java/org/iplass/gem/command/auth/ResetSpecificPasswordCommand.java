@@ -166,7 +166,7 @@ public class ResetSpecificPasswordCommand implements Command, AuthCommandConstan
 		// passwordがnullの場合、自動生成するパスワードでリセットする。
 		Credential credential = new IdPasswordCredential(id, password);
 		try {
-			am.resetCredential(credential);
+			am.resetCredential(credential, user.getValue(User.ACCOUNT_POLICY));
 			return Constants.CMD_EXEC_SUCCESS;
 		} catch (CredentialUpdateException e) {
 			if(logger.isDebugEnabled()) {
