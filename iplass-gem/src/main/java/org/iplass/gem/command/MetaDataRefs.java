@@ -24,6 +24,7 @@ import org.iplass.gem.command.auth.LoginCommand;
 import org.iplass.gem.command.auth.LogoutCommand;
 import org.iplass.gem.command.auth.ReAuthCommand;
 import org.iplass.gem.command.auth.ResetPasswordCommand;
+import org.iplass.gem.command.auth.ResetSpecificPasswordCommand;
 import org.iplass.gem.command.auth.UpdateExpirePasswordCommand;
 import org.iplass.gem.command.auth.UpdatePasswordCommand;
 import org.iplass.gem.command.auth.UpdateUserCommand;
@@ -173,6 +174,7 @@ import org.iplass.mtp.command.annotation.MetaDataSeeAlso;
 	UpdatePasswordCommand.class,
 	UpdateExpirePasswordCommand.class,
 	ResetPasswordCommand.class,
+	ResetSpecificPasswordCommand.class,
 	UpdateUserCommand.class,
 	ReAuthCommand.class,
 	//プレビュー日付

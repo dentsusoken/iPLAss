@@ -2657,6 +2657,42 @@ COPYRIGHT 2011 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. ALL RIGHTS RESE
         </htmlMessage>
     </metaData>
 </metaDataEntry>
+<metaDataEntry>
+    <metaData xsi:type="metaMailTemplate" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+        <id>MT0003</id>
+        <name>mtp/auth/CredentialResetWithSpecifiedPasswordMail</name>
+        <displayName>パスワード指定リセット通知メール</displayName>
+        <description>標準メール通知リスナーBuiltinMailNotificationListnerのユーザ登録時に通知するメールメッセージ定義です。
+メッセージ生成時に以下のバインド変数を渡します。
+tenant(api.tenant.Tenant)、user(api.auth.User)、newPassword(String)</description>
+        <subject>【${tenant.displayName}】ユーザ情報パスワードリセットのお知らせ</subject>
+        <message>
+            <content>${user.name}様
+
+（ユーザID：${user.accountId}）のパスワードがリセットされました。
+
+   URL: XXXXXXXX
+   ユーザID: ${user.accountId}
+   ユーザ名: ${user.name}
+
+=====================================================================
+□ 本メールにお心当たりが無い方へ
+
+本メールは、${tenant.displayName}にてユーザー登録を頂いたお客様にお送りしています。
+このメールにお心当たりのない場合は、お手数ですが下記、アドレス
+(送信元アドレス)までご連絡下さい。
+   ${tenant.displayName}事務局
+   ${tenant.tenantMailInfo.mailReply}
+=====================================================================
+
+送信元：株式会社 電通国際情報サービス
+COPYRIGHT 2011 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. ALL RIGHTS RESERVED.</content>
+        </message>
+        <htmlMessage>
+            <content></content>
+        </htmlMessage>
+    </metaData>
+</metaDataEntry>
 </contextPath>
 
 <contextPath name="/authNPolicy">
@@ -2693,6 +2729,7 @@ COPYRIGHT 2011 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. ALL RIGHTS RESE
         <notificationListener xsi:type="metaMailAccountNotificationListener">
             <createUserMailTemplate>mtp/auth/UserCreateMail</createUserMailTemplate>
             <credentialResetMailTemplate>mtp/auth/CredentialResetMail</credentialResetMailTemplate>
+            <credentialResetWithSpecifiedPasswordMailTemplate>mtp/auth/CredentialResetWithSpecifiedPasswordMail</credentialResetWithSpecifiedPasswordMailTemplate>
         </notificationListener>
         <passwordPolicy>
             <createAccountWithSpecificPassword>false</createAccountWithSpecificPassword>

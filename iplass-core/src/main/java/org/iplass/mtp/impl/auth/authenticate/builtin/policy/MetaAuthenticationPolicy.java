@@ -486,6 +486,10 @@ public class MetaAuthenticationPolicy extends BaseRootMetaData implements Defina
 			return makeRandomString(passwordPolicy.getRandomPasswordLength(), randomPasswordIncludeSigns != null, randomPasswordIncludeSigns, randomPasswordExcludeChars);
 		}
 
+		public boolean isResetPasswordWithSpecificPassword() {
+			return passwordPolicy.isResetPasswordWithSpecificPassword();
+		}
+
 		private String makeRandomString(int length, boolean isSign, char[] sign, char[] excludedChar) {
 
 			char[] c = new char[length];
