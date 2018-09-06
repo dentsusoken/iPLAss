@@ -69,11 +69,6 @@ $(function () {
 });
 //-->
 </script>
-<h2 class="hgroup-01">
-<span>
-<i class="far fa-circle default-icon"></i>
-</span>
-${m:rs("mtp-gem-messages", "auth.SpecificPassword.resetPass")}</h2>
 <div class="user-profile">
 <h3 class="hgroup-02 hgroup-02-01">${m:rs("mtp-gem-messages", "auth.Password.enterPass")}</h3>
 <%
@@ -119,17 +114,18 @@ ${m:outputToken('FORM_XHTML', true)}
 </table>
 </div>
 </div>
-<div>
+<div class="operation-bar operation-bar_bottom">
 <ul class="list_operation">
 <li class="btn"><input type="submit" value="${m:rs('mtp-gem-messages', 'auth.SpecificPassword.reset')}" class="gr-btn" /></li>
 <li class="mt05 cancel-link"><a href="javascript:void(0)" onclick="cancel();return false;">${m:rs("mtp-gem-messages", "auth.SpecificPassword.cancel")}</a></li>
 </ul>
 </div>
 </form>
+</div>
 <script type="text/javascript">
+var key = "<%=modalTarget%>";
+var modalTarget = key != "" ? key : null;
 function cancel() {
-	var key = "<%=modalTarget%>";
-	var modalTarget = key != "" ? key : null;
 	if (!modalTarget) {
 		$("#modal-dialog-root .modal-close", parent.document).click();
 	} else {
@@ -137,6 +133,11 @@ function cancel() {
 	}
 }
 $(function(){
+	if (!modalTarget) {
+		$("#modal-title", parent.document).text("${m:rs('mtp-gem-messages', 'auth.SpecificPassword.resetPass')}");
+	} else {
+		$("#modal-title-" + modalTarget, parent.document).text("${m:rs('mtp-gem-messages', 'auth.SpecificPassword.resetPass')}");
+	}
 	$("#resetSpecificPassForm").submit(function(){
 		if(window.confirm(scriptContext.locale.passResetConfirm)) {
 			return true;
