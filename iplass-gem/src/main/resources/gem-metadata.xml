@@ -175,7 +175,7 @@ def am = org.iplass.mtp.ManagerLocator.getInstance().getManager(org.iplass.mtp.a
 def auth = org.iplass.mtp.auth.AuthContext.getCurrentContext();
 def tenant = auth.tenant;
 
-if (am.canResetCredential()) {
+if (am.canResetCredential(entity.accountPolicy)) {
 	if (user.admin) {
 		return true;
 	} else {
@@ -218,7 +218,7 @@ return false;
 					</buttons>
 					<buttons>
 						<dispFlag>true</dispFlag>
-						<customDisplayTypeScript>
+						<customDisplayTypeScript><![CDATA[
 if (!org.iplass.mtp.view.generic.OutputType.EDIT.equals(outputType)) {
 	return false;
 }
@@ -237,7 +237,7 @@ def am = org.iplass.mtp.ManagerLocator.getInstance().getManager(org.iplass.mtp.a
 def auth = org.iplass.mtp.auth.AuthContext.getCurrentContext();
 def tenant = auth.tenant;
 
-if (am.canResetCredential()) {
+if (am.canResetCredential(entity.accountPolicy)) {
 	if (user.admin) {
 		return true;
 	} else {
@@ -251,29 +251,30 @@ if (am.canResetCredential()) {
 		}
 	}
 }
-return false;</customDisplayTypeScript>
-							<displayLabel>パスワードリセット</displayLabel>
-							<displayType>Custom</displayType>
-							<localizedDisplayLabelList>
-								<localeName>ja</localeName>
-								<stringValue>パスワードリセット</stringValue>
-							</localizedDisplayLabelList>
-							<localizedDisplayLabelList>
-								<localeName>en</localeName>
-								<stringValue>Password Reset</stringValue>
-							</localizedDisplayLabelList>
-							<localizedDisplayLabelList>
-								<localeName>zh-CN</localeName>
-								<stringValue>重设密码</stringValue>
-							</localizedDisplayLabelList>
-							<localizedDisplayLabelList>
-								<localeName>zh-TW</localeName>
-								<stringValue>重設密碼</stringValue>
-							</localizedDisplayLabelList>
-							<localizedDisplayLabelList>
-								<localeName>th</localeName>
-								<stringValue>รีเซ็ตพาสเวิร์ด</stringValue>
-							</localizedDisplayLabelList>
+return false;
+]]></customDisplayTypeScript>
+						<displayLabel>パスワードリセット</displayLabel>
+						<displayType>Custom</displayType>
+						<localizedDisplayLabelList>
+							<localeName>ja</localeName>
+							<stringValue>パスワードリセット</stringValue>
+						</localizedDisplayLabelList>
+						<localizedDisplayLabelList>
+							<localeName>en</localeName>
+							<stringValue>Password Reset</stringValue>
+						</localizedDisplayLabelList>
+						<localizedDisplayLabelList>
+							<localeName>zh-CN</localeName>
+							<stringValue>重设密码</stringValue>
+						</localizedDisplayLabelList>
+						<localizedDisplayLabelList>
+							<localeName>zh-TW</localeName>
+							<stringValue>重設密碼</stringValue>
+						</localizedDisplayLabelList>
+						<localizedDisplayLabelList>
+							<localeName>th</localeName>
+							<stringValue>รีเซ็ตพาสเวิร์ด</stringValue>
+						</localizedDisplayLabelList>
 						<onclickEvent>resetSpecificPassword()</onclickEvent>
 						<style>gr-btn gr-size-02 modal-btn</style>
 					</buttons>
@@ -538,17 +539,17 @@ if (entity == null || entity.getOid() == null || entity.getOid().isEmpty()) {
 	return false;
 }
 
-def am = org.iplass.mtp.ManagerLocator.getInstance().getManager(org.iplass.mtp.auth.AuthManager.class);
-def auth = org.iplass.mtp.auth.AuthContext.getCurrentContext();
-def tenant = auth.tenant;
-
 def aps = org.iplass.mtp.spi.ServiceRegistry.getRegistry().getService(org.iplass.mtp.impl.auth.authenticate.builtin.policy.AuthenticationPolicyService.class);
 def policy = aps.getOrDefault(entity.accountPolicy);
 if (policy.isResetPasswordWithSpecificPassword()){
     return false;
 }
 
-if (am.canResetCredential()) {
+def am = org.iplass.mtp.ManagerLocator.getInstance().getManager(org.iplass.mtp.auth.AuthManager.class);
+def auth = org.iplass.mtp.auth.AuthContext.getCurrentContext();
+def tenant = auth.tenant;
+
+if (am.canResetCredential(entity.accountPolicy)) {
 	if (user.admin) {
 		return true;
 	} else {
@@ -591,7 +592,7 @@ return false;
 					</buttons>
 					<buttons>
 						<dispFlag>true</dispFlag>
-						<customDisplayTypeScript>
+						<customDisplayTypeScript><![CDATA[
 if (!org.iplass.mtp.view.generic.OutputType.EDIT.equals(outputType)) {
 	return false;
 }
@@ -610,7 +611,7 @@ def am = org.iplass.mtp.ManagerLocator.getInstance().getManager(org.iplass.mtp.a
 def auth = org.iplass.mtp.auth.AuthContext.getCurrentContext();
 def tenant = auth.tenant;
 
-if (am.canResetCredential()) {
+if (am.canResetCredential(entity.accountPolicy)) {
 	if (user.admin) {
 		return true;
 	} else {
@@ -624,29 +625,30 @@ if (am.canResetCredential()) {
 		}
 	}
 }
-return false;</customDisplayTypeScript>
-							<displayLabel>パスワードリセット</displayLabel>
-							<displayType>Custom</displayType>
-							<localizedDisplayLabelList>
-								<localeName>ja</localeName>
-								<stringValue>パスワードリセット</stringValue>
-							</localizedDisplayLabelList>
-							<localizedDisplayLabelList>
-								<localeName>en</localeName>
-								<stringValue>Password Reset</stringValue>
-							</localizedDisplayLabelList>
-							<localizedDisplayLabelList>
-								<localeName>zh-CN</localeName>
-								<stringValue>重设密码</stringValue>
-							</localizedDisplayLabelList>
-							<localizedDisplayLabelList>
-								<localeName>zh-TW</localeName>
-								<stringValue>重設密碼</stringValue>
-							</localizedDisplayLabelList>
-							<localizedDisplayLabelList>
-								<localeName>th</localeName>
-								<stringValue>รีเซ็ตพาสเวิร์ด</stringValue>
-							</localizedDisplayLabelList>
+return false;
+]]></customDisplayTypeScript>
+						<displayLabel>パスワードリセット</displayLabel>
+						<displayType>Custom</displayType>
+						<localizedDisplayLabelList>
+							<localeName>ja</localeName>
+							<stringValue>パスワードリセット</stringValue>
+						</localizedDisplayLabelList>
+						<localizedDisplayLabelList>
+							<localeName>en</localeName>
+							<stringValue>Password Reset</stringValue>
+						</localizedDisplayLabelList>
+						<localizedDisplayLabelList>
+							<localeName>zh-CN</localeName>
+							<stringValue>重设密码</stringValue>
+						</localizedDisplayLabelList>
+						<localizedDisplayLabelList>
+							<localeName>zh-TW</localeName>
+							<stringValue>重設密碼</stringValue>
+						</localizedDisplayLabelList>
+						<localizedDisplayLabelList>
+							<localeName>th</localeName>
+							<stringValue>รีเซ็ตพาสเวิร์ด</stringValue>
+						</localizedDisplayLabelList>
 						<onclickEvent>resetSpecificPassword()</onclickEvent>
 						<style>gr-btn gr-size-02 modal-btn</style>
 					</buttons>
