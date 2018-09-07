@@ -45,7 +45,6 @@ import org.iplass.mtp.impl.tools.pack.PackageCreateCondition;
 import org.iplass.mtp.impl.tools.pack.PackageCreateResult;
 import org.iplass.mtp.impl.tools.pack.PackageEntity;
 import org.iplass.mtp.impl.tools.pack.PackageService;
-import org.iplass.mtp.impl.web.WebFrontendService;
 import org.iplass.mtp.spi.ServiceRegistry;
 import org.iplass.mtp.tenant.Tenant;
 import org.iplass.mtp.tools.ToolsBatchResourceBundleUtil;
@@ -102,7 +101,7 @@ public class PackageExport extends MtpCuiBase {
 
 		if (args != null) {
 			if (args.length > 0 && args[0] != null) {
-				setExecMode(ExecMode.valueOf(args[0].toUpperCase()));
+				execMode = ExecMode.valueOf(args[0].toUpperCase());
 			}
 			if (args.length > 1 && args[1] != null) {
 				tenantId = Integer.parseInt(args[1]);
@@ -130,43 +129,52 @@ public class PackageExport extends MtpCuiBase {
 
 		clearLog();
 
-		//Console出力用のログリスナーを生成
-		LogListner consoleLogListner = getConsoleLogListner();
-		addLogListner(consoleLogListner);
+		try {
+			switch (execMode) {
+			case WIZARD :
+				LogListner consoleLogListner = getConsoleLogListner();
+				addLogListner(consoleLogListner);
 
-		//環境情報出力
-		logEnvironment();
+				//環境情報出力
+				logEnvironment();
 
-		switch (getExecMode()) {
-		case WIZARD :
-			logInfo("■Start Export Wizard");
+				logInfo("■Start Export Wizard");
+				logInfo("");
+
+				//Wizardの実行
+				return wizard();
+			case SILENT :
+				LogListner loggingLogListner = getLoggingLogListner();
+				addLogListner(loggingLogListner);
+
+				//環境情報出力
+				logEnvironment();
+
+				logInfo("■Start Export Silent");
+				logInfo("");
+
+				//Silentの実行
+				return silent();
+			default :
+				logError("unsupport execute mode : " + execMode);
+				return false;
+			}
+		} finally {
 			logInfo("");
-
-			//Wizardの実行
-			return startExportWizard();
-		case SILENT :
-			logInfo("■Start Export Silent");
+			logInfo("■Execute Result :" + (isSuccess() ? "SUCCESS" : "FAILED"));
 			logInfo("");
-
-			//Silentの実行
-			return startExportSilent();
-		default :
-			logError("unsupport execute mode : " + getExecMode());
-			return false;
 		}
 
 	}
 
-	public ExecMode getExecMode() {
-		return execMode;
-	}
-
-	public void setExecMode(ExecMode execMode) {
+	public PackageExport execMode(ExecMode execMode) {
 		this.execMode = execMode;
+		return this;
 	}
 
-	public void setTenantId(Integer tenantId) {
+	public PackageExport tenantId(Integer tenantId) {
 		this.tenantId = tenantId;
+		return this;
 	}
 
 	/**
@@ -175,27 +183,27 @@ public class PackageExport extends MtpCuiBase {
 	 * @param param Export情報
 	 * @return
 	 */
-	public boolean executeExport(final PackageExportParameter param) {
+	public boolean export(final PackageExportParameter param) {
 
 		setSuccess(false);
 
 		try {
 			boolean isSuccess = Transaction.required(t -> {
 
-				//外部から直接呼び出された場合を考慮し、Pathを取得
-				if (param.isExportMetaData() && param.getExportMetaDataPathList() == null) {
-					getMetaDataPathList(param);
-				}
-
-				//外部から直接呼び出された場合を考慮し、Pathを取得
-				if (param.isExportEntityData() && param.getExportEntityDataPathList() == null) {
-					getEntityDataPathList(param);
-				}
-
 				TenantContext tContext = tcs.getTenantContext(param.getTenantId());
 
 				return ExecuteContext.executeAs(tContext, () -> {
 					ExecuteContext.getCurrentContext().setLanguage(getLanguage());
+
+					//外部から直接呼び出された場合を考慮し、Pathを取得
+					if (param.isExportMetaData() && param.getExportMetaDataPathList() == null) {
+						param.setExportMetaDataPathList(getMetaDataPathList(param));
+					}
+
+					//外部から直接呼び出された場合を考慮し、Pathを取得
+					if (param.isExportEntityData() && param.getExportEntityDataPathList() == null) {
+						param.setExportEntityDataPathList(getEntityDataPathList(param));
+					}
 
 					//PackageCreateConditionの生成
 					final PackageCreateCondition cond = new PackageCreateCondition();
@@ -205,7 +213,7 @@ public class PackageExport extends MtpCuiBase {
 
 					List<String> messageSummary = new ArrayList<>();
 
-					//Package情報を登録(別トランザクションにしないとCreatePackage処理でエラーになる。別トランザクションなので)
+					//Package情報を登録(別トランザクションにしないとarchivePackage処理でエラーになる。別トランザクションなので)
 					final String oid = Transaction.requiresNew(tt -> {
 						return ps.storePackage(cond, PackageEntity.TYPE_OFFLINE);
 					});
@@ -217,7 +225,7 @@ public class PackageExport extends MtpCuiBase {
 					//Package作成処理
 					logInfo(rs("PackageExport.startExportPackageLog"));
 					final PackageCreateResult result = Transaction.requiresNew(tt -> {
-						return ps.archivePackage(oid, getTempDir(param));
+						return ps.archivePackage(oid, param.getWorkDir());
 					});
 					if (result.isError()) {
 						if (result.getMessages() != null) {
@@ -263,10 +271,6 @@ public class PackageExport extends MtpCuiBase {
 
 		} catch (Throwable e) {
 			logError(getCommonResourceMessage("errorMsg", e.getMessage()));
-		} finally {
-			logInfo("");
-			logInfo("■Execute Result :" + (isSuccess() ? "SUCCESS" : "FAILED"));
-			logInfo("");
 		}
 
 		return isSuccess();
@@ -279,6 +283,9 @@ public class PackageExport extends MtpCuiBase {
 		logInfo("-----------------------------------------------------------");
 		logInfo("■Execute Argument");
 		logInfo("\ttenant name :" + param.getTenantName());
+		logInfo("\texport dir :" + param.getExportDirName());
+		logInfo("\twork dir :" + param.getWorkDirName());
+		logInfo("\tpackage name :" + param.getPackageName());
 		logInfo("\texport metadata :" + param.isExportMetaData());
 		if (param.isExportMetaData()) {
 			String metaTarget = null;
@@ -322,80 +329,73 @@ public class PackageExport extends MtpCuiBase {
 	 * Export対象のメタデータパスを設定します。
 	 * @param param
 	 */
-	private void getMetaDataPathList(final PackageExportParameter param) {
+	private List<String> getMetaDataPathList(final PackageExportParameter param) {
 
 		if (!param.isExportMetaData()) {
-			return;
+			return null;
 		}
 
-		TenantContext tContext = tcs.getTenantContext(param.getTenantId());
-		ExecuteContext.executeAs(tContext, ()-> {
-			ExecuteContext.getCurrentContext().setLanguage(getLanguage());
-
-			List<String> paths = new ArrayList<>();
-			if (param.isExportAllMetaData()) {
-				List<MetaDataEntryInfo> allMeta = MetaDataContext.getContext().definitionList("/");
-				for (MetaDataEntryInfo info : allMeta) {
-					if (param.isExportLocalMetaDataOnly()) {
-						if (info.getRepositryType() != RepositoryType.TENANT_LOCAL) {
-							continue;
-						}
-					}
-					if (!param.isExportTenantMetaData()) {
-						if (mdps.isTenantMeta(info.getPath())) {
-							continue;
-						}
-					}
-					paths.add(info.getPath());
-				}
-			} else {
-				//個別指定
-
-				Set<String> directPathSet = new HashSet<>();	//重複を避けるためSetに保持
-
-				String[] pathStrArray = param.getExportMetaDataPathStr().split(",");
-				for (String pathStr : pathStrArray) {
-					//,,などの阻止
-					if (StringUtil.isEmpty(pathStr)) {
+		List<String> paths = new ArrayList<>();
+		if (param.isExportAllMetaData()) {
+			List<MetaDataEntryInfo> allMeta = MetaDataContext.getContext().definitionList("/");
+			for (MetaDataEntryInfo info : allMeta) {
+				if (param.isExportLocalMetaDataOnly()) {
+					if (info.getRepositryType() != RepositoryType.TENANT_LOCAL) {
 						continue;
 					}
-
-					if (pathStr.endsWith("*")) {
-						//アスタリスク指定
-						List<MetaDataEntryInfo> allMeta = MetaDataContext.getContext().definitionList(pathStr.substring(0, pathStr.length() - 1));
-						for (MetaDataEntryInfo info : allMeta) {
-							if (param.isExportLocalMetaDataOnly()) {
-								if (info.getRepositryType() != RepositoryType.TENANT_LOCAL) {
-									continue;
-								}
-							}
-							directPathSet.add(info.getPath());
-						}
-					} else {
-						//直接指定
-						MetaDataEntry entry = MetaDataContext.getContext().getMetaDataEntry(pathStr);
-						if (entry != null) {
-							if (param.isExportLocalMetaDataOnly()) {
-								if (entry.getRepositryType() != RepositoryType.TENANT_LOCAL) {
-									logWarn(rs("PackageExport.excludeNotLocalMetaLog", pathStr));
-									continue;
-								}
-							}
-							directPathSet.add(entry.getPath());
-						} else {
-							logWarn(rs("PackageExport.notFoundMetaLog", pathStr));
-							continue;
-						}
+				}
+				if (!param.isExportTenantMetaData()) {
+					if (mdps.isTenantMeta(info.getPath())) {
+						continue;
 					}
 				}
-				paths.addAll(directPathSet);
+				paths.add(info.getPath());
 			}
+		} else {
+			//個別指定
 
-			//ソートしてセット
-			param.setExportMetaDataPathList(paths.stream().sorted().collect(Collectors.toList()));
+			Set<String> directPathSet = new HashSet<>();	//重複を避けるためSetに保持
 
-			return null;
-		});
+			String[] pathStrArray = param.getExportMetaDataPathStr().split(",");
+			for (String pathStr : pathStrArray) {
+				//,,などの阻止
+				if (StringUtil.isEmpty(pathStr)) {
+					continue;
+				}
+
+				if (pathStr.endsWith("*")) {
+					//アスタリスク指定
+					List<MetaDataEntryInfo> allMeta = MetaDataContext.getContext().definitionList(pathStr.substring(0, pathStr.length() - 1));
+					for (MetaDataEntryInfo info : allMeta) {
+						if (param.isExportLocalMetaDataOnly()) {
+							if (info.getRepositryType() != RepositoryType.TENANT_LOCAL) {
+								continue;
+							}
+						}
+						directPathSet.add(info.getPath());
+					}
+				} else {
+					//直接指定
+					MetaDataEntry entry = MetaDataContext.getContext().getMetaDataEntry(pathStr);
+					if (entry != null) {
+						if (param.isExportLocalMetaDataOnly()) {
+							if (entry.getRepositryType() != RepositoryType.TENANT_LOCAL) {
+								logWarn(rs("PackageExport.excludeNotLocalMetaLog", pathStr));
+								continue;
+							}
+						}
+						directPathSet.add(entry.getPath());
+					} else {
+						logWarn(rs("PackageExport.notFoundMetaLog", pathStr));
+						continue;
+					}
+				}
+			}
+			paths.addAll(directPathSet);
+		}
+
+		//ソートして返す
+		return paths.stream().sorted().collect(Collectors.toList());
 	}
 
 	/**
@@ -416,81 +416,73 @@ public class PackageExport extends MtpCuiBase {
 	 * Export対象のEntityデータパスを設定します。
 	 * @param param
 	 */
-	private void getEntityDataPathList(final PackageExportParameter param) {
+	private List<String> getEntityDataPathList(final PackageExportParameter param) {
 
 		if (!param.isExportEntityData()) {
-			return;
+			return null;
 		}
 
-		TenantContext tContext = tcs.getTenantContext(param.getTenantId());
-		ExecuteContext.executeAs(tContext, ()-> {
-			ExecuteContext.getCurrentContext().setLanguage(getLanguage());
+		List<String> paths = new ArrayList<>();
 
-			List<String> paths = new ArrayList<>();
+		List<MetaDataEntryInfo> entityList = ehs.list();
 
-			List<MetaDataEntryInfo> entityList = ehs.list();
+		if (param.isExportAllEntityData()) {
+			for (MetaDataEntryInfo info : entityList) {
+				if (!param.isExportUserEntityData()) {
+					if (info.getPath().equals(EntityService.getFixedPath() + User.DEFINITION_NAME)) {
+						continue;
+					}
+				}
+				paths.add(info.getPath());
+			}
+		} else {
+			//個別指定
 
-			if (param.isExportAllEntityData()) {
-				for (MetaDataEntryInfo info : entityList) {
-					if (!param.isExportUserEntityData()) {
-						if (info.getPath().equals(EntityService.getFixedPath() + User.DEFINITION_NAME)) {
+			Set<String> directPathSet = new HashSet<>();	//重複を避けるためSetに保持
+
+			String[] pathStrArray = param.getExportEntityDataPathStr().split(",");
+			for (String pathStr : pathStrArray) {
+				//,,などの阻止
+				if (StringUtil.isEmpty(pathStr)) {
+					continue;
+				}
+
+				boolean isFound = false;
+				if (pathStr.endsWith("*")) {
+					//アスタリスク指定
+					String prefixPath = null;
+					if (pathStr.equals("*")) {
+						prefixPath = "";
+					} else {
+						prefixPath = pathStr.substring(0, pathStr.length() - 1).replace(".", "/");
+					}
+					for (MetaDataEntryInfo info : entityList) {
+						if (!info.getPath().startsWith(EntityService.getFixedPath() + prefixPath)) {
 							continue;
 						}
+						isFound = true;
+						directPathSet.add(info.getPath());
 					}
-					paths.add(info.getPath());
-				}
-			} else {
-				//個別指定
-
-				Set<String> directPathSet = new HashSet<>();	//重複を避けるためSetに保持
-
-				String[] pathStrArray = param.getExportEntityDataPathStr().split(",");
-				for (String pathStr : pathStrArray) {
-					//,,などの阻止
-					if (StringUtil.isEmpty(pathStr)) {
-						continue;
-					}
-
-					boolean isFound = false;
-					if (pathStr.endsWith("*")) {
-						//アスタリスク指定
-						String prefixPath = null;
-						if (pathStr.equals("*")) {
-							prefixPath = "";
-						} else {
-							prefixPath = pathStr.substring(0, pathStr.length() - 1).replace(".", "/");
-						}
-						for (MetaDataEntryInfo info : entityList) {
-							if (!info.getPath().startsWith(EntityService.getFixedPath() + prefixPath)) {
-								continue;
-							}
-							isFound = true;
+				} else {
+					//直接指定
+					for (MetaDataEntryInfo info : entityList) {
+						if (info.getPath().equals(EntityService.getFixedPath() + pathStr)) {
 							directPathSet.add(info.getPath());
+							isFound = true;
+							break;
 						}
-					} else {
-						//直接指定
-						for (MetaDataEntryInfo info : entityList) {
-							if (info.getPath().equals(EntityService.getFixedPath() + pathStr)) {
-								directPathSet.add(info.getPath());
-								isFound = true;
-								break;
-							}
-						}
-					}
-					if (!isFound) {
-						logWarn(rs("PackageExport.notFoundEntityLog", pathStr));
-						continue;
 					}
 				}
-				paths.addAll(directPathSet);
+				if (!isFound) {
+					logWarn(rs("PackageExport.notFoundEntityLog", pathStr));
+					continue;
+				}
 			}
+			paths.addAll(directPathSet);
+		}
 
-			//ソートしてセット
-			param.setExportEntityDataPathList(paths.stream().sorted().collect(Collectors.toList()));
-
-			return null;
-		});
-
+		//ソートして返す
+		return paths.stream().sorted().collect(Collectors.toList());
 	}
 
 	/**
@@ -568,7 +560,7 @@ public class PackageExport extends MtpCuiBase {
 	 *
 	 * @return 実行結果
 	 */
-	private boolean startExportWizard() {
+	private boolean wizard() {
 
 		Tenant tenant = null;
 		if (tenantId != null) {
@@ -577,7 +569,7 @@ public class PackageExport extends MtpCuiBase {
 			if (tenant == null) {
 				logWarn(getCommonResourceMessage("notExistsTenantIdMsg", tenantId));
 				tenantId = null;
-				return startExportWizard();
+				return wizard();
 			}
 		} else {
 			//テナントURL
@@ -585,17 +577,17 @@ public class PackageExport extends MtpCuiBase {
 
 			if (StringUtil.isEmpty(tenantUrl)) {
 				logWarn(getCommonResourceMessage("requiredTenantUrlMsg"));
-				return startExportWizard();
+				return wizard();
 			}
 			if (tenantUrl.equalsIgnoreCase("-show")) {
 				//一覧を出力
 				showValidTenantList();
-				return startExportWizard();
+				return wizard();
 			}
 			if (tenantUrl.equalsIgnoreCase("-env")) {
 				//環境情報を出力
 				logEnvironment();
-				return startExportWizard();
+				return wizard();
 			}
 
 			//URL存在チェック
@@ -603,187 +595,201 @@ public class PackageExport extends MtpCuiBase {
 			tenant = ts.getTenant(url);
 			if (tenant == null) {
 				logWarn(getCommonResourceMessage("notExistsTenantMsg", tenantUrl));
-				return startExportWizard();
+				return wizard();
 			}
 		}
 
 		PackageExportParameter param = new PackageExportParameter(tenant.getId(), tenant.getName());
 
-		//出力先ディレクトリ
-		boolean validFile = false;
-		do {
-			String exportDirName = readConsole(rs("PackageExport.Wizard.inputDirMsg") + "(" + param.getExportDirName() + ")");
-			if (StringUtil.isNotBlank(exportDirName)) {
-				param.setExportDirName(exportDirName);
-			}
+		TenantContext tContext = tcs.getTenantContext(param.getTenantId());
+		return ExecuteContext.executeAs(tContext, ()-> {
+			ExecuteContext.getCurrentContext().setLanguage(getLanguage());
 
-			//チェック
-			File exportDir = new File(param.getExportDirName());
-			if (!exportDir.exists()) {
-				exportDir.mkdir();
-				logInfo(rs("PackageExport.Wizard.createdInputDirMsg", param.getExportDirName()));
-			}
-			if (!exportDir.isDirectory()) {
-				logWarn(rs("PackageExport.Wizard.notDirMsg", param.getExportDirName()));
-			} else {
-				param.setExportDir(exportDir);
-				validFile = true;
-			}
-		} while(validFile == false);
-
-		//Package名
-		String packageName = readConsole(rs("PackageExport.Wizard.inputPackageNameMsg") + "(" + param.getPackageName() + ")");
-		if (StringUtil.isNotBlank(packageName)) {
-			param.setPackageName(packageName);
-		}
-
-		boolean validTarget = false;
-		do {
-			//メタデータExport
-			boolean validMetaData = false;
+			//出力先ディレクトリ
+			boolean validFile = false;
 			do {
-				boolean isExportMeta = readConsoleBoolean(rs("PackageExport.Wizard.confirmExportMetaMsg"), param.isExportMetaData());
-				param.setExportMetaData(isExportMeta);
-				if (isExportMeta) {
+				String exportDirName = readConsole(rs("PackageExport.Wizard.inputDirMsg") + "(" + param.getExportDirName() + ")");
+				if (StringUtil.isNotBlank(exportDirName)) {
+					param.setExportDirName(exportDirName);
+				}
+				File dir = new File(param.getExportDirName());
+				if (checkDir(dir)) {
+					param.setExportDir(dir);
+					validFile = true;
+				}
+			} while(validFile == false);
 
-					boolean isExportLocalOnly = readConsoleBoolean(rs("PackageExport.Wizard.confirmTargetLocalMetaMsg"), param.isExportLocalMetaDataOnly());
-					param.setExportLocalMetaDataOnly(isExportLocalOnly);
+			//Workディレクトリ
+			boolean validWork = false;
+			do {
+				String workDirName = readConsole(rs("PackageExport.Wizard.inputWorkMsg") + "(" + param.getWorkDirName() + ")");
+				if (StringUtil.isNotBlank(workDirName)) {
+					param.setWorkDirName(workDirName);
+				}
+				File dir = new File(param.getWorkDirName());
+				if (checkDir(dir)) {
+					param.setWorkDir(dir);
+					validWork = true;
+				}
+			} while(validWork == false);
 
-					boolean isExportAllMeta = readConsoleBoolean(rs("PackageExport.Wizard.confirmExportAllMetaMsg"), param.isExportAllMetaData());
-					param.setExportAllMetaData(isExportAllMeta);
-					if (isExportAllMeta) {
-						//全メタデータ出力
+			//Package名
+			String packageName = readConsole(rs("PackageExport.Wizard.inputPackageNameMsg") + "(" + param.getPackageName() + ")");
+			if (StringUtil.isNotBlank(packageName)) {
+				param.setPackageName(packageName);
+			}
 
-						//テナントを含めるかを確認
-						boolean isExportTenantMetaData = readConsoleBoolean(rs("PackageExport.Wizard.confirmIncludeTenantMetaMsg"), param.isExportTenantMetaData());
-						param.setExportTenantMetaData(isExportTenantMetaData);
+			boolean validTarget = false;
+			do {
+				//メタデータExport
+				boolean validMetaData = false;
+				do {
+					boolean isExportMeta = readConsoleBoolean(rs("PackageExport.Wizard.confirmExportMetaMsg"), param.isExportMetaData());
+					param.setExportMetaData(isExportMeta);
+					if (isExportMeta) {
 
-						validMetaData = true;
-					} else {
-						//個別指定
-						String exportMetaDataPathStr = readConsole(rs("PackageExport.Wizard.inputMetaPathMsg"));
-						if (StringUtil.isEmpty(exportMetaDataPathStr)) {
-							//未指定なのでContinue
-							logWarn(rs("PackageExport.Wizard.requiredMetaPathMsg"));
-							logInfo("");
-						} else {
-							param.setExportMetaDataPathStr(exportMetaDataPathStr);
+						boolean isExportLocalOnly = readConsoleBoolean(rs("PackageExport.Wizard.confirmTargetLocalMetaMsg"), param.isExportLocalMetaDataOnly());
+						param.setExportLocalMetaDataOnly(isExportLocalOnly);
+
+						boolean isExportAllMeta = readConsoleBoolean(rs("PackageExport.Wizard.confirmExportAllMetaMsg"), param.isExportAllMetaData());
+						param.setExportAllMetaData(isExportAllMeta);
+						if (isExportAllMeta) {
+							//全メタデータ出力
+
+							//テナントを含めるかを確認
+							boolean isExportTenantMetaData = readConsoleBoolean(rs("PackageExport.Wizard.confirmIncludeTenantMetaMsg"), param.isExportTenantMetaData());
+							param.setExportTenantMetaData(isExportTenantMetaData);
+
 							validMetaData = true;
-						}
-					}
-
-					if (validMetaData) {
-						//Pathの取得
-						getMetaDataPathList(param);
-						boolean isShow = readConsoleBoolean(rs("PackageExport.Wizard.confirmShowMetaListMsg", param.getExportMetaDataPathList().size()), false);
-						if (isShow) {
-							showMetaDataPathList(param);
-						}
-						boolean isContinue = readConsoleBoolean(getCommonResourceMessage("continueMsg"), true);
-						if (!isContinue) {
-							validMetaData = false;
-						}
-					}
-
-				} else {
-					//Exportしない
-					validMetaData = true;
-				}
-			} while(validMetaData == false);
-
-
-			//EntityデータExport
-			boolean validEntityData = false;
-			do {
-				boolean isExportEntity = readConsoleBoolean(rs("PackageExport.Wizard.confirmExportEntityMsg"), param.isExportEntityData());
-				param.setExportEntityData(isExportEntity);
-				if (isExportEntity) {
-
-					boolean isExportAllEntity = readConsoleBoolean(rs("PackageExport.Wizard.confirmExportAllEntityMsg"), param.isExportAllEntityData());
-					param.setExportAllEntityData(isExportAllEntity);
-					if (isExportAllEntity) {
-						//全Entityデータ出力
-
-						//Userを含めるかを確認
-						boolean isExportUserEntityData = readConsoleBoolean(rs("PackageExport.Wizard.confirmIncludeUserEntityMsg"), param.isExportUserEntityData());
-						param.setExportUserEntityData(isExportUserEntityData);
-
-						validEntityData = true;
-					} else {
-						//個別指定
-						String exportEntityPathStr = readConsole(rs("PackageExport.Wizard.inputEntityPathMsg"));
-						if (StringUtil.isEmpty(exportEntityPathStr)) {
-							//未指定なのでContinue
-							logWarn(rs("PackageExport.Wizard.requiredEntityPathMsg"));
-							logInfo("");
 						} else {
-							param.setExportEntityDataPathStr(exportEntityPathStr);
+							//個別指定
+							String exportMetaDataPathStr = readConsole(rs("PackageExport.Wizard.inputMetaPathMsg"));
+							if (StringUtil.isEmpty(exportMetaDataPathStr)) {
+								//未指定なのでContinue
+								logWarn(rs("PackageExport.Wizard.requiredMetaPathMsg"));
+								logInfo("");
+							} else {
+								param.setExportMetaDataPathStr(exportMetaDataPathStr);
+								validMetaData = true;
+							}
+						}
+
+						if (validMetaData) {
+							//Pathの取得
+							param.setExportMetaDataPathList(getMetaDataPathList(param));
+							boolean isShow = readConsoleBoolean(rs("PackageExport.Wizard.confirmShowMetaListMsg", param.getExportMetaDataPathList().size()), false);
+							if (isShow) {
+								showMetaDataPathList(param);
+							}
+							boolean isContinue = readConsoleBoolean(getCommonResourceMessage("continueMsg"), true);
+							if (!isContinue) {
+								validMetaData = false;
+							}
+						}
+
+					} else {
+						//Exportしない
+						validMetaData = true;
+					}
+				} while(validMetaData == false);
+
+
+				//EntityデータExport
+				boolean validEntityData = false;
+				do {
+					boolean isExportEntity = readConsoleBoolean(rs("PackageExport.Wizard.confirmExportEntityMsg"), param.isExportEntityData());
+					param.setExportEntityData(isExportEntity);
+					if (isExportEntity) {
+
+						boolean isExportAllEntity = readConsoleBoolean(rs("PackageExport.Wizard.confirmExportAllEntityMsg"), param.isExportAllEntityData());
+						param.setExportAllEntityData(isExportAllEntity);
+						if (isExportAllEntity) {
+							//全Entityデータ出力
+
+							//Userを含めるかを確認
+							boolean isExportUserEntityData = readConsoleBoolean(rs("PackageExport.Wizard.confirmIncludeUserEntityMsg"), param.isExportUserEntityData());
+							param.setExportUserEntityData(isExportUserEntityData);
+
 							validEntityData = true;
+						} else {
+							//個別指定
+							String exportEntityPathStr = readConsole(rs("PackageExport.Wizard.inputEntityPathMsg"));
+							if (StringUtil.isEmpty(exportEntityPathStr)) {
+								//未指定なのでContinue
+								logWarn(rs("PackageExport.Wizard.requiredEntityPathMsg"));
+								logInfo("");
+							} else {
+								param.setExportEntityDataPathStr(exportEntityPathStr);
+								validEntityData = true;
+							}
 						}
-					}
 
-					if (validEntityData) {
-						//Pathの取得
-						getEntityDataPathList(param);
-						boolean isShow = readConsoleBoolean(rs("PackageExport.Wizard.confirmShowEntityListMsg", param.getExportEntityDataPathList().size()), false);
-						if (isShow) {
-							showEntityDataPathList(param);
+						if (validEntityData) {
+							//Pathの取得
+							param.setExportEntityDataPathList(getEntityDataPathList(param));
+							boolean isShow = readConsoleBoolean(rs("PackageExport.Wizard.confirmShowEntityListMsg", param.getExportEntityDataPathList().size()), false);
+							if (isShow) {
+								showEntityDataPathList(param);
+							}
+							boolean isContinue = readConsoleBoolean(getCommonResourceMessage("continueMsg"), true);
+							if (!isContinue) {
+								validEntityData = false;
+							}
 						}
-						boolean isContinue = readConsoleBoolean(getCommonResourceMessage("continueMsg"), true);
-						if (!isContinue) {
-							validEntityData = false;
-						}
-					}
 
+					} else {
+						//Exportしない
+						validEntityData = true;
+					}
+				} while(validEntityData == false);
+
+				//Export対象が含まれるかのチェック
+				if (!param.isExportMetaData() && !param.isExportEntityData()) {
+					//Export対象なし
+					logWarn(rs("PackageExport.Wizard.targetEmptyMsg"));
+					logInfo("");
 				} else {
-					//Exportしない
-					validEntityData = true;
+					validTarget = true;
 				}
-			} while(validEntityData == false);
 
-			//Export対象が含まれるかのチェック
-			if (!param.isExportMetaData() && !param.isExportEntityData()) {
-				//Export対象なし
-				logWarn(rs("PackageExport.Wizard.targetEmptyMsg"));
-				logInfo("");
-			} else {
-				validTarget = true;
-			}
+			} while(validTarget == false);
 
-		} while(validTarget == false);
+			boolean validExecute = false;
+			do {
+				//実行情報出力
+				logArguments(param);
 
-		boolean validExecute = false;
-		do {
-			//実行情報出力
-			logArguments(param);
-
-			boolean isExecute = readConsoleBoolean(rs("PackageExport.Wizard.confirmExportPackageMsg"), false);
-			if (isExecute) {
-				validExecute = true;
-			} else {
-				//defaultがfalseなので念のため再度確認
-				isExecute = readConsoleBoolean(rs("PackageExport.Wizard.confirmRetryMsg"), true);
-
+				boolean isExecute = readConsoleBoolean(rs("PackageExport.Wizard.confirmExportPackageMsg"), false);
 				if (isExecute) {
-					//再度実行
-					return startExportWizard();
+					validExecute = true;
+				} else {
+					//defaultがfalseなので念のため再度確認
+					isExecute = readConsoleBoolean(rs("PackageExport.Wizard.confirmRetryMsg"), true);
+
+					if (isExecute) {
+						//再度実行
+						return wizard();
+					}
 				}
+			} while(validExecute == false);
+
+			//ConsoleのLogListnerを一度削除してLog出力に切り替え
+			LogListner consoleLogListner = getConsoleLogListner();
+			removeLogListner(consoleLogListner);
+			LogListner loggingListner = getLoggingLogListner();
+			addLogListner(loggingListner);
+
+			//Export処理実行
+			try {
+				export(param);
+
+				return isSuccess();
+
+			} finally {
+				removeLogListner(loggingListner);
+				addLogListner(consoleLogListner);
 			}
-		} while(validExecute == false);
-
-		//ConsoleのLogListnerを一度削除してLog出力に切り替え
-		LogListner consoleLogListner = getConsoleLogListner();
-		removeLogListner(consoleLogListner);
-		LogListner loggingListner = getLoggingLogListner();
-		addLogListner(loggingListner);
-
-		//Export処理実行
-		boolean ret = executeExport(param);
-
-		//LogListnerを一度削除
-		removeLogListner(loggingListner);
-
-		return ret;
+		});
 	}
 
 	/**
@@ -791,13 +797,7 @@ public class PackageExport extends MtpCuiBase {
 	 *
 	 * @return 実行結果
 	 */
-	private boolean startExportSilent() {
-
-		//ConsoleのLogListnerを一度削除してLog出力に切り替え
-		LogListner consoleLogListner = getConsoleLogListner();
-		removeLogListner(consoleLogListner);
-		LogListner loggingListner = getLoggingLogListner();
-		addLogListner(loggingListner);
+	private boolean silent() {
 
 		//プロパティファイルの取得
 		String configFileName = System.getProperty(KEY_CONFIG_FILE);
@@ -875,99 +875,105 @@ public class PackageExport extends MtpCuiBase {
 
 		PackageExportParameter param = new PackageExportParameter(tenant.getId(), tenant.getName());
 
-		String exportDir = prop.getProperty(PROP_EXPORT_DIR);
-		if (StringUtil.isNotEmpty(exportDir)) {
-			param.setExportDirName(exportDir);
+		TenantContext tContext = tcs.getTenantContext(param.getTenantId());
+		return ExecuteContext.executeAs(tContext, ()-> {
+			ExecuteContext.getCurrentContext().setLanguage(getLanguage());
 
-			//チェック
-			File dir = new File(param.getExportDirName());
-			if (!dir.exists()) {
-				dir.mkdir();
-				logInfo(rs("PackageExport.Wizard.createdInputDirMsg", param.getExportDirName()));
+			String exportDirName = prop.getProperty(PROP_EXPORT_DIR);
+			if (StringUtil.isNotEmpty(exportDirName)) {
+				param.setExportDirName(exportDirName);
 			}
-			if (!dir.isDirectory()) {
-				logError(rs("PackageExport.Wizard.notDirMsg", param.getExportDirName()));
+			File exportDir = new File(param.getExportDirName());
+			if (!checkDir(exportDir)) {
 				return false;
 			}
-		}
+			param.setExportDir(exportDir);
 
-		String packageName = prop.getProperty(PROP_PACKAGE_NAME);
-		if (StringUtil.isNotEmpty(packageName)) {
-			param.setPackageName(packageName);
-		}
+			String workDirName = prop.getProperty(PROP_WORK_DIR);
+			if (StringUtil.isNotEmpty(workDirName)) {
+				param.setWorkDirName(workDirName);
+			}
+			File workDir = new File(param.getWorkDirName());
+			if (!checkDir(workDir)) {
+				return false;
+			}
+			param.setWorkDir(workDir);
 
-		String exportMeta = prop.getProperty(PROP_META_EXPORT);
-		if (StringUtil.isNotEmpty(exportMeta)) {
-			param.setExportMetaData(Boolean.valueOf(exportMeta));
-		}
-		if (param.isExportMetaData()) {
-
-			String localOnly = prop.getProperty(PROP_META_LOCAL_ONLY);
-			if (StringUtil.isNotEmpty(localOnly)) {
-				param.setExportLocalMetaDataOnly(Boolean.valueOf(localOnly));
+			String packageName = prop.getProperty(PROP_PACKAGE_NAME);
+			if (StringUtil.isNotEmpty(packageName)) {
+				param.setPackageName(packageName);
 			}
 
-			String source = prop.getProperty(PROP_META_SOURCE);
-			if (StringUtil.isEmpty(source)) {
-				//全対象
-				param.setExportAllMetaData(true);
-
-				String excludeTenant = prop.getProperty(PROP_META_EXCLUDE_TENANT);
-				if (StringUtil.isNotEmpty(excludeTenant)) {
-					param.setExportTenantMetaData(!Boolean.valueOf(excludeTenant));
+			String exportMeta = prop.getProperty(PROP_META_EXPORT);
+			if (StringUtil.isNotEmpty(exportMeta)) {
+				param.setExportMetaData(Boolean.valueOf(exportMeta));
+			}
+			if (param.isExportMetaData()) {
+				String localOnly = prop.getProperty(PROP_META_LOCAL_ONLY);
+				if (StringUtil.isNotEmpty(localOnly)) {
+					param.setExportLocalMetaDataOnly(Boolean.valueOf(localOnly));
 				}
 
-			} else {
-				param.setExportAllMetaData(false);
-				param.setExportMetaDataPathStr(source);
-			}
-			getMetaDataPathList(param);
-		}
+				String source = prop.getProperty(PROP_META_SOURCE);
+				if (StringUtil.isEmpty(source)) {
+					//全対象
+					param.setExportAllMetaData(true);
 
-		String exportEntity = prop.getProperty(PROP_ENTITY_EXPORT);
-		if (StringUtil.isNotEmpty(exportEntity)) {
-			param.setExportEntityData(Boolean.valueOf(exportEntity));
-		}
-		if (param.isExportEntityData()) {
-			String source = prop.getProperty(PROP_ENTITY_SOURCE);
-			if (StringUtil.isEmpty(source)) {
-				//全対象
-				param.setExportAllEntityData(true);
+					String excludeTenant = prop.getProperty(PROP_META_EXCLUDE_TENANT);
+					if (StringUtil.isNotEmpty(excludeTenant)) {
+						param.setExportTenantMetaData(!Boolean.valueOf(excludeTenant));
+					}
 
-				String excludeUser = prop.getProperty(PROP_ENTITY_EXCLUDE_USER);
-				if (StringUtil.isNotEmpty(excludeUser)) {
-					param.setExportUserEntityData(!Boolean.valueOf(excludeUser));
+				} else {
+					param.setExportAllMetaData(false);
+					param.setExportMetaDataPathStr(source);
 				}
-			} else {
-				param.setExportAllEntityData(false);
-				param.setExportEntityDataPathStr(source);
+				param.setExportMetaDataPathList(getMetaDataPathList(param));
 			}
-			getEntityDataPathList(param);
-		}
 
-		//実行情報出力
-		logArguments(param);
+			String exportEntity = prop.getProperty(PROP_ENTITY_EXPORT);
+			if (StringUtil.isNotEmpty(exportEntity)) {
+				param.setExportEntityData(Boolean.valueOf(exportEntity));
+			}
+			if (param.isExportEntityData()) {
+				String source = prop.getProperty(PROP_ENTITY_SOURCE);
+				if (StringUtil.isEmpty(source)) {
+					//全対象
+					param.setExportAllEntityData(true);
 
-		//Export処理実行
-		boolean ret = executeExport(param);
+					String excludeUser = prop.getProperty(PROP_ENTITY_EXCLUDE_USER);
+					if (StringUtil.isNotEmpty(excludeUser)) {
+						param.setExportUserEntityData(!Boolean.valueOf(excludeUser));
+					}
+				} else {
+					param.setExportAllEntityData(false);
+					param.setExportEntityDataPathStr(source);
+				}
+				param.setExportEntityDataPathList(getEntityDataPathList(param));
+			}
 
-		//LogListnerを一度削除
-		removeLogListner(loggingListner);
+			//実行情報出力
+			logArguments(param);
 
-		return ret;
+			//Export処理実行
+			boolean ret = export(param);
+
+			return ret;
+		});
+
 	}
 
-	private File getTempDir(final PackageExportParameter param) {
-		//TODO BatchのTempディレクトリもWebFrontendServiceを見ていいか？
-		WebFrontendService webFront = ServiceRegistry.getRegistry().getService(WebFrontendService.class);
-		File tempDir = null;
-		if (webFront.getTempFileDir() == null) {
-			//未指定の場合は、作成先ディレクトリを利用
-			tempDir = param.getExportDir();
-		} else {
-			tempDir = new File(webFront.getTempFileDir());
+	private boolean checkDir(File dir) {
+
+		if (!dir.exists()) {
+			dir.mkdir();
+			logInfo(rs("PackageExport.createdDirMsg", dir.getPath()));
 		}
-		return tempDir;
+		if (!dir.isDirectory()) {
+			logError(rs("PackageExport.notDirMsg", dir.getPath()));
+			return false;
+		}
+		return true;
 	}
 
 	private String rs(String key, Object... args) {

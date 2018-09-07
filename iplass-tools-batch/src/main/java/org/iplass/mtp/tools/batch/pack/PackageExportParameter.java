@@ -17,6 +17,8 @@ public class PackageExportParameter {
 	public static final String PROP_TENANT_ID = "tenantId";
 	/** Silentモード 出力先ディレクトリ */
 	public static final String PROP_EXPORT_DIR = "exportDir";
+	/** Silentモード 作業用ディレクトリ */
+	public static final String PROP_WORK_DIR = "workDir";
 	/** Silentモード パッケージ名 */
 	public static final String PROP_PACKAGE_NAME = "packageName";
 	/** Silentモード メタデータ 出力 */
@@ -42,6 +44,9 @@ public class PackageExportParameter {
 
 	//出力先ディレクトリ名
 	private String exportDirName = "./";
+
+	//Workディレクトリ名
+	private String workDirName = "./";
 
 	//パッケージ名
 	private String packageName;
@@ -76,9 +81,11 @@ public class PackageExportParameter {
 	//作成者
 	private String registId = "program";
 
-
 	//出力先ディレクトリ(内部用)
 	private File exportDir;
+
+	//Workディレクトリ(内部用)
+	private File workDir;
 
 	//出力メタデータパスのリスト(内部用)
 	private List<String> exportMetaDataPathList = null;
@@ -116,6 +123,14 @@ public class PackageExportParameter {
 		this.exportDirName = exportDirName;
 	}
 
+	public String getWorkDirName() {
+		return workDirName;
+	}
+
+	public void setWorkDirName(String workDirName) {
+		this.workDirName = workDirName;
+	}
+
 	public String getPackageName() {
 		return packageName;
 	}
@@ -130,6 +145,14 @@ public class PackageExportParameter {
 
 	public void setExportDir(File exportDir) {
 		this.exportDir = exportDir;
+	}
+
+	public File getWorkDir() {
+		return workDir;
+	}
+
+	public void setWorkDir(File workDir) {
+		this.workDir = workDir;
 	}
 
 	public boolean isExportMetaData() {
