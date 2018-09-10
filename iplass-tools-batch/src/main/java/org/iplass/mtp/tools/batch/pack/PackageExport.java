@@ -183,16 +183,15 @@ public class PackageExport extends MtpCuiBase {
 	 * @param param Export情報
 	 * @return
 	 */
-	public boolean export(final PackageExportParameter param) {
+	public boolean exportPack(final PackageExportParameter param) {
 
 		setSuccess(false);
 
 		try {
 			boolean isSuccess = Transaction.required(t -> {
 
-				TenantContext tContext = tcs.getTenantContext(param.getTenantId());
-
-				return ExecuteContext.executeAs(tContext, () -> {
+				TenantContext tc = tcs.getTenantContext(param.getTenantId());
+				return ExecuteContext.executeAs(tc, () -> {
 					ExecuteContext.getCurrentContext().setLanguage(getLanguage());
 
 					//外部から直接呼び出された場合を考慮し、Pathを取得
@@ -601,8 +600,8 @@ public class PackageExport extends MtpCuiBase {
 
 		PackageExportParameter param = new PackageExportParameter(tenant.getId(), tenant.getName());
 
-		TenantContext tContext = tcs.getTenantContext(param.getTenantId());
-		return ExecuteContext.executeAs(tContext, ()-> {
+		TenantContext tc = tcs.getTenantContext(param.getTenantId());
+		return ExecuteContext.executeAs(tc, ()-> {
 			ExecuteContext.getCurrentContext().setLanguage(getLanguage());
 
 			//出力先ディレクトリ
@@ -781,7 +780,7 @@ public class PackageExport extends MtpCuiBase {
 
 			//Export処理実行
 			try {
-				export(param);
+				exportPack(param);
 
 				return isSuccess();
 
@@ -875,8 +874,8 @@ public class PackageExport extends MtpCuiBase {
 
 		PackageExportParameter param = new PackageExportParameter(tenant.getId(), tenant.getName());
 
-		TenantContext tContext = tcs.getTenantContext(param.getTenantId());
-		return ExecuteContext.executeAs(tContext, ()-> {
+		TenantContext tc = tcs.getTenantContext(param.getTenantId());
+		return ExecuteContext.executeAs(tc, ()-> {
 			ExecuteContext.getCurrentContext().setLanguage(getLanguage());
 
 			String exportDirName = prop.getProperty(PROP_EXPORT_DIR);
@@ -956,9 +955,7 @@ public class PackageExport extends MtpCuiBase {
 			logArguments(param);
 
 			//Export処理実行
-			boolean ret = export(param);
-
-			return ret;
+			return exportPack(param);
 		});
 
 	}

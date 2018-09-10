@@ -59,9 +59,9 @@ public class PackageImport extends MtpCuiBase {
 	//テナントID(引数)
 	private Integer tenantId;
 
-	private TenantService tenantService = ServiceRegistry.getRegistry().getService(TenantService.class);
-	private TenantContextService tenantContextService = ServiceRegistry.getRegistry().getService(TenantContextService.class);
-	private PackageService packageService = ServiceRegistry.getRegistry().getService(PackageService.class);
+	private TenantService ts = ServiceRegistry.getRegistry().getService(TenantService.class);
+	private TenantContextService tcs = ServiceRegistry.getRegistry().getService(TenantContextService.class);
+	private PackageService ps = ServiceRegistry.getRegistry().getService(PackageService.class);
 
 	/**
 	 * args[0]・・・execMode
@@ -89,7 +89,7 @@ public class PackageImport extends MtpCuiBase {
 
 		if (args != null) {
 			if (args.length > 0 && args[0] != null) {
-				setExecMode(ExecMode.valueOf(args[0].toUpperCase()));
+				execMode = ExecMode.valueOf(args[0].toUpperCase());
 			}
 			if (args.length > 1 && args[1] != null) {
 				tenantId = Integer.parseInt(args[1]);
@@ -117,43 +117,52 @@ public class PackageImport extends MtpCuiBase {
 
 		clearLog();
 
-		//Console出力用のログリスナーを生成
-		LogListner consoleLogListner = getConsoleLogListner();
-		addLogListner(consoleLogListner);
+		try {
+			switch (execMode) {
+			case WIZARD :
+				LogListner consoleLogListner = getConsoleLogListner();
+				addLogListner(consoleLogListner);
 
-		//環境情報出力
-		logEnvironment();
+				//環境情報出力
+				logEnvironment();
 
-		switch (getExecMode()) {
-		case WIZARD :
-			logInfo("■Start Import Wizard");
+				logInfo("■Start Import Wizard");
+				logInfo("");
+
+				//Wizardの実行
+				return wizard();
+			case SILENT :
+				LogListner loggingLogListner = getLoggingLogListner();
+				addLogListner(loggingLogListner);
+
+				//環境情報出力
+				logEnvironment();
+
+				logInfo("■Start Import Silent");
+				logInfo("");
+
+				//Silentの実行
+				return silent();
+			default :
+				logError("unsupport execute mode : " + execMode);
+				return false;
+			}
+
+		} finally {
 			logInfo("");
-
-			//Wizardの実行
-			return startImportWizard();
-		case SILENT :
-			logInfo("■Start Import Silent");
+			logInfo("■Execute Result :" + (isSuccess() ? "SUCCESS" : "FAILED"));
 			logInfo("");
-
-			//Silentの実行
-			return startImportSilent();
-		default :
-			logError("unsupport execute mode : " + getExecMode());
-			return false;
 		}
-
 	}
 
-	public ExecMode getExecMode() {
-		return execMode;
-	}
-
-	public void setExecMode(ExecMode execMode) {
+	public PackageImport execMode(ExecMode execMode) {
 		this.execMode = execMode;
+		return this;
 	}
 
-	public void setTenantId(Integer tenantId) {
+	public PackageImport tenantId(Integer tenantId) {
 		this.tenantId = tenantId;
+		return this;
 	}
 
 	/**
@@ -162,7 +171,7 @@ public class PackageImport extends MtpCuiBase {
 	 * @param param Import情報
 	 * @return
 	 */
-	public boolean executeImport(final PackageImportParameter param) {
+	public boolean importPack(final PackageImportParameter param) {
 
 		setSuccess(false);
 
@@ -178,15 +187,14 @@ public class PackageImport extends MtpCuiBase {
 
 					boolean ret = Transaction.requiresNew(tt->{
 
-						TenantContext tc  = tenantContextService.getTenantContext(param.getTenantId());
-
+						TenantContext tc  = tcs.getTenantContext(param.getTenantId());
 						return ExecuteContext.executeAs(tc, ()->{
 							ExecuteContext.getCurrentContext().setLanguage(getLanguage());
 
 							String logMessage = null;	//work用
 
 							//Fileのアップロード
-							oid = packageService.uploadPackage(
+							oid = ps.uploadPackage(
 									param.getPackageName(), null, param.getImportFile(), PackageEntity.TYPE_OFFLINE);
 
 							logMessage = rs("PackageImport.createdPackageInfoLog", oid);
@@ -200,7 +208,7 @@ public class PackageImport extends MtpCuiBase {
 								logInfo(rs("PackageImport.startImportMetaLog"));
 
 								MetaDataImportResult metaResult
-									= packageService.importPackageMetaData(oid, param.getWorkDir(), param.getImportTenant());
+									= ps.importPackageMetaData(oid, param.getWorkDir(), param.getImportTenant());
 
 								if (metaResult.isError()) {
 									if (metaResult.getMessages() != null) {
@@ -248,7 +256,7 @@ public class PackageImport extends MtpCuiBase {
 					//インポートのメタデータにUtilityClassが含まれるとTenantContextがreloadされてメタデータが取得できなくなるため
 					ret = Transaction.requiresNew(tt->{
 
-						TenantContext reloadTc = tenantContextService.getTenantContext(param.getTenantId());
+						TenantContext reloadTc = tcs.getTenantContext(param.getTenantId());
 						return ExecuteContext.executeAs(reloadTc, ()->{
 							ExecuteContext.getCurrentContext().setLanguage(getLanguage());
 
@@ -265,7 +273,7 @@ public class PackageImport extends MtpCuiBase {
 
 
 									EntityDataImportResult entityResult
-											= packageService.importPackageEntityData(oid, entityPath, param.getEntityImportCondition(), param.getWorkDir());
+											= ps.importPackageEntityData(oid, entityPath, param.getEntityImportCondition(), param.getWorkDir());
 
 									if (entityResult.isError()) {
 										if (entityResult.getMessages() != null) {
@@ -336,11 +344,6 @@ public class PackageImport extends MtpCuiBase {
 
 		} catch (Throwable e) {
 			logError(getCommonResourceMessage("errorMsg", e.getMessage()));
-			e.printStackTrace();
-		} finally {
-			logInfo("");
-			logInfo("■Execute Result :" + (isSuccess() ? "SUCCESS" : "FAILED"));
-			logInfo("");
 		}
 
 		return isSuccess();
@@ -422,49 +425,50 @@ public class PackageImport extends MtpCuiBase {
 	 *
 	 * @return 実行結果
 	 */
-	private boolean startImportWizard() {
+	private boolean wizard() {
 
 		Tenant tenant = null;
 		if (tenantId != null) {
 			//引数でテナントIDが指定されている場合
-			tenant = tenantService.getTenant(tenantId);
+			tenant = ts.getTenant(tenantId);
 			if (tenant == null) {
 				logWarn(getCommonResourceMessage("notExistsTenantIdMsg", tenantId));
 				tenantId = null;
-				return startImportWizard();
+				return wizard();
 			}
 		} else {
-			//テナント名
-			String tenantName = readConsole(getCommonResourceMessage("inputTenantNameMsg"));
-			String tenantUrl = "/" + tenantName;
+			//テナントURL
+			String tenantUrl = readConsole(getCommonResourceMessage("inputTenantUrlMsg"));
 
-			if (StringUtil.isEmpty(tenantName)) {
-				logWarn(getCommonResourceMessage("requiredTenantNameMsg"));
-				return startImportWizard();
+			if (StringUtil.isEmpty(tenantUrl)) {
+				logWarn(getCommonResourceMessage("requiredTenantUrlMsg"));
+				return wizard();
 			}
-			if (tenantName.equalsIgnoreCase("-show")) {
+			if (tenantUrl.equalsIgnoreCase("-show")) {
 				//一覧を出力
 				showValidTenantList();
-				return startImportWizard();
+				return wizard();
 			}
-			if (tenantName.equalsIgnoreCase("-env")) {
+			if (tenantUrl.equalsIgnoreCase("-env")) {
 				//環境情報を出力
 				logEnvironment();
-				return startImportWizard();
+				return wizard();
 			}
 
 			//URL存在チェック
-			tenant = tenantService.getTenant(tenantUrl);
+			String url = tenantUrl.startsWith("/") ? tenantUrl : "/" + tenantUrl;
+			tenant = ts.getTenant(url);
 			if (tenant == null) {
-				logWarn(getCommonResourceMessage("notExistsTenantMsg", tenantName));
-				return startImportWizard();
+				logWarn(getCommonResourceMessage("notExistsTenantMsg", tenantUrl));
+				return wizard();
 			}
 		}
 
 		PackageImportParameter param = new PackageImportParameter(tenant.getId(), tenant.getName());
 
-		TenantContext tc = tenantContextService.getTenantContext(param.getTenantId());
+		TenantContext tc = tcs.getTenantContext(param.getTenantId());
 		ExecuteContext.executeAs(tc, ()->{
+			ExecuteContext.getCurrentContext().setLanguage(getLanguage());
 
 			//Workディレクトリ
 			boolean validWork = false;
@@ -475,15 +479,9 @@ public class PackageImport extends MtpCuiBase {
 				}
 
 				//チェック
-				File workDir = new File(param.getWorkDirName());
-				if (!workDir.exists()) {
-					workDir.mkdir();
-					logInfo(rs("PackageImport.Wizard.createdWorkDirMsg", param.getWorkDirName()));
-				}
-				if (!workDir.isDirectory()) {
-					logError(rs("PackageImport.Wizard.notDirMsg", param.getWorkDirName()));
-				} else {
-					param.setWorkDir(workDir);
+				File dir = new File(param.getWorkDirName());
+				if (checkDir(dir)) {
+					param.setWorkDir(dir);
 					validWork = true;
 				}
 			} while(validWork == false);
@@ -499,13 +497,13 @@ public class PackageImport extends MtpCuiBase {
 					//存在チェック
 					File importFile = new File(param.getImportFilePath());
 					if (!importFile.exists()) {
-						logWarn(rs("PackageImport.Wizard.notExistsImportFileMsg"));
+						logWarn(rs("PackageImport.notExistsImportFileMsg"));
 						continue;
 					}
 
 					try {
 						//データチェック
-						packInfo = packageService.getPackageInfo(importFile);
+						packInfo = ps.getPackageInfo(importFile);
 
 						//対象メタデータチェック
 						int metaCount = (CollectionUtil.isNotEmpty(packInfo.getMetaDataPaths()) ? packInfo.getMetaDataPaths().size() : 0);
@@ -515,7 +513,7 @@ public class PackageImport extends MtpCuiBase {
 							//警告テナントの存在チェック
 							if (packInfo.isWarningTenant()) {
 								//警告がある場合は、Packageに含まれるテナントは取り込まない
-								logWarn(rs("PackageImport.Wizard.includeWarnTenantMetaMsg"));
+								logWarn(rs("PackageImport.includeWarnTenantMetaMsg"));
 							} else {
 								//警告がない場合は、Packageに含まれるテナントをセット
 								param.setImportTenant(packInfo.getTenant());
@@ -552,7 +550,7 @@ public class PackageImport extends MtpCuiBase {
 						validFile = true;
 
 					} catch (PackageRuntimeException e) {
-						logWarn(rs("PackageImport.Wizard.errorAnalysisFileMsg", e.getMessage()));
+						logWarn(rs("PackageImport.errorAnalysisFileMsg", e.getMessage()));
 					}
 
 				} else {
@@ -614,7 +612,7 @@ public class PackageImport extends MtpCuiBase {
 							condition.setPrefixOid(oidPrefix);
 							validOidPrefix = true;
 						} else {
-							logWarn(rs("PackageImport.Wizard.warnOIDPrefixMsg"));
+							logWarn(rs("PackageImport.warnOIDPrefixMsg"));
 						}
 					}
 				} while(validOidPrefix == false);
@@ -653,7 +651,7 @@ public class PackageImport extends MtpCuiBase {
 
 					if (isExecute) {
 						//再度実行
-						return startImportWizard();
+						return wizard();
 					}
 				}
 			} while(validExecute == false);
@@ -668,12 +666,15 @@ public class PackageImport extends MtpCuiBase {
 		addLogListner(loggingListner);
 
 		//Import処理実行
-		boolean ret = executeImport(param);
+		try {
+			importPack(param);
 
-		//LogListnerを一度削除
-		removeLogListner(loggingListner);
+			return isSuccess();
 
-		return ret;
+		} finally {
+			removeLogListner(loggingListner);
+			addLogListner(consoleLogListner);
+		}
 	}
 
 	/**
@@ -681,18 +682,12 @@ public class PackageImport extends MtpCuiBase {
 	 *
 	 * @return 実行結果
 	 */
-	private boolean startImportSilent() {
-
-		//ConsoleのLogListnerを一度削除してLog出力に切り替え
-		LogListner consoleLogListner = getConsoleLogListner();
-		removeLogListner(consoleLogListner);
-		LogListner loggingListner = getLoggingLogListner();
-		addLogListner(loggingListner);
+	private boolean silent() {
 
 		//プロパティファイルの取得
 		String configFileName = System.getProperty(KEY_CONFIG_FILE);
 		if (StringUtil.isEmpty(configFileName)) {
-			logError("config file property is not found. key=" + KEY_CONFIG_FILE);
+			logError(rs("PackageImport.Silent.requiredConfigFileMsg", KEY_CONFIG_FILE));
 			return false;
 		}
 
@@ -709,7 +704,7 @@ public class PackageImport extends MtpCuiBase {
 				logDebug("load config file from classpath:" + configFileName);
 				try (InputStream is = PackageExport.class.getResourceAsStream(configFileName)) {
 					if (is == null) {
-						logError("config file :" + configFileName + " not found.");
+						logError(rs("PackageImport.Silent.notExistsConfigFileMsg", configFileName));
 						return false;
 					}
 					InputStreamReader isr = new InputStreamReader(is, "utf-8");
@@ -723,7 +718,7 @@ public class PackageImport extends MtpCuiBase {
 		Tenant tenant = null;
 		if (tenantId != null) {
 			//引数でテナントIDが指定されている場合
-			tenant = tenantService.getTenant(tenantId);
+			tenant = ts.getTenant(tenantId);
 			if (tenant == null) {
 				logError(getCommonResourceMessage("notExistsTenantIdMsg", tenantId));
 				return false;
@@ -732,7 +727,7 @@ public class PackageImport extends MtpCuiBase {
 			//プロパティから取得
 			String propTenantId = prop.getProperty(PROP_TENANT_ID);
 			if (StringUtil.isNotEmpty(propTenantId)) {
-				tenant = tenantService.getTenant(Integer.parseInt(propTenantId));
+				tenant = ts.getTenant(Integer.parseInt(propTenantId));
 				if (tenant == null) {
 					logError(getCommonResourceMessage("notExistsTenantIdMsg", propTenantId));
 					return false;
@@ -744,7 +739,7 @@ public class PackageImport extends MtpCuiBase {
 					if (!propTenantUrl.startsWith("/")) {
 						propTenantUrl = "/" + propTenantUrl;
 					}
-					tenant = tenantService.getTenant(propTenantUrl);
+					tenant = ts.getTenant(propTenantUrl);
 					if (tenant == null) {
 						logError(getCommonResourceMessage("notExistsTenantUrlMsg", propTenantUrl));
 						return false;
@@ -760,24 +755,19 @@ public class PackageImport extends MtpCuiBase {
 
 		PackageImportParameter param = new PackageImportParameter(tenant.getId(), tenant.getName());
 
-		TenantContext tc = tenantContextService.getTenantContext(param.getTenantId());
+		TenantContext tc = tcs.getTenantContext(param.getTenantId());
 		return ExecuteContext.executeAs(tc, ()->{
+			ExecuteContext.getCurrentContext().setLanguage(getLanguage());
 
 			String workDirName = prop.getProperty(PROP_WORK_DIR);
 			if (StringUtil.isNotEmpty(workDirName)) {
 				param.setWorkDirName(workDirName);
 			}
 			File workDir = new File(param.getWorkDirName());
-			if (!workDir.exists()) {
-				workDir.mkdir();
-				logInfo(rs("PackageImport.Wizard.createdWorkDirMsg", param.getWorkDirName()));
-			}
-			if (!workDir.isDirectory()) {
-				logError(rs("PackageImport.Wizard.notDirMsg", param.getWorkDirName()));
+			if (!checkDir(workDir)) {
 				return false;
-			} else {
-				param.setWorkDir(workDir);
 			}
+			param.setWorkDir(workDir);
 
 			String importFilePath = prop.getProperty(PROP_IMPORT_FILE);
 			if (StringUtil.isEmpty(importFilePath)) {
@@ -788,19 +778,19 @@ public class PackageImport extends MtpCuiBase {
 			//存在チェック
 			File importFile = new File(importFilePath);
 			if (!importFile.exists()) {
-				logError(rs("PackageImport.Wizard.notExistsImportFileMsg"));
+				logError(rs("PackageImport.notExistsImportFileMsg"));
 				return false;
 			}
 			param.setImportFilePath(importFilePath);
 
 			//データチェック
 			try {
-				PackageInfo packInfo = packageService.getPackageInfo(importFile);
+				PackageInfo packInfo = ps.getPackageInfo(importFile);
 
 				//警告テナントの存在チェック
 				if (packInfo.isWarningTenant()) {
 					//警告がある場合は、Packageに含まれるテナントは取り込まない
-					logWarn(rs("PackageImport.Wizard.includeWarnTenantMetaMsg"));
+					logWarn(rs("PackageImport.includeWarnTenantMetaMsg"));
 				} else {
 					//警告がない場合は、Packageに含まれるテナントをセット
 					param.setImportTenant(packInfo.getTenant());
@@ -810,7 +800,7 @@ public class PackageImport extends MtpCuiBase {
 				param.setPackInfo(packInfo);
 
 			} catch (PackageRuntimeException e) {
-				logError(rs("PackageImport.Wizard.errorAnalysisFileMsg", e.getMessage()));
+				logError(rs("PackageImport.errorAnalysisFileMsg", e.getMessage()));
 				return false;
 			}
 
@@ -879,7 +869,7 @@ public class PackageImport extends MtpCuiBase {
 						//OK
 						condition.setPrefixOid(oidPrefix);
 					} else {
-						logError(rs("PackageImport.Wizard.warnOIDPrefixMsg"));
+						logError(rs("PackageImport.warnOIDPrefixMsg"));
 						return false;
 					}
 				}
@@ -891,14 +881,22 @@ public class PackageImport extends MtpCuiBase {
 			logArguments(param);
 
 			//Import処理実行
-			boolean ret = executeImport(param);
-
-			//LogListnerを一度削除
-			removeLogListner(loggingListner);
-
-			return ret;
+			return importPack(param);
 		});
 
+	}
+
+	private boolean checkDir(File dir) {
+
+		if (!dir.exists()) {
+			dir.mkdir();
+			logInfo(rs("PackageImport.createdDirMsg", dir.getPath()));
+		}
+		if (!dir.isDirectory()) {
+			logError(rs("PackageImport.notDirMsg", dir.getPath()));
+			return false;
+		}
+		return true;
 	}
 
 	private String rs(String key, Object... args) {
