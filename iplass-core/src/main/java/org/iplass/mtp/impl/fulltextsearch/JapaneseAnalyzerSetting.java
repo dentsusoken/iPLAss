@@ -23,7 +23,7 @@ package org.iplass.mtp.impl.fulltextsearch;
 /**
  * 日本語用アナライザーの初期化設定クラス
  */
-public class JapaneseAnalyzerSetting extends AbstractAnalyzerSetting {
+public class JapaneseAnalyzerSetting implements AnalyzerSetting {
 
 	private String userDictionary;
 	private String stopwords;

@@ -20,6 +20,6 @@
 
 package org.iplass.mtp.impl.fulltextsearch;
 
-public abstract class AbstractAnalyzerSetting {
+public interface AnalyzerSetting {
 
 }

@@ -245,7 +245,7 @@ public class FulltextSearchLuceneService extends AbstractFulltextSeachService {
 		try {
 			String className = config.getValue("analyzer");
 			if (StringUtil.isNotEmpty(className)) {
-				analyzer = AnalyzerFactory.createAnalyzer(className, config.getValue("analyzerSetting", AbstractAnalyzerSetting.class));
+				analyzer = AnalyzerFactory.createAnalyzer(className, config.getValue("analyzerSetting", AnalyzerSetting.class));
 			} else {
 				analyzer = (Analyzer) config.getBean("analyzer");
 			}

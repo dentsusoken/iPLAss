@@ -42,7 +42,7 @@ public class AnalyzerFactory {
 
 	private static Logger logger = LoggerFactory.getLogger(AnalyzerFactory.class);
 
-	public static Analyzer createAnalyzer(String className, AbstractAnalyzerSetting analyzerSetting)
+	public static Analyzer createAnalyzer(String className, AnalyzerSetting analyzerSetting)
 			throws ClassNotFoundException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException {
 		if (analyzerSetting != null && JapaneseAnalyzer.class.isAssignableFrom(Class.forName(className))) {
 			// 日本語用アナライザーの初期化設定に変換
