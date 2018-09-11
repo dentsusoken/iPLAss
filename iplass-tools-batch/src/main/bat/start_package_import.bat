@@ -13,10 +13,17 @@ REM app arguments
 REM (Depend on the situation, please change values)
 REM ----------------------------------------------------
 
-REM Execute Mode
+REM Execute Mode (WIZARD or SILENT)
 set EXEC_MODE=WIZARD
 
+REM Tenant Id (if value is -1, specified by wizard or silent package config)
+set TENANT_ID=-1
 
+REM import file (if value is 'empty', specified by wizard or silent package config)
+set FILE=empty
+
+REM if silent mode, package export config file name (please set your package-imp-config file)
+set PACK_CONFIG=./../conf/pack-imp-config.properties
 
 REM ----------------------------------------------------
 REM app settings
@@ -26,7 +33,10 @@ REM APP class
 set EXEC_APP=org.iplass.mtp.tools.batch.pack.PackageImport
 
 REM App Arguments
-set APP_ARGS=%EXEC_MODE% %LANG%
+set APP_ARGS=%EXEC_MODE% %TENANT_ID% %FILE% %LANG%
+
+REM Silent mode package config
+set PACK_CONFIG_ARG=pack.config=%PACK_CONFIG%
 
 REM ----------------------------------------------------
 REM confirm
@@ -39,13 +49,21 @@ echo EXEC_CLASS_PATH : %EXEC_CLASS_PATH%
 echo SYS_ENV         : %SYS_ENV%
 echo
 
+if "%EXEC_MODE%" == "SILENT" goto EXECUTE
+
 pause
 
 REM ----------------------------------------------------
 REM execute
 REM ----------------------------------------------------
 
+:EXECUTE
+
 REM execute tool
-java -cp %EXEC_CLASS_PATH% -D%SYS_ENV% %EXEC_APP% %APP_ARGS%
+java -cp %EXEC_CLASS_PATH% -D%SYS_ENV% -D%PACK_CONFIG_ARG% %EXEC_APP% %APP_ARGS%
+
+if "%EXEC_MODE%" == "SILENT" goto END
 
 pause
+
+:END
