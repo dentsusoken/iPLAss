@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
+ * Copyright (C) 2018 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
  *
  * Unless you have purchased a commercial license,
  * the following license terms apply:
@@ -20,7 +20,10 @@
 
 package org.iplass.mtp.impl.fulltextsearch;
 
-public class AnalyzerSetting {
+/**
+ * 日本語用アナライザーの初期化設定クラス
+ */
+public class JapaneseAnalyzerSetting extends AbstractAnalyzerSetting {
 
 	private String userDictionary;
 	private String stopwords;

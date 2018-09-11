@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
+ * Copyright (C) 2018 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
  *
  * Unless you have purchased a commercial license,
  * the following license terms apply:
@@ -42,13 +42,15 @@ public class AnalyzerFactory {
 
 	private static Logger logger = LoggerFactory.getLogger(AnalyzerFactory.class);
 
-	public static Analyzer createAnalyzer(String className, AnalyzerSetting analyzerSetting)
+	public static Analyzer createAnalyzer(String className, AbstractAnalyzerSetting analyzerSetting)
 			throws ClassNotFoundException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException {
 		if (analyzerSetting != null && JapaneseAnalyzer.class.isAssignableFrom(Class.forName(className))) {
-			UserDictionary userDict = AnalyzerFactoryJapaneseAnalyzer.createUserDictionary(analyzerSetting.getUserDictionary());
-			Mode mode = AnalyzerFactoryJapaneseAnalyzer.createMode(analyzerSetting.getMode());
-			CharArraySet stopwords = AnalyzerFactoryJapaneseAnalyzer.createStopwords(analyzerSetting.getStopwords());
-			Set<String> stoptags = AnalyzerFactoryJapaneseAnalyzer.createStopTags(analyzerSetting.getStoptags());
+			// 日本語用アナライザーの初期化設定に変換
+			JapaneseAnalyzerSetting japaneseAnalyzerSetting = (JapaneseAnalyzerSetting) analyzerSetting;
+			UserDictionary userDict = AnalyzerFactoryJapaneseAnalyzer.createUserDictionary(japaneseAnalyzerSetting.getUserDictionary());
+			Mode mode = AnalyzerFactoryJapaneseAnalyzer.createMode(japaneseAnalyzerSetting.getMode());
+			CharArraySet stopwords = AnalyzerFactoryJapaneseAnalyzer.createStopwords(japaneseAnalyzerSetting.getStopwords());
+			Set<String> stoptags = AnalyzerFactoryJapaneseAnalyzer.createStopTags(japaneseAnalyzerSetting.getStoptags());
 			try {
 				Constructor<?> c = Class.forName(className).getConstructor(UserDictionary.class, Mode.class, CharArraySet.class, Set.class);
 				return (Analyzer) c.newInstance(userDict, mode, stopwords, stoptags);
