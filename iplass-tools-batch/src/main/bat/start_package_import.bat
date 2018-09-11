@@ -19,6 +19,9 @@ set EXEC_MODE=WIZARD
 REM Tenant Id (if value is -1, specified by wizard or silent package config)
 set TENANT_ID=-1
 
+REM import file (if value is 'empty', specified by wizard or silent package config)
+set FILE=empty
+
 REM if silent mode, package export config file name (please set your package-imp-config file)
 set PACK_CONFIG=./../conf/pack-imp-config.properties
 
@@ -30,7 +33,7 @@ REM APP class
 set EXEC_APP=org.iplass.mtp.tools.batch.pack.PackageImport
 
 REM App Arguments
-set APP_ARGS=%EXEC_MODE% %TENANT_ID% %LANG%
+set APP_ARGS=%EXEC_MODE% %TENANT_ID% %FILE% %LANG%
 
 REM Silent mode package config
 set PACK_CONFIG_ARG=pack.config=%PACK_CONFIG%

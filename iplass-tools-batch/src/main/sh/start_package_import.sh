@@ -16,6 +16,9 @@ export EXEC_MODE=WIZARD
 # Tenant Id (if value is -1, specified by wizard or silent package config)
 export TENANT_ID=-1
 
+# import file (if value is 'empty', specified by wizard or silent package config)
+export FILE=empty
+
 # if silent mode, package import config file name (please set your package-imp-config file)
 export PACK_CONFIG=./../conf/pack-imp-config.properties
 
@@ -27,7 +30,7 @@ export PACK_CONFIG=./../conf/pack-imp-config.properties
 export EXEC_APP=org.iplass.mtp.tools.batch.pack.PackageImport
 
 # App Arguments
-export APP_ARGS="${EXEC_MODE} ${TENANT_ID} ${LANG}"
+export APP_ARGS="${EXEC_MODE} ${TENANT_ID} ${FILE} ${LANG}"
 
 # Silent mode package config
 export PACK_CONFIG_ARG=pack.config=${PACK_CONFIG}

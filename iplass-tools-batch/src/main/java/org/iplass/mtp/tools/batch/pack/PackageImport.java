@@ -59,6 +59,9 @@ public class PackageImport extends MtpCuiBase {
 	//テナントID(引数)
 	private Integer tenantId;
 
+	//インポートファイル(引数)
+	private String importFile;
+
 	private TenantService ts = ServiceRegistry.getRegistry().getService(TenantService.class);
 	private TenantContextService tcs = ServiceRegistry.getRegistry().getService(TenantContextService.class);
 	private PackageService ps = ServiceRegistry.getRegistry().getService(PackageService.class);
@@ -66,7 +69,8 @@ public class PackageImport extends MtpCuiBase {
 	/**
 	 * args[0]・・・execMode
 	 * args[1]・・・tenantId
-	 * args[2]・・・language
+	 * args[2]・・・import file
+	 * args[3]・・・language
 	 **/
 	public static void main(String[] args) {
 
@@ -83,7 +87,8 @@ public class PackageImport extends MtpCuiBase {
 	/**
 	 * args[0]・・・execMode
 	 * args[1]・・・tenantId
-	 * args[2]・・・language
+	 * args[2]・・・import file
+	 * args[3]・・・language
 	 **/
 	public PackageImport(String... args) {
 
@@ -93,14 +98,21 @@ public class PackageImport extends MtpCuiBase {
 			}
 			if (args.length > 1 && args[1] != null) {
 				tenantId = Integer.parseInt(args[1]);
+				//-1の場合は、未指定
 				if (tenantId == -1) {
 					tenantId = null;
 				}
 			}
 			if (args.length > 2 && args[2] != null) {
+				//emptyの場合は、未指定
+				if (!"empty".equals(args[2].toLowerCase())) {
+					importFile = args[2];
+				}
+			}
+			if (args.length > 3 && args[3] != null) {
 				//systemの場合は、JVMのデフォルトを利用
-				if (!"system".equals(args[2].toLowerCase())) {
-					setLanguage(args[2]);
+				if (!"system".equals(args[3].toLowerCase())) {
+					setLanguage(args[3]);
 				}
 			}
 		}
@@ -162,6 +174,11 @@ public class PackageImport extends MtpCuiBase {
 
 	public PackageImport tenantId(Integer tenantId) {
 		this.tenantId = tenantId;
+		return this;
+	}
+
+	public PackageImport importFile(String importFile) {
+		this.importFile = importFile;
 		return this;
 	}
 
@@ -490,20 +507,24 @@ public class PackageImport extends MtpCuiBase {
 			PackageInfo packInfo = null;
 			boolean validFile = false;
 			do {
-				String importFileName = readConsole(rs("PackageImport.Wizard.inputImportFileMsg"));
+				String importFileName = importFile;
+				importFile = null;
+				if (StringUtil.isEmpty(importFileName)) {
+					importFileName = readConsole(rs("PackageImport.Wizard.inputImportFileMsg"));
+				}
 				if (StringUtil.isNotBlank(importFileName)) {
 					param.setImportFilePath(importFileName);
 
 					//存在チェック
-					File importFile = new File(param.getImportFilePath());
-					if (!importFile.exists()) {
+					File file = new File(param.getImportFilePath());
+					if (!file.exists()) {
 						logWarn(rs("PackageImport.notExistsImportFileMsg"));
 						continue;
 					}
 
 					try {
 						//データチェック
-						packInfo = ps.getPackageInfo(importFile);
+						packInfo = ps.getPackageInfo(file);
 
 						//対象メタデータチェック
 						int metaCount = (CollectionUtil.isNotEmpty(packInfo.getMetaDataPaths()) ? packInfo.getMetaDataPaths().size() : 0);
@@ -544,7 +565,7 @@ public class PackageImport extends MtpCuiBase {
 							continue;
 						}
 
-						param.setImportFile(importFile);
+						param.setImportFile(file);
 						param.setPackInfo(packInfo);
 
 						validFile = true;
@@ -769,15 +790,18 @@ public class PackageImport extends MtpCuiBase {
 			}
 			param.setWorkDir(workDir);
 
-			String importFilePath = prop.getProperty(PROP_IMPORT_FILE);
+			String importFilePath = importFile;
+			if (StringUtil.isEmpty(importFilePath)) {
+				importFilePath = prop.getProperty(PROP_IMPORT_FILE);
+			}
 			if (StringUtil.isEmpty(importFilePath)) {
 				logError(getCommonResourceMessage("requiredMsg", PROP_IMPORT_FILE));
 				return false;
 			}
 
 			//存在チェック
-			File importFile = new File(importFilePath);
-			if (!importFile.exists()) {
+			File file = new File(importFilePath);
+			if (!file.exists()) {
 				logError(rs("PackageImport.notExistsImportFileMsg"));
 				return false;
 			}
@@ -785,7 +809,7 @@ public class PackageImport extends MtpCuiBase {
 
 			//データチェック
 			try {
-				PackageInfo packInfo = ps.getPackageInfo(importFile);
+				PackageInfo packInfo = ps.getPackageInfo(file);
 
 				//警告テナントの存在チェック
 				if (packInfo.isWarningTenant()) {
@@ -796,7 +820,7 @@ public class PackageImport extends MtpCuiBase {
 					param.setImportTenant(packInfo.getTenant());
 				}
 
-				param.setImportFile(importFile);
+				param.setImportFile(file);
 				param.setPackInfo(packInfo);
 
 			} catch (PackageRuntimeException e) {
