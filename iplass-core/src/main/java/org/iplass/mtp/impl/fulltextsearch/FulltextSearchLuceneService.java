@@ -245,12 +245,12 @@ public class FulltextSearchLuceneService extends AbstractFulltextSeachService {
 		try {
 			String className = config.getValue("analyzer");
 			if (StringUtil.isNotEmpty(className)) {
-				analyzer = (Analyzer) Class.forName(config.getValue("analyzer")).getConstructor().newInstance();
+				analyzer = AnalyzerFactory.createAnalyzer(className, config.getValue("analyzerSetting", AnalyzerSetting.class));
 			} else {
 				analyzer = (Analyzer) config.getBean("analyzer");
 			}
 		} catch (Exception e) {
-			logger.warn("Analyzer not found. use JapaneseAnalyzer(mode:search). : " + config.getValue("analyzer"));
+			logger.warn("Analyzer not found. use JapaneseAnalyzer(mode:search). : " + config.getValue("analyzer"), e);
 			analyzer = new JapaneseAnalyzer();
 		}
 		defaultOperator = Operator.valueOf(config.getValue("defaultOperator"));
@@ -582,7 +582,9 @@ public class FulltextSearchLuceneService extends AbstractFulltextSeachService {
 			}
 			luceneQuery = setEntityDefCondition(luceneQuery, defNameList.toArray(new String[defNameList.size()]));
 
-			logger.debug("lucene query : " + luceneQuery.toString());
+			if (logger.isDebugEnabled()) {
+				logger.debug("lucene query : " + luceneQuery.build().toString());
+			}
 
 			TopDocs docs = searcher.search(luceneQuery.build(), getMaxRows(), getDefaultSort(), true, false);
 			ScoreDoc[] hits = docs.scoreDocs;
@@ -731,7 +733,9 @@ public class FulltextSearchLuceneService extends AbstractFulltextSeachService {
 			luceneQuery = setTenantCondition(qp, luceneQuery);
 			luceneQuery = setEntityDefCondition(luceneQuery, searchDefName);
 
-			logger.debug("lucene query : " + luceneQuery.toString());
+			if (logger.isDebugEnabled()) {
+				logger.debug("lucene query : " + luceneQuery.build().toString());
+			}
 
 			TopDocs docs = searcher.search(luceneQuery.build(), allIndexCount);
 			ScoreDoc[] hits = docs.scoreDocs;
@@ -784,7 +788,9 @@ public class FulltextSearchLuceneService extends AbstractFulltextSeachService {
 			luceneQuery = setTenantCondition(qp, luceneQuery);
 			luceneQuery = setEntityDefCondition(luceneQuery, searchDefName);
 
-			logger.debug("lucene query : " + luceneQuery.toString());
+			if (logger.isDebugEnabled()) {
+				logger.debug("lucene query : " + luceneQuery.build().toString());
+			}
 
 			TopDocs docs = searcher.search(luceneQuery.build(), getMaxRows(), getDefaultSort());
 			ScoreDoc[] hits = docs.scoreDocs;
