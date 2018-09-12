@@ -718,9 +718,10 @@ public class PackageImport extends MtpCuiBase {
 			Path path = Paths.get(configFileName);
 			if (Files.exists(path)) {
 				logDebug("load config file from file path:" + configFileName);
-				try (InputStreamReader is = new InputStreamReader(new FileInputStream(path.toFile()), "utf-8")) {
-					prop.load(is);
-				}
+				try (InputStream is = new FileInputStream(path.toFile());
+						InputStreamReader reader = new InputStreamReader(is, "UTF-8");) {
+						prop.load(reader);
+					}
 			} else {
 				logDebug("load config file from classpath:" + configFileName);
 				try (InputStream is = PackageExport.class.getResourceAsStream(configFileName)) {
@@ -728,8 +729,9 @@ public class PackageImport extends MtpCuiBase {
 						logError(rs("PackageImport.Silent.notExistsConfigFileMsg", configFileName));
 						return false;
 					}
-					InputStreamReader isr = new InputStreamReader(is, "utf-8");
-					prop.load(isr);
+					try (InputStreamReader reader = new InputStreamReader(is, "UTF-8")) {
+						prop.load(reader);
+					}
 				}
 			}
 		} catch (IOException e) {

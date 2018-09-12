@@ -478,7 +478,7 @@ public class MetaDataExport extends MtpCuiBase {
 				//実行情報出力
 				logArguments(param);
 
-				boolean isExecute = readConsoleBoolean(rs("MetaDataExport.Wizard.confirmExportPackageMsg"), false);
+				boolean isExecute = readConsoleBoolean(rs("MetaDataExport.Wizard.confirmExecuteMsg"), false);
 				if (isExecute) {
 					validExecute = true;
 				} else {
@@ -532,7 +532,7 @@ public class MetaDataExport extends MtpCuiBase {
 			if (Files.exists(path)) {
 				logDebug("load config file from file path:" + configFileName);
 				try (InputStream is = new FileInputStream(path.toFile());
-					InputStreamReader reader = new InputStreamReader(is, "utf-8");) {
+					InputStreamReader reader = new InputStreamReader(is, "UTF-8");) {
 					prop.load(reader);
 				}
 			} else {
@@ -542,7 +542,7 @@ public class MetaDataExport extends MtpCuiBase {
 						logError(rs("MetaDataExport.Silent.notExistsConfigFileMsg", configFileName));
 						return false;
 					}
-					try (InputStreamReader reader = new InputStreamReader(is, "utf-8")) {
+					try (InputStreamReader reader = new InputStreamReader(is, "UTF-8")) {
 						prop.load(reader);
 					}
 				}

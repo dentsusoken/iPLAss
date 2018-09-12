@@ -1,414 +1,605 @@
 /*
- * Copyright 2011 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
+ * Copyright 2018 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
  */
 
 package org.iplass.mtp.tools.batch.metadataporting;
 
-import java.io.BufferedReader;
+import static org.iplass.mtp.tools.batch.pack.PackageImportParameter.*;
+
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.Iterator;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
+import java.util.Optional;
+import java.util.Properties;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.Unmarshaller;
-
-import org.iplass.mtp.ManagerLocator;
-import org.iplass.mtp.entity.EntityRuntimeException;
+import org.iplass.mtp.SystemException;
 import org.iplass.mtp.impl.core.ExecuteContext;
 import org.iplass.mtp.impl.core.TenantContext;
 import org.iplass.mtp.impl.core.TenantContextService;
-import org.iplass.mtp.impl.datastore.StoreService;
-import org.iplass.mtp.impl.datastore.strategy.ApplyMetaDataStrategy;
-import org.iplass.mtp.impl.entity.EntityContext;
-import org.iplass.mtp.impl.entity.EntityHandler;
-import org.iplass.mtp.impl.entity.EntityService;
-import org.iplass.mtp.impl.entity.MetaEntity;
-import org.iplass.mtp.impl.metadata.MetaDataContext;
-import org.iplass.mtp.impl.metadata.MetaDataEntry;
-import org.iplass.mtp.impl.metadata.MetaDataJAXBService;
-import org.iplass.mtp.impl.metadata.MetaDataRepository;
-import org.iplass.mtp.impl.metadata.MetaDataStore;
-import org.iplass.mtp.impl.metadata.RootMetaData;
-import org.iplass.mtp.impl.metadata.MetaDataEntry.State;
-import org.iplass.mtp.impl.metadata.xmlresource.ContextPath;
-import org.iplass.mtp.impl.metadata.xmlresource.MetaDataEntryList;
-import org.iplass.mtp.impl.metadata.xmlresource.XmlResourceMetaDataEntryThinWrapper;
-import org.iplass.mtp.impl.view.filter.MetaEntityFilter;
-import org.iplass.mtp.impl.view.generic.MetaEntityView;
+import org.iplass.mtp.impl.tenant.MetaTenant;
+import org.iplass.mtp.impl.tenant.TenantService;
+import org.iplass.mtp.impl.tools.metaport.MetaDataImportResult;
+import org.iplass.mtp.impl.tools.metaport.MetaDataPortingService;
+import org.iplass.mtp.impl.tools.metaport.XMLEntryInfo;
 import org.iplass.mtp.spi.ServiceRegistry;
+import org.iplass.mtp.tenant.Tenant;
+import org.iplass.mtp.tools.ToolsBatchResourceBundleUtil;
+import org.iplass.mtp.tools.batch.ExecMode;
 import org.iplass.mtp.tools.batch.MtpCuiBase;
+import org.iplass.mtp.tools.batch.pack.PackageExport;
 import org.iplass.mtp.transaction.Transaction;
-import org.iplass.mtp.transaction.TransactionManager;
-import org.iplass.mtp.transaction.TransactionStatus;
+import org.iplass.mtp.util.CollectionUtil;
+import org.iplass.mtp.util.StringUtil;
 
 
 public class MetaDataImport extends MtpCuiBase {
 
-	/** テナントID */
-	private int tenantId = 154;
-	/** インポートファイル名 */
-	private String importFileName = "./drpc-metadata-user.xml";
+	/** Silentモード 設定ファイル名 */
+	public static final String KEY_CONFIG_FILE = "meta.config";
 
-	/** サイレントモード設定 */
-	private boolean silent = false;	//デフォルトは確認しながら実行
+	//実行モード
+	private ExecMode execMode = ExecMode.WIZARD;
 
+	//テナントID(引数)
+	private Integer tenantId;
 
-	/** 実行時の上書き設定 */
-	private boolean allOverwrite = false;
+	//インポートファイル(引数)
+	private String importFile;
 
-	private boolean allReset = false;
+	private TenantService ts = ServiceRegistry.getRegistry().getService(TenantService.class);
+	private TenantContextService tcs = ServiceRegistry.getRegistry().getService(TenantContextService.class);
+	private MetaDataPortingService mdps = ServiceRegistry.getRegistry().getService(MetaDataPortingService.class);
 
-//	private RdbMetaDataStore rdb = ServiceRegistry.getRegistry().getService("RdbMetaDataRepository");
-	private MetaDataRepository repos = ServiceRegistry.getRegistry().getService(MetaDataRepository.class);
-	private MetaDataStore rdb = repos.getTenantLocalStore();
-	private MetaDataJAXBService jaxb = ServiceRegistry.getRegistry().getService(MetaDataJAXBService.class);
-	private ApplyMetaDataStrategy applyMetaStrategy = ServiceRegistry.getRegistry().getService(StoreService.class).getDataStore().getApplyMetaDataStrategy();
+	/**
+	 * args[0]・・・execMode
+	 * args[1]・・・tenantId
+	 * args[2]・・・import file
+	 * args[3]・・・language
+	 **/
+	public static void main(String[] args) {
 
-	public static void main(String[] args) throws Exception {
 		MetaDataImport instance = null;
 		try {
 			instance = new MetaDataImport(args);
-
-			instance.importFile();
-
+			instance.execute();
+		} catch (Throwable e) {
+			e.printStackTrace();
 		} finally {
-//			if (instance != null) {
-//				instance.showLogMessage();
-//			}
 		}
 	}
 
 	/**
-	 * tenantId
-	 * importFileName
-	 * silent("silent" is true)
+	 * args[0]・・・execMode
+	 * args[1]・・・tenantId
+	 * args[2]・・・import file
+	 * args[3]・・・language
 	 **/
 	public MetaDataImport(String... args) {
-		//TODO UserUtilを使って、既存のユーザとして登録（可能であれば、passの認証も）
 
 		if (args != null) {
-			if (args.length > 0) {
-				setTenantId(Integer.parseInt(args[0]));
+			if (args.length > 0 && args[0] != null) {
+				execMode = ExecMode.valueOf(args[0].toUpperCase());
 			}
-			if (args.length > 1) {
-				setImportFileName(args[1]);
+			if (args.length > 1 && args[1] != null) {
+				tenantId = Integer.parseInt(args[1]);
+				//-1の場合は、未指定
+				if (tenantId == -1) {
+					tenantId = null;
+				}
 			}
-			if (args.length > 2) {
-				setSilent(args[2].equalsIgnoreCase(SILENT_MODE));
+			if (args.length > 2 && args[2] != null) {
+				//emptyの場合は、未指定
+				if (!"empty".equals(args[2].toLowerCase())) {
+					importFile = args[2];
+				}
+			}
+			if (args.length > 3 && args[3] != null) {
+				//systemの場合は、JVMのデフォルトを利用
+				if (!"system".equals(args[3].toLowerCase())) {
+					setLanguage(args[3]);
+				}
 			}
 		}
+
+		setupLanguage();
 	}
 
-
-	private boolean importFile() throws Exception {
+	/**
+	 * モードに合わせて実行します。
+	 *
+	 * @return
+	 */
+	public boolean execute() {
 
 		clearLog();
 
-		logArguments();
+		try {
+			switch (execMode) {
+			case WIZARD :
+				LogListner consoleLogListner = getConsoleLogListner();
+				addLogListner(consoleLogListner);
 
-		logInfo("■Start Execute");
-		logInfo("");
+				//環境情報出力
+				logEnvironment();
+
+				logInfo("■Start Import Wizard");
+				logInfo("");
+
+				//Wizardの実行
+				return wizard();
+			case SILENT :
+				LogListner loggingLogListner = getLoggingLogListner();
+				addLogListner(loggingLogListner);
+
+				//環境情報出力
+				logEnvironment();
+
+				logInfo("■Start Import Silent");
+				logInfo("");
+
+				//Silentの実行
+				return silent();
+			default :
+				logError("unsupport execute mode : " + execMode);
+				return false;
+			}
+
+		} finally {
+			logInfo("");
+			logInfo("■Execute Result :" + (isSuccess() ? "SUCCESS" : "FAILED"));
+			logInfo("");
+		}
+	}
+
+	public MetaDataImport execMode(ExecMode execMode) {
+		this.execMode = execMode;
+		return this;
+	}
+
+	public MetaDataImport tenantId(Integer tenantId) {
+		this.tenantId = tenantId;
+		return this;
+	}
+
+	public MetaDataImport importFile(String importFile) {
+		this.importFile = importFile;
+		return this;
+	}
+
+	/**
+	 * Importします。
+	 *
+	 * @param param Import情報
+	 * @return
+	 */
+	public boolean importMeta(final MetaDataImportParameter param) {
 
 		setSuccess(false);
 
-		Transaction t = null;
 		try {
-			File f = new File(getImportFileName());
-			if (!f.exists() || !f.isFile()) {
-				logError(getImportFileName() + "が読み込めません。");
-				return isSuccess();
-			}
+			boolean isSuccess = Transaction.required(new Function<Transaction, Boolean>() {
 
-			JAXBContext jaxbContext = jaxb.getJAXBContext();
-			Unmarshaller um = jaxbContext.createUnmarshaller();
+				@Override
+				public Boolean apply(Transaction t) {
 
-			MetaDataEntryList metaDataList = (MetaDataEntryList) um.unmarshal(f);
+					TenantContext tc  = tcs.getTenantContext(param.getTenantId());
+					return ExecuteContext.executeAs(tc, ()->{
+						ExecuteContext.getCurrentContext().setLanguage(getLanguage());
 
-			TenantContext tContext = ServiceRegistry.getRegistry().getService(TenantContextService.class).getTenantContext(getTenantId());
-			if (tContext == null) {
-				logError("テナントID (" + getTenantId() + ")のテナントが見つかりません。");
-				return isSuccess();
-			}
-			if (!isSilent()) {
-				System.out.println("tenantId: " + tContext.getTenantId()
-						+ " (" + tContext.loadTenantInfo().getName()
-						+ ")のメタデータを更新します。(YES/NO)");
-				BufferedReader console = new BufferedReader(new InputStreamReader(System.in));
-				String str = console.readLine();
-				if (!"YES".equalsIgnoreCase(str)) {
-					logInfo("import処理を中止します。");
-					return isSuccess();
+						logInfo(rs("MetaDataImport.startImportMetaLog"));
+
+						try (InputStream is = new FileInputStream(param.getImportFile())) {
+							//ファイルに含まれるMetaData情報を取得
+							XMLEntryInfo entryInfo = mdps.getXMLMetaDataEntryInfo(is);
+
+							//インポート処理の実行
+							MetaDataImportResult result = mdps.importMetaData(param.getImportFile().getName(), entryInfo, param.getImportTenant());
+
+							if (result.isError()) {
+								if (result.getMessages() != null) {
+									for (String message : result.getMessages()) {
+										logError(message);
+									}
+									logInfo("");
+								}
+
+								logError(getCommonResourceMessage("errorMsg", ""));
+								return false;
+							}
+
+							if (result.getMessages() != null) {
+								for (String message : result.getMessages()) {
+									logInfo(message);
+								}
+							}
+
+							logInfo(rs("MetaDataImport.completedImportMetaLog"));
+						} catch (IOException e) {
+							throw new SystemException("failed to read metadata configure. file=" + param.getImportFile().getName(), e);
+						}
+
+						return true;
+
+					});
 				}
-			}
+			});
 
-			ExecuteContext econtext = new ExecuteContext(tContext);
-			econtext.setClientId("0000");
-			ExecuteContext.initContext(econtext);
-
-			t = ManagerLocator.getInstance().getManager(TransactionManager.class).newTransaction();
-
-			if (metaDataList.getContextPath() != null) {
-				for (ContextPath context: metaDataList.getContextPath()) {
-					if (!parseContext(econtext, context, "")) {
-						break;
-					}
-				}
-			}
-			setSuccess(true);
+			setSuccess(isSuccess);
 
 		} catch (Throwable e) {
-			logError("エラーが発生しました。 : " + e.getMessage());
-			e.printStackTrace();
-		} finally {
-			if (t != null && t.getStatus() == TransactionStatus.ACTIVE && isSuccess() && !t.isRollbackOnly()) {
-				t.commit();
-			} else {
-				t.rollback();
-			}
-			logInfo("");
-			logInfo("■Execute Result :" + (isSuccess() ? "SUCCESS" : "FAILED"));
+			logError(getCommonResourceMessage("errorMsg", e.getMessage()));
 		}
+
 		return isSuccess();
 	}
 
-	private boolean parseContext(ExecuteContext econtext, ContextPath context, String prefixPath) throws IOException {
+	/**
+	 * 実行情報を出力します。
+	 */
+	public void logArguments(MetaDataImportParameter param) {
 
-		if (context.getContextPath() != null) {
-			for (ContextPath child: context.getContextPath()) {
-				if (!parseContext(econtext, child, prefixPath + context.getName() + "/")) {
-					return false;
-				}
-			}
+		logInfo("-----------------------------------------------------------");
+		logInfo("■Execute Argument");
+		logInfo("\ttenant name :" + param.getTenantName());
+		logInfo("\timport file :" + param.getImportFilePath());
+
+		if (CollectionUtil.isNotEmpty(param.getMetaDataPaths())) {
+			logInfo("\tmetadata count :" + param.getMetaDataPaths().size());
+		} else {
+			logInfo("\tmetadata count :" + "0");
 		}
 
-		if (context.getEntry() != null) {
-			for (XmlResourceMetaDataEntryThinWrapper w: context.getEntry()) {
-				RootMetaData meta = w.getMetaData();
-
-				//pathはEntryのnameが指定されている場合は、それを利用。
-				//指定されていない場合はContextPathを利用
-				String path = w.getName();
-				if (path == null) {
-					if (meta instanceof MetaEntity
-							|| meta instanceof MetaEntityFilter
-							|| meta instanceof MetaEntityView) {
-						//上記３つは階層を「.」で表すため変換
-						path = context.getName() + "/" + convertPath(meta.getName());
-					} else {
-						//それ以外は「.」は階層を表さないためそのまま結合
-						path = context.getName() + "/" + meta.getName();
-					}
-				}
-
-				//IDが同じMetaDataがすでに登録されているかのチェック
-				MetaDataEntry preID = rdb.loadById(tenantId, meta.getId());
-				//Nameが同じMetaDataがすでに登録されているかのチェック
-				MetaDataEntry prePath = rdb.load(tenantId, path);
-
-				if (preID != null) {
-					//更新
-					if (!isSilent() && !isAllOverwrite()) {
-						System.out.println("「" + meta.getName() + "(" + meta.getId() + ")」は、すでに同一IDで登録されています。\n"
-								+ "更新してよろしいですか？(YES/ALL/SKIP/ABORT)");
-						BufferedReader console = new BufferedReader(new InputStreamReader(System.in));
-						String str = console.readLine();
-						if (!"YES".equalsIgnoreCase(str)) {
-							if ("ABORT".equalsIgnoreCase(str)) {
-								logInfo("import処理を中止します。");
-								return false;
-							} else if ("ALL".equalsIgnoreCase(str)) {
-								setAllOverwrite(true);
-							} else {
-								logInfo("「" + meta.getName() + "(" + meta.getId() + ")」のimport処理をSKIPします。");
-								return true;
-							}
-						}
-					}
-
-					logInfo(("「" + meta.getName() + "(" + meta.getId() + ")」は、すでに同一IDで登録されているため更新します。"));
-
-					if (meta instanceof MetaEntity) {
-						//MetaEntityの場合、データの更新もする
-						updateMetaEntity((MetaEntity)meta, preID, path, econtext, w.isSharable(), w.isOverwritable());
-					} else {
-						MetaDataEntry ent = preID.copy();
-						ent.setMetaData(meta);
-						ent.setSharable(w.isSharable());
-						ent.setOverwritable(w.isOverwritable());
-						rdb.update(tenantId, ent);
-					}
-					logInfo("「" + meta.getName() + "(" + meta.getId() + ")」を更新しました。");
-				} else {
-					if (prePath != null) {
-						//更新
-						if (!isSilent() && !isAllReset()) {
-							System.out.println("「" + meta.getName() + "(登録済ID:" + prePath.getMetaData().getId() + ")"
-									+ "(ImportID：" + meta.getId() + ")"
-									+ "(Path:" + path + ")」は、IDが異なりますが、同一Pathで登録されています。\n"
-									+ "既存のメタデータを削除後、新規でインポートを行ってよろしいですか？(YES/ALL/SKIP/ABORT)");
-							BufferedReader console = new BufferedReader(new InputStreamReader(System.in));
-							String str = console.readLine();
-							if (!"YES".equalsIgnoreCase(str)) {
-								if ("ABORT".equalsIgnoreCase(str)) {
-									logInfo("import処理を中止します。");
-									return false;
-								} else if ("ALL".equalsIgnoreCase(str)) {
-									setAllReset(true);
-								} else {
-									logInfo("「" + meta.getName() + "(" + path + ")」のimport処理をSKIPします。");
-									return true;
-								}
-							}
-						}
-
-						logInfo(("「" + meta.getName() + "(" + prePath.getMetaData().getId() + ")」を削除します。"));
-
-						rdb.remove(tenantId, path);
-
-						logInfo("「" + meta.getName() + "(" + prePath.getMetaData().getId() + ")」を削除しました。");
-					}
-
-					//新規作成
-					if (meta instanceof MetaEntity) {
-						//XMLに定義されている可能性があるので再度検索
-						EntityService ehs = ServiceRegistry.getRegistry().getService(EntityService.class);
-						EntityHandler eh = ehs.getRuntimeById(meta.getId());
-						if (eh != null) {
-							//XML定義上に存在
-							logInfo(("「" + meta.getName() + "(" + meta.getId() + ")」は、すでに同一IDでXML登録されているためRDBにデータを作成します。"));
-
-							MetaEntity preEntity = eh.getMetaData();
-							MetaDataEntry preEnt = MetaDataContext.getContext().getMetaDataEntryById(preEntity.getId());
-
-							//MetaEntityの場合、データの更新もする
-							updateMetaEntity((MetaEntity)meta, preEnt, path, econtext, w.isSharable(), w.isOverwritable());
-
-							logInfo("RDBメタデータとして新規で「" + meta.getName() + "(" + meta.getId() + ")」を作成しました。");
-						} else {
-							//純粋に新規作成
-							applyMetaStrategy.create((MetaEntity) meta, EntityContext.getCurrentContext()/*, 0*/);
-
-							MetaDataEntry ent = new MetaDataEntry(path, meta, State.VALID, 0, w.isOverwritable(), w.isSharable(), w.isDataSharable(), w.isPermissionSharable());
-
-							rdb.store(tenantId, ent);
-							logInfo("新規で「" + meta.getName() + "(" + meta.getId() + ")」を作成しました。");
-						}
-					} else {
-						MetaDataEntry ent = new MetaDataEntry(path, meta, State.VALID, 0, w.isOverwritable(), w.isSharable(), w.isDataSharable(), w.isPermissionSharable());
-						rdb.store(tenantId, ent);
-						logInfo("新規で「" + meta.getName() + "(" + meta.getId() + ")」を作成しました。");
-					}
-				}
-			}
-		}
-		return true;
+		logInfo("-----------------------------------------------------------");
+		logInfo("");
 	}
 
-	private void updateMetaEntity(MetaEntity newEntity, MetaDataEntry curEntity, String path, ExecuteContext econtext, boolean share, boolean overwrite) {
-		boolean prepare = applyMetaStrategy.prepare(newEntity, (MetaEntity) curEntity.getMetaData(), EntityContext.getCurrentContext());
-		if (!prepare) {
-			throw new EntityRuntimeException("can not prepare for update Entity:" + curEntity);
+	/**
+	 * Wizard形式でImport用のパラメータを生成して、Import処理を実行します。
+	 *
+	 * @return 実行結果
+	 */
+	private boolean wizard() {
+
+		Tenant tenant = null;
+		if (tenantId != null) {
+			//引数でテナントIDが指定されている場合
+			tenant = ts.getTenant(tenantId);
+			if (tenant == null) {
+				logWarn(getCommonResourceMessage("notExistsTenantIdMsg", tenantId));
+				tenantId = null;
+				return wizard();
+			}
+		} else {
+			//テナントURL
+			String tenantUrl = readConsole(getCommonResourceMessage("inputTenantUrlMsg"));
+
+			if (StringUtil.isEmpty(tenantUrl)) {
+				logWarn(getCommonResourceMessage("requiredTenantUrlMsg"));
+				return wizard();
+			}
+			if (tenantUrl.equalsIgnoreCase("-show")) {
+				//一覧を出力
+				showValidTenantList();
+				return wizard();
+			}
+			if (tenantUrl.equalsIgnoreCase("-env")) {
+				//環境情報を出力
+				logEnvironment();
+				return wizard();
+			}
+
+			//URL存在チェック
+			String url = tenantUrl.startsWith("/") ? tenantUrl : "/" + tenantUrl;
+			tenant = ts.getTenant(url);
+			if (tenant == null) {
+				logWarn(getCommonResourceMessage("notExistsTenantMsg", tenantUrl));
+				return wizard();
+			}
 		}
 
-		boolean result = false;
-		try {
+		MetaDataImportParameter param = new MetaDataImportParameter(tenant.getId(), tenant.getName());
 
-			//SharedTenantのデータの場合は、複数のテナントを一括で更新する必要あり
-			int tenantId = econtext.getClientTenantId();
-			int[] targetTenantIds = null;
-			TenantContextService tcService = ServiceRegistry.getRegistry().getService(TenantContextService.class);
-			if (tcService.getSharedTenantId() == tenantId
-					&& curEntity.isSharable()
-					&& !curEntity.isDataSharable()) {
-				List<Integer> allTenantIds = tcService.getAllTenantIdList();
-				List<Integer> overwritedTenantIds = MetaDataContext.getContext().getOverwriteTenantIdList(curEntity.getMetaData().getId());
-				for (Iterator<Integer> it = allTenantIds.iterator(); it.hasNext();) {
-					Integer id = it.next();
-					if (overwritedTenantIds.contains(id)) {
-						logInfo(id + "'s MetaData:" + curEntity.getPath() + " (" + curEntity.getMetaData().getId() + ") is overwrote. so skip data patch.");
-						it.remove();
+		TenantContext tc = tcs.getTenantContext(param.getTenantId());
+		ExecuteContext.executeAs(tc, ()->{
+			ExecuteContext.getCurrentContext().setLanguage(getLanguage());
+
+			//Importファイル
+			boolean validFile = false;
+			do {
+				String importFileName = importFile;
+				importFile = null;
+				if (StringUtil.isEmpty(importFileName)) {
+					importFileName = readConsole(rs("MetaDataImport.Wizard.inputImportFileMsg"));
+				}
+				if (StringUtil.isNotBlank(importFileName)) {
+					param.setImportFilePath(importFileName);
+
+					//存在チェック
+					File file = new File(param.getImportFilePath());
+					if (!file.exists()) {
+						logWarn(rs("MetaDataImport.notExistsImportFileMsg"));
+						continue;
+					}
+
+					//データチェック
+					try {
+						analyse(file, param);
+					} catch (IOException e) {
+						logWarn(rs("MetaDataImport.errorAnalysisFileMsg", e.getMessage()));
+						continue;
+					}
+
+					//対象メタデータチェック
+					int metaCount = (CollectionUtil.isNotEmpty(param.getMetaDataPaths()) ? param.getMetaDataPaths().size() : 0);
+					if (metaCount == 0) {
+						logInfo(rs("MetaDataImport.Wizard.notIncludeMetaMsg"));
+					} else {
+						//警告テナントの存在チェック
+						if (param.isWarningTenant()) {
+							//警告がある場合は、Packageに含まれるテナントは取り込まない
+							logWarn(rs("MetaDataImport.includeWarnTenantMetaMsg"));
+						}
+
+						boolean isShow = readConsoleBoolean(rs("MetaDataImport.Wizard.confirmShowMetaListMsg", metaCount), false);
+						if (isShow) {
+							showMetaDataPathList(param.getMetaDataPaths());
+						}
+					}
+					boolean isContinue = readConsoleBoolean(getCommonResourceMessage("continueMsg"), true);
+					if (!isContinue) {
+						continue;
+					}
+
+					param.setImportFile(file);
+
+					validFile = true;
+
+				} else {
+					logWarn(rs("MetaDataImport.Wizard.requiredImportFilePathMsg"));
+				}
+			} while(validFile == false);
+
+			boolean validExecute = false;
+			do {
+				//実行情報出力
+				logArguments(param);
+
+				boolean isExecute = readConsoleBoolean(rs("MetaDataImport.Wizard.confirmExecuteMsg"), false);
+				if (isExecute) {
+					validExecute = true;
+				} else {
+					//defaultがfalseなので念のため再度確認
+					isExecute = readConsoleBoolean(rs("MetaDataImport.Wizard.confirmRetryMsg"), true);
+
+					if (isExecute) {
+						//再度実行
+						return wizard();
 					}
 				}
-				targetTenantIds = new int[allTenantIds.size()];
-				for (int i = 0; i < allTenantIds.size(); i++) {
-					targetTenantIds[i] = allTenantIds.get(i);
-				}
-			} else {
-				targetTenantIds = new int[]{tenantId};
-			}
+			} while(validExecute == false);
 
-			result = applyMetaStrategy.modify(newEntity, (MetaEntity) curEntity.getMetaData(), EntityContext.getCurrentContext(), targetTenantIds);
-			if (result) {
-				MetaDataEntry ent = curEntity.copy();
-				ent.setMetaData(newEntity);
-				ent.setSharable(share);
-				ent.setOverwritable(overwrite);
-				rdb.update(tenantId, ent);
-			}
+			return null;
+		});
+
+		//ConsoleのLogListnerを一度削除してLog出力に切り替え
+		LogListner consoleLogListner = getConsoleLogListner();
+		removeLogListner(consoleLogListner);
+		LogListner loggingListner = getLoggingLogListner();
+		addLogListner(loggingListner);
+
+		//Import処理実行
+		try {
+			importMeta(param);
+
+			return isSuccess();
+
 		} finally {
-			applyMetaStrategy.finish(result, newEntity, (MetaEntity) curEntity.getMetaData(), EntityContext.getCurrentContext());
+			removeLogListner(loggingListner);
+			addLogListner(consoleLogListner);
 		}
 	}
 
 	/**
-	 * <p>Pathを有効な値に変換します。</p>
+	 * Propertyファイル形式でImport用のパラメータを生成して、Import処理を実行します。
 	 *
-	 * Entityのnameは「.」区切りなので、nameをそのまま渡された場合などを考慮して変換
-	 *
-	 * @param path パス
-	 * @return 有効なパス
+	 * @return 実行結果
 	 */
-	private String convertPath(String path) {
-		return path.replace(".","/");
+	private boolean silent() {
+
+		//プロパティファイルの取得
+		//インポートに対してはパラメータが少ない、引数で指定可能なので必須にしない
+		String configFileName = System.getProperty(KEY_CONFIG_FILE);
+
+		//プロパティの取得
+		Properties prop = new Properties();
+		if (StringUtil.isNotEmpty(configFileName)) {
+			try {
+				Path path = Paths.get(configFileName);
+				if (Files.exists(path)) {
+					logDebug("load config file from file path:" + configFileName);
+					try (InputStream is = new FileInputStream(path.toFile());
+						InputStreamReader reader = new InputStreamReader(is, "UTF-8");) {
+						prop.load(reader);
+					}
+				} else {
+					logDebug("load config file from classpath:" + configFileName);
+					try (InputStream is = PackageExport.class.getResourceAsStream(configFileName)) {
+						if (is == null) {
+							logError(rs("MetaDataImport.Silent.notExistsConfigFileMsg", configFileName));
+							return false;
+						}
+						try (InputStreamReader reader = new InputStreamReader(is, "UTF-8")) {
+							prop.load(reader);
+						}
+					}
+				}
+			} catch (IOException e) {
+				throw new SystemException(e);
+			}
+		}
+
+		Tenant tenant = null;
+		if (tenantId != null) {
+			//引数でテナントIDが指定されている場合
+			tenant = ts.getTenant(tenantId);
+			if (tenant == null) {
+				logError(getCommonResourceMessage("notExistsTenantIdMsg", tenantId));
+				return false;
+			}
+		} else {
+			//プロパティから取得
+			String propTenantId = prop.getProperty(PROP_TENANT_ID);
+			if (StringUtil.isNotEmpty(propTenantId)) {
+				tenant = ts.getTenant(Integer.parseInt(propTenantId));
+				if (tenant == null) {
+					logError(getCommonResourceMessage("notExistsTenantIdMsg", propTenantId));
+					return false;
+				}
+			}
+			if (tenant == null) {
+				String propTenantUrl = prop.getProperty(PROP_TENANT_URL);
+				if (StringUtil.isNotEmpty(propTenantUrl)) {
+					if (!propTenantUrl.startsWith("/")) {
+						propTenantUrl = "/" + propTenantUrl;
+					}
+					tenant = ts.getTenant(propTenantUrl);
+					if (tenant == null) {
+						logError(getCommonResourceMessage("notExistsTenantUrlMsg", propTenantUrl));
+						return false;
+					}
+				}
+			}
+			if (tenant == null) {
+				logError(getCommonResourceMessage("requiredMsg", PROP_TENANT_ID + " or " + PROP_TENANT_URL));
+				return false;
+			}
+		}
+		logInfo("target tenant:[" + tenant.getId() + "]" + tenant.getName());
+
+		MetaDataImportParameter param = new MetaDataImportParameter(tenant.getId(), tenant.getName());
+
+		TenantContext tc = tcs.getTenantContext(param.getTenantId());
+		return ExecuteContext.executeAs(tc, ()->{
+			ExecuteContext.getCurrentContext().setLanguage(getLanguage());
+
+			String importFilePath = importFile;
+			if (StringUtil.isEmpty(importFilePath)) {
+				importFilePath = prop.getProperty(PROP_IMPORT_FILE);
+			}
+			if (StringUtil.isEmpty(importFilePath)) {
+				logError(getCommonResourceMessage("requiredMsg", PROP_IMPORT_FILE));
+				return false;
+			}
+
+			//存在チェック
+			File file = new File(importFilePath);
+			if (!file.exists()) {
+				logError(rs("MetaDataImport.notExistsImportFileMsg"));
+				return false;
+			}
+			param.setImportFilePath(importFilePath);
+
+			//データチェック
+			try {
+				analyse(file, param);
+			} catch (IOException e) {
+				logError(rs("MetaDataImport.errorAnalysisFileMsg", e.getMessage()));
+				return false;
+			}
+
+			//警告テナントの存在チェック
+			if (param.isWarningTenant()) {
+				//警告がある場合は、Packageに含まれるテナントは取り込まない
+				logWarn(rs("MetaDataImport.includeWarnTenantMetaMsg"));
+			}
+			param.setImportFile(file);
+
+			//実行情報出力
+			logArguments(param);
+
+			//Import処理実行
+			return importMeta(param);
+		});
+
 	}
 
-	private void logArguments() {
-		logInfo("■Execute Argument");
-		logInfo("\ttenant id :" + getTenantId());
-		logInfo("\timport file :" + getImportFileName());
-		logInfo("\tsilent mode :" + (isSilent() ? "SILENT" : "NOT SILENT"));
-		logInfo("");
+	/**
+	 * インポートファイルを解析します。
+	 *
+	 * @param file インポートファイル
+	 * @param param 解析結果をセットするパラメータ
+	 * @throws IOException
+	 */
+	private void analyse(File file, MetaDataImportParameter param) throws IOException {
+
+		//データチェック
+		try (InputStream is = new FileInputStream(file)) {
+
+			XMLEntryInfo entryInfo = mdps.getXMLMetaDataEntryInfo(is);
+			List<String> pathList = entryInfo.getPathEntryMap().keySet().stream()
+					.sorted((path1, path2) -> {
+						//大文字・小文字区別しない
+						return path1.compareToIgnoreCase(path2);
+					})
+					.collect(Collectors.toList());
+			param.setMetaDataPaths(pathList);
+
+			//テナントのチェック
+			Optional<MetaTenant> importMetaTenant = entryInfo.getPathEntryMap().entrySet().stream()
+					.filter(entry -> {
+						return mdps.isTenantMeta(entry.getKey());
+					})
+					.map(entry -> {
+						return (MetaTenant)entry.getValue().getMetaData();
+					})
+					.findFirst();
+
+			if (importMetaTenant.isPresent()) {
+				MetaTenant metaTenant = importMetaTenant.get();
+				Tenant importTenant = new Tenant();
+				metaTenant.applyToTenant(importTenant);
+
+				importTenant.setId(-1); //IDはセットされない（不明なので未セット）
+				importTenant.setName(metaTenant.getName()); //nameはapplyToTenantでセットされないのでセット(DB側優先)
+				importTenant.setDescription(metaTenant.getDescription()); //descriptionはapplyToTenantでセットされないのでセット(DB側優先)
+
+				Tenant currentTenant = ExecuteContext.getCurrentContext().getCurrentTenant();
+				if (!currentTenant.getName().equals(metaTenant.getName())) {
+					//名前が違う場合はWarning対象
+					param.setWarningTenant(true);
+					param.setImportTenant(null);
+				} else {
+					param.setWarningTenant(false);
+					param.setImportTenant(importTenant);
+				}
+			}
+		}
 	}
 
-	public int getTenantId() {
-		return tenantId;
+	/**
+	 * Import対象のメタデータパスを出力します。
+	 * @param pathList
+	 */
+	private void showMetaDataPathList(List<String> pathList) {
+
+		logInfo("-----------------------------------------------------------");
+		logInfo("■MetaData List");
+		for (String path : pathList) {
+			logInfo(path);
+		}
+		logInfo("-----------------------------------------------------------");
 	}
 
-	public void setTenantId(int tenantId) {
-		this.tenantId = tenantId;
+	private String rs(String key, Object... args) {
+		return ToolsBatchResourceBundleUtil.resourceString(getLanguage(), key, args);
 	}
 
-	public String getImportFileName() {
-		return importFileName;
-	}
-
-	public void setImportFileName(String importFileName) {
-		this.importFileName = importFileName;
-	}
-
-	public boolean isSilent() {
-		return silent;
-	}
-
-	public void setSilent(boolean silent) {
-		this.silent = silent;
-	}
-
-	private boolean isAllOverwrite() {
-		return allOverwrite;
-	}
-
-	private void setAllOverwrite(boolean allOverwrite) {
-		this.allOverwrite = allOverwrite;
-	}
-
-	private boolean isAllReset() {
-		return allReset;
-	}
-
-	private void setAllReset(boolean allReset) {
-		this.allReset = allReset;
-	}
 }
