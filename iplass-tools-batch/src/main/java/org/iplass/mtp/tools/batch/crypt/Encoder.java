@@ -129,6 +129,11 @@ public class Encoder {
 			System.out.println("encrypted text:");
 			System.out.println(coder.encode(plain));
 			System.out.println();
+			
+			// 引数指定で起動する場合、バッチ処理を終了する。
+			if (args[0].equals("-file") && args.length > 1) {
+				return;
+			}
 		}
 
 	}
