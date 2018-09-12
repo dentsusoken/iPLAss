@@ -23,6 +23,9 @@ dependencies {
 		exclude(group: 'org.glassfish.jersey.containers')
 		exclude(group: 'org.glassfish.jersey.core')
 		exclude (group: 'javax.validation')
+		exclude(group: 'org.webjars')
+		exclude(group: 'org.webjars.npm')
+		exclude(group: 'org.webjars.bower')
 	}
 	compile(project(':iplass-tools')) {
 		exclude(group: 'org.glassfish.jersey.containers')
@@ -66,7 +69,7 @@ gwt {
 	minHeapSize = '32M'
 	maxHeapSize = '2048M'
 	logLevel = 'INFO'
-	sourceLevel = '1.8'
+	sourceLevel = javaVersion
 	compiler {
 		strict = true;
 	}

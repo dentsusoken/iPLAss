@@ -1,5 +1,6 @@
 
 ext.localLibDir = file(localLibDirPath)
+ext.javaVersion = "${javaVersion}"
 
 allprojects {
 	apply plugin: 'java'
@@ -13,6 +14,9 @@ allprojects {
 			url 'http://jaspersoft.jfrog.io/jaspersoft/third-party-ce-artifacts/'
 		}
 	}
+
+//	sourceCompatibility = javaVersion
+//	targetCompatibility = javaVersion
 
 	javadoc {
 		options.encoding = 'UTF-8'
