@@ -70,7 +70,6 @@ public class PackageImport extends MtpCuiBase {
 	 * args[0]・・・execMode
 	 * args[1]・・・tenantId
 	 * args[2]・・・import file
-	 * args[3]・・・language
 	 **/
 	public static void main(String[] args) {
 
@@ -88,7 +87,6 @@ public class PackageImport extends MtpCuiBase {
 	 * args[0]・・・execMode
 	 * args[1]・・・tenantId
 	 * args[2]・・・import file
-	 * args[3]・・・language
 	 **/
 	public PackageImport(String... args) {
 
@@ -109,15 +107,7 @@ public class PackageImport extends MtpCuiBase {
 					importFile = args[2];
 				}
 			}
-			if (args.length > 3 && args[3] != null) {
-				//systemの場合は、JVMのデフォルトを利用
-				if (!"system".equals(args[3].toLowerCase())) {
-					setLanguage(args[3]);
-				}
-			}
 		}
-
-		setupLanguage();
 	}
 
 	/**

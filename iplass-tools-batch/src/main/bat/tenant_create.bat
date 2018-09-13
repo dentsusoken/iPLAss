@@ -26,7 +26,7 @@ REM APP class
 set EXEC_APP=org.iplass.mtp.tools.batch.tenant.TenantBatch
 
 REM App Arguments
-set APP_ARGS=%EXEC_MODE% %LANG%
+set APP_ARGS=%EXEC_MODE%
 
 REM ----------------------------------------------------
 REM confirm
@@ -46,6 +46,6 @@ REM execute
 REM ----------------------------------------------------
 
 REM execute tool
-java -cp %EXEC_CLASS_PATH% -D%SYS_ENV% %EXEC_APP% %APP_ARGS%
+java -cp %EXEC_CLASS_PATH% -D%SYS_ENV% -D%LANG_ENV% %EXEC_APP% %APP_ARGS%
 
 pause

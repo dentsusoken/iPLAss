@@ -49,11 +49,10 @@ public class StorageSpaceMigration extends MtpCuiBase {
 	 * コンストラクタ
 	 *
 	 * args[0]・・・execMode["Wizard" or "Silent"]
-	 * args[1]・・・language
-	 * args[2]・・・tenantId
-	 * args[3]・・・entityName
-	 * args[4]・・・storageSpaceName
-	 * args[5]・・・withCleanup
+	 * args[1]・・・tenantId
+	 * args[2]・・・entityName
+	 * args[3]・・・storageSpaceName
+	 * args[4]・・・withCleanup
 	 **/
 	public StorageSpaceMigration(String... args) {
 		if (args != null) {
@@ -61,25 +60,18 @@ public class StorageSpaceMigration extends MtpCuiBase {
 				execMode = ExecMode.valueOf(args[0]);
 			}
 			if (args.length > 1) {
-				// "system"の場合は、JVMのデフォルトを利用
-				if (!"system".equals(args[1])) {
-					setLanguage(args[1]);
-				}
+				setTenantId(Integer.parseInt(args[1]));
 			}
 			if (args.length > 2) {
-				setTenantId(Integer.parseInt(args[2]));
+				setEntityName(args[2]);
 			}
 			if (args.length > 3) {
-				setEntityName(args[3]);
+				setStorageSpaceName(args[3]);
 			}
 			if (args.length > 4) {
-				setStorageSpaceName(args[4]);
-			}
-			if (args.length > 5) {
-				setWithCleanup(Boolean.valueOf(args[5]));
+				setWithCleanup(Boolean.valueOf(args[4]));
 			}
 		}
-		setupLanguage();
 	}
 
 	/**

@@ -68,11 +68,10 @@ public class ObjStoreDDLGenerateBatch extends MtpCuiBase {
 
 	/**
 	 * args[0]・・・execMode
-	 * args[1]・・・language
-	 * args[2]・・・tmplRootPath
-	 * args[3]・・・outputRootPath
-	 * args[4]・・・storageSpaceName
-	 * args[5]・・・partition
+	 * args[1]・・・tmplRootPath
+	 * args[2]・・・outputRootPath
+	 * args[3]・・・storageSpaceName
+	 * args[4]・・・partition
 	 **/
 	public static void main(String[] args) throws Exception {
 
@@ -88,11 +87,10 @@ public class ObjStoreDDLGenerateBatch extends MtpCuiBase {
 
 	/**
 	 * args[0]・・・execMode
-	 * args[1]・・・language
-	 * args[2]・・・tmplRootPath
-	 * args[3]・・・outputRootPath
-	 * args[4]・・・storageSpaceName
-	 * args[5]・・・partition
+	 * args[1]・・・tmplRootPath
+	 * args[2]・・・outputRootPath
+	 * args[3]・・・storageSpaceName
+	 * args[4]・・・partition
 	 **/
 	public ObjStoreDDLGenerateBatch(String... args) throws Exception {
 
@@ -101,32 +99,26 @@ public class ObjStoreDDLGenerateBatch extends MtpCuiBase {
 			if (args.length > 0) {
 				execMode = ExecMode.valueOf(args[0]);
 			}
-			if (args.length > 1) {
-				//systemの場合は、JVMのデフォルトを利用
-				if (!"system".equals(args[1])) {
-					setLanguage(args[1]);
-				}
-			}
 
 			parameter = new ObjStoreDDLParameter();
 
+			if (args.length > 1) {
+				parameter.setTemplateRootPath(args[1]);
+			}
 			if (args.length > 2) {
-				parameter.setTemplateRootPath(args[2]);
+				parameter.setOutputPath(args[2]);
 			}
 			if (args.length > 3) {
-				parameter.setOutputPath(args[3]);
-			}
-			if (args.length > 4) {
-				if (!args[4].equalsIgnoreCase("all")) {
-					String[] spaceNames = args[4].split(",");
+				if (!args[3].equalsIgnoreCase("all")) {
+					String[] spaceNames = args[3].split(",");
 					for (int i =0; i < spaceNames.length; i++) {
 						spaceNames[i] = spaceNames[i].trim();
 					}
 					parameter.setStorageSpaceName(spaceNames);
 				}
 			}
-			if (args.length > 5) {
-				parameter.setUsePartition("TRUE".equalsIgnoreCase(args[5]));
+			if (args.length > 4) {
+				parameter.setUsePartition("TRUE".equalsIgnoreCase(args[4]));
 			} else if (getConfigSetting().isSQLServer()) {
 				// SQL Serverの場合、パーティションの利用はデフォルトではしない
 				parameter.setUsePartition(false);
@@ -140,8 +132,6 @@ public class ObjStoreDDLGenerateBatch extends MtpCuiBase {
 		if (getConfigSetting().isPostgreSQL()) {
 			columnNameLowerCase = true;
 		}
-
-		setupLanguage();
 	}
 
 	/**

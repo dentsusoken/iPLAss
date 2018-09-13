@@ -46,6 +46,9 @@ import org.slf4j.LoggerFactory;
 
 public abstract class MtpCuiBase {
 
+	/** バッチ実行言語 VM KEY */
+	public static final String KEY_BAT_LANG = "batch.language";
+
 	/** サイレントモードで実行する場合の引数値 */
 	public static final String SILENT_MODE = "silent";
 
@@ -68,6 +71,11 @@ public abstract class MtpCuiBase {
 	/** 言語(locale名) */
 	private String language;
 
+	public MtpCuiBase() {
+		//言語設定
+		setupLanguage();
+	}
+
 	public List<String> getLogMessage() {
 		return logMessage;
 	}
@@ -88,10 +96,6 @@ public abstract class MtpCuiBase {
 
 	public String getLanguage() {
 		return language;
-	}
-
-	public void setLanguage(String language) {
-		this.language = language;
 	}
 
 	protected void setSuccess(boolean isSuccess) {
@@ -482,19 +486,25 @@ public abstract class MtpCuiBase {
 
 	}
 
-	protected void setupLanguage() {
-		if (getLanguage() == null) {
+	private void setupLanguage() {
+
+		String lang = System.getProperty(KEY_BAT_LANG);
+
+		if (StringUtil.isEmpty(lang) || "system".equals(lang.toLowerCase())) {
 			//Systemのデフォルトを取得
-			setLanguage(Locale.getDefault().getLanguage());
+			lang = Locale.getDefault().getLanguage();
 		}
+		lang = lang.toLowerCase();
 
 		//enまたはja以外の場合はenにする
-		if (!"ja".equals(getLanguage()) && !"en".equals(getLanguage())) {
-			setLanguage("en");
+		if (!"ja".equals(lang) && !"en".equals(lang)) {
+			lang = "en";
 		}
 
+		this.language = lang;
+
 		ExecuteContext eContext = ExecuteContext.getCurrentContext();
-		eContext.setLanguage(getLanguage());
+		eContext.setLanguage(lang);
 	}
 
 	protected String getCommonResourceMessage(String subKey, Object... args) {
