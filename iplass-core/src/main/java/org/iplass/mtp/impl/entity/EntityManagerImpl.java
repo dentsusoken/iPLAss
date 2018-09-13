@@ -20,11 +20,13 @@
 
 package org.iplass.mtp.impl.entity;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.reflect.Array;
 import java.math.BigDecimal;
+import java.nio.file.Files;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -925,6 +927,58 @@ public class EntityManagerImpl implements EntityManager {
 		}
 	}
 
+	@Override
+	public BinaryReference createBinaryReference(File file, String name, String type) {
+		try {
+			long start = 0L;
+			if (logger.isDebugEnabled()) {
+				start = System.currentTimeMillis();
+			}
+
+			if (!file.exists()) {
+				throw new EntityRuntimeException("file is not exists:" + file.getPath());
+			}
+			
+			if (file.isDirectory()) {
+				throw new EntityRuntimeException("file is directory:" + file.getPath());
+			}
+			
+			if (type == null) {
+				try {
+					type = Files.probeContentType(file.toPath());
+				} catch (IOException e) {
+					logger.warn("can't determine the MIME type due to IOException: " + file.getName(), e);
+					type = "application/octet-stream";
+				}
+			}
+			if (name == null) {
+				name = file.getName();
+			}
+			
+			try {
+				LobHandler lm = LobHandler.getInstance(BinaryType.LOB_STORE_NAME);
+				Lob bin = lm.crateBinaryDataTemporary(name, type, sessionService.getSession(true).getId());
+				bin.transferFrom(file);
+				return lm.toBinaryReference(bin, EntityContext.getCurrentContext());
+			} catch (IOException e) {
+				throw new EntityRuntimeException(e.getMessage(), e);
+			} finally {
+				if (logger.isDebugEnabled()) {
+					logger.debug("createBinaryReference done.time:" + (System.currentTimeMillis() - start));
+				}
+			}
+		} catch (ApplicationException e) {
+			//更新操作が行われた可能性があるので、
+			setRollbackOnly();
+			throw e;
+		} catch (RuntimeException e) {
+			setRollbackOnly();
+			throw e;
+		} catch (Error e) {
+			setRollbackOnly();
+			throw e;
+		}
+	}
 
 	@Override
 	public OutputStream getOutputStream(BinaryReference binaryReference) {
@@ -1338,4 +1392,5 @@ public class EntityManagerImpl implements EntityManager {
 	private static String resourceString(String key, Object... arguments) {
 		return CoreResourceBundleUtil.resourceString(key, arguments);
 	}
+
 }

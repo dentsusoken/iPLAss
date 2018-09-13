@@ -20,6 +20,8 @@
 
 package org.iplass.mtp.impl.web.fileupload;
 
+import static org.iplass.mtp.impl.web.WebResourceBundleUtil.resourceString;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -41,7 +43,6 @@ import org.iplass.mtp.entity.EntityManager;
 import org.iplass.mtp.impl.util.UploadFileUtil;
 import org.iplass.mtp.impl.web.WebFrontendService;
 import org.iplass.mtp.impl.web.WebProcessRuntimeException;
-import org.iplass.mtp.impl.web.WebResourceBundleUtil;
 import org.iplass.mtp.spi.ServiceRegistry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -160,23 +161,13 @@ public class UploadFileHandleImpl implements UploadFileHandle {
 			UploadFileUtil.checkMagicByte(tempFile, type, fileName);
 		}
 
-		FileInputStream is = null;
-		try {
-			is = new FileInputStream(tempFile);
-			EntityManager em = ManagerLocator.getInstance().getManager(EntityManager.class);
-			return em.createBinaryReference(fileName, type, is);
-		} catch (FileNotFoundException e) {
-			logger.warn("upload file is externally deleted. maybe contains virus." , e);
+		if (!tempFile.exists()) {
+			logger.warn("upload file is externally deleted. maybe contains virus. fileName:" + fileName);
 			return null;
-		} finally {
-			if (is != null) {
-				try {
-					is.close();
-				} catch (IOException e) {
-					logger.warn("can not close resource:" + tempFile.getName(), e);
-				}
-			}
 		}
+		
+		EntityManager em = ManagerLocator.getInstance().getManager(EntityManager.class);
+		return em.createBinaryReference(tempFile, fileName, type);
 	}
 
 	@Override
@@ -184,7 +175,6 @@ public class UploadFileHandleImpl implements UploadFileHandle {
 		return size;
 	}
 
-	//TODO バイナリストリームはパブリッククラウドの場合は、使わせないほうがよいか？
 	@Override
 	public InputStream getInputStream() {
 		if (isSizeOver) {
@@ -258,7 +248,4 @@ public class UploadFileHandleImpl implements UploadFileHandle {
 		return fileName;
 	}
 
-	private static String resourceString(String key, Object... arguments) {
-		return WebResourceBundleUtil.resourceString(key, arguments);
-	}
 }

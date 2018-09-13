@@ -22,6 +22,8 @@ package org.iplass.mtp.impl.lob;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -31,6 +33,7 @@ import org.iplass.mtp.entity.EntityRuntimeException;
 import org.iplass.mtp.impl.lob.lobstore.LobData;
 import org.iplass.mtp.impl.lob.lobstore.LobStore;
 import org.iplass.mtp.impl.lob.lobstore.LobValidator;
+import org.iplass.mtp.impl.lob.lobstore.rdb.RdbLobStore;
 import org.iplass.mtp.impl.util.CoreResourceBundleUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -71,9 +74,10 @@ public class Lob {
 	private LobStore lobStore;
 
 	private LobDao dao;
-
+	private boolean updateSize;
+	 
 	public Lob(int tenantId, long lobId, String name, String type,
-			String definitionId, String propertyId, String oid, Long version, String sessionId, String status, long lobDataId, LobStore lobStore, LobDao dao) {
+			String definitionId, String propertyId, String oid, Long version, String sessionId, String status, long lobDataId, LobStore lobStore, LobDao dao, boolean updateSize) {
 		this.tenantId = tenantId;
 		this.lobId = lobId;
 		this.name = name;
@@ -87,6 +91,16 @@ public class Lob {
 		this.lobDataId = lobDataId;
 		this.lobStore = lobStore;
 		this.dao = dao;
+		if (lobStore instanceof RdbLobStore) {
+			//RdbLobStore側の処理で一括で保存する
+			this.updateSize = false;
+		} else {
+			this.updateSize = updateSize;
+		}
+	}
+
+	public boolean isUpdateSize() {
+		return updateSize;
 	}
 
 	public LobDao getDao() {
@@ -113,7 +127,23 @@ public class Lob {
 	}
 
 	public OutputStream getBinaryOutputStream() {
-
+		allocateLobData(null);
+		
+		OutputStream os = null;
+		LobValidator lv = lobStore.getLobValidator();
+		if (lv == null) {
+			os = lobData.getBinaryOutputStream();
+		} else {
+			os = new LobValidatedOutputStream(lobData.getBinaryOutputStream(), this, lv);
+		}
+		
+		if (updateSize) {
+			os = new SizeUpdateOutputStream(os, tenantId, dao);
+		}
+		return os;
+	}
+	
+	private void allocateLobData(Long size) {
 		if (lobDataId == IS_NEW) {
 			//新規にLobDataをロケート
 			prevLobDataId = lobDataId;
@@ -122,7 +152,7 @@ public class Lob {
 				throw new EntityConcurrentUpdateException(resourceString("impl.lob.Lob.cantUpdate"));
 			}
 			//参照カウント用のレコード追加
-			dao.initLobData(tenantId, lobDataId);
+			dao.initLobData(tenantId, lobDataId, size);
 
 			lobData = lobStore.create(tenantId, lobDataId);
 		} else if (prevLobDataId == IS_NOT_INIT) {
@@ -137,19 +167,36 @@ public class Lob {
 			dao.refCountUp(tenantId, prevLobDataId, -1);
 
 			//新しい参照カウント用のレコード追加
-			dao.initLobData(tenantId, lobDataId);
+			dao.initLobData(tenantId, lobDataId, size);
 
 			lobData = lobStore.create(tenantId, lobDataId);
 		}
-
+	}
+	
+	public void transferFrom(File file) throws IOException {
+		Long size = null;
+		if (updateSize) {
+			size  = file.length();
+		}
+		allocateLobData(size);
+		
 		LobValidator lv = lobStore.getLobValidator();
 		if (lv == null) {
-			return lobData.getBinaryOutputStream();
+			lobData.transferFrom(file);
 		} else {
-			return new LobValidatedOutputStream(lobData.getBinaryOutputStream(), this, lv);
+			byte[] buf = new byte[8192];
+			int count;
+			try (InputStream is = new FileInputStream(file);
+					OutputStream los = lobData.getBinaryOutputStream();
+					OutputStream os = new LobValidatedOutputStream(los, this, lv)) {
+				while ((count = is.read(buf)) != -1) {
+					os.write(buf, 0, count);
+				}
+				os.flush();
+			}
 		}
 	}
-
+	
 	public long getLobId() {
 		return lobId;
 	}

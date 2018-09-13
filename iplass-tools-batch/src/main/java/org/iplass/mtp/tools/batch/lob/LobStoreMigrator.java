@@ -136,7 +136,7 @@ public class LobStoreMigrator extends MtpCuiBase {
 
 							try (ResultSet rs = getStatement().executeQuery(sql)) {
 								while (rs.next()) {
-									Lob lob = sqlCreator.toBinaryData(rs, lobStore, dao);
+									Lob lob = sqlCreator.toBinaryData(rs, lobStore, dao, lobStoreService.isManageLobSizeOnRdb());
 
 									if ((MigrateTarget.BINARY.equals(migrateTarget) && LongTextType.LOB_NAME.equals(lob.getName())) ||
 											(MigrateTarget.LONGTEXT.equals(migrateTarget) && !LongTextType.LOB_NAME.equals(lob.getName()))) {

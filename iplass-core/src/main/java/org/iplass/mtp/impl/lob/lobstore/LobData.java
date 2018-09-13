@@ -20,6 +20,8 @@
 
 package org.iplass.mtp.impl.lob.lobstore;
 
+import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
@@ -32,6 +34,8 @@ public interface LobData {
 	public InputStream getBinaryInputStream();
 	
 	public OutputStream getBinaryOutputStream();
+	
+	public void transferFrom(File file) throws IOException;
 	
 	public boolean exists();
 

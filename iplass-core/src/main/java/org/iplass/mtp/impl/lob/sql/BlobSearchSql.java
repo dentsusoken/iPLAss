@@ -158,7 +158,7 @@ public class BlobSearchSql extends QuerySqlHandler {
 		return sb.toString();
 	}
 
-	public Lob toBinaryData(ResultSet rs, LobStore lobStore, LobDao dao) throws SQLException {
+	public Lob toBinaryData(ResultSet rs, LobStore lobStore, LobDao dao, boolean manageLobSizeOnRdb) throws SQLException {
 		return new Lob(
 				rs.getInt(ObjBlobTable.TENANT_ID),
 				rs.getLong(ObjBlobTable.LOB_ID),
@@ -172,7 +172,8 @@ public class BlobSearchSql extends QuerySqlHandler {
 				rs.getString(ObjBlobTable.LOB_STAT),
 				rs.getLong(ObjBlobTable.LOB_DATA_ID),
 				lobStore,
-				dao);
+				dao,
+				manageLobSizeOnRdb);
 	}
 
 	/**
