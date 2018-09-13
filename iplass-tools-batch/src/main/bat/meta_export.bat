@@ -16,27 +16,24 @@ REM ----------------------------------------------------
 REM Execute Mode (WIZARD or SILENT)
 set EXEC_MODE=WIZARD
 
-REM Tenant Id (if value is -1, specified by wizard or silent package config)
+REM Tenant Id (if value is -1, specified by wizard or silent metadata config)
 set TENANT_ID=-1
 
-REM import file (if value is 'empty', specified by wizard or silent package config)
-set FILE=empty
-
-REM if silent mode, package import config file name (please set your package-imp-config file)
-set PACK_CONFIG=./../conf/pack-imp-config.properties
+REM if silent mode, metadata export config file name (please set your meta-exp-config file)
+set META_CONFIG=./../conf/meta-exp-config.properties
 
 REM ----------------------------------------------------
 REM app settings
 REM ----------------------------------------------------
 
 REM APP class
-set EXEC_APP=org.iplass.mtp.tools.batch.pack.PackageImport
+set EXEC_APP=org.iplass.mtp.tools.batch.metadataporting.MetaDataExport
 
 REM App Arguments
-set APP_ARGS=%EXEC_MODE% %TENANT_ID% %FILE% %LANG%
+set APP_ARGS=%EXEC_MODE% %TENANT_ID% %LANG%
 
-REM Silent mode package config
-set PACK_CONFIG_ARG=pack.config=%PACK_CONFIG%
+REM Silent mode metadata config
+set META_CONFIG_ARG=meta.config=%META_CONFIG%
 
 REM ----------------------------------------------------
 REM confirm
@@ -60,7 +57,7 @@ REM ----------------------------------------------------
 :EXECUTE
 
 REM execute tool
-java -cp %EXEC_CLASS_PATH% -D%SYS_ENV% -D%PACK_CONFIG_ARG% %EXEC_APP% %APP_ARGS%
+java -cp %EXEC_CLASS_PATH% -D%SYS_ENV% -D%META_CONFIG_ARG% %EXEC_APP% %APP_ARGS%
 
 if "%EXEC_MODE%" == "SILENT" goto END
 
