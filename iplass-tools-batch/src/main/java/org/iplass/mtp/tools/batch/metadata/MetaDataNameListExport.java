@@ -47,7 +47,6 @@ public class MetaDataNameListExport extends MtpCuiBase {
 
 	/**
 	 * args[0]・・・execMode
-	 * args[1]・・・language
 	 **/
 	public static void main(String[] args) {
 
@@ -63,7 +62,6 @@ public class MetaDataNameListExport extends MtpCuiBase {
 
 	/**
 	 * args[0]・・・execMode
-	 * args[1]・・・language
 	 **/
 	public MetaDataNameListExport(String... args) {
 
@@ -71,15 +69,7 @@ public class MetaDataNameListExport extends MtpCuiBase {
 			if (args.length > 0) {
 				setExecMode(ExecMode.valueOf(args[0]));
 			}
-			if (args.length > 1) {
-				//systemの場合は、JVMのデフォルトを利用
-				if (!"system".equals(args[1])) {
-					setLanguage(args[1]);
-				}
-			}
 		}
-
-		setupLanguage();
 	}
 
 	/**

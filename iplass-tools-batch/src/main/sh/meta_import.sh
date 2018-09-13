@@ -30,7 +30,7 @@ export META_CONFIG=./../conf/meta-imp-config.properties
 export EXEC_APP=org.iplass.mtp.tools.batch.metadata.MetaDataImport
 
 # App Arguments
-export APP_ARGS="${EXEC_MODE} ${TENANT_ID} ${FILE} ${LANG}"
+export APP_ARGS="${EXEC_MODE} ${TENANT_ID} ${FILE}"
 
 # Silent mode metadata config
 export META_CONFIG_ARG=meta.config=${META_CONFIG}
@@ -59,7 +59,7 @@ fi
 # ----------------------------------------------------
 
 # execute tool
-java -cp ${EXEC_CLASS_PATH} -D${SYS_ENV} -D${META_CONFIG_ARG} ${EXEC_APP} ${APP_ARGS}
+java -cp ${EXEC_CLASS_PATH} -D${SYS_ENV} -D${LANG_ENV} -D${META_CONFIG_ARG} ${EXEC_APP} ${APP_ARGS}
 
 if [ "${EXEC_MODE}" = "WIZARD" ]
 then

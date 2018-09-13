@@ -33,7 +33,7 @@ REM APP class
 set EXEC_APP=org.iplass.mtp.tools.batch.metadata.MetaDataImport
 
 REM App Arguments
-set APP_ARGS=%EXEC_MODE% %TENANT_ID% %FILE% %LANG%
+set APP_ARGS=%EXEC_MODE% %TENANT_ID% %FILE%
 
 REM Silent mode metadata config
 set META_CONFIG_ARG=meta.config=%META_CONFIG%
@@ -60,7 +60,7 @@ REM ----------------------------------------------------
 :EXECUTE
 
 REM execute tool
-java -cp %EXEC_CLASS_PATH% -D%SYS_ENV% -D%META_CONFIG_ARG% %EXEC_APP% %APP_ARGS%
+java -cp %EXEC_CLASS_PATH% -D%SYS_ENV% -D%LANG_ENV% -D%META_CONFIG_ARG% %EXEC_APP% %APP_ARGS%
 
 if "%EXEC_MODE%" == "SILENT" goto END
 

@@ -49,7 +49,6 @@ public class TenantBatch extends MtpCuiBase {
 
 	/**
 	 * args[0]・・・execMode
-	 * args[1]・・・language
 	 **/
 	public static void main(String[] args) {
 
@@ -65,7 +64,6 @@ public class TenantBatch extends MtpCuiBase {
 
 	/**
 	 * args[0]・・・execMode
-	 * args[1]・・・language
 	 **/
 	public TenantBatch(String... args) {
 
@@ -73,15 +71,7 @@ public class TenantBatch extends MtpCuiBase {
 			if (args.length > 0 && args[0] != null) {
 				setExecMode(TenantBatchExecMode.valueOf(args[0].toUpperCase()));
 			}
-			if (args.length > 1 && args[1] != null) {
-				//systemの場合は、JVMのデフォルトを利用
-				if (!"system".equals(args[1].toLowerCase())) {
-					setLanguage(args[1]);
-				}
-			}
 		}
-
-		setupLanguage();
 	}
 
 	/**

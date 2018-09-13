@@ -71,13 +71,12 @@ public class EntityJavaMappingClassCreator extends MtpCuiBase {
 	 * コンストラクタ
 	 *
 	 * args[0]・・・execMode["Wizard" or "Silent"]
-	 * args[1]・・・language
-	 * args[2]・・・tenantId
-	 * args[3]・・・recursive["recursive" or other]
-	 * args[4]・・・force["force" or other]
-	 * args[5]・・・outDir[Current is empty or "."]
-	 * args[6]・・・entityPath[Root is empty or "/"]
-	 * args[7]・・・basePackage
+	 * args[1]・・・tenantId
+	 * args[2]・・・recursive["recursive" or other]
+	 * args[3]・・・force["force" or other]
+	 * args[4]・・・outDir[Current is empty or "."]
+	 * args[5]・・・entityPath[Root is empty or "/"]
+	 * args[6]・・・basePackage
 	 **/
 	public EntityJavaMappingClassCreator(String... args) {
 		if (args != null) {
@@ -85,31 +84,24 @@ public class EntityJavaMappingClassCreator extends MtpCuiBase {
 				execMode = ExecMode.valueOf(args[0]);
 			}
 			if (args.length > 1) {
-				// "system"の場合は、JVMのデフォルトを利用
-				if (!"system".equals(args[1])) {
-					setLanguage(args[1]);
-				}
+				setTenantId(Integer.parseInt(args[1]));
 			}
 			if (args.length > 2) {
-				setTenantId(Integer.parseInt(args[2]));
+				setRecursive(args[2]);
 			}
 			if (args.length > 3) {
-				setRecursive(args[3]);
+				setForce(args[3]);
 			}
 			if (args.length > 4) {
-				setForce(args[4]);
+				setOutDir(args[4]);
 			}
 			if (args.length > 5) {
-				setOutDir(args[5]);
+				setEntityPath(args[5]);
 			}
 			if (args.length > 6) {
-				setEntityPath(args[6]);
-			}
-			if (args.length > 7) {
-				setBasePackage(args[7]);
+				setBasePackage(args[6]);
 			}
 		}
-		setupLanguage();
 	}
 
 	/**

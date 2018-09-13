@@ -23,7 +23,7 @@ export EXEC_MODE=WIZARD
 export EXEC_APP=org.iplass.mtp.tools.batch.storagespace.ObjStoreDDLGenerateBatch
 
 # App Arguments
-export APP_ARGS="${EXEC_MODE} ${LANG}"
+export APP_ARGS="${EXEC_MODE}"
 
 # ----------------------------------------------------
 # confirm
@@ -45,7 +45,7 @@ read wait
 # ----------------------------------------------------
 
 # execute tool
-java -cp ${EXEC_CLASS_PATH} -D${SYS_ENV} ${EXEC_APP} ${APP_ARGS}
+java -cp ${EXEC_CLASS_PATH} -D${SYS_ENV} -D${LANG_ENV} ${EXEC_APP} ${APP_ARGS}
 
 echo "Please press any key..."
 

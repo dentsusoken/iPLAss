@@ -77,7 +77,6 @@ public class PackageExport extends MtpCuiBase {
 	/**
 	 * args[0]・・・execMode
 	 * args[1]・・・tenantId
-	 * args[2]・・・language
 	 **/
 	public static void main(String[] args) {
 
@@ -95,7 +94,6 @@ public class PackageExport extends MtpCuiBase {
 	/**
 	 * args[0]・・・execMode
 	 * args[1]・・・tenantId
-	 * args[2]・・・language
 	 **/
 	public PackageExport(String... args) {
 
@@ -109,15 +107,7 @@ public class PackageExport extends MtpCuiBase {
 					tenantId = null;
 				}
 			}
-			if (args.length > 2 && args[2] != null) {
-				//systemの場合は、JVMのデフォルトを利用
-				if (!"system".equals(args[2].toLowerCase())) {
-					setLanguage(args[2]);
-				}
-			}
 		}
-
-		setupLanguage();
 	}
 
 	/**
