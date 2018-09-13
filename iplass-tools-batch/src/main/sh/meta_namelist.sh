@@ -20,7 +20,7 @@ export EXEC_MODE=WIZARD
 # ----------------------------------------------------
 
 # APP Class
-export EXEC_APP=org.iplass.mtp.tools.batch.metadata.ExportMetaDataNameList
+export EXEC_APP=org.iplass.mtp.tools.batch.metadata.MetaDataNameListExport
 
 # App Arguments
 export APP_ARGS="${EXEC_MODE} ${LANG}"

@@ -33,7 +33,7 @@ import org.iplass.mtp.util.StringUtil;
 /**
  * Export MetaDataXML Name List Batch
  */
-public class ExportMetaDataNameList extends MtpCuiBase {
+public class MetaDataNameListExport extends MtpCuiBase {
 
 	/** リソースファイルの接頭語 */
 	private static final String RES_WIZARD_PRE = "ExportMetaDataNameList.Wizard.";
@@ -51,9 +51,9 @@ public class ExportMetaDataNameList extends MtpCuiBase {
 	 **/
 	public static void main(String[] args) {
 
-		ExportMetaDataNameList instance = null;
+		MetaDataNameListExport instance = null;
 		try {
-			instance = new ExportMetaDataNameList(args);
+			instance = new MetaDataNameListExport(args);
 			instance.execute();
 		} catch (Throwable e) {
 			e.printStackTrace();
@@ -65,7 +65,7 @@ public class ExportMetaDataNameList extends MtpCuiBase {
 	 * args[0]・・・execMode
 	 * args[1]・・・language
 	 **/
-	public ExportMetaDataNameList(String... args) {
+	public MetaDataNameListExport(String... args) {
 
 		if (args != null) {
 			if (args.length > 0) {
@@ -132,7 +132,7 @@ public class ExportMetaDataNameList extends MtpCuiBase {
 	 * @param param Import情報
 	 * @return
 	 */
-	public boolean executeExport(final ExportMetaDataNameListParameter param) {
+	public boolean executeExport(final MetaDataNameListExportParameter param) {
 
 		setSuccess(false);
 
@@ -231,7 +231,7 @@ public class ExportMetaDataNameList extends MtpCuiBase {
 	 */
 	private boolean startExportWizard() {
 
-		ExportMetaDataNameListParameter param = new ExportMetaDataNameListParameter();
+		MetaDataNameListExportParameter param = new MetaDataNameListExportParameter();
 
 		//Importファイル
 		boolean validFile = false;

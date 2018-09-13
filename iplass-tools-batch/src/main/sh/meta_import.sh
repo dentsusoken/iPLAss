@@ -27,7 +27,7 @@ export META_CONFIG=./../conf/meta-imp-config.properties
 # ----------------------------------------------------
 
 # APP Class
-export EXEC_APP=org.iplass.mtp.tools.batch.metadataporting.MetaDataImport
+export EXEC_APP=org.iplass.mtp.tools.batch.metadata.MetaDataImport
 
 # App Arguments
 export APP_ARGS="${EXEC_MODE} ${TENANT_ID} ${FILE} ${LANG}"

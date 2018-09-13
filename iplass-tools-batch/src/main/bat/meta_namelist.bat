@@ -22,7 +22,7 @@ REM app settings
 REM ----------------------------------------------------
 
 REM APP class
-set EXEC_APP=org.iplass.mtp.tools.batch.metadata.ExportMetaDataNameList
+set EXEC_APP=org.iplass.mtp.tools.batch.metadata.MetaDataNameListExport
 
 REM App Arguments
 set APP_ARGS=%EXEC_MODE% %LANG%

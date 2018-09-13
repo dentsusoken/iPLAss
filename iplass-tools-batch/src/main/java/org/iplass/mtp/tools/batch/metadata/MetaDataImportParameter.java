@@ -2,7 +2,7 @@
  * Copyright 2018 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
  */
 
-package org.iplass.mtp.tools.batch.metadataporting;
+package org.iplass.mtp.tools.batch.metadata;
 
 import java.io.File;
 import java.util.List;

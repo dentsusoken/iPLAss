@@ -2,7 +2,7 @@
  * Copyright 2011 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
  */
 
-package org.iplass.mtp.tools.batch.metadataporting;
+package org.iplass.mtp.tools.batch.metadata;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
