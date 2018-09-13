@@ -11,7 +11,7 @@ set SERVICE_CONFIG_NAME=mtp-service-config.xml
 REM config file path (Please set the directory that a resource file is stored)
 set MTP_RESOURCE_PATH=.\..\src\main\resources
 
-REM library path (Please set the directory that a jar file is stored�j
+REM library path (Please set the directory that a jar file is stored)
 set MTP_LIB_PATH=.\..\WebContent\WEB-INF\lib
 
 REM source build class path (for develop. Please set the pass that compilation class of the source is stored)
