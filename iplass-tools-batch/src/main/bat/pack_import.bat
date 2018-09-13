@@ -22,7 +22,7 @@ set TENANT_ID=-1
 REM import file (if value is 'empty', specified by wizard or silent package config)
 set FILE=empty
 
-REM if silent mode, package export config file name (please set your package-imp-config file)
+REM if silent mode, package import config file name (please set your package-imp-config file)
 set PACK_CONFIG=./../conf/pack-imp-config.properties
 
 REM ----------------------------------------------------

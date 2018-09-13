@@ -812,7 +812,7 @@ public class PackageExport extends MtpCuiBase {
 			if (Files.exists(path)) {
 				logDebug("load config file from file path:" + configFileName);
 				try (InputStream is = new FileInputStream(path.toFile());
-					InputStreamReader reader = new InputStreamReader(is, "utf-8");) {
+					InputStreamReader reader = new InputStreamReader(is, "UTF-8");) {
 					prop.load(reader);
 				}
 			} else {
@@ -822,7 +822,7 @@ public class PackageExport extends MtpCuiBase {
 						logError(rs("PackageExport.Silent.notExistsConfigFileMsg", configFileName));
 						return false;
 					}
-					try (InputStreamReader reader = new InputStreamReader(is, "utf-8")) {
+					try (InputStreamReader reader = new InputStreamReader(is, "UTF-8")) {
 						prop.load(reader);
 					}
 				}
