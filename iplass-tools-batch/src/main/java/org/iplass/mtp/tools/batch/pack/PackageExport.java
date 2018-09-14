@@ -47,7 +47,6 @@ import org.iplass.mtp.impl.tools.pack.PackageEntity;
 import org.iplass.mtp.impl.tools.pack.PackageService;
 import org.iplass.mtp.spi.ServiceRegistry;
 import org.iplass.mtp.tenant.Tenant;
-import org.iplass.mtp.tools.ToolsBatchResourceBundleUtil;
 import org.iplass.mtp.tools.batch.ExecMode;
 import org.iplass.mtp.tools.batch.MtpCuiBase;
 import org.iplass.mtp.transaction.Transaction;
@@ -224,7 +223,7 @@ public class PackageExport extends MtpCuiBase {
 							logInfo("");
 						}
 
-						logError(getCommonResourceMessage("errorMsg", ""));
+						logError(rs("Common.errorMsg", ""));
 						return false;
 					}
 
@@ -259,7 +258,7 @@ public class PackageExport extends MtpCuiBase {
 			setSuccess(isSuccess);
 
 		} catch (Throwable e) {
-			logError(getCommonResourceMessage("errorMsg", e.getMessage()));
+			logError(rs("Common.errorMsg", e.getMessage()));
 		}
 
 		return isSuccess();
@@ -556,16 +555,16 @@ public class PackageExport extends MtpCuiBase {
 			//引数でテナントIDが指定されている場合
 			tenant = ts.getTenant(tenantId);
 			if (tenant == null) {
-				logWarn(getCommonResourceMessage("notExistsTenantIdMsg", tenantId));
+				logWarn(rs("Common.notExistsTenantIdMsg", tenantId));
 				tenantId = null;
 				return wizard();
 			}
 		} else {
 			//テナントURL
-			String tenantUrl = readConsole(getCommonResourceMessage("inputTenantUrlMsg"));
+			String tenantUrl = readConsole(rs("Common.inputTenantUrlMsg"));
 
 			if (StringUtil.isEmpty(tenantUrl)) {
-				logWarn(getCommonResourceMessage("requiredTenantUrlMsg"));
+				logWarn(rs("Common.requiredTenantUrlMsg"));
 				return wizard();
 			}
 			if (tenantUrl.equalsIgnoreCase("-show")) {
@@ -583,7 +582,7 @@ public class PackageExport extends MtpCuiBase {
 			String url = tenantUrl.startsWith("/") ? tenantUrl : "/" + tenantUrl;
 			tenant = ts.getTenant(url);
 			if (tenant == null) {
-				logWarn(getCommonResourceMessage("notExistsTenantMsg", tenantUrl));
+				logWarn(rs("Common.notExistsTenantMsg", tenantUrl));
 				return wizard();
 			}
 		}
@@ -670,7 +669,7 @@ public class PackageExport extends MtpCuiBase {
 							if (isShow) {
 								showMetaDataPathList(param);
 							}
-							boolean isContinue = readConsoleBoolean(getCommonResourceMessage("continueMsg"), true);
+							boolean isContinue = readConsoleBoolean(rs("Common.continueMsg"), true);
 							if (!isContinue) {
 								validMetaData = false;
 							}
@@ -720,7 +719,7 @@ public class PackageExport extends MtpCuiBase {
 							if (isShow) {
 								showEntityDataPathList(param);
 							}
-							boolean isContinue = readConsoleBoolean(getCommonResourceMessage("continueMsg"), true);
+							boolean isContinue = readConsoleBoolean(rs("Common.continueMsg"), true);
 							if (!isContinue) {
 								validEntityData = false;
 							}
@@ -827,7 +826,7 @@ public class PackageExport extends MtpCuiBase {
 			//引数でテナントIDが指定されている場合
 			tenant = ts.getTenant(tenantId);
 			if (tenant == null) {
-				logError(getCommonResourceMessage("notExistsTenantIdMsg", tenantId));
+				logError(rs("Common.notExistsTenantIdMsg", tenantId));
 				return false;
 			}
 		} else {
@@ -837,7 +836,7 @@ public class PackageExport extends MtpCuiBase {
 			if (StringUtil.isNotEmpty(propTenantId)) {
 				tenant = ts.getTenant(Integer.parseInt(propTenantId));
 				if (tenant == null) {
-					logError(getCommonResourceMessage("notExistsTenantIdMsg", propTenantId));
+					logError(rs("Common.notExistsTenantIdMsg", propTenantId));
 					return false;
 				}
 			}
@@ -850,13 +849,13 @@ public class PackageExport extends MtpCuiBase {
 					}
 					tenant = ts.getTenant(propTenantUrl);
 					if (tenant == null) {
-						logError(getCommonResourceMessage("notExistsTenantMsg", propTenantUrl));
+						logError(rs("Common.notExistsTenantMsg", propTenantUrl));
 						return false;
 					}
 				}
 			}
 			if (tenant == null) {
-				logError(getCommonResourceMessage("requiredMsg", PROP_TENANT_ID + " or " + PROP_TENANT_URL));
+				logError(rs("Common.requiredMsg", PROP_TENANT_ID + " or " + PROP_TENANT_URL));
 				return false;
 			}
 		}
@@ -961,10 +960,6 @@ public class PackageExport extends MtpCuiBase {
 			return false;
 		}
 		return true;
-	}
-
-	private String rs(String key, Object... args) {
-		return ToolsBatchResourceBundleUtil.resourceString(getLanguage(), key, args);
 	}
 
 }

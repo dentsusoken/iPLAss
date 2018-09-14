@@ -12,7 +12,6 @@ import org.iplass.mtp.impl.entity.EntityService;
 import org.iplass.mtp.impl.metadata.MetaDataContext;
 import org.iplass.mtp.impl.tools.storagespace.StorageSpaceService;
 import org.iplass.mtp.spi.ServiceRegistry;
-import org.iplass.mtp.tools.ToolsBatchResourceBundleUtil;
 import org.iplass.mtp.tools.batch.ExecMode;
 import org.iplass.mtp.tools.batch.MtpCuiBase;
 import org.iplass.mtp.util.StringUtil;
@@ -147,13 +146,13 @@ public class StorageSpaceCleaner extends MtpCuiBase {
 		// TenantId
 		boolean validTenantId = false;
 		do {
-			String tenantId = readConsole(getWizardResourceMessage("tenantIdMsg"));
+			String tenantId = readConsole(rs("StorageSpaceCleaner.Wizard.tenantIdMsg"));
 			if (StringUtil.isNotBlank(tenantId)) {
 				try {
 					setTenantId(Integer.parseInt(tenantId));
 					validTenantId = true;
 				} catch (NumberFormatException e) {
-					logWarn(getWizardResourceMessage("invalidTenantIdMsg", tenantId));
+					logWarn(rs("StorageSpaceCleaner.Wizard.invalidTenantIdMsg", tenantId));
 				}
 			}
 		} while(validTenantId == false);
@@ -161,7 +160,7 @@ public class StorageSpaceCleaner extends MtpCuiBase {
 		// EntityName(DefinitionName)
 		boolean validEntityName = false;
 		do {
-			String entityName = readConsole(getWizardResourceMessage("entityNameMsg"));
+			String entityName = readConsole(rs("StorageSpaceCleaner.Wizard.entityNameMsg"));
 			if (StringUtil.isNotBlank(entityName)) {
 				setEntityName(entityName);
 				validEntityName = true;
@@ -171,7 +170,7 @@ public class StorageSpaceCleaner extends MtpCuiBase {
 		// StorageSpaceName
 		boolean validStorageSpaceName = false;
 		do {
-			String storageSpaceName = readConsole(getWizardResourceMessage("storageSpaceNameMsg"));
+			String storageSpaceName = readConsole(rs("StorageSpaceCleaner.Wizard.storageSpaceNameMsg"));
 			if (StringUtil.isNotBlank(storageSpaceName)) {
 				setStorageSpaceName(storageSpaceName);
 				validStorageSpaceName = true;
@@ -198,7 +197,7 @@ public class StorageSpaceCleaner extends MtpCuiBase {
 			// テナント存在チェック
 			TenantContext tCtx = tenantContextService.getTenantContext(tenantId);
 			if (tCtx == null) {
-				logError(getResourceMessage("notFoundTenant", tenantId));
+				logError(rs("StorageSpaceCleaner.notFoundTenant", tenantId));
 				return isSuccess();
 			}
 
@@ -206,14 +205,14 @@ public class StorageSpaceCleaner extends MtpCuiBase {
 
 			EntityHandler entityHandler = MetaDataContext.getContext().getMetaDataHandler(EntityHandler.class, EntityService.ENTITY_META_PATH + entityName.replace(".", "/"));
 			if (entityHandler == null) {
-				logError(getResourceMessage("notFoundEntity", entityName));
+				logError(rs("StorageSpaceCleaner.notFoundEntity", entityName));
 				return isSuccess();
 			}
 
 			try {
 				storageSpaceService.cleanup(tenantId, storageSpaceName, entityHandler.getMetaData());
 			} catch (Exception e) {
-				logError(getResourceMessage("failedCleanup"), e);
+				logError(rs("StorageSpaceCleaner.failedCleanup"), e);
 				return isSuccess();
 			}
 
@@ -227,18 +226,6 @@ public class StorageSpaceCleaner extends MtpCuiBase {
 		}
 
 		return isSuccess();
-	}
-
-	/** リソースファイルの接頭語 */
-	private static final String RES_PRE = "StorageSpaceCleaner.";
-	private static final String RES_WIZARD_PRE = RES_PRE + "Wizard.";
-
-	private String getResourceMessage(String suffix, Object... args) {
-		return ToolsBatchResourceBundleUtil.resourceString(getLanguage(), RES_PRE + suffix, args);
-	}
-
-	private String getWizardResourceMessage(String suffix, Object... args) {
-		return ToolsBatchResourceBundleUtil.resourceString(getLanguage(), RES_WIZARD_PRE + suffix, args);
 	}
 
 }

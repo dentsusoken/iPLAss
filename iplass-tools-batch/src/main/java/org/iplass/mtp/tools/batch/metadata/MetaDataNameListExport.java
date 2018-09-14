@@ -23,7 +23,6 @@ import org.iplass.mtp.impl.tools.metaport.MetaDataPortingService;
 import org.iplass.mtp.impl.tools.metaport.XMLEntryInfo;
 import org.iplass.mtp.impl.tools.pack.PackageService;
 import org.iplass.mtp.spi.ServiceRegistry;
-import org.iplass.mtp.tools.ToolsBatchResourceBundleUtil;
 import org.iplass.mtp.tools.batch.ExecMode;
 import org.iplass.mtp.tools.batch.MtpCuiBase;
 import org.iplass.mtp.transaction.Transaction;
@@ -34,10 +33,6 @@ import org.iplass.mtp.util.StringUtil;
  * Export MetaDataXML Name List Batch
  */
 public class MetaDataNameListExport extends MtpCuiBase {
-
-	/** リソースファイルの接頭語 */
-	private static final String RES_WIZARD_PRE = "ExportMetaDataNameList.Wizard.";
-
 
 	//実行モード
 	private ExecMode execMode = ExecMode.WIZARD;
@@ -201,7 +196,7 @@ public class MetaDataNameListExport extends MtpCuiBase {
 			setSuccess(isSuccess);
 
 		} catch (Throwable e) {
-			logError(getCommonResourceMessage("errorMsg", e.getMessage()));
+			logError(rs("Common.errorMsg", e.getMessage()));
 			e.printStackTrace();
 		} finally {
 			logInfo("");
@@ -226,25 +221,25 @@ public class MetaDataNameListExport extends MtpCuiBase {
 		//Importファイル
 		boolean validFile = false;
 		do {
-			String importFileName = readConsole(getImportWizardResourceMessage("inputMetaDataFileMsg"));
+			String importFileName = readConsole(rs("ExportMetaDataNameList.Wizard.inputMetaDataFileMsg"));
 			if (StringUtil.isNotBlank(importFileName)) {
 				param.setMetaDataFilePath(importFileName);
 
 				//存在チェック
 				File importFile = new File(param.getMetaDataFilePath());
 				if (!importFile.exists()) {
-					logWarn(getImportWizardResourceMessage("notExistsMetaDataFileMsg"));
+					logWarn(rs("ExportMetaDataNameList.Wizard.notExistsMetaDataFileMsg"));
 					continue;
 				}
 				if (importFile.isDirectory()) {
-					logWarn(getImportWizardResourceMessage("notFileMsg", param.getMetaDataFilePath()));
+					logWarn(rs("ExportMetaDataNameList.Wizard.notFileMsg", param.getMetaDataFilePath()));
 					continue;
 				}
 
 				validFile = true;
 
 			} else {
-				logWarn(getImportWizardResourceMessage("requiredMetaDataFilePathMsg"));
+				logWarn(rs("ExportMetaDataNameList.Wizard.requiredMetaDataFilePathMsg"));
 			}
 
 		} while(validFile == false);
@@ -252,7 +247,7 @@ public class MetaDataNameListExport extends MtpCuiBase {
 		//出力先ディレクトリ
 		boolean validExportDir = false;
 		do {
-			String exportDirName = readConsole(getImportWizardResourceMessage("inputDirMsg") + "(" + param.getExportDirName() + ")");
+			String exportDirName = readConsole(rs("ExportMetaDataNameList.Wizard.inputDirMsg") + "(" + param.getExportDirName() + ")");
 			if (StringUtil.isNotBlank(exportDirName)) {
 				param.setExportDirName(exportDirName);
 			}
@@ -261,10 +256,10 @@ public class MetaDataNameListExport extends MtpCuiBase {
 			File exportDir = new File(param.getExportDirName());
 			if (!exportDir.exists()) {
 				exportDir.mkdir();
-				logInfo(getImportWizardResourceMessage("createdInputDirMsg", param.getExportDirName()));
+				logInfo(rs("ExportMetaDataNameList.Wizard.createdInputDirMsg", param.getExportDirName()));
 			}
 			if (!exportDir.isDirectory()) {
-				logWarn(getImportWizardResourceMessage("notDirMsg", param.getExportDirName()));
+				logWarn(rs("ExportMetaDataNameList.Wizard.notDirMsg", param.getExportDirName()));
 			} else {
 				param.setExportDir(exportDir);
 				validExportDir = true;
@@ -272,7 +267,7 @@ public class MetaDataNameListExport extends MtpCuiBase {
 		} while(validExportDir == false);
 
 		//出力ファイル名
-		String exportFileName = readConsole(getImportWizardResourceMessage("inputFileNameMsg") + "(" + param.getExportFileName() + ")");
+		String exportFileName = readConsole(rs("ExportMetaDataNameList.Wizard.inputFileNameMsg") + "(" + param.getExportFileName() + ")");
 		if (StringUtil.isNotBlank(exportFileName)) {
 			param.setExportFileName(exportFileName);
 		}
@@ -299,10 +294,6 @@ public class MetaDataNameListExport extends MtpCuiBase {
 		} else {
 			return "";
 		}
-	}
-
-	private String getImportWizardResourceMessage(String suffix, Object... args) {
-		return ToolsBatchResourceBundleUtil.resourceString(getLanguage(), RES_WIZARD_PRE + suffix, args);
 	}
 
 }

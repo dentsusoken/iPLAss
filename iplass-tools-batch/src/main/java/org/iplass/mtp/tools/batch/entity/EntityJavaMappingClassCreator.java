@@ -32,7 +32,6 @@ import org.iplass.mtp.impl.core.TenantContext;
 import org.iplass.mtp.impl.core.TenantContextService;
 import org.iplass.mtp.impl.tools.entity.EntityToolService;
 import org.iplass.mtp.spi.ServiceRegistry;
-import org.iplass.mtp.tools.ToolsBatchResourceBundleUtil;
 import org.iplass.mtp.tools.batch.ExecMode;
 import org.iplass.mtp.tools.batch.MtpCuiBase;
 import org.iplass.mtp.util.StringUtil;
@@ -229,40 +228,40 @@ public class EntityJavaMappingClassCreator extends MtpCuiBase {
 		// TenantId
 		boolean validTenantId = false;
 		do {
-			String tenantId = readConsole(getWizardResourceMessage("tenantIdMsg"));
+			String tenantId = readConsole(rs("EntityJavaMappingClassCreator.Wizard.tenantIdMsg"));
 			if (StringUtil.isNotBlank(tenantId)) {
 				try {
 					setTenantId(Integer.parseInt(tenantId));
 					validTenantId = true;
 				} catch (NumberFormatException e) {
-					logWarn(getWizardResourceMessage("invalidTenantIdMsg", tenantId));
+					logWarn(rs("EntityJavaMappingClassCreator.Wizard.invalidTenantIdMsg", tenantId));
 				}
 			}
 		} while(validTenantId == false);
 
 		// EntityPath
-		String entityPath = readConsole(getWizardResourceMessage("entityPathMsg"));
+		String entityPath = readConsole(rs("EntityJavaMappingClassCreator.Wizard.entityPathMsg"));
 		if (StringUtil.isNotBlank(entityPath)) {
 			setEntityPath(entityPath);
 		}
 
 		// BasePackage
-		String basePackage = readConsole(getWizardResourceMessage("basePackageMsg"));
+		String basePackage = readConsole(rs("EntityJavaMappingClassCreator.Wizard.basePackageMsg"));
 		if (StringUtil.isNotBlank(basePackage)) {
 			setBasePackage(basePackage);
 		}
 
 		// OutDir
-		String outDir = readConsole(getWizardResourceMessage("outDirMsg"));
+		String outDir = readConsole(rs("EntityJavaMappingClassCreator.Wizard.outDirMsg"));
 		if (StringUtil.isNotBlank(outDir)) {
 			setOutDir(outDir);
 		}
 
 		// Recursive
-		setRecursive(readConsoleBoolean(getWizardResourceMessage("recursiveMsg"), isRecursive));
+		setRecursive(readConsoleBoolean(rs("EntityJavaMappingClassCreator.Wizard.recursiveMsg"), isRecursive));
 
 		// Force
-		setForce(readConsoleBoolean(getWizardResourceMessage("forceMsg"), isForce));
+		setForce(readConsoleBoolean(rs("EntityJavaMappingClassCreator.Wizard.forceMsg"), isForce));
 
 		// EntityJavaMappingClassファイル作成処理実行
 		boolean ret = proceed();
@@ -280,7 +279,7 @@ public class EntityJavaMappingClassCreator extends MtpCuiBase {
 			// テナント存在チェック
 			TenantContext tCtx = tenantContextService.getTenantContext(tenantId);
 			if (tCtx == null) {
-				logError(getResourceMessage("notFoundTenant", tenantId));
+				logError(rs("EntityJavaMappingClassCreator.notFoundTenant", tenantId));
 				return isSuccess();
 			}
 
@@ -292,7 +291,7 @@ public class EntityJavaMappingClassCreator extends MtpCuiBase {
 				File file = new File(generateJavaClassFileName(ed.getName()));
 				if (!isForce && file.exists()) {
 					// 上書き確認
-					if (!readConsoleBoolean(getResourceMessage("confirmOverwrite", file.getPath()), false)) {
+					if (!readConsoleBoolean(rs("EntityJavaMappingClassCreator.confirmOverwrite", file.getPath()), false)) {
 						setSuccess(true);
 						return isSuccess();
 					}
@@ -310,7 +309,7 @@ public class EntityJavaMappingClassCreator extends MtpCuiBase {
 					File file = new File(generateJavaClassFileName(it.getName()));
 					if (!isForce && file.exists()) {
 						// 上書き確認
-						if (!readConsoleBoolean(getResourceMessage("confirmOverwrite", file.getPath()), false)) {
+						if (!readConsoleBoolean(rs("EntityJavaMappingClassCreator.confirmOverwrite", file.getPath()), false)) {
 							return;
 						}
 					}
@@ -341,18 +340,6 @@ public class EntityJavaMappingClassCreator extends MtpCuiBase {
 		sb.append(entityName.replace('.', '/')).append(".java");
 
 		return sb.toString();
-	}
-
-	/** リソースファイルの接頭語 */
-	private static final String RES_PRE = "EntityJavaMappingClassCreator.";
-	private static final String RES_WIZARD_PRE = RES_PRE + "Wizard.";
-
-	private String getResourceMessage(String suffix, Object... args) {
-		return ToolsBatchResourceBundleUtil.resourceString(getLanguage(), RES_PRE + suffix, args);
-	}
-
-	private String getWizardResourceMessage(String suffix, Object... args) {
-		return ToolsBatchResourceBundleUtil.resourceString(getLanguage(), RES_WIZARD_PRE + suffix, args);
 	}
 
 }

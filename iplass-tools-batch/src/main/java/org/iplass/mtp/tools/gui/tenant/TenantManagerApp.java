@@ -56,16 +56,15 @@ import org.iplass.mtp.impl.rdb.mysql.MysqlRdbAdaptor;
 import org.iplass.mtp.impl.tools.tenant.TenantInfo;
 import org.iplass.mtp.impl.tools.tenant.TenantToolService;
 import org.iplass.mtp.spi.ServiceRegistry;
-import org.iplass.mtp.tools.ToolsBatchResourceBundleUtil;
+import org.iplass.mtp.tools.gui.MtpJFrameBase;
 import org.iplass.mtp.tools.gui.partition.MySQLPartitionManagerApp;
 import org.iplass.mtp.tools.gui.widget.menu.BasicMenuBar;
 
-@SuppressWarnings("serial")
-public class TenantManagerApp extends JFrame {
+public class TenantManagerApp extends MtpJFrameBase {
+
+	private static final long serialVersionUID = -8414236309660247814L;
 
 	private TenantToolService tenantToolService;
-
-	private String language;
 
 	private JButton btnRefresh;
 	private TenantTableModel model;
@@ -73,8 +72,6 @@ public class TenantManagerApp extends JFrame {
 
 	/**
 	 * Launch the application.
-	 *
-	 * args[0]・・・language
 	 */
 	public static void main(final String[] args) {
 
@@ -87,16 +84,7 @@ public class TenantManagerApp extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					String language = null;
-					if (args != null) {
-						if (args.length > 0) {
-							if (!"system".equals(args[0])) {
-								language = args[0];
-							}
-						}
-					}
-
-					TenantManagerApp frame = new TenantManagerApp(language);
+					TenantManagerApp frame = new TenantManagerApp();
 
 //					frame.setExtendedState(Frame.MAXIMIZED_BOTH);	//最大化
 					frame.setLocationRelativeTo(null);//中央表示
@@ -109,8 +97,7 @@ public class TenantManagerApp extends JFrame {
 		});
 	}
 
-	public TenantManagerApp(String language) {
-		setLanguage(language);
+	public TenantManagerApp() {
 
 		setTitle("Tenant Manager");
 
@@ -140,14 +127,6 @@ public class TenantManagerApp extends JFrame {
 		});
 	}
 
-	private String getLanguage() {
-		return language;
-	}
-
-	private void setLanguage(String language) {
-		this.language = language;
-	}
-
 	private JPanel createHeaderPane() {
 
 		JPanel headerPane = new JPanel();
@@ -161,7 +140,7 @@ public class TenantManagerApp extends JFrame {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				TenantCreateDialog dialog = new TenantCreateDialog(TenantManagerApp.this, getLanguage());
+				TenantCreateDialog dialog = new TenantCreateDialog(TenantManagerApp.this);
 				dialog.setModal(true);
 				dialog.addTenantDataChangeListner(new ChangeListener() {
 
@@ -186,7 +165,7 @@ public class TenantManagerApp extends JFrame {
 							"WARN", JOptionPane.WARNING_MESSAGE);
 					return;
 				}
-				TenantDeleteDialog dialog = new TenantDeleteDialog(TenantManagerApp.this, getLanguage());
+				TenantDeleteDialog dialog = new TenantDeleteDialog(TenantManagerApp.this);
 				dialog.setTenantInfo(selected);
 				dialog.setModal(true);
 				dialog.addTenantDataChangeListner(new ChangeListener() {
@@ -211,7 +190,7 @@ public class TenantManagerApp extends JFrame {
 
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					MySQLPartitionManagerApp.main(new String[]{getLanguage()});
+					MySQLPartitionManagerApp.main(new String[]{});
 
 					//自身を消す
 					dispose();
@@ -317,6 +296,8 @@ public class TenantManagerApp extends JFrame {
 	}
 
 	private class TenantTableModel extends DefaultTableModel {
+
+		private static final long serialVersionUID = 3473483302496226680L;
 
 		private List<TenantInfo> data;
 		private List<Boolean> isSelects;
@@ -466,25 +447,17 @@ public class TenantManagerApp extends JFrame {
 				txtCount.setText(String.valueOf(result.size()));
 			} catch (ExecutionException e) {
 				e.printStackTrace();
-				JOptionPane.showMessageDialog(TenantManagerApp.this, getCommonResourceMessage("errorMsg"),
+				JOptionPane.showMessageDialog(TenantManagerApp.this, rs("Common.errorMsg"),
 						"ERROR", JOptionPane.ERROR_MESSAGE);
             } catch (InterruptedException e) {
 				e.printStackTrace();
-				JOptionPane.showMessageDialog(TenantManagerApp.this, getCommonResourceMessage("errorMsg"),
+				JOptionPane.showMessageDialog(TenantManagerApp.this, rs("Common.errorMsg"),
 						"ERROR", JOptionPane.ERROR_MESSAGE);
 			}
     		btnRefresh.setText("Refresh List");
     		btnRefresh.setEnabled(true);
 		}
 
-	}
-
-	private String rs(String key, Object... args) {
-		return ToolsBatchResourceBundleUtil.resourceString(getLanguage(), key, args);
-	}
-
-	private String getCommonResourceMessage(String subKey, Object... args) {
-		return ToolsBatchResourceBundleUtil.commonResourceString(getLanguage(), subKey, args);
 	}
 
 }

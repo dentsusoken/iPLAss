@@ -1,19 +1,19 @@
 /*
  * Copyright (C) 2016 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
- * 
+ *
  * Unless you have purchased a commercial license,
  * the following license terms apply:
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
@@ -57,21 +57,17 @@ import org.iplass.mtp.impl.rdb.adapter.RdbAdapterService;
 import org.iplass.mtp.impl.rdb.mysql.MysqlRdbAdaptor;
 import org.iplass.mtp.impl.tools.tenant.PartitionCreateParameter;
 import org.iplass.mtp.spi.ServiceRegistry;
-import org.iplass.mtp.tools.ToolsBatchResourceBundleUtil;
 import org.iplass.mtp.tools.batch.partition.MySQLPartitionBatch;
 import org.iplass.mtp.tools.batch.tenant.TenantBatch.TenantBatchExecMode;
+import org.iplass.mtp.tools.gui.MtpJDialogBase;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@SuppressWarnings("serial")
-public class PartitionCreateDialog extends JDialog {
+public class PartitionCreateDialog extends MtpJDialogBase {
+
+	private static final long serialVersionUID = 3059528383221001309L;
 
 	private static Logger logger = LoggerFactory.getLogger(PartitionCreateDialog.class);
-
-	/** リソースファイルの接頭語 */
-	private static final String RES_PRE = "MySQLPartitionManagerApp.PartitionCreateDialog.";
-
-	private String language;
 
 	private JTextField txtMaxTenantId;
 	private JCheckBox chkMySQLSubPartition;
@@ -83,24 +79,14 @@ public class PartitionCreateDialog extends JDialog {
 
 	private List<ChangeListener> dataChangeListners = new ArrayList<ChangeListener>();
 
-	public PartitionCreateDialog(Frame owner, String language) {
+	public PartitionCreateDialog(Frame owner) {
 		super(owner);
-
-		setLanguage(language);
 
 		createDialog();
 	}
 
 	public void addPartitionDataChangeListner(ChangeListener listner) {
 		dataChangeListners.add(listner);
-	}
-
-	private String getLanguage() {
-		return language;
-	}
-
-	private void setLanguage(String language) {
-		this.language = language;
 	}
 
 	private void createDialog() {
@@ -134,10 +120,10 @@ public class PartitionCreateDialog extends JDialog {
 		JPanel messagePane = new JPanel();
 		messagePane.setLayout(new BoxLayout(messagePane, BoxLayout.Y_AXIS));
 
-		JLabel lblInfo1 = new JLabel(getResourceMessage("createPartitionLabel"));
+		JLabel lblInfo1 = new JLabel(rs("MySQLPartitionManagerApp.PartitionCreateDialog.createPartitionLabel"));
 		messagePane.add(lblInfo1);
 
-		JLabel lblInfo2 = new JLabel(getResourceMessage("warnAlterTablePermissionLabel"));
+		JLabel lblInfo2 = new JLabel(rs("MySQLPartitionManagerApp.PartitionCreateDialog.warnAlterTablePermissionLabel"));
 		lblInfo2.setForeground(Color.RED);
 		messagePane.add(lblInfo2);
 
@@ -267,13 +253,14 @@ public class PartitionCreateDialog extends JDialog {
 					//numチェック
 					Integer.parseInt(txtMaxTenantId.getText());
 				} catch (NumberFormatException ex) {
-					JOptionPane.showMessageDialog(PartitionCreateDialog.this, getResourceMessage("inputMaxTenantIdMsg"),
+					JOptionPane.showMessageDialog(PartitionCreateDialog.this,
+							rs("MySQLPartitionManagerApp.PartitionCreateDialog.inputMaxTenantIdMsg"),
 							"ERROR", JOptionPane.ERROR_MESSAGE);
 					return;
 				}
 
 				if (JOptionPane.showConfirmDialog(PartitionCreateDialog.this,
-						getResourceMessage("confirmCreatePartitionMsg"),
+						rs("MySQLPartitionManagerApp.PartitionCreateDialog.confirmCreatePartitionMsg"),
 						"CONFIRM", JOptionPane.YES_NO_OPTION,
 						JOptionPane.QUESTION_MESSAGE) != JOptionPane.YES_OPTION) {
 					return;
@@ -306,7 +293,7 @@ public class PartitionCreateDialog extends JDialog {
 		JScrollPane sclMessagePane = new JScrollPane();
 		txtMessageArea = new JTextArea();
 		txtMessageArea.setEditable(false);
-		txtMessageArea.setFont(new Font(getResourceMessage("messageFont"), Font.PLAIN, 10));
+		txtMessageArea.setFont(new Font(rs("MySQLPartitionManagerApp.PartitionCreateDialog.messageFont"), Font.PLAIN, 10));
 		txtMessageArea.setRows(20);
 		sclMessagePane.setViewportView(txtMessageArea);
 		tabMessagePane.addTab("Log", sclMessagePane);
@@ -334,7 +321,7 @@ public class PartitionCreateDialog extends JDialog {
 		protected Boolean doInBackground() throws Exception {
 
 			try {
-				MySQLPartitionBatch manager = new MySQLPartitionBatch(TenantBatchExecMode.CREATE.name(), getLanguage());
+				MySQLPartitionBatch manager = new MySQLPartitionBatch(TenantBatchExecMode.CREATE.name());
 				manager.addLogListner(new MySQLPartitionBatch.LogListner() {
 
 					@Override
@@ -375,7 +362,7 @@ public class PartitionCreateDialog extends JDialog {
 				});
 
 
-				publish(getResourceMessage("startCreatePartitionLog"));
+				publish(rs("MySQLPartitionManagerApp.PartitionCreateDialog.startCreatePartitionLog"));
 
 				manager.createPartition(createParameter());
 
@@ -403,19 +390,20 @@ public class PartitionCreateDialog extends JDialog {
 				Boolean isSuccess = get();
 
 				if (isSuccess) {
-					JOptionPane.showMessageDialog(PartitionCreateDialog.this, getResourceMessage("createCompleteMsg"),
+					JOptionPane.showMessageDialog(PartitionCreateDialog.this,
+							rs("MySQLPartitionManagerApp.PartitionCreateDialog.createCompleteMsg"),
 							"INFO", JOptionPane.INFORMATION_MESSAGE);
 
 					firePartitionDataChanged();
 				} else {
-					JOptionPane.showMessageDialog(PartitionCreateDialog.this, getCommonResourceMessage("errorMsg"),
+					JOptionPane.showMessageDialog(PartitionCreateDialog.this, rs("Common.errorMsg"),
 							"ERROR", JOptionPane.ERROR_MESSAGE);
 				}
 			} catch (Exception e) {
-				addLog(getCommonResourceMessage("errorMsg"));
+				addLog(rs("Common.errorMsg"));
 				addLog(e.getMessage());
 
-				JOptionPane.showMessageDialog(PartitionCreateDialog.this, getCommonResourceMessage("errorMsg"),
+				JOptionPane.showMessageDialog(PartitionCreateDialog.this, rs("Common.errorMsg"),
 						"ERROR", JOptionPane.ERROR_MESSAGE);
 			}
 			btnCreate.setText("Create");
@@ -443,11 +431,4 @@ public class PartitionCreateDialog extends JDialog {
 		}
 	}
 
-	private String getResourceMessage(String suffix, Object... args) {
-		return ToolsBatchResourceBundleUtil.resourceString(getLanguage(), RES_PRE + suffix, args);
-	}
-
-	private String getCommonResourceMessage(String subKey, Object... args) {
-		return ToolsBatchResourceBundleUtil.commonResourceString(getLanguage(), subKey, args);
-	}
 }

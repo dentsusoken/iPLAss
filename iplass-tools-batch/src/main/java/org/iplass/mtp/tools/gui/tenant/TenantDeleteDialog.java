@@ -58,18 +58,17 @@ import org.iplass.mtp.impl.rdb.mysql.MysqlRdbAdaptor;
 import org.iplass.mtp.impl.tools.tenant.TenantDeleteParameter;
 import org.iplass.mtp.impl.tools.tenant.TenantInfo;
 import org.iplass.mtp.spi.ServiceRegistry;
-import org.iplass.mtp.tools.ToolsBatchResourceBundleUtil;
 import org.iplass.mtp.tools.batch.tenant.TenantBatch;
 import org.iplass.mtp.tools.batch.tenant.TenantBatch.TenantBatchExecMode;
+import org.iplass.mtp.tools.gui.MtpJDialogBase;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@SuppressWarnings("serial")
-public class TenantDeleteDialog extends JDialog {
+public class TenantDeleteDialog extends MtpJDialogBase {
+
+	private static final long serialVersionUID = 4144178376940227935L;
 
 	private static Logger logger = LoggerFactory.getLogger(TenantDeleteDialog.class);
-
-	private String language;
 
 	private TenantDialogTableModel model;
 
@@ -82,10 +81,8 @@ public class TenantDeleteDialog extends JDialog {
 
 	private List<ChangeListener> dataChangeListners = new ArrayList<ChangeListener>();
 
-	public TenantDeleteDialog(Frame owner, String language) {
+	public TenantDeleteDialog(Frame owner) {
 		super(owner);
-
-		setLanguage(language);
 
 		createDialog();
 	}
@@ -97,14 +94,6 @@ public class TenantDeleteDialog extends JDialog {
 	public void setTenantInfo(List<TenantInfo> infos) {
 		model.setTenantData(infos);
 		model.fireTableDataChanged();
-	}
-
-	private String getLanguage() {
-		return language;
-	}
-
-	private void setLanguage(String language) {
-		this.language = language;
 	}
 
 	private void createDialog() {
@@ -181,6 +170,7 @@ public class TenantDeleteDialog extends JDialog {
 
 		model = new TenantDialogTableModel();
 
+		@SuppressWarnings("serial")
 		JTable tblTenantList = new JTable(model) {};
 		tblTenantList.setAutoResizeMode(JTable.AUTO_RESIZE_LAST_COLUMN);
 
@@ -361,7 +351,7 @@ public class TenantDeleteDialog extends JDialog {
 
 			TenantBatch manager = null;
 			try {
-				manager = new TenantBatch(TenantBatchExecMode.DELETE.name(), getLanguage());
+				manager = new TenantBatch(TenantBatchExecMode.DELETE.name());
 				manager.addLogListner(new TenantBatch.LogListner() {
 
 					@Override
@@ -437,19 +427,20 @@ public class TenantDeleteDialog extends JDialog {
 				Boolean isSuccess = get();
 
 				if (isSuccess) {
-					JOptionPane.showMessageDialog(TenantDeleteDialog.this, rs("TenantManagerApp.TenantDeleteDialog.removeCompleteMsg"),
+					JOptionPane.showMessageDialog(TenantDeleteDialog.this,
+							rs("TenantManagerApp.TenantDeleteDialog.removeCompleteMsg"),
 							"INFO", JOptionPane.INFORMATION_MESSAGE);
 
 					fireTenantDataChanged();
 				} else {
-					JOptionPane.showMessageDialog(TenantDeleteDialog.this, getCommonResourceMessage("errorMsg"),
+					JOptionPane.showMessageDialog(TenantDeleteDialog.this, rs("Common.errorMsg"),
 							"ERROR", JOptionPane.ERROR_MESSAGE);
 				}
 			} catch (Exception e) {
-				addLog(getCommonResourceMessage("errorMsg"));
+				addLog(rs("Common.errorMsg"));
 				addLog(e.getMessage());
 
-				JOptionPane.showMessageDialog(TenantDeleteDialog.this, getCommonResourceMessage("errorMsg"),
+				JOptionPane.showMessageDialog(TenantDeleteDialog.this, rs("Common.errorMsg"),
 						"ERROR", JOptionPane.ERROR_MESSAGE);
 			}
 			btnDelete.setText("Remove");
@@ -479,11 +470,4 @@ public class TenantDeleteDialog extends JDialog {
 		}
 	}
 
-	private String rs(String key, Object... args) {
-		return ToolsBatchResourceBundleUtil.resourceString(getLanguage(), key, args);
-	}
-
-	private String getCommonResourceMessage(String subKey, Object... args) {
-		return ToolsBatchResourceBundleUtil.commonResourceString(getLanguage(), subKey, args);
-	}
 }
