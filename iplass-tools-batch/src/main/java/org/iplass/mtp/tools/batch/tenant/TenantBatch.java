@@ -28,7 +28,6 @@ import org.iplass.mtp.impl.tools.tenant.TenantInfo;
 import org.iplass.mtp.impl.tools.tenant.TenantToolService;
 import org.iplass.mtp.impl.tools.tenant.log.LogHandler;
 import org.iplass.mtp.spi.ServiceRegistry;
-import org.iplass.mtp.tools.ToolsBatchResourceBundleUtil;
 import org.iplass.mtp.tools.batch.MtpCuiBase;
 import org.iplass.mtp.tools.gui.tenant.TenantManagerApp;
 import org.iplass.mtp.util.StringUtil;
@@ -149,7 +148,7 @@ public class TenantBatch extends MtpCuiBase {
 			setSuccess(isSuccess);
 
 		} catch (Throwable e) {
-			logError(getCommonResourceMessage("errorMsg", e.getMessage()), e);
+			logError(rs("Common.errorMsg", e.getMessage()), e);
 		} finally {
 			logInfo("");
 			logInfo("■Execute Result :" + (isSuccess() ? "SUCCESS" : "FAILED"));
@@ -310,7 +309,7 @@ public class TenantBatch extends MtpCuiBase {
 			setSuccess(isSuccess);
 
 		} catch (Throwable e) {
-			logError(getCommonResourceMessage("errorMsg", e.getMessage()));
+			logError(rs("Common.errorMsg", e.getMessage()));
 		} finally {
 			logInfo("");
 			logInfo("■Execute Result :" + (isSuccess() ? "SUCCESS" : "FAILED"));
@@ -345,7 +344,7 @@ public class TenantBatch extends MtpCuiBase {
 	private boolean startDeleteWizard() {
 
 		//テナントURL
-		String tenantUrl = readConsole(getCommonResourceMessage("inputTenantUrlMsg"));
+		String tenantUrl = readConsole(rs("Common.inputTenantUrlMsg"));
 
 		if (StringUtil.isEmpty(tenantUrl) || tenantUrl.equalsIgnoreCase("-show")) {
 			//一覧を出力
@@ -361,7 +360,7 @@ public class TenantBatch extends MtpCuiBase {
 		//存在チェック
 		TenantInfo tenant = toolService.getTenantInfo(tenantUrl);
 		if (tenant == null) {
-			logWarn(getCommonResourceMessage("notExistsTenantMsg", tenantUrl));
+			logWarn(rs("Common.notExistsTenantMsg", tenantUrl));
 			return startDeleteWizard();
 		}
 
@@ -396,10 +395,6 @@ public class TenantBatch extends MtpCuiBase {
 		removeLogListner(loggingListner);
 
 		return ret;
-	}
-
-	private String rs(String key, Object... args) {
-		return ToolsBatchResourceBundleUtil.resourceString(getLanguage(), key, args);
 	}
 
 	private class TenantBatchLogListener implements LogHandler {

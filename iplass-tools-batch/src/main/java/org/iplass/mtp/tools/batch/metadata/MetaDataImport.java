@@ -31,7 +31,6 @@ import org.iplass.mtp.impl.tools.metaport.MetaDataPortingService;
 import org.iplass.mtp.impl.tools.metaport.XMLEntryInfo;
 import org.iplass.mtp.spi.ServiceRegistry;
 import org.iplass.mtp.tenant.Tenant;
-import org.iplass.mtp.tools.ToolsBatchResourceBundleUtil;
 import org.iplass.mtp.tools.batch.ExecMode;
 import org.iplass.mtp.tools.batch.MtpCuiBase;
 import org.iplass.mtp.tools.batch.pack.PackageExport;
@@ -201,7 +200,7 @@ public class MetaDataImport extends MtpCuiBase {
 									logInfo("");
 								}
 
-								logError(getCommonResourceMessage("errorMsg", ""));
+								logError(rs("Common.errorMsg", ""));
 								return false;
 							}
 
@@ -225,7 +224,7 @@ public class MetaDataImport extends MtpCuiBase {
 			setSuccess(isSuccess);
 
 		} catch (Throwable e) {
-			logError(getCommonResourceMessage("errorMsg", e.getMessage()));
+			logError(rs("Common.errorMsg", e.getMessage()));
 		}
 
 		return isSuccess();
@@ -263,16 +262,16 @@ public class MetaDataImport extends MtpCuiBase {
 			//引数でテナントIDが指定されている場合
 			tenant = ts.getTenant(tenantId);
 			if (tenant == null) {
-				logWarn(getCommonResourceMessage("notExistsTenantIdMsg", tenantId));
+				logWarn(rs("Common.notExistsTenantIdMsg", tenantId));
 				tenantId = null;
 				return wizard();
 			}
 		} else {
 			//テナントURL
-			String tenantUrl = readConsole(getCommonResourceMessage("inputTenantUrlMsg"));
+			String tenantUrl = readConsole(rs("Common.inputTenantUrlMsg"));
 
 			if (StringUtil.isEmpty(tenantUrl)) {
-				logWarn(getCommonResourceMessage("requiredTenantUrlMsg"));
+				logWarn(rs("Common.requiredTenantUrlMsg"));
 				return wizard();
 			}
 			if (tenantUrl.equalsIgnoreCase("-show")) {
@@ -290,7 +289,7 @@ public class MetaDataImport extends MtpCuiBase {
 			String url = tenantUrl.startsWith("/") ? tenantUrl : "/" + tenantUrl;
 			tenant = ts.getTenant(url);
 			if (tenant == null) {
-				logWarn(getCommonResourceMessage("notExistsTenantMsg", tenantUrl));
+				logWarn(rs("Common.notExistsTenantMsg", tenantUrl));
 				return wizard();
 			}
 		}
@@ -343,7 +342,7 @@ public class MetaDataImport extends MtpCuiBase {
 							showMetaDataPathList(param.getMetaDataPaths());
 						}
 					}
-					boolean isContinue = readConsoleBoolean(getCommonResourceMessage("continueMsg"), true);
+					boolean isContinue = readConsoleBoolean(rs("Common.continueMsg"), true);
 					if (!isContinue) {
 						continue;
 					}
@@ -441,7 +440,7 @@ public class MetaDataImport extends MtpCuiBase {
 			//引数でテナントIDが指定されている場合
 			tenant = ts.getTenant(tenantId);
 			if (tenant == null) {
-				logError(getCommonResourceMessage("notExistsTenantIdMsg", tenantId));
+				logError(rs("Common.notExistsTenantIdMsg", tenantId));
 				return false;
 			}
 		} else {
@@ -450,7 +449,7 @@ public class MetaDataImport extends MtpCuiBase {
 			if (StringUtil.isNotEmpty(propTenantId)) {
 				tenant = ts.getTenant(Integer.parseInt(propTenantId));
 				if (tenant == null) {
-					logError(getCommonResourceMessage("notExistsTenantIdMsg", propTenantId));
+					logError(rs("Common.notExistsTenantIdMsg", propTenantId));
 					return false;
 				}
 			}
@@ -462,13 +461,13 @@ public class MetaDataImport extends MtpCuiBase {
 					}
 					tenant = ts.getTenant(propTenantUrl);
 					if (tenant == null) {
-						logError(getCommonResourceMessage("notExistsTenantUrlMsg", propTenantUrl));
+						logError(rs("Common.notExistsTenantUrlMsg", propTenantUrl));
 						return false;
 					}
 				}
 			}
 			if (tenant == null) {
-				logError(getCommonResourceMessage("requiredMsg", PROP_TENANT_ID + " or " + PROP_TENANT_URL));
+				logError(rs("Common.requiredMsg", PROP_TENANT_ID + " or " + PROP_TENANT_URL));
 				return false;
 			}
 		}
@@ -485,7 +484,7 @@ public class MetaDataImport extends MtpCuiBase {
 				importFilePath = prop.getProperty(PROP_IMPORT_FILE);
 			}
 			if (StringUtil.isEmpty(importFilePath)) {
-				logError(getCommonResourceMessage("requiredMsg", PROP_IMPORT_FILE));
+				logError(rs("Common.requiredMsg", PROP_IMPORT_FILE));
 				return false;
 			}
 
@@ -586,10 +585,6 @@ public class MetaDataImport extends MtpCuiBase {
 			logInfo(path);
 		}
 		logInfo("-----------------------------------------------------------");
-	}
-
-	private String rs(String key, Object... args) {
-		return ToolsBatchResourceBundleUtil.resourceString(getLanguage(), key, args);
 	}
 
 }

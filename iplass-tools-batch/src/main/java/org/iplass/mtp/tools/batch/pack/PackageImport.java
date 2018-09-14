@@ -37,7 +37,6 @@ import org.iplass.mtp.impl.tools.pack.PackageRuntimeException;
 import org.iplass.mtp.impl.tools.pack.PackageService;
 import org.iplass.mtp.spi.ServiceRegistry;
 import org.iplass.mtp.tenant.Tenant;
-import org.iplass.mtp.tools.ToolsBatchResourceBundleUtil;
 import org.iplass.mtp.tools.batch.ExecMode;
 import org.iplass.mtp.tools.batch.MtpCuiBase;
 import org.iplass.mtp.transaction.Transaction;
@@ -225,7 +224,7 @@ public class PackageImport extends MtpCuiBase {
 										logInfo("");
 									}
 
-									logError(getCommonResourceMessage("errorMsg", ""));
+									logError(rs("Common.errorMsg", ""));
 									return false;
 								}
 
@@ -296,7 +295,7 @@ public class PackageImport extends MtpCuiBase {
 
 										//エラースキップしない場合は、ここで終了
 										if (!param.getEntityImportCondition().isErrorSkip()) {
-											logError(getCommonResourceMessage("errorMsg", ""));
+											logError(rs("Common.errorMsg", ""));
 											return false;
 										}
 										logInfo(rs("PackageImport.continueLog"));
@@ -350,7 +349,7 @@ public class PackageImport extends MtpCuiBase {
 			setSuccess(isSuccess);
 
 		} catch (Throwable e) {
-			logError(getCommonResourceMessage("errorMsg", e.getMessage()));
+			logError(rs("Common.errorMsg", e.getMessage()));
 		}
 
 		return isSuccess();
@@ -439,16 +438,16 @@ public class PackageImport extends MtpCuiBase {
 			//引数でテナントIDが指定されている場合
 			tenant = ts.getTenant(tenantId);
 			if (tenant == null) {
-				logWarn(getCommonResourceMessage("notExistsTenantIdMsg", tenantId));
+				logWarn(rs("Common.notExistsTenantIdMsg", tenantId));
 				tenantId = null;
 				return wizard();
 			}
 		} else {
 			//テナントURL
-			String tenantUrl = readConsole(getCommonResourceMessage("inputTenantUrlMsg"));
+			String tenantUrl = readConsole(rs("Common.inputTenantUrlMsg"));
 
 			if (StringUtil.isEmpty(tenantUrl)) {
-				logWarn(getCommonResourceMessage("requiredTenantUrlMsg"));
+				logWarn(rs("Common.requiredTenantUrlMsg"));
 				return wizard();
 			}
 			if (tenantUrl.equalsIgnoreCase("-show")) {
@@ -466,7 +465,7 @@ public class PackageImport extends MtpCuiBase {
 			String url = tenantUrl.startsWith("/") ? tenantUrl : "/" + tenantUrl;
 			tenant = ts.getTenant(url);
 			if (tenant == null) {
-				logWarn(getCommonResourceMessage("notExistsTenantMsg", tenantUrl));
+				logWarn(rs("Common.notExistsTenantMsg", tenantUrl));
 				return wizard();
 			}
 		}
@@ -535,7 +534,7 @@ public class PackageImport extends MtpCuiBase {
 								showMetaDataPathList(packInfo);
 							}
 						}
-						boolean isContinue = readConsoleBoolean(getCommonResourceMessage("continueMsg"), true);
+						boolean isContinue = readConsoleBoolean(rs("Common.continueMsg"), true);
 						if (!isContinue) {
 							continue;
 						}
@@ -550,7 +549,7 @@ public class PackageImport extends MtpCuiBase {
 								showEntityDataPathList(packInfo);
 							}
 						}
-						isContinue = readConsoleBoolean(getCommonResourceMessage("continueMsg"), true);
+						isContinue = readConsoleBoolean(rs("Common.continueMsg"), true);
 						if (!isContinue) {
 							continue;
 						}
@@ -733,7 +732,7 @@ public class PackageImport extends MtpCuiBase {
 			//引数でテナントIDが指定されている場合
 			tenant = ts.getTenant(tenantId);
 			if (tenant == null) {
-				logError(getCommonResourceMessage("notExistsTenantIdMsg", tenantId));
+				logError(rs("Common.notExistsTenantIdMsg", tenantId));
 				return false;
 			}
 		} else {
@@ -742,7 +741,7 @@ public class PackageImport extends MtpCuiBase {
 			if (StringUtil.isNotEmpty(propTenantId)) {
 				tenant = ts.getTenant(Integer.parseInt(propTenantId));
 				if (tenant == null) {
-					logError(getCommonResourceMessage("notExistsTenantIdMsg", propTenantId));
+					logError(rs("Common.notExistsTenantIdMsg", propTenantId));
 					return false;
 				}
 			}
@@ -754,13 +753,13 @@ public class PackageImport extends MtpCuiBase {
 					}
 					tenant = ts.getTenant(propTenantUrl);
 					if (tenant == null) {
-						logError(getCommonResourceMessage("notExistsTenantUrlMsg", propTenantUrl));
+						logError(rs("Common.notExistsTenantUrlMsg", propTenantUrl));
 						return false;
 					}
 				}
 			}
 			if (tenant == null) {
-				logError(getCommonResourceMessage("requiredMsg", PROP_TENANT_ID + " or " + PROP_TENANT_URL));
+				logError(rs("Common.requiredMsg", PROP_TENANT_ID + " or " + PROP_TENANT_URL));
 				return false;
 			}
 		}
@@ -787,7 +786,7 @@ public class PackageImport extends MtpCuiBase {
 				importFilePath = prop.getProperty(PROP_IMPORT_FILE);
 			}
 			if (StringUtil.isEmpty(importFilePath)) {
-				logError(getCommonResourceMessage("requiredMsg", PROP_IMPORT_FILE));
+				logError(rs("Common.requiredMsg", PROP_IMPORT_FILE));
 				return false;
 			}
 
@@ -913,10 +912,6 @@ public class PackageImport extends MtpCuiBase {
 			return false;
 		}
 		return true;
-	}
-
-	private String rs(String key, Object... args) {
-		return ToolsBatchResourceBundleUtil.resourceString(getLanguage(), key, args);
 	}
 
 }

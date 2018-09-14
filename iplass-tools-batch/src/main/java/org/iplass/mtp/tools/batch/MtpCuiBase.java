@@ -27,7 +27,7 @@ import java.io.InputStreamReader;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
+import java.util.ResourceBundle;
 
 import org.iplass.mtp.SystemException;
 import org.iplass.mtp.impl.core.ExecuteContext;
@@ -45,9 +45,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public abstract class MtpCuiBase {
-
-	/** バッチ実行言語 VM KEY */
-	public static final String KEY_BAT_LANG = "batch.language";
 
 	/** サイレントモードで実行する場合の引数値 */
 	public static final String SILENT_MODE = "silent";
@@ -71,8 +68,10 @@ public abstract class MtpCuiBase {
 	/** 言語(locale名) */
 	private String language;
 
+	/** リソースバンドル */
+	private ResourceBundle resourceBundle;
+
 	public MtpCuiBase() {
-		//言語設定
 		setupLanguage();
 	}
 
@@ -421,6 +420,26 @@ public abstract class MtpCuiBase {
 		}
 	}
 
+	private void setupLanguage() {
+
+		language = ToolsBatchResourceBundleUtil.getLanguage();
+		resourceBundle = ToolsBatchResourceBundleUtil.getResourceBundle(language);
+
+		ExecuteContext context = ExecuteContext.getCurrentContext();
+		context.setLanguage(language);
+	}
+
+	/**
+	 * メッセージを返します。
+	 *
+	 * @param key メッセージKEY
+	 * @param args 引数
+	 * @return メッセージ
+	 */
+	protected String rs(String key, Object... args) {
+		return ToolsBatchResourceBundleUtil.resourceString(resourceBundle, key, args);
+	}
+
 	public interface LogListner {
 		default void debug(String message) {};
 		void info(String message);
@@ -484,31 +503,6 @@ public abstract class MtpCuiBase {
 			error(message);
 		}
 
-	}
-
-	private void setupLanguage() {
-
-		String lang = System.getProperty(KEY_BAT_LANG);
-
-		if (StringUtil.isEmpty(lang) || "system".equals(lang.toLowerCase())) {
-			//Systemのデフォルトを取得
-			lang = Locale.getDefault().getLanguage();
-		}
-		lang = lang.toLowerCase();
-
-		//enまたはja以外の場合はenにする
-		if (!"ja".equals(lang) && !"en".equals(lang)) {
-			lang = "en";
-		}
-
-		this.language = lang;
-
-		ExecuteContext eContext = ExecuteContext.getCurrentContext();
-		eContext.setLanguage(lang);
-	}
-
-	protected String getCommonResourceMessage(String subKey, Object... args) {
-		return ToolsBatchResourceBundleUtil.commonResourceString(getLanguage(), subKey, args);
 	}
 
 }

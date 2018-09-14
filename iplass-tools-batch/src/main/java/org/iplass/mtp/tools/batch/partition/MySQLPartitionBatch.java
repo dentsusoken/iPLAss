@@ -28,15 +28,11 @@ import org.iplass.mtp.impl.tools.tenant.PartitionInfo;
 import org.iplass.mtp.impl.tools.tenant.TenantToolService;
 import org.iplass.mtp.impl.tools.tenant.log.LogHandler;
 import org.iplass.mtp.spi.ServiceRegistry;
-import org.iplass.mtp.tools.ToolsBatchResourceBundleUtil;
 import org.iplass.mtp.tools.batch.MtpCuiBase;
 import org.iplass.mtp.tools.gui.partition.MySQLPartitionManagerApp;
 import org.iplass.mtp.util.StringUtil;
 
 public class MySQLPartitionBatch extends MtpCuiBase {
-
-	/** リソースファイルの接頭語(Create) */
-	private static final String RES_CREATE_PRE = "MySQLPartitionManager.Create.";
 
 	/** 実行モード */
 	public enum MySQLPartitionBatchExecMode {GUI, CREATE};
@@ -179,7 +175,7 @@ public class MySQLPartitionBatch extends MtpCuiBase {
 			setSuccess(isSuccess);
 
 		} catch (Throwable e) {
-			logError(getCommonResourceMessage("errorMsg", e.getMessage()), e);
+			logError(rs("Common.errorMsg", e.getMessage()), e);
 		} finally {
 			logInfo("");
 			logInfo("■Execute Result :" + (isSuccess() ? "SUCCESS" : "FAILED"));
@@ -192,10 +188,10 @@ public class MySQLPartitionBatch extends MtpCuiBase {
 	private boolean startCreateWizard() {
 
 		//MaxテナントID
-		String strMaxTenantId = readConsole(getCreateResourceMessage("inputMaxTenantIdMsg"));
+		String strMaxTenantId = readConsole(rs("MySQLPartitionManager.Create.inputMaxTenantIdMsg"));
 
 		if (StringUtil.isEmpty(strMaxTenantId)) {
-			logWarn(getCreateResourceMessage("requiredMaxTenantIdMsg"));
+			logWarn(rs("MySQLPartitionManager.Create.requiredMaxTenantIdMsg"));
 			return startCreateWizard();
 		}
 		if (strMaxTenantId.equalsIgnoreCase("-show")) {
@@ -215,18 +211,18 @@ public class MySQLPartitionBatch extends MtpCuiBase {
 			int maxTenantId = Integer.parseInt(strMaxTenantId);
 			param.setTenantId(maxTenantId);
 		} catch (Exception e) {
-			logWarn(getCreateResourceMessage("warnMaxTenantIdMsg"));
+			logWarn(rs("MySQLPartitionManager.Create.warnMaxTenantIdMsg"));
 			return startCreateWizard();
 		}
 
 		//サブパーティション利用有無
-		boolean isUseSubPartition = readConsoleBoolean(getCreateResourceMessage("useSubPartitionMsg"), param.isMySqlUseSubPartition());
+		boolean isUseSubPartition = readConsoleBoolean(rs("MySQLPartitionManager.Create.useSubPartitionMsg"), param.isMySqlUseSubPartition());
 		param.setMySqlUseSubPartition(isUseSubPartition);
 
 		//実行情報出力
 		logArguments(param);
 
-		boolean isExecute = readConsoleBoolean(getCreateResourceMessage("confirmCreatePartitionMsg"), false);
+		boolean isExecute = readConsoleBoolean(rs("MySQLPartitionManager.Create.confirmCreatePartitionMsg"), false);
 		if (!isExecute) {
 			//再度実行
 			return startCreateWizard();
@@ -272,11 +268,6 @@ public class MySQLPartitionBatch extends MtpCuiBase {
 		logInfo("\tuse sub partition :" + param.isMySqlUseSubPartition());
 		logInfo("-----------------------------------------------------------");
 		logInfo("");
-	}
-
-
-	private String getCreateResourceMessage(String suffix, Object... args) {
-		return ToolsBatchResourceBundleUtil.resourceString(getLanguage(), RES_CREATE_PRE + suffix, args);
 	}
 
 }

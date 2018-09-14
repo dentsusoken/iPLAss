@@ -17,7 +17,6 @@ import org.iplass.mtp.impl.entity.MetaEntity;
 import org.iplass.mtp.impl.metadata.MetaDataContext;
 import org.iplass.mtp.impl.tools.storagespace.StorageSpaceService;
 import org.iplass.mtp.spi.ServiceRegistry;
-import org.iplass.mtp.tools.ToolsBatchResourceBundleUtil;
 import org.iplass.mtp.tools.batch.ExecMode;
 import org.iplass.mtp.tools.batch.MtpCuiBase;
 import org.iplass.mtp.util.StringUtil;
@@ -168,13 +167,13 @@ public class StorageSpaceMigration extends MtpCuiBase {
 		// TenantId
 		boolean validTenantId = false;
 		do {
-			String tenantId = readConsole(getWizardResourceMessage("tenantIdMsg"));
+			String tenantId = readConsole(rs("StorageSpaceMigration.Wizard.tenantIdMsg"));
 			if (StringUtil.isNotBlank(tenantId)) {
 				try {
 					setTenantId(Integer.parseInt(tenantId));
 					validTenantId = true;
 				} catch (NumberFormatException e) {
-					logWarn(getWizardResourceMessage("invalidTenantIdMsg", tenantId));
+					logWarn(rs("StorageSpaceMigration.Wizard.invalidTenantIdMsg", tenantId));
 				}
 			}
 		} while(validTenantId == false);
@@ -182,7 +181,7 @@ public class StorageSpaceMigration extends MtpCuiBase {
 		// EntityName(DefinitionName)
 		boolean validEntityName = false;
 		do {
-			String entityName = readConsole(getWizardResourceMessage("entityNameMsg"));
+			String entityName = readConsole(rs("StorageSpaceMigration.Wizard.entityNameMsg"));
 			if (StringUtil.isNotBlank(entityName)) {
 				setEntityName(entityName);
 				validEntityName = true;
@@ -192,7 +191,7 @@ public class StorageSpaceMigration extends MtpCuiBase {
 		// StorageSpaceName
 		boolean validStorageSpaceName = false;
 		do {
-			String storageSpaceName = readConsole(getWizardResourceMessage("storageSpaceNameMsg"));
+			String storageSpaceName = readConsole(rs("StorageSpaceMigration.Wizard.storageSpaceNameMsg"));
 			if (StringUtil.isNotBlank(storageSpaceName)) {
 				setStorageSpaceName(storageSpaceName);
 				validStorageSpaceName = true;
@@ -200,7 +199,7 @@ public class StorageSpaceMigration extends MtpCuiBase {
 		} while(validStorageSpaceName == false);
 
 		// WithCleanup
-		setWithCleanup(readConsoleBoolean(getWizardResourceMessage("confirmCleanupMsg"), withCleanup));
+		setWithCleanup(readConsoleBoolean(rs("StorageSpaceMigration.Wizard.confirmCleanupMsg"), withCleanup));
 
 		// Console出力用のログリスナーを一度削除してログ出力に切り替え
 		removeLogListner(getConsoleLogListner());
@@ -222,7 +221,7 @@ public class StorageSpaceMigration extends MtpCuiBase {
 			// テナント存在チェック
 			TenantContext tCtx = tenantContextService.getTenantContext(tenantId);
 			if (tCtx == null) {
-				logError(getResourceMessage("notFoundTenant", tenantId));
+				logError(rs("StorageSpaceMigration.notFoundTenant", tenantId));
 				return isSuccess();
 			}
 
@@ -232,7 +231,7 @@ public class StorageSpaceMigration extends MtpCuiBase {
 			EntityDefinition ed = edm.get(entityName);
 
 			if (ed == null) {
-				logError(getResourceMessage("notFoundEntity", entityName));
+				logError(rs("StorageSpaceMigration.notFoundEntity", entityName));
 				return isSuccess();
 			}
 
@@ -242,7 +241,7 @@ public class StorageSpaceMigration extends MtpCuiBase {
 				// StorageSpace移行
 				storageSpaceService.migrate(storageSpaceName, ed);
 			} catch (Exception e) {
-				logError(getResourceMessage("failedMigrate"), e);
+				logError(rs("StorageSpaceMigration.failedMigrate"), e);
 				return isSuccess();
 			}
 
@@ -254,7 +253,7 @@ public class StorageSpaceMigration extends MtpCuiBase {
 					// 移行元StorageSpaceクリーンアップ
 					storageSpaceService.cleanup(tenantId, currentStorageSpaceName, metaEntity);
 				} catch (Exception e) {
-					logError(getResourceMessage("failedCleanup"), e);
+					logError(rs("StorageSpaceMigration.failedCleanup"), e);
 					return isSuccess();
 				}
 			}
@@ -269,18 +268,6 @@ public class StorageSpaceMigration extends MtpCuiBase {
 		}
 
 		return isSuccess();
-	}
-
-	/** リソースファイルの接頭語 */
-	private static final String RES_PRE = "StorageSpaceMigration.";
-	private static final String RES_WIZARD_PRE = RES_PRE + "Wizard.";
-
-	private String getResourceMessage(String suffix, Object... args) {
-		return ToolsBatchResourceBundleUtil.resourceString(getLanguage(), RES_PRE + suffix, args);
-	}
-
-	private String getWizardResourceMessage(String suffix, Object... args) {
-		return ToolsBatchResourceBundleUtil.resourceString(getLanguage(), RES_WIZARD_PRE + suffix, args);
 	}
 
 }
