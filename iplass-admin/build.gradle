@@ -23,9 +23,6 @@ dependencies {
 		exclude(group: 'org.glassfish.jersey.containers')
 		exclude(group: 'org.glassfish.jersey.core')
 		exclude (group: 'javax.validation')
-		exclude(group: 'org.webjars')
-		exclude(group: 'org.webjars.npm')
-		exclude(group: 'org.webjars.bower')
 	}
 	compile(project(':iplass-tools')) {
 		exclude(group: 'org.glassfish.jersey.containers')
