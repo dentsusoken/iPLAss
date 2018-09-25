@@ -64,7 +64,9 @@ public class StatementWrapper implements Statement {
 					logger.warn(logStr(method, sql, queryTime));
 				}
 			} else {
-				logger.debug(logStr(method, sql, queryTime));
+				if (logger.isDebugEnabled()) {
+					logger.debug(logStr(method, sql, queryTime));
+				}
 			}
 		}
 	}

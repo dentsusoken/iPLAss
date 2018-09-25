@@ -84,7 +84,9 @@ public class PreparedStatementWrapper extends StatementWrapper implements
 					logger.warn(logStr(method, sql, queryTime, withParam));
 				}
 			} else {
-				logger.debug(logStr(method, sql, queryTime, withParam));
+				if (logger.isDebugEnabled()) {
+					logger.debug(logStr(method, sql, queryTime, withParam));
+				}
 			}
 		}
 	}
