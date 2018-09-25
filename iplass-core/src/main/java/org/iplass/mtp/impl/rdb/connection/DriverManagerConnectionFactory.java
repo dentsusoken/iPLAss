@@ -65,7 +65,8 @@ public class DriverManagerConnectionFactory extends AbstractConnectionFactory {
 		info = new Properties();
 		for (String name: config.getNames()) {
 			if (!name.equals("warnLogThreshold")
-					&& !name.equals("transactionIsolationLevel")) {
+					&& !name.equals("transactionIsolationLevel")
+					&& !name.equals("warnLogBefore")) {
 				info.put(name, config.getValue(name));
 			}
 		}
