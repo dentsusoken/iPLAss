@@ -159,6 +159,9 @@ public class MetaReferencePropertyEditor extends MetaPropertyEditor implements H
 	/** ネストテーブルの表示順プロパティ */
 	private String tableOrderPropertyId;
 
+	/** 更新時に強制的に更新処理を行う */
+	private boolean forceUpadte;
+
 	/** 検索条件での全選択を許可 */
 	private boolean permitConditionSelectAll = true;
 
@@ -682,6 +685,22 @@ public class MetaReferencePropertyEditor extends MetaPropertyEditor implements H
 	}
 
 	/**
+	 * 更新時に強制的に更新処理を行うかを取得します。
+	 * @return forceUpdate 更新時に強制的に更新処理を行うか
+	 */
+	public boolean isForceUpadte() {
+		return forceUpadte;
+	}
+
+	/**
+	 * 更新時に強制的に更新処理を行うかを設定します。
+	 * @param forceUpadte 更新時に強制的に更新処理を行うか
+	 */
+	public void setForceUpadte(boolean forceUpadte) {
+		this.forceUpadte = forceUpadte;
+	}
+
+	/**
 	 * 検索条件での全選択を許可を取得します。
 	 * @return 検索条件での全選択を許可
 	 */
@@ -748,6 +767,7 @@ public class MetaReferencePropertyEditor extends MetaPropertyEditor implements H
 			PropertyHandler tableOrderProperty = refEntity.getProperty(rpe.getTableOrderPropertyName(), context);
 			tableOrderPropertyId = tableOrderProperty != null ? tableOrderProperty.getId() : null;
 		}
+		forceUpadte = rpe.isForceUpadte();
 		for (NestProperty np : rpe.getNestProperties()) {
 			MetaNestProperty mnp = new MetaNestProperty();
 			mnp.applyConfig(np, refEntity, fromEntity);
@@ -833,6 +853,7 @@ public class MetaReferencePropertyEditor extends MetaPropertyEditor implements H
 			PropertyHandler tableOrderProperty = refEntity.getPropertyById(tableOrderPropertyId, context);
 			editor.setTableOrderPropertyName(tableOrderProperty != null ? tableOrderProperty.getName() : null);
 		}
+		editor.setForceUpadte(forceUpadte);
 		for (MetaNestProperty mnp : getNestProperties()) {
 			NestProperty np = mnp.currentConfig(refEntity, fromEntity);
 			if (np != null && np.getPropertyName() != null) editor.addNestProperty(np);

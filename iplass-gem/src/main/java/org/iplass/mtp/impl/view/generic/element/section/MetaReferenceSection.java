@@ -86,6 +86,9 @@ public class MetaReferenceSection extends MetaSection {
 	/** 詳細表示非表示設定 */
 	private boolean hideView;
 
+	/** 更新時に強制的に更新処理を行う */
+	private boolean forceUpadte;
+
 	/** 上部のコンテンツ */
 	private String upperContents;
 
@@ -249,6 +252,21 @@ public class MetaReferenceSection extends MetaSection {
 	}
 
 	/**
+	 * 更新時に強制的に更新処理を行うかを取得します。
+	 * @return forceUpdate 更新時に強制的に更新処理を行うか
+	 */
+	public boolean isForceUpadte() {
+		return forceUpadte;
+	}
+
+	/**
+	 * 更新時に強制的に更新処理を行うかを設定します。
+	 * @param forceUpadte 更新時に強制的に更新処理を行うか
+	 */
+	public void setForceUpadte(boolean forceUpadte) {
+		this.forceUpadte = forceUpadte;
+	}
+	/**
 	 * 上部のコンテンツを取得します。
 	 * @return 上部のコンテンツ
 	 */
@@ -378,6 +396,7 @@ public class MetaReferenceSection extends MetaSection {
 		showLink = section.isShowLink();
 		hideDetail = section.isHideDetail();
 		hideView = section.isHideView();
+		forceUpadte = section.isForceUpadte();
 		upperContents = section.getUpperContents();
 		lowerContents = section.getLowerContents();
 		index = section.getIndex();
@@ -424,6 +443,7 @@ public class MetaReferenceSection extends MetaSection {
 		section.setShowLink(showLink);
 		section.setHideDetail(hideDetail);
 		section.setHideView(hideView);
+		section.setForceUpadte(forceUpadte);
 		section.setUpperContents(upperContents);
 		section.setLowerContents(lowerContents);
 		section.setIndex(index);

@@ -340,6 +340,16 @@ public class DetailFormView extends FormView {
 	)
 	private boolean loadDefinedReferenceProperty;
 
+	/** 更新時に強制的に更新処理を行う */
+	@MetaFieldInfo(
+			displayName="更新時に強制的に更新処理を行う",
+			displayNameKey="generic_DetailFormView_forceUpadteDisplaNameKey",
+			inputType=InputType.CHECKBOX,
+			description="変更項目が一つもなくとも、強制的に更新処理（更新日時、更新者が更新される）を行います。",
+			descriptionKey="generic_DetailFormView_forceUpadteDescriptionKey"
+	)
+	private boolean forceUpadte;
+
 	/** コピー対象 */
 	@MetaFieldInfo(
 			displayName="コピー対象",
@@ -863,6 +873,22 @@ public class DetailFormView extends FormView {
 	 */
 	public void setLoadDefinedReferenceProperty(boolean loadDefinedReferenceProperty) {
 	    this.loadDefinedReferenceProperty = loadDefinedReferenceProperty;
+	}
+
+	/**
+	 * 更新時に強制的に更新処理を行うかを取得します。
+	 * @return forceUpdate 更新時に強制的に更新処理を行うか
+	 */
+	public boolean isForceUpadte() {
+		return forceUpadte;
+	}
+
+	/**
+	 * 更新時に強制的に更新処理を行うかを設定します。
+	 * @param forceUpadte 更新時に強制的に更新処理を行うか
+	 */
+	public void setForceUpadte(boolean forceUpadte) {
+		this.forceUpadte = forceUpadte;
 	}
 
 	/**

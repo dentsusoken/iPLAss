@@ -535,6 +535,20 @@ public class ReferencePropertyEditor extends PropertyEditor {
 	)
 	private String tableOrderPropertyName;
 
+	/** 更新時に強制的に更新処理を行う */
+	@MetaFieldInfo(
+			displayName="更新時に強制的に更新処理を行う",
+			displayNameKey="generic_editor_ReferencePropertyEditor_forceUpadteDisplaNameKey",
+			inputType=InputType.CHECKBOX,
+			description="<b>表示タイプ:NestTable</b><br>" +
+					"変更項目が一つもなくとも、強制的に更新処理（更新日時、更新者が更新される）を行います。",
+			descriptionKey="generic_editor_ReferencePropertyEditor_forceUpadteDescriptionKey"
+	)
+	@EntityViewField(
+			referenceTypes={FieldReferenceType.DETAIL}
+	)
+	private boolean forceUpadte;
+
 	/** 検索条件での全選択を許可 */
 	@MetaFieldInfo(displayName="検索条件での全選択を許可",
 			displayNameKey="generic_editor_ReferencePropertyEditor_permitConditionSelectAllDisplaNameKey",
@@ -1055,6 +1069,22 @@ public class ReferencePropertyEditor extends PropertyEditor {
 	 */
 	public void setTableOrderPropertyName(String tableOrderPropertyName) {
 	    this.tableOrderPropertyName = tableOrderPropertyName;
+	}
+
+	/**
+	 * 更新時に強制的に更新処理を行うかを取得します。
+	 * @return forceUpdate 更新時に強制的に更新処理を行うか
+	 */
+	public boolean isForceUpadte() {
+		return forceUpadte;
+	}
+
+	/**
+	 * 更新時に強制的に更新処理を行うかを設定します。
+	 * @param forceUpadte 更新時に強制的に更新処理を行うか
+	 */
+	public void setForceUpadte(boolean forceUpadte) {
+		this.forceUpadte = forceUpadte;
 	}
 
 	/**
