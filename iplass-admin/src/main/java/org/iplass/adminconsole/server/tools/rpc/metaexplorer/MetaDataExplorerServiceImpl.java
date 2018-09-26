@@ -20,7 +20,6 @@
 
 package org.iplass.adminconsole.server.tools.rpc.metaexplorer;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -50,7 +49,6 @@ import org.iplass.mtp.impl.metadata.MetaDataEntry;
 import org.iplass.mtp.impl.metadata.MetaDataEntryInfo;
 import org.iplass.mtp.impl.metadata.RootMetaData;
 import org.iplass.mtp.impl.tenant.MetaTenant;
-import org.iplass.mtp.impl.web.WebFrontendService;
 import org.iplass.mtp.spi.ServiceRegistry;
 import org.iplass.mtp.tenant.Tenant;
 import org.iplass.mtp.transaction.Transaction;
@@ -180,28 +178,12 @@ public class MetaDataExplorerServiceImpl extends XsrfProtectedServiceServlet imp
 
 			@Override
 			public Void call() {
-				File tempDir = getTempDir(getContextTempDir());
 				MetaDataPortingLogic logic = MetaDataPortingLogic.getInstance();
-				logic.createTag(tenantId, name, description, tempDir);
+				logic.createTag(tenantId, name, description);
 				return null;
 			}
 
 		});
-	}
-
-	private File getContextTempDir() {
-		return (File)getThreadLocalRequest().getSession().getServletContext().getAttribute("javax.servlet.context.tempdir");
-	}
-
-	private File getTempDir(final File contextTempDir) {
-		WebFrontendService webFront = ServiceRegistry.getRegistry().getService(WebFrontendService.class);
-		File tempDir = null;
-		if (webFront.getTempFileDir() == null) {
-			tempDir = contextTempDir;
-		} else {
-			tempDir = new File(webFront.getTempFileDir());
-		}
-		return tempDir;
 	}
 
 	@Override

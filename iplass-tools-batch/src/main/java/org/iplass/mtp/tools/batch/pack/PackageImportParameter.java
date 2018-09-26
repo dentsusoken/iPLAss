@@ -20,8 +20,6 @@ public class PackageImportParameter {
 
 	/** Silentモード パッケージファイル */
 	public static final String PROP_IMPORT_FILE = "importFile";
-	/** Silentモード 作業用ディレクトリ */
-	public static final String PROP_WORK_DIR = "workDir";
 
 	/** Silentモード Entityデータ Truncate */
 	public static final String PROP_ENTITY_TRUNCATE = "entity.truncate";
@@ -51,9 +49,6 @@ public class PackageImportParameter {
 	//Importファイルパス
 	private String importFilePath;
 
-	//Workディレクトリ名
-	private String workDirName = "./";
-
 	//Upload用Package名(固定)
 	private String packageName;
 
@@ -68,9 +63,6 @@ public class PackageImportParameter {
 
 	//Importファイル(内部用)
 	private File importFile;
-
-	//Workディレクトリ(内部用)
-	private File workDir;
 
 	//ImportファイルPackage情報(内部用)
 	private PackageInfo packInfo;
@@ -112,14 +104,6 @@ public class PackageImportParameter {
 		this.importFilePath = importFilePath;
 	}
 
-	public String getWorkDirName() {
-		return workDirName;
-	}
-
-	public void setWorkDirName(String workDirName) {
-		this.workDirName = workDirName;
-	}
-
 	public String getPackageName() {
 		return packageName;
 	}
@@ -159,14 +143,6 @@ public class PackageImportParameter {
 
 	public void setImportFile(File importFile) {
 		this.importFile = importFile;
-	}
-
-	public File getWorkDir() {
-		return workDir;
-	}
-
-	public void setWorkDir(File workDir) {
-		this.workDir = workDir;
 	}
 
 	public PackageInfo getPackInfo() {

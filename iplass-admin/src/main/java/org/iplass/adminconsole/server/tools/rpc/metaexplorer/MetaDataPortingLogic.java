@@ -138,16 +138,15 @@ public class MetaDataPortingLogic {
 	 * @param tenantId    テナントID
 	 * @param name        タグ名
 	 * @param description コメント
-	 * @param tempDir     テンポラリフォルダ
 	 * @return 登録後のOID
 	 */
-	public String createTag(final int tenantId, final String name, final String description, final File tempDir) {
+	public String createTag(final int tenantId, final String name, final String description) {
 
 		Entity entity = null;
 		try {
 
 			//一時出力ファイル生成
-			File exportFile = File.createTempFile("tmp", ".tmp", tempDir);
+			File exportFile = File.createTempFile("tmp", ".tmp");
 			PrintWriter writer = new PrintWriter(exportFile, "UTF-8");
 
 			try {

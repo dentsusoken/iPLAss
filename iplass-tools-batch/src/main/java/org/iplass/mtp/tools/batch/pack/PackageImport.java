@@ -4,10 +4,7 @@
 
 package org.iplass.mtp.tools.batch.pack;
 
-import static org.iplass.mtp.tools.batch.pack.PackageExportParameter.PROP_WORK_DIR;
 import static org.iplass.mtp.tools.batch.pack.PackageImportParameter.*;
-import static org.iplass.mtp.tools.batch.pack.PackageImportParameter.PROP_TENANT_ID;
-import static org.iplass.mtp.tools.batch.pack.PackageImportParameter.PROP_TENANT_URL;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -214,7 +211,7 @@ public class PackageImport extends MtpCuiBase {
 								logInfo(rs("PackageImport.startImportMetaLog"));
 
 								MetaDataImportResult metaResult
-									= ps.importPackageMetaData(oid, param.getWorkDir(), param.getImportTenant());
+									= ps.importPackageMetaData(oid, param.getImportTenant());
 
 								if (metaResult.isError()) {
 									if (metaResult.getMessages() != null) {
@@ -279,7 +276,7 @@ public class PackageImport extends MtpCuiBase {
 
 
 									EntityDataImportResult entityResult
-											= ps.importPackageEntityData(oid, entityPath, param.getEntityImportCondition(), param.getWorkDir());
+											= ps.importPackageEntityData(oid, entityPath, param.getEntityImportCondition());
 
 									if (entityResult.isError()) {
 										if (entityResult.getMessages() != null) {
@@ -366,7 +363,6 @@ public class PackageImport extends MtpCuiBase {
 		logInfo("\timport file :" + param.getImportFilePath());
 		logInfo("\timport file locale :" + param.getLocale());
 		logInfo("\timport file timezone :" + param.getTimezone());
-		logInfo("\twork dir :" + param.getWorkDirName());
 
 		PackageInfo packInfo = param.getPackInfo();
 
@@ -475,22 +471,6 @@ public class PackageImport extends MtpCuiBase {
 		TenantContext tc = tcs.getTenantContext(param.getTenantId());
 		ExecuteContext.executeAs(tc, ()->{
 			ExecuteContext.getCurrentContext().setLanguage(getLanguage());
-
-			//Workディレクトリ
-			boolean validWork = false;
-			do {
-				String workDirName = readConsole(rs("PackageImport.Wizard.inputWorkMsg") + "(" + param.getWorkDirName() + ")");
-				if (StringUtil.isNotBlank(workDirName)) {
-					param.setWorkDirName(workDirName);
-				}
-
-				//チェック
-				File dir = new File(param.getWorkDirName());
-				if (checkDir(dir)) {
-					param.setWorkDir(dir);
-					validWork = true;
-				}
-			} while(validWork == false);
 
 			//Importファイル
 			PackageInfo packInfo = null;
@@ -771,16 +751,6 @@ public class PackageImport extends MtpCuiBase {
 		return ExecuteContext.executeAs(tc, ()->{
 			ExecuteContext.getCurrentContext().setLanguage(getLanguage());
 
-			String workDirName = prop.getProperty(PROP_WORK_DIR);
-			if (StringUtil.isNotEmpty(workDirName)) {
-				param.setWorkDirName(workDirName);
-			}
-			File workDir = new File(param.getWorkDirName());
-			if (!checkDir(workDir)) {
-				return false;
-			}
-			param.setWorkDir(workDir);
-
 			String importFilePath = importFile;
 			if (StringUtil.isEmpty(importFilePath)) {
 				importFilePath = prop.getProperty(PROP_IMPORT_FILE);
@@ -899,19 +869,6 @@ public class PackageImport extends MtpCuiBase {
 			return importPack(param);
 		});
 
-	}
-
-	private boolean checkDir(File dir) {
-
-		if (!dir.exists()) {
-			dir.mkdir();
-			logInfo(rs("PackageImport.createdDirMsg", dir.getPath()));
-		}
-		if (!dir.isDirectory()) {
-			logError(rs("PackageImport.notDirMsg", dir.getPath()));
-			return false;
-		}
-		return true;
 	}
 
 }

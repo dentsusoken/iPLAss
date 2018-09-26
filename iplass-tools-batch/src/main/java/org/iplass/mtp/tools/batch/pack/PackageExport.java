@@ -213,7 +213,7 @@ public class PackageExport extends MtpCuiBase {
 					//Package作成処理
 					logInfo(rs("PackageExport.startExportPackageLog"));
 					final PackageCreateResult result = Transaction.requiresNew(tt -> {
-						return ps.archivePackage(oid, param.getWorkDir());
+						return ps.archivePackage(oid);
 					});
 					if (result.isError()) {
 						if (result.getMessages() != null) {
@@ -272,7 +272,6 @@ public class PackageExport extends MtpCuiBase {
 		logInfo("■Execute Argument");
 		logInfo("\ttenant name :" + param.getTenantName());
 		logInfo("\texport dir :" + param.getExportDirName());
-		logInfo("\twork dir :" + param.getWorkDirName());
 		logInfo("\tpackage name :" + param.getPackageName());
 		logInfo("\texport metadata :" + param.isExportMetaData());
 		if (param.isExportMetaData()) {
@@ -607,20 +606,6 @@ public class PackageExport extends MtpCuiBase {
 				}
 			} while(validFile == false);
 
-			//Workディレクトリ
-			boolean validWork = false;
-			do {
-				String workDirName = readConsole(rs("PackageExport.Wizard.inputWorkMsg") + "(" + param.getWorkDirName() + ")");
-				if (StringUtil.isNotBlank(workDirName)) {
-					param.setWorkDirName(workDirName);
-				}
-				File dir = new File(param.getWorkDirName());
-				if (checkDir(dir)) {
-					param.setWorkDir(dir);
-					validWork = true;
-				}
-			} while(validWork == false);
-
 			//Package名
 			String packageName = readConsole(rs("PackageExport.Wizard.inputPackageNameMsg") + "(" + param.getPackageName() + ")");
 			if (StringUtil.isNotBlank(packageName)) {
@@ -876,16 +861,6 @@ public class PackageExport extends MtpCuiBase {
 				return false;
 			}
 			param.setExportDir(exportDir);
-
-			String workDirName = prop.getProperty(PROP_WORK_DIR);
-			if (StringUtil.isNotEmpty(workDirName)) {
-				param.setWorkDirName(workDirName);
-			}
-			File workDir = new File(param.getWorkDirName());
-			if (!checkDir(workDir)) {
-				return false;
-			}
-			param.setWorkDir(workDir);
 
 			String packageName = prop.getProperty(PROP_PACKAGE_NAME);
 			if (StringUtil.isNotEmpty(packageName)) {

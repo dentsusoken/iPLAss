@@ -20,17 +20,12 @@
 
 package org.iplass.mtp.impl.report;
 
-import java.io.File;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
-import org.apache.poi.util.DefaultTempFileCreationStrategy;
-import org.apache.poi.util.TempFile;
-import org.iplass.mtp.impl.web.WebFrontendService;
 import org.iplass.mtp.impl.web.WebRequestStack;
 import org.iplass.mtp.impl.web.template.report.MetaPoiReportOutputLogic.PoiReportOutputLogicRuntime;
-import org.iplass.mtp.spi.ServiceRegistry;
 import org.iplass.mtp.util.StringUtil;
 import org.iplass.mtp.web.template.report.ReportOutputException;
 import org.iplass.mtp.web.template.report.definition.PoiReportType;
@@ -41,22 +36,6 @@ public class PoiReportingEngine implements ReportingEngine{
 	private String[] supportFiles;
 
 	public PoiReportingEngine() {
-
-		//poiが利用するtempファイルの作成場所を指定する
-		WebFrontendService webFront = ServiceRegistry.getRegistry().getService(WebFrontendService.class);
-		File tempDir = null;
-		if (webFront.getTempFileDir() != null) {
-			tempDir = new File(webFront.getTempFileDir());
-		} else {
-			WebRequestStack reqStack = WebRequestStack.getCurrent();
-			if (reqStack != null && reqStack.getServletContext() != null) {
-				tempDir = (File)reqStack.getServletContext().getAttribute("javax.servlet.context.tempdir");
-			}
-		}
-		if (tempDir != null) {
-			TempFile.setTempFileCreationStrategy(new DefaultTempFileCreationStrategy(tempDir));
-		}
-
 	}
 
 	@Override

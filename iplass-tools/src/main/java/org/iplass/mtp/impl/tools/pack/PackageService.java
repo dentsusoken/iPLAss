@@ -116,10 +116,9 @@ public class PackageService implements Service {
 	 * <p>登録済のPackage情報を解析し、含まれるPackage情報を返します。</p>
 	 *
 	 * @param packOid 対象PackageエンティティのOID
-	 * @param tempDir 作業用ディレクトリ(WebまたはBatchで異なるため引数で指定)
 	 * @return Package情報
 	 */
-	public PackageInfo getPackageInfo(String packOid, final File tempDir) {
+	public PackageInfo getPackageInfo(String packOid) {
 
 		//対象ファイルの取得
 		//ant版ではFileしかだめなのでFileに変換
@@ -127,7 +126,7 @@ public class PackageService implements Service {
 		try {
 			Entity packEntity = loadWithCheckExist(packOid);
 
-			archive = getPackageArchiveFile(packEntity, tempDir);
+			archive = getPackageArchiveFile(packEntity);
 
 			//Package情報取得
 			return getPackageInfo(archive);
@@ -453,10 +452,9 @@ public class PackageService implements Service {
 	 * により登録された条件です。</p>
 	 *
 	 * @param packOid PackageエンティティOID
-	 * @param tempDir 作業用ディレクトリ(WebまたはBatchで異なるため引数で指定)
 	 * @return Package作成結果
 	 */
-	public PackageCreateResult archivePackage(final String packOid, final File tempDir) {
+	public PackageCreateResult archivePackage(final String packOid) {
 
 		//対象の取得
 		final Entity entity = em.load(packOid, PackageEntity.ENTITY_DEFINITION_NAME);
@@ -469,7 +467,7 @@ public class PackageService implements Service {
 			throw new PackageRuntimeException("failed to read package setting. id=" + packOid);
 		}
 
-		return doCreatePackage(packOid, entity, condition, tempDir);
+		return doCreatePackage(packOid, entity, condition);
 	}
 
 	/**
@@ -487,9 +485,8 @@ public class PackageService implements Service {
 	 * により登録された条件です。</p>
 	 *
 	 * @param packOid PackageエンティティOID
-	 * @param tempDir 作業用ディレクトリ(WebまたはBatchで異なるため引数で指定)
 	 */
-	public void archivePackageAsync(final String packOid, final File tempDir) {
+	public void archivePackageAsync(final String packOid) {
 		//対象の取得
 		final Entity entity = em.load(packOid, PackageEntity.ENTITY_DEFINITION_NAME);
 		if (entity == null) {
@@ -507,7 +504,7 @@ public class PackageService implements Service {
 			//非同期なのでTransactionを開始
 			return Transaction.required(transaction -> {
 
-				return doCreatePackage(packOid, entity, condition, tempDir);
+				return doCreatePackage(packOid, entity, condition);
 
 			});
 		});
@@ -564,11 +561,10 @@ public class PackageService implements Service {
 	 * @param packOid PackageエンティティOID
 	 * @param entity Packageエンティティ
 	 * @param condition Package作成条件
-	 * @param tempDir 作業用ディレクトリ(WebまたはBatchで異なるため引数で指定)
 	 * @return Package作成結果
 	 */
 	private PackageCreateResult doCreatePackage(final String packOid, final Entity entity,
-			final PackageCreateCondition condition, final File tempDir) {
+			final PackageCreateCondition condition) {
 
 		final PackageCreateResult result = new PackageCreateResult();
 
@@ -602,7 +598,7 @@ public class PackageService implements Service {
 					result.addMessages(getRS("startExportMetaData"));
 
 					//MetaDataをtempに出力
-					File metadataFile = File.createTempFile("tmp", ".tmp", tempDir);
+					File metadataFile = File.createTempFile("tmp", ".tmp");
 					try {
 						try (PrintWriter writer = new PrintWriter(metadataFile, "UTF-8")){
 
@@ -700,7 +696,7 @@ public class PackageService implements Service {
 						auditLogger.info("create package entity," + fileName + ",entityName:" + entry.getMetaData().getName() + " packageOid:" + packOid);
 
 						long count = 0;
-						File entityCsvFile = File.createTempFile("tmp", ".tmp", tempDir);
+						File entityCsvFile = File.createTempFile("tmp", ".tmp");
 						try {
 							try (OutputStream os = new FileOutputStream(entityCsvFile)){
 								count = entityService.writeWithBinary(os, entry, entityCond, zos);
@@ -882,11 +878,9 @@ public class PackageService implements Service {
 	 * <p>Packageのメタデータをインポートします。</p>
 	 *
 	 * @param packOid PackageエンティティOID
-	 * @param tempDir 作業用ディレクトリ(WebまたはBatchで異なるため引数で指定)
 	 * @param importTenant インポート対象Tenant
 	 */
-	public MetaDataImportResult importPackageMetaData(final String packOid, final File tempDir,
-			final Tenant importTenant) {
+	public MetaDataImportResult importPackageMetaData(final String packOid, final Tenant importTenant) {
 
 		Entity packEntity = null;
 		try {
@@ -904,7 +898,7 @@ public class PackageService implements Service {
 		File archive = null;
 		MetaDataImportResult result = null;
 		try {
-			archive = getPackageArchiveFile(packEntity, tempDir);
+			archive = getPackageArchiveFile(packEntity);
 
 			//メタデータ定義ファイルの取得
 			try (ZipFile zf = new ZipFile(archive)) {
@@ -942,11 +936,10 @@ public class PackageService implements Service {
 	 * @param packOid PackageエンティティOID
 	 * @param path Entityパス
 	 * @param condition インポート条件
-	 * @param tempDir 作業用ディレクトリ(WebまたはBatchで異なるため引数で指定)
 	 * @return インポート結果
 	 */
 	public EntityDataImportResult importPackageEntityData(final String packOid, final String path,
-			final EntityDataImportCondition condition, final File tempDir) {
+			final EntityDataImportCondition condition) {
 
 		Entity packEntity = null;
 		try {
@@ -998,7 +991,7 @@ public class PackageService implements Service {
 
 			File archive = null;
 			try {
-				archive = getPackageArchiveFile(packEntity, tempDir);
+				archive = getPackageArchiveFile(packEntity);
 
 				//CSVファイルの取得
 				try (ZipFile zf = new ZipFile(archive)) {
@@ -1047,10 +1040,9 @@ public class PackageService implements Service {
 	 * <p>結果として戻されたFileは呼び出し元で削除する必要があります。</p>
 	 *
 	 * @param packEntity Packageエンティティ
-	 * @param tempDir 作業用ディレクトリ(WebまたはBatchで異なるため引数で指定)
 	 * @return アーカイブファイル
 	 */
-	private File getPackageArchiveFile(Entity packEntity, final File tempDir) {
+	private File getPackageArchiveFile(Entity packEntity) {
 		//対象の取得
 		final BinaryReference archiveRef = packEntity.getValue(PackageEntity.ARCHIVE);
 		if (archiveRef == null) {
@@ -1058,7 +1050,7 @@ public class PackageService implements Service {
 		}
 
 		try {
-			File archive = File.createTempFile("tmp", ".tmp", tempDir);
+			File archive = File.createTempFile("tmp", ".tmp");
 			try (
 				FileOutputStream fos = new FileOutputStream(archive);
 				InputStream is = em.getInputStream(archiveRef);

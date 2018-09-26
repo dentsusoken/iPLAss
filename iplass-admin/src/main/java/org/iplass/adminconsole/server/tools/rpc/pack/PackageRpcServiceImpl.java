@@ -20,7 +20,6 @@
 
 package org.iplass.adminconsole.server.tools.rpc.pack;
 
-import java.io.File;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
@@ -47,7 +46,6 @@ import org.iplass.mtp.impl.tools.pack.PackageCreateResult;
 import org.iplass.mtp.impl.tools.pack.PackageEntity;
 import org.iplass.mtp.impl.tools.pack.PackageInfo;
 import org.iplass.mtp.impl.tools.pack.PackageService;
-import org.iplass.mtp.impl.web.WebFrontendService;
 import org.iplass.mtp.spi.ServiceRegistry;
 import org.iplass.mtp.tenant.Tenant;
 import org.iplass.mtp.util.StringUtil;
@@ -135,8 +133,7 @@ public class PackageRpcServiceImpl extends XsrfProtectedServiceServlet implement
 
 			@Override
 			public Void call() {
-				File tempDir = getTempDir(getContextTempDir());
-				service.archivePackageAsync(packOid, tempDir);
+				service.archivePackageAsync(packOid);
 				return null;
 			}
 
@@ -149,8 +146,7 @@ public class PackageRpcServiceImpl extends XsrfProtectedServiceServlet implement
 
 			@Override
 			public PackageCreateResultInfo call() {
-				File tempDir = getTempDir(getContextTempDir());
-				PackageCreateResult result = service.archivePackage(packOid, tempDir);
+				PackageCreateResult result = service.archivePackage(packOid);
 
 				PackageCreateResultInfo info = new PackageCreateResultInfo();
 				info.setError(result.isError());
@@ -168,8 +164,7 @@ public class PackageRpcServiceImpl extends XsrfProtectedServiceServlet implement
 
 			@Override
 			public PackageEntryInfo call() {
-				File tempDir = getTempDir(getContextTempDir());
-				PackageInfo info = service.getPackageInfo(packOid, tempDir);
+				PackageInfo info = service.getPackageInfo(packOid);
 
 				//PackageInfo -> PackageEntryInfo(DTO)
 				PackageEntryInfo entry = new PackageEntryInfo();
@@ -190,8 +185,7 @@ public class PackageRpcServiceImpl extends XsrfProtectedServiceServlet implement
 
 			@Override
 			public MetaDataImportResultInfo call() {
-				File tempDir = getTempDir(getContextTempDir());
-				MetaDataImportResult info = service.importPackageMetaData(packOid, tempDir, importTenant);
+				MetaDataImportResult info = service.importPackageMetaData(packOid, importTenant);
 
 				//MetaDataImportResult -> MetaDataImportResultInfo(DTO)
 				MetaDataImportResultInfo result = new MetaDataImportResultInfo();
@@ -234,9 +228,8 @@ public class PackageRpcServiceImpl extends XsrfProtectedServiceServlet implement
 					cond.setTimezone(condition.getTimezone());
 				}
 
-				File tempDir = getTempDir(getContextTempDir());
 				String entityPath =  EntityService.ENTITY_META_PATH + path.substring(0, path.length() - 4).replace(".", "/");	//.csvを除く
-				EntityDataImportResult info = service.importPackageEntityData(packOid, entityPath, cond, tempDir);
+				EntityDataImportResult info = service.importPackageEntityData(packOid, entityPath, cond);
 
 				//EntityDataImportResult -> EntityDataImportResultInfo(DTO)
 				EntityDataImportResultInfo result = new EntityDataImportResultInfo();
@@ -249,19 +242,4 @@ public class PackageRpcServiceImpl extends XsrfProtectedServiceServlet implement
 		});
 	}
 
-
-	private File getContextTempDir() {
-		return (File)getThreadLocalRequest().getSession().getServletContext().getAttribute("javax.servlet.context.tempdir");
-	}
-
-	private File getTempDir(final File contextTempDir) {
-		WebFrontendService webFront = ServiceRegistry.getRegistry().getService(WebFrontendService.class);
-		File tempDir = null;
-		if (webFront.getTempFileDir() == null) {
-			tempDir = contextTempDir;
-		} else {
-			tempDir = new File(webFront.getTempFileDir());
-		}
-		return tempDir;
-	}
 }
