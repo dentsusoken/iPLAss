@@ -156,12 +156,13 @@
 %>
 		</select>
 		<input class="form-size inpbr" type="text" name="fulltextKey" id="fulltext" onkeypress="if(event.keyCode == 13){return false;}" />
-		<input type="button"  class="btn-search-01 gr-btn" value="${m:rs('mtp-gem-messages', 'generic.element.section.SearchConditionSection.search')}" onclick="fulltextSearchResultView()"/>
+		<input type="button"  class="btn-search-01 gr-btn" value="${m:rs('mtp-gem-messages', 'fulltext.search.search')}" onclick="fulltextSearchResultView()"/>
+		<img src="${m:esc(skinImagePath)}/icon-help-01.png" class="vm tp" alt="" title="${m:rs('mtp-gem-messages', 'fulltext.search.hint')}" />
 	</form>
 </div>
 <div class="message-block" style="display:none;"></div>
 <div class="result-block" style="display:none;">
-	<span class="searching" style="display:none;">${m:rs("mtp-gem-messages", "generic.element.section.SearchResultSection.searching")}</span>
+	<span class="searching" style="display:none;">${m:rs("mtp-gem-messages", "fulltext.search.searching")}</span>
 	<div class="result-data" style="display:none;">
 		<div id="entityList"></div>
 		<input type="hidden" id="searchCond" name="searchCond">
@@ -266,11 +267,11 @@ function setData(grid, listId, data, viewUrl, detailUrl, detailLink) {
 		this["id"] = this.orgOid + "_" + this.orgVersion;
 		if (detailLink) {
 			this["_mtpDetailLink"] =
-				"<a href='javascript:void(0)' action='" + viewUrl + "' oid='" + this.orgOid + "' version='" + this.orgVersion + "' class='jqborder detailLink'>${m:rs('mtp-gem-messages', 'generic.element.section.SearchResultSection.detail')}</a>" +
-				"<a href='javascript:void(0)'  action='" + detailUrl + "' oid='" + this.orgOid + "' version='" + this.orgVersion + "' class='detailLink editLink'>${m:rs('mtp-gem-messages', 'generic.element.section.SearchResultSection.edit')}</a>";
+				"<a href='javascript:void(0)' action='" + viewUrl + "' oid='" + this.orgOid + "' version='" + this.orgVersion + "' class='jqborder detailLink'>${m:rs('mtp-gem-messages', 'fulltext.search.detail')}</a>" +
+				"<a href='javascript:void(0)'  action='" + detailUrl + "' oid='" + this.orgOid + "' version='" + this.orgVersion + "' class='detailLink editLink'>${m:rs('mtp-gem-messages', 'fulltext.search.edit')}</a>";
 		} else {
 			this["_mtpDetailLink"] =
-				"<a href='javascript:void(0)' action='" + viewUrl + "' oid='" + this.orgOid + "' version='" + this.orgVersion + "' class='detailLink'>${m:rs('mtp-gem-messages', 'generic.element.section.SearchResultSection.detail')}</a>";
+				"<a href='javascript:void(0)' action='" + viewUrl + "' oid='" + this.orgOid + "' version='" + this.orgVersion + "' class='detailLink'>${m:rs('mtp-gem-messages', 'fulltext.search.detail')}</a>";
 		}
 		grid.addRowData(index + 1, this);
 	});
