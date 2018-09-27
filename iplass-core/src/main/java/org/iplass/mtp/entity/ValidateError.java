@@ -33,6 +33,7 @@ import java.util.List;
 public class ValidateError {
 	
 	private String propertyName;
+	private String propertyDisplayName;
 	private List<String> errorMessages;
 	private List<String> errorCodes;
 	
@@ -41,6 +42,12 @@ public class ValidateError {
 	}
 	public void setPropertyName(String propertyName) {
 		this.propertyName = propertyName;
+	}
+	public String getPropertyDisplayName() {
+		return propertyDisplayName;
+	}
+	public void setPropertyDisplayName(String propertyDisplayName) {
+		this.propertyDisplayName = propertyDisplayName;
 	}
 	public List<String> getErrorCodes() {
 		return errorCodes;

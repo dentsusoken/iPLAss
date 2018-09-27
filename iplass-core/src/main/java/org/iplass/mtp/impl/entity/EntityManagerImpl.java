@@ -54,6 +54,7 @@ import org.iplass.mtp.entity.SelectValue;
 import org.iplass.mtp.entity.TargetVersion;
 import org.iplass.mtp.entity.UpdateCondition;
 import org.iplass.mtp.entity.UpdateOption;
+import org.iplass.mtp.entity.ValidateError;
 import org.iplass.mtp.entity.ValidateResult;
 import org.iplass.mtp.entity.bulkupdate.BulkUpdatable;
 import org.iplass.mtp.entity.definition.EntityDefinition;
@@ -85,6 +86,7 @@ import org.iplass.mtp.impl.entity.property.PrimitivePropertyHandler;
 import org.iplass.mtp.impl.entity.property.PropertyHandler;
 import org.iplass.mtp.impl.entity.property.ReferencePropertyHandler;
 import org.iplass.mtp.impl.fulltextsearch.FulltextSearchService;
+import org.iplass.mtp.impl.i18n.I18nUtil;
 import org.iplass.mtp.impl.lob.Lob;
 import org.iplass.mtp.impl.lob.LobHandler;
 import org.iplass.mtp.impl.properties.extend.BinaryType;
@@ -1214,14 +1216,25 @@ public class EntityManagerImpl implements EntityManager {
 				Object value = null;
 				if (pd.getMultiplicity() == 1) {
 					Entity ref = entity.getValue(pd.getName());
-					value = copyReference(ref, rp, callbacks);
+					try {
+						value = copyReference(ref, rp, callbacks);
+					} catch (EntityValidationException e) {
+						setParentPropNameToValidateResult(e, rp);
+						throw e;
+					}
 				} else {
 					ArrayList<Entity> array = new ArrayList<Entity>();
 					Entity[] _ref = entity.getValue(pd.getName());
 					if (_ref != null) {
-						for (Entity ref : _ref) {
-							Entity ret = copyReference(ref, rp, callbacks);
-							if (ret != null) array.add(ret);
+						try {
+							for (Entity ref : _ref) {
+								Entity ret = copyReference(ref, rp, callbacks);
+								if (ret != null)
+									array.add(ret);
+							}
+						} catch (EntityValidationException e) {
+							setParentPropNameToValidateResult(e, rp);
+							throw e;
 						}
 						if (mappingClass == null) {
 							//Entityの配列作成
@@ -1293,9 +1306,14 @@ public class EntityManagerImpl implements EntityManager {
 						Entity ref = load(entity.getOid(), entity.getDefinitionName());
 						resetProperty(ref, callbacks);
 						ref.setValue(rp.getMappedBy(), dataModel);
-						insert(ref);
-						for (EntityProcessCallback callback : callbacks) {
-							callback.handle(ref);
+						try {
+							insert(ref);
+							for (EntityProcessCallback callback : callbacks) {
+								callback.handle(ref);
+							}
+						} catch (EntityValidationException e) {
+							setParentPropNameToValidateResult(e, rp);
+							throw e;
 						}
 
 						//親のデータを上書き
@@ -1339,6 +1357,20 @@ public class EntityManagerImpl implements EntityManager {
 			}
 		}
 		return ret;
+	}
+
+	/**
+	 * 親子関係を持つエンティティをディープコピーする場合、再帰的に参照先エンティティがコピーされるので、
+	 * バリデーションエラーが発生した場合、親エンティティの参照プロパティ情報を設定する。
+	 * 
+	 * @param e バリデーションエラー
+	 * @param referenceProperty 親の参照プロパティ
+	 */
+	private void setParentPropNameToValidateResult(EntityValidationException e, ReferenceProperty referenceProperty) {
+		ValidateError err = new ValidateError();
+		err.setPropertyName(referenceProperty.getName());
+		err.setPropertyDisplayName(I18nUtil.stringDef(referenceProperty.getDisplayName(), referenceProperty.getLocalizedDisplayNameList()));
+		e.getValidateResults().add(err);
 	}
 
 	@Override

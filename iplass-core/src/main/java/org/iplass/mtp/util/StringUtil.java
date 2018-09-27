@@ -404,4 +404,7 @@ public class StringUtil {
 		return StringUtils.stripToNull(str);
 	}
 
+	public static String reverseDelimited(final String str, final char separatorChar) {
+		return StringUtils.reverseDelimited(str, separatorChar);
+	}
 }
