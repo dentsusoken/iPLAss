@@ -15,9 +15,6 @@ allprojects {
 		}
 	}
 
-	sourceCompatibility = javaVersion
-	targetCompatibility = javaVersion
-
 	javadoc {
 		options.encoding = 'UTF-8'
 		options.docEncoding = 'UTF-8'
