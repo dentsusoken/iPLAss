@@ -25,11 +25,8 @@ export MTP_LIB_PATH=${WEB_APP_HOME}/${WEB_APP_NAME}/WEB-INF/lib
 # source build class path (for develop. Please set the pass that compilation class of the source is stored)
 export MTP_SOURCE_CLASS_PATH=
 
-
-
 # language (Please set the language.  system(Java VM Default) or en or ja)
 export LANG=system
-
 
 
 
@@ -43,3 +40,5 @@ export EXEC_CLASS_PATH="./*:./../lib/*:./../conf:${MTP_LIB_PATH}/*:${MTP_RESOURC
 # system config
 export SYS_ENV=mtp.config=/${SERVICE_CONFIG_NAME}
 
+# batch resource language
+export LANG_ENV=batch.language=${LANG}

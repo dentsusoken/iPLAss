@@ -52,6 +52,7 @@ public class LobDao {
 	
 	private RdbAdapter rdb;
 	private CounterService counterService;
+	private boolean manageLobSizeOnRdb;
 
 	private BlobInsertSql blobInsertSql;
 	private BlobSearchSql searchSql;
@@ -68,9 +69,10 @@ public class LobDao {
 	public LobDao() {
 	}
 
-	public void init(RdbAdapter rdb, CounterService counterService) {
+	public void init(RdbAdapter rdb, CounterService counterService, boolean manageLobSizeOnRdb) {
 		this.rdb = rdb;
 		this.counterService = counterService;
+		this.manageLobSizeOnRdb = manageLobSizeOnRdb;
 		blobInsertSql = rdb.getUpdateSqlCreator(BlobInsertSql.class);
 		searchSql = rdb.getQuerySqlCreator(BlobSearchSql.class);
 		deleteSql = rdb.getUpdateSqlCreator(BlobDeleteSql.class);
@@ -117,7 +119,7 @@ public class LobDao {
 		} else {
 			status = Lob.STATE_VALID;
 		}
-		Lob bin = new Lob(tenantId, lobId, name, type, defId, propId, oid, version, sessionId, status, lobDataId, lobStore, this);
+		Lob bin = new Lob(tenantId, lobId, name, type, defId, propId, oid, version, sessionId, status, lobDataId, lobStore, this, manageLobSizeOnRdb);
 		return bin;
 	}
 
@@ -143,7 +145,7 @@ public class LobDao {
 				ResultSet rs = getStatement().executeQuery(searchSql.toSql(rdb, tenantId, lobId, sessionId,defId, propId, oid, version, withLock));
 				Lob bin = null;
 				if (rs.next()) {
-					bin = searchSql.toBinaryData(rs, lobStore, LobDao.this);
+					bin = searchSql.toBinaryData(rs, lobStore, LobDao.this, manageLobSizeOnRdb);
 				}
 				rs.close();
 				return bin;
@@ -163,7 +165,7 @@ public class LobDao {
 				ArrayList<Lob> res = new ArrayList<Lob>();
 
 				while (rs.next()) {
-					Lob bin = searchSql.toBinaryData(rs, lobStore, LobDao.this);
+					Lob bin = searchSql.toBinaryData(rs, lobStore, LobDao.this, manageLobSizeOnRdb);
 					res.add(bin);
 				}
 				rs.close();
@@ -333,12 +335,12 @@ public class LobDao {
 		return exec.execute(rdb, true).booleanValue();
 	}
 
-	public void initLobData(final int tenantId, final long lobDataId) {
+	public void initLobData(final int tenantId, final long lobDataId, Long size) {
 		SqlExecuter<Integer> exec = new SqlExecuter<Integer>() {
 
 			@Override
 			public Integer logic() throws SQLException {
-				return getStatement().executeUpdate(lobStoreInsertSql.toSql(tenantId, lobDataId, rdb));
+				return getStatement().executeUpdate(lobStoreInsertSql.toSql(tenantId, lobDataId, size, rdb));
 			}
 		};
 
@@ -502,7 +504,7 @@ public class LobDao {
 	 * @param lobDataId LobDataId
 	 * @param size サイズ
 	 */
-	public void updateLobStoreSize(final int tenantId, final long lobDataId, final long size) {
+	public boolean updateLobStoreSize(final int tenantId, final long lobDataId, final long size) {
 		SqlExecuter<Boolean> exec = new SqlExecuter<Boolean>() {
 
 			@Override
@@ -516,6 +518,7 @@ public class LobDao {
 			}
 
 		};
-		exec.execute(rdb, true);
+		return exec.execute(rdb, true);
 	}
+	
 }

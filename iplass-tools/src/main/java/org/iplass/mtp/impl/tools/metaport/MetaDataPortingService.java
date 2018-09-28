@@ -1,19 +1,19 @@
 /*
  * Copyright (C) 2012 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
- * 
+ *
  * Unless you have purchased a commercial license,
  * the following license terms apply:
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
@@ -54,11 +54,11 @@ public interface MetaDataPortingService extends Service {
 	 * Packageで利用しています。
 	 * </p>
 	 *
-	 * @param packageName インポート対象の名前(Package名)
+	 * @param targetName インポート対象の名前(Package名、XMLファイル名、Tag名)
 	 * @param entryInfo 取り込み対象が定義されたMetaData情報
 	 * @param importTenant ワーニング時のインポート対象Tenant
 	 */
-	MetaDataImportResult importMetaData(String packageName, XMLEntryInfo entryInfo, final Tenant importTenant);
+	MetaDataImportResult importMetaData(String targetName, XMLEntryInfo entryInfo, final Tenant importTenant);
 
 	/**
 	 * <p>MetaDataEntryを取り込みます(選択Pathのみ)。</p>
@@ -66,12 +66,12 @@ public interface MetaDataPortingService extends Service {
 	 * MetaDataExplorerで利用しています。
 	 * </p>
 	 *
-	 * @param targetName インポート対象の名前(MetaDataTag名)
+	 * @param targetName インポート対象の名前(Package名、XMLファイル名、Tag名)
 	 * @param entryInfo 取り込み対象が含まれたMetaData情報
 	 * @param selectedPaths 取り込み対象のList
 	 * @param importTenant ワーニング時のインポート対象Tenant
 	 */
-	MetaDataImportResult importMetaData(String tagName, XMLEntryInfo entryInfo, final List<String> selectedPaths, final Tenant importTenant);
+	MetaDataImportResult importMetaData(String targetName, XMLEntryInfo entryInfo, final List<String> selectedPaths, final Tenant importTenant);
 
 	/**
 	 * 取り込むMetaDataの整合性をチェックします。

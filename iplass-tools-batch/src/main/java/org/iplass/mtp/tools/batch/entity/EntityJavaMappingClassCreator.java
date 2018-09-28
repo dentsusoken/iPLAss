@@ -32,7 +32,6 @@ import org.iplass.mtp.impl.core.TenantContext;
 import org.iplass.mtp.impl.core.TenantContextService;
 import org.iplass.mtp.impl.tools.entity.EntityToolService;
 import org.iplass.mtp.spi.ServiceRegistry;
-import org.iplass.mtp.tools.ToolsBatchResourceBundleUtil;
 import org.iplass.mtp.tools.batch.ExecMode;
 import org.iplass.mtp.tools.batch.MtpCuiBase;
 import org.iplass.mtp.util.StringUtil;
@@ -71,13 +70,12 @@ public class EntityJavaMappingClassCreator extends MtpCuiBase {
 	 * コンストラクタ
 	 *
 	 * args[0]・・・execMode["Wizard" or "Silent"]
-	 * args[1]・・・language
-	 * args[2]・・・tenantId
-	 * args[3]・・・recursive["recursive" or other]
-	 * args[4]・・・force["force" or other]
-	 * args[5]・・・outDir[Current is empty or "."]
-	 * args[6]・・・entityPath[Root is empty or "/"]
-	 * args[7]・・・basePackage
+	 * args[1]・・・tenantId
+	 * args[2]・・・recursive["recursive" or other]
+	 * args[3]・・・force["force" or other]
+	 * args[4]・・・outDir[Current is empty or "."]
+	 * args[5]・・・entityPath[Root is empty or "/"]
+	 * args[6]・・・basePackage
 	 **/
 	public EntityJavaMappingClassCreator(String... args) {
 		if (args != null) {
@@ -85,31 +83,24 @@ public class EntityJavaMappingClassCreator extends MtpCuiBase {
 				execMode = ExecMode.valueOf(args[0]);
 			}
 			if (args.length > 1) {
-				// "system"の場合は、JVMのデフォルトを利用
-				if (!"system".equals(args[1])) {
-					setLanguage(args[1]);
-				}
+				setTenantId(Integer.parseInt(args[1]));
 			}
 			if (args.length > 2) {
-				setTenantId(Integer.parseInt(args[2]));
+				setRecursive(args[2]);
 			}
 			if (args.length > 3) {
-				setRecursive(args[3]);
+				setForce(args[3]);
 			}
 			if (args.length > 4) {
-				setForce(args[4]);
+				setOutDir(args[4]);
 			}
 			if (args.length > 5) {
-				setOutDir(args[5]);
+				setEntityPath(args[5]);
 			}
 			if (args.length > 6) {
-				setEntityPath(args[6]);
-			}
-			if (args.length > 7) {
-				setBasePackage(args[7]);
+				setBasePackage(args[6]);
 			}
 		}
-		setupLanguage();
 	}
 
 	/**
@@ -237,40 +228,40 @@ public class EntityJavaMappingClassCreator extends MtpCuiBase {
 		// TenantId
 		boolean validTenantId = false;
 		do {
-			String tenantId = readConsole(getWizardResourceMessage("tenantIdMsg"));
+			String tenantId = readConsole(rs("EntityJavaMappingClassCreator.Wizard.tenantIdMsg"));
 			if (StringUtil.isNotBlank(tenantId)) {
 				try {
 					setTenantId(Integer.parseInt(tenantId));
 					validTenantId = true;
 				} catch (NumberFormatException e) {
-					logWarn(getWizardResourceMessage("invalidTenantIdMsg", tenantId));
+					logWarn(rs("EntityJavaMappingClassCreator.Wizard.invalidTenantIdMsg", tenantId));
 				}
 			}
 		} while(validTenantId == false);
 
 		// EntityPath
-		String entityPath = readConsole(getWizardResourceMessage("entityPathMsg"));
+		String entityPath = readConsole(rs("EntityJavaMappingClassCreator.Wizard.entityPathMsg"));
 		if (StringUtil.isNotBlank(entityPath)) {
 			setEntityPath(entityPath);
 		}
 
 		// BasePackage
-		String basePackage = readConsole(getWizardResourceMessage("basePackageMsg"));
+		String basePackage = readConsole(rs("EntityJavaMappingClassCreator.Wizard.basePackageMsg"));
 		if (StringUtil.isNotBlank(basePackage)) {
 			setBasePackage(basePackage);
 		}
 
 		// OutDir
-		String outDir = readConsole(getWizardResourceMessage("outDirMsg"));
+		String outDir = readConsole(rs("EntityJavaMappingClassCreator.Wizard.outDirMsg"));
 		if (StringUtil.isNotBlank(outDir)) {
 			setOutDir(outDir);
 		}
 
 		// Recursive
-		setRecursive(readConsoleBoolean(getWizardResourceMessage("recursiveMsg"), isRecursive));
+		setRecursive(readConsoleBoolean(rs("EntityJavaMappingClassCreator.Wizard.recursiveMsg"), isRecursive));
 
 		// Force
-		setForce(readConsoleBoolean(getWizardResourceMessage("forceMsg"), isForce));
+		setForce(readConsoleBoolean(rs("EntityJavaMappingClassCreator.Wizard.forceMsg"), isForce));
 
 		// EntityJavaMappingClassファイル作成処理実行
 		boolean ret = proceed();
@@ -288,7 +279,7 @@ public class EntityJavaMappingClassCreator extends MtpCuiBase {
 			// テナント存在チェック
 			TenantContext tCtx = tenantContextService.getTenantContext(tenantId);
 			if (tCtx == null) {
-				logError(getResourceMessage("notFoundTenant", tenantId));
+				logError(rs("EntityJavaMappingClassCreator.notFoundTenant", tenantId));
 				return isSuccess();
 			}
 
@@ -300,7 +291,7 @@ public class EntityJavaMappingClassCreator extends MtpCuiBase {
 				File file = new File(generateJavaClassFileName(ed.getName()));
 				if (!isForce && file.exists()) {
 					// 上書き確認
-					if (!readConsoleBoolean(getResourceMessage("confirmOverwrite", file.getPath()), false)) {
+					if (!readConsoleBoolean(rs("EntityJavaMappingClassCreator.confirmOverwrite", file.getPath()), false)) {
 						setSuccess(true);
 						return isSuccess();
 					}
@@ -318,7 +309,7 @@ public class EntityJavaMappingClassCreator extends MtpCuiBase {
 					File file = new File(generateJavaClassFileName(it.getName()));
 					if (!isForce && file.exists()) {
 						// 上書き確認
-						if (!readConsoleBoolean(getResourceMessage("confirmOverwrite", file.getPath()), false)) {
+						if (!readConsoleBoolean(rs("EntityJavaMappingClassCreator.confirmOverwrite", file.getPath()), false)) {
 							return;
 						}
 					}
@@ -349,18 +340,6 @@ public class EntityJavaMappingClassCreator extends MtpCuiBase {
 		sb.append(entityName.replace('.', '/')).append(".java");
 
 		return sb.toString();
-	}
-
-	/** リソースファイルの接頭語 */
-	private static final String RES_PRE = "EntityJavaMappingClassCreator.";
-	private static final String RES_WIZARD_PRE = RES_PRE + "Wizard.";
-
-	private String getResourceMessage(String suffix, Object... args) {
-		return ToolsBatchResourceBundleUtil.resourceString(getLanguage(), RES_PRE + suffix, args);
-	}
-
-	private String getWizardResourceMessage(String suffix, Object... args) {
-		return ToolsBatchResourceBundleUtil.resourceString(getLanguage(), RES_WIZARD_PRE + suffix, args);
 	}
 
 }

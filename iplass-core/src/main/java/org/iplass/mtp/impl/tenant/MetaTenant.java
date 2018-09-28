@@ -21,6 +21,7 @@
 package org.iplass.mtp.impl.tenant;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -104,9 +105,11 @@ public class MetaTenant extends BaseRootMetaData implements DefinableMetaData<Te
 		tenant.setLocalizedDisplayNameList(I18nUtil.toDef(localizedDisplayNameList));
 
 		if (tenantConfigs != null) {
+			//coreモジュール外のMetaTenantConfigのサブクラスは参照できない可能性を考慮する
 			tenant.setTenantConfigs(
 					tenantConfigs.stream()
 							.map(config -> config.currentConfig())
+							.filter(config -> config != null)
 							.collect(Collectors.toList()));
 		} else {
 			tenant.setTenantConfigs(null);
@@ -158,11 +161,18 @@ public class MetaTenant extends BaseRootMetaData implements DefinableMetaData<Te
 		@SuppressWarnings("rawtypes")
 		private Map<String, MetaTenantConfigRuntime> tenantConfigsRuntimes;
 
+		@SuppressWarnings("rawtypes")
 		public MetaTenantHandler() {
 
 			if (tenantConfigs != null) {
-				tenantConfigsRuntimes = tenantConfigs.stream().map(config -> config.createRuntime(this))
-				.collect(Collectors.toMap(runtime -> runtime.getClass().getName(), runtime -> runtime));
+				//coreモジュール外のMetaTenantConfigのサブクラスは参照できない可能性を考慮する
+				tenantConfigsRuntimes = new HashMap<>();
+				for (MetaTenantConfig config: tenantConfigs) {
+					MetaTenantConfigRuntime runtime = config.createRuntime(this);
+					if (runtime != null) {
+						tenantConfigsRuntimes.put(runtime.getClass().getName(), runtime);
+					}
+				}
 			} else {
 				tenantConfigsRuntimes = Collections.emptyMap();
 			}

@@ -87,7 +87,8 @@ public class LobStoreService implements Service {
 			lobDao = new LobDao();
 		}
 		lobDao.init(config.getDependentService(RdbAdapterService.class).getRdbAdapter(),
-				config.getDependentService(CounterService.OID_COUNTER_SERVICE_NAME));
+				config.getDependentService(CounterService.OID_COUNTER_SERVICE_NAME),
+				manageLobSizeOnRdb);
 	}
 
 	@Override

@@ -13,6 +13,33 @@ import org.iplass.mtp.tenant.Tenant;
 
 public class PackageImportParameter {
 
+	/** Silentモード テナントURL */
+	public static final String PROP_TENANT_URL = "tenantUrl";
+	/** Silentモード テナントID */
+	public static final String PROP_TENANT_ID = "tenantId";
+
+	/** Silentモード パッケージファイル */
+	public static final String PROP_IMPORT_FILE = "importFile";
+
+	/** Silentモード Entityデータ Truncate */
+	public static final String PROP_ENTITY_TRUNCATE = "entity.truncate";
+	/** Silentモード Entityデータ Listnerを実行 */
+	public static final String PROP_ENTITY_NOTIFY_LISTENER = "entity.notifyListener";
+	/** Silentモード Entityデータ Validationを実行(更新不可項目を対象にする場合はfalseに強制設定) */
+	public static final String PROP_ENTITY_WITH_VALIDATION = "entity.withValidation";
+	/** Silentモード Entityデータ 更新不可項目を更新対象 */
+	public static final String PROP_ENTITY_UPDATE_DISUPDATABLE = "entity.updateDisupdatableProperty";
+	/** Silentモード Entityデータ 強制更新 */
+	public static final String PROP_ENTITY_FORCE_UPDATE = "entity.forceUpdate";
+	/** Silentモード Entityデータ エラーデータはSkip */
+	public static final String PROP_ENTITY_ERROR_SKIP = "entity.errorSkip";
+	/** Silentモード Entityデータ 存在しないプロパティは無視 */
+	public static final String PROP_ENTITY_IGNORE_INVALID_PROPERTY = "entity.ignoreInvalidProperty";
+	/** Silentモード Entityデータ OIDに付与するPrefix */
+	public static final String PROP_ENTITY_PREFIX_OID = "entity.prefixOid";
+	/** Silentモード Entityデータ Commit単位(件数) */
+	public static final String PROP_ENTITY_COMMIT_LIMIT = "entity.commitLimit";
+
 	// テナントID
 	private int tenantId;
 
@@ -21,9 +48,6 @@ public class PackageImportParameter {
 
 	//Importファイルパス
 	private String importFilePath;
-
-	//Workディレクトリ名
-	private String workDirName = "./";
 
 	//Upload用Package名(固定)
 	private String packageName;
@@ -39,9 +63,6 @@ public class PackageImportParameter {
 
 	//Importファイル(内部用)
 	private File importFile;
-
-	//Workディレクトリ(内部用)
-	private File workDir;
 
 	//ImportファイルPackage情報(内部用)
 	private PackageInfo packInfo;
@@ -83,14 +104,6 @@ public class PackageImportParameter {
 		this.importFilePath = importFilePath;
 	}
 
-	public String getWorkDirName() {
-		return workDirName;
-	}
-
-	public void setWorkDirName(String workDirName) {
-		this.workDirName = workDirName;
-	}
-
 	public String getPackageName() {
 		return packageName;
 	}
@@ -130,14 +143,6 @@ public class PackageImportParameter {
 
 	public void setImportFile(File importFile) {
 		this.importFile = importFile;
-	}
-
-	public File getWorkDir() {
-		return workDir;
-	}
-
-	public void setWorkDir(File workDir) {
-		this.workDir = workDir;
 	}
 
 	public PackageInfo getPackInfo() {

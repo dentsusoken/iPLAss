@@ -22,6 +22,23 @@ https://www.gnu.org/licenses/agpl.html[AGPL-3.0]
 
 https://www.isid.co.jp/solution/iPLAss.html
 
+## Docker
+
+ > docker pull iplass/iplass-standalone
+
+ > docker run -p 8080:8080 -e IPLASS_TENANT_ADMIN_PASSWORD=[yourPassword] iplass/iplass-standalone
+
+起動後、
+
+\http://localhost:8080/iplass
+
+にアクセスします。
+ログイン画面で、IDに'admin'、パスワードに[yourPassword]を入力しログインしてください。
+
+詳細は以下を参照ください。
+
+https://hub.docker.com/r/iplass/iplass-standalone/
+
 ## Build
 gradleでビルドします。
 

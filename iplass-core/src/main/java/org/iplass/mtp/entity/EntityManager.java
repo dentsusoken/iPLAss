@@ -20,6 +20,7 @@
 
 package org.iplass.mtp.entity;
 
+import java.io.File;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.sql.Timestamp;
@@ -332,6 +333,20 @@ public interface EntityManager extends Manager {
 	 * @return
 	 */
 	public BinaryReference createBinaryReference(String name, String type, InputStream is);
+	
+	/**
+	 * BinaryReferenceを新規に作成します。
+	 * 引数のfileのデータを同時にバイナリデータとして書き込みます。<br>
+	 * 作成されたBinaryReferenceはまだEntityに紐付いていない状態です。<br>
+	 * nameが未指定の場合は、fileの名前がnameに指定されます。
+	 * typeが未指定の場合は、fileの拡張子からmimetypeが解決されます。
+	 * 
+	 * @param file 
+	 * @param name
+	 * @param type
+	 * @return
+	 */
+	public BinaryReference createBinaryReference(File file, String name, String type);
 
 	/**
 	 * 引数で指定されたBinaryReferenceのバイナリデータを取得するためのInputStreamを取得します。

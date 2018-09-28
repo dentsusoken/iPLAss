@@ -27,15 +27,11 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 
 import org.iplass.mtp.SystemException;
 import org.iplass.mtp.impl.lob.lobstore.LobData;
-import org.iplass.mtp.impl.lob.lobstore.LobStoreRuntimeException;
-import org.iplass.mtp.impl.lob.sql.LobStoreUpdateSql;
-import org.iplass.mtp.impl.rdb.SqlExecuter;
-import org.iplass.mtp.impl.rdb.adapter.RdbAdapter;
 import org.iplass.mtp.impl.transaction.TransactionService;
 import org.iplass.mtp.spi.ServiceRegistry;
 import org.iplass.mtp.transaction.Transaction;
@@ -54,16 +50,11 @@ public class FileLobData implements LobData {
 
 	private File blobFile;
 
-	private boolean manageLobSizeOnRdb;
-	private RdbAdapter rdb;
-
-	public FileLobData(int tenantId, long lobDataId, String rootDir, boolean overwriteFile, boolean manageLobSizeOnRdb, RdbAdapter rdb) {
+	public FileLobData(int tenantId, long lobDataId, String rootDir, boolean overwriteFile) {
 		this.tenantId = tenantId;
 		this.lobDataId = lobDataId;
 		this.rootDir = rootDir;
 		this.overwriteFile = overwriteFile;
-		this.manageLobSizeOnRdb = manageLobSizeOnRdb;
-		this.rdb = rdb;
 	}
 
 	@Override
@@ -144,6 +135,24 @@ public class FileLobData implements LobData {
 			throw new SystemException("can not create file:" + newFile.getAbsolutePath() + ", cause " + e, e);
 		}
 	}
+	
+	@Override
+	public void transferFrom(File file) throws IOException {
+		if (blobFile == null) {
+			blobFile = createNewFile(lobDataId);
+		}
+		
+		Transaction t = ServiceRegistry.getRegistry().getService(TransactionService.class).getTransacitonManager().currentTransaction();
+		if (t != null && t.getStatus() == TransactionStatus.ACTIVE) {
+			t.afterRollback(() -> {
+					if (!blobFile.delete()) {
+						logger.warn("maybe can not delete file:" + blobFile.getAbsolutePath());
+					}
+			});
+		}
+		
+		Files.copy(file.toPath(), blobFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+	}
 
 	private class FileBinaryDataOutputStream extends OutputStream {
 		private FileOutputStream wrapped;
@@ -174,13 +183,7 @@ public class FileLobData implements LobData {
 					wrapped.flush();
 				} finally {
 					wrapped.close();
-
-					try {
-						//サイズを更新
-						storeBlobSize();
-					} finally {
-						wrapped = null;
-					}
+					wrapped = null;
 				}
 			}
 		}
@@ -209,32 +212,6 @@ public class FileLobData implements LobData {
 			wrapped.write(b);
 		}
 
-		private boolean storeBlobSize() {
-			//LobサイズをRdb上で管理しない場合は抜ける
-			if (!manageLobSizeOnRdb) {
-				return true;
-			}
-
-			SqlExecuter<Boolean> exec = new SqlExecuter<Boolean>() {
-
-				@Override
-				public Boolean logic() throws SQLException {
-
-					LobStoreUpdateSql sql = rdb.getUpdateSqlCreator(LobStoreUpdateSql.class);
-					PreparedStatement stmt = getPreparedStatement(sql.toPrepareSqlForLobSizeUpdate(rdb));
-					stmt.setLong(1, getSize());
-					stmt.setInt(2, tenantId);
-					stmt.setLong(3, lobDataId);
-					if (stmt.executeUpdate() != 1) {
-						//プログラムから更新の場合、OBJ_BLOBでロックしてるので、発生しえないはず。なのでシステム例外。
-						throw new LobStoreRuntimeException("Concurrent Update Occured.");
-					}
-					return Boolean.TRUE;
-				}
-
-			};
-			return exec.execute(rdb, true);
-		}
 	}
 
 	private class FileBinaryDataInputStream extends InputStream {

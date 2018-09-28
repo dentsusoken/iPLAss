@@ -22,6 +22,8 @@ package org.iplass.mtp.impl.rdb.connection;
 
 public interface AdditionalWarnLogInfo {
 	
+	public boolean logBefore();
+	
 	public String toString();
 
 }

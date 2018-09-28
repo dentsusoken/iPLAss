@@ -40,6 +40,7 @@ public abstract class AbstractConnectionFactory extends ConnectionFactory {
 
 	private static final Logger logger = LoggerFactory.getLogger(AbstractConnectionFactory.class);
 	private int warnLogThreshold;
+	private boolean warnLogBefore;
 	private TransactionIsolationLevel transactionIsolationLevel;
 
 	private boolean isDefault;
@@ -65,10 +66,10 @@ public abstract class AbstractConnectionFactory extends ConnectionFactory {
 							if (rh == null || rh.isInUse()) {
 								//ResourceHolder使ってない場合/既にResourceHolder利用されている場合は物理Connection
 								t.setCon(new LocalTransactionConnectionWrapper(
-										getPhysicalConnection(afterGetPhysicalConnectionHandler), true, null, warnLogThreshold));
+										getPhysicalConnection(afterGetPhysicalConnectionHandler), true, null, warnLogThreshold, warnLogBefore));
 							} else {
 								t.setCon(new LocalTransactionConnectionWrapper(
-										getHoldingConnection(rh, afterGetPhysicalConnectionHandler), true, rh, warnLogThreshold));
+										getHoldingConnection(rh, afterGetPhysicalConnectionHandler), true, rh, warnLogThreshold, warnLogBefore));
 							}
 						} catch (SQLException e) {
 							throw new ConnectionException(e);
@@ -78,11 +79,11 @@ public abstract class AbstractConnectionFactory extends ConnectionFactory {
 				} else {
 					if (rh == null || rh.isInUse()) {
 						return new LocalTransactionConnectionWrapper(
-								getPhysicalConnection(afterGetPhysicalConnectionHandler), false, null, warnLogThreshold);
+								getPhysicalConnection(afterGetPhysicalConnectionHandler), false, null, warnLogThreshold, warnLogBefore);
 					} else {
 						//未使用のResourceHolderのコネクション
 						return new LocalTransactionConnectionWrapper(
-								getHoldingConnection(rh, afterGetPhysicalConnectionHandler), false, rh, warnLogThreshold);
+								getHoldingConnection(rh, afterGetPhysicalConnectionHandler), false, rh, warnLogThreshold, warnLogBefore);
 					}
 				}
 			}
@@ -91,17 +92,17 @@ public abstract class AbstractConnectionFactory extends ConnectionFactory {
 			if (tm instanceof LocalTransactionManager) {
 				if (rh == null || rh.isInUse()) {
 					return new LocalTransactionConnectionWrapper(
-							getPhysicalConnection(afterGetPhysicalConnectionHandler), false, null, warnLogThreshold);
+							getPhysicalConnection(afterGetPhysicalConnectionHandler), false, null, warnLogThreshold, warnLogBefore);
 				} else {
 					return new LocalTransactionConnectionWrapper(
-							getHoldingConnection(rh, afterGetPhysicalConnectionHandler), false, rh, warnLogThreshold);
+							getHoldingConnection(rh, afterGetPhysicalConnectionHandler), false, rh, warnLogThreshold, warnLogBefore);
 				}
 			}
 		}
 		//デフォルトのConnectionFactoryでない場合、、LocalTransactionでない場合、そのまま素直に生成
 		//TODO トランザクション管理
 		return new LocalTransactionConnectionWrapper(
-				getPhysicalConnection(afterGetPhysicalConnectionHandler), false, null, warnLogThreshold);
+				getPhysicalConnection(afterGetPhysicalConnectionHandler), false, null, warnLogThreshold, warnLogBefore);
 	}
 
 	Connection getHoldingConnection(ResourceHolder rh, Function<Connection, Connection> afterGetPhysicalConnectionHandler) {
@@ -139,19 +140,13 @@ public abstract class AbstractConnectionFactory extends ConnectionFactory {
 			isDefault = true;
 		}
 
-		if (config.getBean("warnLogThreshold") == null) {
-			warnLogThreshold = 0;
-		} else {
-
-			try {
-				warnLogThreshold = Integer.parseInt(config.getBean("warnLogThreshold").toString());
-			} catch (NumberFormatException e) {
-				warnLogThreshold = 0;
-			}
-		}
-
+		warnLogThreshold = config.getValue("warnLogThreshold", Integer.TYPE, 0);
+		warnLogBefore = config.getValue("warnLogBefore", Boolean.TYPE, true);
 		transactionIsolationLevel = config.getValue("transactionIsolationLevel", TransactionIsolationLevel.class);
+	}
 
+	public boolean isWarnLogBefore() {
+		return warnLogBefore;
 	}
 
 	public int getWarnLogThreshold() {

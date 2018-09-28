@@ -140,6 +140,16 @@ public class ReferenceSection extends Section {
 	)
 	private boolean hideView;
 
+	/** 更新時に強制的に更新処理を行う */
+	@MetaFieldInfo(
+			displayName="更新時に強制的に更新処理を行う",
+			displayNameKey="generic_element_section_ReferenceSection_forceUpadteDisplaNameKey",
+			inputType=InputType.CHECKBOX,
+			description="変更項目が一つもなくとも、強制的に更新処理（更新日時、更新者が更新される）を行います。",
+			descriptionKey="generic_element_section_ReferenceSection_forceUpadteDescriptionKey"
+	)
+	private boolean forceUpadte;
+
 	/** 上部のコンテンツ */
 	@MetaFieldInfo(
 			displayName="上部のコンテンツ",
@@ -368,6 +378,22 @@ public class ReferenceSection extends Section {
 	 */
 	public void setHideView(boolean hideView) {
 	    this.hideView = hideView;
+	}
+
+	/**
+	 * 更新時に強制的に更新処理を行うかを取得します。
+	 * @return forceUpdate 更新時に強制的に更新処理を行うか
+	 */
+	public boolean isForceUpadte() {
+		return forceUpadte;
+	}
+
+	/**
+	 * 更新時に強制的に更新処理を行うかを設定します。
+	 * @param forceUpadte 更新時に強制的に更新処理を行うか
+	 */
+	public void setForceUpadte(boolean forceUpadte) {
+		this.forceUpadte = forceUpadte;
 	}
 
 	/**

@@ -141,6 +141,7 @@ public abstract class PropertyHandler /* implements MetaDataRuntime*/ {
 					if (!v.validateArray((Object[]) value, context)) {
 						ValidateError res = new ValidateError();
 						res.setPropertyName(metaData.getName());
+						res.setPropertyDisplayName(getDisplayName());
 						if (entityDispName == null) {
 							entityDispName = getEntityDispName(model);
 						}
@@ -151,6 +152,7 @@ public abstract class PropertyHandler /* implements MetaDataRuntime*/ {
 					if (!v.validate(value, context)) {
 						ValidateError res = new ValidateError();
 						res.setPropertyName(metaData.getName());
+						res.setPropertyDisplayName(getDisplayName());
 						if (entityDispName == null) {
 							entityDispName = getEntityDispName(model);
 						}

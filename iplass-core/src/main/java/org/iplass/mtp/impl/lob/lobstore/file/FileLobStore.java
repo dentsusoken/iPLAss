@@ -26,8 +26,6 @@ import org.iplass.mtp.impl.lob.LobStoreService;
 import org.iplass.mtp.impl.lob.lobstore.LobData;
 import org.iplass.mtp.impl.lob.lobstore.LobStore;
 import org.iplass.mtp.impl.lob.lobstore.LobValidator;
-import org.iplass.mtp.impl.rdb.adapter.RdbAdapter;
-import org.iplass.mtp.impl.rdb.adapter.RdbAdapterService;
 import org.iplass.mtp.impl.transaction.TransactionService;
 import org.iplass.mtp.spi.Config;
 import org.iplass.mtp.spi.ServiceConfigrationException;
@@ -43,11 +41,8 @@ public class FileLobStore implements LobStore {
 
 	private static final Logger logger = LoggerFactory.getLogger(FileLobStore.class);
 
-	private RdbAdapter rdb;
-
 	private String rootDir;
 	private boolean overwriteFile = false;
-	private boolean manageLobSizeOnRdb;
 
 	private LobValidator lobValidator;
 
@@ -81,8 +76,6 @@ public class FileLobStore implements LobStore {
 		if (rootDir == null) {
 			throw new ServiceConfigrationException("rootDir is undefined at FileLobStoreService");
 		}
-		rdb = config.getDependentService(RdbAdapterService.class).getRdbAdapter();
-		manageLobSizeOnRdb = service.isManageLobSizeOnRdb();
 	}
 
 	@Override
@@ -91,12 +84,12 @@ public class FileLobStore implements LobStore {
 
 	@Override
 	public LobData create(int tenantId, long lobDataId) {
-		return new FileLobData(tenantId, lobDataId, rootDir, overwriteFile, manageLobSizeOnRdb, rdb);
+		return new FileLobData(tenantId, lobDataId, rootDir, overwriteFile);
 	}
 
 	@Override
 	public LobData load(int tenantId, long lobDataId) {
-		return new FileLobData(tenantId, lobDataId, rootDir, overwriteFile, manageLobSizeOnRdb, rdb);
+		return new FileLobData(tenantId, lobDataId, rootDir, overwriteFile);
 	}
 
 	@Override
@@ -104,7 +97,7 @@ public class FileLobStore implements LobStore {
 		Transaction t = ServiceRegistry.getRegistry().getService(TransactionService.class).getTransacitonManager().currentTransaction();
 		if (t != null && t.getStatus() == TransactionStatus.ACTIVE) {
 			t.afterCommit(() -> {
-					FileLobData data = new FileLobData(tenantId, lobDataId, rootDir, overwriteFile, manageLobSizeOnRdb, rdb);
+					FileLobData data = new FileLobData(tenantId, lobDataId, rootDir, overwriteFile);
 					File f = data.toFile(lobDataId);
 					if (f.exists()) {
 						if (!f.delete()) {
@@ -113,7 +106,7 @@ public class FileLobStore implements LobStore {
 					}
 			});
 		} else {
-			FileLobData data = new FileLobData(tenantId, lobDataId, rootDir, overwriteFile, manageLobSizeOnRdb, rdb);
+			FileLobData data = new FileLobData(tenantId, lobDataId, rootDir, overwriteFile);
 			File f = data.toFile(lobDataId);
 			if (f.exists()) {
 				if (!f.delete()) {

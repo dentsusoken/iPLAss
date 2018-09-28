@@ -512,7 +512,7 @@ public class DetailCommandContext extends GenericCommandContext {
 		if (copyTarget == null || copyTarget.isEmpty()) {
 			return CopyTarget.SHALLOW;
 		}
-		return CopyTarget.valueOf(copyTarget);
+		return CopyTarget.getEnum(copyTarget);
 	}
 
 	/**
@@ -927,6 +927,7 @@ public class DetailCommandContext extends GenericCommandContext {
 
 		ReferenceRegistHandler handler = NestTableReferenceRegistHandler.get(this, list, red, p, property, editor.getNestProperties());
 		if (handler != null) {
+			handler.setForceUpdate(editor.isForceUpadte());
 			referenceRegistHandlers.add(handler);
 		}
 	}
@@ -1016,6 +1017,7 @@ public class DetailCommandContext extends GenericCommandContext {
 
 		ReferenceRegistHandler handler = ReferenceSectionReferenceRegistHandler.get(this, list, red, p, property);
 		if (handler != null) {
+			//handler.setForceUpdate(forceUpadte); //参照セクションはSection毎に個別設定になるので、Handler内で設定
 			referenceRegistHandlers.add(handler);
 		}
 	}

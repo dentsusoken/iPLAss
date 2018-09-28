@@ -21,6 +21,8 @@
 package org.iplass.mtp.impl.lob.lobstore.rdb;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -124,6 +126,19 @@ public class RdbLobData implements LobData {
 	@Override
 	public OutputStream getBinaryOutputStream() {
 		return new LobOutputStream();
+	}
+	
+	@Override
+	public void transferFrom(File file) throws IOException {
+		byte[] buf = new byte[8192];
+		int count;
+		try (InputStream is = new FileInputStream(file);
+				OutputStream os = getBinaryOutputStream()) {
+			while ((count = is.read(buf)) != -1) {
+				os.write(buf, 0, count);
+			}
+			os.flush();
+		}
 	}
 
 	private class LobInputStream extends InputStream {

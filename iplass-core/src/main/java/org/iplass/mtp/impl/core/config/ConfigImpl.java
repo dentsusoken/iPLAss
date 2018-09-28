@@ -576,8 +576,18 @@ public class ConfigImpl implements Config {
 			return (String) value;
 		}
 		if (value instanceof List) {
-			return ((List<String>) value).get(0);
+			value = ((List<Object>) value).get(0);
+			if (value instanceof String) {
+				return (String) value;
+			}
 		}
+		
+		//from NameValue
+		Instance i = propMap.get(name);
+		if (i != null && i.nvl != null && i.nvl.size() > 0) {
+			return i.nvl.get(0).value();
+		}
+		
 		return null;
 	}
 
@@ -590,13 +600,38 @@ public class ConfigImpl implements Config {
 			return res;
 		}
 		if (value instanceof List) {
-			return (List<String>) value;
+			//check instance type
+			boolean isStr = true;
+			for (Object o: (List<Object>) value) {
+				if (o != null && !(o instanceof String)) {
+					isStr = false;
+					break;
+				}
+			}
+			if (isStr) {
+				return (List<String>) value;
+			}
 		}
+		
+		//from NameValue
+		Instance i = propMap.get(name);
+		if (i != null && i.nvl != null && i.nvl.size() > 0) {
+			ArrayList<String> ret = new ArrayList<>(i.nvl.size());
+			for (NameValue nv: i.nvl) {
+				ret.add(nv.value());
+			}
+			return ret;
+		}
+		
 		return null;
 	}
 	
 	@SuppressWarnings("unchecked")
 	public <T> T getValue(String name, Class<T> type) {
+		if (type == Object.class) {
+			type = null;
+		}
+		
 		Object value = valueInit(name, type);
 		if (value instanceof List) {
 			return ((List<T>) value).get(0);
@@ -607,6 +642,10 @@ public class ConfigImpl implements Config {
 	
 	@SuppressWarnings("unchecked")
 	public <T> List<T> getValues(String name, Class<T> type) {
+		if (type == Object.class) {
+			type = null;
+		}
+		
 		Object value = valueInit(name, type);
 		if (value == null) {
 			return null;

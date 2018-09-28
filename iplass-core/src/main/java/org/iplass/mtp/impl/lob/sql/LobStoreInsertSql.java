@@ -25,20 +25,26 @@ import org.iplass.mtp.impl.rdb.adapter.UpdateSqlHandler;
 
 public class LobStoreInsertSql extends UpdateSqlHandler {
 	
-	public String toSql(int tenantId, long lobId, RdbAdapter rdb) {
+	public String toSql(int tenantId, long lobId, Long size, RdbAdapter rdb) {
 		StringBuilder sql = new StringBuilder();
 		sql.append("INSERT INTO " + LobStoreTable.TABLE_NAME + "("
 				+ LobStoreTable.TENANT_ID
 				+ "," + LobStoreTable.LOB_DATA_ID 
 				+ "," + LobStoreTable.CRE_DATE
 				+ "," + LobStoreTable.REF_COUNT
-				+ "," + LobStoreTable.B_DATA
-				+ ") VALUES(");
+				+ "," + LobStoreTable.B_DATA);
+		if (size != null) {
+			sql.append("," + LobStoreTable.LOB_SIZE);
+		}
+		sql.append(") VALUES(");
 		sql.append(tenantId).append(",");
 		sql.append(lobId).append(",");
 		sql.append(rdb.systimestamp()).append(",");
 		sql.append("1,");
 		sql.append("null");
+		if (size != null) {
+			sql.append(",").append(size.longValue());
+		}
 		sql.append(")");
 		
 		return sql.toString();

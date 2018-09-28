@@ -64,19 +64,18 @@ import org.iplass.mtp.impl.rdb.mysql.MysqlRdbAdaptor;
 import org.iplass.mtp.impl.tools.tenant.TenantCreateParameter;
 import org.iplass.mtp.impl.tools.tenant.TenantToolService;
 import org.iplass.mtp.spi.ServiceRegistry;
-import org.iplass.mtp.tools.ToolsBatchResourceBundleUtil;
 import org.iplass.mtp.tools.batch.tenant.TenantBatch;
 import org.iplass.mtp.tools.batch.tenant.TenantBatch.TenantBatchExecMode;
+import org.iplass.mtp.tools.gui.MtpJDialogBase;
 import org.iplass.mtp.util.StringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@SuppressWarnings("serial")
-public class TenantCreateDialog extends JDialog {
+public class TenantCreateDialog extends MtpJDialogBase {
+
+	private static final long serialVersionUID = -8293278349056121678L;
 
 	private static Logger logger = LoggerFactory.getLogger(TenantCreateDialog.class);
-
-	private String language;
 
 	private TenantToolService toolService = ServiceRegistry.getRegistry().getService(TenantToolService.class);
 	private I18nService i18nService = ServiceRegistry.getRegistry().getService(I18nService.class);
@@ -111,10 +110,8 @@ public class TenantCreateDialog extends JDialog {
 
 	protected List<ChangeListener> dataChangeListners = new ArrayList<ChangeListener>();
 
-	public TenantCreateDialog(Frame owner, String language) {
+	public TenantCreateDialog(Frame owner) {
 		super(owner);
-
-		setLanguage(language);
 
 		if (i18nService.getEnableLanguagesMap() != null) {
 			for (String languageKey : i18nService.getEnableLanguagesMap().keySet()) {
@@ -130,14 +127,6 @@ public class TenantCreateDialog extends JDialog {
 
 	public void addTenantDataChangeListner(ChangeListener listner) {
 		dataChangeListners.add(listner);
-	}
-
-	private String getLanguage() {
-		return language;
-	}
-
-	private void setLanguage(String language) {
-		this.language = language;
 	}
 
 	protected void createDialog() {
@@ -483,19 +472,19 @@ public class TenantCreateDialog extends JDialog {
 	protected boolean inputValidate() {
 		StringBuilder messages = new StringBuilder();
 		if (txtName.getText().trim().isEmpty()) {
-			messages.append(getCommonResourceMessage("requiredMsg", "name") + "\n");
+			messages.append(rs("Common.requiredMsg", "name") + "\n");
 		}
 		if (txtAdminUserId.getText().trim().isEmpty()) {
-			messages.append(getCommonResourceMessage("requiredMsg", "AdminUserId") + "\n");
+			messages.append(rs("Common.requiredMsg", "AdminUserId") + "\n");
 		}
 		if (txtAdminUserPass.getPassword().length == 0) {
-			messages.append(getCommonResourceMessage("requiredMsg", "AdminUserPassword") + "\n");
+			messages.append(rs("Common.requiredMsg", "AdminUserPassword") + "\n");
 		}
 		if (txtUrl.getText().trim().isEmpty()) {
-			messages.append(getCommonResourceMessage("requiredMsg", "url") + "\n");
+			messages.append(rs("Common.requiredMsg", "url") + "\n");
 		}
 		if (txtDisplayName.getText().trim().isEmpty()) {
-			messages.append(getCommonResourceMessage("requiredMsg", "displayName") + "\n");
+			messages.append(rs("Common.requiredMsg", "displayName") + "\n");
 		}
 
 		if (messages.length() > 0) {
@@ -538,7 +527,7 @@ public class TenantCreateDialog extends JDialog {
 		protected TenantBatch doInBackground() throws Exception {
 			TenantBatch manager = null;
 			try {
-				manager = new TenantBatch(TenantBatchExecMode.CREATE.name(), getLanguage());
+				manager = new TenantBatch(TenantBatchExecMode.CREATE.name());
 				manager.addLogListner(new TenantBatch.LogListner() {
 
 					@Override
@@ -604,19 +593,20 @@ public class TenantCreateDialog extends JDialog {
 				TenantBatch manager = get();
 
 				if (manager.isSuccess()) {
-					JOptionPane.showMessageDialog(TenantCreateDialog.this, rs("TenantManagerApp.TenantCreateDialog.createCompleteMsg"),
+					JOptionPane.showMessageDialog(TenantCreateDialog.this,
+							rs("TenantManagerApp.TenantCreateDialog.createCompleteMsg"),
 							"INFO", JOptionPane.INFORMATION_MESSAGE);
 
 					fireTenantDataChanged();
 				} else {
-					JOptionPane.showMessageDialog(TenantCreateDialog.this, getCommonResourceMessage("errorMsg", ""),
+					JOptionPane.showMessageDialog(TenantCreateDialog.this, rs("Common.errorMsg", ""),
 							"ERROR", JOptionPane.ERROR_MESSAGE);
 				}
 			} catch (Exception e) {
-				addLog(getCommonResourceMessage("errorMsg", ""));
+				addLog(rs("Common.errorMsg", ""));
 				addLog(e.getMessage());
 
-				JOptionPane.showMessageDialog(TenantCreateDialog.this, getCommonResourceMessage("errorMsg", ""),
+				JOptionPane.showMessageDialog(TenantCreateDialog.this, rs("Common.errorMsg", ""),
 						"ERROR", JOptionPane.ERROR_MESSAGE);
 			}
 			btnCreate.setText("Create");
@@ -662,11 +652,4 @@ public class TenantCreateDialog extends JDialog {
 		}
 	}
 
-	private String rs(String key, Object... args) {
-		return ToolsBatchResourceBundleUtil.resourceString(getLanguage(), key, args);
-	}
-
-	private String getCommonResourceMessage(String subKey, Object... args) {
-		return ToolsBatchResourceBundleUtil.commonResourceString(getLanguage(), subKey, args);
-	}
 }

@@ -243,9 +243,9 @@ public class MetaDataPortingServiceImpl implements MetaDataPortingService {
 	}
 
 	@Override
-	public MetaDataImportResult importMetaData(String packageName, XMLEntryInfo entryInfo, final Tenant importTenant) {
+	public MetaDataImportResult importMetaData(String targetName, XMLEntryInfo entryInfo, final Tenant importTenant) {
 
-		toolLogger.info("start metadata import. {package:{}}", packageName);
+		toolLogger.info("start metadata import. {target:{}}", targetName);
 
 		MetaDataImportResult result = new MetaDataImportResult();
 		try {
@@ -254,14 +254,14 @@ public class MetaDataPortingServiceImpl implements MetaDataPortingService {
 
 			return doImportMetaData(entryInfo, entryList, result, importTenant);
 		} finally {
-			toolLogger.info("finish metadata import. {package:{}, result:{}}", packageName, (result.isError() ? "failed" : "success"));
+			toolLogger.info("finish metadata import. {target:{}, result:{}}", targetName, (result.isError() ? "failed" : "success"));
 		}
 	}
 
 	@Override
-	public MetaDataImportResult importMetaData(String tagName, XMLEntryInfo entryInfo, final List<String> selectedPaths, final Tenant importTenant) {
+	public MetaDataImportResult importMetaData(String targetName, XMLEntryInfo entryInfo, final List<String> selectedPaths, final Tenant importTenant) {
 
-		toolLogger.info("start metadata import. {tag:{}}", tagName);
+		toolLogger.info("start metadata import. {target:{}}", targetName);
 
 		MetaDataImportResult result = new MetaDataImportResult();
 		try {
@@ -292,7 +292,7 @@ public class MetaDataPortingServiceImpl implements MetaDataPortingService {
 
 			return doImportMetaData(filterEntryInfo, entryList, result, importTenant);
 		} finally {
-			toolLogger.info("finish metadata import. {tag:{}, result:{}}", tagName, (result.isError() ? "failed" : "success"));
+			toolLogger.info("finish metadata import. {target:{}, result:{}}", targetName, (result.isError() ? "failed" : "success"));
 		}
 	}
 

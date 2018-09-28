@@ -165,11 +165,17 @@ if (entity == null || entity.getOid() == null || entity.getOid().isEmpty()) {
 	return false;
 }
 
+def aps = org.iplass.mtp.spi.ServiceRegistry.getRegistry().getService(org.iplass.mtp.impl.auth.authenticate.builtin.policy.AuthenticationPolicyService.class);
+def policy = aps.getOrDefault(entity.accountPolicy);
+if (policy.isResetPasswordWithSpecificPassword()){
+    return false;
+}
+
 def am = org.iplass.mtp.ManagerLocator.getInstance().getManager(org.iplass.mtp.auth.AuthManager.class);
 def auth = org.iplass.mtp.auth.AuthContext.getCurrentContext();
 def tenant = auth.tenant;
 
-if (am.canResetCredential()) {
+if (am.canResetCredential(entity.accountPolicy)) {
 	if (user.admin) {
 		return true;
 	} else {
@@ -210,6 +216,68 @@ return false;
 						<onclickEvent>resetPassword()</onclickEvent>
 						<style>gr-btn gr-size-02</style>
 					</buttons>
+					<buttons>
+						<dispFlag>true</dispFlag>
+						<customDisplayTypeScript><![CDATA[
+if (!org.iplass.mtp.view.generic.OutputType.EDIT.equals(outputType)) {
+	return false;
+}
+
+if (entity == null || entity.getOid() == null || entity.getOid().isEmpty()) {
+	return false;
+}
+
+def aps = org.iplass.mtp.spi.ServiceRegistry.getRegistry().getService(org.iplass.mtp.impl.auth.authenticate.builtin.policy.AuthenticationPolicyService.class);
+def policy = aps.getOrDefault(entity.accountPolicy);
+if (!policy.isResetPasswordWithSpecificPassword()){
+	return false;
+}
+
+def am = org.iplass.mtp.ManagerLocator.getInstance().getManager(org.iplass.mtp.auth.AuthManager.class);
+def auth = org.iplass.mtp.auth.AuthContext.getCurrentContext();
+def tenant = auth.tenant;
+
+if (am.canResetCredential(entity.accountPolicy)) {
+	if (user.admin) {
+		return true;
+	} else {
+		// ユーザ管理が可能なロールを持っているか
+		if (tenant.tenantAuthInfo.userAdminRoles != null) {
+			for (def role: tenant.tenantAuthInfo.userAdminRoles) {
+				if (auth.userInRole(role)) {
+					return true;
+				}
+			}
+		}
+	}
+}
+return false;
+]]></customDisplayTypeScript>
+						<displayLabel>パスワードリセット</displayLabel>
+						<displayType>Custom</displayType>
+						<localizedDisplayLabelList>
+							<localeName>ja</localeName>
+							<stringValue>パスワードリセット</stringValue>
+						</localizedDisplayLabelList>
+						<localizedDisplayLabelList>
+							<localeName>en</localeName>
+							<stringValue>Password Reset</stringValue>
+						</localizedDisplayLabelList>
+						<localizedDisplayLabelList>
+							<localeName>zh-CN</localeName>
+							<stringValue>重设密码</stringValue>
+						</localizedDisplayLabelList>
+						<localizedDisplayLabelList>
+							<localeName>zh-TW</localeName>
+							<stringValue>重設密碼</stringValue>
+						</localizedDisplayLabelList>
+						<localizedDisplayLabelList>
+							<localeName>th</localeName>
+							<stringValue>รีเซ็ตพาสเวิร์ด</stringValue>
+						</localizedDisplayLabelList>
+						<onclickEvent>resetSpecificPassword()</onclickEvent>
+						<style>gr-btn gr-size-02 modal-btn</style>
+					</buttons>
 					<javaScript><![CDATA[
 function resetPassword() {
 	if(window.confirm(scriptContext.locale.passResetConfirm)) {
@@ -221,6 +289,20 @@ function resetPassword() {
 		}
 		$("#detailForm").attr("action", contextPath + dType + action).submit();
 	}
+}
+
+function resetSpecificPassword(){
+    var isSubModal = $("body.modal-body").length !== 0;
+    var target = getModalTarget(isSubModal);
+    var action = '/gem/auth/specificpassword';
+    var oid = $(":hidden[name='oid']").val();
+    var execType = $(":hidden[name='execType']").val();
+    var $form = $("<form />").attr({method:"POST", action: contextPath + action, target:target}).appendTo("body");
+	$("<input />").attr({type:"hidden", name:"oid", value:oid}).appendTo($form);
+	$("<input />").attr({type:"hidden", name:"execType", value:execType}).appendTo($form);
+	if (isSubModal) $("<input />").attr({type:"hidden", name:"modalTarget", value:target}).appendTo($form);
+	$form.submit();
+	$form.remove();
 }
 ]]></javaScript>
 				</views>
@@ -457,11 +539,17 @@ if (entity == null || entity.getOid() == null || entity.getOid().isEmpty()) {
 	return false;
 }
 
+def aps = org.iplass.mtp.spi.ServiceRegistry.getRegistry().getService(org.iplass.mtp.impl.auth.authenticate.builtin.policy.AuthenticationPolicyService.class);
+def policy = aps.getOrDefault(entity.accountPolicy);
+if (policy.isResetPasswordWithSpecificPassword()){
+    return false;
+}
+
 def am = org.iplass.mtp.ManagerLocator.getInstance().getManager(org.iplass.mtp.auth.AuthManager.class);
 def auth = org.iplass.mtp.auth.AuthContext.getCurrentContext();
 def tenant = auth.tenant;
 
-if (am.canResetCredential()) {
+if (am.canResetCredential(entity.accountPolicy)) {
 	if (user.admin) {
 		return true;
 	} else {
@@ -502,6 +590,68 @@ return false;
 						<onclickEvent>resetPassword()</onclickEvent>
 						<style>gr-btn gr-size-02</style>
 					</buttons>
+					<buttons>
+						<dispFlag>true</dispFlag>
+						<customDisplayTypeScript><![CDATA[
+if (!org.iplass.mtp.view.generic.OutputType.EDIT.equals(outputType)) {
+	return false;
+}
+
+if (entity == null || entity.getOid() == null || entity.getOid().isEmpty()) {
+	return false;
+}
+
+def aps = org.iplass.mtp.spi.ServiceRegistry.getRegistry().getService(org.iplass.mtp.impl.auth.authenticate.builtin.policy.AuthenticationPolicyService.class);
+def policy = aps.getOrDefault(entity.accountPolicy);
+if (!policy.isResetPasswordWithSpecificPassword()){
+	return false;
+}
+
+def am = org.iplass.mtp.ManagerLocator.getInstance().getManager(org.iplass.mtp.auth.AuthManager.class);
+def auth = org.iplass.mtp.auth.AuthContext.getCurrentContext();
+def tenant = auth.tenant;
+
+if (am.canResetCredential(entity.accountPolicy)) {
+	if (user.admin) {
+		return true;
+	} else {
+		// ユーザ管理が可能なロールを持っているか
+		if (tenant.tenantAuthInfo.userAdminRoles != null) {
+			for (def role: tenant.tenantAuthInfo.userAdminRoles) {
+				if (auth.userInRole(role)) {
+					return true;
+				}
+			}
+		}
+	}
+}
+return false;
+]]></customDisplayTypeScript>
+						<displayLabel>パスワードリセット</displayLabel>
+						<displayType>Custom</displayType>
+						<localizedDisplayLabelList>
+							<localeName>ja</localeName>
+							<stringValue>パスワードリセット</stringValue>
+						</localizedDisplayLabelList>
+						<localizedDisplayLabelList>
+							<localeName>en</localeName>
+							<stringValue>Password Reset</stringValue>
+						</localizedDisplayLabelList>
+						<localizedDisplayLabelList>
+							<localeName>zh-CN</localeName>
+							<stringValue>重设密码</stringValue>
+						</localizedDisplayLabelList>
+						<localizedDisplayLabelList>
+							<localeName>zh-TW</localeName>
+							<stringValue>重設密碼</stringValue>
+						</localizedDisplayLabelList>
+						<localizedDisplayLabelList>
+							<localeName>th</localeName>
+							<stringValue>รีเซ็ตพาสเวิร์ด</stringValue>
+						</localizedDisplayLabelList>
+						<onclickEvent>resetSpecificPassword()</onclickEvent>
+						<style>gr-btn gr-size-02 modal-btn</style>
+					</buttons>
 					<javaScript><![CDATA[
 function resetPassword() {
 	if(window.confirm(scriptContext.locale.passResetConfirm)) {
@@ -513,6 +663,20 @@ function resetPassword() {
 		}
 		$("#detailForm").attr("action", contextPath + dType + action).submit();
 	}
+}
+
+function resetSpecificPassword(){
+    var isSubModal = $("body.modal-body").length !== 0;
+    var target = getModalTarget(isSubModal);
+    var action = '/gem/auth/specificpassword';
+    var oid = $(":hidden[name='oid']").val();
+    var execType = $(":hidden[name='execType']").val();
+    var $form = $("<form />").attr({method:"POST", action: contextPath + action, target:target}).appendTo("body");
+	$("<input />").attr({type:"hidden", name:"oid", value:oid}).appendTo($form);
+	$("<input />").attr({type:"hidden", name:"execType", value:execType}).appendTo($form);
+	if (isSubModal) $("<input />").attr({type:"hidden", name:"modalTarget", value:target}).appendTo($form);
+	$form.submit();
+	$form.remove();
 }
 ]]></javaScript>
 				</views>

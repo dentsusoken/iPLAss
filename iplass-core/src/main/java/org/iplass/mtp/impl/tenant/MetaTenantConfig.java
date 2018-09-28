@@ -23,10 +23,13 @@ package org.iplass.mtp.impl.tenant;
 import org.iplass.mtp.impl.metadata.BaseMetaDataRuntime;
 import org.iplass.mtp.impl.metadata.MetaData;
 import org.iplass.mtp.impl.tenant.MetaTenant.MetaTenantHandler;
+import org.iplass.mtp.impl.util.ObjectUtil;
 import org.iplass.mtp.tenant.Tenant;
 import org.iplass.mtp.tenant.TenantConfig;
 
-public abstract class MetaTenantConfig<C extends TenantConfig> implements MetaData {
+public class MetaTenantConfig<C extends TenantConfig> implements MetaData {
+	//coreモジュール外のMetaTenantConfigのサブクラスは参照できない可能性を考慮し、
+	//JAXB経由で復元された際に、MetaTenantConfigでインスタンス化されるようにabstractにしない
 
 	private static final long serialVersionUID = -7759766584935038978L;
 
@@ -34,13 +37,16 @@ public abstract class MetaTenantConfig<C extends TenantConfig> implements MetaDa
 	 * DefinitionをMetaDataに変換します。
 	 * @param definition Definition
 	 */
-	public abstract void applyConfig(C definition);
+	public void applyConfig(C definition) {
+	}
 
 	/**
 	 * MetaDataをDefinitionに変換します。
 	 * @return Definition
 	 */
-	public abstract C currentConfig();
+	public C currentConfig() {
+		return null;
+	}
 
 	/**
 	 * Runtimeを生成します。
@@ -48,11 +54,18 @@ public abstract class MetaTenantConfig<C extends TenantConfig> implements MetaDa
 	 * @param tenantRuntime TenantのRuntime
 	 * @return Runtime
 	 */
-	public abstract MetaTenantConfigRuntime createRuntime(MetaTenantHandler tenantRuntime);
+	public MetaTenantConfigRuntime createRuntime(MetaTenantHandler tenantRuntime) {
+		return null;
+	}
 
 	public abstract class MetaTenantConfigRuntime extends BaseMetaDataRuntime {
 
 		public abstract void applyMetaDataToTenant(Tenant tenant);
+	}
+
+	@Override
+	public MetaData copy() {
+		return ObjectUtil.deepCopy(this);
 	}
 
 }

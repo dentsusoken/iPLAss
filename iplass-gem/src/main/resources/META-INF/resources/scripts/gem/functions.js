@@ -527,14 +527,15 @@ $.fn.allInputCheck = function(){
 			$this.on("mouseenter", function() {
 				$this.attr("title","");
 				var offset = $this.offset();
-				$toolwrap.show().css({
-					top : offset.top - 39,
-					left : offset.left - (options.offleft)
-				});
+				$toolwrap.show();
 				$toolicon.css({
 					left :  (options.range)
 				});
 				$tooltxt.append($title);
+				$toolwrap.css({
+					top : offset.top - $tooltxt.height() - 23,
+					left : offset.left - (options.offleft)
+				});
 			}).on("mouseleave", function() {
 				$toolwrap.hide();
 				$tooltxt.text('');	//title属性が表示するのを防ぐ

@@ -270,6 +270,7 @@ public abstract class DetailCommandBase implements Command {
 			option.setUpdateProperties(context.getRegistrationInterrupterHandler().getAdditionalProperties(updatePropNames));
 			option.setPurgeCompositionedEntity(context.getView().isPurgeCompositionedEntity());
 			option.setLocalized(context.getView().isLocalizationData());
+			option.setForceUpdate(context.getView().isForceUpadte());
 			try {
 				em.update(entity, option);
 			} catch (EntityValidationException e) {

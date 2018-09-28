@@ -1,19 +1,19 @@
 /*
  * Copyright (C) 2016 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
- * 
+ *
  * Unless you have purchased a commercial license,
  * the following license terms apply:
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
@@ -48,18 +48,16 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import org.iplass.mtp.impl.tools.tenant.PartitionInfo;
-import org.iplass.mtp.tools.ToolsBatchResourceBundleUtil;
 import org.iplass.mtp.tools.batch.partition.MySQLPartitionBatch;
 import org.iplass.mtp.tools.batch.tenant.TenantBatch.TenantBatchExecMode;
+import org.iplass.mtp.tools.gui.MtpJFrameBase;
 import org.iplass.mtp.tools.gui.partition.PartitionTable.PartitionTableModel;
 import org.iplass.mtp.tools.gui.tenant.TenantManagerApp;
 import org.iplass.mtp.tools.gui.widget.menu.BasicMenuBar;
 
-public class MySQLPartitionManagerApp extends JFrame {
+public class MySQLPartitionManagerApp extends MtpJFrameBase {
 
 	private static final long serialVersionUID = 5705897124813193817L;
-
-	private String language;
 
 	private JButton btnRefresh;
 	private JTextField txtCount;
@@ -70,8 +68,6 @@ public class MySQLPartitionManagerApp extends JFrame {
 
 	/**
 	 * Launch the application.
-	 *
-	 * args[0]・・・language
 	 */
 	public static void main(final String[] args) {
 
@@ -84,16 +80,7 @@ public class MySQLPartitionManagerApp extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					String language = null;
-					if (args != null) {
-						if (args.length > 0) {
-							if (!"system".equals(args[0])) {
-								language = args[0];
-							}
-						}
-					}
-
-					MySQLPartitionManagerApp frame = new MySQLPartitionManagerApp(language);
+					MySQLPartitionManagerApp frame = new MySQLPartitionManagerApp();
 
 					frame.setLocationRelativeTo(null);//中央表示
 					frame.setVisible(true);
@@ -105,11 +92,9 @@ public class MySQLPartitionManagerApp extends JFrame {
 		});
 	}
 
-	public MySQLPartitionManagerApp(String language) {
+	public MySQLPartitionManagerApp() {
 
-		setLanguage(language);
-
-		manager = new MySQLPartitionBatch(TenantBatchExecMode.GUI.name(), getLanguage());
+		manager = new MySQLPartitionBatch(TenantBatchExecMode.GUI.name());
 
 		setTitle("MySQL Partition Manager");
 
@@ -137,14 +122,6 @@ public class MySQLPartitionManagerApp extends JFrame {
 		});
 	}
 
-	private String getLanguage() {
-		return language;
-	}
-
-	private void setLanguage(String language) {
-		this.language = language;
-	}
-
 	private JPanel createHeaderPane() {
 
 		JPanel headerPane = new JPanel();
@@ -158,7 +135,7 @@ public class MySQLPartitionManagerApp extends JFrame {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				PartitionCreateDialog dialog = new PartitionCreateDialog(MySQLPartitionManagerApp.this, getLanguage());
+				PartitionCreateDialog dialog = new PartitionCreateDialog(MySQLPartitionManagerApp.this);
 				dialog.setModal(true);
 				dialog.addPartitionDataChangeListner(new ChangeListener() {
 
@@ -177,7 +154,7 @@ public class MySQLPartitionManagerApp extends JFrame {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				TenantManagerApp.main(new String[]{getLanguage()});
+				TenantManagerApp.main(new String[]{});
 
 				//自身を消す
 				dispose();
@@ -265,21 +242,17 @@ public class MySQLPartitionManagerApp extends JFrame {
 				txtCount.setText(String.valueOf(result.size()));
 			} catch (ExecutionException e) {
 				e.printStackTrace();
-				JOptionPane.showMessageDialog(MySQLPartitionManagerApp.this, getCommonResourceMessage("errorMsg"),
+				JOptionPane.showMessageDialog(MySQLPartitionManagerApp.this, rs("Common.errorMsg"),
 						"ERROR", JOptionPane.ERROR_MESSAGE);
             } catch (InterruptedException e) {
 				e.printStackTrace();
-				JOptionPane.showMessageDialog(MySQLPartitionManagerApp.this, getCommonResourceMessage("errorMsg"),
+				JOptionPane.showMessageDialog(MySQLPartitionManagerApp.this, rs("Common.errorMsg"),
 						"ERROR", JOptionPane.ERROR_MESSAGE);
 			}
     		btnRefresh.setText("Refresh List");
     		btnRefresh.setEnabled(true);
 		}
 
-	}
-
-	private String getCommonResourceMessage(String subKey, Object... args) {
-		return ToolsBatchResourceBundleUtil.commonResourceString(getLanguage(), subKey, args);
 	}
 
 }

@@ -33,6 +33,7 @@ public abstract class ConnectionFactory implements Service {
 	public abstract Connection getConnection(Function<Connection, Connection> afterGetPhysicalConnectionHandler);
 
 	public abstract int getWarnLogThreshold();
+	public abstract boolean isWarnLogBefore();
 
 	public abstract TransactionIsolationLevel getTransactionIsolationLevel();
 }

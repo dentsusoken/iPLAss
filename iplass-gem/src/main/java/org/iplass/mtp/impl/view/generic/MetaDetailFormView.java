@@ -131,6 +131,9 @@ public class MetaDetailFormView extends MetaFormView {
 	/** 定義されている参照プロパティのみを取得 */
 	private boolean loadDefinedReferenceProperty;
 
+	/** 更新時に強制的に更新処理を行う */
+	private boolean forceUpadte;
+
 	/** コピー対象 */
 	private CopyTarget copyTarget;
 
@@ -566,6 +569,22 @@ public class MetaDetailFormView extends MetaFormView {
 	}
 
 	/**
+	 * 更新時に強制的に更新処理を行うかを取得します。
+	 * @return forceUpdate 更新時に強制的に更新処理を行うか
+	 */
+	public boolean isForceUpadte() {
+		return forceUpadte;
+	}
+
+	/**
+	 * 更新時に強制的に更新処理を行うかを設定します。
+	 * @param forceUpadte 更新時に強制的に更新処理を行うか
+	 */
+	public void setForceUpadte(boolean forceUpadte) {
+		this.forceUpadte = forceUpadte;
+	}
+
+	/**
 	 * JavaScriptを取得します。
 	 * @return JavaScript
 	 */
@@ -733,6 +752,7 @@ public class MetaDetailFormView extends MetaFormView {
 		hideDelete = dForm.isHideDelete();
 		purgeCompositionedEntity = dForm.isPurgeCompositionedEntity();
 		loadDefinedReferenceProperty = dForm.isLoadDefinedReferenceProperty();
+		forceUpadte = dForm.isForceUpadte();
 		javaScript = dForm.getJavaScript();
 		validJavascriptDetailPage = dForm.isValidJavascriptDetailPage();
 		validJavascriptViewPage = dForm.isValidJavascriptViewPage();
@@ -778,6 +798,7 @@ public class MetaDetailFormView extends MetaFormView {
 		form.setHideDelete(hideDelete);
 		form.setPurgeCompositionedEntity(purgeCompositionedEntity);
 		form.setLoadDefinedReferenceProperty(loadDefinedReferenceProperty);
+		form.setForceUpadte(forceUpadte);
 		form.setJavaScript(javaScript);
 		form.setInterrupterName(interrupterName);
 		form.setLoadEntityInterrupterName(loadEntityInterrupterName);

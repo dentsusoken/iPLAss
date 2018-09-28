@@ -37,7 +37,9 @@ import org.iplass.mtp.command.annotation.action.Result;
 import org.iplass.mtp.command.annotation.action.Result.Type;
 import org.iplass.mtp.entity.BinaryReference;
 import org.iplass.mtp.entity.Entity;
+import org.iplass.mtp.entity.EntityValidationException;
 import org.iplass.mtp.entity.GenericEntity;
+import org.iplass.mtp.entity.ValidateError;
 import org.iplass.mtp.entity.definition.PropertyDefinition;
 import org.iplass.mtp.entity.definition.properties.BinaryProperty;
 import org.iplass.mtp.entity.definition.properties.ReferenceProperty;
@@ -123,6 +125,10 @@ import org.iplass.mtp.view.generic.DetailFormView.CopyTarget;
 					templateName="gem/generic/detail/edit",
 					layoutActionName=Constants.LAYOUT_NORMAL_ACTION),
 			@Result(status=Constants.CMD_EXEC_ERROR_LOCK, type=Type.JSP,
+					value=Constants.CMD_RSLT_JSP_VIEW,
+					templateName="gem/generic/detail/view",
+					layoutActionName=Constants.LAYOUT_NORMAL_ACTION),
+			@Result(status=Constants.CMD_EXEC_ERROR_VALIDATE, type=Type.JSP,
 					value=Constants.CMD_RSLT_JSP_VIEW,
 					templateName="gem/generic/detail/view",
 					layoutActionName=Constants.LAYOUT_NORMAL_ACTION),
@@ -268,10 +274,16 @@ public final class DetailViewCommand extends DetailCommandBase {
 				initCopyProperty(context, data.getEntity());
 				data.setExecType(Constants.EXEC_TYPE_INSERT);
 			} else if (context.getCopyTarget() == CopyTarget.DEEP) {
-				//ディープコピーの場合はデータ登録を行う
-				entity = em.deepCopy(oid, context.getDefinitionName());
-				data.setEntity((GenericEntity) entity);
-				data.setExecType(Constants.EXEC_TYPE_UPDATE);
+				try {
+					// ディープコピーの場合はデータ登録を行う
+					entity = em.deepCopy(oid, context.getDefinitionName());
+					data.setEntity((GenericEntity) entity);
+					data.setExecType(Constants.EXEC_TYPE_UPDATE);
+				} catch (EntityValidationException e) {
+					String refPropName = createHierarchyRefPropDispName(e);
+					request.setAttribute(Constants.MESSAGE, resourceString("command.generic.detail.DetailViewCommand.failedDeepCopy", refPropName));
+					ret = Constants.CMD_EXEC_ERROR_VALIDATE;
+				}
 			} else if (context.getCopyTarget() == CopyTarget.CUSTOM) {
 				Entity _entity = evm.copyEntity(context.getViewName(), entity);
 				if (_entity != null) {
@@ -366,5 +378,14 @@ public final class DetailViewCommand extends DetailCommandBase {
 
 	private static String resourceString(String key, Object... arguments) {
 		return GemResourceBundleUtil.resourceString(key, arguments);
+	}
+	
+	private String createHierarchyRefPropDispName(EntityValidationException e) {
+		StringBuilder builder = new StringBuilder();
+		for (ValidateError err : e.getValidateResult()) {
+			builder.append(err.getPropertyDisplayName() + ".");
+		}
+		builder.deleteCharAt(builder.length() - 1);
+		return StringUtil.reverseDelimited(builder.toString(), '.');
 	}
 }

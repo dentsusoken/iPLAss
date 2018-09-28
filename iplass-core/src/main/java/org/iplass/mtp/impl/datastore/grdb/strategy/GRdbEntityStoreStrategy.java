@@ -170,7 +170,7 @@ public class GRdbEntityStoreStrategy implements EntityStoreStrategy {
 						qo.setQueryTimeout(qo.getQueryTimeout());
 					}
 					if (stmt instanceof StatementWrapper) {
-						((StatementWrapper) stmt).setAdditionalWarnLogInfo(new EQLAdditionalWarnLogInfo(query, true));
+						((StatementWrapper) stmt).setAdditionalWarnLogInfo(new EQLAdditionalWarnLogInfo(query, true, handler, context));
 					}
 					try (ResultSet rs = stmt.executeQuery(sql.sql)) {
 						if (stmt instanceof StatementWrapper) {
@@ -182,7 +182,7 @@ public class GRdbEntityStoreStrategy implements EntityStoreStrategy {
 				} else {
 					PreparedStatement stmt = getPreparedStatement(sql.sql);
 					if (stmt instanceof PreparedStatementWrapper) {
-						((PreparedStatementWrapper) stmt).setAdditionalWarnLogInfo(new EQLAdditionalWarnLogInfo(query, true));
+						((PreparedStatementWrapper) stmt).setAdditionalWarnLogInfo(new EQLAdditionalWarnLogInfo(query, true, handler, context));
 					}
 					int index = 1;
 					for (BindValue val: sql.bindVariables) {
@@ -538,7 +538,7 @@ public class GRdbEntityStoreStrategy implements EntityStoreStrategy {
 					//検索SQL実行
 					Statement stmt = getStatement();
 					if (stmt instanceof StatementWrapper) {
-						((StatementWrapper) stmt).setAdditionalWarnLogInfo(new EQLAdditionalWarnLogInfo(query, false));
+						((StatementWrapper) stmt).setAdditionalWarnLogInfo(new EQLAdditionalWarnLogInfo(query, false, handler, context));
 					}
 					if (option != null) {
 						if (rdb.getMaxFetchSize() < option.getFetchSize()) {
@@ -558,7 +558,7 @@ public class GRdbEntityStoreStrategy implements EntityStoreStrategy {
 				} else {
 					PreparedStatement stmt = getPreparedStatement(sql.sql);
 					if (stmt instanceof PreparedStatementWrapper) {
-						((PreparedStatementWrapper) stmt).setAdditionalWarnLogInfo(new EQLAdditionalWarnLogInfo(query, false));
+						((PreparedStatementWrapper) stmt).setAdditionalWarnLogInfo(new EQLAdditionalWarnLogInfo(query, false, handler, context));
 					}
 
 					int index = 1;

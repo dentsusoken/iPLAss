@@ -27,7 +27,6 @@ import org.iplass.mtp.impl.script.template.GroovyTemplate;
 import org.iplass.mtp.impl.script.template.GroovyTemplateBinding;
 import org.iplass.mtp.impl.script.template.GroovyTemplateCompiler;
 import org.iplass.mtp.spi.ServiceRegistry;
-import org.iplass.mtp.tools.ToolsBatchResourceBundleUtil;
 import org.iplass.mtp.tools.batch.ExecMode;
 import org.iplass.mtp.tools.batch.MtpCuiBase;
 import org.iplass.mtp.util.StringUtil;
@@ -68,11 +67,10 @@ public class ObjStoreDDLGenerateBatch extends MtpCuiBase {
 
 	/**
 	 * args[0]・・・execMode
-	 * args[1]・・・language
-	 * args[2]・・・tmplRootPath
-	 * args[3]・・・outputRootPath
-	 * args[4]・・・storageSpaceName
-	 * args[5]・・・partition
+	 * args[1]・・・tmplRootPath
+	 * args[2]・・・outputRootPath
+	 * args[3]・・・storageSpaceName
+	 * args[4]・・・partition
 	 **/
 	public static void main(String[] args) throws Exception {
 
@@ -88,11 +86,10 @@ public class ObjStoreDDLGenerateBatch extends MtpCuiBase {
 
 	/**
 	 * args[0]・・・execMode
-	 * args[1]・・・language
-	 * args[2]・・・tmplRootPath
-	 * args[3]・・・outputRootPath
-	 * args[4]・・・storageSpaceName
-	 * args[5]・・・partition
+	 * args[1]・・・tmplRootPath
+	 * args[2]・・・outputRootPath
+	 * args[3]・・・storageSpaceName
+	 * args[4]・・・partition
 	 **/
 	public ObjStoreDDLGenerateBatch(String... args) throws Exception {
 
@@ -101,32 +98,26 @@ public class ObjStoreDDLGenerateBatch extends MtpCuiBase {
 			if (args.length > 0) {
 				execMode = ExecMode.valueOf(args[0]);
 			}
-			if (args.length > 1) {
-				//systemの場合は、JVMのデフォルトを利用
-				if (!"system".equals(args[1])) {
-					setLanguage(args[1]);
-				}
-			}
 
 			parameter = new ObjStoreDDLParameter();
 
+			if (args.length > 1) {
+				parameter.setTemplateRootPath(args[1]);
+			}
 			if (args.length > 2) {
-				parameter.setTemplateRootPath(args[2]);
+				parameter.setOutputPath(args[2]);
 			}
 			if (args.length > 3) {
-				parameter.setOutputPath(args[3]);
-			}
-			if (args.length > 4) {
-				if (!args[4].equalsIgnoreCase("all")) {
-					String[] spaceNames = args[4].split(",");
+				if (!args[3].equalsIgnoreCase("all")) {
+					String[] spaceNames = args[3].split(",");
 					for (int i =0; i < spaceNames.length; i++) {
 						spaceNames[i] = spaceNames[i].trim();
 					}
 					parameter.setStorageSpaceName(spaceNames);
 				}
 			}
-			if (args.length > 5) {
-				parameter.setUsePartition("TRUE".equalsIgnoreCase(args[5]));
+			if (args.length > 4) {
+				parameter.setUsePartition("TRUE".equalsIgnoreCase(args[4]));
 			} else if (getConfigSetting().isSQLServer()) {
 				// SQL Serverの場合、パーティションの利用はデフォルトではしない
 				parameter.setUsePartition(false);
@@ -140,8 +131,6 @@ public class ObjStoreDDLGenerateBatch extends MtpCuiBase {
 		if (getConfigSetting().isPostgreSQL()) {
 			columnNameLowerCase = true;
 		}
-
-		setupLanguage();
 	}
 
 	/**
@@ -219,7 +208,7 @@ public class ObjStoreDDLGenerateBatch extends MtpCuiBase {
 			setSuccess(true);
 
 		} catch (Throwable e) {
-			logError(getCommonResourceMessage("errorMsg", e.getMessage()));
+			logError(rs("Common.errorMsg", e.getMessage()));
 			e.printStackTrace();
 		} finally {
 			logInfo("");
@@ -318,7 +307,7 @@ public class ObjStoreDDLGenerateBatch extends MtpCuiBase {
 		do {
 			//デフォルトを02_tools/templateとして想定
 			String defaultPath = "./../template/" + (getConfigSetting().isOracle() ? "oracle" : getConfigSetting().isSQLServer() ? "sqlserver" : getConfigSetting().isPostgreSQL() ? "postgresql" : "mysql");
-			String templatePath = readConsole(getResourceMessage("templateDirMsg") + "(" + defaultPath + ")");
+			String templatePath = readConsole(rs("ObjStoreDDLGenerator.Wizard.templateDirMsg") + "(" + defaultPath + ")");
 			if (StringUtil.isNotBlank(templatePath)) {
 				param.setTemplateRootPath(templatePath);
 			} else {
@@ -328,9 +317,9 @@ public class ObjStoreDDLGenerateBatch extends MtpCuiBase {
 			//チェック
 			File templateDir = new File(param.getTemplateRootPath());
 			if (!templateDir.exists()) {
-				logWarn(getResourceMessage("notExistsDirMsg", templateDir.getAbsolutePath()));
+				logWarn(rs("ObjStoreDDLGenerator.Wizard.notExistsDirMsg", templateDir.getAbsolutePath()));
 			} else if (!templateDir.isDirectory()) {
-				logWarn(getResourceMessage("notDirMsg", templateDir.getAbsolutePath()));
+				logWarn(rs("ObjStoreDDLGenerator.Wizard.notDirMsg", templateDir.getAbsolutePath()));
 			} else {
 				param.setTemplateRootDir(templateDir);
 				validTemplateFile = true;
@@ -340,7 +329,7 @@ public class ObjStoreDDLGenerateBatch extends MtpCuiBase {
 		//出力先ディレクトリ
 		boolean validOutputFile = false;
 		do {
-			String outputPath = readConsole(getResourceMessage("outputDirMsg") + "(" + param.getOutputPath() + ")");
+			String outputPath = readConsole(rs("ObjStoreDDLGenerator.Wizard.outputDirMsg") + "(" + param.getOutputPath() + ")");
 			if (StringUtil.isNotBlank(outputPath)) {
 				param.setOutputPath(outputPath);
 			}
@@ -349,10 +338,10 @@ public class ObjStoreDDLGenerateBatch extends MtpCuiBase {
 			File outputDir = new File(param.getOutputPath());
 			if (!outputDir.exists()) {
 				outputDir.mkdir();
-				logInfo(getResourceMessage("createdOutputDirMsg", param.getOutputPath()));
+				logInfo(rs("ObjStoreDDLGenerator.Wizard.createdOutputDirMsg", param.getOutputPath()));
 			}
 			if (!outputDir.isDirectory()) {
-				logWarn(getResourceMessage("notDirMsg", param.getOutputPath()));
+				logWarn(rs("ObjStoreDDLGenerator.Wizard.notDirMsg", param.getOutputPath()));
 			} else {
 				param.setOutputDir(outputDir);
 				validOutputFile = true;
@@ -363,7 +352,7 @@ public class ObjStoreDDLGenerateBatch extends MtpCuiBase {
 		boolean validStorageSpaceName = false;
 		List<StorageSpaceMap> ssList = new ArrayList<StorageSpaceMap>();
 		do {
-			String storageSpaceName = readConsole(getResourceMessage("storageSpaceNameMsg") + "(" + "" + ")");
+			String storageSpaceName = readConsole(rs("ObjStoreDDLGenerator.Wizard.storageSpaceNameMsg") + "(" + "" + ")");
 			if (StringUtil.isNotBlank(storageSpaceName)) {
 				param.setStorageSpaceName(storageSpaceName.split(","));
 
@@ -380,7 +369,7 @@ public class ObjStoreDDLGenerateBatch extends MtpCuiBase {
 							}
 						}
 						if (!existsName) {
-							logWarn(getResourceMessage("notStorageSpaceMsg", target));
+							logWarn(rs("ObjStoreDDLGenerator.Wizard.notStorageSpaceMsg", target));
 							break;
 						}
 					}
@@ -417,7 +406,7 @@ public class ObjStoreDDLGenerateBatch extends MtpCuiBase {
 				// SQL Serverの場合、パーティションの利用はデフォルトではしない
 				param.setUsePartition(false);
 			}
-			boolean usePartition = readConsoleBoolean(getResourceMessage("confirmPartitionMsg"), param.isUsePartition());
+			boolean usePartition = readConsoleBoolean(rs("ObjStoreDDLGenerator.Wizard.confirmPartitionMsg"), param.isUsePartition());
 			param.setUsePartition(usePartition);
 		} else {
 			//標準のものがないのでPartitionは利用しない
@@ -439,13 +428,6 @@ public class ObjStoreDDLGenerateBatch extends MtpCuiBase {
 		removeLogListner(loggingListner);
 
 		return true;
-	}
-
-	/** リソースファイルの接頭語 */
-	private static final String RES_WIZARD_PRE = "ObjStoreDDLGenerator.Wizard.";
-
-	private String getResourceMessage(String suffix, Object... args) {
-		return ToolsBatchResourceBundleUtil.resourceString(getLanguage(), RES_WIZARD_PRE + suffix, args);
 	}
 
 	public static class Col {

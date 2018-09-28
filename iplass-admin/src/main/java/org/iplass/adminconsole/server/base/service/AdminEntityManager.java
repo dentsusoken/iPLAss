@@ -20,6 +20,7 @@
 
 package org.iplass.adminconsole.server.base.service;
 
+import java.io.File;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.sql.Timestamp;
@@ -226,6 +227,11 @@ public class AdminEntityManager implements EntityManager {
 	@Override
 	public BinaryReference createBinaryReference(String name, String type, InputStream is) {
 		return em.createBinaryReference(name, type, is);
+	}
+
+	@Override
+	public BinaryReference createBinaryReference(File file, String name, String type) {
+		return em.createBinaryReference(file, name, type);
 	}
 
 	@Override
