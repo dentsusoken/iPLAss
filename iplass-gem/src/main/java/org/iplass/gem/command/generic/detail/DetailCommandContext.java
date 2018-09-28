@@ -512,7 +512,7 @@ public class DetailCommandContext extends GenericCommandContext {
 		if (copyTarget == null || copyTarget.isEmpty()) {
 			return CopyTarget.SHALLOW;
 		}
-		return CopyTarget.valueOf(copyTarget);
+		return CopyTarget.getEnum(copyTarget);
 	}
 
 	/**

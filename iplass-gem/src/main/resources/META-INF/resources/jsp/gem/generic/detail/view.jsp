@@ -232,8 +232,8 @@ function dataUnlock() {
 ${m:outputToken('FORM_XHTML', true)}
 <input type="hidden" name="defName" value="<c:out value="<%=defName%>"/>" />
 <input type="hidden" name="searchCond" value="<c:out value="<%=searchCond%>"/>" />
-<input type="hidden" name="_copyTarget" value="<c:out value="<%=copyTarget.name()%>"/>" />
-<input type="hidden" name="copyTarget" value="<c:out value="<%=copyTarget.name()%>"/>" />
+<input type="hidden" name="_copyTarget" value="<c:out value="<%=copyTarget.value()%>"/>" />
+<input type="hidden" name="copyTarget" value="<c:out value="<%=copyTarget.value()%>"/>" />
 <input type="hidden" name="backPath" value="<c:out value="<%=backPath%>"/>" />
 <input type="hidden" name="topViewListOffset" value="<c:out value="<%=topViewListOffset%>"/>" />
 <%

@@ -43,13 +43,32 @@ public class DetailFormView extends FormView {
 	@XmlType(namespace="http://mtp.iplass.org/xml/definition/view/generic")
 	public enum CopyTarget {
 		/** 当該エンティティのみコピー */
-		@XmlEnumValue("Shallow")SHALLOW,
+		@XmlEnumValue("Shallow")SHALLOW("Shallow"),
 		/** 包含する（親子関係の）エンティティも一括にコピー */
-		@XmlEnumValue("Deep")DEEP,
+		@XmlEnumValue("Deep")DEEP("Deep"),
 		/** コピー時にShallowかDeepを選択 */
-		@XmlEnumValue("Both")BOTH,
+		@XmlEnumValue("Both")BOTH("Both"),
 		/** 独自実装したコピー処理を実行 */
-		@XmlEnumValue("Custom")CUSTOM
+		@XmlEnumValue("Custom")CUSTOM("Custom");
+		
+		private final String value;
+		
+		private CopyTarget(final String value) {
+			this.value = value;
+		}
+
+		public String value() {
+			return this.value;
+		}
+
+		public static CopyTarget getEnum(String value) {
+			for (CopyTarget v : values()) {
+				if (v.value().equals(value)) {
+					return v;
+				}
+			}
+			throw new IllegalArgumentException("no such CopyTarget for the value: " + value);
+		}
 	}
 
 	/** シリアルバージョンID */
