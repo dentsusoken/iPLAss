@@ -66,8 +66,7 @@ gwt {
 	minHeapSize = '32M'
 	maxHeapSize = '2048M'
 	logLevel = 'INFO'
-	//sourceLevel = '1.8'
-	sourceLevel = 'auto' //10が指定できない、GWTのバージョンが未対応？
+	sourceLevel = '1.8'
 	compiler {
 		strict = true;
 	}
