@@ -8,20 +8,6 @@ image::https://user-images.githubusercontent.com/22016554/42924803-cc0eb00c-8b66
 * https://iplass.org/intro/[Getting Started]
 * https://iplass.org/docs/[Document]
 
-## Related repositories
-
-* https://github.com/ISID/iplass-skeleton
-* https://github.com/ISID/iplass-sample-app
-* https://github.com/ISID/iplass-sample-app-vuejs
-* https://github.com/ISID/iplass-eclipse
-
-## License
-https://www.gnu.org/licenses/agpl.html[AGPL-3.0]
-
-商用ライセンスをご希望の方は、 下記リンクよりお問い合わせください。
-
-https://www.isid.co.jp/solution/iPLAss.html
-
 ## Docker
 
  > docker pull iplass/iplass-standalone
@@ -39,6 +25,70 @@ https://www.isid.co.jp/solution/iPLAss.html
 
 https://hub.docker.com/r/iplass/iplass-standalone/
 
+## Download
+次のページからSDK、インストーラ、Eclipse Pluginがダウンロード可能です。
+
+https://iplass.org/downloads/
+
+また、jarは groupId : org.iplass でMaven CentralおよびJCenterに公開しています。
+
+gradleでの定義例：
+
+ compile 'org.iplass:iplass-gem:3.0.1'
+
+mavenでの設定例：
+
+ <dependency>
+   <groupId>org.iplass</groupId>
+   <artifactId>iplass-gem</artifactId>
+   <version>3.0.1</version>
+   <type>pom</type>
+ </dependency>
+
+NOTE: JavaEE7 (Servlet/JSP/JSTL/EL/JAX-RS/BeanValidation/CommonAnnotations/JavaMail/JAXB/JAF) のランタイムが必要です。
+https://github.com/ISID/iplass-skeleton[スケルトンプロジェクト] のbuild.gradleを参考にしてください。
+
+以下に各モジュールの説明をします。
+
+### iplass-core
+iPLAssのコアモジュールです。 +
+その他の各モジュールから参照されます。
+
+### iplass-web
+web関連機能のモジュールです。 +
+WebFragments形式です。
+
+### iplass-admin
+adminConsoleのモジュールです。 +
+WebFragments形式です。 +
+GWT/SmartGWTベースです。
+
+### iplass-gem
+GEM関連機能のモジュールです。 +
+WebFragments形式です。
+
+### iplass-test
+Unitテストをサポートするモジュールです。 +
+JUnitベースです。
+
+### iplass-tools
+管理用機能のモジュールです。 +
+iplass-admin、iplass-tools-batchから参照されます。
+
+### iplass-tools-batch
+バッチプログラム群のモジュールです。 +
+
+### iplass-infinispan
+infinispanアドオンモジュールです。 +
+キャッシュストア、クラスタ間通信基盤としてinfinispanを利用することを可能にします。
+
+## Related repositories
+
+* https://github.com/ISID/iplass-skeleton
+* https://github.com/ISID/iplass-sample-app
+* https://github.com/ISID/iplass-sample-app-vuejs
+* https://github.com/ISID/iplass-eclipse
+
 ## Build
 gradleでビルドします。
 
@@ -49,37 +99,9 @@ lib/smartgwt/note.txt参照してください。
 
 NOTE: 現状、Java8/JavaEE7ベースです
 
-## Repository overview
-モジュール単位にgradleサブプロジェクトとして構成しています。 
+## License
+https://www.gnu.org/licenses/agpl.html[AGPL-3.0]
 
-### iplass-core
-iPLAssのコアモジュール
+商用ライセンスをご希望の方は、 下記リンクよりお問い合わせください。
 
-### iplass-web
-web関連機能のモジュール +
-WebFragments形式
-
-### iplass-admin
-adminConsoleのモジュール +
-WebFragments形式 +
-GWT/SmartGWTベース
-
-### iplass-gem
-GEM関連機能のモジュール +
-WebFragments形式
-
-### iplass-test
-Unitテストをサポートするモジュール +
-JUnitベース
-
-### iplass-tools
-管理用機能のモジュール +
-adminConsole、バッチから利用される
-
-### iplass-tools-batch
-バッチプログラム群 +
-
-### iplass-infinispan
-infinispanアドオンモジュール +
-キャッシュストア、クラスタ間通信基盤としてinfinispanを利用することを可能にする
-
+https://www.isid.co.jp/solution/iPLAss.html
