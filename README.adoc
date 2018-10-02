@@ -2,7 +2,7 @@
 image::https://user-images.githubusercontent.com/22016554/42924803-cc0eb00c-8b66-11e8-8e86-2a13b0609ea5.png[iPLAss]
 
 [.lead]
-エンタープライズクラスのシステム開発における生産性向上を主目的とした、javaベースの開発プラットフォームです。
+エンタープライズクラスのシステム開発における生産性向上を主目的とした、javaベースのローコード開発プラットフォームです。
 
 * https://iplass.org/[iPLAss Website]
 * https://iplass.org/intro/[Getting Started]
@@ -48,7 +48,7 @@ mavenでの設定例：
 NOTE: JavaEE7 (Servlet/JSP/JSTL/EL/JAX-RS/BeanValidation/CommonAnnotations/JavaMail/JAXB/JAF) のランタイムが必要です。
 https://github.com/ISID/iplass-skeleton[スケルトンプロジェクト] のbuild.gradleを参考にしてください。
 
-以下に各モジュールの説明をします。
+以下は各モジュールの説明です。
 
 ### iplass-core
 iPLAssのコアモジュールです。 +
