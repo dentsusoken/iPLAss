@@ -75,8 +75,8 @@ task compileJsp(dependsOn: ["compileJava"]) {
 				uriRoot: "src/main/resources",
 				outputDir: outDir,
 				javaencoding: "utf-8",
-				compilersourcevm: "1.8",
-				compilertargetvm: "1.8",
+				compilersourcevm: javaVersion,
+				compilertargetvm: javaVersion,
 				compile: "true",
 				verbose: "1")
 	}

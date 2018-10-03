@@ -72,8 +72,7 @@ dependencies {
 	//jackson
 	compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.8.9'
 	compile group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: '2.8.9'
-	
+
 	//hibernate validator
 	compile group: 'org.hibernate', name: 'hibernate-validator', version: '5.4.1.Final'
-
 }

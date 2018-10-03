@@ -1,5 +1,6 @@
 
 ext.localLibDir = file(localLibDirPath)
+ext.javaVersion = "${javaVersion}"
 
 allprojects {
 	apply plugin: 'java'
