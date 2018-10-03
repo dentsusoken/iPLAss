@@ -8,10 +8,6 @@ dependencies {
 	}
 
 	//java mail runtime
-	//runtime (group: 'com.sun.mail', name: 'javax.mail', version: '1.5.6') {
-		//JavaBeans (TM) Activation Framework is excluded because it contains standard with Java8.
-		//exclude(group: 'javax.activation', module: 'activation')
-	//}
 	runtime group: 'com.sun.mail', name: 'javax.mail', version: '1.5.6'
 
 	//Bean validation runtime
