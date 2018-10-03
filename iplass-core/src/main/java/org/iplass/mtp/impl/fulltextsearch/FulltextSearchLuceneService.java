@@ -558,6 +558,10 @@ public class FulltextSearchLuceneService extends AbstractFulltextSeachService {
 	@SuppressWarnings("unchecked")
 	@Override
 	public <T extends Entity> SearchResult<T> fulltextSearchEntity(Map<String, List<String>> entityProperties, String fulltext) {
+		if (searcherManager == null) {
+			return new SearchResult<T>(-1, null);
+		}
+
 		MultiFieldQueryParser qp = new MultiFieldQueryParser(searchFields, analyzer);
 		qp.setDefaultOperator(defaultOperator);
 
@@ -705,16 +709,13 @@ public class FulltextSearchLuceneService extends AbstractFulltextSeachService {
 
 	@Override
 	public List<String> fulltextSearchOidList(String searchDefName, String fulltext) {
-
-		MultiFieldQueryParser qp = new MultiFieldQueryParser(searchFields, analyzer);
-		qp.setDefaultOperator(defaultOperator);
-
 		List<String> oidList = new ArrayList<String>();
-
-		if (StringUtil.isEmpty(searchDefName) || StringUtil.isEmpty(fulltext)) {
+		if (StringUtil.isEmpty(searchDefName) || StringUtil.isEmpty(fulltext) || searcherManager == null) {
 			return oidList;
 		}
 
+		MultiFieldQueryParser qp = new MultiFieldQueryParser(searchFields, analyzer);
+		qp.setDefaultOperator(defaultOperator);
 		IndexSearcher searcher = null;
 		try {
 
@@ -771,6 +772,9 @@ public class FulltextSearchLuceneService extends AbstractFulltextSeachService {
 
 	@Override
 	public List<FulltextSearchResult> execFulltextSearch(String searchDefName, String keywords) {
+		if (searcherManager == null) {
+			return new ArrayList<FulltextSearchResult>();
+		}
 
 		MultiFieldQueryParser qp = new MultiFieldQueryParser(searchFields, analyzer);
 		qp.setDefaultOperator(defaultOperator);

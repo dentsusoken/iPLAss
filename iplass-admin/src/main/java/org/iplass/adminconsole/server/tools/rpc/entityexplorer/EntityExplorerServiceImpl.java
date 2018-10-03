@@ -1177,6 +1177,8 @@ public class EntityExplorerServiceImpl extends XsrfProtectedServiceServlet imple
 				for (String defName : defNames) {
 					fsm.crawlEntity(defName);
 				}
+				// 手動Crawlの場合、自動Refresh
+				fsm.refresh();
 				return null;
 			}
 
@@ -1190,6 +1192,8 @@ public class EntityExplorerServiceImpl extends XsrfProtectedServiceServlet imple
 			@Override
 			public Void call() {
 				fsm.recrawlAllEntity();
+				// 手動Crawlの場合、自動Refresh
+				fsm.refresh();
 				return null;
 			}
 		});
