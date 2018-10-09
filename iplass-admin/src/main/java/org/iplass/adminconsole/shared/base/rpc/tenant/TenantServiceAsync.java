@@ -60,16 +60,6 @@ public interface TenantServiceAsync {
 
 	void setLanguage(int tenantId, String lang, AsyncCallback<Void> callback);
 
-//	void getTenantAvailableStatus(int tenantId, AsyncCallback<AvailableStatus> callback);
-//
-//	void updateTenantAvailableStatus(int tenantId, AvailableStatus status, AsyncCallback<Boolean> callback);
-//
-//	void getTenantAvailable(int tenantId, AsyncCallback<TenantAvailable> callback);
-//
-//	void updateTenantAvailable(int tenantId, TenantAvailable definition, AsyncCallback<AdminDefinitionModifyResult> callback);
-//
-//	void getOnetimeCodeGeneratorNames(int tenantId, AsyncCallback<List<String>> callback);
-
 	/**
 	 * テナント情報を取得します。
 	 *

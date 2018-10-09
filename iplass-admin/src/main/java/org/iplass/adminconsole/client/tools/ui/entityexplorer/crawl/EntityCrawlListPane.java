@@ -88,7 +88,7 @@ public class EntityCrawlListPane extends VLayout {
 		final ToolStripButton startCrawlButton = new ToolStripButton();
 		startCrawlButton.setIcon(EXECUTE_ICON);
 		startCrawlButton.setTitle("Start Crawl");
-		startCrawlButton.setTooltip(SmartGWTUtil.getHoverString(AdminClientMessageUtil.getString("ui_tools_fulltextsearch_EntityListPane_startCrawling")));
+		startCrawlButton.setTooltip(SmartGWTUtil.getHoverString(AdminClientMessageUtil.getString("ui_tools_entityexplorer_EntityCrawlListPane_startCrawling")));
 		startCrawlButton.addClickHandler(new ClickHandler() {
 
 			@Override
@@ -103,7 +103,7 @@ public class EntityCrawlListPane extends VLayout {
 		final ToolStripButton deleteButton = new ToolStripButton();
 		deleteButton.setIcon(RE_CRAWL_ICON);
 		deleteButton.setTitle("Re Crawl All Entity");
-		deleteButton.setTooltip(AdminClientMessageUtil.getString("ui_tools_fulltextsearch_EntityListPane_deleteAllIndex"));
+		deleteButton.setTooltip(AdminClientMessageUtil.getString("ui_tools_entityexplorer_EntityCrawlListPane_deleteAllIndex"));
 		deleteButton.setHoverWrap(false);
 		deleteButton.addClickHandler(new ClickHandler() {
 
@@ -116,8 +116,8 @@ public class EntityCrawlListPane extends VLayout {
 					return;
 				}
 
-				SC.ask(AdminClientMessageUtil.getString("ui_tools_fulltextsearch_EntityListPane_confirm"),
-						AdminClientMessageUtil.getString("ui_tools_fulltextsearch_EntityListPane_startReCreateDeleteAllIndex"), new BooleanCallback() {
+				SC.ask(AdminClientMessageUtil.getString("ui_tools_entityexplorer_EntityCrawlListPane_confirm"),
+						AdminClientMessageUtil.getString("ui_tools_entityexplorer_EntityCrawlListPane_startReCreateDeleteAllIndex"), new BooleanCallback() {
 
 					@Override
 					public void execute(Boolean value) {
@@ -135,15 +135,15 @@ public class EntityCrawlListPane extends VLayout {
 		final ToolStripButton refreshIndexChangesButton = new ToolStripButton();
 		refreshIndexChangesButton.setIcon(RE_CRAWL_ICON);
 		refreshIndexChangesButton.setTitle("Refresh");
-		refreshIndexChangesButton.setTooltip(AdminClientMessageUtil.getString("ui_tools_fulltextsearch_EntityListPane_refreshIndexChanges"));
+		refreshIndexChangesButton.setTooltip(AdminClientMessageUtil.getString("ui_tools_entityexplorer_EntityCrawlListPane_refreshIndexChanges"));
 		refreshIndexChangesButton.setHoverWrap(false);
 		refreshIndexChangesButton.addClickHandler(new ClickHandler() {
 
 			@Override
 			public void onClick(ClickEvent event) {
 
-				SC.ask(AdminClientMessageUtil.getString("ui_tools_fulltextsearch_EntityListPane_confirm"),
-						AdminClientMessageUtil.getString("ui_tools_fulltextsearch_EntityListPane_startRefreshIndexChanges"), new BooleanCallback() {
+				SC.ask(AdminClientMessageUtil.getString("ui_tools_entityexplorer_EntityCrawlListPane_confirm"),
+						AdminClientMessageUtil.getString("ui_tools_entityexplorer_EntityCrawlListPane_startRefreshIndexChanges"), new BooleanCallback() {
 
 					@Override
 					public void execute(Boolean value) {
@@ -160,7 +160,7 @@ public class EntityCrawlListPane extends VLayout {
 
 		showCountItem = new CheckboxItem();
 		showCountItem.setTitle("Get Data Count");
-		showCountItem.setTooltip(SmartGWTUtil.getHoverString(AdminClientMessageUtil.getString("ui_tools_fulltextsearch_EntityListPane_entityDataNumberLarge")));
+		showCountItem.setTooltip(SmartGWTUtil.getHoverString(AdminClientMessageUtil.getString("ui_tools_entityexplorer_EntityCrawlListPane_entityDataNumberLarge")));
 		showCountItem.addChangedHandler(new ChangedHandler() {
 
 			@Override
@@ -180,7 +180,7 @@ public class EntityCrawlListPane extends VLayout {
 
 		final ToolStripButton refreshButton = new ToolStripButton();
 		refreshButton.setIcon(REFRESH_ICON);
-		refreshButton.setTooltip(SmartGWTUtil.getHoverString(AdminClientMessageUtil.getString("ui_tools_fulltextsearch_EntityListPane_refreshList")));
+		refreshButton.setTooltip(SmartGWTUtil.getHoverString(AdminClientMessageUtil.getString("ui_tools_entityexplorer_EntityCrawlListPane_refreshList")));
 		refreshButton.addClickHandler(new ClickHandler() {
 
 			@Override
@@ -197,7 +197,7 @@ public class EntityCrawlListPane extends VLayout {
 				if ("explorerButton".equals(fieldName)) {
 					if (!record.getAttributeAsBoolean("isError")){
 						MetaDataViewGridButton button = new MetaDataViewGridButton(EntityDefinition.class.getName());
-						button.setActionButtonPrompt(SmartGWTUtil.getHoverString(AdminClientMessageUtil.getString("ui_tools_fulltextsearch_EntityListPane_showMetaDataEditScreen")));
+						button.setActionButtonPrompt(SmartGWTUtil.getHoverString(AdminClientMessageUtil.getString("ui_tools_entityexplorer_EntityCrawlListPane_showMetaDataEditScreen")));
 						button.setMetaDataShowClickHandler(new MetaDataViewGridButton.MetaDataShowClickHandler() {
 							@Override
 							public String targetDefinitionName() {
@@ -266,7 +266,7 @@ public class EntityCrawlListPane extends VLayout {
 		ListGridRecord[] records = grid.getSelectedRecords();
 		if (records == null || records.length == 0) {
 			SmartGWTUtil.hideProgress();
-			SC.say(AdminClientMessageUtil.getString("ui_tools_fulltextsearch_EntityListPane_selectEntityTarget"));
+			SC.say(AdminClientMessageUtil.getString("ui_tools_entityexplorer_EntityCrawlListPane_selectEntityTarget"));
 			return;
 		}
 
@@ -288,8 +288,8 @@ public class EntityCrawlListPane extends VLayout {
 
 			@Override
 			public void onSuccess(Void result) {
-				SC.say(AdminClientMessageUtil.getString("ui_tools_fulltextsearch_EntityListPane_completion"),
-						AdminClientMessageUtil.getString("ui_tools_fulltextsearch_EntityListPane_crawlingComp"));
+				SC.say(AdminClientMessageUtil.getString("ui_tools_entityexplorer_EntityCrawlListPane_completion"),
+						AdminClientMessageUtil.getString("ui_tools_entityexplorer_EntityCrawlListPane_crawlingComp"));
 				SmartGWTUtil.hideProgress();
 				refreshGrid();
 			}
@@ -310,8 +310,8 @@ public class EntityCrawlListPane extends VLayout {
 
 			@Override
 			public void onSuccess(Void result) {
-				SC.say(AdminClientMessageUtil.getString("ui_tools_fulltextsearch_EntityListPane_completion"),
-						AdminClientMessageUtil.getString("ui_tools_fulltextsearch_EntityListPane_crawlingComp"));
+				SC.say(AdminClientMessageUtil.getString("ui_tools_entityexplorer_EntityCrawlListPane_completion"),
+						AdminClientMessageUtil.getString("ui_tools_entityexplorer_EntityCrawlListPane_crawlingComp"));
 				SmartGWTUtil.hideProgress();
 				refreshGrid();
 			}
@@ -332,8 +332,8 @@ public class EntityCrawlListPane extends VLayout {
 
 			@Override
 			public void onSuccess(Void result) {
-				SC.say(AdminClientMessageUtil.getString("ui_tools_fulltextsearch_EntityListPane_completion"),
-						AdminClientMessageUtil.getString("ui_tools_fulltextsearch_EntityListPane_refreshingComp"));
+				SC.say(AdminClientMessageUtil.getString("ui_tools_entityexplorer_EntityCrawlListPane_completion"),
+						AdminClientMessageUtil.getString("ui_tools_entityexplorer_EntityCrawlListPane_refreshingComp"));
 				SmartGWTUtil.hideProgress();
 			}
 		});

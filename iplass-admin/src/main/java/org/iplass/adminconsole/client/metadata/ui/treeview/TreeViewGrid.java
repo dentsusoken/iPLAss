@@ -926,8 +926,8 @@ public class TreeViewGrid extends TreeGrid {
 
 			ListGridField nameField = new ListGridField("name", "name");
 			nameField.setWidth(75);
-			ListGridField displayLabelField = new ListGridField("displayLabel", AdminClientMessageUtil.getString("ui_metadata_aggregation_dashboard_DashboardUnitPane_propertyDispName"));
-			ListGridField mappingItemDisplayNameField = new ListGridField("mappingItemDisplayLabel", AdminClientMessageUtil.getString("ui_metadata_aggregation_dashboard_DashboardUnitPane_propertyDispNameCorre"));
+			ListGridField displayLabelField = new ListGridField("displayLabel", AdminClientMessageUtil.getString("ui_metadata_treeview_TreeViewGrid_propertyDispName"));
+			ListGridField mappingItemDisplayNameField = new ListGridField("mappingItemDisplayLabel", AdminClientMessageUtil.getString("ui_metadata_treeview_TreeViewGrid_propertyDispNameCorre"));
 			ListGridField delActionField = new ListGridField("delAction", " ");
 			delActionField.setWidth(25);
 			setFields(nameField, displayLabelField, mappingItemDisplayNameField, delActionField);
@@ -982,7 +982,7 @@ public class TreeViewGrid extends TreeGrid {
 				deleteBtn.setShowRollOver(false);
 				deleteBtn.setLayoutAlign(Alignment.CENTER);
 				deleteBtn.setSrc("remove.png");
-				deleteBtn.setPrompt(AdminClientMessageUtil.getString("ui_metadata_aggregation_dashboard_DashboardUnitPane_releaseMappingFilterItem"));
+				deleteBtn.setPrompt(AdminClientMessageUtil.getString("ui_metadata_treeview_TreeViewGrid_releaseMappingFilterItem"));
 				deleteBtn.setHeight(16);
 				deleteBtn.setWidth(16);
 				deleteBtn.addClickHandler(new ClickHandler() {
@@ -990,8 +990,8 @@ public class TreeViewGrid extends TreeGrid {
 					@Override
 					public void onClick(ClickEvent event) {
 
-						SC.confirm(AdminClientMessageUtil.getString("ui_metadata_aggregation_dashboard_DashboardUnitPane_deleteConfirm"),
-								AdminClientMessageUtil.getString("ui_metadata_aggregation_dashboard_DashboardUnitPane_deleteFilterItemConf", record.getAttribute("displayLabel"))
+						SC.confirm(AdminClientMessageUtil.getString("ui_metadata_treeview_TreeViewGrid_deleteConfirm"),
+								AdminClientMessageUtil.getString("ui_metadata_treeview_TreeViewGrid_deleteFilterItemConf", record.getAttribute("displayLabel"))
 								, new BooleanCallback() {
 
 							@Override

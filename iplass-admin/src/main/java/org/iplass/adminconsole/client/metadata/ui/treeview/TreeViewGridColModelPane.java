@@ -419,7 +419,7 @@ public class TreeViewGridColModelPane extends VLayout {
 			langBtn.setIcon("world.png");
 			langBtn.setStartRow(false);	//これを指定しないとButtonの場合、先頭にくる
 			langBtn.setEndRow(false);	//これを指定しないと次のFormItemが先頭にいく
-			langBtn.setPrompt(AdminClientMessageUtil.getString("ui_metadata_aggregation_common_AggregationFilterGrid_eachLangDspName"));
+			langBtn.setPrompt(AdminClientMessageUtil.getString("ui_metadata_treeview_TreeViewGridColModelPane_eachLangDspName"));
 			langBtn.addClickHandler(new com.smartgwt.client.widgets.form.fields.events.ClickHandler() {
 
 				@Override

@@ -274,7 +274,7 @@ public class EntitySearchResultDS extends AbstractAdminDataSource {
 				//エラーの通知
 				EntityDataListResultInfo result = new EntityDataListResultInfo();
 				result.setDefinitionName(definition.getName());
-				result.addLogMessage(AdminClientMessageUtil.getString("datasource_tools_entityexplorer_EntityDataListDS_errGetData", definition.getName()));
+				result.addLogMessage(AdminClientMessageUtil.getString("datasource_tools_entityexplorer_EntitySearchResultDS_errGetData", definition.getName()));
 				result.addLogMessage(caught.getMessage());
 				result.setError(true);
 

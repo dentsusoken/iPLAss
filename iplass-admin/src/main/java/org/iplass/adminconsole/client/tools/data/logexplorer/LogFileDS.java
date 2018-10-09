@@ -89,7 +89,7 @@ public class LogFileDS extends AbstractAdminDataSource {
 			public void onFailure(Throwable caught) {
 				GWT.log("error!!!", caught);
 
-				SC.warn(AdminClientMessageUtil.getString("ui_tools_logexplorer_LogExplorerMainPane_failedToGetLogFile") + caught.getMessage());
+				SC.warn(AdminClientMessageUtil.getString("datasource_tools_logexplorer_LogFileDS_failedToGetLogFile") + caught.getMessage());
 
 				response.setStatus(RPCResponse.STATUS_FAILURE);
 				processResponse(requestId, response);

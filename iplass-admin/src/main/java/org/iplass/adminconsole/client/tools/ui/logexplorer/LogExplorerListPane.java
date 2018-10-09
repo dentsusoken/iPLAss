@@ -75,7 +75,7 @@ public class LogExplorerListPane extends VLayout {
 
 		final ToolStripButton refreshButton = new ToolStripButton();
 		refreshButton.setIcon(REFRESH_ICON);
-		refreshButton.setTooltip(SmartGWTUtil.getHoverString(AdminClientMessageUtil.getString("ui_tools_logexplorer_LogExplorerMainPane_refreshFileList")));
+		refreshButton.setTooltip(SmartGWTUtil.getHoverString(AdminClientMessageUtil.getString("ui_tools_logexplorer_LogExplorerListPane_refreshFileList")));
 		refreshButton.addClickHandler(new ClickHandler() {
 
 			@Override
@@ -93,7 +93,7 @@ public class LogExplorerListPane extends VLayout {
 
 					GridActionImgButton recordCanvas = new GridActionImgButton();
 					recordCanvas.setActionButtonSrc(EXPORT_ICON);
-					recordCanvas.setActionButtonPrompt(SmartGWTUtil.getHoverString(AdminClientMessageUtil.getString("ui_tools_logexplorer_LogExplorerMainPane_fileDownload")));
+					recordCanvas.setActionButtonPrompt(SmartGWTUtil.getHoverString(AdminClientMessageUtil.getString("ui_tools_logexplorer_LogExplorerListPane_fileDownload")));
 					recordCanvas.addActionClickHandler(new ClickHandler() {
 
 						@Override

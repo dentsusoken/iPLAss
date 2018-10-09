@@ -189,7 +189,7 @@ public class BuiltinUserDS extends AbstractAdminDataSource {
 
 						//エラーの通知
 						BuiltinAuthUserListResultDto result = new BuiltinAuthUserListResultDto();
-						result.addLogMessage(AdminClientMessageUtil.getString("datasource_tools_auth_builtin_BuiltinUserListDS_errUserSearch"));
+						result.addLogMessage(AdminClientMessageUtil.getString("datasource_tools_auth_builtin_BuiltinUserDS_errUserSearch"));
 						result.addLogMessage(caught.getMessage());
 						result.setError(true);
 
