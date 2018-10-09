@@ -88,7 +88,7 @@ public class PackageDS extends AbstractAdminDataSource {
 			public void onFailure(Throwable caught) {
 				GWT.log("error!!!", caught);
 
-				SC.warn(AdminClientMessageUtil.getString("datasource_tools_pack_PackageListDS_failedToGetPackageList") + caught.getMessage());
+				SC.warn(AdminClientMessageUtil.getString("datasource_tools_pack_PackageDS_failedToGetPackageList") + caught.getMessage());
 
 				response.setStatus(RPCResponse.STATUS_FAILURE);
 				processResponse(requestId, response);

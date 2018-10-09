@@ -1,19 +1,19 @@
 /*
  * Copyright (C) 2013 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
- * 
+ *
  * Unless you have purchased a commercial license,
  * the following license terms apply:
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
@@ -79,42 +79,42 @@ public class ElementItemDS extends AbstractAdminDataSource {
 		if (viewType == ViewType.DETAIL) {
 			ListGridRecord button = new ListGridRecord();
 			button.setAttribute("name", Button.class.getName());
-			button.setAttribute("displayName", AdminClientMessageUtil.getString("datasource_ElementListDS_btn"));
+			button.setAttribute("displayName", AdminClientMessageUtil.getString("datasource_entity_layout_ElementItemDS_btn"));
 			records.add(button);
 
 			ListGridRecord script = new ListGridRecord();
 			script.setAttribute("name", ScriptingElement.class.getName());
-			script.setAttribute("displayName", AdminClientMessageUtil.getString("datasource_ElementListDS_script"));
+			script.setAttribute("displayName", AdminClientMessageUtil.getString("datasource_entity_layout_ElementItemDS_script"));
 			records.add(script);
 
 			ListGridRecord template = new ListGridRecord();
 			template.setAttribute("name", TemplateElement.class.getName());
-			template.setAttribute("displayName", AdminClientMessageUtil.getString("datasource_ElementListDS_template"));
+			template.setAttribute("displayName", AdminClientMessageUtil.getString("datasource_entity_layout_ElementItemDS_template"));
 			records.add(template);
 
 			ListGridRecord link = new ListGridRecord();
 			link.setAttribute("name", Link.class.getName());
-			link.setAttribute("displayName", AdminClientMessageUtil.getString("datasource_ElementListDS_link"));
+			link.setAttribute("displayName", AdminClientMessageUtil.getString("datasource_entity_layout_ElementItemDS_link"));
 			records.add(link);
 
 			ListGridRecord space = new ListGridRecord();
 			space.setAttribute("name", BlankSpace.class.getName());
-			space.setAttribute("displayName", AdminClientMessageUtil.getString("datasource_ElementListDS_space"));
+			space.setAttribute("displayName", AdminClientMessageUtil.getString("datasource_entity_layout_ElementItemDS_space"));
 			records.add(space);
 
 			ListGridRecord virtualProperty = new ListGridRecord();
 			virtualProperty.setAttribute("name", VirtualPropertyItem.class.getName());
-			virtualProperty.setAttribute("displayName", AdminClientMessageUtil.getString("datasource_ElementListDS_virtualProperty"));
+			virtualProperty.setAttribute("displayName", AdminClientMessageUtil.getString("datasource_entity_layout_ElementItemDS_virtualProperty"));
 			records.add(virtualProperty);
 		} else if (viewType == ViewType.SEARCH) {
 			ListGridRecord space = new ListGridRecord();
 			space.setAttribute("name", BlankSpace.class.getName());
-			space.setAttribute("displayName", AdminClientMessageUtil.getString("datasource_ElementListDS_space"));
+			space.setAttribute("displayName", AdminClientMessageUtil.getString("datasource_entity_layout_ElementItemDS_space"));
 			records.add(space);
 
 			ListGridRecord virtualProperty = new ListGridRecord();
 			virtualProperty.setAttribute("name", VirtualPropertyItem.class.getName());
-			virtualProperty.setAttribute("displayName", AdminClientMessageUtil.getString("datasource_ElementListDS_virtualProperty"));
+			virtualProperty.setAttribute("displayName", AdminClientMessageUtil.getString("datasource_entity_layout_ElementItemDS_virtualProperty"));
 			records.add(virtualProperty);
 		}
 		ListGridRecord[] list = records.toArray(new ListGridRecord[records.size()]);

@@ -60,9 +60,9 @@ public class CrawlEntityDS extends AbstractAdminDataSource {
 
 		this.parts = parts;
 		this.isInitDrop = isInitDrop;
-		DataSourceField nameField = new DataSourceTextField("name", AdminClientMessageUtil.getString("datasource_tools_fulltextsearch_CrawlEntityInfoDS_name"));
+		DataSourceField nameField = new DataSourceTextField("name", AdminClientMessageUtil.getString("datasource_entity_CrawlEntityDS_name"));
 		nameField.setPrimaryKey(true);
-		DataSourceField displayNameField = new DataSourceTextField("displayName", AdminClientMessageUtil.getString("datasource_tools_fulltextsearch_CrawlEntityInfoDS_dispName"));
+		DataSourceField displayNameField = new DataSourceTextField("displayName", AdminClientMessageUtil.getString("datasource_entity_CrawlEntityDS_dispName"));
 		DataSourceField entityView = new DataSourceTextField("entityView", "entityView");
 		DataSourceBooleanField isDispEntity = new DataSourceBooleanField("isDispEntity", "DisplayEntity");
 
@@ -80,7 +80,7 @@ public class CrawlEntityDS extends AbstractAdminDataSource {
 			public void onFailure(Throwable caught) {
 				GWT.log("error!!!", caught);
 
-				SC.warn(AdminClientMessageUtil.getString("datasource_tools_fulltextsearch_CrawlEntityInfoDS_failedToGetEntityList") + caught.getMessage());
+				SC.warn(AdminClientMessageUtil.getString("datasource_entity_CrawlEntityDS_failedToGetEntityList") + caught.getMessage());
 
 				response.setStatus(RPCResponse.STATUS_FAILURE);
 				processResponse(requestId, response);

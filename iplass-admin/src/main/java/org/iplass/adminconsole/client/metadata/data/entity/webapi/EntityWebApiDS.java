@@ -55,9 +55,9 @@ public class EntityWebApiDS extends AbstractAdminDataSource {
     }
 
 	private EntityWebApiDS() {
-		DataSourceField nameField = new DataSourceTextField("name", AdminClientMessageUtil.getString("datasource_entity_webapi_EntityWebApiDefinitionInfoDS_name"));
+		DataSourceField nameField = new DataSourceTextField("name", AdminClientMessageUtil.getString("datasource_entity_webapi_EntityWebApiDS_name"));
 		nameField.setPrimaryKey(true);
-		DataSourceField displayNameField = new DataSourceTextField("displayName", AdminClientMessageUtil.getString("datasource_entity_webapi_EntityWebApiDefinitionInfoDS_dispName"));
+		DataSourceField displayNameField = new DataSourceTextField("displayName", AdminClientMessageUtil.getString("datasource_entity_webapi_EntityWebApiDS_dispName"));
 		DataSourceField isInsertField = new DataSourceBooleanField("isInsert", "INSERT");
 		DataSourceField isLoadField = new DataSourceBooleanField("isLoad", "SELECT(Load)");
 		DataSourceField isQueryField = new DataSourceBooleanField("isQuery", "SELECT(Query)");
@@ -88,7 +88,7 @@ public class EntityWebApiDS extends AbstractAdminDataSource {
 			public void onFailure(Throwable caught) {
 				GWT.log("error!!!", caught);
 
-				SC.warn(AdminClientMessageUtil.getString("datasource_entity_webapi_EntityWebApiDefinitionInfoDS_failedToGetEntityWebApiDef") + caught.getMessage());
+				SC.warn(AdminClientMessageUtil.getString("datasource_entity_webapi_EntityWebApiDS_failedToGetEntityWebApiDef") + caught.getMessage());
 
 				response.setStatus(RPCResponse.STATUS_FAILURE);
 				processResponse(requestId, response);
