@@ -65,16 +65,6 @@ public interface TenantService extends XsrfProtectedService {
 
 	public void setLanguage(int tenantId, String lang);
 
-//	public AvailableStatus getTenantAvailableStatus(int tenantId);
-//
-//	public boolean updateTenantAvailableStatus(int tenantId, AvailableStatus status);
-//
-//	public TenantAvailable getTenantAvailable(int tenantId);
-//
-//	public AdminDefinitionModifyResult updateTenantAvailable(int tenantId, TenantAvailable definition);
-//
-//	public List<String> getOnetimeCodeGeneratorNames(int tenantId);
-
 	/**
 	 * テナント情報を取得します。
 	 *
