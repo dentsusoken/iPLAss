@@ -7,6 +7,9 @@ allprojects {
 
 	group "org.iplass"
 
+	sourceCompatibility = javaVersion
+	targetCompatibility = javaVersion
+
 	repositories {
 		mavenCentral()
 		maven {

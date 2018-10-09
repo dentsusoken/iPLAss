@@ -1,3 +1,4 @@
+apply from: '../javaeecoreapis.gradle'
 apply from: '../javaeewebapis.gradle'
 apply from: 'libs.gradle'
 dependencies {
