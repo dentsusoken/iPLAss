@@ -81,6 +81,8 @@ public class AuthInterceptor implements RequestInterceptor,ServiceInitListener<A
 	public static final String REDIRECT_PATH_AFTER_LOGOUT = "redirectPathAfterLogout";
 	public static final String REDIRECT_BY_AUTH_INTERCEPTOR = "mtp.auth.redirectByAuthInterceptor";
 
+	private static final String AUTO_LOGIN_PROCESSED_FLAG = "mtp.auth.AutoLoginProcessed";
+
 	private LangSelector lang = new LangSelector();
 	private ActionMappingService amService;
 	private WebFrontendService wfService = ServiceRegistry.getRegistry().getService(WebFrontendService.class);
@@ -107,7 +109,7 @@ public class AuthInterceptor implements RequestInterceptor,ServiceInitListener<A
 		}
 	}
 
-	private boolean processAutoLogin(RequestInvocation invocation, AuthService authService) {
+	private void processAutoLogin(RequestInvocation invocation, AuthService authService) {
 		UserContext user = authService.getCurrentSessionUserContext();
 
 		//process auto login...
@@ -124,31 +126,31 @@ public class AuthInterceptor implements RequestInterceptor,ServiceInitListener<A
 						alh.handleSuccess(inst, invocation.getRequest(), authService.getCurrentSessionUserContext());
 					} catch (ApplicationException e) {
 						Exception he = alh.handleException(inst, e, invocation.getRequest(), true, user);
-						if (he != null) {
-							//notify to client...
-							invocation.getRequest().setAttribute(WebRequestConstants.EXCEPTION, he);
-							return false;
+						if (he instanceof ApplicationException) {
+							throw (ApplicationException) he;
+						} else if (he != null) {
+							throw new WebProcessRuntimeException("auto login fail. cause:" + he ,he);
 						} else {
 							if (logger.isDebugEnabled()) {
 								logger.debug("auto login fail. cause:" + e);
 							}
 						}
 					}
-					return true;
+					return;
 
 				case LOGOUT:
 					authService.logout();
-					return true;
+					return;
 
 				case ERROR:
 					authService.logout();
 					throw new ApplicationException(resourceString("auth.Login.noLogin"));
 
 				case THROUGH:
-					return true;
+					return;
 
 				default:
-					return true;
+					return;
 				}
 			}
 		} else {
@@ -161,14 +163,14 @@ public class AuthInterceptor implements RequestInterceptor,ServiceInitListener<A
 						try {
 							authService.login(inst.getCredential());
 							autoLoginHandler.handleSuccess(inst, invocation.getRequest(), authService.getCurrentSessionUserContext());
-							return true;
+							
+							return;
 						} catch (ApplicationException e) {
 							Exception he = autoLoginHandler.handleException(inst, e, invocation.getRequest(), false, null);
-
-							if (he != null) {
-								//notify to client...
-								invocation.getRequest().setAttribute(WebRequestConstants.EXCEPTION, he);
-								return false;
+							if (he instanceof ApplicationException) {
+								throw (ApplicationException) he;
+							} else if (he != null) {
+								throw new WebProcessRuntimeException("auto login fail. cause:" + he ,he);
 							} else {
 								if (logger.isDebugEnabled()) {
 									logger.debug("auto login fail. cause:" + e);
@@ -180,7 +182,7 @@ public class AuthInterceptor implements RequestInterceptor,ServiceInitListener<A
 
 					case LOGOUT:
 						authService.logout();
-						return true;
+						return;
 
 					case ERROR:
 						authService.logout();
@@ -197,8 +199,6 @@ public class AuthInterceptor implements RequestInterceptor,ServiceInitListener<A
 				}
 			}
 		}
-
-		return true;
 	}
 
 	@Override
@@ -206,10 +206,26 @@ public class AuthInterceptor implements RequestInterceptor,ServiceInitListener<A
 		final WebInvocationImpl webInvocation = (WebInvocationImpl) invocation;
 
 		//AutoLogin processing
-		if (!processAutoLogin(webInvocation, authService)) {
-			return;
+		ExecuteContext ec = ExecuteContext.getCurrentContext();
+		if (ec.getAttribute(AUTO_LOGIN_PROCESSED_FLAG) == null) {
+			try {
+				
+				ec.setAttribute(AUTO_LOGIN_PROCESSED_FLAG, true, false);
+				processAutoLogin(webInvocation, authService);
+			} catch (ApplicationException e) {
+				//notify to client...
+				invocation.getRequest().setAttribute(WebRequestConstants.EXCEPTION, e);
+				try {
+					
+					showLoginForm(webInvocation, wfService);
+				} catch (ServletException | IOException ee) {
+					throw new WebProcessRuntimeException("can not forword to login form:" + ee.getMessage(), ee);
+				}
+				
+				return;
+			}
 		}
-
+		
 		final AuthContextHolder account = getAuthContextHolder(webInvocation.getAction());
 
 		//当該権限にて処理実行
