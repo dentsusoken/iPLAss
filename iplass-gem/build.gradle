@@ -14,6 +14,7 @@ plugins {
 	id "com.moowork.node" version "1.2.0"
 }
 
+apply from: '../javaeecoreapis.gradle'
 apply from: '../javaeewebapis.gradle'
 apply from: 'libs.gradle'
 dependencies {

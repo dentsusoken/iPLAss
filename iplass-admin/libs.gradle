@@ -22,4 +22,9 @@ dependencies {
 	runtime group: 'com.google.code.gson', name: 'gson', version: '2.6.2'
 //	runtime group: 'javax.validation', name: 'validation-api', version: '1.0.0.GA'
 
+	//javax activation for java11
+	compileOnly group: 'javax.activation', name: 'activation', version: '1.1.1'
+
+	//JAXB for java11
+	compileOnly group: 'javax.xml.bind', name: 'jaxb-api', version: '2.3.0'
 }

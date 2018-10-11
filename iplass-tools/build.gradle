@@ -1,3 +1,5 @@
+apply from: '../javaeecoreapis.gradle'
+
 dependencies {
 	compile project(':iplass-core')
 	compile project(':iplass-web')
