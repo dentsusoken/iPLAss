@@ -2930,6 +2930,8 @@ function addNestRow(rowId, countId, multiplicy, insertTop, rootDefName, viewName
 		if (callback && $.isFunction(callback)) callback.call(this, $copyRow.get(0), idx);
 	});
 	$(".fixHeight").fixHeight();
+
+	return $copyRow;
 }
 
 /**

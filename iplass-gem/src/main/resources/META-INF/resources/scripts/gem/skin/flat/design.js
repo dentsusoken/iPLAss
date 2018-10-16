@@ -365,6 +365,31 @@ $(function() {
 
 	$("#content").show();
 	$(".fixHeight").fixHeight(); //高さ揃え実行
+
+	//ネストテーブルで行追加時にラジオのイベントが反映されないので行追加をオーバーライド
+	if (typeof addNestRow !== "undefined") {
+		var _addNestRow = addNestRow;
+
+		addNestRow = function(rowId, countId, multiplicy, insertTop, rootDefName, viewName, orgPropName, callback) {
+			var $row = _addNestRow(rowId, countId, multiplicy, insertTop, rootDefName, viewName, orgPropName, callback);
+
+			$("input[type=radio],input[type=checkbox]", $row).on("click", function(e) {
+				e.stopPropagation();
+				$(this).prev().trigger("click");
+			});
+			$("input[type=radio],input[type=checkbox]", $row).parent("label").on("click", function(e) {
+				var $pseudo = $(this).children(".pseudo-radio,.pseudo-checkbox");
+				if ($pseudo.is(":visible")) {
+					// ラベル部分クリックでイベントが2重発生しないよう抑制
+					$pseudo.trigger("click");
+					e.preventDefault();
+				}
+			});
+
+			$(".pseudo-radio", $row).on("click", onClickPseudoRadio);
+			$(".pseudo-checkbox", $row).on("click", onClickPseudoCheckbox);
+		}
+	}
 });
 
 /**
