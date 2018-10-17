@@ -468,8 +468,11 @@ public class PackageExport extends MtpCuiBase {
 			paths.addAll(directPathSet);
 		}
 
-		//ソートして返す
-		return paths.stream().sorted().collect(Collectors.toList());
+		final List<String> excludePaths = ps.getNonSupportEntityPathList();
+		return paths.stream()
+				.filter(path -> {
+					return excludePaths == null || !excludePaths.contains(path);
+				}).sorted().collect(Collectors.toList());
 	}
 
 	/**
