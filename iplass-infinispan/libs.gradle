@@ -1,6 +1,7 @@
 dependencies {
 	compile (group: 'org.infinispan', name: 'infinispan-core', version: '9.1.6.Final') {
 		exclude(group: 'log4j')//use log4j-over-slf4j
+		exclude(group: 'org.jboss.marshalling', module: 'jboss-marshalling-osgi')//use 2.0.6.Final for java11
 	}
 	runtime 'org.slf4j:log4j-over-slf4j:1.7.21'
 
