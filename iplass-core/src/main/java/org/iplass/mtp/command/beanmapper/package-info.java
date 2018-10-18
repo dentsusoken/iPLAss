@@ -19,9 +19,6 @@
  */
 
 @javax.xml.bind.annotation.XmlSchema(
-	namespace="http://mtp.iplass.org/xml/webapi",
-	xmlns={
-		@javax.xml.bind.annotation.XmlNs(namespaceURI="http://mtp.iplass.org/xml/webapi", prefix="beanmapper")
-	}
+	namespace="http://mtp.iplass.org/xml/webapi"
 )
 package org.iplass.mtp.command.beanmapper;
