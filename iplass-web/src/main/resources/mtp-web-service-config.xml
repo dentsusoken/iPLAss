@@ -91,14 +91,16 @@
 					<property name="systemSalt" value="iPLAssSystemSalt" />
 					<property name="stretchCount" value="1000" />
 				</property>
+				
+				<property name="autoLoginHandler" class="org.iplass.mtp.impl.auth.authenticate.builtin.web.IdPasswordAutoLoginHandler" />
 			</property>
 		</property>
 
 		<property name="authenticationProvider" class="org.iplass.mtp.impl.auth.authenticate.simpletoken.SimpleAuthTokenAuthenticationProvider" inherit="false">
- 			<property name="providerName" value="simpleAuthToken" />
- 			<property name="credentialTypeForTrust" value="org.iplass.mtp.auth.login.IdPasswordCredential" />
- 			<property name="accountHandleClassForTrust" value="org.iplass.mtp.impl.auth.authenticate.builtin.BuiltinAccountHandle" />
- 			<property name="autoLoginHandler" class="org.iplass.mtp.impl.auth.authenticate.token.web.BearerTokenAutoLoginHandler" />
+			<property name="providerName" value="simpleAuthToken" />
+			<property name="credentialTypeForTrust" value="org.iplass.mtp.auth.login.IdPasswordCredential" />
+			<property name="accountHandleClassForTrust" value="org.iplass.mtp.impl.auth.authenticate.builtin.BuiltinAccountHandle" />
+			<property name="autoLoginHandler" class="org.iplass.mtp.impl.auth.authenticate.token.web.BearerTokenAutoLoginHandler" />
 		</property>
 
 		<property name="authorizationProvider" class="org.iplass.mtp.impl.auth.authorize.builtin.BuiltinAuthorizationProvider">
@@ -238,6 +240,10 @@
 
 		<property name="xRequestedWithMap">
 			<property name="X-Requested-With" value="XMLHttpRequest" />
+		</property>
+		<property name="statusMap">
+			<property name="exception" value="org.iplass.mtp.auth.login.LoginException" />
+			<property name="status" value="401" />
 		</property>
 		<property name="statusMap">
 			<property name="exception" value="org.iplass.mtp.auth.NoPermissionException" />

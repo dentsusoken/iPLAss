@@ -173,6 +173,10 @@ public class BuiltinAuthenticationProvider extends AuthenticationProviderBase {
 			return null;
 //			throw new SystemException("BuiltinAuthenticationProvider supports IdPasswordCredential");
 		}
+		
+		if (accountId == null || accountId.isEmpty()) {
+			return null;
+		}
 
 		int tenantId = getTenantId();
 

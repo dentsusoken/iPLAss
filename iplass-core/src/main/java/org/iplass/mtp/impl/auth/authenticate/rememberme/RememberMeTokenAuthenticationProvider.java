@@ -498,11 +498,24 @@ public class RememberMeTokenAuthenticationProvider implements AuthenticationProv
 		if (deleteTokenOnFailure && e instanceof RememberMeTokenStolenException) {
 			return e;
 		}
+		
+		if (ali.getCredential() instanceof RememberMeTokenCredential) {
+			return null;
+		}
 
 		if (authenticationProvider.getAutoLoginHandler() != null) {
 			return authenticationProvider.getAutoLoginHandler().handleException(ali, e, req, isLogined, user);
 		} else {
 			return null;
+		}
+	}
+	
+	@Override
+	public void handleSuccess(AutoLoginInstruction ali, RequestContext req, UserContext user) {
+		if (!(ali.getCredential() instanceof RememberMeTokenCredential)) {
+			if (authenticationProvider.getAutoLoginHandler() != null) {
+				authenticationProvider.getAutoLoginHandler().handleSuccess(ali, req, user);
+			}
 		}
 	}
 

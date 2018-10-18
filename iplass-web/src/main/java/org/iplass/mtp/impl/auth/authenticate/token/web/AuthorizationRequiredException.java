@@ -79,7 +79,11 @@ public class AuthorizationRequiredException extends WebApplicationException {
 			}
 		}
 		
-		return Response.status(status).header("WWW-Authenticate", resMsg.toString()).build();
+		if (errorDescription == null) {
+			errorDescription = "";
+		}
+		
+		return Response.status(status).header("WWW-Authenticate", resMsg.toString()).entity(errorDescription).build();
 	}
 
 }

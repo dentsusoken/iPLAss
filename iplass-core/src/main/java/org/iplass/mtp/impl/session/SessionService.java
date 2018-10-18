@@ -58,6 +58,11 @@ public abstract class SessionService implements Service {
 		ExecuteContext.getCurrentContext().setAttribute(SESSION_STATELESS_FLAG, Boolean.TRUE, true);
 	}
 	
+	public boolean isSessionStateless() {
+		ExecuteContext ec = ExecuteContext.getCurrentContext();
+		return ec.getAttribute(SESSION_STATELESS_FLAG) != null;
+	}
+	
 	public void removeSessionFromExecuteContext(Session session) {
 		ExecuteContext ec = ExecuteContext.getCurrentContext();
 		Session s = (Session) ec.getAttribute(SESSION_NAME);
