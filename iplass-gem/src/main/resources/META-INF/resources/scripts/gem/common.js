@@ -251,6 +251,38 @@ function showDetail(action, oid, version, isEdit, target, options) {
 }
 
 /**
+ * QueryStringをdecodeする
+ * @param query
+ * @returns
+ */
+function decodeQueryString(query) {
+	var ret = "";
+	if (query != null && query.length > 0 && query.charAt(0) != "&") {
+		query = "&" + query;
+	}
+	var sr = new StringReader(query);
+	var c = -1;
+	while (true) {
+		c = sr.read();
+		if (c == -1) {
+			ret = ret.slice(1);
+			break;
+		}
+		if (c == "&") {
+			var kv = parseKeyValue(sr);
+			if (kv != null) {
+				var k = decodeURIComponent(kv.key);
+				var v = (kv.val != null) ? decodeURIComponent(kv.val) : undefined;
+				//parseKeyValueの処理に併せて、&なら&&にエスケープする
+				if (typeof v !== "undefined" && v.indexOf("&") != -1) v = v.replace(/\&/g, "&&");
+				ret += "&" + k + "=" + (typeof v === "undefined" ? "" : v);
+			}
+		}
+	}
+	return ret;
+}
+
+/**
  * searchCond解析
  * @param query
  * @returns {Array}

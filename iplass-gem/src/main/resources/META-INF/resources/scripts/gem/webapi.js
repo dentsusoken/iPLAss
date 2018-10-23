@@ -224,7 +224,8 @@ function search(webapi, searchType, formName, isCount, successFunc, errorFunc) {
 			if (response.status == "SUCCESS") {
 				var count = response.count;
 				var htmlData = response.htmlData;
-				$(":hidden[name='searchCond']").val(data);
+				// フォームパラメータのQueryStringをdecodeする
+				$(":hidden[name='searchCond']").val(decodeQueryString(data));
 				if (successFunc && $.isFunction(successFunc)) {
 					successFunc.call(this, htmlData, count);
 				}
