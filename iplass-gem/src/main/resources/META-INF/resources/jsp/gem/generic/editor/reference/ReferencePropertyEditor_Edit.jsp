@@ -52,6 +52,7 @@
 <%@ page import="org.iplass.mtp.view.generic.FormViewUtil"%>
 <%@ page import="org.iplass.mtp.view.generic.LoadEntityContext"%>
 <%@ page import="org.iplass.mtp.view.generic.LoadEntityInterrupter.LoadType"%>
+<%@ page import="org.iplass.mtp.view.generic.OutputType" %>
 <%@ page import="org.iplass.mtp.view.generic.editor.LinkProperty"%>
 <%@ page import="org.iplass.mtp.view.generic.editor.PropertyEditor"%>
 <%@ page import="org.iplass.mtp.view.generic.editor.ReferencePropertyEditor" %>
@@ -266,6 +267,7 @@
 	Entity entity = request.getAttribute(Constants.ENTITY_DATA) instanceof Entity ? (Entity) request.getAttribute(Constants.ENTITY_DATA) : null;
 	Object propValue = request.getAttribute(Constants.EDITOR_PROP_VALUE);
 
+	OutputType type = (OutputType) request.getAttribute(Constants.OUTPUT_TYPE);
 	String defName = (String)request.getAttribute(Constants.DEF_NAME);
 	String rootDefName = (String)request.getAttribute(Constants.ROOT_DEF_NAME);
 	ReferenceProperty pd = (ReferenceProperty) request.getAttribute(Constants.EDITOR_PROPERTY_DEFINITION);
@@ -375,7 +377,7 @@
 	}
 
 	//タイプ毎に表示内容かえる
-	if (editor.getDisplayType() == ReferenceDisplayType.LINK && updatable && !isMappedby) {
+	if ((editor.getDisplayType() == ReferenceDisplayType.LINK || type == OutputType.BULKEDIT) && updatable && !isMappedby) {
 		//リンク
 		String ulId = "ul_" + propName;
 

@@ -97,6 +97,9 @@ public class Constants {
 	public static final String DETAIL_COND_COUNT = "dtlCndCount";
 	public static final String DETAIL_COND_FILTER_EXPRESSION = "dtlCndFilterExpression";
 
+	// 一括更新のプロパティ名
+	public static final String BULK_UPDATE_PROP_NM = "bulkUpdatePropNm";
+
 	/** CSVダウンロード時の文字コード */
 	public static final String CSV_CHARACTER_CODE = "characterCode";
 	public static final String CSV_FILE_DOWNLOAD_TOKEN = "fileDownloadToken";
@@ -289,6 +292,7 @@ public class Constants {
 	public static final String CMD_RSLT_JSP_UPDATE_PASSWORD = "/jsp/gem/auth/Password.jsp";
 	public static final String CMD_RSLT_JSP_RESET_SPECIFIC_PASSWORD = "/jsp/gem/auth/specificPassword.jsp";
 	public static final String CMD_RSLT_JSP_PASSWORD_EXPIRE = "/jsp/gem/auth/Expire.jsp";
+	public static final String CMD_RSLT_JSP_BULK_EDIT="/jsp/gem/generic/detail/bulkEdit.jsp";
 	public static final String CMD_RSLT_HTML_PDFVIEWER_PATH = "/jsp/gem/binary/pdfviewer.jsp";
 
 	// LayoutAction

@@ -2865,6 +2865,8 @@ LocaleInfo.generic_element_section_SearchResultSection_hidePageLinkDisplaNameKey
 LocaleInfo.generic_element_section_SearchResultSection_hidePageLinkDescriptionKey = "検索結果のページングでページリンクを非表示にします。";
 LocaleInfo.generic_element_section_SearchResultSection_pagingPositionDisplaNameKey = "ページング表示位置";
 LocaleInfo.generic_element_section_SearchResultSection_pagingPositionDescriptionKey = "ページングの表示位置を指定します。<br><b>BOTH   :</b> グリッドの上下<br><b>TOP    :</b> グリッドの上部<br><b>BOTTOM :</b> グリッドの下部<br>";
+LocaleInfo.generic_element_section_SearchResultSection_showBulkUpdateDisplayNameKey = "一括更新ボタンを表示";
+LocaleInfo.generic_element_section_SearchResultSection_showBulkUpdateDescriptionKey = "一括更新ボタンと検索結果のチェックボックスを表示にします。";
 LocaleInfo.generic_element_section_SortSetting_sortKeyDisplayNameKey = "ソート項目";
 LocaleInfo.generic_element_section_SortSetting_sortKeyDescriptionKey = "検索時にデフォルトで指定するソート項目を設定します";
 LocaleInfo.generic_element_section_SortSetting_sortTypeDisplayNameKey = "ソート種別";

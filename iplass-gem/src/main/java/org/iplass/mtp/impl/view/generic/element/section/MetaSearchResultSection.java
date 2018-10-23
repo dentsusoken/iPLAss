@@ -75,6 +75,9 @@ public class MetaSearchResultSection extends MetaSection {
 	/** ページング表示位置 */
 	private PagingPosition pagingPosition;
 
+	/** 一括更新ボタン表示設定 */
+	private boolean showBulkUpdate;
+
 	/** 要素 */
 	private List<MetaElement> elements;
 
@@ -210,6 +213,22 @@ public class MetaSearchResultSection extends MetaSection {
 	}
 
 	/**
+	 * 一括更新ボタン表示設定を取得します。
+	 * @return 一括更新ボタン表示設定
+	 */
+	public boolean isShowBulkUpdate() {
+		return showBulkUpdate;
+	}
+
+	/**
+	 * 一括更新ボタン表示設定を設定します。
+	 * @param showBulkUpdate 一括更新ボタン表示設定
+	 */
+	public void setShowBulkUpdate(boolean showBulkUpdate) {
+		this.showBulkUpdate = showBulkUpdate;
+	}
+
+	/**
 	 * 要素を取得します。
 	 * @return 要素
 	 */
@@ -252,6 +271,7 @@ public class MetaSearchResultSection extends MetaSection {
 		this.hidePageLink = section.isHidePageLink();
 		this.hideCount = section.isHideCount();
 		this.pagingPosition = section.getPagingPosition();
+		this.showBulkUpdate = section.isShowBulkUpdate();
 		// 仮想プロパティ追加によりMetaPropertyからMetaElementへフィールドを変更
 //		if (section.getProperties().size() > 0) {
 //			for (PropertyColumn col : section.getProperties()) {
@@ -283,6 +303,7 @@ public class MetaSearchResultSection extends MetaSection {
 		section.setHidePageLink(this.hidePageLink);
 		section.setHideCount(this.hideCount);
 		section.setPagingPosition(pagingPosition);
+		section.setShowBulkUpdate(this.showBulkUpdate);
 
 		if (this.getElements().size() > 0) {
 			for (MetaElement elem : this.getElements()) {

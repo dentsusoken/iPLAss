@@ -108,7 +108,7 @@
 	String propName = editor.getPropertyName();
 
 	//タイプ毎に出力内容かえる
-	if (OutputType.EDIT == type) {
+	if (OutputType.EDIT == type || OutputType.BULKEDIT == type) {
 %>
 <jsp:include page="./select/SelectPropertyEditor_Edit.jsp"></jsp:include>
 <jsp:include page="ErrorMessage.jsp">

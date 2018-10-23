@@ -200,7 +200,7 @@ public class DetailCommandContext extends GenericCommandContext {
 	 * @param section セクション
 	 * @return プロパティの一覧
 	 */
-	private List<PropertyItem> getProperty(DefaultSection section) {
+	protected List<PropertyItem> getProperty(DefaultSection section) {
 		String execType = getExecType();
 		List<PropertyItem> propList = new ArrayList<PropertyItem>();
 		for (Element elem : section.getElements()) {
@@ -583,44 +583,11 @@ public class DetailCommandContext extends GenericCommandContext {
 	private Entity createEntity(String paramPrefix, String errorPrefix) {
 		Entity entity = newEntity();
 		for (PropertyDefinition p : getPropertyList()) {
-			Object value = null;
-			boolean isMultiple = p.getMultiplicity() != 1;
-			String name = paramPrefix +  p.getName();
-			if (p instanceof BinaryProperty) {
-				value = isMultiple ? getBinaryReferenceValues(name) : getBinaryReferenceValue(name);
-			} else if (p instanceof BooleanProperty) {
-				value = isMultiple ? getBooleanValues(name, p.getMultiplicity()) : getBooleanValue(name);
-			} else if (p instanceof DateProperty) {
-				value = isMultiple ? getDateValues(name) : getDateValue(name);
-			} else if (p instanceof DateTimeProperty) {
-				value = isMultiple ? getTimestampValues(name) : getTimestampValue(name);
-			} else if (p instanceof DecimalProperty) {
-				value = isMultiple ? getDecimalValues(name) : getDecimalValue(name);
-			} else if (p instanceof ExpressionProperty) {
-				//数式型は更新プロパティに含めない
-				value = getExpressionValue((ExpressionProperty) p, name);
-			} else if (p instanceof FloatProperty) {
-				value = isMultiple ? getDoubleValues(name) : getDoubleValue(name);
-			} else if (p instanceof IntegerProperty) {
-				value = isMultiple ? getLongValues(name) : getLongValue(name);
-			} else if (p instanceof LongTextProperty) {
-				value = isMultiple ? getStringValues(name) : getStringValue(name);
-			} else if (p instanceof ReferenceProperty) {
-				value = createReference(p, paramPrefix);
-			} else if (p instanceof SelectProperty) {
-				value = isMultiple ? getSelectValues(name) : getSelectValue(name);
-			} else if (p instanceof StringProperty) {
-				value = isMultiple ? getStringValues(name) : getStringValue(name);
-			} else if (p instanceof TimeProperty) {
-				value = isMultiple ? getTimeValues(name) : getTimeValue(name);
-			} else if (p instanceof AutoNumberProperty) {
-				//AutoNumber型は更新プロパティに含めない
-				value = getStringValue(name);
-			}
-
+			Object value = getPropValue(p, paramPrefix);
 			entity.setValue(p.getName(), value);
 
 			if (errorPrefix != null) {
+				String name = paramPrefix + p.getName();
 				//Entity生成時にエラーが発生していないかチェックして置き換え
 				String errorName = errorPrefix +  p.getName();
 				getErrors().stream()
@@ -630,8 +597,46 @@ public class DetailCommandContext extends GenericCommandContext {
 		}
 		return entity;
 	}
+	
+	protected Object getPropValue(PropertyDefinition p, String paramPrefix) {
+		Object value = null;
+		boolean isMultiple = p.getMultiplicity() != 1;
+		String name = paramPrefix +  p.getName();
+		if (p instanceof BinaryProperty) {
+			value = isMultiple ? getBinaryReferenceValues(name) : getBinaryReferenceValue(name);
+		} else if (p instanceof BooleanProperty) {
+			value = isMultiple ? getBooleanValues(name, p.getMultiplicity()) : getBooleanValue(name);
+		} else if (p instanceof DateProperty) {
+			value = isMultiple ? getDateValues(name) : getDateValue(name);
+		} else if (p instanceof DateTimeProperty) {
+			value = isMultiple ? getTimestampValues(name) : getTimestampValue(name);
+		} else if (p instanceof DecimalProperty) {
+			value = isMultiple ? getDecimalValues(name) : getDecimalValue(name);
+		} else if (p instanceof ExpressionProperty) {
+			//数式型は更新プロパティに含めない
+			value = getExpressionValue((ExpressionProperty) p, name);
+		} else if (p instanceof FloatProperty) {
+			value = isMultiple ? getDoubleValues(name) : getDoubleValue(name);
+		} else if (p instanceof IntegerProperty) {
+			value = isMultiple ? getLongValues(name) : getLongValue(name);
+		} else if (p instanceof LongTextProperty) {
+			value = isMultiple ? getStringValues(name) : getStringValue(name);
+		} else if (p instanceof ReferenceProperty) {
+			value = createReference(p, paramPrefix);
+		} else if (p instanceof SelectProperty) {
+			value = isMultiple ? getSelectValues(name) : getSelectValue(name);
+		} else if (p instanceof StringProperty) {
+			value = isMultiple ? getStringValues(name) : getStringValue(name);
+		} else if (p instanceof TimeProperty) {
+			value = isMultiple ? getTimeValues(name) : getTimeValue(name);
+		} else if (p instanceof AutoNumberProperty) {
+			//AutoNumber型は更新プロパティに含めない
+			value = getStringValue(name);
+		}
+		return value;
+	}
 
-	private Entity newEntity() {
+	protected Entity newEntity() {
 		Entity res = null;
 		if (entityDefinition.getMapping() != null && entityDefinition.getMapping().getMappingModelClass() != null) {
 			try {
@@ -1264,7 +1269,7 @@ public class DetailCommandContext extends GenericCommandContext {
 	 * 標準の入力チェック以外のチェック、PropertyEditor絡みのもの
 	 * @param entity
 	 */
-	private void validate(Entity entity) {
+	protected void validate(Entity entity) {
 		List<PropertyItem> properties = getDisplayProperty(true);
 		for (PropertyItem property : properties) {
 			if (property.getEditor() instanceof DateRangePropertyEditor) {

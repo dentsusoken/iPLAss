@@ -142,6 +142,16 @@ public class SearchResultSection extends Section {
 	)
 	private PagingPosition pagingPosition;
 
+	/** 一括更新ボタン表示設定 */
+	@MetaFieldInfo(
+			displayName="一括更新ボタン表示設定",
+			displayNameKey="generic_element_section_SearchResultSection_showBulkUpdateDisplayNameKey",
+			inputType=InputType.CHECKBOX,
+			description="一括更新ボタンを表示にします。",
+			descriptionKey="generic_element_section_SearchResultSection_showBulkUpdateDescriptionKey"
+	)
+	private boolean showBulkUpdate;
+
 	/** カスタムスタイルキー */
 	private String scriptKey;
 
@@ -307,6 +317,22 @@ public class SearchResultSection extends Section {
 	@Override
 	public boolean isShowLink() {
 		return false;
+	}
+
+	/**
+	 * 一括更新ボタン表示設定を取得します。
+	 * @return 一括更新ボタン表示設定
+	 */
+	public boolean isShowBulkUpdate() {
+		return showBulkUpdate;
+	}
+
+	/**
+	 * 一括更新ボタン表示設定を設定します。
+	 * @param showBulkUpdate 一括更新ボタン表示設定 
+	 */
+	public void setShowBulkUpdate(boolean showBulkUpdate) {
+		this.showBulkUpdate = showBulkUpdate;
 	}
 
 	/**

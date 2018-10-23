@@ -65,6 +65,12 @@
 	border: 0 !important;
 }
 
+%extend_gdd_6 {
+	padding-bottom: 10px;
+	font-size: 1rem;
+	display: block;
+}
+
 #detailForm {
 	> div {
 		@extend %extend_gdd_1;
@@ -409,11 +415,12 @@ input[type=button] {
 		}
 	}
 }
+span.success{
+	@extend %extend_gdd_6;
+}
 span.error {
-	padding-bottom: 10px;
+	@extend %extend_gdd_6;
 	color: $red;
-	font-size: 1rem;
-	display: block;
 }
 a + .binaryDelete {
 	margin-left: 10px;

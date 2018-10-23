@@ -48,6 +48,9 @@ import org.iplass.gem.command.generic.delete.GetRecycleBinCommand;
 import org.iplass.gem.command.generic.delete.PurgeCommand;
 import org.iplass.gem.command.generic.delete.RestoreCommand;
 import org.iplass.gem.command.generic.delete.TrashCommand;
+import org.iplass.gem.command.generic.detail.BulkDetailViewCommand;
+import org.iplass.gem.command.generic.detail.BulkUpdateAllCommand;
+import org.iplass.gem.command.generic.detail.BulkUpdateListCommand;
 import org.iplass.gem.command.generic.detail.DetailViewCommand;
 import org.iplass.gem.command.generic.detail.GetMassReferencesCommand;
 import org.iplass.gem.command.generic.detail.GetNestTableDataCommand;
@@ -127,6 +130,9 @@ import org.iplass.mtp.command.annotation.MetaDataSeeAlso;
 	UpdateMappedbyReferenceCommand.class,
 	UpdateReferencePropertyCommand.class,
 	UpdateTableOrderCommand.class,
+	BulkDetailViewCommand.class,
+	BulkUpdateAllCommand.class,
+	BulkUpdateListCommand.class,
 	//自動補完
 	GetAutocompletionValueCommand.class,
 	//参照コンボ

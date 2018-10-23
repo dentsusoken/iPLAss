@@ -50,8 +50,8 @@
 	String propName = editor.getPropertyName();
 
 	//タイプ毎に出力内容かえる
-	if (OutputType.EDIT == type) {
-		//詳細編集
+	if (OutputType.EDIT == type || OutputType.BULKEDIT == type) {
+		//詳細編集 or 一括更新編集
 %>
 <jsp:include page="./string/StringPropertyEditor_Edit.jsp"></jsp:include>
 <jsp:include page="ErrorMessage.jsp">

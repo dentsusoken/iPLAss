@@ -74,7 +74,7 @@ public abstract class DetailCommandBase implements Command {
 	private static Logger logger = LoggerFactory.getLogger(DetailCommandBase.class);
 
 	/** EntityDefinitionManager */
-	private EntityDefinitionManager edm = null;
+	protected EntityDefinitionManager edm = null;
 
 	/** EntityViewManager */
 	protected EntityViewManager evm = null;
