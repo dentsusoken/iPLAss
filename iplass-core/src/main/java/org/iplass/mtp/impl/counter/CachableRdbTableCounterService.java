@@ -1,19 +1,19 @@
 /*
  * Copyright (C) 2012 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
- * 
+ *
  * Unless you have purchased a commercial license,
  * the following license terms apply:
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
@@ -23,6 +23,7 @@ package org.iplass.mtp.impl.counter;
 import java.io.Serializable;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Set;
 
 import org.iplass.mtp.SystemException;
 import org.iplass.mtp.entity.EntityApplicationException;
@@ -44,18 +45,18 @@ import org.slf4j.LoggerFactory;
  * APサーバ上にカウンター値をキャッシュするCounterService。
  * キャッシュするので、飛び番は発生する（飛び番許容しない場合[increment時にPropagation.REQUIRED]は、直接rdbを呼ぶ）。
  * また、currentの値は必ずしも正しいとは限らない。APサーバローカルの最新値であるだけ。
- * 
+ *
  * @author K.Higuchi
  *
  */
 public class CachableRdbTableCounterService implements CounterService {
 	private static final String COUNTER_CACHE_NAMESPACE = "mtp.counter.rdbTableCounter";
 	private static Logger logger = LoggerFactory.getLogger(CachableRdbTableCounterService.class);
-	
+
 	private int cacheSize = 20;
-	
+
 	private RdbTableCounterService rdbCounter;
-	
+
 	//FIXME クラスタへリセット時の通知。SyncServerな、LRUなキャッシュを利用。
 	private CacheStore cache;
 
@@ -64,7 +65,7 @@ public class CachableRdbTableCounterService implements CounterService {
 		rdbCounter = new RdbTableCounterService();
 		rdbCounter.init(config);
 		cacheSize = config.getValue("cacheSize", Integer.TYPE, 20);
-		
+
 		CacheService cs = config.getDependentService(CacheService.class);
 		cache = cs.getCache(COUNTER_CACHE_NAMESPACE);
 	}
@@ -103,7 +104,7 @@ public class CachableRdbTableCounterService implements CounterService {
 		Transaction.requiresNew(t -> {
 			rdbCounter.resetCounter(tenantId, incrementUnitKey, currentCount);
 		});
-		
+
 		cache.remove(new CounterKey(tenantId, rdbCounter.getCounterTypeName(), incrementUnitKey));
 	}
 
@@ -113,10 +114,10 @@ public class CachableRdbTableCounterService implements CounterService {
 		Transaction.requiresNew(t -> {
 			rdbCounter.deleteCounter(tenantId, incrementUnitKey);
 		});
-		
+
 		cache.remove(new CounterKey(tenantId, rdbCounter.getCounterTypeName(), incrementUnitKey));
 	}
-	
+
 	@Override
 	public long current(int tenantId, String incrementUnitKey) {
 		CounterKey key = new CounterKey(tenantId, rdbCounter.getCounterTypeName(), incrementUnitKey);
@@ -127,15 +128,19 @@ public class CachableRdbTableCounterService implements CounterService {
 			return rdbCounter.current(tenantId, incrementUnitKey);
 		}
 	}
-	
-	
+
+	@Override
+	public Set<String> keySet(int tenantId, String prefixIncrementUnitKey) {
+		return rdbCounter.keySet(tenantId, prefixIncrementUnitKey);
+	}
+
 	private static class CounterKey implements Serializable {
 		private static final long serialVersionUID = 9085282190400818284L;
-		
+
 		private final int tenantId;
 		private final String typeName;
 		private final String incrementUnitKey;
-		
+
 		public CounterKey(int tenantId, String typeName, String incrementUnitKey) {
 			this.tenantId = tenantId;
 			this.typeName = typeName;
@@ -145,7 +150,8 @@ public class CachableRdbTableCounterService implements CounterService {
 		public int getTenantId() {
 			return tenantId;
 		}
-		
+
+		@SuppressWarnings("unused")
 		public String getTypeName() {
 			return typeName;
 		}
@@ -192,22 +198,22 @@ public class CachableRdbTableCounterService implements CounterService {
 			return true;
 		}
 	}
-	
-	
+
+
 	private class Counter {
-		
+
 		private final CounterKey key;
 		private long cachedMax;
 		private long count;
 		private boolean inited;
-		
+
 		private Counter(CounterKey key, long initCount) {
 			this.key = key;
 			this.count = initCount;
 			this.cachedMax = this.count;
 			inited = false;
 		}
-		
+
 		public synchronized long increment() {
 			if (!inited || count == cachedMax) {
 				for (int i = 0; i < rdbCounter.getRetryCount(); i++) {
@@ -228,22 +234,22 @@ public class CachableRdbTableCounterService implements CounterService {
 			count = count + 1;
 			return count;
 		}
-		
+
 		private void loadNextCount() {
 			if (logger.isDebugEnabled()) {
 				logger.debug("counter:" + rdbCounter.getCounterTypeName() + "." + key.getIncrementUnitKey() + " load to cache, size=" + cacheSize);
 			}
-			
+
 			EntityApplicationException eae = null;
 			Long rdbCount = null;
 			try {
 				rdbCount = Transaction.requiresNew(t -> {
-					
+
 					SqlExecuter<Long> executer = new SqlExecuter<Long>() {
 						@Override
 						public Long logic() throws SQLException {
 							RdbTableCounterSql sql = rdbCounter.getCounterSql();
-			
+
 							String select = sql.currentValueSql(key.getTenantId(), rdbCounter.getCounterTypeName(), key.getIncrementUnitKey(), true, rdbCounter.getRdbAdapter());
 							ResultSet rs = getStatement().executeQuery(select);
 							long current = Long.MIN_VALUE;
@@ -275,7 +281,7 @@ public class CachableRdbTableCounterService implements CounterService {
 					};
 					return executer.execute(rdbCounter.getRdbAdapter(), true);
 				});
-				
+
 			} catch (EntityDuplicateValueException e) {
 				//別スレッド、もしくは別サーバで初期化された
 				if (logger.isDebugEnabled()) {
@@ -293,16 +299,16 @@ public class CachableRdbTableCounterService implements CounterService {
 				}
 				eae = e;
 			}
-			
+
 			//採番のみ再度実施を試みる
 			if (eae != null) {
 				rdbCount = Transaction.requiresNew(t -> {
-					
+
 					SqlExecuter<Long> executer = new SqlExecuter<Long>() {
 						@Override
 						public Long logic() throws SQLException {
 							RdbTableCounterSql sql = rdbCounter.getCounterSql();
-			
+
 							String select = sql.currentValueSql(key.getTenantId(), rdbCounter.getCounterTypeName(), key.getIncrementUnitKey(), true, rdbCounter.getRdbAdapter());
 							ResultSet rs = getStatement().executeQuery(select);
 							long current = Long.MIN_VALUE;
@@ -329,17 +335,17 @@ public class CachableRdbTableCounterService implements CounterService {
 					return executer.execute(rdbCounter.getRdbAdapter(), true);
 				});
 			}
-			
+
 			if (rdbCount == null) {
 				throw new SystemException("counter:" + rdbCounter.getCounterTypeName() + "." + key.getIncrementUnitKey() + " increment failed");
 			}
-			
+
 			count = rdbCount.longValue();
 			cachedMax = rdbCount.longValue() + cacheSize;
 			inited = true;
 		}
-		
-		
+
+
 		public synchronized long current() {
 			if (inited) {
 				return count;
@@ -347,9 +353,9 @@ public class CachableRdbTableCounterService implements CounterService {
 				return rdbCounter.current(key.getTenantId(), key.getIncrementUnitKey());
 			}
 		}
-		
+
 	}
-	
+
 	public static class CounterCacheKeyResolver implements CacheKeyResolver {
 
 		@Override
@@ -362,13 +368,13 @@ public class CachableRdbTableCounterService implements CounterService {
 
 		@Override
 		public Object toCacheKey(String cacheKeyString) {
-			
+
 			int index = cacheKeyString.indexOf(':');
 			int tenantId = Integer.parseInt(cacheKeyString.substring(0, index));
 			int index2 = cacheKeyString.indexOf(index + 1, ':');
 			String type = cacheKeyString.substring(index, index2);
 			String incUnitKey = cacheKeyString.substring(index2 + 1);
-			
+
 			return new CounterKey(tenantId, type, incUnitKey);
 		}
 

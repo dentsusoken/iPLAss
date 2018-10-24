@@ -22,6 +22,8 @@ package org.iplass.mtp.impl.counter;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.iplass.mtp.SystemException;
 import org.iplass.mtp.impl.counter.sql.RdbTableCounterSql;
@@ -249,4 +251,26 @@ public class RdbTableCounterService implements CounterService {
 		return executer.execute(rdb, true);
 	}
 
+	@Override
+	public Set<String> keySet(final int tenantId, final String prefixIncrementUnitKey) {
+		SqlExecuter<Set<String>> executer = new SqlExecuter<Set<String>>() {
+
+			@Override
+			public Set<String> logic() throws SQLException {
+				String select = sql.keySetSql(tenantId, counterTypeName, prefixIncrementUnitKey, rdb);
+				ResultSet rs = getStatement().executeQuery(select);
+				Set<String> keys = new HashSet<>();
+				try {
+					while (rs.next()) {
+						keys.add(rs.getString(1));
+					}
+				} finally {
+					rs.close();
+				}
+				return keys;
+			}
+
+		};
+		return executer.execute(rdb, true);
+	}
 }

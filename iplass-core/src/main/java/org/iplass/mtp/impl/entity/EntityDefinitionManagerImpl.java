@@ -25,7 +25,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
+import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 import org.iplass.mtp.ManagerLocator;
 import org.iplass.mtp.definition.DefinitionManager;
 import org.iplass.mtp.definition.DefinitionSummary;
@@ -74,7 +77,7 @@ public class EntityDefinitionManagerImpl implements
 		dm = DefinitionService.getInstance();
 	}
 
-
+	@Override
 	public EntityDefinitionModifyResult create(EntityDefinition definition) {
 
 		//FIXME 自身への参照（階層的な参照定義）が定義されていた場合の対応
@@ -128,7 +131,6 @@ public class EntityDefinitionManagerImpl implements
 
 	}
 
-
 	private EntityDefinition checkAndModify(EntityDefinition definition) {
 
 		//FIXME チェック処理
@@ -136,6 +138,7 @@ public class EntityDefinitionManagerImpl implements
 		return definition;
 	}
 
+	@Override
 	public List<String> definitionList() {
 		return dmHandlerService.nameList();
 	}
@@ -164,6 +167,7 @@ public class EntityDefinitionManagerImpl implements
 		return ret;
 	}
 
+	@Override
 	public EntityDefinition get(String definitionName) {
 
 //		ExecuteContext context = ExecuteContext.getCurrentContext();
@@ -176,6 +180,7 @@ public class EntityDefinitionManagerImpl implements
 		return eh.getMetaData().currentConfig(ctx);
 	}
 
+	@Override
 	public EntityDefinitionModifyResult remove(String definitionName) {
 //		final ExecuteContext context = ExecuteContext.getCurrentContext();
 		EntityDefinition definition = get(definitionName);
@@ -224,10 +229,12 @@ public class EntityDefinitionManagerImpl implements
 		};
 	}
 
+	@Override
 	public EntityDefinitionModifyResult update(EntityDefinition definition) {
 		return update(definition, null);
 	}
 
+	@Override
 	public EntityDefinitionModifyResult update(EntityDefinition definition, Map<String, String> renamePropertyMap) {
 
 
@@ -293,35 +300,48 @@ public class EntityDefinitionManagerImpl implements
 		};
 	}
 
-
+	@Override
 	public void renameEntityDefinition(String from, String to) {
 		ManagerLocator.getInstance().getManager(DefinitionManager.class).rename(EntityDefinition.class, from, to);
 	}
 
+	@Override
 	public void renamePropertyDefinition(String defName, String from, String to) {
 		dmHandlerService.renameProperty(defName, from, to);
 	}
 
 	@Override
 	public long getAutoNumberCurrentValue(String definitionName, String propertyName) {
-
-		EntityContext eContext = EntityContext.getCurrentContext();
-
-		EntityHandler eh = eContext.getHandlerByName(definitionName);
-		PropertyHandler ph = eh.getProperty(propertyName, eContext);
-		if (!(ph instanceof PrimitivePropertyHandler)) {
-			throw new EntityRuntimeException(definitionName + "." + propertyName + " is not AutoNumberProperty");
-		}
-		if (!(((PrimitivePropertyHandler) ph).getMetaData().getType() instanceof AutoNumberType)) {
-			throw new EntityRuntimeException(definitionName + "." + propertyName + " is not AutoNumberProperty");
-		}
-		AutoNumberTypeRuntime typeRuntime = (AutoNumberTypeRuntime) ((PrimitivePropertyHandler) ph).getTypeSpecificRuntime();
-		return typeRuntime.currentValue();
+		return getAutoNumberCurrentValue(definitionName, propertyName, null);
 	}
 
 	@Override
-	public void resetAutoNumberCounter(String definitionName,
-			String propertyName, long startsWith) {
+	public long getAutoNumberCurrentValue(String definitionName, String propertyName, String subUnitKey) {
+		AutoNumberTypeRuntime typeRuntime = getAutoNumberRuntime(definitionName, propertyName);
+		return typeRuntime.currentValue(subUnitKey);
+	}
+
+	@Override
+	public List<Pair<String, Long>> getAutoNumberCurrentValueList(String definitionName, String propertyName) {
+		final AutoNumberTypeRuntime typeRuntime = getAutoNumberRuntime(definitionName, propertyName);
+		return typeRuntime.keySet().stream().map(key->{
+			long value = typeRuntime.currentValue(key);
+			return new ImmutablePair<String, Long>(key, value);
+		}).collect(Collectors.toList());
+	}
+
+	@Override
+	public void resetAutoNumberCounter(String definitionName, String propertyName, long startsWith) {
+		resetAutoNumberCounter(definitionName, propertyName, null, startsWith);
+	}
+
+	@Override
+	public void resetAutoNumberCounter(String definitionName, String propertyName, String subUnitKey, long startsWith) {
+		AutoNumberTypeRuntime typeRuntime = getAutoNumberRuntime(definitionName, propertyName);
+		typeRuntime.resetCounter(subUnitKey, startsWith);
+	}
+
+	private AutoNumberTypeRuntime getAutoNumberRuntime(String definitionName, String propertyName) {
 
 		EntityContext eContext = EntityContext.getCurrentContext();
 
@@ -333,10 +353,8 @@ public class EntityDefinitionManagerImpl implements
 		if (!(((PrimitivePropertyHandler) ph).getMetaData().getType() instanceof AutoNumberType)) {
 			throw new EntityRuntimeException(definitionName + "." + propertyName + " is not AutoNumberProperty");
 		}
-		AutoNumberTypeRuntime typeRuntime = (AutoNumberTypeRuntime) ((PrimitivePropertyHandler) ph).getTypeSpecificRuntime();
-		typeRuntime.resetCounter(startsWith);
+		return (AutoNumberTypeRuntime) ((PrimitivePropertyHandler) ph).getTypeSpecificRuntime();
 	}
-
 
 	@Override
 	public List<String> getStorageSpaceList() {

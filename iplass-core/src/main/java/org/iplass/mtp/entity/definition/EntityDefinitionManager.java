@@ -1,19 +1,19 @@
 /*
  * Copyright (C) 2011 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
- * 
+ *
  * Unless you have purchased a commercial license,
  * the following license terms apply:
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
@@ -23,6 +23,7 @@ package org.iplass.mtp.entity.definition;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.tuple.Pair;
 import org.iplass.mtp.definition.DefinitionSummary;
 import org.iplass.mtp.definition.TypedDefinitionManager;
 
@@ -39,7 +40,7 @@ public interface EntityDefinitionManager extends TypedDefinitionManager<EntityDe
 	/**
 	 * 新規にEntity定義を作成する。
 	 *
-	 * @param definition　新規に作成するEntityの定義
+	 * @param definition 新規に作成するEntityの定義
 	 * @return 作成結果
 	 */
 	@Override
@@ -109,18 +110,49 @@ public interface EntityDefinitionManager extends TypedDefinitionManager<EntityDe
 	 * AutoNumberPropertyの現在のカウンター値を返す。
 	 *
 	 * @param definitionName Entity定義名
-	 * @param propertyName AutoNumberProperty型のプロパティのプロパティ名
+	 * @param propertyName AutoNumberProperty型プロパティのプロパティ名
+	 * @return 現在のカウンター値
 	 */
 	public long getAutoNumberCurrentValue(String definitionName, String propertyName);
+
+	/**
+	 * AutoNumberPropertyの現在のカウンター値のリストを返す。
+	 *
+	 * @param definitionName Entity定義名
+	 * @param propertyName AutoNumberProperty型プロパティのプロパティ名
+	 * @return 現在のカウンター値のリスト
+	 */
+	public List<Pair<String, Long>> getAutoNumberCurrentValueList(String definitionName, String propertyName);
+
+	/**
+	 * AutoNumberPropertyの現在のカウンター値を返す。
+	 *
+	 * @param definitionName Entity定義名
+	 * @param propertyName AutoNumberProperty型プロパティのプロパティ名
+	 * @param subUnitKey 採番単位のKEY値
+	 * @return 現在のカウンター値
+	 */
+	public long getAutoNumberCurrentValue(String definitionName, String propertyName, String subUnitKey);
 
 	/**
 	 * AutoNumberPropertyのカウンター値を指定の値にリセットする。
 	 *
 	 * @param definitionName Entity定義名
-	 * @param propertyName AutoNumberProperty型のプロパティのプロパティ名
+	 * @param propertyName AutoNumberProperty型プロパティのプロパティ名
+	 * @param subUnitKey 採番単位のKEY値
 	 * @param startsWith リセットするカウンター値
 	 */
 	public void resetAutoNumberCounter(String definitionName, String propertyName, long startsWith);
+
+	/**
+	 * AutoNumberPropertyのカウンター値を指定の値にリセットする。
+	 *
+	 * @param definitionName Entity定義名
+	 * @param propertyName AutoNumberProperty型プロパティのプロパティ名
+	 * @param subUnitKey 採番単位のKEY値
+	 * @param startsWith リセットするカウンター値
+	 */
+	public void resetAutoNumberCounter(String definitionName, String propertyName, String subUnitKey, long startsWith);
 
 	/**
 	 * Entity定義名を変更する。
@@ -132,7 +164,7 @@ public interface EntityDefinitionManager extends TypedDefinitionManager<EntityDe
 	public void renameEntityDefinition(String from, String to);
 
 	/**
-	 *　Entity定義のプロパティ名を変更する。
+	 * Entity定義のプロパティ名を変更する。
 	 * データ自体はそのまま保持される。
 	 *
 	 * @param definitionName 対象のEntity定義名
