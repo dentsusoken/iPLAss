@@ -24,6 +24,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.iplass.adminconsole.shared.base.dto.KeyValue;
 import org.iplass.adminconsole.shared.base.dto.i18n.I18nMetaDisplayInfo;
 import org.iplass.adminconsole.shared.metadata.dto.AdminDefinitionModifyResult;
 import org.iplass.adminconsole.shared.metadata.dto.MetaDataInfo;
@@ -272,9 +273,9 @@ public interface MetaDataService extends XsrfProtectedService {
 
 	public List<String> getEntityStoreSpaceList(int tenantId);
 
-	public Long getAutoNumberCurrentValue(int tenantId, String name, String propertyName);
+	public List<KeyValue<String, Long>> getAutoNumberCurrentValueList(int tenantId, String name, String propertyName);
 
-	public void resetAutoNumberCounter(int tenantId, String name, String propertyName, long startsWith);
+	public void resetAutoNumberCounterList(int tenantId, String name, String propertyName, List<KeyValue<String, Long>> values);
 
 	public List<SortInfo> getSortInfo(int tenantId, String orderBy);
 

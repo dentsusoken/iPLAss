@@ -26,6 +26,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
+import java.util.stream.Collectors;
 
 import org.apache.commons.io.FilenameUtils;
 import org.iplass.adminconsole.server.base.i18n.AdminResourceBundleUtil;
@@ -33,6 +34,7 @@ import org.iplass.adminconsole.server.base.rpc.util.AuthUtil;
 import org.iplass.adminconsole.server.base.service.AdminEntityManager;
 import org.iplass.adminconsole.server.base.service.auditlog.MetaDataAction;
 import org.iplass.adminconsole.server.base.service.auditlog.MetaDataAuditLogger;
+import org.iplass.adminconsole.shared.base.dto.KeyValue;
 import org.iplass.adminconsole.shared.base.dto.i18n.I18nMetaDisplayInfo;
 import org.iplass.adminconsole.shared.metadata.dto.AdminDefinitionModifyResult;
 import org.iplass.adminconsole.shared.metadata.dto.MetaDataInfo;
@@ -1096,22 +1098,27 @@ public class MetaDataServiceImpl extends XsrfProtectedServiceServlet implements 
 	}
 
 	@Override
-	public Long getAutoNumberCurrentValue(int tenantId, final String name, final String propertyName) {
-		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId, new AuthUtil.Callable<Long>() {
+	public List<KeyValue<String, Long>> getAutoNumberCurrentValueList(int tenantId, final String name, final String propertyName) {
+		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId, new AuthUtil.Callable<List<KeyValue<String, Long>>>() {
 			@Override
-			public Long call() {
-				return edm.getAutoNumberCurrentValue(name, propertyName);
+			public List<KeyValue<String, Long>> call() {
+				return edm.getAutoNumberCurrentValueList(name, propertyName).stream().map(value -> {
+					return new KeyValue<String, Long>(value.getKey(), value.getValue());
+				}).collect(Collectors.toList());
 			}
 		});
 	}
 
 	@Override
-	public void resetAutoNumberCounter(int tenantId, final String name, final String propertyName, final long startsWith) {
+	public void resetAutoNumberCounterList(int tenantId, final String name, final String propertyName, final List<KeyValue<String, Long>> values) {
 		AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId, new AuthUtil.Callable<Void>() {
 			@Override
 			public Void call() {
-				auditLogger.logMetadata(MetaDataAction.UPDATE, EntityDefinition.class.getName(), "name:" + name + " propertyName:" + propertyName + " autoNumber:" + startsWith);
-				edm.resetAutoNumberCounter(name, propertyName, startsWith);
+				values.forEach(value -> {
+					auditLogger.logMetadata(MetaDataAction.UPDATE, EntityDefinition.class.getName(), "name:" + name + " propertyName:" + propertyName + " subKey:" + value.getKey() + " autoNumber:" + value.getValue());
+					//開始値を指定するため、+1する
+					edm.resetAutoNumberCounter(name, propertyName, value.getKey(), value.getValue() + 1);
+				});
 				return null;
 			}
 		});

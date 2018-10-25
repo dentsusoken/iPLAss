@@ -24,6 +24,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.iplass.adminconsole.shared.base.dto.KeyValue;
 import org.iplass.adminconsole.shared.base.dto.i18n.I18nMetaDisplayInfo;
 import org.iplass.adminconsole.shared.metadata.dto.AdminDefinitionModifyResult;
 import org.iplass.adminconsole.shared.metadata.dto.MetaDataInfo;
@@ -210,9 +211,9 @@ public interface MetaDataServiceAsync {
 
 	void getEntityStoreSpaceList(int tenantId, AsyncCallback<List<String>> callback);
 
-	void getAutoNumberCurrentValue(int tenantId, String name, String propertyName, AsyncCallback<Long> callback);
+	void getAutoNumberCurrentValueList(int tenantId, String name, String propertyName, AsyncCallback<List<KeyValue<String, Long>>> callback);
 
-	void resetAutoNumberCounter(int tenantId, String name, String propertyName, long startsWith, AsyncCallback<Void> callback);
+	void resetAutoNumberCounterList(int tenantId, String name, String propertyName, List<KeyValue<String, Long>> values, AsyncCallback<Void> callback);
 
 	void getSortInfo(int tenantId, String orderBy, AsyncCallback<List<SortInfo>> callback);
 
