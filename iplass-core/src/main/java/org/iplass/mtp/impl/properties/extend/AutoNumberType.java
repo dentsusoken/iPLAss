@@ -310,13 +310,13 @@ public class AutoNumberType extends ComplexWrapperType {
 
 		public long currentValue(String subUnitKey) {
 			int tenantId = ExecuteContext.getCurrentContext().getClientTenantId();
-			String incrementKey = incrementUnitKey + (subUnitKey != null ? "." + subUnitKey.toString() : "");
+			String incrementKey = incrementUnitKey + (StringUtil.isNotEmpty(subUnitKey) ? "." + subUnitKey : "");
 			return counter.current(tenantId, incrementKey);
 		}
 
 		public void resetCounter(String subUnitKey, long startsWith) {
 			int tenantId = ExecuteContext.getCurrentContext().getClientTenantId();
-			String incrementKey = incrementUnitKey + (subUnitKey != null ? "." + subUnitKey.toString() : "");
+			String incrementKey = incrementUnitKey + (StringUtil.isNotEmpty(subUnitKey) ? "." + subUnitKey : "");
 			counter.resetCounter(tenantId, incrementKey, startsWith - 1);
 		}
 
