@@ -149,30 +149,6 @@ public class DefaultSectionWindow extends ViewEditWindow implements SectionWindo
 		setValueObject(section);
 	}
 
-//	/**
-//	 * コンストラクタ
-//	 * @param section
-//	 * @param editStartHandler
-//	 * @param propertyOperationHandler
-//	 */
-//	public DefaultSectionWindow(String defName, FieldReferenceType triggerType, EntityDefinition ed, DefaultSection section, MTPEventHandler editStartHandler,
-//			PropertyOperationHandler propertyOperationHandler) {
-//		this(defName, triggerType, section);
-//		this.editStartHandler = editStartHandler;
-//		this.propertyOperationHandler = propertyOperationHandler;
-//		this.ed = ed;
-//
-//		if (layout != null) {
-//			//SRB(Null Dereference)対応
-//			//this(final String defName, String title, int colNum)で生成されるのであり得ないが
-//			layout.setEditStartHandler(editStartHandler);
-//			layout.setPropertyOperationHandler(propertyOperationHandler);
-//			layout.setEntityDefinition(ed);
-//		}
-//
-//		restoreMember(section);
-//	}
-
 	public void setHandlers(EntityDefinition ed, MTPEventHandler editStartHandler, PropertyOperationHandler propertyOperationHandler) {
 		this.ed = ed;
 		this.editStartHandler = editStartHandler;
@@ -209,35 +185,11 @@ public class DefaultSectionWindow extends ViewEditWindow implements SectionWindo
 		//配下の要素を復元
 		for (Element element : section.getElements()) {
 			if (element instanceof Section) {
-				ViewEditWindow child = sectionController.createWindow(section, defName, getTriggerType(), ed);
+				ViewEditWindow child = sectionController.createWindow((Section)element, defName, getTriggerType(), ed);
 				if (child instanceof DefaultSectionWindow) {
 					((DefaultSectionWindow)child).setHandlers(ed, editStartHandler, propertyOperationHandler);
 				}
 				addMember(child);
-
-//				if (element instanceof DefaultSection) {
-//					DefaultSectionWindow child = new DefaultSectionWindow(defName, getTriggerType(), ed, (DefaultSection) element,
-//							editStartHandler, propertyOperationHandler);
-//					addMember(child);
-//				} else if (element instanceof ScriptingSection) {
-//					ScriptingSectionWindow child = new ScriptingSectionWindow(defName, getTriggerType(), (ScriptingSection) element);
-//					addMember(child);
-//				} else if (element instanceof TemplateSection) {
-//					TemplateSectionWindow child = new TemplateSectionWindow(defName, getTriggerType(), (TemplateSection) element);
-//					addMember(child);
-//				} else if (element instanceof VersionSection) {
-//					VersionSectionWindow child = new VersionSectionWindow(defName, getTriggerType(), (VersionSection) element);
-//					addMember(child);
-//				} else if (element instanceof AuditLogSection) {
-//					AuditLogSectionWindow child = new AuditLogSectionWindow(defName, getTriggerType(), (AuditLogSection) element);
-//					addMember(child);
-//				} else if (element instanceof ReferenceSection) {
-//					ReferenceSectionWindow child = new ReferenceSectionWindow(defName, getTriggerType(), (ReferenceSection) element);
-//					addMember(child);
-//				} else if (element instanceof MassReferenceSection) {
-//					MassReferenceSectionWindow child = new MassReferenceSectionWindow(defName, getTriggerType(), (MassReferenceSection) element);
-//					addMember(child);
-//				}
 			} else if (element instanceof PropertyItem) {
 				PropertyBaseWindow child = new PropertyBaseWindow(defName, getTriggerType(), (PropertyItem) element);
 				child.setHandler(propertyOperationHandler);
