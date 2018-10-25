@@ -1,19 +1,19 @@
 /*
  * Copyright (C) 2011 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
- * 
+ *
  * Unless you have purchased a commercial license,
  * the following license terms apply:
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
@@ -25,6 +25,8 @@ import java.io.StringWriter;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.codehaus.groovy.runtime.MethodClosure;
 import org.iplass.mtp.entity.Entity;
@@ -63,7 +65,7 @@ public class AutoNumberType extends ComplexWrapperType {
 
 	public static final String ACCEPT_SKIP_COUNTER_SERVICE_NAME = "AutoNumberTypeCounterAcceptSkip";
 	public static final String NO_SKIP_COUNTER_SERVICE_NAME = "AutoNumberTypeCounterNoSkip";
-	
+
 	private static StringType actualType = new StringType();
 
 	private static ComplexWrapperTypeLoadAdapter loadAdaper = new ComplexWrapperTypeLoadAdapter() {
@@ -186,7 +188,7 @@ public class AutoNumberType extends ComplexWrapperType {
 	public PropertyDefinitionType getEnumType() {
 		return PropertyDefinitionType.AUTONUMBER;
 	}
-	
+
 	@Override
 	public PropertyDefinitionType getDataStoreEnumType() {
 		return PropertyDefinitionType.STRING;
@@ -280,7 +282,7 @@ public class AutoNumberType extends ComplexWrapperType {
 	public String toString(Object value) {
 		return actualType.toString(value);
 	}
-	
+
 	@Override
 	public Object fromString(String strValue) {
 		return actualType.fromString(strValue);
@@ -292,7 +294,7 @@ public class AutoNumberType extends ComplexWrapperType {
 		private String incrementUnitKey;
 
 		public AutoNumberTypeRuntime(String entityDefId, String propDefId) {
-			
+
 			if (formatScript != null) {
 				ScriptEngine se = ExecuteContext.getCurrentContext().getTenantContext().getScriptEngine();
 				compiledFormatScript = GroovyTemplateCompiler.compile(
@@ -306,10 +308,32 @@ public class AutoNumberType extends ComplexWrapperType {
 			incrementUnitKey = createIncrementUnitKey(entityDefId, propDefId);
 		}
 
+		public long currentValue(String subUnitKey) {
+			int tenantId = ExecuteContext.getCurrentContext().getClientTenantId();
+			String incrementKey = incrementUnitKey + (StringUtil.isNotEmpty(subUnitKey) ? "." + subUnitKey : "");
+			return counter.current(tenantId, incrementKey);
+		}
+
+		public void resetCounter(String subUnitKey, long startsWith) {
+			int tenantId = ExecuteContext.getCurrentContext().getClientTenantId();
+			String incrementKey = incrementUnitKey + (StringUtil.isNotEmpty(subUnitKey) ? "." + subUnitKey : "");
+			counter.resetCounter(tenantId, incrementKey, startsWith - 1);
+		}
+
+		public Set<String> keySet() {
+			int tenantId = ExecuteContext.getCurrentContext().getClientTenantId();
+			return counter.keySet(tenantId, incrementUnitKey).stream().map(key->{
+				//incrementUnitKeyを除去
+				if (key.length() > incrementUnitKey.length()) {
+					return key.substring(incrementUnitKey.length() + 1);
+				}
+				return "";
+			}).collect(Collectors.toSet());
+		}
 
 		String newValue(int tenantId, Entity entity) {
 			if (compiledFormatScript == null) {
-				return increment(tenantId);
+				return increment(tenantId, null);
 			} else {
 				StringWriter sw = new StringWriter();
 				try {
@@ -321,18 +345,9 @@ public class AutoNumberType extends ComplexWrapperType {
 			}
 		}
 
-		public long currentValue() {
-			int tenantId = ExecuteContext.getCurrentContext().getClientTenantId();
-			return counter.current(tenantId, incrementUnitKey);
-		}
-
-		public void resetCounter(long startsWith) {
-			int tenantId = ExecuteContext.getCurrentContext().getClientTenantId();
-			counter.resetCounter(tenantId, incrementUnitKey, startsWith - 1);
-		}
-
-		String increment(final int tenantId) {
-			Long v = counter.increment(tenantId, incrementUnitKey, getStartsWith());
+		String increment(int tenantId, Object subUnitKey) {
+			String incrementKey = incrementUnitKey + (subUnitKey != null ? "." + subUnitKey.toString() : "");
+			Long v = counter.increment(tenantId, incrementKey, getStartsWith());
 			String vStr = Long.toString(v);
 			if (fixedNumberOfDigits >= 0) {
 				if (fixedNumberOfDigits >= vStr.length()) {
@@ -341,7 +356,6 @@ public class AutoNumberType extends ComplexWrapperType {
 			}
 			return vStr;
 		}
-
 
 		private class AutoNumberGroovyTemplateBinding extends GroovyTemplateBinding {
 
@@ -371,8 +385,8 @@ public class AutoNumberType extends ComplexWrapperType {
 			}
 
 			@SuppressWarnings("unused")
-			public String nextVal() {
-				return increment(tenantId);
+			public String nextVal(Object key) {
+				return increment(tenantId, key);
 			}
 		}
 	}
