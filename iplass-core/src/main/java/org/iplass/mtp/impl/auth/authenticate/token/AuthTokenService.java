@@ -24,27 +24,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.iplass.mtp.impl.util.random.SecureRandomGenerator;
-import org.iplass.mtp.impl.util.random.SecureRandomService;
 import org.iplass.mtp.spi.Config;
 import org.iplass.mtp.spi.Service;
-import org.iplass.mtp.spi.ServiceRegistry;
 
 public class AuthTokenService implements Service {
 	public static final String DEFAULT_STORE_NAME = "default";
 
-	private static class RandomHolder {
-		static final SecureRandomGenerator random = ServiceRegistry.getRegistry().getService(SecureRandomService.class).createGenerator("authTokenGenerator");
-	}
-	
 	private Map<String, AuthTokenStore> storeMap;
 	private AuthTokenStore defaultStore;
 	
 	private Map<String, AuthTokenHandler> handlerMap;
-	
-	public String newTokenString() {
-		return RandomHolder.random.secureRandomToken();
-	}
 	
 	public Collection<AuthTokenStore> getStores() {
 		return storeMap.values();

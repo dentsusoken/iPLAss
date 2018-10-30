@@ -20,10 +20,12 @@
 
 package org.iplass.mtp.impl.auth.authenticate.token;
 
+import java.io.Serializable;
 import java.sql.Timestamp;
 
-public class AuthToken {
-	
+public class AuthToken implements Serializable {
+	private static final long serialVersionUID = -1344782486916344042L;
+
 	public static final String SEPARATOR = ".";
 	
 	private int tenantId;
@@ -35,7 +37,7 @@ public class AuthToken {
 	private Timestamp startDate;
 	
 	private String type;
-	private Object details;
+	private Serializable details;
 	
 	public AuthToken() {
 	}
@@ -46,7 +48,7 @@ public class AuthToken {
 		}
 	}
 	
-	public AuthToken(int tenantId, String type, String uniqueKey, String series, String token, String policyName, Timestamp startDate, Object details) {
+	public AuthToken(int tenantId, String type, String uniqueKey, String series, String token, String policyName, Timestamp startDate, Serializable details) {
 		this.tenantId = tenantId;
 		this.type = type;
 		this.uniqueKey = uniqueKey;
@@ -86,11 +88,11 @@ public class AuthToken {
 		this.type = type;
 	}
 
-	public Object getDetails() {
+	public Serializable getDetails() {
 		return details;
 	}
 
-	public void setDetails(Object details) {
+	public void setDetails(Serializable details) {
 		this.details = details;
 	}
 	public int getTenantId() {

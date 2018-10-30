@@ -17,28 +17,36 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
-package org.iplass.mtp.impl.auth.authenticate.token.sql;
+package org.iplass.mtp.impl.auth.authenticate.token;
 
-import java.io.Serializable;
+import java.security.NoSuchAlgorithmException;
 
-public class DetailWrapper implements Serializable {
-	private static final long serialVersionUID = 2926799761837894728L;
+import org.iplass.mtp.impl.util.HashUtil;
 
-	private Serializable details;
+public class HashSetting {
+
+	private String version;
+	private String hashAlgorithm;
 	
-	public DetailWrapper() {
+	public String getVersion() {
+		return version;
 	}
-
-	public DetailWrapper(Serializable details) {
-		this.details = details;
+	public void setVersion(String version) {
+		this.version = version;
 	}
-
-	public Serializable getDetails() {
-		return details;
+	public String getHashAlgorithm() {
+		return hashAlgorithm;
 	}
-
-	public void setDetails(Serializable details) {
-		this.details = details;
+	public void setHashAlgorithm(String hashAlgorithm) {
+		this.hashAlgorithm = hashAlgorithm;
 	}
-
+	
+	protected String hash(String token) {
+		try {
+			return HashUtil.digest(token, hashAlgorithm);
+		} catch (NoSuchAlgorithmException e) {
+			throw new RuntimeException(e);
+		}
+	}
+	
 }

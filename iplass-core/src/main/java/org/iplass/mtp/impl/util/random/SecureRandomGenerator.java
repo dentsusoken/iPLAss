@@ -23,16 +23,20 @@ import java.math.BigInteger;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 import java.security.SecureRandom;
+import java.util.Base64;
+import java.util.Base64.Encoder;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import org.iplass.mtp.spi.ServiceConfigrationException;
 
 public class SecureRandomGenerator {
+	private static Encoder base64urlsafewop = Base64.getUrlEncoder().withoutPadding();
 	
 	private final Queue<SecureRandom> randoms = new ConcurrentLinkedQueue<SecureRandom>();
 	
 	private final int numBitsOfSecureRandomToken;
+	/** 2-36,64 */
 	private final int radixOfSecureRandomToken;
 	private final boolean useStrongSecureRandom;
 	private final String algorithm;
@@ -92,7 +96,12 @@ public class SecureRandomGenerator {
         }
 		BigInteger randInt = new BigInteger(numBitsOfSecureRandomToken, rand);
 		randoms.add(rand);
-		return randInt.toString(radixOfSecureRandomToken);
+		if (radixOfSecureRandomToken == 64) {
+			byte[] b = randInt.toByteArray();
+			return base64urlsafewop.encodeToString(b);
+		} else {
+			return randInt.toString(radixOfSecureRandomToken);
+		}
 	}
 	
 	public int randomInt(int bound) {

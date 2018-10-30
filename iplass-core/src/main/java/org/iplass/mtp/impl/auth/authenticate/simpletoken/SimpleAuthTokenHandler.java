@@ -64,13 +64,13 @@ public class SimpleAuthTokenHandler extends AuthTokenHandler {
 	public AuthToken newAuthToken(String userUniqueId, String policyName, AuthTokenInfo tokenInfo) {
 		SimpleAuthTokenInfo sat = (SimpleAuthTokenInfo) tokenInfo;
 		int tenantId = ExecuteContext.getCurrentContext().getClientTenantId();
-		Map<String, Object> details = null;
+		HashMap<String, Object> details = null;
 		if (sat.getApplication() != null) {
 			details = new HashMap<>();
 			details.put("application", sat.getApplication());
 		}
 		
-		return new AuthToken(tenantId, getType(), userUniqueId, getService().newTokenString(), getService().newTokenString(), policyName, new Timestamp(System.currentTimeMillis()), details);
+		return new AuthToken(tenantId, getType(), userUniqueId, newSeriesString(), newTokenString(), policyName, new Timestamp(System.currentTimeMillis()), details);
 	}
 
 	@Override

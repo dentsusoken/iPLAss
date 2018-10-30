@@ -190,7 +190,7 @@ public class RememberMeTokenAuthenticationProvider implements AuthenticationProv
 					}
 					throw new LoginFailedException(resourceString("impl.auth.authenticate.rememberme.failed"));
 				}
-				if (!rmtoken.getToken().equals(crToken.getToken())) {
+				if (!tokenHandler.checkTokenValid(crToken.getToken(), rmtoken)) {
 					//There is a possibility that token was stolen.
 					if (deleteTokenOnFailure) {
 						tokenHandler.authTokenStore().delete(tenantId, authTokenType, rmtoken.getUniqueKey());
@@ -546,6 +546,6 @@ public class RememberMeTokenAuthenticationProvider implements AuthenticationProv
 		} else {
 			startDate = previousToken.getStartDate();
 		}
-		return new AuthToken(previousToken.getTenantId(), previousToken.getType(), previousToken.getUniqueKey(), previousToken.getSeries(), tokenService.newTokenString(), previousToken.getPolicyName(), startDate, previousToken.getDetails());
+		return new AuthToken(previousToken.getTenantId(), previousToken.getType(), previousToken.getUniqueKey(), previousToken.getSeries(), tokenHandler.newTokenString(), previousToken.getPolicyName(), startDate, previousToken.getDetails());
 	}
 }

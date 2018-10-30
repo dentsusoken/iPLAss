@@ -230,6 +230,12 @@ public class ServiceRegistry {
 				return service;
 			}
 
+			long start = 0;
+			if (logger.isDebugEnabled()) {
+				logger.debug("Service: " + serviceName + " create");
+				start = System.currentTimeMillis();
+			}
+			
 			if (dependStack.contains(serviceName)) {
 				throw new ServiceConfigrationException("depend loop occured." + dependStack + " " + serviceName);
 			}
@@ -252,6 +258,7 @@ public class ServiceRegistry {
 				}
 			}
 			try {
+				
 				Class<?> interfaceType = Class.forName(sc.getInterfaceName());
 				if (!Service.class.isAssignableFrom(interfaceType)) {
 					logger.error("Can not regist Service." + sc.getInterfaceName() + "must implements Service interface.");
@@ -280,7 +287,7 @@ public class ServiceRegistry {
 				dependStack.remove(serviceName);
 
 				if (logger.isDebugEnabled()) {
-					logger.debug("Service created: " + serviceName);
+					logger.debug("Service: " + serviceName + " created in " + (System.currentTimeMillis() - start) + "ms.");
 				}
 
 				return se;

@@ -131,7 +131,7 @@ public class SimpleAuthTokenAuthenticationProvider extends AuthenticationProvide
 				if (stToken == null) {
 					throw new LoginFailedException(resourceString("impl.auth.authenticate.rememberme.failed"));
 				}
-				if (!stToken.getToken().equals(crToken.getToken())) {
+				if (!tokenHandler.checkTokenValid(crToken.getToken(), stToken)) {
 					throw new LoginFailedException(resourceString("impl.auth.authenticate.rememberme.failed"));
 				}
 				
@@ -140,7 +140,7 @@ public class SimpleAuthTokenAuthenticationProvider extends AuthenticationProvide
 					throw new LoginFailedException(resourceString("impl.auth.authenticate.rememberme.failed"));
 				}
 				
-				return new SimpleAuthTokenAccountHandle(stToken.getUniqueKey(), stToken.getSeries(), stToken.getToken(), stToken.getPolicyName());
+				return new SimpleAuthTokenAccountHandle(stToken.getUniqueKey(), stToken.getSeries(), crToken.getToken(), stToken.getPolicyName());
 			}
 		}
 		
