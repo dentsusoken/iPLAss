@@ -1,19 +1,19 @@
 /*
  * Copyright (C) 2011 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
- * 
+ *
  * Unless you have purchased a commercial license,
  * the following license terms apply:
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
@@ -91,6 +91,16 @@ public class Button extends Element {
 			inputType=InputType.LANGUAGE
 	)
 	private List<LocalizedStringDefinition> localizedDisplayLabelList;
+
+	/** プライマリー */
+	@MetaFieldInfo(
+			displayName="プライマリー",
+			displayNameKey="generic_element_Button_primaryDisplaNameKey",
+			inputType=InputType.CHECKBOX,
+			description="設定するとボタンが強調表示されます。",
+			descriptionKey="generic_element_Button_primaryDescriptionKey"
+	)
+	private boolean primary = true;
 
 	/** クラス名 */
 	@MetaFieldInfo(
@@ -200,6 +210,22 @@ public class Button extends Element {
 	 */
 	public void setDisplayLabel(String displayLabel) {
 		this.displayLabel = displayLabel;
+	}
+
+	/**
+	 * プライマリーを取得します。
+	 * @return プライマリー
+	 */
+	public boolean isPrimary() {
+		return primary;
+	}
+
+	/**
+	 * プライマリーを設定します。
+	 * @param primary プライマリー
+	 */
+	public void setPrimary(boolean primary) {
+		this.primary = primary;
 	}
 
 	/**

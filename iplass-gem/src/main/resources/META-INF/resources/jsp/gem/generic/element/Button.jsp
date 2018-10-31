@@ -88,13 +88,13 @@
 <td class="<c:out value="<%=cellStyle%>"/>">
 <%
 	if (isDispBitton) {
-		String cls = "gr-btn";
+		String cssClass = button.isPrimary() ? "gr-btn" : "gr-btn-02";
 		if (StringUtil.isNotBlank(button.getStyle())) {
-			cls += " " + button.getStyle();
+			cssClass += " " + button.getStyle();
 		}
 %>
 <%-- XSS対応-メタの設定のため対応なし(onclick) --%>
-<input type="button" value="<c:out value="<%=label %>"/>" class="<c:out value="<%=cls %>"/>" style="<c:out value="<%=customStyle%>"/>" onclick="<%=onclick %>" />
+<input type="button" value="<c:out value="<%=label %>"/>" class="<c:out value="<%=cssClass %>"/>" style="<c:out value="<%=customStyle%>"/>" onclick="<%=onclick %>" />
 <%
 	}
 %>
