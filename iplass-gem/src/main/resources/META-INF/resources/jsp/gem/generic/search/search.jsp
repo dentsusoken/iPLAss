@@ -159,7 +159,7 @@ function submitCsvupload(action) {
 	if (view.getButtons().size() > 0) {
 		for (Button button : view.getButtons()) {
 			if (button.isDispFlag()) {
-				String cssClass = "gr-btn gr-size-02 mb10";
+				String cssClass = (button.isPrimary() ? "gr-btn" : "gr-btn-02") + " gr-size-02 mb10";
 				if (StringUtil.isNotBlank(button.getStyle())) {
 					cssClass = button.getStyle();
 				}

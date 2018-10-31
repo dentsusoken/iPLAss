@@ -1,19 +1,19 @@
 /*
  * Copyright (C) 2011 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
- * 
+ *
  * Unless you have purchased a commercial license,
  * the following license terms apply:
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
@@ -74,6 +74,9 @@ public class MetaButton extends MetaElement {
 
 	/** 多言語設定情報 */
 	private List<MetaLocalizedString> localizedDisplayLabelList = new ArrayList<MetaLocalizedString>();
+
+	/** プライマリー */
+	private boolean primary = true;
 
 	/** クラス名 */
 	private String style;
@@ -139,6 +142,22 @@ public class MetaButton extends MetaElement {
 	 */
 	public void setDisplayLabel(String displayLabel) {
 		this.displayLabel = displayLabel;
+	}
+
+	/**
+	 * プライマリーを取得します。
+	 * @return プライマリー
+	 */
+	public boolean isPrimary() {
+		return primary;
+	}
+
+	/**
+	 * プライマリーを設定します。
+	 * @param primary プライマリー
+	 */
+	public void setPrimary(boolean primary) {
+		this.primary = primary;
 	}
 
 	/**
@@ -285,6 +304,7 @@ public class MetaButton extends MetaElement {
 		this.displayType = button.getDisplayType();
 		this.title = button.getTitle();
 		this.displayLabel = button.getDisplayLabel();
+		this.primary = button.isPrimary();
 		this.style = button.getStyle();
 		this.inputCustomStyle = button.getInputCustomStyle();
 		this.onclickEvent = button.getOnclickEvent();
@@ -306,6 +326,7 @@ public class MetaButton extends MetaElement {
 		button.setDisplayType(this.displayType);
 		button.setTitle(this.title);
 		button.setDisplayLabel(this.displayLabel);
+		button.setPrimary(this.primary);
 		button.setStyle(this.style);
 		button.setOnclickEvent(this.onclickEvent);
 		button.setInputCustomStyle(this.inputCustomStyle);

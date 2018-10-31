@@ -97,7 +97,7 @@
 				isDisplayCustomType = evm.isDisplayButton(data.getEntityDefinition().getName(), button.getCustomDisplayTypeScriptKey(), OutputType.EDIT, data.getEntity());
 			}
 			if (button.isDispFlag() && (button.getDisplayType() == null || button.getDisplayType() == DisplayType.DETAIL || button.getDisplayType() == DisplayType.BOTH || isDisplayCustomType) && ViewUtil.dispElement(button)) {
-				String cssClass = "gr-btn";
+				String cssClass = button.isPrimary() ? "gr-btn" : "gr-btn-02";
 				if (StringUtil.isNotBlank(button.getStyle())) {
 					cssClass = button.getStyle();
 				}
