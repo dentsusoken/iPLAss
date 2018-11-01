@@ -697,6 +697,12 @@ public class ConfigImpl implements Config {
 						((ServiceInitListener<Service>) lp).inited(service, this);
 					}
 				}
+			} else if (i.instance instanceof Map<?,?>) {
+				for (Object mp: ((Map<?,?>) i.instance).values()) {
+					if (mp instanceof ServiceInitListener) {
+						((ServiceInitListener<Service>) mp).inited(service, this);
+					}
+				}
 			}
 		}
 	}
@@ -709,6 +715,12 @@ public class ConfigImpl implements Config {
 				for (Object lp: (List<?>) i.instance) {
 					if (lp instanceof ServiceInitListener) {
 						((ServiceInitListener<?>) lp).destroyed();
+					}
+				}
+			} else if (i.instance instanceof Map<?,?>) {
+				for (Object mp: ((Map<?,?>) i.instance).values()) {
+					if (mp instanceof ServiceInitListener) {
+						((ServiceInitListener<?>) mp).destroyed();
 					}
 				}
 			}
