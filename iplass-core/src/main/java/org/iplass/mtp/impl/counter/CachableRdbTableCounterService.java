@@ -57,7 +57,6 @@ public class CachableRdbTableCounterService implements CounterService {
 
 	private RdbTableCounterService rdbCounter;
 
-	//FIXME クラスタへリセット時の通知。SyncServerな、LRUなキャッシュを利用。
 	private CacheStore cache;
 
 	@Override
@@ -151,7 +150,6 @@ public class CachableRdbTableCounterService implements CounterService {
 			return tenantId;
 		}
 
-		@SuppressWarnings("unused")
 		public String getTypeName() {
 			return typeName;
 		}
@@ -362,7 +360,7 @@ public class CachableRdbTableCounterService implements CounterService {
 		public String toString(Object cacheKey) {
 			CounterKey key = (CounterKey) cacheKey;
 			StringBuilder sb = new StringBuilder();
-			sb.append(key.getTenantId()).append(':').append(key.getIncrementUnitKey());
+			sb.append(key.getTenantId()).append(':').append(key.getTypeName()).append(':').append(key.getIncrementUnitKey());
 			return sb.toString();
 		}
 
