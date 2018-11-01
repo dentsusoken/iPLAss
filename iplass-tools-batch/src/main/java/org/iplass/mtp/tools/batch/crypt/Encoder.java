@@ -27,7 +27,8 @@ public class Encoder {
 			Path path = Paths.get(fileName);
 			if (Files.exists(path)) {
 				System.out.println("load CryptConfigFile from file path:" + fileName);
-				try (InputStreamReader is = new InputStreamReader(new FileInputStream(path.toFile()), "utf-8")) {
+				try (FileInputStream fis = new FileInputStream(path.toFile());
+						InputStreamReader is = new InputStreamReader(fis, "utf-8")) {
 					prop.load(is);
 				}
 			} else {
