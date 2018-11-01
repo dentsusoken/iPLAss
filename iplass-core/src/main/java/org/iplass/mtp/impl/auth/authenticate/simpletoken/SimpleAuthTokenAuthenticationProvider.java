@@ -114,7 +114,7 @@ public class SimpleAuthTokenAuthenticationProvider extends AuthenticationProvide
 			int tenantId = ExecuteContext.getCurrentContext().getClientTenantId();
 			if (cre.getToken() != null) {
 				AuthToken crToken = new AuthToken();
-				crToken.setTokenEncoded(cre.getToken());
+				crToken.decodeToken(cre.getToken());
 				if (!authTokenType.equals(crToken.getType())) {
 					//another authProvider's token...
 					if (logger.isDebugEnabled()) {
@@ -140,7 +140,7 @@ public class SimpleAuthTokenAuthenticationProvider extends AuthenticationProvide
 					throw new LoginFailedException(resourceString("impl.auth.authenticate.rememberme.failed"));
 				}
 				
-				return new SimpleAuthTokenAccountHandle(stToken.getUniqueKey(), stToken.getSeries(), crToken.getToken(), stToken.getPolicyName());
+				return new SimpleAuthTokenAccountHandle(stToken.getOwnerId(), stToken.getSeries(), stToken.getPolicyName());
 			}
 		}
 		

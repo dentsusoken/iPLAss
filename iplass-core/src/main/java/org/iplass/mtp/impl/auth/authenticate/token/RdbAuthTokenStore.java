@@ -161,7 +161,7 @@ public class RdbAuthTokenStore implements AuthTokenStore {
 	}
 
 	@Override
-	public List<AuthToken> getByUser(int tenantId, String userUniqueKey) {
+	public List<AuthToken> getByOwner(int tenantId, String userUniqueKey) {
 		SqlExecuter<List<AuthToken>> executer = new SqlExecuter<List<AuthToken>>() {
 			@Override
 			public List<AuthToken> logic() throws SQLException {

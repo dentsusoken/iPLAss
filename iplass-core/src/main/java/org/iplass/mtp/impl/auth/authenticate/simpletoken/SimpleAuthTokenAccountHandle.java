@@ -31,19 +31,20 @@ import org.iplass.mtp.impl.auth.authenticate.AccountHandle;
 public class SimpleAuthTokenAccountHandle implements AccountHandle {
 	private static final long serialVersionUID = 731216514006775874L;
 
+	public static final String AUTHED_BY_SIMPLE_AUTH_TOKEN ="authedBySimpleAuthToken";
+	public static final String SIMPLE_AUTH_TOKEN_SERIES ="simpleAuthTokenSeries";
+	
 	private String unmodifiableUniqueKey;
-	private String series;
-//	private String token;
 	private Map<String, Object> attributeMap;
 	private int authenticationProviderIndex;
 
 	public SimpleAuthTokenAccountHandle() {
 	}
 	
-	public SimpleAuthTokenAccountHandle(String unmodifiableUniqueKey, String series, String token, String policyName) {
+	public SimpleAuthTokenAccountHandle(String unmodifiableUniqueKey, String series, String policyName) {
 		this.unmodifiableUniqueKey = unmodifiableUniqueKey;
-		this.series = series;
-//		this.token = token;
+		getAttributeMap().put(SimpleAuthTokenAccountHandle.AUTHED_BY_SIMPLE_AUTH_TOKEN, Boolean.TRUE);
+		getAttributeMap().put(SimpleAuthTokenAccountHandle.SIMPLE_AUTH_TOKEN_SERIES, series);
 		getAttributeMap().put(User.ACCOUNT_POLICY, policyName);
 	}
 

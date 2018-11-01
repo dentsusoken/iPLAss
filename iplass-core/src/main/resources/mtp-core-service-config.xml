@@ -736,6 +736,18 @@
 			</property>
 		</property>
 
+		<!-- AuthTokenStore キャッシュ -->
+		<property name="cachableAuthTokenStore" class="org.iplass.mtp.impl.cache.store.builtin.SyncServerCacheStoreFactory">
+			<property name="namespacePattern" value="mtp[.]auth[.]cachableAuthTokenStore/.*" />
+			<property name="cacheKeyResolver" class="org.iplass.mtp.impl.auth.authenticate.token.CachableAuthTokenStore$AuthTokenKeyResolver" />
+			<property name="store" class="org.iplass.mtp.impl.cache.store.builtin.SimpleCacheStoreFactory">
+				<!-- 30分間有効 -->
+				<property name="timeToLive" value="1800000" />
+				<!-- 最大キャッシュ数1万 -->
+				<property name="size" value="10000" />
+			</property>
+		</property>
+
 		<!-- 上記namespace以外の場合のデフォルトキャッシュ -->
 		<property name="defaultFactory" class="org.iplass.mtp.impl.cache.store.builtin.SimpleCacheStoreFactory">
 			<property name="namespacePattern" value=".*" />

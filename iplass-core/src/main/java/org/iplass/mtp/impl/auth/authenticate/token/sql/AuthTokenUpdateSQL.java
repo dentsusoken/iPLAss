@@ -43,7 +43,7 @@ public class AuthTokenUpdateSQL extends UpdateSqlHandler {
 		// T_TYPE
 		ps.setString(2, token.getType());
 		// U_KEY
-		ps.setString(3, token.getUniqueKey());
+		ps.setString(3, token.getOwnerId());
 		// SERIES
 		ps.setString(4, token.getSeries());
 		// TOKEN

@@ -81,7 +81,7 @@ public class RememberMeTokenHandler extends AuthTokenHandler {
 
 	@Override
 	public Credential toCredential(AuthToken newToken) {
-		return new RememberMeTokenCredential(newToken.getTokenEncoded());
+		return new RememberMeTokenCredential(newToken.encodeToken());
 	}
 
 }

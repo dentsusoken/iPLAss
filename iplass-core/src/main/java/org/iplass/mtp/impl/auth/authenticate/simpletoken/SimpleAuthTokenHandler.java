@@ -75,7 +75,7 @@ public class SimpleAuthTokenHandler extends AuthTokenHandler {
 
 	@Override
 	public Credential toCredential(AuthToken newToken) {
-		return new SimpleAuthTokenCredential(newToken.getTokenEncoded());
+		return new SimpleAuthTokenCredential(newToken.encodeToken());
 	}
 
 }

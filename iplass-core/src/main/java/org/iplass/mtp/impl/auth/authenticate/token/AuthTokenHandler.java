@@ -196,15 +196,15 @@ public abstract class AuthTokenHandler implements ServiceInitListener<AuthTokenS
 		}
 
 		@Override
-		public List<AuthToken> getByUser(int tenantId, String userUniqueKey) {
-			return store.getByUser(tenantId, userUniqueKey);
+		public List<AuthToken> getByOwner(int tenantId, String userUniqueKey) {
+			return store.getByOwner(tenantId, userUniqueKey);
 		}
 		
 		private AuthToken hashToken(AuthToken token) {
 			HashSetting hs = hashSettings.get(hashSettings.size() - 1);
 			String hashedTokenString = "$" + hs.getVersion() + "$" + hs.hash(token.getToken());
 			
-			return new AuthToken(token.getTenantId(), token.getType(), token.getUniqueKey(), token.getSeries(),
+			return new AuthToken(token.getTenantId(), token.getType(), token.getOwnerId(), token.getSeries(),
 					hashedTokenString, token.getPolicyName(), token.getStartDate(), token.getDetails());
 		}
 

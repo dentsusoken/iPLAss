@@ -50,7 +50,7 @@ public class AuthTokenInfoListImpl implements AuthTokenInfoList {
 		
 		List<AuthTokenInfo> atiList = new ArrayList<>();
 		for (AuthTokenStore s: tokenService.getStores()) {
-			List<AuthToken> sList = s.getByUser(tenantId, userUniqueKey);
+			List<AuthToken> sList = s.getByOwner(tenantId, userUniqueKey);
 			if (sList != null) {
 				for (AuthToken at: sList) {
 					AuthTokenHandler handler = tokenService.getHandler(at.getType());

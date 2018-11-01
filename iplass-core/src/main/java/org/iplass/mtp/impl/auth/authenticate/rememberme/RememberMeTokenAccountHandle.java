@@ -32,21 +32,19 @@ public class RememberMeTokenAccountHandle implements AccountHandle {
 	private static final long serialVersionUID = 8676835071856056838L;
 	
 	public static final String AUTHED_BY_REMEMBER_ME_TOKEN ="authedByRememberMeToken";
+	public static final String REMEMBER_ME_TOKEN_SERIES ="rememberMeTokenSeries";
 	
 	private String unmodifiableUniqueKey;
-	private String series;
-//	private String onetimeToken;
 	private Map<String, Object> attributeMap;
 	private int authenticationProviderIndex;
 
 	public RememberMeTokenAccountHandle() {
 	}
 	
-	public RememberMeTokenAccountHandle(String unmodifiableUniqueKey, String series, String onetimeToken, String policyName) {
+	public RememberMeTokenAccountHandle(String unmodifiableUniqueKey, String series, String policyName) {
 		this.unmodifiableUniqueKey = unmodifiableUniqueKey;
-		this.series = series;
-//		this.onetimeToken = onetimeToken;
 		getAttributeMap().put(RememberMeTokenAccountHandle.AUTHED_BY_REMEMBER_ME_TOKEN, Boolean.TRUE);
+		getAttributeMap().put(RememberMeTokenAccountHandle.REMEMBER_ME_TOKEN_SERIES, series);
 		getAttributeMap().put(User.ACCOUNT_POLICY, policyName);
 	}
 

@@ -170,7 +170,7 @@ public class RememberMeTokenAuthenticationProvider implements AuthenticationProv
 			int tenantId = ExecuteContext.getCurrentContext().getClientTenantId();
 			if (rmtc.getToken() != null) {
 				AuthToken crToken = new AuthToken();
-				crToken.setTokenEncoded(rmtc.getToken());
+				crToken.decodeToken(rmtc.getToken());
 				if (!authTokenType.equals(crToken.getType())) {
 					//another authProvider's token...
 					return null;
@@ -193,7 +193,7 @@ public class RememberMeTokenAuthenticationProvider implements AuthenticationProv
 				if (!tokenHandler.checkTokenValid(crToken.getToken(), rmtoken)) {
 					//There is a possibility that token was stolen.
 					if (deleteTokenOnFailure) {
-						tokenHandler.authTokenStore().delete(tenantId, authTokenType, rmtoken.getUniqueKey());
+						tokenHandler.authTokenStore().delete(tenantId, authTokenType, rmtoken.getOwnerId());
 						clientStore.clearToken();
 					}
 					throw new RememberMeTokenStolenException(resourceString("impl.auth.authenticate.rememberme.tokenStolen"));
@@ -202,7 +202,7 @@ public class RememberMeTokenAuthenticationProvider implements AuthenticationProv
 				MetaRememberMePolicy pol = rememberMePolicy(rmtoken.getPolicyName());
 				if (pol == null) {
 					if (deleteTokenOnFailure) {
-						tokenHandler.authTokenStore().delete(tenantId, authTokenType, rmtoken.getUniqueKey());
+						tokenHandler.authTokenStore().delete(tenantId, authTokenType, rmtoken.getOwnerId());
 						clientStore.clearToken();
 					}
 //					return null;
@@ -224,10 +224,10 @@ public class RememberMeTokenAuthenticationProvider implements AuthenticationProv
 				Transaction.requiresNew(t -> {
 					tokenHandler.authTokenStore().update(newToken, rmtoken);
 					t.afterCommit(() -> {
-						clientStore.setToken(newToken.getTokenEncoded(), newMaxAgeSeconds);
+						clientStore.setToken(newToken.encodeToken(), newMaxAgeSeconds);
 					});
 				});
-				account = new RememberMeTokenAccountHandle(newToken.getUniqueKey(), newToken.getSeries(), newToken.getToken(), newToken.getPolicyName());
+				account = new RememberMeTokenAccountHandle(newToken.getOwnerId(), newToken.getSeries(), newToken.getPolicyName());
 			} else {
 				throw new IllegalArgumentException("specify token");
 			}
@@ -272,7 +272,7 @@ public class RememberMeTokenAuthenticationProvider implements AuthenticationProv
 					AuthToken newToken = tokenHandler.newAuthToken(account.getUnmodifiableUniqueKey(), policyName, null);
 					tokenHandler.authTokenStore().create(newToken);
 					t.afterCommit(() -> {
-						clientStore.setToken(newToken.getTokenEncoded(), maxAgeSeconds(newToken, rememberMePolicy.getLifetimeMinutes()));
+						clientStore.setToken(newToken.encodeToken(), maxAgeSeconds(newToken, rememberMePolicy.getLifetimeMinutes()));
 					});
 				});
 
@@ -309,16 +309,10 @@ public class RememberMeTokenAuthenticationProvider implements AuthenticationProv
 
 	@Override
 	public void logout(final AccountHandle user) {
-
-		int pIndex = user.getAuthenticationProviderIndex();
-		String pName = service.getAuthenticationProviders()[pIndex].getProviderName();
-		if (getProviderName().equals(pName)) {
-			Transaction.requiresNew(t -> {
-				clientStore.clearToken();
-				tokenHandler.authTokenStore().delete(ExecuteContext.getCurrentContext().getClientTenantId(), authTokenType, user.getUnmodifiableUniqueKey());
-			});
-		}
-
+		Transaction.requiresNew(t -> {
+			clientStore.clearToken();
+			tokenHandler.authTokenStore().delete(ExecuteContext.getCurrentContext().getClientTenantId(), authTokenType, user.getUnmodifiableUniqueKey());
+		});
 	}
 
 	@Override
@@ -527,7 +521,7 @@ public class RememberMeTokenAuthenticationProvider implements AuthenticationProv
 					&& t.getTenantConfig(TenantAuthInfo.class).isUseRememberMe()) {
 				AuthToken token = new AuthToken(clientStore.getToken());
 				if (authTokenType.equals(token.getType()) && token.getSeries() != null) {
-					return new AutoLoginInstruction(new RememberMeTokenCredential(token.getTokenEncoded()));
+					return new AutoLoginInstruction(new RememberMeTokenCredential(token.encodeToken()));
 				}
 			}
 		}
@@ -546,6 +540,6 @@ public class RememberMeTokenAuthenticationProvider implements AuthenticationProv
 		} else {
 			startDate = previousToken.getStartDate();
 		}
-		return new AuthToken(previousToken.getTenantId(), previousToken.getType(), previousToken.getUniqueKey(), previousToken.getSeries(), tokenHandler.newTokenString(), previousToken.getPolicyName(), startDate, previousToken.getDetails());
+		return new AuthToken(previousToken.getTenantId(), previousToken.getType(), previousToken.getOwnerId(), previousToken.getSeries(), tokenHandler.newTokenString(), previousToken.getPolicyName(), startDate, previousToken.getDetails());
 	}
 }
