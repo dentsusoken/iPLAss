@@ -202,25 +202,25 @@
 		<!-- スキン定義 -->
 		<property name="skins" class="org.iplass.gem.Skin">
 			<property name="skinName" value="flat" />
-			<property name="displayName" value="フラット" />
+			<property name="displayName" value="Flat" />
 			<property name="pageSkinName" value="flat" />
 			<property name="menuSkinName" value="sub-popup" />
 		</property>
 		<property name="skins" class="org.iplass.gem.Skin">
 			<property name="skinName" value="vertical" />
-			<property name="displayName" value="垂直メニュー" />
+			<property name="displayName" value="Vertical" />
 			<property name="pageSkinName" value="vertical" />
 			<property name="menuSkinName" value="sub-popup" />
 		</property>
 		<property name="skins" class="org.iplass.gem.Skin">
 			<property name="skinName" value="horizontal" />
-			<property name="displayName" value="水平メニュー" />
+			<property name="displayName" value="Horizontal" />
 			<property name="pageSkinName" value="horizontal" />
 			<property name="menuSkinName" value="sub-popup" />
 		</property>
 		<property name="skins" class="org.iplass.gem.Skin">
 			<property name="skinName" value="horizontal_droplist" />
-			<property name="displayName" value="水平メニュー(ドロップリストメニュー)" />
+			<property name="displayName" value="Horizontal (Menu Dropdown)" />
 			<property name="pageSkinName" value="horizontal" />
 			<property name="menuSkinName" value="sub-droplist" />
 		</property>
@@ -228,35 +228,35 @@
 		<!-- テーマ定義 -->
 		<property name="themes" class="org.iplass.gem.Theme">
 			<property name="themeName" value="black" />
-			<property name="displayName" value="黒" />
+			<property name="displayName" value="Black" />
 		</property>
 		<property name="themes" class="org.iplass.gem.Theme">
 			<property name="themeName" value="red" />
-			<property name="displayName" value="赤" />
+			<property name="displayName" value="Red" />
 		</property>
 		<property name="themes" class="org.iplass.gem.Theme">
 			<property name="themeName" value="green" />
-			<property name="displayName" value="緑" />
+			<property name="displayName" value="Green" />
 		</property>
 		<property name="themes" class="org.iplass.gem.Theme">
 			<property name="themeName" value="blue" />
-			<property name="displayName" value="青" />
+			<property name="displayName" value="Blue" />
 		</property>
 		<property name="themes" class="org.iplass.gem.Theme">
 			<property name="themeName" value="lightred" />
-			<property name="displayName" value="明赤" />
+			<property name="displayName" value="Light Red" />
 		</property>
 		<property name="themes" class="org.iplass.gem.Theme">
 			<property name="themeName" value="lightgreen" />
-			<property name="displayName" value="明緑" />
+			<property name="displayName" value="Light Green" />
 		</property>
 		<property name="themes" class="org.iplass.gem.Theme">
 			<property name="themeName" value="lightblue" />
-			<property name="displayName" value="明青" />
+			<property name="displayName" value="Light Blue" />
 		</property>
 		<property name="themes" class="org.iplass.gem.Theme">
 			<property name="themeName" value="orange" />
-			<property name="displayName" value="橙" />
+			<property name="displayName" value="Orange" />
 		</property>
 		<property name="entityViewHelper" class="org.iplass.gem.EntityViewHelperImpl" />
 	</service>
