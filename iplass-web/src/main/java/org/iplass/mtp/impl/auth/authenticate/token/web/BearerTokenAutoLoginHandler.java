@@ -29,11 +29,9 @@ import org.iplass.mtp.impl.auth.authenticate.AutoLoginHandler;
 import org.iplass.mtp.impl.auth.authenticate.AutoLoginInstruction;
 import org.iplass.mtp.impl.session.Session;
 import org.iplass.mtp.impl.session.SessionService;
-import org.iplass.mtp.impl.web.token.TokenStore;
 import org.iplass.mtp.impl.webapi.rest.RestRequestContext;
 import org.iplass.mtp.spi.ServiceRegistry;
 import org.iplass.mtp.web.WebRequestConstants;
-import org.iplass.mtp.web.actionmapping.ResponseHeader;
 import org.iplass.mtp.webapi.definition.MethodType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -149,11 +147,6 @@ public class BearerTokenAutoLoginHandler implements AutoLoginHandler {
 			Session s = sessionService.getSession(false);
 			if (s != null) {
 				s.setAttribute(SESSION_ATTRIBUTE_BEARER_TOKEN, ((SimpleAuthTokenCredential) ali.getCredential()).getToken());
-				
-				//transaction token を返却
-				String token = TokenStore.getFixedToken(req.getSession());
-				ResponseHeader res = (ResponseHeader) req.getAttribute(WebRequestConstants.RESPONSE_HEADER);
-				res.setHeader(TokenStore.TOKEN_HEADER_NAME, token);
 			}
 		}
 	}

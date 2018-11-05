@@ -21,6 +21,7 @@ package org.iplass.mtp.impl.webapi.interceptors;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.iplass.mtp.command.RequestContext;
 import org.iplass.mtp.command.interceptor.CommandInterceptor;
 import org.iplass.mtp.command.interceptor.CommandInvocation;
 import org.iplass.mtp.impl.web.WebResourceBundleUtil;
@@ -28,7 +29,6 @@ import org.iplass.mtp.impl.web.token.TokenStore;
 import org.iplass.mtp.impl.webapi.MetaWebApi.WebApiRuntime;
 import org.iplass.mtp.impl.webapi.MetaWebApiTokenCheck;
 import org.iplass.mtp.impl.webapi.WebApiInvocationImpl;
-import org.iplass.mtp.impl.webapi.rest.RestRequestContext;
 import org.iplass.mtp.web.WebRequestConstants;
 import org.iplass.mtp.web.actionmapping.TokenValidationException;
 import org.slf4j.Logger;
@@ -44,8 +44,8 @@ public class TokenInterceptor implements CommandInterceptor {
 		
 		if (invocation instanceof WebApiInvocationImpl) {
 			WebApiRuntime runtime = ((WebApiInvocationImpl) invocation).getWebApiRuntime();
-			RestRequestContext context = (RestRequestContext) invocation.getRequest();
-			MetaWebApiTokenCheck tokenCheck = runtime.getMetaData().getTokenCheck();;
+			RequestContext context = invocation.getRequest();
+			MetaWebApiTokenCheck tokenCheck = runtime.getMetaData().getTokenCheck();
 			
 			if (tokenCheck != null) {
 				logger.trace("execute validate token...");

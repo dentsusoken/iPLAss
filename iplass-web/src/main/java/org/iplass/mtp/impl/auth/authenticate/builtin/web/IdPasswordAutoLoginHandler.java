@@ -32,12 +32,8 @@ import org.iplass.mtp.command.RequestContext;
 import org.iplass.mtp.impl.auth.UserContext;
 import org.iplass.mtp.impl.auth.authenticate.AutoLoginHandler;
 import org.iplass.mtp.impl.auth.authenticate.AutoLoginInstruction;
-import org.iplass.mtp.impl.session.SessionService;
-import org.iplass.mtp.impl.web.token.TokenStore;
 import org.iplass.mtp.impl.webapi.rest.RestRequestContext;
-import org.iplass.mtp.spi.ServiceRegistry;
 import org.iplass.mtp.web.WebRequestConstants;
-import org.iplass.mtp.web.actionmapping.ResponseHeader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -56,8 +52,6 @@ public class IdPasswordAutoLoginHandler implements AutoLoginHandler {
 	
 	public static final String HEADER_AUTHORIZATION = "Authorization";
 	public static final String AUTH_SCHEME_BASIC = "Basic";
-	
-	private SessionService sessionService = ServiceRegistry.getRegistry().getService(SessionService.class);
 	
 	private boolean enableBasicAuthentication;
 	private boolean rejectAmbiguousRequest;
@@ -153,12 +147,6 @@ public class IdPasswordAutoLoginHandler implements AutoLoginHandler {
 
 	@Override
 	public void handleSuccess(AutoLoginInstruction ali, RequestContext req, UserContext user) {
-		if (!sessionService.isSessionStateless()) {
-			//transaction token を返却
-			String token = TokenStore.getFixedToken(req.getSession());
-			ResponseHeader res = (ResponseHeader) req.getAttribute(WebRequestConstants.RESPONSE_HEADER);
-			res.setHeader(TokenStore.TOKEN_HEADER_NAME, token);
-		}
 	}
 
 	@Override
