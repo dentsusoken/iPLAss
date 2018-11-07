@@ -1,4 +1,4 @@
-package org.iplass.gem.command.generic.detail;
+package org.iplass.gem.command.generic.bulk;
 
 import java.util.List;
 import java.util.Set;
@@ -14,21 +14,21 @@ import org.iplass.mtp.command.annotation.action.ParamMapping;
 import org.iplass.mtp.command.annotation.action.Result;
 import org.iplass.mtp.command.annotation.action.Result.Type;
 import org.iplass.mtp.entity.Entity;
-import org.iplass.mtp.view.generic.DetailFormView;
+import org.iplass.mtp.view.generic.SearchFormView;
 
 @ActionMappings({
-	@ActionMapping(name=BulkDetailViewCommand.BULK_EDIT_ACTION_NAME,
+	@ActionMapping(name=BulkUpdateViewCommand.BULK_EDIT_ACTION_NAME,
 			displayName="一括詳細編集",
 			paramMapping={
 				@ParamMapping(name=Constants.DEF_NAME, mapFrom="${0}", condition="subPath.length==1"),
 				@ParamMapping(name=Constants.VIEW_NAME, mapFrom="${0}", condition="subPath.length==2"),
 				@ParamMapping(name=Constants.DEF_NAME, mapFrom="${1}", condition="subPath.length==2"),
 			},
-			command=@CommandConfig(commandClass=BulkDetailViewCommand.class, value="cmd.detail=true;"),
+			command=@CommandConfig(commandClass=BulkUpdateViewCommand.class, value="cmd.detail=true;"),
 			result={
 				@Result(status=Constants.CMD_EXEC_SUCCESS, type=Type.JSP,
 						value=Constants.CMD_RSLT_JSP_BULK_EDIT,
-						templateName="gem/generic/detail/bulkEdit",
+						templateName="gem/generic/bulk/bulkEdit",
 						layoutActionName=Constants.LAYOUT_POPOUT_ACTION),
 				@Result(status=Constants.CMD_EXEC_ERROR_VIEW, type=Type.JSP,
 						value=Constants.CMD_RSLT_JSP_ERROR,
@@ -42,9 +42,9 @@ import org.iplass.mtp.view.generic.DetailFormView;
 		)
 })
 @CommandClass(name = "gem/generic/detail/BulkDetailViewCommand", displayName = "一括詳細表示")
-public class BulkDetailViewCommand extends BulkDetailCommandBase {
+public class BulkUpdateViewCommand extends BulkCommandBase {
 
-	public static final String BULK_EDIT_ACTION_NAME = "gem/generic/detail/bulkEdit";
+	public static final String BULK_EDIT_ACTION_NAME = "gem/generic/bulk/bulkEdit";
 
 	private boolean detail;
 
@@ -59,26 +59,26 @@ public class BulkDetailViewCommand extends BulkDetailCommandBase {
 	/**
 	 * コンストラクタ
 	 */
-	public BulkDetailViewCommand() {
+	public BulkUpdateViewCommand() {
 		super();
 	}
 
 	@Override
 	public String execute(RequestContext request) {
-		BulkDetailCommandContext context = getContext(request);
+		BulkCommandContext context = getContext(request);
 
 		// 必要なパラメータ取得
 		Set<String> oids = context.getOids();
 		String searchCond = context.getSearchCond();
 
-		// 各種定義取得 
-		DetailFormView view = context.getView();
+		// 各種定義取得
+		SearchFormView view = context.getView();
 		if (view == null) {
 			request.setAttribute(Constants.MESSAGE, resourceString("command.generic.detail.DetailViewCommand.viewErr"));
 			return Constants.CMD_EXEC_ERROR_VIEW;
 		}
 
-		BulkDetailFormViewData data = new BulkDetailFormViewData(context);
+		BulkUpdateFormViewData data = new BulkUpdateFormViewData(context);
 		data.setExecType(Constants.EXEC_TYPE_UPDATE);
 
 		StringBuilder builder = new StringBuilder();
@@ -86,12 +86,7 @@ public class BulkDetailViewCommand extends BulkDetailCommandBase {
 			Integer targetRow = context.getRow(oid);
 			Long targetVersion = context.getVersion(oid);
 			if (oid != null && oid.length() > 0) {
-				Entity entity = null;
-				if (view.isLoadDefinedReferenceProperty()) {
-					entity = loadViewEntity(context, oid, targetVersion, context.getDefinitionName(), context.getReferencePropertyName());
-				} else {
-					entity = loadViewEntity(context, oid, targetVersion, context.getDefinitionName(), (List<String>) null);
-				}
+				Entity entity = loadViewEntity(context, oid, targetVersion, context.getDefinitionName(), (List<String>) null);
 				if (entity == null) {
 					builder.append(resourceString("command.generic.detail.DetailViewCommand.noPermission", targetRow));
 					break;

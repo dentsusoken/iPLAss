@@ -1,19 +1,19 @@
 /*
  * Copyright (C) 2014 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
- * 
+ *
  * Unless you have purchased a commercial license,
  * the following license terms apply:
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
@@ -51,7 +51,7 @@ public interface LoadEntityInterrupter {
 	 * @param type ロード処理の種類
 	 * @return 実行結果
 	 */
-	public LoadEntityContext beforeLoadEntity(RequestContext request, DetailFormView view,
+	public LoadEntityContext beforeLoadEntity(RequestContext request, FormView view,
 			String defName, LoadOption loadOption, LoadType type);
 
 	/**
@@ -62,7 +62,7 @@ public interface LoadEntityInterrupter {
 	 * @param loadOption ロード時のオプション
 	 * @param type ロード処理の種類
 	 */
-	default public void afterLoadEntity(RequestContext request, DetailFormView view,
+	default public void afterLoadEntity(RequestContext request, FormView view,
 			Entity entity, LoadOption loadOption, LoadType type) {
 	}
 
@@ -76,7 +76,7 @@ public interface LoadEntityInterrupter {
 	 * @param type ロード処理の種類
 	 * @return 実行結果
 	 */
-	public LoadEntityContext beforeLoadReference(RequestContext request, DetailFormView view,
+	public LoadEntityContext beforeLoadReference(RequestContext request, FormView view,
 			String defName, LoadOption loadOption, ReferenceProperty property, LoadType type);
 
 	/**
@@ -88,7 +88,7 @@ public interface LoadEntityInterrupter {
 	 * @param property プロパティ定義
 	 * @param type ロード処理の種類
 	 */
-	default public void afterLoadReference(RequestContext request, DetailFormView view,
+	default public void afterLoadReference(RequestContext request, FormView view,
 			Entity entity, LoadOption loadOption, ReferenceProperty property, LoadType type) {
 	}
 

@@ -38,6 +38,9 @@ import org.iplass.gem.command.calendar.ref.CalendarFilterCommand;
 import org.iplass.gem.command.calendar.ref.GetCalendarFilterCommand;
 import org.iplass.gem.command.fulltext.FullTextSearchCommand;
 import org.iplass.gem.command.fulltext.FullTextSearchViewCommand;
+import org.iplass.gem.command.generic.bulk.BulkUpdateViewCommand;
+import org.iplass.gem.command.generic.bulk.BulkUpdateAllCommand;
+import org.iplass.gem.command.generic.bulk.BulkUpdateListCommand;
 import org.iplass.gem.command.generic.common.GetAutocompletionValueCommand;
 import org.iplass.gem.command.generic.common.GetEntityNameCommand;
 import org.iplass.gem.command.generic.common.GetEntityNameListCommand;
@@ -48,9 +51,6 @@ import org.iplass.gem.command.generic.delete.GetRecycleBinCommand;
 import org.iplass.gem.command.generic.delete.PurgeCommand;
 import org.iplass.gem.command.generic.delete.RestoreCommand;
 import org.iplass.gem.command.generic.delete.TrashCommand;
-import org.iplass.gem.command.generic.detail.BulkDetailViewCommand;
-import org.iplass.gem.command.generic.detail.BulkUpdateAllCommand;
-import org.iplass.gem.command.generic.detail.BulkUpdateListCommand;
 import org.iplass.gem.command.generic.detail.DetailViewCommand;
 import org.iplass.gem.command.generic.detail.GetMassReferencesCommand;
 import org.iplass.gem.command.generic.detail.GetNestTableDataCommand;
@@ -130,7 +130,7 @@ import org.iplass.mtp.command.annotation.MetaDataSeeAlso;
 	UpdateMappedbyReferenceCommand.class,
 	UpdateReferencePropertyCommand.class,
 	UpdateTableOrderCommand.class,
-	BulkDetailViewCommand.class,
+	BulkUpdateViewCommand.class,
 	BulkUpdateAllCommand.class,
 	BulkUpdateListCommand.class,
 	//自動補完

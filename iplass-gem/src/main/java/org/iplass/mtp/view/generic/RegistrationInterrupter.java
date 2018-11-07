@@ -1,19 +1,19 @@
 /*
  * Copyright (C) 2011 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
- * 
+ *
  * Unless you have purchased a commercial license,
  * the following license terms apply:
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
@@ -48,9 +48,9 @@ public interface RegistrationInterrupter {
 	 * @param entity 登録用のデータ
 	 * @param request リクエスト
 	 * @param definition Entity定義
-	 * @param view 詳細画面定義
+	 * @param view 画面定義
 	 */
-	public void dataMapping(Entity entity, RequestContext request, EntityDefinition definition, DetailFormView view);
+	public void dataMapping(Entity entity, RequestContext request, EntityDefinition definition, FormView view);
 
 	/**
 	 * {@link #getAdditionalProperties()} で全てのプロパティを対象にするかを判断します。
@@ -75,22 +75,22 @@ public interface RegistrationInterrupter {
 	 * @param entity 登録用のデータ
 	 * @param request リクエスト
 	 * @param definition Entity定義
-	 * @param view 詳細画面定義
+	 * @param view 画面定義
 	 * @param registrationType 登録処理の種類
 	 * @return 入力エラーリスト
 	 */
 	public List<ValidateError> beforeRegist(Entity entity, RequestContext request,
-			EntityDefinition definition, DetailFormView view, RegistrationType registrationType);
+			EntityDefinition definition, FormView view, RegistrationType registrationType);
 
 	/**
 	 * 登録後処理を行います。
 	 * @param entity 登録用のデータ
 	 * @param request リクエスト
 	 * @param definition Entity定義
-	 * @param view 詳細画面定義
+	 * @param view 画面定義
 	 * @param registrationType 登録処理の種類
 	 * @return 入力エラーリスト
 	 */
 	public List<ValidateError> afterRegist(Entity entity, RequestContext request,
-			EntityDefinition definition, DetailFormView view, RegistrationType registType);
+			EntityDefinition definition, FormView view, RegistrationType registType);
 }

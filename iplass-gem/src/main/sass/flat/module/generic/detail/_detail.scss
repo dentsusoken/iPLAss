@@ -176,7 +176,10 @@
 		width: 180px;
 		background: $color_gallery_approx;
 		border-right: 0;
-    vertical-align: top;
+		vertical-align: top;
+		&.w-auto {
+			width: auto;
+		}
 	}
 	td.section-data {
 		padding: 12px 10px;

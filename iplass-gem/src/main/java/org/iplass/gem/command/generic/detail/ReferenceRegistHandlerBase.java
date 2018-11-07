@@ -64,7 +64,7 @@ public abstract class ReferenceRegistHandlerBase implements ReferenceRegistHandl
 	 * @param property プロパティ定義
 	 * @return Entity
 	 */
-	protected Entity loadReference(DetailCommandContext context, final Entity entity, LoadOption loadOption, ReferenceProperty property) {
+	protected Entity loadReference(RegistrationCommandContext context, final Entity entity, LoadOption loadOption, ReferenceProperty property) {
 		Entity e = null;
 		if (entity.getOid() != null) {
 			final LoadEntityContext leContext = context.getLoadEntityInterrupterHandler().beforeLoadReference(entity.getDefinitionName(), loadOption, property, LoadType.UPDATE);
@@ -93,7 +93,7 @@ public abstract class ReferenceRegistHandlerBase implements ReferenceRegistHandl
 	 * @return 入力エラーリスト
 	 */
 	@SuppressWarnings("unchecked")
-	protected List<ValidateError> registReference(DetailCommandContext context, Entity entity,
+	protected List<ValidateError> registReference(RegistrationCommandContext context, Entity entity,
 			List<String> updateProperties, String propertyName) {
 		List<ValidateError> errors = new ArrayList<ValidateError>();
 
@@ -170,7 +170,7 @@ public abstract class ReferenceRegistHandlerBase implements ReferenceRegistHandl
 	 * @param rpd 参照プロパティ定義
 	 * @param refEntity 参照元Entity
 	 */
-	protected void setMappedByValue(DetailCommandContext context, Entity entity, String mappedBy, String defName,
+	protected void setMappedByValue(RegistrationCommandContext context, Entity entity, String mappedBy, String defName,
 			ReferenceProperty rpd, Entity refEntity) {
 		if (rpd.getMultiplicity() != 1) {
 			//参照が多重の場合
@@ -209,7 +209,7 @@ public abstract class ReferenceRegistHandlerBase implements ReferenceRegistHandl
 	 * @param rpd 参照プロパティ定義
 	 * @param refEntity 参照元Entity
 	 */
-	protected void delMappedByValue(DetailCommandContext context, Entity entity, String mappedBy, String defName,
+	protected void delMappedByValue(RegistrationCommandContext context, Entity entity, String mappedBy, String defName,
 			ReferenceProperty rpd, Entity refEntity) {
 		if (rpd.getMultiplicity() != 1) {
 			//参照が多重の場合

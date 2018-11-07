@@ -1,19 +1,19 @@
 /*
  * Copyright (C) 2017 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
- * 
+ *
  * Unless you have purchased a commercial license,
  * the following license terms apply:
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
@@ -36,7 +36,7 @@ import org.iplass.mtp.view.generic.editor.NestProperty;
 import org.iplass.mtp.view.generic.editor.ReferencePropertyEditor;
 import org.iplass.mtp.view.generic.editor.ReferencePropertyEditor.EditPage;
 import org.iplass.mtp.view.generic.editor.ReferencePropertyEditor.ReferenceDisplayType;
-import org.iplass.mtp.view.generic.element.property.PropertyItem;
+import org.iplass.mtp.view.generic.element.property.PropertyBase;
 
 /**
  * ネストテーブル用の登録処理
@@ -47,14 +47,15 @@ public abstract class NestTableReferenceRegistHandler extends ReferenceRegistHan
 
 	protected List<Entity> references;
 
-	public static boolean canRegist(PropertyItem property) {
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	public static boolean canRegist(PropertyBase property, RegistrationPropertyBaseHandler propBaseHandler) {
 		//非表示プロパティは対象外
-		if (!property.isDispFlag() || property.isHideDetail()) return false;
+		if (propBaseHandler.isHidden(property)) return false;
 
 		//テーブルの場合のみ新規or更新
-		if (!(property.getEditor() instanceof ReferencePropertyEditor)) return false;
+		if (!(propBaseHandler.getEditor(property) instanceof ReferencePropertyEditor)) return false;
 
-		ReferencePropertyEditor editor = (ReferencePropertyEditor) property.getEditor();
+		ReferencePropertyEditor editor = (ReferencePropertyEditor) propBaseHandler.getEditor(property);
 		if (editor.getDisplayType() != ReferenceDisplayType.NESTTABLE) return false;
 
 		//Viewモードの場合は編集画面では更新対象ではないので対象外
@@ -63,10 +64,12 @@ public abstract class NestTableReferenceRegistHandler extends ReferenceRegistHan
 		return true;
 	}
 
-	public static ReferenceRegistHandler get(final DetailCommandContext context, final List<Entity> refs,
-			EntityDefinition ed, final ReferenceProperty rp, final PropertyItem property, List<NestProperty> nestProperties) {
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	public static ReferenceRegistHandler get(final RegistrationCommandContext context, final List<Entity> refs,
+			EntityDefinition ed, final ReferenceProperty rp, final PropertyBase property, List<NestProperty> nestProperties,
+			RegistrationPropertyBaseHandler propBaseHandler) {
 		//登録可否は呼び元でチェック済み
-		final List<String> updateProperties = getUpdateProperties(nestProperties, ed, (ReferencePropertyEditor) property.getEditor());
+		final List<String> updateProperties = getUpdateProperties(nestProperties, ed, (ReferencePropertyEditor) propBaseHandler.getEditor(property));
 
 		if (rp.getMappedBy() == null || rp.getMappedBy().isEmpty()) {
 			// 通常参照は登録前のみ
@@ -97,7 +100,7 @@ public abstract class NestTableReferenceRegistHandler extends ReferenceRegistHan
 		}
 	}
 
-	private static List<String> getUpdateProperties(List<NestProperty> nestProperties, EntityDefinition ed, ReferencePropertyEditor editor) {
+	protected static List<String> getUpdateProperties(List<NestProperty> nestProperties, EntityDefinition ed, ReferencePropertyEditor editor) {
 		List<String> updateProperties = getUpdateProperties(nestProperties, ed);
 		if (StringUtil.isNotBlank(editor.getTableOrderPropertyName()) && !updateProperties.contains(editor.getTableOrderPropertyName())) {
 			updateProperties.add(editor.getTableOrderPropertyName());
@@ -115,8 +118,8 @@ public abstract class NestTableReferenceRegistHandler extends ReferenceRegistHan
 	 * @param updateProperties 更新対象プロパティ
 	 * @param errors 入力エラーリスト
 	 */
-	protected void registReference(DetailCommandContext context, Entity inputEntity, Entity loadedEntity,
-			PropertyItem property, ReferenceProperty rp, List<String> updateProperties, List<ValidateError> errors) {
+	protected void registReference(RegistrationCommandContext context, Entity inputEntity, Entity loadedEntity,
+			PropertyBase property, ReferenceProperty rp, List<String> updateProperties, List<ValidateError> errors) {
 
 		for (Entity entity : references) {
 			errors.addAll(registReference(context, entity, updateProperties, rp.getName()));
@@ -133,8 +136,8 @@ public abstract class NestTableReferenceRegistHandler extends ReferenceRegistHan
 	 * @param updateProperties 更新対象プロパティ
 	 * @param errors 入力エラーリスト
 	 */
-	protected void registMappedbyReference(DetailCommandContext context, Entity inputEntity, Entity loadedEntity,
-			PropertyItem property, ReferenceProperty rp, List<String> updateProperties, List<ValidateError> errors) {
+	protected void registMappedbyReference(RegistrationCommandContext context, Entity inputEntity, Entity loadedEntity,
+			PropertyBase property, ReferenceProperty rp, List<String> updateProperties, List<ValidateError> errors) {
 
 		//被参照の場合はプロパティの値の方で元データを保持する
 		String mappedBy = rp.getMappedBy();

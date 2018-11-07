@@ -1,4 +1,4 @@
-package org.iplass.gem.command.generic.detail;
+package org.iplass.gem.command.generic.bulk;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -37,11 +37,11 @@ import org.slf4j.LoggerFactory;
 			result={
 				@Result(status=Constants.CMD_EXEC_SUCCESS, type=Type.JSP,
 						value=Constants.CMD_RSLT_JSP_BULK_EDIT,
-						templateName="gem/generic/detail/bulkEdit",
+						templateName="gem/generic/bulk/bulkEdit",
 						layoutActionName=Constants.LAYOUT_POPOUT_ACTION),
 				@Result(status=Constants.CMD_EXEC_ERROR, type=Type.JSP,
 						value=Constants.CMD_RSLT_JSP_BULK_EDIT,
-						templateName="gem/generic/detail/bulkEdit",
+						templateName="gem/generic/bulk/bulkEdit",
 						layoutActionName=Constants.LAYOUT_POPOUT_ACTION),
 				@Result(status=Constants.CMD_EXEC_ERROR_TOKEN, type=Type.JSP,
 						value=Constants.CMD_RSLT_JSP_ERROR,
@@ -56,11 +56,11 @@ import org.slf4j.LoggerFactory;
 	)
 })
 @CommandClass(name = "gem/generic/detail/BulkUpdateAllCommand", displayName = "一括全更新")
-public class BulkUpdateAllCommand extends BulkDetailCommandBase {
+public class BulkUpdateAllCommand extends BulkCommandBase {
 
 	private static Logger logger = LoggerFactory.getLogger(BulkUpdateAllCommand.class);
 
-	public static final String BULK_UPDATE_ALL_ACTION_NAME = "gem/generic/detail/bulkUpdateAll";
+	public static final String BULK_UPDATE_ALL_ACTION_NAME = "gem/generic/bulk/bulkUpdateAll";
 
 	@Override
 	public String execute(RequestContext request) {
@@ -114,7 +114,7 @@ public class BulkUpdateAllCommand extends BulkDetailCommandBase {
 					ret = Transaction.requiresNew(t -> {
 						String r = null;
 						try {
-							// 一括全更新の場合、リクエストスコープに削除しようとするエンティティ情報をセットします。
+							// 一括全更新の場合、リクエストスコープに一括更新しようとするエンティティ情報をセットします。
 							request.setAttribute(Constants.OID, subOidList.toArray(new String[] {}));
 							request.setAttribute(Constants.VERSION, subVersionList.toArray(new String[] {}));
 							request.setAttribute(Constants.TIMESTAMP, subUpdateDate.toArray(new String[] {}));

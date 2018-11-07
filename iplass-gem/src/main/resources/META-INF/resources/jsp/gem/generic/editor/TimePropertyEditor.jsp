@@ -48,7 +48,7 @@
 	String propName = editor.getPropertyName();
 
 	//タイプ毎に出力内容かえる
-	if (OutputType.EDIT == type || OutputType.BULKEDIT == type) {
+	if (OutputType.EDIT == type || OutputType.BULK == type) {
 		//詳細編集, 一括更新編集
 %>
 <jsp:include page="./time/TimePropertyEditor_Edit.jsp"></jsp:include>

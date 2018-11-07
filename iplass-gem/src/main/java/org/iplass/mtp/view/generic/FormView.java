@@ -1,19 +1,19 @@
 /*
  * Copyright (C) 2011 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
- * 
+ *
  * Unless you have purchased a commercial license,
  * the following license terms apply:
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
@@ -79,6 +79,18 @@ public abstract class FormView implements Refrectable {
 	@MetaFieldInfo(displayName="データを多言語化", inputType=InputType.CHECKBOX, description="データを多言語化するかを設定します。",
 			displayNameKey="generic_FormView_localizationDataDisplaNameKey", descriptionKey="generic_FormView_localizationDataDescriptionKey")
 	private boolean localizationData;
+
+	/** 親子関係の参照を物理削除するか */
+	@MetaFieldInfo(displayName="親子関係の参照を物理削除するか", inputType=InputType.CHECKBOX, description="親子関係の参照を物理削除するかを設定します",
+			displayNameKey="generic_FormView_purgeCompositionedEntityDisplaNameKey", descriptionKey="generic_FormView_purgeCompositionedEntityDescriptionKey"
+	)
+	private boolean purgeCompositionedEntity;
+
+	/** 更新時に強制的に更新処理を行う */
+	@MetaFieldInfo(displayName="更新時に強制的に更新処理を行う", inputType=InputType.CHECKBOX, description="変更項目が一つもなくとも、強制的に更新処理（更新日時、更新者が更新される）を行います。",
+			displayNameKey="generic_FormView_forceUpadteDisplaNameKey", descriptionKey="generic_FormView_forceUpadteDescriptionKey"
+	)
+	private boolean forceUpadte;
 
 	/** ダイアログ表示時に最大化 */
 	@MetaFieldInfo(displayName="ダイアログ表示時に最大化", inputType=InputType.CHECKBOX, description="ダイアログ表示時に最大化するかを設定します。",
@@ -198,6 +210,38 @@ public abstract class FormView implements Refrectable {
 	 */
 	public void setLocalizationData(boolean localizationData) {
 	    this.localizationData = localizationData;
+	}
+
+	/**
+	 * 親子関係の参照を物理削除するかを取得します。
+	 * @return 親子関係の参照を物理削除するか
+	 */
+	public boolean isPurgeCompositionedEntity() {
+	    return purgeCompositionedEntity;
+	}
+
+	/**
+	 * 親子関係の参照を物理削除するかを設定します。
+	 * @param purgeCompositionedEntity 親子関係の参照を物理削除するか
+	 */
+	public void setPurgeCompositionedEntity(boolean purgeCompositionedEntity) {
+	    this.purgeCompositionedEntity = purgeCompositionedEntity;
+	}
+
+	/**
+	 * 更新時に強制的に更新処理を行うかを取得します。
+	 * @return forceUpdate 更新時に強制的に更新処理を行うか
+	 */
+	public boolean isForceUpadte() {
+		return forceUpadte;
+	}
+
+	/**
+	 * 更新時に強制的に更新処理を行うかを設定します。
+	 * @param forceUpadte 更新時に強制的に更新処理を行うか
+	 */
+	public void setForceUpadte(boolean forceUpadte) {
+		this.forceUpadte = forceUpadte;
 	}
 
 	/**

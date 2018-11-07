@@ -48,7 +48,7 @@
 <%@ page import="org.iplass.gem.command.generic.delete.DeleteAllCommand"%>
 <%@ page import="org.iplass.gem.command.generic.delete.DeleteListCommand"%>
 <%@ page import="org.iplass.gem.command.generic.detail.DetailViewCommand"%>
-<%@ page import="org.iplass.gem.command.generic.detail.BulkDetailViewCommand"%>
+<%@ page import="org.iplass.gem.command.generic.bulk.BulkUpdateViewCommand"%>
 <%@ page import="org.iplass.gem.command.generic.search.CountCommand"%>
 <%@ page import="org.iplass.gem.command.generic.search.SearchFormViewData"%>
 <%@ page import="org.iplass.gem.command.generic.search.SearchSelectListCommand"%>
@@ -138,7 +138,7 @@
 	}
 
 	//一括詳細表示アクション
-	String bulkEditAction = BulkDetailViewCommand.BULK_EDIT_ACTION_NAME + urlPath;
+	String bulkEditAction = BulkUpdateViewCommand.BULK_EDIT_ACTION_NAME + urlPath;
 
 	Boolean showdDetermineButton = (Boolean) request.getAttribute(Constants.SHOW_DETERMINE_BUTTON);
 	if (showdDetermineButton == null) showdDetermineButton = false;
@@ -600,7 +600,7 @@ ${m:outputToken('FORM_XHTML', false)}
 <%	}
 	if (OutputType.SEARCHRESULT == type && section.isShowBulkUpdate() && canUpdate) {
 %>
-<input id="bulkUpdateBtn" type="button" value="${m:rs('mtp-gem-messages', 'generic.element.section.SearchResultSection.bulkUpdate')}" class="gr-btn modal-btn" onclick="doBulkUpdate(event)" />
+<input id="bulkUpdateBtn" type="button" value="${m:rs('mtp-gem-messages', 'generic.element.section.SearchResultSection.bulkUpdate')}" class="gr-btn modal-btn" onclick="doBulkUpdate()" />
 <%	} %>
 </p>
 <%
@@ -705,77 +705,8 @@ function deleteRow(isConfirmed) {
 <% 
 	}
 	if (OutputType.SEARCHRESULT == type && section.isShowBulkUpdate() && canUpdate) { %>
-<div id="selectBulkUpdateTypeDialog" title="${m:rs('mtp-gem-messages', 'generic.element.section.SearchResultSection.selectBulkUpdateType')}" style="display:none;">
-<ul style="text-align:left; margin-left:15px;">
-<li>
-<label><input type="radio" name="bulkUpdateType" value="select" checked>${m:rs("mtp-gem-messages", "generic.element.section.SearchResultSection.bulkUpdateRow")}</label>
-</li>
-<li>
-<label><input type="radio" name="bulkUpdateType" value="all">${m:rs("mtp-gem-messages", "generic.element.section.SearchResultSection.bulkUpdateAll")}<span id="bulkUpdateCount"></span></label>
-</li>
-<li class="chagne-condition" style="display:none;">
-${m:rs("mtp-gem-messages", "generic.element.section.SearchResultSection.displayUnmatch")}
-</li>
-</ul>
-</div>
 <script>
-$(function() {
-	$("#selectBulkUpdateTypeDialog").dialog({
-		resizable: false,
-		autoOpen: false,
-		height: 180,
-		width: 400,
-		modal: true,
-		buttons: {
-			"${m:rs('mtp-gem-messages', 'generic.element.section.SearchResultSection.bulkUpdate')}": function() {
-				var bulkUpdateType = $(":radio[name='bulkUpdateType']:checked").val();
-				if (bulkUpdateType == "all") {
-					bulkUpdateByCondition();
-				} else {
-					bulkUpdateRow();
-				}
-				$(this).dialog("close");
-			},
-			"${m:rs('mtp-gem-messages', 'generic.element.section.SearchResultSection.cancel')}": function() {
-				closeBulkUpdateModalWindow();
-				$(this).dialog("close");
-			}
-		},
-		close: function() {
-		}
-	});
-	$("#selectBulkUpdateTypeDialog").on("dialogopen", function(e) {
-		adjustDialogLayer($(".ui-widget-overlay"));
-	});
-});
-function doBulkUpdate(e) {
-	e = e || window.event;
-	if ($("#cb_searchResult").is(":checked")) {
-		var type = $(":hidden[name='searchType']").val();
-		if (!validation(type)) return;
-
-		count("<%=CountCommand.WEBAPI_NAME%>", type, type + "Form", function(count) {
-			var bulkUpdateItem = "${m:rs('mtp-gem-messages', 'generic.element.section.SearchResultSection.bulkUpdateItem')}";
-			bulkUpdateItem = bulkUpdateItem.replace("{0}", count);
-			$("#bulkUpdateCount").text(bulkUpdateItem);
-			$("#selectBulkUpdateTypeDialog").dialog("open");
-		});
-	} else {
-		if(!bulkUpdateRow()) e.stopImmediatePropagation();
-	}
-}
-function bulkUpdateByCondition() {
-	var isSubModal = $("body.modal-body").length !== 0;
-	var target = getModalTarget(isSubModal);
-	var searchCond = $(":hidden[name='searchCond']").val();
-	var action = contextPath + '/' + '<%=StringUtil.escapeJavaScript(bulkEditAction) %>';
-	var $form = $("<form />").attr({method:"POST", action:action, target:target}).appendTo("body");
-	$("<input />").attr({type:"hidden", name:"searchCond", value:searchCond}).appendTo($form);
-	if (isSubModal) $("<input />").attr({type:"hidden", name:"modalTarget", value:target}).appendTo($form);
-	$form.submit();
-	$form.remove();
-}
-function bulkUpdateRow() {
+function doBulkUpdate() {
 	var ids = grid.getGridParam("selarrrow");
 	if(ids.length <= 0) {
 		alert("${m:rs('mtp-gem-messages', 'generic.element.section.SearchResultSection.selectBulkUpdateMsg')}");
@@ -789,30 +720,63 @@ function bulkUpdateRow() {
 		oid.push(id + "_" + row.orgOid);
 		version.push(id + "_" + row.orgVersion);
 	}
-	var isSubModal = $("body.modal-body").length !== 0;
+
 	var target = getModalTarget(isSubModal);
 	var action = contextPath + '/' + '<%=StringUtil.escapeJavaScript(bulkEditAction) %>';
-// 	var execType = $(":hidden[name='execType']").val();
 	var $form = $("<form />").attr({method:"POST", action:action, target:target}).appendTo("body");
+
 	$(oid).each(function() {
 		$("<input />").attr({type:"hidden", name:"oid", value:this}).appendTo($form);
 	})
 	$(version).each(function() {
 		$("<input />").attr({type:"hidden", name:"version", value:this}).appendTo($form);
 	})
+	
+	if ($("#cb_searchResult").is(":checked")) {
+		var type = $(":hidden[name='searchType']").val();
+		if (!validation(type)) return;
+		var searchCond = $(":hidden[name='searchCond']").val();
+		$("<input />").attr({type:"hidden", name:"searchCond", value:searchCond}).appendTo($form);
+	} 
+// 	var execType = $(":hidden[name='execType']").val();
 // 	$("<input />").attr({type:"hidden", name:"execType", value:execType}).appendTo($form);
+	var isSubModal = $("body.modal-body").length !== 0;
 	if (isSubModal) $("<input />").attr({type:"hidden", name:"modalTarget", value:target}).appendTo($form);
 	$form.submit();
 	$form.remove();
-	return true;
+}
+
+function countBulkUpdate(frame, func){
+	var type = $(":hidden[name='searchType']").val();
+	if (!validation(type)) return;
+
+	count("<%=CountCommand.WEBAPI_NAME%>", type, type + "Form", function(count) {
+		if(func && $.isFunction(func)){
+			func.call(frame, count);
+		}
+	});
 }
 function closeBulkUpdateModalWindow() {
 	var isSubModal = $("body.modal-body").length !== 0;
 	var target = getModalTarget(isSubModal);
 	$("iframe[name='" + target + "']").parents("div.modal-dialog").find(".modal-close").click();
 }
-function bulkUpdateModalWindowCallback() {
-	doSearch($(":hidden[name='searchType']").val(), 0, false, "bulkUpdate");
+function bulkUpdateModalWindowCallback(id) {
+	if (typeof id === "undefined") return;
+	// 一括更新後行選択処理を実行する　
+	var selectAfterBulkUpdate = function() {
+		// 検索条件を元に一括更新の場合
+		if (id === "all") {
+			$("#cb_searchResult").trigger("click");
+		// 選択された行を一括更新
+		} else if ($.isArray(id)) {
+			selectArray = id;
+			applyGridSelection();
+		}
+		$(".result-block").off("iplassAfterSearch", selectAfterBulkUpdate);
+	}
+	$(".result-block").on("iplassAfterSearch", selectAfterBulkUpdate);
+	doSearch($(":hidden[name='searchType']").val(), $(":hidden[name='offset']").val(), false, "bulkUpdate");
 }
 </script>
 <%

@@ -21,7 +21,6 @@
 package org.iplass.gem.command;
 
 import java.text.DecimalFormatSymbols;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -43,17 +42,11 @@ import org.iplass.mtp.view.generic.EntityView;
 import org.iplass.mtp.view.generic.EntityViewManager;
 import org.iplass.mtp.view.generic.FormView;
 import org.iplass.mtp.view.generic.common.WebApiAutocompletionSetting;
-import org.iplass.mtp.view.generic.editor.AutoNumberPropertyEditor;
-import org.iplass.mtp.view.generic.editor.ExpressionPropertyEditor;
-import org.iplass.mtp.view.generic.editor.PropertyEditor;
-import org.iplass.mtp.view.generic.editor.UserPropertyEditor;
 import org.iplass.mtp.view.generic.element.Element;
 import org.iplass.mtp.view.generic.element.Element.EditDisplayType;
+import org.iplass.mtp.view.generic.element.property.PropertyColumn;
 import org.iplass.mtp.view.generic.element.property.PropertyItem;
-import org.iplass.mtp.view.generic.element.section.DefaultSection;
-import org.iplass.mtp.view.generic.element.section.MassReferenceSection;
 import org.iplass.mtp.view.generic.element.section.SearchConditionSection.CsvDownloadSpecifyCharacterCode;
-import org.iplass.mtp.view.generic.element.section.Section;
 import org.iplass.mtp.view.top.TopViewDefinition;
 import org.iplass.mtp.view.top.TopViewDefinitionManager;
 import org.iplass.mtp.view.top.parts.CsvDownloadSettingsParts;
@@ -233,32 +226,9 @@ public class ViewUtil {
 		}
 		return null;
 	}
-
-	public static List<DefaultSection> filterDefaultSection(List<Element> elements) {
-		return elements.stream().filter(e -> e instanceof DefaultSection).map(e -> (DefaultSection) e).collect(Collectors.toList());
-	}
-
-	public static List<PropertyItem> collectNestedPropertyItem(List<? extends Element> elements) {
-		List<PropertyItem> properties = new ArrayList<PropertyItem>();
-		elements.stream().filter(e -> e instanceof DefaultSection).map(e -> (DefaultSection) e).collect(Collectors.toList()).forEach(d -> {
-			properties.addAll(ViewUtil.filterPropertyItem(d.getElements()));
-			// 再帰的にネストされたDefaultSectionからPropertyItemを探す
-			List<PropertyItem> nestProperties = collectNestedPropertyItem(ViewUtil.filterDefaultSection(d.getElements()));
-			properties.addAll(nestProperties);
-		});
-		return properties;
-	}
 	
-	/**
-	 * プロパティが一括更新対象となるか
-	 * @return
-	 */
-	public static boolean isBulkUpdatable(PropertyItem pi) {
-		PropertyEditor pe = pi.getEditor();
-		if (pe instanceof AutoNumberPropertyEditor || pe instanceof UserPropertyEditor || pe instanceof ExpressionPropertyEditor) {
-			return false;
-		}
-		return true;
+	public static List<PropertyColumn> filterPropertyColumn(List<Element> elements) {
+		return elements.stream().filter(e -> e instanceof PropertyColumn).map(e -> (PropertyColumn) e).collect(Collectors.toList());
 	}
 
 	/**

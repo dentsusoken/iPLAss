@@ -50,9 +50,9 @@ public class DetailFormView extends FormView {
 		@XmlEnumValue("Both")BOTH("Both"),
 		/** 独自実装したコピー処理を実行 */
 		@XmlEnumValue("Custom")CUSTOM("Custom");
-		
+
 		private final String value;
-		
+
 		private CopyTarget(final String value) {
 			this.value = value;
 		}
@@ -339,16 +339,6 @@ public class DetailFormView extends FormView {
 	)
 	private boolean hideDelete;
 
-	/** 親子関係の参照を物理削除するか */
-	@MetaFieldInfo(
-			displayName="親子関係の参照を物理削除するか",
-			displayNameKey="generic_DetailFormView_purgeCompositionedEntityDisplaNameKey",
-			inputType=InputType.CHECKBOX,
-			description="親子関係の参照を物理削除するかを設定します",
-			descriptionKey="generic_DetailFormView_purgeCompositionedEntityDescriptionKey"
-	)
-	private boolean purgeCompositionedEntity;
-
 	/** 定義されている参照プロパティのみを取得 */
 	@MetaFieldInfo(
 			displayName="定義されている参照プロパティのみを取得",
@@ -358,16 +348,6 @@ public class DetailFormView extends FormView {
 			descriptionKey="generic_DetailFormView_loadDefinedReferencePropertyDescriptionKey"
 	)
 	private boolean loadDefinedReferenceProperty;
-
-	/** 更新時に強制的に更新処理を行う */
-	@MetaFieldInfo(
-			displayName="更新時に強制的に更新処理を行う",
-			displayNameKey="generic_DetailFormView_forceUpadteDisplaNameKey",
-			inputType=InputType.CHECKBOX,
-			description="変更項目が一つもなくとも、強制的に更新処理（更新日時、更新者が更新される）を行います。",
-			descriptionKey="generic_DetailFormView_forceUpadteDescriptionKey"
-	)
-	private boolean forceUpadte;
 
 	/** コピー対象 */
 	@MetaFieldInfo(
@@ -863,22 +843,6 @@ public class DetailFormView extends FormView {
 	}
 
 	/**
-	 * 親子関係の参照を物理削除するかを取得します。
-	 * @return 親子関係の参照を物理削除するか
-	 */
-	public boolean isPurgeCompositionedEntity() {
-	    return purgeCompositionedEntity;
-	}
-
-	/**
-	 * 親子関係の参照を物理削除するかを設定します。
-	 * @param purgeCompositionedEntity 親子関係の参照を物理削除するか
-	 */
-	public void setPurgeCompositionedEntity(boolean purgeCompositionedEntity) {
-	    this.purgeCompositionedEntity = purgeCompositionedEntity;
-	}
-
-	/**
 	 * 定義されている参照プロパティのみを取得を取得します。
 	 * @return 定義されている参照プロパティのみを取得
 	 */
@@ -892,22 +856,6 @@ public class DetailFormView extends FormView {
 	 */
 	public void setLoadDefinedReferenceProperty(boolean loadDefinedReferenceProperty) {
 	    this.loadDefinedReferenceProperty = loadDefinedReferenceProperty;
-	}
-
-	/**
-	 * 更新時に強制的に更新処理を行うかを取得します。
-	 * @return forceUpdate 更新時に強制的に更新処理を行うか
-	 */
-	public boolean isForceUpadte() {
-		return forceUpadte;
-	}
-
-	/**
-	 * 更新時に強制的に更新処理を行うかを設定します。
-	 * @param forceUpadte 更新時に強制的に更新処理を行うか
-	 */
-	public void setForceUpadte(boolean forceUpadte) {
-		this.forceUpadte = forceUpadte;
 	}
 
 	/**

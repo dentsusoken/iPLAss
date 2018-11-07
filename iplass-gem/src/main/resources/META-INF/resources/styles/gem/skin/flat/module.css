@@ -1620,6 +1620,8 @@ span.success, span.error {
     background: #ededed;
     border-right: 0;
     vertical-align: top; }
+    .tbl-section th.section-data.w-auto {
+      width: auto; }
   .tbl-section td.section-data {
     padding: 12px 10px;
     border: 1px solid #ddd;
