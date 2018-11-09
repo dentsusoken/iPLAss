@@ -228,7 +228,7 @@ public abstract class RegistrationCommandBase<T extends RegistrationCommandConte
 		List<String> updatePropNames = new ArrayList<String>();
 		List<V> propList = getProperty(context);
 		for (V prop : propList) {
-			if (isHidden(context, prop)) continue;
+			if (!context.getRegistrationPropertyBaseHandler().isDispProperty(prop)) continue;
 			PropertyDefinition pd = context.getProperty(prop.getPropertyName());
 			if (pd != null && pd.isUpdatable()) {
 				//被参照は更新しない
@@ -279,8 +279,6 @@ public abstract class RegistrationCommandBase<T extends RegistrationCommandConte
 	}
 
 	protected abstract List<V> getProperty(T context);
-
-	protected abstract boolean isHidden(T context, V property);
 
 	protected abstract boolean isNewVersion(T context);
 

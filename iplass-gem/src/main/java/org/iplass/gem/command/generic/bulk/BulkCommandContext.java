@@ -1,3 +1,23 @@
+/*
+ * Copyright (C) 2018 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
+ *
+ * Unless you have purchased a commercial license,
+ * the following license terms apply:
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
 package org.iplass.gem.command.generic.bulk;
 
 import java.lang.reflect.Array;
@@ -59,13 +79,13 @@ public class BulkCommandContext extends RegistrationCommandContext {
 	private GemConfigService gemConfig = null;
 
 	/** パラメータマップ。 key: oid, value: パラメータ対象  */
-	private Map<String, BulkCommandParams> bulkDetailCommandBaseParams = new HashMap<>();
+	private Map<String, BulkCommandParams> bulkCommandParams = new HashMap<>();
 
 	/** 更新されたプロパティリスト */
 	private List<BulkUpdatedProperty> updatedProps = new ArrayList<>();
 
 	/** パラメータパターン */
-	private Pattern pattern = Pattern.compile("^(\\d+)\\_([^_]+)$");
+	private Pattern pattern = Pattern.compile("^(\\d+)\\_(.+)$");
 
 	/**
 	 * クライアントから配列で受け取ったパラメータは自動設定する対象外
@@ -88,95 +108,70 @@ public class BulkCommandContext extends RegistrationCommandContext {
 		super(request, entityLoader, definitionLoader);
 
 		gemConfig = ServiceRegistry.getRegistry().getService(GemConfigService.class);
-		populateParams();
+		init();
 	}
 
-	private void populateParams() {
-		// BulkUpdateAllCommandからのChainの可能性があるので、Attributeから取得する
-		String[] oid = (String[]) request.getAttribute(Constants.OID);
-		if (oid == null || oid.length == 0) {
-			oid = getParams(Constants.OID);
+	private void init() {
+		populateBulkCommandParam(Constants.OID, String.class, true);
+		populateBulkCommandParam(Constants.VERSION, Long.class, false);
+		populateBulkCommandParam(Constants.TIMESTAMP, Long.class, false);
+
+		populateBulkUpdatedProperty(Constants.BULK_UPDATED_PROP_NM, true);
+		populateBulkUpdatedProperty(Constants.BULK_UPDATED_PROP_VALUE, false);
+	}
+
+	private void populateBulkCommandParam(String name, Class<?> cls, boolean create) {
+		//BulkUpdateAllCommandからのChainの可能性があるので、Attributeから取得する
+		String[] param = (String[]) request.getAttribute(name);
+		if (param == null || param.length == 0) {
+			param = getParams(name);
 		}
-		if (oid != null) {
-			for (int i = 0; i < oid.length; i++) {
-				// oidには先頭に「行番号_」が付加されているので分離する
-				String[] params = splitRowParam(oid[i]);
+		if (param != null) {
+			for (int i = 0; i < param.length; i++) {
+				// 先頭に「行番号_」が付加されているので分離する
+				String[] params = splitRowParam(param[i]);
 				Integer targetRow = Integer.parseInt(params[0]);
-				String targetOid = params[1];
-				BulkCommandParams bulkParams = getBulkDetailCommandBaseParams(targetRow);
-				if (bulkParams != null) {
-					//TODO
-					throw new ApplicationException();
+				String targetParam = params[1];
+				BulkCommandParams bulkParams = getBulkCommandParams(targetRow);
+				if (create) {
+					// targetParamをキーとして設定する
+					if (bulkParams != null) {
+						getLogger().error("duplicate row. row=" + targetRow);
+						throw new ApplicationException(resourceString("command.generic.bulk.BulkCommandContext.duplicateRow"));
+					}
+					bulkCommandParams.put(targetParam, new BulkCommandParams(targetRow, targetParam));
+				} else {
+					if (bulkParams == null) {
+						getLogger().error("selected row does not exist. param=" + param[i]);
+						throw new ApplicationException(resourceString("command.generic.bulk.BulkCommandContext.invalidRow"));
+					}
+					bulkParams.setValue(name, ConvertUtil.convertFromString(cls, targetParam));
 				}
-				bulkDetailCommandBaseParams.put(targetOid, new BulkCommandParams(targetRow, targetOid));
 			}
 		}
+	}
 
-		// BulkUpdateAllCommandからのChainの可能性があるので、Attributeから取得する
-		String[] version = (String[]) request.getAttribute(Constants.VERSION);
-		if (version == null || version.length == 0) {
-			version = getParams(Constants.VERSION);
-		}
-		if (version != null) {
-			for (int i = 0; i < version.length; i++) {
-				// versionには先頭に「行番号_」が付加されているので分離する
-				String[] params = splitRowParam(version[i]);
-				Integer targetRow = Integer.parseInt(params[0]);
-				Long targetVersion = Long.parseLong(params[1]);
-				BulkCommandParams bulkParams = getBulkDetailCommandBaseParams(targetRow);
-				if (bulkParams == null) {
-					// TODO
-					throw new ApplicationException();
+	private void populateBulkUpdatedProperty(String name, boolean create) {
+		String[] param = (String[]) request.getParams(name);
+		if (param != null) {
+			for (int i = 0; i < param.length; i++) {
+				String[] params = splitRowParam(param[i]);
+				Integer updateNo = Integer.parseInt(params[0]);
+				String targetParam = params[1];
+				BulkUpdatedProperty updatedProp = getBulkUpdatedProperty(updateNo);
+				if (create) {
+					if (updatedProp != null) {
+						getLogger().error("duplicate updateNo. updateNo=" + updateNo);
+						throw new ApplicationException(resourceString("command.generic.bulk.BulkCommandContext.duplicateUpdateNo"));
+					}
+					updatedProps.add(new BulkUpdatedProperty(updateNo, targetParam));
+				} else {
+					if (updatedProp == null) {
+						getLogger().error("updateNo does not exist. params=" + param[i]);
+						throw new ApplicationException(resourceString("command.generic.bulk.BulkCommandContext.invalidUpdateNo"));
+					}
+					updatedProp.setValue(name, targetParam);
 				}
-				bulkParams.setVersion(targetVersion);
-			}
-		}
-
-		// BulkUpdateAllCommandからのChainの可能性があるので、Attributeから取得する
-		String[] timestamp = (String[]) request.getAttribute(Constants.TIMESTAMP);
-		if (timestamp == null || timestamp.length == 0) {
-			timestamp = getParams(Constants.TIMESTAMP);
-		}
-		if (timestamp != null) {
-			for (int i = 0; i < timestamp.length; i++) {
-				// timestampには先頭に「行番号_」が付加されているので分離する
-				String[] params = splitRowParam(timestamp[i]);
-				Integer targetRow = Integer.parseInt(params[0]);
-				Long targetTimestamp = Long.parseLong(params[1]);
-				BulkCommandParams bulkParams = getBulkDetailCommandBaseParams(targetRow);
-				if (bulkParams == null) {
-					// TODO
-					throw new ApplicationException();
-				}
-				bulkParams.setUpdateDate(targetTimestamp);
-			}
-		}
-
-		String[] updatedPropNm = (String[]) request.getParams(Constants.BULK_UPDATED_PROP_NM);
-		if (updatedPropNm != null) {
-			for (int i = 0; i < updatedPropNm.length; i++) {
-				String[] params = splitRowParam(updatedPropNm[i]);
-				Integer nth = Integer.parseInt(params[0]);
-				String propName = params[1];
-				BulkUpdatedProperty updatedProp = getBulkUpdatedProperty(nth);
-				if (updatedProp != null) {
-					throw new ApplicationException();
-				}
-				updatedProps.add(new BulkUpdatedProperty(nth, propName));
-			}
-		}
-
-		String[] updatedPropVal = (String[]) request.getParams(Constants.BULK_UPDATED_PROP_VALUE);
-		if (updatedPropVal != null) {
-			for (int i = 0; i < updatedPropNm.length; i++) {
-				String[] params = splitRowParam(updatedPropVal[i]);
-				Integer nth = Integer.parseInt(params[0]);
-				String propVal = params[1];
-				BulkUpdatedProperty updatedProp = getBulkUpdatedProperty(nth);
-				if (updatedProp == null) {
-					throw new ApplicationException();
-				}
-				updatedProp.setPropertyValue(propVal);
 			}
 		}
 	}
@@ -184,24 +179,37 @@ public class BulkCommandContext extends RegistrationCommandContext {
 	private String[] splitRowParam(String rowParam) {
 		Matcher m = pattern.matcher(rowParam);
 		if (!m.matches()) {
-			// TODO
-			throw new ApplicationException();
+			getLogger().error("invalid parameter format. rowParam=" + rowParam);
+			throw new ApplicationException(resourceString("command.generic.bulk.BulkCommandContext.invalidFormat"));
 		}
 		String[] params = new String[] { m.group(1), m.group(2) };
 		return params;
 	}
 
-	private BulkCommandParams getBulkDetailCommandBaseParams(Integer row) {
-		List<BulkCommandParams> paramsList = bulkDetailCommandBaseParams.values().stream()
+	private BulkCommandParams getBulkCommandParams(Integer row) {
+		List<BulkCommandParams> paramsList = bulkCommandParams.values().stream()
 				.filter(p -> p.getRow().equals(row))
 				.collect(Collectors.toList());
 		if (paramsList.size() == 0) {
 			return null;
 		} else if (paramsList.size() > 1) {
-			// TODO
-			throw new ApplicationException("duplicate parameter: " + paramsList);
+			getLogger().error("duplicate row. paramsList=" + paramsList);
+			throw new ApplicationException(resourceString("command.generic.bulk.BulkCommandContext.duplicateRow"));
 		}
 		return paramsList.get(0);
+	}
+
+	private BulkUpdatedProperty getBulkUpdatedProperty(Integer updateNo) {
+		List<BulkUpdatedProperty> updatedPropList = updatedProps.stream()
+				.filter(p -> p.getUpdateNo().equals(updateNo))
+				.collect(Collectors.toList());
+		if (updatedPropList.size() == 0) {
+			return null;
+		} else if (updatedPropList.size() > 1) {
+			getLogger().error("duplicate updateNo. updatedPropList=" + updatedPropList);
+			throw new ApplicationException(resourceString("command.generic.bulk.BulkCommandContext.duplicateUpdateNo"));
+		}
+		return updatedPropList.get(0);
 	}
 
 	/**
@@ -338,21 +346,10 @@ public class BulkCommandContext extends RegistrationCommandContext {
 	}
 
 	private void addNestTableRegistHandler(ReferenceProperty p, List<Entity> list, EntityDefinition red, PropertyColumn property) {
-		RegistrationPropertyBaseHandler<PropertyColumn> propBaseHandler = new RegistrationPropertyBaseHandler<PropertyColumn>() {
-			@Override
-			public boolean isHidden(PropertyColumn property) {
-				return !property.isDispFlag() || property.getBulkUpdateEditor() == null;
-			}
-
-			@Override
-			public PropertyEditor getEditor(PropertyColumn property) {
-				return property.getBulkUpdateEditor();
-			}
-		};
 		// ネストテーブルはプロパティ単位で登録可否決定
-		if (!NestTableReferenceRegistHandler.canRegist(property, propBaseHandler)) return;
+		if (!NestTableReferenceRegistHandler.canRegist(property, getRegistrationPropertyBaseHandler())) return;
 
-		ReferencePropertyEditor editor = (ReferencePropertyEditor) property.getEditor();
+		ReferencePropertyEditor editor = (ReferencePropertyEditor) property.getBulkUpdateEditor();
 
 		List<Entity> target = null;
 		if (StringUtil.isNotBlank(editor.getTableOrderPropertyName())) {
@@ -366,7 +363,7 @@ public class BulkCommandContext extends RegistrationCommandContext {
 			target = list;
 		}
 
-		ReferenceRegistHandler handler = NestTableReferenceRegistHandler.get(this, list, red, p, property, editor.getNestProperties(), propBaseHandler);
+		ReferenceRegistHandler handler = NestTableReferenceRegistHandler.get(this, list, red, p, property, editor.getNestProperties(), getRegistrationPropertyBaseHandler());
 		if (handler != null) {
 			handler.setForceUpdate(editor.isForceUpadte());
 			getReferenceRegistHandlers().add(handler);
@@ -402,21 +399,24 @@ public class BulkCommandContext extends RegistrationCommandContext {
 		return null;
 	}
 
-	public BulkUpdatedProperty getBulkUpdatedProperty(Integer nth) {
-		List<BulkUpdatedProperty> updatedPropList = updatedProps.stream()
-				.filter(p -> p.getNth().equals(nth))
-				.collect(Collectors.toList());
-		if (updatedPropList.size() == 0) {
-			return null;
-		} else if (updatedPropList.size() > 1) {
-			// TODO
-			throw new ApplicationException("duplicate updated property: " + updatedPropList);
-		}
-		return updatedPropList.get(0);
+	@Override
+	protected RegistrationPropertyBaseHandler<PropertyColumn> createRegistrationPropertyBaseHandler() {
+		return new RegistrationPropertyBaseHandler<PropertyColumn>() {
+			@Override
+			public boolean isDispProperty(PropertyColumn property) {
+				//一括更新プロパティエディタが未設定のプロパティは対象外にする
+				return property.isDispFlag() && property.getBulkUpdateEditor() != null;
+			}
+
+			@Override
+			public PropertyEditor getEditor(PropertyColumn property) {
+				return property.getBulkUpdateEditor();
+			}
+		};
 	}
 
 	public Set<String> getOids() {
-		return bulkDetailCommandBaseParams.keySet();
+		return bulkCommandParams.keySet();
 	}
 
 	/**
@@ -477,7 +477,7 @@ public class BulkCommandContext extends RegistrationCommandContext {
 
 	public Integer getRow(String oid) {
 		Integer row = null;
-		BulkCommandParams params = bulkDetailCommandBaseParams.get(oid);
+		BulkCommandParams params = bulkCommandParams.get(oid);
 		if (params != null) {
 			row = params.getRow();
 		}
@@ -486,7 +486,7 @@ public class BulkCommandContext extends RegistrationCommandContext {
 
 	public Long getVersion(String oid) {
 		Long version = null;
-		BulkCommandParams params = bulkDetailCommandBaseParams.get(oid);
+		BulkCommandParams params = bulkCommandParams.get(oid);
 		if (params != null) {
 			version = params.getVersion();
 		}
@@ -495,7 +495,7 @@ public class BulkCommandContext extends RegistrationCommandContext {
 
 	public Timestamp getTimestamp(String oid) {
 		Timestamp ts = null;
-		BulkCommandParams params = bulkDetailCommandBaseParams.get(oid);
+		BulkCommandParams params = bulkCommandParams.get(oid);
 		if (params != null) {
 			Long l = params.getUpdateDate();
 			if (l != null) {
@@ -517,9 +517,8 @@ public class BulkCommandContext extends RegistrationCommandContext {
 		return updatedProps;
 	}
 
-	public Object getBulkUpdatePropDispValue() {
-		String name = getBulkUpdatePropName();
-		PropertyDefinition p = entityDefinition.getProperty(name);
+	public Object getBulkUpdatePropertyValue(String propertyName) {
+		PropertyDefinition p = entityDefinition.getProperty(propertyName);
 		return getPropValue(p, "");
 	}
 
@@ -620,30 +619,36 @@ public class BulkCommandContext extends RegistrationCommandContext {
 		}
 	}
 
+	/**
+	 * 一括更新するプロパティを取得します。 組み合わせで使うプロパティである場合、通常のプロパティ扱いにします。
+	 *
+	 * @return 一括更新するプロパティ
+	 */
 	public List<PropertyColumn> getProperty() {
 //		String execType = getExecType();
 		List<PropertyColumn> propList = new ArrayList<PropertyColumn>();
-		String propName = getBulkUpdatePropName();
-		if (StringUtil.isEmpty(propName)) {
-			// TODO
-			throw new ApplicationException();
+		String updatePropName = getBulkUpdatePropName();
+		if (StringUtil.isEmpty(updatePropName)) {
+			getLogger().error("update property name is empty. updatePropName=" + updatePropName);
+			throw new ApplicationException(resourceString("command.generic.bulk.BulkCommandContext.propNameNullValueErr"));
 		}
-		PropertyDefinition pd = getEntityDefinition().getProperty(propName);
+		PropertyDefinition pd = getEntityDefinition().getProperty(updatePropName);
 		if (pd == null) {
-			// TODO
-			throw new ApplicationException();
+			getLogger().error("can not find property definition. updatePropName=" + updatePropName);
+			throw new ApplicationException(resourceString("command.generic.bulk.BulkCommandContext.propDefNotFoundErr"));
 		}
 
 		SearchResultSection section = getView().getResultSection();
 		List<PropertyColumn> propertyColumns = section.getElements().stream()
 				.filter(e -> e instanceof PropertyColumn)
-				.map(e -> (PropertyColumn)e)
-				.filter(e -> e.getBulkUpdateEditor() != null) //一括更新プロパティエディタが未設定のプロパティは対象外にする
+				.map(e -> (PropertyColumn) e)
+				.filter(e -> getRegistrationPropertyBaseHandler().isDispProperty(e))
 				.collect(Collectors.toList());
 
 		for (PropertyColumn pc : propertyColumns) {
-			if(pc.getPropertyName().equals(propName)) {
+			if(pc.getPropertyName().equals(updatePropName)) {
 				propList.add(pc);
+				//組み合わせで使うプロパティを通常のプロパティ扱いに
 				if (pc.getBulkUpdateEditor() instanceof DateRangePropertyEditor) {
 					DateRangePropertyEditor de = (DateRangePropertyEditor) pc.getBulkUpdateEditor();
 					PropertyColumn dummy = new PropertyColumn();
@@ -651,6 +656,7 @@ public class BulkCommandContext extends RegistrationCommandContext {
 					dummy.setPropertyName(de.getToPropertyName());
 					dummy.setEditor(de.getEditor());
 					propList.add(dummy);
+				//組み合わせで使うプロパティを通常のプロパティ扱いに
 				} else if (pc.getBulkUpdateEditor() instanceof JoinPropertyEditor) {
 					JoinPropertyEditor je = (JoinPropertyEditor) pc.getBulkUpdateEditor();
 					for (NestProperty nest : je.getProperties()) {
@@ -688,101 +694,164 @@ public class BulkCommandContext extends RegistrationCommandContext {
 		return loadReferences;
 	}
 
+	/**
+	 * 更新可能な被参照（ネストテーブル、参照セクション）を定義内に保持しているかを取得します。
+	 * @return
+	 */
+	public boolean hasUpdatableMappedByReference() {
+		List<PropertyColumn> properties = getProperty();
+		for (PropertyColumn property : properties) {
+			PropertyDefinition pd = getProperty(property.getPropertyName());
+			if (pd instanceof ReferenceProperty) {
+				String mappedBy = ((ReferenceProperty) pd).getMappedBy();
+				if (StringUtil.isBlank(mappedBy)) continue;
+				if (property.getBulkUpdateEditor() instanceof ReferencePropertyEditor) {
+					ReferencePropertyEditor editor = (ReferencePropertyEditor) property.getBulkUpdateEditor();
+					if (editor.getDisplayType() == ReferenceDisplayType.NESTTABLE) {
+						return true;
+					}
+				}
+			}
+		}
+		return false;
+	}
+
 	@SuppressWarnings("unused")
 	private class BulkCommandParams {
 
-		private Integer row;
-		private String oid;
-		private Long version;
-		private Long updateDate;
+		private Map<String, Object> params;
 
 		public BulkCommandParams(Integer row, String oid) {
-			this.row = row;
-			this.oid = oid;
+			setRow(row);
+			setOid(oid);
 		}
 
 		public Integer getRow() {
-			return row;
+			return getValue(Constants.ID);
 		}
 
 		public void setRow(Integer row) {
-			this.row = row;
+			setValue(Constants.ID, row);
 		}
 
 		public String getOid() {
-			return oid;
+			return getValue(Constants.OID);
 		}
 
 		public void setOid(String oid) {
-			this.oid = oid;
+			setValue(Constants.OID, oid);
 		}
 
 		public Long getVersion() {
-			return version;
+			return getValue(Constants.VERSION);
 		}
 
 		public void setVersion(Long version) {
-			this.version = version;
+			setValue(Constants.VERSION, version);
 		}
 
 		public Long getUpdateDate() {
-			return updateDate;
+			return getValue(Constants.TIMESTAMP);
 		}
 
 		public void setUpdateDate(Long updateDate) {
-			this.updateDate = updateDate;
+			setValue(Constants.TIMESTAMP, updateDate);
+		}
+
+		public void setValue(String name, Object value) {
+			if (value == null && getValue(name) == null) {
+				return;
+			}
+			if (params == null) {
+				params = new HashMap<String, Object>();
+			}
+
+			if (value == null) {
+				params.remove(name);
+			} else {
+				params.put(name, value);
+			}
+		}
+
+		@SuppressWarnings("unchecked")
+		public <T> T getValue(String name) {
+			if (params != null) {
+				return (T) params.get(name);
+			}
+			return null;
 		}
 
 		@Override
 		public String toString() {
-			return "BulkDetailCommandBaseParameters [row=" + row + ", oid=" + oid + ", version=" + version + ", updateDate=" + updateDate + "]";
+			return "BulkCommandParams [row=" + getRow() + ", oid=" + getOid() + ", version=" + getVersion() + ", updateDate=" + getUpdateDate() + "]";
 		}
 	}
 
 
 	public static class BulkUpdatedProperty {
-		private Integer nth;
-		private String propertyName;
-		private Object propertyValue;
 
-		public BulkUpdatedProperty(Integer nth, String propertyName) {
-			this(nth, propertyName, null);
+		private Map<String, Object> params;
+
+		public BulkUpdatedProperty(Integer updateNo, String propertyName) {
+			this(updateNo, propertyName, null);
 		}
 
-		public BulkUpdatedProperty(Integer nth, String propertyName, Object propertyValue) {
-			this.nth = nth;
-			this.propertyName = propertyName;
-			this.propertyValue = propertyValue;
+		public BulkUpdatedProperty(Integer updateNo, String propertyName, Object propertyValue) {
+			setUpdateNo(updateNo);
+			setPropertyName(propertyName);
+			setPropertyValue(propertyValue);
 		}
 
-		public Integer getNth() {
-			return nth;
+		public Integer getUpdateNo() {
+			return getValue(Constants.ID);
 		}
 
-		public void setNth(Integer nth) {
-			this.nth = nth;
+		public void setUpdateNo(Integer updateNo) {
+			setValue(Constants.ID, updateNo);
 		}
 
 		public String getPropertyName() {
-			return propertyName;
+			return getValue(Constants.BULK_UPDATED_PROP_NM);
 		}
 
 		public void setPropertyName(String propertyName) {
-			this.propertyName = propertyName;
+			setValue(Constants.BULK_UPDATED_PROP_NM, propertyName);
 		}
 
 		public Object getPropertyValue() {
-			return propertyValue;
+			return getValue(Constants.BULK_UPDATED_PROP_VALUE);
 		}
 
 		public void setPropertyValue(Object propertyValue) {
-			this.propertyValue = propertyValue;
+			setValue(Constants.BULK_UPDATED_PROP_VALUE, propertyValue);
+		}
+
+		public void setValue(String name, Object value) {
+			if (value == null && getValue(name) == null) {
+				return;
+			}
+			if (params == null) {
+				params = new HashMap<String, Object>();
+			}
+
+			if (value == null) {
+				params.remove(name);
+			} else {
+				params.put(name, value);
+			}
+		}
+
+		@SuppressWarnings("unchecked")
+		public <T> T getValue(String name) {
+			if (params != null) {
+				return (T) params.get(name);
+			}
+			return null;
 		}
 
 		@Override
 		public String toString() {
-			return "BulkUpdatedProperty [nth=" + nth + ", propertyName=" + propertyName + "]";
+			return "BulkUpdatedProperty [updateNo=" + getUpdateNo() + ", propertyName=" + getPropertyName() + "]";
 		}
 	}
-
 }

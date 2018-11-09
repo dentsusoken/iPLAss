@@ -3,8 +3,8 @@ package org.iplass.gem.command.generic.bulk;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.iplass.gem.command.Constants;
 import org.iplass.gem.command.GemResourceBundleUtil;
@@ -75,17 +75,13 @@ public class BulkUpdateListCommand extends BulkCommandBase {
 
 		SearchFormView view = context.getView();
 		if (view == null) {
-			request.setAttribute(Constants.MESSAGE, resourceString("command.generic.detail.DetailViewCommand.viewErr"));
+			request.setAttribute(Constants.MESSAGE, resourceString("command.generic.bulk.BulkUpdateViewCommand.viewErr"));
 			return Constants.CMD_EXEC_ERROR_VIEW;
 		}
-		//　一括更新プロパティエディターが設定されているかをチェックする
-		Optional<PropertyColumn> optional = view.getResultSection().getElements().stream()
-				.filter(e -> e instanceof PropertyColumn)
-				.map(e -> (PropertyColumn) e)
-				.filter(e -> e.getBulkUpdateEditor() != null)
-				.findFirst();
-		if(!optional.isPresent()) {
-			request.setAttribute(Constants.MESSAGE, resourceString("command.generic.detail.DetailViewCommand.viewErr"));
+
+		if (context.getProperty().size() == 0) {
+			// 一括更新するプロパティ定義が一件もない場合、プロパティの一括更新が無効になっています。
+			request.setAttribute(Constants.MESSAGE, resourceString("command.generic.bulk.BulkUpdateViewCommand.canNotUpdateProp"));
 			return Constants.CMD_EXEC_ERROR_VIEW;
 		}
 
@@ -102,7 +98,7 @@ public class BulkUpdateListCommand extends BulkCommandBase {
 					ret = new EditResult();
 					ret.setResultType(ResultType.ERROR);
 					ret.setErrors(context.getErrors().toArray(new ValidateError[context.getErrors().size()]));
-					ret.setMessage(resourceString("command.generic.detail.UpdateCommand.inputErr"));
+					ret.setMessage(resourceString("command.generic.bulk.BulkUpdateListCommand.inputErr"));
 				}
 				data.setEntity(row, model);
 			} else {
@@ -131,8 +127,20 @@ public class BulkUpdateListCommand extends BulkCommandBase {
 
 		String retKey = Constants.CMD_EXEC_SUCCESS;
 		if (ret.getResultType() == ResultType.SUCCESS) {
-			data.addUpdatedProperty(context.getBulkUpdatePropName(), context.getBulkUpdatePropDispValue());
-			request.setAttribute(Constants.MESSAGE, resourceString("command.generic.detail.BulkUpdateCommand.successMsg"));
+			//更新されたプロパティリストに登録
+			List<PropertyColumn> updatedProps = context.getProperty();
+			// 組み合わせで使うプロパティ
+			if (updatedProps.size() > 1) {
+				List<Object> updatedPropValue = updatedProps.stream()
+						.map(pc -> context.getBulkUpdatePropertyValue(pc.getPropertyName()))
+						.collect(Collectors.toList());
+				data.addUpdatedProperty(context.getBulkUpdatePropName(), updatedPropValue);
+			} else {
+				String updatedPropName = context.getBulkUpdatePropName();
+				Object updatedPropValue = context.getBulkUpdatePropertyValue(updatedPropName);
+				data.addUpdatedProperty(updatedPropName, updatedPropValue);
+			}
+			request.setAttribute(Constants.MESSAGE, resourceString("command.generic.bulk.BulkUpdateCommand.successMsg"));
 		} else if (ret.getResultType() == ResultType.ERROR) {
 			retKey = Constants.CMD_EXEC_ERROR;
 			List<ValidateError> tmpList = new ArrayList<ValidateError>();

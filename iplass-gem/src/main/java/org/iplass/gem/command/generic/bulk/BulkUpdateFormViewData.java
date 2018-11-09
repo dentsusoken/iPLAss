@@ -98,7 +98,7 @@ public class BulkUpdateFormViewData{
 	}
 
 	public void addUpdatedProperty(String propName, Object propValue) {
-		Optional<Integer> optional = updatedProperties.stream().map(BulkUpdatedProperty::getNth)
+		Optional<Integer> optional = updatedProperties.stream().map(BulkUpdatedProperty::getUpdateNo)
 				.max(Integer::compareTo);
 		Integer current = Integer.valueOf(0);
 		if(optional.isPresent()) {

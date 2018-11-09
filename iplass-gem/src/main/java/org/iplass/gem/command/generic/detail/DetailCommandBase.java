@@ -78,12 +78,6 @@ public abstract class DetailCommandBase extends RegistrationCommandBase<DetailCo
 	}
 
 	@Override
-	protected boolean isHidden(DetailCommandContext context, PropertyItem property) {
-		//詳細編集で非表示なら更新対象外
-		return property.isHideDetail();
-	}
-
-	@Override
 	protected boolean isNewVersion(DetailCommandContext context) {
 		return context.isNewVersion();
 	}

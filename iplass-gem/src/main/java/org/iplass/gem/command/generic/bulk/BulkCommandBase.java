@@ -28,18 +28,12 @@ public abstract class BulkCommandBase extends RegistrationCommandBase<BulkComman
 
 	@Override
 	protected boolean hasUpdatableMappedByReference(BulkCommandContext context) {
-		// TODO Auto-generated method stub
-		return false;
+		return context.hasUpdatableMappedByReference();
 	}
 
 	@Override
 	protected List<PropertyColumn> getProperty(BulkCommandContext context) {
 		return context.getProperty();
-	}
-
-	@Override
-	protected boolean isHidden(BulkCommandContext context, PropertyColumn property) {
-		return property.isDispFlag() == false;
 	}
 
 	@Override

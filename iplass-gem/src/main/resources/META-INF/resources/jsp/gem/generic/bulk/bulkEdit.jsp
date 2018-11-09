@@ -50,19 +50,19 @@
 
 <%!
 	boolean isSelectAll(String selectAllType) {
-		return "all".equals(selectAllType) ? true : false;
+		return "all".equals(selectAllType);
 	}
 
 	boolean isFirstSelect(String selectAllType) {
-		return StringUtil.isEmpty(selectAllType) ? true : false;
+		return StringUtil.isEmpty(selectAllType);
 	}
 	
 	boolean isUpdateFailed(String bulkUpdatePropNm) {
-		return StringUtil.isNotEmpty(bulkUpdatePropNm) ? true : false;
+		return StringUtil.isNotEmpty(bulkUpdatePropNm);
 	}
 	
 	boolean canBulkUpdate(PropertyColumn pc) {
-		if (pc.getBulkUpdateEditor() == null || pc.getEditor() instanceof UserPropertyEditor || 
+		if (!pc.isDispFlag() || pc.getBulkUpdateEditor() == null || pc.getEditor() instanceof UserPropertyEditor || 
 			pc.getEditor() instanceof ExpressionPropertyEditor || pc.getEditor() instanceof AutoNumberPropertyEditor) {
 			return false;
 		}
@@ -72,59 +72,38 @@
 	//プロパティ値の表示値を取得する
 	String getPropertyDisplayValue(PropertyDefinition p, Object propValue) {
 		// 表示値に変更済み
-		if (propValue instanceof String) return (String)propValue;
+		if (propValue instanceof String) return (String) propValue;
 		String dispValue = "";
 		boolean isMultiple = p.getMultiplicity() != 1;
-		// リクエストパラメータから参照型
-		if (p instanceof ReferenceProperty) {
-			if (isMultiple) {
-				StringBuilder strBuilder = new StringBuilder();
-				Entity[] tmp = (Entity[])propValue;
-				for (Entity e : tmp) {
-					strBuilder.append(e.getName() + ",");
-				}
-				if (strBuilder.length() > 0) {
-					strBuilder.deleteCharAt(strBuilder.length() - 1);
-					dispValue = strBuilder.toString();
-				}
-			} else {
-				dispValue = ((Entity)propValue).getName();
+		if (isMultiple) {
+			Object[] values = (Object[]) propValue;
+			String[] tmp = new String[values.length];
+			for (int i = 0; i < values.length; i++) {
+				tmp[i] = convertPropValueToString(p, values[i]);
 			}
+			dispValue = Arrays.toString(tmp);
 		} else {
-			if (isMultiple) {
-				StringBuilder strBuilder = new StringBuilder();
-				if (propValue instanceof BinaryReference[]) {
-					BinaryReference[] tmp = (BinaryReference[]) propValue;
-					for (BinaryReference bf : tmp) {
-						strBuilder.append(bf.getName() + ",");
-					}
-				} else if (propValue instanceof SelectValue[]) {
-					SelectValue[] tmp = (SelectValue[]) propValue;
-					for (SelectValue sv : tmp) {
-						SelectValue lsv = ((SelectProperty) p).getLocalizedSelectValue(sv.getValue(), TemplateUtil.getLanguage());
-						strBuilder.append(lsv.getDisplayName() + ",");
-					}
-				} else {
-					strBuilder.append(propValue.toString());
-				}
-				if (strBuilder.length() > 0) {
-					strBuilder.deleteCharAt(strBuilder.length() - 1);
-					dispValue = strBuilder.toString();
-				}
-			} else {
-				if (propValue instanceof BinaryReference) {
-					dispValue = ((BinaryReference) propValue).getName();
-				} else if (propValue instanceof SelectValue) {
-					SelectValue sv = (SelectValue)propValue;
-					SelectValue lsv = ((SelectProperty) p).getLocalizedSelectValue(sv.getValue(), TemplateUtil.getLanguage());
-					dispValue = ((SelectValue) lsv).getDisplayName();
-				} else {
-					dispValue = propValue.toString();
-				}
-			}
+			dispValue = convertPropValueToString(p, propValue);
+		}
+		return StringUtil.escapeHtml(dispValue);
+	}
+
+	String convertPropValueToString(PropertyDefinition p, Object propValue) {
+		String dispValue = "";
+		if (propValue instanceof Entity) {
+			dispValue = ((Entity) propValue).getName();
+		} else if (propValue instanceof BinaryReference) {
+			dispValue = ((BinaryReference) propValue).getName();
+		} else if (propValue instanceof SelectValue) {
+			SelectValue sv = (SelectValue) propValue;
+			SelectValue lsv = ((SelectProperty) p).getLocalizedSelectValue(sv.getValue(), TemplateUtil.getLanguage());
+			dispValue = ((SelectValue) lsv).getDisplayName();
+		} else {
+			dispValue = propValue.toString();
 		}
 		return dispValue;
-	}%>
+	}
+%>
 <%
 	//権限確認用
 	AuthContext auth = AuthContext.getCurrentContext();
@@ -172,7 +151,6 @@
 	Map<String, PropertyDefinition> defMap = new HashMap<String, PropertyDefinition>();
 	Map<String, PropertyColumn> colMap = new HashMap<String, PropertyColumn>();
 	for (PropertyColumn pc : properties) {
-		if (!canBulkUpdate(pc)) continue;
 		String propName = pc.getPropertyName();
 		colMap.put(propName, pc);
 
@@ -191,7 +169,6 @@
 
 	//section以下で参照するパラメータ
 	request.setAttribute(Constants.OUTPUT_TYPE, type);
-	//	request.setAttribute(Constants.ENTITY_DATA, data.getEntity());
 	request.setAttribute(Constants.ENTITY_DEFINITION, data.getEntityDefinition());
 	request.setAttribute(Constants.EXEC_TYPE, execType);
 %>
@@ -302,11 +279,11 @@ $(function() {
 <tr>
 <th>${m:rs("mtp-gem-messages", "generic.bulk.updatePropName")}</th>
 <td>
-<select id="sel_<c:out value="<%=Constants.BULK_UPDATE_PROP_NM%>"/>" name="<c:out value="<%=Constants.BULK_UPDATE_PROP_NM%>"/>" class="inpbr form-size-11" onchange="propChange(this)">
+<select id="sel_<c:out value="<%=Constants.BULK_UPDATE_PROP_NM%>"/>" name="<c:out value="<%=Constants.BULK_UPDATE_PROP_NM%>"/>" class="inpbr form-size" onchange="propChange(this)">
 <option value="" selected="selected"><%= pleaseSelectLabel %></option>
 <%
 	for (PropertyColumn pc : colMap.values()) {
-		if (!pc.isDispFlag()) continue;
+		if (!canBulkUpdate(pc)) continue;
 		String propName = pc.getPropertyName();
 		//		PropertyDefinition pd = ed.getProperty(propName);
 		PropertyDefinition pd = defMap.get(propName);
@@ -328,10 +305,9 @@ $(function() {
 <table id="id_tbl_bulkupdate" class="tbl-section">
 <%
 	for (PropertyColumn pc : colMap.values()) {
-// 		if (pc.isDispFlag() && (type != OutputType.EDIT || ViewUtil.dispElement(pi))) {
-		if (pc.isDispFlag()) {
+		if (canBulkUpdate(pc)) {
 			request.setAttribute(Constants.ELEMENT, pc);
-//				request.setAttribute(Constants.COL_NUM, section.getColNum());
+
 			String path = EntityViewUtil.getJspPath(pc, ViewConst.DESIGN_TYPE_GEM);
 			if (path != null) {
 %>
@@ -352,11 +328,11 @@ $(function() {
 		//ボタンの表示ラベル
 		String bulkUpdateDisplayLabel = GemResourceBundleUtil.resourceString("generic.bulk.update");
 %>
-<li class="btn save-btn"><input id="bulkUpdateBtn" type="button" class="gr-btn" value="<c:out value="<%=bulkUpdateDisplayLabel %>" />" /></li>
+<li class="btn save-btn"><input id="bulkUpdateBtn" type="button" class="gr-btn" value="<c:out value="<%=bulkUpdateDisplayLabel %>" />" onclick="onclick_bulkupdate()" /></li>
 <%
 	}
 %>
-<li class="mt05 cancel-link"><a href="javascript:void(0)" onclick="cancel();return false;">${m:rs("mtp-gem-messages", "generic.bulk.cancel")}</a></li> 
+<li class="mt05 cancel-link"><a href="javascript:void(0)" onclick="onclick_cancel()">${m:rs("mtp-gem-messages", "generic.bulk.cancel")}</a></li> 
 </ul>
 </div>
 <div>
@@ -370,24 +346,33 @@ $(function() {
 <th class="section-data w-auto">${m:rs("mtp-gem-messages", "generic.bulk.updatedPropValue")}</th>
 </tr>
 <%
-	for (BulkUpdatedProperty updatedProp : data.getUpdatedProperties()) {
-		Integer nth = updatedProp.getNth();
-		String updatedPropName = updatedProp.getPropertyName();
-		PropertyDefinition pd = defMap.get(updatedPropName);
-		PropertyColumn pc = colMap.get(updatedPropName);
-		String updatedPropDispName = TemplateUtil.getMultilingualString(pc.getDisplayLabel(), pc.getLocalizedDisplayLabelList(),
-				pd.getDisplayName(), pd.getLocalizedDisplayNameList());
-		Object updatedPropValue = updatedProp.getPropertyValue();
-		String updatedPropDispValue = getPropertyDisplayValue(defMap.get(updatedPropName), updatedPropValue);
+		for (BulkUpdatedProperty updatedProp : data.getUpdatedProperties()) {
+			Integer updateNo = updatedProp.getUpdateNo();
+			String updatedPropName = updatedProp.getPropertyName();
+			PropertyDefinition pd = defMap.get(updatedPropName);
+			PropertyColumn pc = colMap.get(updatedPropName);
+			String updatedPropDispName = TemplateUtil.getMultilingualString(pc.getDisplayLabel(), pc.getLocalizedDisplayLabelList(),
+					pd.getDisplayName(), pd.getLocalizedDisplayNameList());
+			Object updatedPropValue = updatedProp.getPropertyValue();
+		
+			if (pc.getBulkUpdateEditor() instanceof DateRangePropertyEditor || pc.getBulkUpdateEditor() instanceof JoinPropertyEditor) {
+				List<Object> values = (List<Object>) updatedPropValue;
+				String[] tmp = new String[values.size()];
+				for(int i = 0; i < values.size(); i++) {
+					tmp[i] = convertPropValueToString(pd, values.get(i));
+				}
+				updatedPropValue = Arrays.toString(tmp);
+			} 
+			String updatedPropDispValue = getPropertyDisplayValue(pd, updatedPropValue);
 %>
 <tr>
 <th class="section-data col1">
 <%=updatedPropDispName%>
-<input type="hidden" name="<%=Constants.BULK_UPDATED_PROP_NM%>" value="<%=nth + "_" + updatedPropName%>"/>
+<input type="hidden" name="<%=Constants.BULK_UPDATED_PROP_NM%>" value="<%=updateNo + "_" + updatedPropName%>"/>
 </th>
 <td class="section-data col1">
 <%=updatedPropDispValue%>
-<input type="hidden" name="<%=Constants.BULK_UPDATED_PROP_VALUE%>" value="<%=nth + "_" + updatedPropDispValue%>"/>
+<input type="hidden" name="<%=Constants.BULK_UPDATED_PROP_VALUE%>" value="<%=updateNo + "_" + updatedPropDispValue%>"/>
 </td>
 </tr>
 <% 
@@ -395,14 +380,24 @@ $(function() {
 %>
 </table>
 <%
-	} 
+	}
 %>
 </div>
 </div>
 </form>
 <script type="text/javascript">
-function cancel() {
+function onclick_cancel() {
 	$("#modal-dialog-root .modal-close", parent.document).trigger("click");
+}
+function onclick_bulkupdate(){
+	if (!confirm("${m:rs('mtp-gem-messages', 'generic.bulk.updateMsg')}")) {
+		return;
+	}
+	if ($("#sel_<%=Constants.BULK_UPDATE_PROP_NM%>").val() == "") {
+		alert("${m:rs('mtp-gem-messages', 'generic.bulk.pleaseSelect')}");
+		return;
+	}
+	$("#detailForm").submit();
 }
 function onDialogClose() {
 	var edited = ("<%=StringUtil.isNotBlank(message)%>" == "true");
@@ -426,16 +421,8 @@ $(function() {
 	//前回で更新に失敗したプロパティに対してエラーメッセージを表示する
 	$("#id_tr_<%=bulkUpdatePropNm%>").css("display", "");
 <%	} %>
-	$("#bulkUpdateBtn").on("click", function(){
-		if (!confirm("${m:rs('mtp-gem-messages', 'generic.bulk.updateMsg')}")) {
-			return;
-		}
-		if ($("#sel_<%=Constants.BULK_UPDATE_PROP_NM%>").val() == "") {
-			alert("${m:rs('mtp-gem-messages', 'generic.bulk.pleaseSelect')}");
-			return;
-		}
-		$("#detailForm").submit();
-	});
+	// タイトルの設定
+	$("#modal-title", parent.document).text("<%=displayName%>");<%-- XSS対応-メタの設定のため対応なし(displayName) --%>
 	// 一括更新件数
 	var countBulkUpdate = parent.window.countBulkUpdate;
 	if(countBulkUpdate && $.isFunction(countBulkUpdate)) {

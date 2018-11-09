@@ -50,6 +50,7 @@ import org.iplass.mtp.view.generic.editor.SelectPropertyEditor;
 import org.iplass.mtp.view.generic.editor.StringPropertyEditor;
 import org.iplass.mtp.view.generic.editor.TimePropertyEditor;
 import org.iplass.mtp.view.generic.editor.TimestampPropertyEditor;
+import org.iplass.mtp.view.generic.element.property.PropertyBase;
 import org.slf4j.Logger;
 
 public abstract class RegistrationCommandContext extends GenericCommandContext{
@@ -66,6 +67,9 @@ public abstract class RegistrationCommandContext extends GenericCommandContext{
 	private LoadEntityInterrupterHandler loadEntityInterrupterHandler;
 
 	private List<ReferenceRegistHandler> referenceRegistHandlers = new ArrayList<>();
+
+	@SuppressWarnings("rawtypes")
+	private RegistrationPropertyBaseHandler registrationPropertyBaseHandler;
 
 	protected abstract Logger getLogger();
 
@@ -305,7 +309,7 @@ public abstract class RegistrationCommandContext extends GenericCommandContext{
 				interrupter = ucdm.createInstanceAs(RegistrationInterrupter.class, className);
 			} catch (ClassNotFoundException e) {
 				getLogger().error(className + " can not instantiate.", e);
-				throw new ApplicationException(resourceString("command.generic.detail.DetailCommandContext.internalErr"));
+				throw new ApplicationException(resourceString("command.generic.detail.RegistrationCommandContext.internalErr"));
 			}
 		}
 		if (interrupter == null) {
@@ -356,10 +360,6 @@ public abstract class RegistrationCommandContext extends GenericCommandContext{
 
 	protected abstract String getLoadEntityInterrupterName();
 
-	public List<ReferenceRegistHandler> getReferenceRegistHandlers() {
-		return referenceRegistHandlers;
-	}
-
 	private LoadEntityInterrupter createLoadEntityInterrupter(String className) {
 		LoadEntityInterrupter interrupter = null;
 		if (StringUtil.isNotEmpty(className)) {
@@ -368,7 +368,7 @@ public abstract class RegistrationCommandContext extends GenericCommandContext{
 				interrupter = ucdm.createInstanceAs(LoadEntityInterrupter.class, className);
 			} catch (ClassNotFoundException e) {
 				getLogger().error(className + " can not instantiate.", e);
-				throw new ApplicationException(resourceString("command.generic.detail.DetailCommandContext.internalErr"));
+				throw new ApplicationException(resourceString("command.generic.detail.RegistrationCommandContext.internalErr"));
 			}
 		}
 		if (interrupter == null) {
@@ -393,6 +393,10 @@ public abstract class RegistrationCommandContext extends GenericCommandContext{
 		return interrupter;
 	}
 
+	public List<ReferenceRegistHandler> getReferenceRegistHandlers() {
+		return referenceRegistHandlers;
+	}
+
 	public void regist(ReferenceRegistHandlerFunction function, Entity inputEntity, Entity loadedEntity) {
 		for (ReferenceRegistHandler handler : referenceRegistHandlers) {
 			handler.regist(function, inputEntity, loadedEntity);
@@ -404,6 +408,17 @@ public abstract class RegistrationCommandContext extends GenericCommandContext{
 			handler.registMappedby(fucntion, inputEntity, loadedEntity);
 		}
 	}
+
+	@SuppressWarnings("unchecked")
+	public <T extends PropertyBase> RegistrationPropertyBaseHandler<T> getRegistrationPropertyBaseHandler() {
+		if (registrationPropertyBaseHandler == null) {
+			registrationPropertyBaseHandler = createRegistrationPropertyBaseHandler();
+		}
+		return registrationPropertyBaseHandler;
+	}
+
+	@SuppressWarnings("rawtypes")
+	protected abstract RegistrationPropertyBaseHandler createRegistrationPropertyBaseHandler();
 
 	protected static String resourceString(String key, Object... arguments) {
 		return GemResourceBundleUtil.resourceString(key, arguments);

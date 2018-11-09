@@ -137,6 +137,22 @@ public class DetailCommandContext extends RegistrationCommandContext {
 		return getView().getLoadEntityInterrupterName();
 	}
 
+	@Override
+	protected RegistrationPropertyBaseHandler<PropertyItem> createRegistrationPropertyBaseHandler() {
+		return new RegistrationPropertyBaseHandler<PropertyItem>() {
+			@Override
+			public boolean isDispProperty(PropertyItem property) {
+				//詳細編集で非表示なら更新対象外
+				return property.isDispFlag() && !property.isHideDetail();
+			}
+
+			@Override
+			public PropertyEditor getEditor(PropertyItem property) {
+				return property.getEditor();
+			}
+		};
+	}
+
 	/**
 	 * フォーム内のプロパティを取得します。
 	 * @param view 画面定義
@@ -181,7 +197,7 @@ public class DetailCommandContext extends RegistrationCommandContext {
 		for (Element elem : section.getElements()) {
 			if (elem instanceof PropertyItem) {
 				PropertyItem prop = (PropertyItem) elem;
-				if (prop.isDispFlag() && !prop.isHideDetail() && ViewUtil.dispElement(execType, prop)) {
+				if (getRegistrationPropertyBaseHandler().isDispProperty(prop) && ViewUtil.dispElement(execType, prop)) {
 					if (prop.getEditor() instanceof JoinPropertyEditor) {
 						//組み合わせで使うプロパティを通常のプロパティ扱いに
 						JoinPropertyEditor je = (JoinPropertyEditor) prop.getEditor();
@@ -622,19 +638,8 @@ public class DetailCommandContext extends RegistrationCommandContext {
 	}
 
 	private void addNestTableRegistHandler(ReferenceProperty p, List<Entity> list, EntityDefinition red, PropertyItem property) {
-		RegistrationPropertyBaseHandler<PropertyItem> propBaseHandler = new RegistrationPropertyBaseHandler<PropertyItem>() {
-			@Override
-			public boolean isHidden(PropertyItem property) {
-				return !property.isDispFlag() || property.isHideDetail();
-			}
-
-			@Override
-			public PropertyEditor getEditor(PropertyItem property) {
-				return property.getEditor();
-			}
-		};
 		// ネストテーブルはプロパティ単位で登録可否決定
-		if (!NestTableReferenceRegistHandler.canRegist(property, propBaseHandler)) return;
+		if (!NestTableReferenceRegistHandler.canRegist(property, getRegistrationPropertyBaseHandler())) return;
 
 		ReferencePropertyEditor editor = (ReferencePropertyEditor) property.getEditor();
 
@@ -650,7 +655,7 @@ public class DetailCommandContext extends RegistrationCommandContext {
 			target = list;
 		}
 
-		ReferenceRegistHandler handler = NestTableReferenceRegistHandler.get(this, list, red, p, property, editor.getNestProperties(), propBaseHandler);
+		ReferenceRegistHandler handler = NestTableReferenceRegistHandler.get(this, list, red, p, property, editor.getNestProperties(), getRegistrationPropertyBaseHandler());
 		if (handler != null) {
 			handler.setForceUpdate(editor.isForceUpadte());
 			getReferenceRegistHandlers().add(handler);

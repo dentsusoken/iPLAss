@@ -74,7 +74,7 @@ public class BulkUpdateViewCommand extends BulkCommandBase {
 		// 各種定義取得
 		SearchFormView view = context.getView();
 		if (view == null) {
-			request.setAttribute(Constants.MESSAGE, resourceString("command.generic.detail.DetailViewCommand.viewErr"));
+			request.setAttribute(Constants.MESSAGE, resourceString("command.generic.bulk.BulkUpdateViewCommand.viewErr"));
 			return Constants.CMD_EXEC_ERROR_VIEW;
 		}
 
@@ -88,7 +88,7 @@ public class BulkUpdateViewCommand extends BulkCommandBase {
 			if (oid != null && oid.length() > 0) {
 				Entity entity = loadViewEntity(context, oid, targetVersion, context.getDefinitionName(), (List<String>) null);
 				if (entity == null) {
-					builder.append(resourceString("command.generic.detail.DetailViewCommand.noPermission", targetRow));
+					builder.append(resourceString("command.generic.bulk.BulkUpdateViewCommand.noPermission", targetRow));
 					break;
 				}
 				data.setEntity(targetRow, entity);
