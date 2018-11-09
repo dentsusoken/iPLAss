@@ -71,8 +71,6 @@
 
 	//プロパティ値の表示値を取得する
 	String getPropertyDisplayValue(PropertyDefinition p, Object propValue) {
-		// 表示値に変更済み
-		if (propValue instanceof String) return (String) propValue;
 		String dispValue = "";
 		boolean isMultiple = p.getMultiplicity() != 1;
 		if (isMultiple) {
@@ -354,16 +352,21 @@ $(function() {
 			String updatedPropDispName = TemplateUtil.getMultilingualString(pc.getDisplayLabel(), pc.getLocalizedDisplayLabelList(),
 					pd.getDisplayName(), pd.getLocalizedDisplayNameList());
 			Object updatedPropValue = updatedProp.getPropertyValue();
-		
-			if (pc.getBulkUpdateEditor() instanceof DateRangePropertyEditor || pc.getBulkUpdateEditor() instanceof JoinPropertyEditor) {
-				List<Object> values = (List<Object>) updatedPropValue;
-				String[] tmp = new String[values.size()];
-				for(int i = 0; i < values.size(); i++) {
-					tmp[i] = convertPropValueToString(pd, values.get(i));
-				}
-				updatedPropValue = Arrays.toString(tmp);
-			} 
-			String updatedPropDispValue = getPropertyDisplayValue(pd, updatedPropValue);
+			String updatedPropDispValue = "";
+			// 表示値に変更済み
+			if (updatedPropValue instanceof String) {
+				updatedPropDispValue = (String)updatedPropValue;
+			} else {
+				if (pc.getBulkUpdateEditor() instanceof DateRangePropertyEditor || pc.getBulkUpdateEditor() instanceof JoinPropertyEditor) {
+					List<Object> values = (List<Object>) updatedPropValue;
+					String[] tmp = new String[values.size()];
+					for(int i = 0; i < values.size(); i++) {
+						tmp[i] = convertPropValueToString(pd, values.get(i));
+					}
+					updatedPropValue = Arrays.toString(tmp);
+				} 
+				updatedPropDispValue = getPropertyDisplayValue(pd, updatedPropValue);
+			}
 %>
 <tr>
 <th class="section-data col1">
