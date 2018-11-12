@@ -445,7 +445,7 @@ function deleteAll(webapi, searchType, formName, _t, func) {
 	});
 }
 
-function getMassReference(webapi, oid, defName, propName, viewName, offset, sortKey, sortType, isCount, condKey, outputType, func) {
+function getMassReferenceData(webapi, oid, defName, propName, viewName, offset, sortKey, sortType, isCount, condKey, outputType, func) {
 	var params = "{";
 	params += "\"oid\":\"" + oid + "\"";
 	params += ",\"defName\":\"" + defName + "\"";

@@ -1252,7 +1252,7 @@ $.fn.allInputCheck = function(){
 					if ($table.length > 0) {
 
 						//参照プロパティ取得
-						getMassReference($v.webapiName, $v.oid, $v.defName, $v.propName, $v.viewName, $v.offset, $v.sortKey, $v.sortType, $v.showCount, $v.condKey, $v.orgOutputType, function(dispInfo, count, list) {
+						getMassReferenceData($v.webapiName, $v.oid, $v.defName, $v.propName, $v.viewName, $v.offset, $v.sortKey, $v.sortType, $v.showCount, $v.condKey, $v.orgOutputType, function(dispInfo, count, list) {
 							//テーブル作成
 							if (!$v.grid) {
 								$v.grid = $table.build(dispInfo, count, list);
@@ -1337,8 +1337,8 @@ $.fn.allInputCheck = function(){
 						document.scriptContext["editReferenceCallback"] = function(entity) {
 							$v.getMassReference();
 
-							var $form = $("<form />").attr({method:"POST", action:$v.viewAction, target:target}).appendTo("body");
-							$("<input />").attr({type:"hidden", name:"defName", value:$v.targetDefName}).appendTo($form);
+							var viewAction = $v.viewAction + "/" + entity.oid;
+							var $form = $("<form />").attr({method:"POST", action:contextPath + "/" + viewAction, target:target}).appendTo("body");
 							$("<input />").attr({type:"hidden", name:"oid", value:entity.oid}).appendTo($form);
 							$("<input />").attr({type:"hidden", name:"version", value:entity.version}).appendTo($form);
 							$("<input />").attr({type:"hidden", name:"refEdit", value:$v.updatable}).appendTo($form);
@@ -1347,8 +1347,7 @@ $.fn.allInputCheck = function(){
 							$form.remove();
 						}
 
-						var $form = $("<form />").attr({method:"POST", action:$v.detailAction, target:target}).appendTo("body");
-						$("<input />").attr({type:"hidden", name:"defName", value:$v.targetDefName}).appendTo($form);
+						var $form = $("<form />").attr({method:"POST", action:contextPath + "/" + $v.detailAction, target:target}).appendTo("body");
 						$("<input />").attr({type:"hidden", name:"updateByParam", value:true}).appendTo($form);
 						$("<input />").attr({type:"hidden", name:$v.mappedBy, value:$v.oid}).appendTo($form);
 						if (isSubModal) $("<input />").attr({type:"hidden", name:"modalTarget", value:target}).appendTo($form);
@@ -1398,7 +1397,7 @@ $.fn.allInputCheck = function(){
 				document.scriptContext["editReferenceCallback"] = function(entity) {
 					$v.getMassReference();
 
-					var viewAction = $v.viewAction + "/" + entity.oid
+					var viewAction = $v.viewAction + "/" + entity.oid;
 					var $form = $("<form />").attr({method:"POST", action:contextPath + "/" + viewAction, target:target}).appendTo("body");
 //					$("<input />").attr({type:"hidden", name:"defName", value:$v.targetDefName}).appendTo($form);
 //					$("<input />").attr({type:"hidden", name:"oid", value:entity.oid}).appendTo($form);
@@ -1426,7 +1425,8 @@ $.fn.allInputCheck = function(){
 				document.scriptContext["editReferenceCallback"] = function(entity) {
 					$v.getMassReference();
 
-					var $form = $("<form />").attr({method:"POST", action:contextPath + "/" + $v.viewAction, target:target}).appendTo("body");
+					var viewAction = $v.viewAction + "/" + entity.oid;
+					var $form = $("<form />").attr({method:"POST", action:contextPath + "/" + viewAction, target:target}).appendTo("body");
 //					$("<input />").attr({type:"hidden", name:"defName", value:$v.targetDefName}).appendTo($form);
 					$("<input />").attr({type:"hidden", name:"oid", value:entity.oid}).appendTo($form);
 					$("<input />").attr({type:"hidden", name:"version", value:entity.version}).appendTo($form);
