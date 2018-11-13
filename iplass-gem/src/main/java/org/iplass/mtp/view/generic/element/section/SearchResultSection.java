@@ -155,6 +155,28 @@ public class SearchResultSection extends Section {
 	/** カスタムスタイルキー */
 	private String scriptKey;
 
+	/** カスタム登録処理クラス名 */
+	@MetaFieldInfo(
+			displayName="カスタム登録処理クラス名",
+			displayNameKey="generic_element_section_SearchResultSection_interrupterNameDisplaNameKey",
+			description="データ登録時に行うカスタム登録処理のクラス名を指定します。<br>" +
+					"RegistrationInterrupterインターフェースを実装するクラスを指定してください。",
+
+			descriptionKey="generic_element_section_SearchResultSection_interrupterNameDescriptionKey"
+	)
+	private String interrupterName;
+
+	/** カスタムロード処理クラス名 */
+	@MetaFieldInfo(
+			displayName="カスタムロード処理クラス名",
+			displayNameKey="generic_element_section_SearchResultSection_loadEntityInterrupterNameDisplaNameKey",
+			description="Entityロード処理実行前にロード用のオプションをカスタマイズするためのクラス名を指定します。<br>" +
+					"LoadEntityInterrupterインターフェースを実装するクラスを指定してください。",
+
+			descriptionKey="generic_element_section_SearchResultSection_loadEntityInterrupterNameDescriptionKey"
+	)
+	private String loadEntityInterrupterName;
+
 	/**
 	 * デフォルトコンストラクタ
 	 */
@@ -329,7 +351,7 @@ public class SearchResultSection extends Section {
 
 	/**
 	 * 一括更新ボタン表示設定を設定します。
-	 * @param showBulkUpdate 一括更新ボタン表示設定 
+	 * @param showBulkUpdate 一括更新ボタン表示設定
 	 */
 	public void setShowBulkUpdate(boolean showBulkUpdate) {
 		this.showBulkUpdate = showBulkUpdate;
@@ -349,6 +371,38 @@ public class SearchResultSection extends Section {
 	 */
 	public void setScriptKey(String scriptKey) {
 		this.scriptKey = scriptKey;
+	}
+
+	/**
+	 * カスタム登録処理クラス名を取得します。
+	 * @return カスタム登録処理クラス名
+	 */
+	public String getInterrupterName() {
+	    return interrupterName;
+	}
+
+	/**
+	 * カスタム登録処理クラス名を設定します。
+	 * @param interrupterName カスタム登録処理クラス名
+	 */
+	public void setInterrupterName(String interrupterName) {
+	    this.interrupterName = interrupterName;
+	}
+
+	/**
+	 * カスタムロード処理クラス名を取得します。
+	 * @return カスタムロード処理クラス名
+	 */
+	public String getLoadEntityInterrupterName() {
+	    return loadEntityInterrupterName;
+	}
+
+	/**
+	 * カスタムロード処理クラス名を設定します。
+	 * @param loadEntityInterrupterName カスタムロード処理クラス名
+	 */
+	public void setLoadEntityInterrupterName(String loadEntityInterrupterName) {
+	    this.loadEntityInterrupterName = loadEntityInterrupterName;
 	}
 
 }

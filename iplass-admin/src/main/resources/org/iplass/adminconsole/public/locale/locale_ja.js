@@ -2871,6 +2871,10 @@ LocaleInfo.generic_element_section_SearchResultSection_pagingPositionDisplaNameK
 LocaleInfo.generic_element_section_SearchResultSection_pagingPositionDescriptionKey = "ページングの表示位置を指定します。<br><b>BOTH   :</b> グリッドの上下<br><b>TOP    :</b> グリッドの上部<br><b>BOTTOM :</b> グリッドの下部<br>";
 LocaleInfo.generic_element_section_SearchResultSection_showBulkUpdateDisplayNameKey = "一括更新ボタンを表示";
 LocaleInfo.generic_element_section_SearchResultSection_showBulkUpdateDescriptionKey = "一括更新ボタンと検索結果のチェックボックスを表示にします。";
+LocaleInfo.generic_element_section_SearchResultSection_interrupterNameDisplaNameKey = "カスタム登録処理クラス名";
+LocaleInfo.generic_element_section_SearchResultSection_interrupterNameDescriptionKey = "データ登録時に行うカスタム登録処理のクラス名を指定します。<br>.org.iplass.mtp.view.generic.RegistrationInterrupterインターフェースを実装するクラスを指定してください。";
+LocaleInfo.generic_element_section_SearchResultSection_loadEntityInterrupterNameDisplaNameKey = "カスタムロード処理クラス名";
+LocaleInfo.generic_element_section_SearchResultSection_loadEntityInterrupterNameDescriptionKey = "Entityロード処理実行前にロード用のオプションをカスタマイズするためのクラス名を指定します。<br>org.iplass.mtp.view.generic.LoadEntityInterrupterインターフェースを実装するクラスを指定してください。";
 LocaleInfo.generic_element_section_SortSetting_sortKeyDisplayNameKey = "ソート項目";
 LocaleInfo.generic_element_section_SortSetting_sortKeyDescriptionKey = "検索時にデフォルトで指定するソート項目を設定します";
 LocaleInfo.generic_element_section_SortSetting_sortTypeDisplayNameKey = "ソート種別";

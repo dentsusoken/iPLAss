@@ -132,15 +132,14 @@
 	List<String> versions = new ArrayList<String>();
 	List<String> updateDates = new ArrayList<String>();
 	// 検索結果一覧チェックを付け直すため
-	StringBuilder id = new StringBuilder();
+	List<String> id = new ArrayList<String>();
 	if (data.getEntries() != null) {
 		for (SelectedRowEntity entry : data.getEntries()) {
 			oids.add(entry.getRow() + "_" + entry.getEntity().getOid());
 			versions.add(entry.getRow() + "_" + entry.getEntity().getVersion());
 			updateDates.add(entry.getRow() + "_" + entry.getEntity().getUpdateDate().getTime());
-			id.append(",\"" + entry.getEntity().getOid() + "_" + entry.getEntity().getVersion() + "\"");
+			id.add("\"" + entry.getEntity().getOid() + "_" + entry.getEntity().getVersion() + "\"");
 		}
-		if(id.length() >0) id.deleteCharAt(0);
 	}
 
 	// プロパティリスト
@@ -407,7 +406,7 @@ function onDialogClose() {
 	if (!edited) return true;
 	var func = parent.window.bulkUpdateModalWindowCallback;
 	if (func && $.isFunction(func)) {
-		var id = "<%= isSelectAll(selectAllType)%>" == "true" ? "all" : eval('[<%=id.toString()%>]');
+		var id = "<%=isSelectAll(selectAllType)%>" == "true" ? "all" : <%=Arrays.toString(id.toArray())%>;
 		func.call(parent.window, id);
 	}
 	return true;
@@ -420,7 +419,7 @@ function propChange(obj) {
 	$("#id_tr_" + propName).css("display", "");
 } 
 $(function() {
-<%	if (isUpdateFailed(bulkUpdatePropNm)) {%>
+<%	if (isUpdateFailed(bulkUpdatePropNm)) { %>
 	//前回で更新に失敗したプロパティに対してエラーメッセージを表示する
 	$("#id_tr_<%=bulkUpdatePropNm%>").css("display", "");
 <%	} %>

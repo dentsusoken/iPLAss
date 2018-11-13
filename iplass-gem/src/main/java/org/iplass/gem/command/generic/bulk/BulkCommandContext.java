@@ -23,6 +23,7 @@ package org.iplass.gem.command.generic.bulk;
 import java.lang.reflect.Array;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -78,8 +79,7 @@ public class BulkCommandContext extends RegistrationCommandContext {
 
 	private GemConfigService gemConfig = null;
 
-	/** パラメータマップ。 key: oid, value: パラメータ対象  */
-	private Map<String, BulkCommandParams> bulkCommandParams = new HashMap<>();
+	private List<BulkCommandParams> bulkCommandParams = new ArrayList<>();
 
 	/** 更新されたプロパティリスト */
 	private List<BulkUpdatedProperty> updatedProps = new ArrayList<>();
@@ -139,13 +139,23 @@ public class BulkCommandContext extends RegistrationCommandContext {
 						getLogger().error("duplicate row. row=" + targetRow);
 						throw new ApplicationException(resourceString("command.generic.bulk.BulkCommandContext.duplicateRow"));
 					}
-					bulkCommandParams.put(targetParam, new BulkCommandParams(targetRow, targetParam));
+					bulkCommandParams.add(new BulkCommandParams(targetRow, targetParam));
 				} else {
 					if (bulkParams == null) {
-						getLogger().error("selected row does not exist. param=" + param[i]);
+						getLogger().error("selected row does not exist. params=" + Arrays.toString(params));
 						throw new ApplicationException(resourceString("command.generic.bulk.BulkCommandContext.invalidRow"));
 					}
 					bulkParams.setValue(name, ConvertUtil.convertFromString(cls, targetParam));
+
+					if (i == param.length - 1) {
+						// マルチリファレンスのプロパティ定義がある場合、同じOIDで行番号が異なるデータが存在するので、
+						// 設定されたプロパティ値が同じ値であるかチェックします。
+						boolean hasDiffPropValue = hasDifferentPropertyValue(bulkParams.getOid(), name);
+						if (hasDiffPropValue) {
+							getLogger().error("has different prop value. name=" + name + ", bulkCommandParams=" + bulkCommandParams.toString());
+							throw new ApplicationException(resourceString("command.generic.bulk.BulkCommandContext.diffPropVal"));
+						}
+					}
 				}
 			}
 		}
@@ -187,7 +197,7 @@ public class BulkCommandContext extends RegistrationCommandContext {
 	}
 
 	private BulkCommandParams getBulkCommandParams(Integer row) {
-		List<BulkCommandParams> paramsList = bulkCommandParams.values().stream()
+		List<BulkCommandParams> paramsList = bulkCommandParams.stream()
 				.filter(p -> p.getRow().equals(row))
 				.collect(Collectors.toList());
 		if (paramsList.size() == 0) {
@@ -197,6 +207,18 @@ public class BulkCommandContext extends RegistrationCommandContext {
 			throw new ApplicationException(resourceString("command.generic.bulk.BulkCommandContext.duplicateRow"));
 		}
 		return paramsList.get(0);
+	}
+
+	private boolean hasDifferentPropertyValue(String oid, String propName) {
+		List<Object> propValues = bulkCommandParams.stream().filter(p -> p.getOid().equals(oid))
+				.map(p -> p.getValue(propName))
+				.collect(Collectors.toList());
+		Object first = propValues.get(0);
+		if (propValues.get(0) == null) {
+			return propValues.stream().anyMatch(v -> v != null);
+		} else {
+			return propValues.stream().anyMatch(v -> !first.equals(v));
+		}
 	}
 
 	private BulkUpdatedProperty getBulkUpdatedProperty(Integer updateNo) {
@@ -389,14 +411,12 @@ public class BulkCommandContext extends RegistrationCommandContext {
 
 	@Override
 	protected String getInterrupterName() {
-		// TODO Auto-generated method stub
-		return null;
+		return getView().getResultSection().getInterrupterName();
 	}
 
 	@Override
 	protected String getLoadEntityInterrupterName() {
-		// TODO Auto-generated method stub
-		return null;
+		return getView().getResultSection().getLoadEntityInterrupterName();
 	}
 
 	@Override
@@ -404,8 +424,7 @@ public class BulkCommandContext extends RegistrationCommandContext {
 		return new RegistrationPropertyBaseHandler<PropertyColumn>() {
 			@Override
 			public boolean isDispProperty(PropertyColumn property) {
-				//一括更新プロパティエディタが未設定のプロパティは対象外にする
-				return property.isDispFlag() && property.getBulkUpdateEditor() != null;
+				return property.isDispFlag();
 			}
 
 			@Override
@@ -416,7 +435,7 @@ public class BulkCommandContext extends RegistrationCommandContext {
 	}
 
 	public Set<String> getOids() {
-		return bulkCommandParams.keySet();
+		return bulkCommandParams.stream().map(p -> p.getOid()).collect(Collectors.toSet());
 	}
 
 	/**
@@ -477,30 +496,42 @@ public class BulkCommandContext extends RegistrationCommandContext {
 
 	public Integer getRow(String oid) {
 		Integer row = null;
-		BulkCommandParams params = bulkCommandParams.get(oid);
-		if (params != null) {
-			row = params.getRow();
+		// マルチリファレンスのプロパティ定義がある場合、同じOIDで行番号が異なるデータが存在するので、
+		// 一括更新する際に、一行目だけ更新します。
+		Optional<Integer> rw = bulkCommandParams.stream()
+				.filter(p -> p.getOid().equals(oid))
+				.map(p -> p.getRow())
+				.findFirst();
+		if (rw.isPresent()) {
+			row = rw.get();
 		}
 		return row;
 	}
 
 	public Long getVersion(String oid) {
 		Long version = null;
-		BulkCommandParams params = bulkCommandParams.get(oid);
-		if (params != null) {
-			version = params.getVersion();
+		// マルチリファレンスのプロパティ定義がある場合、同じOIDで行番号が異なるデータが存在するので、
+		// 一括更新する際に、一行目だけ更新します。
+		Optional<Long> ver = bulkCommandParams.stream()
+				.filter(p -> p.getOid().equals(oid))
+				.map(p -> p.getVersion())
+				.findFirst();
+		if (ver.isPresent()) {
+			version = ver.get();
 		}
 		return version;
 	}
 
 	public Timestamp getTimestamp(String oid) {
 		Timestamp ts = null;
-		BulkCommandParams params = bulkCommandParams.get(oid);
-		if (params != null) {
-			Long l = params.getUpdateDate();
-			if (l != null) {
-				ts = new Timestamp(l);
-			}
+		// マルチリファレンスのプロパティ定義がある場合、同じOIDで行番号が異なるデータが存在するので、
+		// 一括更新する際に、一行目だけ更新します。
+		Optional<Long> updateDate = bulkCommandParams.stream()
+				.filter(p -> p.getOid().equals(oid))
+				.map(p -> p.getUpdateDate())
+				.findFirst();
+		if (updateDate.isPresent() && updateDate.get() != null) {
+			ts = new Timestamp(updateDate.get());
 		}
 		return ts;
 	}
@@ -643,6 +674,7 @@ public class BulkCommandContext extends RegistrationCommandContext {
 				.filter(e -> e instanceof PropertyColumn)
 				.map(e -> (PropertyColumn) e)
 				.filter(e -> getRegistrationPropertyBaseHandler().isDispProperty(e))
+				.filter(e -> e.getBulkUpdateEditor() != null) //一括更新プロパティエディタが未設定のプロパティは対象外にする
 				.collect(Collectors.toList());
 
 		for (PropertyColumn pc : propertyColumns) {

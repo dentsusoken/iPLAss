@@ -2873,6 +2873,10 @@ LocaleInfo.generic_element_section_SearchResultSection_pagingPositionDisplaNameK
 LocaleInfo.generic_element_section_SearchResultSection_pagingPositionDescriptionKey = "Specify paging bar position.<br><b>BOTH   :</b> The top and bottom of the grid<br><b>TOP    :</b> The top of the grid<br><b>BOTTOM :</b> The bottom of the grid<br>";
 LocaleInfo.generic_element_section_SearchResultSection_showBulkUpdateDisplayNameKey = "Show Bulk Update Button";
 LocaleInfo.generic_element_section_SearchResultSection_showBulkUpdateDescriptionKey = "Show the check box of search results and bulk update button.";
+LocaleInfo.generic_element_section_SearchResultSection_interrupterNameDisplaNameKey = "Custom registration process class";
+LocaleInfo.generic_element_section_SearchResultSection_interrupterNameDescriptionKey = "Specify the class name of a custom registration process used for data registration.<br>Please specify the class that implements the interface org.iplass.mtp.view.generic.RegistrationInterrupter.";
+LocaleInfo.generic_element_section_SearchResultSection_loadEntityInterrupterNameDisplaNameKey = "Custom load process class";
+LocaleInfo.generic_element_section_SearchResultSection_loadEntityInterrupterNameDescriptionKey = "Specify the class name to customize the options for loading in Entity loading process before execution.<br>Please specify the class that implements the interface org.iplass.mtp.view.generic.LoadEntityInterrupter.";
 LocaleInfo.generic_element_section_SortSetting_sortKeyDisplayNameKey = "Sort items";
 LocaleInfo.generic_element_section_SortSetting_sortKeyDescriptionKey = "Set the sort items to be specified by default during a search.";
 LocaleInfo.generic_element_section_SortSetting_sortTypeDisplayNameKey = "Sort type";

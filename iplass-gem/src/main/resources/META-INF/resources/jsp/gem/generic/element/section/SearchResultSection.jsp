@@ -746,13 +746,13 @@ function doBulkUpdate() {
 	$form.remove();
 }
 
-function countBulkUpdate(frame, func){
+function countBulkUpdate($frame, func){
 	var type = $(":hidden[name='searchType']").val();
 	if (!validation(type)) return;
 
 	count("<%=CountCommand.WEBAPI_NAME%>", type, type + "Form", function(count) {
 		if(func && $.isFunction(func)){
-			func.call(frame, count);
+			func.call($frame, count);
 		}
 	});
 }

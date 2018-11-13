@@ -49,7 +49,7 @@ public abstract class NestTableReferenceRegistHandler extends ReferenceRegistHan
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public static boolean canRegist(PropertyBase property, RegistrationPropertyBaseHandler propBaseHandler) {
-		//更新対象外
+		//非表示なら更新対象外
 		if (!propBaseHandler.isDispProperty(property)) return false;
 
 		//テーブルの場合のみ新規or更新

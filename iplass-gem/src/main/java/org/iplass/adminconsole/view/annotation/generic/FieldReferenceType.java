@@ -36,5 +36,5 @@ public enum FieldReferenceType {
 	/** 全て */
 	ALL,
 	/** 未設定 */
-	NULL
+	NONE
 }

@@ -64,5 +64,5 @@ public @interface EntityViewField {
 	 * <p>
 	 * @return
 	 */
-	FieldReferenceType overrideTriggerType() default FieldReferenceType.NULL;
+	FieldReferenceType overrideTriggerType() default FieldReferenceType.NONE;
 }
