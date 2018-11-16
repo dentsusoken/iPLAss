@@ -52,7 +52,6 @@
 <%@ page import="org.iplass.mtp.view.generic.FormViewUtil"%>
 <%@ page import="org.iplass.mtp.view.generic.LoadEntityContext"%>
 <%@ page import="org.iplass.mtp.view.generic.LoadEntityInterrupter.LoadType"%>
-<%@ page import="org.iplass.mtp.view.generic.OutputType" %>
 <%@ page import="org.iplass.mtp.view.generic.editor.LinkProperty"%>
 <%@ page import="org.iplass.mtp.view.generic.editor.PropertyEditor"%>
 <%@ page import="org.iplass.mtp.view.generic.editor.ReferencePropertyEditor" %>
@@ -376,7 +375,7 @@
 	}
 
 	//タイプ毎に表示内容かえる
-	if ((editor.getDisplayType() == ReferenceDisplayType.LINK) && updatable && !isMappedby) {
+	if (editor.getDisplayType() == ReferenceDisplayType.LINK && updatable && !isMappedby) {
 		//リンク
 		String ulId = "ul_" + propName;
 

@@ -1,7 +1,5 @@
 package org.iplass.gem.command.generic.bulk;
 
-import java.util.List;
-
 import org.iplass.gem.command.generic.detail.RegistrationCommandBase;
 import org.iplass.mtp.command.RequestContext;
 import org.iplass.mtp.view.generic.element.property.PropertyColumn;
@@ -24,21 +22,6 @@ public abstract class BulkCommandBase extends RegistrationCommandBase<BulkComman
 		context.setEntityView(evm.get(context.getDefinitionName()));
 
 		return context;
-	}
-
-	@Override
-	protected boolean hasUpdatableMappedByReference(BulkCommandContext context) {
-		return context.hasUpdatableMappedByReference();
-	}
-
-	@Override
-	protected List<PropertyColumn> getProperty(BulkCommandContext context) {
-		return context.getProperty();
-	}
-
-	@Override
-	protected boolean isNewVersion(BulkCommandContext context) {
-		return false;
 	}
 
 }

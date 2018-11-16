@@ -140,7 +140,7 @@ public class BulkUpdateListCommand extends BulkCommandBase {
 				Object updatedPropValue = context.getBulkUpdatePropertyValue(updatedPropName);
 				data.addUpdatedProperty(updatedPropName, updatedPropValue);
 			}
-			request.setAttribute(Constants.MESSAGE, resourceString("command.generic.bulk.BulkUpdateCommand.successMsg"));
+			request.setAttribute(Constants.MESSAGE, resourceString("command.generic.bulk.BulkUpdateListCommand.successMsg"));
 		} else if (ret.getResultType() == ResultType.ERROR) {
 			retKey = Constants.CMD_EXEC_ERROR;
 			List<ValidateError> tmpList = new ArrayList<ValidateError>();

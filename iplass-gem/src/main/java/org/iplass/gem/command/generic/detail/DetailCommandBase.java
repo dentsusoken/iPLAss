@@ -67,21 +67,6 @@ public abstract class DetailCommandBase extends RegistrationCommandBase<DetailCo
 		return context;
 	}
 
-	@Override
-	protected boolean hasUpdatableMappedByReference(DetailCommandContext context) {
-		return context.hasUpdatableMappedByReference();
-	}
-
-	@Override
-	protected List<PropertyItem> getProperty(DetailCommandContext context) {
-		return context.getProperty();
-	}
-
-	@Override
-	protected boolean isNewVersion(DetailCommandContext context) {
-		return context.isNewVersion();
-	}
-
 	protected void setUserInfoMap(DetailCommandContext context, Entity entity, boolean isDetail) {
 		if (!context.isUseUserPropertyEditor(isDetail)) return;
 

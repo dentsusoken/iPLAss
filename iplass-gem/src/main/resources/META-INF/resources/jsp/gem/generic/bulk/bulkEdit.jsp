@@ -87,6 +87,7 @@
 	}
 
 	String convertPropValueToString(PropertyDefinition p, Object propValue) {
+		if (propValue == null) return "";
 		String dispValue = "";
 		if (propValue instanceof Entity) {
 			dispValue = ((Entity) propValue).getName();
@@ -110,12 +111,15 @@
 	BulkUpdateFormViewData data = (BulkUpdateFormViewData) request.getAttribute(Constants.DATA);
 	String selectAllType = (String) request.getAttribute(Constants.BULK_UPDATE_SELECT_TYPE);
 	String searchCond = (String) request.getAttribute(Constants.SEARCH_COND);
-	String searchType = (String) request.getAttribute(Constants.SEARCH_TYPE);
 	String message = (String) request.getAttribute(Constants.MESSAGE);
 	String bulkUpdatePropNm = (String) request.getAttribute(Constants.BULK_UPDATE_PROP_NM);
 
 	OutputType type = OutputType.BULK;
 	String contextPath = TemplateUtil.getTenantContextPath();
+	String action = contextPath + "/" + BulkUpdateListCommand.BULK_UPDATE_ACTION_NAME;
+	if (isSelectAll(selectAllType)) {
+		action = contextPath + "/" + BulkUpdateAllCommand.BULK_UPDATE_ALL_ACTION_NAME;
+	}
 	EntityDefinition ed = data.getEntityDefinition();
 	SearchFormView form = data.getView();
 
@@ -172,18 +176,18 @@
 <h3 class="hgroup-02 hgroup-02-01"><%=GemResourceBundleUtil.resourceString("generic.bulk.title", displayName)%></h3>
 <%
 	if (StringUtil.isNotBlank(message)) {
-	if ("SUCCESS".equals(request.getAttribute(WebRequestConstants.COMMAND_RESULT))) {
+		if ("SUCCESS".equals(request.getAttribute(WebRequestConstants.COMMAND_RESULT))) {
 %>
 <span class="success"><c:out value="<%=message%>"/></span>
 <%
-	} else {
+		} else {
 %>
 <span class="error"><c:out value="<%=message%>"/></span>
 <%
+		}
 	}
-}
 %>
-<form id="detailForm" method="post" action="<%=contextPath + "/" + BulkUpdateListCommand.BULK_UPDATE_ACTION_NAME%>">
+<form id="detailForm" method="post" action="<%=action%>">
 ${m:outputToken('FORM_XHTML', true)}
 <input type="hidden" name="defName" value="<c:out value="<%=defName%>"/>" />
 <input type="hidden" name="execType" value="<c:out value="<%=execType%>"/>" />
@@ -218,21 +222,21 @@ $(function() {
 </script>
 <%
 	}
-	if (oids != null && oids.size() > 0) {
+	if (!isSelectAll(selectAllType) && oids != null && oids.size() > 0) {
 		for (String  oid : oids) {
 %>
 <input type="hidden" name="oid" value="<c:out value="<%=oid%>"/>" />
 <%
 		}
 	}
-	if (updateDates != null && updateDates.size() > 0) {
+	if (!isSelectAll(selectAllType) && updateDates != null && updateDates.size() > 0) {
 		for (String updateDate : updateDates) {
 %>
 <input type="hidden" name="timestamp" value="<c:out value="<%=updateDate%>"/>" />
 <%
 		}
 	}
-	if (versions != null && versions.size() > 0) {
+	if (!isSelectAll(selectAllType) && versions != null && versions.size() > 0) {
 		for (String version : versions) {
 %>
 <input type="hidden" name="version" value="<c:out value="<%=version%>"/>" />
@@ -282,7 +286,6 @@ $(function() {
 	for (PropertyColumn pc : colMap.values()) {
 		if (!canBulkUpdate(pc)) continue;
 		String propName = pc.getPropertyName();
-		//		PropertyDefinition pd = ed.getProperty(propName);
 		PropertyDefinition pd = defMap.get(propName);
 		String displayLabel = TemplateUtil.getMultilingualString(pc.getDisplayLabel(), pc.getLocalizedDisplayLabelList(), pd.getDisplayName(),
 				pd.getLocalizedDisplayNameList());
@@ -325,7 +328,7 @@ $(function() {
 		//ボタンの表示ラベル
 		String bulkUpdateDisplayLabel = GemResourceBundleUtil.resourceString("generic.bulk.update");
 %>
-<li class="btn save-btn"><input id="bulkUpdateBtn" type="button" class="gr-btn" value="<c:out value="<%=bulkUpdateDisplayLabel %>" />" onclick="onclick_bulkupdate()" /></li>
+<li class="btn save-btn"><input id="bulkUpdateBtn" type="button" class="gr-btn" value="<c:out value="<%=bulkUpdateDisplayLabel %>" />" onclick="onclick_bulkupdate(this)" /></li>
 <%
 	}
 %>
@@ -391,7 +394,7 @@ $(function() {
 function onclick_cancel() {
 	$("#modal-dialog-root .modal-close", parent.document).trigger("click");
 }
-function onclick_bulkupdate(){
+function onclick_bulkupdate(target){
 	if (!confirm("${m:rs('mtp-gem-messages', 'generic.bulk.updateMsg')}")) {
 		return;
 	}
@@ -399,12 +402,13 @@ function onclick_bulkupdate(){
 		alert("${m:rs('mtp-gem-messages', 'generic.bulk.pleaseSelect')}");
 		return;
 	}
+	$(target).prop("disabled", true);
 	$("#detailForm").submit();
 }
 function onDialogClose() {
 	var edited = ("<%=StringUtil.isNotBlank(message)%>" == "true");
 	if (!edited) return true;
-	var func = parent.window.bulkUpdateModalWindowCallback;
+	var func = parent.document.scriptContext["bulkUpdateModalWindowCallback"];
 	if (func && $.isFunction(func)) {
 		var id = "<%=isSelectAll(selectAllType)%>" == "true" ? "all" : <%=Arrays.toString(id.toArray())%>;
 		func.call(parent.window, id);
@@ -413,22 +417,22 @@ function onDialogClose() {
 }
 function propChange(obj) {
 	var propName = obj.options[obj.selectedIndex].value;
-	$("table#id_tbl_bulkupdate tr").each(function() {
+	$("table#id_tbl_bulkupdate tbody").children("tr").each(function() {
 		$(this).css("display", "none").val("");
 	});
-	$("#id_tr_" + propName).css("display", "");
+	$("tr#id_tr_" + propName).css("display", "");
 } 
 $(function() {
 <%	if (isUpdateFailed(bulkUpdatePropNm)) { %>
 	//前回で更新に失敗したプロパティに対してエラーメッセージを表示する
-	$("#id_tr_<%=bulkUpdatePropNm%>").css("display", "");
+	$("tr#id_tr_<%=bulkUpdatePropNm%>").css("display", "");
 <%	} %>
 	// タイトルの設定
 	$("#modal-title", parent.document).text("<%=displayName%>");<%-- XSS対応-メタの設定のため対応なし(displayName) --%>
 	// 一括更新件数
-	var countBulkUpdate = parent.window.countBulkUpdate;
-	if(countBulkUpdate && $.isFunction(countBulkUpdate)) {
-		countBulkUpdate(this, function(count){
+	var func = parent.document.scriptContext["countBulkUpdate"];
+	if(func && $.isFunction(func)) {
+		func(this, function(count){
 			var bulkUpdateItem = "${m:rs('mtp-gem-messages', 'generic.bulk.updateItem')}";
 			bulkUpdateItem = bulkUpdateItem.replace("{0}", count);
 			$("#bulkUpdateCount").text(bulkUpdateItem);

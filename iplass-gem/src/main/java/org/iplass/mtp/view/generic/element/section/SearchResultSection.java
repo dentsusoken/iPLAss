@@ -152,6 +152,26 @@ public class SearchResultSection extends Section {
 	)
 	private boolean showBulkUpdate;
 
+	/** 親子関係の参照を物理削除するか */
+	@MetaFieldInfo(
+			displayName="親子関係の参照を物理削除するか",
+			displayNameKey="generic_element_section_SearchResultSection_purgeCompositionedEntityDisplaNameKey",
+			inputType=InputType.CHECKBOX,
+			description="親子関係の参照を物理削除するかを設定します",
+			descriptionKey="generic_element_section_SearchResultSection_purgeCompositionedEntityDescriptionKey"
+	)
+	private boolean purgeCompositionedEntity;
+
+	/** 更新時に強制的に更新処理を行う */
+	@MetaFieldInfo(
+			displayName="更新時に強制的に更新処理を行う",
+			displayNameKey="generic_element_section_SearchResultSection_forceUpadteDisplaNameKey",
+			inputType=InputType.CHECKBOX,
+			description="変更項目が一つもなくとも、強制的に更新処理（更新日時、更新者が更新される）を行います。",
+			descriptionKey="generic_element_section_SearchResultSection_forceUpadteDescriptionKey"
+	)
+	private boolean forceUpadte;
+
 	/** カスタムスタイルキー */
 	private String scriptKey;
 
@@ -355,6 +375,38 @@ public class SearchResultSection extends Section {
 	 */
 	public void setShowBulkUpdate(boolean showBulkUpdate) {
 		this.showBulkUpdate = showBulkUpdate;
+	}
+
+	/**
+	 * 親子関係の参照を物理削除するかを取得します。
+	 * @return 親子関係の参照を物理削除するか
+	 */
+	public boolean isPurgeCompositionedEntity() {
+	    return purgeCompositionedEntity;
+	}
+
+	/**
+	 * 親子関係の参照を物理削除するかを設定します。
+	 * @param purgeCompositionedEntity 親子関係の参照を物理削除するか
+	 */
+	public void setPurgeCompositionedEntity(boolean purgeCompositionedEntity) {
+	    this.purgeCompositionedEntity = purgeCompositionedEntity;
+	}
+
+	/**
+	 * 更新時に強制的に更新処理を行うかを取得します。
+	 * @return forceUpdate 更新時に強制的に更新処理を行うか
+	 */
+	public boolean isForceUpadte() {
+		return forceUpadte;
+	}
+
+	/**
+	 * 更新時に強制的に更新処理を行うかを設定します。
+	 * @param forceUpadte 更新時に強制的に更新処理を行うか
+	 */
+	public void setForceUpadte(boolean forceUpadte) {
+		this.forceUpadte = forceUpadte;
 	}
 
 	/**

@@ -85,7 +85,7 @@ public class BulkCommandContext extends RegistrationCommandContext {
 	private List<BulkUpdatedProperty> updatedProps = new ArrayList<>();
 
 	/** パラメータパターン */
-	private Pattern pattern = Pattern.compile("^(\\d+)\\_(.+)$");
+	private Pattern pattern = Pattern.compile("^(\\d+)\\_(.+)?$");
 
 	/**
 	 * クライアントから配列で受け取ったパラメータは自動設定する対象外
@@ -150,7 +150,7 @@ public class BulkCommandContext extends RegistrationCommandContext {
 					if (i == param.length - 1) {
 						// マルチリファレンスのプロパティ定義がある場合、同じOIDで行番号が異なるデータが存在するので、
 						// 設定されたプロパティ値が同じ値であるかチェックします。
-						boolean hasDiffPropValue = hasDifferentPropertyValue(bulkParams.getOid(), name);
+						boolean hasDiffPropValue = hasDifferentPropertyValue(name);
 						if (hasDiffPropValue) {
 							getLogger().error("has different prop value. name=" + name + ", bulkCommandParams=" + bulkCommandParams.toString());
 							throw new ApplicationException(resourceString("command.generic.bulk.BulkCommandContext.diffPropVal"));
@@ -209,16 +209,20 @@ public class BulkCommandContext extends RegistrationCommandContext {
 		return paramsList.get(0);
 	}
 
-	private boolean hasDifferentPropertyValue(String oid, String propName) {
-		List<Object> propValues = bulkCommandParams.stream().filter(p -> p.getOid().equals(oid))
-				.map(p -> p.getValue(propName))
-				.collect(Collectors.toList());
-		Object first = propValues.get(0);
-		if (propValues.get(0) == null) {
-			return propValues.stream().anyMatch(v -> v != null);
-		} else {
-			return propValues.stream().anyMatch(v -> !first.equals(v));
+	private boolean hasDifferentPropertyValue(String propName) {
+		Set<String> oids = getOids();
+		for (String oid : oids) {
+			List<Object> propValues = bulkCommandParams.stream().filter(p -> p.getOid().equals(oid))
+					.map(p -> p.getValue(propName))
+					.collect(Collectors.toList());
+			Object first = propValues.get(0);
+			if (propValues.get(0) == null) {
+				return propValues.stream().anyMatch(v -> v != null);
+			} else {
+				return propValues.stream().anyMatch(v -> !first.equals(v));
+			}
 		}
+		return false;
 	}
 
 	private BulkUpdatedProperty getBulkUpdatedProperty(Integer updateNo) {
@@ -419,6 +423,7 @@ public class BulkCommandContext extends RegistrationCommandContext {
 		return getView().getResultSection().getLoadEntityInterrupterName();
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	protected RegistrationPropertyBaseHandler<PropertyColumn> createRegistrationPropertyBaseHandler() {
 		return new RegistrationPropertyBaseHandler<PropertyColumn>() {
@@ -464,9 +469,49 @@ public class BulkCommandContext extends RegistrationCommandContext {
 	 * 新しいバージョンとして更新を行うかを取得します。
 	 * @return 新しいバージョンとして更新を行うか
 	 */
+	@Override
 	public boolean isNewVersion() {
 		String newVersion = getParam(Constants.NEWVERSION);
 		return newVersion != null && "true".equals(newVersion);
+	}
+
+	@Override
+	protected boolean isPurgeCompositionedEntity() {
+		return getView().getResultSection().isPurgeCompositionedEntity();
+	}
+
+	@Override
+	protected boolean isLocalizationData() {
+		return getView().isLocalizationData();
+	}
+
+	@Override
+	protected boolean isForceUpadte() {
+		return getView().getResultSection().isForceUpadte();
+	}
+
+	/**
+	 * 更新可能な被参照（ネストテーブル）を定義内に保持しているかを取得します。
+	 * @return
+	 */
+	@Override
+	public boolean hasUpdatableMappedByReference() {
+		List<PropertyColumn> properties = getProperty();
+		for (PropertyColumn property : properties) {
+			PropertyDefinition pd = getProperty(property.getPropertyName());
+			if (pd instanceof ReferenceProperty) {
+				String mappedBy = ((ReferenceProperty) pd).getMappedBy();
+				if (StringUtil.isBlank(mappedBy)) continue;
+
+				if (property.getBulkUpdateEditor() instanceof ReferencePropertyEditor) {
+					ReferencePropertyEditor editor = (ReferencePropertyEditor) property.getBulkUpdateEditor();
+					if (editor.getDisplayType() == ReferenceDisplayType.NESTTABLE) {
+						return true;
+					}
+				}
+			}
+		}
+		return false;
 	}
 
 	/**
@@ -483,15 +528,6 @@ public class BulkCommandContext extends RegistrationCommandContext {
 	 */
 	public String getExecType() {
 		return getParam(Constants.EXEC_TYPE);
-	}
-
-	/**
-	 * ロードしたデータをリクエストパラメータの値で上書きするかを取得します。
-	 * @return
-	 */
-	public boolean isUpdateByParam() {
-		String updateByParam = getParam("updateByParam");
-		return updateByParam != null && "true".equals(updateByParam);
 	}
 
 	public Integer getRow(String oid) {
@@ -655,6 +691,8 @@ public class BulkCommandContext extends RegistrationCommandContext {
 	 *
 	 * @return 一括更新するプロパティ
 	 */
+	@SuppressWarnings("unchecked")
+	@Override
 	public List<PropertyColumn> getProperty() {
 //		String execType = getExecType();
 		List<PropertyColumn> propList = new ArrayList<PropertyColumn>();
@@ -724,28 +762,6 @@ public class BulkCommandContext extends RegistrationCommandContext {
 			}
 		}
 		return loadReferences;
-	}
-
-	/**
-	 * 更新可能な被参照（ネストテーブル、参照セクション）を定義内に保持しているかを取得します。
-	 * @return
-	 */
-	public boolean hasUpdatableMappedByReference() {
-		List<PropertyColumn> properties = getProperty();
-		for (PropertyColumn property : properties) {
-			PropertyDefinition pd = getProperty(property.getPropertyName());
-			if (pd instanceof ReferenceProperty) {
-				String mappedBy = ((ReferenceProperty) pd).getMappedBy();
-				if (StringUtil.isBlank(mappedBy)) continue;
-				if (property.getBulkUpdateEditor() instanceof ReferencePropertyEditor) {
-					ReferencePropertyEditor editor = (ReferencePropertyEditor) property.getBulkUpdateEditor();
-					if (editor.getDisplayType() == ReferenceDisplayType.NESTTABLE) {
-						return true;
-					}
-				}
-			}
-		}
-		return false;
 	}
 
 	@SuppressWarnings("unused")

@@ -53,7 +53,7 @@ import org.iplass.mtp.view.generic.editor.TimestampPropertyEditor;
 import org.iplass.mtp.view.generic.element.property.PropertyBase;
 import org.slf4j.Logger;
 
-public abstract class RegistrationCommandContext extends GenericCommandContext{
+public abstract class RegistrationCommandContext extends GenericCommandContext {
 
 	protected EntityManager entityManager;
 	protected EntityDefinitionManager definitionManager;
@@ -409,16 +409,27 @@ public abstract class RegistrationCommandContext extends GenericCommandContext{
 		}
 	}
 
-	@SuppressWarnings("unchecked")
-	public <T extends PropertyBase> RegistrationPropertyBaseHandler<T> getRegistrationPropertyBaseHandler() {
+	@SuppressWarnings("rawtypes")
+	public RegistrationPropertyBaseHandler getRegistrationPropertyBaseHandler() {
 		if (registrationPropertyBaseHandler == null) {
 			registrationPropertyBaseHandler = createRegistrationPropertyBaseHandler();
 		}
 		return registrationPropertyBaseHandler;
 	}
 
-	@SuppressWarnings("rawtypes")
-	protected abstract RegistrationPropertyBaseHandler createRegistrationPropertyBaseHandler();
+	protected abstract <T extends PropertyBase> RegistrationPropertyBaseHandler<T> createRegistrationPropertyBaseHandler();
+
+	public abstract <T extends PropertyBase> List<T> getProperty();
+
+	protected abstract boolean isNewVersion();
+
+	protected abstract boolean isPurgeCompositionedEntity();
+
+	protected abstract boolean isLocalizationData();
+
+	protected abstract boolean isForceUpadte();
+
+	protected abstract boolean hasUpdatableMappedByReference();
 
 	protected static String resourceString(String key, Object... arguments) {
 		return GemResourceBundleUtil.resourceString(key, arguments);

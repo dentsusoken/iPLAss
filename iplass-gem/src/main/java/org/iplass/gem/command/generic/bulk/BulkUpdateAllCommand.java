@@ -100,17 +100,18 @@ public class BulkUpdateAllCommand extends BulkCommandBase {
 						.collect(Collectors.toList());
 
 				//大量データを考慮してトランザクションを分割(100件毎)
+				int hundred = 100;
 				int count = oid.size();
-				int countPerHundret = count / 100;
-				if (count % 100 > 0) countPerHundret++;
-				for (int i = 0; i < countPerHundret; i++) {
-					int current = i * 100;
+				int countPerHundred = count / hundred;
+				if (count % hundred > 0) countPerHundred++;
+				for (int i = 0; i < countPerHundred; i++) {
+					int current = i * hundred;
 					List<String> subOidList = oid.stream()
-							.skip(current).limit(100).collect(Collectors.toList());
+							.skip(current).limit(hundred).collect(Collectors.toList());
 					List<String> subVersionList = version.stream()
-							.skip(current).limit(100).collect(Collectors.toList());
+							.skip(current).limit(hundred).collect(Collectors.toList());
 					List<String> subUpdateDate = updateDate.stream()
-							.skip(current).limit(100).collect(Collectors.toList());
+							.skip(current).limit(hundred).collect(Collectors.toList());
 					ret = Transaction.requiresNew(t -> {
 						String r = null;
 						try {

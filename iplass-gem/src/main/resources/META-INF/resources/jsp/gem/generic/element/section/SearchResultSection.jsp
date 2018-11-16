@@ -600,7 +600,7 @@ ${m:outputToken('FORM_XHTML', false)}
 <%	}
 	if (OutputType.SEARCHRESULT == type && section.isShowBulkUpdate() && canUpdate) {
 %>
-<input id="bulkUpdateBtn" type="button" value="${m:rs('mtp-gem-messages', 'generic.element.section.SearchResultSection.bulkUpdate')}" class="gr-btn modal-btn" onclick="doBulkUpdate()" />
+<input id="bulkUpdateBtn" type="button" value="${m:rs('mtp-gem-messages', 'generic.element.section.SearchResultSection.bulkUpdate')}" class="gr-btn" onclick="doBulkUpdate(this)" />
 <%	} %>
 </p>
 <%
@@ -706,12 +706,45 @@ function deleteRow(isConfirmed) {
 	}
 	if (OutputType.SEARCHRESULT == type && section.isShowBulkUpdate() && canUpdate) { %>
 <script>
-function doBulkUpdate() {
+function doBulkUpdate(target) {
 	var ids = grid.getGridParam("selarrrow");
 	if(ids.length <= 0) {
 		alert("${m:rs('mtp-gem-messages', 'generic.element.section.SearchResultSection.selectBulkUpdateMsg')}");
 		return false;
 	}
+
+	var $bulkUpdateDialogTrigger = getDialogTrigger($(target).parent(), {dialogHeight:450, resizable:true});
+	$bulkUpdateDialogTrigger.click();
+	
+	document.scriptContext["countBulkUpdate"] = function($frame, func) {
+		var type = $(":hidden[name='searchType']").val();
+		if (!validation(type)) return;
+
+		count("<%=CountCommand.WEBAPI_NAME%>", type, type + "Form", function(count) {
+			if(func && $.isFunction(func)){
+				func.call($frame, count);
+			}
+		});
+	}
+
+	document.scriptContext["bulkUpdateModalWindowCallback"] = function(id) {
+		if (typeof id === "undefined") return;
+		// 一括更新後行選択処理を実行する　
+		var selectAfterBulkUpdate = function() {
+			// 検索条件を元に一括更新の場合
+			if (id === "all") {
+				$("#cb_searchResult").trigger("click");
+			// 選択された行を一括更新
+			} else if ($.isArray(id)) {
+				selectArray = id;
+				applyGridSelection();
+			}
+			$(".result-block").off("iplassAfterSearch", selectAfterBulkUpdate);
+		}
+		$(".result-block").on("iplassAfterSearch", selectAfterBulkUpdate);
+		doSearch($(":hidden[name='searchType']").val(), $(":hidden[name='offset']").val(), false, "bulkUpdate");
+	}
+
 	var oid = [];
 	var version = [];
 	for(var i=0; i< ids.length; ++i) {
@@ -746,37 +779,10 @@ function doBulkUpdate() {
 	$form.remove();
 }
 
-function countBulkUpdate($frame, func){
-	var type = $(":hidden[name='searchType']").val();
-	if (!validation(type)) return;
-
-	count("<%=CountCommand.WEBAPI_NAME%>", type, type + "Form", function(count) {
-		if(func && $.isFunction(func)){
-			func.call($frame, count);
-		}
-	});
-}
 function closeBulkUpdateModalWindow() {
 	var isSubModal = $("body.modal-body").length !== 0;
 	var target = getModalTarget(isSubModal);
 	$("iframe[name='" + target + "']").parents("div.modal-dialog").find(".modal-close").click();
-}
-function bulkUpdateModalWindowCallback(id) {
-	if (typeof id === "undefined") return;
-	// 一括更新後行選択処理を実行する　
-	var selectAfterBulkUpdate = function() {
-		// 検索条件を元に一括更新の場合
-		if (id === "all") {
-			$("#cb_searchResult").trigger("click");
-		// 選択された行を一括更新
-		} else if ($.isArray(id)) {
-			selectArray = id;
-			applyGridSelection();
-		}
-		$(".result-block").off("iplassAfterSearch", selectAfterBulkUpdate);
-	}
-	$(".result-block").on("iplassAfterSearch", selectAfterBulkUpdate);
-	doSearch($(":hidden[name='searchType']").val(), $(":hidden[name='offset']").val(), false, "bulkUpdate");
 }
 </script>
 <%

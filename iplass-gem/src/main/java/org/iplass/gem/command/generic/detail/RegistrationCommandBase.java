@@ -173,7 +173,7 @@ public abstract class RegistrationCommandBase<T extends RegistrationCommandConte
 		context.setAttribute(Constants.VALID_ERROR_LIST, errors);
 		try {
 			//参照型の登録
-			Entity loadEntity = loadEntityRegistProcess(context, entity, new LoadOption(true, hasUpdatableMappedByReference(context)));
+			Entity loadEntity = loadEntityRegistProcess(context, entity, new LoadOption(true, context.hasUpdatableMappedByReference()));
 			errors.addAll(beforeRegistRefEntity(context, entity, loadEntity));
 
 			//カスタム登録前処理
@@ -212,8 +212,6 @@ public abstract class RegistrationCommandBase<T extends RegistrationCommandConte
 		return ret;
 	}
 
-	protected abstract boolean hasUpdatableMappedByReference(T context);
-
 	/**
 	 * Entityを更新します。
 	 * @param context コンテキスト
@@ -226,7 +224,7 @@ public abstract class RegistrationCommandBase<T extends RegistrationCommandConte
 
 		//画面に表示してるものだけ更新
 		List<String> updatePropNames = new ArrayList<String>();
-		List<V> propList = getProperty(context);
+		List<V> propList = context.getProperty();
 		for (V prop : propList) {
 			if (!context.getRegistrationPropertyBaseHandler().isDispProperty(prop)) continue;
 			PropertyDefinition pd = context.getProperty(prop.getPropertyName());
@@ -246,7 +244,7 @@ public abstract class RegistrationCommandBase<T extends RegistrationCommandConte
 		TargetVersion targetVersion = TargetVersion.CURRENT_VALID;
 		if (context.isVersioned()) {
 			//バージョン番号更新かそのまま更新か
-			if (isNewVersion(context)) {
+			if (context.isNewVersion()) {
 				targetVersion = TargetVersion.NEW;
 			} else {
 				targetVersion = TargetVersion.SPECIFIC;
@@ -257,9 +255,9 @@ public abstract class RegistrationCommandBase<T extends RegistrationCommandConte
 		if (occurredErrors.isEmpty()) {
 			UpdateOption option = new UpdateOption(true, targetVersion);
 			option.setUpdateProperties(context.getRegistrationInterrupterHandler().getAdditionalProperties(updatePropNames));
-			option.setPurgeCompositionedEntity(context.getView().isPurgeCompositionedEntity());
-			option.setLocalized(context.getView().isLocalizationData());
-			option.setForceUpdate(context.getView().isForceUpadte());
+			option.setPurgeCompositionedEntity(context.isPurgeCompositionedEntity());
+			option.setLocalized(context.isLocalizationData());
+			option.setForceUpdate(context.isForceUpadte());
 			try {
 				em.update(entity, option);
 			} catch (EntityValidationException e) {
@@ -277,10 +275,6 @@ public abstract class RegistrationCommandBase<T extends RegistrationCommandConte
 		}
 		return errors;
 	}
-
-	protected abstract List<V> getProperty(T context);
-
-	protected abstract boolean isNewVersion(T context);
 
 	/**
 	 * Entityを追加します。

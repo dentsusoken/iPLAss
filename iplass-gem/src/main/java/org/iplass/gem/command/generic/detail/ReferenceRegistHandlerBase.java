@@ -116,7 +116,7 @@ public abstract class ReferenceRegistHandlerBase implements ReferenceRegistHandl
 						UpdateOption option = new UpdateOption(false, TargetVersion.SPECIFIC);
 						option.setForceUpdate(forceUpdate);
 						option.setUpdateProperties(updateProperties);
-						option.setPurgeCompositionedEntity(context.getView().isPurgeCompositionedEntity());
+						option.setPurgeCompositionedEntity(context.isPurgeCompositionedEntity());
 						option.setLocalized(context.getView().isLocalizationData());
 						em.update(entity, option);
 					}

@@ -88,12 +88,6 @@
 // 		tooltip = TemplateUtil.getMultilingualString(property.getTooltip(), property.getLocalizedTooltipList());
 // 	}
 
-// 	String description = "";
-// 	if (StringUtil.isNotBlank(property.getDescription())) {
-// 		description = TemplateUtil.getMultilingualString(property.getDescription(), property.getLocalizedDescriptionList());
-// 	}
-
-//	boolean showDesc = OutputType.EDIT == type && description != null && description.length() > 0;
 %>
 
 <th id="id_th_<c:out value="<%=propName %>"/>" class="<c:out value="<%=style %>"/>">
@@ -115,11 +109,6 @@
 </th>
 <td id="id_td_<c:out value="<%=propName %>"/>" class="<c:out value="<%=style %>"/>">
 <%
-//	if (showDesc) {
-%>
-<!-- <p class="mb05"> -->
-<%
-//	}
 	request.setAttribute(Constants.EDITOR_EDITOR, property.getBulkUpdateEditor());
 	request.setAttribute(Constants.EDITOR_PROP_VALUE, propValue);
 	request.setAttribute(Constants.EDITOR_PROPERTY_DEFINITION, pd);
@@ -132,28 +121,21 @@
 <jsp:include page="<%=path %>" />
 <%
 	}
-//	if (showDesc) {
+// 	if (OutputType.EDIT == type && property.getAutocompletionSetting() != null) {
+// 		request.setAttribute(Constants.AUTOCOMPLETION_DEF_NAME, ed.getName());
+// 		request.setAttribute(Constants.AUTOCOMPLETION_VIEW_NAME, viewName);
+// 		request.setAttribute(Constants.AUTOCOMPLETION_PROP_NAME, propName);
+// 		request.setAttribute(Constants.AUTOCOMPLETION_MULTIPLICTTY, pd.getMultiplicity());
+// 		String autocompletionPath = "/jsp/gem/generic/common/Autocompletion.jsp";
 %>
-<!-- </p> -->
-<%-- XSS対応-メタの設定のため対応なし(description) --%>
-<%-- <p class="explanation"><%=description %></p> --%>
+<%-- <jsp:include page="<%=autocompletionPath%>" /> --%>
 <%
-//	}
-	if (OutputType.EDIT == type && property.getAutocompletionSetting() != null) {
-		request.setAttribute(Constants.AUTOCOMPLETION_DEF_NAME, ed.getName());
-		request.setAttribute(Constants.AUTOCOMPLETION_VIEW_NAME, viewName);
-		request.setAttribute(Constants.AUTOCOMPLETION_PROP_NAME, propName);
-		request.setAttribute(Constants.AUTOCOMPLETION_MULTIPLICTTY, pd.getMultiplicity());
-		String autocompletionPath = "/jsp/gem/generic/common/Autocompletion.jsp";
-%>
-<jsp:include page="<%=autocompletionPath%>" />
-<%
-		request.removeAttribute(Constants.AUTOCOMPLETION_SETTING);
-		request.removeAttribute(Constants.AUTOCOMPLETION_DEF_NAME);
-		request.removeAttribute(Constants.AUTOCOMPLETION_VIEW_NAME);
-		request.removeAttribute(Constants.AUTOCOMPLETION_PROP_NAME);
-		request.removeAttribute(Constants.AUTOCOMPLETION_MULTIPLICTTY);
-		request.removeAttribute(Constants.AUTOCOMPLETION_SCRIPT_PATH);
-	}
+// 		request.removeAttribute(Constants.AUTOCOMPLETION_SETTING);
+// 		request.removeAttribute(Constants.AUTOCOMPLETION_DEF_NAME);
+// 		request.removeAttribute(Constants.AUTOCOMPLETION_VIEW_NAME);
+// 		request.removeAttribute(Constants.AUTOCOMPLETION_PROP_NAME);
+// 		request.removeAttribute(Constants.AUTOCOMPLETION_MULTIPLICTTY);
+// 		request.removeAttribute(Constants.AUTOCOMPLETION_SCRIPT_PATH);
+// 	}
 %>
 </td>

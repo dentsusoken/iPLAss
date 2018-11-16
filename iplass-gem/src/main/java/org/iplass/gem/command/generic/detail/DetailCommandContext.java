@@ -137,6 +137,7 @@ public class DetailCommandContext extends RegistrationCommandContext {
 		return getView().getLoadEntityInterrupterName();
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	protected RegistrationPropertyBaseHandler<PropertyItem> createRegistrationPropertyBaseHandler() {
 		return new RegistrationPropertyBaseHandler<PropertyItem>() {
@@ -158,6 +159,8 @@ public class DetailCommandContext extends RegistrationCommandContext {
 	 * @param view 画面定義
 	 * @return プロパティの一覧
 	 */
+	@SuppressWarnings("unchecked")
+	@Override
 	public List<PropertyItem> getProperty() {
 		String execType = getExecType();
 		List<PropertyItem> propList = new ArrayList<PropertyItem>();
@@ -191,6 +194,7 @@ public class DetailCommandContext extends RegistrationCommandContext {
 	 * @param section セクション
 	 * @return プロパティの一覧
 	 */
+	@SuppressWarnings("unchecked")
 	protected List<PropertyItem> getProperty(DefaultSection section) {
 		String execType = getExecType();
 		List<PropertyItem> propList = new ArrayList<PropertyItem>();
@@ -296,31 +300,6 @@ public class DetailCommandContext extends RegistrationCommandContext {
 		}
 	}
 
-	/**
-	 * 更新可能な被参照（ネストテーブル、参照セクション）を定義内に保持しているかを取得します。
-	 * @return
-	 */
-	public boolean hasUpdatableMappedByReference() {
-		List<PropertyItem> properties = getProperty();
-		for (PropertyItem property : properties) {
-			PropertyDefinition pd = getProperty(property.getPropertyName());
-			if (pd instanceof ReferenceProperty) {
-				String mappedBy = ((ReferenceProperty) pd).getMappedBy();
-				if (StringUtil.isBlank(mappedBy)) continue;
-
-				if (property instanceof ReferenceSectionPropertyItem) {
-					return true;
-				} else if (property.getEditor() instanceof ReferencePropertyEditor) {
-					ReferencePropertyEditor editor = (ReferencePropertyEditor) property.getEditor();
-					if (editor.getDisplayType() == ReferenceDisplayType.NESTTABLE) {
-						return true;
-					}
-				}
-			}
-		}
-		return false;
-	}
-
 	// 同一プロパティの参照セクションをまとめておくPropertyItem
 	public class ReferenceSectionPropertyItem extends PropertyItem {
 
@@ -408,9 +387,51 @@ public class DetailCommandContext extends RegistrationCommandContext {
 	 * 新しいバージョンとして更新を行うかを取得します。
 	 * @return 新しいバージョンとして更新を行うか
 	 */
+	@Override
 	public boolean isNewVersion() {
 		String newVersion = getParam(Constants.NEWVERSION);
 		return newVersion != null && "true".equals(newVersion);
+	}
+
+	@Override
+	protected boolean isPurgeCompositionedEntity() {
+		return getView().isPurgeCompositionedEntity();
+	}
+
+	@Override
+	protected boolean isLocalizationData() {
+		return getView().isLocalizationData();
+	}
+
+	@Override
+	protected boolean isForceUpadte() {
+		return getView().isForceUpadte();
+	}
+
+	/**
+	 * 更新可能な被参照（ネストテーブル、参照セクション）を定義内に保持しているかを取得します。
+	 * @return
+	 */
+	@Override
+	public boolean hasUpdatableMappedByReference() {
+		List<PropertyItem> properties = getProperty();
+		for (PropertyItem property : properties) {
+			PropertyDefinition pd = getProperty(property.getPropertyName());
+			if (pd instanceof ReferenceProperty) {
+				String mappedBy = ((ReferenceProperty) pd).getMappedBy();
+				if (StringUtil.isBlank(mappedBy)) continue;
+
+				if (property instanceof ReferenceSectionPropertyItem) {
+					return true;
+				} else if (property.getEditor() instanceof ReferencePropertyEditor) {
+					ReferencePropertyEditor editor = (ReferencePropertyEditor) property.getEditor();
+					if (editor.getDisplayType() == ReferenceDisplayType.NESTTABLE) {
+						return true;
+					}
+				}
+			}
+		}
+		return false;
 	}
 
 	/**
