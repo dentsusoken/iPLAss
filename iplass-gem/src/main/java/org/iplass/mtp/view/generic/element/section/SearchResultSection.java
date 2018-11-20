@@ -26,9 +26,11 @@ import java.util.List;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 
+import org.iplass.adminconsole.annotation.MultiLang;
 import org.iplass.adminconsole.view.annotation.IgnoreField;
 import org.iplass.adminconsole.view.annotation.InputType;
 import org.iplass.adminconsole.view.annotation.MetaFieldInfo;
+import org.iplass.mtp.definition.LocalizedStringDefinition;
 import org.iplass.mtp.view.generic.Jsp;
 import org.iplass.mtp.view.generic.Jsps;
 import org.iplass.mtp.view.generic.PagingPosition;
@@ -47,7 +49,7 @@ import org.iplass.mtp.view.generic.element.Element;
 public class SearchResultSection extends Section {
 
 	/** シリアルバージョンUID */
-	private static final long serialVersionUID = -700624023196624864L;
+	private static final long serialVersionUID = -2842595695389408528L;
 
 	/** 要素 */
 	private List<Element> elements;
@@ -145,12 +147,31 @@ public class SearchResultSection extends Section {
 	/** 一括更新ボタン表示設定 */
 	@MetaFieldInfo(
 			displayName="一括更新ボタン表示設定",
-			displayNameKey="generic_element_section_SearchResultSection_showBulkUpdateDisplayNameKey",
+			displayNameKey="generic_element_section_SearchResultSection_showBulkUpdateDisplaNameKey",
 			inputType=InputType.CHECKBOX,
 			description="一括更新ボタンを表示にします。",
 			descriptionKey="generic_element_section_SearchResultSection_showBulkUpdateDescriptionKey"
 	)
 	private boolean showBulkUpdate;
+
+	/** 一括更新ボタン表示ラベル */
+	@MetaFieldInfo(
+			displayName="一括更新ボタン表示ラベル",
+			displayNameKey="generic_element_section_SearchResultSection_bulkUpdateDisplayLabelDisplaNameKey",
+			description="一括更新ボタンに表示されるラベルを設定します。",
+			descriptionKey="generic_element_section_SearchResultSection_bulkUpdateDisplayLabelDescriptionKey",
+			useMultiLang=true
+	)
+	@MultiLang()
+	private String bulkUpdateDisplayLabel;
+
+	/** 多言語設定情報 */
+	@MetaFieldInfo(
+			displayName="多言語設定",
+			displayNameKey="generic_element_section_SearchResultSection_localizedBulkUpdateDisplayLabelDisplaNameKey",
+			inputType=InputType.LANGUAGE
+	)
+	private List<LocalizedStringDefinition> localizedBulkUpdateDisplayLabel;
 
 	/** 親子関係の参照を物理削除するか */
 	@MetaFieldInfo(
@@ -375,6 +396,38 @@ public class SearchResultSection extends Section {
 	 */
 	public void setShowBulkUpdate(boolean showBulkUpdate) {
 		this.showBulkUpdate = showBulkUpdate;
+	}
+
+	/**
+	 * 一括更新ボタン表示ラベルを取得します。
+	 * @return 一括更新ボタンボタン表示ラベル
+	 */
+	public String getBulkUpdateDisplayLabel() {
+		return bulkUpdateDisplayLabel;
+	}
+
+	/**
+	 * 一括更新ボタンボタン表示ラベルを設定します。
+	 * @param bulkUpdateDisplayLabel 一括更新ボタンボタン表示ラベル
+	 */
+	public void setBulkUpdateDisplayLabel(String bulkUpdateDisplayLabel) {
+		this.bulkUpdateDisplayLabel = bulkUpdateDisplayLabel;
+	}
+
+	/**
+	 * 多言語設定情報を取得します。
+	 * @return 多言語設定情報
+	 */
+	public List<LocalizedStringDefinition> getLocalizedBulkUpdateDisplayLabel() {
+		return localizedBulkUpdateDisplayLabel;
+	}
+
+	/**
+	 * 多言語設定情報を設定します。
+	 * @param localizedBulkUpdateDisplayLabel 多言語設定情報
+	 */
+	public void setLocalizedBulkUpdateDisplayLabel(List<LocalizedStringDefinition> localizedBulkUpdateDisplayLabel) {
+		this.localizedBulkUpdateDisplayLabel = localizedBulkUpdateDisplayLabel;
 	}
 
 	/**

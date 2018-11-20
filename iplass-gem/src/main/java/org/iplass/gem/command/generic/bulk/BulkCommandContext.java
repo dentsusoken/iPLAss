@@ -216,7 +216,7 @@ public class BulkCommandContext extends RegistrationCommandContext {
 					.map(p -> p.getValue(propName))
 					.collect(Collectors.toList());
 			Object first = propValues.get(0);
-			if (propValues.get(0) == null) {
+			if (first == null) {
 				return propValues.stream().anyMatch(v -> v != null);
 			} else {
 				return propValues.stream().anyMatch(v -> !first.equals(v));

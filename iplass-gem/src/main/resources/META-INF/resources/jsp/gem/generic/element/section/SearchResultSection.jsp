@@ -53,6 +53,7 @@
 <%@ page import="org.iplass.gem.command.generic.search.SearchFormViewData"%>
 <%@ page import="org.iplass.gem.command.generic.search.SearchSelectListCommand"%>
 <%@ page import="org.iplass.gem.command.Constants"%>
+<%@ page import="org.iplass.gem.command.GemResourceBundleUtil"%>
 <%@ page import="org.iplass.gem.command.ViewUtil"%>
 <%!
 	boolean isDispProperty(PropertyDefinition pd, PropertyColumn property) {
@@ -599,8 +600,13 @@ ${m:outputToken('FORM_XHTML', false)}
 <input type="button" value="${m:rs('mtp-gem-messages', 'generic.element.section.SearchResultSection.delete')}" class="gr-btn" onclick="doDelete()" />
 <%	}
 	if (OutputType.SEARCHRESULT == type && section.isShowBulkUpdate() && canUpdate) {
+		String bulkUpdateDisplayLabel = GemResourceBundleUtil.resourceString("generic.element.section.SearchResultSection.bulkUpdate");
+		String localizedBulkUpdateDisplayLabel = TemplateUtil.getMultilingualString(section.getBulkUpdateDisplayLabel(), section.getLocalizedBulkUpdateDisplayLabel());
+		if (StringUtil.isNotBlank(localizedBulkUpdateDisplayLabel)) {
+			bulkUpdateDisplayLabel = localizedBulkUpdateDisplayLabel;
+		}
 %>
-<input id="bulkUpdateBtn" type="button" value="${m:rs('mtp-gem-messages', 'generic.element.section.SearchResultSection.bulkUpdate')}" class="gr-btn" onclick="doBulkUpdate(this)" />
+<input id="bulkUpdateBtn" type="button" value="<%=bulkUpdateDisplayLabel%>" class="gr-btn" onclick="doBulkUpdate(this)" />
 <%	} %>
 </p>
 <%

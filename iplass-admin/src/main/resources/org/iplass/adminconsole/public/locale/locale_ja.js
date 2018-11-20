@@ -2869,8 +2869,10 @@ LocaleInfo.generic_element_section_SearchResultSection_hidePageLinkDisplaNameKey
 LocaleInfo.generic_element_section_SearchResultSection_hidePageLinkDescriptionKey = "検索結果のページングでページリンクを非表示にします。";
 LocaleInfo.generic_element_section_SearchResultSection_pagingPositionDisplaNameKey = "ページング表示位置";
 LocaleInfo.generic_element_section_SearchResultSection_pagingPositionDescriptionKey = "ページングの表示位置を指定します。<br><b>BOTH   :</b> グリッドの上下<br><b>TOP    :</b> グリッドの上部<br><b>BOTTOM :</b> グリッドの下部<br>";
-LocaleInfo.generic_element_section_SearchResultSection_showBulkUpdateDisplayNameKey = "一括更新ボタンを表示";
+LocaleInfo.generic_element_section_SearchResultSection_showBulkUpdateDisplaNameKey = "一括更新ボタンを表示";
 LocaleInfo.generic_element_section_SearchResultSection_showBulkUpdateDescriptionKey = "一括更新ボタンと検索結果のチェックボックスを表示にします。";
+LocaleInfo.generic_element_section_SearchResultSection_bulkUpdateDisplayLabelDisplaNameKey = "一括更新ボタン表示ラベル";
+LocaleInfo.generic_element_section_SearchResultSection_bulkUpdateDisplayLabelDescriptionKey = "一括更新ボタンに表示するラベルを設定します。";
 LocaleInfo.generic_element_section_SearchResultSection_purgeCompositionedEntityDisplaNameKey = "親子関係の参照を物理削除";
 LocaleInfo.generic_element_section_SearchResultSection_purgeCompositionedEntityDescriptionKey = "参照データを削除した時に親子関係の参照の場合は物理削除します。";
 LocaleInfo.generic_element_section_SearchResultSection_forceUpadteDisplaNameKey = "更新時に強制的に更新処理を行う";

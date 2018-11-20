@@ -2871,8 +2871,10 @@ LocaleInfo.generic_element_section_SearchResultSection_hidePageLinkDisplaNameKey
 LocaleInfo.generic_element_section_SearchResultSection_hidePageLinkDescriptionKey = "Hide the page link in the paging of search results.";
 LocaleInfo.generic_element_section_SearchResultSection_pagingPositionDisplaNameKey = "Paging bar position";
 LocaleInfo.generic_element_section_SearchResultSection_pagingPositionDescriptionKey = "Specify paging bar position.<br><b>BOTH   :</b> The top and bottom of the grid<br><b>TOP    :</b> The top of the grid<br><b>BOTTOM :</b> The bottom of the grid<br>";
-LocaleInfo.generic_element_section_SearchResultSection_showBulkUpdateDisplayNameKey = "Show Bulk Update Button";
+LocaleInfo.generic_element_section_SearchResultSection_showBulkUpdateDisplaNameKey = "Show Bulk Update Button";
 LocaleInfo.generic_element_section_SearchResultSection_showBulkUpdateDescriptionKey = "Show the check box of search results and bulk update button.";
+LocaleInfo.generic_element_section_SearchResultSection_bulkUpdateDisplayLabelDisplaNameKey = "Label of Bulk Update Button";
+LocaleInfo.generic_element_section_SearchResultSection_bulkUpdateDisplayLabelDescriptionKey = "Set the label to be displayed on the bulk update button.";
 LocaleInfo.generic_element_section_SearchResultSection_purgeCompositionedEntityDisplaNameKey = "Physically delete the reference of parent-child relationship";
 LocaleInfo.generic_element_section_SearchResultSection_purgeCompositionedEntityDescriptionKey = "Physical delete in case of parent-child relationship reference when reference data is deleted.";
 LocaleInfo.generic_element_section_SearchResultSection_forceUpadteDisplaNameKey = "Force update processing at update";

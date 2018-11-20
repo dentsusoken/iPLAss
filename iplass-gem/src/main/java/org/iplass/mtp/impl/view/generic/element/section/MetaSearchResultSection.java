@@ -26,6 +26,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.iplass.mtp.impl.i18n.I18nUtil;
+import org.iplass.mtp.impl.i18n.MetaLocalizedString;
 import org.iplass.mtp.impl.script.template.GroovyTemplate;
 import org.iplass.mtp.impl.script.template.GroovyTemplateCompiler;
 import org.iplass.mtp.impl.util.ObjectUtil;
@@ -45,7 +47,7 @@ import org.iplass.mtp.view.generic.element.section.SearchResultSection;
 public class MetaSearchResultSection extends MetaSection {
 
 	/** シリアルバージョンUID */
-	private static final long serialVersionUID = -4519634456498868653L;
+	private static final long serialVersionUID = 8285678584044389380L;
 
 	public static MetaSearchResultSection createInstance(Element element) {
 		return new MetaSearchResultSection();
@@ -77,6 +79,24 @@ public class MetaSearchResultSection extends MetaSection {
 
 	/** 一括更新ボタン表示設定 */
 	private boolean showBulkUpdate;
+
+	/** 一括更新ボタン表示ラベル */
+	private String bulkUpdateDisplayLabel;
+
+	/** 多言語設定情報 */
+	private List<MetaLocalizedString> localizedBulkUpdateDisplayLabel = new ArrayList<MetaLocalizedString>();
+
+	/** 親子関係の参照を物理削除するか */
+	private boolean purgeCompositionedEntity;
+
+	/** 更新時に強制的に更新処理を行う */
+	private boolean forceUpadte;
+
+	/** カスタム登録処理クラス名 */
+	private String interrupterName;
+
+	/** カスタムロード処理クラス名 */
+	private String loadEntityInterrupterName;
 
 	/** 要素 */
 	private List<MetaElement> elements;
@@ -228,6 +248,103 @@ public class MetaSearchResultSection extends MetaSection {
 		this.showBulkUpdate = showBulkUpdate;
 	}
 
+
+	/**
+	 * 一括更新ボタン表示ラベルを取得します。
+	 * @return 一括更新ボタン表示ラベル
+	 */
+	public String getBulkUpdateDisplayLabel() {
+		return bulkUpdateDisplayLabel;
+	}
+
+	/**
+	 * 一括更新ボタン表示ラベルを設定します。
+	 * @param bulkUpdateDisplayLabel 一括更新ボタン表示ラベル
+	 */
+	public void setBulkUpdateDisplayLabel(String bulkUpdateDisplayLabel) {
+		this.bulkUpdateDisplayLabel = bulkUpdateDisplayLabel;
+	}
+
+	/**
+	 * 多言語設定情報を取得します。
+	 * @return 多言語設定情報
+	 */
+	public List<MetaLocalizedString> getLocalizedBulkUpdateDisplayLabel() {
+		return localizedBulkUpdateDisplayLabel;
+	}
+
+	/**
+	 * 多言語設定情報を設定します。
+	 * @param localizedBulkUpdateDisplayLabel 多言語設定情報
+	 */
+	public void setLocalizedBulkUpdateDisplayLabel(List<MetaLocalizedString> localizedBulkUpdateDisplayLabel) {
+		this.localizedBulkUpdateDisplayLabel = localizedBulkUpdateDisplayLabel;
+	}
+
+	/**
+	 * 親子関係の参照を物理削除するか を取得します。
+	 * @return 親子関係の参照を物理削除するか
+	 */
+	public boolean isPurgeCompositionedEntity() {
+		return purgeCompositionedEntity;
+	}
+
+	/**
+	 * 親子関係の参照を物理削除するかを設定します。
+	 * @param purgeCompositionedEntity 親子関係の参照を物理削除するか
+	 */
+	public void setPurgeCompositionedEntity(boolean purgeCompositionedEntity) {
+		this.purgeCompositionedEntity = purgeCompositionedEntity;
+	}
+
+	/**
+	 * 更新時に強制的に更新処理を行うを取得します。
+	 * @return 更新時に強制的に更新処理を行う
+	 */
+	public boolean isForceUpadte() {
+		return forceUpadte;
+	}
+
+	/**
+	 * 更新時に強制的に更新処理を行うを設定します。
+	 * @param forceUpadte 更新時に強制的に更新処理を行う
+	 */
+	public void setForceUpadte(boolean forceUpadte) {
+		this.forceUpadte = forceUpadte;
+	}
+
+	/**
+	 * カスタム登録処理クラス名を取得します。
+	 * @return カスタム登録処理クラス名
+	 */
+	public String getInterrupterName() {
+		return interrupterName;
+	}
+
+	/**
+	 * カスタム登録処理クラス名を設定します。
+	 * @param interrupterName カスタム登録処理クラス名
+	 */
+	public void setInterrupterName(String interrupterName) {
+		this.interrupterName = interrupterName;
+	}
+
+	/**
+	 * カスタムロード処理クラス名を取得します。
+	 * @return カスタムロード処理クラス名
+	 */
+	public String getLoadEntityInterrupterName() {
+		return loadEntityInterrupterName;
+	}
+
+	/**
+	 * カスタムロード処理クラス名を設定します。
+	 * @param loadEntityInterrupterName カスタムロード処理クラス名
+	 */
+	public void setLoadEntityInterrupterName(String loadEntityInterrupterName) {
+		this.loadEntityInterrupterName = loadEntityInterrupterName;
+	}
+
 	/**
 	 * 要素を取得します。
 	 * @return 要素
@@ -272,6 +389,12 @@ public class MetaSearchResultSection extends MetaSection {
 		this.hideCount = section.isHideCount();
 		this.pagingPosition = section.getPagingPosition();
 		this.showBulkUpdate = section.isShowBulkUpdate();
+		this.bulkUpdateDisplayLabel = section.getBulkUpdateDisplayLabel();
+		this.localizedBulkUpdateDisplayLabel = I18nUtil.toMeta(section.getLocalizedBulkUpdateDisplayLabel());
+		this.purgeCompositionedEntity = section.isPurgeCompositionedEntity();
+		this.forceUpadte = section.isForceUpadte();
+		this.interrupterName = section.getInterrupterName();
+		this.loadEntityInterrupterName = section.getLoadEntityInterrupterName();
 		// 仮想プロパティ追加によりMetaPropertyからMetaElementへフィールドを変更
 //		if (section.getProperties().size() > 0) {
 //			for (PropertyColumn col : section.getProperties()) {
@@ -304,6 +427,12 @@ public class MetaSearchResultSection extends MetaSection {
 		section.setHideCount(this.hideCount);
 		section.setPagingPosition(pagingPosition);
 		section.setShowBulkUpdate(this.showBulkUpdate);
+		section.setBulkUpdateDisplayLabel(this.bulkUpdateDisplayLabel);
+		section.setLocalizedBulkUpdateDisplayLabel(I18nUtil.toDef(this.localizedBulkUpdateDisplayLabel));
+		section.setPurgeCompositionedEntity(this.isPurgeCompositionedEntity());
+		section.setForceUpadte(this.forceUpadte);
+		section.setInterrupterName(this.interrupterName);
+		section.setLoadEntityInterrupterName(this.loadEntityInterrupterName);
 
 		if (this.getElements().size() > 0) {
 			for (MetaElement elem : this.getElements()) {
