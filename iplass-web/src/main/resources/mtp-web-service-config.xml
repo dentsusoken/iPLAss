@@ -100,7 +100,9 @@
 			<property name="providerName" value="simpleAuthToken" />
 			<property name="credentialTypeForTrust" value="org.iplass.mtp.auth.login.IdPasswordCredential" />
 			<property name="accountHandleClassForTrust" value="org.iplass.mtp.impl.auth.authenticate.builtin.BuiltinAccountHandle" />
-			<property name="autoLoginHandler" class="org.iplass.mtp.impl.auth.authenticate.token.web.BearerTokenAutoLoginHandler" />
+			<property name="autoLoginHandler" class="org.iplass.mtp.impl.auth.authenticate.token.web.BearerTokenAutoLoginHandler">
+				<property name="authTokenType" value="SAT" />
+			</property>
 		</property>
 
 		<property name="authorizationProvider" class="org.iplass.mtp.impl.auth.authorize.builtin.BuiltinAuthorizationProvider">

@@ -87,7 +87,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Path("/")
 public class RestCommandInvoker {
-	
+
 	private static final String ORIGIN = "Origin";
 	private static final String ACCESS_CONTROL_REQUEST_HEADERS = "Access-Control-Request-Headers";
 	private static final String ACCESS_CONTROL_REQUEST_METHOD = "Access-Control-Request-Method";
@@ -119,10 +119,10 @@ public class RestCommandInvoker {
  			throw new WebApplicationException(Status.NOT_FOUND);
 		}
 		
-		RestRequestContext context = new RestRequestContext(servletContext, request, rsRequest);
+		RestRequestContext context = new RestRequestContext(servletContext, request, rsRequest, runtime.getMetaData().isSupportBearerToken());
 		WebRequestStack stack = new WebRequestStack(path, context, servletContext, request, response, null);
 		if (runtime.getMetaData().getState() == StateType.STATELESS) {
-			sessionService.setSessionStateless();
+			sessionService.setSessionStateless(false);
 		}
 		
 		try {

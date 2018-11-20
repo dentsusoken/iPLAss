@@ -31,19 +31,30 @@ public abstract class SessionService implements Service {
 	
 	private static final String SESSION_NAME = "mtp.session.store.Session";
 	private static final String SESSION_STATELESS_FLAG = "mtp.session.store.StatelessFlag";
+	
+	
+	private enum StatelessFlag {
+		ENABLE,
+		FORCE
+	}
 
 	public Session getSession(boolean create) {
 		ExecuteContext ec = ExecuteContext.getCurrentContext();
 		Session s = (Session) ec.getAttribute(SESSION_NAME);
 		if (s == null) {
-			if (ec.getAttribute(SESSION_STATELESS_FLAG) != null) {
+			StatelessFlag f = (StatelessFlag) ec.getAttribute(SESSION_STATELESS_FLAG);
+			if (f == null) {
+				s = getSessionInternal(create);
+			} else if (f == StatelessFlag.ENABLE) {
 				//既にSessionが存在する場合は、そちら優先
 				s = getSessionInternal(false);
 				if (s == null && create) {
 					s = new OnetimeSessionImpl(this);
 				}
 			} else {
-				s = getSessionInternal(create);
+				if (create) {
+					s = new OnetimeSessionImpl(this);
+				}
 			}
 			
 			if (s != null) {
@@ -53,9 +64,15 @@ public abstract class SessionService implements Service {
 		
 		return s;
 	}
-
-	public void setSessionStateless() {
-		ExecuteContext.getCurrentContext().setAttribute(SESSION_STATELESS_FLAG, Boolean.TRUE, true);
+	
+	public void setSessionStateless(boolean force) {
+		if (force) {
+			ExecuteContext ec = ExecuteContext.getCurrentContext();
+			ec.setAttribute(SESSION_STATELESS_FLAG, StatelessFlag.FORCE, true);
+			ec.removeAttribute(SESSION_NAME);//clear current
+		} else {
+			ExecuteContext.getCurrentContext().setAttribute(SESSION_STATELESS_FLAG, StatelessFlag.ENABLE, true);
+		}
 	}
 	
 	public boolean isSessionStateless() {

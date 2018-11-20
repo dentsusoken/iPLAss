@@ -35,8 +35,9 @@ public class RestRequestContext extends WebRequestContext {
 	private RequestType requestType;
 	private MethodType methodType;
 	private Request rsRequest;
+	private boolean supportBearerToken;
 	
-	public RestRequestContext(ServletContext servletContext, HttpServletRequest req, Request rsRequest) {
+	public RestRequestContext(ServletContext servletContext, HttpServletRequest req, Request rsRequest, boolean supportBearerToken) {
 		super(servletContext, req);
 		this.rsRequest = rsRequest;
 		switch (rsRequest.getMethod()) {
@@ -55,10 +56,15 @@ public class RestRequestContext extends WebRequestContext {
 		default:
 			break;
 		}
+		this.supportBearerToken = supportBearerToken;
 	}
 	
 	public void setRequestType(RequestType requestType) {
 		this.requestType = requestType;
+	}
+	
+	public boolean supportBearerToken() {
+		return supportBearerToken;
 	}
 	
 	public Request rsRequest() {

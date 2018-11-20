@@ -82,13 +82,6 @@ public class AuthInterceptor implements CommandInterceptor {
 			AuthenticationProvider ap = authService.getAuthenticationProvider();
 			AutoLoginHandler alh = ap.getAutoLoginHandler();
 			if (alh != null) {
-				//TODO BearerTokenAutoLoginHandlerを参照してしまう。。
-				if (alh instanceof BearerTokenAutoLoginHandler) {
-					if (!invocation.getWebApiRuntime().getMetaData().isSupportBearerToken()) {
-						return;
-					}
-				}
-				
 				AutoLoginInstruction inst = alh.handle(invocation.getRequest(), true, user);
 				switch (inst.getInstruction()) {
 				case DO_AUTH:
@@ -133,12 +126,6 @@ public class AuthInterceptor implements CommandInterceptor {
 			for (AuthenticationProvider ap: authService.getAuthenticationProviders()) {
 				AutoLoginHandler autoLoginHandler = ap.getAutoLoginHandler();
 				if (autoLoginHandler != null) {
-					//TODO BearerTokenAutoLoginHandlerを参照してしまう。。
-					if (autoLoginHandler instanceof BearerTokenAutoLoginHandler) {
-						if (!invocation.getWebApiRuntime().getMetaData().isSupportBearerToken()) {
-							continue;
-						}
-					}
 					
 					AutoLoginInstruction inst = autoLoginHandler.handle(invocation.getRequest(), false, null);
 					switch (inst.getInstruction()) {

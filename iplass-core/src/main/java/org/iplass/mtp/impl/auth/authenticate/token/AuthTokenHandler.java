@@ -43,7 +43,6 @@ public abstract class AuthTokenHandler implements ServiceInitListener<AuthTokenS
 	private boolean visible = true;
 	private List<HashSetting> hashSettings;
 	private String secureRandomGeneratorName;
-	
 
 	private AuthTokenService service;
 	private AuthTokenStore authTokenStore;
@@ -141,6 +140,10 @@ public abstract class AuthTokenHandler implements ServiceInitListener<AuthTokenS
 	}
 	
 	public boolean checkTokenValid(String inputToken, AuthToken storeToken) {
+		if (storeToken == null || inputToken == null) {
+			return false;
+		}
+		
 		if (hashSettings == null || hashSettings.size() == 0) {
 			return storeToken.getToken().equals(inputToken);
 		}
