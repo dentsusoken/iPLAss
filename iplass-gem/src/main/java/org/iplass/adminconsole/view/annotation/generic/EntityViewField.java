@@ -54,7 +54,7 @@ public @interface EntityViewField {
 	 *
 	 * <p>
 	 * ここで指定されたフィールドの参照するタイプが起動トリガーのタイプに上書きされる。
-	 * FieldReferenceType.NULLを設定した場合、上書きされない。
+	 * FieldReferenceType.NONEを設定した場合、上書きされない。
 	 * <p>
 	 *
 	 * <p>

@@ -248,7 +248,7 @@ public class BulkCommandContext extends RegistrationCommandContext {
 	protected Object createReference(PropertyDefinition p, String prefix) {
 		ReferenceProperty rp = (ReferenceProperty) p;
 		String defName = rp.getObjectDefinitionName();
-		//NestTable、ReferenceSectionの場合の件数取得
+		//NestTableの場合の件数取得
 		//prefixが付くケース=NestTable内の多重参照なのであり得ない
 		//→件数取れないため通常の参照扱いで処理が終わる
 		Long count = getLongValue(prefix + p.getName() + "_count");
