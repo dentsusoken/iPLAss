@@ -104,7 +104,7 @@ public abstract class ReferenceRegistHandlerBase implements ReferenceRegistHandl
 				try {
 					if (entity.getOid() == null) {
 						InsertOption option = new InsertOption();
-						option.setLocalized(context.getView().isLocalizationData());
+						option.setLocalized(context.isLocalizationData());
 						em.insert(entity, option);
 						//参照プロパティのエンティティに権限が付いてるとうまく行かないケースがある
 						//→逆参照のエンティティのプロパティが権限の条件になっている等
@@ -117,7 +117,7 @@ public abstract class ReferenceRegistHandlerBase implements ReferenceRegistHandl
 						option.setForceUpdate(forceUpdate);
 						option.setUpdateProperties(updateProperties);
 						option.setPurgeCompositionedEntity(context.isPurgeCompositionedEntity());
-						option.setLocalized(context.getView().isLocalizationData());
+						option.setLocalized(context.isLocalizationData());
 						em.update(entity, option);
 					}
 				} catch (EntityValidationException e) {

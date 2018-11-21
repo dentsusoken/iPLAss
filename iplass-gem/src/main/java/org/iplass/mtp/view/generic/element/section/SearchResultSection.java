@@ -49,7 +49,7 @@ import org.iplass.mtp.view.generic.element.Element;
 public class SearchResultSection extends Section {
 
 	/** シリアルバージョンUID */
-	private static final long serialVersionUID = -2842595695389408528L;
+	private static final long serialVersionUID = -700624023196624864L;
 
 	/** 要素 */
 	private List<Element> elements;

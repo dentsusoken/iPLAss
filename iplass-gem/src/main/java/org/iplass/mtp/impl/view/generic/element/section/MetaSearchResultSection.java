@@ -47,7 +47,7 @@ import org.iplass.mtp.view.generic.element.section.SearchResultSection;
 public class MetaSearchResultSection extends MetaSection {
 
 	/** シリアルバージョンUID */
-	private static final long serialVersionUID = 8285678584044389380L;
+	private static final long serialVersionUID = -4519634456498868653L;
 
 	public static MetaSearchResultSection createInstance(Element element) {
 		return new MetaSearchResultSection();

@@ -436,6 +436,10 @@ $(function() {
 			var bulkUpdateItem = "${m:rs('mtp-gem-messages', 'generic.bulk.updateItem')}";
 			bulkUpdateItem = bulkUpdateItem.replace("{0}", count);
 			$("#bulkUpdateCount").text(bulkUpdateItem);
+			// 検索条件で一括更新した後、該当するデータの件数が0件になった場合、一括更新ボタンを無効化にします。
+			if ("" + count === "0") {
+				$("#bulkUpdateBtn").prop("disabled", true);
+			}
 		});
 	} 
 })

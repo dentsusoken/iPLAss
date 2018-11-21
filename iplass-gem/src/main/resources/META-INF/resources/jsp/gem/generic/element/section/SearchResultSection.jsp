@@ -175,7 +175,7 @@ $(function() {
 		};
 	});
 
-	var multiSelect = <%=(OutputType.SEARCHRESULT == type && !section.isHideDelete() && canDelete) || OutputType.MULTISELECT == type%>;
+	var multiSelect = <%=(OutputType.SEARCHRESULT == type && !section.isHideDelete() && canDelete) || (OutputType.SEARCHRESULT == type && section.isShowBulkUpdate() && canUpdate) || OutputType.MULTISELECT == type%>;
 	var colModel = new Array();
 	colModel.push({name:"orgOid", index:"orgOid", sortable:false, hidden:true, frozen:true, label:"oid"});
 	colModel.push({name:"orgVersion", index:"orgVersion", sortable:false, hidden:true, frozen:true, label:"version"});
@@ -712,16 +712,7 @@ function deleteRow(isConfirmed) {
 	}
 	if (OutputType.SEARCHRESULT == type && section.isShowBulkUpdate() && canUpdate) { %>
 <script>
-function doBulkUpdate(target) {
-	var ids = grid.getGridParam("selarrrow");
-	if(ids.length <= 0) {
-		alert("${m:rs('mtp-gem-messages', 'generic.element.section.SearchResultSection.selectBulkUpdateMsg')}");
-		return false;
-	}
-
-	var $bulkUpdateDialogTrigger = getDialogTrigger($(target).parent(), {dialogHeight:450, resizable:true});
-	$bulkUpdateDialogTrigger.click();
-	
+$(function() {
 	document.scriptContext["countBulkUpdate"] = function($frame, func) {
 		var type = $(":hidden[name='searchType']").val();
 		if (!validation(type)) return;
@@ -750,6 +741,16 @@ function doBulkUpdate(target) {
 		$(".result-block").on("iplassAfterSearch", selectAfterBulkUpdate);
 		doSearch($(":hidden[name='searchType']").val(), $(":hidden[name='offset']").val(), false, "bulkUpdate");
 	}
+});
+function doBulkUpdate(target) {
+	var ids = grid.getGridParam("selarrrow");
+	if(ids.length <= 0) {
+		alert("${m:rs('mtp-gem-messages', 'generic.element.section.SearchResultSection.selectBulkUpdateMsg')}");
+		return false;
+	}
+
+	var $bulkUpdateDialogTrigger = getDialogTrigger($(target).parent(), {dialogHeight:450, resizable:true});
+	$bulkUpdateDialogTrigger.click();
 
 	var oid = [];
 	var version = [];

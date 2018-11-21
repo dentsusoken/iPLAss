@@ -84,6 +84,7 @@ public class BulkUpdateAllCommand extends BulkCommandBase {
 
 	@Override
 	public String execute(RequestContext request) {
+		final BulkCommandContext context = getContext(request);
 		String searchType = request.getParam(Constants.SEARCH_TYPE);
 
 		SearchCommandBase command = null;
@@ -97,13 +98,13 @@ public class BulkUpdateAllCommand extends BulkCommandBase {
 
 		String ret = Constants.CMD_EXEC_SUCCESS;
 		if (command != null) {
-			SearchContext context = command.getContext(request);
+			SearchContext searchContext = command.getContext(request);
 
 			Query query = new Query();
 			query.select(Entity.OID, Entity.VERSION, Entity.UPDATE_DATE);
-			query.from(context.getDefName());
-			query.setWhere(context.getWhere());
-			query.setVersiond(context.isVersioned());
+			query.from(searchContext.getDefName());
+			query.setWhere(searchContext.getWhere());
+			query.setVersiond(searchContext.isVersioned());
 			SearchResult<Entity> result = em.searchEntity(query);
 
 			List<Entity> entities = result.getList();
@@ -160,6 +161,11 @@ public class BulkUpdateAllCommand extends BulkCommandBase {
 						break;
 					}
 				}
+			} else {
+				// 一件もない場合、画面表示するために空のフォームビューデータを設定します。
+				request.setAttribute(Constants.DATA, new BulkUpdateFormViewData(context));
+				request.setAttribute(Constants.SEARCH_COND, context.getSearchCond());
+				request.setAttribute(Constants.BULK_UPDATE_SELECT_TYPE, context.getSelectAllType());
 			}
 		}
 
