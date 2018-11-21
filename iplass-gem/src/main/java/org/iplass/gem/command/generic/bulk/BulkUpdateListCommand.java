@@ -129,14 +129,9 @@ public class BulkUpdateListCommand extends BulkCommandBase {
 					transaction.addTransactionListener(new TransactionListener() {
 						@Override
 						public void afterCommit(Transaction t) {
-							// 被参照をテーブルで追加した場合、コミット前だとロードで取得できない
-							if (context.isVersioned() && !context.isNewVersion()) {
-								// 特定バージョンの場合だけバージョン指定でロード
-								Long version = context.getVersion(oid);
-								data.setEntity(row, loadViewEntity(context, oid, version, context.getDefinitionName(), context.getReferencePropertyName()));
-							} else {
-								data.setEntity(row, loadViewEntity(context, oid, null, context.getDefinitionName(), context.getReferencePropertyName()));
-							}
+							// 特定のバージョン指定でロード
+							Long version = context.getVersion(oid);
+							data.setEntity(row, loadViewEntity(context, oid, version, context.getDefinitionName(), (List<String>) null));
 						}
 					});
 				} else {

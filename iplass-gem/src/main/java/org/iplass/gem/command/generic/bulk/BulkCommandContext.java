@@ -471,8 +471,7 @@ public class BulkCommandContext extends RegistrationCommandContext {
 	 */
 	@Override
 	public boolean isNewVersion() {
-		String newVersion = getParam(Constants.NEWVERSION);
-		return newVersion != null && "true".equals(newVersion);
+		return false;
 	}
 
 	@Override
@@ -742,26 +741,6 @@ public class BulkCommandContext extends RegistrationCommandContext {
 		}
 
 		return propList;
-	}
-
-	/**
-	 * 表示対象の参照プロパティ名を取得します
-	 * @return
-	 */
-	public List<String> getReferencePropertyName() {
-		List<String> loadReferences = new ArrayList<String>();
-		SearchResultSection section = getView().getResultSection();
-		for (Element element : section.getElements()) {
-			if (element instanceof PropertyColumn) {
-				PropertyColumn property = (PropertyColumn) element;
-				PropertyDefinition pd = getProperty(property.getPropertyName());
-				if (pd instanceof ReferenceProperty) {
-					//大量データ用のPropertyEditorを使わない参照プロパティのみ
-					loadReferences.add(property.getPropertyName());
-				}
-			}
-		}
-		return loadReferences;
 	}
 
 	@SuppressWarnings("unused")
