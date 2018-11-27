@@ -86,7 +86,7 @@ String format(String format, Object value) {
 			//ExpressionのResultTypeにあわせたeditorで表示
 			editor.getEditor().setPropertyName(editor.getPropertyName());
 			request.setAttribute(Constants.EDITOR_EDITOR, editor.getEditor());
-			if (OutputType.EDIT == type) {
+			if (OutputType.EDIT == type || OutputType.BULK == type) {
 				String editorTypeName = editor.getPropertyName() + "_editorType";
 				String editorType = editor.getEditor().getClass().getSimpleName();
 %>
@@ -100,7 +100,7 @@ String format(String format, Object value) {
 %>
 <jsp:include page="<%=path %>" />
 <%
-			if (OutputType.EDIT == type) {
+			if (OutputType.EDIT == type || OutputType.BULK == type) {
 				//後続のために戻しておく
 				request.setAttribute(Constants.OUTPUT_TYPE, type);
 				request.removeAttribute(Constants.OUTPUT_HIDDEN);
@@ -116,8 +116,8 @@ String format(String format, Object value) {
 
 	boolean isMultiple = pd.getMultiplicity() != 1;
 
-	if (OutputType.EDIT == type || OutputType.VIEW == type) {
-		//詳細編集 or 詳細表示
+	if (OutputType.EDIT == type || OutputType.VIEW == type || OutputType.BULK == type) {
+		//詳細編集 or 詳細表示 or 一括更新編集
 
 		//カスタムスタイル
 		String customStyle = "";

@@ -42,6 +42,7 @@ import org.iplass.mtp.impl.view.generic.element.ElementHandler;
 import org.iplass.mtp.impl.view.generic.element.MetaElement;
 import org.iplass.mtp.view.generic.editor.DateRangePropertyEditor;
 import org.iplass.mtp.view.generic.editor.JoinPropertyEditor;
+import org.iplass.mtp.view.generic.editor.PropertyEditor;
 import org.iplass.mtp.view.generic.editor.ReferencePropertyEditor;
 import org.iplass.mtp.view.generic.element.Element;
 import org.iplass.mtp.view.generic.element.property.PropertyBase;
@@ -212,21 +213,7 @@ public abstract class MetaPropertyLayout extends MetaElement {
 
 		MetaPropertyEditor editor = MetaPropertyEditor.createInstance(p.getEditor());
 
-		if (p.getEditor() instanceof JoinPropertyEditor) {
-			((JoinPropertyEditor) p.getEditor()).setObjectName(entity.getMetaData().getName());
-		} else if (p.getEditor() instanceof DateRangePropertyEditor) {
-				((DateRangePropertyEditor) p.getEditor()).setObjectName(entity.getMetaData().getName());
-		} else if (p.getEditor() instanceof ReferencePropertyEditor) {
-			ReferencePropertyEditor rpe = (ReferencePropertyEditor)p.getEditor();
-			//参照Entity情報を取得してEditorにEntity名をセット
-			PropertyHandler handler = getHandler(p.getPropertyName(), context, entity);
-			if (handler != null && handler instanceof ReferencePropertyHandler) {
-				String objName = ((ReferencePropertyHandler) handler).getReferenceEntityHandler(context).getMetaData().getName();
-				rpe.setObjectName(objName);
-			}
-			//Editorに参照元Entity名をセット
-			rpe.setReferenceFromObjectName(entity.getMetaData().getName());
-		}
+		fillCustomPropertyEditor(p.getEditor(), p.getPropertyName(), context, entity);
 
 		if (editor != null) {
 			p.getEditor().setPropertyName(p.getPropertyName());
@@ -242,6 +229,24 @@ public abstract class MetaPropertyLayout extends MetaElement {
 		// 言語毎の文字情報設定
 		localizedDisplayLabelList = I18nUtil.toMeta(p.getLocalizedDisplayLabelList());
 
+	}
+
+	protected void fillCustomPropertyEditor(PropertyEditor pe, String propName, EntityContext context, EntityHandler entity) {
+		if (pe instanceof JoinPropertyEditor) {
+			((JoinPropertyEditor) pe).setObjectName(entity.getMetaData().getName());
+		} else if (pe instanceof DateRangePropertyEditor) {
+				((DateRangePropertyEditor) pe).setObjectName(entity.getMetaData().getName());
+		} else if (pe instanceof ReferencePropertyEditor) {
+			ReferencePropertyEditor rpe = (ReferencePropertyEditor)pe;
+			//参照Entity情報を取得してEditorにEntity名をセット
+			PropertyHandler handler = getHandler(propName, context, entity);
+			if (handler != null && handler instanceof ReferencePropertyHandler) {
+				String objName = ((ReferencePropertyHandler) handler).getReferenceEntityHandler(context).getMetaData().getName();
+				rpe.setObjectName(objName);
+			}
+			//Editorに参照元Entity名をセット
+			rpe.setReferenceFromObjectName(entity.getMetaData().getName());
+		}
 	}
 
 	private String convertId(String propName, EntityContext context, EntityHandler entity) {

@@ -44,6 +44,7 @@ import org.iplass.mtp.view.generic.FormView;
 import org.iplass.mtp.view.generic.common.WebApiAutocompletionSetting;
 import org.iplass.mtp.view.generic.element.Element;
 import org.iplass.mtp.view.generic.element.Element.EditDisplayType;
+import org.iplass.mtp.view.generic.element.property.PropertyColumn;
 import org.iplass.mtp.view.generic.element.property.PropertyItem;
 import org.iplass.mtp.view.generic.element.section.SearchConditionSection.CsvDownloadSpecifyCharacterCode;
 import org.iplass.mtp.view.top.TopViewDefinition;
@@ -224,6 +225,10 @@ public class ViewUtil {
 			return property.get();
 		}
 		return null;
+	}
+	
+	public static List<PropertyColumn> filterPropertyColumn(List<Element> elements) {
+		return elements.stream().filter(e -> e instanceof PropertyColumn).map(e -> (PropertyColumn) e).collect(Collectors.toList());
 	}
 
 	/**

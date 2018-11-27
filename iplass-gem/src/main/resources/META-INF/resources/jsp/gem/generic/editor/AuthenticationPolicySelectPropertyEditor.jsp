@@ -29,8 +29,8 @@
 	OutputType type = (OutputType) request.getAttribute(Constants.OUTPUT_TYPE);
 	String propName = editor.getPropertyName();
 
-	if (OutputType.EDIT == type) {
-		//詳細編集
+	if (OutputType.EDIT == type || OutputType.BULK == type) {
+		//詳細編集 or 一括更新編集
 %>
 <jsp:include page="./authpolicyselect/AuthenticationPolicySelectPropertyEditor_Edit.jsp"></jsp:include>
 <jsp:include page="../editor/ErrorMessage.jsp">

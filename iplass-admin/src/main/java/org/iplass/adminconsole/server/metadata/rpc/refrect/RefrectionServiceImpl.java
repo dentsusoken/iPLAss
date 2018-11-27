@@ -337,6 +337,7 @@ public class RefrectionServiceImpl extends XsrfProtectedServiceServlet implement
 					EntityViewField viewAnnotation = field.getAnnotation(EntityViewField.class);
 					if (viewAnnotation != null) {
 						info.setEntityViewReferenceType(viewAnnotation.referenceTypes());
+						info.setOverrideTriggerType(viewAnnotation.overrideTriggerType());
 					}
 				}
 

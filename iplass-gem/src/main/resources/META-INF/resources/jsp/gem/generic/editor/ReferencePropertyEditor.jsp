@@ -73,8 +73,8 @@
 	String propName = editor.getPropertyName();
 
 	//タイプ毎に表示内容かえる
-	if (OutputType.EDIT == type) {
-		//詳細編集
+	if (OutputType.EDIT == type || OutputType.BULK == type) {
+		//詳細編集 or 一括更新編集
 %>
 <jsp:include page="./reference/ReferencePropertyEditor_Edit.jsp" />
 <jsp:include page="ErrorMessage.jsp">

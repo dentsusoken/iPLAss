@@ -295,7 +295,7 @@
 	//定義名を参照型のものに置き換える、後でdefNameに戻す
 	request.setAttribute(Constants.DEF_NAME, refDefName);
 
-	if (OutputType.EDIT == execOutputType) {
+	if (OutputType.EDIT == execOutputType || OutputType.BULK == execOutputType) {
 
 		//-------------------------
 		//Editモード

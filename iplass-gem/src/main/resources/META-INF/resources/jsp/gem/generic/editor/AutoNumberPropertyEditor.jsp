@@ -50,8 +50,8 @@
 	}
 	String propName = editor.getPropertyName();
 
-	if (OutputType.EDIT == type || OutputType.VIEW == type) {
-		//詳細編集 or 詳細表示
+	if (OutputType.EDIT == type || OutputType.VIEW == type || OutputType.BULK == type) {
+		//詳細編集 or 詳細表示 or 一括更新編集
 		String str = propValue != null ? propValue.toString() : "";
 
 		//カスタムスタイル

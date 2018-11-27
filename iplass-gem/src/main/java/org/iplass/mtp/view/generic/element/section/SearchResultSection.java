@@ -26,9 +26,11 @@ import java.util.List;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 
+import org.iplass.adminconsole.annotation.MultiLang;
 import org.iplass.adminconsole.view.annotation.IgnoreField;
 import org.iplass.adminconsole.view.annotation.InputType;
 import org.iplass.adminconsole.view.annotation.MetaFieldInfo;
+import org.iplass.mtp.definition.LocalizedStringDefinition;
 import org.iplass.mtp.view.generic.Jsp;
 import org.iplass.mtp.view.generic.Jsps;
 import org.iplass.mtp.view.generic.PagingPosition;
@@ -142,8 +144,79 @@ public class SearchResultSection extends Section {
 	)
 	private PagingPosition pagingPosition;
 
+	/** 一括更新ボタン表示設定 */
+	@MetaFieldInfo(
+			displayName="一括更新ボタン表示設定",
+			displayNameKey="generic_element_section_SearchResultSection_showBulkUpdateDisplaNameKey",
+			inputType=InputType.CHECKBOX,
+			description="一括更新ボタンを表示にします。",
+			descriptionKey="generic_element_section_SearchResultSection_showBulkUpdateDescriptionKey"
+	)
+	private boolean showBulkUpdate;
+
+	/** 一括更新ボタン表示ラベル */
+	@MetaFieldInfo(
+			displayName="一括更新ボタン表示ラベル",
+			displayNameKey="generic_element_section_SearchResultSection_bulkUpdateDisplayLabelDisplaNameKey",
+			description="一括更新ボタンに表示されるラベルを設定します。",
+			descriptionKey="generic_element_section_SearchResultSection_bulkUpdateDisplayLabelDescriptionKey",
+			useMultiLang=true
+	)
+	@MultiLang()
+	private String bulkUpdateDisplayLabel;
+
+	/** 多言語設定情報 */
+	@MetaFieldInfo(
+			displayName="多言語設定",
+			displayNameKey="generic_element_section_SearchResultSection_localizedBulkUpdateDisplayLabelDisplaNameKey",
+			inputType=InputType.LANGUAGE
+	)
+	private List<LocalizedStringDefinition> localizedBulkUpdateDisplayLabel;
+
+	/** 親子関係の参照を物理削除するか */
+	@MetaFieldInfo(
+			displayName="親子関係の参照を物理削除するか",
+			displayNameKey="generic_element_section_SearchResultSection_purgeCompositionedEntityDisplaNameKey",
+			inputType=InputType.CHECKBOX,
+			description="親子関係の参照を物理削除するかを設定します",
+			descriptionKey="generic_element_section_SearchResultSection_purgeCompositionedEntityDescriptionKey"
+	)
+	private boolean purgeCompositionedEntity;
+
+	/** 更新時に強制的に更新処理を行う */
+	@MetaFieldInfo(
+			displayName="更新時に強制的に更新処理を行う",
+			displayNameKey="generic_element_section_SearchResultSection_forceUpadteDisplaNameKey",
+			inputType=InputType.CHECKBOX,
+			description="変更項目が一つもなくとも、強制的に更新処理（更新日時、更新者が更新される）を行います。",
+			descriptionKey="generic_element_section_SearchResultSection_forceUpadteDescriptionKey"
+	)
+	private boolean forceUpadte;
+
 	/** カスタムスタイルキー */
 	private String scriptKey;
+
+	/** カスタム登録処理クラス名 */
+	@MetaFieldInfo(
+			displayName="カスタム登録処理クラス名",
+			displayNameKey="generic_element_section_SearchResultSection_interrupterNameDisplaNameKey",
+			description="データ登録時に行うカスタム登録処理のクラス名を指定します。<br>" +
+					"RegistrationInterrupterインターフェースを実装するクラスを指定してください。",
+
+			descriptionKey="generic_element_section_SearchResultSection_interrupterNameDescriptionKey"
+	)
+	private String interrupterName;
+
+	/** カスタムロード処理クラス名 */
+	@MetaFieldInfo(
+			displayName="カスタムロード処理クラス名",
+			displayNameKey="generic_element_section_SearchResultSection_loadEntityInterrupterNameDisplaNameKey",
+			description="Entityロード処理実行前にロード用のオプションをカスタマイズするためのクラス名を指定します。<br>" +
+					"LoadEntityInterrupterインターフェースを実装するクラスを指定してください。",
+
+			descriptionKey="generic_element_section_SearchResultSection_loadEntityInterrupterNameDescriptionKey"
+	)
+	private String loadEntityInterrupterName;
 
 	/**
 	 * デフォルトコンストラクタ
@@ -310,6 +383,86 @@ public class SearchResultSection extends Section {
 	}
 
 	/**
+	 * 一括更新ボタン表示設定を取得します。
+	 * @return 一括更新ボタン表示設定
+	 */
+	public boolean isShowBulkUpdate() {
+		return showBulkUpdate;
+	}
+
+	/**
+	 * 一括更新ボタン表示設定を設定します。
+	 * @param showBulkUpdate 一括更新ボタン表示設定
+	 */
+	public void setShowBulkUpdate(boolean showBulkUpdate) {
+		this.showBulkUpdate = showBulkUpdate;
+	}
+
+	/**
+	 * 一括更新ボタン表示ラベルを取得します。
+	 * @return 一括更新ボタンボタン表示ラベル
+	 */
+	public String getBulkUpdateDisplayLabel() {
+		return bulkUpdateDisplayLabel;
+	}
+
+	/**
+	 * 一括更新ボタンボタン表示ラベルを設定します。
+	 * @param bulkUpdateDisplayLabel 一括更新ボタンボタン表示ラベル
+	 */
+	public void setBulkUpdateDisplayLabel(String bulkUpdateDisplayLabel) {
+		this.bulkUpdateDisplayLabel = bulkUpdateDisplayLabel;
+	}
+
+	/**
+	 * 多言語設定情報を取得します。
+	 * @return 多言語設定情報
+	 */
+	public List<LocalizedStringDefinition> getLocalizedBulkUpdateDisplayLabel() {
+		return localizedBulkUpdateDisplayLabel;
+	}
+
+	/**
+	 * 多言語設定情報を設定します。
+	 * @param localizedBulkUpdateDisplayLabel 多言語設定情報
+	 */
+	public void setLocalizedBulkUpdateDisplayLabel(List<LocalizedStringDefinition> localizedBulkUpdateDisplayLabel) {
+		this.localizedBulkUpdateDisplayLabel = localizedBulkUpdateDisplayLabel;
+	}
+
+	/**
+	 * 親子関係の参照を物理削除するかを取得します。
+	 * @return 親子関係の参照を物理削除するか
+	 */
+	public boolean isPurgeCompositionedEntity() {
+	    return purgeCompositionedEntity;
+	}
+
+	/**
+	 * 親子関係の参照を物理削除するかを設定します。
+	 * @param purgeCompositionedEntity 親子関係の参照を物理削除するか
+	 */
+	public void setPurgeCompositionedEntity(boolean purgeCompositionedEntity) {
+	    this.purgeCompositionedEntity = purgeCompositionedEntity;
+	}
+
+	/**
+	 * 更新時に強制的に更新処理を行うかを取得します。
+	 * @return forceUpdate 更新時に強制的に更新処理を行うか
+	 */
+	public boolean isForceUpadte() {
+		return forceUpadte;
+	}
+
+	/**
+	 * 更新時に強制的に更新処理を行うかを設定します。
+	 * @param forceUpadte 更新時に強制的に更新処理を行うか
+	 */
+	public void setForceUpadte(boolean forceUpadte) {
+		this.forceUpadte = forceUpadte;
+	}
+
+	/**
 	 * カスタムスタイルのキーを取得します。
 	 * @return カスタムスタイルのキー
 	 */
@@ -323,6 +476,38 @@ public class SearchResultSection extends Section {
 	 */
 	public void setScriptKey(String scriptKey) {
 		this.scriptKey = scriptKey;
+	}
+
+	/**
+	 * カスタム登録処理クラス名を取得します。
+	 * @return カスタム登録処理クラス名
+	 */
+	public String getInterrupterName() {
+	    return interrupterName;
+	}
+
+	/**
+	 * カスタム登録処理クラス名を設定します。
+	 * @param interrupterName カスタム登録処理クラス名
+	 */
+	public void setInterrupterName(String interrupterName) {
+	    this.interrupterName = interrupterName;
+	}
+
+	/**
+	 * カスタムロード処理クラス名を取得します。
+	 * @return カスタムロード処理クラス名
+	 */
+	public String getLoadEntityInterrupterName() {
+	    return loadEntityInterrupterName;
+	}
+
+	/**
+	 * カスタムロード処理クラス名を設定します。
+	 * @param loadEntityInterrupterName カスタムロード処理クラス名
+	 */
+	public void setLoadEntityInterrupterName(String loadEntityInterrupterName) {
+	    this.loadEntityInterrupterName = loadEntityInterrupterName;
 	}
 
 }

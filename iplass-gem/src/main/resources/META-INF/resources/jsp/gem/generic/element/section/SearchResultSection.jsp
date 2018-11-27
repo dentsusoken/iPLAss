@@ -48,10 +48,12 @@
 <%@ page import="org.iplass.gem.command.generic.delete.DeleteAllCommand"%>
 <%@ page import="org.iplass.gem.command.generic.delete.DeleteListCommand"%>
 <%@ page import="org.iplass.gem.command.generic.detail.DetailViewCommand"%>
+<%@ page import="org.iplass.gem.command.generic.bulk.BulkUpdateViewCommand"%>
 <%@ page import="org.iplass.gem.command.generic.search.CountCommand"%>
 <%@ page import="org.iplass.gem.command.generic.search.SearchFormViewData"%>
 <%@ page import="org.iplass.gem.command.generic.search.SearchSelectListCommand"%>
 <%@ page import="org.iplass.gem.command.Constants"%>
+<%@ page import="org.iplass.gem.command.GemResourceBundleUtil"%>
 <%@ page import="org.iplass.gem.command.ViewUtil"%>
 <%!
 	boolean isDispProperty(PropertyDefinition pd, PropertyColumn property) {
@@ -136,6 +138,9 @@
 		deleteAllWebapi = DeleteAllCommand.WEBAPI_NAME;
 	}
 
+	//一括詳細表示アクション
+	String bulkEditAction = BulkUpdateViewCommand.BULK_EDIT_ACTION_NAME + urlPath;
+
 	Boolean showdDetermineButton = (Boolean) request.getAttribute(Constants.SHOW_DETERMINE_BUTTON);
 	if (showdDetermineButton == null) showdDetermineButton = false;
 %>
@@ -170,7 +175,7 @@ $(function() {
 		};
 	});
 
-	var multiSelect = <%=(OutputType.SEARCHRESULT == type && !section.isHideDelete() && canDelete) || OutputType.MULTISELECT == type%>;
+	var multiSelect = <%=(OutputType.SEARCHRESULT == type && !section.isHideDelete() && canDelete) || (OutputType.SEARCHRESULT == type && section.isShowBulkUpdate() && canUpdate) || OutputType.MULTISELECT == type%>;
 	var colModel = new Array();
 	colModel.push({name:"orgOid", index:"orgOid", sortable:false, hidden:true, frozen:true, label:"oid"});
 	colModel.push({name:"orgVersion", index:"orgVersion", sortable:false, hidden:true, frozen:true, label:"version"});
@@ -588,10 +593,25 @@ ${m:outputToken('FORM_XHTML', false)}
 <%
 	}
 %>
+<p>
 <%
 	if (OutputType.SEARCHRESULT == type && !section.isHideDelete() && canDelete) {
 %>
-<p><input type="button" value="${m:rs('mtp-gem-messages', 'generic.element.section.SearchResultSection.delete')}" class="gr-btn" onclick="doDelete()" /></p>
+<input type="button" value="${m:rs('mtp-gem-messages', 'generic.element.section.SearchResultSection.delete')}" class="gr-btn" onclick="doDelete()" />
+<%	}
+	if (OutputType.SEARCHRESULT == type && section.isShowBulkUpdate() && canUpdate) {
+		String bulkUpdateDisplayLabel = GemResourceBundleUtil.resourceString("generic.element.section.SearchResultSection.bulkUpdate");
+		String localizedBulkUpdateDisplayLabel = TemplateUtil.getMultilingualString(section.getBulkUpdateDisplayLabel(), section.getLocalizedBulkUpdateDisplayLabel());
+		if (StringUtil.isNotBlank(localizedBulkUpdateDisplayLabel)) {
+			bulkUpdateDisplayLabel = localizedBulkUpdateDisplayLabel;
+		}
+%>
+<input id="bulkUpdateBtn" type="button" value="<%=bulkUpdateDisplayLabel%>" class="gr-btn" onclick="doBulkUpdate(this)" />
+<%	} %>
+</p>
+<%
+	if (OutputType.SEARCHRESULT == type && !section.isHideDelete() && canDelete) {
+%>
 <div id="selectDeleteTypeDialog" title="${m:rs('mtp-gem-messages', 'generic.element.section.SearchResultSection.selectDeleteType')}" style="display:none;">
 <ul style="text-align:left; margin-left:15px;">
 <li>
@@ -686,6 +706,90 @@ function deleteRow(isConfirmed) {
 			doSearch($(":hidden[name='searchType']").val(), $(":hidden[name='offset']").val(), false, "delete");
 		}
 	});
+}
+</script>
+<% 
+	}
+	if (OutputType.SEARCHRESULT == type && section.isShowBulkUpdate() && canUpdate) { %>
+<script>
+$(function() {
+	document.scriptContext["countBulkUpdate"] = function($frame, func) {
+		var type = $(":hidden[name='searchType']").val();
+		if (!validation(type)) return;
+
+		count("<%=CountCommand.WEBAPI_NAME%>", type, type + "Form", function(count) {
+			if(func && $.isFunction(func)){
+				func.call($frame, count);
+			}
+		});
+	}
+
+	document.scriptContext["bulkUpdateModalWindowCallback"] = function(id) {
+		if (typeof id === "undefined") return;
+		// 一括更新後行選択処理を実行する　
+		var selectAfterBulkUpdate = function() {
+			// 検索条件を元に一括更新の場合
+			if (id === "all") {
+				$("#cb_searchResult").trigger("click");
+			// 選択された行を一括更新
+			} else if ($.isArray(id)) {
+				selectArray = id;
+				applyGridSelection();
+			}
+			$(".result-block").off("iplassAfterSearch", selectAfterBulkUpdate);
+		}
+		$(".result-block").on("iplassAfterSearch", selectAfterBulkUpdate);
+		doSearch($(":hidden[name='searchType']").val(), $(":hidden[name='offset']").val(), false, "bulkUpdate");
+	}
+});
+function doBulkUpdate(target) {
+	var ids = grid.getGridParam("selarrrow");
+	if(ids.length <= 0) {
+		alert("${m:rs('mtp-gem-messages', 'generic.element.section.SearchResultSection.selectBulkUpdateMsg')}");
+		return false;
+	}
+
+	var $bulkUpdateDialogTrigger = getDialogTrigger($(target).parent(), {dialogHeight:450, resizable:true});
+	$bulkUpdateDialogTrigger.click();
+
+	var oid = [];
+	var version = [];
+	for(var i=0; i< ids.length; ++i) {
+		var id = ids[i];
+		var row = grid.getRowData(id);
+		oid.push(id + "_" + row.orgOid);
+		version.push(id + "_" + row.orgVersion);
+	}
+
+	var target = getModalTarget(isSubModal);
+	var action = contextPath + '/' + '<%=StringUtil.escapeJavaScript(bulkEditAction) %>';
+	var $form = $("<form />").attr({method:"POST", action:action, target:target}).appendTo("body");
+
+	$(oid).each(function() {
+		$("<input />").attr({type:"hidden", name:"oid", value:this}).appendTo($form);
+	})
+	$(version).each(function() {
+		$("<input />").attr({type:"hidden", name:"version", value:this}).appendTo($form);
+	})
+	
+	if ($("#cb_searchResult").is(":checked")) {
+		var type = $(":hidden[name='searchType']").val();
+		if (!validation(type)) return;
+		var searchCond = $(":hidden[name='searchCond']").val();
+		$("<input />").attr({type:"hidden", name:"searchCond", value:searchCond}).appendTo($form);
+	} 
+// 	var execType = $(":hidden[name='execType']").val();
+// 	$("<input />").attr({type:"hidden", name:"execType", value:execType}).appendTo($form);
+	var isSubModal = $("body.modal-body").length !== 0;
+	if (isSubModal) $("<input />").attr({type:"hidden", name:"modalTarget", value:target}).appendTo($form);
+	$form.submit();
+	$form.remove();
+}
+
+function closeBulkUpdateModalWindow() {
+	var isSubModal = $("body.modal-body").length !== 0;
+	var target = getModalTarget(isSubModal);
+	$("iframe[name='" + target + "']").parents("div.modal-dialog").find(".modal-close").click();
 }
 </script>
 <%

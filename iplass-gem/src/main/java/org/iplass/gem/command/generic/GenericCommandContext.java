@@ -1,19 +1,19 @@
 /*
  * Copyright (C) 2012 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
- * 
+ *
  * Unless you have purchased a commercial license,
  * the following license terms apply:
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
@@ -35,6 +35,7 @@ import org.iplass.mtp.entity.definition.EntityDefinition;
 import org.iplass.mtp.entity.definition.PropertyDefinition;
 import org.iplass.mtp.entity.definition.VersionControlType;
 import org.iplass.mtp.view.generic.EntityView;
+import org.iplass.mtp.view.generic.FormView;
 import org.iplass.mtp.web.template.TemplateUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -460,5 +461,19 @@ public abstract class GenericCommandContext {
 
 	private static String resourceString(String key, Object... arguments) {
 		return GemResourceBundleUtil.resourceString(key, arguments);
+	}
+
+	/**
+	 * Formレイアウト情報を取得します。
+	 * @return Formレイアウト情報を取得します
+	 */
+	public abstract <T extends FormView> T getView();
+
+	public void setAttribute(String name, Object value) {
+		request.setAttribute(name, value);
+	}
+
+	public Object getAttribute(String name) {
+		return request.getAttribute(name);
 	}
 }

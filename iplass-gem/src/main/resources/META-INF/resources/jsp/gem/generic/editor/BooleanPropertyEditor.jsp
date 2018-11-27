@@ -48,8 +48,8 @@
 	String propName = editor.getPropertyName();
 
 	//タイプ毎に出力内容かえる
-	if (OutputType.EDIT == type) {
-		//詳細編集
+	if (OutputType.EDIT == type || OutputType.BULK == type) {
+		//詳細編、 一括更新編集
 %>
 <jsp:include page="./boolean/BooleanPropertyEditor_Edit.jsp"></jsp:include>
 <jsp:include page="ErrorMessage.jsp">
