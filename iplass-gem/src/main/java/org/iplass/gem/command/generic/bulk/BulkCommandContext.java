@@ -63,7 +63,6 @@ import org.iplass.mtp.view.generic.editor.NestProperty;
 import org.iplass.mtp.view.generic.editor.PropertyEditor;
 import org.iplass.mtp.view.generic.editor.ReferencePropertyEditor;
 import org.iplass.mtp.view.generic.editor.ReferencePropertyEditor.ReferenceDisplayType;
-import org.iplass.mtp.view.generic.element.Element;
 import org.iplass.mtp.view.generic.element.property.PropertyColumn;
 import org.iplass.mtp.view.generic.element.section.SearchResultSection;
 import org.iplass.mtp.web.template.TemplateUtil;
@@ -429,7 +428,8 @@ public class BulkCommandContext extends RegistrationCommandContext {
 		return new RegistrationPropertyBaseHandler<PropertyColumn>() {
 			@Override
 			public boolean isDispProperty(PropertyColumn property) {
-				return property.isDispFlag();
+				//一括更新プロパティエディタが未設定の場合、更新対象外
+				return property.isDispFlag() && property.getBulkUpdateEditor() != null;
 			}
 
 			@Override
@@ -711,7 +711,6 @@ public class BulkCommandContext extends RegistrationCommandContext {
 				.filter(e -> e instanceof PropertyColumn)
 				.map(e -> (PropertyColumn) e)
 				.filter(e -> getRegistrationPropertyBaseHandler().isDispProperty(e))
-				.filter(e -> e.getBulkUpdateEditor() != null) //一括更新プロパティエディタが未設定のプロパティは対象外にする
 				.collect(Collectors.toList());
 
 		for (PropertyColumn pc : propertyColumns) {
@@ -723,7 +722,7 @@ public class BulkCommandContext extends RegistrationCommandContext {
 					PropertyColumn dummy = new PropertyColumn();
 					dummy.setDispFlag(true);
 					dummy.setPropertyName(de.getToPropertyName());
-					dummy.setEditor(de.getEditor());
+					dummy.setBulkUpdateEditor(de.getEditor());
 					propList.add(dummy);
 				//組み合わせで使うプロパティを通常のプロパティ扱いに
 				} else if (pc.getBulkUpdateEditor() instanceof JoinPropertyEditor) {
@@ -732,7 +731,7 @@ public class BulkCommandContext extends RegistrationCommandContext {
 						PropertyColumn dummy = new PropertyColumn();
 						dummy.setDispFlag(true);
 						dummy.setPropertyName(nest.getPropertyName());
-						dummy.setEditor(nest.getEditor());
+						dummy.setBulkUpdateEditor(nest.getEditor());
 						propList.add(dummy);
 					}
 				}
