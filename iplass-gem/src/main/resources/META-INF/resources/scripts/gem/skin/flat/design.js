@@ -347,10 +347,7 @@ $(function() {
 	};
 
 	//Checkbox and Radio button
-	$("input[type=radio],input[type=checkbox]").each(createPseudoObject).on("click", function(e) {
-		e.stopPropagation();
-		$(this).prev().trigger("click");
-	});
+	$("input[type=radio],input[type=checkbox]").each(createPseudoObject);
 	$("input[type=radio],input[type=checkbox]").parent("label").on("click", function(e) {
 		var $pseudo = $(this).children(".pseudo-radio,.pseudo-checkbox");
 		if ($pseudo.is(":visible")) {
@@ -397,8 +394,13 @@ $(function() {
  * @returns
  */
 function createPseudoObject() {
-	var $this = $(this),
-		isChecked = "";
+	var $this = $(this), isChecked = "";
+
+	//jqgridの選択用checkboxは除外
+	if ($this.hasClass("cbox")) {
+		return;
+	}
+
 	if ($this.prop("checked")) {
 		isChecked = "checked";
 	}
@@ -416,6 +418,12 @@ function createPseudoObject() {
 			}
 		});
 	}
+
+	//ダミーのイベントを発生させる
+	$this.on("click", function(e) {
+		e.stopPropagation();
+		$(this).prev().trigger("click");
+	});
 }
 
 /**
