@@ -1,19 +1,19 @@
 /*
  * Copyright (C) 2012 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
- * 
+ *
  * Unless you have purchased a commercial license,
  * the following license terms apply:
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
@@ -22,18 +22,28 @@ package org.iplass.adminconsole.client.metadata.ui.action;
 
 import java.util.LinkedHashMap;
 
+import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
+import org.iplass.adminconsole.client.base.tenant.TenantInfoHolder;
 import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
 import org.iplass.adminconsole.client.metadata.ui.action.cache.CachableResultGridPane;
 import org.iplass.adminconsole.client.metadata.ui.action.cache.CacheCriteriaTypeEditPane;
 import org.iplass.adminconsole.client.metadata.ui.action.cache.CacheRelatedEntityGridPane;
+import org.iplass.adminconsole.shared.metadata.rpc.MetaDataServiceAsync;
+import org.iplass.adminconsole.shared.metadata.rpc.MetaDataServiceFactory;
 import org.iplass.mtp.web.actionmapping.definition.ActionMappingDefinition;
 import org.iplass.mtp.web.actionmapping.definition.cache.CacheCriteriaDefinition;
 
+import com.google.gwt.core.shared.GWT;
+import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.smartgwt.client.util.BooleanCallback;
+import com.smartgwt.client.util.SC;
 import com.smartgwt.client.widgets.form.DynamicForm;
+import com.smartgwt.client.widgets.form.fields.ButtonItem;
 import com.smartgwt.client.widgets.form.fields.SelectItem;
 import com.smartgwt.client.widgets.form.fields.TextItem;
 import com.smartgwt.client.widgets.form.fields.events.ChangedEvent;
 import com.smartgwt.client.widgets.form.fields.events.ChangedHandler;
+import com.smartgwt.client.widgets.form.fields.events.ClickEvent;
 import com.smartgwt.client.widgets.form.validator.IsIntegerValidator;
 import com.smartgwt.client.widgets.layout.VLayout;
 
@@ -47,11 +57,18 @@ public class CacheCriteriaPane extends VLayout {
 //
 //	private ParamMapGrid grid;
 
+	/** メタデータサービス */
+	private final MetaDataServiceAsync service = MetaDataServiceFactory.get();
+
 	/** フォーム */
 	private DynamicForm typeForm;
 
 	/** キャッシュ設定 */
 	private SelectItem serverCacheTypeField;
+
+	private ButtonItem clearActionCacheBtn;
+
+	private ButtonItem clearTenantActionCacheBtn;
 
 	private CachableResultGridPane resultGridPane;
 	private CacheRelatedEntityGridPane relatedEntityGridPane;
@@ -61,7 +78,7 @@ public class CacheCriteriaPane extends VLayout {
 
 
 
-	public CacheCriteriaPane() {
+	public CacheCriteriaPane(ActionEditPane actionEditPane) {
 		setMargin(5);
 		setAutoHeight();
 
@@ -92,8 +109,8 @@ public class CacheCriteriaPane extends VLayout {
 		//入力部分
 		typeForm = new DynamicForm();
 		typeForm.setWidth100();
-		typeForm.setNumCols(3);
-		typeForm.setColWidths(120, "*", 100);
+		typeForm.setNumCols(4);
+		typeForm.setColWidths(120, 155, 100, "*");
 
 		serverCacheTypeField = new SelectItem("serverCacheType", "Cache Criteria Type");
 		serverCacheTypeField.setWidth(150);
@@ -117,7 +134,85 @@ public class CacheCriteriaPane extends VLayout {
 			}
 		});
 
-		typeForm.setItems(serverCacheTypeField);
+		clearActionCacheBtn = new ButtonItem("clearActionCache", "Clear Action Cache");
+		clearActionCacheBtn.setShowTitle(false);
+		clearActionCacheBtn.setStartRow(false);
+		clearActionCacheBtn.setEndRow(false);
+		clearActionCacheBtn.setVisible(false);
+		clearActionCacheBtn.setPrompt(AdminClientMessageUtil.getString(""));
+		clearActionCacheBtn.addClickHandler(new com.smartgwt.client.widgets.form.fields.events.ClickHandler() {
+
+			@Override
+			public void onClick(ClickEvent event) {
+				SC.ask(AdminClientMessageUtil.getString("ui_metadata_action_cache_CleanActionCache_clearConfirm"),
+						AdminClientMessageUtil.getString("ui_metadata_action_cache_CleanActionCache_clearConfirmComment"), new BooleanCallback() {
+
+					@Override
+					public void execute(Boolean value) {
+						if(value) {
+							service.clearActionCache(TenantInfoHolder.getId(), actionEditPane.getActionName(), new AsyncCallback<Void>() {
+
+								@Override
+								public void onSuccess(Void result) {
+									SC.say(AdminClientMessageUtil.getString("ui_metadata_action_cache_completion"),
+											AdminClientMessageUtil.getString("ui_metadata_action_cache_clearActionCacheComp"));
+
+									GWT.log("Context cache of Action has been cleared.");
+								}
+
+								@Override
+								public void onFailure(Throwable caught) {
+									SC.warn(AdminClientMessageUtil.getString("ui_metadata_action_cache_failedToClearCache") + caught.getMessage());
+
+									GWT.log(caught.getMessage(), caught);
+								}
+							});
+						}
+					}
+				});
+			}
+		});
+
+		clearTenantActionCacheBtn = new ButtonItem("clearTenantActionCache", "Clear Tenant Action Cache");
+		clearTenantActionCacheBtn.setShowTitle(false);
+		clearTenantActionCacheBtn.setStartRow(false);
+		clearTenantActionCacheBtn.setEndRow(false);
+		clearTenantActionCacheBtn.setVisible(false);
+		clearTenantActionCacheBtn.setPrompt(AdminClientMessageUtil.getString(""));
+		clearTenantActionCacheBtn.addClickHandler(new com.smartgwt.client.widgets.form.fields.events.ClickHandler() {
+
+			@Override
+			public void onClick(ClickEvent event) {
+				SC.ask(AdminClientMessageUtil.getString("ui_metadata_action_cache_CleanTenantActionCache_clearConfirm"),
+						AdminClientMessageUtil.getString("ui_metadata_action_cache_CleanTenantActionCache_clearConfirmComment"), new BooleanCallback() {
+
+					@Override
+					public void execute(Boolean value) {
+						if(value) {
+							service.clearTenantActionCache(TenantInfoHolder.getId(), new AsyncCallback<Void>() {
+
+								@Override
+								public void onSuccess(Void result) {
+									SC.say(AdminClientMessageUtil.getString("ui_metadata_action_cache_completion"),
+											AdminClientMessageUtil.getString("ui_metadata_action_cache_clearActionCacheComp"));
+
+									GWT.log("Context cache of all tenant Action has been cleared.");
+								}
+
+								@Override
+								public void onFailure(Throwable caught) {
+									SC.warn(AdminClientMessageUtil.getString("ui_metadata_action_cache_failedToClearCache") + caught.getMessage());
+
+									GWT.log(caught.getMessage(), caught);
+								}
+							});
+						}
+					}
+				});
+			}
+		});
+
+		typeForm.setItems(serverCacheTypeField, clearActionCacheBtn, clearTenantActionCacheBtn);
 
 		addMember(typeForm);
 	}
@@ -125,8 +220,12 @@ public class CacheCriteriaPane extends VLayout {
 	public void setCacheCriteria(CacheCriteriaDefinition cacheCriteria) {
 		if (cacheCriteria != null) {
 			serverCacheTypeField.setValue(CacheCriteriaType.valueOf(cacheCriteria).name());
+			clearActionCacheBtn.setVisible(true);
+			clearTenantActionCacheBtn.setVisible(true);
 		} else {
 			serverCacheTypeField.setValue("");
+			clearActionCacheBtn.setVisible(false);
+			clearTenantActionCacheBtn.setVisible(false);
 		}
 
 		if (resultGridPane != null) {

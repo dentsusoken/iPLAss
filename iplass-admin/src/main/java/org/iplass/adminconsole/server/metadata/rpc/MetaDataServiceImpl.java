@@ -86,6 +86,7 @@ import org.iplass.mtp.entity.query.SortSpec.SortType;
 import org.iplass.mtp.impl.async.rdb.RdbQueueService;
 import org.iplass.mtp.impl.auth.AuthService;
 import org.iplass.mtp.impl.auth.authenticate.AuthenticationProvider;
+import org.iplass.mtp.impl.core.TenantContext;
 import org.iplass.mtp.impl.core.TenantContextService;
 import org.iplass.mtp.impl.definition.DefinitionManagerImpl;
 import org.iplass.mtp.impl.definition.DefinitionPath;
@@ -102,6 +103,7 @@ import org.iplass.mtp.impl.query.OrderBySyntax;
 import org.iplass.mtp.impl.query.QueryServiceHolder;
 import org.iplass.mtp.impl.report.ReportingEngineService;
 import org.iplass.mtp.impl.report.ReportingType;
+import org.iplass.mtp.impl.web.actionmapping.cache.ContentCacheContext;
 import org.iplass.mtp.spi.ServiceRegistry;
 import org.iplass.mtp.transaction.Transaction;
 import org.iplass.mtp.util.StringUtil;
@@ -138,7 +140,7 @@ import com.google.gwt.user.server.rpc.XsrfProtectedServiceServlet;
 
 public class MetaDataServiceImpl extends XsrfProtectedServiceServlet implements MetaDataService {
 
-	private static final long serialVersionUID = 8995713076256998489L;
+	private static final long serialVersionUID = 460714524971929078L;
 
 	private static final Logger logger = LoggerFactory.getLogger(MetaDataServiceImpl.class);
 
@@ -373,6 +375,38 @@ public class MetaDataServiceImpl extends XsrfProtectedServiceServlet implements 
 
 				ServiceRegistry.getRegistry().getService(TenantContextService.class).reloadTenantContext(tenantId, false);
 //				MetaDataContext.getContext().clearAllCache();
+				return null;
+			}
+		});
+	}
+
+	@Override
+	public void clearActionCache(int tenantId, String actionName) {
+		AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId, new AuthUtil.Callable<Void>() {
+
+			@Override
+			public Void call() {
+				auditLogger.logTenant("clear context cache of action", "tenantId:" + tenantId + ", actionName:" + actionName);
+
+				TenantContext tc = ServiceRegistry.getRegistry().getService(TenantContextService.class).getTenantContext(tenantId);
+				ContentCacheContext ac = tc.getResource(ContentCacheContext.class);
+				ac.invalidateByActionName(actionName);
+				return null;
+			}
+		});
+	}
+
+	@Override
+	public void clearTenantActionCache(int tenantId) {
+		AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId, new AuthUtil.Callable<Void>() {
+
+			@Override
+			public Void call() {
+				auditLogger.logTenant("clear context cache of all tenant action", "tenantId:" + tenantId);
+
+				TenantContext tc = ServiceRegistry.getRegistry().getService(TenantContextService.class).getTenantContext(tenantId);
+				ContentCacheContext ac = tc.getResource(ContentCacheContext.class);
+				ac.invalidateAllEntry();
 				return null;
 			}
 		});

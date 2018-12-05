@@ -214,6 +214,13 @@ LocaleInfo.ui_metadata_action_StreamResultEditPane_acceptRangesTooltip = "Set wh
 LocaleInfo.ui_metadata_action_cache_CachableResultEditDialog_allStatus = "<font color='red'>The case of [*], all status</font>";
 LocaleInfo.ui_metadata_action_cache_ScriptingCacheCriteriaEditPane_displayDialogEditScript = "Display a dialog to edit the script.";
 LocaleInfo.ui_metadata_action_cache_ScriptingCacheCriteriaEditPane_scriptHint = "<ul><li>request: RequestContext</li><li>user : UserBinding</li><li>auth : AuthContext</li></ul>";
+LocaleInfo.ui_metadata_action_cache_CleanActionCache_clearConfirm = "The clear confirmation";
+LocaleInfo.ui_metadata_action_cache_CleanActionCache_clearConfirmComment = "Clear context cache of the Action. Would you like?";
+LocaleInfo.ui_metadata_action_cache_CleanTenantActionCache_clearConfirm = "The clear confirmation";
+LocaleInfo.ui_metadata_action_cache_CleanTenantActionCache_clearConfirmComment = "Clear context cache of all tenant Action. Would you like?";
+LocaleInfo.ui_metadata_action_cache_failedToClearCache = "Failed to clear the cache information. <br/>Cause:";
+LocaleInfo.ui_metadata_action_cache_completion = "Completion";
+LocaleInfo.ui_metadata_action_cache_clearActionCacheComp = "Action context cache has been cleared.";
 LocaleInfo.ui_metadata_action_result_ResultEditDialog_allStatus = "<font color='red'>The case of [*], all status</font>";
 LocaleInfo.ui_metadata_action_result_ResultEditDialog_descLabel = "One of the Exception Class Name or Status is mandatory.";
 LocaleInfo.ui_metadata_action_result_ResultEditDialog_errorMsg = "Exception Class Name and Status is missing. Please enter either always.";

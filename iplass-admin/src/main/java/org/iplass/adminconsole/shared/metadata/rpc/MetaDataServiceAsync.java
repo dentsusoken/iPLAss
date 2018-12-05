@@ -83,6 +83,21 @@ public interface MetaDataServiceAsync {
 	 */
 	void clearAllCache(int tenantId, AsyncCallback<Void> callback);
 
+	/**
+	 * キャッシュとして保持しているActionのコンテンツキャッシュをクリアします。
+	 *
+	 * @param tenantId テナントID
+	 * @param actionName アクション名
+	 */
+	void clearActionCache(int tenantId, String actionName, AsyncCallback<Void> callback);
+
+	/**
+	 * キャッシュとして保持しているActionのコンテンツキャッシュをクリアします。
+	 *
+	 * @param tenantId テナントID
+	 */
+	void clearTenantActionCache(int tenantId, AsyncCallback<Void> callback);
+
 	void updateSharedConfig(int tenantId, String className, String name, SharedConfig config, AsyncCallback<Void> callback);
 
 	void renameDefinition(int tenantId, String className, String fromName, String toName, AsyncCallback<AdminDefinitionModifyResult> callback);
