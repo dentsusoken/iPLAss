@@ -122,7 +122,7 @@
 		//単一
 		Time t = propValue instanceof Time ? (Time) propValue : null;
 %>
-<span class="data-label" style="<c:out value="<%=customStyle %>"/>">
+<span class="data-label" style="<c:out value="<%=customStyle %>"/>" data-time-range="<c:out value="<%=editor.getDispRange() %>"/>">
 <c:out value="<%=displayFormat(t, editor.getDispRange()) %>"/>
 <%
 		if (outputHidden) {

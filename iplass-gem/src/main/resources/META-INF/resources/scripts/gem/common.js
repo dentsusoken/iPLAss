@@ -2562,8 +2562,7 @@ function updateNestValue_Date(type, $node, parentPropName, name, entity) {
 function updateNestValue_Time(type, $node, parentPropName, name, entity) {
 	var val = entity[name];
 	var _date = null;
-	if (val == null) val = "";
-	else {
+	if (val != null) {
 		_date = dateUtil.toDate(val, dateUtil.getOutputTimeFormat());
 	}
 
@@ -2613,10 +2612,13 @@ function updateNestValue_Time(type, $node, parentPropName, name, entity) {
 			$node.children("span").children("input:hidden:last").val(hidden);
 		}
 	} else if (type == "LABEL") {
-		var label = _date != null ? dateUtil.format(_date, dateUtil.getOutputTimeFormat()): "";
-		$node.text(label);
+		var $span = $node.children("span.data-label");
+		var range = $span.attr("data-time-range");
+		var label = _date != null ? dateUtil.formatOutputTime(_date, range): "";
+		$span.empty();
+		$span.text(label);
 		var hidden = _date != null ? dateUtil.format(_date, dateUtil.getServerTimeFormat()) : "";
-		$("<input />").attr({type:"hidden", name:parentPropName + "." + name, value:hidden}).appendTo($node);
+		$("<input />").attr({type:"hidden", name:parentPropName + "." + name, value:hidden}).appendTo($span);
 	}
 }
 function updateNestValue_Timestamp(type, $node, parentPropName, name, entity) {
@@ -3697,6 +3699,7 @@ var DateUtil = function(option) {
 			this.output.getTimeFormat = function(range) {
 				var _range = range;
 				if (!_range) _range = "sec";
+				_range = _range.toLowerCase();
 
 				if (_range === "sec") {
 					if (!this.timeSecFormat) {
@@ -3745,6 +3748,7 @@ var DateUtil = function(option) {
 			this.input.getTimeFormat = function(range) {
 				var _range = range;
 				if (!_range) _range = "sec";
+				_range = _range.toLowerCase();
 
 				if (_range === "sec") {
 					if (!this.timeSecFormat) {
@@ -3921,6 +3925,7 @@ DateUtil.prototype.getWeekday = function(dateStr, format) {
 }
 //dateから文字列に
 DateUtil.prototype.format = function(dateObj, format) {
+	if (!format || format == "") return "";
 	var m = new moment(dateObj);
 	return m.format(format);
 }
