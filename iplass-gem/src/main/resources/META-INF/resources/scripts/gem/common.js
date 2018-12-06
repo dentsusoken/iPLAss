@@ -3000,13 +3000,14 @@ function addNestRow_Number(type, cell, idx) {
  * @return
  */
 function addNestRow_Date(type, cell, idx) {
-
-	var id = $(cell).children("input:hidden:last").attr("id").substring(2);
-	$(cell).children(":text:first").each(function() {
-		this.removeAttribute("onchange");
-		$(this).change(function() {dateChange(id);});
-		datepicker(this);
-	});
+	if (type == "DATETIME") {
+		var id = $(cell).children("input:hidden:last").attr("id").substring(2);
+		$(cell).children(":text:first").each(function() {
+			this.removeAttribute("onchange");
+			$(this).change(function() {dateChange(id);});
+			datepicker(this);
+		});
+	}
 }
 
 /**
