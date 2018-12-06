@@ -2690,7 +2690,6 @@ function updateNestValue_Timestamp(type, $node, parentPropName, name, entity) {
 }
 function updateNestValue_Boolean(type, $node, parentPropName, name, entity) {
 	var val = entity[name];
-	var displayName = "";
 	var selectValue = "";
 	if (val != null) {
 		selectValue = val;
@@ -2699,14 +2698,14 @@ function updateNestValue_Boolean(type, $node, parentPropName, name, entity) {
 //		$node.children("ul").children("li").children("label").children(":radio").val([selectValue]);
 		$(":radio", $node).val([selectValue]);
 	} else if (type == "CHECKBOX") {
-		var checked = selectValue == true ? true : false;
+		var checked = selectValue === true ? true : false;
 		$(":checkbox", $node).prop("checked", checked);
 	} else if (type == "LABEL") {
-		var $ul = $node.children("ul");
-		$ul.children("li").remove();
-		var $li = $("<li />").appendTo($ul);
-		$li.text(displayName);
-		$("<input />").attr({type:"hidden", name:parentPropName + "." + name, value:selectValue}).appendTo($li);
+		var $span = $node.children("span.data-label");
+		var label = selectValue === "" ? "" : selectValue === true ? $span.attr("data-true-label") : $span.attr("data-false-label");
+		$span.empty();
+		$span.text(label);
+		$("<input />").attr({type:"hidden", name:parentPropName + "." + name, value:selectValue}).appendTo($span);
 	}
 }
 function updateNestValue_Select(type, $node, parentPropName, name, entity) {

@@ -112,7 +112,7 @@
 		String str = b != null ? b.toString() : "";
 		String label = b != null ? b ? trueLabel : falseLabel : str;
 %>
-<span class="data-label" style="<c:out value="<%=customStyle %>"/>">
+<span class="data-label" style="<c:out value="<%=customStyle %>"/>" data-true-label="<c:out value="<%=trueLabel %>"/>" data-false-label="<c:out value="<%=falseLabel %>"/>">
 <c:out value="<%=label %>"/>
 <%
 		if (outputHidden) {
