@@ -2545,17 +2545,18 @@ function insertComma(str, separator) {
 function updateNestValue_Date(type, $node, parentPropName, name, entity) {
 	var val = entity[name];
 	var date = "";
-	var label = "";
 	if (val != null) {
 		date = dateUtil.newFormatString(val, "YYYY-MM-DD", "YYYYMMDD");
-		label = dateUtil.newFormatString(val, "YYYY-MM-DD", dateUtil.getOutputDateFormat());
 	}
 	if (type == "DATETIME") {
 		$("#d_" + es(parentPropName + "." + name), $node).val(convertToLocaleDateString(date));
 		$("#i_" + es(parentPropName + "." + name), $node).val();
 	} else if (type == "LABEL") {
-		$node.text(label);
-		$("<input />").attr({type:"hidden", name:parentPropName + "." + name, value:date}).appendTo($node);
+		var $span = $node.children("span.data-label");
+		var label = val == null ? "" : dateUtil.newFormatString(val, "YYYY-MM-DD", dateUtil.getOutputDateFormat());
+		$span.empty();
+		$span.text(label);
+		$("<input />").attr({type:"hidden", name:parentPropName + "." + name, value:date}).appendTo($span);
 	}
 }
 function updateNestValue_Time(type, $node, parentPropName, name, entity) {
