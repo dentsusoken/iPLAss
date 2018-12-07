@@ -45,6 +45,7 @@ import com.smartgwt.client.widgets.form.fields.events.ChangedEvent;
 import com.smartgwt.client.widgets.form.fields.events.ChangedHandler;
 import com.smartgwt.client.widgets.form.fields.events.ClickEvent;
 import com.smartgwt.client.widgets.form.validator.IsIntegerValidator;
+import com.smartgwt.client.widgets.layout.HLayout;
 import com.smartgwt.client.widgets.layout.VLayout;
 
 public class CacheCriteriaPane extends VLayout {
@@ -66,8 +67,8 @@ public class CacheCriteriaPane extends VLayout {
 	/** キャッシュ設定 */
 	private SelectItem serverCacheTypeField;
 
+	private DynamicForm clearForm;
 	private ButtonItem clearActionCacheBtn;
-
 	private ButtonItem clearTenantActionCacheBtn;
 
 	private CachableResultGridPane resultGridPane;
@@ -109,8 +110,8 @@ public class CacheCriteriaPane extends VLayout {
 		//入力部分
 		typeForm = new DynamicForm();
 		typeForm.setWidth100();
-		typeForm.setNumCols(4);
-		typeForm.setColWidths(120, 155, 100, "*");
+		typeForm.setNumCols(2);
+		typeForm.setColWidths(120, "*");
 
 		serverCacheTypeField = new SelectItem("serverCacheType", "Cache Criteria Type");
 		serverCacheTypeField.setWidth(150);
@@ -134,18 +135,29 @@ public class CacheCriteriaPane extends VLayout {
 			}
 		});
 
+		typeForm.setItems(serverCacheTypeField);
+
+		clearForm = new DynamicForm();
+		clearForm.setAutoWidth();
+		clearForm.setPadding(10);
+		clearForm.setCellPadding(5);
+		clearForm.setNumCols(1);
+		clearForm.setColWidths("*");
+		clearForm.setIsGroup(true);
+		clearForm.setVisible(false);
+		clearForm.setGroupTitle("Clear Cache");
+
 		clearActionCacheBtn = new ButtonItem("clearActionCache", "Clear Action Cache");
+		clearActionCacheBtn.setWidth(150);
 		clearActionCacheBtn.setShowTitle(false);
-		clearActionCacheBtn.setStartRow(false);
-		clearActionCacheBtn.setEndRow(false);
-		clearActionCacheBtn.setVisible(false);
-		clearActionCacheBtn.setPrompt(AdminClientMessageUtil.getString(""));
+		clearActionCacheBtn.setPrompt(SmartGWTUtil.getHoverString(
+				AdminClientMessageUtil.getString("ui_metadata_action_cache_CacheCriteriaPane_clearActionCacheBtnHint")));
 		clearActionCacheBtn.addClickHandler(new com.smartgwt.client.widgets.form.fields.events.ClickHandler() {
 
 			@Override
 			public void onClick(ClickEvent event) {
-				SC.ask(AdminClientMessageUtil.getString("ui_metadata_action_cache_CleanActionCache_clearConfirm"),
-						AdminClientMessageUtil.getString("ui_metadata_action_cache_CleanActionCache_clearConfirmComment"), new BooleanCallback() {
+				SC.ask(AdminClientMessageUtil.getString("ui_metadata_action_cache_CacheCriteriaPane_clearCacheConfirm"),
+						AdminClientMessageUtil.getString("ui_metadata_action_cache_CacheCriteriaPane_clearActionCacheConfirmComment"), new BooleanCallback() {
 
 					@Override
 					public void execute(Boolean value) {
@@ -154,15 +166,15 @@ public class CacheCriteriaPane extends VLayout {
 
 								@Override
 								public void onSuccess(Void result) {
-									SC.say(AdminClientMessageUtil.getString("ui_metadata_action_cache_completion"),
-											AdminClientMessageUtil.getString("ui_metadata_action_cache_clearActionCacheComp"));
+									SC.say(AdminClientMessageUtil.getString("ui_metadata_action_cache_CacheCriteriaPane_completion"),
+											AdminClientMessageUtil.getString("ui_metadata_action_cache_CacheCriteriaPane_clearActionCacheComp"));
 
-									GWT.log("Context cache of Action has been cleared.");
+									GWT.log("Content cache of Action has been cleared.");
 								}
 
 								@Override
 								public void onFailure(Throwable caught) {
-									SC.warn(AdminClientMessageUtil.getString("ui_metadata_action_cache_failedToClearCache") + caught.getMessage());
+									SC.warn(AdminClientMessageUtil.getString("ui_metadata_action_cache_CacheCriteriaPane_clearActionCacheFailed") + caught.getMessage());
 
 									GWT.log(caught.getMessage(), caught);
 								}
@@ -174,17 +186,16 @@ public class CacheCriteriaPane extends VLayout {
 		});
 
 		clearTenantActionCacheBtn = new ButtonItem("clearTenantActionCache", "Clear Tenant Action Cache");
+		clearTenantActionCacheBtn.setWidth(150);
 		clearTenantActionCacheBtn.setShowTitle(false);
-		clearTenantActionCacheBtn.setStartRow(false);
-		clearTenantActionCacheBtn.setEndRow(false);
-		clearTenantActionCacheBtn.setVisible(false);
-		clearTenantActionCacheBtn.setPrompt(AdminClientMessageUtil.getString(""));
+		clearTenantActionCacheBtn.setPrompt(SmartGWTUtil.getHoverString(
+				AdminClientMessageUtil.getString("ui_metadata_action_cache_CacheCriteriaPane_clearTenantActionCacheBtnHint")));
 		clearTenantActionCacheBtn.addClickHandler(new com.smartgwt.client.widgets.form.fields.events.ClickHandler() {
 
 			@Override
 			public void onClick(ClickEvent event) {
-				SC.ask(AdminClientMessageUtil.getString("ui_metadata_action_cache_CleanTenantActionCache_clearConfirm"),
-						AdminClientMessageUtil.getString("ui_metadata_action_cache_CleanTenantActionCache_clearConfirmComment"), new BooleanCallback() {
+				SC.ask(AdminClientMessageUtil.getString("ui_metadata_action_cache_CacheCriteriaPane_clearCacheConfirm"),
+						AdminClientMessageUtil.getString("ui_metadata_action_cache_CacheCriteriaPane_clearTenantActionCacheConfirmComment"), new BooleanCallback() {
 
 					@Override
 					public void execute(Boolean value) {
@@ -193,15 +204,15 @@ public class CacheCriteriaPane extends VLayout {
 
 								@Override
 								public void onSuccess(Void result) {
-									SC.say(AdminClientMessageUtil.getString("ui_metadata_action_cache_completion"),
-											AdminClientMessageUtil.getString("ui_metadata_action_cache_clearActionCacheComp"));
+									SC.say(AdminClientMessageUtil.getString("ui_metadata_action_cache_CacheCriteriaPane_completion"),
+											AdminClientMessageUtil.getString("ui_metadata_action_cache_CacheCriteriaPane_clearTenantActionCacheComp"));
 
-									GWT.log("Context cache of all tenant Action has been cleared.");
+									GWT.log("Content cache of all tenant Action has been cleared.");
 								}
 
 								@Override
 								public void onFailure(Throwable caught) {
-									SC.warn(AdminClientMessageUtil.getString("ui_metadata_action_cache_failedToClearCache") + caught.getMessage());
+									SC.warn(AdminClientMessageUtil.getString("ui_metadata_action_cache_CacheCriteriaPane_clearTenantActionCacheFailed") + caught.getMessage());
 
 									GWT.log(caught.getMessage(), caught);
 								}
@@ -212,20 +223,24 @@ public class CacheCriteriaPane extends VLayout {
 			}
 		});
 
-		typeForm.setItems(serverCacheTypeField, clearActionCacheBtn, clearTenantActionCacheBtn);
+		clearForm.setItems(clearActionCacheBtn, clearTenantActionCacheBtn);
 
-		addMember(typeForm);
+		HLayout selectCachePane = new HLayout();
+		selectCachePane.setWidth100();
+		selectCachePane.setAutoHeight();
+		selectCachePane.addMember(typeForm);
+		selectCachePane.addMember(clearForm);
+
+		addMember(selectCachePane);
 	}
 
 	public void setCacheCriteria(CacheCriteriaDefinition cacheCriteria) {
 		if (cacheCriteria != null) {
 			serverCacheTypeField.setValue(CacheCriteriaType.valueOf(cacheCriteria).name());
-			clearActionCacheBtn.setVisible(true);
-			clearTenantActionCacheBtn.setVisible(true);
+			clearForm.setVisible(true);
 		} else {
 			serverCacheTypeField.setValue("");
-			clearActionCacheBtn.setVisible(false);
-			clearTenantActionCacheBtn.setVisible(false);
+			clearForm.setVisible(false);
 		}
 
 		if (resultGridPane != null) {

@@ -386,7 +386,7 @@ public class MetaDataServiceImpl extends XsrfProtectedServiceServlet implements 
 
 			@Override
 			public Void call() {
-				auditLogger.logTenant("clear context cache of action", "tenantId:" + tenantId + ", actionName:" + actionName);
+				auditLogger.logTenant("clear content cache of action", "tenantId:" + tenantId + ", actionName:" + actionName);
 
 				TenantContext tc = ServiceRegistry.getRegistry().getService(TenantContextService.class).getTenantContext(tenantId);
 				ContentCacheContext ac = tc.getResource(ContentCacheContext.class);
@@ -402,7 +402,7 @@ public class MetaDataServiceImpl extends XsrfProtectedServiceServlet implements 
 
 			@Override
 			public Void call() {
-				auditLogger.logTenant("clear context cache of all tenant action", "tenantId:" + tenantId);
+				auditLogger.logTenant("clear content cache of all tenant action", "tenantId:" + tenantId);
 
 				TenantContext tc = ServiceRegistry.getRegistry().getService(TenantContextService.class).getTenantContext(tenantId);
 				ContentCacheContext ac = tc.getResource(ContentCacheContext.class);
