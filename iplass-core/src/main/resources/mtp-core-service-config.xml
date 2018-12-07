@@ -216,15 +216,10 @@
 		 -->
 		<property name="mail.host" value="XXXXXXXX"/>
 
-		<!-- デフォルトCharset -->
-		<property name="mail.charset" value="ISO-2022-JP"/>
-
-		<!--
-			Content-Transfer-Encoding
-			これは、一部のケータイメールが quoted-printable を処理できないことへの対策となります。
-			元情報 http://www.igapyon.jp/igapyon/diary/2007/ig070904.html
-		 -->
-		<property name="mail.encoding" value="7bit"/>
+		<!-- Charset -->
+		<property name="mail.charset" value="utf-8"/>
+		<!-- Content-Transfer-Encoding -->
+		<property name="mail.encoding" value="base64"/>
 
 		<!-- ■ for develop only (additional="true) ■ -->
 		<!-- 送信メールをデバッグ出力する場合、以下を有効にしてください。 -->
