@@ -217,6 +217,16 @@ LocaleInfo.ui_metadata_action_StreamResultEditPane_acceptRangesTooltip = "Range�
 LocaleInfo.ui_metadata_action_cache_CachableResultEditDialog_allStatus = "<font color='red'>※「*」の場合、全ステータス</font>";
 LocaleInfo.ui_metadata_action_cache_ScriptingCacheCriteriaEditPane_displayDialogEditScript = "スクリプトの編集ダイアログを表示します。";
 LocaleInfo.ui_metadata_action_cache_ScriptingCacheCriteriaEditPane_scriptHint = "<ul><li>request: RequestContext</li><li>user : UserBinding</li><li>auth : AuthContext</li></ul>";
+LocaleInfo.ui_metadata_action_cache_CacheCriteriaPane_clearActionCacheBtnHint = "当該アクションのコンテンツキャッシュをクリアします。";
+LocaleInfo.ui_metadata_action_cache_CacheCriteriaPane_clearActionCacheConfirmComment = "当該アクションのコンテンツキャッシュをクリアします。よろしいですか？";
+LocaleInfo.ui_metadata_action_cache_CacheCriteriaPane_clearActionCacheFailed = "当該アクションのコンテンツキャッシュのクリアに失敗しました。原因：<br/>";
+LocaleInfo.ui_metadata_action_cache_CacheCriteriaPane_clearActionCacheComp = "当該アクションのコンテンツキャッシュがクリアされました。";
+LocaleInfo.ui_metadata_action_cache_CacheCriteriaPane_clearCacheConfirm = "クリア確認";
+LocaleInfo.ui_metadata_action_cache_CacheCriteriaPane_completion = "完了";
+LocaleInfo.ui_metadata_action_cache_CacheCriteriaPane_clearTenantActionCacheBtnHint = "テナント全体のアクションのコンテンツキャッシュをクリアします。";
+LocaleInfo.ui_metadata_action_cache_CacheCriteriaPane_clearTenantActionCacheConfirmComment = "テナント全体のアクションのコンテンツキャッシュをクリアします。よろしいですか？";
+LocaleInfo.ui_metadata_action_cache_CacheCriteriaPane_clearTenantActionCacheFailed = "テナント全体のアクションのコンテンツキャッシュのクリアに失敗しました。原因：<br/>";
+LocaleInfo.ui_metadata_action_cache_CacheCriteriaPane_clearTenantActionCacheComp = "テナント全体のアクションのコンテンツキャッシュがクリアされました。";
 LocaleInfo.ui_metadata_action_result_ResultEditDialog_allStatus = "<font color='red'>※「*」の場合、全ステータス</font>";
 LocaleInfo.ui_metadata_action_result_ResultEditDialog_descLabel = "StatusかException Class Nameのどちらかが必須となります。";
 LocaleInfo.ui_metadata_action_result_ResultEditDialog_errorMsg = "Status及びException Class Nameが未入力です。必ずどちらかを入力して下さい。";

@@ -148,7 +148,7 @@ public class ActionEditPane extends MetaDataMainEditPane {
 
 
 		//CacheCriteria部分
-		cacheCriteriaPane = new CacheCriteriaPane();
+		cacheCriteriaPane = new CacheCriteriaPane(this);
 
 		//Section設定
 		SectionStackSection serverCacheSection = createSection("Server Cache Criteria", false, cacheCriteriaPane);
@@ -212,6 +212,10 @@ public class ActionEditPane extends MetaDataMainEditPane {
 		paramMapPane.setParamMap(curDefinition.getParamMap());
 		resultPane.setResults(curDefinition.getResult());
 		cacheCriteriaPane.setCacheCriteria(curDefinition.getCacheCriteria());
+	}
+
+	public String getActionName() {
+		return this.defName;
 	}
 
 	/**

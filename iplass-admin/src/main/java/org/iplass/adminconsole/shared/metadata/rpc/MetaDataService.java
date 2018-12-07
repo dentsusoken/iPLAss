@@ -153,6 +153,21 @@ public interface MetaDataService extends XsrfProtectedService {
 	 */
 	public void clearAllCache(int tenantId);
 
+	/**
+	 * キャッシュとして保持しているActionのコンテンツキャッシュをクリアします。
+	 *
+	 * @param tenantId テナントID
+	 * @param actionName アクション名
+	 */
+	public void clearActionCache(int tenantId, String actionName);
+
+	/**
+	 * キャッシュとして保持しているActionのコンテンツキャッシュをクリアします。
+	 *
+	 * @param tenantId テナントID
+	 */
+	public void clearTenantActionCache(int tenantId);
+
 	public void updateSharedConfig(int tenantId, String className, String name, SharedConfig config);
 
 	public AdminDefinitionModifyResult renameDefinition(int tenantId, String className, String fromName, String toName);
