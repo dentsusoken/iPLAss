@@ -336,8 +336,6 @@ public class MetaCommonAttributeSection extends SectionStackSection {
 				public void onFailure(Throwable caught) {
 					// 失敗時
 					SC.warn(AdminClientMessageUtil.getString("ui_metadata_common_MetaCommonAttributeSection_failedToSaveShareSett") + caught.getMessage());
-
-					GWT.log(caught.toString(), caught);
 				}
 			});
 		}
@@ -384,8 +382,6 @@ public class MetaCommonAttributeSection extends SectionStackSection {
 									public void onFailure(Throwable caught) {
 										// 失敗時
 										SC.warn(AdminClientMessageUtil.getString("ui_metadata_common_MetaCommonAttributeSection_failedToSaveShareSett") + caught.getMessage());
-
-										GWT.log(caught.toString(), caught);
 									}
 								});
 					}
