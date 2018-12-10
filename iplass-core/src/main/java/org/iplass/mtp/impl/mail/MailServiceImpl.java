@@ -50,6 +50,7 @@ import org.iplass.mtp.ManagerLocator;
 import org.iplass.mtp.definition.TypedDefinitionManager;
 import org.iplass.mtp.impl.definition.AbstractTypedMetaDataService;
 import org.iplass.mtp.impl.definition.DefinitionMetaDataTypeMap;
+import org.iplass.mtp.impl.mail.smime.SmimeHandler;
 import org.iplass.mtp.impl.mail.template.MetaMailTemplate;
 import org.iplass.mtp.impl.mail.template.MetaMailTemplate.MailTemplateRuntime;
 import org.iplass.mtp.mail.Mail;
@@ -114,6 +115,7 @@ public class MailServiceImpl extends AbstractTypedMetaDataService<MetaMailTempla
 	private long retryIntervalMillis;
 	private int retryCount;
 	
+	private SmimeHandler smimeHandler;
 
 	/**
 	 * コンストラクタ
@@ -127,6 +129,10 @@ public class MailServiceImpl extends AbstractTypedMetaDataService<MetaMailTempla
 
 	public static String getFixedPath() {
 		return MAIL_TEMPLATE_META_PATH;
+	}
+
+	public SmimeHandler getSmimeHandler() {
+		return smimeHandler;
 	}
 
 	public long getRetryIntervalMillis() {
@@ -210,7 +216,8 @@ public class MailServiceImpl extends AbstractTypedMetaDataService<MetaMailTempla
 		} else {
 			mailSmtpAuth = false;
 		}
-		
+
+		smimeHandler = config.getValue("smimeHandler", SmimeHandler.class);
 	}
 
 	/**
@@ -328,7 +335,7 @@ public class MailServiceImpl extends AbstractTypedMetaDataService<MetaMailTempla
 		}
 
 		// メッセージ内容の設定。
-		final MimeMessage message = new MimeMessage(session);
+		MimeMessage message = new MimeMessage(session);
 		message.setFrom(mail.getFromAddress());
 		message.setReplyTo(new Address[]{mail.getReplyToAddress()});
 		setRecipients(mail, message);
@@ -345,6 +352,11 @@ public class MailServiceImpl extends AbstractTypedMetaDataService<MetaMailTempla
 			d = new Date();
 		}
 		message.setSentDate(d);
+
+		if (getSmimeHandler() != null) {
+			message = getSmimeHandler().handle(session, message, mail.isSmimeSign(), mail.getSmimeSignPassword(), mail.isSmimeEncript());
+		}
+
 		return message;
 	}
 
@@ -392,6 +404,29 @@ public class MailServiceImpl extends AbstractTypedMetaDataService<MetaMailTempla
 	}
 
 	private String handlePlainText(String text, String charset) {
+		//プレーンテキストの正規化
+		if ("7bit".equals(mailEncoding)) {
+			//LF -> CRLF
+			//CR -> CRLF
+			StringBuilder sb = new StringBuilder();
+			char pre = '\0';
+			for (int i = 0; i < text.length(); i++ ) {
+				char c = text.charAt(i);
+				if (c == '\r') {
+					sb.append("\r\n");
+				} else if (c == '\n') {
+					if (pre != '\r') {
+						sb.append("\r\n");
+					}
+				} else {
+					sb.append(c);
+				}
+				pre = c;
+			}
+			
+			text = sb.toString();
+		}
+		
 		if (ISO_2022_JP.equalsIgnoreCase(charset)) {
 			//ISO-2022-JPの場合、プレーンテキストの最後が文字化けることがある。
 			if (!text.endsWith("\r\n")) {
@@ -427,6 +462,7 @@ public class MailServiceImpl extends AbstractTypedMetaDataService<MetaMailTempla
 						htmlCharset = charset;
 					}
 					htmlMessageBodyPart.setContent(mail.getHtmlMessage().getContent(), "text/html; charset=" + htmlCharset);
+					htmlMessageBodyPart.setHeader("Content-Transfer-Encoding", "base64");
 					multipartMixed.addBodyPart(htmlMessageBodyPart);
 				}
 			} else {
@@ -448,6 +484,7 @@ public class MailServiceImpl extends AbstractTypedMetaDataService<MetaMailTempla
 					htmlCharset = charset;
 				}
 				htmlMessageBodyPart.setContent(mail.getHtmlMessage().getContent(), "text/html; charset=" + htmlCharset);
+				htmlMessageBodyPart.setHeader("Content-Transfer-Encoding", "base64");
 				multipartAlt.addBodyPart(htmlMessageBodyPart);
 
 				multipartMixed.addBodyPart(altBodyPart);
@@ -476,6 +513,7 @@ public class MailServiceImpl extends AbstractTypedMetaDataService<MetaMailTempla
 					logger.warn("file name cant encoded... cause " + e.getMessage(), e);
 				}
 				attBodyPart.setDisposition("attachment");
+				attBodyPart.setHeader("Content-Transfer-Encoding", "base64");
 				multipartMixed.addBodyPart(attBodyPart);
 			}
 			message.setContent(multipartMixed);
@@ -494,6 +532,7 @@ public class MailServiceImpl extends AbstractTypedMetaDataService<MetaMailTempla
 						htmlCharset = charset;
 					}
 					message.setContent(mail.getHtmlMessage().getContent(), "text/html; charset=\"" + htmlCharset + "\"");
+					message.setHeader("Content-Transfer-Encoding", "base64");
 				}
 			} else {
 				Multipart multipart = new MimeMultipart("alternative");
@@ -511,6 +550,7 @@ public class MailServiceImpl extends AbstractTypedMetaDataService<MetaMailTempla
 					htmlCharset = charset;
 				}
 				htmlMessageBodyPart.setContent(mail.getHtmlMessage().getContent(), "text/html; charset=\"" + htmlCharset + "\"");
+				htmlMessageBodyPart.setHeader("Content-Transfer-Encoding", "base64");
 				multipart.addBodyPart(htmlMessageBodyPart);
 
 				message.setContent(multipart);

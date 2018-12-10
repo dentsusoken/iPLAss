@@ -69,6 +69,10 @@ public class Mail {
 	/** 添付ファイル */
 	private List<DataHandler> attachments;
 
+	private boolean smimeSign;
+	private String smimeSignPassword;
+	private boolean smimeEncript;
+
 	public Mail(String charset) {
 		this.charset = charset;
 	}
@@ -358,6 +362,47 @@ public class Mail {
 
 	public void setRecipientBcc(List<InternetAddress> recipientBcc) {
 	    this.recipientBcc = recipientBcc;
+	}
+	
+	/**
+	 * S/MIMEによる署名を行う場合、trueを設定します。
+	 * 事前に、S/MIME用の証明書（および秘密鍵）ストアに
+	 * 送信者のメールアドレスに対する証明書、秘密鍵が格納されている必要があります。
+	 * 
+	 * @param smimeSign
+	 */
+	public void setSmimeSign(boolean smimeSign) {
+		this.smimeSign = smimeSign;
+	}
+	public boolean isSmimeSign() {
+		return smimeSign;
+	}
+
+	/**
+	 * S/MIMEによる署名を行う場合、
+	 * 且つ明示的にパスワード指定を行う場合に指定します。
+	 * 
+	 * @param smimeSignPassword
+	 */
+	public void setSmimeSignPassword(String smimeSignPassword) {
+		this.smimeSignPassword = smimeSignPassword;
+	}
+	public String getSmimeSignPassword() {
+		return smimeSignPassword;
+	}
+	
+	/**
+	 * S/MIMEによる暗号化を行う場合、trueを設定します。
+	 * 事前に、S/MIME用の証明書ストアに
+	 * 受信者のメールアドレスに対する証明書が格納されている必要があります。
+	 * 
+	 * @param smimeEncript
+	 */
+	public void setSmimeEncript(boolean smimeEncript) {
+		this.smimeEncript = smimeEncript;
+	}
+	public boolean isSmimeEncript() {
+		return smimeEncript;
 	}
 
 }
