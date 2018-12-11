@@ -432,3 +432,28 @@ task copyGwtTransSrc(type: Sync) {
 
 	into "${buildDir}/src/gwt-trans/org/iplass/adminconsole/trans/org/iplass"
 }
+
+task copyStaticResources(type: Sync) {
+	dependsOn('processResources')
+
+	//静的リソースをコピー
+	from 'build/resources/main/'
+	//jar内のwebjarsフォルダ配下をコピー
+	from (configurations.wjRuntime.collect {it.isDirectory() ? it : zipTree(it)}) {
+		exclude 'META-INF/maven/'
+		exclude 'META-INF/MANIFEST.MF'
+	}
+	into 'build/tmp/staticresources'
+	includeEmptyDirs = false
+}
+
+task archiveStaticResources(type: Zip) {
+	dependsOn('copyStaticResources')
+
+	archiveName = "${project.name}-staticresources-${version}.zip"
+
+	//META-INF/resourcesをZIP圧縮
+	from ('build/tmp/staticresources/META-INF/resources') {
+		exclude 'jsp'
+	}
+}

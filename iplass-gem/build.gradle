@@ -49,7 +49,7 @@ task copyStaticResources(type: Sync) {
 task archiveStaticResources(type: Zip) {
 	dependsOn('copyStaticResources')
 
-	archiveName = "iplass-staticresources-${version}.zip"
+	archiveName = "${project.name}-staticresources-${version}.zip"
 
 	//META-INF/resourcesをZIP圧縮
 	from ('build/tmp/staticresources/META-INF/resources') {

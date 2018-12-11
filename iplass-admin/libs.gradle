@@ -2,13 +2,19 @@ ext {
 	gwtVersion = "2.8.2"
 }
 
+configurations {
+	wjRuntime
+}
+
 dependencies {
 	//compile -> server（およびclientでも）で使うjar
 	//compileOnly -> clientのみで使うjar
 	//runtime -> serverのみで利用かつcompile時に必要なし
 
 	compile 'com.googlecode.gwtupload:gwtupload:1.0.3'
-	compile 'org.webjars.npm:ace-builds:1.2.9'
+	wjRuntime 'org.webjars.npm:ace-builds:1.2.9'
+
+	compile configurations.wjRuntime
 
 	compileOnly "com.google.gwt:gwt-user:${gwtVersion}"
 	compileOnly "com.google.gwt:gwt-dev:${gwtVersion}"
