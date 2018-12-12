@@ -75,7 +75,7 @@
 
 	String inputDateFormat = TemplateUtil.getLocaleFormat().getBrowserInputDateFormat();
 	if (StringUtil.isEmpty(inputDateFormat)) {
-		inputDateFormat = "yyyy/MM/dd";
+		inputDateFormat = "yyyyMMdd";
 	}
 
 	String inputTimeHourFormat = TemplateUtil.getLocaleFormat().getBrowserInputTimeHourFormat();

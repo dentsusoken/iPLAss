@@ -112,7 +112,7 @@
 		Date date = propValue instanceof Date ? (Date) propValue : null;
 		String str = displayFormat(date, editor.isShowWeekday());
 %>
-<span class="data-label" style="<c:out value="<%=customStyle %>"/>">
+<span class="data-label" style="<c:out value="<%=customStyle %>"/>" data-show-weekday="<c:out value="<%=editor.isShowWeekday() %>"/>">
 <c:out value="<%=str %>" />
 <%
 		if (outputHidden) {

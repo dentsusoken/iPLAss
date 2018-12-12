@@ -123,7 +123,7 @@
 		//単一
 		Timestamp t = propValue instanceof Timestamp ? (Timestamp) propValue : null;
 %>
-<span class="data-label" style="<c:out value="<%=customStyle %>"/>" data-time-range="<c:out value="<%=editor.getDispRange() %>"/>">
+<span class="data-label" style="<c:out value="<%=customStyle %>"/>" data-time-range="<c:out value="<%=editor.getDispRange() %>"/>" data-show-weekday="<c:out value="<%=editor.isShowWeekday() %>"/>">
 <c:out value="<%=displayFormat(t, editor.getDispRange(), editor.isShowWeekday()) %>"/>
 <%
 		String str = format(t);

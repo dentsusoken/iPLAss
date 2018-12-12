@@ -2544,19 +2544,23 @@ function insertComma(str, separator) {
 
 function updateNestValue_Date(type, $node, parentPropName, name, entity) {
 	var val = entity[name];
-	var date = "";
+	var _date = null;
 	if (val != null) {
-		date = dateUtil.newFormatString(val, "YYYY-MM-DD", "YYYYMMDD");
+		_date = dateUtil.toDate(val, "YYYY-MM-DD");
 	}
 	if (type == "DATETIME") {
-		$("#d_" + es(parentPropName + "." + name), $node).val(convertToLocaleDateString(date));
-		$("#i_" + es(parentPropName + "." + name), $node).val();
+		var value = _date != null ? dateUtil.format(_date, dateUtil.getInputDateFormat()) : "";
+		$("#d_" + es(parentPropName + "." + name), $node).val(value);
+		var hidden = _date != null ? dateUtil.format(_date, dateUtil.getServerDateFormat()) : "";
+		$("#i_" + es(parentPropName + "." + name), $node).val(hidden);
 	} else if (type == "LABEL") {
 		var $span = $node.children("span.data-label");
-		var label = val == null ? "" : dateUtil.newFormatString(val, "YYYY-MM-DD", dateUtil.getOutputDateFormat());
+		var showWeekday = $span.attr("data-show-weekday") == "true";
+		var label = _date != null ? dateUtil.formatOutputDate(_date, showWeekday) : "";
 		$span.empty();
 		$span.text(label);
-		$("<input />").attr({type:"hidden", name:parentPropName + "." + name, value:date}).appendTo($span);
+		var hidden = _date != null ? dateUtil.format(_date, dateUtil.getServerDateFormat()) : "";
+		$("<input />").attr({type:"hidden", name:parentPropName + "." + name, value:hidden}).appendTo($span);
 	}
 }
 function updateNestValue_Time(type, $node, parentPropName, name, entity) {
@@ -2686,7 +2690,8 @@ function updateNestValue_Timestamp(type, $node, parentPropName, name, entity) {
 	} else if (type == "LABEL") {
 		var $span = $node.children("span.data-label");
 		var range = $span.attr("data-time-range");
-		var label = _date != null ? dateUtil.formatOutputDatetime(_date, range): "";
+		var showWeekday = $span.attr("data-show-weekday") == "true";
+		var label = _date != null ? dateUtil.formatOutputDatetime(_date, range, showWeekday) : "";
 		$span.empty();
 		$span.text(label);
 		var hidden = _date != null ? dateUtil.format(_date, dateUtil.getServerDatetimeFormat()) : "";
@@ -3908,8 +3913,12 @@ DateUtil.prototype.format = function(dateObj, format) {
 	var m = new moment(dateObj);
 	return m.format(format);
 }
-DateUtil.prototype.formatOutputDate = function(dateObj) {
-	return this.format(dateObj, this.getOutputDateFormat());
+DateUtil.prototype.formatOutputDate = function(dateObj, showWeekday = false) {
+	if (showWeekday === true) {
+		return this.formatOutputDateWeekday(dateObj);
+	} else {
+		return this.format(dateObj, this.getOutputDateFormat());
+	}
 }
 DateUtil.prototype.formatOutputDateWeekday = function(dateObj) {
 	var m = new moment(dateObj);
@@ -3919,8 +3928,12 @@ DateUtil.prototype.formatOutputDateWeekday = function(dateObj) {
 DateUtil.prototype.formatOutputTime = function(dateObj, range) {
 	return this.format(dateObj, this.getOutputTimeFormat(range));
 }
-DateUtil.prototype.formatOutputDatetime = function(dateObj, range) {
-	return this.format(dateObj, this.getOutputDatetimeFormat(range));
+DateUtil.prototype.formatOutputDatetime = function(dateObj, range, showWeekday = false) {
+	if (showWeekday === true) {
+		return this.formatOutputDatetimeWeekday(dateObj, range);
+	} else {
+		return this.format(dateObj, this.getOutputDatetimeFormat(range));
+	}
 }
 DateUtil.prototype.formatOutputDatetimeWeekday = function(dateObj, range) {
 	var m = new moment(dateObj);
