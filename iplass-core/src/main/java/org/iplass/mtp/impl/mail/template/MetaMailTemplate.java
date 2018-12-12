@@ -76,6 +76,9 @@ public class MetaMailTemplate extends BaseRootMetaData implements DefinableMetaD
 
 	private String langOrUserBindingName;
 
+	private boolean smimeSign;
+	private boolean smimeEncrypt;
+
 	public String getFrom() {
 		return from;
 	}
@@ -134,6 +137,19 @@ public class MetaMailTemplate extends BaseRootMetaData implements DefinableMetaD
 		this.langOrUserBindingName = bindKey;
 	}
 
+	public boolean isSmimeSign() {
+		return smimeSign;
+	}
+	public void setSmimeSign(boolean smimeSign) {
+		this.smimeSign = smimeSign;
+	}
+	public boolean isSmimeEncrypt() {
+		return smimeEncrypt;
+	}
+	public void setSmimeEncrypt(boolean smimeEncrypt) {
+		this.smimeEncrypt = smimeEncrypt;
+	}
+
 	@Override
 	public MailTemplateRuntime createRuntime(MetaDataConfig metaDataConfig) {
 		return new MailTemplateRuntime();
@@ -184,6 +200,8 @@ public class MetaMailTemplate extends BaseRootMetaData implements DefinableMetaD
 		}
 
 		langOrUserBindingName = definition.getLangOrUserBindingName();
+		smimeSign = definition.isSmimeSign();
+		smimeEncrypt = definition.isSmimeEncrypt();
 
 	}
 
@@ -211,6 +229,8 @@ public class MetaMailTemplate extends BaseRootMetaData implements DefinableMetaD
 			}
 		}
 		definition.setLangOrUserBindingName(langOrUserBindingName);
+		definition.setSmimeSign(smimeSign);
+		definition.setSmimeEncrypt(smimeEncrypt);
 		return definition;
 	}
 
@@ -329,6 +349,8 @@ public class MetaMailTemplate extends BaseRootMetaData implements DefinableMetaD
 			if (returnPath != null && returnPath.length() != 0) {
 				mail.setReturnPath(returnPath);
 			}
+			mail.setSmimeSign(smimeSign);
+			mail.setSmimeEncript(smimeEncrypt);
 
 			if (_subjectTemplate != null) {
 				StringWriter sw = new StringWriter();

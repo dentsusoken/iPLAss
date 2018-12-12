@@ -60,6 +60,7 @@ import com.smartgwt.client.widgets.IButton;
 import com.smartgwt.client.widgets.events.ClickEvent;
 import com.smartgwt.client.widgets.events.ClickHandler;
 import com.smartgwt.client.widgets.form.DynamicForm;
+import com.smartgwt.client.widgets.form.fields.CheckboxItem;
 import com.smartgwt.client.widgets.form.fields.TextItem;
 import com.smartgwt.client.widgets.grid.ListGrid;
 import com.smartgwt.client.widgets.grid.ListGridField;
@@ -506,6 +507,10 @@ public class MailTemplateEditPane extends MetaDataMainEditPane {
 		private TextItem replyToField;
 		private TextItem returnPathField;
 
+		private DynamicForm smimeForm;
+		private CheckboxItem smimeSignField;
+		private CheckboxItem smimeEncryptField;
+
 		private DynamicForm subjectForm;
 		private TextItem subjectField;
 
@@ -561,8 +566,27 @@ public class MailTemplateEditPane extends MetaDataMainEditPane {
 
 			sendFromForm.setItems(fromField, replyToField, returnPathField);
 
+			smimeForm = new DynamicForm();
+			smimeForm.setWidth(180);
+			smimeForm.setPadding(10);
+			smimeForm.setNumCols(1);
+			smimeForm.setColWidths("*");
+			smimeForm.setIsGroup(true);
+			smimeForm.setGroupTitle("S/MIME");
+
+			smimeSignField = new CheckboxItem("smimeSign", AdminClientMessageUtil.getString("ui_metadata_mail_MailTemplateEditPane_smimeSign"));
+			SmartGWTUtil.addHoverToFormItem(smimeSignField, AdminClientMessageUtil.getString("ui_metadata_mail_MailTemplateEditPane_smimeSignTooltip"));
+			smimeSignField.setWidth(150);
+
+			smimeEncryptField = new CheckboxItem("smimeEncrypt", AdminClientMessageUtil.getString("ui_metadata_mail_MailTemplateEditPane_smimeEncrypt"));
+			SmartGWTUtil.addHoverToFormItem(smimeEncryptField, AdminClientMessageUtil.getString("ui_metadata_mail_MailTemplateEditPane_smimeEncryptTooltip"));
+			smimeEncryptField.setWidth(150);
+
+			smimeForm.setItems(smimeSignField, smimeEncryptField);
+
 			topPane.addMember(charsetForm);
 			topPane.addMember(sendFromForm);
+			topPane.addMember(smimeForm);
 
 			subjectForm = new DynamicForm();
 			subjectForm.setWidth100();
@@ -623,6 +647,8 @@ public class MailTemplateEditPane extends MetaDataMainEditPane {
 				fromField.setValue(definition.getFrom());
 				replyToField.setValue(definition.getReplyTo());
 				returnPathField.setValue(definition.getReturnPath());
+				smimeSignField.setValue(definition.isSmimeSign());
+				smimeEncryptField.setValue(definition.isSmimeEncrypt());
 				boolean existPlainMessage = false;
 				boolean existHtmlMessage = false;
 				if (definition.getPlainMessage() == null) {
@@ -663,6 +689,8 @@ public class MailTemplateEditPane extends MetaDataMainEditPane {
 				plainEditor.setText("");
 				htmlEditor.setText("");
 				htmlCharsetField.clearValue();
+				smimeSignField.clearValue();
+				smimeEncryptField.clearValue();
 
 				massageTabSet.selectTab(plainMessageTab);
 			}
@@ -690,6 +718,8 @@ public class MailTemplateEditPane extends MetaDataMainEditPane {
 			htmlPart.setContent(htmlEditor.getText());
 			htmlPart.setCharset(SmartGWTUtil.getStringValue(htmlCharsetField));
 			definition.setHtmlMessage(htmlPart);
+			definition.setSmimeSign(SmartGWTUtil.getBooleanValue(smimeSignField));
+			definition.setSmimeEncrypt(SmartGWTUtil.getBooleanValue(smimeEncryptField));
 			return definition;
 		}
 
@@ -699,7 +729,7 @@ public class MailTemplateEditPane extends MetaDataMainEditPane {
 		 * @return 入力チェック結果
 		 */
 		public boolean validate() {
-			return charsetForm.validate() && sendFromForm.validate() && subjectForm.validate();
+			return charsetForm.validate() && sendFromForm.validate() && smimeSignField.validate() && subjectForm.validate();
 		}
 
 		/**
@@ -708,6 +738,7 @@ public class MailTemplateEditPane extends MetaDataMainEditPane {
 		public void clearErrors() {
 			charsetForm.clearErrors(true);
 			sendFromForm.clearErrors(true);
+			smimeForm.clearErrors(true);
 			subjectForm.clearErrors(true);
 		}
 

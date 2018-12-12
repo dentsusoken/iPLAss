@@ -55,6 +55,9 @@ public class MailTemplateDefinition implements Definition {
 	private String replyTo;
 	private String returnPath;
 
+	private boolean smimeSign;
+	private boolean smimeEncrypt;
+
 	public String getFrom() {
 		return from;
 	}
@@ -214,5 +217,37 @@ public class MailTemplateDefinition implements Definition {
 	 */
 	public void setHtmlMessage(HtmlBodyPart htmlMessage) {
 		this.htmlMessage = htmlMessage;
+	}
+
+	/**
+	 * S/MIMEによる署名を行うかを取得します。
+	 * @return S/MIMEによる署名を行うか
+	 */
+	public boolean isSmimeSign() {
+		return smimeSign;
+	}
+
+	/**
+	 * S/MIMEによる署名を行うかを設定します。
+	 * @param smimeSign S/MIMEによる署名を行うか
+	 */
+	public void setSmimeSign(boolean smimeSign) {
+		this.smimeSign = smimeSign;
+	}
+
+	/**
+	 * S/MIMEによる暗号化を行うかを取得します。
+	 * @return S/MIMEによる暗号化を行うか
+	 */
+	public boolean isSmimeEncrypt() {
+		return smimeEncrypt;
+	}
+
+	/**
+	 * S/MIMEによる暗号化を行うかを設定します。
+	 * @param smimeEncrypt S/MIMEによる暗号化を行うか
+	 */
+	public void setSmimeEncrypt(boolean smimeEncrypt) {
+		this.smimeEncrypt = smimeEncrypt;
 	}
 }
