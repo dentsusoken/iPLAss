@@ -2557,7 +2557,6 @@ function updateNestValue_Date(type, $node, parentPropName, name, entity) {
 		var $span = $node.children("span.data-label");
 		var showWeekday = $span.attr("data-show-weekday") == "true";
 		var label = _date != null ? dateUtil.formatOutputDate(_date, showWeekday) : "";
-		$span.empty();
 		$span.text(label);
 		var hidden = _date != null ? dateUtil.format(_date, dateUtil.getServerDateFormat()) : "";
 		$("<input />").attr({type:"hidden", name:parentPropName + "." + name, value:hidden}).appendTo($span);
@@ -2619,7 +2618,6 @@ function updateNestValue_Time(type, $node, parentPropName, name, entity) {
 		var $span = $node.children("span.data-label");
 		var range = $span.attr("data-time-range");
 		var label = _date != null ? dateUtil.formatOutputTime(_date, range): "";
-		$span.empty();
 		$span.text(label);
 		var hidden = _date != null ? dateUtil.format(_date, dateUtil.getServerTimeFormat()) : "";
 		$("<input />").attr({type:"hidden", name:parentPropName + "." + name, value:hidden}).appendTo($span);
@@ -2692,7 +2690,6 @@ function updateNestValue_Timestamp(type, $node, parentPropName, name, entity) {
 		var range = $span.attr("data-time-range");
 		var showWeekday = $span.attr("data-show-weekday") == "true";
 		var label = _date != null ? dateUtil.formatOutputDatetime(_date, range, showWeekday) : "";
-		$span.empty();
 		$span.text(label);
 		var hidden = _date != null ? dateUtil.format(_date, dateUtil.getServerDatetimeFormat()) : "";
 		$("<input />").attr({type:"hidden", name:parentPropName + "." + name, value:hidden}).appendTo($span);
@@ -2713,7 +2710,6 @@ function updateNestValue_Boolean(type, $node, parentPropName, name, entity) {
 	} else if (type == "LABEL") {
 		var $span = $node.children("span.data-label");
 		var label = selectValue === "" ? "" : selectValue === true ? $span.attr("data-true-label") : $span.attr("data-false-label");
-		$span.empty();
 		$span.text(label);
 		$("<input />").attr({type:"hidden", name:parentPropName + "." + name, value:selectValue}).appendTo($span);
 	}
@@ -3827,12 +3823,25 @@ var DateUtil = function(option) {
 
 	//タイプに一致するトークンを取得
 	function getFormatToken(tokenType) {
-		for (var token of util._tokenMap.values()) {
-			if (token && token.type === tokenType) {
-				return token;
+		if (typeof util._tokenMap.values === "function") {
+			var iterator = util._tokenMap.values(), token;
+			while (token = iterator.next(), !token.done) {
+				if (token && token.value.type === tokenType) {
+					return token.value;
+				}
 			}
+			return null;
+		} else {
+			//for IE11
+			var result = null;
+			util._tokenMap.forEach(function(value, key){
+				if (value && value.type === tokenType) {
+					//breakできない
+					result = value;
+				}
+			});
+			return result;
 		}
-		return null;
 	}
 }
 //サーバ送信用フォーマット
@@ -3913,7 +3922,10 @@ DateUtil.prototype.format = function(dateObj, format) {
 	var m = new moment(dateObj);
 	return m.format(format);
 }
-DateUtil.prototype.formatOutputDate = function(dateObj, showWeekday = false) {
+DateUtil.prototype.formatOutputDate = function(dateObj, showWeekday) {
+	if (typeof showWeekday === "undefined") {
+		showWeekday = false;
+	}
 	if (showWeekday === true) {
 		return this.formatOutputDateWeekday(dateObj);
 	} else {
@@ -3928,7 +3940,10 @@ DateUtil.prototype.formatOutputDateWeekday = function(dateObj) {
 DateUtil.prototype.formatOutputTime = function(dateObj, range) {
 	return this.format(dateObj, this.getOutputTimeFormat(range));
 }
-DateUtil.prototype.formatOutputDatetime = function(dateObj, range, showWeekday = false) {
+DateUtil.prototype.formatOutputDatetime = function(dateObj, range, showWeekday) {
+	if (typeof showWeekday === "undefined") {
+		showWeekday = false;
+	}
 	if (showWeekday === true) {
 		return this.formatOutputDatetimeWeekday(dateObj, range);
 	} else {
