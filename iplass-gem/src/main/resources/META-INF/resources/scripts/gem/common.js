@@ -2544,25 +2544,28 @@ function insertComma(str, separator) {
 
 function updateNestValue_Date(type, $node, parentPropName, name, entity) {
 	var val = entity[name];
-	var date = "";
-	var label = "";
+	var _date = null;
 	if (val != null) {
-		date = dateUtil.newFormatString(val, "YYYY-MM-DD", "YYYYMMDD");
-		label = dateUtil.newFormatString(val, "YYYY-MM-DD", dateUtil.getOutputDateFormat());
+		_date = dateUtil.toDate(val, "YYYY-MM-DD");
 	}
 	if (type == "DATETIME") {
-		$("#d_" + es(parentPropName + "." + name), $node).val(convertToLocaleDateString(date));
-		$("#i_" + es(parentPropName + "." + name), $node).val();
+		var value = _date != null ? dateUtil.format(_date, dateUtil.getInputDateFormat()) : "";
+		$("#d_" + es(parentPropName + "." + name), $node).val(value);
+		var hidden = _date != null ? dateUtil.format(_date, dateUtil.getServerDateFormat()) : "";
+		$("#i_" + es(parentPropName + "." + name), $node).val(hidden);
 	} else if (type == "LABEL") {
-		$node.text(label);
-		$("<input />").attr({type:"hidden", name:parentPropName + "." + name, value:date}).appendTo($node);
+		var $span = $node.children("span.data-label");
+		var showWeekday = $span.attr("data-show-weekday") == "true";
+		var label = _date != null ? dateUtil.formatOutputDate(_date, showWeekday) : "";
+		$span.text(label);
+		var hidden = _date != null ? dateUtil.format(_date, dateUtil.getServerDateFormat()) : "";
+		$("<input />").attr({type:"hidden", name:parentPropName + "." + name, value:hidden}).appendTo($span);
 	}
 }
 function updateNestValue_Time(type, $node, parentPropName, name, entity) {
 	var val = entity[name];
 	var _date = null;
-	if (val == null) val = "";
-	else {
+	if (val != null) {
 		_date = dateUtil.toDate(val, dateUtil.getOutputTimeFormat());
 	}
 
@@ -2612,17 +2615,18 @@ function updateNestValue_Time(type, $node, parentPropName, name, entity) {
 			$node.children("span").children("input:hidden:last").val(hidden);
 		}
 	} else if (type == "LABEL") {
-		var label = _date != null ? dateUtil.format(_date, dateUtil.getOutputTimeFormat()): "";
-		$node.text(label);
+		var $span = $node.children("span.data-label");
+		var range = $span.attr("data-time-range");
+		var label = _date != null ? dateUtil.formatOutputTime(_date, range): "";
+		$span.text(label);
 		var hidden = _date != null ? dateUtil.format(_date, dateUtil.getServerTimeFormat()) : "";
-		$("<input />").attr({type:"hidden", name:parentPropName + "." + name, value:hidden}).appendTo($node);
+		$("<input />").attr({type:"hidden", name:parentPropName + "." + name, value:hidden}).appendTo($span);
 	}
 }
 function updateNestValue_Timestamp(type, $node, parentPropName, name, entity) {
 	var val = entity[name];
 	var _date = null;
-	if (val == null) val = "";
-	else {
+	if (val != null) {
 		_date = new Date();
 		_date.setTime(val);
 	}
@@ -2682,15 +2686,17 @@ function updateNestValue_Timestamp(type, $node, parentPropName, name, entity) {
 			$node.children("span").children("input:hidden:last").val(hidden);
 		}
 	} else if (type == "LABEL") {
-		var label = _date != null ? dateUtil.format(_date, dateUtil.getOutputDatetimeFormat()): "";
-		$node.text(label);
+		var $span = $node.children("span.data-label");
+		var range = $span.attr("data-time-range");
+		var showWeekday = $span.attr("data-show-weekday") == "true";
+		var label = _date != null ? dateUtil.formatOutputDatetime(_date, range, showWeekday) : "";
+		$span.text(label);
 		var hidden = _date != null ? dateUtil.format(_date, dateUtil.getServerDatetimeFormat()) : "";
-		$("<input />").attr({type:"hidden", name:parentPropName + "." + name, value:hidden}).appendTo($node);
+		$("<input />").attr({type:"hidden", name:parentPropName + "." + name, value:hidden}).appendTo($span);
 	}
 }
 function updateNestValue_Boolean(type, $node, parentPropName, name, entity) {
 	var val = entity[name];
-	var displayName = "";
 	var selectValue = "";
 	if (val != null) {
 		selectValue = val;
@@ -2699,14 +2705,13 @@ function updateNestValue_Boolean(type, $node, parentPropName, name, entity) {
 //		$node.children("ul").children("li").children("label").children(":radio").val([selectValue]);
 		$(":radio", $node).val([selectValue]);
 	} else if (type == "CHECKBOX") {
-		var checked = selectValue == true ? true : false;
+		var checked = selectValue === true ? true : false;
 		$(":checkbox", $node).prop("checked", checked);
 	} else if (type == "LABEL") {
-		var $ul = $node.children("ul");
-		$ul.children("li").remove();
-		var $li = $("<li />").appendTo($ul);
-		$li.text(displayName);
-		$("<input />").attr({type:"hidden", name:parentPropName + "." + name, value:selectValue}).appendTo($li);
+		var $span = $node.children("span.data-label");
+		var label = selectValue === "" ? "" : selectValue === true ? $span.attr("data-true-label") : $span.attr("data-false-label");
+		$span.text(label);
+		$("<input />").attr({type:"hidden", name:parentPropName + "." + name, value:selectValue}).appendTo($span);
 	}
 }
 function updateNestValue_Select(type, $node, parentPropName, name, entity) {
@@ -3001,13 +3006,14 @@ function addNestRow_Number(type, cell, idx) {
  * @return
  */
 function addNestRow_Date(type, cell, idx) {
-
-	var id = $(cell).children("input:hidden:last").attr("id").substring(2);
-	$(cell).children(":text:first").each(function() {
-		this.removeAttribute("onchange");
-		$(this).change(function() {dateChange(id);});
-		datepicker(this);
-	});
+	if (type == "DATETIME") {
+		var id = $(cell).children("input:hidden:last").attr("id").substring(2);
+		$(cell).children(":text:first").each(function() {
+			this.removeAttribute("onchange");
+			$(this).change(function() {dateChange(id);});
+			datepicker(this);
+		});
+	}
 }
 
 /**
@@ -3597,18 +3603,7 @@ var DateUtil = function(option) {
 	this._tokenMap.set("mm", {type: "min", moment: "mm", datepicker: "mm"});
 	this._tokenMap.set("ss", {type: "sec", moment: "ss", datepicker: "si"});
 	this._tokenMap.set("SSS", {type: "msec", moment: "SSS", datepicker: "|"});
-
-	this._dateDelimiter = option.dateDelimiter ? option.dateDelimiter : "/";
-	this._timeDelimiter = option.timeDelimiter ? option.timeDelimiter : ":";
-
-	this._serverDateTokens = null;
-	this._serverTimeTokens = null;
-
-	this._outputDateTokens = null;
-	this._outputTimeTokens = null;
-
-	this._inputDateTokens = null;
-	this._inputTimeTokens = null;
+	this._tokenMap.set("EEEE", {type: "weekday", moment: "dddd", datepicker: "|"});
 
 	this.server = {
 		dateFormat: null,
@@ -3621,15 +3616,23 @@ var DateUtil = function(option) {
 	}
 	this.output = {
 		dateFormat: null,
+		dateWeekdayFormat: null,
 		timeSecFormat: null,
 		timeMinFormat: null,
 		timeHourFormat: null,
 		getDateFormat: function() { return ""; },
+		getDateWeekdayFormat: function() { return ""; },
 		getTimeFormat: function(range) { return ""; },
 		getDatetimeFormat: function(range) {
 			return this.getDateFormat() + " " + this.getTimeFormat(range);
 		},
-		getWeekdayFormat: function() { return "dddd"; }
+		getDatetimeWeekdayFormat: function(range) {
+			return this.getDateWeekdayFormat() + " " + this.getTimeFormat(range);
+		},
+		getWeekdayFormat: function() {
+			var token = getFormatToken("weekday");
+			return token.moment;
+		}
 	};
 	this.input = {
 		dateFormat: null,
@@ -3656,22 +3659,17 @@ var DateUtil = function(option) {
 	//サーバ送信用フォーマット
 	if (option.server) {
 		if (option.server.dateFormat) {
-			var serverDateDelimiter = option.server.dateFormat.indexOf(util._dateDelimiter) > -1 ? util._dateDelimiter : "";
-			this._serverDateTokens = getTokens(option.server.dateFormat, this._tokenMap);
 			this.server.getDateFormat = function() {
 				if (!this.dateFormat) {
-					this.dateFormat = createDateFormat(util._serverDateTokens, "moment", serverDateDelimiter);
+					this.dateFormat = convertFormat(util._option.server.dateFormat, "moment");
 				}
 				return this.dateFormat;
 			}
 		}
 		if (option.server.timeFormat) {
-			var serverTimeDelimiter = option.server.timeFormat.indexOf(util._timeDelimiter) > -1 ? util._timeDelimiter : "";
-			this._serverTimeTokens = getTokens(option.server.timeFormat, this._tokenMap);
 			this.server.getTimeFormat = function() {
 				if (!this.timeFormat) {
-					var targetType = new Array("msec", "sec", "min", "hour");
-					this.timeFormat = createTimeFormat(util._serverTimeTokens, "moment", serverTimeDelimiter, targetType);
+					this.timeFormat = convertFormat(util._option.server.timeFormat, "moment");
 				}
 				return this.timeFormat;
 			}
@@ -3681,40 +3679,46 @@ var DateUtil = function(option) {
 	if (option.output) {
 		//日付
 		if (option.output.dateFormat) {
-			var outputDateDelimiter = option.output.dateFormat.indexOf(util._dateDelimiter) > -1 ? util._dateDelimiter : "";
-			this._outputDateTokens = getTokens(option.output.dateFormat, this._tokenMap);
 			this.output.getDateFormat = function() {
 				if (!this.dateFormat) {
-					this.dateFormat = createDateFormat(util._outputDateTokens, "moment", outputDateDelimiter);
+					this.dateFormat = convertFormat(util._option.output.dateFormat, "moment");
 				}
 				return this.dateFormat;
 			}
 		}
+		//日付(曜日)
+		if (option.output.dateWeekdayFormat) {
+			this.output.getDateWeekdayFormat = function() {
+				if (!this.dateWeekdayFormat) {
+					this.dateWeekdayFormat = convertFormat(util._option.output.dateWeekdayFormat, "moment");
+				}
+				return this.dateWeekdayFormat;
+			}
+		}
 		//時間
-		if (option.output.timeFormat) {
-			this._outputTimeTokens = getTokens(option.output.timeFormat, this._tokenMap);
+		if (option.output.timeHourFormat && option.output.timeMinFormat && option.output.timeSecFormat) {
 			this.output.getTimeFormat = function(range) {
 				var _range = range;
 				if (!_range) _range = "sec";
+				_range = _range.toLowerCase();
 
 				if (_range === "sec") {
 					if (!this.timeSecFormat) {
-						var targetType = new Array("sec", "min", "hour");
-						this.timeSecFormat = createTimeFormat(util._outputTimeTokens, "moment", util._timeDelimiter, targetType);
+						this.timeSecFormat = convertFormat(util._option.output.timeSecFormat, "moment");
 					}
 					return this.timeSecFormat;
 				} else if (_range === "min") {
 					if (!this.timeMinFormat) {
-						var targetType = new Array("min", "hour");
-						this.timeMinFormat = createTimeFormat(util._outputTimeTokens, "moment", util._timeDelimiter, targetType);
+						this.timeMinFormat = convertFormat(util._option.output.timeMinFormat, "moment");
 					}
 					return this.timeMinFormat;
 				} else if (_range === "hour") {
 					if (!this.timeHourFormat) {
-						var targetType = new Array("hour");
-						this.timeHourFormat = createTimeFormat(util._outputTimeTokens, "moment", util._timeDelimiter, targetType);
+						this.timeHourFormat = convertFormat(util._option.output.timeHourFormat, "moment");
 					}
 					return this.timeHourFormat;
+				} else {
+					return "";
 				}
 			}
 		}
@@ -3723,65 +3727,62 @@ var DateUtil = function(option) {
 	if (option.input) {
 		//日付
 		if (option.input.dateFormat) {
-			var inputDateDelimiter = option.input.dateFormat.indexOf(util._dateDelimiter) > -1 ? util._dateDelimiter : "";
-			this._inputDateTokens = getTokens(option.input.dateFormat, this._tokenMap);
 			this.input.getDateFormat = function() {
 				if (!this.dateFormat) {
-					this.dateFormat = createDateFormat(util._inputDateTokens, "moment", inputDateDelimiter);
+					this.dateFormat = convertFormat(util._option.input.dateFormat, "moment");
 				}
 				return this.dateFormat;
 			}
 			this.datepicker.getDateFormat = function() {
 				if (!this.dateFormat) {
-					this.dateFormat = createDateFormat(util._inputDateTokens, "datepicker", inputDateDelimiter);
+					this.dateFormat = convertFormat(util._option.input.dateFormat, "datepicker");
 				}
 				return this.dateFormat;
 			}
 		}
 		//時間
-		if (option.input.timeFormat) {
-			this._inputTimeTokens = getTokens(option.input.timeFormat, this._tokenMap);
+		if (option.input.timeHourFormat && option.input.timeMinFormat && option.input.timeSecFormat) {
 			this.input.getTimeFormat = function(range) {
 				var _range = range;
 				if (!_range) _range = "sec";
+				_range = _range.toLowerCase();
 
 				if (_range === "sec") {
 					if (!this.timeSecFormat) {
-						var targetType = new Array("sec", "min", "hour");
-						this.timeSecFormat = createTimeFormat(util._inputTimeTokens, "moment", util._timeDelimiter, targetType);
+						this.timeSecFormat = convertFormat(util._option.input.timeSecFormat, "moment");
 					}
 					return this.timeSecFormat;
 				} else if (_range === "min") {
 					if (!this.timeMinFormat) {
-						var targetType = new Array("min", "hour");
-						this.timeMinFormat = createTimeFormat(util._inputTimeTokens, "moment", util._timeDelimiter, targetType);
+						this.timeMinFormat = convertFormat(util._option.input.timeMinFormat, "moment");
 					}
 					return this.timeMinFormat;
 				} else if (_range === "hour") {
 					if (!this.timeHourFormat) {
-						var targetType = new Array("hour");
-						this.timeHourFormat = createTimeFormat(util._inputTimeTokens, "moment", util._timeDelimiter, targetType);
+						this.timeHourFormat = convertFormat(util._option.input.timeHourFormat, "moment");
 					}
 					return this.timeHourFormat;
+				} else {
+					return "";
 				}
 			}
 			this.input.getHourFormat = function() {
 				if (!this.hourFormat) {
-					var token = getTimeFormatToken(util._inputTimeTokens, "hour");
+					var token = getFormatToken("hour");
 					this.hourFormat = token.moment;
 				}
 				return this.hourFormat;
 			}
 			this.input.getMinFormat = function() {
 				if (!this.minFormat) {
-					var token = getTimeFormatToken(util._inputTimeTokens, "min");
+					var token = getFormatToken("min");
 					this.minFormat = token.moment;
 				}
 				return this.minFormat;
 			}
 			this.input.getSecFormat = function() {
 				if (!this.secFormat) {
-					var token = getTimeFormatToken(util._inputTimeTokens, "sec");
+					var token = getFormatToken("sec");
 					this.secFormat = token.moment;
 				}
 				return this.secFormat;
@@ -3789,67 +3790,58 @@ var DateUtil = function(option) {
 		}
 	}
 
-	//フォーマットを分解して変換用のトークンを取得
-	function getTokens(format, map) {
-		var tokens = new Array();
-		var formatChars = format.split("");
-		var i = 0, beginIndex = -1, currentChar = null, lastChar = null;
-		for (; i < formatChars.length; i++) {
-			currentChar = formatChars[i];
-			if (lastChar === null || lastChar !== currentChar) {
-				var token = getMappedToken(format, beginIndex, i, map);
-				if (token) {
-					tokens.push(token);
-				}
-				beginIndex = i;
+	//JavaフォーマットをJSフォーマットに変換
+	function convertFormat(javaFormat, tokenType) {
+		var jsFormat = "";
+		var javaFormatChars = javaFormat.split("");
+		var i = 0, currentChar = null, lastChar = null, javaToken = "";
+		for (; i < javaFormatChars.length; i++) {
+			currentChar = javaFormatChars[i];
+			if (lastChar != null && lastChar !== currentChar) {
+				//文字列変更
+				jsFormat += getJsToken(javaToken, tokenType);
+
+				javaToken = "";
 			}
+			javaToken += currentChar;
 			lastChar = currentChar;
 		}
-		var token = getMappedToken(format, beginIndex, i, map);
-		if (token) {
-			tokens.push(token);
-		}
-		return tokens;
+		jsFormat += getJsToken(javaToken, tokenType);
+
+		return jsFormat;
 	}
-	//フォーマット内の文字列にマッチするトークンを取得
-	function getMappedToken(format, beginIndex, currentIndex, map) {
-		var tmpStr = format.substr(beginIndex, currentIndex - beginIndex);
-		if (map.get(tmpStr)) {
-			return map.get(tmpStr);
+
+	//JavaフォーマットTokenからJSフォーマットTokenに変換
+	function getJsToken(javaToken, tokenType) {
+		if (util._tokenMap.get(javaToken)) {
+			var token = util._tokenMap.get(javaToken);
+			return token[tokenType];
 		}
-		return null;
+		//ない場合はそのまま返す
+		return javaToken;
 	}
-	//日付のフォーマットを作成
-	function createDateFormat(tokens, tokenType, delimiter) {
-		var ret = new Array();
-		for (var i = 0; i < tokens.length; i++) {
-			var token = tokens[i];
-			if (token && token[tokenType]) {
-				ret.push(token[tokenType]);
+
+	//タイプに一致するトークンを取得
+	function getFormatToken(tokenType) {
+		if (typeof util._tokenMap.values === "function") {
+			var iterator = util._tokenMap.values(), token;
+			while (token = iterator.next(), !token.done) {
+				if (token && token.value.type === tokenType) {
+					return token.value;
+				}
 			}
+			return null;
+		} else {
+			//for IE11
+			var result = null;
+			util._tokenMap.forEach(function(value, key){
+				if (value && value.type === tokenType) {
+					//breakできない
+					result = value;
+				}
+			});
+			return result;
 		}
-		return ret.join(delimiter);
-	}
-	//時間のフォーマットを作成
-	function createTimeFormat(tokens, tokenType, delimiter, targetType) {
-		var ret = new Array();
-		for (var i = 0; i < tokens.length; i++) {
-			var token = tokens[i];
-			if (token && token[tokenType] && targetType.indexOf(token.type) >= 0) {
-				ret.push(token[tokenType]);
-			}
-		}
-		return ret.join(delimiter);
-	}
-	//時間の各部位のトークンを取得
-	function getTimeFormatToken(tokens, tokenType) {
-		for (var i = 0; i < tokens.length; i++) {
-			var token = tokens[i];
-			if (token && token.type === tokenType) {
-				return token;
-			}
-		}
-		return null;
 	}
 }
 //サーバ送信用フォーマット
@@ -3870,11 +3862,17 @@ DateUtil.prototype.getDatepickerDateFormat = function() {
 DateUtil.prototype.getOutputDateFormat = function() {
 	return this.output.getDateFormat();
 }
+DateUtil.prototype.getOutputDateWeekdayFormat = function() {
+	return this.output.getDateWeekdayFormat();
+}
 DateUtil.prototype.getOutputTimeFormat = function(range) {
 	return this.output.getTimeFormat(range);
 }
 DateUtil.prototype.getOutputDatetimeFormat = function(range) {
 	return this.output.getDatetimeFormat(range);
+}
+DateUtil.prototype.getOutputDatetimeWeekdayFormat = function(range) {
+	return this.output.getDatetimeWeekdayFormat(range);
 }
 DateUtil.prototype.getOutputWeekdayFormat = function() {
 	return this.output.getWeekdayFormat();
@@ -3920,17 +3918,42 @@ DateUtil.prototype.getWeekday = function(dateStr, format) {
 }
 //dateから文字列に
 DateUtil.prototype.format = function(dateObj, format) {
+	if (!format || format == "") return "";
 	var m = new moment(dateObj);
 	return m.format(format);
 }
-DateUtil.prototype.formatOutputDate = function(dateObj) {
-	return this.format(dateObj, this.getOutputDateFormat());
+DateUtil.prototype.formatOutputDate = function(dateObj, showWeekday) {
+	if (typeof showWeekday === "undefined") {
+		showWeekday = false;
+	}
+	if (showWeekday === true) {
+		return this.formatOutputDateWeekday(dateObj);
+	} else {
+		return this.format(dateObj, this.getOutputDateFormat());
+	}
+}
+DateUtil.prototype.formatOutputDateWeekday = function(dateObj) {
+	var m = new moment(dateObj);
+	m.locale(scriptContext.locale.defaultLocale);
+	return m.format(this.getOutputDateWeekdayFormat());
 }
 DateUtil.prototype.formatOutputTime = function(dateObj, range) {
 	return this.format(dateObj, this.getOutputTimeFormat(range));
 }
-DateUtil.prototype.formatOutputDatetime = function(dateObj, range) {
-	return this.format(dateObj, this.getOutputDatetimeFormat(range));
+DateUtil.prototype.formatOutputDatetime = function(dateObj, range, showWeekday) {
+	if (typeof showWeekday === "undefined") {
+		showWeekday = false;
+	}
+	if (showWeekday === true) {
+		return this.formatOutputDatetimeWeekday(dateObj, range);
+	} else {
+		return this.format(dateObj, this.getOutputDatetimeFormat(range));
+	}
+}
+DateUtil.prototype.formatOutputDatetimeWeekday = function(dateObj, range) {
+	var m = new moment(dateObj);
+	m.locale(scriptContext.locale.defaultLocale);
+	return m.format(this.getOutputDatetimeWeekdayFormat(range));
 }
 DateUtil.prototype.formatInputDate = function(dateObj) {
 	return this.format(dateObj, this.getInputDateFormat());
@@ -3960,11 +3983,16 @@ var dateUtil = new DateUtil({
 	//表示用フォーマット
 	output: {
 		dateFormat: scriptContext.locale.outputDateFormat,
-		timeFormat:scriptContext.locale.outputTimeSecFormat
+		dateWeekdayFormat: scriptContext.locale.outputDateWeekdayFormat,
+		timeHourFormat:scriptContext.locale.outputTimeHourFormat,
+		timeMinFormat:scriptContext.locale.outputTimeMinFormat,
+		timeSecFormat:scriptContext.locale.outputTimeSecFormat
 	},
 	//入力用フォーマット
 	input: {
 		dateFormat: scriptContext.locale.inputDateFormat,
-		timeFormat:scriptContext.locale.inputTimeSecFormat
+		timeHourFormat:scriptContext.locale.inputTimeHourFormat,
+		timeMinFormat:scriptContext.locale.inputTimeMinFormat,
+		timeSecFormat:scriptContext.locale.inputTimeSecFormat
 	}
 });
