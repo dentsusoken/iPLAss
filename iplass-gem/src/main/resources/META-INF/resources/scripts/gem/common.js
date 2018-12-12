@@ -3602,18 +3602,7 @@ var DateUtil = function(option) {
 	this._tokenMap.set("mm", {type: "min", moment: "mm", datepicker: "mm"});
 	this._tokenMap.set("ss", {type: "sec", moment: "ss", datepicker: "si"});
 	this._tokenMap.set("SSS", {type: "msec", moment: "SSS", datepicker: "|"});
-
-	this._dateDelimiter = option.dateDelimiter ? option.dateDelimiter : "/";
-	this._timeDelimiter = option.timeDelimiter ? option.timeDelimiter : ":";
-
-	this._serverDateTokens = null;
-	this._serverTimeTokens = null;
-
-	this._outputDateTokens = null;
-	this._outputTimeTokens = null;
-
-	this._inputDateTokens = null;
-	this._inputTimeTokens = null;
+	this._tokenMap.set("EEEE", {type: "weekday", moment: "dddd", datepicker: "|"});
 
 	this.server = {
 		dateFormat: null,
@@ -3626,15 +3615,23 @@ var DateUtil = function(option) {
 	}
 	this.output = {
 		dateFormat: null,
+		dateWeekdayFormat: null,
 		timeSecFormat: null,
 		timeMinFormat: null,
 		timeHourFormat: null,
 		getDateFormat: function() { return ""; },
+		getDateWeekdayFormat: function() { return ""; },
 		getTimeFormat: function(range) { return ""; },
 		getDatetimeFormat: function(range) {
 			return this.getDateFormat() + " " + this.getTimeFormat(range);
 		},
-		getWeekdayFormat: function() { return "dddd"; }
+		getDatetimeWeekdayFormat: function(range) {
+			return this.getDateWeekdayFormat() + " " + this.getTimeFormat(range);
+		},
+		getWeekdayFormat: function() {
+			var token = getFormatToken("weekday");
+			return token.moment;
+		}
 	};
 	this.input = {
 		dateFormat: null,
@@ -3661,22 +3658,17 @@ var DateUtil = function(option) {
 	//サーバ送信用フォーマット
 	if (option.server) {
 		if (option.server.dateFormat) {
-			var serverDateDelimiter = option.server.dateFormat.indexOf(util._dateDelimiter) > -1 ? util._dateDelimiter : "";
-			this._serverDateTokens = getTokens(option.server.dateFormat, this._tokenMap);
 			this.server.getDateFormat = function() {
 				if (!this.dateFormat) {
-					this.dateFormat = createDateFormat(util._serverDateTokens, "moment", serverDateDelimiter);
+					this.dateFormat = convertFormat(util._option.server.dateFormat, "moment");
 				}
 				return this.dateFormat;
 			}
 		}
 		if (option.server.timeFormat) {
-			var serverTimeDelimiter = option.server.timeFormat.indexOf(util._timeDelimiter) > -1 ? util._timeDelimiter : "";
-			this._serverTimeTokens = getTokens(option.server.timeFormat, this._tokenMap);
 			this.server.getTimeFormat = function() {
 				if (!this.timeFormat) {
-					var targetType = new Array("msec", "sec", "min", "hour");
-					this.timeFormat = createTimeFormat(util._serverTimeTokens, "moment", serverTimeDelimiter, targetType);
+					this.timeFormat = convertFormat(util._option.server.timeFormat, "moment");
 				}
 				return this.timeFormat;
 			}
@@ -3686,18 +3678,24 @@ var DateUtil = function(option) {
 	if (option.output) {
 		//日付
 		if (option.output.dateFormat) {
-			var outputDateDelimiter = option.output.dateFormat.indexOf(util._dateDelimiter) > -1 ? util._dateDelimiter : "";
-			this._outputDateTokens = getTokens(option.output.dateFormat, this._tokenMap);
 			this.output.getDateFormat = function() {
 				if (!this.dateFormat) {
-					this.dateFormat = createDateFormat(util._outputDateTokens, "moment", outputDateDelimiter);
+					this.dateFormat = convertFormat(util._option.output.dateFormat, "moment");
 				}
 				return this.dateFormat;
 			}
 		}
+		//日付(曜日)
+		if (option.output.dateWeekdayFormat) {
+			this.output.getDateWeekdayFormat = function() {
+				if (!this.dateWeekdayFormat) {
+					this.dateWeekdayFormat = convertFormat(util._option.output.dateWeekdayFormat, "moment");
+				}
+				return this.dateWeekdayFormat;
+			}
+		}
 		//時間
-		if (option.output.timeFormat) {
-			this._outputTimeTokens = getTokens(option.output.timeFormat, this._tokenMap);
+		if (option.output.timeHourFormat && option.output.timeMinFormat && option.output.timeSecFormat) {
 			this.output.getTimeFormat = function(range) {
 				var _range = range;
 				if (!_range) _range = "sec";
@@ -3705,20 +3703,17 @@ var DateUtil = function(option) {
 
 				if (_range === "sec") {
 					if (!this.timeSecFormat) {
-						var targetType = new Array("sec", "min", "hour");
-						this.timeSecFormat = createTimeFormat(util._outputTimeTokens, "moment", util._timeDelimiter, targetType);
+						this.timeSecFormat = convertFormat(util._option.output.timeSecFormat, "moment");
 					}
 					return this.timeSecFormat;
 				} else if (_range === "min") {
 					if (!this.timeMinFormat) {
-						var targetType = new Array("min", "hour");
-						this.timeMinFormat = createTimeFormat(util._outputTimeTokens, "moment", util._timeDelimiter, targetType);
+						this.timeMinFormat = convertFormat(util._option.output.timeMinFormat, "moment");
 					}
 					return this.timeMinFormat;
 				} else if (_range === "hour") {
 					if (!this.timeHourFormat) {
-						var targetType = new Array("hour");
-						this.timeHourFormat = createTimeFormat(util._outputTimeTokens, "moment", util._timeDelimiter, targetType);
+						this.timeHourFormat = convertFormat(util._option.output.timeHourFormat, "moment");
 					}
 					return this.timeHourFormat;
 				} else {
@@ -3731,24 +3726,21 @@ var DateUtil = function(option) {
 	if (option.input) {
 		//日付
 		if (option.input.dateFormat) {
-			var inputDateDelimiter = option.input.dateFormat.indexOf(util._dateDelimiter) > -1 ? util._dateDelimiter : "";
-			this._inputDateTokens = getTokens(option.input.dateFormat, this._tokenMap);
 			this.input.getDateFormat = function() {
 				if (!this.dateFormat) {
-					this.dateFormat = createDateFormat(util._inputDateTokens, "moment", inputDateDelimiter);
+					this.dateFormat = convertFormat(util._option.input.dateFormat, "moment");
 				}
 				return this.dateFormat;
 			}
 			this.datepicker.getDateFormat = function() {
 				if (!this.dateFormat) {
-					this.dateFormat = createDateFormat(util._inputDateTokens, "datepicker", inputDateDelimiter);
+					this.dateFormat = convertFormat(util._option.input.dateFormat, "datepicker");
 				}
 				return this.dateFormat;
 			}
 		}
 		//時間
-		if (option.input.timeFormat) {
-			this._inputTimeTokens = getTokens(option.input.timeFormat, this._tokenMap);
+		if (option.input.timeHourFormat && option.input.timeMinFormat && option.input.timeSecFormat) {
 			this.input.getTimeFormat = function(range) {
 				var _range = range;
 				if (!_range) _range = "sec";
@@ -3756,20 +3748,17 @@ var DateUtil = function(option) {
 
 				if (_range === "sec") {
 					if (!this.timeSecFormat) {
-						var targetType = new Array("sec", "min", "hour");
-						this.timeSecFormat = createTimeFormat(util._inputTimeTokens, "moment", util._timeDelimiter, targetType);
+						this.timeSecFormat = convertFormat(util._option.input.timeSecFormat, "moment");
 					}
 					return this.timeSecFormat;
 				} else if (_range === "min") {
 					if (!this.timeMinFormat) {
-						var targetType = new Array("min", "hour");
-						this.timeMinFormat = createTimeFormat(util._inputTimeTokens, "moment", util._timeDelimiter, targetType);
+						this.timeMinFormat = convertFormat(util._option.input.timeMinFormat, "moment");
 					}
 					return this.timeMinFormat;
 				} else if (_range === "hour") {
 					if (!this.timeHourFormat) {
-						var targetType = new Array("hour");
-						this.timeHourFormat = createTimeFormat(util._inputTimeTokens, "moment", util._timeDelimiter, targetType);
+						this.timeHourFormat = convertFormat(util._option.input.timeHourFormat, "moment");
 					}
 					return this.timeHourFormat;
 				} else {
@@ -3778,21 +3767,21 @@ var DateUtil = function(option) {
 			}
 			this.input.getHourFormat = function() {
 				if (!this.hourFormat) {
-					var token = getTimeFormatToken(util._inputTimeTokens, "hour");
+					var token = getFormatToken("hour");
 					this.hourFormat = token.moment;
 				}
 				return this.hourFormat;
 			}
 			this.input.getMinFormat = function() {
 				if (!this.minFormat) {
-					var token = getTimeFormatToken(util._inputTimeTokens, "min");
+					var token = getFormatToken("min");
 					this.minFormat = token.moment;
 				}
 				return this.minFormat;
 			}
 			this.input.getSecFormat = function() {
 				if (!this.secFormat) {
-					var token = getTimeFormatToken(util._inputTimeTokens, "sec");
+					var token = getFormatToken("sec");
 					this.secFormat = token.moment;
 				}
 				return this.secFormat;
@@ -3800,62 +3789,40 @@ var DateUtil = function(option) {
 		}
 	}
 
-	//フォーマットを分解して変換用のトークンを取得
-	function getTokens(format, map) {
-		var tokens = new Array();
-		var formatChars = format.split("");
-		var i = 0, beginIndex = -1, currentChar = null, lastChar = null;
-		for (; i < formatChars.length; i++) {
-			currentChar = formatChars[i];
-			if (lastChar === null || lastChar !== currentChar) {
-				var token = getMappedToken(format, beginIndex, i, map);
-				if (token) {
-					tokens.push(token);
-				}
-				beginIndex = i;
+	//JavaフォーマットをJSフォーマットに変換
+	function convertFormat(javaFormat, tokenType) {
+		var jsFormat = "";
+		var javaFormatChars = javaFormat.split("");
+		var i = 0, currentChar = null, lastChar = null, javaToken = "";
+		for (; i < javaFormatChars.length; i++) {
+			currentChar = javaFormatChars[i];
+			if (lastChar != null && lastChar !== currentChar) {
+				//文字列変更
+				jsFormat += getJsToken(javaToken, tokenType);
+
+				javaToken = "";
 			}
+			javaToken += currentChar;
 			lastChar = currentChar;
 		}
-		var token = getMappedToken(format, beginIndex, i, map);
-		if (token) {
-			tokens.push(token);
-		}
-		return tokens;
+		jsFormat += getJsToken(javaToken, tokenType);
+
+		return jsFormat;
 	}
-	//フォーマット内の文字列にマッチするトークンを取得
-	function getMappedToken(format, beginIndex, currentIndex, map) {
-		var tmpStr = format.substr(beginIndex, currentIndex - beginIndex);
-		if (map.get(tmpStr)) {
-			return map.get(tmpStr);
+
+	//JavaフォーマットTokenからJSフォーマットTokenに変換
+	function getJsToken(javaToken, tokenType) {
+		if (util._tokenMap.get(javaToken)) {
+			var token = util._tokenMap.get(javaToken);
+			return token[tokenType];
 		}
-		return null;
+		//ない場合はそのまま返す
+		return javaToken;
 	}
-	//日付のフォーマットを作成
-	function createDateFormat(tokens, tokenType, delimiter) {
-		var ret = new Array();
-		for (var i = 0; i < tokens.length; i++) {
-			var token = tokens[i];
-			if (token && token[tokenType]) {
-				ret.push(token[tokenType]);
-			}
-		}
-		return ret.join(delimiter);
-	}
-	//時間のフォーマットを作成
-	function createTimeFormat(tokens, tokenType, delimiter, targetType) {
-		var ret = new Array();
-		for (var i = 0; i < tokens.length; i++) {
-			var token = tokens[i];
-			if (token && token[tokenType] && targetType.indexOf(token.type) >= 0) {
-				ret.push(token[tokenType]);
-			}
-		}
-		return ret.join(delimiter);
-	}
-	//時間の各部位のトークンを取得
-	function getTimeFormatToken(tokens, tokenType) {
-		for (var i = 0; i < tokens.length; i++) {
-			var token = tokens[i];
+
+	//タイプに一致するトークンを取得
+	function getFormatToken(tokenType) {
+		for (var token of util._tokenMap.values()) {
 			if (token && token.type === tokenType) {
 				return token;
 			}
@@ -3881,11 +3848,17 @@ DateUtil.prototype.getDatepickerDateFormat = function() {
 DateUtil.prototype.getOutputDateFormat = function() {
 	return this.output.getDateFormat();
 }
+DateUtil.prototype.getOutputDateWeekdayFormat = function() {
+	return this.output.getDateWeekdayFormat();
+}
 DateUtil.prototype.getOutputTimeFormat = function(range) {
 	return this.output.getTimeFormat(range);
 }
 DateUtil.prototype.getOutputDatetimeFormat = function(range) {
 	return this.output.getDatetimeFormat(range);
+}
+DateUtil.prototype.getOutputDatetimeWeekdayFormat = function(range) {
+	return this.output.getDatetimeWeekdayFormat(range);
 }
 DateUtil.prototype.getOutputWeekdayFormat = function() {
 	return this.output.getWeekdayFormat();
@@ -3938,11 +3911,21 @@ DateUtil.prototype.format = function(dateObj, format) {
 DateUtil.prototype.formatOutputDate = function(dateObj) {
 	return this.format(dateObj, this.getOutputDateFormat());
 }
+DateUtil.prototype.formatOutputDateWeekday = function(dateObj) {
+	var m = new moment(dateObj);
+	m.locale(scriptContext.locale.defaultLocale);
+	return m.format(this.getOutputDateWeekdayFormat());
+}
 DateUtil.prototype.formatOutputTime = function(dateObj, range) {
 	return this.format(dateObj, this.getOutputTimeFormat(range));
 }
 DateUtil.prototype.formatOutputDatetime = function(dateObj, range) {
 	return this.format(dateObj, this.getOutputDatetimeFormat(range));
+}
+DateUtil.prototype.formatOutputDatetimeWeekday = function(dateObj, range) {
+	var m = new moment(dateObj);
+	m.locale(scriptContext.locale.defaultLocale);
+	return m.format(this.getOutputDatetimeWeekdayFormat(range));
 }
 DateUtil.prototype.formatInputDate = function(dateObj) {
 	return this.format(dateObj, this.getInputDateFormat());
@@ -3972,11 +3955,16 @@ var dateUtil = new DateUtil({
 	//表示用フォーマット
 	output: {
 		dateFormat: scriptContext.locale.outputDateFormat,
-		timeFormat:scriptContext.locale.outputTimeSecFormat
+		dateWeekdayFormat: scriptContext.locale.outputDateWeekdayFormat,
+		timeHourFormat:scriptContext.locale.outputTimeHourFormat,
+		timeMinFormat:scriptContext.locale.outputTimeMinFormat,
+		timeSecFormat:scriptContext.locale.outputTimeSecFormat
 	},
 	//入力用フォーマット
 	input: {
 		dateFormat: scriptContext.locale.inputDateFormat,
-		timeFormat:scriptContext.locale.inputTimeSecFormat
+		timeHourFormat:scriptContext.locale.inputTimeHourFormat,
+		timeMinFormat:scriptContext.locale.inputTimeMinFormat,
+		timeSecFormat:scriptContext.locale.inputTimeSecFormat
 	}
 });

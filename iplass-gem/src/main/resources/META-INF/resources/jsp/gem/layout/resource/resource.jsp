@@ -53,6 +53,21 @@
 		outputDateFormat = "yyyy/MM/dd";
 	}
 
+	String outputDateWeekdayFormat = TemplateUtil.getLocaleFormat().getOutputDateWeekdayFormat();
+	if (StringUtil.isEmpty(outputDateWeekdayFormat)) {
+		outputDateWeekdayFormat = "yyyy/MM/dd EEEE";
+	}
+
+	String outputTimeHourFormat = TemplateUtil.getLocaleFormat().getOutputTimeHourFormat();
+	if (StringUtil.isEmpty(outputTimeHourFormat)) {
+		outputTimeHourFormat = "HH";
+	}
+
+	String outputTimeMinFormat = TemplateUtil.getLocaleFormat().getOutputTimeMinFormat();
+	if (StringUtil.isEmpty(outputTimeMinFormat)) {
+		outputTimeMinFormat = "HH:mm";
+	}
+
 	String outputTimeSecFormat = TemplateUtil.getLocaleFormat().getOutputTimeSecFormat();
 	if (StringUtil.isEmpty(outputTimeSecFormat)) {
 		outputTimeSecFormat = "HH:mm:ss";
@@ -61,6 +76,16 @@
 	String inputDateFormat = TemplateUtil.getLocaleFormat().getBrowserInputDateFormat();
 	if (StringUtil.isEmpty(inputDateFormat)) {
 		inputDateFormat = "yyyy/MM/dd";
+	}
+
+	String inputTimeHourFormat = TemplateUtil.getLocaleFormat().getBrowserInputTimeHourFormat();
+	if (StringUtil.isEmpty(inputTimeHourFormat)) {
+		inputTimeHourFormat = "HH";
+	}
+
+	String inputTimeMinFormat = TemplateUtil.getLocaleFormat().getBrowserInputTimeMinFormat();
+	if (StringUtil.isEmpty(inputTimeMinFormat)) {
+		inputTimeMinFormat = "HH:mm";
 	}
 
 	String inputTimeSecFormat = TemplateUtil.getLocaleFormat().getBrowserInputTimeSecFormat();
@@ -79,8 +104,13 @@ scriptContext.locale.defaultLocale = "<%=language%>";
 scriptContext.locale.serverDateFormat = "<%=serverDateFormat%>";
 scriptContext.locale.serverTimeFormat = "<%=serverTimeFormat%>";
 scriptContext.locale.outputDateFormat = "<%=outputDateFormat%>";
+scriptContext.locale.outputDateWeekdayFormat = "<%=outputDateWeekdayFormat%>";
+scriptContext.locale.outputTimeHourFormat = "<%=outputTimeHourFormat%>";
+scriptContext.locale.outputTimeMinFormat = "<%=outputTimeMinFormat%>";
 scriptContext.locale.outputTimeSecFormat = "<%=outputTimeSecFormat%>";
 scriptContext.locale.inputDateFormat = "<%=inputDateFormat%>";
+scriptContext.locale.inputTimeHourFormat = "<%=inputTimeHourFormat%>";
+scriptContext.locale.inputTimeMinFormat = "<%=inputTimeMinFormat%>";
 scriptContext.locale.inputTimeSecFormat = "<%=inputTimeSecFormat%>";
 scriptContext.locale.showPulldownPleaseSelectLabel = <%=ViewUtil.isShowPulldownPleaseSelectLabel()%>;
 dType="/gem";
