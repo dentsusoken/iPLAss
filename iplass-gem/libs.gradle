@@ -23,7 +23,7 @@ dependencies {
 	wjRuntime 'org.webjars.npm:free-jqgrid:4.14.1'
 	wjRuntime 'org.webjars.npm:jqtree:1.4.2'
 
-	wjRuntime 'org.webjars.bower:blueimp-file-upload:9.19.1'
+	wjRuntime 'org.webjars.bower:blueimp-file-upload:9.28.0'
 	wjRuntime 'org.webjars.bower:fullcalendar:3.5.1'
 	wjRuntime 'org.webjars.bower:jQuery-contextMenu:2.6.2'
 	wjRuntime 'org.webjars.bower:mediaelement:4.2.5'

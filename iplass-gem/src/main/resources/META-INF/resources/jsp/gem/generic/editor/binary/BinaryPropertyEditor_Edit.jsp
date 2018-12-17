@@ -134,8 +134,8 @@
 		if (request.getAttribute(Constants.UPLOAD_LIB_LOADED) == null) {
 			request.setAttribute(Constants.UPLOAD_LIB_LOADED, true);
 %>
-<script type="text/javascript" src="${m:esc(staticContentPath)}/webjars/blueimp-file-upload/9.19.1/js/jquery.fileupload.js?cv=<%=TemplateUtil.getAPIVersion()%>"></script>
-<script type="text/javascript" src="${m:esc(staticContentPath)}/webjars/blueimp-file-upload/9.19.1/js/jquery.iframe-transport.js?cv=<%=TemplateUtil.getAPIVersion()%>"></script>
+<script type="text/javascript" src="${m:esc(staticContentPath)}/webjars/blueimp-file-upload/9.28.0/js/jquery.fileupload.js?cv=<%=TemplateUtil.getAPIVersion()%>"></script>
+<script type="text/javascript" src="${m:esc(staticContentPath)}/webjars/blueimp-file-upload/9.28.0/js/jquery.iframe-transport.js?cv=<%=TemplateUtil.getAPIVersion()%>"></script>
 <%
 		}
 %>
