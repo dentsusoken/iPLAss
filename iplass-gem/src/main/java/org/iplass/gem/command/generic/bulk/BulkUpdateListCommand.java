@@ -75,7 +75,7 @@ import org.iplass.mtp.view.generic.element.property.PropertyColumn;
 			tokenCheck=@TokenCheck
 	)
 })
-@CommandClass(name = "gem/generic/detail/BulkUpdateListCommand", displayName = "一括更新")
+@CommandClass(name = "gem/generic/bulk/BulkUpdateListCommand", displayName = "一括更新")
 public class BulkUpdateListCommand extends BulkCommandBase {
 
 	public static final String BULK_UPDATE_ACTION_NAME = "gem/generic/bulk/bulkUpdate";

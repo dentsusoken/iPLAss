@@ -61,7 +61,7 @@ import org.iplass.mtp.view.generic.SearchFormView;
 			}
 		)
 })
-@CommandClass(name = "gem/generic/detail/BulkDetailViewCommand", displayName = "一括詳細表示")
+@CommandClass(name = "gem/generic/bulk/BulkDetailViewCommand", displayName = "一括詳細表示")
 public class BulkUpdateViewCommand extends BulkCommandBase {
 
 	public static final String BULK_EDIT_ACTION_NAME = "gem/generic/bulk/bulkEdit";

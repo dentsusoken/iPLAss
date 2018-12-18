@@ -75,7 +75,7 @@ import org.slf4j.LoggerFactory;
 			tokenCheck=@TokenCheck
 	)
 })
-@CommandClass(name = "gem/generic/detail/BulkUpdateAllCommand", displayName = "一括全更新")
+@CommandClass(name = "gem/generic/bulk/BulkUpdateAllCommand", displayName = "一括全更新")
 public class BulkUpdateAllCommand extends BulkCommandBase {
 
 	private static Logger logger = LoggerFactory.getLogger(BulkUpdateAllCommand.class);
