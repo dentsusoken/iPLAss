@@ -152,7 +152,7 @@ public abstract class NestTableReferenceRegistHandler extends ReferenceRegistHan
 		//参照元の登録
 		List<Entity> registList = new ArrayList<>();
 		List<Entity> deleteList = new ArrayList<>();
-		difference(loadedEntity, rp, registList, deleteList);
+		diffMappedbyReference(loadedEntity, rp, registList, deleteList);
 
 		//新規・更新されたものは参照プロパティにEntityを追加
 		for (Entity entity : registList) {
@@ -183,53 +183,48 @@ public abstract class NestTableReferenceRegistHandler extends ReferenceRegistHan
 	 * @param entity 画面で入力したデータ
 	 * @param loadedEntity ロードしたデータ
 	 * @param pd 比較対象プロパティ
-	 * @param registList 登録用Entityを保持するためのList
-	 * @param deleteList 削除用Entityを保持するためのList
+	 * @param registRefList 登録用Entityを保持するためのList
+	 * @param deleteRefList 削除用Entityを保持するためのList
 	 */
-	protected void difference(Entity loadedEntity, PropertyDefinition pd, List<Entity> registList, List<Entity> deleteList) {
-		List<Entity> list1 = new ArrayList<>();
-		List<Entity> list2 = new ArrayList<>();
+	protected void diffMappedbyReference(Entity loadedEntity, PropertyDefinition pd, List<Entity> registRefList, List<Entity> deleteRefList) {
+
+		List<Entity> storedRefList = new ArrayList<>();
 
 		if (pd.getMultiplicity() != 1) {
 			//複数
 			Entity[] in = references.toArray(new Entity[]{});
-			if (in != null) list1.addAll(Arrays.asList(in));
+			if (in != null) {
+				registRefList.addAll(Arrays.asList(in));
+			}
+
 			if (loadedEntity != null) {
 				Entity[] load = loadedEntity.getValue(pd.getName());
-				if (load != null) list2.addAll(Arrays.asList(load));
+				if (load != null) {
+					storedRefList.addAll(Arrays.asList(load));
+				}
 			}
 		} else {
 			//単一
 			Entity in = !references.isEmpty() ? references.get(0) : null;
-			if (in != null) list1.add(in);
+			if (in != null) {
+				registRefList.add(in);
+			}
+
 			if (loadedEntity != null) {
 				Entity load = loadedEntity.getValue(pd.getName());
-				if (load != null) list2.add(load);
+				if (load != null) {
+					storedRefList.add(load);
+				}
 			}
 		}
 
-		for (Entity in : list1) {
-			if (in.getOid() == null) {
-				//OIDがないのは画面で入力されたデータ
-				registList.add(in);
-			}
-		}
-		for (Entity load : list2) {
-			boolean match = false;
-			Entity updEntity = null;
-			for (Entity in : list1) {
-				if (in.getOid() != null && load.getOid().equals(in.getOid())) {
-					match = true;
-					updEntity = in;
-					break;
-				}
-			}
-			if (match) {
-				//画面・ロードしたデータ両方にあれば更新
-				registList.add(updEntity);
-			} else {
+		for (Entity stored : storedRefList) {
+			boolean match = registRefList.stream().anyMatch(regist -> {
+				return regist.getOid() != null && stored.getOid().equals(regist.getOid());
+			});
+			if (!match) {
 				//ロードしたデータにしかなければ削除
-				deleteList.add(load);
+				deleteRefList.add(stored);
 			}
 		}
 	}
