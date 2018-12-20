@@ -2906,6 +2906,9 @@ function addNestRow(rowId, countId, multiplicy, insertTop, rootDefName, viewName
 		$("[name]", $copyRow).each(function() {
 			replaceDummyAttr(this, "name", idx);
 		});
+		$("[data-name]", $copyRow).each(function() {
+			replaceDummyAttr(this, "data-name", idx);
+		});
 		$copyRow.addClass("stripeRow");
 
 		//形式による置換以外の処理
