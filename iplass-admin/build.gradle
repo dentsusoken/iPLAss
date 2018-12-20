@@ -176,6 +176,8 @@ task copyGwtTransSrc(type: Sync) {
 		include 'mtp/entity/definition/listeners/EventType.java'
 		include 'mtp/entity/definition/listeners/JavaClassEventListenerDefinition.java'
 		include 'mtp/entity/definition/listeners/ScriptingEventListenerDefinition.java'
+		include 'mtp/entity/definition/listeners/SendNotificationListenerDefinition.java'
+		include 'mtp/entity/definition/listeners/SendNotificationType.java'
 
 		include 'mtp/entity/definition/properties/AutoNumberProperty.java'
 		include 'mtp/entity/definition/properties/BinaryProperty.java'

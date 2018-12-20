@@ -1,19 +1,19 @@
 /*
  * Copyright (C) 2011 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
- * 
+ *
  * Unless you have purchased a commercial license,
  * the following license terms apply:
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
@@ -38,6 +38,9 @@ public class EventListenerListGridRecord extends ListGridRecord {
 	public static final String BEFOREVALIDATE = "beforeValidate";
 	public static final String CNAME = "className";
 	public static final String WITHOUTMAPPEDBY = "WITHOUTMAPPEDBY";
+	public static final String NTYPE = "notificationType";
+	public static final String NCONDSCRIPT = "notificationCondScript";
+	public static final String TDNAME = "tmplDefName";
 
 	public static final String GP = "gp";
 
@@ -151,6 +154,30 @@ public class EventListenerListGridRecord extends ListGridRecord {
 
 	public void setWithoutMappedByReference(boolean value) {
 		setAttribute(WITHOUTMAPPEDBY, value);
+	}
+
+	public String getNotificationType() {
+		return getAttribute(NTYPE);
+	}
+
+	public void setNotificationType(String value) {
+		setAttribute(NTYPE, value);
+	}
+
+	public String getTmplDefName() {
+		return getAttribute(TDNAME);
+	}
+
+	public void setTmplDefName(String value) {
+		setAttribute(TDNAME, value);
+	}
+
+	public String getNotificationCondScript() {
+		return getAttribute(NCONDSCRIPT);
+	}
+
+	public void setNotificationCondScript(String value) {
+		setAttribute(NCONDSCRIPT, value);
 	}
 
 	public String getGeneralPurpus() {
