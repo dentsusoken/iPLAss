@@ -144,7 +144,8 @@ public class EntityViewFieldSettingPane extends MetaFieldSettingPane {
 	@Override
 	protected MetaFieldSettingWindow createSubWindow(String className, Refrectable value, FieldInfo info) {
 		FieldReferenceType triggerType = this.triggerType;
-		if (info.getOverrideTriggerType() != FieldReferenceType.NONE) {
+		// EntityViewFieldアノテーションを利用しないフィールドの場合、上書きをしません。
+		if (info.getOverrideTriggerType() != null && info.getOverrideTriggerType() != FieldReferenceType.NONE) {
 			triggerType = info.getOverrideTriggerType();
 		}
 		if (propDefName != null) {
