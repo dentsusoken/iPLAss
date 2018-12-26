@@ -277,9 +277,9 @@ public class MetaSendNotificationEventListener extends MetaEventListener {
 
 		private void setupHandleAfterCommit(Entity entity, EventType type, EntityEventContext context) {
 			Transaction t = ManagerLocator.getInstance().getManager(TransactionManager.class).currentTransaction();
-			try {
-				final Object n = createNotification(entity, type, context);
-				Runnable r = () -> {
+			final Object n = createNotification(entity, type, context);
+			if (t != null && t.getStatus() == TransactionStatus.ACTIVE) {
+				t.afterCommit(() -> {
 					try {
 						sendNotification(n);
 					} catch (RuntimeException e) {
@@ -290,20 +290,10 @@ public class MetaSendNotificationEventListener extends MetaEventListener {
 								+ ",templateName=" + tmplDefName,
 								e);
 					}
-				};
-				if (t != null && t.getStatus() == TransactionStatus.ACTIVE) {
-					t.afterCommit(r);
-				} else {
-					// トランザクションがないので、即時通知する
-					r.run();
-				}
-			} catch (RuntimeException e) {
-				fatalLog.error("cannot create notification:"
-						+ "entity=" + entity
-						+ ",event=" + type
-						+ ",context=" + context
-						+ ",templateName=" + tmplDefName,
-						e);
+				});
+			} else {
+				// トランザクションがないので、即時通知する
+				sendNotification(n);
 			}
 		}
 
