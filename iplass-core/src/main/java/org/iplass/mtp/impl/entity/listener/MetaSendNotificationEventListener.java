@@ -56,7 +56,7 @@ import org.slf4j.LoggerFactory;
 public class MetaSendNotificationEventListener extends MetaEventListener {
 	private static final long serialVersionUID = 3089787592456473699L;
 
-	private static final Logger log = LoggerFactory.getLogger(MetaSendNotificationEventListener.class);
+	private static final Logger fatalLog = LoggerFactory.getLogger("mtp.fatal.mail");
 
 	public static final String TENANT_BINDING_NAME = "tenant";
 	public static final String ENTITY_BINDING_NAME = "entity";
@@ -167,6 +167,9 @@ public class MetaSendNotificationEventListener extends MetaEventListener {
 		if (d.getListenEvent() != null) {
 			listenEvent = new ArrayList<EventType>();
 			listenEvent.addAll(d.getListenEvent());
+		} else {
+			// listenEventをnullにクリアする
+			listenEvent = null;
 		}
 	}
 
@@ -274,29 +277,33 @@ public class MetaSendNotificationEventListener extends MetaEventListener {
 
 		private void setupHandleAfterCommit(Entity entity, EventType type, EntityEventContext context) {
 			Transaction t = ManagerLocator.getInstance().getManager(TransactionManager.class).currentTransaction();
-			if (t != null && t.getStatus() == TransactionStatus.ACTIVE) {
-				try {
-					final Object n = createNotification(entity, type, context);
-					t.afterCommit(() -> {
-						try {
-							sendNotification(n);
-						} catch (RuntimeException e) {
-							log.error("cannot send notification:"
-									+ "entity=" + entity
-									+ ",event=" + type
-									+ ",context=" + context
-									+ ",templateName=" + tmplDefName,
-									e);
-						}
-					});
-				} catch (RuntimeException e) {
-					log.error("cannot create notification:"
-							+ "entity=" + entity
-							+ ",event=" + type
-							+ ",context=" + context
-							+ ",templateName=" + tmplDefName,
-							e);
+			try {
+				final Object n = createNotification(entity, type, context);
+				Runnable r = () -> {
+					try {
+						sendNotification(n);
+					} catch (RuntimeException e) {
+						fatalLog.error("cannot send notification:"
+								+ "entity=" + entity
+								+ ",event=" + type
+								+ ",context=" + context
+								+ ",templateName=" + tmplDefName,
+								e);
+					}
+				};
+				if (t != null && t.getStatus() == TransactionStatus.ACTIVE) {
+					t.afterCommit(r);
+				} else {
+					// トランザクションがないので、即時通知する
+					r.run();
 				}
+			} catch (RuntimeException e) {
+				fatalLog.error("cannot create notification:"
+						+ "entity=" + entity
+						+ ",event=" + type
+						+ ",context=" + context
+						+ ",templateName=" + tmplDefName,
+						e);
 			}
 		}
 
