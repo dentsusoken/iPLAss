@@ -403,6 +403,7 @@ LocaleInfo.ui_metadata_entity_EntityPluginManager_canNotGet = "が取得でき�
 LocaleInfo.ui_metadata_entity_EventListenerListGrid_javaClassNameItemComment = "org.iplass.mtp.entity.EntityEventListenerの実装クラスを指定してください。";
 LocaleInfo.ui_metadata_entity_EventListenerListGrid_withoutMappByRefComment = "EventListenerに渡されるEntity情報に、非参照プロパティの情報が不要な場合は選択してください。";
 LocaleInfo.ui_metadata_entity_EventListenerListGrid_scriptHint = "<ul><li>entity: target entity</li><li>event : EventType(org.iplass.mtp.entity.definition.listeners.EventType)</li><li>context : EntityEventContext</li><li>user : UserBinding</li><li>date : CurrentTimestamp</li></ul>";
+LocaleInfo.ui_metadata_entity_EventListenerListGrid_notificationCondScriptHint = "<ul><li>entity: target entity</li><li>event : EventType(org.iplass.mtp.entity.definition.listeners.EventType)</li><li>context : EntityEventContext</li><li>user : UserBinding</li><li>date : CurrentTimestamp</li></ul>";
 LocaleInfo.ui_metadata_entity_PropertyEditDialog_nameErr = "名前には英数字、アンダースコアのみ利用することができます。\n先頭は英字のみ利用することができます。";
 LocaleInfo.ui_metadata_entity_PropertyListGrid_failedGetSortSett = "ソート設定の取得に失敗しました。<br/>原因：";
 LocaleInfo.ui_metadata_entity_PropertyListGrid_eachLangDspName = "<div style=\"white-space: nowrap;\">言語毎の表示名を設定します。</div>";

@@ -1,19 +1,19 @@
 /*
  * Copyright (C) 2011 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
- * 
+ *
  * Unless you have purchased a commercial license,
  * the following license terms apply:
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
@@ -30,12 +30,14 @@ import org.iplass.mtp.entity.definition.EventListenerDefinition;
 import org.iplass.mtp.entity.definition.PropertyDefinition;
 import org.iplass.mtp.entity.definition.VersionControlType;
 import org.iplass.mtp.entity.definition.listeners.ScriptingEventListenerDefinition;
+import org.iplass.mtp.entity.definition.listeners.SendNotificationEventListenerDefinition;
 import org.iplass.mtp.entity.definition.properties.ReferenceProperty;
 import org.iplass.mtp.impl.datastore.MetaEntityStore;
 import org.iplass.mtp.impl.definition.DefinableMetaData;
 import org.iplass.mtp.impl.entity.l10n.MetaDataLocalizationStrategy;
 import org.iplass.mtp.impl.entity.listener.MetaJavaClassEventListener;
 import org.iplass.mtp.impl.entity.listener.MetaScriptingEventListener;
+import org.iplass.mtp.impl.entity.listener.MetaSendNotificationEventListener;
 import org.iplass.mtp.impl.entity.property.MetaPrimitiveProperty;
 import org.iplass.mtp.impl.entity.property.MetaProperty;
 import org.iplass.mtp.impl.entity.property.MetaReferenceProperty;
@@ -303,6 +305,10 @@ public class MetaEntity extends BaseRootMetaData implements DefinableMetaData<En
 					MetaScriptingEventListener ms = new MetaScriptingEventListener();
 					ms.applyConfig(ed);
 					eventListenerList.add(ms);
+				} else if (ed instanceof SendNotificationEventListenerDefinition) {
+					MetaSendNotificationEventListener msn = new MetaSendNotificationEventListener();
+					msn.applyConfig(ed);
+					eventListenerList.add(msn);
 				} else {
 					MetaJavaClassEventListener ms = new MetaJavaClassEventListener();
 					ms.applyConfig(ed);

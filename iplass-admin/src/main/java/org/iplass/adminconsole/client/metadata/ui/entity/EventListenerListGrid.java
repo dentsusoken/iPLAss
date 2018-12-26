@@ -30,12 +30,16 @@ import org.iplass.adminconsole.client.base.ui.widget.ScriptEditorDialogCondition
 import org.iplass.adminconsole.client.base.ui.widget.ScriptEditorDialogHandler;
 import org.iplass.adminconsole.client.base.ui.widget.ScriptEditorDialogMode;
 import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
+import org.iplass.adminconsole.client.metadata.data.MetaDataNameDS;
+import org.iplass.adminconsole.client.metadata.data.MetaDataNameDS.MetaDataNameDSOption;
 import org.iplass.adminconsole.client.metadata.ui.MetaDataUtil;
 import org.iplass.mtp.entity.definition.EntityDefinition;
 import org.iplass.mtp.entity.definition.EventListenerDefinition;
 import org.iplass.mtp.entity.definition.listeners.EventType;
 import org.iplass.mtp.entity.definition.listeners.JavaClassEventListenerDefinition;
 import org.iplass.mtp.entity.definition.listeners.ScriptingEventListenerDefinition;
+import org.iplass.mtp.entity.definition.listeners.SendNotificationEventListenerDefinition;
+import org.iplass.mtp.entity.definition.listeners.SendNotificationType;
 
 import com.smartgwt.client.types.Alignment;
 import com.smartgwt.client.types.Overflow;
@@ -69,6 +73,7 @@ public class EventListenerListGrid extends ListGrid {
 
 	private final String SCRIPT = "Script";
 	private final String JAVACLASS = "JavaClass";
+	private final String SENDNOTIFICATION = "SendNotification";
 
 	/**
 	 * コンストラクタ
@@ -203,6 +208,54 @@ public class EventListenerListGrid extends ListGrid {
 //			// TODO OutboundEventListenerの場合
 //			record.setElName(OUTBOUND);
 //			OutboundEventListenerDefinition oDef = (OutboundEventListenerDefinition)elDef;
+		} else if (elDef instanceof SendNotificationEventListenerDefinition) {
+			record.setElName(SENDNOTIFICATION);
+
+			SendNotificationEventListenerDefinition snDef = (SendNotificationEventListenerDefinition)elDef;
+			record.setNotificationType(snDef.getNotificationType().name());
+			record.setGeneralPurpus(snDef.getNotificationType().name());
+			record.setTmplDefName(snDef.getTmplDefName());
+			record.setNotificationCondScript(snDef.getNotificationCondScript());
+			
+			List<EventType> lstEType = snDef.getListenEvent();
+			if (lstEType != null) {
+				for (EventType eType : lstEType) {
+					switch(eType) {
+						case AFTER_DELETE:
+							record.setNotifyAfterD(true);
+							break;
+						case AFTER_INSERT:
+							record.setNotifyAfterI(true);
+							break;
+						case AFTER_UPDATE:
+							record.setNotifyAfterU(true);
+							break;
+						case BEFORE_DELETE:
+							record.setNotifyBeforeD(true);
+							break;
+						case BEFORE_INSERT:
+							record.setNotifyBeforeI(true);
+							break;
+						case BEFORE_UPDATE:
+							record.setNotifyBeforeU(true);
+							break;
+						case AFTER_RESTORE:
+							record.setNotifyAfterR(true);
+							break;
+						case AFTER_PURGE:
+							record.setNotifyAfterP(true);
+							break;
+						case ON_LOAD:
+							record.setNotifyOnLoad(true);
+							break;
+						case BEFORE_VALIDATE:
+							record.setNotifyBeforeValidate(true);
+						default:
+							break;
+					}
+				}
+			}
+			
 		} else {
 		}
 		record.setWithoutMappedByReference(elDef.isWithoutMappedByReference());
@@ -243,6 +296,26 @@ public class EventListenerListGrid extends ListGrid {
 				result = jDef;
 //			} else if (OUTBOUND.equals(elName)) {
 //
+			} else if (SENDNOTIFICATION.equals(elName)) {
+				SendNotificationEventListenerDefinition snDef = new SendNotificationEventListenerDefinition();
+				snDef.setNotificationType(SendNotificationType.valueOf(record.getNotificationType()));
+				snDef.setTmplDefName(record.getTmplDefName());
+				snDef.setNotificationCondScript(record.getNotificationCondScript());
+
+				List<EventType> lstEType = new ArrayList<EventType>();
+				if (record.isNotifyAfterD()) { lstEType.add(EventType.AFTER_DELETE); }
+				if (record.isNotifyAfterI()) { lstEType.add(EventType.AFTER_INSERT); }
+				if (record.isNotifyAfterU()) { lstEType.add(EventType.AFTER_UPDATE); }
+				if (record.isNotifyBeforeD()) { lstEType.add(EventType.BEFORE_DELETE); }
+				if (record.isNotifyBeforeI()) { lstEType.add(EventType.BEFORE_INSERT); }
+				if (record.isNotifyBeforeU()) { lstEType.add(EventType.BEFORE_UPDATE); }
+				if (record.isNotifyAfterR()) { lstEType.add(EventType.AFTER_RESTORE); }
+				if (record.isNotifyAfterP()) { lstEType.add(EventType.AFTER_PURGE); }
+				if (record.isNotifyOnLoad()) { lstEType.add(EventType.ON_LOAD); }
+				if (record.isNotifyBeforeValidate()) { lstEType.add(EventType.BEFORE_VALIDATE); }
+				snDef.setListenEvent(lstEType);
+
+				result = snDef;
 			}
 			if (result != null) {
 				result.setWithoutMappedByReference(record.isWithoutMappedByReference());
@@ -304,6 +377,26 @@ public class EventListenerListGrid extends ListGrid {
 		//JavaClass
 		private DynamicForm javaClassItemForm;
 		private TextItem javaClassNameItem;
+
+		//SendNotification
+		private DynamicForm sendNotificationForm;
+		private SelectItem notificationTypeItem;
+		private SelectItem tmplDefNameItem;
+		//NotificationCondition
+		private DynamicForm notificationCondForm;
+		private TextAreaItem notificationCondScriptItem;
+		//NotificationEvent
+		private DynamicForm notifyEventItemForm;
+		private CheckboxItem notifyBeforeIItem;
+		private CheckboxItem notifyAfterIItem;
+		private CheckboxItem notifyBeforeUItem;
+		private CheckboxItem notifyAfterUItem;
+		private CheckboxItem notifyBeforeDItem;
+		private CheckboxItem notifyAfterDItem;
+		private CheckboxItem notifyAfterRItem;
+		private CheckboxItem notifyAfterPItem;
+		private CheckboxItem notifyOnLoadItem;
+		private CheckboxItem notifyBeforeValidateItem;
 
 		//withoutMappedByReference
 		private DynamicForm withoutMappedByReferenceItemForm;
@@ -449,6 +542,107 @@ public class EventListenerListGrid extends ListGrid {
 			javaClassItemForm.setItems(javaClassNameItem, SmartGWTUtil.createSpacer(50));
 
 			//---------------------------------
+			//Send Notification
+			//---------------------------------
+			notificationTypeItem = new SelectItem();
+			notificationTypeItem.setTitle("Notification type");
+			SmartGWTUtil.setRequired(notificationTypeItem);
+			notificationTypeItem.addChangedHandler(new ChangedHandler() {
+
+				@Override
+				public void onChanged(ChangedEvent event) {
+					MetaTemplateChange();
+				}
+			});
+
+			tmplDefNameItem = new SelectItem("template", "Template");
+			tmplDefNameItem.setWidth(250);
+			SmartGWTUtil.setRequired(tmplDefNameItem);
+
+			sendNotificationForm = new DynamicForm();
+			sendNotificationForm.setMargin(5);
+			sendNotificationForm.setNumCols(3);
+			sendNotificationForm.setColWidths(100, "*", 50);
+			sendNotificationForm.setHeight(50);
+			sendNotificationForm.setItems(notificationTypeItem, SmartGWTUtil.createSpacer(50), tmplDefNameItem, SmartGWTUtil.createSpacer(50));
+
+
+			//---------------------------------
+			//Notification Condition
+			//---------------------------------
+			notificationCondScriptItem = new TextAreaItem();
+			notificationCondScriptItem.setColSpan(2);
+			notificationCondScriptItem.setTitle("Notification condition");
+			notificationCondScriptItem.setWidth("100%");
+			notificationCondScriptItem.setHeight("100%");
+			SmartGWTUtil.setReadOnlyTextArea(notificationCondScriptItem);
+
+			ButtonItem editNotificationCond = new ButtonItem("editNotificationCond", "Edit");
+			editNotificationCond.setWidth(100);
+			editNotificationCond.setStartRow(false);
+			editNotificationCond.addClickHandler(new com.smartgwt.client.widgets.form.fields.events.ClickHandler() {
+
+				@Override
+				public void onClick(com.smartgwt.client.widgets.form.fields.events.ClickEvent event) {
+					MetaDataUtil.showScriptEditDialog(ScriptEditorDialogMode.GROOVY_SCRIPT,
+							SmartGWTUtil.getStringValue(notificationCondScriptItem),
+							ScriptEditorDialogCondition.ENTITY_EVENT_LISTNER,
+							"ui_metadata_entity_EventListenerListGrid_notificationCondScriptHint",
+							null,
+							new ScriptEditorDialogHandler() {
+
+								@Override
+								public void onSave(String text) {
+									notificationCondScriptItem.setValue(text);
+								}
+								@Override
+								public void onCancel() {
+								}
+							});
+				}
+			});
+
+			notificationCondForm = new DynamicForm();
+			notificationCondForm.setMargin(5);
+			notificationCondForm.setNumCols(3);
+			notificationCondForm.setColWidths(100, "*", 100);
+			notificationCondForm.setWidth100();
+			notificationCondForm.setHeight100();
+			notificationCondForm.setAlign(Alignment.LEFT);
+			notificationCondForm.setItems(new SpacerItem(), new SpacerItem(), editNotificationCond, notificationCondScriptItem);
+
+			notifyBeforeIItem = new CheckboxItem();
+			notifyBeforeIItem.setTitle("beforeInsert");
+			notifyAfterIItem = new CheckboxItem();
+			notifyAfterIItem.setTitle("afterInsert");
+			notifyBeforeUItem = new CheckboxItem();
+			notifyBeforeUItem.setTitle("beforeUpdate");
+			notifyAfterUItem = new CheckboxItem();
+			notifyAfterUItem.setTitle("afterUpdate");
+			notifyBeforeDItem = new CheckboxItem();
+			notifyBeforeDItem.setTitle("beforeDelete");
+			notifyAfterDItem = new CheckboxItem();
+			notifyAfterDItem.setTitle("afterDelete");
+			notifyAfterRItem = new CheckboxItem();
+			notifyAfterRItem.setTitle("afterRestore");
+			notifyAfterPItem = new CheckboxItem();
+			notifyAfterPItem.setTitle("afterPurge");
+			notifyOnLoadItem = new CheckboxItem();
+			notifyOnLoadItem.setTitle("onLoad");
+			notifyBeforeValidateItem = new CheckboxItem();
+			notifyBeforeValidateItem.setTitle("beforeValidate");
+			
+			notifyEventItemForm = new DynamicForm();
+			notifyEventItemForm.setMargin(5);
+			notifyEventItemForm.setNumCols(9);
+			notifyEventItemForm.setHeight(100);
+			notifyEventItemForm.setIsGroup(true);
+			notifyEventItemForm.setGroupTitle("Events");
+			notifyEventItemForm.setItems(notifyBeforeIItem, notifyAfterIItem, notifyBeforeUItem, notifyAfterUItem, SmartGWTUtil.createSpacer(),
+					notifyBeforeDItem, notifyAfterDItem, notifyAfterRItem, notifyAfterPItem,SmartGWTUtil.createSpacer(),
+					notifyOnLoadItem, notifyBeforeValidateItem);
+
+			//---------------------------------
 			//withoutMappedByReference
 			//---------------------------------
 			withoutMappedByReferenceItem = new CheckboxItem();
@@ -504,6 +698,8 @@ public class EventListenerListGrid extends ListGrid {
 			LinkedHashMap<String, String> typeMap = new LinkedHashMap<String, String>();
 			typeMap.put(SCRIPT, "Script");
 			typeMap.put(JAVACLASS, "JavaClass");
+			typeMap.put(SENDNOTIFICATION, "SendNotification");
+
 			typeItem.setValueMap(typeMap);
 
 			typeItem.setValue(target.getElName());
@@ -521,6 +717,26 @@ public class EventListenerListGrid extends ListGrid {
 			beforeValidateItem.setValue(target.isBeforeValidate());
 
 			javaClassNameItem.setValue(target.getClassName());
+
+			LinkedHashMap<String, String> notificationTypeMap = new LinkedHashMap<String, String>();
+			notificationTypeMap.put(SendNotificationType.MAIL.name(), SendNotificationType.MAIL.displayName());
+			notificationTypeMap.put(SendNotificationType.SMS.name(), SendNotificationType.SMS.displayName());
+			notificationTypeMap.put(SendNotificationType.PUSH.name(), SendNotificationType.PUSH.displayName());
+			notificationTypeItem.setValueMap(notificationTypeMap);
+
+			notificationTypeItem.setValue(target.getNotificationType());
+			notificationCondScriptItem.setValue(target.getNotificationCondScript());
+			tmplDefNameItem.setValue(target.getTmplDefName());
+			notifyAfterDItem.setValue(target.isNotifyAfterD());
+			notifyAfterIItem.setValue(target.isNotifyAfterI());
+			notifyAfterUItem.setValue(target.isNotifyAfterU());
+			notifyBeforeDItem.setValue(target.isNotifyBeforeD());
+			notifyBeforeIItem.setValue(target.isNotifyBeforeI());
+			notifyBeforeUItem.setValue(target.isNotifyBeforeU());
+			notifyAfterRItem.setValue(target.isNotifyAfterR());
+			notifyAfterPItem.setValue(target.isNotifyAfterP());
+			notifyOnLoadItem.setValue(target.isNotifyOnLoad());
+			notifyBeforeValidateItem.setValue(target.isNotifyBeforeValidate());
 
 			withoutMappedByReferenceItem.setValue(target.isWithoutMappedByReference());
 		}
@@ -540,6 +756,18 @@ public class EventListenerListGrid extends ListGrid {
 				javaClassItemForm.clearErrors(true);
 				mainLayout.removeMember(javaClassItemForm);
 			}
+			if (mainLayout.contains(sendNotificationForm)) {
+				sendNotificationForm.clearErrors(true);
+				mainLayout.removeMember(sendNotificationForm);
+			}
+			if (mainLayout.contains(notificationCondForm)) {
+				notificationCondForm.clearErrors(true);
+				mainLayout.removeMember(notificationCondForm);
+			}
+			if (mainLayout.contains(notifyEventItemForm)) {
+				notifyEventItemForm.clearErrors(true);
+				mainLayout.removeMember(notifyEventItemForm);
+			}
 			if (mainLayout.contains(withoutMappedByReferenceItemForm)) {
 				withoutMappedByReferenceItemForm.clearErrors(true);
 				mainLayout.removeMember(withoutMappedByReferenceItemForm);
@@ -556,9 +784,23 @@ public class EventListenerListGrid extends ListGrid {
 				mainLayout.addMember(javaClassItemForm);
 				mainLayout.addMember(withoutMappedByReferenceItemForm);
 				setHeight(190);
+			} else if (SENDNOTIFICATION.equals(selectValType)) {
+				mainLayout.addMember(sendNotificationForm);
+				mainLayout.addMember(notificationCondForm);
+				mainLayout.addMember(withoutMappedByReferenceItemForm);
+				mainLayout.addMember(notifyEventItemForm);
+				setHeight(470);
+				centerInPage();
 			} else {
 				setHeight(120);
 			}
+		}
+
+		private void MetaTemplateChange() {
+			sendNotificationForm.clearErrors(true);
+			String selectValType = SmartGWTUtil.getStringValue(notificationTypeItem);
+			SendNotificationType type = SendNotificationType.valueOf(selectValType);
+			MetaDataNameDS.setDataSource(tmplDefNameItem, type.definitionClass(), new MetaDataNameDSOption(true, false));
 		}
 
 		private boolean validate() {
@@ -578,6 +820,21 @@ public class EventListenerListGrid extends ListGrid {
 			}
 			if (mainLayout.contains(javaClassItemForm)) {
 				if (!javaClassItemForm.validate()) {
+					isValidate = false;
+				}
+			}
+			if (mainLayout.contains(sendNotificationForm)) {
+				if (!sendNotificationForm.validate()) {
+					isValidate = false;
+				}
+			}
+			if (mainLayout.contains((notificationCondForm))) {
+				if (!notificationCondForm.validate()) {
+					isValidate = false;
+				}
+			}
+			if (mainLayout.contains(notifyEventItemForm)) {
+				if (!notifyEventItemForm.validate()) {
 					isValidate = false;
 				}
 			}
@@ -609,6 +866,22 @@ public class EventListenerListGrid extends ListGrid {
 			} else if (JAVACLASS.equals(selectValType)) {
 				target.setClassName(SmartGWTUtil.getStringValue(javaClassNameItem));
 				target.setGeneralPurpus(SmartGWTUtil.getStringValue(javaClassNameItem));
+			} else if (SENDNOTIFICATION.equals(selectValType)) {
+				target.setNotificationType(SmartGWTUtil.getStringValue(notificationTypeItem));
+				target.setTmplDefName(SmartGWTUtil.getStringValue(tmplDefNameItem));
+				target.setGeneralPurpus(SmartGWTUtil.getStringValue(notificationTypeItem));
+				target.setNotificationCondScript(SmartGWTUtil.getStringValue(notificationCondScriptItem));
+
+				target.setNotifyAfterD(SmartGWTUtil.getBooleanValue(notifyAfterDItem));
+				target.setNotifyAfterI(SmartGWTUtil.getBooleanValue(notifyAfterIItem));
+				target.setNotifyAfterU(SmartGWTUtil.getBooleanValue(notifyAfterUItem));
+				target.setNotifyBeforeD(SmartGWTUtil.getBooleanValue(notifyBeforeDItem));
+				target.setNotifyBeforeI(SmartGWTUtil.getBooleanValue(notifyBeforeIItem));
+				target.setNotifyBeforeU(SmartGWTUtil.getBooleanValue(notifyBeforeUItem));
+				target.setNotifyAfterR(SmartGWTUtil.getBooleanValue(notifyAfterRItem));
+				target.setNotifyAfterP(SmartGWTUtil.getBooleanValue(notifyAfterPItem));
+				target.setNotifyOnLoad(SmartGWTUtil.getBooleanValue(notifyOnLoadItem));
+				target.setNotifyBeforeValidate(SmartGWTUtil.getBooleanValue(notifyBeforeValidateItem));
 			}
 			target.setWithoutMappedByReference(SmartGWTUtil.getBooleanValue(withoutMappedByReferenceItem));
 			updateData(target);

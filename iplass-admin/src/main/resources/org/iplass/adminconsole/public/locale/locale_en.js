@@ -403,6 +403,7 @@ LocaleInfo.ui_metadata_entity_EntityPluginManager_canNotGet = " was not get";
 LocaleInfo.ui_metadata_entity_EventListenerListGrid_javaClassNameItemComment = "Please specify the implementation class of org.iplass.mtp.entity.EntityEventListener.";
 LocaleInfo.ui_metadata_entity_EventListenerListGrid_withoutMappByRefComment = "Please select If information of non-reference property is not required for entity information that passed to the EventListener.";
 LocaleInfo.ui_metadata_entity_EventListenerListGrid_scriptHint = "<ul><li>entity: target entity</li><li>event : EventType(org.iplass.mtp.entity.definition.listeners.EventType)</li><li>context : EntityEventContext</li><li>user : UserBinding</li><li>date : CurrentTimestamp</li></ul>";
+LocaleInfo.ui_metadata_entity_EventListenerListGrid_notificationCondScriptHint = "<ul><li>entity: target entity</li><li>event : EventType(org.iplass.mtp.entity.definition.listeners.EventType)</li><li>context : EntityEventContext</li><li>user : UserBinding</li><li>date : CurrentTimestamp</li></ul>";
 LocaleInfo.ui_metadata_entity_PropertyEditDialog_nameErr = "The name can be used alphanumeric and underscore.\nThe first character can be used alphabets only.";
 LocaleInfo.ui_metadata_entity_PropertyListGrid_failedGetSortSett = "Failed to get the sort setting.<br/>Cause:";
 LocaleInfo.ui_metadata_entity_PropertyListGrid_eachLangDspName = "<div style=\"white-space: nowrap;\">Set the display name for each language.</div>";

@@ -1,19 +1,19 @@
 /*
  * Copyright (C) 2011 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
- * 
+ *
  * Unless you have purchased a commercial license,
  * the following license terms apply:
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
@@ -38,6 +38,19 @@ public class EventListenerListGridRecord extends ListGridRecord {
 	public static final String BEFOREVALIDATE = "beforeValidate";
 	public static final String CNAME = "className";
 	public static final String WITHOUTMAPPEDBY = "WITHOUTMAPPEDBY";
+	public static final String NTYPE = "notificationType";
+	public static final String NCONDSCRIPT = "notificationCondScript";
+	public static final String TDNAME = "tmplDefName";
+	public static final String NAFTERD = "notifyAfterD";
+	public static final String NAFTERI = "notifyAfterI";
+	public static final String NAFTERU = "notifyAfterU";
+	public static final String NBEFORED = "notifyBeforeD";
+	public static final String NBEFOREI = "notifyBeforeI";
+	public static final String NBEFOREU = "notifyBeforeU";
+	public static final String NAFTERR = "notifyAfterR";
+	public static final String NAFTERP = "notifyAfterP";
+	public static final String NONLOAD = "notifyOnLoad";
+	public static final String NBEFOREVALIDATE = "notifyBeforeValidate";
 
 	public static final String GP = "gp";
 
@@ -151,6 +164,110 @@ public class EventListenerListGridRecord extends ListGridRecord {
 
 	public void setWithoutMappedByReference(boolean value) {
 		setAttribute(WITHOUTMAPPEDBY, value);
+	}
+
+	public String getNotificationType() {
+		return getAttribute(NTYPE);
+	}
+
+	public void setNotificationType(String value) {
+		setAttribute(NTYPE, value);
+	}
+
+	public String getTmplDefName() {
+		return getAttribute(TDNAME);
+	}
+
+	public void setTmplDefName(String value) {
+		setAttribute(TDNAME, value);
+	}
+
+	public String getNotificationCondScript() {
+		return getAttribute(NCONDSCRIPT);
+	}
+
+	public void setNotificationCondScript(String value) {
+		setAttribute(NCONDSCRIPT, value);
+	}
+	
+	public boolean isNotifyAfterD() {
+		return getAttributeAsBoolean(NAFTERD);
+	}
+
+	public void setNotifyAfterD(boolean value) {
+		setAttribute(NAFTERD, value);
+	}
+
+	public boolean isNotifyAfterI() {
+		return getAttributeAsBoolean(NAFTERI);
+	}
+
+	public void setNotifyAfterI(boolean value) {
+		setAttribute(NAFTERI, value);
+	}
+
+	public boolean isNotifyAfterU() {
+		return getAttributeAsBoolean(NAFTERU);
+	}
+
+	public void setNotifyAfterU(boolean value) {
+		setAttribute(NAFTERU, value);
+	}
+
+	public boolean isNotifyBeforeD() {
+		return getAttributeAsBoolean(NBEFORED);
+	}
+
+	public void setNotifyBeforeD(boolean value) {
+		setAttribute(NBEFORED, value);
+	}
+
+	public boolean isNotifyBeforeI() {
+		return getAttributeAsBoolean(NBEFOREI);
+	}
+
+	public void setNotifyBeforeI(boolean value) {
+		setAttribute(NBEFOREI, value);
+	}
+
+	public boolean isNotifyBeforeU() {
+		return getAttributeAsBoolean(NBEFOREU);
+	}
+
+	public void setNotifyBeforeU(boolean value) {
+		setAttribute(NBEFOREU, value);
+	}
+
+	public boolean isNotifyAfterR() {
+		return getAttributeAsBoolean(NAFTERR);
+	}
+
+	public void setNotifyAfterR(boolean value) {
+		setAttribute(NAFTERR, value);
+	}
+
+	public boolean isNotifyAfterP() {
+		return getAttributeAsBoolean(NAFTERP);
+	}
+
+	public void setNotifyAfterP(boolean value) {
+		setAttribute(NAFTERP, value);
+	}
+
+	public boolean isNotifyOnLoad() {
+		return getAttributeAsBoolean(NONLOAD);
+	}
+
+	public void setNotifyOnLoad(boolean value) {
+		setAttribute(NONLOAD, value);
+	}
+
+	public boolean isNotifyBeforeValidate() {
+		return getAttributeAsBoolean(NBEFOREVALIDATE);
+	}
+
+	public void setNotifyBeforeValidate(boolean value) {
+		setAttribute(NBEFOREVALIDATE, value);
 	}
 
 	public String getGeneralPurpus() {
