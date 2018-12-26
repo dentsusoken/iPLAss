@@ -787,8 +787,8 @@ public class EventListenerListGrid extends ListGrid {
 			} else if (SENDNOTIFICATION.equals(selectValType)) {
 				mainLayout.addMember(sendNotificationForm);
 				mainLayout.addMember(notificationCondForm);
-				mainLayout.addMember(withoutMappedByReferenceItemForm);
 				mainLayout.addMember(notifyEventItemForm);
+				mainLayout.addMember(withoutMappedByReferenceItemForm);
 				setHeight(470);
 				centerInPage();
 			} else {
