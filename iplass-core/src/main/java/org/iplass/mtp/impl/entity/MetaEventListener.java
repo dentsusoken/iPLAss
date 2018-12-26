@@ -27,10 +27,10 @@ import org.iplass.mtp.entity.EntityEventContext;
 import org.iplass.mtp.entity.definition.EventListenerDefinition;
 import org.iplass.mtp.impl.entity.listener.MetaJavaClassEventListener;
 import org.iplass.mtp.impl.entity.listener.MetaScriptingEventListener;
-import org.iplass.mtp.impl.entity.listener.MetaSendNotificationListener;
+import org.iplass.mtp.impl.entity.listener.MetaSendNotificationEventListener;
 import org.iplass.mtp.impl.metadata.MetaData;
 
-@XmlSeeAlso({MetaJavaClassEventListener.class, MetaScriptingEventListener.class, MetaSendNotificationListener.class})
+@XmlSeeAlso({MetaJavaClassEventListener.class, MetaScriptingEventListener.class, MetaSendNotificationEventListener.class})
 public abstract class MetaEventListener implements MetaData {
 	private static final long serialVersionUID = 3146246621777839273L;
 	

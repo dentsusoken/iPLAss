@@ -37,7 +37,6 @@ public enum SendNotificationType {
 	private String displayName;
 	private Class<? extends Definition> definitionClass;
 
-	//Classに対してClass<EventListenerDefinition>を指定するとコンパイルエラーになるため未指定
 	private SendNotificationType(String displayName, Class<? extends Definition> definitionClass) {
 		this.displayName = displayName;
 		this.definitionClass = definitionClass;
@@ -49,15 +48,5 @@ public enum SendNotificationType {
 
 	public Class<? extends Definition> definitionClass() {
 		return definitionClass;
-	}
-
-	public static SendNotificationType valueOf(SendNotificationType definition) {
-		for (SendNotificationType type : values()) {
-			//if (definition.getClass().isAssignableFrom(type.definitionClass)) {
-			if (definition.getClass().getName().equals(type.definitionClass().getName())) {
-				return type;
-			}
-		}
-		return null;
 	}
 }

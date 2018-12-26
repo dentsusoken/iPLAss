@@ -26,7 +26,7 @@ import javax.xml.bind.annotation.XmlSeeAlso;
 
 import org.iplass.mtp.entity.definition.listeners.JavaClassEventListenerDefinition;
 import org.iplass.mtp.entity.definition.listeners.ScriptingEventListenerDefinition;
-import org.iplass.mtp.entity.definition.listeners.SendNotificationListenerDefinition;
+import org.iplass.mtp.entity.definition.listeners.SendNotificationEventListenerDefinition;
 
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
@@ -48,7 +48,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 @XmlSeeAlso (value = {
 		JavaClassEventListenerDefinition.class,
 		ScriptingEventListenerDefinition.class,
-		SendNotificationListenerDefinition.class
+		SendNotificationEventListenerDefinition.class
 })
 @JsonTypeInfo(use=JsonTypeInfo.Id.CLASS)
 public abstract class EventListenerDefinition implements Serializable {

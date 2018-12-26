@@ -30,14 +30,14 @@ import org.iplass.mtp.entity.definition.EventListenerDefinition;
 import org.iplass.mtp.entity.definition.PropertyDefinition;
 import org.iplass.mtp.entity.definition.VersionControlType;
 import org.iplass.mtp.entity.definition.listeners.ScriptingEventListenerDefinition;
-import org.iplass.mtp.entity.definition.listeners.SendNotificationListenerDefinition;
+import org.iplass.mtp.entity.definition.listeners.SendNotificationEventListenerDefinition;
 import org.iplass.mtp.entity.definition.properties.ReferenceProperty;
 import org.iplass.mtp.impl.datastore.MetaEntityStore;
 import org.iplass.mtp.impl.definition.DefinableMetaData;
 import org.iplass.mtp.impl.entity.l10n.MetaDataLocalizationStrategy;
 import org.iplass.mtp.impl.entity.listener.MetaJavaClassEventListener;
 import org.iplass.mtp.impl.entity.listener.MetaScriptingEventListener;
-import org.iplass.mtp.impl.entity.listener.MetaSendNotificationListener;
+import org.iplass.mtp.impl.entity.listener.MetaSendNotificationEventListener;
 import org.iplass.mtp.impl.entity.property.MetaPrimitiveProperty;
 import org.iplass.mtp.impl.entity.property.MetaProperty;
 import org.iplass.mtp.impl.entity.property.MetaReferenceProperty;
@@ -305,8 +305,8 @@ public class MetaEntity extends BaseRootMetaData implements DefinableMetaData<En
 					MetaScriptingEventListener ms = new MetaScriptingEventListener();
 					ms.applyConfig(ed);
 					eventListenerList.add(ms);
-				} else if (ed instanceof SendNotificationListenerDefinition) {
-					MetaSendNotificationListener msn = new MetaSendNotificationListener();
+				} else if (ed instanceof SendNotificationEventListenerDefinition) {
+					MetaSendNotificationEventListener msn = new MetaSendNotificationEventListener();
 					msn.applyConfig(ed);
 					eventListenerList.add(msn);
 				} else {

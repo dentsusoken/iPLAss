@@ -20,21 +20,24 @@
 
 package org.iplass.mtp.entity.definition.listeners;
 
+import java.util.List;
+
 import org.iplass.mtp.entity.definition.EventListenerDefinition;
 
-public class SendNotificationListenerDefinition extends EventListenerDefinition {
-	private static final long serialVersionUID = 1976467924474814451L;
+public class SendNotificationEventListenerDefinition extends EventListenerDefinition {
+	private static final long serialVersionUID = 7891113805980486070L;
 
-	private String notificationTmplType;
+	private SendNotificationType notificationType;
 	private String tmplDefName;
 	private String notificationCondScript;
+	private List<EventType> listenEvent;
 
-	public String getNotificationTmplType() {
-		return notificationTmplType;
+	public SendNotificationType getNotificationType() {
+		return notificationType;
 	}
 
-	public void setNotificationTmplType(String notificationTmplType) {
-		this.notificationTmplType = notificationTmplType;
+	public void setNotificationType(SendNotificationType notificationType) {
+		this.notificationType = notificationType;
 	}
 
 	public String getTmplDefName() {
@@ -52,4 +55,13 @@ public class SendNotificationListenerDefinition extends EventListenerDefinition 
 	public void setNotificationCondScript(String notificationCondScript) {
 		this.notificationCondScript = notificationCondScript;
 	}
+
+	public List<EventType> getListenEvent() {
+		return listenEvent;
+	}
+
+	public void setListenEvent(List<EventType> listenEvent) {
+		this.listenEvent = listenEvent;
+	}
+
 }

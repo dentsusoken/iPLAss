@@ -40,7 +40,7 @@ import org.iplass.mtp.impl.script.ScriptEngine;
 
 
 public class MetaScriptingEventListener extends MetaEventListener {
-	private static final long serialVersionUID = -898491763968686439L;
+	private static final long serialVersionUID = -5525839977593609749L;
 
 	public static final String ENTITY_BINDING_NAME = "entity";
 	public static final String EVENT_TYPE_BINDING_NAME = "event";

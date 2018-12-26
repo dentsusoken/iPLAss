@@ -41,6 +41,16 @@ public class EventListenerListGridRecord extends ListGridRecord {
 	public static final String NTYPE = "notificationType";
 	public static final String NCONDSCRIPT = "notificationCondScript";
 	public static final String TDNAME = "tmplDefName";
+	public static final String NAFTERD = "notifyAfterD";
+	public static final String NAFTERI = "notifyAfterI";
+	public static final String NAFTERU = "notifyAfterU";
+	public static final String NBEFORED = "notifyBeforeD";
+	public static final String NBEFOREI = "notifyBeforeI";
+	public static final String NBEFOREU = "notifyBeforeU";
+	public static final String NAFTERR = "notifyAfterR";
+	public static final String NAFTERP = "notifyAfterP";
+	public static final String NONLOAD = "notifyOnLoad";
+	public static final String NBEFOREVALIDATE = "notifyBeforeValidate";
 
 	public static final String GP = "gp";
 
@@ -178,6 +188,86 @@ public class EventListenerListGridRecord extends ListGridRecord {
 
 	public void setNotificationCondScript(String value) {
 		setAttribute(NCONDSCRIPT, value);
+	}
+	
+	public boolean isNotifyAfterD() {
+		return getAttributeAsBoolean(NAFTERD);
+	}
+
+	public void setNotifyAfterD(boolean value) {
+		setAttribute(NAFTERD, value);
+	}
+
+	public boolean isNotifyAfterI() {
+		return getAttributeAsBoolean(NAFTERI);
+	}
+
+	public void setNotifyAfterI(boolean value) {
+		setAttribute(NAFTERI, value);
+	}
+
+	public boolean isNotifyAfterU() {
+		return getAttributeAsBoolean(NAFTERU);
+	}
+
+	public void setNotifyAfterU(boolean value) {
+		setAttribute(NAFTERU, value);
+	}
+
+	public boolean isNotifyBeforeD() {
+		return getAttributeAsBoolean(NBEFORED);
+	}
+
+	public void setNotifyBeforeD(boolean value) {
+		setAttribute(NBEFORED, value);
+	}
+
+	public boolean isNotifyBeforeI() {
+		return getAttributeAsBoolean(NBEFOREI);
+	}
+
+	public void setNotifyBeforeI(boolean value) {
+		setAttribute(NBEFOREI, value);
+	}
+
+	public boolean isNotifyBeforeU() {
+		return getAttributeAsBoolean(NBEFOREU);
+	}
+
+	public void setNotifyBeforeU(boolean value) {
+		setAttribute(NBEFOREU, value);
+	}
+
+	public boolean isNotifyAfterR() {
+		return getAttributeAsBoolean(NAFTERR);
+	}
+
+	public void setNotifyAfterR(boolean value) {
+		setAttribute(NAFTERR, value);
+	}
+
+	public boolean isNotifyAfterP() {
+		return getAttributeAsBoolean(NAFTERP);
+	}
+
+	public void setNotifyAfterP(boolean value) {
+		setAttribute(NAFTERP, value);
+	}
+
+	public boolean isNotifyOnLoad() {
+		return getAttributeAsBoolean(NONLOAD);
+	}
+
+	public void setNotifyOnLoad(boolean value) {
+		setAttribute(NONLOAD, value);
+	}
+
+	public boolean isNotifyBeforeValidate() {
+		return getAttributeAsBoolean(NBEFOREVALIDATE);
+	}
+
+	public void setNotifyBeforeValidate(boolean value) {
+		setAttribute(NBEFOREVALIDATE, value);
 	}
 
 	public String getGeneralPurpus() {
