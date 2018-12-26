@@ -120,6 +120,9 @@ public class MetaScriptingEventListener extends MetaEventListener {
 		if (d.getListenEvent() != null) {
 			listenEvent = new ArrayList<EventType>();
 			listenEvent.addAll(d.getListenEvent());
+		} else {
+			// listenEventをnullにクリアする
+			listenEvent = null;
 		}
 	}
 
