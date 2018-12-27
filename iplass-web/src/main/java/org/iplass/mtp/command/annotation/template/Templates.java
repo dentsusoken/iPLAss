@@ -26,7 +26,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * 複数のActionMappingを定義する場合のアノテーションです。
+ * 複数のTemplateを定義する場合のアノテーションです。
  *
  * @author Y.Yasuda
  */
