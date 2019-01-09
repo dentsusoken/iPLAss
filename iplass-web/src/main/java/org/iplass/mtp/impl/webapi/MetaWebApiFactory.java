@@ -107,6 +107,20 @@ public class MetaWebApiFactory implements AnnotatableMetaDataFactory<WebApi, Com
 			}
 		}
 
+		if (webapi.cacheControlType() != null) {
+			switch (webapi.cacheControlType()) {
+				case CACHE:
+					meta.setCacheControlType(org.iplass.mtp.webapi.definition.CacheControlType.CACHE);
+					break;
+				case NO_CACHE:
+					meta.setCacheControlType(org.iplass.mtp.webapi.definition.CacheControlType.NO_CACHE);
+					break;
+				default:
+					break;
+			}
+		}
+		meta.setCacheControlMaxAge(webapi.cacheControlMaxAge());
+
 		meta.setAccepts(webapi.accepts());
 		meta.setMethods(webapi.methods());
 		meta.setResults(webapi.results());

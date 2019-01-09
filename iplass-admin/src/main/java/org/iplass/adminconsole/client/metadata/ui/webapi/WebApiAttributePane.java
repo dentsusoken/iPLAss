@@ -29,6 +29,7 @@ import org.iplass.adminconsole.client.base.ui.widget.ScriptEditorDialogHandler;
 import org.iplass.adminconsole.client.base.ui.widget.ScriptEditorDialogMode;
 import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
 import org.iplass.adminconsole.client.metadata.ui.MetaDataUtil;
+import org.iplass.mtp.webapi.definition.CacheControlType;
 import org.iplass.mtp.webapi.definition.MethodType;
 import org.iplass.mtp.webapi.definition.StateType;
 import org.iplass.mtp.webapi.definition.WebApiDefinition;
@@ -40,6 +41,7 @@ import com.smartgwt.client.widgets.form.fields.CheckboxItem;
 import com.smartgwt.client.widgets.form.fields.SelectItem;
 import com.smartgwt.client.widgets.form.fields.SpacerItem;
 import com.smartgwt.client.widgets.form.fields.TextAreaItem;
+import com.smartgwt.client.widgets.form.fields.TextItem;
 import com.smartgwt.client.widgets.form.fields.events.ChangedEvent;
 import com.smartgwt.client.widgets.form.fields.events.ChangedHandler;
 import com.smartgwt.client.widgets.layout.HLayout;
@@ -54,6 +56,7 @@ public class WebApiAttributePane extends HLayout {
 	private DynamicForm methodForm;
 	private DynamicForm accessForm;
 	private DynamicForm tokenForm;
+	private DynamicForm cacheForm;
 
 	/** メソッド種別（GET) */
 	private CheckboxItem getMethod;
@@ -92,6 +95,9 @@ public class WebApiAttributePane extends HLayout {
 	private CheckboxItem accessControlAllowCredentialsField;
 
 	private CheckboxItem supportBearerTokenField;
+
+	private SelectItem cacheControlTypeField;
+	private TextItem cacheControlMaxAgeField;
 
 	/**
 	 * コンストラクタ
@@ -229,10 +235,34 @@ public class WebApiAttributePane extends HLayout {
 		exceptionRollbackField.setVisible(false);
 
 		tokenForm.setItems(tokenCheckField, useFixedTokenField, consumeField, exceptionRollbackField);
+		
+		cacheForm = new DynamicForm();
+		cacheForm.setWidth100();
+		cacheForm.setPadding(10);
+		cacheForm.setNumCols(2);
+		cacheForm.setColWidths(82, "*");
+		cacheForm.setIsGroup(true);
+		cacheForm.setGroupTitle("Cache Control");
+
+		cacheControlTypeField = new SelectItem("cacheControlType", "Cache Control");
+		cacheControlTypeField.setWidth(150);
+
+		LinkedHashMap<String, String> casheTypeMap = new LinkedHashMap<String, String>();
+		casheTypeMap.put(CacheControlType.CACHE.name(), "Cache");
+		casheTypeMap.put(CacheControlType.NO_CACHE.name(), "Not Cache");
+		casheTypeMap.put("", "Default");
+		cacheControlTypeField.setValueMap(casheTypeMap);
+
+		cacheControlMaxAgeField = new TextItem("cacheControlMaxAge", "Max Age");
+		cacheControlMaxAgeField.setWidth(150);
+		cacheControlMaxAgeField.setKeyPressFilter("[\\-0-9]");
+
+		cacheForm.setItems(cacheControlTypeField, cacheControlMaxAgeField);
 
 		addMember(methodForm);
 		addMember(accessForm);
 		addMember(tokenForm);
+		addMember(cacheForm);
 
 	}
 
@@ -296,6 +326,13 @@ public class WebApiAttributePane extends HLayout {
 			exceptionRollbackField.hide();
 		}
 
+		if (definition.getCacheControlType() != null) {
+			cacheControlTypeField.setValue(definition.getCacheControlType().name());
+		} else {
+			cacheControlTypeField.setValue("");
+		}
+		cacheControlMaxAgeField.setValue(definition.getCacheControlMaxAge());
+
 	}
 
 	/**
@@ -346,6 +383,14 @@ public class WebApiAttributePane extends HLayout {
 			definition.setTokenCheck(null);
 		}
 
+		if (cacheControlTypeField.getValue() != null && !cacheControlTypeField.getValueAsString().isEmpty()) {
+			definition.setCacheControlType(CacheControlType.valueOf(SmartGWTUtil.getStringValue(cacheControlTypeField)));
+		} else {
+			definition.setCacheControlType(null);
+		}
+		if (!SmartGWTUtil.isEmpty(SmartGWTUtil.getStringValue(cacheControlMaxAgeField))) {
+			definition.setCacheControlMaxAge(Long.valueOf(SmartGWTUtil.getStringValue(cacheControlMaxAgeField)));
+		}
 
 		return definition;
 	}
@@ -356,7 +401,7 @@ public class WebApiAttributePane extends HLayout {
 	 * @return 入力チェック結果
 	 */
 	public boolean validate() {
-		return tokenForm.validate();
+		return tokenForm.validate() && cacheForm.validate();
 	}
 
 	private void tokenCheckChanged() {

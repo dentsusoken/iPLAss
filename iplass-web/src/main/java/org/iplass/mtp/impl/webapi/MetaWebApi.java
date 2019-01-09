@@ -54,6 +54,7 @@ import org.iplass.mtp.spi.ServiceRegistry;
 import org.iplass.mtp.util.StringUtil;
 import org.iplass.mtp.webapi.WebApiRuntimeException;
 import org.iplass.mtp.webapi.definition.RequestType;
+import org.iplass.mtp.webapi.definition.CacheControlType;
 import org.iplass.mtp.webapi.definition.MethodType;
 import org.iplass.mtp.webapi.definition.StateType;
 import org.iplass.mtp.webapi.definition.WebApiDefinition;
@@ -77,6 +78,9 @@ public class MetaWebApi extends BaseRootMetaData implements DefinableMetaData<We
 	private MethodType[] methods;
 	private StateType state = StateType.STATEFUL;
 	private boolean supportBearerToken;
+
+	private CacheControlType cacheControlType;
+	private long cacheControlMaxAge = -1;
 
 	private String restJsonParameterName = null;
 	private Class<?> restJsonParameterType = void.class;
@@ -269,6 +273,22 @@ public class MetaWebApi extends BaseRootMetaData implements DefinableMetaData<We
 
 	public void setRestXmlParameterName(String restXmlParameterName) {
 		this.restXmlParameterName = restXmlParameterName;
+	}
+
+	public CacheControlType getCacheControlType() {
+		return cacheControlType;
+	}
+
+	public void setCacheControlType(CacheControlType cacheControlType) {
+		this.cacheControlType = cacheControlType;
+	}
+
+	public long getCacheControlMaxAge() {
+		return cacheControlMaxAge;
+	}
+
+	public void setCacheControlMaxAge(long cacheControlMaxAge) {
+		this.cacheControlMaxAge = cacheControlMaxAge;
 	}
 
 	public class WebApiRuntime extends BaseMetaDataRuntime {
@@ -534,6 +554,9 @@ public class MetaWebApi extends BaseRootMetaData implements DefinableMetaData<We
 		definition.setState(state);
 		definition.setSupportBearerToken(supportBearerToken);
 
+		definition.setCacheControlType(cacheControlType);
+		definition.setCacheControlMaxAge(cacheControlMaxAge);
+
 		definition.setPrivilaged(isPrivilaged);
 		definition.setPublicWebApi(isPublicWebApi);
 		definition.setCheckXRequestedWithHeader(isCheckXRequestedWithHeader);
@@ -592,6 +615,8 @@ public class MetaWebApi extends BaseRootMetaData implements DefinableMetaData<We
 		state = definition.getState();
 		supportBearerToken = definition.isSupportBearerToken();
 
+		cacheControlType = definition.getCacheControlType();
+		cacheControlMaxAge = definition.getCacheControlMaxAge();
 
 		if (definition.getCommandConfig() != null) {
 			command = MetaCommand.createInstance(definition.getCommandConfig());

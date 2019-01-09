@@ -48,6 +48,24 @@ public @interface WebApi {
 	String name();
 	String displayName() default "##default";
 	String description() default "##default";
+	
+	/**
+	 * WebAPIのキャッシュ種別（Cache-Controlヘッダの制御）を設定します。
+	 * デフォルトは、UNSPECIFIED（未指定）です。
+	 * 
+	 * @return WebAPIのキャッシュ種別
+	 */
+	CacheControlType cacheControlType() default CacheControlType.UNSPECIFIED;
+
+	/**
+	 * cacheControlType=CACHEを指定した場合の
+	 * WebAPIキャッシュのmax-age（秒）を指定します。
+	 * デフォルト値は-1でこの場合はmax-ageは未指定となります。<br>
+	 * <b>注意：max-age未指定の場合、FF、Chromeでは実際はキャッシュが利用されません</b>
+	 * 
+	 * @param cacheControlMaxAge
+	 */
+	long cacheControlMaxAge() default -1;
 
 	boolean checkXRequestedWithHeader() default true;
 	boolean privilaged() default false;
@@ -84,4 +102,13 @@ public @interface WebApi {
 	boolean synchronizeOnSession() default false;
 
 	String responseType() default "";
+	
+	/**
+	 * WebAPIのキャッシュ設定のenumです。<br>
+	 * CACHE : "Cache-Control:private"をセット<br>
+	 * NO_CACHE : "Cache-Control:no-store,no-cache"をセット
+	 */
+	public enum CacheControlType {
+		CACHE, NO_CACHE, UNSPECIFIED
+	}
 }

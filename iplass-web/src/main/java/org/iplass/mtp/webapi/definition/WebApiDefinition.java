@@ -36,6 +36,15 @@ public class WebApiDefinition implements Definition {
 	private String name;
 	private String displayName;
 	private String description;
+	
+	/**
+	 * WebAPIキャッシュ指定。
+	 * 未指定の場合はキャッシュをしない。
+	 */
+	private CacheControlType cacheControlType;
+
+	/** WebAPIキャッシュのmax-age（秒）*/
+	private long cacheControlMaxAge = -1;
 
 	/**
 	 * このWebApiが呼び出されたときに実行するCommand。
@@ -254,6 +263,46 @@ public class WebApiDefinition implements Definition {
 	 */
 	public void setDescription(String description) {
 		this.description = description;
+	}
+
+	/**
+	 * @see #setCacheControlType(cacheControlType)
+	 * @return cacheControlType
+	 */
+	public CacheControlType getCacheControlType() {
+		return cacheControlType;
+	}
+
+	/**
+	 * WebAPIキャッシュ指定（Cache-Controlヘッダの制御）。
+	 * 未指定の場合はキャッシュをしない。
+	 * ブラウザ種別によらず、キャッシュを有効化するためには、合わせてCacheControlMaxAgeの設定も必要。
+	 * 
+	 * @see #setCacheControlMaxAge(long)
+	 * @param cacheControlType
+	 */
+	public void setCacheControlType(CacheControlType cacheControlType) {
+		this.cacheControlType = cacheControlType;
+	}
+
+	/**
+	 * @see #setCacheControlMaxAge(long)
+	 * @return
+	 */
+	public long getCacheControlMaxAge() {
+		return cacheControlMaxAge;
+	}
+
+	/**
+	 * cacheControlMaxAge=CacheControlType.CACHEを指定した場合の
+	 * WebAPIキャッシュのmax-age（秒）を指定。
+	 * デフォルト値は-1でこの場合はmax-ageは未指定となる。<br>
+	 * <b>注意：max-age未指定の場合、FF、Chromeでは実際はキャッシュが利用されない</b>
+	 * 
+	 * @param cacheControlMaxAge
+	 */
+	public void setCacheControlMaxAge(long cacheControlMaxAge) {
+		this.cacheControlMaxAge = cacheControlMaxAge;
 	}
 
 	/**

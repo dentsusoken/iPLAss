@@ -300,6 +300,7 @@ task copyGwtTransSrc(type: Sync) {
 		include 'mtp/webapi/definition/EntityWebApiDefinition.java'
 		include 'mtp/webapi/definition/MethodType.java'
 		include 'mtp/webapi/definition/StateType.java'
+		include 'mtp/webapi/definition/CacheControlType.java'
 		include 'mtp/webapi/definition/WebApiDefinition.java'
 		include 'mtp/webapi/definition/WebApiDefinitionModifyResult.java'
 		include 'mtp/webapi/definition/WebApiTokenCheck.java'
