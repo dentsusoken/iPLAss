@@ -22,7 +22,7 @@ package org.iplass.mtp.impl.prefs;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -86,7 +86,7 @@ public class MetaPreferenceSet extends MetaPreference {
 		protected Map<String, Object> map;
 
 		public PreferenceSetRuntime() {
-			map = new HashMap<>();
+			map = new LinkedHashMap<>();
 			if (getValue() != null) {
 				map.put(VALUE_KEY, getValue());
 			}
@@ -120,7 +120,7 @@ public class MetaPreferenceSet extends MetaPreference {
 				for (MetaPreference p: set) {
 					Object pre = map.get(p.getName());
 					if (p instanceof MetaPreferenceSet) {
-						Map<String, Object> subMap = new HashMap<>();
+						Map<String, Object> subMap = new LinkedHashMap<>();
 						applyToMap(subMap, ((MetaPreferenceSet) p).getSubSet());
 						subMap = Collections.unmodifiableMap(subMap);
 						if (pre == null) {
