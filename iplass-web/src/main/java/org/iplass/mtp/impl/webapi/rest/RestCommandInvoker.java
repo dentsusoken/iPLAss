@@ -63,6 +63,7 @@ import org.iplass.mtp.command.RequestContext;
 import org.iplass.mtp.impl.session.SessionService;
 import org.iplass.mtp.impl.web.RequestPath;
 import org.iplass.mtp.impl.web.WebRequestStack;
+import org.iplass.mtp.impl.web.WebUtil;
 import org.iplass.mtp.impl.webapi.MetaWebApi;
 import org.iplass.mtp.impl.webapi.MetaWebApi.WebApiRuntime;
 import org.iplass.mtp.impl.webapi.WebApiParameter;
@@ -76,6 +77,7 @@ import org.iplass.mtp.util.StringUtil;
 import org.iplass.mtp.webapi.WebApiRequestConstants;
 import org.iplass.mtp.webapi.WebApiRuntimeException;
 import org.iplass.mtp.webapi.definition.RequestType;
+import org.iplass.mtp.webapi.definition.CacheControlType;
 import org.iplass.mtp.webapi.definition.MethodType;
 import org.iplass.mtp.webapi.definition.StateType;
 import org.slf4j.Logger;
@@ -159,6 +161,19 @@ public class RestCommandInvoker {
 			onlyOneRes = result.getResults().values().iterator().next();
 		}
 		
+		if (runtime.getMetaData().getCacheControlType() != null) {
+			switch (runtime.getMetaData().getCacheControlType()) {
+			case CACHE:
+				WebUtil.setCacheControlHeader(stack, true, runtime.getMetaData().getCacheControlMaxAge());
+				break;
+			case NO_CACHE:
+				WebUtil.setCacheControlHeader(stack, false, -1);
+				break;
+			default:
+				break;
+			}
+		}
+
 		if (onlyOneRes instanceof ResponseBuilder) {
 			return ((ResponseBuilder) onlyOneRes).build();
 		} else if (onlyOneRes instanceof StreamingOutput) {
