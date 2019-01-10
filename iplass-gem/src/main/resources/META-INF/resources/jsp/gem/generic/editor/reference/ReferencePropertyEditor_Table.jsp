@@ -713,7 +713,7 @@ ${m:rs("mtp-gem-messages", "generic.editor.reference.ReferencePropertyEditor_Tab
 				String _detailAction = StringUtil.escapeJavaScript(detailAction);
 				String _viewAction = StringUtil.escapeJavaScript(viewAction);
 				String _refDefName = StringUtil.escapeJavaScript(refDefName);
-				String _entityOid = StringUtil.escapeJavaScript(entity.getOid());
+				String _entityOid = entity.getOid() == null ? "" : StringUtil.escapeJavaScript(entity.getOid());
 				String _trId = StringUtil.escapeJavaScript(trId);
 				String _idxPropName = StringUtil.escapeJavaScript(idxPropName);
 				String _reloadUrl = StringUtil.escapeJavaScript(reloadUrl);
@@ -875,7 +875,6 @@ ${m:rs("mtp-gem-messages", "generic.editor.reference.ReferencePropertyEditor_Tab
 		for (int i = 0; i < entities.size(); i++) {
 			final Entity tmp = entities.get(i);
 			String trId = "id_tr_" + propName + i;
-//			Entity entity = em.load(tmp.getOid(), tmp.getVersion(), tmp.getDefinitionName());
 			Entity entity = null;
 			final LoadOption loadOption = getOption(refEd, editor, mappedBy, outputType);
 			LoadEntityContext leContext = handler.beforeLoadReference(tmp.getDefinitionName(), loadOption, pd, LoadType.VIEW);
@@ -958,7 +957,7 @@ ${m:rs("mtp-gem-messages", "generic.editor.reference.ReferencePropertyEditor_Tab
 				}
 				String _viewAction = StringUtil.escapeJavaScript(viewAction);
 				String _refDefName = StringUtil.escapeJavaScript(refDefName);
-				String _entityOid = StringUtil.escapeJavaScript(entity.getOid());
+				String _entityOid = entity.getOid() == null ? "" : StringUtil.escapeJavaScript(entity.getOid());
 				String _reloadUrl = StringUtil.escapeJavaScript(reloadUrl);
 %>
 <td nowrap="nowrap" class="colLink center">
