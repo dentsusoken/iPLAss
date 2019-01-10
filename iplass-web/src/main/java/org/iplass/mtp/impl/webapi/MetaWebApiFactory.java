@@ -30,6 +30,7 @@ import org.iplass.mtp.impl.command.MetaCommand;
 import org.iplass.mtp.impl.command.MetaCommandFactory;
 import org.iplass.mtp.impl.metadata.annotation.AnnotatableMetaDataFactory;
 import org.iplass.mtp.impl.metadata.annotation.AnnotateMetaDataEntry;
+import org.iplass.mtp.webapi.definition.CacheControlType;
 
 
 public class MetaWebApiFactory implements AnnotatableMetaDataFactory<WebApi, Command> {
@@ -110,10 +111,10 @@ public class MetaWebApiFactory implements AnnotatableMetaDataFactory<WebApi, Com
 		if (webapi.cacheControlType() != null) {
 			switch (webapi.cacheControlType()) {
 				case CACHE:
-					meta.setCacheControlType(org.iplass.mtp.webapi.definition.CacheControlType.CACHE);
+					meta.setCacheControlType(CacheControlType.CACHE);
 					break;
 				case NO_CACHE:
-					meta.setCacheControlType(org.iplass.mtp.webapi.definition.CacheControlType.NO_CACHE);
+					meta.setCacheControlType(CacheControlType.NO_CACHE);
 					break;
 				default:
 					break;

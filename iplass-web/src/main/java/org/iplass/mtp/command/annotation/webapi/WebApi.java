@@ -28,6 +28,7 @@ import java.lang.annotation.Target;
 
 import org.iplass.mtp.command.annotation.CommandConfig;
 import org.iplass.mtp.webapi.WebApiRequestConstants;
+import org.iplass.mtp.webapi.definition.CacheControlType;
 import org.iplass.mtp.webapi.definition.RequestType;
 import org.iplass.mtp.webapi.definition.MethodType;
 import org.iplass.mtp.webapi.definition.StateType;
@@ -102,13 +103,4 @@ public @interface WebApi {
 	boolean synchronizeOnSession() default false;
 
 	String responseType() default "";
-	
-	/**
-	 * WebAPIのキャッシュ設定のenumです。<br>
-	 * CACHE : "Cache-Control:private"をセット<br>
-	 * NO_CACHE : "Cache-Control:no-store,no-cache"をセット
-	 */
-	public enum CacheControlType {
-		CACHE, NO_CACHE, UNSPECIFIED
-	}
 }

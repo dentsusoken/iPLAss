@@ -39,6 +39,11 @@ public enum CacheControlType {
 	 * （加えて、HTTP/1.0の場合は、Pragmaをno-cache指定します）。
 	 * 
 	 */
-	NO_CACHE;
+	NO_CACHE,
 
+	/**
+	 * キャッシュ設定は未指定です。
+	 * 具体的にはCache-Controlを指定しません。
+	 */
+	UNSPECIFIED;
 }
