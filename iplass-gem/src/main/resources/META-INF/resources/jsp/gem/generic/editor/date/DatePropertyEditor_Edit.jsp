@@ -38,9 +38,8 @@
 <%@ page import="org.iplass.gem.command.ViewUtil"%>
 
 <%!
-	String format(Date date) {
-		SimpleDateFormat format = DateUtil.getSimpleDateFormat(TemplateUtil.getLocaleFormat().getOutputDateFormat(), false);
-		return date != null ? format.format(date) : "";
+	String dateToString(Date date, String format) {
+		return date != null ? DateUtil.getSimpleDateFormat(format, false).format(date) : "";
 	}
 	Object getDefaultValue(DatePropertyEditor editor, PropertyDefinition pd) {
 		String defaultValue = editor.getDefaultValue();
@@ -60,13 +59,13 @@
 		return null;
 	}
 	Date getDefaultValue(String value) {
-		SimpleDateFormat format = DateUtil.getSimpleDateFormat(TemplateUtil.getLocaleFormat().getServerDateFormat(), false);
 		if (value != null) {
 			if ("NOW".equals(value)) {
 				//TODO 予約語の検討、X日後とか特定日付からの加減も必要？
 				return new Date(TemplateUtil.getCurrentTimestamp().getTime());
 			} else {
 				try {
+					SimpleDateFormat format = DateUtil.getSimpleDateFormat(TemplateUtil.getLocaleFormat().getServerDateFormat(), false);
 					Long l = format.parse(value).getTime();
 					return new Date(l);
 				} catch (ParseException e) {
@@ -144,10 +143,8 @@
 				length = array.length;
 				for (int i = 0; i < array.length; i++) {
 					String liId = "li_" + propName + i;
-					String str = format(array[i]);
-
-					SimpleDateFormat inSdf = DateUtil.getSimpleDateFormat(TemplateUtil.getLocaleFormat().getServerDateFormat(), false);
-					String hiddenDate = inSdf.format(array[i]);
+					String str = dateToString(array[i], TemplateUtil.getLocaleFormat().getOutputDateFormat());
+					String hiddenDate = dateToString(array[i], TemplateUtil.getLocaleFormat().getServerDateFormat());
 					String onchange = "dateChange('" + StringUtil.escapeJavaScript(liId) + "')";
 %>
 <li id="<c:out value="<%=liId%>"/>" class="list-add picker-list">
@@ -178,8 +175,7 @@ $(function() {
 			String hiddenDate = "";
 
 			if (propValue instanceof Date) {
-				SimpleDateFormat inSdf = DateUtil.getSimpleDateFormat(TemplateUtil.getLocaleFormat().getServerDateFormat(), false);
-				hiddenDate = inSdf.format(propValue);
+				hiddenDate = dateToString((Date)propValue, TemplateUtil.getLocaleFormat().getServerDateFormat());
 			}
 			String onchange = "dateChange('" + StringUtil.escapeJavaScript(propName) + "')";
 %>
