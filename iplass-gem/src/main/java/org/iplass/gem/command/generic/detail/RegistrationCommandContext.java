@@ -21,6 +21,7 @@
 package org.iplass.gem.command.generic.detail;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -170,18 +171,20 @@ public abstract class RegistrationCommandContext extends GenericCommandContext {
 
 	private BinaryReference[] getBinaryReferenceValues(String name) {
 		Long[] params = getLongValues(name);
-		List<BinaryReference> list = new ArrayList<BinaryReference>();
 		if (params != null) {
-			for (Long lobId : params) {
-				if (lobId != null) {
-					//バリデーションエラー時に消えないようにデータ読み込み
-					BinaryReference br = entityManager.loadBinaryReference(lobId);
-					br.setLobId(lobId);
-					list.add(br);
-				}
-			}
+			BinaryReference[] ret = Arrays.stream(params)
+					.filter(lobId -> lobId != null)
+					.map(lobId -> {
+						//バリデーションエラー時に消えないようにデータ読み込み
+						BinaryReference br = entityManager.loadBinaryReference(lobId);
+						br.setLobId(lobId);
+						return br;
+					})
+					.toArray(BinaryReference[]::new);
+			return ret.length > 0 ? ret : null;
+		} else {
+			return null;
 		}
-		return list.toArray(new BinaryReference[list.size()]);
 	}
 
 	private Object getExpressionValue(ExpressionProperty ep, String name) {
@@ -239,32 +242,37 @@ public abstract class RegistrationCommandContext extends GenericCommandContext {
 		return ret;
 	}
 	protected Boolean[] getBooleanValues(String name, int multiplicity) {
-		List<Boolean> list = new ArrayList<Boolean>();
 		String type = getParam(name + "Type");
-		if ("Select".equals(type)) {
+		Boolean[] ret = null;
+		if ("Select".equals(type) || "Label".equals(type)) {
 			String[] params = getParams(name);
 			if (params != null) {
-				for (String value : params) {
-					list.add(Boolean.parseBoolean(value));
-				}
-			}
-		} else if ("Label".equals(type)){
-			String[] params = getParams(name);
-			if (params != null) {
-				for (String value : params) {
-					if (StringUtil.isNotBlank(value)) list.add(Boolean.parseBoolean(value));
-				}
+				ret = Arrays.stream(params)
+						.map(value -> {
+							if (StringUtil.isEmpty(value)) {
+								return null;
+							} else {
+								return Boolean.parseBoolean(value);
+							}
+						})
+						.toArray(Boolean[]::new);
 			}
 		} else {
 			//同一名で取得できないので個別に取得
+			List<Boolean> list = new ArrayList<Boolean>();
 			for (int i = 0; i < multiplicity; i++) {
 				String param = getParam(name + i);
 				Boolean b = param != null ? Boolean.parseBoolean(param) : null;
 				if (b == null && "Checkbox".equals(type)) b = false;
 				list.add(b);
 			}
+			//データが１つでも存在する場合のみ配列化
+			boolean hasValue = list.stream().anyMatch(value -> value != null);
+			if (hasValue) {
+				ret = list.toArray(new Boolean[]{});
+			}
 		}
-		return list.toArray(new Boolean[list.size()]);
+		return ret != null && ret.length > 0 ? ret : null;
 	}
 
 	protected SelectValue getSelectValue(String name) {
@@ -278,13 +286,14 @@ public abstract class RegistrationCommandContext extends GenericCommandContext {
 
 	protected SelectValue[] getSelectValues(String name) {
 		String[] params = getParams(name);
-		List<SelectValue> list = new ArrayList<SelectValue>();
 		if (params != null) {
-			for (String value : params) {
-				list.add(new SelectValue(value));
-			}
+			SelectValue[] ret = Arrays.stream(params)
+					.map(value -> new SelectValue(value))
+					.toArray(SelectValue[]::new);
+			return ret.length > 0 ? ret : null;
+		} else {
+			return null;
 		}
-		return list.toArray(new SelectValue[list.size()]);
 	}
 
 	protected String getStringValue(String name) {
@@ -299,7 +308,7 @@ public abstract class RegistrationCommandContext extends GenericCommandContext {
 	protected String[] getStringValues(String name) {
 		String[] params = getParams(name);
 		if (params == null || params.length == 0) {
-			return new String[0];
+			return null;
 		} else {
 			return params;
 		}

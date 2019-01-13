@@ -23,10 +23,12 @@ package org.iplass.gem.command.generic.detail;
 import java.lang.reflect.Array;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.iplass.gem.GemConfigService;
 import org.iplass.gem.command.CommandUtil;
@@ -523,8 +525,9 @@ public class DetailCommandContext extends RegistrationCommandContext {
 	 */
 	@Override
 	protected Object createReference(PropertyDefinition p, String prefix) {
-		ReferenceProperty rp = (ReferenceProperty) p;
-		String defName = rp.getObjectDefinitionName();
+		final ReferenceProperty rp = (ReferenceProperty) p;
+		final String defName = rp.getObjectDefinitionName();
+
 		//NestTable、ReferenceSectionの場合の件数取得
 		//prefixが付くケース=NestTable内の多重参照なのであり得ない
 		//→件数取れないため通常の参照扱いで処理が終わる
@@ -546,14 +549,14 @@ public class DetailCommandContext extends RegistrationCommandContext {
 			}
 			return entity;
 		} else {
-			List<Entity> list = new ArrayList<Entity>();
+			List<Entity> list = null;
 			if (count == null) {
 				String[] params = getParams(prefix + p.getName());
 				if (params != null) {
-					for (String key : params) {
-						Entity entity = getRefEntity(rp.getObjectDefinitionName(), key);
-						if (entity != null) list.add(entity);
-					}
+					list = Arrays.stream(params)
+							.map(key -> getRefEntity(rp.getObjectDefinitionName(), key))
+							.filter(value -> value != null)
+							.collect(Collectors.toList());
 				}
 			} else {
 				//参照型で参照先のデータを作成・編集するケース
@@ -564,15 +567,19 @@ public class DetailCommandContext extends RegistrationCommandContext {
 				}
 			}
 
-			//マッピングクラスの配列を生成する
-			Object[] array = null;
-			EntityDefinition ed = getEntityDefinition();
-			setEntityDefinition(definitionManager.get(defName));
-			Entity emptyEntity = newEntity();
-			setEntityDefinition(ed);
+			if (list != null && !list.isEmpty()) {
+				//マッピングクラスの配列を生成する
+				EntityDefinition ed = getEntityDefinition();
+				setEntityDefinition(definitionManager.get(defName));
+				Entity emptyEntity = newEntity();
+				setEntityDefinition(ed);
 
-			array = (Object[]) Array.newInstance(emptyEntity.getClass(), list.size());
-			return list.toArray(array);
+				Object[] array = (Object[]) Array.newInstance(emptyEntity.getClass(), list.size());
+				return list.toArray(array);
+
+			} else {
+				return null;
+			}
 		}
 	}
 

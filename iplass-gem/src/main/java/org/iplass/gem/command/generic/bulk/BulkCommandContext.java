@@ -245,8 +245,9 @@ public class BulkCommandContext extends RegistrationCommandContext {
 	 */
 	@Override
 	protected Object createReference(PropertyDefinition p, String prefix) {
-		ReferenceProperty rp = (ReferenceProperty) p;
-		String defName = rp.getObjectDefinitionName();
+		final ReferenceProperty rp = (ReferenceProperty) p;
+		final String defName = rp.getObjectDefinitionName();
+
 		//NestTableの場合の件数取得
 		//prefixが付くケース=NestTable内の多重参照なのであり得ない
 		//→件数取れないため通常の参照扱いで処理が終わる
@@ -262,29 +263,33 @@ public class BulkCommandContext extends RegistrationCommandContext {
 			}
 			return entity;
 		} else {
-			List<Entity> list = new ArrayList<Entity>();
+			List<Entity> list = null;
 			if (count == null) {
 				String[] params = getParams(prefix + p.getName());
 				if (params != null) {
-					for (String key : params) {
-						Entity entity = getRefEntity(rp.getObjectDefinitionName(), key);
-						if (entity != null) list.add(entity);
-					}
+					list = Arrays.stream(params)
+							.map(key -> getRefEntity(rp.getObjectDefinitionName(), key))
+							.filter(value -> value != null)
+							.collect(Collectors.toList());
 				}
 			} else {
 				//参照型で参照先のデータを作成・編集するケース
 				list = getRefTableValues(rp, defName, count, prefix);
 			}
 
-			//マッピングクラスの配列を生成する
-			Object[] array = null;
-			EntityDefinition ed = getEntityDefinition();
-			setEntityDefinition(definitionManager.get(defName));
-			Entity emptyEntity = newEntity();
-			setEntityDefinition(ed);
+			if (list != null && !list.isEmpty()) {
+				//マッピングクラスの配列を生成する
+				EntityDefinition ed = getEntityDefinition();
+				setEntityDefinition(definitionManager.get(defName));
+				Entity emptyEntity = newEntity();
+				setEntityDefinition(ed);
 
-			array = (Object[]) Array.newInstance(emptyEntity.getClass(), list.size());
-			return list.toArray(array);
+				Object[] array = (Object[]) Array.newInstance(emptyEntity.getClass(), list.size());
+				return list.toArray(array);
+
+			} else {
+				return null;
+			}
 		}
 	}
 
