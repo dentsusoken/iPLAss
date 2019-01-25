@@ -73,6 +73,7 @@ public class MysqlRdbAdaptor extends RdbAdapter {
 
 	private boolean useFractionalSecondsOnTimestamp = true;
 	private boolean supportOptimizerHint = false;
+	private boolean supportWindowFunction = false;
 
 	private boolean localTemporaryTableManageOutsideTransaction = false;
 	private boolean localTemporaryTableCreatedByDataSource = false;
@@ -760,7 +761,11 @@ public class MysqlRdbAdaptor extends RdbAdapter {
 
 	@Override
 	public boolean isSupportWindowFunction() {
-		return false;
+		return supportWindowFunction;
+	}
+
+	public void setSupportWindowFunction(boolean supportWindowFunction) {
+		this.supportWindowFunction = supportWindowFunction;
 	}
 
 	/**

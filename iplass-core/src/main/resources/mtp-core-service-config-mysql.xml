@@ -40,6 +40,8 @@
 					<property name="timestampMethod" value="CONVERT_TZ(NOW(),'+00:00','+09:00')" />
 				supportOptimizerHint :
 					mysql5.7から利用可能なOptimizer Hintsを利用する場合trueを設定
+				supportWindowFunction :
+					mysql8.0から利用可能なウィンドウ関数を利用する場合trueを設定
 				localTemporaryTableManageOutsideTransaction :
 					ローカル一時テーブルの管理をトランザクションの外で行う場合trueを設定
 					mysql5.6.5から利用可能なGTIDを利用する場合trueを設定する必要あり
@@ -51,6 +53,7 @@
 			<property name="timestampMethod" value="NOW(3)" />
 			<property name="defaultQueryTimeout" value="0" />
 			<property name="supportOptimizerHint" value="true" />
+			<property name="supportWindowFunction" value="true" />
 			<property name="localTemporaryTableManageOutsideTransaction" value="false" />
 			<property name="localTemporaryTableCreatedByDataSource" value="false" />
 		</property>
