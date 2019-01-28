@@ -1,19 +1,19 @@
 /*
  * Copyright (C) 2012 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
- * 
+ *
  * Unless you have purchased a commercial license,
  * the following license terms apply:
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
@@ -78,13 +78,14 @@ public class PlatformUtil {
 
 						String version = platformInfo.getVersion();
 						if (version != null) {
-							//バージョン番号のハッシュ値を求めてセット
+							//タイトル(CEとEE区別)とバージョン番号の文字列のハッシュ値を求めてセット
+							String cashKey = platformInfo.getTitle() + "_" + version;
 							try {
-								platformInfo.setVersionHash(HashUtil.digest(version, "SHA-256"));
+								platformInfo.setVersionHash(HashUtil.digest(cashKey, "SHA-256"));
 							} catch (NoSuchAlgorithmException e) {
-								platformInfo.setVersionHash(version);
+								platformInfo.setVersionHash(cashKey);
 							}
-							logger.info("platform version is " + version + ". version hash=" + platformInfo.getVersionHash());
+							logger.info("platform version is " + cashKey + ". version hash=" + platformInfo.getVersionHash());
 						} else {
 							platformInfo.setError(true);
 							platformInfo.setErrorMessage("platform version information read failed.");
@@ -209,6 +210,13 @@ public class PlatformUtil {
 				return infomations.get(VERSION_KEY);
 			}
 			return null;
+		}
+
+		public String getTitle() {
+			if (infomations != null) {
+				return infomations.get(TITLE_KEY);
+			}
+			return "";
 		}
 	}
 
