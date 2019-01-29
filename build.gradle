@@ -59,13 +59,15 @@ subprojects { subproject ->
 
 //public api
 javadoc {
-
 	source(project(':iplass-core').sourceSets['main'].allJava)
 	source(project(':iplass-web').sourceSets['main'].allJava)
 	exclude('**/impl/**')
 
-	failOnError = false
+	classpath += project(':iplass-core').sourceSets['main'].compileClasspath
+	classpath += project(':iplass-web').sourceSets['main'].compileClasspath
+	classpath += files(project(':iplass-web').sourceSets['main'].allJava.srcDirs)
 
+	failOnError = false
 }
 
 //Release
