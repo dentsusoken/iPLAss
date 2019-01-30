@@ -110,18 +110,20 @@ $(function(){
 				for (var i = 0; i < this.overlays.length; i++) {
 					$(this.overlays[i]).removeClass("modal-overlay");
 				}
-				$(overlay).css({zIndex:this.nextZindex()}).addClass("modal-overlay");
+				$(overlay).css({zIndex:this.nextZindex()}).addClass("modal-overlay").attr("overlay-id", this.zindex);
 				this.overlays.push(overlay);
 			},
 			removeOverlay:function($overlay){
-				for (var i = 0; i < this.overlays.length; i++) {
-					if (this.overlays[i] == $overlay) {
-						this.overlays.splice(i, 1);
+				for (var i = this.overlays.length - 1; i >= 0; i--) {
+					if (this.overlays[i] == $overlay
+							|| $(this.overlays[i]).attr("overlay-id") == $overlay.attr("overlay-id")) {
 						$overlay.css({zIndex:0}).removeClass("modal-overlay");
 						if (i > 0) {
 							$(this.overlays[i - 1]).addClass("modal-overlay");
 						}
+						this.overlays.splice(i, 1);
 						this.zindex -= 2;
+						return;
 					}
 				}
 			},
