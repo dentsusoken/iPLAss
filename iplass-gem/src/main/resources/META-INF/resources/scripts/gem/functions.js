@@ -110,18 +110,20 @@ $(function(){
 				for (var i = 0; i < this.overlays.length; i++) {
 					$(this.overlays[i]).removeClass("modal-overlay");
 				}
-				$(overlay).css({zIndex:this.nextZindex()}).addClass("modal-overlay");
+				$(overlay).css({zIndex:this.nextZindex()}).addClass("modal-overlay").attr("overlay-id", this.zindex);
 				this.overlays.push(overlay);
 			},
 			removeOverlay:function($overlay){
-				for (var i = 0; i < this.overlays.length; i++) {
-					if (this.overlays[i] == $overlay) {
-						this.overlays.splice(i, 1);
+				for (var i = this.overlays.length - 1; i >= 0; i--) {
+					if (this.overlays[i] == $overlay
+							|| $(this.overlays[i]).attr("overlay-id") == $overlay.attr("overlay-id")) {
 						$overlay.css({zIndex:0}).removeClass("modal-overlay");
 						if (i > 0) {
 							$(this.overlays[i - 1]).addClass("modal-overlay");
 						}
+						this.overlays.splice(i, 1);
 						this.zindex -= 2;
+						return;
 					}
 				}
 			},
@@ -800,36 +802,38 @@ $.fn.allInputCheck = function(){
 			}
 		};
 
-		$under.on("click", ".modal-close.sub-modal-close", function(){
-			//GemConfigServiceで編集画面でキャンセル時に確認ダイアログを表示する設定になってる場合確認を行う
-			//⇒ダイアログ内画面のfunction「onDialogClose」で確認ダイアログをコントロール
-			//  アプリ側は確認が必要な画面に同名のfunctionを入れておけば、ここからその関数が呼び出される
-			if (typeof $frame.get(0).contentWindow.onDialogClose === "function" && !$frame.get(0).contentWindow.onDialogClose()) {
-				return;
-			}
-			fade.hide();
-			$frame.parents(".modal-dialog").trigger(new $.Event('closeModalDialog', {}));
-		});
-		$under.on("click", ".modal-maximize.sub-modal-maximize", function(){
-			var pw = $(rootWindow).width();
-			$under.addClass("fullWindow");
-			setModalWindowToCenter(pw);
-		});
-		$under.on("click", ".modal-restore.sub-modal-restore", function(){
-			$under.removeClass("fullWindow");
-			setModalWindowToCenter();
-		});
-		$overlay.on("click", function(){
-			//GemConfigServiceで編集画面でキャンセル時に確認ダイアログを表示する設定になってる場合確認を行う
-			//⇒ダイアログ内画面のfunction「onDialogClose」で確認ダイアログをコントロール
-			//  アプリ側は確認が必要な画面に同名のfunctionを入れておけば、ここからその関数が呼び出される
-			if (typeof $frame.get(0).contentWindow.onDialogClose === "function" && !$frame.get(0).contentWindow.onDialogClose()) {
-				return;
-			}
-			fade.hide();
-			$frame.parents(".modal-dialog").trigger(new $.Event('closeModalDialog', {}));
-		});
-		$under.attr("initialized", true);
+		if (!$under.attr("initialized")) {
+			$under.on("click", ".modal-close.sub-modal-close", function(){
+				//GemConfigServiceで編集画面でキャンセル時に確認ダイアログを表示する設定になってる場合確認を行う
+				//⇒ダイアログ内画面のfunction「onDialogClose」で確認ダイアログをコントロール
+				//  アプリ側は確認が必要な画面に同名のfunctionを入れておけば、ここからその関数が呼び出される
+				if (typeof $frame.get(0).contentWindow.onDialogClose === "function" && !$frame.get(0).contentWindow.onDialogClose()) {
+					return;
+				}
+				fade.hide();
+				$frame.parents(".modal-dialog").trigger(new $.Event('closeModalDialog', {}));
+			});
+			$under.on("click", ".modal-maximize.sub-modal-maximize", function(){
+				var pw = $(rootWindow).width();
+				$under.addClass("fullWindow");
+				setModalWindowToCenter(pw);
+			});
+			$under.on("click", ".modal-restore.sub-modal-restore", function(){
+				$under.removeClass("fullWindow");
+				setModalWindowToCenter();
+			});
+			$overlay.on("click", function(){
+				//GemConfigServiceで編集画面でキャンセル時に確認ダイアログを表示する設定になってる場合確認を行う
+				//⇒ダイアログ内画面のfunction「onDialogClose」で確認ダイアログをコントロール
+				//  アプリ側は確認が必要な画面に同名のfunctionを入れておけば、ここからその関数が呼び出される
+				if (typeof $frame.get(0).contentWindow.onDialogClose === "function" && !$frame.get(0).contentWindow.onDialogClose()) {
+					return;
+				}
+				fade.hide();
+				$frame.parents(".modal-dialog").trigger(new $.Event('closeModalDialog', {}));
+			});
+			$under.attr("initialized", true);
+		}
 
 		return this.each(function(){
 			var $this = $(this);

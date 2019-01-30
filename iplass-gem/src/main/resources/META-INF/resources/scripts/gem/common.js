@@ -2449,7 +2449,11 @@ function editReference(detailAction, defName, oid, trId, propName, index, viewAc
 					$link.on("click", function() {
 						editReference(detailAction, defName, entity.oid, trId, propName, index, viewAction, rootDefName, viewName, orgPropName);
 					});
-					$link.modalWindow();
+					if ($("body.modal-body").length != 0) {
+						$link.subModalWindow();
+					} else {
+						$link.modalWindow();
+					}
 				}
 			});
 
