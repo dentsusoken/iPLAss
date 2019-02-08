@@ -1,19 +1,19 @@
 /*
  * Copyright (C) 2011 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
- * 
+ *
  * Unless you have purchased a commercial license,
  * the following license terms apply:
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
@@ -69,7 +69,7 @@ public class LobStoreSearchSql extends QuerySqlHandler {
 		}
 	}
 
-	public String toSqlForClean(int tenantId, RdbAdapter rdb) {
+	public String toSqlForClean(int tenantId, int day, RdbAdapter rdb) {
 		StringBuilder sb = new StringBuilder();
 		sb.append("SELECT "
 				+ LobStoreTable.TENANT_ID
@@ -82,7 +82,10 @@ public class LobStoreSearchSql extends QuerySqlHandler {
 				+ LobStoreTable.TENANT_ID
 				+ "=");
 		sb.append(tenantId);
-		sb.append(" AND " + LobStoreTable.REF_COUNT + "<1");
+		sb.append(" AND " + LobStoreTable.REF_COUNT + " < 1");
+		if (day < 0) {
+			sb.append(" AND " + LobStoreTable.CRE_DATE + " < ").append(rdb.addDate(rdb.systimestamp(), day));
+		}
 		return sb.toString();
 	}
 

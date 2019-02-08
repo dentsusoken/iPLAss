@@ -1,19 +1,19 @@
 /*
  * Copyright (C) 2011 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
- * 
+ *
  * Unless you have purchased a commercial license,
  * the following license terms apply:
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
@@ -151,10 +151,12 @@ public class BlobSearchSql extends QuerySqlHandler {
 				+ "," + ObjBlobTable.OBJ_VER
 				+ " FROM "
 				+ ObjBlobTable.TABLE_NAME);
-		sb.append(" WHERE LOB_STAT='T'");
+		sb.append(" WHERE " + ObjBlobTable.LOB_STAT + "='" + Lob.STATE_TEMP + "'");
 		sb.append(" AND " + ObjBlobTable.TENANT_ID + "=");
 		sb.append(tenantId);
-		sb.append(" AND UP_DATE<").append(rdb.addDate(rdb.systimestamp(), day));
+		if (day < 0) {
+			sb.append(" AND " + ObjBlobTable.UP_DATE + "<").append(rdb.addDate(rdb.systimestamp(), day));
+		}
 		return sb.toString();
 	}
 

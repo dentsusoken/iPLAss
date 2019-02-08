@@ -430,6 +430,22 @@
 			ver1.5.2でサイズ管理制御のためにlob_storeテーブルのレイアウトを変更。
 			既存システムでlob_storeテーブルが変更できない場合は、falseを指定することで回避可能。 -->
 		<property name="manageLobSizeOnRdb" value="false" />
+
+		<!-- テンポラリデータの保存日数。クリーナによりここで指定された日数よりも前のデータが削除されます。 -->
+		<!--
+		<property name="temporaryKeepDay" value="1" />
+		-->
+
+		<!-- 無効(非参照)データの保存日数。クリーナによりここで指定された日数よりも前のデータが削除されます。 -->
+		<!--
+		<property name="invalidKeepDay" value="0" />
+		-->
+
+		<!-- クリーナのコミット件数。 -->
+		<!--
+		<property name="cleanCommitLimit" value="100" />
+		-->
+
 	</service>
 	<service name="OidCounter">
 		<interface>org.iplass.mtp.impl.counter.CounterService</interface>
