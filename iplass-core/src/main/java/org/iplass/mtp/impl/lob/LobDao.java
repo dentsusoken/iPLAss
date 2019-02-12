@@ -1,19 +1,19 @@
 /*
  * Copyright (C) 2011 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
- * 
+ *
  * Unless you have purchased a commercial license,
  * the following license terms apply:
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
@@ -49,7 +49,7 @@ import org.iplass.mtp.impl.rdb.adapter.RdbAdapter;
 
 public class LobDao {
 	private static final String COUNTER_SERVICE_INC_KEY = "lobid";
-	
+
 	private RdbAdapter rdb;
 	private CounterService counterService;
 	private boolean manageLobSizeOnRdb;
@@ -213,7 +213,7 @@ public class LobDao {
 
 		return exec.execute(rdb, true).booleanValue();
 	}
-	
+
 	public boolean updateBinaryDataInfo(final int tenantId, final long lobId, final String name, final String type) {
 		SqlExecuter<Boolean> exec = new SqlExecuter<Boolean>() {
 
@@ -348,7 +348,7 @@ public class LobDao {
 	}
 
 	/**
-	 * 
+	 *
 	 * @param day
 	 * @param tenantId
 	 * @return LOB_ID,LOB_DATA_IDのリスト
@@ -374,13 +374,13 @@ public class LobDao {
 		return exec.execute(rdb, true);
 	}
 
-	public List<Long> getLobDataIdListForClean(final int tenantId) {
+	public List<Long> getLobDataIdListForClean(final int day, final int tenantId) {
 		SqlExecuter<List<Long>> exec = new SqlExecuter<List<Long>>() {
 
 			@Override
 			public List<Long> logic() throws SQLException {
 				List<Long> res = new ArrayList<Long>();
-				ResultSet rs = getStatement().executeQuery(lobStoreSearchSql.toSqlForClean(tenantId, rdb));
+				ResultSet rs = getStatement().executeQuery(lobStoreSearchSql.toSqlForClean(tenantId, day, rdb));
 				try {
 					while (rs.next()) {
 						res.add(rs.getLong(LobStoreTable.LOB_DATA_ID));
@@ -520,5 +520,5 @@ public class LobDao {
 		};
 		return exec.execute(rdb, true);
 	}
-	
+
 }

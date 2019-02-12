@@ -1,19 +1,19 @@
 /*
  * Copyright (C) 2011 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
- * 
+ *
  * Unless you have purchased a commercial license,
  * the following license terms apply:
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
@@ -35,12 +35,19 @@ public class LobStoreService implements Service {
 
 	private HashMap<String, LobStore> stores;
 	private String defaultLobStoreName = "default";
-	
+
+	/** テンポラリデータの保存日数 */
+	private int temporaryKeepDay = 1;
+	/** 非参照データの保存日数 */
+	private int invalidKeepDay = 0;
+	/** Clean時のコミット件数 */
+	private int cleanCommitLimit = 100;
+
 	private LobDao lobDao;
 
 	/** LobのサイズをDB(lob_store)で管理するかを指定します */
 	private boolean manageLobSizeOnRdb = true;
-	
+
 	public LobDao getLobDao() {
 		return lobDao;
 	}
@@ -65,6 +72,18 @@ public class LobStoreService implements Service {
 		return manageLobSizeOnRdb;
 	}
 
+	public int getTemporaryKeepDay() {
+		return temporaryKeepDay;
+	}
+
+	public int getInvalidKeepDay() {
+		return invalidKeepDay;
+	}
+
+	public int getCleanCommitLimit() {
+		return cleanCommitLimit;
+	}
+
 	@Override
 	public void init(Config config) {
 		if (config.getValue(DEFAULT_LOB_STORE_CONFIG_NAME) != null) {
@@ -72,7 +91,7 @@ public class LobStoreService implements Service {
 		}
 		stores = new HashMap<String, LobStore>();
 		for (String propName: config.getNames()) {
-			Object val = config.getBean(propName);
+			Object val = config.getValue(propName, Object.class);
 			if (val instanceof LobStore) {
 				stores.put(propName, (LobStore) val);
 			}
@@ -81,7 +100,17 @@ public class LobStoreService implements Service {
 		if (config.getValue("manageLobSizeOnRdb") != null) {
 			manageLobSizeOnRdb = Boolean.valueOf(config.getValue("manageLobSizeOnRdb"));
 		}
-		
+
+		if (config.getValue("temporaryKeepDay") != null) {
+			temporaryKeepDay = Integer.parseInt(config.getValue("temporaryKeepDay"));
+		}
+		if (config.getValue("invalidKeepDay") != null) {
+			invalidKeepDay = Integer.parseInt(config.getValue("invalidKeepDay"));
+		}
+		if (config.getValue("cleanCommitLimit") != null) {
+			cleanCommitLimit = Integer.parseInt(config.getValue("cleanCommitLimit"));
+		}
+
 		lobDao = config.getValue("lobDao", LobDao.class);
 		if (lobDao == null) {
 			lobDao = new LobDao();

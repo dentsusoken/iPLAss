@@ -1,19 +1,19 @@
 /*
  * Copyright (C) 2011 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
- * 
+ *
  * Unless you have purchased a commercial license,
  * the following license terms apply:
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
@@ -108,7 +108,7 @@ public class LobHandler {
 		} else {
 			//当該Entityの項目の参照可否をチェック
 			AuthContextHolder user = AuthContextHolder.getAuthContext();
-			
+
 			if (user.isPrivilegedExecution()) {
 				if (logger.isDebugEnabled()) {
 					logger.debug("privileged updateAll call. shrot cut auth check.");
@@ -241,20 +241,26 @@ public class LobHandler {
 
 	}
 
+	/**
+	 * テンポラリデータを削除します。
+	 */
 	public static void cleanTemporaryBinaryData() {
-		//1日以上経過しているテンポラリを削除
+
 		//TODO 1件ずつのループだが、微妙か、、、削除対象を確定しなければならないので1回はlobIDをselectする必要あり。（sqlで、update<-selectだとファントムリードが発生するので。）
 		final int tenantId = ExecuteContext.getCurrentContext().getClientTenantId();
 
-		final LobDao dao = ServiceRegistry.getRegistry().getService(LobStoreService.class).getLobDao();
+		LobStoreService lobStoreService = ServiceRegistry.getRegistry().getService(LobStoreService.class);
+		final LobDao dao = lobStoreService.getLobDao();
 
-		final List<long[]> cleanupTarget = dao.getLobIdListForCleanTemporary(-1, tenantId);
-		//TODO とりあえず、100件単位でcommit。パラメータ化。
-		for (int offset = 0; offset < cleanupTarget.size(); offset+=100) {
+		//保存日数以上経過しているテンポラリを取得
+		final List<long[]> cleanupTarget = dao.getLobIdListForCleanTemporary(-1 * lobStoreService.getTemporaryKeepDay(), tenantId);
+
+		int limit = lobStoreService.getCleanCommitLimit() > 0 ? lobStoreService.getCleanCommitLimit() : 100;
+		for (int offset = 0; offset < cleanupTarget.size(); offset+=limit) {
 			final int offsetFinal = offset;
 			try {
 				Transaction.requiresNew(t -> {
-					int end = (offsetFinal + 100 < cleanupTarget.size()) ? offsetFinal + 100: cleanupTarget.size();
+					int end = (offsetFinal + limit < cleanupTarget.size()) ? offsetFinal + limit: cleanupTarget.size();
 					for (int i = offsetFinal; i < end; i++) {
 						dao.remove(tenantId, cleanupTarget.get(i)[0]);
 						if (cleanupTarget.get(i)[1] != Lob.IS_NEW) {
@@ -269,19 +275,25 @@ public class LobHandler {
 		}
 	}
 
+	/**
+	 * 参照されていないLobデータを削除します。
+	 */
 	public static void cleanLobData() {
+
 		final int tenantId = ExecuteContext.getCurrentContext().getClientTenantId();
-		final LobDao dao = ServiceRegistry.getRegistry().getService(LobStoreService.class).getLobDao();
-		Map<String, LobStore> lobStoreMap = ServiceRegistry.getRegistry().getService(LobStoreService.class).getLobStoreMap();
 
-		final List<Long> lobDataIdList = dao.getLobDataIdListForClean(tenantId);
+		LobStoreService lobStoreService = ServiceRegistry.getRegistry().getService(LobStoreService.class);
+		final LobDao dao = lobStoreService.getLobDao();
+		Map<String, LobStore> lobStoreMap = lobStoreService.getLobStoreMap();
 
-		//TODO とりあえず、100件単位でcommit。パラメータ化。
-		for (int offset = 0; offset < lobDataIdList.size(); offset+=100) {
+		final List<Long> lobDataIdList = dao.getLobDataIdListForClean(-1 * lobStoreService.getInvalidKeepDay(), tenantId);
+
+		int limit = lobStoreService.getCleanCommitLimit() > 0 ? lobStoreService.getCleanCommitLimit() : 100;
+		for (int offset = 0; offset < lobDataIdList.size(); offset+=limit) {
 			final int offsetFinal = offset;
 			try {
 				Transaction.requiresNew(t -> {
-						int end = (offsetFinal + 100 < lobDataIdList.size()) ? offsetFinal + 100: lobDataIdList.size();
+						int end = (offsetFinal + limit < lobDataIdList.size()) ? offsetFinal + limit: lobDataIdList.size();
 						for (int i = offsetFinal; i < end; i++) {
 							Long lobDataId = lobDataIdList.get(i);
 							dao.removeData(tenantId, lobDataId);
