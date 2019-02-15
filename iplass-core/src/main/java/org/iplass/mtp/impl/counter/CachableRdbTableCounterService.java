@@ -369,8 +369,8 @@ public class CachableRdbTableCounterService implements CounterService {
 
 			int index = cacheKeyString.indexOf(':');
 			int tenantId = Integer.parseInt(cacheKeyString.substring(0, index));
-			int index2 = cacheKeyString.indexOf(index + 1, ':');
-			String type = cacheKeyString.substring(index, index2);
+			int index2 = cacheKeyString.indexOf(':', index + 1);
+			String type = cacheKeyString.substring(index + 1, index2);
 			String incUnitKey = cacheKeyString.substring(index2 + 1);
 
 			return new CounterKey(tenantId, type, incUnitKey);
