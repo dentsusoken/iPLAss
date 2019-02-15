@@ -71,6 +71,7 @@ import org.iplass.mtp.entity.query.Query;
 import org.iplass.mtp.entity.query.condition.predicate.Equals;
 import org.iplass.mtp.impl.util.ConvertUtil;
 import org.iplass.mtp.impl.util.CoreResourceBundleUtil;
+import org.iplass.mtp.util.CollectionUtil;
 import org.iplass.mtp.util.StringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -99,6 +100,7 @@ public class EntityCsvReader implements Iterable<Entity>, AutoCloseable {
 
 	private EntityDefinition definition;
 	private boolean withReferenceVersion;
+	private String prefixOid;
 
 	private Reader reader;
 	private CsvListReader csvListReader;
@@ -111,32 +113,42 @@ public class EntityCsvReader implements Iterable<Entity>, AutoCloseable {
 	private boolean isIterate;
 	private boolean useCtrl;
 	private ObjectMapper mapper;
+	private boolean usePrefixOid;
 
 
 	private EntityDefinitionManager edm = ManagerLocator.manager(EntityDefinitionManager.class);
 	private EntityManager em = ManagerLocator.manager(EntityManager.class);
 
 	public EntityCsvReader(EntityDefinition definition, InputStream inputStream, boolean withReferenceVersion) throws UnsupportedEncodingException {
-		this(definition, inputStream, "UTF-8", withReferenceVersion);
+		this(definition, inputStream, "UTF-8", withReferenceVersion, null);
 	}
-
+	public EntityCsvReader(EntityDefinition definition, InputStream inputStream, boolean withReferenceVersion, String prefixOid) throws UnsupportedEncodingException {
+		this(definition, inputStream, "UTF-8", withReferenceVersion, prefixOid);
+	}
 	public EntityCsvReader(EntityDefinition definition, InputStream inputStream, String charset, boolean withReferenceVersion) throws UnsupportedEncodingException {
-
+		this(definition, inputStream, charset, withReferenceVersion, null);
+	}
+	public EntityCsvReader(EntityDefinition definition, InputStream inputStream, String charset, boolean withReferenceVersion, String prefixOid) throws UnsupportedEncodingException {
 		Reader reader = new InputStreamReader(inputStream, charset);
-
-		this.definition = definition;
-		this.reader = new BufferedReader(reader);
-		this.withReferenceVersion = withReferenceVersion;
+		BufferedReader buffered = new BufferedReader(reader);
+		config(definition, buffered, withReferenceVersion, prefixOid);
 	}
 
 	public EntityCsvReader(EntityDefinition definition, Reader reader, boolean withReferenceVersion) {
-		this.definition = definition;
+		BufferedReader buffered = null;
 		if (reader instanceof BufferedReader) {
-			this.reader = (BufferedReader)reader;
+			buffered = (BufferedReader)reader;
 		} else {
-			this.reader = new BufferedReader(reader);
+			buffered = new BufferedReader(reader);
 		}
+		config(definition, buffered, withReferenceVersion, prefixOid);
+	}
+
+	protected void config(EntityDefinition definition, BufferedReader reader, boolean withReferenceVersion, String prefixOid) {
+		this.definition = definition;
+		this.reader = reader;
 		this.withReferenceVersion = withReferenceVersion;
+		this.prefixOid = prefixOid;
 	}
 
 	protected void init() {
@@ -161,6 +173,10 @@ public class EntityCsvReader implements Iterable<Entity>, AutoCloseable {
 
 		// check valid header
 		validateHeader();
+
+		// check prefix oid
+		// カスタムOIDが設定されている場合は無視
+		usePrefixOid = StringUtil.isNotEmpty(prefixOid) && CollectionUtil.isEmpty(definition.getOidPropertyName());
 
 		isInit = true;
 	}
@@ -264,6 +280,11 @@ public class EntityCsvReader implements Iterable<Entity>, AutoCloseable {
 						//変換でエラー
 						throw new EntityCsvException("CE1001", rs("impl.csv.EntityCsvReader.invalidValue", headerName, value), e);
 					}
+				}
+
+				//OID Prefixのセット
+				if (usePrefixOid && entity.getOid() != null) {
+					entity.setOid(prefixOid + entity.getOid());
 				}
 
 				//配列のうしろのnull値を削除
@@ -540,11 +561,15 @@ public class EntityCsvReader implements Iterable<Entity>, AutoCloseable {
 
 			ReferenceInfo reference = references.get(headerName);
 
+			//参照Entityに設定するOIDPrefix、カスタムOIDが設定されている場合は無視
+			String refOidPrefix
+				= StringUtil.isNotEmpty(prefixOid) && CollectionUtil.isEmpty(reference.ed.getOidPropertyName()) ? prefixOid : "";
+
 			if (rpd.getMultiplicity() == 1) {
 				if (StringUtil.isEmpty(valStr)) {
 					return null;
 				}
-				Entity entity = generateReferenceEntity(valStr, rpd, reference.ed);
+				Entity entity = generateReferenceEntity(valStr, rpd, reference.ed, refOidPrefix);
 				return entity;
 			} else {
 				if (StringUtil.isEmpty(valStr)) {
@@ -558,7 +583,7 @@ public class EntityCsvReader implements Iterable<Entity>, AutoCloseable {
 						//配列にnullを含むとエラーになるので除外
 						//eList.add(null);
 					} else {
-						eList.add(generateReferenceEntity(oid, rpd, reference.ed));
+						eList.add(generateReferenceEntity(oid, rpd, reference.ed, refOidPrefix));
 					}
 				}
 
@@ -621,7 +646,7 @@ public class EntityCsvReader implements Iterable<Entity>, AutoCloseable {
 		return entity;
 	}
 
-	private Entity generateReferenceEntity(String value, ReferenceProperty rpd, EntityDefinition red) {
+	private Entity generateReferenceEntity(String value, ReferenceProperty rpd, EntityDefinition red, String refOidPrefix) {
 
 		Entity entity = generateEntity(red.getMapping(), rpd.getName());
 		entity.setDefinitionName(red.getName());
@@ -642,7 +667,8 @@ public class EntityCsvReader implements Iterable<Entity>, AutoCloseable {
 				ver = "0";
 			}
 		}
-		entity.setOid(oid);
+
+		entity.setOid(refOidPrefix + oid);
 		entity.setVersion(Long.parseLong(ver));
 
 		return entity;

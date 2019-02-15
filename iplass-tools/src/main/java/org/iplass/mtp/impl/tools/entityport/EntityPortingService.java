@@ -314,7 +314,7 @@ public class EntityPortingService implements Service {
 			@Override
 			public Integer apply(Transaction transaction) {
 
-				try (EntityCsvReader reader = new EntityCsvReader(definition, is, true)){
+				try (EntityCsvReader reader = new EntityCsvReader(definition, is, true, condition.getPrefixOid())){
 
 					final Iterator<Entity> iterator = reader.iterator();
 					final List<String> properties = reader.properties();
