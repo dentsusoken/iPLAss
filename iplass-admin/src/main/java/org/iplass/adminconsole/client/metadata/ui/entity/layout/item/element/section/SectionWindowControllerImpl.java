@@ -278,7 +278,7 @@ public class SectionWindowControllerImpl implements SectionWindowController {
 
 							ReferenceProperty rp = (ReferenceProperty) pd;
 							ReferenceSection section = new ReferenceSection();
-							section.setDefintionName(rp.getName());
+							section.setDefintionName(rp.getObjectDefinitionName());
 							section.setPropertyName(name);
 							section.setDispFlag(true);
 							section.setTitle(rp.getDisplayName());

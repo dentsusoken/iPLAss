@@ -44,7 +44,7 @@ public class ReferenceSection extends Section {
 	/** SerialVersionUID */
 	private static final long serialVersionUID = -5340250243884655144L;
 
-	/** Entity定義名 */
+	/** 参照先Entity定義名 */
 	private String defintionName;
 
 	/** プロパティ名 */
@@ -221,7 +221,7 @@ public class ReferenceSection extends Section {
 	private String contentScriptKey;
 
 	/**
-	 * Entity定義名を取得します。
+	 * 参照先Entity定義名を取得します。
 	 * @return Entity定義名
 	 */
 	public String getDefintionName() {
@@ -229,7 +229,7 @@ public class ReferenceSection extends Section {
 	}
 
 	/**
-	 * Entity定義名を設定します。
+	 * 参照先Entity定義名を設定します。
 	 * @param defintionName Entity定義名
 	 */
 	public void setDefintionName(String defintionName) {
