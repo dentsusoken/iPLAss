@@ -56,6 +56,9 @@ public class MetaSearchResultSection extends MetaSection {
 	/** 表示行数 */
 	private int dispRowCount;
 
+	/** 表示高さ */
+	private int dispHeight;
+
 	/** 編集リンク非表示設定 */
 	private boolean hideDetailLink;
 
@@ -118,6 +121,23 @@ public class MetaSearchResultSection extends MetaSection {
 	 */
 	public void setDispRowCount(int dispRowCount) {
 		this.dispRowCount = dispRowCount;
+	}
+
+
+	/**
+	 * 表示高さを取得します。
+	 * @return 表示高さ
+	 */
+	public int getDispHeight() {
+		return dispHeight;
+	}
+
+	/**
+	 * 表示高さを設定します。
+	 * @param dispHeight 表示高さ
+	 */
+	public void setDispHeight(int dispHeight) {
+		this.dispHeight = dispHeight;
 	}
 
 	/**
@@ -381,6 +401,7 @@ public class MetaSearchResultSection extends MetaSection {
 
 		SearchResultSection section = (SearchResultSection) element;
 		this.dispRowCount = section.getDispRowCount();
+		this.dispHeight = section.getDispHeight();
 		this.hideDetailLink = section.isHideDetailLink();
 		this.hideDelete = section.isHideDelete();
 		this.hidePaging = section.isHidePaging();
@@ -419,6 +440,7 @@ public class MetaSearchResultSection extends MetaSection {
 
 		section.setScriptKey(scriptKey);
 		section.setDispRowCount(this.dispRowCount);
+		section.setDispHeight(this.dispHeight);
 		section.setHideDetailLink(hideDetailLink);
 		section.setHideDelete(hideDelete);
 		section.setHidePaging(hidePaging);

@@ -67,6 +67,18 @@ public class SearchResultSection extends Section {
 	)
 	private int dispRowCount;
 
+	@MetaFieldInfo(
+			displayName="検索結果の高さ",
+			displayNameKey="generic_element_section_SearchResultSection_dispHeightDisplaNameKey",
+			inputType=InputType.NUMBER,
+			rangeCheck=true,
+			minRange=0,
+			description="検索結果の高さを指定します。<br>" +
+						"0を指定した場合、高さを自動とします。",
+			descriptionKey="generic_element_section_SearchResultSection_dispHeightDescriptionKey"
+	)
+	private int dispHeight;
+
 	/** 編集リンク非表示設定 */
 	@MetaFieldInfo(
 			displayName="編集リンク非表示設定",
@@ -255,6 +267,23 @@ public class SearchResultSection extends Section {
 	 */
 	public void setDispRowCount(int dispRowCount) {
 		this.dispRowCount = dispRowCount;
+	}
+
+
+	/**
+	 * 検索結果の高さを取得します。
+	 * @return 検索結果の高さ
+	 */
+	public int getDispHeight() {
+		return dispHeight;
+	}
+
+	/**
+	 * 検索結果の高さを設定します。
+	 * @param dispHeight 検索結果の高さ
+	 */
+	public void setDispHeight(int dispHeight) {
+		this.dispHeight = dispHeight;
 	}
 
 	/**

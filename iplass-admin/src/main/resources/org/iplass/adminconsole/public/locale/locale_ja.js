@@ -2052,6 +2052,8 @@ LocaleInfo.generic_element_section_SearchConditionSection_csvUploadTransactionTy
 LocaleInfo.generic_element_section_SearchConditionSection_csvUploadTransactionTypeDescriptionKey = "CSVアップロード時のコミットタイミングを設定します。ONCE、DIVISIONの2種類から選択します。<br />ONCE：CSVファイルの全行の処理が終わった時点でコミットされます。<br />DIVISION：service-configで設定された単位でコミットされます。";
 LocaleInfo.generic_element_section_SearchResultSection_dispRowCountDisplaNameKey = "検索結果の表示件数";
 LocaleInfo.generic_element_section_SearchResultSection_dispRowCountDescriptionKey = "検索結果の一覧に表示する件数を指定します。";
+LocaleInfo.generic_element_section_SearchResultSection_dispHeightDisplaNameKey = "検索結果の高さ";
+LocaleInfo.generic_element_section_SearchResultSection_dispHeightDescriptionKey = "検索結果の高さを指定します。<br>0を指定した場合、高さを自動とします。";
 LocaleInfo.generic_element_section_SearchResultSection_hideDetailLinkDisplaNameKey = "編集リンクを非表示";
 LocaleInfo.generic_element_section_SearchResultSection_hideDetailLinkDescriptionKey = "検索結果の編集リンクを非表示にします。";
 LocaleInfo.generic_element_section_SearchResultSection_hideDeleteDisplaNameKey = "削除ボタンを非表示";

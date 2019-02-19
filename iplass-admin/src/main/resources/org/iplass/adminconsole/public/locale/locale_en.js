@@ -2052,6 +2052,8 @@ LocaleInfo.generic_element_section_SearchConditionSection_csvUploadTransactionTy
 LocaleInfo.generic_element_section_SearchConditionSection_csvUploadTransactionTypeDescriptionKey = "I set the timing of commit CSV upload. I will choose from two types ONCE, the DIVISION. <br />It is committed when the processing of all the rows in the CSV file is over: ONCE. <br />It is committed in a unit that is set in the service-config: DIVISION.";
 LocaleInfo.generic_element_section_SearchResultSection_dispRowCountDisplaNameKey = "Display number of search results";
 LocaleInfo.generic_element_section_SearchResultSection_dispRowCountDescriptionKey = "Specify the number of documents to be displayed in the list of search results.";
+LocaleInfo.generic_element_section_SearchResultSection_dispHeightDisplaNameKey = "Display height of search results";
+LocaleInfo.generic_element_section_SearchResultSection_dispHeightDescriptionKey = "Specify the display height of search results.<br>If set to 0, auto height will be used.";
 LocaleInfo.generic_element_section_SearchResultSection_hideDetailLinkDisplaNameKey = "Hide Edit Link";
 LocaleInfo.generic_element_section_SearchResultSection_hideDetailLinkDescriptionKey = "Hide the edit link in the search results.";
 LocaleInfo.generic_element_section_SearchResultSection_hideDeleteDisplaNameKey = "Hide Delete Button";
