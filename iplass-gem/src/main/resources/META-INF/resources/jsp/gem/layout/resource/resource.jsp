@@ -139,6 +139,8 @@ dType="/gem";
 <%
 	}
 %>
+<script src="${staticContentPath}/scripts/gem/plugin/jQuery-Timepicker-Addon/jquery-ui-timepicker-addon-mtp.js?cv=${apiVersion}"></script>
+
 <link rel="stylesheet" href="${staticContentPath}/webjars/jquery-ui/1.12.1/jquery-ui.css?cv=${apiVersion}" />
 <link rel="stylesheet" href="${staticContentPath}/webjars/free-jqgrid/4.14.1/css/ui.jqgrid.min.css?cv=${apiVersion}" />
 <link rel="stylesheet" href="${staticContentPath}/webjars/free-jqgrid/4.14.1/plugins/css/ui.multiselect.min.css?cv=${apiVersion}" />
