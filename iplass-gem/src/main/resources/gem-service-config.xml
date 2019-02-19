@@ -107,6 +107,9 @@
 		<!-- 検索画面でリセットボタンを表示するか -->
 		<property name="showSeachCondResetButton" value="true"/>
 
+		<!-- 検索画面で表示する検索結果の件数 -->
+		<property name="searchResultDispRowCount" value="10"/>
+
 		<!-- 検索処理のインターバル、無期限(0)/指定ミリ秒(1以上) -->
 		<property name="searchInterval" value="60000"/>
 

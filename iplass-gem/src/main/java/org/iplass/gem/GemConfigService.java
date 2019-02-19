@@ -72,6 +72,9 @@ public class GemConfigService implements Service {
 	/** 検索画面でリセットボタンを表示するか */
 	private boolean showSeachCondResetButton;
 
+	/** 検索画面で表示する検索結果の件数*/
+	private int searchResultDispRowCount;
+
 	/** 検索処理のインターバル */
 	private int searchInterval;
 
@@ -167,6 +170,13 @@ public class GemConfigService implements Service {
 		confirmEditCancel = Boolean.valueOf(config.getValue("confirmEditCancel"));
 
 		showSeachCondResetButton = Boolean.valueOf(config.getValue("showSeachCondResetButton"));
+
+		String searchResultDispRowCount = config.getValue("searchResultDispRowCount");
+		if (searchResultDispRowCount != null) {
+			this.searchResultDispRowCount = Integer.parseInt(searchResultDispRowCount);
+		} else {
+			this.searchResultDispRowCount = 10;
+		}
 
 		String searchInterval = config.getValue("searchInterval");
 		if (searchInterval != null) {
@@ -308,6 +318,14 @@ public class GemConfigService implements Service {
 	 */
 	public boolean isShowSeachCondResetButton() {
 		return showSeachCondResetButton;
+	}
+
+	/**
+	 * 検索画面で表示する検索結果の件数を取得します。
+	 * @return 検索画面で表示する検索結果の件数
+	 */
+	public int getSearchResultDispRowCount() {
+		return searchResultDispRowCount;
 	}
 
 	/**
