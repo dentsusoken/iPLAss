@@ -22,6 +22,7 @@ package org.iplass.mtp.view.generic;
 
 import java.util.List;
 
+import org.iplass.gem.GemConfigService;
 import org.iplass.gem.command.GemResourceBundleUtil;
 import org.iplass.mtp.ManagerLocator;
 import org.iplass.mtp.definition.LocalizedStringDefinition;
@@ -37,6 +38,7 @@ import org.iplass.mtp.entity.definition.properties.SelectProperty;
 import org.iplass.mtp.entity.definition.properties.selectvalue.SelectValueDefinition;
 import org.iplass.mtp.entity.definition.properties.selectvalue.SelectValueDefinitionManager;
 import org.iplass.mtp.impl.core.ExecuteContext;
+import org.iplass.mtp.spi.ServiceRegistry;
 import org.iplass.mtp.tenant.TenantI18nInfo;
 import org.iplass.mtp.util.StringUtil;
 import org.iplass.mtp.view.generic.editor.AutoNumberPropertyEditor;
@@ -160,7 +162,7 @@ public class FormViewUtil {
 		view.addSection(condSection);
 
 		SearchResultSection resultSection = new SearchResultSection();
-		resultSection.setDispRowCount(10);
+		resultSection.setDispRowCount(getSearchResultDispRowCount());
 		resultSection.addElement(createNamePropertyColumn(ed.getProperty(Entity.NAME), isLoadDisplayLabel));
 		if (ed.getVersionControlType() == VersionControlType.TIMEBASE) {
 			resultSection.addElement(createTimestampPropertyColumn(
@@ -192,6 +194,15 @@ public class FormViewUtil {
 
 		return view;
 
+	}
+
+	/**
+	 * 検索画面で表示する検索結果の件数を取得します。
+	 * @return 検索画面で表示する検索結果の件数
+	 */
+	private static int getSearchResultDispRowCount() {
+		GemConfigService gemConfigService = ServiceRegistry.getRegistry().getService(GemConfigService.class);
+		return gemConfigService.getSearchResultDispRowCount();
 	}
 
 	/**
