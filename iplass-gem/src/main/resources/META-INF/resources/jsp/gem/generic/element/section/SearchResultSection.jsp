@@ -279,7 +279,17 @@ colModel.push({name:"<%=propName%>", index:"<%=propName%>", classes:"<%=style%>"
 %>
 	grid = $("#searchResult").jqGrid({
 		datatype: "local",
+<%	
+	if (section.getDispHeight() > 0) {
+%>
+		height: <%=section.getDispHeight()%>,
+<%
+	} else {
+%>
 		height: "auto",
+<%
+	}
+%>
 		colModel: colModel,
 		headertitles: true,
 		multiselect: multiSelect,
