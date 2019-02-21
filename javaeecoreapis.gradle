@@ -11,5 +11,5 @@ dependencies {
 	compileOnly group: 'javax.activation', name: 'activation', version: '1.1.1'
 
 	//JAXB for java11
-	compileOnly group: 'javax.xml.bind', name: 'jaxb-api', version: '2.3.0'
+	compileOnly group: 'javax.xml.bind', name: 'jaxb-api', version: '2.3.1'
 }
