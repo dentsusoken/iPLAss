@@ -157,23 +157,35 @@ public class EntityViewManagerImpl extends AbstractTypedDefinitionManager<Entity
 
 		for (Section section : form.getSections()) {
 			if (section instanceof DefaultSection) {
-				DefaultSection df = (DefaultSection) section;
-				for (Element element : df.getElements()) {
-					if (element instanceof PropertyItem) {
-						PropertyItem property = (PropertyItem) element;
-						if (property.getPropertyName().equals(currentPropName)) {
-							//FIXME なぜセットが必要？
-//							if (property.getEditor() instanceof ReferencePropertyEditor) {
-//								property.getEditor().setPropertyName(property.getPropertyName());
-//							}
-							if (subPropName == null) {
-								property.getEditor().setPropertyName(property.getPropertyName());	//念のためセット
-								return property.getEditor();
-							} else {
-								return getEditor(subPropName, property.getEditor());
-							}
-						}
+				PropertyEditor editor = getEditor((DefaultSection)section, currentPropName, subPropName);
+				if (editor != null) {
+					return editor;
+				}
+			}
+		}
+		return null;
+	}
+
+	private PropertyEditor getEditor(DefaultSection section, final String currentPropName, final String subPropName) {
+		for (Element element : section.getElements()) {
+			if (element instanceof PropertyItem) {
+				PropertyItem property = (PropertyItem) element;
+				if (property.getPropertyName().equals(currentPropName)) {
+					//FIXME なぜセットが必要？
+//					if (property.getEditor() instanceof ReferencePropertyEditor) {
+//						property.getEditor().setPropertyName(property.getPropertyName());
+//					}
+					if (subPropName == null) {
+						property.getEditor().setPropertyName(property.getPropertyName());	//念のためセット
+						return property.getEditor();
+					} else {
+						return getEditor(subPropName, property.getEditor());
 					}
+				}
+			} else if (element instanceof DefaultSection) {
+				PropertyEditor nest = getEditor((DefaultSection)element, currentPropName, subPropName);
+				if (nest != null) {
+					return nest;
 				}
 			}
 		}
