@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!DOCTYPE serviceDefinition>
+<serviceDefinition>
+	<!--
+		Mixin service definition of redis module.
+		To use this file, include on main serviceDefinition file.
+	-->
+
+	<service>
+		<interface>org.iplass.mtp.impl.redis.RedisService</interface>
+
+		<property name="redisServers">
+			<property name="serverName" value="RedisServer" />
+			<property name="host" value="xxx.xxx.xxx.xxx" />
+			<property name="port" value="6379" />
+		</property>
+		<property name="redisServers">
+			<property name="serverName" value="RedisServer-2" />
+			<property name="host" value="yyy.yyy.yyy.yyy" />
+			<property name="port" value="6379" />
+		</property>
+	</service>
+
+	<service>
+		<interface>org.iplass.mtp.impl.cache.CacheService</interface>
+		<depend>org.iplass.mtp.impl.redis.RedisService</depend>
+
+		<!-- cubeのキャッシュ -->
+		<property name="cubeStatus" class="org.iplass.mtp.impl.redis.cache.store.RedisCacheStoreFactory">
+			<property name="serverName" value="RedisServer" />
+			<property name="namespace" value="mtp.aggregation.cube.status" />
+		</property>
+		<property name="cubeFactData" class="org.iplass.mtp.impl.redis.cache.store.RedisCacheStoreFactory">
+			<property name="serverName" value="RedisServer" />
+			<property name="namespace" value="mtp.aggregation.cube.factPartition" />
+			<property name="timeToLive" value="6000" /> <!-- 100分有効 -->
+		</property>
+	</service>
+
+</serviceDefinition>
