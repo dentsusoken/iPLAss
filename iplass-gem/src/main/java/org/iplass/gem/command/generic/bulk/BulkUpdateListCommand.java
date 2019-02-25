@@ -123,7 +123,7 @@ public class BulkUpdateListCommand extends BulkCommandBase {
 				data.setEntity(row, model);
 			} else {
 				// 更新
-				ret = updateEntity(context, model);
+				if (ret == null || ret.getResultType() == ResultType.SUCCESS) ret = updateEntity(context, model);
 				if (ret.getResultType() == ResultType.SUCCESS) {
 					Transaction transaction = ManagerLocator.getInstance().getManager(TransactionManager.class).currentTransaction();
 					transaction.addTransactionListener(new TransactionListener() {
@@ -132,6 +132,11 @@ public class BulkUpdateListCommand extends BulkCommandBase {
 							// 特定のバージョン指定でロード
 							Long version = context.getVersion(oid);
 							data.setEntity(row, loadViewEntity(context, oid, version, context.getDefinitionName(), (List<String>) null));
+						}
+
+						@Override
+						public void afterRollback(Transaction t) {
+							data.setEntity(row, model);
 						}
 					});
 				} else {
