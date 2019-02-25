@@ -63,6 +63,7 @@ import org.iplass.mtp.view.generic.LoadEntityContext;
 import org.iplass.mtp.view.generic.LoadEntityInterrupter;
 import org.iplass.mtp.view.generic.RegistrationInterrupter;
 import org.iplass.mtp.view.generic.editor.BooleanPropertyEditor;
+import org.iplass.mtp.view.generic.editor.BooleanPropertyEditor.BooleanDisplayType;
 import org.iplass.mtp.view.generic.editor.DatePropertyEditor;
 import org.iplass.mtp.view.generic.editor.DecimalPropertyEditor;
 import org.iplass.mtp.view.generic.editor.FloatPropertyEditor;
@@ -228,23 +229,25 @@ public abstract class RegistrationCommandContext extends GenericCommandContext {
 
 	protected Boolean getBooleanValue(String name) {
 		String param = getParam(name);
-		String type = getParam(name + "Type");
+		String _type = getParam(name + "Type");
+		BooleanDisplayType type = BooleanDisplayType.valueOf(_type);
 		Boolean ret = null;
-		if ("Select".equals(type) || "Label".equals(type)) {
+		if (type == BooleanDisplayType.SELECT || type == BooleanDisplayType.LABEL) {
 			//未選択時は空文字→nullで登録
 			ret = StringUtil.isNotBlank(param) ? Boolean.parseBoolean(param) : null;
 		} else {
 			ret = param != null ? Boolean.parseBoolean(param) : null;
 
 			//チェックボックス未チェック時はNullになるがfalseに置き換える
-			if (ret == null && "Checkbox".equals(type)) ret = false;
+			if (ret == null && type == BooleanDisplayType.CHECKBOX) ret = false;
 		}
 		return ret;
 	}
 	protected Boolean[] getBooleanValues(String name, int multiplicity) {
-		String type = getParam(name + "Type");
+		String _type = getParam(name + "Type");
+		BooleanDisplayType type = BooleanDisplayType.valueOf(_type);
 		Boolean[] ret = null;
-		if ("Select".equals(type) || "Label".equals(type)) {
+		if (type == BooleanDisplayType.SELECT || type == BooleanDisplayType.LABEL) {
 			String[] params = getParams(name);
 			if (params != null) {
 				ret = Arrays.stream(params)
@@ -263,7 +266,7 @@ public abstract class RegistrationCommandContext extends GenericCommandContext {
 			for (int i = 0; i < multiplicity; i++) {
 				String param = getParam(name + i);
 				Boolean b = param != null ? Boolean.parseBoolean(param) : null;
-				if (b == null && "Checkbox".equals(type)) b = false;
+				if (b == null && type == BooleanDisplayType.CHECKBOX) b = false;
 				list.add(b);
 			}
 			//データが１つでも存在する場合のみ配列化
