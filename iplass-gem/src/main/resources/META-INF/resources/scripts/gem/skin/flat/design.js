@@ -404,7 +404,15 @@ function createPseudoObject() {
 	if ($this.prop("checked")) {
 		isChecked = "checked";
 	}
-	var $pseudo = $("<span class='pseudo-" + $this.attr("type") + " " + isChecked + "'/>").insertBefore(this);
+	var $pseudo = $("<span class='pseudo-" + $this.attr("type") + " " + isChecked + "'/>").attr("tabIndex", "0").insertBefore(this);
+	$pseudo.on("keydown", function(e) {
+		//Spaceで選択
+		if(e.keyCode === 32) {
+			$(this).trigger("click");
+			// Spaceにより画面がスクロールしないよう抑制
+			e.preventDefault();
+		}
+	});
 	$pseudo.parent().addClass("pseudo-parent");
 	if ($this.prop("disabled")) {
 		$pseudo.parent().addClass("disabled");
