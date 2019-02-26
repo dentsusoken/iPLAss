@@ -81,7 +81,7 @@ public class RedisIndexedCacheStore extends RedisCacheStoreBase {
 				String prefix = wrapped.getCodec().getNamespaceHandler().getPrefix();
 				if (message.startsWith(prefix)) {
 					if (logger.isDebugEnabled()) {
-						logger.debug(String.format("Occuer expired event. channel:%s, message:%s", channel, message));
+						logger.debug(String.format("Occur expired event. channel:%s, message:%s", channel, message));
 					}
 					Object key = decodeBase64(message.substring(prefix.length()));
 					removeAllFromIndex(key);
