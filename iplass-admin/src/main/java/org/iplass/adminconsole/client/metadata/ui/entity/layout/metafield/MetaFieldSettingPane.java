@@ -861,6 +861,11 @@ public class MetaFieldSettingPane extends VLayout {
 			if (!form.validate()) return;
 
 			for (FieldInfo info : fields) {
+				//表示対象外は更新しない
+				if (!isVisileField(info)) {
+					continue;
+				}
+
 				if (form.getValue(info.getName()) != null) {
 					//Formの値をMapに格納
 					//参照型とテキストエリアはFormItemではないので、ダイアログでの編集時に設定
