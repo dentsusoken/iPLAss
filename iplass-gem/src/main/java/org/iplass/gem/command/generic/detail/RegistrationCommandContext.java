@@ -230,7 +230,7 @@ public abstract class RegistrationCommandContext extends GenericCommandContext {
 	protected Boolean getBooleanValue(String name) {
 		String param = getParam(name);
 		String _type = getParam(name + "Type");
-		BooleanDisplayType type = BooleanDisplayType.valueOf(_type);
+		BooleanDisplayType type = StringUtil.isNotEmpty(_type) ? BooleanDisplayType.valueOf(_type) : null;
 		Boolean ret = null;
 		if (type == BooleanDisplayType.SELECT || type == BooleanDisplayType.LABEL) {
 			//未選択時は空文字→nullで登録
@@ -245,7 +245,7 @@ public abstract class RegistrationCommandContext extends GenericCommandContext {
 	}
 	protected Boolean[] getBooleanValues(String name, int multiplicity) {
 		String _type = getParam(name + "Type");
-		BooleanDisplayType type = BooleanDisplayType.valueOf(_type);
+		BooleanDisplayType type = StringUtil.isNotEmpty(_type) ? BooleanDisplayType.valueOf(_type) : null;
 		Boolean[] ret = null;
 		if (type == BooleanDisplayType.SELECT || type == BooleanDisplayType.LABEL) {
 			String[] params = getParams(name);
