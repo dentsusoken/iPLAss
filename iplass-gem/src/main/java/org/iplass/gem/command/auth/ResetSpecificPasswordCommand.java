@@ -20,8 +20,6 @@
 
 package org.iplass.gem.command.auth;
 
-import java.util.List;
-
 import org.iplass.gem.command.Constants;
 import org.iplass.gem.command.GemResourceBundleUtil;
 import org.iplass.mtp.ApplicationException;
@@ -45,12 +43,14 @@ import org.iplass.mtp.command.annotation.action.Result.Type;
 import org.iplass.mtp.command.annotation.action.TokenCheck;
 import org.iplass.mtp.entity.Entity;
 import org.iplass.mtp.entity.EntityManager;
-import org.iplass.mtp.entity.LoadOption;
+import org.iplass.mtp.entity.permission.EntityPermission;
+import org.iplass.mtp.entity.permission.EntityPropertyPermission;
+import org.iplass.mtp.entity.query.Query;
+import org.iplass.mtp.entity.query.condition.predicate.Equals;
 import org.iplass.mtp.impl.auth.authenticate.builtin.policy.AuthenticationPolicyService;
 import org.iplass.mtp.impl.auth.authenticate.builtin.policy.MetaAuthenticationPolicy.AuthenticationPolicyRuntime;
 import org.iplass.mtp.spi.ServiceRegistry;
 import org.iplass.mtp.tenant.Tenant;
-import org.iplass.mtp.tenant.TenantAuthInfo;
 import org.iplass.mtp.web.actionmapping.definition.HttpMethodType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -103,7 +103,10 @@ public class ResetSpecificPasswordCommand implements Command, AuthCommandConstan
 		}
 		// アカウントID存在チェック
 		EntityManager em = ManagerLocator.getInstance().getManager(EntityManager.class);
-		Entity user = em.load(oid, User.DEFINITION_NAME, new LoadOption(false, false));
+		Entity user = EntityPermission.doQueryAs(EntityPermission.Action.UPDATE, () ->
+				em.searchEntity(new Query().select(User.ACCOUNT_ID, User.ACCOUNT_POLICY)
+						.from(User.DEFINITION_NAME)
+						.where(new Equals(Entity.OID, oid))).getFirst());
 
 		// アカウントID存在チェック
 		String id = null;
@@ -113,7 +116,8 @@ public class ResetSpecificPasswordCommand implements Command, AuthCommandConstan
 		}
 
 		if (id == null) {
-			throw new SystemException("id is null");
+			request.setAttribute(Constants.MESSAGE, resourceString("command.auth.ResetPasswordCommand.onlyAdmin"));
+			return Constants.CMD_EXEC_ERROR;
 		}
 
 		AuthenticationPolicyService aps = ServiceRegistry.getRegistry().getService(AuthenticationPolicyService.class);
@@ -157,8 +161,15 @@ public class ResetSpecificPasswordCommand implements Command, AuthCommandConstan
 		// 管理者以外にもpasswordリセットを許可するか確認
 		Tenant tenant = AuthContext.getCurrentContext().getTenant();
 		// パスワードリセット実施者が管理者権限であること
-		if (!isUserAdminRole(tenant)) {
+		if (!ResetPasswordCommand.isUserAdminRole(tenant)) {
 			// 管理者権限がないため、エラー
+			request.setAttribute(Constants.MESSAGE, resourceString("command.auth.ResetPasswordCommand.onlyAdmin"));
+			return Constants.CMD_EXEC_ERROR;
+		}
+
+		//UserのEntityProperty権限チェック
+		if (!AuthContext.getCurrentContext().checkPermission(
+				new EntityPropertyPermission(User.DEFINITION_NAME, User.PASSWORD, EntityPropertyPermission.Action.UPDATE))) {
 			request.setAttribute(Constants.MESSAGE, resourceString("command.auth.ResetPasswordCommand.onlyAdmin"));
 			return Constants.CMD_EXEC_ERROR;
 		}
@@ -195,22 +206,6 @@ public class ResetSpecificPasswordCommand implements Command, AuthCommandConstan
 		return pass1.equals(pass2);
 	}
 	
-	private boolean isUserAdminRole(Tenant tenant) {
-		AuthContext auth = AuthContext.getCurrentContext();
-		if (auth.getUser().isAdmin()) {
-			return true;
-		}
-		List<String> userAdminRoles = tenant.getTenantConfig(TenantAuthInfo.class).getUserAdminRoles();
-		if (userAdminRoles != null) {
-			for (String role: userAdminRoles) {
-				if (auth.userInRole(role)) {
-					return true;
-				}
-			}
-		}
-		return false;
-	}
-
 	private static String resourceString(String key, Object... arguments) {
 		return GemResourceBundleUtil.resourceString(key, arguments);
 	}

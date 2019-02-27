@@ -45,7 +45,10 @@ import org.iplass.mtp.command.annotation.action.Result.Type;
 import org.iplass.mtp.command.annotation.action.TokenCheck;
 import org.iplass.mtp.entity.Entity;
 import org.iplass.mtp.entity.EntityManager;
-import org.iplass.mtp.entity.LoadOption;
+import org.iplass.mtp.entity.permission.EntityPermission;
+import org.iplass.mtp.entity.permission.EntityPropertyPermission;
+import org.iplass.mtp.entity.query.Query;
+import org.iplass.mtp.entity.query.condition.predicate.Equals;
 import org.iplass.mtp.tenant.Tenant;
 import org.iplass.mtp.tenant.TenantAuthInfo;
 
@@ -107,8 +110,11 @@ public final class ResetPasswordCommand implements Command, AuthCommandConstants
 		}
 
 		EntityManager em = ManagerLocator.getInstance().getManager(EntityManager.class);
-		Entity user = em.load(oid, User.DEFINITION_NAME, new LoadOption(false, false));
-
+		Entity user = EntityPermission.doQueryAs(EntityPermission.Action.UPDATE, () ->
+				em.searchEntity(new Query().select(User.ACCOUNT_ID, User.ACCOUNT_POLICY)
+						.from(User.DEFINITION_NAME)
+						.where(new Equals(Entity.OID, oid))).getFirst());
+		
 		//アカウントID存在チェック
 		String id = null;
 
@@ -117,7 +123,8 @@ public final class ResetPasswordCommand implements Command, AuthCommandConstants
 		}
 
 		if (id == null) {
-			throw new SystemException("id is null");
+			request.setAttribute(Constants.MESSAGE, resourceString("command.auth.ResetPasswordCommand.onlyAdmin"));
+			return Constants.CMD_EXEC_ERROR;
 		}
 
 		//ユーザ更新時であること
@@ -144,12 +151,19 @@ public final class ResetPasswordCommand implements Command, AuthCommandConstants
 			return Constants.CMD_EXEC_ERROR;
 		}
 
+		//UserのEntityProperty権限チェック
+		if (!AuthContext.getCurrentContext().checkPermission(
+				new EntityPropertyPermission(User.DEFINITION_NAME, User.PASSWORD, EntityPropertyPermission.Action.UPDATE))) {
+			request.setAttribute(Constants.MESSAGE, resourceString("command.auth.ResetPasswordCommand.onlyAdmin"));
+			return Constants.CMD_EXEC_ERROR;
+		}
+		
 		Credential credential = new IdPasswordCredential(id, null);
 		am.resetCredential(credential, user.getValue(User.ACCOUNT_POLICY));
 		return Constants.CMD_EXEC_SUCCESS;
 	}
 
-	private boolean isUserAdminRole(Tenant tenant) {
+	static boolean isUserAdminRole(Tenant tenant) {
 		AuthContext auth = AuthContext.getCurrentContext();
 		if (auth.getUser().isAdmin()) {
 			return true;
