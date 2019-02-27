@@ -306,7 +306,9 @@ class BuiltinEntityAuthContext extends BuiltinAuthorizationContext implements En
 			if (c.hasLimitCondition()) {
 				or.addExpression(c.getCondition(user, tenantAuthContext));
 			} else {
-				hasNoCondition = true;
+				if (c.isPermit()) {
+					hasNoCondition = true;
+				}
 			}
 		}
 
@@ -377,7 +379,7 @@ class BuiltinEntityAuthContext extends BuiltinAuthorizationContext implements En
 		}
 
 		for (EntityPermissionEntry c: checkTarget) {
-			if (!c.hasLimitCondition()) {
+			if (c.isPermit() && !c.hasLimitCondition()) {
 				return false;
 			}
 		}
