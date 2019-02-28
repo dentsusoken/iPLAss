@@ -82,6 +82,10 @@ iplass-admin、iplass-tools-batchから参照されます。
 infinispanアドオンモジュールです。 +
 キャッシュストア、クラスタ間通信基盤としてinfinispanを利用することを可能にします。
 
+### iplass-redis
+Redisアドオンモジュールです。 +
+キャッシュストアとしてRedisを利用することを可能にします。
+
 ## Related repositories
 
 * https://github.com/ISID/iplass-skeleton
