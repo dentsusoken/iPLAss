@@ -41,7 +41,7 @@ mavenでの設定例：
  <dependency>
    <groupId>org.iplass</groupId>
    <artifactId>iplass-gem</artifactId>
-   <version>3.0.5</version>
+   <version>3.0.6</version>
    <type>pom</type>
  </dependency>
 
