@@ -1,19 +1,19 @@
 /*
  * Copyright (C) 2011 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
- * 
+ *
  * Unless you have purchased a commercial license,
  * the following license terms apply:
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
@@ -21,11 +21,12 @@
 package org.iplass.mtp.entity;
 
 import java.io.Serializable;
-//import java.lang.reflect.Array;
+import java.lang.reflect.Array;
 import java.sql.Timestamp;
-//import java.util.Date;
+import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
-//import java.util.LinkedList;
+import java.util.LinkedList;
 import java.util.Map;
 import java.util.Set;
 
@@ -37,7 +38,11 @@ import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.iplass.mtp.entity.definition.EntityDefinition;
+//import org.iplass.mtp.impl.entity.EntityContext;
+//import org.iplass.mtp.impl.entity.EntityHandler;
 import org.iplass.mtp.impl.entity.jaxb.EntityPropertyXmlAdapter;
+//import org.iplass.mtp.impl.entity.property.PropertyHandler;
+//import org.iplass.mtp.impl.entity.property.ReferencePropertyHandler;
 
 
 /**
@@ -75,14 +80,14 @@ public class GenericEntity implements Entity, Serializable {
 		setName(name);
 	}
 
-	/**
-	 * 現状、未実装
-	 *
-	 * @param pojoObject
-	 */
-	public GenericEntity(Object pojoObject) {
-		//TODO 実装
-	}
+//	/**
+//	 * 現状、未実装
+//	 *
+//	 * @param pojoObject
+//	 */
+//	public GenericEntity(Object pojoObject) {
+//		//TODO 実装
+//	}
 
 	public GenericEntity(EntityDefinition dataModelDefinition) {
 		this.definitionName = dataModelDefinition.getName();
@@ -133,7 +138,7 @@ public class GenericEntity implements Entity, Serializable {
 //			stack.pop();
 //		}
 //	}
-//
+
 //	@Override
 //	public String toString() {
 //		StringBuilder sb = new StringBuilder();
@@ -141,37 +146,125 @@ public class GenericEntity implements Entity, Serializable {
 //		return sb.toString();
 //	}
 
-	/* (non-Javadoc)
-	 * @see org.iplass.mtp.datamodel.Entity#getValue(java.lang.String)
+	/**
+	 * propNameで表現されるプロパティを取得します。<br>
+	 * <br>
+	 * <b>注意<br></b>
+	 * {@link #getValue(String, boolean)}をenableExpression=trueで呼び出します。
+	 * propNameはクライアントからの入力値を未検証のまま適用しないでください。
+	 * 改竄された場合意図しないプロパティ値が取得される可能性があります。
+	 * enableExpression=falseで呼び出したい場合は、明示的に{@link #getValue(String, boolean)}を利用してください。
 	 */
-	@SuppressWarnings("unchecked")
 	@Override
 	public <P> P getValue(String propName) {
+		return getValue(propName, true);
+	}
+
+	/**
+	 * propNameで表現されるプロパティを取得します。
+	 *
+	 * enableExpression=trueの場合、propNameには、"."にてネストされたプロパティ、
+	 * "[index]"にて配列アクセスを指定可能。<br>
+	 * 例えば、
+	 * "role.condition[0].name"は、getValue("role").getValue("condition")[0].getValue("name")を示す。<br>
+	 * <br>
+	 * <b>注意<br>
+	 * enableExpression=trueの場合、propNameはクライアントからの入力値を未検証のまま適用しないでください。
+	 * 改竄された場合意図しないプロパティ値が取得される可能性があります。
+	 * </b>
+	 *
+	 * @param propName
+	 * @param enableExpression
+	 * @return
+	 */
+	@SuppressWarnings("unchecked")
+	public <P> P getValue(String propName, boolean enableExpression) {
 		if (properties != null) {
+			if (!enableExpression) {
+				return (P) properties.get(propName);
+			}
+
 			int firstDotIndex = propName.indexOf('.');
 			if (firstDotIndex > 0) {
 				String topPropName = propName.substring(0, firstDotIndex);
 				String subPropName = propName.substring(firstDotIndex + 1);
-				Entity topEntity = (Entity) properties.get(topPropName);
+				Entity topEntity = (Entity) getValueInternal(topPropName);
 				if (topEntity == null) {
 					return null;
 				} else {
 					return topEntity.<P> getValue(subPropName);
 				}
 			} else {
-				return (P) properties.get(propName);
+				return (P) getValueInternal(propName);
 			}
 		} else {
 			return null;
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see org.iplass.mtp.datamodel.Entity#setValue(java.lang.String, java.lang.Object)
+	private Object getValueInternal(String propName) {
+		int begin = propName.indexOf('[');
+		if (begin > 0) {
+			int end = propName.indexOf(']');
+			if (end < 0) {
+				throw new IllegalArgumentException("propName expression invalid:" + propName);
+			}
+			try {
+				int index = Integer.parseInt(propName.substring(begin + 1, end));
+				Object val = properties.get(propName.substring(0, begin));
+				if (val == null) {
+					return null;
+				}
+				if (val instanceof Object[]) {
+					Object[] valArray = (Object[]) val;
+					if (valArray.length <= index) {
+						return null;
+					}
+					return valArray[index];
+				}
+				return null;
+
+			} catch (NumberFormatException e) {
+				throw new IllegalArgumentException("propName expression invalid:" + propName, e);
+			}
+
+		} else {
+			return properties.get(propName);
+		}
+	}
+
+	/**
+	 * propNameで表現されるプロパティにvalueをセットします。<br>
+	 * <br>
+	 * <b>注意<br></b>
+	 * {@link #setValue(String, Object, boolean)}をenableExpression=trueで呼び出します。
+	 * propNameはクライアントからの入力値を未検証のまま適用しないでください。
+	 * 改竄された場合意図しないプロパティに値ががセットされる可能性があります。<br>
+	 * enableExpression=falseで呼び出したい場合は、明示的に{@link #setValue(String, Object, boolean)}を利用してください。
 	 */
 	@Override
 	public void setValue(String propName, Object value) {
-		if (getValue(propName) == null && value == null) {
+		setValue(propName, value, true);
+	}
+
+	/**
+	 * propNameで表現されるプロパティにvalueをセットします。
+	 * enableExpression=trueの場合、propNameには、"."にてネストされたプロパティ、
+	 * "[index]"にて配列アクセスを指定可能です。<br>
+	 * 例えば、
+	 * "role.condition[0].name"は、getValue("role").getValue("condition")[0].getValue("name")を示します。<br>
+	 * <br>
+	 * <b>注意<br>
+	 * enableExpression=trueの場合、propNameはクライアントからの入力値を未検証のまま適用しないでください。
+	 * 改竄された場合意図しないプロパティに値がセットされる可能性があります。
+	 * </b>
+	 *
+	 * @param propName
+	 * @param value
+	 * @param enableExpression
+	 */
+	public void setValue(String propName, Object value, boolean enableExpression) {
+		if (value == null && getValue(propName, enableExpression) == null) {
 			return;
 		}
 
@@ -179,45 +272,45 @@ public class GenericEntity implements Entity, Serializable {
 			properties = new HashMap<String, Object>();
 		}
 
+		if (!enableExpression) {
+			if (value == null) {
+				properties.remove(propName);
+			} else {
+				properties.put(propName, value);
+			}
+		}
+
 		int firstDotIndex = propName.indexOf('.');
 		if (firstDotIndex > 0) {
-			String topPropName = propName.substring(0, firstDotIndex);
-			String subPropName = propName.substring(firstDotIndex + 1);
-			Entity topEntity = (Entity) properties.get(topPropName);
-			if (topEntity == null) {//TODO EntityDefinitionManagerの参照をしない（チェックしない）ほうがよいかも、、、
-//				EntityDefinitionManager edm = ServiceLocator.getInstance().getEntityDefinitionManager();
-//				EntityDefinition myDef = edm.get(getDefinitionName());
+//			String topPropName = propName.substring(0, firstDotIndex);
+//			String subPropName = propName.substring(firstDotIndex + 1);
+//			Entity topEntity = (Entity) getValueInternal(topPropName);
+//			if (topEntity == null) {
+//				EntityContext ec = EntityContext.getCurrentContext();
+//				EntityHandler myDef = ec.getHandlerByName(getDefinitionName());
 //				if (myDef == null) {
 //					throw new EntityRuntimeException("DefinitionName is unspecified.");
 //				}
-//				ReferenceProperty rp = (ReferenceProperty) myDef.getProperty(topPropName);
-//				if (rp == null) {
-//					throw new EntityRuntimeException(topPropName + " is undefined.");
+//				PropertyHandler ph = myDef.getProperty(propNameOnly(topPropName), ec);
+//				if (ph == null || !(ph instanceof ReferencePropertyHandler)) {
+//					throw new EntityRuntimeException(topPropName + " is undefined or not ReferenceProperty.");
 //				}
-//				EntityDefinition refDef = edm.get(rp.getObjectDefinitionName());
-//				if (refDef.getMapping() != null) {
-//					try {
-//						topEntity = (Entity) Class.forName(refDef.getMapping().getMappingModelClass()).newInstance();
-//					} catch (InstantiationException e) {
-//						throw new EntityRuntimeException(e);
-//					} catch (IllegalAccessException e) {
-//						throw new EntityRuntimeException(e);
-//					} catch (ClassNotFoundException e) {
-//						throw new EntityRuntimeException(e);
-//					}
-//				} else {
-//					topEntity = new GenericEntity();
+//				EntityHandler refDef = ((ReferencePropertyHandler) ph).getReferenceEntityHandler(ec);
+//				if (refDef == null) {
+//					throw new EntityRuntimeException(topPropName + "'s EntityDefinition is undefined.");
 //				}
-//				topEntity.setDefinitionName(rp.getObjectDefinitionName());
-//				properties.put(topPropName, topEntity);
+//				topEntity = refDef.newInstance();
+//				setValueInternal(topPropName, topEntity, refDef);
+//			}
 //
-//				//TODO 循環参照（相互参照）対応するか？？
-//				//TODO 配列対応するか？？
-
-			}
-			topEntity.setValue(subPropName, value);
+//			if (topEntity instanceof GenericEntity) {
+//				((GenericEntity) topEntity).setValue(subPropName, value, enableExpression);
+//			} else {
+//				topEntity.setValue(subPropName, value);
+//			}
 
 		} else {
+//			setValueInternal(propName, value, null);
 			if (value == null) {
 				properties.remove(propName);
 			} else {
@@ -226,97 +319,121 @@ public class GenericEntity implements Entity, Serializable {
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see org.iplass.mtp.datamodel.Entity#getOid()
-	 */
+	private String propNameOnly(String propName) {
+		int begin = propName.indexOf('[');
+		if (begin > 0) {
+			return propName.substring(0, begin);
+		} else {
+			return propName;
+		}
+	}
+
+//	private void setValueInternal(String propName, Object value, EntityHandler eh) {
+//		int begin = propName.indexOf('[');
+//		if (begin > 0) {
+//			int end = propName.indexOf(']');
+//			if (end < 0) {
+//				throw new IllegalArgumentException("propName expression invalid:" + propName);
+//			}
+//			try {
+//				int index = Integer.parseInt(propName.substring(begin + 1, end));
+//				String propNameOnly = propName.substring(0, begin);
+//				Object val = properties.get(propNameOnly);
+//				if (val == null) {
+//					if (value == null) {
+//						return;
+//					} else {
+//						Object[] valArray = (eh == null) ?
+//								(Object[]) Array.newInstance(value.getClass(), index + 1): eh.newArrayInstance(index + 1);
+//						valArray[index] = value;
+//						properties.put(propNameOnly, valArray);
+//						return;
+//					}
+//				}
+//				if (val instanceof Object[]) {
+//					Object[] valArray = (Object[]) val;
+//					if (value == null) {
+//						if (valArray.length > index) {
+//							valArray[index] = null;
+//						}
+//						return;
+//					} else {
+//						if (valArray.length <= index) {
+//							valArray = Arrays.copyOf(valArray, index + 1);
+//							properties.put(propNameOnly, valArray);
+//						}
+//						valArray[index] = val;
+//						return;
+//					}
+//				}
+//			} catch (NumberFormatException e) {
+//				throw new IllegalArgumentException("propName expression invalid:" + propName, e);
+//			}
+//
+//		} else {
+//			if (value == null) {
+//				properties.remove(propName);
+//			} else {
+//				properties.put(propName, value);
+//			}
+//		}
+//	}
+
 	@Override
 	public String getOid() {
 		return (String) getValue(Entity.OID);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.iplass.mtp.datamodel.Entity#setOid(long)
-	 */
 	@Override
 	public void setOid(String oid) {
 		setValue(Entity.OID, oid);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.iplass.mtp.datamodel.Entity#getName()
-	 */
 	@Override
 	public String getName() {
 		return (String) getValue(Entity.NAME);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.iplass.mtp.datamodel.Entity#setName(java.lang.String)
-	 */
 	@Override
 	public void setName(String name) {
 		setValue(Entity.NAME, name);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.iplass.mtp.datamodel.Entity#getCreateDate()
-	 */
 	@Override
 	public Timestamp getCreateDate() {
 		return (Timestamp) getValue(Entity.CREATE_DATE);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.iplass.mtp.datamodel.Entity#setCreateDate(java.util.Date)
-	 */
 	@Override
 	public void setCreateDate(Timestamp createDate) {
 		setValue(Entity.CREATE_DATE, createDate);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.iplass.mtp.datamodel.Entity#getUpdateDate()
-	 */
 	@Override
 	public Timestamp getUpdateDate() {
 		return (Timestamp) getValue(Entity.UPDATE_DATE);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.iplass.mtp.datamodel.Entity#setUpdateDate(java.util.Date)
-	 */
 	@Override
 	public void setUpdateDate(Timestamp updateDate) {
 		setValue(Entity.UPDATE_DATE, updateDate);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.iplass.mtp.datamodel.Entity#getCreateBy()
-	 */
 	@Override
 	public String getCreateBy() {
 		return (String) getValue(Entity.CREATE_BY);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.iplass.mtp.datamodel.Entity#setCreateBy(long)
-	 */
 	@Override
 	public void setCreateBy(String createBy) {
 		setValue(Entity.CREATE_BY, createBy);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.iplass.mtp.datamodel.Entity#getUpdateBy()
-	 */
 	@Override
 	public String getUpdateBy() {
 		return (String) getValue(Entity.UPDATE_BY);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.iplass.mtp.datamodel.Entity#setUpdateBy(long)
-	 */
 	@Override
 	public void setUpdateBy(String updateBy) {
 		setValue(Entity.UPDATE_BY, updateBy);
@@ -544,6 +661,7 @@ public class GenericEntity implements Entity, Serializable {
 		return properties.keySet();
 	}
 
+
 //	/**
 //	 * JSON形式の送受信にpropertiesを含めるためのメソッド(Jacksonへの対応)。
 //	 * 利用箇所はなし。
@@ -561,18 +679,11 @@ public class GenericEntity implements Entity, Serializable {
 //	}
 //
 //	/**
-//	 * JSON形式の送受信にpropertiesを含めるためのメソッド(Jacksonへの対応)。
-//	 * 利用箇所はなし。
-//	 *
-//	 * org.codehaus.jackson.annotate.JsonProperty
-//	 * を指定することでgetter、setterは不要になるが、
-//	 * Entityとしてはjacksonに依存したくないため、
-//	 * privateメソッドとして定義。
+//	 * プロパティをMap形式で取得。
 //	 *
 //	 * @return
 //	 */
-//	@SuppressWarnings("unused")
-//	private Map<String, Object> getProperties() {
+//	public Map<String, Object> getProperties() {
 //		if (properties == null) {
 //			properties = new HashMap<String, Object>();
 //		}

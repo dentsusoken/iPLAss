@@ -47,6 +47,7 @@ compileJava {
 		exclude 'org/iplass/adminconsole/client/**'
 		exclude 'org/iplass/adminconsole/trans/**'
 		exclude 'edu/ycp/cs/dh/acegwt/client/**'
+//		exclude 'com/google/gwt/user/client/**'  //これはサーバでも必要
 	}
 }
 
@@ -88,6 +89,7 @@ task processGwtResources(type: Sync) {
 	//GWTの対象からserverを除外
 	from ('src/main/java') {
 		exclude 'org/iplass/adminconsole/server/**'
+		exclude 'com/google/gwt/user/server/**/*.*'
 	}
 	from ('src/main/resources') {
 		exclude 'META-INF/**'
