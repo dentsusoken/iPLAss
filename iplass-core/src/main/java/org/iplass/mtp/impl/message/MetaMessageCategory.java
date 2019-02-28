@@ -1,19 +1,19 @@
 /*
  * Copyright (C) 2011 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
- * 
+ *
  * Unless you have purchased a commercial license,
  * the following license terms apply:
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
@@ -25,6 +25,7 @@ package org.iplass.mtp.impl.message;
 
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.regex.Pattern;
 
@@ -62,7 +63,7 @@ public class MetaMessageCategory extends BaseRootMetaData implements DefinableMe
 	private static final long serialVersionUID = 3080437844175871382L;
 
 	/** メッセージメタ情報 */
-	private Map<String,MetaMessageItem> messages;
+	private LinkedHashMap<String,MetaMessageItem> messages;
 
 	private static final Pattern namePattern = Pattern.compile("${name}", Pattern.LITERAL);
 	private static final Pattern entityNamePattern = Pattern.compile("${entityName}", Pattern.LITERAL);
@@ -96,7 +97,7 @@ public class MetaMessageCategory extends BaseRootMetaData implements DefinableMe
 		if(messages == null || messages.size() == 0) {
 			return Collections.emptyMap();
 		}
-		Map<String, MessageItem> ret = new HashMap<String, MessageItem>(messages.size());
+		Map<String, MessageItem> ret = new LinkedHashMap<String, MessageItem>(messages.size());
 		for (Map.Entry<String, MetaMessageItem> metaItem: messages.entrySet()) {
 			ret.put(metaItem.getKey(),metaItem.getValue().createMessageItem());
 		}
@@ -152,7 +153,7 @@ public class MetaMessageCategory extends BaseRootMetaData implements DefinableMe
 			}
 			return meta.createMessageItem();
 		}
-		
+
 		public String getMessageString(String messageId, String lang) {
 			if (messages == null) {
 				return null;
@@ -244,7 +245,7 @@ public class MetaMessageCategory extends BaseRootMetaData implements DefinableMe
 	 * メッセージメタ情報を取得します。
 	 * @return メッセージメタ情報
 	 */
-	public Map<String,MetaMessageItem> getMessages() {
+	public LinkedHashMap<String,MetaMessageItem> getMessages() {
 	    return messages;
 	}
 
@@ -252,7 +253,7 @@ public class MetaMessageCategory extends BaseRootMetaData implements DefinableMe
 	 * メッセージメタ情報を設定します。
 	 * @param messages メッセージメタ情報
 	 */
-	public void setMessages(Map<String,MetaMessageItem> messages) {
+	public void setMessages(LinkedHashMap<String,MetaMessageItem> messages) {
 	    this.messages = messages;
 	}
 	/**
@@ -261,7 +262,7 @@ public class MetaMessageCategory extends BaseRootMetaData implements DefinableMe
 	 */
 	public void addMessage(MetaMessageItem metaMessageItem) {
 		if(messages == null) {
-			messages = new HashMap<String,MetaMessageItem>();
+			messages = new LinkedHashMap<String,MetaMessageItem>();
 		}
 		messages.put(metaMessageItem.getMessageId(), metaMessageItem);
 	}
