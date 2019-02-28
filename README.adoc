@@ -34,7 +34,7 @@ https://iplass.org/downloads/
 
 gradleでの定義例：
 
- compile 'org.iplass:iplass-gem:3.0.5'
+ compile 'org.iplass:iplass-gem:3.0.6'
 
 mavenでの設定例：
 
