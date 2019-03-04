@@ -111,15 +111,15 @@ public class BulkCommandContext extends RegistrationCommandContext {
 	}
 
 	private void init() {
-		populateBulkCommandParam(Constants.OID, String.class, true, false);
-		populateBulkCommandParam(Constants.VERSION, Long.class, false, false);
-		populateBulkCommandParam(Constants.TIMESTAMP, Long.class, false, true);
+		populateBulkCommandParam(Constants.OID, String.class, true, true, false);
+		populateBulkCommandParam(Constants.VERSION, Long.class, false, true, false);
+		populateBulkCommandParam(Constants.TIMESTAMP, Long.class, false, false, true);
 
 		populateBulkUpdatedProperty(Constants.BULK_UPDATED_PROP_NM, true);
 		populateBulkUpdatedProperty(Constants.BULK_UPDATED_PROP_VALUE, false);
 	}
 
-	private void populateBulkCommandParam(String name, Class<?> cls, boolean create, boolean checkDiff) {
+	private void populateBulkCommandParam(String name, Class<?> cls, boolean create, boolean notBlank, boolean checkDiff) {
 		//BulkUpdateAllCommandからのChainの可能性があるので、Attributeから取得する
 		String[] param = (String[]) request.getAttribute(name);
 		if (param == null || param.length == 0) {
@@ -131,6 +131,10 @@ public class BulkCommandContext extends RegistrationCommandContext {
 				String[] params = splitRowParam(param[i]);
 				Integer targetRow = Integer.parseInt(params[0]);
 				String targetParam = params[1];
+				if (StringUtil.isBlank(targetParam) && notBlank) {
+					getLogger().error("can not be empty. name=" + name + ", param=" + param[i]);
+					throw new ApplicationException(resourceString("command.generic.bulk.BulkCommandContext.invalidFormat"));
+				}
 				BulkCommandParams bulkParams = getBulkCommandParams(targetRow);
 				if (create) {
 					// targetParamをキーとして設定する
