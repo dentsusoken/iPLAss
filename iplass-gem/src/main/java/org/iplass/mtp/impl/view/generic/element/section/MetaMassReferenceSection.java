@@ -701,13 +701,14 @@ public class MetaMassReferenceSection extends MetaSection {
 		for (MetaNestProperty mnp : getNestProperties()) {
 			if (refEntity != null) {
 				NestProperty np = mnp.currentConfig(refEntity, entity);
-				if (np != null && np.getPropertyName() != null) section.addProperty(np);
+				if (np != null) section.addProperty(np);
 			}
 		}
 
 		if (!getSortSetting().isEmpty()) {
 			for (MetaSortSetting meta : getSortSetting()) {
-				section.addSortSetting(meta.currentConfig(ctx, refEntity));
+				SortSetting ss = meta.currentConfig(ctx, refEntity);
+				if (ss != null) section.addSortSetting(ss);
 			}
 		}
 
