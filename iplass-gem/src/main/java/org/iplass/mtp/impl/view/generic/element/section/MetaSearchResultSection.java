@@ -459,7 +459,10 @@ public class MetaSearchResultSection extends MetaSection {
 		if (this.getElements().size() > 0) {
 			for (MetaElement elem : this.getElements()) {
 				Element e = elem.currentConfig(definitionId);
-				section.addElement(e);
+				//プロパティが無効な場合など、生成できない場合は追加しない
+				if (e != null) {
+					section.addElement(e);
+				}
 			}
 		}
 		return section;
