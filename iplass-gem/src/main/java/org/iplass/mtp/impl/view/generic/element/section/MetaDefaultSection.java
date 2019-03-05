@@ -422,7 +422,7 @@ public class MetaDefaultSection extends MetaSection {
 					if (p != null) section.addElement(p);
 				} else {
 					Element e = fillToElement(elem, definitionId);
-					section.addElement(e);
+					if (e != null) section.addElement(e);
 				}
 			}
 		}
@@ -452,7 +452,6 @@ public class MetaDefaultSection extends MetaSection {
 	private PropertyBase fillToProperty(MetaElement element, String definitionId) {
 		MetaPropertyLayout mp = (MetaPropertyLayout) element;
 		PropertyItem property = (PropertyItem) mp.currentConfig(definitionId);
-		if (property == null || property.getPropertyName() == null) property = null;
 		return property;
 	}
 
