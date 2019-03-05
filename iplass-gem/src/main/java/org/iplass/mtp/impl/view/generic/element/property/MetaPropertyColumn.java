@@ -25,15 +25,10 @@ import javax.xml.bind.annotation.XmlAccessorType;
 
 import org.iplass.mtp.impl.entity.EntityContext;
 import org.iplass.mtp.impl.entity.EntityHandler;
-import org.iplass.mtp.impl.entity.property.PropertyHandler;
-import org.iplass.mtp.impl.entity.property.ReferencePropertyHandler;
 import org.iplass.mtp.impl.view.generic.editor.MetaPropertyEditor;
 import org.iplass.mtp.view.generic.NullOrderType;
 import org.iplass.mtp.view.generic.RequiredDisplayType;
 import org.iplass.mtp.view.generic.TextAlign;
-import org.iplass.mtp.view.generic.editor.DateRangePropertyEditor;
-import org.iplass.mtp.view.generic.editor.JoinPropertyEditor;
-import org.iplass.mtp.view.generic.editor.ReferencePropertyEditor;
 import org.iplass.mtp.view.generic.element.Element;
 import org.iplass.mtp.view.generic.element.property.PropertyColumn;
 
@@ -179,6 +174,11 @@ public class MetaPropertyColumn extends MetaPropertyLayout {
 		//ReferencePropertyEditorは参照先Entityがない場合null。
 		//その場合はElementもnullで返す。
 		if (p.getEditor() == null) {
+			return null;
+		}
+
+		//プロパティ名が取得できない場合はnullを返す
+		if (p.getPropertyName() == null) {
 			return null;
 		}
 

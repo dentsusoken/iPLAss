@@ -453,7 +453,7 @@ public class MetaReferenceSection extends MetaSection {
 		}
 		for (MetaNestProperty meta : getProperties()) {
 			NestProperty nest = meta.currentConfig(refEntity, entity);
-			if (nest != null && nest.getPropertyName() != null) section.addProperty(nest);
+			if (nest != null) section.addProperty(nest);
 		}
 		section.setContentScriptKey(contentScriptKey);
 

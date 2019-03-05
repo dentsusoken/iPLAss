@@ -22,13 +22,12 @@ package org.iplass.mtp.impl.view.generic.common;
 
 import org.iplass.mtp.impl.entity.EntityContext;
 import org.iplass.mtp.impl.entity.EntityHandler;
-import org.iplass.mtp.impl.entity.property.PropertyHandler;
-import org.iplass.mtp.impl.entity.property.ReferencePropertyHandler;
 import org.iplass.mtp.impl.metadata.MetaData;
 import org.iplass.mtp.impl.util.ObjectUtil;
+import org.iplass.mtp.impl.view.generic.HasEntityProperty;
 import org.iplass.mtp.view.generic.common.AutocompletionProperty;
 
-public class MetaAutocompletionProperty implements MetaData {
+public class MetaAutocompletionProperty implements MetaData, HasEntityProperty {
 
 	private static final long serialVersionUID = 8665280705434279354L;
 
@@ -102,39 +101,6 @@ public class MetaAutocompletionProperty implements MetaData {
 		referencePropertyIndex = property.getReferencePropertyIndex();
 	}
 
-	private String convertId(String propName, EntityContext context, EntityHandler entity) {
-		if (propName == null || propName.isEmpty()) {
-			return null;
-		}
-		if (propName.contains(".")) {
-			int indexOfDot = propName.indexOf('.');
-			String objPropName = propName.substring(0, indexOfDot);
-			String subPropPath = propName.substring(indexOfDot + 1, propName.length());
-
-			PropertyHandler property = entity.getProperty(objPropName, context);
-			if (!(property instanceof ReferencePropertyHandler)) {
-				throw new IllegalArgumentException("path is invalid:" + objPropName + " is not ObjectReferenceProperty of " + entity.getMetaData().getName());
-			}
-			ReferencePropertyHandler refProp = (ReferencePropertyHandler) property;
-			EntityHandler refEntity = refProp.getReferenceEntityHandler(context);
-			if (refEntity == null) {
-				throw new IllegalArgumentException(objPropName + "'s Entity is not defined.");
-			}
-			String refProperty = convertId(subPropPath, context, refEntity);
-			if (refProperty == null) {
-				throw new IllegalArgumentException(subPropPath + "'s Property is not defined.");
-			}
-			return property.getId() + "." + refProperty;
-
-		} else {
-			PropertyHandler property = entity.getProperty(propName, context);
-			if (property == null) {
-				throw new IllegalArgumentException(propName + "'s Property is not defined.");
-			}
-			return property.getId();
-		}
-	}
-
 	public AutocompletionProperty currentConfig(EntityHandler refEntity, EntityHandler rootEntity) {
 		String _name = null;
 		if (rootEntity == null || nestProperty) {
@@ -151,34 +117,4 @@ public class MetaAutocompletionProperty implements MetaData {
 		return property;
 	}
 
-	private String convertName(String id, EntityContext context, EntityHandler entity) {
-		//idから復元できない場合→プロパティが消された等が考えられるので、
-		//Exceptionを投げずにnullで返しておく
-		if (id != null && id.contains(".")) {
-			int indexOfDot = id.indexOf(".");
-			String objPropId = id.substring(0, indexOfDot);
-			String subPropPath = id.substring(indexOfDot + 1, id.length());
-
-			PropertyHandler property = entity.getPropertyById(objPropId, context);
-			if (!(property instanceof ReferencePropertyHandler)) {
-				return null;
-			}
-			ReferencePropertyHandler refProp = (ReferencePropertyHandler) property;
-			EntityHandler refEntity = refProp.getReferenceEntityHandler(context);
-			if (refEntity == null) {
-				return null;
-			}
-			String refProperty = convertName(subPropPath, context, refEntity);
-			if (refProperty == null) {
-				return null;
-			}
-			return property.getName() + "." + refProperty;
-		} else {
-			PropertyHandler property = entity.getPropertyById(id, context);
-			if (property == null) {
-				return null;
-			}
-			return property.getName();
-		}
-	}
 }
