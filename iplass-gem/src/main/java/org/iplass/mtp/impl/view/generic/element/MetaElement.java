@@ -108,15 +108,15 @@ public abstract class MetaElement implements MetaData {
 	}
 
 	/**
-	 * 要素の内容を自身に適用。
-	 * @param element 要素
+	 * エレメントの設定をメタデータに反映します。
+	 * @param element エレメント定義
 	 * @param definitionId Entity定義のID
 	 */
 	public abstract void applyConfig(Element element, String definitionId);
 
 	/**
-	 * 自身の属性に要素の属性の値をセット
-	 * @param element 要素
+	 * エレメント共通の設定をメタデータに反映します。
+	 * @param element エレメント定義
 	 * @param definitionId Entity定義のID
 	 */
 	protected void fillFrom(Element element, String definitionId) {
@@ -125,15 +125,15 @@ public abstract class MetaElement implements MetaData {
 	}
 
 	/**
-	 * 自身の内容を要素に適用。
+	 * メタデータからエレメントを生成します。
 	 * @param definitionId Entity定義のID
-	 * @return 要素
+	 * @return エレメント
 	 */
 	public abstract Element currentConfig(String definitionId);
 
 	/**
-	 * 要素の属性に自身の属性の値をセット
-	 * @param element 要素
+	 * メタデータ共通の設定をエレメントに反映します。
+	 * @param element エレメント定義
 	 * @param definitionId Entity定義のID
 	 */
 	protected void fillTo(Element element, String definitionId) {
