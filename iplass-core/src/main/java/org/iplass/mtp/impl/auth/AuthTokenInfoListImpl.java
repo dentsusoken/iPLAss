@@ -49,13 +49,12 @@ public class AuthTokenInfoListImpl implements AuthTokenInfoList {
 		String userUniqueKey = userContext.getAccount().getUnmodifiableUniqueKey();
 		
 		List<AuthTokenInfo> atiList = new ArrayList<>();
-		for (AuthTokenStore s: tokenService.getStores()) {
-			List<AuthToken> sList = s.getByOwner(tenantId, userUniqueKey);
-			if (sList != null) {
-				for (AuthToken at: sList) {
-					AuthTokenHandler handler = tokenService.getHandler(at.getType());
-					if (handler != null && handler.isVisible()) {
-						atiList.add(handler.toAuthTokenInfo(at));
+		for (AuthTokenHandler ah: tokenService.getHandlers()) {
+			if (ah.isVisible()) {
+				List<AuthToken> sList = ah.authTokenStore().getByOwner(tenantId, ah.getType(), userUniqueKey);
+				if (sList != null) {
+					for (AuthToken at: sList) {
+						atiList.add(ah.toAuthTokenInfo(at));
 					}
 				}
 			}

@@ -83,6 +83,7 @@ public @interface WebApi {
 	MethodType[] methods() default{};
 	StateType state() default StateType.STATEFUL;
 	boolean supportBearerToken() default false;
+	String[] oauthScopes() default{};
 
 	String[] results() default {WebApiRequestConstants.DEFAULT_RESULT};
 

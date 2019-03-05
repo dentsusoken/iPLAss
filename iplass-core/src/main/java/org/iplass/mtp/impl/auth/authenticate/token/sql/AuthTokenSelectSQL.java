@@ -20,7 +20,10 @@
 
 package org.iplass.mtp.impl.auth.authenticate.token.sql;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.Serializable;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -48,13 +51,19 @@ public class AuthTokenSelectSQL extends QuerySqlHandler {
 		ps.setString(2, type);
 		ps.setString(3, series);
 	}
-	public AuthToken toAuthToken(ResultSet rs, ObjectMapper om) throws SQLException {
+	public AuthToken toAuthToken(ResultSet rs, boolean saveDetailAsJson, ObjectMapper om) throws SQLException {
 		AuthToken at = new AuthToken(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5), rs.getString(6), rs.getTimestamp(7), null);
 		byte[] tiByte = rs.getBytes(8);
 		if (tiByte != null && tiByte.length > 0) {
 			try {
-				at.setDetails(om.readValue(tiByte, DetailWrapper.class).getDetails());
-			} catch (IOException e) {
+				if (saveDetailAsJson) {
+					at.setDetails(om.readValue(tiByte, DetailWrapper.class).getDetails());
+				} else {
+					ByteArrayInputStream byteIn = new ByteArrayInputStream(tiByte);
+					ObjectInputStream in = new ObjectInputStream(byteIn);
+					at.setDetails((Serializable) in.readObject());
+				}
+			} catch (IOException | ClassNotFoundException e) {
 				logger.error("Can't parse tokenInfo value so ignore tokenInfo:tenantId=" + at.getTenantId() + ", type=" + at.getType() + ", series=" + at.getSeries());
 			}
 		}
@@ -65,11 +74,12 @@ public class AuthTokenSelectSQL extends QuerySqlHandler {
 		return "SELECT " +
 				"TENANT_ID,T_TYPE,U_KEY,SERIES,TOKEN,POL_NAME,S_DATE,T_INFO " +
 				"FROM T_ATOKEN " +
-				"WHERE TENANT_ID=? AND U_KEY=?";
+				"WHERE TENANT_ID=? AND U_KEY=? AND T_TYPE=?";
 	}
-	public void setSelectByUserUniqueKeyParameter(RdbAdapter rdb, PreparedStatement ps, int tenantId, String userUniqueKey) throws SQLException {
+	public void setSelectByUserUniqueKeyParameter(RdbAdapter rdb, PreparedStatement ps, int tenantId, String type, String userUniqueKey) throws SQLException {
 		ps.setInt(1, tenantId);
 		ps.setString(2, userUniqueKey);
+		ps.setString(3, type);
 	}
 
 }

@@ -19,7 +19,7 @@
  */
 package org.iplass.mtp.impl.auth.authenticate.simpletoken;
 
-import java.sql.Timestamp;
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -30,7 +30,6 @@ import org.iplass.mtp.auth.token.AuthTokenInfo;
 import org.iplass.mtp.impl.auth.authenticate.token.AuthToken;
 import org.iplass.mtp.impl.auth.authenticate.token.AuthTokenHandler;
 import org.iplass.mtp.impl.auth.authenticate.token.AuthTokenService;
-import org.iplass.mtp.impl.core.ExecuteContext;
 import org.iplass.mtp.spi.Config;
 
 public class SimpleAuthTokenHandler extends AuthTokenHandler {
@@ -61,21 +60,19 @@ public class SimpleAuthTokenHandler extends AuthTokenHandler {
 	}
 	
 	@Override
-	public AuthToken newAuthToken(String userUniqueId, String policyName, AuthTokenInfo tokenInfo) {
+	public Credential toCredential(AuthToken newToken) {
+		return new SimpleAuthTokenCredential(newToken.encodeToken());
+	}
+
+	@Override
+	protected Serializable createDetails(String seriesString, String tokenString, String userUniqueId, String policyName, AuthTokenInfo tokenInfo) {
 		SimpleAuthTokenInfo sat = (SimpleAuthTokenInfo) tokenInfo;
-		int tenantId = ExecuteContext.getCurrentContext().getClientTenantId();
 		HashMap<String, Object> details = null;
 		if (sat.getApplication() != null) {
 			details = new HashMap<>();
 			details.put("application", sat.getApplication());
 		}
-		
-		return new AuthToken(tenantId, getType(), userUniqueId, newSeriesString(), newTokenString(), policyName, new Timestamp(System.currentTimeMillis()), details);
-	}
-
-	@Override
-	public Credential toCredential(AuthToken newToken) {
-		return new SimpleAuthTokenCredential(newToken.encodeToken());
+		return details;
 	}
 
 }

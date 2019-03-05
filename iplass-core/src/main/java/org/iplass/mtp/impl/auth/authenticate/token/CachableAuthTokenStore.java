@@ -19,7 +19,6 @@
  */
 package org.iplass.mtp.impl.auth.authenticate.token;
 
-import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
@@ -27,7 +26,7 @@ import java.util.List;
 import org.iplass.mtp.impl.cache.CacheController;
 import org.iplass.mtp.impl.cache.CacheService;
 import org.iplass.mtp.impl.cache.LoadingAdapter;
-import org.iplass.mtp.impl.cache.store.keyresolver.CacheKeyResolver;
+import org.iplass.mtp.impl.util.ObjectUtil;
 import org.iplass.mtp.spi.Config;
 import org.iplass.mtp.spi.ServiceInitListener;
 import org.iplass.mtp.spi.ServiceRegistry;
@@ -97,12 +96,24 @@ public class CachableAuthTokenStore implements AuthTokenStore, ServiceInitListen
 
 	@Override
 	public AuthToken getBySeries(int tenantId, String type, String series) {
-		return tokenCache.get(new AuthTokenKey(tenantId, type, series));
+		AuthToken t = tokenCache.get(new AuthTokenKey(tenantId, type, series));
+		if (t != null) {
+			t = ObjectUtil.deepCopy(t);
+		}
+		return t;
 	}
 
 	@Override
-	public List<AuthToken> getByOwner(int tenantId, String userUniqueKey) {
-		return authTokenStore.getByOwner(tenantId, userUniqueKey);
+	public List<AuthToken> getByOwner(int tenantId, String type, String userUniqueKey) {
+		List<AuthToken> l = authTokenStore.getByOwner(tenantId, type, userUniqueKey);
+		if (l != null) {
+			List<AuthToken> ret = new ArrayList<>(l.size());
+			for (AuthToken t: l) {
+				ret.add(ObjectUtil.deepCopy(t));
+			}
+			l = ret;
+		}
+		return l;
 	}
 
 	@Override
@@ -113,7 +124,7 @@ public class CachableAuthTokenStore implements AuthTokenStore, ServiceInitListen
 		if (t.getStatus() == TransactionStatus.ACTIVE) {
 			t.afterRollback(() -> {
 				tokenCache.notifyInvalid(token);
-			}); 
+			});
 		}
 	}
 
@@ -131,16 +142,14 @@ public class CachableAuthTokenStore implements AuthTokenStore, ServiceInitListen
 
 	@Override
 	public void delete(int tenantId, String type, String userUniqueKey) {
-		List<AuthToken> lists = getByOwner(tenantId, userUniqueKey);
+		List<AuthToken> lists = getByOwner(tenantId, type, userUniqueKey);
 		authTokenStore.delete(tenantId, type, userUniqueKey);
 		if (lists != null && lists.size() > 0) {
 			List<AuthTokenKey> keys = new ArrayList<>();
 			for (AuthToken t: lists) {
-				if (t.getType().equals(type)) {
-					AuthTokenKey key = new AuthTokenKey(t.getTenantId(), t.getType(), t.getSeries());
-					tokenCache.notifyDeleteByKey(key);
-					keys.add(key);
-				}
+				AuthTokenKey key = new AuthTokenKey(t.getTenantId(), t.getType(), t.getSeries());
+				tokenCache.notifyDeleteByKey(key);
+				keys.add(key);
 			}
 			
 			//念のため
@@ -174,90 +183,6 @@ public class CachableAuthTokenStore implements AuthTokenStore, ServiceInitListen
 	public void deleteByDate(int tenantId, String type, Timestamp ts) {
 		//キャッシュの有効期間は、ここで指定される日付より十分短い想定
 		authTokenStore.deleteByDate(tenantId, type, ts);
-	}
-
-	private static class AuthTokenKey implements Serializable {
-		private static final long serialVersionUID = 6033114232648174950L;
-
-		private final int tenantId;
-		private final String type;
-		private final String series;
-		
-		public AuthTokenKey(int tenantId, String type, String series) {
-			this.tenantId = tenantId;
-			this.type = type;
-			this.series = series;
-		}
-
-		public int getTenantId() {
-			return tenantId;
-		}
-
-		public String getType() {
-			return type;
-		}
-
-		public String getSeries() {
-			return series;
-		}
-
-		@Override
-		public int hashCode() {
-			final int prime = 31;
-			int result = 1;
-			result = prime * result + ((series == null) ? 0 : series.hashCode());
-			result = prime * result + tenantId;
-			result = prime * result + ((type == null) ? 0 : type.hashCode());
-			return result;
-		}
-
-		@Override
-		public boolean equals(Object obj) {
-			if (this == obj)
-				return true;
-			if (obj == null)
-				return false;
-			if (getClass() != obj.getClass())
-				return false;
-			AuthTokenKey other = (AuthTokenKey) obj;
-			if (series == null) {
-				if (other.series != null)
-					return false;
-			} else if (!series.equals(other.series))
-				return false;
-			if (tenantId != other.tenantId)
-				return false;
-			if (type == null) {
-				if (other.type != null)
-					return false;
-			} else if (!type.equals(other.type))
-				return false;
-			return true;
-		}
-
-	}
-
-	public static class AuthTokenKeyResolver implements CacheKeyResolver {
-
-		@Override
-		public String toString(Object cacheKey) {
-			AuthTokenKey key = (AuthTokenKey) cacheKey;
-			StringBuilder sb = new StringBuilder();
-			sb.append(key.getTenantId()).append(':').append(key.getType()).append(':').append(key.getSeries());
-			return sb.toString();
-		}
-
-		@Override
-		public Object toCacheKey(String cacheKeyString) {
-			int index = cacheKeyString.indexOf(':');
-			int tenantId = Integer.parseInt(cacheKeyString.substring(0, index));
-			int index2 = cacheKeyString.indexOf(index + 1, ':');
-			String type = cacheKeyString.substring(index, index2);
-			String series = cacheKeyString.substring(index2 + 1);
-
-			return new AuthTokenKey(tenantId, type, series);
-		}
-
 	}
 
 }

@@ -33,7 +33,8 @@ import org.iplass.mtp.impl.webapi.command.entity.UpdateEntityCommand;
 	CreateEntityCommand.class,
 	UpdateEntityCommand.class,
 	DeleteEntityCommand.class,
-	BinaryCommand.class
+	BinaryCommand.class,
+	org.iplass.mtp.impl.auth.oauth.command.MetaDataRefs.class
 })
 public class MetaDataRefs {
 }

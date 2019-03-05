@@ -78,6 +78,7 @@ public class MetaWebApi extends BaseRootMetaData implements DefinableMetaData<We
 	private MethodType[] methods;
 	private StateType state = StateType.STATEFUL;
 	private boolean supportBearerToken;
+	private String[] oauthScopes;
 
 	private CacheControlType cacheControlType;
 	private long cacheControlMaxAge = -1;
@@ -112,6 +113,14 @@ public class MetaWebApi extends BaseRootMetaData implements DefinableMetaData<We
 	//TODO paramMap（pathParam）
 
 	private boolean needTrustedAuthenticate;
+
+	public String[] getOauthScopes() {
+		return oauthScopes;
+	}
+
+	public void setOauthScopes(String[] oauthScopes) {
+		this.oauthScopes = oauthScopes;
+	}
 
 	public boolean isSupportBearerToken() {
 		return supportBearerToken;
@@ -531,6 +540,30 @@ public class MetaWebApi extends BaseRootMetaData implements DefinableMetaData<We
 			throw new WebApplicationException(Status.METHOD_NOT_ALLOWED);
 //			throw new WebAPIException("Unsupported request(requested method type not allowed)");
 		}
+
+		public boolean isSufficientOAuthScope(List<String> grantedScopes) {
+			if (oauthScopes == null || oauthScopes.length == 0) {
+				return false;
+			}
+			if (grantedScopes == null || grantedScopes.size() == 0) {
+				return false;
+			}
+			
+			for (String os: oauthScopes) {
+				if (os.indexOf(' ') > 0) {
+					String[] osSplit = os.split(" ");
+					if (grantedScopes.containsAll(Arrays.asList(osSplit))) {
+						return true;
+					}
+				} else {
+					if (grantedScopes.contains(os)) {
+						return true;
+					}
+				}
+			}
+
+			return false;
+		}
 	}
 
 	// Meta → Definition
@@ -582,6 +615,10 @@ public class MetaWebApi extends BaseRootMetaData implements DefinableMetaData<We
 		definition.setAccessControlAllowOrigin(accessControlAllowOrigin);
 		definition.setAccessControlAllowCredentials(accessControlAllowCredentials);
 		definition.setNeedTrustedAuthenticate(needTrustedAuthenticate);
+		
+		if (oauthScopes != null) {
+			definition.setOauthScopes(Arrays.copyOf(oauthScopes, oauthScopes.length));
+		}
 
 		return definition;
 	}
@@ -614,7 +651,6 @@ public class MetaWebApi extends BaseRootMetaData implements DefinableMetaData<We
 		}
 		state = definition.getState();
 		supportBearerToken = definition.isSupportBearerToken();
-
 		cacheControlType = definition.getCacheControlType();
 		cacheControlMaxAge = definition.getCacheControlMaxAge();
 
@@ -651,5 +687,11 @@ public class MetaWebApi extends BaseRootMetaData implements DefinableMetaData<We
 		accessControlAllowOrigin = definition.getAccessControlAllowOrigin();
 		accessControlAllowCredentials = definition.isAccessControlAllowCredentials();
 		needTrustedAuthenticate = definition.isNeedTrustedAuthenticate();
+		
+		if (definition.getOauthScopes() != null) {
+			oauthScopes = Arrays.copyOf(definition.getOauthScopes(), definition.getOauthScopes().length);
+		} else {
+			oauthScopes = null;
+		}
 	}
 }

@@ -8,6 +8,9 @@
 		<property name="org.iplass.mtp.web.template.definition.TemplateDefinitionManager" value="org.iplass.mtp.impl.web.template.TemplateDefinitionManagerImpl" />
 		<property name="org.iplass.mtp.webapi.definition.EntityWebApiDefinitionManager" value="org.iplass.mtp.impl.webapi.EntityWebApiDefinitionManagerImpl" />
 		<property name="org.iplass.mtp.webapi.definition.WebApiDefinitionManager" value="org.iplass.mtp.impl.webapi.WebApiDefinitionManagerImpl" />
+		<property name="org.iplass.mtp.auth.oauth.definition.OAuthAuthorizationDefinitionManager" value="org.iplass.mtp.impl.auth.oauth.OAuthAuthorizationDefinitionManagerImpl" />
+		<property name="org.iplass.mtp.auth.oauth.definition.OAuthClientDefinitionManager" value="org.iplass.mtp.impl.auth.oauth.OAuthClientDefinitionManagerImpl" />
+		<property name="org.iplass.mtp.auth.oauth.definition.OAuthResourceServerDefinitionManager" value="org.iplass.mtp.impl.auth.oauth.OAuthResourceServerDefinitionManagerImpl" />
 	</service>
 
 	<!-- MetaData JAXB configuration -->
@@ -41,6 +44,9 @@
 		<property name="typeMap" value="org.iplass.mtp.impl.web.template.TemplateService$TypeMap" additional="true" />
 		<property name="typeMap" value="org.iplass.mtp.impl.webapi.WebApiService$TypeMap" additional="true" />
 		<property name="typeMap" value="org.iplass.mtp.impl.web.staticresource.StaticResourceService$TypeMap" additional="true" />
+		<property name="typeMap" value="org.iplass.mtp.impl.auth.oauth.OAuthAuthorizationService$TypeMap" additional="true" />
+		<property name="typeMap" value="org.iplass.mtp.impl.auth.oauth.OAuthClientService$TypeMap" additional="true" />
+		<property name="typeMap" value="org.iplass.mtp.impl.auth.oauth.OAuthResourceServerService$TypeMap" additional="true" />
 	</service>
 
 	<!-- Tenant関連 -->
@@ -96,6 +102,25 @@
 			</property>
 		</property>
 
+		<property name="authenticationProvider" class="org.iplass.mtp.impl.auth.oauth.AccessTokenAuthenticationProvider" inherit="false">
+			<property name="providerName" value="oauthAccessToken" />
+			<property name="credentialTypeForTrust" value="org.iplass.mtp.auth.login.IdPasswordCredential" />
+			<property name="accountHandleClassForTrust" value="org.iplass.mtp.impl.auth.authenticate.builtin.BuiltinAccountHandle" />
+			<property name="autoLoginHandler" class="org.iplass.mtp.impl.auth.authenticate.token.web.BearerTokenAutoLoginHandler">
+				<property name="authTokenType" value="OAT" />
+				<property name="rejectAmbiguousRequest" value="true" />
+			</property>
+			
+ 			<!-- if load custom reference property at login, set userEntityResolver.eagerLoadReferenceProperty -->
+ 			<!--
+ 			<property name="userEntityResolver" class="org.iplass.mtp.impl.auth.authenticate.DefaultUserEntityResolver">
+	 			<property name="eagerLoadReferenceProperty" value="rank" />
+	 			<property name="eagerLoadReferenceProperty" value="groups" />
+	 			<property name="eagerLoadReferenceProperty" value="yourCustomReference" />
+ 			</property>
+ 			 -->
+		</property>
+
 		<property name="authenticationProvider" class="org.iplass.mtp.impl.auth.authenticate.simpletoken.SimpleAuthTokenAuthenticationProvider" inherit="false">
 			<property name="providerName" value="simpleAuthToken" />
 			<property name="credentialTypeForTrust" value="org.iplass.mtp.auth.login.IdPasswordCredential" />
@@ -109,6 +134,86 @@
 			<property name="authorizationContextHandler" class="org.iplass.mtp.impl.auth.authorize.builtin.action.ActionAuthContextHandler" additional="true" />
 			<property name="authorizationContextHandler" class="org.iplass.mtp.impl.auth.authorize.builtin.webapi.WebApiAuthContextHandler" additional="true" />
 		</property>
+	</service>
+	
+	<!-- OAuth関連 -->
+	<service>
+		<interface>org.iplass.mtp.impl.auth.authenticate.token.AuthTokenService</interface>
+		<property name="handler" class="org.iplass.mtp.impl.auth.oauth.token.opaque.AccessTokenHandler" additional="true" >
+			<property name="type" value="OAT" />
+			<property name="store" value="cachableRdb" />
+			<property name="secureRandomGeneratorName" value="accessTokenGenerator" />
+			<property name="refreshTokenType" value="ORT" />
+			<property name="refreshTokenStore" value="cachableRdb" />
+			<property name="refreshTokenSecureRandomGeneratorName" value="refreshTokenGenerator" />
+			<property name="hashSettings">
+				<property name="version" value="1" />
+				<property name="hashAlgorithm" value="SHA-256" />
+			</property>
+		</property>
+		<property name="handler" class="org.iplass.mtp.impl.auth.oauth.OAuthClientCredentialHandler" additional="true" >
+			<property name="type" value="OC" />
+			<property name="oldCredentialValidDays" value="7" />
+			<property name="store" value="cachableRdb" />
+			<property name="secureRandomGeneratorName" value="clientSecretGenerator" />
+			<property name="hashSettings">
+				<property name="version" value="1" />
+				<property name="hashAlgorithm" value="SHA-256" />
+			</property>
+		</property>
+		<property name="handler" class="org.iplass.mtp.impl.auth.oauth.OAuthClientCredentialHandler" additional="true" >
+			<property name="type" value="ORS" />
+			<property name="oldCredentialValidDays" value="7" />
+			<property name="store" value="cachableRdb" />
+			<property name="secureRandomGeneratorName" value="clientSecretGenerator" />
+			<property name="hashSettings">
+				<property name="version" value="1" />
+				<property name="hashAlgorithm" value="SHA-256" />
+			</property>
+		</property>
+	</service>
+	<service>
+		<interface>org.iplass.mtp.impl.util.random.SecureRandomService</interface>
+		<property name="accessTokenGenerator">
+			<property name="numBitsOfSecureRandomToken" value="256" />
+			<property name="radixOfSecureRandomToken" value="64" />
+			<property name="useStrongSecureRandom" value="false" />
+		</property>
+		<property name="refreshTokenGenerator">
+			<property name="numBitsOfSecureRandomToken" value="256" />
+			<property name="radixOfSecureRandomToken" value="64" />
+			<property name="useStrongSecureRandom" value="false" />
+		</property>
+		<property name="clientSecretGenerator">
+			<property name="numBitsOfSecureRandomToken" value="256" />
+			<property name="radixOfSecureRandomToken" value="64" />
+			<property name="useStrongSecureRandom" value="false" />
+		</property>
+	</service>
+	<service>
+		<interface>org.iplass.mtp.impl.auth.oauth.OAuthAuthorizationService</interface>
+		<property name="defaultConsentTemplateName" value="oauth/Consent" />
+		<property name="authorizationCodeStore" class="org.iplass.mtp.impl.auth.oauth.code.CacheAuthorizationCodeStore">
+			<property name="timeToLive" value="180000" />
+		</property>
+		<property name="accessTokenStore" class="org.iplass.mtp.impl.auth.oauth.token.opaque.OpaqueOAuthAccessTokenStore">
+			<property name="seriesHashAlgorithm" value="SHA-256" />
+			<!-- TODO change salt for each environment -->
+			<property name="seriesHashSalt" value="iPLAss#86e0f9cf-2b45-4395-a449-4c38760cc259" />
+			<property name="tokenCreationStrategy" class="org.iplass.mtp.impl.auth.oauth.token.opaque.NewTokenCreationStrategy" />
+		</property>
+		
+		<property name="subjectIdHashAlgorithm" value="SHA-256" />
+		<!-- TODO set salt for each environment if subjectId hashing -->
+		<!-- 
+		<property name="subjectIdHashSalt" value="yourOwnSalt" />
+		 -->
+	</service>
+	<service>
+		<interface>org.iplass.mtp.impl.auth.oauth.OAuthClientService</interface>
+	</service>
+	<service>
+		<interface>org.iplass.mtp.impl.auth.oauth.OAuthResourceServerService</interface>
 	</service>
 
 	<!-- Web関連 -->
@@ -213,6 +318,7 @@
 
 		<property name="webApi" class="org.iplass.mtp.impl.webapi.interceptors.InitialInterceptor" />
 		<property name="webApi" class="org.iplass.mtp.impl.webapi.interceptors.AuthInterceptor" />
+		<property name="webApi" class="org.iplass.mtp.impl.webapi.interceptors.OAuthScopeInterceptor" />
 		<property name="webApi" class="org.iplass.mtp.impl.webapi.interceptors.LoggingInterceptor" />
 		<property name="webApi" class="org.iplass.mtp.impl.command.interceptors.TransactionInterceptor" />
 		<property name="webApi" class="org.iplass.mtp.impl.webapi.interceptors.TokenInterceptor" />
@@ -338,8 +444,17 @@
 
 	<service>
 		<interface>org.iplass.mtp.impl.cache.CacheService</interface>
+		
+		<!-- OAuth AuthorizationCodeのキャッシュ -->
+		<!-- TODO 本番利用時はRedisCacheStoreFactoryなど利用するように設定変更が必要 -->
+		<property name="actionContent" class="org.iplass.mtp.impl.cache.store.builtin.SimpleCacheStoreFactory">
+			<property name="namespace" value="mtp.oauth.codeStore" />
+			<!-- 10分有効 -->
+			<property name="timeToLive" value="600000" />
+		</property>
 
 		<!-- ActionContentキャッシュ -->
+		<!-- TODO 本番利用時はRedisCacheStoreFactoryなど利用するように設定変更が必要 -->
 		<property name="actionContent" class="org.iplass.mtp.impl.cache.store.builtin.TransactionLocalCacheStoreFactory">
 			<property name="namespacePattern" value="mtp[.]action[.]content[.].*" />
 			<property name="indexCount" value="3" /><!-- index:actionName,entityName;oid, entityName -->

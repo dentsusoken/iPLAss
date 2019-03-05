@@ -144,14 +144,26 @@
 		<interface>org.iplass.mtp.impl.auth.authenticate.token.AuthTokenService</interface>
 		<property name="storeMap">
 			<property name="default" class="org.iplass.mtp.impl.auth.authenticate.token.RdbAuthTokenStore" />
+			<property name="cachableRdb" class="org.iplass.mtp.impl.auth.authenticate.token.CachableAuthTokenStore">
+				<property name="authTokenStore" class="org.iplass.mtp.impl.auth.authenticate.token.RdbAuthTokenStore" />
+			</property>
+			<property name="cacheOnly" class="org.iplass.mtp.impl.auth.authenticate.token.CacheOnlyAuthTokenStore" />
 		</property>
 		<property name="handler" class="org.iplass.mtp.impl.auth.authenticate.rememberme.RememberMeTokenHandler">
 			<property name="type" value="REMME" />
 			<property name="store" value="default" />
+			<property name="hashSettings">
+				<property name="version" value="1" />
+				<property name="hashAlgorithm" value="SHA-256" />
+			</property>
 		</property>
 		<property name="handler" class="org.iplass.mtp.impl.auth.authenticate.simpletoken.SimpleAuthTokenHandler">
 			<property name="type" value="SAT" />
 			<property name="store" value="default" />
+			<property name="hashSettings">
+				<property name="version" value="1" />
+				<property name="hashAlgorithm" value="SHA-256" />
+			</property>
 		</property>
 	</service>
 
@@ -747,16 +759,26 @@
 			</property>
 		</property>
 
-		<!-- AuthTokenStore キャッシュ -->
+		<!-- CachableAuthTokenStore キャッシュ -->
 		<property name="cachableAuthTokenStore" class="org.iplass.mtp.impl.cache.store.builtin.SyncServerCacheStoreFactory">
 			<property name="namespacePattern" value="mtp[.]auth[.]cachableAuthTokenStore/.*" />
-			<property name="cacheKeyResolver" class="org.iplass.mtp.impl.auth.authenticate.token.CachableAuthTokenStore$AuthTokenKeyResolver" />
+			<property name="cacheKeyResolver" class="org.iplass.mtp.impl.auth.authenticate.token.AuthTokenKeyResolver" />
 			<property name="store" class="org.iplass.mtp.impl.cache.store.builtin.SimpleCacheStoreFactory">
 				<!-- 30分間有効 -->
 				<property name="timeToLive" value="1800000" />
 				<!-- 最大キャッシュ数1万 -->
 				<property name="size" value="10000" />
 			</property>
+		</property>
+		
+		<!-- CacheOnlyAuthTokenStore キャッシュ -->
+		<!-- TODO 本番利用時はRedisCacheStoreFactoryなど利用するように設定変更が必要 -->
+		<property name="cacheOnlyAuthTokenStore" class="org.iplass.mtp.impl.cache.store.builtin.SimpleCacheStoreFactory">
+			<property name="namespacePattern" value="mtp[.]auth[.]cacheOnlyAuthTokenStore/.*" />
+			<property name="cacheKeyResolver" class="org.iplass.mtp.impl.auth.authenticate.token.AuthTokenKeyResolver" />
+			<property name="indexCount" value="2" />
+			<!-- 1時間有効 -->
+			<property name="timeToLive" value="3600000" />
 		</property>
 
 		<!-- 上記namespace以外の場合のデフォルトキャッシュ -->

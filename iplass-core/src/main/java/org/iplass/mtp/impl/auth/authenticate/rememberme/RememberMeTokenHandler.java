@@ -19,6 +19,7 @@
  */
 package org.iplass.mtp.impl.auth.authenticate.rememberme;
 
+import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.concurrent.TimeUnit;
 
@@ -31,7 +32,6 @@ import org.iplass.mtp.impl.auth.authenticate.builtin.policy.MetaAuthenticationPo
 import org.iplass.mtp.impl.auth.authenticate.token.AuthToken;
 import org.iplass.mtp.impl.auth.authenticate.token.AuthTokenHandler;
 import org.iplass.mtp.impl.auth.authenticate.token.AuthTokenService;
-import org.iplass.mtp.impl.core.ExecuteContext;
 import org.iplass.mtp.spi.Config;
 import org.iplass.mtp.spi.ServiceRegistry;
 
@@ -74,14 +74,13 @@ public class RememberMeTokenHandler extends AuthTokenHandler {
 	}
 	
 	@Override
-	public AuthToken newAuthToken(String userUniqueId, String policyName, AuthTokenInfo tokenInfo) {
-		int tenantId = ExecuteContext.getCurrentContext().getClientTenantId();
-		return new AuthToken(tenantId, getType(), userUniqueId, newSeriesString(), newTokenString(), policyName, new Timestamp(System.currentTimeMillis()), null);
+	public Credential toCredential(AuthToken newToken) {
+		return new RememberMeTokenCredential(newToken.encodeToken());
 	}
 
 	@Override
-	public Credential toCredential(AuthToken newToken) {
-		return new RememberMeTokenCredential(newToken.encodeToken());
+	protected Serializable createDetails(String seriesString, String tokenString, String userUniqueId, String policyName, AuthTokenInfo tokenInfo) {
+		return null;
 	}
 
 }

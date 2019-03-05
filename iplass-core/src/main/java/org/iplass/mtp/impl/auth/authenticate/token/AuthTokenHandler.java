@@ -19,6 +19,7 @@
  */
 package org.iplass.mtp.impl.auth.authenticate.token;
 
+import java.io.Serializable;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.sql.Timestamp;
@@ -26,6 +27,7 @@ import java.util.List;
 
 import org.iplass.mtp.auth.login.Credential;
 import org.iplass.mtp.auth.token.AuthTokenInfo;
+import org.iplass.mtp.impl.core.ExecuteContext;
 import org.iplass.mtp.impl.util.random.SecureRandomGenerator;
 import org.iplass.mtp.impl.util.random.SecureRandomService;
 import org.iplass.mtp.spi.Config;
@@ -135,7 +137,7 @@ public abstract class AuthTokenHandler implements ServiceInitListener<AuthTokenS
 		}
 	}
 
-	public String newSeriesString() {
+	public String newSeriesString(String userUniqueId, String policyName, AuthTokenInfo tokenInfo) {
 		return RandomHolder.random.secureRandomToken();
 	}
 	
@@ -181,8 +183,18 @@ public abstract class AuthTokenHandler implements ServiceInitListener<AuthTokenS
 		}
 	}
 
+	public AuthToken newAuthToken(String userUniqueId, String policyName, AuthTokenInfo tokenInfo) {
+		int tenantId = ExecuteContext.getCurrentContext().getClientTenantId();
+		String seriesString = newSeriesString(userUniqueId, policyName, tokenInfo);
+		String tokenString = newTokenString();
+		Serializable details = createDetails(seriesString, tokenString, userUniqueId, policyName, tokenInfo);
+		return new AuthToken(tenantId, getType(), userUniqueId, seriesString, tokenString, policyName, new Timestamp(System.currentTimeMillis()), details);
+	}
+	
+	protected abstract Serializable createDetails(String seriesString, String tokenString, String userUniqueId, String policyName, AuthTokenInfo tokenInfo);
+	
 	public abstract AuthTokenInfo toAuthTokenInfo(AuthToken authToken);
-	public abstract AuthToken newAuthToken(String userUniqueId, String policyName, AuthTokenInfo tokenInfo);
+	
 	public abstract Credential toCredential(AuthToken newToken);
 	
 	private class HashingAuthTokenStore implements AuthTokenStore {
@@ -199,8 +211,8 @@ public abstract class AuthTokenHandler implements ServiceInitListener<AuthTokenS
 		}
 
 		@Override
-		public List<AuthToken> getByOwner(int tenantId, String userUniqueKey) {
-			return store.getByOwner(tenantId, userUniqueKey);
+		public List<AuthToken> getByOwner(int tenantId, String type, String userUniqueKey) {
+			return store.getByOwner(tenantId, type, userUniqueKey);
 		}
 		
 		private AuthToken hashToken(AuthToken token) {

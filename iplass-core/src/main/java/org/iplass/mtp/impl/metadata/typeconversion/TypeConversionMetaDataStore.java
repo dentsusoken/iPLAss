@@ -128,8 +128,9 @@ public class TypeConversionMetaDataStore implements MetaDataStore {
 
 	@Override
 	public MetaDataEntry load(int tenantId, String path) throws MetaDataRuntimeException {
+
 		MetaDataEntry entry = store.load(tenantId, path);
-		if (entry == null && converters != null) {
+		if (path !=null && entry == null && converters != null) {
 			for (TypeConverter c: converters) {
 				if (c.hasFallbackPath(path)) {
 					String fallbackPath = c.fallbackPath(path);
@@ -157,7 +158,7 @@ public class TypeConversionMetaDataStore implements MetaDataStore {
 	@Override
 	public MetaDataEntry load(int tenantId, String path, int version) throws MetaDataRuntimeException {
 		MetaDataEntry entry = store.load(tenantId, path, version);
-		if (entry == null && converters != null) {
+		if (path !=null && entry == null && converters != null) {
 			for (TypeConverter c: converters) {
 				if (c.hasFallbackPath(path)) {
 					String fallbackPath = c.fallbackPath(path);
@@ -195,7 +196,7 @@ public class TypeConversionMetaDataStore implements MetaDataStore {
 	@Override
 	public void remove(int tenantId, String path) throws MetaDataRuntimeException {
 		boolean removeFallback = false;
-		if (converters != null) {
+		if (path !=null && converters != null) {
 			for (TypeConverter c: converters) {
 				if (c.hasFallbackPath(path)) {
 					String fallbackPath = c.fallbackPath(path);

@@ -27,6 +27,7 @@ public class HashSetting {
 
 	private String version;
 	private String hashAlgorithm;
+	private int stretchCount = 1;
 	
 	public String getVersion() {
 		return version;
@@ -40,13 +41,24 @@ public class HashSetting {
 	public void setHashAlgorithm(String hashAlgorithm) {
 		this.hashAlgorithm = hashAlgorithm;
 	}
+	public int getStretchCount() {
+		return stretchCount;
+	}
+	public void setStretchCount(int stretchCount) {
+		this.stretchCount = stretchCount;
+	}
 	
 	protected String hash(String token) {
 		try {
-			return HashUtil.digest(token, hashAlgorithm);
+			
+			String hashTarget = token;
+			for (int i = 0; i < stretchCount; i++) {
+				hashTarget = HashUtil.digest(hashTarget, hashAlgorithm);
+			}
+			return hashTarget;
 		} catch (NoSuchAlgorithmException e) {
 			throw new RuntimeException(e);
 		}
 	}
-	
+
 }

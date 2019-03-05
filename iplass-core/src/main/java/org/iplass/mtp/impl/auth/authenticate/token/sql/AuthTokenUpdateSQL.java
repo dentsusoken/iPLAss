@@ -20,6 +20,10 @@
 
 package org.iplass.mtp.impl.auth.authenticate.token.sql;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Timestamp;
@@ -37,7 +41,7 @@ public class AuthTokenUpdateSQL extends UpdateSqlHandler {
 		return "INSERT INTO T_ATOKEN(TENANT_ID,T_TYPE,U_KEY,SERIES,TOKEN,POL_NAME,S_DATE,T_INFO) " +
 				"VALUES (?,?,?,?,?,?,?,?)";
  	}
-	public void setInsertParameter(RdbAdapter rdb, PreparedStatement ps, AuthToken token, ObjectMapper om) throws SQLException, JsonProcessingException {
+	public void setInsertParameter(RdbAdapter rdb, PreparedStatement ps, AuthToken token, boolean saveDetailAsJson, ObjectMapper om) throws SQLException, JsonProcessingException {
 		// TENANT_ID
 		ps.setInt(1, token.getTenantId());
 		// T_TYPE
@@ -55,8 +59,10 @@ public class AuthTokenUpdateSQL extends UpdateSqlHandler {
 		// T_INFO
 		if (token.getDetails() == null) {
 			ps.setBytes(8, null);
-		} else {
+		} else if (saveDetailAsJson) {
 			ps.setBytes(8, om.writeValueAsBytes(new DetailWrapper(token.getDetails())));
+		} else {
+			ps.setBytes(8, toBin(token.getDetails()));
 		}
 	}
 
@@ -93,17 +99,34 @@ public class AuthTokenUpdateSQL extends UpdateSqlHandler {
 	public String createUpdateStrictSQL() {
 		return "UPDATE T_ATOKEN SET TOKEN=?,S_DATE=?,T_INFO=? WHERE TENANT_ID=? AND T_TYPE=? AND SERIES=? AND TOKEN=?";
 	}
-	public void setUpdateStrictParameter(RdbAdapter rdb, PreparedStatement ps, AuthToken newToken, AuthToken currentToken, ObjectMapper om) throws SQLException, JsonProcessingException {
+	public void setUpdateStrictParameter(RdbAdapter rdb, PreparedStatement ps, AuthToken newToken, AuthToken currentToken, boolean saveDetailAsJson, ObjectMapper om) throws SQLException, JsonProcessingException {
 		ps.setString(1, newToken.getToken());
 		ps.setTimestamp(2, newToken.getStartDate());
 		if (newToken.getDetails() == null) {
 			ps.setBytes(3, null);
-		} else {
+		} else if (saveDetailAsJson) {
 			ps.setBytes(3, om.writeValueAsBytes(new DetailWrapper(newToken.getDetails())));
+		} else {
+			ps.setBytes(3, toBin(newToken.getDetails()));
+			
 		}
 		ps.setInt(4, newToken.getTenantId());
 		ps.setString(5, newToken.getType());
 		ps.setString(6, newToken.getSeries());
 		ps.setString(7, currentToken.getToken());
+	}
+	
+	
+	byte[] toBin(Serializable obj) {
+		
+		ByteArrayOutputStream byteOut;
+		try {
+			byteOut = new ByteArrayOutputStream();
+			ObjectOutputStream out = new ObjectOutputStream(byteOut);
+			out.writeObject(obj);
+			return byteOut.toByteArray();
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
 	}
 }

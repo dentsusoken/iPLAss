@@ -109,7 +109,17 @@ public class WebApiDefinition implements Definition {
 	private StateType state = StateType.STATEFUL;
 
 	private boolean supportBearerToken;
+	
+	private String[] oauthScopes;
 
+	public String[] getOauthScopes() {
+		return oauthScopes;
+	}
+
+	public void setOauthScopes(String[] oauthScopes) {
+		this.oauthScopes = oauthScopes;
+	}
+	
 	public boolean isSupportBearerToken() {
 		return supportBearerToken;
 	}

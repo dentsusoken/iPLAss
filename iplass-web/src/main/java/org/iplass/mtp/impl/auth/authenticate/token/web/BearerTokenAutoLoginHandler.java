@@ -60,8 +60,17 @@ public class BearerTokenAutoLoginHandler implements AutoLoginHandler {
 	private AuthTokenHandler authTokenHandler;
 	
 	private boolean rejectAmbiguousRequest;
+	private boolean bearerTokenHeaderOnly;
 	private String authTokenType;
 	
+	public boolean isBearerTokenHeaderOnly() {
+		return bearerTokenHeaderOnly;
+	}
+
+	public void setBearerTokenHeaderOnly(boolean bearerTokenHeaderOnly) {
+		this.bearerTokenHeaderOnly = bearerTokenHeaderOnly;
+	}
+
 	public String getAuthTokenType() {
 		return authTokenType;
 	}
@@ -84,6 +93,9 @@ public class BearerTokenAutoLoginHandler implements AutoLoginHandler {
 	}
 
 	private boolean isForm(HttpServletRequest sr, RestRequestContext rrc) {
+		if (bearerTokenHeaderOnly) {
+			return false;
+		}
 		if (!"application/x-www-form-urlencoded".equals(sr.getContentType())) {
 			return false;
 		}
@@ -152,6 +164,12 @@ public class BearerTokenAutoLoginHandler implements AutoLoginHandler {
 			return AutoLoginInstruction.THROUGH;
 		} else {
 			if (!(req instanceof RestRequestContext)) {
+				return AutoLoginInstruction.THROUGH;
+			}
+			
+			//BearerTokenをサポートしているWebAPIに限定
+			RestRequestContext restReq = (RestRequestContext) req;
+			if (!restReq.supportBearerToken()) {
 				return AutoLoginInstruction.THROUGH;
 			}
 			

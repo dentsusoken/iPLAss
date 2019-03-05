@@ -19,13 +19,9 @@
  */
 package org.iplass.mtp.impl.auth.authenticate.builtin.web;
 
-import java.io.UnsupportedEncodingException;
-import java.util.Base64;
-
 import javax.servlet.http.HttpServletRequest;
 
 import org.iplass.mtp.ApplicationException;
-import org.iplass.mtp.SystemException;
 import org.iplass.mtp.auth.login.IdPasswordCredential;
 import org.iplass.mtp.auth.login.LoginFailedException;
 import org.iplass.mtp.command.RequestContext;
@@ -49,9 +45,6 @@ public class IdPasswordAutoLoginHandler implements AutoLoginHandler {
 	
 	public static final String AUTH_ID_HEADER = "X-Auth-Id";
 	public static final String AUTH_PASSWORD_HEADER = "X-Auth-Password";
-	
-	public static final String HEADER_AUTHORIZATION = "Authorization";
-	public static final String AUTH_SCHEME_BASIC = "Basic";
 	
 	private boolean enableBasicAuthentication;
 	private boolean rejectAmbiguousRequest;
@@ -87,27 +80,10 @@ public class IdPasswordAutoLoginHandler implements AutoLoginHandler {
 		
 		//Basic認証
 		if (enableBasicAuthentication) {
-			String authHeaderValue = hr.getHeader(HEADER_AUTHORIZATION);
-			if (authHeaderValue != null && authHeaderValue.regionMatches(true, 0, AUTH_SCHEME_BASIC + " ", 0, AUTH_SCHEME_BASIC.length() + 1)) {
+			IdPasswordCredential cre = BasicAuthUtil.decodeFromHeader(req);
+			if (cre != null) {
 				logger.debug("handle basic authentication");
-				
-				String idpassEncoded = authHeaderValue.substring(AUTH_SCHEME_BASIC.length() + 1).trim();
-				String idpass;
-				try {
-					idpass = new String(Base64.getDecoder().decode(idpassEncoded), "utf-8");
-				} catch (UnsupportedEncodingException e) {
-					throw new SystemException(e);
-				}
-				
-				int index = idpass.indexOf(':');
-				if (index < 0) {
-					id = idpass.trim();
-				} else {
-					id = idpass.substring(0, index).trim();
-					pass = idpass.substring(index + 1).trim();
-				}
-				
-				return new IdPasswordCredential(id, pass);
+				return cre;
 			}
 		}
 		
@@ -153,7 +129,7 @@ public class IdPasswordAutoLoginHandler implements AutoLoginHandler {
 	public Exception handleException(AutoLoginInstruction ali, ApplicationException e, RequestContext req, boolean isLogined,
 			UserContext user) {
 		if (isBasicAuth(req)) {
-			throw new WWWAuthenticateException(AUTH_SCHEME_BASIC, null, "Login with BASIC Authentication failed.");
+			throw new WWWAuthenticateException(BasicAuthUtil.AUTH_SCHEME_BASIC, null, "Login with BASIC Authentication failed.");
 		} else {
 			throw e;
 		}
