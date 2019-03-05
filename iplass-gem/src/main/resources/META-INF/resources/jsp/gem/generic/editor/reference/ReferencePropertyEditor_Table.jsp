@@ -314,7 +314,7 @@
 <p class="mb10">
 <input type="button" value="${m:rs('mtp-gem-messages', 'generic.editor.reference.ReferencePropertyEditor_Table.add')}" id="id_<c:out value="<%=propName%>"/>_addButton_top" class="gr-btn-02 add-btn table-top-button" style="<c:out value="<%=addBtnStyle%>" />" />
 <script type="text/javascript">
-var toggleAddBtn = function() {
+var toggleAddBtn_<%=_propName%> = function() {
 	var $tbody = $("#<%=StringUtil.escapeJavaScript(dummyRowId)%>").parent();
 	var display = $tbody.children("tr:not(:hidden)").length < <%=pd.getMultiplicity()%>;
 	$("#id_<c:out value="<%=propName%>"/>_addButton_top").toggle(display);
@@ -329,9 +329,9 @@ $(function() {
 <%
 			}
 %>
-			$(row).find(":button.del-btn").on("click", toggleAddBtn);
+			$(row).find(":button.del-btn").on("click", toggleAddBtn_<%=_propName%>);
 		});
-		toggleAddBtn();
+		toggleAddBtn_<%=_propName%>();
 	});
 });
 </script>
@@ -762,7 +762,7 @@ ${m:rs("mtp-gem-messages", "generic.editor.reference.ReferencePropertyEditor_Tab
 %>
 <td nowrap="nowrap">
 <input type="button" value="${m:rs('mtp-gem-messages', 'generic.editor.reference.ReferencePropertyEditor_Table.delete')}" class="gr-btn-02 del-btn"
-		onclick="deleteRefTableRow('<%=StringUtil.escapeJavaScript(trId)%>');toggleAddBtn();" />
+		onclick="deleteRefTableRow('<%=StringUtil.escapeJavaScript(trId)%>');toggleAddBtn_<%=StringUtil.escapeJavaScript(propName)%>();" />
 </td>
 <%
 			}
@@ -789,7 +789,7 @@ ${m:rs("mtp-gem-messages", "generic.editor.reference.ReferencePropertyEditor_Tab
 <p class="mt10">
 <input type="button" value="${m:rs('mtp-gem-messages', 'generic.editor.reference.ReferencePropertyEditor_Table.add')}" id="id_<c:out value="<%=propName%>"/>_addButton_bottom" class="gr-btn-02 add-btn table-bottom-button" style="<c:out value="<%=addBtnStyle%>" />" />
 <script type="text/javascript">
-var toggleAddBtn = function() {
+var toggleAddBtn_<%=_propName%> = function() {
 	var $tbody = $("#<%=StringUtil.escapeJavaScript(dummyRowId)%>").parent();
 	var display = $tbody.children("tr:not(:hidden)").length < <%=pd.getMultiplicity()%>;
 	$("#id_<c:out value="<%=propName%>"/>_addButton_bottom").toggle(display);
@@ -804,9 +804,9 @@ $(function() {
 <%
 			}
 %>
-			$(row).find(":button.del-btn").on("click", toggleAddBtn);
+			$(row).find(":button.del-btn").on("click", toggleAddBtn_<%=_propName%>);
 		});
-		toggleAddBtn();
+		toggleAddBtn_<%=_propName%>();
 	});
 });
 </script>
