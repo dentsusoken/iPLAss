@@ -2896,8 +2896,9 @@ function addNestRow(rowId, countId, multiplicy, insertTop, rootDefName, viewName
 
 	var $copyRow = $srcRow.clone().removeAttr("style");
 	var $headerRow = $tbody.prev("thead").children("tr:first");
-	if (insertTop && rowCount.length > 1) {
-		$headerRow.after($copyRow);
+	if (insertTop && rowCount > 1) {
+		var $firstRow = $tbody.children("tr:not(:hidden):first");
+		$copyRow.insertBefore($firstRow);
 	} else {
 		$tbody.append($copyRow);
 	}
