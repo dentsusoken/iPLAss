@@ -322,6 +322,7 @@ var toggleAddBtn_<%=_propName%> = function() {
 $(function() {
 	$("#id_<%=StringUtil.escapeJavaScript(propName)%>_addButton_top").on("click", function() {
 		addNestRow("<%=StringUtil.escapeJavaScript(dummyRowId)%>", "<%=StringUtil.escapeJavaScript(countId)%>", <%=pd.getMultiplicity() + 1%>, true, "<%=_rootDefName%>", "<%=_viewName%>", "<%=_propName%>", function(row, index) {
+			toggleAddBtn_<%=_propName%>();
 <%
 			if (StringUtil.isNotBlank(editor.getAddRowCallbackScript())) {
 %>
@@ -329,9 +330,7 @@ $(function() {
 <%
 			}
 %>
-			$(row).find(":button.del-btn").on("click", toggleAddBtn_<%=_propName%>);
-		});
-		toggleAddBtn_<%=_propName%>();
+		}, toggleAddBtn_<%=_propName%>);
 	});
 });
 </script>
@@ -762,7 +761,7 @@ ${m:rs("mtp-gem-messages", "generic.editor.reference.ReferencePropertyEditor_Tab
 %>
 <td nowrap="nowrap">
 <input type="button" value="${m:rs('mtp-gem-messages', 'generic.editor.reference.ReferencePropertyEditor_Table.delete')}" class="gr-btn-02 del-btn"
-		onclick="deleteRefTableRow('<%=StringUtil.escapeJavaScript(trId)%>');toggleAddBtn_<%=StringUtil.escapeJavaScript(propName)%>();" />
+		onclick="deleteRefTableRow('<%=StringUtil.escapeJavaScript(trId)%>', toggleAddBtn_<%=StringUtil.escapeJavaScript(propName)%>)" />
 </td>
 <%
 			}
@@ -797,6 +796,7 @@ var toggleAddBtn_<%=_propName%> = function() {
 $(function() {
 	$("#id_<%=StringUtil.escapeJavaScript(propName)%>_addButton_bottom").on("click", function() {
 		addNestRow("<%=StringUtil.escapeJavaScript(dummyRowId)%>", "<%=StringUtil.escapeJavaScript(countId)%>", <%=pd.getMultiplicity() + 1%>, false, "<%=_rootDefName%>", "<%=_viewName%>", "<%=_propName%>", function(row, index) {
+			toggleAddBtn_<%=_propName%>();
 <%
 			if (StringUtil.isNotBlank(editor.getAddRowCallbackScript())) {
 %>
@@ -804,9 +804,7 @@ $(function() {
 <%
 			}
 %>
-			$(row).find(":button.del-btn").on("click", toggleAddBtn_<%=_propName%>);
-		});
-		toggleAddBtn_<%=_propName%>();
+		}, toggleAddBtn_<%=_propName%>);
 	});
 });
 </script>

@@ -2887,7 +2887,7 @@ function updateNestValue_DateRange(head, $node, parentPropName, name, entity) {
  * @param multiplicy
  * @return
  */
-function addNestRow(rowId, countId, multiplicy, insertTop, rootDefName, viewName, orgPropName, callback) {
+function addNestRow(rowId, countId, multiplicy, insertTop, rootDefName, viewName, orgPropName, callback, delCallback) {
 	var $srcRow = $("#" + rowId);
 	$srcRow.parents("table").show();
 	var $tbody = $srcRow.parent();
@@ -2971,7 +2971,7 @@ function addNestRow(rowId, countId, multiplicy, insertTop, rootDefName, viewName
 				$(".down-icon", $td).on("click", function(){shiftDown(rowId)});
 			} else if (type[0] == "last") {
 				//削除ボタン
-				$($td).children(":button").on("click", function() {deleteRefTableRow(rowId);});
+				$($td).children(":button").on("click", function() {deleteRefTableRow(rowId, delCallback);});
 			}
 		});
 
@@ -3372,12 +3372,13 @@ function shiftOrder(webapi, rowId, orderPropName, key, refDefName, shiftUp, relo
 	});
 }
 
-function deleteRefTableRow(id) {
+function deleteRefTableRow(id, delCallback) {
 	var $tbody = $("#" + id).parent();
 	deleteItem(id);
 	if ($("tr:not(:hidden)", $tbody).length == 0) {
 		$tbody.parent("table").hide();
 	};
+	if (delCallback && $.isFunction(delCallback)) delCallback.call(this, id);
 }
 
 /**
