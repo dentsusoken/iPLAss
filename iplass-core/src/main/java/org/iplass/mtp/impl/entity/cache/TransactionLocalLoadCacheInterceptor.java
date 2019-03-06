@@ -45,12 +45,15 @@ import org.iplass.mtp.entity.interceptor.EntityRestoreInvocation;
 import org.iplass.mtp.entity.interceptor.EntityUnlockByUserInvocation;
 import org.iplass.mtp.entity.interceptor.EntityUpdateAllInvocation;
 import org.iplass.mtp.entity.interceptor.EntityUpdateInvocation;
+import org.iplass.mtp.entity.permission.EntityPermission;
+import org.iplass.mtp.impl.auth.AuthContextHolder;
 import org.iplass.mtp.impl.cache.CacheService;
 import org.iplass.mtp.impl.cache.store.CacheEntry;
 import org.iplass.mtp.impl.cache.store.CacheStore;
 import org.iplass.mtp.impl.cache.store.builtin.NullCacheStore;
 import org.iplass.mtp.impl.core.ExecuteContext;
 import org.iplass.mtp.impl.entity.EntityHandler;
+import org.iplass.mtp.impl.entity.auth.EntityQueryAuthContextHolder;
 import org.iplass.mtp.impl.entity.interceptor.EntityLoadInvocationImpl;
 import org.iplass.mtp.spi.ServiceRegistry;
 import org.iplass.mtp.transaction.Transaction;
@@ -62,7 +65,6 @@ import org.slf4j.LoggerFactory;
 
 class TransactionLocalLoadCacheInterceptor extends EntityInterceptorAdapter {
 
-	private static final EntityCacheEntry NULL_ENTRY = new EntityCacheEntry(null, true, null, false, null);
 	private static final NullCacheStore NULL_CACHE = new NullCacheStore(EntityCacheInterceptor.LOCAL_LOAD_CACHE_NAMESPACE, null);
 
 	private static Logger logger = LoggerFactory.getLogger(TransactionLocalLoadCacheInterceptor.class);
@@ -180,9 +182,6 @@ class TransactionLocalLoadCacheInterceptor extends EntityInterceptorAdapter {
 //		}
 //	}
 
-
-
-
 	@Override
 	public boolean unlockByUser(EntityUnlockByUserInvocation invocation) {
 		boolean res = transactionLocalQueryCacheInterceptor.unlockByUser(invocation);
@@ -230,9 +229,22 @@ class TransactionLocalLoadCacheInterceptor extends EntityInterceptorAdapter {
 		CacheKey key = crateCacheKey(invocation, invocation.getOid(), invocation.getVersion());
 		CacheEntry val = cache.get(key);
 		EntityCacheEntry ce = null;
+		
+		//check AuthContext
+		EntityPermission.Action entityPermissionAction = EntityQueryAuthContextHolder.getContext().getQueryAction();
+		AuthContextHolder authContext = AuthContextHolder.getAuthContext();
+		if (val != null) {
+			EntityCacheEntry ceForCheck = (EntityCacheEntry) val.getValue();
+			if (ceForCheck.authContext != authContext
+					|| ceForCheck.entityPermissionAction != entityPermissionAction) {
+				cache.remove(key);
+				val = null;
+			}
+		}
+		
 		if (val != null) {
 			ce = (EntityCacheEntry) val.getValue();
-			if (ce == NULL_ENTRY) {
+			if (ce.entity == null) {
 				if (logger.isTraceEnabled()) {
 					logger.trace("hit entity cache null:definition=" + invocation.getEntityDefinition().getName() + ", oid=" + invocation.getOid());
 				}
@@ -248,9 +260,9 @@ class TransactionLocalLoadCacheInterceptor extends EntityInterceptorAdapter {
 					}
 					Entity e = invocation.proceed();
 					if (e == null) {
-						ce = NULL_ENTRY;
+						ce = nullEntry(entityPermissionAction, authContext);
 					} else {
-						ce = createEntityCacheEntry(e, invocation, null);
+						ce = createEntityCacheEntry(e, invocation, null, entityPermissionAction, authContext);
 					}
 					putToCache(cache, key, ce, eh);
 				} else {
@@ -260,9 +272,9 @@ class TransactionLocalLoadCacheInterceptor extends EntityInterceptorAdapter {
 						}
 						Entity e = invocation.proceed();
 						if (e == null) {
-							ce = NULL_ENTRY;
+							ce = nullEntry(entityPermissionAction, authContext);
 						} else {
-							ce = createEntityCacheEntry(e, invocation, ce);
+							ce = createEntityCacheEntry(e, invocation, ce, entityPermissionAction, authContext);
 						}
 						putToCache(cache, key, ce, eh);
 					}
@@ -271,10 +283,10 @@ class TransactionLocalLoadCacheInterceptor extends EntityInterceptorAdapter {
 		} else {
 			Entity e = invocation.proceed();
 			if (e == null) {
-				ce = NULL_ENTRY;
+				ce = nullEntry(entityPermissionAction, authContext);
 				return null;
 			} else {
-				ce = createEntityCacheEntry(e, invocation, null);
+				ce = createEntityCacheEntry(e, invocation, null, entityPermissionAction, authContext);
 			}
 			putToCache(cache, key, ce, eh);
 		}
@@ -297,8 +309,12 @@ class TransactionLocalLoadCacheInterceptor extends EntityInterceptorAdapter {
 		}
 
 	}
+	
+	private EntityCacheEntry nullEntry(EntityPermission.Action entityPermissionAction, AuthContextHolder authContext) {
+		return new EntityCacheEntry(null, true, null, false, null, entityPermissionAction, authContext);
+	}
 
-	private EntityCacheEntry createEntityCacheEntry(Entity e, EntityLoadInvocation invocation, EntityCacheEntry prev) {
+	private EntityCacheEntry createEntityCacheEntry(Entity e, EntityLoadInvocation invocation, EntityCacheEntry prev, EntityPermission.Action entityPermissionAction, AuthContextHolder authContext) {
 
 		LoadOption option = invocation.getLoadOption();
 		boolean all = false;
@@ -356,8 +372,8 @@ class TransactionLocalLoadCacheInterceptor extends EntityInterceptorAdapter {
 				}
 			}
 		}
-
-		return new EntityCacheEntry(e, all, loadRefNames, invocation.withLock(), def);
+		
+		return new EntityCacheEntry(e, all, loadRefNames, invocation.withLock(), def, entityPermissionAction, authContext);
 	}
 
 	@Override
@@ -424,8 +440,11 @@ class TransactionLocalLoadCacheInterceptor extends EntityInterceptorAdapter {
 		final HashSet<String> refNames;
 		final boolean withLock;
 		final List<Entity> refEntity;
+		
+		final EntityPermission.Action entityPermissionAction;
+		final AuthContextHolder authContext;
 
-		private EntityCacheEntry(Entity entity, boolean all, HashSet<String> refNames, boolean withLock, EntityDefinition ed) {
+		private EntityCacheEntry(Entity entity, boolean all, HashSet<String> refNames, boolean withLock, EntityDefinition ed, EntityPermission.Action entityPermissionAction, AuthContextHolder authContext) {
 			this.entity = entity;
 			this.all = all;
 			this.refNames = refNames;
@@ -451,6 +470,8 @@ class TransactionLocalLoadCacheInterceptor extends EntityInterceptorAdapter {
 				}
 			}
 			refEntity = newRefEntity;
+			this.entityPermissionAction = entityPermissionAction;
+			this.authContext = authContext;
 		}
 
 		public boolean isRef(CacheKey updateKey) {
