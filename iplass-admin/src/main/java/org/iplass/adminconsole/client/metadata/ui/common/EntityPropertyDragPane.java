@@ -30,7 +30,7 @@ public class EntityPropertyDragPane extends VLayout {
 	protected static final String SECTION_ID_PROPERTY = "propertyItem";
 
 	protected SectionStack propertySectionStack;
-	protected EntityPropertyGrid propertyGrid;
+	protected EntityPropertyTreeGrid propertyGrid;
 
 	public EntityPropertyDragPane(boolean showRoot) {
 		setWidth("30%");
@@ -47,7 +47,7 @@ public class EntityPropertyDragPane extends VLayout {
 		propertySectionStack.addSection(propertySection);
 
 		//表示TreeGrid
-		propertyGrid = new EntityPropertyGrid(showRoot);
+		propertyGrid = new EntityPropertyTreeGrid(showRoot);
 		propertyGrid.setDragType("Property");	//DragされるItemのType設定
 
 		propertySection.addItem(propertyGrid);

@@ -146,7 +146,7 @@ public class SearchLayoutPanelImpl extends MetaDataMainEditPane implements Searc
 		layout.addMember(form);
 
 		// ドラッグエリア
-		DragPane dragArea = new DragPane(defName, true, true, true, true, ViewType.SEARCH);
+		DragPane dragArea = new DragPane(defName, true, ViewType.SEARCH);
 		layout.addMember(dragArea);
 
 		viewEditPane.addMember(viewMenuPane);

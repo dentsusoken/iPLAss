@@ -29,6 +29,7 @@ import org.iplass.adminconsole.client.base.event.MTPEventHandler;
 import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
 import org.iplass.adminconsole.client.base.tenant.TenantInfoHolder;
 import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
+import org.iplass.adminconsole.client.metadata.data.entity.layout.ViewType;
 import org.iplass.adminconsole.client.metadata.ui.MetaDataItemMenuTreeNode;
 import org.iplass.adminconsole.client.metadata.ui.MetaDataMainEditPane;
 import org.iplass.adminconsole.client.metadata.ui.common.MetaCommonAttributeSection;
@@ -146,7 +147,7 @@ public class DetailLayoutPanelImpl extends MetaDataMainEditPane implements Detai
 		layout.addMember(form);
 
 		//ドラッグエリア
-		DragPane dragArea = new DragPane(defName);
+		DragPane dragArea = new DragPane(defName, false, ViewType.DETAIL);
 		layout.addMember(dragArea);
 
 		viewEditPane.addMember(viewMenuPane);
