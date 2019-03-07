@@ -77,6 +77,9 @@ public class WebApiEditPane extends MetaDataMainEditPane {
 	/** 共通属性部分 */
 	private WebApiAttributePane attributePane;
 
+	/** CORS属性部分 */
+	private CorsAttributePane corsAttributePane;
+
 	/** 受付種別部分 */
 	private RequestTypePane requestTypeGridPane;
 
@@ -90,8 +93,6 @@ public class WebApiEditPane extends MetaDataMainEditPane {
 
 	RestJsonParamPane jsonParamPane;
 	RestXmlParamPane xmlParamPane;
-
-//	JsonpPermitPane jsonpPermitPane;
 
 	ResponseTypePane responseTypePane;
 
@@ -120,6 +121,9 @@ public class WebApiEditPane extends MetaDataMainEditPane {
 		//属性編集部分
 		attributePane = new WebApiAttributePane();
 
+		//CORS編集部分
+		corsAttributePane = new CorsAttributePane();
+
 		// 受付種別選択部分
 		requestTypeGridPane = new RequestTypePane();
 		requestTypeGridPane.setTypeChangedHandler(new ChangedHandler() {
@@ -129,8 +133,6 @@ public class WebApiEditPane extends MetaDataMainEditPane {
 				typeChanged(requestTypeGridPane.selectedType());
 			}
 		});
-
-//		jsonpPermitPane = new JsonpPermitPane();
 
 		// 受付種別別変動部分
 		requestTypePane = new VLayout();
@@ -145,7 +147,7 @@ public class WebApiEditPane extends MetaDataMainEditPane {
 		resultPane = new ResultPane();
 
 		//Section設定
-		MetaDataSectionStackSection webApiSection = createSection("WebApi Attribute", attributePane, requestTypeGridPane, /*jsonpPermitPane,*/ responseTypePane, requestTypePane, commandConfigPane, resultPane);
+		MetaDataSectionStackSection webApiSection = createSection("WebApi Attribute", attributePane, corsAttributePane, requestTypeGridPane, responseTypePane, requestTypePane, commandConfigPane, resultPane);
 
 		//Drop設定
 		new AbstractMetaDataDropHandler() {
@@ -218,13 +220,11 @@ public class WebApiEditPane extends MetaDataMainEditPane {
 			if (jsonParamPane == null || requestTypePane.getMember(requestTypePane.getMemberNumber(jsonParamPane)) == null) {
 				jsonParamPane = new RestJsonParamPane();
 			}
-//			jsonpPermitPane.show();
 			paramPaneList.add(jsonParamPane);
 		} else {
 			if (jsonParamPane != null && requestTypePane.getMember(requestTypePane.getMemberNumber(jsonParamPane)) != null) {
 				requestTypePane.removeMember(jsonParamPane);
 			}
-//			jsonpPermitPane.hide();
 		}
 
 		if (list.contains(RequestType.REST_XML)) {
@@ -260,9 +260,8 @@ public class WebApiEditPane extends MetaDataMainEditPane {
 		commonSection.setDescription(curDefinition.getDescription());
 
 		attributePane.setDefinition(curDefinition);
+		corsAttributePane.setDefinition(curDefinition);
 		requestTypeGridPane.setDefinition(curDefinition);
-
-//		jsonpPermitPane.setDefinition(curDefinition);
 
 		typeChanged(requestTypeGridPane.selectedType());
 
@@ -339,8 +338,9 @@ public class WebApiEditPane extends MetaDataMainEditPane {
 		public void onClick(ClickEvent event) {
 			boolean commonValidate = commonSection.validate();
 			boolean attrValidate = attributePane.validate();
+			boolean corsValidate = corsAttributePane.validate();
 			boolean commandValidate = commandConfigPane.validate();
-			if (!commonValidate || !attrValidate || !commandValidate) {
+			if (!commonValidate || !attrValidate || !corsValidate || !commandValidate) {
 				return;
 			}
 			SC.ask(AdminClientMessageUtil.getString("ui_metadata_webapi_WebAPIEditPane_saveConfirm"),
@@ -356,6 +356,7 @@ public class WebApiEditPane extends MetaDataMainEditPane {
 						definition.setDescription(commonSection.getDescription());
 
 						definition = attributePane.getEditDefinition(definition);
+						definition = corsAttributePane.getEditDefinition(definition);
 						definition.setCommandConfig(commandConfigPane.getEditCommandConfig());
 						definition = requestTypeGridPane.getEditDefinition(definition);
 						definition = resultPane.getEditDefinition(definition);
@@ -365,7 +366,6 @@ public class WebApiEditPane extends MetaDataMainEditPane {
 						if (xmlParamPane != null) {
 							definition = xmlParamPane.getEditDefinition(definition);
 						}
-//						definition = jsonpPermitPane.getEditDefinition(definition);
 						definition = responseTypePane.getEditDefinition(definition);
 						updateWebAPI(definition, true);
 					}

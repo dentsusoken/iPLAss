@@ -25,10 +25,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 
 import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
-import org.iplass.adminconsole.client.base.ui.widget.ScriptEditorDialogHandler;
-import org.iplass.adminconsole.client.base.ui.widget.ScriptEditorDialogMode;
 import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
-import org.iplass.adminconsole.client.metadata.ui.MetaDataUtil;
 import org.iplass.mtp.webapi.definition.CacheControlType;
 import org.iplass.mtp.webapi.definition.MethodType;
 import org.iplass.mtp.webapi.definition.StateType;
@@ -36,11 +33,8 @@ import org.iplass.mtp.webapi.definition.WebApiDefinition;
 import org.iplass.mtp.webapi.definition.WebApiTokenCheck;
 
 import com.smartgwt.client.widgets.form.DynamicForm;
-import com.smartgwt.client.widgets.form.fields.ButtonItem;
 import com.smartgwt.client.widgets.form.fields.CheckboxItem;
 import com.smartgwt.client.widgets.form.fields.SelectItem;
-import com.smartgwt.client.widgets.form.fields.SpacerItem;
-import com.smartgwt.client.widgets.form.fields.TextAreaItem;
 import com.smartgwt.client.widgets.form.fields.TextItem;
 import com.smartgwt.client.widgets.form.fields.events.ChangedEvent;
 import com.smartgwt.client.widgets.form.fields.events.ChangedHandler;
@@ -88,12 +82,6 @@ public class WebApiAttributePane extends HLayout {
 	private CheckboxItem consumeField;
 	private CheckboxItem exceptionRollbackField;
 
-	/** Access-Control-Allow-Originヘッダ */
-	private TextAreaItem accessControlAllowOriginField;
-
-	/** Access-Control-Allow-Credentials */
-	private CheckboxItem accessControlAllowCredentialsField;
-
 	private CheckboxItem supportBearerTokenField;
 
 	private SelectItem cacheControlTypeField;
@@ -105,7 +93,7 @@ public class WebApiAttributePane extends HLayout {
 	public WebApiAttributePane() {
 
 		//レイアウト設定
-		setHeight(310);
+		setHeight(170);
 		setMargin(5);
 		setMembersMargin(10);
 
@@ -149,33 +137,6 @@ public class WebApiAttributePane extends HLayout {
 		synchronizeOnSessionField = new CheckboxItem("synchronizeOnSession", "Synchronize On Session");
 		synchronizeOnSessionField.setTooltip(SmartGWTUtil.getHoverString(AdminClientMessageUtil.getString("ui_metadata_webapi_WebAPIAttributePane_synchronizeOnSession")));
 
-		ButtonItem editButton = new ButtonItem("editScript", "Edit");
-		editButton.setWidth(100);
-		editButton.setStartRow(false);
-		editButton.addClickHandler(new com.smartgwt.client.widgets.form.fields.events.ClickHandler() {
-
-			@Override
-			public void onClick(com.smartgwt.client.widgets.form.fields.events.ClickEvent event) {
-				MetaDataUtil.showScriptEditDialog(ScriptEditorDialogMode.JSP,
-					SmartGWTUtil.getStringValue(accessControlAllowOriginField),
-					"Access-Control-Allow-Origin Script",
-					null,
-					AdminClientMessageUtil.getString("ui_metadata_webapi_WebAPIAttributePane_accessControlAllowOriginComment"),
-					new ScriptEditorDialogHandler() {
-
-						@Override
-						public void onSave(String text) {
-							accessControlAllowOriginField.setValue(text);
-						}
-
-						@Override
-						public void onCancel() {
-						}
-					}
-				);
-			}
-		});
-
 		stateTypeField = new SelectItem();
 		stateTypeField.setTitle("State Type");
 		stateTypeField.setWidth(150);
@@ -186,18 +147,10 @@ public class WebApiAttributePane extends HLayout {
 		stateTypeMap.put(StateType.STATELESS.toString(), StateType.STATELESS.toString());
 		stateTypeField.setValueMap(stateTypeMap);
 
-		accessControlAllowOriginField = new TextAreaItem("accessControlAllowOriginField", "Access-Control-Allow-Origin");
-		accessControlAllowOriginField.setWidth("*");
-		accessControlAllowOriginField.setHeight(65);
-		SmartGWTUtil.setReadOnlyTextArea(accessControlAllowOriginField);
-
-		accessControlAllowCredentialsField = new CheckboxItem("accessControlAllowCredentialsField", "Access-Control-Allow-Credentials");
 		supportBearerTokenField = new CheckboxItem("supportBearerTokenField", "Support Bearer Token");
 
-
 		accessForm.setItems(privilagedField, publicWebAPIField, checkXRequestedWithHeaderField,
-				synchronizeOnSessionField, stateTypeField, accessControlAllowOriginField,
-				new SpacerItem(), editButton, accessControlAllowCredentialsField, supportBearerTokenField);
+				synchronizeOnSessionField, stateTypeField, supportBearerTokenField);
 
 		tokenForm = new DynamicForm();
 		tokenForm.setWidth100();
@@ -235,7 +188,7 @@ public class WebApiAttributePane extends HLayout {
 		exceptionRollbackField.setVisible(false);
 
 		tokenForm.setItems(tokenCheckField, useFixedTokenField, consumeField, exceptionRollbackField);
-		
+
 		cacheForm = new DynamicForm();
 		cacheForm.setWidth100();
 		cacheForm.setPadding(10);
@@ -305,8 +258,6 @@ public class WebApiAttributePane extends HLayout {
 			stateTypeField.setValue(StateType.STATEFUL.name());
 		}
 
-		accessControlAllowOriginField.setValue(definition.getAccessControlAllowOrigin());
-		accessControlAllowCredentialsField.setValue(definition.isAccessControlAllowCredentials());
 		supportBearerTokenField.setValue(definition.isSupportBearerToken());
 
 		if (definition.getTokenCheck() != null) {
@@ -369,8 +320,6 @@ public class WebApiAttributePane extends HLayout {
 		definition.setSynchronizeOnSession(SmartGWTUtil.getBooleanValue(synchronizeOnSessionField));
 		definition.setState(StateType.valueOf(SmartGWTUtil.getStringValue(stateTypeField)));
 
-		definition.setAccessControlAllowOrigin(SmartGWTUtil.getStringValue(accessControlAllowOriginField, true));
-		definition.setAccessControlAllowCredentials(SmartGWTUtil.getBooleanValue(accessControlAllowCredentialsField));
 		definition.setSupportBearerToken(SmartGWTUtil.getBooleanValue(supportBearerTokenField));
 
 		if (Boolean.valueOf(SmartGWTUtil.getStringValue(tokenCheckField))) {
