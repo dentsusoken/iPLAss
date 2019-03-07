@@ -72,7 +72,7 @@ public class CorsAttributePane extends VLayout {
 					SmartGWTUtil.getStringValue(accessControlAllowOriginField),
 					"Access-Control-Allow-Origin Script",
 					null,
-					AdminClientMessageUtil.getString("ui_metadata_webapi_WebAPIAttributePane_accessControlAllowOriginComment"),
+					AdminClientMessageUtil.getString("ui_metadata_webapi_CorsAttributePane_accessControlAllowOriginComment"),
 					new ScriptEditorDialogHandler() {
 
 						@Override
@@ -92,9 +92,11 @@ public class CorsAttributePane extends VLayout {
 		accessControlAllowOriginField.setWidth("*");
 		accessControlAllowOriginField.setHeight(65);
 		accessControlAllowOriginField.setStartRow(true);
+		accessControlAllowOriginField.setTooltip(SmartGWTUtil.getHoverString(AdminClientMessageUtil.getString("ui_metadata_webapi_CorsAttributePane_accessControlAllowOrigin")));
 		SmartGWTUtil.setReadOnlyTextArea(accessControlAllowOriginField);
 
 		accessControlAllowCredentialsField = new CheckboxItem("accessControlAllowCredentialsField", "Access-Control-Allow-Credentials");
+		accessControlAllowCredentialsField.setTooltip(SmartGWTUtil.getHoverString(AdminClientMessageUtil.getString("ui_metadata_webapi_CorsAttributePane_accessControlAllowCredentials")));
 
 		form.setItems(editButton, accessControlAllowOriginField, accessControlAllowCredentialsField);
 
