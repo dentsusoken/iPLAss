@@ -82,8 +82,6 @@ public class WebApiAttributePane extends HLayout {
 	private CheckboxItem consumeField;
 	private CheckboxItem exceptionRollbackField;
 
-	private CheckboxItem supportBearerTokenField;
-
 	private SelectItem cacheControlTypeField;
 	private TextItem cacheControlMaxAgeField;
 
@@ -147,10 +145,8 @@ public class WebApiAttributePane extends HLayout {
 		stateTypeMap.put(StateType.STATELESS.toString(), StateType.STATELESS.toString());
 		stateTypeField.setValueMap(stateTypeMap);
 
-		supportBearerTokenField = new CheckboxItem("supportBearerTokenField", "Support Bearer Token");
-
 		accessForm.setItems(privilagedField, publicWebAPIField, checkXRequestedWithHeaderField,
-				synchronizeOnSessionField, stateTypeField, supportBearerTokenField);
+				synchronizeOnSessionField, stateTypeField);
 
 		tokenForm = new DynamicForm();
 		tokenForm.setWidth100();
@@ -258,8 +254,6 @@ public class WebApiAttributePane extends HLayout {
 			stateTypeField.setValue(StateType.STATEFUL.name());
 		}
 
-		supportBearerTokenField.setValue(definition.isSupportBearerToken());
-
 		if (definition.getTokenCheck() != null) {
 			tokenCheckField.setValue(Boolean.TRUE.toString());
 			useFixedTokenField.setValue(definition.getTokenCheck().isUseFixedToken());
@@ -319,8 +313,6 @@ public class WebApiAttributePane extends HLayout {
 		definition.setCheckXRequestedWithHeader(SmartGWTUtil.getBooleanValue(checkXRequestedWithHeaderField));
 		definition.setSynchronizeOnSession(SmartGWTUtil.getBooleanValue(synchronizeOnSessionField));
 		definition.setState(StateType.valueOf(SmartGWTUtil.getStringValue(stateTypeField)));
-
-		definition.setSupportBearerToken(SmartGWTUtil.getBooleanValue(supportBearerTokenField));
 
 		if (Boolean.valueOf(SmartGWTUtil.getStringValue(tokenCheckField))) {
 			WebApiTokenCheck tokenCheck = new WebApiTokenCheck();

@@ -1049,12 +1049,14 @@ LocaleInfo.ui_metadata_utilityclass_UtilityClassPluginManager_failedToDeleteUtil
 LocaleInfo.ui_metadata_utilityclass_UtilityClassPluginManager_completion = "完了";
 LocaleInfo.ui_metadata_utilityclass_UtilityClassPluginManager_deleteUtilityClassComp = "UtilityClassが削除されました。";
 LocaleInfo.ui_metadata_webapi_CorsAttributePane_accessControlAllowOrigin = "アクセスを許可するドメイン名";
-LocaleInfo.ui_metadata_webapi_CorsAttributePane_accessControlAllowOriginComment = "<p>アクセスを許可するドメイン名を返すGroovyTemplateを設定します。「*（アスタリスク）」を出力した場合、全てのドメイン名からの接続を許可します。複数ある場合はスペースで区切ってください。</p><p>以下の変数がバインドされます。</p><ul><li>request: リクエスト</li><li>session: セッション</li></ul>";
+LocaleInfo.ui_metadata_webapi_CorsAttributePane_accessControlAllowOriginComment = "<p>アクセスを許可するドメイン名を返すGroovyTemplateを設定します。「*（アスタリスク）」を出力した場合、全てのドメイン名からの接続を許可します。複数指定する場合はスペースで区切ってください。</p><p>以下の変数がバインドされます。</p><ul><li>request: リクエスト</li><li>session: セッション</li></ul>";
 LocaleInfo.ui_metadata_webapi_CorsAttributePane_accessControlAllowCredentials = "認証情報が必要";
 LocaleInfo.ui_metadata_webapi_RequestTypePane_receptionType = "受付種別 :";
 LocaleInfo.ui_metadata_webapi_JsonpPermitPane_jsonpPermissions = "JSONPアクセス許可 :";
 LocaleInfo.ui_metadata_webapi_JsonpPermitPane_allowAccessJsonp = "JSONPからのアクセスを許可する";
 LocaleInfo.ui_metadata_webapi_MethodTypePane_methodType = "メソッド種別 :";
+LocaleInfo.ui_metadata_webapi_OAuthAttributePane_supportBearerToken = "RFC6750規格に基づいたBearer Tokenによる認証を許可する";
+LocaleInfo.ui_metadata_webapi_OAuthAttributePane_oauthScopes = "許可するスコープ。<br/>複数指定する場合はスペースまたは改行で区切ってください。";
 LocaleInfo.ui_metadata_webapi_RestJsonParamPane_parameterName = "パラメータ名";
 LocaleInfo.ui_metadata_webapi_RestJsonParamPane_parameterType = "パラメータタイプ";
 LocaleInfo.ui_metadata_webapi_RestXmlParamPane_parameterName = "パラメータ名";
