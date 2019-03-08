@@ -46,7 +46,7 @@ public class MailTemplatePlugin extends DefaultMetaDataPlugin {
 	private static final String NODE_NAME = "MailTemplate";
 
 	/** ノードアイコン */
-	private static final String NODE_ICON = "mail.png";
+	private static final String NODE_ICON = "email.png";
 
 	@Override
 	public String getCategoryName() {

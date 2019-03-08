@@ -45,7 +45,7 @@ public class SmsMailTemplatePlugin extends DefaultMetaDataPlugin {
 	private static final String NODE_NAME = "SMSTemplate";
 
 	/** ノードアイコン */
-	private static final String NODE_ICON = "sms.png";
+	private static final String NODE_ICON = "comment.png";
 
 	@Override
 	public String getCategoryName() {
