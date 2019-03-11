@@ -22,9 +22,10 @@ package org.iplass.gem.command.generic.bulk;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import org.iplass.gem.command.Constants;
 import org.iplass.gem.command.GemResourceBundleUtil;
@@ -152,10 +153,11 @@ public class BulkUpdateListCommand extends BulkCommandBase {
 			List<PropertyColumn> updatedProps = context.getProperty();
 			// 組み合わせで使うプロパティ
 			if (updatedProps.size() > 1) {
-				List<Object> updatedPropValue = updatedProps.stream()
-						.map(pc -> context.getBulkUpdatePropertyValue(pc.getPropertyName()))
-						.collect(Collectors.toList());
-				data.addUpdatedProperty(context.getBulkUpdatePropName(), updatedPropValue);
+				Map<String, Object> updatedPropsMap = new LinkedHashMap<>();
+				updatedProps.stream().forEach(pc -> {
+					updatedPropsMap.put(pc.getPropertyName(), context.getBulkUpdatePropertyValue(pc.getPropertyName()));
+				});
+				data.addUpdatedProperty(context.getBulkUpdatePropName(), updatedPropsMap);
 			} else {
 				String updatedPropName = context.getBulkUpdatePropName();
 				Object updatedPropValue = context.getBulkUpdatePropertyValue(updatedPropName);
