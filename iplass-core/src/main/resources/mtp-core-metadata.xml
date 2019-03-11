@@ -544,6 +544,10 @@ return true</script>
             </maxVarchar>
             <version>0</version>
         </entityStoreDefinition>
+        <eventListenerList xsi:type="metaJavaClassEventListener">
+            <withoutMappedByReference>false</withoutMappedByReference>
+            <className>org.iplass.mtp.impl.information.InformationEntityEventListener</className>
+        </eventListenerList>
         <storeMapping xsi:type="metaSchemalessRdbStoreMapping">
             <storageSpace>mtp</storageSpace>
         </storeMapping>
