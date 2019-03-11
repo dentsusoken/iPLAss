@@ -114,9 +114,11 @@ import org.iplass.mtp.impl.datastore.grdb.sql.queryconvert.SqlQueryContext.Query
 import org.iplass.mtp.impl.datastore.grdb.sql.table.ObjIndexTable;
 import org.iplass.mtp.impl.datastore.grdb.sql.table.ObjStoreTable;
 import org.iplass.mtp.impl.entity.EntityContext;
+import org.iplass.mtp.impl.entity.EntityHandler;
 import org.iplass.mtp.impl.entity.property.PrimitivePropertyHandler;
 import org.iplass.mtp.impl.entity.property.PropertyHandler;
 import org.iplass.mtp.impl.entity.property.PropertyType;
+import org.iplass.mtp.impl.entity.property.ReferencePropertyHandler;
 import org.iplass.mtp.impl.rdb.adapter.BaseRdbTypeAdapter;
 import org.iplass.mtp.impl.rdb.adapter.RdbAdapter;
 import org.iplass.mtp.impl.rdb.adapter.function.FunctionAdapter;
@@ -1989,7 +1991,50 @@ public class SqlConverter extends QueryVisitorSupport {
 			if (refer.getCondition() != null) {//without permission conditionのみ指定の場合があるので、、、
 				EntityField refPropName = refer.getReferenceName();
 				String oidName = refPropName.getPropertyName() + "." + Entity.OID;
+				String verName = refPropName.getPropertyName() + "." + Entity.VERSION;
 				context.notifyUsedPropertyName(oidName);
+				
+				Condition refCond = refer.getCondition();
+				
+				MultiPageChecker mpc = new MultiPageChecker(context.getFromEntity(), context.getMetaContext(), refPropName.getPropertyName());
+				refCond.accept(mpc);
+				if (mpc.isMultiPage()) {
+					//複数ページ跨ぐ場合、oidのサブクエリに変換
+					ReferencePropertyHandler refPh = (ReferencePropertyHandler) context.getFromEntity().getPropertyCascade(refPropName.getPropertyName(), context.getMetaContext());
+					EntityHandler refEh = refPh.getReferenceEntityHandler(context.getMetaContext());
+					
+					Query subq = new Query();
+					if (mpc.isAllPropertyUnderRef()) {
+						//サブクエリの深さを刈り取る
+						if (context.getFromEntity().isVersioned()) {
+							subq.select(new EntityField(Entity.OID), new EntityField(Entity.VERSION));
+						} else {
+							subq.select(new EntityField(Entity.OID));
+						}
+						subq.from(refEh.getMetaData().getName());
+						
+						RefTrimmer refTrimmer = new RefTrimmer(refPropName.getPropertyName());
+						subq.where((Condition) refer.getCondition().accept(refTrimmer));
+						
+					} else {
+						if (context.getFromEntity().isVersioned()) {
+							subq.select(new EntityField(oidName), new EntityField(verName));
+						} else {
+							subq.select(new EntityField(oidName));
+						}
+						subq.from(context.getFromEntity().getMetaData().getName());
+						subq.where(refer.getCondition());
+					}
+
+					if (context.getFromEntity().isVersioned()) {
+						ArrayList<ValueExpression> p = new ArrayList<>();
+						p.add(new EntityField(oidName));
+						p.add(new EntityField(verName));
+						refCond = new In(p, subq);
+					} else {
+						refCond = new And(new In(new EntityField(oidName), subq), new Equals(new EntityField(verName), new Literal(0L)));
+					}
+				}
 				
 				//JoinPath,Aliasesは共有
 				SqlQueryContext referContext = new SqlQueryContext(
@@ -2001,14 +2046,14 @@ public class SqlConverter extends QueryVisitorSupport {
 						context.getJoinPath(),
 						context.getIndexTable(),
 						context.isEnableBindVariable());
-				//TODO join時の限定条件でindexを利用可能にするかどうか（Join条件がすでにindex項目での結合になっている）
+				
 				referContext.setUseIndexTable(false);
 				
 				SqlQueryContext mainContext = context;
 				
 				context = referContext;
 				context.changeCurrentClause(Clause.WHERE);
-				refer.getCondition().accept(this);
+				refCond.accept(this);
 				if (referContext.getCurrentClause() != Clause.WHERE) {
 					referContext.changeCurrentClause(Clause.WHERE);
 				}
@@ -2021,7 +2066,7 @@ public class SqlConverter extends QueryVisitorSupport {
 						((QueryBindValue) b).clause = Clause.REFER;
 					}
 				}
-
+	
 				mainContext.getJoinPath().getJoinPath(refPropName.getPropertyName()).setAdditionalCondition(referContext.getCurrentSb().toString(), referBindVarialbes);
 				if (mainContext.getIndexTable() == null) {
 					mainContext.setIndexTable(referContext.getIndexTable());
