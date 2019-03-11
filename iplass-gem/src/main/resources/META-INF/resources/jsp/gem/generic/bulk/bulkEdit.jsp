@@ -83,7 +83,7 @@
 		} else {
 			dispValue = convertPropValueToString(p, propValue);
 		}
-		return StringUtil.escapeHtml(dispValue);
+		return dispValue;
 	}
 
 	String convertPropValueToString(PropertyDefinition p, Object propValue) {
@@ -348,7 +348,7 @@ $(function() {
 <%
 		for (BulkUpdatedProperty updatedProp : data.getUpdatedProperties()) {
 			Integer updateNo = updatedProp.getUpdateNo();
-			String updatedPropName = updatedProp.getPropertyName();
+			String updatedPropName = StringUtil.escapeHtml(updatedProp.getPropertyName());
 			PropertyDefinition pd = defMap.get(updatedPropName);
 			PropertyColumn pc = colMap.get(updatedPropName);
 			String updatedPropDispName = TemplateUtil.getMultilingualString(pc.getDisplayLabel(), pc.getLocalizedDisplayLabelList(),
@@ -357,7 +357,7 @@ $(function() {
 			String updatedPropDispValue = "";
 			// 表示値に変更済み
 			if (updatedPropValue instanceof String) {
-				updatedPropDispValue = (String)updatedPropValue;
+				updatedPropDispValue = StringUtil.escapeHtml((String)updatedPropValue);
 			} else {
 				if (pc.getBulkUpdateEditor() instanceof DateRangePropertyEditor || pc.getBulkUpdateEditor() instanceof JoinPropertyEditor) {
 					Map<String, Object> updatedPropsMap = (Map<String, Object>) updatedPropValue;
@@ -367,7 +367,7 @@ $(function() {
 					}
 					updatedPropValue = tmp.toString();
 				} 
-				updatedPropDispValue = getPropertyDisplayValue(pd, updatedPropValue);
+				updatedPropDispValue = StringUtil.escapeHtml(getPropertyDisplayValue(pd, updatedPropValue));
 			}
 %>
 <tr>
