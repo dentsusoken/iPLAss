@@ -92,8 +92,8 @@ public class BulkUpdateListCommand extends BulkCommandBase {
 		final BulkCommandContext context = getContext(request);
 		// 必要なパラメータ取得
 		Set<String> oids = context.getOids();
-
 		SearchFormView view = context.getView();
+
 		if (view == null) {
 			request.setAttribute(Constants.MESSAGE, resourceString("command.generic.bulk.BulkUpdateViewCommand.viewErr"));
 			return Constants.CMD_EXEC_ERROR_VIEW;
@@ -111,36 +111,37 @@ public class BulkUpdateListCommand extends BulkCommandBase {
 		data.setExecType(Constants.EXEC_TYPE_UPDATE);
 		data.setView(context.getView());
 		for (String oid : oids) {
-			Entity model = context.createEntity(oid);
-			Integer row = context.getRow(oid);
-			if (context.hasErrors()) {
-				if (ret == null) {
-					ret = new EditResult();
-					ret.setResultType(ResultType.ERROR);
-					ret.setErrors(context.getErrors().toArray(new ValidateError[context.getErrors().size()]));
-					ret.setMessage(resourceString("command.generic.bulk.BulkUpdateListCommand.inputErr"));
-				}
-				data.setEntity(row, model);
-			} else {
-				// 更新
-				if (ret == null || ret.getResultType() == ResultType.SUCCESS) ret = updateEntity(context, model);
-				if (ret.getResultType() == ResultType.SUCCESS) {
-					Transaction transaction = ManagerLocator.getInstance().getManager(TransactionManager.class).currentTransaction();
-					transaction.addTransactionListener(new TransactionListener() {
-						@Override
-						public void afterCommit(Transaction t) {
-							// 特定のバージョン指定でロード
-							Long version = context.getVersion(oid);
-							data.setEntity(row, loadViewEntity(context, oid, version, context.getDefinitionName(), (List<String>) null));
-						}
-
-						@Override
-						public void afterRollback(Transaction t) {
-							data.setEntity(row, model);
-						}
-					});
-				} else {
+			for (Long version : context.getVersions(oid)) {
+				Entity model = context.createEntity(oid, version);
+				Integer row = context.getRow(oid, version);
+				if (context.hasErrors()) {
+					if (ret == null) {
+						ret = new EditResult();
+						ret.setResultType(ResultType.ERROR);
+						ret.setErrors(context.getErrors().toArray(new ValidateError[context.getErrors().size()]));
+						ret.setMessage(resourceString("command.generic.bulk.BulkUpdateListCommand.inputErr"));
+					}
 					data.setEntity(row, model);
+				} else {
+					// 更新
+					if (ret == null || ret.getResultType() == ResultType.SUCCESS) ret = updateEntity(context, model);
+					if (ret.getResultType() == ResultType.SUCCESS) {
+						Transaction transaction = ManagerLocator.getInstance().getManager(TransactionManager.class).currentTransaction();
+						transaction.addTransactionListener(new TransactionListener() {
+							@Override
+							public void afterCommit(Transaction t) {
+								// 特定のバージョン指定でロード
+								data.setEntity(row, loadViewEntity(context, oid, version, context.getDefinitionName(), (List<String>) null));
+							}
+
+							@Override
+							public void afterRollback(Transaction t) {
+								data.setEntity(row, model);
+							}
+						});
+					} else {
+						data.setEntity(row, model);
+					}
 				}
 			}
 		}

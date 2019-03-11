@@ -101,22 +101,18 @@ public class BulkUpdateViewCommand extends BulkCommandBase {
 		BulkUpdateFormViewData data = new BulkUpdateFormViewData(context);
 		data.setExecType(Constants.EXEC_TYPE_UPDATE);
 
-		StringBuilder builder = new StringBuilder();
 		for (String oid : oids) {
-			Integer targetRow = context.getRow(oid);
-			Long targetVersion = context.getVersion(oid);
 			if (oid != null && oid.length() > 0) {
-				Entity entity = loadViewEntity(context, oid, targetVersion, context.getDefinitionName(), (List<String>) null);
-				if (entity == null) {
-					builder.append(resourceString("command.generic.bulk.BulkUpdateViewCommand.noPermission", targetRow));
-					break;
+				for (Long targetVersion : context.getVersions(oid)) {
+					Integer targetRow = context.getRow(oid, targetVersion);
+					Entity entity = loadViewEntity(context, oid, targetVersion, context.getDefinitionName(), (List<String>) null);
+					if (entity == null) {
+						request.setAttribute(Constants.MESSAGE, resourceString("command.generic.bulk.BulkUpdateViewCommand.noPermission"));
+						return Constants.CMD_EXEC_ERROR_NODATA;
+					}
+					data.setEntity(targetRow, entity);
 				}
-				data.setEntity(targetRow, entity);
 			}
-		}
-		if (builder.length() > 0) {
-			request.setAttribute(Constants.MESSAGE, builder.toString());
-			return Constants.CMD_EXEC_ERROR_NODATA;
 		}
 
 		request.setAttribute(Constants.DATA, data);

@@ -111,15 +111,15 @@ public class BulkCommandContext extends RegistrationCommandContext {
 	}
 
 	private void init() {
-		populateBulkCommandParam(Constants.OID, String.class, true);
-		populateBulkCommandParam(Constants.VERSION, Long.class, false);
-		populateBulkCommandParam(Constants.TIMESTAMP, Long.class, false);
+		populateBulkCommandParam(Constants.OID, String.class, true, true, false);
+		populateBulkCommandParam(Constants.VERSION, Long.class, false, true, false);
+		populateBulkCommandParam(Constants.TIMESTAMP, Long.class, false, false, true);
 
 		populateBulkUpdatedProperty(Constants.BULK_UPDATED_PROP_NM, true);
 		populateBulkUpdatedProperty(Constants.BULK_UPDATED_PROP_VALUE, false);
 	}
 
-	private void populateBulkCommandParam(String name, Class<?> cls, boolean create) {
+	private void populateBulkCommandParam(String name, Class<?> cls, boolean create, boolean notBlank, boolean checkDiff) {
 		//BulkUpdateAllCommandからのChainの可能性があるので、Attributeから取得する
 		String[] param = (String[]) request.getAttribute(name);
 		if (param == null || param.length == 0) {
@@ -131,6 +131,10 @@ public class BulkCommandContext extends RegistrationCommandContext {
 				String[] params = splitRowParam(param[i]);
 				Integer targetRow = Integer.parseInt(params[0]);
 				String targetParam = params[1];
+				if (StringUtil.isBlank(targetParam) && notBlank) {
+					getLogger().error("can not be empty. name=" + name + ", param=" + param[i]);
+					throw new ApplicationException(resourceString("command.generic.bulk.BulkCommandContext.invalidFormat"));
+				}
 				BulkCommandParams bulkParams = getBulkCommandParams(targetRow);
 				if (create) {
 					// targetParamをキーとして設定する
@@ -145,15 +149,15 @@ public class BulkCommandContext extends RegistrationCommandContext {
 						throw new ApplicationException(resourceString("command.generic.bulk.BulkCommandContext.invalidRow"));
 					}
 					bulkParams.setValue(name, ConvertUtil.convertFromString(cls, targetParam));
+				}
 
-					if (i == param.length - 1) {
-						// マルチリファレンスのプロパティ定義がある場合、同じOIDで行番号が異なるデータが存在するので、
-						// 設定されたプロパティ値が同じ値であるかチェックします。
-						boolean hasDiffPropValue = hasDifferentPropertyValue(name);
-						if (hasDiffPropValue) {
-							getLogger().error("has different prop value. name=" + name + ", bulkCommandParams=" + bulkCommandParams.toString());
-							throw new ApplicationException(resourceString("command.generic.bulk.BulkCommandContext.diffPropVal"));
-						}
+				if (checkDiff && i == param.length - 1) {
+					// バージョン管理されているエンティティでマルチリファレンスのプロパティ定義がある場合、同じOIDとバージョンで行番号が異なるデータが存在するので、
+					// 設定されたプロパティ値が同じ値であるかチェックします。
+					boolean hasDiffPropValue = hasDifferentPropertyValue(name);
+					if (hasDiffPropValue) {
+						getLogger().error("has different prop value. name=" + name + ", bulkCommandParams=" + bulkCommandParams.toString());
+						throw new ApplicationException(resourceString("command.generic.bulk.BulkCommandContext.diffPropVal"));
 					}
 				}
 			}
@@ -211,14 +215,17 @@ public class BulkCommandContext extends RegistrationCommandContext {
 	private boolean hasDifferentPropertyValue(String propName) {
 		Set<String> oids = getOids();
 		for (String oid : oids) {
-			List<Object> propValues = bulkCommandParams.stream().filter(p -> p.getOid().equals(oid))
-					.map(p -> p.getValue(propName))
-					.collect(Collectors.toList());
-			Object first = propValues.get(0);
-			if (first == null) {
-				return propValues.stream().anyMatch(v -> v != null);
-			} else {
-				return propValues.stream().anyMatch(v -> !first.equals(v));
+			for (Long version: getVersions(oid)) {
+				List<Object> propValues = bulkCommandParams.stream()
+						.filter(p -> p.getOid().equals(oid) && p.getVersion().equals(version))
+						.map(p -> p.getValue(propName))
+						.collect(Collectors.toList());
+				Object first = propValues.get(0);
+				if (first == null) {
+					return propValues.stream().anyMatch(v -> v != null);
+				} else {
+					return propValues.stream().anyMatch(v -> !first.equals(v));
+				}
 			}
 		}
 		return false;
@@ -335,7 +342,7 @@ public class BulkCommandContext extends RegistrationCommandContext {
 			//データあり
 			String paramPrefix = prefix + p.getName() + "[" + Integer.toString(i) + "].";
 			String errorPrefix = (i != list.size() ? prefix + p.getName() + "[" + Integer.toString(list.size()) + "]." : null);
-			Entity entity = createEntity(paramPrefix, errorPrefix);
+			Entity entity = createEntityInternal(paramPrefix, errorPrefix);
 
 			//入力エラー時に再Loadされないようにフラグ設定
 			entity.setValue(Constants.REF_RELOAD, Boolean.FALSE);
@@ -534,12 +541,12 @@ public class BulkCommandContext extends RegistrationCommandContext {
 		return getParam(Constants.EXEC_TYPE);
 	}
 
-	public Integer getRow(String oid) {
+	public Integer getRow(String oid, Long version) {
 		Integer row = null;
-		// マルチリファレンスのプロパティ定義がある場合、同じOIDで行番号が異なるデータが存在するので、
+		// バージョン管理されているエンティティでマルチリファレンスのプロパティ定義がある場合、同じOIDとバージョンで行番号が異なるデータが存在するので、
 		// 一括更新する際に、一行目だけ更新します。
 		Optional<Integer> rw = bulkCommandParams.stream()
-				.filter(p -> p.getOid().equals(oid))
+				.filter(p -> p.getOid().equals(oid) && p.getVersion().equals(version))
 				.map(p -> p.getRow())
 				.findFirst();
 		if (rw.isPresent()) {
@@ -548,26 +555,21 @@ public class BulkCommandContext extends RegistrationCommandContext {
 		return row;
 	}
 
-	public Long getVersion(String oid) {
-		Long version = null;
-		// マルチリファレンスのプロパティ定義がある場合、同じOIDで行番号が異なるデータが存在するので、
-		// 一括更新する際に、一行目だけ更新します。
-		Optional<Long> ver = bulkCommandParams.stream()
+	public Set<Long> getVersions(String oid) {
+		// バージョン管理の場合、同じOIDで異なるバージョンが存在するので、
+		// バージョンセットを取得する。
+		return bulkCommandParams.stream()
 				.filter(p -> p.getOid().equals(oid))
 				.map(p -> p.getVersion())
-				.findFirst();
-		if (ver.isPresent()) {
-			version = ver.get();
-		}
-		return version;
+				.collect(Collectors.toSet());
 	}
 
-	public Timestamp getTimestamp(String oid) {
+	public Timestamp getTimestamp(String oid, Long version) {
 		Timestamp ts = null;
-		// マルチリファレンスのプロパティ定義がある場合、同じOIDで行番号が異なるデータが存在するので、
+		// バージョン管理されているエンティティでマルチリファレンスのプロパティ定義がある場合、同じOIDとバージョンで行番号が異なるデータが存在するので、
 		// 一括更新する際に、一行目だけ更新します。
 		Optional<Long> updateDate = bulkCommandParams.stream()
-				.filter(p -> p.getOid().equals(oid))
+				.filter(p -> p.getOid().equals(oid) && p.getVersion().equals(version))
 				.map(p -> p.getUpdateDate())
 				.findFirst();
 		if (updateDate.isPresent() && updateDate.get() != null) {
@@ -593,13 +595,13 @@ public class BulkCommandContext extends RegistrationCommandContext {
 		return getPropValue(p, "");
 	}
 
-	public Entity createEntity(String oid) {
-		Entity entity = createEntity("" , null);
+	public Entity createEntity(String oid, Long version) {
+		Entity entity = createEntityInternal("" , null);
 		entity.setOid(oid);
-		entity.setUpdateDate(getTimestamp(oid));
+		entity.setUpdateDate(getTimestamp(oid, version));
 //		if (isVersioned()) {
 		// バージョン管理にかかわらず、セットする問題ないかな..
-		entity.setVersion(getVersion(oid));
+		entity.setVersion(version);
 //		}
 //		setVirtualPropertyValue(entity);
 		getRegistrationInterrupterHandler().dataMapping(entity);
@@ -607,7 +609,7 @@ public class BulkCommandContext extends RegistrationCommandContext {
 		return entity;
 	}
 
-	private Entity createEntity(String paramPrefix, String errorPrefix) {
+	private Entity createEntityInternal(String paramPrefix, String errorPrefix) {
 		Entity entity = newEntity();
 		for (PropertyDefinition p : getPropertyList()) {
 			if (skipProps.contains(p.getName())) continue;
