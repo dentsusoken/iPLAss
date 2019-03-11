@@ -308,13 +308,21 @@
 			String _rootDefName = StringUtil.escapeJavaScript(rootDefName);
 			String _propName = StringUtil.escapeJavaScript(propName);
 			String _viewName = StringUtil.escapeJavaScript(viewName);
+			String addBtnStyle = "";
+			if (entities.size() == pd.getMultiplicity()) addBtnStyle = "display: none;"; 
 %>
 <p class="mb10">
-<input type="button" value="${m:rs('mtp-gem-messages', 'generic.editor.reference.ReferencePropertyEditor_Table.add')}" id="id_<c:out value="<%=propName%>"/>_addButton_top" class="gr-btn-02 add-btn table-top-button" />
+<input type="button" value="${m:rs('mtp-gem-messages', 'generic.editor.reference.ReferencePropertyEditor_Table.add')}" id="id_<c:out value="<%=propName%>"/>_addButton_top" class="gr-btn-02 add-btn table-top-button" style="<c:out value="<%=addBtnStyle%>" />" />
 <script type="text/javascript">
+var toggleAddBtn_<%=_propName%> = function() {
+	var $tbody = $("#<%=StringUtil.escapeJavaScript(dummyRowId)%>").parent();
+	var display = $tbody.children("tr:not(:hidden)").length < <%=pd.getMultiplicity()%>;
+	$("#id_<c:out value="<%=propName%>"/>_addButton_top").toggle(display);
+}
 $(function() {
 	$("#id_<%=StringUtil.escapeJavaScript(propName)%>_addButton_top").on("click", function() {
 		addNestRow("<%=StringUtil.escapeJavaScript(dummyRowId)%>", "<%=StringUtil.escapeJavaScript(countId)%>", <%=pd.getMultiplicity() + 1%>, true, "<%=_rootDefName%>", "<%=_viewName%>", "<%=_propName%>", function(row, index) {
+			toggleAddBtn_<%=_propName%>();
 <%
 			if (StringUtil.isNotBlank(editor.getAddRowCallbackScript())) {
 %>
@@ -322,7 +330,7 @@ $(function() {
 <%
 			}
 %>
-		});
+		}, toggleAddBtn_<%=_propName%>);
 	});
 });
 </script>
@@ -753,7 +761,7 @@ ${m:rs("mtp-gem-messages", "generic.editor.reference.ReferencePropertyEditor_Tab
 %>
 <td nowrap="nowrap">
 <input type="button" value="${m:rs('mtp-gem-messages', 'generic.editor.reference.ReferencePropertyEditor_Table.delete')}" class="gr-btn-02 del-btn"
-		onclick="deleteRefTableRow('<%=StringUtil.escapeJavaScript(trId)%>')" />
+		onclick="deleteRefTableRow('<%=StringUtil.escapeJavaScript(trId)%>', toggleAddBtn_<%=StringUtil.escapeJavaScript(propName)%>)" />
 </td>
 <%
 			}
@@ -774,13 +782,21 @@ ${m:rs("mtp-gem-messages", "generic.editor.reference.ReferencePropertyEditor_Tab
 			String _rootDefName = StringUtil.escapeJavaScript(rootDefName);
 			String _propName = StringUtil.escapeJavaScript(propName);
 			String _viewName = StringUtil.escapeJavaScript(viewName);
+			String addBtnStyle = "";
+			if (entities.size() == pd.getMultiplicity()) addBtnStyle = "display: none;"; 
 %>
 <p class="mt10">
-<input type="button" value="${m:rs('mtp-gem-messages', 'generic.editor.reference.ReferencePropertyEditor_Table.add')}" id="id_<c:out value="<%=propName%>"/>_addButton_bottom" class="gr-btn-02 add-btn table-bottom-button" />
+<input type="button" value="${m:rs('mtp-gem-messages', 'generic.editor.reference.ReferencePropertyEditor_Table.add')}" id="id_<c:out value="<%=propName%>"/>_addButton_bottom" class="gr-btn-02 add-btn table-bottom-button" style="<c:out value="<%=addBtnStyle%>" />" />
 <script type="text/javascript">
+var toggleAddBtn_<%=_propName%> = function() {
+	var $tbody = $("#<%=StringUtil.escapeJavaScript(dummyRowId)%>").parent();
+	var display = $tbody.children("tr:not(:hidden)").length < <%=pd.getMultiplicity()%>;
+	$("#id_<c:out value="<%=propName%>"/>_addButton_bottom").toggle(display);
+}
 $(function() {
 	$("#id_<%=StringUtil.escapeJavaScript(propName)%>_addButton_bottom").on("click", function() {
 		addNestRow("<%=StringUtil.escapeJavaScript(dummyRowId)%>", "<%=StringUtil.escapeJavaScript(countId)%>", <%=pd.getMultiplicity() + 1%>, false, "<%=_rootDefName%>", "<%=_viewName%>", "<%=_propName%>", function(row, index) {
+			toggleAddBtn_<%=_propName%>();
 <%
 			if (StringUtil.isNotBlank(editor.getAddRowCallbackScript())) {
 %>
@@ -788,7 +804,7 @@ $(function() {
 <%
 			}
 %>
-		});
+		}, toggleAddBtn_<%=_propName%>);
 	});
 });
 </script>

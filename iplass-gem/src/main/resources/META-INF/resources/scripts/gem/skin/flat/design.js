@@ -367,8 +367,8 @@ $(function() {
 	if (typeof addNestRow !== "undefined") {
 		var _addNestRow = addNestRow;
 
-		addNestRow = function(rowId, countId, multiplicy, insertTop, rootDefName, viewName, orgPropName, callback) {
-			var $row = _addNestRow(rowId, countId, multiplicy, insertTop, rootDefName, viewName, orgPropName, callback);
+		addNestRow = function(rowId, countId, multiplicy, insertTop, rootDefName, viewName, orgPropName, callback, delCallback) {
+			var $row = _addNestRow(rowId, countId, multiplicy, insertTop, rootDefName, viewName, orgPropName, callback, delCallback);
 
 			$("input[type=radio],input[type=checkbox]", $row).on("click", function(e) {
 				e.stopPropagation();
