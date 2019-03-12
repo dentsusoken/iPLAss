@@ -166,6 +166,7 @@
 				String ulId = "ul_" + propName;
 				String dummyRowId = "id_li_" + propName + "Dummmy";
 				String selector = null;
+				String toggleAddBtnFunc = "toggleAddBtn_" + escapedPropName;
 				if (editor.getDisplayType() == StringDisplayType.RICHTEXT && request.getAttribute(Constants.RICHTEXT_LIB_LOADED) == null) {
 					request.setAttribute(Constants.RICHTEXT_LIB_LOADED, true);
 %>
@@ -257,13 +258,13 @@ $(function() {
 <script type="text/javascript">
 function delete_<%=escapedPropName + i%>(liId) {
 	if (CKEDITOR.instances.id_<%=escapedPropName + i%>) CKEDITOR.instances.id_<%=escapedPropName + i%>.destroy();
-	deleteItem(liId);
+	deleteItem(liId, <%=toggleAddBtnFunc%>);
 }
 </script>
 <%
 						} else {
 %>
- <input type="button" value="${m:rs('mtp-gem-messages', 'generic.editor.string.StringPropertyEditor_Edit.delete')}" class="gr-btn-02 del-btn" onclick="deleteItem('<%=StringUtil.escapeJavaScript(liId)%>')" />
+ <input type="button" value="${m:rs('mtp-gem-messages', 'generic.editor.string.StringPropertyEditor_Edit.delete')}" class="gr-btn-02 del-btn" onclick="deleteItem('<%=StringUtil.escapeJavaScript(liId)%>', <%=toggleAddBtnFunc%>)" />
 <%
 						}
 %>
@@ -287,24 +288,35 @@ $(function() {
 					$delBtn.off("click");
 					$delBtn.on("click", function() {
 						if (CKEDITOR.instances["id_<%=escapedPropName%>" + count]) CKEDITOR.instances["id_<%=escapedPropName%>" + count].destroy();
-						deleteItem($(this).parent().attr("id"));
+						deleteItem($(this).parent().attr("id"), <%=toggleAddBtnFunc%>);
 					});
 
 					$(elem).attr("id", "id_<%=escapedPropName%>" + count);
 					$(elem).ckeditor(
 						function() {}, { allowedContent:<%=allowedContent%> }
 					);
+					<%=toggleAddBtnFunc%>();
 				}
 <%
+				} else {
+%>
+				, <%=toggleAddBtnFunc%>
+<% 
 				}
 %>
-		);
+		, <%=toggleAddBtnFunc%>);
 	});
 });
+function <%=toggleAddBtnFunc%>(){
+	var display = $("#<%=StringUtil.escapeJavaScript(ulId)%> li:not(:hidden)").length < <%=pd.getMultiplicity()%>;
+	$("#id_addBtn_<%=escapedPropName%>").toggle(display);
+}
 </script>
 <%
+				String addBtnStyle = "";
+				if (array != null && array.length >= pd.getMultiplicity()) addBtnStyle = "display: none;";
 %>
-<input type="button" value="${m:rs('mtp-gem-messages', 'generic.editor.string.StringPropertyEditor_Edit.add')}" class="gr-btn-02 add-btn" id="id_addBtn_<c:out value="<%=propName %>"/>" />
+<input type="button" value="${m:rs('mtp-gem-messages', 'generic.editor.string.StringPropertyEditor_Edit.add')}" class="gr-btn-02 add-btn" style="<%=addBtnStyle%>" id="id_addBtn_<c:out value="<%=propName %>"/>" />
 <input type="hidden" id="id_count_<c:out value="<%=propName %>"/>" value="<c:out value="<%=length %>"/>" />
 <%
 			} else {
