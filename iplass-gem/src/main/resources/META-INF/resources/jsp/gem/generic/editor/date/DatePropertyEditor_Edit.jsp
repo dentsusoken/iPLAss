@@ -130,7 +130,14 @@
 		if (isMultiple) {
 			//複数
 			String dummyRowId = "id_li_" + propName + "Dummmy";
+			String toggleAddBtnFunc = "toggleAddBtn_" + StringUtil.escapeJavaScript(propName);
 %>
+<script type="text/javascript">
+function <%=toggleAddBtnFunc%>() {
+	var display = $("#<%=StringUtil.escapeJavaScript(ulId)%> li:not(:hidden)").length < <%=pd.getMultiplicity()%>;
+	$("#id_addBtn_<c:out value="<%=propName%>"/>").toggle(display);
+}
+</script>
 <ul id="<c:out value="<%=ulId %>"/>" class="mb05">
 <li id="<c:out value="<%=dummyRowId %>"/>" class="list-add picker-list" style="display: none;">
 <input type="text" class="inpbr" style="<c:out value="<%=customStyle%>"/>" data-showButtonPanel=<%=!editor.isHideButtonPanel()%> data-showWeekday=<%=editor.isShowWeekday()%> />
@@ -149,7 +156,7 @@
 %>
 <li id="<c:out value="<%=liId%>"/>" class="list-add picker-list">
 <input type="text" id="d_<c:out value="<%=liId%>"/>" class="inpbr datepicker" style="<c:out value="<%=customStyle%>"/>" value="<c:out value="<%=str%>"/>" onchange="<%=onchange%>" data-showButtonPanel="<%=!editor.isHideButtonPanel()%>" data-showWeekday=<%=editor.isShowWeekday()%> />
-<input type="button" value="${m:rs('mtp-gem-messages', 'generic.editor.date.DatePropertyEditor_Edit.delete')}" class="gr-btn-02 del-btn" onclick="deleteItem('<%=StringUtil.escapeJavaScript(liId)%>')" />
+<input type="button" value="${m:rs('mtp-gem-messages', 'generic.editor.date.DatePropertyEditor_Edit.delete')}" class="gr-btn-02 del-btn" onclick="deleteItem('<%=StringUtil.escapeJavaScript(liId)%>', <%=toggleAddBtnFunc%>)" />
 <input type="hidden" id="i_<c:out value="<%=liId%>"/>" name="<c:out value="<%=propName%>"/>" value="<c:out value="<%=hiddenDate%>"/>" />
 <script type="text/javascript">
 $(function() {
@@ -161,9 +168,11 @@ $(function() {
 <%
 				}
 			}
+			String addBtnStyle = "";
+			if (array != null && array.length >= pd.getMultiplicity()) addBtnStyle = "display: none;";
 %>
 </ul>
-<input type="button" id="id_addBtn_<c:out value="<%=propName%>"/>" value="${m:rs('mtp-gem-messages', 'generic.editor.date.DatePropertyEditor_Edit.add')}" class="gr-btn-02 add-btn" onclick="addDateItem('<%=StringUtil.escapeJavaScript(ulId)%>', <%=pd.getMultiplicity() + 1%>, '<%=StringUtil.escapeJavaScript(dummyRowId)%>', '<%=StringUtil.escapeJavaScript(propName)%>', 'id_count_<%=StringUtil.escapeJavaScript(propName)%>')" />
+<input type="button" id="id_addBtn_<c:out value="<%=propName%>"/>" value="${m:rs('mtp-gem-messages', 'generic.editor.date.DatePropertyEditor_Edit.add')}" class="gr-btn-02 add-btn" style="<%=addBtnStyle%>" onclick="addDateItem('<%=StringUtil.escapeJavaScript(ulId)%>', <%=pd.getMultiplicity() + 1%>, '<%=StringUtil.escapeJavaScript(dummyRowId)%>', '<%=StringUtil.escapeJavaScript(propName)%>', 'id_count_<%=StringUtil.escapeJavaScript(propName)%>', <%=toggleAddBtnFunc%>, <%=toggleAddBtnFunc%>)" />
 <input type="hidden" id="id_count_<c:out value="<%=propName%>"/>" value="<c:out value="<%=length%>"/>" />
 <%
 		} else {

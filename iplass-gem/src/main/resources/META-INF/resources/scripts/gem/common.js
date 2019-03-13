@@ -400,9 +400,10 @@ function StringBuilder() {
  * @param id
  * @return
  */
-function deleteItem(id) {
+function deleteItem(id, delCallback) {
 	$("#" + es(id)).remove();
 	$(".fixHeight").fixHeight();
+	if (delCallback && $.isFunction(delCallback)) {delCallback.call(this, id);}
 }
 
 /**
@@ -740,10 +741,10 @@ function resetDetailCondition() {
  * @param selector
  * @return
  */
-function addTextItem(ulId, multiplicity, liId, propName, countId, selector, func) {
+function addTextItem(ulId, multiplicity, liId, propName, countId, selector, func, delCallback) {
 	if (canAddItem(ulId, multiplicity)) {
 		countUp(countId, function(count){
-			var $copy = copyText(liId, propName, count, selector);
+			var $copy = copyText(liId, propName, count, selector, delCallback);
 			if ($(":text", $copy).hasClass("commaFieldDummy")) {
 				$(":text", $copy).removeClass("commaFieldDummy").addClass("commaField");
 				$(":text", $copy).commaField();
@@ -762,7 +763,7 @@ function addTextItem(ulId, multiplicity, liId, propName, countId, selector, func
  * @param selector
  * @return
  */
-function copyText(liId, propName, idx, selector) {
+function copyText(liId, propName, idx, selector, delCallback) {
 	var $src = $("#" + liId);
 	var copyId = "li_" + propName + idx;
 	var $copy = clone($src, copyId);
@@ -771,7 +772,7 @@ function copyText(liId, propName, idx, selector) {
 	var $button = $(":button", $copy);
 
 	$text.attr("name", propName);
-	$button.click(function() {deleteItem(copyId);});
+	$button.click(function() {deleteItem(copyId, delCallback);});
 
 	return $copy;
 }
@@ -887,15 +888,16 @@ function dateToHidden($date, $hidden) {
  * @param countId
  * @return
  */
-function addDateItem(ulId, multiplicity, dummyRowId, propName, countId) {
+function addDateItem(ulId, multiplicity, dummyRowId, propName, countId, func, delCallback) {
 	if (canAddItem(ulId, multiplicity)) {
 		countUp(countId, function(count) {
-			copyDate(dummyRowId, propName, count);
+			var $copy = copyDate(dummyRowId, propName, count, delCallback);
+			if (func && $.isFunction(func)) func.call(this, $copy);
 		});
 		$(".fixHeight").fixHeight();
 	}
 
-	function copyDate(dummyRowId, propName, idx) {
+	function copyDate(dummyRowId, propName, idx, delCallback) {
 		var newId = propName + idx;
 		var copyId = "li_" + newId;
 
@@ -917,9 +919,11 @@ function addDateItem(ulId, multiplicity, dummyRowId, propName, countId) {
 		$text.change(function() {dateChange(newId);});
 
 		//削除ボタンのclickを設定
-		$button.click(function() {deleteItem(copyId);});
+		$button.click(function() {deleteItem(copyId, delCallback);});
 
 		datepicker($text);
+		
+		return $copy;
 	}
 }
 
@@ -1007,15 +1011,16 @@ function timeSelectToHidden($hour, $min, $sec, $hidden) {
  * @param countId
  * @return
  */
-function addTimeSelectItem(ulId, multiplicity, dummyRowId, propName, countId) {
+function addTimeSelectItem(ulId, multiplicity, dummyRowId, propName, countId, func, delCallback) {
 	if (canAddItem(ulId, multiplicity)) {
 		countUp(countId, function(count) {
-			copyTime(dummyRowId, propName, count);
+			var $copy = copyTime(dummyRowId, propName, count, delCallback);
+			if (func && $.isFunction(func)) func.call(this, $copy);
 		});
 		$(".fixHeight").fixHeight();
 	}
 
-	function copyTime(dummyRowId, propName, idx) {
+	function copyTime(dummyRowId, propName, idx, delCallback) {
 		var newId = propName + idx;
 		var copyId = "li_" + newId;
 
@@ -1050,7 +1055,9 @@ function addTimeSelectItem(ulId, multiplicity, dummyRowId, propName, countId) {
 		$hidden.attr({name: propName, id: "i_" + newId});
 
 		//削除ボタンのclickを設定
-		$button.click(function() {deleteItem(copyId);});
+		$button.click(function() {deleteItem(copyId, delCallback);});
+		
+		return $copy;
 	}
 }
 
@@ -1096,16 +1103,17 @@ function timePickerToHidden($time, $hidden) {
  * @param countId
  * @return
  */
-function addTimePickerItem(ulId, multiplicity, dummyRowId, propName, countId) {
+function addTimePickerItem(ulId, multiplicity, dummyRowId, propName, countId, func, delCallback) {
 	if (canAddItem(ulId, multiplicity)) {
 		countUp(countId, function(count) {
-			copyTimePicker(dummyRowId, propName, count);
+			var $copy = copyTimePicker(dummyRowId, propName, count, delCallback);
+			if (func && $.isFunction(func)) func.call(this, $copy);
 		});
 		$(".fixHeight").fixHeight();
 	}
 
 	//function copyTimePicker(dummyRowId, propName, idx, timeformat, maxlength, stepmin) {
-	function copyTimePicker(dummyRowId, propName, idx) {
+	function copyTimePicker(dummyRowId, propName, idx, delCallback) {
 
 		var newId = propName + idx;
 		var copyId = "li_" + newId;
@@ -1127,9 +1135,11 @@ function addTimePickerItem(ulId, multiplicity, dummyRowId, propName, countId) {
 		$hidden.attr({name : propName,id : "i_" + newId});
 
 		//削除ボタンのclickを設定
-		$button.click(function() {deleteItem(copyId);});
+		$button.click(function() {deleteItem(copyId, delCallback);});
 
 		timepicker($text);
+
+		return $copy;
 	}
 }
 
@@ -1230,15 +1240,16 @@ function timestampSelectToHidden($date, $hour, $min, $sec, $msec, $hidden) {
  * @param countId
  * @return
  */
-function addTimestampSelectItem(ulId, multiplicity, dummyRowId, propName, countId) {
+function addTimestampSelectItem(ulId, multiplicity, dummyRowId, propName, countId, func, delCallback) {
 	if (canAddItem(ulId, multiplicity)) {
 		countUp(countId, function(count) {
-			copyTimestamp(dummyRowId, propName, count);
+			var $copy = copyTimestamp(dummyRowId, propName, count, delCallback);
+			if (func && $.isFunction(func)) func.call(this, $copy);
 		});
 		$(".fixHeight").fixHeight();
 	}
 
-	function copyTimestamp(dummyRowId, propName, idx) {
+	function copyTimestamp(dummyRowId, propName, idx, delCallback) {
 		var newId = propName + idx;
 		var copyId = "li_" + newId;
 
@@ -1279,9 +1290,11 @@ function addTimestampSelectItem(ulId, multiplicity, dummyRowId, propName, countI
 		$hidden.attr({name : propName, id : "i_" + newId});
 
 		//削除ボタンのclickを設定
-		$button.click(function() {deleteItem(copyId);});
+		$button.click(function() {deleteItem(copyId, delCallback);});
 
 		$text.applyDatepicker();
+
+		return $copy;
 	}
 }
 
@@ -1328,15 +1341,16 @@ function timestampPickerToHidden($date, $hidden) {
  * @param countId
  * @return
  */
-function addTimestampPickerItem(ulId, multiplicity, dummyRowId, propName, countId) {
+function addTimestampPickerItem(ulId, multiplicity, dummyRowId, propName, countId, func, delCallback) {
 	if (canAddItem(ulId, multiplicity)) {
 		countUp(countId, function(count) {
-			copyTimestampPicker(dummyRowId, propName, count);
+			var $copy = copyTimestampPicker(dummyRowId, propName, count, delCallback);
+			if (func && $.isFunction(func)) func.call(this, $copy);
 		});
 		$(".fixHeight").fixHeight();
 	}
 
-	function copyTimestampPicker(dummyRowId, propName, idx) {
+	function copyTimestampPicker(dummyRowId, propName, idx, delCallback) {
 
 		var newId = propName + idx;
 		var copyId = "li_" + newId;
@@ -1358,9 +1372,11 @@ function addTimestampPickerItem(ulId, multiplicity, dummyRowId, propName, countI
 		$hidden.attr({name : propName, id : "i_" + newId});
 
 		//削除ボタンのclickを設定
-		$button.click(function() {deleteItem(copyId);});
+		$button.click(function() {deleteItem(copyId, delCallback);});
 
 		datetimepicker($text);
+
+		return $copy;
 	}
 }
 
