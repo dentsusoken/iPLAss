@@ -64,7 +64,16 @@ public class SyncServerCacheStoreFactory extends AbstractBuiltinCacheStoreFactor
 	private CacheKeyResolver cacheKeyResolver;
 	private List<CacheKeyResolver> cacheIndexResolver;
 	private SyncServerCacheEventListener listener;
+	private boolean noClusterEventOnPut;
 
+	public boolean isNoClusterEventOnPut() {
+		return noClusterEventOnPut;
+	}
+
+	public void setNoClusterEventOnPut(boolean noClusterEventOnPut) {
+		this.noClusterEventOnPut = noClusterEventOnPut;
+	}
+	
 	public SyncServerCacheEventListener getListener() {
 		return listener;
 	}
@@ -201,7 +210,7 @@ public class SyncServerCacheStoreFactory extends AbstractBuiltinCacheStoreFactor
 		@Override
 		public CacheEntry put(CacheEntry entry, boolean isClean) {
 			CacheEntry previous = wrapped.put(entry, isClean);
-			if (!isClean) {
+			if (!isClean && !noClusterEventOnPut) {
 				sendByKeyEvent(entry);
 			}
 			return previous;
@@ -210,7 +219,7 @@ public class SyncServerCacheStoreFactory extends AbstractBuiltinCacheStoreFactor
 		@Override
 		public CacheEntry putIfAbsent(CacheEntry entry) {
 			CacheEntry e = wrapped.putIfAbsent(entry);
-			if (e == null) {
+			if (e == null && !noClusterEventOnPut) {
 				sendByKeyEvent(entry);
 			}
 			return e;

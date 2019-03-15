@@ -691,6 +691,7 @@
 		<!-- CounterServiceのカウンタキャッシュ -->
 		<property name="rdbTableCounter" class="org.iplass.mtp.impl.cache.store.builtin.SyncServerCacheStoreFactory">
 			<property name="namespace" value="mtp.counter.rdbTableCounter" />
+			<property name="noClusterEventOnPut" value="true" />
 			<property name="cacheKeyResolver" class="org.iplass.mtp.impl.counter.CachableRdbTableCounterService$CounterCacheKeyResolver" />
 			<property name="store" class="org.iplass.mtp.impl.cache.store.builtin.SimpleCacheStoreFactory">
 				<property name="timeToLive" value="-1" />
