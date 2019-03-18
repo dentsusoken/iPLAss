@@ -18,7 +18,7 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.iplass.adminconsole.client.metadata.ui.oauth.server;
+package org.iplass.adminconsole.client.metadata.ui.oauth.resource;
 
 import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
 import org.iplass.adminconsole.client.base.tenant.TenantInfoHolder;
@@ -133,8 +133,8 @@ public class OAuthResourceServerEditPane extends MetaDataMainEditPane {
 
 			@Override
 			public void onFailure(Throwable caught) {
-				SC.say(AdminClientMessageUtil.getString("ui_metadata_oauth_server_OAuthResourceServerEditPane_failed"),
-						AdminClientMessageUtil.getString("ui_metadata_oauth_server_OAuthResourceServerEditPane_failedGetScreenInfo") + caught.getMessage());
+				SC.say(AdminClientMessageUtil.getString("ui_metadata_oauth_resource_OAuthResourceServerEditPane_failed"),
+						AdminClientMessageUtil.getString("ui_metadata_oauth_resource_OAuthResourceServerEditPane_failedGetScreenInfo") + caught.getMessage());
 
 				GWT.log(caught.toString(), caught);
 			}
@@ -170,8 +170,8 @@ public class OAuthResourceServerEditPane extends MetaDataMainEditPane {
 			return;
 		}
 
-		SC.ask(AdminClientMessageUtil.getString("ui_metadata_oauth_server_OAuthResourceServerEditPane_saveConfirm"),
-				AdminClientMessageUtil.getString("ui_metadata_oauth_server_OAuthResourceServerEditPane_saveComment"), new BooleanCallback() {
+		SC.ask(AdminClientMessageUtil.getString("ui_metadata_oauth_resource_OAuthResourceServerEditPane_saveConfirm"),
+				AdminClientMessageUtil.getString("ui_metadata_oauth_resource_OAuthResourceServerEditPane_saveComment"), new BooleanCallback() {
 
 			@Override
 			public void execute(Boolean value) {
@@ -192,8 +192,8 @@ public class OAuthResourceServerEditPane extends MetaDataMainEditPane {
 	 */
 	private void cancelDefinition() {
 
-		SC.ask(AdminClientMessageUtil.getString("ui_metadata_oauth_server_OAuthResourceServerEditPane_cancelConfirm"),
-				AdminClientMessageUtil.getString("ui_metadata_oauth_server_OAuthResourceServerEditPane_cancelConfirmComment")
+		SC.ask(AdminClientMessageUtil.getString("ui_metadata_oauth_resource_OAuthResourceServerEditPane_cancelConfirm"),
+				AdminClientMessageUtil.getString("ui_metadata_oauth_resource_OAuthResourceServerEditPane_cancelConfirmComment")
 				, new BooleanCallback() {
 			@Override
 			public void execute(Boolean value) {
@@ -235,8 +235,8 @@ public class OAuthResourceServerEditPane extends MetaDataMainEditPane {
 	 */
 	private void updateDefinitionComplete(OAuthResourceServerDefinition definition) {
 
-		SC.say(AdminClientMessageUtil.getString("ui_metadata_oauth_server_OAuthResourceServerEditPane_completion"),
-				AdminClientMessageUtil.getString("ui_metadata_oauth_server_OAuthResourceServerEditPane_saveComp"));
+		SC.say(AdminClientMessageUtil.getString("ui_metadata_oauth_resource_OAuthResourceServerEditPane_completion"),
+				AdminClientMessageUtil.getString("ui_metadata_oauth_resource_OAuthResourceServerEditPane_saveComp"));
 
 		//再表示
 		initializeData();

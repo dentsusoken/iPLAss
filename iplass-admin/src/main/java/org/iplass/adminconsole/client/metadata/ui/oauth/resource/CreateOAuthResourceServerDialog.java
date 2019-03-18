@@ -18,7 +18,7 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.iplass.adminconsole.client.metadata.ui.oauth.server;
+package org.iplass.adminconsole.client.metadata.ui.oauth.resource;
 
 import org.iplass.adminconsole.client.base.tenant.TenantInfoHolder;
 import org.iplass.adminconsole.client.metadata.ui.common.Callable;
@@ -26,7 +26,7 @@ import org.iplass.adminconsole.client.metadata.ui.common.MetaDataCreateDialog;
 import org.iplass.mtp.auth.oauth.definition.OAuthResourceServerDefinition;
 
 /**
- * OAuthResourceServer新規作成ダイアログ
+ * OAuthResourceServerDefinition新規作成ダイアログ
  */
 public class CreateOAuthResourceServerDialog extends MetaDataCreateDialog {
 
@@ -49,7 +49,7 @@ public class CreateOAuthResourceServerDialog extends MetaDataCreateDialog {
 	}
 
 	/**
-	 * OAuthResourceServerを登録します。
+	 * OAuthResourceServerDefinitionを登録します。
 	 */
 	private void createDefinition(final SaveInfo saveInfo, final boolean isCopyMode) {
 

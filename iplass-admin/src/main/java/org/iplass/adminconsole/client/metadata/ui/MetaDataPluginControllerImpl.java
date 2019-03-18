@@ -35,7 +35,7 @@ import org.iplass.adminconsole.client.metadata.ui.menu.MenuPlugin;
 import org.iplass.adminconsole.client.metadata.ui.message.MessagePlugin;
 import org.iplass.adminconsole.client.metadata.ui.oauth.OAuthAuthorizationPlugin;
 import org.iplass.adminconsole.client.metadata.ui.oauth.client.OAuthClientPlugin;
-import org.iplass.adminconsole.client.metadata.ui.oauth.server.OAuthResourceServerPlugin;
+import org.iplass.adminconsole.client.metadata.ui.oauth.resource.OAuthResourceServerPlugin;
 import org.iplass.adminconsole.client.metadata.ui.prefs.PrefsPlugin;
 import org.iplass.adminconsole.client.metadata.ui.pushnotification.PushNotificationTemplatePlugin;
 import org.iplass.adminconsole.client.metadata.ui.selectvalue.SelectValuePlugin;

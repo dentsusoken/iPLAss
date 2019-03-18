@@ -18,7 +18,7 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.iplass.adminconsole.client.metadata.ui.oauth.server;
+package org.iplass.adminconsole.client.metadata.ui.oauth.resource;
 
 import org.iplass.adminconsole.client.base.event.DataChangedEvent;
 import org.iplass.adminconsole.client.base.event.DataChangedHandler;
@@ -111,17 +111,17 @@ public class OAuthResourceServerPlugin extends DefaultMetaDataPlugin {
 		service.deleteDefinition(TenantInfoHolder.getId(), OAuthResourceServerDefinition.class.getName(), itemNode.getDefName(), new AsyncCallback<AdminDefinitionModifyResult>() {
 			public void onFailure(Throwable caught) {
 				// 失敗時
-				SC.warn(AdminClientMessageUtil.getString("ui_metadata_oauth_server_OAuthResourceServerPlugin_failedToDelete") + caught.getMessage());
+				SC.warn(AdminClientMessageUtil.getString("ui_metadata_oauth_resource_OAuthResourceServerPlugin_failedToDelete") + caught.getMessage());
 			}
 			public void onSuccess(AdminDefinitionModifyResult result) {
 				if (result.isSuccess()) {
-					SC.say(AdminClientMessageUtil.getString("ui_metadata_oauth_server_OAuthResourceServerPlugin_completion"),
-							AdminClientMessageUtil.getString("ui_metadata_oauth_server_OAuthResourceServerPlugin_deleteComp"));
+					SC.say(AdminClientMessageUtil.getString("ui_metadata_oauth_resource_OAuthResourceServerPlugin_completion"),
+							AdminClientMessageUtil.getString("ui_metadata_oauth_resource_OAuthResourceServerPlugin_deleteComp"));
 
 					refresh();
 					removeTab(itemNode);
 				} else {
-					SC.warn(AdminClientMessageUtil.getString("ui_metadata_oauth_server_OAuthResourceServerPlugin_failedToDelete") + result.getMessage());
+					SC.warn(AdminClientMessageUtil.getString("ui_metadata_oauth_resource_OAuthResourceServerPlugin_failedToDelete") + result.getMessage());
 				}
 			}
 		});
