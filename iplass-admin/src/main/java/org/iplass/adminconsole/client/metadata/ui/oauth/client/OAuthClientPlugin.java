@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
+ * Copyright (C) 2019 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
  *
  * Unless you have purchased a commercial license,
  * the following license terms apply:
@@ -20,11 +20,21 @@
 
 package org.iplass.adminconsole.client.metadata.ui.oauth.client;
 
+import org.iplass.adminconsole.client.base.event.DataChangedEvent;
+import org.iplass.adminconsole.client.base.event.DataChangedHandler;
+import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
+import org.iplass.adminconsole.client.base.tenant.TenantInfoHolder;
 import org.iplass.adminconsole.client.metadata.ui.DefaultMetaDataPlugin;
 import org.iplass.adminconsole.client.metadata.ui.MetaDataItemMenuTreeNode;
 import org.iplass.adminconsole.client.metadata.ui.MetaDataMainEditPane;
+import org.iplass.adminconsole.shared.metadata.dto.AdminDefinitionModifyResult;
 import org.iplass.adminconsole.shared.metadata.dto.MetaDataConstants;
+import org.iplass.adminconsole.shared.metadata.rpc.MetaDataServiceAsync;
+import org.iplass.adminconsole.shared.metadata.rpc.MetaDataServiceFactory;
 import org.iplass.mtp.auth.oauth.definition.OAuthClientDefinition;
+
+import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.smartgwt.client.util.SC;
 
 
 public class OAuthClientPlugin extends DefaultMetaDataPlugin {
@@ -68,59 +78,58 @@ public class OAuthClientPlugin extends DefaultMetaDataPlugin {
 
 	@Override
 	protected void itemCreateAction(String folderPath) {
-//		CreateAuthenticationPolicyDialog dialog = new CreateAuthenticationPolicyDialog(definitionClassName(), nodeDisplayName(), folderPath, false);
-//		dialog.setNamePolicy(isPathSlash(), isNameAcceptPeriod());
-//		dialog.addDataChangeHandler(new DataChangedHandler() {
-//
-//			@Override
-//			public void onDataChanged(DataChangedEvent event) {
-//				refreshWithSelect(event.getValueName(), null);
-//			}
-//		});
-//		dialog.show();
+		CreateOAuthClientDialog dialog = new CreateOAuthClientDialog(definitionClassName(), nodeDisplayName(), folderPath, false);
+		dialog.setNamePolicy(isPathSlash(), isNameAcceptPeriod());
+		dialog.addDataChangeHandler(new DataChangedHandler() {
+
+			@Override
+			public void onDataChanged(DataChangedEvent event) {
+				refreshWithSelect(event.getValueName(), null);
+			}
+		});
+		dialog.show();
 	}
 
 	@Override
 	protected void itemCopyAction(MetaDataItemMenuTreeNode itemNode) {
-//		CreateAuthenticationPolicyDialog dialog = new CreateAuthenticationPolicyDialog(definitionClassName(), nodeDisplayName(), "", true);
-//		dialog.setNamePolicy(isPathSlash(), isNameAcceptPeriod());
-//		dialog.addDataChangeHandler(new DataChangedHandler() {
-//			@Override
-//			public void onDataChanged(DataChangedEvent event) {
-//				refreshWithSelect(event.getValueName(), null);
-//			}
-//		});
-//		dialog.show();
-//		dialog.setSourceName(itemNode.getDefName());
-//		dialog.show();
+		CreateOAuthClientDialog dialog = new CreateOAuthClientDialog(definitionClassName(), nodeDisplayName(), "", true);
+		dialog.setNamePolicy(isPathSlash(), isNameAcceptPeriod());
+		dialog.addDataChangeHandler(new DataChangedHandler() {
+			@Override
+			public void onDataChanged(DataChangedEvent event) {
+				refreshWithSelect(event.getValueName(), null);
+			}
+		});
+		dialog.show();
+		dialog.setSourceName(itemNode.getDefName());
+		dialog.show();
 	}
 
 	@Override
 	protected void itemDelete(final MetaDataItemMenuTreeNode itemNode) {
-//		MetaDataServiceAsync service = MetaDataServiceFactory.get();
-//		service.deleteDefinition(TenantInfoHolder.getId(), AuthenticationPolicyDefinition.class.getName(), itemNode.getDefName(), new AsyncCallback<AdminDefinitionModifyResult>() {
-//			public void onFailure(Throwable caught) {
-//				// 失敗時
-//				SC.warn(AdminClientMessageUtil.getString("ui_metadata_auth_AuthenticationPolicyPluginManager_failedToDeleteAuthenticationPolicy") + caught.getMessage());
-//			}
-//			public void onSuccess(AdminDefinitionModifyResult result) {
-//				if (result.isSuccess()) {
-//					SC.say(AdminClientMessageUtil.getString("ui_metadata_auth_AuthenticationPolicyPluginManager_completion"),
-//							AdminClientMessageUtil.getString("ui_metadata_auth_AuthenticationPolicyPluginManager_deleteAuthenticationPolicyComp"));
-//
-//					refresh();
-//					removeTab(itemNode);
-//				} else {
-//					SC.warn(AdminClientMessageUtil.getString("ui_metadata_auth_AuthenticationPolicyPluginManager_failedToDeleteAuthenticationPolicy") + result.getMessage());
-//				}
-//			}
-//		});
+		MetaDataServiceAsync service = MetaDataServiceFactory.get();
+		service.deleteDefinition(TenantInfoHolder.getId(), definitionClassName(), itemNode.getDefName(), new AsyncCallback<AdminDefinitionModifyResult>() {
+			public void onFailure(Throwable caught) {
+				// 失敗時
+				SC.warn(AdminClientMessageUtil.getString("ui_metadata_oauth_client_OAuthClientPlugin_failedToDelete") + caught.getMessage());
+			}
+			public void onSuccess(AdminDefinitionModifyResult result) {
+				if (result.isSuccess()) {
+					SC.say(AdminClientMessageUtil.getString("ui_metadata_oauth_client_OAuthClientPlugin_completion"),
+							AdminClientMessageUtil.getString("ui_metadata_oauth_client_OAuthClientPlugin_deleteComp"));
+
+					refresh();
+					removeTab(itemNode);
+				} else {
+					SC.warn(AdminClientMessageUtil.getString("ui_metadata_oauth_client_OAuthClientPlugin_failedToDelete") + result.getMessage());
+				}
+			}
+		});
 	}
 
 	@Override
 	protected MetaDataMainEditPane workSpaceContents(MetaDataItemMenuTreeNode itemNode) {
-//		return new AuthenticationPolicyEditPane(itemNode, this);
-		return null;
+		return new OAuthClientEditPane(itemNode, this);
 	}
 
 	@Override
