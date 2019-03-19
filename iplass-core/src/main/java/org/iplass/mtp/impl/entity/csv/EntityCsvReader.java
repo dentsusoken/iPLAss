@@ -78,6 +78,7 @@ import org.slf4j.LoggerFactory;
 import org.supercsv.io.CsvListReader;
 import org.supercsv.prefs.CsvPreference;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -488,6 +489,8 @@ public class EntityCsvReader implements Iterable<Entity>, AutoCloseable {
 			try {
 				if (mapper == null) {
 					mapper = new ObjectMapper();
+					//for backward compatibility
+					mapper.configOverride(java.sql.Date.class).setFormat(JsonFormat.Value.forPattern("yyyy-MM-dd"));
 				}
 				JsonNode root = mapper.readValue(valStr, JsonNode.class);
 

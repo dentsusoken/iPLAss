@@ -28,6 +28,7 @@ import java.io.OutputStreamWriter;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.StreamingOutput;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
@@ -45,6 +46,8 @@ public class JsonStreamingOutput implements StreamingOutput {
 	@Override
 	public void write(OutputStream output) throws IOException, WebApplicationException {
 		ObjectMapper mapper = new ObjectMapper();
+		//for backward compatibility
+		mapper.configOverride(java.sql.Date.class).setFormat(JsonFormat.Value.forPattern("yyyy-MM-dd"));
 		BufferedWriter writer = null;
 		try {
 			writer = new BufferedWriter(new OutputStreamWriter(output, "UTF-8"));

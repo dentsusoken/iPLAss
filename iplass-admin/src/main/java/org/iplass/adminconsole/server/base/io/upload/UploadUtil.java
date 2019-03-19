@@ -35,6 +35,7 @@ import org.iplass.mtp.spi.ServiceRegistry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -112,6 +113,9 @@ public class UploadUtil {
 		try {
 			//JSONで出力
 			ObjectMapper mapper = new ObjectMapper();
+			//for backward compatibility
+			mapper.configOverride(java.sql.Date.class).setFormat(JsonFormat.Value.forPattern("yyyy-MM-dd"));
+
 			JsonFactory f = new JsonFactory();
 			JsonGenerator g = f.createGenerator(new Writer() {
 
