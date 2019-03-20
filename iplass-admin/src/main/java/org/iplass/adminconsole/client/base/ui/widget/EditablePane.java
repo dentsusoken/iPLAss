@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2011 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
+ * Copyright (C) 2019 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
  *
  * Unless you have purchased a commercial license,
  * the following license terms apply:
@@ -20,23 +20,32 @@
 
 package org.iplass.adminconsole.client.base.ui.widget;
 
-public abstract class CommonIconConstants {
+/**
+ * 編集可能な部品の共通インターフェース
+ *
+ * @param <D> 対象のDefinition
+ */
+public interface EditablePane<D> {
 
-	/** ヘルプ */
-	public static final String COMMON_ICON_HELP = "[SKINIMG]/actions/help.png";
+	/**
+	 * 編集対象のDefinitionを設定します。
+	 *
+	 * @param definition 編集対象のDefinition
+	 */
+	void setDefinition(D definition);
 
-	/** メタデータ参照 */
-	public static final String COMMON_ICON_SHOW_META_DATA = "[SKINIMG]/actions/view.png";
+	/**
+	 * 編集結果をDefinitionに反映します。
+	 *
+	 * @param definition 編集対象のDefinition
+	 * @return 編集結果
+	 */
+	D getEditDefinition(D definition);
 
-	/** リフレッシュ */
-	public static final String COMMON_ICON_REFRESH = "refresh.png";
-
-	/** 編集 */
-	public static final String COMMON_ICON_EDIT = "icon_edit.png";
-
-	/** 削除 */
-	public static final String COMMON_ICON_REMOVE = "remove.png";
-
-	/** 多言語 */
-	public static final String COMMON_ICON_LANG = "world.png";
+	/**
+	 * 編集値を検証します。
+	 *
+	 * @return 検証結果
+	 */
+	boolean validate();
 }
