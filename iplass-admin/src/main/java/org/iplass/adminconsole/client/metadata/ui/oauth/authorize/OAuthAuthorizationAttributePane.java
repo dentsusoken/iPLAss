@@ -44,6 +44,8 @@ public class OAuthAuthorizationAttributePane extends VLayout {
 
 	private MetaDataSelectItem selConsentTemplate;
 
+	private ClientPolicyGridPane gridClientPolicies;
+
 	private TextItem txtIssuerUri;
 
 	public OAuthAuthorizationAttributePane() {
@@ -71,6 +73,8 @@ public class OAuthAuthorizationAttributePane extends VLayout {
 			selConsentTemplate.setValue("");
 		}
 
+		gridClientPolicies.setDefinition(definition);
+
 		txtIssuerUri.setValue(definition.getIssuerUri());
 	}
 
@@ -87,6 +91,8 @@ public class OAuthAuthorizationAttributePane extends VLayout {
 		gridScopes.getEditDefinition(definition);
 
 		definition.setConsentTemplateName(SmartGWTUtil.getStringValue(selConsentTemplate, true));
+
+		gridClientPolicies.getEditDefinition(definition);
 
 		definition.setIssuerUri(SmartGWTUtil.getStringValue(txtIssuerUri, true));
 
@@ -126,6 +132,13 @@ public class OAuthAuthorizationAttributePane extends VLayout {
 		selConsentTemplate.setTitle("Consent Template");
 		selConsentTemplate.setWidth("100%");
 
+		gridClientPolicies = new ClientPolicyGridPane();
+		CanvasItem canvasClientPolicies = new CanvasItem();
+		canvasClientPolicies.setTitle("Client Policies");
+		canvasClientPolicies.setCanvas(gridClientPolicies);
+		canvasClientPolicies.setColSpan(3);
+		canvasClientPolicies.setStartRow(true);
+
 		txtIssuerUri = new TextItem();
 		txtIssuerUri.setTitle("Issuer URI");
 		txtIssuerUri.setWidth("100%");
@@ -133,7 +146,7 @@ public class OAuthAuthorizationAttributePane extends VLayout {
 		txtIssuerUri.setColSpan(3);
 		txtIssuerUri.setStartRow(true);
 
-		form.setItems(txaAvailableRoles, canvasScopes, selConsentTemplate, txtIssuerUri);
+		form.setItems(txaAvailableRoles, canvasScopes, selConsentTemplate, canvasClientPolicies, txtIssuerUri);
 
 		addMember(form);
 	}
@@ -142,7 +155,9 @@ public class OAuthAuthorizationAttributePane extends VLayout {
 
 		boolean formValidate = form.validate();
 		boolean gridScopesValidate = gridScopes.validate();
-		return formValidate && gridScopesValidate;
+		boolean gridClientPoliciesValidate = gridClientPolicies.validate();
+
+		return formValidate && gridScopesValidate && gridClientPoliciesValidate;
 	}
 
 }
