@@ -442,7 +442,7 @@ public class ClientPolicyGridPane extends VLayout implements EditablePane<OAuthA
 
 	private static class ConsentTypeEditPane extends VLayout implements EditablePane<ConsentTypeDefinition> {
 
-		/** ClientTypeの種類選択用Map */
+		/** ConsentTypeの種類選択用Map */
 		private static LinkedHashMap<String, String> consentTypeMap;
 		static {
 			consentTypeMap = new LinkedHashMap<String, String>();

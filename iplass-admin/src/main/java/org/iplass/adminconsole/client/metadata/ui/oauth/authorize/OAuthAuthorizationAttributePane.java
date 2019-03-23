@@ -46,6 +46,8 @@ public class OAuthAuthorizationAttributePane extends VLayout {
 
 	private ClientPolicyGridPane gridClientPolicies;
 
+	private SubjectIdentifierTypeEditPane pnlSubjectIdentifierType;
+
 	private TextItem txtIssuerUri;
 
 	public OAuthAuthorizationAttributePane() {
@@ -75,6 +77,8 @@ public class OAuthAuthorizationAttributePane extends VLayout {
 
 		gridClientPolicies.setDefinition(definition);
 
+		pnlSubjectIdentifierType.setDefinition(definition.getSubjectIdentifierType());
+
 		txtIssuerUri.setValue(definition.getIssuerUri());
 	}
 
@@ -93,6 +97,8 @@ public class OAuthAuthorizationAttributePane extends VLayout {
 		definition.setConsentTemplateName(SmartGWTUtil.getStringValue(selConsentTemplate, true));
 
 		gridClientPolicies.getEditDefinition(definition);
+
+		definition.setSubjectIdentifierType(pnlSubjectIdentifierType.getEditDefinition(definition.getSubjectIdentifierType()));
 
 		definition.setIssuerUri(SmartGWTUtil.getStringValue(txtIssuerUri, true));
 
@@ -139,6 +145,13 @@ public class OAuthAuthorizationAttributePane extends VLayout {
 		canvasClientPolicies.setColSpan(3);
 		canvasClientPolicies.setStartRow(true);
 
+		pnlSubjectIdentifierType = new SubjectIdentifierTypeEditPane();
+		CanvasItem canvasSubjectIdentifierType = new CanvasItem();
+		canvasSubjectIdentifierType.setTitle("SubjectIdentifier");
+		canvasSubjectIdentifierType.setCanvas(pnlSubjectIdentifierType);
+		canvasSubjectIdentifierType.setColSpan(3);
+		canvasSubjectIdentifierType.setStartRow(true);
+
 		txtIssuerUri = new TextItem();
 		txtIssuerUri.setTitle("Issuer URI");
 		txtIssuerUri.setWidth("100%");
@@ -146,7 +159,7 @@ public class OAuthAuthorizationAttributePane extends VLayout {
 		txtIssuerUri.setColSpan(3);
 		txtIssuerUri.setStartRow(true);
 
-		form.setItems(txaAvailableRoles, canvasScopes, selConsentTemplate, canvasClientPolicies, txtIssuerUri);
+		form.setItems(txaAvailableRoles, canvasScopes, selConsentTemplate, canvasClientPolicies, canvasSubjectIdentifierType, txtIssuerUri);
 
 		addMember(form);
 	}
@@ -156,8 +169,9 @@ public class OAuthAuthorizationAttributePane extends VLayout {
 		boolean formValidate = form.validate();
 		boolean gridScopesValidate = gridScopes.validate();
 		boolean gridClientPoliciesValidate = gridClientPolicies.validate();
+		boolean pnlSubjectIdentifierTypeValidate = pnlSubjectIdentifierType.validate();
 
-		return formValidate && gridScopesValidate && gridClientPoliciesValidate;
+		return formValidate && gridScopesValidate && gridClientPoliciesValidate && pnlSubjectIdentifierTypeValidate;
 	}
 
 }
