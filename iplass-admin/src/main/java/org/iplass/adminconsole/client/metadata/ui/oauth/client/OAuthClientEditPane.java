@@ -21,7 +21,9 @@
 package org.iplass.adminconsole.client.metadata.ui.oauth.client;
 
 import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
+import org.iplass.adminconsole.client.base.rpc.AdminAsyncCallback;
 import org.iplass.adminconsole.client.base.tenant.TenantInfoHolder;
+import org.iplass.adminconsole.client.base.ui.widget.CommonIconConstants;
 import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
 import org.iplass.adminconsole.client.metadata.ui.DefaultMetaDataPlugin;
 import org.iplass.adminconsole.client.metadata.ui.MetaDataItemMenuTreeNode;
@@ -41,8 +43,10 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.smartgwt.client.util.BooleanCallback;
 import com.smartgwt.client.util.SC;
+import com.smartgwt.client.widgets.IButton;
 import com.smartgwt.client.widgets.events.ClickEvent;
 import com.smartgwt.client.widgets.events.ClickHandler;
+import com.smartgwt.client.widgets.layout.LayoutSpacer;
 import com.smartgwt.client.widgets.layout.SectionStackSection;
 
 /**
@@ -102,6 +106,20 @@ public class OAuthClientEditPane extends MetaDataMainEditPane {
 				metaDataHistoryDialog.show();
 			}
 		});
+
+		LayoutSpacer space = new LayoutSpacer();
+		space.setWidth(95);
+		headerPane.addMember(space);
+		IButton btnDeleteOldCredential = new IButton("Delete Old Credential");
+		btnDeleteOldCredential.setAutoWidth();
+		btnDeleteOldCredential.setIcon(CommonIconConstants.COMMON_ICON_REMOVE);
+		btnDeleteOldCredential.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				deleteOldCredential();
+			}
+		});
+		headerPane.addMember(btnDeleteOldCredential);
 
 		// 共通属性
 		commonSection = new MetaCommonAttributeSection(targetNode, OAuthClientDefinition.class, true);
@@ -272,4 +290,29 @@ public class OAuthClientEditPane extends MetaDataMainEditPane {
 		});
 	}
 
+	private void deleteOldCredential() {
+
+		SC.ask(AdminClientMessageUtil.getString("ui_metadata_oauth_client_OAuthClientEditPane_deleteOldCredentialConfirm"),
+				AdminClientMessageUtil.getString("ui_metadata_oauth_client_OAuthClientEditPane_deleteOldCredentialConfirm2"), new BooleanCallback() {
+
+			@Override
+			public void execute(Boolean value) {
+				if (value) {
+					SmartGWTUtil.showProgress();
+					service.deleteOldCredentialOAuthClient(TenantInfoHolder.getId(), commonSection.getName(), new AdminAsyncCallback<Void>() {
+
+						@Override
+						public void onSuccess(Void result) {
+							SmartGWTUtil.hideProgress();
+						}
+
+						@Override
+						protected void beforeFailure(Throwable caught){
+							SmartGWTUtil.hideProgress();
+						};
+					});
+				}
+			}
+		});
+	}
 }

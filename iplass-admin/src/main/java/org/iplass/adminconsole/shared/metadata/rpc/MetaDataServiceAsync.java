@@ -451,4 +451,13 @@ public interface MetaDataServiceAsync {
 	 * @param callback  Callbackクラス
 	 */
 	void getImageColorList(int tenantId, AsyncCallback<List<String>> callback);
+
+	/* ---------------------------------------
+	 * OAuth
+	 --------------------------------------- */
+
+	void deleteOldCredentialOAuthClient(final int tenantId, final String definitionName, AsyncCallback<Void> callback);
+
+	void deleteOldCredentialOAuthResourceServer(final int tenantId, final String definitionName, AsyncCallback<Void> callback);
+
 }
