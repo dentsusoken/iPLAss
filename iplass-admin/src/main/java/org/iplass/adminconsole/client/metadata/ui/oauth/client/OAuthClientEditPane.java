@@ -111,7 +111,7 @@ public class OAuthClientEditPane extends MetaDataMainEditPane {
 		space.setWidth(95);
 		headerPane.addMember(space);
 		IButton btnDeleteOldCredential = new IButton("Delete Old Credential");
-		btnDeleteOldCredential.setAutoWidth();
+		btnDeleteOldCredential.setWidth(150);
 		btnDeleteOldCredential.setIcon(CommonIconConstants.COMMON_ICON_REMOVE);
 		btnDeleteOldCredential.addClickHandler(new ClickHandler() {
 			@Override
