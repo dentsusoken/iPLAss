@@ -15,6 +15,35 @@
     color:#003168;				/* default #AAAAAA */
 }
 
+/* Custom item icon button style. base buttonRounded */
+.adminButtonRounded {
+	background-color: #f0f0f0;
+	background-image: url("./images/cssButton/button_stretch.png");
+	background-repeat: repeat-x;
+	background-image: url('data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4gPHN2ZyB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJncmFkIiBncmFkaWVudFVuaXRzPSJvYmplY3RCb3VuZGluZ0JveCIgeDE9IjAuNSIgeTE9IjAuMCIgeDI9IjAuNSIgeTI9IjEuMCI+PHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iI2ZmZmZmZiIvPjxzdG9wIG9mZnNldD0iMTAwJSIgc3RvcC1jb2xvcj0iI2UwZTBlMCIvPjwvbGluZWFyR3JhZGllbnQ+PC9kZWZzPjxyZWN0IHg9IjAiIHk9IjAiIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9InVybCgjZ3JhZCkiIC8+PC9zdmc+IA==');
+	background-size: 100%;
+	background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #ffffff), color-stop(100%, #e0e0e0));
+	background-image: -moz-linear-gradient(top, #ffffff 0%, #e0e0e0 100%);
+	background-image: -webkit-linear-gradient(top, #ffffff 0%, #e0e0e0 100%);
+	background-image: linear-gradient(to bottom, #ffffff 0%, #e0e0e0 100%);
+	border: 1px solid #b15a59;
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
+	border-radius: 3px;
+	font-family: Arial, Verdana, sans-serif;
+	font-size: 11px;
+	padding: 0 3px;
+
+	border: 1px solid #ababab;
+	-moz-box-shadow: inset white 0 -1px 1px, inset white -1px 0 1px, inset white 1px 0 1px;
+	-webkit-box-shadow: inset white 0 -1px 1px, inset white -1px 0 1px, inset white 1px 0 1px;
+	box-shadow: inset white 0 -1px 1px, inset white -1px 0 1px, inset white 1px 0 1px;
+
+	/* 調整 */
+	margin-top: -3px !important;
+	padding: 1px;
+}
+
 /* Top Navi Title base windowHeaderText */
 .adminWindowHeaderText {
 	color: #4D4D4D;

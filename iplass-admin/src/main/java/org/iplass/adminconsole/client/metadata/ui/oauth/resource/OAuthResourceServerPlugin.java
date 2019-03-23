@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
+ * Copyright (C) 2019 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
  *
  * Unless you have purchased a commercial license,
  * the following license terms apply:
@@ -18,7 +18,7 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.iplass.adminconsole.client.metadata.ui.sms;
+package org.iplass.adminconsole.client.metadata.ui.oauth.resource;
 
 import org.iplass.adminconsole.client.base.event.DataChangedEvent;
 import org.iplass.adminconsole.client.base.event.DataChangedHandler;
@@ -31,21 +31,25 @@ import org.iplass.adminconsole.shared.metadata.dto.AdminDefinitionModifyResult;
 import org.iplass.adminconsole.shared.metadata.dto.MetaDataConstants;
 import org.iplass.adminconsole.shared.metadata.rpc.MetaDataServiceAsync;
 import org.iplass.adminconsole.shared.metadata.rpc.MetaDataServiceFactory;
-import org.iplass.mtp.sms.template.definition.SmsMailTemplateDefinition;
+import org.iplass.mtp.auth.oauth.definition.OAuthResourceServerDefinition;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.smartgwt.client.util.SC;
 
-public class SmsMailTemplatePlugin extends DefaultMetaDataPlugin {
+
+public class OAuthResourceServerPlugin extends DefaultMetaDataPlugin {
 
 	/** カテゴリ名 */
-	private static final String CATEGORY_NAME = MetaDataConstants.META_CATEGORY_NOTIFICATION;
+	private static final String CATEGORY_NAME = MetaDataConstants.META_CATEGORY_SECURITY + "/OAuth";
 
 	/** ノード名 */
-	private static final String NODE_NAME = "SMSTemplate";
+	private static final String NODE_NAME = "OAuthResourceServer";
+
+	/** ノード表示名 */
+	private static final String NODE_DISPLAY_NAME = "OAuthResourceServer";
 
 	/** ノードアイコン */
-	private static final String NODE_ICON = "comment.png";
+	private static final String NODE_ICON = "server_key.png";
 
 	@Override
 	public String getCategoryName() {
@@ -59,7 +63,7 @@ public class SmsMailTemplatePlugin extends DefaultMetaDataPlugin {
 
 	@Override
 	protected String nodeDisplayName() {
-		return AdminClientMessageUtil.getString("ui_metadata_sms_SmsMailTemplatePluginManager_smsTemplate");
+		return NODE_DISPLAY_NAME;
 	}
 
 	@Override
@@ -69,14 +73,15 @@ public class SmsMailTemplatePlugin extends DefaultMetaDataPlugin {
 
 	@Override
 	protected String definitionClassName() {
-		return SmsMailTemplateDefinition.class.getName();
+		return OAuthResourceServerDefinition.class.getName();
 	}
 
 	@Override
 	protected void itemCreateAction(String folderPath) {
-		CreateSmsTemplateDialog dialog = new CreateSmsTemplateDialog(definitionClassName(), nodeDisplayName(), folderPath, false);
+		CreateOAuthResourceServerDialog dialog = new CreateOAuthResourceServerDialog(definitionClassName(), nodeDisplayName(), folderPath, false);
 		dialog.setNamePolicy(isPathSlash(), isNameAcceptPeriod());
 		dialog.addDataChangeHandler(new DataChangedHandler() {
+
 			@Override
 			public void onDataChanged(DataChangedEvent event) {
 				refreshWithSelect(event.getValueName(), null);
@@ -87,7 +92,7 @@ public class SmsMailTemplatePlugin extends DefaultMetaDataPlugin {
 
 	@Override
 	protected void itemCopyAction(MetaDataItemMenuTreeNode itemNode) {
-		CreateSmsTemplateDialog dialog = new CreateSmsTemplateDialog(definitionClassName(), nodeDisplayName(), "", true);
+		CreateOAuthResourceServerDialog dialog = new CreateOAuthResourceServerDialog(definitionClassName(), nodeDisplayName(), "", true);
 		dialog.setNamePolicy(isPathSlash(), isNameAcceptPeriod());
 		dialog.addDataChangeHandler(new DataChangedHandler() {
 			@Override
@@ -95,6 +100,7 @@ public class SmsMailTemplatePlugin extends DefaultMetaDataPlugin {
 				refreshWithSelect(event.getValueName(), null);
 			}
 		});
+		dialog.show();
 		dialog.setSourceName(itemNode.getDefName());
 		dialog.show();
 	}
@@ -102,33 +108,32 @@ public class SmsMailTemplatePlugin extends DefaultMetaDataPlugin {
 	@Override
 	protected void itemDelete(final MetaDataItemMenuTreeNode itemNode) {
 		MetaDataServiceAsync service = MetaDataServiceFactory.get();
-		service.deleteDefinition(TenantInfoHolder.getId(), SmsMailTemplateDefinition.class.getName(), itemNode.getDefName(), new AsyncCallback<AdminDefinitionModifyResult>() {
+		service.deleteDefinition(TenantInfoHolder.getId(), OAuthResourceServerDefinition.class.getName(), itemNode.getDefName(), new AsyncCallback<AdminDefinitionModifyResult>() {
 			public void onFailure(Throwable caught) {
 				// 失敗時
-				SC.warn(AdminClientMessageUtil.getString("ui_metadata_sms_SmsMailTemplatePluginManager_failedToDeleteSmsTemplate") + caught.getMessage());
+				SC.warn(AdminClientMessageUtil.getString("ui_metadata_oauth_resource_OAuthResourceServerPlugin_failedToDelete") + caught.getMessage());
 			}
 			public void onSuccess(AdminDefinitionModifyResult result) {
 				if (result.isSuccess()) {
-					SC.say(AdminClientMessageUtil.getString("ui_metadata_sms_SmsMailTemplatePluginManager_completion"),
-							AdminClientMessageUtil.getString("ui_metadata_sms_SmsMailTemplatePluginManager_deleteSmsTemplateComp"));
+					SC.say(AdminClientMessageUtil.getString("ui_metadata_oauth_resource_OAuthResourceServerPlugin_completion"),
+							AdminClientMessageUtil.getString("ui_metadata_oauth_resource_OAuthResourceServerPlugin_deleteComp"));
 
 					refresh();
 					removeTab(itemNode);
 				} else {
-					SC.warn(AdminClientMessageUtil.getString("ui_metadata_sms_SmsMailTemplatePluginManager_failedToDeleteSmsTemplate") + result.getMessage());
+					SC.warn(AdminClientMessageUtil.getString("ui_metadata_oauth_resource_OAuthResourceServerPlugin_failedToDelete") + result.getMessage());
 				}
 			}
 		});
-
 	}
 
 	@Override
 	protected MetaDataMainEditPane workSpaceContents(MetaDataItemMenuTreeNode itemNode) {
-		return new SmsMailTemplateEditPane(itemNode, this);
+		return new OAuthResourceServerEditPane(itemNode, this);
 	}
 
 	@Override
 	protected Class<?>[] workspaceContentsPaneClass() {
-		return new Class[]{ SmsMailTemplateEditPane.class };
+		return new Class[]{OAuthResourceServerDefinition.class};
 	}
 }

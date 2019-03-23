@@ -1,19 +1,19 @@
 /*
  * Copyright (C) 2017 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
- * 
+ *
  * Unless you have purchased a commercial license,
  * the following license terms apply:
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
@@ -33,6 +33,9 @@ import org.iplass.adminconsole.client.metadata.ui.entity.EntityPlugin;
 import org.iplass.adminconsole.client.metadata.ui.mail.MailTemplatePlugin;
 import org.iplass.adminconsole.client.metadata.ui.menu.MenuPlugin;
 import org.iplass.adminconsole.client.metadata.ui.message.MessagePlugin;
+import org.iplass.adminconsole.client.metadata.ui.oauth.authorize.OAuthAuthorizationPlugin;
+import org.iplass.adminconsole.client.metadata.ui.oauth.client.OAuthClientPlugin;
+import org.iplass.adminconsole.client.metadata.ui.oauth.resource.OAuthResourceServerPlugin;
 import org.iplass.adminconsole.client.metadata.ui.prefs.PrefsPlugin;
 import org.iplass.adminconsole.client.metadata.ui.pushnotification.PushNotificationTemplatePlugin;
 import org.iplass.adminconsole.client.metadata.ui.selectvalue.SelectValuePlugin;
@@ -54,7 +57,11 @@ public class MetaDataPluginControllerImpl implements MetaDataPluginController {
 
 		plugins.add(new TenantPlugin());
 		plugins.add(new PrefsPlugin());
+
 		plugins.add(new AuthenticationPolicyPlugin());
+		plugins.add(new OAuthAuthorizationPlugin());
+		plugins.add(new OAuthClientPlugin());
+		plugins.add(new OAuthResourceServerPlugin());
 
 		plugins.add(new EntityPlugin());
 		plugins.add(new SelectValuePlugin());

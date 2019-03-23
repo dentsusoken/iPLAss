@@ -246,6 +246,23 @@ task copyGwtTransSrc(type: Sync) {
 
 	from ('../iplass-web/src/main/java/org/iplass') {
 
+		include 'mtp/auth/oauth/definition/ClaimMappingDefinition.java'
+		include 'mtp/auth/oauth/definition/ClientPolicyDefinition.java'
+		include 'mtp/auth/oauth/definition/ClientType.java'
+		include 'mtp/auth/oauth/definition/ConsentTypeDefinition.java'
+		include 'mtp/auth/oauth/definition/GrantType.java'
+		include 'mtp/auth/oauth/definition/OAuthAuthorizationDefinition.java'
+		include 'mtp/auth/oauth/definition/OAuthClientDefinition.java'
+		include 'mtp/auth/oauth/definition/OAuthResourceServerDefinition.java'
+		include 'mtp/auth/oauth/definition/OIDCClaimScopeDefinition.java'
+		include 'mtp/auth/oauth/definition/ScopeDefinition.java'
+		include 'mtp/auth/oauth/definition/SubjectIdentifierTypeDefinition.java'
+		include 'mtp/auth/oauth/definition/subtypes/PairwiseSubjectIdentifierTypeDefinition.java'
+		include 'mtp/auth/oauth/definition/subtypes/PublicSubjectIdentifierTypeDefinition.java'
+		include 'mtp/auth/oauth/definition/consents/AlwaysConsentTypeDefinition.java'
+		include 'mtp/auth/oauth/definition/consents/OnceConsentTypeDefinition.java'
+		include 'mtp/auth/oauth/definition/consents/ScriptingConsentTypeDefinition.java'
+
 		include 'mtp/web/actionmapping/definition/ActionMappingDefinition.java'
 		include 'mtp/web/actionmapping/definition/ActionMappingDefinitionModifyResult.java'
 		include 'mtp/web/actionmapping/definition/ClientCacheType.java'

@@ -28,6 +28,7 @@ import org.iplass.adminconsole.client.metadata.ui.DefaultMetaDataPlugin;
 import org.iplass.adminconsole.client.metadata.ui.MetaDataItemMenuTreeNode;
 import org.iplass.adminconsole.client.metadata.ui.MetaDataMainEditPane;
 import org.iplass.adminconsole.shared.metadata.dto.AdminDefinitionModifyResult;
+import org.iplass.adminconsole.shared.metadata.dto.MetaDataConstants;
 import org.iplass.adminconsole.shared.metadata.rpc.MetaDataServiceAsync;
 import org.iplass.adminconsole.shared.metadata.rpc.MetaDataServiceFactory;
 import org.iplass.mtp.auth.policy.definition.AuthenticationPolicyDefinition;
@@ -38,6 +39,9 @@ import com.smartgwt.client.util.SC;
 
 public class AuthenticationPolicyPlugin extends DefaultMetaDataPlugin {
 
+	/** カテゴリ名 */
+	private static final String CATEGORY_NAME = MetaDataConstants.META_CATEGORY_SECURITY;
+
 	/** ノード名 */
 	private static final String NODE_NAME = "AuthenticationPolicy";
 
@@ -45,7 +49,12 @@ public class AuthenticationPolicyPlugin extends DefaultMetaDataPlugin {
 	private static final String NODE_DISPLAY_NAME = "AuthenticationPolicy";
 
 	/** ノードアイコン */
-	private static final String NODE_ICON = "vcard_edit.png";
+	private static final String NODE_ICON = "vcard.png";
+
+	@Override
+	public String getCategoryName() {
+		return CATEGORY_NAME;
+	}
 
 	@Override
 	protected String nodeName() {
