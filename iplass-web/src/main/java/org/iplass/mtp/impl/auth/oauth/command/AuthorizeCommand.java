@@ -21,8 +21,11 @@ package org.iplass.mtp.impl.auth.oauth.command;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 
+import org.iplass.mtp.auth.AuthContext;
+import org.iplass.mtp.auth.NeedTrustedAuthenticationException;
 import org.iplass.mtp.command.Command;
 import org.iplass.mtp.command.RequestContext;
 import org.iplass.mtp.command.annotation.CommandClass;
@@ -49,6 +52,7 @@ import org.slf4j.LoggerFactory;
 @ActionMapping(name="oauth/authorize",
 	clientCacheType=ClientCacheType.NO_CACHE,
 	allowMethod={HttpMethodType.GET, HttpMethodType.POST},
+	publicAction=true,
 	result={
 		@Result(status=AuthorizeCommand.STAT_SUCCESS_REDIRECT, type=Type.REDIRECT, allowExternalLocation=true, value=WebRequestConstants.REDIRECT_PATH),
 		@Result(status=AuthorizeCommand.STAT_SUCCESS_POST, type=Type.TEMPLATE, value=AuthorizeCommand.TMPL_POST),
@@ -130,12 +134,46 @@ public class AuthorizeCommand implements Command {
 		authReq.addResponseTypes(StringUtil.split(request.getParam(PARAM_RESPONSE_TYPE), ' '));
 		authReq.addScopes(StringUtil.split(request.getParam(PARAM_SCOPE), ' '));
 		authReq.setResponseMode(StringUtil.stripToNull(request.getParam(PARAM_RESPONSE_MODE)));
+		
+		authReq.setNonce(StringUtil.stripToNull(request.getParam(PARAM_NONCE)));
+		authReq.addPrompts(StringUtil.split(request.getParam(PARAM_PROMPT), ' '));
+		authReq.setMaxAge(request.getParamAsLong(PARAM_MAX_AGE));
 
 		try {
 			authRuntime.checkValidAuthorizationRequest(authReq);
 			
-			if (authRuntime.isNeedConsent(request, authReq)) {
-				return needConsent(request, authReq, authRuntime);
+			//check user auth context
+			AuthContext ac = AuthContext.getCurrentContext();
+			if (ac.isAuthenticated() && !authReq.hasPrompt(OAuthConstants.PROMPT_LOGIN)) {
+				//check max_age
+				if (authReq.getMaxAge() != null) {
+					if (ac.getAuthTime() + TimeUnit.SECONDS.toMillis(authReq.getMaxAge()) < System.currentTimeMillis()) {
+						if (authReq.hasPrompt(OAuthConstants.PROMPT_NONE)) {
+							throw new OAuthApplicationException(OAuthConstants.ERROR_LOGIN_REQUIRED, "Login required.");
+						} else {
+							throw new NeedTrustedAuthenticationException();
+						}
+					}
+				}
+			} else {
+				if (authReq.hasPrompt(OAuthConstants.PROMPT_NONE)) {
+					throw new OAuthApplicationException(OAuthConstants.ERROR_LOGIN_REQUIRED, "Login required.");
+				} else {
+					throw new NeedTrustedAuthenticationException();
+				}
+			}
+
+			//check user has Available Role
+			if (!authRuntime.hasAvailableRole()) {
+				throw new OAuthApplicationException(OAuthConstants.ERROR_ACCESS_DENIED, "User can't access this resource.");
+			}
+			
+			if (authReq.hasPrompt(OAuthConstants.PROMPT_CONSENT) || authRuntime.isNeedConsent(request, authReq)) {
+				if (authReq.getPrompt() != null && authReq.getPrompt().contains(OAuthConstants.PROMPT_NONE)) {
+					throw new OAuthApplicationException(OAuthConstants.ERROR_CONSENT_REQUIRED, "Consent required.");
+				} else {
+					return needConsent(request, authReq, authRuntime);
+				}
 			} else {
 				//remove offline_access scope
 				authReq.getScopes().remove(OAuthConstants.SCOPE_OFFLINE_ACCESS);
@@ -143,7 +181,9 @@ public class AuthorizeCommand implements Command {
 				AuthorizationCode code = authRuntime.generateCode(authReq);
 				return success(request, code);
 			}
-			
+		} catch (NeedTrustedAuthenticationException e) {
+			//redirect to Login screen
+			throw e;
 		} catch (OAuthApplicationException e) {
 			if (logger.isDebugEnabled()) {
 				logger.debug(e.getMessage(), e);

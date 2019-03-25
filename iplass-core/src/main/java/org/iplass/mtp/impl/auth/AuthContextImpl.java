@@ -119,4 +119,13 @@ public class AuthContextImpl extends AuthContext {
 		}
 	}
 
+	@Override
+	public long getAuthTime() {
+		UserContext uc = getAuthContextHolder().getUserContext();
+		if (uc == null) {
+			return Long.MIN_VALUE;
+		}
+		return uc.getCreationTime();
+	}
+
 }

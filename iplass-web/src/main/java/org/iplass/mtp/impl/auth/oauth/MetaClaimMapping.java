@@ -19,8 +19,14 @@
  */
 package org.iplass.mtp.impl.auth.oauth;
 
+import org.iplass.mtp.auth.User;
 import org.iplass.mtp.auth.oauth.definition.ClaimMappingDefinition;
+import org.iplass.mtp.impl.core.ExecuteContext;
+import org.iplass.mtp.impl.core.TenantContext;
 import org.iplass.mtp.impl.metadata.MetaData;
+import org.iplass.mtp.impl.script.Script;
+import org.iplass.mtp.impl.script.ScriptContext;
+import org.iplass.mtp.impl.script.ScriptEngine;
 import org.iplass.mtp.impl.util.ObjectUtil;
 
 public class MetaClaimMapping implements MetaData {
@@ -29,6 +35,14 @@ public class MetaClaimMapping implements MetaData {
 	private String claimName;
 	private String userPropertyName;
 	private String customValueScript;
+	
+	public MetaClaimMapping() {
+	}
+	
+	public MetaClaimMapping(String claimName, String userPropertyName) {
+		this.claimName = claimName;
+		this.userPropertyName = userPropertyName;
+	}
 	
 	public String getClaimName() {
 		return claimName;
@@ -65,5 +79,35 @@ public class MetaClaimMapping implements MetaData {
 		def.setCustomValueScript(customValueScript);
 		return def;
 	}
-
+	
+	public ClaimMappingRuntime createRuntime(String defName, String scopeName) {
+		return new ClaimMappingRuntime(defName, scopeName);
+	}
+	
+	public class ClaimMappingRuntime {
+		private ScriptEngine se;
+		private Script s;
+		
+		private ClaimMappingRuntime(String defName, String scopeName) {
+			if (customValueScript != null) {
+				TenantContext tc = ExecuteContext.getCurrentContext().getTenantContext();
+				se = tc.getScriptEngine();
+				s = se.createScript(customValueScript, "CustomValueScript_" + defName + "_" + scopeName + "_" + claimName);
+			}
+		}
+		
+		public Object value(User user) {
+			if (userPropertyName != null) {
+				return user.getValue(userPropertyName);
+			} else {
+				ScriptContext sc = se.newScriptContext();
+				sc.setAttribute("user", user);
+				return s.eval(sc);
+			}
+		}
+		
+		public String name() {
+			return claimName;
+		}
+	}
 }

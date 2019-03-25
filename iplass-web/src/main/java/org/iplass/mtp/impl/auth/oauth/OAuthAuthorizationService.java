@@ -28,6 +28,8 @@ import org.iplass.mtp.auth.oauth.definition.OAuthAuthorizationDefinitionManager;
 import org.iplass.mtp.definition.TypedDefinitionManager;
 import org.iplass.mtp.impl.auth.oauth.MetaOAuthAuthorization.OAuthAuthorizationRuntime;
 import org.iplass.mtp.impl.auth.oauth.code.AuthorizationCodeStore;
+import org.iplass.mtp.impl.auth.oauth.jwt.JwtKeyStore;
+import org.iplass.mtp.impl.auth.oauth.jwt.JwtProcessor;
 import org.iplass.mtp.impl.auth.oauth.token.OAuthAccessTokenStore;
 import org.iplass.mtp.impl.definition.AbstractTypedMetaDataService;
 import org.iplass.mtp.impl.definition.DefinitionMetaDataTypeMap;
@@ -51,16 +53,32 @@ public class OAuthAuthorizationService extends AbstractTypedMetaDataService<Meta
 	}
 	
 	private boolean paramStateRequired = true;
+	private boolean paramNonceRequired = false;
 	private boolean forceS256ForCodeChallengeMethod = true;
 	private boolean forcePKCE = true;
 	private String defaultConsentTemplateName;
 	
 	private AuthorizationCodeStore authorizationCodeStore;
 	private OAuthAccessTokenStore accessTokenStore;
+	private JwtProcessor jwtProcessor;
+	private JwtKeyStore jwtKeyStore;
 	
 	private String subjectIdHashAlgorithm;
 	private String subjectIdHashSalt;
+	private long idTokenLifetimeSeconds = 60 * 60;//1 hour
 	
+	public long getIdTokenLifetimeSeconds() {
+		return idTokenLifetimeSeconds;
+	}
+
+	public JwtProcessor getJwtProcessor() {
+		return jwtProcessor;
+	}
+
+	public JwtKeyStore getJwtKeyStore() {
+		return jwtKeyStore;
+	}
+
 	public String getDefaultConsentTemplateName() {
 		return defaultConsentTemplateName;
 	}
@@ -71,6 +89,10 @@ public class OAuthAuthorizationService extends AbstractTypedMetaDataService<Meta
 
 	public boolean isForceS256ForCodeChallengeMethod() {
 		return forceS256ForCodeChallengeMethod;
+	}
+
+	public boolean isParamNonceRequired() {
+		return paramNonceRequired;
 	}
 
 	public boolean isParamStateRequired() {
@@ -102,6 +124,7 @@ public class OAuthAuthorizationService extends AbstractTypedMetaDataService<Meta
 	@Override
 	public void init(Config config) {
 		paramStateRequired = config.getValue("paramStateRequired", Boolean.TYPE, Boolean.TRUE);
+		paramNonceRequired = config.getValue("paramNonceRequired", Boolean.TYPE, Boolean.FALSE);
 		forceS256ForCodeChallengeMethod = config.getValue("forceS256ForCodeChallengeMethod", Boolean.TYPE, Boolean.TRUE);
 		forcePKCE = config.getValue("forcePKCE", Boolean.TYPE, Boolean.TRUE);
 		defaultConsentTemplateName = config.getValue("defaultConsentTemplateName");
@@ -109,6 +132,9 @@ public class OAuthAuthorizationService extends AbstractTypedMetaDataService<Meta
 		accessTokenStore = config.getValue("accessTokenStore", OAuthAccessTokenStore.class);
 		subjectIdHashAlgorithm = config.getValue("subjectIdHashAlgorithm");
 		subjectIdHashSalt = config.getValue("subjectIdHashSalt");
+		jwtProcessor = config.getValue("jwtProcessor", JwtProcessor.class);
+		jwtKeyStore = config.getValue("jwtKeyStore", JwtKeyStore.class);
+		idTokenLifetimeSeconds = config.getValue("idTokenLifetimeSeconds", Long.TYPE, 3600L);
 		
 		if (subjectIdHashAlgorithm != null) {
 			try {

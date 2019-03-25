@@ -23,6 +23,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.iplass.mtp.auth.User;
 import org.iplass.mtp.util.StringUtil;
 
 public class AuthorizationRequest implements Serializable {
@@ -40,13 +41,64 @@ public class AuthorizationRequest implements Serializable {
 	private String codeChallenge;
 	private String codeChallengeMethod;
 	
+	private String nonce;
+	private List<String> prompt;
+	private Long maxAge;
+	
+	private User user;
+	private long authTime;
+	
 	public AuthorizationRequest(String authorizationServerId, String clientId, String redirectUri) {
 		this.requestId = StringUtil.randomToken();
 		this.authorizationServerId = authorizationServerId;
 		this.clientId = clientId;
 		this.redirectUri = redirectUri;
 	}
+	
+	public User getUser() {
+		return user;
+	}
 
+	public void setUser(User user) {
+		this.user = user;
+	}
+
+	public long getAuthTime() {
+		return authTime;
+	}
+
+	public void setAuthTime(long authTime) {
+		this.authTime = authTime;
+	}
+
+	public String getNonce() {
+		return nonce;
+	}
+	public void setNonce(String nonce) {
+		this.nonce = nonce;
+	}
+	public List<String> getPrompt() {
+		return prompt;
+	}
+	public void setPrompt(List<String> prompt) {
+		this.prompt = prompt;
+	}
+	public void addPrompts(String... prompt) {
+		if (prompt != null) {
+			if (this.prompt == null) {
+				this.prompt = new ArrayList<>();
+			}
+			for (String p: prompt) {
+				this.prompt.add(p);
+			}
+		}
+	}
+	public Long getMaxAge() {
+		return maxAge;
+	}
+	public void setMaxAge(Long maxAge) {
+		this.maxAge = maxAge;
+	}
 	public String getRequestId() {
 		return requestId;
 	}
@@ -125,6 +177,13 @@ public class AuthorizationRequest implements Serializable {
 				this.scopes.add(s);
 			}
 		}
+	}
+	
+	public boolean hasPrompt(String p) {
+		if (prompt == null) {
+			return false;
+		}
+		return prompt.contains(p);
 	}
 
 }

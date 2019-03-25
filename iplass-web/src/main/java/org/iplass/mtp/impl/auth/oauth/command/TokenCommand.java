@@ -35,6 +35,8 @@ import org.iplass.mtp.impl.auth.oauth.MetaOAuthAuthorization.OAuthAuthorizationR
 import org.iplass.mtp.impl.auth.oauth.MetaOAuthClient.OAuthClientRuntime;
 import org.iplass.mtp.impl.auth.oauth.OAuthApplicationException;
 import org.iplass.mtp.impl.auth.oauth.OAuthConstants;
+import org.iplass.mtp.impl.auth.oauth.OAuthTokens;
+import org.iplass.mtp.impl.auth.oauth.idtoken.IdToken;
 import org.iplass.mtp.impl.auth.oauth.token.AccessToken;
 import org.iplass.mtp.util.StringUtil;
 import org.iplass.mtp.webapi.WebApiRequestConstants;
@@ -87,8 +89,8 @@ public class TokenCommand implements Command {
 		
 		try {
 			OAuthAuthorizationRuntime authRuntime = clientRuntime.getAuthorizationServer();
-			AccessToken token = authRuntime.exchangeCodeToToken(codeStr, redirectUri, codeVerifier, clientRuntime);
-			ResponseBuilder res = Response.ok().type(MediaType.APPLICATION_JSON_TYPE.withCharset("UTF-8")).entity(toResponseEntity(token));
+			OAuthTokens tokens = authRuntime.exchangeCodeToToken(codeStr, redirectUri, codeVerifier, clientRuntime);
+			ResponseBuilder res = Response.ok().type(MediaType.APPLICATION_JSON_TYPE.withCharset("UTF-8")).entity(toResponseEntity(tokens.getAccessToken(), tokens.getIdToken(), request, authRuntime));
 			request.setAttribute(WebApiRequestConstants.DEFAULT_RESULT, res);
 			
 			return STAT_SUCCESS;
@@ -97,7 +99,7 @@ public class TokenCommand implements Command {
 		}
 	}
 	
-	private Object toResponseEntity(AccessToken accessToken) {
+	private Object toResponseEntity(AccessToken accessToken, IdToken idToken, RequestContext request, OAuthAuthorizationRuntime authServer) {
 		Map<String, Object> res = new HashMap<>();
 		res.put("access_token", accessToken.getTokenEncoded());
 		res.put("token_type", OAuthConstants.TOKEN_TYPE_BEARER);
@@ -107,7 +109,9 @@ public class TokenCommand implements Command {
 			res.put("refresh_token", accessToken.getRefreshToken().getTokenEncoded());
 			res.put("refresh_token_expires_in", accessToken.getRefreshToken().getExpiresIn());
 		}
-		
+		if (idToken != null) {
+			res.put("id_token", idToken.getTokenEncoded(authServer.issuerId(request)));
+		}
 		return res;
 	}
 
@@ -122,7 +126,7 @@ public class TokenCommand implements Command {
 		try {
 			OAuthAuthorizationRuntime authRuntime = clientRuntime.getAuthorizationServer();
 			AccessToken token = authRuntime.refreshToken(refreshToken, clientRuntime);
-			ResponseBuilder res = Response.ok().type(MediaType.APPLICATION_JSON_TYPE.withCharset("UTF-8")).entity(toResponseEntity(token));
+			ResponseBuilder res = Response.ok().type(MediaType.APPLICATION_JSON_TYPE.withCharset("UTF-8")).entity(toResponseEntity(token, null, null, authRuntime));
 			request.setAttribute(WebApiRequestConstants.DEFAULT_RESULT, res);
 			
 			return STAT_SUCCESS;

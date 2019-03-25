@@ -35,6 +35,7 @@ public class UserContextImpl implements UserContext {
 	private AccountHandle account;
 	private User userEntity;
 	private String[] groupCode;
+	private long creationTime;
 	
 	public UserContextImpl(AccountHandle account, User userEntity) {
 		this.account = account;
@@ -77,6 +78,8 @@ public class UserContextImpl implements UserContext {
 		if (list.size() != 0) {
 			groupCode = list.toArray(new String[list.size()]);
 		}
+		
+		creationTime = System.currentTimeMillis();
 	}
 
 	public User getUser() {
@@ -124,6 +127,11 @@ public class UserContextImpl implements UserContext {
 	@Override
 	public void resetUserEntity(User userEntity) {
 		this.userEntity = userEntity;
+	}
+
+	@Override
+	public long getCreationTime() {
+		return creationTime;
 	}
 
 }

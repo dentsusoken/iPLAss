@@ -21,10 +21,13 @@ package org.iplass.mtp.impl.auth.oauth;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
+import org.iplass.mtp.auth.User;
 import org.iplass.mtp.auth.oauth.definition.ClaimMappingDefinition;
 import org.iplass.mtp.auth.oauth.definition.OIDCClaimScopeDefinition;
 import org.iplass.mtp.auth.oauth.definition.ScopeDefinition;
+import org.iplass.mtp.impl.auth.oauth.MetaClaimMapping.ClaimMappingRuntime;
 
 /**
  * OpenID Connectでclaimのセットを定義するためのScope。
@@ -73,5 +76,34 @@ public class MetaOIDCClaimScope extends MetaScope {
 		}
 		
 		return def;
+	}
+	
+	public OIDCClaimScopeRuntime createRuntime(String defName) {
+		return new OIDCClaimScopeRuntime(defName);
+	}
+	
+	public class OIDCClaimScopeRuntime {
+		
+		private List<ClaimMappingRuntime> claimRuntimes;
+		
+		private OIDCClaimScopeRuntime(String defName) {
+			if (claims != null) {
+				claimRuntimes = new ArrayList<>();
+				for (MetaClaimMapping m: claims) {
+					claimRuntimes.add(m.createRuntime(defName, getName()));
+				}
+			}
+		}
+		
+		public void map(User user, Map<String, Object> claimMap) {
+			if (claimRuntimes != null) {
+				for (ClaimMappingRuntime cmr: claimRuntimes) {
+					Object val = cmr.value(user);
+					if (val != null) {
+						claimMap.put(cmr.name(), val);
+					}
+				}
+			}
+		}
 	}
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
+ * Copyright (C) 2019 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
  * 
  * Unless you have purchased a commercial license,
  * the following license terms apply:
@@ -17,39 +17,38 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
-package org.iplass.mtp.impl.auth.oauth.code;
+package org.iplass.mtp.impl.auth.oauth.jwt;
 
-import java.io.Serializable;
-
-public class AuthorizationCode implements Serializable {
-	private static final long serialVersionUID = -7076391970509925265L;
-
-	private AuthorizationRequest request;
-	private String codeValue;
-	private long expires;
+public enum EllipticCurveSpec {
 	
-	public String getCodeValue() {
-		return codeValue;
+	P_256("P-256", 32),
+	P_384("P-384", 48),
+	P_521("P-521", 66);
+	
+	private final String curveName;
+	private final int octetStringLength;
+	
+	private EllipticCurveSpec(String curveName, int octetStringLength) {
+		this.curveName = curveName;
+		this.octetStringLength = octetStringLength;
 	}
-
-	public void setCodeValue(String codeValue) {
-		this.codeValue = codeValue;
+	
+    public String getCurveName() {
+		return curveName;
 	}
-
-	public AuthorizationRequest getRequest() {
-		return request;
+	public int getOctetStringLength() {
+		return octetStringLength;
 	}
-
-	public void setRequest(AuthorizationRequest request) {
-		this.request = request;
-	}
-
-	public long getExpires() {
-		return expires;
-	}
-
-	public void setExpires(long expires) {
-		this.expires = expires;
+	
+	static EllipticCurveSpec preferredSpec(int keyLength) {
+		if (keyLength >= 512) {
+			return P_521;
+		}
+		if (keyLength >= 384) {
+			return P_384;
+		}
+		
+		return P_256;
 	}
 
 }

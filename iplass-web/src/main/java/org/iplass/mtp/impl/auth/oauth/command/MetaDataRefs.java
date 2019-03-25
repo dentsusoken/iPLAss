@@ -26,7 +26,9 @@ import org.iplass.mtp.command.annotation.MetaDataSeeAlso;
 	AuthorizeCommand.class,
 	IntrospectCommand.class,
 	RevokeCommand.class,
-	TokenCommand.class
+	TokenCommand.class,
+	UserInfoCommand.class,
+	JwksCommand.class
 })
 public class MetaDataRefs {
 }

@@ -34,4 +34,5 @@ public interface UserContext extends Serializable {
 	
 	public String getIdForLog();
 	public void resetUserEntity(User userEntity);
+	public long getCreationTime();
 }

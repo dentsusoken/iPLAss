@@ -40,9 +40,11 @@ import org.iplass.mtp.auth.oauth.definition.ScopeDefinition;
 import org.iplass.mtp.command.RequestContext;
 import org.iplass.mtp.impl.auth.oauth.MetaClientPolicy.ClientPolicyRuntime;
 import org.iplass.mtp.impl.auth.oauth.MetaOAuthClient.OAuthClientRuntime;
+import org.iplass.mtp.impl.auth.oauth.MetaOIDCClaimScope.OIDCClaimScopeRuntime;
 import org.iplass.mtp.impl.auth.oauth.MetaSubjectIdentifierType.SubjectIdentifierTypeRuntime;
 import org.iplass.mtp.impl.auth.oauth.code.AuthorizationCode;
 import org.iplass.mtp.impl.auth.oauth.code.AuthorizationRequest;
+import org.iplass.mtp.impl.auth.oauth.idtoken.IdToken;
 import org.iplass.mtp.impl.auth.oauth.token.AccessToken;
 import org.iplass.mtp.impl.auth.oauth.token.RefreshToken;
 import org.iplass.mtp.impl.definition.DefinableMetaData;
@@ -176,7 +178,9 @@ public class MetaOAuthAuthorization extends BaseRootMetaData implements Definabl
 		def.setDescription(description);
 		def.setDisplayName(displayName);
 		
-		def.setAvailableRoles(new ArrayList<>(availableRoles));
+		if (availableRoles != null) {
+			def.setAvailableRoles(new ArrayList<>(availableRoles));
+		}
 		if (scopes != null) {
 			ArrayList<ScopeDefinition> list = new ArrayList<>();
 			for (MetaScope ms: scopes) {
@@ -208,26 +212,39 @@ public class MetaOAuthAuthorization extends BaseRootMetaData implements Definabl
 		private EnumMap<ClientType, ClientPolicyRuntime> clientPolicyRuntimeMap;
 		private SubjectIdentifierTypeRuntime subjectIdentifierTypeRuntime;
 		private Map<String, MetaScope> scopeMap;
+		private Map<String, OIDCClaimScopeRuntime> oidcClaimScopeMap;
 		
 		
 		private OAuthAuthorizationRuntime() {
-			clientPolicyRuntimeMap = new EnumMap<>(ClientType.class);
-			if (clientPolicies != null) {
-				for (MetaClientPolicy cp: clientPolicies) {
-					clientPolicyRuntimeMap.put(cp.getClientType(), cp.createRuntime(MetaOAuthAuthorization.this));
+			try {
+				clientPolicyRuntimeMap = new EnumMap<>(ClientType.class);
+				if (clientPolicies != null) {
+					for (MetaClientPolicy cp: clientPolicies) {
+						clientPolicyRuntimeMap.put(cp.getClientType(), cp.createRuntime(MetaOAuthAuthorization.this));
+					}
 				}
-			}
-			subjectIdentifierTypeRuntime = subjectIdentifierType.createRuntime();
-			scopeMap = new HashMap<>();
-			if (scopes != null) {
-				for (MetaScope ms: scopes) {
-					scopeMap.put(ms.getName(), ms);
+				if (subjectIdentifierType == null) {
+					throw new NullPointerException("subjectIdentifierType must be specified");
 				}
-			}
-			for (MetaScope ms: standardScopes) {
-				if (!scopeMap.containsKey(ms.getName())) {
-					scopeMap.put(ms.getName(), ms);
+				subjectIdentifierTypeRuntime = subjectIdentifierType.createRuntime();
+				scopeMap = new HashMap<>();
+				oidcClaimScopeMap = new HashMap<>();
+				if (scopes != null) {
+					for (MetaScope ms: scopes) {
+						scopeMap.put(ms.getName(), ms);
+						if (ms instanceof MetaOIDCClaimScope) {
+							oidcClaimScopeMap.put(ms.getName(), ((MetaOIDCClaimScope) ms).createRuntime(getName()));
+						}
+					}
 				}
+				for (MetaScope ms: standardScopes) {
+					if (!scopeMap.containsKey(ms.getName())) {
+						scopeMap.put(ms.getName(), ms);
+					}
+				}
+				
+			} catch (RuntimeException e) {
+				setIllegalStateException(e);
 			}
 		}
 		
@@ -280,6 +297,11 @@ public class MetaOAuthAuthorization extends BaseRootMetaData implements Definabl
 					throw new OAuthApplicationException(OAuthConstants.ERROR_INVALID_REQUEST, "state required.");
 				}
 			}
+			if (service.isParamNonceRequired()) {
+				if (authorizationRequest.getNonce() == null) {
+					throw new OAuthApplicationException(OAuthConstants.ERROR_INVALID_REQUEST, "nonce required.");
+				}
+			}
 			
 			if (authorizationRequest.getResponseMode() != null) {
 				if (!OAuthConstants.RESPONSE_MODE_FORM_POST.equals(authorizationRequest.getResponseMode())
@@ -314,10 +336,30 @@ public class MetaOAuthAuthorization extends BaseRootMetaData implements Definabl
 				}
 			}
 			
-			//check user has Available Role
-			if (!hasAvailableRole()) {
-				throw new OAuthApplicationException(OAuthConstants.ERROR_ACCESS_DENIED, "User can't access this resource.");
+			if (authorizationRequest.getPrompt() != null && authorizationRequest.getPrompt().size() > 0) {
+				if (authorizationRequest.getPrompt().contains(OAuthConstants.PROMPT_NONE)) {
+					if (authorizationRequest.getPrompt().size() != 1) {
+						throw new OAuthApplicationException(OAuthConstants.ERROR_INVALID_REQUEST, "invalid prompt.");
+					}
+				} else {
+					if (authorizationRequest.getPrompt().size() > 2) {
+						//currently supports "login" and "consent"
+						throw new OAuthApplicationException(OAuthConstants.ERROR_INVALID_REQUEST, "invalid prompt.");
+					}
+					for (String p: authorizationRequest.getPrompt()) {
+						if (!p.equals(OAuthConstants.PROMPT_CONSENT) && !p.equals(OAuthConstants.PROMPT_LOGIN)) {
+							throw new OAuthApplicationException(OAuthConstants.ERROR_INVALID_REQUEST, "invalid prompt.");
+						}
+					}
+				}
 			}
+			
+			if (authorizationRequest.getMaxAge() != null) {
+				if (authorizationRequest.getMaxAge().longValue() < 0) {
+					throw new OAuthApplicationException(OAuthConstants.ERROR_INVALID_REQUEST, "invalid max_age.");
+				}
+			}
+			
 		}
 		
 		public ClientPolicyRuntime getClientPolicy(ClientType clientType) {
@@ -335,6 +377,14 @@ public class MetaOAuthAuthorization extends BaseRootMetaData implements Definabl
 			
 			return ret;
 		}
+		
+		public MetaScope getScope(String scopeName) {
+			return scopeMap.get(scopeName);
+		}
+		
+		public OIDCClaimScopeRuntime getOIDCClaimScope(String scopeName) {
+			return oidcClaimScopeMap.get(scopeName);
+		}
 
 		public boolean isNeedConsent(RequestContext request, AuthorizationRequest authReq) {
 			OAuthClientRuntime client = clientService.getRuntimeByName(authReq.getClientId());
@@ -345,7 +395,11 @@ public class MetaOAuthAuthorization extends BaseRootMetaData implements Definabl
 		}
 
 		public AuthorizationCode generateCode(AuthorizationRequest authReq) {
-			return service.getAuthorizationCodeStore().newAuthorizationCode(authReq, AuthContext.getCurrentContext().getUser().getOid());
+			AuthContext authContext = AuthContext.getCurrentContext();
+			authReq.setUser(authContext.getUser());
+			authReq.setAuthTime(authContext.getAuthTime());
+			
+			return service.getAuthorizationCodeStore().newAuthorizationCode(authReq);
 		}
 
 		public String consentTemplateName() {
@@ -401,7 +455,7 @@ public class MetaOAuthAuthorization extends BaseRootMetaData implements Definabl
 			
 		}
 
-		public AccessToken exchangeCodeToToken(String codeStr, String redirectUri, String codeVerifier, OAuthClientRuntime client) {
+		public OAuthTokens exchangeCodeToToken(String codeStr, String redirectUri, String codeVerifier, OAuthClientRuntime client) {
 			if (!getId().equals(client.getMetaData().getAuthorizationServerId())) {
 				throw new OAuthRuntimeException("client's authServer is unmatch");
 			}
@@ -421,10 +475,16 @@ public class MetaOAuthAuthorization extends BaseRootMetaData implements Definabl
 				}
 			}
 			
-			AccessToken accessToken = service.getAccessTokenStore().createAccessToken(client, code.getResourceOwnerId(), code.getRequest().getScopes());
-			return accessToken;
+			AccessToken accessToken = service.getAccessTokenStore().createAccessToken(client, code.getRequest().getUser().getOid(), code.getRequest().getScopes());
+			
+			IdToken idToken = null;
+			if (code.getRequest().getScopes().contains(OAuthConstants.SCOPE_OPENID)) {
+				idToken = new IdToken(code, accessToken, this, client, service);
+			}
+			
+			return new OAuthTokens(accessToken, idToken);
 		}
-
+		
 		public AccessToken refreshToken(String refreshTokenStr, OAuthClientRuntime client) {
 			if (!getId().equals(client.getMetaData().getAuthorizationServerId())) {
 				throw new OAuthRuntimeException("client's authServer is unmatch");
@@ -495,6 +555,23 @@ public class MetaOAuthAuthorization extends BaseRootMetaData implements Definabl
 			}
 			
 			return sb.toString();
+		}
+
+		public Map<String, Object> userInfo(AccessToken accessToken, OAuthClientRuntime client) {
+			if (!getId().equals(client.getMetaData().getAuthorizationServerId())) {
+				throw new OAuthRuntimeException("client's authServer is unmatch");
+			}
+			
+			Map<String, Object> userInfoClaims = new HashMap<>();
+			for (String s: accessToken.getGrantedScopes()) {
+				OIDCClaimScopeRuntime csr = getOIDCClaimScope(s);
+				if (csr != null) {
+					csr.map(accessToken.getUser(), userInfoClaims);
+				}
+			}
+			String sub = getSubjectIdentifierType().subjectId(accessToken.getUser(), client);
+			userInfoClaims.put("sub", sub);
+			return userInfoClaims;
 		}
 		
 	}

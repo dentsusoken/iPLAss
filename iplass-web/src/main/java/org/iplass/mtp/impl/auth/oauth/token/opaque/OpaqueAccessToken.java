@@ -98,17 +98,17 @@ public class OpaqueAccessToken extends AccessToken {
 	}
 
 	@Override
-	public Object getExpirationTime() {
+	public long getExpirationTime() {
 		return TimeUnit.MILLISECONDS.toSeconds(expires);
 	}
 
 	@Override
-	public Object getIssuedAt() {
+	public long getIssuedAt() {
 		return TimeUnit.MILLISECONDS.toSeconds(creationTime);
 	}
 
 	@Override
-	public Object getNotbefore() {
+	public long getNotbefore() {
 		return TimeUnit.MILLISECONDS.toSeconds(creationTime);
 	}
 

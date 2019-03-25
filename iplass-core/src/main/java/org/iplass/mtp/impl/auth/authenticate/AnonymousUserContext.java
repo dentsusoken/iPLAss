@@ -130,4 +130,9 @@ public final class AnonymousUserContext implements UserContext {
 	public void resetUserEntity(User userEntity) {
 	}
 
+	@Override
+	public long getCreationTime() {
+		return Long.MIN_VALUE;
+	}
+
 }

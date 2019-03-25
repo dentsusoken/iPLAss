@@ -81,12 +81,11 @@ public class CacheAuthorizationCodeStore implements AuthorizationCodeStore, Serv
 	}
 
 	@Override
-	public AuthorizationCode newAuthorizationCode(AuthorizationRequest authReq, String resourceOwnerId) {
+	public AuthorizationCode newAuthorizationCode(AuthorizationRequest authReq) {
 		while (true) {
 			String codeValue = generator.secureRandomToken();
 			AuthorizationCode code = new AuthorizationCode();
 			code.setCodeValue(codeValue);
-			code.setResourceOwnerId(resourceOwnerId);
 			code.setRequest(authReq);
 			code.setExpires(System.currentTimeMillis() + timeToLive);
 			CacheEntry ce = new CacheEntry(toKey(codeValue), code);

@@ -79,12 +79,21 @@ public abstract class AuthContext {
 
 	/**
 	 * 現在のセキュリティコンテキストに紐づいている属性を取得します。
+	 * 認証されたユーザのUserエンティティのプロパティ、
+	 * また、認証プロバイダが返却したユーザ属性を取得可能です。
 	 *
 	 * @param name
 	 * @return
 	 */
 	public abstract Object getAttribute(String name);
-
+	
+	/**
+	 * 現在のセッションが認証された時間を取得します。
+	 * 未ログインユーザの場合は、返却される値は不定です。
+	 * 
+	 * @return
+	 */
+	public abstract long getAuthTime();
 
 	/**
 	 * 現在のセッションが認証済みユーザによるものか否かを取得します。

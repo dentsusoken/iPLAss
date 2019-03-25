@@ -203,6 +203,21 @@
 			<property name="tokenCreationStrategy" class="org.iplass.mtp.impl.auth.oauth.token.opaque.NewTokenCreationStrategy" />
 		</property>
 		
+		<property name="jwtProcessor" class="org.iplass.mtp.impl.auth.oauth.jwt.JjwtProcesor" />
+		
+		<!-- if OpenID Connect enabled, configure keyStore that uses for sign to ID Token as JWT -->
+		<!--
+		<property name="jwtKeyStore" class="org.iplass.mtp.impl.auth.oauth.jwt.SimpleJwtKeyStore">
+			<property name="keyStoreType" value="PKCS12" />
+			<property name="keyStoreFilePath" value="[your jks keystore filepath]" />
+			<property name="keyStorePassword" value="[your jks store password]" />
+			<property name="keyPasswordMap">
+				<property name="yourKeyId1" value="[key password for yourKeyId1" />
+				<property name="yourKeyId2" value="[key password for yourKeyId2" />
+			</property>
+		</property>
+		-->
+		
 		<property name="subjectIdHashAlgorithm" value="SHA-256" />
 		<!-- TODO set salt for each environment if subjectId hashing -->
 		<!-- 
@@ -447,7 +462,7 @@
 		
 		<!-- OAuth AuthorizationCodeのキャッシュ -->
 		<!-- TODO 本番利用時はRedisCacheStoreFactoryなど利用するように設定変更が必要 -->
-		<property name="actionContent" class="org.iplass.mtp.impl.cache.store.builtin.SimpleCacheStoreFactory">
+		<property name="oauthCodeStore" class="org.iplass.mtp.impl.cache.store.builtin.SimpleCacheStoreFactory">
 			<property name="namespace" value="mtp.oauth.codeStore" />
 			<!-- 10分有効 -->
 			<property name="timeToLive" value="600000" />

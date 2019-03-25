@@ -222,20 +222,25 @@ public class MetaOAuthClient extends BaseRootMetaData implements DefinableMetaDa
 		private String sectorId;
 		
 		public OAuthClientRuntime() {
-			if (redirectUris == null || redirectUris.size() == 0) {
-				throw new IllegalStateException("redirectUris must specify");
-			} else {
-				for (String ru: redirectUris) {
-					//check redirectUris valid
-					try {
-						new URI(ru);
-					} catch (URISyntaxException e) {
-						throw new IllegalStateException("redirectUris must valid uri:" + ru, e);
+			try {
+				if (redirectUris == null || redirectUris.size() == 0) {
+					throw new IllegalStateException("redirectUris  must be specified");
+				} else {
+					for (String ru: redirectUris) {
+						//check redirectUris valid
+						try {
+							new URI(ru);
+						} catch (URISyntaxException e) {
+							throw new IllegalStateException("redirectUris must valid uri:" + ru, e);
+						}
 					}
 				}
+				
+				sectorId = genSectorId();
+				
+			} catch (RuntimeException e) {
+				setIllegalStateException(e);
 			}
-			
-			sectorId = genSectorId();
 		}
 		
 		private String genSectorId() {

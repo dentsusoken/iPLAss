@@ -42,6 +42,13 @@ public interface OAuthConstants {
 	public static final String ERROR_SERVER_ERROR = "server_error";
 	//認可サーバーが一時的な過負荷やメンテナンスによってリクエストを扱うことが出来ない. (503 Service Unavailable のHTTPステータスコードをHTTPのリダイレクトでクライアントに返すことができないため, このエラーコードは必要である)
 	public static final String ERROR_TEMPORARILY_UNAVAILABLE = "temporarily_unavailable";
+	//Authorization Server は処理を進めるためにいくつかの End-User interaction を必要とする. Authentication Request 中の prompt パラメータが none であるが, End-User interaction のためのユーザーインターフェースの表示なしには Authentication Request が完了できない時にこのエラーが返される
+	public static final String ERROR_INTERACTION_REQUIRED = "interaction_required";
+	//Authorization Server は End-User の認証を必要とする. Authentication Request 中の prompt パラメータが none であるが, End-User の認証のためのユーザーインターフェースの表示なしには Authentication Request が完了できない時にこのエラーが返される
+	public static final String ERROR_LOGIN_REQUIRED = "login_required";
+	//Authorization Server は End-User の同意を必要とする. Authentication Request 中の prompt パラメータが none であるが, End-User の同意のためのユーザーインターフェースの表示なしには Authentication Request が完了できない時にこのエラーが返される
+	public static final String ERROR_CONSENT_REQUIRED = "consent_required";
+	
 	
 	//response_type
 	public static final String RESPONSE_TYPE_CODE = "code";

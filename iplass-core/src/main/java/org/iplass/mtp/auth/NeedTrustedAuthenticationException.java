@@ -25,7 +25,7 @@ import org.iplass.mtp.ApplicationException;
 /**
  * 信頼された認証処理を経て認証されていない場合にスローする例外。
  * この例外がCommand（Actionで利用する）のexecute()からスローされた場合は、
- * 基盤は、再認証画面を表示するように動作する。
+ * 基盤は、再認証画面（未ログインの場合は、認証画面）を表示するように動作する。
  * 
  * 
  * @author K.Higuchi
