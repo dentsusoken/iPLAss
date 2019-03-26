@@ -21,13 +21,11 @@
 package org.iplass.adminconsole.client.metadata.ui.oauth.authorize;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 
 import org.iplass.adminconsole.client.base.event.DataChangedEvent;
 import org.iplass.adminconsole.client.base.event.DataChangedHandler;
-import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
 import org.iplass.adminconsole.client.base.ui.widget.AbstractWindow;
 import org.iplass.adminconsole.client.base.ui.widget.EditablePane;
 import org.iplass.adminconsole.client.base.ui.widget.ScriptEditorDialogHandler;
@@ -36,13 +34,13 @@ import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
 import org.iplass.adminconsole.client.metadata.ui.MetaDataUtil;
 import org.iplass.mtp.auth.oauth.definition.ClientPolicyDefinition;
 import org.iplass.mtp.auth.oauth.definition.ClientType;
-import org.iplass.mtp.auth.oauth.definition.ConsentTypeDefinition;
 import org.iplass.mtp.auth.oauth.definition.OAuthAuthorizationDefinition;
 import org.iplass.mtp.auth.oauth.definition.consents.AlwaysConsentTypeDefinition;
 import org.iplass.mtp.auth.oauth.definition.consents.OnceConsentTypeDefinition;
 import org.iplass.mtp.auth.oauth.definition.consents.ScriptingConsentTypeDefinition;
 
 import com.smartgwt.client.types.AutoFitWidthApproach;
+import com.smartgwt.client.types.ListGridEditEvent;
 import com.smartgwt.client.types.Overflow;
 import com.smartgwt.client.types.VerticalAlignment;
 import com.smartgwt.client.widgets.IButton;
@@ -53,7 +51,6 @@ import com.smartgwt.client.widgets.form.fields.CanvasItem;
 import com.smartgwt.client.widgets.form.fields.CheckboxItem;
 import com.smartgwt.client.widgets.form.fields.IntegerItem;
 import com.smartgwt.client.widgets.form.fields.SelectItem;
-import com.smartgwt.client.widgets.form.fields.TextAreaItem;
 import com.smartgwt.client.widgets.form.fields.events.ChangedEvent;
 import com.smartgwt.client.widgets.form.fields.events.ChangedHandler;
 import com.smartgwt.client.widgets.grid.ListGrid;
@@ -256,7 +253,7 @@ public class ClientPolicyGridPane extends VLayout implements EditablePane<OAuthA
 
 		private ConsentTypeEditPane pnlConsentType;
 
-		private TextAreaItem txaScopes;
+		private ScopeGridPane pnlScopeGrid;
 
 		private CheckboxItem chkSupportOpenIDConnect;
 
@@ -264,8 +261,8 @@ public class ClientPolicyGridPane extends VLayout implements EditablePane<OAuthA
 
 		public ClientPolicyEditDialog() {
 
-			setHeight(350);
-			setWidth(500);
+			setHeight(450);
+			setWidth(600);
 			setTitle("Client Policy");
 
 			setShowMinimizeButton(false);
@@ -307,18 +304,18 @@ public class ClientPolicyGridPane extends VLayout implements EditablePane<OAuthA
 			canvasConsentType.setColSpan(2);
 			canvasConsentType.setStartRow(true);
 
-			txaScopes = new TextAreaItem();
-			txaScopes.setTitle("Scopes");
-			txaScopes.setWidth("100%");
-			txaScopes.setHeight(75);
-			txaScopes.setBrowserSpellCheck(false);
-			txaScopes.setTooltip(SmartGWTUtil.getHoverString(AdminClientMessageUtil.getString("ui_metadata_oauth_authorize_ClientPolicyGridPane_scopes")));
+			pnlScopeGrid = new ScopeGridPane();
+			CanvasItem canvasScopes = new CanvasItem();
+			canvasScopes.setTitle("Scopes");
+			canvasScopes.setCanvas(pnlScopeGrid);
+			canvasScopes.setColSpan(2);
+			canvasScopes.setStartRow(true);
 
 			chkSupportOpenIDConnect = new CheckboxItem();
 			chkSupportOpenIDConnect.setTitle("Support OpenID Connect");
 
 			form.setItems(selClientType, txtAccessTokenLifetimeSeconds, chkSupportRefreshToken,
-					txtRefreshTokenLifetimeSeconds, canvasConsentType, txaScopes, chkSupportOpenIDConnect);
+					txtRefreshTokenLifetimeSeconds, canvasConsentType, canvasScopes, chkSupportOpenIDConnect);
 
 			VLayout contents = new VLayout(5);
 			contents.setHeight100();
@@ -368,22 +365,9 @@ public class ClientPolicyGridPane extends VLayout implements EditablePane<OAuthA
 			chkSupportRefreshToken.setValue(definition.isSupportRefreshToken());
 			txtRefreshTokenLifetimeSeconds.setValue(definition.getRefreshTokenLifetimeSeconds());
 
-			if (definition.getConsentType() != null) {
-				pnlConsentType.setDefinition(definition.getConsentType());
-			} else {
-				pnlConsentType.setDefinition(null);
-			}
+			pnlConsentType.setDefinition(definition);
 
-			if (definition.getScopes() != null) {
-				String scopeText = "";
-				for (String scope : definition.getScopes()) {
-					scopeText += scope + "\n";
-				}
-				if (!scopeText.isEmpty()) {
-					scopeText = scopeText.substring(0, scopeText.length() - 1);
-				}
-				txaScopes.setValue(scopeText);
-			}
+			pnlScopeGrid.setDefinition(definition);
 
 			chkSupportOpenIDConnect.setValue(definition.isSupportOpenIDConnect());
 
@@ -414,15 +398,9 @@ public class ClientPolicyGridPane extends VLayout implements EditablePane<OAuthA
 				definition.setRefreshTokenLifetimeSeconds(refreshTokenLifetimeSeconds);
 			}
 
-			definition.setConsentType(pnlConsentType.getEditDefinition(definition.getConsentType()));
+			pnlConsentType.getEditDefinition(definition);
 
-			String scopeText = SmartGWTUtil.getStringValue(txaScopes, true);
-			if (scopeText != null && !scopeText.trim().isEmpty()) {
-				String[] scopeTextArray = scopeText.split("\r\n|[\n\r\u2028\u2029\u0085]");
-				definition.setScopes(Arrays.asList(scopeTextArray));
-			} else {
-				definition.setScopes(null);
-			}
+			pnlScopeGrid.getEditDefinition(definition);
 
 			definition.setSupportOpenIDConnect(SmartGWTUtil.getBooleanValue(chkSupportOpenIDConnect));
 
@@ -440,7 +418,104 @@ public class ClientPolicyGridPane extends VLayout implements EditablePane<OAuthA
 		}
 	}
 
-	private static class ConsentTypeEditPane extends VLayout implements EditablePane<ConsentTypeDefinition> {
+	private static class ScopeGridPane extends VLayout implements EditablePane<ClientPolicyDefinition> {
+
+		private ListGrid grid;
+
+		public ScopeGridPane() {
+			setAutoHeight();
+			setWidth100();
+
+			grid = new ListGrid();
+			grid.setWidth100();
+			grid.setHeight(1);
+
+			grid.setShowAllColumns(true);								//列を全て表示
+			grid.setShowAllRecords(true);								//レコードを全て表示
+			grid.setCanResizeFields(false);								//列幅変更可能
+			grid.setCanSort(false);										//ソート不可
+			grid.setCanPickFields(false);								//表示フィールドの選択不可
+			grid.setCanGroupBy(false);									//GroupByの選択不可
+			grid.setAutoFitWidthApproach(AutoFitWidthApproach.BOTH);	//AutoFit時にタイトルと値を参照
+			grid.setLeaveScrollbarGap(false);							//縦スクロールバー自動表示制御
+			grid.setBodyOverflow(Overflow.VISIBLE);
+			grid.setOverflow(Overflow.VISIBLE);
+			grid.setCanReorderRecords(true);							//Dragによる並び替えを可能にする
+
+			grid.setCanEdit(true);
+			grid.setEditEvent(ListGridEditEvent.DOUBLECLICK);
+
+			ListGridField scopeField = new ListGridField("scope", "Scope");
+			grid.setFields(scopeField);
+
+			IButton btnAdd = new IButton("Add");
+			btnAdd.addClickHandler(new ClickHandler() {
+				public void onClick(ClickEvent event) {
+					grid.startEditingNew();
+				}
+			});
+
+			IButton btnDel = new IButton("Remove");
+			btnDel.addClickHandler(new ClickHandler() {
+				public void onClick(ClickEvent event) {
+					grid.removeSelectedData();
+				}
+			});
+
+			HLayout buttonPane = new HLayout(5);
+			buttonPane.setMargin(5);
+			buttonPane.addMember(btnAdd);
+			buttonPane.addMember(btnDel);
+
+			addMember(grid);
+			addMember(buttonPane);
+		}
+
+		@Override
+		public void setDefinition(ClientPolicyDefinition definition) {
+
+			if (definition.getScopes() != null) {
+
+				ListGridRecord[] records = new ListGridRecord[definition.getScopes().size()];
+
+				int cnt = 0;
+				for (String scope : definition.getScopes()) {
+					ListGridRecord record = new ListGridRecord();
+					record.setAttribute("scope",scope);
+					records[cnt] = record;
+					cnt++;
+				}
+				grid.setData(records);
+			}
+		}
+
+		@Override
+		public ClientPolicyDefinition getEditDefinition(ClientPolicyDefinition definition) {
+
+			ListGridRecord[] records = grid.getRecords();
+			if (records == null || records.length == 0) {
+				definition.setScopes(null);
+			} else {
+				List<String> scopes = new ArrayList<String>(records.length);
+				for (ListGridRecord record : records) {
+					String scope = record.getAttribute("scope");
+					if (scope != null && !scope.trim().isEmpty()) {
+						scopes.add(scope);
+					}
+				}
+				definition.setScopes(scopes);
+			}
+			return definition;
+		}
+
+		@Override
+		public boolean validate() {
+			return true;
+		}
+
+	}
+
+	private static class ConsentTypeEditPane extends VLayout implements EditablePane<ClientPolicyDefinition> {
 
 		/** ConsentTypeの種類選択用Map */
 		private static LinkedHashMap<String, String> consentTypeMap;
@@ -516,16 +591,16 @@ public class ClientPolicyGridPane extends VLayout implements EditablePane<OAuthA
 		}
 
 		@Override
-		public void setDefinition(ConsentTypeDefinition definition) {
+		public void setDefinition(ClientPolicyDefinition definition) {
 
 			script = null;
-			if (definition != null) {
-				String value = consentTypeMap.get(definition.getClass().getName());
+			if (definition.getConsentType() != null) {
+				String value = consentTypeMap.get(definition.getConsentType().getClass().getName());
 				if (value != null) {
-					selConsentType.setValue(definition.getClass().getName());
+					selConsentType.setValue(definition.getConsentType().getClass().getName());
 
-					if (definition instanceof ScriptingConsentTypeDefinition) {
-						script = ((ScriptingConsentTypeDefinition)definition).getScript();
+					if (definition.getConsentType() instanceof ScriptingConsentTypeDefinition) {
+						script = ((ScriptingConsentTypeDefinition)definition.getConsentType()).getScript();
 					}
 				} else {
 					selConsentType.setValue("");
@@ -538,23 +613,23 @@ public class ClientPolicyGridPane extends VLayout implements EditablePane<OAuthA
 		}
 
 		@Override
-		public ConsentTypeDefinition getEditDefinition(ConsentTypeDefinition definition) {
+		public ClientPolicyDefinition getEditDefinition(ClientPolicyDefinition definition) {
 
 			String type = SmartGWTUtil.getStringValue(selConsentType, true);
 			if (type != null) {
 				if (type.equals(AlwaysConsentTypeDefinition.class.getName())) {
 					AlwaysConsentTypeDefinition edit = new AlwaysConsentTypeDefinition();
-					return edit;
+					definition.setConsentType(edit);
 				} else 	if (type.equals(OnceConsentTypeDefinition.class.getName())) {
 					OnceConsentTypeDefinition edit = new OnceConsentTypeDefinition();
-					return edit;
+					definition.setConsentType(edit);
 				} else 	if (type.equals(ScriptingConsentTypeDefinition.class.getName())) {
 					ScriptingConsentTypeDefinition edit = new ScriptingConsentTypeDefinition();
 					edit.setScript(script);
-					return edit;
+					definition.setConsentType(edit);
 				}
 			}
-			return null;
+			return definition;
 		}
 
 		@Override

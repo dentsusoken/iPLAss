@@ -30,10 +30,15 @@ import org.iplass.adminconsole.client.base.ui.widget.AbstractWindow;
 import org.iplass.adminconsole.client.base.ui.widget.CommonIconConstants;
 import org.iplass.adminconsole.client.base.ui.widget.EditablePane;
 import org.iplass.adminconsole.client.base.ui.widget.MetaDataLangTextItem;
+import org.iplass.adminconsole.client.base.ui.widget.ScriptEditorDialogHandler;
+import org.iplass.adminconsole.client.base.ui.widget.ScriptEditorDialogMode;
 import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
+import org.iplass.adminconsole.client.metadata.ui.MetaDataUtil;
 import org.iplass.adminconsole.client.metadata.ui.common.LocalizedStringSettingDialog;
 import org.iplass.adminconsole.client.metadata.ui.common.LocalizedStringSettingDialog.LocalizedStringSettingDialogOption;
+import org.iplass.mtp.auth.oauth.definition.ClaimMappingDefinition;
 import org.iplass.mtp.auth.oauth.definition.OAuthAuthorizationDefinition;
+import org.iplass.mtp.auth.oauth.definition.OIDCClaimScopeDefinition;
 import org.iplass.mtp.auth.oauth.definition.ScopeDefinition;
 import org.iplass.mtp.definition.LocalizedStringDefinition;
 
@@ -45,6 +50,7 @@ import com.smartgwt.client.widgets.events.ClickEvent;
 import com.smartgwt.client.widgets.events.ClickHandler;
 import com.smartgwt.client.widgets.form.DynamicForm;
 import com.smartgwt.client.widgets.form.fields.ButtonItem;
+import com.smartgwt.client.widgets.form.fields.CanvasItem;
 import com.smartgwt.client.widgets.form.fields.SpacerItem;
 import com.smartgwt.client.widgets.form.fields.TextAreaItem;
 import com.smartgwt.client.widgets.form.fields.TextItem;
@@ -234,6 +240,7 @@ public class ScopeGridPane extends VLayout implements EditablePane<OAuthAuthoriz
 		private TextItem txtName;
 		private MetaDataLangTextItem txtDisplayName;
 		private TextAreaItem txaDescription;
+		private ClaimMappingGridPane pnlClaimMappingGrid;
 
 		private List<LocalizedStringDefinition> localizedDescriptionList;
 
@@ -241,7 +248,7 @@ public class ScopeGridPane extends VLayout implements EditablePane<OAuthAuthoriz
 
 		public ScopeEditDialog() {
 
-			setHeight(250);
+			setHeight(450);
 			setWidth(500);
 			setTitle("Scope");
 
@@ -304,7 +311,14 @@ public class ScopeGridPane extends VLayout implements EditablePane<OAuthAuthoriz
 				}
 			});
 
-			form.setItems(txtName, txtDisplayName, txaDescription, spacer, btbDescLang);
+			pnlClaimMappingGrid = new ClaimMappingGridPane();
+			CanvasItem canvasClaims = new CanvasItem();
+			canvasClaims.setTitle("Claims");
+			canvasClaims.setCanvas(pnlClaimMappingGrid);
+			canvasClaims.setColSpan(2);
+			canvasClaims.setStartRow(true);
+
+			form.setItems(txtName, txtDisplayName, txaDescription, spacer, btbDescLang, canvasClaims);
 
 			VLayout contents = new VLayout(5);
 			contents.setHeight100();
@@ -349,6 +363,8 @@ public class ScopeGridPane extends VLayout implements EditablePane<OAuthAuthoriz
 			txtDisplayName.setLocalizedList(definition.getLocalizedDisplayNameList());
 			txaDescription.setValue(definition.getDescription());
 			localizedDescriptionList = definition.getLocalizedDescriptionList();
+
+			pnlClaimMappingGrid.setDefinition(definition);
 		}
 
 		public void addDataChangeHandler(DataChangedHandler handler) {
@@ -357,7 +373,13 @@ public class ScopeGridPane extends VLayout implements EditablePane<OAuthAuthoriz
 
 		private void createEditDefinition() {
 
-			ScopeDefinition definition = new ScopeDefinition();
+			ScopeDefinition definition = null;
+			if (pnlClaimMappingGrid.isEmpty()) {
+				definition = new ScopeDefinition();
+			} else {
+				definition = new OIDCClaimScopeDefinition();
+				pnlClaimMappingGrid.getEditDefinition((OIDCClaimScopeDefinition)definition);
+			}
 			definition.setName(SmartGWTUtil.getStringValue(txtName, true));
 			definition.setDisplayName(SmartGWTUtil.getStringValue(txtDisplayName, true));
 			definition.setLocalizedDisplayNameList(txtDisplayName.getLocalizedList());
@@ -374,6 +396,350 @@ public class ScopeGridPane extends VLayout implements EditablePane<OAuthAuthoriz
 		}
 
 		private void fireDataChanged(ScopeDefinition definition) {
+			DataChangedEvent event = new DataChangedEvent();
+			event.setValueObject(definition);
+			for (DataChangedHandler handler : handlers) {
+				handler.onDataChanged(event);
+			}
+		}
+	}
+
+	private static class ClaimMappingGridPane extends VLayout implements EditablePane<ScopeDefinition> {
+
+		private ClaimMappingGrid grid;
+
+		public ClaimMappingGridPane() {
+			setAutoHeight();
+			setWidth100();
+
+			grid = new ClaimMappingGrid();
+
+			IButton btnAdd = new IButton("Add");
+			btnAdd.addClickHandler(new ClickHandler() {
+				public void onClick(ClickEvent event) {
+					grid.addClaimMapping();
+				}
+			});
+
+			IButton btnDel = new IButton("Remove");
+			btnDel.addClickHandler(new ClickHandler() {
+				public void onClick(ClickEvent event) {
+					grid.removeClaimMapping();
+				}
+			});
+
+			HLayout buttonPane = new HLayout(5);
+			buttonPane.setMargin(5);
+			buttonPane.addMember(btnAdd);
+			buttonPane.addMember(btnDel);
+
+			addMember(grid);
+			addMember(buttonPane);
+		}
+
+		@Override
+		public void setDefinition(ScopeDefinition definition) {
+			grid.setDefinition(definition);
+		}
+
+		@Override
+		public ScopeDefinition getEditDefinition(ScopeDefinition definition) {
+			return grid.getEditDefinition(definition);
+		}
+
+		@Override
+		public boolean validate() {
+			return grid.validate();
+		}
+
+		public boolean isEmpty() {
+
+			return grid.getRecordList().isEmpty();
+		}
+
+	}
+
+	private static class ClaimMappingGrid extends ListGrid implements EditablePane<ScopeDefinition> {
+
+		private enum FIELD_NAME {
+			CLAIM_NAME,
+			USER_PROPERTY_NAME,
+			HAS_SCRIPT,
+			VALUE_OBJECT,
+		}
+
+		public ClaimMappingGrid() {
+
+			setWidth100();
+			setHeight(1);
+
+			setShowAllColumns(true);							//列を全て表示
+			setShowAllRecords(true);							//レコードを全て表示
+			setCanResizeFields(false);							//列幅変更可能
+			setCanSort(false);									//ソート不可
+			setCanPickFields(false);							//表示フィールドの選択不可
+			setCanGroupBy(false);								//GroupByの選択不可
+			setAutoFitWidthApproach(AutoFitWidthApproach.BOTH);	//AutoFit時にタイトルと値を参照
+			setLeaveScrollbarGap(false);						//縦スクロールバー自動表示制御
+			setBodyOverflow(Overflow.VISIBLE);
+			setOverflow(Overflow.VISIBLE);
+
+			setCanReorderRecords(true);							//Dragによる並び替えを可能にする
+
+			ListGridField claimNameField = new ListGridField(FIELD_NAME.CLAIM_NAME.name(), "Claim Name");
+			ListGridField userPropertyNameField = new ListGridField(FIELD_NAME.USER_PROPERTY_NAME.name(), "User Property Name");
+			ListGridField scriptField = new ListGridField(FIELD_NAME.HAS_SCRIPT.name(), "Script");
+			scriptField.setWidth(50);
+
+			setFields(claimNameField, userPropertyNameField, scriptField);
+
+			// レコード編集イベント設定
+			addRecordDoubleClickHandler(new RecordDoubleClickHandler() {
+
+				@Override
+				public void onRecordDoubleClick(RecordDoubleClickEvent event) {
+					editClaimMapping((ListGridRecord)event.getRecord());
+
+				}
+			});
+
+		}
+
+		@Override
+		public void setDefinition(ScopeDefinition definition) {
+
+			setData(new ListGridRecord[]{});
+
+			if (definition instanceof OIDCClaimScopeDefinition) {
+				OIDCClaimScopeDefinition claimScope = (OIDCClaimScopeDefinition)definition;
+				if (claimScope.getClaims() != null) {
+					List<ListGridRecord> records = new ArrayList<ListGridRecord>();
+					for (ClaimMappingDefinition claim : claimScope.getClaims()) {
+						records.add(createRecord(claim, null));
+					}
+					setData(records.toArray(new ListGridRecord[]{}));
+				}
+			}
+		}
+
+		@Override
+		public ScopeDefinition getEditDefinition(ScopeDefinition definition) {
+
+			if (definition instanceof OIDCClaimScopeDefinition) {
+				OIDCClaimScopeDefinition claimScope = (OIDCClaimScopeDefinition)definition;
+				ListGridRecord[] records = getRecords();
+				if (records == null || records.length == 0) {
+					claimScope.setClaims(null);
+				} else {
+					List<ClaimMappingDefinition> claims = new ArrayList<ClaimMappingDefinition>(records.length);
+					for (ListGridRecord record : records) {
+						ClaimMappingDefinition claim = (ClaimMappingDefinition)record.getAttributeAsObject(FIELD_NAME.VALUE_OBJECT.name());
+						claims.add(claim);
+					}
+					claimScope.setClaims(claims);
+				}
+			}
+			return definition;
+		}
+
+		@Override
+		public boolean validate() {
+			return true;
+		}
+
+		public void addClaimMapping() {
+			editClaimMapping(null);
+		}
+
+		public void removeClaimMapping() {
+			removeSelectedData();
+		}
+
+		private void editClaimMapping(final ListGridRecord record) {
+			final ClaimMappingEditDialog dialog = new ClaimMappingEditDialog();
+			dialog.addDataChangeHandler(new DataChangedHandler() {
+
+				@Override
+				public void onDataChanged(DataChangedEvent event) {
+					ClaimMappingDefinition claim = event.getValueObject(ClaimMappingDefinition.class);
+					ListGridRecord newRecord = createRecord(claim, record);
+					if (record != null) {
+						updateData(newRecord);
+					} else {
+						//追加
+						addData(newRecord);
+					}
+					refreshFields();
+				}
+			});
+
+			if (record != null) {
+				dialog.setDefinition((ClaimMappingDefinition)record.getAttributeAsObject(FIELD_NAME.VALUE_OBJECT.name()));
+			}
+			dialog.show();
+		}
+
+		private ListGridRecord createRecord(ClaimMappingDefinition claim, ListGridRecord record) {
+			if (record == null) {
+				record = new ListGridRecord();
+			}
+			record.setAttribute(FIELD_NAME.CLAIM_NAME.name(), claim.getClaimName());
+			record.setAttribute(FIELD_NAME.USER_PROPERTY_NAME.name(), claim.getUserPropertyName());
+			if (claim.getCustomValueScript() != null) {
+				record.setAttribute(FIELD_NAME.HAS_SCRIPT.name(), "*");
+			} else {
+				record.setAttribute(FIELD_NAME.HAS_SCRIPT.name(), "");
+			}
+			record.setAttribute(FIELD_NAME.VALUE_OBJECT.name(), claim);
+			return record;
+		}
+
+	}
+
+	private static class ClaimMappingEditDialog extends AbstractWindow {
+
+		private DynamicForm form;
+
+		private TextItem txtClaimName;
+		private TextItem txtUserPropertyName;
+		private TextAreaItem txaCustomValueScript;
+
+		private List<DataChangedHandler> handlers = new ArrayList<DataChangedHandler>();
+
+		public ClaimMappingEditDialog() {
+
+			setHeight(250);
+			setWidth(500);
+			setTitle("Scope");
+
+			setShowMinimizeButton(false);
+			setShowMaximizeButton(false);
+			setCanDragResize(true);
+			setIsModal(true);
+			setShowModalMask(true);
+
+			centerInPage();
+
+			form = new DynamicForm();
+			form.setWidth100();
+			form.setNumCols(3);	//間延びしないように最後に１つ余分に作成
+			form.setColWidths(100, 300, "*");
+			form.setMargin(5);
+
+			txtClaimName = new TextItem();
+			txtClaimName.setTitle("Claim Name");
+			txtClaimName.setWidth("100%");
+			txtClaimName.setBrowserSpellCheck(false);
+			SmartGWTUtil.setRequired(txtClaimName);
+			txtClaimName.setRequired(true);	//TODO 直接指定しないと効かない
+
+			txtUserPropertyName = new TextItem();
+			txtUserPropertyName.setTitle("User Property Name");
+			txtUserPropertyName.setWidth("100%");
+			txtUserPropertyName.setBrowserSpellCheck(false);
+
+			txaCustomValueScript = new TextAreaItem();
+			txaCustomValueScript.setTitle("Custom Value Script");
+			txaCustomValueScript.setWidth("100%");
+			txaCustomValueScript.setHeight(55);
+			txaCustomValueScript.setBrowserSpellCheck(false);
+			SmartGWTUtil.setReadOnlyTextArea(txaCustomValueScript);
+
+			SpacerItem spacer = new SpacerItem();
+			spacer.setStartRow(true);
+
+			ButtonItem btnCustomValueScript = new ButtonItem();
+			btnCustomValueScript.setTitle("Script");
+			btnCustomValueScript.setShowTitle(false);
+			btnCustomValueScript.setStartRow(false);
+			btnCustomValueScript.setEndRow(false);
+			btnCustomValueScript.addClickHandler(new com.smartgwt.client.widgets.form.fields.events.ClickHandler() {
+
+				@Override
+				public void onClick(com.smartgwt.client.widgets.form.fields.events.ClickEvent event) {
+
+					MetaDataUtil.showScriptEditDialog(
+							ScriptEditorDialogMode.GROOVY_SCRIPT,
+							SmartGWTUtil.getStringValue(txaCustomValueScript, true),
+							"Custom Value Script",
+							"ui_metadata_oauth_authorize_ScopeGridPane_customValueScriptHint",
+							null,
+							new ScriptEditorDialogHandler() {
+
+								@Override
+								public void onSave(String text) {
+									txaCustomValueScript.setValue(text);
+								}
+								@Override
+								public void onCancel() {
+								}
+							});
+
+				}
+			});
+
+			form.setItems(txtClaimName, txtUserPropertyName, txaCustomValueScript, spacer, btnCustomValueScript);
+
+			VLayout contents = new VLayout(5);
+			contents.setHeight100();
+			contents.setOverflow(Overflow.AUTO);
+			contents.setMembers(form);
+
+			HLayout footer = new HLayout(5);
+			footer.setMargin(10);
+			footer.setAutoHeight();
+			footer.setWidth100();
+			footer.setAlign(VerticalAlignment.CENTER);
+			footer.setOverflow(Overflow.VISIBLE);
+
+			IButton btnOK = new IButton("OK");
+			btnOK.addClickHandler(new ClickHandler() {
+				public void onClick(ClickEvent event) {
+					if (form.validate()){
+						createEditDefinition();
+					}
+				}
+			});
+
+			IButton btnCancel = new IButton("Cancel");
+			btnCancel.addClickHandler(new ClickHandler() {
+				public void onClick(ClickEvent event) {
+					destroy();
+				}
+			});
+
+			footer.setMembers(btnOK, btnCancel);
+
+			addItem(contents);
+			addItem(SmartGWTUtil.separator());
+			addItem(footer);
+
+		}
+
+		public void setDefinition(ClaimMappingDefinition definition) {
+
+			txtClaimName.setValue(definition.getClaimName());
+			txtUserPropertyName.setValue(definition.getUserPropertyName());
+			txaCustomValueScript.setValue(definition.getCustomValueScript());
+		}
+
+		public void addDataChangeHandler(DataChangedHandler handler) {
+			handlers.add(0, handler);
+		}
+
+		private void createEditDefinition() {
+
+			ClaimMappingDefinition definition = new ClaimMappingDefinition();
+			definition.setClaimName(SmartGWTUtil.getStringValue(txtClaimName, true));
+			definition.setUserPropertyName(SmartGWTUtil.getStringValue(txtUserPropertyName, true));
+			definition.setCustomValueScript(SmartGWTUtil.getStringValue(txaCustomValueScript, true));
+
+			fireDataChanged(definition);
+
+			destroy();
+		}
+
+		private void fireDataChanged(ClaimMappingDefinition definition) {
 			DataChangedEvent event = new DataChangedEvent();
 			event.setValueObject(definition);
 			for (DataChangedHandler handler : handlers) {
