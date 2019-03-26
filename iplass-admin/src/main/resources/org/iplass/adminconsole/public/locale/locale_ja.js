@@ -777,6 +777,7 @@ LocaleInfo.ui_metadata_oauth_client_OAuthClientEditPane_cancelConfirmComment = "
 LocaleInfo.ui_metadata_oauth_client_OAuthClientEditPane_completion = "完了";
 LocaleInfo.ui_metadata_oauth_client_OAuthClientEditPane_deleteOldCredentialConfirm = "削除確認";
 LocaleInfo.ui_metadata_oauth_client_OAuthClientEditPane_deleteOldCredentialConfirm2 = "古い認証情報を削除してよろしいですか？";
+LocaleInfo.ui_metadata_oauth_client_OAuthClientEditPane_generateCredentialConfirm = "認証情報を生成してよろしいですか？";
 LocaleInfo.ui_metadata_oauth_client_OAuthClientEditPane_failed = "失敗";
 LocaleInfo.ui_metadata_oauth_client_OAuthClientEditPane_failedGetScreenInfo = "画面情報の取得に失敗しました。";
 LocaleInfo.ui_metadata_oauth_client_OAuthClientEditPane_saveComment = "OAuthClientを保存します。よろしいですか？";
@@ -790,6 +791,7 @@ LocaleInfo.ui_metadata_oauth_resource_OAuthResourceServerEditPane_cancelConfirmC
 LocaleInfo.ui_metadata_oauth_resource_OAuthResourceServerEditPane_completion = "完了";
 LocaleInfo.ui_metadata_oauth_resource_OAuthResourceServerEditPane_deleteOldCredentialConfirm = "削除確認";
 LocaleInfo.ui_metadata_oauth_resource_OAuthResourceServerEditPane_deleteOldCredentialConfirm2 = "古い認証情報を削除してよろしいですか？";
+LocaleInfo.ui_metadata_oauth_resource_OAuthResourceServerEditPane_generateCredentialConfirm = "認証情報を生成してよろしいですか？";
 LocaleInfo.ui_metadata_oauth_resource_OAuthResourceServerEditPane_failed = "失敗";
 LocaleInfo.ui_metadata_oauth_resource_OAuthResourceServerEditPane_failedGetScreenInfo = "画面情報の取得に失敗しました。";
 LocaleInfo.ui_metadata_oauth_resource_OAuthResourceServerEditPane_saveComment = "OAuthResourceServerを保存します。よろしいですか？";

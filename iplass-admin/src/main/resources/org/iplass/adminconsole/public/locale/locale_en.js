@@ -777,6 +777,7 @@ LocaleInfo.ui_metadata_oauth_client_OAuthClientEditPane_cancelConfirmComment = "
 LocaleInfo.ui_metadata_oauth_client_OAuthClientEditPane_completion = "Completion";
 LocaleInfo.ui_metadata_oauth_client_OAuthClientEditPane_deleteOldCredentialConfirm = "Delete confirmation";
 LocaleInfo.ui_metadata_oauth_client_OAuthClientEditPane_deleteOldCredentialConfirm2 = "Do want to delete the old credential?";
+LocaleInfo.ui_metadata_oauth_client_OAuthClientEditPane_generateCredentialConfirm = "Do want to generate a credential?";
 LocaleInfo.ui_metadata_oauth_client_OAuthClientEditPane_failed = "Failed";
 LocaleInfo.ui_metadata_oauth_client_OAuthClientEditPane_failedGetScreenInfo = "Failed to get the screen information.";
 LocaleInfo.ui_metadata_oauth_client_OAuthClientEditPane_saveComment = "Save the OAuthClient. Would you like?";
@@ -790,6 +791,7 @@ LocaleInfo.ui_metadata_oauth_resource_OAuthResourceServerEditPane_cancelConfirmC
 LocaleInfo.ui_metadata_oauth_resource_OAuthResourceServerEditPane_completion = "Completion";
 LocaleInfo.ui_metadata_oauth_resource_OAuthResourceServerEditPane_deleteOldCredentialConfirm = "Delete confirmation";
 LocaleInfo.ui_metadata_oauth_resource_OAuthResourceServerEditPane_deleteOldCredentialConfirm2 = "Do want to delete the old credential?";
+LocaleInfo.ui_metadata_oauth_resource_OAuthResourceServerEditPane_generateCredentialConfirm = "Do want to generate a credential?";
 LocaleInfo.ui_metadata_oauth_resource_OAuthResourceServerEditPane_failed = "Failed";
 LocaleInfo.ui_metadata_oauth_resource_OAuthResourceServerEditPane_failedGetScreenInfo = "Failed to get the screen information.";
 LocaleInfo.ui_metadata_oauth_resource_OAuthResourceServerEditPane_saveComment = "Save the OAuthResourceServer. Would you like?";

@@ -23,7 +23,6 @@ package org.iplass.adminconsole.client.metadata.ui.oauth.resource;
 import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
 import org.iplass.adminconsole.client.base.rpc.AdminAsyncCallback;
 import org.iplass.adminconsole.client.base.tenant.TenantInfoHolder;
-import org.iplass.adminconsole.client.base.ui.widget.CommonIconConstants;
 import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
 import org.iplass.adminconsole.client.metadata.ui.DefaultMetaDataPlugin;
 import org.iplass.adminconsole.client.metadata.ui.MetaDataItemMenuTreeNode;
@@ -33,6 +32,7 @@ import org.iplass.adminconsole.client.metadata.ui.common.MetaCommonHeaderPane;
 import org.iplass.adminconsole.client.metadata.ui.common.MetaDataHistoryDialog;
 import org.iplass.adminconsole.client.metadata.ui.common.MetaDataUpdateCallback;
 import org.iplass.adminconsole.client.metadata.ui.common.StatusCheckUtil;
+import org.iplass.adminconsole.client.metadata.ui.oauth.CredentialResultDialog;
 import org.iplass.adminconsole.shared.metadata.dto.AdminDefinitionModifyResult;
 import org.iplass.adminconsole.shared.metadata.rpc.MetaDataServiceAsync;
 import org.iplass.adminconsole.shared.metadata.rpc.MetaDataServiceFactory;
@@ -106,9 +106,17 @@ public class OAuthResourceServerEditPane extends MetaDataMainEditPane {
 		LayoutSpacer space = new LayoutSpacer();
 		space.setWidth(95);
 		headerPane.addMember(space);
+		IButton btnGenerateCredential = new IButton("Generate Credential");
+		btnGenerateCredential.setWidth(150);
+		btnGenerateCredential.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				generateCredential();
+			}
+		});
+		headerPane.addMember(btnGenerateCredential);
 		IButton btnDeleteOldCredential = new IButton("Delete Old Credential");
 		btnDeleteOldCredential.setWidth(150);
-		btnDeleteOldCredential.setIcon(CommonIconConstants.COMMON_ICON_REMOVE);
 		btnDeleteOldCredential.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
@@ -271,6 +279,33 @@ public class OAuthResourceServerEditPane extends MetaDataMainEditPane {
 
 			@Override
 			public void onFailure(Throwable caught) {
+			}
+		});
+	}
+
+	private void generateCredential() {
+
+		SC.ask(AdminClientMessageUtil.getString("ui_metadata_oauth_resource_OAuthResourceServerEditPane_generateCredentialConfirm"), new BooleanCallback() {
+
+			@Override
+			public void execute(Boolean value) {
+				if (value) {
+					SmartGWTUtil.showProgress();
+					service.generateCredentialOAuthResourceServer(TenantInfoHolder.getId(), commonSection.getName(), new AdminAsyncCallback<String>() {
+
+						@Override
+						public void onSuccess(String result) {
+							SmartGWTUtil.hideProgress();
+							CredentialResultDialog dialog = new CredentialResultDialog(result);
+							dialog.show();
+						}
+
+						@Override
+						protected void beforeFailure(Throwable caught){
+							SmartGWTUtil.hideProgress();
+						};
+					});
+				}
 			}
 		});
 	}

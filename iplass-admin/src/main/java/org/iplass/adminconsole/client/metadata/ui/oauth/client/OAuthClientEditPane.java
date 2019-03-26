@@ -23,7 +23,6 @@ package org.iplass.adminconsole.client.metadata.ui.oauth.client;
 import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
 import org.iplass.adminconsole.client.base.rpc.AdminAsyncCallback;
 import org.iplass.adminconsole.client.base.tenant.TenantInfoHolder;
-import org.iplass.adminconsole.client.base.ui.widget.CommonIconConstants;
 import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
 import org.iplass.adminconsole.client.metadata.ui.DefaultMetaDataPlugin;
 import org.iplass.adminconsole.client.metadata.ui.MetaDataItemMenuTreeNode;
@@ -33,9 +32,11 @@ import org.iplass.adminconsole.client.metadata.ui.common.MetaCommonHeaderPane;
 import org.iplass.adminconsole.client.metadata.ui.common.MetaDataHistoryDialog;
 import org.iplass.adminconsole.client.metadata.ui.common.MetaDataUpdateCallback;
 import org.iplass.adminconsole.client.metadata.ui.common.StatusCheckUtil;
+import org.iplass.adminconsole.client.metadata.ui.oauth.CredentialResultDialog;
 import org.iplass.adminconsole.shared.metadata.dto.AdminDefinitionModifyResult;
 import org.iplass.adminconsole.shared.metadata.rpc.MetaDataServiceAsync;
 import org.iplass.adminconsole.shared.metadata.rpc.MetaDataServiceFactory;
+import org.iplass.mtp.auth.oauth.definition.ClientType;
 import org.iplass.mtp.auth.oauth.definition.OAuthClientDefinition;
 import org.iplass.mtp.definition.DefinitionEntry;
 
@@ -68,6 +69,7 @@ public class OAuthClientEditPane extends MetaDataMainEditPane {
 
 	/** ヘッダ部分 */
 	private MetaCommonHeaderPane headerPane;
+	private IButton btnGenerateCredential;
 	/** 共通属性部分 */
 	private MetaCommonAttributeSection commonSection;
 
@@ -110,9 +112,18 @@ public class OAuthClientEditPane extends MetaDataMainEditPane {
 		LayoutSpacer space = new LayoutSpacer();
 		space.setWidth(95);
 		headerPane.addMember(space);
+		btnGenerateCredential = new IButton("Generate Credential");
+		btnGenerateCredential.setWidth(150);
+		btnGenerateCredential.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				generateCredential();
+			}
+		});
+		btnGenerateCredential.setDisabled(true);
+		headerPane.addMember(btnGenerateCredential);
 		IButton btnDeleteOldCredential = new IButton("Delete Old Credential");
 		btnDeleteOldCredential.setWidth(150);
-		btnDeleteOldCredential.setIcon(CommonIconConstants.COMMON_ICON_REMOVE);
 		btnDeleteOldCredential.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
@@ -182,6 +193,13 @@ public class OAuthClientEditPane extends MetaDataMainEditPane {
 		commonSection.setDisplayName(curDefinition.getDisplayName());
 		commonSection.setLocalizedDisplayNameList(curDefinition.getLocalizedDisplayNameList());
 		commonSection.setDescription(curDefinition.getDescription());
+
+		if (curDefinition.getClientType() == null
+				|| curDefinition.getClientType() == ClientType.PUBLIC) {
+			btnGenerateCredential.setDisabled(true);
+		} else {
+			btnGenerateCredential.setDisabled(false);
+		}
 
 		// OAuthClientDefinition属性
 		clientAttributePane.setDefinition(curDefinition);
@@ -286,6 +304,33 @@ public class OAuthClientEditPane extends MetaDataMainEditPane {
 
 			@Override
 			public void onFailure(Throwable caught) {
+			}
+		});
+	}
+
+	private void generateCredential() {
+
+		SC.ask(	AdminClientMessageUtil.getString("ui_metadata_oauth_client_OAuthClientEditPane_generateCredentialConfirm"), new BooleanCallback() {
+
+			@Override
+			public void execute(Boolean value) {
+				if (value) {
+					SmartGWTUtil.showProgress();
+					service.generateCredentialOAuthClient(TenantInfoHolder.getId(), commonSection.getName(), new AdminAsyncCallback<String>() {
+
+						@Override
+						public void onSuccess(String result) {
+							SmartGWTUtil.hideProgress();
+							CredentialResultDialog dialog = new CredentialResultDialog(result);
+							dialog.show();
+						}
+
+						@Override
+						protected void beforeFailure(Throwable caught){
+							SmartGWTUtil.hideProgress();
+						};
+					});
+				}
 			}
 		});
 	}
