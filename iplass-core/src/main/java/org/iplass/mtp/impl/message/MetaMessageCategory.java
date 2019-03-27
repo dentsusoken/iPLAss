@@ -29,7 +29,9 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.regex.Pattern;
 
+import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 import org.iplass.mtp.entity.Entity;
 import org.iplass.mtp.impl.core.ExecuteContext;
@@ -63,6 +65,7 @@ public class MetaMessageCategory extends BaseRootMetaData implements DefinableMe
 	private static final long serialVersionUID = 3080437844175871382L;
 
 	/** メッセージメタ情報 */
+	@XmlElement
 	private LinkedHashMap<String,MetaMessageItem> messages;
 
 	private static final Pattern namePattern = Pattern.compile("${name}", Pattern.LITERAL);
@@ -241,11 +244,13 @@ public class MetaMessageCategory extends BaseRootMetaData implements DefinableMe
 
 		return definition;
 	}
+
 	/**
 	 * メッセージメタ情報を取得します。
 	 * @return メッセージメタ情報
 	 */
-	public LinkedHashMap<String,MetaMessageItem> getMessages() {
+	@XmlTransient
+	public Map<String,MetaMessageItem> getMessages() {
 	    return messages;
 	}
 
@@ -253,9 +258,18 @@ public class MetaMessageCategory extends BaseRootMetaData implements DefinableMe
 	 * メッセージメタ情報を設定します。
 	 * @param messages メッセージメタ情報
 	 */
-	public void setMessages(LinkedHashMap<String,MetaMessageItem> messages) {
-	    this.messages = messages;
+	public void setMessages(Map<String,MetaMessageItem> messages) {
+		if (messages == null) {
+			this.messages = null;
+		} else {
+			if (messages instanceof LinkedHashMap) {
+			    this.messages = (LinkedHashMap<String,MetaMessageItem>)messages;
+			} else {
+				this.messages = new LinkedHashMap<>(messages);
+			}
+		}
 	}
+
 	/**
 	 * メッセージメタ情報を追加します。
 	 * @param messages メッセージメタ情報
@@ -276,11 +290,9 @@ public class MetaMessageCategory extends BaseRootMetaData implements DefinableMe
 			return;
 		}
 		for (Map.Entry<String, MessageItem> messageItem: messages.entrySet()) {
-			MetaMessageItem buf = new MetaMessageItem();
-			buf.setValue(messageItem.getValue());
-			if(buf != null) {
-				addMessage(buf);
-			}
+			MetaMessageItem item = new MetaMessageItem();
+			item.setValue(messageItem.getValue());
+			addMessage(item);
 		}
 	}
 
