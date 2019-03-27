@@ -224,7 +224,9 @@ public class AccessTokenHandler extends AuthTokenHandler {
 		}
 		
 		//キャッシュするのでこのタイミングでsubjectIdを付与（もしまだ付与されていなかったら）
-		user = server.getSubjectIdentifierType().handleOnLoad(user);
+		if (server.getSubjectIdentifierType() != null) {
+			user = server.getSubjectIdentifierType().handleOnLoad(user);
+		}
 		
 		mement.save(info, expires, userUniqueId, user);
 		return mement;

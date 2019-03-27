@@ -595,5 +595,138 @@
 </metaDataEntry>
 </contextPath>
 
-
+<contextPath name="/oauth/authZ">
+<metaDataEntry overwritable="true" sharable="true" dataSharable="false" permissionSharable="false" xmlns:def-vgeneric="http://mtp.iplass.org/xml/definition/view/generic" xmlns:def="http://mtp.iplass.org/xml/definition" xmlns:array="http://jaxb.dev.java.net/array" xmlns:webapi="http://mtp.iplass.org/xml/webapi">
+    <metaData xsi:type="metaOAuthAuthorization" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+        <id>429c5583-aec4-43b3-8baa-4d736d34f307</id>
+        <name>DEFAULT</name>
+        <clientPolicies>
+            <accessTokenLifetimeSeconds>3600</accessTokenLifetimeSeconds>
+            <clientType>PUBLIC</clientType>
+            <consentType xsi:type="metaAlwaysConsentType"/>
+            <refreshTokenLifetimeSeconds>0</refreshTokenLifetimeSeconds>
+            <supportOpenIDConnect>false</supportOpenIDConnect>
+            <supportRefreshToken>false</supportRefreshToken>
+        </clientPolicies>
+        <clientPolicies>
+            <accessTokenLifetimeSeconds>21600</accessTokenLifetimeSeconds>
+            <clientType>CONFIDENTIAL</clientType>
+            <consentType xsi:type="metaOnceConsentType"/>
+            <refreshTokenLifetimeSeconds>2592000</refreshTokenLifetimeSeconds>
+            <supportOpenIDConnect>false</supportOpenIDConnect>
+            <supportRefreshToken>true</supportRefreshToken>
+        </clientPolicies>
+        <scopes xsi:type="metaOIDCClaimScope">
+            <description>Application requires your basic profile information.</description>
+            <displayName>User Profile</displayName>
+            <localizedDescriptionList>
+                <localeName>ja</localeName>
+                <stringValue>アプリケーションはあなたの基本的なプロフィール情報を必要とします。</stringValue>
+            </localizedDescriptionList>
+            <localizedDescriptionList>
+                <localeName>en</localeName>
+                <stringValue>Application requires your basic profile information.</stringValue>
+            </localizedDescriptionList>
+            <localizedDescriptionList>
+                <localeName>zh-CN</localeName>
+                <stringValue>应用程序需要您的基本个人资料</stringValue>
+            </localizedDescriptionList>
+            <localizedDescriptionList>
+                <localeName>zh-TW</localeName>
+                <stringValue>應用程序需要您的基本個人資料</stringValue>
+            </localizedDescriptionList>
+            <localizedDescriptionList>
+                <localeName>th</localeName>
+                <stringValue>แอปพลิเคชันต้องการข้อมูลโปรไฟล์พื้นฐานของคุณ</stringValue>
+            </localizedDescriptionList>
+            <localizedDisplayNameList>
+                <localeName>ja</localeName>
+                <stringValue>ユーザのプロフィール</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>en</localeName>
+                <stringValue>User Profile</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>zh-CN</localeName>
+                <stringValue>用户资料</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>zh-TW</localeName>
+                <stringValue>用戶資料</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>th</localeName>
+                <stringValue>ประวัติผู้ใช้</stringValue>
+            </localizedDisplayNameList>
+            <name>profile</name>
+            <claims>
+                <claimName>name</claimName>
+                <userPropertyName>name</userPropertyName>
+            </claims>
+            <claims>
+                <claimName>family_name</claimName>
+                <userPropertyName>lastName</userPropertyName>
+            </claims>
+            <claims>
+                <claimName>given_name</claimName>
+                <userPropertyName>firstName</userPropertyName>
+            </claims>
+            <claims>
+                <claimName>updated_at</claimName>
+                <customValueScript>(user.updateDate == null) ? null: java.util.concurrent.TimeUnit.MILLISECONDS.toSeconds(user.updateDate.time)</customValueScript>
+            </claims>
+        </scopes>
+        <scopes xsi:type="metaOIDCClaimScope">
+            <description>Application requires your Email Address.</description>
+            <displayName>Email</displayName>
+            <localizedDescriptionList>
+                <localeName>ja</localeName>
+                <stringValue>アプリケーションはあなたのメールアドレスを必要とします。</stringValue>
+            </localizedDescriptionList>
+            <localizedDescriptionList>
+                <localeName>en</localeName>
+                <stringValue>Application requires your Email Address.</stringValue>
+            </localizedDescriptionList>
+            <localizedDescriptionList>
+                <localeName>zh-CN</localeName>
+                <stringValue>应用程序需要您的电子邮件地址</stringValue>
+            </localizedDescriptionList>
+            <localizedDescriptionList>
+                <localeName>zh-TW</localeName>
+                <stringValue>應用程序需要您的電子郵件地址</stringValue>
+            </localizedDescriptionList>
+            <localizedDescriptionList>
+                <localeName>th</localeName>
+                <stringValue>แอปพลิเคชันต้องการที่อยู่อีเมลของคุณ</stringValue>
+            </localizedDescriptionList>
+            <localizedDisplayNameList>
+                <localeName>ja</localeName>
+                <stringValue>メールアドレス</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>en</localeName>
+                <stringValue>Email</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>zh-CN</localeName>
+                <stringValue>电子邮件</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>zh-TW</localeName>
+                <stringValue>電子郵件</stringValue>
+            </localizedDisplayNameList>
+            <localizedDisplayNameList>
+                <localeName>th</localeName>
+                <stringValue>อีเมล</stringValue>
+            </localizedDisplayNameList>
+            <name>email</name>
+            <claims>
+                <claimName>email</claimName>
+                <userPropertyName>mail</userPropertyName>
+            </claims>
+        </scopes>
+    </metaData>
+</metaDataEntry>
+</contextPath>
 </metaDataList>

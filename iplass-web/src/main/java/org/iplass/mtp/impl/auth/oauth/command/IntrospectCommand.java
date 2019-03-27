@@ -146,7 +146,7 @@ public class IntrospectCommand implements Command {
 		res.put("scope", CommandUtil.scopeToStr(accessToken.getGrantedScopes()));
 		res.put("client_id", accessToken.getClientId());
 		res.put("username", accessToken.getUser().getName());
-		res.put("sub", authServer.getSubjectIdentifierType().subjectId(accessToken.getUser(), clientService.getRuntimeByName(accessToken.getClientId())));
+		res.put("sub", accessToken.getUser().getOid());
 		res.put("exp", accessToken.getExpirationTime());
 		res.put("iat", accessToken.getIssuedAt());
 		res.put("nbf", accessToken.getNotbefore());

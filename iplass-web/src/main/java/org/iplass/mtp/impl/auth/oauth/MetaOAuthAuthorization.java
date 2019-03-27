@@ -217,16 +217,20 @@ public class MetaOAuthAuthorization extends BaseRootMetaData implements Definabl
 		
 		private OAuthAuthorizationRuntime() {
 			try {
+				boolean useOpenIdConnect = false;
 				clientPolicyRuntimeMap = new EnumMap<>(ClientType.class);
 				if (clientPolicies != null) {
 					for (MetaClientPolicy cp: clientPolicies) {
 						clientPolicyRuntimeMap.put(cp.getClientType(), cp.createRuntime(MetaOAuthAuthorization.this));
+						useOpenIdConnect = useOpenIdConnect || cp.isSupportOpenIDConnect();
 					}
 				}
-				if (subjectIdentifierType == null) {
-					throw new NullPointerException("subjectIdentifierType must be specified");
+				if (subjectIdentifierType == null && useOpenIdConnect) {
+					throw new NullPointerException("subjectIdentifierType must be specified for OpenID Connect");
 				}
-				subjectIdentifierTypeRuntime = subjectIdentifierType.createRuntime();
+				if (subjectIdentifierType != null) {
+					subjectIdentifierTypeRuntime = subjectIdentifierType.createRuntime();
+				}
 				scopeMap = new HashMap<>();
 				oidcClaimScopeMap = new HashMap<>();
 				if (scopes != null) {

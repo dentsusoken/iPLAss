@@ -37,15 +37,25 @@ import org.iplass.mtp.spi.ServiceRegistry;
  *
  */
 public class CacheAuthorizationCodeStore implements AuthorizationCodeStore, ServiceInitListener<OAuthAuthorizationService> {
-	public static final String CACHE_NAMESPACE = "mtp.oauth.codeStore";
+	public static final String DEFAULT_CACHE_NAMESPACE = "mtp.oauth.codeStore";
 	public static final String DEFAULT_SECURE_RANDOM_GENERATOR_NAME = "oauthAuthorizationCodeGenerator";
 	
 	private String secureRandomGeneratorName = DEFAULT_SECURE_RANDOM_GENERATOR_NAME;
+	private String cacheStoreName = DEFAULT_CACHE_NAMESPACE;
+
 	private long timeToLive = 3 * 60 * 1000;//default 3 min.
 	
 	private CacheStore cache;
 	private SecureRandomGenerator generator;
 	
+	public String getCacheStoreName() {
+		return cacheStoreName;
+	}
+
+	public void setCacheStoreName(String cacheStoreName) {
+		this.cacheStoreName = cacheStoreName;
+	}
+
 	public long getTimeToLive() {
 		return timeToLive;
 	}
@@ -65,7 +75,7 @@ public class CacheAuthorizationCodeStore implements AuthorizationCodeStore, Serv
 	@Override
 	public void inited(OAuthAuthorizationService service, Config config) {
 		CacheService cs = ServiceRegistry.getRegistry().getService(CacheService.class);
-		cache = cs.getCache(CACHE_NAMESPACE);
+		cache = cs.getCache(cacheStoreName);
 		generator = ServiceRegistry.getRegistry().getService(SecureRandomService.class).createGenerator(secureRandomGeneratorName);
 	}
 
