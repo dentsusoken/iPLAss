@@ -30,6 +30,7 @@ import org.iplass.mtp.entity.definition.EntityDefinition;
 import org.iplass.mtp.entity.definition.properties.SelectProperty;
 import org.iplass.mtp.impl.entity.csv.EntitySearchCsvWriter;
 import org.iplass.mtp.impl.entity.csv.EntityWriteOption;
+import org.iplass.mtp.impl.entity.csv.EntityWriteOption.SearchQueryCsvContext;
 import org.iplass.mtp.spi.ServiceRegistry;
 import org.iplass.mtp.view.generic.SearchQueryContext;
 import org.iplass.mtp.view.generic.SearchQueryInterrupter.SearchQueryType;
@@ -103,7 +104,10 @@ public class CsvDownloadUploadableWriter implements ResultStreamWriter {
 				})
 				.beforeSearch(query -> {
 					SearchQueryContext sqc = handler.beforeSearch(query, SearchQueryType.CSV);
-					return sqc.getQuery();
+					SearchQueryCsvContext sqcc = new SearchQueryCsvContext(sqc.getQuery());
+					sqcc.setDoPrivileged(sqc.isDoPrivileged());
+					sqcc.setWithoutConditionReferenceName(sqc.getWithoutConditionReferenceName());
+					return sqcc;
 				})
 				.afterSearch((query, entity) -> {
 					handler.afterSearch(query, entity, SearchQueryType.CSV);

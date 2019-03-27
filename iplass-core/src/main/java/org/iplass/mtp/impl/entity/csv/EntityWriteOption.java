@@ -60,7 +60,7 @@ public class EntityWriteOption extends ParseOption {
 	private Function<SelectProperty, Boolean> sortSelectValue = property -> false;
 
 	/** 検索実行前Query処理 */
-	private Function<Query, Query> beforeSearch = query -> query;
+	private Function<Query, SearchQueryCsvContext> beforeSearch = query -> new SearchQueryCsvContext(query);
 
 	/** 検索実行後Query処理 */
 	private BiConsumer<Query, Entity> afterSearch = (query, entity) -> {};
@@ -137,11 +137,11 @@ public class EntityWriteOption extends ParseOption {
 		this.sortSelectValue = sortSelectValue;
 	}
 
-	public Function<Query, Query> getBeforeSearch() {
+	public Function<Query, SearchQueryCsvContext> getBeforeSearch() {
 		return beforeSearch;
 	}
 
-	public void setBeforeSearch(Function<Query, Query> beforeSearch) {
+	public void setBeforeSearch(Function<Query, SearchQueryCsvContext> beforeSearch) {
 		this.beforeSearch = beforeSearch;
 	}
 
@@ -198,7 +198,7 @@ public class EntityWriteOption extends ParseOption {
 		return this;
 	}
 
-	public EntityWriteOption beforeSearch(Function<Query, Query> beforeSearch) {
+	public EntityWriteOption beforeSearch(Function<Query, SearchQueryCsvContext> beforeSearch) {
 		setBeforeSearch(beforeSearch);
 		return this;
 	}
@@ -226,4 +226,40 @@ public class EntityWriteOption extends ParseOption {
 		return this;
 	}
 
+	public static class SearchQueryCsvContext {
+
+		private Query query;
+
+		private boolean doPrivileged;
+
+		private String[] withoutConditionReferenceName;
+
+		public SearchQueryCsvContext(Query query) {
+			this.query = query;
+		}
+
+		public Query getQuery() {
+		    return query;
+		}
+
+		public void setQuery(Query query) {
+		    this.query = query;
+		}
+
+		public boolean isDoPrivileged() {
+		    return doPrivileged;
+		}
+
+		public void setDoPrivileged(boolean doPrivileged) {
+		    this.doPrivileged = doPrivileged;
+		}
+
+		public String[] getWithoutConditionReferenceName() {
+			return withoutConditionReferenceName;
+		}
+
+		public void setWithoutConditionReferenceName(String... withoutConditionReferenceName) {
+			this.withoutConditionReferenceName = withoutConditionReferenceName;
+		}
+	}
 }

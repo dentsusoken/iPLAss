@@ -41,6 +41,7 @@ import java.util.function.Predicate;
 import org.apache.commons.text.StringEscapeUtils;
 import org.iplass.gem.GemConfigService;
 import org.iplass.mtp.ManagerLocator;
+import org.iplass.mtp.auth.AuthContext;
 import org.iplass.mtp.auth.User;
 import org.iplass.mtp.entity.BinaryReference;
 import org.iplass.mtp.entity.Entity;
@@ -56,6 +57,7 @@ import org.iplass.mtp.entity.definition.properties.BinaryProperty;
 import org.iplass.mtp.entity.definition.properties.ExpressionProperty;
 import org.iplass.mtp.entity.definition.properties.ReferenceProperty;
 import org.iplass.mtp.entity.definition.properties.SelectProperty;
+import org.iplass.mtp.entity.permission.EntityPermission;
 import org.iplass.mtp.entity.query.Limit;
 import org.iplass.mtp.entity.query.Query;
 import org.iplass.mtp.entity.query.condition.predicate.In;
@@ -320,10 +322,27 @@ public class CSVDownloadSearchViewWriter implements ResultStreamWriter {
 		 */
 		public void searchEntity(Query query, final CSVDownloadPredicate callback) {
 
+			final SearchQueryContext sqc = handler.beforeSearch(query.versioned(true), SearchQueryType.CSV);
+
+			if (sqc.isDoPrivileged()) {
+				AuthContext.doPrivileged(() -> searchEntity(sqc, callback));
+			} else {
+				if (sqc.getWithoutConditionReferenceName() != null) {
+					EntityPermission.doQueryAs(sqc.getWithoutConditionReferenceName(), () -> {
+						searchEntity(sqc, callback);
+						return null;
+					});
+				} else {
+					searchEntity(sqc, callback);
+				}
+			}
+		}
+
+		private void searchEntity(final SearchQueryContext sqc, final CSVDownloadPredicate callback) {
+
 			final List<Entity> tmpResult = new ArrayList<>();
 			final Set<String> userOides = new HashSet<>();
 
-			SearchQueryContext sqc = handler.beforeSearch(query.versioned(true), SearchQueryType.CSV);
 			em.searchEntity(sqc.getQuery(), new Predicate<Entity>() {
 
 				@Override

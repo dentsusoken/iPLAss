@@ -28,6 +28,7 @@ import java.util.function.Predicate;
 import java.util.zip.ZipOutputStream;
 
 import org.iplass.mtp.ManagerLocator;
+import org.iplass.mtp.auth.AuthContext;
 import org.iplass.mtp.entity.Entity;
 import org.iplass.mtp.entity.EntityManager;
 import org.iplass.mtp.entity.LoadOption;
@@ -36,12 +37,14 @@ import org.iplass.mtp.entity.definition.EntityDefinitionManager;
 import org.iplass.mtp.entity.definition.PropertyDefinition;
 import org.iplass.mtp.entity.definition.VersionControlType;
 import org.iplass.mtp.entity.definition.properties.ReferenceProperty;
+import org.iplass.mtp.entity.permission.EntityPermission;
 import org.iplass.mtp.entity.query.Limit;
 import org.iplass.mtp.entity.query.OrderBy;
 import org.iplass.mtp.entity.query.Query;
 import org.iplass.mtp.entity.query.QueryVisitorSupport;
 import org.iplass.mtp.entity.query.Where;
 import org.iplass.mtp.entity.query.value.primary.EntityField;
+import org.iplass.mtp.impl.entity.csv.EntityWriteOption.SearchQueryCsvContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -160,7 +163,8 @@ public class EntitySearchCsvWriter implements AutoCloseable {
 
 	private int searchEntity(final EntityCsvWriter writer, final EntityDefinition ed, final Query query, final boolean hasMultiReference) {
 
-		final Query optQuery = option.getBeforeSearch().apply(query);
+		final SearchQueryCsvContext context = option.getBeforeSearch().apply(query);
+		final Query optQuery = context.getQuery();
 
 		//where条件によるdistinctチェック
 		if (!optQuery.getSelect().isDistinct()) {
@@ -185,6 +189,19 @@ public class EntitySearchCsvWriter implements AutoCloseable {
 				optQuery.setOrderBy(null);
 			}
 		}
+
+		if (context.isDoPrivileged()) {
+			return AuthContext.doPrivileged(() -> searchEntity(writer, optQuery, hasMultiReference));
+		} else {
+			if (context.getWithoutConditionReferenceName() != null) {
+				return EntityPermission.doQueryAs(context.getWithoutConditionReferenceName(),
+						() -> searchEntity(writer, optQuery, hasMultiReference));
+			}
+		}
+		return searchEntity(writer, optQuery, hasMultiReference);
+	}
+
+	private int searchEntity(final EntityCsvWriter writer, final Query optQuery, final boolean hasMultiReference) {
 
 		final int[] count = new int[1];
 		em.searchEntity(optQuery, new Predicate<Entity>() {
