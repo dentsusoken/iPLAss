@@ -1,19 +1,19 @@
 /*
  * Copyright (C) 2014 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
- * 
+ *
  * Unless you have purchased a commercial license,
  * the following license terms apply:
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
@@ -38,6 +38,13 @@ public class SearchQueryContext {
 	 * 特権実行を行うか
 	 */
 	private boolean doPrivileged;
+
+	/**
+	 * Entity権限における限定条件を適用せずに検索を実行する参照先名
+	 *
+	 * @see org.iplass.mtp.entity.permission.EntityPermission#doQueryAs(String[], java.util.function.Supplier)
+	 */
+	private String[] withoutConditionReferenceName;
 
 	/**
 	 * コンストラクタ
@@ -88,6 +95,23 @@ public class SearchQueryContext {
 	 */
 	public void setDoPrivileged(boolean doPrivileged) {
 	    this.doPrivileged = doPrivileged;
+	}
+
+	/**
+	 * Entity権限における限定条件を適用せずに検索を実行する参照先名を返します
+	 * @return 除外参照先名
+	 */
+	public String[] getWithoutConditionReferenceName() {
+		return withoutConditionReferenceName;
+	}
+
+	/**
+	 * Entity権限における限定条件を適用せずに検索を実行する参照先名を設定します。
+	 *
+	 * @param withoutConditionReferenceName 除外参照先名
+	 */
+	public void setWithoutConditionReferenceName(String... withoutConditionReferenceName) {
+		this.withoutConditionReferenceName = withoutConditionReferenceName;
 	}
 
 }

@@ -38,6 +38,7 @@ import org.iplass.mtp.entity.EntityManager;
 import org.iplass.mtp.entity.EntityRuntimeException;
 import org.iplass.mtp.entity.SearchResult;
 import org.iplass.mtp.entity.definition.EntityDefinitionManager;
+import org.iplass.mtp.entity.permission.EntityPermission;
 import org.iplass.mtp.entity.query.Query;
 import org.iplass.mtp.entity.query.condition.predicate.In;
 import org.iplass.mtp.view.generic.EntityViewManager;
@@ -165,7 +166,11 @@ public abstract class SearchCommandBase implements Command {
 			//特権実行
 			result = AuthContext.doPrivileged(() -> searchEntity(_context, userOidList, sqContext.getQuery()));
 		} else {
-			result = searchEntity(_context, userOidList, sqContext.getQuery());
+			if (sqContext.getWithoutConditionReferenceName() != null) {
+				result = EntityPermission.doQueryAs(sqContext.getWithoutConditionReferenceName(), () -> searchEntity(_context, userOidList, sqContext.getQuery()));
+			} else {
+				result = searchEntity(_context, userOidList, sqContext.getQuery());
+			}
 		}
 		context.getRequest().setAttribute("result", result);
 
@@ -230,7 +235,11 @@ public abstract class SearchCommandBase implements Command {
 			//特権実行
 			count = AuthContext.doPrivileged(() -> em.count(sqContext.getQuery()));
 		} else {
-			count = em.count(sqContext.getQuery());
+			if (sqContext.getWithoutConditionReferenceName() != null) {
+				count = EntityPermission.doQueryAs(sqContext.getWithoutConditionReferenceName(), () -> em.count(sqContext.getQuery()));
+			} else {
+				count = em.count(sqContext.getQuery());
+			}
 		}
 
 		context.getRequest().setAttribute("count", count);
