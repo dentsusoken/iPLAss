@@ -17,29 +17,39 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
-package org.iplass.mtp.auth.oauth.definition;
+package org.iplass.mtp.auth.oauth.definition.introspectors;
 
-import java.io.Serializable;
-
-import javax.xml.bind.annotation.XmlSeeAlso;
-
-import org.iplass.mtp.auth.oauth.definition.consents.AlwaysConsentTypeDefinition;
-import org.iplass.mtp.auth.oauth.definition.consents.OnceConsentTypeDefinition;
-import org.iplass.mtp.auth.oauth.definition.consents.ScriptingConsentTypeDefinition;
-
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import org.iplass.mtp.auth.oauth.definition.CustomTokenIntrospectorDefinition;
 
 /**
- * スコープ承認画面の表示有無を判断するための定義です。
+ * <p>
+ * GroovyScriptで実装されるCustomTokenIntrospector定義です。
+ * </p>
+ * <p>
+ * GroovyScriptでは、レスポンス返却有無をbooleanで返却するように実装します。次の変数がバインドされます。
+ * </p>
+ * <ul>
+ * <li>request: RequestContextBinding</li>
+ * <li>response: 返却する値を表現するMap</li>
+ * <li>resourceOwner: Userエンティティ</li>
+ * </ul>
+ * 
  * 
  * @author K.Higuchi
  *
  */
-@XmlSeeAlso({
-	AlwaysConsentTypeDefinition.class,
-	OnceConsentTypeDefinition.class,
-	ScriptingConsentTypeDefinition.class})
-@JsonTypeInfo(use=JsonTypeInfo.Id.CLASS)
-public abstract class ConsentTypeDefinition implements Serializable {
-	private static final long serialVersionUID = 4679081921898475535L;
+public class ScriptingCustomTokenIntrospectorDefinition extends CustomTokenIntrospectorDefinition {
+	private static final long serialVersionUID = 2347657870175988864L;
+
+	private String script;
+
+	public String getScript() {
+		return script;
+	}
+
+	public void setScript(String script) {
+		this.script = script;
+	}
+
+
 }

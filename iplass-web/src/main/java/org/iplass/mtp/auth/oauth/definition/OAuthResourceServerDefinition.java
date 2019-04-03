@@ -19,6 +19,8 @@
  */
 package org.iplass.mtp.auth.oauth.definition;
 
+import java.util.List;
+
 import org.iplass.mtp.definition.Definition;
 
 /**
@@ -33,7 +35,16 @@ public class OAuthResourceServerDefinition implements Definition {
 	private String name;
 	private String displayName;
 	private String description;
+	private List<CustomTokenIntrospectorDefinition> customTokenIntrospectors;
+	
+	public List<CustomTokenIntrospectorDefinition> getCustomTokenIntrospectors() {
+		return customTokenIntrospectors;
+	}
 
+	public void setCustomTokenIntrospectors(List<CustomTokenIntrospectorDefinition> customTokenIntrospectors) {
+		this.customTokenIntrospectors = customTokenIntrospectors;
+	}
+	
 	@Override
 	public String getName() {
 		return name;

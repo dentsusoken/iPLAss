@@ -51,6 +51,10 @@ public class RequestContextBinding {
 	public RequestContextBinding() {
 	}
 	
+	public RequestContextBinding(RequestContext request) {
+		this.request = request;
+	}
+	
 	public Map<String, Object> getParam() {
 		RequestContext req = getContext();
 		if (req == null) {

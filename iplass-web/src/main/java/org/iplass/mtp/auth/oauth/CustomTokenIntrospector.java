@@ -17,29 +17,30 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
-package org.iplass.mtp.auth.oauth.definition;
+package org.iplass.mtp.auth.oauth;
 
-import java.io.Serializable;
+import java.util.Map;
 
-import javax.xml.bind.annotation.XmlSeeAlso;
-
-import org.iplass.mtp.auth.oauth.definition.consents.AlwaysConsentTypeDefinition;
-import org.iplass.mtp.auth.oauth.definition.consents.OnceConsentTypeDefinition;
-import org.iplass.mtp.auth.oauth.definition.consents.ScriptingConsentTypeDefinition;
-
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import org.iplass.mtp.auth.User;
+import org.iplass.mtp.command.RequestContext;
 
 /**
- * スコープ承認画面の表示有無を判断するための定義です。
+ * ResourceServerからのintrospectionリクエストのレスポンスを
+ * カスタマイズするためのインタフェースです。
  * 
  * @author K.Higuchi
  *
  */
-@XmlSeeAlso({
-	AlwaysConsentTypeDefinition.class,
-	OnceConsentTypeDefinition.class,
-	ScriptingConsentTypeDefinition.class})
-@JsonTypeInfo(use=JsonTypeInfo.Id.CLASS)
-public abstract class ConsentTypeDefinition implements Serializable {
-	private static final long serialVersionUID = 4679081921898475535L;
+public interface CustomTokenIntrospector {
+	
+	/**
+	 * introspectionリクエストのレスポンスをカスタマイズするよう実装します。
+	 * 
+	 * @param response レスポンスを表すMap
+	 * @param request RequestContext
+	 * @param resourceOwner 当該AccessTokenのResource Owner
+	 * @return falseを返した場合、Tokenは無効と判断し、active=falseのみをResourceServerへ返却します。
+	 */
+	public boolean handle(Map<String, Object> response, RequestContext request, User resourceOwner);
+
 }

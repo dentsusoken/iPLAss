@@ -23,7 +23,7 @@ import org.iplass.mtp.auth.oauth.definition.SubjectIdentifierTypeDefinition;
 
 /**
  * client毎に異なるsubjectIdが付与されるSubjectIdentifierType定義です。
- * 特定のユーザ単位のIDをベースにclient事にそのハッシュ値を返却します。
+ * 特定のユーザ単位のIDをベースにclient毎にそのハッシュ値を返却します。
  * 
  * @author K.Higuchi
  *

@@ -115,19 +115,5 @@ class CommandUtil {
 		sb.append("}");
 		return sb.toString();
 	}
-	
-	static String scopeToStr(List<String> grantedScopes) {
-		StringBuilder sb = new StringBuilder();
-		if (grantedScopes != null) {
-			for (String s: grantedScopes) {
-				if (sb.length() > 0) {
-					sb.append(' ');
-				}
-				sb.append(s);
-			}
-		}
-		return sb.toString();
-	}
-
 
 }

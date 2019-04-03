@@ -104,7 +104,9 @@ public class TokenCommand implements Command {
 		res.put("access_token", accessToken.getTokenEncoded());
 		res.put("token_type", OAuthConstants.TOKEN_TYPE_BEARER);
 		res.put("expires_in", accessToken.getExpiresIn());
-		res.put("scope", CommandUtil.scopeToStr(accessToken.getGrantedScopes()));
+		if (accessToken.getGrantedScopes() != null) {
+			res.put("scope", String.join(" ", accessToken.getGrantedScopes()));
+		}
 		if (accessToken.getRefreshToken() != null) {
 			res.put("refresh_token", accessToken.getRefreshToken().getTokenEncoded());
 			res.put("refresh_token_expires_in", accessToken.getRefreshToken().getExpiresIn());

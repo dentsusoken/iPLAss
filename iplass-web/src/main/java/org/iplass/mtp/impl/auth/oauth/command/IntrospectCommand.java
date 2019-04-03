@@ -105,7 +105,12 @@ public class IntrospectCommand implements Command {
 				return inactiveResponseEntity();
 			}
 			
-			return toResponseEntity(request, accessToken, server, resourceServer);
+			Map<String, Object> res = resourceServer.toResponseMap(request, accessToken, server);
+			if (res == null) {
+				return inactiveResponseEntity();
+			}
+			
+			return res;
 			
 		} catch (RuntimeException e) {
 			if (logger.isDebugEnabled()) {
@@ -139,28 +144,6 @@ public class IntrospectCommand implements Command {
 
 	}
 	
-	private Object toResponseEntity(RequestContext request, AccessToken accessToken, OAuthAuthorizationRuntime authServer, OAuthResourceServerRuntime resourceServer) {
-		Map<String, Object> res = new HashMap<>();
-		res.put("active", true);
-		res.put("token_type", OAuthConstants.TOKEN_TYPE_BEARER);
-		res.put("scope", CommandUtil.scopeToStr(accessToken.getGrantedScopes()));
-		res.put("client_id", accessToken.getClientId());
-		res.put("username", accessToken.getUser().getName());
-		res.put("sub", accessToken.getUser().getOid());
-		res.put("exp", accessToken.getExpirationTime());
-		res.put("iat", accessToken.getIssuedAt());
-		res.put("nbf", accessToken.getNotbefore());
-		res.put("aud", resourceServer.getMetaData().getName());
-		res.put("iss", authServer.issuerId(request));
-		
-		//以下は現状未レスポンス
-		//jti
-		// OPTIONAL.  String identifier for the token, as defined in JWT
-		// [RFC7519].	
-		
-		return res;
-	}
-
 	private Object inactiveResponseEntity() {
 		Map<String, Object> res = new HashMap<>();
 		res.put("active", false);

@@ -17,29 +17,30 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
-package org.iplass.mtp.auth.oauth.definition;
+package org.iplass.mtp.auth.oauth.definition.introspectors;
 
-import java.io.Serializable;
-
-import javax.xml.bind.annotation.XmlSeeAlso;
-
-import org.iplass.mtp.auth.oauth.definition.consents.AlwaysConsentTypeDefinition;
-import org.iplass.mtp.auth.oauth.definition.consents.OnceConsentTypeDefinition;
-import org.iplass.mtp.auth.oauth.definition.consents.ScriptingConsentTypeDefinition;
-
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import org.iplass.mtp.auth.oauth.CustomTokenIntrospector;
+import org.iplass.mtp.auth.oauth.definition.CustomTokenIntrospectorDefinition;
 
 /**
- * スコープ承認画面の表示有無を判断するための定義です。
+ * Javaクラスで実装されるCustomTokenIntrospector定義です。
+ * classNameに CustomTokenIntrospectorの実装クラスを指定します。
  * 
+ * @see CustomTokenIntrospector
  * @author K.Higuchi
  *
  */
-@XmlSeeAlso({
-	AlwaysConsentTypeDefinition.class,
-	OnceConsentTypeDefinition.class,
-	ScriptingConsentTypeDefinition.class})
-@JsonTypeInfo(use=JsonTypeInfo.Id.CLASS)
-public abstract class ConsentTypeDefinition implements Serializable {
-	private static final long serialVersionUID = 4679081921898475535L;
+public class JavaClassCustomTokenIntrospectorDefinition extends CustomTokenIntrospectorDefinition {
+	private static final long serialVersionUID = 7805854304702805608L;
+
+	private String className;
+	
+	public String getClassName() {
+		return className;
+	}
+
+	public void setClassName(String className) {
+		this.className = className;
+	}
+
 }
