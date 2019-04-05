@@ -526,6 +526,7 @@
 	<service>
 		<interface>org.iplass.mtp.impl.cluster.ClusterService</interface>
 		<depend>AsyncTaskServiceForHttpMessageChannel</depend>
+		<!-- for use Simple HTTP messaging -->
 		<property name="messageChannel" class="org.iplass.mtp.impl.cluster.channel.http.HttpMessageChannel">
 			<!--
 			<property name="serverUrl" value="http://localhost:18080/mtp/cmcs" />
@@ -539,8 +540,16 @@
 			<property name="poolingTimeToLive" value="[set poolingTimeToLive if needed]" />
 			<property name="proxyHost" value="proxy.xxx.xxx" />
 			<property name="proxyPort" value="8080" />
-			 -->
+			-->
 		</property>
+		
+		<!-- for use JGroups -->
+		<!--
+		<property name="messageChannel" class="org.iplass.mtp.impl.cluster.channel.jgroups.JGroupsMessageChannel">
+			<property name="configFilePath" value="/jgroups-config-udp.xml" />
+			<property name="clusterName" value="iPLAssCluster" />
+		</property>
+		-->
 	</service>
 	<service name="AsyncTaskServiceForHttpMessageChannel">
 		<interface>org.iplass.mtp.impl.async.AsyncTaskService</interface>

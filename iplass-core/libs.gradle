@@ -79,4 +79,6 @@ dependencies {
 	//Bouncy Castle S/MIME API
 	compile group: 'org.bouncycastle', name: 'bcmail-jdk15on', version: '1.60'
 
+	//JGroups
+	compile group: 'org.jgroups', name: 'jgroups', version: '4.0.19.Final'
 }
