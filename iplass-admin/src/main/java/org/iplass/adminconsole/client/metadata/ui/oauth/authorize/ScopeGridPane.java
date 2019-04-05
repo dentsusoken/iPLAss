@@ -610,7 +610,7 @@ public class ScopeGridPane extends VLayout implements EditablePane<OAuthAuthoriz
 
 			setHeight(250);
 			setWidth(500);
-			setTitle("Scope");
+			setTitle("Claim Mapping");
 
 			setShowMinimizeButton(false);
 			setShowMaximizeButton(false);

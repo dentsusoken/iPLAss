@@ -23,6 +23,7 @@ package org.iplass.adminconsole.client.metadata.ui.oauth.authorize;
 import java.util.Arrays;
 
 import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
+import org.iplass.adminconsole.client.base.ui.widget.EditablePane;
 import org.iplass.adminconsole.client.base.ui.widget.MetaDataSelectItem;
 import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
 import org.iplass.mtp.auth.oauth.definition.OAuthAuthorizationDefinition;
@@ -34,7 +35,7 @@ import com.smartgwt.client.widgets.form.fields.TextAreaItem;
 import com.smartgwt.client.widgets.form.fields.TextItem;
 import com.smartgwt.client.widgets.layout.VLayout;
 
-public class OAuthAuthorizationAttributePane extends VLayout {
+public class OAuthAuthorizationAttributePane extends VLayout implements EditablePane<OAuthAuthorizationDefinition> {
 
 	private DynamicForm form;
 
@@ -54,6 +55,7 @@ public class OAuthAuthorizationAttributePane extends VLayout {
 		initialize();
 	}
 
+	@Override
 	public void setDefinition(OAuthAuthorizationDefinition definition) {
 
 		if (definition.getAvailableRoles() != null) {
@@ -82,6 +84,7 @@ public class OAuthAuthorizationAttributePane extends VLayout {
 		txtIssuerUri.setValue(definition.getIssuerUri());
 	}
 
+	@Override
 	public OAuthAuthorizationDefinition getEditDefinition(OAuthAuthorizationDefinition definition) {
 
 		String availableRolesText = SmartGWTUtil.getStringValue(txaAvailableRoles, true);
@@ -164,6 +167,7 @@ public class OAuthAuthorizationAttributePane extends VLayout {
 		addMember(form);
 	}
 
+	@Override
 	public boolean validate() {
 
 		boolean formValidate = form.validate();

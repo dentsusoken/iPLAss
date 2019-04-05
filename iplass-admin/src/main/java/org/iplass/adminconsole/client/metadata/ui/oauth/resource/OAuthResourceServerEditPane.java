@@ -47,6 +47,7 @@ import com.smartgwt.client.widgets.IButton;
 import com.smartgwt.client.widgets.events.ClickEvent;
 import com.smartgwt.client.widgets.events.ClickHandler;
 import com.smartgwt.client.widgets.layout.LayoutSpacer;
+import com.smartgwt.client.widgets.layout.SectionStackSection;
 
 /**
  * OAuthResourceServerDefinition編集パネル
@@ -69,6 +70,9 @@ public class OAuthResourceServerEditPane extends MetaDataMainEditPane {
 	private MetaCommonHeaderPane headerPane;
 	/** 共通属性部分 */
 	private MetaCommonAttributeSection commonSection;
+
+	/** 個別属性部分 */
+	private OAuthResourceServerAttributePane attributePane;
 
 	public OAuthResourceServerEditPane(MetaDataItemMenuTreeNode targetNode, DefaultMetaDataPlugin plugin) {
 		super(targetNode, plugin);
@@ -129,11 +133,15 @@ public class OAuthResourceServerEditPane extends MetaDataMainEditPane {
 		// 共通属性
 		commonSection = new MetaCommonAttributeSection(targetNode, OAuthResourceServerDefinition.class, false);
 
-		//共通属性しかないので、開く
+		//共通属性を開く
 		commonSection.setExpanded(true);
 
+		// 個別属性
+		attributePane = new OAuthResourceServerAttributePane();
+		SectionStackSection attributeSection = createSection("OAuthResourceServer Attribute", attributePane);
+
 		// Section設定
-		setMainSections(commonSection);
+		setMainSections(commonSection, attributeSection);
 
 		// 全体配置
 		addMember(headerPane);
@@ -185,6 +193,8 @@ public class OAuthResourceServerEditPane extends MetaDataMainEditPane {
 		commonSection.setName(curDefinition.getName());
 		commonSection.setDisplayName(curDefinition.getDisplayName());
 		commonSection.setDescription(curDefinition.getDescription());
+
+		attributePane.setDefinition(curDefinition);
 	}
 
 	/**
@@ -193,7 +203,8 @@ public class OAuthResourceServerEditPane extends MetaDataMainEditPane {
 	private void saveDefinition() {
 
 		boolean commonValidate = commonSection.validate();
-		if (!commonValidate) {
+		boolean attributeValidate = attributePane.validate();
+		if (!commonValidate || !attributeValidate) {
 			return;
 		}
 
@@ -207,6 +218,8 @@ public class OAuthResourceServerEditPane extends MetaDataMainEditPane {
 					definition.setName(commonSection.getName());
 					definition.setDisplayName(commonSection.getDisplayName());
 					definition.setDescription(commonSection.getDescription());
+
+					attributePane.getEditDefinition(definition);
 
 					updateDefinition(definition, true);
 				}

@@ -28,6 +28,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
+import org.iplass.adminconsole.client.base.ui.widget.EditablePane;
 import org.iplass.adminconsole.client.base.ui.widget.MetaDataSelectItem;
 import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
 import org.iplass.mtp.auth.oauth.definition.ClientType;
@@ -43,7 +44,7 @@ import com.smartgwt.client.widgets.form.fields.TextAreaItem;
 import com.smartgwt.client.widgets.form.fields.TextItem;
 import com.smartgwt.client.widgets.layout.VLayout;
 
-public class OAuthClientAttributePane extends VLayout {
+public class OAuthClientAttributePane extends VLayout implements EditablePane<OAuthClientDefinition> {
 
 	/** ClientTypeの種類選択用Map */
 	private static LinkedHashMap<String, String> clientTypeMap;
@@ -83,6 +84,7 @@ public class OAuthClientAttributePane extends VLayout {
 		initialize();
 	}
 
+	@Override
 	public void setDefinition(OAuthClientDefinition definition) {
 
 		if (definition.getAuthorizationServer() != null) {
@@ -136,6 +138,7 @@ public class OAuthClientAttributePane extends VLayout {
 		txtPolicyUri.setValue(definition.getPolicyUri());
 	}
 
+	@Override
 	public OAuthClientDefinition getEditDefinition(OAuthClientDefinition definition) {
 
 		definition.setAuthorizationServer(SmartGWTUtil.getStringValue(selAuthorizationServer, true));
@@ -286,6 +289,7 @@ public class OAuthClientAttributePane extends VLayout {
 		addMember(form);
 	}
 
+	@Override
 	public boolean validate() {
 
 		boolean formValidate = form.validate();
