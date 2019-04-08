@@ -87,7 +87,9 @@ public class JGroupsMessageChannel implements MessageChannel, ServiceInitListene
 		    	if (!channel.getAddress().equals(msg.getSrc())) {
 			    	Message m = msg.getObject();
 			    	messageReceiver.receiveMessage(m);
-			    	logger.debug("receive message:" + m);
+			    	if (logger.isDebugEnabled()) {
+				    	logger.debug("receive message:" + m);
+			    	}
 		    	}
 		    }
 		    
@@ -136,9 +138,10 @@ public class JGroupsMessageChannel implements MessageChannel, ServiceInitListene
 	public void sendMessage(Message message) {
 		if (channel != null) {
 			try {
-logger.debug("send message:" + message);
 				channel.send(null, message);
-logger.debug("send message end:" + message);
+				if (logger.isDebugEnabled()) {
+					logger.debug("send message:" + message);
+				}
 				
 			} catch (Exception e) {
 				fatalLog.error("send message failed.JGroups cluster=" + clusterName + ", error=" + e + ", message=" + message, e);
