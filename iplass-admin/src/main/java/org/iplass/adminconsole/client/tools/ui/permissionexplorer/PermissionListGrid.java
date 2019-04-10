@@ -1,19 +1,19 @@
 /*
  * Copyright (C) 2015 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
- * 
+ *
  * Unless you have purchased a commercial license,
  * the following license terms apply:
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
@@ -26,6 +26,7 @@ import org.iplass.adminconsole.client.tools.data.permissionexplorer.PermissionLi
 import org.iplass.adminconsole.client.tools.data.permissionexplorer.PermissionListGridDS.PermissionListGridRecord;
 
 import com.smartgwt.client.widgets.grid.ListGrid;
+import com.smartgwt.client.widgets.grid.ListGridField;
 import com.smartgwt.client.widgets.grid.ListGridRecord;
 import com.smartgwt.client.widgets.grid.events.CellContextClickEvent;
 import com.smartgwt.client.widgets.grid.events.CellContextClickHandler;
@@ -100,6 +101,11 @@ public abstract class PermissionListGrid extends ListGrid implements PermissionG
 		setLeaveScrollbarGap(false);	//falseで縦スクロールバー領域が自動表示制御される
 
 		setShowRowNumbers(true);		//行番号表示
+		ListGridField rowNumberField = new ListGridField();
+		rowNumberField.setWidth(30);
+		rowNumberField.setFrozen(true);
+		setRowNumberFieldProperties(rowNumberField);
+
 		setShowSelectedStyle(false);
 
 		setCanFreezeFields(false);
