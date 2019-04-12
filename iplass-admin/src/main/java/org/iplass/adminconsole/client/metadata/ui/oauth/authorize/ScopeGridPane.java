@@ -27,9 +27,9 @@ import org.iplass.adminconsole.client.base.event.DataChangedEvent;
 import org.iplass.adminconsole.client.base.event.DataChangedHandler;
 import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
 import org.iplass.adminconsole.client.base.ui.widget.AbstractWindow;
-import org.iplass.adminconsole.client.base.ui.widget.CommonIconConstants;
 import org.iplass.adminconsole.client.base.ui.widget.EditablePane;
 import org.iplass.adminconsole.client.base.ui.widget.MetaDataLangTextItem;
+import org.iplass.adminconsole.client.base.ui.widget.MtpWidgetConstants;
 import org.iplass.adminconsole.client.base.ui.widget.ScriptEditorDialogHandler;
 import org.iplass.adminconsole.client.base.ui.widget.ScriptEditorDialogMode;
 import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
@@ -108,6 +108,10 @@ public class ScopeGridPane extends VLayout implements EditablePane<OAuthAuthoriz
 	@Override
 	public boolean validate() {
 		return grid.validate();
+	}
+
+	@Override
+	public void clearErrors() {
 	}
 
 	private static class ScopeGrid extends ListGrid implements EditablePane<OAuthAuthorizationDefinition> {
@@ -189,6 +193,10 @@ public class ScopeGridPane extends VLayout implements EditablePane<OAuthAuthoriz
 			return true;
 		}
 
+		@Override
+		public void clearErrors() {
+		}
+
 		public void addScope() {
 			editScope(null);
 		}
@@ -233,7 +241,7 @@ public class ScopeGridPane extends VLayout implements EditablePane<OAuthAuthoriz
 
 	}
 
-	private static class ScopeEditDialog extends AbstractWindow {
+	private static class ScopeEditDialog extends AbstractWindow implements MtpWidgetConstants {
 
 		private DynamicForm form;
 
@@ -275,8 +283,6 @@ public class ScopeGridPane extends VLayout implements EditablePane<OAuthAuthoriz
 
 			txtDisplayName = new MetaDataLangTextItem();
 			txtDisplayName.setTitle("Display Name");
-			txtDisplayName.setWidth("100%");
-			txtDisplayName.setBrowserSpellCheck(false);
 
 			txaDescription = new TextAreaItem();
 			txaDescription.setTitle("Description");
@@ -289,7 +295,7 @@ public class ScopeGridPane extends VLayout implements EditablePane<OAuthAuthoriz
 
 			ButtonItem btbDescLang = new ButtonItem();
 			btbDescLang.setTitle("Description Lang");
-			btbDescLang.setIcon(CommonIconConstants.COMMON_ICON_LANG);
+			btbDescLang.setIcon(ICON_LANG);
 			btbDescLang.setShowTitle(false);
 			btbDescLang.setStartRow(false);
 			btbDescLang.setEndRow(false);
@@ -452,6 +458,10 @@ public class ScopeGridPane extends VLayout implements EditablePane<OAuthAuthoriz
 			return grid.validate();
 		}
 
+		@Override
+		public void clearErrors() {
+		}
+
 		public boolean isEmpty() {
 
 			return grid.getRecordList().isEmpty();
@@ -545,6 +555,10 @@ public class ScopeGridPane extends VLayout implements EditablePane<OAuthAuthoriz
 		@Override
 		public boolean validate() {
 			return true;
+		}
+
+		@Override
+		public void clearErrors() {
 		}
 
 		public void addClaimMapping() {

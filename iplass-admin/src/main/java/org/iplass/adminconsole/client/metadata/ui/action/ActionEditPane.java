@@ -67,7 +67,7 @@ public class ActionEditPane extends MetaDataMainEditPane {
 	/** ヘッダ部分 */
 	private MetaCommonHeaderPane headerPane;
 	/** 共通属性部分 */
-	private MetaCommonAttributeSection commonSection;
+	private MetaCommonAttributeSection<ActionMappingDefinition> commonSection;
 
 	/** Action属性部分 */
 	private ActionAttributePane actionAttributePane;
@@ -105,7 +105,7 @@ public class ActionEditPane extends MetaDataMainEditPane {
 		});
 
 		//共通属性
-		commonSection = new MetaCommonAttributeSection(targetNode, ActionMappingDefinition.class, true);
+		commonSection = new MetaCommonAttributeSection<>(targetNode, ActionMappingDefinition.class, true);
 
 		//Action編集部分
 		actionAttributePane = new ActionAttributePane();
@@ -201,12 +201,8 @@ public class ActionEditPane extends MetaDataMainEditPane {
 		this.curVersion = entry.getDefinitionInfo().getVersion();
 		this.curDefinitionId = entry.getDefinitionInfo().getObjDefId();
 
-		//共通属性
-		commonSection.setName(curDefinition.getName());
-		commonSection.setDisplayName(curDefinition.getDisplayName());
+		commonSection.setDefinition(curDefinition);
 		commonSection.setLocalizedDisplayNameList(curDefinition.getLocalizedDisplayNameList());
-		commonSection.setDescription(curDefinition.getDescription());
-
 		actionAttributePane.setDefinition(curDefinition);
 		commandConfigPane.setConfig(curDefinition.getCommandConfig());
 		paramMapPane.setParamMap(curDefinition.getParamMap());
@@ -292,11 +288,8 @@ public class ActionEditPane extends MetaDataMainEditPane {
 					if (value) {
 						ActionMappingDefinition definition = new ActionMappingDefinition();
 
-						definition.setName(commonSection.getName());
-						definition.setDisplayName(commonSection.getDisplayName());
+						definition = commonSection.getEditDefinition(definition);
 						definition.setLocalizedDisplayNameList(commonSection.getLocalizedDisplayNameList());
-						definition.setDescription(commonSection.getDescription());
-
 						definition = actionAttributePane.getEditDefinition(definition);
 						definition.setCommandConfig(commandConfigPane.getEditCommandConfig());
 						definition = paramMapPane.getEditDefinition(definition);

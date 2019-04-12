@@ -95,7 +95,7 @@ public class MailTemplateEditPane extends MetaDataMainEditPane {
 	/** ヘッダ部分 */
 	private MetaCommonHeaderPane headerPane;
 	/** 共通属性部分 */
-	private MetaCommonAttributeSection commonSection;
+	private MetaCommonAttributeSection<MailTemplateDefinition> commonSection;
 
 	/** 個別属性部分（デフォルト） */
 	private MailTemplateAttributePane mailTemplateAttrPane;
@@ -127,7 +127,7 @@ public class MailTemplateEditPane extends MetaDataMainEditPane {
 		});
 
 		//共通属性
-		commonSection = new MetaCommonAttributeSection(targetNode, MailTemplateDefinition.class);
+		commonSection = new MetaCommonAttributeSection<>(targetNode, MailTemplateDefinition.class);
 
 		//個別属性
 		mailTemplateAttrPane = new MailTemplateAttributePane();
@@ -204,14 +204,9 @@ public class MailTemplateEditPane extends MetaDataMainEditPane {
 		this.curVersion = entry.getDefinitionInfo().getVersion();
 		this.curDefinitionId = entry.getDefinitionInfo().getObjDefId();
 
-		//共通属性
-		commonSection.setName(curDefinition.getName());
-		commonSection.setDisplayName(curDefinition.getDisplayName());
-		commonSection.setDescription(curDefinition.getDescription());
-
+		commonSection.setDefinition(curDefinition);
 		mailTemplateAttrPane.setDefinition(curDefinition);
 		multiMailTemplateAttrPane.setDefinition(curDefinition);
-
 	}
 
 
@@ -779,9 +774,7 @@ public class MailTemplateEditPane extends MetaDataMainEditPane {
 				public void execute(Boolean value) {
 					if (value) {
 						MailTemplateDefinition definition = curDefinition;
-						definition.setName(commonSection.getName());
-						definition.setDisplayName(commonSection.getDisplayName());
-						definition.setDescription(commonSection.getDescription());
+						definition = commonSection.getEditDefinition(definition);
 						definition = mailTemplateAttrPane.getEditDefinition(definition);
 						definition = multiMailTemplateAttrPane.getEditDefinition(definition);
 

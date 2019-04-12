@@ -141,6 +141,10 @@ public class SubjectIdentifierTypeEditPane extends VLayout implements EditablePa
 		return form.validate();
 	}
 
+	@Override
+	public void clearErrors() {
+	}
+
 	private void typeChanged() {
 
 		String type = SmartGWTUtil.getStringValue(selSubjectIdentifierType, true);

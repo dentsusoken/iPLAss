@@ -20,6 +20,10 @@
 
 package org.iplass.adminconsole.client.base.ui.widget;
 
+/**
+ * @deprecated use {@link MtpWidgetConstants}
+ */
+@Deprecated
 public abstract class CommonIconConstants {
 
 	/** ヘルプ */

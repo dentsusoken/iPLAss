@@ -79,7 +79,7 @@ public class StaticResourceEditPane extends MetaDataMainEditPane {
 	/** 共通ヘッダ部分 */
 	private MetaCommonHeaderPane headerPane;
 	/** 共通属性部分 */
-	private MetaCommonAttributeSection commonSection;
+	private MetaCommonAttributeSection<StaticResourceDefinition> commonSection;
 
 	/** StaticResource属性部分 */
 	private StaticResourceAttributePane attributePane;
@@ -113,7 +113,7 @@ public class StaticResourceEditPane extends MetaDataMainEditPane {
 		});
 
 		//共通属性
-		commonSection = new MetaCommonAttributeSection(targetNode, StaticResourceDefinition.class, true);
+		commonSection = new MetaCommonAttributeSection<>(targetNode, StaticResourceDefinition.class, true);
 
 		//Template属性編集部分
 		attributePane = new StaticResourceAttributePane();
@@ -202,11 +202,13 @@ public class StaticResourceEditPane extends MetaDataMainEditPane {
 	private void setDefinition(StaticResourceInfo difinition) {
 		this.curDefinition = difinition;
 
-		//共通属性
-		commonSection.setName(curDefinition.getName());
-		commonSection.setDisplayName(curDefinition.getDisplayName());
+		//共通属性(StaticResourceInfo->StaticResourceDefinition)
+		StaticResourceDefinition dummy = new StaticResourceDefinition();
+		dummy.setName(curDefinition.getName());
+		dummy.setDisplayName(curDefinition.getDisplayName());
+		dummy.setDescription(curDefinition.getDescription());
+		commonSection.setDefinition(dummy);
 		commonSection.setLocalizedDisplayNameList(curDefinition.getLocalizedDisplayNameList());
-		commonSection.setDescription(curDefinition.getDescription());
 
 		attributePane.setDefinition(curDefinition);
 		multilingualPane.setDefinition(curDefinition);
@@ -388,9 +390,12 @@ public class StaticResourceEditPane extends MetaDataMainEditPane {
 					if (value) {
 						StaticResourceInfo definition = new StaticResourceInfo();
 
-						definition.setName(commonSection.getName());
-						definition.setDisplayName(commonSection.getDisplayName());
-						definition.setDescription(commonSection.getDescription());
+						//StaticResourceInfo<-StaticResourceDefinition
+						StaticResourceDefinition dummy = new StaticResourceDefinition();
+						commonSection.getEditDefinition(dummy);
+						definition.setName(dummy.getName());
+						definition.setDisplayName(dummy.getDisplayName());
+						definition.setDescription(dummy.getDescription());
 						definition.setLocalizedDisplayNameList(commonSection.getLocalizedDisplayNameList());
 
 						definition = attributePane.getEditDefinition(definition);

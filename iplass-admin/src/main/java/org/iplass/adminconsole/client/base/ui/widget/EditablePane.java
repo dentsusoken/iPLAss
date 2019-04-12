@@ -48,4 +48,10 @@ public interface EditablePane<D> {
 	 * @return 検証結果
 	 */
 	boolean validate();
+
+	/**
+	 * エラー情報をクリアします。
+	 */
+	void clearErrors();
+
 }

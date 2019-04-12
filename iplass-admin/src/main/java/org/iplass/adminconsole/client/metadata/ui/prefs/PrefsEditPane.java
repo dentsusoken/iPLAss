@@ -88,7 +88,7 @@ public class PrefsEditPane extends MetaDataMainEditPane {
 	private MetaCommonHeaderPane headerPane;
 
 	/** 共通属性部分 */
-	private MetaCommonAttributeSection commonSection;
+	private MetaCommonAttributeSection<Preference> commonSection;
 
 	/** ツリー部分 */
 	private PreferenceTreeGrid grid;
@@ -132,7 +132,7 @@ public class PrefsEditPane extends MetaDataMainEditPane {
 		});
 
 		//共通属性
-		commonSection = new MetaCommonAttributeSection(targetNode, Preference.class, false);
+		commonSection = new MetaCommonAttributeSection<>(targetNode, Preference.class, false);
 
 		//メイン編集領域
 		HLayout layout = new HLayout();
@@ -175,9 +175,7 @@ public class PrefsEditPane extends MetaDataMainEditPane {
 				public void execute(Boolean value) {
 					if (value) {
 						Preference definition = grid.getEditPreference();
-						definition.setName(commonSection.getName());
-						definition.setDisplayName(commonSection.getDisplayName());
-						definition.setDescription(commonSection.getDescription());
+						commonSection.getEditDefinition(definition);
 
 						updatePreference(definition, true);
 					}
@@ -280,10 +278,7 @@ public class PrefsEditPane extends MetaDataMainEditPane {
 		this.curVersion = entry.getDefinitionInfo().getVersion();
 		this.curDefinitionId = entry.getDefinitionInfo().getObjDefId();
 
-		//共通属性
-		commonSection.setName(curDefinition.getName());
-		commonSection.setDisplayName(curDefinition.getDisplayName());
-		commonSection.setDescription(curDefinition.getDescription());
+		commonSection.setDefinition(curDefinition);
 
 		refreshGrid(curDefinition.getName());
 	}

@@ -76,7 +76,7 @@ public class SearchLayoutPanelImpl extends MetaDataMainEditPane implements Searc
 	/** ヘッダ部分 */
 	private MetaCommonHeaderPane headerPane;
 	/** 共通属性部分 */
-	private MetaCommonAttributeSection commonSection;
+	private MetaCommonAttributeSection<EntityView> commonSection;
 
 	/** メニュー部分のレイアウト */
 	private EntityViewMenuPane viewMenuPane;
@@ -121,7 +121,7 @@ public class SearchLayoutPanelImpl extends MetaDataMainEditPane implements Searc
 		});
 
 		//共通属性
-		commonSection = new MetaCommonAttributeSection(targetNode, EntityView.class);
+		commonSection = new MetaCommonAttributeSection<>(targetNode, EntityView.class);
 
 		//View編集画面
 		VLayout viewEditPane = new VLayout();
@@ -253,9 +253,10 @@ public class SearchLayoutPanelImpl extends MetaDataMainEditPane implements Searc
 		public void onSuccess(DefinitionEntry entry) {
 			if (entry == null || entry.getDefinition() == null) {
 				//共通属性（Entityからコピー）
-				commonSection.setName(ed.getName());
-				commonSection.setDisplayName(ed.getDisplayName());
-				//commonSection.setDescription(ed.getDescription());
+				EntityView copy = new EntityView();
+				copy.setName(ed.getName());
+				copy.setDisplayName(ed.getDisplayName());
+				commonSection.setDefinition(copy);
 
 				viewMenuPane.setValueMap(new String[0]);
 				viewMenuPane.getViewSelectItem().setValue("");
@@ -271,9 +272,7 @@ public class SearchLayoutPanelImpl extends MetaDataMainEditPane implements Searc
 			curDefinitionId = entry.getDefinitionInfo().getObjDefId();
 
 			//共通属性
-			commonSection.setName(curDefinition.getName());
-			commonSection.setDisplayName(curDefinition.getDisplayName());
-			commonSection.setDescription(curDefinition.getDescription());
+			commonSection.setDefinition(curDefinition);
 
 			//保存されているのでShared設定利用可能
 			commonSection.setSharedEditDisabled(false);
@@ -339,10 +338,7 @@ public class SearchLayoutPanelImpl extends MetaDataMainEditPane implements Searc
 					//View定義を新規作成
 					EntityView tmp = new EntityView();
 
-					tmp.setName(commonSection.getName());
-					tmp.setDisplayName(commonSection.getDisplayName());
-					tmp.setDescription(commonSection.getDescription());
-
+					commonSection.getEditDefinition(tmp);
 					tmp.setDefinitionName(defName);
 
 					if (fv.getName() == null) {
@@ -355,10 +351,7 @@ public class SearchLayoutPanelImpl extends MetaDataMainEditPane implements Searc
 				} else {
 					//View定義を更新
 
-					ev.setName(commonSection.getName());
-					ev.setDisplayName(commonSection.getDisplayName());
-					ev.setDescription(commonSection.getDescription());
-
+					commonSection.getEditDefinition(ev);
 					ev.setDefinitionName(defName);
 
 					if (fv.getName() == null) {
@@ -667,9 +660,7 @@ public class SearchLayoutPanelImpl extends MetaDataMainEditPane implements Searc
 				}
 
 				if (ev.getViews().size() > 0) {
-					ev.setName(commonSection.getName());
-					ev.setDisplayName(commonSection.getDisplayName());
-					ev.setDescription(commonSection.getDescription());
+					commonSection.getEditDefinition(ev);
 					ev.setDefinitionName(defName);
 					updateEntityView(ev, true);
 				} else {

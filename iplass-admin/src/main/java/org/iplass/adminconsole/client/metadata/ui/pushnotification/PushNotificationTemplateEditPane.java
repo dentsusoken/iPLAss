@@ -103,7 +103,7 @@ public class PushNotificationTemplateEditPane extends MetaDataMainEditPane {
 	private MetaCommonHeaderPane headerPane;
 
 	/** 共通属性部分 */
-	private MetaCommonAttributeSection commonSection;
+	private MetaCommonAttributeSection<PushNotificationTemplateDefinition> commonSection;
 
 	/** 個別属性部分（デフォルト） */
 	private PushNotificationTemplateAttributePane pushNotificationTemplateAttrPane;
@@ -134,7 +134,7 @@ public class PushNotificationTemplateEditPane extends MetaDataMainEditPane {
 		});
 
 		//共通属性
-		commonSection = new MetaCommonAttributeSection(targetNode, PushNotificationTemplateDefinition.class);
+		commonSection = new MetaCommonAttributeSection<>(targetNode, PushNotificationTemplateDefinition.class);
 
 		//個別属性
 		pushNotificationTemplateAttrPane = new PushNotificationTemplateAttributePane();
@@ -205,11 +205,7 @@ public class PushNotificationTemplateEditPane extends MetaDataMainEditPane {
 		this.curVersion = entry.getDefinitionInfo().getVersion();
 		this.curDefinitionId = entry.getDefinitionInfo().getObjDefId();
 
-		//共通属性
-		commonSection.setName(curDefinition.getName());
-		commonSection.setDisplayName(curDefinition.getDisplayName());
-		commonSection.setDescription(curDefinition.getDescription());
-
+		commonSection.setDefinition(curDefinition);
 		pushNotificationTemplateAttrPane.setDefinition(curDefinition);
 		multiPushNotificationTemplateAttrPane.setDefinition(curDefinition);
 	}
@@ -283,9 +279,7 @@ public class PushNotificationTemplateEditPane extends MetaDataMainEditPane {
 				public void execute(Boolean value) {
 					if (value) {
 						PushNotificationTemplateDefinition definition = curDefinition;
-						definition.setName(commonSection.getName());
-						definition.setDisplayName(commonSection.getDisplayName());
-						definition.setDescription(commonSection.getDescription());
+						definition = commonSection.getEditDefinition(definition);
 						definition = pushNotificationTemplateAttrPane.getEditDefinition(definition);
 						definition = multiPushNotificationTemplateAttrPane.getEditDefinition(definition);
 

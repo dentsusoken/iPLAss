@@ -65,7 +65,7 @@ public class CommandEditPane extends MetaDataMainEditPane {
 	/** ヘッダ部分 */
 	private MetaCommonHeaderPane headerPane;
 	/** 共通属性部分 */
-	private MetaCommonAttributeSection commonSection;
+	private MetaCommonAttributeSection<CommandDefinition> commonSection;
 
 	/** Command属性部分 */
 	private CommandAttributePane commandAttributePane;
@@ -97,7 +97,7 @@ public class CommandEditPane extends MetaDataMainEditPane {
 		});
 
 		//共通属性
-		commonSection = new MetaCommonAttributeSection(targetNode, CommandDefinition.class, true);
+		commonSection = new MetaCommonAttributeSection<>(targetNode, CommandDefinition.class, true);
 
 		//属性編集部分
 		commandAttributePane = new CommandAttributePane();
@@ -166,12 +166,8 @@ public class CommandEditPane extends MetaDataMainEditPane {
 			this.curDefinitionId = entry.getDefinitionInfo().getObjDefId();
 		}
 
-		//共通属性
-		commonSection.setName(curDefinition.getName());
-		commonSection.setDisplayName(curDefinition.getDisplayName());
+		commonSection.setDefinition(curDefinition);
 		commonSection.setLocalizedDisplayNameList(curDefinition.getLocalizedDisplayNameList());
-		commonSection.setDescription(curDefinition.getDescription());
-
 		commandAttributePane.setDefinition(curDefinition);
 
 		if (typeEditPane != null) {
@@ -281,11 +277,8 @@ public class CommandEditPane extends MetaDataMainEditPane {
 					if (value) {
 						CommandDefinition definition = CommandType.typeOfDefinition(commandAttributePane.selectedType());
 
-						definition.setName(commonSection.getName());
-						definition.setDisplayName(commonSection.getDisplayName());
+						definition = commonSection.getEditDefinition(definition);
 						definition.setLocalizedDisplayNameList(commonSection.getLocalizedDisplayNameList());
-						definition.setDescription(commonSection.getDescription());
-
 						definition = commandAttributePane.getEditDefinition(definition);
 						definition = typeEditPane.getEditDefinition(definition);
 

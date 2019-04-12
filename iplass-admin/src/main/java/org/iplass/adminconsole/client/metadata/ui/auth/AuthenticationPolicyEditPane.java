@@ -65,7 +65,7 @@ public class AuthenticationPolicyEditPane extends MetaDataMainEditPane {
 	/** ヘッダ部分 */
 	private MetaCommonHeaderPane headerPane;
 	/** 共通属性部分 */
-	private MetaCommonAttributeSection commonSection;
+	private MetaCommonAttributeSection<AuthenticationPolicyDefinition> commonSection;
 
 	/** 個別属性部分 */
 	private AuthenticationPolicyAttributePane apAttributePane;
@@ -104,7 +104,7 @@ public class AuthenticationPolicyEditPane extends MetaDataMainEditPane {
 		});
 
 		// 共通属性
-		commonSection = new MetaCommonAttributeSection(targetNode, AuthenticationPolicyDefinition.class, true);
+		commonSection = new MetaCommonAttributeSection<>(targetNode, AuthenticationPolicyDefinition.class, true);
 
 		// 個別属性
 		apAttributePane = new AuthenticationPolicyAttributePane();
@@ -159,13 +159,8 @@ public class AuthenticationPolicyEditPane extends MetaDataMainEditPane {
 		this.curVersion = entry.getDefinitionInfo().getVersion();
 		this.curDefinitionId = entry.getDefinitionInfo().getObjDefId();
 
-		// 共通属性
-		commonSection.setName(curDefinition.getName());
-		commonSection.setDisplayName(curDefinition.getDisplayName());
+		commonSection.setDefinition(curDefinition);
 		commonSection.setLocalizedDisplayNameList(curDefinition.getLocalizedDisplayNameList());
-		commonSection.setDescription(curDefinition.getDescription());
-
-		// AuthenticationPolicy属性
 		apAttributePane.setDefinition(curDefinition);
 	}
 
@@ -190,11 +185,8 @@ public class AuthenticationPolicyEditPane extends MetaDataMainEditPane {
 			public void execute(Boolean value) {
 				if (value) {
 					final AuthenticationPolicyDefinition definition = curDefinition;
-					definition.setName(commonSection.getName());
-					definition.setDisplayName(commonSection.getDisplayName());
+					commonSection.getEditDefinition(definition);
 					definition.setLocalizedDisplayNameList(commonSection.getLocalizedDisplayNameList());
-					definition.setDescription(commonSection.getDescription());
-
 					apAttributePane.getEditDefinition(definition);
 
 					updateDefinition(definition, true);

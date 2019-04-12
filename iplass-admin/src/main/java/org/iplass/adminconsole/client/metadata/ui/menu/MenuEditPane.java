@@ -82,7 +82,7 @@ public class MenuEditPane extends MetaDataMainEditPane {
 	/** ヘッダ部分 */
 	private MetaCommonHeaderPane headerPane;
 	/** 共通属性部分 */
-	private MetaCommonAttributeSection commonSection;
+	private MetaCommonAttributeSection<MenuTree> commonSection;
 
 	/** 個別属性部分 */
 	private MenuAttributePane menuAttrPane;
@@ -115,7 +115,7 @@ public class MenuEditPane extends MetaDataMainEditPane {
 		});
 
 		//共通属性
-		commonSection = new MetaCommonAttributeSection(targetNode, MenuTree.class);
+		commonSection = new MetaCommonAttributeSection<>(targetNode, MenuTree.class);
 
 		//個別属性
 		menuAttrPane = new MenuAttributePane();
@@ -172,11 +172,7 @@ public class MenuEditPane extends MetaDataMainEditPane {
 		this.curVersion = menuTree.getDefinitionInfo().getVersion();
 		this.curDefinitionId = menuTree.getDefinitionInfo().getObjDefId();
 
-		//共通属性
-		commonSection.setName(curDefinition.getName());
-		commonSection.setDisplayName(curDefinition.getDisplayName());
-		commonSection.setDescription(curDefinition.getDescription());
-
+		commonSection.setDefinition(curDefinition);
 		menuAttrPane.setDefinition(curDefinition);
 
 	}
@@ -248,9 +244,7 @@ public class MenuEditPane extends MetaDataMainEditPane {
 				public void execute(Boolean value) {
 					if (value) {
 						MenuTree definition = new MenuTree();
-						definition.setName(commonSection.getName());
-						definition.setDisplayName(commonSection.getDisplayName());
-						definition.setDescription(commonSection.getDescription());
+						definition = commonSection.getEditDefinition(definition);
 						definition = menuAttrPane.getEditDefinition(definition);
 
 						updateMenuTree(definition, true);

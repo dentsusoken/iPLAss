@@ -88,7 +88,7 @@ public class EntityEditPane extends MetaDataMainEditPane {
 	/** ヘッダ部分 */
 	private MetaCommonHeaderPane headerPane;
 	/** 共通属性部分 */
-	private MetaCommonAttributeSection commonSection;
+	private MetaCommonAttributeSection<EntityDefinition> commonSection;
 
 	/** Entity属性定義部分 */
 	private EntityAttributePane entityAttributePane;
@@ -140,7 +140,7 @@ public class EntityEditPane extends MetaDataMainEditPane {
 		});
 
 		//共通属性
-		commonSection = new MetaCommonAttributeSection(targetNode, EntityDefinition.class, true);
+		commonSection = new MetaCommonAttributeSection<>(targetNode, EntityDefinition.class, true);
 
 		// Entity属性用Pane初期化
 		entityAttributePane = new EntityAttributePane();
@@ -242,12 +242,8 @@ public class EntityEditPane extends MetaDataMainEditPane {
 		this.curShared = entry.getDefinitionInfo().isShared();
 		this.curSharedOverwrite = entry.getDefinitionInfo().isSharedOverwrite();
 
-		//共通属性
-		commonSection.setName(curDefinition.getName());
-		commonSection.setDisplayName(curDefinition.getDisplayName());
-		commonSection.setDescription(curDefinition.getDescription());
+		commonSection.setDefinition(curDefinition);
 		commonSection.setLocalizedDisplayNameList(curDefinition.getLocalizedDisplayNameList());
-
 		entityAttributePane.setDefinition(curDefinition);
 		propertyPane.setDefinition(curDefinition);
 		eventListnerPane.setDefinition(curDefinition);
@@ -293,13 +289,9 @@ public class EntityEditPane extends MetaDataMainEditPane {
 	}
 
 	private EntityDefinition getEditDefinition(EntityDefinition definition) {
-		definition.setName(commonSection.getName());
-		definition.setDisplayName(commonSection.getDisplayName());
-		definition.setDescription(commonSection.getDescription());
+		commonSection.getEditDefinition(definition);
 		definition.setLocalizedDisplayNameList(commonSection.getLocalizedDisplayNameList());
-
 		entityAttributePane.getEditDefinition(definition);
-//		propertyPane.getEditDefinition(definition, definition.getVersionControlType());
 		propertyPane.getEditDefinition(definition);
 		eventListnerPane.getEditDefinition(definition);
 		dataLocalizationPane.getEditDefinition(definition);

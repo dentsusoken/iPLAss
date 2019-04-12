@@ -25,10 +25,14 @@ import java.util.List;
 
 import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
 import org.iplass.adminconsole.client.base.tenant.TenantInfoHolder;
+import org.iplass.adminconsole.client.base.ui.widget.EditablePane;
+import org.iplass.adminconsole.client.base.ui.widget.MetaDataLangTextItem;
+import org.iplass.adminconsole.client.base.ui.widget.form.MtpForm;
+import org.iplass.adminconsole.client.base.ui.widget.form.MtpTextAreaItem;
+import org.iplass.adminconsole.client.base.ui.widget.form.MtpTextItem;
 import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
 import org.iplass.adminconsole.client.metadata.ui.MetaDataItemMenuTreeNode;
 import org.iplass.adminconsole.client.metadata.ui.MetaDataUtil;
-import org.iplass.adminconsole.shared.metadata.dto.MetaDataConstants;
 import org.iplass.adminconsole.shared.metadata.rpc.MetaDataServiceAsync;
 import org.iplass.adminconsole.shared.metadata.rpc.MetaDataServiceFactory;
 import org.iplass.mtp.definition.Definition;
@@ -45,7 +49,6 @@ import com.smartgwt.client.widgets.form.DynamicForm;
 import com.smartgwt.client.widgets.form.fields.ButtonItem;
 import com.smartgwt.client.widgets.form.fields.CheckboxItem;
 import com.smartgwt.client.widgets.form.fields.FormItem;
-import com.smartgwt.client.widgets.form.fields.SpacerItem;
 import com.smartgwt.client.widgets.form.fields.TextAreaItem;
 import com.smartgwt.client.widgets.form.fields.TextItem;
 import com.smartgwt.client.widgets.form.fields.events.ClickEvent;
@@ -54,9 +57,7 @@ import com.smartgwt.client.widgets.layout.HLayout;
 import com.smartgwt.client.widgets.layout.SectionStackSection;
 import com.smartgwt.client.widgets.layout.VLayout;
 
-public class MetaCommonAttributeSection extends SectionStackSection {
-
-	//TODO Definitionにこの属性を定義したらDefinitionをInterfaceにできる・・・
+public class MetaCommonAttributeSection<D extends Definition> extends SectionStackSection implements EditablePane<D> {
 
 	private MetaDataServiceAsync service = MetaDataServiceFactory.get();
 
@@ -64,17 +65,17 @@ public class MetaCommonAttributeSection extends SectionStackSection {
 
 	private Label metaTypeLabel;
 
-	private MetaCommonAttributePane attrPane;
+	private MetaCommonAttributePane<D> attrPane;
 	private SharedSettingPane sharedPane;
 
 	private MetaDataItemMenuTreeNode targetNode;
-	private Class<? extends Definition> defClass;
+	private Class<D> defClass;
 
-	public MetaCommonAttributeSection(MetaDataItemMenuTreeNode targetNode, Class<? extends Definition> defClass) {
+	public MetaCommonAttributeSection(MetaDataItemMenuTreeNode targetNode, Class<D> defClass) {
 		this(targetNode, defClass , false);
 	}
 
-	public MetaCommonAttributeSection(MetaDataItemMenuTreeNode targetNode, Class<? extends Definition> defClass, boolean useLangSetting) {
+	public MetaCommonAttributeSection(MetaDataItemMenuTreeNode targetNode, Class<D> defClass, boolean useLangSetting) {
 		this.defClass = defClass;
 
 		setTitle("Common Attribute");
@@ -92,7 +93,7 @@ public class MetaCommonAttributeSection extends SectionStackSection {
 		HLayout contents = new HLayout();
 		contents.setHeight(20);	//これでこのSectionの高さが決まる
 
-		attrPane = new MetaCommonAttributePane(useLangSetting);
+		attrPane = new MetaCommonAttributePane<D>(useLangSetting);
 		sharedPane = new SharedSettingPane();
 
 		contents.addMember(attrPane);
@@ -104,35 +105,31 @@ public class MetaCommonAttributeSection extends SectionStackSection {
 		setTargetNode(targetNode);
 	}
 
-	public void setName(String name) {
-		attrPane.nameField.setValue(name);
+	@Override
+	public void setDefinition(D definition) {
+		attrPane.setDefinition(definition);
 	}
-	public String getName() {
-		return SmartGWTUtil.getStringValue(attrPane.nameField);
+
+	@Override
+	public D getEditDefinition(D definition) {
+		return attrPane.getEditDefinition(definition);
 	}
-	public void setDisplayName(String displayName) {
-		attrPane.displayNameField.setValue(displayName);
+
+	@Override
+	public boolean validate() {
+		return attrPane.validate();
 	}
-	public String getDisplayName() {
-		return SmartGWTUtil.getStringValue(attrPane.displayNameField);
+
+	@Override
+	public void clearErrors() {
+		attrPane.clearErrors();
 	}
-	public void setDescription(String description) {
-		attrPane.descriptionField.setValue(description);
-	}
-	public String getDescription() {
-		return SmartGWTUtil.getStringValue(attrPane.descriptionField);
-	}
+
 	public void setLocalizedDisplayNameList(List<LocalizedStringDefinition> localizedDisplayNameList) {
-		attrPane.localizedDisplayNameList = localizedDisplayNameList;
+		attrPane.setLocalizedDisplayNameList(localizedDisplayNameList);
 	}
 	public List<LocalizedStringDefinition> getLocalizedDisplayNameList() {
-		return attrPane.localizedDisplayNameList;
-	}
-	public boolean validate() {
-		return attrPane.form.validate();
-	}
-	public void clearErrors() {
-		attrPane.form.clearErrors(true);
+		return attrPane.getLocalizedDisplayNameList();
 	}
 
 	public void setTargetNode(MetaDataItemMenuTreeNode targetNode) {
@@ -158,74 +155,70 @@ public class MetaCommonAttributeSection extends SectionStackSection {
 		sharedPane.refreshSharedConfig();
 	}
 
-	public class MetaCommonAttributePane extends HLayout {
+	public class MetaCommonAttributePane<T extends Definition> extends HLayout implements EditablePane<T> {
 
-		public DynamicForm form;
+		private MtpForm form;
 
 		/** 名前 */
-		public TextItem nameField;
+		private TextItem nameField;
 		/** 表示名 */
-		public TextItem displayNameField;
+		private MetaDataLangTextItem displayNameField;
 		/** 説明 */
-		public TextAreaItem descriptionField;
-
-		public List<LocalizedStringDefinition> localizedDisplayNameList;
-
-		private ButtonItem langBtn;
+		private TextAreaItem descriptionField;
 
 		public MetaCommonAttributePane(boolean useLangSetting) {
-//			setHeight(20);	//これでこのSectionの高さが決まる
 			setMargin(5);
 
-			form = new DynamicForm();
-			form.setWidth100();
-			form.setNumCols(4);	//間延びしないように最後に１つ余分に作成
-			form.setColWidths(100, "*", 100, "*");
+			form = new MtpForm();
 
-			nameField = new TextItem("name", "Name");
-			nameField.setWidth(MetaDataConstants.DEFAULT_FORM_ITEM_WIDTH);
+			nameField = new MtpTextItem();
+			nameField.setTitle("Name");
 			SmartGWTUtil.setReadOnly(nameField);
 
-			displayNameField = new TextItem("displayName", "Display Name");
-			displayNameField.setWidth(MetaDataConstants.DEFAULT_FORM_ITEM_WIDTH);
-			displayNameField.setStartRow(true);
+			displayNameField = new MetaDataLangTextItem(useLangSetting);
+			displayNameField.setTitle("Display Name");
 
-			if (useLangSetting) {
-				langBtn = new ButtonItem("addDisplayName", "Languages");
-				langBtn.setShowTitle(false);
-				langBtn.setIcon("world.png");
-				langBtn.setStartRow(false);	//これを指定しないとButtonの場合、先頭にくる
-				langBtn.setEndRow(false);	//これを指定しないと次のFormItemが先頭にいく
-				langBtn.setPrompt(AdminClientMessageUtil.getString("ui_metadata_common_MetaCommonAttributeSection_eachLangDspName"));
-				langBtn.addClickHandler(new com.smartgwt.client.widgets.form.fields.events.ClickHandler() {
-
-					@Override
-					public void onClick(com.smartgwt.client.widgets.form.fields.events.ClickEvent event) {
-
-						if (attrPane.localizedDisplayNameList == null) {
-							attrPane.localizedDisplayNameList = new ArrayList<LocalizedStringDefinition>();
-						}
-						LocalizedStringSettingDialog dialog = new LocalizedStringSettingDialog(attrPane.localizedDisplayNameList);
-						dialog.show();
-
-					}
-				});
-			}
-
-			//リサイズさせたくないが、設定できない
-			descriptionField = new TextAreaItem("description", "Description");
-			descriptionField.setWidth("100%");
+			descriptionField = new MtpTextAreaItem();
+			descriptionField.setTitle("Description");
 			descriptionField.setHeight(55);
-			descriptionField.setColSpan(4);
-			descriptionField.setStartRow(true);
+			descriptionField.setColSpan(2);
 
-			if (useLangSetting) {
-				form.setItems(nameField, displayNameField, langBtn, new SpacerItem(), descriptionField);
-			} else {
-				form.setItems(nameField, displayNameField, new SpacerItem(), descriptionField);
-			}
+			form.setItems(nameField, displayNameField, descriptionField);
 
 			addMember(form);
+		}
+
+		@Override
+		public void setDefinition(T definition) {
+			nameField.setValue(definition.getName());
+			displayNameField.setValue(definition.getDisplayName());
+			descriptionField.setValue(definition.getDescription());
+		}
+
+		@Override
+		public T getEditDefinition(T definition) {
+			definition.setName(SmartGWTUtil.getStringValue(nameField));
+			definition.setDisplayName(SmartGWTUtil.getStringValue(displayNameField));
+			definition.setDescription(SmartGWTUtil.getStringValue(descriptionField));
+			return definition;
+		}
+
+		@Override
+		public boolean validate() {
+			return form.validate();
+		}
+
+		@Override
+		public void clearErrors() {
+			form.clearErrors(true);
+		}
+
+		public void setLocalizedDisplayNameList(List<LocalizedStringDefinition> localizedDisplayNameList) {
+			displayNameField.setLocalizedList(localizedDisplayNameList);
+		}
+
+		public List<LocalizedStringDefinition> getLocalizedDisplayNameList() {
+			return displayNameField.getLocalizedList();
 		}
 	}
 
@@ -389,30 +382,6 @@ public class MetaCommonAttributeSection extends SectionStackSection {
 			});
 		}
 
-//		private boolean isDataSharableEnabled() {
-//			//TODO instanceofで判断したほうがいいいかも
-//			//Entity、Cube(念のためSubClassも)の場合はデータ共有設定可
-//			return (EntityDefinition.class.getName().equals(defClass.getName())
-//					|| CubeDefinition.class.getName().equals(defClass.getName())
-//					|| CsvCubeDefinition.class.getName().equals(defClass.getName())
-//					|| EntityCubeDefinition.class.getName().equals(defClass.getName())
-//					|| JdbcCubeDefinition.class.getName().equals(defClass.getName())
-//					|| DerivedCubeDefinition.class.getName().equals(defClass.getName())
-//					);
-//		}
-//
-//		private boolean isPermissionSharableEnabled() {
-//			//TODO instanceofで判断したほうがいいいかも
-//			return (EntityDefinition.class.getName().equals(defClass.getName())
-//					|| ActionMappingDefinition.class.getName().equals(defClass.getName())
-//					|| WebAPIDefinition.class.getName().equals(defClass.getName())
-//					|| WorkflowDefinition.class.getName().equals(defClass.getName())
-//					|| CubeDefinition.class.getName().equals(defClass.getName())
-//					|| CsvCubeDefinition.class.getName().equals(defClass.getName())
-//					|| EntityCubeDefinition.class.getName().equals(defClass.getName())
-//					|| JdbcCubeDefinition.class.getName().equals(defClass.getName())
-//					|| DerivedCubeDefinition.class.getName().equals(defClass.getName())
-//					);
-//		}
 	}
+
 }

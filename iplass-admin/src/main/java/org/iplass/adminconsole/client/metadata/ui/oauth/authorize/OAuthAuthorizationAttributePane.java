@@ -139,7 +139,6 @@ public class OAuthAuthorizationAttributePane extends VLayout implements Editable
 
 		selConsentTemplate = new MetaDataSelectItem(TemplateDefinition.class);
 		selConsentTemplate.setTitle("Consent Template");
-		selConsentTemplate.setWidth("100%");
 
 		gridClientPolicies = new ClientPolicyGridPane();
 		CanvasItem canvasClientPolicies = new CanvasItem();
@@ -176,6 +175,10 @@ public class OAuthAuthorizationAttributePane extends VLayout implements Editable
 		boolean pnlSubjectIdentifierTypeValidate = pnlSubjectIdentifierType.validate();
 
 		return formValidate && gridScopesValidate && gridClientPoliciesValidate && pnlSubjectIdentifierTypeValidate;
+	}
+
+	@Override
+	public void clearErrors() {
 	}
 
 }

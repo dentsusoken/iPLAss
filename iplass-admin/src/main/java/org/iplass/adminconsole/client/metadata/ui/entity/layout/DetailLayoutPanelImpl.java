@@ -84,7 +84,7 @@ public class DetailLayoutPanelImpl extends MetaDataMainEditPane implements Detai
 	/** ヘッダ部分 */
 	private MetaCommonHeaderPane headerPane;
 	/** 共通属性部分 */
-	private MetaCommonAttributeSection commonSection;
+	private MetaCommonAttributeSection<EntityView> commonSection;
 
 
 	/** メニュー部分のレイアウト */
@@ -122,7 +122,7 @@ public class DetailLayoutPanelImpl extends MetaDataMainEditPane implements Detai
 		});
 
 		//共通属性
-		commonSection = new MetaCommonAttributeSection(targetNode, EntityView.class);
+		commonSection = new MetaCommonAttributeSection<>(targetNode, EntityView.class);
 
 		//View編集画面
 		VLayout viewEditPane = new VLayout();
@@ -255,9 +255,10 @@ public class DetailLayoutPanelImpl extends MetaDataMainEditPane implements Detai
 
 			if (entry == null || entry.getDefinition() == null) {
 				//共通属性（Entityからコピー）
-				commonSection.setName(ed.getName());
-				commonSection.setDisplayName(ed.getDisplayName());
-				//commonSection.setDescription(ed.getDescription());
+				EntityView copy = new EntityView();
+				copy.setName(ed.getName());
+				copy.setDisplayName(ed.getDisplayName());
+				commonSection.setDefinition(copy);
 
 				//まだ未保存なのでShared設定利用不可
 				commonSection.setSharedEditDisabled(true);
@@ -272,10 +273,7 @@ public class DetailLayoutPanelImpl extends MetaDataMainEditPane implements Detai
 			curVersion = entry.getDefinitionInfo().getVersion();
 			curDefinitionId = entry.getDefinitionInfo().getObjDefId();
 
-			//共通属性
-			commonSection.setName(curDefinition.getName());
-			commonSection.setDisplayName(curDefinition.getDisplayName());
-			commonSection.setDescription(curDefinition.getDescription());
+			commonSection.setDefinition(curDefinition);
 
 			//保存されているのでShared設定利用可能
 			commonSection.setSharedEditDisabled(false);
@@ -340,10 +338,7 @@ public class DetailLayoutPanelImpl extends MetaDataMainEditPane implements Detai
 					//View定義を新規作成
 					EntityView tmp = new EntityView();
 
-					tmp.setName(commonSection.getName());
-					tmp.setDisplayName(commonSection.getDisplayName());
-					tmp.setDescription(commonSection.getDescription());
-
+					commonSection.getEditDefinition(tmp);
 					tmp.setDefinitionName(defName);
 
 					if (fv.getName() == null) {
@@ -356,10 +351,7 @@ public class DetailLayoutPanelImpl extends MetaDataMainEditPane implements Detai
 				} else {
 					//View定義を更新
 
-					ev.setName(commonSection.getName());
-					ev.setDisplayName(commonSection.getDisplayName());
-					ev.setDescription(commonSection.getDescription());
-
+					commonSection.getEditDefinition(ev);
 					ev.setDefinitionName(defName);
 
 					if (fv.getName() == null) {
@@ -671,9 +663,7 @@ public class DetailLayoutPanelImpl extends MetaDataMainEditPane implements Detai
 				}
 
 				if (ev.getViews().size() > 0) {
-					ev.setName(commonSection.getName());
-					ev.setDisplayName(commonSection.getDisplayName());
-					ev.setDescription(commonSection.getDescription());
+					commonSection.getEditDefinition(ev);
 					ev.setDefinitionName(defName);
 					updateEntityView(ev, true);
 				} else {

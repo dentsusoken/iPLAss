@@ -91,7 +91,7 @@ public class SmsMailTemplateEditPane extends MetaDataMainEditPane {
 	/** ヘッダ部分 */
 	private MetaCommonHeaderPane headerPane;
 	/** 共通属性部分 */
-	private MetaCommonAttributeSection commonSection;
+	private MetaCommonAttributeSection<SmsMailTemplateDefinition> commonSection;
 
 	/** 個別属性部分（デフォルト） */
 	private SmsMailTemplateAttributePane smsMailTemplateAttrPane;
@@ -122,7 +122,7 @@ public class SmsMailTemplateEditPane extends MetaDataMainEditPane {
 		});
 
 		//共通属性
-		commonSection = new MetaCommonAttributeSection(targetNode, SmsMailTemplateDefinition.class);
+		commonSection = new MetaCommonAttributeSection<>(targetNode, SmsMailTemplateDefinition.class);
 
 		//個別属性
 		smsMailTemplateAttrPane = new SmsMailTemplateAttributePane();
@@ -192,11 +192,7 @@ public class SmsMailTemplateEditPane extends MetaDataMainEditPane {
 		this.curVersion = entry.getDefinitionInfo().getVersion();
 		this.curDefinitionId = entry.getDefinitionInfo().getObjDefId();
 
-		//共通属性
-		commonSection.setName(curDefinition.getName());
-		commonSection.setDisplayName(curDefinition.getDisplayName());
-		commonSection.setDescription(curDefinition.getDescription());
-
+		commonSection.setDefinition(curDefinition);
 		smsMailTemplateAttrPane.setDefinition(curDefinition);
 
 		multiSmsMailTemplateAttrPane.init(curDefinition.getLocalizedSmsMailTemplateList());
@@ -272,9 +268,7 @@ public class SmsMailTemplateEditPane extends MetaDataMainEditPane {
 				public void execute(Boolean value) {
 					if (value) {
 						SmsMailTemplateDefinition definition = curDefinition;
-						definition.setName(commonSection.getName());
-						definition.setDisplayName(commonSection.getDisplayName());
-						definition.setDescription(commonSection.getDescription());
+						definition = commonSection.getEditDefinition(definition);
 						definition = smsMailTemplateAttrPane.getEditDefinition(definition);
 
 						updateSmsMailTemplate(definition, true);

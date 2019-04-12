@@ -204,7 +204,6 @@ public class OAuthClientAttributePane extends VLayout implements EditablePane<OA
 
 		selAuthorizationServer = new MetaDataSelectItem(OAuthAuthorizationDefinition.class);
 		selAuthorizationServer.setTitle("OAuth Authorization");
-		selAuthorizationServer.setWidth("100%");
 
 		selClientType = new SelectItem();
 		selClientType.setTitle("Client Type");
@@ -295,6 +294,10 @@ public class OAuthClientAttributePane extends VLayout implements EditablePane<OA
 		boolean formValidate = form.validate();
 		boolean grantTypeValidate = formGrantType.validate();
 		return formValidate && grantTypeValidate;
+	}
+
+	@Override
+	public void clearErrors() {
 	}
 
 }

@@ -109,6 +109,10 @@ public class ClientPolicyGridPane extends VLayout implements EditablePane<OAuthA
 		return grid.validate();
 	}
 
+	@Override
+	public void clearErrors() {
+	}
+
 	private static class ClientPolicyGrid extends ListGrid implements EditablePane<OAuthAuthorizationDefinition> {
 
 		private enum FIELD_NAME {
@@ -184,6 +188,10 @@ public class ClientPolicyGridPane extends VLayout implements EditablePane<OAuthA
 		@Override
 		public boolean validate() {
 			return true;
+		}
+
+		@Override
+		public void clearErrors() {
 		}
 
 		public void addClientPolicy() {
@@ -513,6 +521,9 @@ public class ClientPolicyGridPane extends VLayout implements EditablePane<OAuthA
 			return true;
 		}
 
+		@Override
+		public void clearErrors() {
+		}
 	}
 
 	private static class ConsentTypeEditPane extends VLayout implements EditablePane<ClientPolicyDefinition> {
@@ -635,6 +646,10 @@ public class ClientPolicyGridPane extends VLayout implements EditablePane<OAuthA
 		@Override
 		public boolean validate() {
 			return form.validate();
+		}
+
+		@Override
+		public void clearErrors() {
 		}
 
 		private void typeChanged() {

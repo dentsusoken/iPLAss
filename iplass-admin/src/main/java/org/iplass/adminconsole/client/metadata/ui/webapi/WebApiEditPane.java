@@ -72,7 +72,7 @@ public class WebApiEditPane extends MetaDataMainEditPane {
 	/** ヘッダ部分 */
 	private MetaCommonHeaderPane headerPane;
 	/** 共通属性部分 */
-	private MetaCommonAttributeSection commonSection;
+	private MetaCommonAttributeSection<WebApiDefinition> commonSection;
 
 	/** 共通属性部分 */
 	private WebApiAttributePane attributePane;
@@ -119,7 +119,7 @@ public class WebApiEditPane extends MetaDataMainEditPane {
 		});
 
 		//共通属性
-		commonSection = new MetaCommonAttributeSection(targetNode, WebApiDefinition.class);
+		commonSection = new MetaCommonAttributeSection<>(targetNode, WebApiDefinition.class);
 
 		//属性編集部分
 		attributePane = new WebApiAttributePane();
@@ -261,11 +261,7 @@ public class WebApiEditPane extends MetaDataMainEditPane {
 		this.curVersion = entry.getDefinitionInfo().getVersion();
 		this.curDefinitionId = entry.getDefinitionInfo().getObjDefId();
 
-		//共通属性
-		commonSection.setName(curDefinition.getName());
-		commonSection.setDisplayName(curDefinition.getDisplayName());
-		commonSection.setDescription(curDefinition.getDescription());
-
+		commonSection.setDefinition(curDefinition);
 		attributePane.setDefinition(curDefinition);
 		corsAttributePane.setDefinition(curDefinition);
 		oauthAttributePane.setDefinition(curDefinition);
@@ -360,10 +356,7 @@ public class WebApiEditPane extends MetaDataMainEditPane {
 					if (value) {
 						WebApiDefinition definition = new WebApiDefinition();
 
-						definition.setName(commonSection.getName());
-						definition.setDisplayName(commonSection.getDisplayName());
-						definition.setDescription(commonSection.getDescription());
-
+						definition = commonSection.getEditDefinition(definition);
 						definition = attributePane.getEditDefinition(definition);
 						definition = corsAttributePane.getEditDefinition(definition);
 						definition = oauthAttributePane.getEditDefinition(definition);

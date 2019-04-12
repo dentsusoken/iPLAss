@@ -69,7 +69,7 @@ public class OAuthResourceServerEditPane extends MetaDataMainEditPane {
 	/** ヘッダ部分 */
 	private MetaCommonHeaderPane headerPane;
 	/** 共通属性部分 */
-	private MetaCommonAttributeSection commonSection;
+	private MetaCommonAttributeSection<OAuthResourceServerDefinition> commonSection;
 
 	/** 個別属性部分 */
 	private OAuthResourceServerAttributePane attributePane;
@@ -131,7 +131,7 @@ public class OAuthResourceServerEditPane extends MetaDataMainEditPane {
 
 
 		// 共通属性
-		commonSection = new MetaCommonAttributeSection(targetNode, OAuthResourceServerDefinition.class, false);
+		commonSection = new MetaCommonAttributeSection<>(targetNode, OAuthResourceServerDefinition.class, false);
 
 		//共通属性を開く
 		commonSection.setExpanded(true);
@@ -189,11 +189,7 @@ public class OAuthResourceServerEditPane extends MetaDataMainEditPane {
 		this.curVersion = entry.getDefinitionInfo().getVersion();
 		this.curDefinitionId = entry.getDefinitionInfo().getObjDefId();
 
-		// 共通属性
-		commonSection.setName(curDefinition.getName());
-		commonSection.setDisplayName(curDefinition.getDisplayName());
-		commonSection.setDescription(curDefinition.getDescription());
-
+		commonSection.setDefinition(curDefinition);
 		attributePane.setDefinition(curDefinition);
 	}
 
@@ -215,10 +211,7 @@ public class OAuthResourceServerEditPane extends MetaDataMainEditPane {
 			public void execute(Boolean value) {
 				if (value) {
 					final OAuthResourceServerDefinition definition = curDefinition;
-					definition.setName(commonSection.getName());
-					definition.setDisplayName(commonSection.getDisplayName());
-					definition.setDescription(commonSection.getDescription());
-
+					commonSection.getEditDefinition(definition);
 					attributePane.getEditDefinition(definition);
 
 					updateDefinition(definition, true);

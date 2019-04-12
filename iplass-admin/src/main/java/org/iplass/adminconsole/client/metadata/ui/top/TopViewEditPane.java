@@ -71,7 +71,7 @@ public class TopViewEditPane extends MetaDataMainEditPane {
 	/** ヘッダ部分 */
 	private MetaCommonHeaderPane headerPane;
 	/** 共通属性部分 */
-	private MetaCommonAttributeSection commonSection;
+	private MetaCommonAttributeSection<TopViewDefinition> commonSection;
 
 	/** メニューエリア */
 	private TopViewMenuAreaPane menuArea;
@@ -108,7 +108,7 @@ public class TopViewEditPane extends MetaDataMainEditPane {
 		});
 
 		//共通属性
-		commonSection = new MetaCommonAttributeSection(targetNode, TopViewDefinition.class);
+		commonSection = new MetaCommonAttributeSection<>(targetNode, TopViewDefinition.class);
 
 //		//共通パネル
 //		attributePane = new TopViewAttributePane();
@@ -155,12 +155,7 @@ public class TopViewEditPane extends MetaDataMainEditPane {
 				TopViewEditPane.this.curVersion = entry.getDefinitionInfo().getVersion();
 				TopViewEditPane.this.curDefinitionId = entry.getDefinitionInfo().getObjDefId();
 
-
-				//共通属性
-				commonSection.setName(definition.getName());
-				commonSection.setDisplayName(definition.getDisplayName());
-				commonSection.setDescription(definition.getDescription());
-
+				commonSection.setDefinition(definition);
 				menuArea.setWidgets(definition.getWidgets());
 				mainArea.setParts(definition.getParts());
 			}
@@ -179,10 +174,7 @@ public class TopViewEditPane extends MetaDataMainEditPane {
 	}
 
 	private void setValue() {
-		definition.setName(commonSection.getName());
-		definition.setDisplayName(commonSection.getDisplayName());
-		definition.setDescription(commonSection.getDescription());
-
+		definition = commonSection.getEditDefinition(definition);
 		definition.setWidgets(menuArea.getWidgets());
 		definition.setParts(mainArea.getParts());
 	}

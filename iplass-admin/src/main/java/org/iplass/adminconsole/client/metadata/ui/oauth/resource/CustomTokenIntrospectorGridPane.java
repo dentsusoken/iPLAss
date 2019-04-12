@@ -108,6 +108,10 @@ public class CustomTokenIntrospectorGridPane extends VLayout implements Editable
 		return grid.validate();
 	}
 
+	@Override
+	public void clearErrors() {
+	}
+
 	private static class CustomTokenIntrospectorGrid extends ListGrid implements EditablePane<OAuthResourceServerDefinition> {
 
 		private enum FIELD_NAME {
@@ -183,6 +187,10 @@ public class CustomTokenIntrospectorGridPane extends VLayout implements Editable
 		@Override
 		public boolean validate() {
 			return true;
+		}
+
+		@Override
+		public void clearErrors() {
 		}
 
 		public void addCustomTokenIntrospector() {

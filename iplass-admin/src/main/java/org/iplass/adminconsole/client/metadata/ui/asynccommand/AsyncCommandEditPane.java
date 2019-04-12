@@ -63,7 +63,7 @@ public class AsyncCommandEditPane extends MetaDataMainEditPane {
 	/** ヘッダ部分 */
 	private MetaCommonHeaderPane headerPane;
 	/** 共通属性部分 */
-	private MetaCommonAttributeSection commonSection;
+	private MetaCommonAttributeSection<AsyncCommandDefinition> commonSection;
 
 	/** AsyncCommand属性部分 */
 	private AsyncCommandAttributePane asyncCommandAttributePane;
@@ -92,7 +92,7 @@ public class AsyncCommandEditPane extends MetaDataMainEditPane {
 		});
 
 		//共通属性
-		commonSection = new MetaCommonAttributeSection(targetNode, AsyncCommandDefinition.class);
+		commonSection = new MetaCommonAttributeSection<>(targetNode, AsyncCommandDefinition.class);
 
 		//AsyncCommand編集部分
 		asyncCommandAttributePane = new AsyncCommandAttributePane();
@@ -151,11 +151,7 @@ public class AsyncCommandEditPane extends MetaDataMainEditPane {
 		this.curVersion = entry.getDefinitionInfo().getVersion();
 		this.curDefinitionId = entry.getDefinitionInfo().getObjDefId();
 
-		//共通属性
-		commonSection.setName(curDefinition.getName());
-		commonSection.setDisplayName(curDefinition.getDisplayName());
-		commonSection.setDescription(curDefinition.getDescription());
-
+		commonSection.setDefinition(curDefinition);
 		asyncCommandAttributePane.setDefinition(curDefinition);
 		commandConfigPane.setConfig(curDefinition.getCommandConfig());
 	}
@@ -231,10 +227,7 @@ public class AsyncCommandEditPane extends MetaDataMainEditPane {
 					if (value) {
 						AsyncCommandDefinition definition = new AsyncCommandDefinition();
 
-						definition.setName(commonSection.getName());
-						definition.setDisplayName(commonSection.getDisplayName());
-						definition.setDescription(commonSection.getDescription());
-
+						definition = commonSection.getEditDefinition(definition);
 						definition = asyncCommandAttributePane.getEditDefinition(definition);
 						definition.setCommandConfig(commandConfigPane.getEditCommandConfig());
 

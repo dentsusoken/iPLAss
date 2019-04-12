@@ -65,7 +65,7 @@ public class OAuthAuthorizationEditPane extends MetaDataMainEditPane {
 	/** ヘッダ部分 */
 	private MetaCommonHeaderPane headerPane;
 	/** 共通属性部分 */
-	private MetaCommonAttributeSection commonSection;
+	private MetaCommonAttributeSection<OAuthAuthorizationDefinition> commonSection;
 
 	/** 個別属性部分 */
 	private OAuthAuthorizationAttributePane attributePane;
@@ -104,7 +104,7 @@ public class OAuthAuthorizationEditPane extends MetaDataMainEditPane {
 		});
 
 		// 共通属性
-		commonSection = new MetaCommonAttributeSection(targetNode, OAuthAuthorizationDefinition.class, false);
+		commonSection = new MetaCommonAttributeSection<>(targetNode, OAuthAuthorizationDefinition.class, false);
 
 		// 個別属性
 		attributePane = new OAuthAuthorizationAttributePane();
@@ -159,13 +159,7 @@ public class OAuthAuthorizationEditPane extends MetaDataMainEditPane {
 		this.curVersion = entry.getDefinitionInfo().getVersion();
 		this.curDefinitionId = entry.getDefinitionInfo().getObjDefId();
 
-		// 共通属性
-		commonSection.setName(curDefinition.getName());
-		commonSection.setDisplayName(curDefinition.getDisplayName());
-//		commonSection.setLocalizedDisplayNameList(curDefinition.getLocalizedDisplayNameList());
-		commonSection.setDescription(curDefinition.getDescription());
-
-		// OAuthAuthorizationDefinition属性
+		commonSection.setDefinition(curDefinition);
 		attributePane.setDefinition(curDefinition);
 	}
 
@@ -190,11 +184,7 @@ public class OAuthAuthorizationEditPane extends MetaDataMainEditPane {
 			public void execute(Boolean value) {
 				if (value) {
 					final OAuthAuthorizationDefinition definition = curDefinition;
-					definition.setName(commonSection.getName());
-					definition.setDisplayName(commonSection.getDisplayName());
-//					definition.setLocalizedDisplayNameList(commonSection.getLocalizedDisplayNameList());
-					definition.setDescription(commonSection.getDescription());
-
+					commonSection.getEditDefinition(definition);
 					attributePane.getEditDefinition(definition);
 
 					updateDefinition(definition, true);

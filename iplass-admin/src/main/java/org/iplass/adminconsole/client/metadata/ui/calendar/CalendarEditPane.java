@@ -56,7 +56,7 @@ public class CalendarEditPane extends MetaDataMainEditPane {
 	/** ヘッダ部分 */
 	private MetaCommonHeaderPane headerPane;
 	/** 共通属性部分 */
-	private MetaCommonAttributeSection commonSection;
+	private MetaCommonAttributeSection<EntityCalendar> commonSection;
 
 	/** 属性部分 */
 	private CalendarAttributePane attributePane;
@@ -99,7 +99,7 @@ public class CalendarEditPane extends MetaDataMainEditPane {
 		});
 
 		//共通属性
-		commonSection = new MetaCommonAttributeSection(targetNode, EntityCalendar.class, true);
+		commonSection = new MetaCommonAttributeSection<>(targetNode, EntityCalendar.class, true);
 
 		//Calendar属性編集部分
 		attributePane = new CalendarAttributePane();
@@ -181,12 +181,8 @@ public class CalendarEditPane extends MetaDataMainEditPane {
 		this.curVersion = entry.getDefinitionInfo().getVersion();
 		this.curDefinitionId = entry.getDefinitionInfo().getObjDefId();
 
-		//共通属性
-		commonSection.setName(curDefinition.getName());
-		commonSection.setDisplayName(curDefinition.getDisplayName());
-		commonSection.setDescription(curDefinition.getDescription());
+		commonSection.setDefinition(curDefinition);
 		commonSection.setLocalizedDisplayNameList(curDefinition.getLocalizedDisplayNameList());
-
 		attributePane.setCalendar(curDefinition);
 		calendarGrid.setCalendar(curDefinition);
 	}
@@ -262,23 +258,11 @@ public class CalendarEditPane extends MetaDataMainEditPane {
 
 						EntityCalendar calendar = new EntityCalendar();
 
-						calendar.setName(commonSection.getName());
-						calendar.setDisplayName(commonSection.getDisplayName());
-						calendar.setDescription(commonSection.getDescription());
+						calendar = commonSection.getEditDefinition(calendar);
 						calendar.setLocalizedDisplayNameList(commonSection.getLocalizedDisplayNameList());
-
-						//EntityCalendar属性のセット
 						calendar = attributePane.getEditCalendar(calendar);
 						calendar.setItems(calendarGrid.getItems());
 
-//						if (!defName.equals(calendar.getName())) {
-//							//名前が変更されているので、Delete⇒Insert
-//							updateNameCalendar(calendar, defName);
-//						} else {
-//							//Update
-//							updateCalendar(calendar);
-//						}
-						//Update
 						updateCalendar(calendar, true);
 					}
 				}

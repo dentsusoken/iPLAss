@@ -62,7 +62,7 @@ public class TemplateEditPane extends MetaDataMainEditPane {
 	/** ヘッダ部分 */
 	private MetaCommonHeaderPane headerPane;
 	/** Definition共通属性部分 */
-	private MetaCommonAttributeSection commonSection;
+	private MetaCommonAttributeSection<TemplateDefinition> commonSection;
 
 	/** Template共通属性部分 */
 	private TemplateAttributePane attributePane;
@@ -103,7 +103,7 @@ public class TemplateEditPane extends MetaDataMainEditPane {
 		});
 
 		//共通属性
-		commonSection = new MetaCommonAttributeSection(targetNode, TemplateDefinition.class, true);
+		commonSection = new MetaCommonAttributeSection<>(targetNode, TemplateDefinition.class, true);
 
 		//Template属性編集部分
 		attributePane = new TemplateAttributePane();
@@ -183,13 +183,8 @@ public class TemplateEditPane extends MetaDataMainEditPane {
 	private void setDefinition(TemplateDefinition definition) {
 		this.curDefinition = definition;
 
-		//共通属性
-		commonSection.setName(curDefinition.getName());
-		commonSection.setDisplayName(curDefinition.getDisplayName());
-		commonSection.setDescription(curDefinition.getDescription());
+		commonSection.setDefinition(curDefinition);
 		commonSection.setLocalizedDisplayNameList(curDefinition.getLocalizedDisplayNameList());
-
-		//Template共通属性
 		attributePane.setDefinition(curDefinition);
 
 		//Type別設定のクリア
@@ -421,11 +416,8 @@ public class TemplateEditPane extends MetaDataMainEditPane {
 						TemplateType type = attributePane.selectedType();
 						TemplateDefinition definition = TemplateType.typeOfDefinition(type);
 
-						definition.setName(commonSection.getName());
-						definition.setDisplayName(commonSection.getDisplayName());
-						definition.setDescription(commonSection.getDescription());
+						definition = commonSection.getEditDefinition(definition);
 						definition.setLocalizedDisplayNameList(commonSection.getLocalizedDisplayNameList());
-
 						definition = attributePane.getEditDefinition(definition);
 						definition = typeEditPane.getEditDefinition(definition);
 						definition = multilingualPane.getEditDefinition(definition);

@@ -71,7 +71,7 @@ public class OAuthClientEditPane extends MetaDataMainEditPane {
 	private MetaCommonHeaderPane headerPane;
 	private IButton btnGenerateCredential;
 	/** 共通属性部分 */
-	private MetaCommonAttributeSection commonSection;
+	private MetaCommonAttributeSection<OAuthClientDefinition> commonSection;
 
 	/** 個別属性部分 */
 	private OAuthClientAttributePane clientAttributePane;
@@ -133,7 +133,7 @@ public class OAuthClientEditPane extends MetaDataMainEditPane {
 		headerPane.addMember(btnDeleteOldCredential);
 
 		// 共通属性
-		commonSection = new MetaCommonAttributeSection(targetNode, OAuthClientDefinition.class, true);
+		commonSection = new MetaCommonAttributeSection<>(targetNode, OAuthClientDefinition.class, true);
 
 		// 個別属性
 		clientAttributePane = new OAuthClientAttributePane();
@@ -188,11 +188,8 @@ public class OAuthClientEditPane extends MetaDataMainEditPane {
 		this.curVersion = entry.getDefinitionInfo().getVersion();
 		this.curDefinitionId = entry.getDefinitionInfo().getObjDefId();
 
-		// 共通属性
-		commonSection.setName(curDefinition.getName());
-		commonSection.setDisplayName(curDefinition.getDisplayName());
+		commonSection.setDefinition(curDefinition);
 		commonSection.setLocalizedDisplayNameList(curDefinition.getLocalizedDisplayNameList());
-		commonSection.setDescription(curDefinition.getDescription());
 
 		if (curDefinition.getClientType() == null
 				|| curDefinition.getClientType() == ClientType.PUBLIC) {
@@ -226,11 +223,8 @@ public class OAuthClientEditPane extends MetaDataMainEditPane {
 			public void execute(Boolean value) {
 				if (value) {
 					final OAuthClientDefinition definition = curDefinition;
-					definition.setName(commonSection.getName());
-					definition.setDisplayName(commonSection.getDisplayName());
+					commonSection.getEditDefinition(definition);
 					definition.setLocalizedDisplayNameList(commonSection.getLocalizedDisplayNameList());
-					definition.setDescription(commonSection.getDescription());
-
 					clientAttributePane.getEditDefinition(definition);
 
 					updateDefinition(definition, true);

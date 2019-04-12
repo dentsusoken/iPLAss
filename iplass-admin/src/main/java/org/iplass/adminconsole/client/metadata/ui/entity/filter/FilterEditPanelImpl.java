@@ -85,7 +85,7 @@ public class FilterEditPanelImpl extends MetaDataMainEditPane implements FilterE
 	/** ヘッダ部分 */
 	private MetaCommonHeaderPane headerPane;
 	/** 共通属性部分 */
-	private MetaCommonAttributeSection commonSection;
+	private MetaCommonAttributeSection<EntityFilter> commonSection;
 
 	private SectionStack filterListStack;
 	private SectionStackSection filterListSection;
@@ -143,7 +143,7 @@ public class FilterEditPanelImpl extends MetaDataMainEditPane implements FilterE
 		});
 
 		//共通属性
-		commonSection = new MetaCommonAttributeSection(targetNode, EntityFilter.class);
+		commonSection = new MetaCommonAttributeSection<>(targetNode, EntityFilter.class);
 
 		//Filter編集用部分
 		VLayout filterPane = new VLayout();
@@ -382,9 +382,7 @@ public class FilterEditPanelImpl extends MetaDataMainEditPane implements FilterE
 					curDefinitionId = entry.getDefinitionInfo().getObjDefId();
 
 					//共通属性
-					commonSection.setName(ef.getName());
-					commonSection.setDisplayName(ef.getDisplayName());
-					commonSection.setDescription(ef.getDescription());
+					commonSection.setDefinition(ef);
 
 					//保存されているのでShared設定利用可能
 					commonSection.setSharedEditDisabled(false);
@@ -392,9 +390,10 @@ public class FilterEditPanelImpl extends MetaDataMainEditPane implements FilterE
 					//未登録時
 
 					//共通属性（Entityからコピー）
-					commonSection.setName(ed.getName());
-					commonSection.setDisplayName(ed.getDisplayName());
-					//commonSection.setDescription(ed.getDescription());
+					EntityFilter copy = new EntityFilter();
+					copy.setName(ed.getName());
+					copy.setDisplayName(ed.getDisplayName());
+					commonSection.setDefinition(copy);
 
 					//まだ未保存なのでShared設定利用不可
 					commonSection.setSharedEditDisabled(true);
@@ -603,16 +602,12 @@ public class FilterEditPanelImpl extends MetaDataMainEditPane implements FilterE
 					if (value) {
 						if (ef == null) {
 							ef = new EntityFilter();
-							ef.setName(commonSection.getName());
-							ef.setDisplayName(commonSection.getDisplayName());
-							ef.setDescription(commonSection.getDescription());
+							commonSection.getEditDefinition(ef);
 							ef.setDefinitionName(defName);
 							getItems();
 							createEntityFilter(ef);
 						} else {
-							ef.setName(commonSection.getName());
-							ef.setDisplayName(commonSection.getDisplayName());
-							ef.setDescription(commonSection.getDescription());
+							commonSection.getEditDefinition(ef);
 							getItems();
 							updateEntityFilter(ef, true);
 						}

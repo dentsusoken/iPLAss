@@ -68,7 +68,7 @@ public class TreeViewEditPane extends MetaDataMainEditPane {
 	/** ヘッダ部分 */
 	private MetaCommonHeaderPane headerPane;
 	/** 共通属性部分 */
-	private MetaCommonAttributeSection commonSection;
+	private MetaCommonAttributeSection<TreeView> commonSection;
 
 	private TreeViewGridColModelPane colModelPane;
 	/** ツリー部分 */
@@ -110,7 +110,7 @@ public class TreeViewEditPane extends MetaDataMainEditPane {
 		});
 
 		//共通属性
-		commonSection = new MetaCommonAttributeSection(targetNode, TreeView.class, true);
+		commonSection = new MetaCommonAttributeSection<>(targetNode, TreeView.class, true);
 
 
 		//メイン編集領域
@@ -203,12 +203,8 @@ public class TreeViewEditPane extends MetaDataMainEditPane {
 		this.curVersion = entry.getDefinitionInfo().getVersion();
 		this.curDefinitionId = entry.getDefinitionInfo().getObjDefId();
 
-		//共通属性
-		commonSection.setName(curDefinition.getName());
-		commonSection.setDisplayName(curDefinition.getDisplayName());
-		commonSection.setDescription(curDefinition.getDescription());
+		commonSection.setDefinition(curDefinition);
 		commonSection.setLocalizedDisplayNameList(curDefinition.getLocalizedDisplayNameList());
-
 		colModelPane.setDefinition(curDefinition.getColModel());
 		treeGrid.setTreeView(curDefinition);
 	}
@@ -284,9 +280,10 @@ public class TreeViewEditPane extends MetaDataMainEditPane {
 
 						TreeView editTreeView = new TreeView();
 
-						editTreeView.setName(commonSection.getName());
-						editTreeView.setDisplayName(commonSection.getDisplayName());
-						editTreeView.setDescription(commonSection.getDescription());
+						commonSection.getEditDefinition(editTreeView);
+//						editTreeView.setName(commonSection.getName());
+//						editTreeView.setDisplayName(commonSection.getDisplayName());
+//						editTreeView.setDescription(commonSection.getDescription());
 						editTreeView.setLocalizedDisplayNameList(commonSection.getLocalizedDisplayNameList());
 
 						//TreeView属性のセット

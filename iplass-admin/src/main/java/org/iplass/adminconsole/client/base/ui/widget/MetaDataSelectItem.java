@@ -22,17 +22,17 @@ package org.iplass.adminconsole.client.base.ui.widget;
 
 import org.iplass.adminconsole.client.base.event.AdminConsoleGlobalEventBus;
 import org.iplass.adminconsole.client.base.event.ViewMetaDataEvent;
+import org.iplass.adminconsole.client.base.ui.widget.form.MtpSelectItem;
 import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
 import org.iplass.adminconsole.client.metadata.data.MetaDataNameDS;
 import org.iplass.adminconsole.client.metadata.data.MetaDataNameDS.MetaDataNameDSOption;
 import org.iplass.mtp.definition.Definition;
 
 import com.smartgwt.client.widgets.form.fields.FormItemIcon;
-import com.smartgwt.client.widgets.form.fields.SelectItem;
 import com.smartgwt.client.widgets.form.fields.events.FormItemClickHandler;
 import com.smartgwt.client.widgets.form.fields.events.FormItemIconClickEvent;
 
-public class MetaDataSelectItem extends SelectItem {
+public class MetaDataSelectItem extends MtpSelectItem implements MtpWidgetConstants {
 
 	public MetaDataSelectItem(final Class<? extends Definition> definition) {
 		this(definition, new MetaDataNameDSOption(true, false));
@@ -42,7 +42,7 @@ public class MetaDataSelectItem extends SelectItem {
 		super();
 
 		FormItemIcon icon = new FormItemIcon();
-		icon.setSrc(CommonIconConstants.COMMON_ICON_SHOW_META_DATA);
+		icon.setSrc(ICON_SHOW_META_DATA);
 		icon.addFormItemClickHandler(new FormItemClickHandler() {
 
 			@Override

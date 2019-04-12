@@ -53,6 +53,10 @@ public class OAuthResourceServerAttributePane extends VLayout implements Editabl
 		return gridCustomTokenIntrospector.validate();
 	}
 
+	@Override
+	public void clearErrors() {
+	}
+
 	private void initialize() {
 
 		setMargin(5);

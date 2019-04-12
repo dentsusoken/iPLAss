@@ -73,7 +73,7 @@ public class UtilityClassEditPane extends MetaDataMainEditPane {
 	/** ヘッダ部分 */
 	private MetaCommonHeaderPane headerPane;
 	/** 共通属性部分 */
-	private MetaCommonAttributeSection commonSection;
+	private MetaCommonAttributeSection<UtilityClassDefinition> commonSection;
 
 	/** 個別属性部分 */
 	private UtilityClassAttributePane utilityClassAttrPane;
@@ -100,7 +100,7 @@ public class UtilityClassEditPane extends MetaDataMainEditPane {
 		});
 
 		//共通属性
-		commonSection = new MetaCommonAttributeSection(targetNode, UtilityClassDefinition.class);
+		commonSection = new MetaCommonAttributeSection<>(targetNode, UtilityClassDefinition.class);
 
 		//個別属性
 		utilityClassAttrPane = new UtilityClassAttributePane();
@@ -157,11 +157,7 @@ public class UtilityClassEditPane extends MetaDataMainEditPane {
 		this.curVersion = entry.getDefinitionInfo().getVersion();
 		this.curDefinitionId = entry.getDefinitionInfo().getObjDefId();
 
-		//共通属性
-		commonSection.setName(curDefinition.getName());
-		commonSection.setDisplayName(curDefinition.getDisplayName());
-		commonSection.setDescription(curDefinition.getDescription());
-
+		commonSection.setDefinition(curDefinition);
 		utilityClassAttrPane.setDefinition(curDefinition);
 	}
 
@@ -347,9 +343,7 @@ public class UtilityClassEditPane extends MetaDataMainEditPane {
 				public void execute(Boolean value) {
 					if (value) {
 						UtilityClassDefinition definition = curDefinition;
-						definition.setName(commonSection.getName());
-						definition.setDisplayName(commonSection.getDisplayName());
-						definition.setDescription(commonSection.getDescription());
+						definition = commonSection.getEditDefinition(definition);
 						definition = utilityClassAttrPane.getEditDefinition(definition);
 
 						updateUtilityClass(definition, true);

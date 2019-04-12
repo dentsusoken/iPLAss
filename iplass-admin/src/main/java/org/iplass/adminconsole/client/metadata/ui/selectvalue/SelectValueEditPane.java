@@ -85,7 +85,7 @@ public class SelectValueEditPane extends MetaDataMainEditPane {
 	/** ヘッダ部分 */
 	private MetaCommonHeaderPane headerPane;
 	/** 共通属性部分 */
-	private MetaCommonAttributeSection commonSection;
+	private MetaCommonAttributeSection<SelectValueDefinition> commonSection;
 
 	/** 個別属性部分 */
 	private SelectValueAttributePane selectValueAttributePane;
@@ -124,7 +124,7 @@ public class SelectValueEditPane extends MetaDataMainEditPane {
 		});
 
 		//共通属性
-		commonSection = new MetaCommonAttributeSection(targetNode, SelectValueDefinition.class);
+		commonSection = new MetaCommonAttributeSection<>(targetNode, SelectValueDefinition.class);
 
 		//個別属性
 		selectValueAttributePane = new SelectValueAttributePane();
@@ -201,12 +201,7 @@ public class SelectValueEditPane extends MetaDataMainEditPane {
 		this.curVersion = entry.getDefinitionInfo().getVersion();
 		this.curDefinitionId = entry.getDefinitionInfo().getObjDefId();
 
-		//共通属性
-		commonSection.setName(curDefinition.getName());
-		commonSection.setDisplayName(curDefinition.getDisplayName());
-		commonSection.setDescription(curDefinition.getDescription());
-
-		//SelectValue属性
+		commonSection.setDefinition(curDefinition);
 		selectValueAttributePane.setDefinition(curDefinition);
 	}
 
@@ -227,10 +222,7 @@ public class SelectValueEditPane extends MetaDataMainEditPane {
 			public void execute(Boolean value) {
 				if (value) {
 					final SelectValueDefinition definition = curDefinition;
-					definition.setName(commonSection.getName());
-					definition.setDisplayName(commonSection.getDisplayName());
-					definition.setDescription(commonSection.getDescription());
-
+					commonSection.getEditDefinition(definition);
 					selectValueAttributePane.getEditDefinition(definition);
 
 					updateDefinition(definition, true);
