@@ -67,6 +67,7 @@ public class Constants {
 	public static final String OUTPUT_TYPE = "outputType";
 	public static final String VIEW_TYPE = "viewType";
 	public static final String BACK_PATH = "backPath";
+	public static final String FROM_VIEW = "fromView";
 
 	public static final String VIEW_TYPE_DETAIL = "detail";
 	public static final String VIEW_TYPE_SEARCH = "search";
