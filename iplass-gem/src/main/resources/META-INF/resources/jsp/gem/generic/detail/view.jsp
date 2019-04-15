@@ -236,6 +236,7 @@ ${m:outputToken('FORM_XHTML', true)}
 <input type="hidden" name="copyTarget" value="<c:out value="<%=copyTarget.value()%>"/>" />
 <input type="hidden" name="backPath" value="<c:out value="<%=backPath%>"/>" />
 <input type="hidden" name="topViewListOffset" value="<c:out value="<%=topViewListOffset%>"/>" />
+<input type="hidden" name="fromView" value="true" />
 <%
 	if (oid != null) {
 %>

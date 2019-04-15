@@ -27,6 +27,7 @@
 <%@ page import="org.iplass.mtp.view.generic.element.section.*"%>
 <%@ page import="org.iplass.mtp.web.template.TemplateUtil" %>
 <%@ page import="org.iplass.gem.command.generic.delete.DeleteCommand"%>
+<%@ page import="org.iplass.gem.command.generic.detail.DetailViewCommand"%>
 <%@ page import="org.iplass.gem.command.generic.detail.DetailFormViewData" %>
 <%@ page import="org.iplass.gem.command.generic.detail.InsertCommand"%>
 <%@ page import="org.iplass.gem.command.generic.detail.UpdateCommand"%>
@@ -39,6 +40,8 @@
 	String backPath = request.getParameter(Constants.BACK_PATH);
 	String topViewListOffset = request.getParameter(Constants.TOPVIEW_LIST_OFFSET);
 	if (topViewListOffset == null) {topViewListOffset = "";}
+	boolean fromView = request.getParameter(Constants.FROM_VIEW) != null
+						&& "true".equals(request.getParameter(Constants.FROM_VIEW));
 
 	//コマンドから
 	DetailFormViewData data = (DetailFormViewData) request.getAttribute(Constants.DATA);
@@ -93,6 +96,8 @@
 	if (StringUtil.isEmpty(backPath)) {
 		if (StringUtil.isNotBlank(form.getCancelActionName())) {
 			cancel = form.getCancelActionName() + urlPath;
+		} else if (fromView) {
+			cancel = DetailViewCommand.VIEW_ACTION_NAME + urlPath;
 		} else {
 			cancel = SearchViewCommand.SEARCH_ACTION_NAME + urlPath;
 		}
@@ -178,7 +183,14 @@ function cancel() {
 
 	submitForm(contextPath + "/<%=StringUtil.escapeJavaScript(cancel)%>", {
 		<%=Constants.SEARCH_COND%>:$(":hidden[name='searchCond']").val(),
-		<%=Constants.TOPVIEW_LIST_OFFSET%>:"<%=StringUtil.escapeJavaScript(topViewListOffset)%>"
+		<%=Constants.TOPVIEW_LIST_OFFSET%>:"<%=StringUtil.escapeJavaScript(topViewListOffset)%>",
+<% if (fromView) { %>
+		<%=Constants.DEF_NAME%>:$(":hidden[name='defName']").val(),
+		<%=Constants.OID%>:$(":hidden[name='oid']").val(),
+		<%=Constants.VERSION%>:$(":hidden[name='version']").val(),
+		<%=Constants.TIMESTAMP%>:$(":hidden[name='timestamp']").val(),
+		<%=Constants.BACK_PATH%>:$(":hidden[name='backPath']").val()
+<% } %>
 	});
 }
 </script>
