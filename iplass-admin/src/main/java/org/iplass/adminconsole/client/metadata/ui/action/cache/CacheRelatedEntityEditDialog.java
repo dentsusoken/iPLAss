@@ -27,8 +27,9 @@ import java.util.List;
 import org.iplass.adminconsole.client.base.event.DataChangedEvent;
 import org.iplass.adminconsole.client.base.event.DataChangedHandler;
 import org.iplass.adminconsole.client.base.ui.widget.AbstractWindow;
+import org.iplass.adminconsole.client.base.ui.widget.MetaDataComboBoxItem;
 import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
-import org.iplass.adminconsole.client.metadata.data.entity.EntityDS;
+import org.iplass.mtp.entity.definition.EntityDefinition;
 import org.iplass.mtp.web.actionmapping.definition.cache.CacheRelatedEntityDefinition;
 import org.iplass.mtp.web.actionmapping.definition.cache.RelatedEntityType;
 
@@ -64,10 +65,8 @@ public class CacheRelatedEntityEditDialog extends AbstractWindow {
 		setShowModalMask(true);
 		centerInPage();
 
-		entityNameField = new ComboBoxItem("entityName", "Entity");
-		entityNameField.setWidth(250);
+		entityNameField = new MetaDataComboBoxItem(EntityDefinition.class, "Entity");
 		SmartGWTUtil.setRequired(entityNameField);
-		EntityDS.setDataSource(entityNameField);
 
 		relatedEntityTypeField = new SelectItem("relatedEntityType", "Type");
 		relatedEntityTypeField.setWidth(250);

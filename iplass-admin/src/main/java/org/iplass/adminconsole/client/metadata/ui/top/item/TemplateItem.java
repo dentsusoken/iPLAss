@@ -26,8 +26,8 @@ import java.util.List;
 import org.iplass.adminconsole.client.base.event.DataChangedEvent;
 import org.iplass.adminconsole.client.base.event.DataChangedHandler;
 import org.iplass.adminconsole.client.base.ui.widget.AbstractWindow;
+import org.iplass.adminconsole.client.base.ui.widget.MetaDataSelectItem;
 import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
-import org.iplass.adminconsole.client.metadata.data.MetaDataNameDS;
 import org.iplass.mtp.view.top.parts.TemplateParts;
 import org.iplass.mtp.web.template.definition.TemplateDefinition;
 
@@ -119,9 +119,7 @@ public class TemplateItem extends PartsItem {
 			form.setAlign(Alignment.CENTER);
 			form.setAutoFocus(true);
 
-			final SelectItem templateField = new SelectItem("template", "Template");
-			templateField.setWidth(250);
-			MetaDataNameDS.setDataSource(templateField, TemplateDefinition.class);
+			final SelectItem templateField = new MetaDataSelectItem(TemplateDefinition.class, "Template");
 			SmartGWTUtil.setRequired(templateField);
 			templateField.setValue(path);
 

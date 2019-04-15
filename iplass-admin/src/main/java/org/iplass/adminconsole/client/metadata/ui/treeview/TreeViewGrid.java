@@ -28,9 +28,9 @@ import java.util.List;
 import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
 import org.iplass.adminconsole.client.base.tenant.TenantInfoHolder;
 import org.iplass.adminconsole.client.base.ui.widget.AbstractWindow;
+import org.iplass.adminconsole.client.base.ui.widget.MetaDataSelectItem;
+import org.iplass.adminconsole.client.base.ui.widget.MetaDataSelectItem.ItemOption;
 import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
-import org.iplass.adminconsole.client.metadata.data.MetaDataNameDS;
-import org.iplass.adminconsole.client.metadata.data.MetaDataNameDS.MetaDataNameDSOption;
 import org.iplass.adminconsole.client.metadata.ui.common.EntityPropertyDragPane;
 import org.iplass.adminconsole.shared.metadata.rpc.MetaDataServiceAsync;
 import org.iplass.adminconsole.shared.metadata.rpc.MetaDataServiceFactory;
@@ -610,13 +610,12 @@ public class TreeViewGrid extends TreeGrid {
 			sortTypeField.setValueMap(new String[]{"ASC", "DESC"});
 			items.add(sortTypeField);
 
-			actionField = new SelectItem("action", AdminClientMessageUtil.getString("ui_metadata_treeview_TreeViewGrid_detailDispAction"));
+			actionField = new MetaDataSelectItem(ActionMappingDefinition.class, AdminClientMessageUtil.getString("ui_metadata_treeview_TreeViewGrid_detailDispAction"), new ItemOption(false, true));
 			SmartGWTUtil.addHoverToFormItem(actionField,
 					AdminClientMessageUtil.getString("ui_metadata_treeview_TreeViewGrid_actionToDisplayEntity"));
 			String action = item.getAction();
 			if (action == null || action.isEmpty()) action = "#default";
 			actionField.setValue(action);
-			MetaDataNameDS.setDataSource(actionField, ActionMappingDefinition.class, new MetaDataNameDSOption(false, true));
 			items.add(actionField);
 
 			viewNameField = new TextItem("viewName", AdminClientMessageUtil.getString("ui_metadata_treeview_TreeViewGrid_viewName"));

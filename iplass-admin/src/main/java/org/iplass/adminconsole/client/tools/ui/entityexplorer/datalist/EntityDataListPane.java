@@ -26,9 +26,10 @@ import java.util.List;
 import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
 import org.iplass.adminconsole.client.base.tenant.TenantInfoHolder;
 import org.iplass.adminconsole.client.base.ui.widget.MessageTabSet;
-import org.iplass.adminconsole.client.base.ui.widget.MetaDataViewButtonItem;
+import org.iplass.adminconsole.client.base.ui.widget.MetaDataSelectItem;
+import org.iplass.adminconsole.client.base.ui.widget.MetaDataSelectItem.ItemOption;
+import org.iplass.adminconsole.client.base.ui.widget.MtpWidgetConstants;
 import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
-import org.iplass.adminconsole.client.metadata.data.entity.EntityDS;
 import org.iplass.adminconsole.client.tools.data.entityexplorer.EntitySearchResultDS;
 import org.iplass.adminconsole.shared.metadata.rpc.MetaDataServiceAsync;
 import org.iplass.adminconsole.shared.metadata.rpc.MetaDataServiceFactory;
@@ -78,11 +79,9 @@ import com.smartgwt.client.widgets.toolbar.ToolStripButton;
  */
 public class EntityDataListPane extends VLayout {
 
-	private static final String SEARCH_ICON = "[SKIN]/actions/view.png";
 	private static final String EDIT_ICON = "icon_edit.png";
 	private static final String DELETE_ICON = "[SKINIMG]/MultiUploadItem/icon_remove_files.png";
 	private static final String PROGRESS_ICON = "[SKINIMG]/shared/progressCursorTracker.gif";
-	private static final String GRID_POPUP_ICON = "[SKINIMG]/actions/view.png";
 	private static final String EXPORT_ICON = "[SKIN]/actions/download.png";
 	private static final String IMPORT_ICON = "[SKIN]/SchemaViewer/operation.png";
 
@@ -250,12 +249,10 @@ public class EntityDataListPane extends VLayout {
 			form.setMargin(0);
 			form.setWrapItemTitles(false);
 			form.setAutoFocus(true);
-			form.setNumCols(3);
+			form.setColWidths(100, 300, 10);
 			form.setAutoWidth();
 
-			entityField = new SelectItem("selectEntity", "Entity");
-			entityField.setWidth(300);
-			EntityDS.setDataSource(entityField);
+			entityField = new MetaDataSelectItem(EntityDefinition.class, "Entity", new ItemOption(false, false, true));
 			entityField.addChangedHandler(new ChangedHandler() {
 
 				@Override
@@ -265,20 +262,7 @@ public class EntityDataListPane extends VLayout {
 			});
 			entityField.setValue(entityName);	//初期選択
 
-			MetaDataViewButtonItem showMetaButton = new MetaDataViewButtonItem(EntityDefinition.class.getName());
-			showMetaButton.setPrompt(SmartGWTUtil.getHoverString("view the selected entity definition"));
-			showMetaButton.setMetaDataShowClickHandler(
-					new MetaDataViewButtonItem.MetaDataShowClickHandler() {
-				@Override
-				public String targetDefinitionName() {
-					if (curDefinition != null) {
-						return curDefinition.getName();
-					}
-					return null;
-				}
-			});
-
-			form.setFields(entityField, showMetaButton);
+			form.setFields(entityField);
 
 			//------------------------
 			//Config Export
@@ -513,7 +497,7 @@ public class EntityDataListPane extends VLayout {
 						IButton button = new IButton();
 						button.setHeight(18);
 						button.setWidth(80);
-						button.setIcon(GRID_POPUP_ICON);
+						button.setIcon(MtpWidgetConstants.ICON_SEARCH);
 						button.setTitle("Show...");
 						button.addClickHandler(new ClickHandler() {
 							@Override
@@ -800,7 +784,7 @@ public class EntityDataListPane extends VLayout {
 			footer.setMembersMargin(10);
 
 			IButton searchButton = new IButton("Search");
-			searchButton.setIcon(SEARCH_ICON);
+			searchButton.setIcon(MtpWidgetConstants.ICON_SEARCH);
 			searchButton.setTooltip(SmartGWTUtil.getHoverString(AdminClientMessageUtil.getString("ui_tools_entityexplorer_EntityDataListPane_correCondEntitySearch")));
 			searchButton.addClickHandler(new ClickHandler() {
 
@@ -811,7 +795,7 @@ public class EntityDataListPane extends VLayout {
 			});
 
 			IButton countButton = new IButton("Count");
-			countButton.setIcon(SEARCH_ICON);
+			countButton.setIcon(MtpWidgetConstants.ICON_SEARCH);
 			countButton.setTooltip(SmartGWTUtil.getHoverString(AdminClientMessageUtil.getString("ui_tools_entityexplorer_EntityDataListPane_correCondEntityCount")));
 			countButton.addClickHandler(new ClickHandler() {
 

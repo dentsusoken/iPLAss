@@ -24,6 +24,7 @@ import java.util.LinkedHashMap;
 
 import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
 import org.iplass.adminconsole.client.base.ui.widget.AbstractWindow;
+import org.iplass.adminconsole.client.base.ui.widget.MtpWidgetConstants;
 import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
 import org.iplass.adminconsole.client.tools.data.auth.builtin.SelectBuiltinUserDS;
 import org.iplass.adminconsole.shared.tools.dto.auth.builtin.BuiltinAuthUserDto;
@@ -153,8 +154,6 @@ public class BuiltinUserSelectDialog extends AbstractWindow {
 	 */
 	private class UserAttributeCriteriaPane extends VLayout {
 
-		private static final String SEARCH_ICON = "[SKIN]/actions/view.png";
-
 		private TextItem accountIdItem;
 		private TextItem nameItem;
 		private TextItem mailItem;
@@ -196,7 +195,7 @@ public class BuiltinUserSelectDialog extends AbstractWindow {
 			footer.setMembersMargin(10);
 
 			IButton searchButton = new IButton("Search");
-			searchButton.setIcon(SEARCH_ICON);
+			searchButton.setIcon(MtpWidgetConstants.ICON_SEARCH);
 			searchButton.addClickHandler(new ClickHandler() {
 				@Override
 				public void onClick(ClickEvent event) {

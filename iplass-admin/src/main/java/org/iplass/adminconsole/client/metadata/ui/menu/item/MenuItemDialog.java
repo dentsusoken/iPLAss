@@ -27,12 +27,11 @@ import java.util.List;
 import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
 import org.iplass.adminconsole.client.base.tenant.TenantInfoHolder;
 import org.iplass.adminconsole.client.base.ui.widget.AbstractWindow;
+import org.iplass.adminconsole.client.base.ui.widget.MetaDataSelectItem;
 import org.iplass.adminconsole.client.base.ui.widget.ScriptEditorDialogConstants;
 import org.iplass.adminconsole.client.base.ui.widget.ScriptEditorDialogHandler;
 import org.iplass.adminconsole.client.base.ui.widget.ScriptEditorDialogMode;
 import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
-import org.iplass.adminconsole.client.metadata.data.MetaDataNameDS;
-import org.iplass.adminconsole.client.metadata.data.entity.EntityDS;
 import org.iplass.adminconsole.client.metadata.data.menu.MenuItemTreeDS;
 import org.iplass.adminconsole.client.metadata.ui.MetaDataUtil;
 import org.iplass.adminconsole.client.metadata.ui.common.LocalizedStringSettingDialog;
@@ -46,6 +45,7 @@ import org.iplass.adminconsole.shared.metadata.rpc.MetaDataServiceFactory;
 import org.iplass.mtp.definition.DefinitionInfo;
 import org.iplass.mtp.definition.LocalizedStringDefinition;
 import org.iplass.mtp.definition.SharedConfig;
+import org.iplass.mtp.entity.definition.EntityDefinition;
 import org.iplass.mtp.view.generic.EntityView;
 import org.iplass.mtp.view.menu.ActionMenuItem;
 import org.iplass.mtp.view.menu.EntityMenuItem;
@@ -234,8 +234,7 @@ public class MenuItemDialog extends AbstractWindow {
 			actionForm.setIsGroup(true);
 			actionForm.setGroupTitle("Action Menu Attribute");
 
-			actionNameField = new SelectItem("actionName", "Execute Action");
-			actionNameField.setWidth(300);
+			actionNameField = new MetaDataSelectItem(ActionMappingDefinition.class, "Execute Action");
 			SmartGWTUtil.setRequired(actionNameField);
 
 			actionParameterField = new TextItem("actionParameter", "Parameter");
@@ -284,8 +283,7 @@ public class MenuItemDialog extends AbstractWindow {
 			entityForm.setIsGroup(true);
 			entityForm.setGroupTitle("Entity Menu Attribute");
 
-			entityNameField = new SelectItem("entityName", "Entity");
-			entityNameField.setWidth(300);
+			entityNameField = new MetaDataSelectItem(EntityDefinition.class, "Entity");
 			SmartGWTUtil.setRequired(entityNameField);
 			entityNameField.addChangedHandler(new ChangedHandler() {
 				@Override
@@ -578,12 +576,8 @@ public class MenuItemDialog extends AbstractWindow {
 		int height = 300;
 		if (MenuItemTreeDS.MenuItemType.ACTION.equals(type)){
 			height = 420;
-			//Action名コンボデータ作成
-			MetaDataNameDS.setDataSource(actionNameField, ActionMappingDefinition.class);
 		} else if (MenuItemTreeDS.MenuItemType.ENTITY.equals(type)){
 			height = 460;
-			//Entity名コンボデータ作成
-			EntityDS.setDataSource(entityNameField);
 		} else if (MenuItemTreeDS.MenuItemType.URL.equals(type)) {
 			height = 440;
 		}

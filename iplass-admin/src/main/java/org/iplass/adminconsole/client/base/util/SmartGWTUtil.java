@@ -1,19 +1,19 @@
 /*
  * Copyright (C) 2011 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
- * 
+ *
  * Unless you have purchased a commercial license,
  * the following license terms apply:
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
@@ -33,7 +33,7 @@ import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
 import org.iplass.adminconsole.client.base.tenant.TenantInfoHolder;
 import org.iplass.adminconsole.client.base.ui.widget.AnimationCloseCallback;
 import org.iplass.adminconsole.client.base.ui.widget.AnimationFullScreenCallback;
-import org.iplass.adminconsole.client.base.ui.widget.CommonIconConstants;
+import org.iplass.adminconsole.client.base.ui.widget.MtpWidgetConstants;
 import org.iplass.adminconsole.client.base.ui.widget.ProgressDialog;
 
 import com.google.gwt.core.client.GWT;
@@ -275,7 +275,7 @@ public final class SmartGWTUtil {
 	 * @param hint 表示メッセージ
 	 */
 	public static void addHintToFormItem(final FormItem item, final String hint) {
-		item.setIcons(SmartGWTUtil.getIcon(CommonIconConstants.COMMON_ICON_HELP));
+		item.setIcons(SmartGWTUtil.getIcon(MtpWidgetConstants.ICON_HELP));
 		item.addIconClickHandler(new IconClickHandler() {
 			@Override
 			public void onIconClick(IconClickEvent event) {
@@ -285,7 +285,7 @@ public final class SmartGWTUtil {
 	}
 
 	public static void addHintToLabel(final Label label, final String hint) {
-		label.setIcon(CommonIconConstants.COMMON_ICON_HELP);
+		label.setIcon(MtpWidgetConstants.ICON_HELP);
 		label.addIconClickHandler(new com.smartgwt.client.widgets.events.IconClickHandler() {
 			@Override
 			public void onIconClick(

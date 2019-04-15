@@ -27,8 +27,8 @@ import org.iplass.adminconsole.client.base.data.DataSourceConstants;
 import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
 import org.iplass.adminconsole.client.base.rpc.AdminAsyncCallback;
 import org.iplass.adminconsole.client.base.tenant.TenantInfoHolder;
+import org.iplass.adminconsole.client.base.ui.widget.MetaDataSelectItem;
 import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
-import org.iplass.adminconsole.client.metadata.data.entity.EntityDS;
 import org.iplass.adminconsole.client.metadata.ui.entity.property.PropertyAttribute;
 import org.iplass.adminconsole.client.metadata.ui.entity.property.PropertyAttributePane;
 import org.iplass.adminconsole.client.metadata.ui.entity.property.PropertyListGridRecord;
@@ -82,10 +82,8 @@ public class ReferenceAttributePane extends VLayout implements PropertyAttribute
 //		setHeight100();
 		setAutoHeight();
 
-		selReferenceName = new SelectItem();
+		selReferenceName = new MetaDataSelectItem(EntityDefinition.class);
 		selReferenceName.setTitle(rs("ui_metadata_entity_PropertyListGrid_referenceEntity"));
-		selReferenceName.setWidth(200);
-		EntityDS.setDataSource(selReferenceName);
 		SmartGWTUtil.setRequired(selReferenceName);
 		selReferenceName.addChangedHandler(new ChangedHandler() {
 			@Override

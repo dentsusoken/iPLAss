@@ -29,12 +29,12 @@ import java.util.List;
 import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
 import org.iplass.adminconsole.client.base.tenant.TenantInfoHolder;
 import org.iplass.adminconsole.client.base.ui.widget.AbstractWindow;
+import org.iplass.adminconsole.client.base.ui.widget.MetaDataSelectItem;
+import org.iplass.adminconsole.client.base.ui.widget.MetaDataSelectItem.ItemOption;
 import org.iplass.adminconsole.client.base.ui.widget.ScriptEditorDialogCondition;
 import org.iplass.adminconsole.client.base.ui.widget.ScriptEditorDialogHandler;
 import org.iplass.adminconsole.client.base.ui.widget.ScriptEditorDialogMode;
 import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
-import org.iplass.adminconsole.client.metadata.data.MetaDataNameDS;
-import org.iplass.adminconsole.client.metadata.data.MetaDataNameDS.MetaDataNameDSOption;
 import org.iplass.adminconsole.client.metadata.ui.MetaDataUtil;
 import org.iplass.adminconsole.shared.metadata.dto.MetaDataConstants;
 import org.iplass.adminconsole.shared.metadata.rpc.MetaDataServiceAsync;
@@ -582,20 +582,15 @@ public class CalendarGrid extends TreeGrid {
 					AdminClientMessageUtil.getString("ui_metadata_calendar_CalendarGrid_displayTimeOnCalendar"));
 			items.add(displayTimeField);
 
-			viewActionField = new SelectItem("viewAction", "Detail Action");
-			viewActionField.setWidth(MetaDataConstants.DEFAULT_FORM_ITEM_WIDTH);
+			viewActionField = new MetaDataSelectItem(ActionMappingDefinition.class, "Detail Action", new ItemOption(false, true));
 			SmartGWTUtil.addHoverToFormItem(viewActionField,
 					AdminClientMessageUtil.getString("ui_metadata_calendar_CalendarGrid_speDisplayDetailAction"));
 			items.add(viewActionField);
-			MetaDataNameDS.setDataSource(viewActionField, ActionMappingDefinition.class, new MetaDataNameDSOption(false, true));
 
-			addActionField = new SelectItem("addAction", "Add Action");
-			addActionField.setWidth(MetaDataConstants.DEFAULT_FORM_ITEM_WIDTH);
+			addActionField = new MetaDataSelectItem(ActionMappingDefinition.class, "Add Action", new ItemOption(false, true));
 			SmartGWTUtil.addHoverToFormItem(addActionField,
 					AdminClientMessageUtil.getString("ui_metadata_calendar_CalendarGrid_speAddDataAction"));
 			items.add(addActionField);
-			MetaDataNameDS.setDataSource(addActionField, ActionMappingDefinition.class, new MetaDataNameDSOption(false, true));
-
 
 			viewNameField = new TextItem("viewName", "Entity View");
 			viewNameField.setWidth(MetaDataConstants.DEFAULT_FORM_ITEM_WIDTH);

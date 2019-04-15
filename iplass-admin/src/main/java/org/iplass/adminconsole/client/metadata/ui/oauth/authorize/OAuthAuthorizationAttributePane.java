@@ -25,12 +25,14 @@ import java.util.Arrays;
 import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
 import org.iplass.adminconsole.client.base.ui.widget.EditablePane;
 import org.iplass.adminconsole.client.base.ui.widget.MetaDataSelectItem;
+import org.iplass.adminconsole.client.base.ui.widget.MetaDataSelectItem.ItemOption;
 import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
 import org.iplass.mtp.auth.oauth.definition.OAuthAuthorizationDefinition;
 import org.iplass.mtp.web.template.definition.TemplateDefinition;
 
 import com.smartgwt.client.widgets.form.DynamicForm;
 import com.smartgwt.client.widgets.form.fields.CanvasItem;
+import com.smartgwt.client.widgets.form.fields.SelectItem;
 import com.smartgwt.client.widgets.form.fields.TextAreaItem;
 import com.smartgwt.client.widgets.form.fields.TextItem;
 import com.smartgwt.client.widgets.layout.VLayout;
@@ -43,7 +45,7 @@ public class OAuthAuthorizationAttributePane extends VLayout implements Editable
 
 	private ScopeGridPane gridScopes;
 
-	private MetaDataSelectItem selConsentTemplate;
+	private SelectItem selConsentTemplate;
 
 	private ClientPolicyGridPane gridClientPolicies;
 
@@ -137,7 +139,7 @@ public class OAuthAuthorizationAttributePane extends VLayout implements Editable
 		canvasScopes.setColSpan(3);
 		canvasScopes.setStartRow(true);
 
-		selConsentTemplate = new MetaDataSelectItem(TemplateDefinition.class);
+		selConsentTemplate = new MetaDataSelectItem(TemplateDefinition.class, new ItemOption(true, false));
 		selConsentTemplate.setTitle("Consent Template");
 
 		gridClientPolicies = new ClientPolicyGridPane();

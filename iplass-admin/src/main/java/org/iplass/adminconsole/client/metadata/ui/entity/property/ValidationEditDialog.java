@@ -26,12 +26,12 @@ import java.util.List;
 
 import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
 import org.iplass.adminconsole.client.base.ui.widget.AbstractWindow;
+import org.iplass.adminconsole.client.base.ui.widget.MetaDataSelectItem;
+import org.iplass.adminconsole.client.base.ui.widget.MetaDataSelectItem.ItemOption;
 import org.iplass.adminconsole.client.base.ui.widget.ScriptEditorDialogConstants;
 import org.iplass.adminconsole.client.base.ui.widget.ScriptEditorDialogHandler;
 import org.iplass.adminconsole.client.base.ui.widget.ScriptEditorDialogMode;
 import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
-import org.iplass.adminconsole.client.metadata.data.MetaDataNameDS;
-import org.iplass.adminconsole.client.metadata.data.MetaDataNameDS.MetaDataNameDSOption;
 import org.iplass.adminconsole.client.metadata.data.message.MessageItemDS;
 import org.iplass.adminconsole.client.metadata.ui.MetaDataUtil;
 import org.iplass.adminconsole.client.metadata.ui.common.LocalizedStringSettingDialog;
@@ -286,7 +286,7 @@ public class ValidationEditDialog extends AbstractWindow {
 		_errorCodeItem = new TextItem();
 		_errorCodeItem.setTitle("Code");
 
-		_msgCategoryItem = new SelectItem();
+		_msgCategoryItem = new MetaDataSelectItem(MessageCategory.class, new ItemOption(true, false));
 		_msgCategoryItem.setTitle("Message Category");
 		_msgIdItem = new SelectItem();
 		_msgIdItem.setTitle("Message Id");
@@ -436,7 +436,6 @@ public class ValidationEditDialog extends AbstractWindow {
 		_msgCategoryItem.setValue(record.getMessageCategory());
 		_msgIdItem.setValue(record.getMessageId());
 
-		MetaDataNameDS.setDataSource(_msgCategoryItem, MessageCategory.class, new MetaDataNameDSOption(true, false));
 		_msgCategoryItem.addChangedHandler(new ChangedHandler() {
 			@Override
 			public void onChanged(ChangedEvent event) {

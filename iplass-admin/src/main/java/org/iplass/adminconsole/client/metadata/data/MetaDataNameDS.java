@@ -52,6 +52,7 @@ import com.smartgwt.client.widgets.form.fields.events.DataArrivedHandler;
 import com.smartgwt.client.widgets.form.fields.events.HasDataArrivedHandlers;
 import com.smartgwt.client.widgets.form.fields.events.ItemHoverEvent;
 import com.smartgwt.client.widgets.form.fields.events.ItemHoverHandler;
+import com.smartgwt.client.widgets.grid.ListGrid;
 import com.smartgwt.client.widgets.grid.ListGridField;
 import com.smartgwt.client.widgets.grid.ListGridRecord;
 
@@ -97,7 +98,7 @@ public class MetaDataNameDS extends AbstractAdminDataSource {
 
     private static void setup(final FormItem item, final Class<? extends Definition> definition, final MetaDataNameDSOption option) {
 
-    	item.setOptionDataSource(MetaDataNameDS.getInstance(definition, option));
+    	item.setOptionDataSource(getInstance(definition, option));
     	item.setValueField(DataSourceConstants.FIELD_NAME);
 
     	//addValueHoverHandlerを利用したいが、ValueHoverはテキストがあふれないとEventが発生しないので、ItemHoverを利用
@@ -139,14 +140,18 @@ public class MetaDataNameDS extends AbstractAdminDataSource {
 			});
     	}
 
+    	ListGrid pickListProperties = new ListGrid();
+    	pickListProperties.setShowFilterEditor(true);
     	if (item instanceof SelectItem) {
     		ListGridField nameField = new ListGridField(DataSourceConstants.FIELD_NAME, DataSourceConstants.FIELD_NAME_TITLE);
     		((SelectItem)item).setPickListFields(nameField);
     		((SelectItem)item).setPickListWidth(420);
+    		((SelectItem)item).setPickListProperties(pickListProperties);
     	} else if (item instanceof ComboBoxItem) {
     		ListGridField nameField = new ListGridField(DataSourceConstants.FIELD_NAME, DataSourceConstants.FIELD_NAME_TITLE);
     		((ComboBoxItem)item).setPickListFields(nameField);
     		((ComboBoxItem)item).setPickListWidth(420);
+    		((ComboBoxItem)item).setPickListProperties(pickListProperties);
     	}
 
     }

@@ -28,8 +28,9 @@ import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
 import org.iplass.adminconsole.client.base.io.download.PostDownloadFrame;
 import org.iplass.adminconsole.client.base.tenant.TenantInfoHolder;
 import org.iplass.adminconsole.client.base.ui.widget.MessageTabSet;
+import org.iplass.adminconsole.client.base.ui.widget.MetaDataSelectItem;
+import org.iplass.adminconsole.client.base.ui.widget.MtpWidgetConstants;
 import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
-import org.iplass.adminconsole.client.metadata.data.MetaDataNameDS;
 import org.iplass.adminconsole.client.tools.data.auth.builtin.BuiltinUserDS;
 import org.iplass.adminconsole.shared.tools.dto.auth.builtin.BuiltinAuthUserDto;
 import org.iplass.adminconsole.shared.tools.dto.auth.builtin.BuiltinAuthUserListResultDto;
@@ -76,7 +77,6 @@ import com.smartgwt.client.widgets.toolbar.ToolStripButton;
 
 public class BuiltinAuthExplorerMainPane extends VLayout {
 
-	private static final String SEARCH_ICON = "[SKIN]/actions/view.png";
 	private static final String EXPORT_ICON = "[SKIN]/actions/download.png";
 	private static final String RESET_ERROR_COUNT_ICON = "icon_edit.png";
 
@@ -228,8 +228,7 @@ public class BuiltinAuthExplorerMainPane extends VLayout {
 			lockedUserForm.setNumCols(3);
 			lockedUserForm.setColWidths(100, 400, "*");
 
-			lockedUserPolicyNameField = new SelectItem("policyName", "Policy Name");
-			MetaDataNameDS.setDataSource(lockedUserPolicyNameField, AuthenticationPolicyDefinition.class);
+			lockedUserPolicyNameField = new MetaDataSelectItem(AuthenticationPolicyDefinition.class, "Policy Name");
 			lockedUserPolicyNameField.setValue("DEFAULT");
 
 			lockedUserForm.setFields(lockedUserPolicyNameField);
@@ -243,9 +242,8 @@ public class BuiltinAuthExplorerMainPane extends VLayout {
 			remainPWDaysForm.setNumCols(4);
 			remainPWDaysForm.setColWidths(100, 70, 400, "*");
 
-			remainDaysPolicyNameField = new SelectItem("policyName", "Policy Name");
+			remainDaysPolicyNameField = new MetaDataSelectItem(AuthenticationPolicyDefinition.class, "Policy Name");
 			remainDaysPolicyNameField.setColSpan(3);
-			MetaDataNameDS.setDataSource(remainDaysPolicyNameField, AuthenticationPolicyDefinition.class);
 			remainDaysPolicyNameField.setValue("DEFAULT");
 
 			LinkedHashMap<String, String> remainDaysOparatorValues = new LinkedHashMap<String, String>();
@@ -315,7 +313,7 @@ public class BuiltinAuthExplorerMainPane extends VLayout {
 			footer.setMembersMargin(10);
 
 			IButton searchButton = new IButton("Search");
-			searchButton.setIcon(SEARCH_ICON);
+			searchButton.setIcon(MtpWidgetConstants.ICON_SEARCH);
 			searchButton.addClickHandler(new ClickHandler() {
 
 				@Override
@@ -553,7 +551,7 @@ public class BuiltinAuthExplorerMainPane extends VLayout {
 			footer.setMembersMargin(10);
 
 			IButton searchButton = new IButton("Search");
-			searchButton.setIcon(SEARCH_ICON);
+			searchButton.setIcon(MtpWidgetConstants.ICON_SEARCH);
 			searchButton.addClickHandler(new ClickHandler() {
 				@Override
 				public void onClick(ClickEvent event) {

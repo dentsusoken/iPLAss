@@ -18,38 +18,28 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.iplass.adminconsole.client.base.ui.widget;
+package org.iplass.adminconsole.client.base.ui.widget.form;
 
-public interface MtpWidgetConstants {
+import com.smartgwt.client.widgets.form.fields.ComboBoxItem;
 
-	/** ヘルプ */
-	public static final String ICON_HELP = "help.png";
+public class MtpComboBoxItem extends ComboBoxItem {
 
-	/** メタデータ参照 */
-	public static final String ICON_SHOW_META_DATA = "link_go.png";
+	public MtpComboBoxItem() {
+		init();
+	}
 
-	/** リフレッシュ */
-	public static final String ICON_REFRESH = "refresh.png";
+	public MtpComboBoxItem(String name) {
+		super(name);
+		init();
+	}
 
-	/** 検索 */
-	public static final String ICON_SEARCH = "view.png";
+	public MtpComboBoxItem(String name, String title) {
+		super(name, title);
+		init();
+	}
 
-	/** 編集 */
-	public static final String ICON_EDIT = "icon_edit.png";
-
-	/** 削除 */
-	public static final String ICON_REMOVE = "remove.png";
-
-	/** 多言語 */
-	public static final String ICON_LANG = "world.png";
-
-	/** タイトルの幅 */
-	public static final int FORM_WIDTH_TITLE = 100;
-
-	/** 入力欄の幅 */
-	public static final int FORM_WIDTH_ITEM = 600;
-
-	/** 入力欄の半分の幅 */
-	public static final int FORM_WIDTH_ITEM_HALF = 300;
+	private void init() {
+		setWidth("100%");
+	}
 
 }

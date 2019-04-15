@@ -1,19 +1,19 @@
 /*
  * Copyright (C) 2017 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
- * 
+ *
  * Unless you have purchased a commercial license,
  * the following license terms apply:
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
@@ -22,8 +22,8 @@ package org.iplass.adminconsole.client.metadata.ui.entity.layout.metafield;
 
 import java.util.ArrayList;
 
-import org.iplass.adminconsole.client.metadata.data.MetaDataNameDS;
-import org.iplass.adminconsole.client.metadata.data.MetaDataNameDS.MetaDataNameDSOption;
+import org.iplass.adminconsole.client.base.ui.widget.MetaDataSelectItem;
+import org.iplass.adminconsole.client.base.ui.widget.MetaDataSelectItem.ItemOption;
 import org.iplass.adminconsole.shared.metadata.dto.refrect.FieldInfo;
 import org.iplass.adminconsole.view.annotation.InputType;
 import org.iplass.mtp.web.actionmapping.definition.ActionMappingDefinition;
@@ -112,29 +112,23 @@ public class MetaFieldSettingPartsControllerImpl implements MetaFieldSettingPart
 	}
 
 	private FormItem createActionList(final FieldInfo info) {
-		final SelectItem item = new SelectItem();
 		if (!info.isRequired()) {
-			MetaDataNameDS.setDataSource(item, ActionMappingDefinition.class, new MetaDataNameDSOption(false, true));
+			return new MetaDataSelectItem(ActionMappingDefinition.class, new ItemOption(false, true));
 		} else {
-			MetaDataNameDS.setDataSource(item, ActionMappingDefinition.class);
+			return new MetaDataSelectItem(ActionMappingDefinition.class);
 		}
-		return item;
 	}
 
 	private FormItem createWebAPIList(final FieldInfo info) {
-		final SelectItem item = new SelectItem();
 		if (!info.isRequired()) {
-			MetaDataNameDS.setDataSource(item, WebApiDefinition.class, new MetaDataNameDSOption(false, true));
+			return new MetaDataSelectItem(WebApiDefinition.class, new ItemOption(false, true));
 		} else {
-			MetaDataNameDS.setDataSource(item, WebApiDefinition.class);
+			return new MetaDataSelectItem(WebApiDefinition.class);
 		}
-		return item;
 	}
 
 	private FormItem createTemplateList(FieldInfo info) {
-		SelectItem item = new SelectItem();
-		MetaDataNameDS.setDataSource(item, TemplateDefinition.class);
-		return item;
+		return new MetaDataSelectItem(TemplateDefinition.class);
 	}
 
 }

@@ -22,8 +22,8 @@ package org.iplass.adminconsole.client.metadata.ui.action.result;
 
 import java.util.LinkedHashMap;
 
+import org.iplass.adminconsole.client.base.ui.widget.MetaDataSelectItem;
 import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
-import org.iplass.adminconsole.client.metadata.data.MetaDataNameDS;
 import org.iplass.mtp.web.actionmapping.definition.result.ContentDispositionType;
 import org.iplass.mtp.web.actionmapping.definition.result.ResultDefinition;
 import org.iplass.mtp.web.actionmapping.definition.result.StaticResourceResultDefinition;
@@ -68,24 +68,10 @@ public class StaticResourceResultEditPane extends ResultTypeEditPane {
 		form.setNumCols(4);	//間延びしないように最後に１つ余分に作成
 		form.setColWidths(100, 250, 40, "*");
 
-		staticResourceField = new SelectItem("staticResource", "StaticResource");
-		staticResourceField.setWidth(250);
-
-		MetaDataNameDS.setDataSource(staticResourceField, StaticResourceDefinition.class);
+		staticResourceField = new MetaDataSelectItem(StaticResourceDefinition.class);
+		staticResourceField.setTitle("StaticResource");
 		SmartGWTUtil.setRequired(staticResourceField);
 
-		//#19232
-//		MetaDataViewButtonItem staticResourceMetaButton = new MetaDataViewButtonItem(StaticResourceDefinition.class.getName());
-//		staticResourceMetaButton.setPrompt(SmartGWTUtil.getHoverString("view the selected static resource"));
-//		staticResourceMetaButton.setMetaDataShowClickHandler(
-//				new MetaDataViewButtonItem.MetaDataShowClickHandler() {
-//			@Override
-//			public String targetDefinitionName() {
-//				return SmartGWTUtil.getStringValue(staticResourceField);
-//			}
-//		});
-
-//		form.setItems(staticResourceField, staticResourceMetaButton);
 		form.setItems(staticResourceField);
 
 		contentDispositionForm = new DynamicForm();

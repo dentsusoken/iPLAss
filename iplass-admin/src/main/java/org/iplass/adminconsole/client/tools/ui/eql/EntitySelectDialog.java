@@ -29,8 +29,9 @@ import org.iplass.adminconsole.client.base.event.DataChangedHandler;
 import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
 import org.iplass.adminconsole.client.base.ui.widget.AbstractWindow;
 import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
-import org.iplass.adminconsole.client.metadata.data.entity.EntityDS;
+import org.iplass.adminconsole.client.metadata.data.MetaDataNameDS;
 import org.iplass.mtp.entity.Entity;
+import org.iplass.mtp.entity.definition.EntityDefinition;
 
 import com.smartgwt.client.types.Alignment;
 import com.smartgwt.client.util.SC;
@@ -41,6 +42,7 @@ import com.smartgwt.client.widgets.events.ClickHandler;
 import com.smartgwt.client.widgets.form.DynamicForm;
 import com.smartgwt.client.widgets.form.fields.CheckboxItem;
 import com.smartgwt.client.widgets.grid.ListGrid;
+import com.smartgwt.client.widgets.grid.ListGridField;
 import com.smartgwt.client.widgets.grid.events.RecordDoubleClickEvent;
 import com.smartgwt.client.widgets.grid.events.RecordDoubleClickHandler;
 import com.smartgwt.client.widgets.layout.HLayout;
@@ -80,7 +82,10 @@ public class EntitySelectDialog extends AbstractWindow {
 		grid.setShowAllRecords(true);
 		grid.setCanResizeFields(true);
 
-		EntityDS.setDataSource(grid);
+    	grid.setDataSource(MetaDataNameDS.getInstance(EntityDefinition.class));
+		ListGridField nameField = new ListGridField(DataSourceConstants.FIELD_NAME, DataSourceConstants.FIELD_NAME_TITLE);
+		grid.setFields(nameField);
+
 		grid.setAutoFetchData(true);
 
 		grid.addRecordDoubleClickHandler(new RecordDoubleClickHandler() {

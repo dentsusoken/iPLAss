@@ -26,9 +26,9 @@ import java.util.List;
 import java.util.Map;
 
 import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
+import org.iplass.adminconsole.client.base.ui.widget.MetaDataSelectItem;
+import org.iplass.adminconsole.client.base.ui.widget.MetaDataSelectItem.ItemOption;
 import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
-import org.iplass.adminconsole.client.metadata.data.MetaDataNameDS;
-import org.iplass.adminconsole.client.metadata.data.MetaDataNameDS.MetaDataNameDSOption;
 import org.iplass.adminconsole.client.metadata.ui.entity.property.PropertyAttribute;
 import org.iplass.adminconsole.client.metadata.ui.entity.property.PropertyAttributePane;
 import org.iplass.adminconsole.client.metadata.ui.entity.property.PropertyAttributePane.NeedsEnableLangMap;
@@ -73,28 +73,16 @@ public class SelectAttributePane extends VLayout implements PropertyAttributePan
 //		setHeight100();
 		setAutoHeight();
 
-		selGlobalSelectValue = new SelectItem();
+		selGlobalSelectValue = new MetaDataSelectItem(SelectValueDefinition.class, new ItemOption(true, false));
 		selGlobalSelectValue.setTitle("Global Value");
 		selGlobalSelectValue.setTitleAlign(Alignment.LEFT);
-		//_selectValueNameItem.setWidth(200);
-		selGlobalSelectValue.setWidth("100%");
 		SmartGWTUtil.addHoverToFormItem(selGlobalSelectValue, rs("ui_metadata_entity_PropertyListGrid_globalSelectValueComment"));
-		//#19232
-//		MetaDataViewButtonItem btnMetaView = new MetaDataViewButtonItem(SelectValueDefinition.class.getName());
-//		btnMetaView.setPrompt(SmartGWTUtil.getHoverString("view the selected global value"));
-//		btnMetaView.setMetaDataShowClickHandler(new MetaDataViewButtonItem.MetaDataShowClickHandler() {
-//			@Override
-//			public String targetDefinitionName() {
-//				return SmartGWTUtil.getStringValue(selGlobalSelectValue);
-//			}
-//		});
 
 		DynamicForm formGlobal = new DynamicForm();
 		//formGlobal.setMargin(5);	//LocalValueに開始位置を合わせるためMarginなし
 		formGlobal.setNumCols(4);
 		formGlobal.setColWidths(100, 200, 50, "*");
 		formGlobal.setHeight(25);
-//		formGlobal.setItems(selGlobalSelectValue, btnMetaView);
 		formGlobal.setItems(selGlobalSelectValue);
 
 		gridLocalSelectValue = new ListGrid();
@@ -266,8 +254,6 @@ public class SelectAttributePane extends VLayout implements PropertyAttributePan
 	}
 
 	private void initialize() {
-
-		MetaDataNameDS.setDataSource(selGlobalSelectValue, SelectValueDefinition.class, new MetaDataNameDSOption(true, false));
 	}
 
 	private void startSelectValueEdit(boolean isNewRow, ListGrid grid, SelectValueListGridRecord target) {

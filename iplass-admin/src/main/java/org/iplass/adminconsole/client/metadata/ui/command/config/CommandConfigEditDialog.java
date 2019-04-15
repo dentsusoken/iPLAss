@@ -29,11 +29,13 @@ import org.iplass.adminconsole.client.base.event.DataChangedHandler;
 import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
 import org.iplass.adminconsole.client.base.tenant.TenantInfoHolder;
 import org.iplass.adminconsole.client.base.ui.widget.AbstractWindow;
+import org.iplass.adminconsole.client.base.ui.widget.MetaDataSelectItem;
 import org.iplass.adminconsole.client.base.ui.widget.ScriptEditorDialogCondition;
 import org.iplass.adminconsole.client.base.ui.widget.ScriptEditorDialogHandler;
 import org.iplass.adminconsole.client.base.ui.widget.ScriptEditorDialogMode;
+import org.iplass.adminconsole.client.base.ui.widget.form.MtpSelectItem;
+import org.iplass.adminconsole.client.base.ui.widget.form.MtpTextAreaItem;
 import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
-import org.iplass.adminconsole.client.metadata.data.MetaDataNameDS;
 import org.iplass.adminconsole.client.metadata.ui.MetaDataUtil;
 import org.iplass.adminconsole.shared.metadata.rpc.MetaDataServiceAsync;
 import org.iplass.adminconsole.shared.metadata.rpc.MetaDataServiceFactory;
@@ -81,9 +83,7 @@ public class CommandConfigEditDialog extends AbstractWindow {
 		setShowModalMask(true);
 
 		//共通
-		commandField = new SelectItem("command", "Execute Command");
-		commandField.setWidth(250);
-		MetaDataNameDS.setDataSource(commandField, CommandDefinition.class);
+		commandField = new MetaDataSelectItem(CommandDefinition.class, "Execute Command");
 		SmartGWTUtil.setRequired(commandField);
 
 		ButtonItem editScript = new ButtonItem("editScript", "Edit");
@@ -113,9 +113,8 @@ public class CommandConfigEditDialog extends AbstractWindow {
 			}
 		});
 
-		initScriptField = new TextAreaItem("initScript", "Init Script");
+		initScriptField = new MtpTextAreaItem("initScript", "Init Script");
 		initScriptField.setColSpan(2);
-		initScriptField.setWidth("100%");
 		initScriptField.setHeight("100%");
 
 		//SelectItemとTextAreaItem(Height=100%)の場合に画面レイアウトが崩れるのでformを分ける
@@ -134,8 +133,7 @@ public class CommandConfigEditDialog extends AbstractWindow {
 		} else {
 			setHeight(490);
 
-			transactionPropagationField = new SelectItem("transactionPropagation", "Transaction Propagation");
-			transactionPropagationField.setWidth(250);
+			transactionPropagationField = new MtpSelectItem("transactionPropagation", "Transaction Propagation");
 			HashMap<String, String> valueMap = new HashMap<>();
 			for (Propagation propagation : Propagation.values()) {
 				valueMap.put(propagation.name(), propagation.name());

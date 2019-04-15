@@ -22,9 +22,9 @@ package org.iplass.adminconsole.client.metadata.ui.action.result;
 
 import java.util.LinkedHashMap;
 
+import org.iplass.adminconsole.client.base.ui.widget.MetaDataSelectItem;
+import org.iplass.adminconsole.client.base.ui.widget.MetaDataSelectItem.ItemOption;
 import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
-import org.iplass.adminconsole.client.metadata.data.MetaDataNameDS;
-import org.iplass.adminconsole.client.metadata.data.MetaDataNameDS.MetaDataNameDSOption;
 import org.iplass.mtp.web.actionmapping.definition.ActionMappingDefinition;
 import org.iplass.mtp.web.actionmapping.definition.result.ContentDispositionType;
 import org.iplass.mtp.web.actionmapping.definition.result.ResultDefinition;
@@ -74,40 +74,14 @@ public class TemplateResultEditPane extends ResultTypeEditPane {
 		form.setNumCols(4);	//間延びしないように最後に１つ余分に作成
 		form.setColWidths(100, 250, 40, "*");
 
-		templateField = new SelectItem("template", "Template");
-		templateField.setWidth(250);
-
-		MetaDataNameDS.setDataSource(templateField, TemplateDefinition.class);
+		templateField = new MetaDataSelectItem(TemplateDefinition.class);
+		templateField.setTitle("Template");
 		SmartGWTUtil.setRequired(templateField);
 
-		//#19232
-//		MetaDataViewButtonItem templateMetaButton = new MetaDataViewButtonItem(TemplateDefinition.class.getName());
-//		templateMetaButton.setPrompt(SmartGWTUtil.getHoverString("view the selected template"));
-//		templateMetaButton.setMetaDataShowClickHandler(
-//				new MetaDataViewButtonItem.MetaDataShowClickHandler() {
-//			@Override
-//			public String targetDefinitionName() {
-//				return SmartGWTUtil.getStringValue(templateField);
-//			}
-//		});
-
-		layoutActionNameField = new SelectItem("layoutAction", "Layout Action");
-		layoutActionNameField.setWidth(250);
+		layoutActionNameField = new MetaDataSelectItem(ActionMappingDefinition.class, new ItemOption(true, false));
+		layoutActionNameField.setTitle("Layout Action");
 		layoutActionNameField.setStartRow(true);
-		MetaDataNameDS.setDataSource(layoutActionNameField, ActionMappingDefinition.class, new MetaDataNameDSOption(true, false));
 
-		//#19232
-//		MetaDataViewButtonItem layoutActionMetaButton = new MetaDataViewButtonItem(ActionMappingDefinition.class.getName());
-//		layoutActionMetaButton.setPrompt(SmartGWTUtil.getHoverString("view the selected layout action"));
-//		layoutActionMetaButton.setMetaDataShowClickHandler(
-//				new MetaDataViewButtonItem.MetaDataShowClickHandler() {
-//			@Override
-//			public String targetDefinitionName() {
-//				return SmartGWTUtil.getStringValue(layoutActionNameField);
-//			}
-//		});
-
-//		form.setItems(templateField, templateMetaButton, layoutActionNameField, layoutActionMetaButton);
 		form.setItems(templateField, layoutActionNameField);
 
 		contentDispositionForm = new DynamicForm();

@@ -25,6 +25,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.iplass.adminconsole.client.base.ui.widget.GridActionImgButton;
+import org.iplass.adminconsole.client.base.ui.widget.MtpWidgetConstants;
 import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
 import org.iplass.adminconsole.client.tools.data.metaexplorer.MetaDataTreeDS;
 import org.iplass.adminconsole.client.tools.data.metaexplorer.MetaDataTreeDS.FIELD_NAME;
@@ -124,8 +125,6 @@ public class MetaDataTreeGridPane extends VLayout {
 	}
 
 	public class MetaDataAdvancedSearchPane extends VLayout {
-
-		private static final String SEARCH_ICON = "[SKIN]/actions/view.png";
 
 		private CheckboxItem updateDateField;
 		private DateItem updateDateFromField;
@@ -264,7 +263,7 @@ public class MetaDataTreeGridPane extends VLayout {
 			tagFromSelectFiled.setStartRow(false);
 			tagFromSelectFiled.setEndRow(false);
 			tagFromSelectFiled.setTitle("");
-			tagFromSelectFiled.setIcon(SEARCH_ICON);
+			tagFromSelectFiled.setIcon(MtpWidgetConstants.ICON_SEARCH);
 			tagFromSelectFiled.setTooltip("Select Tag");
 			tagFromSelectFiled.addClickHandler(new com.smartgwt.client.widgets.form.fields.events.ClickHandler() {
 
@@ -308,7 +307,7 @@ public class MetaDataTreeGridPane extends VLayout {
 			tagToSelectFiled.setStartRow(false);
 			tagToSelectFiled.setEndRow(false);
 			tagToSelectFiled.setTitle("");
-			tagToSelectFiled.setIcon(SEARCH_ICON);
+			tagToSelectFiled.setIcon(MtpWidgetConstants.ICON_SEARCH);
 			tagToSelectFiled.setTooltip("Select Tag");
 			tagToSelectFiled.addClickHandler(new com.smartgwt.client.widgets.form.fields.events.ClickHandler() {
 
@@ -358,7 +357,7 @@ public class MetaDataTreeGridPane extends VLayout {
 
 			IButton advanceSearchBtn = new IButton();
 			advanceSearchBtn.setTitle("Search");
-			advanceSearchBtn.setIcon(SEARCH_ICON);
+			advanceSearchBtn.setIcon(MtpWidgetConstants.ICON_SEARCH);
 			advanceSearchBtn.addClickHandler(new ClickHandler() {
 
 				@Override

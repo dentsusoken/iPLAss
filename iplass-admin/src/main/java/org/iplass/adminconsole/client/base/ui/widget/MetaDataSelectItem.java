@@ -20,6 +20,9 @@
 
 package org.iplass.adminconsole.client.base.ui.widget;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.iplass.adminconsole.client.base.event.AdminConsoleGlobalEventBus;
 import org.iplass.adminconsole.client.base.event.ViewMetaDataEvent;
 import org.iplass.adminconsole.client.base.ui.widget.form.MtpSelectItem;
@@ -35,31 +38,127 @@ import com.smartgwt.client.widgets.form.fields.events.FormItemIconClickEvent;
 public class MetaDataSelectItem extends MtpSelectItem implements MtpWidgetConstants {
 
 	public MetaDataSelectItem(final Class<? extends Definition> definition) {
-		this(definition, new MetaDataNameDSOption(true, false));
+		this(definition, null, null);
 	}
 
-	public MetaDataSelectItem(final Class<? extends Definition> definition, MetaDataNameDSOption option) {
+	public MetaDataSelectItem(final Class<? extends Definition> definition, String title) {
+		this(definition, title, null);
+	}
+
+	public MetaDataSelectItem(final Class<? extends Definition> definition, ItemOption option) {
+		this(definition, null, option);
+	}
+
+	public MetaDataSelectItem(final Class<? extends Definition> definition, String title, ItemOption option) {
 		super();
 
-		FormItemIcon icon = new FormItemIcon();
-		icon.setSrc(ICON_SHOW_META_DATA);
-		icon.addFormItemClickHandler(new FormItemClickHandler() {
+		if (title != null) {
+			setTitle(title);
+		}
+		if (option == null) {
+			option = new ItemOption();
+		}
+
+		List<FormItemIcon> icons = new ArrayList<FormItemIcon>();
+		if (option.isShowJump()) {
+			FormItemIcon iconJump = new FormItemIcon();
+			iconJump.setSrc(ICON_SHOW_META_DATA);
+			iconJump.addFormItemClickHandler(new FormItemClickHandler() {
+
+				@Override
+				public void onFormItemClick(FormItemIconClickEvent event) {
+
+					String defName = SmartGWTUtil.getStringValue(MetaDataSelectItem.this);
+					if (SmartGWTUtil.isNotEmpty(defName)) {
+						ViewMetaDataEvent.fire(definition.getName(), defName, AdminConsoleGlobalEventBus.getEventBus());
+					}
+
+				}
+			});
+			iconJump.setPrompt("view the selected MetaData");
+			iconJump.setBaseStyle("adminButtonRounded");
+			icons.add(iconJump);
+		}
+
+		FormItemIcon iconRefresh = new FormItemIcon();
+		iconRefresh.setSrc(ICON_REFRESH);
+		iconRefresh.addFormItemClickHandler(new FormItemClickHandler() {
 
 			@Override
 			public void onFormItemClick(FormItemIconClickEvent event) {
-
-				String defName = SmartGWTUtil.getStringValue(MetaDataSelectItem.this);
-				if (SmartGWTUtil.isNotEmpty(defName)) {
-					ViewMetaDataEvent.fire(definition.getName(), defName, AdminConsoleGlobalEventBus.getEventBus());
-				}
-
+				fetchData();
 			}
 		});
-		icon.setPrompt("view the selected MetaData");
-		icon.setBaseStyle("adminButtonRounded");
-		setIcons(icon);
+		iconRefresh.setPrompt("refresh MetaData list");
+		iconRefresh.setBaseStyle("adminButtonRounded");
+		icons.add(iconRefresh);
 
-		MetaDataNameDS.setDataSource(this, definition, option);
+		setIcons(icons.toArray(new FormItemIcon[]{}));
+
+		MetaDataNameDS.setDataSource(this, definition, option.toMetaDataNameDSOption());
+	}
+
+	public static class ItemOption {
+
+		private boolean addBlank;
+		private boolean addDefault;
+		private String tooltip;
+		private boolean showJump;
+
+		public ItemOption() {
+			this(false, false, false);
+		}
+
+		public ItemOption(boolean addBlank, boolean addDefault) {
+			this(addBlank, addDefault, false);
+		}
+
+		public ItemOption(boolean addBlank, boolean addDefault, boolean showJump) {
+			addBlank(addBlank);
+			this.addDefault(addDefault);
+			this.showJump(showJump);
+		}
+
+		public boolean isAddBlank() {
+			return addBlank;
+		}
+
+		public ItemOption addBlank(boolean addBlank) {
+			this.addBlank = addBlank;
+			return this;
+		}
+
+		public boolean isAddDefault() {
+			return addDefault;
+		}
+
+		public ItemOption addDefault(boolean addDefault) {
+			this.addDefault = addDefault;
+			return this;
+		}
+
+		public String getTooltip() {
+			return tooltip;
+		}
+
+		public ItemOption tooltip(String tooltip) {
+			this.tooltip = tooltip;
+			return this;
+		}
+
+		public boolean isShowJump() {
+			return showJump;
+		}
+
+		public ItemOption showJump(boolean showJump) {
+			this.showJump = showJump;
+			return this;
+		}
+
+		public MetaDataNameDSOption toMetaDataNameDSOption() {
+			return new MetaDataNameDSOption(addBlank, addDefault, tooltip);
+		}
+
 	}
 
 }

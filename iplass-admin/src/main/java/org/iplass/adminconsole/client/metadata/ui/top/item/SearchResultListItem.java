@@ -29,12 +29,15 @@ import org.iplass.adminconsole.client.base.event.DataChangedHandler;
 import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
 import org.iplass.adminconsole.client.base.tenant.TenantInfoHolder;
 import org.iplass.adminconsole.client.base.ui.widget.AbstractWindow;
+import org.iplass.adminconsole.client.base.ui.widget.MetaDataLangTextItem;
+import org.iplass.adminconsole.client.base.ui.widget.MetaDataSelectItem;
+import org.iplass.adminconsole.client.base.ui.widget.form.MtpComboBoxItem;
+import org.iplass.adminconsole.client.base.ui.widget.form.MtpSelectItem;
+import org.iplass.adminconsole.client.base.ui.widget.form.MtpTextItem;
 import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
-import org.iplass.adminconsole.client.metadata.data.entity.EntityDS;
-import org.iplass.adminconsole.client.metadata.ui.common.LocalizedStringSettingDialog;
 import org.iplass.adminconsole.shared.metadata.rpc.MetaDataServiceAsync;
 import org.iplass.adminconsole.shared.metadata.rpc.MetaDataServiceFactory;
-import org.iplass.mtp.definition.LocalizedStringDefinition;
+import org.iplass.mtp.entity.definition.EntityDefinition;
 import org.iplass.mtp.view.filter.EntityFilter;
 import org.iplass.mtp.view.filter.EntityFilterItem;
 import org.iplass.mtp.view.generic.EntityView;
@@ -51,7 +54,6 @@ import com.smartgwt.client.widgets.IButton;
 import com.smartgwt.client.widgets.events.ClickEvent;
 import com.smartgwt.client.widgets.events.ClickHandler;
 import com.smartgwt.client.widgets.form.DynamicForm;
-import com.smartgwt.client.widgets.form.fields.ButtonItem;
 import com.smartgwt.client.widgets.form.fields.ComboBoxItem;
 import com.smartgwt.client.widgets.form.fields.IntegerItem;
 import com.smartgwt.client.widgets.form.fields.SelectItem;
@@ -122,8 +124,6 @@ public class SearchResultListItem extends PartsItem {
 		private ComboBoxItem viewForLinkField;
 		private SelectItem filterField;
 		private IntegerItem heightField;
-		private ButtonItem langBtn;
-		private List<LocalizedStringDefinition> localizedTitleList;
 
 		private List<DataChangedHandler> handlers = new ArrayList<DataChangedHandler>();
 
@@ -147,32 +147,27 @@ public class SearchResultListItem extends PartsItem {
 			form.setAutoFocus(true);
 			form.setNumCols(3);
 
-			final SelectItem entityField = new SelectItem("entity", "Entity");
-			entityField.setWidth(250);
-			EntityDS.setDataSource(entityField);
+			final SelectItem entityField = new MetaDataSelectItem(EntityDefinition.class, "Entity");
 			SmartGWTUtil.setRequired(entityField);
 			entityField.setValue(parts.getDefName());
-			entityField.setColSpan(3);
+			entityField.setColSpan(2);
 
-			viewField = new ComboBoxItem("view", "ResultList View");
-			viewField.setWidth(250);
+			viewField = new MtpComboBoxItem("view", "ResultList View");
 			viewField.setDisabled(true);
 			viewField.setValue(parts.getViewName());
-			viewField.setColSpan(3);
+			viewField.setColSpan(2);
 
-			viewForLinkField = new ComboBoxItem("viewForLink", "Link Action View");
-			viewForLinkField.setWidth(250);
+			viewForLinkField = new MtpComboBoxItem("viewForLink", "Link Action View");
 			viewForLinkField.setDisabled(true);
 			viewForLinkField.setValue(parts.getViewNameForLink());
-			viewForLinkField.setColSpan(3);
+			viewForLinkField.setColSpan(2);
 
 			getViewList(parts.getDefName());
 
-			filterField = new SelectItem("filter", "Filter");
-			filterField.setWidth(250);
+			filterField = new MtpSelectItem("filter", "Filter");
 			filterField.setDisabled(true);
 			filterField.setValue(parts.getFilterName());
-			filterField.setColSpan(3);
+			filterField.setColSpan(2);
 			getFilterList(parts.getDefName());
 
 			entityField.addChangedHandler(new ChangedHandler() {
@@ -196,41 +191,23 @@ public class SearchResultListItem extends PartsItem {
 				}
 			});
 
-			final TextItem titleField = new TextItem("title", "Title");
-			titleField.setWidth(165);
+			final MetaDataLangTextItem titleField = new MetaDataLangTextItem();
+			titleField.setTitle("Title");
 			titleField.setValue(parts.getTitle());
+			titleField.setLocalizedList(parts.getLocalizedTitleList());
+			titleField.setColSpan(2);
 
-			langBtn = new ButtonItem("addDisplayName", "Languages");
-			langBtn.setShowTitle(false);
-			langBtn.setIcon("world.png");
-			langBtn.setStartRow(false);	//これを指定しないとButtonの場合、先頭にくる
-			langBtn.setEndRow(false);	//これを指定しないと次のFormItemが先頭にいく
-			langBtn.setPrompt(AdminClientMessageUtil.getString("ui_metadata_top_item_EntityListItem_eachLangDspName"));
-			langBtn.addClickHandler(new com.smartgwt.client.widgets.form.fields.events.ClickHandler() {
-
-				@Override
-				public void onClick(com.smartgwt.client.widgets.form.fields.events.ClickEvent event) {
-					if (localizedTitleList == null) {
-						localizedTitleList = new ArrayList<LocalizedStringDefinition>();
-					}
-					LocalizedStringSettingDialog dialog = new LocalizedStringSettingDialog(localizedTitleList);
-					dialog.show();
-				}
-			});
-			localizedTitleList = parts.getLocalizedTitleList();
-
-			iconTagField = new TextItem("iconTag", "Icon Tag");
-			iconTagField.setWidth(250);
+			iconTagField = new MtpTextItem("iconTag", "Icon Tag");
 			iconTagField.setValue(parts.getIconTag());
-			iconTagField.setColSpan(3);
+			iconTagField.setColSpan(2);
 			SmartGWTUtil.addHoverToFormItem(iconTagField, AdminClientMessageUtil.getString("ui_metadata_top_item_EntityListItem_iconTagComment"));
 
 			heightField = new IntegerItem("height", "Height");
-			heightField.setWidth(250);
+			heightField.setWidth("100%");
 			heightField.setValue(parts.getHeight());
-			heightField.setColSpan(3);
+			heightField.setColSpan(2);
 
-			form.setItems(entityField, viewField, viewForLinkField, filterField, titleField, langBtn, iconTagField, heightField);
+			form.setItems(entityField, viewField, viewForLinkField, filterField, titleField, iconTagField, heightField);
 
 			HLayout footer = new HLayout(5);
 			footer.setMargin(10);
@@ -249,7 +226,7 @@ public class SearchResultListItem extends PartsItem {
 						parts.setTitle(SmartGWTUtil.getStringValue(titleField));
 						parts.setIconTag(SmartGWTUtil.getStringValue(iconTagField));
 						parts.setHeight(heightField.getValueAsInteger());
-						parts.setLocalizedTitleList(localizedTitleList);
+						parts.setLocalizedTitleList(titleField.getLocalizedList());
 						fireDataChanged();
 						destroy();
 					}

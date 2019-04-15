@@ -23,9 +23,9 @@ package org.iplass.adminconsole.client.metadata.ui.entity.property.type;
 import java.util.LinkedHashMap;
 
 import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
+import org.iplass.adminconsole.client.base.ui.widget.MetaDataSelectItem;
+import org.iplass.adminconsole.client.base.ui.widget.MetaDataSelectItem.ItemOption;
 import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
-import org.iplass.adminconsole.client.metadata.data.MetaDataNameDS;
-import org.iplass.adminconsole.client.metadata.data.MetaDataNameDS.MetaDataNameDSOption;
 import org.iplass.adminconsole.client.metadata.ui.entity.property.PropertyAttribute;
 import org.iplass.adminconsole.client.metadata.ui.entity.property.PropertyAttributePane;
 import org.iplass.adminconsole.client.metadata.ui.entity.property.PropertyListGridRecord;
@@ -73,22 +73,10 @@ public class ExpressionAttributePane extends VLayout implements PropertyAttribut
 			}
 		});
 
-		selGlobalSelectValue = new SelectItem();
+		selGlobalSelectValue = new MetaDataSelectItem(SelectValueDefinition.class,
+				(new ItemOption(true, false)).tooltip(rs("ui_metadata_entity_PropertyListGrid_expressionGlobalSelectValueComment")));
 		selGlobalSelectValue.setTitle("Global Value");
-		selGlobalSelectValue.setWidth(200);
-
-		MetaDataNameDS.setDataSource(selGlobalSelectValue, SelectValueDefinition.class, new MetaDataNameDSOption(true, false, rs("ui_metadata_entity_PropertyListGrid_expressionGlobalSelectValueComment")));
 		SmartGWTUtil.addHoverToFormItem(selGlobalSelectValue, rs("ui_metadata_entity_PropertyListGrid_expressionGlobalSelectValueComment"));
-		//#19232
-//		btnGlobalSelectValueMeta = new MetaDataViewButtonItem(SelectValueDefinition.class.getName());
-//		btnGlobalSelectValueMeta.setPrompt(SmartGWTUtil.getHoverString("view the selected global value"));
-//		btnGlobalSelectValueMeta.setMetaDataShowClickHandler(
-//				new MetaDataViewButtonItem.MetaDataShowClickHandler() {
-//			@Override
-//			public String targetDefinitionName() {
-//				return SmartGWTUtil.getStringValue(selGlobalSelectValue);
-//			}
-//		});
 
 		txtExpression = new TextAreaItem();
 		txtExpression.setTitle(rs("ui_metadata_entity_PropertyListGrid_expression"));

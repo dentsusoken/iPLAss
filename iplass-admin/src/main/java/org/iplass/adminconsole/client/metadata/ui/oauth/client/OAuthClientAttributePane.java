@@ -30,6 +30,7 @@ import java.util.Map.Entry;
 import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
 import org.iplass.adminconsole.client.base.ui.widget.EditablePane;
 import org.iplass.adminconsole.client.base.ui.widget.MetaDataSelectItem;
+import org.iplass.adminconsole.client.base.ui.widget.MetaDataSelectItem.ItemOption;
 import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
 import org.iplass.mtp.auth.oauth.definition.ClientType;
 import org.iplass.mtp.auth.oauth.definition.GrantType;
@@ -58,7 +59,7 @@ public class OAuthClientAttributePane extends VLayout implements EditablePane<OA
 
 	private DynamicForm form;
 
-	private MetaDataSelectItem selAuthorizationServer;
+	private SelectItem selAuthorizationServer;
 
 	private SelectItem selClientType;
 
@@ -202,7 +203,7 @@ public class OAuthClientAttributePane extends VLayout implements EditablePane<OA
 		form.setColWidths(100, 300, 100, 300, "*");
 		form.setMargin(5);
 
-		selAuthorizationServer = new MetaDataSelectItem(OAuthAuthorizationDefinition.class);
+		selAuthorizationServer = new MetaDataSelectItem(OAuthAuthorizationDefinition.class, new ItemOption(true, false));
 		selAuthorizationServer.setTitle("OAuth Authorization");
 
 		selClientType = new SelectItem();

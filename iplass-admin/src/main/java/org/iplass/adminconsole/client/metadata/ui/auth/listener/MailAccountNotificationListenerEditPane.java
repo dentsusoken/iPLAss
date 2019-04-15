@@ -1,19 +1,19 @@
 /*
  * Copyright (C) 2014 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
- * 
+ *
  * Unless you have purchased a commercial license,
  * the following license terms apply:
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
@@ -25,9 +25,9 @@ import java.util.List;
 
 import org.iplass.adminconsole.client.base.event.DataChangedEvent;
 import org.iplass.adminconsole.client.base.event.DataChangedHandler;
+import org.iplass.adminconsole.client.base.ui.widget.MetaDataSelectItem;
+import org.iplass.adminconsole.client.base.ui.widget.MetaDataSelectItem.ItemOption;
 import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
-import org.iplass.adminconsole.client.metadata.data.MetaDataNameDS;
-import org.iplass.adminconsole.client.metadata.data.MetaDataNameDS.MetaDataNameDSOption;
 import org.iplass.mtp.auth.policy.definition.AccountNotificationListenerDefinition;
 import org.iplass.mtp.auth.policy.definition.listeners.MailAccountNotificationListenerDefinition;
 import org.iplass.mtp.mail.template.definition.MailTemplateDefinition;
@@ -80,41 +80,23 @@ public class MailAccountNotificationListenerEditPane extends AuthenticationListe
 		form.setAutoHeight();
 		form.setWidth(500);
 
-		slctCreateUserMailTemplateField = new SelectItem("createUserMailTemplate", "Create User MailTemplate");
-		slctCreateUserMailTemplateField.setWidth("100%");
-		MetaDataNameDS.setDataSource(slctCreateUserMailTemplateField, MailTemplateDefinition.class, new MetaDataNameDSOption(true, false));
+		slctCreateUserMailTemplateField = new MetaDataSelectItem(MailTemplateDefinition.class, "Create User MailTemplate", new ItemOption(true, false));
 
-		slctCredentialResetMailTemplateField = new SelectItem("credentialResetMailTemplate", "Credential Reset MailTemplate");
-		slctCredentialResetMailTemplateField.setWidth("100%");
-		MetaDataNameDS.setDataSource(slctCredentialResetMailTemplateField, MailTemplateDefinition.class, new MetaDataNameDSOption(true, false));
+		slctCredentialResetMailTemplateField = new MetaDataSelectItem(MailTemplateDefinition.class, "Credential Reset MailTemplate", new ItemOption(true, false));
 
-		slctCreateUserWithSpecifiedPasswordMailTemplateField = new SelectItem("createUserWithSpecifiedPasswordMailTemplate", "Create User With SpecifiedPassword MailTemplate");
-		slctCreateUserWithSpecifiedPasswordMailTemplateField.setWidth("100%");
-		MetaDataNameDS.setDataSource(slctCreateUserWithSpecifiedPasswordMailTemplateField, MailTemplateDefinition.class, new MetaDataNameDSOption(true, false));
+		slctCreateUserWithSpecifiedPasswordMailTemplateField = new MetaDataSelectItem(MailTemplateDefinition.class, "Create User With SpecifiedPassword MailTemplate", new ItemOption(true, false));
 
-		slctCredentialResetWithSpecifiedPasswordMailTemplateField = new SelectItem("credentialResetWithSpecifiedPasswordMailTemplate", "Credential Reset WithSpecified PasswordMailTemplate");
-		slctCredentialResetWithSpecifiedPasswordMailTemplateField.setWidth("100%");
-		MetaDataNameDS.setDataSource(slctCredentialResetWithSpecifiedPasswordMailTemplateField, MailTemplateDefinition.class, new MetaDataNameDSOption(true, false));
+		slctCredentialResetWithSpecifiedPasswordMailTemplateField = new MetaDataSelectItem(MailTemplateDefinition.class, "Credential Reset WithSpecified PasswordMailTemplate", new ItemOption(true, false));
 
-		slctLockedoutMailTemplateField = new SelectItem("lockedoutMailTemplate", "Lockedout MailTemplate");
-		slctLockedoutMailTemplateField.setWidth("100%");
-		MetaDataNameDS.setDataSource(slctLockedoutMailTemplateField, MailTemplateDefinition.class, new MetaDataNameDSOption(true, false));
+		slctLockedoutMailTemplateField = new MetaDataSelectItem(MailTemplateDefinition.class, "Lockedout MailTemplate", new ItemOption(true, false));
 
-		slctCredentialUpdatedMailTemplateField = new SelectItem("credentialUpdatedMailTemplate", "Credential Updated MailTemplate");
-		slctCredentialUpdatedMailTemplateField.setWidth("100%");
-		MetaDataNameDS.setDataSource(slctCredentialUpdatedMailTemplateField, MailTemplateDefinition.class, new MetaDataNameDSOption(true, false));
+		slctCredentialUpdatedMailTemplateField = new MetaDataSelectItem(MailTemplateDefinition.class, "Credential Updated MailTemplate", new ItemOption(true, false));
 
-		slctPropertyUpdatedMailTemplateField = new SelectItem("propertyUpdatedMailTemplate", "Property Updated MailTemplate");
-		slctPropertyUpdatedMailTemplateField.setWidth("100%");
-		MetaDataNameDS.setDataSource(slctPropertyUpdatedMailTemplateField, MailTemplateDefinition.class, new MetaDataNameDSOption(true, false));
+		slctPropertyUpdatedMailTemplateField = new MetaDataSelectItem(MailTemplateDefinition.class, "Property Updated MailTemplate", new ItemOption(true, false));
 
-		slctRemovedUpdatedMailTemplateField = new SelectItem("removedUpdatedMailTemplate", "Remove User MailTemplate");
-		slctRemovedUpdatedMailTemplateField.setWidth("100%");
-		MetaDataNameDS.setDataSource(slctRemovedUpdatedMailTemplateField, MailTemplateDefinition.class, new MetaDataNameDSOption(true, false));
+		slctRemovedUpdatedMailTemplateField = new MetaDataSelectItem(MailTemplateDefinition.class, "Remove User MailTemplate", new ItemOption(true, false));
 
-		slctLoginSuccessUserMailTemplateField = new SelectItem("loginSuccessUserMailTemplate", "Logged in User MailTemplate");
-		slctLoginSuccessUserMailTemplateField.setWidth("100%");
-		MetaDataNameDS.setDataSource(slctLoginSuccessUserMailTemplateField, MailTemplateDefinition.class, new MetaDataNameDSOption(true, false));
+		slctLoginSuccessUserMailTemplateField = new MetaDataSelectItem(MailTemplateDefinition.class, "Logged in User MailTemplate", new ItemOption(true, false));
 
 		propertiesForUpdateNotificationPane = new PropertiesForUpdateNotificationPane();
 
