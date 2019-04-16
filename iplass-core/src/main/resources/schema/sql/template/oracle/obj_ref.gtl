@@ -21,5 +21,5 @@ SUBPARTITION BY HASH (OBJ_DEF_ID) SUBPARTITIONS 8
 <%}
 %>;
 
-CREATE INDEX "OBJ_REF${tableNamePostfix}_INDEX1" ON "OBJ_REF${tableNamePostfix}" ("TENANT_ID", "OBJ_DEF_ID", "OBJ_ID") <%if (partition) {%>LOCAL<%}%>;
-CREATE INDEX "OBJ_REF${tableNamePostfix}_INDEX2" ON "OBJ_REF${tableNamePostfix}" ("TENANT_ID", "TARGET_OBJ_DEF_ID", "TARGET_OBJ_ID") <%if (partition) {%>LOCAL<%}%>;
+CREATE INDEX "OBJ_REF${tableNamePostfix}_INDEX1" ON "OBJ_REF${tableNamePostfix}" ("TENANT_ID", "OBJ_DEF_ID", "OBJ_ID", "REF_DEF_ID") <%if (partition) {%>LOCAL<%}%>;
+CREATE INDEX "OBJ_REF${tableNamePostfix}_INDEX2" ON "OBJ_REF${tableNamePostfix}" ("TENANT_ID", "TARGET_OBJ_DEF_ID", "TARGET_OBJ_ID", "REF_DEF_ID") <%if (partition) {%>LOCAL<%}%>;

@@ -11,8 +11,8 @@ CREATE TABLE `obj_ref` (
   `target_obj_id` VARCHAR(64) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `target_obj_ver` BIGINT(10) DEFAULT 0 NOT NULL,
   PRIMARY KEY (`r_id`, `tenant_id`, `obj_def_id`),
-  INDEX `obj_ref_index1` (`tenant_id`, `obj_def_id`(128), `obj_id`(64)),
-  INDEX `obj_ref_index2` (`tenant_id`, `target_obj_def_id`(128), `target_obj_id`(64))
+  INDEX `obj_ref_index1` (`tenant_id`, `obj_def_id`(128), `obj_id`(64), `ref_def_id`(128)),
+  INDEX `obj_ref_index2` (`tenant_id`, `target_obj_def_id`(128), `target_obj_id`(64), `ref_def_id`(128))
 )
 ENGINE = INNODB ROW_FORMAT=DYNAMIC
 
@@ -44,8 +44,8 @@ CREATE TABLE `obj_ref__MTP` (
   `target_obj_id` VARCHAR(64) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `target_obj_ver` BIGINT(10) DEFAULT 0 NOT NULL,
   PRIMARY KEY (`r_id`, `tenant_id`, `obj_def_id`),
-  INDEX `obj_ref__MTP_index1` (`tenant_id`, `obj_def_id`(128), `obj_id`(64)),
-  INDEX `obj_ref__MTP_index2` (`tenant_id`, `target_obj_def_id`(128), `target_obj_id`(64))
+  INDEX `obj_ref__MTP_index1` (`tenant_id`, `obj_def_id`(128), `obj_id`(64), `ref_def_id`(128)),
+  INDEX `obj_ref__MTP_index2` (`tenant_id`, `target_obj_def_id`(128), `target_obj_id`(64), `ref_def_id`(128))
 )
 ENGINE = INNODB ROW_FORMAT=DYNAMIC
 
@@ -77,8 +77,8 @@ CREATE TABLE `obj_ref__USER` (
   `target_obj_id` VARCHAR(64) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `target_obj_ver` BIGINT(10) DEFAULT 0 NOT NULL,
   PRIMARY KEY (`r_id`, `tenant_id`, `obj_def_id`),
-  INDEX `obj_ref__USER_index1` (`tenant_id`, `obj_def_id`(128), `obj_id`(64)),
-  INDEX `obj_ref__USER_index2` (`tenant_id`, `target_obj_def_id`(128), `target_obj_id`(64))
+  INDEX `obj_ref__USER_index1` (`tenant_id`, `obj_def_id`(128), `obj_id`(64), `ref_def_id`(128)),
+  INDEX `obj_ref__USER_index2` (`tenant_id`, `target_obj_def_id`(128), `target_obj_id`(64), `ref_def_id`(128))
 )
 ENGINE = INNODB ROW_FORMAT=DYNAMIC
 
