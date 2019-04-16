@@ -97,7 +97,13 @@
 		if (StringUtil.isNotBlank(form.getCancelActionName())) {
 			cancel = form.getCancelActionName() + urlPath;
 		} else if (fromView) {
-			cancel = DetailViewCommand.VIEW_ACTION_NAME + urlPath;
+			//詳細表示アクション
+			SearchFormView searchView = (SearchFormView)ViewUtil.getFormView(defName, viewName, true);
+			String viewAction = searchView.getViewActionName();
+			if (StringUtil.isBlank(viewAction)) {
+				viewAction = DetailViewCommand.VIEW_ACTION_NAME;
+			}
+			cancel = viewAction + urlPath + "/" + oid;
 		} else {
 			cancel = SearchViewCommand.SEARCH_ACTION_NAME + urlPath;
 		}
@@ -182,15 +188,14 @@ function cancel() {
 	}
 
 	submitForm(contextPath + "/<%=StringUtil.escapeJavaScript(cancel)%>", {
-		<%=Constants.SEARCH_COND%>:$(":hidden[name='searchCond']").val(),
-		<%=Constants.TOPVIEW_LIST_OFFSET%>:"<%=StringUtil.escapeJavaScript(topViewListOffset)%>",
 <% if (fromView) { %>
-		<%=Constants.DEF_NAME%>:$(":hidden[name='defName']").val(),
-		<%=Constants.OID%>:$(":hidden[name='oid']").val(),
+		//詳細画面表示用
 		<%=Constants.VERSION%>:$(":hidden[name='version']").val(),
-		<%=Constants.TIMESTAMP%>:$(":hidden[name='timestamp']").val(),
-		<%=Constants.BACK_PATH%>:$(":hidden[name='backPath']").val()
+		<%=Constants.BACK_PATH%>:$(":hidden[name='backPath']").val(),
 <% } %>
+		//一覧画面表示用
+		<%=Constants.SEARCH_COND%>:$(":hidden[name='searchCond']").val(),
+		<%=Constants.TOPVIEW_LIST_OFFSET%>:"<%=StringUtil.escapeJavaScript(topViewListOffset)%>"
 	});
 }
 </script>
