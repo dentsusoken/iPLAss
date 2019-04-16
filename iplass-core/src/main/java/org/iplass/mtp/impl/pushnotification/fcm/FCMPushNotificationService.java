@@ -61,7 +61,7 @@ public class FCMPushNotificationService extends PushNotificationService {
 
 	private RegistrationIdHandler registrationIdHandler;
 	//for Exponential Backoff
-	private ExponentialBackoff exponentialBackoff;
+	private org.iplass.mtp.impl.http.ExponentialBackoff exponentialBackoff;
 
 	private HttpClientConfig httpClientConfig;
 
@@ -82,12 +82,12 @@ public class FCMPushNotificationService extends PushNotificationService {
 			enableRetry = Boolean.valueOf(config.getValue("enableRetry"));
 		}
 		if (enableRetry) {
-			exponentialBackoff = (ExponentialBackoff) config.getBean("exponentialBackoff");
+			exponentialBackoff = (org.iplass.mtp.impl.http.ExponentialBackoff) config.getBean("exponentialBackoff");
 			if (exponentialBackoff == null) {
-				exponentialBackoff = new ExponentialBackoff();
+				exponentialBackoff = new org.iplass.mtp.impl.http.ExponentialBackoff();
 			}
 		} else {
-			exponentialBackoff = ExponentialBackoff.NO_RETRY;
+			exponentialBackoff = org.iplass.mtp.impl.http.ExponentialBackoff.NO_RETRY;
 		}
 
 		registrationIdHandler = (RegistrationIdHandler) config.getBean("registrationIdHandler");

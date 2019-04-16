@@ -19,97 +19,14 @@
  */
 package org.iplass.mtp.impl.pushnotification.fcm;
 
-import java.util.function.BooleanSupplier;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-public class ExponentialBackoff {
-	
-	private static final Logger logger = LoggerFactory.getLogger(ExponentialBackoff.class);
-	
-	static ExponentialBackoff NO_RETRY = new ExponentialBackoff() {
-		@Override
-		public void execute(BooleanSupplier func) throws InterruptedException {
-			func.getAsBoolean();
-		}
-	};
-	
-	private long retryIntervalMillis = 500;
-	private double randomizationFactor = 0.5;
-	private double multiplier = 1.5;
-	private long maxIntervalMillis = 1000 * 60;//1 min.
-	private long maxElapsedTimeMillis = 1000 * 60 * 5;//5 min.
-	
-	public long getRetryIntervalMillis() {
-		return retryIntervalMillis;
-	}
-
-	public void setRetryIntervalMillis(long retryIntervalMillis) {
-		this.retryIntervalMillis = retryIntervalMillis;
-	}
-
-	public double getRandomizationFactor() {
-		return randomizationFactor;
-	}
-
-	public void setRandomizationFactor(double randomizationFactor) {
-		this.randomizationFactor = randomizationFactor;
-	}
-
-	public double getMultiplier() {
-		return multiplier;
-	}
-
-	public void setMultiplier(double multiplier) {
-		this.multiplier = multiplier;
-	}
-
-	public long getMaxIntervalMillis() {
-		return maxIntervalMillis;
-	}
-
-	public void setMaxIntervalMillis(long maxIntervalMillis) {
-		this.maxIntervalMillis = maxIntervalMillis;
-	}
-
-	public long getMaxElapsedTimeMillis() {
-		return maxElapsedTimeMillis;
-	}
-
-	public void setMaxElapsedTimeMillis(long maxElapsedTimeMillis) {
-		this.maxElapsedTimeMillis = maxElapsedTimeMillis;
-	}
-
-	public void execute(BooleanSupplier func) throws InterruptedException {
-		
-		long endTime = System.currentTimeMillis() + maxElapsedTimeMillis;
-		long intervalTime = retryIntervalMillis;
-		while (System.currentTimeMillis() < endTime) {
-			if (func.getAsBoolean()) {
-				return;
-			}
-			
-			//retry
-			long sleepTime = randomized(intervalTime);
-			if (logger.isDebugEnabled()) {
-				logger.debug("execution failed. retry after " + sleepTime + "ms.");
-			}
-			Thread.sleep(sleepTime);
-			intervalTime = (long) (intervalTime * multiplier);
-			if (intervalTime > maxIntervalMillis) {
-				intervalTime = maxIntervalMillis;
-			}
-		}
-		
-		if (logger.isDebugEnabled()) {
-			logger.debug("execution failed and retry over.");
-		}
-	}
-	
-	private long randomized(long l) {
-		double rv = randomizationFactor * (Math.random() * 2 - 1);
-		return (long) (l * (1 + rv));
-	}
+/**
+ * org.iplass.mtp.impl.http.ExponentialBackoffとしてパッケージ移動。
+ * 当該パッケージのクラスはver.3.1.0で削除予定。
+ * 
+ * 
+ * @deprecated use org.iplass.mtp.impl.http.ExponentialBackoff
+ */
+@Deprecated
+public class ExponentialBackoff extends org.iplass.mtp.impl.http.ExponentialBackoff {
 
 }
