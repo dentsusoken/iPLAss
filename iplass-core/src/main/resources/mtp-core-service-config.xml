@@ -257,7 +257,7 @@
 		<property name="authorizationKey" value="[your Firebase authorizationKey]" />
 		<property name="dryRun" value="false" />
 		<property name="enableRetry" value="true" />
-		<property name="exponentialBackoff" class="org.iplass.mtp.impl.pushnotification.fcm.ExponentialBackoff">
+		<property name="exponentialBackoff" class="org.iplass.mtp.impl.http.ExponentialBackoff">
 			<property name="retryIntervalMillis" value="500" />
 			<property name="randomizationFactor" value="0.5" />
 			<property name="multiplier" value="1.5" />
