@@ -790,7 +790,8 @@ ${m:rs("mtp-gem-messages", "generic.editor.reference.ReferencePropertyEditor_Tab
 <script type="text/javascript">
 var toggleAddBtn_<%=_propName%> = function() {
 	var $tbody = $("#<%=StringUtil.escapeJavaScript(dummyRowId)%>").parent();
-	var display = $tbody.children("tr:not(:hidden)").length < <%=pd.getMultiplicity()%>;
+	<%-- 参照プロパティで多重度が*指定（値的には-1）可能 --%>
+	var display = <%=pd.getMultiplicity() == -1%> || $tbody.children("tr:not(:hidden)").length < <%=pd.getMultiplicity()%>;
 	$("#id_<c:out value="<%=propName%>"/>_addButton_bottom").toggle(display);
 }
 $(function() {
