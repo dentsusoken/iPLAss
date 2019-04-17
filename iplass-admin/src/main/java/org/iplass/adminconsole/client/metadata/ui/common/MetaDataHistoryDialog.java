@@ -26,7 +26,7 @@ import java.util.List;
 import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
 import org.iplass.adminconsole.client.base.io.download.PostDownloadFrame;
 import org.iplass.adminconsole.client.base.tenant.TenantInfoHolder;
-import org.iplass.adminconsole.client.base.ui.widget.AbstractWindow;
+import org.iplass.adminconsole.client.base.ui.widget.MtpDialog;
 import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
 import org.iplass.adminconsole.shared.metadata.rpc.MetaDataServiceAsync;
 import org.iplass.adminconsole.shared.metadata.rpc.MetaDataServiceFactory;
@@ -35,12 +35,10 @@ import org.iplass.mtp.definition.VersionHistory;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.smartgwt.client.types.Alignment;
 import com.smartgwt.client.types.AutoFitWidthApproach;
 import com.smartgwt.client.types.Overflow;
 import com.smartgwt.client.types.SelectionAppearance;
 import com.smartgwt.client.types.SelectionStyle;
-import com.smartgwt.client.types.VerticalAlignment;
 import com.smartgwt.client.util.SC;
 import com.smartgwt.client.widgets.IButton;
 import com.smartgwt.client.widgets.Label;
@@ -50,9 +48,8 @@ import com.smartgwt.client.widgets.grid.ListGrid;
 import com.smartgwt.client.widgets.grid.ListGridField;
 import com.smartgwt.client.widgets.grid.ListGridRecord;
 import com.smartgwt.client.widgets.layout.HLayout;
-import com.smartgwt.client.widgets.layout.VLayout;
 
-public class MetaDataHistoryDialog extends AbstractWindow {
+public class MetaDataHistoryDialog extends MtpDialog {
 
 	private MetaDataHistoryListPane metaDataHistoryListPane;
 	private MetaDataServiceAsync service = MetaDataServiceFactory.get();
@@ -60,31 +57,19 @@ public class MetaDataHistoryDialog extends AbstractWindow {
 
 	public MetaDataHistoryDialog(String className, final String definitionId, int curVersion) {
 
-		VLayout layout = new VLayout();
-
-		String title = "MetaData History Dialog";
-		setTitle(title);
+		setTitle("MetaData History Dialog");
 		setHeight(420);
-		setWidth(400);
-		setMargin(0);
-		setMembersMargin(0);
-
-		setShowMinimizeButton(false);
-		setIsModal(true);
-		setShowModalMask(true);
 		centerInPage();
+
+		Label label = new Label(AdminClientMessageUtil.getString("ui_metadata_common_MetaDataHistoryDialog_label"));
+		label.setWidth100();
+		label.setAutoHeight();
+
+		container.addMember(label);
 
 		metaDataHistoryListPane = new MetaDataHistoryListPane(className, definitionId, curVersion);
 
-		layout.addMember(metaDataHistoryListPane);
-
-		HLayout footer;
-
-		footer = new HLayout(5);
-		footer.setMargin(10);
-		footer.setHeight(50);
-		footer.setWidth100();
-		footer.setAlign(VerticalAlignment.CENTER);
+		container.addMember(metaDataHistoryListPane);
 
 		IButton create = new IButton("Create");
 		create.setIcon(EXPORT_ICON);
@@ -119,24 +104,6 @@ public class MetaDataHistoryDialog extends AbstractWindow {
 		});
 		footer.setMembers(create);
 
-		HLayout labelLayout = new HLayout(5);
-		labelLayout.setHeight(20);
-		labelLayout.setWidth100();
-		labelLayout.setAlign(Alignment.LEFT);
-		labelLayout.setPadding(7);
-
-		Label label = new Label(AdminClientMessageUtil.getString("ui_metadata_common_MetaDataHistoryDialog_label"));
-		label.setHeight(30);
-		label.setPadding(10);
-		label.setAlign(Alignment.LEFT);
-		label.setWrap(false);
-
-		labelLayout.setMembers(label);
-
-		addItem(labelLayout);
-		addItem(layout);
-		addItem(SmartGWTUtil.separator());
-		addItem(footer);
 	}
 
 	private class MetaDataHistoryListPane extends HLayout {
@@ -144,8 +111,6 @@ public class MetaDataHistoryDialog extends AbstractWindow {
 		private HistoryInfoGrid grid;
 
 		public MetaDataHistoryListPane(String className, final String definitionId, final int curVersion) {
-			setMargin(10);
-			setMembersMargin(10);
 			grid = new HistoryInfoGrid();
 
 			service.getHistoryById(TenantInfoHolder.getId(), className, definitionId, new AsyncCallback<DefinitionInfo>() {
@@ -175,7 +140,7 @@ public class MetaDataHistoryDialog extends AbstractWindow {
 
 			});
 
-			addItem(grid);
+			addMember(grid);
 		}
 	}
 

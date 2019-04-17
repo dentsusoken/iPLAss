@@ -26,50 +26,42 @@ import java.util.List;
 
 import org.iplass.adminconsole.client.base.event.DataChangedEvent;
 import org.iplass.adminconsole.client.base.event.DataChangedHandler;
-import org.iplass.adminconsole.client.base.ui.widget.AbstractWindow;
 import org.iplass.adminconsole.client.base.ui.widget.MetaDataComboBoxItem;
+import org.iplass.adminconsole.client.base.ui.widget.MtpDialog;
+import org.iplass.adminconsole.client.base.ui.widget.form.MtpForm;
+import org.iplass.adminconsole.client.base.ui.widget.form.MtpSelectItem;
 import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
 import org.iplass.mtp.entity.definition.EntityDefinition;
 import org.iplass.mtp.web.actionmapping.definition.cache.CacheRelatedEntityDefinition;
 import org.iplass.mtp.web.actionmapping.definition.cache.RelatedEntityType;
 
-import com.smartgwt.client.types.VerticalAlignment;
 import com.smartgwt.client.widgets.IButton;
 import com.smartgwt.client.widgets.events.ClickEvent;
 import com.smartgwt.client.widgets.events.ClickHandler;
 import com.smartgwt.client.widgets.form.DynamicForm;
 import com.smartgwt.client.widgets.form.fields.ComboBoxItem;
 import com.smartgwt.client.widgets.form.fields.SelectItem;
-import com.smartgwt.client.widgets.layout.HLayout;
 
-public class CacheRelatedEntityEditDialog extends AbstractWindow {
+public class CacheRelatedEntityEditDialog extends MtpDialog {
 
 	/** Entity */
 	private ComboBoxItem entityNameField;
 	/** Type */
 	private SelectItem relatedEntityTypeField;
 
-	/** フッター */
-	private HLayout footer;
-
 	/** データ変更ハンドラ */
 	private List<DataChangedHandler> handlers = new ArrayList<DataChangedHandler>();
 
 	public CacheRelatedEntityEditDialog() {
 
-		setWidth(400);
-		setHeight(130);
+		setHeight(200);
 		setTitle("Cache Related Entity");
-		setShowMinimizeButton(false);
-		setIsModal(true);
-		setShowModalMask(true);
 		centerInPage();
 
 		entityNameField = new MetaDataComboBoxItem(EntityDefinition.class, "Entity");
 		SmartGWTUtil.setRequired(entityNameField);
 
-		relatedEntityTypeField = new SelectItem("relatedEntityType", "Type");
-		relatedEntityTypeField.setWidth(250);
+		relatedEntityTypeField = new MtpSelectItem("relatedEntityType", "Type");
 		SmartGWTUtil.setRequired(relatedEntityTypeField);
 		LinkedHashMap<String, String> typeMap = new LinkedHashMap<String, String>();
 		for (RelatedEntityType type : RelatedEntityType.values()) {
@@ -78,12 +70,10 @@ public class CacheRelatedEntityEditDialog extends AbstractWindow {
 		relatedEntityTypeField.setValueMap(typeMap);
 		relatedEntityTypeField.setDefaultValue(RelatedEntityType.values()[0].name());
 
-		final DynamicForm form = new DynamicForm();
-		form.setMargin(5);
-//		form.setHeight100();
-		form.setAutoHeight();	//下に追加するためAutoHeight
-		form.setWidth100();
+		final DynamicForm form = new MtpForm();
 		form.setItems(entityNameField, relatedEntityTypeField);
+
+		container.addMember(form);
 
 		IButton save = new IButton("OK");
 		save.addClickHandler(new ClickHandler() {
@@ -91,8 +81,6 @@ public class CacheRelatedEntityEditDialog extends AbstractWindow {
 				boolean commonValidate = form.validate();
 				if (commonValidate) {
 					saveDefinition();
-				} else {
-//					errors.setVisible(true);
 				}
 			}
 		});
@@ -104,17 +92,7 @@ public class CacheRelatedEntityEditDialog extends AbstractWindow {
 			}
 		});
 
-		footer = new HLayout(5);
-		footer.setMargin(5);
-		footer.setHeight(20);
-		footer.setWidth100();
-		//footer.setAlign(Alignment.LEFT);
-		footer.setAlign(VerticalAlignment.CENTER);
 		footer.setMembers(save, cancel);
-
-
-		addItem(form);
-		addItem(footer);
 	}
 
 	/**

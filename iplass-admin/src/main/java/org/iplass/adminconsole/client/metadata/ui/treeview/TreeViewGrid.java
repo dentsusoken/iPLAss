@@ -27,9 +27,12 @@ import java.util.List;
 
 import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
 import org.iplass.adminconsole.client.base.tenant.TenantInfoHolder;
-import org.iplass.adminconsole.client.base.ui.widget.AbstractWindow;
 import org.iplass.adminconsole.client.base.ui.widget.MetaDataSelectItem;
 import org.iplass.adminconsole.client.base.ui.widget.MetaDataSelectItem.ItemOption;
+import org.iplass.adminconsole.client.base.ui.widget.MtpDialog;
+import org.iplass.adminconsole.client.base.ui.widget.form.MtpForm;
+import org.iplass.adminconsole.client.base.ui.widget.form.MtpSelectItem;
+import org.iplass.adminconsole.client.base.ui.widget.form.MtpTextItem;
 import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
 import org.iplass.adminconsole.client.metadata.ui.common.EntityPropertyDragPane;
 import org.iplass.adminconsole.shared.metadata.rpc.MetaDataServiceAsync;
@@ -54,7 +57,6 @@ import com.smartgwt.client.types.Alignment;
 import com.smartgwt.client.types.DragDataAction;
 import com.smartgwt.client.types.SelectionStyle;
 import com.smartgwt.client.types.TreeModelType;
-import com.smartgwt.client.types.VerticalAlignment;
 import com.smartgwt.client.util.BooleanCallback;
 import com.smartgwt.client.util.SC;
 import com.smartgwt.client.widgets.Canvas;
@@ -68,15 +70,12 @@ import com.smartgwt.client.widgets.form.fields.FormItem;
 import com.smartgwt.client.widgets.form.fields.SelectItem;
 import com.smartgwt.client.widgets.form.fields.SpinnerItem;
 import com.smartgwt.client.widgets.form.fields.TextItem;
-import com.smartgwt.client.widgets.form.validator.RequiredIfFunction;
-import com.smartgwt.client.widgets.form.validator.RequiredIfValidator;
 import com.smartgwt.client.widgets.grid.ListGrid;
 import com.smartgwt.client.widgets.grid.ListGridField;
 import com.smartgwt.client.widgets.grid.ListGridRecord;
 import com.smartgwt.client.widgets.grid.events.RecordDropEvent;
 import com.smartgwt.client.widgets.grid.events.RecordDropHandler;
 import com.smartgwt.client.widgets.layout.HLayout;
-import com.smartgwt.client.widgets.layout.VLayout;
 import com.smartgwt.client.widgets.tab.Tab;
 import com.smartgwt.client.widgets.tab.TabSet;
 import com.smartgwt.client.widgets.tree.Tree;
@@ -475,7 +474,7 @@ public class TreeViewGrid extends TreeGrid {
 	 * @author lis3wg
 	 *
 	 */
-	private class TreeViewItemEditDialog extends AbstractWindow {
+	private class TreeViewItemEditDialog extends MtpDialog {
 
 		TreeNode node = null;
 
@@ -533,55 +532,32 @@ public class TreeViewGrid extends TreeGrid {
 			}
 
 			setTitle(AdminClientMessageUtil.getString("ui_metadata_treeview_TreeViewGrid_editTreeViewItem"));
-			setWidth(600);
-			setHeight(340);
-			setShowMinimizeButton(false);
-			setIsModal(true);
-			setShowModalMask(true);
+			setHeight(380);
 			centerInPage();
-
-			HLayout header = new HLayout(5);
-			header.setHeight(20);
-			header.setWidth100();
-			header.setAlign(VerticalAlignment.CENTER);
-
-			VLayout contents = new VLayout(5);
-			contents.setAlign(Alignment.CENTER);
 
 			TabSet tab = new TabSet();
 			tab.setWidth100();
 			tab.setHeight100();
 
-			RequiredIfValidator requiredValidator = new RequiredIfValidator(
-				new RequiredIfFunction() {
-
-					@Override
-					public boolean execute(FormItem formItem, Object value) {
-						return value == null || value.toString().isEmpty();
-					}
-				});
-			//TODO YK ロケールを設定すればデフォルトでOK
-			requiredValidator.setErrorMessage(AdminClientMessageUtil.getString("ui_metadata_treeview_TreeViewGrid_valueFieldRequired"));
-
 			//設定項目の入力フィールド作成
 			List<FormItem> items = new ArrayList<FormItem>();
 
-			defNameField = new TextItem("defName", AdminClientMessageUtil.getString("ui_metadata_treeview_TreeViewGrid_entityDefName"));
+			defNameField = new MtpTextItem("defName", AdminClientMessageUtil.getString("ui_metadata_treeview_TreeViewGrid_entityDefName"));
 			defNameField.setValue(item.getDefName());
 			SmartGWTUtil.setReadOnly(defNameField);
 			items.add(defNameField);
 
-			displayPropertNameField = new SelectItem("displayPropertyName", AdminClientMessageUtil.getString("ui_metadata_treeview_TreeViewGrid_dispItem"));
+			displayPropertNameField = new MtpSelectItem("displayPropertyName", AdminClientMessageUtil.getString("ui_metadata_treeview_TreeViewGrid_dispItem"));
 			SmartGWTUtil.addHoverToFormItem(displayPropertNameField,
 					AdminClientMessageUtil.getString("ui_metadata_treeview_TreeViewGrid_speItemEntityDispTreeView"));
-			displayPropertNameField.setValidators(requiredValidator);
+			SmartGWTUtil.setRequired(displayPropertNameField);
 			displayPropertNameField.setValue(item.getDisplayPropertyName());
 			items.add(displayPropertNameField);
 
 			limitField = new SpinnerItem("limit", AdminClientMessageUtil.getString("ui_metadata_treeview_TreeViewGrid_upperLimitDisp"));
 			SmartGWTUtil.addHoverToFormItem(limitField,
 					AdminClientMessageUtil.getString("ui_metadata_treeview_TreeViewGrid_setUpperLimit"));
-			limitField.setValidators(requiredValidator);
+			SmartGWTUtil.setRequired(limitField);
 			limitField.setDefaultValue(1);
 			limitField.setMin(1);
 			limitField.setMax(100);
@@ -595,17 +571,17 @@ public class TreeViewGrid extends TreeGrid {
 			displayDefinitionNodeField.setValue(item.isDisplayDefinitionNode());
 			items.add(displayDefinitionNodeField);
 
-			sortItemField = new SelectItem("sortItem", AdminClientMessageUtil.getString("ui_metadata_treeview_TreeViewGrid_sortItem"));
+			sortItemField = new MtpSelectItem("sortItem", AdminClientMessageUtil.getString("ui_metadata_treeview_TreeViewGrid_sortItem"));
 			SmartGWTUtil.addHoverToFormItem(sortItemField,
 					AdminClientMessageUtil.getString("ui_metadata_treeview_TreeViewGrid_speSortItemTreeView"));
-			sortItemField.setValidators(requiredValidator);
+			SmartGWTUtil.setRequired(sortItemField);
 			sortItemField.setValue(item.getSortItem());
 			items.add(sortItemField);
 
-			sortTypeField = new SelectItem("sortType", AdminClientMessageUtil.getString("ui_metadata_treeview_TreeViewGrid_sortType"));
+			sortTypeField = new MtpSelectItem("sortType", AdminClientMessageUtil.getString("ui_metadata_treeview_TreeViewGrid_sortType"));
 			SmartGWTUtil.addHoverToFormItem(sortTypeField,
 					AdminClientMessageUtil.getString("ui_metadata_treeview_TreeViewGrid_speSortTypeTreeView"));
-			sortTypeField.setValidators(requiredValidator);
+			SmartGWTUtil.setRequired(sortTypeField);
 			sortTypeField.setValue(item.getSortType().name());
 			sortTypeField.setValueMap(new String[]{"ASC", "DESC"});
 			items.add(sortTypeField);
@@ -618,7 +594,7 @@ public class TreeViewGrid extends TreeGrid {
 			actionField.setValue(action);
 			items.add(actionField);
 
-			viewNameField = new TextItem("viewName", AdminClientMessageUtil.getString("ui_metadata_treeview_TreeViewGrid_viewName"));
+			viewNameField = new MtpTextItem("viewName", AdminClientMessageUtil.getString("ui_metadata_treeview_TreeViewGrid_viewName"));
 			SmartGWTUtil.addHoverToFormItem(displayDefinitionNodeField,
 					AdminClientMessageUtil.getString("ui_metadata_treeview_TreeViewGrid_viewNameComment"));
 			viewNameField.setValue(item.getViewName());
@@ -626,22 +602,19 @@ public class TreeViewGrid extends TreeGrid {
 
 			if (item instanceof ReferenceTreeViewItem) {
 				ReferenceTreeViewItem rItem = (ReferenceTreeViewItem) item;
-				propertyNameField = new TextItem("propertyName", AdminClientMessageUtil.getString("ui_metadata_treeview_TreeViewGrid_referencePropName"));
+				propertyNameField = new MtpTextItem("propertyName", AdminClientMessageUtil.getString("ui_metadata_treeview_TreeViewGrid_referencePropName"));
 				SmartGWTUtil.setReadOnly(propertyNameField);
 				propertyNameField.setValue(rItem.getPropertyName());
 				items.add(propertyNameField);
 
-				displayNameField = new TextItem("displayName", AdminClientMessageUtil.getString("ui_metadata_treeview_TreeViewGrid_dispName"));
+				displayNameField = new MtpTextItem("displayName", AdminClientMessageUtil.getString("ui_metadata_treeview_TreeViewGrid_dispName"));
 				SmartGWTUtil.addHoverToFormItem(displayNameField,
 						AdminClientMessageUtil.getString("ui_metadata_treeview_TreeViewGrid_speEntityDefHieraName"));
 				displayNameField.setValue(rItem.getDisplayName());
 				items.add(displayNameField);
 			}
 
-			DynamicForm baseForm = new DynamicForm();
-			baseForm.setNumCols(4);
-			baseForm.setMargin(10);
-			baseForm.setWidth100();
+			DynamicForm baseForm = new MtpForm();
 			baseForm.setFields(items.toArray(new FormItem[items.size()]));
 
 			Tab baseItem = new Tab();
@@ -649,10 +622,7 @@ public class TreeViewGrid extends TreeGrid {
 			baseItem.setPane(baseForm);
 			tab.addTab(baseItem);
 
-			refForm = new DynamicForm();
-			refForm.setNumCols(4);
-			refForm.setMargin(10);
-			refForm.setWidth100();
+			refForm = new MtpForm();
 
 			Tab refItem = new Tab();
 			refItem.setTitle(AdminClientMessageUtil.getString("ui_metadata_treeview_TreeViewGrid_referenceConf"));
@@ -680,44 +650,41 @@ public class TreeViewGrid extends TreeGrid {
 				tab.addTab(colModelMappingItem);
 			}
 
-			widgetForm = new DynamicForm();
-			widgetForm.setNumCols(4);
-			widgetForm.setMargin(10);
-			widgetForm.setWidth100();
+			widgetForm = new MtpForm();
 
 			items = new ArrayList<FormItem>();
 
-			entityNodeIconField = new TextItem("entityNodeIcon", AdminClientMessageUtil.getString("ui_metadata_treeview_TreeViewGrid_icon1"));
+			entityNodeIconField = new MtpTextItem("entityNodeIcon", AdminClientMessageUtil.getString("ui_metadata_treeview_TreeViewGrid_icon1"));
 			SmartGWTUtil.addHoverToFormItem(entityNodeIconField,
 					AdminClientMessageUtil.getString("ui_metadata_treeview_TreeViewGrid_icon1Comment"));
 			entityNodeIconField.setValue(item.getEntityNodeIcon());
 			items.add(entityNodeIconField);
 
-			entityNodeCssStyleField = new TextItem("entityNodeCssStyle", AdminClientMessageUtil.getString("ui_metadata_treeview_TreeViewGrid_style1"));
+			entityNodeCssStyleField = new MtpTextItem("entityNodeCssStyle", AdminClientMessageUtil.getString("ui_metadata_treeview_TreeViewGrid_style1"));
 			SmartGWTUtil.addHoverToFormItem(entityNodeCssStyleField,
 					AdminClientMessageUtil.getString("ui_metadata_treeview_TreeViewGrid_style1Comment"));
 			entityNodeCssStyleField.setValue(item.getEntityNodeCssStyle());
 			items.add(entityNodeCssStyleField);
 
-			entityDefinitionNodeIconField = new TextItem("entityDefinitionNodeIcon", AdminClientMessageUtil.getString("ui_metadata_treeview_TreeViewGrid_icon2"));
+			entityDefinitionNodeIconField = new MtpTextItem("entityDefinitionNodeIcon", AdminClientMessageUtil.getString("ui_metadata_treeview_TreeViewGrid_icon2"));
 			SmartGWTUtil.addHoverToFormItem(entityDefinitionNodeIconField,
 					AdminClientMessageUtil.getString("ui_metadata_treeview_TreeViewGrid_icon2Comment"));
 			entityDefinitionNodeIconField.setValue(item.getEntityDefinitionNodeIcon());
 			items.add(entityDefinitionNodeIconField);
 
-			entityDefinitionNodeCssStyleField = new TextItem("entityDefinitionNodeCssStyle", AdminClientMessageUtil.getString("ui_metadata_treeview_TreeViewGrid_style2"));
+			entityDefinitionNodeCssStyleField = new MtpTextItem("entityDefinitionNodeCssStyle", AdminClientMessageUtil.getString("ui_metadata_treeview_TreeViewGrid_style2"));
 			SmartGWTUtil.addHoverToFormItem(entityDefinitionNodeCssStyleField,
 					AdminClientMessageUtil.getString("ui_metadata_treeview_TreeViewGrid_style2Comment"));
 			entityDefinitionNodeCssStyleField.setValue(item.getEntityDefinitionNodeCssStyle());
 			items.add(entityDefinitionNodeCssStyleField);
 
-			indexNodeIconField = new TextItem("indexNodeIcon", AdminClientMessageUtil.getString("ui_metadata_treeview_TreeViewGrid_icon3"));
+			indexNodeIconField = new MtpTextItem("indexNodeIcon", AdminClientMessageUtil.getString("ui_metadata_treeview_TreeViewGrid_icon3"));
 			SmartGWTUtil.addHoverToFormItem(indexNodeIconField,
 					AdminClientMessageUtil.getString("ui_metadata_treeview_TreeViewGrid_icon3Comment"));
 			indexNodeIconField.setValue(item.getIndexNodeIcon());
 			items.add(indexNodeIconField);
 
-			indexNodeCssStyleField = new TextItem("indexNodeCssStyle", AdminClientMessageUtil.getString("ui_metadata_treeview_TreeViewGrid_style3"));
+			indexNodeCssStyleField = new MtpTextItem("indexNodeCssStyle", AdminClientMessageUtil.getString("ui_metadata_treeview_TreeViewGrid_style3"));
 			SmartGWTUtil.addHoverToFormItem(indexNodeCssStyleField,
 					AdminClientMessageUtil.getString("ui_metadata_treeview_TreeViewGrid_style3Comment"));
 			indexNodeCssStyleField.setValue(item.getIndexNodeCssStyle());
@@ -730,14 +697,7 @@ public class TreeViewGrid extends TreeGrid {
 			widgetItem.setPane(widgetForm);
 			tab.addTab(widgetItem);
 
-			contents.addMember(tab);
-
-			HLayout footer = new HLayout(5);
-			footer.setMargin(5);
-			footer.setHeight(20);
-			footer.setWidth100();
-			//footer.setAlign(Alignment.LEFT);
-			footer.setAlign(VerticalAlignment.CENTER);
+			container.addMember(tab);
 
 			IButton ok = new IButton("OK");
 			ok.addClickHandler(new ClickHandler() {
@@ -822,8 +782,10 @@ public class TreeViewGrid extends TreeGrid {
 
 				private FormItem createRefField(ReferenceProperty pd, TreeNode[] children) {
 					CheckboxItem refField = new CheckboxItem(pd.getName(), pd.getDisplayName());
+					refField.setShowTitle(false);
+					refField.setStartRow(true);
 
-					refField.setTooltip(AdminClientMessageUtil.getString("ui_metadata_treeview_TreeViewGrid_setTreeViewDisp", pd.getDisplayName()));
+					SmartGWTUtil.addHoverToFormItem(refField, AdminClientMessageUtil.getString("ui_metadata_treeview_TreeViewGrid_setTreeViewDisp", pd.getDisplayName()));
 					if (children != null) {
 						for (TreeNode child : children) {
 							ReferenceTreeViewItem item = (ReferenceTreeViewItem) child.getAttributeAsObject("valueObject");
@@ -840,10 +802,6 @@ public class TreeViewGrid extends TreeGrid {
 					SC.warn(AdminClientMessageUtil.getString("ui_metadata_treeview_TreeViewGrid_failedToGetEntityDef") + caught.getMessage());
 				}
 			});
-
-			addItem(header);
-			addItem(contents);
-			addItem(footer);
 		}
 
 		private void refreshNode() {

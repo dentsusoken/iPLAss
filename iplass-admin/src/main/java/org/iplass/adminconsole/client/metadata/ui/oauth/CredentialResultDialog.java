@@ -20,63 +20,36 @@
 
 package org.iplass.adminconsole.client.metadata.ui.oauth;
 
-import org.iplass.adminconsole.client.base.ui.widget.AbstractWindow;
-import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
+import org.iplass.adminconsole.client.base.ui.widget.MtpDialog;
+import org.iplass.adminconsole.client.base.ui.widget.form.MtpForm;
+import org.iplass.adminconsole.client.base.ui.widget.form.MtpTextAreaItem;
 
-import com.smartgwt.client.types.Overflow;
 import com.smartgwt.client.types.TextAreaWrap;
-import com.smartgwt.client.types.VerticalAlignment;
 import com.smartgwt.client.widgets.IButton;
 import com.smartgwt.client.widgets.events.ClickEvent;
 import com.smartgwt.client.widgets.events.ClickHandler;
 import com.smartgwt.client.widgets.form.DynamicForm;
 import com.smartgwt.client.widgets.form.fields.TextAreaItem;
-import com.smartgwt.client.widgets.layout.HLayout;
-import com.smartgwt.client.widgets.layout.VLayout;
 
-public final class CredentialResultDialog  extends AbstractWindow {
+public final class CredentialResultDialog  extends MtpDialog {
 
 	public CredentialResultDialog(String secret) {
 
 		setHeight(200);
-		setWidth(500);
 		setTitle("Credential Result");
-
-		setShowMinimizeButton(false);
-		setShowMaximizeButton(false);
-		setCanDragResize(true);
-		setIsModal(true);
-		setShowModalMask(true);
-
 		centerInPage();
 
-		DynamicForm form = new DynamicForm();
-		form.setWidth100();
-		form.setNumCols(3);	//間延びしないように最後に１つ余分に作成
-		form.setColWidths(100, 300, "*");
-		form.setMargin(5);
+		DynamicForm form = new MtpForm();
 
-		TextAreaItem txaSecret = new TextAreaItem();
+		TextAreaItem txaSecret = new MtpTextAreaItem();
 		txaSecret.setTitle("Secret");
-		txaSecret.setWidth("100%");
 		txaSecret.setHeight(105);
-		txaSecret.setBrowserSpellCheck(false);
 		txaSecret.setWrap(TextAreaWrap.HARD);
 		txaSecret.setValue(secret);
 
 		form.setItems(txaSecret);
 
-		VLayout contents = new VLayout(5);
-		contents.setHeight100();
-		contents.setOverflow(Overflow.AUTO);
-		contents.setMembers(form);
-
-		HLayout footer = new HLayout(5);
-		footer.setMargin(10);
-		footer.setAutoHeight();
-		footer.setWidth100();
-		footer.setAlign(VerticalAlignment.CENTER);
-		footer.setOverflow(Overflow.VISIBLE);
+		container.setMembers(form);
 
 		IButton btnOK = new IButton("OK");
 		btnOK.addClickHandler(new ClickHandler() {
@@ -86,11 +59,6 @@ public final class CredentialResultDialog  extends AbstractWindow {
 		});
 
 		footer.setMembers(btnOK);
-
-		addItem(contents);
-		addItem(SmartGWTUtil.separator());
-		addItem(footer);
-
 	}
 
 }

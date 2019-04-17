@@ -24,6 +24,9 @@ import java.util.LinkedHashMap;
 
 import org.iplass.adminconsole.client.base.ui.widget.MetaDataSelectItem;
 import org.iplass.adminconsole.client.base.ui.widget.MetaDataSelectItem.ItemOption;
+import org.iplass.adminconsole.client.base.ui.widget.form.MtpForm;
+import org.iplass.adminconsole.client.base.ui.widget.form.MtpSelectItem;
+import org.iplass.adminconsole.client.base.ui.widget.form.MtpTextItem;
 import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
 import org.iplass.mtp.web.actionmapping.definition.ActionMappingDefinition;
 import org.iplass.mtp.web.actionmapping.definition.result.ContentDispositionType;
@@ -62,17 +65,11 @@ public class TemplateResultEditPane extends ResultTypeEditPane {
 	 */
 	public TemplateResultEditPane() {
 
-		//レイアウト設定
 		setWidth100();
-		setHeight100();	//OK、Cancelボタンを下に持っていくため
 
 		//入力部分
-		form = new DynamicForm();
-		form.setMargin(5);
+		form = new MtpForm();
 		form.setAutoHeight();
-		form.setWidth100();
-		form.setNumCols(4);	//間延びしないように最後に１つ余分に作成
-		form.setColWidths(100, 250, 40, "*");
 
 		templateField = new MetaDataSelectItem(TemplateDefinition.class);
 		templateField.setTitle("Template");
@@ -80,22 +77,18 @@ public class TemplateResultEditPane extends ResultTypeEditPane {
 
 		layoutActionNameField = new MetaDataSelectItem(ActionMappingDefinition.class, new ItemOption(true, false));
 		layoutActionNameField.setTitle("Layout Action");
-		layoutActionNameField.setStartRow(true);
 
 		form.setItems(templateField, layoutActionNameField);
 
-		contentDispositionForm = new DynamicForm();
-		contentDispositionForm.setMargin(5);
+		contentDispositionForm = new MtpForm();
 		contentDispositionForm.setAutoHeight();
-		contentDispositionForm.setWidth100();
 		contentDispositionForm.setIsGroup(true);
 		contentDispositionForm.setGroupTitle("Content Disposition Setting");
 
 		useContentDispositionField = new CheckboxItem("useContentDisposition", "Set ContentDisposition");
 
-		contentDispositionTypeField = new SelectItem();
+		contentDispositionTypeField = new MtpSelectItem();
 		contentDispositionTypeField.setTitle("Content Disposition Type");
-		contentDispositionTypeField.setWidth(150);
 
 		LinkedHashMap<String, String> contentDispositionTypeMap = new LinkedHashMap<String, String>();
 		contentDispositionTypeMap.put("", "Default");
@@ -103,8 +96,7 @@ public class TemplateResultEditPane extends ResultTypeEditPane {
 		contentDispositionTypeMap.put(ContentDispositionType.INLINE.name(), "Inline");
 		contentDispositionTypeField.setValueMap(contentDispositionTypeMap);
 
-		fileNameAttributeNameField = new TextItem("fileNameAttributeName", "FileName AttributeName");
-		fileNameAttributeNameField.setWidth(250);
+		fileNameAttributeNameField = new MtpTextItem("fileNameAttributeName", "FileName AttributeName");
 
 		contentDispositionForm.setItems(useContentDispositionField, contentDispositionTypeField, fileNameAttributeNameField);
 

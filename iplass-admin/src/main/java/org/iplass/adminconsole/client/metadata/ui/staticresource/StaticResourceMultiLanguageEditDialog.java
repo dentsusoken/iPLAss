@@ -27,19 +27,16 @@ import java.util.List;
 import org.iplass.adminconsole.client.base.event.DataChangedEvent;
 import org.iplass.adminconsole.client.base.event.DataChangedHandler;
 import org.iplass.adminconsole.client.base.io.upload.UploadFileItem;
-import org.iplass.adminconsole.client.base.ui.widget.AbstractWindow;
+import org.iplass.adminconsole.client.base.ui.widget.MtpDialog;
 import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
 import org.iplass.adminconsole.shared.metadata.dto.staticresource.LocalizedStaticResourceInfo;
 
-import com.smartgwt.client.types.VerticalAlignment;
 import com.smartgwt.client.widgets.IButton;
 import com.smartgwt.client.widgets.form.DynamicForm;
 import com.smartgwt.client.widgets.form.fields.SelectItem;
 import com.smartgwt.client.widgets.form.fields.SpacerItem;
-import com.smartgwt.client.widgets.layout.HLayout;
-import com.smartgwt.client.widgets.layout.VLayout;
 
-public class StaticResourceMultiLanguageEditDialog extends AbstractWindow {
+public class StaticResourceMultiLanguageEditDialog extends MtpDialog {
 
 	private static final String TITLE = "Multilingual StaticResource Setting";
 
@@ -56,17 +53,10 @@ public class StaticResourceMultiLanguageEditDialog extends AbstractWindow {
 	private LocalizedStaticResourceInfo curStaticResourceDefinition;
 
 	public StaticResourceMultiLanguageEditDialog(LinkedHashMap<String, String> enableLang) {
-		setWidth(800);
+
 		setHeight(500);
 		setTitle(TITLE);
-		setShowMinimizeButton(false);
-		setIsModal(true);
-		setShowModalMask(true);
 		centerInPage();
-
-		VLayout mainPane = new VLayout();
-		mainPane.setHeight100();
-		mainPane.setPadding(10);
 
 		langSelectItem = new SelectItem("language", "Language");
 		langSelectItem.setValueMap(enableLang);
@@ -80,14 +70,35 @@ public class StaticResourceMultiLanguageEditDialog extends AbstractWindow {
 
 		uploadPane = new StaticResourceUploadPane();
 
-		mainPane.addMember(langSelectForm);
-		mainPane.addMember(uploadPane);
+		container.addMember(langSelectForm);
+		container.addMember(uploadPane);
 
-		OperationPane opePane = new OperationPane(this);
+		IButton save = new IButton("OK");
+		save.addClickHandler(new com.smartgwt.client.widgets.events.ClickHandler() {
+			public void onClick(com.smartgwt.client.widgets.events.ClickEvent event) {
+				boolean validate = langSelectForm.validate() & uploadPane.validate();
+				if (!validate) {
+					return;
+				}
 
-		addItem(mainPane);
-		addItem(SmartGWTUtil.separator());
-		addItem(opePane);
+				LocalizedStaticResourceInfo definition = curStaticResourceDefinition;
+				definition.setLocaleName(langSelectItem.getValueAsString());
+				definition = uploadPane.getEditLocalizedStaticResourceDefinition(definition);
+				UploadFileItem fileItem = uploadPane.getEditUploadFileItem();
+				fireDataChanged(definition, fileItem);
+
+				destroy();
+			}
+		});
+
+		IButton cancel = new IButton("Cancel");
+		cancel.addClickHandler(new com.smartgwt.client.widgets.events.ClickHandler() {
+			public void onClick(com.smartgwt.client.widgets.events.ClickEvent event) {
+				destroy();
+			}
+		});
+		footer.setMembers(save, cancel);
+
 	}
 
 	public void setDefinition(LocalizedStaticResourceInfo definition, UploadFileItem fileItem) {
@@ -139,43 +150,6 @@ public class StaticResourceMultiLanguageEditDialog extends AbstractWindow {
 		event.setUploadFileItem(fileItem);
 		for (DataChangedHandler handler : handlers) {
 			handler.onDataChanged(event);
-		}
-	}
-
-	private class OperationPane extends HLayout {
-		public OperationPane(final StaticResourceMultiLanguageEditDialog dialog) {
-			setMembersMargin(5);
-			setMargin(10);
-			setAutoHeight();
-			setWidth100();
-			setAlign(VerticalAlignment.CENTER);
-
-			IButton save = new IButton("OK");
-			save.addClickHandler(new com.smartgwt.client.widgets.events.ClickHandler() {
-				public void onClick(com.smartgwt.client.widgets.events.ClickEvent event) {
-					boolean validate = langSelectForm.validate() & uploadPane.validate();
-					if (!validate) {
-						return;
-					}
-
-					LocalizedStaticResourceInfo definition = curStaticResourceDefinition;
-					definition.setLocaleName(langSelectItem.getValueAsString());
-					definition = uploadPane.getEditLocalizedStaticResourceDefinition(definition);
-					UploadFileItem fileItem = uploadPane.getEditUploadFileItem();
-					fireDataChanged(definition, fileItem);
-
-					dialog.destroy();
-				}
-			});
-
-			IButton cancel = new IButton("Cancel");
-			cancel.addClickHandler(new com.smartgwt.client.widgets.events.ClickHandler() {
-				public void onClick(com.smartgwt.client.widgets.events.ClickEvent event) {
-					dialog.destroy();
-				}
-			});
-
-			setMembers(save, cancel);
 		}
 	}
 

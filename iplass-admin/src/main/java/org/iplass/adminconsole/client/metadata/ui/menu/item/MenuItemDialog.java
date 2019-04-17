@@ -26,24 +26,26 @@ import java.util.List;
 
 import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
 import org.iplass.adminconsole.client.base.tenant.TenantInfoHolder;
-import org.iplass.adminconsole.client.base.ui.widget.AbstractWindow;
+import org.iplass.adminconsole.client.base.ui.widget.MetaDataLangTextItem;
 import org.iplass.adminconsole.client.base.ui.widget.MetaDataSelectItem;
+import org.iplass.adminconsole.client.base.ui.widget.MtpDialog;
 import org.iplass.adminconsole.client.base.ui.widget.ScriptEditorDialogConstants;
 import org.iplass.adminconsole.client.base.ui.widget.ScriptEditorDialogHandler;
 import org.iplass.adminconsole.client.base.ui.widget.ScriptEditorDialogMode;
+import org.iplass.adminconsole.client.base.ui.widget.form.MtpForm;
+import org.iplass.adminconsole.client.base.ui.widget.form.MtpSelectItem;
+import org.iplass.adminconsole.client.base.ui.widget.form.MtpTextAreaItem;
+import org.iplass.adminconsole.client.base.ui.widget.form.MtpTextItem;
 import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
 import org.iplass.adminconsole.client.metadata.data.menu.MenuItemTreeDS;
 import org.iplass.adminconsole.client.metadata.ui.MetaDataUtil;
-import org.iplass.adminconsole.client.metadata.ui.common.LocalizedStringSettingDialog;
 import org.iplass.adminconsole.client.metadata.ui.common.MetaDataUpdateCallback;
 import org.iplass.adminconsole.client.metadata.ui.menu.item.event.MenuItemDataChangeHandler;
 import org.iplass.adminconsole.client.metadata.ui.menu.item.event.MenuItemDataChangedEvent;
 import org.iplass.adminconsole.shared.metadata.dto.AdminDefinitionModifyResult;
-import org.iplass.adminconsole.shared.metadata.dto.MetaDataConstants;
 import org.iplass.adminconsole.shared.metadata.rpc.MetaDataServiceAsync;
 import org.iplass.adminconsole.shared.metadata.rpc.MetaDataServiceFactory;
 import org.iplass.mtp.definition.DefinitionInfo;
-import org.iplass.mtp.definition.LocalizedStringDefinition;
 import org.iplass.mtp.definition.SharedConfig;
 import org.iplass.mtp.entity.definition.EntityDefinition;
 import org.iplass.mtp.view.generic.EntityView;
@@ -57,7 +59,6 @@ import org.iplass.mtp.web.actionmapping.definition.ActionMappingDefinition;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.smartgwt.client.types.Alignment;
-import com.smartgwt.client.types.VerticalAlignment;
 import com.smartgwt.client.util.BooleanCallback;
 import com.smartgwt.client.util.SC;
 import com.smartgwt.client.widgets.Canvas;
@@ -68,18 +69,18 @@ import com.smartgwt.client.widgets.form.DynamicForm;
 import com.smartgwt.client.widgets.form.fields.ButtonItem;
 import com.smartgwt.client.widgets.form.fields.CheckboxItem;
 import com.smartgwt.client.widgets.form.fields.SelectItem;
+import com.smartgwt.client.widgets.form.fields.SpacerItem;
 import com.smartgwt.client.widgets.form.fields.TextAreaItem;
 import com.smartgwt.client.widgets.form.fields.TextItem;
 import com.smartgwt.client.widgets.form.fields.events.ChangedEvent;
 import com.smartgwt.client.widgets.form.fields.events.ChangedHandler;
-import com.smartgwt.client.widgets.layout.HLayout;
 import com.smartgwt.client.widgets.layout.VLayout;
 
 /**
  * メニューアイテム編集ダイアログ
  *
  */
-public class MenuItemDialog extends AbstractWindow {
+public class MenuItemDialog extends MtpDialog {
 
 	/** メニューアイテムタイプ */
 	private MenuItemTreeDS.MenuItemType type;
@@ -104,7 +105,7 @@ public class MenuItemDialog extends AbstractWindow {
 
 	//共通項目
 	private TextItem nameField;
-	private TextItem displayNameField;
+	private MetaDataLangTextItem displayNameField;
 	private TextAreaItem descriptionField;
 	private TextItem imageUrlField;
 	private TextItem iconTagField;
@@ -139,66 +140,28 @@ public class MenuItemDialog extends AbstractWindow {
 	private CheckboxItem overwritableField;
 	private ButtonItem sharedSaveButton;
 
-	public List<LocalizedStringDefinition> localizedDisplayNameList;
-
-	private ButtonItem langBtn;
-
 	private MetaDataServiceAsync service = MetaDataServiceFactory.get();
 
 	public MenuItemDialog(MenuItemTreeDS.MenuItemType type) {
 		this.type = type;
 		this.isCopy = false;
 
-		setHeight(630); //centerInPageする前に仮のHeight設定(画面下部に隠れるのを防ぐ)
-
 		setTitle("Create MenuItem");
-		setShowMinimizeButton(false);
-		setIsModal(true);
-		setShowModalMask(true);
+		setHeight(630); //centerInPageする前に仮のHeight設定(画面下部に隠れるのを防ぐ)
 		centerInPage();
 
+		final DynamicForm commonForm = new MtpForm();
 
-		VLayout contents = new VLayout(5);
-		//contents.setAlign(VerticalAlignment.CENTER);
-		contents.setAlign(Alignment.CENTER);
-
-		final DynamicForm commonForm = new DynamicForm();
-		commonForm.setMargin(10);
-		commonForm.setWidth100();
-		commonForm.setNumCols(3);
-
-		nameField = new TextItem("name","Name");
-		nameField.setWidth(MetaDataConstants.DEFAULT_FORM_ITEM_WIDTH);
-		nameField.setColSpan(3);
+		nameField = new MtpTextItem("name","Name");
 		SmartGWTUtil.setRequired(nameField);
-		displayNameField = new TextItem("displayName", "Display Name");
-		displayNameField.setWidth(212);
+		displayNameField = new MetaDataLangTextItem();
+		displayNameField.setTitle("Display Name");
 
-		langBtn = new ButtonItem("addDisplayName", "Languages");
-		langBtn.setShowTitle(false);
-		langBtn.setIcon("world.png");
-		langBtn.setStartRow(false);	//これを指定しないとButtonの場合、先頭にくる
-		langBtn.setEndRow(false);	//これを指定しないと次のFormItemが先頭にいく
-		langBtn.setPrompt(getRS("eachLangDspName"));
-		langBtn.addClickHandler(new com.smartgwt.client.widgets.form.fields.events.ClickHandler() {
-
-			@Override
-			public void onClick(com.smartgwt.client.widgets.form.fields.events.ClickEvent event) {
-				if (localizedDisplayNameList == null) {
-					localizedDisplayNameList = new ArrayList<LocalizedStringDefinition>();
-				}
-				LocalizedStringSettingDialog dialog = new LocalizedStringSettingDialog(localizedDisplayNameList);
-				dialog.show();
-			}
-		});
-
-		descriptionField = new TextAreaItem("description", "Description");
-		descriptionField.setWidth(MetaDataConstants.DEFAULT_FORM_ITEM_WIDTH);
-		descriptionField.setColSpan(3);
+		descriptionField = new MtpTextAreaItem("description", "Description");
+		descriptionField.setColSpan(2);
 		descriptionField.setHeight(45);
 
-		imageUrlField = new TextItem("imageUrl", "Icon URL");
-		imageUrlField.setWidth(MetaDataConstants.DEFAULT_FORM_ITEM_WIDTH);
+		imageUrlField = new MtpTextItem("imageUrl", "Icon URL");
 		String prompt = "<div style=\"white-space: nowrap;\">"
 			+ getRS("rulesComment1")
 			+ "<ul style=\"margin:5px 0px;padding-left:5px;list-style-type:none;\">"
@@ -208,42 +171,33 @@ public class MenuItemDialog extends AbstractWindow {
 			+ "</ul>"
 			+ "</div>";
 		imageUrlField.setPrompt(prompt);
-		imageUrlField.setColSpan(3);
 
-		iconTagField = new TextItem("iconTag", "Icon Tag");
-		iconTagField.setWidth(MetaDataConstants.DEFAULT_FORM_ITEM_WIDTH);
+		iconTagField = new MtpTextItem("iconTag", "Icon Tag");
 		prompt = "<div style=\"white-space: nowrap;\">"
 			+ getRS("iconTagComment")
 			+ "</div>";
 		iconTagField.setPrompt(prompt);
-		iconTagField.setColSpan(3);
 
-		imageColorField = new SelectItem("imageColor", "Image Color");
-		imageColorField.setColSpan(3);
+		imageColorField = new MtpSelectItem("imageColor", "Image Color");
 
-		commonForm.setItems(nameField, displayNameField, langBtn, descriptionField, imageUrlField, iconTagField, imageColorField);
+		commonForm.setItems(nameField, displayNameField, descriptionField, imageUrlField, iconTagField, imageColorField);
 
-		contents.addMember(commonForm);
+		container.addMember(commonForm);
 
 		if (MenuItemTreeDS.MenuItemType.ACTION.equals(type)){
-			actionForm = new DynamicForm();
-			actionForm.setMargin(10);
-			actionForm.setPadding(5);
-			actionForm.setWidth100();
-			actionForm.setAlign(Alignment.CENTER);
+			actionForm = new MtpForm();
 			actionForm.setIsGroup(true);
 			actionForm.setGroupTitle("Action Menu Attribute");
 
 			actionNameField = new MetaDataSelectItem(ActionMappingDefinition.class, "Execute Action");
 			SmartGWTUtil.setRequired(actionNameField);
 
-			actionParameterField = new TextItem("actionParameter", "Parameter");
-			actionParameterField.setWidth(300);
+			actionParameterField = new MtpTextItem("actionParameter", "Parameter");
 
 			actionCustomizeScriptField = new ButtonItem();
 			actionCustomizeScriptField.setTitle("Dynamic Customize Setting");
+			actionCustomizeScriptField.setStartRow(false);
 			actionCustomizeScriptField.setWidth("100%");
-			actionCustomizeScriptField.setColSpan(2);
 			actionCustomizeScriptField.setPrompt(getRS("customizeScriptComment"));
 			actionCustomizeScriptField.addClickHandler(new com.smartgwt.client.widgets.form.fields.events.ClickHandler() {
 
@@ -269,17 +223,14 @@ public class MenuItemDialog extends AbstractWindow {
 				}
 			});
 
-			actionForm.setItems(actionNameField, actionParameterField, actionCustomizeScriptField);
+			actionForm.setItems(actionNameField, actionParameterField, new SpacerItem(),
+					new SpacerItem(), actionCustomizeScriptField);
 
-			contents.addMember(actionForm);
+			container.addMember(actionForm);
 		}
 
 		if (MenuItemTreeDS.MenuItemType.ENTITY.equals(type)){
-			entityForm = new DynamicForm();
-			entityForm.setMargin(10);
-			entityForm.setPadding(5);
-			entityForm.setWidth100();
-			entityForm.setAlign(Alignment.CENTER);
+			entityForm = new MtpForm();
 			entityForm.setIsGroup(true);
 			entityForm.setGroupTitle("Entity Menu Attribute");
 
@@ -293,22 +244,19 @@ public class MenuItemDialog extends AbstractWindow {
 				}
 			});
 
-			entityViewNameField = new SelectItem();
+			entityViewNameField = new MtpSelectItem();
 			entityViewNameField.setTitle("View Name");
-			entityViewNameField.setWidth(300);
 
-			entityParameterField = new TextItem("entityParameter", "Parameter");
-			entityParameterField.setWidth(300);
+			entityParameterField = new MtpTextItem("entityParameter", "Parameter");
 
 			executeSearchField = new CheckboxItem();
 			executeSearchField.setTitle("show with execute search");
 			executeSearchField.setShowTitle(false);
-			executeSearchField.setColSpan(2);
 
 			entityCustomizeScriptField = new ButtonItem();
 			entityCustomizeScriptField.setTitle("Dynamic Customize Setting");
 			entityCustomizeScriptField.setWidth("100%");
-			entityCustomizeScriptField.setColSpan(2);
+			entityCustomizeScriptField.setStartRow(false);
 			entityCustomizeScriptField.setPrompt(getRS("customizeScriptComment"));
 			entityCustomizeScriptField.addClickHandler(new com.smartgwt.client.widgets.form.fields.events.ClickHandler() {
 
@@ -334,40 +282,34 @@ public class MenuItemDialog extends AbstractWindow {
 				}
 			});
 
-			entityForm.setItems(entityNameField, entityViewNameField, entityParameterField, executeSearchField, entityCustomizeScriptField);
+			entityForm.setItems(entityNameField, entityViewNameField, entityParameterField,
+					new SpacerItem(), new SpacerItem(), executeSearchField,
+					new SpacerItem(), new SpacerItem(), entityCustomizeScriptField);
 
-			contents.addMember(entityForm);
+			container.addMember(entityForm);
 		} else {
-
 			// EntityMenuの場合のみ表示名は必須ではない
 			SmartGWTUtil.setRequired(displayNameField);
 		}
 
 		if (MenuItemTreeDS.MenuItemType.URL.equals(type)){
-			urlForm = new DynamicForm();
-			urlForm.setMargin(10);
-			urlForm.setPadding(5);
-			urlForm.setWidth100();
-			urlForm.setAlign(Alignment.CENTER);
+			urlForm = new MtpForm();
 			urlForm.setIsGroup(true);
 			urlForm.setGroupTitle("Url Menu Attribute");
 
-			urlField = new TextItem("url", "URL");
-			urlField.setWidth(300);
+			urlField = new MtpTextItem("url", "URL");
 			SmartGWTUtil.setRequired(urlField);
 
-			urlParameterField = new TextItem("urlParameter", "Parameter");
-			urlParameterField.setWidth(300);
+			urlParameterField = new MtpTextItem("urlParameter", "Parameter");
 
 			urlShowNewPageField = new CheckboxItem();
 			urlShowNewPageField.setTitle("show new page");
 			urlShowNewPageField.setShowTitle(false);
-			urlShowNewPageField.setColSpan(2);
 
 			urlCustomizeScriptField = new ButtonItem();
 			urlCustomizeScriptField.setTitle("Dynamic Customize Setting");
 			urlCustomizeScriptField.setWidth("100%");
-			urlCustomizeScriptField.setColSpan(2);
+			urlCustomizeScriptField.setStartRow(false);
 			urlCustomizeScriptField.setPrompt(getRS("customizeScriptComment"));
 			urlCustomizeScriptField.addClickHandler(new com.smartgwt.client.widgets.form.fields.events.ClickHandler() {
 
@@ -393,9 +335,11 @@ public class MenuItemDialog extends AbstractWindow {
 				}
 			});
 
-			urlForm.setItems(urlField, urlParameterField, urlShowNewPageField, urlCustomizeScriptField);
+			urlForm.setItems(urlField, urlParameterField,
+					new SpacerItem(), new SpacerItem(), urlShowNewPageField,
+					new SpacerItem(), new SpacerItem(), urlCustomizeScriptField);
 
-			contents.addMember(urlForm);
+			container.addMember(urlForm);
 		}
 
 		//共有設定部
@@ -430,13 +374,7 @@ public class MenuItemDialog extends AbstractWindow {
 		sharedForm.setItems(sharableField, overwritableField, sharedSaveButton);
 		sharedPane.addMember(sharedForm);
 
-		//フッター部
-		HLayout footer = new HLayout(5);
-		footer.setMargin(5);
-		footer.setHeight(20);
-		footer.setWidth100();
-		//footer.setAlign(Alignment.LEFT);
-		footer.setAlign(VerticalAlignment.CENTER);
+		container.addMember(sharedPane);
 
 		save = new IButton("Save");
 		save.addClickHandler(new ClickHandler() {
@@ -459,11 +397,6 @@ public class MenuItemDialog extends AbstractWindow {
 		});
 
 		footer.setMembers(save, cancel);
-
-		addItem(contents);
-		addItem(sharedPane);
-		addItem(SmartGWTUtil.separator());
-		addItem(footer);
 
 		//タイプ別画面調整
 		setTitleSuffix();
@@ -508,19 +441,20 @@ public class MenuItemDialog extends AbstractWindow {
 			public void onSuccess(MenuItem current) {
 				MenuItemDialog.this.curMenuItem = current;
 				MenuItemDialog.this.isCopy = isCopy;
-				MenuItemDialog.this.localizedDisplayNameList = current.getLocalizedDisplayNameList();
 
 				if (isCopy) {
 					//タイトルの変更
 					setTitle("(Copy)" + current.getDisplayName());
 					nameField.setValue(current.getName() + "_Copy");
 					displayNameField.setValue(current.getDisplayName() + "_Copy");
+					displayNameField.setLocalizedList(current.getLocalizedDisplayNameList());
 				} else {
 					//タイトルの変更
 					setTitle(current.getDisplayName());
 					SmartGWTUtil.setReadOnly(nameField);
 					nameField.setValue(current.getName());
 					displayNameField.setValue(current.getDisplayName());
+					displayNameField.setLocalizedList(current.getLocalizedDisplayNameList());
 				}
 				descriptionField.setValue(current.getDescription());
 				imageUrlField.setValue(current.getImageUrl());
@@ -564,14 +498,6 @@ public class MenuItemDialog extends AbstractWindow {
 	 * タイプ別の画面サイズを調整します。
 	 */
 	private void setItemTypeDisplay(boolean isShowSharedPane) {
-		setWidth(450);
-
-//		List<String> imageColors = new ArrayList<String>();
-//		imageColors.add("");
-//		for (int i = 0; i < ImageColor.values().length; i++) { FIXME
-//			imageColors.add(ImageColor.values()[i].name());
-//		}
-//		imageColorField.setValueMap(imageColors.toArray(new String[imageColors.size()]));
 
 		int height = 300;
 		if (MenuItemTreeDS.MenuItemType.ACTION.equals(type)){
@@ -826,10 +752,10 @@ public class MenuItemDialog extends AbstractWindow {
 	private void setCommonValues(MenuItem item) {
 		item.setName(SmartGWTUtil.getStringValue(nameField));
 		item.setDisplayName(SmartGWTUtil.getStringValue(displayNameField));
+		item.setLocalizedDisplayNameList(displayNameField.getLocalizedList());
 		item.setDescription(SmartGWTUtil.getStringValue(descriptionField));
 		item.setImageUrl(SmartGWTUtil.getStringValue(imageUrlField));
 		item.setIconTag(SmartGWTUtil.getStringValue(iconTagField));
-		item.setLocalizedDisplayNameList(localizedDisplayNameList);
 		item.setImageColor(SmartGWTUtil.getStringValue(imageColorField));
 	}
 

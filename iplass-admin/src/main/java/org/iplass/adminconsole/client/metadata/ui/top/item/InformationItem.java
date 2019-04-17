@@ -20,37 +20,34 @@
 
 package org.iplass.adminconsole.client.metadata.ui.top.item;
 
-import java.util.ArrayList;
 import java.util.LinkedHashMap;
-import java.util.List;
 
 import org.iplass.adminconsole.client.base.event.MTPEvent;
 import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
-import org.iplass.adminconsole.client.base.ui.widget.AbstractWindow;
+import org.iplass.adminconsole.client.base.ui.widget.MetaDataLangTextAreaItem;
+import org.iplass.adminconsole.client.base.ui.widget.MetaDataLangTextItem;
+import org.iplass.adminconsole.client.base.ui.widget.MtpDialog;
+import org.iplass.adminconsole.client.base.ui.widget.form.MtpComboBoxItem;
+import org.iplass.adminconsole.client.base.ui.widget.form.MtpForm;
+import org.iplass.adminconsole.client.base.ui.widget.form.MtpSelectItem;
+import org.iplass.adminconsole.client.base.ui.widget.form.MtpTextItem;
 import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
-import org.iplass.adminconsole.client.metadata.ui.common.LocalizedStringSettingDialog;
 import org.iplass.adminconsole.client.metadata.ui.top.PartsOperationHandler;
-import org.iplass.mtp.definition.LocalizedStringDefinition;
 import org.iplass.mtp.view.generic.editor.DateTimePropertyEditor.TimeDispRange;
 import org.iplass.mtp.view.top.parts.InformationParts;
 
 import com.smartgwt.client.types.HeaderControls;
-import com.smartgwt.client.types.VerticalAlignment;
 import com.smartgwt.client.widgets.HeaderControl;
 import com.smartgwt.client.widgets.IButton;
 import com.smartgwt.client.widgets.events.ClickEvent;
 import com.smartgwt.client.widgets.events.ClickHandler;
 import com.smartgwt.client.widgets.form.DynamicForm;
-import com.smartgwt.client.widgets.form.fields.ButtonItem;
 import com.smartgwt.client.widgets.form.fields.CheckboxItem;
 import com.smartgwt.client.widgets.form.fields.ComboBoxItem;
 import com.smartgwt.client.widgets.form.fields.IntegerItem;
 import com.smartgwt.client.widgets.form.fields.SelectItem;
 import com.smartgwt.client.widgets.form.fields.SliderItem;
-import com.smartgwt.client.widgets.form.fields.TextAreaItem;
 import com.smartgwt.client.widgets.form.fields.TextItem;
-import com.smartgwt.client.widgets.layout.HLayout;
-import com.smartgwt.client.widgets.layout.VLayout;
 
 /**
  *
@@ -94,95 +91,58 @@ public class InformationItem extends PartsItem {
 		return true;
 	}
 
-	private class InformationItemSettingDialog extends AbstractWindow {
+	private class InformationItemSettingDialog extends MtpDialog {
 
-		private TextItem titleField;
+		private MetaDataLangTextItem titleField;
 		private TextItem iconTagField;
 		private SelectItem dispRangeField;
 
 		private CheckboxItem showPasswordWarnField;
 		private SliderItem passwordWarningAgeField;
-		private TextAreaItem passwordWarningMessageField;
+		private MetaDataLangTextAreaItem passwordWarningMessageField;
 		private ComboBoxItem passwordWarnAreaStyleField;
 		private ComboBoxItem passwordWarnMarkStyleField;
 		private CheckboxItem enableHtmlTagField;
 		private IntegerItem numberOfDisplayField;
 
-		private List<LocalizedStringDefinition> localizedTitleList;
-		private List<LocalizedStringDefinition> localizedPasswordWarningMessageList;
-
 		public InformationItemSettingDialog() {
+
 			setTitle("Information List");
 			setHeight(580);
-			setWidth(700);
-
-			setShowMinimizeButton(false);
-			setIsModal(true);
-			setShowModalMask(true);
 			centerInPage();
 
 			//------------------------------
 			//Title
 			//------------------------------
-			final DynamicForm commonForm = new DynamicForm();
-			commonForm.setCellPadding(5);
-			commonForm.setNumCols(4);
-			commonForm.setColWidths(100, 280, "*", "*");
+			final DynamicForm commonForm = new MtpForm();
 			commonForm.setAutoFocus(true);
 
-			titleField = new TextItem("title","Title");
-			titleField.setWidth("100%");
-			titleField.setColSpan(2);
+			titleField = new MetaDataLangTextItem();
+			titleField.setTitle("Title");
 			SmartGWTUtil.addHoverToFormItem(titleField, AdminClientMessageUtil.getString("ui_metadata_top_item_InformationItem_titleCustom"));
 
-			ButtonItem titleLangBtn = new ButtonItem("addDisplayName", "Languages");
-			titleLangBtn.setShowTitle(false);
-			titleLangBtn.setIcon("world.png");
-			titleLangBtn.setStartRow(false);	//これを指定しないとButtonの場合、先頭にくる
-			titleLangBtn.setEndRow(false);	//これを指定しないと次のFormItemが先頭にいく
-			SmartGWTUtil.addHoverToFormItem(titleLangBtn, AdminClientMessageUtil.getString("ui_metadata_top_item_InformationItem_titleEachLang"));
-			titleLangBtn.addClickHandler(new com.smartgwt.client.widgets.form.fields.events.ClickHandler() {
-
-				@Override
-				public void onClick(com.smartgwt.client.widgets.form.fields.events.ClickEvent event) {
-					if (localizedTitleList == null) {
-						localizedTitleList = new ArrayList<LocalizedStringDefinition>();
-					}
-					LocalizedStringSettingDialog dialog = new LocalizedStringSettingDialog(localizedTitleList);
-					dialog.show();
-				}
-			});
-
-			iconTagField = new TextItem("iconTag", "Icon Tag");
-			iconTagField.setWidth("100%");
-			iconTagField.setColSpan(4);
+			iconTagField = new MtpTextItem("iconTag", "Icon Tag");
 			SmartGWTUtil.addHoverToFormItem(iconTagField, AdminClientMessageUtil.getString("ui_metadata_top_item_InformationItem_iconTagComment"));
 
-			commonForm.setItems(titleField, titleLangBtn, iconTagField);
+			commonForm.setItems(titleField, iconTagField);
 
 			//------------------------------
 			//Information List
 			//------------------------------
-			final DynamicForm infoListForm = new DynamicForm();
-			infoListForm.setCellPadding(5);
-			infoListForm.setNumCols(4);
-			infoListForm.setColWidths(100, 280, "*", "*");
+			final DynamicForm infoListForm = new MtpForm();
 			infoListForm.setIsGroup(true);
 			infoListForm.setGroupTitle("Information List Settings");
 
-			dispRangeField = new SelectItem("dispRange", "Time Range");
-			dispRangeField.setWidth("100%");
-			dispRangeField.setColSpan(2);
+			dispRangeField = new MtpSelectItem("dispRange", "Time Range");
 			SmartGWTUtil.addHoverToFormItem(dispRangeField, AdminClientMessageUtil.getString("ui_metadata_top_item_InformationItem_partsTimeDispRange"));
 			setDispRangeValues();
 
 			enableHtmlTagField = new CheckboxItem("enableHtmlTagField", "Enable Html Tag");
-			enableHtmlTagField.setColSpan(4);
 
 			numberOfDisplayField = new IntegerItem();
 			numberOfDisplayField.setTitle("Scroll display number");
+			numberOfDisplayField.setWidth("100%");
 			SmartGWTUtil.addHoverToFormItem(numberOfDisplayField, AdminClientMessageUtil.getString("ui_metadata_top_item_InformationItem_numberOfDisplay"));
-			numberOfDisplayField.setColSpan(4);
 
 			infoListForm.setItems(dispRangeField, enableHtmlTagField, numberOfDisplayField);
 
@@ -190,17 +150,12 @@ public class InformationItem extends PartsItem {
 			//Password Warning Message
 			//------------------------------
 
-			final DynamicForm pwWarnform = new DynamicForm();
-			pwWarnform.setCellPadding(5);
-			pwWarnform.setNumCols(4);
-			pwWarnform.setColWidths(100, 280, "*", "*");
+			final DynamicForm pwWarnform = new MtpForm();
 			pwWarnform.setIsGroup(true);
 			pwWarnform.setGroupTitle("Password Warning Message Settings");
 
 			showPasswordWarnField = new CheckboxItem();
 			showPasswordWarnField.setTitle("show warning message of the password expiration date.");
-			showPasswordWarnField.setShowTitle(false);
-			showPasswordWarnField.setColSpan(3);
 			SmartGWTUtil.addHoverToFormItem(showPasswordWarnField, AdminClientMessageUtil.getString("ui_metadata_top_item_InformationItem_showPasswordWarn"));
 
 			passwordWarningAgeField = new SliderItem();
@@ -209,64 +164,30 @@ public class InformationItem extends PartsItem {
 			passwordWarningAgeField.setHeight(20);
 			passwordWarningAgeField.setMinValue(0.0);
 			passwordWarningAgeField.setMaxValue(30.0);
-			passwordWarningAgeField.setColSpan(2);
-			passwordWarningAgeField.setStartRow(true);
 			passwordWarningAgeField.setDefaultValue(5);	//初期値5
 			SmartGWTUtil.addHoverToFormItem(passwordWarningAgeField, AdminClientMessageUtil.getString("ui_metadata_top_item_InformationItem_specifyPasswordWarnremainDay"));
 
-			passwordWarningMessageField = new TextAreaItem();
+			passwordWarningMessageField = new MetaDataLangTextAreaItem();
 			passwordWarningMessageField.setTitle("Custom message");
 			passwordWarningMessageField.setColSpan(2);
-			passwordWarningMessageField.setWidth("100%");
 			passwordWarningMessageField.setHeight(100);
 			SmartGWTUtil.addHoverToFormItem(passwordWarningMessageField, AdminClientMessageUtil.getString("ui_metadata_top_item_InformationItem_specifyCustomWarnMessage"));
 
-			ButtonItem pwWarnMsgLangBtn = new ButtonItem();
-			pwWarnMsgLangBtn.setTitle("Languages");
-			pwWarnMsgLangBtn.setShowTitle(false);
-			pwWarnMsgLangBtn.setIcon("world.png");
-			pwWarnMsgLangBtn.setStartRow(false);	//これを指定しないとButtonの場合、先頭にくる
-			pwWarnMsgLangBtn.setEndRow(false);	//これを指定しないと次のFormItemが先頭にいく
-			SmartGWTUtil.addHoverToFormItem(pwWarnMsgLangBtn, AdminClientMessageUtil.getString("ui_metadata_top_item_InformationItem_warnMessageEachLang"));
-			pwWarnMsgLangBtn.addClickHandler(new com.smartgwt.client.widgets.form.fields.events.ClickHandler() {
-
-				@Override
-				public void onClick(com.smartgwt.client.widgets.form.fields.events.ClickEvent event) {
-					if (localizedPasswordWarningMessageList == null) {
-						localizedPasswordWarningMessageList = new ArrayList<LocalizedStringDefinition>();
-					}
-					LocalizedStringSettingDialog dialog = new LocalizedStringSettingDialog(localizedPasswordWarningMessageList);
-					dialog.show();
-				}
-			});
-
-			passwordWarnAreaStyleField = new ComboBoxItem();
+			passwordWarnAreaStyleField = new MtpComboBoxItem();
 			passwordWarnAreaStyleField.setTitle("Custom message area style class");
-			passwordWarnAreaStyleField.setWidth("100%");
-			passwordWarnAreaStyleField.setColSpan(2);
 			SmartGWTUtil.addHoverToFormItem(passwordWarnAreaStyleField, AdminClientMessageUtil.getString("ui_metadata_top_item_InformationItem_warnMessageDispAreaStyle"));
 			setPasswordWarnAreaStyleValues();
 
-			passwordWarnMarkStyleField = new ComboBoxItem();
+			passwordWarnMarkStyleField = new MtpComboBoxItem();
 			passwordWarnMarkStyleField.setTitle("Custom message mark style class");
-			passwordWarnMarkStyleField.setWidth("100%");
-			passwordWarnMarkStyleField.setColSpan(2);
 			SmartGWTUtil.addHoverToFormItem(passwordWarnMarkStyleField, AdminClientMessageUtil.getString("ui_metadata_top_item_InformationItem_warnMessageDispAreaIcon"));
 			setPasswordWarnMarkStyleValues();
 
-			pwWarnform.setItems(showPasswordWarnField, passwordWarningAgeField, passwordWarningMessageField, pwWarnMsgLangBtn, passwordWarnAreaStyleField, passwordWarnMarkStyleField);
+			pwWarnform.setItems(showPasswordWarnField, passwordWarningAgeField, passwordWarningMessageField, passwordWarnAreaStyleField, passwordWarnMarkStyleField);
 
-			//------------------------------
-			//Main Layout
-			//------------------------------
-			VLayout mainLayout = new VLayout();
-			mainLayout.setWidth100();
-			mainLayout.setHeight100();
-			mainLayout.setMargin(10);
-			mainLayout.setMembersMargin(10);
-			mainLayout.addMember(commonForm);
-			mainLayout.addMember(infoListForm);
-			mainLayout.addMember(pwWarnform);
+			container.addMember(commonForm);
+			container.addMember(infoListForm);
+			container.addMember(pwWarnform);
 
 			//------------------------------
 			//Footer Layout
@@ -277,7 +198,7 @@ public class InformationItem extends PartsItem {
 					if (commonForm.validate() && infoListForm.validate() && pwWarnform.validate()){
 						//入力情報をパーツに
 						parts.setTitle(SmartGWTUtil.getStringValue(titleField));
-						parts.setLocalizedTitleList(localizedTitleList);
+						parts.setLocalizedTitleList(titleField.getLocalizedList());
 						parts.setIconTag(SmartGWTUtil.getStringValue(iconTagField));
 						if (dispRangeField.getValue() != null && !dispRangeField.getValueAsString().isEmpty()) {
 							parts.setDispRange(TimeDispRange.valueOf(SmartGWTUtil.getStringValue(dispRangeField)));
@@ -288,7 +209,7 @@ public class InformationItem extends PartsItem {
 						if (parts.isShowWarningPasswordAge()) {
 							parts.setPasswordWarningAge(passwordWarningAgeField.getValueAsFloat().intValue());
 							parts.setPasswordWarningMessage(SmartGWTUtil.getStringValue(passwordWarningMessageField));
-							parts.setLocalizedPasswordWarningMessageList(localizedPasswordWarningMessageList);
+							parts.setLocalizedPasswordWarningMessageList(passwordWarningMessageField.getLocalizedList());
 							parts.setPasswordWarnAreaStyleClass(SmartGWTUtil.getStringValue(passwordWarnAreaStyleField));
 							parts.setPasswordWarnMarkStyleClass(SmartGWTUtil.getStringValue(passwordWarnMarkStyleField));
 						}
@@ -306,17 +227,7 @@ public class InformationItem extends PartsItem {
 				}
 			});
 
-			HLayout footer = new HLayout(5);
-			footer.setMargin(5);
-			footer.setHeight(20);
-			footer.setWidth100();
-			footer.setAlign(VerticalAlignment.CENTER);
 			footer.setMembers(save, cancel);
-
-
-			addItem(mainLayout);
-			addItem(SmartGWTUtil.separator());
-			addItem(footer);
 
 			setValues();
 		}
@@ -354,7 +265,7 @@ public class InformationItem extends PartsItem {
 
 		private void setValues() {
 			titleField.setValue(parts.getTitle());
-			localizedTitleList = parts.getLocalizedTitleList();
+			titleField.setLocalizedList(parts.getLocalizedTitleList());
 			iconTagField.setValue(parts.getIconTag());
 
 			if (parts.getDispRange() != null) {
@@ -369,7 +280,7 @@ public class InformationItem extends PartsItem {
 			if (parts.isShowWarningPasswordAge()) {
 				passwordWarningAgeField.setValue(parts.getPasswordWarningAge());
 				passwordWarningMessageField.setValue(parts.getPasswordWarningMessage());
-				localizedPasswordWarningMessageList = parts.getLocalizedPasswordWarningMessageList();
+				passwordWarningMessageField.setLocalizedList(parts.getLocalizedPasswordWarningMessageList());
 				passwordWarnAreaStyleField.setValue(parts.getPasswordWarnAreaStyleClass());
 				passwordWarnMarkStyleField.setValue(parts.getPasswordWarnMarkStyleClass());
 			}

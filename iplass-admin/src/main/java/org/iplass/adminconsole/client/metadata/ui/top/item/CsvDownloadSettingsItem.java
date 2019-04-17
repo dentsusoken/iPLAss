@@ -21,22 +21,20 @@
 package org.iplass.adminconsole.client.metadata.ui.top.item;
 
 import org.iplass.adminconsole.client.base.event.MTPEvent;
-import org.iplass.adminconsole.client.base.ui.widget.AbstractWindow;
+import org.iplass.adminconsole.client.base.ui.widget.MtpDialog;
+import org.iplass.adminconsole.client.base.ui.widget.form.MtpForm;
 import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
 import org.iplass.adminconsole.client.metadata.ui.top.PartsOperationHandler;
 import org.iplass.mtp.view.top.parts.CsvDownloadSettingsParts;
 
 import com.google.gwt.core.shared.GWT;
-import com.smartgwt.client.types.Alignment;
 import com.smartgwt.client.types.HeaderControls;
-import com.smartgwt.client.types.VerticalAlignment;
 import com.smartgwt.client.widgets.HeaderControl;
 import com.smartgwt.client.widgets.IButton;
 import com.smartgwt.client.widgets.events.ClickEvent;
 import com.smartgwt.client.widgets.events.ClickHandler;
 import com.smartgwt.client.widgets.form.DynamicForm;
 import com.smartgwt.client.widgets.form.fields.CheckboxItem;
-import com.smartgwt.client.widgets.layout.HLayout;
 
 /**
  *
@@ -79,7 +77,7 @@ public class CsvDownloadSettingsItem extends PartsItem {
 		return true;
 	}
 
-	private class CsvDownloadSettingsItemSettingDialog extends AbstractWindow {
+	private class CsvDownloadSettingsItemSettingDialog extends MtpDialog {
 
 		private CsvDownloadSettingsPartsFormController formController = GWT.create(CsvDownloadSettingsPartsFormController.class);
 
@@ -87,27 +85,17 @@ public class CsvDownloadSettingsItem extends PartsItem {
 		 * コンストラクタ
 		 */
 		public CsvDownloadSettingsItemSettingDialog() {
-			setTitle("CsvDownload Settings");
-			setHeight(170);
-			setWidth(430);
-			setMargin(10);
-			setMembersMargin(10);
 
-			setShowMinimizeButton(false);
-			setIsModal(true);
-			setShowModalMask(true);
+			setTitle("CsvDownload Settings");
+			setHeight(200);
 			centerInPage();
 
-			final DynamicForm form = new DynamicForm();
-			form.setAlign(Alignment.CENTER);
+			final DynamicForm form = new MtpForm();
 			form.setAutoFocus(true);
 
 			formController.createForm(parts, form);
 
-			HLayout footer = new HLayout(5);
-			footer.setMargin(10);
-			footer.setWidth100();
-			footer.setAlign(VerticalAlignment.CENTER);
+			container.addMember(form);
 
 			IButton save = new IButton("OK");
 			save.addClickHandler(new ClickHandler() {
@@ -127,9 +115,6 @@ public class CsvDownloadSettingsItem extends PartsItem {
 			});
 
 			footer.setMembers(save, cancel);
-
-			addItem(form);
-			addItem(footer);
 		}
 	}
 

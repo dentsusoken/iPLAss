@@ -25,25 +25,20 @@ import java.util.List;
 
 import org.iplass.adminconsole.client.base.event.DataChangedEvent;
 import org.iplass.adminconsole.client.base.event.DataChangedHandler;
-import org.iplass.adminconsole.client.base.ui.widget.AbstractWindow;
+import org.iplass.adminconsole.client.base.ui.widget.MtpDialog;
+import org.iplass.adminconsole.client.base.ui.widget.form.MtpForm;
+import org.iplass.adminconsole.client.base.ui.widget.form.MtpTextItem;
 import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
 
-import com.smartgwt.client.types.VerticalAlignment;
-import com.smartgwt.client.widgets.Canvas;
 import com.smartgwt.client.widgets.IButton;
 import com.smartgwt.client.widgets.events.ClickEvent;
 import com.smartgwt.client.widgets.events.ClickHandler;
 import com.smartgwt.client.widgets.form.DynamicForm;
 import com.smartgwt.client.widgets.form.fields.TextItem;
-import com.smartgwt.client.widgets.layout.HLayout;
 
-public class PropertiesForUpdateNotificationEditDialog extends AbstractWindow {
+public class PropertiesForUpdateNotificationEditDialog extends MtpDialog {
 
 	private TextItem txtPropertiesForUpdateNotificationField;
-
-	/** フッター */
-	private Canvas footerLine;
-	private HLayout footer;
 
 	/** 編集対象 */
 	private String propertiesForUpdateNotification;
@@ -53,22 +48,17 @@ public class PropertiesForUpdateNotificationEditDialog extends AbstractWindow {
 
 	public PropertiesForUpdateNotificationEditDialog() {
 
-		setWidth(550);
-		setHeight(110);
+		setHeight(200);
 		setTitle("Properties For Update Notification Setting");
-		setShowMinimizeButton(false);
-		setIsModal(true);
-		setShowModalMask(true);
 		centerInPage();
 
-		txtPropertiesForUpdateNotificationField = new TextItem("propertyName", "Property Name");
+		txtPropertiesForUpdateNotificationField = new MtpTextItem("propertyName", "Property Name");
 
-		final DynamicForm form = new DynamicForm();
-		form.setNumCols(4);
-		form.setMargin(5);
+		final DynamicForm form = new MtpForm();
 		form.setAutoHeight();
-		form.setWidth100();
 		form.setItems(txtPropertiesForUpdateNotificationField);
+
+		container.addMember(form);
 
 		IButton save = new IButton("OK");
 		save.addClickHandler(new ClickHandler() {
@@ -87,25 +77,13 @@ public class PropertiesForUpdateNotificationEditDialog extends AbstractWindow {
 			}
 		});
 
-		footerLine = SmartGWTUtil.separator();
-		footer = new HLayout(5);
-		footer.setMargin(5);
-		footer.setHeight(20);
-		footer.setWidth100();
-		footer.setAlign(VerticalAlignment.CENTER);
 		footer.setMembers(save, cancel);
 
-		addItem(form);
-		addItem(footerLine);
-		addItem(footer);
 	}
 
 	public void setPropertiesForUpdateNotification(String propertiesForUpdateNotification) {
 		this.propertiesForUpdateNotification = propertiesForUpdateNotification;
 		txtPropertiesForUpdateNotificationField.setValue(propertiesForUpdateNotification);
-
-		addItem(footerLine);
-		addItem(footer);
 	}
 
 	public void addDataChangeHandler(DataChangedHandler handler) {

@@ -26,50 +26,49 @@ import java.util.List;
 import org.iplass.adminconsole.client.base.event.DataChangedEvent;
 import org.iplass.adminconsole.client.base.event.DataChangedHandler;
 import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
-import org.iplass.adminconsole.client.base.ui.widget.AbstractWindow;
+import org.iplass.adminconsole.client.base.ui.widget.MtpDialog;
+import org.iplass.adminconsole.client.base.ui.widget.form.MtpForm;
+import org.iplass.adminconsole.client.base.ui.widget.form.MtpTextItem;
 import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
 import org.iplass.mtp.web.actionmapping.definition.result.ResultDefinition;
 
-import com.smartgwt.client.types.VerticalAlignment;
 import com.smartgwt.client.widgets.IButton;
+import com.smartgwt.client.widgets.Label;
 import com.smartgwt.client.widgets.events.ClickEvent;
 import com.smartgwt.client.widgets.events.ClickHandler;
 import com.smartgwt.client.widgets.form.DynamicForm;
+import com.smartgwt.client.widgets.form.fields.CanvasItem;
+import com.smartgwt.client.widgets.form.fields.SpacerItem;
 import com.smartgwt.client.widgets.form.fields.TextItem;
-import com.smartgwt.client.widgets.layout.HLayout;
 
-public class CachableResultEditDialog extends AbstractWindow {
+public class CachableResultEditDialog extends MtpDialog {
 
 	/** ステータス */
 	private TextItem statusField;
-
-	/** フッター */
-	private HLayout footer;
 
 	/** データ変更ハンドラ */
 	private List<DataChangedHandler> handlers = new ArrayList<DataChangedHandler>();
 
 	public CachableResultEditDialog() {
 
-		setWidth(550);
-		setHeight(100);
+		setHeight(200);
 		setTitle("Cachable Result Status");
-		setShowMinimizeButton(false);
-		setIsModal(true);
-		setShowModalMask(true);
 		centerInPage();
 
-		statusField = new TextItem("status", "Status");
-		statusField.setWidth(250);
+		statusField = new MtpTextItem("status", "Status");
 		SmartGWTUtil.setRequired(statusField);
-		statusField.setHint(AdminClientMessageUtil.getString("ui_metadata_action_cache_CachableResultEditDialog_allStatus"));
 
-		final DynamicForm form = new DynamicForm();
-		form.setMargin(5);
-//		form.setHeight100();
-		form.setAutoHeight();	//下に追加するためAutoHeight
-		form.setWidth100();
-		form.setItems(statusField);
+		CanvasItem hintField = new CanvasItem();
+		hintField.setWidth("100%");
+		hintField.setShowTitle(false);
+		Label hint = new Label(AdminClientMessageUtil.getString("ui_metadata_action_cache_CachableResultEditDialog_allStatus"));
+		hint.setAutoHeight();
+		hintField.setCanvas(hint);
+
+		final DynamicForm form = new MtpForm();
+		form.setItems(statusField, new SpacerItem(), new SpacerItem(), hintField);
+
+		container.addMember(form);
 
 		IButton save = new IButton("OK");
 		save.addClickHandler(new ClickHandler() {
@@ -77,8 +76,6 @@ public class CachableResultEditDialog extends AbstractWindow {
 				boolean commonValidate = form.validate();
 				if (commonValidate) {
 					saveDefinition();
-				} else {
-//					errors.setVisible(true);
 				}
 			}
 		});
@@ -90,17 +87,7 @@ public class CachableResultEditDialog extends AbstractWindow {
 			}
 		});
 
-		footer = new HLayout(5);
-		footer.setMargin(5);
-		footer.setHeight(20);
-		footer.setWidth100();
-		//footer.setAlign(Alignment.LEFT);
-		footer.setAlign(VerticalAlignment.CENTER);
 		footer.setMembers(save, cancel);
-
-
-		addItem(form);
-		addItem(footer);
 	}
 
 	/**

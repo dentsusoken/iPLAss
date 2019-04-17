@@ -26,10 +26,12 @@ import java.util.List;
 
 import org.iplass.adminconsole.client.base.event.DataChangedEvent;
 import org.iplass.adminconsole.client.base.event.DataChangedHandler;
-import org.iplass.adminconsole.client.base.ui.widget.AbstractWindow;
 import org.iplass.adminconsole.client.base.ui.widget.EditablePane;
+import org.iplass.adminconsole.client.base.ui.widget.MtpDialog;
 import org.iplass.adminconsole.client.base.ui.widget.ScriptEditorDialogHandler;
 import org.iplass.adminconsole.client.base.ui.widget.ScriptEditorDialogMode;
+import org.iplass.adminconsole.client.base.ui.widget.form.MtpForm;
+import org.iplass.adminconsole.client.base.ui.widget.form.MtpSelectItem;
 import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
 import org.iplass.adminconsole.client.metadata.ui.MetaDataUtil;
 import org.iplass.mtp.auth.oauth.definition.ClientPolicyDefinition;
@@ -42,7 +44,6 @@ import org.iplass.mtp.auth.oauth.definition.consents.ScriptingConsentTypeDefinit
 import com.smartgwt.client.types.AutoFitWidthApproach;
 import com.smartgwt.client.types.ListGridEditEvent;
 import com.smartgwt.client.types.Overflow;
-import com.smartgwt.client.types.VerticalAlignment;
 import com.smartgwt.client.widgets.IButton;
 import com.smartgwt.client.widgets.events.ClickEvent;
 import com.smartgwt.client.widgets.events.ClickHandler;
@@ -237,7 +238,7 @@ public class ClientPolicyGridPane extends VLayout implements EditablePane<OAuthA
 
 	}
 
-	private static class ClientPolicyEditDialog extends AbstractWindow {
+	private static class ClientPolicyEditDialog extends MtpDialog {
 
 		/** ClientTypeの種類選択用Map */
 		private static LinkedHashMap<String, String> clientTypeMap;
@@ -270,26 +271,13 @@ public class ClientPolicyGridPane extends VLayout implements EditablePane<OAuthA
 		public ClientPolicyEditDialog() {
 
 			setHeight(450);
-			setWidth(600);
 			setTitle("Client Policy");
-
-			setShowMinimizeButton(false);
-			setShowMaximizeButton(false);
-			setCanDragResize(true);
-			setIsModal(true);
-			setShowModalMask(true);
-
 			centerInPage();
 
-			form = new DynamicForm();
-			form.setWidth100();
-			form.setNumCols(3);	//間延びしないように最後に１つ余分に作成
-			form.setColWidths(100, 300, "*");
-			form.setMargin(5);
+			form = new MtpForm();
 
-			selClientType = new SelectItem();
+			selClientType = new MtpSelectItem();
 			selClientType.setTitle("Client Type");
-			selClientType.setWidth("100%");
 			selClientType.setValueMap(clientTypeMap);
 
 			txtAccessTokenLifetimeSeconds = new IntegerItem();
@@ -325,17 +313,7 @@ public class ClientPolicyGridPane extends VLayout implements EditablePane<OAuthA
 			form.setItems(selClientType, txtAccessTokenLifetimeSeconds, chkSupportRefreshToken,
 					txtRefreshTokenLifetimeSeconds, canvasConsentType, canvasScopes, chkSupportOpenIDConnect);
 
-			VLayout contents = new VLayout(5);
-			contents.setHeight100();
-			contents.setOverflow(Overflow.AUTO);
-			contents.setMembers(form);
-
-			HLayout footer = new HLayout(5);
-			footer.setMargin(10);
-			footer.setAutoHeight();
-			footer.setWidth100();
-			footer.setAlign(VerticalAlignment.CENTER);
-			footer.setOverflow(Overflow.VISIBLE);
+			container.setMembers(form);
 
 			IButton btnOK = new IButton("OK");
 			btnOK.addClickHandler(new ClickHandler() {
@@ -354,11 +332,6 @@ public class ClientPolicyGridPane extends VLayout implements EditablePane<OAuthA
 			});
 
 			footer.setMembers(btnOK, btnCancel);
-
-			addItem(contents);
-			addItem(SmartGWTUtil.separator());
-			addItem(footer);
-
 		}
 
 		public void setDefinition(ClientPolicyDefinition definition) {

@@ -28,15 +28,18 @@ import java.util.List;
 
 import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
 import org.iplass.adminconsole.client.base.tenant.TenantInfoHolder;
-import org.iplass.adminconsole.client.base.ui.widget.AbstractWindow;
 import org.iplass.adminconsole.client.base.ui.widget.MetaDataSelectItem;
 import org.iplass.adminconsole.client.base.ui.widget.MetaDataSelectItem.ItemOption;
+import org.iplass.adminconsole.client.base.ui.widget.MtpDialog;
 import org.iplass.adminconsole.client.base.ui.widget.ScriptEditorDialogCondition;
 import org.iplass.adminconsole.client.base.ui.widget.ScriptEditorDialogHandler;
 import org.iplass.adminconsole.client.base.ui.widget.ScriptEditorDialogMode;
+import org.iplass.adminconsole.client.base.ui.widget.form.MtpForm;
+import org.iplass.adminconsole.client.base.ui.widget.form.MtpSelectItem;
+import org.iplass.adminconsole.client.base.ui.widget.form.MtpTextAreaItem;
+import org.iplass.adminconsole.client.base.ui.widget.form.MtpTextItem;
 import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
 import org.iplass.adminconsole.client.metadata.ui.MetaDataUtil;
-import org.iplass.adminconsole.shared.metadata.dto.MetaDataConstants;
 import org.iplass.adminconsole.shared.metadata.rpc.MetaDataServiceAsync;
 import org.iplass.adminconsole.shared.metadata.rpc.MetaDataServiceFactory;
 import org.iplass.mtp.entity.Entity;
@@ -56,7 +59,6 @@ import com.smartgwt.client.types.Alignment;
 import com.smartgwt.client.types.DragDataAction;
 import com.smartgwt.client.types.SelectionStyle;
 import com.smartgwt.client.types.TreeModelType;
-import com.smartgwt.client.types.VerticalAlignment;
 import com.smartgwt.client.util.BooleanCallback;
 import com.smartgwt.client.util.SC;
 import com.smartgwt.client.widgets.Canvas;
@@ -78,8 +80,6 @@ import com.smartgwt.client.widgets.grid.ListGrid;
 import com.smartgwt.client.widgets.grid.ListGridRecord;
 import com.smartgwt.client.widgets.grid.events.RecordDoubleClickEvent;
 import com.smartgwt.client.widgets.grid.events.RecordDoubleClickHandler;
-import com.smartgwt.client.widgets.layout.HLayout;
-import com.smartgwt.client.widgets.layout.VLayout;
 import com.smartgwt.client.widgets.tree.Tree;
 import com.smartgwt.client.widgets.tree.TreeGrid;
 import com.smartgwt.client.widgets.tree.TreeGridField;
@@ -405,7 +405,7 @@ public class CalendarGrid extends TreeGrid {
 
 	}
 
-	private class EntityCalendarItemEditDialog extends AbstractWindow {
+	private class EntityCalendarItemEditDialog extends MtpDialog {
 
 		private EntityCalendarItem item;
 
@@ -443,21 +443,8 @@ public class CalendarGrid extends TreeGrid {
 			this.item = calendarItem;
 
 			setTitle("Calendar Item");
-			setWidth(600);
-			setHeight(620);
-			setShowMinimizeButton(false);
-			setIsModal(true);
-			setShowModalMask(true);
+			setHeight(650);
 			centerInPage();
-
-			//--------------------------
-			//Property Setting
-			//--------------------------
-			VLayout mainLayout = new VLayout();
-			mainLayout.setWidth100();
-			mainLayout.setHeight100();
-			mainLayout.setMargin(10);
-			mainLayout.setMembersMargin(10);
 
 			RequiredIfValidator propertyNameValidator = new RequiredIfValidator(
 				new RequiredIfFunction() {
@@ -486,18 +473,15 @@ public class CalendarGrid extends TreeGrid {
 			//設定項目の入力フィールド作成
 			List<FormItem> items = new ArrayList<FormItem>();
 
-			defNameField = new TextItem("defName", "Entity Name");
-			defNameField.setWidth(MetaDataConstants.DEFAULT_FORM_ITEM_WIDTH);
+			defNameField = new MtpTextItem("defName", "Entity Name");
 			SmartGWTUtil.setReadOnly(defNameField);
 			items.add(defNameField);
 
-			entityColorField = new TextItem("entityColor", "Entity Color");
-			entityColorField.setWidth(MetaDataConstants.DEFAULT_FORM_ITEM_WIDTH);
+			entityColorField = new MtpTextItem("entityColor", "Entity Color");
 			items.add(entityColorField);
 
 			ButtonItem editScript = new ButtonItem("editScript", "Edit");
 			editScript.setWidth(100);
-			editScript.setStartRow(false);
 			editScript.setColSpan(3);
 			editScript.setAlign(Alignment.RIGHT);
 			editScript.setPrompt(SmartGWTUtil.getHoverString(AdminClientMessageUtil.getString("ui_metadata_calendar_CalendarGrid_displayDialogEditScript")));
@@ -523,15 +507,13 @@ public class CalendarGrid extends TreeGrid {
 			});
 			items.add(editScript);
 
-			colorConfigField = new TextAreaItem("colorConfig", "Color Config");
-			colorConfigField.setStartRow(true);
-			colorConfigField.setWidth("100%");
+			colorConfigField = new MtpTextAreaItem("colorConfig", "Color Config");
+			colorConfigField.setColSpan(2);
 			colorConfigField.setHeight(100);
 			items.add(colorConfigField);
 			SmartGWTUtil.setReadOnlyTextArea(colorConfigField);
 
-			calendarSearchTypeField = new SelectItem("calendarSearchType", "Matching Type");
-			calendarSearchTypeField.setWidth(MetaDataConstants.DEFAULT_FORM_ITEM_WIDTH);
+			calendarSearchTypeField = new MtpSelectItem("calendarSearchType", "Matching Type");
 			SmartGWTUtil.addHoverToFormItem(calendarSearchTypeField,
 					AdminClientMessageUtil.getString("ui_metadata_calendar_CalendarGrid_howToSearchCalendar"));
 			HashMap<String, String> valueMap = new HashMap<>();
@@ -540,30 +522,26 @@ public class CalendarGrid extends TreeGrid {
 			calendarSearchTypeField.setValueMap(valueMap);
 			items.add(calendarSearchTypeField);
 
-			propertyNameField = new SelectItem("propertyName", "Target Property<br/>(for Date)");
-			propertyNameField.setWidth(MetaDataConstants.DEFAULT_FORM_ITEM_WIDTH);
+			propertyNameField = new MtpSelectItem("propertyName", "Target Property<br/>(for Date)");
 			SmartGWTUtil.addHoverToFormItem(propertyNameField,
 					AdminClientMessageUtil.getString("ui_metadata_calendar_CalendarGrid_speEntityItemCalendarDate"));
 			propertyNameField.setValidators(propertyNameValidator);
 			items.add(propertyNameField);
 
-			fromPropertyNameField = new SelectItem("fromPropertyName", "From Property<br/>(for Period)");
-			fromPropertyNameField.setWidth(MetaDataConstants.DEFAULT_FORM_ITEM_WIDTH);
+			fromPropertyNameField = new MtpSelectItem("fromPropertyName", "From Property<br/>(for Period)");
 			SmartGWTUtil.addHoverToFormItem(fromPropertyNameField,
 					AdminClientMessageUtil.getString("ui_metadata_calendar_CalendarGrid_speEntityItemCalendarPeriodStart"));
 			fromPropertyNameField.setValidators(propertyNameValidator);
 			items.add(fromPropertyNameField);
 
-			toPropertyNameField = new SelectItem("toPropertyName", "To Property<br/>(for Period)");
-			toPropertyNameField.setWidth(MetaDataConstants.DEFAULT_FORM_ITEM_WIDTH);
+			toPropertyNameField = new MtpSelectItem("toPropertyName", "To Property<br/>(for Period)");
 			SmartGWTUtil.addHoverToFormItem(toPropertyNameField,
 					AdminClientMessageUtil.getString("ui_metadata_calendar_CalendarGrid_speEntityItemCalendarPeriodEnd"));
 			toPropertyNameField.setValidators(propertyNameValidator);
 			items.add(toPropertyNameField);
 
-			filterConditionField = new TextAreaItem();
+			filterConditionField = new MtpTextAreaItem();
 			filterConditionField.setTitle("Filter Condition");
-			filterConditionField.setWidth("100%");
 			filterConditionField.setHeight(100);
 			SmartGWTUtil.addHoverToFormItem(filterConditionField, AdminClientMessageUtil.getString("ui_metadata_calendar_CalendarGrid_speCommonFilterCond"));
 			items.add(filterConditionField);
@@ -577,7 +555,7 @@ public class CalendarGrid extends TreeGrid {
 			items.add(limitField);
 
 			displayTimeField = new CheckboxItem("displayTime", "show time value");
-			displayTimeField.setWidth(MetaDataConstants.DEFAULT_FORM_ITEM_WIDTH);
+			displayTimeField.setWidth("100%");
 			SmartGWTUtil.addHoverToFormItem(displayTimeField,
 					AdminClientMessageUtil.getString("ui_metadata_calendar_CalendarGrid_displayTimeOnCalendar"));
 			items.add(displayTimeField);
@@ -592,39 +570,23 @@ public class CalendarGrid extends TreeGrid {
 					AdminClientMessageUtil.getString("ui_metadata_calendar_CalendarGrid_speAddDataAction"));
 			items.add(addActionField);
 
-			viewNameField = new TextItem("viewName", "Entity View");
-			viewNameField.setWidth(MetaDataConstants.DEFAULT_FORM_ITEM_WIDTH);
+			viewNameField = new MtpTextItem("viewName", "Entity View");
 			SmartGWTUtil.addHoverToFormItem(viewNameField,
 					AdminClientMessageUtil.getString("ui_metadata_calendar_CalendarGrid_speDisplayDetailAndAddViewName"));
 			items.add(viewNameField);
 
-			final DynamicForm baseForm = new DynamicForm();
-			baseForm.setWidth100();
-			baseForm.setCellPadding(5);
-			baseForm.setNumCols(2);
-			baseForm.setColWidths(100, "*");
-			baseForm.setAutoFocus(true);
+			final DynamicForm form = new MtpForm();
+			form.setAutoFocus(true);
+			form.setFields(items.toArray(new FormItem[items.size()]));
 
-			baseForm.setFields(items.toArray(new FormItem[items.size()]));
-
-
-			mainLayout.addMember(baseForm);
-
-			//--------------------------
-			//Footer
-			//--------------------------
-			HLayout footer = new HLayout(5);
-			footer.setMargin(5);
-			footer.setHeight(20);
-			footer.setWidth100();
-			footer.setAlign(VerticalAlignment.CENTER);
+			container.addMember(form);
 
 			IButton ok = new IButton("OK");
 			ok.addClickHandler(new ClickHandler() {
 
 				@Override
 				public void onClick(ClickEvent event) {
-					if (baseForm.validate()){
+					if (form.validate()){
 						item.setEntityColor(SmartGWTUtil.getStringValue(entityColorField));
 						item.setColorConfig(SmartGWTUtil.getStringValue(colorConfigField));
 						String calendarSearchType = SmartGWTUtil.getStringValue(calendarSearchTypeField);
@@ -664,10 +626,6 @@ public class CalendarGrid extends TreeGrid {
 			});
 
 			footer.setMembers(ok, cancel);
-
-			addItem(mainLayout);
-			addItem(SmartGWTUtil.separator());
-			addItem(footer);
 
 			initialize();
 		}

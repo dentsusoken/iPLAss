@@ -24,14 +24,14 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.iplass.adminconsole.client.base.event.MTPEvent;
-import org.iplass.adminconsole.client.base.ui.widget.AbstractWindow;
+import org.iplass.adminconsole.client.base.ui.widget.MtpDialog;
+import org.iplass.adminconsole.client.base.ui.widget.form.MtpForm;
 import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
 import org.iplass.adminconsole.client.metadata.ui.top.PartsOperationHandler;
 import org.iplass.mtp.view.top.parts.FulltextSearchViewParts;
 
 import com.smartgwt.client.data.Record;
 import com.smartgwt.client.types.HeaderControls;
-import com.smartgwt.client.types.VerticalAlignment;
 import com.smartgwt.client.widgets.Canvas;
 import com.smartgwt.client.widgets.HeaderControl;
 import com.smartgwt.client.widgets.IButton;
@@ -41,8 +41,6 @@ import com.smartgwt.client.widgets.form.DynamicForm;
 import com.smartgwt.client.widgets.form.fields.CheckboxItem;
 import com.smartgwt.client.widgets.form.fields.FormItem;
 import com.smartgwt.client.widgets.grid.ListGrid;
-import com.smartgwt.client.widgets.layout.HLayout;
-import com.smartgwt.client.widgets.layout.VLayout;
 
 /**
  *
@@ -93,36 +91,19 @@ public class FulltextSearchViewItem extends PartsItem {
 		return true;
 	}
 
-	private class FulltextSearchViewItemSettingDialog extends AbstractWindow {
+	private class FulltextSearchViewItemSettingDialog extends MtpDialog {
 
 		/**
 		 * コンストラクタ
 		 */
 		public FulltextSearchViewItemSettingDialog() {
 
-			VLayout layout = new VLayout();
-
 			setTitle("Fulltext Search");
 			setHeight(400);
-			setWidth(470);
-			setMargin(10);
-			setMembersMargin(10);
-
-			setShowMinimizeButton(false);
-			setIsModal(true);
-			setShowModalMask(true);
 			centerInPage();
 
-			listPane = new FulltextSearchTargetEntityPane(parts, isInitDrop);
+			form = new MtpForm();
 
-			OperationPane opePane = new OperationPane(this);
-
-			layout.addMember(listPane);
-
-			form = new DynamicForm();
-			form.setWidth100();
-			form.setNumCols(3);
-			form.setColWidths("*", "*", "400");
 			CheckboxItem isDispSearchWindow = new CheckboxItem();
 			isDispSearchWindow.setTitle("Display search textbox");
 			isDispSearchWindow.setName("dispSearchWindow");
@@ -133,21 +114,10 @@ public class FulltextSearchViewItem extends PartsItem {
 			}
 			form.setItems(isDispSearchWindow);
 
-			addItem(form);
-			addItem(layout);
-			addItem(opePane);
-		}
-	}
+			container.addMember(form);
 
-
-	private class OperationPane extends HLayout {
-		public OperationPane(final FulltextSearchViewItemSettingDialog dialog) {
-			setHeight(40);
-
-			HLayout footer = new HLayout(5);
-			footer.setMargin(10);
-			footer.setWidth100();
-			footer.setAlign(VerticalAlignment.CENTER);
+			listPane = new FulltextSearchTargetEntityPane(parts, isInitDrop);
+			container.addMember(listPane);
 
 			IButton save = new IButton("OK");
 			save.addClickHandler(new ClickHandler() {
@@ -178,20 +148,18 @@ public class FulltextSearchViewItem extends PartsItem {
 					FormItem dispSearchWindow = form.getField("dispSearchWindow");
 					parts.setDispSearchWindow(SmartGWTUtil.getBooleanValue(dispSearchWindow));
 
-					dialog.destroy();
+					destroy();
 				}
 			});
 
 			IButton cancel = new IButton("Cancel");
 			cancel.addClickHandler(new ClickHandler() {
 				public void onClick(ClickEvent event) {
-					dialog.destroy();
+					destroy();
 				}
 			});
 
 			footer.setMembers(save, cancel);
-
-			addMember(footer);
 		}
 	}
 

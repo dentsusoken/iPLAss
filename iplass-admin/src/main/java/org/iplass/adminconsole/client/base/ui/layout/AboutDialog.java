@@ -24,11 +24,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map.Entry;
 
-import org.iplass.adminconsole.client.base.ui.widget.AbstractWindow;
-import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
+import org.iplass.adminconsole.client.base.ui.widget.MtpDialog;
 import org.iplass.adminconsole.shared.base.dto.tenant.AdminPlatformInfo;
 
-import com.smartgwt.client.types.Alignment;
 import com.smartgwt.client.types.Overflow;
 import com.smartgwt.client.types.VerticalAlignment;
 import com.smartgwt.client.widgets.Canvas;
@@ -41,59 +39,24 @@ import com.smartgwt.client.widgets.grid.ListGridRecord;
 import com.smartgwt.client.widgets.layout.HLayout;
 import com.smartgwt.client.widgets.layout.VLayout;
 
-public class AboutDialog extends AbstractWindow {
+public class AboutDialog extends MtpDialog {
 
 	public AboutDialog(AdminPlatformInfo result) {
 
 		setTitle("About iPLAss");
 
 		setHeight(600);
-		setWidth(600);
-		setMargin(5);
-
-		setIsModal(true);
-		setShowModalMask(true);
-		setShowMinimizeButton(false);
-		setShowMaximizeButton(true);
-		setCanDragResize(true);
-		setCanDragReposition(true);
 		centerInPage();
 
-		HLayout header = new HLayout();
-		header.setMargin(10);
-		header.setAutoHeight();
-		header.setWidth100();
-		header.setMembersMargin(10);
-		header.setAlign(VerticalAlignment.CENTER);
-
-		Label title = new Label("About iPLAss");
-		title.setStyleName("adminWindowHeaderText");
-		title.setWrap(false);
-
-		header.setMembers(title);
-
-		VLayout main = new VLayout();
-		main.setMargin(10);
-		main.setHeight100();
-		main.setWidth100();
-		main.setMembersMargin(5);
-		main.setOverflow(Overflow.AUTO);
-
-		main.addMember(new PlatformInfoPane(result));
+		container.addMember(new TitlePane());
+		container.addMember(new PlatformInfoPane(result));
 
 		if (result.isShowServerInfo()) {
-			main.addMember(new ServerInfoPane(result));
+			container.addMember(new ServerInfoPane(result));
 		}
 
-		main.addMembers(new ContentsPane("Licenses :", result.getLicenseLines()));
-
-		main.addMembers(new ContentsPane("Notices :", result.getNoticeLines()));
-
-		HLayout footer = new HLayout(5);
-		footer.setMargin(10);
-		footer.setWidth100();
-		footer.setHeight(30);
-		footer.setAlign(Alignment.CENTER);
+		container.addMembers(new ContentsPane("Licenses :", result.getLicenseLines()));
+		container.addMembers(new ContentsPane("Notices :", result.getNoticeLines()));
 
 		IButton okButton = new IButton("OK");
 		okButton.addClickHandler(new com.smartgwt.client.widgets.events.ClickHandler() {
@@ -105,11 +68,24 @@ public class AboutDialog extends AbstractWindow {
 		});
 
 		footer.setMembers(okButton);
+	}
 
-		addItem(header);
-		addItem(main);
-		addItem(SmartGWTUtil.separator());
-		addItem(footer);
+	private static class TitlePane extends HLayout {
+
+		public TitlePane() {
+
+			setMargin(10);
+			setAutoHeight();
+			setWidth100();
+			setMembersMargin(10);
+			setAlign(VerticalAlignment.CENTER);
+
+			Label title = new Label("About iPLAss");
+			title.setStyleName("adminWindowHeaderText");
+			title.setWrap(false);
+
+			setMembers(title);
+		}
 	}
 
 	private static class PlatformInfoPane extends VLayout {

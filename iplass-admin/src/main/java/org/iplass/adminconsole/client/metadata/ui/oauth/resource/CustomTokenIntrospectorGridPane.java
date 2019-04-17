@@ -27,10 +27,14 @@ import java.util.List;
 import org.iplass.adminconsole.client.base.event.DataChangedEvent;
 import org.iplass.adminconsole.client.base.event.DataChangedHandler;
 import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
-import org.iplass.adminconsole.client.base.ui.widget.AbstractWindow;
 import org.iplass.adminconsole.client.base.ui.widget.EditablePane;
+import org.iplass.adminconsole.client.base.ui.widget.MtpDialog;
 import org.iplass.adminconsole.client.base.ui.widget.ScriptEditorDialogHandler;
 import org.iplass.adminconsole.client.base.ui.widget.ScriptEditorDialogMode;
+import org.iplass.adminconsole.client.base.ui.widget.form.MtpForm;
+import org.iplass.adminconsole.client.base.ui.widget.form.MtpSelectItem;
+import org.iplass.adminconsole.client.base.ui.widget.form.MtpTextAreaItem;
+import org.iplass.adminconsole.client.base.ui.widget.form.MtpTextItem;
 import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
 import org.iplass.adminconsole.client.metadata.ui.MetaDataUtil;
 import org.iplass.mtp.auth.oauth.definition.CustomTokenIntrospectorDefinition;
@@ -40,7 +44,6 @@ import org.iplass.mtp.auth.oauth.definition.introspectors.ScriptingCustomTokenIn
 
 import com.smartgwt.client.types.AutoFitWidthApproach;
 import com.smartgwt.client.types.Overflow;
-import com.smartgwt.client.types.VerticalAlignment;
 import com.smartgwt.client.widgets.IButton;
 import com.smartgwt.client.widgets.events.ClickEvent;
 import com.smartgwt.client.widgets.events.ClickHandler;
@@ -240,7 +243,7 @@ public class CustomTokenIntrospectorGridPane extends VLayout implements Editable
 
 	}
 
-	private static class CustomTokenIntrospectorEditDialog extends AbstractWindow {
+	private static class CustomTokenIntrospectorEditDialog extends MtpDialog {
 
 		/** 種類選択用Map */
 		private static LinkedHashMap<String, String> typeMap;
@@ -249,8 +252,6 @@ public class CustomTokenIntrospectorGridPane extends VLayout implements Editable
 			typeMap.put("Java", "Java");
 			typeMap.put("Script", "Script");
 		}
-
-		private VLayout contents;
 
 		private DynamicForm form;
 
@@ -269,26 +270,13 @@ public class CustomTokenIntrospectorGridPane extends VLayout implements Editable
 		public CustomTokenIntrospectorEditDialog() {
 
 			setHeight(450);
-			setWidth(600);
 			setTitle("Custom Token Introspector");
-
-			setShowMinimizeButton(false);
-			setShowMaximizeButton(false);
-			setCanDragResize(true);
-			setIsModal(true);
-			setShowModalMask(true);
-
 			centerInPage();
 
-			form = new DynamicForm();
-			form.setWidth100();
-			form.setNumCols(3);	//間延びしないように最後に１つ余分に作成
-			form.setColWidths(100, 450, "*");
-			form.setMargin(5);
+			form = new MtpForm();
 
-			selType = new SelectItem();
+			selType = new MtpSelectItem();
 			selType.setTitle("Type");
-			selType.setWidth("100%");
 			selType.setValueMap(typeMap);
 			SmartGWTUtil.setRequired(selType);
 			selType.setRequired(true);
@@ -302,33 +290,21 @@ public class CustomTokenIntrospectorGridPane extends VLayout implements Editable
 
 			form.setItems(selType);
 
-			javaForm = new DynamicForm();
-			javaForm.setWidth100();
-			javaForm.setNumCols(3);	//間延びしないように最後に１つ余分に作成
-			javaForm.setColWidths(100, 450, "*");
-			javaForm.setMargin(5);
+			javaForm = new MtpForm();
 
-			txtClassName = new TextItem();
+			txtClassName = new MtpTextItem();
 			txtClassName.setTitle("Java ClassName");
-			txtClassName.setWidth("100%");
-			txtClassName.setBrowserSpellCheck(false);
 			txtClassName.setStartRow(true);
 			SmartGWTUtil.addHoverToFormItem(txtClassName,
 					SmartGWTUtil.getHoverString(AdminClientMessageUtil.getString("ui_metadata_oauth_resource_OAuthResourceServerAttributePane_introspectorJavaClassName")));
 
 			javaForm.setItems(txtClassName);
 
-			scriptForm = new DynamicForm();
-			scriptForm.setWidth100();
-			scriptForm.setNumCols(3);	//間延びしないように最後に１つ余分に作成
-			scriptForm.setColWidths(100, 450, "*");
-			scriptForm.setMargin(5);
+			scriptForm = new MtpForm();
 
-			txaScript = new TextAreaItem();
+			txaScript = new MtpTextAreaItem();
 			txaScript.setTitle("Script");
-			txaScript.setWidth("100%");
 			txaScript.setHeight(255);
-			txaScript.setBrowserSpellCheck(false);
 			SmartGWTUtil.setReadOnlyTextArea(txaScript);
 
 			SpacerItem spacer = new SpacerItem();
@@ -366,17 +342,7 @@ public class CustomTokenIntrospectorGridPane extends VLayout implements Editable
 
 			scriptForm.setItems(txaScript, spacer, btnScript);
 
-			contents = new VLayout(5);
-			contents.setHeight100();
-			contents.setOverflow(Overflow.AUTO);
-			contents.setMembers(form);
-
-			HLayout footer = new HLayout(5);
-			footer.setMargin(10);
-			footer.setAutoHeight();
-			footer.setWidth100();
-			footer.setAlign(VerticalAlignment.CENTER);
-			footer.setOverflow(Overflow.VISIBLE);
+			container.addMember(form);
 
 			IButton btnOK = new IButton("OK");
 			btnOK.addClickHandler(new ClickHandler() {
@@ -395,11 +361,6 @@ public class CustomTokenIntrospectorGridPane extends VLayout implements Editable
 			});
 
 			footer.setMembers(btnOK, btnCancel);
-
-			addItem(contents);
-			addItem(SmartGWTUtil.separator());
-			addItem(footer);
-
 		}
 
 		public void setDefinition(CustomTokenIntrospectorDefinition definition) {
@@ -427,8 +388,8 @@ public class CustomTokenIntrospectorGridPane extends VLayout implements Editable
 		private void typeChanged() {
 
 			if (currentForm != null) {
-				if (contents.contains(currentForm)) {
-					contents.removeMember(currentForm);
+				if (container.contains(currentForm)) {
+					container.removeMember(currentForm);
 				}
 				currentForm = null;
 			}
@@ -438,10 +399,10 @@ public class CustomTokenIntrospectorGridPane extends VLayout implements Editable
 				return;
 			}
 			if ("Java".equals(type)) {
-				contents.addMember(javaForm);
+				container.addMember(javaForm);
 				currentForm = javaForm;
 			} else if ("Script".equals(type)) {
-				contents.addMember(scriptForm);
+				container.addMember(scriptForm);
 				currentForm = scriptForm;
 			}
 		}

@@ -1,19 +1,19 @@
 /*
  * Copyright (C) 2011 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
- * 
+ *
  * Unless you have purchased a commercial license,
  * the following license terms apply:
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
@@ -22,6 +22,9 @@ package org.iplass.adminconsole.client.metadata.ui.action.result;
 
 import java.util.LinkedHashMap;
 
+import org.iplass.adminconsole.client.base.ui.widget.form.MtpForm;
+import org.iplass.adminconsole.client.base.ui.widget.form.MtpSelectItem;
+import org.iplass.adminconsole.client.base.ui.widget.form.MtpTextItem;
 import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
 import org.iplass.mtp.web.actionmapping.definition.result.ContentDispositionType;
 import org.iplass.mtp.web.actionmapping.definition.result.DynamicTemplateResultDefinition;
@@ -58,40 +61,29 @@ public class DynamicTemplateResultEditPane extends ResultTypeEditPane {
 	 */
 	public DynamicTemplateResultEditPane() {
 
-		//レイアウト設定
 		setWidth100();
-//		setAutoHeight();
-		setHeight100();	//OK、Cancelボタンを下に持っていくため
 
 		//入力部分
-		form = new DynamicForm();
-		form.setMargin(5);
+		form = new MtpForm();
 		form.setAutoHeight();
-		form.setWidth100();
 
-		attributeNameField = new TextItem("attributeName", "Template AttributeName");
-		attributeNameField.setWidth(250);
+		attributeNameField = new MtpTextItem("attributeName", "Template AttributeName");
 		SmartGWTUtil.setRequired(attributeNameField);
 
-
-		layoutActionAttributeNameField = new TextItem();
+		layoutActionAttributeNameField = new MtpTextItem();
 		layoutActionAttributeNameField.setTitle("Layout Action AttributeName");
-		layoutActionAttributeNameField.setWidth(250);
 
 		form.setItems(attributeNameField, layoutActionAttributeNameField);
 
-		contentDispositionForm = new DynamicForm();
-		contentDispositionForm.setMargin(5);
+		contentDispositionForm = new MtpForm();
 		contentDispositionForm.setAutoHeight();
-		contentDispositionForm.setWidth100();
 		contentDispositionForm.setIsGroup(true);
 		contentDispositionForm.setGroupTitle("Content Disposition Setting");
 
 		useContentDispositionField = new CheckboxItem("useContentDisposition", "Set ContentDisposition");
 
-		contentDispositionTypeField = new SelectItem();
+		contentDispositionTypeField = new MtpSelectItem();
 		contentDispositionTypeField.setTitle("Content Disposition Type");
-		contentDispositionTypeField.setWidth(150);
 
 		LinkedHashMap<String, String> contentDispositionTypeMap = new LinkedHashMap<String, String>();
 		contentDispositionTypeMap.put("", "Default");
@@ -99,8 +91,7 @@ public class DynamicTemplateResultEditPane extends ResultTypeEditPane {
 		contentDispositionTypeMap.put(ContentDispositionType.INLINE.name(), "Inline");
 		contentDispositionTypeField.setValueMap(contentDispositionTypeMap);
 
-		fileNameAttributeNameField = new TextItem("fileNameAttributeName", "FileName AttributeName");
-		fileNameAttributeNameField.setWidth(250);
+		fileNameAttributeNameField = new MtpTextItem("fileNameAttributeName", "FileName AttributeName");
 
 		contentDispositionForm.setItems(useContentDispositionField, contentDispositionTypeField, fileNameAttributeNameField);
 

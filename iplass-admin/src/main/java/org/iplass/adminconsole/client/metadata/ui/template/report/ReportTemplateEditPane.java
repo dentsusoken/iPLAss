@@ -29,6 +29,9 @@ import org.iplass.adminconsole.client.base.io.upload.UploadResultInfo;
 import org.iplass.adminconsole.client.base.io.upload.UploadSubmitCompleteHandler;
 import org.iplass.adminconsole.client.base.rpc.AdminAsyncCallback;
 import org.iplass.adminconsole.client.base.tenant.TenantInfoHolder;
+import org.iplass.adminconsole.client.base.ui.widget.form.MtpForm;
+import org.iplass.adminconsole.client.base.ui.widget.form.MtpSelectItem;
+import org.iplass.adminconsole.client.base.ui.widget.form.MtpTextItem;
 import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
 import org.iplass.adminconsole.client.metadata.ui.template.HasEditLocalizedReportDefinition;
 import org.iplass.adminconsole.client.metadata.ui.template.TemplateMultiLanguagePane.LocalizedReportDefinitionInfo;
@@ -112,16 +115,11 @@ public class ReportTemplateEditPane extends TemplateTypeEditPane implements HasE
 	 */
 	public ReportTemplateEditPane() {
 
-		//レイアウト設定
 		setWidth100();
-		setMargin(5);
 
-		reportTypeForm = new DynamicForm();
-		reportTypeForm.setWidth("300px");
-		reportTypeForm.setMargin(5);
+		reportTypeForm = new MtpForm();
 
-		reportTypeField = new SelectItem("outputType", "Report Type");
-		reportTypeField.setWidth("100%");
+		reportTypeField = new MtpSelectItem("outputType", "Report Type");
 		reportTypeField.addChangedHandler(new ChangedHandler() {
 			@Override
 			public void onChanged(ChangedEvent event) {
@@ -152,12 +150,9 @@ public class ReportTemplateEditPane extends TemplateTypeEditPane implements HasE
 		SmartGWTUtil.setRequired(reportTypeField);
 		reportTypeForm.setItems(reportTypeField);
 
-		outputTypeForm = new DynamicForm();
-		outputTypeForm.setWidth("300px");
-		outputTypeForm.setMargin(5);
+		outputTypeForm = new MtpForm();
 
-		outputTypeField = new SelectItem("outputType", "Format");
-		outputTypeField.setWidth("100%");
+		outputTypeField = new MtpSelectItem("outputType", "Format");
 		outputTypeField.addChangedHandler(new ChangedHandler() {
 			@Override
 			public void onChanged(ChangedEvent event) {
@@ -170,17 +165,18 @@ public class ReportTemplateEditPane extends TemplateTypeEditPane implements HasE
 
 		itmFileUpload = new UploadFileItem();
 
-		downloadForm = new DynamicForm();
-		downloadForm.setWidth100();
-		downloadForm.setMargin(5);
+		downloadForm = new MtpForm();
 
 		txtDownloadFileName = new StaticTextItem();
 		txtDownloadFileName.setTitle("Saved File");
 
+		SpacerItem downloadSpace = new SpacerItem();
+		downloadSpace.setStartRow(true);
+
 		downloadFilebtn = new ButtonItem("Download", "Download");
 		downloadFilebtn.setWidth(100);
 		downloadFilebtn.setStartRow(false);
-		downloadForm.setItems(txtDownloadFileName, new SpacerItem(), downloadFilebtn);
+		downloadForm.setItems(txtDownloadFileName, downloadSpace, downloadFilebtn);
 
 		//入力部分
 		form = new FormPanel();
@@ -202,16 +198,12 @@ public class ReportTemplateEditPane extends TemplateTypeEditPane implements HasE
 		form.addSubmitCompleteHandler(new ReportTemplateDefinitionSubmitCompleteHandler());
 
 		//JasperAttributeForm
-		jasperAttributeForm = new DynamicForm();
-		jasperAttributeForm.setWidth("300px");
-		jasperAttributeForm.setMargin(5);
+		jasperAttributeForm = new MtpForm();
 
-		jasperDataSourceAttributeNameField = new TextItem();
-		jasperDataSourceAttributeNameField.setWidth("100%");
+		jasperDataSourceAttributeNameField = new MtpTextItem();
 		jasperDataSourceAttributeNameField.setTitle("DataSource AttributeName");
 
-		jasperPasswordAttributeNameField = new TextItem();
-		jasperPasswordAttributeNameField.setWidth("100%");
+		jasperPasswordAttributeNameField = new MtpTextItem();
 		jasperPasswordAttributeNameField.setTitle("Password AttributeName");
 
 		jasperAttributeForm.setItems(jasperDataSourceAttributeNameField, jasperPasswordAttributeNameField);
@@ -220,11 +212,9 @@ public class ReportTemplateEditPane extends TemplateTypeEditPane implements HasE
 		jasperParamMapPane = new ReportParamMapGridPane();
 
 		//PoiパスワードAttributeName
-		poiPasswordAttributeNameForm = new DynamicForm();
-		poiPasswordAttributeNameForm.setWidth("300px");
-		poiPasswordAttributeNameForm.setMargin(5);
-		poiPasswordAttributeNameField = new TextItem("poiPasswordAttributeName", "Password AttributeName");
-		poiPasswordAttributeNameField.setWidth("100%");
+		poiPasswordAttributeNameForm = new MtpForm();
+
+		poiPasswordAttributeNameField = new MtpTextItem("poiPasswordAttributeName", "Password AttributeName");
 		poiPasswordAttributeNameForm.setItems(poiPasswordAttributeNameField);
 
 		//Poiレポート出力ロジック部分

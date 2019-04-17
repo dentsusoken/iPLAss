@@ -24,6 +24,7 @@ import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
 import org.iplass.adminconsole.client.base.io.download.PostDownloadFrame;
 import org.iplass.adminconsole.client.base.tenant.TenantInfoHolder;
 import org.iplass.adminconsole.client.base.ui.widget.AbstractWindow;
+import org.iplass.adminconsole.client.base.ui.widget.form.MtpForm;
 import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
 import org.iplass.adminconsole.client.metadata.ui.common.MetaDataCreateDialog;
 import org.iplass.adminconsole.shared.metadata.dto.entity.EntityJavaMappingClassDownloadProperty;
@@ -53,7 +54,7 @@ public class CreateJavaMappingClassDialog extends AbstractWindow {
 		setShowModalMask(true);
 		centerInPage();
 
-		final DynamicForm form = MetaDataCreateDialog.createDefaultForm();
+		final DynamicForm form = new MtpForm();
 		form.setAutoFocus(true);
 
 		final TextItem classNameField = new TextItem("className","Class Name");
