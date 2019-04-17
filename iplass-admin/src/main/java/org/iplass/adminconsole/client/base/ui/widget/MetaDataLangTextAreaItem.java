@@ -37,10 +37,25 @@ public class MetaDataLangTextAreaItem extends MtpTextAreaItem implements MtpWidg
 	private List<LocalizedStringDefinition> localizedList;
 
 	public MetaDataLangTextAreaItem() {
-		this(true);
+		super();
 	}
+
+	public MetaDataLangTextAreaItem(String name) {
+		super(name);
+		init(true);
+	}
+
+	public MetaDataLangTextAreaItem(String name, String title) {
+		super(name, title);
+		init(true);
+	}
+
 	public MetaDataLangTextAreaItem(boolean showLang) {
 		super();
+		init(showLang);
+	}
+
+	private void init(boolean showLang) {
 
 		setHeight(55);
 

@@ -37,10 +37,25 @@ public class MetaDataLangTextItem extends MtpTextItem implements MtpWidgetConsta
 	private List<LocalizedStringDefinition> localizedList;
 
 	public MetaDataLangTextItem() {
-		this(true);
+		super();
 	}
+
+	public MetaDataLangTextItem(String name) {
+		super(name);
+		init(true);
+	}
+
+	public MetaDataLangTextItem(String name, String title) {
+		super(name, title);
+		init(true);
+	}
+
 	public MetaDataLangTextItem(boolean showLang) {
 		super();
+		init(showLang);
+	}
+
+	private void init(boolean showLang) {
 
 		if (showLang) {
 			FormItemIcon icon = new FormItemIcon();
