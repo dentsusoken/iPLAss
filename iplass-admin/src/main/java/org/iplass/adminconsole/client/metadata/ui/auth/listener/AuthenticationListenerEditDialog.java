@@ -65,7 +65,7 @@ public class AuthenticationListenerEditDialog extends MtpDialog {
 
 	public AuthenticationListenerEditDialog() {
 
-		setHeight(570);
+		setHeight(590);
 		setTitle("Authentication Listener Setting");
 		centerInPage();
 
