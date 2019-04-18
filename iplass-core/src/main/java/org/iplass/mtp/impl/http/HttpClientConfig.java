@@ -24,7 +24,6 @@ import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.http.HttpHost;
-import org.apache.http.client.HttpClient;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
@@ -109,14 +108,14 @@ public class HttpClientConfig implements ServiceInitListener<Service> {
 		this.proxyPort = proxyPort;
 	}
 
-	public HttpClient getInstance() {
+	public CloseableHttpClient getInstance() {
 		return instance;
 	}
 
 	@Override
 	public void inited(Service service, Config config) {
 		
-		if (httpClientBuilderFactory == null) {
+		if (httpClientBuilderFactory != null) {
 			instance = httpClientBuilderFactory.create(service, config, this).build();
 			
 		} else {
