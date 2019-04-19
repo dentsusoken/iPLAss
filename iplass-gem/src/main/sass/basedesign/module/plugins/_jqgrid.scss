@@ -188,9 +188,8 @@
 		display: block;
 		height: 0;
 		> .ui-grid-ico-sort {
-			display: inline-block;
 			&.ui-state-disabled {
-				display: none;
+				display: none; //片方のみを表示する
 			}
 			&.ui-icon-desc.ui-icon.ui-sort-ltr {
 				background: $url_pjg1 no-repeat left center !important;
@@ -205,6 +204,9 @@
 		}
 	}
 	.ui-jqgrid-sortable {
+		.ui-grid-ico-sort {
+			display:none; //ui-jqgrid-sortableにasc、descが付いていないアイコンは非表示
+		}
 		&.desc .ui-grid-ico-sort.ui-icon-desc {
 			display: inline-block;
 		}

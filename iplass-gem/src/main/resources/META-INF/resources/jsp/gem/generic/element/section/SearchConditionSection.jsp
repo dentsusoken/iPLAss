@@ -389,7 +389,11 @@ function doSearch(searchType, offset, resetSort, target, src) {
 	if (resetSort) {
 		$(":hidden[name='sortKey']").val("");
 		$(":hidden[name='sortType']").val("");
-		$("#gview_searchResult tr.ui-jqgrid-labels th .ui-jqgrid-sortable").removeClass('asc desc');
+		var $sortable = $("#gview_searchResult tr.ui-jqgrid-labels th .ui-jqgrid-sortable");
+		//フラット以外のソートマーククリア
+		$sortable.removeClass('asc desc');
+		//フラットのソートマーククリア
+		$("span.s-ico", $sortable).hide();
 	}
 
 	$("div.result-block").show();

@@ -749,18 +749,18 @@ ul.context-menu-list li.context-menu-item span {
     float: right;
     display: block;
     height: 0; }
-    .ui-jqgrid .s-ico > .ui-grid-ico-sort {
-      display: inline-block; }
-      .ui-jqgrid .s-ico > .ui-grid-ico-sort.ui-state-disabled {
-        display: none; }
-      .ui-jqgrid .s-ico > .ui-grid-ico-sort.ui-icon-desc.ui-icon.ui-sort-ltr {
-        background: url(../../../../images/gem/skin/vertical/icon-arrow-04.png) no-repeat left center !important;
-        top: -1.5em;
-        margin-left: 0; }
-      .ui-jqgrid .s-ico > .ui-grid-ico-sort.ui-icon-asc.ui-icon.ui-sort-ltr {
-        background: url(../../../../images/gem/skin/vertical/icon-arrow-05.png) no-repeat left center !important;
-        top: -1.5em;
-        margin-left: 0; }
+    .ui-jqgrid .s-ico > .ui-grid-ico-sort.ui-state-disabled {
+      display: none; }
+    .ui-jqgrid .s-ico > .ui-grid-ico-sort.ui-icon-desc.ui-icon.ui-sort-ltr {
+      background: url(../../../../images/gem/skin/vertical/icon-arrow-04.png) no-repeat left center !important;
+      top: -1.5em;
+      margin-left: 0; }
+    .ui-jqgrid .s-ico > .ui-grid-ico-sort.ui-icon-asc.ui-icon.ui-sort-ltr {
+      background: url(../../../../images/gem/skin/vertical/icon-arrow-05.png) no-repeat left center !important;
+      top: -1.5em;
+      margin-left: 0; }
+  .ui-jqgrid .ui-jqgrid-sortable .ui-grid-ico-sort {
+    display: none; }
   .ui-jqgrid .ui-jqgrid-sortable.desc .ui-grid-ico-sort.ui-icon-desc {
     display: inline-block; }
   .ui-jqgrid .ui-jqgrid-sortable.asc .ui-grid-ico-sort.ui-icon-asc {
