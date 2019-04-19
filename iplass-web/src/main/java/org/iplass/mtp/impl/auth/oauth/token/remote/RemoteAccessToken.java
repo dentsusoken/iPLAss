@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
+ * Copyright (C) 2019 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
  * 
  * Unless you have purchased a commercial license,
  * the following license terms apply:
@@ -17,54 +17,85 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
-package org.iplass.mtp.impl.auth.oauth.token.opaque;
+package org.iplass.mtp.impl.auth.oauth.token.remote;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import org.iplass.mtp.auth.User;
-import org.iplass.mtp.impl.auth.oauth.MetaOAuthAuthorization.OAuthAuthorizationRuntime;
-import org.iplass.mtp.impl.auth.oauth.MetaOAuthClient.OAuthClientRuntime;
 import org.iplass.mtp.impl.auth.oauth.token.AccessToken;
 import org.iplass.mtp.impl.auth.oauth.token.RefreshToken;
 
-public class OpaqueAccessToken extends AccessToken {
+public class RemoteAccessToken extends AccessToken {
 	
-	private String series;
 	private String tokenEncoded;
-	private long expires;
-	private long expiresIn;
 	private User user;
 	private List<String> grantedScopes;
 	private String clientId;
-	private long creationTime;
+	private String sub;
+	private long expires;
+	private long expiresIn;
+	private long issuedAt;
+	private long notBefore;
 	
-	private RefreshToken refreshToken;
+	private String audience;
+	private String issuer;
+	private String username;
 	
-	public OpaqueAccessToken(OAuthClientRuntime client, AccessTokenMement mement, String series, String tokenEncoded, long creationTime, OpaqueRefreshToken refreshToken) {
-		this.series = series;
+	RemoteAccessToken(String tokenEncoded, IntroResponse jsonMap) {
 		this.tokenEncoded = tokenEncoded;
-		this.expires = mement.getExpires();
-		expiresIn = (this.expires - System.currentTimeMillis()) / 1000;
-		this.user = mement.getUser();
-		this.refreshToken = refreshToken;
-		this.clientId = client.getMetaData().getName();
-		this.creationTime = creationTime;
+		if (jsonMap.scope != null) {
+			this.grantedScopes = Arrays.asList(jsonMap.scope.split(" "));
+		}
+		this.clientId = jsonMap.client_id;
+		this.sub = jsonMap.sub;
+		if (jsonMap.exp != null) {
+			this.expires = jsonMap.exp;
+			expiresIn = this.expires - (System.currentTimeMillis() / 1000);
+		} else {
+			expiresIn = 1;
+		}
+		if (jsonMap.iat != null) {
+			this.issuedAt = jsonMap.iat;
+		}
+		if (jsonMap.nbf != null) {
+			this.notBefore = jsonMap.nbf;
+		}
+		this.audience = jsonMap.aud;
+		this.issuer = jsonMap.iss;
+		this.username = jsonMap.username;
 		
-		//check scopes is valid
-		grantedScopes = new ArrayList<>();
-		OAuthAuthorizationRuntime server = client.getAuthorizationServer();
-		List<String> scopesByClientType = server.getClientPolicy(client.getMetaData().getClientType()).scopeList();
-		for (String s: mement.getGrantedScopes()) {
-			if (scopesByClientType.contains(s)) {
-				grantedScopes.add(s);
-			}
+		this.user = jsonMap.resource_owner;
+		if (user == null) {
+			user = new User();
+			user.setOid(sub);
+			user.setAccountId(sub);
+			user.setName(username);
 		}
 	}
 	
-	public String getSeries() {
-		return series;
+	public long getExpires() {
+		return expires;
+	}
+
+	public String getAudience() {
+		return audience;
+	}
+
+	public String getIssuer() {
+		return issuer;
+	}
+
+	public String getUsername() {
+		return username;
+	}
+
+	public String getSub() {
+		return sub;
+	}
+	
+	public void setUser(User user) {
+		this.user = user;
 	}
 
 	@Override
@@ -89,7 +120,7 @@ public class OpaqueAccessToken extends AccessToken {
 	
 	@Override
 	public RefreshToken getRefreshToken() {
-		return refreshToken;
+		return null;
 	}
 
 	@Override
@@ -99,17 +130,17 @@ public class OpaqueAccessToken extends AccessToken {
 
 	@Override
 	public long getExpirationTime() {
-		return TimeUnit.MILLISECONDS.toSeconds(expires);
+		return expires;
 	}
 
 	@Override
 	public long getIssuedAt() {
-		return TimeUnit.MILLISECONDS.toSeconds(creationTime);
+		return issuedAt;
 	}
 
 	@Override
 	public long getNotBefore() {
-		return TimeUnit.MILLISECONDS.toSeconds(creationTime);
+		return notBefore;
 	}
 
 }

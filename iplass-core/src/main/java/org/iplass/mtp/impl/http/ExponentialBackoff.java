@@ -82,7 +82,8 @@ public class ExponentialBackoff {
 	}
 
 	/**
-	 * 同期（呼び出しスレッドをブロックして）でExponentialBackoffでfuncを実行する。
+	 * ExponentialBackoffでfuncを実行する。
+	 * リトライ時の待機は呼び出しスレッドをブロックする。
 	 * 処理成功した場合、funcでtrueを返却するようにする。
 	 * 
 	 * @param func

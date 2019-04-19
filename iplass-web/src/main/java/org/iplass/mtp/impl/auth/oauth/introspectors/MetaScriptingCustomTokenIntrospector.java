@@ -103,6 +103,11 @@ public class MetaScriptingCustomTokenIntrospector extends MetaCustomTokenIntrosp
 				return false;
 			}
 		}
+
+		@Override
+		public MetaCustomTokenIntrospector getMetaData() {
+			return MetaScriptingCustomTokenIntrospector.this;
+		}
 		
 	}
 

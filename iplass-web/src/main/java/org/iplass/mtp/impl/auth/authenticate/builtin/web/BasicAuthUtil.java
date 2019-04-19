@@ -61,5 +61,13 @@ public class BasicAuthUtil {
 		
 		return null;
 	}
-
+	
+	public static String encodeValue(IdPasswordCredential idpass) {
+		String str = idpass.getId() + ":" + idpass.getPassword();
+		try {
+			return AUTH_SCHEME_BASIC + " " + Base64.getEncoder().encodeToString(str.getBytes("UTF-8"));
+		} catch (UnsupportedEncodingException e) {
+			throw new IllegalStateException(e);
+		}
+	}
 }

@@ -433,32 +433,37 @@ public class HttpMessageChannel implements MessageChannel, ServiceInitListener<C
 //		}
 //		httpClient = new DefaultHttpClient(new PoolingClientConnectionManager(), clientParams);
 
-		RequestConfig.Builder builder = RequestConfig.custom()
-				.setConnectTimeout(connectionTimeout)
-				.setSocketTimeout(soTimeout);
-		if (proxyHost != null) {
-			builder.setProxy(new HttpHost(proxyHost, proxyPort));
-		}
-		HttpClientBuilder hcBuilder = HttpClientBuilder.create().setDefaultRequestConfig(builder.build());
-		if (poolingMaxTotal != null) {
-			hcBuilder.setMaxConnTotal(poolingMaxTotal);
-		}
-		if (poolingDefaultMaxPerRoute != null) {
-			hcBuilder.setMaxConnPerRoute(poolingDefaultMaxPerRoute);
-		}
-		if (poolingTimeToLive != null) {
-			hcBuilder.setConnectionTimeToLive(poolingTimeToLive.longValue(), TimeUnit.MILLISECONDS);
-		}
 		
-		httpClient = hcBuilder.build();
+		if (serverUrl != null && serverUrl.size() > 0) {
+			RequestConfig.Builder builder = RequestConfig.custom()
+					.setConnectTimeout(connectionTimeout)
+					.setSocketTimeout(soTimeout);
+			if (proxyHost != null) {
+				builder.setProxy(new HttpHost(proxyHost, proxyPort));
+			}
+			HttpClientBuilder hcBuilder = HttpClientBuilder.create().setDefaultRequestConfig(builder.build());
+			if (poolingMaxTotal != null) {
+				hcBuilder.setMaxConnTotal(poolingMaxTotal);
+			}
+			if (poolingDefaultMaxPerRoute != null) {
+				hcBuilder.setMaxConnPerRoute(poolingDefaultMaxPerRoute);
+			}
+			if (poolingTimeToLive != null) {
+				hcBuilder.setConnectionTimeToLive(poolingTimeToLive.longValue(), TimeUnit.MILLISECONDS);
+			}
+			
+			httpClient = hcBuilder.build();
+		}
 	}
 
 	@Override
 	public void destroyed() {
 		try {
-			httpClient.close();
+			if (httpClient != null) {
+				httpClient.close();
+			}
 		} catch (IOException e) {
-			logger.error("", e);
+			logger.error(e.getMessage(), e);
 		}
 		httpClient = null;
 		timer.cancel();

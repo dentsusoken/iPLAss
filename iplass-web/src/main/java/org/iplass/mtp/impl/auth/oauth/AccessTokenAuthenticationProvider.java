@@ -32,7 +32,6 @@ import org.iplass.mtp.impl.auth.authenticate.AuthenticationProviderBase;
 import org.iplass.mtp.impl.auth.authenticate.UserEntityResolver;
 import org.iplass.mtp.impl.auth.authenticate.builtin.policy.AuthenticationPolicyService;
 import org.iplass.mtp.impl.auth.authenticate.builtin.policy.MetaAuthenticationPolicy.AuthenticationPolicyRuntime;
-import org.iplass.mtp.impl.auth.oauth.MetaOAuthClient.OAuthClientRuntime;
 import org.iplass.mtp.impl.auth.oauth.token.AccessToken;
 import org.iplass.mtp.spi.Config;
 import org.iplass.mtp.spi.ServiceRegistry;
@@ -41,7 +40,6 @@ public class AccessTokenAuthenticationProvider extends AuthenticationProviderBas
 	
 	private AccessTokenAccountManagementModule amm = new AccessTokenAccountManagementModule();
 	private OAuthAuthorizationService authorizationService = ServiceRegistry.getRegistry().getService(OAuthAuthorizationService.class);
-	private OAuthClientService clientService = ServiceRegistry.getRegistry().getService(OAuthClientService.class);
 	private AuthenticationPolicyService authPolicyService = ServiceRegistry.getRegistry().getService(AuthenticationPolicyService.class);
 	
 	private Class<? extends Credential> credentialTypeForTrust;
@@ -97,10 +95,6 @@ public class AccessTokenAuthenticationProvider extends AuthenticationProviderBas
 			AccessToken token = authorizationService.getAccessTokenStore().getAccessToken(cre.getToken());
 			if (token == null) {
 				return null;
-			}
-			OAuthClientRuntime client = clientService.getRuntimeByName(token.getClientId());
-			if (client == null) {
-				throw new OAuthRuntimeException("client not found:" + token.getClientId());
 			}
 			
 			if (token.getExpiresIn() <= 0) {

@@ -50,6 +50,8 @@ public abstract class MetaCustomTokenIntrospector implements MetaData {
 	public abstract class CustomTokenIntrospectorRuntime {
 		
 		public abstract boolean handle(Map<String, Object> response, RequestContext request, AccessToken token);
+		
+		public abstract MetaCustomTokenIntrospector getMetaData();
 	}
 
 	public static MetaCustomTokenIntrospector createInstance(CustomTokenIntrospectorDefinition customTokenIntrospector) {

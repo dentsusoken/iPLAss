@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
+ * Copyright (C) 2019 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
  * 
  * Unless you have purchased a commercial license,
  * the following license terms apply:
@@ -17,22 +17,11 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
-package org.iplass.mtp.impl.auth.oauth.token;
+package org.iplass.mtp.impl.auth.oauth.token.remote;
 
-import java.util.List;
+public enum TenantValidationType {
+	NONE,
+	ID,
+	NAME
 
-import org.iplass.mtp.auth.User;
-
-public abstract class AccessToken {
-	
-	public abstract RefreshToken getRefreshToken();
-	public abstract List<String> getGrantedScopes();
-	public abstract String getTokenEncoded();
-	public abstract long getExpiresIn();
-	public abstract User getUser();
-	public abstract String getClientId();
-	public abstract long getExpirationTime();//秒
-	public abstract long getIssuedAt();//秒
-	public abstract long getNotBefore();//秒
-	
 }

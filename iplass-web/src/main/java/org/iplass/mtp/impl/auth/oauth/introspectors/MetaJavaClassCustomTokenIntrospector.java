@@ -86,6 +86,11 @@ public class MetaJavaClassCustomTokenIntrospector extends MetaCustomTokenIntrosp
 		public boolean handle(Map<String, Object> response, RequestContext request, AccessToken token) {
 			return customTokenIntrospector.handle(response, request, token.getUser());
 		}
+
+		@Override
+		public MetaCustomTokenIntrospector getMetaData() {
+			return MetaJavaClassCustomTokenIntrospector.this;
+		}
 		
 	}
 

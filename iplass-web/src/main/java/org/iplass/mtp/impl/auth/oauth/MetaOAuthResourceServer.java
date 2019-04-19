@@ -38,9 +38,13 @@ import org.iplass.mtp.impl.metadata.BaseRootMetaData;
 import org.iplass.mtp.impl.metadata.MetaDataConfig;
 import org.iplass.mtp.impl.util.ObjectUtil;
 import org.iplass.mtp.spi.ServiceRegistry;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class MetaOAuthResourceServer extends BaseRootMetaData implements DefinableMetaData<OAuthResourceServerDefinition> {
 	private static final long serialVersionUID = 1339189788049685788L;
+	
+	private static Logger logger = LoggerFactory.getLogger(MetaOAuthResourceServer.class);
 
 	private List<MetaCustomTokenIntrospector> customTokenIntrospectors;
 
@@ -140,7 +144,7 @@ public class MetaOAuthResourceServer extends BaseRootMetaData implements Definab
 			res.put("sub", accessToken.getUser().getOid());
 			res.put("exp", accessToken.getExpirationTime());
 			res.put("iat", accessToken.getIssuedAt());
-			res.put("nbf", accessToken.getNotbefore());
+			res.put("nbf", accessToken.getNotBefore());
 			res.put("aud", getName());
 			res.put("iss", authServer.issuerId(request));
 
@@ -152,6 +156,9 @@ public class MetaOAuthResourceServer extends BaseRootMetaData implements Definab
 			if (customTokenIntrospectors != null) {
 				for (CustomTokenIntrospectorRuntime ctir: customTokenIntrospectorRuntimes) {
 					if (!ctir.handle(res, request, accessToken)) {
+						if (logger.isDebugEnabled()) {
+							logger.debug("ResourceServer:" + getName() + "'s " + ctir.getMetaData() + " handle fail. accessToken:" + res);
+						}
 						return null;
 					}
 				}
