@@ -565,6 +565,18 @@ public class ReferencePropertyEditor extends PropertyEditor {
 			referenceTypes={FieldReferenceType.SEARCHCONDITION, FieldReferenceType.DETAIL}
 	)
 	private boolean permitConditionSelectAll = true; //デフォルトtrue
+	
+	@MetaFieldInfo(displayName="表示ラベルとして扱うプロパティ",
+			displayNameKey="generic_editor_ReferencePropertyEditor_displayLabelItemDisplaNameKey",
+			inputType=InputType.PROPERTY,
+			description="<b>表示タイプ:Link、Select</b><br>" +
+					"表示ラベルとして扱うプロパティを指定します。",
+			descriptionKey="generic_editor_ReferencePropertyEditor_displayLabelItemDescriptionKey"
+	)
+	@EntityViewField(
+			referenceTypes = {FieldReferenceType.ALL}
+	)
+	private String displayLabelItem;
 
 	/** オブジェクト名 */
 	private String objectName;
@@ -1101,6 +1113,14 @@ public class ReferencePropertyEditor extends PropertyEditor {
 	 */
 	public void setPermitConditionSelectAll(boolean permitConditionSelectAll) {
 	    this.permitConditionSelectAll = permitConditionSelectAll;
+	}
+
+	public String getDisplayLabelItem() {
+		return displayLabelItem;
+	}
+
+	public void setDisplayLabelItem(String displayLabelItem) {
+		this.displayLabelItem = displayLabelItem;
 	}
 
 	/**

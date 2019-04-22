@@ -23,19 +23,49 @@
 
 <%@ page import="org.iplass.mtp.util.StringUtil" %>
 <%@ page import="org.iplass.mtp.web.template.TemplateUtil" %>
+<%@ page import="org.iplass.mtp.entity.Entity" %>
+<%@ page import="org.iplass.mtp.ManagerLocator"%>
+<%@ page import="org.iplass.mtp.view.generic.EntityViewManager"%>
+<%@ page import="org.iplass.mtp.view.generic.editor.PropertyEditor" %>
+<%@ page import="org.iplass.mtp.view.generic.editor.ReferencePropertyEditor"%>
 <%@ page import="org.iplass.gem.command.generic.detail.DetailFormViewData" %>
 <%@ page import="org.iplass.gem.command.Constants"%>
 <%@ page import="org.iplass.gem.command.ViewUtil"%>
 <!DOCTYPE html>
+<%!
+	String getDisplayLabelItem(String defName, String viewName, String propName) {
+		EntityViewManager evm = ManagerLocator.getInstance().getManager(EntityViewManager.class);
+		PropertyEditor editor = evm.getPropertyEditor(defName, "detail", viewName, propName);
+		if (editor != null && editor instanceof ReferencePropertyEditor) {
+			ReferencePropertyEditor rpe = (ReferencePropertyEditor) editor;
+			if (rpe.getDisplayLabelItem() != null) {
+				return rpe.getDisplayLabelItem();
+			}
+		}
+		return null;
+	}
+%>
 <%
 	//データ取得
 	DetailFormViewData data = (DetailFormViewData) request.getAttribute(Constants.DATA);
 	String modalTarget = request.getParameter(Constants.MODAL_TARGET);
+	//参照先エンティティ登録用
+	String parentDefName = request.getParameter(Constants.PARENT_DEFNAME);
+	String parentViewName = request.getParameter(Constants.PARENT_VIEWNAME);
+	String parentPropName = request.getParameter(Constants.PARENT_PROPNAME);
 
 	if (modalTarget == null) modalTarget = "";
 	else modalTarget = StringUtil.escapeHtml(modalTarget);
 
 	String title = ViewUtil.getDispTenantName();
+
+	String dispPropLabel = null;
+	if (StringUtil.isNotBlank(parentDefName) && StringUtil.isNotBlank(parentPropName)) {
+		dispPropLabel = getDisplayLabelItem(parentDefName, parentViewName, parentPropName);
+	}
+	if (dispPropLabel == null) {
+		dispPropLabel = Entity.NAME;
+	}
 %>
 <html>
 <head>
@@ -52,7 +82,7 @@ $(function() {
 	var entity = {
 		oid:"<%=StringUtil.escapeJavaScript(data.getEntity().getOid())%>",
 		version:"<%=data.getEntity().getVersion()%>",
-		name:"<%=StringUtil.escapeJavaScript(data.getEntity().getName())%>"
+		name:"<%=StringUtil.escapeJavaScript((String)data.getEntity().getValue(dispPropLabel))%>"
 	};
 	var func = null;
 	var windowManager = document.rootWindow.scriptContext["windowManager"];

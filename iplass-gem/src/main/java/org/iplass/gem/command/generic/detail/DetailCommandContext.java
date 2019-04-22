@@ -436,6 +436,22 @@ public class DetailCommandContext extends RegistrationCommandContext {
 		return false;
 	}
 
+	@Override
+	public List<String> getReferenceEntityDisplayProperty(String refPropName) {
+		PropertyDefinition pd = getProperty(refPropName);
+		if (pd instanceof ReferenceProperty) {
+			// 参照プロパティのプロパティエディタで表示ラベルとして扱う項目を設定すれば、返す。
+			return getProperty().stream()
+					.filter(pi -> refPropName.equals(pi.getPropertyName()))
+					.map(pi -> pi.getEditor()).filter(e -> e instanceof ReferencePropertyEditor).map(e -> (ReferencePropertyEditor) e)
+					// TODO 表示タイプ：LINK、SELECTでの利用をサポートします。
+					.filter(rpe -> rpe.getDisplayType() == ReferenceDisplayType.LINK || rpe.getDisplayType() == ReferenceDisplayType.SELECT)
+					.filter(rpe -> rpe.getDisplayLabelItem() != null).map(rpe -> rpe.getDisplayLabelItem())
+					.collect(Collectors.toList());
+		}
+		return null;
+	}
+
 	/**
 	 * リクエストから検索条件を取得します。
 	 * @return 検索条件
