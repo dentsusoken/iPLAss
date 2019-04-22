@@ -28,13 +28,17 @@ import java.util.Map;
 import org.iplass.adminconsole.client.base.event.DataChangedEvent;
 import org.iplass.adminconsole.client.base.event.DataChangedHandler;
 import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
-import org.iplass.adminconsole.client.base.ui.widget.AbstractWindow;
+import org.iplass.adminconsole.client.base.ui.widget.MetaDataLangTextItem;
+import org.iplass.adminconsole.client.base.ui.widget.MtpDialog;
 import org.iplass.adminconsole.client.base.ui.widget.ScriptEditorDialogHandler;
 import org.iplass.adminconsole.client.base.ui.widget.ScriptEditorDialogMode;
+import org.iplass.adminconsole.client.base.ui.widget.form.MtpForm;
+import org.iplass.adminconsole.client.base.ui.widget.form.MtpSelectItem;
+import org.iplass.adminconsole.client.base.ui.widget.form.MtpTextAreaItem;
+import org.iplass.adminconsole.client.base.ui.widget.form.MtpTextItem;
 import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
 import org.iplass.adminconsole.client.metadata.data.tenant.TenantDS;
 import org.iplass.adminconsole.client.metadata.ui.MetaDataUtil;
-import org.iplass.adminconsole.client.metadata.ui.common.LocalizedStringSettingDialog;
 import org.iplass.mtp.definition.LocalizedStringDefinition;
 
 import com.google.gwt.core.client.JavaScriptObject;
@@ -57,16 +61,13 @@ import com.smartgwt.client.widgets.form.fields.RadioGroupItem;
 import com.smartgwt.client.widgets.form.fields.SelectItem;
 import com.smartgwt.client.widgets.form.fields.TextAreaItem;
 import com.smartgwt.client.widgets.form.fields.TextItem;
-import com.smartgwt.client.widgets.form.validator.RequiredIfFunction;
-import com.smartgwt.client.widgets.form.validator.RequiredIfValidator;
 import com.smartgwt.client.widgets.layout.HLayout;
-import com.smartgwt.client.widgets.layout.VLayout;
 
 /**
  * テナントプロパティ編集ダイアログ
  *
  */
-public class TenantPropertyEditDialog extends AbstractWindow {
+public class TenantPropertyEditDialog extends MtpDialog {
 
 	/** 対象レコード */
 	private Record record;
@@ -78,56 +79,19 @@ public class TenantPropertyEditDialog extends AbstractWindow {
 	private FormItem valueField;
 	private FormItem[] valueFields;
 
-	private List<LocalizedStringDefinition> localizedStringList;
+//	private List<LocalizedStringDefinition> localizedStringList;
 
 	public TenantPropertyEditDialog(Record record) {
 
 		this.record = record;
 
 		setTitle(record.getAttribute("title"));
-		setShowMinimizeButton(false);
-		setIsModal(true);
-		setShowModalMask(true);
-		setAutoCenter(true);
-		centerInPage();
-
-		HLayout header = new HLayout(5);
-		header.setHeight(20);
-		header.setWidth100();
-		//header.setAlign(Alignment.LEFT);
-		header.setAlign(VerticalAlignment.CENTER);
-
-		final Label errors = new Label(AdminClientMessageUtil.getString("ui_metadata_tenant_TenantPropertyEditDialog_errorExists"));
-		errors.setHeight(30);
-		errors.setPadding(10);
-		errors.setAlign(Alignment.LEFT);
-		errors.setWrap(false);
-		errors.setIcon("exclamation.png");
-		errors.setVisible(false);
-
-		header.setMembers(errors);
-
-		RequiredIfValidator requiredValidator = new RequiredIfValidator(
-			new RequiredIfFunction() {
-
-				@Override
-				public boolean execute(FormItem formItem, Object value) {
-					return value == null || value.toString().isEmpty();
-				}
-			});
-		//TODO YK ロケールを設定すればデフォルトでOK
-		requiredValidator.setErrorMessage(AdminClientMessageUtil.getString("ui_metadata_tenant_TenantPropertyEditDialog_requiredField"));
-
-		VLayout contents = new VLayout(5);
-		//contents.setAlign(VerticalAlignment.CENTER);
-		contents.setAlign(Alignment.CENTER);
 
 		final DynamicForm form = createForm(record);
-		contents.addMember(form);
+		container.addMember(form);
 
-		HLayout help = null;
 		if (record.getAttribute("helpText") != null) {
-			help = new HLayout(5);
+			HLayout help = new HLayout(5);
 			help.setHeight(20);
 			help.setWidth100();
 			help.setAlign(VerticalAlignment.CENTER);
@@ -140,23 +104,15 @@ public class TenantPropertyEditDialog extends AbstractWindow {
 			helpText.setWrap(false);
 
 			help.setMembers(helpText);
-		}
 
-		HLayout footer = new HLayout(5);
-		footer.setMargin(5);
-		footer.setHeight(20);
-		footer.setWidth100();
-		//footer.setAlign(Alignment.LEFT);
-		footer.setAlign(VerticalAlignment.CENTER);	//setAutoSize(true）にしたタイミングで効かなくなった
+			container.addMember(help);
+		}
 
 		IButton ok = new IButton("OK");
 		ok.addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
 				if (form.validate()){
-					errors.setVisible(false);
 					setValue();
-				} else {
-					errors.setVisible(true);
 				}
 			}
 		});
@@ -170,10 +126,7 @@ public class TenantPropertyEditDialog extends AbstractWindow {
 
 		footer.setMembers(ok, cancel);
 
-		addItem(header);
-		addItem(contents);
-		if (help != null) addItem(help);
-		addItem(footer);
+		centerInPage();
 	}
 
 	/**
@@ -192,59 +145,35 @@ public class TenantPropertyEditDialog extends AbstractWindow {
 	@SuppressWarnings("unchecked")
 	private DynamicForm createForm(Record record) {
 
-		setAutoSize(true);
-
-		final DynamicForm form = new DynamicForm();
+		final DynamicForm form = new MtpForm();
 		form.setAutoFocus(true);
-		form.setMargin(10);
-		form.setWidth100();
-
-		form.setWrapItemTitles(false);
 
 		TenantDS.ColType type = (TenantDS.ColType)record.getAttributeAsObject("colType");
 		String name = record.getAttribute("name");
 		String title = record.getAttribute("title");
 
 		if (TenantDS.ColType.STRING.equals(type)) {
-			TextItem textItem = new TextItem(name, title);
-			textItem.setValue(record.getAttributeAsString("value"));
-			textItem.setWidth(300);
-			valueField = textItem;
+			setHeight(200);
 
+			TextItem textItem = null;
 			if ("displayName".equals(name) || "passwordPatternErrorMessage".equals(name)) {
+				MetaDataLangTextItem langItem = new MetaDataLangTextItem();
+				langItem.setName(name);
+				langItem.setTitle(title);
+				langItem.setValue(record.getAttributeAsString("value"));
 
-				if (record.getAttributeAsObject("localizedStringList") != null) {
-					localizedStringList = (List<LocalizedStringDefinition>)JSOHelper.convertToJava((JavaScriptObject)record.getAttributeAsObject("localizedStringList"));
-				}
-
-				ButtonItem langBtn;
-				langBtn = new ButtonItem("addDisplayName", "Languages");
-				langBtn.setShowTitle(false);
-				langBtn.setIcon("world.png");
-				langBtn.setStartRow(false);	//これを指定しないとButtonの場合、先頭にくる
-				langBtn.setEndRow(false);	//これを指定しないと次のFormItemが先頭にいく
-				langBtn.setPrompt(AdminClientMessageUtil.getString("ui_metadata_tenant_TenantPropertyEditDialog_eachLangDspName"));
-				langBtn.addClickHandler(new com.smartgwt.client.widgets.form.fields.events.ClickHandler() {
-
-					@Override
-					public void onClick(com.smartgwt.client.widgets.form.fields.events.ClickEvent event) {
-
-						if (localizedStringList == null) {
-							localizedStringList = new ArrayList<LocalizedStringDefinition>();
-						}
-						LocalizedStringSettingDialog dialog = new LocalizedStringSettingDialog(localizedStringList);
-						dialog.show();
-
-					}
-				});
-				form.setNumCols(4);	//間延びしないように最後に１つ余分に作成
-				form.setColWidths(100, "*", 100, "*");
-				form.setItems(textItem, langBtn);
+				List<LocalizedStringDefinition> localizedStringList = (List<LocalizedStringDefinition>)JSOHelper.convertToJava((JavaScriptObject)record.getAttributeAsObject("localizedStringList"));
+				langItem.setLocalizedList(localizedStringList);
+				textItem = langItem;
 			} else {
-				form.setItems(textItem);
+				textItem = new MtpTextItem(name, title);
+				textItem.setValue(record.getAttributeAsString("value"));
 			}
-
+			form.setItems(textItem);
+			valueField = textItem;
 		} else if (TenantDS.ColType.INTEGER.equals(type)) {
+			setHeight(200);
+
 			IntegerItem textItem = new IntegerItem(name, title);
 			textItem.setValue(record.getAttributeAsInt("value"));
 			textItem.setWidth(100);
@@ -253,7 +182,10 @@ public class TenantPropertyEditDialog extends AbstractWindow {
 
 			valueField = textItem;
 			form.setItems(textItem);
+
 		} else if (TenantDS.ColType.DATE.equals(type)) {
+			setHeight(200);
+
 			DateItem dateItem = SmartGWTUtil.createDateItem();
 			dateItem.setName(name);
 			dateItem.setTitle(title);
@@ -265,12 +197,16 @@ public class TenantPropertyEditDialog extends AbstractWindow {
 			valueField = dateItem;
 			form.setItems(dateItem);
 		} else if (TenantDS.ColType.PASSWORD.equals(type)) {
+			setHeight(200);
+
 			PasswordItem passwdItem = new PasswordItem(name, title);
-			passwdItem.setWidth(300);
+			passwdItem.setWidth("100%");
 			passwdItem.setValue(record.getAttributeAsString("value"));
 			valueField = passwdItem;
 			form.setItems(passwdItem);
 		} else if (TenantDS.ColType.BOOLEAN.equals(type)) {
+			setHeight(200);
+
 			RadioGroupItem radioGroupItem = new RadioGroupItem();
 			radioGroupItem.setTitle(title);
 			radioGroupItem.setWrap(false);
@@ -282,7 +218,11 @@ public class TenantPropertyEditDialog extends AbstractWindow {
 			radioGroupItem.setValue(record.getAttributeAsBoolean("value").toString());
 			valueField = radioGroupItem;
 			form.setItems(radioGroupItem);
+			//一部タイトルが長いものがあるので設定
+			form.setWrapItemTitles(false);
 		} else if (TenantDS.ColType.SELECTRADIO.equals(type)) {
+			setHeight(200);
+
 			RadioGroupItem radioGroupItem = new RadioGroupItem();
 			radioGroupItem.setTitle(title);
 			radioGroupItem.setWrap(false);
@@ -294,6 +234,8 @@ public class TenantPropertyEditDialog extends AbstractWindow {
 			radioGroupItem.setValue(record.getAttributeAsString("value"));
 			valueField = radioGroupItem;
 			form.setItems(radioGroupItem);
+			//一部タイトルが長いものがあるので設定
+			form.setWrapItemTitles(false);
 		} else if (TenantDS.ColType.SELECTCHECKBOX.equals(type)) {
 
 			//RecordからはLinkedHashMapは取得できないため、一度Mapで取得後変換（並び順が指定できない）
@@ -318,13 +260,14 @@ public class TenantPropertyEditDialog extends AbstractWindow {
 				cnt ++;
 //				valueField = checkboxItemItem;
 			}
-
 			form.setItems(items);
 
+			setHeight(180 + 20 * cnt);
 		} else if (TenantDS.ColType.SELECTCOMBO.equals(type)) {
-			SelectItem selectItem = new SelectItem();
+			setHeight(200);
+
+			SelectItem selectItem = new MtpSelectItem();
 			selectItem.setTitle(title);
-			selectItem.setWidth(300);
 			//RecordからはLinkedHashMapは取得できないため、一度Mapで取得後変換（並び順が指定できない）
 			Map<String, String> valueMap = record.getAttributeAsMap("selectItem");
 			LinkedHashMap<String, String> setMap = new LinkedHashMap<String, String>(valueMap.size());
@@ -350,6 +293,8 @@ public class TenantPropertyEditDialog extends AbstractWindow {
 
 	private void createScriptDialog(DynamicForm form, TenantDS.ColType colType) {
 
+		setHeight(500);
+
 		final ScriptEditorDialogMode editorMode;
 
 		if (colType == TenantDS.ColType.GROOVYTEMPLATE) {
@@ -358,16 +303,15 @@ public class TenantPropertyEditDialog extends AbstractWindow {
 			editorMode = ScriptEditorDialogMode.GROOVY_SCRIPT;
 		}
 
-		final TextAreaItem sourceField = new TextAreaItem("source", "Script");
+		final TextAreaItem sourceField = new MtpTextAreaItem("source", "Script");
 		sourceField.setColSpan(2);
-		sourceField.setWidth("100%");
-		sourceField.setHeight(300);
+		sourceField.setHeight("100%");
 		sourceField.setValue(record.getAttributeAsString("value"));
 		SmartGWTUtil.setReadOnlyTextArea(sourceField);
+		valueField = sourceField;
 
 		ButtonItem editScript = new ButtonItem("editScript", AdminClientMessageUtil.getString("ui_metadata_tenant_TenantPropertyEditDialog_editScript"));
 		editScript.setWidth(100);
-		editScript.setStartRow(false);
 		editScript.setColSpan(3);
 		editScript.setAlign(Alignment.RIGHT);
 		editScript.setPrompt(AdminClientMessageUtil.getString("ui_metadata_tenant_TenantPropertyEditDialog_dispScriptEditDialog"));
@@ -392,16 +336,8 @@ public class TenantPropertyEditDialog extends AbstractWindow {
 						});
 			}
 		});
-		valueField = sourceField;
 
-
-		form.setMargin(5);
-		form.setNumCols(2);
-		form.setWidth(500);
-		form.setColWidths(100, "*");
 		form.setHeight100();
-		form.setAlign(Alignment.LEFT);
-
 		form.setItems(editScript, sourceField);
 	}
 
@@ -473,7 +409,7 @@ public class TenantPropertyEditDialog extends AbstractWindow {
 			record.setAttribute("displayValue", valueField.getValue());
 
 			if ("displayName".equals(valueField.getName()) || "passwordPatternErrorMessage".equals(valueField.getName())) {
-				record.setAttribute("localizedStringList", localizedStringList);
+				record.setAttribute("localizedStringList", ((MetaDataLangTextItem)valueField).getLocalizedList());
 			}
 		}
 

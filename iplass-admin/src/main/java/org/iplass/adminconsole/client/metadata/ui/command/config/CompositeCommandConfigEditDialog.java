@@ -27,15 +27,18 @@ import java.util.List;
 import org.iplass.adminconsole.client.base.event.DataChangedEvent;
 import org.iplass.adminconsole.client.base.event.DataChangedHandler;
 import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
-import org.iplass.adminconsole.client.base.ui.widget.AbstractWindow;
+import org.iplass.adminconsole.client.base.ui.widget.MtpDialog;
 import org.iplass.adminconsole.client.base.ui.widget.ScriptEditorDialogCondition;
 import org.iplass.adminconsole.client.base.ui.widget.ScriptEditorDialogHandler;
 import org.iplass.adminconsole.client.base.ui.widget.ScriptEditorDialogMode;
+import org.iplass.adminconsole.client.base.ui.widget.form.MtpForm;
+import org.iplass.adminconsole.client.base.ui.widget.form.MtpSelectItem;
+import org.iplass.adminconsole.client.base.ui.widget.form.MtpTextAreaItem;
 import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
 import org.iplass.adminconsole.client.metadata.ui.MetaDataUtil;
 import org.iplass.mtp.transaction.Propagation;
 
-import com.smartgwt.client.types.VerticalAlignment;
+import com.smartgwt.client.types.Alignment;
 import com.smartgwt.client.widgets.IButton;
 import com.smartgwt.client.widgets.events.ClickEvent;
 import com.smartgwt.client.widgets.events.ClickHandler;
@@ -43,11 +46,9 @@ import com.smartgwt.client.widgets.form.DynamicForm;
 import com.smartgwt.client.widgets.form.fields.ButtonItem;
 import com.smartgwt.client.widgets.form.fields.CheckboxItem;
 import com.smartgwt.client.widgets.form.fields.SelectItem;
-import com.smartgwt.client.widgets.form.fields.SpacerItem;
 import com.smartgwt.client.widgets.form.fields.TextAreaItem;
-import com.smartgwt.client.widgets.layout.HLayout;
 
-public class CompositeCommandConfigEditDialog extends AbstractWindow {
+public class CompositeCommandConfigEditDialog extends MtpDialog {
 
 	private SelectItem transactionPropagationField;
 	private CheckboxItem rollbackWhenExceptionField;
@@ -64,17 +65,14 @@ public class CompositeCommandConfigEditDialog extends AbstractWindow {
 
 	public CompositeCommandConfigEditDialog(boolean isMin) {
 
-		setWidth(500);
 		setTitle("Composite Command Config");
-		setShowMinimizeButton(false);
 		setShowMaximizeButton(true);	//最大化は可能に設定（スクリプト編集用）
-		setCanDragResize(true);			//リサイズは可能に設定（スクリプト編集用）
-		setIsModal(true);
-		setShowModalMask(true);
+		centerInPage();
 
 		ButtonItem initScript = new ButtonItem("editScript1", "Edit");
 		initScript.setWidth(100);
-		initScript.setStartRow(false);
+		initScript.setColSpan(3);
+		initScript.setAlign(Alignment.RIGHT);
 		initScript.setPrompt(SmartGWTUtil.getHoverString(AdminClientMessageUtil.getString("ui_metadata_command_config_CompositeCommandConfigEditDialog_dispEditDialogInitScript")));
 		initScript.addClickHandler(new com.smartgwt.client.widgets.form.fields.events.ClickHandler() {
 
@@ -98,14 +96,15 @@ public class CompositeCommandConfigEditDialog extends AbstractWindow {
 			}
 		});
 
-		initScriptField = new TextAreaItem("initScript", "Initialize Script");
+		initScriptField = new MtpTextAreaItem("initScript", "Initialize Script");
 		initScriptField.setColSpan(2);
-		initScriptField.setWidth("100%");
 		initScriptField.setHeight("100%");
+		SmartGWTUtil.setReadOnlyTextArea(initScriptField);
 
 		ButtonItem editScript = new ButtonItem("editScript2", "Edit");
 		editScript.setWidth(100);
-		editScript.setStartRow(false);
+		editScript.setColSpan(3);
+		editScript.setAlign(Alignment.RIGHT);
 		editScript.setPrompt(SmartGWTUtil.getHoverString(AdminClientMessageUtil.getString("ui_metadata_command_config_CompositeCommandConfigEditDialog_displayDialogEditExecuteRuleScript")));
 		editScript.addClickHandler(new com.smartgwt.client.widgets.form.fields.events.ClickHandler() {
 
@@ -129,33 +128,24 @@ public class CompositeCommandConfigEditDialog extends AbstractWindow {
 			}
 		});
 
-		execScriptField = new TextAreaItem("execScript", "Execute Rule Script");
+		execScriptField = new MtpTextAreaItem("execScript", "Execute Rule Script");
 		execScriptField.setColSpan(2);
-		execScriptField.setWidth("100%");
 		execScriptField.setHeight("100%");
+		SmartGWTUtil.setReadOnlyTextArea(execScriptField);
 
-		final DynamicForm form1 = new DynamicForm();
-		form1.setNumCols(3);
-		form1.setColWidths(100, "*", 100);
-		form1.setMargin(5);
+		final DynamicForm form1 = new MtpForm();
 		form1.setHeight(66);
-		form1.setWidth100();
 
-		final DynamicForm form2 = new DynamicForm();
-		form2.setNumCols(3);
-		form2.setColWidths(100, "*", 100);
-		form2.setMargin(5);
-		form2.setHeight(330);
-		form2.setWidth100();
-		form2.setItems(new SpacerItem(), new SpacerItem(), initScript, initScriptField, new SpacerItem(), new SpacerItem(), editScript, execScriptField);
+		final DynamicForm form2 = new MtpForm();
+		form2.setHeight100();
+		form2.setItems(initScript, initScriptField, editScript, execScriptField);
 
 		if (isMin) {
 			setHeight(400);
 		} else {
 			setHeight(490);
 
-			transactionPropagationField = new SelectItem("transactionPropagation", "Transaction Propagation");
-			transactionPropagationField.setWidth(250);
+			transactionPropagationField = new MtpSelectItem("transactionPropagation", "Transaction Propagation");
 			HashMap<String, String> valueMap = new HashMap<>();
 			for (Propagation propagation : Propagation.values()) {
 				valueMap.put(propagation.name(), propagation.name());
@@ -172,6 +162,10 @@ public class CompositeCommandConfigEditDialog extends AbstractWindow {
 			form1.setItems(transactionPropagationField, rollbackWhenExceptionField, throwExceptionIfSetRollbackOnlyField);
 		}
 
+		if (form1.getFieldCount() > 0) {
+			container.addMember(form1);
+		}
+		container.addMember(form2);
 
 		IButton save = new IButton("OK");
 		save.addClickHandler(new ClickHandler() {
@@ -180,8 +174,6 @@ public class CompositeCommandConfigEditDialog extends AbstractWindow {
 				boolean isValidate2 = form2.validate();
 				if (isValidate1 && isValidate2){
 					saveExecScript();
-				} else {
-//					errors.setVisible(true);
 				}
 			}
 		});
@@ -193,22 +185,8 @@ public class CompositeCommandConfigEditDialog extends AbstractWindow {
 			}
 		});
 
-		HLayout footer = new HLayout(5);
-		footer.setMargin(5);
-		footer.setHeight(20);
-		footer.setWidth100();
-		//footer.setAlign(Alignment.LEFT);
-		footer.setAlign(VerticalAlignment.CENTER);
 		footer.setMembers(save, cancel);
 
-		if (form1.getFieldCount() > 0) addItem(form1);
-		addItem(form2);
-		addItem(footer);
-
-		centerInPage();
-
-		SmartGWTUtil.setReadOnlyTextArea(initScriptField);
-		SmartGWTUtil.setReadOnlyTextArea(execScriptField);
 	}
 
 	public void setExecScript(String execScript) {

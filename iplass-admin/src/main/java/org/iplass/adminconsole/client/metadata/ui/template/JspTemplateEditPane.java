@@ -1,25 +1,27 @@
 /*
  * Copyright (C) 2011 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
- * 
+ *
  * Unless you have purchased a commercial license,
  * the following license terms apply:
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
 package org.iplass.adminconsole.client.metadata.ui.template;
 
+import org.iplass.adminconsole.client.base.ui.widget.form.MtpForm;
+import org.iplass.adminconsole.client.base.ui.widget.form.MtpTextItem;
 import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
 import org.iplass.mtp.definition.LocalizedStringDefinition;
 import org.iplass.mtp.web.template.definition.JspTemplateDefinition;
@@ -41,22 +43,13 @@ public class JspTemplateEditPane extends TemplateTypeEditPane implements HasEdit
 	 */
 	public JspTemplateEditPane() {
 
-		//レイアウト設定
 		setWidth100();
-		setMargin(5);
 
 		//入力部分
-		form = new DynamicForm();
+		form = new MtpForm();
 		form.setWidth100();
-//		form.setNumCols(5);	//間延びしないように最後に１つ余分に作成
-//		form.setColWidths(100, "*", 100, "*", "*");
-		form.setNumCols(3);	//間延びしないように最後に１つ余分に作成
-		form.setColWidths(100, "*", "*");
-		form.setMargin(5);
 
-		pathField = new TextItem("path", "Path");
-		pathField.setWidth("100%");
-		pathField.setColSpan(2);
+		pathField = new MtpTextItem("path", "Path");
 		SmartGWTUtil.setRequired(pathField);
 
 		form.setItems(pathField);

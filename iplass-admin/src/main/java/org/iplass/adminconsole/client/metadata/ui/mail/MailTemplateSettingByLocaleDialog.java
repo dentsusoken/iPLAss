@@ -29,10 +29,11 @@ import org.iplass.adminconsole.client.base.event.DataChangedEvent;
 import org.iplass.adminconsole.client.base.event.DataChangedHandler;
 import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
 import org.iplass.adminconsole.client.base.tenant.TenantInfoHolder;
-import org.iplass.adminconsole.client.base.ui.widget.AbstractWindow;
+import org.iplass.adminconsole.client.base.ui.widget.MtpDialog;
 import org.iplass.adminconsole.client.base.ui.widget.ScriptEditorPane;
+import org.iplass.adminconsole.client.base.ui.widget.form.MtpForm2Column;
+import org.iplass.adminconsole.client.base.ui.widget.form.MtpTextItem;
 import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
-import org.iplass.adminconsole.shared.metadata.dto.MetaDataConstants;
 import org.iplass.adminconsole.shared.metadata.rpc.MetaDataServiceAsync;
 import org.iplass.adminconsole.shared.metadata.rpc.MetaDataServiceFactory;
 import org.iplass.gwt.ace.client.EditorMode;
@@ -47,12 +48,11 @@ import com.smartgwt.client.widgets.form.DynamicForm;
 import com.smartgwt.client.widgets.form.fields.SelectItem;
 import com.smartgwt.client.widgets.form.fields.SpacerItem;
 import com.smartgwt.client.widgets.form.fields.TextItem;
-import com.smartgwt.client.widgets.layout.HLayout;
 import com.smartgwt.client.widgets.layout.VLayout;
 import com.smartgwt.client.widgets.tab.Tab;
 import com.smartgwt.client.widgets.tab.TabSet;
 
-public class MailTemplateSettingByLocaleDialog extends AbstractWindow {
+public class MailTemplateSettingByLocaleDialog extends MtpDialog {
 
 	private LocalizedMailTemplateAttributePane localizedMainPane;
 
@@ -69,23 +69,32 @@ public class MailTemplateSettingByLocaleDialog extends AbstractWindow {
 			curLocalizedDefinition = new LocalizedMailTemplateDefinition();
 		}
 
-		localizedMainPane = new LocalizedMailTemplateAttributePane();
-
 		setTitle("Multilingual Setting Dialog");
-		setHeight100();
-		setWidth(800);
-		setMargin(10);
-		setMembersMargin(10);
-		setShowMinimizeButton(false);
-		setIsModal(true);
-		setShowModalMask(true);
+		setHeight("80%");
 		centerInPage();
 
-		OperationPane opePane = new OperationPane(this);
-
+		localizedMainPane = new LocalizedMailTemplateAttributePane();
 		localizedMainPane.setHeight100();
-		addItem(localizedMainPane);
-		addItem(opePane);
+		container.addMember(localizedMainPane);
+
+		IButton save = new IButton("Save");
+		save.addClickHandler(new com.smartgwt.client.widgets.events.ClickHandler() {
+			public void onClick(com.smartgwt.client.widgets.events.ClickEvent event) {
+				LocalizedMailTemplateDefinition definition = curLocalizedDefinition;
+
+				definition = localizedMainPane.getEditDefinition(curLocalizedDefinition);
+				fireDataChanged(definition);
+				destroy();
+			}
+		});
+
+		IButton cancel = new IButton("Cancel");
+		cancel.addClickHandler(new com.smartgwt.client.widgets.events.ClickHandler() {
+			public void onClick(com.smartgwt.client.widgets.events.ClickEvent event) {
+				destroy();
+			}
+		});
+		footer.setMembers(save, cancel);
 	}
 
 	private class LocalizedMailTemplateAttributePane extends VLayout {
@@ -103,7 +112,6 @@ public class MailTemplateSettingByLocaleDialog extends AbstractWindow {
 		private ScriptEditorPane htmlEditor;
 
 		public LocalizedMailTemplateAttributePane() {
-			setOverflow(Overflow.AUTO);	//Stack上の表示領域が小さい場合にスクロールができるようにAUTO設定
 
 			MetaDataServiceAsync service = MetaDataServiceFactory.get();
 			service.getEnableLanguages(TenantInfoHolder.getId(), new AsyncCallback<Map<String, String>>() {
@@ -121,29 +129,19 @@ public class MailTemplateSettingByLocaleDialog extends AbstractWindow {
 						enableLanguagesMap.put(e.getKey(), e.getValue());
 					}
 
+					form = new MtpForm2Column();
+
 					langSelectItem = new SelectItem("language", "Language");
 					langSelectItem.setValueMap(enableLanguagesMap);
 
-					VLayout mainPane = new VLayout();
-					mainPane.setMargin(5);
-
-					form = new DynamicForm();
-					form.setWidth100();
-					form.setNumCols(5);	//間延びしないように最後に１つ余分に作成
-					form.setColWidths(100, "*", 100, "*", "*");
-
-					subjectField = new TextItem("subject", AdminClientMessageUtil.getString("ui_metadata_mail_MailTemplateSettingByLocaleDialog_subject"));
-					//subjectField.setWidth(MetaDataConstants.DEFAULT_FORM_ITEM_WIDTH);
-					subjectField.setWidth("100%");
-					subjectField.setColSpan(4);
+					subjectField = new MtpTextItem("subject", AdminClientMessageUtil.getString("ui_metadata_mail_MailTemplateSettingByLocaleDialog_subject"));
+					subjectField.setColSpan(3);
 					SmartGWTUtil.setRequired(subjectField);
 
-					charsetField = new TextItem("charset", AdminClientMessageUtil.getString("ui_metadata_mail_MailTemplateSettingByLocaleDialog_charaCode"));
-					charsetField.setWidth(MetaDataConstants.DEFAULT_FORM_ITEM_WIDTH);
+					charsetField = new MtpTextItem("charset", AdminClientMessageUtil.getString("ui_metadata_mail_MailTemplateSettingByLocaleDialog_charaCode"));
 					charsetField.setStartRow(true);
 
-					htmlCharsetField = new TextItem("htmlCharset", AdminClientMessageUtil.getString("ui_metadata_mail_MailTemplateSettingByLocaleDialog_htmlCharaCode"));
-					htmlCharsetField.setWidth(MetaDataConstants.DEFAULT_FORM_ITEM_WIDTH);
+					htmlCharsetField = new MtpTextItem("htmlCharset", AdminClientMessageUtil.getString("ui_metadata_mail_MailTemplateSettingByLocaleDialog_htmlCharaCode"));
 
 					form.setItems(langSelectItem, subjectField, charsetField, htmlCharsetField, new SpacerItem());
 
@@ -172,15 +170,11 @@ public class MailTemplateSettingByLocaleDialog extends AbstractWindow {
 					htmlMessageTab.setPane(htmlEditor);
 					massageTabSet.addTab(htmlMessageTab);
 
-					mainPane.addMember(form);
-					mainPane.addMember(massageTabSet);
-
-					addMember(mainPane);
+					addMember(form);
+					addMember(massageTabSet);
 
 					setDefinition(curLocalizedDefinition);
-
 				}
-
 			});
 
 		}
@@ -269,36 +263,6 @@ public class MailTemplateSettingByLocaleDialog extends AbstractWindow {
 			} else {
 				target.setTitle(title);
 			}
-		}
-	}
-
-	private class OperationPane extends HLayout {
-		public OperationPane(final MailTemplateSettingByLocaleDialog dialog) {
-			HLayout footer = new HLayout(5);
-			footer.setMargin(10);
-			footer.setWidth100();
-
-			IButton save = new IButton("Save");
-			save.addClickHandler(new com.smartgwt.client.widgets.events.ClickHandler() {
-				public void onClick(com.smartgwt.client.widgets.events.ClickEvent event) {
-					LocalizedMailTemplateDefinition definition = curLocalizedDefinition;
-
-					definition = localizedMainPane.getEditDefinition(curLocalizedDefinition);
-					fireDataChanged(definition);
-					dialog.destroy();
-				}
-			});
-
-			IButton cancel = new IButton("Cancel");
-			cancel.addClickHandler(new com.smartgwt.client.widgets.events.ClickHandler() {
-				public void onClick(com.smartgwt.client.widgets.events.ClickEvent event) {
-					dialog.destroy();
-				}
-			});
-
-			footer.setMembers(save, cancel);
-
-			addMember(footer);
 		}
 	}
 

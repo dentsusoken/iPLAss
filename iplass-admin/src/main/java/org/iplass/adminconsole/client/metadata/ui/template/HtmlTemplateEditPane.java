@@ -1,19 +1,19 @@
 /*
  * Copyright (C) 2011 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
- * 
+ *
  * Unless you have purchased a commercial license,
  * the following license terms apply:
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
@@ -24,6 +24,7 @@ import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
 import org.iplass.adminconsole.client.base.ui.widget.ScriptEditorDialogCondition;
 import org.iplass.adminconsole.client.base.ui.widget.ScriptEditorDialogHandler;
 import org.iplass.adminconsole.client.base.ui.widget.ScriptEditorDialogMode;
+import org.iplass.adminconsole.client.base.ui.widget.form.MtpForm;
 import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
 import org.iplass.adminconsole.client.metadata.ui.MetaDataUtil;
 import org.iplass.mtp.definition.LocalizedStringDefinition;
@@ -33,7 +34,6 @@ import org.iplass.mtp.web.template.definition.TemplateDefinition;
 import com.smartgwt.client.types.Alignment;
 import com.smartgwt.client.widgets.form.DynamicForm;
 import com.smartgwt.client.widgets.form.fields.ButtonItem;
-import com.smartgwt.client.widgets.form.fields.SpacerItem;
 import com.smartgwt.client.widgets.form.fields.TextAreaItem;
 import com.smartgwt.client.widgets.form.fields.events.ClickEvent;
 import com.smartgwt.client.widgets.form.fields.events.ClickHandler;
@@ -51,17 +51,10 @@ public class HtmlTemplateEditPane extends TemplateTypeEditPane implements HasEdi
 	 */
 	public HtmlTemplateEditPane() {
 
-		//レイアウト設定
 		setWidth100();
-		setMargin(5);
 
-		//入力部分
-		form = new DynamicForm();
-		form.setWidth100();
+		form = new MtpForm();
 		form.setHeight100();
-		form.setNumCols(3);
-		form.setColWidths(100, "*", "*");
-		form.setMargin(5);
 
 		ButtonItem editScript = new ButtonItem("editScript", "Edit");
 		editScript.setWidth(100);
@@ -96,13 +89,12 @@ public class HtmlTemplateEditPane extends TemplateTypeEditPane implements HasEdi
 		sourceField.setWidth("100%");
 		sourceField.setHeight("100%");
 		SmartGWTUtil.setRequired(sourceField);
+		SmartGWTUtil.setReadOnlyTextArea(sourceField);
 
-		form.setItems(new SpacerItem(), new SpacerItem(), editScript, sourceField);
+		form.setItems(editScript, sourceField);
 
 		//配置
 		addMember(form);
-
-		SmartGWTUtil.setReadOnlyTextArea(sourceField);
 	}
 
 	@Override

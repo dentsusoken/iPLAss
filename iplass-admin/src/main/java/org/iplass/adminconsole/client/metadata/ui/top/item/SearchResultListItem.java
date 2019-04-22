@@ -28,10 +28,11 @@ import org.iplass.adminconsole.client.base.event.DataChangedEvent;
 import org.iplass.adminconsole.client.base.event.DataChangedHandler;
 import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
 import org.iplass.adminconsole.client.base.tenant.TenantInfoHolder;
-import org.iplass.adminconsole.client.base.ui.widget.AbstractWindow;
 import org.iplass.adminconsole.client.base.ui.widget.MetaDataLangTextItem;
 import org.iplass.adminconsole.client.base.ui.widget.MetaDataSelectItem;
+import org.iplass.adminconsole.client.base.ui.widget.MtpDialog;
 import org.iplass.adminconsole.client.base.ui.widget.form.MtpComboBoxItem;
+import org.iplass.adminconsole.client.base.ui.widget.form.MtpForm;
 import org.iplass.adminconsole.client.base.ui.widget.form.MtpSelectItem;
 import org.iplass.adminconsole.client.base.ui.widget.form.MtpTextItem;
 import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
@@ -45,9 +46,7 @@ import org.iplass.mtp.view.top.parts.EntityListParts;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.smartgwt.client.types.Alignment;
 import com.smartgwt.client.types.HeaderControls;
-import com.smartgwt.client.types.VerticalAlignment;
 import com.smartgwt.client.util.SC;
 import com.smartgwt.client.widgets.HeaderControl;
 import com.smartgwt.client.widgets.IButton;
@@ -60,7 +59,6 @@ import com.smartgwt.client.widgets.form.fields.SelectItem;
 import com.smartgwt.client.widgets.form.fields.TextItem;
 import com.smartgwt.client.widgets.form.fields.events.ChangedEvent;
 import com.smartgwt.client.widgets.form.fields.events.ChangedHandler;
-import com.smartgwt.client.widgets.layout.HLayout;
 
 /**
  *
@@ -117,7 +115,7 @@ public class SearchResultListItem extends PartsItem {
 		dialog.show();
 	}
 
-	private class EntityListItemSettingDialog extends AbstractWindow {
+	private class EntityListItemSettingDialog extends MtpDialog {
 
 		private TextItem iconTagField;
 		private ComboBoxItem viewField;
@@ -131,43 +129,31 @@ public class SearchResultListItem extends PartsItem {
 		 * コンストラクタ
 		 */
 		public EntityListItemSettingDialog() {
-			setTitle("SearchResult List");
-			setHeight(280);
-			setWidth(430);
-			setMargin(10);
-			setMembersMargin(10);
 
-			setShowMinimizeButton(false);
-			setIsModal(true);
-			setShowModalMask(true);
+			setTitle("SearchResult List");
+			setHeight(300);
 			centerInPage();
 
-			final DynamicForm form = new DynamicForm();
-			form.setAlign(Alignment.CENTER);
+			final DynamicForm form = new MtpForm();
 			form.setAutoFocus(true);
-			form.setNumCols(3);
 
 			final SelectItem entityField = new MetaDataSelectItem(EntityDefinition.class, "Entity");
 			SmartGWTUtil.setRequired(entityField);
 			entityField.setValue(parts.getDefName());
-			entityField.setColSpan(2);
 
 			viewField = new MtpComboBoxItem("view", "ResultList View");
 			viewField.setDisabled(true);
 			viewField.setValue(parts.getViewName());
-			viewField.setColSpan(2);
 
 			viewForLinkField = new MtpComboBoxItem("viewForLink", "Link Action View");
 			viewForLinkField.setDisabled(true);
 			viewForLinkField.setValue(parts.getViewNameForLink());
-			viewForLinkField.setColSpan(2);
 
 			getViewList(parts.getDefName());
 
 			filterField = new MtpSelectItem("filter", "Filter");
 			filterField.setDisabled(true);
 			filterField.setValue(parts.getFilterName());
-			filterField.setColSpan(2);
 			getFilterList(parts.getDefName());
 
 			entityField.addChangedHandler(new ChangedHandler() {
@@ -195,24 +181,18 @@ public class SearchResultListItem extends PartsItem {
 			titleField.setTitle("Title");
 			titleField.setValue(parts.getTitle());
 			titleField.setLocalizedList(parts.getLocalizedTitleList());
-			titleField.setColSpan(2);
 
 			iconTagField = new MtpTextItem("iconTag", "Icon Tag");
 			iconTagField.setValue(parts.getIconTag());
-			iconTagField.setColSpan(2);
 			SmartGWTUtil.addHoverToFormItem(iconTagField, AdminClientMessageUtil.getString("ui_metadata_top_item_EntityListItem_iconTagComment"));
 
 			heightField = new IntegerItem("height", "Height");
 			heightField.setWidth("100%");
 			heightField.setValue(parts.getHeight());
-			heightField.setColSpan(2);
 
 			form.setItems(entityField, viewField, viewForLinkField, filterField, titleField, iconTagField, heightField);
 
-			HLayout footer = new HLayout(5);
-			footer.setMargin(10);
-			footer.setWidth100();
-			footer.setAlign(VerticalAlignment.CENTER);
+			container.addMember(form);
 
 			IButton save = new IButton("OK");
 			save.addClickHandler(new ClickHandler() {
@@ -241,9 +221,6 @@ public class SearchResultListItem extends PartsItem {
 			});
 
 			footer.setMembers(save, cancel);
-
-			addItem(form);
-			addItem(footer);
 		}
 
 		private void getViewList(String defName) {

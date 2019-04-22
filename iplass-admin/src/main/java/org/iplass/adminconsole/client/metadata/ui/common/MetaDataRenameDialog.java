@@ -27,7 +27,9 @@ import org.iplass.adminconsole.client.base.event.DataChangedEvent;
 import org.iplass.adminconsole.client.base.event.DataChangedHandler;
 import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
 import org.iplass.adminconsole.client.base.tenant.TenantInfoHolder;
-import org.iplass.adminconsole.client.base.ui.widget.AbstractWindow;
+import org.iplass.adminconsole.client.base.ui.widget.MtpDialog;
+import org.iplass.adminconsole.client.base.ui.widget.form.MtpForm;
+import org.iplass.adminconsole.client.base.ui.widget.form.MtpTextItem;
 import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
 import org.iplass.adminconsole.shared.metadata.dto.AdminDefinitionModifyResult;
 import org.iplass.adminconsole.shared.metadata.dto.MetaDataConstants;
@@ -37,7 +39,6 @@ import org.iplass.mtp.definition.DefinitionInfo;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.smartgwt.client.types.VerticalAlignment;
 import com.smartgwt.client.util.BooleanCallback;
 import com.smartgwt.client.util.SC;
 import com.smartgwt.client.widgets.IButton;
@@ -46,16 +47,13 @@ import com.smartgwt.client.widgets.events.ClickHandler;
 import com.smartgwt.client.widgets.form.DynamicForm;
 import com.smartgwt.client.widgets.form.fields.TextItem;
 import com.smartgwt.client.widgets.form.validator.RegExpValidator;
-import com.smartgwt.client.widgets.layout.HLayout;
-import com.smartgwt.client.widgets.layout.VLayout;
 
 /**
  * MetaDataの名前変更用標準ダイアログクラスです。
  */
-public class MetaDataRenameDialog extends AbstractWindow {
+public class MetaDataRenameDialog extends MtpDialog {
 
 	public static final int DEFAULT_HEIGHT = 160;
-	public static final int DEFAULT_WIDTH = 450;
 
 	protected MetaDataServiceAsync service = MetaDataServiceFactory.get();
 
@@ -86,44 +84,26 @@ public class MetaDataRenameDialog extends AbstractWindow {
 		this.nodeDisplayName = nodeDisplayName;
 
 		setTitle(rs("ui_metadata_common_MetaDataRenameDialog_renameTitle", nodeDisplayName));
-
 		setHeight(DEFAULT_HEIGHT);
-		setWidth(DEFAULT_WIDTH);
-
-		setShowMinimizeButton(false);
-		setIsModal(true);
-		setShowModalMask(true);
 		centerInPage();
 
-		fromField = new TextItem();
+		fromField = new MtpTextItem();
 		fromField.setTitle("From Name");
-		fromField.setWidth(MetaDataConstants.DEFAULT_FORM_ITEM_WIDTH);
 		fromField.setValue(fromName);
 		SmartGWTUtil.setReadOnly(fromField);
 
-		toField = new TextItem();
+		toField = new MtpTextItem();
 		toField.setTitle("To Name");
-		toField.setWidth(MetaDataConstants.DEFAULT_FORM_ITEM_WIDTH);
 		SmartGWTUtil.setRequired(toField);
 		toField.setValue(fromName);
 
 		setNamePolicy(pathSlash, nameAcceptPeriod);
 
-		final DynamicForm form = MetaDataCreateDialog.createDefaultForm();
+		final DynamicForm form = new MtpForm();
 		form.setAutoFocus(true);
 		form.setItems(fromField, toField);
 
-		//Mainコンテンツ
-		VLayout contents = new VLayout(5);
-		contents.setPadding(10);
-		contents.setMembers(form);
-
-		//Footer
-		HLayout footer = new HLayout(5);
-		footer.setMargin(10);
-		footer.setAutoHeight();
-		footer.setWidth100();
-		footer.setAlign(VerticalAlignment.CENTER);
+		container.setMembers(form);
 
 		IButton save = new IButton("Save");
 		save.addClickHandler(new ClickHandler() {
@@ -142,10 +122,6 @@ public class MetaDataRenameDialog extends AbstractWindow {
 		});
 
 		footer.setMembers(save, cancel);
-
-		addItem(contents);
-		addItem(SmartGWTUtil.separator());
-		addItem(footer);
 	}
 
 	/**

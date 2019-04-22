@@ -22,21 +22,20 @@ package org.iplass.adminconsole.client.metadata.ui.top.item;
 
 import org.iplass.adminconsole.client.base.event.MTPEvent;
 import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
-import org.iplass.adminconsole.client.base.ui.widget.AbstractWindow;
+import org.iplass.adminconsole.client.base.ui.widget.MtpDialog;
+import org.iplass.adminconsole.client.base.ui.widget.form.MtpForm;
+import org.iplass.adminconsole.client.base.ui.widget.form.MtpTextItem;
 import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
 import org.iplass.adminconsole.client.metadata.ui.top.PartsOperationHandler;
 import org.iplass.mtp.view.top.parts.TreeViewParts;
 
 import com.smartgwt.client.types.HeaderControls;
-import com.smartgwt.client.types.VerticalAlignment;
 import com.smartgwt.client.widgets.HeaderControl;
 import com.smartgwt.client.widgets.IButton;
 import com.smartgwt.client.widgets.events.ClickEvent;
 import com.smartgwt.client.widgets.events.ClickHandler;
 import com.smartgwt.client.widgets.form.DynamicForm;
 import com.smartgwt.client.widgets.form.fields.TextItem;
-import com.smartgwt.client.widgets.layout.HLayout;
-import com.smartgwt.client.widgets.layout.VLayout;
 
 /**
  *
@@ -77,7 +76,7 @@ public class TreeViewItem extends PartsItem {
 		return true;
 	}
 
-	private class TreeViewItemSettingDialog extends AbstractWindow {
+	private class TreeViewItemSettingDialog extends MtpDialog {
 
 		private TextItem iconTagField;
 
@@ -88,32 +87,18 @@ public class TreeViewItem extends PartsItem {
 
 			setTitle("TreeView(" + parts.getTreeViewName() + ")");
 			setHeight(130);
-			setWidth(430);
-
-			setShowMinimizeButton(false);
-			setIsModal(true);
-			setShowModalMask(true);
 			centerInPage();
 
-			final DynamicForm form = new DynamicForm();
+			final DynamicForm form = new MtpForm();
 			form.setAutoFocus(true);
-			form.setCellPadding(5);
-			form.setNumCols(3);
-			form.setColWidths(100, 280, "*");
 
-			iconTagField = new TextItem("iconTag", "Icon Tag");
-			iconTagField.setWidth("100%");
+			iconTagField = new MtpTextItem("iconTag", "Icon Tag");
 			iconTagField.setValue(parts.getIconTag());
 			SmartGWTUtil.addHoverToFormItem(iconTagField, AdminClientMessageUtil.getString("ui_metadata_top_item_TreeViewItem_iconTagComment"));
 
 			form.setItems(iconTagField);
 
-			VLayout mainLayout = new VLayout();
-			mainLayout.setWidth100();
-			mainLayout.setHeight100();
-			mainLayout.setMargin(10);
-			mainLayout.setMembersMargin(10);
-			mainLayout.addMember(form);
+			container.addMember(form);
 
 			IButton save = new IButton("OK");
 			save.addClickHandler(new ClickHandler() {
@@ -133,16 +118,7 @@ public class TreeViewItem extends PartsItem {
 				}
 			});
 
-			HLayout footer = new HLayout(5);
-			footer.setMargin(5);
-			footer.setHeight(20);
-			footer.setWidth100();
-			footer.setAlign(VerticalAlignment.CENTER);
 			footer.setMembers(save, cancel);
-
-			addItem(mainLayout);
-			addItem(SmartGWTUtil.separator());
-			addItem(footer);
 		}
 	}
 }

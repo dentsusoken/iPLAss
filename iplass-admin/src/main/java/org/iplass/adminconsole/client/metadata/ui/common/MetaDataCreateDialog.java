@@ -27,7 +27,10 @@ import org.iplass.adminconsole.client.base.event.DataChangedEvent;
 import org.iplass.adminconsole.client.base.event.DataChangedHandler;
 import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
 import org.iplass.adminconsole.client.base.tenant.TenantInfoHolder;
-import org.iplass.adminconsole.client.base.ui.widget.AbstractWindow;
+import org.iplass.adminconsole.client.base.ui.widget.MtpDialog;
+import org.iplass.adminconsole.client.base.ui.widget.form.MtpForm;
+import org.iplass.adminconsole.client.base.ui.widget.form.MtpTextAreaItem;
+import org.iplass.adminconsole.client.base.ui.widget.form.MtpTextItem;
 import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
 import org.iplass.adminconsole.shared.metadata.dto.AdminDefinitionModifyResult;
 import org.iplass.adminconsole.shared.metadata.dto.MetaDataConstants;
@@ -37,7 +40,6 @@ import org.iplass.mtp.definition.DefinitionInfo;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.smartgwt.client.types.VerticalAlignment;
 import com.smartgwt.client.util.BooleanCallback;
 import com.smartgwt.client.util.SC;
 import com.smartgwt.client.widgets.Canvas;
@@ -45,30 +47,24 @@ import com.smartgwt.client.widgets.IButton;
 import com.smartgwt.client.widgets.events.ClickEvent;
 import com.smartgwt.client.widgets.events.ClickHandler;
 import com.smartgwt.client.widgets.form.DynamicForm;
+import com.smartgwt.client.widgets.form.fields.TextAreaItem;
 import com.smartgwt.client.widgets.form.fields.TextItem;
 import com.smartgwt.client.widgets.form.validator.RegExpValidator;
 import com.smartgwt.client.widgets.form.validator.Validator;
-import com.smartgwt.client.widgets.layout.HLayout;
-import com.smartgwt.client.widgets.layout.VLayout;
 
 /**
  * MetaDataの新規作成用標準ダイアログクラスです。
  */
-public abstract class MetaDataCreateDialog extends AbstractWindow {
+public abstract class MetaDataCreateDialog extends MtpDialog {
 
-	public static final int DEFAULT_HEIGHT = 200;
-	public static final int DEFAULT_WIDTH = 450;
+	public static final int DEFAULT_HEIGHT = 250;
 
 	protected MetaDataServiceAsync service = MetaDataServiceFactory.get();
-
-	private VLayout contents;
 
 	private TextItem sourceNameField;
 	private TextItem nameField;
 	private TextItem displayNameField;
-	private TextItem descriptionField;
-
-	private HLayout footer;
+	private TextAreaItem descriptionField;
 
 	/** データ変更ハンドラ */
 	private List<DataChangedHandler> handlers = new ArrayList<DataChangedHandler>();
@@ -119,52 +115,35 @@ public abstract class MetaDataCreateDialog extends AbstractWindow {
 			setTitle(getString("createTitle", nodeDisplayName));
 			setHeight(DEFAULT_HEIGHT);	//項目を追加したい場合は調整すること
 		}
-		setWidth(DEFAULT_WIDTH);
 
-		setShowMinimizeButton(false);
-		setIsModal(true);
-		setShowModalMask(true);
 		centerInPage();
 
-		sourceNameField = new TextItem();
+		sourceNameField = new MtpTextItem();
 		sourceNameField.setTitle("Source Name");
-		sourceNameField.setWidth(MetaDataConstants.DEFAULT_FORM_ITEM_WIDTH);
 		SmartGWTUtil.setReadOnly(sourceNameField);
 		if (!isCopyMode) {
 			sourceNameField.hide();
 		}
 
-		nameField = new TextItem();
+		nameField = new MtpTextItem();
 		nameField.setTitle("Name");
-		nameField.setWidth(MetaDataConstants.DEFAULT_FORM_ITEM_WIDTH);
 		SmartGWTUtil.setRequired(nameField);
 		nameField.setValue(folderPath);
 
 		setNamePolicy(true, false);
 
-		displayNameField = new TextItem();
+		displayNameField = new MtpTextItem();
 		displayNameField.setTitle("Display Name");
-		displayNameField.setWidth(MetaDataConstants.DEFAULT_FORM_ITEM_WIDTH);
 
-		descriptionField = new TextItem();
+		descriptionField = new MtpTextAreaItem();
 		descriptionField.setTitle("Description");
-		descriptionField.setWidth(MetaDataConstants.DEFAULT_FORM_ITEM_WIDTH);
+		descriptionField.setHeight(60);
 
-		final DynamicForm form = createDefaultForm();
+		final DynamicForm form = new MtpForm();
 		form.setAutoFocus(true);
 		form.setItems(sourceNameField, nameField, displayNameField, descriptionField);
 
-		//Mainコンテンツ
-		contents = new VLayout(5);
-		contents.setPadding(10);
-		contents.setMembers(form);
-
-		//Footer
-		footer = new HLayout(5);
-		footer.setMargin(10);
-		footer.setAutoHeight();
-		footer.setWidth100();
-		footer.setAlign(VerticalAlignment.CENTER);
+		container.addMember(form);
 
 		IButton save = new IButton("Save");
 		save.addClickHandler(new ClickHandler() {
@@ -187,10 +166,6 @@ public abstract class MetaDataCreateDialog extends AbstractWindow {
 		});
 
 		footer.setMembers(save, cancel);
-
-		addItem(contents);
-		addItem(SmartGWTUtil.separator());
-		addItem(footer);
 	}
 
 	/**
@@ -327,7 +302,17 @@ public abstract class MetaDataCreateDialog extends AbstractWindow {
 	 * @param customParts カスタマイズ部品
 	 */
 	protected void addCustomParts(Canvas customParts) {
-		contents.addMember(customParts);
+		container.addMember(customParts);
+	}
+
+	/**
+	 * カスタムParts生成時などに利用する目的で、標準のDynamicFormを生成します。
+	 *
+	 * @return 標準のDynamicForm
+	 */
+	@Deprecated
+	protected DynamicForm createDefaultForm() {
+		return new MtpForm();
 	}
 
 	/**
@@ -340,20 +325,6 @@ public abstract class MetaDataCreateDialog extends AbstractWindow {
 		for (DataChangedHandler handler : handlers) {
 			handler.onDataChanged(event);
 		}
-	}
-
-	/**
-	 * カスタムParts生成時などに利用する目的で、標準のDynamicFormを生成します。
-	 *
-	 * @return 標準のDynamicForm
-	 */
-	public static DynamicForm createDefaultForm() {
-		DynamicForm form = new DynamicForm();
-		form.setPadding(5);
-		form.setWidth100();
-		form.setNumCols(2);
-		form.setColWidths(100, "*");
-		return form;
 	}
 
 	/**

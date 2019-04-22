@@ -23,6 +23,9 @@ package org.iplass.adminconsole.client.metadata.ui.action.result;
 import java.util.LinkedHashMap;
 
 import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
+import org.iplass.adminconsole.client.base.ui.widget.form.MtpForm;
+import org.iplass.adminconsole.client.base.ui.widget.form.MtpSelectItem;
+import org.iplass.adminconsole.client.base.ui.widget.form.MtpTextItem;
 import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
 import org.iplass.mtp.web.actionmapping.definition.result.ContentDispositionType;
 import org.iplass.mtp.web.actionmapping.definition.result.ResultDefinition;
@@ -66,44 +69,34 @@ public class StreamResultEditPane extends ResultTypeEditPane {
 	 */
 	public StreamResultEditPane() {
 
-		//レイアウト設定
 		setWidth100();
-		setHeight100();	//OK、Cancelボタンを下に持っていくため
 
 		//入力部分
-		form = new DynamicForm();
-		form.setMargin(5);
+		form = new MtpForm();
 		form.setAutoHeight();
-		form.setWidth100();
 
-		streamAttributeNameField = new TextItem("streamAttributeName", "Stream AttributeName");
-		streamAttributeNameField.setWidth(250);
+		streamAttributeNameField = new MtpTextItem("streamAttributeName", "Stream AttributeName");
 		streamAttributeNameField.setRequired(true);
 		SmartGWTUtil.setRequired(streamAttributeNameField);
 
-		contentTypeAttributeNameField = new TextItem("contentTypeAttributeName", "contentType AttributeName");
-		contentTypeAttributeNameField.setWidth(250);
+		contentTypeAttributeNameField = new MtpTextItem("contentTypeAttributeName", "contentType AttributeName");
 
-		contentLengthAttributeNameField = new TextItem("contentLengthAttributeName", "contentLength AttributeName");
-		contentLengthAttributeNameField.setWidth(250);
+		contentLengthAttributeNameField = new MtpTextItem("contentLengthAttributeName", "contentLength AttributeName");
 
 		acceptRangesField = new CheckboxItem("acceptRanges", "Accept Ranges");
 		SmartGWTUtil.addHoverToFormItem(acceptRangesField, AdminClientMessageUtil.getString("ui_metadata_action_StreamResultEditPane_acceptRangesTooltip"));
 
 		form.setItems(streamAttributeNameField, contentTypeAttributeNameField, contentLengthAttributeNameField, acceptRangesField);
 
-		contentDispositionForm = new DynamicForm();
-		contentDispositionForm.setMargin(5);
+		contentDispositionForm = new MtpForm();
 		contentDispositionForm.setAutoHeight();
-		contentDispositionForm.setWidth100();
 		contentDispositionForm.setIsGroup(true);
 		contentDispositionForm.setGroupTitle("Content Disposition Setting");
 
 		useContentDispositionField = new CheckboxItem("useContentDisposition", "Set ContentDisposition");
 
-		contentDispositionTypeField = new SelectItem();
+		contentDispositionTypeField = new MtpSelectItem();
 		contentDispositionTypeField.setTitle("Content Disposition Type");
-		contentDispositionTypeField.setWidth(150);
 
 		LinkedHashMap<String, String> contentDispositionTypeMap = new LinkedHashMap<String, String>();
 		contentDispositionTypeMap.put("", "Default");
@@ -111,8 +104,7 @@ public class StreamResultEditPane extends ResultTypeEditPane {
 		contentDispositionTypeMap.put(ContentDispositionType.INLINE.name(), "Inline");
 		contentDispositionTypeField.setValueMap(contentDispositionTypeMap);
 
-		fileNameAttributeNameField = new TextItem("fileNameAttributeName", "FileName AttributeName");
-		fileNameAttributeNameField.setWidth(250);
+		fileNameAttributeNameField = new MtpTextItem("fileNameAttributeName", "FileName AttributeName");
 
 		contentDispositionForm.setItems(useContentDispositionField, contentDispositionTypeField, fileNameAttributeNameField);
 

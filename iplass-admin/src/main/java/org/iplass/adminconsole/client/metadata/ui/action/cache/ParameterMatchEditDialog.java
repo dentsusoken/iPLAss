@@ -25,48 +25,38 @@ import java.util.List;
 
 import org.iplass.adminconsole.client.base.event.DataChangedEvent;
 import org.iplass.adminconsole.client.base.event.DataChangedHandler;
-import org.iplass.adminconsole.client.base.ui.widget.AbstractWindow;
+import org.iplass.adminconsole.client.base.ui.widget.MtpDialog;
+import org.iplass.adminconsole.client.base.ui.widget.form.MtpForm;
+import org.iplass.adminconsole.client.base.ui.widget.form.MtpTextItem;
 import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
 
-import com.smartgwt.client.types.VerticalAlignment;
 import com.smartgwt.client.widgets.IButton;
 import com.smartgwt.client.widgets.events.ClickEvent;
 import com.smartgwt.client.widgets.events.ClickHandler;
 import com.smartgwt.client.widgets.form.DynamicForm;
 import com.smartgwt.client.widgets.form.fields.TextItem;
-import com.smartgwt.client.widgets.layout.HLayout;
 
-public class ParameterMatchEditDialog extends AbstractWindow {
+public class ParameterMatchEditDialog extends MtpDialog {
 
 	/** パラメータ名 */
 	private TextItem nameField;
-
-	/** フッター */
-	private HLayout footer;
 
 	/** データ変更ハンドラ */
 	private List<DataChangedHandler> handlers = new ArrayList<DataChangedHandler>();
 
 	public ParameterMatchEditDialog() {
 
-		setWidth(550);
-		setHeight(100);
+		setHeight(200);
 		setTitle("Matching Parameter Name");
-		setShowMinimizeButton(false);
-		setIsModal(true);
-		setShowModalMask(true);
 		centerInPage();
 
-		nameField = new TextItem("name", "Parameter Name");
-		nameField.setWidth(250);
+		nameField = new MtpTextItem("name", "Parameter Name");
 		SmartGWTUtil.setRequired(nameField);
 
-		final DynamicForm form = new DynamicForm();
-		form.setMargin(5);
-//		form.setHeight100();
-		form.setAutoHeight();	//下に追加するためAutoHeight
-		form.setWidth100();
+		final DynamicForm form = new MtpForm();
 		form.setItems(nameField);
+
+		container.addMember(form);
 
 		IButton save = new IButton("OK");
 		save.addClickHandler(new ClickHandler() {
@@ -74,8 +64,6 @@ public class ParameterMatchEditDialog extends AbstractWindow {
 				boolean commonValidate = form.validate();
 				if (commonValidate) {
 					saveDefinition();
-				} else {
-//					errors.setVisible(true);
 				}
 			}
 		});
@@ -87,17 +75,7 @@ public class ParameterMatchEditDialog extends AbstractWindow {
 			}
 		});
 
-		footer = new HLayout(5);
-		footer.setMargin(5);
-		footer.setHeight(20);
-		footer.setWidth100();
-		//footer.setAlign(Alignment.LEFT);
-		footer.setAlign(VerticalAlignment.CENTER);
 		footer.setMembers(save, cancel);
-
-
-		addItem(form);
-		addItem(footer);
 	}
 
 	public void setParameterName(String name) {

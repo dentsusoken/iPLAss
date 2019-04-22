@@ -27,6 +27,7 @@ import org.iplass.adminconsole.client.base.event.DataChangedEvent;
 import org.iplass.adminconsole.client.base.event.DataChangedHandler;
 import org.iplass.adminconsole.client.base.ui.widget.MetaDataSelectItem;
 import org.iplass.adminconsole.client.base.ui.widget.MetaDataSelectItem.ItemOption;
+import org.iplass.adminconsole.client.base.ui.widget.form.MtpForm;
 import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
 import org.iplass.mtp.auth.policy.definition.AccountNotificationListenerDefinition;
 import org.iplass.mtp.auth.policy.definition.listeners.MailAccountNotificationListenerDefinition;
@@ -70,15 +71,11 @@ public class MailAccountNotificationListenerEditPane extends AuthenticationListe
 	 */
 	public MailAccountNotificationListenerEditPane() {
 
-		//レイアウト設定
 		setWidth100();
-		setHeight100();
 
 		//入力部分
-		form = new DynamicForm();
-		form.setMargin(5);
+		form = new MtpForm();
 		form.setAutoHeight();
-		form.setWidth(500);
 
 		slctCreateUserMailTemplateField = new MetaDataSelectItem(MailTemplateDefinition.class, "Create User MailTemplate", new ItemOption(true, false));
 

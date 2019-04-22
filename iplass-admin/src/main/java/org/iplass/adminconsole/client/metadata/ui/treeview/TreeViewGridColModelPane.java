@@ -28,16 +28,17 @@ import java.util.List;
 import org.iplass.adminconsole.client.base.event.DataChangedEvent;
 import org.iplass.adminconsole.client.base.event.DataChangedHandler;
 import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
-import org.iplass.adminconsole.client.base.ui.widget.AbstractWindow;
+import org.iplass.adminconsole.client.base.ui.widget.MetaDataLangTextItem;
+import org.iplass.adminconsole.client.base.ui.widget.MtpDialog;
+import org.iplass.adminconsole.client.base.ui.widget.form.MtpForm;
+import org.iplass.adminconsole.client.base.ui.widget.form.MtpSelectItem;
+import org.iplass.adminconsole.client.base.ui.widget.form.MtpTextItem;
 import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
-import org.iplass.adminconsole.client.metadata.ui.common.LocalizedStringSettingDialog;
-import org.iplass.mtp.definition.LocalizedStringDefinition;
 import org.iplass.mtp.view.treeview.TreeViewGridColModel;
 
 import com.smartgwt.client.types.Alignment;
 import com.smartgwt.client.types.DragDataAction;
 import com.smartgwt.client.types.SelectionStyle;
-import com.smartgwt.client.types.VerticalAlignment;
 import com.smartgwt.client.util.BooleanCallback;
 import com.smartgwt.client.util.SC;
 import com.smartgwt.client.widgets.Canvas;
@@ -47,14 +48,12 @@ import com.smartgwt.client.widgets.Label;
 import com.smartgwt.client.widgets.events.ClickEvent;
 import com.smartgwt.client.widgets.events.ClickHandler;
 import com.smartgwt.client.widgets.form.DynamicForm;
-import com.smartgwt.client.widgets.form.fields.ButtonItem;
 import com.smartgwt.client.widgets.form.fields.IntegerItem;
 import com.smartgwt.client.widgets.form.fields.SelectItem;
 import com.smartgwt.client.widgets.form.fields.TextItem;
 import com.smartgwt.client.widgets.grid.ListGrid;
 import com.smartgwt.client.widgets.grid.ListGridField;
 import com.smartgwt.client.widgets.grid.ListGridRecord;
-import com.smartgwt.client.widgets.layout.HLayout;
 import com.smartgwt.client.widgets.layout.VLayout;
 
 public class TreeViewGridColModelPane extends VLayout {
@@ -371,7 +370,7 @@ public class TreeViewGridColModelPane extends VLayout {
 	 * @author lis3wg
 	 *
 	 */
-	public class TreeViewGridColModelEditDialog extends AbstractWindow {
+	public class TreeViewGridColModelEditDialog extends MtpDialog {
 
 		/** データ変更ハンドラ */
 		private List<DataChangedHandler> handlers = new ArrayList<DataChangedHandler>();
@@ -379,91 +378,49 @@ public class TreeViewGridColModelPane extends VLayout {
 		private DynamicForm form;
 
 		private TextItem nameField;
-		private TextItem displayLabelField;
+		private MetaDataLangTextItem displayLabelField;
 		private IntegerItem widthField;
 		private SelectItem alignField;
-
-		private ButtonItem langBtn;
-
-		private HLayout footer;
-		private IButton save;
-		private IButton cancel;
-
-		private List<LocalizedStringDefinition> localizedDisplayLabelList;
 
 		public TreeViewGridColModelEditDialog() {
 
 			setTitle("ColModel Setting");
+			setHeight(220);
+			centerInPage();
 
-			setWidth(400);
-			setHeight(180);
+			form = new MtpForm();
 
-			setShowMinimizeButton(false);
-			setIsModal(true);
-			setShowModalMask(true);
-
-			form = new DynamicForm();
-			form.setColWidths(120, "*", "*");
-			form.setNumCols(3);
-
-			nameField = new TextItem("name", AdminClientMessageUtil.getString("ui_metadata_treeview_TreeViewGridColModelPane_columnName"));
+			nameField = new MtpTextItem("name", AdminClientMessageUtil.getString("ui_metadata_treeview_TreeViewGridColModelPane_columnName"));
 			nameField.setWidth(220);
-			nameField.setRequired(true);
-			nameField.setColSpan(3);
+			SmartGWTUtil.setRequired(nameField);
 
-			displayLabelField = new TextItem("displayLabel", AdminClientMessageUtil.getString("ui_metadata_treeview_TreeViewGridColModelPane_displayLabel"));
-			displayLabelField.setWidth(134);
-
-			langBtn = new ButtonItem("addDisplayLabel", "Languages");
-			langBtn.setShowTitle(false);
-			langBtn.setIcon("world.png");
-			langBtn.setStartRow(false);	//これを指定しないとButtonの場合、先頭にくる
-			langBtn.setEndRow(false);	//これを指定しないと次のFormItemが先頭にいく
-			langBtn.setPrompt(AdminClientMessageUtil.getString("ui_metadata_treeview_TreeViewGridColModelPane_eachLangDspName"));
-			langBtn.addClickHandler(new com.smartgwt.client.widgets.form.fields.events.ClickHandler() {
-
-				@Override
-				public void onClick(com.smartgwt.client.widgets.form.fields.events.ClickEvent event) {
-
-					if (localizedDisplayLabelList == null) {
-						localizedDisplayLabelList = new ArrayList<LocalizedStringDefinition>();
-					}
-					LocalizedStringSettingDialog dialog = new LocalizedStringSettingDialog(localizedDisplayLabelList);
-					dialog.show();
-
-				}
-			});
+			displayLabelField = new MetaDataLangTextItem();
+			displayLabelField.setTitle(AdminClientMessageUtil.getString("ui_metadata_treeview_TreeViewGridColModelPane_displayLabel"));
 
 			widthField = new IntegerItem("width", AdminClientMessageUtil.getString("ui_metadata_treeview_TreeViewGridColModelPane_width"));
-			widthField.setColSpan(3);
+			widthField.setWidth("100%");
 
 			LinkedHashMap<String, String> valueMap = new LinkedHashMap<String, String>();
 			valueMap.put("", "");
 			valueMap.put("left", "left");
 			valueMap.put("center", "center");
 			valueMap.put("right", "right");
-			alignField = new SelectItem("align", AdminClientMessageUtil.getString("ui_metadata_treeview_TreeViewGridColModelPane_align"));
+			alignField = new MtpSelectItem("align", AdminClientMessageUtil.getString("ui_metadata_treeview_TreeViewGridColModelPane_align"));
 			alignField.setValueMap(valueMap);
 			alignField.setDefaultValue("");
-			alignField.setColSpan(3);
 
-			form.setItems(nameField, displayLabelField, langBtn, widthField, alignField);
-			addItem(form);
+			form.setItems(nameField, displayLabelField, widthField, alignField);
 
-			footer = new HLayout(5);
-			footer.setMargin(5);
-			footer.setAutoHeight();
-			footer.setWidth100();
-			footer.setAlign(VerticalAlignment.CENTER);
+			container.addMember(form);
 
-			save = new IButton("Save");
+			IButton save = new IButton("Save");
 			save.addClickHandler(new ClickHandler() {
 				public void onClick(ClickEvent event) {
 					if (validate()){
 						TreeViewGridColModel definition = new TreeViewGridColModel();
 						definition.setName(SmartGWTUtil.getStringValue(nameField));
 						definition.setDisplayLabel(SmartGWTUtil.getStringValue(displayLabelField));
-						definition.setLocalizedDisplayLabelList(localizedDisplayLabelList);
+						definition.setLocalizedDisplayLabelList(displayLabelField.getLocalizedList());
 						String width = SmartGWTUtil.getStringValue(widthField);
 						if (width != null && !width.isEmpty()) {
 							try {
@@ -479,18 +436,15 @@ public class TreeViewGridColModelPane extends VLayout {
 					}
 				}
 			});
-			footer.addMember(save);
 
-			cancel = new IButton("Cancel");
+			IButton cancel = new IButton("Cancel");
 			cancel.addClickHandler(new ClickHandler() {
 				public void onClick(ClickEvent event) {
 					destroy();
 				}
 			});
-			footer.addMember(cancel);
-			addItem(footer);
 
-			centerInPage();
+			footer.setMembers(save, cancel);
 		}
 
 		/**
@@ -499,10 +453,9 @@ public class TreeViewGridColModelPane extends VLayout {
 		 */
 		public void setDefinition(TreeViewGridColModel definition) {
 			if (definition != null) {
-				localizedDisplayLabelList = definition.getLocalizedDisplayLabelList();
-
 				nameField.setValue(definition.getName());
 				displayLabelField.setValue(definition.getDisplayLabel());
+				displayLabelField.setLocalizedList(definition.getLocalizedDisplayLabelList());
 				widthField.setValue(definition.getWidth());
 				alignField.setValue(definition.getAlign());
 			}

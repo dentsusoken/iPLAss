@@ -27,21 +27,19 @@ import java.util.List;
 import org.iplass.adminconsole.client.base.event.DataChangedEvent;
 import org.iplass.adminconsole.client.base.event.DataChangedHandler;
 import org.iplass.adminconsole.client.base.io.upload.UploadFileItem;
-import org.iplass.adminconsole.client.base.ui.widget.AbstractWindow;
+import org.iplass.adminconsole.client.base.ui.widget.MtpDialog;
+import org.iplass.adminconsole.client.base.ui.widget.form.MtpForm;
 import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
 import org.iplass.mtp.definition.LocalizedStringDefinition;
 import org.iplass.mtp.web.template.definition.LocalizedBinaryDefinition;
 import org.iplass.mtp.web.template.report.definition.LocalizedReportDefinition;
 
-import com.smartgwt.client.types.VerticalAlignment;
 import com.smartgwt.client.widgets.IButton;
 import com.smartgwt.client.widgets.form.DynamicForm;
 import com.smartgwt.client.widgets.form.fields.SelectItem;
-import com.smartgwt.client.widgets.form.fields.SpacerItem;
-import com.smartgwt.client.widgets.layout.HLayout;
 import com.smartgwt.client.widgets.layout.VLayout;
 
-public class TemplateMultiLanguageEditDialog extends AbstractWindow {
+public class TemplateMultiLanguageEditDialog extends MtpDialog {
 
 	private static final String TITLE = "Multilingual Template Setting";
 
@@ -65,37 +63,67 @@ public class TemplateMultiLanguageEditDialog extends AbstractWindow {
 	public TemplateMultiLanguageEditDialog(LinkedHashMap<String, String> enableLang) {
 
 		setTitle(TITLE);
-		setShowMinimizeButton(false);
-		setIsModal(true);
-		setShowModalMask(true);
 		centerInPage();
 
-		VLayout mainPane = new VLayout();
-		mainPane.setHeight100();
-		mainPane.setPadding(10);
-
-		langSelectForm = new DynamicForm();
-		langSelectForm.setWidth100();
-		langSelectForm.setNumCols(3);
-		langSelectForm.setColWidths(100, "*", "*");
+		langSelectForm = new MtpForm();
 
 		langSelectItem = new SelectItem("language", "Language");
 		langSelectItem.setValueMap(enableLang);
 		SmartGWTUtil.setRequired(langSelectItem);
 
-		langSelectForm.setItems(langSelectItem, new SpacerItem());
+		langSelectForm.setItems(langSelectItem);
 
 		//個別は枠のみ追加(setDefinitionで決定)
 		templateTypeMainPane = new VLayout();
 
-		mainPane.addMember(langSelectForm);
-		mainPane.addMember(templateTypeMainPane);
+		container.addMember(langSelectForm);
+		container.addMember(templateTypeMainPane);
 
-		OperationPane opePane = new OperationPane(this);
+		IButton save = new IButton("OK");
+		save.addClickHandler(new com.smartgwt.client.widgets.events.ClickHandler() {
+			public void onClick(com.smartgwt.client.widgets.events.ClickEvent event) {
 
-		addItem(mainPane);
-		addItem(SmartGWTUtil.separator());
-		addItem(opePane);
+				boolean validate = langSelectForm.validate() & typeEditPane.validate();
+				if (!validate) {
+					return;
+				}
+
+				switch (type) {
+					case HTML:
+					case JSP:
+					case GROOVY:
+						LocalizedStringDefinition stringDefinition = curStringDefinition;
+						stringDefinition.setLocaleName(langSelectItem.getValueAsString());
+						((HasEditLocalizedStringDefinition)typeEditPane).getEditLocalizedStringDefinition(stringDefinition);
+						fireDataChanged(stringDefinition);
+						break;
+					case BINARY:
+						LocalizedBinaryDefinition binaryDefinition = curBinaryDefinition;
+						binaryDefinition.setLocaleName(langSelectItem.getValueAsString());
+						((HasEditLocalizedBinaryDefinition)typeEditPane).getEditLocalizedBinaryDefinition(binaryDefinition);
+						UploadFileItem binaryFile = ((HasEditLocalizedBinaryDefinition)typeEditPane).getEditUploadFileItem();
+						fireDataChanged(binaryDefinition, binaryFile);
+						break;
+					case REPORT:
+						LocalizedReportDefinition reportDefinition = curReportDefinition;
+						reportDefinition.setLocaleName(langSelectItem.getValueAsString());
+						((HasEditLocalizedReportDefinition)typeEditPane).getEditLocalizedReportDefinition(reportDefinition);
+						UploadFileItem reportFile = ((HasEditLocalizedReportDefinition)typeEditPane).getEditUploadFileItem();
+						fireDataChanged(reportDefinition, reportFile);
+						break;
+				}
+				destroy();
+			}
+		});
+
+		IButton cancel = new IButton("Cancel");
+		cancel.addClickHandler(new com.smartgwt.client.widgets.events.ClickHandler() {
+			public void onClick(com.smartgwt.client.widgets.events.ClickEvent event) {
+				destroy();
+			}
+		});
+
+		footer.setMembers(save, cancel);
 	}
 
 	public void setDefinition(TemplateType type, LocalizedStringDefinition definition) {
@@ -175,13 +203,8 @@ public class TemplateMultiLanguageEditDialog extends AbstractWindow {
 
 	private void fitSize() {
 
-		if (typeEditPane.getLocaleDialogWidth() == 0) {
-			setWidth100();
-		} else {
-			setWidth(typeEditPane.getLocaleDialogWidth());
-		}
 		if (typeEditPane.getLocaleDialogHeight() == 0) {
-			setHeight100();
+			setHeight("80%");
 		} else {
 			setHeight(typeEditPane.getLocaleDialogHeight());
 		}
@@ -236,65 +259,6 @@ public class TemplateMultiLanguageEditDialog extends AbstractWindow {
 			this.fileItem = fileItem;
 		}
 
-	}
-
-	private class OperationPane extends HLayout {
-		public OperationPane(final TemplateMultiLanguageEditDialog dialog) {
-
-			setMembersMargin(5);
-			setMargin(10);
-			setAutoHeight();
-			setWidth100();
-			setAlign(VerticalAlignment.CENTER);
-
-			IButton save = new IButton("OK");
-			save.addClickHandler(new com.smartgwt.client.widgets.events.ClickHandler() {
-				public void onClick(com.smartgwt.client.widgets.events.ClickEvent event) {
-
-					boolean validate = langSelectForm.validate() & typeEditPane.validate();
-					if (!validate) {
-						return;
-					}
-
-					switch (type) {
-						case HTML:
-						case JSP:
-						case GROOVY:
-							LocalizedStringDefinition stringDefinition = curStringDefinition;
-							stringDefinition.setLocaleName(langSelectItem.getValueAsString());
-							((HasEditLocalizedStringDefinition)typeEditPane).getEditLocalizedStringDefinition(stringDefinition);
-							fireDataChanged(stringDefinition);
-							break;
-						case BINARY:
-							LocalizedBinaryDefinition binaryDefinition = curBinaryDefinition;
-							binaryDefinition.setLocaleName(langSelectItem.getValueAsString());
-							((HasEditLocalizedBinaryDefinition)typeEditPane).getEditLocalizedBinaryDefinition(binaryDefinition);
-							UploadFileItem binaryFile = ((HasEditLocalizedBinaryDefinition)typeEditPane).getEditUploadFileItem();
-							fireDataChanged(binaryDefinition, binaryFile);
-							break;
-						case REPORT:
-							LocalizedReportDefinition reportDefinition = curReportDefinition;
-							reportDefinition.setLocaleName(langSelectItem.getValueAsString());
-							((HasEditLocalizedReportDefinition)typeEditPane).getEditLocalizedReportDefinition(reportDefinition);
-							UploadFileItem reportFile = ((HasEditLocalizedReportDefinition)typeEditPane).getEditUploadFileItem();
-							fireDataChanged(reportDefinition, reportFile);
-							break;
-					}
-//					dialog.hide();
-					dialog.destroy();
-				}
-			});
-
-			IButton cancel = new IButton("Cancel");
-			cancel.addClickHandler(new com.smartgwt.client.widgets.events.ClickHandler() {
-				public void onClick(com.smartgwt.client.widgets.events.ClickEvent event) {
-//					dialog.hide();
-					dialog.destroy();
-				}
-			});
-
-			setMembers(save, cancel);
-		}
 	}
 
 }

@@ -25,22 +25,20 @@ import java.util.List;
 
 import org.iplass.adminconsole.client.base.event.DataChangedEvent;
 import org.iplass.adminconsole.client.base.event.DataChangedHandler;
-import org.iplass.adminconsole.client.base.ui.widget.AbstractWindow;
 import org.iplass.adminconsole.client.base.ui.widget.MetaDataSelectItem;
+import org.iplass.adminconsole.client.base.ui.widget.MtpDialog;
+import org.iplass.adminconsole.client.base.ui.widget.form.MtpForm;
 import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
 import org.iplass.mtp.view.top.parts.TemplateParts;
 import org.iplass.mtp.web.template.definition.TemplateDefinition;
 
-import com.smartgwt.client.types.Alignment;
 import com.smartgwt.client.types.HeaderControls;
-import com.smartgwt.client.types.VerticalAlignment;
 import com.smartgwt.client.widgets.HeaderControl;
 import com.smartgwt.client.widgets.IButton;
 import com.smartgwt.client.widgets.events.ClickEvent;
 import com.smartgwt.client.widgets.events.ClickHandler;
 import com.smartgwt.client.widgets.form.DynamicForm;
 import com.smartgwt.client.widgets.form.fields.SelectItem;
-import com.smartgwt.client.widgets.layout.HLayout;
 
 /**
  *
@@ -96,7 +94,7 @@ public class TemplateItem extends PartsItem {
 		dialog.show();
 	}
 
-	private class TemplateItemSettingDialog extends AbstractWindow {
+	private class TemplateItemSettingDialog extends MtpDialog {
 
 		private List<DataChangedHandler> handlers = new ArrayList<DataChangedHandler>();
 
@@ -104,19 +102,12 @@ public class TemplateItem extends PartsItem {
 		 * コンストラクタ
 		 */
 		public TemplateItemSettingDialog(String path) {
+
 			setTitle("Template");
 			setHeight(130);
-			setWidth(430);
-			setMargin(10);
-			setMembersMargin(10);
-
-			setShowMinimizeButton(false);
-			setIsModal(true);
-			setShowModalMask(true);
 			centerInPage();
 
-			final DynamicForm form = new DynamicForm();
-			form.setAlign(Alignment.CENTER);
+			final DynamicForm form = new MtpForm();
 			form.setAutoFocus(true);
 
 			final SelectItem templateField = new MetaDataSelectItem(TemplateDefinition.class, "Template");
@@ -125,10 +116,7 @@ public class TemplateItem extends PartsItem {
 
 			form.setItems(templateField);
 
-			HLayout footer = new HLayout(5);
-			footer.setMargin(10);
-			footer.setWidth100();
-			footer.setAlign(VerticalAlignment.CENTER);
+			container.addMember(form);
 
 			IButton save = new IButton("OK");
 			save.addClickHandler(new ClickHandler() {
@@ -149,9 +137,6 @@ public class TemplateItem extends PartsItem {
 			});
 
 			footer.setMembers(save, cancel);
-
-			addItem(form);
-			addItem(footer);
 		}
 
 		public void addDataChangedHandler(DataChangedHandler handler) {

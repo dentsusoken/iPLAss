@@ -26,12 +26,14 @@ import java.util.List;
 
 import org.iplass.adminconsole.client.base.event.DataChangedEvent;
 import org.iplass.adminconsole.client.base.event.DataChangedHandler;
-import org.iplass.adminconsole.client.base.ui.widget.AbstractWindow;
+import org.iplass.adminconsole.client.base.ui.widget.MtpDialog;
+import org.iplass.adminconsole.client.base.ui.widget.form.MtpForm;
+import org.iplass.adminconsole.client.base.ui.widget.form.MtpSelectItem;
+import org.iplass.adminconsole.client.base.ui.widget.form.MtpTextItem;
 import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
 import org.iplass.adminconsole.client.metadata.data.template.ReportTemplateDS;
 import org.iplass.mtp.web.template.report.definition.ReportParamMapDefinition;
 
-import com.smartgwt.client.types.VerticalAlignment;
 import com.smartgwt.client.widgets.IButton;
 import com.smartgwt.client.widgets.events.ClickEvent;
 import com.smartgwt.client.widgets.events.ClickHandler;
@@ -41,9 +43,8 @@ import com.smartgwt.client.widgets.form.fields.TextItem;
 import com.smartgwt.client.widgets.form.fields.events.ChangedEvent;
 import com.smartgwt.client.widgets.form.fields.events.ChangedHandler;
 import com.smartgwt.client.widgets.grid.ListGridField;
-import com.smartgwt.client.widgets.layout.HLayout;
 
-public class ReportParamMapEditDialog extends AbstractWindow {
+public class ReportParamMapEditDialog extends MtpDialog {
 
 	private SelectItem typeField;
 	private SelectItem templateField;
@@ -55,16 +56,11 @@ public class ReportParamMapEditDialog extends AbstractWindow {
 
 	public ReportParamMapEditDialog() {
 
-		setWidth(370);
-		setHeight(190);
+		setHeight(200);
 		setTitle("JasperReports Parameter");
-		setShowMinimizeButton(false);
-		setIsModal(true);
-		setShowModalMask(true);
 		centerInPage();
 
 		typeField = new SelectItem("type", "Value Type");
-		templateField = new SelectItem("template", "Template");
 
 		LinkedHashMap<String, String> typeMap = new LinkedHashMap<String, String>();
 		typeMap.put("string", "Parameter");
@@ -77,7 +73,6 @@ public class ReportParamMapEditDialog extends AbstractWindow {
 					fromField.hide();
 					templateField.show();
 
-					templateField.setWidth(250);
 					templateField.setOptionDataSource(ReportTemplateDS.getInstance());
 					templateField.setValueField("name");
 					templateField.setDisplayField("displayName");
@@ -96,27 +91,27 @@ public class ReportParamMapEditDialog extends AbstractWindow {
 		});
 		typeField.setValueMap(typeMap);
 
-		nameField = new TextItem("name", "Name");
-		nameField.setWidth(250);
+		nameField = new MtpTextItem("name", "Name");
 		SmartGWTUtil.setRequired(nameField);
 
-		fromField = new TextItem("mapFrom", "Value");
-		fromField.setWidth(250);
+		fromField = new MtpTextItem("mapFrom", "Value");
+		fromField.setVisible(false);
 		SmartGWTUtil.setRequired(fromField);
 
-		final DynamicForm form = new DynamicForm();
-		form.setMargin(5);
+		templateField = new MtpSelectItem("template", "Template");
+		templateField.setVisible(false);
+
+		final DynamicForm form = new MtpForm();
 		form.setHeight100();
-		form.setWidth100();
 		form.setItems(typeField, nameField, fromField, templateField);
+
+		container.addMember(form);
 
 		IButton save = new IButton("OK");
 		save.addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
 				if (form.validate()){
 					saveMap();
-				} else {
-//					errors.setVisible(true);
 				}
 			}
 		});
@@ -128,17 +123,7 @@ public class ReportParamMapEditDialog extends AbstractWindow {
 			}
 		});
 
-		HLayout footer = new HLayout(5);
-		footer.setMargin(5);
-		footer.setHeight(20);
-		footer.setWidth100();
-		//footer.setAlign(Alignment.LEFT);
-		footer.setAlign(VerticalAlignment.CENTER);
 		footer.setMembers(save, cancel);
-
-		addItem(form);
-		addItem(SmartGWTUtil.separator());
-		addItem(footer);
 	}
 
 	/**
@@ -150,7 +135,6 @@ public class ReportParamMapEditDialog extends AbstractWindow {
 			fromField.hide();
 			templateField.show();
 
-			templateField.setWidth(250);
 			templateField.setOptionDataSource(ReportTemplateDS.getInstance());
 			templateField.setValueField("name");
 			templateField.setDisplayField("displayName");

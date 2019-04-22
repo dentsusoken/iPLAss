@@ -26,26 +26,27 @@ import java.util.List;
 import org.iplass.adminconsole.client.base.event.DataChangedEvent;
 import org.iplass.adminconsole.client.base.event.DataChangedHandler;
 import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
-import org.iplass.adminconsole.client.base.ui.widget.AbstractWindow;
+import org.iplass.adminconsole.client.base.ui.widget.MtpDialog;
 import org.iplass.adminconsole.client.base.ui.widget.ScriptEditorDialogConstants;
 import org.iplass.adminconsole.client.base.ui.widget.ScriptEditorDialogHandler;
 import org.iplass.adminconsole.client.base.ui.widget.ScriptEditorDialogMode;
+import org.iplass.adminconsole.client.base.ui.widget.form.MtpForm;
+import org.iplass.adminconsole.client.base.ui.widget.form.MtpTextAreaItem;
+import org.iplass.adminconsole.client.base.ui.widget.form.MtpTextItem;
 import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
 import org.iplass.adminconsole.client.metadata.ui.MetaDataUtil;
 import org.iplass.mtp.web.actionmapping.definition.ParamMapDefinition;
 
-import com.smartgwt.client.types.VerticalAlignment;
+import com.smartgwt.client.types.Alignment;
 import com.smartgwt.client.widgets.IButton;
 import com.smartgwt.client.widgets.events.ClickEvent;
 import com.smartgwt.client.widgets.events.ClickHandler;
 import com.smartgwt.client.widgets.form.DynamicForm;
 import com.smartgwt.client.widgets.form.fields.ButtonItem;
-import com.smartgwt.client.widgets.form.fields.SpacerItem;
 import com.smartgwt.client.widgets.form.fields.TextAreaItem;
 import com.smartgwt.client.widgets.form.fields.TextItem;
-import com.smartgwt.client.widgets.layout.HLayout;
 
-public class ParamMapEditDialog extends AbstractWindow {
+public class ParamMapEditDialog extends MtpDialog {
 
 	private TextItem nameField;
 	private TextItem fromField;
@@ -56,27 +57,21 @@ public class ParamMapEditDialog extends AbstractWindow {
 
 	public ParamMapEditDialog() {
 
-		setWidth(500);
 		setHeight(400);
 		setTitle("Parameter Mapping Setting");
-		setShowMinimizeButton(false);
-		setIsModal(true);
-		setShowModalMask(true);
 		centerInPage();
 
-		nameField = new TextItem("name", "Parameter Name");
-		nameField.setColSpan(2);
-		nameField.setWidth(250);
+		nameField = new MtpTextItem("name", "Parameter Name");
 		SmartGWTUtil.setRequired(nameField);
 
-		fromField = new TextItem("mapFrom", "Map From");
-		fromField.setColSpan(2);
-		fromField.setWidth(250);
+		fromField = new MtpTextItem("mapFrom", "Map From");
 		SmartGWTUtil.setRequired(fromField);
 
 		ButtonItem editScript = new ButtonItem("editScript", "Edit");
 		editScript.setWidth(100);
-		editScript.setStartRow(false);
+		editScript.setStartRow(true);
+		editScript.setColSpan(3);
+		editScript.setAlign(Alignment.RIGHT);
 		editScript.setPrompt(SmartGWTUtil.getHoverString(AdminClientMessageUtil.getString("ui_metadata_action_ParamMapEditDialog_dispEditDialogCondition")));
 		editScript.addClickHandler(new com.smartgwt.client.widgets.form.fields.events.ClickHandler() {
 
@@ -102,27 +97,22 @@ public class ParamMapEditDialog extends AbstractWindow {
 			}
 		});
 
-		conditionField = new TextAreaItem("condition", "Condition");
+		conditionField = new MtpTextAreaItem("condition", "Condition");
 		conditionField.setColSpan(2);
-		conditionField.setWidth("100%");
 		conditionField.setHeight("100%");
 		SmartGWTUtil.setReadOnlyTextArea(conditionField);
 
-		final DynamicForm form = new DynamicForm();
-		form.setNumCols(3);
-		form.setColWidths(120, "*", 100);
-		form.setMargin(5);
+		final DynamicForm form = new MtpForm();
 		form.setHeight100();
-		form.setWidth100();
-		form.setItems(nameField, fromField, new SpacerItem(), new SpacerItem(), editScript, conditionField);
+		form.setItems(nameField, fromField, editScript, conditionField);
+
+		container.addMember(form);
 
 		IButton save = new IButton("OK");
 		save.addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
 				if (form.validate()){
 					saveMap();
-				} else {
-//					errors.setVisible(true);
 				}
 			}
 		});
@@ -134,16 +124,7 @@ public class ParamMapEditDialog extends AbstractWindow {
 			}
 		});
 
-		HLayout footer = new HLayout(5);
-		footer.setMargin(5);
-		footer.setHeight(20);
-		footer.setWidth100();
-		//footer.setAlign(Alignment.LEFT);
-		footer.setAlign(VerticalAlignment.CENTER);
 		footer.setMembers(save, cancel);
-
-		addItem(form);
-		addItem(footer);
 	}
 
 	/**

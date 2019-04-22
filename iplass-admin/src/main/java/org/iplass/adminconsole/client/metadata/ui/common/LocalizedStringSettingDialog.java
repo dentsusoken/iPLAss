@@ -29,8 +29,7 @@ import java.util.Map;
 import org.iplass.adminconsole.client.base.event.DataChangedEvent;
 import org.iplass.adminconsole.client.base.event.DataChangedHandler;
 import org.iplass.adminconsole.client.base.tenant.TenantInfoHolder;
-import org.iplass.adminconsole.client.base.ui.widget.AbstractWindow;
-import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
+import org.iplass.adminconsole.client.base.ui.widget.MtpDialog;
 import org.iplass.adminconsole.shared.metadata.rpc.MetaDataServiceAsync;
 import org.iplass.adminconsole.shared.metadata.rpc.MetaDataServiceFactory;
 import org.iplass.mtp.definition.LocalizedStringDefinition;
@@ -40,7 +39,6 @@ import com.smartgwt.client.data.Record;
 import com.smartgwt.client.types.AutoFitWidthApproach;
 import com.smartgwt.client.types.ListGridEditEvent;
 import com.smartgwt.client.types.Overflow;
-import com.smartgwt.client.types.VerticalAlignment;
 import com.smartgwt.client.widgets.IButton;
 import com.smartgwt.client.widgets.events.ClickEvent;
 import com.smartgwt.client.widgets.events.ClickHandler;
@@ -52,7 +50,7 @@ import com.smartgwt.client.widgets.grid.ListGridRecord;
 import com.smartgwt.client.widgets.layout.HLayout;
 import com.smartgwt.client.widgets.layout.VLayout;
 
-public class LocalizedStringSettingDialog extends AbstractWindow {
+public class LocalizedStringSettingDialog extends MtpDialog {
 
 	private DisplayNameListPane entityPane;
 
@@ -78,35 +76,12 @@ public class LocalizedStringSettingDialog extends AbstractWindow {
 			title += "(Read Only)";
 		}
 		setTitle(title);
-
-		if (option.isModeTextArea()) {
-			setWidth(650);
-		} else {
-			setWidth(500);
-		}
 		setHeight(425);
-
-		setShowMinimizeButton(false);
-		setShowMaximizeButton(false);
-		setCanDragResize(true);
-		setIsModal(true);
-		setShowModalMask(true);
 		centerInPage();
 
 		entityPane = new DisplayNameListPane();
 
-		VLayout layout = new VLayout();
-		layout.setHeight100();
-		layout.setOverflow(Overflow.AUTO);
-		layout.addMember(entityPane);
-
-		HLayout footer = new HLayout();
-		footer.setMembersMargin(5);
-		footer.setMargin(10);
-		footer.setWidth100();
-		footer.setAutoHeight();
-		footer.setAlign(VerticalAlignment.CENTER);
-		footer.setOverflow(Overflow.VISIBLE);
+		container.addMember(entityPane);
 
 		IButton save = new IButton("Save");
 		save.addClickHandler(new ClickHandler() {
@@ -128,12 +103,7 @@ public class LocalizedStringSettingDialog extends AbstractWindow {
 		});
 
 		footer.setMembers(save, cancel);
-
-		addItem(layout);
-		addItem(SmartGWTUtil.separator());
-		addItem(footer);
 	}
-
 
 	private class DisplayNameListPane extends VLayout {
 

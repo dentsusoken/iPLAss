@@ -25,19 +25,18 @@ import java.util.List;
 
 import org.iplass.adminconsole.client.base.event.DataChangedEvent;
 import org.iplass.adminconsole.client.base.event.DataChangedHandler;
-import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
-import org.iplass.adminconsole.client.base.ui.widget.AbstractWindow;
+import org.iplass.adminconsole.client.base.ui.widget.MtpDialog;
+import org.iplass.adminconsole.client.base.ui.widget.form.MtpForm;
+import org.iplass.adminconsole.client.base.ui.widget.form.MtpTextItem;
 import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
 
-import com.smartgwt.client.types.VerticalAlignment;
 import com.smartgwt.client.widgets.IButton;
 import com.smartgwt.client.widgets.events.ClickEvent;
 import com.smartgwt.client.widgets.events.ClickHandler;
 import com.smartgwt.client.widgets.form.DynamicForm;
 import com.smartgwt.client.widgets.form.fields.TextItem;
-import com.smartgwt.client.widgets.layout.HLayout;
 
-public class ResultEditDialog extends AbstractWindow {
+public class ResultEditDialog extends MtpDialog {
 
 	private TextItem nameField;
 
@@ -46,33 +45,23 @@ public class ResultEditDialog extends AbstractWindow {
 
 	public ResultEditDialog() {
 
-		setWidth(370);
 		setHeight(140);
 		setTitle("Result setting");
-		setShowMinimizeButton(false);
-		setIsModal(true);
-		setShowModalMask(true);
 		centerInPage();
 
-		nameField = new TextItem("result", "Attribute name");
-		nameField.setWidth(250);
-		nameField.setRequired(true);
-		//TODO YK ロケールを設定すればデフォルトでOK
-		nameField.setRequiredMessage(AdminClientMessageUtil.getString("ui_metadata_webapi_ResultEditDialog_valueFieldRequired"));
+		nameField = new MtpTextItem("result", "Attribute name");
+		SmartGWTUtil.setRequired(nameField);
 
-		final DynamicForm form = new DynamicForm();
-		form.setMargin(5);
-		form.setHeight100();
-		form.setWidth100();
+		final DynamicForm form = new MtpForm();
 		form.setItems(nameField);
+
+		container.addMember(form);
 
 		IButton save = new IButton("OK");
 		save.addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
 				if (form.validate()){
 					saveMap();
-				} else {
-//					errors.setVisible(true);
 				}
 			}
 		});
@@ -84,16 +73,7 @@ public class ResultEditDialog extends AbstractWindow {
 			}
 		});
 
-		HLayout footer = new HLayout(5);
-		footer.setMargin(5);
-		footer.setHeight(20);
-		footer.setWidth100();
-		//footer.setAlign(Alignment.LEFT);
-		footer.setAlign(VerticalAlignment.CENTER);
 		footer.setMembers(save, cancel);
-
-		addItem(form);
-		addItem(footer);
 	}
 
 	/**

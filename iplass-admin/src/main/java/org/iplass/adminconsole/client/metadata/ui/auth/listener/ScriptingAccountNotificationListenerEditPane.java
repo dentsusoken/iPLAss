@@ -30,16 +30,18 @@ import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
 import org.iplass.adminconsole.client.base.ui.widget.ScriptEditorDialogCondition;
 import org.iplass.adminconsole.client.base.ui.widget.ScriptEditorDialogHandler;
 import org.iplass.adminconsole.client.base.ui.widget.ScriptEditorDialogMode;
+import org.iplass.adminconsole.client.base.ui.widget.form.MtpForm;
+import org.iplass.adminconsole.client.base.ui.widget.form.MtpTextAreaItem;
 import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
 import org.iplass.adminconsole.client.metadata.ui.MetaDataUtil;
 import org.iplass.mtp.auth.policy.definition.AccountNotificationListenerDefinition;
 import org.iplass.mtp.auth.policy.definition.NotificationType;
 import org.iplass.mtp.auth.policy.definition.listeners.ScriptingAccountNotificationListenerDefinition;
 
+import com.smartgwt.client.types.Alignment;
 import com.smartgwt.client.widgets.form.DynamicForm;
 import com.smartgwt.client.widgets.form.fields.ButtonItem;
 import com.smartgwt.client.widgets.form.fields.CheckboxItem;
-import com.smartgwt.client.widgets.form.fields.SpacerItem;
 import com.smartgwt.client.widgets.form.fields.TextAreaItem;
 
 public class ScriptingAccountNotificationListenerEditPane extends AuthenticationListenerTypeEditPane {
@@ -56,17 +58,13 @@ public class ScriptingAccountNotificationListenerEditPane extends Authentication
 		setWidth100();
 		setHeight100();
 
-		scriptForm = new DynamicForm();
-		scriptForm.setMargin(5);
-		scriptForm.setAutoHeight();
-		scriptForm.setWidth100();
+		scriptForm = new MtpForm();
 		scriptForm.setHeight100();
-		scriptForm.setNumCols(3);
-		scriptForm.setColWidths(100, "*", 105);
 
 		ButtonItem editScript = new ButtonItem("editScript", "Edit");
 		editScript.setWidth(100);
-		editScript.setStartRow(false);
+		editScript.setColSpan(3);
+		editScript.setAlign(Alignment.RIGHT);
 		editScript.setPrompt(SmartGWTUtil.getHoverString(AdminClientMessageUtil.getString("ui_metadata_auth_listener_ScriptingAccountNotificationListenerEditPane_dispScriptEditDialog")));
 		editScript.addClickHandler(new com.smartgwt.client.widgets.form.fields.events.ClickHandler() {
 
@@ -90,21 +88,17 @@ public class ScriptingAccountNotificationListenerEditPane extends Authentication
 			}
 		});
 
-		txtScriptField = new TextAreaItem("script", "Script");
+		txtScriptField = new MtpTextAreaItem("script", "Script");
 		txtScriptField.setColSpan(2);
-		txtScriptField.setWidth("100%");
 		txtScriptField.setHeight("100%");
 		SmartGWTUtil.setReadOnlyTextArea(txtScriptField);
 
-		scriptForm.setItems(new SpacerItem(), new SpacerItem(), editScript, txtScriptField);
+		scriptForm.setItems(editScript, txtScriptField);
 
-		notificationTypeForm = new DynamicForm();
-		notificationTypeForm.setMargin(5);
+		notificationTypeForm = new MtpForm();
 		notificationTypeForm.setAutoHeight();
-		notificationTypeForm.setWidth100();
-		notificationTypeForm.setNumCols(3);
-		notificationTypeForm.setColWidths(150, 190, "*");
 		notificationTypeForm.setIsGroup(true);
+		notificationTypeForm.setColWidths(200, 200, 200);
 		notificationTypeForm.setGroupTitle("Notification Type");
 
 		mapTypeCheckBox = new LinkedHashMap<>();

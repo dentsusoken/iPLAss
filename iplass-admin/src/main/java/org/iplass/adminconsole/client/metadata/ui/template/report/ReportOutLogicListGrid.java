@@ -23,10 +23,13 @@ package org.iplass.adminconsole.client.metadata.ui.template.report;
 import java.util.LinkedHashMap;
 
 import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
-import org.iplass.adminconsole.client.base.ui.widget.AbstractWindow;
+import org.iplass.adminconsole.client.base.ui.widget.MtpDialog;
 import org.iplass.adminconsole.client.base.ui.widget.ScriptEditorDialogCondition;
 import org.iplass.adminconsole.client.base.ui.widget.ScriptEditorDialogHandler;
 import org.iplass.adminconsole.client.base.ui.widget.ScriptEditorDialogMode;
+import org.iplass.adminconsole.client.base.ui.widget.form.MtpForm;
+import org.iplass.adminconsole.client.base.ui.widget.form.MtpTextAreaItem;
+import org.iplass.adminconsole.client.base.ui.widget.form.MtpTextItem;
 import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
 import org.iplass.adminconsole.client.metadata.ui.MetaDataUtil;
 import org.iplass.mtp.web.template.report.definition.GroovyReportOutputLogicDefinition;
@@ -36,14 +39,12 @@ import org.iplass.mtp.web.template.report.definition.ReportOutputLogicDefinition
 
 import com.smartgwt.client.types.Alignment;
 import com.smartgwt.client.types.Overflow;
-import com.smartgwt.client.types.VerticalAlignment;
 import com.smartgwt.client.widgets.IButton;
 import com.smartgwt.client.widgets.events.ClickEvent;
 import com.smartgwt.client.widgets.events.ClickHandler;
 import com.smartgwt.client.widgets.form.DynamicForm;
 import com.smartgwt.client.widgets.form.fields.ButtonItem;
 import com.smartgwt.client.widgets.form.fields.SelectItem;
-import com.smartgwt.client.widgets.form.fields.SpacerItem;
 import com.smartgwt.client.widgets.form.fields.TextAreaItem;
 import com.smartgwt.client.widgets.form.fields.TextItem;
 import com.smartgwt.client.widgets.form.fields.events.ChangedEvent;
@@ -53,7 +54,6 @@ import com.smartgwt.client.widgets.grid.ListGridField;
 import com.smartgwt.client.widgets.grid.ListGridRecord;
 import com.smartgwt.client.widgets.grid.events.RecordDoubleClickEvent;
 import com.smartgwt.client.widgets.grid.events.RecordDoubleClickHandler;
-import com.smartgwt.client.widgets.layout.HLayout;
 import com.smartgwt.client.widgets.layout.VLayout;
 
 /**
@@ -211,9 +211,7 @@ public class ReportOutLogicListGrid extends ListGrid {
 	 * @author lis71n
 	 *
 	 */
-	private class ReportOutputLogicEditDialog extends AbstractWindow {
-
-		private static final int DEFAULT_WIDTH = 600;
+	private class ReportOutputLogicEditDialog extends MtpDialog {
 
 		private boolean isNewRow = false;
 		private ReportOutLogicListGridRecord target;
@@ -223,7 +221,7 @@ public class ReportOutLogicListGrid extends ListGrid {
 		private SelectItem typeItem;
 
 		//Main
-		private VLayout mainLayout = new VLayout();
+		private VLayout mainLayout;
 
 		//Script
 		private DynamicForm scriptItemForm;
@@ -244,15 +242,10 @@ public class ReportOutLogicListGrid extends ListGrid {
 		}
 
 		private void initialize() {
-			// ダイアログ本体のプロパティ設定
-			setWidth(DEFAULT_WIDTH);
-			setHeight(100);
+
+			setHeight(150);
 			setTitle("ReportOutputLogic");
-			setShowMinimizeButton(false);
 			setShowMaximizeButton(true);	//最大化は可能に設定（スクリプト編集用）
-			setCanDragResize(true);			//リサイズは可能に設定（スクリプト編集用）
-			setIsModal(true);
-			setShowModalMask(true);
 			centerInPage();
 
 			//---------------------------------
@@ -267,31 +260,32 @@ public class ReportOutLogicListGrid extends ListGrid {
 				}
 			});
 
-			typeItemForm = new DynamicForm();
-			typeItemForm.setMargin(5);
-			typeItemForm.setNumCols(3);
-			typeItemForm.setColWidths(100, "*", 100);
-			typeItemForm.setAlign(Alignment.LEFT);
+			typeItemForm = new MtpForm();
+			typeItemForm.setAutoHeight();
 			typeItemForm.setItems(typeItem);
 
+			container.addMember(typeItemForm);
+
+			mainLayout = new VLayout();
 			mainLayout.setWidth100();
 			mainLayout.setHeight100();
-//			mainLayout.setMargin(10);
+
+			container.addMember(mainLayout);
 
 			//---------------------------------
 			//Script
 			//---------------------------------
-			scriptItem = new TextAreaItem();
+			scriptItem = new MtpTextAreaItem();
 			scriptItem.setColSpan(2);
 			scriptItem.setTitle("Script");
-			scriptItem.setWidth("100%");
 			scriptItem.setHeight("100%");
 			SmartGWTUtil.setRequired(scriptItem);
 			SmartGWTUtil.setReadOnlyTextArea(scriptItem);
 
 			ButtonItem editScript = new ButtonItem("editScript", "Edit");
 			editScript.setWidth(100);
-			editScript.setStartRow(false);
+			editScript.setColSpan(3);
+			editScript.setAlign(Alignment.RIGHT);
 			editScript.addClickHandler(new com.smartgwt.client.widgets.form.fields.events.ClickHandler() {
 
 				@Override
@@ -314,31 +308,21 @@ public class ReportOutLogicListGrid extends ListGrid {
 				}
 			});
 
-			scriptItemForm = new DynamicForm();
-			scriptItemForm.setMargin(5);
-			scriptItemForm.setNumCols(3);
-			scriptItemForm.setColWidths(100, "*", 100);
-			scriptItemForm.setWidth100();
+			scriptItemForm = new MtpForm();
 			scriptItemForm.setHeight100();
-			scriptItemForm.setAlign(Alignment.LEFT);
-			scriptItemForm.setItems(new SpacerItem(), new SpacerItem(), editScript, scriptItem);
+			scriptItemForm.setItems(editScript, scriptItem);
 
 			//---------------------------------
 			//Java Class
 			//---------------------------------
-			javaClassNameItem = new TextItem();
+			javaClassNameItem = new MtpTextItem();
 			javaClassNameItem.setTitle("Class Name");
-			javaClassNameItem.setWidth("*");
 			SmartGWTUtil.setRequired(javaClassNameItem);
 			SmartGWTUtil.addHoverToFormItem(javaClassNameItem,
 					AdminClientMessageUtil.getString("ui_metadata_template_report_ReportOutLogicListGrid_javaClassNameItemComment"));
 
-			javaClassItemForm = new DynamicForm();
-			javaClassItemForm.setMargin(5);
-			javaClassItemForm.setNumCols(3);
-			javaClassItemForm.setColWidths(100, "*", 50);
-			javaClassItemForm.setHeight(25);
-			javaClassItemForm.setItems(javaClassNameItem, SmartGWTUtil.createSpacer(50));
+			javaClassItemForm = new MtpForm();
+			javaClassItemForm.setItems(javaClassNameItem);
 
 			//---------------------------------
 			//Footer
@@ -368,17 +352,8 @@ public class ReportOutLogicListGrid extends ListGrid {
 				}
 			});
 
-			HLayout footer = new HLayout(5);
-			footer.setMargin(5);
-			footer.setHeight(20);
-			footer.setWidth100();
-			footer.setAlign(VerticalAlignment.CENTER);
 			footer.setMembers(ok, cancel);
 
-			addItem(typeItemForm);
-			addItem(mainLayout);
-			addItem(SmartGWTUtil.separator());
-			addItem(footer);
 		}
 
 		private void dataInitialize() {
@@ -416,7 +391,7 @@ public class ReportOutLogicListGrid extends ListGrid {
 				mainLayout.addMember(javaClassItemForm);
 				setHeight(190);
 			} else {
-				setHeight(120);
+				setHeight(150);
 			}
 		}
 

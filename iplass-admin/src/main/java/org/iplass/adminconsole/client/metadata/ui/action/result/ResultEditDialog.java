@@ -27,26 +27,28 @@ import java.util.List;
 import org.iplass.adminconsole.client.base.event.DataChangedEvent;
 import org.iplass.adminconsole.client.base.event.DataChangedHandler;
 import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
-import org.iplass.adminconsole.client.base.ui.widget.AbstractWindow;
+import org.iplass.adminconsole.client.base.ui.widget.MtpDialog;
+import org.iplass.adminconsole.client.base.ui.widget.form.MtpForm;
+import org.iplass.adminconsole.client.base.ui.widget.form.MtpSelectItem;
+import org.iplass.adminconsole.client.base.ui.widget.form.MtpTextItem;
 import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
 import org.iplass.adminconsole.client.metadata.ui.action.ResultType;
 import org.iplass.mtp.web.actionmapping.definition.result.ResultDefinition;
 
-import com.smartgwt.client.types.VerticalAlignment;
-import com.smartgwt.client.widgets.Canvas;
 import com.smartgwt.client.widgets.IButton;
 import com.smartgwt.client.widgets.Label;
 import com.smartgwt.client.widgets.events.ClickEvent;
 import com.smartgwt.client.widgets.events.ClickHandler;
 import com.smartgwt.client.widgets.form.DynamicForm;
+import com.smartgwt.client.widgets.form.fields.CanvasItem;
 import com.smartgwt.client.widgets.form.fields.SelectItem;
+import com.smartgwt.client.widgets.form.fields.SpacerItem;
 import com.smartgwt.client.widgets.form.fields.TextItem;
 import com.smartgwt.client.widgets.form.fields.events.ChangedEvent;
 import com.smartgwt.client.widgets.form.fields.events.ChangedHandler;
 import com.smartgwt.client.widgets.form.validator.CustomValidator;
-import com.smartgwt.client.widgets.layout.HLayout;
 
-public class ResultEditDialog extends AbstractWindow {
+public class ResultEditDialog extends MtpDialog {
 
 	/** Resultの種類選択用Map */
 	private static LinkedHashMap<String, String> typeMap;
@@ -69,10 +71,6 @@ public class ResultEditDialog extends AbstractWindow {
 	/** 個別属性部分 */
 	private ResultTypeEditPane typeEditPane;
 
-	/** フッター */
-	private Canvas footerLine;
-	private HLayout footer;
-
 	/** 編集対象 */
 	private ResultDefinition curDefinition;
 
@@ -81,13 +79,14 @@ public class ResultEditDialog extends AbstractWindow {
 
 	public ResultEditDialog() {
 
-		setWidth(550);
-		setHeight(430);
+		setHeight(460);
 		setTitle("Status Result Setting");
-		setShowMinimizeButton(false);
-		setIsModal(true);
-		setShowModalMask(true);
 		centerInPage();
+
+		final Label require = new Label(AdminClientMessageUtil.getString("ui_metadata_action_result_ResultEditDialog_descLabel"));
+		require.setAutoHeight();
+
+		container.addMember(require);
 
 		CustomValidator validator = new CustomValidator() {
 
@@ -99,16 +98,20 @@ public class ResultEditDialog extends AbstractWindow {
 		};
 		validator.setErrorMessage(AdminClientMessageUtil.getString("ui_metadata_action_result_ResultEditDialog_errorMsg"));
 
-		statusField = new TextItem("status", "Status");
-		statusField.setWidth(250);
-		statusField.setHint(AdminClientMessageUtil.getString("ui_metadata_action_result_ResultEditDialog_allStatus"));
+		statusField = new MtpTextItem("status", "Status");
 		statusField.setValidators(validator);
 
-		exceptionClassNameField = new TextItem("exceptionClassName", "Exception Class Name");
-		exceptionClassNameField.setWidth(250);
+		CanvasItem statusHintField = new CanvasItem();
+		statusHintField.setWidth("100%");
+		statusHintField.setShowTitle(false);
+		Label hint = new Label(AdminClientMessageUtil.getString("ui_metadata_action_result_ResultEditDialog_allStatus"));
+		hint.setAutoHeight();
+		statusHintField.setCanvas(hint);
+
+		exceptionClassNameField = new MtpTextItem("exceptionClassName", "Exception Class Name");
 		exceptionClassNameField.setValidators(validator);
 
-		typeField = new SelectItem("type", "Type");
+		typeField = new MtpSelectItem("type", "Type");
 		typeField.setValueMap(typeMap);
 		SmartGWTUtil.setRequired(typeField);
 		typeField.addChangedHandler(new ChangedHandler() {
@@ -119,12 +122,11 @@ public class ResultEditDialog extends AbstractWindow {
 			}
 		});
 
-		final DynamicForm form = new DynamicForm();
-		form.setMargin(5);
-//		form.setHeight100();
+		final DynamicForm form = new MtpForm();
 		form.setAutoHeight();	//下に追加するためAutoHeight
-		form.setWidth100();
-		form.setItems(statusField, exceptionClassNameField, typeField);
+		form.setItems(statusField, new SpacerItem(), new SpacerItem(), statusHintField, exceptionClassNameField, typeField);
+
+		container.addMember(form);
 
 		IButton save = new IButton("OK");
 		save.addClickHandler(new ClickHandler() {
@@ -146,23 +148,7 @@ public class ResultEditDialog extends AbstractWindow {
 			}
 		});
 
-		footerLine = SmartGWTUtil.separator();
-		footer = new HLayout(5);
-		footer.setMargin(5);
-		footer.setHeight(20);
-		footer.setWidth100();
-		footer.setAlign(VerticalAlignment.CENTER);
 		footer.setMembers(save, cancel);
-
-		final Label require = new Label(AdminClientMessageUtil.getString("ui_metadata_action_result_ResultEditDialog_descLabel"));
-		require.setWidth(400);
-		require.setMargin(15);
-		require.setAutoHeight();
-
-		addItem(require);
-		addItem(form);
-		addItem(footerLine);
-		addItem(footer);
 	}
 
 	/**
@@ -177,22 +163,18 @@ public class ResultEditDialog extends AbstractWindow {
 		typeField.setValue(ResultType.valueOf(definition).name());
 
 		if (typeEditPane != null) {
-			if (contains(typeEditPane)) {
-				removeItem(typeEditPane);
+			if (container.contains(typeEditPane)) {
+				container.removeMember(typeEditPane);
 			}
 			typeEditPane = null;
 		}
-		removeItem(footerLine);
-		removeItem(footer);
 
 		if (definition != null) {
 			ResultType type = ResultType.valueOf(definition);
 			typeEditPane = ResultType.typeOfEditPane(type);
 			typeEditPane.setDefinition(definition);
-			addItem(typeEditPane);
+			container.addMember(typeEditPane);
 		}
-		addItem(footerLine);
-		addItem(footer);
 	}
 
 	/**

@@ -29,8 +29,10 @@ import org.iplass.adminconsole.client.base.event.DataChangedEvent;
 import org.iplass.adminconsole.client.base.event.DataChangedHandler;
 import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
 import org.iplass.adminconsole.client.base.tenant.TenantInfoHolder;
-import org.iplass.adminconsole.client.base.ui.widget.AbstractWindow;
+import org.iplass.adminconsole.client.base.ui.widget.MtpDialog;
 import org.iplass.adminconsole.client.base.ui.widget.ScriptEditorPane;
+import org.iplass.adminconsole.client.base.ui.widget.form.MtpForm2Column;
+import org.iplass.adminconsole.client.base.ui.widget.form.MtpTextItem;
 import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
 import org.iplass.adminconsole.shared.metadata.rpc.MetaDataServiceAsync;
 import org.iplass.adminconsole.shared.metadata.rpc.MetaDataServiceFactory;
@@ -42,14 +44,12 @@ import com.smartgwt.client.types.Overflow;
 import com.smartgwt.client.widgets.IButton;
 import com.smartgwt.client.widgets.form.DynamicForm;
 import com.smartgwt.client.widgets.form.fields.SelectItem;
-import com.smartgwt.client.widgets.form.fields.SpacerItem;
 import com.smartgwt.client.widgets.form.fields.TextItem;
-import com.smartgwt.client.widgets.layout.HLayout;
 import com.smartgwt.client.widgets.layout.VLayout;
 import com.smartgwt.client.widgets.tab.Tab;
 import com.smartgwt.client.widgets.tab.TabSet;
 
-public class PushNotificationTemplateSettingByLocaleDialog extends AbstractWindow {
+public class PushNotificationTemplateSettingByLocaleDialog extends MtpDialog {
 
 	private LocalizedPushNotificationTemplateAttributePane localizedMainPane;
 
@@ -65,23 +65,38 @@ public class PushNotificationTemplateSettingByLocaleDialog extends AbstractWindo
 			curLocalizedDefinition = new LocalizedNotificationDefinition();
 		}
 
-		localizedMainPane = new LocalizedPushNotificationTemplateAttributePane();
-
 		setTitle("Multilingual Setting Dialog");
-		setHeight100();
-		setWidth(800);
-		setMargin(10);
-		setMembersMargin(10);
-		setShowMinimizeButton(false);
-		setIsModal(true);
-		setShowModalMask(true);
+		setHeight("80%");
 		centerInPage();
 
-		OperationPane opePane = new OperationPane(this);
-
+		localizedMainPane = new LocalizedPushNotificationTemplateAttributePane();
 		localizedMainPane.setHeight100();
-		addItem(localizedMainPane);
-		addItem(opePane);
+		container.addMember(localizedMainPane);
+
+		IButton save = new IButton("Save");
+		save.addClickHandler(new com.smartgwt.client.widgets.events.ClickHandler() {
+			public void onClick(com.smartgwt.client.widgets.events.ClickEvent event) {
+				boolean validate = localizedMainPane.validate();
+				if (!validate) {
+					return;
+				}
+
+				LocalizedNotificationDefinition definition = curLocalizedDefinition;
+
+				definition = localizedMainPane.getEditDefinition(curLocalizedDefinition);
+				fireDataChanged(definition);
+				destroy();
+			}
+		});
+
+		IButton cancel = new IButton("Cancel");
+		cancel.addClickHandler(new com.smartgwt.client.widgets.events.ClickHandler() {
+			public void onClick(com.smartgwt.client.widgets.events.ClickEvent event) {
+				destroy();
+			}
+		});
+
+		footer.setMembers(save, cancel);
 	}
 
 	private class LocalizedPushNotificationTemplateAttributePane extends VLayout {
@@ -95,7 +110,6 @@ public class PushNotificationTemplateSettingByLocaleDialog extends AbstractWindo
 		private ScriptEditorPane bodyEditor;
 
 		public LocalizedPushNotificationTemplateAttributePane() {
-			setOverflow(Overflow.AUTO);	//Stack上の表示領域が小さい場合にスクロールができるようにAUTO設定
 
 			MetaDataServiceAsync service = MetaDataServiceFactory.get();
 			service.getEnableLanguages(TenantInfoHolder.getId(), new AsyncCallback<Map<String, String>>() {
@@ -110,23 +124,16 @@ public class PushNotificationTemplateSettingByLocaleDialog extends AbstractWindo
 						enableLanguagesMap.put(e.getKey(), e.getValue());
 					}
 
+					form = new MtpForm2Column();
+
 					langSelectItem = new SelectItem("language", "Language");
 					langSelectItem.setValueMap(enableLanguagesMap);
 					SmartGWTUtil.setRequired(langSelectItem);
 
-					VLayout mainPane = new VLayout();
-					mainPane.setMargin(5);
+					titleField = new MtpTextItem("title", AdminClientMessageUtil.getString("ui_metadata_pushnotification_PushNotificationTemplateSettingByLocaleDialog_title"));
+					titleField.setColSpan(3);
 
-					form = new DynamicForm();
-					form.setWidth100();
-					form.setNumCols(5);	//間延びしないように最後に１つ余分に作成
-					form.setColWidths(100, "*", 100, "*", "*");
-
-					titleField = new TextItem("title", AdminClientMessageUtil.getString("ui_metadata_pushnotification_PushNotificationTemplateSettingByLocaleDialog_title"));
-					titleField.setWidth("100%");
-					titleField.setColSpan(4);
-
-					form.setItems(langSelectItem, titleField, new SpacerItem());
+					form.setItems(langSelectItem, titleField);
 
 					//メッセージ編集領域
 					tabSet = new TabSet();
@@ -143,10 +150,8 @@ public class PushNotificationTemplateSettingByLocaleDialog extends AbstractWindo
 					bodyTab.setPane(bodyEditor);
 					tabSet.addTab(bodyTab);
 
-					mainPane.addMember(form);
-					mainPane.addMember(tabSet);
-
-					addMember(mainPane);
+					addMember(form);
+					addMember(tabSet);
 
 					setDefinition(curLocalizedDefinition);
 				}
@@ -211,41 +216,6 @@ public class PushNotificationTemplateSettingByLocaleDialog extends AbstractWindo
 			} else {
 				target.setTitle(title);
 			}
-		}
-	}
-
-	private class OperationPane extends HLayout {
-		public OperationPane(final PushNotificationTemplateSettingByLocaleDialog dialog) {
-			HLayout footer = new HLayout(5);
-			footer.setMargin(10);
-			footer.setWidth100();
-
-			IButton save = new IButton("Save");
-			save.addClickHandler(new com.smartgwt.client.widgets.events.ClickHandler() {
-				public void onClick(com.smartgwt.client.widgets.events.ClickEvent event) {
-					boolean validate = localizedMainPane.validate();
-					if (!validate) {
-						return;
-					}
-
-					LocalizedNotificationDefinition definition = curLocalizedDefinition;
-
-					definition = localizedMainPane.getEditDefinition(curLocalizedDefinition);
-					fireDataChanged(definition);
-					dialog.destroy();
-				}
-			});
-
-			IButton cancel = new IButton("Cancel");
-			cancel.addClickHandler(new com.smartgwt.client.widgets.events.ClickHandler() {
-				public void onClick(com.smartgwt.client.widgets.events.ClickEvent event) {
-					dialog.destroy();
-				}
-			});
-
-			footer.setMembers(save, cancel);
-
-			addMember(footer);
 		}
 	}
 

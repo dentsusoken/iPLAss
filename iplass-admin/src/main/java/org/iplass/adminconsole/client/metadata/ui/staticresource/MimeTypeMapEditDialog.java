@@ -25,19 +25,19 @@ import java.util.List;
 
 import org.iplass.adminconsole.client.base.event.DataChangedEvent;
 import org.iplass.adminconsole.client.base.event.DataChangedHandler;
-import org.iplass.adminconsole.client.base.ui.widget.AbstractWindow;
+import org.iplass.adminconsole.client.base.ui.widget.MtpDialog;
+import org.iplass.adminconsole.client.base.ui.widget.form.MtpForm;
+import org.iplass.adminconsole.client.base.ui.widget.form.MtpTextItem;
 import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
 import org.iplass.mtp.web.staticresource.definition.MimeTypeMappingDefinition;
 
-import com.smartgwt.client.types.VerticalAlignment;
 import com.smartgwt.client.widgets.IButton;
 import com.smartgwt.client.widgets.events.ClickEvent;
 import com.smartgwt.client.widgets.events.ClickHandler;
 import com.smartgwt.client.widgets.form.DynamicForm;
 import com.smartgwt.client.widgets.form.fields.TextItem;
-import com.smartgwt.client.widgets.layout.HLayout;
 
-public class MimeTypeMapEditDialog extends AbstractWindow {
+public class MimeTypeMapEditDialog extends MtpDialog {
 
 	private TextItem extensionField;
 	private TextItem mimeTypeField;
@@ -46,27 +46,21 @@ public class MimeTypeMapEditDialog extends AbstractWindow {
 	private List<DataChangedHandler> handlers = new ArrayList<DataChangedHandler>();
 
 	public MimeTypeMapEditDialog() {
-		setWidth(370);
-		setHeight(140);
+
+		setHeight(200);
 		setTitle("MIME Type Mapping Setting");
-		setShowMinimizeButton(false);
-		setIsModal(true);
-		setShowModalMask(true);
 		centerInPage();
 
-		extensionField = new TextItem("extension", "Extension");
-		extensionField.setWidth(250);
+		extensionField = new MtpTextItem("extension", "Extension");
 		SmartGWTUtil.setRequired(extensionField);
 
-		mimeTypeField = new TextItem("mimeType", "MIME Type");
-		mimeTypeField.setWidth(250);
+		mimeTypeField = new MtpTextItem("mimeType", "MIME Type");
 		SmartGWTUtil.setRequired(mimeTypeField);
 
-		final DynamicForm form = new DynamicForm();
-		form.setMargin(5);
-		form.setHeight100();
-		form.setWidth100();
+		final DynamicForm form = new MtpForm();
 		form.setItems(extensionField, mimeTypeField);
+
+		container.addMember(form);
 
 		IButton save = new IButton("OK");
 		save.addClickHandler(new ClickHandler() {
@@ -84,15 +78,7 @@ public class MimeTypeMapEditDialog extends AbstractWindow {
 			}
 		});
 
-		HLayout footer = new HLayout(5);
-		footer.setMargin(5);
-		footer.setHeight(20);
-		footer.setWidth100();
-		footer.setAlign(VerticalAlignment.CENTER);
 		footer.setMembers(save, cancel);
-
-		addItem(form);
-		addItem(footer);
 	}
 
 	/**

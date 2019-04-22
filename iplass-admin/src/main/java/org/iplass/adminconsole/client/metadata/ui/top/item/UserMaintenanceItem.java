@@ -25,7 +25,9 @@ import java.util.LinkedHashMap;
 import org.iplass.adminconsole.client.base.event.MTPEvent;
 import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
 import org.iplass.adminconsole.client.base.tenant.TenantInfoHolder;
-import org.iplass.adminconsole.client.base.ui.widget.AbstractWindow;
+import org.iplass.adminconsole.client.base.ui.widget.MtpDialog;
+import org.iplass.adminconsole.client.base.ui.widget.form.MtpForm;
+import org.iplass.adminconsole.client.base.ui.widget.form.MtpSelectItem;
 import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
 import org.iplass.adminconsole.client.metadata.ui.top.PartsOperationHandler;
 import org.iplass.adminconsole.shared.metadata.rpc.MetaDataServiceAsync;
@@ -36,7 +38,6 @@ import org.iplass.mtp.view.top.parts.UserMaintenanceParts;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.smartgwt.client.types.HeaderControls;
-import com.smartgwt.client.types.VerticalAlignment;
 import com.smartgwt.client.util.SC;
 import com.smartgwt.client.widgets.HeaderControl;
 import com.smartgwt.client.widgets.IButton;
@@ -44,8 +45,6 @@ import com.smartgwt.client.widgets.events.ClickEvent;
 import com.smartgwt.client.widgets.events.ClickHandler;
 import com.smartgwt.client.widgets.form.DynamicForm;
 import com.smartgwt.client.widgets.form.fields.SelectItem;
-import com.smartgwt.client.widgets.layout.HLayout;
-import com.smartgwt.client.widgets.layout.VLayout;
 
 /**
  *
@@ -91,7 +90,7 @@ public class UserMaintenanceItem extends PartsItem {
 		return true;
 	}
 
-	private class UserMaintenanceItemSettingDialog extends AbstractWindow {
+	private class UserMaintenanceItemSettingDialog extends MtpDialog {
 
 		private static final String USER_DEFINITION_NAME = "mtp.auth.User";
 		private SelectItem viewField;
@@ -100,35 +99,22 @@ public class UserMaintenanceItem extends PartsItem {
 		 * コンストラクタ
 		 */
 		public UserMaintenanceItemSettingDialog() {
+
 			setTitle("User Maintenance");
 			setHeight(130);
-			setWidth(430);
-
-			setShowMinimizeButton(false);
-			setIsModal(true);
-			setShowModalMask(true);
 			centerInPage();
 
-			final DynamicForm form = new DynamicForm();
+			final DynamicForm form = new MtpForm();
 			form.setAutoFocus(true);
-			form.setCellPadding(5);
-			form.setNumCols(3);
-			form.setColWidths(100, 280, "*");
 
-			viewField = new SelectItem("view", "User View");
-			viewField.setWidth("100%");
+			viewField = new MtpSelectItem("view", "User View");
 			viewField.setDisabled(true);
 			viewField.setValue(parts.getViewName());
 			getViewList(USER_DEFINITION_NAME);
 
 			form.setItems(viewField);
 
-			VLayout mainLayout = new VLayout();
-			mainLayout.setWidth100();
-			mainLayout.setHeight100();
-			mainLayout.setMargin(10);
-			mainLayout.setMembersMargin(10);
-			mainLayout.addMember(form);
+			container.addMember(form);
 
 			IButton save = new IButton("OK");
 			save.addClickHandler(new ClickHandler() {
@@ -148,16 +134,7 @@ public class UserMaintenanceItem extends PartsItem {
 				}
 			});
 
-			HLayout footer = new HLayout(5);
-			footer.setMargin(5);
-			footer.setHeight(20);
-			footer.setWidth100();
-			footer.setAlign(VerticalAlignment.CENTER);
 			footer.setMembers(save, cancel);
-
-			addItem(mainLayout);
-			addItem(SmartGWTUtil.separator());
-			addItem(footer);
 		}
 
 		private void getViewList(String defName) {

@@ -26,12 +26,12 @@ import java.util.List;
 
 import org.iplass.adminconsole.client.base.event.DataChangedEvent;
 import org.iplass.adminconsole.client.base.event.DataChangedHandler;
-import org.iplass.adminconsole.client.base.ui.widget.AbstractWindow;
+import org.iplass.adminconsole.client.base.ui.widget.MtpDialog;
+import org.iplass.adminconsole.client.base.ui.widget.form.MtpForm;
+import org.iplass.adminconsole.client.base.ui.widget.form.MtpSelectItem;
 import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
 import org.iplass.mtp.auth.policy.definition.AccountNotificationListenerDefinition;
 
-import com.smartgwt.client.types.VerticalAlignment;
-import com.smartgwt.client.widgets.Canvas;
 import com.smartgwt.client.widgets.IButton;
 import com.smartgwt.client.widgets.events.ClickEvent;
 import com.smartgwt.client.widgets.events.ClickHandler;
@@ -39,9 +39,8 @@ import com.smartgwt.client.widgets.form.DynamicForm;
 import com.smartgwt.client.widgets.form.fields.SelectItem;
 import com.smartgwt.client.widgets.form.fields.events.ChangedEvent;
 import com.smartgwt.client.widgets.form.fields.events.ChangedHandler;
-import com.smartgwt.client.widgets.layout.HLayout;
 
-public class AuthenticationListenerEditDialog extends AbstractWindow {
+public class AuthenticationListenerEditDialog extends MtpDialog {
 
 	/** AuthenticationListenerの種類選択用Map */
 	private static LinkedHashMap<String, String> typeMap;
@@ -58,10 +57,6 @@ public class AuthenticationListenerEditDialog extends AbstractWindow {
 	/** 個別属性部分 */
 	private AuthenticationListenerTypeEditPane typeEditPane;
 
-	/** フッター */
-	private Canvas footerLine;
-	private HLayout footer;
-
 	/** 編集対象 */
 	private AccountNotificationListenerDefinition curDefinition;
 
@@ -70,15 +65,11 @@ public class AuthenticationListenerEditDialog extends AbstractWindow {
 
 	public AuthenticationListenerEditDialog() {
 
-		setWidth(550);
-		setHeight(570);
+		setHeight(590);
 		setTitle("Authentication Listener Setting");
-		setShowMinimizeButton(false);
-		setIsModal(true);
-		setShowModalMask(true);
 		centerInPage();
 
-		slctTypeField = new SelectItem("type", "Type");
+		slctTypeField = new MtpSelectItem("type", "Type");
 		slctTypeField.setValueMap(typeMap);
 		SmartGWTUtil.setRequired(slctTypeField);
 		slctTypeField.addChangedHandler(new ChangedHandler() {
@@ -89,11 +80,11 @@ public class AuthenticationListenerEditDialog extends AbstractWindow {
 			}
 		});
 
-		final DynamicForm form = new DynamicForm();
-		form.setMargin(5);
+		final DynamicForm form = new MtpForm();
 		form.setAutoHeight();
-		form.setWidth100();
 		form.setItems(slctTypeField);
+
+		container.addMember(form);
 
 		IButton save = new IButton("OK");
 		save.addClickHandler(new ClickHandler() {
@@ -113,17 +104,7 @@ public class AuthenticationListenerEditDialog extends AbstractWindow {
 			}
 		});
 
-		footerLine = SmartGWTUtil.separator();
-		footer = new HLayout(5);
-		footer.setMargin(5);
-		footer.setHeight(20);
-		footer.setWidth100();
-		footer.setAlign(VerticalAlignment.CENTER);
 		footer.setMembers(save, cancel);
-
-		addItem(form);
-		addItem(footerLine);
-		addItem(footer);
 	}
 
 	/**
@@ -136,22 +117,18 @@ public class AuthenticationListenerEditDialog extends AbstractWindow {
 		slctTypeField.setValue(AuthenticationListenerType.valueOf(definition).name());
 
 		if (typeEditPane != null) {
-			if (contains(typeEditPane)) {
-				removeItem(typeEditPane);
+			if (container.contains(typeEditPane)) {
+				container.removeMember(typeEditPane);
 			}
 			typeEditPane = null;
 		}
-		removeItem(footerLine);
-		removeItem(footer);
 
 		if (definition != null) {
 			AuthenticationListenerType type = AuthenticationListenerType.valueOf(definition);
 			typeEditPane = AuthenticationListenerType.typeOfEditPane(type);
 			typeEditPane.setDefinition(definition);
-			addItem(typeEditPane);
+			container.addMember(typeEditPane);
 		}
-		addItem(footerLine);
-		addItem(footer);
 	}
 
 	/**
