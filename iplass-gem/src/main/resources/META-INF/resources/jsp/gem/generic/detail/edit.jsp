@@ -99,9 +99,9 @@
 		} else if (fromView) {
 			//詳細表示アクション
 			SearchFormView searchView = (SearchFormView)ViewUtil.getFormView(defName, viewName, true);
-			String viewAction = searchView.getViewActionName();
-			if (StringUtil.isBlank(viewAction)) {
-				viewAction = DetailViewCommand.VIEW_ACTION_NAME;
+			String viewAction = DetailViewCommand.VIEW_ACTION_NAME;
+			if (searchView != null && StringUtil.isNotBlank(searchView.getViewActionName())) {
+				viewAction = searchView.getViewActionName();
 			}
 			cancel = viewAction + urlPath + "/" + oid;
 		} else {
