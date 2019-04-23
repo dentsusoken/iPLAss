@@ -33,6 +33,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 import org.iplass.mtp.ApplicationException;
 import org.iplass.mtp.auth.AuthContext;
@@ -66,6 +67,7 @@ import org.iplass.mtp.entity.definition.properties.ReferenceProperty;
 import org.iplass.mtp.entity.definition.properties.ReferenceType;
 import org.iplass.mtp.entity.definition.properties.StringProperty;
 import org.iplass.mtp.entity.interceptor.InvocationType;
+import org.iplass.mtp.entity.query.Limit;
 import org.iplass.mtp.entity.query.Query;
 import org.iplass.mtp.impl.core.ExecuteContext;
 import org.iplass.mtp.impl.entity.interceptor.EntityBulkUpdateInvocationImpl;
@@ -1387,6 +1389,49 @@ public class EntityManagerImpl implements EntityManager {
 	public <T extends Entity> SearchResult<T> fulltextSearchEntity(Map<String, List<String>> entityProperties,
 			String fulltext) {
 		return fulltextSearchService.fulltextSearchEntity(entityProperties, fulltext);
+	}
+
+	@Override
+	public <T extends Entity> SearchResult<T> fulltextSearchEntity(Query query, String fulltext, SearchOption option) {
+		String defName = query.getFrom().getEntityName();
+		List<String> oids = fulltextSearchService.fulltextSearchOidList(defName, fulltext);
+		if (oids == null || oids.size() == 0) {
+			return new SearchResult<T>(-1, null);
+		}
+		Map<String, String> oidMap = oids.stream().collect(Collectors.toMap(oid -> oid, oid -> oid));
+
+		Query cpQuery = query.copy();
+		cpQuery.setLimit(null);
+
+		final Limit limit = query.getLimit();
+		final List<T> entityList = new ArrayList<>();
+		final int[] count = new int[1];
+		searchEntity(cpQuery, new Predicate<T>() {
+
+			@Override
+			public boolean test(T t) {
+				if (oidMap.containsKey(t.getOid())) {
+					count[0]++;
+					if (limit == null) {
+						entityList.add(t);
+					} else {
+						if (limit.getOffset() != Limit.UNSPECIFIED && count[0] <= limit.getOffset()) {
+							return true;
+						}
+						if (limit.getLimit() != Limit.UNSPECIFIED && entityList.size() >= limit.getLimit()) {
+							return option == null ? false : option.isCountTotal();
+						}
+						entityList.add(t);
+					}
+				}
+				return true;
+			}
+		});
+
+		if (option == null || !option.isCountTotal()) {
+			return new SearchResult<T>(-1, entityList);
+		}
+		return new SearchResult<T>(count[0], entityList);
 	}
 
 	@Override
