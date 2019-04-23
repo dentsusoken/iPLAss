@@ -121,6 +121,12 @@ public class MetaCommonAttributeSection<D extends Definition> extends SectionSta
 	}
 
 	@Override
+	public String getName() {
+		//nameはDefinitionNameを返す
+		return attrPane.getDefinitionName();
+	}
+
+	@Override
 	public void clearErrors() {
 		attrPane.clearErrors();
 	}
@@ -211,6 +217,10 @@ public class MetaCommonAttributeSection<D extends Definition> extends SectionSta
 		@Override
 		public void clearErrors() {
 			form.clearErrors(true);
+		}
+
+		public String getDefinitionName() {
+			return SmartGWTUtil.getStringValue(nameField);
 		}
 
 		public void setLocalizedDisplayNameList(List<LocalizedStringDefinition> localizedDisplayNameList) {
