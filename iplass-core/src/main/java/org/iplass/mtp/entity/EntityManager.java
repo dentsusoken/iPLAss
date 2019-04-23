@@ -474,4 +474,14 @@ public interface EntityManager extends Manager {
 	 * @return 検索キーワードを含むエンティティデータのリスト
 	 */
 	public <T extends Entity> SearchResult<T> fulltextSearchEntity(Map<String, List<String>> entityProperties, String keyword);
+
+	/**
+	 * クエリ実行結果に対して、指定のワードで全文検索します。
+	 *<pre><b>メモリを大量消費する恐れがありますので、絞り込む条件とリミット条件を指定した上でご利用してください。</b></pre>
+	 *
+	 * @param Query クエリ、Entity.OIDを検索項目として設定する必要が有ります。 <pre>Entity.OIDを指定しないと、空のリストが返されます。</pre> 
+	 * @param keyword 全文検索用キーワード
+	 * @return SearchOption 検索時のオプション、countTotal=trueの場合総件数を積み上げる
+	 */
+	public <T extends Entity> SearchResult<T> fulltextSearchEntity(Query query, String keyword, SearchOption option);
 }
