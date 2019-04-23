@@ -537,7 +537,7 @@ $(function() {
 	}
 	$insBtn.on("click", function() {
 		insertReference(params.addAction, params.viewAction, params.defName, params.propName, params.multiplicity,
-				 params.urlParam, params.parentOid, params.parentVersion, params.parentDefName, params.parentViewName, params.refEdit, callback, this, params.labelProp);
+				 params.urlParam, params.parentOid, params.parentVersion, params.parentDefName, params.parentViewName, params.refEdit, callback, this);
 	});
 
 });
@@ -842,6 +842,7 @@ $(function() {
 		, parentOid: "<%=StringUtil.escapeJavaScript(parentOid)%>"
 		, parentVersion: "<%=StringUtil.escapeJavaScript(parentVersion)%>"
 		, parentDefName: "<%=StringUtil.escapeJavaScript(defName)%>"
+		, parentViewName: "<%=StringUtil.escapeJavaScript(viewName)%>"
 		, refEdit: <%=refEdit %>
 		, callbackKey: key
 	}
@@ -851,7 +852,7 @@ $(function() {
 	}
 	$insBtn.on("click", function() {
 		insertReference(params.addAction, params.viewAction, params.defName, params.propName, params.multiplicity,
-				 params.urlParam, params.parentOid, params.parentVersion, params.parentDefName, params.refEdit, callback, this);
+				 params.urlParam, params.parentOid, params.parentVersion, params.parentDefName, params.parentViewName, params.refEdit, callback, this);
 	});
 
 });
