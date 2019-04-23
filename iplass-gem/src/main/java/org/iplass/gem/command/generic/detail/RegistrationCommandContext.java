@@ -463,6 +463,14 @@ public abstract class RegistrationCommandContext extends GenericCommandContext {
 
 	protected abstract boolean hasUpdatableMappedByReference();
 
+	/**
+	 * 画面表示（Name以外の項目を表示）に必要な参照先エンティティのプロパティリストを返します。
+	 * 
+	 * @param refPropName 参照プロパティ名
+	 * @return 参照先エンティティのプロパティリスト
+	 */
+	public abstract List<String> getReferenceEntityDisplayProperty(String refPropName);
+
 	protected static String resourceString(String key, Object... arguments) {
 		return GemResourceBundleUtil.resourceString(key, arguments);
 	}

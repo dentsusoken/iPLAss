@@ -143,6 +143,10 @@ public abstract class SearchContextBase implements SearchContext {
 				if (p.getEditor() instanceof ReferencePropertyEditor) {
 					List<NestProperty> nest = ((ReferencePropertyEditor)p.getEditor()).getNestProperties();
 					addSearchProperty(select, propName, nest.toArray(new NestProperty[nest.size()]));
+					String dispLabelPropName = ((ReferencePropertyEditor) p.getEditor()).getDisplayLabelItem();
+					if (dispLabelPropName != null) {
+						addSearchProperty(select, propName, dispLabelPropName);
+					}
 				} else if (p.getEditor() instanceof JoinPropertyEditor) {
 					addSearchProperty(select, propName);
 					JoinPropertyEditor je = (JoinPropertyEditor) p.getEditor();
@@ -560,6 +564,10 @@ public abstract class SearchContextBase implements SearchContext {
 							if (!rpe.getNestProperties().isEmpty()) {
 								List<NestProperty> _nest = rpe.getNestProperties();
 								addSearchProperty(select, nestPropName, _nest.toArray(new NestProperty[_nest.size()]));
+								String dispLabelPropName = rpe.getDisplayLabelItem();
+								if (dispLabelPropName != null) {
+									addSearchProperty(select, propName, dispLabelPropName);
+								}
 							}
 						}
 					}
@@ -567,6 +575,15 @@ public abstract class SearchContextBase implements SearchContext {
 			}
 		} else {
 			if (!select.contains(propName)) select.add(propName);
+		}
+	}
+	
+	protected void addSearchProperty(ArrayList<String> select, String propName, String refEntityPropName) {
+		PropertyDefinition pd = getPropertyDefinition(propName);
+		if (pd instanceof ReferenceProperty) {
+			if (!select.contains(propName + "." + refEntityPropName)) {
+				select.add(propName + "." + refEntityPropName);
+			}
 		}
 	}
 

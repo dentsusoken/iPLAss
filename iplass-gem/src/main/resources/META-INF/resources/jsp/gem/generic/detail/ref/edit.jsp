@@ -36,6 +36,18 @@
 	modalTarget = StringUtil.escapeHtml(modalTarget);
 	if (modalTarget == null) modalTarget = "";
 
+	String parentDefName = request.getParameter(Constants.PARENT_DEFNAME);
+	parentDefName = StringUtil.escapeHtml(parentDefName);
+	if (parentDefName == null) parentDefName = "";
+
+	String parentViewName = request.getParameter(Constants.PARENT_VIEWNAME);
+	parentViewName = StringUtil.escapeHtml(parentViewName);
+	if (parentViewName == null) parentViewName = "";
+
+	String parentPropName = request.getParameter(Constants.PARENT_PROPNAME);
+	parentPropName = StringUtil.escapeHtml(parentPropName);
+	if (parentPropName == null) parentPropName = "";
+
 	//コマンドから
 	DetailFormViewData data = (DetailFormViewData) request.getAttribute(Constants.DATA);
 	String message = (String) request.getAttribute(Constants.MESSAGE);
@@ -156,6 +168,9 @@ ${m:outputToken('FORM_XHTML', true)}
 <input type="hidden" name="defName" value="<c:out value="<%=defName%>"/>" />
 <input type="hidden" name="modalTarget" value="<c:out value="<%=modalTarget%>"/>" />
 <input type="hidden" name="execType" value="<c:out value="<%=execType%>"/>" />
+<input type="hidden" name="parentDefName" value="<c:out value="<%=parentDefName%>" />" />
+<input type="hidden" name="parentViewName" value="<c:out value="<%=parentViewName%>" />" />
+<input type="hidden" name="parentPropName" value="<c:out value="<%=parentPropName%>" />" />
 <%
 	if (oid != null) {
 %>

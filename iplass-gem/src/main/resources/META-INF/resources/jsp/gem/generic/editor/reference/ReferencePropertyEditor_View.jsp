@@ -145,6 +145,14 @@
 
 		return TemplateUtil.getMultilingualString(fv.getTitle(), fv.getLocalizedTitleList(), ed.getDisplayName(), ed.getLocalizedDisplayNameList());
 	}
+
+	String getDisplayPropLabel(ReferencePropertyEditor editor, Entity refEntity) {
+		String displayPropName = editor.getDisplayLabelItem();
+		if (displayPropName == null) {
+			displayPropName = Entity.NAME;
+		}
+		return refEntity.getValue(displayPropName);
+	}
 %>
 <%
 	String contextPath = TemplateUtil.getTenantContextPath();
@@ -298,8 +306,13 @@
 		for (int i = 0; i < entityList.size(); i++) {
 			Entity refEntity = entityList.get(i);
 			String liId = "li_" + propName + i;
-			if (refEntity == null || refEntity.getName() == null) continue;
+			if (refEntity == null) continue;
 
+			String displayPropLabel = refEntity.getName();
+			if (editor.getDisplayType() == ReferenceDisplayType.LINK || editor.getDisplayType() == ReferenceDisplayType.SELECT) {
+				displayPropLabel = getDisplayPropLabel(editor, refEntity);
+			}
+			if (displayPropLabel == null) continue;
 %>
 <li id="<c:out value="<%=liId %>"/>">
 <%
@@ -335,7 +348,7 @@
 					String _value = refEntity.getOid() + "_" + refEntity.getVersion();
 
 %>
-<a href="javascript:void(0)" class="modal-lnk" style="<c:out value="<%=customStyle%>"/>" onclick="viewEditableReference('<%=StringUtil.escapeJavaScript(viewAction)%>', '<%=StringUtil.escapeJavaScript(refDefName)%>', '<%=StringUtil.escapeJavaScript(refEntity.getOid())%>', '<%=StringUtil.escapeJavaScript(reloadUrl)%>', true)"><c:out value="<%=refEntity.getName() %>" /></a>
+<a href="javascript:void(0)" class="modal-lnk" style="<c:out value="<%=customStyle%>"/>" onclick="viewEditableReference('<%=StringUtil.escapeJavaScript(viewAction)%>', '<%=StringUtil.escapeJavaScript(refDefName)%>', '<%=StringUtil.escapeJavaScript(refEntity.getOid())%>', '<%=StringUtil.escapeJavaScript(reloadUrl)%>', true)"><c:out value="<%=displayPropLabel %>" /></a>
 <input type="hidden" name="<c:out value="<%=propName %>"/>" value="<c:out value="<%=_value %>"/>" />
 <%
 					if (!hideDeleteButton && updatable) {
@@ -363,14 +376,14 @@ $(function() {
 					//参照のみ
 					String linkId = propName + "_" + refEntity.getOid();
 %>
-<a href="javascript:void(0)" class="modal-lnk" style="<c:out value="<%=customStyle%>"/>" id="<c:out value="<%=linkId %>" />" onclick="showReference('<%=StringUtil.escapeJavaScript(viewAction)%>', '<%=StringUtil.escapeJavaScript(refDefName)%>', '<%=StringUtil.escapeJavaScript(refEntity.getOid())%>', '<%=refEntity.getVersion()%>', '<%=StringUtil.escapeJavaScript(linkId)%>', <%=refEdit %>)"><c:out value="<%=refEntity.getName() %>" /></a>
+<a href="javascript:void(0)" class="modal-lnk" style="<c:out value="<%=customStyle%>"/>" id="<c:out value="<%=linkId %>" />" onclick="showReference('<%=StringUtil.escapeJavaScript(viewAction)%>', '<%=StringUtil.escapeJavaScript(refDefName)%>', '<%=StringUtil.escapeJavaScript(refEntity.getOid())%>', '<%=refEntity.getVersion()%>', '<%=StringUtil.escapeJavaScript(linkId)%>', <%=refEdit %>)"><c:out value="<%=displayPropLabel %>" /></a>
 <%
 				}
 			} else {
 				//Select,Checkbox,RefCombo
 				String linkId = propName + "_" + refEntity.getOid();
 %>
-<a href="javascript:void(0)" class="modal-lnk" style="<c:out value="<%=customStyle%>"/>" id="<c:out value="<%=linkId %>" />" onclick="showReference('<%=StringUtil.escapeJavaScript(viewAction)%>', '<%=StringUtil.escapeJavaScript(refDefName)%>', '<%=StringUtil.escapeJavaScript(refEntity.getOid())%>', '<%=refEntity.getVersion() %>', '<%=StringUtil.escapeJavaScript(linkId)%>', <%=refEdit %>)"><c:out value="<%=refEntity.getName() %>" /></a>
+<a href="javascript:void(0)" class="modal-lnk" style="<c:out value="<%=customStyle%>"/>" id="<c:out value="<%=linkId %>" />" onclick="showReference('<%=StringUtil.escapeJavaScript(viewAction)%>', '<%=StringUtil.escapeJavaScript(refDefName)%>', '<%=StringUtil.escapeJavaScript(refEntity.getOid())%>', '<%=refEntity.getVersion() %>', '<%=StringUtil.escapeJavaScript(linkId)%>', <%=refEdit %>)"><c:out value="<%=displayPropLabel %>" /></a>
 <%
 			}
 			if (outputHidden) {

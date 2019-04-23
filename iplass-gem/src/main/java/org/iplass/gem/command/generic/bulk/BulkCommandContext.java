@@ -525,6 +525,11 @@ public class BulkCommandContext extends RegistrationCommandContext {
 		return false;
 	}
 
+	@Override
+	public List<String> getReferenceEntityDisplayProperty(String refPropName) {
+		return null;
+	}
+
 	/**
 	 * リクエストから検索条件を取得します。
 	 * @return 検索条件

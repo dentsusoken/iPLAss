@@ -192,6 +192,11 @@ public class Constants {
 	public static final String SHOW_DETERMINE_BUTTON = "showDetermineButton";
 	public static final String PERMIT_CONDITION_SELECT_ALL = "permitConditionSelectAll";
 
+	//参照先エンティティ登録用
+	public static final String PARENT_DEFNAME = "parentDefName";
+	public static final String PARENT_VIEWNAME = "parentViewName";
+	public static final String PARENT_PROPNAME = "parentPropName";
+
 	//自動補完
 	public static final String AUTOCOMPLETION_SETTING = "autocompletionSetting";
 	public static final String AUTOCOMPLETION_DEF_NAME = "autocompletionDefName";

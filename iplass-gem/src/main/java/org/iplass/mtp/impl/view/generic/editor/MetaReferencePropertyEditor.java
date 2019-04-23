@@ -164,6 +164,8 @@ public class MetaReferencePropertyEditor extends MetaPropertyEditor implements H
 
 	/** 検索条件での全選択を許可 */
 	private boolean permitConditionSelectAll = true;
+	
+	private String displayLabelItem;
 
 	/**
 	 * 表示タイプを取得します。
@@ -716,6 +718,14 @@ public class MetaReferencePropertyEditor extends MetaPropertyEditor implements H
 	    this.permitConditionSelectAll = permitConditionSelectAll;
 	}
 
+	public String getDisplayLabelItem() {
+		return displayLabelItem;
+	}
+
+	public void setDisplayLabelItem(String displayLabelItem) {
+		this.displayLabelItem = displayLabelItem;
+	}
+
 	@Override
 	public void applyConfig(PropertyEditor editor) {
 		super.fillFrom(editor);
@@ -737,6 +747,10 @@ public class MetaReferencePropertyEditor extends MetaPropertyEditor implements H
 		objectId = refEntity.getMetaData().getId();
 		if (fromEntity != null) {
 			referenceFromObjectId = fromEntity.getMetaData().getId();
+		}
+		PropertyHandler displayLabelProperty = null;
+		if (rpe.getDisplayLabelItem() != null) {
+			displayLabelProperty = refEntity.getProperty(rpe.getDisplayLabelItem(), context);
 		}
 		useSearchDialog = rpe.isUseSearchDialog();
 		singleSelect = rpe.isSingleSelect();
@@ -763,6 +777,7 @@ public class MetaReferencePropertyEditor extends MetaPropertyEditor implements H
 		showRefComboParent = rpe.isShowRefComboParent();
 		specificVersionPropertyName = rpe.getSpecificVersionPropertyName();
 		permitConditionSelectAll = rpe.isPermitConditionSelectAll();
+		displayLabelItem = displayLabelProperty != null ? displayLabelProperty.getId() : null;
 		if (rpe.getTableOrderPropertyName() != null) {
 			PropertyHandler tableOrderProperty = refEntity.getProperty(rpe.getTableOrderPropertyName(), context);
 			tableOrderPropertyId = tableOrderProperty != null ? tableOrderProperty.getId() : null;
@@ -823,6 +838,10 @@ public class MetaReferencePropertyEditor extends MetaPropertyEditor implements H
 		if (fromEntity != null) {
 			editor.setReferenceFromObjectName(fromEntity.getMetaData().getName());
 		}
+		PropertyHandler displayLabelProperty = null;
+		if (displayLabelItem != null) {
+			displayLabelProperty = refEntity.getPropertyById(displayLabelItem, context);
+		}
 		editor.setUseSearchDialog(useSearchDialog);
 		editor.setSingleSelect(singleSelect);
 		editor.setUseNestConditionWithProperty(useNestConditionWithProperty);
@@ -849,6 +868,7 @@ public class MetaReferencePropertyEditor extends MetaPropertyEditor implements H
 		editor.setShowRefComboParent(showRefComboParent);
 		editor.setSpecificVersionPropertyName(specificVersionPropertyName);
 		editor.setPermitConditionSelectAll(permitConditionSelectAll);
+		editor.setDisplayLabelItem(displayLabelProperty != null ? displayLabelProperty.getName() : null);
 		if (tableOrderPropertyId != null) {
 			PropertyHandler tableOrderProperty = refEntity.getPropertyById(tableOrderPropertyId, context);
 			editor.setTableOrderPropertyName(tableOrderProperty != null ? tableOrderProperty.getName() : null);

@@ -118,6 +118,9 @@
 			Query q = new Query();
 			q.from(editor.getObjectName());
 			q.select(Entity.OID, Entity.NAME, Entity.VERSION);
+			if (editor.getDisplayLabelItem() != null) {
+				q.select().add(editor.getDisplayLabelItem());
+			}
 			if (condition != null) {
 				q.where(condition);
 			}
@@ -188,7 +191,7 @@
 			Entity[] entities = (Entity[]) propValue;
 			if (entities != null) {
 				for (Entity refEntity : entities) {
-					Entity entity = loadItem(refEntity, editor.getObjectName(), pd, handler, em);
+					Entity entity = loadItem(refEntity, editor, pd, handler, em);
 					if (entity != null) {
 						entityList.add(entity);
 					}
@@ -197,7 +200,7 @@
 		} else if (propValue instanceof Entity) {
 			Entity refEntity = (Entity) propValue;
 			if (refEntity != null) {
-				Entity entity = loadItem(refEntity, editor.getObjectName(), pd, handler, em);
+				Entity entity = loadItem(refEntity, editor, pd, handler, em);
 				if (entity != null) {
 					entityList.add(entity);
 				}
@@ -213,15 +216,16 @@
 		return context.getLoadEntityInterrupterHandler();
 	}
 
-	Entity loadItem(final Entity refEntity, final String refDefName, final ReferenceProperty pd, final LoadEntityInterrupterHandler handler, final EntityManager em) {
+	Entity loadItem(final Entity refEntity, final ReferencePropertyEditor editor, final ReferenceProperty pd, final LoadEntityInterrupterHandler handler, final EntityManager em) {
 		//念のためOIDチェック
 		if (refEntity.getOid() == null) {
 			return null;
 		}
-		if (refEntity.getName() == null || refEntity.getVersion() == null) {
+		if (getDisplayPropLabel(editor, refEntity) == null || refEntity.getVersion() == null) {
 			//name、versionは必須のためどちらかが未指定ならLoadする
 			Entity entity = null;
 			LoadOption loadOption = new LoadOption(false, false);
+			final String refDefName = editor.getObjectName();
 			final LoadEntityContext leContext = handler.beforeLoadReference(refDefName, loadOption, pd, LoadType.VIEW);
 			if (leContext.isDoPrivileged()) {
 				entity = AuthContext.doPrivileged(new Supplier<Entity>() {
@@ -254,6 +258,14 @@
 		if (fv == null) fv = FormViewUtil.createDefaultDetailFormView(ed);
 
 		return TemplateUtil.getMultilingualString(fv.getTitle(), fv.getLocalizedTitleList(), ed.getDisplayName(), ed.getLocalizedDisplayNameList());
+	}
+	
+	String getDisplayPropLabel(ReferencePropertyEditor editor, Entity refEntity) {
+		String displayPropName = editor.getDisplayLabelItem();
+		if (displayPropName == null) {
+			displayPropName = Entity.NAME;
+		}
+		return refEntity.getValue(displayPropName);
 	}
 %>
 <%
@@ -396,12 +408,13 @@
 			String liId = "li_" + propName + i;
 			String linkId = propName + "_" + refEntity.getOid();
 			String key = refEntity.getOid() + "_" + refEntity.getVersion();
+			String dispPropLabel = getDisplayPropLabel(editor, refEntity);
 %>
 <li id="<c:out value="<%=liId %>"/>" class="list-add">
 <%
 			if (editPageDetail) {
 %>
-<a href="javascript:void(0)" class="modal-lnk" style="<c:out value="<%=customStyle%>"/>" id="<c:out value="<%=linkId %>"/>" onclick="showReference('<%=StringUtil.escapeJavaScript(viewAction)%>', '<%=StringUtil.escapeJavaScript(refDefName)%>', '<%=StringUtil.escapeJavaScript(refEntity.getOid())%>', '<%=refEntity.getVersion() %>', '<%=StringUtil.escapeJavaScript(linkId)%>', <%=refEdit %>)"><c:out value="<%=refEntity.getName() %>" /></a>
+<a href="javascript:void(0)" class="modal-lnk" style="<c:out value="<%=customStyle%>"/>" id="<c:out value="<%=linkId %>"/>" onclick="showReference('<%=StringUtil.escapeJavaScript(viewAction)%>', '<%=StringUtil.escapeJavaScript(refDefName)%>', '<%=StringUtil.escapeJavaScript(refEntity.getOid())%>', '<%=refEntity.getVersion() %>', '<%=StringUtil.escapeJavaScript(linkId)%>', <%=refEdit %>)"><c:out value="<%=dispPropLabel %>" /></a>
 <%
 				if (!hideDeleteButton && updatable) {
 %>
@@ -409,7 +422,7 @@
 <%				}
 			} else {
 %>
-<a href="javascript:void(0)" class="modal-lnk" style="<c:out value="<%=customStyle%>"/>" id="<c:out value="<%=linkId %>"/>" onclick="showReference('<%=StringUtil.escapeJavaScript(viewAction)%>', '<%=StringUtil.escapeJavaScript(refDefName)%>', '<%=StringUtil.escapeJavaScript(refEntity.getOid())%>', '<%=refEntity.getVersion() %>', '<%=StringUtil.escapeJavaScript(linkId)%>', false)"><c:out value="<%=refEntity.getName() %>" /></a>
+<a href="javascript:void(0)" class="modal-lnk" style="<c:out value="<%=customStyle%>"/>" id="<c:out value="<%=linkId %>"/>" onclick="showReference('<%=StringUtil.escapeJavaScript(viewAction)%>', '<%=StringUtil.escapeJavaScript(refDefName)%>', '<%=StringUtil.escapeJavaScript(refEntity.getOid())%>', '<%=refEntity.getVersion() %>', '<%=StringUtil.escapeJavaScript(linkId)%>', false)"><c:out value="<%=dispPropLabel %>" /></a>
 <%
 			}
 %>
@@ -470,6 +483,8 @@ $(function() {
 		, specVersionKey: "<%=StringUtil.escapeJavaScript(specVersionKey) %>"
 		, viewName: "<%=StringUtil.escapeJavaScript(_viewName) %>"
 		, permitConditionSelectAll: <%=editor.isPermitConditionSelectAll()%>
+		, parentDefName: "<%=StringUtil.escapeJavaScript(defName)%>"
+		, parentViewName: "<%=StringUtil.escapeJavaScript(viewName)%>"
 	}
 	var $selBtn = $(":button[id='<%=StringUtil.escapeJavaScript(selBtnId) %>']");
 	for (key in params) {
@@ -477,7 +492,7 @@ $(function() {
 	}
 	$selBtn.on("click", function() {
 		searchReference(params.selectAction, params.viewAction, params.defName, $(this).attr("data-propName"), params.multiplicity, <%=isMultiple %>,
-				 params.urlParam, params.refEdit, callback, this, params.viewName, params.permitConditionSelectAll);
+				 params.urlParam, params.refEdit, callback, this, params.viewName, params.permitConditionSelectAll, params.parentDefName, params.parentViewName);
 	});
 
 });
@@ -512,6 +527,7 @@ $(function() {
 		, parentOid: "<%=StringUtil.escapeJavaScript(parentOid)%>"
 		, parentVersion: "<%=StringUtil.escapeJavaScript(parentVersion)%>"
 		, parentDefName: "<%=StringUtil.escapeJavaScript(defName)%>"
+		, parentViewName: "<%=StringUtil.escapeJavaScript(viewName)%>"
 		, refEdit: <%=refEdit %>
 		, callbackKey: key
 	}
@@ -521,7 +537,7 @@ $(function() {
 	}
 	$insBtn.on("click", function() {
 		insertReference(params.addAction, params.viewAction, params.defName, params.propName, params.multiplicity,
-				 params.urlParam, params.parentOid, params.parentVersion, params.parentDefName, params.refEdit, callback, this);
+				 params.urlParam, params.parentOid, params.parentVersion, params.parentDefName, params.parentViewName, params.refEdit, callback, this);
 	});
 
 });
@@ -585,8 +601,9 @@ data-upperType="<c:out value="<%=upperType %>"/>"
 			for (Entity refEntity : entityList) {
 				String selected = oid.contains(refEntity.getOid()) ? " selected" : "";
 				String _value = refEntity.getOid() + "_" + refEntity.getVersion();
+				String displayPropLabel = getDisplayPropLabel(editor, refEntity);
 %>
-<option value="<c:out value="<%=_value %>"/>" <c:out value="<%=selected %>"/>><c:out value="<%=refEntity.getName() %>" /></option>
+<option value="<c:out value="<%=_value %>"/>" <c:out value="<%=selected %>"/>><c:out value="<%=displayPropLabel %>" /></option>
 <%
 			}
 %>
@@ -606,8 +623,9 @@ data-upperType="<c:out value="<%=upperType %>"/>"
 			for (Entity refEntity : entityList) {
 				String selected = oid.contains(refEntity.getOid()) ? " selected" : "";
 				String _value = refEntity.getOid() + "_" + refEntity.getVersion();
+				String displayPropLabel = getDisplayPropLabel(editor, refEntity);
 %>
-<option value="<c:out value="<%=_value %>"/>" <c:out value="<%=selected %>"/>><c:out value="<%=refEntity.getName() %>" /></option>
+<option value="<c:out value="<%=_value %>"/>" <c:out value="<%=selected %>"/>><c:out value="<%=displayPropLabel %>" /></option>
 <%
 			}
 		}
@@ -824,6 +842,7 @@ $(function() {
 		, parentOid: "<%=StringUtil.escapeJavaScript(parentOid)%>"
 		, parentVersion: "<%=StringUtil.escapeJavaScript(parentVersion)%>"
 		, parentDefName: "<%=StringUtil.escapeJavaScript(defName)%>"
+		, parentViewName: "<%=StringUtil.escapeJavaScript(viewName)%>"
 		, refEdit: <%=refEdit %>
 		, callbackKey: key
 	}
@@ -833,7 +852,7 @@ $(function() {
 	}
 	$insBtn.on("click", function() {
 		insertReference(params.addAction, params.viewAction, params.defName, params.propName, params.multiplicity,
-				 params.urlParam, params.parentOid, params.parentVersion, params.parentDefName, params.refEdit, callback, this);
+				 params.urlParam, params.parentOid, params.parentVersion, params.parentDefName, params.parentViewName, params.refEdit, callback, this);
 	});
 
 });

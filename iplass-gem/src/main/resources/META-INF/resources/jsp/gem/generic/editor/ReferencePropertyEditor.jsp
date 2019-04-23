@@ -43,6 +43,14 @@
 		if (property.getEditor() == null) return false;
 		return true;
 	}
+
+	String getDisplayPropLabel(ReferencePropertyEditor editor, Entity refEntity) {
+		String displayPropName = editor.getDisplayLabelItem();
+		if (displayPropName == null) {
+			displayPropName = Entity.NAME;
+		}
+		return refEntity.getValue(displayPropName);
+	}
 %>
 <%
 	ReferencePropertyEditor editor = (ReferencePropertyEditor) request.getAttribute(Constants.EDITOR_EDITOR);
@@ -98,8 +106,12 @@
 // 		} else {
 			Entity entity = value instanceof Entity ? (Entity) value : null;
 			if (editor.getNestProperties().size() == 0) {
-				if (entity != null && entity.getName() != null) {
+				if (entity != null && getDisplayPropLabel(editor, entity) != null) {
 					String linkId = propName + "_" + entity.getOid();
+					String displayPropLabel = entity.getName();
+					if (editor.getDisplayType() == ReferenceDisplayType.LINK || editor.getDisplayType() == ReferenceDisplayType.SELECT) {
+						displayPropLabel = getDisplayPropLabel(editor, entity);
+					}
 					if (editor.getDisplayType() == ReferenceDisplayType.LABEL) {
 						//ラベルの場合はリンクにしない
 %>
@@ -107,7 +119,7 @@
 <%
 					} else {
 %>
-<a href="javascript:void(0)" class="modal-lnk" id="<c:out value="<%=linkId %>" />" onclick="showReference('<%=StringUtil.escapeJavaScript(view)%>', '<%=StringUtil.escapeJavaScript(editor.getObjectName())%>', '<%=StringUtil.escapeJavaScript(entity.getOid())%>', '<%=entity.getVersion() %>', '<%=StringUtil.escapeJavaScript(linkId)%>', <%=refEdit %>)"><c:out value="<%=entity.getName() %>" /></a>
+<a href="javascript:void(0)" class="modal-lnk" id="<c:out value="<%=linkId %>" />" onclick="showReference('<%=StringUtil.escapeJavaScript(view)%>', '<%=StringUtil.escapeJavaScript(editor.getObjectName())%>', '<%=StringUtil.escapeJavaScript(entity.getOid())%>', '<%=entity.getVersion() %>', '<%=StringUtil.escapeJavaScript(linkId)%>', <%=refEdit %>)"><c:out value="<%=displayPropLabel %>" /></a>
 <%
 					}
 				}
