@@ -139,7 +139,7 @@
 					dispStyle = "display: none";
 				}
 %>
-<li class="btn edit-btn"><input type="submit" value="<c:out value="<%=editDisplayLabel %>"/>" class="gr-btn" style="<c:out value="<%=dispStyle %>"/>" /></li>
+<li class="btn edit-btn"><input type="submit" value="<c:out value="<%=editDisplayLabel %>"/>" class="gr-btn" style="<c:out value="<%=dispStyle %>"/>" onclick="onclick_submit()" /></li>
 <%
 			}
 		}
