@@ -24,6 +24,7 @@ import javax.xml.bind.annotation.XmlSeeAlso;
 
 import org.iplass.mtp.impl.metadata.MetaData;
 import org.iplass.mtp.view.top.parts.ActionParts;
+import org.iplass.mtp.view.top.parts.ApplicationMaintenanceParts;
 import org.iplass.mtp.view.top.parts.CsvDownloadSettingsParts;
 import org.iplass.mtp.view.top.parts.FulltextSearchViewParts;
 import org.iplass.mtp.view.top.parts.ScriptParts;

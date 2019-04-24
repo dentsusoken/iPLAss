@@ -20,6 +20,7 @@
 
 package org.iplass.gem.command;
 
+import org.iplass.gem.command.auth.RevokeApplicationCommand;
 import org.iplass.gem.command.auth.LoginCommand;
 import org.iplass.gem.command.auth.LogoutCommand;
 import org.iplass.gem.command.auth.ReAuthCommand;
@@ -38,9 +39,9 @@ import org.iplass.gem.command.calendar.ref.CalendarFilterCommand;
 import org.iplass.gem.command.calendar.ref.GetCalendarFilterCommand;
 import org.iplass.gem.command.fulltext.FullTextSearchCommand;
 import org.iplass.gem.command.fulltext.FullTextSearchViewCommand;
-import org.iplass.gem.command.generic.bulk.BulkUpdateViewCommand;
 import org.iplass.gem.command.generic.bulk.BulkUpdateAllCommand;
 import org.iplass.gem.command.generic.bulk.BulkUpdateListCommand;
+import org.iplass.gem.command.generic.bulk.BulkUpdateViewCommand;
 import org.iplass.gem.command.generic.common.GetAutocompletionValueCommand;
 import org.iplass.gem.command.generic.common.GetEntityNameCommand;
 import org.iplass.gem.command.generic.common.GetEntityNameListCommand;
@@ -183,6 +184,7 @@ import org.iplass.mtp.command.annotation.MetaDataSeeAlso;
 	ResetSpecificPasswordCommand.class,
 	UpdateUserCommand.class,
 	ReAuthCommand.class,
+	RevokeApplicationCommand.class,
 	//プレビュー日付
 	GetPreviewDateTimeCommand.class,
 	SetPreviewDateTimeCommand.class,
