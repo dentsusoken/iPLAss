@@ -35,9 +35,10 @@ public class SizeUpdateOutputStream extends FilterOutputStream {
 
 	private boolean closed;
 
-	public SizeUpdateOutputStream(OutputStream out, int tenantId, LobDao dao) {
+	public SizeUpdateOutputStream(OutputStream out, int tenantId, LobData lobData, LobDao dao) {
 		super(out);
 		this.tenantId = tenantId;
+		this.lobData  = lobData;
 		this.dao = dao;
 	}
 	

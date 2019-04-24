@@ -138,7 +138,7 @@ public class Lob {
 		}
 		
 		if (updateSize) {
-			os = new SizeUpdateOutputStream(os, tenantId, dao);
+			os = new SizeUpdateOutputStream(os, tenantId, lobData, dao);
 		}
 		return os;
 	}
