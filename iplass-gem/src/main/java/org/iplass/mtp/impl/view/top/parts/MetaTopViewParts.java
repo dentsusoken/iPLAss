@@ -38,7 +38,7 @@ import org.iplass.mtp.view.top.parts.UserMaintenanceParts;
  */
 @XmlSeeAlso({MetaActionParts.class, MetaTemplateParts.class, MetaScriptParts.class,
 	MetaSeparatorParts.class, MetaUserMaintenanceParts.class, MetaFulltextSearchViewParts.class,
-	MetaCsvDownloadSettingsParts.class})
+	MetaCsvDownloadSettingsParts.class, MetaApplicationMaintenanceParts.class})
 public abstract class MetaTopViewParts implements MetaData {
 
 	/** SerialVersionUID */
@@ -65,6 +65,8 @@ public abstract class MetaTopViewParts implements MetaData {
 			return MetaFulltextSearchViewParts.createInstance(parts);
 		} else if (parts instanceof CsvDownloadSettingsParts) {
 			return MetaCsvDownloadSettingsParts.createInstance(parts);
+		} else if (parts instanceof ApplicationMaintenanceParts) {
+			return MetaApplicationMaintenanceParts.createInstance(parts);
 		}
 		return null;
 	}

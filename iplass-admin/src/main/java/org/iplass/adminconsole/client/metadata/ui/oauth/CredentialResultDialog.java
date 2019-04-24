@@ -35,7 +35,7 @@ public final class CredentialResultDialog  extends MtpDialog {
 
 	public CredentialResultDialog(String secret) {
 
-		setHeight(200);
+		setHeight(220);
 		setTitle("Credential Result");
 		centerInPage();
 

@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.iplass.adminconsole.client.base.event.MTPEvent;
+import org.iplass.adminconsole.client.metadata.ui.top.item.ApplicationMaintenanceItem;
 import org.iplass.adminconsole.client.metadata.ui.top.item.CalendarItem;
 import org.iplass.adminconsole.client.metadata.ui.top.item.CsvDownloadSettingsItem;
 import org.iplass.adminconsole.client.metadata.ui.top.item.FulltextSearchViewItem;
@@ -44,6 +45,7 @@ import org.iplass.adminconsole.client.metadata.ui.top.node.SingleNodeManager;
 import org.iplass.adminconsole.client.metadata.ui.top.node.ToolbarNodeManager;
 import org.iplass.adminconsole.client.metadata.ui.top.node.TopViewNode;
 import org.iplass.adminconsole.client.metadata.ui.top.node.TreeViewNodeManager;
+import org.iplass.mtp.view.top.parts.ApplicationMaintenanceParts;
 import org.iplass.mtp.view.top.parts.CalendarParts;
 import org.iplass.mtp.view.top.parts.CsvDownloadSettingsParts;
 import org.iplass.mtp.view.top.parts.EntityListParts;
@@ -96,6 +98,9 @@ public class PartsControllerImpl implements PartsController {
 		} else if (parts instanceof CsvDownloadSettingsParts) {
 			item = new CsvDownloadSettingsItem((CsvDownloadSettingsParts) parts, controler);
 			isUnique = true;
+		} else if (parts instanceof ApplicationMaintenanceParts) {
+			item = new ApplicationMaintenanceItem((ApplicationMaintenanceParts)parts, controler);
+			isUnique = true;
 		}
 
 		if (item != null) item.setDropAreaType(dropAreaType);
@@ -141,6 +146,8 @@ public class PartsControllerImpl implements PartsController {
 			item = new FulltextSearchViewItem(parts, controler, true);
 		} else if (CsvDownloadSettingsParts.class.getName().equals(node.getType())) {
 			item = new CsvDownloadSettingsItem(new CsvDownloadSettingsParts(), controler);
+		} else if (ApplicationMaintenanceParts.class.getName().equals(node.getType())) {
+			item = new ApplicationMaintenanceItem(new ApplicationMaintenanceParts(), controler);
 		}
 
 		if (item != null) item.setDropAreaType(dropAreaType);

@@ -38,6 +38,7 @@ public class MetaDataLangTextItem extends MtpTextItem implements MtpWidgetConsta
 
 	public MetaDataLangTextItem() {
 		super();
+		init(true);
 	}
 
 	public MetaDataLangTextItem(String name) {
