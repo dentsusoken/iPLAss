@@ -22,6 +22,7 @@ package org.iplass.gem.command.generic.common;
 
 import java.util.List;
 
+import org.iplass.gem.command.Constants;
 import org.iplass.mtp.ManagerLocator;
 import org.iplass.mtp.command.Command;
 import org.iplass.mtp.command.RequestContext;
@@ -67,6 +68,7 @@ public final class GetEntityNameListCommand implements Command {
 		String parentDefName = param.getParentDefName();
 		String parentViewName = param.getParentViewName();
 		String parentPropName = param.getParentPropName();
+		String viewType = param.getViewType();
 		List<GetEntityNameListEntityParameter> list = param.getList();
 
 		Object ret = null;
@@ -75,7 +77,7 @@ public final class GetEntityNameListCommand implements Command {
 			String dispLabelProp = null;
 			if (parentDefName != null && !parentDefName.isEmpty()
 					&& parentPropName != null && !parentPropName.isEmpty()) {
-				dispLabelProp = getDisplayLabelItem(parentDefName, parentViewName, parentPropName);
+				dispLabelProp = getDisplayLabelItem(parentDefName, parentViewName, parentPropName, viewType);
 			}
 			// ラベルとして扱うプロパティ項目が未設定の場合、nameを取得します。
 			if (dispLabelProp == null) {
@@ -102,9 +104,13 @@ public final class GetEntityNameListCommand implements Command {
 		return "OK";
 	}
 
-	private String getDisplayLabelItem(String defName, String viewName, String propName) {
+	private String getDisplayLabelItem(String defName, String viewName, String propName, String viewType) {
 		EntityViewManager evm = ManagerLocator.getInstance().getManager(EntityViewManager.class);
-		PropertyEditor editor = evm.getPropertyEditor(defName, "detail", viewName, propName);
+		String _propName = propName;
+		if (Constants.VIEW_TYPE_SEARCH.equals(viewType) && propName.startsWith(Constants.SEARCH_COND_PREFIX)) {
+			_propName = propName.substring(Constants.SEARCH_COND_PREFIX.length());
+		}
+		PropertyEditor editor = evm.getPropertyEditor(defName, viewType, viewName, _propName);
 		if (editor != null && editor instanceof ReferencePropertyEditor) {
 			ReferencePropertyEditor rpe = (ReferencePropertyEditor) editor;
 			// TODO 表示タイプ：LINK、SELECTでの利用をサポートします。

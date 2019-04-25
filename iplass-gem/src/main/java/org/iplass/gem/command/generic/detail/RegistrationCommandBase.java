@@ -136,26 +136,43 @@ public abstract class RegistrationCommandBase<T extends RegistrationCommandConte
 	 */
 	protected Entity loadViewEntity(T context, String oid, Long version, String defName, List<String> loadReferences) {
 		Entity entity = loadEntity(context, oid, version, defName, new LoadOption(loadReferences), LoadType.VIEW);
-		if (loadReferences != null && loadReferences.size() > 0) {
+		if (entity != null && loadReferences != null && loadReferences.size() > 0) {
 			for (String refPropName : loadReferences) {
 				// 画面表示に必要な参照先エンティティのプロパティリスト
 				List<String> refEntityProperties = context.getReferenceEntityDisplayProperty(refPropName);
 				if (refEntityProperties != null && refEntityProperties.size() > 0) {
-					Entity refEntity = entity.getValue(refPropName);
-					if (refEntity != null) {
-						Query q = new Query();
-						q.select(Entity.OID, Entity.VERSION);
-						for (String refEntityProp : refEntityProperties) {
-							q.select().add(refEntityProp);
+					Object value = entity.getValue(refPropName);
+					if (value == null) continue;
+					if (value instanceof Entity) {
+						Entity refEntity = (Entity) value;
+						loadReferenceEntityProperties(refEntity, refEntityProperties);
+					} else if (value instanceof Entity[]) {
+						Entity[] refEntities = (Entity[]) value;
+						for (int i = 0; i < refEntities.length; i++) {
+							Entity refEntity = refEntities[i];
+							loadReferenceEntityProperties(refEntity, refEntityProperties);
 						}
-						q.from(refEntity.getDefinitionName());
-						q.where(new And(new Equals(Entity.OID, refEntity.getOid()), new Equals(Entity.VERSION, refEntity.getVersion())));
-						entity.setValue(refPropName, em.searchEntity(q).getFirst());
 					}
 				}
 			}
 		}
 		return entity;
+	}
+
+	private void loadReferenceEntityProperties(Entity refEntity, List<String> refEntityProperties) {
+		Query q = new Query();
+		for (String refEntityProp : refEntityProperties) {
+			q.select().add(refEntityProp);
+		}
+		q.from(refEntity.getDefinitionName());
+		q.where(new And(new Equals(Entity.OID, refEntity.getOid()), new Equals(Entity.VERSION, refEntity.getVersion())));
+
+		Entity ret = em.searchEntity(q).getFirst();
+		if (ret != null) {
+			for (String refEntityProp : refEntityProperties) {
+				refEntity.setValue(refEntityProp, ret.getValue(refEntityProp));
+			}
+		}
 	}
 
 	/**

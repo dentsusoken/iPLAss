@@ -35,6 +35,8 @@ public class GetEntityNameListParameter implements GemWebApiParameter {
 	private String parentViewName;
 	
 	private String parentPropName;
+	
+	private String viewType;
 
 	private List<GetEntityNameListEntityParameter> list;
 
@@ -88,6 +90,14 @@ public class GetEntityNameListParameter implements GemWebApiParameter {
 
 	public void setParentPropName(String parentPropName) {
 		this.parentPropName = parentPropName;
+	}
+
+	public String getViewType() {
+		return viewType;
+	}
+
+	public void setViewType(String viewType) {
+		this.viewType = viewType;
 	}
 
 	/**

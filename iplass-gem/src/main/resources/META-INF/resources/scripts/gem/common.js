@@ -1848,7 +1848,7 @@ function showReference(viewAction, defName, oid, version, linkId, refEdit, editC
  * @param button
  * @return
  */
-function searchReference(selectAction, viewAction, defName, propName, multiplicity, multi, urlParam, refEdit, callback, button, viewName, permitConditionSelectAll, parentDefName, parentViewName) {
+function searchReference(selectAction, viewAction, defName, propName, multiplicity, multi, urlParam, refEdit, callback, button, viewName, permitConditionSelectAll, parentDefName, parentViewName, viewType) {
 	var _propName = propName.replace(/\[/g, "\\[").replace(/\]/g, "\\]").replace(/\./g, "\\.");
 	document.scriptContext["searchReferenceCallback"] = function(selectArray) {
 		var $ul = $("#ul_" + _propName);
@@ -1884,7 +1884,7 @@ function searchReference(selectAction, viewAction, defName, propName, multiplici
 			list.push(keySplit(key));
 		}
 		if (list.length > 0) {
-			getEntityNameList(defName, viewName, parentDefName, parentViewName, propName, list, function(entities) {
+			getEntityNameList(defName, viewName, parentDefName, parentViewName, propName, viewType, list, function(entities) {
 				for (var i = 0; i < entities.length; i++) {
 					var entity = entities[i];
 					var _key = entity.oid + "_" + entity.version;

@@ -253,6 +253,7 @@
 
 	String viewName = request.getParameter(Constants.VIEW_NAME);
 	String searchCond = request.getParameter(Constants.SEARCH_COND);
+	String defName = request.getParameter(Constants.DEF_NAME);
 
 
 	String propName = Constants.SEARCH_COND_PREFIX + editor.getPropertyName();
@@ -548,6 +549,9 @@ $(function() {
 		String _defName = editor.getObjectName();
 		String _viewName = editor.getViewName() != null ? editor.getViewName() : "";
 
+		if (viewName == null) viewName = "";
+		else viewName = StringUtil.escapeHtml(viewName);
+
 		String contextPath = TemplateUtil.getTenantContextPath();
 		String urlPath = ViewUtil.getParamMappingPath(_defName, _viewName);
 
@@ -639,6 +643,9 @@ $(function() {
 		, refEdit: false
 		, viewName: "<%=StringUtil.escapeJavaScript(_viewName) %>"
 		, permitConditionSelectAll: <%=editor.isPermitConditionSelectAll()%>
+		, parentDefName: "<%=StringUtil.escapeJavaScript(defName)%>"
+		, parentViewName: "<%=StringUtil.escapeJavaScript(viewName)%>"
+		, viewType: "<%=Constants.VIEW_TYPE_SEARCH %>"
 	}
 	var $selBtn = $(":button[id='<%=StringUtil.escapeJavaScript(selBtnId)%>']");
 	for (key in params) {
@@ -646,7 +653,7 @@ $(function() {
 	}
 	$selBtn.on("click", function() {
 		searchReference(params.selectAction, params.viewAction, params.defName, params.propName, params.multiplicity, <%=isMultiple%>,
-				 params.urlParam, params.refEdit, function(){}, null, params.viewName, params.permitConditionSelectAll);
+				 params.urlParam, params.refEdit, function(){}, null, params.viewName, params.permitConditionSelectAll, params.parentDefName, params.parentViewName, params.viewType);
 	});
 
 	<%-- common.js --%>
