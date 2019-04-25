@@ -21,6 +21,10 @@
 package org.iplass.gem.command.auth;
 
 import org.iplass.gem.command.Constants;
+import org.iplass.mtp.auth.AuthContext;
+import org.iplass.mtp.auth.oauth.AccessTokenInfo;
+import org.iplass.mtp.auth.token.AuthTokenInfo;
+import org.iplass.mtp.auth.token.AuthTokenInfoList;
 import org.iplass.mtp.command.Command;
 import org.iplass.mtp.command.RequestContext;
 import org.iplass.mtp.command.annotation.CommandClass;
@@ -38,7 +42,7 @@ import org.iplass.mtp.command.annotation.action.Result.Type;
 					templateName="gem/auth/application",
 					layoutActionName=Constants.LAYOUT_NORMAL_ACTION)
 	),
-	@ActionMapping(name=RevokeApplicationCommand.VIEW_ACTION_NAME,
+	@ActionMapping(name=RevokeApplicationCommand.ACTION_NAME,
 		needTrustedAuthenticate=true,
 		result=@Result(type=Type.JSP,
 				value=Constants.CMD_RSLT_JSP_APP_MAINTENANCE,
@@ -54,6 +58,36 @@ public class RevokeApplicationCommand implements Command {
 
 	@Override
 	public String execute(RequestContext request) {
+
+		AuthTokenInfoList infoList = AuthContext.getCurrentContext().getAuthTokenInfos();
+		if (infoList == null) {
+			return Constants.CMD_EXEC_SUCCESS;
+		}
+
+		String target = request.getParam("target");
+
+		if (target != null) {
+			if (target.equals("one-token")) {
+				String type = request.getParam("tokenType");
+				String key = request.getParam("tokenKey");
+				AuthTokenInfo info = infoList.get(type, key);
+				if (info != null) {
+					infoList.remove(type, key);
+				}
+			} else {
+				for (AuthTokenInfo info : infoList.getList()) {
+					if (info instanceof AccessTokenInfo) {
+						if (target.equals("all-app")) {
+							infoList.remove(info.getType(), info.getKey());
+						}
+					} else {
+						if (target.equals("all-token")) {
+							infoList.remove(info.getType(), info.getKey());
+						}
+					}
+				}
+			}
+		}
 
 		return Constants.CMD_EXEC_SUCCESS;
 	}

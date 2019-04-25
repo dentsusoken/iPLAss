@@ -288,6 +288,18 @@ $(function() {
 		if ($("body.modal-body").length > 0 && $(".result-block + .btn").length > 0) {
 			$(".result-block form").after($(".result-block + .btn"));
 		}
+
+		//OAuth Application
+		var $authDetailForms = $(".detailForm", $(".auth-application")).each(function() {
+			var $authDetailForm = $(this);
+			$authDetailForm.find(".nav-section").after("<div class='formArchive'/>");
+			var $authFormArchive = $(".formArchive", $authDetailForm);
+			$authDetailForm.children("div:not(.lyt-edit-01,.lyt-edit-02,.operation-bar)").each(function() {
+				var $this = $(this);
+				$this.appendTo($authFormArchive);
+			});
+		});
+
 	} else {
 		//ログイン
 		$("#header-container").find("#header").prependTo("#main");
