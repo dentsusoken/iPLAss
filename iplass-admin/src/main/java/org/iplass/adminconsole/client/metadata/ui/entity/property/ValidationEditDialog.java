@@ -253,11 +253,11 @@ public class ValidationEditDialog extends AbstractWindow {
 				+ rs("ui_metadata_entity_PropertyListGrid_availBindVariable")
 				+ "<p " + contentsStyle + ">"
 				+ "<table style=\"border-collapse:collapse;\">"
-				+ "<tr><th " + tableStyle + rs("ui_metadata_entity_PropertyListGrid_format") + tableStyle + rs("ui_metadata_entity_PropertyListGrid_outputContent")
-				+ "<tr><td " + tableStyle + ">name</td><td "+ tableStyle + rs("ui_metadata_entity_PropertyListGrid_propName")
-				+ "<tr><td " + tableStyle + ">entityName</td><td "+ tableStyle + rs("ui_metadata_entity_PropertyListGrid_entityName")
-				+ "<tr><td " + tableStyle + ">min</td><td "+ tableStyle + rs("ui_metadata_entity_PropertyListGrid_lengthRangeTypeMin")
-				+ "<tr><td " + tableStyle + ">max</td><td "+ tableStyle + rs("ui_metadata_entity_PropertyListGrid_lengthRangeTypeMax")
+				+ "<tr><th " + tableStyle + ">" + rs("ui_metadata_entity_PropertyListGrid_format") + "</th><th" + tableStyle + ">" + rs("ui_metadata_entity_PropertyListGrid_outputContent") + "</th></tr>"
+				+ "<tr><td " + tableStyle + ">name</td><td "+ tableStyle + ">" + rs("ui_metadata_entity_PropertyListGrid_propName") + "</td></tr>"
+				+ "<tr><td " + tableStyle + ">entityName</td><td "+ tableStyle + ">" + rs("ui_metadata_entity_PropertyListGrid_entityName") + "</td></tr>"
+				+ "<tr><td " + tableStyle + ">min</td><td "+ tableStyle + ">" + rs("ui_metadata_entity_PropertyListGrid_lengthRangeTypeMin") + "</td></tr>"
+				+ "<tr><td " + tableStyle + ">max</td><td "+ tableStyle + ">" + rs("ui_metadata_entity_PropertyListGrid_lengthRangeTypeMax") + "</td></tr>"
 				+ "</table></p></div>"
 				);
 
