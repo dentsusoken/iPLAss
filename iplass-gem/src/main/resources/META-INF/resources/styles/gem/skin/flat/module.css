@@ -963,6 +963,11 @@ span.jqtree_common.jqtree-title.ui-draggable.ui-draggable-dragging {
   .tbl-maintenance textarea {
     width: 100%; }
 
+.auth-application .detailForm > div, .auth-application .detailForm .formArchive > div, #detailForm > div, #detailForm .formArchive > div {
+  display: block;
+  float: left;
+  width: 100%; }
+
 /* お知らせ */
 .tbl-information-list th, .tbl-information-list td {
   padding: 20px;
@@ -1504,7 +1509,7 @@ span.jqtree_common.jqtree-title.ui-draggable.ui-draggable-dragging {
 .entity-list-widget .result-nav .next {
   margin-right: 0; }
 
-#detailForm > div, #detailForm .formArchive > div {
+.auth-application .detailForm > div, .auth-application .detailForm .formArchive > div, #detailForm > div, #detailForm .formArchive > div {
   display: block;
   float: left;
   width: 100%; }

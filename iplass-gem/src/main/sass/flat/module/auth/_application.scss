@@ -1,0 +1,17 @@
+//@extend-elements
+%extend_gdd_1 {
+	display: block;
+	float: left;
+	width: 100%;
+}
+
+.auth-application {
+	.detailForm {
+		> div {
+			@extend %extend_gdd_1;
+		}
+		.formArchive > div {
+			@extend %extend_gdd_1;
+		}
+	}
+}

@@ -32,6 +32,7 @@
 <%@ page import="org.iplass.mtp.entity.definition.EntityDefinition"%>
 <%@ page import="org.iplass.mtp.entity.definition.EntityDefinitionManager"%>
 <%@ page import="org.iplass.mtp.entity.fulltextsearch.FulltextSearchManager"%>
+<%@ page import="org.iplass.mtp.impl.i18n.I18nUtil"%>
 <%@ page import="org.iplass.mtp.impl.web.i18n.LangSelector"%>
 <%@ page import="org.iplass.mtp.impl.web.WebUtil"%>
 <%@ page import="org.iplass.mtp.tenant.Tenant" %>
@@ -40,6 +41,7 @@
 <%@ page import="org.iplass.mtp.tenant.gem.TenantGemInfo"%>
 <%@ page import="org.iplass.mtp.util.StringUtil"%>
 <%@ page import="org.iplass.mtp.view.generic.*"%>
+<%@ page import="org.iplass.mtp.view.top.parts.ApplicationMaintenanceParts"%>
 <%@ page import="org.iplass.mtp.view.top.parts.FulltextSearchViewParts"%>
 <%@ page import="org.iplass.mtp.view.top.parts.TopViewParts"%>
 <%@ page import="org.iplass.mtp.view.top.TopViewDefinition"%>
@@ -49,9 +51,11 @@
 <%@ page import="org.iplass.gem.command.AboutCommand"%>
 <%@ page import="org.iplass.gem.command.ChangeRoleCommand"%>
 <%@ page import="org.iplass.gem.command.Constants" %>
+<%@ page import="org.iplass.gem.command.GemResourceBundleUtil"%>
 <%@ page import="org.iplass.gem.command.MenuCommand"%>
 <%@ page import="org.iplass.gem.command.ViewUtil"%>
 <%@ page import="org.iplass.gem.command.auth.LogoutCommand"%>
+<%@ page import="org.iplass.gem.command.auth.RevokeApplicationCommand"%>
 <%@ page import="org.iplass.gem.command.auth.UpdatePasswordCommand"%>
 <%@ page import="org.iplass.gem.command.fulltext.FullTextSearchViewCommand"%>
 
@@ -206,6 +210,23 @@
 	if (showNavi) {
 		fulltextEntities = getFulltextEntities(topView);
 	}
+
+	//アプリ管理
+	boolean showAppMentenance = false;
+	String titleAppMentenance = null;
+	if (showNavi && auth.isAuthenticated() && topView != null) {
+		for (TopViewParts parts : topView.getParts()) {
+	if (parts instanceof ApplicationMaintenanceParts) {
+		ApplicationMaintenanceParts amp = (ApplicationMaintenanceParts)parts;
+		showAppMentenance = true;
+		titleAppMentenance = I18nUtil.stringDef(amp.getTitle(), amp.getLocalizedTitleList());
+		if (titleAppMentenance == null) {
+	titleAppMentenance = GemResourceBundleUtil.resourceString("layout.header.appMaintenance");
+		}
+		break;
+	}
+		}
+	}
 %>
 
 <div id="header-container">
@@ -235,8 +256,8 @@
 	if (gemInfo.isUseDisplayName()) {
 		String title = ViewUtil.getDispTenantName();
 		if (request.getAttribute("title") != null) {
-			// 認証前の画面でロゴやタイトルを表示するか判断した結果のタイトル
-			title = (String)request.getAttribute("title");
+	// 認証前の画面でロゴやタイトルを表示するか判断した結果のタイトル
+	title = (String)request.getAttribute("title");
 		}
 %>
 <span><c:out value="<%=title%>"/></span>
@@ -255,7 +276,7 @@
 <p><span class="name"><c:out value="<%=userName%>"/></span></p>
 <ul>
 <%
-		if (isAdmin) {
+	if (isAdmin) {
 %>
 <li>
 <a href="javascript:void(0)" onclick="showAdminConsole();">${m:rs("mtp-gem-messages", "layout.header.manage")}</a>
@@ -266,7 +287,7 @@ function showAdminConsole() {
 </script>
 </li>
 <%
-		}
+	}
 
 		TenantWebInfo webInfo = WebUtil.getTenantWebInfo(tenant);
 		if (webInfo.isUsePreview()) {
@@ -329,7 +350,7 @@ function showPreviewDateTimeDialog() {
 </script>
 </li>
 <%
-		}
+	}
 
 		TenantI18nInfo i18nInfo = tenant.getTenantConfig(TenantI18nInfo.class);
 		if (i18nInfo.isUseMultilingual() && i18nInfo.getUseLanguageList() != null && i18nInfo.getUseLanguageList().size() > 1) {
@@ -339,28 +360,28 @@ function showPreviewDateTimeDialog() {
 <span class="node-cursor"></span>
 <ul>
 <%
-			List<String> useLangList = i18nInfo.getUseLanguageList();
+	List<String> useLangList = i18nInfo.getUseLanguageList();
 
-			for (String key : enabelLangeages.keySet()) {
-				String name = enabelLangeages.get(key);
+	for (String key : enabelLangeages.keySet()) {
+		String name = enabelLangeages.get(key);
 
-				if (useLangList.contains(key)) {
-					boolean selectLang = key.equals(lang);
+		if (useLangList.contains(key)) {
+	boolean selectLang = key.equals(lang);
 %>
 <li>
 <%
-					if (selectLang) {
+	if (selectLang) {
 %>
 <span class="icon"></span>
 <%
-					}
+	}
 %>
-<span class="txt"><c:out value="<%= name %>"/></span>
+<span class="txt"><c:out value="<%=name%>"/></span>
 <input type="hidden" value="<%=key%>"/>
 </li>
 <%
-				}
-			}
+	}
+	}
 %>
 </ul>
 
@@ -389,7 +410,7 @@ $(function() {
 </li>
 
 <%
-		}
+	}
 
 		if (role != null && role.size() > 1) {
 %>
@@ -398,24 +419,24 @@ $(function() {
 <span class="node-cursor"></span>
 <ul>
 <%
-			for (String key : role.keySet()) {
-				String name = role.get(key);
-				boolean selectRole = key.equals(roleName);
+	for (String key : role.keySet()) {
+		String name = role.get(key);
+		boolean selectRole = key.equals(roleName);
 %>
 <li class="menu">
 <%
-				if (selectRole) {
+	if (selectRole) {
 %>
 <span class="icon"></span>
 <%
-				}
+	}
 %>
 
-<span class="txt"><c:out value="<%= name %>"/></span>
+<span class="txt"><c:out value="<%=name%>"/></span>
 <input type="hidden" value="<c:out value="<%=key%>"/>"/>
 </li>
 <%
-			}
+	}
 %>
 </ul>
 <script>
@@ -435,10 +456,10 @@ $(function() {
 </script>
 </li>
 <%
-		}
+	}
 
 		if (!user.isAnonymous()) {
-			if(am.canUpdateCredential(user.getAccountPolicy())) {
+	if(am.canUpdateCredential(user.getAccountPolicy())) {
 %>
 <li>
 <a href="javascript:void(0)" onclick="changePassword()">${m:rs("mtp-gem-messages", "layout.header.passChng")}</a>
@@ -450,9 +471,27 @@ function changePassword() {
 </script>
 </li>
 <%
-			}
+	}
 		}
 
+		//Application Maintenance
+		if (showAppMentenance) {
+%>
+<li class="app-maintenance">
+<span class="txt about-iplass"><c:out value="<%=titleAppMentenance%>"/></span>
+<script>
+$(function() {
+	$("li.app-maintenance > span").on("click", function() {
+		clearMenuState();
+		submitForm(contextPath + "/<%=RevokeApplicationCommand.VIEW_ACTION_NAME%>");
+	});
+});
+</script>
+</li>
+<%
+		}
+
+		//About
 		String appName = application.getServletContextName();
 		if (StringUtil.isEmpty(appName)) {
 			appName = "iPLAss";

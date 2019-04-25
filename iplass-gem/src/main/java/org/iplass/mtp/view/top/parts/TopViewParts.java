@@ -30,7 +30,9 @@ import javax.xml.bind.annotation.XmlSeeAlso;
  * TOP画面パーツ
  * @author lis3wg
  */
-@XmlSeeAlso({ActionParts.class, TemplateParts.class, ScriptParts.class, SeparatorParts.class, UserMaintenanceParts.class, FulltextSearchViewParts.class, CsvDownloadSettingsParts.class})
+@XmlSeeAlso({ActionParts.class, TemplateParts.class, ScriptParts.class, SeparatorParts.class,
+	UserMaintenanceParts.class, FulltextSearchViewParts.class, CsvDownloadSettingsParts.class,
+	ApplicationMaintenanceParts.class})
 public abstract class TopViewParts implements Serializable {
 
 	/** SerialVersionUID */
