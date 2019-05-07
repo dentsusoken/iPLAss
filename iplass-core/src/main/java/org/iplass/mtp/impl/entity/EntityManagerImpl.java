@@ -1396,7 +1396,11 @@ public class EntityManagerImpl implements EntityManager {
 		String defName = query.getFrom().getEntityName();
 		List<String> oids = fulltextSearchService.fulltextSearchOidList(defName, fulltext);
 		if (oids == null || oids.size() == 0) {
-			return new SearchResult<T>(-1, null);
+			if (option == null || !option.isCountTotal()) {
+				return new SearchResult<T>(-1, null);
+			}
+			// SearchOptionでisCountTotalがtrueで0件を返します。
+			return new SearchResult<T>(0, null);
 		}
 		Map<String, String> oidMap = oids.stream().collect(Collectors.toMap(oid -> oid, oid -> oid));
 
