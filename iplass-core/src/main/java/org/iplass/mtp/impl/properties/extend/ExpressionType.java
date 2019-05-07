@@ -222,7 +222,7 @@ public class ExpressionType extends VirtualType {
 				int unnestCount = entityField.unnestCount();
 				
 				if (unnestCount > 0) {
-					for (int i = 0; i < unnestCount; i++) {
+					for (int i = 0; i <= unnestCount; i++) {
 						if (forMain == null) {
 							throw new QueryException("subQuery's on clause invalid. not found correlation property:" + entityField);
 						}
@@ -278,9 +278,9 @@ public class ExpressionType extends VirtualType {
 			
 			Condition on = subQuery.getOn();
 			if (on != null) {
-				inSubqueryOnClause = true;
+				nest.inSubqueryOnClause = true;
 				subQuery.getOn().accept(nest);
-				inSubqueryOnClause = false;
+				nest.inSubqueryOnClause = false;
 			}
 			
 			return false;
