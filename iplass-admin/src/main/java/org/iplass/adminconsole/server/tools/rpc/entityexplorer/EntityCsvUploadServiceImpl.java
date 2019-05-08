@@ -28,6 +28,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.TimeZone;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -232,7 +233,7 @@ public class EntityCsvUploadServiceImpl extends AdminUploadAction {
 		//JSONで出力
 		ObjectMapper mapper = new ObjectMapper();
 		//for backward compatibility
-		mapper.configOverride(java.sql.Date.class).setFormat(JsonFormat.Value.forPattern("yyyy-MM-dd"));
+		mapper.configOverride(java.sql.Date.class).setFormat(JsonFormat.Value.forPattern("yyyy-MM-dd").withTimeZone(TimeZone.getDefault()));
 
 		JsonFactory f = new JsonFactory();
 		JsonGenerator g = f.createGenerator(new Writer() {

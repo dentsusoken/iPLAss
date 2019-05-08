@@ -41,6 +41,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Set;
+import java.util.TimeZone;
 
 import org.iplass.mtp.ManagerLocator;
 import org.iplass.mtp.entity.BinaryReference;
@@ -490,7 +491,7 @@ public class EntityCsvReader implements Iterable<Entity>, AutoCloseable {
 				if (mapper == null) {
 					mapper = new ObjectMapper();
 					//for backward compatibility
-					mapper.configOverride(java.sql.Date.class).setFormat(JsonFormat.Value.forPattern("yyyy-MM-dd"));
+					mapper.configOverride(java.sql.Date.class).setFormat(JsonFormat.Value.forPattern("yyyy-MM-dd").withTimeZone(TimeZone.getDefault()));
 				}
 				JsonNode root = mapper.readValue(valStr, JsonNode.class);
 

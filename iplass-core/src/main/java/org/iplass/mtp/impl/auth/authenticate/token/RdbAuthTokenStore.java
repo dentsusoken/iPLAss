@@ -26,6 +26,7 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.TimeZone;
 
 import org.iplass.mtp.impl.auth.authenticate.token.sql.AuthTokenSelectSQL;
 import org.iplass.mtp.impl.auth.authenticate.token.sql.AuthTokenUpdateSQL;
@@ -59,7 +60,7 @@ public class RdbAuthTokenStore implements AuthTokenStore {
 		objectMapper.enableDefaultTyping(DefaultTyping.OBJECT_AND_NON_CONCRETE, As.PROPERTY);
 		objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 		//for backward compatibility
-		objectMapper.configOverride(java.sql.Date.class).setFormat(JsonFormat.Value.forPattern("yyyy-MM-dd"));
+		objectMapper.configOverride(java.sql.Date.class).setFormat(JsonFormat.Value.forPattern("yyyy-MM-dd").withTimeZone(TimeZone.getDefault()));
 	}
 	
 	public boolean isSaveDetailAsJson() {

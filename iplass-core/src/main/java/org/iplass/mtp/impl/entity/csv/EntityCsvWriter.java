@@ -37,6 +37,7 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TimeZone;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.zip.ZipEntry;
@@ -433,7 +434,7 @@ public class EntityCsvWriter implements AutoCloseable, Flushable {
 		if (mapper == null) {
 			mapper = new ObjectMapper();
 			//for backward compatibility
-			mapper.configOverride(java.sql.Date.class).setFormat(JsonFormat.Value.forPattern("yyyy-MM-dd"));
+			mapper.configOverride(java.sql.Date.class).setFormat(JsonFormat.Value.forPattern("yyyy-MM-dd").withTimeZone(TimeZone.getDefault()));
 		}
 		try (StringWriter writer = new StringWriter()) {
 			mapper.writeValue(writer, value);

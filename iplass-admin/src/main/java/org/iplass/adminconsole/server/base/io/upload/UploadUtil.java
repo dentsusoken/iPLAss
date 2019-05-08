@@ -25,6 +25,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Writer;
+import java.util.TimeZone;
 
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.util.Streams;
@@ -114,7 +115,7 @@ public class UploadUtil {
 			//JSONで出力
 			ObjectMapper mapper = new ObjectMapper();
 			//for backward compatibility
-			mapper.configOverride(java.sql.Date.class).setFormat(JsonFormat.Value.forPattern("yyyy-MM-dd"));
+			mapper.configOverride(java.sql.Date.class).setFormat(JsonFormat.Value.forPattern("yyyy-MM-dd").withTimeZone(TimeZone.getDefault()));
 
 			JsonFactory f = new JsonFactory();
 			JsonGenerator g = f.createGenerator(new Writer() {
