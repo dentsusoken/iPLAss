@@ -315,12 +315,12 @@ public class PropertyControl extends ItemControl {
 	}
 
 	@Override
-	protected EntityViewFieldSettingDialog createSubWindow() {
+	protected EntityViewFieldSettingDialog createSubDialog() {
 		PropertyEditor editor =  (PropertyEditor) getValue("propertyEditor");
 		if (editor instanceof ReferencePropertyEditor) {
 			String refDefName = ((ReferencePropertyEditor) editor).getObjectName();
 			return new EntityViewFieldSettingDialog(getClassName(), getValueObject(), triggerType, defName, refDefName);
 		}
-		return super.createSubWindow();
+		return super.createSubDialog();
 	}
 }

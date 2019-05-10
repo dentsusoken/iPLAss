@@ -27,6 +27,7 @@ import java.util.List;
 import org.iplass.adminconsole.client.base.event.MTPEvent;
 import org.iplass.adminconsole.client.base.event.MTPEventHandler;
 import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
+import org.iplass.adminconsole.client.base.rpc.AdminAsyncCallback;
 import org.iplass.adminconsole.client.base.tenant.TenantInfoHolder;
 import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
 import org.iplass.adminconsole.client.metadata.data.entity.layout.ViewType;
@@ -243,12 +244,7 @@ public class DetailLayoutPanelImpl extends MetaDataMainEditPane implements Detai
 	/**
 	 * 初期化読込処理
 	 */
-	private final class LoadAsyncCallback implements AsyncCallback<DefinitionEntry> {
-		@Override
-		public void onFailure(Throwable caught) {
-			SC.warn(AdminClientMessageUtil.getString("ui_metadata_entity_layout_DetailLayoutPane_failedGetScreenInfo") + caught.getMessage());
-			GWT.log(caught.toString(), caught);
-		}
+	private final class LoadAsyncCallback extends AdminAsyncCallback<DefinitionEntry> {
 
 		@Override
 		public void onSuccess(DefinitionEntry entry) {
@@ -491,7 +487,7 @@ public class DetailLayoutPanelImpl extends MetaDataMainEditPane implements Detai
 		/**
 		 * 指定Viewの表示処理
 		 */
-		private final class DisplayAsyncCallback implements AsyncCallback<EntityView> {
+		private final class DisplayAsyncCallback extends AdminAsyncCallback<EntityView> {
 
 			@Override
 			public void onSuccess(EntityView ev) {
@@ -516,12 +512,6 @@ public class DetailLayoutPanelImpl extends MetaDataMainEditPane implements Detai
 				}
 				apply(fv);
 			}
-
-			@Override
-			public void onFailure(Throwable caught) {
-				SC.warn(AdminClientMessageUtil.getString("ui_metadata_entity_layout_DetailLayoutPane_failedReadScreenInfo") + caught.getMessage());
-				GWT.log(caught.toString(), caught);
-			}
 		}
 	}
 
@@ -532,7 +522,7 @@ public class DetailLayoutPanelImpl extends MetaDataMainEditPane implements Detai
 
 		@Override
 		public void onClick(ClickEvent event) {
-			service.getDefinition(TenantInfoHolder.getId(), EntityView.class.getName(), defName, new AsyncCallback<EntityView>() {
+			service.getDefinition(TenantInfoHolder.getId(), EntityView.class.getName(), defName, new AdminAsyncCallback<EntityView>() {
 
 				@Override
 				public void onSuccess(EntityView result) {
@@ -543,11 +533,6 @@ public class DetailLayoutPanelImpl extends MetaDataMainEditPane implements Detai
 					}
 				}
 
-				@Override
-				public void onFailure(Throwable caught) {
-					SC.warn(AdminClientMessageUtil.getString("ui_metadata_entity_layout_DetailLayoutPane_failedReadScreenInfo") + caught.getMessage());
-					GWT.log(caught.toString(), caught);
-				}
 			});
 		}
 
@@ -636,7 +621,7 @@ public class DetailLayoutPanelImpl extends MetaDataMainEditPane implements Detai
 		/**
 		 * 削除開始
 		 */
-		private final class DeleteStartAsyncCallback implements AsyncCallback<EntityView> {
+		private final class DeleteStartAsyncCallback extends AdminAsyncCallback<EntityView> {
 
 			@Override
 			public void onSuccess(EntityView ev) {
@@ -671,11 +656,6 @@ public class DetailLayoutPanelImpl extends MetaDataMainEditPane implements Detai
 				}
 			}
 
-			@Override
-			public void onFailure(Throwable caught) {
-				SC.warn(AdminClientMessageUtil.getString("ui_metadata_entity_layout_DetailLayoutPane_failedReadScreenInfo") + caught.getMessage());
-				GWT.log(caught.toString(), caught);
-			}
 		}
 
 		private void updateEntityView(final EntityView  definition, boolean checkVersion) {
@@ -803,7 +783,7 @@ public class DetailLayoutPanelImpl extends MetaDataMainEditPane implements Detai
 
 		@Override
 		public void onClick(ClickEvent event) {
-			service.getDefinition(TenantInfoHolder.getId(), EntityView.class.getName(), defName, new AsyncCallback<EntityView>() {
+			service.getDefinition(TenantInfoHolder.getId(), EntityView.class.getName(), defName, new AdminAsyncCallback<EntityView>() {
 
 				@Override
 				public void onSuccess(EntityView result) {
@@ -812,12 +792,6 @@ public class DetailLayoutPanelImpl extends MetaDataMainEditPane implements Detai
 					} else {
 						SC.say(AdminClientMessageUtil.getString("ui_metadata_entity_layout_DetailLayoutPane_defaultViewCreateCaution"));
 					}
-				}
-
-				@Override
-				public void onFailure(Throwable caught) {
-					SC.warn(AdminClientMessageUtil.getString("ui_metadata_entity_layout_DetailLayoutPane_failedReadScreenInfo") + caught.getMessage());
-					GWT.log(caught.toString(), caught);
 				}
 			});
 		}

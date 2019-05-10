@@ -169,7 +169,7 @@ public abstract class ItemControl extends AbstractWindow {
 		this.updateHandler = updateHandler;
 	}
 
-	protected EntityViewFieldSettingDialog createSubWindow() {
+	protected EntityViewFieldSettingDialog createSubDialog() {
 		return new EntityViewFieldSettingDialog(getClassName(), getValueObject(), triggerType, defName);
 	}
 
@@ -181,7 +181,7 @@ public abstract class ItemControl extends AbstractWindow {
 	private final class ClickHandlerImpl implements ClickHandler {
 		@Override
 		public void onClick(ClickEvent event) {
-			final EntityViewFieldSettingDialog dialog = createSubWindow();
+			final EntityViewFieldSettingDialog dialog = createSubDialog();
 
 			dialog.setOkHandler(new MetaFieldUpdateHandler() {
 

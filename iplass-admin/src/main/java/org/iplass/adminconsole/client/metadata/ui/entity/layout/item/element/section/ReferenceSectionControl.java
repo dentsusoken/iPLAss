@@ -162,7 +162,7 @@ public class ReferenceSectionControl extends ItemControl implements SectionContr
 	}
 
 	@Override
-	protected EntityViewFieldSettingDialog createSubWindow() {
+	protected EntityViewFieldSettingDialog createSubDialog() {
 		ReferenceSection section = getSection();
 		return new EntityViewFieldSettingDialog(getClassName(), getValueObject(), triggerType, defName, section.getDefintionName());
 	}

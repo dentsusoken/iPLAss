@@ -27,6 +27,7 @@ import java.util.List;
 import org.iplass.adminconsole.client.base.event.MTPEvent;
 import org.iplass.adminconsole.client.base.event.MTPEventHandler;
 import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
+import org.iplass.adminconsole.client.base.rpc.AdminAsyncCallback;
 import org.iplass.adminconsole.client.base.tenant.TenantInfoHolder;
 import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
 import org.iplass.adminconsole.client.metadata.data.entity.layout.ViewType;
@@ -242,12 +243,7 @@ public class SearchLayoutPanelImpl extends MetaDataMainEditPane implements Searc
 	/**
 	 * 初期化読込処理
 	 */
-	private final class LoadAsyncCallback implements AsyncCallback<DefinitionEntry> {
-		@Override
-		public void onFailure(Throwable caught) {
-			SC.warn(AdminClientMessageUtil.getString("ui_metadata_entity_layout_SearchLayoutPane_failedGetScreenInfo") + caught.getMessage());
-			GWT.log(caught.toString(), caught);
-		}
+	private final class LoadAsyncCallback extends AdminAsyncCallback<DefinitionEntry> {
 
 		@Override
 		public void onSuccess(DefinitionEntry entry) {
@@ -326,8 +322,7 @@ public class SearchLayoutPanelImpl extends MetaDataMainEditPane implements Searc
 		/**
 		 * 編集開始
 		 */
-		private final class SaveStartAsyncCallback implements
-				AsyncCallback<EntityView> {
+		private final class SaveStartAsyncCallback implements AsyncCallback<EntityView> {
 			@Override
 			public void onSuccess(EntityView ev) {
 				//検索画面のデータ作成
@@ -489,7 +484,7 @@ public class SearchLayoutPanelImpl extends MetaDataMainEditPane implements Searc
 		/**
 		 * 指定Viewの表示処理
 		 */
-		private final class DisplayAsyncCallback implements AsyncCallback<EntityView> {
+		private final class DisplayAsyncCallback extends AdminAsyncCallback<EntityView> {
 
 			@Override
 			public void onSuccess(EntityView ev) {
@@ -515,11 +510,6 @@ public class SearchLayoutPanelImpl extends MetaDataMainEditPane implements Searc
 				apply(fv);
 			}
 
-			@Override
-			public void onFailure(Throwable caught) {
-				SC.warn(AdminClientMessageUtil.getString("ui_metadata_entity_layout_SearchLayoutPane_failedReadScreenInfo") + caught.getMessage());
-				GWT.log(caught.toString(), caught);
-			}
 		}
 	}
 
@@ -530,7 +520,7 @@ public class SearchLayoutPanelImpl extends MetaDataMainEditPane implements Searc
 
 		@Override
 		public void onClick(ClickEvent event) {
-			service.getDefinition(TenantInfoHolder.getId(), EntityView.class.getName(), defName, new AsyncCallback<EntityView>() {
+			service.getDefinition(TenantInfoHolder.getId(), EntityView.class.getName(), defName, new AdminAsyncCallback<EntityView>() {
 
 				@Override
 				public void onSuccess(EntityView result) {
@@ -541,11 +531,6 @@ public class SearchLayoutPanelImpl extends MetaDataMainEditPane implements Searc
 					}
 				}
 
-				@Override
-				public void onFailure(Throwable caught) {
-					SC.warn(AdminClientMessageUtil.getString("ui_metadata_entity_layout_SearchLayoutPane_failedReadScreenInfo") + caught.getMessage());
-					GWT.log(caught.toString(), caught);
-				}
 			});
 		}
 
@@ -633,7 +618,7 @@ public class SearchLayoutPanelImpl extends MetaDataMainEditPane implements Searc
 		/**
 		 * 削除開始
 		 */
-		private final class DeleteStartAsyncCallback implements AsyncCallback<EntityView> {
+		private final class DeleteStartAsyncCallback extends AdminAsyncCallback<EntityView> {
 
 			@Override
 			public void onSuccess(EntityView ev) {
@@ -668,11 +653,6 @@ public class SearchLayoutPanelImpl extends MetaDataMainEditPane implements Searc
 				}
 			}
 
-			@Override
-			public void onFailure(Throwable caught) {
-				SC.warn(AdminClientMessageUtil.getString("ui_metadata_entity_layout_SearchLayoutPane_failedReadScreenInfo") + caught.getMessage());
-				GWT.log(caught.toString(), caught);
-			}
 		}
 
 		private void updateEntityView(final EntityView  definition, boolean checkVersion) {
@@ -800,7 +780,7 @@ public class SearchLayoutPanelImpl extends MetaDataMainEditPane implements Searc
 
 		@Override
 		public void onClick(ClickEvent event) {
-			service.getDefinition(TenantInfoHolder.getId(), EntityView.class.getName(), defName, new AsyncCallback<EntityView>() {
+			service.getDefinition(TenantInfoHolder.getId(), EntityView.class.getName(), defName, new AdminAsyncCallback<EntityView>() {
 
 				@Override
 				public void onSuccess(EntityView result) {
@@ -811,11 +791,6 @@ public class SearchLayoutPanelImpl extends MetaDataMainEditPane implements Searc
 					}
 				}
 
-				@Override
-				public void onFailure(Throwable caught) {
-					SC.warn(AdminClientMessageUtil.getString("ui_metadata_entity_layout_SearchLayoutPane_failedReadScreenInfo") + caught.getMessage());
-					GWT.log(caught.toString(), caught);
-				}
 			});
 		}
 

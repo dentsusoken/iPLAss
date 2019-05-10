@@ -153,7 +153,7 @@ public class MassReferenceSectionControl extends ItemControl implements SectionC
 	}
 
 	@Override
-	protected EntityViewFieldSettingDialog createSubWindow() {
+	protected EntityViewFieldSettingDialog createSubDialog() {
 		return new EntityViewFieldSettingDialog(getClassName(), getValueObject(), triggerType, defName, refDefName);
 	}
 
