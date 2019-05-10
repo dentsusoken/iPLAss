@@ -1,43 +1,42 @@
 /*
  * Copyright (C) 2017 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
- * 
+ *
  * Unless you have purchased a commercial license,
  * the following license terms apply:
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
 package org.iplass.adminconsole.client.metadata.ui.entity.property.common;
 
-import java.util.ArrayList;
 import java.util.LinkedHashMap;
-import java.util.List;
 
 import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
+import org.iplass.adminconsole.client.base.ui.widget.MetaDataLangTextItem;
+import org.iplass.adminconsole.client.base.ui.widget.form.MtpForm2Column;
+import org.iplass.adminconsole.client.base.ui.widget.form.MtpSelectItem;
+import org.iplass.adminconsole.client.base.ui.widget.form.MtpTextItem;
 import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
-import org.iplass.adminconsole.client.metadata.ui.common.LocalizedStringSettingDialog;
 import org.iplass.adminconsole.client.metadata.ui.entity.property.PropertyAttribute;
 import org.iplass.adminconsole.client.metadata.ui.entity.property.PropertyListGridRecord;
 import org.iplass.adminconsole.client.metadata.ui.entity.property.common.PropertyCommonAttributePane.PropertyCommonAttributePaneHandler;
 import org.iplass.adminconsole.client.metadata.ui.entity.property.type.PropertyTypeAttributeController;
 import org.iplass.adminconsole.shared.metadata.dto.MetaDataConstants;
-import org.iplass.mtp.definition.LocalizedStringDefinition;
 import org.iplass.mtp.entity.definition.PropertyDefinitionType;
 
 import com.google.gwt.core.shared.GWT;
 import com.smartgwt.client.widgets.form.DynamicForm;
-import com.smartgwt.client.widgets.form.fields.ButtonItem;
 import com.smartgwt.client.widgets.form.fields.SelectItem;
 import com.smartgwt.client.widgets.form.fields.TextItem;
 import com.smartgwt.client.widgets.form.fields.events.ChangedEvent;
@@ -46,27 +45,28 @@ import com.smartgwt.client.widgets.form.validator.RegExpValidator;
 
 public class CommonAttributeParts1 extends PropertyCommonAttributeParts {
 
-	private DynamicForm form = new DynamicForm();
+	private DynamicForm form;
 
 	/** 名前 */
 	private TextItem txtName;
+
 	/** 表示名称 */
-	private TextItem txtDisplayName;
-	/** 表示名称(多言語値) */
-	public List<LocalizedStringDefinition> localizedDisplayNameList;
+	private MetaDataLangTextItem txtDisplayName;
+
 	/** 型 */
 	private SelectItem selType;
 
+	/** 多重度 */
+	private TextItem txtMultipl;
+
 	private PropertyCommonAttributePane owner;
-	private boolean readOnly;
 
 	private PropertyTypeAttributeController typeController = GWT.create(PropertyTypeAttributeController.class);
 
 	public CommonAttributeParts1() {
 
-		txtName = new TextItem();
+		txtName = new MtpTextItem();
 		txtName.setTitle("Name");
-		txtName.setWidth(200);
 
 		//名前のPolicyをカスタマイズ
 		RegExpValidator nameValidator = new RegExpValidator();
@@ -75,32 +75,11 @@ public class CommonAttributeParts1 extends PropertyCommonAttributeParts {
 		txtName.setValidators(nameValidator);
 		SmartGWTUtil.setRequired(txtName);
 
-		txtDisplayName = new TextItem();
+		txtDisplayName = new MetaDataLangTextItem();
 		txtDisplayName.setTitle("Display Name");
-		txtDisplayName.setWidth(200);
 
-		ButtonItem btnLangDisplayName = new ButtonItem();
-		btnLangDisplayName.setTitle("");
-		btnLangDisplayName.setShowTitle(false);
-		btnLangDisplayName.setIcon("world.png");
-		btnLangDisplayName.setStartRow(false);	//これを指定しないとButtonの場合、先頭にくる
-		btnLangDisplayName.setEndRow(false);	//これを指定しないと次のFormItemが先頭にいく
-		btnLangDisplayName.setPrompt(rs("ui_metadata_entity_PropertyListGrid_eachLangDspName"));
-		btnLangDisplayName.addClickHandler(new com.smartgwt.client.widgets.form.fields.events.ClickHandler() {
-
-			@Override
-			public void onClick(com.smartgwt.client.widgets.form.fields.events.ClickEvent event) {
-				if (localizedDisplayNameList == null) {
-					localizedDisplayNameList = new ArrayList<LocalizedStringDefinition>();
-				}
-				LocalizedStringSettingDialog dialog = new LocalizedStringSettingDialog(localizedDisplayNameList, readOnly);
-				dialog.show();
-			}
-		});
-
-		selType = new SelectItem();
+		selType = new MtpSelectItem();
 		selType.setTitle("Type");
-		selType.setWidth(200);
 		SmartGWTUtil.setRequired(selType);
 		selType.addChangedHandler(new ChangedHandler() {
 			@Override
@@ -109,14 +88,14 @@ public class CommonAttributeParts1 extends PropertyCommonAttributeParts {
 			}
 		});
 
-		form.setMargin(5);
-		form.setNumCols(7);
-		form.setWidth100();
-		form.setHeight(30);
-		form.setItems(txtName, txtDisplayName, btnLangDisplayName, selType);
+		txtMultipl = new MtpTextItem();
+		txtMultipl.setTitle("Multiple");
+		txtMultipl.setKeyPressFilter(KEYFILTER_NUM);
+
+		form = new MtpForm2Column();
+		form.setItems(txtName, txtDisplayName, selType, txtMultipl);
 
 		addMember(form);
-
 	}
 
 	@Override
@@ -135,17 +114,14 @@ public class CommonAttributeParts1 extends PropertyCommonAttributeParts {
 
 		CommonAttribute commonAttribute = (CommonAttribute)typeAttribute;
 
-		if (commonAttribute.isInherited()) {
-			readOnly = true;
-		}
-
 		txtName.setValue(commonAttribute.getName());
 		txtDisplayName.setValue(commonAttribute.getDisplayName());
-		localizedDisplayNameList = commonAttribute.getLocalizedDisplayNameList();
-
+		txtDisplayName.setLocalizedList(commonAttribute.getLocalizedDisplayNameList());
 		if (commonAttribute.getType() != null) {
 			selType.setValue(commonAttribute.getType().name());
+			typeControl(commonAttribute.getType());
 		}
+		txtMultipl.setValue(commonAttribute.getMultipleStringValue());
 	}
 
 	@Override
@@ -159,9 +135,11 @@ public class CommonAttributeParts1 extends PropertyCommonAttributeParts {
 		if (txtDisplayName.getValue() != null) {
 			commonAttribute.setDisplayName(SmartGWTUtil.getStringValue(txtDisplayName));
 		}
-		commonAttribute.setLocalizedDisplayNameList(localizedDisplayNameList);
+		commonAttribute.setLocalizedDisplayNameList(txtDisplayName.getLocalizedList());
 
 		commonAttribute.setType(PropertyDefinitionType.valueOf(SmartGWTUtil.getStringValue(selType)));
+
+		commonAttribute.setMultipleStringValue(SmartGWTUtil.getStringValue(txtMultipl));
 	}
 
 	@Override
@@ -171,7 +149,7 @@ public class CommonAttributeParts1 extends PropertyCommonAttributeParts {
 
 	@Override
 	public int panelHeight() {
-		return 40;
+		return 60;
 	}
 
 	private PropertyDefinitionType getType() {
@@ -183,7 +161,39 @@ public class CommonAttributeParts1 extends PropertyCommonAttributeParts {
 	}
 
 	private void typeChanged(PropertyDefinitionType type) {
+
+		typeControl(type);
+
+		switch (type) {
+		case REFERENCE:
+			break;
+		default:
+			txtMultipl.setValue(1);
+		}
+
 		owner.onTypeChanged(type);
+	}
+
+	private void typeControl(PropertyDefinitionType type) {
+
+		txtMultipl.setDisabled(false);
+		txtMultipl.setKeyPressFilter(KEYFILTER_NUM);
+
+		switch (type) {
+		case EXPRESSION:
+			txtMultipl.setDisabled(true);
+			break;
+		case REFERENCE:
+			txtMultipl.setKeyPressFilter(KEYFILTER_NUMANDASTER);
+			break;
+		case AUTONUMBER:
+			txtMultipl.setDisabled(true);
+			break;
+		case BINARY:
+			txtMultipl.setKeyPressFilter(KEYFILTER_NUM);
+			break;
+		default:
+		}
 	}
 
 	private String rs(String key) {

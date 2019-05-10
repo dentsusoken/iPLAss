@@ -36,9 +36,6 @@ import com.smartgwt.client.widgets.layout.VLayout;
  */
 public abstract class MtpDialog extends AbstractWindow {
 
-	/** 標準のWindow幅 */
-	private static final int DEFAULT_WIDTH = 800;
-
 	/** コンテンツ部分 */
 	protected VLayout container;
 
@@ -49,7 +46,7 @@ public abstract class MtpDialog extends AbstractWindow {
 
 		//標準的な設定
 
-		setWidth(DEFAULT_WIDTH);
+		setWidth(MtpWidgetConstants.DIALOG_WIDTH);
 
 		setShowMinimizeButton(false);
 		setShowMaximizeButton(false);

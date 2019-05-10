@@ -28,6 +28,7 @@ import java.util.Map;
 import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
 import org.iplass.adminconsole.client.base.ui.widget.MetaDataSelectItem;
 import org.iplass.adminconsole.client.base.ui.widget.MetaDataSelectItem.ItemOption;
+import org.iplass.adminconsole.client.base.ui.widget.form.MtpForm2Column;
 import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
 import org.iplass.adminconsole.client.metadata.ui.entity.property.PropertyAttribute;
 import org.iplass.adminconsole.client.metadata.ui.entity.property.PropertyAttributePane;
@@ -70,28 +71,29 @@ public class SelectAttributePane extends VLayout implements PropertyAttributePan
 	public SelectAttributePane() {
 
 		setWidth100();
-//		setHeight100();
 		setAutoHeight();
 
 		selGlobalSelectValue = new MetaDataSelectItem(SelectValueDefinition.class, new ItemOption(true, false));
 		selGlobalSelectValue.setTitle("Global Value");
-		selGlobalSelectValue.setTitleAlign(Alignment.LEFT);
 		SmartGWTUtil.addHoverToFormItem(selGlobalSelectValue, rs("ui_metadata_entity_PropertyListGrid_globalSelectValueComment"));
 
-		DynamicForm formGlobal = new DynamicForm();
-		//formGlobal.setMargin(5);	//LocalValueに開始位置を合わせるためMarginなし
-		formGlobal.setNumCols(4);
-		formGlobal.setColWidths(100, 200, 50, "*");
-		formGlobal.setHeight(25);
+		DynamicForm formGlobal = new MtpForm2Column();
 		formGlobal.setItems(selGlobalSelectValue);
 
 		gridLocalSelectValue = new ListGrid();
 		gridLocalSelectValue.setMargin(5);
 		gridLocalSelectValue.setHeight(110);
 		gridLocalSelectValue.setWidth100();
+
 		gridLocalSelectValue.setShowAllColumns(true);
 		gridLocalSelectValue.setShowAllRecords(true);
 		gridLocalSelectValue.setCanResizeFields(true);
+
+		gridLocalSelectValue.setCanGroupBy(false);
+		gridLocalSelectValue.setCanFreezeFields(false);
+		gridLocalSelectValue.setCanPickFields(false);
+		gridLocalSelectValue.setCanSort(false);
+		gridLocalSelectValue.setCanAutoFitFields(false);
 
 		//grid内でのD&Dでの並べ替えを許可
 		gridLocalSelectValue.setCanDragRecordsOut(true);

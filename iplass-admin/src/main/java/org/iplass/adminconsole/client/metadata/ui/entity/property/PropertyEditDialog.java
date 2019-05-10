@@ -22,7 +22,7 @@ package org.iplass.adminconsole.client.metadata.ui.entity.property;
 
 import java.util.Map;
 
-import org.iplass.adminconsole.client.base.ui.widget.AbstractWindow;
+import org.iplass.adminconsole.client.base.ui.widget.MtpDialog;
 import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
 import org.iplass.adminconsole.client.metadata.ui.entity.property.PropertyAttributePane.NeedsEnableLangMap;
 import org.iplass.adminconsole.client.metadata.ui.entity.property.ValidationListPane.ValidationListPaneHandler;
@@ -32,15 +32,13 @@ import org.iplass.adminconsole.client.metadata.ui.entity.property.type.PropertyT
 import org.iplass.mtp.entity.definition.PropertyDefinitionType;
 
 import com.google.gwt.core.shared.GWT;
-import com.smartgwt.client.types.VerticalAlignment;
 import com.smartgwt.client.widgets.Canvas;
 import com.smartgwt.client.widgets.IButton;
 import com.smartgwt.client.widgets.events.ClickEvent;
 import com.smartgwt.client.widgets.events.ClickHandler;
-import com.smartgwt.client.widgets.layout.HLayout;
 import com.smartgwt.client.widgets.layout.VLayout;
 
-public class PropertyEditDialog extends AbstractWindow {
+public class PropertyEditDialog extends MtpDialog {
 
 	//Windowタイトル分とフッタ分の高さ
 	private static final int ADJUST_HEIGHT = 90;
@@ -82,19 +80,12 @@ public class PropertyEditDialog extends AbstractWindow {
 		}
 		this.record = record;
 
-		setWidth(920);
-		setMaxWidth(920);
-		setMaxHeight(600);
 		if (record.isInherited()) {
 			setTitle("Property (Read Only)");
 		} else {
 			setTitle("Property");
 		}
-		setShowMinimizeButton(false);
-		setIsModal(true);
-		setShowModalMask(true);
-		setCanDragResize(true);
-		//centerInPage();
+		setHeight(600);
 
 		pnlCommonAttribute = new PropertyCommonAttributePane(new PropertyCommonAttributePaneHandler() {
 
@@ -124,6 +115,15 @@ public class PropertyEditDialog extends AbstractWindow {
 			}
 		});
 
+		pnlAttributeContainer = new VLayout();
+		pnlAttributeContainer.setWidth100();
+		pnlAttributeContainer.setAutoHeight();
+		pnlAttributeContainer.addMember(pnlCommonAttribute);
+
+		container.addMember(pnlAttributeContainer);
+		container.addMember(SmartGWTUtil.separator());
+		container.addMember(pnlValidation);
+
 		IButton btnOk = new IButton();
 		btnOk.addClickHandler(new ClickHandler() {
 			@Override
@@ -152,34 +152,10 @@ public class PropertyEditDialog extends AbstractWindow {
 			}
 		});
 
-		VLayout pnlMainContainer = new VLayout();
-		pnlMainContainer.setWidth100();
-		pnlMainContainer.setHeight100();
-		pnlMainContainer.setMargin(10);
-		//pnlMainContainer.setOverflow(Overflow.AUTO);
-
-		pnlAttributeContainer = new VLayout();
-		pnlAttributeContainer.setWidth100();
-		pnlAttributeContainer.setAutoHeight();
-		pnlAttributeContainer.addMember(pnlCommonAttribute);
-
-		pnlMainContainer.addMember(pnlAttributeContainer);
-		pnlMainContainer.addMember(SmartGWTUtil.separator());
-		pnlMainContainer.addMember(pnlValidation);
-
-		HLayout pnlFooter = new HLayout(5);
-		pnlFooter.setMargin(5);
-		pnlFooter.setHeight(20);
-		pnlFooter.setWidth100();
-		pnlFooter.setAlign(VerticalAlignment.CENTER);
-		pnlFooter.addMember(btnOk);
-		pnlFooter.addMember(btnCancel);
-
-		addItem(pnlMainContainer);
-		addItem(SmartGWTUtil.separator());
-		addItem(pnlFooter);
+		footer.setMembers(btnOk, btnCancel);
 
 		initialize();
+		centerInPage();
 	}
 
 	/**

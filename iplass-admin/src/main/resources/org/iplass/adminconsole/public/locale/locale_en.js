@@ -360,8 +360,8 @@ LocaleInfo.ui_metadata_common_MetaDataHistoryDialog_label = "<font color='red'>N
 LocaleInfo.ui_metadata_common_MetaDataUpdateCallback_overwriteConfirmMsg = "MetaData of the new version has been saved than the version being edited.<br />Do you want to overwrite it?";
 LocaleInfo.ui_metadata_common_MetaDataUpdateCallback_failedUpdateMetaDataMsg = "Failed to save MetaData. <br/>Cause:";
 LocaleInfo.ui_metadata_entity_CreateEntityDialog_nameErr = "The name can be used alphanumeric and underscore.\nThe first character can be used alphabets only.\nThe path will use the period.";
-LocaleInfo.ui_metadata_entity_CreateJavaMappingClassDialog_comment1 = "<font color=\"red\">Note:Ggenerated from the definition Entity that has been saved.<br/>Please save in advance If being edited.</font>";
-LocaleInfo.ui_metadata_entity_CreateJavaMappingClassDialog_comment2 = "<font color=\"red\">Note:If you specify a Mapping against also reference Entity, <br/>please specify in advance  the destination of the Entity Mapping referenced.";
+LocaleInfo.ui_metadata_entity_CreateJavaMappingClassDialog_comment1 = "<font color=\"red\">Note:Generated from the definition Entity that has been saved.Please save in advance If being edited.</font>";
+LocaleInfo.ui_metadata_entity_CreateJavaMappingClassDialog_comment2 = "<font color=\"red\">Note:If you specify a Mapping against also reference Entity, please specify in advance  the destination of the Entity Mapping referenced.";
 LocaleInfo.ui_metadata_entity_EntityAttributeEditPane_failed = "Failed";
 LocaleInfo.ui_metadata_entity_EntityAttributeEditPane_failedGetScreenInfo = "Failed to get the screen information.";
 LocaleInfo.ui_metadata_entity_EntityAttributeEditPane_versionControleTypeComment = "Select the method of version control.<br/><table><tr><td>NONE</td><td>...</td><td>Do not keep multiple versions of one oid.</td></tr><tr><td>NUMBER BASE</td><td>...</td><td>Keep multiple versions of one oid.</td></tr><tr><td>TIME BASE</td><td>...</td><td>Hold more than one valid term for one oid.</td></tr>";
@@ -471,8 +471,8 @@ LocaleInfo.ui_metadata_entity_PropertyListGrid_displayDialogEditScript = "<div s
 LocaleInfo.ui_metadata_entity_PropertyListGrid_scriptHint = "<ul><li>entity: Entity</li><li>propertyName : Property Name</li><li>value : Property Value</li></ul>";
 LocaleInfo.ui_metadata_entity_PropertyListGrid_scriptAsArray = "If Multiple is not 1, bind the array type to value.";
 LocaleInfo.ui_metadata_entity_PropertyListGrid_messageSpecifyComment = "Can specify the message directly or  from the Message of meta-data message.<br/>Variables can be bound, please refer to help.";
-LocaleInfo.ui_metadata_entity_PropertyListGrid_messageDef = "<div><b>About the message definition</b><br/>";
-LocaleInfo.ui_metadata_entity_PropertyListGrid_directMessageComment = "If have defined a direct message, priority is higher than the specified Message of metadata";
+LocaleInfo.ui_metadata_entity_PropertyListGrid_messageDef = "About the message definition";
+LocaleInfo.ui_metadata_entity_PropertyListGrid_directMessageComment = "If have defined a direct message, priority is higher than the specified Message of metadata.";
 LocaleInfo.ui_metadata_entity_PropertyListGrid_propName = "Property name";
 LocaleInfo.ui_metadata_entity_PropertyListGrid_entityName = "Entity name";
 LocaleInfo.ui_metadata_entity_PropertyListGrid_lengthRangeTypeMin = "Value that set to the minimum value of the Length type or Range type or Binary Size type";

@@ -1,19 +1,19 @@
 /*
  * Copyright (C) 2017 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
- * 
+ *
  * Unless you have purchased a commercial license,
  * the following license terms apply:
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
@@ -23,6 +23,9 @@ package org.iplass.adminconsole.client.metadata.ui.entity.property.type;
 import java.util.LinkedHashMap;
 
 import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
+import org.iplass.adminconsole.client.base.ui.widget.form.MtpForm2Column;
+import org.iplass.adminconsole.client.base.ui.widget.form.MtpSelectItem;
+import org.iplass.adminconsole.client.base.ui.widget.form.MtpTextItem;
 import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
 import org.iplass.adminconsole.client.metadata.ui.entity.property.PropertyAttribute;
 import org.iplass.adminconsole.client.metadata.ui.entity.property.PropertyAttributePane;
@@ -36,32 +39,27 @@ import com.smartgwt.client.widgets.layout.VLayout;
 
 public class DecimalAttributePane extends VLayout implements PropertyAttributePane {
 
-	private DynamicForm form = new DynamicForm();
+	private DynamicForm form;
 
 	/** スケール */
 	private TextItem txtScale;
+
 	/** 丸めモード */
 	private SelectItem selRoundMode;
 
 	public DecimalAttributePane() {
 
 		setWidth100();
-//		setHeight100();
 		setAutoHeight();
 
-		txtScale = new TextItem();
+		txtScale = new MtpTextItem();
 		txtScale.setTitle(rs("ui_metadata_entity_PropertyListGrid_numberDecimal"));
 		txtScale.setKeyPressFilter(KEYFILTER_NUM);
-		txtScale.setWidth(40);
 
-		selRoundMode = new SelectItem();
+		selRoundMode = new MtpSelectItem();
 		selRoundMode.setTitle(rs("ui_metadata_entity_PropertyListGrid_roundMode"));
-		selRoundMode.setWidth(200);
 
-		form.setMargin(5);
-		form.setNumCols(6);
-		form.setWidth100();
-		form.setHeight(30);
+		form = new MtpForm2Column();
 		form.setItems(txtScale, selRoundMode);
 
 		addMember(form);

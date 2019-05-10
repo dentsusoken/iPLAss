@@ -137,6 +137,7 @@ public abstract class MetaDataCreateDialog extends MtpDialog {
 
 		descriptionField = new MtpTextAreaItem();
 		descriptionField.setTitle("Description");
+		descriptionField.setColSpan(2);
 		descriptionField.setHeight(60);
 
 		final DynamicForm form = new MtpForm();

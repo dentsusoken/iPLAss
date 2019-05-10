@@ -41,27 +41,33 @@ public class MetaDataLangTextItem extends MtpTextItem implements MtpWidgetConsta
 		init(true);
 	}
 
-	public MetaDataLangTextItem(String name) {
-		super(name);
-		init(true);
-	}
-
-	public MetaDataLangTextItem(String name, String title) {
-		super(name, title);
-		init(true);
-	}
-
-	public MetaDataLangTextItem(boolean showLang) {
+	public MetaDataLangTextItem(FormItemIcon... icons) {
 		super();
-		init(showLang);
+		init(true, icons);
 	}
 
-	private void init(boolean showLang) {
+	public MetaDataLangTextItem(String name, FormItemIcon... icons) {
+		super(name);
+		init(true, icons);
+	}
 
+	public MetaDataLangTextItem(String name, String title, FormItemIcon... icons) {
+		super(name, title);
+		init(true, icons);
+	}
+
+	public MetaDataLangTextItem(boolean showLang, FormItemIcon... icons) {
+		super();
+		init(showLang, icons);
+	}
+
+	private void init(boolean showLang, FormItemIcon... icons) {
+
+		List<FormItemIcon> iconList = new ArrayList<FormItemIcon>();
 		if (showLang) {
-			FormItemIcon icon = new FormItemIcon();
-			icon.setSrc(ICON_LANG);
-			icon.addFormItemClickHandler(new FormItemClickHandler() {
+			FormItemIcon langIcon = new FormItemIcon();
+			langIcon.setSrc(ICON_LANG);
+			langIcon.addFormItemClickHandler(new FormItemClickHandler() {
 
 				@Override
 				public void onFormItemClick(FormItemIconClickEvent event) {
@@ -73,9 +79,18 @@ public class MetaDataLangTextItem extends MtpTextItem implements MtpWidgetConsta
 					dialog.show();
 				}
 			});
-			icon.setPrompt(AdminClientMessageUtil.getString("ui_metadata_common_MetaCommonAttributeSection_eachLangDspName"));
-			icon.setBaseStyle("adminButtonRounded");
-			setIcons(icon);
+			langIcon.setPrompt(AdminClientMessageUtil.getString("ui_metadata_common_MetaCommonAttributeSection_eachLangDspName"));
+			langIcon.setBaseStyle("adminButtonRounded");
+			iconList.add(langIcon);
+		}
+		if (icons != null) {
+			for (FormItemIcon icon : icons) {
+				icon.setBaseStyle("adminButtonRounded");
+				iconList.add(icon);
+			}
+		}
+		if (!iconList.isEmpty()) {
+			setIcons(iconList.toArray(new FormItemIcon[]{}));
 		}
 	}
 

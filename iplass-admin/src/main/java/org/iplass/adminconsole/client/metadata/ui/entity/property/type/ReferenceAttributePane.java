@@ -28,6 +28,9 @@ import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
 import org.iplass.adminconsole.client.base.rpc.AdminAsyncCallback;
 import org.iplass.adminconsole.client.base.tenant.TenantInfoHolder;
 import org.iplass.adminconsole.client.base.ui.widget.MetaDataSelectItem;
+import org.iplass.adminconsole.client.base.ui.widget.form.MtpForm2Column;
+import org.iplass.adminconsole.client.base.ui.widget.form.MtpSelectItem;
+import org.iplass.adminconsole.client.base.ui.widget.form.MtpTextItem;
 import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
 import org.iplass.adminconsole.client.metadata.ui.entity.property.PropertyAttribute;
 import org.iplass.adminconsole.client.metadata.ui.entity.property.PropertyAttributePane;
@@ -44,7 +47,6 @@ import org.iplass.mtp.entity.definition.properties.VersionControlReferenceType;
 import com.smartgwt.client.widgets.form.DynamicForm;
 import com.smartgwt.client.widgets.form.fields.CheckboxItem;
 import com.smartgwt.client.widgets.form.fields.SelectItem;
-import com.smartgwt.client.widgets.form.fields.SpacerItem;
 import com.smartgwt.client.widgets.form.fields.TextItem;
 import com.smartgwt.client.widgets.form.fields.events.ChangedEvent;
 import com.smartgwt.client.widgets.form.fields.events.ChangedHandler;
@@ -53,7 +55,7 @@ import com.smartgwt.client.widgets.layout.VLayout;
 
 public class ReferenceAttributePane extends VLayout implements PropertyAttributePane {
 
-	private DynamicForm form = new DynamicForm();
+	private DynamicForm form;
 
 	/** 参照先Entity */
 	private SelectItem selReferenceName;
@@ -64,7 +66,7 @@ public class ReferenceAttributePane extends VLayout implements PropertyAttribute
 	/** 非参照AuditLog出力 */
 	private CheckboxItem chkAuditLogMappedBy;
 
-	private DynamicForm formVersionControl = new DynamicForm();
+	private DynamicForm formVersionControl;
 
 	/** バージョン管理方法 */
 	private SelectItem selVersionControlType;
@@ -79,7 +81,6 @@ public class ReferenceAttributePane extends VLayout implements PropertyAttribute
 	public ReferenceAttributePane() {
 
 		setWidth100();
-//		setHeight100();
 		setAutoHeight();
 
 		selReferenceName = new MetaDataSelectItem(EntityDefinition.class);
@@ -94,16 +95,22 @@ public class ReferenceAttributePane extends VLayout implements PropertyAttribute
 				mappedTargetDataInit(refDefName, null, refAuditLog);
 			}
 		});
-		selReferenceType = new SelectItem();
+
+		selReferenceType = new MtpSelectItem();
 		selReferenceType.setTitle(rs("ui_metadata_entity_PropertyListGrid_referenceRelation"));
-		selReferenceType.setWidth(200);
-		selMappedByProperty = new SelectItem();
+
+		selMappedByProperty = new MtpSelectItem();
 		selMappedByProperty.setTitle(rs("ui_metadata_entity_PropertyListGrid_referencedProperty"));
-		selMappedByProperty.setWidth(200);
-		selMappedByProperty.setDisabled(Boolean.TRUE);
-		selVersionControlType = new SelectItem();
+		selMappedByProperty.setDisabled(true);
+
+		chkAuditLogMappedBy = new CheckboxItem();
+		chkAuditLogMappedBy.setTitle(rs("ui_metadata_entity_PropertyListGrid_operationHistorySave"));
+
+		form = new MtpForm2Column();
+		form.setItems(selReferenceName, selReferenceType, selMappedByProperty, chkAuditLogMappedBy);
+
+		selVersionControlType = new MtpSelectItem();
 		selVersionControlType.setTitle(rs("ui_metadata_entity_PropertyListGrid_versionControle"));
-		selVersionControlType.setWidth(200);
 		selVersionControlType.addChangedHandler(new ChangedHandler() {
 			@Override
 			public void onChanged(ChangedEvent event) {
@@ -114,30 +121,15 @@ public class ReferenceAttributePane extends VLayout implements PropertyAttribute
 				}
 			}
 		});
-		txtVersionControlExpression = new TextItem();
+		txtVersionControlExpression = new MtpTextItem();
 		txtVersionControlExpression.setTitle(rs("ui_metadata_entity_PropertyListGrid_versionControlAsExpression"));
-		txtVersionControlExpression.setWidth(200);
 		txtVersionControlExpression.setDisabled(true);
 		SmartGWTUtil.addHoverToFormItem(txtVersionControlExpression, rs("ui_metadata_entity_PropertyListGrid_versionControlAsExpressionComment"));
-		chkAuditLogMappedBy = new CheckboxItem();
-		chkAuditLogMappedBy.setTitle(rs("ui_metadata_entity_PropertyListGrid_operationHistorySave"));
 
-		form.setMargin(5);
-		form.setNumCols(6);
-		form.setColWidths(100, 200, 60, 200, 100, "*");
-		form.setWidth100();
-		form.setHeight(60);
-		form.setItems(selReferenceName, selReferenceType, selMappedByProperty
-				, new SpacerItem(), new SpacerItem(), new SpacerItem(), new SpacerItem(), chkAuditLogMappedBy);
-
-		formVersionControl.setPadding(5);
-		formVersionControl.setNumCols(6);
-		formVersionControl.setColWidths(100, 200, 60, 200, 100, "*");
-		formVersionControl.setWidth100();
-		formVersionControl.setHeight(30);
+		formVersionControl = new MtpForm2Column();
 		formVersionControl.setGroupTitle(rs("ui_metadata_entity_PropertyListGrid_referenceVersion"));
 		formVersionControl.setIsGroup(true);
-		formVersionControl.setItems(selVersionControlType, txtVersionControlExpression, new SpacerItem(), new SpacerItem());
+		formVersionControl.setItems(selVersionControlType, txtVersionControlExpression);
 
 		pnlSortList = new SortInfoListPane(new SortInfoListPaneHandler() {
 

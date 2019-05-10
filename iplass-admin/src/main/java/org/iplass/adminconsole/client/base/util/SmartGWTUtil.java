@@ -64,8 +64,8 @@ import com.smartgwt.client.widgets.form.fields.SpacerItem;
 import com.smartgwt.client.widgets.form.fields.TextAreaItem;
 import com.smartgwt.client.widgets.form.fields.TextItem;
 import com.smartgwt.client.widgets.form.fields.TimeItem;
-import com.smartgwt.client.widgets.form.fields.events.IconClickEvent;
-import com.smartgwt.client.widgets.form.fields.events.IconClickHandler;
+import com.smartgwt.client.widgets.form.fields.events.FormItemClickHandler;
+import com.smartgwt.client.widgets.form.fields.events.FormItemIconClickEvent;
 import com.smartgwt.client.widgets.form.fields.events.ItemHoverEvent;
 import com.smartgwt.client.widgets.form.fields.events.ItemHoverHandler;
 import com.smartgwt.client.widgets.layout.HLayout;
@@ -275,13 +275,19 @@ public final class SmartGWTUtil {
 	 * @param hint 表示メッセージ
 	 */
 	public static void addHintToFormItem(final FormItem item, final String hint) {
-		item.setIcons(SmartGWTUtil.getIcon(MtpWidgetConstants.ICON_HELP));
-		item.addIconClickHandler(new IconClickHandler() {
+		item.setIcons(getHintIcon(hint));
+	}
+
+	public static FormItemIcon getHintIcon(final String hint) {
+		FormItemIcon icon = SmartGWTUtil.getIcon(MtpWidgetConstants.ICON_HELP);
+		icon.addFormItemClickHandler(new FormItemClickHandler() {
 			@Override
-			public void onIconClick(IconClickEvent event) {
+			public void onFormItemClick(FormItemIconClickEvent event) {
 				SC.say(hint);
 			}
 		});
+		icon.setBaseStyle("adminButtonRounded");
+		return icon;
 	}
 
 	public static void addHintToLabel(final Label label, final String hint) {

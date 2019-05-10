@@ -25,6 +25,9 @@ import java.util.LinkedHashMap;
 import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
 import org.iplass.adminconsole.client.base.ui.widget.MetaDataSelectItem;
 import org.iplass.adminconsole.client.base.ui.widget.MetaDataSelectItem.ItemOption;
+import org.iplass.adminconsole.client.base.ui.widget.form.MtpForm2Column;
+import org.iplass.adminconsole.client.base.ui.widget.form.MtpSelectItem;
+import org.iplass.adminconsole.client.base.ui.widget.form.MtpTextAreaItem;
 import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
 import org.iplass.adminconsole.client.metadata.ui.entity.property.PropertyAttribute;
 import org.iplass.adminconsole.client.metadata.ui.entity.property.PropertyAttributePane;
@@ -42,30 +45,28 @@ import com.smartgwt.client.widgets.layout.VLayout;
 
 public class ExpressionAttributePane extends VLayout implements PropertyAttributePane {
 
-	private DynamicForm form = new DynamicForm();
-
-	/** 式 */
-	private TextAreaItem txtExpression;
-
-	private DynamicForm formResultType = new DynamicForm();
+	private DynamicForm formResultType;
 
 	/** 結果タイプ */
 	private SelectItem selResultType;
+	
 	/** 結果タイプがSelect時のSelectValue */
 	private SelectItem selGlobalSelectValue;
-//	private MetaDataViewButtonItem btnGlobalSelectValueMeta;
+
+	private DynamicForm formExpression;
+
+	/** 式 */
+	private TextAreaItem txtExpression;
 
 	private PropertyTypeAttributeController typeController = GWT.create(PropertyTypeAttributeController.class);
 
 	public ExpressionAttributePane() {
 
 		setWidth100();
-//		setHeight100();
 		setAutoHeight();
 
-		selResultType = new SelectItem();
+		selResultType = new MtpSelectItem();
 		selResultType.setTitle("Result Type");
-		selResultType.setWidth(200);
 		selResultType.addChangedHandler(new ChangedHandler() {
 			@Override
 			public void onChanged(ChangedEvent event) {
@@ -78,30 +79,21 @@ public class ExpressionAttributePane extends VLayout implements PropertyAttribut
 		selGlobalSelectValue.setTitle("Global Value");
 		SmartGWTUtil.addHoverToFormItem(selGlobalSelectValue, rs("ui_metadata_entity_PropertyListGrid_expressionGlobalSelectValueComment"));
 
-		txtExpression = new TextAreaItem();
+		formResultType = new MtpForm2Column();
+		formResultType.setItems(selResultType, selGlobalSelectValue);
+
+		txtExpression = new MtpTextAreaItem();
 		txtExpression.setTitle(rs("ui_metadata_entity_PropertyListGrid_expression"));
-		txtExpression.setWidth("100%");
 		txtExpression.setHeight(100);
-		txtExpression.setColSpan(6);
+		txtExpression.setColSpan(3);
 		SmartGWTUtil.setRequired(txtExpression);
 		SmartGWTUtil.addHoverToFormItem(txtExpression, rs("ui_metadata_entity_PropertyListGrid_expressionItem"));
 
-		formResultType.setMargin(5);
-		formResultType.setNumCols(6);
-		formResultType.setColWidths(100, 200, 100, 200, 50, "*");
-		formResultType.setWidth100();
-		formResultType.setHeight(30);
-//		formResultType.setItems(selResultType, selGlobalSelectValue, btnGlobalSelectValueMeta);
-		formResultType.setItems(selResultType, selGlobalSelectValue);
-
-		form.setMargin(5);
-		form.setNumCols(6);
-		form.setWidth100();
-		form.setHeight(80);
-		form.setItems(txtExpression);
+		formExpression = new MtpForm2Column();
+		formExpression.setItems(txtExpression);
 
 		addMember(formResultType);
-		addMember(form);
+		addMember(formExpression);
 
 		initialize();
 	}
@@ -125,10 +117,8 @@ public class ExpressionAttributePane extends VLayout implements PropertyAttribut
 
 		if (PropertyDefinitionType.SELECT == expressionAttribute.getResultType()) {
 			selGlobalSelectValue.setVisible(true);
-//			btnGlobalSelectValueMeta.setVisible(true);
 		} else {
 			selGlobalSelectValue.setVisible(false);
-//			btnGlobalSelectValueMeta.setVisible(false);
 		}
 
 	}
@@ -165,7 +155,7 @@ public class ExpressionAttributePane extends VLayout implements PropertyAttribut
 		if (!formResultType.validate()) {
 			isValidate = false;
 		}
-		if (!form.validate()) {
+		if (!formExpression.validate()) {
 			isValidate = false;
 		}
 
@@ -191,10 +181,8 @@ public class ExpressionAttributePane extends VLayout implements PropertyAttribut
 
 		if (PropertyDefinitionType.SELECT.name().equals(SmartGWTUtil.getStringValue(selResultType))) {
 			selGlobalSelectValue.show();
-//			btnGlobalSelectValueMeta.show();
 		} else {
 			selGlobalSelectValue.hide();
-//			btnGlobalSelectValueMeta.hide();
 			selGlobalSelectValue.setValue("");
 		}
 	}

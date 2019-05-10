@@ -26,7 +26,7 @@ import java.util.List;
 import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
 import org.iplass.adminconsole.client.base.rpc.AdminAsyncCallback;
 import org.iplass.adminconsole.client.base.tenant.TenantInfoHolder;
-import org.iplass.adminconsole.client.base.ui.widget.AbstractWindow;
+import org.iplass.adminconsole.client.base.ui.widget.MtpDialog;
 import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
 import org.iplass.adminconsole.shared.base.dto.KeyValue;
 import org.iplass.adminconsole.shared.metadata.rpc.MetaDataServiceAsync;
@@ -38,7 +38,6 @@ import com.smartgwt.client.types.ListGridEditEvent;
 import com.smartgwt.client.types.Overflow;
 import com.smartgwt.client.types.SelectionAppearance;
 import com.smartgwt.client.types.SelectionStyle;
-import com.smartgwt.client.types.VerticalAlignment;
 import com.smartgwt.client.types.VisibilityMode;
 import com.smartgwt.client.util.BooleanCallback;
 import com.smartgwt.client.util.SC;
@@ -53,12 +52,11 @@ import com.smartgwt.client.widgets.grid.ListGridField;
 import com.smartgwt.client.widgets.grid.ListGridRecord;
 import com.smartgwt.client.widgets.grid.events.EditCompleteEvent;
 import com.smartgwt.client.widgets.grid.events.EditCompleteHandler;
-import com.smartgwt.client.widgets.layout.HLayout;
 import com.smartgwt.client.widgets.layout.SectionStack;
 import com.smartgwt.client.widgets.layout.SectionStackSection;
 import com.smartgwt.client.widgets.layout.VLayout;
 
-public class AutoNumberValueListDialog extends AbstractWindow {
+public class AutoNumberValueListDialog extends MtpDialog {
 
 	private String defName;
 	private String propertyName;
@@ -73,20 +71,11 @@ public class AutoNumberValueListDialog extends AbstractWindow {
 
 		setTitle("AutoNumber Value List");
 		setHeight(425);
-		setWidth(450);
-
-		setShowMinimizeButton(false);
-		setIsModal(true);
-		setShowModalMask(true);
 		centerInPage();
 
 		gridPane = new AutoNumberValueListGridPane();
 
-		HLayout pnlFooter = new HLayout(5);
-		pnlFooter.setMargin(10);
-		pnlFooter.setAutoHeight();
-		pnlFooter.setWidth100();
-		pnlFooter.setAlign(VerticalAlignment.CENTER);
+		container.addMember(gridPane);
 
 		IButton btnSave = new IButton("Save");
 		btnSave.addClickHandler(new ClickHandler() {
@@ -102,11 +91,7 @@ public class AutoNumberValueListDialog extends AbstractWindow {
 			}
 		});
 
-		pnlFooter.setMembers(btnSave, btnCancel);
-
-		addItem(gridPane);
-		addItem(SmartGWTUtil.separator());
-		addItem(pnlFooter);
+		footer.setMembers(btnSave, btnCancel);
 	}
 
 	class AutoNumberValueListGridPane extends VLayout {
@@ -252,6 +237,7 @@ public class AutoNumberValueListDialog extends AbstractWindow {
 			setCanReorderRecords(false);
 			setCanDragSelectText(true);
 			setShowSelectedStyle(false);
+			setCanAutoFitFields(false);
 
 			//CheckBox選択設定
 			setSelectionType(SelectionStyle.SIMPLE);

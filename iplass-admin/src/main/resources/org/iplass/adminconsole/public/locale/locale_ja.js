@@ -360,8 +360,8 @@ LocaleInfo.ui_metadata_common_MetaDataHistoryDialog_label = "※太字が現在�
 LocaleInfo.ui_metadata_common_MetaDataUpdateCallback_overwriteConfirmMsg = "編集中のバージョンよりも新しいバージョンのMetaDataが保存されています。<br />上書きしてもよろしいですか？";
 LocaleInfo.ui_metadata_common_MetaDataUpdateCallback_failedUpdateMetaDataMsg = "保存に失敗しました。<br/>原因：";
 LocaleInfo.ui_metadata_entity_CreateEntityDialog_nameErr = "名前には英数字、アンダースコアのみ利用することができます。\n先頭は英字のみ利用することができます。\nパスにはピリオドを利用します。";
-LocaleInfo.ui_metadata_entity_CreateJavaMappingClassDialog_comment1 = "<font color=\"red\">※保存されているEntity定義から生成します。<br/>編集中の場合は先に保存してください。</font>";
-LocaleInfo.ui_metadata_entity_CreateJavaMappingClassDialog_comment2 = "<font color=\"red\">※参照Entityに対してもMapping指定する場合は、参照先EntityのMappingを<br/>　先に指定してください。</font>";
+LocaleInfo.ui_metadata_entity_CreateJavaMappingClassDialog_comment1 = "<font color=\"red\">※保存されているEntity定義から生成します。編集中の場合は先に保存してください。</font>";
+LocaleInfo.ui_metadata_entity_CreateJavaMappingClassDialog_comment2 = "<font color=\"red\">※参照Entityに対してもMapping指定する場合は、参照先EntityのMappingを先に指定してください。</font>";
 LocaleInfo.ui_metadata_entity_EntityAttributeEditPane_failed = "失敗";
 LocaleInfo.ui_metadata_entity_EntityAttributeEditPane_failedGetScreenInfo = "画面情報の取得に失敗しました。";
 LocaleInfo.ui_metadata_entity_EntityAttributeEditPane_versionControleTypeComment = "バージョンの管理方式を指定します。<br/><table><tr><td>NONE</td><td>・・・</td><td>1つのoidに対して複数のバージョンを保持しません。</td></tr><tr><td>NUMBER BASE</td><td>・・・</td><td>1つのoidに対して複数のバージョンを保持します。</td></tr><tr><td>TIME BASE</td><td>・・・</td><td>1つのoidに対して複数の有効期間を保持します。</td></tr>";
@@ -471,7 +471,7 @@ LocaleInfo.ui_metadata_entity_PropertyListGrid_displayDialogEditScript = "<div s
 LocaleInfo.ui_metadata_entity_PropertyListGrid_scriptHint = "<ul><li>entity: Entity</li><li>propertyName : プロパティ名</li><li>value : プロパティ値</li></ul>";
 LocaleInfo.ui_metadata_entity_PropertyListGrid_scriptAsArray = "Multipleが1ではない場合、配列型をvalueにバインドします。";
 LocaleInfo.ui_metadata_entity_PropertyListGrid_messageSpecifyComment = "メッセージは直接指定するか、メタデータのMessageから指定できます。<br/>バインド可能な変数はヘルプを参照してください。";
-LocaleInfo.ui_metadata_entity_PropertyListGrid_messageDef = "<div><b>・メッセージ定義について</b><br/>";
+LocaleInfo.ui_metadata_entity_PropertyListGrid_messageDef = "・メッセージ定義について";
 LocaleInfo.ui_metadata_entity_PropertyListGrid_directMessageComment = "直接メッセージを定義した場合は、メタデータのMessage指定よりも優先して利用されます。";
 LocaleInfo.ui_metadata_entity_PropertyListGrid_propName = "プロパティ名";
 LocaleInfo.ui_metadata_entity_PropertyListGrid_entityName = "エンティティ名";

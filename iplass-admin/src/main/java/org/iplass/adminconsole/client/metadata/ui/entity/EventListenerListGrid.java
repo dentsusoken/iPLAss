@@ -25,10 +25,14 @@ import java.util.LinkedHashMap;
 import java.util.List;
 
 import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
-import org.iplass.adminconsole.client.base.ui.widget.AbstractWindow;
+import org.iplass.adminconsole.client.base.ui.widget.MtpDialog;
 import org.iplass.adminconsole.client.base.ui.widget.ScriptEditorDialogCondition;
 import org.iplass.adminconsole.client.base.ui.widget.ScriptEditorDialogHandler;
 import org.iplass.adminconsole.client.base.ui.widget.ScriptEditorDialogMode;
+import org.iplass.adminconsole.client.base.ui.widget.form.MtpForm;
+import org.iplass.adminconsole.client.base.ui.widget.form.MtpSelectItem;
+import org.iplass.adminconsole.client.base.ui.widget.form.MtpTextAreaItem;
+import org.iplass.adminconsole.client.base.ui.widget.form.MtpTextItem;
 import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
 import org.iplass.adminconsole.client.metadata.data.MetaDataNameDS;
 import org.iplass.adminconsole.client.metadata.data.MetaDataNameDS.MetaDataNameDSOption;
@@ -43,7 +47,6 @@ import org.iplass.mtp.entity.definition.listeners.SendNotificationType;
 
 import com.smartgwt.client.types.Alignment;
 import com.smartgwt.client.types.Overflow;
-import com.smartgwt.client.types.VerticalAlignment;
 import com.smartgwt.client.widgets.IButton;
 import com.smartgwt.client.widgets.events.ClickEvent;
 import com.smartgwt.client.widgets.events.ClickHandler;
@@ -51,7 +54,6 @@ import com.smartgwt.client.widgets.form.DynamicForm;
 import com.smartgwt.client.widgets.form.fields.ButtonItem;
 import com.smartgwt.client.widgets.form.fields.CheckboxItem;
 import com.smartgwt.client.widgets.form.fields.SelectItem;
-import com.smartgwt.client.widgets.form.fields.SpacerItem;
 import com.smartgwt.client.widgets.form.fields.TextAreaItem;
 import com.smartgwt.client.widgets.form.fields.TextItem;
 import com.smartgwt.client.widgets.form.fields.events.ChangedEvent;
@@ -61,7 +63,6 @@ import com.smartgwt.client.widgets.grid.ListGridField;
 import com.smartgwt.client.widgets.grid.ListGridRecord;
 import com.smartgwt.client.widgets.grid.events.RecordDoubleClickEvent;
 import com.smartgwt.client.widgets.grid.events.RecordDoubleClickHandler;
-import com.smartgwt.client.widgets.layout.HLayout;
 import com.smartgwt.client.widgets.layout.VLayout;
 
 /**
@@ -216,7 +217,7 @@ public class EventListenerListGrid extends ListGrid {
 			record.setGeneralPurpus(snDef.getNotificationType().name());
 			record.setTmplDefName(snDef.getTmplDefName());
 			record.setNotificationCondScript(snDef.getNotificationCondScript());
-			
+
 			List<EventType> lstEType = snDef.getListenEvent();
 			if (lstEType != null) {
 				for (EventType eType : lstEType) {
@@ -255,7 +256,7 @@ public class EventListenerListGrid extends ListGrid {
 					}
 				}
 			}
-			
+
 		} else {
 		}
 		record.setWithoutMappedByReference(elDef.isWithoutMappedByReference());
@@ -343,9 +344,7 @@ public class EventListenerListGrid extends ListGrid {
 	 * @author lis2s8
 	 *
 	 */
-	private class EventListenerEditDialog extends AbstractWindow {
-
-		private static final int DEFAULT_WIDTH = 670;
+	private class EventListenerEditDialog extends MtpDialog {
 
 		private boolean isNewRow = false;
 		private EventListenerListGridRecord target;
@@ -355,7 +354,7 @@ public class EventListenerListGrid extends ListGrid {
 		private SelectItem typeItem;
 
 		//Main
-		private VLayout mainLayout = new VLayout();
+		private VLayout typeLayout;
 
 		//Script
 		private DynamicForm scriptItemForm;
@@ -414,21 +413,14 @@ public class EventListenerListGrid extends ListGrid {
 
 		private void initialize() {
 
-			// ダイアログ本体のプロパティ設定
-			setWidth(DEFAULT_WIDTH);
-			setHeight(100);
+			setHeight(200);
 			setTitle("EventListener");
-			setShowMinimizeButton(false);
-			setShowMaximizeButton(true);	//最大化は可能に設定（スクリプト編集用）
-			setCanDragResize(true);			//リサイズは可能に設定（スクリプト編集用）
-			setIsModal(true);
-			setShowModalMask(true);
 			centerInPage();
 
 			//---------------------------------
 			//Type
 			//---------------------------------
-			typeItem = new SelectItem();
+			typeItem = new MtpSelectItem();
 			typeItem.setTitle("Type");
 			SmartGWTUtil.setRequired(typeItem);
 			typeItem.addChangedHandler(new ChangedHandler() {
@@ -437,31 +429,25 @@ public class EventListenerListGrid extends ListGrid {
 				}
 			});
 
-			typeItemForm = new DynamicForm();
-			typeItemForm.setMargin(5);
-			typeItemForm.setNumCols(3);
-			typeItemForm.setColWidths(100, "*", 100);
-			typeItemForm.setAlign(Alignment.LEFT);
+			typeItemForm = new MtpForm();
 			typeItemForm.setItems(typeItem);
 
-			mainLayout.setWidth100();
-			mainLayout.setHeight100();
-//			mainLayout.setMargin(10);
+			container.addMember(typeItemForm);
+
+			typeLayout = new VLayout();
+			typeLayout.setWidth100();
+			typeLayout.setHeight100();
+
+			container.addMember(typeLayout);
 
 			//---------------------------------
 			//Script
 			//---------------------------------
-			scriptItem = new TextAreaItem();
-			scriptItem.setColSpan(2);
-			scriptItem.setTitle("Script");
-			scriptItem.setWidth("100%");
-			scriptItem.setHeight("100%");
-			SmartGWTUtil.setRequired(scriptItem);
-			SmartGWTUtil.setReadOnlyTextArea(scriptItem);
-
 			ButtonItem editScript = new ButtonItem("editScript", "Edit");
 			editScript.setWidth(100);
 			editScript.setStartRow(false);
+			editScript.setColSpan(3);
+			editScript.setAlign(Alignment.RIGHT);
 			editScript.addClickHandler(new com.smartgwt.client.widgets.form.fields.events.ClickHandler() {
 
 				@Override
@@ -484,14 +470,16 @@ public class EventListenerListGrid extends ListGrid {
 				}
 			});
 
-			scriptItemForm = new DynamicForm();
-			scriptItemForm.setMargin(5);
-			scriptItemForm.setNumCols(3);
-			scriptItemForm.setColWidths(100, "*", 100);
-			scriptItemForm.setWidth100();
+			scriptItem = new MtpTextAreaItem();
+			scriptItem.setColSpan(2);
+			scriptItem.setTitle("Script");
+			scriptItem.setHeight("100%");
+			SmartGWTUtil.setRequired(scriptItem);
+			SmartGWTUtil.setReadOnlyTextArea(scriptItem);
+
+			scriptItemForm = new MtpForm();
 			scriptItemForm.setHeight100();
-			scriptItemForm.setAlign(Alignment.LEFT);
-			scriptItemForm.setItems(new SpacerItem(), new SpacerItem(), editScript, scriptItem);
+			scriptItemForm.setItems(editScript, scriptItem);
 
 			beforeIItem = new CheckboxItem();
 			beforeIItem.setTitle("beforeInsert");
@@ -515,36 +503,31 @@ public class EventListenerListGrid extends ListGrid {
 			beforeValidateItem.setTitle("beforeValidate");
 
 			scriptEventItemForm = new DynamicForm();
-			scriptEventItemForm.setMargin(5);
 			scriptEventItemForm.setNumCols(9);
 			scriptEventItemForm.setHeight(100);
 			scriptEventItemForm.setIsGroup(true);
 			scriptEventItemForm.setGroupTitle("Events");
 			scriptEventItemForm.setItems(beforeIItem, afterIItem, beforeUItem, afterUItem, SmartGWTUtil.createSpacer(),
-					beforeDItem, afterDItem, afterRItem, afterPItem,SmartGWTUtil.createSpacer(),
+					beforeDItem, afterDItem, afterRItem, afterPItem, SmartGWTUtil.createSpacer(),
 					onLoadItem, beforeValidateItem);
 
 			//---------------------------------
 			//Java Class
 			//---------------------------------
-			javaClassNameItem = new TextItem();
+			javaClassNameItem = new MtpTextItem();
 			javaClassNameItem.setTitle("Class Name");
-			javaClassNameItem.setWidth("*");
 			SmartGWTUtil.setRequired(javaClassNameItem);
 			SmartGWTUtil.addHoverToFormItem(javaClassNameItem,
 					AdminClientMessageUtil.getString("ui_metadata_entity_EventListenerListGrid_javaClassNameItemComment"));
 
-			javaClassItemForm = new DynamicForm();
-			javaClassItemForm.setMargin(5);
-			javaClassItemForm.setNumCols(3);
-			javaClassItemForm.setColWidths(100, "*", 50);
+			javaClassItemForm = new MtpForm();
 			javaClassItemForm.setHeight(25);
-			javaClassItemForm.setItems(javaClassNameItem, SmartGWTUtil.createSpacer(50));
+			javaClassItemForm.setItems(javaClassNameItem);
 
 			//---------------------------------
 			//Send Notification
 			//---------------------------------
-			notificationTypeItem = new SelectItem();
+			notificationTypeItem = new MtpSelectItem();
 			notificationTypeItem.setTitle("Notification type");
 			SmartGWTUtil.setRequired(notificationTypeItem);
 			notificationTypeItem.addChangedHandler(new ChangedHandler() {
@@ -555,31 +538,21 @@ public class EventListenerListGrid extends ListGrid {
 				}
 			});
 
-			tmplDefNameItem = new SelectItem("template", "Template");
-			tmplDefNameItem.setWidth(250);
+			tmplDefNameItem = new MtpSelectItem("template", "Template");
 			SmartGWTUtil.setRequired(tmplDefNameItem);
 
-			sendNotificationForm = new DynamicForm();
-			sendNotificationForm.setMargin(5);
-			sendNotificationForm.setNumCols(3);
-			sendNotificationForm.setColWidths(100, "*", 50);
+			sendNotificationForm = new MtpForm();
 			sendNotificationForm.setHeight(50);
-			sendNotificationForm.setItems(notificationTypeItem, SmartGWTUtil.createSpacer(50), tmplDefNameItem, SmartGWTUtil.createSpacer(50));
-
+			sendNotificationForm.setItems(notificationTypeItem, tmplDefNameItem);
 
 			//---------------------------------
 			//Notification Condition
 			//---------------------------------
-			notificationCondScriptItem = new TextAreaItem();
-			notificationCondScriptItem.setColSpan(2);
-			notificationCondScriptItem.setTitle("Notification condition");
-			notificationCondScriptItem.setWidth("100%");
-			notificationCondScriptItem.setHeight("100%");
-			SmartGWTUtil.setReadOnlyTextArea(notificationCondScriptItem);
-
 			ButtonItem editNotificationCond = new ButtonItem("editNotificationCond", "Edit");
 			editNotificationCond.setWidth(100);
 			editNotificationCond.setStartRow(false);
+			editNotificationCond.setColSpan(3);
+			editNotificationCond.setAlign(Alignment.RIGHT);
 			editNotificationCond.addClickHandler(new com.smartgwt.client.widgets.form.fields.events.ClickHandler() {
 
 				@Override
@@ -602,14 +575,15 @@ public class EventListenerListGrid extends ListGrid {
 				}
 			});
 
-			notificationCondForm = new DynamicForm();
-			notificationCondForm.setMargin(5);
-			notificationCondForm.setNumCols(3);
-			notificationCondForm.setColWidths(100, "*", 100);
-			notificationCondForm.setWidth100();
+			notificationCondScriptItem = new MtpTextAreaItem();
+			notificationCondScriptItem.setColSpan(2);
+			notificationCondScriptItem.setTitle("Notification condition");
+			notificationCondScriptItem.setHeight("100%");
+			SmartGWTUtil.setReadOnlyTextArea(notificationCondScriptItem);
+
+			notificationCondForm = new MtpForm();
 			notificationCondForm.setHeight100();
-			notificationCondForm.setAlign(Alignment.LEFT);
-			notificationCondForm.setItems(new SpacerItem(), new SpacerItem(), editNotificationCond, notificationCondScriptItem);
+			notificationCondForm.setItems(editNotificationCond, notificationCondScriptItem);
 
 			notifyBeforeIItem = new CheckboxItem();
 			notifyBeforeIItem.setTitle("beforeInsert");
@@ -631,9 +605,8 @@ public class EventListenerListGrid extends ListGrid {
 			notifyOnLoadItem.setTitle("onLoad");
 			notifyBeforeValidateItem = new CheckboxItem();
 			notifyBeforeValidateItem.setTitle("beforeValidate");
-			
+
 			notifyEventItemForm = new DynamicForm();
-			notifyEventItemForm.setMargin(5);
 			notifyEventItemForm.setNumCols(9);
 			notifyEventItemForm.setHeight(100);
 			notifyEventItemForm.setIsGroup(true);
@@ -651,12 +624,9 @@ public class EventListenerListGrid extends ListGrid {
 			SmartGWTUtil.addHoverToFormItem(withoutMappedByReferenceItem,
 					AdminClientMessageUtil.getString("ui_metadata_entity_EventListenerListGrid_withoutMappByRefComment"));
 
-			withoutMappedByReferenceItemForm = new DynamicForm();
-			withoutMappedByReferenceItemForm.setMargin(5);
-			withoutMappedByReferenceItemForm.setNumCols(3);
-			withoutMappedByReferenceItemForm.setColWidths(100, "*", 50);
+			withoutMappedByReferenceItemForm = new MtpForm();
 			withoutMappedByReferenceItemForm.setHeight(25);
-			withoutMappedByReferenceItemForm.setItems(withoutMappedByReferenceItem, SmartGWTUtil.createSpacer(50));
+			withoutMappedByReferenceItemForm.setItems(withoutMappedByReferenceItem);
 
 			//---------------------------------
 			//Footer
@@ -681,17 +651,7 @@ public class EventListenerListGrid extends ListGrid {
 				}
 			});
 
-			HLayout footer = new HLayout(5);
-			footer.setMargin(5);
-			footer.setHeight(20);
-			footer.setWidth100();
-			footer.setAlign(VerticalAlignment.CENTER);
 			footer.setMembers(ok, cancel);
-
-			addItem(typeItemForm);
-			addItem(mainLayout);
-			addItem(SmartGWTUtil.separator());
-			addItem(footer);
 		}
 
 		private void dataInitialize() {
@@ -744,55 +704,55 @@ public class EventListenerListGrid extends ListGrid {
 		private void formVisibleChange() {
 			typeItemForm.clearErrors(true);
 
-			if (mainLayout.contains(scriptItemForm)) {
+			if (typeLayout.contains(scriptItemForm)) {
 				scriptItemForm.clearErrors(true);
-				mainLayout.removeMember(scriptItemForm);
+				typeLayout.removeMember(scriptItemForm);
 			}
-			if (mainLayout.contains(scriptEventItemForm)) {
+			if (typeLayout.contains(scriptEventItemForm)) {
 				scriptEventItemForm.clearErrors(true);
-				mainLayout.removeMember(scriptEventItemForm);
+				typeLayout.removeMember(scriptEventItemForm);
 			}
-			if (mainLayout.contains(javaClassItemForm)) {
+			if (typeLayout.contains(javaClassItemForm)) {
 				javaClassItemForm.clearErrors(true);
-				mainLayout.removeMember(javaClassItemForm);
+				typeLayout.removeMember(javaClassItemForm);
 			}
-			if (mainLayout.contains(sendNotificationForm)) {
+			if (typeLayout.contains(sendNotificationForm)) {
 				sendNotificationForm.clearErrors(true);
-				mainLayout.removeMember(sendNotificationForm);
+				typeLayout.removeMember(sendNotificationForm);
 			}
-			if (mainLayout.contains(notificationCondForm)) {
+			if (typeLayout.contains(notificationCondForm)) {
 				notificationCondForm.clearErrors(true);
-				mainLayout.removeMember(notificationCondForm);
+				typeLayout.removeMember(notificationCondForm);
 			}
-			if (mainLayout.contains(notifyEventItemForm)) {
+			if (typeLayout.contains(notifyEventItemForm)) {
 				notifyEventItemForm.clearErrors(true);
-				mainLayout.removeMember(notifyEventItemForm);
+				typeLayout.removeMember(notifyEventItemForm);
 			}
-			if (mainLayout.contains(withoutMappedByReferenceItemForm)) {
+			if (typeLayout.contains(withoutMappedByReferenceItemForm)) {
 				withoutMappedByReferenceItemForm.clearErrors(true);
-				mainLayout.removeMember(withoutMappedByReferenceItemForm);
+				typeLayout.removeMember(withoutMappedByReferenceItemForm);
 			}
 
 			String selectValType = SmartGWTUtil.getStringValue(typeItem);
 			if (SCRIPT.equals(selectValType)) {
-				mainLayout.addMember(scriptItemForm);
-				mainLayout.addMember(scriptEventItemForm);
-				mainLayout.addMember(withoutMappedByReferenceItemForm);
+				typeLayout.addMember(scriptItemForm);
+				typeLayout.addMember(scriptEventItemForm);
+				typeLayout.addMember(withoutMappedByReferenceItemForm);
 				setHeight(470);
 				centerInPage();
 			} else if (JAVACLASS.equals(selectValType)) {
-				mainLayout.addMember(javaClassItemForm);
-				mainLayout.addMember(withoutMappedByReferenceItemForm);
+				typeLayout.addMember(javaClassItemForm);
+				typeLayout.addMember(withoutMappedByReferenceItemForm);
 				setHeight(190);
 			} else if (SENDNOTIFICATION.equals(selectValType)) {
-				mainLayout.addMember(sendNotificationForm);
-				mainLayout.addMember(notificationCondForm);
-				mainLayout.addMember(notifyEventItemForm);
-				mainLayout.addMember(withoutMappedByReferenceItemForm);
+				typeLayout.addMember(sendNotificationForm);
+				typeLayout.addMember(notificationCondForm);
+				typeLayout.addMember(notifyEventItemForm);
+				typeLayout.addMember(withoutMappedByReferenceItemForm);
 				setHeight(470);
 				centerInPage();
 			} else {
-				setHeight(120);
+				setHeight(200);
 			}
 		}
 
@@ -808,37 +768,37 @@ public class EventListenerListGrid extends ListGrid {
 			if (!typeItemForm.validate()) {
 				isValidate = false;
 			}
-			if (mainLayout.contains(scriptItemForm)) {
+			if (typeLayout.contains(scriptItemForm)) {
 				if (!scriptItemForm.validate()) {
 					isValidate = false;
 				}
 			}
-			if (mainLayout.contains(scriptEventItemForm)) {
+			if (typeLayout.contains(scriptEventItemForm)) {
 				if (!scriptEventItemForm.validate()) {
 					isValidate = false;
 				}
 			}
-			if (mainLayout.contains(javaClassItemForm)) {
+			if (typeLayout.contains(javaClassItemForm)) {
 				if (!javaClassItemForm.validate()) {
 					isValidate = false;
 				}
 			}
-			if (mainLayout.contains(sendNotificationForm)) {
+			if (typeLayout.contains(sendNotificationForm)) {
 				if (!sendNotificationForm.validate()) {
 					isValidate = false;
 				}
 			}
-			if (mainLayout.contains((notificationCondForm))) {
+			if (typeLayout.contains((notificationCondForm))) {
 				if (!notificationCondForm.validate()) {
 					isValidate = false;
 				}
 			}
-			if (mainLayout.contains(notifyEventItemForm)) {
+			if (typeLayout.contains(notifyEventItemForm)) {
 				if (!notifyEventItemForm.validate()) {
 					isValidate = false;
 				}
 			}
-			if (mainLayout.contains(withoutMappedByReferenceItemForm)) {
+			if (typeLayout.contains(withoutMappedByReferenceItemForm)) {
 				if (!withoutMappedByReferenceItemForm.validate()) {
 					isValidate = false;
 				}

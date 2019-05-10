@@ -263,7 +263,7 @@ public class ValidationListPane extends VLayout implements PropertyAttributePane
 
 	@Override
 	public int panelHeight() {
-		return 180;
+		return 160;
 	}
 
 	public void onChangeNotNullFromAttribute(boolean isNotNull) {
@@ -432,9 +432,16 @@ public class ValidationListPane extends VLayout implements PropertyAttributePane
 			setMargin(5);
 			setHeight(101);
 			setWidth100();
+
 			setShowAllColumns(true);
 			setShowAllRecords(true);
 			setCanResizeFields(true);
+
+			setCanGroupBy(false);
+			setCanFreezeFields(false);
+			setCanPickFields(false);
+			setCanSort(false);
+			setCanAutoFitFields(false);
 
 			//grid内でのD&Dでの並べ替えを許可
 			setCanDragRecordsOut(true);

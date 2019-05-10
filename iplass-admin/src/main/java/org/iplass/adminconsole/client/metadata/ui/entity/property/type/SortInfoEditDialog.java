@@ -25,14 +25,15 @@ import java.util.LinkedHashMap;
 import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
 import org.iplass.adminconsole.client.base.rpc.AdminAsyncCallback;
 import org.iplass.adminconsole.client.base.tenant.TenantInfoHolder;
-import org.iplass.adminconsole.client.base.ui.widget.AbstractWindow;
+import org.iplass.adminconsole.client.base.ui.widget.MtpDialog;
+import org.iplass.adminconsole.client.base.ui.widget.form.MtpForm2Column;
+import org.iplass.adminconsole.client.base.ui.widget.form.MtpSelectItem;
 import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
 import org.iplass.adminconsole.shared.metadata.rpc.MetaDataServiceAsync;
 import org.iplass.adminconsole.shared.metadata.rpc.MetaDataServiceFactory;
 import org.iplass.mtp.entity.definition.EntityDefinition;
 import org.iplass.mtp.entity.definition.PropertyDefinition;
 
-import com.smartgwt.client.types.VerticalAlignment;
 import com.smartgwt.client.util.SC;
 import com.smartgwt.client.widgets.IButton;
 import com.smartgwt.client.widgets.events.ClickEvent;
@@ -40,9 +41,8 @@ import com.smartgwt.client.widgets.events.ClickHandler;
 import com.smartgwt.client.widgets.form.DynamicForm;
 import com.smartgwt.client.widgets.form.fields.SelectItem;
 import com.smartgwt.client.widgets.grid.ListGridRecord;
-import com.smartgwt.client.widgets.layout.HLayout;
 
-public class SortInfoEditDialog extends AbstractWindow {
+public class SortInfoEditDialog extends MtpDialog {
 
 	private SelectItem selProperty;
 	private SelectItem selSortType;
@@ -69,32 +69,20 @@ public class SortInfoEditDialog extends AbstractWindow {
 		this.isReadOnly = isReadOnly;
 		this.handler = handler;
 
-		setWidth(350);
-		setMaxWidth(350);
 		setHeight(140);
-		setMaxHeight(140);
-
-		setShowMinimizeButton(false);
-		setIsModal(true);
-		setShowModalMask(true);
-		setCanDragResize(true);
 		centerInPage();
 
-		selProperty = new SelectItem();
+		selProperty = new MtpSelectItem();
 		selProperty.setTitle("Property Name");
-		selProperty.setWidth(200);
 		SmartGWTUtil.setRequired(selProperty);
 
-		selSortType = new SelectItem();
+		selSortType = new MtpSelectItem();
 		selSortType.setTitle("Order");
-		selSortType.setWidth(200);
 
-		final DynamicForm form = new DynamicForm();
-		form.setMargin(5);
-		form.setNumCols(2);
-		form.setWidth100();
-		form.setHeight(25);
+		final DynamicForm form = new MtpForm2Column();
 		form.setItems(selProperty, selSortType);
+
+		container.addMember(form);
 
 		btnOk = new IButton("OK");
 		btnOk.addClickHandler(new ClickHandler() {
@@ -113,17 +101,7 @@ public class SortInfoEditDialog extends AbstractWindow {
 			}
 		});
 
-		HLayout pnlFooter = new HLayout(5);
-		pnlFooter.setMargin(5);
-		pnlFooter.setHeight(20);
-		pnlFooter.setWidth100();
-		pnlFooter.setAlign(VerticalAlignment.CENTER);
-		pnlFooter.addMember(btnOk);
-		pnlFooter.addMember(btnCancel);
-
-		addItem(form);
-		addItem(SmartGWTUtil.separator());
-		addItem(pnlFooter);
+		footer.setMembers(btnOk, btnCancel);
 
 		initialize();
 	}
