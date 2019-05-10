@@ -65,7 +65,6 @@ GWT/SmartGWTベースです。
 
 ### iplass-gem
 GEM関連機能のモジュールです。 +
-WebFragments形式です。
 
 ### iplass-test
 Unitテストをサポートするモジュールです。 +
