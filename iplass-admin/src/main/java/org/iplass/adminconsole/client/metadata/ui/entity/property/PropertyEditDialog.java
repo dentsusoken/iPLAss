@@ -40,8 +40,14 @@ import com.smartgwt.client.widgets.layout.VLayout;
 
 public class PropertyEditDialog extends MtpDialog {
 
-	//Windowタイトル分とフッタ分の高さ
-	private static final int ADJUST_HEIGHT = 90;
+	/** 初期高さ */
+	private static final int INIT_HEIGHT = 600;
+
+	/** Windowタイトル分とフッタ分の高さ */
+	private static final int LAYOUT_HEIGHT = 90;
+
+	/** TOP表示位置を調整する高さの閾値(ダイアログが高すぎるとフッタがスクロールで隠れるため) */
+	private static final int AJUST_MAX_HEIGHT = 600;
 
 	/** 対象Propertyのレコード */
 	private PropertyListGridRecord record;
@@ -85,7 +91,7 @@ public class PropertyEditDialog extends MtpDialog {
 		} else {
 			setTitle("Property");
 		}
-		setHeight(600);
+		setHeight(INIT_HEIGHT);
 
 		pnlCommonAttribute = new PropertyCommonAttributePane(new PropertyCommonAttributePaneHandler() {
 
@@ -231,7 +237,7 @@ public class PropertyEditDialog extends MtpDialog {
 		int height =
 				pnlCommonAttribute.panelHeight()
 				+ pnlValidation.panelHeight()
-				+ ADJUST_HEIGHT;
+				+ LAYOUT_HEIGHT;
 
 		if (type != null) {
 			pnlTypeAttribute = typeController.createTypeAttributePane(type);
@@ -248,6 +254,18 @@ public class PropertyEditDialog extends MtpDialog {
 			}
 		}
 
+		//タイプによる高さが大きい場合、表示するTOP位置を調整
+		if (height > AJUST_MAX_HEIGHT) {
+			//上に上げる高さ
+			int ajustTop = height - AJUST_MAX_HEIGHT;
+
+			//ページのTOPよりも上に行く場合は、ページのTOPにする
+			int top = getPageTop();
+			if (top < ajustTop) {
+				ajustTop = top;
+			}
+			moveBy(0, -1 * ajustTop);
+		}
 		setHeight(height);
 	}
 
