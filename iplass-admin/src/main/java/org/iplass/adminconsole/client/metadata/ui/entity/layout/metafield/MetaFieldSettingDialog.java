@@ -28,17 +28,17 @@ import org.iplass.adminconsole.view.annotation.Refrectable;
  * {@link org.iplass.adminconsole.view.annotation.MetaFieldInfo}が設定されたフィールドのみが対象。
  *
  * 現状、EntityViewでのみ使用しているが、commonにあるので今後他のところでも利用することを想定。
- * EntityViewについては、{@link org.iplass.adminconsole.client.metadata.ui.entity.layout.item.EntityViewFieldSettingWindow}として継承して利用。
+ * EntityViewについては、{@link org.iplass.adminconsole.client.metadata.ui.entity.layout.item.EntityViewFieldSettingDialog}として継承して利用。
  *
  */
-public class MetaFieldSettingWindow extends AbstractWindow {
+public class MetaFieldSettingDialog extends AbstractWindow {
 
 	private String className;
 	private Refrectable value;
 
 	private MetaFieldSettingPane panel = null;
 
-	private MetaFieldSettingWindow() {
+	private MetaFieldSettingDialog() {
 		setWidth(600);
 		setShowMinimizeButton(false);
 		setIsModal(true);
@@ -46,7 +46,7 @@ public class MetaFieldSettingWindow extends AbstractWindow {
 		setShowModalMask(false);
 	}
 
-	public MetaFieldSettingWindow(String className, Refrectable value) {
+	public MetaFieldSettingDialog(String className, Refrectable value) {
 		this();
 		this.className = className;
 		this.value = value;

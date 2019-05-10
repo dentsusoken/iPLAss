@@ -38,7 +38,7 @@ import org.iplass.adminconsole.client.metadata.ui.common.MetaDataHistoryDialog;
 import org.iplass.adminconsole.client.metadata.ui.common.MetaDataUpdateCallback;
 import org.iplass.adminconsole.client.metadata.ui.common.StatusCheckUtil;
 import org.iplass.adminconsole.client.metadata.ui.entity.EntityPlugin;
-import org.iplass.adminconsole.client.metadata.ui.entity.layout.item.SearchFormViewWindow;
+import org.iplass.adminconsole.client.metadata.ui.entity.layout.item.SearchFormViewControl;
 import org.iplass.adminconsole.shared.metadata.dto.AdminDefinitionModifyResult;
 import org.iplass.adminconsole.shared.metadata.rpc.MetaDataServiceAsync;
 import org.iplass.adminconsole.shared.metadata.rpc.MetaDataServiceFactory;
@@ -81,7 +81,7 @@ public class SearchLayoutPanelImpl extends MetaDataMainEditPane implements Searc
 	/** メニュー部分のレイアウト */
 	private EntityViewMenuPane viewMenuPane;
 
-	private SearchFormViewWindow form;
+	private SearchFormViewControl form;
 
 	private EntityView curDefinition;
 
@@ -140,7 +140,7 @@ public class SearchLayoutPanelImpl extends MetaDataMainEditPane implements Searc
 		layout.setWidth100();
 
 		// 編集用のエリア
-		form = new SearchFormViewWindow(this.defName);
+		form = new SearchFormViewControl(this.defName);
 		form.setShowResizeBar(true);
 		form.setResizeBarTarget("next");	//リサイズバーをダブルクリックした際、次を収縮
 		layout.addMember(form);

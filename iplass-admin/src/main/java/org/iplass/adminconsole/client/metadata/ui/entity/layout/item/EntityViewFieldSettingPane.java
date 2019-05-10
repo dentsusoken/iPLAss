@@ -28,7 +28,7 @@ import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
 import org.iplass.adminconsole.client.metadata.data.entity.PropertyDS;
 import org.iplass.adminconsole.client.metadata.data.filter.EntityFilterItemDS;
 import org.iplass.adminconsole.client.metadata.ui.entity.layout.metafield.MetaFieldSettingPane;
-import org.iplass.adminconsole.client.metadata.ui.entity.layout.metafield.MetaFieldSettingWindow;
+import org.iplass.adminconsole.client.metadata.ui.entity.layout.metafield.MetaFieldSettingDialog;
 import org.iplass.adminconsole.shared.metadata.dto.refrect.FieldInfo;
 import org.iplass.adminconsole.shared.metadata.rpc.MetaDataServiceAsync;
 import org.iplass.adminconsole.shared.metadata.rpc.MetaDataServiceFactory;
@@ -142,7 +142,7 @@ public class EntityViewFieldSettingPane extends MetaFieldSettingPane {
 	}
 
 	@Override
-	protected MetaFieldSettingWindow createSubWindow(String className, Refrectable value, FieldInfo info) {
+	protected MetaFieldSettingDialog createSubWindow(String className, Refrectable value, FieldInfo info) {
 		FieldReferenceType triggerType = this.triggerType;
 		// EntityViewFieldアノテーションを利用しないフィールドの場合、上書きをしません。
 		if (info.getOverrideTriggerType() != null && info.getOverrideTriggerType() != FieldReferenceType.NONE) {
@@ -150,12 +150,12 @@ public class EntityViewFieldSettingPane extends MetaFieldSettingPane {
 		}
 		if (propDefName != null) {
 			//プロパティのコンボで参照選択時
-			return new EntityViewFieldSettingWindow(className, value, triggerType, defName, propDefName);
+			return new EntityViewFieldSettingDialog(className, value, triggerType, defName, propDefName);
 		} else if (refDefName != null) {
 			//参照プロパティ、参照セクションから起動時
-			return new EntityViewFieldSettingWindow(className, value, triggerType, defName, refDefName);
+			return new EntityViewFieldSettingDialog(className, value, triggerType, defName, refDefName);
 		} else {
-			return new EntityViewFieldSettingWindow(className, value, triggerType, defName);
+			return new EntityViewFieldSettingDialog(className, value, triggerType, defName);
 		}
 	}
 

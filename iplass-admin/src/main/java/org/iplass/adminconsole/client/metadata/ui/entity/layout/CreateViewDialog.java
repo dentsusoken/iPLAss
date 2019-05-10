@@ -23,30 +23,28 @@ package org.iplass.adminconsole.client.metadata.ui.entity.layout;
 import org.iplass.adminconsole.client.base.event.MTPEvent;
 import org.iplass.adminconsole.client.base.event.MTPEventHandler;
 import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
+import org.iplass.adminconsole.client.base.rpc.AdminAsyncCallback;
 import org.iplass.adminconsole.client.base.tenant.TenantInfoHolder;
-import org.iplass.adminconsole.client.base.ui.widget.AbstractWindow;
+import org.iplass.adminconsole.client.base.ui.widget.MtpDialog;
+import org.iplass.adminconsole.client.base.ui.widget.form.MtpForm;
+import org.iplass.adminconsole.client.base.ui.widget.form.MtpTextItem;
 import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
 import org.iplass.adminconsole.shared.metadata.rpc.MetaDataServiceAsync;
 import org.iplass.mtp.view.generic.EntityView;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.smartgwt.client.types.VerticalAlignment;
-import com.smartgwt.client.util.SC;
 import com.smartgwt.client.widgets.IButton;
 import com.smartgwt.client.widgets.events.ClickEvent;
 import com.smartgwt.client.widgets.events.ClickHandler;
 import com.smartgwt.client.widgets.form.DynamicForm;
 import com.smartgwt.client.widgets.form.fields.TextItem;
-import com.smartgwt.client.widgets.layout.HLayout;
-import com.smartgwt.client.widgets.layout.VLayout;
 
 /**
  * View追加用ダイアログ
  * @author lis3wg
  *
  */
-public class CreateViewDialog extends AbstractWindow {
+public class CreateViewDialog extends MtpDialog {
+
 	/** 名前入力用アイテム */
 	private TextItem nameItem;
 	private DynamicForm form;
@@ -63,37 +61,17 @@ public class CreateViewDialog extends AbstractWindow {
 	public CreateViewDialog(final MetaDataServiceAsync service, final String defName) {
 
 		setTitle(AdminClientMessageUtil.getString("ui_metadata_entity_layout_CreateViewDialog_createNewView"));
-
-		setWidth(450);
-		setHeight(150);
-
-		setShowMinimizeButton(false);
-		setIsModal(true);
-		setShowModalMask(true);
+		setHeight(140);
 		centerInPage();
 
-		nameItem = new TextItem("name", "View Name");
+		nameItem = new MtpTextItem("name", "View Name");
 		SmartGWTUtil.setRequired(nameItem);
 
-		form = new DynamicForm();
-		form.setPadding(5);
-		form.setWidth100();
-		form.setNumCols(2);
-		form.setColWidths(100, "*");
+		form = new MtpForm();
 		form.setAutoFocus(true);
 		form.setItems(nameItem);
 
-		//Mainコンテンツ
-		VLayout contents = new VLayout(5);
-		contents.setPadding(10);
-		contents.setMembers(form);
-
-		//Footer
-		HLayout footer = new HLayout(5);
-		footer.setMargin(10);
-		footer.setAutoHeight();
-		footer.setWidth100();
-		footer.setAlign(VerticalAlignment.CENTER);
+		container.addMember(form);
 
 		IButton ok = new IButton("OK");
 		ok.addClickHandler(new OkClickHandler(service, defName));
@@ -101,11 +79,6 @@ public class CreateViewDialog extends AbstractWindow {
 		cancel.addClickHandler(new CancelClickHandler());
 
 		footer.setMembers(ok, cancel);
-
-		addItem(contents);
-		addItem(SmartGWTUtil.separator());
-		addItem(footer);
-
 	}
 
 	/**
@@ -127,7 +100,7 @@ public class CreateViewDialog extends AbstractWindow {
 			}
 
 			//View定義を取得
-			service.getDefinition(TenantInfoHolder.getId(), EntityView.class.getName(), defName, new AsyncCallback<EntityView>() {
+			service.getDefinition(TenantInfoHolder.getId(), EntityView.class.getName(), defName, new AdminAsyncCallback<EntityView>() {
 
 				@Override
 				public void onSuccess(EntityView ev) {
@@ -143,13 +116,6 @@ public class CreateViewDialog extends AbstractWindow {
 					}
 
 					destroy();
-				}
-
-				@Override
-				public void onFailure(Throwable caught) {
-					SC.say("失敗", "画面情報の読込に失敗しました。");
-
-					GWT.log(caught.toString(), caught);
 				}
 			});
 		}

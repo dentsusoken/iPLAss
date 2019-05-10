@@ -23,16 +23,15 @@ package org.iplass.adminconsole.client.metadata.ui.entity.layout.item;
 import org.iplass.adminconsole.client.base.event.MTPEvent;
 import org.iplass.adminconsole.client.base.event.MTPEventHandler;
 import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
-import org.iplass.adminconsole.client.base.ui.widget.AbstractWindow;
 import org.iplass.adminconsole.client.metadata.ui.entity.layout.MultiColumnDropLayout;
 import org.iplass.adminconsole.client.metadata.ui.entity.layout.PropertyOperationHandler;
-import org.iplass.adminconsole.client.metadata.ui.entity.layout.item.element.ElementWindow;
-import org.iplass.adminconsole.client.metadata.ui.entity.layout.item.element.VirtualPropertyElementWindow;
-import org.iplass.adminconsole.client.metadata.ui.entity.layout.item.element.property.PropertyBaseWindow;
-import org.iplass.adminconsole.client.metadata.ui.entity.layout.item.element.section.DefaultSectionWindow;
-import org.iplass.adminconsole.client.metadata.ui.entity.layout.item.element.section.MassReferenceSectionWindow;
-import org.iplass.adminconsole.client.metadata.ui.entity.layout.item.element.section.ReferenceSectionWindow;
-import org.iplass.adminconsole.client.metadata.ui.entity.layout.item.element.section.SectionWindowController;
+import org.iplass.adminconsole.client.metadata.ui.entity.layout.item.element.ElementControl;
+import org.iplass.adminconsole.client.metadata.ui.entity.layout.item.element.VirtualPropertyControl;
+import org.iplass.adminconsole.client.metadata.ui.entity.layout.item.element.property.PropertyControl;
+import org.iplass.adminconsole.client.metadata.ui.entity.layout.item.element.section.DefaultSectionControl;
+import org.iplass.adminconsole.client.metadata.ui.entity.layout.item.element.section.MassReferenceSectionControl;
+import org.iplass.adminconsole.client.metadata.ui.entity.layout.item.element.section.ReferenceSectionControl;
+import org.iplass.adminconsole.client.metadata.ui.entity.layout.item.element.section.SectionController;
 import org.iplass.adminconsole.view.annotation.generic.FieldReferenceType;
 import org.iplass.mtp.entity.definition.EntityDefinition;
 import org.iplass.mtp.view.generic.editor.StringPropertyEditor;
@@ -41,21 +40,15 @@ import org.iplass.mtp.view.generic.element.VirtualPropertyItem;
 import org.iplass.mtp.view.generic.element.property.PropertyItem;
 
 import com.google.gwt.core.client.GWT;
-import com.smartgwt.client.types.Alignment;
-import com.smartgwt.client.types.VerticalAlignment;
 import com.smartgwt.client.util.EventHandler;
 import com.smartgwt.client.util.SC;
 import com.smartgwt.client.widgets.Canvas;
-import com.smartgwt.client.widgets.IButton;
 import com.smartgwt.client.widgets.events.ClickEvent;
 import com.smartgwt.client.widgets.events.ClickHandler;
 import com.smartgwt.client.widgets.events.DropEvent;
 import com.smartgwt.client.widgets.events.DropHandler;
-import com.smartgwt.client.widgets.form.DynamicForm;
-import com.smartgwt.client.widgets.form.fields.TextItem;
 import com.smartgwt.client.widgets.grid.ListGrid;
 import com.smartgwt.client.widgets.grid.ListGridRecord;
-import com.smartgwt.client.widgets.layout.HLayout;
 
 /**
  * ビュー編集用レイアウト
@@ -71,7 +64,7 @@ public class DetailDropLayout extends MultiColumnDropLayout {
 	private EntityDefinition ed;
 
 	/** SectionWindowController */
-	private SectionWindowController sectionController = GWT.create(SectionWindowController.class);
+	private SectionController sectionController = GWT.create(SectionController.class);
 
 	/**
 	 * コンストラクタ
@@ -136,16 +129,16 @@ public class DetailDropLayout extends MultiColumnDropLayout {
 					ListGridRecord record = ((ListGrid) dragTarget).getSelectedRecord();
 					String name = record.getAttribute("name");
 
-					sectionController.createWindow(name, defName, FieldReferenceType.DETAIL, propertyOperationHandler, new SectionWindowController.Callback() {
+					sectionController.createControl(name, defName, FieldReferenceType.DETAIL, propertyOperationHandler, new SectionController.Callback() {
 
 						@Override
-						public void onCreated(ViewEditWindow window) {
-							if (window instanceof DefaultSectionWindow) {
-								((DefaultSectionWindow)window).setHandlers(ed, editStartHandler, propertyOperationHandler);
-							} else if (window instanceof ReferenceSectionWindow) {
-								((ReferenceSectionWindow)window).setHandler(propertyOperationHandler);
-							} else if (window instanceof MassReferenceSectionWindow) {
-								((MassReferenceSectionWindow)window).setHandler(propertyOperationHandler);
+						public void onCreated(ItemControl window) {
+							if (window instanceof DefaultSectionControl) {
+								((DefaultSectionControl)window).setHandlers(ed, editStartHandler, propertyOperationHandler);
+							} else if (window instanceof ReferenceSectionControl) {
+								((ReferenceSectionControl)window).setHandler(propertyOperationHandler);
+							} else if (window instanceof MassReferenceSectionControl) {
+								((MassReferenceSectionControl)window).setHandler(propertyOperationHandler);
 							}
 							col.addMember(window, dropPosition);
 						}
@@ -157,7 +150,7 @@ public class DetailDropLayout extends MultiColumnDropLayout {
 					mtpEvent.setValue("name", record.getAttribute("name"));
 					if (propertyOperationHandler != null) {
 						if (!propertyOperationHandler.check(mtpEvent)) {
-							PropertyBaseWindow newProperty = new PropertyBaseWindow(defName, FieldReferenceType.DETAIL, record, new PropertyItem());
+							PropertyControl newProperty = new PropertyControl(defName, FieldReferenceType.DETAIL, record, new PropertyItem());
 							newProperty.setHandler(propertyOperationHandler);
 							propertyOperationHandler.add(mtpEvent);
 							col.addMember(newProperty, dropPosition);
@@ -167,7 +160,7 @@ public class DetailDropLayout extends MultiColumnDropLayout {
 					} else {
 						//プロパティの重複チェックしないケースあるか？？
 						GWT.log(AdminClientMessageUtil.getString("ui_metadata_entity_layout_DetailDropLayout_propCheckThrought"));
-						PropertyBaseWindow newProperty = new PropertyBaseWindow(defName, FieldReferenceType.DETAIL, record, new PropertyItem());
+						PropertyControl newProperty = new PropertyControl(defName, FieldReferenceType.DETAIL, record, new PropertyItem());
 						col.addMember(newProperty, dropPosition);
 					}
 
@@ -175,10 +168,46 @@ public class DetailDropLayout extends MultiColumnDropLayout {
 					ListGridRecord record = ((ListGrid) dragTarget).getSelectedRecord();
 					String name = record.getAttribute("name");
 					if (VirtualPropertyItem.class.getName().equals(name)) {
-						VirtualPropertyDialog dialog = new VirtualPropertyDialog(dropPosition, col);
+						final VirtualPropertyDialog dialog = new VirtualPropertyDialog();
+						dialog.addOKClickHandler(new ClickHandler() {
+
+							@Override
+							public void onClick(ClickEvent event) {
+								//OK押下時はウィンドウ追加
+
+								if (!dialog.validate()) return;
+
+								final String name = dialog.getPropertyName();
+								MTPEvent mtpEvent = new MTPEvent();
+								mtpEvent.setValue("name", name);
+								if (propertyOperationHandler.check(mtpEvent)) {
+									SC.say(AdminClientMessageUtil.getString("ui_metadata_entity_layout_DetailDropLayout_checkPropExistsErr"));
+									return;
+								}
+								if (ed.getProperty(name) != null) {
+									SC.say(AdminClientMessageUtil.getString("ui_metadata_entity_layout_DetailDropLayout_checkPropDefExistsErr"));
+									return;
+								}
+
+								VirtualPropertyItem property = new VirtualPropertyItem();
+								property.setDispFlag(true);
+								property.setPropertyName(name);
+								property.setDisplayLabel(dialog.getDisplayLabel());
+								StringPropertyEditor editor = new StringPropertyEditor();
+								editor.setDisplayType(StringDisplayType.TEXT);
+								property.setEditor(editor);
+
+								VirtualPropertyControl newProperty = new VirtualPropertyControl(defName, FieldReferenceType.DETAIL, ed, property);
+								newProperty.setHandler(propertyOperationHandler);
+
+								col.addMember(newProperty, dropPosition);
+								dialog.destroy();
+							}
+						});
+
 						dialog.show();
 					} else {
-						ElementWindow newElement = new ElementWindow(defName, FieldReferenceType.DETAIL, record);
+						ElementControl newElement = new ElementControl(defName, FieldReferenceType.DETAIL, record);
 						col.addMember(newElement, dropPosition);
 					}
 				}
@@ -190,98 +219,6 @@ public class DetailDropLayout extends MultiColumnDropLayout {
 			if (editStartHandler != null) {
 				editStartHandler.execute(new MTPEvent());
 			}
-		}
-	}
-
-	/**
-	 * 仮想プロパティ追加時の入力ダイアログ
-	 */
-	private class VirtualPropertyDialog extends AbstractWindow {
-		private TextItem propName = null;
-		private TextItem displayLabel = null;
-		private IButton ok = null;
-		private IButton cancel = null;
-		private DynamicForm form = null;
-
-		private VirtualPropertyDialog(final int dropPosition, final ColumnLayout col) {
-			setWidth(300);
-			setHeight(130);
-			setTitle("VirtualProperty Setting");
-			setShowMinimizeButton(false);
-			setIsModal(true);
-			setShowModalMask(false);
-			centerInPage();
-
-			propName = new TextItem();
-			propName.setTitle(AdminClientMessageUtil.getString("ui_metadata_entity_layout_DetailDropLayout_propName"));
-			propName.setRequired(true);
-
-			displayLabel = new TextItem();
-			displayLabel.setTitle(AdminClientMessageUtil.getString("ui_metadata_entity_layout_DetailDropLayout_displayLabel"));
-			displayLabel.setRequired(true);
-
-			ok = new IButton("OK");
-			cancel = new IButton("cancel");
-
-			//OK押下時はウィンドウ追加
-			ok.addClickHandler(new ClickHandler() {
-
-				@Override
-				public void onClick(ClickEvent event) {
-
-					if (!form.validate()) return;
-
-					final String name = propName.getValueAsString();
-					MTPEvent mtpEvent = new MTPEvent();
-					mtpEvent.setValue("name", name);
-					if (propertyOperationHandler.check(mtpEvent)) {
-						SC.say(AdminClientMessageUtil.getString("ui_metadata_entity_layout_DetailDropLayout_checkPropExistsErr"));
-						return;
-					}
-					if (ed.getProperty(name) != null) {
-						SC.say(AdminClientMessageUtil.getString("ui_metadata_entity_layout_DetailDropLayout_checkPropDefExistsErr"));
-						return;
-					}
-
-					VirtualPropertyItem property = new VirtualPropertyItem();
-					property.setDispFlag(true);
-					property.setPropertyName(name);
-					property.setDisplayLabel(displayLabel.getValueAsString());
-					StringPropertyEditor editor = new StringPropertyEditor();
-					editor.setDisplayType(StringDisplayType.TEXT);
-					property.setEditor(editor);
-
-					VirtualPropertyElementWindow newProperty = new VirtualPropertyElementWindow(defName, FieldReferenceType.DETAIL, ed, property);
-					newProperty.setHandler(propertyOperationHandler);
-
-					col.addMember(newProperty, dropPosition);
-					destroy();
-				}
-			});
-
-			//Cancel押下時はダイアログを閉じる
-			cancel.addClickHandler(new ClickHandler() {
-
-				@Override
-				public void onClick(ClickEvent event) {
-					destroy();
-				}
-			});
-
-			form = new DynamicForm();
-			form.setAutoFocus(true);
-			form.setWidth100();
-			form.setPadding(5);
-			form.setFields(propName, displayLabel);
-
-			HLayout hl = new HLayout();
-			hl.setAlign(Alignment.CENTER);
-			hl.setAlign(VerticalAlignment.CENTER);
-			hl.addMember(ok);
-			hl.addMember(cancel);
-
-			addItem(form);
-			addItem(hl);
 		}
 	}
 

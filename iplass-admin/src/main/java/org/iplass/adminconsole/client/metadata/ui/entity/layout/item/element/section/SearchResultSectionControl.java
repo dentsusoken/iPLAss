@@ -26,12 +26,12 @@ import java.util.List;
 import org.iplass.adminconsole.client.base.event.MTPEvent;
 import org.iplass.adminconsole.client.base.event.MTPEventHandler;
 import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
-import org.iplass.adminconsole.client.base.ui.widget.AbstractWindow;
 import org.iplass.adminconsole.client.metadata.ui.entity.layout.PropertyOperationContext;
 import org.iplass.adminconsole.client.metadata.ui.entity.layout.PropertyOperationHandler;
-import org.iplass.adminconsole.client.metadata.ui.entity.layout.item.ViewEditWindow;
-import org.iplass.adminconsole.client.metadata.ui.entity.layout.item.element.VirtualPropertyElementWindow;
-import org.iplass.adminconsole.client.metadata.ui.entity.layout.item.element.property.PropertyBaseWindow;
+import org.iplass.adminconsole.client.metadata.ui.entity.layout.item.ItemControl;
+import org.iplass.adminconsole.client.metadata.ui.entity.layout.item.VirtualPropertyDialog;
+import org.iplass.adminconsole.client.metadata.ui.entity.layout.item.element.VirtualPropertyControl;
+import org.iplass.adminconsole.client.metadata.ui.entity.layout.item.element.property.PropertyControl;
 import org.iplass.adminconsole.view.annotation.generic.FieldReferenceType;
 import org.iplass.mtp.entity.definition.EntityDefinition;
 import org.iplass.mtp.view.generic.editor.StringPropertyEditor;
@@ -42,23 +42,17 @@ import org.iplass.mtp.view.generic.element.property.PropertyColumn;
 import org.iplass.mtp.view.generic.element.section.SearchResultSection;
 
 import com.google.gwt.core.client.GWT;
-import com.smartgwt.client.types.Alignment;
 import com.smartgwt.client.types.HeaderControls;
-import com.smartgwt.client.types.VerticalAlignment;
 import com.smartgwt.client.util.EventHandler;
 import com.smartgwt.client.util.SC;
 import com.smartgwt.client.widgets.Canvas;
 import com.smartgwt.client.widgets.HeaderControl;
-import com.smartgwt.client.widgets.IButton;
 import com.smartgwt.client.widgets.events.ClickEvent;
 import com.smartgwt.client.widgets.events.ClickHandler;
 import com.smartgwt.client.widgets.events.DropEvent;
 import com.smartgwt.client.widgets.events.DropHandler;
-import com.smartgwt.client.widgets.form.DynamicForm;
-import com.smartgwt.client.widgets.form.fields.TextItem;
 import com.smartgwt.client.widgets.grid.ListGrid;
 import com.smartgwt.client.widgets.grid.ListGridRecord;
-import com.smartgwt.client.widgets.layout.HLayout;
 import com.smartgwt.client.widgets.layout.Layout;
 
 
@@ -67,7 +61,7 @@ import com.smartgwt.client.widgets.layout.Layout;
  * @author lis3wg
  *
  */
-public class SearchResultSectionWindow extends ViewEditWindow implements SectionWindow {
+public class SearchResultSectionControl extends ItemControl implements SectionControl {
 	/** 重複チェック用のリスト */
 	private List<String> propList = new ArrayList<String>();
 
@@ -90,7 +84,7 @@ public class SearchResultSectionWindow extends ViewEditWindow implements Section
 	/**
 	 * コンストラクタ
 	 */
-	public SearchResultSectionWindow(String defName, FieldReferenceType triggerType) {
+	public SearchResultSectionControl(String defName, FieldReferenceType triggerType) {
 		super(defName, triggerType);
 
 		vertical = new HeaderControl(HeaderControl.DOUBLE_ARROW_DOWN, new ClickHandler() {
@@ -202,7 +196,7 @@ public class SearchResultSectionWindow extends ViewEditWindow implements Section
 						ListGridRecord record = ((ListGrid) dragTarget).getSelectedRecord();
 						String name = record.getAttribute("name");
 						if (!propList.contains(name)) {
-							PropertyBaseWindow newProperty = new PropertyBaseWindow(defName, getTriggerType(), record, new PropertyColumn());
+							PropertyControl newProperty = new PropertyControl(defName, getTriggerType(), record, new PropertyColumn());
 							newProperty.setWidth(getColWidth());
 							newProperty.setDragType("property_r");
 							newProperty.setHandler(handler);
@@ -216,7 +210,65 @@ public class SearchResultSectionWindow extends ViewEditWindow implements Section
 						ListGridRecord record = ((ListGrid) dragTarget).getSelectedRecord();
 						String name = record.getAttribute("name");
 						if (VirtualPropertyItem.class.getName().equals(name)) {
-							VirtualPropertyDialog dialog = new VirtualPropertyDialog(dropPosition, DropLayout.this);
+							final VirtualPropertyDialog dialog = new VirtualPropertyDialog();
+							dialog.addOKClickHandler(new ClickHandler() {
+
+								@Override
+								public void onClick(ClickEvent event) {
+									if (!dialog.validate()) return;
+
+									final String name = dialog.getPropertyName();
+									if (propList.contains(name)) {
+										SC.say(AdminClientMessageUtil.getString("ui_metadata_entity_layout_DetailDropLayout_checkPropExistsErr"));
+										return;
+									}
+									if (ed.getProperty(name) != null) {
+										SC.say(AdminClientMessageUtil.getString("ui_metadata_entity_layout_DetailDropLayout_checkPropDefExistsErr"));
+										return;
+									}
+
+									VirtualPropertyItem property = new VirtualPropertyItem();
+									property.setDispFlag(true);
+									property.setPropertyName(name);
+									property.setDisplayLabel(dialog.getDisplayLabel());
+									StringPropertyEditor editor = new StringPropertyEditor();
+									editor.setDisplayType(StringDisplayType.TEXT);
+									property.setEditor(editor);
+
+									VirtualPropertyControl newProperty = new VirtualPropertyControl(defName, FieldReferenceType.SEARCHRESULT, ed, property);
+									newProperty.setWidth(DropLayout.this.getColWidth());
+									newProperty.setHandler(new PropertyOperationHandler() {
+										@Override
+										public boolean check(MTPEvent event) {
+											String name = (String) event.getValue("name");
+											return propList.contains(name);
+										}
+
+										@Override
+										public void add(MTPEvent event) {
+											String name = (String) event.getValue("name");
+											propList.add(name);
+										}
+
+										@Override
+										public void remove(MTPEvent event) {
+											String name = (String) event.getValue("name");
+											propList.remove(name);
+										}
+
+										@Override
+										public PropertyOperationContext getContext() {
+											return null;
+										}
+									});
+
+									DropLayout.this.addMember(newProperty, dropPosition);
+									propList.add(name);
+
+									dialog.destroy();
+								}
+							});
+
 							dialog.show();
 						}
 					}
@@ -316,7 +368,7 @@ public class SearchResultSectionWindow extends ViewEditWindow implements Section
 		for (Element elem : section.getElements()) {
 			if (elem instanceof PropertyColumn) {
 				PropertyColumn property = (PropertyColumn) elem;
-				PropertyBaseWindow win = new PropertyBaseWindow(defName, getTriggerType(), property);
+				PropertyControl win = new PropertyControl(defName, getTriggerType(), property);
 				win.setWidth(layout.getColWidth());
 				win.setDragType("property_r");
 
@@ -328,7 +380,7 @@ public class SearchResultSectionWindow extends ViewEditWindow implements Section
 				propList.add(name);
 			} else if (elem instanceof VirtualPropertyItem) {
 				VirtualPropertyItem property = (VirtualPropertyItem) elem;
-				VirtualPropertyElementWindow win = new VirtualPropertyElementWindow(defName, FieldReferenceType.SEARCHRESULT, ed, property);
+				VirtualPropertyControl win = new VirtualPropertyControl(defName, FieldReferenceType.SEARCHRESULT, ed, property);
 				win.setWidth(layout.getColWidth());
 				layout.addMember(win);
 			}
@@ -351,11 +403,11 @@ public class SearchResultSectionWindow extends ViewEditWindow implements Section
 			section.getElements().clear();
 		}
 		for (Canvas canvas : layout.getMembers()) {
-			if (canvas instanceof PropertyBaseWindow) {
-				PropertyColumn property = ((PropertyBaseWindow) canvas).getPropertyColumn();
+			if (canvas instanceof PropertyControl) {
+				PropertyColumn property = ((PropertyControl) canvas).getPropertyColumn();
 				section.addElement(property);
-			} else if (canvas instanceof VirtualPropertyElementWindow) {
-				VirtualPropertyItem prop = ((VirtualPropertyElementWindow) canvas).getViewElement();
+			} else if (canvas instanceof VirtualPropertyControl) {
+				VirtualPropertyItem prop = ((VirtualPropertyControl) canvas).getViewElement();
 				section.addElement(prop);
 			}
 		}
@@ -368,125 +420,10 @@ public class SearchResultSectionWindow extends ViewEditWindow implements Section
 	public void clear() {
 		propList.clear();
 		for (Canvas canvas : layout.getMembers()) {
-			if (canvas instanceof ViewEditWindow) {
-				((ViewEditWindow) canvas).destroy();
+			if (canvas instanceof ItemControl) {
+				((ItemControl) canvas).destroy();
 			}
 		}
 	}
 
-	/**
-	 * 仮想プロパティ追加時の入力ダイアログ
-	 */
-	private class VirtualPropertyDialog extends AbstractWindow {
-		private TextItem propName = null;
-		private TextItem displayLabel = null;
-		private IButton ok = null;
-		private IButton cancel = null;
-		private DynamicForm form = null;
-
-		private VirtualPropertyDialog(final int dropPosition, final DropLayout dropLayout) {
-			setWidth(300);
-			setHeight(130);
-			setTitle("VirtualProperty Setting");
-			setShowMinimizeButton(false);
-			setIsModal(true);
-			setShowModalMask(false);
-			centerInPage();
-
-			propName = new TextItem();
-			propName.setTitle(AdminClientMessageUtil.getString("ui_metadata_entity_layout_DetailDropLayout_propName"));
-			propName.setRequired(true);
-
-			displayLabel = new TextItem();
-			displayLabel.setTitle(AdminClientMessageUtil.getString("ui_metadata_entity_layout_DetailDropLayout_displayLabel"));
-			displayLabel.setRequired(true);
-
-			ok = new IButton("OK");
-			cancel = new IButton("cancel");
-
-			//OK押下時はウィンドウ追加
-			ok.addClickHandler(new ClickHandler() {
-
-				@Override
-				public void onClick(ClickEvent event) {
-
-					if (!form.validate()) return;
-
-					final String name = propName.getValueAsString();
-					if (propList.contains(name)) {
-						SC.say(AdminClientMessageUtil.getString("ui_metadata_entity_layout_DetailDropLayout_checkPropExistsErr"));
-						return;
-					}
-					if (ed.getProperty(name) != null) {
-						SC.say(AdminClientMessageUtil.getString("ui_metadata_entity_layout_DetailDropLayout_checkPropDefExistsErr"));
-						return;
-					}
-
-					VirtualPropertyItem property = new VirtualPropertyItem();
-					property.setDispFlag(true);
-					property.setPropertyName(name);
-					property.setDisplayLabel(displayLabel.getValueAsString());
-					StringPropertyEditor editor = new StringPropertyEditor();
-					editor.setDisplayType(StringDisplayType.TEXT);
-					property.setEditor(editor);
-
-					VirtualPropertyElementWindow newProperty = new VirtualPropertyElementWindow(defName, FieldReferenceType.SEARCHRESULT, ed, property);
-					newProperty.setWidth(dropLayout.getColWidth());
-					newProperty.setHandler(new PropertyOperationHandler() {
-						@Override
-						public boolean check(MTPEvent event) {
-							String name = (String) event.getValue("name");
-							return propList.contains(name);
-						}
-
-						@Override
-						public void add(MTPEvent event) {
-							String name = (String) event.getValue("name");
-							propList.add(name);
-						}
-
-						@Override
-						public void remove(MTPEvent event) {
-							String name = (String) event.getValue("name");
-							propList.remove(name);
-						}
-
-						@Override
-						public PropertyOperationContext getContext() {
-							return null;
-						}
-					});
-
-					dropLayout.addMember(newProperty, dropPosition);
-					propList.add(name);
-
-					destroy();
-				}
-			});
-
-			//Cancel押下時はダイアログを閉じる
-			cancel.addClickHandler(new ClickHandler() {
-
-				@Override
-				public void onClick(ClickEvent event) {
-					destroy();
-				}
-			});
-
-			form = new DynamicForm();
-			form.setAutoFocus(true);
-			form.setWidth100();
-			form.setPadding(5);
-			form.setFields(propName, displayLabel);
-
-			HLayout hl = new HLayout();
-			hl.setAlign(Alignment.CENTER);
-			hl.setAlign(VerticalAlignment.CENTER);
-			hl.addMember(ok);
-			hl.addMember(cancel);
-
-			addItem(form);
-			addItem(hl);
-		}
-	}
 }

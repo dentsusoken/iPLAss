@@ -217,8 +217,8 @@ public class MetaFieldSettingPane extends VLayout {
 	 * @param value 値
 	 * @return Window
 	 */
-	protected MetaFieldSettingWindow createSubWindow(String className, Refrectable value, FieldInfo info) {
-		MetaFieldSettingWindow window = new MetaFieldSettingWindow(className, value);
+	protected MetaFieldSettingDialog createSubWindow(String className, Refrectable value, FieldInfo info) {
+		MetaFieldSettingDialog window = new MetaFieldSettingDialog(className, value);
 		window.init();
 		return window;
 	}
@@ -801,7 +801,7 @@ public class MetaFieldSettingPane extends VLayout {
 		@Override
 		public void onSuccess(Refrectable result) {
 			//設定画面表示
-			final MetaFieldSettingWindow dialog = createSubWindow(className, result, info);
+			final MetaFieldSettingDialog dialog = createSubWindow(className, result, info);
 			dialog.setOkHandler(new MetaFieldUpdateHandler() {
 
 				@Override
@@ -957,7 +957,7 @@ public class MetaFieldSettingPane extends VLayout {
 			Serializable refValue = getValue(info.getName());
 
 			//編集ダイアログ表示
-			final MetaFieldSettingWindow dialog = createSubWindow(
+			final MetaFieldSettingDialog dialog = createSubWindow(
 					refValue.getClass().getName(), (Refrectable) refValue, info);
 
 			dialog.setOkHandler(new MetaFieldUpdateHandler() {
@@ -1003,7 +1003,7 @@ public class MetaFieldSettingPane extends VLayout {
 
 			Refrectable fieldValue = (Refrectable) record.getAttributeAsObject(RECORD_ATTRIBUTE_VALUE);
 			String className = fieldValue.getClass().getName();
-			final MetaFieldSettingWindow dialog = createSubWindow(className, (Refrectable) fieldValue, info);
+			final MetaFieldSettingDialog dialog = createSubWindow(className, (Refrectable) fieldValue, info);
 			dialog.setOkHandler(new MetaFieldUpdateHandler() {
 
 				@Override

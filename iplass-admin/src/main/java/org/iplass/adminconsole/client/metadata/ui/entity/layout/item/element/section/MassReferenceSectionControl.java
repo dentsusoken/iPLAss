@@ -23,14 +23,17 @@ package org.iplass.adminconsole.client.metadata.ui.entity.layout.item.element.se
 import org.iplass.adminconsole.client.base.event.MTPEvent;
 import org.iplass.adminconsole.client.base.tenant.TenantInfoHolder;
 import org.iplass.adminconsole.client.metadata.ui.entity.layout.PropertyOperationHandler;
-import org.iplass.adminconsole.client.metadata.ui.entity.layout.item.EntityViewFieldSettingWindow;
-import org.iplass.adminconsole.client.metadata.ui.entity.layout.item.ViewEditWindow;
+import org.iplass.adminconsole.client.metadata.ui.entity.layout.item.EntityViewFieldSettingDialog;
+import org.iplass.adminconsole.client.metadata.ui.entity.layout.item.ItemControl;
 import org.iplass.adminconsole.client.metadata.ui.entity.layout.metafield.MetaFieldUpdateEvent;
 import org.iplass.adminconsole.client.metadata.ui.entity.layout.metafield.MetaFieldUpdateHandler;
 import org.iplass.adminconsole.shared.metadata.rpc.MetaDataServiceAsync;
 import org.iplass.adminconsole.shared.metadata.rpc.MetaDataServiceFactory;
 import org.iplass.adminconsole.view.annotation.generic.FieldReferenceType;
-import org.iplass.mtp.view.generic.element.section.ReferenceSection;
+import org.iplass.mtp.entity.definition.EntityDefinition;
+import org.iplass.mtp.entity.definition.PropertyDefinition;
+import org.iplass.mtp.entity.definition.properties.ReferenceProperty;
+import org.iplass.mtp.view.generic.element.section.MassReferenceSection;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.smartgwt.client.types.HeaderControls;
@@ -39,10 +42,7 @@ import com.smartgwt.client.types.HeaderControls;
  *
  * @author lis3wg
  */
-public class ReferenceSectionWindow extends ViewEditWindow implements SectionWindow {
-
-	public static final String SECTION_SUFFIX = "_section";
-	public static final String SECTION_COUNT_KEY = "_section_count";
+public class MassReferenceSectionControl extends ItemControl implements SectionControl {
 
 	/** Window破棄前にプロパティの重複チェックリストから削除するためのハンドラ */
 	private PropertyOperationHandler handler = null;
@@ -50,21 +50,28 @@ public class ReferenceSectionWindow extends ViewEditWindow implements SectionWin
 
 	private String loadedDisplayLabel = null;
 
+	private String refDefName;
+
 	/**
 	 * コンストラクタ
 	 * @param defName
 	 */
-	public ReferenceSectionWindow(final String defName, FieldReferenceType triggerType, final ReferenceSection section) {
+	public MassReferenceSectionControl(final String defName, FieldReferenceType triggerType, final MassReferenceSection section, EntityDefinition ed) {
 		super(defName, triggerType);
 
 		service = MetaDataServiceFactory.get();
 
-		setBackgroundColor("#99FFCC");
+		setBackgroundColor("#88DDBB");
 		setDragType("section");
 		setHeight(22);
 		setBorder("1px solid navy");
 
 		setValue("name", section.getPropertyName());
+
+		PropertyDefinition pd = ed.getProperty(section.getPropertyName());
+		if (pd != null && pd instanceof ReferenceProperty) {
+			refDefName = ((ReferenceProperty) pd).getObjectDefinitionName();
+		}
 
 		setHeaderControls(HeaderControls.MINIMIZE_BUTTON, HeaderControls.HEADER_LABEL, setting, HeaderControls.CLOSE_BUTTON);
 
@@ -129,25 +136,9 @@ public class ReferenceSectionWindow extends ViewEditWindow implements SectionWin
 	@Override
 	protected boolean onPreDestroy() {
 		if (handler != null) {
-			Object name = getValue("name");
-
-			if (handler.getContext().get(name + SECTION_COUNT_KEY) != null) {
-				Integer count = (Integer) handler.getContext().get(name + SECTION_COUNT_KEY);
-				if (count > 1) {
-					handler.getContext().set(name + SECTION_COUNT_KEY, --count);
-				} else {
-					// 同一プロパティ名のセクションが消えたらhandlerからプロパティ名削除
-					MTPEvent propCheck = new MTPEvent();
-					propCheck.setValue("name", name);
-					handler.remove(propCheck);
-
-					MTPEvent sectionCheck = new MTPEvent();
-					sectionCheck.setValue("name", name + SECTION_SUFFIX);
-					handler.remove(sectionCheck);
-
-					handler.getContext().set(name + SECTION_COUNT_KEY, null);
-				}
-			}
+			MTPEvent event = new MTPEvent();
+			event.setValue("name", getValue("name"));
+			handler.remove(event);
 		}
 		return true;
 	}
@@ -156,15 +147,15 @@ public class ReferenceSectionWindow extends ViewEditWindow implements SectionWin
 	 * @see org.iplass.adminconsole.client.metadata.ui.entity.layout.item.SectionWindow#getSection()
 	 */
 	@Override
-	public ReferenceSection getSection() {
-		ReferenceSection section = (ReferenceSection) getValueObject();
+	public MassReferenceSection getSection() {
+		MassReferenceSection section = (MassReferenceSection) getValueObject();
 		return section;
 	}
 
 	@Override
-	protected EntityViewFieldSettingWindow createSubWindow() {
-		ReferenceSection section = getSection();
-		return new EntityViewFieldSettingWindow(getClassName(), getValueObject(), triggerType, defName, section.getDefintionName());
+	protected EntityViewFieldSettingDialog createSubWindow() {
+		return new EntityViewFieldSettingDialog(getClassName(), getValueObject(), triggerType, defName, refDefName);
 	}
+
 
 }

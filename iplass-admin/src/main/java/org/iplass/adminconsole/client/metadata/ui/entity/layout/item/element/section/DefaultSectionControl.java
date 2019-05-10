@@ -27,10 +27,10 @@ import org.iplass.adminconsole.client.base.event.MTPEvent;
 import org.iplass.adminconsole.client.base.event.MTPEventHandler;
 import org.iplass.adminconsole.client.metadata.ui.entity.layout.PropertyOperationHandler;
 import org.iplass.adminconsole.client.metadata.ui.entity.layout.item.DetailDropLayout;
-import org.iplass.adminconsole.client.metadata.ui.entity.layout.item.ViewEditWindow;
-import org.iplass.adminconsole.client.metadata.ui.entity.layout.item.element.ElementWindow;
-import org.iplass.adminconsole.client.metadata.ui.entity.layout.item.element.VirtualPropertyElementWindow;
-import org.iplass.adminconsole.client.metadata.ui.entity.layout.item.element.property.PropertyBaseWindow;
+import org.iplass.adminconsole.client.metadata.ui.entity.layout.item.ItemControl;
+import org.iplass.adminconsole.client.metadata.ui.entity.layout.item.element.ElementControl;
+import org.iplass.adminconsole.client.metadata.ui.entity.layout.item.element.VirtualPropertyControl;
+import org.iplass.adminconsole.client.metadata.ui.entity.layout.item.element.property.PropertyControl;
 import org.iplass.adminconsole.client.metadata.ui.entity.layout.metafield.MetaFieldUpdateEvent;
 import org.iplass.adminconsole.client.metadata.ui.entity.layout.metafield.MetaFieldUpdateHandler;
 import org.iplass.adminconsole.view.annotation.generic.FieldReferenceType;
@@ -51,7 +51,7 @@ import com.smartgwt.client.widgets.Canvas;
  * @author lis3wg
  *
  */
-public class DefaultSectionWindow extends ViewEditWindow implements SectionWindow {
+public class DefaultSectionControl extends ItemControl implements SectionControl {
 
 	/** 内部のレイアウト */
 	private DetailDropLayout layout = null;
@@ -61,14 +61,14 @@ public class DefaultSectionWindow extends ViewEditWindow implements SectionWindo
 	private EntityDefinition ed;
 
 	/** SectionWindowController */
-	private SectionWindowController sectionController = GWT.create(SectionWindowController.class);
+	private SectionController sectionController = GWT.create(SectionController.class);
 
 	/**
 	 * コンストラクタ
 	 * @param title
 	 * @param colNum
 	 */
-	private DefaultSectionWindow(final String defName, FieldReferenceType triggerType, String title, int colNum) {
+	private DefaultSectionControl(final String defName, FieldReferenceType triggerType, String title, int colNum) {
 		super(defName, triggerType);
 
 		String bgColor = "#DDFFFF";
@@ -116,7 +116,7 @@ public class DefaultSectionWindow extends ViewEditWindow implements SectionWindo
 				layout.setEntityDefinition(ed);
 
 				//カラム変更前のレイアウトからメンバー取得
-				List<ViewEditWindow> members = new ArrayList<ViewEditWindow>();
+				List<ItemControl> members = new ArrayList<ItemControl>();
 				int mCol = old.getColNum();
 				int mRow = old.getRowNum();
 				for (int i = 0; i < mRow; i++) {
@@ -129,7 +129,7 @@ public class DefaultSectionWindow extends ViewEditWindow implements SectionWindo
 
 				//カラム変更後のレイアウトにメンバー設定
 				currentCols = 0;
-				for (ViewEditWindow member : members) {
+				for (ItemControl member : members) {
 					addMember(member);
 				}
 
@@ -143,7 +143,7 @@ public class DefaultSectionWindow extends ViewEditWindow implements SectionWindo
 	 * コンストラクタ
 	 * @param section
 	 */
-	public DefaultSectionWindow(String defName, FieldReferenceType triggerType, DefaultSection section) {
+	public DefaultSectionControl(String defName, FieldReferenceType triggerType, DefaultSection section) {
 		this(defName, triggerType, section.getTitle(), section.getColNum());
 		setClassName(section.getClass().getName());
 		setValueObject(section);
@@ -185,13 +185,13 @@ public class DefaultSectionWindow extends ViewEditWindow implements SectionWindo
 		//配下の要素を復元
 		for (Element element : section.getElements()) {
 			if (element instanceof Section) {
-				ViewEditWindow child = sectionController.createWindow((Section)element, defName, getTriggerType(), ed);
-				if (child instanceof DefaultSectionWindow) {
-					((DefaultSectionWindow)child).setHandlers(ed, editStartHandler, propertyOperationHandler);
+				ItemControl child = sectionController.createControl((Section)element, defName, getTriggerType(), ed);
+				if (child instanceof DefaultSectionControl) {
+					((DefaultSectionControl)child).setHandlers(ed, editStartHandler, propertyOperationHandler);
 				}
 				addMember(child);
 			} else if (element instanceof PropertyItem) {
-				PropertyBaseWindow child = new PropertyBaseWindow(defName, getTriggerType(), (PropertyItem) element);
+				PropertyControl child = new PropertyControl(defName, getTriggerType(), (PropertyItem) element);
 				child.setHandler(propertyOperationHandler);
 				MTPEvent event = new MTPEvent();
 				event.setValue("name", ((PropertyItem) element).getPropertyName());
@@ -200,7 +200,7 @@ public class DefaultSectionWindow extends ViewEditWindow implements SectionWindo
 				}
 				addMember(child);
 			} else if (element instanceof VirtualPropertyItem) {
-				VirtualPropertyElementWindow child = new VirtualPropertyElementWindow(defName, getTriggerType(), ed, (VirtualPropertyItem) element);
+				VirtualPropertyControl child = new VirtualPropertyControl(defName, getTriggerType(), ed, (VirtualPropertyItem) element);
 				child.setHandler(propertyOperationHandler);
 				MTPEvent event = new MTPEvent();
 				event.setValue("name", ((VirtualPropertyItem) element).getPropertyName());
@@ -209,7 +209,7 @@ public class DefaultSectionWindow extends ViewEditWindow implements SectionWindo
 				}
 				addMember(child);
 			} else {
-				ElementWindow child = new ElementWindow(defName, getTriggerType(), element);
+				ElementControl child = new ElementControl(defName, getTriggerType(), element);
 				addMember(child);
 			}
 		}
@@ -250,24 +250,24 @@ public class DefaultSectionWindow extends ViewEditWindow implements SectionWindo
 		int mRow = layout.getRowNum();
 		for (int i = 0; i < mRow; i++) {
 			for (int j = 0; j < mCol; j++) {
-				ViewEditWindow member = layout.getMember(j, i);
+				ItemControl member = layout.getMember(j, i);
 				if (member == null) {
 					BlankSpace nElem = new BlankSpace();
 					nElem.setDispFlag(true);
 					elements.add(nElem);
 				} else {
-					if (member instanceof SectionWindow) {
-						SectionWindow sw = (SectionWindow) member;
+					if (member instanceof SectionControl) {
+						SectionControl sw = (SectionControl) member;
 						Section section = sw.getSection();
 						elements.add(section);
-					} else if (member instanceof PropertyBaseWindow) {
-						PropertyItem prop = ((PropertyBaseWindow) member).getProperty();
+					} else if (member instanceof PropertyControl) {
+						PropertyItem prop = ((PropertyControl) member).getProperty();
 						elements.add(prop);
-					} else if (member instanceof VirtualPropertyElementWindow) {
-						VirtualPropertyItem prop = ((VirtualPropertyElementWindow) member).getViewElement();
+					} else if (member instanceof VirtualPropertyControl) {
+						VirtualPropertyItem prop = ((VirtualPropertyControl) member).getViewElement();
 						elements.add(prop);
-					} else if (member instanceof ElementWindow) {
-						Element elem = ((ElementWindow) member).getViewElement();
+					} else if (member instanceof ElementControl) {
+						Element elem = ((ElementControl) member).getViewElement();
 						elements.add(elem);
 					}
 				}

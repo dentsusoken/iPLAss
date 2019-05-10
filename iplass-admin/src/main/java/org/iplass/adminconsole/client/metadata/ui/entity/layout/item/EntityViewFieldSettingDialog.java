@@ -20,7 +20,7 @@
 
 package org.iplass.adminconsole.client.metadata.ui.entity.layout.item;
 
-import org.iplass.adminconsole.client.metadata.ui.entity.layout.metafield.MetaFieldSettingWindow;
+import org.iplass.adminconsole.client.metadata.ui.entity.layout.metafield.MetaFieldSettingDialog;
 import org.iplass.adminconsole.view.annotation.Refrectable;
 import org.iplass.adminconsole.view.annotation.generic.FieldReferenceType;
 
@@ -29,20 +29,20 @@ import org.iplass.adminconsole.view.annotation.generic.FieldReferenceType;
  *
  * 起動トリガーのタイプを保持する。
  */
-public class EntityViewFieldSettingWindow extends MetaFieldSettingWindow {
+public class EntityViewFieldSettingDialog extends MetaFieldSettingDialog {
 
 	private FieldReferenceType triggerType;
 	private String defName;
 	private String refDefName;
 
-	public EntityViewFieldSettingWindow(String className, Refrectable value, FieldReferenceType triggerType, String defName) {
+	public EntityViewFieldSettingDialog(String className, Refrectable value, FieldReferenceType triggerType, String defName) {
 		super(className, value);
 		this.triggerType = triggerType;
 		this.defName = defName;
 		init();
 	}
 
-	public EntityViewFieldSettingWindow(String className, Refrectable value, FieldReferenceType triggerType, String defName, String refDefName) {
+	public EntityViewFieldSettingDialog(String className, Refrectable value, FieldReferenceType triggerType, String defName, String refDefName) {
 		super(className, value);
 		this.triggerType = triggerType;
 		this.defName = defName;

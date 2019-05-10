@@ -18,35 +18,35 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.iplass.adminconsole.client.metadata.ui.entity.layout.item.element.property;
+package org.iplass.adminconsole.client.metadata.ui.entity.layout.item.element.section;
 
-import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
-import org.iplass.adminconsole.client.metadata.ui.entity.layout.item.ViewEditWindow;
+import org.iplass.adminconsole.client.metadata.ui.entity.layout.item.ItemControl;
 import org.iplass.adminconsole.view.annotation.generic.FieldReferenceType;
-import org.iplass.mtp.view.generic.element.property.PropertyItem;
+import org.iplass.mtp.view.generic.element.section.VersionSection;
 
 import com.smartgwt.client.types.HeaderControls;
 
-public class BlankPropertyItemWindow extends ViewEditWindow {
+public class VersionSectionControl extends ItemControl implements SectionControl {
 
-	public BlankPropertyItemWindow(String defName, FieldReferenceType triggerType) {
+	public VersionSectionControl(String defName, FieldReferenceType triggerType, VersionSection section) {
 		super(defName, triggerType);
 
-		setTitle(AdminClientMessageUtil.getString("ui_metadata_entity_layout_item_BlankPropertyWindow_space"));
-		setDragType("element");
-
-		setShowMinimizeButton(false);
-		setBackgroundColor("#FFFFCC");
-		setBorder("1px solid olive");
+		setTitle("Version Section");
+		setBackgroundColor("#BBBBFF");
+		setDragType("section");
 		setHeight(22);
+		setBorder("1px solid navy");
 
-		setHeaderControls(HeaderControls.HEADER_LABEL, HeaderControls.CLOSE_BUTTON);
+		setHeaderControls(HeaderControls.MINIMIZE_BUTTON, HeaderControls.HEADER_LABEL, setting, HeaderControls.CLOSE_BUTTON);
+
+		setClassName(section.getClass().getName());
+		setValueObject(section);
 	}
 
-	public PropertyItem getProperty() {
-		PropertyItem prop = new PropertyItem();
-		prop.setDispFlag(true);
-		prop.setBlank(true);
-		return prop;
+	@Override
+	public VersionSection getSection() {
+		VersionSection section = (VersionSection) getValueObject();
+		return section;
 	}
+
 }

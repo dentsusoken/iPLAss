@@ -22,11 +22,11 @@ package org.iplass.adminconsole.client.metadata.ui.entity.layout.item;
 
 import org.iplass.adminconsole.client.base.event.MTPEventHandler;
 import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
-import org.iplass.adminconsole.client.metadata.ui.entity.layout.item.element.section.ScriptingSectionWindow;
-import org.iplass.adminconsole.client.metadata.ui.entity.layout.item.element.section.SearchConditionSectionWindow;
-import org.iplass.adminconsole.client.metadata.ui.entity.layout.item.element.section.SearchResultSectionWindow;
-import org.iplass.adminconsole.client.metadata.ui.entity.layout.item.element.section.SectionWindow;
-import org.iplass.adminconsole.client.metadata.ui.entity.layout.item.element.section.TemplateSectionWindow;
+import org.iplass.adminconsole.client.metadata.ui.entity.layout.item.element.section.ScriptingSectionControl;
+import org.iplass.adminconsole.client.metadata.ui.entity.layout.item.element.section.SearchConditionSectionControl;
+import org.iplass.adminconsole.client.metadata.ui.entity.layout.item.element.section.SearchResultSectionControl;
+import org.iplass.adminconsole.client.metadata.ui.entity.layout.item.element.section.SectionControl;
+import org.iplass.adminconsole.client.metadata.ui.entity.layout.item.element.section.TemplateSectionControl;
 import org.iplass.adminconsole.view.annotation.generic.FieldReferenceType;
 import org.iplass.mtp.entity.definition.EntityDefinition;
 import org.iplass.mtp.view.generic.SearchFormView;
@@ -45,19 +45,19 @@ import com.smartgwt.client.widgets.grid.ListGridRecord;
 import com.smartgwt.client.widgets.layout.HLayout;
 import com.smartgwt.client.widgets.layout.VLayout;
 
-public class SearchFormViewWindow extends ViewEditWindow {
+public class SearchFormViewControl extends ItemControl {
 	/** 検索条件 */
-	private SearchConditionSectionWindow condition = null;
+	private SearchConditionSectionControl condition = null;
 
 	/** 検索結果 */
-	private SearchResultSectionWindow result;
+	private SearchResultSectionControl result;
 
 	private DropLayout topDropLayout1;
 	private DropLayout topDropLayout2;
 	private DropLayout centerDropLayout;
 	private DropLayout bottomDropLayout;
 
-	public SearchFormViewWindow(String defName) {
+	public SearchFormViewControl(String defName) {
 		super(defName, FieldReferenceType.SEARCHCONDITION); // カスタムボタンの表示タイプを隠すためにSearchConditionを指定
 		setHeaderControls(HeaderControls.HEADER_LABEL, setting);
 		setTitle(AdminClientMessageUtil.getString("ui_metadata_entity_layout_item_SearchFormWindow_searchScreen"));
@@ -79,13 +79,13 @@ public class SearchFormViewWindow extends ViewEditWindow {
 		topDropLayout2 = new DropLayout(AdminClientMessageUtil.getString("ui_metadata_entity_layout_item_SearchFormWindow_buttonBottom"));
 		dropArea.addMember(topDropLayout2);
 
-		condition = new SearchConditionSectionWindow(defName, FieldReferenceType.SEARCHCONDITION);
+		condition = new SearchConditionSectionControl(defName, FieldReferenceType.SEARCHCONDITION);
 		dropArea.addMember(condition);
 
 		centerDropLayout = new DropLayout(AdminClientMessageUtil.getString("ui_metadata_entity_layout_item_SearchFormWindow_searchCenterScreen"));
 		dropArea.addMember(centerDropLayout);
 
-		result = new SearchResultSectionWindow(defName, FieldReferenceType.SEARCHRESULT);
+		result = new SearchResultSectionControl(defName, FieldReferenceType.SEARCHRESULT);
 		dropArea.addMember(result);
 
 		bottomDropLayout = new DropLayout(AdminClientMessageUtil.getString("ui_metadata_entity_layout_item_SearchFormWindow_searchBottomScreen"));
@@ -235,7 +235,7 @@ public class SearchFormViewWindow extends ViewEditWindow {
 
 						// cancelしないとdrop元自体が移動してしまう
 						event.cancel();
-					} else if (dragTarget instanceof SectionWindow) {
+					} else if (dragTarget instanceof SectionControl) {
 						clearSection();
 
 						dropLayout.addMember(dragTarget);
@@ -256,18 +256,18 @@ public class SearchFormViewWindow extends ViewEditWindow {
 
 			//それぞれトリガは関係ないのでALLを指定
 			if (section instanceof ScriptingSection) {
-				ScriptingSectionWindow newSection = new ScriptingSectionWindow(defName, FieldReferenceType.ALL, (ScriptingSection) section);
+				ScriptingSectionControl newSection = new ScriptingSectionControl(defName, FieldReferenceType.ALL, (ScriptingSection) section);
 				dropLayout.addMember(newSection);
 			} else if (section instanceof TemplateSection) {
-				TemplateSectionWindow newSection = new TemplateSectionWindow(defName, FieldReferenceType.ALL, (TemplateSection) section);
+				TemplateSectionControl newSection = new TemplateSectionControl(defName, FieldReferenceType.ALL, (TemplateSection) section);
 				dropLayout.addMember(newSection);
 			}
 		}
 
 		public Section getSection() {
 			for (Canvas member : dropLayout.getMembers()) {
-				if (member instanceof SectionWindow) {
-					return ((SectionWindow) member).getSection();
+				if (member instanceof SectionControl) {
+					return ((SectionControl) member).getSection();
 				}
 			}
 			return null;

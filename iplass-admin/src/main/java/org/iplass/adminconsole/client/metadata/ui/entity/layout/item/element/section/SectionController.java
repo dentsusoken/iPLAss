@@ -24,22 +24,22 @@ import java.util.List;
 
 import org.iplass.adminconsole.client.metadata.data.entity.layout.ViewType;
 import org.iplass.adminconsole.client.metadata.ui.entity.layout.PropertyOperationHandler;
-import org.iplass.adminconsole.client.metadata.ui.entity.layout.item.ViewEditWindow;
+import org.iplass.adminconsole.client.metadata.ui.entity.layout.item.ItemControl;
 import org.iplass.adminconsole.view.annotation.generic.FieldReferenceType;
 import org.iplass.mtp.entity.definition.EntityDefinition;
 import org.iplass.mtp.view.generic.element.section.Section;
 
 import com.smartgwt.client.widgets.grid.ListGridRecord;
 
-public interface SectionWindowController {
+public interface SectionController {
 
 	public interface Callback {
-		void onCreated(ViewEditWindow window);
+		void onCreated(ItemControl window);
 	}
 
-	ViewEditWindow createWindow(Section section, String defName, FieldReferenceType triggerType, EntityDefinition ed);
+	ItemControl createControl(Section section, String defName, FieldReferenceType triggerType, EntityDefinition ed);
 
-	void createWindow(String sectionClassName, String defName, FieldReferenceType triggerType, PropertyOperationHandler propertyOperationHandler, Callback callback);
+	void createControl(String sectionClassName, String defName, FieldReferenceType triggerType, PropertyOperationHandler propertyOperationHandler, Callback callback);
 
 	List<ListGridRecord> sectionItemList(ViewType viewType);
 }

@@ -23,7 +23,7 @@ package org.iplass.adminconsole.client.metadata.data.entity.layout;
 import java.util.HashMap;
 
 import org.iplass.adminconsole.client.base.data.AbstractAdminDataSource;
-import org.iplass.adminconsole.client.metadata.ui.entity.layout.item.element.section.SectionWindowController;
+import org.iplass.adminconsole.client.metadata.ui.entity.layout.item.element.section.SectionController;
 
 import com.google.gwt.core.client.GWT;
 import com.smartgwt.client.data.DSRequest;
@@ -57,7 +57,7 @@ public class SectionItemDS extends AbstractAdminDataSource {
 	}
 
 	private ViewType viewType = null;
-	private SectionWindowController sectionController = GWT.create(SectionWindowController.class);
+	private SectionController sectionController = GWT.create(SectionController.class);
 
 	private SectionItemDS(String id, ViewType viewType) {
 		setID(id);

@@ -24,7 +24,7 @@ import java.io.Serializable;
 import java.util.HashMap;
 
 import org.iplass.adminconsole.client.base.ui.widget.AbstractWindow;
-import org.iplass.adminconsole.client.metadata.ui.entity.layout.item.element.section.SectionWindowController;
+import org.iplass.adminconsole.client.metadata.ui.entity.layout.item.element.section.SectionController;
 import org.iplass.adminconsole.client.metadata.ui.entity.layout.metafield.MetaFieldUpdateEvent;
 import org.iplass.adminconsole.client.metadata.ui.entity.layout.metafield.MetaFieldUpdateHandler;
 import org.iplass.adminconsole.view.annotation.Refrectable;
@@ -41,7 +41,8 @@ import com.smartgwt.client.widgets.events.ClickHandler;
  * @author lis3wg
  *
  */
-public abstract class ViewEditWindow extends AbstractWindow {
+public abstract class ItemControl extends AbstractWindow {
+
 	/** パラメータを保持するマップ */
 	private HashMap<String, Serializable> valueMap = new HashMap<String, Serializable>();
 
@@ -61,12 +62,12 @@ public abstract class ViewEditWindow extends AbstractWindow {
 	protected final String defName;
 
 	/** SectionWindowController */
-	protected SectionWindowController sectionController = GWT.create(SectionWindowController.class);
+	protected SectionController sectionController = GWT.create(SectionController.class);
 
 	/**
 	 * コンストラクタ
 	 */
-	public ViewEditWindow(String defName) {
+	public ItemControl(String defName) {
 		this(defName, FieldReferenceType.ALL);
 	}
 
@@ -76,7 +77,7 @@ public abstract class ViewEditWindow extends AbstractWindow {
 	 * @param defName 定義名
 	 * @param triggerType 起動元のタイプ
 	 */
-	public ViewEditWindow(String defName, FieldReferenceType triggerType) {
+	public ItemControl(String defName, FieldReferenceType triggerType) {
 		this.defName = defName;
 		if (triggerType != null) {
 			this.triggerType = triggerType;
@@ -168,8 +169,8 @@ public abstract class ViewEditWindow extends AbstractWindow {
 		this.updateHandler = updateHandler;
 	}
 
-	protected EntityViewFieldSettingWindow createSubWindow() {
-		return new EntityViewFieldSettingWindow(getClassName(), getValueObject(), triggerType, defName);
+	protected EntityViewFieldSettingDialog createSubWindow() {
+		return new EntityViewFieldSettingDialog(getClassName(), getValueObject(), triggerType, defName);
 	}
 
 	/**
@@ -180,7 +181,7 @@ public abstract class ViewEditWindow extends AbstractWindow {
 	private final class ClickHandlerImpl implements ClickHandler {
 		@Override
 		public void onClick(ClickEvent event) {
-			final EntityViewFieldSettingWindow dialog = createSubWindow();
+			final EntityViewFieldSettingDialog dialog = createSubWindow();
 
 			dialog.setOkHandler(new MetaFieldUpdateHandler() {
 

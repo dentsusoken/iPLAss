@@ -38,7 +38,7 @@ import org.iplass.adminconsole.client.metadata.ui.common.MetaDataHistoryDialog;
 import org.iplass.adminconsole.client.metadata.ui.common.MetaDataUpdateCallback;
 import org.iplass.adminconsole.client.metadata.ui.common.StatusCheckUtil;
 import org.iplass.adminconsole.client.metadata.ui.entity.EntityPlugin;
-import org.iplass.adminconsole.client.metadata.ui.entity.layout.item.DetailFormViewWindow;
+import org.iplass.adminconsole.client.metadata.ui.entity.layout.item.DetailFormViewControl;
 import org.iplass.adminconsole.shared.metadata.dto.AdminDefinitionModifyResult;
 import org.iplass.adminconsole.shared.metadata.rpc.MetaDataServiceAsync;
 import org.iplass.adminconsole.shared.metadata.rpc.MetaDataServiceFactory;
@@ -90,7 +90,7 @@ public class DetailLayoutPanelImpl extends MetaDataMainEditPane implements Detai
 	/** メニュー部分のレイアウト */
 	private EntityViewMenuPane viewMenuPane;
 
-	private DetailFormViewWindow form;
+	private DetailFormViewControl form;
 
 	public DetailLayoutPanelImpl() {
 	}
@@ -141,7 +141,7 @@ public class DetailLayoutPanelImpl extends MetaDataMainEditPane implements Detai
 		layout.setWidth100();
 
 		//編集用のエリア
-		form = new DetailFormViewWindow(defName);
+		form = new DetailFormViewControl(defName);
 		form.setShowResizeBar(true);
 		form.setResizeBarTarget("next");	//リサイズバーをダブルクリックした際、次を収縮
 		layout.addMember(form);
