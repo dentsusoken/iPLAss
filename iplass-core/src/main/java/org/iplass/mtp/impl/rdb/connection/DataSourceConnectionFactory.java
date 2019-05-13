@@ -20,6 +20,7 @@
 
 package org.iplass.mtp.impl.rdb.connection;
 
+import java.io.Closeable;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Hashtable;
@@ -38,8 +39,8 @@ public class DataSourceConnectionFactory extends AbstractConnectionFactory {
 	
 	private static Logger logger = LoggerFactory.getLogger(DataSourceConnectionFactory.class);
 
-	//TODO @Resourceアノテーションを使う？jndi名は固定となるが。
 	private DataSource dataSource;
+	private boolean directCreate;
 
 	@Override
 	protected Connection getConnectionInternal() {
@@ -52,43 +53,67 @@ public class DataSourceConnectionFactory extends AbstractConnectionFactory {
 	}
 
 	public void destroy() {
+		if (directCreate) {
+			try {
+				if (dataSource instanceof Closeable) {
+					((Closeable) dataSource).close();
+				} else if (dataSource instanceof AutoCloseable) {
+					((AutoCloseable) dataSource).close();
+				}
+			} catch (Exception e) {
+				logger.warn("error in DataSourceConnectionFactory#destroy()" + e, e);
+			}
+		}
 		dataSource = null;
 	}
 
 	public void init(Config config) {
 		super.init(config);
-
-		String dsName = "java:comp/env/jdbc/defaultDS";
-		if (config.getValue("dataSourceName") != null) {
-			dsName = config.getValue("dataSourceName");
-		}
 		
-		//jndi env
-		Hashtable<String, Object> jndiEnv = new Hashtable<>();
-		for (String n: config.getNames()) {
-			if (n.startsWith(JNDI_ENV_PREFIX)) {
-				jndiEnv.put(n.substring(JNDI_ENV_PREFIX.length()), config.getValue(n));
+		dataSource = config.getValue("dataSource", DataSource.class);
+		if (dataSource != null) {
+			if (logger.isDebugEnabled()) {
+				logger.debug("create DataSource directly. DataSource class:" + dataSource.getClass().getName());
 			}
-		}
-
-		InitialContext context = null;
-		try {
-			if (jndiEnv.size() > 0) {
-				context = new InitialContext(jndiEnv);
-			} else {
-				context = new InitialContext();
+			directCreate = true;
+		} else {
+			//look up from JNDI
+			String dsName = "java:comp/env/jdbc/defaultDS";
+			if (config.getValue("dataSourceName") != null) {
+				dsName = config.getValue("dataSourceName");
 			}
-			dataSource = (DataSource) context.lookup(dsName);
-		} catch (NamingException e) {
-			throw new ConnectionException("can not create DataSource:" + dsName, e);
-		} finally {
-			if (context != null) {
-				try {
-					context.close();
-				} catch (NamingException e) {
-					logger.warn("InitialContext.close() fail.maybe leak... " + e, e);
+			
+			//jndi env
+			Hashtable<String, Object> jndiEnv = new Hashtable<>();
+			for (String n: config.getNames()) {
+				if (n.startsWith(JNDI_ENV_PREFIX)) {
+					jndiEnv.put(n.substring(JNDI_ENV_PREFIX.length()), config.getValue(n));
 				}
 			}
+			
+			if (logger.isDebugEnabled()) {
+				logger.debug("look up DataSource from JNDI. name:" + dsName);
+			}
+
+			InitialContext context = null;
+			try {
+				if (jndiEnv.size() > 0) {
+					context = new InitialContext(jndiEnv);
+				} else {
+					context = new InitialContext();
+				}
+				dataSource = (DataSource) context.lookup(dsName);
+			} catch (NamingException e) {
+				throw new ConnectionException("can not create DataSource:" + dsName, e);
+			} finally {
+				if (context != null) {
+					try {
+						context.close();
+					} catch (NamingException e) {
+						logger.warn("InitialContext.close() fail.maybe leak... " + e, e);
+					}
+				}
+			}			
 		}
 	}
 
