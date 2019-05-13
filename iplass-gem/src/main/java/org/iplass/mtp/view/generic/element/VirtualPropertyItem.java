@@ -79,7 +79,8 @@ public class VirtualPropertyItem extends Element {
 			description="画面に表示するラベルを設定します。",
 			descriptionKey="generic_element_VirtualPropertyItem_displayLabelDescriptionKey",
 			required=true,
-			useMultiLang=true
+			inputType=InputType.MULTI_LANG,
+			multiLangField = "localizedDisplayLabelList"
 	)
 	@MultiLang(itemNameGetter = "getPropertyName")
 	private String displayLabel;
@@ -88,7 +89,7 @@ public class VirtualPropertyItem extends Element {
 	@MetaFieldInfo(
 			displayName="多言語設定",
 			displayNameKey="generic_element_VirtualPropertyItem_localizedDisplayLabelListDisplaNameKey",
-			inputType=InputType.LANGUAGE
+			inputType=InputType.MULTI_LANG_LIST
 	)
 	private List<LocalizedStringDefinition> localizedDisplayLabelList;
 
@@ -108,7 +109,8 @@ public class VirtualPropertyItem extends Element {
 			displayNameKey="generic_element_VirtualPropertyItem_descriptionDisplaNameKey",
 			description="入力欄下部表示する説明を設定します。",
 			descriptionKey="generic_element_VirtualPropertyItem_descriptionDescriptionKey",
-			useMultiLang=true
+			inputType=InputType.MULTI_LANG,
+			multiLangField = "localizedDescriptionList"
 	)
 	@EntityViewField(referenceTypes={FieldReferenceType.DETAIL, FieldReferenceType.SEARCHCONDITION})
 	@MultiLang(itemNameGetter = "getPropertyName")
@@ -118,7 +120,7 @@ public class VirtualPropertyItem extends Element {
 	@MetaFieldInfo(
 			displayName="説明の多言語設定",
 			displayNameKey="generic_element_VirtualPropertyItem_localizedDescriptionListDisplaNameKey",
-			inputType=InputType.LANGUAGE
+			inputType=InputType.MULTI_LANG_LIST
 	)
 	@EntityViewField(referenceTypes={FieldReferenceType.DETAIL, FieldReferenceType.SEARCHCONDITION})
 	private List<LocalizedStringDefinition> localizedDescriptionList;
@@ -129,7 +131,8 @@ public class VirtualPropertyItem extends Element {
 			displayNameKey="generic_element_VirtualPropertyItem_tooltipDisplaNameKey",
 			description="ツールチップに表示する説明を設定します。",
 			descriptionKey="generic_element_VirtualPropertyItem_tooltipDescriptionKey",
-			useMultiLang=true
+			inputType=InputType.MULTI_LANG,
+			multiLangField = "localizedTooltipList"
 	)
 	@EntityViewField(referenceTypes={FieldReferenceType.DETAIL, FieldReferenceType.SEARCHCONDITION})
 	@MultiLang(itemNameGetter = "getPropertyName")
@@ -139,7 +142,7 @@ public class VirtualPropertyItem extends Element {
 	@MetaFieldInfo(
 			displayName="ツールチップの多言語設定",
 			displayNameKey="generic_element_VirtualPropertyItem_localizedTooltipListDisplaNameKey",
-			inputType=InputType.LANGUAGE
+			inputType=InputType.MULTI_LANG_LIST
 	)
 	@EntityViewField(referenceTypes={FieldReferenceType.DETAIL, FieldReferenceType.SEARCHCONDITION})
 	private List<LocalizedStringDefinition> localizedTooltipList;

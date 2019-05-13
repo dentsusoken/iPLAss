@@ -100,7 +100,8 @@ public class DetailFormView extends FormView {
 			displayNameKey="generic_DetailFormView_editDisplayLabelDisplaNameKey",
 			description="編集ボタンに表示されるラベルを設定します。",
 			descriptionKey="generic_DetailFormView_editDisplayLabelDescriptionKey",
-			useMultiLang=true
+			inputType=InputType.MULTI_LANG,
+			multiLangField = "localizedEditDisplayLabelList"
 	)
 	@MultiLang()
 	private String editDisplayLabel;
@@ -109,7 +110,7 @@ public class DetailFormView extends FormView {
 	@MetaFieldInfo(
 			displayName="多言語設定",
 			displayNameKey="generic_DetailFormView_localizedEditDisplayLabelListDisplaNameKey",
-			inputType=InputType.LANGUAGE
+			inputType=InputType.MULTI_LANG_LIST
 	)
 	private List<LocalizedStringDefinition> localizedEditDisplayLabelList;
 
@@ -119,7 +120,8 @@ public class DetailFormView extends FormView {
 			displayNameKey="generic_DetailFormView_copyDisplayLabelDisplaNameKey",
 			description="コピーボタンに表示されるラベルを設定します。",
 			descriptionKey="generic_DetailFormView_copyDisplayLabelDescriptionKey",
-			useMultiLang=true
+			inputType=InputType.MULTI_LANG,
+			multiLangField = "localizedCopyDisplayLabelList"
 	)
 	@MultiLang()
 	private String copyDisplayLabel;
@@ -128,7 +130,7 @@ public class DetailFormView extends FormView {
 	@MetaFieldInfo(
 			displayName="多言語設定",
 			displayNameKey="generic_DetailFormView_localizedCopyDisplayLabelListDisplaNameKey",
-			inputType=InputType.LANGUAGE
+			inputType=InputType.MULTI_LANG_LIST
 	)
 	private List<LocalizedStringDefinition> localizedCopyDisplayLabelList;
 
@@ -138,7 +140,8 @@ public class DetailFormView extends FormView {
 			displayNameKey="generic_DetailFormView_versionupDisplayLabelDisplaNameKey",
 			description="バージョンアップボタンに表示されるラベルを設定します。",
 			descriptionKey="generic_DetailFormView_versionupDisplayLabelDescriptionKey",
-			useMultiLang=true
+			inputType=InputType.MULTI_LANG,
+			multiLangField = "localizedVersionupDisplayLabelList"
 	)
 	@MultiLang()
 	private String versionupDisplayLabel;
@@ -147,7 +150,7 @@ public class DetailFormView extends FormView {
 	@MetaFieldInfo(
 			displayName="多言語設定",
 			displayNameKey="generic_DetailFormView_localizedVersionupDisplayLabelListDisplaNameKey",
-			inputType=InputType.LANGUAGE
+			inputType=InputType.MULTI_LANG_LIST
 	)
 	private List<LocalizedStringDefinition> localizedVersionupDisplayLabelList;
 
@@ -177,7 +180,8 @@ public class DetailFormView extends FormView {
 			displayNameKey="generic_DetailFormView_insertDisplayLabelDisplaNameKey",
 			description="追加ボタンに表示されるラベルを設定します。",
 			descriptionKey="generic_DetailFormView_insertDisplayLabelDescriptionKey",
-			useMultiLang=true
+			inputType=InputType.MULTI_LANG,
+			multiLangField = "localizedInsertDisplayLabelList"
 	)
 	@MultiLang()
 	private String insertDisplayLabel;
@@ -186,7 +190,7 @@ public class DetailFormView extends FormView {
 	@MetaFieldInfo(
 			displayName="多言語設定",
 			displayNameKey="generic_DetailFormView_localizedInsertDisplayLabelListDisplaNameKey",
-			inputType=InputType.LANGUAGE
+			inputType=InputType.MULTI_LANG_LIST
 	)
 	private List<LocalizedStringDefinition> localizedInsertDisplayLabelList;
 
@@ -216,7 +220,8 @@ public class DetailFormView extends FormView {
 			displayNameKey="generic_DetailFormView_updateDisplayLabelDisplaNameKey",
 			description="更新ボタンに表示されるラベルを設定します。",
 			descriptionKey="generic_DetailFormView_updateDisplayLabelDescriptionKey",
-			useMultiLang=true
+			inputType=InputType.MULTI_LANG,
+			multiLangField = "localizedUpdateDisplayLabelList"
 	)
 	@MultiLang()
 	private String updateDisplayLabel;
@@ -225,7 +230,7 @@ public class DetailFormView extends FormView {
 	@MetaFieldInfo(
 			displayName="多言語設定",
 			displayNameKey="generic_DetailFormView_localizedUpdateDisplayLabelListDisplaNameKey",
-			inputType=InputType.LANGUAGE
+			inputType=InputType.MULTI_LANG_LIST
 	)
 	private List<LocalizedStringDefinition> localizedUpdateDisplayLabelList;
 
@@ -245,7 +250,8 @@ public class DetailFormView extends FormView {
 			displayNameKey="generic_DetailFormView_deleteDisplayLabelDisplaNameKey",
 			description="削除ボタンに表示されるラベルを設定します。",
 			descriptionKey="generic_DetailFormView_deleteDisplayLabelDescriptionKey",
-			useMultiLang=true
+			inputType=InputType.MULTI_LANG,
+			multiLangField = "localizedDeleteDisplayLabelList"
 	)
 	@MultiLang()
 	private String deleteDisplayLabel;
@@ -254,7 +260,7 @@ public class DetailFormView extends FormView {
 	@MetaFieldInfo(
 			displayName="多言語設定",
 			displayNameKey="generic_DetailFormView_localizedDeleteDisplayLabelListDisplaNameKey",
-			inputType=InputType.LANGUAGE
+			inputType=InputType.MULTI_LANG_LIST
 	)
 	private List<LocalizedStringDefinition> localizedDeleteDisplayLabelList;
 

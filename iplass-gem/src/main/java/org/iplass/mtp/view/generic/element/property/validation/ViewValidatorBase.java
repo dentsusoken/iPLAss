@@ -55,7 +55,8 @@ public abstract class ViewValidatorBase implements Refrectable {
 			description="入力チェックエラー時に表示するメッセージを設定します。",
 			descriptionKey="generic_element_property_validation_ValidatorBase_messageDescriptionKey",
 			required=true,
-			useMultiLang=true
+			inputType=InputType.MULTI_LANG,
+			multiLangField = "localizedMessageList"
 	)
 	@EntityViewField(
 			referenceTypes={FieldReferenceType.SEARCHCONDITION}
@@ -67,7 +68,7 @@ public abstract class ViewValidatorBase implements Refrectable {
 	@MetaFieldInfo(
 			displayName="メッセージの多言語設定",
 			displayNameKey="generic_element_property_validation_ValidatorBase_localizedMessageListDisplaNameKey",
-			inputType=InputType.LANGUAGE
+			inputType=InputType.MULTI_LANG_LIST
 	)
 	@EntityViewField(
 			referenceTypes={FieldReferenceType.SEARCHCONDITION}

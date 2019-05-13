@@ -76,7 +76,8 @@ public class BooleanPropertyEditor extends PrimitivePropertyEditor {
 			displayNameKey="generic_editor_BooleanPropertyEditor_trueLabelDisplaNameKey",
 			description="真の選択肢に表示するラベルを設定します。",
 			descriptionKey="generic_editor_BooleanPropertyEditor_trueLabelDescriptionKey",
-			useMultiLang=true
+			inputType=InputType.MULTI_LANG,
+			multiLangField="localizedTrueLabelList"
 	)
 	@EntityViewField(
 			referenceTypes={FieldReferenceType.ALL}
@@ -88,7 +89,7 @@ public class BooleanPropertyEditor extends PrimitivePropertyEditor {
 	@MetaFieldInfo(
 			displayName="多言語設定情報",
 			displayNameKey="generic_editor_BooleanPropertyEditor_localizedTrueLabelListDisplaNameKey",
-			inputType=InputType.LANGUAGE
+			inputType=InputType.MULTI_LANG_LIST
 	)
 	@EntityViewField(
 			referenceTypes={FieldReferenceType.ALL}
@@ -101,7 +102,8 @@ public class BooleanPropertyEditor extends PrimitivePropertyEditor {
 			displayNameKey="generic_editor_BooleanPropertyEditor_falseLabelDisplaNameKey",
 			description="偽の選択肢に表示するラベルを設定します。",
 			descriptionKey="generic_editor_BooleanPropertyEditor_falseLabelDescriptionKey",
-			useMultiLang=true
+			inputType=InputType.MULTI_LANG,
+			multiLangField="localizedFalseLabelList"
 	)
 	@EntityViewField(
 			referenceTypes={FieldReferenceType.ALL}
@@ -113,7 +115,7 @@ public class BooleanPropertyEditor extends PrimitivePropertyEditor {
 	@MetaFieldInfo(
 			displayName="多言語設定情報",
 			displayNameKey="generic_editor_BooleanPropertyEditor_localizedFalseLabelListDisplaNameKey",
-			inputType=InputType.LANGUAGE
+			inputType=InputType.MULTI_LANG_LIST
 	)
 	@EntityViewField(
 			referenceTypes={FieldReferenceType.ALL}

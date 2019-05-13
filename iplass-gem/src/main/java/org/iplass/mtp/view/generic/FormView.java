@@ -56,9 +56,14 @@ public abstract class FormView implements Refrectable {
 	private List<Section> sections;
 
 	/** タイトル */
-	@MetaFieldInfo(displayName="画面タイトル", description="画面に表示されるタイトルを入力します",
-			displayNameKey="generic_FormView_titleDisplaNameKey", descriptionKey="generic_FormView_titleDescriptionKey",
-			useMultiLang=true)
+	@MetaFieldInfo(
+			displayName="画面タイトル",
+			description="画面に表示されるタイトルを入力します",
+			displayNameKey="generic_FormView_titleDisplaNameKey",
+			descriptionKey="generic_FormView_titleDescriptionKey",
+			inputType=InputType.MULTI_LANG,
+			multiLangField = "localizedTitleList"
+	)
 	@MultiLang(itemNameGetter = "getName")
 	private String title;
 
@@ -66,7 +71,7 @@ public abstract class FormView implements Refrectable {
 	@MetaFieldInfo(
 			displayName="多言語設定情報",
 			displayNameKey="generic_FormView_localizedTitleListDisplaNameKey",
-			inputType=InputType.LANGUAGE
+			inputType=InputType.MULTI_LANG_LIST
 	)
 	private List<LocalizedStringDefinition> localizedTitleList;
 

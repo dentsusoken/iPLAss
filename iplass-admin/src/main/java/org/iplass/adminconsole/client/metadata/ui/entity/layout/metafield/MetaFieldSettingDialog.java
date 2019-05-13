@@ -20,8 +20,12 @@
 
 package org.iplass.adminconsole.client.metadata.ui.entity.layout.metafield;
 
-import org.iplass.adminconsole.client.base.ui.widget.AbstractWindow;
+import org.iplass.adminconsole.client.base.ui.widget.MtpDialog;
 import org.iplass.adminconsole.view.annotation.Refrectable;
+
+import com.google.gwt.event.shared.HandlerRegistration;
+import com.smartgwt.client.widgets.IButton;
+import com.smartgwt.client.widgets.events.ClickHandler;
 
 /**
  * インターフェースクラス(org.iplass.mtpパッケージ配下)の各フィールドに値を設定するためのWindow。
@@ -31,19 +35,24 @@ import org.iplass.adminconsole.view.annotation.Refrectable;
  * EntityViewについては、{@link org.iplass.adminconsole.client.metadata.ui.entity.layout.item.EntityViewFieldSettingDialog}として継承して利用。
  *
  */
-public class MetaFieldSettingDialog extends AbstractWindow {
+public class MetaFieldSettingDialog extends MtpDialog {
 
 	private String className;
 	private Refrectable value;
 
 	private MetaFieldSettingPane panel = null;
 
+	private IButton btnOK;
+	private IButton btnCancel;
+
 	private MetaFieldSettingDialog() {
-		setWidth(600);
-		setShowMinimizeButton(false);
-		setIsModal(true);
-		setAutoSize(true);
-		setShowModalMask(false);
+
+		setHeight(600);
+
+		btnOK = new IButton("OK");
+		btnCancel = new IButton("Cancel");
+
+		footer.setMembers(btnOK, btnCancel);
 	}
 
 	public MetaFieldSettingDialog(String className, Refrectable value) {
@@ -70,13 +79,23 @@ public class MetaFieldSettingDialog extends AbstractWindow {
 			setTitle(className.substring(className.lastIndexOf(".") + 1) + " Setting");
 
 			panel = createPane(className, value);
-			addItem(panel);
+			container.addMember(panel);
 		}
+		centerInPage();
 	}
 
 	protected MetaFieldSettingPane createPane(String className, Refrectable value) {
-		MetaFieldSettingPane pane = new MetaFieldSettingPane(className, value);
+		MetaFieldSettingPane pane = new MetaFieldSettingPane(this, className, value);
 		pane.init();
 		return pane;
 	}
+
+	protected HandlerRegistration addOKClickHandler(ClickHandler handler) {
+		return btnOK.addClickHandler(handler);
+	}
+
+	protected HandlerRegistration addCancelClickHandler(ClickHandler handler) {
+		return btnCancel.addClickHandler(handler);
+	}
+
 }

@@ -21,11 +21,15 @@
 package org.iplass.adminconsole.client.metadata.ui.entity.layout.metafield;
 
 import java.util.ArrayList;
+import java.util.List;
 
+import org.iplass.adminconsole.client.base.ui.widget.MetaDataLangTextItem;
 import org.iplass.adminconsole.client.base.ui.widget.MetaDataSelectItem;
 import org.iplass.adminconsole.client.base.ui.widget.MetaDataSelectItem.ItemOption;
+import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
 import org.iplass.adminconsole.shared.metadata.dto.refrect.FieldInfo;
 import org.iplass.adminconsole.view.annotation.InputType;
+import org.iplass.mtp.definition.LocalizedStringDefinition;
 import org.iplass.mtp.web.actionmapping.definition.ActionMappingDefinition;
 import org.iplass.mtp.web.template.definition.TemplateDefinition;
 import org.iplass.mtp.webapi.definition.WebApiDefinition;
@@ -42,6 +46,7 @@ public class MetaFieldSettingPartsControllerImpl implements MetaFieldSettingPart
 	private static final String DEFAULT_ACTION_NAME = "#default";
 	private static final String DEFAULT_WEBAPI_NAME = "#default";
 
+	@SuppressWarnings("unchecked")
 	public FormItem createItem(MetaFieldSettingPane pane, FieldInfo info) {
 		FormItem item = null;
 		if (info.getInputType() == InputType.TEXT) {
@@ -106,6 +111,16 @@ public class MetaFieldSettingPartsControllerImpl implements MetaFieldSettingPart
 			item = createTemplateList(info);
 			if (pane.getValue(info.getName()) != null) {
 				item.setValue(pane.getValueAs(String.class, info.getName()));
+			}
+		} else if (info.getInputType() == InputType.MULTI_LANG) {
+			item = new MetaDataLangTextItem();
+			if (pane.getValue(info.getName()) != null) {
+				item.setValue(pane.getValueAs(Boolean.class, info.getName()));
+			}
+			if (SmartGWTUtil.isNotEmpty(info.getMultiLangFieldName())) {
+				List<LocalizedStringDefinition> localizedList = (List<LocalizedStringDefinition>) pane
+						.getValue(info.getMultiLangFieldName());
+				((MetaDataLangTextItem) item).setLocalizedList(localizedList);
 			}
 		}
 		return item;

@@ -48,9 +48,12 @@ public class Link extends Element {
 	private static final long serialVersionUID = 131576062106926116L;
 
 	/** タイトル */
-	@MetaFieldInfo(displayName="タイトル", description="ヘッダに表示するタイトルを設定します。", useMultiLang=true,
+	@MetaFieldInfo(displayName="タイトル", description="ヘッダに表示するタイトルを設定します。", 
 			displayNameKey="generic_element_Link_titleDisplaNameKey",
-			descriptionKey="generic_element_Link_titleDescriptionKey")
+			descriptionKey="generic_element_Link_titleDescriptionKey",
+			inputType=InputType.MULTI_LANG,
+			multiLangField = "localizedTitleList"
+	)
 	@MultiLang()
 	private String title;
 
@@ -58,14 +61,17 @@ public class Link extends Element {
 	@MetaFieldInfo(
 			displayName="多言語設定",
 			displayNameKey="generic_element_Link_localizedTitleListDisplaNameKey",
-			inputType=InputType.LANGUAGE
+			inputType=InputType.MULTI_LANG_LIST
 	)
 	private List<LocalizedStringDefinition> localizedTitleList;
 
 	/** 表示ラベル */
-	@MetaFieldInfo(displayName="表示ラベル", description="リンクに表示するラベルを設定します。", useMultiLang=true,
+	@MetaFieldInfo(displayName="表示ラベル", description="リンクに表示するラベルを設定します。", 
 			displayNameKey="generic_element_Link_displayLabelDisplaNameKey",
-			descriptionKey="generic_element_Link_displayLabelDescriptionKey")
+			descriptionKey="generic_element_Link_displayLabelDescriptionKey",
+			inputType=InputType.MULTI_LANG,
+			multiLangField = "localizedDisplayLabelList"
+	)
 	@MultiLang()
 	private String displayLabel;
 
@@ -73,7 +79,7 @@ public class Link extends Element {
 	@MetaFieldInfo(
 			displayName="多言語設定",
 			displayNameKey="generic_element_Link_localizedDisplayLabelListDisplaNameKey",
-			inputType=InputType.LANGUAGE
+			inputType=InputType.MULTI_LANG_LIST
 	)
 	private List<LocalizedStringDefinition> localizedDisplayLabelList;
 

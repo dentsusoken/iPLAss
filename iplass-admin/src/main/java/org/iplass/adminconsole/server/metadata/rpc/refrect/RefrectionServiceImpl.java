@@ -62,133 +62,143 @@ public class RefrectionServiceImpl extends XsrfProtectedServiceServlet implement
 
 	/**
 	 * インターフェースクラスを解析して、フィールド情報を各フィールドの値を取得する。
+	 * 
 	 * @param className インターフェースクラスのクラス名
-	 * @param value インターフェースクラス
+	 * @param value     インターフェースクラス
 	 * @return
 	 */
 	@Override
 	public AnalysisResult analysis(int tenantId, String className, Refrectable value) {
-		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId, new AuthUtil.Callable<AnalysisResult>() {
+		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(),
+				this.getThreadLocalResponse(), tenantId, new AuthUtil.Callable<AnalysisResult>() {
 
-			@Override
-			public AnalysisResult call() {
-				AnalysisResult ret = new AnalysisResult();
-				ret.setFields(getFieldInfo(className));
-				ret.setValueMap(getFieldValues(className, value, ret.getFields()));
-				return ret;
-			}
-		});
+					@Override
+					public AnalysisResult call() {
+						AnalysisResult ret = new AnalysisResult();
+						ret.setFields(getFieldInfo(className));
+						ret.setValueMap(getFieldValues(className, value, ret.getFields()));
+						return ret;
+					}
+				});
 
 	}
 
 	/**
 	 * インターフェースクラスの配列を解析して、フィールド情報と各フィールドの値を取得する。
+	 * 
 	 * @param className
 	 * @param valueList
 	 * @return
 	 */
 	@Override
 	public AnalysisListDataResult analysisListData(int tenantId, String className, List<Refrectable> valueList) {
-		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId, new AuthUtil.Callable<AnalysisListDataResult>() {
+		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(),
+				this.getThreadLocalResponse(), tenantId, new AuthUtil.Callable<AnalysisListDataResult>() {
 
-			@Override
-			public AnalysisListDataResult call() {
-				AnalysisListDataResult ret = new AnalysisListDataResult();
-				ret.setFields(getFieldInfo(className));
-				ret.setRefrectables(getListFieldValues(valueList));
-				return ret;
-			}
-		});
+					@Override
+					public AnalysisListDataResult call() {
+						AnalysisListDataResult ret = new AnalysisListDataResult();
+						ret.setFields(getFieldInfo(className));
+						ret.setRefrectables(getListFieldValues(valueList));
+						return ret;
+					}
+				});
 	}
 
 	/**
 	 * インターフェースクラスのインスタンスを生成する。
+	 * 
 	 * @param className
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
 	public Refrectable create(int tenantId, String className) {
-		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId, new AuthUtil.Callable<Refrectable>() {
+		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(),
+				this.getThreadLocalResponse(), tenantId, new AuthUtil.Callable<Refrectable>() {
 
-			@Override
-			public Refrectable call() {
-				Refrectable instance = null;
+					@Override
+					public Refrectable call() {
+						Refrectable instance = null;
 
-				try {
-					Class<? extends Refrectable> cls = (Class<? extends Refrectable>) Class.forName(className);
-					instance = cls.newInstance();
+						try {
+							Class<? extends Refrectable> cls = (Class<? extends Refrectable>) Class.forName(className);
+							instance = cls.newInstance();
 
-					FieldInfo[] infos = getFieldInfo(cls);
-					for (FieldInfo info : infos) {
-						if (info.getInputType() == InputType.ENUM) {
-							//enumの場合は初期値(最初の値)を入れとく
-							setDefaultEnumValue(info, cls, instance);
+							FieldInfo[] infos = getFieldInfo(cls);
+							for (FieldInfo info : infos) {
+								if (info.getInputType() == InputType.ENUM) {
+									// enumの場合は初期値(最初の値)を入れとく
+									setDefaultEnumValue(info, cls, instance);
+								}
+							}
+
+						} catch (ClassNotFoundException e) {
+							logger.error(e.getMessage(), e);
+						} catch (InstantiationException e) {
+							logger.error(e.getMessage(), e);
+						} catch (IllegalAccessException e) {
+							logger.error(e.getMessage(), e);
 						}
+
+						return instance;
 					}
-
-				} catch (ClassNotFoundException e) {
-					logger.error(e.getMessage(), e);
-				} catch (InstantiationException e) {
-					logger.error(e.getMessage(), e);
-				} catch (IllegalAccessException e) {
-					logger.error(e.getMessage(), e);
-				}
-
-				return instance;
-			}
-		});
+				});
 	}
 
 	/**
 	 * インターフェースクラスのフィールドを更新する。
-	 * @param value インターフェースクラス
+	 * 
+	 * @param value    インターフェースクラス
 	 * @param valueMap インターフェースクラスの更新データ
 	 * @return
 	 */
 	@Override
 	public Refrectable update(int tenantId, Refrectable value, Map<String, Serializable> valueMap) {
-		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId, new AuthUtil.Callable<Refrectable>() {
+		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(),
+				this.getThreadLocalResponse(), tenantId, new AuthUtil.Callable<Refrectable>() {
 
-			@Override
-			public Refrectable call() {
-				Class<?> cls = value.getClass();
+					@Override
+					public Refrectable call() {
+						Class<?> cls = value.getClass();
 
-				update(cls, value, valueMap);
+						update(cls, value, valueMap);
 
-				return value;
-			}
-		});
+						return value;
+					}
+				});
 
 	}
 
 	@Override
 	public Name[] getSubClass(int tenantId, final String rootClassName) {
-		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId, new AuthUtil.Callable<Name[]>() {
+		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(),
+				this.getThreadLocalResponse(), tenantId, new AuthUtil.Callable<Name[]>() {
 
-			@Override
-			public Name[] call() {
-				List<Name> nameList = new ArrayList<Name>();
-				try {
-					Class<?> cls = Class.forName(rootClassName);
-					int mod = cls.getModifiers();
-					if (!Modifier.isAbstract(mod) && !Modifier.isInterface(mod)) {
-						nameList.add(new Name(cls.getName(), cls.getSimpleName()));
+					@Override
+					public Name[] call() {
+						List<Name> nameList = new ArrayList<Name>();
+						try {
+							Class<?> cls = Class.forName(rootClassName);
+							int mod = cls.getModifiers();
+							if (!Modifier.isAbstract(mod) && !Modifier.isInterface(mod)) {
+								nameList.add(new Name(cls.getName(), cls.getSimpleName()));
+							}
+							nameList.addAll(getXmlSeeAlsoClass(cls));
+						} catch (ClassNotFoundException e) {
+							// throw e;
+							logger.error(e.getMessage(), e);
+						}
+
+						return nameList.toArray(new Name[nameList.size()]);
 					}
-					nameList.addAll(getXmlSeeAlsoClass(cls));
-				} catch (ClassNotFoundException e) {
-					//throw e;
-					logger.error(e.getMessage(), e);
-				}
-
-				return nameList.toArray(new Name[nameList.size()]);
-			}
-		});
+				});
 
 	}
 
 	/**
 	 * instanceのEnumフィールドに初期値を設定する。
+	 * 
 	 * @param info
 	 * @param cls
 	 * @param instance
@@ -208,7 +218,7 @@ public class RefrectionServiceImpl extends XsrfProtectedServiceServlet implement
 		} catch (SecurityException e) {
 			logger.error(e.getMessage(), e);
 		} catch (NoSuchFieldException e) {
-			//logger.error(e.getMessage(), e);
+			// logger.error(e.getMessage(), e);
 		} catch (IllegalArgumentException e) {
 			logger.error(e.getMessage(), e);
 		} catch (ClassNotFoundException e) {
@@ -219,7 +229,7 @@ public class RefrectionServiceImpl extends XsrfProtectedServiceServlet implement
 	private Object getFirstEnumValue(FieldInfo info) throws ClassNotFoundException {
 		Class<?> cls = Class.forName(info.getEnumClassName());
 		for (Object constants : cls.getEnumConstants()) {
-			//Deprecatedされてない最初の要素を返す
+			// Deprecatedされてない最初の要素を返す
 			try {
 				if (!cls.getField(constants.toString()).isAnnotationPresent(Deprecated.class)) {
 					return constants;
@@ -227,7 +237,7 @@ public class RefrectionServiceImpl extends XsrfProtectedServiceServlet implement
 			} catch (SecurityException e) {
 				logger.error(e.getMessage(), e);
 			} catch (NoSuchFieldException e) {
-				//logger.error(e.getMessage(), e);
+				// logger.error(e.getMessage(), e);
 			}
 		}
 		return null;
@@ -235,6 +245,7 @@ public class RefrectionServiceImpl extends XsrfProtectedServiceServlet implement
 
 	/**
 	 * 型名から各フィールドのメタデータを取得。
+	 * 
 	 * @param className
 	 * @return
 	 */
@@ -243,7 +254,7 @@ public class RefrectionServiceImpl extends XsrfProtectedServiceServlet implement
 			Class<?> cls = Class.forName(className);
 			return getFieldInfo(cls);
 		} catch (ClassNotFoundException e) {
-			//throw e;
+			// throw e;
 			logger.error(e.getMessage(), e);
 		}
 		return null;
@@ -251,6 +262,7 @@ public class RefrectionServiceImpl extends XsrfProtectedServiceServlet implement
 
 	/**
 	 * 型から各フィールドのメタデータを取得。
+	 * 
 	 * @param cls
 	 * @return
 	 */
@@ -268,12 +280,12 @@ public class RefrectionServiceImpl extends XsrfProtectedServiceServlet implement
 
 	/**
 	 * 型から各フィールドのメタデータを取得。
+	 * 
 	 * @param list
 	 * @param cls
 	 */
 	private void getFieldInfo(List<FieldInfo> list, Class<?> cls, List<String> ignoreFields) {
-		if (cls.getSuperclass() != null
-				&& cls.getSuperclass() instanceof Object) {
+		if (cls.getSuperclass() != null && cls.getSuperclass() instanceof Object) {
 			getFieldInfo(list, cls.getSuperclass(), ignoreFields);
 		}
 
@@ -300,24 +312,24 @@ public class RefrectionServiceImpl extends XsrfProtectedServiceServlet implement
 							nameList.add(new Name(fixedReferenceClass.getName(), fixedReferenceClass.getSimpleName()));
 						}
 					}
-					info.setFixedReferenceClass(nameList.toArray(new Name[]{}));
+					info.setFixedReferenceClass(nameList.toArray(new Name[] {}));
 				}
-				if (annotation.inputType() == InputType.ENUM
-						&& annotation.enumClass() != null
+				if (annotation.inputType() == InputType.ENUM && annotation.enumClass() != null
 						&& annotation.enumClass().isEnum()) {
 //					info.setEnumValues((Serializable[]) annotation.enumClass().getEnumConstants());
 					info.setEnumClassName(annotation.enumClass().getName());
 					List<Serializable> enumValues = new ArrayList<Serializable>();
 					for (Object constants : annotation.enumClass().getEnumConstants()) {
-						//Deprecatedなメソッドは選択させない
+						// Deprecatedなメソッドは選択させない
 						try {
-							if (!annotation.enumClass().getField(constants.toString()).isAnnotationPresent(Deprecated.class)) {
+							if (!annotation.enumClass().getField(constants.toString())
+									.isAnnotationPresent(Deprecated.class)) {
 								enumValues.add((Serializable) constants);
 							}
 						} catch (SecurityException e) {
 							logger.error(e.getMessage(), e);
 						} catch (NoSuchFieldException e) {
-							//logger.error(e.getMessage(), e);
+							// logger.error(e.getMessage(), e);
 						}
 					}
 					Object[] array = (Object[]) Array.newInstance(annotation.enumClass(), enumValues.size());
@@ -327,13 +339,13 @@ public class RefrectionServiceImpl extends XsrfProtectedServiceServlet implement
 				info.setDescription(annotation.description());
 //				info.setDescription(getDescription(annotation));
 				info.setDescriptionKey(annotation.descriptionKey());
-				info.setUseMultiLang(annotation.useMultiLang());
+				info.setMultiLangFieldName(annotation.multiLangField());
 				info.setUseReferenceType(annotation.useReferenceType());
 				info.setEntityDefinitionName(annotation.entityDefinitionName());
 				info.setDeprecated(annotation.deprecated());
 
 				if (evs.isFilterSettingProperty()) {
-					//EntityViewに特化した情報の取得
+					// EntityViewに特化した情報の取得
 					EntityViewField viewAnnotation = field.getAnnotation(EntityViewField.class);
 					if (viewAnnotation != null) {
 						info.setEntityViewReferenceType(viewAnnotation.referenceTypes());
@@ -386,6 +398,7 @@ public class RefrectionServiceImpl extends XsrfProtectedServiceServlet implement
 
 	/**
 	 * インターフェースクラスのフィールドの値を取得。
+	 * 
 	 * @param className
 	 * @param object
 	 * @param fields
@@ -398,6 +411,7 @@ public class RefrectionServiceImpl extends XsrfProtectedServiceServlet implement
 
 	/**
 	 * インターフェースクラスのフィールドの値を取得。
+	 * 
 	 * @param className
 	 * @param object
 	 * @param fields
@@ -415,6 +429,7 @@ public class RefrectionServiceImpl extends XsrfProtectedServiceServlet implement
 
 	/**
 	 * インターフェースクラスのフィールドの値を取得。
+	 * 
 	 * @param cls
 	 * @param object
 	 * @param fields
@@ -422,10 +437,10 @@ public class RefrectionServiceImpl extends XsrfProtectedServiceServlet implement
 	 */
 	private Map<String, Serializable> getFieldValues(Class<?> cls, Refrectable object, FieldInfo[] fields) {
 		Map<String, Serializable> valueMap = new HashMap<String, Serializable>();
-		if (object == null || cls.getName().equals(Object.class.getName())) return valueMap;
+		if (object == null || cls.getName().equals(Object.class.getName()))
+			return valueMap;
 
-		if (cls.getSuperclass() != null
-				&& cls.getSuperclass() instanceof Object) {
+		if (cls.getSuperclass() != null && cls.getSuperclass() instanceof Object) {
 			valueMap.putAll(getFieldValues(cls.getSuperclass(), object, fields));
 		}
 
@@ -440,6 +455,7 @@ public class RefrectionServiceImpl extends XsrfProtectedServiceServlet implement
 
 	/**
 	 * 指定フィールドの値を取得。
+	 * 
 	 * @param cls
 	 * @param object
 	 * @param name
@@ -453,9 +469,9 @@ public class RefrectionServiceImpl extends XsrfProtectedServiceServlet implement
 		} catch (SecurityException e) {
 			logger.error(e.getMessage(), e);
 		} catch (NoSuchFieldException e) {
-			//継承しているフィールドは見つからない
-			//→親のフィールドを見に行くのでエラー処理は不要
-			//logger.error(e.getMessage(), e);
+			// 継承しているフィールドは見つからない
+			// →親のフィールドを見に行くのでエラー処理は不要
+			// logger.error(e.getMessage(), e);
 		} catch (IllegalArgumentException e) {
 			logger.error(e.getMessage(), e);
 		} catch (IllegalAccessException e) {
@@ -466,6 +482,7 @@ public class RefrectionServiceImpl extends XsrfProtectedServiceServlet implement
 
 	/**
 	 * インターフェースクラスのフィールドを更新する。
+	 * 
 	 * @param cls
 	 * @param value
 	 * @param valueMap
@@ -494,7 +511,7 @@ public class RefrectionServiceImpl extends XsrfProtectedServiceServlet implement
 				} catch (SecurityException e) {
 					logger.error(e.getMessage(), e);
 				} catch (NoSuchFieldException e) {
-					//親クラスのフィールドなどが見つからない場合にここにくる
+					// 親クラスのフィールドなどが見つからない場合にここにくる
 				} catch (IllegalArgumentException e) {
 					logger.error(e.getMessage(), e);
 				} catch (IllegalAccessException e) {

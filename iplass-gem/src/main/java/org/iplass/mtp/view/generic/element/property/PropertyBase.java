@@ -57,7 +57,8 @@ public abstract class PropertyBase extends Element {
 			displayNameKey="generic_element_property_PropertyBase_displayLabelDisplaNameKey",
 			description="画面に表示するラベルを設定します。",
 			descriptionKey="generic_element_property_PropertyBase_displayLabelDescriptionKey",
-			useMultiLang=true
+			inputType=InputType.MULTI_LANG,
+			multiLangField = "localizedDisplayLabelList"
 	)
 	@EntityViewField(
 			referenceTypes={FieldReferenceType.ALL}
@@ -86,7 +87,7 @@ public abstract class PropertyBase extends Element {
 	@MetaFieldInfo(
 			displayName="多言語設定",
 			displayNameKey="generic_element_property_PropertyBase_localizedDisplayLabelListDisplaNameKey",
-			inputType=InputType.LANGUAGE
+			inputType=InputType.MULTI_LANG_LIST
 	)
 	@EntityViewField(
 			referenceTypes={FieldReferenceType.ALL}

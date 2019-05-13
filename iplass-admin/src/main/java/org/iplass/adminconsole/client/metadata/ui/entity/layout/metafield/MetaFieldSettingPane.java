@@ -27,14 +27,14 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.iplass.adminconsole.client.base.event.DataChangedEvent;
-import org.iplass.adminconsole.client.base.event.DataChangedHandler;
 import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
+import org.iplass.adminconsole.client.base.rpc.AdminAsyncCallback;
 import org.iplass.adminconsole.client.base.tenant.TenantInfoHolder;
+import org.iplass.adminconsole.client.base.ui.widget.MetaDataLangTextItem;
 import org.iplass.adminconsole.client.base.ui.widget.ScriptEditorDialogHandler;
 import org.iplass.adminconsole.client.base.ui.widget.ScriptEditorDialogMode;
+import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
 import org.iplass.adminconsole.client.metadata.ui.MetaDataUtil;
-import org.iplass.adminconsole.client.metadata.ui.common.LocalizedStringSettingDialog;
 import org.iplass.adminconsole.shared.metadata.dto.Name;
 import org.iplass.adminconsole.shared.metadata.dto.refrect.AnalysisListDataResult;
 import org.iplass.adminconsole.shared.metadata.dto.refrect.AnalysisResult;
@@ -44,12 +44,10 @@ import org.iplass.adminconsole.shared.metadata.rpc.refrect.RefrectionServiceAsyn
 import org.iplass.adminconsole.shared.metadata.rpc.refrect.RefrectionServiceFactory;
 import org.iplass.adminconsole.view.annotation.InputType;
 import org.iplass.adminconsole.view.annotation.Refrectable;
-import org.iplass.mtp.definition.LocalizedStringDefinition;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.smartgwt.client.types.Alignment;
-import com.smartgwt.client.types.Overflow;
 import com.smartgwt.client.types.VerticalAlignment;
 import com.smartgwt.client.widgets.Canvas;
 import com.smartgwt.client.widgets.IButton;
@@ -60,7 +58,6 @@ import com.smartgwt.client.widgets.events.ClickHandler;
 import com.smartgwt.client.widgets.events.DragStopEvent;
 import com.smartgwt.client.widgets.events.DragStopHandler;
 import com.smartgwt.client.widgets.form.DynamicForm;
-import com.smartgwt.client.widgets.form.fields.ButtonItem;
 import com.smartgwt.client.widgets.form.fields.FormItem;
 import com.smartgwt.client.widgets.form.fields.SelectItem;
 import com.smartgwt.client.widgets.form.fields.events.ChangeEvent;
@@ -103,6 +100,7 @@ public class MetaFieldSettingPane extends VLayout {
 	/** リフレクションを使ってインターフェースクラスを操作するためのサービス */
 	private RefrectionServiceAsync service = null;
 
+	private final MetaFieldSettingDialog owner;
 	private final String className;
 	private final Refrectable value;
 
@@ -110,10 +108,12 @@ public class MetaFieldSettingPane extends VLayout {
 
 	/**
 	 * コンストラクタ
+	 * 
 	 * @param className
 	 * @param value
 	 */
-	public MetaFieldSettingPane(String className, Refrectable value) {
+	public MetaFieldSettingPane(MetaFieldSettingDialog owner, String className, Refrectable value) {
+		this.owner = owner;
 		this.className = className;
 		this.value = value;
 
@@ -122,8 +122,8 @@ public class MetaFieldSettingPane extends VLayout {
 		setMembersMargin(10);
 		setWidth100();
 
-		//サブクラスでcreatePaneをカスタマイズするために解析は明示的に実行するように変更
-		//コンストラクタ内だとサブクラス側で色々準備できないので
+		// サブクラスでcreatePaneをカスタマイズするために解析は明示的に実行するように変更
+		// コンストラクタ内だとサブクラス側で色々準備できないので
 //		service = GWT.create(RefrectionService.class);
 //
 //		//解析サービス呼び出し
@@ -148,24 +148,27 @@ public class MetaFieldSettingPane extends VLayout {
 	public void init() {
 		service = RefrectionServiceFactory.get();
 
-		//解析サービス呼び出し
-		service.analysis(TenantInfoHolder.getId(), className, value, new AsyncCallback<AnalysisResult>() {
+		SmartGWTUtil.showProgress();
+		// 解析サービス呼び出し
+		service.analysis(TenantInfoHolder.getId(), className, value, new AdminAsyncCallback<AnalysisResult>() {
 
 			@Override
 			public void onSuccess(AnalysisResult result) {
-				//画面生成
+				// 画面生成
 				createPane(result, value);
+				SmartGWTUtil.hideProgress();
 			}
 
 			@Override
-			public void onFailure(Throwable caught) {
-				GWT.log(caught.toString(), caught);
-			}
+			protected void beforeFailure(Throwable caught) {
+				SmartGWTUtil.hideProgress();
+			};
 		});
 	}
 
 	/**
 	 * メタデータの指定フィールドの値を取得。
+	 * 
 	 * @param key
 	 * @return
 	 */
@@ -175,6 +178,7 @@ public class MetaFieldSettingPane extends VLayout {
 
 	/**
 	 * メタデータの指定フィールドの値を設定。
+	 * 
 	 * @param key
 	 * @param value
 	 */
@@ -184,6 +188,7 @@ public class MetaFieldSettingPane extends VLayout {
 
 	/**
 	 * OKボタン押下時のイベントを設定。
+	 * 
 	 * @param handler
 	 */
 	public void setOkHandler(MetaFieldUpdateHandler handler) {
@@ -192,6 +197,7 @@ public class MetaFieldSettingPane extends VLayout {
 
 	/**
 	 * Cancelボタン押下時のイベントを設定。
+	 * 
 	 * @param handler
 	 */
 	public void setCancelHandler(MetaFieldUpdateHandler handler) {
@@ -223,87 +229,37 @@ public class MetaFieldSettingPane extends VLayout {
 		return dialog;
 	}
 
-
-	@SuppressWarnings("unchecked")
 	private void createPane(AnalysisResult result, final Refrectable value) {
-//		defValueMap.putAll(result.getValueMap());
+
 		for (String key : result.getValueMap().keySet()) {
 			defValueMap.put(key, result.getValueMap().get(key));
 		}
 
-		//解析結果から入力フィールドを生成
+		// 解析結果から入力フィールドを生成
 		ArrayList<FormItem> items = new ArrayList<FormItem>();
 		ArrayList<Canvas> canvass = new ArrayList<Canvas>();
-		int fieldCount = 0;//ダイアログの大きさをコントロールするための項目数(多言語のボタンは含めない)
+		int fieldCount = 0;// ダイアログの大きさをコントロールするための項目数(多言語のボタンは含めない)
 		for (FieldInfo info : result.getFields()) {
 			if (!isVisileField(info)) {
 				continue;
 			}
 
 			if (info.getInputType() == InputType.REFERENCE) {
-				//参照系は入力を別にする
+				// 参照系は入力を別にする
 				Canvas canvas = createReferenceInputItem(info);
 				if (canvas != null) {
 					canvass.add(canvas);
 					fieldCount++;
 				}
 			} else if (info.getInputType() == InputType.SCRIPT) {
-				//スクリプトエディタは別画面起動
+				// スクリプトエディタは別画面起動
 				Canvas canvas = createScriptInputItem(info);
 				if (canvas != null) {
 					canvass.add(canvas);
 					fieldCount++;
 				}
-			} else if (info.getInputType() == InputType.LANGUAGE) {
-
-				final FieldInfo fInfo = info;
-
-				ButtonItem langBtn;
-				langBtn = new ButtonItem("addDisplayName", "Languages");
-				langBtn.setAlign(Alignment.LEFT);
-				langBtn.setShowTitle(false);
-				langBtn.setIcon("world.png");
-				langBtn.setStartRow(false);	//これを指定しないとButtonの場合、先頭にくる
-				langBtn.setEndRow(false);	//これを指定しないと次のFormItemが先頭にいく
-				langBtn.setPrompt(AdminClientMessageUtil.getString("ui_metadata_common_MetaFieldSettingPane_eachLangDspName"));
-				langBtn.addClickHandler(new com.smartgwt.client.widgets.form.fields.events.ClickHandler() {
-
-					@Override
-					public void onClick(com.smartgwt.client.widgets.form.fields.events.ClickEvent event) {
-
-						final List<LocalizedStringDefinition> localizedStringList = new ArrayList<LocalizedStringDefinition>();
-						List<LocalizedStringDefinition> defValueList = (List<LocalizedStringDefinition>) getValue(fInfo.getName());
-						if (defValueList != null && !defValueList.isEmpty()) {
-							//参照渡すだけなので元データ上書きしないようにコピー
-							for (LocalizedStringDefinition def : defValueList) {
-								LocalizedStringDefinition nv = new LocalizedStringDefinition();
-								nv.setLocaleName(def.getLocaleName());
-								nv.setStringValue(def.getStringValue());
-								localizedStringList.add(nv);
-							}
-						}
-
-						LocalizedStringSettingDialog dialog = new LocalizedStringSettingDialog(localizedStringList);
-						dialog.addDataChangedHandler(new DataChangedHandler() {
-
-							@Override
-							public void onDataChanged(DataChangedEvent event) {
-								//保存時に上書き
-								setValue(fInfo.getName(), (Serializable) localizedStringList);
-							}
-						});
-						dialog.show();
-
-					}
-				});
-
-				items.add(langBtn);
 			} else {
 				FormItem item = createSingleInputItem(info);
-
-				if (!info.isUseMultiLang()) {
-					item.setColSpan(3);
-				}
 				if (item != null) {
 					items.add(item);
 					fieldCount++;
@@ -311,7 +267,7 @@ public class MetaFieldSettingPane extends VLayout {
 			}
 		}
 
-		//標準のフォーム作成
+		// 標準のフォーム作成
 		DynamicForm form = new DynamicForm();
 		form.setMargin(10);
 		form.setWidth100();
@@ -319,15 +275,8 @@ public class MetaFieldSettingPane extends VLayout {
 		form.setAlign(Alignment.CENTER);
 		form.setFields(items.toArray(new FormItem[items.size()]));
 
-		//ボタン用のレイアウト作成
-		HLayout buttonLyout = new HLayout();
-		buttonLyout.setAlign(Alignment.CENTER);
-		buttonLyout.setAlign(VerticalAlignment.CENTER);
-
-		IButton ok = new IButton("OK");
-		ok.addClickHandler(new OkClickHandler(form, result.getFields(), value));
-		IButton cancel = new IButton("cancel");
-		cancel.addClickHandler(new ClickHandler() {
+		owner.addOKClickHandler(new OkClickHandler(form, result.getFields(), value));
+		owner.addCancelClickHandler(new ClickHandler() {
 
 			@Override
 			public void onClick(ClickEvent event) {
@@ -337,26 +286,16 @@ public class MetaFieldSettingPane extends VLayout {
 				}
 			}
 		});
-		buttonLyout.addMember(ok);
-		buttonLyout.addMember(cancel);
 
-		//パネルに設定
-		VLayout contents = new VLayout();
-		if (fieldCount > 16) {//FIXME ここの計算方法を再考する
-			//項目多い場合はスクロール
-			contents.setHeight(500);
-			contents.setOverflow(Overflow.AUTO);
-		}
-		contents.addMember(form);
+		addMember(form);
 		for (Canvas canvas : canvass) {
-			contents.addMember(canvas);
+			addMember(canvas);
 		}
-		addMember(contents);
-		addMember(buttonLyout);
 	}
 
 	/**
 	 * 参照型入力アイテム生成
+	 * 
 	 * @param info
 	 * @return
 	 */
@@ -370,12 +309,13 @@ public class MetaFieldSettingPane extends VLayout {
 
 	/**
 	 * 複数参照型入力レイアウト生成
+	 * 
 	 * @param info
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
 	private Canvas createReferenceMultiInputItem(FieldInfo info) {
-		//一覧表示用Grid生成
+		// 一覧表示用Grid生成
 		HLayout layout = new HLayout();
 		layout.setWidth100();
 		layout.setMembersMargin(6);
@@ -396,32 +336,34 @@ public class MetaFieldSettingPane extends VLayout {
 		grid.setHeight(120);
 		grid.setCanFreezeFields(true);
 
-		//grid内でのD&Dでの並べ替えを許可
+		// grid内でのD&Dでの並べ替えを許可
 		grid.setCanDragRecordsOut(true);
 		grid.setCanAcceptDroppedRecords(true);
 		grid.setCanReorderRecords(true);
 
-		//フィールドの値がnullなら空のリストを詰めておく
+		// フィールドの値がnullなら空のリストを詰めておく
 		boolean isValueNull = getValue(info.getName()) == null;
-		final List<Refrectable> valueList = isValueNull ?
-				new ArrayList<Refrectable>() : (List<Refrectable>) getValue(info.getName());
+		final List<Refrectable> valueList = isValueNull ? new ArrayList<Refrectable>()
+				: (List<Refrectable>) getValue(info.getName());
 		if (isValueNull) {
 			setValue(info.getName(), (Serializable) valueList);
 		}
 
-		//カラムの構築
-		grid.setFields(new ListGridField("empty"));//仮設定
-		service.analysisListData(TenantInfoHolder.getId(), info.getReferenceClassName(),
-				valueList, new AnalysisListDataAsyncCallback(
-						getSimpleName(info.getReferenceClassName()), grid));
+		// カラムの構築
+		grid.setFields(new ListGridField("empty"));// 仮設定
+		service.analysisListData(TenantInfoHolder.getId(), info.getReferenceClassName(), valueList,
+				new AnalysisListDataAsyncCallback(getSimpleName(info.getReferenceClassName()), grid));
 
-		IButton setButton = new IButton(AdminClientMessageUtil.getString("ui_metadata_common_MetaFieldSettingPane_edit"));
+		IButton setButton = new IButton(
+				AdminClientMessageUtil.getString("ui_metadata_common_MetaFieldSettingPane_edit"));
 		setButton.addClickHandler(new MultiReferenceEditClickHandler(grid, valueList, info));
 
-		IButton addButton = new IButton(AdminClientMessageUtil.getString("ui_metadata_common_MetaFieldSettingPane_add"));
+		IButton addButton = new IButton(
+				AdminClientMessageUtil.getString("ui_metadata_common_MetaFieldSettingPane_add"));
 		addButton.addClickHandler(new MultiReferenceAddClickHandler(valueList, info, grid));
 
-		IButton delButton = new IButton(AdminClientMessageUtil.getString("ui_metadata_common_MetaFieldSettingPane_delete"));
+		IButton delButton = new IButton(
+				AdminClientMessageUtil.getString("ui_metadata_common_MetaFieldSettingPane_delete"));
 		delButton.addClickHandler(new MultiReferenceDeleteClickHandler(grid, valueList));
 
 		VLayout buttonLayout = new VLayout();
@@ -433,7 +375,7 @@ public class MetaFieldSettingPane extends VLayout {
 		layout.addMember(grid);
 		layout.addMember(buttonLayout);
 
-		//grid内でのD&D後のデータ並べ替え
+		// grid内でのD&D後のデータ並べ替え
 		grid.addDragStopHandler(new DragStopHandler() {
 
 			@Override
@@ -451,6 +393,7 @@ public class MetaFieldSettingPane extends VLayout {
 
 	/**
 	 * 単一参照型入力レイアウト生成
+	 * 
 	 * @param info
 	 * @return
 	 */
@@ -466,7 +409,7 @@ public class MetaFieldSettingPane extends VLayout {
 		Serializable s = getValue(info.getName());
 		final String name = s != null ? s.getClass().getName() : "";
 
-		//型名を表示、詳細は設定ボタンで
+		// 型名を表示、詳細は設定ボタンで
 		String displayName = getDisplayName(info);
 		String title = info.isDeprecated() ? "<del>" + displayName + "</del>" : displayName;
 		final SelectItem item = new SelectItem(FIELD_ATTRIBUTE_CLASSTYPE, title);
@@ -479,7 +422,7 @@ public class MetaFieldSettingPane extends VLayout {
 			@Override
 			public void onChange(ChangeEvent event) {
 				if (event.getOldValue().equals(event.getValue())) {
-					//変更されてなかったらキャンセル
+					// 変更されてなかったらキャンセル
 					event.cancel();
 				}
 			}
@@ -492,11 +435,11 @@ public class MetaFieldSettingPane extends VLayout {
 				if (className == null || className.isEmpty()) {
 					setValue(info.getName(), null);
 				} else {
-					//選択されたクラスのインスタンスを生成
+					// 選択されたクラスのインスタンスを生成
 					service.create(TenantInfoHolder.getId(), className, new AsyncCallback<Refrectable>() {
 						@Override
 						public void onSuccess(Refrectable result) {
-							//指定フィールドの更新用の値として保管
+							// 指定フィールドの更新用の値として保管
 							setValue(info.getName(), result);
 						}
 
@@ -509,7 +452,7 @@ public class MetaFieldSettingPane extends VLayout {
 			}
 		});
 
-		//コンボの内容を取得
+		// コンボの内容を取得
 		if (info.getFixedReferenceClass() == null || info.getFixedReferenceClass().length == 0) {
 			service.getSubClass(TenantInfoHolder.getId(), info.getReferenceClassName(), new AsyncCallback<Name[]>() {
 
@@ -544,7 +487,8 @@ public class MetaFieldSettingPane extends VLayout {
 		form.setFields(item);
 		form.setValue(FIELD_ATTRIBUTE_CLASSTYPE, name);
 
-		IButton setButton = new IButton(AdminClientMessageUtil.getString("ui_metadata_common_MetaFieldSettingPane_edit"));
+		IButton setButton = new IButton(
+				AdminClientMessageUtil.getString("ui_metadata_common_MetaFieldSettingPane_edit"));
 		setButton.addClickHandler(new ReferenceEditClickHandler(info));
 
 		layout.addMember(form);
@@ -554,6 +498,7 @@ public class MetaFieldSettingPane extends VLayout {
 
 	/**
 	 * スクリプト入力レイアウト生成
+	 * 
 	 * @param info
 	 * @return
 	 */
@@ -580,21 +525,18 @@ public class MetaFieldSettingPane extends VLayout {
 			public void onClick(ClickEvent event) {
 				Object value = getValue(info.getName());
 				String _text = value != null ? value.toString() : "";
-				MetaDataUtil.showScriptEditDialog(ScriptEditorDialogMode.getMode(info.getMode()),
-						_text,
-						title,
-						null,
-						scriptHint,
-						new ScriptEditorDialogHandler() {
+				MetaDataUtil.showScriptEditDialog(ScriptEditorDialogMode.getMode(info.getMode()), _text, title, null,
+						scriptHint, new ScriptEditorDialogHandler() {
 
-					@Override
-					public void onSave(String text) {
-						setValue(info.getName(), text);
-					}
-					@Override
-					public void onCancel() {
-					}
-				});
+							@Override
+							public void onSave(String text) {
+								setValue(info.getName(), text);
+							}
+
+							@Override
+							public void onCancel() {
+							}
+						});
 
 			}
 		});
@@ -607,18 +549,19 @@ public class MetaFieldSettingPane extends VLayout {
 
 	/**
 	 * 複数参照型のレコード更新
+	 * 
 	 * @param record
 	 * @param className
 	 * @param value
 	 * @param fields
 	 * @param valueMap
 	 */
-	private void updateRecord(ListGridRecord record, String className,
-			Refrectable value, ListGridField[] fields, Map<String, Serializable> valueMap) {
+	private void updateRecord(ListGridRecord record, String className, Refrectable value, ListGridField[] fields,
+			Map<String, Serializable> valueMap) {
 		record.setAttribute(RECORD_ATTRIBUTE_VALUE, value);
 		record.setAttribute(RECORD_ATTRIBUTE_TYPE, getSimpleName(value.getClass().getName()));
 
-		//Gridに表示されている項目のみ更新する
+		// Gridに表示されている項目のみ更新する
 		for (ListGridField field : fields) {
 			String fieldName = field.getName();
 			if (!RECORD_ATTRIBUTE_TYPE.equals(fieldName)) {
@@ -634,6 +577,7 @@ public class MetaFieldSettingPane extends VLayout {
 
 	/**
 	 * 単一入力アイテム生成
+	 * 
 	 * @param info
 	 * @return
 	 */
@@ -651,10 +595,12 @@ public class MetaFieldSettingPane extends VLayout {
 			item.setPrompt(prompt);
 			item.setRequired(info.isRequired());
 			if (info.isRangeCheck()) {
-				//数値型の範囲設定
+				// 数値型の範囲設定
 				IntegerRangeValidator ir = new IntegerRangeValidator();
-				if (info.getMaxRange() > -127) ir.setMax(info.getMaxRange());
-				if (info.getMinRange() > -127) ir.setMin(info.getMinRange());
+				if (info.getMaxRange() > -127)
+					ir.setMax(info.getMaxRange());
+				if (info.getMinRange() > -127)
+					ir.setMin(info.getMinRange());
 				item.setValidators(ir);
 			}
 		}
@@ -664,6 +610,7 @@ public class MetaFieldSettingPane extends VLayout {
 
 	/**
 	 * 指定の型で値を取得
+	 * 
 	 * @param <T>
 	 * @param type
 	 * @param key
@@ -676,6 +623,7 @@ public class MetaFieldSettingPane extends VLayout {
 
 	/**
 	 * フィールド情報から表示名を取得します。
+	 * 
 	 * @param info フィールド情報
 	 * @return 表示名
 	 */
@@ -688,6 +636,7 @@ public class MetaFieldSettingPane extends VLayout {
 
 	/**
 	 * フィールド情報から説明を取得します。
+	 * 
 	 * @param info フィールド情報
 	 * @return 説明
 	 */
@@ -725,8 +674,7 @@ public class MetaFieldSettingPane extends VLayout {
 	 * 複数参照型の解析処理のコールバック
 	 *
 	 */
-	private final class AnalysisListDataAsyncCallback implements
-			AsyncCallback<AnalysisListDataResult> {
+	private final class AnalysisListDataAsyncCallback implements AsyncCallback<AnalysisListDataResult> {
 		private final ListGrid grid;
 		private final String simpleName;
 
@@ -738,13 +686,12 @@ public class MetaFieldSettingPane extends VLayout {
 		@Override
 		public void onSuccess(AnalysisListDataResult result) {
 			List<ListGridField> fieldList = new ArrayList<ListGridField>();
-			//fieldList.add(new ListGridField(RECORD_ATTRIBUTE_TYPE, AdminClientMessageUtil.getString("ui_metadata_common_MetaFieldSettingPane_type")));
+			// fieldList.add(new ListGridField(RECORD_ATTRIBUTE_TYPE,
+			// AdminClientMessageUtil.getString("ui_metadata_common_MetaFieldSettingPane_type")));
 			for (FieldInfo info : result.getFields()) {
-				if (!info.isMultiple()
-						&& info.getInputType() != InputType.REFERENCE
-						&& info.getInputType() != InputType.SCRIPT
-						&& info.getInputType() != InputType.LANGUAGE) {
-					//複数型と参照型は表示しない
+				if (!info.isMultiple() && info.getInputType() != InputType.REFERENCE
+						&& info.getInputType() != InputType.SCRIPT && info.getInputType() != InputType.MULTI_LANG_LIST) {
+					// 複数型と参照型は表示しない
 					String displayName = getDisplayName(info);
 					fieldList.add(new ListGridField(simpleName + "." + info.getName(), displayName));
 				}
@@ -775,7 +722,7 @@ public class MetaFieldSettingPane extends VLayout {
 	 */
 	private final class CreateAsyncCallback implements AsyncCallback<Refrectable> {
 
-		/** 表示用グリッド*/
+		/** 表示用グリッド */
 		private final ListGrid grid;
 		/** 参照型フィールドの値 */
 		private final List<Refrectable> valueList;
@@ -786,6 +733,7 @@ public class MetaFieldSettingPane extends VLayout {
 
 		/**
 		 * コンストラクタ
+		 * 
 		 * @param grid
 		 * @param valueList
 		 * @param className
@@ -800,24 +748,25 @@ public class MetaFieldSettingPane extends VLayout {
 
 		@Override
 		public void onSuccess(Refrectable result) {
-			//設定画面表示
+			// 設定画面表示
 			final MetaFieldSettingDialog dialog = createSubDialog(className, result, info);
 			dialog.setOkHandler(new MetaFieldUpdateHandler() {
 
 				@Override
 				public void execute(final MetaFieldUpdateEvent event) {
-					//ダイアログ破棄
+					// ダイアログ破棄
 					dialog.destroy();
 
-					//ValueObject再設定
+					// ValueObject再設定
 					valueList.add(event.getValue());
 
-					//レコード生成
+					// レコード生成
 					ListGridRecord record = new ListGridRecord();
-					updateRecord(record, getSimpleName(info.getReferenceClassName()), event.getValue(), grid.getFields(), event.getValueMap());
+					updateRecord(record, getSimpleName(info.getReferenceClassName()), event.getValue(),
+							grid.getFields(), event.getValueMap());
 					grid.addData(record);
 
-					//作成したObjectを保存
+					// 作成したObjectを保存
 					setValue(info.getName(), (Serializable) valueList);
 				}
 			});
@@ -847,6 +796,7 @@ public class MetaFieldSettingPane extends VLayout {
 
 		/**
 		 * コンストラクタ
+		 * 
 		 * @param form
 		 * @param fields
 		 */
@@ -858,42 +808,54 @@ public class MetaFieldSettingPane extends VLayout {
 
 		@Override
 		public void onClick(ClickEvent event) {
-			if (!form.validate()) return;
+			if (!form.validate())
+				return;
 
 			for (FieldInfo info : fields) {
-				//表示対象外は更新しない
+				// 表示対象外は更新しない
 				if (!isVisileField(info)) {
 					continue;
 				}
 
+				// 多言語Listは対象プロパティ側でセット
+				if (info.getInputType() == InputType.MULTI_LANG_LIST) {
+					continue;
+				}
+
 				if (form.getValue(info.getName()) != null) {
-					//Formの値をMapに格納
-					//参照型とテキストエリアはFormItemではないので、ダイアログでの編集時に設定
+					// Formの値をMapに格納
+					// 参照型とテキストエリアはFormItemではないので、ダイアログでの編集時に設定
 					setValue(info.getName(), getFormValue(info));
 				} else {
-					//参照型かテキストエリア、多言語設定以外は未入力ならnull設定
-					if (info.getInputType() != InputType.REFERENCE
-							&& info.getInputType() != InputType.SCRIPT
-							&& info.getInputType() != InputType.LANGUAGE) {
+					// 参照型かテキストエリア以外は未入力ならnull設定
+					if (info.getInputType() != InputType.REFERENCE && info.getInputType() != InputType.SCRIPT) {
 						if (info.getInputType() == InputType.CHECKBOX) {
-							//チェックボックス未操作＆未設定だとnullになる
+							// チェックボックス未操作＆未設定だとnullになる
 							setValue(info.getName(), false);
 						} else {
 							setValue(info.getName(), null);
 						}
 					}
 				}
+
+				if (info.getInputType() == InputType.MULTI_LANG
+						&& SmartGWTUtil.isNotEmpty(info.getMultiLangFieldName())) {
+					if (form.getItem(info.getName()) != null) {
+						MetaDataLangTextItem mdl = (MetaDataLangTextItem) form.getItem(info.getName());
+						setValue(info.getMultiLangFieldName(), (Serializable) mdl.getLocalizedList());
+					}
+				}
 			}
 
-			//更新サービス呼び出し
+			// 更新サービス呼び出し
 			HashMap<String, Serializable> valueMap = new HashMap<String, Serializable>();
-			valueMap.putAll(defValueMap);//defValueMapのままだと値が古い？
+			valueMap.putAll(defValueMap);// defValueMapのままだと値が古い？
 			service.update(TenantInfoHolder.getId(), value, valueMap, new AsyncCallback<Refrectable>() {
 
 				@Override
 				public void onSuccess(Refrectable result) {
 					if (okHandler != null) {
-						//親コントロールで設定された処理実行
+						// 親コントロールで設定された処理実行
 						okHandler.execute(new MetaFieldUpdateEvent(defValueMap, result));
 					}
 				}
@@ -907,6 +869,7 @@ public class MetaFieldSettingPane extends VLayout {
 
 		/**
 		 * 入力タイプに合わせて値を取得
+		 * 
 		 * @param info
 		 * @return
 		 */
@@ -921,16 +884,21 @@ public class MetaFieldSettingPane extends VLayout {
 				return Boolean.parseBoolean(form.getValue(info.getName()).toString());
 			} else if (info.getInputType() == InputType.ENUM) {
 				String val = (String) form.getValue(info.getName());
-				if ("".equals(val)) return null;
+				if ("".equals(val))
+					return null;
 				return val;
 			} else if (info.getInputType() == InputType.ACTION) {
 				String val = (String) form.getValue(info.getName());
-				if (DEFAULT_ACTION_NAME.equals(val)) return null;
-				else return val;
+				if (DEFAULT_ACTION_NAME.equals(val))
+					return null;
+				else
+					return val;
 			} else if (info.getInputType() == InputType.WEBAPI) {
 				String val = (String) form.getValue(info.getName());
-				if (DEFAULT_WEBAPI_NAME.equals(val)) return null;
-				else return val;
+				if (DEFAULT_WEBAPI_NAME.equals(val))
+					return null;
+				else
+					return val;
 			}
 			return (Serializable) form.getValue(info.getName());
 		}
@@ -945,6 +913,7 @@ public class MetaFieldSettingPane extends VLayout {
 
 		/**
 		 * コンストラクタ
+		 * 
 		 * @param FieldInfo
 		 */
 		private ReferenceEditClickHandler(FieldInfo info) {
@@ -953,22 +922,22 @@ public class MetaFieldSettingPane extends VLayout {
 
 		@Override
 		public void onClick(ClickEvent event) {
-			//指定フィールドの値を取得
+			// 指定フィールドの値を取得
 			Serializable refValue = getValue(info.getName());
 
-			//編集ダイアログ表示
-			final MetaFieldSettingDialog dialog = createSubDialog(
-					refValue.getClass().getName(), (Refrectable) refValue, info);
+			// 編集ダイアログ表示
+			final MetaFieldSettingDialog dialog = createSubDialog(refValue.getClass().getName(), (Refrectable) refValue,
+					info);
 
 			dialog.setOkHandler(new MetaFieldUpdateHandler() {
 
 				@Override
 				public void execute(MetaFieldUpdateEvent event) {
-					//ダイアログ破棄
+					// ダイアログ破棄
 					dialog.destroy();
 
-					//更新したObjectで上書き
-					setValue(info.getName() ,event.getValue());
+					// 更新したObjectで上書き
+					setValue(info.getName(), event.getValue());
 				}
 			});
 
@@ -988,18 +957,18 @@ public class MetaFieldSettingPane extends VLayout {
 		private final FieldInfo info;
 		private final String simpleName;
 
-		private MultiReferenceEditClickHandler(ListGrid grid,
-				List<Refrectable> valueList, FieldInfo info) {
+		private MultiReferenceEditClickHandler(ListGrid grid, List<Refrectable> valueList, FieldInfo info) {
 			this.grid = grid;
 			this.valueList = valueList;
 			this.info = info;
-			this.simpleName =  getSimpleName(info.getReferenceClassName());
+			this.simpleName = getSimpleName(info.getReferenceClassName());
 		}
 
 		@Override
 		public void onClick(ClickEvent event) {
 			final ListGridRecord record = grid.getSelectedRecord();
-			if (record == null) return;
+			if (record == null)
+				return;
 
 			Refrectable fieldValue = (Refrectable) record.getAttributeAsObject(RECORD_ATTRIBUTE_VALUE);
 			String className = fieldValue.getClass().getName();
@@ -1008,10 +977,10 @@ public class MetaFieldSettingPane extends VLayout {
 
 				@Override
 				public void execute(MetaFieldUpdateEvent event) {
-					//ダイアログ破棄
+					// ダイアログ破棄
 					dialog.destroy();
 
-					//表示対象更新
+					// 表示対象更新
 					updateRecord(record, simpleName, event.getValue(), grid.getFields(), event.getValueMap());
 					grid.refreshRow(grid.getRecordIndex(record));
 
@@ -1037,8 +1006,7 @@ public class MetaFieldSettingPane extends VLayout {
 		private final FieldInfo info;
 		private final ListGrid grid;
 
-		private MultiReferenceAddClickHandler(List<Refrectable> valueList,
-				FieldInfo info, ListGrid grid) {
+		private MultiReferenceAddClickHandler(List<Refrectable> valueList, FieldInfo info, ListGrid grid) {
 			this.valueList = valueList;
 			this.info = info;
 			this.grid = grid;
@@ -1046,16 +1014,17 @@ public class MetaFieldSettingPane extends VLayout {
 
 		@Override
 		public void onClick(ClickEvent event) {
-			//型リストを取得
+			// 型リストを取得
 			service.getSubClass(TenantInfoHolder.getId(), info.getReferenceClassName(), new AsyncCallback<Name[]>() {
 
 				@Override
 				public void onSuccess(Name[] names) {
 					if (names != null && names.length > 1) {
-						//利用可能なクラスが複数ある場合、インスタンス化するクラスを選択
+						// 利用可能なクラスが複数ある場合、インスタンス化するクラスを選択
 						Window dialog = new Window();
 						final DynamicForm form = new DynamicForm();
-						SelectItem item = new SelectItem(FIELD_ATTRIBUTE_CLASSTYPE, AdminClientMessageUtil.getString("ui_metadata_common_MetaFieldSettingPane_type"));
+						SelectItem item = new SelectItem(FIELD_ATTRIBUTE_CLASSTYPE,
+								AdminClientMessageUtil.getString("ui_metadata_common_MetaFieldSettingPane_type"));
 						LinkedHashMap<String, String> valueMap = new LinkedHashMap<String, String>();
 						for (Name clsName : names) {
 							valueMap.put(clsName.getName(), clsName.getDisplayName());
@@ -1063,7 +1032,7 @@ public class MetaFieldSettingPane extends VLayout {
 						item.setValueMap(valueMap);
 						form.setFields(item);
 
-						//ボタン処理
+						// ボタン処理
 						IButton ok = new IButton("OK");
 						IButton cancel = new IButton("cancel");
 						ok.addClickHandler(new ClickHandler() {
@@ -1071,7 +1040,8 @@ public class MetaFieldSettingPane extends VLayout {
 							@Override
 							public void onClick(ClickEvent event) {
 								String className = (String) form.getValue(FIELD_ATTRIBUTE_CLASSTYPE);
-								service.create(TenantInfoHolder.getId(), className, new CreateAsyncCallback(grid, valueList, className, info));
+								service.create(TenantInfoHolder.getId(), className,
+										new CreateAsyncCallback(grid, valueList, className, info));
 							}
 						});
 						cancel.addClickHandler(new DialogClooseHandler(dialog));
@@ -1093,9 +1063,10 @@ public class MetaFieldSettingPane extends VLayout {
 						dialog.addItem(vl);
 						dialog.show();
 
-					} else if (names != null && names.length == 1){
-						//一つしかない場合、その型でインスタンス作成
-						service.create(TenantInfoHolder.getId(), names[0].getName(), new CreateAsyncCallback(grid, valueList, names[0].getName(), info));
+					} else if (names != null && names.length == 1) {
+						// 一つしかない場合、その型でインスタンス作成
+						service.create(TenantInfoHolder.getId(), names[0].getName(),
+								new CreateAsyncCallback(grid, valueList, names[0].getName(), info));
 					}
 				}
 
@@ -1115,8 +1086,7 @@ public class MetaFieldSettingPane extends VLayout {
 		private final ListGrid grid;
 		private final List<Refrectable> valueList;
 
-		private MultiReferenceDeleteClickHandler(ListGrid grid,
-				List<Refrectable> valueList) {
+		private MultiReferenceDeleteClickHandler(ListGrid grid, List<Refrectable> valueList) {
 			this.grid = grid;
 			this.valueList = valueList;
 		}
@@ -1124,15 +1094,16 @@ public class MetaFieldSettingPane extends VLayout {
 		@Override
 		public void onClick(ClickEvent event) {
 			ListGridRecord record = grid.getSelectedRecord();
-			if (record == null) return;
+			if (record == null)
+				return;
 
-			//フィールド情報から削除
-			//valueList.remove(record.getAttributeAsObject(RECORD_ATTRIBUTE_VALUE));
-			//レコードのインスタンスがリストのものと違うため削除できない
+			// フィールド情報から削除
+			// valueList.remove(record.getAttributeAsObject(RECORD_ATTRIBUTE_VALUE));
+			// レコードのインスタンスがリストのものと違うため削除できない
 			int index = grid.getRecordIndex(record);
 			valueList.remove(index);
 
-			//グリッドから削除
+			// グリッドから削除
 			grid.removeData(record);
 		}
 	}
@@ -1140,14 +1111,14 @@ public class MetaFieldSettingPane extends VLayout {
 	/**
 	 * ダイアログ破棄用のイベントハンドラ
 	 */
-	private final class DialogClooseHandler implements
-		MetaFieldUpdateHandler, ClickHandler {
+	private final class DialogClooseHandler implements MetaFieldUpdateHandler, ClickHandler {
 
 		/** ダイアログ */
 		private final Window dialog;
 
 		/**
 		 * コンストラクタ
+		 * 
 		 * @param dialog
 		 */
 		private DialogClooseHandler(Window dialog) {

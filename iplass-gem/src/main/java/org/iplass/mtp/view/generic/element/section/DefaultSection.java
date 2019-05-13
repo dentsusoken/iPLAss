@@ -54,7 +54,8 @@ public class DefaultSection extends Section {
 			displayNameKey="generic_element_section_DefaultSection_titleDisplaNameKey",
 			description="セクションのタイトルを設定します。",
 			descriptionKey="generic_element_section_DefaultSection_titleDescriptionKey",
-			useMultiLang=true
+			inputType=InputType.MULTI_LANG,
+			multiLangField = "localizedTitleList"
 	)
 	@MultiLang()
 	private String title;
@@ -63,7 +64,7 @@ public class DefaultSection extends Section {
 	@MetaFieldInfo(
 			displayName="多言語設定",
 			displayNameKey="generic_element_section_DefaultSection_localizedTitleListDisplaNameKey",
-			inputType=InputType.LANGUAGE
+			inputType=InputType.MULTI_LANG_LIST
 	)
 	private List<LocalizedStringDefinition> localizedTitleList;
 

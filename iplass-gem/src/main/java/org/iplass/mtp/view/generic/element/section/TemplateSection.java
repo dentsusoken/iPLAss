@@ -75,7 +75,8 @@ public class TemplateSection extends Section {
 			displayNameKey="generic_element_section_TemplateSection_titleDisplaNameKey",
 			description="セクションのタイトルを設定します。",
 			descriptionKey="generic_element_section_TemplateSection_titleDescriptionKey",
-			useMultiLang=true
+			inputType=InputType.MULTI_LANG,
+			multiLangField = "localizedTitleList"
 	)
 	@EntityViewField(
 			referenceTypes={FieldReferenceType.ALL}
@@ -87,7 +88,7 @@ public class TemplateSection extends Section {
 	@MetaFieldInfo(
 			displayName="多言語設定",
 			displayNameKey="generic_element_section_TemplateSection_localizedTitleListDisplaNameKey",
-			inputType=InputType.LANGUAGE
+			inputType=InputType.MULTI_LANG_LIST
 	)
 	@EntityViewField(
 			referenceTypes={FieldReferenceType.ALL}

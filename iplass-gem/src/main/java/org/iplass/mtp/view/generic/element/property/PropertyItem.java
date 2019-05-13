@@ -57,7 +57,8 @@ public class PropertyItem extends PropertyBase {
 			displayNameKey="generic_element_property_PropertyItem_descriptionDisplaNameKey",
 			description="入力欄下部表示する説明を設定します。",
 			descriptionKey="generic_element_property_PropertyItem_descriptionDescriptionKey",
-			useMultiLang=true
+			inputType=InputType.MULTI_LANG,
+			multiLangField = "localizedDescriptionList"
 	)
 	@EntityViewField(
 			referenceTypes={FieldReferenceType.DETAIL}
@@ -69,7 +70,7 @@ public class PropertyItem extends PropertyBase {
 	@MetaFieldInfo(
 			displayName="説明の多言語設定",
 			displayNameKey="generic_element_property_PropertyItem_localizedDescriptionListDisplaNameKey",
-			inputType=InputType.LANGUAGE
+			inputType=InputType.MULTI_LANG_LIST
 	)
 	@EntityViewField(
 			referenceTypes={FieldReferenceType.DETAIL}
@@ -82,7 +83,8 @@ public class PropertyItem extends PropertyBase {
 			displayNameKey="generic_element_property_PropertyItem_tooltipDisplaNameKey",
 			description="ツールチップに表示する説明を設定します。",
 			descriptionKey="generic_element_property_PropertyItem_tooltipDescriptionKey",
-			useMultiLang=true
+			inputType=InputType.MULTI_LANG,
+			multiLangField = "localizedTooltipList"
 	)
 	@EntityViewField(
 			referenceTypes={FieldReferenceType.SEARCHCONDITION, FieldReferenceType.DETAIL}
@@ -94,7 +96,7 @@ public class PropertyItem extends PropertyBase {
 	@MetaFieldInfo(
 			displayName="ツールチップの多言語設定",
 			displayNameKey="generic_element_property_PropertyItem_localizedTooltipListDisplaNameKey",
-			inputType=InputType.LANGUAGE
+			inputType=InputType.MULTI_LANG_LIST
 	)
 	@EntityViewField(
 			referenceTypes={FieldReferenceType.SEARCHCONDITION, FieldReferenceType.DETAIL}

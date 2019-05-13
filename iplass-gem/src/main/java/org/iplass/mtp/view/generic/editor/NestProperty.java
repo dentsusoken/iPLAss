@@ -64,7 +64,8 @@ public class NestProperty implements Refrectable {
 			displayNameKey="generic_editor_NestProperty_DisplaNameKey",
 			description="未設定の場合はプロパティに定義された表示名が表示されます",
 			descriptionKey="generic_editor_NestProperty_DescriptionKey",
-			useMultiLang=true
+			inputType=InputType.MULTI_LANG,
+			multiLangField = "localizedDisplayLabelList"
 	)
 	@EntityViewField(
 			referenceTypes={FieldReferenceType.ALL}
@@ -76,7 +77,7 @@ public class NestProperty implements Refrectable {
 	@MetaFieldInfo(
 			displayName="多言語設定",
 			displayNameKey="generic_editor_NestProperty_localizedDisplayLabelListDisplaNameKey",
-			inputType=InputType.LANGUAGE
+			inputType=InputType.MULTI_LANG_LIST
 	)
 	@EntityViewField(
 			referenceTypes={FieldReferenceType.ALL}
@@ -89,7 +90,8 @@ public class NestProperty implements Refrectable {
 			displayNameKey="generic_editor_NestProperty_descriptionDisplaNameKey",
 			description="入力欄下部に表示する説明を設定します。",
 			descriptionKey="generic_editor_NestProperty_descriptionDescriptionKey",
-			useMultiLang=true
+			inputType=InputType.MULTI_LANG,
+			multiLangField = "localizedDescriptionList"
 	)
 	@EntityViewField(
 			referenceTypes={FieldReferenceType.DETAIL}
@@ -101,7 +103,7 @@ public class NestProperty implements Refrectable {
 	@MetaFieldInfo(
 			displayName="説明の多言語設定",
 			displayNameKey="generic_editor_NestProperty_localizedDescriptionListDisplaNameKey",
-			inputType=InputType.LANGUAGE
+			inputType=InputType.MULTI_LANG_LIST
 	)
 	@EntityViewField(
 			referenceTypes={FieldReferenceType.DETAIL}
@@ -114,7 +116,8 @@ public class NestProperty implements Refrectable {
 			displayNameKey="generic_editor_NestProperty_tooltipDisplaNameKey",
 			description="ツールチップに表示する説明を設定します。",
 			descriptionKey="generic_editor_NestProperty_tooltipDescriptionKey",
-			useMultiLang=true
+			inputType=InputType.MULTI_LANG,
+			multiLangField = "localizedTooltipList"
 	)
 	@EntityViewField(
 			referenceTypes={FieldReferenceType.SEARCHCONDITION, FieldReferenceType.DETAIL}
@@ -126,7 +129,7 @@ public class NestProperty implements Refrectable {
 	@MetaFieldInfo(
 			displayName="ツールチップの多言語設定",
 			displayNameKey="generic_editor_NestProperty_localizedTooltipListDisplaNameKey",
-			inputType=InputType.LANGUAGE
+			inputType=InputType.MULTI_LANG_LIST
 	)
 	@EntityViewField(
 			referenceTypes={FieldReferenceType.SEARCHCONDITION, FieldReferenceType.DETAIL}

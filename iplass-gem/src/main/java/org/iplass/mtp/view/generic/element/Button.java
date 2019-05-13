@@ -62,9 +62,12 @@ public class Button extends Element {
 	private DisplayType displayType;
 
 	/** タイトル */
-	@MetaFieldInfo(displayName="タイトル", description="ヘッダに表示するタイトルを設定します。", useMultiLang=true,
+	@MetaFieldInfo(displayName="タイトル", description="ヘッダに表示するタイトルを設定します。", 
 			displayNameKey="generic_element_Button_titleDisplaNameKey",
-			descriptionKey="generic_element_Button_titleDescriptionKey")
+			descriptionKey="generic_element_Button_titleDescriptionKey",
+			inputType=InputType.MULTI_LANG,
+			multiLangField = "localizedTitleList"
+	)
 	@MultiLang()
 	private String title;
 
@@ -72,15 +75,17 @@ public class Button extends Element {
 	@MetaFieldInfo(
 			displayName="多言語設定",
 			displayNameKey="generic_element_Button_localizedTitleListDisplaNameKey",
-			inputType=InputType.LANGUAGE
+			inputType=InputType.MULTI_LANG_LIST
 	)
 	private List<LocalizedStringDefinition> localizedTitleList;
 
 	/** 表示ラベル */
-	@MetaFieldInfo(displayName="表示ラベル", description="ボタンに表示するラベルを設定します。", useMultiLang=true,
+	@MetaFieldInfo(displayName="表示ラベル", description="ボタンに表示するラベルを設定します。", 
 			displayNameKey="generic_element_Button_displayLabelDisplaNameKey",
-			descriptionKey="generic_element_Button_displayLabelDescriptionKey"
-			)
+			descriptionKey="generic_element_Button_displayLabelDescriptionKey",
+			inputType=InputType.MULTI_LANG,
+			multiLangField = "localizedDisplayLabelList"
+	)
 	@MultiLang()
 	private String displayLabel;
 
@@ -88,7 +93,7 @@ public class Button extends Element {
 	@MetaFieldInfo(
 			displayName="多言語設定",
 			displayNameKey="generic_element_Button_localizedDisplayLabelListDisplaNameKey",
-			inputType=InputType.LANGUAGE
+			inputType=InputType.MULTI_LANG_LIST
 	)
 	private List<LocalizedStringDefinition> localizedDisplayLabelList;
 

@@ -45,7 +45,10 @@ public class EditorValue implements Refrectable {
 
 	/** ラベル */
 	@MetaFieldInfo(displayName="表示名", description="選択肢のラベルを設定します。",
-			displayNameKey="generic_editor_EditorValue_labelDisplaNameKey", descriptionKey="generic_editor_EditorValue_labelDescriptionKey", useMultiLang=true)
+			displayNameKey="generic_editor_EditorValue_labelDisplaNameKey", descriptionKey="generic_editor_EditorValue_labelDescriptionKey", 
+			inputType=InputType.MULTI_LANG,
+			multiLangField = "localizedLabelList"
+	)
 	@EntityViewField(
 			referenceTypes={FieldReferenceType.ALL}
 	)
@@ -56,7 +59,7 @@ public class EditorValue implements Refrectable {
 	@MetaFieldInfo(
 			displayName="多言語設定情報",
 			displayNameKey="generic_editor_EditorValue_localizedLabelListDisplayNameKey",
-			inputType=InputType.LANGUAGE
+			inputType=InputType.MULTI_LANG_LIST
 	)
 	@EntityViewField(
 			referenceTypes={FieldReferenceType.ALL}

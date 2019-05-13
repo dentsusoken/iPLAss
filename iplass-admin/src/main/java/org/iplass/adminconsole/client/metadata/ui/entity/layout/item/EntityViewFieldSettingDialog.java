@@ -35,14 +35,16 @@ public class EntityViewFieldSettingDialog extends MetaFieldSettingDialog {
 	private String defName;
 	private String refDefName;
 
-	public EntityViewFieldSettingDialog(String className, Refrectable value, FieldReferenceType triggerType, String defName) {
+	public EntityViewFieldSettingDialog(String className, Refrectable value, FieldReferenceType triggerType,
+			String defName) {
 		super(className, value);
 		this.triggerType = triggerType;
 		this.defName = defName;
 		init();
 	}
 
-	public EntityViewFieldSettingDialog(String className, Refrectable value, FieldReferenceType triggerType, String defName, String refDefName) {
+	public EntityViewFieldSettingDialog(String className, Refrectable value, FieldReferenceType triggerType,
+			String defName, String refDefName) {
 		super(className, value);
 		this.triggerType = triggerType;
 		this.defName = defName;
@@ -53,9 +55,9 @@ public class EntityViewFieldSettingDialog extends MetaFieldSettingDialog {
 	@Override
 	protected EntityViewFieldSettingPane createPane(String className, Refrectable value) {
 		if (refDefName != null) {
-			return new EntityViewFieldSettingPane(className, value, triggerType, defName, refDefName);
+			return new EntityViewFieldSettingPane(this, className, value, triggerType, defName, refDefName);
 		} else {
-			return new EntityViewFieldSettingPane(className, value, triggerType, defName);
+			return new EntityViewFieldSettingPane(this, className, value, triggerType, defName);
 		}
 	}
 

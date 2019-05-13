@@ -54,9 +54,12 @@ public class TemplateElement extends Element {
 	}
 
 	/** タイトル */
-	@MetaFieldInfo(displayName="タイトル", description="ヘッダに表示するタイトルを設定します。", useMultiLang=true,
+	@MetaFieldInfo(displayName="タイトル", description="ヘッダに表示するタイトルを設定します。", 
 			displayNameKey="generic_element_TemplateElement_titleDisplaNameKey",
-			descriptionKey="generic_element_TemplateElement_titleDescriptionKey")
+			descriptionKey="generic_element_TemplateElement_titleDescriptionKey",
+			inputType=InputType.MULTI_LANG,
+			multiLangField = "localizedTitleList"
+	)
 	@MultiLang()
 	private String title;
 
@@ -64,7 +67,7 @@ public class TemplateElement extends Element {
 	@MetaFieldInfo(
 			displayName="多言語設定",
 			displayNameKey="generic_element_TemplateElement_localizedTitleListDisplaNameKey",
-			inputType=InputType.LANGUAGE
+			inputType=InputType.MULTI_LANG_LIST
 	)
 	private List<LocalizedStringDefinition> localizedTitleList;
 
