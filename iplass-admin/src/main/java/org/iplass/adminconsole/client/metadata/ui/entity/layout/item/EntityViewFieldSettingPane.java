@@ -24,6 +24,8 @@ import org.iplass.adminconsole.client.base.data.DataSourceConstants;
 import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
 import org.iplass.adminconsole.client.base.rpc.AdminAsyncCallback;
 import org.iplass.adminconsole.client.base.tenant.TenantInfoHolder;
+import org.iplass.adminconsole.client.base.ui.widget.form.MtpComboBoxItem;
+import org.iplass.adminconsole.client.base.ui.widget.form.MtpSelectItem;
 import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
 import org.iplass.adminconsole.client.metadata.data.entity.PropertyDS;
 import org.iplass.adminconsole.client.metadata.data.filter.EntityFilterItemDS;
@@ -165,7 +167,7 @@ public class EntityViewFieldSettingPane extends MetaFieldSettingPane {
 	}
 
 	private FormItem createFilterList(FieldInfo info) {
-		SelectItem item = new SelectItem();
+		SelectItem item = new MtpSelectItem();
 		EntityFilterItemDS.setDataSource(item, defName);
 		return item;
 	}
@@ -174,7 +176,7 @@ public class EntityViewFieldSettingPane extends MetaFieldSettingPane {
 		// defNameに対応するEntityのプロパティの選択リスト
 		// Entityの依存関係まで考慮はできないので、.で子Entityのプロパティを指定することはできない
 		// 子Entityのプロパティを指定する項目はTextベースにすること
-		final ComboBoxItem item = new ComboBoxItem();
+		final ComboBoxItem item = new MtpComboBoxItem();
 		if (info.getEntityDefinitionName() != null && !info.getEntityDefinitionName().isEmpty()) {
 			item.setOptionDataSource(PropertyDS.create(info.getEntityDefinitionName()));
 		} else if (refDefName != null) {

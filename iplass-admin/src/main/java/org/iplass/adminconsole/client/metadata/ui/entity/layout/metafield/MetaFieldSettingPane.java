@@ -33,6 +33,7 @@ import org.iplass.adminconsole.client.base.tenant.TenantInfoHolder;
 import org.iplass.adminconsole.client.base.ui.widget.MetaDataLangTextItem;
 import org.iplass.adminconsole.client.base.ui.widget.ScriptEditorDialogHandler;
 import org.iplass.adminconsole.client.base.ui.widget.ScriptEditorDialogMode;
+import org.iplass.adminconsole.client.base.ui.widget.form.MtpForm;
 import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
 import org.iplass.adminconsole.client.metadata.ui.MetaDataUtil;
 import org.iplass.adminconsole.shared.metadata.dto.Name;
@@ -268,11 +269,7 @@ public class MetaFieldSettingPane extends VLayout {
 		}
 
 		// 標準のフォーム作成
-		DynamicForm form = new DynamicForm();
-		form.setMargin(10);
-		form.setWidth100();
-		form.setNumCols(3);
-		form.setAlign(Alignment.CENTER);
+		DynamicForm form = new MtpForm();
 		form.setFields(items.toArray(new FormItem[items.size()]));
 
 		owner.addOKClickHandler(new OkClickHandler(form, result.getFields(), value));
@@ -589,11 +586,13 @@ public class MetaFieldSettingPane extends VLayout {
 			String title = info.isDeprecated() ? "<del>" + displayName + "</del>" : displayName;
 			item.setTitle(title);
 			item.setAttribute(FIELD_ATTRIBUTE_NAME, info.getName());
-//			item.setPrompt(info.getDescription());
 			String description = getDescription(info);
-			String prompt = "<div style=\"white-space: nowrap;\">" + description + "</div>";
-			item.setPrompt(prompt);
-			item.setRequired(info.isRequired());
+			if (SmartGWTUtil.isNotEmpty(description)) {
+				SmartGWTUtil.addHoverToFormItem(item, description);
+			}
+			if (info.isRequired()) {
+				SmartGWTUtil.setRequired(item);
+			}
 			if (info.isRangeCheck()) {
 				// 数値型の範囲設定
 				IntegerRangeValidator ir = new IntegerRangeValidator();

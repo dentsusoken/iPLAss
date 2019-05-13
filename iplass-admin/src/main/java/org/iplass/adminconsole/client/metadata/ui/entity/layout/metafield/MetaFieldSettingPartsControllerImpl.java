@@ -26,6 +26,9 @@ import java.util.List;
 import org.iplass.adminconsole.client.base.ui.widget.MetaDataLangTextItem;
 import org.iplass.adminconsole.client.base.ui.widget.MetaDataSelectItem;
 import org.iplass.adminconsole.client.base.ui.widget.MetaDataSelectItem.ItemOption;
+import org.iplass.adminconsole.client.base.ui.widget.form.MtpIntegerItem;
+import org.iplass.adminconsole.client.base.ui.widget.form.MtpSelectItem;
+import org.iplass.adminconsole.client.base.ui.widget.form.MtpTextItem;
 import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
 import org.iplass.adminconsole.shared.metadata.dto.refrect.FieldInfo;
 import org.iplass.adminconsole.view.annotation.InputType;
@@ -37,9 +40,7 @@ import org.iplass.mtp.webapi.definition.WebApiDefinition;
 import com.smartgwt.client.types.MultipleAppearance;
 import com.smartgwt.client.widgets.form.fields.CheckboxItem;
 import com.smartgwt.client.widgets.form.fields.FormItem;
-import com.smartgwt.client.widgets.form.fields.IntegerItem;
 import com.smartgwt.client.widgets.form.fields.SelectItem;
-import com.smartgwt.client.widgets.form.fields.TextItem;
 
 public class MetaFieldSettingPartsControllerImpl implements MetaFieldSettingPartsController {
 
@@ -50,7 +51,7 @@ public class MetaFieldSettingPartsControllerImpl implements MetaFieldSettingPart
 	public FormItem createItem(MetaFieldSettingPane pane, FieldInfo info) {
 		FormItem item = null;
 		if (info.getInputType() == InputType.TEXT) {
-			item = new TextItem();
+			item = new MtpTextItem();
 			if (pane.getValue(info.getName()) != null) {
 				item.setValue(pane.getValueAs(String.class, info.getName()));
 			}
@@ -61,7 +62,7 @@ public class MetaFieldSettingPartsControllerImpl implements MetaFieldSettingPart
 //				item.setWidth(500);
 //			}
 		} else if (info.getInputType() == InputType.NUMBER) {
-			item = new IntegerItem();
+			item = new MtpIntegerItem();
 			if (pane.getValue(info.getName()) != null) {
 				item.setValue(pane.getValueAs(Integer.class, info.getName()));
 			}
@@ -71,7 +72,7 @@ public class MetaFieldSettingPartsControllerImpl implements MetaFieldSettingPart
 				item.setValue(pane.getValueAs(Boolean.class, info.getName()));
 			}
 		} else if (info.getInputType() == InputType.ENUM) {
-			item = new SelectItem();
+			item = new MtpSelectItem();
 			ArrayList<String> enms = new ArrayList<String>();
 			enms.add("");
 			for (int i = 0; i < info.getEnumValues().length; i++) {
