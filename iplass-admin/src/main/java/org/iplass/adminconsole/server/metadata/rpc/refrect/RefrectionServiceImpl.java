@@ -62,7 +62,7 @@ public class RefrectionServiceImpl extends XsrfProtectedServiceServlet implement
 
 	/**
 	 * インターフェースクラスを解析して、フィールド情報を各フィールドの値を取得する。
-	 * 
+	 *
 	 * @param className インターフェースクラスのクラス名
 	 * @param value     インターフェースクラス
 	 * @return
@@ -85,7 +85,7 @@ public class RefrectionServiceImpl extends XsrfProtectedServiceServlet implement
 
 	/**
 	 * インターフェースクラスの配列を解析して、フィールド情報と各フィールドの値を取得する。
-	 * 
+	 *
 	 * @param className
 	 * @param valueList
 	 * @return
@@ -107,7 +107,7 @@ public class RefrectionServiceImpl extends XsrfProtectedServiceServlet implement
 
 	/**
 	 * インターフェースクラスのインスタンスを生成する。
-	 * 
+	 *
 	 * @param className
 	 * @return
 	 */
@@ -148,7 +148,7 @@ public class RefrectionServiceImpl extends XsrfProtectedServiceServlet implement
 
 	/**
 	 * インターフェースクラスのフィールドを更新する。
-	 * 
+	 *
 	 * @param value    インターフェースクラス
 	 * @param valueMap インターフェースクラスの更新データ
 	 * @return
@@ -198,7 +198,7 @@ public class RefrectionServiceImpl extends XsrfProtectedServiceServlet implement
 
 	/**
 	 * instanceのEnumフィールドに初期値を設定する。
-	 * 
+	 *
 	 * @param info
 	 * @param cls
 	 * @param instance
@@ -245,7 +245,7 @@ public class RefrectionServiceImpl extends XsrfProtectedServiceServlet implement
 
 	/**
 	 * 型名から各フィールドのメタデータを取得。
-	 * 
+	 *
 	 * @param className
 	 * @return
 	 */
@@ -262,7 +262,7 @@ public class RefrectionServiceImpl extends XsrfProtectedServiceServlet implement
 
 	/**
 	 * 型から各フィールドのメタデータを取得。
-	 * 
+	 *
 	 * @param cls
 	 * @return
 	 */
@@ -275,12 +275,25 @@ public class RefrectionServiceImpl extends XsrfProtectedServiceServlet implement
 
 		List<FieldInfo> list = new ArrayList<FieldInfo>();
 		getFieldInfo(list, cls, ignoreFields);
-		return list.toArray(new FieldInfo[list.size()]);
+
+		//必須を先頭に移動
+		List<FieldInfo> result = new ArrayList<FieldInfo>();
+		List<FieldInfo> required = new ArrayList<FieldInfo>();
+		for (FieldInfo info : list) {
+			if (info.isRequired()) {
+				required.add(info);
+			} else {
+				result.add(info);
+			}
+		}
+		result.addAll(0, required);
+
+		return result.toArray(new FieldInfo[result.size()]);
 	}
 
 	/**
 	 * 型から各フィールドのメタデータを取得。
-	 * 
+	 *
 	 * @param list
 	 * @param cls
 	 */
@@ -398,7 +411,7 @@ public class RefrectionServiceImpl extends XsrfProtectedServiceServlet implement
 
 	/**
 	 * インターフェースクラスのフィールドの値を取得。
-	 * 
+	 *
 	 * @param className
 	 * @param object
 	 * @param fields
@@ -411,7 +424,7 @@ public class RefrectionServiceImpl extends XsrfProtectedServiceServlet implement
 
 	/**
 	 * インターフェースクラスのフィールドの値を取得。
-	 * 
+	 *
 	 * @param className
 	 * @param object
 	 * @param fields
@@ -429,7 +442,7 @@ public class RefrectionServiceImpl extends XsrfProtectedServiceServlet implement
 
 	/**
 	 * インターフェースクラスのフィールドの値を取得。
-	 * 
+	 *
 	 * @param cls
 	 * @param object
 	 * @param fields
@@ -455,7 +468,7 @@ public class RefrectionServiceImpl extends XsrfProtectedServiceServlet implement
 
 	/**
 	 * 指定フィールドの値を取得。
-	 * 
+	 *
 	 * @param cls
 	 * @param object
 	 * @param name
@@ -482,7 +495,7 @@ public class RefrectionServiceImpl extends XsrfProtectedServiceServlet implement
 
 	/**
 	 * インターフェースクラスのフィールドを更新する。
-	 * 
+	 *
 	 * @param cls
 	 * @param value
 	 * @param valueMap

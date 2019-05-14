@@ -55,7 +55,6 @@ import com.smartgwt.client.widgets.grid.ListGridField;
  */
 public class EntityViewFieldSettingPane extends MetaFieldSettingPane {
 
-	private EntityViewFieldSettingDialog owner;
 	private FieldReferenceType triggerType;
 	// 画面定義の対象Entity
 	private String defName;
@@ -69,7 +68,6 @@ public class EntityViewFieldSettingPane extends MetaFieldSettingPane {
 	public EntityViewFieldSettingPane(EntityViewFieldSettingDialog owner, String className, Refrectable value,
 			FieldReferenceType triggerType, String defName) {
 		super(owner, className, value);
-		this.owner = owner;
 		this.triggerType = triggerType;
 		this.defName = defName;
 		init();
@@ -78,7 +76,6 @@ public class EntityViewFieldSettingPane extends MetaFieldSettingPane {
 	public EntityViewFieldSettingPane(EntityViewFieldSettingDialog owner, String className, Refrectable value,
 			FieldReferenceType triggerType, String defName, String refDefName) {
 		super(owner, className, value);
-		this.owner = owner;
 		this.triggerType = triggerType;
 		this.defName = defName;
 		this.refDefName = refDefName;
@@ -105,7 +102,7 @@ public class EntityViewFieldSettingPane extends MetaFieldSettingPane {
 			String displayName = getDisplayName(info);
 			String title = info.isDeprecated() ? "<del>" + displayName + "</del>" : displayName;
 			item.setTitle(title);
-			item.setAttribute(FIELD_ATTRIBUTE_NAME, info.getName());
+			item.setName(info.getName());
 			String description = getDescription(info);
 			String prompt = "<div style=\"white-space: nowrap;\">" + description + "</div>";
 			item.setPrompt(prompt);

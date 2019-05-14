@@ -48,6 +48,7 @@ public class MetaFieldSettingDialog extends MtpDialog {
 	private MetaFieldSettingDialog() {
 
 		setHeight(600);
+		setShowMaximizeButton(true);
 
 		btnOK = new IButton("OK");
 		btnCancel = new IButton("Cancel");

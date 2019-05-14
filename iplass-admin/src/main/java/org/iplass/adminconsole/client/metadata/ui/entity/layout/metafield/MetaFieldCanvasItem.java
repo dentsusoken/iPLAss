@@ -22,6 +22,8 @@ package org.iplass.adminconsole.client.metadata.ui.entity.layout.metafield;
 
 import org.iplass.adminconsole.client.base.ui.widget.form.MtpCanvasItem;
 
-public class MetaFieldCanvasItem extends MtpCanvasItem {
+public abstract class MetaFieldCanvasItem extends MtpCanvasItem {
+
+	public abstract Boolean validate();
 
 }
