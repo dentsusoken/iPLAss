@@ -65,9 +65,9 @@ dependencies {
 	compile 'org.mapdb:mapdb:1.0.9'
 
 	//slf4j and logback
-	compile 'org.slf4j:slf4j-api:1.7.21'
-	runtime 'org.slf4j:jcl-over-slf4j:1.7.21'
-	runtime 'ch.qos.logback:logback-classic:1.1.7'
+	compile 'org.slf4j:slf4j-api:1.7.26'
+	runtime 'org.slf4j:jcl-over-slf4j:1.7.26'
+	runtime 'ch.qos.logback:logback-classic:1.2.3'
 
 	//jackson
 	compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.9.8'
