@@ -24,11 +24,13 @@ import org.iplass.adminconsole.client.base.data.DataSourceConstants;
 import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
 import org.iplass.adminconsole.client.base.rpc.AdminAsyncCallback;
 import org.iplass.adminconsole.client.base.tenant.TenantInfoHolder;
+import org.iplass.adminconsole.client.base.ui.widget.form.MtpComboBoxItem;
+import org.iplass.adminconsole.client.base.ui.widget.form.MtpSelectItem;
 import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
 import org.iplass.adminconsole.client.metadata.data.entity.PropertyDS;
 import org.iplass.adminconsole.client.metadata.data.filter.EntityFilterItemDS;
+import org.iplass.adminconsole.client.metadata.ui.entity.layout.metafield.MetaFieldSettingDialog;
 import org.iplass.adminconsole.client.metadata.ui.entity.layout.metafield.MetaFieldSettingPane;
-import org.iplass.adminconsole.client.metadata.ui.entity.layout.metafield.MetaFieldSettingWindow;
 import org.iplass.adminconsole.shared.metadata.dto.refrect.FieldInfo;
 import org.iplass.adminconsole.shared.metadata.rpc.MetaDataServiceAsync;
 import org.iplass.adminconsole.shared.metadata.rpc.MetaDataServiceFactory;
@@ -49,31 +51,31 @@ import com.smartgwt.client.widgets.grid.ListGridField;
 /**
  * EntityView用のプロパティ編集用パネル
  *
- * 起動トリガーのタイプを保持する。
- * またフィールド情報に参照タイプが指定されていた場合はチェックを行い、
- * 対象外の場合は画面に表示しない。
+ * 起動トリガーのタイプを保持する。 またフィールド情報に参照タイプが指定されていた場合はチェックを行い、 対象外の場合は画面に表示しない。
  */
 public class EntityViewFieldSettingPane extends MetaFieldSettingPane {
 
 	private FieldReferenceType triggerType;
-	//画面定義の対象Entity
+	// 画面定義の対象Entity
 	private String defName;
-	//参照プロパティの対象Entity
+	// 参照プロパティの対象Entity
 	private String refDefName;
-	//入力タイプ:Propertyで選んだプロパティが参照型の場合の対象Entity
+	// 入力タイプ:Propertyで選んだプロパティが参照型の場合の対象Entity
 	private String propDefName;
 
 	private final MetaDataServiceAsync service = MetaDataServiceFactory.get();
 
-	public EntityViewFieldSettingPane(String className, Refrectable value, FieldReferenceType triggerType, String defName) {
-		super(className, value);
+	public EntityViewFieldSettingPane(EntityViewFieldSettingDialog owner, String className, Refrectable value,
+			FieldReferenceType triggerType, String defName) {
+		super(owner, className, value);
 		this.triggerType = triggerType;
 		this.defName = defName;
 		init();
 	}
 
-	public EntityViewFieldSettingPane(String className, Refrectable value, FieldReferenceType triggerType, String defName, String refDefName) {
-		super(className, value);
+	public EntityViewFieldSettingPane(EntityViewFieldSettingDialog owner, String className, Refrectable value,
+			FieldReferenceType triggerType, String defName, String refDefName) {
+		super(owner, className, value);
 		this.triggerType = triggerType;
 		this.defName = defName;
 		this.refDefName = refDefName;
@@ -81,7 +83,7 @@ public class EntityViewFieldSettingPane extends MetaFieldSettingPane {
 	}
 
 	@Override
-	protected FormItem createSingleInputItem(FieldInfo info) {
+	protected FormItem createInputItem(FieldInfo info) {
 		FormItem item = null;
 		// フィルタ選択は親側ではなく、画面定義側でオーバーライドしてフィールドを生成
 		if (info.getInputType() == InputType.FILTER) {
@@ -100,20 +102,22 @@ public class EntityViewFieldSettingPane extends MetaFieldSettingPane {
 			String displayName = getDisplayName(info);
 			String title = info.isDeprecated() ? "<del>" + displayName + "</del>" : displayName;
 			item.setTitle(title);
-			item.setAttribute(FIELD_ATTRIBUTE_NAME, info.getName());
+			item.setName(info.getName());
 			String description = getDescription(info);
 			String prompt = "<div style=\"white-space: nowrap;\">" + description + "</div>";
 			item.setPrompt(prompt);
 			item.setRequired(info.isRequired());
 			if (info.isRangeCheck()) {
-				//数値型の範囲設定
+				// 数値型の範囲設定
 				IntegerRangeValidator ir = new IntegerRangeValidator();
-				if (info.getMaxRange() > -127) ir.setMax(info.getMaxRange());
-				if (info.getMinRange() > -127) ir.setMin(info.getMinRange());
+				if (info.getMaxRange() > -127)
+					ir.setMax(info.getMaxRange());
+				if (info.getMinRange() > -127)
+					ir.setMin(info.getMinRange());
 				item.setValidators(ir);
 			}
 		} else {
-			item = super.createSingleInputItem(info);
+			item = super.createInputItem(info);
 		}
 
 		return item;
@@ -122,11 +126,11 @@ public class EntityViewFieldSettingPane extends MetaFieldSettingPane {
 	@Override
 	protected boolean isVisileField(FieldInfo info) {
 		if (info.getEntityViewReferenceType() == null) {
-			//アノテーションが未定義なので許可
+			// アノテーションが未定義なので許可
 			return true;
 		}
 		if (triggerType != null && triggerType == FieldReferenceType.ALL) {
-			//トリガがALL(種類に無関係)なので許可
+			// トリガがALL(種類に無関係)なので許可
 			return true;
 		}
 		for (FieldReferenceType type : info.getEntityViewReferenceType()) {
@@ -142,25 +146,25 @@ public class EntityViewFieldSettingPane extends MetaFieldSettingPane {
 	}
 
 	@Override
-	protected MetaFieldSettingWindow createSubWindow(String className, Refrectable value, FieldInfo info) {
+	protected MetaFieldSettingDialog createSubDialog(String className, Refrectable value, FieldInfo info) {
 		FieldReferenceType triggerType = this.triggerType;
 		// EntityViewFieldアノテーションを利用しないフィールドの場合、上書きをしません。
 		if (info.getOverrideTriggerType() != null && info.getOverrideTriggerType() != FieldReferenceType.NONE) {
 			triggerType = info.getOverrideTriggerType();
 		}
 		if (propDefName != null) {
-			//プロパティのコンボで参照選択時
-			return new EntityViewFieldSettingWindow(className, value, triggerType, defName, propDefName);
+			// プロパティのコンボで参照選択時
+			return new EntityViewFieldSettingDialog(className, value, triggerType, defName, propDefName);
 		} else if (refDefName != null) {
-			//参照プロパティ、参照セクションから起動時
-			return new EntityViewFieldSettingWindow(className, value, triggerType, defName, refDefName);
+			// 参照プロパティ、参照セクションから起動時
+			return new EntityViewFieldSettingDialog(className, value, triggerType, defName, refDefName);
 		} else {
-			return new EntityViewFieldSettingWindow(className, value, triggerType, defName);
+			return new EntityViewFieldSettingDialog(className, value, triggerType, defName);
 		}
 	}
 
 	private FormItem createFilterList(FieldInfo info) {
-		SelectItem item = new SelectItem();
+		SelectItem item = new MtpSelectItem();
 		EntityFilterItemDS.setDataSource(item, defName);
 		return item;
 	}
@@ -169,7 +173,7 @@ public class EntityViewFieldSettingPane extends MetaFieldSettingPane {
 		// defNameに対応するEntityのプロパティの選択リスト
 		// Entityの依存関係まで考慮はできないので、.で子Entityのプロパティを指定することはできない
 		// 子Entityのプロパティを指定する項目はTextベースにすること
-		final ComboBoxItem item = new ComboBoxItem();
+		final ComboBoxItem item = new MtpComboBoxItem();
 		if (info.getEntityDefinitionName() != null && !info.getEntityDefinitionName().isEmpty()) {
 			item.setOptionDataSource(PropertyDS.create(info.getEntityDefinitionName()));
 		} else if (refDefName != null) {
@@ -181,7 +185,8 @@ public class EntityViewFieldSettingPane extends MetaFieldSettingPane {
 		item.setDisplayField(DataSourceConstants.FIELD_NAME);
 		item.setValueField(DataSourceConstants.FIELD_NAME);
 
-		ListGridField nameField = new ListGridField(DataSourceConstants.FIELD_NAME, AdminClientMessageUtil.getString("ui_metadata_common_MetaFieldSettingPane_name"));
+		ListGridField nameField = new ListGridField(DataSourceConstants.FIELD_NAME,
+				AdminClientMessageUtil.getString("ui_metadata_common_MetaFieldSettingPane_name"));
 		item.setPickListFields(nameField);
 		item.setPickListWidth(400 + 20);
 
@@ -190,7 +195,7 @@ public class EntityViewFieldSettingPane extends MetaFieldSettingPane {
 
 				@Override
 				public void onChanged(ChangedEvent event) {
-					//このプロパティの型を取得
+					// このプロパティの型を取得
 					final String propName = SmartGWTUtil.getStringValue(item);
 					if (propName == null || propName.isEmpty()) {
 						propDefName = null;
@@ -198,17 +203,17 @@ public class EntityViewFieldSettingPane extends MetaFieldSettingPane {
 					}
 
 					String _defName = refDefName != null ? refDefName : defName;
-					service.getPropertyDefinition(TenantInfoHolder.getId(), _defName,
-							propName, new AdminAsyncCallback<PropertyDefinition>() {
+					service.getPropertyDefinition(TenantInfoHolder.getId(), _defName, propName,
+							new AdminAsyncCallback<PropertyDefinition>() {
 
-						@Override
-						public void onSuccess(PropertyDefinition property) {
-							//参照型の場合、Entity定義名を取得
-							if (property instanceof ReferenceProperty) {
-								propDefName = ((ReferenceProperty) property).getObjectDefinitionName();
-							}
-						}
-					});
+								@Override
+								public void onSuccess(PropertyDefinition property) {
+									// 参照型の場合、Entity定義名を取得
+									if (property instanceof ReferenceProperty) {
+										propDefName = ((ReferenceProperty) property).getObjectDefinitionName();
+									}
+								}
+							});
 				}
 			});
 		}

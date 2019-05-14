@@ -28,6 +28,7 @@ import java.lang.annotation.Target;
 
 /**
  * メタデータ編集用の画面で使用するフィールドの情報を定義するアノテーション
+ * 
  * @author lis3wg
  */
 @Inherited
@@ -47,7 +48,7 @@ public @interface MetaFieldInfo {
 	/**
 	 * フィールドの値の入力方法
 	 */
-	InputType inputType() default InputType.TEXT ;
+	InputType inputType() default InputType.TEXT;
 
 	/**
 	 * このフィールドが必須入力か
@@ -85,8 +86,7 @@ public @interface MetaFieldInfo {
 	Class<?> referenceClass() default Object.class;
 
 	/**
-	 * 参照型クラス(固定)
-	 * 特定のクラスのみ利用する場合に使用する。
+	 * 参照型クラス(固定) 特定のクラスのみ利用する場合に使用する。
 	 */
 	Class<?>[] fixedReferenceClass() default {};
 
@@ -111,9 +111,9 @@ public @interface MetaFieldInfo {
 	String mode() default "";
 
 	/**
-	 * 多言語設定を利用するか
+	 * 多言語プロパティ名
 	 */
-	boolean useMultiLang() default false;
+	String multiLangField() default "";
 
 	/**
 	 * inputTypeがPropertyの場合、そのプロパティの型を別の入力項目のProperty選択に利用するか

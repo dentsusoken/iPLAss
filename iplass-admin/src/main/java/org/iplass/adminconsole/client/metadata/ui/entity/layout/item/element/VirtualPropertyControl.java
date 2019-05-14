@@ -23,7 +23,7 @@ package org.iplass.adminconsole.client.metadata.ui.entity.layout.item.element;
 import org.iplass.adminconsole.client.base.event.MTPEvent;
 import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
 import org.iplass.adminconsole.client.metadata.ui.entity.layout.PropertyOperationHandler;
-import org.iplass.adminconsole.client.metadata.ui.entity.layout.item.ViewEditWindow;
+import org.iplass.adminconsole.client.metadata.ui.entity.layout.item.ItemControl;
 import org.iplass.adminconsole.client.metadata.ui.entity.layout.metafield.MetaFieldUpdateEvent;
 import org.iplass.adminconsole.client.metadata.ui.entity.layout.metafield.MetaFieldUpdateHandler;
 import org.iplass.adminconsole.view.annotation.generic.FieldReferenceType;
@@ -38,7 +38,7 @@ import com.smartgwt.client.util.SC;
  * @author lis3wg
  *
  */
-public class VirtualPropertyElementWindow extends ViewEditWindow {
+public class VirtualPropertyControl extends ItemControl {
 
 	/** Window破棄前にプロパティの重複チェックリストから削除するためのハンドラ */
 	private PropertyOperationHandler handler = null;
@@ -50,7 +50,7 @@ public class VirtualPropertyElementWindow extends ViewEditWindow {
 	/**
 	 * コンストラクタ
 	 */
-	private VirtualPropertyElementWindow(String defName, FieldReferenceType triggerType) {
+	private VirtualPropertyControl(String defName, FieldReferenceType triggerType) {
 		super(defName, triggerType);
 
 		setDragType("element");
@@ -113,7 +113,7 @@ public class VirtualPropertyElementWindow extends ViewEditWindow {
 	 * コンストラクタ
 	 * @param element
 	 */
-	public VirtualPropertyElementWindow(String defName, FieldReferenceType triggerType, EntityDefinition ed, Element element) {
+	public VirtualPropertyControl(String defName, FieldReferenceType triggerType, EntityDefinition ed, Element element) {
 		this(defName, triggerType);
 
 		this.ed = ed;

@@ -145,9 +145,11 @@ public class PropertyListGrid extends ListGrid {
 		ListGridField dispNameField = new ListGridField(PropertyListGridRecord.DISPNAME, "Display Name");
 		dispNameField.setCanEdit(false);
 		dispNameField.setShowHover(true);
+		dispNameField.setHoverWrap(false);
 		ListGridField typeField = new ListGridField(PropertyListGridRecord.TYPE_DISP_VAL, "Type");
 		typeField.setCanEdit(false);
 		typeField.setShowHover(true);
+		typeField.setHoverWrap(false);
 		typeField.setWidth(90);
 		ListGridField multiplicity = new ListGridField(PropertyListGridRecord.MULTIPLE_DISP_VAL, "Multi");
 		multiplicity.setWidth(35);
@@ -169,9 +171,11 @@ public class PropertyListGrid extends ListGrid {
 		columnMappingNameField.setWidth(70);
 		columnMappingNameField.setCanEdit(false);
 		columnMappingNameField.setShowHover(true);
+		columnMappingNameField.setHoverWrap(false);
 		ListGridField gpField = new ListGridField(PropertyListGridRecord.REMARKS, " ");
 		gpField.setCanEdit(false);
 		gpField.setShowHover(true);
+		gpField.setHoverWrap(false);
 
 		// 各フィールドをListGridに設定
 		setFields(statusField, customOidField, customNameField, crawlPropField,

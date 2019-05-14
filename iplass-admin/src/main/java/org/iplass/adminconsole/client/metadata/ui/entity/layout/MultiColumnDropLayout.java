@@ -23,7 +23,7 @@ package org.iplass.adminconsole.client.metadata.ui.entity.layout;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.iplass.adminconsole.client.metadata.ui.entity.layout.item.ViewEditWindow;
+import org.iplass.adminconsole.client.metadata.ui.entity.layout.item.ItemControl;
 
 import com.smartgwt.client.widgets.Canvas;
 import com.smartgwt.client.widgets.events.DropHandler;
@@ -108,7 +108,7 @@ public abstract class MultiColumnDropLayout extends HLayout {
 	 * @param row
 	 * @return
 	 */
-	public ViewEditWindow getMember(int col, int row) {
+	public ItemControl getMember(int col, int row) {
 		//getMemberでループしてcol番目のカラムのrow行目のメンバを返す
 		int current = 0;
 		for (int i = 0; i < getMembers().length; i++) {
@@ -116,7 +116,7 @@ public abstract class MultiColumnDropLayout extends HLayout {
 				if (current == col) {
 					ColumnLayout column = (ColumnLayout) getMember(i);
 					if (column.getMembers().length > row) {
-						return (ViewEditWindow) column.getMember(row);
+						return (ItemControl) column.getMember(row);
 					}
 				}
 				current++;
@@ -131,8 +131,8 @@ public abstract class MultiColumnDropLayout extends HLayout {
 	public void clear() {
 		for (ColumnLayout col : cols) {
 			for (Canvas canvas : col.getMembers()) {
-				if (canvas instanceof ViewEditWindow) {
-					((ViewEditWindow) canvas).destroy();
+				if (canvas instanceof ItemControl) {
+					((ItemControl) canvas).destroy();
 				}
 			}
 		}

@@ -20,7 +20,7 @@
 
 package org.iplass.adminconsole.client.metadata.ui.entity.layout.item.element.section;
 
-import org.iplass.adminconsole.client.metadata.ui.entity.layout.item.ViewEditWindow;
+import org.iplass.adminconsole.client.metadata.ui.entity.layout.item.ItemControl;
 import org.iplass.adminconsole.client.metadata.ui.entity.layout.metafield.MetaFieldUpdateEvent;
 import org.iplass.adminconsole.client.metadata.ui.entity.layout.metafield.MetaFieldUpdateHandler;
 import org.iplass.adminconsole.view.annotation.generic.FieldReferenceType;
@@ -28,9 +28,9 @@ import org.iplass.mtp.view.generic.element.section.TemplateSection;
 
 import com.smartgwt.client.types.HeaderControls;
 
-public class TemplateSectionWindow extends ViewEditWindow implements SectionWindow {
+public class TemplateSectionControl extends ItemControl implements SectionControl {
 
-	public TemplateSectionWindow(String defName, FieldReferenceType triggerType, TemplateSection section) {
+	public TemplateSectionControl(String defName, FieldReferenceType triggerType, TemplateSection section) {
 		super(defName, triggerType);
 
 		if (section.getTitle() != null && !section.getTitle().isEmpty()) {

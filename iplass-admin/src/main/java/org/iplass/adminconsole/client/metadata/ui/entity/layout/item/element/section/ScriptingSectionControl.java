@@ -20,32 +20,53 @@
 
 package org.iplass.adminconsole.client.metadata.ui.entity.layout.item.element.section;
 
-import org.iplass.adminconsole.client.metadata.ui.entity.layout.item.ViewEditWindow;
+import org.iplass.adminconsole.client.metadata.ui.entity.layout.item.ItemControl;
+import org.iplass.adminconsole.client.metadata.ui.entity.layout.metafield.MetaFieldUpdateEvent;
+import org.iplass.adminconsole.client.metadata.ui.entity.layout.metafield.MetaFieldUpdateHandler;
 import org.iplass.adminconsole.view.annotation.generic.FieldReferenceType;
-import org.iplass.mtp.view.generic.element.section.VersionSection;
+import org.iplass.mtp.view.generic.element.section.ScriptingSection;
 
 import com.smartgwt.client.types.HeaderControls;
 
-public class VersionSectionWindow extends ViewEditWindow implements SectionWindow {
+public class ScriptingSectionControl extends ItemControl implements SectionControl {
 
-	public VersionSectionWindow(String defName, FieldReferenceType triggerType, VersionSection section) {
+	public ScriptingSectionControl(String defName, FieldReferenceType triggerType, ScriptingSection section) {
 		super(defName, triggerType);
 
-		setTitle("Version Section");
-		setBackgroundColor("#BBBBFF");
+		if (section.getTitle() != null && !section.getTitle().isEmpty()) {
+			setTitle(section.getTitle());
+		} else {
+			setTitle("Script Section");
+		}
+		setBackgroundColor("#BBFFFF");
 		setDragType("section");
 		setHeight(22);
 		setBorder("1px solid navy");
 
 		setHeaderControls(HeaderControls.MINIMIZE_BUTTON, HeaderControls.HEADER_LABEL, setting, HeaderControls.CLOSE_BUTTON);
 
+		setMetaFieldUpdateHandler(new MetaFieldUpdateHandler() {
+
+			@Override
+			public void execute(MetaFieldUpdateEvent event) {
+				ScriptingSection section = (ScriptingSection) event.getValue();
+
+				if (section.getTitle() != null && !section.getTitle().isEmpty()) {
+					setTitle(section.getTitle());
+				} else {
+					setTitle("Script Section");
+				}
+
+			}
+		});
+
 		setClassName(section.getClass().getName());
 		setValueObject(section);
 	}
 
 	@Override
-	public VersionSection getSection() {
-		VersionSection section = (VersionSection) getValueObject();
+	public ScriptingSection getSection() {
+		ScriptingSection section = (ScriptingSection) getValueObject();
 		return section;
 	}
 

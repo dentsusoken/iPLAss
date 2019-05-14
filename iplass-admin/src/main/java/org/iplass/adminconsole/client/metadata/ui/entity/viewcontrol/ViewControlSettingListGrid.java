@@ -27,7 +27,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import org.iplass.adminconsole.client.base.ui.widget.AbstractWindow;
+import org.iplass.adminconsole.client.base.ui.widget.MtpDialog;
+import org.iplass.adminconsole.client.base.ui.widget.form.MtpForm;
+import org.iplass.adminconsole.client.base.ui.widget.form.MtpTextItem;
 import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
 import org.iplass.adminconsole.client.metadata.data.auth.RoleDS;
 import org.iplass.mtp.view.generic.ViewControlSetting;
@@ -35,7 +37,6 @@ import org.iplass.mtp.view.generic.ViewControlSetting;
 import com.smartgwt.client.types.ListGridFieldType;
 import com.smartgwt.client.types.MultipleAppearance;
 import com.smartgwt.client.types.Overflow;
-import com.smartgwt.client.types.VerticalAlignment;
 import com.smartgwt.client.util.SC;
 import com.smartgwt.client.widgets.IButton;
 import com.smartgwt.client.widgets.events.ClickEvent;
@@ -50,7 +51,6 @@ import com.smartgwt.client.widgets.grid.ListGridEditorContext;
 import com.smartgwt.client.widgets.grid.ListGridEditorCustomizer;
 import com.smartgwt.client.widgets.grid.ListGridField;
 import com.smartgwt.client.widgets.grid.ListGridRecord;
-import com.smartgwt.client.widgets.layout.HLayout;
 
 public class ViewControlSettingListGrid extends ListGrid {
 
@@ -233,30 +233,26 @@ public class ViewControlSettingListGrid extends ListGrid {
 		return ret;
 	}
 
-	private class ViewControlSettingCreateDialog extends AbstractWindow {
+	private class ViewControlSettingCreateDialog extends MtpDialog {
 
 		private DynamicForm form;
 
 		private TextItem nameField;
 
 		public ViewControlSettingCreateDialog() {
-			setWidth(350);
-			setHeight(120);
+
+			setHeight(140);
 			setTitle("Add ViewControl Setting");
-			setShowMinimizeButton(false);
-			setShowMaximizeButton(true);	//最大化は可能に設定（スクリプト編集用）
-			setCanDragResize(true);			//リサイズは可能に設定（スクリプト編集用）
-			setIsModal(true);
-			setShowModalMask(true);
 			centerInPage();
 
-			form = new DynamicForm();
-			form.setMargin(5);
+			form = new MtpForm();
 
-			nameField = new TextItem("name", "View Name");
-			nameField.setRequired(true);
+			nameField = new MtpTextItem("name", "View Name");
+			SmartGWTUtil.setRequired(nameField);
 
 			form.setFields(nameField);
+
+			container.addMember(form);
 
 			IButton ok = new IButton("OK");
 			ok.addClickHandler(new ClickHandler() {
@@ -286,17 +282,7 @@ public class ViewControlSettingListGrid extends ListGrid {
 				}
 			});
 
-			HLayout footer = new HLayout(5);
-			footer.setMargin(5);
-			footer.setHeight(20);
-			footer.setWidth100();
-			footer.setAlign(VerticalAlignment.CENTER);
 			footer.setMembers(ok, cancel);
-
-			addItem(form);
-			addItem(SmartGWTUtil.separator());
-			addItem(footer);
-
 		}
 
 		private void updateRecordData(String viewName) {

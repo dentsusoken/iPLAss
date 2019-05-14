@@ -28,10 +28,10 @@ import org.iplass.adminconsole.client.base.event.MTPEventHandler;
 import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
 import org.iplass.adminconsole.client.metadata.ui.entity.layout.PropertyOperationContext;
 import org.iplass.adminconsole.client.metadata.ui.entity.layout.PropertyOperationHandler;
-import org.iplass.adminconsole.client.metadata.ui.entity.layout.item.element.section.DefaultSectionWindow;
-import org.iplass.adminconsole.client.metadata.ui.entity.layout.item.element.section.MassReferenceSectionWindow;
-import org.iplass.adminconsole.client.metadata.ui.entity.layout.item.element.section.ReferenceSectionWindow;
-import org.iplass.adminconsole.client.metadata.ui.entity.layout.item.element.section.SectionWindow;
+import org.iplass.adminconsole.client.metadata.ui.entity.layout.item.element.section.DefaultSectionControl;
+import org.iplass.adminconsole.client.metadata.ui.entity.layout.item.element.section.MassReferenceSectionControl;
+import org.iplass.adminconsole.client.metadata.ui.entity.layout.item.element.section.ReferenceSectionControl;
+import org.iplass.adminconsole.client.metadata.ui.entity.layout.item.element.section.SectionControl;
 import org.iplass.adminconsole.view.annotation.generic.FieldReferenceType;
 import org.iplass.mtp.entity.definition.EntityDefinition;
 import org.iplass.mtp.view.generic.DetailFormView;
@@ -41,7 +41,7 @@ import org.iplass.mtp.view.generic.element.section.Section;
 
 import com.smartgwt.client.types.HeaderControls;
 
-public class DetailFormViewWindow extends ViewEditWindow {
+public class DetailFormViewControl extends ItemControl {
 
 	/** 重複チェック用のリスト */
 	private List<String> propList = new ArrayList<String>();
@@ -55,7 +55,7 @@ public class DetailFormViewWindow extends ViewEditWindow {
 	/** プロパティチェック用イベントハンドラ */
 	private PropertyOperationHandler propertyOperationHandler;
 
-	public DetailFormViewWindow(String defName) {
+	public DetailFormViewControl(String defName) {
 		super(defName);
 		setHeaderControls(HeaderControls.HEADER_LABEL, setting);
 		setTitle(AdminClientMessageUtil.getString("ui_metadata_entity_layout_item_DetailFormWindow_detailScreen"));
@@ -109,12 +109,12 @@ public class DetailFormViewWindow extends ViewEditWindow {
 		}
 		editArea.setEntityDefinition(ed);
 		for (Section section : fv.getSections()) {
-			ViewEditWindow window = sectionController.createWindow(section, defName, FieldReferenceType.DETAIL, ed);
+			ItemControl window = sectionController.createControl(section, defName, FieldReferenceType.DETAIL, ed);
 
-			if (window instanceof DefaultSectionWindow) {
-				((DefaultSectionWindow)window).setHandlers(ed, editStartHandler, propertyOperationHandler);
-			} else if (window instanceof ReferenceSectionWindow) {
-				((ReferenceSectionWindow)window).setHandler(propertyOperationHandler);
+			if (window instanceof DefaultSectionControl) {
+				((DefaultSectionControl)window).setHandlers(ed, editStartHandler, propertyOperationHandler);
+			} else if (window instanceof ReferenceSectionControl) {
+				((ReferenceSectionControl)window).setHandler(propertyOperationHandler);
 				MTPEvent propEvent = new MTPEvent();
 				String name = ((ReferenceSection) section).getPropertyName();
 				propEvent.setValue("name", name);
@@ -122,14 +122,14 @@ public class DetailFormViewWindow extends ViewEditWindow {
 					propertyOperationHandler.add(propEvent);
 
 					MTPEvent sectionEvent = new MTPEvent();
-					sectionEvent.setValue("name", name + ReferenceSectionWindow.SECTION_SUFFIX);
+					sectionEvent.setValue("name", name + ReferenceSectionControl.SECTION_SUFFIX);
 					propertyOperationHandler.add(sectionEvent);
 				}
-				Integer count = (Integer) propertyOperationHandler.getContext().get(name + ReferenceSectionWindow.SECTION_COUNT_KEY);
+				Integer count = (Integer) propertyOperationHandler.getContext().get(name + ReferenceSectionControl.SECTION_COUNT_KEY);
 				if (count == null) count = 0;
-				propertyOperationHandler.getContext().set(name + ReferenceSectionWindow.SECTION_COUNT_KEY, ++count);
-			} else if (window instanceof MassReferenceSectionWindow) {
-				((MassReferenceSectionWindow)window).setHandler(propertyOperationHandler);
+				propertyOperationHandler.getContext().set(name + ReferenceSectionControl.SECTION_COUNT_KEY, ++count);
+			} else if (window instanceof MassReferenceSectionControl) {
+				((MassReferenceSectionControl)window).setHandler(propertyOperationHandler);
 				MTPEvent event = new MTPEvent();
 				event.setValue("name", ((MassReferenceSection) section).getPropertyName());
 				propertyOperationHandler.add(event);
@@ -151,9 +151,9 @@ public class DetailFormViewWindow extends ViewEditWindow {
 	private List<Section> getSection() {
 		List<Section> sections = new ArrayList<Section>();
 		for (int i = 0; i < editArea.getRowNum(); i++) {
-			ViewEditWindow editWindow = editArea.getMember(0, i);
-			if (editWindow instanceof SectionWindow) {
-				SectionWindow window = (SectionWindow) editWindow;
+			ItemControl editWindow = editArea.getMember(0, i);
+			if (editWindow instanceof SectionControl) {
+				SectionControl window = (SectionControl) editWindow;
 				Section section = window.getSection();
 				sections.add(section);
 			}

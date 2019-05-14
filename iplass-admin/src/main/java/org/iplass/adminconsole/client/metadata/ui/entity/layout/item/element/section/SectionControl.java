@@ -22,7 +22,7 @@ package org.iplass.adminconsole.client.metadata.ui.entity.layout.item.element.se
 
 import org.iplass.mtp.view.generic.element.section.Section;
 
-public interface SectionWindow {
+public interface SectionControl {
 
 	/**
 	 * デフォルトセクションを取得。

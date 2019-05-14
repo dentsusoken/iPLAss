@@ -26,8 +26,8 @@ import org.iplass.adminconsole.client.base.event.MTPEvent;
 import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
 import org.iplass.adminconsole.client.base.tenant.TenantInfoHolder;
 import org.iplass.adminconsole.client.metadata.ui.entity.layout.PropertyOperationHandler;
-import org.iplass.adminconsole.client.metadata.ui.entity.layout.item.EntityViewFieldSettingWindow;
-import org.iplass.adminconsole.client.metadata.ui.entity.layout.item.ViewEditWindow;
+import org.iplass.adminconsole.client.metadata.ui.entity.layout.item.EntityViewFieldSettingDialog;
+import org.iplass.adminconsole.client.metadata.ui.entity.layout.item.ItemControl;
 import org.iplass.adminconsole.client.metadata.ui.entity.layout.metafield.MetaFieldUpdateEvent;
 import org.iplass.adminconsole.client.metadata.ui.entity.layout.metafield.MetaFieldUpdateHandler;
 import org.iplass.adminconsole.shared.metadata.rpc.MetaDataServiceAsync;
@@ -83,7 +83,7 @@ import com.smartgwt.client.widgets.grid.ListGridRecord;
  * @author lis3wg
  *
  */
-public class PropertyBaseWindow extends ViewEditWindow {
+public class PropertyControl extends ItemControl {
 
 	/** Window破棄前にプロパティの重複チェックリストから削除するためのハンドラ */
 	private PropertyOperationHandler handler = null;
@@ -94,7 +94,7 @@ public class PropertyBaseWindow extends ViewEditWindow {
 	/**
 	 * コンストラクタ
 	 */
-	private PropertyBaseWindow(String defName, FieldReferenceType triggerType) {
+	private PropertyControl(String defName, FieldReferenceType triggerType) {
 		super(defName, triggerType);
 
 		service = MetaDataServiceFactory.get();
@@ -126,7 +126,7 @@ public class PropertyBaseWindow extends ViewEditWindow {
 	 * @param record
 	 * @param property
 	 */
-	public PropertyBaseWindow(String defName, FieldReferenceType triggerType, ListGridRecord record, PropertyBase property) {
+	public PropertyControl(String defName, FieldReferenceType triggerType, ListGridRecord record, PropertyBase property) {
 		this(defName, triggerType);
 		defaultDisplayName = record.getAttribute("parentDisplayName") != null ?
 				record.getAttribute("parentDisplayName") + "." + record.getAttribute("displayName") : record.getAttribute("displayName");
@@ -150,7 +150,7 @@ public class PropertyBaseWindow extends ViewEditWindow {
 	 * コンストラクタ
 	 * @param property
 	 */
-	public PropertyBaseWindow(String defName, FieldReferenceType triggerType, PropertyItem property) {
+	public PropertyControl(String defName, FieldReferenceType triggerType, PropertyItem property) {
 		this(defName, triggerType);
 
 		setTitle(property.getDisplayLabel());
@@ -165,7 +165,7 @@ public class PropertyBaseWindow extends ViewEditWindow {
 	/**
 	 * コンストラクタ
 	 */
-	public PropertyBaseWindow(String defName, FieldReferenceType triggerType, PropertyColumn property) {
+	public PropertyControl(String defName, FieldReferenceType triggerType, PropertyColumn property) {
 		this(defName, triggerType);
 
 		setTitle(property.getDisplayLabel());
@@ -315,12 +315,12 @@ public class PropertyBaseWindow extends ViewEditWindow {
 	}
 
 	@Override
-	protected EntityViewFieldSettingWindow createSubWindow() {
+	protected EntityViewFieldSettingDialog createSubDialog() {
 		PropertyEditor editor =  (PropertyEditor) getValue("propertyEditor");
 		if (editor instanceof ReferencePropertyEditor) {
 			String refDefName = ((ReferencePropertyEditor) editor).getObjectName();
-			return new EntityViewFieldSettingWindow(getClassName(), getValueObject(), triggerType, defName, refDefName);
+			return new EntityViewFieldSettingDialog(getClassName(), getValueObject(), triggerType, defName, refDefName);
 		}
-		return super.createSubWindow();
+		return super.createSubDialog();
 	}
 }

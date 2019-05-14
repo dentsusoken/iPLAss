@@ -28,6 +28,7 @@ import org.iplass.adminconsole.view.annotation.generic.FieldReferenceType;
 
 /**
  * メタデータのフィールド情報
+ * 
  * @author lis3wg
  */
 public class FieldInfo implements Serializable {
@@ -82,10 +83,8 @@ public class FieldInfo implements Serializable {
 	/** フィールドの説明のキー */
 	private String descriptionKey;
 
-	/**
-	 * 多言語設定を利用するか
-	 */
-	private boolean useMultiLang;
+	/** 多言語プロパティ名 */
+	private String multiLangFieldName;
 
 	/** inputTypeがPropertyの場合、そのプロパティの型を別の入力項目のProperty選択に利用するか */
 	private boolean useReferenceType;
@@ -110,6 +109,7 @@ public class FieldInfo implements Serializable {
 
 	/**
 	 * フィールド名を取得します。
+	 * 
 	 * @return フィールド名
 	 */
 	public String getName() {
@@ -118,6 +118,7 @@ public class FieldInfo implements Serializable {
 
 	/**
 	 * フィールド名を設定します。
+	 * 
 	 * @param name フィールド名
 	 */
 	public void setName(String name) {
@@ -126,6 +127,7 @@ public class FieldInfo implements Serializable {
 
 	/**
 	 * 表示名を取得します。
+	 * 
 	 * @return 表示名
 	 */
 	public String getDisplayName() {
@@ -134,6 +136,7 @@ public class FieldInfo implements Serializable {
 
 	/**
 	 * 表示名を設定します。
+	 * 
 	 * @param displayName 表示名
 	 */
 	public void setDisplayName(String displayName) {
@@ -142,6 +145,7 @@ public class FieldInfo implements Serializable {
 
 	/**
 	 * 表示名のキーを取得します。
+	 * 
 	 * @return 表示名のキー
 	 */
 	public String getDisplayNameKey() {
@@ -150,6 +154,7 @@ public class FieldInfo implements Serializable {
 
 	/**
 	 * 表示名のキーを設定します。
+	 * 
 	 * @param displayNameKey 表示名のキー
 	 */
 	public void setDisplayNameKey(String displayNameKey) {
@@ -158,6 +163,7 @@ public class FieldInfo implements Serializable {
 
 	/**
 	 * 入力タイプを取得します。
+	 * 
 	 * @return 入力タイプ
 	 */
 	public InputType getInputType() {
@@ -166,6 +172,7 @@ public class FieldInfo implements Serializable {
 
 	/**
 	 * 入力タイプを設定します。
+	 * 
 	 * @param inputType 入力タイプ
 	 */
 	public void setInputType(InputType inputType) {
@@ -174,6 +181,7 @@ public class FieldInfo implements Serializable {
 
 	/**
 	 * 必須入力かを取得します。
+	 * 
 	 * @return 必須入力か
 	 */
 	public boolean isRequired() {
@@ -182,6 +190,7 @@ public class FieldInfo implements Serializable {
 
 	/**
 	 * 必須入力かを設定します。
+	 * 
 	 * @param required 必須入力か
 	 */
 	public void setRequired(boolean required) {
@@ -190,6 +199,7 @@ public class FieldInfo implements Serializable {
 
 	/**
 	 * 範囲チェックを行うかを取得します。
+	 * 
 	 * @return 範囲チェックを行うか
 	 */
 	public boolean isRangeCheck() {
@@ -198,6 +208,7 @@ public class FieldInfo implements Serializable {
 
 	/**
 	 * 範囲チェックを行うかを設定します。
+	 * 
 	 * @param rangeCheck 範囲チェックを行うか
 	 */
 	public void setRangeCheck(boolean rangeCheck) {
@@ -206,6 +217,7 @@ public class FieldInfo implements Serializable {
 
 	/**
 	 * 最大範囲を取得します。
+	 * 
 	 * @return 最大範囲
 	 */
 	public int getMaxRange() {
@@ -214,6 +226,7 @@ public class FieldInfo implements Serializable {
 
 	/**
 	 * 最大範囲を設定します。
+	 * 
 	 * @param maxRange 最大範囲
 	 */
 	public void setMaxRange(int maxRange) {
@@ -222,6 +235,7 @@ public class FieldInfo implements Serializable {
 
 	/**
 	 * 最小範囲を取得します。
+	 * 
 	 * @return 最小範囲
 	 */
 	public int getMinRange() {
@@ -230,6 +244,7 @@ public class FieldInfo implements Serializable {
 
 	/**
 	 * 最小範囲を設定します。
+	 * 
 	 * @param minRange 最小範囲
 	 */
 	public void setMinRange(int minRange) {
@@ -238,6 +253,7 @@ public class FieldInfo implements Serializable {
 
 	/**
 	 * 多重度を取得します。
+	 * 
 	 * @return 多重度
 	 */
 	public boolean isMultiple() {
@@ -246,6 +262,7 @@ public class FieldInfo implements Serializable {
 
 	/**
 	 * 多重度を設定します。
+	 * 
 	 * @param multiple 多重度
 	 */
 	public void setMultiple(boolean multiple) {
@@ -254,6 +271,7 @@ public class FieldInfo implements Serializable {
 
 	/**
 	 * 参照型クラスを取得します。
+	 * 
 	 * @return 参照型クラス
 	 */
 	public String getReferenceClassName() {
@@ -262,6 +280,7 @@ public class FieldInfo implements Serializable {
 
 	/**
 	 * 参照型クラスを設定します。
+	 * 
 	 * @param referenceClassName 参照型クラス
 	 */
 	public void setReferenceClassName(String referenceClassName) {
@@ -270,6 +289,7 @@ public class FieldInfo implements Serializable {
 
 	/**
 	 * 参照型クラス(固定)を取得します。
+	 * 
 	 * @return 参照型クラス(固定)
 	 */
 	public Name[] getFixedReferenceClass() {
@@ -278,6 +298,7 @@ public class FieldInfo implements Serializable {
 
 	/**
 	 * 参照型クラス(固定)を設定します。
+	 * 
 	 * @param referenceClassName 参照型クラス(固定)
 	 */
 	public void setFixedReferenceClass(Name[] fixedReferenceClass) {
@@ -286,22 +307,25 @@ public class FieldInfo implements Serializable {
 
 	/**
 	 * Enum値のクラス名を取得します。
+	 * 
 	 * @return Enum値のクラス名
 	 */
 	public String getEnumClassName() {
-	    return enumClassName;
+		return enumClassName;
 	}
 
 	/**
 	 * Enum値のクラス名を設定します。
+	 * 
 	 * @param enumClassName Enum値のクラス名
 	 */
 	public void setEnumClassName(String enumClassName) {
-	    this.enumClassName = enumClassName;
+		this.enumClassName = enumClassName;
 	}
 
 	/**
 	 * Enum値の配列を取得します。
+	 * 
 	 * @return Enum値の配列
 	 */
 	public Serializable[] getEnumValues() {
@@ -310,6 +334,7 @@ public class FieldInfo implements Serializable {
 
 	/**
 	 * Enum値の配列を設定します。
+	 * 
 	 * @param enumValues Enum値の配列
 	 */
 	public void setEnumValues(Serializable[] enumValues) {
@@ -318,6 +343,7 @@ public class FieldInfo implements Serializable {
 
 	/**
 	 * スクリプトのモードを取得します。
+	 * 
 	 * @return スクリプトのモード
 	 */
 	public String getMode() {
@@ -326,6 +352,7 @@ public class FieldInfo implements Serializable {
 
 	/**
 	 * スクリプトのモードを設定します。
+	 * 
 	 * @param mode スクリプトのモード
 	 */
 	public void setMode(String mode) {
@@ -334,6 +361,7 @@ public class FieldInfo implements Serializable {
 
 	/**
 	 * フィールドの説明を取得します。
+	 * 
 	 * @return フィールドの説明
 	 */
 	public String getDescription() {
@@ -342,6 +370,7 @@ public class FieldInfo implements Serializable {
 
 	/**
 	 * フィールドの説明を設定します。
+	 * 
 	 * @param description フィールドの説明
 	 */
 	public void setDescription(String description) {
@@ -350,6 +379,7 @@ public class FieldInfo implements Serializable {
 
 	/**
 	 * フィールドの説明のキーを取得します。
+	 * 
 	 * @return フィールドの説明のキー
 	 */
 	public String getDescriptionKey() {
@@ -358,6 +388,7 @@ public class FieldInfo implements Serializable {
 
 	/**
 	 * フィールドの説明のキーを設定します。
+	 * 
 	 * @param descriptionKey フィールドの説明のキー
 	 */
 	public void setDescriptionKey(String descriptionKey) {
@@ -365,19 +396,21 @@ public class FieldInfo implements Serializable {
 	}
 
 	/**
-	 * 多言語設定を利用するかを取得します。
-	 * @return 多言語設定を利用するか
+	 * 多言語プロパティ名を取得します。
+	 * 
+	 * @return 多言語プロパティ名
 	 */
-	public boolean isUseMultiLang() {
-		return useMultiLang;
+	public String getMultiLangFieldName() {
+		return multiLangFieldName;
 	}
 
 	/**
-	 * 多言語設定を利用するかを設定します。
-	 * @param useMultiLang 多言語設定を利用するか
+	 * 多言語プロパティ名を設定します。
+	 * 
+	 * @param multiLangFieldName 多言語プロパティ名
 	 */
-	public void setUseMultiLang(boolean useMultiLang) {
-		this.useMultiLang = useMultiLang;
+	public void setMultiLangFieldName(String multiLangFieldName) {
+		this.multiLangFieldName = multiLangFieldName;
 	}
 
 	/**
@@ -410,23 +443,25 @@ public class FieldInfo implements Serializable {
 
 	/**
 	 * 非推奨または未使用の項目かを取得します。
+	 * 
 	 * @return 非推奨または未使用の項目か
 	 */
 	public boolean isDeprecated() {
-	    return deprecated;
+		return deprecated;
 	}
 
 	/**
 	 * 非推奨または未使用の項目かを設定します。
+	 * 
 	 * @param deprecated 非推奨または未使用の項目か
 	 */
 	public void setDeprecated(boolean deprecated) {
-	    this.deprecated = deprecated;
+		this.deprecated = deprecated;
 	}
-
 
 	/**
 	 * EntityViewのプロパティとして参照するタイプを取得します。
+	 * 
 	 * @return EntityViewのプロパティとして参照するタイプ
 	 */
 	public FieldReferenceType[] getEntityViewReferenceType() {
@@ -435,6 +470,7 @@ public class FieldInfo implements Serializable {
 
 	/**
 	 * EntityViewのプロパティとして参照するタイプを設定します。
+	 * 
 	 * @param entityViewReferenceType EntityViewのプロパティとして参照するタイプ
 	 */
 	public void setEntityViewReferenceType(FieldReferenceType[] entityViewReferenceType) {
@@ -443,6 +479,7 @@ public class FieldInfo implements Serializable {
 
 	/**
 	 * 起動トリガーのタイプを上書きする参照タイプ
+	 * 
 	 * @return 起動トリガーのタイプを上書きする参照タイプ
 	 */
 	public FieldReferenceType getOverrideTriggerType() {
@@ -451,9 +488,11 @@ public class FieldInfo implements Serializable {
 
 	/**
 	 * 起動トリガーのタイプを上書きする参照タイプ
+	 * 
 	 * @param overrideTriggerType 起動トリガーのタイプを上書きする参照タイプ
 	 */
 	public void setOverrideTriggerType(FieldReferenceType overrideTriggerType) {
 		this.overrideTriggerType = overrideTriggerType;
 	}
+
 }

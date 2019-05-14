@@ -20,7 +20,7 @@
 
 package org.iplass.adminconsole.client.metadata.ui.entity.layout;
 
-import org.iplass.adminconsole.client.base.ui.widget.CommonIconConstants;
+import org.iplass.adminconsole.client.base.ui.widget.MtpWidgetConstants;
 import org.iplass.adminconsole.client.metadata.data.entity.layout.ElementItemDS;
 import org.iplass.adminconsole.client.metadata.data.entity.layout.SectionItemDS;
 import org.iplass.adminconsole.client.metadata.data.entity.layout.ViewType;
@@ -181,7 +181,7 @@ public class DragPane extends VLayout {
 		}
 
 		ImgButton btnRefesh = new ImgButton();
-		btnRefesh.setSrc(CommonIconConstants.COMMON_ICON_REFRESH);
+		btnRefesh.setSrc(MtpWidgetConstants.ICON_REFRESH);
 		btnRefesh.setSize(16);
 		btnRefesh.setShowFocused(false);
 		btnRefesh.setShowRollOver(false);

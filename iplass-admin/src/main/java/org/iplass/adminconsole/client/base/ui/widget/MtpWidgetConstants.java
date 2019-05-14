@@ -43,13 +43,16 @@ public interface MtpWidgetConstants {
 	/** 多言語 */
 	public static final String ICON_LANG = "world.png";
 
+	/** 標準のDialog幅 */
+	public static final int DIALOG_WIDTH = 800;
+
 	/** タイトルの幅 */
 	public static final int FORM_WIDTH_TITLE = 100;
 
 	/** 入力欄の幅 */
-	public static final int FORM_WIDTH_ITEM = 600;
+	public static final int FORM_WIDTH_ITEM = 650;
 
 	/** 入力欄の半分の幅 */
-	public static final int FORM_WIDTH_ITEM_HALF = 300;
+	public static final int FORM_WIDTH_ITEM_HALF = 275;
 
 }

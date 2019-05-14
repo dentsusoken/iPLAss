@@ -25,6 +25,9 @@ import java.util.LinkedHashMap;
 import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
 import org.iplass.adminconsole.client.base.rpc.AdminAsyncCallback;
 import org.iplass.adminconsole.client.base.tenant.TenantInfoHolder;
+import org.iplass.adminconsole.client.base.ui.widget.form.MtpForm2Column;
+import org.iplass.adminconsole.client.base.ui.widget.form.MtpSelectItem;
+import org.iplass.adminconsole.client.base.ui.widget.form.MtpTextItem;
 import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
 import org.iplass.adminconsole.client.metadata.ui.entity.property.PropertyAttribute;
 import org.iplass.adminconsole.client.metadata.ui.entity.property.PropertyAttributePane;
@@ -36,6 +39,7 @@ import org.iplass.mtp.entity.definition.PropertyDefinition;
 import org.iplass.mtp.entity.definition.properties.AutoNumberProperty;
 import org.iplass.mtp.entity.definition.properties.NumberingType;
 
+import com.smartgwt.client.types.Alignment;
 import com.smartgwt.client.util.SC;
 import com.smartgwt.client.widgets.form.DynamicForm;
 import com.smartgwt.client.widgets.form.fields.ButtonItem;
@@ -45,7 +49,10 @@ import com.smartgwt.client.widgets.layout.VLayout;
 
 public class AutoNumberAttributePane extends VLayout implements PropertyAttributePane {
 
-	private DynamicForm form = new DynamicForm();
+	private DynamicForm form;
+
+	/** Format */
+	private TextItem txtFormatScript;
 
 	/** 開始値 */
 	private TextItem txtStartValue;
@@ -53,8 +60,6 @@ public class AutoNumberAttributePane extends VLayout implements PropertyAttribut
 	private TextItem txtFixedNumber;
 	/** 採番タイプ */
 	private SelectItem selNumberingType;
-	/** Format */
-	private TextItem txtFormatScript;
 
 	private ButtonItem btnCurrent;
 
@@ -66,27 +71,11 @@ public class AutoNumberAttributePane extends VLayout implements PropertyAttribut
 	public AutoNumberAttributePane() {
 
 		setWidth100();
-//		setHeight100();
 		setAutoHeight();
 
-		txtStartValue = new TextItem();
-		txtStartValue.setTitle(rs("ui_metadata_entity_PropertyListGrid_startVal"));
-		txtStartValue.setKeyPressFilter(KEYFILTER_NUM);
-		txtStartValue.setWidth(40);
-		SmartGWTUtil.addHoverToFormItem(txtStartValue, rs("ui_metadata_entity_PropertyListGrid_startValComment"));
-		txtFixedNumber = new TextItem();
-		txtFixedNumber.setTitle(rs("ui_metadata_entity_PropertyListGrid_fixedNumDig"));
-		txtFixedNumber.setKeyPressFilter(KEYFILTER_NUM);
-		txtFixedNumber.setWidth(40);
-		SmartGWTUtil.addHoverToFormItem(txtFixedNumber, rs("ui_metadata_entity_PropertyListGrid_fixedNumDigComment"));
-		selNumberingType = new SelectItem();
-		selNumberingType.setTitle(rs("ui_metadata_entity_PropertyListGrid_numberingRules"));
-		selNumberingType.setWidth(200);
-		SmartGWTUtil.addHoverToFormItem(selNumberingType, rs("ui_metadata_entity_PropertyListGrid_numberingRulesComment1"));
-		txtFormatScript = new TextItem();
+		txtFormatScript = new MtpTextItem();
 		txtFormatScript.setTitle(rs("ui_metadata_entity_PropertyListGrid_formatScript"));
-		txtFormatScript.setWidth(450);
-		txtFormatScript.setColSpan(4);
+		txtFormatScript.setColSpan(3);
 		SmartGWTUtil.addHoverToFormItem(txtFormatScript, rs("ui_metadata_entity_PropertyListGrid_numberingRulesComment2"));
 		//ちょっとヒントが大きいので別ダイアログで表示
 		String contentsStyle = "style=\"margin-left:5px;\"";
@@ -98,10 +87,11 @@ public class AutoNumberAttributePane extends VLayout implements PropertyAttribut
 				+ "<p " + contentsStyle + ">" + rs("ui_metadata_entity_PropertyListGrid_exampleFormat") + "</p>"
 				+ "</div>"
 
-				+ "<div><b>" + rs("ui_metadata_entity_PropertyListGrid_availBindVariable") + "</b><br/>"
-				+ "<p " + contentsStyle + ">"
-				+ "<table style=\"border-collapse:collapse;\">"
+				+ "<div><p><b>" + rs("ui_metadata_entity_PropertyListGrid_availBindVariable") + "</b></p>"
 
+				+ "<div " + contentsStyle + ">"
+
+				+ "<table style=\"border-collapse:collapse;\">"
 				+ "<tr><th " + tableStyle + ">" + rs("ui_metadata_entity_PropertyListGrid_format")
 				+ "</th><th "+ tableStyle + ">" + rs("ui_metadata_entity_PropertyListGrid_outputContent") + "</th></tr>"
 
@@ -116,13 +106,29 @@ public class AutoNumberAttributePane extends VLayout implements PropertyAttribut
 				+ "<tr><td " + tableStyle + ">user</td><td "+ tableStyle + ">" + rs("ui_metadata_entity_PropertyListGrid_userInfo") + "</td></tr>"
 				+ "<tr><td " + tableStyle + ">entity</td><td "+ tableStyle + ">" + rs("ui_metadata_entity_PropertyListGrid_entity") + "</td></tr>"
 
-				+ "</table></p></div>"
+				+ "</table></div></div>"
 				);
+
+		txtStartValue = new MtpTextItem();
+		txtStartValue.setTitle(rs("ui_metadata_entity_PropertyListGrid_startVal"));
+		txtStartValue.setKeyPressFilter(KEYFILTER_NUM);
+		SmartGWTUtil.addHoverToFormItem(txtStartValue, rs("ui_metadata_entity_PropertyListGrid_startValComment"));
+
+		txtFixedNumber = new MtpTextItem();
+		txtFixedNumber.setTitle(rs("ui_metadata_entity_PropertyListGrid_fixedNumDig"));
+		txtFixedNumber.setKeyPressFilter(KEYFILTER_NUM);
+		SmartGWTUtil.addHoverToFormItem(txtFixedNumber, rs("ui_metadata_entity_PropertyListGrid_fixedNumDigComment"));
+
+		selNumberingType = new MtpSelectItem();
+		selNumberingType.setTitle(rs("ui_metadata_entity_PropertyListGrid_numberingRules"));
+		SmartGWTUtil.addHoverToFormItem(selNumberingType, rs("ui_metadata_entity_PropertyListGrid_numberingRulesComment1"));
 
 		btnCurrent = new ButtonItem();
 		btnCurrent.setWidth(100);
 		btnCurrent.setStartRow(false);
 		btnCurrent.setTitle("Current Value");
+		btnCurrent.setColSpan(2);
+		btnCurrent.setAlign(Alignment.RIGHT);
 		btnCurrent.setPrompt(SmartGWTUtil.getHoverString(rs("ui_metadata_entity_PropertyListGrid_showCurrentValueList")));
 		btnCurrent.addClickHandler(new com.smartgwt.client.widgets.form.fields.events.ClickHandler() {
 
@@ -133,11 +139,8 @@ public class AutoNumberAttributePane extends VLayout implements PropertyAttribut
 
 		});
 
-		form.setMargin(5);
-		form.setNumCols(6);
-		form.setWidth100();
-		form.setHeight(60);
-		form.setItems(txtStartValue, txtFixedNumber, selNumberingType, txtFormatScript, btnCurrent);
+		form = new MtpForm2Column();
+		form.setItems(txtFormatScript, txtStartValue, txtFixedNumber, selNumberingType, btnCurrent);
 
 		addMember(form);
 
@@ -191,7 +194,7 @@ public class AutoNumberAttributePane extends VLayout implements PropertyAttribut
 
 	@Override
 	public int panelHeight() {
-		return 80;
+		return 120;
 	}
 
 	private void initialize() {

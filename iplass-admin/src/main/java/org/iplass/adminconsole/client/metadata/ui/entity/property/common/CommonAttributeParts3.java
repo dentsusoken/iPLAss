@@ -1,19 +1,19 @@
 /*
  * Copyright (C) 2017 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
- * 
+ *
  * Unless you have purchased a commercial license,
  * the following license terms apply:
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
@@ -22,6 +22,9 @@ package org.iplass.adminconsole.client.metadata.ui.entity.property.common;
 
 import java.util.LinkedHashMap;
 
+import org.iplass.adminconsole.client.base.ui.widget.form.MtpForm2Column;
+import org.iplass.adminconsole.client.base.ui.widget.form.MtpSelectItem;
+import org.iplass.adminconsole.client.base.ui.widget.form.MtpTextItem;
 import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
 import org.iplass.adminconsole.client.metadata.ui.entity.property.PropertyAttribute;
 import org.iplass.adminconsole.client.metadata.ui.entity.property.PropertyListGridRecord;
@@ -36,27 +39,23 @@ import com.smartgwt.client.widgets.form.fields.TextItem;
 
 public class CommonAttributeParts3 extends PropertyCommonAttributeParts implements TypeChangeHandler {
 
-	private DynamicForm form = new DynamicForm();
+	private DynamicForm form;
 
 	/** インデックスタイプ */
 	private SelectItem selIndexType;
+
 	/** StoreDefinition マッピングカラム名 */
 	private TextItem txtStoreColName;
 
 	public CommonAttributeParts3() {
 
-		selIndexType = new SelectItem();
+		selIndexType = new MtpSelectItem();
 		selIndexType.setTitle("Index Type");
-		selIndexType.setWidth(200);
 
-		txtStoreColName = new TextItem();
+		txtStoreColName = new MtpTextItem();
 		txtStoreColName.setTitle("Store Col Name");
-		txtStoreColName.setWidth(200);
 
-		form.setMargin(5);
-		form.setNumCols(7);
-		form.setWidth100();
-		form.setHeight(30);
+		form = new MtpForm2Column();
 		form.setItems(selIndexType, txtStoreColName);
 
 		addMember(form);
@@ -83,6 +82,10 @@ public class CommonAttributeParts3 extends PropertyCommonAttributeParts implemen
 		}
 		if (commonAttribute.getStoreColumnMappingName() != null) {
 			txtStoreColName.setValue(commonAttribute.getStoreColumnMappingName());
+		}
+
+		if (commonAttribute.getType() != null) {
+			typeControl(commonAttribute.getType());
 		}
 	}
 
@@ -114,35 +117,32 @@ public class CommonAttributeParts3 extends PropertyCommonAttributeParts implemen
 	@Override
 	public void onTypeChanged(PropertyDefinitionType type) {
 
+		typeControl(type);
+
+		switch (type) {
+		case EXPRESSION:
+		case REFERENCE:
+		case BINARY:
+		case LONGTEXT:
+			selIndexType.setValue(IndexType.NON_INDEXED.name());
+			txtStoreColName.clearValue();
+			break;
+		default:
+		}
+	}
+
+	private void typeControl(PropertyDefinitionType type) {
+
 		selIndexType.setDisabled(false);
 		txtStoreColName.setDisabled(false);
 
 		switch (type) {
 		case EXPRESSION:
-			selIndexType.setDisabled(true);
-			selIndexType.setValue(IndexType.NON_INDEXED.name());
-			txtStoreColName.setDisabled(true);
-			txtStoreColName.clearValue();
-			break;
 		case REFERENCE:
-			selIndexType.setDisabled(true);
-			selIndexType.setValue(IndexType.NON_INDEXED.name());
-			txtStoreColName.setDisabled(true);
-			txtStoreColName.clearValue();
-			break;
-		case AUTONUMBER:
-			break;
 		case BINARY:
-			selIndexType.setDisabled(true);
-			selIndexType.setValue(IndexType.NON_INDEXED.name());
-			txtStoreColName.setDisabled(true);
-			txtStoreColName.clearValue();
-			break;
 		case LONGTEXT:
 			selIndexType.setDisabled(true);
-			selIndexType.setValue(IndexType.NON_INDEXED.name());
 			txtStoreColName.setDisabled(true);
-			txtStoreColName.clearValue();
 			break;
 		default:
 		}

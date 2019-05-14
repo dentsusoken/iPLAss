@@ -23,42 +23,32 @@ package org.iplass.adminconsole.client.metadata.ui.entity;
 import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
 import org.iplass.adminconsole.client.base.io.download.PostDownloadFrame;
 import org.iplass.adminconsole.client.base.tenant.TenantInfoHolder;
-import org.iplass.adminconsole.client.base.ui.widget.AbstractWindow;
+import org.iplass.adminconsole.client.base.ui.widget.MtpDialog;
 import org.iplass.adminconsole.client.base.ui.widget.form.MtpForm;
+import org.iplass.adminconsole.client.base.ui.widget.form.MtpTextItem;
 import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
-import org.iplass.adminconsole.client.metadata.ui.common.MetaDataCreateDialog;
 import org.iplass.adminconsole.shared.metadata.dto.entity.EntityJavaMappingClassDownloadProperty;
 
 import com.google.gwt.core.client.GWT;
-import com.smartgwt.client.types.VerticalAlignment;
 import com.smartgwt.client.widgets.IButton;
 import com.smartgwt.client.widgets.Label;
 import com.smartgwt.client.widgets.events.ClickEvent;
 import com.smartgwt.client.widgets.events.ClickHandler;
 import com.smartgwt.client.widgets.form.DynamicForm;
 import com.smartgwt.client.widgets.form.fields.TextItem;
-import com.smartgwt.client.widgets.layout.HLayout;
-import com.smartgwt.client.widgets.layout.VLayout;
 
-public class CreateJavaMappingClassDialog extends AbstractWindow {
+public class CreateJavaMappingClassDialog extends MtpDialog {
 
 	public CreateJavaMappingClassDialog(final String defName, final String className) {
 
 		setTitle("Create Java Mapping Class");
-
-		setHeight(250);
-		setWidth(450);
-
-		setShowMinimizeButton(false);
-		setIsModal(true);
-		setShowModalMask(true);
+		setHeight(200);
 		centerInPage();
 
 		final DynamicForm form = new MtpForm();
 		form.setAutoFocus(true);
 
-		final TextItem classNameField = new TextItem("className","Class Name");
-		classNameField.setWidth("100%");
+		final TextItem classNameField = new MtpTextItem("className","Class Name");
 		classNameField.setValue(className);
 
 		form.setItems(classNameField);
@@ -70,16 +60,7 @@ public class CreateJavaMappingClassDialog extends AbstractWindow {
 		comment2.setMargin(10);
 		comment2.setHeight(32);
 
-		VLayout contents = new VLayout();
-		contents.setPadding(10);
-
-		contents.setMembers(form, comment1, comment2);
-
-		HLayout footer = new HLayout(5);
-		footer.setMargin(10);
-		footer.setAutoHeight();
-		footer.setWidth100();
-		footer.setAlign(VerticalAlignment.CENTER);
+		container.addMembers(form, comment1, comment2);
 
 		IButton create = new IButton("Create");
 		create.addClickHandler(new ClickHandler() {
@@ -103,10 +84,6 @@ public class CreateJavaMappingClassDialog extends AbstractWindow {
 		});
 
 		footer.setMembers(create, cancel);
-
-		addItem(contents);
-		addItem(SmartGWTUtil.separator());
-		addItem(footer);
 	}
 
 }

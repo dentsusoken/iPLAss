@@ -172,7 +172,8 @@ public class SearchResultSection extends Section {
 			displayNameKey="generic_element_section_SearchResultSection_bulkUpdateDisplayLabelDisplaNameKey",
 			description="一括更新ボタンに表示されるラベルを設定します。",
 			descriptionKey="generic_element_section_SearchResultSection_bulkUpdateDisplayLabelDescriptionKey",
-			useMultiLang=true
+			inputType=InputType.MULTI_LANG,
+			multiLangField = "localizedBulkUpdateDisplayLabel"
 	)
 	@MultiLang()
 	private String bulkUpdateDisplayLabel;
@@ -181,7 +182,7 @@ public class SearchResultSection extends Section {
 	@MetaFieldInfo(
 			displayName="多言語設定",
 			displayNameKey="generic_element_section_SearchResultSection_localizedBulkUpdateDisplayLabelDisplaNameKey",
-			inputType=InputType.LANGUAGE
+			inputType=InputType.MULTI_LANG_LIST
 	)
 	private List<LocalizedStringDefinition> localizedBulkUpdateDisplayLabel;
 

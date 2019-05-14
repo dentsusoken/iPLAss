@@ -62,8 +62,8 @@
 	</replace-with>
 
 	<!-- switch entity view section controll -->
-	<replace-with class="org.iplass.adminconsole.client.metadata.ui.entity.layout.item.element.section.SectionWindowControllerImpl">
-		<when-type-is class="org.iplass.adminconsole.client.metadata.ui.entity.layout.item.element.section.SectionWindowController"/>
+	<replace-with class="org.iplass.adminconsole.client.metadata.ui.entity.layout.item.element.section.SectionControllerImpl">
+		<when-type-is class="org.iplass.adminconsole.client.metadata.ui.entity.layout.item.element.section.SectionController"/>
 	</replace-with>
 	<!-- switch entity view MetaFieldSettingParts controll -->
 	<replace-with class="org.iplass.adminconsole.client.metadata.ui.entity.layout.metafield.MetaFieldSettingPartsControllerImpl">

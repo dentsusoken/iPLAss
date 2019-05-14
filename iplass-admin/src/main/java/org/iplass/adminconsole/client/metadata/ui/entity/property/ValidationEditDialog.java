@@ -21,103 +21,71 @@
 package org.iplass.adminconsole.client.metadata.ui.entity.property;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
-import org.iplass.adminconsole.client.base.ui.widget.AbstractWindow;
+import org.iplass.adminconsole.client.base.ui.widget.EditablePane;
+import org.iplass.adminconsole.client.base.ui.widget.MetaDataLangTextItem;
 import org.iplass.adminconsole.client.base.ui.widget.MetaDataSelectItem;
 import org.iplass.adminconsole.client.base.ui.widget.MetaDataSelectItem.ItemOption;
-import org.iplass.adminconsole.client.base.ui.widget.ScriptEditorDialogConstants;
-import org.iplass.adminconsole.client.base.ui.widget.ScriptEditorDialogHandler;
-import org.iplass.adminconsole.client.base.ui.widget.ScriptEditorDialogMode;
+import org.iplass.adminconsole.client.base.ui.widget.MtpDialog;
+import org.iplass.adminconsole.client.base.ui.widget.form.MtpForm;
+import org.iplass.adminconsole.client.base.ui.widget.form.MtpForm2Column;
+import org.iplass.adminconsole.client.base.ui.widget.form.MtpSelectItem;
+import org.iplass.adminconsole.client.base.ui.widget.form.MtpTextAreaItem;
+import org.iplass.adminconsole.client.base.ui.widget.form.MtpTextItem;
 import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
 import org.iplass.adminconsole.client.metadata.data.message.MessageItemDS;
-import org.iplass.adminconsole.client.metadata.ui.MetaDataUtil;
-import org.iplass.adminconsole.client.metadata.ui.common.LocalizedStringSettingDialog;
 import org.iplass.adminconsole.client.metadata.ui.entity.property.ValidationListGridRecord.ValidationType;
+import org.iplass.adminconsole.client.metadata.ui.entity.property.validation.BinarySizeAttributePane;
+import org.iplass.adminconsole.client.metadata.ui.entity.property.validation.BinaryTypeAttributePane;
+import org.iplass.adminconsole.client.metadata.ui.entity.property.validation.LengthAttributePane;
+import org.iplass.adminconsole.client.metadata.ui.entity.property.validation.NotNullAttributePane;
+import org.iplass.adminconsole.client.metadata.ui.entity.property.validation.RangeAttributePane;
+import org.iplass.adminconsole.client.metadata.ui.entity.property.validation.RegexAttributePane;
+import org.iplass.adminconsole.client.metadata.ui.entity.property.validation.ScriptAttributePane;
 import org.iplass.mtp.definition.LocalizedStringDefinition;
 import org.iplass.mtp.message.MessageCategory;
 
 import com.google.gwt.core.client.JavaScriptObject;
-import com.smartgwt.client.types.VerticalAlignment;
 import com.smartgwt.client.util.JSOHelper;
 import com.smartgwt.client.widgets.IButton;
 import com.smartgwt.client.widgets.events.ClickEvent;
 import com.smartgwt.client.widgets.events.ClickHandler;
 import com.smartgwt.client.widgets.form.DynamicForm;
-import com.smartgwt.client.widgets.form.fields.ButtonItem;
-import com.smartgwt.client.widgets.form.fields.CheckboxItem;
+import com.smartgwt.client.widgets.form.fields.FormItemIcon;
 import com.smartgwt.client.widgets.form.fields.SelectItem;
-import com.smartgwt.client.widgets.form.fields.SpacerItem;
 import com.smartgwt.client.widgets.form.fields.TextAreaItem;
 import com.smartgwt.client.widgets.form.fields.TextItem;
 import com.smartgwt.client.widgets.form.fields.events.ChangedEvent;
 import com.smartgwt.client.widgets.form.fields.events.ChangedHandler;
 import com.smartgwt.client.widgets.grid.ListGridField;
-import com.smartgwt.client.widgets.layout.HLayout;
 import com.smartgwt.client.widgets.layout.VLayout;
 
-public class ValidationEditDialog extends AbstractWindow {
+public class ValidationEditDialog extends MtpDialog {
 
-	/** 対象Propertyのレコード */
-	private ValidationListGridRecord record;
+	private static final int BASE_HEIGHT = 200;
 
-	/** Validationの選択項目 */
+	private static final int MESSAGE_HEIGHT = 120;
+
 	private SelectItem selType;
 
-	/** 説明 */
 	private TextAreaItem descriptionField;
 
-	/** 最小値用の入力項目 */
-	private TextItem _minItem;
-	/** 最大値用の入力項目 */
-	private TextItem _maxItem;
-	/**  */
-	private CheckboxItem _minExItem;
-	/**  */
-	private CheckboxItem _maxExItem;
-	/**  */
-	private CheckboxItem _byteCheckItem;
-	/**  */
-	private CheckboxItem _surrogatePairAsOneCharItem;
+	private ValidationAttributePane typePane;
 
-	/**  */
-	private TextItem _ptrnItem;
+	private Map<ValidationType, ValidationAttributePane> mapTypePanes;
 
-	/**  */
-	private TextItem _mimeTypePtrnItem;
-
-	/**  */
-	private TextAreaItem _scriptItem;
-	/**  */
-	private CheckboxItem _asArray;
-
-	/**  */
-	private TextItem _errorMsgItem;
-	/**  */
-	private TextItem _errorCodeItem;
-	/**  */
-	private SelectItem _msgCategoryItem;
-	/**  */
-	private SelectItem _msgIdItem;
-
-	private DynamicForm _rangeItemForm;
-	private DynamicForm _regexItemForm;
-	private DynamicForm _lengthItemForm;
-	private DynamicForm _scriptItemForm;
-	private DynamicForm _binarySizeItemForm;
-	private DynamicForm _binaryTypeItemForm;
-
-	private DynamicForm _commonItemForm2;
-
-	/** Form表示用領域 */
-	private VLayout _formLayout;
+	private ValidationMessagePane messagePane;
 
 	private boolean isReadOnly = false;
 	private boolean canSelectNotNull = true;
 
-	public List<LocalizedStringDefinition> _localizedDisplayNameList;
+	/** 対象Propertyのレコード */
+	private ValidationListGridRecord record;
 
 	public interface ValidationEditDialogHandler {
 
@@ -132,248 +100,67 @@ public class ValidationEditDialog extends AbstractWindow {
 		this.isReadOnly = isReadOnly;
 		this.handler = handler;
 
+		if (isReadOnly) {
+			setTitle("Validator (Read Only)");
+		} else {
+			setTitle("Validator");
+		}
+		setHeight(BASE_HEIGHT);
+
 		initialize();
 		dataInitialize();
 		formVisibleChange();
+
+		centerInPage();
 	}
 
 	/**
 	 * コンポーネント初期化
 	 */
 	private void initialize() {
-		// ダイアログ本体のプロパティ設定
-		if (isReadOnly) {
-			setTitle("Validator (Read Only)");
-		} else {
-			setTitle("Validator");
-		}
-		setWidth(630);
-		setHeight(170);
-		setShowMinimizeButton(false);
-		setIsModal(true);
-		setShowModalMask(true);
-		setCanDragResize(true);
-		centerInPage();
 
-		_formLayout = new VLayout(10);
-		_formLayout.setMargin(5);
-
-		selType = new SelectItem();
+		selType = new MtpSelectItem();
 		selType.setTitle("Type");
-		selType.setWidth(200);
 		SmartGWTUtil.setRequired(selType);
 		selType.addChangedHandler(new ChangedHandler() {
 			public void onChanged(ChangedEvent event) {
 
 				formVisibleChange();
 
-				resetMessage();
-			}
-		});
-		descriptionField = new TextAreaItem("description", "Description");
-		descriptionField.setWidth("100%");
-		descriptionField.setHeight(40);
-		descriptionField.setColSpan(4);
-		descriptionField.setStartRow(true);
-		_maxItem = new TextItem("maxValue");
-		_maxItem.setTitle("Max");
-		_maxItem.setKeyPressFilter("[0-9]");
-		_minItem = new TextItem("minValue");
-		_minItem.setTitle("Min");
-		_minItem.setKeyPressFilter("[0-9]");
-		_maxExItem = new CheckboxItem();
-		_maxExItem.setTitle("less than max value");
-		SmartGWTUtil.addHoverToFormItem(_maxExItem, rs("ui_metadata_entity_PropertyListGrid_maxExclude"));
-		_minExItem = new CheckboxItem();
-		_minExItem.setTitle("grater than min value");
-		SmartGWTUtil.addHoverToFormItem(_minExItem, rs("ui_metadata_entity_PropertyListGrid_minExclude"));
-		_byteCheckItem = new CheckboxItem();
-		_byteCheckItem.setTitle("check byte");
-		_surrogatePairAsOneCharItem = new CheckboxItem();
-		_surrogatePairAsOneCharItem.setTitle("surrogate pair as one char");
-
-		_ptrnItem = new TextItem();
-		_ptrnItem.setTitle("Pattern");
-		_ptrnItem.setWidth(360);
-
-		_mimeTypePtrnItem = new TextItem();
-		_mimeTypePtrnItem.setTitle("Pattern");
-		_mimeTypePtrnItem.setWidth(360);
-
-		_scriptItem = new TextAreaItem();
-		_scriptItem.setColSpan(2);
-		_scriptItem.setTitle("Script");
-		_scriptItem.setRowSpan(6);
-		_scriptItem.setWidth("100%");
-		SmartGWTUtil.setReadOnlyTextArea(_scriptItem);
-
-		ButtonItem editScript = new ButtonItem("editScript", "Edit");
-		editScript.setWidth(100);
-		editScript.setStartRow(false);
-		editScript.setPrompt(rs("ui_metadata_entity_PropertyListGrid_displayDialogEditScript"));
-		editScript.addClickHandler(new com.smartgwt.client.widgets.form.fields.events.ClickHandler() {
-
-			@Override
-			public void onClick(com.smartgwt.client.widgets.form.fields.events.ClickEvent event) {
-				MetaDataUtil.showScriptEditDialog(ScriptEditorDialogMode.GROOVY_SCRIPT,
-						SmartGWTUtil.getStringValue(_scriptItem),
-						ScriptEditorDialogConstants.ENTITY_VALIDATION,
-						null,
-						rs("ui_metadata_entity_PropertyListGrid_scriptHint"),
-						new ScriptEditorDialogHandler() {
-
-							@Override
-							public void onSave(String text) {
-								_scriptItem.setValue(text);
-							}
-							@Override
-							public void onCancel() {
-							}
-						});
+				ValidationType validationType = ValidationType.valueOf(SmartGWTUtil.getStringValue(selType));
+				messagePane.resetMessage(validationType);
 			}
 		});
 
-		_asArray = new CheckboxItem();
-		_asArray.setTitle("bind variable to array types");
-		SmartGWTUtil.addHoverToFormItem(_asArray, rs("ui_metadata_entity_PropertyListGrid_scriptAsArray"));
+		descriptionField = new MtpTextAreaItem("description", "Description");
+		descriptionField.setHeight(60);
+		descriptionField.setColSpan(2);
 
-		_errorMsgItem = new TextItem();
-		_errorMsgItem.setTitle("Message (Direct)");
-		_errorMsgItem.setWidth(400);
-		SmartGWTUtil.addHoverToFormItem(_errorMsgItem, rs("ui_metadata_entity_PropertyListGrid_messageSpecifyComment"));
-		//ちょっとヒントが大きいので別ダイアログで表示
-		String contentsStyle = "style=\"margin-left:5px;\"";
-		String tableStyle = "style=\"border: thin gray solid;padding:5px;white-space:nowrap;\"";
-		SmartGWTUtil.addHintToFormItem(_errorMsgItem,
-				"<br/>"
-				+ rs("ui_metadata_entity_PropertyListGrid_messageDef")
-				+ "<p " + contentsStyle + ">" + rs("ui_metadata_entity_PropertyListGrid_directMessageComment") + "</p>"
-				+ "<p " + contentsStyle + ">" + rs("ui_metadata_entity_PropertyListGrid_exampleFormat") + "</p>"
-				+ "</div>"
-				+ rs("ui_metadata_entity_PropertyListGrid_availBindVariable")
-				+ "<p " + contentsStyle + ">"
-				+ "<table style=\"border-collapse:collapse;\">"
-				+ "<tr><th " + tableStyle + ">" + rs("ui_metadata_entity_PropertyListGrid_format") + "</th><th" + tableStyle + ">" + rs("ui_metadata_entity_PropertyListGrid_outputContent") + "</th></tr>"
-				+ "<tr><td " + tableStyle + ">name</td><td "+ tableStyle + ">" + rs("ui_metadata_entity_PropertyListGrid_propName") + "</td></tr>"
-				+ "<tr><td " + tableStyle + ">entityName</td><td "+ tableStyle + ">" + rs("ui_metadata_entity_PropertyListGrid_entityName") + "</td></tr>"
-				+ "<tr><td " + tableStyle + ">min</td><td "+ tableStyle + ">" + rs("ui_metadata_entity_PropertyListGrid_lengthRangeTypeMin") + "</td></tr>"
-				+ "<tr><td " + tableStyle + ">max</td><td "+ tableStyle + ">" + rs("ui_metadata_entity_PropertyListGrid_lengthRangeTypeMax") + "</td></tr>"
-				+ "</table></p></div>"
-				);
+		final DynamicForm form = new MtpForm();
+		form.setItems(selType, descriptionField);
 
-		ButtonItem langBtn = new ButtonItem();
-		langBtn.setTitle("");
-		langBtn.setShowTitle(false);
-		langBtn.setIcon("world.png");
-		langBtn.setStartRow(false);	//これを指定しないとButtonの場合、先頭にくる
-		langBtn.setEndRow(false);	//これを指定しないと次のFormItemが先頭にいく
-		langBtn.setPrompt(rs("ui_metadata_entity_PropertyListGrid_eachLangDspName"));
-		langBtn.addClickHandler(new com.smartgwt.client.widgets.form.fields.events.ClickHandler() {
+		container.addMember(form);
 
-			@Override
-			public void onClick(com.smartgwt.client.widgets.form.fields.events.ClickEvent event) {
+		List<ValidationAttributePane> typePaneList = new ArrayList<ValidationAttributePane>();
+		typePaneList.add(new BinarySizeAttributePane());
+		typePaneList.add(new BinaryTypeAttributePane());
+		typePaneList.add(new LengthAttributePane());
+		typePaneList.add(new NotNullAttributePane());
+		typePaneList.add(new RangeAttributePane());
+		typePaneList.add(new RegexAttributePane());
+		typePaneList.add(new ScriptAttributePane());
 
-				if (_localizedDisplayNameList == null) {
-					_localizedDisplayNameList = new ArrayList<LocalizedStringDefinition>();
-				}
+		mapTypePanes = new HashMap<ValidationListGridRecord.ValidationType, ValidationAttributePane>();
+		for (ValidationAttributePane typePane : typePaneList) {
+			mapTypePanes.put(typePane.getType(), typePane);
+		}
 
-				LocalizedStringSettingDialog dialog = new LocalizedStringSettingDialog(_localizedDisplayNameList, isReadOnly);
-				dialog.show();
-
-			}
-		});
-
-		_errorCodeItem = new TextItem();
-		_errorCodeItem.setTitle("Code");
-
-		_msgCategoryItem = new MetaDataSelectItem(MessageCategory.class, new ItemOption(true, false));
-		_msgCategoryItem.setTitle("Message Category");
-		_msgIdItem = new SelectItem();
-		_msgIdItem.setTitle("Message Id");
-
-
-		final DynamicForm commonItemForm1 = new DynamicForm();
-		commonItemForm1.setWrapItemTitles(false);
-		commonItemForm1.setMargin(5);
-		commonItemForm1.setNumCols(2);
-		commonItemForm1.setWidth100();
-		commonItemForm1.setHeight(25);
-		commonItemForm1.setItems(selType, descriptionField);
-
-		_rangeItemForm = new DynamicForm();
-		_rangeItemForm.setWrapItemTitles(false);
-		_rangeItemForm.setMargin(5);
-		_rangeItemForm.setNumCols(5);
-		_rangeItemForm.setWidth100();
-		_rangeItemForm.setHeight(50);
-		_rangeItemForm.setItems(
-				_minItem, _minExItem, SmartGWTUtil.createSpacer(),
-				_maxItem, _maxExItem);
-
-		_regexItemForm = new DynamicForm();
-		_regexItemForm.setWrapItemTitles(false);
-		_regexItemForm.setMargin(5);
-		_regexItemForm.setNumCols(2);
-		_regexItemForm.setWidth100();
-		_regexItemForm.setHeight(25);
-		_regexItemForm.setItems(_ptrnItem);
-
-		_lengthItemForm = new DynamicForm();
-		_lengthItemForm.setWrapItemTitles(false);
-		_lengthItemForm.setMargin(5);
-		_lengthItemForm.setNumCols(2);
-		_lengthItemForm.setWidth100();
-		_lengthItemForm.setHeight(95);
-		_lengthItemForm.setItems(_minItem, _maxItem, _byteCheckItem, _surrogatePairAsOneCharItem);
-
-		_scriptItemForm = new DynamicForm();
-		_scriptItemForm.setWrapItemTitles(false);
-		_scriptItemForm.setMargin(5);
-		_scriptItemForm.setNumCols(3);
-		_scriptItemForm.setColWidths(100, "*", 100);
-		_scriptItemForm.setWidth100();
-		_scriptItemForm.setHeight(120);
-		_scriptItemForm.setItems(new SpacerItem(), new SpacerItem(), editScript, _scriptItem, _asArray);
-
-		_binarySizeItemForm = new DynamicForm();
-		_binarySizeItemForm.setWrapItemTitles(false);
-		_binarySizeItemForm.setMargin(5);
-		_binarySizeItemForm.setNumCols(2);
-		_binarySizeItemForm.setWidth100();
-		_binarySizeItemForm.setHeight(50);
-		_binarySizeItemForm.setItems(_minItem, _maxItem);
-
-		_binaryTypeItemForm = new DynamicForm();
-		_binaryTypeItemForm.setWrapItemTitles(false);
-		_binaryTypeItemForm.setMargin(5);
-		_binaryTypeItemForm.setNumCols(2);
-		_binaryTypeItemForm.setWidth100();
-		_binaryTypeItemForm.setHeight(25);
-		//_binaryTypeItemForm.setItems(_ptrnItem);
-		_binaryTypeItemForm.setItems(_mimeTypePtrnItem);
-
-		_commonItemForm2 = new DynamicForm();
-		_commonItemForm2.setWrapItemTitles(false);
-		_commonItemForm2.setPadding(5);
-		_commonItemForm2.setNumCols(5);
-		_commonItemForm2.setWidth100();
-		_commonItemForm2.setHeight(110);
-		_commonItemForm2.setIsGroup(true);
-		_commonItemForm2.setGroupTitle("Message");
-		_errorCodeItem.setColSpan(4);
-		_errorMsgItem.setColSpan(3);
-		_commonItemForm2.setItems(
-				_errorMsgItem, //SmartGWTUtil.createSpacer(), SmartGWTUtil.createSpacer(),
-				langBtn,
-				_msgCategoryItem, _msgIdItem, SmartGWTUtil.createSpacer(),
-				_errorCodeItem
-				);
-
+		messagePane = new ValidationMessagePane();
 
 		IButton ok = new IButton("OK");
 		ok.addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
-				if (!commonItemForm1.validate()) {
+				if (!form.validate()) {
 					return;
 				}
 				validateUpdateRecordData();
@@ -390,25 +177,12 @@ public class ValidationEditDialog extends AbstractWindow {
 			}
 		});
 
-		HLayout btnLayout = new HLayout(5);
-		btnLayout.setMargin(5);
-		btnLayout.setHeight(20);
-		btnLayout.setWidth100();
-		btnLayout.setAlign(VerticalAlignment.CENTER);
-		btnLayout.addMember(ok);
-		btnLayout.addMember(cancel);
-
-		_formLayout.addMember(commonItemForm1);
-
-		addItem(_formLayout);
-		addItem(SmartGWTUtil.separator());
-		addItem(btnLayout);
+		footer.setMembers(ok, cancel);
 	}
 
 	/**
 	 * データ初期化
 	 */
-	@SuppressWarnings("unchecked")
 	private void dataInitialize() {
 
 		LinkedHashMap<String, String> validationMap = ValidationType.allTypeMap();
@@ -420,208 +194,188 @@ public class ValidationEditDialog extends AbstractWindow {
 
 		selType.setValue(record.getValType());
 		descriptionField.setValue(record.getDescription());
-		_maxItem.setValue(record.getMax());
-		_maxExItem.setValue(record.isMaxValueExcluded());
-		_minItem.setValue(record.getMin());
-		_minExItem.setValue(record.isMinValueExcluded());
-		_byteCheckItem.setValue(record.isByteLengthCheck());
-		_surrogatePairAsOneCharItem.setValue(record.isSurrogatePairAsOneChar());
-		_ptrnItem.setValue(record.getPtrn());
-		_mimeTypePtrnItem.setValue(record.getPtrn());
-		_scriptItem.setValue(record.getScripting());
-		_asArray.setValue(record.isAsArray());
-		_errorMsgItem.setValue(record.getErrorMessage());
-		_localizedDisplayNameList = (List<LocalizedStringDefinition>) JSOHelper.convertToJava((JavaScriptObject) record.getErrorMessageMultiLang());
-		_errorCodeItem.setValue(record.getErrorCode());
-		_msgCategoryItem.setValue(record.getMessageCategory());
-		_msgIdItem.setValue(record.getMessageId());
 
-		_msgCategoryItem.addChangedHandler(new ChangedHandler() {
-			@Override
-			public void onChanged(ChangedEvent event) {
-				changeMessageCategory();
-				_msgIdItem.clearValue();
-			}
-		});
-
-		if (record.getMessageCategory() != null && !record.getMessageCategory().isEmpty()) {
-			_msgIdItem.setOptionDataSource(MessageItemDS.getInstance(record.getMessageCategory()));
-		}
-		_msgIdItem.setValueField("id");
-		_msgIdItem.setDisplayField("id");
-		_msgIdItem.setPickListWidth(520);
-		ListGridField itemIdField = new ListGridField("id", "ID", 150);
-		ListGridField itemMsgField = new ListGridField("shortMessage", "Message", 350);
-		_msgIdItem.setPickListFields(itemIdField, itemMsgField);
-		_msgIdItem.setSortField("id");
+		messagePane.setDefinition(record);
 	}
 
 	private void formVisibleChange() {
-		if (_formLayout.contains(_rangeItemForm)) {
-			_formLayout.removeMember(_rangeItemForm);
+
+		if (typePane != null) {
+			container.removeMember(typePane);
+			typePane = null;
 		}
-		if (_formLayout.contains(_regexItemForm)) {
-			_formLayout.removeMember(_regexItemForm);
-		}
-		if (_formLayout.contains(_lengthItemForm)) {
-			_formLayout.removeMember(_lengthItemForm);
-		}
-		if (_formLayout.contains(_scriptItemForm)) {
-			_formLayout.removeMember(_scriptItemForm);
-		}
-		if (_formLayout.contains(_binarySizeItemForm)) {
-			_formLayout.removeMember(_binarySizeItemForm);
-		}
-		if (_formLayout.contains(_binaryTypeItemForm)) {
-			_formLayout.removeMember(_binaryTypeItemForm);
-		}
-		if (_formLayout.contains(_commonItemForm2)) {
-			_formLayout.removeMember(_commonItemForm2);
+
+		if (container.contains(messagePane)) {
+			container.removeMember(messagePane);
 		}
 
 		if (selType.getValue() != null) {
 			ValidationType validationType
-					= ValidationType.valueOf(selType.getValueAsString());
-			if (ValidationType.RANGE.equals(validationType)) {
-				_formLayout.addMember(_rangeItemForm);
-				setHeight(360);
-			} else if (ValidationType.REGEX.equals(validationType)) {
-				_formLayout.addMember(_regexItemForm);
-				setHeight(335);
-			} else if (ValidationType.LENGTH.equals(validationType)) {
-				_formLayout.addMember(_lengthItemForm);
-				setHeight(405);
-			} else if (ValidationType.SCRIPT.equals(validationType)) {
-				_formLayout.addMember(_scriptItemForm);
-				setHeight(460);
-			} else if (ValidationType.NOTNULL.equals(validationType)) {
-				setHeight(290);
-			} else if (ValidationType.BINARYSIZE.equals(validationType)) {
-				_formLayout.addMember(_binarySizeItemForm);
-				setHeight(385);
-			} else if (ValidationType.BINARYTYPE.equals(validationType)) {
-				_formLayout.addMember(_binaryTypeItemForm);
-				setHeight(335);
+					= ValidationType.valueOf(SmartGWTUtil.getStringValue(selType));
+
+			typePane = mapTypePanes.get(validationType);
+			if (typePane != null) {
+				typePane.setDefinition(record);
+				container.addMember(typePane);
+				setHeight(BASE_HEIGHT + typePane.panelHeight() + MESSAGE_HEIGHT);
 			}
-			_formLayout.addMember(_commonItemForm2);
-		}
-//		_formLayout.draw();
-	}
-
-	private void resetMessage() {
-
-		_errorMsgItem.clearValue();
-		if (_localizedDisplayNameList != null) {
-			_localizedDisplayNameList.clear();
-		}
-		_errorCodeItem.clearValue();
-
-		ValidationType validationType = ValidationType.valueOf(selType.getValueAsString());
-		if (ValidationType.NOTNULL == validationType) {
-			_msgCategoryItem.setValue("mtp/validation");
-			_msgIdItem.setValue("NotNull");
-		} else {
-			_msgCategoryItem.clearValue();
-			_msgIdItem.clearValue();
-		}
-		changeMessageCategory();
-	}
-
-	private void changeMessageCategory() {
-		String category = SmartGWTUtil.getStringValue(_msgCategoryItem);
-		if (SmartGWTUtil.isEmpty(category)) {
-			_msgIdItem.setOptionDataSource(MessageItemDS.getInstance(""));
-		} else {
-			_msgIdItem.setOptionDataSource(MessageItemDS.getInstance(category));
+			container.addMember(messagePane);
 		}
 	}
 
 	private void validateUpdateRecordData() {
 
-		record.setValType(selType.getValueAsString());
+		record.setValType(SmartGWTUtil.getStringValue(selType, true));
 		record.setDescription(SmartGWTUtil.getStringValue(descriptionField, true));
 
-		ValidationType validationType
-				= ValidationType.valueOf(selType.getValueAsString());
-		switch (validationType) {
-		case RANGE:
-			Object minValue = _rangeItemForm.getValue("minValue");
-			if (minValue != null) {
-				record.setMin(minValue.toString());
-			} else {
-				//未指定だったら除外ON
-				_minExItem.setValue(true);
-			}
-			record.setMinValueExcluded(_minExItem.getValueAsBoolean());
-			Object maxValue = _rangeItemForm.getValue("maxValue");
-			if (maxValue != null) {
-				record.setMax(maxValue.toString());
-			} else {
-				//未指定だったら除外ON
-				_maxExItem.setValue(true);
-			}
-			record.setMaxValueExcluded(_maxExItem.getValueAsBoolean());
-			//record.setGeneralPurpus(record.getMin() + "～" + record.getMax());
-			break;
-		case REGEX:
-			if (_ptrnItem.getValue() != null) {
-				record.setPtrn(_ptrnItem.getValue().toString());
-			}
-			//record.setGeneralPurpus(record.getPtrn());
-			break;
-		case LENGTH:
-			Object minLength = _lengthItemForm.getValue("minValue");
-			if (minLength != null) {
-				record.setMin(minLength.toString());
-			} else {
-				record.setMin(null);
-			}
-			Object maxLength = _lengthItemForm.getValue("maxValue");
-			if (maxLength != null) {
-				record.setMax(maxLength.toString());
-			} else {
-				record.setMax(null);
-			}
-			record.setByteLengthCheck(_byteCheckItem.getValueAsBoolean());
-			record.setSurrogatePairAsOneChar(_surrogatePairAsOneCharItem.getValueAsBoolean());
-			//String purpus = record.getMin() + "～" + record.getMax();
-			//if (record.isByteLengthCheck()) {
-			//	purpus = purpus + "(byte)";
-			//}
-			//record.setGeneralPurpus(purpus);
-			break;
-		case SCRIPT:
-			if (_scriptItem.getValue() != null) {
-				record.setScripting(_scriptItem.getValue().toString());
-			}
-			record.setAsArray(_asArray.getValueAsBoolean());
-			//record.setGeneralPurpus(record.getScripting());
-			break;
-		case NOTNULL:
-			//特になし
-			break;
-		case BINARYSIZE:
-			record.setMin(SmartGWTUtil.getStringValue(_minItem));
-			record.setMax(SmartGWTUtil.getStringValue(_maxItem));
-			break;
-		case BINARYTYPE:
-//			record.setPtrn(SmartGWTUtil.getStringValue(_ptrnItem));
-			record.setPtrn(SmartGWTUtil.getStringValue(_mimeTypePtrnItem));
-			//record.setGeneralPurpus(record.getPtrn());
-			break;
-		default:
+		if (typePane != null) {
+			typePane.getEditDefinition(record);
 		}
 
-		record.setErrorMessage(SmartGWTUtil.getStringValue(_errorMsgItem, true));
-		record.setErrorMessageMultiLang(_localizedDisplayNameList);
-		record.setErrorCode(SmartGWTUtil.getStringValue(_errorCodeItem, true));
-		record.setMessageCategory(SmartGWTUtil.getStringValue(_msgCategoryItem, true));
-		record.setMessageId(SmartGWTUtil.getStringValue(_msgIdItem, true));
+		if (messagePane != null) {
+			messagePane.getEditDefinition(record);
+		}
 
 		handler.onSaved(record);
 	}
 
-	private String rs(String key) {
-		return AdminClientMessageUtil.getString(key);
+	private static class ValidationMessagePane extends VLayout implements EditablePane<ValidationListGridRecord>{
+
+		private MetaDataLangTextItem errorMessageItem;
+
+		private SelectItem messageCategoryItem;
+		private SelectItem messageIdItem;
+
+		private TextItem errorCodeItem;
+
+		private DynamicForm form;
+
+		public ValidationMessagePane() {
+
+			setHeight(MESSAGE_HEIGHT);
+
+			//ちょっとヒントが大きいので別ダイアログで表示
+			String contentsStyle = "style=\"margin-left:5px;\"";
+			String tableStyle = "style=\"border: thin gray solid;padding:5px;white-space:nowrap;\"";
+			FormItemIcon hintIcon = SmartGWTUtil.getHintIcon(
+					"<br/>"
+					+ "<div>"
+					+ "<p><b>" + rs("ui_metadata_entity_PropertyListGrid_messageDef") + "</b></p>"
+					+ "<div " + contentsStyle + ">"
+					+ "<p>" + rs("ui_metadata_entity_PropertyListGrid_directMessageComment") + "</p>"
+					+ "<p>" + rs("ui_metadata_entity_PropertyListGrid_exampleFormat") + "</p>"
+					+ "</div></div>"
+					+ "<div>"
+					+ "<p><b>" + rs("ui_metadata_entity_PropertyListGrid_availBindVariable") + "</b></p>"
+					+ "<div " + contentsStyle + ">"
+					+ "<table style=\"border-collapse:collapse;\">"
+					+ "<tr><th " + tableStyle + ">" + rs("ui_metadata_entity_PropertyListGrid_format") + "</th><th " + tableStyle + ">" + rs("ui_metadata_entity_PropertyListGrid_outputContent") + "</th></tr>"
+					+ "<tr><td " + tableStyle + ">name</td><td "+ tableStyle + ">" + rs("ui_metadata_entity_PropertyListGrid_propName") + "</td></tr>"
+					+ "<tr><td " + tableStyle + ">entityName</td><td "+ tableStyle + ">" + rs("ui_metadata_entity_PropertyListGrid_entityName") + "</td></tr>"
+					+ "<tr><td " + tableStyle + ">min</td><td "+ tableStyle + ">" + rs("ui_metadata_entity_PropertyListGrid_lengthRangeTypeMin") + "</td></tr>"
+					+ "<tr><td " + tableStyle + ">max</td><td "+ tableStyle + ">" + rs("ui_metadata_entity_PropertyListGrid_lengthRangeTypeMax") + "</td></tr>"
+					+ "</table></div></div>"
+					);
+			errorMessageItem = new MetaDataLangTextItem(hintIcon);
+			errorMessageItem.setTitle("Message (Direct)");
+			errorMessageItem.setColSpan(3);
+			SmartGWTUtil.addHoverToFormItem(errorMessageItem, rs("ui_metadata_entity_PropertyListGrid_messageSpecifyComment"));
+
+			messageCategoryItem = new MetaDataSelectItem(MessageCategory.class, new ItemOption(true, false));
+			messageCategoryItem.setTitle("Message Category");
+			messageCategoryItem.addChangedHandler(new ChangedHandler() {
+				@Override
+				public void onChanged(ChangedEvent event) {
+					changeMessageCategory();
+					messageIdItem.clearValue();
+				}
+			});
+
+			messageIdItem = new MtpSelectItem();
+			messageIdItem.setTitle("Message Id");
+			messageIdItem.setValueField("id");
+			messageIdItem.setDisplayField("id");
+			messageIdItem.setPickListWidth(520);
+			ListGridField itemIdField = new ListGridField("id", "ID", 150);
+			ListGridField itemMsgField = new ListGridField("shortMessage", "Message", 350);
+			messageIdItem.setPickListFields(itemIdField, itemMsgField);
+			messageIdItem.setSortField("id");
+
+			errorCodeItem = new MtpTextItem();
+			errorCodeItem.setTitle("Code");
+
+			form = new MtpForm2Column();
+			form.setIsGroup(true);
+			form.setGroupTitle("Message");
+			form.setItems(errorMessageItem, messageCategoryItem, messageIdItem, errorCodeItem);
+
+			addMember(form);
+		}
+
+		@SuppressWarnings("unchecked")
+		@Override
+		public void setDefinition(ValidationListGridRecord record) {
+
+			errorMessageItem.setValue(record.getErrorMessage());
+			errorMessageItem.setLocalizedList((List<LocalizedStringDefinition>) JSOHelper.convertToJava((JavaScriptObject) record.getErrorMessageMultiLang()));
+			messageCategoryItem.setValue(record.getMessageCategory());
+			messageIdItem.setValue(record.getMessageId());
+			errorCodeItem.setValue(record.getErrorCode());
+
+			if (record.getMessageCategory() != null && !record.getMessageCategory().isEmpty()) {
+				messageIdItem.setOptionDataSource(MessageItemDS.getInstance(record.getMessageCategory()));
+			}
+		}
+
+		@Override
+		public ValidationListGridRecord getEditDefinition(ValidationListGridRecord record) {
+
+			record.setErrorMessage(SmartGWTUtil.getStringValue(errorMessageItem, true));
+			record.setErrorMessageMultiLang(errorMessageItem.getLocalizedList());
+			record.setErrorCode(SmartGWTUtil.getStringValue(errorCodeItem, true));
+			record.setMessageCategory(SmartGWTUtil.getStringValue(messageCategoryItem, true));
+			record.setMessageId(SmartGWTUtil.getStringValue(messageIdItem, true));
+
+			return record;
+		}
+
+		@Override
+		public boolean validate() {
+			return form.validate();
+		}
+
+		@Override
+		public void clearErrors() {
+			form.clearErrors(true);
+		}
+
+		public void resetMessage(ValidationType validationType) {
+
+			errorMessageItem.clearValue();
+			errorMessageItem.setLocalizedList(null);
+			errorCodeItem.clearValue();
+
+			if (ValidationType.NOTNULL == validationType) {
+				messageCategoryItem.setValue("mtp/validation");
+				messageIdItem.setValue("NotNull");
+			} else {
+				messageCategoryItem.clearValue();
+				messageIdItem.clearValue();
+			}
+			changeMessageCategory();
+		}
+
+		private void changeMessageCategory() {
+			String category = SmartGWTUtil.getStringValue(messageCategoryItem);
+			if (SmartGWTUtil.isEmpty(category)) {
+				messageIdItem.setOptionDataSource(MessageItemDS.getInstance(""));
+			} else {
+				messageIdItem.setOptionDataSource(MessageItemDS.getInstance(category));
+			}
+		}
+
+		private String rs(String key) {
+			return AdminClientMessageUtil.getString(key);
+		}
 	}
 }

@@ -21,11 +21,12 @@
 package org.iplass.adminconsole.client.metadata.ui.entity.filter;
 
 import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
-import org.iplass.adminconsole.client.base.ui.widget.AbstractWindow;
+import org.iplass.adminconsole.client.base.ui.widget.MtpDialog;
+import org.iplass.adminconsole.client.base.ui.widget.form.MtpForm;
+import org.iplass.adminconsole.client.base.ui.widget.form.MtpTextItem;
 import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
 import org.iplass.mtp.view.filter.EntityFilterItem;
 
-import com.smartgwt.client.types.VerticalAlignment;
 import com.smartgwt.client.util.SC;
 import com.smartgwt.client.widgets.IButton;
 import com.smartgwt.client.widgets.events.ClickEvent;
@@ -34,14 +35,12 @@ import com.smartgwt.client.widgets.form.DynamicForm;
 import com.smartgwt.client.widgets.form.fields.TextItem;
 import com.smartgwt.client.widgets.grid.ListGrid;
 import com.smartgwt.client.widgets.grid.ListGridRecord;
-import com.smartgwt.client.widgets.layout.HLayout;
-import com.smartgwt.client.widgets.layout.VLayout;
 
 /**
  * フィルタアイテム編集ダイアログ
  *
  */
-public class EntityFilterItemDialog extends AbstractWindow {
+public class EntityFilterItemDialog extends MtpDialog {
 
 	private ListGrid parent;
 
@@ -59,39 +58,19 @@ public class EntityFilterItemDialog extends AbstractWindow {
 		this.parent = parent;
 
 		setTitle(AdminClientMessageUtil.getString("ui_metadata_entity_filter_EntityFilterItemDialog_title"));
-		setWidth(450);
 		setHeight(170);
-		setShowMinimizeButton(false);
-		setIsModal(true);
-		setShowModalMask(true);
 		centerInPage();
 
-		DynamicForm form = new DynamicForm();
-		form.setPadding(5);
-		form.setWidth100();
-		form.setNumCols(2);
-		form.setColWidths(100, "*");
+		DynamicForm form = new MtpForm();
 		form.setAutoFocus(true);
 
-		nameField = new TextItem("name", AdminClientMessageUtil.getString("ui_metadata_entity_filter_EntityFilterItemDialog_name"));
-		nameField.setWidth(300);
-		nameField.setSelectOnFocus(true);
+		nameField = new MtpTextItem("name", AdminClientMessageUtil.getString("ui_metadata_entity_filter_EntityFilterItemDialog_name"));
 		SmartGWTUtil.setRequired(nameField);
 
-		displayNameField = new TextItem("displayName", AdminClientMessageUtil.getString("ui_metadata_entity_filter_EntityFilterItemDialog_dispName"));
-		displayNameField.setWidth(300);
+		displayNameField = new MtpTextItem("displayName", AdminClientMessageUtil.getString("ui_metadata_entity_filter_EntityFilterItemDialog_dispName"));
 		form.setItems(nameField, displayNameField);
 
-		//Mainコンテンツ
-		VLayout contents = new VLayout(5);
-		contents.setPadding(10);
-		contents.setMembers(form);
-
-		HLayout footer = new HLayout(5);
-		footer.setMargin(10);
-		footer.setAutoHeight();
-		footer.setWidth100();
-		footer.setAlign(VerticalAlignment.CENTER);
+		container.addMember(form);
 
 		IButton add = new IButton(AdminClientMessageUtil.getString("ui_metadata_entity_filter_EntityFilterItemDialog_add"));
 		add.addClickHandler(new ClickHandler() {
@@ -110,10 +89,6 @@ public class EntityFilterItemDialog extends AbstractWindow {
 		});
 
 		footer.setMembers(add, cancel);
-
-		addItem(contents);
-		addItem(SmartGWTUtil.separator());
-		addItem(footer);
 	}
 
 	/**

@@ -21,7 +21,7 @@
 package org.iplass.adminconsole.client.metadata.ui.entity.layout.item.element;
 
 import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
-import org.iplass.adminconsole.client.metadata.ui.entity.layout.item.ViewEditWindow;
+import org.iplass.adminconsole.client.metadata.ui.entity.layout.item.ItemControl;
 import org.iplass.adminconsole.view.annotation.generic.FieldReferenceType;
 import org.iplass.mtp.view.generic.element.BlankSpace;
 import org.iplass.mtp.view.generic.element.Button;
@@ -37,12 +37,12 @@ import com.smartgwt.client.widgets.grid.ListGridRecord;
  * @author lis3wg
  *
  */
-public class ElementWindow extends ViewEditWindow {
+public class ElementControl extends ItemControl {
 
 	/**
 	 * コンストラクタ
 	 */
-	private ElementWindow(String defName, FieldReferenceType triggerType) {
+	private ElementControl(String defName, FieldReferenceType triggerType) {
 		super(defName, triggerType);
 
 		setDragType("element");
@@ -57,7 +57,7 @@ public class ElementWindow extends ViewEditWindow {
 	 * コンストラクタ
 	 * @param record
 	 */
-	public ElementWindow(String defName, FieldReferenceType triggerType, ListGridRecord record) {
+	public ElementControl(String defName, FieldReferenceType triggerType, ListGridRecord record) {
 		this(defName, triggerType);
 		setTitle(record.getAttribute("displayName"));
 		setClassName(record.getAttribute("name"));
@@ -68,7 +68,7 @@ public class ElementWindow extends ViewEditWindow {
 	 * コンストラクタ
 	 * @param element
 	 */
-	public ElementWindow(String defName, FieldReferenceType triggerType, Element element) {
+	public ElementControl(String defName, FieldReferenceType triggerType, Element element) {
 		this(defName, triggerType);
 
 		//TODO 復元時に保持する内容

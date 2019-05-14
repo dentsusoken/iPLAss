@@ -26,11 +26,14 @@ import java.util.List;
 import org.iplass.adminconsole.client.base.event.MTPEvent;
 import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
 import org.iplass.adminconsole.client.base.tenant.TenantInfoHolder;
-import org.iplass.adminconsole.client.base.ui.widget.AbstractWindow;
+import org.iplass.adminconsole.client.base.ui.widget.MtpDialog;
+import org.iplass.adminconsole.client.base.ui.widget.form.MtpForm;
+import org.iplass.adminconsole.client.base.ui.widget.form.MtpIntegerItem;
+import org.iplass.adminconsole.client.base.ui.widget.form.MtpTextItem;
 import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
 import org.iplass.adminconsole.client.metadata.data.entity.layout.ViewType;
 import org.iplass.adminconsole.client.metadata.ui.entity.layout.PropertyOperationHandler;
-import org.iplass.adminconsole.client.metadata.ui.entity.layout.item.ViewEditWindow;
+import org.iplass.adminconsole.client.metadata.ui.entity.layout.item.ItemControl;
 import org.iplass.adminconsole.shared.metadata.rpc.MetaDataServiceAsync;
 import org.iplass.adminconsole.shared.metadata.rpc.MetaDataServiceFactory;
 import org.iplass.adminconsole.view.annotation.generic.FieldReferenceType;
@@ -47,8 +50,6 @@ import org.iplass.mtp.view.generic.element.section.VersionSection;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.smartgwt.client.types.Alignment;
-import com.smartgwt.client.types.VerticalAlignment;
 import com.smartgwt.client.util.SC;
 import com.smartgwt.client.widgets.IButton;
 import com.smartgwt.client.widgets.events.ClickEvent;
@@ -59,32 +60,31 @@ import com.smartgwt.client.widgets.form.fields.IntegerItem;
 import com.smartgwt.client.widgets.form.fields.TextItem;
 import com.smartgwt.client.widgets.form.validator.IntegerRangeValidator;
 import com.smartgwt.client.widgets.grid.ListGridRecord;
-import com.smartgwt.client.widgets.layout.HLayout;
 
-public class SectionWindowControllerImpl implements SectionWindowController {
+public class SectionControllerImpl implements SectionController {
 
 	@Override
-	public ViewEditWindow createWindow(Section section, String defName, FieldReferenceType triggerType, EntityDefinition ed) {
+	public ItemControl createControl(Section section, String defName, FieldReferenceType triggerType, EntityDefinition ed) {
 
-		ViewEditWindow window = null;
+		ItemControl window = null;
 		if (section instanceof DefaultSection) {
-			window = new DefaultSectionWindow(defName, triggerType, (DefaultSection) section);
+			window = new DefaultSectionControl(defName, triggerType, (DefaultSection) section);
 		} else if (section instanceof ScriptingSection) {
-			window = new ScriptingSectionWindow(defName, triggerType, (ScriptingSection) section);
+			window = new ScriptingSectionControl(defName, triggerType, (ScriptingSection) section);
 		} else if (section instanceof TemplateSection) {
-			window = new TemplateSectionWindow(defName, triggerType, (TemplateSection) section);
+			window = new TemplateSectionControl(defName, triggerType, (TemplateSection) section);
 		} else if (section instanceof VersionSection) {
-			window = new VersionSectionWindow(defName, triggerType, (VersionSection) section);
+			window = new VersionSectionControl(defName, triggerType, (VersionSection) section);
 		} else if (section instanceof ReferenceSection) {
-			window = new ReferenceSectionWindow(defName, triggerType, (ReferenceSection) section);
+			window = new ReferenceSectionControl(defName, triggerType, (ReferenceSection) section);
 		} else if (section instanceof MassReferenceSection) {
-			window = new MassReferenceSectionWindow(defName, triggerType, (MassReferenceSection) section, ed);
+			window = new MassReferenceSectionControl(defName, triggerType, (MassReferenceSection) section, ed);
 		}
 		return window;
 	}
 
 	@Override
-	public void createWindow(String sectionClassName, String defName, FieldReferenceType triggerType, PropertyOperationHandler propertyOperationHandler, Callback callback) {
+	public void createControl(String sectionClassName, String defName, FieldReferenceType triggerType, PropertyOperationHandler propertyOperationHandler, Callback callback) {
 
 		if (DefaultSection.class.getName().equals(sectionClassName)) {
 			DefaultSectionDialog dialog = new DefaultSectionDialog(defName, triggerType, callback);
@@ -93,18 +93,18 @@ public class SectionWindowControllerImpl implements SectionWindowController {
 			//HTMLセクション
 			ScriptingSection section = new ScriptingSection();
 			section.setDispFlag(true);
-			ScriptingSectionWindow window = new ScriptingSectionWindow(defName, triggerType, section);
+			ScriptingSectionControl window = new ScriptingSectionControl(defName, triggerType, section);
 			callback.onCreated(window);
 		} else if (TemplateSection.class.getName().equals(sectionClassName)) {
 			//カスタムセクション
 			TemplateSection section = new TemplateSection();
 			section.setDispFlag(true);
-			TemplateSectionWindow window = new TemplateSectionWindow(defName, triggerType, section);
+			TemplateSectionControl window = new TemplateSectionControl(defName, triggerType, section);
 			callback.onCreated(window);
 		} else if (VersionSection.class.getName().equals(sectionClassName)) {
 			VersionSection section = new VersionSection();
 			section.setDispFlag(true);
-			VersionSectionWindow window = new VersionSectionWindow(defName, triggerType, section);
+			VersionSectionControl window = new VersionSectionControl(defName, triggerType, section);
 			callback.onCreated(window);
 		} else if (ReferenceSection.class.getName().equals(sectionClassName)) {
 			ReferenceSectionDialog dialog = new ReferenceSectionDialog(defName, triggerType, propertyOperationHandler, callback);
@@ -118,29 +118,18 @@ public class SectionWindowControllerImpl implements SectionWindowController {
 	/**
 	 * セクション追加時の入力ダイアログ
 	 */
-	private class DefaultSectionDialog extends AbstractWindow {
-
-		private DynamicForm form = new DynamicForm();
-
-		private TextItem title = null;
-		private IntegerItem colNum = null;
-		private CheckboxItem expand = null;
-		private IButton ok = null;
-		private IButton cancel = null;
+	private class DefaultSectionDialog extends MtpDialog {
 
 		private DefaultSectionDialog(final String defName, final FieldReferenceType triggerType, final Callback callback) {
-			setWidth(300);
-			setHeight(150);
+
+			setHeight(200);
 			setTitle("Section Setting");
-			setShowMinimizeButton(false);
-			setIsModal(true);
-			setShowModalMask(false);
 			centerInPage();
 
-			title = new TextItem();
+			final TextItem title = new MtpTextItem();
 			title.setTitle(AdminClientMessageUtil.getString("ui_metadata_entity_layout_DetailDropLayout_title"));
 
-			colNum = new IntegerItem();
+			final IntegerItem colNum = new MtpIntegerItem();
 			colNum.setTitle(AdminClientMessageUtil.getString("ui_metadata_entity_layout_DetailDropLayout_colNum"));
 			colNum.setDefaultValue(1);
 			SmartGWTUtil.setRequired(colNum);
@@ -149,15 +138,17 @@ public class SectionWindowControllerImpl implements SectionWindowController {
 			colNumValidator.setMin(1);
 			colNum.setValidators(colNumValidator);
 
-
-			expand = new CheckboxItem();
+			final CheckboxItem expand = new CheckboxItem();
 			expand.setTitle(AdminClientMessageUtil.getString("ui_metadata_entity_layout_DetailDropLayout_expandInitDisp"));
 			expand.setValue(true);
 
-			ok = new IButton("OK");
-			cancel = new IButton("cancel");
+			final DynamicForm form = new MtpForm();
+			form.setAutoFocus(true);
+			form.setFields(title, colNum, expand);
 
-			//OK押下時はウィンドウ追加
+			container.addMember(form);
+
+			IButton ok = new IButton("OK");
 			ok.addClickHandler(new ClickHandler() {
 
 				@Override
@@ -172,13 +163,13 @@ public class SectionWindowControllerImpl implements SectionWindowController {
 					section.setColNum(SmartGWTUtil.getIntegerValue(colNum));
 					section.setExpandable(Boolean.parseBoolean(expand.getValue().toString()));
 
-					DefaultSectionWindow window = new DefaultSectionWindow(defName, triggerType, section);
+					DefaultSectionControl window = new DefaultSectionControl(defName, triggerType, section);
 					callback.onCreated(window);
 					destroy();
 				}
 			});
 
-			//Cancel押下時はダイアログを閉じる
+			IButton cancel = new IButton("Cancel");
 			cancel.addClickHandler(new ClickHandler() {
 
 				@Override
@@ -187,51 +178,35 @@ public class SectionWindowControllerImpl implements SectionWindowController {
 				}
 			});
 
-			form.setAutoFocus(true);
-			form.setWidth100();
-			form.setPadding(5);
-			form.setFields(title, colNum, expand);
-
-			HLayout hl = new HLayout();
-			hl.setAlign(Alignment.CENTER);
-			hl.setAlign(VerticalAlignment.CENTER);
-			hl.addMember(ok);
-			hl.addMember(cancel);
-
-			addItem(form);
-			addItem(hl);
+			footer.setMembers(ok, cancel);
 		}
 	}
 
 	/**
 	 * セクション追加時の入力ダイアログ
 	 */
-	private class ReferenceSectionDialog extends AbstractWindow {
-		private TextItem propName = null;
-		private CheckboxItem expand = null;
-		private IButton ok = null;
-		private IButton cancel = null;
+	private class ReferenceSectionDialog extends MtpDialog {
 
 		private ReferenceSectionDialog(final String defName, final FieldReferenceType triggerType, final PropertyOperationHandler propertyOperationHandler, final Callback callback) {
-			setWidth(300);
-			setHeight(150);
-			setTitle("Section Setting");
-			setShowMinimizeButton(false);
-			setIsModal(true);
-			setShowModalMask(false);
+
+			setHeight(170);
+			setTitle("Reference Section Setting");
 			centerInPage();
 
-			propName = new TextItem();
+			final TextItem propName = new MtpTextItem();
 			propName.setTitle(AdminClientMessageUtil.getString("ui_metadata_entity_layout_DetailDropLayout_propName"));
 
-			expand = new CheckboxItem();
+			final CheckboxItem expand = new CheckboxItem();
 			expand.setTitle(AdminClientMessageUtil.getString("ui_metadata_entity_layout_DetailDropLayout_expandInitDisp"));
 			expand.setValue(true);
 
-			ok = new IButton("OK");
-			cancel = new IButton("cancel");
+			DynamicForm form = new MtpForm();
+			form.setAutoFocus(true);
+			form.setFields(propName, expand);
 
-			//OK押下時はウィンドウ追加
+			container.addMember(form);
+
+			IButton ok = new IButton("OK");
 			ok.addClickHandler(new ClickHandler() {
 
 				@Override
@@ -245,7 +220,7 @@ public class SectionWindowControllerImpl implements SectionWindowController {
 					final MTPEvent propCheck = new MTPEvent();
 					propCheck.setValue("name", name);
 					final MTPEvent sectionCheck = new MTPEvent();
-					sectionCheck.setValue("name", name + ReferenceSectionWindow.SECTION_SUFFIX);
+					sectionCheck.setValue("name", name + ReferenceSectionControl.SECTION_SUFFIX);
 					boolean chk = false;
 					if (propertyOperationHandler.check(propCheck)) {
 						if (!propertyOperationHandler.check(sectionCheck)) {
@@ -268,7 +243,7 @@ public class SectionWindowControllerImpl implements SectionWindowController {
 								return;
 							}
 
-							Integer count = (Integer) propertyOperationHandler.getContext().get(name + ReferenceSectionWindow.SECTION_COUNT_KEY);
+							Integer count = (Integer) propertyOperationHandler.getContext().get(name + ReferenceSectionControl.SECTION_COUNT_KEY);
 							if (count == null) count = 0;
 							if (pd.getMultiplicity() != -1 && pd.getMultiplicity() <= count) {
 								//セクション追加済みだが多重度より多くなる場合はエラー
@@ -284,14 +259,14 @@ public class SectionWindowControllerImpl implements SectionWindowController {
 							section.setTitle(rp.getDisplayName());
 							section.setExpandable(Boolean.parseBoolean(expand.getValue().toString()));
 
-							ReferenceSectionWindow window = new ReferenceSectionWindow(defName, triggerType, section);
+							ReferenceSectionControl window = new ReferenceSectionControl(defName, triggerType, section);
 
 							// handlerに未登録の場合だけ追加
 							if (!addedHandler) {
 								propertyOperationHandler.add(propCheck);
 								propertyOperationHandler.add(sectionCheck);
 							}
-							propertyOperationHandler.getContext().set(name + ReferenceSectionWindow.SECTION_COUNT_KEY, ++count);
+							propertyOperationHandler.getContext().set(name + ReferenceSectionControl.SECTION_COUNT_KEY, ++count);
 
 							callback.onCreated(window);
 							destroy();
@@ -308,7 +283,7 @@ public class SectionWindowControllerImpl implements SectionWindowController {
 				}
 			});
 
-			//Cancel押下時はダイアログを閉じる
+			IButton cancel = new IButton("cancel");
 			cancel.addClickHandler(new ClickHandler() {
 
 				@Override
@@ -317,52 +292,35 @@ public class SectionWindowControllerImpl implements SectionWindowController {
 				}
 			});
 
-			DynamicForm form = new DynamicForm();
-			form.setAutoFocus(true);
-			form.setWidth100();
-			form.setPadding(5);
-			form.setFields(propName, expand);
-
-			HLayout hl = new HLayout();
-			hl.setAlign(Alignment.CENTER);
-			hl.setAlign(VerticalAlignment.CENTER);
-			hl.addMember(ok);
-			hl.addMember(cancel);
-
-			addItem(form);
-			addItem(hl);
+			footer.setMembers(ok, cancel);
 		}
 	}
 
 	/**
 	 * セクション追加時の入力ダイアログ
 	 */
-	private class MassReferenceSectionDialog extends AbstractWindow {
-		private TextItem propName = null;
-		private CheckboxItem expand = null;
-		private IButton ok = null;
-		private IButton cancel = null;
+	private class MassReferenceSectionDialog extends MtpDialog {
 
 		private MassReferenceSectionDialog(final String defName, final FieldReferenceType triggerType, final PropertyOperationHandler propertyOperationHandler, final Callback callback) {
-			setWidth(300);
-			setHeight(150);
-			setTitle("Section Setting");
-			setShowMinimizeButton(false);
-			setIsModal(true);
-			setShowModalMask(false);
+
+			setHeight(170);
+			setTitle("MassReference Section Setting");
 			centerInPage();
 
-			propName = new TextItem();
+			final TextItem propName = new MtpTextItem();
 			propName.setTitle(AdminClientMessageUtil.getString("ui_metadata_entity_layout_DetailDropLayout_propName"));
 
-			expand = new CheckboxItem();
+			final CheckboxItem expand = new CheckboxItem();
 			expand.setTitle(AdminClientMessageUtil.getString("ui_metadata_entity_layout_DetailDropLayout_expandInitDisp"));
 			expand.setValue(true);
 
-			ok = new IButton("OK");
-			cancel = new IButton("cancel");
+			final DynamicForm form = new MtpForm();
+			form.setAutoFocus(true);
+			form.setFields(propName, expand);
 
-			//OK押下時はウィンドウ追加
+			container.addMember(form);
+
+			IButton ok = new IButton("OK");
 			ok.addClickHandler(new ClickHandler() {
 
 				@Override
@@ -403,7 +361,7 @@ public class SectionWindowControllerImpl implements SectionWindowController {
 							section.setTitle(rp.getDisplayName());
 							section.setExpandable(Boolean.parseBoolean(expand.getValue().toString()));
 
-							MassReferenceSectionWindow window = new MassReferenceSectionWindow(defName, triggerType, section, result);
+							MassReferenceSectionControl window = new MassReferenceSectionControl(defName, triggerType, section, result);
 							propertyOperationHandler.add(mtpEvent);
 
 							callback.onCreated(window);
@@ -421,7 +379,7 @@ public class SectionWindowControllerImpl implements SectionWindowController {
 				}
 			});
 
-			//Cancel押下時はダイアログを閉じる
+			IButton cancel = new IButton("cancel");
 			cancel.addClickHandler(new ClickHandler() {
 
 				@Override
@@ -430,20 +388,7 @@ public class SectionWindowControllerImpl implements SectionWindowController {
 				}
 			});
 
-			DynamicForm form = new DynamicForm();
-			form.setAutoFocus(true);
-			form.setWidth100();
-			form.setPadding(5);
-			form.setFields(propName, expand);
-
-			HLayout hl = new HLayout();
-			hl.setAlign(Alignment.CENTER);
-			hl.setAlign(VerticalAlignment.CENTER);
-			hl.addMember(ok);
-			hl.addMember(cancel);
-
-			addItem(form);
-			addItem(hl);
+			footer.setMembers(ok, cancel);
 		}
 	}
 

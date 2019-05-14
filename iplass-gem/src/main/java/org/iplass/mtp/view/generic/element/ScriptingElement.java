@@ -48,9 +48,12 @@ public class ScriptingElement extends Element {
 	private static final long serialVersionUID = -2708119901042084930L;
 
 	/** タイトル */
-	@MetaFieldInfo(displayName="タイトル", description="ヘッダに表示するタイトルを設定します。", useMultiLang=true,
+	@MetaFieldInfo(displayName="タイトル", description="ヘッダに表示するタイトルを設定します。", 
 			displayNameKey="generic_element_ScriptingElement_titleDisplaNameKey",
-			descriptionKey="generic_element_ScriptingElement_titleDescriptionKey")
+			descriptionKey="generic_element_ScriptingElement_titleDescriptionKey",
+			inputType=InputType.MULTI_LANG,
+			multiLangField = "localizedTitleList"
+	)
 	@MultiLang()
 	private String title;
 
@@ -58,7 +61,7 @@ public class ScriptingElement extends Element {
 	@MetaFieldInfo(
 			displayName="多言語設定",
 			displayNameKey="generic_element_ScriptingElement_localizedTitleListDisplaNameKey",
-			inputType=InputType.LANGUAGE
+			inputType=InputType.MULTI_LANG_LIST
 	)
 	private List<LocalizedStringDefinition> localizedTitleList;
 

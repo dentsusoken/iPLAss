@@ -34,5 +34,6 @@ public enum InputType {
 	TEMPLATE,
 	FILTER,
 	PROPERTY,
-	LANGUAGE
+	MULTI_LANG_LIST,
+	MULTI_LANG
 }

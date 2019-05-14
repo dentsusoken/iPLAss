@@ -20,33 +20,43 @@
 
 package org.iplass.adminconsole.client.metadata.ui.entity.layout.metafield;
 
-import org.iplass.adminconsole.client.base.ui.widget.AbstractWindow;
+import org.iplass.adminconsole.client.base.ui.widget.MtpDialog;
 import org.iplass.adminconsole.view.annotation.Refrectable;
+
+import com.google.gwt.event.shared.HandlerRegistration;
+import com.smartgwt.client.widgets.IButton;
+import com.smartgwt.client.widgets.events.ClickHandler;
 
 /**
  * インターフェースクラス(org.iplass.mtpパッケージ配下)の各フィールドに値を設定するためのWindow。
  * {@link org.iplass.adminconsole.view.annotation.MetaFieldInfo}が設定されたフィールドのみが対象。
  *
  * 現状、EntityViewでのみ使用しているが、commonにあるので今後他のところでも利用することを想定。
- * EntityViewについては、{@link org.iplass.adminconsole.client.metadata.ui.entity.layout.item.EntityViewFieldSettingWindow}として継承して利用。
+ * EntityViewについては、{@link org.iplass.adminconsole.client.metadata.ui.entity.layout.item.EntityViewFieldSettingDialog}として継承して利用。
  *
  */
-public class MetaFieldSettingWindow extends AbstractWindow {
+public class MetaFieldSettingDialog extends MtpDialog {
 
 	private String className;
 	private Refrectable value;
 
 	private MetaFieldSettingPane panel = null;
 
-	private MetaFieldSettingWindow() {
-		setWidth(600);
-		setShowMinimizeButton(false);
-		setIsModal(true);
-		setAutoSize(true);
-		setShowModalMask(false);
+	private IButton btnOK;
+	private IButton btnCancel;
+
+	private MetaFieldSettingDialog() {
+
+		setHeight(600);
+		setShowMaximizeButton(true);
+
+		btnOK = new IButton("OK");
+		btnCancel = new IButton("Cancel");
+
+		footer.setMembers(btnOK, btnCancel);
 	}
 
-	public MetaFieldSettingWindow(String className, Refrectable value) {
+	public MetaFieldSettingDialog(String className, Refrectable value) {
 		this();
 		this.className = className;
 		this.value = value;
@@ -70,13 +80,23 @@ public class MetaFieldSettingWindow extends AbstractWindow {
 			setTitle(className.substring(className.lastIndexOf(".") + 1) + " Setting");
 
 			panel = createPane(className, value);
-			addItem(panel);
+			container.addMember(panel);
 		}
+		centerInPage();
 	}
 
 	protected MetaFieldSettingPane createPane(String className, Refrectable value) {
-		MetaFieldSettingPane pane = new MetaFieldSettingPane(className, value);
+		MetaFieldSettingPane pane = new MetaFieldSettingPane(this, className, value);
 		pane.init();
 		return pane;
 	}
+
+	protected HandlerRegistration addOKClickHandler(ClickHandler handler) {
+		return btnOK.addClickHandler(handler);
+	}
+
+	protected HandlerRegistration addCancelClickHandler(ClickHandler handler) {
+		return btnCancel.addClickHandler(handler);
+	}
+
 }
