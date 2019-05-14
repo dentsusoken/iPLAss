@@ -24,6 +24,7 @@ import org.iplass.adminconsole.client.base.ui.widget.form.MtpCanvasItem;
 
 public abstract class MetaFieldCanvasItem extends MtpCanvasItem {
 
+	@Override
 	public abstract Boolean validate();
 
 }

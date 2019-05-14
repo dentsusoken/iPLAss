@@ -83,7 +83,7 @@ public class EntityViewFieldSettingPane extends MetaFieldSettingPane {
 	}
 
 	@Override
-	protected FormItem createSingleInputItem(FieldInfo info) {
+	protected FormItem createInputItem(FieldInfo info) {
 		FormItem item = null;
 		// フィルタ選択は親側ではなく、画面定義側でオーバーライドしてフィールドを生成
 		if (info.getInputType() == InputType.FILTER) {
@@ -117,7 +117,7 @@ public class EntityViewFieldSettingPane extends MetaFieldSettingPane {
 				item.setValidators(ir);
 			}
 		} else {
-			item = super.createSingleInputItem(info);
+			item = super.createInputItem(info);
 		}
 
 		return item;

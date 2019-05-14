@@ -40,7 +40,6 @@ import org.iplass.adminconsole.view.annotation.Refrectable;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.smartgwt.client.widgets.Canvas;
-import com.smartgwt.client.widgets.Window;
 import com.smartgwt.client.widgets.events.ClickEvent;
 import com.smartgwt.client.widgets.events.ClickHandler;
 import com.smartgwt.client.widgets.form.DynamicForm;
@@ -99,7 +98,7 @@ public class MetaFieldSettingPane extends VLayout {
 	/**
 	 * 解析の実行
 	 */
-	public void init() {
+	protected void init() {
 		service = RefrectionServiceFactory.get();
 
 		SmartGWTUtil.showProgress();
@@ -126,8 +125,21 @@ public class MetaFieldSettingPane extends VLayout {
 	 * @param key
 	 * @return
 	 */
-	public Serializable getValue(String key) {
+	protected Serializable getValue(String key) {
 		return defValueMap.get(key);
+	}
+
+	/**
+	 * 指定の型で値を取得
+	 *
+	 * @param <T>
+	 * @param type
+	 * @param key
+	 * @return
+	 */
+	@SuppressWarnings("unchecked")
+	protected <T extends Serializable> T getValueAs(Class<T> type, String key) {
+		return (T) getValue(key);
 	}
 
 	/**
@@ -136,7 +148,7 @@ public class MetaFieldSettingPane extends VLayout {
 	 * @param key
 	 * @param value
 	 */
-	public void setValue(String key, Serializable value) {
+	protected void setValue(String key, Serializable value) {
 		defValueMap.put(key, value);
 	}
 
@@ -145,7 +157,7 @@ public class MetaFieldSettingPane extends VLayout {
 	 *
 	 * @param handler
 	 */
-	public void setOkHandler(MetaFieldUpdateHandler handler) {
+	protected void setOkHandler(MetaFieldUpdateHandler handler) {
 		this.okHandler = handler;
 	}
 
@@ -154,7 +166,7 @@ public class MetaFieldSettingPane extends VLayout {
 	 *
 	 * @param handler
 	 */
-	public void setCancelHandler(MetaFieldUpdateHandler handler) {
+	protected void setCancelHandler(MetaFieldUpdateHandler handler) {
 		this.cancelHandler = handler;
 	}
 
@@ -183,59 +195,14 @@ public class MetaFieldSettingPane extends VLayout {
 		return dialog;
 	}
 
-	private void createPane(AnalysisResult result, final Refrectable value) {
-
-		for (String key : result.getValueMap().keySet()) {
-			defValueMap.put(key, result.getValueMap().get(key));
-		}
-
-		// 解析結果から入力フィールドを生成
-		ArrayList<FormItem> items = new ArrayList<FormItem>();
-		ArrayList<Canvas> canvass = new ArrayList<Canvas>();
-		for (FieldInfo info : result.getFields()) {
-			if (!isVisileField(info)) {
-				continue;
-			}
-
-			FormItem item = createSingleInputItem(info);
-			if (item != null) {
-				items.add(item);
-			}
-		}
-
-		// 標準のフォーム作成
-		DynamicForm form = new MtpForm();
-		form.setFields(items.toArray(new FormItem[items.size()]));
-
-		owner.addOKClickHandler(new OkClickHandler(form, result.getFields(), value));
-		owner.addCancelClickHandler(new ClickHandler() {
-
-			@Override
-			public void onClick(ClickEvent event) {
-				if (cancelHandler != null) {
-					// 親コントロールで設定された処理実行
-					cancelHandler.execute(new MetaFieldUpdateEvent(defValueMap, value));
-				}
-			}
-		});
-
-		addMember(form);
-		for (Canvas canvas : canvass) {
-			addMember(canvas);
-		}
-	}
-
 	protected String getSimpleName(String name) {
 		return name.substring(name.lastIndexOf(".") + 1);
 	}
 
 	/**
-	 * 単一入力アイテム生成
-	 *
-	 * @param info
-	 * @return
+	 * 入力アイテム生成
 	 */
-	protected FormItem createSingleInputItem(FieldInfo info) {
+	protected FormItem createInputItem(FieldInfo info) {
 		FormItem item = partsController.createItem(this, info);
 
 		if (item != null) {
@@ -263,19 +230,6 @@ public class MetaFieldSettingPane extends VLayout {
 		}
 
 		return item;
-	}
-
-	/**
-	 * 指定の型で値を取得
-	 *
-	 * @param <T>
-	 * @param type
-	 * @param key
-	 * @return
-	 */
-	@SuppressWarnings("unchecked")
-	protected <T extends Serializable> T getValueAs(Class<T> type, String key) {
-		return (T) getValue(key);
 	}
 
 	/**
@@ -321,6 +275,48 @@ public class MetaFieldSettingPane extends VLayout {
 			return getString(info.getDescriptionKey());
 		}
 		return info.getDescription();
+	}
+
+	private void createPane(AnalysisResult result, final Refrectable value) {
+
+		for (String key : result.getValueMap().keySet()) {
+			defValueMap.put(key, result.getValueMap().get(key));
+		}
+
+		// 解析結果から入力フィールドを生成
+		ArrayList<FormItem> items = new ArrayList<FormItem>();
+		ArrayList<Canvas> canvass = new ArrayList<Canvas>();
+		for (FieldInfo info : result.getFields()) {
+			if (!isVisileField(info)) {
+				continue;
+			}
+
+			FormItem item = createInputItem(info);
+			if (item != null) {
+				items.add(item);
+			}
+		}
+
+		// 標準のフォーム作成
+		DynamicForm form = new MtpForm();
+		form.setFields(items.toArray(new FormItem[items.size()]));
+
+		owner.addOKClickHandler(new OkClickHandler(form, result.getFields(), value));
+		owner.addCancelClickHandler(new ClickHandler() {
+
+			@Override
+			public void onClick(ClickEvent event) {
+				if (cancelHandler != null) {
+					// 親コントロールで設定された処理実行
+					cancelHandler.execute(new MetaFieldUpdateEvent(defValueMap, value));
+				}
+			}
+		});
+
+		addMember(form);
+		for (Canvas canvas : canvass) {
+			addMember(canvas);
+		}
 	}
 
 	private String getString(String key) {
@@ -473,39 +469,6 @@ public class MetaFieldSettingPane extends VLayout {
 					return val;
 			}
 			return (Serializable) form.getValue(info.getName());
-		}
-	}
-
-	/**
-	 * ダイアログ破棄用のイベントハンドラ
-	 */
-	public final class DialogClooseHandler implements MetaFieldUpdateHandler, ClickHandler {
-
-		/** ダイアログ */
-		private final Window dialog;
-
-		/**
-		 * コンストラクタ
-		 *
-		 * @param dialog
-		 */
-		private DialogClooseHandler(Window dialog) {
-			this.dialog = dialog;
-		}
-
-		@Override
-		public void execute(MetaFieldUpdateEvent event) {
-			destroy();
-		}
-
-		@Override
-		public void onClick(ClickEvent event) {
-			destroy();
-		}
-
-		private void destroy() {
-			// ダイアログ破棄
-			dialog.destroy();
 		}
 	}
 

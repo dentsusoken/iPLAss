@@ -143,6 +143,11 @@ public class MetaFieldReferenceMultiItem extends MetaFieldCanvasItem {
 				new AnalysisListDataAsyncCallback(pane.getSimpleName(info.getReferenceClassName()), grid));
 	}
 
+	@Override
+	public Boolean validate() {
+		return true;
+	}
+
 	/**
 	 * 複数参照型のレコード更新
 	 *
@@ -335,7 +340,7 @@ public class MetaFieldReferenceMultiItem extends MetaFieldCanvasItem {
 					}
 				}
 			});
-			IButton cancel = new IButton("cancel");
+			IButton cancel = new IButton("Cancel");
 			cancel.addClickHandler(new ClickHandler() {
 
 				@Override
@@ -438,11 +443,6 @@ public class MetaFieldReferenceMultiItem extends MetaFieldCanvasItem {
 			dialog.show();
 		}
 
-	}
-
-	@Override
-	public Boolean validate() {
-		return true;
 	}
 
 }
