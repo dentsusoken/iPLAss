@@ -114,10 +114,13 @@
 	String message = (String) request.getAttribute(Constants.MESSAGE);
 	String bulkUpdatePropNm = (String) request.getAttribute(Constants.BULK_UPDATE_PROP_NM);
 
+	//全選択フラグ
+	boolean isSelectAll = isSelectAll(selectAllType);
+
 	OutputType type = OutputType.BULK;
 	String contextPath = TemplateUtil.getTenantContextPath();
 	String action = contextPath + "/" + BulkUpdateListCommand.BULK_UPDATE_ACTION_NAME;
-	if (isSelectAll(selectAllType)) {
+	if (isSelectAll) {
 		action = contextPath + "/" + BulkUpdateAllCommand.BULK_UPDATE_ALL_ACTION_NAME;
 	}
 	EntityDefinition ed = data.getEntityDefinition();
@@ -166,6 +169,7 @@
 
 	//各プロパティでの権限チェック用に定義名をリクエストに保存
 	request.setAttribute(Constants.DEF_NAME, defName);
+	request.setAttribute(Constants.VIEW_NAME, viewName);
 	request.setAttribute(Constants.ROOT_DEF_NAME, defName); //NestTableの場合にDEF_NAMEが置き換わるので別名でRootのDefNameをセット
 
 	//section以下で参照するパラメータ
@@ -189,54 +193,39 @@
 %>
 <form id="detailForm" method="post" action="<%=action%>">
 ${m:outputToken('FORM_XHTML', true)}
-<input type="hidden" name="defName" value="<c:out value="<%=defName%>"/>" />
 <input type="hidden" name="execType" value="<c:out value="<%=execType%>"/>" />
-<%	if(selectAllType != null) {%>
+<%
+	if (!isSelectAll) {
+%>
+<input type="hidden" name="defName" value="<c:out value="<%=defName%>"/>" />
+<input type="hidden" name="viewName" value="<c:out value="<%=viewName%>"/>" />
+<%
+	}
+	if(selectAllType != null) {
+%>
 <input type="hidden" name="selectAllType" value="<c:out value="<%=selectAllType%>"/>" />
 <%
 	}
 	if(searchCond != null) {
 %>
 <input type="hidden" name="searchCond" value="<c:out value="<%=searchCond%>"/>" />
-<script>
-$(function() {
-	$("#detailForm").on("submit", function() {
-		var searchCond = $(":hidden[name='searchCond']").val();
-		// 検索条件を元に一括更新
-		if (searchCond && searchCond.length > 0) {
-			var $form = $(this);
-			var params = parseSearchCond(searchCond);
-			if (params.length > 0) {
-				for (var i = 0; i < params.length; i++) {
-					var param = params[i];
-					if ($(":hidden[name='" + param.key + "']").length > 0) {
-						$(":hidden[name='" + param.key + "']").val(param.val);
-					} else {
-						$("<input />").attr({type:"hidden", name:param.key, value:param.val}).appendTo($form);
-					}
-				}
-			}
-		}
-	})
-});
-</script>
 <%
 	}
-	if (!isSelectAll(selectAllType) && oids != null && oids.size() > 0) {
+	if (!isSelectAll && oids != null && oids.size() > 0) {
 		for (String  oid : oids) {
 %>
 <input type="hidden" name="oid" value="<c:out value="<%=oid%>"/>" />
 <%
 		}
 	}
-	if (!isSelectAll(selectAllType) && updateDates != null && updateDates.size() > 0) {
+	if (!isSelectAll && updateDates != null && updateDates.size() > 0) {
 		for (String updateDate : updateDates) {
 %>
 <input type="hidden" name="timestamp" value="<c:out value="<%=updateDate%>"/>" />
 <%
 		}
 	}
-	if (!isSelectAll(selectAllType) && versions != null && versions.size() > 0) {
+	if (!isSelectAll && versions != null && versions.size() > 0) {
 		for (String version : versions) {
 %>
 <input type="hidden" name="version" value="<c:out value="<%=version%>"/>" />
@@ -253,19 +242,44 @@ $(function() {
 %>
 <tr>
 <th rowspan="2">${m:rs("mtp-gem-messages", "generic.bulk.selectBulkUpdateType")}</th>
-<td><label><input type="radio" name="selectAllType" value="select" <%=!isSelectAll(selectAllType) ? "checked" : ""%>>${m:rs("mtp-gem-messages", "generic.bulk.updateRow")}</label></td>
+<td><label><input type="radio" name="selectAllType" value="select" <%=!isSelectAll ? "checked" : ""%>>${m:rs("mtp-gem-messages", "generic.bulk.updateRow")}</label></td>
 </tr>
 <tr>
-<td><label><input type="radio" name="selectAllType" value="all" <%=isSelectAll(selectAllType) ? "checked" : ""%>>${m:rs("mtp-gem-messages", "generic.bulk.updateAll")}<span id="bulkUpdateCount"></span></label></td>
+<td><label><input type="radio" name="selectAllType" value="all" <%=isSelectAll ? "checked" : ""%>>${m:rs("mtp-gem-messages", "generic.bulk.updateAll")}<span id="bulkUpdateCount"></span></label></td>
 </tr>
 <script>
 $(function() {
 	var $radio = $(":radio[name='selectAllType']");
+	var createSearchCondParams = function() {
+		var searchCond = $(":hidden[name='searchCond']").val();
+		// 検索条件を元に一括更新
+		if (searchCond && searchCond.length > 0) {
+			var $form = $(this);
+			var params = parseSearchCond(searchCond);
+			if (params.length > 0) {
+				for (var i = 0; i < params.length; i++) {
+					var param = params[i];
+					if ($(":hidden[name='" + param.key + "']").length > 0) {
+						$(":hidden[name='" + param.key + "']").val(param.val);
+					} else {
+						$("<input />").attr({type:"hidden", name:param.key, value:param.val}).appendTo($form);
+					}
+				}
+			}
+		}
+	};
+<%
+	if(isSelectAll) {
+%>
+	$("#detailForm").on("submit", createSearchCondParams);
+<%
+	}
+%>
 	$radio.on("change", function(){
 		if ($(this).val() == "all") {
-			$("#detailForm").attr("action", "<%=contextPath + "/" + BulkUpdateAllCommand.BULK_UPDATE_ALL_ACTION_NAME%>");
+			$("#detailForm").attr("action", "<%=contextPath + "/" + BulkUpdateAllCommand.BULK_UPDATE_ALL_ACTION_NAME%>").on("submit", createSearchCondParams);
 		} else {
-			$("#detailForm").attr("action", "<%=contextPath + "/" + BulkUpdateListCommand.BULK_UPDATE_ACTION_NAME%>");
+			$("#detailForm").attr("action", "<%=contextPath + "/" + BulkUpdateListCommand.BULK_UPDATE_ACTION_NAME%>").off("submit", createSearchCondParams);
 		}
 	});
 	//二回目以降は編集不可にする
@@ -410,7 +424,7 @@ function onDialogClose() {
 	if (!edited) return true;
 	var func = parent.document.scriptContext["bulkUpdateModalWindowCallback"];
 	if (func && $.isFunction(func)) {
-		var id = "<%=isSelectAll(selectAllType)%>" == "true" ? "all" : <%=Arrays.toString(id.toArray())%>;
+		var id = "<%=isSelectAll%>" == "true" ? "all" : <%=Arrays.toString(id.toArray())%>;
 		func.call(parent.window, id);
 	}
 	return true;
