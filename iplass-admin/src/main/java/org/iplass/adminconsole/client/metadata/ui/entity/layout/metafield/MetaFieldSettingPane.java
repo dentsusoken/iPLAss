@@ -31,11 +31,8 @@ import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
 import org.iplass.adminconsole.client.base.rpc.AdminAsyncCallback;
 import org.iplass.adminconsole.client.base.tenant.TenantInfoHolder;
 import org.iplass.adminconsole.client.base.ui.widget.MetaDataLangTextItem;
-import org.iplass.adminconsole.client.base.ui.widget.ScriptEditorDialogHandler;
-import org.iplass.adminconsole.client.base.ui.widget.ScriptEditorDialogMode;
 import org.iplass.adminconsole.client.base.ui.widget.form.MtpForm;
 import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
-import org.iplass.adminconsole.client.metadata.ui.MetaDataUtil;
 import org.iplass.adminconsole.shared.metadata.dto.Name;
 import org.iplass.adminconsole.shared.metadata.dto.refrect.AnalysisListDataResult;
 import org.iplass.adminconsole.shared.metadata.dto.refrect.AnalysisResult;
@@ -109,7 +106,7 @@ public class MetaFieldSettingPane extends VLayout {
 
 	/**
 	 * コンストラクタ
-	 * 
+	 *
 	 * @param className
 	 * @param value
 	 */
@@ -169,7 +166,7 @@ public class MetaFieldSettingPane extends VLayout {
 
 	/**
 	 * メタデータの指定フィールドの値を取得。
-	 * 
+	 *
 	 * @param key
 	 * @return
 	 */
@@ -179,7 +176,7 @@ public class MetaFieldSettingPane extends VLayout {
 
 	/**
 	 * メタデータの指定フィールドの値を設定。
-	 * 
+	 *
 	 * @param key
 	 * @param value
 	 */
@@ -189,7 +186,7 @@ public class MetaFieldSettingPane extends VLayout {
 
 	/**
 	 * OKボタン押下時のイベントを設定。
-	 * 
+	 *
 	 * @param handler
 	 */
 	public void setOkHandler(MetaFieldUpdateHandler handler) {
@@ -198,7 +195,7 @@ public class MetaFieldSettingPane extends VLayout {
 
 	/**
 	 * Cancelボタン押下時のイベントを設定。
-	 * 
+	 *
 	 * @param handler
 	 */
 	public void setCancelHandler(MetaFieldUpdateHandler handler) {
@@ -252,13 +249,6 @@ public class MetaFieldSettingPane extends VLayout {
 					canvass.add(canvas);
 					fieldCount++;
 				}
-			} else if (info.getInputType() == InputType.SCRIPT) {
-				// スクリプトエディタは別画面起動
-				Canvas canvas = createScriptInputItem(info);
-				if (canvas != null) {
-					canvass.add(canvas);
-					fieldCount++;
-				}
 			} else {
 				FormItem item = createSingleInputItem(info);
 				if (item != null) {
@@ -292,7 +282,7 @@ public class MetaFieldSettingPane extends VLayout {
 
 	/**
 	 * 参照型入力アイテム生成
-	 * 
+	 *
 	 * @param info
 	 * @return
 	 */
@@ -306,7 +296,7 @@ public class MetaFieldSettingPane extends VLayout {
 
 	/**
 	 * 複数参照型入力レイアウト生成
-	 * 
+	 *
 	 * @param info
 	 * @return
 	 */
@@ -390,7 +380,7 @@ public class MetaFieldSettingPane extends VLayout {
 
 	/**
 	 * 単一参照型入力レイアウト生成
-	 * 
+	 *
 	 * @param info
 	 * @return
 	 */
@@ -494,59 +484,8 @@ public class MetaFieldSettingPane extends VLayout {
 	}
 
 	/**
-	 * スクリプト入力レイアウト生成
-	 * 
-	 * @param info
-	 * @return
-	 */
-	private Canvas createScriptInputItem(final FieldInfo info) {
-		HLayout layout = new HLayout();
-		layout.setWidth100();
-		layout.setMembersMargin(6);
-		layout.setAlign(Alignment.LEFT);
-
-		String displayName = getDisplayName(info);
-		final String title = info.isDeprecated() ? "<del>" + displayName + "</del>" : displayName;
-		Label label = new Label(title + " : ");
-		label.setAlign(Alignment.RIGHT);
-//		label.setPrompt(info.getDescription());
-		String description = getDescription(info);
-		final String prompt = "<div style=\"white-space: nowrap;\">" + description + "</div>";
-		label.setPrompt(prompt);
-		final String scriptHint = getScriptHint(info);
-
-		IButton button = new IButton(AdminClientMessageUtil.getString("ui_metadata_common_MetaFieldSettingPane_edit"));
-		button.addClickHandler(new ClickHandler() {
-
-			@Override
-			public void onClick(ClickEvent event) {
-				Object value = getValue(info.getName());
-				String _text = value != null ? value.toString() : "";
-				MetaDataUtil.showScriptEditDialog(ScriptEditorDialogMode.getMode(info.getMode()), _text, title, null,
-						scriptHint, new ScriptEditorDialogHandler() {
-
-							@Override
-							public void onSave(String text) {
-								setValue(info.getName(), text);
-							}
-
-							@Override
-							public void onCancel() {
-							}
-						});
-
-			}
-		});
-
-		layout.addMember(label);
-		layout.addMember(button);
-
-		return layout;
-	}
-
-	/**
 	 * 複数参照型のレコード更新
-	 * 
+	 *
 	 * @param record
 	 * @param className
 	 * @param value
@@ -574,7 +513,7 @@ public class MetaFieldSettingPane extends VLayout {
 
 	/**
 	 * 単一入力アイテム生成
-	 * 
+	 *
 	 * @param info
 	 * @return
 	 */
@@ -609,7 +548,7 @@ public class MetaFieldSettingPane extends VLayout {
 
 	/**
 	 * 指定の型で値を取得
-	 * 
+	 *
 	 * @param <T>
 	 * @param type
 	 * @param key
@@ -622,7 +561,7 @@ public class MetaFieldSettingPane extends VLayout {
 
 	/**
 	 * フィールド情報から表示名を取得します。
-	 * 
+	 *
 	 * @param info フィールド情報
 	 * @return 表示名
 	 */
@@ -635,7 +574,7 @@ public class MetaFieldSettingPane extends VLayout {
 
 	/**
 	 * フィールド情報から説明を取得します。
-	 * 
+	 *
 	 * @param info フィールド情報
 	 * @return 説明
 	 */
@@ -654,7 +593,7 @@ public class MetaFieldSettingPane extends VLayout {
 	 * @param info フィールド情報
 	 * @return Scriptヒント(説明)
 	 */
-	private String getScriptHint(FieldInfo info) {
+	protected String getScriptHint(FieldInfo info) {
 		if (info.getDescriptionKey() != null && !info.getDescriptionKey().isEmpty()) {
 			String hint = getString(info.getDescriptionKey() + "ScriptHint");
 			if (hint != null && !hint.isEmpty()) {
@@ -732,7 +671,7 @@ public class MetaFieldSettingPane extends VLayout {
 
 		/**
 		 * コンストラクタ
-		 * 
+		 *
 		 * @param grid
 		 * @param valueList
 		 * @param className
@@ -795,7 +734,7 @@ public class MetaFieldSettingPane extends VLayout {
 
 		/**
 		 * コンストラクタ
-		 * 
+		 *
 		 * @param form
 		 * @param fields
 		 */
@@ -821,13 +760,20 @@ public class MetaFieldSettingPane extends VLayout {
 					continue;
 				}
 
+				// CanvasItemは個別で値設定
+				if (form.getItem(info.getName()) != null) {
+					if (form.getItem(info.getName()) instanceof MetaFieldCanvasItem) {
+						continue;
+					}
+				}
+
 				if (form.getValue(info.getName()) != null) {
 					// Formの値をMapに格納
 					// 参照型とテキストエリアはFormItemではないので、ダイアログでの編集時に設定
 					setValue(info.getName(), getFormValue(info));
 				} else {
 					// 参照型かテキストエリア以外は未入力ならnull設定
-					if (info.getInputType() != InputType.REFERENCE && info.getInputType() != InputType.SCRIPT) {
+					if (info.getInputType() != InputType.REFERENCE) {
 						if (info.getInputType() == InputType.CHECKBOX) {
 							// チェックボックス未操作＆未設定だとnullになる
 							setValue(info.getName(), false);
@@ -868,7 +814,7 @@ public class MetaFieldSettingPane extends VLayout {
 
 		/**
 		 * 入力タイプに合わせて値を取得
-		 * 
+		 *
 		 * @param info
 		 * @return
 		 */
@@ -912,7 +858,7 @@ public class MetaFieldSettingPane extends VLayout {
 
 		/**
 		 * コンストラクタ
-		 * 
+		 *
 		 * @param FieldInfo
 		 */
 		private ReferenceEditClickHandler(FieldInfo info) {
@@ -1117,7 +1063,7 @@ public class MetaFieldSettingPane extends VLayout {
 
 		/**
 		 * コンストラクタ
-		 * 
+		 *
 		 * @param dialog
 		 */
 		private DialogClooseHandler(Window dialog) {
