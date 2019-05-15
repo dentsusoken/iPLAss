@@ -51,7 +51,7 @@ public class NestProperty implements Refrectable {
 			required=true,
 			description="参照型のプロパティ名を指定してください",
 			descriptionKey="generic_editor_NestProperty_propertyNameDescriptionKey",
-			useReferenceType=true
+			childEntityName=true
 	)
 	@EntityViewField(
 			referenceTypes={FieldReferenceType.ALL}

@@ -39,7 +39,6 @@ import org.iplass.adminconsole.view.annotation.Refrectable;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.smartgwt.client.widgets.Canvas;
 import com.smartgwt.client.widgets.events.ClickEvent;
 import com.smartgwt.client.widgets.events.ClickHandler;
 import com.smartgwt.client.widgets.form.DynamicForm;
@@ -233,6 +232,14 @@ public class MetaFieldSettingPane extends VLayout {
 	}
 
 	/**
+	 * 画面生成後の処理
+	 *
+	 * @param form 生成したForm
+	 */
+	protected void afterCreatePane(DynamicForm form) {
+	}
+
+	/**
 	 * フィールド情報から表示名を取得します。
 	 *
 	 * @param info フィールド情報
@@ -285,7 +292,6 @@ public class MetaFieldSettingPane extends VLayout {
 
 		// 解析結果から入力フィールドを生成
 		ArrayList<FormItem> items = new ArrayList<FormItem>();
-		ArrayList<Canvas> canvass = new ArrayList<Canvas>();
 		for (FieldInfo info : result.getFields()) {
 			if (!isVisileField(info)) {
 				continue;
@@ -301,6 +307,8 @@ public class MetaFieldSettingPane extends VLayout {
 		DynamicForm form = new MtpForm();
 		form.setFields(items.toArray(new FormItem[items.size()]));
 
+		afterCreatePane(form);
+
 		owner.addOKClickHandler(new OkClickHandler(form, result.getFields(), value));
 		owner.addCancelClickHandler(new ClickHandler() {
 
@@ -314,9 +322,6 @@ public class MetaFieldSettingPane extends VLayout {
 		});
 
 		addMember(form);
-		for (Canvas canvas : canvass) {
-			addMember(canvas);
-		}
 	}
 
 	private String getString(String key) {

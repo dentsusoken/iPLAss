@@ -20,7 +20,7 @@
 
 package org.iplass.adminconsole.client.metadata.data.entity;
 
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.iplass.adminconsole.client.base.data.AbstractAdminDataSource;
@@ -31,11 +31,11 @@ import org.iplass.mtp.definition.LocalizedStringDefinition;
 import org.iplass.mtp.entity.definition.EntityDefinition;
 import org.iplass.mtp.entity.definition.PropertyDefinition;
 import org.iplass.mtp.entity.definition.ValidationDefinition;
+import org.iplass.mtp.entity.definition.properties.ReferenceProperty;
 import org.iplass.mtp.entity.definition.validations.NotNullValidation;
 import org.iplass.mtp.entity.definition.validations.RangeValidation;
 import org.iplass.mtp.entity.definition.validations.RegexValidation;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.smartgwt.client.data.DSRequest;
 import com.smartgwt.client.data.DSResponse;
@@ -47,27 +47,23 @@ import com.smartgwt.client.widgets.grid.ListGridRecord;
 
 public class PropertyDS extends AbstractAdminDataSource {
 
-	private static HashMap<String, PropertyDS> dsList = null;
-
 	private MetaDataServiceAsync service = MetaDataServiceFactory.get();
 
 	public static PropertyDS create(String defName) {
-		//同じEntityのDSを作らない
-		if (dsList == null) {
-			dsList = new HashMap<String, PropertyDS>();
-		}
-		if (dsList.containsKey(defName)) {
-			return dsList.get(defName);
-		}
-
-		PropertyDS ds = new PropertyDS(defName);
-		dsList.put(defName, ds);
-		return ds;
+		return new PropertyDS(defName, null);
+	}
+	public static PropertyDS create(String defName, String refPropertyName) {
+		return new PropertyDS(defName, refPropertyName);
 	}
 
+	/** Entity定義名 */
+	private final String defName;
+	/** 表示対象の参照Property定義名(ReferencePropertyのみ) */
+	private final String refPropertyName;
 
-	private PropertyDS(String defName) {
-		setAttribute("defName", defName, false);
+	private PropertyDS(String defName, String refPropertyName) {
+		this.defName = defName;
+		this.refPropertyName = refPropertyName;
 
 		DataSourceField nameField = new DataSourceField("name", FieldType.TEXT, "name");
 		DataSourceField displayNameField = new DataSourceField("displayName", FieldType.TEXT, "displayName");
@@ -82,37 +78,63 @@ public class PropertyDS extends AbstractAdminDataSource {
 	@Override
 	protected void executeFetch(final String requestId, final DSRequest request, final DSResponse response) {
 
-		String defName = getAttribute("defName");
-
 		service.getEntityDefinition(TenantInfoHolder.getId(), defName, new AsyncCallback<EntityDefinition>() {
 
 			@Override
 			public void onFailure(Throwable caught) {
-				GWT.log("error!!!", caught);
-
 				response.setStatus(RPCResponse.STATUS_FAILURE);
 				processResponse(requestId, response);
 			}
 
 			@Override
-			public void onSuccess(EntityDefinition result) {
-				int size = result.getPropertyList().size();
+			public void onSuccess(EntityDefinition ed) {
 
-				// Create list for return - it is just requested records
-				ListGridRecord[] list = new ListGridRecord[size];
-				if (size > 0) {
-					for (int i = 0; i < size; i++) {
-						PropertyDefinition pd = result.getPropertyList().get(i);
-
-						ListGridRecord record = new ListGridRecord();
-						copyValues(pd, record);
-						list[i] = record;
-					}
+				if (ed == null) {
+					response.setData(new ListGridRecord[0]);
+					response.setTotalRows(0);
+					processResponse(requestId, response);
+					return;
 				}
-				response.setData(list);
 
-				response.setTotalRows(size);
-				processResponse(requestId, response);
+				if (refPropertyName != null) {
+					//参照PropertyNameが指定されている場合は、Property定義から対象のEntityを取得
+					PropertyDefinition pd = ed.getProperty(refPropertyName);
+					if (pd instanceof ReferenceProperty) {
+						ReferenceProperty rp = (ReferenceProperty)pd;
+						String refDefName = rp.getObjectDefinitionName();
+						service.getEntityDefinition(TenantInfoHolder.getId(), refDefName, new AsyncCallback<EntityDefinition>() {
+
+							@Override
+							public void onFailure(Throwable caught) {
+								response.setStatus(RPCResponse.STATUS_FAILURE);
+								processResponse(requestId, response);
+							}
+
+							@Override
+							public void onSuccess(EntityDefinition red) {
+
+								if (red == null) {
+									response.setData(new ListGridRecord[0]);
+									response.setTotalRows(0);
+									processResponse(requestId, response);
+									return;
+								}
+
+								response.setData(createRecord(red));
+								response.setTotalRows(red.getPropertyList().size());
+								processResponse(requestId, response);
+							}
+						});
+					} else {
+						response.setData(new ListGridRecord[0]);
+						response.setTotalRows(0);
+						processResponse(requestId, response);
+					}
+				} else {
+					response.setData(createRecord(ed));
+					response.setTotalRows(ed.getPropertyList().size());
+					processResponse(requestId, response);
+				}
 			}
 
 		});
@@ -123,7 +145,19 @@ public class PropertyDS extends AbstractAdminDataSource {
 		return getAttribute("defName");
 	}
 
-	private static void copyValues(PropertyDefinition from, Record to) {
+	private ListGridRecord[] createRecord(EntityDefinition ed) {
+
+		List<ListGridRecord> properties = new ArrayList<ListGridRecord>();
+		for (PropertyDefinition pd : ed.getPropertyList()) {
+			ListGridRecord record = new ListGridRecord();
+			copyValues(pd, record);
+			properties.add(record);
+
+		}
+		return properties.toArray(new ListGridRecord[]{});
+	}
+
+	private void copyValues(PropertyDefinition from, Record to) {
 		to.setAttribute("name", from.getName());
 		to.setAttribute("displayName", from.getDisplayName());
 		to.setAttribute("propertyDefinition", from);
@@ -132,7 +166,7 @@ public class PropertyDS extends AbstractAdminDataSource {
 		copyLocalizeStingValues(from.getLocalizedDisplayNameList(), to);
 	}
 
-	private static void copyValidationValues(List<ValidationDefinition> vdList, Record to) {
+	private void copyValidationValues(List<ValidationDefinition> vdList, Record to) {
 		for (ValidationDefinition vd : vdList) {
 			if (vd instanceof NotNullValidation) {
 				to.setAttribute("must", true);
@@ -149,7 +183,7 @@ public class PropertyDS extends AbstractAdminDataSource {
 		}
 	}
 
-	private static void copyLocalizeStingValues(List<LocalizedStringDefinition> lsdList, Record to) {
+	private void copyLocalizeStingValues(List<LocalizedStringDefinition> lsdList, Record to) {
 		to.setAttribute("localizedString", lsdList);
 	}
 }
