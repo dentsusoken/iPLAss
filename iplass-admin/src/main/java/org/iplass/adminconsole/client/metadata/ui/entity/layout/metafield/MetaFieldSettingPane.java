@@ -284,6 +284,15 @@ public class MetaFieldSettingPane extends VLayout {
 		return info.getDescription();
 	}
 
+	/**
+	 * 起動ダイアログを返します。
+	 *
+	 * @return 起動ダイアログ
+	 */
+	protected MetaFieldSettingDialog getOwner() {
+		return owner;
+	}
+
 	private void createPane(AnalysisResult result, final Refrectable value) {
 
 		for (String key : result.getValueMap().keySet()) {

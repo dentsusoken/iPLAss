@@ -63,8 +63,9 @@ public class EntityViewFieldSettingPane extends MetaFieldSettingPane {
 	// 参照プロパティの対象Entity
 	private String refDefName;
 
-	// 入力タイプ:Propertyで選んだプロパティが参照型の場合の対象Entity
+	// 入力タイプ:Propertyで選んだプロパティがサブダイアログの基準になる場合の選択Entity
 	private String childRefDefName;
+	private String childRefPropertyDisplayName;
 
 	private Map<EntityPropertyComboBoxItem, String> triggerdPropertyList = new HashMap<>();
 
@@ -178,15 +179,27 @@ public class EntityViewFieldSettingPane extends MetaFieldSettingPane {
 		if (info.getOverrideTriggerType() != null && info.getOverrideTriggerType() != FieldReferenceType.NONE) {
 			triggerType = info.getOverrideTriggerType();
 		}
+		EntityViewFieldSettingDialog dialog = null;
 		if (childRefDefName != null) {
 			// サブダイアログの参照Entityとして指定されたEntityを設定
-			return new EntityViewFieldSettingDialog(className, value, triggerType, defName, childRefDefName);
+			dialog = new EntityViewFieldSettingDialog(className, value, triggerType, defName, childRefDefName);
 		} else if (refDefName != null) {
 			// サブダイアログの参照Entityとして対象の参照Entityを設定
-			return new EntityViewFieldSettingDialog(className, value, triggerType, defName, refDefName);
+			dialog = new EntityViewFieldSettingDialog(className, value, triggerType, defName, refDefName);
 		} else {
-			return new EntityViewFieldSettingDialog(className, value, triggerType, defName);
+			dialog = new EntityViewFieldSettingDialog(className, value, triggerType, defName);
 		}
+
+		if (childRefPropertyDisplayName != null) {
+			//タイトル説明を基準になるプロパティ名に変更
+			dialog.setTitleDescription(childRefPropertyDisplayName);
+		} else {
+			//起動元のタイトル説明を引き継ぐ
+			EntityViewFieldSettingDialog owner = (EntityViewFieldSettingDialog)getOwner();
+			dialog.setTitleDescription(owner.getTitleDescription());
+		}
+
+		return dialog;
 	}
 
 	private FormItem createFilterList(FieldInfo info) {
@@ -242,6 +255,7 @@ public class EntityViewFieldSettingPane extends MetaFieldSettingPane {
 	private void getChildReferenceEntityName(String propertyName) {
 		if (SmartGWTUtil.isEmpty(propertyName)) {
 			childRefDefName = null;
+			childRefPropertyDisplayName = null;
 			return;
 		}
 		String _defName = refDefName != null ? refDefName : defName;
@@ -249,13 +263,15 @@ public class EntityViewFieldSettingPane extends MetaFieldSettingPane {
 				new AdminAsyncCallback<PropertyDefinition>() {
 
 					@Override
-					public void onSuccess(PropertyDefinition property) {
+					public void onSuccess(PropertyDefinition pd) {
 						// 参照型の場合、Entity定義名を取得
-						if (property instanceof ReferenceProperty) {
-							childRefDefName = ((ReferenceProperty) property).getObjectDefinitionName();
+						if (pd instanceof ReferenceProperty) {
+							childRefDefName = ((ReferenceProperty) pd).getObjectDefinitionName();
 						} else {
 							childRefDefName = null;
 						}
+						//サブダイアログの説明のためプロパティ名を保持
+						childRefPropertyDisplayName = pd.getDisplayName();
 					}
 		});
 	}

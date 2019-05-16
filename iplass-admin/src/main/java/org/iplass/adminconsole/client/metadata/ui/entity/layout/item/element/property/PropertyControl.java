@@ -26,6 +26,7 @@ import org.iplass.adminconsole.client.base.event.MTPEvent;
 import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
 import org.iplass.adminconsole.client.base.rpc.AdminAsyncCallback;
 import org.iplass.adminconsole.client.base.tenant.TenantInfoHolder;
+import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
 import org.iplass.adminconsole.client.metadata.ui.entity.layout.PropertyOperationHandler;
 import org.iplass.adminconsole.client.metadata.ui.entity.layout.item.EntityViewFieldSettingDialog;
 import org.iplass.adminconsole.client.metadata.ui.entity.layout.item.ItemControl;
@@ -102,7 +103,6 @@ public class PropertyControl extends ItemControl {
 				record.getAttribute("parentDisplayName") + "." + record.getAttribute("displayName") : record.getAttribute("displayName");
 
 		setTitle(defaultDisplayName);
-		setTooltip(getTitle());
 		setValue("name", record.getAttribute("name"));
 		setValue("propertyEditor", createDefaultEditor(
 				(PropertyDefinition) record.getAttributeAsObject("propertyDefinition")));
@@ -112,6 +112,8 @@ public class PropertyControl extends ItemControl {
 		property.setEditor((PropertyEditor) getValue("propertyEditor"));
 		setClassName(property.getClass().getName());
 		setValueObject(property);
+
+		createTitle(null);
 	}
 
 	/**
@@ -198,7 +200,7 @@ public class PropertyControl extends ItemControl {
 		} else {
 			setTitle(defaultDisplayName);
 		}
-		setTooltip(getTitle());
+		SmartGWTUtil.addHoverToCanvas(this, getTitle());
 	}
 
 	/**
@@ -310,11 +312,18 @@ public class PropertyControl extends ItemControl {
 
 	@Override
 	protected EntityViewFieldSettingDialog createSubDialog() {
+		EntityViewFieldSettingDialog dialog = null;
 		PropertyEditor editor =  (PropertyEditor) getValue("propertyEditor");
 		if (editor instanceof ReferencePropertyEditor) {
+			// ReferencePropertyEditorの場合は、refDefNameを設定
 			String refDefName = ((ReferencePropertyEditor) editor).getObjectName();
-			return new EntityViewFieldSettingDialog(getClassName(), getValueObject(), triggerType, defName, refDefName);
+			dialog = new EntityViewFieldSettingDialog(getClassName(), getValueObject(), triggerType, defName, refDefName);
+		} else {
+			dialog = super.createSubDialog();
 		}
-		return super.createSubDialog();
+
+		// ダイアログのタイトルに対象のプロパティ名を表示
+		dialog.setTitleDescription(defaultDisplayName);
+		return dialog;
 	}
 }

@@ -164,7 +164,11 @@ public class ReferenceSectionControl extends ItemControl implements SectionContr
 	@Override
 	protected EntityViewFieldSettingDialog createSubDialog() {
 		ReferenceSection section = getSection();
-		return new EntityViewFieldSettingDialog(getClassName(), getValueObject(), triggerType, defName, section.getDefintionName());
+		EntityViewFieldSettingDialog dialog = new EntityViewFieldSettingDialog(getClassName(), getValueObject(), triggerType, defName, section.getDefintionName());
+
+		// ダイアログのタイトルに対象のプロパティ名を表示
+		dialog.setTitleDescription(loadedDisplayLabel);
+		return dialog;
 	}
 
 }
