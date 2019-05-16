@@ -32,6 +32,7 @@ import org.iplass.adminconsole.client.base.ui.widget.form.MtpIntegerItem;
 import org.iplass.adminconsole.client.base.ui.widget.form.MtpTextItem;
 import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
 import org.iplass.adminconsole.client.metadata.data.entity.layout.ViewType;
+import org.iplass.adminconsole.client.metadata.ui.common.EntityPropertySelectItem;
 import org.iplass.adminconsole.client.metadata.ui.entity.layout.PropertyOperationHandler;
 import org.iplass.adminconsole.client.metadata.ui.entity.layout.item.ItemControl;
 import org.iplass.adminconsole.shared.metadata.rpc.MetaDataServiceAsync;
@@ -57,6 +58,7 @@ import com.smartgwt.client.widgets.events.ClickHandler;
 import com.smartgwt.client.widgets.form.DynamicForm;
 import com.smartgwt.client.widgets.form.fields.CheckboxItem;
 import com.smartgwt.client.widgets.form.fields.IntegerItem;
+import com.smartgwt.client.widgets.form.fields.SelectItem;
 import com.smartgwt.client.widgets.form.fields.TextItem;
 import com.smartgwt.client.widgets.form.validator.IntegerRangeValidator;
 import com.smartgwt.client.widgets.grid.ListGridRecord;
@@ -193,7 +195,7 @@ public class SectionControllerImpl implements SectionController {
 			setTitle("Reference Section Setting");
 			centerInPage();
 
-			final TextItem propName = new MtpTextItem();
+			final SelectItem propName = new EntityPropertySelectItem(defName);
 			propName.setTitle(AdminClientMessageUtil.getString("ui_metadata_entity_layout_DetailDropLayout_propName"));
 
 			final CheckboxItem expand = new CheckboxItem();
@@ -307,7 +309,7 @@ public class SectionControllerImpl implements SectionController {
 			setTitle("MassReference Section Setting");
 			centerInPage();
 
-			final TextItem propName = new MtpTextItem();
+			final SelectItem propName = new EntityPropertySelectItem(defName);
 			propName.setTitle(AdminClientMessageUtil.getString("ui_metadata_entity_layout_DetailDropLayout_propName"));
 
 			final CheckboxItem expand = new CheckboxItem();

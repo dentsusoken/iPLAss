@@ -47,7 +47,7 @@ public class EntityPropertyListGrid extends ListGrid implements EntityPropertyGr
 	@Override
 	public void refresh(String defName) {
 
-		PropertyDS dataSource = PropertyDS.create(defName);
+		PropertyDS dataSource = PropertyDS.getInstance(defName);
 		dataSource.fetchData(null, new DSCallback() {
 
 			@Override
