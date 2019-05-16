@@ -98,6 +98,11 @@ public class MetaFieldReferenceMultiItem extends MetaFieldCanvasItem {
 		// カラムの構築
 		grid.setFields(new ListGridField("empty"));// 仮設定
 
+		String description = pane.getDescription(info);
+		if (SmartGWTUtil.isNotEmpty(description)) {
+			SmartGWTUtil.addHoverToCanvas(grid, description);
+		}
+
 		// フィールドの値がnullなら空のリストを詰めておく
 		boolean isValueNull = pane.getValue(info.getName()) == null;
 		@SuppressWarnings("unchecked")
