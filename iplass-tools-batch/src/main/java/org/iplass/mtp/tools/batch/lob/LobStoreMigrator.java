@@ -113,7 +113,7 @@ public class LobStoreMigrator extends MtpCuiBase {
 					ServiceRegistry sr = ServiceRegistry.getRegistry();
 					LobStoreService lobStoreService = sr.getService(LobStoreService.class);
 
-					ConfigImpl config = new ConfigImpl("lobStoreMigrator", null);
+					ConfigImpl config = new ConfigImpl("lobStoreMigrator", null, null);
 					config.addDependentService(RdbAdapterService.class.getName(), sr.getService(RdbAdapterService.class));
 
 					RdbLobStore rdbLobStore = new RdbLobStore();

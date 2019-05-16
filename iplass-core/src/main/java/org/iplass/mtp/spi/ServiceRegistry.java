@@ -20,30 +20,17 @@
 
 package org.iplass.mtp.spi;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.StringReader;
-import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
-import javax.xml.bind.Unmarshaller;
-
 import org.iplass.mtp.SystemException;
 import org.iplass.mtp.impl.core.config.ConfigImpl;
 import org.iplass.mtp.impl.core.config.ConfigPreprocessor;
-import org.iplass.mtp.impl.core.config.NameValue;
 import org.iplass.mtp.impl.core.config.ServiceConfig;
 import org.iplass.mtp.impl.core.config.ServiceDefinition;
+import org.iplass.mtp.impl.core.config.ServiceDefinitionParser;
 import org.iplass.mtp.impl.core.config.ServiceRegistryInitializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -64,9 +51,8 @@ public class ServiceRegistry {
 	private static ServiceRegistry registry = new ServiceRegistry();
 
 	private final ConcurrentHashMap<String, ServiceEntry> services;
-
+	private final ServiceDefinitionParser parser;
 	private volatile ServiceDefinition serviceDefinition;
-
 	private volatile boolean destroyed = false;
 
 	/**
@@ -80,24 +66,11 @@ public class ServiceRegistry {
 
 	private ServiceRegistry() {
 		services = new ConcurrentHashMap<>(32, 0.75f, 1);
-		serviceDefinition = loadServiceDefinition();
+		parser = new ServiceDefinitionParser(newConfigPreprocessor());
+		String configFileName = ServiceRegistryInitializer.getConfigFileName();
+		serviceDefinition = parser.read(configFileName);
 	}
 
-	private ServiceDefinition loadServiceDefinition() {
-		String configFileName = ServiceRegistryInitializer.getConfigFileName();
-		
-		ConfigPreprocessor[] prepros = newConfigPreprocessor();
-		
-		try {
-			JAXBContext context = JAXBContext.newInstance(NameValue.class, ServiceConfig.class, ServiceDefinition.class);
-			ServiceDefinition serviceDefinition = getServiceDefinision(configFileName, context, prepros);
-			return serviceDefinition;
-		} catch (JAXBException e) {
-			logger.error("JAXBContext can not initialize.", e);
-			throw new ServiceConfigrationException(e);
-		}
-	}
-	
 	private ConfigPreprocessor[] newConfigPreprocessor() {
 		List<String> cnames = ServiceRegistryInitializer.getConfigPreprocessorClassNames();
 		ConfigPreprocessor[] cps = null;
@@ -112,109 +85,6 @@ public class ServiceRegistry {
 			}
 		}
 		return cps;
-	}
-	
-	private String readContent(String fileName) {
-		InputStream is = null;
-		try {
-			is = getClass().getResourceAsStream(fileName);
-			if (is == null) {
-				File file = new File(fileName);
-				if (file.exists()) {
-					try {
-						is = new FileInputStream(file);
-					} catch (FileNotFoundException e) {
-						if (logger.isDebugEnabled()) {
-							logger.debug("ConfigFile:" + fileName + " not found.", e);
-						}
-					}
-				}
-			}
-			if (is == null) {
-				logger.error("ConfigFile:" + fileName + " not found.Can not initialize ServiceRegistry.");
-				throw new ServiceConfigrationException("Config File:" + fileName + " Not Found.");
-			}
-			
-			InputStreamReader r = new InputStreamReader(is, "utf-8");
-			StringBuffer str = new StringBuffer();
-			char[] buf = new char[1024];
-			int length = 0;
-			while ((length = r.read(buf)) != -1) {
-				str.append(buf, 0, length);
-			}
-			return str.toString();
-		} catch (IOException e) {
-			logger.error("Cant read ConfigFile:" + fileName + ".Can not initialize ServiceRegistry.", e);
-			throw new ServiceConfigrationException(e);
-		} finally {
-			if (is != null) {
-				try {
-					is.close();
-				} catch (IOException e) {
-					logger.warn("resource close failed. Maybe Resource Leak.", e);
-				}
-			}
-		}
-	}
-
-
-	private ServiceDefinition getServiceDefinision(String fileName, JAXBContext context, ConfigPreprocessor[] prepros) {
-		
-		String content = readContent(fileName);
-		if (prepros != null) {
-			for (ConfigPreprocessor p: prepros) {
-				content = p.preprocess(content, fileName);
-			}
-		}
-
-		try {
-			Unmarshaller um = context.createUnmarshaller();
-			ServiceDefinition sd = (ServiceDefinition) um.unmarshal(new StringReader(content));
-			if (prepros != null) {
-				for (ConfigPreprocessor p: prepros) {
-					sd = p.preprocess(sd);
-				}
-			}
-			
-			if (sd.getInherits() != null) {
-				//merge multi inherits
-				if (logger.isDebugEnabled()) {
-					logger.debug(fileName + " inherited " + sd.getInherits()[0]);
-				}
-				ServiceDefinition inhSd = getServiceDefinision(sd.getInherits()[0], context, prepros);
-				for (int i = 1; i < sd.getInherits().length; i++) {
-					if (logger.isDebugEnabled()) {
-						logger.debug(fileName + " inherited " + sd.getInherits()[i]);
-					}
-					inhSd.include(getServiceDefinision(sd.getInherits()[i], context, prepros));
-				}
-				
-				sd.inherit(inhSd);
-			}
-
-			if (sd.getIncludes() != null) {
-				for (String inc: sd.getIncludes()) {
-					ServiceDefinition incSd = getServiceDefinision(inc, context, prepros);
-					sd.include(incSd);
-					if (logger.isDebugEnabled()) {
-						logger.debug(fileName + " included " + inc);
-					}
-				}
-			}
-
-			if (logger.isTraceEnabled()) {
-				Marshaller m = context.createMarshaller();
-				m.setProperty("jaxb.formatted.output", true);
-				StringWriter w = new StringWriter();
-				m.marshal(sd, w);
-				logger.trace("configration of " + fileName + "\n=============\n" + w.toString() + "\n=============");
-			}
-
-			return sd;
-		} catch (JAXBException e) {
-			logger.error("Parse failed ConfigFile:" + fileName + ".Can not initialize ServiceRegistry.", e);
-			throw new ServiceConfigrationException(e);
-		}
 	}
 
 	private ServiceEntry createService(String serviceName, List<String> dependStack) {
@@ -246,7 +116,7 @@ public class ServiceRegistry {
 			if (sc == null) {
 				throw new ServiceConfigrationException(serviceName + " not defined.");
 			}
-			ConfigImpl config = new ConfigImpl(serviceName, sc.getProperty());
+			ConfigImpl config = new ConfigImpl(serviceName, sc.getProperty(), sc.getBean());
 
 			if (sc.getDepend() != null) {
 				for (String depend: sc.getDepend()) {
@@ -405,7 +275,8 @@ public class ServiceRegistry {
 
 			//reload
 			services.clear();
-			serviceDefinition = loadServiceDefinition();
+			String configFileName = ServiceRegistryInitializer.getConfigFileName();
+			serviceDefinition = parser.read(configFileName);
 
 			for (ServiceEntry se: forDest) {
 				se.destroy();

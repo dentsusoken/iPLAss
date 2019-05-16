@@ -32,6 +32,7 @@ public class ServiceConfig {
 	private String className;
 	private String[] depend;
 	private NameValue[] property;
+	private NameValue[] bean;
 	
 	private boolean isFinal;
 	private boolean isInherit = true;
@@ -71,6 +72,12 @@ public class ServiceConfig {
 	}
 	public void setProperty(NameValue[] property) {
 		this.property = property;
+	}
+	public NameValue[] getBean() {
+		return bean;
+	}
+	public void setBean(NameValue[] bean) {
+		this.bean = bean;
 	}
 	@XmlElement(name="interface")
 	public String getInterfaceName() {
@@ -130,6 +137,7 @@ public class ServiceConfig {
 		}
 		
 		merged.property = NameValue.mergeNameValueArray(id(), property, superConfig.property);
+		merged.bean = NameValue.mergeNameValueArray(id() + "(bean)", bean, superConfig.bean);
 		
 		return merged;
 	}

@@ -70,12 +70,12 @@ public class MetaDataPatch {
 			}
 		}
 
-		ConfigImpl newConfig = new ConfigImpl("forPatchNew", new NameValue[] {new NameValue("filePath", newDefaultMetaData)});
+		ConfigImpl newConfig = new ConfigImpl("forPatchNew", new NameValue[] {new NameValue("filePath", newDefaultMetaData)}, null);
 		newConfig.addDependentService(MetaDataJAXBService.class.getName(), jaxb);
 		XmlResourceMetaDataStore newRepo = new XmlResourceMetaDataStore();
 		newRepo.inited(null, newConfig);
 
-		ConfigImpl oldConfig = new ConfigImpl("forPatchOld", new NameValue[] {new NameValue("filePath", oldDefaultMetaData)});
+		ConfigImpl oldConfig = new ConfigImpl("forPatchOld", new NameValue[] {new NameValue("filePath", oldDefaultMetaData)}, null);
 		oldConfig.addDependentService(MetaDataJAXBService.class.getName(), jaxb);
 		XmlResourceMetaDataStore oldRepo = new XmlResourceMetaDataStore();
 		oldRepo.inited(null, oldConfig);

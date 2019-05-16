@@ -51,6 +51,8 @@ public class NameValue {
 	
 	private boolean isNull;
 	
+	private String ref;
+	
 	public NameValue() {
 	}
 	
@@ -163,6 +165,14 @@ public class NameValue {
 		this.textValue = textValue;
 	}
 	
+	@XmlAttribute
+	public String getRef() {
+		return ref;
+	}
+
+	public void setRef(String ref) {
+		this.ref = ref;
+	}
 	
 	public String value() {
 		if (value != null && value.length() != 0) {
@@ -174,32 +184,41 @@ public class NameValue {
 	public NameValue merge(NameValue superNameValue) {
 		NameValue merged = new NameValue();
 		merged.name = name;
-		if (className != null) {
-			merged.className = className;
-		} else {
-			merged.className = superNameValue.className;
-		}
 		merged.isAdditional = isAdditional;
 		merged.isFinal = isFinal;
 		merged.isEncrypted = isEncrypted;
 		merged.isIfnone = isIfnone;
-		if (textValue != null) {
-			merged.textValue = textValue;
-		} else {
-			merged.textValue = superNameValue.textValue;
-		}
-		if (value != null) {
-			merged.value = value;
-		} else {
-			merged.value = superNameValue.value;
-		}
 		
-		merged.property = mergeNameValueArray(name, property, superNameValue.property);
-
-		if (arg != null) {
-			merged.arg = arg;
+		if (ref != null) {
+			//ref定義を優先
+			merged.ref = ref;
 		} else {
-			merged.arg = superNameValue.arg;
+			merged.ref = superNameValue.ref;
+			
+			if (className != null) {
+				merged.className = className;
+			} else {
+				merged.className = superNameValue.className;
+			}
+			
+			if (textValue != null) {
+				merged.textValue = textValue;
+			} else {
+				merged.textValue = superNameValue.textValue;
+			}
+			if (value != null) {
+				merged.value = value;
+			} else {
+				merged.value = superNameValue.value;
+			}
+			
+			merged.property = mergeNameValueArray(name, property, superNameValue.property);
+
+			if (arg != null) {
+				merged.arg = arg;
+			} else {
+				merged.arg = superNameValue.arg;
+			}
 		}
 		
 		return merged;
