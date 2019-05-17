@@ -37,8 +37,6 @@ import org.iplass.mtp.entity.query.condition.expr.Paren;
 import org.iplass.mtp.entity.query.condition.predicate.Equals;
 import org.iplass.mtp.util.StringUtil;
 import org.iplass.mtp.view.generic.EntityViewManager;
-import org.iplass.mtp.view.generic.editor.JoinPropertyEditor;
-import org.iplass.mtp.view.generic.editor.NestProperty;
 import org.iplass.mtp.view.generic.editor.PropertyEditor;
 import org.iplass.mtp.view.generic.editor.ReferencePropertyEditor;
 import org.iplass.mtp.webapi.definition.MethodType;
@@ -117,8 +115,8 @@ public final class GetEntityNameListCommand implements Command {
 	private void replaceNamePropWithDisplayLabelProp(List<Entity> entities, String dispLabelProp) {
 		for (Entity entity : entities) {
 			String dispPropValue = entity.getValue(dispLabelProp);
-			entity.setValue(Entity.NAME, dispPropValue);
 			entity.setValue(dispLabelProp, null);
+			entity.setValue(Entity.NAME, dispPropValue);
 		}
 	}
 }
