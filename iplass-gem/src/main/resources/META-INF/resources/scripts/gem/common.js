@@ -1884,7 +1884,8 @@ function searchReference(selectAction, viewAction, defName, propName, multiplici
 			list.push(keySplit(key));
 		}
 		if (list.length > 0) {
-			getEntityNameList(defName, viewName, parentDefName, parentViewName, propName, viewType, list, function(entities) {
+			var parentPropName = propName.replace(/^sc_/, "").replace(/\[\w+\]/g, "");
+			getEntityNameList(defName, viewName, parentDefName, parentViewName, parentPropName, viewType, list, function(entities) {
 				for (var i = 0; i < entities.length; i++) {
 					var entity = entities[i];
 					var _key = entity.oid + "_" + entity.version;
@@ -1951,9 +1952,10 @@ function searchReference(selectAction, viewAction, defName, propName, multiplici
  * @param refEdit
  * @param callback
  * @param button
+ * @param displayPropName 表示ラベルプロパティ
  * @return
  */
-function searchReferenceForBi(webapi, selectAction, viewAction, defName, entityDefName, propName, multiplicity, multi, urlParam, refEdit, callback, button) {
+function searchReferenceForBi(webapi, selectAction, viewAction, defName, entityDefName, propName, multiplicity, multi, urlParam, refEdit, callback, button, displayPropName) {
 	var _propName = propName.replace(/\[/g, "\\[").replace(/\]/g, "\\]").replace(/\./g, "\\.");
 	document.scriptContext["searchReferenceCallback"] = function(selectArray) {
 		var $ul = $("#ul_" + _propName);
@@ -1988,11 +1990,13 @@ function searchReferenceForBi(webapi, selectAction, viewAction, defName, entityD
 			list.push(keySplit(key));
 		}
 		if (list.length > 0) {
-			getEntityValueList(webapi, defName, entityDefName, "name", list, function(entities) {
+			var _displayPropName = displayPropName;
+			if (typeof _displayPropName === "undefined" || _displayPropName == null || _displayPropName == "") _displayPropName = "name";
+			getEntityValueList(webapi, defName, entityDefName, _displayPropName, list, function(entities) {
 				for (var i = 0; i < entities.length; i++) {
 					var entity = entities[i];
 					var _key = entity.oid + "_" + entity.version;
-					addReference("li_" + propName + _key, viewAction, entityDefName, _key, entity.name, propName, "ul_" + _propName, refEdit);
+					addReference("li_" + propName + _key, viewAction, entityDefName, _key, entity[_displayPropName], propName, "ul_" + _propName, refEdit);
 				}
 				entityList = entities;
 			});
@@ -2158,13 +2162,14 @@ function insertReference(addAction, viewAction, defName, propName, multiplicity,
 			showReference(viewAction, defName, entity.oid, entity.version, linkId, refEdit);
 		};
 
+		var parentPropName = propName.replace(/\[\w+\]/g, "");
 		var $form = $("<form />").attr({method:"POST", action:addAction, target:target}).appendTo("body");
 //		$("<input />").attr({type:"hidden", name:"defName", value:defName}).appendTo($form);//定義名
 		$("<input />").attr({type:"hidden", name:"parentOid", value:parentOid}).appendTo($form);//参照元の情報
 		$("<input />").attr({type:"hidden", name:"parentVersion", value:parentVersion}).appendTo($form);
 		$("<input />").attr({type:"hidden", name:"parentDefName", value:parentDefName}).appendTo($form);
 		$("<input />").attr({type:"hidden", name:"parentViewName", value:parentViewName}).appendTo($form);
-		$("<input />").attr({type:"hidden", name:"parentPropName", value:propName}).appendTo($form);
+		$("<input />").attr({type:"hidden", name:"parentPropName", value:parentPropName}).appendTo($form);
 		if (isSubModal) $("<input />").attr({type:"hidden", name:"modalTarget", value:target}).appendTo($form);
 		var kv = urlParam.split("&");
 		if (urlParam.length > 0 && kv.length > 0) {
@@ -3155,7 +3160,10 @@ function addNestRow_Reference(type, cell, idx) {
 			var viewName = $selButton.attr("data-viewName");
 			var permitConditionSelectAll = $selButton.attr("data-permitConditionSelectAll");
 			var callback = scriptContext[callbackKey];
-			searchReference(selectAction, viewAction, defName, propName, multiplicity, false, urlParam, refEdit, callback, $selButton, viewName, permitConditionSelectAll);
+			var parentDefName = $selButton.attr("data-parentDefName");
+			var parentViewName = $selButton.attr("data-parentViewName");
+			var viewType = $selButton.attr("data-viewType");
+			searchReference(selectAction, viewAction, defName, propName, multiplicity, false, urlParam, refEdit, callback, $selButton, viewName, permitConditionSelectAll, parentDefName, parentViewName, viewType);
 		});
 
 		$insButton.on("click", function() {
@@ -3168,10 +3176,11 @@ function addNestRow_Reference(type, cell, idx) {
 			var parentOid = $insButton.attr("data-parentOid");
 			var parentVersion = $insButton.attr("data-parentVersion");
 			var parentDefName = $insButton.attr("data-parentDefName");
+			var parentViewName = $insButton.attr("data-parentViewName");
 			var refEdit = $insButton.attr("data-refEdit");
 			var callbackKey = $insButton.attr("data-callbackKey");
 			var callback = scriptContext[callbackKey]
-			insertReference(addAction, viewAction, defName, propName, multiplicity, urlParam, parentOid, parentVersion, parentDefName, refEdit, callback, $insButton);
+			insertReference(addAction, viewAction, defName, propName, multiplicity, urlParam, parentOid, parentVersion, parentDefName, parentViewName, refEdit, callback, $insButton);
 		});
 	} else if (type == "TREE") {
 		var $selBtn = $(".sel-btn", $(cell));
@@ -3197,10 +3206,11 @@ function addNestRow_Reference(type, cell, idx) {
 			var parentOid = $insButton.attr("data-parentOid");
 			var parentVersion = $insButton.attr("data-parentVersion");
 			var parentDefName = $insButton.attr("data-parentDefName");
+			var parentViewName = $insButton.attr("data-parentViewName");
 			var refEdit = $insButton.attr("data-refEdit");
 			var callbackKey = $insButton.attr("data-callbackKey");
 			var callback = scriptContext[callbackKey]
-			insertReference(addAction, viewAction, defName, propName, multiplicity, urlParam, parentOid, parentVersion, parentDefName, refEdit, callback, $insButton);
+			insertReference(addAction, viewAction, defName, propName, multiplicity, urlParam, parentOid, parentVersion, parentDefName, parentViewName, refEdit, callback, $insButton);
 		});
 	} else if (type == "REFCOMBO") {
 		//TODO 連動コンボ時の初期ロードで実行されるjavascriptをどうにかする

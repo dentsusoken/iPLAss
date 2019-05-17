@@ -52,6 +52,7 @@
 <%@ page import="org.iplass.mtp.view.generic.FormViewUtil"%>
 <%@ page import="org.iplass.mtp.view.generic.LoadEntityContext"%>
 <%@ page import="org.iplass.mtp.view.generic.LoadEntityInterrupter.LoadType"%>
+<%@ page import="org.iplass.mtp.view.generic.OutputType"%>
 <%@ page import="org.iplass.mtp.view.generic.editor.LinkProperty"%>
 <%@ page import="org.iplass.mtp.view.generic.editor.PropertyEditor"%>
 <%@ page import="org.iplass.mtp.view.generic.editor.ReferencePropertyEditor" %>
@@ -117,9 +118,11 @@
 		if (doSearch) {
 			Query q = new Query();
 			q.from(editor.getObjectName());
-			q.select(Entity.OID, Entity.NAME, Entity.VERSION);
+			q.select(Entity.OID, Entity.VERSION);
 			if (editor.getDisplayLabelItem() != null) {
 				q.select().add(editor.getDisplayLabelItem());
+			} else {
+				q.select().add(Entity.NAME);
 			}
 			if (condition != null) {
 				q.where(condition);
@@ -238,10 +241,25 @@
 			} else {
 				entity = em.load(refEntity.getOid(), refEntity.getVersion(), refDefName, leContext.getLoadOption());
 			}
+			if (entity != null && editor.getDisplayLabelItem() != null) {
+				loadReferenceEntityProperty(entity, editor.getDisplayLabelItem());
+			}
 			handler.afterLoadReference(entity, loadOption, pd, LoadType.VIEW);
 			return entity;
 		} else {
 			return refEntity;
+		}
+	}
+
+	void loadReferenceEntityProperty(Entity refEntity, String propName) {
+		if (refEntity == null || StringUtil.isBlank(propName)) return;
+		Query q = new Query().select(propName);
+		q.from(refEntity.getDefinitionName());
+		q.where(new And(new Equals(Entity.OID, refEntity.getOid()), new Equals(Entity.VERSION, refEntity.getVersion())));
+
+		Entity ret = ManagerLocator.getInstance().getManager(EntityManager.class).searchEntity(q).getFirst();
+		if (ret != null && ret.getValue(propName) != null) {
+			refEntity.setValue(propName, ret.getValue(propName));
 		}
 	}
 
@@ -283,6 +301,7 @@
 	ReferenceProperty pd = (ReferenceProperty) request.getAttribute(Constants.EDITOR_PROPERTY_DEFINITION);
 	String scriptKey = (String)request.getAttribute(Constants.SECTION_SCRIPT_KEY);
 	String execType = (String) request.getAttribute(Constants.EXEC_TYPE);
+	OutputType type = (OutputType)request.getAttribute(Constants.OUTPUT_TYPE);
 	String viewName = request.getParameter(Constants.VIEW_NAME);
 	if (viewName == null) {
 		viewName = "";
@@ -483,9 +502,19 @@ $(function() {
 		, specVersionKey: "<%=StringUtil.escapeJavaScript(specVersionKey) %>"
 		, viewName: "<%=StringUtil.escapeJavaScript(_viewName) %>"
 		, permitConditionSelectAll: <%=editor.isPermitConditionSelectAll()%>
-		, parentDefName: "<%=StringUtil.escapeJavaScript(defName)%>"
+		, parentDefName: "<%=StringUtil.escapeJavaScript(rootDefName)%>"
 		, parentViewName: "<%=StringUtil.escapeJavaScript(viewName)%>"
+<%
+				if (type == OutputType.BULK) { // 一括更新モード
+%>
+		, viewType: "<%=Constants.VIEW_TYPE_BULK %>"
+<% 
+				} else {
+%>
 		, viewType: "<%=Constants.VIEW_TYPE_DETAIL %>"
+<%
+				}
+%>
 	}
 	var $selBtn = $(":button[id='<%=StringUtil.escapeJavaScript(selBtnId) %>']");
 	for (key in params) {
@@ -527,7 +556,7 @@ $(function() {
 		, urlParam: "<%=StringUtil.escapeJavaScript(urlParam) %>"
 		, parentOid: "<%=StringUtil.escapeJavaScript(parentOid)%>"
 		, parentVersion: "<%=StringUtil.escapeJavaScript(parentVersion)%>"
-		, parentDefName: "<%=StringUtil.escapeJavaScript(defName)%>"
+		, parentDefName: "<%=StringUtil.escapeJavaScript(rootDefName)%>"
 		, parentViewName: "<%=StringUtil.escapeJavaScript(viewName)%>"
 		, refEdit: <%=refEdit %>
 		, callbackKey: key
@@ -565,6 +594,9 @@ $(function() {
 				for (Entity refEntity : entities) {
 					if (refEntity != null && refEntity.getOid() != null) {
 						oid.add(refEntity.getOid());
+						if (editor.getDisplayLabelItem() != null) {
+							loadReferenceEntityProperty(refEntity, editor.getDisplayLabelItem());
+						}
 					}
 				}
 			}
@@ -572,6 +604,9 @@ $(function() {
 			Entity refEntity = (Entity) propValue;
 			if (refEntity != null && refEntity.getOid() != null) {
 				oid.add(refEntity.getOid());
+				if (editor.getDisplayLabelItem() != null) {
+					loadReferenceEntityProperty(refEntity, editor.getDisplayLabelItem());
+				}
 			}
 		}
 
@@ -652,6 +687,9 @@ data-upperType="<c:out value="<%=upperType %>"/>"
 				for (Entity refEntity : entities) {
 					if (refEntity != null && refEntity.getOid() != null) {
 						oid.add(refEntity.getOid());
+						if (editor.getDisplayLabelItem() != null) {
+							loadReferenceEntityProperty(refEntity, editor.getDisplayLabelItem());
+						}
 					}
 				}
 			}
@@ -659,6 +697,9 @@ data-upperType="<c:out value="<%=upperType %>"/>"
 			Entity refEntity = (Entity) propValue;
 			if (refEntity != null && refEntity.getOid() != null) {
 				oid.add(refEntity.getOid());
+				if (editor.getDisplayLabelItem() != null) {
+					loadReferenceEntityProperty(refEntity, editor.getDisplayLabelItem());
+				}
 			}
 		}
 		String cls = "list-check-01";
@@ -687,13 +728,14 @@ data-customStyle="<c:out value="<%=customStyle%>"/>"
 <%
 				String checked = oid.contains(refEntity.getOid()) ? " checked" : "";
 				String _value = refEntity.getOid() + "_" + refEntity.getVersion();
+				String displayPropLabel = getDisplayPropLabel(editor, refEntity);
 				if (isMultiple) {
 %>
-<input type="checkbox" name="<c:out value="<%=propName %>"/>" value="<c:out value="<%=_value %>"/>" <c:out value="<%=checked %>"/> /><c:out value="<%=refEntity.getName() %>" />
+<input type="checkbox" name="<c:out value="<%=propName %>"/>" value="<c:out value="<%=_value %>"/>" <c:out value="<%=checked %>"/> /><c:out value="<%=displayPropLabel %>" />
 <%
 				} else {
 %>
-<input type="radio" name="<c:out value="<%=propName %>"/>" value="<c:out value="<%=_value %>"/>" <c:out value="<%=checked %>"/> /><c:out value="<%=refEntity.getName() %>" />
+<input type="radio" name="<c:out value="<%=propName %>"/>" value="<c:out value="<%=_value %>"/>" <c:out value="<%=checked %>"/> /><c:out value="<%=displayPropLabel %>" />
 <%
 				}
 %>
@@ -713,13 +755,14 @@ data-customStyle="<c:out value="<%=customStyle%>"/>"
 <%
 				String checked = oid.contains(refEntity.getOid()) ? " checked" : "";
 				String _value = refEntity.getOid() + "_" + refEntity.getVersion();
+				String displayPropLabel = getDisplayPropLabel(editor, refEntity);
 				if (isMultiple) {
 %>
-<input type="checkbox" name="<c:out value="<%=propName %>"/>" value="<c:out value="<%=_value %>"/>" <c:out value="<%=checked %>"/> /><c:out value="<%=refEntity.getName() %>" />
+<input type="checkbox" name="<c:out value="<%=propName %>"/>" value="<c:out value="<%=_value %>"/>" <c:out value="<%=checked %>"/> /><c:out value="<%=displayPropLabel %>" />
 <%
 				} else {
 %>
-<input type="radio" name="<c:out value="<%=propName %>"/>" value="<c:out value="<%=_value %>"/>" <c:out value="<%=checked %>"/> /><c:out value="<%=refEntity.getName() %>" />
+<input type="radio" name="<c:out value="<%=propName %>"/>" value="<c:out value="<%=_value %>"/>" <c:out value="<%=checked %>"/> /><c:out value="<%=displayPropLabel %>" />
 <%
 				}
 %>
@@ -751,12 +794,13 @@ data-customStyle="<c:out value="<%=customStyle%>"/>"
 			String liId = "li_" + propName + i;
 			String linkId = propName + "_" + refEntity.getOid();
 			String key = refEntity.getOid() + "_" + refEntity.getVersion();
+			String displayPropLabel = getDisplayPropLabel(editor, refEntity);
 %>
 <li id="<c:out value="<%=liId %>"/>" class="list-add">
 <%
 			if (editPageDetail) {
 %>
-<a href="javascript:void(0)" class="modal-lnk" style="<c:out value="<%=customStyle%>"/>" id="<c:out value="<%=linkId %>"/>" onclick="showReference('<%=StringUtil.escapeJavaScript(viewAction)%>', '<%=StringUtil.escapeJavaScript(refDefName)%>', '<%=StringUtil.escapeJavaScript(refEntity.getOid())%>', '<%=refEntity.getVersion() %>', '<%=StringUtil.escapeJavaScript(linkId)%>', <%=refEdit %>)"><c:out value="<%=refEntity.getName() %>" /></a>
+<a href="javascript:void(0)" class="modal-lnk" style="<c:out value="<%=customStyle%>"/>" id="<c:out value="<%=linkId %>"/>" onclick="showReference('<%=StringUtil.escapeJavaScript(viewAction)%>', '<%=StringUtil.escapeJavaScript(refDefName)%>', '<%=StringUtil.escapeJavaScript(refEntity.getOid())%>', '<%=refEntity.getVersion() %>', '<%=StringUtil.escapeJavaScript(linkId)%>', <%=refEdit %>)"><c:out value="<%=displayPropLabel %>" /></a>
 <%
 				if (!hideDeleteButton && updatable) {
 %>
@@ -764,7 +808,7 @@ data-customStyle="<c:out value="<%=customStyle%>"/>"
 <%				}
 			} else {
 %>
-<a href="javascript:void(0)" class="modal-lnk" style="<c:out value="<%=customStyle%>"/>" id="<c:out value="<%=linkId %>"/>" onclick="showReference('<%=StringUtil.escapeJavaScript(viewAction)%>', '<%=StringUtil.escapeJavaScript(refDefName)%>', '<%=StringUtil.escapeJavaScript(refEntity.getOid())%>', '<%=refEntity.getVersion() %>', '<%=StringUtil.escapeJavaScript(linkId)%>', false)"><c:out value="<%=refEntity.getName() %>" /></a>
+<a href="javascript:void(0)" class="modal-lnk" style="<c:out value="<%=customStyle%>"/>" id="<c:out value="<%=linkId %>"/>" onclick="showReference('<%=StringUtil.escapeJavaScript(viewAction)%>', '<%=StringUtil.escapeJavaScript(refDefName)%>', '<%=StringUtil.escapeJavaScript(refEntity.getOid())%>', '<%=refEntity.getVersion() %>', '<%=StringUtil.escapeJavaScript(linkId)%>', false)"><c:out value="<%=displayPropLabel %>" /></a>
 <%
 			}
 %>

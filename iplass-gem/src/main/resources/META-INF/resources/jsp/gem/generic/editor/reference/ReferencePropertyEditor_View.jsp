@@ -36,6 +36,7 @@
 <%@ page import="org.iplass.mtp.entity.definition.EntityDefinition"%>
 <%@ page import="org.iplass.mtp.entity.definition.EntityDefinitionManager"%>
 <%@ page import="org.iplass.mtp.entity.query.Query"%>
+<%@ page import="org.iplass.mtp.entity.query.condition.expr.And"%>
 <%@ page import="org.iplass.mtp.entity.query.condition.predicate.Equals"%>
 <%@ page import="org.iplass.mtp.util.StringUtil" %>
 <%@ page import="org.iplass.mtp.view.generic.DetailFormView"%>
@@ -87,7 +88,7 @@
 
 		return viewAction;
 	}
-	void searchParent(List<Entity> parentList, ReferenceProperty crp, ReferenceComboSetting setting, String oid) {
+	void searchParent(List<Entity> parentList, List<ReferenceComboSetting> settingList, ReferenceProperty crp, ReferenceComboSetting setting, String oid) {
 		//子の親プロパティ
 		EntityDefinition ed = ManagerLocator.getInstance().getManager(EntityDefinitionManager.class).get(crp.getObjectDefinitionName());
 		ReferenceProperty rp = (ReferenceProperty) ed.getProperty(setting.getPropertyName());
@@ -95,18 +96,25 @@
 			String childOid = null;
 			if (oid != null) {
 				//子階層が指定されてたら、指定の子を持つ親階層を検索
-				Query q = new Query().select(rp.getName() + "." + Entity.OID, rp.getName() + "." + Entity.NAME).from(crp.getObjectDefinitionName()).where(new Equals(Entity.OID, oid));
+				Query q = new Query().select(rp.getName() + "." + Entity.OID);
+				if (setting.getDisplayLabelItem() != null) {
+					q.select().add(rp.getName() + "." + setting.getDisplayLabelItem());
+				} else {
+					q.select().add(rp.getName() + "." + Entity.NAME);
+				}
+				q.from(crp.getObjectDefinitionName()).where(new Equals(Entity.OID, oid));
 				Entity ret = ManagerLocator.getInstance().getManager(EntityManager.class).searchEntity(q).getFirst();
 				if (ret != null && ret.getValue(rp.getName()) != null) {
 					//最初の項目をデフォルト選択させる
 					Entity ref = ret.getValue(rp.getName());
 					childOid = ref.getOid();
 					parentList.add(0, ref);
+					settingList.add(0, setting);
 				}
 			}
 
 			if (setting.getParent() != null && StringUtil.isNotBlank(setting.getParent().getPropertyName())) {
-				searchParent(parentList, rp, setting.getParent(), childOid);
+				searchParent(parentList, settingList, rp, setting.getParent(), childOid);
 			}
 		}
 	}
@@ -114,20 +122,39 @@
 	Entity[] getParents(Entity entity, ReferencePropertyEditor editor) {
 		LinkedList<Entity> ret = new LinkedList<Entity>();
 		String propName = editor.getReferenceRecursiveTreeSetting().getChildPropertyName();
-		searchParent(entity.getOid(), entity.getDefinitionName(), propName, ret);
+		String displayPropName = editor.getDisplayLabelItem();
+		searchParent(entity.getOid(), entity.getDefinitionName(), propName, displayPropName, ret);
 		return ret.toArray(new Entity[]{});
 	}
-	void searchParent(String oid, String defName, String childPropName, LinkedList<Entity> ret) {
+	void searchParent(String oid, String defName, String childPropName, String displayPropName, LinkedList<Entity> ret) {
 		EntityManager em = ManagerLocator.getInstance().getManager(EntityManager.class);
 
 		//指定のOIDを子にもつデータを検索
-		Query query = new Query().select(Entity.OID, Entity.NAME, Entity.VERSION).from(defName).where(new Equals(childPropName + ".oid", oid));
+		Query query = new Query().select(Entity.OID, Entity.VERSION);
+		if (displayPropName != null) {
+			query.select().add(displayPropName);
+		} else {
+			query.select().add(Entity.NAME);
+		}
+		query.from(defName).where(new Equals(childPropName + ".oid", oid));
 		Entity entity = em.searchEntity(query).getFirst();
 		if (entity != null) {
 			ret.addFirst(entity);
 
 			//再帰で自分を子にもつデータを検索
-			searchParent(entity.getOid(), defName, childPropName, ret);
+			searchParent(entity.getOid(), defName, childPropName, displayPropName, ret);
+		}
+	}
+
+	void loadReferenceEntityProperty(Entity refEntity, String propName) {
+		if (refEntity == null || StringUtil.isBlank(propName)) return;
+		Query q = new Query().select(propName);
+		q.from(refEntity.getDefinitionName());
+		q.where(new And(new Equals(Entity.OID, refEntity.getOid()), new Equals(Entity.VERSION, refEntity.getVersion())));
+
+		Entity ret = ManagerLocator.getInstance().getManager(EntityManager.class).searchEntity(q).getFirst();
+		if (ret != null && ret.getValue(propName) != null) {
+			refEntity.setValue(propName, ret.getValue(propName));
 		}
 	}
 
@@ -152,6 +179,14 @@
 			displayPropName = Entity.NAME;
 		}
 		return refEntity.getValue(displayPropName);
+	}
+
+	String getDisplayPropLabel(ReferenceComboSetting setting, Entity parent) {
+		if (setting != null && setting.getDisplayLabelItem() != null) {
+			String displayPropName = setting.getDisplayLabelItem();
+			return parent.getValue(displayPropName);
+		}
+		return parent.getName();
 	}
 %>
 <%
@@ -263,11 +298,19 @@
 		Entity[] entities = (Entity[]) propValue;
 		if (entities != null) {
 			entityList.addAll(Arrays.asList(entities));
+			if (editor.getDisplayLabelItem() != null) {
+				for (Entity refEntity : entities) {
+					loadReferenceEntityProperty(refEntity, editor.getDisplayLabelItem());
+				}
+			}
 		}
 	} else if (propValue instanceof Entity) {
 		Entity refEntity = (Entity) propValue;
 		if (refEntity != null) {
 			entityList.add(refEntity);
+			if (editor.getDisplayLabelItem() != null) {
+				loadReferenceEntityProperty(refEntity, editor.getDisplayLabelItem());
+			}
 		}
 	}
 
@@ -306,13 +349,9 @@
 		for (int i = 0; i < entityList.size(); i++) {
 			Entity refEntity = entityList.get(i);
 			String liId = "li_" + propName + i;
-			if (refEntity == null) continue;
+			if (refEntity == null || getDisplayPropLabel(editor, refEntity) == null) continue;
 
-			String displayPropLabel = refEntity.getName();
-			if (editor.getDisplayType() == ReferenceDisplayType.LINK || editor.getDisplayType() == ReferenceDisplayType.SELECT) {
-				displayPropLabel = getDisplayPropLabel(editor, refEntity);
-			}
-			if (displayPropLabel == null) continue;
+			String displayPropLabel = getDisplayPropLabel(editor, refEntity);
 %>
 <li id="<c:out value="<%=liId %>"/>">
 <%
@@ -324,7 +363,7 @@
 <%
 				}
 %>
-<c:out value="<%=refEntity.getName() %>" />
+<c:out value="<%=displayPropLabel %>" />
 <%
 				if (StringUtil.isNotEmpty(customStyle)) {
 %>
@@ -338,7 +377,7 @@
 					if (parents != null && parents.length > 0) {
 						for (int j = 0; j < parents.length; j++) {
 %>
-<span><c:out value="<%=parents[j].getName() %>"/></span>&nbsp;&gt;&nbsp;
+<span><c:out value="<%=getDisplayPropLabel(editor, parents[j]) %>"/></span>&nbsp;&gt;&nbsp;
 <%
 						}
 					}
@@ -496,26 +535,30 @@ $(function() {
 		for (int i = 0; i < entityList.size(); i++) {
 			Entity refEntity = entityList.get(i);
 			String liId = "li_" + propName + i;
-			if (refEntity == null || refEntity.getName() == null) continue;
+			if (refEntity == null || getDisplayPropLabel(editor, refEntity) == null) continue;
+			String displayPropLabel = getDisplayPropLabel(editor, refEntity);
 
 %>
 <li id="<c:out value="<%=liId %>"/>">
 <%
 			if (editor.isShowRefComboParent()) {
 				List<Entity> parentList = new ArrayList<Entity>();
+				List<ReferenceComboSetting> settingList = new ArrayList<ReferenceComboSetting>();
 				if (editor.getReferenceComboSetting() != null && StringUtil.isNotBlank(editor.getReferenceComboSetting().getPropertyName())) {
-					searchParent(parentList, pd, editor.getReferenceComboSetting(), refEntity.getOid());
+					searchParent(parentList, settingList, pd, editor.getReferenceComboSetting(), refEntity.getOid());
 				}
-				for (Entity parent : parentList) {
+				for (int j = 0; j < parentList.size(); j++) {
+					Entity parent = parentList.get(j);
+					ReferenceComboSetting setting = settingList.get(j);
 %>
-<span><c:out value="<%=parent.getName() %>"/></span>&nbsp;&gt;&nbsp;
+<span><c:out value="<%=getDisplayPropLabel(setting, parent) %>"/></span>&nbsp;&gt;&nbsp;
 <%
 				}
 			}
 
 			String linkId = propName + "_" + refEntity.getOid();
 %>
-<a href="javascript:void(0)" class="modal-lnk" style="<c:out value="<%=customStyle%>"/>" id="<c:out value="<%=linkId %>" />" onclick="showReference('<%=StringUtil.escapeJavaScript(viewAction)%>', '<%=StringUtil.escapeJavaScript(refDefName)%>', '<%=StringUtil.escapeJavaScript(refEntity.getOid())%>', '<%=refEntity.getVersion() %>', '<%=StringUtil.escapeJavaScript(linkId)%>', <%=refEdit %>)"><c:out value="<%=refEntity.getName() %>" /></a>
+<a href="javascript:void(0)" class="modal-lnk" style="<c:out value="<%=customStyle%>"/>" id="<c:out value="<%=linkId %>" />" onclick="showReference('<%=StringUtil.escapeJavaScript(viewAction)%>', '<%=StringUtil.escapeJavaScript(refDefName)%>', '<%=StringUtil.escapeJavaScript(refEntity.getOid())%>', '<%=refEntity.getVersion() %>', '<%=StringUtil.escapeJavaScript(linkId)%>', <%=refEdit %>)"><c:out value="<%=displayPropLabel %>" /></a>
 <%
 			if (outputHidden) {
 				String _value = refEntity.getOid() + "_" + refEntity.getVersion();

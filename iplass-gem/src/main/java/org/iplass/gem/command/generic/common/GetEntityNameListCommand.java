@@ -22,7 +22,6 @@ package org.iplass.gem.command.generic.common;
 
 import java.util.List;
 
-import org.iplass.gem.command.Constants;
 import org.iplass.mtp.ManagerLocator;
 import org.iplass.mtp.command.Command;
 import org.iplass.mtp.command.RequestContext;
@@ -36,10 +35,12 @@ import org.iplass.mtp.entity.query.condition.expr.And;
 import org.iplass.mtp.entity.query.condition.expr.Or;
 import org.iplass.mtp.entity.query.condition.expr.Paren;
 import org.iplass.mtp.entity.query.condition.predicate.Equals;
+import org.iplass.mtp.util.StringUtil;
 import org.iplass.mtp.view.generic.EntityViewManager;
+import org.iplass.mtp.view.generic.editor.JoinPropertyEditor;
+import org.iplass.mtp.view.generic.editor.NestProperty;
 import org.iplass.mtp.view.generic.editor.PropertyEditor;
 import org.iplass.mtp.view.generic.editor.ReferencePropertyEditor;
-import org.iplass.mtp.view.generic.editor.ReferencePropertyEditor.ReferenceDisplayType;
 import org.iplass.mtp.webapi.definition.MethodType;
 import org.iplass.mtp.webapi.definition.RequestType;
 
@@ -74,17 +75,15 @@ public final class GetEntityNameListCommand implements Command {
 		Object ret = null;
 		if (defName != null && !defName.isEmpty()
 				&& list != null && !list.isEmpty()) {
-			String dispLabelProp = null;
-			if (parentDefName != null && !parentDefName.isEmpty()
-					&& parentPropName != null && !parentPropName.isEmpty()) {
-				dispLabelProp = getDisplayLabelItem(parentDefName, parentViewName, parentPropName, viewType);
-			}
-			// ラベルとして扱うプロパティ項目が未設定の場合、nameを取得します。
-			if (dispLabelProp == null) {
-				dispLabelProp = Entity.NAME;
-			}
+			// 表示ラベルとして扱うプロパティを取得します
+			String dispLabelProp = getDisplayLabelItem(parentDefName, parentViewName, parentPropName, viewType);
 			Query query = new Query();
-			query.select(dispLabelProp, Entity.OID, Entity.VERSION).from(defName);
+			query.select(Entity.OID, Entity.VERSION).from(defName);
+			if (dispLabelProp == null) { // 未設定場合、Nameを検索します。
+				query.select().add(Entity.NAME);
+			} else if (!dispLabelProp.isEmpty()) { // 表示ラベルが設定されている場合
+				query.select().add(dispLabelProp);
+			}
 			Or or = new Or();
 			for (GetEntityNameListEntityParameter entity : list) {
 				And and = new And(new Equals(Entity.OID, entity.getOid()),
@@ -95,7 +94,7 @@ public final class GetEntityNameListCommand implements Command {
 
 			EntityManager em = ManagerLocator.getInstance().getManager(EntityManager.class);
 			ret = em.searchEntity(query).getList();
-			if (!Entity.NAME.equals(dispLabelProp) && ret != null) {
+			if (StringUtil.isNotBlank(dispLabelProp) && ret != null) {
 				// ラベルとして扱うプロパティ項目をnameとして返します。
 				replaceNamePropWithDisplayLabelProp((List<Entity>) ret, dispLabelProp);
 			}
@@ -106,20 +105,13 @@ public final class GetEntityNameListCommand implements Command {
 
 	private String getDisplayLabelItem(String defName, String viewName, String propName, String viewType) {
 		EntityViewManager evm = ManagerLocator.getInstance().getManager(EntityViewManager.class);
-		String _propName = propName;
-		if (Constants.VIEW_TYPE_SEARCH.equals(viewType) && propName.startsWith(Constants.SEARCH_COND_PREFIX)) {
-			_propName = propName.substring(Constants.SEARCH_COND_PREFIX.length());
-		}
-		PropertyEditor editor = evm.getPropertyEditor(defName, viewType, viewName, _propName);
+		PropertyEditor editor = evm.getPropertyEditor(defName, viewType, viewName, propName);
 		if (editor != null && editor instanceof ReferencePropertyEditor) {
 			ReferencePropertyEditor rpe = (ReferencePropertyEditor) editor;
-			// TODO 表示タイプ：LINK、SELECTでの利用をサポートします。
-			if ((rpe.getDisplayType() == ReferenceDisplayType.LINK || rpe.getDisplayType() == ReferenceDisplayType.SELECT)
-					&& rpe.getDisplayLabelItem() != null) {
-				return rpe.getDisplayLabelItem();
-			}
+			return rpe.getDisplayLabelItem();
 		}
-		return null;
+		// エディター定義が見つからなかった場合、空文字を返します。
+		return "";
 	}
 
 	private void replaceNamePropWithDisplayLabelProp(List<Entity> entities, String dispLabelProp) {

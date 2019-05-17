@@ -95,9 +95,17 @@ public class SearchTreeDataCommand implements Command {
 	private List<RefTreeJqTreeData > search(ReferencePropertyEditor editor, String oid, String linkValue) {
 		ReferenceRecursiveTreeSetting treeSetting = editor.getReferenceRecursiveTreeSetting();
 
-		Query query = new Query().select(Entity.OID, Entity.VERSION, Entity.NAME, new Count(treeSetting.getChildPropertyName() + ".oid"))
-			.from(editor.getObjectName())
-			.groupBy(Entity.OID, Entity.VERSION, Entity.NAME);
+		Query query = new Query().select(Entity.OID, Entity.VERSION, new Count(treeSetting.getChildPropertyName() + ".oid"))
+				.from(editor.getObjectName())
+				.groupBy(Entity.OID, Entity.VERSION);
+		if (editor.getDisplayLabelItem() != null) {
+			query.select().add(editor.getDisplayLabelItem());
+			query.getGroupBy().add(editor.getDisplayLabelItem());
+		} else {
+			query.select().add(Entity.NAME);
+			query.getGroupBy().add(Entity.NAME);
+		}
+
 
 		//条件設定
 		if (oid == null && treeSetting.getRootCondition() != null) {
@@ -150,8 +158,8 @@ public class SearchTreeDataCommand implements Command {
 			setId((String) data[0]);
 			setOid((String) data[0]);
 			setVersion((Long) data[1]);
-			setName((String) data[2]);
-			setLoad_on_demand(((Long) data[3]) > 0);
+			setLoad_on_demand(((Long) data[2]) > 0);
+			setName((String) data[3]);
 		}
 
 		public String getOid() {

@@ -135,44 +135,7 @@ public abstract class RegistrationCommandBase<T extends RegistrationCommandConte
 	 * @return Entity
 	 */
 	protected Entity loadViewEntity(T context, String oid, Long version, String defName, List<String> loadReferences) {
-		Entity entity = loadEntity(context, oid, version, defName, new LoadOption(loadReferences), LoadType.VIEW);
-		if (entity != null && loadReferences != null && loadReferences.size() > 0) {
-			for (String refPropName : loadReferences) {
-				// 画面表示に必要な参照先エンティティのプロパティリスト
-				List<String> refEntityProperties = context.getReferenceEntityDisplayProperty(refPropName);
-				if (refEntityProperties != null && refEntityProperties.size() > 0) {
-					Object value = entity.getValue(refPropName);
-					if (value == null) continue;
-					if (value instanceof Entity) {
-						Entity refEntity = (Entity) value;
-						loadReferenceEntityProperties(refEntity, refEntityProperties);
-					} else if (value instanceof Entity[]) {
-						Entity[] refEntities = (Entity[]) value;
-						for (int i = 0; i < refEntities.length; i++) {
-							Entity refEntity = refEntities[i];
-							loadReferenceEntityProperties(refEntity, refEntityProperties);
-						}
-					}
-				}
-			}
-		}
-		return entity;
-	}
-
-	private void loadReferenceEntityProperties(Entity refEntity, List<String> refEntityProperties) {
-		Query q = new Query();
-		for (String refEntityProp : refEntityProperties) {
-			q.select().add(refEntityProp);
-		}
-		q.from(refEntity.getDefinitionName());
-		q.where(new And(new Equals(Entity.OID, refEntity.getOid()), new Equals(Entity.VERSION, refEntity.getVersion())));
-
-		Entity ret = em.searchEntity(q).getFirst();
-		if (ret != null) {
-			for (String refEntityProp : refEntityProperties) {
-				refEntity.setValue(refEntityProp, ret.getValue(refEntityProp));
-			}
-		}
+		return loadEntity(context, oid, version, defName, new LoadOption(loadReferences), LoadType.VIEW);
 	}
 
 	/**

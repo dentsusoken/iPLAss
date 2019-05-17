@@ -49,6 +49,8 @@ public class MetaReferenceComboSetting implements MetaData {
 
 	private String sortItem;
 
+	private String displayLabelItem;
+
 	private RefSortType sortType;
 
 	@Override
@@ -112,6 +114,14 @@ public class MetaReferenceComboSetting implements MetaData {
 		this.sortItem = sortItem;
 	}
 
+	public String getDisplayLabelItem() {
+		return displayLabelItem;
+	}
+
+	public void setDisplayLabelItem(String displayLabelItem) {
+		this.displayLabelItem = displayLabelItem;
+	}
+
 	public RefSortType getSortType() {
 		return sortType;
 	}
@@ -137,6 +147,13 @@ public class MetaReferenceComboSetting implements MetaData {
 					.getProperty(setting.getSortItem(), ctx);
 			if (sortProperty != null) {
 				sortItem = sortProperty.getId();
+			}
+		}
+		if (setting.getDisplayLabelItem() != null && !setting.getDisplayLabelItem().isEmpty()) {
+			PropertyHandler displayProperty = referenceProperty.getReferenceEntityHandler(ctx)
+					.getProperty(setting.getDisplayLabelItem(), ctx);
+			if (displayProperty != null) {
+				displayLabelItem = displayProperty.getId();
 			}
 		}
 		sortType = setting.getSortType();
@@ -167,6 +184,13 @@ public class MetaReferenceComboSetting implements MetaData {
 					.getPropertyById(sortItem, ctx);
 			if (sortProperty != null) {
 				setting.setSortItem(sortProperty.getName());
+			}
+		}
+		if (displayLabelItem != null) {
+			PropertyHandler displayProperty = referenceProperty.getReferenceEntityHandler(ctx)
+					.getPropertyById(displayLabelItem, ctx);
+			if (displayProperty != null) {
+				setting.setDisplayLabelItem(displayProperty.getName());
 			}
 		}
 		setting.setSortType(sortType);

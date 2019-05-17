@@ -139,8 +139,14 @@ public final class ReferenceComboCommand implements Command {
 
 			//上位の条件があって、データがなければ
 			Query q = new Query();
-			q.select(Entity.OID, Entity.NAME).from(defName);
-			q.where(new And(conditions));
+			q.select(Entity.OID);
+			if (editor.getDisplayLabelItem() != null) {
+				// 表示ラベルとして扱うプロパティ
+				q.select().add(editor.getDisplayLabelItem());
+			} else {
+				q.select().add(Entity.NAME);
+			}
+			q.from(defName).where(new And(conditions));
 
 			String sortItem = editor.getSortItem();
 			if (sortItem == null || sortItem.isEmpty()) {
@@ -159,7 +165,13 @@ public final class ReferenceComboCommand implements Command {
 
 				@Override
 				public boolean test(Entity dataModel) {
-					list.add(new SimpleEntity(dataModel));
+					if (editor.getDisplayLabelItem() != null) {
+						String displayLabelItem = editor.getDisplayLabelItem();
+						// 表示ラベルとして扱うプロパティをNameに設定
+						list.add(new SimpleEntity(dataModel.getOid(), dataModel.getValue(displayLabelItem)));
+					} else {
+						list.add(new SimpleEntity(dataModel));
+					}
 					return true;
 				}
 			});
@@ -198,7 +210,14 @@ public final class ReferenceComboCommand implements Command {
 			if (parent == null || !conditions.isEmpty()) {
 				//参照先のEntity検索
 				Query q = new Query();
-				q.select(Entity.OID, Entity.NAME).from(red.getName());
+				q.select(Entity.OID);
+				if (setting.getDisplayLabelItem() != null) {
+					// 表示ラベルとして扱うプロパティ
+					q.select().add(setting.getDisplayLabelItem());
+				} else {
+					q.select().add(Entity.NAME);
+				}
+				q.from(red.getName());
 				And and = new And();
 				and.setConditions(new ArrayList<Condition>());
 				if (setting.getCondition() != null) {
@@ -228,7 +247,13 @@ public final class ReferenceComboCommand implements Command {
 
 					@Override
 					public boolean test(Entity dataModel) {
-						list.add(new SimpleEntity(dataModel));
+						if (setting.getDisplayLabelItem() != null) {
+							String displayLabelItem = setting.getDisplayLabelItem();
+							// 表示ラベルとして扱うプロパティをNameに設定
+							list.add(new SimpleEntity(dataModel.getOid(), dataModel.getValue(displayLabelItem)));
+						} else {
+							list.add(new SimpleEntity(dataModel));
+						}
 						return true;
 					}
 				});
@@ -259,6 +284,12 @@ public final class ReferenceComboCommand implements Command {
 			this.oid = entity.getOid();
 			this.name = entity.getName();
 		}
+
+		public SimpleEntity(String oid, String name) {
+			this.oid = oid;
+			this.name = name;
+		}
+
 		/**
 		 * oidを取得します。
 		 * @return oid
