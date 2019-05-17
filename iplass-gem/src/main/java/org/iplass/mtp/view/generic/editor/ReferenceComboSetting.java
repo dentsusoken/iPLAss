@@ -106,10 +106,11 @@ public class ReferenceComboSetting implements Refrectable {
 
 	@MetaFieldInfo(displayName="表示ラベルとして扱うプロパティ",
 			displayNameKey="generic_editor_ReferencePropertyEditor_displayLabelItemDisplaNameKey",
-			inputType=InputType.TEXT,
+			inputType=InputType.PROPERTY,
 			description="<b>表示タイプ:Link、Select</b><br>" +
 					"表示ラベルとして扱うプロパティを指定します。",
-			descriptionKey="generic_editor_ReferencePropertyEditor_displayLabelItemDescriptionKey"
+			descriptionKey="generic_editor_ReferencePropertyEditor_displayLabelItemDescriptionKey",
+			soruceEntityNameField="propertyName"
 	)
 	@EntityViewField(
 			referenceTypes = {FieldReferenceType.ALL}
