@@ -83,7 +83,7 @@ public class ReferenceComboSetting implements Refrectable {
 			inputType=InputType.PROPERTY,
 			description="参照データをソートする項目を指定します。",
 			descriptionKey="generic_editor_ReferencePropertyEditor_sortItemDescriptionKey",
-			soruceEntityNameField="propertyName"
+			sourceEntityNameField="propertyName"
 	)
 	@EntityViewField(
 			referenceTypes={FieldReferenceType.SEARCHCONDITION, FieldReferenceType.DETAIL}
@@ -110,7 +110,7 @@ public class ReferenceComboSetting implements Refrectable {
 			description="<b>表示タイプ:Link、Select</b><br>" +
 					"表示ラベルとして扱うプロパティを指定します。",
 			descriptionKey="generic_editor_ReferencePropertyEditor_displayLabelItemDescriptionKey",
-			soruceEntityNameField="propertyName"
+			sourceEntityNameField="propertyName"
 	)
 	@EntityViewField(
 			referenceTypes = {FieldReferenceType.ALL}

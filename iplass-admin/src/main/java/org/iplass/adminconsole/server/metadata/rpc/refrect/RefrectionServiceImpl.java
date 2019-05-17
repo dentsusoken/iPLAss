@@ -368,7 +368,7 @@ public class RefrectionServiceImpl extends XsrfProtectedServiceServlet implement
 				info.setChildEntityName(annotation.childEntityName());
 				info.setFixedEntityName(annotation.fixedEntityName());
 				info.setUseRootEntityName(annotation.useRootEntityName());
-				info.setSourceEntityNameField(annotation.soruceEntityNameField());
+				info.setSourceEntityNameField(annotation.sourceEntityNameField());
 				info.setDeprecated(annotation.deprecated());
 
 				if (evs.isFilterSettingProperty()) {

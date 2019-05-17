@@ -143,6 +143,6 @@ public @interface MetaFieldInfo {
 	 * 指定されたPropertyのProperty定義から対象のEntityを決定する。
 	 * 同じClass内で参照する場合に指定
 	 */
-	String soruceEntityNameField() default "";
+	String sourceEntityNameField() default "";
 
 }
