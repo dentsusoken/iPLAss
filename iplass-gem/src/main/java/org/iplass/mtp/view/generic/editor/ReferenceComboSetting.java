@@ -104,6 +104,18 @@ public class ReferenceComboSetting implements Refrectable {
 	)
 	private RefSortType sortType;
 
+	@MetaFieldInfo(displayName="表示ラベルとして扱うプロパティ",
+			displayNameKey="generic_editor_ReferencePropertyEditor_displayLabelItemDisplaNameKey",
+			inputType=InputType.TEXT,
+			description="<b>表示タイプ:Link、Select</b><br>" +
+					"表示ラベルとして扱うプロパティを指定します。",
+			descriptionKey="generic_editor_ReferencePropertyEditor_displayLabelItemDescriptionKey"
+	)
+	@EntityViewField(
+			referenceTypes = {FieldReferenceType.ALL}
+	)
+	private String displayLabelItem;
+
 	/**
 	 * プロパティ名を取得します。
 	 * @return プロパティ名
@@ -182,5 +194,21 @@ public class ReferenceComboSetting implements Refrectable {
 	 */
 	public void setSortType(RefSortType sortType) {
 		this.sortType = sortType;
+	}
+
+	/**
+	 * 表示ラベルとして扱うプロパティを取得します。
+	 * @return 表示ラベルとして扱うプロパティ
+	 */
+	public String getDisplayLabelItem() {
+		return displayLabelItem;
+	}
+
+	/**
+	 * 表示ラベルとして扱うプロパティを設定します。
+	 * @param displayLabelItem 表示ラベルとして扱うプロパティ
+	 */
+	public void setDisplayLabelItem(String displayLabelItem) {
+		this.displayLabelItem = displayLabelItem;
 	}
 }

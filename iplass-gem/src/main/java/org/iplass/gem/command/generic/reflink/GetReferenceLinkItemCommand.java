@@ -152,7 +152,12 @@ public final class GetReferenceLinkItemCommand implements Command {
 		if (doSearch) {
 			Query q = new Query();
 			q.from(editor.getObjectName());
-			q.select(Entity.OID, Entity.NAME, Entity.VERSION);
+			q.select(Entity.OID, Entity.VERSION);
+			if (editor.getDisplayLabelItem() != null) {
+				q.select().add(editor.getDisplayLabelItem());
+			} else {
+				q.select().add(Entity.NAME);
+			}
 			if (condition != null) {
 				q.where(condition);
 			}
@@ -173,7 +178,13 @@ public final class GetReferenceLinkItemCommand implements Command {
 
 				@Override
 				public boolean test(Entity dataModel) {
-					list.add(new SimpleEntity(dataModel));
+					if (editor.getDisplayLabelItem() != null) {
+						String displayLabelItem = editor.getDisplayLabelItem();
+						// 表示ラベルとして扱うプロパティをNameに設定
+						list.add(new SimpleEntity(dataModel.getOid(), dataModel.getVersion(), dataModel.getValue(displayLabelItem)));
+					} else {
+						list.add(new SimpleEntity(dataModel));
+					}
 					return true;
 				}
 			});
@@ -194,6 +205,12 @@ public final class GetReferenceLinkItemCommand implements Command {
 			this.oid = entity.getOid();
 			this.name = entity.getName();
 			this.setVersion(entity.getVersion());
+		}
+
+		public SimpleEntity(String oid, Long version, String name) {
+			this.oid = oid;
+			this.version = version;
+			this.name = name;
 		}
 
 		public String getOid() {

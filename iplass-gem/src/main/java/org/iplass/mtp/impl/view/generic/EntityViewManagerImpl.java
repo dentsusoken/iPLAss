@@ -75,10 +75,12 @@ import org.iplass.mtp.view.generic.editor.NestProperty;
 import org.iplass.mtp.view.generic.editor.PropertyEditor;
 import org.iplass.mtp.view.generic.editor.ReferencePropertyEditor;
 import org.iplass.mtp.view.generic.element.Element;
+import org.iplass.mtp.view.generic.element.property.PropertyColumn;
 import org.iplass.mtp.view.generic.element.property.PropertyItem;
 import org.iplass.mtp.view.generic.element.section.DefaultSection;
 import org.iplass.mtp.view.generic.element.section.ReferenceSection;
 import org.iplass.mtp.view.generic.element.section.SearchConditionSection;
+import org.iplass.mtp.view.generic.element.section.SearchResultSection;
 import org.iplass.mtp.view.generic.element.section.Section;
 import org.iplass.mtp.web.template.TemplateUtil;
 import org.slf4j.Logger;
@@ -140,6 +142,14 @@ public class EntityViewManagerImpl extends AbstractTypedDefinitionManager<Entity
 				form = ev.getSearchFormView(viewName);
 			}
 			editor = getEditor(propName, form);
+		} else if ("bulk".equals(viewType)) {
+			SearchFormView form = null;
+			if (viewName == null || viewName.isEmpty()) {
+				form = ev.getDefaultSearchFormView();
+			} else {
+				form = ev.getSearchFormView(viewName);
+			}
+			editor = getBulkUpdateEditor(propName, form);
 		}
 
 		return editor;
@@ -249,6 +259,33 @@ public class EntityViewManagerImpl extends AbstractTypedDefinitionManager<Entity
 					return property.getEditor();
 				} else {
 					return getEditor(subPropName, property.getEditor());
+				}
+			}
+		}
+		return null;
+	}
+
+	private PropertyEditor getBulkUpdateEditor(String propName, SearchFormView form) {
+		String currentPropName = null;
+		String subPropName = null;
+		if (propName.indexOf(".") == -1) {
+			currentPropName = propName;
+		} else {
+			currentPropName = propName.substring(0, propName.indexOf("."));
+			subPropName = propName.substring(propName.indexOf(".") + 1);
+		}
+
+		SearchResultSection section = form.getResultSection();
+		for (Element element : section.getElements()) {
+			if (!(element instanceof PropertyColumn)) continue;
+			PropertyColumn property = (PropertyColumn) element;
+			if (property.getBulkUpdateEditor() == null) continue;
+			if (property.getPropertyName().equals(currentPropName)) {
+				if (subPropName == null) {
+					property.getBulkUpdateEditor().setPropertyName(property.getPropertyName());
+					return property.getBulkUpdateEditor();
+				} else {
+					return getEditor(subPropName, property.getBulkUpdateEditor());
 				}
 			}
 		}

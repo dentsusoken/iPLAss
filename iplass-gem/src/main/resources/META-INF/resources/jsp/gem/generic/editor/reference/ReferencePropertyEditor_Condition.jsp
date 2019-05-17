@@ -191,9 +191,11 @@
 		if (doSearch) {
 			Query q = new Query();
 			q.from(editor.getObjectName());
-			q.select(Entity.OID, Entity.NAME, Entity.VERSION);
+			q.select(Entity.OID, Entity.VERSION);
 			if (editor.getDisplayLabelItem() != null) {
 				q.select().add(editor.getDisplayLabelItem());
+			} else {
+				q.select().add(Entity.NAME);
 			}
 			if (condition != null) {
 				q.where(condition);
@@ -398,7 +400,12 @@ $(function() {
 
 		Query q = new Query();
 		q.from(editor.getObjectName());
-		q.select(Entity.OID, Entity.NAME);
+		q.select(Entity.OID);
+		if (editor.getDisplayLabelItem() != null) {
+			q.select().add(editor.getDisplayLabelItem());
+		} else {
+			q.select().add(Entity.NAME);
+		}
 		if (condition != null) {
 			q.where(condition);
 		}
@@ -419,9 +426,10 @@ $(function() {
 		for (Entity ref : entityList) {
 			String checked = "";
 			if (oids.contains(ref.getOid())) checked = " checked";
+			String displayPropLabel = getDisplayPropLabel(editor, ref);
 %>
-<li><label style="<c:out value="<%=customStyle%>"/>" title="<c:out value="<%=ref.getName() %>" />">
-<input type="checkbox" name="<c:out value="<%=propName %>"/>" value="<c:out value="<%=ref.getOid() %>"/>" <%=checked %>/><c:out value="<%=ref.getName() %>" />
+<li><label style="<c:out value="<%=customStyle%>"/>" title="<c:out value="<%=displayPropLabel %>" />">
+<input type="checkbox" name="<c:out value="<%=propName %>"/>" value="<c:out value="<%=ref.getOid() %>"/>" <%=checked %>/><c:out value="<%=displayPropLabel %>" />
 </label></li>
 <%
 		}
@@ -586,8 +594,8 @@ $(function() {
 			for (int i = 0; i < propValue.length; i++) {
 				String oid = propValue[i];
 				Entity entity = em.load(oid, _defName);
+				if (entity == null || getDisplayPropLabel(editor, entity) == null) continue;
 				String displayPropLabel = getDisplayPropLabel(editor, entity);
-				if (entity == null || displayPropLabel == null) continue;
 				String liId = "li_" + propName + i;
 				String linkId = propName + "_" + entity.getOid();
 				String key = entity.getOid() + "_" + entity.getVersion();
@@ -609,8 +617,8 @@ $(function() {
 					int index = kv[1].lastIndexOf("_");
 					String oid = kv[1].substring(0, index);
 					Entity entity = em.load(oid,_defName);
+					if (entity == null || getDisplayPropLabel(editor, entity) == null) continue;
 					String displayPropLabel = getDisplayPropLabel(editor, entity);
-					if (entity == null || displayPropLabel == null) continue;
 					String liId = "li_" + propName + i;
 					String linkId = propName + "_" + entity.getOid();
 					String key = entity.getOid() + "_" + entity.getVersion();
@@ -672,8 +680,8 @@ $(function() {
 <%			for (int i = 0; i < defaultValue.length; i++) {
 				String oid = defaultValue[i];
 				Entity entity = em.load(oid, _defName);
+				if (entity == null || getDisplayPropLabel(editor, entity) == null) continue;
 				String displayPropLabel = getDisplayPropLabel(editor, entity);
-				if (entity == null || displayLabel == null) continue;
 
 				String liId = StringUtil.escapeJavaScript("li_" + propName + i);
 				String label = StringUtil.escapeJavaScript(displayPropLabel);
@@ -727,13 +735,14 @@ $(function() {
 			for (int i = 0; i < propValue.length; i++) {
 				String oid = propValue[i];
 				Entity entity = em.load(oid, rp.getObjectDefinitionName());
-				if (entity == null || entity.getName() == null) continue;
+				if (entity == null || getDisplayPropLabel(editor, entity) == null) continue;
 				String liId = "li_" + propName + i;
 				String linkId = propName + "_" + entity.getOid();
 				String key = entity.getOid() + "_" + entity.getVersion();
+				String displayPropLabel = getDisplayPropLabel(editor, entity);
 %>
 <li id="<c:out value="<%=liId %>"/>" class="list-add">
-<a href="javascript:void(0)" class="modal-lnk"id="<c:out value="<%=linkId %>"/>" style="<c:out value="<%=customStyle%>"/>" onclick="showReference('<%=StringUtil.escapeJavaScript(view)%>', '<%=StringUtil.escapeJavaScript(rp.getObjectDefinitionName())%>', '<%=StringUtil.escapeJavaScript(entity.getOid())%>', '<%=entity.getVersion() %>', '<%=StringUtil.escapeJavaScript(linkId)%>', false)"><c:out value="<%=entity.getName() %>" /></a>
+<a href="javascript:void(0)" class="modal-lnk"id="<c:out value="<%=linkId %>"/>" style="<c:out value="<%=customStyle%>"/>" onclick="showReference('<%=StringUtil.escapeJavaScript(view)%>', '<%=StringUtil.escapeJavaScript(rp.getObjectDefinitionName())%>', '<%=StringUtil.escapeJavaScript(entity.getOid())%>', '<%=entity.getVersion() %>', '<%=StringUtil.escapeJavaScript(linkId)%>', false)"><c:out value="<%=displayPropLabel %>" /></a>
 <input type="button" value="${m:rs('mtp-gem-messages', 'generic.editor.reference.ReferencePropertyEditor_Edit.delete')}" class="gr-btn-02 del-btn" onclick="deleteItem('<%=StringUtil.escapeJavaScript(liId)%>')" />
 <input type="hidden" name="<c:out value="<%=propName %>"/>" value="<c:out value="<%=key %>"/>"/>
 </li>
@@ -749,14 +758,15 @@ $(function() {
 					int index = kv[1].lastIndexOf("_");
 					String oid = kv[1].substring(0, index);
 					Entity entity = em.load(oid, rp.getObjectDefinitionName());
-					if (entity == null || entity.getName() == null) continue;
+					if (entity == null || getDisplayPropLabel(editor, entity) == null) continue;
 					String liId = "li_" + propName + i;
 					String linkId = propName + "_" + entity.getOid();
 					String key = entity.getOid() + "_" + entity.getVersion();
+					String displayPropLabel = getDisplayPropLabel(editor, entity);
 					//hiddenにjavascriptで値上書きしないようにnorewrite属性をつけておく
 %>
 <li id="<c:out value="<%=liId %>"/>" class="list-add">
-<a href="javascript:void(0)" class="modal-lnk"id="<c:out value="<%=linkId %>"/>" style="<c:out value="<%=customStyle%>"/>" onclick="showReference('<%=StringUtil.escapeJavaScript(view)%>', '<%=StringUtil.escapeJavaScript(rp.getObjectDefinitionName())%>', '<%=StringUtil.escapeJavaScript(entity.getOid())%>', '<%=entity.getVersion() %>', '<%=StringUtil.escapeJavaScript(linkId)%>', false)"><c:out value="<%=entity.getName() %>" /></a>
+<a href="javascript:void(0)" class="modal-lnk"id="<c:out value="<%=linkId %>"/>" style="<c:out value="<%=customStyle%>"/>" onclick="showReference('<%=StringUtil.escapeJavaScript(view)%>', '<%=StringUtil.escapeJavaScript(rp.getObjectDefinitionName())%>', '<%=StringUtil.escapeJavaScript(entity.getOid())%>', '<%=entity.getVersion() %>', '<%=StringUtil.escapeJavaScript(linkId)%>', false)"><c:out value="<%=displayPropLabel %>" /></a>
 <input type="button" value="${m:rs('mtp-gem-messages', 'generic.editor.reference.ReferencePropertyEditor_Edit.delete')}" class="gr-btn-02 del-btn" onclick="deleteItem('<%=StringUtil.escapeJavaScript(liId)%>')" />
 <input type="hidden" name="<c:out value="<%=propName %>"/>" value="<c:out value="<%=key %>"/>" data-norewrite="true"/>
 </li>
@@ -821,13 +831,13 @@ $(function() {
 <%			for (int i = 0; i < defaultValue.length; i++) {
 				String oid = defaultValue[i];
 				Entity entity = em.load(oid, rp.getObjectDefinitionName());
-				if (entity == null || entity.getName() == null) continue;
+				if (entity == null || getDisplayPropLabel(editor, entity) == null) continue;
 
 				String liId = StringUtil.escapeJavaScript("li_" + propName + i);
 				String viewAction = StringUtil.escapeJavaScript(view);
 				String _defName = StringUtil.escapeJavaScript(rp.getObjectDefinitionName());
 				String key = StringUtil.escapeJavaScript(entity.getOid() + "_" + entity.getVersion());
-				String label = StringUtil.escapeJavaScript(entity.getName());
+				String label = StringUtil.escapeJavaScript(getDisplayPropLabel(editor, entity));
 				String _propName = StringUtil.escapeJavaScript(propName);
 %>
 		<%-- common.js --%>

@@ -70,27 +70,32 @@
 	}
 
 	//プロパティ値の表示値を取得する
-	String getPropertyDisplayValue(PropertyDefinition p, Object propValue) {
+	String getPropertyDisplayValue(PropertyDefinition p, Object propValue, PropertyEditor editor) {
 		String dispValue = "";
 		boolean isMultiple = p.getMultiplicity() != 1;
 		if (isMultiple) {
 			Object[] values = (Object[]) propValue;
 			String[] tmp = new String[values.length];
 			for (int i = 0; i < values.length; i++) {
-				tmp[i] = convertPropValueToString(p, values[i]);
+				tmp[i] = convertPropValueToString(p, values[i], editor);
 			}
 			dispValue = Arrays.toString(tmp);
 		} else {
-			dispValue = convertPropValueToString(p, propValue);
+			dispValue = convertPropValueToString(p, propValue, editor);
 		}
 		return dispValue;
 	}
 
-	String convertPropValueToString(PropertyDefinition p, Object propValue) {
+	String convertPropValueToString(PropertyDefinition p, Object propValue, PropertyEditor editor) {
 		if (propValue == null) return "";
 		String dispValue = "";
 		if (propValue instanceof Entity) {
-			dispValue = ((Entity) propValue).getName();
+			ReferencePropertyEditor rpe = (ReferencePropertyEditor) editor;
+			if (rpe.getDisplayLabelItem() != null) {
+				dispValue = ((Entity) propValue).getValue(rpe.getDisplayLabelItem());
+			} else {
+				dispValue = ((Entity) propValue).getName();
+			}
 		} else if (propValue instanceof BinaryReference) {
 			dispValue = ((BinaryReference) propValue).getName();
 		} else if (propValue instanceof SelectValue) {
@@ -101,6 +106,25 @@
 			dispValue = propValue.toString();
 		}
 		return dispValue;
+	}
+
+	PropertyEditor getJoinPropertyEditor(JoinPropertyEditor editor, String propName) {
+		for (NestProperty nest : editor.getJoinProperties()) {
+			if (nest.getPropertyName().equals(propName)) {
+				return nest.getEditor();
+			}
+		}
+		return null;
+	}
+
+	PropertyEditor getDateRangePropertyEditor(DateRangePropertyEditor editor, String propName) {
+		if (editor.getPropertyName().equals(propName)) {
+			return editor.getEditor();
+		}
+		if (editor.getToPropertyName().equals(propName)) {
+			return editor.getToEditor();
+		}
+		return null;
 	}
 %>
 <%
@@ -365,6 +389,7 @@ $(function() {
 			String updatedPropName = StringUtil.escapeHtml(updatedProp.getPropertyName());
 			PropertyDefinition pd = defMap.get(updatedPropName);
 			PropertyColumn pc = colMap.get(updatedPropName);
+			PropertyEditor editor = pc.getBulkUpdateEditor();
 			String updatedPropDispName = TemplateUtil.getMultilingualString(pc.getDisplayLabel(), pc.getLocalizedDisplayLabelList(),
 					pd.getDisplayName(), pd.getLocalizedDisplayNameList());
 			Object updatedPropValue = updatedProp.getPropertyValue();
@@ -373,15 +398,23 @@ $(function() {
 			if (updatedPropValue instanceof String) {
 				updatedPropDispValue = StringUtil.escapeHtml((String)updatedPropValue);
 			} else {
-				if (pc.getBulkUpdateEditor() instanceof DateRangePropertyEditor || pc.getBulkUpdateEditor() instanceof JoinPropertyEditor) {
+				if (editor instanceof DateRangePropertyEditor || editor instanceof JoinPropertyEditor) {
 					Map<String, Object> updatedPropsMap = (Map<String, Object>) updatedPropValue;
 					List<String> tmp = new ArrayList<>(updatedPropsMap.size());
 					for(Map.Entry<String, Object> entry : updatedPropsMap.entrySet()) {
-						tmp.add(convertPropValueToString(EntityViewUtil.getPropertyDefinition(entry.getKey(), ed), entry.getValue()));
+						String propName = entry.getKey();
+						Object propValue = entry.getValue();
+						PropertyEditor nestEditor = null;
+						if (editor instanceof DateRangePropertyEditor) {
+							nestEditor = getDateRangePropertyEditor((DateRangePropertyEditor) editor, propName);
+						} else if (editor instanceof JoinPropertyEditor) {
+							nestEditor = getJoinPropertyEditor((JoinPropertyEditor) editor, propName);
+						}
+						tmp.add(convertPropValueToString(EntityViewUtil.getPropertyDefinition(propName, ed), propValue, nestEditor));
 					}
 					updatedPropValue = tmp.toString();
 				} 
-				updatedPropDispValue = StringUtil.escapeHtml(getPropertyDisplayValue(pd, updatedPropValue));
+				updatedPropDispValue = StringUtil.escapeHtml(getPropertyDisplayValue(pd, updatedPropValue, editor));
 			}
 %>
 <tr>

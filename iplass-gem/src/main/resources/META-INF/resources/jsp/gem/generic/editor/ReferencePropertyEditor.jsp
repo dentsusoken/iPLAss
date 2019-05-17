@@ -108,14 +108,11 @@
 			if (editor.getNestProperties().size() == 0) {
 				if (entity != null && getDisplayPropLabel(editor, entity) != null) {
 					String linkId = propName + "_" + entity.getOid();
-					String displayPropLabel = entity.getName();
-					if (editor.getDisplayType() == ReferenceDisplayType.LINK || editor.getDisplayType() == ReferenceDisplayType.SELECT) {
-						displayPropLabel = getDisplayPropLabel(editor, entity);
-					}
+					String displayPropLabel = getDisplayPropLabel(editor, entity);
 					if (editor.getDisplayType() == ReferenceDisplayType.LABEL) {
 						//ラベルの場合はリンクにしない
 %>
-<c:out value="<%=entity.getName() %>" />
+<c:out value="<%=displayPropLabel %>" />
 <%
 					} else {
 %>
