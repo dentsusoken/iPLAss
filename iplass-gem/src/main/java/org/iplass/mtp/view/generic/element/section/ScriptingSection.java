@@ -1,19 +1,19 @@
 /*
  * Copyright (C) 2011 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
- * 
+ *
  * Unless you have purchased a commercial license,
  * the following license terms apply:
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
@@ -49,76 +49,12 @@ public class ScriptingSection extends Section {
 	/** シリアルバージョンUID */
 	private static final long serialVersionUID = -8977266385152999890L;
 
-	/** スクリプト */
-	@MetaFieldInfo(
-			displayName="スクリプト",
-			displayNameKey="generic_element_section_ScriptingSection_scriptDisplaNameKey",
-			inputType=InputType.SCRIPT,
-			mode="groovytemplate",
-			description="HTMLコードを含むスクリプトを設定します。",
-			descriptionKey="generic_element_section_ScriptingSection_scriptDescriptionKey"
-	)
-	@EntityViewField(
-			referenceTypes={FieldReferenceType.ALL}
-	)
-	private String script;
-
-	/** タイトル */
-	@MetaFieldInfo(
-			displayName="タイトル",
-			displayNameKey="generic_element_section_ScriptingSection_titleDisplaNameKey",
-			description="セクションのタイトルを設定します。",
-			descriptionKey="generic_element_section_ScriptingSection_titleDescriptionKey",
-			inputType=InputType.MULTI_LANG,
-			multiLangField = "localizedTitleList"
-	)
-	@EntityViewField(
-			referenceTypes={FieldReferenceType.ALL}
-	)
-	@MultiLang()
-	private String title;
-
-	/** 多言語設定情報 */
-	@MetaFieldInfo(
-			displayName="多言語設定",
-			displayNameKey="generic_element_section_ScriptingSection_localizedTitleListDisplaNameKey",
-			inputType=InputType.MULTI_LANG_LIST
-	)
-	@EntityViewField(
-			referenceTypes={FieldReferenceType.ALL}
-	)
-	private List<LocalizedStringDefinition> localizedTitleList;
-
-	/** id */
-	@MetaFieldInfo(
-			displayName="id",
-			displayNameKey="generic_element_section_ScriptingSection_idDisplaNameKey",
-			description="画面上で一意となるIDを設定してください。",
-			descriptionKey="generic_element_section_ScriptingSection_idDescriptionKey"
-	)
-	@EntityViewField(
-			referenceTypes={FieldReferenceType.ALL}
-	)
-	private String id;
-
-	/** リンクを表示するか */
-	@MetaFieldInfo(
-			displayName="リンクを表示するか",
-			displayNameKey="generic_element_section_ScriptingSection_showLinkDisplaNameKey",
-			inputType=InputType.CHECKBOX,
-			description="詳細画面でのページ内リンクを表示するかを指定します。",
-			descriptionKey="generic_element_section_ScriptingSection_showLinkDescriptionKey"
-	)
-	@EntityViewField(
-			referenceTypes={FieldReferenceType.DETAIL}
-	)
-	private boolean showLink;
-
 	/** 詳細編集非表示設定 */
 	@MetaFieldInfo(
 			displayName="詳細編集非表示設定",
 			displayNameKey="generic_element_section_ScriptingSection_hideDetailDisplaNameKey",
 			inputType=InputType.CHECKBOX,
+			displayOrder=200,
 			description="詳細編集で非表示にするかを設定します。",
 			descriptionKey="generic_element_section_ScriptingSection_hideDetailDescriptionKey"
 	)
@@ -132,6 +68,7 @@ public class ScriptingSection extends Section {
 			displayName="詳細表示非表示設定",
 			displayNameKey="generic_element_section_ScriptingSection_hideViewDisplaNameKey",
 			inputType=InputType.CHECKBOX,
+			displayOrder=210,
 			description="詳細表示で非表示にするかを設定します。",
 			descriptionKey="generic_element_section_ScriptingSection_hideViewDescriptionKey"
 	)
@@ -139,6 +76,86 @@ public class ScriptingSection extends Section {
 			referenceTypes={FieldReferenceType.DETAIL}
 	)
 	private boolean hideView;
+
+
+
+
+	/** タイトル */
+	@MetaFieldInfo(
+			displayName="タイトル",
+			displayNameKey="generic_element_section_ScriptingSection_titleDisplaNameKey",
+			description="セクションのタイトルを設定します。",
+			descriptionKey="generic_element_section_ScriptingSection_titleDescriptionKey",
+			inputType=InputType.MULTI_LANG,
+			multiLangField = "localizedTitleList",
+			displayOrder=300
+	)
+	@EntityViewField(
+			referenceTypes={FieldReferenceType.ALL}
+	)
+	@MultiLang()
+	private String title;
+
+	/** 多言語設定情報 */
+	@MetaFieldInfo(
+			displayName="多言語設定",
+			displayNameKey="generic_element_section_ScriptingSection_localizedTitleListDisplaNameKey",
+			inputType=InputType.MULTI_LANG_LIST,
+			displayOrder=310
+	)
+	@EntityViewField(
+			referenceTypes={FieldReferenceType.ALL}
+	)
+	private List<LocalizedStringDefinition> localizedTitleList;
+
+
+
+
+	/** id */
+	@MetaFieldInfo(
+			displayName="id",
+			displayNameKey="generic_element_section_ScriptingSection_idDisplaNameKey",
+			displayOrder=400,
+			description="画面上で一意となるIDを設定してください。",
+			descriptionKey="generic_element_section_ScriptingSection_idDescriptionKey"
+	)
+	@EntityViewField(
+			referenceTypes={FieldReferenceType.ALL}
+	)
+	private String id;
+
+	/** リンクを表示するか */
+	@MetaFieldInfo(
+			displayName="リンクを表示するか",
+			displayNameKey="generic_element_section_ScriptingSection_showLinkDisplaNameKey",
+			inputType=InputType.CHECKBOX,
+			displayOrder=410,
+			description="詳細画面でのページ内リンクを表示するかを指定します。",
+			descriptionKey="generic_element_section_ScriptingSection_showLinkDescriptionKey"
+	)
+	@EntityViewField(
+			referenceTypes={FieldReferenceType.DETAIL}
+	)
+	private boolean showLink;
+
+
+
+
+	/** スクリプト */
+	@MetaFieldInfo(
+			displayName="スクリプト",
+			displayNameKey="generic_element_section_ScriptingSection_scriptDisplaNameKey",
+			inputType=InputType.SCRIPT,
+			mode="groovytemplate",
+			displayOrder=1000,
+			description="HTMLコードを含むスクリプトを設定します。",
+			descriptionKey="generic_element_section_ScriptingSection_scriptDescriptionKey"
+	)
+	@EntityViewField(
+			referenceTypes={FieldReferenceType.ALL}
+	)
+	private String script;
+
 
 	/** スクリプトのキー */
 	private String key;

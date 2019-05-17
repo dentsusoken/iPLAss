@@ -1,19 +1,19 @@
 /*
  * Copyright (C) 2011 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
- * 
+ *
  * Unless you have purchased a commercial license,
  * the following license terms apply:
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
@@ -51,6 +51,7 @@ public class TimestampPropertyEditor extends DateTimePropertyEditor {
 			displayNameKey="generic_editor_TimestampPropertyEditor_dispRangeDisplaNameKey",
 			inputType=InputType.ENUM,
 			enumClass=TimeDispRange.class,
+			displayOrder=1010,
 			description="時間の各リストをどこまで表示するか設定します。",
 			descriptionKey="generic_editor_TimestampPropertyEditor_dispRangeDescriptionKey"
 	)
@@ -65,6 +66,7 @@ public class TimestampPropertyEditor extends DateTimePropertyEditor {
 			displayNameKey="generic_editor_TimestampPropertyEditor_intervalDisplaNameKey",
 			inputType=InputType.ENUM,
 			enumClass=MinIntereval.class,
+			displayOrder=1020,
 			description="分のリストの表示間隔を設定します。",
 			descriptionKey="generic_editor_TimestampPropertyEditor_intervalDescriptionKey"
 	)
@@ -73,30 +75,31 @@ public class TimestampPropertyEditor extends DateTimePropertyEditor {
 	)
 	private MinIntereval interval;
 
-	/** 初期値 */
-	@MetaFieldInfo(
-			displayName="初期値",
-			displayNameKey="generic_editor_TimestampPropertyEditor_defaultValueDisplaNameKey",
-			description="新規作成時の初期値を設定します。yyyyMMddHHmmss形式か予約語を指定してください。",
-			descriptionKey="generic_editor_TimestampPropertyEditor_defaultValueDescriptionKey"
-	)
-	@EntityViewField(
-			referenceTypes={FieldReferenceType.DETAIL}
-	)
-	private String defaultValue;
-
 	/** 現在日付設定ボタン表示可否 */
 	@MetaFieldInfo(
 			displayName="現在日付設定ボタンを非表示",
 			displayNameKey="generic_editor_TimestampPropertyEditor_hideButtonPanelDisplaNameKey",
 			description="現在日付設定ボタンを非表示にするかを設定します。",
 			descriptionKey="generic_editor_TimestampPropertyEditor_hideButtonPanelDescriptionKey",
-			inputType=InputType.CHECKBOX
+			inputType=InputType.CHECKBOX,
+			displayOrder=1030
 	)
 	@EntityViewField(
 			referenceTypes={FieldReferenceType.SEARCHCONDITION, FieldReferenceType.DETAIL}
 	)
 	private boolean hideButtonPanel;
+
+	/** 曜日を表示 */
+	@MetaFieldInfo(
+			displayName="曜日を表示",
+			displayNameKey="generic_editor_TimestampPropertyEditor_showWeekdayDisplaNameKey",
+			description="曜日を表示します。",
+			descriptionKey="generic_editor_TimestampPropertyEditor_showWeekdayDescriptionKey",
+			inputType=InputType.CHECKBOX,
+			displayOrder=1040
+	)
+	@EntityViewField()
+	private boolean showWeekday;
 
 	/** 時間のデフォルト値補完を行わない */
 	@MetaFieldInfo(
@@ -104,7 +107,8 @@ public class TimestampPropertyEditor extends DateTimePropertyEditor {
 			displayNameKey="generic_editor_TimestampPropertyEditor_notFillTimeDisplaNameKey",
 			description="日付入力時に時間のプルダウンにデフォルト値を設定しないようにするかの設定です。",
 			descriptionKey="generic_editor_TimestampPropertyEditor_notFillTimeDescriptionKey",
-			inputType=InputType.CHECKBOX
+			inputType=InputType.CHECKBOX,
+			displayOrder=1050
 	)
 	@EntityViewField(
 			referenceTypes={FieldReferenceType.SEARCHCONDITION, FieldReferenceType.DETAIL}
@@ -117,6 +121,7 @@ public class TimestampPropertyEditor extends DateTimePropertyEditor {
 			displayNameKey="generic_editor_TimestampPropertyEditor_useDatetimePickerDisplaNameKey",
 			description="検索時にDatetimePickerを利用して日時を選択するかの設定です。",
 			inputType=InputType.CHECKBOX,
+			displayOrder=1060,
 			descriptionKey="generic_editor_TimestampPropertyEditor_useDatetimePickerDescriptionKey"
 	)
 	@EntityViewField(
@@ -124,16 +129,18 @@ public class TimestampPropertyEditor extends DateTimePropertyEditor {
 	)
 	private boolean useDatetimePicker;
 
-	/** 曜日を表示 */
+	/** 初期値 */
 	@MetaFieldInfo(
-			displayName="曜日を表示",
-			displayNameKey="generic_editor_TimestampPropertyEditor_showWeekdayDisplaNameKey",
-			description="曜日を表示します。",
-			descriptionKey="generic_editor_TimestampPropertyEditor_showWeekdayDescriptionKey",
-			inputType=InputType.CHECKBOX
+			displayName="初期値",
+			displayNameKey="generic_editor_TimestampPropertyEditor_defaultValueDisplaNameKey",
+			displayOrder=1070,
+			description="新規作成時の初期値を設定します。yyyyMMddHHmmss形式か予約語を指定してください。",
+			descriptionKey="generic_editor_TimestampPropertyEditor_defaultValueDescriptionKey"
 	)
-	@EntityViewField()
-	private boolean showWeekday;
+	@EntityViewField(
+			referenceTypes={FieldReferenceType.DETAIL}
+	)
+	private String defaultValue;
 
 	/**
 	 * コンストラクタ

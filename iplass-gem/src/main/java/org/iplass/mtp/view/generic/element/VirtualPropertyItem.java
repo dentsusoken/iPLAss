@@ -1,19 +1,19 @@
 /*
  * Copyright (C) 2014 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
- * 
+ *
  * Unless you have purchased a commercial license,
  * the following license terms apply:
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
@@ -27,6 +27,7 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 
 import org.iplass.adminconsole.annotation.MultiLang;
+import org.iplass.adminconsole.view.annotation.FieldOrder;
 import org.iplass.adminconsole.view.annotation.InputType;
 import org.iplass.adminconsole.view.annotation.MetaFieldInfo;
 import org.iplass.adminconsole.view.annotation.generic.EntityViewField;
@@ -58,6 +59,7 @@ import org.iplass.mtp.view.generic.editor.TimestampPropertyEditor;
 @Jsps({
 	@Jsp(path="/jsp/gem/generic/element/VirtualProperty.jsp", key=ViewConst.DESIGN_TYPE_GEM)
 })
+@FieldOrder(manual=true)
 public class VirtualPropertyItem extends Element {
 
 	private static final long serialVersionUID = 8040377351280643403L;
@@ -68,90 +70,20 @@ public class VirtualPropertyItem extends Element {
 			displayNameKey="generic_element_VirtualPropertyItem_propertyNameDisplaNameKey",
 			description="プロパティ名を設定します。実際に存在するプロパティ名は指定しないでください。",
 			descriptionKey="generic_element_VirtualPropertyItem_propertyNameDescriptionKey",
-			required=true
+			required=true,
+			displayOrder=190
 	)
 	private String propertyName;
 
-	/** 画面表示時のラベル */
-	@MetaFieldInfo(
-			displayName="表示ラベル",
-			displayNameKey="generic_element_VirtualPropertyItem_displayLabelDisplaNameKey",
-			description="画面に表示するラベルを設定します。",
-			descriptionKey="generic_element_VirtualPropertyItem_displayLabelDescriptionKey",
-			required=true,
-			inputType=InputType.MULTI_LANG,
-			multiLangField = "localizedDisplayLabelList"
-	)
-	@MultiLang(itemNameGetter = "getPropertyName")
-	private String displayLabel;
 
-	/** 多言語設定情報 */
-	@MetaFieldInfo(
-			displayName="多言語設定",
-			displayNameKey="generic_element_VirtualPropertyItem_localizedDisplayLabelListDisplaNameKey",
-			inputType=InputType.MULTI_LANG_LIST
-	)
-	private List<LocalizedStringDefinition> localizedDisplayLabelList;
 
-	/** クラス名 */
-	@MetaFieldInfo(
-			displayName="クラス名",
-			displayNameKey="generic_element_VirtualPropertyItem_styleDisplaNameKey",
-			description="スタイルシートのクラス名を指定します。" +
-					"複数指定する場合は半角スペースで区切ってください。",
-			descriptionKey="generic_element_VirtualPropertyItem_styleDescriptionKey"
-	)
-	private String style;
-
-	/** 説明 */
-	@MetaFieldInfo(
-			displayName="説明",
-			displayNameKey="generic_element_VirtualPropertyItem_descriptionDisplaNameKey",
-			description="入力欄下部表示する説明を設定します。",
-			descriptionKey="generic_element_VirtualPropertyItem_descriptionDescriptionKey",
-			inputType=InputType.MULTI_LANG,
-			multiLangField = "localizedDescriptionList"
-	)
-	@EntityViewField(referenceTypes={FieldReferenceType.DETAIL, FieldReferenceType.SEARCHCONDITION})
-	@MultiLang(itemNameGetter = "getPropertyName")
-	private String description;
-
-	/** 説明の多言語設定情報 */
-	@MetaFieldInfo(
-			displayName="説明の多言語設定",
-			displayNameKey="generic_element_VirtualPropertyItem_localizedDescriptionListDisplaNameKey",
-			inputType=InputType.MULTI_LANG_LIST
-	)
-	@EntityViewField(referenceTypes={FieldReferenceType.DETAIL, FieldReferenceType.SEARCHCONDITION})
-	private List<LocalizedStringDefinition> localizedDescriptionList;
-
-	/** ツールチップ */
-	@MetaFieldInfo(
-			displayName="ツールチップ",
-			displayNameKey="generic_element_VirtualPropertyItem_tooltipDisplaNameKey",
-			description="ツールチップに表示する説明を設定します。",
-			descriptionKey="generic_element_VirtualPropertyItem_tooltipDescriptionKey",
-			inputType=InputType.MULTI_LANG,
-			multiLangField = "localizedTooltipList"
-	)
-	@EntityViewField(referenceTypes={FieldReferenceType.DETAIL, FieldReferenceType.SEARCHCONDITION})
-	@MultiLang(itemNameGetter = "getPropertyName")
-	private String tooltip;
-
-	/** ツールチップの多言語設定情報 */
-	@MetaFieldInfo(
-			displayName="ツールチップの多言語設定",
-			displayNameKey="generic_element_VirtualPropertyItem_localizedTooltipListDisplaNameKey",
-			inputType=InputType.MULTI_LANG_LIST
-	)
-	@EntityViewField(referenceTypes={FieldReferenceType.DETAIL, FieldReferenceType.SEARCHCONDITION})
-	private List<LocalizedStringDefinition> localizedTooltipList;
 
 	/** 詳細編集非表示設定 */
 	@MetaFieldInfo(
 			displayName="詳細編集非表示設定",
 			displayNameKey="generic_element_VirtualPropertyItem_hideDetailDisplaNameKey",
 			inputType=InputType.CHECKBOX,
+			displayOrder=200,
 			description="詳細編集の項目として非表示にするかを設定します。",
 			descriptionKey="generic_element_VirtualPropertyItem_hideDetailDescriptionKey"
 	)
@@ -163,11 +95,100 @@ public class VirtualPropertyItem extends Element {
 			displayName="詳細表示非表示設定",
 			displayNameKey="generic_element_VirtualPropertyItem_hideViewDisplaNameKey",
 			inputType=InputType.CHECKBOX,
+			displayOrder=210,
 			description="詳細表示の項目として非表示にするかを設定します。",
 			descriptionKey="generic_element_VirtualPropertyItem_hideViewDescriptionKey"
 	)
 	@EntityViewField(referenceTypes=FieldReferenceType.DETAIL)
 	private boolean hideView;
+
+
+
+
+	/** 画面表示時のラベル */
+	@MetaFieldInfo(
+			displayName="表示ラベル",
+			displayNameKey="generic_element_VirtualPropertyItem_displayLabelDisplaNameKey",
+			description="画面に表示するラベルを設定します。",
+			descriptionKey="generic_element_VirtualPropertyItem_displayLabelDescriptionKey",
+			required=true,
+			inputType=InputType.MULTI_LANG,
+			multiLangField = "localizedDisplayLabelList",
+			displayOrder=300
+	)
+	@MultiLang(itemNameGetter = "getPropertyName")
+	private String displayLabel;
+
+	/** 多言語設定情報 */
+	@MetaFieldInfo(
+			displayName="多言語設定",
+			displayNameKey="generic_element_VirtualPropertyItem_localizedDisplayLabelListDisplaNameKey",
+			inputType=InputType.MULTI_LANG_LIST,
+			displayOrder=310
+	)
+	private List<LocalizedStringDefinition> localizedDisplayLabelList;
+
+	/** クラス名 */
+	@MetaFieldInfo(
+			displayName="クラス名",
+			displayNameKey="generic_element_VirtualPropertyItem_styleDisplaNameKey",
+			displayOrder=320,
+			description="スタイルシートのクラス名を指定します。" +
+					"複数指定する場合は半角スペースで区切ってください。",
+			descriptionKey="generic_element_VirtualPropertyItem_styleDescriptionKey"
+	)
+	private String style;
+
+
+
+
+	/** 説明 */
+	@MetaFieldInfo(
+			displayName="説明",
+			displayNameKey="generic_element_VirtualPropertyItem_descriptionDisplaNameKey",
+			description="入力欄下部表示する説明を設定します。",
+			descriptionKey="generic_element_VirtualPropertyItem_descriptionDescriptionKey",
+			inputType=InputType.MULTI_LANG,
+			multiLangField = "localizedDescriptionList",
+			displayOrder=400
+	)
+	@EntityViewField(referenceTypes={FieldReferenceType.DETAIL, FieldReferenceType.SEARCHCONDITION})
+	@MultiLang(itemNameGetter = "getPropertyName")
+	private String description;
+
+	/** 説明の多言語設定情報 */
+	@MetaFieldInfo(
+			displayName="説明の多言語設定",
+			displayNameKey="generic_element_VirtualPropertyItem_localizedDescriptionListDisplaNameKey",
+			inputType=InputType.MULTI_LANG_LIST,
+			displayOrder=410
+	)
+	@EntityViewField(referenceTypes={FieldReferenceType.DETAIL, FieldReferenceType.SEARCHCONDITION})
+	private List<LocalizedStringDefinition> localizedDescriptionList;
+
+	/** ツールチップ */
+	@MetaFieldInfo(
+			displayName="ツールチップ",
+			displayNameKey="generic_element_VirtualPropertyItem_tooltipDisplaNameKey",
+			description="ツールチップに表示する説明を設定します。",
+			descriptionKey="generic_element_VirtualPropertyItem_tooltipDescriptionKey",
+			inputType=InputType.MULTI_LANG,
+			multiLangField = "localizedTooltipList",
+			displayOrder=420
+	)
+	@EntityViewField(referenceTypes={FieldReferenceType.DETAIL, FieldReferenceType.SEARCHCONDITION})
+	@MultiLang(itemNameGetter = "getPropertyName")
+	private String tooltip;
+
+	/** ツールチップの多言語設定情報 */
+	@MetaFieldInfo(
+			displayName="ツールチップの多言語設定",
+			displayNameKey="generic_element_VirtualPropertyItem_localizedTooltipListDisplaNameKey",
+			inputType=InputType.MULTI_LANG_LIST,
+			displayOrder=430
+	)
+	@EntityViewField(referenceTypes={FieldReferenceType.DETAIL, FieldReferenceType.SEARCHCONDITION})
+	private List<LocalizedStringDefinition> localizedTooltipList;
 
 	/** 必須属性表示タイプ */
 //	@MetaFieldInfo(
@@ -183,28 +204,12 @@ public class VirtualPropertyItem extends Element {
 //	)
 	private RequiredDisplayType requiredDisplayType;
 
-	//参照とかバイナリとか、文字列から直接変換可能な値以外は扱わない
-	/** プロパティエディタ */
-	@MetaFieldInfo(
-			displayName="プロパティエディタ",
-			displayNameKey="generic_element_VirtualPropertyItem_editorDisplaNameKey",
-			required=true,
-			inputType=InputType.REFERENCE,
-			referenceClass=PropertyEditor.class,
-			fixedReferenceClass={BooleanPropertyEditor.class, DatePropertyEditor.class, TimePropertyEditor.class,
-				TimestampPropertyEditor.class, DecimalPropertyEditor.class, IntegerPropertyEditor.class,
-				FloatPropertyEditor.class, SelectPropertyEditor.class, StringPropertyEditor.class, TemplatePropertyEditor.class},
-			description="表示したい形式に合わせたプロパティエディタを指定してください。",
-			descriptionKey="generic_element_VirtualPropertyItem_editorDescriptionKey"
-	)
-	@MultiLang(itemNameGetter = "getPropertyName")
-	private PropertyEditor editor;
-
 	/** 列幅 */
 	@MetaFieldInfo(
 			displayName="列幅",
 			displayNameKey="generic_element_property_PropertyColumn_widthDisplaNameKey",
 			inputType=InputType.NUMBER,
+			displayOrder=440,
 			description="列幅を指定します。",
 			descriptionKey="generic_element_property_PropertyColumn_widthDescriptionKey"
 	)
@@ -217,6 +222,7 @@ public class VirtualPropertyItem extends Element {
 			displayNameKey="generic_element_property_PropertyColumn_textAlignDisplaNameKey",
 			inputType=InputType.ENUM,
 			enumClass=TextAlign.class,
+			displayOrder=450,
 			description="テキストの配置を指定します。<br>" +
 					"LEFT:左寄せ<br>" +
 					"CENTER:中央寄せ<br>" +
@@ -225,6 +231,27 @@ public class VirtualPropertyItem extends Element {
 	)
 	@EntityViewField(referenceTypes=FieldReferenceType.SEARCHRESULT)
 	private TextAlign textAlign;
+
+
+
+
+	//参照とかバイナリとか、文字列から直接変換可能な値以外は扱わない
+	/** プロパティエディタ */
+	@MetaFieldInfo(
+			displayName="プロパティエディタ",
+			displayNameKey="generic_element_VirtualPropertyItem_editorDisplaNameKey",
+			required=true,
+			inputType=InputType.REFERENCE,
+			referenceClass=PropertyEditor.class,
+			fixedReferenceClass={BooleanPropertyEditor.class, DatePropertyEditor.class, TimePropertyEditor.class,
+				TimestampPropertyEditor.class, DecimalPropertyEditor.class, IntegerPropertyEditor.class,
+				FloatPropertyEditor.class, SelectPropertyEditor.class, StringPropertyEditor.class, TemplatePropertyEditor.class},
+			displayOrder=1000,
+			description="表示したい形式に合わせたプロパティエディタを指定してください。",
+			descriptionKey="generic_element_VirtualPropertyItem_editorDescriptionKey"
+	)
+	@MultiLang(itemNameGetter = "getPropertyName")
+	private PropertyEditor editor;
 
 	/**
 	 * プロパティ名を取得します。

@@ -62,6 +62,7 @@ public class SearchResultSection extends Section {
 			rangeCheck=true,
 			minRange=1,
 			maxRange=200,
+			displayOrder=200,
 			description="検索結果の一覧に表示する件数を指定します。",
 			descriptionKey="generic_element_section_SearchResultSection_dispRowCountDescriptionKey"
 	)
@@ -73,6 +74,7 @@ public class SearchResultSection extends Section {
 			inputType=InputType.NUMBER,
 			rangeCheck=true,
 			minRange=0,
+			displayOrder=210,
 			description="検索結果の高さを指定します。<br>" +
 						"0を指定した場合、高さを自動とします。",
 			descriptionKey="generic_element_section_SearchResultSection_dispHeightDescriptionKey"
@@ -84,6 +86,7 @@ public class SearchResultSection extends Section {
 			displayName="編集リンク非表示設定",
 			displayNameKey="generic_element_section_SearchResultSection_hideDetailLinkDisplaNameKey",
 			inputType=InputType.CHECKBOX,
+			displayOrder=220,
 			description="検索結果の編集リンクを非表示にします。",
 			descriptionKey="generic_element_section_SearchResultSection_hideDetailLinkDescriptionKey"
 	)
@@ -94,6 +97,7 @@ public class SearchResultSection extends Section {
 			displayName="削除ボタン非表示設定",
 			displayNameKey="generic_element_section_SearchResultSection_hideDeleteDisplaNameKey",
 			inputType=InputType.CHECKBOX,
+			displayOrder=230,
 			description="削除ボタンと検索結果のチェックボックスを非表示にします。",
 			descriptionKey="generic_element_section_SearchResultSection_hideDeleteDescriptionKey"
 	)
@@ -104,6 +108,7 @@ public class SearchResultSection extends Section {
 			displayName="ページング非表示設定",
 			displayNameKey="generic_element_section_SearchResultSection_hidePagingDisplaNameKey",
 			inputType=InputType.CHECKBOX,
+			displayOrder=240,
 			description="参照の一覧のページングを非表示にします。<br>" +
 					"非表示にした場合はページングが行えないため、対象データを全件取得します。",
 			descriptionKey="generic_element_section_SearchResultSection_hidePagingDescriptionKey"
@@ -115,6 +120,7 @@ public class SearchResultSection extends Section {
 			displayName="件数非表示設定",
 			displayNameKey="generic_element_section_SearchResultSection_hideCountDisplaNameKey",
 			inputType=InputType.CHECKBOX,
+			displayOrder=250,
 			description="検索結果のページングで件数を非表示にします。<br>" +
 					"非表示にした場合、全件数はカウントされません。<br>" +
 					"また、ページジャンプ、ページリンクも非表示になります。",
@@ -127,6 +133,7 @@ public class SearchResultSection extends Section {
 			displayName="ページジャンプ非表示設定",
 			displayNameKey="generic_element_section_SearchResultSection_hidePageJumpDisplaNameKey",
 			inputType=InputType.CHECKBOX,
+			displayOrder=260,
 			description="検索結果のページングでページジャンプを非表示にします。",
 			descriptionKey="generic_element_section_SearchResultSection_hidePageJumpDescriptionKey"
 	)
@@ -137,6 +144,7 @@ public class SearchResultSection extends Section {
 			displayName="ページリンク非表示設定",
 			displayNameKey="generic_element_section_SearchResultSection_hidePageLinkDisplaNameKey",
 			inputType=InputType.CHECKBOX,
+			displayOrder=270,
 			description="検索結果のページングでページリンクを非表示にします。",
 			descriptionKey="generic_element_section_SearchResultSection_hidePageLinkDescriptionKey"
 	)
@@ -148,6 +156,7 @@ public class SearchResultSection extends Section {
 			displayNameKey="generic_element_section_SearchResultSection_pagingPositionDisplaNameKey",
 			inputType=InputType.ENUM,
 			enumClass=PagingPosition.class,
+			displayOrder=280,
 			description="ページングの表示位置を指定します。<br>" +
 					"<b>BOTH   :</b> グリッドの上下<br>" +
 					"<b>TOP    :</b> グリッドの上部<br>" +
@@ -161,6 +170,7 @@ public class SearchResultSection extends Section {
 			displayName="一括更新ボタン表示設定",
 			displayNameKey="generic_element_section_SearchResultSection_showBulkUpdateDisplaNameKey",
 			inputType=InputType.CHECKBOX,
+			displayOrder=290,
 			description="一括更新ボタンを表示にします。",
 			descriptionKey="generic_element_section_SearchResultSection_showBulkUpdateDescriptionKey"
 	)
@@ -173,7 +183,8 @@ public class SearchResultSection extends Section {
 			description="一括更新ボタンに表示されるラベルを設定します。",
 			descriptionKey="generic_element_section_SearchResultSection_bulkUpdateDisplayLabelDescriptionKey",
 			inputType=InputType.MULTI_LANG,
-			multiLangField = "localizedBulkUpdateDisplayLabel"
+			multiLangField = "localizedBulkUpdateDisplayLabel",
+			displayOrder=300
 	)
 	@MultiLang()
 	private String bulkUpdateDisplayLabel;
@@ -182,15 +193,20 @@ public class SearchResultSection extends Section {
 	@MetaFieldInfo(
 			displayName="多言語設定",
 			displayNameKey="generic_element_section_SearchResultSection_localizedBulkUpdateDisplayLabelDisplaNameKey",
-			inputType=InputType.MULTI_LANG_LIST
+			inputType=InputType.MULTI_LANG_LIST,
+			displayOrder=310
 	)
 	private List<LocalizedStringDefinition> localizedBulkUpdateDisplayLabel;
+
+
+
 
 	/** 親子関係の参照を物理削除するか */
 	@MetaFieldInfo(
 			displayName="親子関係の参照を物理削除するか",
 			displayNameKey="generic_element_section_SearchResultSection_purgeCompositionedEntityDisplaNameKey",
 			inputType=InputType.CHECKBOX,
+			displayOrder=1000,
 			description="親子関係の参照を物理削除するかを設定します",
 			descriptionKey="generic_element_section_SearchResultSection_purgeCompositionedEntityDescriptionKey"
 	)
@@ -201,6 +217,7 @@ public class SearchResultSection extends Section {
 			displayName="更新時に強制的に更新処理を行う",
 			displayNameKey="generic_element_section_SearchResultSection_forceUpadteDisplaNameKey",
 			inputType=InputType.CHECKBOX,
+			displayOrder=1010,
 			description="変更項目が一つもなくとも、強制的に更新処理（更新日時、更新者が更新される）を行います。",
 			descriptionKey="generic_element_section_SearchResultSection_forceUpadteDescriptionKey"
 	)
@@ -213,6 +230,7 @@ public class SearchResultSection extends Section {
 	@MetaFieldInfo(
 			displayName="カスタム登録処理クラス名",
 			displayNameKey="generic_element_section_SearchResultSection_interrupterNameDisplaNameKey",
+			displayOrder=1020,
 			description="データ登録時に行うカスタム登録処理のクラス名を指定します。<br>" +
 					"RegistrationInterrupterインターフェースを実装するクラスを指定してください。",
 
@@ -224,6 +242,7 @@ public class SearchResultSection extends Section {
 	@MetaFieldInfo(
 			displayName="カスタムロード処理クラス名",
 			displayNameKey="generic_element_section_SearchResultSection_loadEntityInterrupterNameDisplaNameKey",
+			displayOrder=1030,
 			description="Entityロード処理実行前にロード用のオプションをカスタマイズするためのクラス名を指定します。<br>" +
 					"LoadEntityInterrupterインターフェースを実装するクラスを指定してください。",
 

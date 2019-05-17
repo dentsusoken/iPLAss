@@ -1,19 +1,19 @@
 /*
  * Copyright (C) 2011 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
- * 
+ *
  * Unless you have purchased a commercial license,
  * the following license terms apply:
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
@@ -51,6 +51,7 @@ public class TimePropertyEditor extends DateTimePropertyEditor {
 			displayNameKey="generic_editor_TimePropertyEditor_dispRangeDisplaNameKey",
 			inputType=InputType.ENUM,
 			enumClass=TimeDispRange.class,
+			displayOrder=1010,
 			description="時間の各リストをどこまで表示するか設定します。",
 			descriptionKey="generic_editor_TimePropertyEditor_dispRangeDescriptionKey"
 	)
@@ -65,6 +66,7 @@ public class TimePropertyEditor extends DateTimePropertyEditor {
 			displayNameKey="generic_editor_TimePropertyEditor_intervalDisplaNameKey",
 			inputType=InputType.ENUM,
 			enumClass=MinIntereval.class,
+			displayOrder=1020,
 			description="分のリストの表示間隔を設定します。",
 			descriptionKey="generic_editor_TimePropertyEditor_intervalDescriptionKey"
 	)
@@ -73,30 +75,32 @@ public class TimePropertyEditor extends DateTimePropertyEditor {
 	)
 	private MinIntereval interval;
 
-	/** 初期値 */
-	@MetaFieldInfo(
-			displayName="初期値",
-			displayNameKey="generic_editor_TimePropertyEditor_defaultValueDisplaNameKey",
-			description="新規作成時の初期値を設定します。HHmmss形式か予約語を指定してください。",
-			descriptionKey="generic_editor_TimePropertyEditor_defaultValueDescriptionKey"
-	)
-	@EntityViewField(
-			referenceTypes={FieldReferenceType.DETAIL}
-	)
-	private String defaultValue;
-
 	/** TimePickerの利用有無 */
 	@MetaFieldInfo(
 			displayName="TimePickerの利用有無",
 			displayNameKey="generic_editor_TimePropertyEditor_useTimePickerDisplaNameKey",
 			description="TimePickerを利用して日時を表示するかの設定です。",
 			inputType=InputType.CHECKBOX,
+			displayOrder=1030,
 			descriptionKey="generic_editor_TimePropertyEditor_useTimePickerDescriptionKey"
 	)
 	@EntityViewField(
 			referenceTypes={FieldReferenceType.SEARCHCONDITION, FieldReferenceType.DETAIL}
 	)
 	private boolean useTimePicker;
+
+	/** 初期値 */
+	@MetaFieldInfo(
+			displayName="初期値",
+			displayNameKey="generic_editor_TimePropertyEditor_defaultValueDisplaNameKey",
+			description="新規作成時の初期値を設定します。HHmmss形式か予約語を指定してください。",
+			descriptionKey="generic_editor_TimePropertyEditor_defaultValueDescriptionKey",
+			displayOrder=1040
+	)
+	@EntityViewField(
+			referenceTypes={FieldReferenceType.DETAIL}
+	)
+	private String defaultValue;
 
 	/**
 	 * コンストラクタ

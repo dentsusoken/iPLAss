@@ -24,7 +24,9 @@ import java.util.ArrayList;
 
 import org.iplass.adminconsole.client.base.event.MTPEvent;
 import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
+import org.iplass.adminconsole.client.base.rpc.AdminAsyncCallback;
 import org.iplass.adminconsole.client.base.tenant.TenantInfoHolder;
+import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
 import org.iplass.adminconsole.client.metadata.ui.entity.layout.PropertyOperationHandler;
 import org.iplass.adminconsole.client.metadata.ui.entity.layout.item.EntityViewFieldSettingDialog;
 import org.iplass.adminconsole.client.metadata.ui.entity.layout.item.ItemControl;
@@ -75,7 +77,6 @@ import org.iplass.mtp.view.generic.element.property.PropertyBase;
 import org.iplass.mtp.view.generic.element.property.PropertyColumn;
 import org.iplass.mtp.view.generic.element.property.PropertyItem;
 
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.smartgwt.client.widgets.grid.ListGridRecord;
 
 /**
@@ -93,36 +94,6 @@ public class PropertyControl extends ItemControl {
 
 	/**
 	 * コンストラクタ
-	 */
-	private PropertyControl(String defName, FieldReferenceType triggerType) {
-		super(defName, triggerType);
-
-		service = MetaDataServiceFactory.get();
-
-		setDragType("property");
-
-		setShowMinimizeButton(false);
-		setBackgroundColor("lightgreen");
-		setBorder("1px solid green");
-		setHeight(22);
-
-		setMetaFieldUpdateHandler(new MetaFieldUpdateHandler() {
-
-			@Override
-			public void execute(MetaFieldUpdateEvent event) {
-				String displayName = null;
-				if (event.getValueMap().containsKey("displayLabel")) {
-					displayName = (String) event.getValueMap().get("displayLabel");
-				} else if (event.getValueMap().containsKey("title")) {
-					displayName = (String) event.getValueMap().get("title");
-				}
-				createTitle(displayName);
-			}
-		});
-	}
-
-	/**
-	 * コンストラクタ
 	 * @param record
 	 * @param property
 	 */
@@ -132,18 +103,17 @@ public class PropertyControl extends ItemControl {
 				record.getAttribute("parentDisplayName") + "." + record.getAttribute("displayName") : record.getAttribute("displayName");
 
 		setTitle(defaultDisplayName);
-		setTooltip(getTitle());
 		setValue("name", record.getAttribute("name"));
 		setValue("propertyEditor", createDefaultEditor(
 				(PropertyDefinition) record.getAttributeAsObject("propertyDefinition")));
 
 		property.setDispFlag(true);
-//		property.setDisplayLabel(getTitle());
 		property.setPropertyName((String) getValue("name"));
 		property.setEditor((PropertyEditor) getValue("propertyEditor"));
-//		property.setLocalizedTitleList((List<LocalizedStringDefinition>) record.getAttributeAsObject("localizedString"));
 		setClassName(property.getClass().getName());
 		setValueObject(property);
+
+		createTitle(null);
 	}
 
 	/**
@@ -177,19 +147,45 @@ public class PropertyControl extends ItemControl {
 		setDefaultDisplayName(property);
 	}
 
+	/**
+	 * コンストラクタ
+	 */
+	private PropertyControl(String defName, FieldReferenceType triggerType) {
+		super(defName, triggerType);
+
+		service = MetaDataServiceFactory.get();
+
+		setDragType("property");
+
+		setShowMinimizeButton(false);
+		setBackgroundColor("lightgreen");
+		setBorder("1px solid green");
+		setHeight(22);
+
+		setMetaFieldUpdateHandler(new MetaFieldUpdateHandler() {
+
+			@Override
+			public void execute(MetaFieldUpdateEvent event) {
+				String displayName = null;
+				if (event.getValueMap().containsKey("displayLabel")) {
+					displayName = (String) event.getValueMap().get("displayLabel");
+				} else if (event.getValueMap().containsKey("title")) {
+					displayName = (String) event.getValueMap().get("title");
+				}
+				createTitle(displayName);
+			}
+		});
+	}
+
 	private void setDefaultDisplayName(final PropertyBase property) {
 
-		service.getPropertyDisplayName(TenantInfoHolder.getId(), defName, property.getPropertyName(), new AsyncCallback<String>() {
+		service.getPropertyDisplayName(TenantInfoHolder.getId(), defName, property.getPropertyName(), new AdminAsyncCallback<String>() {
 
 			@Override
 			public void onSuccess(String result) {
 				defaultDisplayName = result;
 
 				createTitle(property.getDisplayLabel());
-			}
-
-			@Override
-			public void onFailure(Throwable caught) {
 			}
 		});
 	}
@@ -204,7 +200,7 @@ public class PropertyControl extends ItemControl {
 		} else {
 			setTitle(defaultDisplayName);
 		}
-		setTooltip(getTitle());
+		SmartGWTUtil.addHoverToCanvas(this, getTitle());
 	}
 
 	/**
@@ -316,11 +312,18 @@ public class PropertyControl extends ItemControl {
 
 	@Override
 	protected EntityViewFieldSettingDialog createSubDialog() {
+		EntityViewFieldSettingDialog dialog = null;
 		PropertyEditor editor =  (PropertyEditor) getValue("propertyEditor");
 		if (editor instanceof ReferencePropertyEditor) {
+			// ReferencePropertyEditorの場合は、refDefNameを設定
 			String refDefName = ((ReferencePropertyEditor) editor).getObjectName();
-			return new EntityViewFieldSettingDialog(getClassName(), getValueObject(), triggerType, defName, refDefName);
+			dialog = new EntityViewFieldSettingDialog(getClassName(), getValueObject(), triggerType, defName, refDefName);
+		} else {
+			dialog = super.createSubDialog();
 		}
-		return super.createSubDialog();
+
+		// ダイアログのタイトルに対象のプロパティ名を表示
+		dialog.setTitleDescription(defaultDisplayName);
+		return dialog;
 	}
 }

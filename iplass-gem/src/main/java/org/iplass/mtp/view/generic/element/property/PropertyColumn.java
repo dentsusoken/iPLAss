@@ -53,24 +53,11 @@ public class PropertyColumn extends PropertyBase {
 			displayName="列幅",
 			displayNameKey="generic_element_property_PropertyColumn_widthDisplaNameKey",
 			inputType=InputType.NUMBER,
+			displayOrder=400,
 			description="列幅を指定します。",
 			descriptionKey="generic_element_property_PropertyColumn_widthDescriptionKey"
 	)
 	private int width;
-
-	/** null項目のソート順 */
-	@MetaFieldInfo(
-			displayName="null項目のソート順",
-			displayNameKey="generic_element_property_PropertyColumn_nullOrderTypeDisplaNameKey",
-			inputType=InputType.ENUM,
-			enumClass=NullOrderType.class,
-			description="null項目のソート順を指定します。<br>" +
-					"NONE:未指定、DB依存<br>" +
-					"FIRST:null項目を先頭にソート<br>" +
-					"LAST:null項目を後尾にソート",
-			descriptionKey="generic_element_property_PropertyColumn_nullOrderTypeDescriptionKey"
-	)
-	private NullOrderType nullOrderType;
 
 	/** テキストの配置 */
 	@MetaFieldInfo(
@@ -78,6 +65,7 @@ public class PropertyColumn extends PropertyBase {
 			displayNameKey="generic_element_property_PropertyColumn_textAlignDisplaNameKey",
 			inputType=InputType.ENUM,
 			enumClass=TextAlign.class,
+			displayOrder=410,
 			description="テキストの配置を指定します。<br>" +
 					"LEFT:左寄せ<br>" +
 					"CENTER:中央寄せ<br>" +
@@ -86,12 +74,34 @@ public class PropertyColumn extends PropertyBase {
 	)
 	private TextAlign textAlign;
 
+
+
+
+	/** null項目のソート順 */
+	@MetaFieldInfo(
+			displayName="null項目のソート順",
+			displayNameKey="generic_element_property_PropertyColumn_nullOrderTypeDisplaNameKey",
+			inputType=InputType.ENUM,
+			enumClass=NullOrderType.class,
+			displayOrder=2100,
+			description="null項目のソート順を指定します。<br>" +
+					"NONE:未指定、DB依存<br>" +
+					"FIRST:null項目を先頭にソート<br>" +
+					"LAST:null項目を後尾にソート",
+			descriptionKey="generic_element_property_PropertyColumn_nullOrderTypeDescriptionKey"
+	)
+	private NullOrderType nullOrderType;
+
+
+
+
 	/** 一括更新プロパティエディタ */
 	@MetaFieldInfo(
 			displayName="一括更新プロパティエディタ",
 			displayNameKey="generic_element_property_PropertyColumn_bulkUpdateEditorDisplaNameKey",
 			inputType=InputType.REFERENCE,
 			referenceClass = PropertyEditor.class,
+			displayOrder=2200,
 			description="プロパティの型にあわせたプロパティエディタを選択してください。<br>"
 					+ "未指定の場合、一括更新が無効になります。",
 			descriptionKey="generic_element_property_PropertyColumn_bulkUpdateEditorDescriptionKey"
@@ -107,6 +117,7 @@ public class PropertyColumn extends PropertyBase {
 			displayNameKey="generic_element_property_PropertyColumn_bulkUpdateRequiredDisplayTypeDisplaNameKey",
 			inputType=InputType.ENUM,
 			enumClass=RequiredDisplayType.class,
+			displayOrder=2210,
 			description="一括更新画面で必須表示を行うかを設定します。<BR />" +
 					"DEFAULT : プロパティ定義の必須設定に従って必須属性を表示<BR />" +
 					"DISPLAY : 必須属性を表示<BR />" +

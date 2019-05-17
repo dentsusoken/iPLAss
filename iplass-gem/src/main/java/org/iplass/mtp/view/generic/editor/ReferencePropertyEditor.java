@@ -95,15 +95,81 @@ public class ReferencePropertyEditor extends PropertyEditor {
 			inputType=InputType.ENUM,
 			enumClass=ReferenceDisplayType.class,
 			required=true,
+			displayOrder=100,
 			description="画面に表示する方法を選択します。",
 			descriptionKey="generic_editor_ReferencePropertyEditor_displayTypeDescriptionKey"
 	)
 	private ReferenceDisplayType displayType;
 
+
+
+
+	@MetaFieldInfo(displayName="表示ラベルとして扱うプロパティ",
+			displayNameKey="generic_editor_ReferencePropertyEditor_displayLabelItemDisplaNameKey",
+			inputType=InputType.PROPERTY,
+			displayOrder=200,
+			description="<b>表示タイプ:Link、Select</b><br>" +
+					"表示ラベルとして扱うプロパティを指定します。",
+			descriptionKey="generic_editor_ReferencePropertyEditor_displayLabelItemDescriptionKey"
+	)
+	@EntityViewField(
+			referenceTypes = {FieldReferenceType.ALL}
+	)
+	private String displayLabelItem;
+
+	/** 参照型の表示プロパティ */
+	@MetaFieldInfo(displayName="参照型の表示プロパティ",
+			displayNameKey="generic_editor_ReferencePropertyEditor_nestPropertiesDisplaNameKey",
+			inputType=InputType.REFERENCE,
+			referenceClass=NestProperty.class,
+			multiple=true,
+			displayOrder=210,
+			description="<b>表示タイプ:NestTable</b><br>" +
+					"テーブルに表示するプロパティを指定します。",
+			descriptionKey="generic_editor_ReferencePropertyEditor_nestPropertiesDescriptionKey"
+	)
+	@MultiLang(isMultiLangValue = false)
+	@EntityViewField(
+			referenceTypes={FieldReferenceType.ALL}
+	)
+	private List<NestProperty> nestProperties;
+
+	/** ネストテーブルの表示順プロパティ */
+	@MetaFieldInfo(
+			displayName="ネストテーブルの表示順プロパティ",
+			displayNameKey="generic_editor_ReferencePropertyEditor_tableOrderPropertyNameDisplaNameKey",
+			inputType=InputType.PROPERTY,
+			displayOrder=220,
+			description="<b>表示タイプ:NestTable</b><br>" +
+					"ネストテーブルで表示する際の表示順を示すプロパティを設定します。",
+			descriptionKey="generic_editor_ReferencePropertyEditor_tableOrderPropertyNameDescriptionKey"
+	)
+	@EntityViewField(
+			referenceTypes={FieldReferenceType.DETAIL}
+	)
+	private String tableOrderPropertyName;
+
+	/** プロパティと同時にネスト項目を条件に利用 */
+	@MetaFieldInfo(displayName="プロパティと同時にネスト項目を条件に表示",
+			displayNameKey="generic_editor_ReferencePropertyEditor_useNestConditionWithPropertyDisplaNameKey",
+			inputType=InputType.CHECKBOX,
+			displayOrder=230,
+			description="ネスト項目が指定されていた場合、プロパティと同時に表示するかを指定します。。",
+			descriptionKey="generic_editor_ReferencePropertyEditor_useNestConditionWithPropertyDescriptionKey"
+	)
+	@EntityViewField(
+			referenceTypes={FieldReferenceType.SEARCHCONDITION}
+	)
+	private boolean useNestConditionWithProperty;
+
+
+
+
 	/** 選択ダイアログ利用可否 */
 	@MetaFieldInfo(displayName="選択ダイアログ利用可否",
 			displayNameKey="generic_editor_ReferencePropertyEditor_useSearchDialogDisplaNameKey",
 			inputType=InputType.CHECKBOX,
+			displayOrder=300,
 			description="<b>表示タイプ:Link</b><br>" +
 			"検索画面での条件指定方法をテキストでの名前指定から<br>" +
 			"選択ダイアログからのレコード選択に変更します。",
@@ -119,6 +185,7 @@ public class ReferencePropertyEditor extends PropertyEditor {
 	@MetaFieldInfo(displayName="検索条件で単一選択",
 			displayNameKey="generic_editor_ReferencePropertyEditor_singleSelectDisplaNameKey",
 			inputType=InputType.CHECKBOX,
+			displayOrder=310,
 			description="<b>表示タイプ:Link</b><br>" +
 			"検索画面での条件指定時に、選択ダイアログでのレコード選択方法を複数選択から単一選択に変更します。",
 			descriptionKey="generic_editor_ReferencePropertyEditor_singleSelectDescriptionKey"
@@ -128,53 +195,67 @@ public class ReferencePropertyEditor extends PropertyEditor {
 	)
 	private boolean singleSelect;
 
-	/** プロパティと同時にネスト項目を条件に利用 */
-	@MetaFieldInfo(displayName="プロパティと同時にネスト項目を条件に表示",
-			displayNameKey="generic_editor_ReferencePropertyEditor_useNestConditionWithPropertyDisplaNameKey",
+	/** 検索条件での全選択を許可 */
+	@MetaFieldInfo(displayName="検索条件での全選択を許可",
+			displayNameKey="generic_editor_ReferencePropertyEditor_permitConditionSelectAllDisplaNameKey",
 			inputType=InputType.CHECKBOX,
-			description="ネスト項目が指定されていた場合、プロパティと同時に表示するかを指定します。。",
-			descriptionKey="generic_editor_ReferencePropertyEditor_useNestConditionWithPropertyDescriptionKey"
+			displayOrder=320,
+			description="<b>表示タイプ:Link</b><br>" +
+					"参照先の選択画面で複数選択が可能な場合、全選択時の範囲を選択します。<br>" +
+					"ただし多重度以上の選択は出来ず、先頭から順に選択されます。<br>" +
+					"<br>" +
+					"チェックあり : 検索条件に一致する全てのデータ(前後のページ含む)が対象<br>" +
+					"チェックなし : 現在のページの全てのデータが対象",
+			descriptionKey="generic_editor_ReferencePropertyEditor_permitConditionSelectAllDescriptionKey"
 	)
 	@EntityViewField(
-			referenceTypes={FieldReferenceType.SEARCHCONDITION}
+			referenceTypes={FieldReferenceType.SEARCHCONDITION, FieldReferenceType.DETAIL}
 	)
-	private boolean useNestConditionWithProperty;
+	private boolean permitConditionSelectAll = true; //デフォルトtrue
 
-	/** 参照型の表示プロパティ */
-	@MetaFieldInfo(displayName="参照型の表示プロパティ",
-			displayNameKey="generic_editor_ReferencePropertyEditor_nestPropertiesDisplaNameKey",
-			inputType=InputType.REFERENCE,
-			referenceClass=NestProperty.class,
-			multiple=true,
-			description="<b>表示タイプ:NestTable</b><br>" +
-					"テーブルに表示するプロパティを指定します。",
-			descriptionKey="generic_editor_ReferencePropertyEditor_nestPropertiesDescriptionKey"
-	)
-	@MultiLang(isMultiLangValue = false)
-	@EntityViewField(
-			referenceTypes={FieldReferenceType.ALL}
-	)
-	private List<NestProperty> nestProperties;
-
-	/** 削除ボタン非表示設定 */
+	/** 参照リンク編集可否 */
 	@MetaFieldInfo(
-			displayName="削除ボタン非表示",
-			displayNameKey="generic_editor_ReferencePropertyEditor_hideDeleteButtonDisplaNameKey",
+			displayName="参照リンク編集可否",
+			displayNameKey="generic_editor_ReferencePropertyEditor_editableReferenceDisplaNameKey",
 			inputType=InputType.CHECKBOX,
+			displayOrder=330,
+			description="<b>表示タイプ:Link</b><br>" +
+					"リンク先のページで編集を許可します。<br>" +
+					"<b>表示タイプ:NestTable</b><br>" +
+					"テーブルに編集用のリンクを表示します。",
+			descriptionKey="generic_editor_ReferencePropertyEditor_editableReferenceDescriptionKey"
+	)
+	@EntityViewField(
+			referenceTypes={FieldReferenceType.SEARCHRESULT, FieldReferenceType.DETAIL}
+	)
+	private boolean editableReference;
+
+
+
+
+	/** 編集ページ */
+	@MetaFieldInfo(
+			displayName="編集ページ",
+			displayNameKey="generic_editor_ReferencePropertyEditor_editPageDisplaNameKey",
+			inputType=InputType.ENUM,
+			enumClass=EditPage.class,
+			displayOrder=400,
 			description="<b>表示タイプ:Link、NestTable</b><br>" +
-					"データを削除するボタンを非表示にします。",
-			descriptionKey="generic_editor_ReferencePropertyEditor_hideDeleteButtonDescriptionKey"
+					"参照型の編集を行うページを指定します。",
+
+			descriptionKey="generic_editor_ReferencePropertyEditor_editPageDescriptionKey"
 	)
 	@EntityViewField(
 			referenceTypes={FieldReferenceType.DETAIL}
 	)
-	private boolean hideDeleteButton;
+	private EditPage editPage;
 
 	/** 新規ボタン非表示設定 */
 	@MetaFieldInfo(
 			displayName="新規ボタン非表示",
 			displayNameKey="generic_editor_ReferencePropertyEditor_hideRegistButtonDisplaNameKey",
 			inputType=InputType.CHECKBOX,
+			displayOrder=410,
 			description="<b>表示タイプ:Link、NestTable</b><br>" +
 					"データを追加するボタンを非表示にします。",
 			descriptionKey="generic_editor_ReferencePropertyEditor_hideRegistButtonDescriptionKey"
@@ -189,6 +270,7 @@ public class ReferencePropertyEditor extends PropertyEditor {
 			displayName="選択ボタン非表示",
 			displayNameKey="generic_editor_ReferencePropertyEditor_hideSelectButtonDisplaNameKey",
 			inputType=InputType.CHECKBOX,
+			displayOrder=420,
 			description="<b>表示タイプ:Link、NestTable</b><br>" +
 					"データを選択するボタンを非表示にします。",
 			descriptionKey="generic_editor_ReferencePropertyEditor_hideSelectButtonDescriptionKey"
@@ -198,27 +280,27 @@ public class ReferencePropertyEditor extends PropertyEditor {
 	)
 	private boolean hideSelectButton;
 
-	/** 参照リンク編集可否 */
+	/** 削除ボタン非表示設定 */
 	@MetaFieldInfo(
-			displayName="参照リンク編集可否",
-			displayNameKey="generic_editor_ReferencePropertyEditor_editableReferenceDisplaNameKey",
+			displayName="削除ボタン非表示",
+			displayNameKey="generic_editor_ReferencePropertyEditor_hideDeleteButtonDisplaNameKey",
 			inputType=InputType.CHECKBOX,
-			description="<b>表示タイプ:Link</b><br>" +
-					"リンク先のページで編集を許可します。<br>" +
-					"<b>表示タイプ:NestTable</b><br>" +
-					"テーブルに編集用のリンクを表示します。",
-			descriptionKey="generic_editor_ReferencePropertyEditor_editableReferenceDescriptionKey"
+			displayOrder=430,
+			description="<b>表示タイプ:Link、NestTable</b><br>" +
+					"データを削除するボタンを非表示にします。",
+			descriptionKey="generic_editor_ReferencePropertyEditor_hideDeleteButtonDescriptionKey"
 	)
 	@EntityViewField(
-			referenceTypes={FieldReferenceType.SEARCHRESULT, FieldReferenceType.DETAIL}
+			referenceTypes={FieldReferenceType.DETAIL}
 	)
-	private boolean editableReference;
+	private boolean hideDeleteButton;
 
 	/** 行追加方法 */
 	@MetaFieldInfo(displayName="行追加方法",
 			displayNameKey="generic_editor_ReferencePropertyEditor_insertTypeDisplaNameKey",
 			inputType=InputType.ENUM,
 			enumClass=InsertType.class,
+			displayOrder=440,
 			description="<b>表示タイプ:NestTable</b><br>" +
 					"追加ボタンを押した時に追加される行の位置を設定します。",
 			descriptionKey="generic_editor_ReferencePropertyEditor_insertTypeDescriptionKey"
@@ -228,11 +310,15 @@ public class ReferencePropertyEditor extends PropertyEditor {
 	)
 	private InsertType insertType;
 
+
+
+
 	/** ダイアログ表示アクション名 */
 	@MetaFieldInfo(
 			displayName="ダイアログ表示アクション名",
 			displayNameKey="generic_editor_ReferencePropertyEditor_viewrefActionNameDisplaNameKey",
 			inputType=InputType.ACTION,
+			displayOrder=500,
 			description="<b>表示タイプ:Link</b><br>" +
 					"リンククリックで実行されるアクションを設定します。<br>" +
 					"<b>表示タイプ:NestTable</b><br>" +
@@ -249,6 +335,7 @@ public class ReferencePropertyEditor extends PropertyEditor {
 			displayName="ダイアログ編集アクション名",
 			displayNameKey="generic_editor_ReferencePropertyEditor_detailrefActionNameDisplaNameKey",
 			inputType=InputType.ACTION,
+			displayOrder=510,
 			description="<b>表示タイプ:NestTable</b><br>" +
 					"詳細編集画面での編集リンククリックで実行されるアクションを設定します。",
 			descriptionKey="generic_editor_ReferencePropertyEditor_detailrefActionNameDescriptionKey"
@@ -258,25 +345,12 @@ public class ReferencePropertyEditor extends PropertyEditor {
 	)
 	private String detailrefActionName;
 
-	/** 選択アクション名 */
-	@MetaFieldInfo(
-			displayName="選択アクション名",
-			displayNameKey="generic_editor_ReferencePropertyEditor_selectActionNameDisplaNameKey",
-			inputType=InputType.ACTION,
-			description="<b>表示タイプ:Link</b><br>" +
-					"選択ボタン押下で実行されるアクションを設定します。",
-			descriptionKey="generic_editor_ReferencePropertyEditor_selectActionNameDescriptionKey"
-	)
-	@EntityViewField(
-			referenceTypes={FieldReferenceType.SEARCHCONDITION, FieldReferenceType.DETAIL}
-	)
-	private String selectActionName;
-
 	/** 追加アクション名 */
 	@MetaFieldInfo(
 			displayName="追加アクション名",
 			displayNameKey="generic_editor_ReferencePropertyEditor_addActionNameDisplaNameKey",
 			inputType=InputType.ACTION,
+			displayOrder=520,
 			description="<b>表示タイプがLink</b><br>" +
 					"追加ボタン押下で実行されるアクションを設定します。",
 			descriptionKey="generic_editor_ReferencePropertyEditor_addActionNameDescriptionKey"
@@ -286,10 +360,43 @@ public class ReferencePropertyEditor extends PropertyEditor {
 	)
 	private String addActionName;
 
+	/** 選択アクション名 */
+	@MetaFieldInfo(
+			displayName="選択アクション名",
+			displayNameKey="generic_editor_ReferencePropertyEditor_selectActionNameDisplaNameKey",
+			inputType=InputType.ACTION,
+			displayOrder=530,
+			description="<b>表示タイプ:Link</b><br>" +
+					"選択ボタン押下で実行されるアクションを設定します。",
+			descriptionKey="generic_editor_ReferencePropertyEditor_selectActionNameDescriptionKey"
+	)
+	@EntityViewField(
+			referenceTypes={FieldReferenceType.SEARCHCONDITION, FieldReferenceType.DETAIL}
+	)
+	private String selectActionName;
+
+	/** 更新時に強制的に更新処理を行う */
+	@MetaFieldInfo(
+			displayName="更新時に強制的に更新処理を行う",
+			displayNameKey="generic_editor_ReferencePropertyEditor_forceUpadteDisplaNameKey",
+			inputType=InputType.CHECKBOX,
+			displayOrder=540,
+			description="<b>表示タイプ:NestTable</b><br>" +
+					"変更項目が一つもなくとも、強制的に更新処理（更新日時、更新者が更新される）を行います。",
+			descriptionKey="generic_editor_ReferencePropertyEditor_forceUpadteDescriptionKey"
+	)
+	@EntityViewField(
+			referenceTypes={FieldReferenceType.DETAIL}
+	)
+	private boolean forceUpadte;
+
+
+
 	/** ビュー定義名 */
 	@MetaFieldInfo(
 			displayName="ビュー定義名",
 			displayNameKey="generic_editor_ReferencePropertyEditor_viewNameDisplaNameKey",
+			displayOrder=600,
 			description="<b>表示タイプ:Link、NestTable</b><br>" +
 					"選択・追加ボタン、編集リンク押下で表示する画面のView定義名を設定します。<br>" +
 					"未指定の場合はデフォルトのView定義を使用します。",
@@ -318,18 +425,103 @@ public class ReferencePropertyEditor extends PropertyEditor {
 					"parentDefName:親EntityのEntity定義名",
 			descriptionKey="generic_editor_ReferencePropertyEditor_urlParameterDescriptionKey",
 			inputType=InputType.SCRIPT,
-			mode="groovytemplate"
+			mode="groovytemplate",
+			displayOrder=610
 	)
 	@EntityViewField(
 			referenceTypes={FieldReferenceType.SEARCHCONDITION, FieldReferenceType.DETAIL}
 	)
 	private String urlParameter;
 
+	/** 新規アクションコールバックスクリプト */
+	@MetaFieldInfo(
+			displayName="新規アクションコールバックスクリプト",
+			displayNameKey="generic_editor_ReferencePropertyEditor_insertActionCallbackScriptDisplaNameKey",
+			inputType=InputType.SCRIPT,
+			mode="javascript",
+			displayOrder=620,
+			description="<b>表示タイプ:Link</b><br>" +
+					"新規ダイアログで追加した後に実行するスクリプトを記述します。<br>" +
+					"Entityの情報(OID、Version、名前)を持ったObject(entity)が引数になります。",
+			descriptionKey="generic_editor_ReferencePropertyEditor_insertActionCallbackScriptDescriptionKey"
+	)
+	@EntityViewField(
+			referenceTypes={FieldReferenceType.DETAIL}
+	)
+	private String insertActionCallbackScript;
+
+	/** 選択アクションコールバックスクリプト */
+	@MetaFieldInfo(
+			displayName="選択アクションコールバックスクリプト",
+			displayNameKey="generic_editor_ReferencePropertyEditor_selectActionCallbackScriptDisplaNameKey",
+			inputType=InputType.SCRIPT,
+			mode="javascript",
+			displayOrder=630,
+			description="<b>表示タイプ:Link</b><br>" +
+					"選択ダイアログで選択した後に実行するスクリプトを記述します。<br>" +
+					"Entityの情報(OID、Version、名前)を持ったObjectの配列(entityList)が引数になります。",
+			descriptionKey="generic_editor_ReferencePropertyEditor_selectActionCallbackScriptDescriptionKey"
+	)
+	@EntityViewField(
+			referenceTypes={FieldReferenceType.DETAIL}
+	)
+	private String selectActionCallbackScript;
+
+	/** 行追加コールバックスクリプト */
+	@MetaFieldInfo(
+			displayName="行追加コールバックスクリプト",
+			displayNameKey="generic_editor_ReferencePropertyEditor_addRowCallbackScriptDisplaNameKey",
+			inputType=InputType.SCRIPT,
+			mode="javascript",
+			displayOrder=640,
+			description="<b>表示タイプ:NestTable</b><br>" +
+					"NestTableで行追加した後に実行するスクリプトを記述します。<br>" +
+					"行のDOMオブジェクト(row)とインデックス(index)が引数になります。",
+			descriptionKey="generic_editor_ReferencePropertyEditor_addRowCallbackScriptDescriptionKey"
+	)
+	@EntityViewField(
+			referenceTypes={FieldReferenceType.DETAIL}
+	)
+	private String addRowCallbackScript;
+
+
+
+
+	/** 特定バージョンの基準となるプロパティ */
+	@MetaFieldInfo(
+			displayName="特定バージョンの基準となるプロパティ",
+			displayNameKey="generic_editor_ReferencePropertyEditor_specificVersionPropertyNameDisplaNameKey",
+			displayOrder=700,
+			description="<b>表示タイプ:Link</b><br>",
+			descriptionKey="generic_editor_ReferencePropertyEditor_specificVersionPropertyNameDescriptionKey"
+	)
+	@EntityViewField(
+			referenceTypes={FieldReferenceType.DETAIL}
+	)
+	private String specificVersionPropertyName;
+
+	/** 検索条件 */
+	@MetaFieldInfo(
+			displayName="検索条件",
+			displayNameKey="generic_editor_ReferencePropertyEditor_conditionDisplaNameKey",
+			inputType=InputType.SCRIPT,
+			mode="groovytemplate",
+			displayOrder=710,
+			description="<b>表示タイプ:Select、Checkbox、RefCombo</b><br>" +
+					"表示する選択肢を検索する際に付与する検索条件を設定します。",
+			descriptionKey="generic_editor_ReferencePropertyEditor_conditionDescriptionKey"
+	)
+	@EntityViewField(
+			referenceTypes={FieldReferenceType.SEARCHCONDITION, FieldReferenceType.DETAIL}
+	)
+	private String condition;
+
 	/** ソートアイテム */
 	@MetaFieldInfo(
 			displayName="ソートアイテム",
 			displayNameKey="generic_editor_ReferencePropertyEditor_sortItemDisplaNameKey",
 			inputType=InputType.PROPERTY,
+			displayOrder=720,
 			description="<b>表示タイプ:Select</b><br>" +
 					"プルダウンの参照データをソートする項目を指定します。",
 			descriptionKey="generic_editor_ReferencePropertyEditor_sortItemDescriptionKey"
@@ -344,6 +536,7 @@ public class ReferencePropertyEditor extends PropertyEditor {
 			displayName="ソート種別",
 			displayNameKey="generic_editor_ReferencePropertyEditor_sortTypeDisplaNameKey",
 			inputType=InputType.ENUM,
+			displayOrder=730,
 			enumClass=RefSortType.class,
 			description="<b>表示タイプ:Select</b><br>" +
 					"プルダウンの参照データをソートする順序を指定します。",
@@ -354,84 +547,9 @@ public class ReferencePropertyEditor extends PropertyEditor {
 	)
 	private RefSortType sortType;
 
-	/** 編集ページ */
-	@MetaFieldInfo(
-			displayName="編集ページ",
-			displayNameKey="generic_editor_ReferencePropertyEditor_editPageDisplaNameKey",
-			inputType=InputType.ENUM,
-			enumClass=EditPage.class,
-			description="<b>表示タイプ:Link、NestTable</b><br>" +
-					"参照型の編集を行うページを指定します。",
 
-			descriptionKey="generic_editor_ReferencePropertyEditor_editPageDescriptionKey"
-	)
-	@EntityViewField(
-			referenceTypes={FieldReferenceType.DETAIL}
-	)
-	private EditPage editPage;
 
-	/** 選択アクションコールバックスクリプト */
-	@MetaFieldInfo(
-			displayName="選択アクションコールバックスクリプト",
-			displayNameKey="generic_editor_ReferencePropertyEditor_selectActionCallbackScriptDisplaNameKey",
-			inputType=InputType.SCRIPT,
-			mode="javascript",
-			description="<b>表示タイプ:Link</b><br>" +
-					"選択ダイアログで選択した後に実行するスクリプトを記述します。<br>" +
-					"Entityの情報(OID、Version、名前)を持ったObjectの配列(entityList)が引数になります。",
-			descriptionKey="generic_editor_ReferencePropertyEditor_selectActionCallbackScriptDescriptionKey"
-	)
-	@EntityViewField(
-			referenceTypes={FieldReferenceType.DETAIL}
-	)
-	private String selectActionCallbackScript;
 
-	/** 新規アクションコールバックスクリプト */
-	@MetaFieldInfo(
-			displayName="新規アクションコールバックスクリプト",
-			displayNameKey="generic_editor_ReferencePropertyEditor_insertActionCallbackScriptDisplaNameKey",
-			inputType=InputType.SCRIPT,
-			mode="javascript",
-			description="<b>表示タイプ:Link</b><br>" +
-					"新規ダイアログで追加した後に実行するスクリプトを記述します。<br>" +
-					"Entityの情報(OID、Version、名前)を持ったObject(entity)が引数になります。",
-			descriptionKey="generic_editor_ReferencePropertyEditor_insertActionCallbackScriptDescriptionKey"
-	)
-	@EntityViewField(
-			referenceTypes={FieldReferenceType.DETAIL}
-	)
-	private String insertActionCallbackScript;
-
-	/** 行追加コールバックスクリプト */
-	@MetaFieldInfo(
-			displayName="行追加コールバックスクリプト",
-			displayNameKey="generic_editor_ReferencePropertyEditor_addRowCallbackScriptDisplaNameKey",
-			inputType=InputType.SCRIPT,
-			mode="javascript",
-			description="<b>表示タイプ:NestTable</b><br>" +
-					"NestTableで行追加した後に実行するスクリプトを記述します。<br>" +
-					"行のDOMオブジェクト(row)とインデックス(index)が引数になります。",
-			descriptionKey="generic_editor_ReferencePropertyEditor_addRowCallbackScriptDescriptionKey"
-	)
-	@EntityViewField(
-			referenceTypes={FieldReferenceType.DETAIL}
-	)
-	private String addRowCallbackScript;
-
-	/** 検索条件 */
-	@MetaFieldInfo(
-			displayName="検索条件",
-			displayNameKey="generic_editor_ReferencePropertyEditor_conditionDisplaNameKey",
-			inputType=InputType.SCRIPT,
-			mode="groovytemplate",
-			description="<b>表示タイプ:Select、Checkbox、RefCombo</b><br>" +
-					"表示する選択肢を検索する際に付与する検索条件を設定します。",
-			descriptionKey="generic_editor_ReferencePropertyEditor_conditionDescriptionKey"
-	)
-	@EntityViewField(
-			referenceTypes={FieldReferenceType.SEARCHCONDITION, FieldReferenceType.DETAIL}
-	)
-	private String condition;
 
 	/** 参照コンボ設定 */
 	@MetaFieldInfo(
@@ -439,6 +557,7 @@ public class ReferencePropertyEditor extends PropertyEditor {
 			displayNameKey="generic_editor_ReferencePropertyEditor_referenceComboSettingDisplaNameKey",
 			inputType=InputType.REFERENCE,
 			referenceClass=ReferenceComboSetting.class,
+			displayOrder=800,
 			description="<b>表示タイプ:RefCombo</b><br>" +
 					"コンボの内容を絞り込む条件を指定します。",
 			descriptionKey="generic_editor_ReferencePropertyEditor_referenceComboSettingDescriptionKey"
@@ -453,6 +572,7 @@ public class ReferencePropertyEditor extends PropertyEditor {
 			displayNameKey="generic_editor_ReferencePropertyEditor_searchTypeDisplaNameKey",
 			inputType=InputType.ENUM,
 			enumClass=RefComboSearchType.class,
+			displayOrder=810,
 			description="検索条件に参照コンボを利用する場合で、最下層を選択しなかった時の動作を設定します。<BR />" +
 					"NONE  : 検索条件に利用しない<BR />" +
 					"UPPER : 上位の階層で選択されているものがあればそれを利用する<BR />" +
@@ -469,6 +589,7 @@ public class ReferencePropertyEditor extends PropertyEditor {
 			displayName="参照コンボの親階層を表示するか",
 			displayNameKey="generic_editor_ReferencePropertyEditor_showRefComboParentDisplaNameKey",
 			inputType=InputType.CHECKBOX,
+			displayOrder=820,
 			description="<b>表示タイプ:RefCombo</b><br>" +
 					"詳細画面で参照コンボの親階層を表示するかを指定します。",
 			descriptionKey="generic_editor_ReferencePropertyEditor_showRefComboParentDescriptionKey"
@@ -484,6 +605,7 @@ public class ReferencePropertyEditor extends PropertyEditor {
 			displayNameKey="generic_editor_ReferencePropertyEditor_referenceRecursiveTreeSettingDisplaNameKey",
 			inputType=InputType.REFERENCE,
 			referenceClass=ReferenceRecursiveTreeSetting.class,
+			displayOrder=830,
 			description="<b>表示タイプ:Tree</b><br>" +
 					"Entity内に同一Entityの参照を持つ、再帰構造のEntityをツリー表示するための条件を設定します。",
 			descriptionKey="generic_editor_ReferencePropertyEditor_referenceRecursiveTreeSettingDescriptionKey"
@@ -499,6 +621,7 @@ public class ReferencePropertyEditor extends PropertyEditor {
 			displayNameKey="generic_editor_ReferencePropertyEditor_linkPropertyDisplaNameKey",
 			inputType=InputType.REFERENCE,
 			referenceClass=LinkProperty.class,
+			displayOrder=840,
 			description="<b>表示タイプ:Select、Checkbox、RefCombo</b><br>" +
 					"選択可能値を連動するプロパティ情報を設定します。",
 			descriptionKey="generic_editor_ReferencePropertyEditor_linkPropertyDescriptionKey"
@@ -508,75 +631,7 @@ public class ReferencePropertyEditor extends PropertyEditor {
 	)
 	private LinkProperty linkProperty;
 
-	/** 特定バージョンの基準となるプロパティ */
-	@MetaFieldInfo(
-			displayName="特定バージョンの基準となるプロパティ",
-			displayNameKey="generic_editor_ReferencePropertyEditor_specificVersionPropertyNameDisplaNameKey",
-			description="<b>表示タイプ:Link</b><br>" +
-					"",
-			descriptionKey="generic_editor_ReferencePropertyEditor_specificVersionPropertyNameDescriptionKey"
-	)
-	@EntityViewField(
-			referenceTypes={FieldReferenceType.DETAIL}
-	)
-	private String specificVersionPropertyName;
 
-	/** ネストテーブルの表示順プロパティ */
-	@MetaFieldInfo(
-			displayName="ネストテーブルの表示順プロパティ",
-			displayNameKey="generic_editor_ReferencePropertyEditor_tableOrderPropertyNameDisplaNameKey",
-			inputType=InputType.PROPERTY,
-			description="<b>表示タイプ:NestTable</b><br>" +
-					"ネストテーブルで表示する際の表示順を示すプロパティを設定します。",
-			descriptionKey="generic_editor_ReferencePropertyEditor_tableOrderPropertyNameDescriptionKey"
-	)
-	@EntityViewField(
-			referenceTypes={FieldReferenceType.DETAIL}
-	)
-	private String tableOrderPropertyName;
-
-	/** 更新時に強制的に更新処理を行う */
-	@MetaFieldInfo(
-			displayName="更新時に強制的に更新処理を行う",
-			displayNameKey="generic_editor_ReferencePropertyEditor_forceUpadteDisplaNameKey",
-			inputType=InputType.CHECKBOX,
-			description="<b>表示タイプ:NestTable</b><br>" +
-					"変更項目が一つもなくとも、強制的に更新処理（更新日時、更新者が更新される）を行います。",
-			descriptionKey="generic_editor_ReferencePropertyEditor_forceUpadteDescriptionKey"
-	)
-	@EntityViewField(
-			referenceTypes={FieldReferenceType.DETAIL}
-	)
-	private boolean forceUpadte;
-
-	/** 検索条件での全選択を許可 */
-	@MetaFieldInfo(displayName="検索条件での全選択を許可",
-			displayNameKey="generic_editor_ReferencePropertyEditor_permitConditionSelectAllDisplaNameKey",
-			inputType=InputType.CHECKBOX,
-			description="<b>表示タイプ:Link</b><br>" +
-					"参照先の選択画面で複数選択が可能な場合、全選択時の範囲を選択します。<br>" +
-					"ただし多重度以上の選択は出来ず、先頭から順に選択されます。<br>" +
-					"<br>" +
-					"チェックあり : 検索条件に一致する全てのデータ(前後のページ含む)が対象<br>" +
-					"チェックなし : 現在のページの全てのデータが対象",
-			descriptionKey="generic_editor_ReferencePropertyEditor_permitConditionSelectAllDescriptionKey"
-	)
-	@EntityViewField(
-			referenceTypes={FieldReferenceType.SEARCHCONDITION, FieldReferenceType.DETAIL}
-	)
-	private boolean permitConditionSelectAll = true; //デフォルトtrue
-	
-	@MetaFieldInfo(displayName="表示ラベルとして扱うプロパティ",
-			displayNameKey="generic_editor_ReferencePropertyEditor_displayLabelItemDisplaNameKey",
-			inputType=InputType.PROPERTY,
-			description="<b>表示タイプ:Link、Select</b><br>" +
-					"表示ラベルとして扱うプロパティを指定します。",
-			descriptionKey="generic_editor_ReferencePropertyEditor_displayLabelItemDescriptionKey"
-	)
-	@EntityViewField(
-			referenceTypes = {FieldReferenceType.ALL}
-	)
-	private String displayLabelItem;
 
 	/** オブジェクト名 */
 	private String objectName;

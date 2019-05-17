@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.iplass.adminconsole.client.base.data.AbstractAdminDataSource;
+import org.iplass.adminconsole.client.base.data.DataSourceConstants;
 import org.iplass.adminconsole.client.base.tenant.TenantInfoHolder;
 import org.iplass.adminconsole.shared.metadata.rpc.MetaDataServiceAsync;
 import org.iplass.adminconsole.shared.metadata.rpc.MetaDataServiceFactory;
@@ -43,16 +44,77 @@ import com.smartgwt.client.data.DataSourceField;
 import com.smartgwt.client.data.Record;
 import com.smartgwt.client.rpc.RPCResponse;
 import com.smartgwt.client.types.FieldType;
+import com.smartgwt.client.widgets.form.fields.ComboBoxItem;
+import com.smartgwt.client.widgets.form.fields.FormItem;
+import com.smartgwt.client.widgets.form.fields.SelectItem;
+import com.smartgwt.client.widgets.grid.ListGrid;
+import com.smartgwt.client.widgets.grid.ListGridField;
 import com.smartgwt.client.widgets.grid.ListGridRecord;
 
 public class PropertyDS extends AbstractAdminDataSource {
 
+	private static final DataSourceField[] fields;
+
+	static {
+		DataSourceField name = new DataSourceField(
+				DataSourceConstants.FIELD_NAME,
+				FieldType.TEXT,
+				DataSourceConstants.FIELD_NAME_TITLE);
+		DataSourceField dispName = new DataSourceField(
+				DataSourceConstants.FIELD_DISPLAY_NAME,
+				FieldType.TEXT,
+				DataSourceConstants.FIELD_DISPLAY_NAME_TITLE);
+		DataSourceField javaType = new DataSourceField("javaType", FieldType.TEXT, "javaType");
+		DataSourceField must = new DataSourceField("must", FieldType.BOOLEAN, "must");
+		DataSourceField max = new DataSourceField("max", FieldType.TEXT, "max");
+		DataSourceField min = new DataSourceField("min", FieldType.TEXT, "min");
+		DataSourceField objRef = new DataSourceField("objRef", FieldType.TEXT, "objRef");
+
+		fields = new DataSourceField[] {name, dispName, javaType, must, max, min, objRef};
+	}
+
+    public static void setDataSource(final SelectItem item, final String defName) {
+    	setup(item, defName, null);
+    }
+    public static void setDataSource(final SelectItem item, final String defName, final String refPropertyName) {
+    	setup(item, defName, refPropertyName);
+    }
+    public static void setDataSource(final ComboBoxItem item, final String defName) {
+    	setup(item, defName, null);
+    }
+    public static void setDataSource(final ComboBoxItem item, final String defName, final String refPropertyName) {
+    	setup(item, defName, refPropertyName);
+    }
+
+    private static void setup(final FormItem item, final String defName, final String refPropertyName) {
+
+    	item.setOptionDataSource(getInstance(defName, refPropertyName));
+    	item.setValueField(DataSourceConstants.FIELD_NAME);
+
+    	ListGrid pickListProperties = new ListGrid();
+    	pickListProperties.setShowFilterEditor(true);
+    	if (item instanceof SelectItem) {
+    		ListGridField nameField = new ListGridField(DataSourceConstants.FIELD_NAME, DataSourceConstants.FIELD_NAME_TITLE);
+    		ListGridField dispNameField = new ListGridField(DataSourceConstants.FIELD_DISPLAY_NAME, DataSourceConstants.FIELD_DISPLAY_NAME_TITLE);
+    		((SelectItem)item).setPickListFields(nameField, dispNameField);
+//    		((SelectItem)item).setPickListWidth(420);
+    		((SelectItem)item).setPickListProperties(pickListProperties);
+    	} else if (item instanceof ComboBoxItem) {
+    		ListGridField nameField = new ListGridField(DataSourceConstants.FIELD_NAME, DataSourceConstants.FIELD_NAME_TITLE);
+    		ListGridField dispNameField = new ListGridField(DataSourceConstants.FIELD_DISPLAY_NAME, DataSourceConstants.FIELD_DISPLAY_NAME_TITLE);
+    		((ComboBoxItem)item).setPickListFields(nameField, dispNameField);
+//    		((ComboBoxItem)item).setPickListWidth(420);
+    		((ComboBoxItem)item).setPickListProperties(pickListProperties);
+    	}
+
+    }
+
 	private MetaDataServiceAsync service = MetaDataServiceFactory.get();
 
-	public static PropertyDS create(String defName) {
+	public static PropertyDS getInstance(String defName) {
 		return new PropertyDS(defName, null);
 	}
-	public static PropertyDS create(String defName, String refPropertyName) {
+	public static PropertyDS getInstance(String defName, String refPropertyName) {
 		return new PropertyDS(defName, refPropertyName);
 	}
 
@@ -64,15 +126,7 @@ public class PropertyDS extends AbstractAdminDataSource {
 	private PropertyDS(String defName, String refPropertyName) {
 		this.defName = defName;
 		this.refPropertyName = refPropertyName;
-
-		DataSourceField nameField = new DataSourceField("name", FieldType.TEXT, "name");
-		DataSourceField displayNameField = new DataSourceField("displayName", FieldType.TEXT, "displayName");
-		DataSourceField javaTypeField = new DataSourceField("javaType", FieldType.TEXT, "javaType");
-		DataSourceField mustField = new DataSourceField("must", FieldType.BOOLEAN, "must");
-		DataSourceField maxField = new DataSourceField("max", FieldType.TEXT, "max");
-		DataSourceField minField = new DataSourceField("min", FieldType.TEXT, "min");
-		DataSourceField objRefField = new DataSourceField("objRef", FieldType.TEXT, "objRef");
-		setFields(nameField, displayNameField, javaTypeField, mustField, maxField, minField, objRefField);
+		setFields(fields);
 	}
 
 	@Override
@@ -158,8 +212,8 @@ public class PropertyDS extends AbstractAdminDataSource {
 	}
 
 	private void copyValues(PropertyDefinition from, Record to) {
-		to.setAttribute("name", from.getName());
-		to.setAttribute("displayName", from.getDisplayName());
+		to.setAttribute(DataSourceConstants.FIELD_NAME, from.getName());
+		to.setAttribute(DataSourceConstants.FIELD_DISPLAY_NAME, from.getDisplayName());
 		to.setAttribute("propertyDefinition", from);
 		to.setAttribute("javaType", from.getJavaType().getName());
 		copyValidationValues(from.getValidations(), to);
@@ -186,4 +240,5 @@ public class PropertyDS extends AbstractAdminDataSource {
 	private void copyLocalizeStingValues(List<LocalizedStringDefinition> lsdList, Record to) {
 		to.setAttribute("localizedString", lsdList);
 	}
+
 }

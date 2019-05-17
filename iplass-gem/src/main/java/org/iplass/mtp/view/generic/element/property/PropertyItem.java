@@ -1,19 +1,19 @@
 /*
  * Copyright (C) 2011 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
- * 
+ *
  * Unless you have purchased a commercial license,
  * the following license terms apply:
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
@@ -51,63 +51,12 @@ public class PropertyItem extends PropertyBase {
 	/** シリアルバージョンUID */
 	private static final long serialVersionUID = 9163069385726194724L;
 
-	/** 説明 */
-	@MetaFieldInfo(
-			displayName="説明",
-			displayNameKey="generic_element_property_PropertyItem_descriptionDisplaNameKey",
-			description="入力欄下部表示する説明を設定します。",
-			descriptionKey="generic_element_property_PropertyItem_descriptionDescriptionKey",
-			inputType=InputType.MULTI_LANG,
-			multiLangField = "localizedDescriptionList"
-	)
-	@EntityViewField(
-			referenceTypes={FieldReferenceType.DETAIL}
-	)
-	@MultiLang(itemNameGetter = "getPropertyName", isUseSuperForItemName = true)
-	private String description;
-
-	/** 説明の多言語設定情報 */
-	@MetaFieldInfo(
-			displayName="説明の多言語設定",
-			displayNameKey="generic_element_property_PropertyItem_localizedDescriptionListDisplaNameKey",
-			inputType=InputType.MULTI_LANG_LIST
-	)
-	@EntityViewField(
-			referenceTypes={FieldReferenceType.DETAIL}
-	)
-	private List<LocalizedStringDefinition> localizedDescriptionList;
-
-	/** ツールチップ */
-	@MetaFieldInfo(
-			displayName="ツールチップ",
-			displayNameKey="generic_element_property_PropertyItem_tooltipDisplaNameKey",
-			description="ツールチップに表示する説明を設定します。",
-			descriptionKey="generic_element_property_PropertyItem_tooltipDescriptionKey",
-			inputType=InputType.MULTI_LANG,
-			multiLangField = "localizedTooltipList"
-	)
-	@EntityViewField(
-			referenceTypes={FieldReferenceType.SEARCHCONDITION, FieldReferenceType.DETAIL}
-	)
-	@MultiLang(itemNameGetter = "getPropertyName", isUseSuperForItemName = true)
-	private String tooltip;
-
-	/** ツールチップの多言語設定情報 */
-	@MetaFieldInfo(
-			displayName="ツールチップの多言語設定",
-			displayNameKey="generic_element_property_PropertyItem_localizedTooltipListDisplaNameKey",
-			inputType=InputType.MULTI_LANG_LIST
-	)
-	@EntityViewField(
-			referenceTypes={FieldReferenceType.SEARCHCONDITION, FieldReferenceType.DETAIL}
-	)
-	private List<LocalizedStringDefinition> localizedTooltipList;
-
 	/** 通常検索非表示設定 */
 	@MetaFieldInfo(
 			displayName="通常検索非表示設定",
 			displayNameKey="generic_element_property_PropertyItem_hideNormalConditionDisplaNameKey",
 			inputType=InputType.CHECKBOX,
+			displayOrder=200,
 			description="通常検索の項目として非表示にするかを設定します。",
 			descriptionKey="generic_element_property_PropertyItem_hideNormalConditionDescriptionKey"
 	)
@@ -121,6 +70,7 @@ public class PropertyItem extends PropertyBase {
 			displayName="詳細検索非表示設定",
 			displayNameKey="generic_element_property_PropertyItem_hideDetailConditionDisplaNameKey",
 			inputType=InputType.CHECKBOX,
+			displayOrder=210,
 			description="詳細検索の項目として非表示にするかを設定します。",
 			descriptionKey="generic_element_property_PropertyItem_hideDetailConditionDescriptionKey"
 	)
@@ -134,6 +84,7 @@ public class PropertyItem extends PropertyBase {
 			displayName="詳細編集非表示設定",
 			displayNameKey="generic_element_property_PropertyItem_hideDetailDisplaNameKey",
 			inputType=InputType.CHECKBOX,
+			displayOrder=220,
 			description="詳細編集の項目として非表示にするかを設定します。",
 			descriptionKey="generic_element_property_PropertyItem_hideDetailDescriptionKey"
 	)
@@ -147,6 +98,7 @@ public class PropertyItem extends PropertyBase {
 			displayName="詳細表示非表示設定",
 			displayNameKey="generic_element_property_PropertyItem_hideViewDisplaNameKey",
 			inputType=InputType.CHECKBOX,
+			displayOrder=230,
 			description="詳細表示の項目として非表示にするかを設定します。",
 			descriptionKey="generic_element_property_PropertyItem_hideViewDescriptionKey"
 	)
@@ -155,12 +107,72 @@ public class PropertyItem extends PropertyBase {
 	)
 	private boolean hideView;
 
+
+
+
+	/** 説明 */
+	@MetaFieldInfo(
+			displayName="説明",
+			displayNameKey="generic_element_property_PropertyItem_descriptionDisplaNameKey",
+			description="入力欄下部表示する説明を設定します。",
+			descriptionKey="generic_element_property_PropertyItem_descriptionDescriptionKey",
+			inputType=InputType.MULTI_LANG,
+			multiLangField = "localizedDescriptionList",
+			displayOrder=400
+	)
+	@EntityViewField(
+			referenceTypes={FieldReferenceType.DETAIL}
+	)
+	@MultiLang(itemNameGetter = "getPropertyName", isUseSuperForItemName = true)
+	private String description;
+
+	/** 説明の多言語設定情報 */
+	@MetaFieldInfo(
+			displayName="説明の多言語設定",
+			displayNameKey="generic_element_property_PropertyItem_localizedDescriptionListDisplaNameKey",
+			inputType=InputType.MULTI_LANG_LIST,
+			displayOrder=410
+	)
+	@EntityViewField(
+			referenceTypes={FieldReferenceType.DETAIL}
+	)
+	private List<LocalizedStringDefinition> localizedDescriptionList;
+
+	/** ツールチップ */
+	@MetaFieldInfo(
+			displayName="ツールチップ",
+			displayNameKey="generic_element_property_PropertyItem_tooltipDisplaNameKey",
+			description="ツールチップに表示する説明を設定します。",
+			descriptionKey="generic_element_property_PropertyItem_tooltipDescriptionKey",
+			inputType=InputType.MULTI_LANG,
+			multiLangField = "localizedTooltipList",
+			displayOrder=420
+	)
+	@EntityViewField(
+			referenceTypes={FieldReferenceType.SEARCHCONDITION, FieldReferenceType.DETAIL}
+	)
+	@MultiLang(itemNameGetter = "getPropertyName", isUseSuperForItemName = true)
+	private String tooltip;
+
+	/** ツールチップの多言語設定情報 */
+	@MetaFieldInfo(
+			displayName="ツールチップの多言語設定",
+			displayNameKey="generic_element_property_PropertyItem_localizedTooltipListDisplaNameKey",
+			inputType=InputType.MULTI_LANG_LIST,
+			displayOrder=430
+	)
+	@EntityViewField(
+			referenceTypes={FieldReferenceType.SEARCHCONDITION, FieldReferenceType.DETAIL}
+	)
+	private List<LocalizedStringDefinition> localizedTooltipList;
+
 	/** 必須属性表示タイプ */
 	@MetaFieldInfo(
 			displayName="必須属性表示",
 			displayNameKey="generic_element_property_PropertyItem_requiredDisplayTypeDisplaNameKey",
 			inputType=InputType.ENUM,
 			enumClass=RequiredDisplayType.class,
+			displayOrder=440,
 			description="詳細画面で必須表示を行うかを設定します。<BR />" +
 					"DEFAULT : プロパティ定義の必須設定に従って必須属性を表示<BR />" +
 					"DISPLAY : 必須属性を表示<BR />" +
@@ -180,6 +192,7 @@ public class PropertyItem extends PropertyBase {
 			displayName="通常検索で必須条件にする",
 			displayNameKey="generic_element_property_PropertyItem_requiredNormalDisplaNameKey",
 			inputType=InputType.CHECKBOX,
+			displayOrder=450,
 			description="通常検索で必須条件にするかを設定します。",
 			descriptionKey="generic_element_property_PropertyItem_requiredNormalDescriptionKey"
 	)
@@ -193,6 +206,7 @@ public class PropertyItem extends PropertyBase {
 			displayName="詳細検索で必須条件にする",
 			displayNameKey="generic_element_property_PropertyItem_requiredDetailDisplaNameKey",
 			inputType=InputType.CHECKBOX,
+			displayOrder=460,
 			description="詳細検索で必須条件にするかを設定します。",
 			descriptionKey="generic_element_property_PropertyItem_requiredDetailDescriptionKey"
 	)
@@ -201,12 +215,16 @@ public class PropertyItem extends PropertyBase {
 	)
 	private boolean requiredDetail;
 
+
+
+
 	/** 入力チェック */
 	@MetaFieldInfo(
 			displayName="入力チェック",
 			displayNameKey="generic_element_property_PropertyItem_validatorDisplaNameKey",
 			inputType=InputType.REFERENCE,
 			referenceClass=ViewValidatorBase.class,
+			displayOrder=2100,
 			description="入力チェックを設定します。",
 			descriptionKey="generic_element_property_PropertyItem_validatorDescriptionKey"
 	)

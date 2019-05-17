@@ -157,6 +157,7 @@ public abstract class DateTimePropertyEditor extends PrimitivePropertyEditor {
 			inputType=InputType.ENUM,
 			enumClass=DateTimeDisplayType.class,
 			required=true,
+			displayOrder=100,
 			description="画面に表示する方法を選択します。",
 			descriptionKey="generic_editor_DateTimePropertyEditor_displayTypeDescriptionKey"
 	)
@@ -167,6 +168,7 @@ public abstract class DateTimePropertyEditor extends PrimitivePropertyEditor {
 			displayName="検索条件の単一日指定",
 			displayNameKey="generic_editor_DateTimePropertyEditor_singleDayConditionDisplaNameKey",
 			inputType=InputType.CHECKBOX,
+			displayOrder=110,
 			description="検索条件の指定を単一日(時)にするかを設定します。<br>" +
 					"単一日とした場合、検索条件From非表示及び検索条件To非表示は無効になります。",
 			descriptionKey="generic_editor_DateTimePropertyEditor_singleDayConditionDescriptionKey"
@@ -181,6 +183,7 @@ public abstract class DateTimePropertyEditor extends PrimitivePropertyEditor {
 			displayName="検索条件From非表示",
 			displayNameKey="generic_editor_DateTimePropertyEditor_hideSearchConditionFromDisplaNameKey",
 			inputType=InputType.CHECKBOX,
+			displayOrder=120,
 			description="検索条件のFromを非表示にするかを設定します。",
 			descriptionKey="generic_editor_DateTimePropertyEditor_hideSearchConditionFromDescriptionKey"
 	)
@@ -194,6 +197,7 @@ public abstract class DateTimePropertyEditor extends PrimitivePropertyEditor {
 			displayName="検索条件To非表示",
 			displayNameKey="generic_editor_DateTimePropertyEditor_hideSearchConditionToDisplaNameKey",
 			inputType=InputType.CHECKBOX,
+			displayOrder=130,
 			description="検索条件のToを非表示にするかを設定します。",
 			descriptionKey="generic_editor_DateTimePropertyEditor_hideSearchConditionToDescriptionKey"
 	)

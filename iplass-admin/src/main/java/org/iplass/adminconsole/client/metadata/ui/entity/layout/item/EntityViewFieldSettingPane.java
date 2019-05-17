@@ -24,15 +24,12 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.iplass.adminconsole.client.base.data.DataSourceConstants;
-import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
 import org.iplass.adminconsole.client.base.rpc.AdminAsyncCallback;
 import org.iplass.adminconsole.client.base.tenant.TenantInfoHolder;
-import org.iplass.adminconsole.client.base.ui.widget.form.MtpComboBoxItem;
 import org.iplass.adminconsole.client.base.ui.widget.form.MtpSelectItem;
 import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
-import org.iplass.adminconsole.client.metadata.data.entity.PropertyDS;
 import org.iplass.adminconsole.client.metadata.data.filter.EntityFilterItemDS;
+import org.iplass.adminconsole.client.metadata.ui.common.EntityPropertyComboBoxItem;
 import org.iplass.adminconsole.client.metadata.ui.entity.layout.metafield.MetaFieldSettingDialog;
 import org.iplass.adminconsole.client.metadata.ui.entity.layout.metafield.MetaFieldSettingPane;
 import org.iplass.adminconsole.shared.metadata.dto.refrect.FieldInfo;
@@ -45,13 +42,11 @@ import org.iplass.mtp.entity.definition.PropertyDefinition;
 import org.iplass.mtp.entity.definition.properties.ReferenceProperty;
 
 import com.smartgwt.client.widgets.form.DynamicForm;
-import com.smartgwt.client.widgets.form.fields.ComboBoxItem;
 import com.smartgwt.client.widgets.form.fields.FormItem;
 import com.smartgwt.client.widgets.form.fields.SelectItem;
 import com.smartgwt.client.widgets.form.fields.events.ChangedEvent;
 import com.smartgwt.client.widgets.form.fields.events.ChangedHandler;
 import com.smartgwt.client.widgets.form.validator.IntegerRangeValidator;
-import com.smartgwt.client.widgets.grid.ListGridField;
 
 /**
  * EntityView用のプロパティ編集用パネル
@@ -68,10 +63,11 @@ public class EntityViewFieldSettingPane extends MetaFieldSettingPane {
 	// 参照プロパティの対象Entity
 	private String refDefName;
 
-	// 入力タイプ:Propertyで選んだプロパティが参照型の場合の対象Entity
+	// 入力タイプ:Propertyで選んだプロパティがサブダイアログの基準になる場合の選択Entity
 	private String childRefDefName;
+	private String childRefPropertyDisplayName;
 
-	private Map<ComboBoxItem, String> triggerdPropertyList = new HashMap<>();
+	private Map<EntityPropertyComboBoxItem, String> triggerdPropertyList = new HashMap<>();
 
 	private final MetaDataServiceAsync service = MetaDataServiceFactory.get();
 
@@ -137,7 +133,7 @@ public class EntityViewFieldSettingPane extends MetaFieldSettingPane {
 	protected void afterCreatePane(DynamicForm form) {
 
 		// 選択値によって対象のEntityが変わる場合は、変更時にDataSourceを再設定
-		for (Entry<ComboBoxItem, String> entry : triggerdPropertyList.entrySet()) {
+		for (Entry<EntityPropertyComboBoxItem, String> entry : triggerdPropertyList.entrySet()) {
 			String triggerProperty = entry.getValue();
 			if (form.getItem(triggerProperty) != null) {
 				form.getItem(triggerProperty).addChangedHandler(new ChangedHandler() {
@@ -146,7 +142,7 @@ public class EntityViewFieldSettingPane extends MetaFieldSettingPane {
 					public void onChanged(ChangedEvent event) {
 						String _defName = refDefName != null ? refDefName : defName;
 						String refPropDefName = SmartGWTUtil.getStringValue(form.getItem(triggerProperty));
-						entry.getKey().setOptionDataSource(PropertyDS.create(_defName, refPropDefName));
+						entry.getKey().resetDataSource(_defName, refPropDefName);
 					}
 				});
 			}
@@ -183,15 +179,27 @@ public class EntityViewFieldSettingPane extends MetaFieldSettingPane {
 		if (info.getOverrideTriggerType() != null && info.getOverrideTriggerType() != FieldReferenceType.NONE) {
 			triggerType = info.getOverrideTriggerType();
 		}
+		EntityViewFieldSettingDialog dialog = null;
 		if (childRefDefName != null) {
 			// サブダイアログの参照Entityとして指定されたEntityを設定
-			return new EntityViewFieldSettingDialog(className, value, triggerType, defName, childRefDefName);
+			dialog = new EntityViewFieldSettingDialog(className, value, triggerType, defName, childRefDefName);
 		} else if (refDefName != null) {
 			// サブダイアログの参照Entityとして対象の参照Entityを設定
-			return new EntityViewFieldSettingDialog(className, value, triggerType, defName, refDefName);
+			dialog = new EntityViewFieldSettingDialog(className, value, triggerType, defName, refDefName);
 		} else {
-			return new EntityViewFieldSettingDialog(className, value, triggerType, defName);
+			dialog = new EntityViewFieldSettingDialog(className, value, triggerType, defName);
 		}
+
+		if (childRefPropertyDisplayName != null) {
+			//タイトル説明を基準になるプロパティ名に変更
+			dialog.setTitleDescription(childRefPropertyDisplayName);
+		} else {
+			//起動元のタイトル説明を引き継ぐ
+			EntityViewFieldSettingDialog owner = (EntityViewFieldSettingDialog)getOwner();
+			dialog.setTitleDescription(owner.getTitleDescription());
+		}
+
+		return dialog;
 	}
 
 	private FormItem createFilterList(FieldInfo info) {
@@ -202,36 +210,28 @@ public class EntityViewFieldSettingPane extends MetaFieldSettingPane {
 
 	private FormItem createPropertyList(FieldInfo info) {
 
-		final ComboBoxItem item = new MtpComboBoxItem();
+		EntityPropertyComboBoxItem item = null;
 
 		if (SmartGWTUtil.isNotEmpty(info.getFixedEntityName())) {
 			//Entityが固定されている場合
-			item.setOptionDataSource(PropertyDS.create(info.getFixedEntityName()));
+			item = new EntityPropertyComboBoxItem(info.getFixedEntityName());
 		} else if (SmartGWTUtil.isNotEmpty(info.getSourceEntityNameField())) {
 			//Entityが他のプロパティで設定される場合
 			String _defName = refDefName != null ? refDefName : defName;
 			String refPropDefName = getValueAs(String.class, info.getSourceEntityNameField());
-			item.setOptionDataSource(PropertyDS.create(_defName, refPropDefName));
+			item = new EntityPropertyComboBoxItem(_defName, refPropDefName);
 
 			//Form作成後にTriggerに対してChangeを設定するために保持
 			triggerdPropertyList.put(item, info.getSourceEntityNameField());
 		} else if (info.isUseRootEntityName()) {
 			//RootのEntityが指定されている場合
-			item.setOptionDataSource(PropertyDS.create(defName));
+			item = new EntityPropertyComboBoxItem(defName);
 		} else if (refDefName != null) {
 			//参照先としてEntityが指定されている場合
-			item.setOptionDataSource(PropertyDS.create(refDefName));
+			item = new EntityPropertyComboBoxItem(refDefName);
 		} else {
-			item.setOptionDataSource(PropertyDS.create(defName));
+			item = new EntityPropertyComboBoxItem(defName);
 		}
-		item.setType("comboBox");
-		item.setDisplayField(DataSourceConstants.FIELD_NAME);
-		item.setValueField(DataSourceConstants.FIELD_NAME);
-
-		ListGridField nameField = new ListGridField(DataSourceConstants.FIELD_NAME,
-				AdminClientMessageUtil.getString("ui_metadata_common_MetaFieldSettingPane_name"));
-		item.setPickListFields(nameField);
-		item.setPickListWidth(400 + 20);
 
 		if (info.isChildEntityName()) {
 			String storedRefPropName = getValueAs(String.class, info.getName());
@@ -243,7 +243,7 @@ public class EntityViewFieldSettingPane extends MetaFieldSettingPane {
 				@Override
 				public void onChanged(ChangedEvent event) {
 					// このプロパティの値(プロパティ名)を取得
-					final String propName = SmartGWTUtil.getStringValue(item);
+					final String propName = SmartGWTUtil.getStringValue(event.getItem());
 					getChildReferenceEntityName(propName);
 				}
 			});
@@ -255,6 +255,7 @@ public class EntityViewFieldSettingPane extends MetaFieldSettingPane {
 	private void getChildReferenceEntityName(String propertyName) {
 		if (SmartGWTUtil.isEmpty(propertyName)) {
 			childRefDefName = null;
+			childRefPropertyDisplayName = null;
 			return;
 		}
 		String _defName = refDefName != null ? refDefName : defName;
@@ -262,13 +263,15 @@ public class EntityViewFieldSettingPane extends MetaFieldSettingPane {
 				new AdminAsyncCallback<PropertyDefinition>() {
 
 					@Override
-					public void onSuccess(PropertyDefinition property) {
+					public void onSuccess(PropertyDefinition pd) {
 						// 参照型の場合、Entity定義名を取得
-						if (property instanceof ReferenceProperty) {
-							childRefDefName = ((ReferenceProperty) property).getObjectDefinitionName();
+						if (pd instanceof ReferenceProperty) {
+							childRefDefName = ((ReferenceProperty) pd).getObjectDefinitionName();
 						} else {
 							childRefDefName = null;
 						}
+						//サブダイアログの説明のためプロパティ名を保持
+						childRefPropertyDisplayName = pd.getDisplayName();
 					}
 		});
 	}

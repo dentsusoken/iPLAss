@@ -71,29 +71,18 @@ public class StringPropertyEditor extends PrimitivePropertyEditor {
 			inputType=InputType.ENUM,
 			enumClass=StringDisplayType.class,
 			required=true,
+			displayOrder=100,
 			description="画面に表示する方法を選択します。",
 			descriptionKey="generic_editor_StringPropertyEditor_displayTypeDescriptionKey"
 	)
 	private StringDisplayType displayType;
-
-	/** RichText表示タグ許可設定 */
-	@MetaFieldInfo(
-			displayName="RichText表示タグ許可設定",
-			displayNameKey="generic_editor_StringPropertyEditor_allowedContentDisplaNameKey",
-			description="RichText選択時のみ有効となります。<br>チェック時は「ソース」ボタンクリックにてスクリプトも表示されるようになります。",
-			inputType=InputType.CHECKBOX,
-			descriptionKey="generic_editor_StringPropertyEditor_allowedContentDescriptionKey"
-	)
-	@EntityViewField(
-			referenceTypes={FieldReferenceType.DETAIL}
-	)
-	private boolean allowedContent;
 
 	/** 最大文字数 */
 	@MetaFieldInfo(
 			displayName="最大文字数",
 			displayNameKey="generic_editor_StringPropertyEditor_maxlengthDisplaNameKey",
 			inputType=InputType.NUMBER,
+			displayOrder=110,
 			rangeCheck=true,
 			minRange=0,
 			description="テキストフィールドに入力可能な最大文字数を設定します。<br>" +
@@ -110,8 +99,8 @@ public class StringPropertyEditor extends PrimitivePropertyEditor {
 			displayName="選択値",
 			displayNameKey="generic_editor_StringPropertyEditor_valuesDisplaNameKey",
 			inputType=InputType.REFERENCE,
-			required=true,
 			multiple=true,
+			displayOrder=120,
 			referenceClass=EditorValue.class
 	)
 	@EntityViewField(
@@ -124,6 +113,7 @@ public class StringPropertyEditor extends PrimitivePropertyEditor {
 	@MetaFieldInfo(
 			displayName="初期値",
 			displayNameKey="generic_editor_StringPropertyEditor_defaultValueDisplaNameKey",
+			displayOrder=130,
 			description="新規作成時の初期値を設定します。",
 			descriptionKey="generic_editor_StringPropertyEditor_defaultValueDescriptionKey"
 	)
@@ -136,8 +126,9 @@ public class StringPropertyEditor extends PrimitivePropertyEditor {
 	@MetaFieldInfo(
 			displayName="検索完全一致設定",
 			displayNameKey="generic_editor_StringPropertyEditor_searchExactMatchConditionDisplaNameKey",
-			description="チェック時は完全一致検索します。<br>未チェック時はLike検索します。",
 			inputType=InputType.CHECKBOX,
+			displayOrder=140,
+			description="チェック時は完全一致検索します。<br>未チェック時はLike検索します。",
 			descriptionKey="generic_editor_StringPropertyEditor_searchExactMatchConditionDescriptionKey"
 	)
 	@EntityViewField(
@@ -145,15 +136,30 @@ public class StringPropertyEditor extends PrimitivePropertyEditor {
 	)
 	private boolean searchExactMatchCondition;
 
+	/** RichText表示タグ許可設定 */
+	@MetaFieldInfo(
+			displayName="RichText表示タグ許可設定",
+			displayNameKey="generic_editor_StringPropertyEditor_allowedContentDisplaNameKey",
+			inputType=InputType.CHECKBOX,
+			displayOrder=150,
+			description="RichText選択時のみ有効となります。<br>チェック時は「ソース」ボタンクリックにてスクリプトも表示されるようになります。",
+			descriptionKey="generic_editor_StringPropertyEditor_allowedContentDescriptionKey"
+	)
+	@EntityViewField(
+			referenceTypes={FieldReferenceType.DETAIL}
+	)
+	private boolean allowedContent;
+
 	/** リッチテキストエディタオプション */
 	@MetaFieldInfo(
 			displayName="リッチテキストエディタオプション",
 			displayNameKey="generic_editor_StringPropertyEditor_richtextEditorOptionDisplaNameKey",
+			inputType=InputType.SCRIPT,
+			displayOrder=160,
+			mode="javascript",
 			description="リッチテキストエディタを生成する際のオプションを指定します。<br>"
 					+ "指定可能なオプションについては CKEDITOR config を参照してください。",
-			descriptionKey="generic_editor_StringPropertyEditor_richtextEditorOptionDescriptionKey",
-			inputType=InputType.SCRIPT,
-			mode="javascript"
+			descriptionKey="generic_editor_StringPropertyEditor_richtextEditorOptionDescriptionKey"
 	)
 	@EntityViewField(
 			referenceTypes={FieldReferenceType.DETAIL}
@@ -177,24 +183,6 @@ public class StringPropertyEditor extends PrimitivePropertyEditor {
 	 */
 	public void setDisplayType(StringDisplayType displayType) {
 		this.displayType = displayType;
-	}
-
-	/**
-	 * RichText表示タグ許可を設定します。
-	 *
-	 * @return allowedContent RichText表示タグ許可設定
-	 */
-	public boolean isAllowedContent() {
-		return allowedContent;
-	}
-
-	/**
-	 * RichText表示タグ許可設定を取得します。
-	 *
-	 * @param RichText表示タグ許可設定
-	 */
-	public void setAllowedContent(boolean allowedContent) {
-		this.allowedContent = allowedContent;
 	}
 
 	/**
@@ -254,6 +242,24 @@ public class StringPropertyEditor extends PrimitivePropertyEditor {
 	 */
 	public void setSearchExactMatchCondition(boolean searchExactMatchCondition) {
 		this.searchExactMatchCondition = searchExactMatchCondition;
+	}
+
+	/**
+	 * RichText表示タグ許可を設定します。
+	 *
+	 * @return allowedContent RichText表示タグ許可設定
+	 */
+	public boolean isAllowedContent() {
+		return allowedContent;
+	}
+
+	/**
+	 * RichText表示タグ許可設定を取得します。
+	 *
+	 * @param RichText表示タグ許可設定
+	 */
+	public void setAllowedContent(boolean allowedContent) {
+		this.allowedContent = allowedContent;
 	}
 
 	/**

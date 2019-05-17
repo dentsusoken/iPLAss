@@ -332,9 +332,10 @@ task copyGwtTransSrc(type: Sync) {
 
 	from ('../iplass-gem/src/main/java/org/iplass') {
 
+		include 'adminconsole/view/annotation/FieldOrder.java'
 		include 'adminconsole/view/annotation/IgnoreField.java.java'
-		include 'adminconsole/view/annotation/MetaFieldInfo.java'
 		include 'adminconsole/view/annotation/InputType.java'
+		include 'adminconsole/view/annotation/MetaFieldInfo.java'
 		include 'adminconsole/view/annotation/Refrectable.java'
 		include 'adminconsole/view/annotation/generic/FieldReferenceType.java'
 

@@ -154,7 +154,11 @@ public class MassReferenceSectionControl extends ItemControl implements SectionC
 
 	@Override
 	protected EntityViewFieldSettingDialog createSubDialog() {
-		return new EntityViewFieldSettingDialog(getClassName(), getValueObject(), triggerType, defName, refDefName);
+		EntityViewFieldSettingDialog dialog = new EntityViewFieldSettingDialog(getClassName(), getValueObject(), triggerType, defName, refDefName);
+
+		// ダイアログのタイトルに対象のプロパティ名を表示
+		dialog.setTitleDescription(loadedDisplayLabel);
+		return dialog;
 	}
 
 

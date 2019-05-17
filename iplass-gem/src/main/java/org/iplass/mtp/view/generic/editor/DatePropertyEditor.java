@@ -1,19 +1,19 @@
 /*
  * Copyright (C) 2011 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
- * 
+ *
  * Unless you have purchased a commercial license,
  * the following license terms apply:
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
@@ -45,25 +45,14 @@ public class DatePropertyEditor extends DateTimePropertyEditor {
 	/** シリアルバージョンUID */
 	private static final long serialVersionUID = 4666753985814020563L;
 
-	/** 初期値 */
-	@MetaFieldInfo(
-			displayName="初期値",
-			displayNameKey="generic_editor_DatePropertyEditor_defaultValueDisplaNameKey",
-			description="新規作成時の初期値を設定します。yyyyMMdd形式か予約語を指定してください。",
-			descriptionKey="generic_editor_DatePropertyEditor_defaultValueDescriptionKey"
-	)
-	@EntityViewField(
-			referenceTypes={FieldReferenceType.DETAIL}
-	)
-	private String defaultValue;
-
 	/** 現在日付設定ボタン表示可否 */
 	@MetaFieldInfo(
 			displayName="現在日付設定ボタンを非表示",
 			displayNameKey="generic_editor_DatePropertyEditor_hideButtonPanelDisplaNameKey",
 			description="現在日付設定ボタンを非表示するかを設定します。",
 			descriptionKey="generic_editor_DatePropertyEditor_hideButtonPanelDescriptionKey",
-			inputType=InputType.CHECKBOX
+			inputType=InputType.CHECKBOX,
+			displayOrder=1010
 	)
 	@EntityViewField(
 			referenceTypes={FieldReferenceType.SEARCHCONDITION, FieldReferenceType.DETAIL}
@@ -76,10 +65,24 @@ public class DatePropertyEditor extends DateTimePropertyEditor {
 			displayNameKey="generic_editor_DatePropertyEditor_showWeekdayDisplaNameKey",
 			description="曜日を表示します。",
 			descriptionKey="generic_editor_DatePropertyEditor_showWeekdayDescriptionKey",
-			inputType=InputType.CHECKBOX
+			inputType=InputType.CHECKBOX,
+			displayOrder=1020
 	)
 	@EntityViewField()
 	private boolean showWeekday;
+
+	/** 初期値 */
+	@MetaFieldInfo(
+			displayName="初期値",
+			displayNameKey="generic_editor_DatePropertyEditor_defaultValueDisplaNameKey",
+			description="新規作成時の初期値を設定します。yyyyMMdd形式か予約語を指定してください。",
+			descriptionKey="generic_editor_DatePropertyEditor_defaultValueDescriptionKey",
+			displayOrder=1030
+	)
+	@EntityViewField(
+			referenceTypes={FieldReferenceType.DETAIL}
+	)
+	private String defaultValue;
 
 	/**
 	 * コンストラクタ
