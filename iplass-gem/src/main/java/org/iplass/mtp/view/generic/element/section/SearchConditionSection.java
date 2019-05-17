@@ -72,17 +72,6 @@ public class SearchConditionSection extends Section {
 	@MultiLang(isMultiLangValue=false)
 	private List<Element> elements;
 
-	/** 検索時にソートしないか */
-	@MetaFieldInfo(
-			displayName="検索時にソートしないか",
-			displayNameKey="generic_element_section_SearchConditionSection_unsortedDisplaNameKey",
-			inputType=InputType.CHECKBOX,
-			description="検索時にソートしないかを設定します。<br>" +
-					"検索結果からソート項目を指定した場合はソートされます。",
-			descriptionKey="generic_element_section_SearchConditionSection_unsortedDescriptionKey"
-	)
-	private boolean unsorted;
-
 	/** 列数 */
 	@MetaFieldInfo(
 			displayName="列数",
@@ -91,6 +80,7 @@ public class SearchConditionSection extends Section {
 			rangeCheck=true,
 			minRange=1,
 //			maxRange=2,
+			displayOrder=200,
 			description="セクションの列数を指定します。",
 			descriptionKey="generic_element_section_SearchConditionSection_colNumDescriptionKey"
 	)
@@ -104,26 +94,18 @@ public class SearchConditionSection extends Section {
 			rangeCheck=true,
 			minRange=1,
 			maxRange=9,
+			displayOrder=210,
 			description="詳細条件に初期表示する条件の数を設定します。",
 			descriptionKey="generic_element_section_SearchConditionSection_conditionDispCountDescriptionKey"
 	)
 	private int conditionDispCount;
-
-	/** 重複行をまとめるか */
-	@MetaFieldInfo(
-			displayName="重複行をまとめるか",
-			displayNameKey="generic_element_section_SearchConditionSection_distinctDisplaNameKey",
-			inputType=InputType.CHECKBOX,
-			description="重複行をまとめるかを設定します。",
-			descriptionKey="generic_element_section_SearchConditionSection_distinctDescriptionKey"
-	)
-	private boolean distinct;
 
 	/** 詳細検索非表示設定 */
 	@MetaFieldInfo(
 			displayName="詳細検索非表示設定",
 			displayNameKey="generic_element_section_SearchConditionSection_hideDetailConditionDisplaNameKey",
 			inputType=InputType.CHECKBOX,
+			displayOrder=220,
 			description="詳細検索を非表示にするかを設定します。",
 			descriptionKey="generic_element_section_SearchConditionSection_hideDetailConditionDescriptionKey"
 	)
@@ -134,16 +116,21 @@ public class SearchConditionSection extends Section {
 			displayName="定型検索非表示設定",
 			displayNameKey="generic_element_section_SearchConditionSection_hideFixedConditionDisplaNameKey",
 			inputType=InputType.CHECKBOX,
+			displayOrder=230,
 			description="定型検索を非表示にするかを設定します。",
 			descriptionKey="generic_element_section_SearchConditionSection_hideFixedConditionDescriptionKey"
 	)
 	private boolean hideFixedCondition;
+
+
+
 
 	/** CSVダウンロードボタン非表示設定 */
 	@MetaFieldInfo(
 			displayName="CSVダウンロードボタン非表示設定 ",
 			displayNameKey="generic_element_section_SearchConditionSection_hideCsvdownloadDisplaNameKey",
 			inputType=InputType.CHECKBOX,
+			displayOrder=1000,
 			description="CSVダウンロードボタンを非表示にするかを設定します。",
 			descriptionKey="generic_element_section_SearchConditionSection_hideCsvdownloadDescriptionKey"
 	)
@@ -154,6 +141,7 @@ public class SearchConditionSection extends Section {
 			displayName="CSVダウンロードダイアログ非表示設定 ",
 			displayNameKey="generic_element_section_SearchConditionSection_hideCsvdownloadDialogDisplaNameKey",
 			inputType=InputType.CHECKBOX,
+			displayOrder=1010,
 			description="CSVダウンロード時に全項目出力するかを選択するダイアログを非表示にするかを設定します。",
 			descriptionKey="generic_element_section_SearchConditionSection_hideCsvdownloadDialogDescriptionKey"
 	)
@@ -164,6 +152,7 @@ public class SearchConditionSection extends Section {
 			displayName="CSVダウンロード時oid非出力設定 ",
 			displayNameKey="generic_element_section_SearchConditionSection_nonOutputOidDisplaNameKey",
 			inputType=InputType.CHECKBOX,
+			displayOrder=1020,
 			description="CSVダウンロード時oidを出力しないかを設定します。",
 			descriptionKey="generic_element_section_SearchConditionSection_nonOutputOidDescriptionKey"
 	)
@@ -174,6 +163,7 @@ public class SearchConditionSection extends Section {
 			displayName="CSVダウンロード時BinaryReference非出力設定 ",
 			displayNameKey="generic_element_section_SearchConditionSection_nonOutputBinaryRefDisplaNameKey",
 			inputType=InputType.CHECKBOX,
+			displayOrder=1030,
 			description="CSVダウンロード時BinaryReferenceのnameを出力しないかを設定します。",
 			descriptionKey="generic_element_section_SearchConditionSection_nonOutputBinaryRefDescriptionKey"
 	)
@@ -184,31 +174,11 @@ public class SearchConditionSection extends Section {
 			displayName="CSVダウンロード時Reference非出力設定 ",
 			displayNameKey="generic_element_section_SearchConditionSection_nonOutputReferenceDisplaNameKey",
 			inputType=InputType.CHECKBOX,
+			displayOrder=1040,
 			description="CSVダウンロード時Referenceを出力しないかを設定します。",
 			descriptionKey="generic_element_section_SearchConditionSection_nonOutputReferenceDescriptionKey"
 	)
 	private boolean nonOutputReference;
-
-	/** CSVアップロードボタン非表示設定 */
-	@MetaFieldInfo(
-			displayName="CSVアップロードボタン非表示設定 ",
-			displayNameKey="generic_element_section_SearchConditionSection_hideCsvUploadDisplaNameKey",
-			inputType=InputType.CHECKBOX,
-			description="CSVアップロードボタンを非表示にするかを設定します。",
-			descriptionKey="generic_element_section_SearchConditionSection_hideCsvUploadDescriptionKey"
-	)
-	private boolean hideCsvUpload;
-
-	/** CSVアップロード時のトランザクション制御設定 */
-	@MetaFieldInfo(
-			displayName="CSVアップロード時のトランザクション制御設定 ",
-			displayNameKey="generic_element_section_SearchConditionSection_csvUploadTransactionTypeDisplaNameKey",
-			inputType=InputType.ENUM,
-			enumClass=CsvUploadTransactionType.class,
-			description="CSVアップロードボタンを非表示にするかを設定します。",
-			descriptionKey="generic_element_section_SearchConditionSection_csvUploadTransactionTypeDescriptionKey"
-	)
-	private CsvUploadTransactionType csvUploadTransactionType = CsvUploadTransactionType.ONCE;;
 
 	/** CSVダウンロード時文字コード指定を可能にする */
 	@MetaFieldInfo(
@@ -216,6 +186,7 @@ public class SearchConditionSection extends Section {
 			displayNameKey="generic_element_section_SearchConditionSection_specifyCharacterCodeNameKey",
 			inputType=InputType.ENUM,
 			enumClass=CsvDownloadSpecifyCharacterCode.class,
+			displayOrder=1050,
 			description="CSVダウンロード時に文字コードを指定可能かを設定します。",
 			descriptionKey="generic_element_section_SearchConditionSection_specifyCharacterCodeDescriptionKey"
 	)
@@ -226,6 +197,7 @@ public class SearchConditionSection extends Section {
 			displayName="CSVダウンロード件数の上限値",
 			displayNameKey="generic_element_section_SearchConditionSection_csvdownloadMaxCountDisplaNameKey",
 			inputType=InputType.TEXT,
+			displayOrder=1060,
 			description="CSVダウンロード件数の上限値を設定します。",
 			descriptionKey="generic_element_section_SearchConditionSection_csvdownloadMaxCountDescriptionKey"
 	)
@@ -236,6 +208,7 @@ public class SearchConditionSection extends Section {
 			displayName="CSVダウンロード項目",
 			displayNameKey="generic_element_section_SearchConditionSection_csvdownloadPropertiesDisplaNameKey",
 			inputType=InputType.TEXT,
+			displayOrder=1070,
 			description="CSV出力対象の項目を指定します。",
 			descriptionKey="generic_element_section_SearchConditionSection_csvdownloadPropertiesDescriptionKey"
 	)
@@ -247,9 +220,50 @@ public class SearchConditionSection extends Section {
 			displayNameKey="generic_element_section_SearchConditionSection_csvdownloadFileNameScriptDisplaNameKey",
 			inputType=InputType.SCRIPT,
 			mode="groovyscript",
+			displayOrder=1080,
 			descriptionKey="generic_element_section_SearchConditionSection_csvdownloadFileNameScriptDescriptionKey"
 	)
 	private String csvdownloadFileNameFormat;
+
+
+
+
+	/** CSVアップロードボタン非表示設定 */
+	@MetaFieldInfo(
+			displayName="CSVアップロードボタン非表示設定 ",
+			displayNameKey="generic_element_section_SearchConditionSection_hideCsvUploadDisplaNameKey",
+			inputType=InputType.CHECKBOX,
+			displayOrder=2000,
+			description="CSVアップロードボタンを非表示にするかを設定します。",
+			descriptionKey="generic_element_section_SearchConditionSection_hideCsvUploadDescriptionKey"
+	)
+	private boolean hideCsvUpload;
+
+	/** CSVアップロード時のトランザクション制御設定 */
+	@MetaFieldInfo(
+			displayName="CSVアップロード時のトランザクション制御設定 ",
+			displayNameKey="generic_element_section_SearchConditionSection_csvUploadTransactionTypeDisplaNameKey",
+			inputType=InputType.ENUM,
+			enumClass=CsvUploadTransactionType.class,
+			displayOrder=2010,
+			description="CSVアップロードボタンを非表示にするかを設定します。",
+			descriptionKey="generic_element_section_SearchConditionSection_csvUploadTransactionTypeDescriptionKey"
+	)
+	private CsvUploadTransactionType csvUploadTransactionType = CsvUploadTransactionType.ONCE;;
+
+
+
+
+	/** 重複行をまとめるか */
+	@MetaFieldInfo(
+			displayName="重複行をまとめるか",
+			displayNameKey="generic_element_section_SearchConditionSection_distinctDisplaNameKey",
+			inputType=InputType.CHECKBOX,
+			displayOrder=3000,
+			description="重複行をまとめるかを設定します。",
+			descriptionKey="generic_element_section_SearchConditionSection_distinctDescriptionKey"
+	)
+	private boolean distinct;
 
 	/** デフォルト検索条件 */
 	@MetaFieldInfo(
@@ -257,17 +271,33 @@ public class SearchConditionSection extends Section {
 			displayNameKey="generic_element_section_SearchConditionSection_defaultConditionDisplaNameKey",
 			inputType=InputType.SCRIPT,
 			mode="groovytemplate",
+			displayOrder=3010,
 			description="検索画面上には表示されず、検索時に自動的に付与される検索条件です。" +
 					"EQL形式でWhere句の条件を記述します。",
 			descriptionKey="generic_element_section_SearchConditionSection_defaultConditionDescriptionKey"
 	)
 	private String defaultCondition;
 
+	/** フィルタ設定 */
+	@MetaFieldInfo(
+			displayName="フィルタ設定",
+			displayNameKey="generic_element_section_SearchConditionSection_filterSettingDisplayNameKey",
+			inputType=InputType.REFERENCE,
+			referenceClass=FilterSetting.class,
+			multiple=true,
+			displayOrder=3020,
+			description="定型検索で利用するフィルタを指定します。<br>"
+					+ "未指定の場合は全てのフィルタが対象になります。",
+			descriptionKey="generic_element_section_SearchConditionSection_filterSettingDescriptionKey"
+	)
+	private List<FilterSetting> filterSetting;
+
 	/** デフォルト検索条件をフィルタ定義と一緒に利用するか */
 	@MetaFieldInfo(
 			displayName="デフォルト検索条件をフィルタ定義と一緒に利用するか ",
 			displayNameKey="generic_element_section_SearchConditionSection_useDefaultConditionWithFilterDefinitionDisplaNameKey",
 			inputType=InputType.CHECKBOX,
+			displayOrder=3030,
 			description="フィルタ定義を使う検索(定型、検索結果一覧パーツ、検索結果一覧ウィジェット)で、フィルタ定義と一緒にデフォルトフィルタ条件を使うかを設定します。<br>"
 					+ "ONの場合：フィルタの条件＋デフォルト条件<br>"
 					+ "OFFの場合：フィルタの条件のみ",
@@ -281,6 +311,7 @@ public class SearchConditionSection extends Section {
 			displayNameKey="generic_element_section_SearchConditionSection_defaultPropertyConditionScriptDisplaNameKey",
 			inputType=InputType.SCRIPT,
 			mode="groovyscript",
+			displayOrder=3040,
 			description="検索画面初期表示にデフォルトで設定する条件を指定するGroovyScriptです。<BR />" +
 					"変数としてinitCondMap(Map<String, Object>)がバインドされています。<BR />" +
 					"このスクリプト内でinitCondMapに「key:プロパティ名(sc_なしです)、value：初期条件とする値」という形式で値を設定することで初期条件として値が設定されます。<BR />" +
@@ -300,24 +331,24 @@ public class SearchConditionSection extends Section {
 			inputType=InputType.REFERENCE,
 			referenceClass=SortSetting.class,
 			multiple=true,
+			displayOrder=3050,
 			description="検索時にデフォルトで設定されるソート条件を設定します。<br>" +
 					"検索画面でソートが行われた場合、設定された内容は2番目以降のソート条件として機能します。",
 			descriptionKey="generic_element_section_SearchConditionSection_sortSettingDescriptionKey"
 	)
 	private List<SortSetting> sortSetting;
 
-	/** フィルタ設定 */
+	/** 検索時にソートしないか */
 	@MetaFieldInfo(
-			displayName="フィルタ設定",
-			displayNameKey="generic_element_section_SearchConditionSection_filterSettingDisplayNameKey",
-			inputType=InputType.REFERENCE,
-			referenceClass=FilterSetting.class,
-			multiple=true,
-			description="定型検索で利用するフィルタを指定します。<br>"
-					+ "未指定の場合は全てのフィルタが対象になります。",
-			descriptionKey="generic_element_section_SearchConditionSection_filterSettingDescriptionKey"
+			displayName="検索時にソートしないか",
+			displayNameKey="generic_element_section_SearchConditionSection_unsortedDisplaNameKey",
+			inputType=InputType.CHECKBOX,
+			displayOrder=3060,
+			description="検索時にソートしないかを設定します。<br>" +
+					"検索結果からソート項目を指定した場合はソートされます。",
+			descriptionKey="generic_element_section_SearchConditionSection_unsortedDescriptionKey"
 	)
-	private List<FilterSetting> filterSetting;
+	private boolean unsorted;
 
 	/** カスタムスタイルキー */
 	private String scriptKey;

@@ -1,19 +1,19 @@
 /*
  * Copyright (C) 2011 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
- * 
+ *
  * Unless you have purchased a commercial license,
  * the following license terms apply:
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
@@ -40,11 +40,23 @@ public class SearchFormView extends FormView {
 	/** シリアルバージョンID */
 	private static final long serialVersionUID = -8342414954265792060L;
 
+	/** 新規作成ボタンを隠すか */
+	@MetaFieldInfo(
+			displayName="新規作成ボタンを非表示",
+			displayNameKey="generic_SearchFormView_hideNewDisplaNameKey",
+			inputType=InputType.CHECKBOX,
+			displayOrder=200,
+			description="新規作成ボタンを非表示にするかを設定します。",
+			descriptionKey="generic_SearchFormView_hideNewDescriptionKey"
+	)
+	private boolean hideNew;
+
 	/** ごみ箱を隠すか */
 	@MetaFieldInfo(
 			displayName="ごみ箱を非表示",
 			displayNameKey="generic_SearchFormView_hideTrashDisplaNameKey",
 			inputType=InputType.CHECKBOX,
+			displayOrder=210,
 			description="ごみ箱へのリンクを非表示にするかを設定します。",
 			descriptionKey="generic_SearchFormView_hideTrashDescriptionKey"
 	)
@@ -55,76 +67,21 @@ public class SearchFormView extends FormView {
 			displayName="ごみ箱操作をユーザ削除データに限定",
 			displayNameKey="generic_SearchFormView_allowTrashOperationToRecycleByDisplaNameKey",
 			inputType=InputType.CHECKBOX,
+			displayOrder=220,
 			description="ユーザが操作可能なごみ箱データを自分が削除したデータのみに制限するかを設定します。",
 			descriptionKey="generic_SearchFormView_allowTrashOperationToRecycleByDescriptionKey"
 	)
 	private boolean allowTrashOperationToRecycleBy;
 
-	/** 新規作成ボタンを隠すか */
-	@MetaFieldInfo(
-			displayName="新規作成ボタンを非表示",
-			displayNameKey="generic_SearchFormView_hideNewDisplaNameKey",
-			inputType=InputType.CHECKBOX,
-			description="新規作成ボタンを非表示にするかを設定します。",
-			descriptionKey="generic_SearchFormView_hideNewDescriptionKey"
-	)
-	private boolean hideNew;
 
-	/** 新規追加アクション名 */
-	@MetaFieldInfo(
-			displayName="新規追加アクション名",
-			displayNameKey="generic_SearchFormView_newActionNameDisplaNameKey",
-			inputType=InputType.ACTION,
-			description="新規追加ボタンクリックで実行されるアクションを設定します。",
-			descriptionKey="generic_SearchFormView_newActionNameDescriptionKey"
-	)
-	private String newActionName;
 
-	/** 表示アクション名 */
-	@MetaFieldInfo(
-			displayName="表示アクション名",
-			displayNameKey="generic_SearchFormView_viewActionNameDisplaNameKey",
-			inputType=InputType.ACTION,
-			description="詳細リンククリックで実行されるアクションを設定します。",
-			descriptionKey="generic_SearchFormView_viewActionNameDescriptionKey"
-	)
-	private String viewActionName;
-
-	/** 編集アクション名 */
-	@MetaFieldInfo(
-			displayName="編集アクション名",
-			displayNameKey="generic_SearchFormView_editActionNameDisplaNameKey",
-			inputType=InputType.ACTION,
-			description="編集リンククリックで実行されるアクションを設定します。",
-			descriptionKey="generic_SearchFormView_editActionNameDescriptionKey"
-	)
-	private String editActionName;
-
-	/** 一括削除WebAPI名 */
-	@MetaFieldInfo(
-			displayName="一括削除WebAPI名",
-			displayNameKey="generic_SearchFormView_deleteListWebapiNameDisplaNameKey",
-			inputType=InputType.WEBAPI,
-			description="削除ボタンクリックで実行されるWebAPIを設定します。",
-			descriptionKey="generic_SearchFormView_deleteListWebapiNameDescriptionKey"
-	)
-	private String deleteListWebapiName;
-
-	/** 全削除WebAPI名 */
-	@MetaFieldInfo(
-			displayName="全削除WebAPI名",
-			displayNameKey="generic_SearchFormView_deleteAllWebapiNameDisplaNameKey",
-			inputType=InputType.WEBAPI,
-			description="全選択チェック時に削除ボタンクリックで実行されるWebAPIを設定します。",
-			descriptionKey="generic_SearchFormView_deleteAllWebapiNameDescriptionKey"
-	)
-	private String deleteAllWebapiName;
 
 	/** 検索WebAPI名 */
 	@MetaFieldInfo(
 			displayName="検索WebAPI名",
 			displayNameKey="generic_SearchFormView_searchWebapiNameDisplaNameKey",
 			inputType=InputType.WEBAPI,
+			displayOrder=500,
 			description="検索ボタンクリックで実行されるWebAPIを設定します。",
 			descriptionKey="generic_SearchFormView_searchWebapiNameDescriptionKey"
 	)
@@ -135,6 +92,7 @@ public class SearchFormView extends FormView {
 			displayName="CSVダウンロードアクション名",
 			displayNameKey="generic_SearchFormView_downloadActionNameDisplaNameKey",
 			inputType=InputType.ACTION,
+			displayOrder=510,
 			description="CSVダウンロードボタンクリックで実行されるアクションを設定します。",
 			descriptionKey="generic_SearchFormView_downloadActionNameDescriptionKey"
 	)
@@ -145,26 +103,90 @@ public class SearchFormView extends FormView {
 			displayName="CSVアップロード画面表示アクション名",
 			displayNameKey="generic_SearchFormView_viewUploadActionNameDisplaNameKey",
 			inputType=InputType.ACTION,
+			displayOrder=520,
 			description="CSVアップロードボタンクリックで実行されるアクションを設定します。",
 			descriptionKey="generic_SearchFormView_viewUploadActionNameDescriptionKey"
 	)
 	private String viewUploadActionName;
+
+	/** 新規追加アクション名 */
+	@MetaFieldInfo(
+			displayName="新規追加アクション名",
+			displayNameKey="generic_SearchFormView_newActionNameDisplaNameKey",
+			inputType=InputType.ACTION,
+			displayOrder=530,
+			description="新規追加ボタンクリックで実行されるアクションを設定します。",
+			descriptionKey="generic_SearchFormView_newActionNameDescriptionKey"
+	)
+	private String newActionName;
+
+	/** 表示アクション名 */
+	@MetaFieldInfo(
+			displayName="表示アクション名",
+			displayNameKey="generic_SearchFormView_viewActionNameDisplaNameKey",
+			inputType=InputType.ACTION,
+			displayOrder=540,
+			description="詳細リンククリックで実行されるアクションを設定します。",
+			descriptionKey="generic_SearchFormView_viewActionNameDescriptionKey"
+	)
+	private String viewActionName;
+
+	/** 編集アクション名 */
+	@MetaFieldInfo(
+			displayName="編集アクション名",
+			displayNameKey="generic_SearchFormView_editActionNameDisplaNameKey",
+			inputType=InputType.ACTION,
+			displayOrder=550,
+			description="編集リンククリックで実行されるアクションを設定します。",
+			descriptionKey="generic_SearchFormView_editActionNameDescriptionKey"
+	)
+	private String editActionName;
+
+	/** 一括削除WebAPI名 */
+	@MetaFieldInfo(
+			displayName="一括削除WebAPI名",
+			displayNameKey="generic_SearchFormView_deleteListWebapiNameDisplaNameKey",
+			inputType=InputType.WEBAPI,
+			displayOrder=560,
+			description="削除ボタンクリックで実行されるWebAPIを設定します。",
+			descriptionKey="generic_SearchFormView_deleteListWebapiNameDescriptionKey"
+	)
+	private String deleteListWebapiName;
+
+	/** 全削除WebAPI名 */
+	@MetaFieldInfo(
+			displayName="全削除WebAPI名",
+			displayNameKey="generic_SearchFormView_deleteAllWebapiNameDisplaNameKey",
+			inputType=InputType.WEBAPI,
+			displayOrder=570,
+			description="全選択チェック時に削除ボタンクリックで実行されるWebAPIを設定します。",
+			descriptionKey="generic_SearchFormView_deleteAllWebapiNameDescriptionKey"
+	)
+	private String deleteAllWebapiName;
+
+
+
 
 	/** JavaScriptコード */
 	@MetaFieldInfo(
 			displayName="JavaScriptコード",
 			displayNameKey="generic_SearchFormView_javaScriptDisplaNameKey",
 			inputType=InputType.SCRIPT,
+			displayOrder=1100,
 			mode="javascript",
 			description="SCRIPTタグ内に出力するJavaScriptコードを設定します。",
 			descriptionKey="generic_SearchFormView_javaScriptDescriptionKey"
 	)
 	private String javaScript;
 
+
+
+
 	/** EQLカスタム処理クラス名 */
 	@MetaFieldInfo(
 			displayName="EQLカスタム処理クラス名",
 			displayNameKey="generic_SearchFormView_interrupterNameDisplaNameKey",
+			displayOrder=1600,
 			description="検索実行前にクエリをカスタマイズするためのクラス名を指定します。<br>" +
 					"SearchQueryInterrupterインターフェースを実装するクラスを指定してください。",
 			descriptionKey="generic_SearchFormView_interrupterNameDescriptionKey"
@@ -176,10 +198,14 @@ public class SearchFormView extends FormView {
 			displayName="EQLカスタム処理クラスをCSVダウンロードで利用するか",
 			displayNameKey="generic_SearchFormView_useInterrupterForCsvDownloadDisplaNameKey",
 			inputType=InputType.CHECKBOX,
+			displayOrder=1610,
 			description="EQLカスタム処理クラスをCSVダウンロードで利用するかを指定します。",
 			descriptionKey="generic_SearchFormView_useInterrupterForCsvDownloadDescriptionKey"
 	)
 	private boolean useInterrupterForCsvDownload;
+
+
+
 
 	/** ボタン上部のセクション */
 	@MultiLang(isMultiLangValue = false)

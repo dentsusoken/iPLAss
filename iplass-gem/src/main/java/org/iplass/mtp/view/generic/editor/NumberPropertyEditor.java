@@ -56,13 +56,34 @@ public abstract class NumberPropertyEditor extends PrimitivePropertyEditor {
 			inputType=InputType.ENUM,
 			enumClass=NumberDisplayType.class,
 			required=true,
+			displayOrder=100,
 			description="画面に表示する方法を選択します。",
 			descriptionKey="generic_editor_NumberPropertyEditor_displayTypeDescriptionKey"
 	)
 	private NumberDisplayType displayType;
 
+	/** 最大文字数 */
+	@MetaFieldInfo(
+			displayName="最大文字数",
+			displayNameKey="generic_editor_NumberPropertyEditor_maxlengthDisplaNameKey",
+			inputType=InputType.NUMBER,
+			displayOrder=110,
+			rangeCheck=true,
+			minRange=0,
+			description="テキストフィールドに入力可能な最大文字数を設定します。<br>" +
+					"0の場合は適用されず、1以上の値を設定した場合に有効になります。",
+			descriptionKey="generic_editor_NumberPropertyEditor_maxlengthDescriptionKey"
+	)
+	@EntityViewField(
+			referenceTypes={FieldReferenceType.DETAIL}
+	)
+	protected int maxlength;
+
 	/** 数値のフォーマット */
-	@MetaFieldInfo(displayName="数値のフォーマット", description="表示する際に整形するフォーマットを指定します。",
+	@MetaFieldInfo(
+			displayName="数値のフォーマット",
+			description="表示する際に整形するフォーマットを指定します。",
+			displayOrder=120,
 			displayNameKey="generic_editor_NumberPropertyEditor_numberFormatDisplaNameKey",
 			descriptionKey="generic_editor_NumberPropertyEditor_numberFormatDescriptionKey")
 	@EntityViewField(
@@ -75,6 +96,7 @@ public abstract class NumberPropertyEditor extends PrimitivePropertyEditor {
 			displayName="カンマ表示",
 			displayNameKey="generic_editor_NumberPropertyEditor_showCommaDisplaNameKey",
 			inputType=InputType.CHECKBOX,
+			displayOrder=130,
 			description="編集時にフォーカスアウトした際、表示内容をカンマ区切りで表示するかを設定します。",
 			descriptionKey="generic_editor_NumberPropertyEditor_showCommaDescriptionKey"
 	)
@@ -88,6 +110,7 @@ public abstract class NumberPropertyEditor extends PrimitivePropertyEditor {
 			displayName="範囲で検索",
 			displayNameKey="generic_editor_NumberPropertyEditor_searchInRangeDisplayNameKey",
 			inputType=InputType.CHECKBOX,
+			displayOrder=140,
 			description="数値の検索を範囲指定で行うかを設定します。",
 			descriptionKey="generic_editor_NumberPropertyEditor_searchInRangeDescriptionKey"
 	)
@@ -96,26 +119,11 @@ public abstract class NumberPropertyEditor extends PrimitivePropertyEditor {
 	)
 	protected boolean searchInRange;
 
-	/** 最大文字数 */
-	@MetaFieldInfo(
-			displayName="最大文字数",
-			displayNameKey="generic_editor_NumberPropertyEditor_maxlengthDisplaNameKey",
-			inputType=InputType.NUMBER,
-			rangeCheck=true,
-			minRange=0,
-			description="テキストフィールドに入力可能な最大文字数を設定します。<br>" +
-					"0の場合は適用されず、1以上の値を設定した場合に有効になります。",
-			descriptionKey="generic_editor_NumberPropertyEditor_maxlengthDescriptionKey"
-	)
-	@EntityViewField(
-			referenceTypes={FieldReferenceType.DETAIL}
-	)
-	protected int maxlength;
-
 	/** 初期値 */
 	@MetaFieldInfo(
 			displayName="初期値",
 			displayNameKey="generic_editor_NumberPropertyEditor_defaultValueDisplaNameKey",
+			displayOrder=150,
 			description="新規作成時の初期値を設定します。",
 			descriptionKey="generic_editor_NumberPropertyEditor_defaultValueDescriptionKey"
 	)

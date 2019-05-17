@@ -1,19 +1,19 @@
 /*
  * Copyright (C) 2011 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
- * 
+ *
  * Unless you have purchased a commercial license,
  * the following license terms apply:
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
@@ -43,6 +43,7 @@ public class VersionSection extends Section {
 			displayName="リンクを表示するか",
 			displayNameKey="generic_element_section_VersionSection_showLinkDisplaNameKey",
 			inputType=InputType.CHECKBOX,
+			displayOrder=400,
 			description="詳細画面でのページ内リンクを表示するかを指定します。",
 			descriptionKey="generic_element_section_VersionSection_showLinkDescriptionKey"
 	)

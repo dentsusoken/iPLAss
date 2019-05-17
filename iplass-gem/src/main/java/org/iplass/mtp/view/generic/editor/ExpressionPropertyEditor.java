@@ -58,21 +58,11 @@ public class ExpressionPropertyEditor extends PrimitivePropertyEditor {
 		return ExpressionDisplayType.LABEL;
 	}
 
-	/** 数値のフォーマット */
-	@MetaFieldInfo(displayName="数値のフォーマット", description="表示する際に整形するフォーマットを指定します。",
-			displayNameKey="generic_editor_ExpressionPropertyEditor_numberFormatDisplaNameKey",
-			descriptionKey="generic_editor_ExpressionPropertyEditor_numberFormatDescriptionKey")
-	@EntityViewField(
-			referenceTypes={FieldReferenceType.SEARCHRESULT, FieldReferenceType.DETAIL}
-	)
-	protected String numberFormat;
-
 	/** プロパティエディタ */
 	@MetaFieldInfo(
 			displayName="プロパティエディタ",
-					displayNameKey="generic_editor_ExpressionPropertyEditor_editorDisplaNameKey",
+			displayNameKey="generic_editor_ExpressionPropertyEditor_editorDisplaNameKey",
 			inputType=InputType.REFERENCE,
-//			referenceClass=PropertyEditor.class,
 			fixedReferenceClass={
 				BooleanPropertyEditor.class,
 				DatePropertyEditor.class,
@@ -84,6 +74,7 @@ public class ExpressionPropertyEditor extends PrimitivePropertyEditor {
 				TimePropertyEditor.class,
 				TimestampPropertyEditor.class
 			},
+			displayOrder=100,
 			description="ExpressionプロパティのResultTypeに設定されている内容に合わせて設定してください。<br>" +
 					"設定した場合、その型にあわせて画面表示を行います。<br>" +
 					"未設定の場合は、値を文字列として表示します。",
@@ -93,6 +84,18 @@ public class ExpressionPropertyEditor extends PrimitivePropertyEditor {
 			referenceTypes={FieldReferenceType.ALL}
 	)
 	private PropertyEditor editor;
+
+	/** 数値のフォーマット */
+	@MetaFieldInfo(
+			displayName="数値のフォーマット",
+			description="表示する際に整形するフォーマットを指定します。",
+			displayOrder=110,
+			displayNameKey="generic_editor_ExpressionPropertyEditor_numberFormatDisplaNameKey",
+			descriptionKey="generic_editor_ExpressionPropertyEditor_numberFormatDescriptionKey")
+	@EntityViewField(
+			referenceTypes={FieldReferenceType.SEARCHRESULT, FieldReferenceType.DETAIL}
+	)
+	protected String numberFormat;
 
 	/**
 	 * デフォルトコンストラクタ

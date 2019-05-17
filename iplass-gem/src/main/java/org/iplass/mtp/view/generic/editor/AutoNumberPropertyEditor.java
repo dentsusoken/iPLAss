@@ -57,6 +57,7 @@ public class AutoNumberPropertyEditor extends PrimitivePropertyEditor {
 			displayNameKey="generic_editor_AutoNumberPropertyEditor_searchExactMatchConditionDisplaNameKey",
 			description="チェック時は完全一致検索します。<br>未チェック時はLike検索します。",
 			inputType=InputType.CHECKBOX,
+			displayOrder=100,
 			descriptionKey="generic_editor_AutoNumberPropertyEditor_searchExactMatchConditionDescriptionKey"
 	)
 	@EntityViewField(

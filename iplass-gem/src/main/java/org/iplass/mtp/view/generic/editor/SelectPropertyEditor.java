@@ -67,6 +67,7 @@ public class SelectPropertyEditor extends PrimitivePropertyEditor {
 			inputType=InputType.ENUM,
 			enumClass=SelectDisplayType.class,
 			required=true,
+			displayOrder=100,
 			description="画面に表示する方法を選択します。",
 			descriptionKey="generic_editor_SelectPropertyEditor_displayTypeDescriptionKey"
 	)
@@ -77,8 +78,8 @@ public class SelectPropertyEditor extends PrimitivePropertyEditor {
 			displayName="選択値",
 			displayNameKey="generic_editor_SelectPropertyEditor_valuesDisplaNameKey",
 			inputType=InputType.REFERENCE,
-			required=true,
 			multiple=true,
+			displayOrder=110,
 			referenceClass=EditorValue.class
 	)
 	@MultiLang(isMultiLangValue = false)
@@ -91,6 +92,7 @@ public class SelectPropertyEditor extends PrimitivePropertyEditor {
 	@MetaFieldInfo(
 			displayName="初期値",
 			displayNameKey="generic_editor_SelectPropertyEditor_defaultValueDisplaNameKey",
+			displayOrder=120,
 			description="新規作成時の初期値を設定します。",
 			descriptionKey="generic_editor_SelectPropertyEditor_defaultValueDescriptionKey"
 	)
@@ -104,6 +106,7 @@ public class SelectPropertyEditor extends PrimitivePropertyEditor {
 			displayName="CSV出力時に選択肢順でソート",
 			displayNameKey="generic_editor_SelectPropertyEditor_sortCsvOutputValueKey",
 			inputType=InputType.CHECKBOX,
+			displayOrder=130,
 			description="CSV出力時に選択肢順でソートするかをしていします。",
 			descriptionKey="generic_editor_SelectPropertyEditor_sortCsvOutputValueDescriptionKey"
 	)

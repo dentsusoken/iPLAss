@@ -1,19 +1,19 @@
 /*
  * Copyright (C) 2011 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
- * 
+ *
  * Unless you have purchased a commercial license,
  * the following license terms apply:
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
@@ -55,19 +55,36 @@ public class TemplateSection extends Section {
 	public TemplateSection() {
 	}
 
-	/** テンプレート名 */
+	/** 詳細編集非表示設定 */
 	@MetaFieldInfo(
-			displayName="テンプレート名",
-			displayNameKey="generic_element_section_TemplateSection_templateNameDisplaNameKey",
-			inputType=InputType.TEMPLATE,
-			required=true,
-			description="表示時に読み込むテンプレートの名前を設定します",
-			descriptionKey="generic_element_section_TemplateSection_templateNameDescriptionKey"
+			displayName="詳細編集非表示設定",
+			displayNameKey="generic_element_section_TemplateSection_hideDetailDisplaNameKey",
+			inputType=InputType.CHECKBOX,
+			displayOrder=200,
+			description="詳細編集で非表示にするかを設定します。",
+			descriptionKey="generic_element_section_TemplateSection_hideDetailDescriptionKey"
 	)
 	@EntityViewField(
-			referenceTypes={FieldReferenceType.ALL}
+			referenceTypes={FieldReferenceType.DETAIL}
 	)
-	private String templateName;
+	private boolean hideDetail;
+
+	/** 詳細表示非表示設定 */
+	@MetaFieldInfo(
+			displayName="詳細表示非表示設定",
+			displayNameKey="generic_element_section_TemplateSection_hideViewDisplaNameKey",
+			inputType=InputType.CHECKBOX,
+			displayOrder=210,
+			description="詳細表示で非表示にするかを設定します。",
+			descriptionKey="generic_element_section_TemplateSection_hideViewDescriptionKey"
+	)
+	@EntityViewField(
+			referenceTypes={FieldReferenceType.DETAIL}
+	)
+	private boolean hideView;
+
+
+
 
 	/** タイトル */
 	@MetaFieldInfo(
@@ -76,7 +93,8 @@ public class TemplateSection extends Section {
 			description="セクションのタイトルを設定します。",
 			descriptionKey="generic_element_section_TemplateSection_titleDescriptionKey",
 			inputType=InputType.MULTI_LANG,
-			multiLangField = "localizedTitleList"
+			multiLangField = "localizedTitleList",
+			displayOrder=300
 	)
 	@EntityViewField(
 			referenceTypes={FieldReferenceType.ALL}
@@ -88,17 +106,22 @@ public class TemplateSection extends Section {
 	@MetaFieldInfo(
 			displayName="多言語設定",
 			displayNameKey="generic_element_section_TemplateSection_localizedTitleListDisplaNameKey",
-			inputType=InputType.MULTI_LANG_LIST
+			inputType=InputType.MULTI_LANG_LIST,
+			displayOrder=310
 	)
 	@EntityViewField(
 			referenceTypes={FieldReferenceType.ALL}
 	)
 	private List<LocalizedStringDefinition> localizedTitleList;
 
+
+
+
 	/** id */
 	@MetaFieldInfo(
 			displayName="id",
 			displayNameKey="generic_element_section_TemplateSection_idDisplaNameKey",
+			displayOrder=400,
 			description="画面上で一意となるIDを設定してください。",
 			descriptionKey="generic_element_section_TemplateSection_idDescriptionKey"
 	)
@@ -113,6 +136,7 @@ public class TemplateSection extends Section {
 			displayNameKey="generic_element_section_TemplateSection_showLinkDisplaNameKey",
 			inputType=InputType.CHECKBOX,
 			description="詳細画面でのページ内リンクを表示するかを指定します。",
+			displayOrder=410,
 			descriptionKey="generic_element_section_TemplateSection_showLinkDescriptionKey"
 	)
 	@EntityViewField(
@@ -120,31 +144,23 @@ public class TemplateSection extends Section {
 	)
 	private boolean showLink;
 
-	/** 詳細編集非表示設定 */
-	@MetaFieldInfo(
-			displayName="詳細編集非表示設定",
-			displayNameKey="generic_element_section_TemplateSection_hideDetailDisplaNameKey",
-			inputType=InputType.CHECKBOX,
-			description="詳細編集で非表示にするかを設定します。",
-			descriptionKey="generic_element_section_TemplateSection_hideDetailDescriptionKey"
-	)
-	@EntityViewField(
-			referenceTypes={FieldReferenceType.DETAIL}
-	)
-	private boolean hideDetail;
 
-	/** 詳細表示非表示設定 */
+
+
+	/** テンプレート名 */
 	@MetaFieldInfo(
-			displayName="詳細表示非表示設定",
-			displayNameKey="generic_element_section_TemplateSection_hideViewDisplaNameKey",
-			inputType=InputType.CHECKBOX,
-			description="詳細表示で非表示にするかを設定します。",
-			descriptionKey="generic_element_section_TemplateSection_hideViewDescriptionKey"
+			displayName="テンプレート名",
+			displayNameKey="generic_element_section_TemplateSection_templateNameDisplaNameKey",
+			inputType=InputType.TEMPLATE,
+			required=true,
+			displayOrder=1000,
+			description="表示時に読み込むテンプレートの名前を設定します",
+			descriptionKey="generic_element_section_TemplateSection_templateNameDescriptionKey"
 	)
 	@EntityViewField(
-			referenceTypes={FieldReferenceType.DETAIL}
+			referenceTypes={FieldReferenceType.ALL}
 	)
-	private boolean hideView;
+	private String templateName;
 
 	/**
 	 * テンプレート名を取得します。

@@ -27,6 +27,7 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 
 import org.iplass.adminconsole.annotation.MultiLang;
+import org.iplass.adminconsole.view.annotation.FieldOrder;
 import org.iplass.adminconsole.view.annotation.InputType;
 import org.iplass.adminconsole.view.annotation.MetaFieldInfo;
 import org.iplass.adminconsole.view.annotation.generic.EntityViewField;
@@ -44,6 +45,7 @@ import org.iplass.mtp.view.generic.ViewConst;
 @Jsps({
 	@Jsp(path="/jsp/gem/generic/element/Button.jsp", key=ViewConst.DESIGN_TYPE_GEM)
 })
+@FieldOrder(manual=true)
 public class Button extends Element {
 
 	/** シリアルバージョンUID */
@@ -56,17 +58,22 @@ public class Button extends Element {
 			description="詳細編集、詳細表示のどちらに表示するかを設定します。",
 			descriptionKey="generic_element_Button_displayTypeDescriptionKey",
 			inputType=InputType.ENUM,
-			enumClass=DisplayType.class
+			enumClass=DisplayType.class,
+			displayOrder=100
 	)
 	@EntityViewField(referenceTypes=FieldReferenceType.DETAIL)
 	private DisplayType displayType;
 
+
+
+
 	/** タイトル */
-	@MetaFieldInfo(displayName="タイトル", description="ヘッダに表示するタイトルを設定します。", 
+	@MetaFieldInfo(displayName="タイトル", description="ヘッダに表示するタイトルを設定します。",
 			displayNameKey="generic_element_Button_titleDisplaNameKey",
 			descriptionKey="generic_element_Button_titleDescriptionKey",
 			inputType=InputType.MULTI_LANG,
-			multiLangField = "localizedTitleList"
+			multiLangField = "localizedTitleList",
+			displayOrder=300
 	)
 	@MultiLang()
 	private String title;
@@ -75,16 +82,18 @@ public class Button extends Element {
 	@MetaFieldInfo(
 			displayName="多言語設定",
 			displayNameKey="generic_element_Button_localizedTitleListDisplaNameKey",
-			inputType=InputType.MULTI_LANG_LIST
+			inputType=InputType.MULTI_LANG_LIST,
+			displayOrder=310
 	)
 	private List<LocalizedStringDefinition> localizedTitleList;
 
 	/** 表示ラベル */
-	@MetaFieldInfo(displayName="表示ラベル", description="ボタンに表示するラベルを設定します。", 
+	@MetaFieldInfo(displayName="表示ラベル", description="ボタンに表示するラベルを設定します。",
 			displayNameKey="generic_element_Button_displayLabelDisplaNameKey",
 			descriptionKey="generic_element_Button_displayLabelDescriptionKey",
 			inputType=InputType.MULTI_LANG,
-			multiLangField = "localizedDisplayLabelList"
+			multiLangField = "localizedDisplayLabelList",
+			displayOrder=320
 	)
 	@MultiLang()
 	private String displayLabel;
@@ -93,51 +102,47 @@ public class Button extends Element {
 	@MetaFieldInfo(
 			displayName="多言語設定",
 			displayNameKey="generic_element_Button_localizedDisplayLabelListDisplaNameKey",
-			inputType=InputType.MULTI_LANG_LIST
+			inputType=InputType.MULTI_LANG_LIST,
+			displayOrder=330
 	)
 	private List<LocalizedStringDefinition> localizedDisplayLabelList;
+
+	/** クラス名 */
+	@MetaFieldInfo(
+			displayName="クラス名",
+			displayNameKey="generic_element_Button_styleDisplaNameKey",
+			displayOrder=340,
+			description="スタイルシートのクラス名を指定します。複数指定する場合は半角スペースで区切ってください。",
+			descriptionKey="generic_element_Button_styleDescriptionKey"
+	)
+	private String style;
+
+
+
+
+
+
 
 	/** プライマリー */
 	@MetaFieldInfo(
 			displayName="プライマリー",
 			displayNameKey="generic_element_Button_primaryDisplaNameKey",
 			inputType=InputType.CHECKBOX,
+			displayOrder=1000,
 			description="設定するとボタンが強調表示されます。",
 			descriptionKey="generic_element_Button_primaryDescriptionKey"
 	)
 	private boolean primary = true;
 
-	/** クラス名 */
-	@MetaFieldInfo(
-			displayName="クラス名",
-			displayNameKey="generic_element_Button_styleDisplaNameKey",
-			description="スタイルシートのクラス名を指定します。複数指定する場合は半角スペースで区切ってください。",
-			descriptionKey="generic_element_Button_styleDescriptionKey"
-	)
-	private String style;
-
-	/** 入力カスタムスタイル */
-	@MetaFieldInfo(
-			displayName="入力カスタムスタイル",
-			displayNameKey="generic_element_Button_inputCustomStyleDisplayNameKey",
-			description="編集画面のinput要素に対するスタイルを指定します。(例)width:100px;",
-			descriptionKey="generic_element_Button_inputCustomStyleDescriptionKey",
-			inputType=InputType.SCRIPT,
-			mode="CSS"
-	)
-	private String inputCustomStyle;
-
 	/** クリックイベント */
 	@MetaFieldInfo(
 			displayName="クリックイベント",
 			displayNameKey="generic_element_Button_onclickEventDisplaNameKey",
+			displayOrder=1010,
 			description="クリック時に実行されるJavaScriptコードを設定します。",
 			descriptionKey="generic_element_Button_onclickEventDescriptionKey"
 	)
 	private String onclickEvent;
-
-	/** 入力カスタムスタイルキー */
-	private String inputCustomStyleScriptKey;
 
 	/** 表示判定用スクリプト */
 	@MetaFieldInfo(
@@ -145,6 +150,7 @@ public class Button extends Element {
 			displayNameKey="generic_element_Button_customDisplayTypeScriptDisplayNameKey",
 			inputType=InputType.SCRIPT,
 			mode="groovyscript",
+			displayOrder=1020,
 			description="表示タイプ：Customの場合に、表示可否を判定するスクリプトを設定します。<BR />" +
 					"スクリプトの実行結果がtrueの場合、ボタンが表示されます。<BR />" +
 					"以下のオブジェクトがバインドされています。<BR />" +
@@ -159,6 +165,24 @@ public class Button extends Element {
 	)
 	@EntityViewField(referenceTypes=FieldReferenceType.DETAIL)
 	private String customDisplayTypeScript;
+
+
+
+
+	/** 入力カスタムスタイル */
+	@MetaFieldInfo(
+			displayName="入力カスタムスタイル",
+			displayNameKey="generic_element_Button_inputCustomStyleDisplayNameKey",
+			description="編集画面のinput要素に対するスタイルを指定します。(例)width:100px;",
+			descriptionKey="generic_element_Button_inputCustomStyleDescriptionKey",
+			inputType=InputType.SCRIPT,
+			mode="CSS",
+			displayOrder=2000
+	)
+	private String inputCustomStyle;
+
+	/** 入力カスタムスタイルキー */
+	private String inputCustomStyleScriptKey;
 
 	/** 表示判定用スクリプトキー */
 	private String customDisplayTypeScriptKey;

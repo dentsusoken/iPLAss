@@ -56,19 +56,6 @@ public class JoinPropertyEditor extends CustomPropertyEditor {
 	/** オブジェクト名 */
 	private String objectName;
 
-	/** フォーマット */
-	@MetaFieldInfo(
-			displayName="フォーマット",
-			displayNameKey="generic_editor_JoinPropertyEditor_formatDisplaNameKey",
-			description="複数のプロパティを組み合わせて表示するためのフォーマットです。<br>" +
-					"プロパティを指定する際は「${プロパティ名}」のように指定します。",
-			descriptionKey="generic_editor_JoinPropertyEditor_formatDescriptionKey"
-	)
-	@EntityViewField(
-			referenceTypes={FieldReferenceType.SEARCHRESULT, FieldReferenceType.DETAIL}
-	)
-	private String format;
-
 	/** プロパティエディタ */
 	@MetaFieldInfo(
 			displayName="プロパティエディタ",
@@ -76,6 +63,7 @@ public class JoinPropertyEditor extends CustomPropertyEditor {
 			required=true,
 			inputType=InputType.REFERENCE,
 			referenceClass=PropertyEditor.class,
+			displayOrder=100,
 			description="プロパティの型にあわせたプロパティエディタを選択してください",
 			descriptionKey="generic_editor_JoinPropertyEditor_editorDescriptionKey"
 	)
@@ -90,6 +78,7 @@ public class JoinPropertyEditor extends CustomPropertyEditor {
 			inputType=InputType.REFERENCE,
 			referenceClass=NestProperty.class,
 			multiple=true,
+			displayOrder=110,
 			description="このプロパティと組み合わせて表示する他のプロパティを指定します。",
 			descriptionKey="generic_editor_JoinPropertyEditor_propertiesDescriptionKey"
 	)
@@ -97,6 +86,20 @@ public class JoinPropertyEditor extends CustomPropertyEditor {
 			referenceTypes={FieldReferenceType.ALL}
 	)
 	private List<NestProperty> properties;
+
+	/** フォーマット */
+	@MetaFieldInfo(
+			displayName="フォーマット",
+			displayNameKey="generic_editor_JoinPropertyEditor_formatDisplaNameKey",
+			displayOrder=120,
+			description="複数のプロパティを組み合わせて表示するためのフォーマットです。<br>" +
+					"プロパティを指定する際は「${プロパティ名}」のように指定します。",
+			descriptionKey="generic_editor_JoinPropertyEditor_formatDescriptionKey"
+	)
+	@EntityViewField(
+			referenceTypes={FieldReferenceType.SEARCHRESULT, FieldReferenceType.DETAIL}
+	)
+	private String format;
 
 	/**
 	 * オブジェクト名を取得します。

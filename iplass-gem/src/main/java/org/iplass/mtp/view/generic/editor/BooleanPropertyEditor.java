@@ -65,6 +65,7 @@ public class BooleanPropertyEditor extends PrimitivePropertyEditor {
 			inputType=InputType.ENUM,
 			enumClass=BooleanDisplayType.class,
 			required=true,
+			displayOrder=100,
 			description="画面に表示する方法を選択します。",
 			descriptionKey="generic_editor_BooleanPropertyEditor_displayTypeDescriptionKey"
 	)
@@ -77,6 +78,7 @@ public class BooleanPropertyEditor extends PrimitivePropertyEditor {
 			description="真の選択肢に表示するラベルを設定します。",
 			descriptionKey="generic_editor_BooleanPropertyEditor_trueLabelDescriptionKey",
 			inputType=InputType.MULTI_LANG,
+			displayOrder=110,
 			multiLangField="localizedTrueLabelList"
 	)
 	@EntityViewField(
@@ -89,7 +91,8 @@ public class BooleanPropertyEditor extends PrimitivePropertyEditor {
 	@MetaFieldInfo(
 			displayName="多言語設定情報",
 			displayNameKey="generic_editor_BooleanPropertyEditor_localizedTrueLabelListDisplaNameKey",
-			inputType=InputType.MULTI_LANG_LIST
+			inputType=InputType.MULTI_LANG_LIST,
+			displayOrder=120
 	)
 	@EntityViewField(
 			referenceTypes={FieldReferenceType.ALL}
@@ -103,6 +106,7 @@ public class BooleanPropertyEditor extends PrimitivePropertyEditor {
 			description="偽の選択肢に表示するラベルを設定します。",
 			descriptionKey="generic_editor_BooleanPropertyEditor_falseLabelDescriptionKey",
 			inputType=InputType.MULTI_LANG,
+			displayOrder=130,
 			multiLangField="localizedFalseLabelList"
 	)
 	@EntityViewField(
@@ -115,7 +119,8 @@ public class BooleanPropertyEditor extends PrimitivePropertyEditor {
 	@MetaFieldInfo(
 			displayName="多言語設定情報",
 			displayNameKey="generic_editor_BooleanPropertyEditor_localizedFalseLabelListDisplaNameKey",
-			inputType=InputType.MULTI_LANG_LIST
+			inputType=InputType.MULTI_LANG_LIST,
+			displayOrder=140
 	)
 	@EntityViewField(
 			referenceTypes={FieldReferenceType.ALL}
@@ -127,7 +132,8 @@ public class BooleanPropertyEditor extends PrimitivePropertyEditor {
 			displayName="初期値",
 			displayNameKey="generic_editor_BooleanPropertyEditor_defaultValueDisplaNameKey",
 			description="新規作成時の初期値を設定します。true/falseまたは1/0を指定してください。",
-			descriptionKey="generic_editor_BooleanPropertyEditor_defaultValueDescriptionKey"
+			descriptionKey="generic_editor_BooleanPropertyEditor_defaultValueDescriptionKey",
+			displayOrder=150
 	)
 	@EntityViewField(
 			referenceTypes={FieldReferenceType.DETAIL}

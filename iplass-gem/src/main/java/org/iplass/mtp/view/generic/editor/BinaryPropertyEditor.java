@@ -60,6 +60,7 @@ public class BinaryPropertyEditor extends PrimitivePropertyEditor {
 			inputType=InputType.ENUM,
 			enumClass=BinaryDisplayType.class,
 			required=true,
+			displayOrder=100,
 			description="画面に表示する方法を選択します。",
 			descriptionKey="generic_editor_BinaryPropertyEditor_displayTypeDescriptionKey"
 	)
@@ -70,6 +71,7 @@ public class BinaryPropertyEditor extends PrimitivePropertyEditor {
 			displayName="画像の高さ(px)",
 			displayNameKey="generic_editor_BinaryPropertyEditor_heightDisplaNameKey",
 			inputType=InputType.NUMBER,
+			displayOrder=110,
 			description="バイナリが画像の場合に表示する画像の高さを設定します。",
 			descriptionKey="generic_editor_BinaryPropertyEditor_heightDescriptionKey"
 	)
@@ -83,6 +85,7 @@ public class BinaryPropertyEditor extends PrimitivePropertyEditor {
 			displayName="画像の幅(px)",
 			displayNameKey="generic_editor_BinaryPropertyEditor_widthDisplaNameKey",
 			inputType=InputType.NUMBER,
+			displayOrder=120,
 			description="バイナリが画像の場合に表示する画像の幅を設定します。",
 			descriptionKey="generic_editor_BinaryPropertyEditor_widthDescriptionKey"
 	)
@@ -96,6 +99,7 @@ public class BinaryPropertyEditor extends PrimitivePropertyEditor {
 			displayName="アップロードアクション名",
 			displayNameKey="generic_editor_BinaryPropertyEditor_uploadActionNameDisplaNameKey",
 			inputType=InputType.ACTION,
+			displayOrder=130,
 			description="アップロード時に実行されるアクションを設定します。",
 			descriptionKey="generic_editor_BinaryPropertyEditor_uploadActionNameDescriptionKey"
 	)
@@ -109,6 +113,7 @@ public class BinaryPropertyEditor extends PrimitivePropertyEditor {
 			displayName="ダウンロードアクション名",
 			displayNameKey="generic_editor_BinaryPropertyEditor_downloadActionNameDisplaNameKey",
 			inputType=InputType.ACTION,
+			displayOrder=140,
 			description="ダウンロード時に実行されるアクションを設定します。",
 			descriptionKey="generic_editor_BinaryPropertyEditor_downloadActionNameDescriptionKey"
 	)
@@ -122,6 +127,7 @@ public class BinaryPropertyEditor extends PrimitivePropertyEditor {
 			displayName="新しいタブで開く",
 			displayNameKey="generic_editor_BinaryPropertyEditor_openNewTabDisplaNameKey",
 			inputType=InputType.CHECKBOX,
+			displayOrder=150,
 			description="リンククリック時にバイナリの内容を新しいタブで表示します。",
 			descriptionKey="generic_editor_BinaryPropertyEditor_openNewTabDescriptionKey"
 	)
@@ -135,6 +141,7 @@ public class BinaryPropertyEditor extends PrimitivePropertyEditor {
 			displayName="PDF表示時にPDF.jsを利用",
 			displayNameKey="generic_editor_BinaryPropertyEditor_usePdfjsNameKey",
 			inputType=InputType.CHECKBOX,
+			displayOrder=160,
 			description="PDF.jsを利用してPDFの表示を行います。<br>"
 					+ "細工されたPDFによる情報詐取(JVNTA#94087669)の対策が必要な場合に利用てください。",
 			descriptionKey="generic_editor_BinaryPropertyEditor_usePdfjsDescriptionKey"

@@ -47,6 +47,9 @@ public class FieldInfo implements Serializable {
 	/** 入力タイプ */
 	private InputType inputType;
 
+	/** 表示順 */
+	private int displayOrder;
+
 	/** 必須入力か */
 	private boolean required;
 
@@ -196,6 +199,24 @@ public class FieldInfo implements Serializable {
 	 */
 	public void setInputType(InputType inputType) {
 		this.inputType = inputType;
+	}
+
+	/**
+	 * 表示順を取得します。
+	 *
+	 * @return 表示順
+	 */
+	public int getDisplayOrder() {
+		return displayOrder;
+	}
+
+	/**
+	 * 表示順を設定します。
+	 *
+	 * @param displayOrder 表示順
+	 */
+	public void setDisplayOrder(int displayOrder) {
+		this.displayOrder = displayOrder;
 	}
 
 	/**

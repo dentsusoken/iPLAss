@@ -48,6 +48,31 @@ public class DefaultSection extends Section {
 	/** シリアルバージョンUID */
 	private static final long serialVersionUID = 8895232754105370651L;
 
+	/** 詳細編集非表示設定 */
+	@MetaFieldInfo(
+			displayName="詳細編集非表示設定",
+			displayNameKey="generic_element_section_DefaultSection_hideDetailDisplaNameKey",
+			inputType=InputType.CHECKBOX,
+			displayOrder=200,
+			description="詳細編集で非表示にするかを設定します。",
+			descriptionKey="generic_element_section_DefaultSection_hideDetailDescriptionKey"
+	)
+	private boolean hideDetail;
+
+	/** 詳細表示非表示設定 */
+	@MetaFieldInfo(
+			displayName="詳細表示非表示設定",
+			displayNameKey="generic_element_section_DefaultSection_hideViewDisplaNameKey",
+			inputType=InputType.CHECKBOX,
+			displayOrder=210,
+			description="詳細表示で非表示にするかを設定します。",
+			descriptionKey="generic_element_section_DefaultSection_hideViewDescriptionKey"
+	)
+	private boolean hideView;
+
+
+
+
 	/** タイトル */
 	@MetaFieldInfo(
 			displayName="タイトル",
@@ -55,7 +80,8 @@ public class DefaultSection extends Section {
 			description="セクションのタイトルを設定します。",
 			descriptionKey="generic_element_section_DefaultSection_titleDescriptionKey",
 			inputType=InputType.MULTI_LANG,
-			multiLangField = "localizedTitleList"
+			multiLangField = "localizedTitleList",
+			displayOrder=300
 	)
 	@MultiLang()
 	private String title;
@@ -64,37 +90,55 @@ public class DefaultSection extends Section {
 	@MetaFieldInfo(
 			displayName="多言語設定",
 			displayNameKey="generic_element_section_DefaultSection_localizedTitleListDisplaNameKey",
-			inputType=InputType.MULTI_LANG_LIST
+			inputType=InputType.MULTI_LANG_LIST,
+			displayOrder=310
 	)
 	private List<LocalizedStringDefinition> localizedTitleList;
-
-	/** セクションの展開可否 */
-	@MetaFieldInfo(
-			displayName="初期表示時に展開",
-			displayNameKey="generic_element_section_DefaultSection_expandableDisplaNameKey",
-			inputType=InputType.CHECKBOX,
-			description="セクションを初期展開するかを指定します。",
-			descriptionKey="generic_element_section_DefaultSection_expandableDescriptionKey"
-	)
-	private boolean expandable;
-
-	/** id */
-	@MetaFieldInfo(
-			displayName="id",
-			displayNameKey="generic_element_section_DefaultSection_idDisplaNameKey",
-			description="画面上で一意となるIDを設定してください。",
-			descriptionKey="generic_element_section_DefaultSection_idDescriptionKey"
-	)
-	private String id;
 
 	/** クラス名 */
 	@MetaFieldInfo(
 			displayName="クラス名",
 			displayNameKey="generic_element_section_DefaultSection_styleDisplaNameKey",
 			description="スタイルシートのクラス名を指定します。複数指定する場合は半角スペースで区切ってください。",
-			descriptionKey="generic_element_section_DefaultSection_styleDescriptionKey"
+			descriptionKey="generic_element_section_DefaultSection_styleDescriptionKey",
+			displayOrder=320
 	)
 	private String style;
+
+	/** id */
+	@MetaFieldInfo(
+			displayName="id",
+			displayNameKey="generic_element_section_DefaultSection_idDisplaNameKey",
+			displayOrder=400,
+			description="画面上で一意となるIDを設定してください。",
+			descriptionKey="generic_element_section_DefaultSection_idDescriptionKey"
+	)
+	private String id;
+
+	/** セクションの展開可否 */
+	@MetaFieldInfo(
+			displayName="初期表示時に展開",
+			displayNameKey="generic_element_section_DefaultSection_expandableDisplaNameKey",
+			inputType=InputType.CHECKBOX,
+			displayOrder=410,
+			description="セクションを初期展開するかを指定します。",
+			descriptionKey="generic_element_section_DefaultSection_expandableDescriptionKey"
+	)
+	private boolean expandable;
+
+	/** リンクを表示するか */
+	@MetaFieldInfo(
+			displayName="リンクを表示するか",
+			displayNameKey="generic_element_section_DefaultSection_showLinkDisplaNameKey",
+			inputType=InputType.CHECKBOX,
+			displayOrder=420,
+			description="詳細画面でのページ内リンクを表示するかを指定します。",
+			descriptionKey="generic_element_section_DefaultSection_showLinkDescriptionKey"
+	)
+	private boolean showLink;
+
+
+
 
 	/** エレメント情報 */
 	@MultiLang(isMultiLangValue = false)
@@ -108,41 +152,12 @@ public class DefaultSection extends Section {
 			rangeCheck=true,
 			minRange=1,
 //			maxRange=2,
+			displayOrder=1000,
 			description="セクションの列数を指定します。<br>" +
 					"なお、3列以上指定する場合は、レイアウトが崩れる可能性があるため注意してください。",
 			descriptionKey="generic_element_section_DefaultSection_colNumDescriptionKey"
 	)
 	private int colNum;
-
-	/** リンクを表示するか */
-	@MetaFieldInfo(
-			displayName="リンクを表示するか",
-			displayNameKey="generic_element_section_DefaultSection_showLinkDisplaNameKey",
-			inputType=InputType.CHECKBOX,
-			description="詳細画面でのページ内リンクを表示するかを指定します。",
-			descriptionKey="generic_element_section_DefaultSection_showLinkDescriptionKey"
-	)
-	private boolean showLink;
-
-	/** 詳細編集非表示設定 */
-	@MetaFieldInfo(
-			displayName="詳細編集非表示設定",
-			displayNameKey="generic_element_section_DefaultSection_hideDetailDisplaNameKey",
-			inputType=InputType.CHECKBOX,
-			description="詳細編集で非表示にするかを設定します。",
-			descriptionKey="generic_element_section_DefaultSection_hideDetailDescriptionKey"
-	)
-	private boolean hideDetail;
-
-	/** 詳細表示非表示設定 */
-	@MetaFieldInfo(
-			displayName="詳細表示非表示設定",
-			displayNameKey="generic_element_section_DefaultSection_hideViewDisplaNameKey",
-			inputType=InputType.CHECKBOX,
-			description="詳細表示で非表示にするかを設定します。",
-			descriptionKey="generic_element_section_DefaultSection_hideViewDescriptionKey"
-	)
-	private boolean hideView;
 
 	/** 上部のコンテンツ */
 	@MetaFieldInfo(
@@ -152,7 +167,8 @@ public class DefaultSection extends Section {
 					"コンテンツの内容にHTMLタグを利用することも可能です。",
 			descriptionKey="generic_element_section_DefaultSection_upperContentsDescriptionKey",
 			inputType=InputType.SCRIPT,
-			mode="groovytemplate"
+			mode="groovytemplate",
+			displayOrder=1010
 	)
 	private String upperContents;
 
@@ -164,7 +180,8 @@ public class DefaultSection extends Section {
 					"コンテンツの内容にHTMLタグを利用することも可能です。",
 			descriptionKey="generic_element_section_DefaultSection_lowerContentsDescriptionKey",
 			inputType=InputType.SCRIPT,
-			mode="groovytemplate"
+			mode="groovytemplate",
+			displayOrder=1020
 	)
 	private String lowerContents;
 

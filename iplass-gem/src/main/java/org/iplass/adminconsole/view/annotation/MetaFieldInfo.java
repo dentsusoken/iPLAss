@@ -51,6 +51,11 @@ public @interface MetaFieldInfo {
 	InputType inputType() default InputType.TEXT;
 
 	/**
+	 * フィールドの表示順
+	 */
+	int displayOrder() default -1;
+
+	/**
 	 * このフィールドが必須入力か
 	 */
 	boolean required() default false;

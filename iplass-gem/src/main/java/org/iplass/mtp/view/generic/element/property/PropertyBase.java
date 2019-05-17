@@ -1,19 +1,19 @@
 /*
  * Copyright (C) 2011 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
- * 
+ *
  * Unless you have purchased a commercial license,
  * the following license terms apply:
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
@@ -28,6 +28,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlSeeAlso;
 
 import org.iplass.adminconsole.annotation.MultiLang;
+import org.iplass.adminconsole.view.annotation.FieldOrder;
 import org.iplass.adminconsole.view.annotation.InputType;
 import org.iplass.adminconsole.view.annotation.MetaFieldInfo;
 import org.iplass.adminconsole.view.annotation.generic.EntityViewField;
@@ -43,6 +44,7 @@ import org.iplass.mtp.view.generic.element.Element;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlSeeAlso({PropertyItem.class, PropertyColumn.class})
+@FieldOrder(manual=true)
 public abstract class PropertyBase extends Element {
 
 	/** シリアルバージョンUID */
@@ -58,7 +60,8 @@ public abstract class PropertyBase extends Element {
 			description="画面に表示するラベルを設定します。",
 			descriptionKey="generic_element_property_PropertyBase_displayLabelDescriptionKey",
 			inputType=InputType.MULTI_LANG,
-			multiLangField = "localizedDisplayLabelList"
+			multiLangField = "localizedDisplayLabelList",
+			displayOrder=300
 	)
 	@EntityViewField(
 			referenceTypes={FieldReferenceType.ALL}
@@ -66,28 +69,12 @@ public abstract class PropertyBase extends Element {
 	@MultiLang(itemNameGetter = "getPropertyName")
 	private String displayLabel;
 
-	/** プロパティエディタ */
-	@MetaFieldInfo(
-			displayName="プロパティエディタ",
-			displayNameKey="generic_element_property_PropertyBase_editorDisplaNameKey",
-			required=true,
-			inputType=InputType.REFERENCE,
-			referenceClass=PropertyEditor.class,
-			description="プロパティの型にあわせたプロパティエディタが" +
-					"デフォルトで選択されているので変更しないで下さい。",
-			descriptionKey="generic_element_property_PropertyBase_editorDescriptionKey"
-	)
-	@EntityViewField(
-			referenceTypes={FieldReferenceType.ALL}
-	)
-	@MultiLang(itemNameGetter = "getPropertyName", isMultiLangValue = false)
-	private PropertyEditor editor;
-
 	/** 多言語設定情報 */
 	@MetaFieldInfo(
 			displayName="多言語設定",
 			displayNameKey="generic_element_property_PropertyBase_localizedDisplayLabelListDisplaNameKey",
-			inputType=InputType.MULTI_LANG_LIST
+			inputType=InputType.MULTI_LANG_LIST,
+			displayOrder=310
 	)
 	@EntityViewField(
 			referenceTypes={FieldReferenceType.ALL}
@@ -98,6 +85,7 @@ public abstract class PropertyBase extends Element {
 	@MetaFieldInfo(
 			displayName="クラス名",
 			displayNameKey="generic_element_property_PropertyBase_styleDisplaNameKey",
+			displayOrder=320,
 			description="スタイルシートのクラス名を指定します。" +
 					"複数指定する場合は半角スペースで区切ってください。",
 			descriptionKey="generic_element_property_PropertyBase_styleDescriptionKey"
@@ -107,12 +95,37 @@ public abstract class PropertyBase extends Element {
 	)
 	private String style;
 
+
+
+
+	/** プロパティエディタ */
+	@MetaFieldInfo(
+			displayName="プロパティエディタ",
+			displayNameKey="generic_element_property_PropertyBase_editorDisplaNameKey",
+			required=true,
+			inputType=InputType.REFERENCE,
+			referenceClass=PropertyEditor.class,
+			displayOrder=1000,
+			description="プロパティの型にあわせたプロパティエディタが" +
+					"デフォルトで選択されているので変更しないで下さい。",
+			descriptionKey="generic_element_property_PropertyBase_editorDescriptionKey"
+	)
+	@EntityViewField(
+			referenceTypes={FieldReferenceType.ALL}
+	)
+	@MultiLang(itemNameGetter = "getPropertyName", isMultiLangValue = false)
+	private PropertyEditor editor;
+
+
+
+
 	/** 自動補完設定 */
 	@MetaFieldInfo(
 			displayName="自動補完設定",
 			displayNameKey="generic_element_property_PropertyBase_autocompletionSettingDisplaNameKey",
 			inputType=InputType.REFERENCE,
 			referenceClass=AutocompletionSetting.class,
+			displayOrder=2000,
 			description="自動補完設定を設定します。",
 			descriptionKey="generic_element_property_PropertyBase_autocompletionSettingDescriptionKey"
 	)

@@ -1,19 +1,19 @@
 /*
  * Copyright (C) 2011 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
- * 
+ *
  * Unless you have purchased a commercial license,
  * the following license terms apply:
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
@@ -24,6 +24,7 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlSeeAlso;
 
+import org.iplass.adminconsole.view.annotation.FieldOrder;
 import org.iplass.adminconsole.view.annotation.InputType;
 import org.iplass.adminconsole.view.annotation.MetaFieldInfo;
 import org.iplass.adminconsole.view.annotation.Refrectable;
@@ -39,6 +40,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlSeeAlso({PrimitivePropertyEditor.class, ReferencePropertyEditor.class, CustomPropertyEditor.class})
 @JsonTypeInfo(use=JsonTypeInfo.Id.CLASS)
+@FieldOrder(manual=true)
 public abstract class PropertyEditor implements Refrectable {
 
 	/** シリアルバージョンUID */
@@ -51,6 +53,7 @@ public abstract class PropertyEditor implements Refrectable {
 	@MetaFieldInfo(
 			displayName="表示カスタムスタイル",
 			displayNameKey="generic_editor_PropertyEditor_customStyleDisplayNameKey",
+			displayOrder=10000,
 			description="検索結果一覧表示用のスタイルを指定します。GroovyScriptで記述して下さい。",
 			descriptionKey="generic_editor_PropertyEditor_customStyleDescriptionKey",
 			inputType=InputType.SCRIPT
@@ -64,6 +67,7 @@ public abstract class PropertyEditor implements Refrectable {
 	@MetaFieldInfo(
 			displayName="入力カスタムスタイル",
 			displayNameKey="generic_editor_PropertyEditor_inputCustomStyleDisplayNameKey",
+			displayOrder=10010,
 			description="編集画面のinput要素に対するスタイルを指定します。(例)width:100px;",
 			descriptionKey="generic_editor_PropertyEditor_inputCustomStyleDescriptionKey",
 			inputType=InputType.SCRIPT,

@@ -31,6 +31,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.xml.bind.annotation.XmlSeeAlso;
 
@@ -41,6 +42,7 @@ import org.iplass.adminconsole.shared.metadata.dto.refrect.AnalysisResult;
 import org.iplass.adminconsole.shared.metadata.dto.refrect.FieldInfo;
 import org.iplass.adminconsole.shared.metadata.dto.refrect.RefrectableInfo;
 import org.iplass.adminconsole.shared.metadata.rpc.refrect.RefrectionService;
+import org.iplass.adminconsole.view.annotation.FieldOrder;
 import org.iplass.adminconsole.view.annotation.IgnoreField;
 import org.iplass.adminconsole.view.annotation.InputType;
 import org.iplass.adminconsole.view.annotation.MetaFieldInfo;
@@ -276,17 +278,26 @@ public class RefrectionServiceImpl extends XsrfProtectedServiceServlet implement
 		List<FieldInfo> list = new ArrayList<FieldInfo>();
 		getFieldInfo(list, cls, ignoreFields);
 
-		//必須を先頭に移動
-		List<FieldInfo> result = new ArrayList<FieldInfo>();
-		List<FieldInfo> required = new ArrayList<FieldInfo>();
-		for (FieldInfo info : list) {
-			if (info.isRequired()) {
-				required.add(info);
-			} else {
-				result.add(info);
+		List<FieldInfo> result = null;
+		FieldOrder fieldOrder = cls.getAnnotation(FieldOrder.class);
+		if (fieldOrder != null && fieldOrder.manual()) {
+			//表示順で並び替え
+			result = list.stream()
+					.sorted((info1, info2) -> info1.getDisplayOrder() - info2.getDisplayOrder())
+					.collect(Collectors.toList());
+		} else {
+			//必須を先頭に移動
+			result = new ArrayList<FieldInfo>();
+			List<FieldInfo> required = new ArrayList<FieldInfo>();
+			for (FieldInfo info : list) {
+				if (info.isRequired()) {
+					required.add(info);
+				} else {
+					result.add(info);
+				}
 			}
+			result.addAll(0, required);
 		}
-		result.addAll(0, required);
 
 		return result.toArray(new FieldInfo[result.size()]);
 	}
@@ -311,6 +322,7 @@ public class RefrectionServiceImpl extends XsrfProtectedServiceServlet implement
 //				info.setDisplayName(getDisplayName(annotation));
 				info.setDisplayNameKey(annotation.displayNameKey());
 				info.setInputType(annotation.inputType());
+				info.setDisplayOrder(annotation.displayOrder());
 				info.setRequired(annotation.required());
 				info.setRangeCheck(annotation.rangeCheck());
 				info.setMaxRange(annotation.maxRange());

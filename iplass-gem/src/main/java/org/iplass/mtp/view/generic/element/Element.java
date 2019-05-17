@@ -55,6 +55,7 @@ public abstract class Element implements Refrectable {
 			displayName="表示/非表示",
 			displayNameKey="generic_element_Element_dispFlagDisplaNameKey",
 			inputType=InputType.CHECKBOX,
+			displayOrder=10,
 			description="画面に表示するかを設定します。",
 			descriptionKey="generic_element_Element_dispFlagDescriptionKey"
 	)
@@ -66,6 +67,7 @@ public abstract class Element implements Refrectable {
 			displayNameKey="generic_element_Element_editDisplayTypeDisplaNameKey",
 			inputType=InputType.ENUM,
 			enumClass=EditDisplayType.class,
+			displayOrder=100,
 			description="新規登録または編集時に項目を表示するかを設定します。<br>" +
 					"INSERT:新規登録時のみ表示します。<br>" +
 					"UPDATE:編集時のみ表示します。<br>" +
