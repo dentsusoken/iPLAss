@@ -64,7 +64,9 @@ $(function() {
 
 	//cookieから展開状態復元
 	if (getCookie("currentMenuId")) {
-		$("#" + es(getCookie("currentMenuId"))).parents(".menu-node:has(.nav-detail)").addClass("sub-open").children("ul").show();
+		//起動時は選択Rootメニュー配下を全て展開して表示
+		var currentRootMenuNode = $("#" + es(getCookie("currentMenuId"))).parents(".menu-node.root-menu-node").addClass("sub-open").children("ul").show();
+		currentRootMenuNode.find(".menu-node").addClass("sub-open");
 
 		$("#" + es(getCookie("currentMenuId"))).addClass("selected");
 		$("#" + es(getCookie("currentMenuId"))).parents(".root-menu-node").addClass("selected");
@@ -239,19 +241,32 @@ $(function() {
 				setCookie("nav-closed", null, 0);
 			}
 		});
-		$("#nav").find(".menu-node").on("click", function() {
-			var $this = $(this),
-				speed = 300;
-			if (!$("html").is(".nav-closed")) {
-				if (!$this.is(".sub-open")) {
-					$this.addClass("sub-open").find(".nav-detail").stop().slideDown(speed);
-					$this.siblings().removeClass("sub-open").find(".nav-detail").stop().slideUp(speed);
-				} else {
-					$this.removeClass("sub-open").find(".nav-detail").stop().slideUp(speed);
+
+		//2階層目以降のnodeメニューアイテムにnav-sub-detailを設定
+		$("#nav ul.subMenuList").addClass("nav-sub-detail");
+		$("#nav ul.subMenuList .menu-node > ul").addClass("nav-sub-detail");
+
+		$("#nav").find(".menu-node").each(function() {
+			var $this = $(this);
+			$this.children("ul").attr("data-category", $(this).children("p").children("a").text());
+
+			$this.on("click", function(event) {
+				event.stopPropagation();
+				var $this = $(this), speed = 300;
+				if (!$("html").is(".nav-closed")) {
+					if (!$this.is(".sub-open")) {
+						$this.addClass("sub-open").find(".menu-node").addClass("sub-open");
+						$this.find(".nav-detail,.nav-sub-detail").stop().slideDown(speed);
+						if ($this.is(".root-menu-node")) {
+							//ルートの場合は他のメニューを全てClose
+							$this.siblings().removeClass("sub-open").find(".nav-detail,.nav-sub-detail").stop().slideUp(speed);
+						}
+					} else {
+						$this.removeClass("sub-open").find(".sub-open").removeClass("sub-open");
+						$this.find(".nav-detail,.nav-sub-detail").stop().slideUp(speed);
+					}
 				}
-			}
-		}).each(function() {
-			$(this).children("ul").attr("data-category", $(this).children("p").children("a").text());
+			});
 		});
 
 		// entityview
