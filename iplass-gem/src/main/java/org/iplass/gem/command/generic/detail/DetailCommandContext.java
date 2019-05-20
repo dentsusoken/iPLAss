@@ -291,6 +291,15 @@ public class DetailCommandContext extends RegistrationCommandContext {
 					//大量データ用のPropertyEditorを使わない参照プロパティのみ
 					loadReferences.add(property.getPropertyName());
 				}
+				if (property.getEditor() instanceof JoinPropertyEditor) {
+					JoinPropertyEditor jpe = (JoinPropertyEditor) property.getEditor();
+					for (NestProperty nest : jpe.getProperties()) {
+						//JoinPropertyエディターのネストプロパティでの参照プロパティ
+						if (nest.getEditor() instanceof ReferencePropertyEditor) {
+							loadReferences.add(nest.getPropertyName());
+						}
+					}
+				}
 			} else if (element instanceof DefaultSection) {
 				getReferencePropertyName((DefaultSection) element, loadReferences);
 			} else if (element instanceof ReferenceSection) {
