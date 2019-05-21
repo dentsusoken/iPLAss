@@ -30,6 +30,7 @@ import java.util.stream.Collectors;
 import org.iplass.gem.command.CommandUtil;
 import org.iplass.gem.command.Constants;
 import org.iplass.gem.command.GemResourceBundleUtil;
+import org.iplass.gem.command.ViewUtil;
 import org.iplass.mtp.ManagerLocator;
 import org.iplass.mtp.command.RequestContext;
 import org.iplass.mtp.entity.Entity;
@@ -501,7 +502,7 @@ public abstract class SearchContextBase implements SearchContext {
 	 */
 	protected Integer getSearchLimit() {
 		Integer limit = request.getParamAsInt(Constants.SEARCH_LIMIT);
-		if (limit == null) limit = getResultSection().getDispRowCount();
+		if (limit == null) limit = ViewUtil.getSearchLimit(getResultSection());
 		return limit;
 	}
 
@@ -577,7 +578,7 @@ public abstract class SearchContextBase implements SearchContext {
 			if (!select.contains(propName)) select.add(propName);
 		}
 	}
-	
+
 	protected void addSearchProperty(ArrayList<String> select, String propName, String refEntityPropName) {
 		PropertyDefinition pd = getPropertyDefinition(propName);
 		if (pd instanceof ReferenceProperty) {

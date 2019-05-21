@@ -138,11 +138,15 @@
 		deleteAllWebapi = DeleteAllCommand.WEBAPI_NAME;
 	}
 
+	//Limit件数
+	int limit = ViewUtil.getSearchLimit(section);
+
 	//一括詳細表示アクション
 	String bulkEditAction = BulkUpdateViewCommand.BULK_EDIT_ACTION_NAME + urlPath;
 
 	Boolean showdDetermineButton = (Boolean) request.getAttribute(Constants.SHOW_DETERMINE_BUTTON);
 	if (showdDetermineButton == null) showdDetermineButton = false;
+
 %>
 <div class="result-block" style="display:none;">
 <h3 class="hgroup-02">
@@ -160,7 +164,7 @@ ${m:rs("mtp-gem-messages", "generic.element.section.SearchResultSection.srchrslt
 	}
 %>
 <input type="hidden" name="offset" value="0" >
-<input type="hidden" name="limit" value="<c:out value="<%=section.getDispRowCount()%>"/>" >
+<input type="hidden" name="limit" value="<%=limit%>">
 <input type="hidden" name="noLimit" value="<%=section.isHidePaging()%>">
 <script type="text/javascript">
 var $pager = null;
@@ -279,7 +283,7 @@ colModel.push({name:"<%=propName%>", index:"<%=propName%>", classes:"<%=style%>"
 %>
 	grid = $("#searchResult").jqGrid({
 		datatype: "local",
-<%	
+<%
 	if (section.getDispHeight() > 0) {
 %>
 		height: <%=section.getDispHeight()%>,
@@ -361,7 +365,7 @@ colModel.push({name:"<%=propName%>", index:"<%=propName%>", classes:"<%=style%>"
 		boolean showPageLink = showItemCount ? !section.isHidePageLink() : false;
 		boolean showPageJump = showItemCount ? !section.isHidePageJump() : false;
 %>
-	var limit = <%=section.getDispRowCount()%>;
+	var limit = <%=limit%>;
 
 	$pager = $(".result-block .result-nav").pager({
 		limit: limit,
@@ -718,7 +722,7 @@ function deleteRow(isConfirmed) {
 	});
 }
 </script>
-<% 
+<%
 	}
 	if (OutputType.SEARCHRESULT == type && section.isShowBulkUpdate() && canUpdate) { %>
 <script>
@@ -781,13 +785,13 @@ function doBulkUpdate(target) {
 	$(version).each(function() {
 		$("<input />").attr({type:"hidden", name:"version", value:this}).appendTo($form);
 	})
-	
+
 	if ($("#cb_searchResult").is(":checked")) {
 		var type = $(":hidden[name='searchType']").val();
 		if (!validation(type)) return;
 		var searchCond = $(":hidden[name='searchCond']").val();
 		$("<input />").attr({type:"hidden", name:"searchCond", value:searchCond}).appendTo($form);
-	} 
+	}
 // 	var execType = $(":hidden[name='execType']").val();
 // 	$("<input />").attr({type:"hidden", name:"execType", value:execType}).appendTo($form);
 	var isSubModal = $("body.modal-body").length !== 0;

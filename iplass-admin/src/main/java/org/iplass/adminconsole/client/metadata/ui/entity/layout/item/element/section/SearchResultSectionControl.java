@@ -133,7 +133,6 @@ public class SearchResultSectionControl extends ItemControl implements SectionCo
 
 		SearchResultSection section = new SearchResultSection();
 		section.setDispFlag(true);
-		section.setDispRowCount(5);
 		setClassName(section.getClass().getName());
 		setValueObject(section);
 	}

@@ -47,6 +47,7 @@ import org.iplass.mtp.view.generic.element.Element.EditDisplayType;
 import org.iplass.mtp.view.generic.element.property.PropertyColumn;
 import org.iplass.mtp.view.generic.element.property.PropertyItem;
 import org.iplass.mtp.view.generic.element.section.SearchConditionSection.CsvDownloadSpecifyCharacterCode;
+import org.iplass.mtp.view.generic.element.section.SearchResultSection;
 import org.iplass.mtp.view.top.TopViewDefinition;
 import org.iplass.mtp.view.top.TopViewDefinitionManager;
 import org.iplass.mtp.view.top.parts.CsvDownloadSettingsParts;
@@ -226,7 +227,7 @@ public class ViewUtil {
 		}
 		return null;
 	}
-	
+
 	public static List<PropertyColumn> filterPropertyColumn(List<Element> elements) {
 		return elements.stream().filter(e -> e instanceof PropertyColumn).map(e -> (PropertyColumn) e).collect(Collectors.toList());
 	}
@@ -257,6 +258,21 @@ public class ViewUtil {
 	public static int getSearchInterval() {
 		GemConfigService gemConfigService = ServiceRegistry.getRegistry().getService(GemConfigService.class);
 		return gemConfigService.getSearchInterval();
+	}
+
+	/**
+	 * 検索結果のLimit件数を返します。
+	 *
+	 * @param resultSection SearchResultSection
+	 * @return 検索結果のLimit件数
+	 */
+	public static int getSearchLimit(SearchResultSection resultSection) {
+		Integer limit = resultSection.getDispRowCount();
+		if (limit != null && limit > 0) {
+			return limit;
+		}
+		GemConfigService gemConfigService = ServiceRegistry.getRegistry().getService(GemConfigService.class);
+		return gemConfigService.getSearchResultDispRowCount();
 	}
 
 	public static int getCsvDownloadInterval() {

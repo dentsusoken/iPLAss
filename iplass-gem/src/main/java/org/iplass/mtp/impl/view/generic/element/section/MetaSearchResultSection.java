@@ -54,7 +54,7 @@ public class MetaSearchResultSection extends MetaSection {
 	}
 
 	/** 表示行数 */
-	private int dispRowCount;
+	private Integer dispRowCount;
 
 	/** 表示高さ */
 	private int dispHeight;
@@ -111,7 +111,7 @@ public class MetaSearchResultSection extends MetaSection {
 	 * 表示行数を取得します。
 	 * @return 表示行数
 	 */
-	public int getDispRowCount() {
+	public Integer getDispRowCount() {
 		return dispRowCount;
 	}
 
@@ -119,7 +119,7 @@ public class MetaSearchResultSection extends MetaSection {
 	 * 表示行数を設定します。
 	 * @param dispRowCount 表示行数
 	 */
-	public void setDispRowCount(int dispRowCount) {
+	public void setDispRowCount(Integer dispRowCount) {
 		this.dispRowCount = dispRowCount;
 	}
 

@@ -1,19 +1,19 @@
 <%--
  Copyright (C) 2013 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
- 
+
  Unless you have purchased a commercial license,
  the following license terms apply:
- 
+
  This program is free software: you can redistribute it and/or modify
  it under the terms of the GNU Affero General Public License as
  published by the Free Software Foundation, either version 3 of the
  License, or (at your option) any later version.
- 
+
  This program is distributed in the hope that it will be useful,
  but WITHOUT ANY WARRANTY; without even the implied warranty of
  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  GNU Affero General Public License for more details.
- 
+
  You should have received a copy of the GNU Affero General Public License
  along with this program. If not, see <https://www.gnu.org/licenses/>.
  --%>
@@ -27,6 +27,7 @@
 <%@ page import="org.iplass.mtp.entity.Entity" %>
 <%@ page import="org.iplass.mtp.entity.SelectValue" %>
 <%@ page import="org.iplass.mtp.util.StringUtil"%>
+<%@ page import="org.iplass.mtp.view.generic.SearchFormView"%>
 <%@ page import="org.iplass.mtp.view.top.parts.EntityListParts"%>
 <%@ page import="org.iplass.mtp.web.template.TemplateUtil" %>
 <%@ page import="org.iplass.gem.command.generic.detail.DetailViewCommand"%>
@@ -40,24 +41,28 @@
 	EntityListParts parts = (EntityListParts) request.getAttribute("entityListParts");
 	if (parts == null) return;
 
-	String action = (String) request.getAttribute("viewAction");
+	SearchFormView form = (SearchFormView) request.getAttribute("searchFormView");
 
 	String urlPath = ViewUtil.getParamMappingPath(parts.getDefName(), parts.getViewNameForLink());
-
 	String searchViewAction = SearchViewCommand.SEARCH_ACTION_NAME + urlPath;
 
 	//詳細表示アクション
 	String viewAction = "";
+	String action = form.getViewActionName();
 	if (action != null && !action.isEmpty()) {
 		viewAction = action +  urlPath;
 	} else {
 		viewAction = DetailViewCommand.VIEW_ACTION_NAME + urlPath;
 	}
+
+	//Limit
+	Integer limit = ViewUtil.getSearchLimit(form.getResultSection());
+
 	String prevLabel = GemResourceBundleUtil.resourceString("generic.search.listWidget.previous");
 	String nextLabel = GemResourceBundleUtil.resourceString("generic.search.listWidget.next");
 %>
 <div class="entity-list-widget topview-widget" data-defName="${m:escJs(entityListParts.defName)}" data-viewName="${m:escJs(entityListParts.viewName)}" data-filterName="${m:escJs(entityListParts.filterName)}"
- data-limit="${limit}" data-prevLabel="<c:out value="<%=prevLabel%>"/>" data-nextLabel="<c:out value="<%=nextLabel%>"/>">
+ data-limit="<%=limit%>" data-prevLabel="<c:out value="<%=prevLabel%>"/>" data-nextLabel="<c:out value="<%=nextLabel%>"/>">
 <div class="lyt-shortcut-01 mb05">
 ${entityListParts.iconTag}
 <p class="title">${m:esc(title)}</p>

@@ -1,19 +1,19 @@
 /*
  * Copyright (C) 2011 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
- * 
+ *
  * Unless you have purchased a commercial license,
  * the following license terms apply:
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
@@ -27,7 +27,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.iplass.mtp.ManagerLocator;
 import org.iplass.mtp.command.RequestContext;
-import org.iplass.mtp.definition.LocalizedStringDefinition;
+import org.iplass.mtp.entity.definition.EntityDefinition;
 import org.iplass.mtp.impl.entity.EntityContext;
 import org.iplass.mtp.impl.entity.EntityHandler;
 import org.iplass.mtp.impl.i18n.I18nUtil;
@@ -38,6 +38,7 @@ import org.iplass.mtp.impl.web.WebUtil;
 import org.iplass.mtp.util.StringUtil;
 import org.iplass.mtp.view.generic.EntityView;
 import org.iplass.mtp.view.generic.EntityViewManager;
+import org.iplass.mtp.view.generic.FormViewUtil;
 import org.iplass.mtp.view.generic.SearchFormView;
 import org.iplass.mtp.view.top.parts.EntityListParts;
 import org.iplass.mtp.view.top.parts.TopViewParts;
@@ -291,49 +292,48 @@ public class MetaEntityListParts extends MetaTemplateParts {
 				if (definitionId == null) return;
 
 				RequestContext request = WebUtil.getRequestContext();
-				EntityHandler entity = context.getHandlerById(definitionId);
+
 				request.setAttribute("partsCnt", req.getAttribute("partsCnt"));
-				if (entity != null) {
-					//タイトルはパーツ設定＞画面設定＞Entity定義の順に優先する
-					String title = MetaEntityListParts.this.title;
-					String action = null;
-					int limit = 5;
-					EntityViewManager em = ManagerLocator.getInstance().getManager(EntityViewManager.class);
-					EntityView ev = em.get(entity.getMetaData().getName());
-					SearchFormView view = null;
-					if (ev != null) view = ev.getSearchFormView(viewName);
 
-					String _title = null;
-					if (view != null) {
-						_title = TemplateUtil.getMultilingualString(view.getTitle(), view.getLocalizedTitleList());
-
-						String _action = view.getViewActionName();
-						int _limit = view.getResultSection().getDispRowCount();
-						if (_action != null && !_action.isEmpty()) action = _action;
-						if (_limit > 0) limit = _limit;
-					}
-
-					List<LocalizedStringDefinition> localizedStringList = new ArrayList<LocalizedStringDefinition>();
-					if (entity.getMetaData().getLocalizedDisplayNameList() != null) {
-						for (MetaLocalizedString mls: entity.getMetaData().getLocalizedDisplayNameList()) {
-							localizedStringList.add(mls.currentConfig());
+				SearchFormView form = null;
+				String title = MetaEntityListParts.this.title;
+				EntityHandler handler = context.getHandlerById(definitionId);
+				if (handler != null) {
+					EntityDefinition ed = handler.getMetaData().currentConfig();
+					EntityViewManager evm = ManagerLocator.manager(EntityViewManager.class);
+					EntityView ev = evm.get(ed.getName());
+					if (ev != null) {
+						if (StringUtil.isEmpty(viewName)) {
+							//デフォルトレイアウトを利用
+							if (ev.getSearchFormViewNames().length > 0) {
+								//1件でもView定義があればその中からデフォルトレイアウトを探す
+								form = ev.getDefaultSearchFormView();
+							} else {
+								//何もなければ自動生成
+								form = FormViewUtil.createDefaultSearchFormView(ed);
+							}
+						} else {
+							//指定レイアウトを利用
+							form = ev.getSearchFormView(viewName);
 						}
 					}
-
-					String displayName = TemplateUtil.getMultilingualString(entity.getMetaData().getDisplayName(), localizedStringList);
-					if(StringUtil.isNotBlank(_title)) {
-						displayName = _title;
-					}
-					if(StringUtil.isNotBlank(title)) {
-						displayName = title;
+					if (form == null) {
+						//View定義がないか、指定されたViewがない場合は自動生成
+						form = FormViewUtil.createDefaultSearchFormView(ed);
 					}
 
-					request.setAttribute("title", displayName);
-					request.setAttribute("viewAction", action);
-					request.setAttribute("limit", limit);
+					if(StringUtil.isEmpty(title)) {
+						title = TemplateUtil.getMultilingualString(form.getTitle(), form.getLocalizedTitleList());
+					}
+					if(StringUtil.isEmpty(title)) {
+						title = TemplateUtil.getMultilingualString(
+								ed.getDisplayName(), ed.getLocalizedDisplayNameList());
+					}
 				}
 
-				request.setAttribute("entityListParts", currentConfig());	//TODO View共通のConstants化
+				request.setAttribute("entityListParts", currentConfig());
+				request.setAttribute("searchFormView", form);
+				request.setAttribute("title", title);
 			}
 
 			@Override

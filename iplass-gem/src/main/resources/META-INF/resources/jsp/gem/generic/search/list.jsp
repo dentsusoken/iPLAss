@@ -63,6 +63,8 @@
 	EntityListParts parts = (EntityListParts) request.getAttribute("entityListParts");
 	if (parts == null) return;
 
+	SearchFormView form = (SearchFormView) request.getAttribute("searchFormView");
+
 	String topViewListOffsetInfo = request.getParameter(Constants.TOPVIEW_LIST_OFFSET);
 
 	String topViewListOffsetKey = "";
@@ -84,28 +86,10 @@
 	EntityDefinitionManager edm = ManagerLocator.getInstance().getManager(EntityDefinitionManager.class);
 	EntityDefinition ed = edm.get(parts.getDefName());
 
-	EntityViewManager evm = ManagerLocator.getInstance().getManager(EntityViewManager.class);
-	EntityView ev = evm.get(parts.getDefName());
-	SearchFormView form = null;
-	if (StringUtil.isBlank(parts.getViewName())) {
-		//デフォルトレイアウトを利用
-		if (ev != null && ev.getSearchFormViewNames().length > 0) {
-			//1件でもView定義があればその中からデフォルトレイアウトを探す
-			form = ev.getDefaultSearchFormView();
-		} else {
-			//何もなければ自動生成
-			form = FormViewUtil.createDefaultSearchFormView(ed);
-		}
-	} else {
-		//指定レイアウトを利用
-		if (ev != null) form = ev.getSearchFormView(parts.getViewName());
-	}
 	SearchResultSection section = form.getResultSection();
 
 	//ビュー名があればアクションの後につける
 	String urlPath = ViewUtil.getParamMappingPath(parts.getDefName(), parts.getViewName());
-
-	String contextPath = TemplateUtil.getTenantContextPath();
 
 	//詳細表示アクション
 	String view = "";
@@ -125,11 +109,14 @@
 
 	//検索結果表示アクション
 	urlPath = ViewUtil.getParamMappingPath(parts.getDefName(), parts.getViewNameForLink());
-	String action = contextPath + "/" + SearchViewCommand.SEARCH_ACTION_NAME + urlPath;
+	String action = TemplateUtil.getTenantContextPath() + "/" + SearchViewCommand.SEARCH_ACTION_NAME + urlPath;
 	String params = "{";
 	params = params + "\"searchType\": \"" + searchType + "\"";
 	params = params + ", \"filterName\": \"" + parts.getFilterName() + "\"";
 	params = params + "}";
+
+	//Limit
+	Integer limit = ViewUtil.getSearchLimit(section);
 
 	AuthContext auth = AuthContext.getCurrentContext();
 	boolean canUpdate = auth.checkPermission(new EntityPermission(ed.getName(), EntityPermission.Action.UPDATE));
@@ -279,7 +266,7 @@ colModel.push({name:"<%=propName%>", index:"<%=propName%>", classes:"<%=style%>"
 	});
 
 	var offset = 0;
-	var limit = ${limit};
+	var limit = <%=limit%>;
 
 
 	var $parent = $table.parents("div.entity-list");
