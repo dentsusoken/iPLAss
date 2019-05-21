@@ -59,7 +59,6 @@
 	}
 %>
 <%
- 	Integer height = (Integer) request.getAttribute("height");
 	EntityListParts parts = (EntityListParts) request.getAttribute("entityListParts");
 	if (parts == null) return;
 
@@ -117,6 +116,12 @@
 
 	//Limit
 	Integer limit = ViewUtil.getSearchLimit(section);
+
+	//Height
+ 	Integer gridHeight = parts.getHeight();
+	if (gridHeight == null || gridHeight < 0) {
+		gridHeight = 160;
+	}
 
 	AuthContext auth = AuthContext.getCurrentContext();
 	boolean canUpdate = auth.checkPermission(new EntityPermission(ed.getName(), EntityPermission.Action.UPDATE));
@@ -227,12 +232,7 @@ colModel.push({name:"<%=propName%>", index:"<%=propName%>", classes:"<%=style%>"
 	}
 %>
 	var $table = $("#searchResult_<%=id%>");
-	var gridHeight;
-<% if (height != null && height > 0) { %>
-	var gridHeight = <%=height%>;
-<% } else { %>
-	var gridHeight = 160;
-<% } %>
+	var gridHeight = <%=gridHeight%>;
 	var grid = $table.jqGrid({
 		datatype: "local",
 		colModel: colModel,

@@ -69,7 +69,7 @@ public class MetaEntityListParts extends MetaTemplateParts {
 	private String title;
 
 	/** 高さ */
-	private int height;
+	private Integer height;
 
 	/** 多言語設定情報 */
 	private List<MetaLocalizedString> localizedTitleList = new ArrayList<MetaLocalizedString>();
@@ -170,7 +170,7 @@ public class MetaEntityListParts extends MetaTemplateParts {
 	 * 高さを取得します。
 	 * @return 高さ
 	 */
-	public int getHeight() {
+	public Integer getHeight() {
 	    return height;
 	}
 
@@ -178,7 +178,7 @@ public class MetaEntityListParts extends MetaTemplateParts {
 	 * 高さを設定します。
 	 * @param height 高さ
 	 */
-	public void setHeight(int height) {
+	public void setHeight(Integer height) {
 	    this.height = height;
 	}
 
