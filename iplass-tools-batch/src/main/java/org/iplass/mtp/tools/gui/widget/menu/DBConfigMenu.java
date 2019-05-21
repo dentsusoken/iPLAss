@@ -1,19 +1,19 @@
 /*
  * Copyright (C) 2016 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
- * 
+ *
  * Unless you have purchased a commercial license,
  * the following license terms apply:
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
@@ -35,7 +35,6 @@ import java.util.Properties;
 
 import javax.swing.Box;
 import javax.swing.JButton;
-import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
@@ -52,10 +51,6 @@ import org.iplass.mtp.impl.rdb.adapter.RdbAdapter;
 import org.iplass.mtp.impl.rdb.adapter.RdbAdapterService;
 import org.iplass.mtp.impl.rdb.connection.ConnectionFactory;
 import org.iplass.mtp.impl.rdb.connection.DriverManagerConnectionFactory;
-import org.iplass.mtp.impl.rdb.mysql.MysqlRdbAdaptor;
-import org.iplass.mtp.impl.rdb.oracle.OracleRdbAdapter;
-import org.iplass.mtp.impl.rdb.postgresql.PostgreSQLRdbAdapter;
-import org.iplass.mtp.impl.rdb.sqlserver.SqlServerRdbAdapter;
 import org.iplass.mtp.spi.ServiceRegistry;
 
 public class DBConfigMenu extends JMenu {
@@ -84,12 +79,12 @@ public class DBConfigMenu extends JMenu {
 		private static final long serialVersionUID = 8378724754491492214L;
 
 		private JTextField txtConfigFileName;
-		private JComboBox<String> cbxRdbAdapter;
+		private JTextField txtRdbAdapter;
 		private JTextField txtConenctUrl;
 		private JTextField txtConenctUser;
 //		private JPasswordField txtConenctUserPass;
 //		private JTextField txtConenctDriver;
-		private JComboBox<String> cbxConenctDriver;
+		private JTextField txtConenctDriver;
 
 		private ConfigSetting initConfig;
 
@@ -143,10 +138,10 @@ public class DBConfigMenu extends JMenu {
 			createLableText(lblConfigFileName, txtConfigFileName, null, 0, gridbag, constraints, headerPane);
 
 			JLabel lblRdbAdapter = new JLabel("Rdb Adapter");
-			cbxRdbAdapter = new JComboBox<String>(new String[]{"OracleRdbAdapter", "MysqlRdbAdaptor", "SqlServerRdbAdapter"});
-			cbxRdbAdapter.setPreferredSize(new Dimension(300, 25));
-			cbxRdbAdapter.setEnabled(false); //各Serviceなどのインスタンス変数に保持してしまっているのであきらめ
-			createLableText(lblRdbAdapter, cbxRdbAdapter, null, 1, gridbag, constraints, headerPane);
+			txtRdbAdapter = new JTextField();
+			txtRdbAdapter.setPreferredSize(new Dimension(300, 25));
+			txtRdbAdapter.setEditable(false);
+			createLableText(lblRdbAdapter, txtRdbAdapter, null, 1, gridbag, constraints, headerPane);
 
 			JLabel lblConenctUrl = new JLabel("Conenct Url");
 			txtConenctUrl = new JTextField();
@@ -167,13 +162,10 @@ public class DBConfigMenu extends JMenu {
 //			createLableText(lblConenctUserPass, txtConenctUserPass, null, 4, gridbag, constraints, headerPane);
 
 			JLabel lblConenctDriver = new JLabel("Conenct Driver");
-//			txtConenctDriver = new JTextField();
-//			txtConenctDriver.setPreferredSize(new Dimension(300, 25));
-//			createLableText(lblConenctDriver, txtConenctDriver, null, 5, gridbag, constraints, headerPane);
-			cbxConenctDriver = new JComboBox<String>(new String[]{"oracle.jdbc.driver.OracleDriver", "com.mysql.jdbc.Driver", "com.microsoft.sqlserver.jdbc.SQLServerDriver"});
-			cbxConenctDriver.setPreferredSize(new Dimension(300, 25));
-			cbxConenctDriver.setEnabled(false);	//RdbAdapterが変更できないのでこれも
-			createLableText(lblConenctDriver, cbxConenctDriver, null, 5, gridbag, constraints, headerPane);
+			txtConenctDriver = new JTextField();
+			txtConenctDriver.setPreferredSize(new Dimension(300, 25));
+			txtConenctDriver.setEditable(false);	//RdbAdapterが変更できないのでこれも
+			createLableText(lblConenctDriver, txtConenctDriver, null, 5, gridbag, constraints, headerPane);
 
 			JPanel mainPane = new JPanel();
 			mainPane.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -262,7 +254,7 @@ public class DBConfigMenu extends JMenu {
 
 			//Rdb Adapter
 			RdbAdapter adapter = getRdbAdapter();
-			initConfig.rdbAdapterName = getRdbAdapterCbxValue(adapter);
+			initConfig.rdbAdapterName = adapter.getClass().getSimpleName();
 
 			//Connection Factory
 			ConnectionFactory factory = ServiceRegistry.getRegistry().getService(ConnectionFactory.class);
@@ -296,33 +288,19 @@ public class DBConfigMenu extends JMenu {
 		private void setConfigSetting(ConfigSetting config) {
 
 			//Rdb Adapter
-			cbxRdbAdapter.setSelectedItem(initConfig.rdbAdapterName);
+			txtRdbAdapter.setText(initConfig.rdbAdapterName);
 
 			//Connection Factory
 			txtConenctUrl.setText(initConfig.conenctUrl);
 			txtConenctUser.setText(initConfig.conenctUser);
 //			txtConenctUserPass.setText(initConfig.conenctUserPass);
-			cbxConenctDriver.setSelectedItem(initConfig.conenctDriver);
+			txtConenctDriver.setText(initConfig.conenctDriver);
 		}
 
 		private RdbAdapter getRdbAdapter() {
 
 			adapterService = ServiceRegistry.getRegistry().getService(RdbAdapterService.class);
 			return adapterService.getRdbAdapter();
-		}
-
-		private String getRdbAdapterCbxValue(RdbAdapter adapter) {
-			if (adapter instanceof OracleRdbAdapter) {
-				return "OracleRdbAdapter";
-			} else if (adapter instanceof MysqlRdbAdaptor) {
-				return "MysqlRdbAdaptor";
-			} else if (adapter instanceof PostgreSQLRdbAdapter) {
-				return "PostgreSQLRdbAdaptor";
-			} else if (adapter instanceof SqlServerRdbAdapter) {
-				return "SqlServerRdbAdapter";
-			} else {
-				throw new ApplicationException("unsupport RdbAdapter class : " + adapter.getClass().getName());
-			}
 		}
 
 		private String getUrl() throws Exception {
