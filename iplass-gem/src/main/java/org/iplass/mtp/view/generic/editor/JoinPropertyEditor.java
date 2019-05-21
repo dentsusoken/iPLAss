@@ -20,6 +20,7 @@
 
 package org.iplass.mtp.view.generic.editor;
 
+import java.security.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -62,7 +63,24 @@ public class JoinPropertyEditor extends CustomPropertyEditor {
 			displayNameKey="generic_editor_JoinPropertyEditor_editorDisplaNameKey",
 			required=true,
 			inputType=InputType.REFERENCE,
-			referenceClass=PropertyEditor.class,
+//			referenceClass=PropertyEditor.class,
+			fixedReferenceClass={
+				UserPropertyEditor.class,
+				AutoNumberPropertyEditor.class,
+				BinaryPropertyEditor.class,
+				BooleanPropertyEditor.class,
+				DatePropertyEditor.class,
+				TimePropertyEditor.class,
+				TimestampPropertyEditor.class,
+				ExpressionPropertyEditor.class,
+				DecimalPropertyEditor.class,
+				FloatPropertyEditor.class,
+				IntegerPropertyEditor.class,
+				SelectPropertyEditor.class,
+				StringPropertyEditor.class,
+				LongTextPropertyEditor.class,
+				ReferencePropertyEditor.class
+			},
 			displayOrder=100,
 			description="プロパティの型にあわせたプロパティエディタを選択してください",
 			descriptionKey="generic_editor_JoinPropertyEditor_editorDescriptionKey"

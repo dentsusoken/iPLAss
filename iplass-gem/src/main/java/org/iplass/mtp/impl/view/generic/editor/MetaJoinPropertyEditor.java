@@ -25,10 +25,13 @@ import java.util.List;
 
 import org.iplass.mtp.impl.entity.EntityContext;
 import org.iplass.mtp.impl.entity.EntityHandler;
+import org.iplass.mtp.impl.entity.property.PropertyHandler;
+import org.iplass.mtp.impl.entity.property.ReferencePropertyHandler;
 import org.iplass.mtp.impl.util.ObjectUtil;
 import org.iplass.mtp.view.generic.editor.JoinPropertyEditor;
 import org.iplass.mtp.view.generic.editor.NestProperty;
 import org.iplass.mtp.view.generic.editor.PropertyEditor;
+import org.iplass.mtp.view.generic.editor.ReferencePropertyEditor;
 
 public class MetaJoinPropertyEditor extends MetaCustomPropertyEditor implements HasNestProperty {
 
@@ -138,12 +141,25 @@ public class MetaJoinPropertyEditor extends MetaCustomPropertyEditor implements 
 		format = e.getFormat();
 		editor = MetaPropertyEditor.createInstance(e.getEditor());
 		if (e.getEditor() != null) {
+			fillCustomPropertyEditor(e.getEditor(), e.getPropertyName(), metaContext, entity);
 			editor.applyConfig(e.getEditor());
 		}
 		for (NestProperty nest : e.getProperties()) {
 			MetaNestProperty mnp = new MetaNestProperty();
 			mnp.applyConfig(nest, entity, null);
 			if (mnp.getPropertyId() != null) addProperty(mnp);
+		}
+	}
+
+	private void fillCustomPropertyEditor(PropertyEditor editor, String propName, EntityContext context, EntityHandler entity) {
+		PropertyHandler ph = entity.getProperty(propName, context);
+		if (ph == null) return;
+
+		if (editor instanceof ReferencePropertyEditor) {
+			if (ph instanceof ReferencePropertyHandler) {
+				String objName = ((ReferencePropertyHandler) ph).getReferenceEntityHandler(context).getMetaData().getName();
+				((ReferencePropertyEditor) editor).setObjectName(objName);
+			}
 		}
 	}
 
