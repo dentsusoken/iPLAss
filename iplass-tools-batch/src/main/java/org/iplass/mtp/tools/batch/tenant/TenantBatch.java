@@ -229,13 +229,35 @@ public class TenantBatch extends MtpCuiBase {
 
 		//Admin PW
 		String adminPW = null;
+		boolean invalidateAdminPW = true;
 		do {
-			adminPW = readConsolePassword(rs("TenantBatch.Create.Wizard.inputAdminPWMsg"));
-			if (StringUtil.isEmpty(adminPW)) {
-				logWarn(rs("TenantBatch.Create.Wizard.requiredAdminPWMsg"));
+			do {
+				adminPW = readConsolePassword(rs("TenantBatch.Create.Wizard.inputAdminPWMsg"));
+				if (StringUtil.isEmpty(adminPW)) {
+					logWarn(rs("TenantBatch.Create.Wizard.requiredAdminPWMsg"));
+					adminPW = null;
+				}
+			} while(adminPW == null);
+
+			//Confirm Admin PW
+			String confirmAdminPW = null;
+			do {
+				confirmAdminPW = readConsolePassword(rs("TenantBatch.Create.Wizard.inputReTypeAdminPWMsg"));
+				if (StringUtil.isEmpty(confirmAdminPW)) {
+					logWarn(rs("TenantBatch.Create.Wizard.requiredAdminPWMsg"));
+					confirmAdminPW = null;
+				}
+			} while(confirmAdminPW == null);
+
+			if (!adminPW.equals(confirmAdminPW)) {
+				logWarn(rs("TenantBatch.Create.Wizard.unmatchAdminPWMsg"));
 				adminPW = null;
+				confirmAdminPW = null;
+			} else {
+				invalidateAdminPW = false;
 			}
-		} while(adminPW == null);
+
+		} while(invalidateAdminPW);
 
 		TenantCreateParameter param = new TenantCreateParameter(tenantName, adminUserId, adminPW);
 		param.setTenantUrl(tenantUrl);

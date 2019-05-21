@@ -92,6 +92,7 @@ public class TenantCreateDialog extends MtpJDialogBase {
 	protected JTextField txtAdminUserId;
 
 	protected JPasswordField txtAdminUserPass;
+	protected JPasswordField txtConfirmAdminUserPass;
 
 	protected JTextField txtTopUrl;
 	protected JCheckBox chkTopUrl;
@@ -132,7 +133,7 @@ public class TenantCreateDialog extends MtpJDialogBase {
 	protected void createDialog() {
 
 		setTitle("Create Tenant");
-		setBounds(64, 64, 300, 520);
+		setBounds(64, 64, 300, 530);
 
 		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 		setLocationRelativeTo(null);//中央表示
@@ -215,10 +216,12 @@ public class TenantCreateDialog extends MtpJDialogBase {
 		gridbag.setConstraints(dummy, constraints);
 		inputPane.add(dummy);
 
+		int rowIndex = 0;
+
 		JLabel lblName = new JLabel("*name");
 		txtName = new JTextField();
 		txtName.setPreferredSize(new Dimension(200, 25));
-		createLableText(lblName, txtName, null, 0, gridbag, constraints, inputPane);
+		createLableText(lblName, txtName, null, rowIndex++, gridbag, constraints, inputPane);
 		txtName.addKeyListener(new KeyListener() {
 
 			@Override
@@ -235,15 +238,20 @@ public class TenantCreateDialog extends MtpJDialogBase {
 			}
 		});
 
-		JLabel lblAdminUserId = new JLabel("*AdminUserId");
+		JLabel lblAdminUserId = new JLabel("*Admin User Id");
 		txtAdminUserId = new JTextField();
 		txtAdminUserId.setPreferredSize(new Dimension(200, 25));
-		createLableText(lblAdminUserId, txtAdminUserId, null, 1, gridbag, constraints, inputPane);
+		createLableText(lblAdminUserId, txtAdminUserId, null, rowIndex++, gridbag, constraints, inputPane);
 
-		JLabel lblAdminUserPass = new JLabel("*AdminUserPassword");
+		JLabel lblAdminUserPass = new JLabel("*Admin User Password");
 		txtAdminUserPass = new JPasswordField();
 		txtAdminUserPass.setPreferredSize(new Dimension(200, 25));
-		createLableText(lblAdminUserPass, txtAdminUserPass, null, 2, gridbag, constraints, inputPane);
+		createLableText(lblAdminUserPass, txtAdminUserPass, null, rowIndex++, gridbag, constraints, inputPane);
+
+		JLabel lblConfirmAdminUserPass = new JLabel("*Confirm Password");
+		txtConfirmAdminUserPass = new JPasswordField();
+		txtConfirmAdminUserPass.setPreferredSize(new Dimension(200, 25));
+		createLableText(lblConfirmAdminUserPass, txtConfirmAdminUserPass, null, rowIndex++, gridbag, constraints, inputPane);
 
 		JLabel lblUrl = new JLabel("*url");
 		txtUrl = new JTextField();
@@ -251,7 +259,7 @@ public class TenantCreateDialog extends MtpJDialogBase {
 		txtUrl.setEditable(false);
 		chkUrl = new JCheckBox("default");
 		chkUrl.setSelected(true);
-		createLableText(lblUrl, txtUrl, chkUrl, 3, gridbag, constraints, inputPane);
+		createLableText(lblUrl, txtUrl, chkUrl, rowIndex++, gridbag, constraints, inputPane);
 		chkUrl.addItemListener(new ItemListener() {
 
 			@Override
@@ -271,7 +279,7 @@ public class TenantCreateDialog extends MtpJDialogBase {
 		txtDisplayName.setEditable(false);
 		chkDisplayName = new JCheckBox("default");
 		chkDisplayName.setSelected(true);
-		createLableText(lblDisplayName, txtDisplayName, chkDisplayName, 4, gridbag, constraints, inputPane);
+		createLableText(lblDisplayName, txtDisplayName, chkDisplayName, rowIndex++, gridbag, constraints, inputPane);
 		chkDisplayName.addItemListener(new ItemListener() {
 
 			@Override
@@ -291,7 +299,7 @@ public class TenantCreateDialog extends MtpJDialogBase {
 		txtTopUrl.setEditable(false);
 		chkTopUrl = new JCheckBox("default");
 		chkTopUrl.setSelected(true);
-		createLableText(lblTopUrl, txtTopUrl, chkTopUrl, 5, gridbag, constraints, inputPane);
+		createLableText(lblTopUrl, txtTopUrl, chkTopUrl, rowIndex++, gridbag, constraints, inputPane);
 		chkTopUrl.addItemListener(new ItemListener() {
 
 			@Override
@@ -311,7 +319,7 @@ public class TenantCreateDialog extends MtpJDialogBase {
 		txtUseLanguages.setEditable(false);
 		chkUseLanguages = new JCheckBox("default");
 		chkUseLanguages.setSelected(true);
-		createLableText(lblUseLanguages, txtUseLanguages, chkUseLanguages, 6, gridbag, constraints, inputPane);
+		createLableText(lblUseLanguages, txtUseLanguages, chkUseLanguages, rowIndex++, gridbag, constraints, inputPane);
 		chkUseLanguages.addItemListener(new ItemListener() {
 
 			@Override
@@ -328,14 +336,14 @@ public class TenantCreateDialog extends MtpJDialogBase {
 
 		chkBlankTenant = new JCheckBox("create blank Tenant");
 		chkBlankTenant.setSelected(false);
-		createCheckBoxRow(chkBlankTenant, 7, gridbag, constraints, inputPane);
+		createCheckBoxRow(chkBlankTenant, rowIndex++, gridbag, constraints, inputPane);
 
 		RdbAdapterService adapterService = ServiceRegistry.getRegistry().getService(RdbAdapterService.class);
 		RdbAdapter adapter = adapterService.getRdbAdapter();
 		if (adapter instanceof MysqlRdbAdaptor) {
 			chkMySQLSubPartition = new JCheckBox("MySQL SubPartition Use");
 			chkMySQLSubPartition.setSelected(true);
-			createCheckBoxRow(chkMySQLSubPartition, 8, gridbag, constraints, inputPane);
+			createCheckBoxRow(chkMySQLSubPartition, rowIndex++, gridbag, constraints, inputPane);
 		}
 
 		return inputPane;
@@ -480,6 +488,16 @@ public class TenantCreateDialog extends MtpJDialogBase {
 		if (txtAdminUserPass.getPassword().length == 0) {
 			messages.append(rs("Common.requiredMsg", "AdminUserPassword") + "\n");
 		}
+		if (txtConfirmAdminUserPass.getPassword().length == 0) {
+			messages.append(rs("TenantManagerApp.TenantCreateDialog.unmatchAdminPWMsg") + "\n");
+		} else {
+			String checkPW = new String(txtAdminUserPass.getPassword());
+			String confirmPW = new String(txtConfirmAdminUserPass.getPassword());
+			if (!checkPW.equals(confirmPW)) {
+				messages.append(rs("TenantManagerApp.TenantCreateDialog.unmatchAdminPWMsg") + "\n");
+			}
+		}
+
 		if (txtUrl.getText().trim().isEmpty()) {
 			messages.append(rs("Common.requiredMsg", "url") + "\n");
 		}
