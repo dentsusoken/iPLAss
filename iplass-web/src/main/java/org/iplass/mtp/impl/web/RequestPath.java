@@ -33,6 +33,7 @@ public class RequestPath {
 	public static final String ATTR_NAME = "mtp.requestPath";
 
 	public enum PathType {
+		REJECT,
 		UNKNOWN,
 		REST,
 		ACTION,
@@ -125,7 +126,6 @@ public class RequestPath {
 		}
 
 		if (isValid) {
-
 			if (wfService.isExcludePath(pathWithoutServletContext)) {
 				pathType = PathType.UNKNOWN;
 			} else {
@@ -165,7 +165,9 @@ public class RequestPath {
 					}
 
 					//ReqType
-					if (wfService.isThroughPath(targetPath)) {
+					if (!wfService.isAcceptPathes(targetPath)) {
+						pathType = PathType.REJECT;
+					} else if (wfService.isThroughPath(targetPath)) {
 						pathType = PathType.THROUGH;
 					} else if (wfService.isRestPath(targetPath)) {
 						pathType = PathType.REST;

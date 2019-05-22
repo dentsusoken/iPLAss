@@ -85,7 +85,6 @@ public class DispatcherFilter implements Filter {
 		ResourceHolder.init();//TODO ExecuteContextに紐付け
 
 		try {
-
 			//exclude path
 			if (path.getPathType() == PathType.UNKNOWN) {
 				if(logger.isTraceEnabled()) {
@@ -116,8 +115,14 @@ public class DispatcherFilter implements Filter {
 					logger.debug("do " + req.getRequestURL().toString() + " " + req.getMethod());
 				}
 
-				//EXCLUDE,SOAP以外を処理
+				//tenantContextPathより後を処理
 				switch (path.getPathType()) {
+				case REJECT:
+					if(logger.isDebugEnabled()) {
+						logger.debug("reject URL:" + req.getRequestURI());
+					}
+					res.sendError(HttpServletResponse.SC_NOT_FOUND);
+					return;
 				case REST:
 					req.setAttribute(RequestPath.ATTR_NAME, path);
 					servletContext.getRequestDispatcher(path.getTargetPath()).forward(req, res);
