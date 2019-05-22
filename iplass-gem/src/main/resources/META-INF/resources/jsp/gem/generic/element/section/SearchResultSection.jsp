@@ -32,6 +32,7 @@
 <%@ page import="org.iplass.mtp.entity.definition.EntityDefinition"%>
 <%@ page import="org.iplass.mtp.entity.definition.PropertyDefinition"%>
 <%@ page import="org.iplass.mtp.util.StringUtil"%>
+<%@ page import="org.iplass.mtp.view.generic.editor.JoinPropertyEditor"%>
 <%@ page import="org.iplass.mtp.view.generic.editor.NestProperty"%>
 <%@ page import="org.iplass.mtp.view.generic.editor.ReferencePropertyEditor"%>
 <%@ page import="org.iplass.mtp.view.generic.element.property.PropertyColumn"%>
@@ -205,6 +206,27 @@ $(function() {
 
 			if (isDispProperty(pd, property)) {
 				if (!(pd instanceof ReferenceProperty)) {
+					String sortPropName = StringUtil.escapeHtml(propName);
+					String width = "";
+					if (property.getWidth() > 0) {
+						width = ", width:" + property.getWidth();
+					}
+					String align = "";
+					if (property.getTextAlign() != null) {
+						align = ", align:'" + property.getTextAlign().name().toLowerCase() + "'";
+					}
+					String style = property.getStyle() != null ? property.getStyle() : "";
+					String sortable = "sortable:true";
+					if (!ViewUtil.getEntityViewHelper().isSortable(pd)) {
+						sortable = "sortable:false";
+					}
+%>
+<%-- XSS対応-メタの設定のため対応なし(displayLabel,style) --%>
+	colModel.push({name:"<%=sortPropName%>", index:"<%=sortPropName%>", classes:"<%=style%>", label:"<p class='title'><%=displayLabel%></p>", <%=sortable%><%=width%><%=align%>});
+	
+<%
+				//参照プロパティでJoinPropertyEditorを利用する場合
+				} else if (property.getEditor() instanceof JoinPropertyEditor) {
 					String sortPropName = StringUtil.escapeHtml(propName);
 					String width = "";
 					if (property.getWidth() > 0) {
