@@ -237,8 +237,7 @@ public class SimpleCacheStoreFactory extends AbstractBuiltinCacheStoreFactory {
 
 		@Override
 		public CacheEntry put(CacheEntry entry, boolean isClean) {
-			CacheEntry previous = cache.getIfPresent(entry.getKey());
-			cache.put(entry.getKey(), entry);
+			CacheEntry previous = cache.asMap().put(entry.getKey(), entry);
 			if (previous == null) {
 				notifyPut(entry);
 			} else {
@@ -249,9 +248,8 @@ public class SimpleCacheStoreFactory extends AbstractBuiltinCacheStoreFactory {
 
 		@Override
 		public CacheEntry remove(Object key) {
-			CacheEntry previous = cache.getIfPresent(key);
+			CacheEntry previous = cache.asMap().remove(key);
 			if (previous != null) {
-				cache.invalidate(key);
 				notifyRemoved(previous);
 			}
 			return previous;
@@ -264,15 +262,14 @@ public class SimpleCacheStoreFactory extends AbstractBuiltinCacheStoreFactory {
 					remove(k);
 				}
 			} else {
-				cache.invalidateAll();
+				cache.asMap().clear();
 			}
 		}
 
 		@Override
 		public CacheEntry putIfAbsent(CacheEntry entry) {
-			CacheEntry putted = cache.getIfPresent(entry.getKey());
+			CacheEntry putted = cache.asMap().putIfAbsent(entry.getKey(), entry);
 			if (putted == null) {
-				cache.put(entry.getKey(), entry);
 				notifyPut(entry);
 			}
 			return putted;
@@ -280,12 +277,7 @@ public class SimpleCacheStoreFactory extends AbstractBuiltinCacheStoreFactory {
 
 		@Override
 		public boolean remove(CacheEntry entry) {
-			boolean res = false;
-			CacheEntry previous = cache.getIfPresent(entry.getKey());
-			if (previous != null && previous.equals(entry)) {
-				cache.invalidate(entry.getKey());
-				res = true;
-			}
+			boolean res = cache.asMap().remove(entry.getKey(), entry);
 			if (res) {
 				notifyRemoved(entry);
 			}
@@ -294,9 +286,8 @@ public class SimpleCacheStoreFactory extends AbstractBuiltinCacheStoreFactory {
 
 		@Override
 		public CacheEntry replace(CacheEntry entry) {
-			CacheEntry previous = cache.getIfPresent(entry.getKey());
+			CacheEntry previous = cache.asMap().replace(entry.getKey(), entry);
 			if (previous != null) {
-				cache.put(entry.getKey(), entry);
 				notifyUpdated(previous, entry);
 			}
 			return previous;
@@ -307,12 +298,7 @@ public class SimpleCacheStoreFactory extends AbstractBuiltinCacheStoreFactory {
 			if (!oldEntry.getKey().equals(newEntry.getKey())) {
 				throw new IllegalArgumentException("oldEntry key not equals newEntryKey");
 			}
-			boolean res = false;
-			CacheEntry previous = cache.getIfPresent(newEntry.getKey());
-			if (previous != null && previous.equals(oldEntry)) {
-				cache.put(newEntry.getKey(), newEntry);
-				res = true;
-			}
+			boolean res = cache.asMap().replace(newEntry.getKey(), oldEntry, newEntry);
 			if (res) {
 				notifyUpdated(oldEntry, newEntry);
 			}
@@ -355,7 +341,7 @@ public class SimpleCacheStoreFactory extends AbstractBuiltinCacheStoreFactory {
 
 		@Override
 		protected void removeNullEntry(NullKey key) {
-			cache.invalidate(key);
+			cache.asMap().remove(key);
 		}
 
 		@Override
@@ -376,6 +362,7 @@ public class SimpleCacheStoreFactory extends AbstractBuiltinCacheStoreFactory {
 
 		@Override
 		public void destroy() {
+			cache.asMap().clear();
 			cache.invalidateAll();
 			cache.cleanUp();
 		}
@@ -491,8 +478,7 @@ public class SimpleCacheStoreFactory extends AbstractBuiltinCacheStoreFactory {
 		public CacheEntry put(CacheEntry entry, boolean isClean) {
 			indexLock.writeLock().lock();
 			try {
-				CacheEntry previous = cache.getIfPresent(entry.getKey());
-				cache.put(entry.getKey(), entry);
+				CacheEntry previous = cache.asMap().put(entry.getKey(), entry);
 				if (previous != null) {
 					removeFromIndex(previous, false);
 				}
@@ -512,9 +498,8 @@ public class SimpleCacheStoreFactory extends AbstractBuiltinCacheStoreFactory {
 		public CacheEntry remove(Object key) {
 			indexLock.writeLock().lock();
 			try {
-				CacheEntry previous = cache.getIfPresent(key);
+				CacheEntry previous = cache.asMap().remove(key);
 				if (previous != null) {
-					cache.invalidate(key);
 					removeFromIndex(previous, false);
 					notifyRemoved(previous);
 				}
@@ -533,7 +518,7 @@ public class SimpleCacheStoreFactory extends AbstractBuiltinCacheStoreFactory {
 						remove(k);
 					}
 				} else {
-					cache.invalidateAll();
+					cache.asMap().clear();
 					for (int i = 0; i < indexCache.length; i++) {
 						indexCache[i].clear();
 					}
@@ -547,9 +532,8 @@ public class SimpleCacheStoreFactory extends AbstractBuiltinCacheStoreFactory {
 		public CacheEntry putIfAbsent(CacheEntry entry) {
 			indexLock.writeLock().lock();
 			try {
-				CacheEntry putted = cache.getIfPresent(entry.getKey());
+				CacheEntry putted = cache.asMap().putIfAbsent(entry.getKey(), entry);
 				if (putted == null) {
-					cache.put(entry.getKey(), entry);
 					addToIndex(entry);
 					notifyPut(entry);
 				}
@@ -563,12 +547,7 @@ public class SimpleCacheStoreFactory extends AbstractBuiltinCacheStoreFactory {
 		public boolean remove(CacheEntry entry) {
 			indexLock.writeLock().lock();
 			try {
-				boolean res = false;
-				CacheEntry previous = cache.getIfPresent(entry.getKey());
-				if (previous != null && previous.equals(entry)) {
-					cache.invalidate(entry.getKey());
-					res = true;
-				}
+				boolean res = cache.asMap().remove(entry.getKey(), entry);
 				if (res) {
 					removeFromIndex(entry, false);
 					notifyRemoved(entry);
@@ -583,9 +562,8 @@ public class SimpleCacheStoreFactory extends AbstractBuiltinCacheStoreFactory {
 		public CacheEntry replace(CacheEntry entry) {
 			indexLock.writeLock().lock();
 			try {
-				CacheEntry previous = cache.getIfPresent(entry.getKey());
+				CacheEntry previous = cache.asMap().replace(entry.getKey(), entry);
 				if (previous != null) {
-					cache.put(entry.getKey(), entry);
 					removeFromIndex(previous, false);
 					addToIndex(entry);
 					notifyUpdated(previous, entry);
@@ -603,12 +581,7 @@ public class SimpleCacheStoreFactory extends AbstractBuiltinCacheStoreFactory {
 			}
 			indexLock.writeLock().lock();
 			try {
-				boolean res = false;
-				CacheEntry previous = cache.getIfPresent(newEntry.getKey());
-				if (previous != null && previous.equals(oldEntry)) {
-					cache.put(newEntry.getKey(), newEntry);
-					res = true;
-				}
+				boolean res = cache.asMap().replace(newEntry.getKey(), oldEntry, newEntry);
 				if (res) {
 					removeFromIndex(oldEntry, false);
 					addToIndex(newEntry);
@@ -712,7 +685,7 @@ public class SimpleCacheStoreFactory extends AbstractBuiltinCacheStoreFactory {
 
 		@Override
 		protected void removeNullEntry(NullKey key) {
-			cache.invalidate(key);
+			cache.asMap().remove(key);
 		}
 
 		public String trace() {
@@ -745,6 +718,7 @@ public class SimpleCacheStoreFactory extends AbstractBuiltinCacheStoreFactory {
 		public void destroy() {
 			indexLock.writeLock().lock();
 			try {
+				cache.asMap().clear();
 				cache.invalidateAll();
 				cache.cleanUp();
 				for (int i = 0; i < indexCache.length; i++) {
