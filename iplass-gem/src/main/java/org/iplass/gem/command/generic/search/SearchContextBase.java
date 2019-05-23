@@ -571,6 +571,10 @@ public abstract class SearchContextBase implements SearchContext {
 								addSearchProperty(select, nestPropName, rpe, _nest.toArray(new NestProperty[_nest.size()]));
 							}
 							addDisplayLabelProperty(select, nestPropName, rpe);
+						} else if (np.getEditor() instanceof JoinPropertyEditor) {
+							JoinPropertyEditor jpe = (JoinPropertyEditor) np.getEditor();
+							List<NestProperty> _nest = jpe.getProperties();
+							addSearchProperty(select, nestPropName, jpe.getEditor(), _nest.toArray(new NestProperty[_nest.size()]));
 						}
 					}
 				}
