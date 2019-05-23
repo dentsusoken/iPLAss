@@ -71,6 +71,7 @@ import org.iplass.mtp.view.generic.FormViewUtil;
 import org.iplass.mtp.view.generic.OutputType;
 import org.iplass.mtp.view.generic.SearchFormView;
 import org.iplass.mtp.view.generic.common.AutocompletionHandleException;
+import org.iplass.mtp.view.generic.editor.JoinPropertyEditor;
 import org.iplass.mtp.view.generic.editor.NestProperty;
 import org.iplass.mtp.view.generic.editor.PropertyEditor;
 import org.iplass.mtp.view.generic.editor.ReferencePropertyEditor;
@@ -192,6 +193,11 @@ public class EntityViewManagerImpl extends AbstractTypedDefinitionManager<Entity
 						return getEditor(subPropName, property.getEditor());
 					}
 				}
+				//JoinPropertyEditorからネスとされたPropertyEditorを探します。
+				if (property.getEditor() instanceof JoinPropertyEditor) {
+					PropertyEditor editor = getEditor(currentPropName, property.getEditor());
+					if (editor != null) return editor;
+				}
 			} else if (element instanceof DefaultSection) {
 				PropertyEditor nest = getEditor((DefaultSection)element, currentPropName, subPropName);
 				if (nest != null) {
@@ -233,13 +239,19 @@ public class EntityViewManagerImpl extends AbstractTypedDefinitionManager<Entity
 	}
 
 	private PropertyEditor getEditor(String propName, PropertyEditor editor) {
+		List<NestProperty> nestProperties = null;
 		// nest構造のPropertyEditorを取得する
-		if (!(editor instanceof ReferencePropertyEditor)) {
+		if (editor instanceof ReferencePropertyEditor) {
+			ReferencePropertyEditor refEditor = (ReferencePropertyEditor) editor;
+			nestProperties = refEditor.getNestProperties();
+		} else if (editor instanceof JoinPropertyEditor) {
+			JoinPropertyEditor joinEditor = (JoinPropertyEditor) editor;
+			nestProperties = joinEditor.getProperties();
+		} else {
 			return null;
 		}
 
-		ReferencePropertyEditor refEditor = (ReferencePropertyEditor) editor;
-		if (refEditor.getNestProperties() == null || refEditor.getNestProperties().isEmpty()) {
+		if (nestProperties == null || nestProperties.isEmpty()) {
 			return null;
 		}
 
@@ -252,7 +264,7 @@ public class EntityViewManagerImpl extends AbstractTypedDefinitionManager<Entity
 			subPropName = propName.substring(propName.indexOf(".") + 1);
 		}
 
-		for (NestProperty property : refEditor.getNestProperties()) {
+		for (NestProperty property : nestProperties) {
 			if (property.getPropertyName().equals(currentPropName)) {
 				if (subPropName == null) {
 					property.getEditor().setPropertyName(property.getPropertyName());	//念のためセット
@@ -260,6 +272,11 @@ public class EntityViewManagerImpl extends AbstractTypedDefinitionManager<Entity
 				} else {
 					return getEditor(subPropName, property.getEditor());
 				}
+			}
+			// JoinPropertyEditorからネスとされたPropertyEditorを探します。
+			if (property.getEditor() instanceof JoinPropertyEditor) {
+				PropertyEditor nestEditor = getEditor(currentPropName, property.getEditor());
+				if (nestEditor != null) return nestEditor;
 			}
 		}
 		return null;
@@ -287,6 +304,11 @@ public class EntityViewManagerImpl extends AbstractTypedDefinitionManager<Entity
 				} else {
 					return getEditor(subPropName, property.getBulkUpdateEditor());
 				}
+			}
+			//JoinPropertyEditorからネストされたPropertyEditorを探します。
+			if (property.getBulkUpdateEditor() instanceof JoinPropertyEditor) {
+				PropertyEditor editor = getEditor(currentPropName, property.getBulkUpdateEditor());
+				if (editor != null) return editor;
 			}
 		}
 		return null;

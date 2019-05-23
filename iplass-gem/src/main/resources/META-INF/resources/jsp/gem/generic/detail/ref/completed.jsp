@@ -27,6 +27,7 @@
 <%@ page import="org.iplass.mtp.ManagerLocator"%>
 <%@ page import="org.iplass.mtp.view.generic.EntityViewManager"%>
 <%@ page import="org.iplass.mtp.view.generic.editor.PropertyEditor" %>
+<%@ page import="org.iplass.mtp.view.generic.editor.JoinPropertyEditor" %>
 <%@ page import="org.iplass.mtp.view.generic.editor.ReferencePropertyEditor"%>
 <%@ page import="org.iplass.gem.command.generic.detail.DetailFormViewData" %>
 <%@ page import="org.iplass.gem.command.Constants"%>
@@ -36,10 +37,15 @@
 	String getDisplayLabelItem(String defName, String viewName, String propName) {
 		EntityViewManager evm = ManagerLocator.getInstance().getManager(EntityViewManager.class);
 		PropertyEditor editor = evm.getPropertyEditor(defName, "detail", viewName, propName);
-		if (editor != null && editor instanceof ReferencePropertyEditor) {
+		if (editor instanceof ReferencePropertyEditor) {
 			ReferencePropertyEditor rpe = (ReferencePropertyEditor) editor;
 			if (rpe.getDisplayLabelItem() != null) {
 				return rpe.getDisplayLabelItem();
+			}
+		} else if (editor instanceof JoinPropertyEditor) {
+			JoinPropertyEditor jpe = (JoinPropertyEditor) editor;
+			if (jpe.getEditor() instanceof ReferencePropertyEditor) {
+				return ((ReferencePropertyEditor) jpe.getEditor()).getDisplayLabelItem();
 			}
 		}
 		return null;

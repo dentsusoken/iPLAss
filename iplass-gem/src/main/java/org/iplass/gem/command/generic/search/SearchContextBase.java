@@ -65,6 +65,7 @@ import org.iplass.mtp.view.generic.SearchQueryInterrupter.SearchQueryType;
 import org.iplass.mtp.view.generic.editor.DateRangePropertyEditor;
 import org.iplass.mtp.view.generic.editor.JoinPropertyEditor;
 import org.iplass.mtp.view.generic.editor.NestProperty;
+import org.iplass.mtp.view.generic.editor.PropertyEditor;
 import org.iplass.mtp.view.generic.editor.ReferencePropertyEditor;
 import org.iplass.mtp.view.generic.editor.UserPropertyEditor;
 import org.iplass.mtp.view.generic.element.property.PropertyColumn;
@@ -143,16 +144,12 @@ public abstract class SearchContextBase implements SearchContext {
 				String propName = p.getPropertyName();
 				if (p.getEditor() instanceof ReferencePropertyEditor) {
 					List<NestProperty> nest = ((ReferencePropertyEditor)p.getEditor()).getNestProperties();
-					addSearchProperty(select, propName, nest.toArray(new NestProperty[nest.size()]));
-					String dispLabelPropName = ((ReferencePropertyEditor) p.getEditor()).getDisplayLabelItem();
-					if (dispLabelPropName != null) {
-						addSearchProperty(select, propName, dispLabelPropName);
-					}
+					addSearchProperty(select, propName, p.getEditor(), nest.toArray(new NestProperty[nest.size()]));
 				} else if (p.getEditor() instanceof JoinPropertyEditor) {
-					addSearchProperty(select, propName);
 					JoinPropertyEditor je = (JoinPropertyEditor) p.getEditor();
+					addSearchProperty(select, propName, je.getEditor());
 					for (NestProperty nest : je.getProperties()) {
-						addSearchProperty(select, nest.getPropertyName());
+						addSearchProperty(select, nest.getPropertyName(), nest.getEditor());
 					}
 				} else if (p.getEditor() instanceof DateRangePropertyEditor) {
 					addSearchProperty(select, propName);
@@ -525,6 +522,10 @@ public abstract class SearchContextBase implements SearchContext {
 	 * @param nest 参照先Entityのプロパティ
 	 */
 	protected void addSearchProperty(ArrayList<String> select, String propName, NestProperty... nest) {
+		addSearchProperty(select, propName, null, nest);
+	}
+
+	protected void addSearchProperty(ArrayList<String> select, String propName, PropertyEditor editor, NestProperty... nest) {
 		PropertyDefinition pd = getPropertyDefinition(propName);
 		if (pd instanceof ReferenceProperty) {
 			if (!select.contains(propName + "." + Entity.NAME)) {
@@ -535,6 +536,9 @@ public abstract class SearchContextBase implements SearchContext {
 			}
 			if (!select.contains(propName + "." + Entity.VERSION)) {
 				select.add(propName + "." + Entity.VERSION);
+			}
+			if (editor instanceof ReferencePropertyEditor) {
+				addDisplayLabelProperty(select, propName, (ReferencePropertyEditor) editor);
 			}
 			if (nest != null && nest.length > 0) {
 				EntityDefinition red = getReferenceEntityDefinition((ReferenceProperty) pd);
@@ -564,12 +568,9 @@ public abstract class SearchContextBase implements SearchContext {
 							ReferencePropertyEditor rpe = (ReferencePropertyEditor) np.getEditor();
 							if (!rpe.getNestProperties().isEmpty()) {
 								List<NestProperty> _nest = rpe.getNestProperties();
-								addSearchProperty(select, nestPropName, _nest.toArray(new NestProperty[_nest.size()]));
-								String dispLabelPropName = rpe.getDisplayLabelItem();
-								if (dispLabelPropName != null) {
-									addSearchProperty(select, propName, dispLabelPropName);
-								}
+								addSearchProperty(select, nestPropName, rpe, _nest.toArray(new NestProperty[_nest.size()]));
 							}
+							addDisplayLabelProperty(select, nestPropName, rpe);
 						}
 					}
 				}
@@ -579,11 +580,13 @@ public abstract class SearchContextBase implements SearchContext {
 		}
 	}
 
-	protected void addSearchProperty(ArrayList<String> select, String propName, String refEntityPropName) {
+	protected void addDisplayLabelProperty(ArrayList<String> select, String propName, ReferencePropertyEditor rpe) {
+		if (rpe.getDisplayLabelItem() == null) return;
+
 		PropertyDefinition pd = getPropertyDefinition(propName);
 		if (pd instanceof ReferenceProperty) {
-			if (!select.contains(propName + "." + refEntityPropName)) {
-				select.add(propName + "." + refEntityPropName);
+			if (!select.contains(propName + "." + rpe.getDisplayLabelItem())) {
+				select.add(propName + "." + rpe.getDisplayLabelItem());
 			}
 		}
 	}

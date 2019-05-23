@@ -37,6 +37,7 @@ import org.iplass.mtp.entity.query.condition.expr.Paren;
 import org.iplass.mtp.entity.query.condition.predicate.Equals;
 import org.iplass.mtp.util.StringUtil;
 import org.iplass.mtp.view.generic.EntityViewManager;
+import org.iplass.mtp.view.generic.editor.JoinPropertyEditor;
 import org.iplass.mtp.view.generic.editor.PropertyEditor;
 import org.iplass.mtp.view.generic.editor.ReferencePropertyEditor;
 import org.iplass.mtp.webapi.definition.MethodType;
@@ -104,9 +105,14 @@ public final class GetEntityNameListCommand implements Command {
 	private String getDisplayLabelItem(String defName, String viewName, String propName, String viewType) {
 		EntityViewManager evm = ManagerLocator.getInstance().getManager(EntityViewManager.class);
 		PropertyEditor editor = evm.getPropertyEditor(defName, viewType, viewName, propName);
-		if (editor != null && editor instanceof ReferencePropertyEditor) {
+		if (editor instanceof ReferencePropertyEditor) {
 			ReferencePropertyEditor rpe = (ReferencePropertyEditor) editor;
 			return rpe.getDisplayLabelItem();
+		} else if (editor instanceof JoinPropertyEditor) {
+			JoinPropertyEditor jpe = (JoinPropertyEditor) editor;
+			if (jpe.getEditor() instanceof ReferencePropertyEditor) {
+				return ((ReferencePropertyEditor) jpe.getEditor()).getDisplayLabelItem();
+			}
 		}
 		// エディター定義が見つからなかった場合、空文字を返します。
 		return "";
