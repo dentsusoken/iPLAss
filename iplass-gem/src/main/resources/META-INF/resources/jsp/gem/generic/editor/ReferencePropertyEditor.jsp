@@ -153,6 +153,8 @@
 							request.setAttribute(Constants.EDITOR_EDITOR, npEditor);
 							request.setAttribute(Constants.EDITOR_PROP_VALUE, rValue);
 							request.setAttribute(Constants.EDITOR_PROPERTY_DEFINITION, _pd);
+							request.setAttribute(Constants.EDITOR_REF_NEST, true);//2重ネスト防止用フラグ
+							request.setAttribute(Constants.EDITOR_REF_NEST_VALUE, entity);//JoinProperty用
 							String path =  EntityViewUtil.getJspPath(npEditor, ViewConst.DESIGN_TYPE_GEM);
 							if (path != null) {
 								//プロパティ単位でhtmlを保持する仕組みの為、ネストの項目がうまく表示されない
@@ -170,6 +172,8 @@
 								}
 
 							}
+							request.removeAttribute(Constants.EDITOR_REF_NEST);
+							request.removeAttribute(Constants.EDITOR_REF_NEST_VALUE);
 						}
 					}
 				}
