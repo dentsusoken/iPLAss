@@ -196,7 +196,12 @@ public class EntityViewManagerImpl extends AbstractTypedDefinitionManager<Entity
 				//JoinPropertyEditorからネスとされたPropertyEditorを探します。
 				if (property.getEditor() instanceof JoinPropertyEditor) {
 					PropertyEditor editor = getEditor(currentPropName, property.getEditor());
-					if (editor != null) return editor;
+					if (editor == null) continue;
+					if (subPropName == null) {
+						return editor;
+					} else {
+						return getEditor(subPropName, editor);
+					}
 				}
 			} else if (element instanceof DefaultSection) {
 				PropertyEditor nest = getEditor((DefaultSection)element, currentPropName, subPropName);
@@ -276,7 +281,12 @@ public class EntityViewManagerImpl extends AbstractTypedDefinitionManager<Entity
 			// JoinPropertyEditorからネスとされたPropertyEditorを探します。
 			if (property.getEditor() instanceof JoinPropertyEditor) {
 				PropertyEditor nestEditor = getEditor(currentPropName, property.getEditor());
-				if (nestEditor != null) return nestEditor;
+				if (nestEditor == null) continue;
+				if (subPropName == null) {
+					return nestEditor;
+				} else {
+					return getEditor(subPropName, nestEditor);
+				}
 			}
 		}
 		return null;
@@ -308,7 +318,12 @@ public class EntityViewManagerImpl extends AbstractTypedDefinitionManager<Entity
 			//JoinPropertyEditorからネストされたPropertyEditorを探します。
 			if (property.getBulkUpdateEditor() instanceof JoinPropertyEditor) {
 				PropertyEditor editor = getEditor(currentPropName, property.getBulkUpdateEditor());
-				if (editor != null) return editor;
+				if (editor == null) continue;
+				if (subPropName == null) {
+					return editor;
+				} else {
+					return getEditor(subPropName, editor);
+				}
 			}
 		}
 		return null;
