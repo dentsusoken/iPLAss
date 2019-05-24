@@ -241,9 +241,6 @@
 			} else {
 				entity = em.load(refEntity.getOid(), refEntity.getVersion(), refDefName, leContext.getLoadOption());
 			}
-			if (entity != null && editor.getDisplayLabelItem() != null) {
-				loadReferenceEntityProperty(entity, editor.getDisplayLabelItem());
-			}
 			handler.afterLoadReference(entity, loadOption, pd, LoadType.VIEW);
 			return entity;
 		} else {
