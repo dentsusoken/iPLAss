@@ -38,7 +38,7 @@ export OUT_FILE=
 # ----------------------------------------------------
 
 # APP Class
-export EXEC_APP=org.iplass.mtp.tools.batch.lob.LobStoreMigrator
+export EXEC_APP=org.iplass.mtp.tools.batch.config.ServiceConfigViewer
 
 # App Arguments
 export APP_ARGS="-m ${MODE} -o ${OUT_FILE}"
