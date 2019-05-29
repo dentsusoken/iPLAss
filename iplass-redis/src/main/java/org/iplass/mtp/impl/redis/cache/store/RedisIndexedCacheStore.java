@@ -25,7 +25,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.iplass.mtp.MtpException;
 import org.iplass.mtp.impl.cache.store.CacheEntry;
 import org.iplass.mtp.impl.cache.store.CacheStoreFactory;
 import org.iplass.mtp.impl.cache.store.event.CacheEventListener;
@@ -102,35 +101,29 @@ public class RedisIndexedCacheStore extends RedisCacheStoreBase {
 
 	@Override
 	public CacheEntry put(CacheEntry entry, boolean clean) {
-		try {
-			wrapped.multi();
-			CacheEntry previous = wrapped.put(redisIndexCmds, entry, clean);
-			if (previous != null) {
-				removeFromIndex(previous);
-			}
-			addToIndex(entry);
-			wrapped.exec();
-			return previous;
-		} catch (Exception e) {
-			wrapped.discard();
-			throw new MtpException(e);
+		CacheEntry previous = wrapped.put(redisIndexCmds, entry, false);
+		if (previous != null) {
+			removeFromIndex(previous);
 		}
+		addToIndex(entry);
+		wrapped.exec();
+		if (previous == null) {
+			wrapped.notifyPut(entry);
+		} else {
+			wrapped.notifyUpdated(previous, entry);
+		}
+		return previous;
 	}
 
 	@Override
 	public CacheEntry putIfAbsent(CacheEntry entry) {
-		try {
-			wrapped.multi();
-			CacheEntry previous = wrapped.putIfAbsent(redisIndexCmds, entry);
-			if (previous == null) {
-				addToIndex(entry);
-			}
+		CacheEntry previous = wrapped.putIfAbsent(redisIndexCmds, entry, false);
+		if (previous == null) {
+			addToIndex(entry);
 			wrapped.exec();
-			return previous;
-		} catch (Exception e) {
-			wrapped.discard();
-			throw new MtpException(e);
+			wrapped.notifyPut(entry);
 		}
+		return previous;
 	}
 
 	@Override
@@ -140,73 +133,54 @@ public class RedisIndexedCacheStore extends RedisCacheStoreBase {
 
 	@Override
 	public CacheEntry remove(Object key) {
-		try {
-			wrapped.multi();
-			CacheEntry previous = wrapped.remove(redisIndexCmds, key);
-			if (previous != null) {
-				removeFromIndex(previous);
-			}
+		CacheEntry previous = wrapped.remove(redisIndexCmds, key, false);
+		if (previous != null) {
+			removeFromIndex(previous);
 			wrapped.exec();
-			return previous;
-		} catch (Exception e) {
-			wrapped.discard();
-			throw new MtpException(e);
+			wrapped.notifyRemoved(previous);
 		}
+		return previous;
 	}
 
 	@Override
 	public boolean remove(CacheEntry entry) {
-		try {
-			wrapped.multi();
-			boolean removed = wrapped.remove(redisIndexCmds, entry);
-			if (removed) {
-				removeFromIndex(entry);
-			}
+		CacheEntry previous = wrapped.remove(redisIndexCmds, entry, false);
+		if (previous != null) {
+			removeFromIndex(entry);
 			wrapped.exec();
-			return removed;
-		} catch (Exception e) {
-			wrapped.discard();
-			throw new MtpException(e);
+			wrapped.notifyRemoved(previous);
+			return true;
 		}
+		return false;
 	}
 
 	@Override
 	public CacheEntry replace(CacheEntry entry) {
-		try {
-			wrapped.multi();
-			CacheEntry previous = wrapped.replace(redisIndexCmds, entry);
-			if (previous != null) {
-				removeFromIndex(previous);
-				addToIndex(entry);
-			}
+		CacheEntry previous = wrapped.replace(redisIndexCmds, entry, false);
+		if (previous != null) {
+			removeFromIndex(previous);
+			addToIndex(entry);
 			wrapped.exec();
-			return previous;
-		} catch (Exception e) {
-			wrapped.discard();
-			throw new MtpException(e);
+			wrapped.notifyUpdated(previous, entry);
 		}
+		return previous;
 	}
 
 	@Override
 	public boolean replace(CacheEntry oldEntry, CacheEntry newEntry) {
-		try {
-			wrapped.multi();
-			boolean replaced = wrapped.replace(redisIndexCmds, oldEntry, newEntry);
-			if (replaced) {
-				removeFromIndex(oldEntry);
-				addToIndex(newEntry);
-			}
+		boolean previous = wrapped.replace(redisIndexCmds, oldEntry, newEntry, false);
+		if (previous) {
+			removeFromIndex(oldEntry);
+			addToIndex(newEntry);
 			wrapped.exec();
-			return replaced;
-		} catch (Exception e) {
-			wrapped.discard();
-			throw new MtpException(e);
+			wrapped.notifyUpdated(oldEntry, newEntry);
 		}
+		return previous;
 	}
 
 	@Override
 	public void removeAll() {
-		wrapped.removeAll();
+		keySet().forEach(key -> remove(key));
 	}
 
 	@Override
@@ -214,12 +188,12 @@ public class RedisIndexedCacheStore extends RedisCacheStoreBase {
 		List<String> keys = redisIndexCmds.keys("*");
 		if (keys != null && !keys.isEmpty()) {
 			List<Object> keyList = new ArrayList<Object>();
-			for (String key : keys) {
+			keys.forEach(key -> {
 				Object keyObj = decodeBase64(key);
 				if (!(keyObj instanceof IndexKey)) {	// IndexのKeyは除く
 					keyList.add(keyObj);
 				}
-			}
+			});
 			return keyList;
 		}
 		return Collections.emptyList();
@@ -242,13 +216,13 @@ public class RedisIndexedCacheStore extends RedisCacheStoreBase {
 		List<Object> keyList = redisIndexCmds.lrange(encodeBase64(new IndexKey(indexKey, indexValue)), 0L, -1L);
 		if (keyList != null && !keyList.isEmpty()) {
 			List<CacheEntry> entryList = new ArrayList<CacheEntry>();
-			for (Object key : keyList) {
+			keyList.forEach(key -> {
 				if (!isExpired(key)) {
 					entryList.add(wrapped.get(key));
 				} else {
 					removeFromIndex(indexKey, indexValue, key);
 				}
-			}
+			});
 			return entryList;
 		}
 		return Collections.emptyList();
@@ -257,9 +231,7 @@ public class RedisIndexedCacheStore extends RedisCacheStoreBase {
 	@Override
 	public List<CacheEntry> removeByIndex(int indexKey, Object indexValue) {
 		List<CacheEntry> entryList = getListByIndex(indexKey, indexValue);
-		for (CacheEntry entry : entryList) {
-			remove(entry.getKey());
-		}
+		entryList.forEach(entry -> remove(entry.getKey()));
 		return entryList;
 	}
 
@@ -343,16 +315,9 @@ public class RedisIndexedCacheStore extends RedisCacheStoreBase {
 
 	private void removeAllFromIndex(Object key) {
 		List<String> iKeyList = redisIndexCmds.keys("*");
-		try {
-			redisIndexCmds.multi();
-			for (String iKey : iKeyList) {
-				redisIndexCmds.lrem(iKey, 0, key);
-			}
-			redisIndexCmds.exec();
-		} catch (Exception e) {
-			redisIndexCmds.discard();
-			throw new MtpException(e);
-		}
+		redisIndexCmds.multi();
+		iKeyList.forEach(iKey -> redisIndexCmds.lrem(iKey, 0, key));
+		redisIndexCmds.exec();
 	}
 
 	private boolean isExpired(Object key) {

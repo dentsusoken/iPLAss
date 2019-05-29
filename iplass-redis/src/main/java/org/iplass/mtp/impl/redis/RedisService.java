@@ -34,9 +34,7 @@ public class RedisService implements Service {
 	@Override
 	public void init(Config config) {
 		List<RedisServer> serverList = config.getValues("redisServers", RedisServer.class);
-		for (RedisServer server : serverList) {
-			servers.put(server.getServerName(), server);
-		}
+		serverList.forEach(server -> servers.put(server.getServerName(), server));
 	}
 
 	@Override

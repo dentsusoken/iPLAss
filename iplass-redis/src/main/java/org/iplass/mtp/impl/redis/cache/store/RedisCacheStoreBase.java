@@ -91,46 +91,35 @@ public abstract class RedisCacheStoreBase implements CacheStore {
 	}
 
 	protected void notifyRemoved(CacheEntry entry) {
-		if (listeners != null) {
+		if (hasListener()) {
 			CacheRemoveEvent e = new CacheRemoveEvent(entry);
-			for (CacheEventListener l: listeners) {
-				l.removed(e);
-			}
+			listeners.forEach(listener -> listener.removed(e));
 		}
 	}
 
 	protected void notifyPut(CacheEntry entry) {
-		if (listeners != null) {
+		if (hasListener()) {
 			CacheCreateEvent e = new CacheCreateEvent(entry);
-			for (CacheEventListener l: listeners) {
-				l.created(e);
-			}
+			listeners.forEach(listener -> listener.created(e));
 		}
 	}
 
 	protected void notifyUpdated(CacheEntry preEntry, CacheEntry entry) {
-		if (listeners != null) {
+		if (hasListener()) {
 			CacheUpdateEvent e = new CacheUpdateEvent(preEntry, entry);
-			for (CacheEventListener l: listeners) {
-				l.updated(e);
-			}
+			listeners.forEach(listener -> listener.updated(e));
 		}
 	}
 
 	protected void notifyInvalidated(CacheEntry entry) {
-		if (listeners != null) {
+		if (hasListener()) {
 			CacheInvalidateEvent e = new CacheInvalidateEvent(entry);
-			for (CacheEventListener l: listeners) {
-				l.invalidated(e);
-			}
+			listeners.forEach(listener -> listener.invalidated(e));
 		}
 	}
 
 	protected boolean hasListener() {
-		if (listeners == null) {
-			return false;
-		}
-		return listeners.size() > 0;
+		return listeners != null ? listeners.size() > 0 : false;
 	}
 
 	protected String encodeBase64(Object obj) {

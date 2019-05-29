@@ -28,6 +28,7 @@ import org.iplass.mtp.impl.cache.store.CacheEntry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import io.lettuce.core.TransactionResult;
 import io.lettuce.core.api.StatefulRedisConnection;
 import io.lettuce.core.api.sync.RedisCommands;
 import io.lettuce.core.pubsub.RedisPubSubListener;
@@ -91,18 +92,27 @@ public class RedisCacheStore extends RedisCacheStoreBase {
 		psCmds.subscribe("__keyevent@0__:expired");		// Expiredイベントのみ受信、DB番号は0固定
 	}
 
-	boolean isExist(RedisCommands<String, Object> readCmds, String... keys) {
+	private boolean isExist(RedisCommands<String, Object> readCmds, String... keys) {
 		return readCmds.exists(keys).compareTo(Long.valueOf(0L)) > 0;
 	}
 
-	CacheEntry put(RedisCommands<String, Object> readCmds, CacheEntry entry, boolean clean) {
+	CacheEntry put(RedisCommands<String, Object> readCmds, CacheEntry entry, boolean doExec) {
 		String strKey = encodeBase64(entry.getKey());
+		watch(strKey);
 		CacheEntry previous = (CacheEntry) readCmds.get(strKey);
+		multi();
 		if (getTimeToLive() > 0) {
 			redisCmds.setex(strKey, getTimeToLive(), entry);
 		} else {
 			redisCmds.set(strKey, entry);
 		}
+		if (doExec) { exec(); }
+		return previous;
+	}
+
+	@Override
+	public CacheEntry put(CacheEntry entry, boolean clean) {
+		CacheEntry previous = put(redisCmds, entry, true);
 		if (previous == null) {
 			notifyPut(entry);
 		} else {
@@ -111,124 +121,148 @@ public class RedisCacheStore extends RedisCacheStoreBase {
 		return previous;
 	}
 
-	@Override
-	public CacheEntry put(CacheEntry entry, boolean clean) {
-		return put(redisCmds, entry, clean);
-	}
-
-	CacheEntry putIfAbsent(RedisCommands<String, Object> readCmds, CacheEntry entry) {
+	CacheEntry putIfAbsent(RedisCommands<String, Object> readCmds, CacheEntry entry, boolean doExec) {
 		String strKey = encodeBase64(entry.getKey());
+		watch(strKey);
 		CacheEntry previous = (CacheEntry) readCmds.get(strKey);
 		if (previous == null) {
+			multi();
 			if (getTimeToLive() > 0) {
 				redisCmds.setex(strKey, getTimeToLive(), entry);
 			} else {
 				redisCmds.set(strKey, entry);
 			}
-			notifyPut(entry);
+			if (doExec) { exec(); }
+		} else {
+			unwatch();
 		}
 		return previous;
 	}
 
 	@Override
 	public CacheEntry putIfAbsent(CacheEntry entry) {
-		return putIfAbsent(redisCmds, entry);
+		CacheEntry previous = putIfAbsent(redisCmds, entry, true);
+		if (previous == null) {
+			notifyPut(entry);
+		}
+		return previous;
 	}
 
 	@Override
 	public CacheEntry get(Object key) {
-		if (key == null) {
-			return null;
-		}
-		return (CacheEntry) redisCmds.get(encodeBase64(key));
+		return key != null ? (CacheEntry) redisCmds.get(encodeBase64(key)) : null;
 	}
 
-	private CacheEntry remove(RedisCommands<String, Object> readCmds, String key) {
+	private CacheEntry remove(RedisCommands<String, Object> readCmds, String key, boolean doExec) {
+		watch(key);
 		if (isExist(readCmds, key)) {
 			CacheEntry previous = (CacheEntry) readCmds.get(key);
+			multi();
 			redisCmds.del(key);
-			notifyRemoved(previous);
+			if (doExec) { exec(); }
 			return previous;
 		}
+		unwatch();
 		return null;
 	}
 
-	CacheEntry remove(RedisCommands<String, Object> readCmds, Object key) {
-		if (key == null) {
-			return null;
-		}
-		return remove(readCmds, encodeBase64(key));
+	CacheEntry remove(RedisCommands<String, Object> readCmds, Object key, boolean doExec) {
+		if (key == null) { return null; }
+		CacheEntry previous = remove(readCmds, encodeBase64(key), doExec);
+		return previous;
 	}
 
 	@Override
 	public CacheEntry remove(Object key) {
-		return remove(redisCmds, key);
+		CacheEntry previous = remove(redisCmds, key, true);
+		if (previous != null) {
+			notifyRemoved(previous);
+		}
+		return previous;
 	}
 
-	boolean remove(RedisCommands<String, Object> readCmds, CacheEntry entry) {
+	CacheEntry remove(RedisCommands<String, Object> readCmds, CacheEntry entry, boolean doExec) {
 		String strKey = encodeBase64(entry.getKey());
+		watch(strKey);
 		if (isExist(readCmds, strKey)) {
 			CacheEntry previous = (CacheEntry) readCmds.get(strKey);
 			if (previous != null && previous.equals(entry)) {
+				multi();
 				redisCmds.del(strKey);
-				notifyRemoved(previous);
-				return true;
+				if (doExec) { exec(); }
+				return previous;
 			}
 		}
-		return false;
-	}
-
-	@Override
-	public boolean remove(CacheEntry entry) {
-		return remove(redisCmds, entry);
-	}
-
-	CacheEntry replace(RedisCommands<String, Object> readCmds, CacheEntry entry) {
-		String strKey = encodeBase64(entry.getKey());
-		if (isExist(readCmds, strKey)) {
-			CacheEntry preEntry = (CacheEntry) readCmds.get(strKey);
-			if (getTimeToLive() > 0) {
-				redisCmds.setex(strKey, getTimeToLive(), entry);
-			} else {
-				redisCmds.set(strKey, entry);
-			}
-			notifyUpdated(preEntry, entry);
-			return preEntry;
-		}
+		unwatch();
 		return null;
 	}
 
 	@Override
-	public CacheEntry replace(CacheEntry entry) {
-		return replace(redisCmds, entry);
-	}
-
-	boolean replace(RedisCommands<String, Object> readCmds, CacheEntry oldEntry, CacheEntry newEntry) {
-		if (!oldEntry.getKey().equals(newEntry.getKey())) {
-			throw new IllegalArgumentException("oldEntry key not equals newEntry key");
-		}
-		String strKey = encodeBase64(newEntry.getKey());
-		if (isExist(readCmds, strKey) && oldEntry.equals(readCmds.get(strKey))) {
-			replace(readCmds, newEntry);
+	public boolean remove(CacheEntry entry) {
+		CacheEntry previous = remove(redisCmds, entry, true);
+		if (previous != null && previous.equals(entry)) {
+			notifyRemoved(previous);
 			return true;
 		}
 		return false;
 	}
 
+	CacheEntry replace(RedisCommands<String, Object> readCmds, CacheEntry entry, boolean doExec) {
+		String strKey = encodeBase64(entry.getKey());
+		watch(strKey);
+		if (isExist(readCmds, strKey)) {
+			CacheEntry preEntry = (CacheEntry) readCmds.get(strKey);
+			multi();
+			if (getTimeToLive() > 0) {
+				redisCmds.setex(strKey, getTimeToLive(), entry);
+			} else {
+				redisCmds.set(strKey, entry);
+			}
+			if (doExec) { exec(); }
+			return preEntry;
+		}
+		unwatch();
+		return null;
+	}
+
+	@Override
+	public CacheEntry replace(CacheEntry entry) {
+		CacheEntry previous = replace(redisCmds, entry, true);
+		if (previous != null) {
+			notifyUpdated(previous, entry);
+		}
+		return previous;
+	}
+
+	boolean replace(RedisCommands<String, Object> readCmds, CacheEntry oldEntry, CacheEntry newEntry, boolean doExec) {
+		if (!oldEntry.getKey().equals(newEntry.getKey())) {
+			throw new IllegalArgumentException("oldEntry key not equals newEntry key");
+		}
+		String strKey = encodeBase64(newEntry.getKey());
+		watch(strKey);
+		if (isExist(readCmds, strKey) && oldEntry.equals(readCmds.get(strKey))) {
+			return replace(readCmds, newEntry, doExec) != null;
+		}
+		unwatch();
+		return false;
+	}
+
 	@Override
 	public boolean replace(CacheEntry oldEntry, CacheEntry newEntry) {
-		return replace(redisCmds, oldEntry, newEntry);
+		boolean previous = replace(redisCmds, oldEntry, newEntry, true);
+		if (previous) {
+			notifyUpdated(oldEntry, newEntry);
+		}
+		return previous;
 	}
 
 	@Override
 	public void removeAll() {
-		List<String> keys = redisCmds.keys("*");
-		if (keys != null && !keys.isEmpty()) {
-			if (hasListener()) {
-				for (String key : keys) {
-					remove(key);
-				}
-			} else {
+		if (hasListener()) {
+			keySet().forEach(key -> remove(key));
+		} else {
+			List<String> keys = redisCmds.keys("*");
+			if (keys != null && !keys.isEmpty()) {
 				redisCmds.del(keys.toArray(new String[keys.size()]));
 			}
 		}
@@ -239,9 +273,7 @@ public class RedisCacheStore extends RedisCacheStoreBase {
 		List<String> keys = redisCmds.keys("*");
 		if (keys != null && !keys.isEmpty()) {
 			List<Object> keyList = new ArrayList<Object>();
-			for (String key : keys) {
-				keyList.add(decodeBase64(key));
-			}
+			keys.forEach(key -> keyList.add(decodeBase64(key)));
 			return keyList;
 		}
 		return Collections.emptyList();
@@ -296,16 +328,24 @@ public class RedisCacheStore extends RedisCacheStoreBase {
 		psConn.addListener(listener);
 	}
 
-	void multi() {
-		redisCmds.multi();
+	String multi() {
+		return redisCmds.multi();
 	}
 
-	void exec() {
-		redisCmds.exec();
+	TransactionResult exec() {
+		return redisCmds.exec();
 	}
 
-	void discard() {
-		redisCmds.discard();
+	String discard() {
+		return redisCmds.discard();
+	}
+
+	String watch(String... keys) {
+		return redisCmds.watch(keys);
+	}
+
+	String unwatch() {
+		return redisCmds.unwatch();
 	}
 
 	Long lrem(String key, long count, Object value) {
