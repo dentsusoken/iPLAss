@@ -171,8 +171,9 @@ public class MetaDataImportDialog extends AbstractWindow {
 			//Grid Pane
 			//------------------------
 			gridLayout = new VLayout();
-			gridLayout.setWidth100();
+			//gridLayout.setWidth100();
 			gridLayout.setHeight100();
+			gridLayout.setOverflow(Overflow.AUTO);
 
 			//------------------------
 			//Grid ToolStrip
@@ -360,7 +361,7 @@ public class MetaDataImportDialog extends AbstractWindow {
 		private MetaDataImportTreeDS dataSource;
 
 		public MetaDataImportTreeGrid(final MetaDataImportSelectPane owner) {
-			setLeaveScrollbarGap(false);
+//			setLeaveScrollbarGap(false);
 			setCanSort(false);
 			setCanFreezeFields(false);
 			setCanPickFields(false);
@@ -380,8 +381,8 @@ public class MetaDataImportDialog extends AbstractWindow {
 			setCanDragSelectText(true);
 
 			// この２つを指定することでcreateRecordComponentが有効
-			setShowRecordComponents(true);
-			setShowRecordComponentsByCell(true);
+//			setShowRecordComponents(true);
+//			setShowRecordComponentsByCell(true);
 
 			setBaseStyle("importMetaGrid");
 
