@@ -453,7 +453,8 @@ public class PackageExport extends MtpCuiBase {
 				} else {
 					//直接指定
 					for (MetaDataEntryInfo info : entityList) {
-						if (info.getPath().equals(EntityService.getFixedPath() + pathStr)) {
+						String entityPath = EntityService.getFixedPath() + pathStr.replace(".", "/");
+						if (info.getPath().equals(entityPath)) {
 							directPathSet.add(info.getPath());
 							isFound = true;
 							break;
