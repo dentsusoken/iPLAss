@@ -35,6 +35,8 @@ import com.smartgwt.client.types.HeaderControls;
 import com.smartgwt.client.widgets.HeaderControl;
 import com.smartgwt.client.widgets.events.ClickEvent;
 import com.smartgwt.client.widgets.events.ClickHandler;
+import com.smartgwt.client.widgets.events.DoubleClickEvent;
+import com.smartgwt.client.widgets.events.DoubleClickHandler;
 
 /**
  * 画面編集用のウィンドウコントロール
@@ -46,9 +48,6 @@ public abstract class ItemControl extends AbstractWindow {
 	/** パラメータを保持するマップ */
 	private HashMap<String, Serializable> valueMap = new HashMap<String, Serializable>();
 
-	/** 設定ボタン押下イベント */
-	private ClickHandlerImpl handler = new ClickHandlerImpl();
-
 	/** メタデータ更新イベント */
 	private MetaFieldUpdateHandler updateHandler = null;
 
@@ -56,7 +55,7 @@ public abstract class ItemControl extends AbstractWindow {
 	protected FieldReferenceType triggerType = FieldReferenceType.ALL;
 
 	/** 設定ボタン */
-	protected final HeaderControl setting = new HeaderControl(HeaderControl.SETTINGS, handler);
+	protected final HeaderControl setting = new HeaderControl(HeaderControl.SETTINGS, new SettingClickHandlerImpl());
 
 	/** Entity定義名 */
 	protected final String defName;
@@ -93,6 +92,9 @@ public abstract class ItemControl extends AbstractWindow {
 		setStyleName("");
 
 		setHeaderControls(HeaderControls.HEADER_LABEL, setting, HeaderControls.CLOSE_BUTTON);
+
+		//DoubleClickで設定画面表示
+		addDoubleClickHandler(new SettingClickHandlerImpl());
 	}
 
 	/**
@@ -178,9 +180,22 @@ public abstract class ItemControl extends AbstractWindow {
 	 * @author lis3wg
 	 *
 	 */
-	private final class ClickHandlerImpl implements ClickHandler {
+	private final class SettingClickHandlerImpl implements ClickHandler, DoubleClickHandler {
+
 		@Override
 		public void onClick(ClickEvent event) {
+			showDialog();
+		}
+
+		@Override
+		public void onDoubleClick(DoubleClickEvent event) {
+			//上位のControlにイベントを発生させない
+			event.cancel();
+
+			showDialog();
+		}
+
+		private void showDialog() {
 			final EntityViewFieldSettingDialog dialog = createSubDialog();
 
 			dialog.setOkHandler(new MetaFieldUpdateHandler() {
@@ -215,7 +230,6 @@ public abstract class ItemControl extends AbstractWindow {
 					dialog.destroy();
 				}
 			});
-
 
 			dialog.show();
 		}
