@@ -26,8 +26,6 @@ import org.iplass.adminconsole.client.metadata.ui.entity.layout.metafield.MetaFi
 import org.iplass.adminconsole.view.annotation.generic.FieldReferenceType;
 import org.iplass.mtp.view.generic.element.section.TemplateSection;
 
-import com.smartgwt.client.types.HeaderControls;
-
 public class TemplateSectionControl extends ItemControl implements SectionControl {
 
 	public TemplateSectionControl(String defName, FieldReferenceType triggerType, TemplateSection section) {
@@ -43,8 +41,6 @@ public class TemplateSectionControl extends ItemControl implements SectionContro
 		setDragType("section");
 		setHeight(22);
 		setBorder("1px solid navy");
-
-		setHeaderControls(HeaderControls.MINIMIZE_BUTTON, HeaderControls.HEADER_LABEL, setting, HeaderControls.CLOSE_BUTTON);
 
 		setMetaFieldUpdateHandler(new MetaFieldUpdateHandler() {
 
