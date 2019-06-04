@@ -1764,8 +1764,10 @@ public class EntityHandler extends BaseMetaDataRuntime {
 				throw new EntityRuntimeException("can not updateAll because not support of Reference");
 			}
 		}
+		
+		VirtualPropertyAdapter vpa = service.getExtendPropertyAdapterFactory().create(cond, entityContext, this);
 
-		return getStrategy().updateAll(cond, entityContext, this, context.getClientId());
+		return getStrategy().updateAll(vpa.getTransformedUpdateCondition(), entityContext, this, context.getClientId());
 	}
 
 	public boolean canDeleteAll() {
@@ -1799,8 +1801,10 @@ public class EntityHandler extends BaseMetaDataRuntime {
 		if (!canDeleteAll()) {
 			throw new EntityRuntimeException("can not deleteAll because not support of COMPOSITION type or LOB type");
 		}
+		
+		VirtualPropertyAdapter vpa = service.getExtendPropertyAdapterFactory().create(cond, entityContext, this);
 
-		return getStrategy().deleteAll(cond, entityContext, this, context.getClientId());
+		return getStrategy().deleteAll(vpa.getTransformedDeleteCondition(), entityContext, this, context.getClientId());
 	}
 
 	public boolean unlockEntityByUser(String oid, final String userId, boolean force) {

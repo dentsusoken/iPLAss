@@ -19,12 +19,22 @@
  */
 package org.iplass.mtp.impl.entity;
 
+import org.iplass.mtp.entity.DeleteCondition;
+import org.iplass.mtp.entity.UpdateCondition;
 import org.iplass.mtp.entity.query.Query;
 
 public class ExtendPropertyAdapterFactory {
 	
 	public VirtualPropertyAdapter create(Query query, EntityContext ec, EntityHandler eh) {
 		return new VirtualPropertyAdapter(query, ec, eh);
+	}
+	
+	public VirtualPropertyAdapter create(UpdateCondition updateCond, EntityContext ec, EntityHandler eh) {
+		return new VirtualPropertyAdapter(updateCond, ec, eh);
+	}
+	
+	public VirtualPropertyAdapter create(DeleteCondition deleteCond, EntityContext ec, EntityHandler eh) {
+		return new VirtualPropertyAdapter(deleteCond, ec, eh);
 	}
 
 }

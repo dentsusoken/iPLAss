@@ -264,6 +264,34 @@ public class UpdateCondition {
 		public void setValue(ValueExpression value) {
 			this.value = value;
 		}
+
+		public UpdateValue copy() {
+			UpdateValue copy = new UpdateValue();
+			copy.entityField = entityField;
+			if (value != null) {
+				copy.value = (ValueExpression) value.copy();
+			}
+			
+			return copy;
+		}
+	}
+	
+	public UpdateCondition copy() {
+		UpdateCondition copy = new UpdateCondition();
+		if (values != null) {
+			copy.values = new ArrayList<>(values.size());
+			for (UpdateValue uv: values) {
+				copy.values.add(uv.copy());
+			}
+		}
+		copy.definitionName = definitionName;
+		if (where != null) {
+			copy.where = (Where) where.copy();
+		}
+		copy.lockStrictly = lockStrictly;
+		copy.checkUpdatable = checkUpdatable;
+		
+		return copy;
 	}
 
 	@Override

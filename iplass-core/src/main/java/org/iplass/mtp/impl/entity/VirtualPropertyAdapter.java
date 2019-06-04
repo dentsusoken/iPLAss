@@ -25,9 +25,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.iplass.mtp.entity.DeleteCondition;
 import org.iplass.mtp.entity.Entity;
 import org.iplass.mtp.entity.EntityRuntimeException;
 import org.iplass.mtp.entity.SelectValue;
+import org.iplass.mtp.entity.UpdateCondition;
+import org.iplass.mtp.entity.UpdateCondition.UpdateValue;
 import org.iplass.mtp.entity.definition.PropertyDefinitionType;
 import org.iplass.mtp.entity.query.ASTNode;
 import org.iplass.mtp.entity.query.ASTTransformerSupport;
@@ -37,6 +40,7 @@ import org.iplass.mtp.entity.query.QueryVisitorSupport;
 import org.iplass.mtp.entity.query.Select;
 import org.iplass.mtp.entity.query.SortSpec;
 import org.iplass.mtp.entity.query.SubQuery;
+import org.iplass.mtp.entity.query.Where;
 import org.iplass.mtp.entity.query.condition.Condition;
 import org.iplass.mtp.entity.query.condition.predicate.Equals;
 import org.iplass.mtp.entity.query.value.ValueExpression;
@@ -191,6 +195,13 @@ public class VirtualPropertyAdapter extends ASTTransformerSupport implements Sea
 	private Query transformedQuery;
 	private EntityContext ec;
 	private EntityHandler eh;
+	
+	private UpdateCondition updateCond;
+	private UpdateCondition transformedUpdateCond;
+	
+	private DeleteCondition deleteCond;
+	private DeleteCondition transformedDeleteCond;
+	
 
 	private boolean isSubQuery = false;
 	
@@ -206,6 +217,62 @@ public class VirtualPropertyAdapter extends ASTTransformerSupport implements Sea
 		loadAdaptorMap = new HashMap<>();
 	}
 	
+	
+	public VirtualPropertyAdapter(UpdateCondition updateCond, EntityContext ec, EntityHandler eh) {
+		this.updateCond = updateCond;
+		this.ec = ec;
+		this.eh = eh;
+	}
+	
+	public VirtualPropertyAdapter(DeleteCondition deleteCond, EntityContext ec, EntityHandler eh) {
+		this.deleteCond = deleteCond;
+		this.ec = ec;
+		this.eh = eh;
+	}
+	
+	public UpdateCondition getTransformedUpdateCondition() {
+		if (transformedUpdateCond == null) {
+			transformedUpdateCond = updateCond.copy();
+			ThisRefNormalizer trn = new ThisRefNormalizer(ec, eh, null);
+			if (transformedUpdateCond.getValues() != null) {
+				for (UpdateValue uv: transformedUpdateCond.getValues()) {
+					if (uv.getValue() != null) {
+						uv.setValue((ValueExpression) uv.getValue().accept(this));
+						uv.getValue().accept(trn);
+					}
+				}
+			}
+			if (transformedUpdateCond.getWhere() != null) {
+				transformedUpdateCond.setWhere((Where) transformedUpdateCond.getWhere().accept(this));
+				transformedUpdateCond.getWhere().accept(trn);
+			}
+			
+			if (logger.isDebugEnabled()) {
+				logger.debug("translate to virtualProperty extracted updateCondition: " + transformedUpdateCond);
+			}
+			
+		}
+		
+		return transformedUpdateCond;
+	}
+	
+	public DeleteCondition getTransformedDeleteCondition() {
+		if (transformedDeleteCond == null) {
+			transformedDeleteCond = deleteCond.copy();
+			ThisRefNormalizer trn = new ThisRefNormalizer(ec, eh, null);
+			if (transformedDeleteCond.getWhere() != null) {
+				transformedDeleteCond.setWhere((Where) transformedDeleteCond.getWhere().accept(this));
+				transformedDeleteCond.getWhere().accept(trn);
+			}
+			
+			if (logger.isDebugEnabled()) {
+				logger.debug("translate to virtualProperty extracted deleteCondition: " + transformedDeleteCond);
+			}
+		}
+		
+		return transformedDeleteCond;
+	}
+
 
 	public Query getTransformedQuery() {
 		if (transformedQuery == null) {
@@ -215,7 +282,7 @@ public class VirtualPropertyAdapter extends ASTTransformerSupport implements Sea
 			transformedQuery.accept(new ThisRefNormalizer(ec, eh, null));
 			
 			if (logger.isDebugEnabled()) {
-				logger.debug("translate to virtualProperty extracted query:" + transformedQuery);
+				logger.debug("translate to virtualProperty extracted query: " + transformedQuery);
 			}
 		}
 		return transformedQuery;
@@ -443,11 +510,26 @@ public class VirtualPropertyAdapter extends ASTTransformerSupport implements Sea
 	
 	protected PropertyHandler getPh(String propName) {
 		EntityHandler handler = null;
-		if (eh.getMetaData().getName().equals(query.getFrom().getEntityName())) {
-			handler = eh;
+		if (query != null) {
+			if (eh.getMetaData().getName().equals(query.getFrom().getEntityName())) {
+				handler = eh;
+			} else {
+				handler = ec.getHandlerByName(query.getFrom().getEntityName());
+			}
+		} else if (updateCond != null) {
+			if (eh.getMetaData().getName().equals(updateCond.getDefinitionName())) {
+				handler = eh;
+			} else {
+				handler = ec.getHandlerByName(updateCond.getDefinitionName());
+			}
 		} else {
-			handler = ec.getHandlerByName(query.getFrom().getEntityName());
+			if (eh.getMetaData().getName().equals(deleteCond.getDefinitionName())) {
+				handler = eh;
+			} else {
+				handler = ec.getHandlerByName(deleteCond.getDefinitionName());
+			}
 		}
+		
 		return handler.getPropertyCascade(propName, ec);
 	}
 	

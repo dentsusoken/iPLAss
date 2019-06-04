@@ -137,6 +137,17 @@ public class DeleteCondition {
 	public DeleteCondition() {
 	}
 
+	public DeleteCondition copy() {
+		DeleteCondition copy = new DeleteCondition();
+		copy.definitionName = definitionName;
+		if (where != null) {
+			copy.where = (Where) where.copy();
+		}
+		copy.lockStrictly = lockStrictly;
+		
+		return copy;
+	}
+
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
