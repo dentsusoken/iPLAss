@@ -308,6 +308,8 @@
 	boolean isInsert = Constants.EXEC_TYPE_INSERT.equals(execType);
 	Boolean nest = (Boolean) request.getAttribute(Constants.EDITOR_REF_NEST);
 	if (nest == null) nest = false;
+	Boolean useBulkView = (Boolean) request.getAttribute(Constants.BULK_UPDATE_USE_BULK_VIEW);
+	if (useBulkView == null) useBulkView = false;
 
 	//本体のEntity
 	Entity parentEntity = (Entity) request.getAttribute(Constants.EDITOR_PARENT_ENTITY);
@@ -502,10 +504,14 @@ $(function() {
 		, parentDefName: "<%=StringUtil.escapeJavaScript(rootDefName)%>"
 		, parentViewName: "<%=StringUtil.escapeJavaScript(viewName)%>"
 <%
-				if (type == OutputType.BULK) { // 一括更新モード
+				if (type == OutputType.BULK && !useBulkView) { // 一括更新モード
 %>
 		, viewType: "<%=Constants.VIEW_TYPE_BULK %>"
-<% 
+<%
+				} else if (type == OutputType.BULK && useBulkView) { // 複数項目一括更新
+%>
+		, viewType: "<%=Constants.VIEW_TYPE_MULTI_BULK %>"
+<%
 				} else {
 %>
 		, viewType: "<%=Constants.VIEW_TYPE_DETAIL %>"

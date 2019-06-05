@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
+ * Copyright (C) 2019 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
  *
  * Unless you have purchased a commercial license,
  * the following license terms apply:
@@ -22,9 +22,7 @@ package org.iplass.gem.command.generic.bulk;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import org.iplass.gem.command.Constants;
@@ -44,11 +42,10 @@ import org.iplass.mtp.entity.ValidateError;
 import org.iplass.mtp.transaction.Transaction;
 import org.iplass.mtp.transaction.TransactionListener;
 import org.iplass.mtp.transaction.TransactionManager;
-import org.iplass.mtp.view.generic.SearchFormView;
-import org.iplass.mtp.view.generic.element.property.PropertyColumn;
+import org.iplass.mtp.view.generic.BulkFormView;
 
 @ActionMappings({
-	@ActionMapping(name=BulkUpdateListCommand.BULK_UPDATE_ACTION_NAME,
+	@ActionMapping(name=MultiBulkUpdateListCommand.BULK_UPDATE_ACTION_NAME,
 			displayName="更新",
 			paramMapping={
 				@ParamMapping(name=Constants.DEF_NAME, mapFrom="${0}", condition="subPath.length==1"),
@@ -57,12 +54,12 @@ import org.iplass.mtp.view.generic.element.property.PropertyColumn;
 			},
 			result={
 				@Result(status=Constants.CMD_EXEC_SUCCESS, type=Type.JSP,
-						value=Constants.CMD_RSLT_JSP_BULK_EDIT,
-						templateName="gem/generic/bulk/bulkEdit",
+						value=Constants.CMD_RSLT_JSP_BULK_MULTI_EDIT,
+						templateName="gem/generic/bulk/edit",
 						layoutActionName=Constants.LAYOUT_POPOUT_ACTION),
 				@Result(status=Constants.CMD_EXEC_ERROR, type=Type.JSP,
-						value=Constants.CMD_RSLT_JSP_BULK_EDIT,
-						templateName="gem/generic/bulk/bulkEdit",
+						value=Constants.CMD_RSLT_JSP_BULK_MULTI_EDIT,
+						templateName="gem/generic/bulk/edit",
 						layoutActionName=Constants.LAYOUT_POPOUT_ACTION),
 				@Result(status=Constants.CMD_EXEC_ERROR_TOKEN, type=Type.JSP,
 						value=Constants.CMD_RSLT_JSP_ERROR,
@@ -76,24 +73,24 @@ import org.iplass.mtp.view.generic.element.property.PropertyColumn;
 			tokenCheck=@TokenCheck
 	)
 })
-@CommandClass(name = "gem/generic/bulk/BulkUpdateListCommand", displayName = "一括更新")
-public class BulkUpdateListCommand extends BulkCommandBase {
+@CommandClass(name = "gem/generic/bulk/MultiBulkUpdateListCommand", displayName = "一括更新")
+public class MultiBulkUpdateListCommand extends MultiBulkCommandBase {
 
-	public static final String BULK_UPDATE_ACTION_NAME = "gem/generic/bulk/bulkUpdate";
+	public static final String BULK_UPDATE_ACTION_NAME = "gem/generic/bulk/update";
 
 	/**
 	 * コンストラクタ
 	 */
-	public BulkUpdateListCommand() {
+	public MultiBulkUpdateListCommand() {
 		super();
 	}
 
 	@Override
 	public String execute(RequestContext request) {
-		final BulkCommandContext context = getContext(request);
+		final MultiBulkCommandContext context = getContext(request);
 		// 必要なパラメータ取得
 		Set<String> oids = context.getOids();
-		SearchFormView view = context.getView();
+		BulkFormView view = context.getView();
 
 		if (view == null) {
 			request.setAttribute(Constants.MESSAGE, resourceString("command.generic.bulk.BulkUpdateViewCommand.viewErr"));
@@ -107,9 +104,7 @@ public class BulkUpdateListCommand extends BulkCommandBase {
 		}
 
 		EditResult ret = null;
-		BulkUpdateFormViewData data = new BulkUpdateFormViewData(context);
-		data.setUpdatedProperties(context.getUpdatedProps());
-		data.setExecType(Constants.EXEC_TYPE_UPDATE);
+		MultiBulkUpdateFormViewData data = new MultiBulkUpdateFormViewData(context);
 		data.setView(context.getView());
 		for (String oid : oids) {
 			for (Long version : context.getVersions(oid)) {
@@ -149,20 +144,6 @@ public class BulkUpdateListCommand extends BulkCommandBase {
 
 		String retKey = Constants.CMD_EXEC_SUCCESS;
 		if (ret.getResultType() == ResultType.SUCCESS) {
-			//更新されたプロパティリストに登録
-			List<PropertyColumn> updatedProps = context.getProperty();
-			// 組み合わせで使うプロパティ
-			if (updatedProps.size() > 1) {
-				Map<String, Object> updatedPropsMap = new LinkedHashMap<>();
-				updatedProps.stream().forEach(pc -> {
-					updatedPropsMap.put(pc.getPropertyName(), context.getBulkUpdatePropertyValue(pc.getPropertyName()));
-				});
-				data.addUpdatedProperty(context.getBulkUpdatePropName(), updatedPropsMap);
-			} else {
-				String updatedPropName = context.getBulkUpdatePropName();
-				Object updatedPropValue = context.getBulkUpdatePropertyValue(updatedPropName);
-				data.addUpdatedProperty(updatedPropName, updatedPropValue);
-			}
 			request.setAttribute(Constants.MESSAGE, resourceString("command.generic.bulk.BulkUpdateListCommand.successMsg"));
 		} else if (ret.getResultType() == ResultType.ERROR) {
 			retKey = Constants.CMD_EXEC_ERROR;
@@ -172,15 +153,14 @@ public class BulkUpdateListCommand extends BulkCommandBase {
 			}
 			ValidateError[] errors = tmpList.toArray(new ValidateError[tmpList.size()]);
 			request.setAttribute(Constants.ERROR_PROP, errors);
-			// 一括更新に失敗した場合、更新に失敗したプロパティ名をセットする
-			request.setAttribute(Constants.BULK_UPDATE_PROP_NM, context.getBulkUpdatePropName());
 			request.setAttribute(Constants.MESSAGE, ret.getMessage());
 		}
 
 		request.setAttribute(Constants.DATA, data);
+		request.setAttribute(Constants.ENTITY_DATA, context.createEntity());
 		request.setAttribute(Constants.SEARCH_COND, context.getSearchCond());
-		request.setAttribute(Constants.BULK_UPDATE_SELECT_TYPE, context.getSelectAllType());
 		request.setAttribute(Constants.BULK_UPDATE_SELECT_ALL_PAGE, context.getSelectAllPage());
+		request.setAttribute(Constants.BULK_UPDATE_SELECT_TYPE, context.getSelectAllType());
 
 		return retKey;
 	}

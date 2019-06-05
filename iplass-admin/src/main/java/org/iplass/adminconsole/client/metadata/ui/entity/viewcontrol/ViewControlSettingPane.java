@@ -85,8 +85,8 @@ public class ViewControlSettingPane extends VLayout {
 		addMember(buttonPane);
 	}
 
-	public void setDefinition(List<ViewControlSetting> settings, List<String> detailViewNames, List<String> searchViewNames) {
-		grid.setDefinition(settings, detailViewNames, searchViewNames);
+	public void setDefinition(List<ViewControlSetting> settings, List<String> detailViewNames, List<String> searchViewNames, List<String> bulkViewNames) {
+		grid.setDefinition(settings, detailViewNames, searchViewNames, bulkViewNames);
 	}
 
 	public List<ViewControlSetting> getEditDefinition() {

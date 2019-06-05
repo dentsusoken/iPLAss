@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
+ * Copyright (C) 2019 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
  *
  * Unless you have purchased a commercial license,
  * the following license terms apply:
@@ -47,7 +47,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @ActionMappings({
-	@ActionMapping(name=BulkUpdateAllCommand.BULK_UPDATE_ALL_ACTION_NAME,
+	@ActionMapping(name=MultiBulkUpdateAllCommand.BULK_UPDATE_ALL_ACTION_NAME,
 			displayName="更新",
 			paramMapping={
 				@ParamMapping(name=Constants.DEF_NAME, mapFrom="${0}", condition="subPath.length==1"),
@@ -56,12 +56,12 @@ import org.slf4j.LoggerFactory;
 			},
 			result={
 				@Result(status=Constants.CMD_EXEC_SUCCESS, type=Type.JSP,
-						value=Constants.CMD_RSLT_JSP_BULK_EDIT,
-						templateName="gem/generic/bulk/bulkEdit",
+						value=Constants.CMD_RSLT_JSP_BULK_MULTI_EDIT,
+						templateName="gem/generic/bulk/edit",
 						layoutActionName=Constants.LAYOUT_POPOUT_ACTION),
 				@Result(status=Constants.CMD_EXEC_ERROR, type=Type.JSP,
-						value=Constants.CMD_RSLT_JSP_BULK_EDIT,
-						templateName="gem/generic/bulk/bulkEdit",
+						value=Constants.CMD_RSLT_JSP_BULK_MULTI_EDIT,
+						templateName="gem/generic/bulk/edit",
 						layoutActionName=Constants.LAYOUT_POPOUT_ACTION),
 				@Result(status=Constants.CMD_EXEC_ERROR_TOKEN, type=Type.JSP,
 						value=Constants.CMD_RSLT_JSP_ERROR,
@@ -75,16 +75,16 @@ import org.slf4j.LoggerFactory;
 			tokenCheck=@TokenCheck
 	)
 })
-@CommandClass(name = "gem/generic/bulk/BulkUpdateAllCommand", displayName = "一括全更新")
-public class BulkUpdateAllCommand extends BulkCommandBase {
+@CommandClass(name = "gem/generic/bulk/MultiBulkUpdateAllCommand", displayName = "一括全更新")
+public class MultiBulkUpdateAllCommand extends MultiBulkCommandBase {
 
-	private static Logger logger = LoggerFactory.getLogger(BulkUpdateAllCommand.class);
+	private static Logger logger = LoggerFactory.getLogger(MultiBulkUpdateAllCommand.class);
 
-	public static final String BULK_UPDATE_ALL_ACTION_NAME = "gem/generic/bulk/bulkUpdateAll";
+	public static final String BULK_UPDATE_ALL_ACTION_NAME = "gem/generic/bulk/updateAll";
 
 	@Override
 	public String execute(RequestContext request) {
-		final BulkCommandContext context = getContext(request);
+		final MultiBulkCommandContext context = getContext(request);
 		String searchType = request.getParam(Constants.SEARCH_TYPE);
 
 		SearchCommandBase command = null;
@@ -141,7 +141,7 @@ public class BulkUpdateAllCommand extends BulkCommandBase {
 							request.setAttribute(Constants.VERSION, subVersionList.toArray(new String[] {}));
 							request.setAttribute(Constants.TIMESTAMP, subUpdateDate.toArray(new String[] {}));
 							// 一括更新処理を呼び出します。
-							BulkUpdateListCommand updateCommand = new BulkUpdateListCommand();
+							MultiBulkUpdateListCommand updateCommand = new MultiBulkUpdateListCommand();
 							r = updateCommand.execute(request);
 						} catch (ApplicationException e) {
 							if (logger.isDebugEnabled()) {
@@ -163,7 +163,8 @@ public class BulkUpdateAllCommand extends BulkCommandBase {
 				}
 			} else {
 				// 一件もない場合、画面表示するために空のフォームビューデータを設定します。
-				request.setAttribute(Constants.DATA, new BulkUpdateFormViewData(context));
+				request.setAttribute(Constants.DATA, new MultiBulkUpdateFormViewData(context));
+				request.setAttribute(Constants.ENTITY_DATA, context.createEntity());
 				request.setAttribute(Constants.SEARCH_COND, context.getSearchCond());
 				request.setAttribute(Constants.BULK_UPDATE_SELECT_TYPE, context.getSelectAllType());
 				request.setAttribute(Constants.BULK_UPDATE_SELECT_ALL_PAGE, context.getSelectAllPage());

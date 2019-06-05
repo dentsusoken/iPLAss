@@ -176,6 +176,16 @@ public class SearchResultSection extends Section {
 	)
 	private boolean showBulkUpdate;
 
+	@MetaFieldInfo(
+			displayName="Bulk Viewの定義を利用",
+			displayNameKey="generic_element_section_SearchResultSection_useBulkViewDisplaNameKey",
+			inputType=InputType.CHECKBOX,
+			displayOrder=295,
+			description="Bulk Viewの定義を利用します。",
+			descriptionKey="generic_element_section_SearchResultSection_useBulkViewDescriptionKey"
+	)
+	private boolean useBulkView;
+
 	/** 一括更新ボタン表示ラベル */
 	@MetaFieldInfo(
 			displayName="一括更新ボタン表示ラベル",
@@ -445,6 +455,22 @@ public class SearchResultSection extends Section {
 	 */
 	public void setShowBulkUpdate(boolean showBulkUpdate) {
 		this.showBulkUpdate = showBulkUpdate;
+	}
+
+	/**
+	 * Bulk Viewの定義を利用を取得します。
+	 * @return Bulk Viewの定義を利用
+	 */
+	public boolean isUseBulkView() {
+		return useBulkView;
+	}
+
+	/**
+	 * Bulk Viewの定義を利用を設定します。
+	 * @param useBulkView Bulk Viewの定義を利用
+	 */
+	public void setUseBulkView(boolean useBulkView) {
+		this.useBulkView = useBulkView;
 	}
 
 	/**

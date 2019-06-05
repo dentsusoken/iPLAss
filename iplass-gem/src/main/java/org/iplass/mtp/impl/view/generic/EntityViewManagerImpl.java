@@ -64,6 +64,7 @@ import org.iplass.mtp.impl.web.template.MetaGroovyTemplate;
 import org.iplass.mtp.spi.ServiceRegistry;
 import org.iplass.mtp.util.DateUtil;
 import org.iplass.mtp.util.StringUtil;
+import org.iplass.mtp.view.generic.BulkFormView;
 import org.iplass.mtp.view.generic.DetailFormView;
 import org.iplass.mtp.view.generic.EntityView;
 import org.iplass.mtp.view.generic.EntityViewManager;
@@ -151,6 +152,14 @@ public class EntityViewManagerImpl extends AbstractTypedDefinitionManager<Entity
 				form = ev.getSearchFormView(viewName);
 			}
 			editor = getBulkUpdateEditor(propName, form);
+		} else if ("multiBulk".equals(viewType)) {
+			BulkFormView form = null;
+			if (viewName == null || viewName.isEmpty()) {
+				form = ev.getDefaultBulkFormView();
+			} else {
+				form = ev.getBulkFormView(viewName);
+			}
+			editor = getEditor(propName, form);
 		}
 
 		return editor;
@@ -329,6 +338,27 @@ public class EntityViewManagerImpl extends AbstractTypedDefinitionManager<Entity
 		return null;
 	}
 
+	private PropertyEditor getEditor(String propName, BulkFormView form) {
+		String currentPropName = null;
+		String subPropName = null;
+		if (propName.indexOf(".") == -1) {
+			currentPropName = propName;
+		} else {
+			currentPropName = propName.substring(0, propName.indexOf("."));
+			subPropName = propName.substring(propName.indexOf(".") + 1);
+		}
+
+		for (Section section : form.getSections()) {
+			if (section instanceof DefaultSection) {
+				PropertyEditor editor = getEditor((DefaultSection)section, currentPropName, subPropName);
+				if (editor != null) {
+					return editor;
+				}
+			}
+		}
+		return null;
+	}
+
 	@Override
 	public void executeTemplate(String name, String templateName, HttpServletRequest req,
 			HttpServletResponse res, ServletContext application, PageContext page) {
@@ -500,6 +530,12 @@ public class EntityViewManagerImpl extends AbstractTypedDefinitionManager<Entity
 	public DetailFormView createDefaultDetailFormView(String definitionName) {
 		// AdminConsoleの標準ロード時は各種表示名を空で作成する為falseを指定
 		return FormViewUtil.createDefaultDetailFormView(edm.get(definitionName), false);
+	}
+
+	@Override
+	public BulkFormView createDefaultBulkFormView(String definitionName) {
+		// AdminConsoleの標準ロード時は各種表示名を空で作成する為falseを指定
+		return FormViewUtil.createDefaultBulkFormView(edm.get(definitionName), false);
 	}
 
 	@Override

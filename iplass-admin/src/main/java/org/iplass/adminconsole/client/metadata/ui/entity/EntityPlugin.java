@@ -33,6 +33,7 @@ import org.iplass.adminconsole.client.metadata.ui.DefaultMetaDataPlugin;
 import org.iplass.adminconsole.client.metadata.ui.MetaDataItemMenuTreeNode;
 import org.iplass.adminconsole.client.metadata.ui.MetaDataMainEditPane;
 import org.iplass.adminconsole.client.metadata.ui.entity.filter.FilterEditPanel;
+import org.iplass.adminconsole.client.metadata.ui.entity.layout.BulkLayoutPanel;
 import org.iplass.adminconsole.client.metadata.ui.entity.layout.DetailLayoutPanel;
 import org.iplass.adminconsole.client.metadata.ui.entity.layout.SearchLayoutPanel;
 import org.iplass.adminconsole.client.metadata.ui.entity.viewcontrol.ViewControlPanel;
@@ -77,6 +78,9 @@ public class EntityPlugin extends DefaultMetaDataPlugin {
 
 	private static final String TAB_SUB_NAME_SEARCH_LAYOUT = "Search_Layout";
 	private static final String CONTEXT_MENU_ICON_SEARCH_LAYOUT = "cube_yellow.png";
+
+	private static final String TAB_SUB_NAME_BULK_LAYOUT = "Bulk_Layout";
+	private static final String CONTEXT_MENU_ICON_BULK_LAYOUT = "cube_blue.png";
 
 	private static final String TAB_SUB_NAME_VIEW_CONTROL = "View_Control";
 	private static final String CONTEXT_MENU_ICON_VIEW_CONTROL = "application_cascade.png";
@@ -211,6 +215,14 @@ public class EntityPlugin extends DefaultMetaDataPlugin {
 			});
 
 			// 右クリックメニュー項目4
+			MenuItem bulkItem = new MenuItem(AdminClientMessageUtil.getString("ui_metadata_entity_EntityPluginManager_openBulkLayout"), CONTEXT_MENU_ICON_BULK_LAYOUT);
+			bulkItem.addClickHandler(new com.smartgwt.client.widgets.menu.events.ClickHandler() {
+				public void onClick(MenuItemClickEvent event) {
+					getBulkEntityViewTreeNode((MetaDataItemMenuTreeNode)node);
+				}
+			});
+
+			// 右クリックメニュー項目5
 			MenuItem viewControlItem = new MenuItem(AdminClientMessageUtil.getString("ui_metadata_entity_EntityPluginManager_openViewControl"), CONTEXT_MENU_ICON_VIEW_CONTROL);
 			viewControlItem.addClickHandler(new com.smartgwt.client.widgets.menu.events.ClickHandler() {
 				public void onClick(MenuItemClickEvent event) {
@@ -218,7 +230,7 @@ public class EntityPlugin extends DefaultMetaDataPlugin {
 				}
 			});
 
-			// 右クリックメニュー項目5
+			// 右クリックメニュー項目6
 			MenuItem filterItem = new MenuItem(AdminClientMessageUtil.getString("ui_metadata_entity_EntityPluginManager_openFilter"), CONTEXT_MENU_ICON_FILTER);
 			filterItem.addClickHandler(new com.smartgwt.client.widgets.menu.events.ClickHandler() {
 				public void onClick(MenuItemClickEvent event) {
@@ -227,7 +239,7 @@ public class EntityPlugin extends DefaultMetaDataPlugin {
 				}
 			});
 
-			// 右クリックメニュー項目6
+			// 右クリックメニュー項目7
 			MenuItem renameItem = new MenuItem(AdminClientMessageUtil.getString("ui_metadata_entity_EntityPluginManager_renameEntity"), MetaDataConstants.CONTEXT_MENU_ICON_RENAME);
 			renameItem.addClickHandler(new com.smartgwt.client.widgets.menu.events.ClickHandler() {
 				public void onClick(MenuItemClickEvent event) {
@@ -236,7 +248,7 @@ public class EntityPlugin extends DefaultMetaDataPlugin {
 			});
 			renameItem.setEnabled(((MetaDataItemMenuTreeNode)node).isCanRename());
 
-			// 右クリックメニュー項目7
+			// 右クリックメニュー項目8
 			MenuItem deleteItem = new MenuItem(AdminClientMessageUtil.getString("ui_metadata_entity_EntityPluginManager_deleteEntity"), MetaDataConstants.CONTEXT_MENU_ICON_DEL);
 			deleteItem.addClickHandler(new com.smartgwt.client.widgets.menu.events.ClickHandler() {
 				public void onClick(MenuItemClickEvent event) {
@@ -245,7 +257,7 @@ public class EntityPlugin extends DefaultMetaDataPlugin {
 			});
 			deleteItem.setEnabled(((MetaDataItemMenuTreeNode)node).isCanDelete());
 
-			// 右クリックメニュー項目8
+			// 右クリックメニュー項目9
 			MenuItem copyItem = new MenuItem(AdminClientMessageUtil.getString("ui_metadata_entity_EntityPluginManager_copyEntity"), MetaDataConstants.CONTEXT_MENU_ICON_COPY);
 			copyItem.addClickHandler(new com.smartgwt.client.widgets.menu.events.ClickHandler() {
 				public void onClick(MenuItemClickEvent event) {
@@ -253,7 +265,7 @@ public class EntityPlugin extends DefaultMetaDataPlugin {
 				}
 			});
 
-			// 右クリックメニュー項目9
+			// 右クリックメニュー項目10
 			MenuItem showExplorerItem = new MenuItem(AdminClientMessageUtil.getString("ui_metadata_entity_EntityPluginManager_showEntityExplorer"), CONTEXT_MENU_ICON_DATA_VIEW);
 			showExplorerItem.addClickHandler(new com.smartgwt.client.widgets.menu.events.ClickHandler() {
 				public void onClick(MenuItemClickEvent event) {
@@ -264,7 +276,7 @@ public class EntityPlugin extends DefaultMetaDataPlugin {
 			//カスタマイズ部分END
 
 			// 右クリックメニュー項目を設定
-			itemContextMenu.setItems(editItem, detailItem, searchItem, viewControlItem, filterItem, renameItem, deleteItem, copyItem, showExplorerItem);
+			itemContextMenu.setItems(editItem, detailItem, searchItem, bulkItem, viewControlItem, filterItem, renameItem, deleteItem, copyItem, showExplorerItem);
 			owner.setContextMenu(itemContextMenu);
 		}
 	}
@@ -406,6 +418,12 @@ public class EntityPlugin extends DefaultMetaDataPlugin {
 		SearchLayoutPanel search = GWT.create(SearchLayoutPanel.class);
 		search.setTarget(itemNode, this);
 		workspace.addTab(itemNode.getDefName(), CONTEXT_MENU_ICON_SEARCH_LAYOUT, TAB_SUB_NAME_SEARCH_LAYOUT , (Canvas)search);
+	}
+
+	private void bulkOpenAction(MetaDataItemMenuTreeNode itemNode) {
+		BulkLayoutPanel bulk = GWT.create(BulkLayoutPanel.class);
+		bulk.setTarget(itemNode, this);
+		workspace.addTab(itemNode.getDefName(), CONTEXT_MENU_ICON_BULK_LAYOUT, TAB_SUB_NAME_BULK_LAYOUT , (Canvas)bulk);
 	}
 
 	/**
@@ -586,6 +604,33 @@ public class EntityPlugin extends DefaultMetaDataPlugin {
 					//定義なしの場合は、EntityNodeから作成
 					MetaDataItemMenuTreeNode node = copyItemNode(entityNode, false);
 					searchOpenAction(node);
+				}
+			}
+
+			@Override
+			public void onFailure(Throwable caught) {
+				GWT.log("error!", caught);
+				SC.say(AdminClientMessageUtil.getString("ui_metadata_entity_EntityPluginManager_failed"),
+						AdminClientMessageUtil.getString("ui_metadata_entity_EntityPluginManager_failedGetScreenInfo")
+						+ caught.getMessage());
+			}
+
+		});
+	}
+
+	private void getBulkEntityViewTreeNode(final MetaDataItemMenuTreeNode entityNode) {
+
+		service.getMetaDataInfo(TenantInfoHolder.getId(), EntityView.class.getName(), entityNode.getDefName(), new AsyncCallback<MetaDataInfo>() {
+
+			@Override
+			public void onSuccess(MetaDataInfo result) {
+				if (result != null) {
+					MetaDataItemMenuTreeNode node = createItemNode(result);
+					bulkOpenAction(node);
+				} else {
+					//定義なしの場合は、EntityNodeから作成
+					MetaDataItemMenuTreeNode node = copyItemNode(entityNode, false);
+					bulkOpenAction(node);
 				}
 			}
 

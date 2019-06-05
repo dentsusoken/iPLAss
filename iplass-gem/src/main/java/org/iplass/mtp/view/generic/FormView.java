@@ -43,7 +43,7 @@ import org.iplass.mtp.view.generic.element.section.Section;
  *
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlSeeAlso({DetailFormView.class, SearchFormView.class})
+@XmlSeeAlso({DetailFormView.class, SearchFormView.class, BulkFormView.class})
 @FieldOrder(manual=true)
 public abstract class FormView implements Refrectable {
 

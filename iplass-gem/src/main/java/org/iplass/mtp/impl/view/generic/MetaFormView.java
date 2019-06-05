@@ -36,6 +36,7 @@ import org.iplass.mtp.impl.view.generic.element.MetaButton;
 import org.iplass.mtp.impl.view.generic.element.section.MetaMassReferenceSection;
 import org.iplass.mtp.impl.view.generic.element.section.MetaReferenceSection;
 import org.iplass.mtp.impl.view.generic.element.section.MetaSection;
+import org.iplass.mtp.view.generic.BulkFormView;
 import org.iplass.mtp.view.generic.DetailFormView;
 import org.iplass.mtp.view.generic.FormView;
 import org.iplass.mtp.view.generic.SearchFormView;
@@ -48,7 +49,7 @@ import org.iplass.mtp.view.generic.element.section.Section;
  * レイアウト情報のスーパークラス
  * @author lis3wg
  */
-@XmlSeeAlso({MetaDetailFormView.class, MetaSearchFormView.class})
+@XmlSeeAlso({MetaDetailFormView.class, MetaSearchFormView.class, MetaBulkFormView.class})
 @XmlAccessorType(XmlAccessType.FIELD)
 public abstract class MetaFormView implements MetaData {
 
@@ -60,6 +61,8 @@ public abstract class MetaFormView implements MetaData {
 			return MetaDetailFormView.createInstance(view);
 		} else if (view instanceof SearchFormView) {
 			return MetaSearchFormView.createInstance(view);
+		} else if (view instanceof BulkFormView) {
+			return MetaBulkFormView.createInstance(view);
 		}
 		return null;
 	}

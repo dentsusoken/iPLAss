@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
+ * Copyright (C) 2019 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
  *
  * Unless you have purchased a commercial license,
  * the following license terms apply:
@@ -18,25 +18,16 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.iplass.adminconsole.view.annotation.generic;
+package org.iplass.mtp.impl.view.generic;
 
-/**
- * EntityViewのフィールドを参照するタイプ
- *
- * EntityViewの各Fieldに対して、参照するタイプを指定する。
- *
- */
-public enum FieldReferenceType {
-	/** 検索条件 */
-	SEARCHCONDITION,
-	/** 検索結果 */
-	SEARCHRESULT,
-	/** 詳細、編集画面 */
-	DETAIL,
-	/** 一括更新画面 */
-	BULK,
-	/** 全て */
-	ALL,
-	/** 未設定 */
-	NONE
+public class BulkFormViewHandler extends FormViewHandler {
+
+	public BulkFormViewHandler(MetaBulkFormView metaData, EntityViewHandler entityView) {
+		super(metaData, entityView);
+	}
+
+	@Override
+	public MetaBulkFormView getMetaData() {
+		return (MetaBulkFormView) super.getMetaData();
+	}
 }

@@ -83,6 +83,9 @@ public class MetaSearchResultSection extends MetaSection {
 	/** 一括更新ボタン表示設定 */
 	private boolean showBulkUpdate;
 
+	/** Bulk Viewの定義を利用*/
+	private boolean useBulkView;
+
 	/** 一括更新ボタン表示ラベル */
 	private String bulkUpdateDisplayLabel;
 
@@ -270,6 +273,22 @@ public class MetaSearchResultSection extends MetaSection {
 
 
 	/**
+	 * Bulk Viewの定義を利用を取得します。
+	 * @return Bulk Viewの定義を利用
+	 */
+	public boolean isUseBulkView() {
+		return useBulkView;
+	}
+
+	/**
+	 * Bulk Viewの定義を利用を設定します。
+	 * @param useBulkView Bulk Viewの定義を利用
+	 */
+	public void setUseBulkView(boolean useBulkView) {
+		this.useBulkView = useBulkView;
+	}
+
+	/**
 	 * 一括更新ボタン表示ラベルを取得します。
 	 * @return 一括更新ボタン表示ラベル
 	 */
@@ -410,6 +429,7 @@ public class MetaSearchResultSection extends MetaSection {
 		this.hideCount = section.isHideCount();
 		this.pagingPosition = section.getPagingPosition();
 		this.showBulkUpdate = section.isShowBulkUpdate();
+		this.useBulkView = section.isUseBulkView();
 		this.bulkUpdateDisplayLabel = section.getBulkUpdateDisplayLabel();
 		this.localizedBulkUpdateDisplayLabel = I18nUtil.toMeta(section.getLocalizedBulkUpdateDisplayLabel());
 		this.purgeCompositionedEntity = section.isPurgeCompositionedEntity();
@@ -449,6 +469,7 @@ public class MetaSearchResultSection extends MetaSection {
 		section.setHideCount(this.hideCount);
 		section.setPagingPosition(pagingPosition);
 		section.setShowBulkUpdate(this.showBulkUpdate);
+		section.setUseBulkView(this.useBulkView);
 		section.setBulkUpdateDisplayLabel(this.bulkUpdateDisplayLabel);
 		section.setLocalizedBulkUpdateDisplayLabel(I18nUtil.toDef(this.localizedBulkUpdateDisplayLabel));
 		section.setPurgeCompositionedEntity(this.isPurgeCompositionedEntity());

@@ -50,6 +50,7 @@
 <%@ page import="org.iplass.gem.command.generic.delete.DeleteListCommand"%>
 <%@ page import="org.iplass.gem.command.generic.detail.DetailViewCommand"%>
 <%@ page import="org.iplass.gem.command.generic.bulk.BulkUpdateViewCommand"%>
+<%@ page import="org.iplass.gem.command.generic.bulk.MultiBulkUpdateViewCommand"%>
 <%@ page import="org.iplass.gem.command.generic.search.CountCommand"%>
 <%@ page import="org.iplass.gem.command.generic.search.SearchFormViewData"%>
 <%@ page import="org.iplass.gem.command.generic.search.SearchSelectListCommand"%>
@@ -144,6 +145,9 @@
 
 	//一括詳細表示アクション
 	String bulkEditAction = BulkUpdateViewCommand.BULK_EDIT_ACTION_NAME + urlPath;
+	if (section.isUseBulkView()) {
+		bulkEditAction = MultiBulkUpdateViewCommand.BULK_EDIT_ACTION_NAME + urlPath;
+	}
 
 	Boolean showdDetermineButton = (Boolean) request.getAttribute(Constants.SHOW_DETERMINE_BUTTON);
 	if (showdDetermineButton == null) showdDetermineButton = false;
@@ -779,6 +783,9 @@ $(function() {
 	}
 });
 function doBulkUpdate(target) {
+	var type = $(":hidden[name='searchType']").val();
+	if (!validation(type)) return;
+
 	var ids = grid.getGridParam("selarrrow");
 	if(ids.length <= 0) {
 		alert("${m:rs('mtp-gem-messages', 'generic.element.section.SearchResultSection.selectBulkUpdateMsg')}");
@@ -808,11 +815,11 @@ function doBulkUpdate(target) {
 		$("<input />").attr({type:"hidden", name:"version", value:this}).appendTo($form);
 	})
 
+	var searchCond = $(":hidden[name='searchCond']").val();
+	$("<input />").attr({type:"hidden", name:"searchCond", value:searchCond}).appendTo($form);
+
 	if ($("#cb_searchResult").is(":checked")) {
-		var type = $(":hidden[name='searchType']").val();
-		if (!validation(type)) return;
-		var searchCond = $(":hidden[name='searchCond']").val();
-		$("<input />").attr({type:"hidden", name:"searchCond", value:searchCond}).appendTo($form);
+		$("<input />").attr({type:"hidden", name:"selectAllPage", value:true}).appendTo($form);
 	}
 // 	var execType = $(":hidden[name='execType']").val();
 // 	$("<input />").attr({type:"hidden", name:"execType", value:execType}).appendTo($form);

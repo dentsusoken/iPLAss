@@ -20,12 +20,12 @@
 
 package org.iplass.gem.command;
 
-import org.iplass.gem.command.auth.RevokeApplicationCommand;
 import org.iplass.gem.command.auth.LoginCommand;
 import org.iplass.gem.command.auth.LogoutCommand;
 import org.iplass.gem.command.auth.ReAuthCommand;
 import org.iplass.gem.command.auth.ResetPasswordCommand;
 import org.iplass.gem.command.auth.ResetSpecificPasswordCommand;
+import org.iplass.gem.command.auth.RevokeApplicationCommand;
 import org.iplass.gem.command.auth.UpdateExpirePasswordCommand;
 import org.iplass.gem.command.auth.UpdatePasswordCommand;
 import org.iplass.gem.command.auth.UpdateUserCommand;
@@ -42,6 +42,9 @@ import org.iplass.gem.command.fulltext.FullTextSearchViewCommand;
 import org.iplass.gem.command.generic.bulk.BulkUpdateAllCommand;
 import org.iplass.gem.command.generic.bulk.BulkUpdateListCommand;
 import org.iplass.gem.command.generic.bulk.BulkUpdateViewCommand;
+import org.iplass.gem.command.generic.bulk.MultiBulkUpdateAllCommand;
+import org.iplass.gem.command.generic.bulk.MultiBulkUpdateListCommand;
+import org.iplass.gem.command.generic.bulk.MultiBulkUpdateViewCommand;
 import org.iplass.gem.command.generic.common.GetAutocompletionValueCommand;
 import org.iplass.gem.command.generic.common.GetEntityNameCommand;
 import org.iplass.gem.command.generic.common.GetEntityNameListCommand;
@@ -134,6 +137,9 @@ import org.iplass.mtp.command.annotation.MetaDataSeeAlso;
 	BulkUpdateViewCommand.class,
 	BulkUpdateAllCommand.class,
 	BulkUpdateListCommand.class,
+	MultiBulkUpdateViewCommand.class,
+	MultiBulkUpdateAllCommand.class,
+	MultiBulkUpdateListCommand.class,
 	//自動補完
 	GetAutocompletionValueCommand.class,
 	//参照コンボ

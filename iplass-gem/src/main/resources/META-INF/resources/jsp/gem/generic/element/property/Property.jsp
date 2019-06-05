@@ -93,19 +93,19 @@
 		description = TemplateUtil.getMultilingualString(property.getDescription(), property.getLocalizedDescriptionList());
 	}
 
-	boolean showDesc = OutputType.EDIT == type && description != null && description.length() > 0;
+	boolean showDesc = (OutputType.EDIT == type || OutputType.BULK == type) && description != null && description.length() > 0;
 %>
 
 <th id="id_th_<c:out value="<%=propName %>"/>" class="<c:out value="<%=style %>"/>">
 <%-- XSS対応-メタの設定のため対応なし(displayLabel) --%>
 <%=displayLabel %>
 <%
-	if (OutputType.EDIT == type && required) {
+	if ((OutputType.EDIT == type || OutputType.BULK == type) && required) {
 %>
 <span class="ico-required ml10 vm">${m:rs("mtp-gem-messages", "generic.element.property.Property.required")}</span>
 <%
 	}
-	if (OutputType.EDIT == type && tooltip != null && tooltip.length() > 0) {
+	if ((OutputType.EDIT == type || OutputType.BULK == type) && tooltip != null && tooltip.length() > 0) {
 %>
 <%-- XSS対応-メタの設定のため対応なし(tooltip) --%>
 <span class="ml05"><img src="${m:esc(skinImagePath)}/icon-help-01.png" alt="" class="vm tp"  title="<%=tooltip %>" /></span>
@@ -123,7 +123,7 @@
 	request.setAttribute(Constants.EDITOR_EDITOR, property.getEditor());
 	request.setAttribute(Constants.EDITOR_PROP_VALUE, propValue);
 	request.setAttribute(Constants.EDITOR_PROPERTY_DEFINITION, pd);
-	if (OutputType.EDIT == type) {
+	if (OutputType.EDIT == type || OutputType.BULK == type) {
 		request.setAttribute(Constants.AUTOCOMPLETION_SETTING, property.getAutocompletionSetting());
 	}
 	String path =  EntityViewUtil.getJspPath(property.getEditor(), ViewConst.DESIGN_TYPE_GEM);
@@ -139,7 +139,7 @@
 <p class="explanation"><%=description %></p>
 <%
 	}
-	if (OutputType.EDIT == type && property.getAutocompletionSetting() != null) {
+	if ((OutputType.EDIT == type || OutputType.BULK == type) && property.getAutocompletionSetting() != null) {
 		request.setAttribute(Constants.AUTOCOMPLETION_DEF_NAME, ed.getName());
 		request.setAttribute(Constants.AUTOCOMPLETION_VIEW_NAME, viewName);
 		request.setAttribute(Constants.AUTOCOMPLETION_PROP_NAME, propName);

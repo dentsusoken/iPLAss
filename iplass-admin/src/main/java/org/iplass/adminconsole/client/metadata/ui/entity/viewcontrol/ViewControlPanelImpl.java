@@ -140,10 +140,11 @@ public class ViewControlPanelImpl extends MetaDataMainEditPane implements ViewCo
 			//作成済みのView名を取得
 			List<String> detailViewNames = Arrays.asList(curDefinition.getDetailFormViewNames()) ;
 			List<String> searchViewNames = Arrays.asList(curDefinition.getSearchFormViewNames());
+			List<String> bulkViewNames = Arrays.asList(curDefinition.getBulkFormViewNames());
 
 			List<ViewControlSetting> settings = curDefinition.getViewControlSettings();
 
-			viewControlSettingPane.setDefinition(settings, detailViewNames, searchViewNames);
+			viewControlSettingPane.setDefinition(settings, detailViewNames, searchViewNames, bulkViewNames);
 
 			//ステータスチェック
 			StatusCheckUtil.statuCheck(EntityView.class.getName(), defName.replace(".", "/"), ViewControlPanelImpl.this);

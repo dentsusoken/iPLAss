@@ -359,6 +359,7 @@ task copyGwtTransSrc(type: Sync) {
 		include 'mtp/view/generic/SearchFormView.java'
 		include 'mtp/view/generic/TextAlign.java'
 		include 'mtp/view/generic/ViewControlSetting.java'
+		include 'mtp/view/generic/BulkFromView.java'
 
 		include 'mtp/view/generic/common/AutocompletionProperty.java'
 		include 'mtp/view/generic/common/AutocompletionSetting.java'

@@ -70,6 +70,8 @@
 			return !hideDetail;
 		} else if (type == OutputType.VIEW) {
 			return !hideView;
+		} else if (type == OutputType.BULK) {
+			return !hideDetail;
 		}
 		return false;
 	}
