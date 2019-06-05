@@ -33,9 +33,9 @@ import org.iplass.mtp.definition.LocalizedStringDefinition;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class BulkFormView extends FormView {
 
-	private static final long serialVersionUID = 937306616465891196L;
+	private static final long serialVersionUID = 8953749183488924551L;
 
-	/** 編集ボタン表示ラベル */
+	/** 更新ボタン表示ラベル */
 	@MetaFieldInfo(
 			displayName="更新ボタン表示ラベル",
 			displayNameKey="generic_BulkFormView_updateDisplayLabelDisplaNameKey",
@@ -57,7 +57,7 @@ public class BulkFormView extends FormView {
 	)
 	private List<LocalizedStringDefinition> localizedUpdateDisplayLabelList;
 
-	/** 編集ボタン非表示 */
+	/** 更新ボタン非表示 */
 	@MetaFieldInfo(
 			displayName="更新ボタン非表示",
 			displayNameKey="generic_BulkFormView_hideUpdateDisplaNameKey",
@@ -68,7 +68,7 @@ public class BulkFormView extends FormView {
 	)
 	private boolean hideUpdate;
 
-	/** 編集アクション名 */
+	/** 更新アクション名 */
 	@MetaFieldInfo(
 			displayName="更新アクション名",
 			displayNameKey="generic_BulkFormView_updateActionNameDisplaNameKey",
@@ -78,6 +78,17 @@ public class BulkFormView extends FormView {
 			descriptionKey="generic_BulkFormView_updateActionNameDescriptionKey"
 	)
 	private String updateActionName;
+
+	/** 検索条件で更新アクション名 */
+	@MetaFieldInfo(
+			displayName="検索条件で更新アクション名",
+			displayNameKey="generic_BulkFormView_updateAllActionNameDisplaNameKey",
+			inputType=InputType.ACTION,
+			displayOrder=550,
+			description="更新ボタンクリックで実行されるアクションを設定します。",
+			descriptionKey="generic_BulkFormView_updateAllActionNameDescriptionKey"
+	)
+	private String updateAllActionName;
 
 	/** JavaScriptコード */
 	@MetaFieldInfo(
@@ -91,7 +102,7 @@ public class BulkFormView extends FormView {
 	)
 	private String javaScript;
 
-	/** Javascriptコード有効可否(編集) */
+	/** Javascriptコード有効可否 */
 	@MetaFieldInfo(
 			displayName="Javascriptコードを有効化",
 			displayNameKey="generic_BulkFormView_validJavascriptBulkPageDisplaNameKey",
@@ -112,19 +123,7 @@ public class BulkFormView extends FormView {
 			descriptionKey="generic_BulkFormView_purgeCompositionedEntityDescriptionKey"
 	)
 	private boolean purgeCompositionedEntity;
-	
-	
-	/** 定義されている参照プロパティのみを取得 */
-	@MetaFieldInfo(
-			displayName="定義されている参照プロパティのみを取得",
-			displayNameKey="generic_BulkFormView_loadDefinedReferencePropertyDisplaNameKey",
-			inputType=InputType.CHECKBOX,
-			displayOrder=1610,
-			description="画面定義に設定された参照プロパティのみを詳細画面表示時に取得します。",
-			descriptionKey="generic_BulkFormView_loadDefinedReferencePropertyDescriptionKey"
-	)
-	private boolean loadDefinedReferenceProperty;
-	
+
 	/** 更新時に強制的に更新処理を行う */
 	@MetaFieldInfo(
 			displayName="更新時に強制的に更新処理を行う",
@@ -161,154 +160,176 @@ public class BulkFormView extends FormView {
 	private String loadEntityInterrupterName;
 
 	/**
-	 * @return the updateDisplayLabel
+	 * 更新ボタン表示ラベルを取得します。
+	 * @return 更新ボタン表示ラベル
 	 */
 	public String getUpdateDisplayLabel() {
 		return updateDisplayLabel;
 	}
 
 	/**
-	 * @param updateDisplayLabel the updateDisplayLabel to set
+	 * 更新ボタン表示ラベルを設定します。
+	 * @param updateDisplayLabel 更新ボタン表示ラベル
 	 */
 	public void setUpdateDisplayLabel(String updateDisplayLabel) {
 		this.updateDisplayLabel = updateDisplayLabel;
 	}
 
 	/**
-	 * @return the localizedUpdateDisplayLabelList
+	 * 多言語設定情報を取得します。
+	 * @return 多言語設定情報
 	 */
 	public List<LocalizedStringDefinition> getLocalizedUpdateDisplayLabelList() {
 		return localizedUpdateDisplayLabelList;
 	}
 
 	/**
-	 * @param localizedUpdateDisplayLabelList the localizedUpdateDisplayLabelList to set
+	 * 多言語設定情報を設定します。
+	 * @param localizedUpdateDisplayLabelList 多言語設定情報
 	 */
 	public void setLocalizedUpdateDisplayLabelList(List<LocalizedStringDefinition> localizedUpdateDisplayLabelList) {
 		this.localizedUpdateDisplayLabelList = localizedUpdateDisplayLabelList;
 	}
 
 	/**
-	 * @return the hideUpdate
+	 * 更新ボタン非表示を取得します。
+	 * @return 更新ボタン非表示
 	 */
 	public boolean isHideUpdate() {
 		return hideUpdate;
 	}
 
 	/**
-	 * @param hideUpdate the hideUpdate to set
+	 * 更新ボタン非表示を取得します。
+	 * @param hideUpdate 更新ボタン非表示
 	 */
 	public void setHideUpdate(boolean hideUpdate) {
 		this.hideUpdate = hideUpdate;
 	}
 
 	/**
-	 * @return the updateActionName
+	 * 更新アクション名を取得します。
+	 * @return 更新アクション名
 	 */
 	public String getUpdateActionName() {
 		return updateActionName;
 	}
 
 	/**
-	 * @param updateActionName the updateActionName to set
+	 * 更新アクション名を設定します。
+	 * @param updateActionName 更新アクション名
 	 */
 	public void setUpdateActionName(String updateActionName) {
 		this.updateActionName = updateActionName;
 	}
 
 	/**
-	 * @return the javaScript
+	 * 検索条件で更新アクション名を取得します。
+	 * @return 検索条件で更新アクション名
+	 */
+	public String getUpdateAllActionName() {
+		return updateAllActionName;
+	}
+
+	/**
+	 * 検索条件で更新アクション名を設定します。
+	 * @param updateAllActionName 検索条件で更新アクション名
+	 */
+	public void setUpdateAllActionName(String updateAllActionName) {
+		this.updateAllActionName = updateAllActionName;
+	}
+
+	/**
+	 * JavaScriptコード を取得します。
+	 * @return JavaScriptコード 
 	 */
 	public String getJavaScript() {
 		return javaScript;
 	}
 
 	/**
-	 * @param javaScript the javaScript to set
+	 * JavaScriptコードを設定します。
+	 * @param javaScript JavaScriptコード
 	 */
 	public void setJavaScript(String javaScript) {
 		this.javaScript = javaScript;
 	}
 
 	/**
-	 * @return the validJavascriptBulkPage
+	 * Javascriptコード有効可否を取得します。
+	 * @return Javascriptコード有効可否
 	 */
 	public boolean isValidJavascriptBulkPage() {
 		return validJavascriptBulkPage;
 	}
 
 	/**
-	 * @param validJavascriptBulkPage the validJavascriptBulkPage to set
+	 * Javascriptコード有効可否を設定します。
+	 * @param validJavascriptBulkPage Javascriptコード有効可否
 	 */
 	public void setValidJavascriptBulkPage(boolean validJavascriptBulkPage) {
 		this.validJavascriptBulkPage = validJavascriptBulkPage;
 	}
 
 	/**
-	 * @return the purgeCompositionedEntity
+	 * 親子関係の参照を物理削除するかを取得します。
+	 * @return 親子関係の参照を物理削除するか
 	 */
 	public boolean isPurgeCompositionedEntity() {
 		return purgeCompositionedEntity;
 	}
 
 	/**
-	 * @param purgeCompositionedEntity the purgeCompositionedEntity to set
+	 * 親子関係の参照を物理削除するかを設定します。
+	 * @param purgeCompositionedEntity 親子関係の参照を物理削除するか
 	 */
 	public void setPurgeCompositionedEntity(boolean purgeCompositionedEntity) {
 		this.purgeCompositionedEntity = purgeCompositionedEntity;
 	}
 
 	/**
-	 * @return the loadDefinedReferenceProperty
-	 */
-	public boolean isLoadDefinedReferenceProperty() {
-		return loadDefinedReferenceProperty;
-	}
-
-	/**
-	 * @param loadDefinedReferenceProperty the loadDefinedReferenceProperty to set
-	 */
-	public void setLoadDefinedReferenceProperty(boolean loadDefinedReferenceProperty) {
-		this.loadDefinedReferenceProperty = loadDefinedReferenceProperty;
-	}
-
-	/**
-	 * @return the forceUpadte
+	 * 更新時に強制的に更新処理を行うかを取得します。
+	 * @return 更新時に強制的に更新処理を行うか
 	 */
 	public boolean isForceUpadte() {
 		return forceUpadte;
 	}
 
 	/**
-	 * @param forceUpadte the forceUpadte to set
+	 * 更新時に強制的に更新処理を行うかを設定します。
+	 * @param forceUpadte 更新時に強制的に更新処理を行うか
 	 */
 	public void setForceUpadte(boolean forceUpadte) {
 		this.forceUpadte = forceUpadte;
 	}
 
 	/**
-	 * @return the interrupterName
+	 * カスタム登録処理クラス名を取得します。
+	 * @return カスタム登録処理クラス名
 	 */
 	public String getInterrupterName() {
 		return interrupterName;
 	}
 
 	/**
-	 * @param interrupterName the interrupterName to set
+	 * カスタム登録処理クラス名を設定します。
+	 * @param interrupterName カスタム登録処理クラス名
 	 */
 	public void setInterrupterName(String interrupterName) {
 		this.interrupterName = interrupterName;
 	}
 
 	/**
-	 * @return the loadEntityInterrupterName
+	 * カスタムロード処理クラス名を取得します。
+	 * @return カスタムロード処理クラス名
 	 */
 	public String getLoadEntityInterrupterName() {
 		return loadEntityInterrupterName;
 	}
 
 	/**
-	 * @param loadEntityInterrupterName the loadEntityInterrupterName to set
+	 * カスタムロード処理クラス名を設定します。
+	 * @param loadEntityInterrupterName カスタムロード処理クラス名
 	 */
 	public void setLoadEntityInterrupterName(String loadEntityInterrupterName) {
 		this.loadEntityInterrupterName = loadEntityInterrupterName;

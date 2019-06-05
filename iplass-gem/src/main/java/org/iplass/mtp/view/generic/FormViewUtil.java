@@ -351,7 +351,7 @@ public class FormViewUtil {
 	 */
 	public static BulkFormView createDefaultBulkFormView(EntityDefinition ed, boolean isLoadDisplayLabel) {
 		BulkFormView view = new BulkFormView();
-		view.setLoadDefinedReferenceProperty(true);
+//		view.setLoadDefinedReferenceProperty(true);
 
 		DefaultSection baseSection = new DefaultSection();
 		baseSection.setDispFlag(true);

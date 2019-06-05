@@ -69,7 +69,6 @@ public class BulkFormViewControl extends ItemControl {
 		addItem(editArea);
 
 		BulkFormView fv = new BulkFormView();
-		fv.setLoadDefinedReferenceProperty(true);
 		setValueObject(fv);
 		setClassName(fv.getClass().getName());
 	}

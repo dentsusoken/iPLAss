@@ -80,11 +80,6 @@
 	boolean isSelectAll = isSelectAll(selectAllType);
 
 	OutputType type = OutputType.BULK;
-	String contextPath = TemplateUtil.getTenantContextPath();
-	String action = contextPath + "/" + MultiBulkUpdateListCommand.BULK_UPDATE_ACTION_NAME;
-	if (isSelectAll) {
-		action = contextPath + "/" + MultiBulkUpdateAllCommand.BULK_UPDATE_ALL_ACTION_NAME;
-	}
 	EntityDefinition ed = data.getEntityDefinition();
 	BulkFormView form = data.getView();
 
@@ -93,6 +88,24 @@
 	//表示名
 	String displayName = TemplateUtil.getMultilingualString(form.getTitle(), form.getLocalizedTitleList(),
 			data.getEntityDefinition().getDisplayName(), data.getEntityDefinition().getLocalizedDisplayNameList());
+
+	String contextPath = TemplateUtil.getTenantContextPath();
+
+	String updateAction = "";
+	if (StringUtil.isNotBlank(form.getUpdateActionName())) {
+		updateAction = contextPath + "/" + form.getUpdateActionName();
+	} else {
+		updateAction = contextPath + "/" + MultiBulkUpdateListCommand.BULK_UPDATE_ACTION_NAME;
+	}
+
+	String updateAllAction = "";
+	if (StringUtil.isNotBlank(form.getUpdateAllActionName())) {
+		updateAllAction = contextPath + "/" + form.getUpdateAllActionName();
+	} else {
+		updateAllAction = contextPath + "/" + MultiBulkUpdateAllCommand.BULK_UPDATE_ALL_ACTION_NAME;
+	}
+
+	String action = isSelectAll ? updateAllAction : updateAction;
 
 	//編集対象情報
 	List<String> oids = new ArrayList<String>();
@@ -228,9 +241,9 @@ $(function() {
 
 	$radio.on("change", function(){
 		if ($(this).val() == "all") {
-			$("#detailForm").attr("action", "<%=contextPath + "/" + MultiBulkUpdateAllCommand.BULK_UPDATE_ALL_ACTION_NAME%>").on("submit", createSearchCondParams);
+			$("#detailForm").attr("action", "<%=StringUtil.escapeJavaScript(updateAllAction) %>").on("submit", createSearchCondParams);
 		} else {
-			$("#detailForm").attr("action", "<%=contextPath + "/" + MultiBulkUpdateListCommand.BULK_UPDATE_ACTION_NAME%>").off("submit", createSearchCondParams);
+			$("#detailForm").attr("action", "<%=StringUtil.escapeJavaScript(updateAction) %>").off("submit", createSearchCondParams);
 		}
 	});
 	//二回目以降は選択不可にする
@@ -261,9 +274,13 @@ $(function() {
 <div class="operation-bar operation-bar_bottom">
 <ul class="list_operation edit-bar">
 <%
-	if (auth.checkPermission(new EntityPermission(defName, EntityPermission.Action.UPDATE))) {
+	if (!form.isHideUpdate() && auth.checkPermission(new EntityPermission(defName, EntityPermission.Action.UPDATE))) {
 		//ボタンの表示ラベル
 		String bulkUpdateDisplayLabel = GemResourceBundleUtil.resourceString("generic.bulk.update");
+		String localizedUpdateDisplayLabel = TemplateUtil.getMultilingualString(form.getUpdateDisplayLabel(), form.getLocalizedUpdateDisplayLabelList());
+		if (StringUtil.isNotBlank(localizedUpdateDisplayLabel)) {
+			bulkUpdateDisplayLabel = localizedUpdateDisplayLabel;
+		}
 %>
 <li class="btn save-btn"><input id="bulkUpdateBtn" type="button" class="gr-btn" value="<c:out value="<%=bulkUpdateDisplayLabel %>" />" onclick="onclick_bulkupdate(this)" /></li>
 <%
@@ -295,6 +312,13 @@ function onDialogClose() {
 $(function() {
 	// タイトルの設定
 	$("#modal-title", parent.document).text("<%=displayName%>");<%-- XSS対応-メタの設定のため対応なし(displayName) --%>
+<%
+	if (form.isDialogMaximize()) {
+%>
+	$("#modal-dialog-root .modal-maximize", parent.document).click();
+<%
+	}
+%>
 	// 一括更新件数
 	var func = parent.document.scriptContext["countBulkUpdate"];
 	if(func && $.isFunction(func)) {

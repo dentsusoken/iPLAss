@@ -34,7 +34,7 @@ import org.iplass.mtp.view.generic.FormView;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class MetaBulkFormView extends MetaFormView {
 
-	private static final long serialVersionUID = 510164329032096078L;
+	private static final long serialVersionUID = -2911371508253934271L;
 
 	public static MetaBulkFormView createInstance(FormView view) {
 		return new MetaBulkFormView();
@@ -42,6 +42,9 @@ public class MetaBulkFormView extends MetaFormView {
 
 	/** 更新アクション名 */
 	private String updateActionName;
+	
+	/** 検索条件で更新アクション名*/
+	private String updateAllActionName;
 
 	/** 更新ボタン表示ラベル */
 	private String updateDisplayLabel;
@@ -58,9 +61,6 @@ public class MetaBulkFormView extends MetaFormView {
 	/** 親子関係の参照を物理削除するか */
 	private boolean purgeCompositionedEntity;
 
-	/** 定義されている参照プロパティのみを取得 */
-	private boolean loadDefinedReferenceProperty;
-
 	/** 更新時に強制的に更新処理を行う */
 	private boolean forceUpadte;
 
@@ -73,90 +73,178 @@ public class MetaBulkFormView extends MetaFormView {
 	/** JavaScript */
 	private String javaScript;
 
+	/**
+	 * 更新アクション名を取得します。
+	 * @return 更新アクション名
+	 */
 	public String getUpdateActionName() {
 		return updateActionName;
 	}
 
+	/**
+	 * 更新アクション名を設定します
+	 * @param updateActionName 更新アクション名
+	 */
 	public void setUpdateActionName(String updateActionName) {
 		this.updateActionName = updateActionName;
 	}
 
+	/**
+	 * 検索条件で更新アクション名を取得します。
+	 * @return 検索条件で更新アクション名
+	 */
+	public String getUpdateAllActionName() {
+		return updateAllActionName;
+	}
+
+	/**
+	 * 検索条件で更新アクション名を設定します。
+	 * @param updateAllActionName 検索条件で更新アクション名
+	 */
+	public void setUpdateAllActionName(String updateAllActionName) {
+		this.updateAllActionName = updateAllActionName;
+	}
+
+	/**
+	 * 更新ボタン表示ラベルを取得します。
+	 * @return 更新ボタン表示ラベル
+	 */
 	public String getUpdateDisplayLabel() {
 		return updateDisplayLabel;
 	}
 
+	/**
+	 * 更新ボタン表示ラベルを設定します。
+	 * @param updateDisplayLabel 更新ボタン表示ラベル
+	 */
 	public void setUpdateDisplayLabel(String updateDisplayLabel) {
 		this.updateDisplayLabel = updateDisplayLabel;
 	}
 
+	/**
+	 *  多言語設定情報を取得します。
+	 * @return 多言語設定情報
+	 */
 	public List<MetaLocalizedString> getLocalizedUpdateDisplayLabelList() {
 		return localizedUpdateDisplayLabelList;
 	}
 
+	/**
+	 *  多言語設定情報を設定します。
+	 * @param localizedUpdateDisplayLabelList 多言語設定情報
+	 */
 	public void setLocalizedUpdateDisplayLabelList(List<MetaLocalizedString> localizedUpdateDisplayLabelList) {
 		this.localizedUpdateDisplayLabelList = localizedUpdateDisplayLabelList;
 	}
 
+	/**
+	 * Javascriptコード有効可否を取得します。
+	 * @return Javascriptコード有効可否
+	 */
 	public Boolean getValidJavascriptBulkPage() {
 		return validJavascriptBulkPage;
 	}
 
+	/**
+	 * Javascriptコード有効可否を設定します。
+	 * @param validJavascriptBulkPage Javascriptコード有効可否
+	 */
 	public void setValidJavascriptBulkPage(Boolean validJavascriptBulkPage) {
 		this.validJavascriptBulkPage = validJavascriptBulkPage;
 	}
 
+	/**
+	 * 更新ボタン非表示を取得します。
+	 * @return 更新ボタン非表示
+	 */
 	public boolean isHideUpdate() {
 		return hideUpdate;
 	}
 
+	/**
+	 * 更新ボタン非表示を設定します。
+	 * @param hideUpdate 更新ボタン非表示
+	 */
 	public void setHideUpdate(boolean hideUpdate) {
 		this.hideUpdate = hideUpdate;
 	}
 
+	/**
+	 * 親子関係の参照を物理削除するかを取得します。
+	 * @return 親子関係の参照を物理削除するか
+	 */
 	public boolean isPurgeCompositionedEntity() {
 		return purgeCompositionedEntity;
 	}
 
+	/**
+	 * 親子関係の参照を物理削除するかを設定します。
+	 * @param purgeCompositionedEntity 親子関係の参照を物理削除するか
+	 */
 	public void setPurgeCompositionedEntity(boolean purgeCompositionedEntity) {
 		this.purgeCompositionedEntity = purgeCompositionedEntity;
 	}
 
-	public boolean isLoadDefinedReferenceProperty() {
-		return loadDefinedReferenceProperty;
-	}
-
-	public void setLoadDefinedReferenceProperty(boolean loadDefinedReferenceProperty) {
-		this.loadDefinedReferenceProperty = loadDefinedReferenceProperty;
-	}
-
+	/**
+	 * 更新時に強制的に更新処理を行うかを取得します。
+	 * @return 更新時に強制的に更新処理を行うか
+	 */
 	public boolean isForceUpadte() {
 		return forceUpadte;
 	}
 
+	/**
+	 * 更新時に強制的に更新処理を行うかを設定します。
+	 * @param forceUpadte 更新時に強制的に更新処理を行うか
+	 */
 	public void setForceUpadte(boolean forceUpadte) {
 		this.forceUpadte = forceUpadte;
 	}
 
+	/**
+	 * カスタム登録処理クラス名を取得します。
+	 * @return カスタム登録処理クラス名
+	 */
 	public String getInterrupterName() {
 		return interrupterName;
 	}
 
+	/**
+	 * カスタム登録処理クラス名を設定します。
+	 * @param interrupterName カスタム登録処理クラス名
+	 */
 	public void setInterrupterName(String interrupterName) {
 		this.interrupterName = interrupterName;
 	}
 
+	/**
+	 * カスタムロード処理クラス名を取得します。
+	 * @return カスタムロード処理クラス名 
+	 */
 	public String getLoadEntityInterrupterName() {
 		return loadEntityInterrupterName;
 	}
 
+	/**
+	 * カスタムロード処理クラス名を設定します。
+	 * @param loadEntityInterrupterName カスタムロード処理クラス名
+	 */
 	public void setLoadEntityInterrupterName(String loadEntityInterrupterName) {
 		this.loadEntityInterrupterName = loadEntityInterrupterName;
 	}
 
+	/**
+	 * JavaScriptを取得します。
+	 * @return JavaScript
+	 */
 	public String getJavaScript() {
 		return javaScript;
 	}
 
+	/**
+	 * JavaScriptを設定します。
+	 * @param javaScript JavaScript
+	 */
 	public void setJavaScript(String javaScript) {
 		this.javaScript = javaScript;
 	}
@@ -167,10 +255,11 @@ public class MetaBulkFormView extends MetaFormView {
 
 		BulkFormView bForm = (BulkFormView) form;
 		updateActionName = bForm.getUpdateActionName();
+		updateAllActionName = bForm.getUpdateAllActionName();
 		updateDisplayLabel = bForm.getUpdateDisplayLabel();
 		localizedUpdateDisplayLabelList = I18nUtil.toMeta(bForm.getLocalizedUpdateDisplayLabelList());
+		hideUpdate = bForm.isHideUpdate();
 		purgeCompositionedEntity = bForm.isPurgeCompositionedEntity();
-		loadDefinedReferenceProperty = bForm.isLoadDefinedReferenceProperty();
 		forceUpadte = bForm.isForceUpadte();
 		javaScript = bForm.getJavaScript();
 		validJavascriptBulkPage = bForm.isValidJavascriptBulkPage();
@@ -185,10 +274,11 @@ public class MetaBulkFormView extends MetaFormView {
 		super.fillTo(form, definitionId);
 
 		form.setUpdateActionName(updateActionName);
+		form.setUpdateAllActionName(updateAllActionName);
 		form.setUpdateDisplayLabel(updateDisplayLabel);
 		form.setLocalizedUpdateDisplayLabelList(I18nUtil.toDef(localizedUpdateDisplayLabelList));
+		form.setHideUpdate(hideUpdate);
 		form.setPurgeCompositionedEntity(purgeCompositionedEntity);
-		form.setLoadDefinedReferenceProperty(loadDefinedReferenceProperty);
 		form.setForceUpadte(forceUpadte);
 		form.setJavaScript(javaScript);
 		form.setInterrupterName(interrupterName);

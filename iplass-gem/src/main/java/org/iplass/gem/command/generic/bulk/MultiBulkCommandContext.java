@@ -490,14 +490,6 @@ public class MultiBulkCommandContext extends RegistrationCommandContext {
 		return getParam(Constants.SEARCH_COND);
 	}
 
-	/**
-	 * リクエストから処理タイプを取得します。
-	 * @return
-	 */
-	public String getExecType() {
-		return getParam(Constants.EXEC_TYPE);
-	}
-
 	public Integer getRow(String oid, Long version) {
 		Integer row = null;
 		// バージョン管理されているエンティティでマルチリファレンスのプロパティ定義がある場合、同じOIDとバージョンで行番号が異なるデータが存在するので、
@@ -655,7 +647,7 @@ public class MultiBulkCommandContext extends RegistrationCommandContext {
 	 *
 	 * @return 一括更新するプロパティ
 	 */
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("unchecked")	
 	@Override
 	public List<PropertyItem> getProperty() {
 		List<PropertyItem> propList = new ArrayList<PropertyItem>();
@@ -667,8 +659,9 @@ public class MultiBulkCommandContext extends RegistrationCommandContext {
 			}
 		}
 
-		for (PropertyDefinition pd : getPropertyList()) {
-			String propName = pd.getName();
+		List<String> propNames = propList.stream().map(PropertyItem::getPropertyName)
+				.collect(Collectors.toList());
+		for (String propName : propNames) {
 			if (skipProps.contains(propName)) continue;
 			// TODO ブランクの項目は未入力と見なし、更新しません。
 			if (getBulkUpdatePropertyValue(propName) == null) {
