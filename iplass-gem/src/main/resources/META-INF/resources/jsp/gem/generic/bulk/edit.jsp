@@ -31,6 +31,7 @@
 <%@ page import="org.iplass.mtp.util.StringUtil" %>
 <%@ page import="org.iplass.mtp.view.generic.*" %>
 <%@ page import="org.iplass.mtp.view.generic.editor.*" %>
+<%@ page import="org.iplass.mtp.view.generic.element.Button" %>
 <%@ page import="org.iplass.mtp.view.generic.element.Element" %>
 <%@ page import="org.iplass.mtp.view.generic.element.section.*" %>
 <%@ page import="org.iplass.mtp.view.generic.element.property.*" %>
@@ -274,6 +275,26 @@ $(function() {
 <div class="operation-bar operation-bar_bottom">
 <ul class="list_operation edit-bar">
 <%
+	if (form.getButtons().size() > 0) {
+		for (Button button : form.getButtons()) {
+			if (button.isDispFlag()) {
+				String cssClass = button.isPrimary() ? "gr-btn" : "gr-btn-02";
+				if (StringUtil.isNotBlank(button.getStyle())) {
+					cssClass = button.getStyle();
+				}
+				String customStyle = "";
+				if (StringUtil.isNotBlank(button.getInputCustomStyle())) {
+					customStyle = EntityViewUtil.getCustomStyle(defName, form.getScriptKey(), button.getInputCustomStyleScriptKey(), null, null);
+				}
+				String displayLabel = TemplateUtil.getMultilingualString(button.getDisplayLabel(), button.getLocalizedDisplayLabelList());
+%>
+<%-- XSS対応-メタの設定のため対応なし(button.getOnclickEvent()) --%>
+<li class="btn"><input class="<c:out value="<%=cssClass %>"/>" style="<c:out value="<%=customStyle %>"/>" type="button" value="<c:out value="<%=displayLabel %>"/>" onclick="<%=button.getOnclickEvent() %>" /></li>
+<%
+			}
+		}
+	}
+
 	if (!form.isHideUpdate() && auth.checkPermission(new EntityPermission(defName, EntityPermission.Action.UPDATE))) {
 		//ボタンの表示ラベル
 		String bulkUpdateDisplayLabel = GemResourceBundleUtil.resourceString("generic.bulk.update");
@@ -286,7 +307,7 @@ $(function() {
 <%
 	}
 %>
-<li class="mt05 cancel-link"><a href="javascript:void(0)" onclick="onclick_cancel()">${m:rs("mtp-gem-messages", "generic.bulk.cancel")}</a></li> 
+<li class="mt05 cancel-link"><a href="javascript:void(0)" onclick="onclick_cancel()">${m:rs("mtp-gem-messages", "generic.bulk.cancel")}</a></li>
 </ul>
 </div>
 </div>
