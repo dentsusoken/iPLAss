@@ -182,6 +182,19 @@ public class SearchFormView extends FormView {
 
 
 
+	/** 物理削除するかどうか */
+	@MetaFieldInfo(
+			displayName="物理削除するか",
+			inputType=InputType.CHECKBOX,
+			displayOrder=1510,
+			description="物理削除を行うかを設定します。",
+			displayNameKey="generic_SearchFormView_isPurgeDisplaNameKey",
+			descriptionKey="generic_SearchFormView_isPurgeDescriptionKey")
+	private boolean isPurge;
+
+
+
+
 	/** EQLカスタム処理クラス名 */
 	@MetaFieldInfo(
 			displayName="EQLカスタム処理クラス名",
@@ -447,6 +460,22 @@ public class SearchFormView extends FormView {
 	 */
 	public void setJavaScript(String javaScript) {
 		this.javaScript = javaScript;
+	}
+
+	/**
+	 * 物理削除するかどうかを取得します。
+	 * @return 物理削除するかどうか
+	 */
+	public boolean isPurge() {
+	    return isPurge;
+	}
+
+	/**
+	 * 物理削除するかどうかを設定します。
+	 * @param isPurge 物理削除するかどうか
+	 */
+	public void setPurge(boolean isPurge) {
+	    this.isPurge = isPurge;
 	}
 
 	/**

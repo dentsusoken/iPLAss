@@ -62,18 +62,21 @@ public class BulkFormView extends FormView {
 			displayName="更新ボタン非表示",
 			displayNameKey="generic_BulkFormView_hideUpdateDisplaNameKey",
 			inputType=InputType.CHECKBOX,
-			displayOrder=320,
+			displayOrder=220,
 			description="更新ボタンを非表示にするかを設定します。",
 			descriptionKey="generic_BulkFormView_hideUpdateDescriptionKey"
 	)
 	private boolean hideUpdate;
+
+
+
 
 	/** 更新アクション名 */
 	@MetaFieldInfo(
 			displayName="更新アクション名",
 			displayNameKey="generic_BulkFormView_updateActionNameDisplaNameKey",
 			inputType=InputType.ACTION,
-			displayOrder=500,
+			displayOrder=300,
 			description="更新ボタンクリックで実行されるアクションを設定します。",
 			descriptionKey="generic_BulkFormView_updateActionNameDescriptionKey"
 	)
@@ -84,18 +87,21 @@ public class BulkFormView extends FormView {
 			displayName="検索条件で更新アクション名",
 			displayNameKey="generic_BulkFormView_updateAllActionNameDisplaNameKey",
 			inputType=InputType.ACTION,
-			displayOrder=550,
+			displayOrder=310,
 			description="更新ボタンクリックで実行されるアクションを設定します。",
 			descriptionKey="generic_BulkFormView_updateAllActionNameDescriptionKey"
 	)
 	private String updateAllActionName;
+
+
+
 
 	/** JavaScriptコード */
 	@MetaFieldInfo(
 			displayName="JavaScriptコード",
 			displayNameKey="generic_BulkFormView_javaScriptDisplaNameKey",
 			inputType=InputType.SCRIPT,
-			displayOrder=1100,
+			displayOrder=500,
 			mode="javascript",
 			description="SCRIPTタグ内に出力するJavaScriptコードを設定します。",
 			descriptionKey="generic_BulkFormView_javaScriptDescriptionKey"
@@ -107,11 +113,14 @@ public class BulkFormView extends FormView {
 			displayName="Javascriptコードを有効化",
 			displayNameKey="generic_BulkFormView_validJavascriptBulkPageDisplaNameKey",
 			inputType=InputType.CHECKBOX,
-			displayOrder=1110,
+			displayOrder=510,
 			description="Javascriptコードに設定した内容を一括更新画面で有効にするかを設定します。",
 			descriptionKey="generic_BulkFormView_validJavascriptBulkPageDescriptionKey"
 	)
 	private boolean validJavascriptBulkPage;
+
+
+
 
 	/** 親子関係の参照を物理削除するか */
 	@MetaFieldInfo(
@@ -129,7 +138,7 @@ public class BulkFormView extends FormView {
 			displayName="更新時に強制的に更新処理を行う",
 			displayNameKey="generic_BulkFormView_forceUpadteDisplaNameKey",
 			inputType=InputType.CHECKBOX,
-			displayOrder=1620,
+			displayOrder=1610,
 			description="変更項目が一つもなくとも、強制的に更新処理（更新日時、更新者が更新される）を行います。",
 			descriptionKey="generic_BulkFormView_forceUpadteDescriptionKey"
 	)
@@ -139,7 +148,7 @@ public class BulkFormView extends FormView {
 	@MetaFieldInfo(
 			displayName="カスタム登録処理クラス名",
 			displayNameKey="generic_BulkFormView_interrupterNameDisplaNameKey",
-			displayOrder=1660,
+			displayOrder=1620,
 			description="データ登録時に行うカスタム登録処理のクラス名を指定します。<br>" +
 					"RegistrationInterrupterインターフェースを実装するクラスを指定してください。",
 
@@ -151,7 +160,7 @@ public class BulkFormView extends FormView {
 	@MetaFieldInfo(
 			displayName="カスタムロード処理クラス名",
 			displayNameKey="generic_BulkFormView_loadEntityInterrupterNameDisplaNameKey",
-			displayOrder=1670,
+			displayOrder=1630,
 			description="Entityロード処理実行前にロード用のオプションをカスタマイズするためのクラス名を指定します。<br>" +
 					"LoadEntityInterrupterインターフェースを実装するクラスを指定してください。",
 

@@ -76,9 +76,6 @@ public abstract class MetaFormView implements MetaData {
 	/** 多言語設定情報 */
 	private List<MetaLocalizedString> localizedTitleList = new ArrayList<MetaLocalizedString>();
 
-	/** 物理削除するかどうか */
-	private boolean isPurge;
-
 	/** データを多言語化するかどうか */
 	private boolean localizationData;
 
@@ -131,22 +128,6 @@ public abstract class MetaFormView implements MetaData {
 	 */
 	public void setTitle(String title) {
 		this.title = title;
-	}
-
-	/**
-	 * 物理削除するかどうかを取得します。
-	 * @return 物理削除するかどうか
-	 */
-	public boolean isPurge() {
-	    return isPurge;
-	}
-
-	/**
-	 * 物理削除するかどうかを設定します。
-	 * @param isPurge 物理削除するかどうか
-	 */
-	public void setPurge(boolean isPurge) {
-	    this.isPurge = isPurge;
 	}
 
 	/**
@@ -292,7 +273,6 @@ public abstract class MetaFormView implements MetaData {
 	protected void fillFrom(FormView form, String definitionId) {
 		this.name = form.getName();
 		this.title = form.getTitle();
-		this.isPurge = form.isPurge();
 		this.localizationData = form.isLocalizationData();
 		this.dialogMaximize = form.isDialogMaximize();
 		this.imageColor = form.getImageColor();
@@ -341,7 +321,6 @@ public abstract class MetaFormView implements MetaData {
 
 		form.setName(this.name);
 		form.setTitle(this.title);
-		form.setPurge(this.isPurge);
 		form.setLocalizationData(this.localizationData);
 		form.setDialogMaximize(this.dialogMaximize);
 		form.setImageColor(this.imageColor);

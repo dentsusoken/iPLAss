@@ -143,16 +143,6 @@ public abstract class FormView implements Refrectable {
 			descriptionKey="generic_FormView_localizationDataDescriptionKey")
 	private boolean localizationData;
 
-	/** 物理削除するかどうか */
-	@MetaFieldInfo(
-			displayName="物理削除するか",
-			inputType=InputType.CHECKBOX,
-			displayOrder=1510,
-			description="物理削除を行うかを設定します。",
-			displayNameKey="generic_FormView_isPurgeDisplaNameKey",
-			descriptionKey="generic_FormView_isPurgeDescriptionKey")
-	private boolean isPurge;
-
 	/** カスタムスタイルキー */
 	private String scriptKey;
 
@@ -211,22 +201,6 @@ public abstract class FormView implements Refrectable {
 	 */
 	public void setTitle(String title) {
 		this.title = title;
-	}
-
-	/**
-	 * 物理削除するかどうかを取得します。
-	 * @return 物理削除するかどうか
-	 */
-	public boolean isPurge() {
-	    return isPurge;
-	}
-
-	/**
-	 * 物理削除するかどうかを設定します。
-	 * @param isPurge 物理削除するかどうか
-	 */
-	public void setPurge(boolean isPurge) {
-	    this.isPurge = isPurge;
 	}
 
 	/**
