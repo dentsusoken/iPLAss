@@ -51,6 +51,9 @@
 	<replace-with class="org.iplass.adminconsole.client.metadata.ui.entity.layout.DetailLayoutPanelImpl">
 		<when-type-is class="org.iplass.adminconsole.client.metadata.ui.entity.layout.DetailLayoutPanel"/>
 	</replace-with>
+	<replace-with class="org.iplass.adminconsole.client.metadata.ui.entity.layout.BulkLayoutPanelImpl">
+		<when-type-is class="org.iplass.adminconsole.client.metadata.ui.entity.layout.BulkLayoutPanel"/>
+	</replace-with>
 	<replace-with class="org.iplass.adminconsole.client.metadata.ui.entity.viewcontrol.ViewControlPanelImpl">
 		<when-type-is class="org.iplass.adminconsole.client.metadata.ui.entity.viewcontrol.ViewControlPanel"/>
 	</replace-with>
