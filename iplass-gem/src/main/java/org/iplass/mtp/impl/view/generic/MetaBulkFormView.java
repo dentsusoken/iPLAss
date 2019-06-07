@@ -34,7 +34,7 @@ import org.iplass.mtp.view.generic.FormView;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class MetaBulkFormView extends MetaFormView {
 
-	private static final long serialVersionUID = -2911371508253934271L;
+	private static final long serialVersionUID = -7141897000334457139L;
 
 	public static MetaBulkFormView createInstance(FormView view) {
 		return new MetaBulkFormView();
@@ -54,9 +54,6 @@ public class MetaBulkFormView extends MetaFormView {
 
 	/** Javascriptコード有効可否 */
 	private Boolean validJavascriptBulkPage;
-
-	/** 更新ボタン非表示 */
-	private boolean hideUpdate;
 
 	/** 親子関係の参照を物理削除するか */
 	private boolean purgeCompositionedEntity;
@@ -154,22 +151,6 @@ public class MetaBulkFormView extends MetaFormView {
 	}
 
 	/**
-	 * 更新ボタン非表示を取得します。
-	 * @return 更新ボタン非表示
-	 */
-	public boolean isHideUpdate() {
-		return hideUpdate;
-	}
-
-	/**
-	 * 更新ボタン非表示を設定します。
-	 * @param hideUpdate 更新ボタン非表示
-	 */
-	public void setHideUpdate(boolean hideUpdate) {
-		this.hideUpdate = hideUpdate;
-	}
-
-	/**
 	 * 親子関係の参照を物理削除するかを取得します。
 	 * @return 親子関係の参照を物理削除するか
 	 */
@@ -258,7 +239,6 @@ public class MetaBulkFormView extends MetaFormView {
 		updateAllActionName = bForm.getUpdateAllActionName();
 		updateDisplayLabel = bForm.getUpdateDisplayLabel();
 		localizedUpdateDisplayLabelList = I18nUtil.toMeta(bForm.getLocalizedUpdateDisplayLabelList());
-		hideUpdate = bForm.isHideUpdate();
 		purgeCompositionedEntity = bForm.isPurgeCompositionedEntity();
 		forceUpadte = bForm.isForceUpadte();
 		javaScript = bForm.getJavaScript();
@@ -277,7 +257,6 @@ public class MetaBulkFormView extends MetaFormView {
 		form.setUpdateAllActionName(updateAllActionName);
 		form.setUpdateDisplayLabel(updateDisplayLabel);
 		form.setLocalizedUpdateDisplayLabelList(I18nUtil.toDef(localizedUpdateDisplayLabelList));
-		form.setHideUpdate(hideUpdate);
 		form.setPurgeCompositionedEntity(purgeCompositionedEntity);
 		form.setForceUpadte(forceUpadte);
 		form.setJavaScript(javaScript);

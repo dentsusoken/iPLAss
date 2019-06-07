@@ -295,7 +295,7 @@ $(function() {
 		}
 	}
 
-	if (!form.isHideUpdate() && auth.checkPermission(new EntityPermission(defName, EntityPermission.Action.UPDATE))) {
+	if (auth.checkPermission(new EntityPermission(defName, EntityPermission.Action.UPDATE))) {
 		//ボタンの表示ラベル
 		String bulkUpdateDisplayLabel = GemResourceBundleUtil.resourceString("generic.bulk.update");
 		String localizedUpdateDisplayLabel = TemplateUtil.getMultilingualString(form.getUpdateDisplayLabel(), form.getLocalizedUpdateDisplayLabelList());

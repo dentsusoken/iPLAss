@@ -33,7 +33,7 @@ import org.iplass.mtp.definition.LocalizedStringDefinition;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class BulkFormView extends FormView {
 
-	private static final long serialVersionUID = 8953749183488924551L;
+	private static final long serialVersionUID = 8695940686714160111L;
 
 	/** 更新ボタン表示ラベル */
 	@MetaFieldInfo(
@@ -56,17 +56,6 @@ public class BulkFormView extends FormView {
 			displayOrder=210
 	)
 	private List<LocalizedStringDefinition> localizedUpdateDisplayLabelList;
-
-	/** 更新ボタン非表示 */
-	@MetaFieldInfo(
-			displayName="更新ボタン非表示",
-			displayNameKey="generic_BulkFormView_hideUpdateDisplaNameKey",
-			inputType=InputType.CHECKBOX,
-			displayOrder=220,
-			description="更新ボタンを非表示にするかを設定します。",
-			descriptionKey="generic_BulkFormView_hideUpdateDescriptionKey"
-	)
-	private boolean hideUpdate;
 
 
 
@@ -198,22 +187,6 @@ public class BulkFormView extends FormView {
 	 */
 	public void setLocalizedUpdateDisplayLabelList(List<LocalizedStringDefinition> localizedUpdateDisplayLabelList) {
 		this.localizedUpdateDisplayLabelList = localizedUpdateDisplayLabelList;
-	}
-
-	/**
-	 * 更新ボタン非表示を取得します。
-	 * @return 更新ボタン非表示
-	 */
-	public boolean isHideUpdate() {
-		return hideUpdate;
-	}
-
-	/**
-	 * 更新ボタン非表示を取得します。
-	 * @param hideUpdate 更新ボタン非表示
-	 */
-	public void setHideUpdate(boolean hideUpdate) {
-		this.hideUpdate = hideUpdate;
 	}
 
 	/**
