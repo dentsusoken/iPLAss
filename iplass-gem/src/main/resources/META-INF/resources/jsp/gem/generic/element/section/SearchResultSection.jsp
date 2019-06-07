@@ -783,6 +783,11 @@ $(function() {
 	}
 });
 function doBulkUpdate(target) {
+	var searchCondChanged = $(".chagne-condition").css("display") != "none";
+	if(searchCondChanged && !confirm('${m:rs("mtp-gem-messages", "generic.element.section.SearchResultSection.displayUnmatchBulk")}')) {
+		return false;
+	}
+
 	var type = $(":hidden[name='searchType']").val();
 	if (!validation(type)) return;
 
