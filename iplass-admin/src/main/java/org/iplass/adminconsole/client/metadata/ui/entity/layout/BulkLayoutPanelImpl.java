@@ -717,13 +717,13 @@ public class BulkLayoutPanelImpl extends MetaDataMainEditPane implements BulkLay
 				//画面を再読込
 				reloadDefaultView();
 			} else {
-				SC.warn(AdminClientMessageUtil.getString("ui_metadata_entity_layout_BulkLayoutPane_failedDeleteEntity") + result.getMessage());
+				SC.warn(AdminClientMessageUtil.getString("ui_metadata_entity_layout_BulkLayoutPane_failedDelete") + result.getMessage());
 			}
 		}
 
 		@Override
 		public void onFailure(Throwable caught) {
-			SC.warn(AdminClientMessageUtil.getString("ui_metadata_entity_layout_BulkLayoutPane_failedDeleteEntity") + caught.getMessage());
+			SC.warn(AdminClientMessageUtil.getString("ui_metadata_entity_layout_BulkLayoutPane_failedDelete") + caught.getMessage());
 			GWT.log(caught.toString(), caught);
 		}
 	}
