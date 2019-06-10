@@ -288,7 +288,12 @@ public class EntityJavaMappingClassCreator extends MtpCuiBase {
 			EntityDefinition ed = edm.get(entityPath);
 			if (ed != null) {
 				// Entity直接指定
-				File file = new File(generateJavaClassFileName(ed.getName()));
+				String entityName = ed.getName();
+				if (StringUtil.isBlank(basePackage)
+						&& ed.getMapping() != null && StringUtil.isNotBlank(ed.getMapping().getMappingModelClass())) {
+					entityName = ed.getMapping().getMappingModelClass();
+				}
+				File file = new File(generateJavaClassFileName(entityName));
 				if (!isForce && file.exists()) {
 					// 上書き確認
 					if (!readConsoleBoolean(rs("EntityJavaMappingClassCreator.confirmOverwrite", file.getPath()), false)) {
@@ -301,12 +306,18 @@ public class EntityJavaMappingClassCreator extends MtpCuiBase {
 			} else {
 				// Entity階層パス指定
 				List<DefinitionSummary> list = edm.definitionSummaryList(entityPath, isRecursive);
-				list.forEach(it -> {
-					if (ROOT_ENTITY.equals(it.getPath())) {
+				list.forEach(ds -> {
+					if (ROOT_ENTITY.equals(ds.getPath())) {
 						return;
 					}
 
-					File file = new File(generateJavaClassFileName(it.getName()));
+					String entityName = ds.getName();
+					EntityDefinition edx = edm.get(ds.getName());
+					if (StringUtil.isBlank(basePackage)
+							&& edx.getMapping() != null && StringUtil.isNotBlank(edx.getMapping().getMappingModelClass())) {
+						entityName = edx.getMapping().getMappingModelClass();
+					}
+					File file = new File(generateJavaClassFileName(entityName));
 					if (!isForce && file.exists()) {
 						// 上書き確認
 						if (!readConsoleBoolean(rs("EntityJavaMappingClassCreator.confirmOverwrite", file.getPath()), false)) {
@@ -314,7 +325,7 @@ public class EntityJavaMappingClassCreator extends MtpCuiBase {
 						}
 					}
 
-					entityToolService.createJavaMappingClass(file, edm.get(it.getName()), basePackage);
+					entityToolService.createJavaMappingClass(file, edx, basePackage);
 				});
 			}
 
