@@ -21,7 +21,6 @@
 package org.iplass.mtp.impl.tools.entity;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.file.Files;
@@ -72,10 +71,9 @@ public class EntityToolService implements Service {
 			}
 		}
 
-		String directClassName = StringUtil.isNotBlank(basePackage) ? basePackage + '.' : "" + definition.getName();
-		try (OutputStream os = new FileOutputStream(file);
-			EntityJavaMappingClassWriter writer = new EntityJavaMappingClassWriter(os, definition, directClassName);
-		) {
+		String directClassName = StringUtil.isNotBlank(basePackage) ? basePackage + '.' + definition.getName() : null; 
+		try (EntityJavaMappingClassWriter writer = 
+				new EntityJavaMappingClassWriter(Files.newOutputStream(file.toPath()), definition, directClassName)) {
 			writer.writeJavaClass();
 		} catch (IOException e) {
 			throw new EntityToolRuntimeException(getRS("unexpectedError"), e);
