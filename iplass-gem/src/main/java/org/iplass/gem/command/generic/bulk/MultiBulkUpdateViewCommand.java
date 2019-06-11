@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
+ * Copyright (C) 2019 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
  *
  * Unless you have purchased a commercial license,
  * the following license terms apply:
@@ -34,21 +34,21 @@ import org.iplass.mtp.command.annotation.action.ParamMapping;
 import org.iplass.mtp.command.annotation.action.Result;
 import org.iplass.mtp.command.annotation.action.Result.Type;
 import org.iplass.mtp.entity.Entity;
-import org.iplass.mtp.view.generic.SearchFormView;
+import org.iplass.mtp.view.generic.BulkFormView;
 
 @ActionMappings({
-	@ActionMapping(name=BulkUpdateViewCommand.BULK_EDIT_ACTION_NAME,
+	@ActionMapping(name=MultiBulkUpdateViewCommand.BULK_EDIT_ACTION_NAME,
 			displayName="一括詳細編集",
 			paramMapping={
 				@ParamMapping(name=Constants.DEF_NAME, mapFrom="${0}", condition="subPath.length==1"),
 				@ParamMapping(name=Constants.VIEW_NAME, mapFrom="${0}", condition="subPath.length==2"),
 				@ParamMapping(name=Constants.DEF_NAME, mapFrom="${1}", condition="subPath.length==2"),
 			},
-			command=@CommandConfig(commandClass=BulkUpdateViewCommand.class, value="cmd.detail=true;"),
+			command=@CommandConfig(commandClass=MultiBulkUpdateViewCommand.class),
 			result={
 				@Result(status=Constants.CMD_EXEC_SUCCESS, type=Type.JSP,
-						value=Constants.CMD_RSLT_JSP_BULK_EDIT,
-						templateName="gem/generic/bulk/bulkEdit",
+						value=Constants.CMD_RSLT_JSP_BULK_MULTI_EDIT,
+						templateName="gem/generic/bulk/edit",
 						layoutActionName=Constants.LAYOUT_POPOUT_ACTION),
 				@Result(status=Constants.CMD_EXEC_ERROR_VIEW, type=Type.JSP,
 						value=Constants.CMD_RSLT_JSP_ERROR,
@@ -61,44 +61,33 @@ import org.iplass.mtp.view.generic.SearchFormView;
 			}
 		)
 })
-@CommandClass(name = "gem/generic/bulk/BulkDetailViewCommand", displayName = "一括詳細表示")
-public class BulkUpdateViewCommand extends BulkCommandBase {
+@CommandClass(name = "gem/generic/bulk/MultiBulkUpdateViewCommand", displayName = "一括詳細表示")
+public class MultiBulkUpdateViewCommand extends MultiBulkCommandBase {
 
-	public static final String BULK_EDIT_ACTION_NAME = "gem/generic/bulk/bulkEdit";
-
-	private boolean detail;
-
-	public boolean isDetail() {
-		return detail;
-	}
-
-	public void setDetail(boolean detail) {
-		this.detail = detail;
-	}
+	public static final String BULK_EDIT_ACTION_NAME = "gem/generic/bulk/edit";
 
 	/**
 	 * コンストラクタ
 	 */
-	public BulkUpdateViewCommand() {
+	public MultiBulkUpdateViewCommand() {
 		super();
 	}
 
 	@Override
 	public String execute(RequestContext request) {
-		BulkCommandContext context = getContext(request);
+		MultiBulkCommandContext context = getContext(request);
 
 		// 必要なパラメータ取得
 		Set<String> oids = context.getOids();
 
 		// 各種定義取得
-		SearchFormView view = context.getView();
+		BulkFormView view = context.getView();
 		if (view == null) {
 			request.setAttribute(Constants.MESSAGE, resourceString("command.generic.bulk.BulkUpdateViewCommand.viewErr"));
 			return Constants.CMD_EXEC_ERROR_VIEW;
 		}
 
-		BulkUpdateFormViewData data = new BulkUpdateFormViewData(context);
-		data.setExecType(Constants.EXEC_TYPE_UPDATE);
+		MultiBulkUpdateFormViewData data = new MultiBulkUpdateFormViewData(context);
 
 		for (String oid : oids) {
 			if (oid != null && oid.length() > 0) {
@@ -115,6 +104,7 @@ public class BulkUpdateViewCommand extends BulkCommandBase {
 		}
 
 		request.setAttribute(Constants.DATA, data);
+		request.setAttribute(Constants.ENTITY_DATA, context.createEntity());
 		request.setAttribute(Constants.SEARCH_COND, context.getSearchCond());
 		request.setAttribute(Constants.BULK_UPDATE_SELECT_ALL_PAGE, context.getSelectAllPage());
 		return Constants.CMD_EXEC_SUCCESS;

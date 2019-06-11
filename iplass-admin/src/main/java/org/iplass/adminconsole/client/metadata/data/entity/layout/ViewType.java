@@ -21,5 +21,5 @@
 package org.iplass.adminconsole.client.metadata.data.entity.layout;
 
 public enum ViewType {
-	DETAIL,SEARCH
+	DETAIL,SEARCH,BULK
 }

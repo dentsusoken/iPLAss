@@ -47,6 +47,7 @@ import org.iplass.mtp.definition.SharedConfig;
 import org.iplass.mtp.entity.Entity;
 import org.iplass.mtp.entity.definition.EntityDefinition;
 import org.iplass.mtp.entity.definition.PropertyDefinition;
+import org.iplass.mtp.view.generic.BulkFormView;
 import org.iplass.mtp.view.generic.DetailFormView;
 import org.iplass.mtp.view.generic.SearchFormView;
 import org.iplass.mtp.view.menu.MenuItem;
@@ -305,6 +306,8 @@ public interface MetaDataService extends XsrfProtectedService {
 	public SearchFormView createDefaultSearchFormView(int tenantId, String name);
 
 	public DetailFormView createDefaultDetailFormView(int tenantId, String name);
+
+	public BulkFormView createDefaultBulkFormView(int tenantId, String name);
 
 	public List<Entity> getRoles(int tenantId);
 

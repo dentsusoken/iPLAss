@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
+ * Copyright (C) 2019 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
  *
  * Unless you have purchased a commercial license,
  * the following license terms apply:
@@ -54,34 +54,33 @@ import org.iplass.mtp.entity.definition.properties.ReferenceProperty;
 import org.iplass.mtp.impl.util.ConvertUtil;
 import org.iplass.mtp.spi.ServiceRegistry;
 import org.iplass.mtp.util.StringUtil;
+import org.iplass.mtp.view.generic.BulkFormView;
 import org.iplass.mtp.view.generic.EntityViewUtil;
 import org.iplass.mtp.view.generic.FormViewUtil;
-import org.iplass.mtp.view.generic.SearchFormView;
 import org.iplass.mtp.view.generic.editor.DateRangePropertyEditor;
 import org.iplass.mtp.view.generic.editor.JoinPropertyEditor;
 import org.iplass.mtp.view.generic.editor.NestProperty;
 import org.iplass.mtp.view.generic.editor.PropertyEditor;
 import org.iplass.mtp.view.generic.editor.ReferencePropertyEditor;
 import org.iplass.mtp.view.generic.editor.ReferencePropertyEditor.ReferenceDisplayType;
-import org.iplass.mtp.view.generic.element.property.PropertyColumn;
-import org.iplass.mtp.view.generic.element.section.SearchResultSection;
+import org.iplass.mtp.view.generic.element.Element;
+import org.iplass.mtp.view.generic.element.property.PropertyItem;
+import org.iplass.mtp.view.generic.element.section.DefaultSection;
+import org.iplass.mtp.view.generic.element.section.Section;
 import org.iplass.mtp.web.template.TemplateUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class BulkCommandContext extends RegistrationCommandContext {
+public class MultiBulkCommandContext extends RegistrationCommandContext {
 
-	private static Logger logger = LoggerFactory.getLogger(BulkCommandContext.class);
+	private static Logger logger = LoggerFactory.getLogger(MultiBulkCommandContext.class);
 
-	/** 検索画面用のFormレイアウト情報 */
-	private SearchFormView view;
+	/** 一括画面用のFormレイアウト情報 */
+	private BulkFormView view;
 
 	private GemConfigService gemConfig = null;
 
 	private List<BulkCommandParams> bulkCommandParams = new ArrayList<>();
-
-	/** 更新されたプロパティリスト */
-	private List<BulkUpdatedProperty> updatedProps = new ArrayList<>();
 
 	/** パラメータパターン */
 	private Pattern pattern = Pattern.compile("^(\\d+)\\_(.+)?$");
@@ -103,7 +102,7 @@ public class BulkCommandContext extends RegistrationCommandContext {
 		return logger;
 	}
 
-	public BulkCommandContext(RequestContext request, EntityManager entityLoader, EntityDefinitionManager definitionLoader) {
+	public MultiBulkCommandContext(RequestContext request, EntityManager entityLoader, EntityDefinitionManager definitionLoader) {
 		super(request, entityLoader, definitionLoader);
 
 		gemConfig = ServiceRegistry.getRegistry().getService(GemConfigService.class);
@@ -114,9 +113,6 @@ public class BulkCommandContext extends RegistrationCommandContext {
 		populateBulkCommandParam(Constants.OID, String.class, true, true, false);
 		populateBulkCommandParam(Constants.VERSION, Long.class, false, true, false);
 		populateBulkCommandParam(Constants.TIMESTAMP, Long.class, false, false, true);
-
-		populateBulkUpdatedProperty(Constants.BULK_UPDATED_PROP_NM, true);
-		populateBulkUpdatedProperty(Constants.BULK_UPDATED_PROP_VALUE, false);
 	}
 
 	private void populateBulkCommandParam(String name, Class<?> cls, boolean create, boolean notBlank, boolean checkDiff) {
@@ -164,31 +160,6 @@ public class BulkCommandContext extends RegistrationCommandContext {
 		}
 	}
 
-	private void populateBulkUpdatedProperty(String name, boolean create) {
-		String[] param = (String[]) request.getParams(name);
-		if (param != null) {
-			for (int i = 0; i < param.length; i++) {
-				String[] params = splitRowParam(param[i]);
-				Integer updateNo = Integer.parseInt(params[0]);
-				String targetParam = params[1];
-				BulkUpdatedProperty updatedProp = getBulkUpdatedProperty(updateNo);
-				if (create) {
-					if (updatedProp != null) {
-						getLogger().error("duplicate updateNo. updateNo=" + updateNo);
-						throw new ApplicationException(resourceString("command.generic.bulk.BulkCommandContext.duplicateUpdateNo"));
-					}
-					updatedProps.add(new BulkUpdatedProperty(updateNo, targetParam));
-				} else {
-					if (updatedProp == null) {
-						getLogger().error("updateNo does not exist. params=" + param[i]);
-						throw new ApplicationException(resourceString("command.generic.bulk.BulkCommandContext.invalidUpdateNo"));
-					}
-					updatedProp.setValue(name, targetParam);
-				}
-			}
-		}
-	}
-
 	private String[] splitRowParam(String rowParam) {
 		Matcher m = pattern.matcher(rowParam);
 		if (!m.matches()) {
@@ -229,19 +200,6 @@ public class BulkCommandContext extends RegistrationCommandContext {
 			}
 		}
 		return false;
-	}
-
-	private BulkUpdatedProperty getBulkUpdatedProperty(Integer updateNo) {
-		List<BulkUpdatedProperty> updatedPropList = updatedProps.stream()
-				.filter(p -> p.getUpdateNo().equals(updateNo))
-				.collect(Collectors.toList());
-		if (updatedPropList.size() == 0) {
-			return null;
-		} else if (updatedPropList.size() > 1) {
-			getLogger().error("duplicate updateNo. updatedPropList=" + updatedPropList);
-			throw new ApplicationException(resourceString("command.generic.bulk.BulkCommandContext.duplicateUpdateNo"));
-		}
-		return updatedPropList.get(0);
 	}
 
 	/**
@@ -374,7 +332,7 @@ public class BulkCommandContext extends RegistrationCommandContext {
 		setEntityDefinition(ed);//元の定義に詰め替える
 
 		// ネストテーブル用の登録処理を追加
-		Optional<PropertyColumn> ret = getProperty().stream().filter(pc -> pc.getPropertyName().equals(p.getName())).findFirst();
+		Optional<PropertyItem> ret = getProperty().stream().filter(pc -> pc.getPropertyName().equals(p.getName())).findFirst();
 		if (ret.isPresent()) {
 			addNestTableRegistHandler(p, list, red, ret.get());
 		}
@@ -382,11 +340,11 @@ public class BulkCommandContext extends RegistrationCommandContext {
 		return list;
 	}
 
-	private void addNestTableRegistHandler(ReferenceProperty p, List<Entity> list, EntityDefinition red, PropertyColumn property) {
+	private void addNestTableRegistHandler(ReferenceProperty p, List<Entity> list, EntityDefinition red, PropertyItem property) {
 		// ネストテーブルはプロパティ単位で登録可否決定
 		if (!NestTableReferenceRegistHandler.canRegist(property, getRegistrationPropertyBaseHandler())) return;
 
-		ReferencePropertyEditor editor = (ReferencePropertyEditor) property.getBulkUpdateEditor();
+		ReferencePropertyEditor editor = (ReferencePropertyEditor) property.getEditor();
 
 		List<Entity> target = null;
 		if (StringUtil.isNotBlank(editor.getTableOrderPropertyName())) {
@@ -426,27 +384,26 @@ public class BulkCommandContext extends RegistrationCommandContext {
 
 	@Override
 	protected String getInterrupterName() {
-		return getView().getResultSection().getInterrupterName();
+		return getView().getInterrupterName();
 	}
 
 	@Override
 	protected String getLoadEntityInterrupterName() {
-		return getView().getResultSection().getLoadEntityInterrupterName();
+		return getView().getLoadEntityInterrupterName();
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
-	protected RegistrationPropertyBaseHandler<PropertyColumn> createRegistrationPropertyBaseHandler() {
-		return new RegistrationPropertyBaseHandler<PropertyColumn>() {
+	protected RegistrationPropertyBaseHandler<PropertyItem> createRegistrationPropertyBaseHandler() {
+		return new RegistrationPropertyBaseHandler<PropertyItem>() {
 			@Override
-			public boolean isDispProperty(PropertyColumn property) {
-				//一括更新プロパティエディタが未設定の場合、更新対象外
-				return property.isDispFlag() && property.getBulkUpdateEditor() != null;
+			public boolean isDispProperty(PropertyItem property) {
+				return property.isDispFlag();
 			}
 
 			@Override
-			public PropertyEditor getEditor(PropertyColumn property) {
-				return property.getBulkUpdateEditor();
+			public PropertyEditor getEditor(PropertyItem property) {
+				return property.getEditor();
 			}
 		};
 	}
@@ -461,10 +418,10 @@ public class BulkCommandContext extends RegistrationCommandContext {
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
-	public SearchFormView getView() {
+	public BulkFormView getView() {
 		String viewName = getViewName();
 		if (view == null) {
-			view = FormViewUtil.getSearchFormView(entityDefinition, entityView, viewName);
+			view = FormViewUtil.getBulkFormView(entityDefinition, entityView, viewName);
 		}
 		return view;
 	}
@@ -473,7 +430,7 @@ public class BulkCommandContext extends RegistrationCommandContext {
 	 * 編集画面用のFormレイアウト情報を設定します。
 	 * @param view 編集画面用のFormレイアウト情報
 	 */
-	public void setView(SearchFormView view) {
+	public void setView(BulkFormView view) {
 		this.view = view;
 	}
 
@@ -488,7 +445,7 @@ public class BulkCommandContext extends RegistrationCommandContext {
 
 	@Override
 	protected boolean isPurgeCompositionedEntity() {
-		return getView().getResultSection().isPurgeCompositionedEntity();
+		return getView().isPurgeCompositionedEntity();
 	}
 
 	@Override
@@ -498,7 +455,7 @@ public class BulkCommandContext extends RegistrationCommandContext {
 
 	@Override
 	protected boolean isForceUpadte() {
-		return getView().getResultSection().isForceUpadte();
+		return getView().isForceUpadte();
 	}
 
 	/**
@@ -507,15 +464,15 @@ public class BulkCommandContext extends RegistrationCommandContext {
 	 */
 	@Override
 	public boolean hasUpdatableMappedByReference() {
-		List<PropertyColumn> properties = getProperty();
-		for (PropertyColumn property : properties) {
+		List<PropertyItem> properties = getProperty();
+		for (PropertyItem property : properties) {
 			PropertyDefinition pd = getProperty(property.getPropertyName());
 			if (pd instanceof ReferenceProperty) {
 				String mappedBy = ((ReferenceProperty) pd).getMappedBy();
 				if (StringUtil.isBlank(mappedBy)) continue;
 
-				if (property.getBulkUpdateEditor() instanceof ReferencePropertyEditor) {
-					ReferencePropertyEditor editor = (ReferencePropertyEditor) property.getBulkUpdateEditor();
+				if (property.getEditor() instanceof ReferencePropertyEditor) {
+					ReferencePropertyEditor editor = (ReferencePropertyEditor) property.getEditor();
 					if (editor.getDisplayType() == ReferenceDisplayType.NESTTABLE) {
 						return true;
 					}
@@ -531,14 +488,6 @@ public class BulkCommandContext extends RegistrationCommandContext {
 	 */
 	public String getSearchCond() {
 		return getParam(Constants.SEARCH_COND);
-	}
-
-	/**
-	 * リクエストから処理タイプを取得します。
-	 * @return
-	 */
-	public String getExecType() {
-		return getParam(Constants.EXEC_TYPE);
 	}
 
 	public Integer getRow(String oid, Long version) {
@@ -586,17 +535,13 @@ public class BulkCommandContext extends RegistrationCommandContext {
 		return getParam(Constants.BULK_UPDATE_SELECT_TYPE);
 	}
 
-	public String getBulkUpdatePropName() {
-		return getParam(Constants.BULK_UPDATE_PROP_NM);
-	}
-
-	public List<BulkUpdatedProperty> getUpdatedProps() {
-		return updatedProps;
-	}
-
 	public Object getBulkUpdatePropertyValue(String propertyName) {
 		PropertyDefinition p = entityDefinition.getProperty(propertyName);
 		return getPropValue(p, "");
+	}
+
+	public Entity createEntity() {
+		return createEntityInternal("", null);
 	}
 
 	public Entity createEntity(String oid, Long version) {
@@ -636,13 +581,14 @@ public class BulkCommandContext extends RegistrationCommandContext {
 	 * @param entity
 	 */
 	protected void validate(Entity entity) {
-		for (PropertyColumn property : getProperty()) {
-			if (property.getBulkUpdateEditor() instanceof DateRangePropertyEditor) {
+		List<PropertyItem> properties = getDisplayProperty();
+		for (PropertyItem property : properties) {
+			if (property.getEditor() instanceof DateRangePropertyEditor) {
 				//日付の逆転チェック
-				DateRangePropertyEditor editor = (DateRangePropertyEditor) property.getBulkUpdateEditor();
+				DateRangePropertyEditor editor = (DateRangePropertyEditor) property.getEditor();
 				checkDateRange(editor, entity, property.getPropertyName(), editor.getToPropertyName(), "");
-			} else if (property.getBulkUpdateEditor() instanceof ReferencePropertyEditor) {
-				ReferencePropertyEditor editor = (ReferencePropertyEditor) property.getBulkUpdateEditor();
+			} else if (property.getEditor() instanceof ReferencePropertyEditor) {
+				ReferencePropertyEditor editor = (ReferencePropertyEditor) property.getEditor();
 				Object val = entity.getValue(property.getPropertyName());
 
 				Entity[] ary = null;
@@ -701,55 +647,120 @@ public class BulkCommandContext extends RegistrationCommandContext {
 	 *
 	 * @return 一括更新するプロパティ
 	 */
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("unchecked")	
 	@Override
-	public List<PropertyColumn> getProperty() {
-//		String execType = getExecType();
-		List<PropertyColumn> propList = new ArrayList<PropertyColumn>();
-		String updatePropName = getBulkUpdatePropName();
-		if (StringUtil.isEmpty(updatePropName)) {
-			getLogger().error("update property name is empty. updatePropName=" + updatePropName);
-			throw new ApplicationException(resourceString("command.generic.bulk.BulkCommandContext.propNameNullValueErr"));
-		}
-		PropertyDefinition pd = getEntityDefinition().getProperty(updatePropName);
-		if (pd == null) {
-			getLogger().error("can not find property definition. updatePropName=" + updatePropName);
-			throw new ApplicationException(resourceString("command.generic.bulk.BulkCommandContext.propDefNotFoundErr"));
-		}
-
-		SearchResultSection section = getView().getResultSection();
-		List<PropertyColumn> propertyColumns = section.getElements().stream()
-				.filter(e -> e instanceof PropertyColumn)
-				.map(e -> (PropertyColumn) e)
-				.filter(e -> getRegistrationPropertyBaseHandler().isDispProperty(e))
-				.collect(Collectors.toList());
-
-		for (PropertyColumn pc : propertyColumns) {
-			if(pc.getPropertyName().equals(updatePropName)) {
-				propList.add(pc);
-				//組み合わせで使うプロパティを通常のプロパティ扱いに
-				if (pc.getBulkUpdateEditor() instanceof DateRangePropertyEditor) {
-					DateRangePropertyEditor de = (DateRangePropertyEditor) pc.getBulkUpdateEditor();
-					PropertyColumn dummy = new PropertyColumn();
-					dummy.setDispFlag(true);
-					dummy.setPropertyName(de.getToPropertyName());
-					dummy.setBulkUpdateEditor(de.getEditor());
-					propList.add(dummy);
-				//組み合わせで使うプロパティを通常のプロパティ扱いに
-				} else if (pc.getBulkUpdateEditor() instanceof JoinPropertyEditor) {
-					JoinPropertyEditor je = (JoinPropertyEditor) pc.getBulkUpdateEditor();
-					for (NestProperty nest : je.getProperties()) {
-						PropertyColumn dummy = new PropertyColumn();
-						dummy.setDispFlag(true);
-						dummy.setPropertyName(nest.getPropertyName());
-						dummy.setBulkUpdateEditor(nest.getEditor());
-						propList.add(dummy);
-					}
+	public List<PropertyItem> getProperty() {
+		List<PropertyItem> propList = new ArrayList<PropertyItem>();
+		for (Section section : getView().getSections()) {
+			if (section instanceof DefaultSection) {
+				if (section.isDispFlag()) {
+					propList.addAll(getProperty((DefaultSection) section));
 				}
-				break;
 			}
 		}
 
+		List<String> propNames = propList.stream().map(PropertyItem::getPropertyName)
+				.collect(Collectors.toList());
+		for (String propName : propNames) {
+			if (skipProps.contains(propName)) continue;
+			// TODO ブランクの項目は未入力と見なし、更新しません。
+			if (getBulkUpdatePropertyValue(propName) == null) {
+				propList.removeIf(pi -> pi.getPropertyName().equals(propName));
+			}
+		}
+		return propList;
+	}
+
+	/**
+	 * セクション内のプロパティ取得を取得します。
+	 * @param section セクション
+	 * @return プロパティの一覧
+	 */
+	@SuppressWarnings("unchecked")
+	protected List<PropertyItem> getProperty(DefaultSection section) {
+		List<PropertyItem> propList = new ArrayList<PropertyItem>();
+		for (Element elem : section.getElements()) {
+			if (elem instanceof PropertyItem) {
+				PropertyItem prop = (PropertyItem) elem;
+				if (getRegistrationPropertyBaseHandler().isDispProperty(prop)) {
+					if (prop.getEditor() instanceof JoinPropertyEditor) {
+						//組み合わせで使うプロパティを通常のプロパティ扱いに
+						JoinPropertyEditor je = (JoinPropertyEditor) prop.getEditor();
+						for (NestProperty nest : je.getProperties()) {
+							PropertyItem dummy = new PropertyItem();
+							dummy.setDispFlag(true);
+							dummy.setPropertyName(nest.getPropertyName());
+							dummy.setEditor(nest.getEditor());
+							propList.add(dummy);
+						}
+					} else if (prop.getEditor() instanceof DateRangePropertyEditor) {
+						//組み合わせで使うプロパティを通常のプロパティ扱いに
+						DateRangePropertyEditor de = (DateRangePropertyEditor) prop.getEditor();
+						PropertyItem dummy = new PropertyItem();
+						dummy.setDispFlag(true);
+						dummy.setPropertyName(de.getToPropertyName());
+						dummy.setEditor(de.getEditor());
+						propList.add(dummy);
+					}
+					propList.add(prop);
+				}
+			} else if (elem instanceof DefaultSection) {
+				if (elem.isDispFlag()) {
+					propList.addAll(getProperty((DefaultSection) elem));
+				}
+			}
+		}
+		return propList;
+	}
+	
+	/**
+	 * 表示プロパティを取得します。
+	 * @return プロパティの一覧
+	 */
+	private List<PropertyItem> getDisplayProperty() {
+		List<PropertyItem> propList = new ArrayList<PropertyItem>();
+
+		for (Section section : getView().getSections()) {
+			if (!section.isDispFlag()) continue;
+
+			if (section instanceof DefaultSection) {
+				DefaultSection ds = (DefaultSection) section;
+				propList.addAll(getDisplayProperty(ds));
+			}
+		}
+		return propList;
+	}
+
+	/**
+	 * セクション内の表示プロパティ取得を取得します。
+	 * @param section セクション
+	 * @return プロパティの一覧
+	 */
+	private List<PropertyItem> getDisplayProperty(DefaultSection section) {
+		List<PropertyItem> propList = new ArrayList<PropertyItem>();
+
+		for (Element elem : section.getElements()) {
+			if (!elem.isDispFlag()) continue;
+
+			if (elem instanceof PropertyItem) {
+				PropertyItem prop = (PropertyItem) elem;
+				if (prop.getEditor() instanceof JoinPropertyEditor) {
+					//組み合わせで使うプロパティを通常のプロパティ扱いに
+					JoinPropertyEditor je = (JoinPropertyEditor) prop.getEditor();
+					for (NestProperty nest : je.getProperties()) {
+						PropertyItem dummy = new PropertyItem();
+						dummy.setDispFlag(true);
+						dummy.setPropertyName(nest.getPropertyName());
+						dummy.setEditor(nest.getEditor());
+						propList.add(dummy);
+					}
+				}
+				propList.add(prop);
+			} else if (elem instanceof DefaultSection) {
+				DefaultSection ds = (DefaultSection) elem;
+				propList.addAll(getDisplayProperty(ds));
+			}
+		}
 		return propList;
 	}
 
@@ -821,74 +832,6 @@ public class BulkCommandContext extends RegistrationCommandContext {
 		@Override
 		public String toString() {
 			return "BulkCommandParams [row=" + getRow() + ", oid=" + getOid() + ", version=" + getVersion() + ", updateDate=" + getUpdateDate() + "]";
-		}
-	}
-
-
-	public static class BulkUpdatedProperty {
-
-		private Map<String, Object> params;
-
-		public BulkUpdatedProperty(Integer updateNo, String propertyName) {
-			this(updateNo, propertyName, null);
-		}
-
-		public BulkUpdatedProperty(Integer updateNo, String propertyName, Object propertyValue) {
-			setUpdateNo(updateNo);
-			setPropertyName(propertyName);
-			setPropertyValue(propertyValue);
-		}
-
-		public Integer getUpdateNo() {
-			return getValue(Constants.ID);
-		}
-
-		public void setUpdateNo(Integer updateNo) {
-			setValue(Constants.ID, updateNo);
-		}
-
-		public String getPropertyName() {
-			return getValue(Constants.BULK_UPDATED_PROP_NM);
-		}
-
-		public void setPropertyName(String propertyName) {
-			setValue(Constants.BULK_UPDATED_PROP_NM, propertyName);
-		}
-
-		public Object getPropertyValue() {
-			return getValue(Constants.BULK_UPDATED_PROP_VALUE);
-		}
-
-		public void setPropertyValue(Object propertyValue) {
-			setValue(Constants.BULK_UPDATED_PROP_VALUE, propertyValue);
-		}
-
-		public void setValue(String name, Object value) {
-			if (value == null && getValue(name) == null) {
-				return;
-			}
-			if (params == null) {
-				params = new HashMap<String, Object>();
-			}
-
-			if (value == null) {
-				params.remove(name);
-			} else {
-				params.put(name, value);
-			}
-		}
-
-		@SuppressWarnings("unchecked")
-		public <T> T getValue(String name) {
-			if (params != null) {
-				return (T) params.get(name);
-			}
-			return null;
-		}
-
-		@Override
-		public String toString() {
-			return "BulkUpdatedProperty [updateNo=" + getUpdateNo() + ", propertyName=" + getPropertyName() + "]";
 		}
 	}
 }

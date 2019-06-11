@@ -72,6 +72,7 @@ public class Constants {
 	public static final String VIEW_TYPE_DETAIL = "detail";
 	public static final String VIEW_TYPE_SEARCH = "search";
 	public static final String VIEW_TYPE_BULK = "bulk";
+	public static final String VIEW_TYPE_MULTI_BULK = "multiBulk";
 
 	public static final String FORM_SCRIPT_KEY = "formScriptKey";
 	public static final String SECTION_SCRIPT_KEY = "sectionScriptKey";
@@ -100,6 +101,8 @@ public class Constants {
 	public static final String DETAIL_COND_FILTER_EXPRESSION = "dtlCndFilterExpression";
 
 	public static final String BULK_UPDATE_SELECT_TYPE = "selectAllType";
+	public static final String BULK_UPDATE_SELECT_ALL_PAGE = "selectAllPage";
+	public static final String BULK_UPDATE_USE_BULK_VIEW = "useBulkView";
 	//一括更新のプロパティ名
 	public static final String BULK_UPDATE_PROP_NM = "bulkUpdatePropNm";
 	//一括更新されたプロパティ名
@@ -304,6 +307,7 @@ public class Constants {
 	public static final String CMD_RSLT_JSP_RESET_SPECIFIC_PASSWORD = "/jsp/gem/auth/specificPassword.jsp";
 	public static final String CMD_RSLT_JSP_PASSWORD_EXPIRE = "/jsp/gem/auth/Expire.jsp";
 	public static final String CMD_RSLT_JSP_BULK_EDIT="/jsp/gem/generic/bulk/bulkEdit.jsp";
+	public static final String CMD_RSLT_JSP_BULK_MULTI_EDIT="/jsp/gem/generic/bulk/edit.jsp";
 	public static final String CMD_RSLT_JSP_APP_MAINTENANCE="/jsp/gem/auth/application.jsp";
 	public static final String CMD_RSLT_HTML_PDFVIEWER_PATH = "/jsp/gem/binary/pdfviewer.jsp";
 

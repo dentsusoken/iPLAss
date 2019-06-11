@@ -115,6 +115,7 @@ import org.iplass.mtp.transaction.Transaction;
 import org.iplass.mtp.util.StringUtil;
 import org.iplass.mtp.view.filter.EntityFilter;
 import org.iplass.mtp.view.filter.EntityFilterManager;
+import org.iplass.mtp.view.generic.BulkFormView;
 import org.iplass.mtp.view.generic.DetailFormView;
 import org.iplass.mtp.view.generic.EntityView;
 import org.iplass.mtp.view.generic.EntityViewManager;
@@ -1279,6 +1280,18 @@ public class MetaDataServiceImpl extends XsrfProtectedServiceServlet implements 
 		});
 	}
 
+	@Override
+	public BulkFormView createDefaultBulkFormView(int tenantId, final String name) {
+		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId, new AuthUtil.Callable<BulkFormView>() {
+			@Override
+			public BulkFormView call() {
+				auditLogger.logMetadata(MetaDataAction.CREATE, BulkFormView.class.getName(), "name:" + name);
+				return evm.createDefaultBulkFormView(name);
+			}
+		});
+	}
+
+	
 	@Override
 	public List<Entity> getRoles(int tenantId) {
 		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId, new AuthUtil.Callable<List<Entity>>() {

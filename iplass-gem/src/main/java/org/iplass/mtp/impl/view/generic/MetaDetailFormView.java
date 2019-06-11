@@ -125,6 +125,9 @@ public class MetaDetailFormView extends MetaFormView {
 	/** 削除ボタン非表示 */
 	private boolean hideDelete;
 
+	/** 物理削除するかどうか */
+	private boolean isPurge;
+
 	/** 親子関係の参照を物理削除するか */
 	private boolean purgeCompositionedEntity;
 
@@ -537,6 +540,22 @@ public class MetaDetailFormView extends MetaFormView {
 	}
 
 	/**
+	 * 物理削除するかどうかを取得します。
+	 * @return 物理削除するかどうか
+	 */
+	public boolean isPurge() {
+	    return isPurge;
+	}
+
+	/**
+	 * 物理削除するかどうかを設定します。
+	 * @param isPurge 物理削除するかどうか
+	 */
+	public void setPurge(boolean isPurge) {
+	    this.isPurge = isPurge;
+	}
+
+	/**
 	 * 親子関係の参照を物理削除するかを取得します。
 	 * @return 親子関係の参照を物理削除するか
 	 */
@@ -750,6 +769,7 @@ public class MetaDetailFormView extends MetaFormView {
 		hideDetail = dForm.isHideDetail();
 		isNoneDispCopyButton = dForm.isNoneDispCopyButton();
 		hideDelete = dForm.isHideDelete();
+		isPurge = dForm.isPurge();
 		purgeCompositionedEntity = dForm.isPurgeCompositionedEntity();
 		loadDefinedReferenceProperty = dForm.isLoadDefinedReferenceProperty();
 		forceUpadte = dForm.isForceUpadte();
@@ -796,6 +816,7 @@ public class MetaDetailFormView extends MetaFormView {
 		form.setHideDetail(hideDetail);
 		form.setIsNoneDispCopyButton(isNoneDispCopyButton);
 		form.setHideDelete(hideDelete);
+		form.setPurge(isPurge);
 		form.setPurgeCompositionedEntity(purgeCompositionedEntity);
 		form.setLoadDefinedReferenceProperty(loadDefinedReferenceProperty);
 		form.setForceUpadte(forceUpadte);

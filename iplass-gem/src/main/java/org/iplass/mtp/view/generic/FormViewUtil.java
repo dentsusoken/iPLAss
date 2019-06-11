@@ -105,6 +105,33 @@ public class FormViewUtil {
 
 		return form;
 	}
+	
+	public static BulkFormView getBulkFormView(EntityDefinition ed, EntityView ev, String viewName) {
+		BulkFormView form = null;
+		if (StringUtil.isEmpty(viewName)) {
+			//デフォルトレイアウトを利用
+			if (ev!= null && ev.getBulkFormViewNames().length > 0) {
+				//1件でもView定義があればその中からデフォルトレイアウトを探す
+				form = ev.getDefaultBulkFormView();
+			} else {
+				//何もなければ自動生成
+				form = createDefaultBulkFormView(ed);
+			}
+		} else {
+			//指定レイアウトを利用
+			if (ev!= null) {
+				if (ev.isAutoGenerateBulkView(viewName)) {
+					//自動設定の対象の場合はViewの有無問わず自動生成
+					form = createDefaultBulkFormView(ed);
+					form.setName(viewName);
+				} else {
+					form = ev.getBulkFormView(viewName);
+				}
+			}
+		}
+
+		return form;
+	}
 
 	/**
 	 * デフォルトの検索画面用定義を生成します。
@@ -300,6 +327,81 @@ public class FormViewUtil {
 			vs.setDispFlag(true);
 			view.addSection(vs);
 		}
+
+		return view;
+	}
+
+	/**
+	 * デフォルトの一括更新画面用定義を生成します。
+	 * 表示名も設定します。
+	 *
+	 * @param ed Entity定義
+	 * @return デフォルトの一括更新画面用定義
+	 */
+	public static BulkFormView createDefaultBulkFormView(EntityDefinition ed) {
+		return createDefaultBulkFormView(ed, true);
+	}
+
+	/**
+	 * デフォルトの一括更新画面用定義を生成します。
+	 *
+	 * @param ed Entity定義
+	 * @param isLoadDisplayLabel 表示名をセットするか
+	 * @return デフォルトの一括更新画面用定義
+	 */
+	public static BulkFormView createDefaultBulkFormView(EntityDefinition ed, boolean isLoadDisplayLabel) {
+		BulkFormView view = new BulkFormView();
+//		view.setLoadDefinedReferenceProperty(true);
+
+		DefaultSection baseSection = new DefaultSection();
+		baseSection.setDispFlag(true);
+		baseSection.setColNum(1);
+		baseSection.setExpandable(true);
+
+		//タイトル(デフォルトはja)
+		baseSection.setTitle(resourceString("generic.element.section.DefaultSection.basicInfo"));
+		baseSection.setLocalizedTitleList(resourceList("generic.element.section.DefaultSection.basicInfo"));
+
+		baseSection.addElement(createNameProperty(ed.getProperty(Entity.NAME), isLoadDisplayLabel));
+		baseSection.addElement(createDescriptionProperty(ed.getProperty(Entity.DESCRIPTION), isLoadDisplayLabel));
+//		if (ed.getVersionControlType() == VersionControlType.TIMEBASE) {
+//			baseSection.addElement(createTimestampProperty(
+//					ed.getProperty(Entity.START_DATE), isLoadDisplayLabel));
+//			baseSection.addElement(createTimestampProperty(
+//					ed.getProperty(Entity.END_DATE), isLoadDisplayLabel));
+//		}
+
+		DefaultSection objectSection = new DefaultSection();
+		objectSection.setDispFlag(true);
+		objectSection.setColNum(1);
+		objectSection.setExpandable(true);
+
+		//タイトル(デフォルトはja)
+		objectSection.setTitle(resourceString("generic.element.section.DefaultSection.objectInfo"));
+		objectSection.setLocalizedTitleList(resourceList("generic.element.section.DefaultSection.objectInfo"));
+
+		for (PropertyDefinition pd : ed.getDeclaredPropertyList()) {
+			PropertyItem p = new PropertyItem();
+			p.setDispFlag(true);
+			if (isLoadDisplayLabel) {
+				p.setDisplayLabel(pd.getDisplayName());
+			}
+			p.setEditor(getDefaultEditor(pd, isLoadDisplayLabel));
+			p.setPropertyName(pd.getName());
+			if (isLoadDisplayLabel) {
+				p.setLocalizedDisplayLabelList(pd.getLocalizedDisplayNameList());
+			}
+			objectSection.addElement(p);
+		}
+
+		view.addSection(baseSection);
+		view.addSection(objectSection);
+
+//		if (ed.getVersionControlType() != VersionControlType.NONE) {
+//			VersionSection vs = new VersionSection();
+//			vs.setDispFlag(true);
+//			view.addSection(vs);
+//		}
 
 		return view;
 	}

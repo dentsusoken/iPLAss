@@ -144,6 +144,14 @@ public interface EntityViewManager extends TypedDefinitionManager<EntityView> {
 	public DetailFormView createDefaultDetailFormView(String definitionName);
 
 	/**
+	 * Entity定義に対応する標準のBulkFormViewを返します。
+	 *
+	 * @param definitionName Entity定義名
+	 * @return BulkFormView
+	 */
+	public BulkFormView createDefaultBulkFormView(String definitionName);
+
+	/**
 	 * カスタムスタイルを取得します。
 	 *
 	 * @param definitionName Entity定義名

@@ -45,6 +45,7 @@ import org.iplass.mtp.definition.SharedConfig;
 import org.iplass.mtp.entity.Entity;
 import org.iplass.mtp.entity.definition.EntityDefinition;
 import org.iplass.mtp.entity.definition.PropertyDefinition;
+import org.iplass.mtp.view.generic.BulkFormView;
 import org.iplass.mtp.view.generic.DetailFormView;
 import org.iplass.mtp.view.generic.SearchFormView;
 import org.iplass.mtp.view.menu.MenuItem;
@@ -243,6 +244,8 @@ public interface MetaDataServiceAsync {
 	void createDefaultSearchFormView(int tenantId, String name, AsyncCallback<SearchFormView> callback);
 
 	void createDefaultDetailFormView(int tenantId, String name, AsyncCallback<DetailFormView> callback);
+
+	void createDefaultBulkFormView(int tenantId, String name, AsyncCallback<BulkFormView> callback);
 
 	void getRoles(int tenantId, AsyncCallback<List<Entity>> callback);
 

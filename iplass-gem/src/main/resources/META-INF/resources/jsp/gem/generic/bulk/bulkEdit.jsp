@@ -49,6 +49,10 @@
 <%@ page import="org.iplass.gem.command.ViewUtil"%>
 
 <%!
+	boolean isSelectAllPage(Boolean selectAllPage) {
+		return selectAllPage != null && selectAllPage;
+	}
+
 	boolean isSelectAll(String selectAllType) {
 		return "all".equals(selectAllType);
 	}
@@ -133,11 +137,13 @@
 
 	//コマンドから
 	BulkUpdateFormViewData data = (BulkUpdateFormViewData) request.getAttribute(Constants.DATA);
+	Boolean selectAllPage = (Boolean) request.getAttribute(Constants.BULK_UPDATE_SELECT_ALL_PAGE);	
 	String selectAllType = (String) request.getAttribute(Constants.BULK_UPDATE_SELECT_TYPE);
 	String searchCond = (String) request.getAttribute(Constants.SEARCH_COND);
 	String message = (String) request.getAttribute(Constants.MESSAGE);
 	String bulkUpdatePropNm = (String) request.getAttribute(Constants.BULK_UPDATE_PROP_NM);
 
+	boolean isSelectAllPage = isSelectAllPage(selectAllPage);
 	//全選択フラグ
 	boolean isSelectAll = isSelectAll(selectAllType);
 
@@ -225,6 +231,11 @@ ${m:outputToken('FORM_XHTML', true)}
 <input type="hidden" name="viewName" value="<c:out value="<%=viewName%>"/>" />
 <%
 	}
+	if (selectAllPage != null) {
+%>
+<input type="hidden" name="selectAllPage" value="<c:out value="<%=selectAllPage%>"/>" />
+<%
+	}
 	if(selectAllType != null) {
 %>
 <input type="hidden" name="selectAllType" value="<c:out value="<%=selectAllType%>"/>" />
@@ -262,7 +273,7 @@ ${m:outputToken('FORM_XHTML', true)}
 <table class="tbl-maintenance mb10">
 <tbody>
 <% 
-	if (searchCond != null) { 
+	if (isSelectAllPage) { 
 %>
 <tr>
 <th rowspan="2">${m:rs("mtp-gem-messages", "generic.bulk.selectBulkUpdateType")}</th>

@@ -33,6 +33,9 @@ public class ViewControlSettingListGridRecord extends ListGridRecord {
 	public static final String EXISTSVIEW = "existSearchView";
 	public static final String AGSVIEW = "autoGenerateSearchView";
 
+	public static final String EXISTBVIEW = "existBulkView";
+	public static final String AGBVIEW = "autoGenerateBulkView";
+
 	public static final String PERMIT_ROLES = "permitRoles";
 
 	public String getSettingName() {
@@ -81,6 +84,22 @@ public class ViewControlSettingListGridRecord extends ListGridRecord {
 
 	public void setAutoGenerateSearchView(boolean value) {
 		setAttribute(AGSVIEW, value);
+	}
+	
+	public boolean isExistBulkView() {
+		return getAttributeAsBoolean(EXISTBVIEW);
+	}
+
+	public void setExistBulkView(boolean value) {
+		setAttribute(EXISTBVIEW, value);
+	}
+
+	public boolean isAutoGenerateBulkView() {
+		return getAttributeAsBoolean(AGBVIEW);
+	}
+
+	public void setAutoGenerateBulkView(boolean value) {
+		setAttribute(AGBVIEW, value);
 	}
 
 	public String[] getPermitRoles() {

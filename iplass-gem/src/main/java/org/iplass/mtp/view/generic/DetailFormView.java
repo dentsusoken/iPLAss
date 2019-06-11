@@ -383,6 +383,19 @@ public class DetailFormView extends FormView {
 
 
 
+	/** 物理削除するかどうか */
+	@MetaFieldInfo(
+			displayName="物理削除するか",
+			inputType=InputType.CHECKBOX,
+			displayOrder=1510,
+			description="物理削除を行うかを設定します。",
+			displayNameKey="generic_DetailFormView_isPurgeDisplaNameKey",
+			descriptionKey="generic_DetailFormView_isPurgeDescriptionKey")
+	private boolean isPurge;
+
+
+
+
 	/** 親子関係の参照を物理削除するか */
 	@MetaFieldInfo(
 			displayName="親子関係の参照を物理削除するか",
@@ -912,6 +925,22 @@ public class DetailFormView extends FormView {
 	 */
 	public void setHideDelete(boolean hideDelete) {
 	    this.hideDelete = hideDelete;
+	}
+
+	/**
+	 * 物理削除するかどうかを取得します。
+	 * @return 物理削除するかどうか
+	 */
+	public boolean isPurge() {
+	    return isPurge;
+	}
+
+	/**
+	 * 物理削除するかどうかを設定します。
+	 * @param isPurge 物理削除するかどうか
+	 */
+	public void setPurge(boolean isPurge) {
+	    this.isPurge = isPurge;
 	}
 
 	/**

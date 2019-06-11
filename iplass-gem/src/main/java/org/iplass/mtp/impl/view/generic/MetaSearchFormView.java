@@ -79,6 +79,9 @@ public class MetaSearchFormView extends MetaFormView {
 	/** JavaScript */
 	private String javaScript;
 
+	/** 物理削除するかどうか */
+	private boolean isPurge;
+
 	/** EQLカスタム処理クラス名 */
 	private String interrupterName;
 
@@ -291,6 +294,22 @@ public class MetaSearchFormView extends MetaFormView {
 	}
 
 	/**
+	 * 物理削除するかどうかを取得します。
+	 * @return 物理削除するかどうか
+	 */
+	public boolean isPurge() {
+		return isPurge;
+	}
+
+	/**
+	 * 物理削除するかどうかを設定します。
+	 * @param isPurge 物理削除するかどうか
+	 */
+	public void setPurge(boolean isPurge) {
+		this.isPurge = isPurge;
+	}
+
+	/**
 	 * EQLカスタム処理クラス名を取得します。
 	 * @return EQLカスタム処理クラス名
 	 */
@@ -412,6 +431,7 @@ public class MetaSearchFormView extends MetaFormView {
 		downloadActionName = sForm.getDownloadActionName();
 		viewUploadActionName = sForm.getViewUploadActionName();
 		javaScript = sForm.getJavaScript();
+		isPurge = sForm.isPurge();
 		interrupterName = sForm.getInterrupterName();
 		useInterrupterForCsvDownload = sForm.isUseInterrupterForCsvDownload();
 		if (sForm.getTopSection1() != null) {
@@ -453,6 +473,7 @@ public class MetaSearchFormView extends MetaFormView {
 		form.setDownloadActionName(downloadActionName);
 		form.setViewUploadActionName(viewUploadActionName);
 		form.setJavaScript(javaScript);
+		form.setPurge(isPurge);
 		form.setInterrupterName(interrupterName);
 		form.setUseInterrupterForCsvDownload(useInterrupterForCsvDownload);
 		if (topSection1 != null) {
