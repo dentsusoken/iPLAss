@@ -36,6 +36,7 @@ import org.iplass.mtp.entity.query.condition.expr.Or;
 import org.iplass.mtp.entity.query.condition.expr.Paren;
 import org.iplass.mtp.entity.query.condition.predicate.Equals;
 import org.iplass.mtp.util.StringUtil;
+import org.iplass.mtp.view.generic.EntityView;
 import org.iplass.mtp.view.generic.EntityViewManager;
 import org.iplass.mtp.view.generic.editor.JoinPropertyEditor;
 import org.iplass.mtp.view.generic.editor.PropertyEditor;
@@ -104,6 +105,10 @@ public final class GetEntityNameListCommand implements Command {
 
 	private String getDisplayLabelItem(String defName, String viewName, String propName, String viewType) {
 		EntityViewManager evm = ManagerLocator.getInstance().getManager(EntityViewManager.class);
+		EntityView ev = evm.get(defName);
+		//EntityViewが未設定の場合、表示ラベルプロパティが未設定と同じように扱います。
+		if (ev == null) return null;
+
 		PropertyEditor editor = evm.getPropertyEditor(defName, viewType, viewName, propName);
 		if (editor instanceof ReferencePropertyEditor) {
 			ReferencePropertyEditor rpe = (ReferencePropertyEditor) editor;
