@@ -24,6 +24,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.regex.Pattern;
 
 import org.iplass.mtp.entity.EntityRuntimeException;
+import org.iplass.mtp.entity.ValidationContext;
 import org.iplass.mtp.entity.definition.ValidationDefinition;
 import org.iplass.mtp.entity.definition.validations.LengthValidation;
 import org.iplass.mtp.impl.datastore.StoreService;

@@ -30,6 +30,7 @@ import org.iplass.adminconsole.annotation.MultiLang;
 import org.iplass.mtp.definition.LocalizedStringDefinition;
 import org.iplass.mtp.entity.definition.validations.BinarySizeValidation;
 import org.iplass.mtp.entity.definition.validations.BinaryTypeValidation;
+import org.iplass.mtp.entity.definition.validations.JavaClassValidation;
 import org.iplass.mtp.entity.definition.validations.LengthValidation;
 import org.iplass.mtp.entity.definition.validations.NotNullValidation;
 import org.iplass.mtp.entity.definition.validations.RangeValidation;
@@ -51,6 +52,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 		RegexValidation.class,
 		LengthValidation.class,
 		ScriptingValidation.class,
+		JavaClassValidation.class,
 		BinarySizeValidation.class,
 		BinaryTypeValidation.class
 		})

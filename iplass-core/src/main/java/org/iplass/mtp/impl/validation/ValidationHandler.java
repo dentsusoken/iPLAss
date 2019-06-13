@@ -20,28 +20,22 @@
 
 package org.iplass.mtp.impl.validation;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 import java.util.regex.Pattern;
 
-import org.iplass.mtp.entity.Entity;
-import org.iplass.mtp.impl.core.ExecuteContext;
-import org.iplass.mtp.impl.entity.EntityContext;
-import org.iplass.mtp.impl.entity.EntityHandler;
-import org.iplass.mtp.impl.entity.property.PropertyHandler;
+import org.iplass.mtp.entity.ValidationContext;
+import org.iplass.mtp.impl.i18n.I18nUtil;
 import org.iplass.mtp.impl.i18n.MetaLocalizedString;
 import org.iplass.mtp.impl.message.MessageService;
-import org.iplass.mtp.impl.message.MetaMessageItem;
 import org.iplass.mtp.impl.message.MetaMessageCategory.MetaMessageCategoryHandler;
-import org.iplass.mtp.impl.metadata.MetaDataContext;
-import org.iplass.mtp.impl.metadata.MetaDataEntry;
+import org.iplass.mtp.impl.message.MetaMessageItem;
 import org.iplass.mtp.spi.ServiceRegistry;
-import org.iplass.mtp.util.StringUtil;
 
 public abstract class ValidationHandler /*implements MetaDataRuntime*/ {
 
-	private static final Pattern namePattern = Pattern.compile("${name}", Pattern.LITERAL);
-	private static final Pattern entityNamePattern = Pattern.compile("${entityName}", Pattern.LITERAL);
+	static final Pattern namePattern = Pattern.compile("${name}", Pattern.LITERAL);
+	static final Pattern entityNamePattern = Pattern.compile("${entityName}", Pattern.LITERAL);
+
 
 	protected MetaValidation metaData;
 
@@ -74,6 +68,7 @@ public abstract class ValidationHandler /*implements MetaDataRuntime*/ {
 
 	public String generateErrorMessage(Object value, ValidationContext context, String propertyDisplayName, String entityDisplayName) {
 		String msg = getErrorMessage();
+		List<MetaLocalizedString> localizedMsg = metaData.getLocalizedErrorMessageList();
 
 		// MesageItemからメッセージを作成
 		if (msg == null || msg.length() == 0) {
@@ -82,55 +77,23 @@ public abstract class ValidationHandler /*implements MetaDataRuntime*/ {
 				MetaMessageCategoryHandler mmc = ms.getRuntimeByName(metaData.getMessageCategory());
 				if (mmc != null) {
 					MetaMessageItem mmi = mmc.getMetaData().getMessages().get(metaData.getMessageId());
-
-					String temp = mmc.createMessage(mmi, context, propertyDisplayName, entityDisplayName);
-					if (StringUtil.isNotEmpty(temp)) {
-						msg = temp;
-
-						return msg;
+					if (mmi != null) {
+						msg = mmi.getMessage();
+						localizedMsg = mmi.getLocalizedMessageList();
 					}
 				}
 			}
 		}
+		
+		msg = I18nUtil.stringMeta(msg, localizedMsg);
 
-		// MetaValidationからメッセージを作成
-		Map<String, String> localizedStringMap = new HashMap<String, String>();
-		if (metaData.getLocalizedErrorMessageList() != null) {
-			for (MetaLocalizedString mls : metaData.getLocalizedErrorMessageList()) {
-				localizedStringMap.put(mls.getLocaleName(), mls.getStringValue());
-			}
-		}
-
-		String lang = ExecuteContext.getCurrentContext().getLanguage();
-
-		if (StringUtil.isNotEmpty(localizedStringMap.get(lang))) {
-			msg = localizedStringMap.get(lang);
-		}
-
-		//${name},${entityName}限定で置換
-		Entity entity = context.getValidatingDataModel();
-		MetaDataEntry entry = MetaDataContext.getContext().getMetaDataEntry(("/entity/" + entity.getDefinitionName()).replace(".","/"));
-		EntityHandler eHandl = (EntityHandler) entry.getRuntime();
-		Map<String, String> entityLangMap = eHandl.getLocalizedStringMap();
-		eHandl.getMetaData().getDisplayName();
-
-		PropertyHandler pHandl = eHandl.getProperty(context.getValidatePropertyName(), EntityContext.getCurrentContext());
-		Map<String, String> propLangMap = pHandl.getLocalizedStringMap();
-
+		//${name},${entityName}を置換
 		if (msg != null) {
 			if (msg.contains("${name}")) {
-				String replaceName = propertyDisplayName;
-				if (propLangMap.get(lang) != null) {
-					replaceName = propLangMap.get(lang);
-				}
-				msg = namePattern.matcher(msg).replaceAll(replaceName);
+				msg = namePattern.matcher(msg).replaceAll(propertyDisplayName);
 			}
 			if (msg.contains("${entityName}")) {
-				String replaceName = entityDisplayName;
-				if (entityLangMap.get(lang) != null) {
-					replaceName = entityLangMap.get(lang);
-				}
-				msg = entityNamePattern.matcher(msg).replaceAll(replaceName);
+				msg = entityNamePattern.matcher(msg).replaceAll(entityDisplayName);
 			}
 		}
 
@@ -145,4 +108,5 @@ public abstract class ValidationHandler /*implements MetaDataRuntime*/ {
 			return code;
 		}
 	}
+
 }

@@ -24,6 +24,7 @@ import java.util.regex.Pattern;
 
 import org.iplass.mtp.entity.BinaryReference;
 import org.iplass.mtp.entity.EntityRuntimeException;
+import org.iplass.mtp.entity.ValidationContext;
 import org.iplass.mtp.entity.definition.ValidationDefinition;
 import org.iplass.mtp.entity.definition.validations.BinaryTypeValidation;
 import org.iplass.mtp.impl.entity.EntityContext;

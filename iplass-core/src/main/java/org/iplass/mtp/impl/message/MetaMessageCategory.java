@@ -24,33 +24,22 @@
 package org.iplass.mtp.impl.message;
 
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.regex.Pattern;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
-import org.iplass.mtp.entity.Entity;
-import org.iplass.mtp.impl.core.ExecuteContext;
 import org.iplass.mtp.impl.definition.DefinableMetaData;
-import org.iplass.mtp.impl.entity.EntityContext;
-import org.iplass.mtp.impl.entity.EntityHandler;
-import org.iplass.mtp.impl.entity.property.PropertyHandler;
 import org.iplass.mtp.impl.i18n.MetaLocalizedString;
 import org.iplass.mtp.impl.metadata.BaseMetaDataRuntime;
 import org.iplass.mtp.impl.metadata.BaseRootMetaData;
 import org.iplass.mtp.impl.metadata.MetaDataConfig;
-import org.iplass.mtp.impl.metadata.MetaDataContext;
-import org.iplass.mtp.impl.metadata.MetaDataEntry;
 import org.iplass.mtp.impl.metadata.MetaDataRuntime;
 import org.iplass.mtp.impl.util.ObjectUtil;
-import org.iplass.mtp.impl.validation.ValidationContext;
 import org.iplass.mtp.message.MessageCategory;
 import org.iplass.mtp.message.MessageItem;
-import org.iplass.mtp.util.StringUtil;
 
 
 /**
@@ -67,9 +56,6 @@ public class MetaMessageCategory extends BaseRootMetaData implements DefinableMe
 	/** メッセージメタ情報 */
 	@XmlElement
 	private LinkedHashMap<String,MetaMessageItem> messages;
-
-	private static final Pattern namePattern = Pattern.compile("${name}", Pattern.LITERAL);
-	private static final Pattern entityNamePattern = Pattern.compile("${entityName}", Pattern.LITERAL);
 
 	/**
 	 * コンストラクタ
@@ -175,56 +161,6 @@ public class MetaMessageCategory extends BaseRootMetaData implements DefinableMe
 				}
 			}
 			return item.getMessage();
-		}
-
-		public String createMessage(MetaMessageItem item, ValidationContext context, String propertyDisplayName, String entityDisplayName) {
-
-			String msg = null;
-			if (item != null) {
-				msg = item.getMessage();
-
-				Map<String, String> localizedStringMap = new HashMap<String, String>();
-				if (item.getLocalizedMessageList() != null) {
-					for (MetaLocalizedString mls : item.getLocalizedMessageList()) {
-						localizedStringMap.put(mls.getLocaleName(), mls.getStringValue());
-					}
-				}
-
-				String lang = ExecuteContext.getCurrentContext().getLanguage();
-
-				if (StringUtil.isNotEmpty(localizedStringMap.get(lang))) {
-					msg = localizedStringMap.get(lang);
-				}
-
-				//${name},${entityName}限定で置換
-				Entity entity = context.getValidatingDataModel();
-				// listnerクラスが設定されている場合落ちるのでプロパティ定義を取得
-				MetaDataEntry entry = MetaDataContext.getContext().getMetaDataEntry(("/entity/" + entity.getDefinitionName()).replace(".","/"));
-				EntityHandler eHandl = (EntityHandler) entry.getRuntime();
-				Map<String, String> entityLangMap = eHandl.getLocalizedStringMap();
-
-				PropertyHandler pHandl = eHandl.getProperty(context.getValidatePropertyName(), EntityContext.getCurrentContext());
-				Map<String, String> propLangMap = pHandl.getLocalizedStringMap();
-
-				if (msg != null) {
-					if (msg.contains("${name}")) {
-						String replaceName = propertyDisplayName;
-						if (propLangMap.get(lang) != null) {
-							replaceName = propLangMap.get(lang);
-						}
-						msg = namePattern.matcher(msg).replaceAll(replaceName);
-					}
-					if (msg.contains("${entityName}")) {
-						String replaceName = entityDisplayName;
-						if (entityLangMap.get(lang) != null) {
-							replaceName = entityLangMap.get(lang);
-						}
-						msg = entityNamePattern.matcher(msg).replaceAll(replaceName);
-					}
-				}
-			}
-
-			return msg;
 		}
 	}
 

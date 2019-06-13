@@ -20,6 +20,9 @@
 
 package org.iplass.mtp.impl.validation;
 
+import java.util.Iterator;
+
+import org.iplass.mtp.entity.ValidationContext;
 import org.iplass.mtp.entity.definition.ValidationDefinition;
 import org.iplass.mtp.entity.definition.validations.ScriptingValidation;
 import org.iplass.mtp.impl.core.ExecuteContext;
@@ -38,6 +41,7 @@ public class MetaValidationScripting extends MetaValidation {
 	public static final String ENTITY_BINDING_NAME = "entity";
 	public static final String PROPERTY_NAME_BINDING_NAME = "propertyName";
 	public static final String VALUE_BINDING_NAME = "value";
+	public static final String CONTEXT_BINDING_NAME = "context";
 
 	private String script;
 	private boolean asArray = false;
@@ -139,11 +143,27 @@ public class MetaValidationScripting extends MetaValidation {
 		}
 
 		@Override
+		public String generateErrorMessage(Object value,
+				ValidationContext context, String propertyDisplayName,
+				String entityDisplayName) {
+			String msg = super.generateErrorMessage(value, context, propertyDisplayName,
+					entityDisplayName);
+			Iterator<String> it = context.getAttributeNames();
+			while (it.hasNext()) {
+				String key = it.next();
+				String target = "${" + key + "}";
+				msg = msg.replace(target, String.valueOf(context.getAttribute(key)));
+			}
+			return msg;
+		}
+		
+		@Override
 		public boolean validate(Object value, ValidationContext context) {
 			ScriptContext sc = scriptEngine.newScriptContext();
-			sc.setAttribute(ENTITY_BINDING_NAME, context.getValidatingDataModel());
-			sc.setAttribute(PROPERTY_NAME_BINDING_NAME, context.getValidatePropertyName());
+			sc.setAttribute(ENTITY_BINDING_NAME, context.getEntity());
+			sc.setAttribute(PROPERTY_NAME_BINDING_NAME, context.getPropertyName());
 			sc.setAttribute(VALUE_BINDING_NAME, value);
+			sc.setAttribute(CONTEXT_BINDING_NAME, context);
 			Boolean retVal = (Boolean) compiledScript.eval(sc);
 			if (retVal == null) {
 				return false;

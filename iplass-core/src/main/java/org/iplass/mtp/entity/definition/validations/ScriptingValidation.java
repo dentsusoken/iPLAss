@@ -24,15 +24,16 @@ import org.iplass.mtp.entity.definition.ValidationDefinition;
 
 /**
  * <p>
- * ScriptによるValidation。
- * Scriptにより、falseを返却した場合、エラーとなる。
- * asArrayフラグがtrueにセットされる場合、検証対象のチェック対象が配列の場合、分解せず配列のまま検証Scriptのvalueへ渡す。
+ * ScriptによるValidation定義です。
+ * Scriptにより、falseを返却した場合、検証エラーとなります。
+ * asArrayフラグがtrueにセットされる場合、検証対象が配列の場合、分解せず配列のまま検証Scriptのvalueへ渡します。
  * </p>
  * <h5>Script上から参照可能な変数</h5>
  * <ul>
  * <li>entity:検証対象のEntityのインスタンス</li>
  * <li>propertyName:検証対象のEntityのプロパティ名</li>
  * <li>value:検証対象のEntityのインスタンスのプロパティに設定されている値</li>
+ * <li>context:ValidationContextのインスタンス</li>
  * </ul>
  * <h5>Scriptコード例）</h5>
  * <pre>

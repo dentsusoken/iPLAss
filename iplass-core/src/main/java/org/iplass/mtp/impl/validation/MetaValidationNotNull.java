@@ -20,6 +20,7 @@
 
 package org.iplass.mtp.impl.validation;
 
+import org.iplass.mtp.entity.ValidationContext;
 import org.iplass.mtp.entity.definition.ValidationDefinition;
 import org.iplass.mtp.entity.definition.validations.NotNullValidation;
 import org.iplass.mtp.impl.entity.EntityContext;

@@ -27,19 +27,17 @@ import java.util.Map;
 
 import org.iplass.mtp.entity.Entity;
 import org.iplass.mtp.entity.ValidateError;
+import org.iplass.mtp.entity.ValidationContext;
 import org.iplass.mtp.entity.definition.IndexType;
 import org.iplass.mtp.entity.definition.PropertyDefinitionType;
 import org.iplass.mtp.impl.datastore.PropertyStoreHandler;
 import org.iplass.mtp.impl.entity.EntityContext;
 import org.iplass.mtp.impl.entity.EntityHandler;
-import org.iplass.mtp.impl.entity.EntityService;
 import org.iplass.mtp.impl.entity.MetaEntity;
 import org.iplass.mtp.impl.i18n.I18nUtil;
 import org.iplass.mtp.impl.i18n.MetaLocalizedString;
 import org.iplass.mtp.impl.validation.MetaValidation;
-import org.iplass.mtp.impl.validation.ValidationContext;
 import org.iplass.mtp.impl.validation.ValidationHandler;
-import org.iplass.mtp.spi.ServiceRegistry;
 
 
 public abstract class PropertyHandler /* implements MetaDataRuntime*/ {
@@ -131,7 +129,8 @@ public abstract class PropertyHandler /* implements MetaDataRuntime*/ {
 		ValidationContext context = new ValidationContext(model, metaData.getName());
 
 		if (validators != null) {
-			String entityDispName = null;
+			String entityDispName = parent.getLocalizedDisplayName();
+			String propDispName = getLocalizedDisplayName();
 
 			for (ValidationHandler v: validators) {
 				Object value = model.getValue(metaData.getName());
@@ -141,22 +140,16 @@ public abstract class PropertyHandler /* implements MetaDataRuntime*/ {
 					if (!v.validateArray((Object[]) value, context)) {
 						ValidateError res = new ValidateError();
 						res.setPropertyName(metaData.getName());
-						res.setPropertyDisplayName(getLocalizedDisplayName());
-						if (entityDispName == null) {
-							entityDispName = getEntityDispName(model);
-						}
-						res.addErrorMessage(v.generateErrorMessage(value, context, getDisplayName(), entityDispName), v.getErrorCode());
+						res.setPropertyDisplayName(propDispName);
+						res.addErrorMessage(v.generateErrorMessage(value, context, propDispName, entityDispName), v.getErrorCode());
 						return res;
 					}
 				} else {
 					if (!v.validate(value, context)) {
 						ValidateError res = new ValidateError();
 						res.setPropertyName(metaData.getName());
-						res.setPropertyDisplayName(getLocalizedDisplayName());
-						if (entityDispName == null) {
-							entityDispName = getEntityDispName(model);
-						}
-						res.addErrorMessage(v.generateErrorMessage(value, context,getDisplayName(), entityDispName), v.getErrorCode());
+						res.setPropertyDisplayName(propDispName);
+						res.addErrorMessage(v.generateErrorMessage(value, context, propDispName, entityDispName), v.getErrorCode());
 						return res;
 					}
 				}
@@ -166,20 +159,6 @@ public abstract class PropertyHandler /* implements MetaDataRuntime*/ {
 		return null;
 	}
 
-	private String getEntityDispName(Entity model) {
-
-		String defName = model.getDefinitionName();
-		EntityHandler eh = ServiceRegistry.getRegistry().getService(EntityService.class).getRuntimeByName(defName);
-		String dispName = null;
-		if (eh != null) {
-			dispName = eh.getMetaData().getDisplayName();
-		}
-		if (dispName == null) {
-			dispName = defName;
-		}
-		return dispName;
-	}
-	
 	public String getLocalizedDisplayName() {
 		return I18nUtil.stringMeta(getDisplayName(), getMetaData().getLocalizedDisplayNameList());
 	}
