@@ -216,15 +216,15 @@
 	String titleAppMentenance = null;
 	if (showNavi && auth.isAuthenticated() && topView != null) {
 		for (TopViewParts parts : topView.getParts()) {
-	if (parts instanceof ApplicationMaintenanceParts) {
-		ApplicationMaintenanceParts amp = (ApplicationMaintenanceParts)parts;
-		showAppMentenance = true;
-		titleAppMentenance = I18nUtil.stringDef(amp.getTitle(), amp.getLocalizedTitleList());
-		if (titleAppMentenance == null) {
-	titleAppMentenance = GemResourceBundleUtil.resourceString("layout.header.appMaintenance");
-		}
-		break;
-	}
+			if (parts instanceof ApplicationMaintenanceParts) {
+				ApplicationMaintenanceParts amp = (ApplicationMaintenanceParts)parts;
+				showAppMentenance = true;
+				titleAppMentenance = I18nUtil.stringDef(amp.getTitle(), amp.getLocalizedTitleList());
+				if (titleAppMentenance == null) {
+					titleAppMentenance = GemResourceBundleUtil.resourceString("layout.header.appMaintenance");
+				}
+				break;
+			}
 		}
 	}
 %>
@@ -276,9 +276,9 @@
 <p><span class="name"><c:out value="<%=userName%>"/></span></p>
 <ul>
 <%
-	if (isAdmin) {
+		if (isAdmin) {
 %>
-<li>
+<li class="admin-console">
 <a href="javascript:void(0)" onclick="showAdminConsole();">${m:rs("mtp-gem-messages", "layout.header.manage")}</a>
 <script>
 function showAdminConsole() {
@@ -287,12 +287,12 @@ function showAdminConsole() {
 </script>
 </li>
 <%
-	}
+		}
 
 		TenantWebInfo webInfo = WebUtil.getTenantWebInfo(tenant);
 		if (webInfo.isUsePreview()) {
 %>
-<li>
+<li class="preview-date">
 <a href="javascript:void(0)" onclick="showPreviewDateTimeDialog();">${m:rs("mtp-gem-messages", "layout.header.chngPrvwDate")}</a>
 <div id="showPreviewDateTimeDialog" title="${m:rs('mtp-gem-messages', 'layout.header.chngPrvwDate')}" style="display:none;">
 <p style="margin-top: 18px;">
@@ -350,7 +350,7 @@ function showPreviewDateTimeDialog() {
 </script>
 </li>
 <%
-	}
+		}
 
 		TenantI18nInfo i18nInfo = tenant.getTenantConfig(TenantI18nInfo.class);
 		if (i18nInfo.isUseMultilingual() && i18nInfo.getUseLanguageList() != null && i18nInfo.getUseLanguageList().size() > 1) {
@@ -360,28 +360,28 @@ function showPreviewDateTimeDialog() {
 <span class="node-cursor"></span>
 <ul>
 <%
-	List<String> useLangList = i18nInfo.getUseLanguageList();
+			List<String> useLangList = i18nInfo.getUseLanguageList();
 
-	for (String key : enabelLangeages.keySet()) {
-		String name = enabelLangeages.get(key);
+			for (String key : enabelLangeages.keySet()) {
+				String name = enabelLangeages.get(key);
 
-		if (useLangList.contains(key)) {
-	boolean selectLang = key.equals(lang);
+				if (useLangList.contains(key)) {
+					boolean selectLang = key.equals(lang);
 %>
 <li>
 <%
-	if (selectLang) {
+					if (selectLang) {
 %>
 <span class="icon"></span>
 <%
-	}
+					}
 %>
 <span class="txt"><c:out value="<%=name%>"/></span>
 <input type="hidden" value="<%=key%>"/>
 </li>
 <%
-	}
-	}
+				}
+			}
 %>
 </ul>
 
@@ -410,7 +410,7 @@ $(function() {
 </li>
 
 <%
-	}
+		}
 
 		if (role != null && role.size() > 1) {
 %>
@@ -419,24 +419,24 @@ $(function() {
 <span class="node-cursor"></span>
 <ul>
 <%
-	for (String key : role.keySet()) {
-		String name = role.get(key);
-		boolean selectRole = key.equals(roleName);
+			for (String key : role.keySet()) {
+				String name = role.get(key);
+				boolean selectRole = key.equals(roleName);
 %>
 <li class="menu">
 <%
-	if (selectRole) {
+				if (selectRole) {
 %>
 <span class="icon"></span>
 <%
-	}
+				}
 %>
 
 <span class="txt"><c:out value="<%=name%>"/></span>
 <input type="hidden" value="<c:out value="<%=key%>"/>"/>
 </li>
 <%
-	}
+			}
 %>
 </ul>
 <script>
@@ -456,12 +456,12 @@ $(function() {
 </script>
 </li>
 <%
-	}
+		}
 
 		if (!user.isAnonymous()) {
-	if(am.canUpdateCredential(user.getAccountPolicy())) {
+			if(am.canUpdateCredential(user.getAccountPolicy())) {
 %>
-<li>
+<li class="password">
 <a href="javascript:void(0)" onclick="changePassword()">${m:rs("mtp-gem-messages", "layout.header.passChng")}</a>
 <script>
 function changePassword() {
@@ -471,7 +471,7 @@ function changePassword() {
 </script>
 </li>
 <%
-	}
+			}
 		}
 
 		//Application Maintenance
@@ -522,7 +522,7 @@ $(function() {
 <%
 		if (!user.isAnonymous()) {
 %>
-<li>
+<li class="logout">
 <a href="javascript:void(0)" onclick="logout();return false;">${m:rs("mtp-gem-messages", "layout.header.logOut")}</a>
 <script>
 function logout() {

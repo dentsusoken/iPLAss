@@ -199,6 +199,7 @@
 }
 #account-01 {
 	padding-left: 70px;
+	//user name
 	p {
 		margin-top: 15px;
 		span {
@@ -261,8 +262,13 @@
 					transition: background 300ms, color 300ms;
 					display: block;
 				}
-				&:hover a {
-					color: $color_selective_yellow_approx;
+				&:hover {
+					a {
+						color: $color_selective_yellow_approx;
+					}
+					> span {
+						color: $color_selective_yellow_approx;
+					}
 				}
 			}
 		}
@@ -282,9 +288,6 @@
 				ul {
 					background: $color_mine_shaft_85_approx;
 					padding: 8px 0;
-				}
-				> span {
-					color: $color_selective_yellow_approx;
 				}
 				li {
 					height: 100%;

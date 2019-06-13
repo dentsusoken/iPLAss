@@ -430,6 +430,8 @@ p.nav-login-01 {
       display: block; }
     #account-01.open > ul li:hover a {
       color: #ffb900; }
+    #account-01.open > ul li:hover > span {
+      color: #ffb900; }
   #account-01.open > ul::before {
     content: '';
     display: block;
@@ -443,8 +445,6 @@ p.nav-login-01 {
   #account-01.open .change-area:hover ul {
     background: rgba(49, 49, 49, 0.85);
     padding: 8px 0; }
-  #account-01.open .change-area:hover > span {
-    color: #ffb900; }
   #account-01.open .change-area:hover li {
     height: 100%;
     overflow: visible; }
