@@ -228,6 +228,17 @@ public class EntityViewManagerImpl extends AbstractTypedDefinitionManager<Entity
 		if (propName.indexOf(".") == -1) {
 			currentPropName = propName;
 		} else {
+			// 子階層Entityのプロパティ
+			SearchConditionSection section = form.getCondSection();
+			for (Element element : section.getElements()) {
+				if (!(element instanceof PropertyItem)) continue;
+				PropertyItem property = (PropertyItem) element;
+				if (!property.isBlank() && property.getPropertyName().equals(propName)) {
+					return property.getEditor();
+				}
+			}
+
+			//ネストテーブルのネストプロパティ
 			currentPropName = propName.substring(0, propName.indexOf("."));
 			subPropName = propName.substring(propName.indexOf(".") + 1);
 		}
