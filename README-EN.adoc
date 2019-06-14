@@ -25,8 +25,8 @@ to the login page. Put 'admin' to ID and use your [password] (was defined by abo
 
 For more details, please have a look at the following pages.
 
-https://hub.docker.com/r/iplass/iplass-standalone/
-+
+https://hub.docker.com/r/iplass/iplass-standalone/ +
+
 _The English version for above links are under construction._ 
 
 ## Download
