@@ -1,3 +1,4 @@
+lang: link:./README-EN.adoc[English] | link:./README.adoc[日本語]
 [link=https://iplass.org/]
 image::https://user-images.githubusercontent.com/22016554/42924803-cc0eb00c-8b66-11e8-8e86-2a13b0609ea5.png[iPLAss]
 
@@ -7,8 +8,8 @@ Java-based enterprise-class low-code development platform that have been focused
 * https://iplass.org/[iPLAss Website]
 * https://iplass.org/intro/[Getting Started]
 * https://iplass.org/docs/[Document]
-
-The English version for above links are under construction. 
++
+_The English version for above links are under construction._ 
 
 ## Docker
 
@@ -25,8 +26,8 @@ to the login page. Put 'admin' to ID and use your [password] (was defined by abo
 For more details, please have a look at the following pages.
 
 https://hub.docker.com/r/iplass/iplass-standalone/
-
-The English version for above link is under construction. 
++
+_The English version for above links are under construction._ 
 
 ## Download
 From the link below, the iPLAss SDK, Installer, and Eclipse Plugin can be downloaded.
