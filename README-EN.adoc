@@ -1,0 +1,115 @@
+[link=https://iplass.org/]
+image::https://user-images.githubusercontent.com/22016554/42924803-cc0eb00c-8b66-11e8-8e86-2a13b0609ea5.png[iPLAss]
+
+[.lead]
+Java-based enterprise-class low-code development platform that have been focused on boosting the productivity and efficiency of system developments.
+
+* https://iplass.org/[iPLAss Website]
+* https://iplass.org/intro/[Getting Started]
+* https://iplass.org/docs/[Document]
+
+The English version for above links are under construction. 
+
+## Docker
+
+ > docker pull iplass/iplass-standalone
+
+ > docker run -p 8080:8080 -e IPLASS_TENANT_ADMIN_PASSWORD=[yourPassword] iplass/iplass-standalone
+
+Once initiated, access
+
+\http://localhost:8080/iplass
+
+to the login page. Put 'admin' to ID and use your [password] (was defined by above docker command) to log on.
+
+For more details, please have a look at the following pages.
+
+https://hub.docker.com/r/iplass/iplass-standalone/
+
+The English version for above link is under construction. 
+
+## Download
+From the link below, the iPLAss SDK, Installer, and Eclipse Plugin can be downloaded.
+
+https://iplass.org/downloads/
+
+NOTE: jar is published at Maven Central and JCenter with groupId : org.iplass.
+
+example when using gradle：
+
+ compile 'org.iplass:iplass-gem:3.0.10'
+
+example when using  maven：
+
+ <dependency>
+   <groupId>org.iplass</groupId>
+   <artifactId>iplass-gem</artifactId>
+   <version>3.0.10</version>
+   <type>pom</type>
+ </dependency>
+
+NOTE: JavaEE7 (Servlet/JSP/JSTL/EL/JAX-RS/BeanValidation/CommonAnnotations/JavaMail/JAXB/JAF) Runtime environment is required.
+Please refer to the build.gradle file from https://github.com/ISID/iplass-skeleton[skeleton-proect].
+
+The modules are explained and listed below.
+
+### iplass-core
+The core module. +
+Is referenced by all other modules.
+
+### iplass-web
+The module of web related functions. +
+It is in the form of WebFragments.
+
+### iplass-admin
+AdminConsole module. +
+It is in the form of WebFragments. +
+Based on GWT/SmartGWT.
+
+### iplass-gem
+GEM (Generic Entity Manager) related module. +
+
+### iplass-test
+The module supporting UnitTest. +
+Based on JUnit.
+
+### iplass-tools
+The module for tools of software managements. +
+referenced by iplass-admin, iplass-tools-batch.
+
+### iplass-tools-batch
+The module that serve as a collection of Batch programs.+
+
+### iplass-infinispan
+infinispan addon module. +
+The module supports infinispan to achieve cachestorage and the communication between clusters.
+
+### iplass-redis
+Redis addon module. +
+Supports Redis for cachestorage.
+
+## Related repositories
+
+* https://github.com/ISID/iplass-skeleton
+* https://github.com/ISID/iplass-sample-app
+* https://github.com/ISID/iplass-sample-app-vuejs
+* https://github.com/ISID/iplass-eclipse
+
+## Build
+To build with gradle, use
+
+ > gradlew
+
+NOTE: There are third-party libraries which do not have public maven. They have to be placed in the lib directory manualy. 
+
+Please refer to the following documents.
+lib/smartgwt/note.txt
+
+NOTE: It is (Java8 | Java11) / JavaEE7 based.
+
+## License
+https://www.gnu.org/licenses/agpl.html[AGPL-3.0]
+
+If you would like to get the business liscense, please contact us by the following link.
+
+https://www.isid.co.jp/solution/iPLAss.html
