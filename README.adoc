@@ -1,3 +1,4 @@
+lang: link:./README-EN.adoc[English] | link:./README.adoc[日本語]
 [link=https://iplass.org/]
 image::https://user-images.githubusercontent.com/22016554/42924803-cc0eb00c-8b66-11e8-8e86-2a13b0609ea5.png[iPLAss]
 
