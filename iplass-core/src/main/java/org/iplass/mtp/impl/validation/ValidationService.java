@@ -1,19 +1,19 @@
 /*
  * Copyright (C) 2011 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
- * 
+ *
  * Unless you have purchased a commercial license,
  * the following license terms apply:
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
@@ -25,6 +25,7 @@ import javax.validation.Validator;
 import org.iplass.mtp.entity.definition.ValidationDefinition;
 import org.iplass.mtp.entity.definition.validations.BinarySizeValidation;
 import org.iplass.mtp.entity.definition.validations.BinaryTypeValidation;
+import org.iplass.mtp.entity.definition.validations.JavaClassValidation;
 import org.iplass.mtp.entity.definition.validations.LengthValidation;
 import org.iplass.mtp.entity.definition.validations.NotNullValidation;
 import org.iplass.mtp.entity.definition.validations.RangeValidation;
@@ -35,11 +36,11 @@ import org.iplass.mtp.spi.Config;
 import org.iplass.mtp.spi.Service;
 
 public class ValidationService implements Service {
-	
+
 	private BeanValidationConfig beanValidation;
 
 	private Validator validator;
-	
+
 
 	//TODO MetaDataRepository内の定義を取得する
 
@@ -53,7 +54,7 @@ public class ValidationService implements Service {
 //		validatorMap.put(RangeValidation.class.getName(), ValidationHandlerRange.class);
 
 	}
-	
+
 	public Validator getValidator() {
 		return validator;
 	}
@@ -65,50 +66,30 @@ public class ValidationService implements Service {
 	public MetaValidation createValidationMetaData(ValidationDefinition def) {
 
 		//TODO 設定の外部化
+		MetaValidation meta = null;
 		if (def instanceof NotNullValidation) {
-			MetaValidationNotNull instance = new MetaValidationNotNull();
-			instance.applyConfig((NotNullValidation) def);
-			return instance;
-		}
-		if (def instanceof RangeValidation) {
-			MetaValidationRange instance = new MetaValidationRange();
-			instance.applyConfig((RangeValidation) def);
-			return instance;
-		}
-
-		if (def instanceof RegexValidation) {
-			MetaValidationRegex instance = new MetaValidationRegex();
-			instance.applyConfig(def);
-			return instance;
-		}
-
-		if (def instanceof LengthValidation) {
-			MetaValidationLength instance = new MetaValidationLength();
-			instance.applyConfig(def);
-			return instance;
+			meta = new MetaValidationNotNull();
+		} else if (def instanceof RangeValidation) {
+			meta = new MetaValidationRange();
+		} else if (def instanceof RegexValidation) {
+			meta = new MetaValidationRegex();
+		} else if (def instanceof LengthValidation) {
+			meta = new MetaValidationLength();
+		} else if (def instanceof ScriptingValidation) {
+			meta = new MetaValidationScripting();
+		} else if (def instanceof JavaClassValidation) {
+			meta = new MetaValidationJavaClass();
+		} else if (def instanceof BinarySizeValidation) {
+			meta = new MetaValidationBinarySize();
+		} else if (def instanceof BinaryTypeValidation) {
+			meta = new MetaValidationBinaryType();
 		}
 
-		if (def instanceof ScriptingValidation) {
-			MetaValidationScripting instance = new MetaValidationScripting();
-			instance.applyConfig(def);
-			return instance;
+		if (meta != null) {
+			meta.applyConfig(def);
 		}
 
-		if (def instanceof BinarySizeValidation) {
-			MetaValidationBinarySize instance = new MetaValidationBinarySize();
-			instance.applyConfig((BinarySizeValidation) def);
-			return instance;
-		}
-
-		if (def instanceof BinaryTypeValidation) {
-			MetaValidationBinaryType instance = new MetaValidationBinaryType();
-			instance.applyConfig((BinaryTypeValidation) def);
-			return instance;
-		}
-
-		//TODO その他要実装
-
-		return null;
+		return meta;
 	}
 
 	public void destroy() {
