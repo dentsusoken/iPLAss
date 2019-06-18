@@ -470,7 +470,9 @@ LocaleInfo.ui_metadata_entity_PropertyListGrid_maxExclude = "最大値を除外�
 LocaleInfo.ui_metadata_entity_PropertyListGrid_minExclude = "最小値を除外します(> min)。未選択の場合は含みます(>= min)。";
 LocaleInfo.ui_metadata_entity_PropertyListGrid_displayDialogEditScript = "<div style=\"white-space: nowrap;\">スクリプトの編集ダイアログを表示します。</div>";
 LocaleInfo.ui_metadata_entity_PropertyListGrid_scriptHint = "<ul><li>entity: Entity</li><li>propertyName : プロパティ名</li><li>value : プロパティ値</li></ul>";
-LocaleInfo.ui_metadata_entity_PropertyListGrid_scriptAsArray = "Multipleが1ではない場合、配列型をvalueにバインドします。";
+LocaleInfo.ui_metadata_entity_PropertyListGrid_scriptAsArray = "検証対象が配列の場合、分解せず配列のまま検証Scriptのvalueへ渡します。";
+LocaleInfo.ui_metadata_entity_PropertyListGrid_javaClassComment = "org.iplass.mtp.entity.PropertyValidatorを実装したJavaクラス名を指定してください。";
+LocaleInfo.ui_metadata_entity_PropertyListGrid_javaClassAsArray = "検証対象が配列の場合、分解せず配列のままvalueへ渡します。";
 LocaleInfo.ui_metadata_entity_PropertyListGrid_messageSpecifyComment = "メッセージは直接指定するか、メタデータのMessageから指定できます。<br/>バインド可能な変数はヘルプを参照してください。";
 LocaleInfo.ui_metadata_entity_PropertyListGrid_messageDef = "・メッセージ定義について";
 LocaleInfo.ui_metadata_entity_PropertyListGrid_directMessageComment = "直接メッセージを定義した場合は、メタデータのMessage指定よりも優先して利用されます。";

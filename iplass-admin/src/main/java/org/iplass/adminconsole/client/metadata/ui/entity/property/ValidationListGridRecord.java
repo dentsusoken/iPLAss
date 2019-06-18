@@ -1,19 +1,19 @@
 /*
  * Copyright (C) 2011 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
- * 
+ *
  * Unless you have purchased a commercial license,
  * the following license terms apply:
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
@@ -37,7 +37,8 @@ public class ValidationListGridRecord extends ListGridRecord {
 		REGEX("Regex (for String, Number)"),
 		BINARYSIZE("Binary Size (for Binary)"),
 		BINARYTYPE("Binary Type (for Binary)"),
-		SCRIPT("Script");
+		SCRIPT("Script"),
+		JAVA_CLASS("Java Class");
 
 		private String displayName;
 
@@ -66,6 +67,7 @@ public class ValidationListGridRecord extends ListGridRecord {
 	public static final String MAXVALEX = "maxValEx";
 	public static final String MINVALEX = "minvalEx";
 	public static final String SCRIPTING = "scripting";
+	public static final String JAVA_CLASS_NAME = "javaClassName";
 	public static final String AS_ARRAY = "asArray";
 	public static final String ERRORMSG = "errorMsg";
 	public static final String ERRORMSGMULTILANG = "errorMsgMultiLang";
@@ -144,6 +146,14 @@ public class ValidationListGridRecord extends ListGridRecord {
 
 	public void setScripting(String value) {
 		setAttribute(SCRIPTING, value);
+	}
+
+	public String getJavaClassName() {
+		return getAttribute(JAVA_CLASS_NAME);
+	}
+
+	public void setJavaClassName(String className) {
+		setAttribute(JAVA_CLASS_NAME, className);
 	}
 
 	public boolean isAsArray() {

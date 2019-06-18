@@ -18,7 +18,7 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.iplass.adminconsole.client.metadata.ui.entity.property;
+package org.iplass.adminconsole.client.metadata.ui.entity.property.validation;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -39,14 +39,8 @@ import org.iplass.adminconsole.client.base.ui.widget.form.MtpTextAreaItem;
 import org.iplass.adminconsole.client.base.ui.widget.form.MtpTextItem;
 import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
 import org.iplass.adminconsole.client.metadata.data.message.MessageItemDS;
+import org.iplass.adminconsole.client.metadata.ui.entity.property.ValidationListGridRecord;
 import org.iplass.adminconsole.client.metadata.ui.entity.property.ValidationListGridRecord.ValidationType;
-import org.iplass.adminconsole.client.metadata.ui.entity.property.validation.BinarySizeAttributePane;
-import org.iplass.adminconsole.client.metadata.ui.entity.property.validation.BinaryTypeAttributePane;
-import org.iplass.adminconsole.client.metadata.ui.entity.property.validation.LengthAttributePane;
-import org.iplass.adminconsole.client.metadata.ui.entity.property.validation.NotNullAttributePane;
-import org.iplass.adminconsole.client.metadata.ui.entity.property.validation.RangeAttributePane;
-import org.iplass.adminconsole.client.metadata.ui.entity.property.validation.RegexAttributePane;
-import org.iplass.adminconsole.client.metadata.ui.entity.property.validation.ScriptAttributePane;
 import org.iplass.mtp.definition.LocalizedStringDefinition;
 import org.iplass.mtp.message.MessageCategory;
 
@@ -141,6 +135,7 @@ public class ValidationEditDialog extends MtpDialog {
 
 		container.addMember(form);
 
+		//FIXME ここで追加したくない。ValidationTypeに寄せたい
 		List<ValidationAttributePane> typePaneList = new ArrayList<ValidationAttributePane>();
 		typePaneList.add(new BinarySizeAttributePane());
 		typePaneList.add(new BinaryTypeAttributePane());
@@ -149,6 +144,7 @@ public class ValidationEditDialog extends MtpDialog {
 		typePaneList.add(new RangeAttributePane());
 		typePaneList.add(new RegexAttributePane());
 		typePaneList.add(new ScriptAttributePane());
+		typePaneList.add(new JavaClassAttributePane());
 
 		mapTypePanes = new HashMap<ValidationListGridRecord.ValidationType, ValidationAttributePane>();
 		for (ValidationAttributePane typePane : typePaneList) {

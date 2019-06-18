@@ -30,35 +30,25 @@ import com.smartgwt.client.widgets.form.DynamicForm;
 import com.smartgwt.client.widgets.form.fields.CheckboxItem;
 import com.smartgwt.client.widgets.form.fields.TextItem;
 
-public class RangeAttributePane extends ValidationAttributePane {
+public class JavaClassAttributePane extends ValidationAttributePane {
 
 	private DynamicForm form;
 
-	private TextItem minItem;
-	private CheckboxItem minExcludeItem;
-	private TextItem maxItem;
-	private CheckboxItem maxExcludeItem;
+	private TextItem classNameItem;
+	private CheckboxItem bindAsArrayItem;
 
-	public RangeAttributePane() {
+	public JavaClassAttributePane() {
 
-		minItem = new MtpTextItem("minValue");
-		minItem.setTitle("Min");
-		minItem.setKeyPressFilter("[0-9]");
+		classNameItem = new MtpTextItem();
+		classNameItem.setTitle("Java Class Name");
+		SmartGWTUtil.addHoverToFormItem(classNameItem, rs("ui_metadata_entity_PropertyListGrid_javaClassComment"));
 
-		minExcludeItem = new CheckboxItem();
-		minExcludeItem.setTitle("grater than min value");
-		SmartGWTUtil.addHoverToFormItem(minExcludeItem, rs("ui_metadata_entity_PropertyListGrid_minExclude"));
-
-		maxItem = new MtpTextItem("maxValue");
-		maxItem.setTitle("Max");
-		maxItem.setKeyPressFilter("[0-9]");
-
-		maxExcludeItem = new CheckboxItem();
-		maxExcludeItem.setTitle("less than max value");
-		SmartGWTUtil.addHoverToFormItem(maxExcludeItem, rs("ui_metadata_entity_PropertyListGrid_maxExclude"));
+		bindAsArrayItem = new CheckboxItem();
+		bindAsArrayItem.setTitle("bind variable to array types");
+		SmartGWTUtil.addHoverToFormItem(bindAsArrayItem, rs("ui_metadata_entity_PropertyListGrid_javaClassAsArray"));
 
 		form = new MtpForm();
-		form.setItems(minItem, minExcludeItem, maxItem, maxExcludeItem);
+		form.setItems(classNameItem, bindAsArrayItem);
 
 		addMember(form);
 	}
@@ -66,30 +56,15 @@ public class RangeAttributePane extends ValidationAttributePane {
 	@Override
 	public void setDefinition(ValidationListGridRecord record) {
 
-		maxItem.setValue(record.getMax());
-		maxExcludeItem.setValue(record.isMaxValueExcluded());
-		minItem.setValue(record.getMin());
-		minExcludeItem.setValue(record.isMinValueExcluded());
+		classNameItem.setValue(record.getJavaClassName());
+		bindAsArrayItem.setValue(record.isAsArray());
 	}
 
 	@Override
 	public ValidationListGridRecord getEditDefinition(ValidationListGridRecord record) {
 
-		String minValue = SmartGWTUtil.getStringValue(minItem, true);
-		record.setMin(minValue);
-		if (minValue == null) {
-			//未指定だったら除外ON
-			minExcludeItem.setValue(true);
-		}
-		record.setMinValueExcluded(SmartGWTUtil.getBooleanValue(minExcludeItem));
-
-		String maxValue = SmartGWTUtil.getStringValue(maxItem, true);
-		record.setMax(maxValue);
-		if (maxValue == null) {
-			//未指定だったら除外ON
-			maxExcludeItem.setValue(true);
-		}
-		record.setMaxValueExcluded(SmartGWTUtil.getBooleanValue(maxExcludeItem));
+		record.setJavaClassName(SmartGWTUtil.getStringValue(classNameItem, true));
+		record.setAsArray(SmartGWTUtil.getBooleanValue(bindAsArrayItem));
 
 		return record;
 	}
@@ -106,12 +81,12 @@ public class RangeAttributePane extends ValidationAttributePane {
 
 	@Override
 	public ValidationType getType() {
-		return ValidationType.RANGE;
+		return ValidationType.JAVA_CLASS;
 	}
 
 	@Override
 	public int panelHeight() {
-		return 120;
+		return 80;
 	}
 
 }

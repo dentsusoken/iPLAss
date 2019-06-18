@@ -24,13 +24,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
-import org.iplass.adminconsole.client.metadata.ui.entity.property.ValidationEditDialog.ValidationEditDialogHandler;
 import org.iplass.adminconsole.client.metadata.ui.entity.property.ValidationListGridRecord.ValidationType;
+import org.iplass.adminconsole.client.metadata.ui.entity.property.validation.ValidationEditDialog;
+import org.iplass.adminconsole.client.metadata.ui.entity.property.validation.ValidationEditDialog.ValidationEditDialogHandler;
 import org.iplass.mtp.definition.LocalizedStringDefinition;
 import org.iplass.mtp.entity.definition.PropertyDefinitionType;
 import org.iplass.mtp.entity.definition.ValidationDefinition;
 import org.iplass.mtp.entity.definition.validations.BinarySizeValidation;
 import org.iplass.mtp.entity.definition.validations.BinaryTypeValidation;
+import org.iplass.mtp.entity.definition.validations.JavaClassValidation;
 import org.iplass.mtp.entity.definition.validations.LengthValidation;
 import org.iplass.mtp.entity.definition.validations.NotNullValidation;
 import org.iplass.mtp.entity.definition.validations.RangeValidation;
@@ -157,6 +159,11 @@ public class ValidationListPane extends VLayout implements PropertyAttributePane
 					validateRecord.setValType(ValidationType.SCRIPT.name());
 					validateRecord.setScripting(sVd.getScript());
 					validateRecord.setAsArray(sVd.isAsArray());
+				} else if (vd instanceof JavaClassValidation) {
+					JavaClassValidation javaVd = (JavaClassValidation)vd;
+					validateRecord.setValType(ValidationType.JAVA_CLASS.name());
+					validateRecord.setJavaClassName(javaVd.getClassName());
+					validateRecord.setAsArray(javaVd.isAsArray());
 				} else if (vd instanceof NotNullValidation) {
 					//念のため必須変更不可の場合は、一覧に出さない
 					//今は入力できないが、今まで入力してしまったデータを考慮してクリーンアップ
@@ -228,6 +235,10 @@ public class ValidationListPane extends VLayout implements PropertyAttributePane
 				validation = new ScriptingValidation(vRecord.getScripting(),
 						vRecord.getErrorMessage(), vRecord.getErrorCode());
 				((ScriptingValidation)validation).setAsArray(vRecord.isAsArray());
+			} else if (ValidationType.JAVA_CLASS.equals(valType)) {
+				validation = new JavaClassValidation(vRecord.getJavaClassName(),
+						vRecord.getErrorMessage(), vRecord.getErrorCode());
+				((JavaClassValidation)validation).setAsArray(vRecord.isAsArray());
 			} else if (ValidationType.NOTNULL.equals(valType)) {
 				validation = new NotNullValidation();
 			} else if (ValidationType.BINARYSIZE.equals(valType)) {
@@ -388,7 +399,8 @@ public class ValidationListPane extends VLayout implements PropertyAttributePane
 			record.setGeneralPurpus(purpus);
 		} else if (ValidationType.SCRIPT.equals(validationType)) {
 			record.setGeneralPurpus(record.getScripting());
-
+		} else if (ValidationType.JAVA_CLASS.equals(validationType)) {
+			record.setGeneralPurpus(record.getJavaClassName());
 		} else if (ValidationType.NOTNULL.equals(validationType)) {
 			//特になし
 		} else if (ValidationType.BINARYSIZE.equals(validationType)) {

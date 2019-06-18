@@ -23,7 +23,6 @@ package org.iplass.adminconsole.client.metadata.ui.entity.property.validation;
 import org.iplass.adminconsole.client.base.ui.widget.form.MtpForm;
 import org.iplass.adminconsole.client.base.ui.widget.form.MtpTextItem;
 import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
-import org.iplass.adminconsole.client.metadata.ui.entity.property.ValidationAttributePane;
 import org.iplass.adminconsole.client.metadata.ui.entity.property.ValidationListGridRecord;
 import org.iplass.adminconsole.client.metadata.ui.entity.property.ValidationListGridRecord.ValidationType;
 

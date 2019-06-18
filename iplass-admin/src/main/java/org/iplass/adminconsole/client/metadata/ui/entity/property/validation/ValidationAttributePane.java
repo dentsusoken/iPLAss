@@ -18,10 +18,11 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.iplass.adminconsole.client.metadata.ui.entity.property;
+package org.iplass.adminconsole.client.metadata.ui.entity.property.validation;
 
 import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
 import org.iplass.adminconsole.client.base.ui.widget.EditablePane;
+import org.iplass.adminconsole.client.metadata.ui.entity.property.ValidationListGridRecord;
 import org.iplass.adminconsole.client.metadata.ui.entity.property.ValidationListGridRecord.ValidationType;
 
 import com.smartgwt.client.widgets.layout.VLayout;
