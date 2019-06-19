@@ -24,10 +24,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 
 import org.iplass.adminconsole.client.base.event.DataChangedEvent;
 import org.iplass.adminconsole.client.base.event.DataChangedHandler;
@@ -772,7 +772,8 @@ public class MessageCategoryEditPane extends MetaDataMainEditPane {
 				return null;
 			}
 
-			Map<String, MessageItem> items = new LinkedHashMap<>();
+			//IDでソートするためTreeMapに格納
+			Map<String, MessageItem> items = new TreeMap<>();
 			for (MessageItemListGridRecord itemRecord : allRecords) {
 
 				String status = itemRecord.getStatus();
