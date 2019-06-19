@@ -469,7 +469,7 @@ LocaleInfo.ui_metadata_entity_PropertyListGrid_failedGetEntityDef = "Failed to g
 LocaleInfo.ui_metadata_entity_PropertyListGrid_maxExclude = "Exclude the maximum value (<max). Including the case of unselected (<= max).";
 LocaleInfo.ui_metadata_entity_PropertyListGrid_minExclude = "Exclude the minimum value (>min). Including the case of unselected (>= min).";
 LocaleInfo.ui_metadata_entity_PropertyListGrid_displayDialogEditScript = "<div style=\"white-space: nowrap;\">Display a dialog to edit the script.</div>";
-LocaleInfo.ui_metadata_entity_PropertyListGrid_scriptHint = "<ul><li>entity: Entity</li><li>propertyName : Property Name</li><li>value : Property Value</li></ul>";
+LocaleInfo.ui_metadata_entity_PropertyListGrid_scriptHint = "<ul><li>entity: Entity</li><li>propertyName : Property Name</li><li>value : Property Value</li><li>context : ValidationContext</li></ul>";
 LocaleInfo.ui_metadata_entity_PropertyListGrid_scriptAsArray = "If the verification target is an array, it is passed to the value of the verification script as it is without decomposition.";
 LocaleInfo.ui_metadata_entity_PropertyListGrid_javaClassComment = "Please specify the class that implements the interface org.iplass.mtp.entity.PropertyValidator.";
 LocaleInfo.ui_metadata_entity_PropertyListGrid_javaClassAsArray = "If the verification target is an array, it is passed to the value of the verification value as it is without decomposition.";
