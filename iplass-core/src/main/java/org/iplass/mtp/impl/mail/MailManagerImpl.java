@@ -59,6 +59,10 @@ public class MailManagerImpl implements MailManager {
 	@Override
 	public void sendMail(Mail mail) {
 		Tenant tenant = ExecuteContext.getCurrentContext().getCurrentTenant();
+		if (mail.getSubject() != null) {
+			mail.setSubject(mail.getSubject().replace('\r', ' '));
+			mail.setSubject(mail.getSubject().replace('\n', ' '));
+		}
 		mailService.sendMail(tenant, mail);
 
 	}
