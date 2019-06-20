@@ -44,7 +44,7 @@ public class JavaClassAttributePane extends ValidationAttributePane {
 		SmartGWTUtil.addHoverToFormItem(classNameItem, rs("ui_metadata_entity_PropertyListGrid_javaClassComment"));
 
 		bindAsArrayItem = new CheckboxItem();
-		bindAsArrayItem.setTitle("bind variable to array types");
+		bindAsArrayItem.setTitle("bind variable as array type");
 		SmartGWTUtil.addHoverToFormItem(bindAsArrayItem, rs("ui_metadata_entity_PropertyListGrid_javaClassAsArray"));
 
 		form = new MtpForm();

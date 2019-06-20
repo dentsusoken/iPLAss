@@ -82,7 +82,7 @@ public class ScriptAttributePane extends ValidationAttributePane {
 		SmartGWTUtil.setReadOnlyTextArea(scriptItem);
 
 		bindAsArrayItem = new CheckboxItem();
-		bindAsArrayItem.setTitle("bind variable to array types");
+		bindAsArrayItem.setTitle("bind variable as array type");
 		SmartGWTUtil.addHoverToFormItem(bindAsArrayItem, rs("ui_metadata_entity_PropertyListGrid_scriptAsArray"));
 
 		form = new MtpForm();
