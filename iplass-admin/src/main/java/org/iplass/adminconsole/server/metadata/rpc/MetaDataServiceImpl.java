@@ -1118,7 +1118,7 @@ public class MetaDataServiceImpl extends XsrfProtectedServiceServlet implements 
 					if (topProperty instanceof ReferenceProperty) {
 						EntityDefinition red = edm.get(((ReferenceProperty) topProperty).getObjectDefinitionName());
 						if (red != null) {
-							return topProperty.getDisplayName() + "." + getProperty(red, subPropName);
+							return getProperty(red, subPropName);
 						}
 					}
 				} else {
@@ -1291,7 +1291,7 @@ public class MetaDataServiceImpl extends XsrfProtectedServiceServlet implements 
 		});
 	}
 
-	
+
 	@Override
 	public List<Entity> getRoles(int tenantId) {
 		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId, new AuthUtil.Callable<List<Entity>>() {

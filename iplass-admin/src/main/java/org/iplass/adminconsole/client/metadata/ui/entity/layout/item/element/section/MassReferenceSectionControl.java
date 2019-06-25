@@ -24,6 +24,7 @@ import org.iplass.adminconsole.client.base.event.MTPEvent;
 import org.iplass.adminconsole.client.base.tenant.TenantInfoHolder;
 import org.iplass.adminconsole.client.metadata.ui.entity.layout.PropertyOperationHandler;
 import org.iplass.adminconsole.client.metadata.ui.entity.layout.item.EntityViewFieldSettingDialog;
+import org.iplass.adminconsole.client.metadata.ui.entity.layout.item.EntityViewFieldSettingDialog.PropertyInfo;
 import org.iplass.adminconsole.client.metadata.ui.entity.layout.item.ItemControl;
 import org.iplass.adminconsole.client.metadata.ui.entity.layout.metafield.MetaFieldUpdateEvent;
 import org.iplass.adminconsole.client.metadata.ui.entity.layout.metafield.MetaFieldUpdateHandler;
@@ -48,7 +49,7 @@ public class MassReferenceSectionControl extends ItemControl implements SectionC
 	private PropertyOperationHandler handler = null;
 	private MetaDataServiceAsync service = null;
 
-	private String loadedDisplayLabel = null;
+	private String entityPropertyDisplayName = null;
 
 	private String refDefName;
 
@@ -103,23 +104,17 @@ public class MassReferenceSectionControl extends ItemControl implements SectionC
 
 			@Override
 			public void onSuccess(String result) {
-				loadedDisplayLabel = result;
+				entityPropertyDisplayName = result;
 				createTitle(getSection().getTitle());
 			}
 
 		});
 	}
 
-	private void createTitle(String title) {
-		if (title != null) {
-			if (title.equals(loadedDisplayLabel)) {
-				setTitle(title);
-			} else {
-				setTitle(title + "(" + loadedDisplayLabel + ")");
-			}
-		} else {
-			setTitle(loadedDisplayLabel);
-		}
+	private void createTitle(String itemDisplayName) {
+		String title = itemDisplayName != null ? itemDisplayName + " ": "";
+		title = title + "(" + entityPropertyDisplayName + "[" + (String)getValue("name") + "])";
+		setTitle(title);
 	}
 
 	/**
@@ -157,7 +152,7 @@ public class MassReferenceSectionControl extends ItemControl implements SectionC
 		EntityViewFieldSettingDialog dialog = new EntityViewFieldSettingDialog(getClassName(), getValueObject(), triggerType, defName, refDefName);
 
 		// ダイアログのタイトルに対象のプロパティ名を表示
-		dialog.setTitleDescription(loadedDisplayLabel);
+		dialog.setTitlePropertyInfo(new PropertyInfo((String)getValue("name"), entityPropertyDisplayName));
 		return dialog;
 	}
 

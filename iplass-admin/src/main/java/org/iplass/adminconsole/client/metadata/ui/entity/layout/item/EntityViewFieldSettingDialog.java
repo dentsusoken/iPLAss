@@ -20,7 +20,6 @@
 
 package org.iplass.adminconsole.client.metadata.ui.entity.layout.item;
 
-import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
 import org.iplass.adminconsole.client.metadata.ui.entity.layout.metafield.MetaFieldSettingDialog;
 import org.iplass.adminconsole.view.annotation.Refrectable;
 import org.iplass.adminconsole.view.annotation.generic.FieldReferenceType;
@@ -36,9 +35,10 @@ public class EntityViewFieldSettingDialog extends MetaFieldSettingDialog {
 	private String defName;
 	private String refDefName;
 
-	/** タイトルにつける説明 */
-	private String originalTitle;
-	private String titleDescription;
+	/** クラス名のタイトル */
+	private String classNameTitle;
+	/** プロパティの情報 */
+	private PropertyInfo propertyInfo;
 
 	public EntityViewFieldSettingDialog(String className, Refrectable value, FieldReferenceType triggerType,
 			String defName) {
@@ -71,16 +71,16 @@ public class EntityViewFieldSettingDialog extends MetaFieldSettingDialog {
 	 *
 	 * @param titleDescription タイトルの説明
 	 */
-	public void setTitleDescription(String titleDescription) {
-		if (originalTitle == null) {
-			originalTitle = getTitle();
+	public void setTitlePropertyInfo(PropertyInfo propertyInfo) {
+		if (classNameTitle == null) {
+			classNameTitle = getTitle();
 		}
-		this.titleDescription = titleDescription;
+		this.propertyInfo = propertyInfo;
 
-		if (SmartGWTUtil.isNotEmpty(titleDescription)) {
-			setTitle(originalTitle + " - " + titleDescription + "-");
+		if (propertyInfo != null) {
+			setTitle(classNameTitle + " (" + propertyInfo.toString() + ")");
 		} else {
-			setTitle(originalTitle);
+			setTitle(classNameTitle);
 		}
 	}
 
@@ -89,8 +89,36 @@ public class EntityViewFieldSettingDialog extends MetaFieldSettingDialog {
 	 *
 	 * @return タイトルの説明
 	 */
-	public String getTitleDescription() {
-		return titleDescription;
+	public PropertyInfo getTitlePropertyInfo() {
+		return propertyInfo;
 	}
 
+	/**
+	 * 対象のプロパティ情報
+	 */
+	public static class PropertyInfo {
+
+		/** プロパティ名 */
+		private final String propertyName;
+		/** プロパティ表示名 */
+		private final String displayName;
+
+		public PropertyInfo(String propertyName, String displayName) {
+			this.propertyName = propertyName;
+			this.displayName = displayName;
+		}
+
+		public String getPropertyName() {
+			return propertyName;
+		}
+
+		public String getDisplayName() {
+			return displayName;
+		}
+
+		@Override
+		public String toString() {
+			return displayName + "[" + propertyName + "]";
+		}
+	}
 }

@@ -23,6 +23,8 @@ package org.iplass.adminconsole.client.metadata.ui.entity.layout.item.element;
 import org.iplass.adminconsole.client.base.event.MTPEvent;
 import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
 import org.iplass.adminconsole.client.metadata.ui.entity.layout.PropertyOperationHandler;
+import org.iplass.adminconsole.client.metadata.ui.entity.layout.item.EntityViewFieldSettingDialog;
+import org.iplass.adminconsole.client.metadata.ui.entity.layout.item.EntityViewFieldSettingDialog.PropertyInfo;
 import org.iplass.adminconsole.client.metadata.ui.entity.layout.item.ItemControl;
 import org.iplass.adminconsole.client.metadata.ui.entity.layout.metafield.MetaFieldUpdateEvent;
 import org.iplass.adminconsole.client.metadata.ui.entity.layout.metafield.MetaFieldUpdateHandler;
@@ -104,7 +106,7 @@ public class VirtualPropertyControl extends ItemControl {
 
 				//表示名
 				String displayLabel = (String) event.getValueMap().get("displayLabel");
-				setTitle(displayLabel);
+				setTitle(displayLabel + "([" + propertyName + "])");
 			}
 		});
 	}
@@ -119,12 +121,12 @@ public class VirtualPropertyControl extends ItemControl {
 		this.ed = ed;
 
 		VirtualPropertyItem property = (VirtualPropertyItem) element;
-		setTitle(property.getDisplayLabel());
+		propertyName = property.getPropertyName();
+		setTitle(property.getDisplayLabel()  + "([" + propertyName + "])");
 
 		setClassName(element.getClass().getName());
 		setValueObject(element);
 
-		propertyName = property.getPropertyName();
 	}
 
 	/**
@@ -156,4 +158,12 @@ public class VirtualPropertyControl extends ItemControl {
 		return true;
 	}
 
+	@Override
+	protected EntityViewFieldSettingDialog createSubDialog() {
+		EntityViewFieldSettingDialog dialog = new EntityViewFieldSettingDialog(getClassName(), getValueObject(), triggerType, defName);
+
+		// ダイアログのタイトルに対象のプロパティ名を表示
+		dialog.setTitlePropertyInfo(new PropertyInfo(propertyName, ""));
+		return dialog;
+	}
 }

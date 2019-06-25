@@ -29,6 +29,7 @@ import org.iplass.adminconsole.client.base.tenant.TenantInfoHolder;
 import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
 import org.iplass.adminconsole.client.metadata.ui.entity.layout.PropertyOperationHandler;
 import org.iplass.adminconsole.client.metadata.ui.entity.layout.item.EntityViewFieldSettingDialog;
+import org.iplass.adminconsole.client.metadata.ui.entity.layout.item.EntityViewFieldSettingDialog.PropertyInfo;
 import org.iplass.adminconsole.client.metadata.ui.entity.layout.item.ItemControl;
 import org.iplass.adminconsole.client.metadata.ui.entity.layout.metafield.MetaFieldUpdateEvent;
 import org.iplass.adminconsole.client.metadata.ui.entity.layout.metafield.MetaFieldUpdateHandler;
@@ -88,21 +89,24 @@ public class PropertyControl extends ItemControl {
 
 	/** Window破棄前にプロパティの重複チェックリストから削除するためのハンドラ */
 	private PropertyOperationHandler handler = null;
-	private String defaultDisplayName;
+	private String entityPropertyDisplayName;
 
 	private MetaDataServiceAsync service = null;
 
 	/**
-	 * コンストラクタ
-	 * @param record
-	 * @param property
+	 * プロパティGridからDropされた場合のProperty用Control生成
+	 *
+	 * @param defName 対象Entity名(ルート)
+	 * @param triggerType 対象となるトリガ
+	 * @param record DropされたEntityPropertyTreeGrid(PropertyTreeDS)のTreeNodeまたはEntityPropertyListGrid(PropertyDS)のListGridRecord
+	 * @param property 対象となるPropertyItemかPropertyColumn
 	 */
 	public PropertyControl(String defName, FieldReferenceType triggerType, ListGridRecord record, PropertyBase property) {
 		this(defName, triggerType);
-		defaultDisplayName = record.getAttribute("parentDisplayName") != null ?
-				record.getAttribute("parentDisplayName") + "." + record.getAttribute("displayName") : record.getAttribute("displayName");
 
-		setTitle(defaultDisplayName);
+		//Drop時はDropされたレコードから表示名を取得
+		entityPropertyDisplayName = record.getAttribute("displayName");
+
 		setValue("name", record.getAttribute("name"));
 		setValue("propertyEditor", createDefaultEditor(
 				(PropertyDefinition) record.getAttributeAsObject("propertyDefinition")));
@@ -113,43 +117,54 @@ public class PropertyControl extends ItemControl {
 		setClassName(property.getClass().getName());
 		setValueObject(property);
 
+		//Itemの表示名はまだ未設定のため未指定
 		createTitle(null);
 	}
 
 	/**
-	 * コンストラクタ
-	 * @param property
+	 * DefaultSectionまたはSearchConditionSectionのProperty用Control生成
+	 *
+	 * @param defName 対象Entity名(ルート)
+	 * @param triggerType 対象となるトリガ
+	 * @param property 対象となるプロパティ設定
 	 */
 	public PropertyControl(String defName, FieldReferenceType triggerType, PropertyItem property) {
 		this(defName, triggerType);
 
+		//一旦Itemの表示名をセット(未指定の場合あり)
 		setTitle(property.getDisplayLabel());
+
 		setValue("name", property.getPropertyName());
 		setValue("propertyEditor", property.getEditor());
 		setClassName(property.getClass().getName());
 		setValueObject(property);
 
-		setDefaultDisplayName(property);
+		//Itemの表示名が未指定の場合を考慮してEntityのプロパティ名を取得する
+		getEntityPropertyDisplayName(property);
 	}
 
 	/**
-	 * コンストラクタ
+	 * SearchResultSectionのProperty用Control生成
+	 *
+	 * @param defName 対象Entity名(ルート)
+	 * @param triggerType 対象となるトリガ
+	 * @param property 対象となるプロパティ設定
 	 */
 	public PropertyControl(String defName, FieldReferenceType triggerType, PropertyColumn property) {
 		this(defName, triggerType);
 
+		//一旦Itemの表示名をセット(未指定の場合あり)
 		setTitle(property.getDisplayLabel());
+
 		setValue("name", property.getPropertyName());
 		setValue("propertyEditor", property.getEditor());
 		setClassName(property.getClass().getName());
 		setValueObject(property);
 
-		setDefaultDisplayName(property);
+		//Itemの表示名が未指定の場合を考慮してEntityのプロパティ名を取得する
+		getEntityPropertyDisplayName(property);
 	}
 
-	/**
-	 * コンストラクタ
-	 */
 	private PropertyControl(String defName, FieldReferenceType triggerType) {
 		super(defName, triggerType);
 
@@ -177,29 +192,23 @@ public class PropertyControl extends ItemControl {
 		});
 	}
 
-	private void setDefaultDisplayName(final PropertyBase property) {
+	private void getEntityPropertyDisplayName(final PropertyBase property) {
 
 		service.getPropertyDisplayName(TenantInfoHolder.getId(), defName, property.getPropertyName(), new AdminAsyncCallback<String>() {
 
 			@Override
 			public void onSuccess(String result) {
-				defaultDisplayName = result;
+				entityPropertyDisplayName = result;
 
 				createTitle(property.getDisplayLabel());
 			}
 		});
 	}
 
-	private void createTitle(String newDisplayName) {
-		if (newDisplayName != null) {
-			if (newDisplayName.equals(defaultDisplayName)) {
-				setTitle(newDisplayName);
-			} else {
-				setTitle(newDisplayName + "(" + defaultDisplayName + ")");
-			}
-		} else {
-			setTitle(defaultDisplayName);
-		}
+	private void createTitle(String itemDisplayName) {
+		String title = itemDisplayName != null ? itemDisplayName + " ": "";
+		title = title + "(" + entityPropertyDisplayName + "[" + (String)getValue("name") + "])";
+		setTitle(title);
 		SmartGWTUtil.addHoverToCanvas(this, getTitle());
 	}
 
@@ -323,7 +332,7 @@ public class PropertyControl extends ItemControl {
 		}
 
 		// ダイアログのタイトルに対象のプロパティ名を表示
-		dialog.setTitleDescription(defaultDisplayName);
+		dialog.setTitlePropertyInfo(new PropertyInfo((String)getValue("name"), entityPropertyDisplayName));
 		return dialog;
 	}
 }

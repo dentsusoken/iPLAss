@@ -30,6 +30,7 @@ import org.iplass.adminconsole.client.base.ui.widget.form.MtpSelectItem;
 import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
 import org.iplass.adminconsole.client.metadata.data.filter.EntityFilterItemDS;
 import org.iplass.adminconsole.client.metadata.ui.common.EntityPropertyComboBoxItem;
+import org.iplass.adminconsole.client.metadata.ui.entity.layout.item.EntityViewFieldSettingDialog.PropertyInfo;
 import org.iplass.adminconsole.client.metadata.ui.entity.layout.metafield.MetaFieldSettingDialog;
 import org.iplass.adminconsole.client.metadata.ui.entity.layout.metafield.MetaFieldSettingPane;
 import org.iplass.adminconsole.shared.metadata.dto.refrect.FieldInfo;
@@ -65,6 +66,7 @@ public class EntityViewFieldSettingPane extends MetaFieldSettingPane {
 
 	// 入力タイプ:Propertyで選んだプロパティがサブダイアログの基準になる場合の選択Entity
 	private String childRefDefName;
+	private String childRefPropertyName;
 	private String childRefPropertyDisplayName;
 
 	private Map<EntityPropertyComboBoxItem, String> triggerdPropertyList = new HashMap<>();
@@ -190,13 +192,18 @@ public class EntityViewFieldSettingPane extends MetaFieldSettingPane {
 			dialog = new EntityViewFieldSettingDialog(className, value, triggerType, defName);
 		}
 
+		EntityViewFieldSettingDialog owner = (EntityViewFieldSettingDialog)getOwner();
+		PropertyInfo ownerPropertyInfo = owner.getTitlePropertyInfo();
 		if (childRefPropertyDisplayName != null) {
 			//タイトル説明を基準になるプロパティ名に変更
-			dialog.setTitleDescription(childRefPropertyDisplayName);
+			String propName = childRefPropertyName;
+			if (ownerPropertyInfo != null) {
+				propName = ownerPropertyInfo.getPropertyName() + "." + propName;
+			}
+			dialog.setTitlePropertyInfo(new PropertyInfo(propName, childRefPropertyDisplayName));
 		} else {
 			//起動元のタイトル説明を引き継ぐ
-			EntityViewFieldSettingDialog owner = (EntityViewFieldSettingDialog)getOwner();
-			dialog.setTitleDescription(owner.getTitleDescription());
+			dialog.setTitlePropertyInfo(ownerPropertyInfo);
 		}
 
 		return dialog;
@@ -255,6 +262,7 @@ public class EntityViewFieldSettingPane extends MetaFieldSettingPane {
 	private void getChildReferenceEntityName(String propertyName) {
 		if (SmartGWTUtil.isEmpty(propertyName)) {
 			childRefDefName = null;
+			childRefPropertyName = null;
 			childRefPropertyDisplayName = null;
 			return;
 		}
@@ -271,6 +279,7 @@ public class EntityViewFieldSettingPane extends MetaFieldSettingPane {
 							childRefDefName = null;
 						}
 						//サブダイアログの説明のためプロパティ名を保持
+						childRefPropertyName = pd.getName();
 						childRefPropertyDisplayName = pd.getDisplayName();
 					}
 		});
