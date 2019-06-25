@@ -39,6 +39,7 @@ public class ServerEnv {
 	
 	private static Logger logger = LoggerFactory.getLogger(ServerEnv.class);
 	
+	public static final String SERVER_ROLE_DEF_SYSTEM_PROP_NAME = "mtp.server.myserverroles";
 	public static final String SERVER_ID_DEF_SYSTEM_PROP_NAME = "mtp.server.myserverid";
 	public static final String SERVER_NAME_DEF_SYSTEM_PROP_NAME = "mtp.server.myservername";
 	public static final String INTERFACE_NAME_DEF_SYSTEM_PROP_NAME = "mtp.server.myinterfacename";
@@ -46,6 +47,8 @@ public class ServerEnv {
 	private static ServerEnv instance = new ServerEnv();
 	
 	private final Properties props;
+	private String[] serverRoles;
+	private String serverId;
 	
 	public static ServerEnv getInstance() {
 		return instance;
@@ -70,6 +73,21 @@ public class ServerEnv {
 			logger.debug("mtp.server.env not specified.use SystemProperty as server env config.");
 			props = System.getProperties();
 		}
+		
+		String myserverroles = getProperty(SERVER_ROLE_DEF_SYSTEM_PROP_NAME);
+		if (myserverroles != null) {
+			serverRoles = myserverroles.trim().split("\\s*,\\s*");
+		}
+		
+		String id = getProperty(SERVER_ID_DEF_SYSTEM_PROP_NAME);
+		if (id == null) {
+			try {
+				id = getServerNameAndAddress()[0];
+			} catch (SocketException e) {
+				throw new IllegalStateException(e);
+			}
+		}
+		serverId = id;
 	}
 	
 	public String getProperty(String key) {
@@ -80,17 +98,12 @@ public class ServerEnv {
 		return props.getProperty(key, def);
 	}
 	
+	public String[] getServerRoles() {
+		return serverRoles;
+	}
 	
 	public String getServerId() {
-		String id = getProperty(SERVER_ID_DEF_SYSTEM_PROP_NAME);
-		if (id == null) {
-			try {
-				id = getServerNameAndAddress()[0];
-			} catch (SocketException e) {
-				throw new IllegalStateException(e);
-			}
-		}
-		return id;
+		return serverId;
 	}
 	
 	public String[] getServerNameAndAddress() throws SocketException {
@@ -153,6 +166,5 @@ public class ServerEnv {
 			list.add(address);
 		}
 	}
-
 
 }

@@ -20,6 +20,7 @@
 		<property name="org.iplass.mtp.prefs.PreferenceManager" value="org.iplass.mtp.impl.prefs.PreferenceManagerImpl" />
 		<property name="org.iplass.mtp.pushnotification.PushNotificationManager" value="org.iplass.mtp.impl.pushnotification.PushNotificationManagerImpl" />
 		<property name="org.iplass.mtp.pushnotification.template.definition.PushNotificationTemplateDefinitionManager" value="org.iplass.mtp.impl.pushnotification.template.PushNotificationTemplateDefinitionManagerImpl" />
+		<property name="org.iplass.mtp.runtime.Environment" value="org.iplass.mtp.impl.runtime.EnvironmentImpl" />
 		<property name="org.iplass.mtp.sms.SmsMailManager" value="org.iplass.mtp.impl.sms.SmsMailManagerImpl" />
 		<property name="org.iplass.mtp.sms.template.definition.SmsMailTemplateDefinitionManager" value="org.iplass.mtp.impl.sms.template.SmsMailTemplateDefinitionManagerImpl" />
 		<property name="org.iplass.mtp.tenant.TenantManager" value="org.iplass.mtp.impl.tenant.TenantManagerImpl" />
