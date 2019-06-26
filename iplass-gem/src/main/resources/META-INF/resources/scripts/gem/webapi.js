@@ -591,6 +591,25 @@ function getAutocompletionValue(webapi, defName, viewName, viewType, propName, k
 	});
 }
 
+function getUniqueItem(webapi, defName, viewName, viewType, propName, uniqueValue, func) {
+	var params = "{";
+	params += "\"defName\":\"" + defName + "\"";
+	params += ",\"viewName\":\"" + viewName + "\"";
+	params += ",\"viewType\":\"" + viewType + "\"";
+	params += ",\"propName\":\"" + propName + "\"";
+	if (uniqueValue == null) {
+		params += ",\"uniqueValue\":null";
+	} else {
+		params += ",\"uniqueValue\":\"" + uniqueValue + "\"";
+	}
+	params += "}";
+
+	postAsync(webapi, params, function(result) {
+		var entity = result.data;
+		if (func && $.isFunction(func)) func.call(this, entity);
+	});
+}
+
 ////////////////////////////////////////////////////////
 //バージョン取得用のJavascript
 ////////////////////////////////////////////////////////

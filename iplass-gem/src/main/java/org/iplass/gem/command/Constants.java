@@ -78,6 +78,7 @@ public class Constants {
 	public static final String SECTION_SCRIPT_KEY = "sectionScriptKey";
 
 	public static final String REF_LINK_VALUE = "linkValue";
+	public static final String REF_UNIQUE_VALUE = "uniqueValue";
 
 	public static final String ENTITY_DATA = "value";
 	public static final String ENTITY_DEFINITION = "entityDefinition";

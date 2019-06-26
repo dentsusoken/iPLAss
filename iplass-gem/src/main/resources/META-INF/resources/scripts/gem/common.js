@@ -928,6 +928,60 @@ function addDateItem(ulId, multiplicity, dummyRowId, propName, countId, func, de
 }
 
 /**
+ * 参照画面 ユニーク項目追加
+ *
+ * @param ulId
+ * @param multiplicity
+ * @param dummyRowId
+ * @param propName
+ * @param countId
+ * @return
+ */
+function addUniqueRefItem(ulId, multiplicity, dummyRowId, propName, countId, func, delCallback) {
+	if (canAddItem(ulId, multiplicity)) {
+		countUp(countId, function(count) {
+			var $copy = copyUniqueRefItem(dummyRowId, propName, count, delCallback);
+			if (func && $.isFunction(func)) func.call(this, $copy);
+		});
+		$(".fixHeight").fixHeight();
+	}
+
+	function copyUniqueRefItem(dummyRowId, propName, idx, delCallback) {
+		var newId = propName + idx;
+		var copyId = "li_" + newId;
+
+		//ソースをコピー
+		var $src = $("#" + dummyRowId);
+		var $copy = clone($src, copyId);
+
+		//input
+		var $text = $(":text", $copy);
+		var $link = $("a.modal-lnk", $copy);
+		var $hidden = $(":hidden:last", $copy);
+		var $selBtn = $(":button.sel-btn", $copy);
+		var $delBtn = $(":button.del-btn", $copy);
+
+		//inputのidを設定
+		$text.attr("id", "uniq_txt_" + copyId);
+
+		$link.modalWindow();
+
+		//hiddenにnameとidを指定
+		$hidden.attr({name: propName, id: "i_" + copyId});
+
+		//selectボタンにidを設定
+		$selBtn.attr("id", "sel_btn_" + newId);
+		//削除ボタンのclickを設定
+		$delBtn.click(function() {deleteItem(copyId, delCallback);});
+
+		$copy.css("display", "");
+		$copy.refUnique();
+
+		return $copy;
+	}
+}
+
+/**
  * 日付型の検証
  *
  * @param val        (必須)値(null可)
@@ -2125,6 +2179,92 @@ function searchReferenceFromView(selectAction, updateAction, defName, id, propNa
 	$form.remove();
 }
 
+function searchUniqueReference(selectAction, viewAction, defName, propName, urlParam, refEdit, callback, button, viewName, permitConditionSelectAll, parentDefName, parentViewName, viewType) {
+	var _propName = propName.replace(/\[/g, "\\[").replace(/\]/g, "\\]").replace(/\./g, "\\.");
+	document.scriptContext["searchReferenceCallback"] = function(selectArray) {
+		var $ul = $("#ul_" + _propName);
+		var refs = new Array();
+		$ul.children("li").children(":hidden").each(function() {
+			refs[$(this).val()] = this.parentNode;
+		});
+
+		var key = selectArray[0];
+		//重複チェック
+		if (key in refs) {
+			alert(scriptContext.locale.duplicateData);
+			return;
+		}
+
+		//idを取得
+		var ids = new Array();
+		$ul.children("li").each(function() {
+			if ($.contains(this, button)) {
+				ids.push(this.id);
+			}
+		});
+		var id = ids[0];
+
+		var list = new Array();
+		list.push(keySplit(key));
+
+		//参照の名前を一括取得
+		var entityList = new Array();
+		var parentPropName = propName.replace(/^sc_/, "").replace(/\[\w+\]/g, "");
+		getEntityNameList(defName, viewName, parentDefName, parentViewName, parentPropName, viewType, list, function(entities) {
+			for (var i = 0; i < entities.length; i++) {
+				var entity = entities[i];
+				var _id = id.replace(/\[/g, "\\[").replace(/\]/g, "\\]").replace(/\./g, "\\.");
+				var _key = entity.oid + "_" + entity.version;
+				var uniqueValue = entity.uniqueValue;
+				updateUniqueReference(_id, viewAction, defName, _key, entity.name, propName, "ul_" + _propName, refEdit, "uniq_txt_" + _id , uniqueValue);
+			}
+			entityList = entities;
+		});
+
+		if (callback && $.isFunction(callback)) {
+			if (typeof button === "undefined" || button == null) {
+				callback.call(this, entityList, null, propName);
+			} else {
+				//引数で渡されたトリガーとなるボタンをthisとして渡す
+				callback.call(button, entityList, null, propName);
+			}
+		}
+
+		if (entityList.length > 0) {
+			$("[name='" + _propName + "']:eq(0)").trigger("change", {});// 複数選択だとイベントが複数回発生するので1つだけ
+		}
+		closeModalDialog();
+	};
+
+	var selType = "single";
+	var multiplicity = 1;
+	var isSubModal = $("body.modal-body").length != 0;
+	var target = getModalTarget(isSubModal);
+	var $form = $("<form />").attr({method:"POST", action:selectAction, target:target}).appendTo("body");
+	$("<input />").attr({type:"hidden", name:"defName", value:defName}).appendTo($form);//定義名
+	$("<input />").attr({type:"hidden", name:"multiplicity", value:multiplicity}).appendTo($form);//選択可能数
+	$("<input />").attr({type:"hidden", name:"selectType", value:selType}).appendTo($form);//単一or複数
+	$("<input />").attr({type:"hidden", name:"propName", value:propName}).appendTo($form);//プロパティ名
+	$("<input />").attr({type:"hidden", name:"rootName", value:"ul_" + propName}).appendTo($form);
+	$("<input />").attr({type:"hidden", name:"permitConditionSelectAll", value:permitConditionSelectAll}).appendTo($form);
+	if (isSubModal) $("<input />").attr({type:"hidden", name:"modalTarget", value:target}).appendTo($form);
+	var kv = urlParam.split("&");
+	if (urlParam.length > 0 && kv.length > 0) {
+		for (var i = 0; i < kv.length; i++) {
+			var _kv = kv[i].split("=");
+			if (_kv.length > 0) {
+				$("<input />").attr({type:"hidden", name:_kv[0], value:_kv[1]}).appendTo($form);
+			}
+		}
+	}
+	var specVersionKey = $(button).attr("data-specVersionKey");
+	if (specVersionKey && specVersionKey != null) {
+		$("<input />").attr({type:"hidden", name:"specVersion", value:$("[name='" + es(specVersionKey) + "']").val()}).appendTo($form);
+	}
+	$form.submit();
+	$form.remove();
+}
+
 /**
  * 参照型の追加
  * @param defName
@@ -2255,6 +2395,64 @@ function insertReferenceFromView(addAction, defName, id, multiplicity, urlParam,
 	}
 }
 
+function insertUniqueReference(addAction, viewAction, defName, propName, multiplicity, urlParam, parentDefName, parentViewName, refEdit, callback, button) {
+	var isSubModal = $("body.modal-body").length != 0;
+	var target = getModalTarget(isSubModal);
+
+	var parentOid = $(button).attr("data-parentOid");
+	var parentVersion = $(button).attr("data-parentVersion"); 
+	
+	var _propName = propName.replace(/\[/g, "\\[").replace(/\]/g, "\\]").replace(/\./g, "\\.");
+	if (canAddItem("ul_" + _propName, multiplicity)) {
+
+		//追加(＝編集)ダイアログで保存された場合は、ダイアログを閉じる
+		document.scriptContext["editReferenceCallback"] = function(entity) {
+			var $ul = $("#ul_" + _propName);
+			var key = entity.oid + "_" + entity.version;
+			var uniqueValue = entity.uniqueValue;
+			var linkId = addUniqueReference("li_" + propName + key, viewAction, defName, key, entity.name, propName, "ul_" + _propName, refEdit, "uniq_txt_" + propName + key, uniqueValue, button);
+
+			//カスタムのCallbackが定義されている場合に呼び出す
+			if (callback && $.isFunction(callback)) {
+				if (typeof button === "undefined" || button == null) {
+					callback.call(this, entity, propName);
+				} else {
+					//引数で渡されたトリガーとなるボタンをthisとして渡す
+					callback.call(button, entity, propName);
+				}
+			}
+
+			$("[name='" + _propName + "']:eq(0)").trigger("change", {});
+
+			//起動したtargetに対して再度詳細画面を表示しなおす
+			showReference(viewAction, defName, entity.oid, entity.version, linkId, refEdit);
+		};
+
+		var parentPropName = propName.replace(/\[\w+\]/g, "");
+		var $form = $("<form />").attr({method:"POST", action:addAction, target:target}).appendTo("body");
+//		$("<input />").attr({type:"hidden", name:"defName", value:defName}).appendTo($form);//定義名
+		$("<input />").attr({type:"hidden", name:"parentOid", value:parentOid}).appendTo($form);//参照元の情報
+		$("<input />").attr({type:"hidden", name:"parentVersion", value:parentVersion}).appendTo($form);
+		$("<input />").attr({type:"hidden", name:"parentDefName", value:parentDefName}).appendTo($form);
+		$("<input />").attr({type:"hidden", name:"parentViewName", value:parentViewName}).appendTo($form);
+		$("<input />").attr({type:"hidden", name:"parentPropName", value:parentPropName}).appendTo($form);
+		if (isSubModal) $("<input />").attr({type:"hidden", name:"modalTarget", value:target}).appendTo($form);
+		var kv = urlParam.split("&");
+		if (urlParam.length > 0 && kv.length > 0) {
+			for (var i = 0; i < kv.length; i++) {
+				var _kv = kv[i].split("=");
+				if (_kv.length > 0) {
+					$("<input />").attr({type:"hidden", name:_kv[0], value:_kv[1]}).appendTo($form);
+				}
+			}
+		}
+		$form.submit();
+		$form.remove();
+	} else {
+		modalCancel();
+	}
+}
+
 function addReference(id, viewAction, defName, key, label, propName, ulId, refEdit) {
 	var tmp = keySplit(key);
 	var oid = tmp.oid;
@@ -2295,6 +2493,49 @@ function addReference(id, viewAction, defName, key, label, propName, ulId, refEd
 	//リンクIDを返す
 	return linkId;
 }
+
+function updateUniqueReference(id, viewAction, defName, key, label, propName, ulId, refEdit, txtId, uniqueValue) {
+	var tmp = keySplit(key);
+	var oid = tmp.oid;
+	var ver = tmp.version;
+
+	var $ul = $("#" + ulId);
+	var $li = $("#" + id);
+	var $txt = $("#" + txtId)
+
+	var linkId = propName + "_" + tmp.oid;
+	var $link = $("a", $li).attr("id", linkId).click(function() {
+		showReference(viewAction, defName, oid, ver, linkId, refEdit);
+	});
+	
+	$link.text(label);
+	if ($("body.modal-body").length != 0) {
+		$link.subModalWindow();
+	} else {
+		$link.modalWindow();
+	}
+
+	$txt.val(uniqueValue);
+	$(":hidden", $li).attr({name:propName, value:key});
+
+	$(".fixHeight").fixHeight();
+
+	//リンクIDを返す
+	return linkId;
+}
+
+function addUniqueReference(id, viewAction, defName, key, label, propName, ulId, refEdit, txtId, uniqueValue, button) {
+	var addBtn = $(button).attr("data-addBtn");
+	$("#" + addBtn).trigger("click");
+	//追加された行
+	$li = $("#" + ulId).children("li:not(:hidden):last-child");
+	var id = $li.attr("id");
+
+	var linkId = updateUniqueReference(id, viewAction, defName, key, label, propName, ulId, refEdit, "uniq_txt_" + id, uniqueValue);
+	//リンクIDを返す
+	return linkId;
+}
+
 
 function keySplit(key) {
 	var index = key.lastIndexOf("_");
@@ -3212,6 +3453,10 @@ function addNestRow_Reference(type, cell, idx) {
 			var callback = scriptContext[callbackKey]
 			insertReference(addAction, viewAction, defName, propName, multiplicity, urlParam, parentOid, parentVersion, parentDefName, parentViewName, refEdit, callback, $insButton);
 		});
+	} else if (type == "UNIQUE") {
+		var $li = $(".unique-list", $(cell));
+		replaceDummyAttr($li, "data-propName", idx);
+		$(".refUnique", $(cell)).refUnique();
 	} else if (type == "REFCOMBO") {
 		//TODO 連動コンボ時の初期ロードで実行されるjavascriptをどうにかする
 		$(cell).children("select").each(function() {

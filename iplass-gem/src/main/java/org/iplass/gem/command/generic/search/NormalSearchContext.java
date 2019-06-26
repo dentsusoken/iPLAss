@@ -535,6 +535,19 @@ public class NormalSearchContext extends SearchContextBase {
 				}
 				ret = new ReferenceNormalConditionValue(list.toArray(new Entity[list.size()]));
 			}
+		} else if (editor.getDisplayType() == ReferenceDisplayType.UNIQUE && editor.isUseSearchDialog()) {
+			//ユニークならoid
+			List<Entity> list = new ArrayList<Entity>();
+			String[] oid_ver = getRequest().getParams(Constants.SEARCH_COND_PREFIX + propName, String.class);
+			if (oid_ver != null && oid_ver.length > 0) {
+				for (String tmp : oid_ver) {
+					if (tmp == null || tmp.length() == 0) continue;
+					int lastIndex = tmp.lastIndexOf("_");
+					String oid = tmp.substring(0, lastIndex);
+					list.add(new GenericEntity(rp.getObjectDefinitionName(), oid, null));
+				}
+				ret = new ReferenceNormalConditionValue(list.toArray(new Entity[list.size()]));
+			}
 		} else {
 			boolean searchName = false;
 			if (editor.getNestProperties().isEmpty()) {

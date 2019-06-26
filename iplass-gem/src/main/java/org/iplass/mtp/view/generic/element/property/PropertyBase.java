@@ -130,7 +130,7 @@ public abstract class PropertyBase extends Element {
 			descriptionKey="generic_element_property_PropertyBase_autocompletionSettingDescriptionKey"
 	)
 	@EntityViewField(
-			referenceTypes={FieldReferenceType.DETAIL, FieldReferenceType.SEARCHCONDITION}
+			referenceTypes={FieldReferenceType.DETAIL, FieldReferenceType.SEARCHCONDITION, FieldReferenceType.BULK}
 	)
 	private AutocompletionSetting autocompletionSetting;
 

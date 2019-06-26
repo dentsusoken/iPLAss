@@ -135,6 +135,7 @@ $(function(){
 	$(".recursiveTreeTrigger").refRecursiveTree();
 	$(".refLinkSelect").refLinkSelect();
 	$(".refLinkRadio").refLinkRadio();
+	$(".refUnique").refUnique();
 
 	if (typeof CKEDITOR !== "undefined") {
 		CKEDITOR.on("instanceReady", function(ev) {

@@ -141,6 +141,19 @@ public class ReferencePropertySearchCondition extends PropertySearchCondition {
 						conditions.add(new In(getPropertyName() + ".oid", oidList.toArray()));
 					}
 				}
+			} else if (editor.getDisplayType() == ReferenceDisplayType.UNIQUE && editor.isUseSearchDialog()) {
+				Entity[] list = (Entity[]) value;
+				if (list != null) {
+					if (list.length == 1) {
+						conditions.add(new Equals(getPropertyName() + ".oid", list[0].getOid()));
+					} else if (list.length > 1) {
+						List<String> oidList = new ArrayList<String>();
+						for (Entity tmp : list) {
+							oidList.add(tmp.getOid());
+						}
+						conditions.add(new In(getPropertyName() + ".oid", oidList.toArray()));
+					}
+				}
 			} else {
 				//名前の部分一致
 				Entity entity = (Entity) value;
@@ -332,6 +345,11 @@ public class ReferencePropertySearchCondition extends PropertySearchCondition {
 					createException(null);
 				}
 			} else if (editor.getDisplayType() == ReferenceDisplayType.TREE) {
+				Entity[] list = (Entity[]) value;
+				if (validateEntity && (value == null || list.length == 0)) {
+					createException(null);
+				}
+			} else if (editor.getDisplayType() == ReferenceDisplayType.UNIQUE && editor.isUseSearchDialog()) {
 				Entity[] list = (Entity[]) value;
 				if (validateEntity && (value == null || list.length == 0)) {
 					createException(null);

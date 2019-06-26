@@ -21,6 +21,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8" trimDirectiveWhitespaces="true"%>
 
+<%@ page import="org.iplass.mtp.impl.util.ConvertUtil"%>
 <%@ page import="org.iplass.mtp.util.StringUtil" %>
 <%@ page import="org.iplass.mtp.web.template.TemplateUtil" %>
 <%@ page import="org.iplass.mtp.entity.Entity" %>
@@ -34,20 +35,33 @@
 <%@ page import="org.iplass.gem.command.ViewUtil"%>
 <!DOCTYPE html>
 <%!
-	String getDisplayLabelItem(String defName, String viewName, String propName) {
+	ReferencePropertyEditor getRefEditor(String defName, String viewName, String propName, String viewType) {
 		EntityViewManager evm = ManagerLocator.getInstance().getManager(EntityViewManager.class);
-		PropertyEditor editor = evm.getPropertyEditor(defName, "detail", viewName, propName);
+		PropertyEditor editor = evm.getPropertyEditor(defName, viewType, viewName, propName);
 		if (editor instanceof ReferencePropertyEditor) {
 			ReferencePropertyEditor rpe = (ReferencePropertyEditor) editor;
-			if (rpe.getDisplayLabelItem() != null) {
-				return rpe.getDisplayLabelItem();
-			}
+			return rpe;
 		} else if (editor instanceof JoinPropertyEditor) {
 			JoinPropertyEditor jpe = (JoinPropertyEditor) editor;
 			if (jpe.getEditor() instanceof ReferencePropertyEditor) {
-				return ((ReferencePropertyEditor) jpe.getEditor()).getDisplayLabelItem();
+				return ((ReferencePropertyEditor) jpe.getEditor());
 			}
 		}
+
+		return null;
+	}
+
+	String getDisplayLabelItem(String defName, String viewName, String propName) {
+		ReferencePropertyEditor editor = getRefEditor(defName, viewName, propName, "detail");
+		if (editor != null) return editor.getDisplayLabelItem();
+
+		return null;
+	}
+
+	String getUniqueItem(String defName, String viewName, String propName) {
+		ReferencePropertyEditor editor = getRefEditor(defName, viewName, propName, "detail");
+		if (editor != null) return editor.getUniqueItem();
+
 		return null;
 	}
 %>
@@ -72,6 +86,11 @@
 	if (dispPropLabel == null) {
 		dispPropLabel = Entity.NAME;
 	}
+	
+	String uniqueItem = null;
+	if (StringUtil.isNotBlank(parentDefName) && StringUtil.isNotBlank(parentPropName)) {
+		uniqueItem = getUniqueItem(parentDefName, parentViewName, parentPropName);
+	}
 %>
 <html>
 <head>
@@ -86,6 +105,9 @@ var key = "<%=modalTarget%>";
 var modalTarget = key != "" ? key : null;
 $(function() {
 	var entity = {
+<% if (uniqueItem != null) {%>
+		uniqueValue: "<%=ConvertUtil.convertToString(data.getEntity().getValue(uniqueItem))%>",
+<% } %>
 		oid:"<%=StringUtil.escapeJavaScript(data.getEntity().getOid())%>",
 		version:"<%=data.getEntity().getVersion()%>",
 		name:"<%=StringUtil.escapeJavaScript((String)data.getEntity().getValue(dispPropLabel))%>"

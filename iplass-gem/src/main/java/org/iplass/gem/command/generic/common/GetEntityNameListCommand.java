@@ -22,6 +22,7 @@ package org.iplass.gem.command.generic.common;
 
 import java.util.List;
 
+import org.iplass.gem.command.Constants;
 import org.iplass.mtp.ManagerLocator;
 import org.iplass.mtp.command.Command;
 import org.iplass.mtp.command.RequestContext;
@@ -30,6 +31,10 @@ import org.iplass.mtp.command.annotation.webapi.RestJson;
 import org.iplass.mtp.command.annotation.webapi.WebApi;
 import org.iplass.mtp.entity.Entity;
 import org.iplass.mtp.entity.EntityManager;
+import org.iplass.mtp.entity.definition.EntityDefinition;
+import org.iplass.mtp.entity.definition.EntityDefinitionManager;
+import org.iplass.mtp.entity.definition.IndexType;
+import org.iplass.mtp.entity.definition.PropertyDefinition;
 import org.iplass.mtp.entity.query.Query;
 import org.iplass.mtp.entity.query.condition.expr.And;
 import org.iplass.mtp.entity.query.condition.expr.Or;
@@ -41,6 +46,7 @@ import org.iplass.mtp.view.generic.EntityViewManager;
 import org.iplass.mtp.view.generic.editor.JoinPropertyEditor;
 import org.iplass.mtp.view.generic.editor.PropertyEditor;
 import org.iplass.mtp.view.generic.editor.ReferencePropertyEditor;
+import org.iplass.mtp.view.generic.editor.ReferencePropertyEditor.ReferenceDisplayType;
 import org.iplass.mtp.webapi.definition.MethodType;
 import org.iplass.mtp.webapi.definition.RequestType;
 
@@ -77,12 +83,18 @@ public final class GetEntityNameListCommand implements Command {
 				&& list != null && !list.isEmpty()) {
 			// 表示ラベルとして扱うプロパティを取得します
 			String dispLabelProp = getDisplayLabelItem(parentDefName, parentViewName, parentPropName, viewType);
+			// ユニークキー項目
+			String uniqueProp = getUniqueItem(parentDefName, parentViewName, parentPropName, viewType);
+
 			Query query = new Query();
 			query.select(Entity.OID, Entity.VERSION).from(defName);
-			if (dispLabelProp == null) { // 未設定場合、Nameを検索します。
+			if (dispLabelProp == null) { //未設定場合、Nameを検索します。
 				query.select().add(Entity.NAME);
-			} else if (!dispLabelProp.isEmpty()) { // 表示ラベルが設定されている場合
+			} else if (dispLabelProp.length() > 0) { //表示ラベルが設定されている場合
 				query.select().add(dispLabelProp);
+			}
+			if (uniqueProp != null) {
+				query.select().add(uniqueProp);
 			}
 			Or or = new Or();
 			for (GetEntityNameListEntityParameter entity : list) {
@@ -94,9 +106,8 @@ public final class GetEntityNameListCommand implements Command {
 
 			EntityManager em = ManagerLocator.getInstance().getManager(EntityManager.class);
 			ret = em.searchEntity(query).getList();
-			if (StringUtil.isNotBlank(dispLabelProp) && ret != null) {
-				// ラベルとして扱うプロパティ項目をnameとして返します。
-				replaceNamePropWithDisplayLabelProp((List<Entity>) ret, dispLabelProp);
+			if (StringUtil.isNotBlank(dispLabelProp) || StringUtil.isNotBlank(uniqueProp)) {
+				replacePropOutputName((List<Entity>) ret, dispLabelProp, uniqueProp);
 			}
 		}
 		request.setAttribute("value", ret);
@@ -105,29 +116,67 @@ public final class GetEntityNameListCommand implements Command {
 
 	private String getDisplayLabelItem(String defName, String viewName, String propName, String viewType) {
 		EntityViewManager evm = ManagerLocator.getInstance().getManager(EntityViewManager.class);
+
 		EntityView ev = evm.get(defName);
 		//EntityViewが未設定の場合、表示ラベルプロパティが未設定と同じように扱います。
 		if (ev == null) return null;
 
+		ReferencePropertyEditor rpe = getRefEditor(defName, viewName, propName, viewType);
+		// エディター定義が見つからなかった場合、空文字を返します。
+		if (rpe == null) return "";
+
+		return rpe.getDisplayLabelItem();
+	}
+
+	private String getUniqueItem(String defName, String viewName, String propName, String viewType) {
+		EntityDefinitionManager edm = ManagerLocator.getInstance().getManager(EntityDefinitionManager.class);
+
+		ReferencePropertyEditor rpe = getRefEditor(defName, viewName, propName, viewType);
+		if (rpe == null || rpe.getDisplayType() != ReferenceDisplayType.UNIQUE) {
+			return null;
+		}
+
+		EntityDefinition ed = edm.get(rpe.getObjectName());
+		PropertyDefinition pd = ed.getProperty(rpe.getUniqueItem());
+		if (pd != null && (pd.getIndexType() == IndexType.UNIQUE || pd.getIndexType() == IndexType.UNIQUE_WITHOUT_NULL)) {
+			return rpe.getUniqueItem();
+		}
+
+		return null;
+	}
+
+	private ReferencePropertyEditor getRefEditor(String defName, String viewName, String propName, String viewType) {
+		EntityViewManager evm = ManagerLocator.getInstance().getManager(EntityViewManager.class);
 		PropertyEditor editor = evm.getPropertyEditor(defName, viewType, viewName, propName);
-		if (editor instanceof ReferencePropertyEditor) {
-			ReferencePropertyEditor rpe = (ReferencePropertyEditor) editor;
-			return rpe.getDisplayLabelItem();
+
+		if (editor instanceof ReferencePropertyEditor) { 
+			return (ReferencePropertyEditor) editor;
 		} else if (editor instanceof JoinPropertyEditor) {
 			JoinPropertyEditor jpe = (JoinPropertyEditor) editor;
 			if (jpe.getEditor() instanceof ReferencePropertyEditor) {
-				return ((ReferencePropertyEditor) jpe.getEditor()).getDisplayLabelItem();
+				return (ReferencePropertyEditor) jpe.getEditor();
 			}
 		}
-		// エディター定義が見つからなかった場合、空文字を返します。
-		return "";
+		return null;
 	}
 
-	private void replaceNamePropWithDisplayLabelProp(List<Entity> entities, String dispLabelProp) {
+	private void replacePropOutputName(List<Entity> entities, String dispLabelProp, String uniqueProp) {
 		for (Entity entity : entities) {
-			String dispPropValue = entity.getValue(dispLabelProp);
-			entity.setValue(dispLabelProp, null);
-			entity.setValue(Entity.NAME, dispPropValue);
+			if (StringUtil.isNotBlank(dispLabelProp)) {
+				// ラベルとして扱うプロパティ項目を「name」として返します。
+				entity.setValue(Entity.NAME, entity.getValue(dispLabelProp));
+			}
+			if (StringUtil.isNotBlank(uniqueProp)) {
+				// ユニークキー項目を「uniqueValue」として返します。
+				entity.setValue(Constants.REF_UNIQUE_VALUE, entity.getValue(uniqueProp));
+			}
+			// displayPropとuniquePropが同じ値になる可能性があるので、クリア処理を最後に実行します。
+			if (StringUtil.isNotBlank(dispLabelProp)) {
+				entity.setValue(dispLabelProp, null);
+			}
+			if (StringUtil.isNotBlank(uniqueProp)) {
+				entity.setValue(uniqueProp, null);
+			}
 		}
 	}
 }

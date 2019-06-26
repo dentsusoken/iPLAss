@@ -60,7 +60,8 @@ public class ReferencePropertyEditor extends PropertyEditor {
 		@XmlEnumValue("RefCombo")REFCOMBO,
 		@XmlEnumValue("Tree")TREE,
 		@XmlEnumValue("NestTable")NESTTABLE,
-		@XmlEnumValue("Label")LABEL
+		@XmlEnumValue("Label")LABEL,
+		@XmlEnumValue("Unique")UNIQUE
 	}
 
 	/** 編集ページ */
@@ -633,6 +634,22 @@ public class ReferencePropertyEditor extends PropertyEditor {
 
 
 
+
+
+	@MetaFieldInfo(displayName="ユニークプロパティ",
+			displayNameKey="generic_editor_ReferencePropertyEditor_uniqueItemDisplaNameKey",
+			inputType=InputType.PROPERTY,
+			displayOrder=900,
+			description="<b>表示タイプ:UniqueKey</b><br>" +
+					"ユニークプロパティを指定します。",
+			descriptionKey="generic_editor_ReferencePropertyEditor_uniqueItemDescriptionKey"
+	)
+	@EntityViewField(
+			referenceTypes = {FieldReferenceType.ALL}
+	)
+	private String uniqueItem;
+
+
 	/** オブジェクト名 */
 	private String objectName;
 
@@ -1176,6 +1193,22 @@ public class ReferencePropertyEditor extends PropertyEditor {
 
 	public void setDisplayLabelItem(String displayLabelItem) {
 		this.displayLabelItem = displayLabelItem;
+	}
+
+	/**
+	 * ユニークプロパティを取得します。
+	 * @return ユニークプロパティ
+	 */
+	public String getUniqueItem() {
+		return uniqueItem;
+	}
+
+	/**
+	 * ユニークプロパティを設定します。
+	 * @param uniqueKeyItem ユニークプロパティ
+	 */
+	public void setUniqueItem(String uniqueItem) {
+		this.uniqueItem = uniqueItem;
 	}
 
 	/**
