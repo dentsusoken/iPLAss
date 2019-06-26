@@ -26,15 +26,19 @@
 <%@ page import="java.util.Collections"%>
 <%@ page import="java.util.List" %>
 <%@ page import="java.util.function.Supplier"%>
+<%@ page import="org.iplass.mtp.impl.util.ConvertUtil" %>
 <%@ page import="org.iplass.mtp.ManagerLocator" %>
 <%@ page import="org.iplass.mtp.auth.AuthContext" %>
 <%@ page import="org.iplass.mtp.entity.permission.EntityPermission" %>
 <%@ page import="org.iplass.mtp.entity.permission.EntityPropertyPermission" %>
 <%@ page import="org.iplass.mtp.entity.Entity" %>
 <%@ page import="org.iplass.mtp.entity.EntityManager" %>
+<%@ page import="org.iplass.mtp.entity.GenericEntity"%>
 <%@ page import="org.iplass.mtp.entity.LoadOption"%>
 <%@ page import="org.iplass.mtp.entity.definition.EntityDefinition"%>
 <%@ page import="org.iplass.mtp.entity.definition.EntityDefinitionManager"%>
+<%@ page import="org.iplass.mtp.entity.definition.IndexType"%>
+<%@ page import="org.iplass.mtp.entity.definition.PropertyDefinition"%>
 <%@ page import="org.iplass.mtp.entity.query.PreparedQuery"%>
 <%@ page import="org.iplass.mtp.entity.query.Query" %>
 <%@ page import="org.iplass.mtp.entity.query.SortSpec"%>
@@ -66,10 +70,12 @@
 <%@ page import="org.iplass.gem.command.generic.detail.LoadEntityInterrupterHandler"%>
 <%@ page import="org.iplass.gem.command.generic.reflink.GetReferenceLinkItemCommand"%>
 <%@ page import="org.iplass.gem.command.generic.reftree.SearchTreeDataCommand"%>
+<%@ page import="org.iplass.gem.command.generic.refunique.GetReferenceUniqueItemCommand"%>
 <%@ page import="org.iplass.gem.command.generic.search.SearchViewCommand"%>
 <%@ page import="org.iplass.gem.command.Constants" %>
 <%@ page import="org.iplass.gem.command.GemResourceBundleUtil" %>
 <%@ page import="org.iplass.gem.command.ViewUtil" %>
+
 <%!
 	List<Entity> getSelectItems(ReferencePropertyEditor editor, Condition defaultCondition, Entity entity,
 			PropertyEditor upperEditor) {
@@ -224,7 +230,7 @@
 		if (refEntity.getOid() == null) {
 			return null;
 		}
-		if (getDisplayPropLabel(editor, refEntity) == null || refEntity.getVersion() == null) {
+		if (getDisplayPropLabel(editor, refEntity) == null || refEntity.getVersion() == null || isUniqueProp(editor)) {
 			//name、versionは必須のためどちらかが未指定ならLoadする
 			Entity entity = null;
 			LoadOption loadOption = new LoadOption(false, false);
@@ -248,14 +254,16 @@
 		}
 	}
 
-	void loadReferenceEntityProperty(Entity refEntity, String propName) {
-		if (refEntity == null || StringUtil.isBlank(propName)) return;
-		Query q = new Query().select(propName);
+	void loadReferenceEntityProperty(Entity refEntity, String... propNames) {
+		if (refEntity == null || propNames == null || propNames.length == 0) return;
+		Query q = new Query().select(propNames);
 		q.from(refEntity.getDefinitionName());
 		q.where(new And(new Equals(Entity.OID, refEntity.getOid()), new Equals(Entity.VERSION, refEntity.getVersion())));
 
 		Entity ret = ManagerLocator.getInstance().getManager(EntityManager.class).searchEntity(q).getFirst();
-		if (ret != null && ret.getValue(propName) != null) {
+		if (ret == null) return;
+
+		for (String propName : propNames) {
 			refEntity.setValue(propName, ret.getValue(propName));
 		}
 	}
@@ -281,6 +289,25 @@
 			displayPropName = Entity.NAME;
 		}
 		return refEntity.getValue(displayPropName);
+	}
+
+	boolean isUniqueProp(ReferencePropertyEditor editor) {
+		if (editor.getDisplayType() == ReferenceDisplayType.UNIQUE && editor.getUniqueItem() != null) {
+			EntityDefinition ed = ManagerLocator.getInstance().getManager(EntityDefinitionManager.class).get(editor.getObjectName());
+			PropertyDefinition pd = ed.getProperty(editor.getUniqueItem());
+			if (pd.getIndexType() == IndexType.UNIQUE || pd.getIndexType() == IndexType.UNIQUE_WITHOUT_NULL) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	String getUniquePropValue(ReferencePropertyEditor editor, Entity refEntity) {
+		String uniquePropName = editor.getUniqueItem();
+		if (uniquePropName == null || refEntity.getValue(uniquePropName) == null) return "";
+		// FIXME ユニークキー項目のプロパティエディター定義が存在しないので、文字列に変換して問題ないかな。。
+		String str = ConvertUtil.convertToString(refEntity.getValue(uniquePropName));
+		return StringUtil.escapeHtml(str);
 	}
 %>
 <%
@@ -908,6 +935,221 @@ $(function() {
 <%
 			}
 		}
+	} else if (editor.getDisplayType() == ReferenceDisplayType.UNIQUE && isUniqueProp(editor) && updatable && !isMappedby) {
+		//リンク
+		String ulId = "ul_" + propName;
+
+		String viewType = Constants.VIEW_TYPE_DETAIL;
+		if (type == OutputType.BULK && !useBulkView) {
+			viewType = Constants.VIEW_TYPE_BULK;
+		} else if (type == OutputType.BULK && useBulkView) {
+			viewType = Constants.VIEW_TYPE_MULTI_BULK;
+		}
+
+		String specVersionKey = "";
+		if (pd.getVersionControlType() == VersionControlReferenceType.AS_OF_EXPRESSION_BASE) {
+			//特定バージョン指定の場合、画面の項目からパラメータ取得
+			if (StringUtil.isNotBlank(editor.getSpecificVersionPropertyName())) {
+				if (editor.getSpecificVersionPropertyName().startsWith(".")) {
+					specVersionKey = editor.getSpecificVersionPropertyName().replace(".", "");//ルートを対象
+				} else {
+					//editorのプロパティ名の最後の.から先を置きかえる
+					if (editor.getPropertyName().indexOf(".") > -1) {
+						//nest、同レベルの他のプロパティを対象にする
+						String parentPath = editor.getPropertyName().substring(0, editor.getPropertyName().lastIndexOf(".") + 1);
+						specVersionKey = parentPath + editor.getSpecificVersionPropertyName();
+					} else {
+						//nestではないのでそのまま設定
+						specVersionKey = editor.getSpecificVersionPropertyName();
+					}
+				}
+			}
+		}
+
+		String selUniqueRefCallback = "selUniqueRefCallback_" + StringUtil.escapeJavaScript(propName);
+		String insUniqueRefCallback = "insUniqueRefCallback_" + StringUtil.escapeJavaScript(propName);
+		String toggleAddBtnFunc = "toggleAddBtn_" + StringUtil.escapeJavaScript(propName);
+%>
+<script type="text/javascript">
+$(function() {
+	var selUniqueRefCallback = function(entityList, deleteList, propName) {
+<%
+		if (editor.getSelectActionCallbackScript() != null) {
+%>
+<%-- XSS対応-メタの設定のため対応なし(editor.getSelectActionCallbackScript) --%>
+<%=editor.getSelectActionCallbackScript()%>
+<%
+		}
+%>
+	};
+	var selKey = "<%=selUniqueRefCallback%>";
+	scriptContext[selKey] = selUniqueRefCallback;
+	
+	var insUniqueRefCallback = function(entity, propName) {
+<%
+		if (editor.getInsertActionCallbackScript() != null) {
+%>
+		<%-- XSS対応-メタの設定のため対応なし(editor.getInsertActionCallbackScript) --%>
+		<%=editor.getInsertActionCallbackScript()%>
+<%
+		}
+%>
+	};
+	var insKey = "<%=insUniqueRefCallback%>";
+	scriptContext[insKey] = insUniqueRefCallback;
+});
+</script>
+<ul id="<c:out value="<%=ulId %>"/>" data-deletable="<c:out value="<%=(!hideDeleteButton && updatable) %>"/>" class="mb05">
+<%
+		//初期値として設定された際に、NameやVersionが未指定の場合を考慮して詰め直す
+		List<Entity> entityList = getLinkTypeItems(propValue, pd, editor);
+		int length = entityList.size();
+		//多重度が１で、登録されたデータが1件も無い場合、空エンティティ1件を作成します。
+		if (!isMultiple && length == 0) {
+			entityList = new ArrayList<Entity>();
+			entityList.add(new GenericEntity(editor.getObjectName()));
+		}
+
+		for (int i = 0; i < entityList.size(); i++) {
+			Entity refEntity = entityList.get(i);
+			String id = propName + i;
+			String liId = "li_" + id;
+			String linkId = propName + "_" + refEntity.getOid();
+			String dispPropLabel = getDisplayPropLabel(editor, refEntity);
+
+			String key = "";
+			if (length > 0) key = refEntity.getOid() + "_" + refEntity.getVersion();
+
+%>
+<li id="<c:out value="<%=liId %>"/>" class="list-add unique-list refUnique"
+ data-defName="<c:out value="<%=rootDefName%>"/>"
+ data-viewType="<c:out value="<%=viewType%>"/>"
+ data-viewName="<c:out value="<%=viewName%>"/>"
+ data-propName="<c:out value="<%=propName%>"/>"
+ data-webapiName="<%=GetReferenceUniqueItemCommand.WEBAPI_NAME%>"
+ data-selectAction="<c:out value="<%=selectAction %>"/>"
+ data-viewAction="<c:out value="<%=viewAction %>"/>"
+ data-addAction="<c:out value="<%=addAction %>"/>"
+ data-urlParam="<c:out value="<%=urlParam %>"/>"
+ data-refDefName="<c:out value="<%=refDefName%>"/>"
+ data-refEdit="<c:out value="<%=refEdit%>"/>"
+ data-specVersionKey="<c:out value="<%=specVersionKey%>"/>"
+ data-permitConditionSelectAll="<c:out value="<%=editor.isPermitConditionSelectAll()%>"/>"
+ <%-- 隠されたDummyRowが存在するので、多重度 +1を渡します。 --%>
+ data-multiplicity="<%=pd.getMultiplicity() + 1%>"
+ data-selUniqueRefCallback="<c:out value="<%=selUniqueRefCallback%>"/>"
+ data-insUniqueRefCallback="<c:out value="<%=insUniqueRefCallback%>"/>"
+>
+<span class="unique-key">
+<%
+			String str = getUniquePropValue(editor, refEntity);
+%>
+<input type="text" id="uniq_txt_<c:out value="<%=liId%>"/>" value="<%=str %>" class="unique-form-size-01 inpbr" />
+<%
+			if (!hideSelectButton) {
+				String selBtnId = "sel_btn_" + propName + i;
+%>
+<input type="button" value="${m:rs('mtp-gem-messages', 'generic.editor.reference.ReferencePropertyEditor_Edit.select')}" class="gr-btn-02 modal-btn sel-btn" id="<c:out value="<%=selBtnId %>"/>" data-propName="<c:out value="<%=propName %>"/>" />
+<%
+			}
+
+			if (isMultiple && auth.checkPermission(new EntityPermission(refDefName, EntityPermission.Action.CREATE)) && !hideRegistButton) {
+				String insBtnId = "ins_btn_" + propName + i;
+%>
+<input type="button" value="${m:rs('mtp-gem-messages', 'generic.editor.reference.ReferencePropertyEditor_Edit.new')}" class="gr-btn-02 modal-btn ins-btn" id="<c:out value="<%=insBtnId %>"/>"
+ data-addbtn="id_addBtn_<c:out value="<%=propName%>"/>"
+ data-parentOid="<%=StringUtil.escapeJavaScript(parentOid)%>"
+ data-parentVersion="<%=StringUtil.escapeJavaScript(parentVersion)%>"
+/>
+<%
+			}
+%>
+</span>
+<span class="unique-ref">
+<a href="javascript:void(0)" class="modal-lnk" style="<c:out value="<%=customStyle%>"/>" id="<c:out value="<%=linkId %>"/>" onclick="showReference('<%=StringUtil.escapeJavaScript(viewAction)%>', '<%=StringUtil.escapeJavaScript(refDefName)%>', '<%=StringUtil.escapeJavaScript(refEntity.getOid())%>', '<%=refEntity.getVersion() %>', '<%=StringUtil.escapeJavaScript(linkId)%>', <%=refEdit %>)"><c:out value="<%=dispPropLabel %>" /></a>
+<%
+
+			if (isMultiple && !hideDeleteButton && updatable) {
+%>
+<input type="button" value="${m:rs('mtp-gem-messages', 'generic.editor.reference.ReferencePropertyEditor_Edit.delete')}" class="gr-btn-02 del-btn" onclick="deleteItem('<%=StringUtil.escapeJavaScript(liId)%>', <%=toggleAddBtnFunc %>)" />
+<%
+			}
+%>
+</span>
+<input type="hidden" id="i_<c:out value="<%=liId%>"/>" name="<c:out value="<%=propName %>"/>" value="<c:out value="<%=key %>"/>" />
+</li>
+<%
+		}
+
+		if (isMultiple) {
+			String dummyRowId = "id_li_" + propName + "Dummmy";
+			String addBtnStyle = "";
+			if (length >= pd.getMultiplicity()) addBtnStyle = "display: none;";
+%>
+<li id="<c:out value="<%=dummyRowId %>"/>" class="list-add unique-list" style="display: none;"
+ data-defName="<c:out value="<%=rootDefName%>"/>"
+ data-viewType="<c:out value="<%=viewType%>"/>"
+ data-viewName="<c:out value="<%=viewName%>"/>"
+ data-propName="<c:out value="<%=propName%>"/>"
+ data-webapiName="<%=GetReferenceUniqueItemCommand.WEBAPI_NAME%>"
+ data-selectAction="<c:out value="<%=selectAction %>"/>"
+ data-viewAction="<c:out value="<%=viewAction %>"/>"
+ data-addAction="<c:out value="<%=addAction %>"/>"
+ data-urlParam="<c:out value="<%=urlParam %>"/>"
+ data-refDefName="<c:out value="<%=refDefName%>"/>"
+ data-refEdit="<c:out value="<%=refEdit%>"/>"
+ data-specVersionKey="<c:out value="<%=specVersionKey%>"/>"
+ data-permitConditionSelectAll="<c:out value="<%=editor.isPermitConditionSelectAll()%>"/>"
+ <%-- 隠されたDummyRowが存在するので、多重度 +1を渡します。 --%>
+ data-multiplicity="<%=pd.getMultiplicity() + 1%>"
+ data-selUniqueRefCallback="<c:out value="<%=selUniqueRefCallback%>"/>"
+ data-insUniqueRefCallback="<c:out value="<%=insUniqueRefCallback%>"/>"
+>
+<span class="unique-key">
+<input type="text" class="unique-form-size-01 inpbr" />
+<%
+			if (!hideSelectButton) {
+%>
+<input type="button" value="${m:rs('mtp-gem-messages', 'generic.editor.reference.ReferencePropertyEditor_Edit.select')}" class="gr-btn-02 modal-btn sel-btn" data-propName="<c:out value="<%=propName %>"/>" />
+<%
+			}
+
+			if (auth.checkPermission(new EntityPermission(refDefName, EntityPermission.Action.CREATE)) && !hideRegistButton) {
+%>
+<input type="button" value="${m:rs('mtp-gem-messages', 'generic.editor.reference.ReferencePropertyEditor_Edit.new')}" class="gr-btn-02 modal-btn ins-btn"
+ data-addbtn="id_addBtn_<c:out value="<%=propName%>"/>"
+ data-parentOid="<%=StringUtil.escapeJavaScript(parentOid)%>"
+ data-parentVersion="<%=StringUtil.escapeJavaScript(parentVersion)%>"
+/>
+<%
+			}
+%>
+</span>
+<span class="unique-ref">
+<a href="javascript:void(0)" class="modal-lnk" style="<c:out value="<%=customStyle%>"/>" ></a>
+<%
+
+			if (!hideDeleteButton && updatable) {
+%>
+<input type="button" value="${m:rs('mtp-gem-messages', 'generic.editor.reference.ReferencePropertyEditor_Edit.delete')}" class="gr-btn-02 del-btn" />
+<%
+			}
+%>
+</span>
+<input type="hidden" />
+</li>
+</ul>
+<script type="text/javascript">
+function <%=toggleAddBtnFunc%>() {
+	var display = $("#<%=StringUtil.escapeJavaScript(ulId)%> li:not(:hidden)").length < <%=pd.getMultiplicity()%>;
+	$("#id_addBtn_<c:out value="<%=propName%>"/>").toggle(display);
+}
+</script>
+<input type="button" id="id_addBtn_<c:out value="<%=propName%>"/>" value="${m:rs('mtp-gem-messages', 'generic.editor.reference.ReferencePropertyEditor_Edit.add')}" class="gr-btn-02 add-btn" style="<%=addBtnStyle%>" onclick="addUniqueRefItem('<%=StringUtil.escapeJavaScript(ulId)%>', <%=pd.getMultiplicity() + 1%>, '<%=StringUtil.escapeJavaScript(dummyRowId)%>', '<%=StringUtil.escapeJavaScript(propName)%>', 'id_count_<%=StringUtil.escapeJavaScript(propName)%>', <%=toggleAddBtnFunc%>, <%=toggleAddBtnFunc%>)" />
+<input type="hidden" id="id_count_<c:out value="<%=propName%>"/>" value="<c:out value="<%=entityList.size()%>"/>" />
+<%
+		}
+
 	} else if (editor.getDisplayType() == ReferenceDisplayType.REFCOMBO && updatable && !isMappedby) {
 		//連動コンボ
 		//多重度1限定

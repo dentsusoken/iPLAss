@@ -25,6 +25,7 @@
 <%@ page import="java.util.Arrays" %>
 <%@ page import="java.util.LinkedList"%>
 <%@ page import="java.util.List" %>
+<%@ page import="org.iplass.mtp.impl.util.ConvertUtil" %>
 <%@ page import="org.iplass.mtp.ManagerLocator"%>
 <%@ page import="org.iplass.mtp.auth.AuthContext"%>
 <%@ page import="org.iplass.mtp.entity.permission.EntityPermission" %>
@@ -35,6 +36,8 @@
 <%@ page import="org.iplass.mtp.entity.definition.properties.VersionControlReferenceType"%>
 <%@ page import="org.iplass.mtp.entity.definition.EntityDefinition"%>
 <%@ page import="org.iplass.mtp.entity.definition.EntityDefinitionManager"%>
+<%@ page import="org.iplass.mtp.entity.definition.IndexType"%>
+<%@ page import="org.iplass.mtp.entity.definition.PropertyDefinition"%>
 <%@ page import="org.iplass.mtp.entity.query.Query"%>
 <%@ page import="org.iplass.mtp.entity.query.condition.expr.And"%>
 <%@ page import="org.iplass.mtp.entity.query.condition.predicate.Equals"%>
@@ -146,14 +149,16 @@
 		}
 	}
 
-	void loadReferenceEntityProperty(Entity refEntity, String propName) {
-		if (refEntity == null || StringUtil.isBlank(propName)) return;
-		Query q = new Query().select(propName);
+	void loadReferenceEntityProperty(Entity refEntity, String... propNames) {
+		if (refEntity == null || propNames == null || propNames.length == 0) return;
+		Query q = new Query().select(propNames);
 		q.from(refEntity.getDefinitionName());
 		q.where(new And(new Equals(Entity.OID, refEntity.getOid()), new Equals(Entity.VERSION, refEntity.getVersion())));
 
 		Entity ret = ManagerLocator.getInstance().getManager(EntityManager.class).searchEntity(q).getFirst();
-		if (ret != null && ret.getValue(propName) != null) {
+		if (ret == null) return;
+
+		for (String propName : propNames) {
 			refEntity.setValue(propName, ret.getValue(propName));
 		}
 	}
@@ -187,6 +192,25 @@
 			return parent.getValue(displayPropName);
 		}
 		return parent.getName();
+	}
+
+	boolean isUniqueProp(ReferencePropertyEditor editor) {
+		if (editor.getDisplayType() == ReferenceDisplayType.UNIQUE && editor.getUniqueItem() != null) {
+			EntityDefinition ed = ManagerLocator.getInstance().getManager(EntityDefinitionManager.class).get(editor.getObjectName());
+			PropertyDefinition pd = ed.getProperty(editor.getUniqueItem());
+			if (pd.getIndexType() == IndexType.UNIQUE || pd.getIndexType() == IndexType.UNIQUE_WITHOUT_NULL) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	String getUniquePropValue(ReferencePropertyEditor editor, Entity refEntity) {
+		String uniquePropName = editor.getUniqueItem();
+		if (uniquePropName == null || refEntity.getValue(uniquePropName) == null) return "";
+		// FIXME ユニークキー項目のプロパティエディター定義が存在しないので、文字列に変換して問題ないかな。。
+		String str = ConvertUtil.convertToString(refEntity.getValue(uniquePropName));
+		return StringUtil.escapeHtml(str);
 	}
 %>
 <%
@@ -293,24 +317,25 @@
 		reloadUrl = getViewAction(defName, viewName, parentOid, isDialog);
 	}
 
+	//ロードプロパティ
+	List<String> loadPropNames = new ArrayList<String>();
+	if (editor.getDisplayLabelItem() != null) loadPropNames.add(editor.getDisplayLabelItem());
+	if (isUniqueProp(editor)) loadPropNames.add(editor.getUniqueItem());
+
 	List<Entity> entityList = new ArrayList<Entity>();
 	if (propValue instanceof Entity[]) {
 		Entity[] entities = (Entity[]) propValue;
 		if (entities != null) {
 			entityList.addAll(Arrays.asList(entities));
-			if (editor.getDisplayLabelItem() != null) {
-				for (Entity refEntity : entities) {
-					loadReferenceEntityProperty(refEntity, editor.getDisplayLabelItem());
-				}
+			for (Entity refEntity : entities) {
+				loadReferenceEntityProperty(refEntity, loadPropNames.toArray(new String[]{}));
 			}
 		}
 	} else if (propValue instanceof Entity) {
 		Entity refEntity = (Entity) propValue;
 		if (refEntity != null) {
 			entityList.add(refEntity);
-			if (editor.getDisplayLabelItem() != null) {
-				loadReferenceEntityProperty(refEntity, editor.getDisplayLabelItem());
-			}
+			loadReferenceEntityProperty(refEntity, loadPropNames.toArray(new String[]{}));
 		}
 	}
 
@@ -331,7 +356,8 @@
 			|| editor.getDisplayType() == ReferenceDisplayType.SELECT
 			|| editor.getDisplayType() == ReferenceDisplayType.CHECKBOX
 			|| editor.getDisplayType() == ReferenceDisplayType.TREE
-			|| editor.getDisplayType() == ReferenceDisplayType.LABEL) {
+			|| editor.getDisplayType() == ReferenceDisplayType.LABEL
+			|| editor.getDisplayType() == ReferenceDisplayType.UNIQUE) {
 
 		//リンク or リスト
 		String ulId = "ul_" + propName;
@@ -370,7 +396,7 @@
 </span>
 <%
 				}
-			} else if (editor.getDisplayType() == ReferenceDisplayType.LINK || editor.getDisplayType() == ReferenceDisplayType.TREE) {
+			} else if (editor.getDisplayType() == ReferenceDisplayType.LINK || editor.getDisplayType() == ReferenceDisplayType.TREE || editor.getDisplayType() == ReferenceDisplayType.UNIQUE) {
 				if (editor.isShowRefComboParent() && editor.getDisplayType() == ReferenceDisplayType.TREE) {
 					//親階層検索
 					Entity[] parents = getParents(refEntity, editor);
@@ -381,6 +407,11 @@
 <%
 						}
 					}
+				}
+				if (editor.getDisplayType() == ReferenceDisplayType.UNIQUE && isUniqueProp(editor)) {
+%>
+<span><c:out value="<%=getUniquePropValue(editor, refEntity) %>" /></span>&nbsp;&nbsp;
+<%
 				}
 				//Viewで編集モードの場合の削除ボタン制御
 				if (updatable && editPageView && type == OutputType.VIEW) {

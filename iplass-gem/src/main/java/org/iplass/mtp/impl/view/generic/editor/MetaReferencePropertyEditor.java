@@ -167,6 +167,9 @@ public class MetaReferencePropertyEditor extends MetaPropertyEditor implements H
 	
 	private String displayLabelItem;
 
+	/** ユニークプロパティ */
+	private String uniqueItem;
+
 	/**
 	 * 表示タイプを取得します。
 	 * @return 表示タイプ
@@ -726,6 +729,22 @@ public class MetaReferencePropertyEditor extends MetaPropertyEditor implements H
 		this.displayLabelItem = displayLabelItem;
 	}
 
+	/**
+	 * ユニークキープロパティを取得します。
+	 * @return ユニークキープロパティ
+	 */
+	public String getUniqueKeyItem() {
+		return uniqueItem;
+	}
+
+	/**
+	 * ユニークキープロパティを設定します。
+	 * @param uniqueKeyItem ユニークキープロパティ
+	 */
+	public void setUniqueKeyItem(String uniqueKeyItem) {
+		this.uniqueItem = uniqueKeyItem;
+	}
+
 	@Override
 	public void applyConfig(PropertyEditor editor) {
 		super.fillFrom(editor);
@@ -751,6 +770,10 @@ public class MetaReferencePropertyEditor extends MetaPropertyEditor implements H
 		PropertyHandler displayLabelProperty = null;
 		if (rpe.getDisplayLabelItem() != null) {
 			displayLabelProperty = refEntity.getProperty(rpe.getDisplayLabelItem(), context);
+		}
+		PropertyHandler uniqueProperty = null;
+		if (rpe.getUniqueItem() != null) {
+			uniqueProperty = refEntity.getProperty(rpe.getUniqueItem(), context);
 		}
 		useSearchDialog = rpe.isUseSearchDialog();
 		singleSelect = rpe.isSingleSelect();
@@ -778,6 +801,7 @@ public class MetaReferencePropertyEditor extends MetaPropertyEditor implements H
 		specificVersionPropertyName = rpe.getSpecificVersionPropertyName();
 		permitConditionSelectAll = rpe.isPermitConditionSelectAll();
 		displayLabelItem = displayLabelProperty != null ? displayLabelProperty.getId() : null;
+		uniqueItem = uniqueProperty != null ? uniqueProperty.getId() : null;
 		if (rpe.getTableOrderPropertyName() != null) {
 			PropertyHandler tableOrderProperty = refEntity.getProperty(rpe.getTableOrderPropertyName(), context);
 			tableOrderPropertyId = tableOrderProperty != null ? tableOrderProperty.getId() : null;
@@ -842,6 +866,10 @@ public class MetaReferencePropertyEditor extends MetaPropertyEditor implements H
 		if (displayLabelItem != null) {
 			displayLabelProperty = refEntity.getPropertyById(displayLabelItem, context);
 		}
+		PropertyHandler uniqueProperty = null;
+		if (uniqueItem != null) {
+			uniqueProperty = refEntity.getPropertyById(uniqueItem, context);
+		}
 		editor.setUseSearchDialog(useSearchDialog);
 		editor.setSingleSelect(singleSelect);
 		editor.setUseNestConditionWithProperty(useNestConditionWithProperty);
@@ -869,6 +897,7 @@ public class MetaReferencePropertyEditor extends MetaPropertyEditor implements H
 		editor.setSpecificVersionPropertyName(specificVersionPropertyName);
 		editor.setPermitConditionSelectAll(permitConditionSelectAll);
 		editor.setDisplayLabelItem(displayLabelProperty != null ? displayLabelProperty.getName() : null);
+		editor.setUniqueItem(uniqueProperty != null ? uniqueProperty.getName() : null);
 		if (tableOrderPropertyId != null) {
 			PropertyHandler tableOrderProperty = refEntity.getPropertyById(tableOrderPropertyId, context);
 			editor.setTableOrderPropertyName(tableOrderProperty != null ? tableOrderProperty.getName() : null);

@@ -42,6 +42,7 @@
  * refComboController
  * refLinkSelect
  * refLinkRadio
+ * refUnique
  * multiColumnTable
  * applyDatepicker
  * applyTimepicker
@@ -2560,6 +2561,124 @@ $.fn.allInputCheck = function(){
 					}
 				});
 			}
+		}
+	};
+})(jQuery);
+
+/**
+ * 参照プロパティ(ユニークキー)
+ */
+(function($){
+	$.fn.refUnique = function(option) {
+		var defaults = {
+		};
+		var options = $.extend(defaults, option);
+		if (!this) return false;
+
+		return this.each(function(options) {
+			var $this = $(this);
+			init($this, options);
+		});
+
+		function init($v, options) {
+			var params = {
+				defName:					$v.attr("data-defName"),
+				viewType:					$v.attr("data-viewType"),
+				viewName:					$v.attr("data-viewName"),
+				propName:					$v.attr("data-propName"),
+				webapiName: 				$v.attr("data-webapiName"),
+				selectAction:				$v.attr("data-selectAction"),
+				viewAction:					$v.attr("data-viewAction"),
+				addAction:					$v.attr("data-addAction"),
+				urlParam:					$v.attr("data-urlParam"),
+				refDefName:					$v.attr("data-refDefName"),
+				refEdit:					$v.attr("data-refEdit"),
+				specVersionKey:				$v.attr("data-specVersionKey"),
+				permitConditionSelectAll:	$v.attr("data-permitConditionSelectAll"),
+				multiplicity:				$v.attr("data-multiplicity"),
+				selUniqueRefCallback:		$v.attr("data-selUniqueRefCallback"),
+				insUniqueRefCallback:		$v.attr("data-insUniqueRefCallback")
+			};
+			$.extend($v, params);
+
+			var $txt = $("input[type='text'].inpbr", $v);
+			var $selBtn = $(":button.sel-btn", $v);
+			var $insBtn = $(":button.ins-btn", $v);
+			var $link = $("a.modal-lnk", $v);
+			var $hidden = $(":hidden[name='" + $v.propName + "']", $v);
+
+			$selBtn.modalWindow();
+			for (key in params) {
+				$selBtn.attr("data-" + key, params[key]);
+			}
+			$selBtn.on("click", function() {
+				//選択コールバック
+				var selRefCallback = scriptContext[$v.selUniqueRefCallback];
+				searchUniqueReference($v.selectAction, $v.viewAction, $v.refDefName, $v.propName, $v.urlParam, $v.refEdit, selRefCallback, this, $v.viewName, $v.permitConditionSelectAll, $v.defName, $v.viewName, $v.viewType);
+			});
+
+			$insBtn.modalWindow();
+			for (key in params) {
+				$insBtn.attr("data-" + key, params[key]);
+			}
+			$insBtn.on("click", function() {
+				//新規コールバック
+				var insRefCallback = scriptContext[$v.insUniqueRefCallback];
+				insertUniqueReference($v.addAction, $v.viewAction, $v.refDefName, $v.propName, $v.multiplicity, $v.urlParam, $v.defName, $v.viewName, $v.refEdit, insRefCallback, this);
+			});
+
+			$txt.on("change", function() {
+				$link.attr("id", "").text("");
+				$hidden.val("");
+
+				var duplicate = false;
+				$("#ul_" + $v.propName).find(".unique-key:not(:hidden)").children("input[type='text']").each(function() {
+					if ($(this).val() == $txt.val() && this !== $txt.get(0)) {
+						duplicate = true;
+						return;
+					}
+				});
+
+				if (duplicate) {
+					alert(scriptContext.locale.duplicateData);
+					return;
+				}
+
+				var _propName = $v.propName.replace(/^sc_/, "").replace(/\[\w+\]/g, "");
+				var uniqueValue = $txt.val().length == 0 ? null : $txt.val();
+				getUniqueItem($v.webapiName, $v.defName, $v.viewName, $v.viewType, _propName, uniqueValue, function(entity) {
+					var entityList = new Array();
+					if(entity && !$.isEmptyObject(entity)) {
+						var linkId = $v.propName + "_" + entity.oid;
+						var label = entity.name;
+						var key = entity.oid + "_" + entity.version;
+						var func = function() {
+							showReference($v.viewAction, $v.refDefName, entity.oid, entity.version, linkId, $v.refEdit);
+						};
+
+						$link.attr("id", linkId).text(label);
+						$link.removeAttr("onclick").off("click", func);
+						$link.on("click", func);
+						$hidden.val(key);
+
+						entityList.push(entity);
+
+						//選択コールバック
+						var selRefCallback = scriptContext[$v.selUniqueRefCallback];
+						if (selRefCallback && $.isFunction(selRefCallback)) {
+							if (typeof button === "undefined" || button == null) {
+								selRefCallback.call(this, entityList, null, $v.propName);
+							} else {
+								//引数で渡されたトリガーとなるボタンをthisとして渡す
+								selRefCallback.call(button, entityList, null, $v.propName);
+							}
+						}
+					} else {
+						alert(scriptContext.locale.noResult);
+					}
+				});
+
+			});
 		}
 	};
 })(jQuery);

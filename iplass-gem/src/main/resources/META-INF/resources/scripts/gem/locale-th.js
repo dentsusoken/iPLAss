@@ -268,3 +268,5 @@ scriptContext.locale.userTaskListRequestDate = "วันที่ต้อง�
 scriptContext.locale.userTaskListTaskQueName = "ชื่อลำดับการทำงาน"
 scriptContext.locale.userTaskListAllocation = "การแจกงาน"
 scriptContext.locale.userTaskListFailedGetTask = "ทำงานไม่สำเร็จ"
+scriptContext.locale.noResult = "ไม่พบข้อมูล"
+scriptContext.locale.duplicateData = "ข้อมูลที่ซ้ำกัน"

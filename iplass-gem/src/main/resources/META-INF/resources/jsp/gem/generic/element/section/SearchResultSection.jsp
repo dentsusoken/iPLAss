@@ -352,8 +352,7 @@ colModel.push({name:"<%=propName%>", index:"<%=propName%>", classes:"<%=style%>"
 			var row = grid.getRowData(rowid);
 			var value = row.orgOid + "_" + row.orgVersion;
 			$(":radio[name='selOid'][value='" + value + "']").prop("checked", true);
-			selectArray.shift();
-			selectArray.push(value);
+			selectArray.splice(0, selectArray.length, value);
 		}
 <%
 	} else if (OutputType.MULTISELECT == type) {

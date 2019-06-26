@@ -71,6 +71,7 @@ import org.iplass.gem.command.generic.refcombo.ReferenceComboCommand;
 import org.iplass.gem.command.generic.refcombo.SearchParentCommand;
 import org.iplass.gem.command.generic.reflink.GetReferenceLinkItemCommand;
 import org.iplass.gem.command.generic.reftree.SearchTreeDataCommand;
+import org.iplass.gem.command.generic.refunique.GetReferenceUniqueItemCommand;
 import org.iplass.gem.command.generic.search.CountCommand;
 import org.iplass.gem.command.generic.search.CsvDownloadCommand;
 import org.iplass.gem.command.generic.search.DetailSearchCommand;
@@ -150,6 +151,8 @@ import org.iplass.mtp.command.annotation.MetaDataSeeAlso;
 	SearchTreeDataCommand.class,
 	//連動プロパティ
 	GetReferenceLinkItemCommand.class,
+	//参照ユニークキー
+	GetReferenceUniqueItemCommand.class,
 	//お知らせ
 	InformationListCommand.class,
 	InformationViewCommand.class,
