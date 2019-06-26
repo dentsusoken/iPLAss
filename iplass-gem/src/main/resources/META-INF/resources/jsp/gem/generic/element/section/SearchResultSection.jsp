@@ -796,7 +796,15 @@ function doBulkUpdate(target) {
 		return false;
 	}
 
-	var $bulkUpdateDialogTrigger = getDialogTrigger($(target).parent(), {dialogHeight:450, resizable:true});
+	var dialogOption = {resizable: true};
+<% 
+	if (!section.isUseBulkView()) { 
+%>
+		dialogOption.dialogHeight = 450;
+<%	
+	}
+%>
+	var $bulkUpdateDialogTrigger = getDialogTrigger($(target).parent(), dialogOption);
 	$bulkUpdateDialogTrigger.click();
 
 	var oid = [];
