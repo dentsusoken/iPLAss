@@ -1748,7 +1748,8 @@ span.success, span.error {
     margin: 2px 0; }
   .list-add.unique-list {
     border: none;
-    display: flex; }
+    display: flex;
+    flex-wrap: wrap; }
     .list-add.unique-list > span.unique-key {
       width: auto; }
     .list-add.unique-list > span.unique-ref {

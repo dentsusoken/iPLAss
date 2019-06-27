@@ -344,6 +344,7 @@
 	&.unique-list {
 		border: none;
 		display: flex;
+		flex-wrap: wrap;
 		> span.unique-key {
 			width: auto;
 		}
