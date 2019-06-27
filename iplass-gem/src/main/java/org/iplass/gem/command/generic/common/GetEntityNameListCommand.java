@@ -43,6 +43,7 @@ import org.iplass.mtp.entity.query.condition.predicate.Equals;
 import org.iplass.mtp.util.StringUtil;
 import org.iplass.mtp.view.generic.EntityView;
 import org.iplass.mtp.view.generic.EntityViewManager;
+import org.iplass.mtp.view.generic.FormView;
 import org.iplass.mtp.view.generic.editor.JoinPropertyEditor;
 import org.iplass.mtp.view.generic.editor.PropertyEditor;
 import org.iplass.mtp.view.generic.editor.ReferencePropertyEditor;
@@ -115,11 +116,8 @@ public final class GetEntityNameListCommand implements Command {
 	}
 
 	private String getDisplayLabelItem(String defName, String viewName, String propName, String viewType) {
-		EntityViewManager evm = ManagerLocator.getInstance().getManager(EntityViewManager.class);
-
-		EntityView ev = evm.get(defName);
-		//EntityViewが未設定の場合、表示ラベルプロパティが未設定と同じように扱います。
-		if (ev == null) return null;
+		FormView form = getFormView(defName, viewName, viewType);
+		if (form == null) return null;
 
 		ReferencePropertyEditor rpe = getRefEditor(defName, viewName, propName, viewType);
 		// エディター定義が見つからなかった場合、空文字を返します。
@@ -129,20 +127,56 @@ public final class GetEntityNameListCommand implements Command {
 	}
 
 	private String getUniqueItem(String defName, String viewName, String propName, String viewType) {
-		EntityDefinitionManager edm = ManagerLocator.getInstance().getManager(EntityDefinitionManager.class);
+		FormView form = getFormView(defName, viewName, viewType);
+		if (form == null) return null;
 
 		ReferencePropertyEditor rpe = getRefEditor(defName, viewName, propName, viewType);
 		if (rpe == null || rpe.getDisplayType() != ReferenceDisplayType.UNIQUE) {
 			return null;
 		}
 
-		EntityDefinition ed = edm.get(rpe.getObjectName());
+		EntityDefinition ed = ManagerLocator.getInstance().getManager(EntityDefinitionManager.class).get(rpe.getObjectName());
 		PropertyDefinition pd = ed.getProperty(rpe.getUniqueItem());
 		if (pd != null && (pd.getIndexType() == IndexType.UNIQUE || pd.getIndexType() == IndexType.UNIQUE_WITHOUT_NULL)) {
 			return rpe.getUniqueItem();
 		}
 
 		return null;
+	}
+
+	private FormView getFormView(String defName, String viewName, String viewType) {
+		EntityViewManager evm = ManagerLocator.getInstance().getManager(EntityViewManager.class);
+		EntityView ev = evm.get(defName);
+		// EntityViewが未設定の場合、表示ラベルプロパティが未設定と同じように扱います。
+		if (ev == null) return null;
+
+		FormView form = null;
+		if ("detail".equals(viewType)) {
+			if (viewName == null || viewName.isEmpty()) {
+				form = ev.getDefaultDetailFormView();
+			} else {
+				form = ev.getDetailFormView(viewName);
+			}
+		} else if ("search".equals(viewType)) {
+			if (viewName == null || viewName.isEmpty()) {
+				form = ev.getDefaultSearchFormView();
+			} else {
+				form = ev.getSearchFormView(viewName);
+			}
+		} else if ("bulk".equals(viewType)) {
+			if (viewName == null || viewName.isEmpty()) {
+				form = ev.getDefaultSearchFormView();
+			} else {
+				form = ev.getSearchFormView(viewName);
+			}
+		} else if ("multiBulk".equals(viewType)) {
+			if (viewName == null || viewName.isEmpty()) {
+				form = ev.getDefaultBulkFormView();
+			} else {
+				form = ev.getBulkFormView(viewName);
+			}
+		}
+		return form;
 	}
 
 	private ReferencePropertyEditor getRefEditor(String defName, String viewName, String propName, String viewType) {
