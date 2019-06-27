@@ -5,11 +5,9 @@ image::https://user-images.githubusercontent.com/22016554/42924803-cc0eb00c-8b66
 [.lead]
 Java-based enterprise-class low-code development platform that have been focused on boosting the productivity and efficiency of system developments.
 
-* https://iplass.org/[iPLAss Website]
-* https://iplass.org/intro/[Getting Started]
-* https://iplass.org/docs/[Document]
-+
-_The English version for above links are under construction._ 
+* https://iplass.org/en/[iPLAss Website]
+* https://iplass.org/en/intro/[Getting Started]
+* https://iplass.org/docs/[Document] _(English version is under constuction)_
 
 ## Docker
 
@@ -27,12 +25,10 @@ For more details, please have a look at the following pages.
 
 https://hub.docker.com/r/iplass/iplass-standalone/ +
 
-_The English version for above links are under construction._ 
-
 ## Download
 From the link below, the iPLAss SDK, Installer, and Eclipse Plugin can be downloaded.
 
-https://iplass.org/downloads/
+https://iplass.org/en/downloads/
 
 Also, jar is published at Maven Central and JCenter with groupId : org.iplass.
 
