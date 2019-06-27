@@ -26,6 +26,8 @@
 <%@ page import="org.iplass.mtp.web.template.TemplateUtil" %>
 <%@ page import="org.iplass.mtp.entity.Entity" %>
 <%@ page import="org.iplass.mtp.ManagerLocator"%>
+<%@ page import="org.iplass.mtp.view.generic.EntityView" %>
+<%@ page import="org.iplass.mtp.view.generic.FormView" %>
 <%@ page import="org.iplass.mtp.view.generic.EntityViewManager"%>
 <%@ page import="org.iplass.mtp.view.generic.editor.PropertyEditor" %>
 <%@ page import="org.iplass.mtp.view.generic.editor.JoinPropertyEditor" %>
@@ -52,6 +54,9 @@
 	}
 
 	String getDisplayLabelItem(String defName, String viewName, String propName) {
+		FormView form = getFormView(defName, viewName, "detail");
+		if (form == null) return null;
+		
 		ReferencePropertyEditor editor = getRefEditor(defName, viewName, propName, "detail");
 		if (editor != null) return editor.getDisplayLabelItem();
 
@@ -59,10 +64,22 @@
 	}
 
 	String getUniqueItem(String defName, String viewName, String propName) {
+		FormView form = getFormView(defName, viewName, "detail");
+		if (form == null) return null;
+
 		ReferencePropertyEditor editor = getRefEditor(defName, viewName, propName, "detail");
 		if (editor != null) return editor.getUniqueItem();
 
 		return null;
+	}
+	
+	FormView getFormView(String defName, String viewName, String viewType) {
+		EntityViewManager evm = ManagerLocator.getInstance().getManager(EntityViewManager.class);
+		EntityView ev = evm.get(defName);
+		// EntityViewが未設定の場合、表示ラベルプロパティが未設定と同じように扱います。
+		if (ev == null) return null;
+
+		return ViewUtil.getFormView(defName, viewName, false);
 	}
 %>
 <%
