@@ -966,6 +966,7 @@ $(function() {
 			}
 		}
 
+		int multiplicity = pd.getMultiplicity() == -1 ? -1 : pd.getMultiplicity() + 1;
 		String selUniqueRefCallback = "selUniqueRefCallback_" + StringUtil.escapeJavaScript(propName);
 		String insUniqueRefCallback = "insUniqueRefCallback_" + StringUtil.escapeJavaScript(propName);
 		String toggleAddBtnFunc = "toggleAddBtn_" + StringUtil.escapeJavaScript(propName);
@@ -1036,7 +1037,7 @@ $(function() {
  data-specVersionKey="<c:out value="<%=specVersionKey%>"/>"
  data-permitConditionSelectAll="<c:out value="<%=editor.isPermitConditionSelectAll()%>"/>"
  <%-- 隠されたDummyRowが存在するので、多重度 +1を渡します。 --%>
- data-multiplicity="<%=pd.getMultiplicity() + 1%>"
+ data-multiplicity="<%=multiplicity%>"
  data-selUniqueRefCallback="<c:out value="<%=selUniqueRefCallback%>"/>"
  data-insUniqueRefCallback="<c:out value="<%=insUniqueRefCallback%>"/>"
 >
@@ -1084,7 +1085,7 @@ $(function() {
 		if (isMultiple) {
 			String dummyRowId = "id_li_" + propName + "Dummmy";
 			String addBtnStyle = "";
-			if (length >= pd.getMultiplicity()) addBtnStyle = "display: none;";
+			if (pd.getMultiplicity() != -1 && length >= pd.getMultiplicity()) addBtnStyle = "display: none;";
 %>
 <li id="<c:out value="<%=dummyRowId %>"/>" class="list-add unique-list" style="display: none;"
  data-defName="<c:out value="<%=rootDefName%>"/>"
@@ -1101,7 +1102,7 @@ $(function() {
  data-specVersionKey="<c:out value="<%=specVersionKey%>"/>"
  data-permitConditionSelectAll="<c:out value="<%=editor.isPermitConditionSelectAll()%>"/>"
  <%-- 隠されたDummyRowが存在するので、多重度 +1を渡します。 --%>
- data-multiplicity="<%=pd.getMultiplicity() + 1%>"
+ data-multiplicity="<%=multiplicity%>"
  data-selUniqueRefCallback="<c:out value="<%=selUniqueRefCallback%>"/>"
  data-insUniqueRefCallback="<c:out value="<%=insUniqueRefCallback%>"/>"
 >
@@ -1141,11 +1142,11 @@ $(function() {
 </ul>
 <script type="text/javascript">
 function <%=toggleAddBtnFunc%>() {
-	var display = $("#<%=StringUtil.escapeJavaScript(ulId)%> li:not(:hidden)").length < <%=pd.getMultiplicity()%>;
+	var display = <%=pd.getMultiplicity() == -1 %> || $("#<%=StringUtil.escapeJavaScript(ulId)%> li:not(:hidden)").length < <%=pd.getMultiplicity()%>;
 	$("#id_addBtn_<c:out value="<%=propName%>"/>").toggle(display);
 }
 </script>
-<input type="button" id="id_addBtn_<c:out value="<%=propName%>"/>" value="${m:rs('mtp-gem-messages', 'generic.editor.reference.ReferencePropertyEditor_Edit.add')}" class="gr-btn-02 add-btn" style="<%=addBtnStyle%>" onclick="addUniqueRefItem('<%=StringUtil.escapeJavaScript(ulId)%>', <%=pd.getMultiplicity() + 1%>, '<%=StringUtil.escapeJavaScript(dummyRowId)%>', '<%=StringUtil.escapeJavaScript(propName)%>', 'id_count_<%=StringUtil.escapeJavaScript(propName)%>', <%=toggleAddBtnFunc%>, <%=toggleAddBtnFunc%>)" />
+<input type="button" id="id_addBtn_<c:out value="<%=propName%>"/>" value="${m:rs('mtp-gem-messages', 'generic.editor.reference.ReferencePropertyEditor_Edit.add')}" class="gr-btn-02 add-btn" style="<%=addBtnStyle%>" onclick="addUniqueRefItem('<%=StringUtil.escapeJavaScript(ulId)%>', <%=multiplicity%>, '<%=StringUtil.escapeJavaScript(dummyRowId)%>', '<%=StringUtil.escapeJavaScript(propName)%>', 'id_count_<%=StringUtil.escapeJavaScript(propName)%>', <%=toggleAddBtnFunc%>, <%=toggleAddBtnFunc%>)" />
 <input type="hidden" id="id_count_<c:out value="<%=propName%>"/>" value="<c:out value="<%=entityList.size()%>"/>" />
 <%
 		}
