@@ -208,7 +208,8 @@ public final class GetEntityNameListCommand implements Command {
 			if (StringUtil.isNotBlank(dispLabelProp)) {
 				entity.setValue(dispLabelProp, null);
 			}
-			if (StringUtil.isNotBlank(uniqueProp)) {
+			// 「OID」がユニークキー項目として設定された場合、クリアしません。
+			if (StringUtil.isNotBlank(uniqueProp) && !Entity.OID.equals(uniqueProp)) {
 				entity.setValue(uniqueProp, null);
 			}
 		}
