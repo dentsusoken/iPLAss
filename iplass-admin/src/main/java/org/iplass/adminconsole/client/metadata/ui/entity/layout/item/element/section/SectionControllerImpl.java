@@ -399,7 +399,7 @@ public class SectionControllerImpl implements SectionController {
 
 		//TODO セクションの情報を動的に取得できるようにする
 		List<ListGridRecord> records = new ArrayList<ListGridRecord>();
-		if (viewType == ViewType.DETAIL) {
+		if (viewType == ViewType.DETAIL || viewType == ViewType.BULK) {
 			ListGridRecord dflt = new ListGridRecord();
 			dflt.setAttribute("name", DefaultSection.class.getName());
 			dflt.setAttribute("displayName", AdminClientMessageUtil.getString("datasource_SectionListDS_defaultSection"));
