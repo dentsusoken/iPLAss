@@ -74,7 +74,7 @@ public abstract class PropertyEditor implements Refrectable {
 			mode="CSS"
 	)
 	@EntityViewField(
-			referenceTypes={FieldReferenceType.SEARCHCONDITION, FieldReferenceType.DETAIL}
+			referenceTypes={FieldReferenceType.SEARCHCONDITION, FieldReferenceType.DETAIL, FieldReferenceType.BULK}
 	)
 	private String inputCustomStyle;
 
