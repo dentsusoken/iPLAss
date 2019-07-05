@@ -85,6 +85,10 @@ public class MetaFieldSettingDialog extends MtpDialog {
 		centerInPage();
 	}
 
+	public Refrectable getValue() {
+		return value;
+	}
+
 	protected MetaFieldSettingPane createPane(String className, Refrectable value) {
 		MetaFieldSettingPane pane = new MetaFieldSettingPane(this, className, value);
 		pane.init();

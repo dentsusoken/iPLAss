@@ -88,10 +88,15 @@ import com.smartgwt.client.widgets.grid.ListGridRecord;
 public class PropertyControl extends ItemControl {
 
 	/** Window破棄前にプロパティの重複チェックリストから削除するためのハンドラ */
-	private PropertyOperationHandler handler = null;
+	private PropertyOperationHandler handler;
+
+	/** 参照Propertyの場合の参照先Entity名 */
+	private String refDefName;
+
+	/** 対象Propertyの表示名 */
 	private String entityPropertyDisplayName;
 
-	private MetaDataServiceAsync service = null;
+	private MetaDataServiceAsync service;
 
 	/**
 	 * プロパティGridからDropされた場合のProperty用Control生成
@@ -104,12 +109,11 @@ public class PropertyControl extends ItemControl {
 	public PropertyControl(String defName, FieldReferenceType triggerType, ListGridRecord record, PropertyBase property) {
 		this(defName, triggerType);
 
-		//Drop時はDropされたレコードから表示名を取得
-		entityPropertyDisplayName = record.getAttribute("displayName");
+		//Drop時はDropされたレコードからPropertyDefinitionを取得
+		PropertyDefinition pd = (PropertyDefinition) record.getAttributeAsObject("propertyDefinition");
 
 		setValue("name", record.getAttribute("name"));
-		setValue("propertyEditor", createDefaultEditor(
-				(PropertyDefinition) record.getAttributeAsObject("propertyDefinition")));
+		setValue("propertyEditor", createDefaultEditor(pd));
 
 		property.setDispFlag(true);
 		property.setPropertyName((String) getValue("name"));
@@ -117,8 +121,8 @@ public class PropertyControl extends ItemControl {
 		setClassName(property.getClass().getName());
 		setValueObject(property);
 
-		//Itemの表示名はまだ未設定のため未指定
-		createTitle(null);
+		//Dropされた段階ではラベルはnull
+		checkPropertyType(pd, null);
 	}
 
 	/**
@@ -139,8 +143,8 @@ public class PropertyControl extends ItemControl {
 		setClassName(property.getClass().getName());
 		setValueObject(property);
 
-		//Itemの表示名が未指定の場合を考慮してEntityのプロパティ名を取得する
-		getEntityPropertyDisplayName(property);
+		//プロパティ定義を取得
+		getEntityPropertyDefinition(property);
 	}
 
 	/**
@@ -161,8 +165,8 @@ public class PropertyControl extends ItemControl {
 		setClassName(property.getClass().getName());
 		setValueObject(property);
 
-		//Itemの表示名が未指定の場合を考慮してEntityのプロパティ名を取得する
-		getEntityPropertyDisplayName(property);
+		//プロパティ定義を取得
+		getEntityPropertyDefinition(property);
 	}
 
 	private PropertyControl(String defName, FieldReferenceType triggerType) {
@@ -192,17 +196,30 @@ public class PropertyControl extends ItemControl {
 		});
 	}
 
-	private void getEntityPropertyDisplayName(final PropertyBase property) {
+	private void getEntityPropertyDefinition(final PropertyBase property) {
 
-		service.getPropertyDisplayName(TenantInfoHolder.getId(), defName, property.getPropertyName(), new AdminAsyncCallback<String>() {
+		service.getPropertyDefinition(TenantInfoHolder.getId(), defName, property.getPropertyName(), new AdminAsyncCallback<PropertyDefinition>() {
 
 			@Override
-			public void onSuccess(String result) {
-				entityPropertyDisplayName = result;
-
-				createTitle(property.getDisplayLabel());
+			public void onSuccess(PropertyDefinition pd) {
+				checkPropertyType(pd, property.getDisplayLabel());
 			}
 		});
+	}
+
+	private void checkPropertyType(PropertyDefinition pd, String itemTitle) {
+		if (pd != null) {
+			entityPropertyDisplayName = pd.getDisplayName();
+			if (pd instanceof ReferenceProperty) {
+				refDefName = ((ReferenceProperty)pd).getObjectDefinitionName();
+			} else {
+				refDefName = null;
+			}
+		} else {
+			entityPropertyDisplayName = null;
+			refDefName = null;
+		}
+		createTitle(itemTitle);
 	}
 
 	private void createTitle(String itemDisplayName) {
@@ -321,15 +338,7 @@ public class PropertyControl extends ItemControl {
 
 	@Override
 	protected EntityViewFieldSettingDialog createSubDialog() {
-		EntityViewFieldSettingDialog dialog = null;
-		PropertyEditor editor =  (PropertyEditor) getValue("propertyEditor");
-		if (editor instanceof ReferencePropertyEditor) {
-			// ReferencePropertyEditorの場合は、refDefNameを設定
-			String refDefName = ((ReferencePropertyEditor) editor).getObjectName();
-			dialog = new EntityViewFieldSettingDialog(getClassName(), getValueObject(), triggerType, defName, refDefName);
-		} else {
-			dialog = super.createSubDialog();
-		}
+		EntityViewFieldSettingDialog dialog = new EntityViewFieldSettingDialog(getClassName(), getValueObject(), triggerType, defName, refDefName);
 
 		// ダイアログのタイトルに対象のプロパティ名を表示
 		dialog.setTitlePropertyInfo(new PropertyInfo((String)getValue("name"), entityPropertyDisplayName));

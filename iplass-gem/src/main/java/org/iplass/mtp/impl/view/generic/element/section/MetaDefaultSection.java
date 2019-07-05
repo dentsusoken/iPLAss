@@ -34,7 +34,7 @@ import org.iplass.mtp.impl.script.template.GroovyTemplate;
 import org.iplass.mtp.impl.script.template.GroovyTemplateCompiler;
 import org.iplass.mtp.impl.util.ObjectUtil;
 import org.iplass.mtp.impl.view.generic.EntityViewHandler;
-import org.iplass.mtp.impl.view.generic.editor.HasNestProperty;
+import org.iplass.mtp.impl.view.generic.HasMetaNestProperty;
 import org.iplass.mtp.impl.view.generic.editor.MetaNestProperty;
 import org.iplass.mtp.impl.view.generic.editor.MetaPropertyEditor;
 import org.iplass.mtp.impl.view.generic.editor.MetaPropertyEditor.PropertyEditorHandler;
@@ -501,8 +501,8 @@ public class MetaDefaultSection extends MetaSection {
 						customStyleMap.put(editor.getOutputCustomStyleScriptKey(), handler.getOutputCustomStyleScript());
 						customStyleMap.put(editor.getInputCustomStyleScriptKey(), handler.getInputCustomStyleScript());
 
-						if (editor instanceof HasNestProperty) {
-							for (MetaNestProperty nest : ((HasNestProperty)editor).getNestProperties()) {
+						if (editor instanceof HasMetaNestProperty) {
+							for (MetaNestProperty nest : ((HasMetaNestProperty)editor).getNestProperties()) {
 								MetaPropertyEditor nestEditor = nest.getEditor();
 								if (nestEditor != null) {
 									PropertyEditorHandler nestHandler = (PropertyEditorHandler)nestEditor.createRuntime(entityView);

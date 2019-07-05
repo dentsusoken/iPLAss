@@ -41,6 +41,8 @@ import org.iplass.adminconsole.view.annotation.Refrectable;
 import org.iplass.adminconsole.view.annotation.generic.FieldReferenceType;
 import org.iplass.mtp.entity.definition.PropertyDefinition;
 import org.iplass.mtp.entity.definition.properties.ReferenceProperty;
+import org.iplass.mtp.view.generic.HasNestProperty;
+import org.iplass.mtp.view.generic.editor.NestProperty;
 
 import com.smartgwt.client.widgets.form.DynamicForm;
 import com.smartgwt.client.widgets.form.fields.FormItem;
@@ -185,11 +187,16 @@ public class EntityViewFieldSettingPane extends MetaFieldSettingPane {
 		if (childRefDefName != null) {
 			// サブダイアログの参照Entityとして指定されたEntityを設定
 			dialog = new EntityViewFieldSettingDialog(className, value, triggerType, defName, childRefDefName);
-		} else if (refDefName != null) {
-			// サブダイアログの参照Entityとして対象の参照Entityを設定
-			dialog = new EntityViewFieldSettingDialog(className, value, triggerType, defName, refDefName);
+		} else if (value instanceof NestProperty) {
+			//NestPropertyの場合は起動元から対象Entity名を取得
+			String nestBaseDefName = refDefName;
+			if (getOwner().getValue() instanceof HasNestProperty) {
+				nestBaseDefName = ((HasNestProperty)getOwner().getValue()).getEntityName();
+			}
+			dialog = new EntityViewFieldSettingDialog(className, value, triggerType, defName, nestBaseDefName);
 		} else {
-			dialog = new EntityViewFieldSettingDialog(className, value, triggerType, defName);
+			// refDefNameが指定されていればサブダイアログの参照Entityとして対象の参照Entityを設定
+			dialog = new EntityViewFieldSettingDialog(className, value, triggerType, defName, refDefName);
 		}
 
 		EntityViewFieldSettingDialog owner = (EntityViewFieldSettingDialog)getOwner();

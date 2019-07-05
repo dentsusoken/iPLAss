@@ -671,6 +671,7 @@ public class MetaMassReferenceSection extends MetaSection {
 			return null;
 		}
 
+		section.setDefintionName(refEntity.getMetaData().getName());
 		section.setPropertyName(rp.getName());
 		section.setTitle(title);
 		section.setExpandable(expandable);

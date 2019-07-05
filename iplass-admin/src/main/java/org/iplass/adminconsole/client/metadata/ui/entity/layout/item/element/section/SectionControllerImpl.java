@@ -358,6 +358,7 @@ public class SectionControllerImpl implements SectionController {
 							}
 
 							MassReferenceSection section = new MassReferenceSection();
+							section.setDefintionName(rp.getObjectDefinitionName());
 							section.setPropertyName(name);
 							section.setDispFlag(true);
 							section.setTitle(rp.getDisplayName());

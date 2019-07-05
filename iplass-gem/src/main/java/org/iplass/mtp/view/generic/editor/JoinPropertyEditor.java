@@ -20,7 +20,6 @@
 
 package org.iplass.mtp.view.generic.editor;
 
-import java.security.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,6 +31,7 @@ import org.iplass.adminconsole.view.annotation.InputType;
 import org.iplass.adminconsole.view.annotation.MetaFieldInfo;
 import org.iplass.adminconsole.view.annotation.generic.EntityViewField;
 import org.iplass.adminconsole.view.annotation.generic.FieldReferenceType;
+import org.iplass.mtp.view.generic.HasNestProperty;
 import org.iplass.mtp.view.generic.Jsp;
 import org.iplass.mtp.view.generic.Jsps;
 import org.iplass.mtp.view.generic.ViewConst;
@@ -44,7 +44,7 @@ import org.iplass.mtp.view.generic.ViewConst;
 @Jsps({
 	@Jsp(path="/jsp/gem/generic/editor/JoinPropertyEditor.jsp", key=ViewConst.DESIGN_TYPE_GEM)
 })
-public class JoinPropertyEditor extends CustomPropertyEditor {
+public class JoinPropertyEditor extends CustomPropertyEditor implements HasNestProperty {
 
 	/** SerialVersionUID */
 	private static final long serialVersionUID = 8692587638693854180L;
@@ -202,5 +202,10 @@ public class JoinPropertyEditor extends CustomPropertyEditor {
 		nestProperties.add(property);
 		nestProperties.addAll(properties);
 		return nestProperties;
+	}
+
+	@Override
+	public String getEntityName() {
+		return objectName;
 	}
 }

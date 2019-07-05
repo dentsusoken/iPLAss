@@ -36,6 +36,7 @@ import org.iplass.mtp.impl.script.template.GroovyTemplate;
 import org.iplass.mtp.impl.script.template.GroovyTemplateCompiler;
 import org.iplass.mtp.impl.util.ObjectUtil;
 import org.iplass.mtp.impl.view.generic.EntityViewHandler;
+import org.iplass.mtp.impl.view.generic.HasMetaNestProperty;
 import org.iplass.mtp.util.StringUtil;
 import org.iplass.mtp.view.generic.editor.NestProperty;
 import org.iplass.mtp.view.generic.editor.PropertyEditor;
@@ -50,7 +51,7 @@ import org.iplass.mtp.view.generic.editor.ReferencePropertyEditor.ReferenceDispl
  * 参照型プロパティエディタのメタデータ
  * @author lis3wg
  */
-public class MetaReferencePropertyEditor extends MetaPropertyEditor implements HasNestProperty {
+public class MetaReferencePropertyEditor extends MetaPropertyEditor implements HasMetaNestProperty {
 
 	/** シリアルバージョンUID */
 	private static final long serialVersionUID = 1640054951421530441L;
