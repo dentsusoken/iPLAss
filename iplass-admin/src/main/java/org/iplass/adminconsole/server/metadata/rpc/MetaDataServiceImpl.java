@@ -1105,29 +1105,12 @@ public class MetaDataServiceImpl extends XsrfProtectedServiceServlet implements 
 
 			@Override
 			public String call() {
-				EntityDefinition ed = edm.get(name);
-				return getProperty(ed, propertyName);
-			}
-
-			private String getProperty(EntityDefinition ed, String propName) {
-				int firstDotIndex = propName.indexOf('.');
-				if (firstDotIndex > 0) {
-					String topPropName = propName.substring(0, firstDotIndex);
-					String subPropName = propName.substring(firstDotIndex + 1);
-					PropertyDefinition topProperty = ed.getProperty(topPropName);
-					if (topProperty instanceof ReferenceProperty) {
-						EntityDefinition red = edm.get(((ReferenceProperty) topProperty).getObjectDefinitionName());
-						if (red != null) {
-							return getProperty(red, subPropName);
-						}
-					}
-				} else {
-					PropertyDefinition pd = ed.getProperty(propName);
-					if (pd != null) return pd.getDisplayName();
+				PropertyDefinition pd = getPropertyDefinition(tenantId, name, propertyName);
+				if (pd != null) {
+					return pd.getDisplayName();
 				}
 				return null;
 			}
-
 		});
 	}
 
