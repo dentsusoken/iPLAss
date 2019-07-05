@@ -131,9 +131,11 @@ public final class GetEntityNameListCommand implements Command {
 		if (form == null) return null;
 
 		ReferencePropertyEditor rpe = getRefEditor(defName, viewName, propName, viewType);
-		if (rpe == null || rpe.getDisplayType() != ReferenceDisplayType.UNIQUE) {
+		if (rpe == null || rpe.getDisplayType() != ReferenceDisplayType.UNIQUE || rpe.getUniqueItem() == null) {
 			return null;
 		}
+		// OIDをユニークキーフィールドとして使えるように
+		if (Entity.OID.equals(rpe.getUniqueItem())) return Entity.OID;
 
 		EntityDefinition ed = ManagerLocator.getInstance().getManager(EntityDefinitionManager.class).get(rpe.getObjectName());
 		PropertyDefinition pd = ed.getProperty(rpe.getUniqueItem());
