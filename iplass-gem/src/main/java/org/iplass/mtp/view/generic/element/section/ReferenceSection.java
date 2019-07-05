@@ -27,6 +27,7 @@ import org.iplass.adminconsole.annotation.MultiLang;
 import org.iplass.adminconsole.view.annotation.InputType;
 import org.iplass.adminconsole.view.annotation.MetaFieldInfo;
 import org.iplass.mtp.definition.LocalizedStringDefinition;
+import org.iplass.mtp.view.generic.HasNestProperty;
 import org.iplass.mtp.view.generic.Jsp;
 import org.iplass.mtp.view.generic.Jsps;
 import org.iplass.mtp.view.generic.ViewConst;
@@ -39,7 +40,7 @@ import org.iplass.mtp.view.generic.editor.NestProperty;
 @Jsps({
 	@Jsp(path="/jsp/gem/generic/element/section/ReferenceSection.jsp", key=ViewConst.DESIGN_TYPE_GEM)
 })
-public class ReferenceSection extends Section {
+public class ReferenceSection extends Section implements HasNestProperty {
 
 	/** SerialVersionUID */
 	private static final long serialVersionUID = -5340250243884655144L;
@@ -563,4 +564,10 @@ public class ReferenceSection extends Section {
 	public void setContentScriptKey(String contentScriptKey) {
 		this.contentScriptKey = contentScriptKey;
 	}
+
+	@Override
+	public String getEntityName() {
+		return defintionName;
+	}
+
 }

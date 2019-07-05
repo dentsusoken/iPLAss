@@ -29,6 +29,7 @@ import org.iplass.adminconsole.annotation.MultiLang;
 import org.iplass.adminconsole.view.annotation.InputType;
 import org.iplass.adminconsole.view.annotation.MetaFieldInfo;
 import org.iplass.mtp.definition.LocalizedStringDefinition;
+import org.iplass.mtp.view.generic.HasNestProperty;
 import org.iplass.mtp.view.generic.Jsp;
 import org.iplass.mtp.view.generic.Jsps;
 import org.iplass.mtp.view.generic.PagingPosition;
@@ -43,7 +44,7 @@ import org.iplass.mtp.view.generic.editor.NestProperty;
 @Jsps({
 	@Jsp(path="/jsp/gem/generic/element/section/MassReferenceSection.jsp", key=ViewConst.DESIGN_TYPE_GEM)
 })
-public class MassReferenceSection extends Section {
+public class MassReferenceSection extends Section implements HasNestProperty {
 
 	private static final long serialVersionUID = -5068125265820445100L;
 
@@ -52,6 +53,9 @@ public class MassReferenceSection extends Section {
 		DETAIL,
 		VIEW
 	}
+
+	/** 参照先Entity定義名 */
+	private String defintionName;
 
 	/** プロパティ名 */
 	private String propertyName;
@@ -387,6 +391,22 @@ public class MassReferenceSection extends Section {
 
 	/** 上下コンテンツスクリプトのキー(内部用) */
 	private String contentScriptKey;
+
+	/**
+	 * 参照先Entity定義名を取得します。
+	 * @return Entity定義名
+	 */
+	public String getDefintionName() {
+	    return defintionName;
+	}
+
+	/**
+	 * 参照先Entity定義名を設定します。
+	 * @param defintionName Entity定義名
+	 */
+	public void setDefintionName(String defintionName) {
+	    this.defintionName = defintionName;
+	}
 
 	/**
 	 * プロパティ名を取得します。
@@ -876,5 +896,10 @@ public class MassReferenceSection extends Section {
 	 */
 	public void setContentScriptKey(String contentScriptKey) {
 		this.contentScriptKey = contentScriptKey;
+	}
+
+	@Override
+	public String getEntityName() {
+		return defintionName;
 	}
 }

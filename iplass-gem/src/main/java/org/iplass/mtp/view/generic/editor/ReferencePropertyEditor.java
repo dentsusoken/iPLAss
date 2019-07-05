@@ -33,6 +33,7 @@ import org.iplass.adminconsole.view.annotation.InputType;
 import org.iplass.adminconsole.view.annotation.MetaFieldInfo;
 import org.iplass.adminconsole.view.annotation.generic.EntityViewField;
 import org.iplass.adminconsole.view.annotation.generic.FieldReferenceType;
+import org.iplass.mtp.view.generic.HasNestProperty;
 import org.iplass.mtp.view.generic.Jsp;
 import org.iplass.mtp.view.generic.Jsps;
 import org.iplass.mtp.view.generic.ViewConst;
@@ -46,7 +47,7 @@ import org.iplass.mtp.view.generic.ViewConst;
 	@Jsp(path="/jsp/gem/generic/editor/ReferencePropertyEditor.jsp", key=ViewConst.DESIGN_TYPE_GEM),
 	@Jsp(path="/jsp/gem/aggregation/unit/editor/ReferencePropertyEditor.jsp", key=ViewConst.DESIGN_TYPE_GEM_AGGREGATION)
 })
-public class ReferencePropertyEditor extends PropertyEditor {
+public class ReferencePropertyEditor extends PropertyEditor implements HasNestProperty {
 
 	/** シリアルバージョンUID */
 	private static final long serialVersionUID = 4691895224010210421L;
@@ -1258,4 +1259,10 @@ public class ReferencePropertyEditor extends PropertyEditor {
 	public void setUrlParameterScriptKey(String urlParameterScriptKey) {
 	    this.urlParameterScriptKey = urlParameterScriptKey;
 	}
+
+	@Override
+	public String getEntityName() {
+		return objectName;
+	}
+
 }

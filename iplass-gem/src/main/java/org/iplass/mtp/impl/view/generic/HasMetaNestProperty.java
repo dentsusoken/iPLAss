@@ -18,11 +18,13 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.iplass.mtp.impl.view.generic.editor;
+package org.iplass.mtp.impl.view.generic;
 
 import java.util.List;
 
-public interface HasNestProperty {
+import org.iplass.mtp.impl.view.generic.editor.MetaNestProperty;
+
+public interface HasMetaNestProperty {
 
 	List<MetaNestProperty> getNestProperties();
 

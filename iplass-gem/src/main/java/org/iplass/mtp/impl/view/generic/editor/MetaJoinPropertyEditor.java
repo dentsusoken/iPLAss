@@ -28,12 +28,13 @@ import org.iplass.mtp.impl.entity.EntityHandler;
 import org.iplass.mtp.impl.entity.property.PropertyHandler;
 import org.iplass.mtp.impl.entity.property.ReferencePropertyHandler;
 import org.iplass.mtp.impl.util.ObjectUtil;
+import org.iplass.mtp.impl.view.generic.HasMetaNestProperty;
 import org.iplass.mtp.view.generic.editor.JoinPropertyEditor;
 import org.iplass.mtp.view.generic.editor.NestProperty;
 import org.iplass.mtp.view.generic.editor.PropertyEditor;
 import org.iplass.mtp.view.generic.editor.ReferencePropertyEditor;
 
-public class MetaJoinPropertyEditor extends MetaCustomPropertyEditor implements HasNestProperty {
+public class MetaJoinPropertyEditor extends MetaCustomPropertyEditor implements HasMetaNestProperty {
 
 	/** SerialVersionUID */
 	private static final long serialVersionUID = 7750500799495855836L;
