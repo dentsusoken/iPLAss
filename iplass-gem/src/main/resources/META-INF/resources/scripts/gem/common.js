@@ -2196,13 +2196,15 @@ function searchUniqueReference(selectAction, viewAction, defName, propName, urlP
 		}
 
 		//idを取得
-		var ids = new Array();
+		var lis = new Array();
 		$ul.children("li").each(function() {
 			if ($.contains(this, button)) {
-				ids.push(this.id);
+				lis.push(this);
 			}
 		});
-		var id = ids[0];
+		var $li = $(lis[0]);
+		var id = $li.attr("id");
+
 
 		var list = new Array();
 		list.push(keySplit(key));
@@ -2231,7 +2233,7 @@ function searchUniqueReference(selectAction, viewAction, defName, propName, urlP
 		}
 
 		if (entityList.length > 0) {
-			$("[name='" + _propName + "']:eq(0)").trigger("change", {});// 複数選択だとイベントが複数回発生するので1つだけ
+			$("[name='" + _propName + "']:eq(0)", $li).trigger("change", {});
 		}
 		closeModalDialog();
 	};
@@ -2516,7 +2518,7 @@ function updateUniqueReference(id, viewAction, defName, key, label, propName, ul
 	}
 
 	$txt.val(uniqueValue);
-	$(":hidden", $li).attr({name:propName, value:key});
+	$(":hidden[name = '" + propName + "']", $li).val(key);
 
 	$(".fixHeight").fixHeight();
 
