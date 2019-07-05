@@ -28,14 +28,18 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.iplass.adminconsole.client.base.ui.widget.MetaDataViewGridButton;
 import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
 import org.iplass.adminconsole.client.metadata.ui.entity.property.PropertyEditDialog.PropertyEditDialogHandler;
 import org.iplass.adminconsole.client.metadata.ui.entity.property.type.PropertyTypeAttributeController;
+import org.iplass.adminconsole.client.metadata.ui.entity.property.type.ReferenceAttribute;
+import org.iplass.adminconsole.client.metadata.ui.entity.property.type.SelectAttribute;
 import org.iplass.mtp.entity.Entity;
 import org.iplass.mtp.entity.definition.EntityDefinition;
 import org.iplass.mtp.entity.definition.PropertyDefinition;
 import org.iplass.mtp.entity.definition.PropertyDefinitionType;
 import org.iplass.mtp.entity.definition.StoreDefinition;
+import org.iplass.mtp.entity.definition.properties.selectvalue.SelectValueDefinition;
 import org.iplass.mtp.entity.definition.stores.ColumnMapping;
 import org.iplass.mtp.entity.definition.stores.SchemalessRdbStore;
 
@@ -44,6 +48,7 @@ import com.smartgwt.client.types.Alignment;
 import com.smartgwt.client.types.ListGridEditEvent;
 import com.smartgwt.client.types.ListGridFieldType;
 import com.smartgwt.client.types.Overflow;
+import com.smartgwt.client.widgets.Canvas;
 import com.smartgwt.client.widgets.grid.ListGrid;
 import com.smartgwt.client.widgets.grid.ListGridField;
 import com.smartgwt.client.widgets.grid.ListGridRecord;
@@ -102,6 +107,10 @@ public class PropertyListGrid extends ListGrid {
 		setCanEdit(true);						//編集可
 		setEditEvent(ListGridEditEvent.CLICK);	//Clickで編集開始
 		setEditByCell(true);					//Cell単位で編集
+
+		//この２つを指定することでcreateRecordComponentが有効
+		setShowRecordComponents(true);
+		setShowRecordComponentsByCell(true);
 
 		// 各フィールド初期化
 		ListGridField statusField = new ListGridField(PropertyListGridRecord.STATUS, "*");
@@ -176,10 +185,14 @@ public class PropertyListGrid extends ListGrid {
 		gpField.setCanEdit(false);
 		gpField.setShowHover(true);
 		gpField.setHoverWrap(false);
+		ListGridField showMetaButtonField = new ListGridField(PropertyListGridRecord.SHOW_ICON, " ");
+		showMetaButtonField.setWidth(25);
+		showMetaButtonField.setCanEdit(false);
 
 		// 各フィールドをListGridに設定
 		setFields(statusField, customOidField, customNameField, crawlPropField,
-				nameField, dispNameField, typeField, multiplicity, mustField, updatableField, indexField, columnMappingNameField, gpField);
+				nameField, dispNameField, typeField, multiplicity, mustField, updatableField, indexField, columnMappingNameField,
+				gpField, showMetaButtonField);
 
 		// レコード編集イベント設定
 		addRecordDoubleClickHandler(new RecordDoubleClickHandler() {
@@ -210,6 +223,42 @@ public class PropertyListGrid extends ListGrid {
 		} else {
 			return super.getBaseStyle(record, rowNum, colNum);
 		}
+	}
+
+	@Override
+	protected Canvas createRecordComponent(final ListGridRecord record, Integer colNum) {
+		final String fieldName = this.getFieldName(colNum);
+		if (PropertyListGridRecord.SHOW_ICON.equals(fieldName)) {
+			PropertyListGridRecord plgd = (PropertyListGridRecord)record;
+			if (plgd.getTypeAttribute() instanceof ReferenceAttribute) {
+				//Referenceの場合は参照先Entity定義にリンク
+				final ReferenceAttribute reference = (ReferenceAttribute)plgd.getTypeAttribute();
+				MetaDataViewGridButton button = new MetaDataViewGridButton(EntityDefinition.class.getName());
+				button.setActionButtonPrompt("view the selected reference Entity");
+				button.setMetaDataShowClickHandler(new MetaDataViewGridButton.MetaDataShowClickHandler() {
+					@Override
+					public String targetDefinitionName() {
+						return reference.getObjectDefinitionName();
+					}
+				});
+				return button;
+			} else if (plgd.getTypeAttribute() instanceof SelectAttribute) {
+				final SelectAttribute select = (SelectAttribute)plgd.getTypeAttribute();
+				//Selectの場合はGlobal指定されている場合は指定されたSelectValue定義にリンク
+				if (SmartGWTUtil.isNotEmpty(select.getSelectValueDefinitionName())) {
+					MetaDataViewGridButton button = new MetaDataViewGridButton(SelectValueDefinition.class.getName());
+					button.setActionButtonPrompt("view the selected SelectValue");
+					button.setMetaDataShowClickHandler(new MetaDataViewGridButton.MetaDataShowClickHandler() {
+						@Override
+						public String targetDefinitionName() {
+							return select.getSelectValueDefinitionName();
+						}
+					});
+					return button;
+				}
+			}
+		}
+		return null;
 	}
 
 	public void setDefinition(EntityDefinition definition) {

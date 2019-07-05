@@ -84,6 +84,9 @@ public class PropertyListGridRecord extends ListGridRecord {
 	/** 備考(Grid表示用) */
 	public static final String REMARKS = "remarks";
 
+	/** ReferencePropery、SelectProperty(Global)のリンク表示 */
+	public static final String SHOW_ICON = "showIcon";
+
 	/** 保存されているProperty名(登録済データのみ、名前変更用) */
 	private static final String SAVED_NAME = "savedName";
 
