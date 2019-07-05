@@ -1048,7 +1048,7 @@ $(function() {
 <%
 			String str = getUniquePropValue(editor, refEntity);
 %>
-<input type="text" id="uniq_txt_<c:out value="<%=liId%>"/>" value="<%=str %>" class="unique-form-size-01 inpbr" />
+<input type="text" id="uniq_txt_<c:out value="<%=liId%>"/>" style="<c:out value="<%=customStyle%>"/>" value="<%=str %>" class="unique-form-size-01 inpbr" />
 <%
 			if (!hideSelectButton) {
 				String selBtnId = "sel_btn_" + propName + i;
@@ -1070,7 +1070,7 @@ $(function() {
 %>
 </span>
 <span class="unique-ref">
-<a href="javascript:void(0)" class="modal-lnk" style="<c:out value="<%=customStyle%>"/>" id="<c:out value="<%=linkId %>"/>" onclick="showReference('<%=StringUtil.escapeJavaScript(viewAction)%>', '<%=StringUtil.escapeJavaScript(refDefName)%>', '<%=StringUtil.escapeJavaScript(refEntity.getOid())%>', '<%=refEntity.getVersion() %>', '<%=StringUtil.escapeJavaScript(linkId)%>', <%=refEdit %>)"><c:out value="<%=dispPropLabel %>" /></a>
+<a href="javascript:void(0)" class="modal-lnk" id="<c:out value="<%=linkId %>"/>" onclick="showReference('<%=StringUtil.escapeJavaScript(viewAction)%>', '<%=StringUtil.escapeJavaScript(refDefName)%>', '<%=StringUtil.escapeJavaScript(refEntity.getOid())%>', '<%=refEntity.getVersion() %>', '<%=StringUtil.escapeJavaScript(linkId)%>', <%=refEdit %>)"><c:out value="<%=dispPropLabel %>" /></a>
 <%
 
 			if (isMultiple && !hideDeleteButton && updatable) {
@@ -1110,7 +1110,7 @@ $(function() {
  data-insUniqueRefCallback="<c:out value="<%=insUniqueRefCallback%>"/>"
 >
 <span class="unique-key">
-<input type="text" class="unique-form-size-01 inpbr" />
+<input type="text" style="<c:out value="<%=customStyle%>"/>" class="unique-form-size-01 inpbr" />
 <%
 			if (!hideSelectButton) {
 %>
@@ -1130,7 +1130,7 @@ $(function() {
 %>
 </span>
 <span class="unique-ref">
-<a href="javascript:void(0)" class="modal-lnk" style="<c:out value="<%=customStyle%>"/>" ></a>
+<a href="javascript:void(0)" class="modal-lnk"></a>
 <%
 
 			if (!hideDeleteButton && updatable) {
