@@ -1057,11 +1057,10 @@ $(function() {
 <%
 			}
 
-			if (isMultiple && auth.checkPermission(new EntityPermission(refDefName, EntityPermission.Action.CREATE)) && !hideRegistButton) {
+			if (auth.checkPermission(new EntityPermission(refDefName, EntityPermission.Action.CREATE)) && !hideRegistButton) {
 				String insBtnId = "ins_btn_" + propName + i;
 %>
 <input type="button" value="${m:rs('mtp-gem-messages', 'generic.editor.reference.ReferencePropertyEditor_Edit.new')}" class="gr-btn-02 modal-btn ins-btn" id="<c:out value="<%=insBtnId %>"/>"
- data-addbtn="id_addBtn_<c:out value="<%=propName%>"/>"
  data-parentOid="<%=StringUtil.escapeJavaScript(parentOid)%>"
  data-parentVersion="<%=StringUtil.escapeJavaScript(parentVersion)%>"
 />
@@ -1127,7 +1126,6 @@ $(function() {
 			if (auth.checkPermission(new EntityPermission(refDefName, EntityPermission.Action.CREATE)) && !hideRegistButton) {
 %>
 <input type="button" value="${m:rs('mtp-gem-messages', 'generic.editor.reference.ReferencePropertyEditor_Edit.new')}" class="gr-btn-02 modal-btn ins-btn"
- data-addbtn="id_addBtn_<c:out value="<%=propName%>"/>"
  data-parentOid="<%=StringUtil.escapeJavaScript(parentOid)%>"
  data-parentVersion="<%=StringUtil.escapeJavaScript(parentVersion)%>"
 />
