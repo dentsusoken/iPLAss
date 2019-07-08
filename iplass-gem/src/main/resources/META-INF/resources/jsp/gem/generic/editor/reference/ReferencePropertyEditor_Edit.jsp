@@ -1073,10 +1073,17 @@ $(function() {
 <a href="javascript:void(0)" class="modal-lnk" id="<c:out value="<%=linkId %>"/>" onclick="showReference('<%=StringUtil.escapeJavaScript(viewAction)%>', '<%=StringUtil.escapeJavaScript(refDefName)%>', '<%=StringUtil.escapeJavaScript(refEntity.getOid())%>', '<%=refEntity.getVersion() %>', '<%=StringUtil.escapeJavaScript(linkId)%>', <%=refEdit %>)"><c:out value="<%=dispPropLabel %>" /></a>
 <%
 
-			if (isMultiple && !hideDeleteButton && updatable) {
+			if (!hideDeleteButton && updatable) {
+
+				if (isMultiple) {
 %>
 <input type="button" value="${m:rs('mtp-gem-messages', 'generic.editor.reference.ReferencePropertyEditor_Edit.delete')}" class="gr-btn-02 del-btn" onclick="deleteItem('<%=StringUtil.escapeJavaScript(liId)%>', <%=toggleAddBtnFunc %>)" />
 <%
+				} else {
+%>
+<input type="button" value="${m:rs('mtp-gem-messages', 'generic.editor.reference.ReferencePropertyEditor_Edit.delete')}" class="gr-btn-02 del-btn" />
+<%
+				}
 			}
 %>
 </span>
@@ -1085,10 +1092,9 @@ $(function() {
 <%
 		}
 
+		String dummyRowId = "id_li_" + propName + "Dummmy";
+
 		if (isMultiple) {
-			String dummyRowId = "id_li_" + propName + "Dummmy";
-			String addBtnStyle = "";
-			if (pd.getMultiplicity() != -1 && length >= pd.getMultiplicity()) addBtnStyle = "display: none;";
 %>
 <li id="<c:out value="<%=dummyRowId %>"/>" class="list-add unique-list" style="display: none;"
  data-defName="<c:out value="<%=rootDefName%>"/>"
@@ -1142,7 +1148,15 @@ $(function() {
 </span>
 <input type="hidden" />
 </li>
+<%
+		}
+%>
 </ul>
+<%
+		if (isMultiple) {
+			String addBtnStyle = "";
+			if (pd.getMultiplicity() != -1 && length >= pd.getMultiplicity()) addBtnStyle = "display: none;";
+%>
 <script type="text/javascript">
 function <%=toggleAddBtnFunc%>() {
 	var display = <%=pd.getMultiplicity() == -1 %> || $("#<%=StringUtil.escapeJavaScript(ulId)%> li:not(:hidden)").length < <%=pd.getMultiplicity()%>;
