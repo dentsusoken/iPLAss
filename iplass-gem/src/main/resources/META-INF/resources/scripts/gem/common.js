@@ -2190,8 +2190,7 @@ function searchUniqueReference(id, selectAction, viewAction, defName, propName, 
 		});
 
 		var key = selectArray[0];
-		//重複チェック
-		if (key in refs) {
+		if (key in refs && !$(refs[key]).is("#" + _id)) {
 			alert(scriptContext.locale.duplicateData);
 			return;
 		}

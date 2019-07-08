@@ -2639,8 +2639,9 @@ $.fn.allInputCheck = function(){
 				if ($txt.val() == "") return;
 
 				var duplicate = false;
-				$("#ul_" + $v.propName).find(".unique-key:not(:hidden)").children("input[type='text']").each(function() {
-					if ($(this).val() == $txt.val() && this !== $txt.get(0)) {
+				$v.parent("ul").find(".unique-key:not(:hidden)").children("input[type='text']").each(function() {
+					//重複チェック （自分を除く）
+					if ($(this).val() == $txt.val() && !$txt.is(this)) {
 						duplicate = true;
 						return;
 					}
