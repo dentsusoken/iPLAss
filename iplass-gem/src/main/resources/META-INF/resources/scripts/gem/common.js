@@ -2179,7 +2179,8 @@ function searchReferenceFromView(selectAction, updateAction, defName, id, propNa
 	$form.remove();
 }
 
-function searchUniqueReference(selectAction, viewAction, defName, propName, urlParam, refEdit, callback, button, viewName, permitConditionSelectAll, parentDefName, parentViewName, viewType) {
+function searchUniqueReference(id, selectAction, viewAction, defName, propName, urlParam, refEdit, callback, button, viewName, permitConditionSelectAll, parentDefName, parentViewName, viewType) {
+	var _id = id.replace(/\[/g, "\\[").replace(/\]/g, "\\]").replace(/\./g, "\\.");
 	var _propName = propName.replace(/\[/g, "\\[").replace(/\]/g, "\\]").replace(/\./g, "\\.");
 	document.scriptContext["searchReferenceCallback"] = function(selectArray) {
 		var $ul = $("#ul_" + _propName);
@@ -2195,17 +2196,6 @@ function searchUniqueReference(selectAction, viewAction, defName, propName, urlP
 			return;
 		}
 
-		//idを取得
-		var lis = new Array();
-		$ul.children("li").each(function() {
-			if ($.contains(this, button)) {
-				lis.push(this);
-			}
-		});
-		var $li = $(lis[0]);
-		var id = $li.attr("id");
-
-
 		var list = new Array();
 		list.push(keySplit(key));
 
@@ -2215,7 +2205,6 @@ function searchUniqueReference(selectAction, viewAction, defName, propName, urlP
 		getEntityNameList(defName, viewName, parentDefName, parentViewName, parentPropName, viewType, list, function(entities) {
 			for (var i = 0; i < entities.length; i++) {
 				var entity = entities[i];
-				var _id = id.replace(/\[/g, "\\[").replace(/\]/g, "\\]").replace(/\./g, "\\.");
 				var _key = entity.oid + "_" + entity.version;
 				var uniqueValue = entity.uniqueValue;
 				updateUniqueReference(_id, viewAction, defName, _key, entity.name, propName, "ul_" + _propName, refEdit, "uniq_txt_" + _id , uniqueValue);
@@ -2233,7 +2222,7 @@ function searchUniqueReference(selectAction, viewAction, defName, propName, urlP
 		}
 
 		if (entityList.length > 0) {
-			$("[name='" + _propName + "']:eq(0)", $li).trigger("change", {});
+			$("[name='" + _propName + "']:eq(0)", $("#" + _id)).trigger("change", {});
 		}
 		closeModalDialog();
 	};
@@ -2247,7 +2236,7 @@ function searchUniqueReference(selectAction, viewAction, defName, propName, urlP
 	$("<input />").attr({type:"hidden", name:"multiplicity", value:multiplicity}).appendTo($form);//選択可能数
 	$("<input />").attr({type:"hidden", name:"selectType", value:selType}).appendTo($form);//単一or複数
 	$("<input />").attr({type:"hidden", name:"propName", value:propName}).appendTo($form);//プロパティ名
-	$("<input />").attr({type:"hidden", name:"rootName", value:"ul_" + propName}).appendTo($form);
+	$("<input />").attr({type:"hidden", name:"rootName", value:id}).appendTo($form);
 	$("<input />").attr({type:"hidden", name:"permitConditionSelectAll", value:permitConditionSelectAll}).appendTo($form);
 	if (isSubModal) $("<input />").attr({type:"hidden", name:"modalTarget", value:target}).appendTo($form);
 	var kv = urlParam.split("&");
@@ -2397,7 +2386,7 @@ function insertReferenceFromView(addAction, defName, id, multiplicity, urlParam,
 	}
 }
 
-function insertUniqueReference(addAction, viewAction, defName, propName, multiplicity, urlParam, parentDefName, parentViewName, refEdit, callback, button) {
+function insertUniqueReference(id, addAction, viewAction, defName, propName, multiplicity, urlParam, parentDefName, parentViewName, refEdit, callback, button) {
 	var isSubModal = $("body.modal-body").length != 0;
 	var target = getModalTarget(isSubModal);
 
@@ -2412,7 +2401,7 @@ function insertUniqueReference(addAction, viewAction, defName, propName, multipl
 			var $ul = $("#ul_" + _propName);
 			var key = entity.oid + "_" + entity.version;
 			var uniqueValue = entity.uniqueValue;
-			var linkId = addUniqueReference("li_" + propName + key, viewAction, defName, key, entity.name, propName, "ul_" + _propName, refEdit, "uniq_txt_" + propName + key, uniqueValue, button);
+			var linkId = addUniqueReference(id, viewAction, defName, key, entity.name, propName, "ul_" + _propName, refEdit, "uniq_txt_" + propName + key, uniqueValue, button);
 
 			//カスタムのCallbackが定義されている場合に呼び出す
 			if (callback && $.isFunction(callback)) {
