@@ -196,6 +196,9 @@
 
 	boolean isUniqueProp(ReferencePropertyEditor editor) {
 		if (editor.getDisplayType() == ReferenceDisplayType.UNIQUE && editor.getUniqueItem() != null) {
+			// OIDをユニークキーフィールドとして使えるように
+			if (Entity.OID.equals(editor.getUniqueItem())) return true;
+
 			EntityDefinition ed = ManagerLocator.getInstance().getManager(EntityDefinitionManager.class).get(editor.getObjectName());
 			PropertyDefinition pd = ed.getProperty(editor.getUniqueItem());
 			if (pd.getIndexType() == IndexType.UNIQUE || pd.getIndexType() == IndexType.UNIQUE_WITHOUT_NULL) {

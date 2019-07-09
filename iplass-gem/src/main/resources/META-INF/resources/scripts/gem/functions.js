@@ -2614,7 +2614,7 @@ $.fn.allInputCheck = function(){
 			$selBtn.on("click", function() {
 				//選択コールバック
 				var selRefCallback = scriptContext[$v.selUniqueRefCallback];
-				searchUniqueReference($v.selectAction, $v.viewAction, $v.refDefName, $v.propName, $v.urlParam, $v.refEdit, selRefCallback, this, $v.viewName, $v.permitConditionSelectAll, $v.defName, $v.viewName, $v.viewType);
+				searchUniqueReference($v.attr("id"), $v.selectAction, $v.viewAction, $v.refDefName, $v.propName, $v.urlParam, $v.refEdit, selRefCallback, this, $v.viewName, $v.permitConditionSelectAll, $v.defName, $v.viewName, $v.viewType);
 			});
 
 			$insBtn.modalWindow();
@@ -2624,16 +2624,24 @@ $.fn.allInputCheck = function(){
 			$insBtn.on("click", function() {
 				//新規コールバック
 				var insRefCallback = scriptContext[$v.insUniqueRefCallback];
-				insertUniqueReference($v.addAction, $v.viewAction, $v.refDefName, $v.propName, $v.multiplicity, $v.urlParam, $v.defName, $v.viewName, $v.refEdit, insRefCallback, this);
+				insertUniqueReference($v.attr("id"), $v.addAction, $v.viewAction, $v.refDefName, $v.propName, $v.multiplicity, $v.urlParam, $v.defName, $v.viewName, $v.refEdit, insRefCallback, this);
+			});
+
+			$hidden.on("change", function() {
+				$link.show();
 			});
 
 			$txt.on("change", function() {
-				$link.attr("id", "").text("");
+				$link.attr("id", "").text("").hide();
 				$hidden.val("");
 
+				//ユニークキーフィールドがクリアされた場合は、検索に行かずに、参照リンクの文字とoid、version情報をクリアする
+				if ($txt.val() == "") return;
+
 				var duplicate = false;
-				$("#ul_" + $v.propName).find(".unique-key:not(:hidden)").children("input[type='text']").each(function() {
-					if ($(this).val() == $txt.val() && this !== $txt.get(0)) {
+				$v.parent("ul").find(".unique-key:not(:hidden)").children("input[type='text']").each(function() {
+					//重複チェック （自分を除く）
+					if ($(this).val() == $txt.val() && !$txt.is(this)) {
 						duplicate = true;
 						return;
 					}
@@ -2656,7 +2664,7 @@ $.fn.allInputCheck = function(){
 							showReference($v.viewAction, $v.refDefName, entity.oid, entity.version, linkId, $v.refEdit);
 						};
 
-						$link.attr("id", linkId).text(label);
+						$link.attr("id", linkId).text(label).show();
 						$link.removeAttr("onclick").off("click", func);
 						$link.on("click", func);
 						$hidden.val(key);

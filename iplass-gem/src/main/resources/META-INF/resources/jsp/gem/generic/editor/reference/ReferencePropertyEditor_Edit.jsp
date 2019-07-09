@@ -293,6 +293,9 @@
 
 	boolean isUniqueProp(ReferencePropertyEditor editor) {
 		if (editor.getDisplayType() == ReferenceDisplayType.UNIQUE && editor.getUniqueItem() != null) {
+			// OIDをユニークキーフィールドとして使えるように
+			if (Entity.OID.equals(editor.getUniqueItem())) return true;
+
 			EntityDefinition ed = ManagerLocator.getInstance().getManager(EntityDefinitionManager.class).get(editor.getObjectName());
 			PropertyDefinition pd = ed.getProperty(editor.getUniqueItem());
 			if (pd.getIndexType() == IndexType.UNIQUE || pd.getIndexType() == IndexType.UNIQUE_WITHOUT_NULL) {
@@ -1045,7 +1048,7 @@ $(function() {
 <%
 			String str = getUniquePropValue(editor, refEntity);
 %>
-<input type="text" id="uniq_txt_<c:out value="<%=liId%>"/>" value="<%=str %>" class="unique-form-size-01 inpbr" />
+<input type="text" id="uniq_txt_<c:out value="<%=liId%>"/>" style="<c:out value="<%=customStyle%>"/>" value="<%=str %>" class="unique-form-size-01 inpbr" />
 <%
 			if (!hideSelectButton) {
 				String selBtnId = "sel_btn_" + propName + i;
@@ -1054,11 +1057,10 @@ $(function() {
 <%
 			}
 
-			if (isMultiple && auth.checkPermission(new EntityPermission(refDefName, EntityPermission.Action.CREATE)) && !hideRegistButton) {
+			if (auth.checkPermission(new EntityPermission(refDefName, EntityPermission.Action.CREATE)) && !hideRegistButton) {
 				String insBtnId = "ins_btn_" + propName + i;
 %>
 <input type="button" value="${m:rs('mtp-gem-messages', 'generic.editor.reference.ReferencePropertyEditor_Edit.new')}" class="gr-btn-02 modal-btn ins-btn" id="<c:out value="<%=insBtnId %>"/>"
- data-addbtn="id_addBtn_<c:out value="<%=propName%>"/>"
  data-parentOid="<%=StringUtil.escapeJavaScript(parentOid)%>"
  data-parentVersion="<%=StringUtil.escapeJavaScript(parentVersion)%>"
 />
@@ -1067,13 +1069,20 @@ $(function() {
 %>
 </span>
 <span class="unique-ref">
-<a href="javascript:void(0)" class="modal-lnk" style="<c:out value="<%=customStyle%>"/>" id="<c:out value="<%=linkId %>"/>" onclick="showReference('<%=StringUtil.escapeJavaScript(viewAction)%>', '<%=StringUtil.escapeJavaScript(refDefName)%>', '<%=StringUtil.escapeJavaScript(refEntity.getOid())%>', '<%=refEntity.getVersion() %>', '<%=StringUtil.escapeJavaScript(linkId)%>', <%=refEdit %>)"><c:out value="<%=dispPropLabel %>" /></a>
+<a href="javascript:void(0)" class="modal-lnk" id="<c:out value="<%=linkId %>"/>" onclick="showReference('<%=StringUtil.escapeJavaScript(viewAction)%>', '<%=StringUtil.escapeJavaScript(refDefName)%>', '<%=StringUtil.escapeJavaScript(refEntity.getOid())%>', '<%=refEntity.getVersion() %>', '<%=StringUtil.escapeJavaScript(linkId)%>', <%=refEdit %>)"><c:out value="<%=dispPropLabel %>" /></a>
 <%
 
-			if (isMultiple && !hideDeleteButton && updatable) {
+			if (!hideDeleteButton && updatable) {
+
+				if (isMultiple) {
 %>
 <input type="button" value="${m:rs('mtp-gem-messages', 'generic.editor.reference.ReferencePropertyEditor_Edit.delete')}" class="gr-btn-02 del-btn" onclick="deleteItem('<%=StringUtil.escapeJavaScript(liId)%>', <%=toggleAddBtnFunc %>)" />
 <%
+				} else {
+%>
+<input type="button" value="${m:rs('mtp-gem-messages', 'generic.editor.reference.ReferencePropertyEditor_Edit.delete')}" class="gr-btn-02 del-btn" />
+<%
+				}
 			}
 %>
 </span>
@@ -1082,10 +1091,9 @@ $(function() {
 <%
 		}
 
+		String dummyRowId = "id_li_" + propName + "Dummmy";
+
 		if (isMultiple) {
-			String dummyRowId = "id_li_" + propName + "Dummmy";
-			String addBtnStyle = "";
-			if (pd.getMultiplicity() != -1 && length >= pd.getMultiplicity()) addBtnStyle = "display: none;";
 %>
 <li id="<c:out value="<%=dummyRowId %>"/>" class="list-add unique-list" style="display: none;"
  data-defName="<c:out value="<%=rootDefName%>"/>"
@@ -1107,7 +1115,7 @@ $(function() {
  data-insUniqueRefCallback="<c:out value="<%=insUniqueRefCallback%>"/>"
 >
 <span class="unique-key">
-<input type="text" class="unique-form-size-01 inpbr" />
+<input type="text" style="<c:out value="<%=customStyle%>"/>" class="unique-form-size-01 inpbr" />
 <%
 			if (!hideSelectButton) {
 %>
@@ -1118,7 +1126,6 @@ $(function() {
 			if (auth.checkPermission(new EntityPermission(refDefName, EntityPermission.Action.CREATE)) && !hideRegistButton) {
 %>
 <input type="button" value="${m:rs('mtp-gem-messages', 'generic.editor.reference.ReferencePropertyEditor_Edit.new')}" class="gr-btn-02 modal-btn ins-btn"
- data-addbtn="id_addBtn_<c:out value="<%=propName%>"/>"
  data-parentOid="<%=StringUtil.escapeJavaScript(parentOid)%>"
  data-parentVersion="<%=StringUtil.escapeJavaScript(parentVersion)%>"
 />
@@ -1127,7 +1134,7 @@ $(function() {
 %>
 </span>
 <span class="unique-ref">
-<a href="javascript:void(0)" class="modal-lnk" style="<c:out value="<%=customStyle%>"/>" ></a>
+<a href="javascript:void(0)" class="modal-lnk"></a>
 <%
 
 			if (!hideDeleteButton && updatable) {
@@ -1139,7 +1146,15 @@ $(function() {
 </span>
 <input type="hidden" />
 </li>
+<%
+		}
+%>
 </ul>
+<%
+		if (isMultiple) {
+			String addBtnStyle = "";
+			if (pd.getMultiplicity() != -1 && length >= pd.getMultiplicity()) addBtnStyle = "display: none;";
+%>
 <script type="text/javascript">
 function <%=toggleAddBtnFunc%>() {
 	var display = <%=pd.getMultiplicity() == -1 %> || $("#<%=StringUtil.escapeJavaScript(ulId)%> li:not(:hidden)").length < <%=pd.getMultiplicity()%>;

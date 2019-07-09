@@ -77,6 +77,9 @@ public class GetReferenceUniqueItemCommand implements Command {
 	}
 
 	private boolean isUniqueProp(ReferencePropertyEditor editor) {
+		// OIDをユニークキーフィールドとして使えるように
+		if (Entity.OID.equals(editor.getUniqueItem())) return true;
+
 		EntityDefinition ed = edm.get(editor.getObjectName());
 		PropertyDefinition pd = ed.getProperty(editor.getUniqueItem());
 		return pd.getIndexType() == IndexType.UNIQUE || pd.getIndexType() == IndexType.UNIQUE_WITHOUT_NULL;
