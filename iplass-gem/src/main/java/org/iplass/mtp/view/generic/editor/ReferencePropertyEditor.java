@@ -171,7 +171,7 @@ public class ReferencePropertyEditor extends PropertyEditor {
 			displayNameKey="generic_editor_ReferencePropertyEditor_useSearchDialogDisplaNameKey",
 			inputType=InputType.CHECKBOX,
 			displayOrder=300,
-			description="<b>表示タイプ:Link</b><br>" +
+			description="<b>表示タイプ:Link、Unique</b><br>" +
 			"検索画面での条件指定方法をテキストでの名前指定から<br>" +
 			"選択ダイアログからのレコード選択に変更します。",
 
@@ -257,12 +257,12 @@ public class ReferencePropertyEditor extends PropertyEditor {
 			displayNameKey="generic_editor_ReferencePropertyEditor_hideRegistButtonDisplaNameKey",
 			inputType=InputType.CHECKBOX,
 			displayOrder=410,
-			description="<b>表示タイプ:Link、NestTable</b><br>" +
+			description="<b>表示タイプ:Link、NestTable、Unique</b><br>" +
 					"データを追加するボタンを非表示にします。",
 			descriptionKey="generic_editor_ReferencePropertyEditor_hideRegistButtonDescriptionKey"
 	)
 	@EntityViewField(
-			referenceTypes={FieldReferenceType.DETAIL}
+			referenceTypes={FieldReferenceType.DETAIL, FieldReferenceType.BULK}
 	)
 	private boolean hideRegistButton;
 
@@ -272,12 +272,12 @@ public class ReferencePropertyEditor extends PropertyEditor {
 			displayNameKey="generic_editor_ReferencePropertyEditor_hideSelectButtonDisplaNameKey",
 			inputType=InputType.CHECKBOX,
 			displayOrder=420,
-			description="<b>表示タイプ:Link、NestTable</b><br>" +
+			description="<b>表示タイプ:Link、NestTable、Unique</b><br>" +
 					"データを選択するボタンを非表示にします。",
 			descriptionKey="generic_editor_ReferencePropertyEditor_hideSelectButtonDescriptionKey"
 	)
 	@EntityViewField(
-			referenceTypes={FieldReferenceType.DETAIL}
+			referenceTypes={FieldReferenceType.DETAIL, FieldReferenceType.BULK}
 	)
 	private boolean hideSelectButton;
 
@@ -287,12 +287,12 @@ public class ReferencePropertyEditor extends PropertyEditor {
 			displayNameKey="generic_editor_ReferencePropertyEditor_hideDeleteButtonDisplaNameKey",
 			inputType=InputType.CHECKBOX,
 			displayOrder=430,
-			description="<b>表示タイプ:Link、NestTable</b><br>" +
+			description="<b>表示タイプ:Link、NestTable、Unique</b><br>" +
 					"データを削除するボタンを非表示にします。",
 			descriptionKey="generic_editor_ReferencePropertyEditor_hideDeleteButtonDescriptionKey"
 	)
 	@EntityViewField(
-			referenceTypes={FieldReferenceType.DETAIL}
+			referenceTypes={FieldReferenceType.DETAIL, FieldReferenceType.BULK}
 	)
 	private boolean hideDeleteButton;
 
@@ -441,13 +441,13 @@ public class ReferencePropertyEditor extends PropertyEditor {
 			inputType=InputType.SCRIPT,
 			mode="javascript",
 			displayOrder=620,
-			description="<b>表示タイプ:Link</b><br>" +
+			description="<b>表示タイプ:Link、Unique</b><br>" +
 					"新規ダイアログで追加した後に実行するスクリプトを記述します。<br>" +
 					"Entityの情報(OID、Version、名前)を持ったObject(entity)が引数になります。",
 			descriptionKey="generic_editor_ReferencePropertyEditor_insertActionCallbackScriptDescriptionKey"
 	)
 	@EntityViewField(
-			referenceTypes={FieldReferenceType.DETAIL}
+			referenceTypes={FieldReferenceType.DETAIL, FieldReferenceType.BULK}
 	)
 	private String insertActionCallbackScript;
 
@@ -458,13 +458,13 @@ public class ReferencePropertyEditor extends PropertyEditor {
 			inputType=InputType.SCRIPT,
 			mode="javascript",
 			displayOrder=630,
-			description="<b>表示タイプ:Link</b><br>" +
+			description="<b>表示タイプ:Link、Unique</b><br>" +
 					"選択ダイアログで選択した後に実行するスクリプトを記述します。<br>" +
 					"Entityの情報(OID、Version、名前)を持ったObjectの配列(entityList)が引数になります。",
 			descriptionKey="generic_editor_ReferencePropertyEditor_selectActionCallbackScriptDescriptionKey"
 	)
 	@EntityViewField(
-			referenceTypes={FieldReferenceType.DETAIL}
+			referenceTypes={FieldReferenceType.DETAIL, FieldReferenceType.BULK}
 	)
 	private String selectActionCallbackScript;
 
