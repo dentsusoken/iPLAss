@@ -1008,7 +1008,7 @@ $(function() {
 <a href="javascript:void(0)" class="modal-lnk" id="<c:out value="<%=linkId %>"/>" onclick="showReference('<%=StringUtil.escapeJavaScript(view)%>', '<%=StringUtil.escapeJavaScript(_defName)%>', '<%=StringUtil.escapeJavaScript(entity.getOid())%>', '<%=entity.getVersion() %>', '<%=StringUtil.escapeJavaScript(linkId)%>', false)"><c:out value="<%=displayPropLabel %>" /></a>
 <input type="button" value="${m:rs('mtp-gem-messages', 'generic.editor.reference.ReferencePropertyEditor_Edit.delete')}" class="gr-btn-02 del-btn" onclick="deleteItem('<%=StringUtil.escapeJavaScript(liId)%>')"/>
 </span>
-<input type="hidden" id="i_<c:out value="<%=liId%>"/>" name="<c:out value="<%=propName %>"/>" value="<c:out value="<%=key %>"/>"/>
+<input type="hidden" id="i_<c:out value="<%=liId%>"/>" name="<c:out value="<%=propName %>"/>" value="<c:out value="<%=key %>"/>" data-norewrite="true" />
 </li>
 <%
 					length++;
@@ -1054,11 +1054,10 @@ $(function() {
 <input type="hidden" id="i_<c:out value="<%=liId%>"/>" name="<c:out value="<%=propName %>"/>" value=""/>
 </li>
 <%
+			length++;
 		}
 
 		String dummyRowId = "id_li_" + propName + "Dummmy";
-
-		if (isMultiple) {
 %>
 <li id="<c:out value="<%=dummyRowId %>"/>" class="list-add unique-list" style="display: none;"
  data-defName="<c:out value="<%=rootDefName%>"/>"
@@ -1084,49 +1083,62 @@ $(function() {
 </span>
 <input type="hidden"/>
 </li>
-<%
-		}
-%>
 </ul>
 <%
 		if (isMultiple) {
-			String selBtnId = "sel_btn_" + propName;
+// 			String selBtnId = "sel_btn_" + propName;
 %>
 <%-- <input type="button" value="${m:rs('mtp-gem-messages', 'generic.editor.reference.ReferencePropertyEditor_Edit.select')}" class="gr-btn-02 modal-btn" id="<c:out value="<%=selBtnId %>"/>" /> --%>
 <input type="button" id="id_addBtn_<c:out value="<%=propName%>"/>" value="${m:rs('mtp-gem-messages', 'generic.editor.reference.ReferencePropertyEditor_Edit.add')}" class="gr-btn-02 add-btn" onclick="addUniqueRefItem('<%=StringUtil.escapeJavaScript(ulId)%>', -1, '<%=StringUtil.escapeJavaScript(dummyRowId)%>', '<%=StringUtil.escapeJavaScript(propName)%>', 'id_count_<%=StringUtil.escapeJavaScript(propName)%>')" />
-<input type="hidden" id="id_count_<c:out value="<%=propName%>"/>" value="<c:out value="<%=length%>"/>" />
 <%
 		}
 %>
+<input type="hidden" id="id_count_<c:out value="<%=propName%>"/>" value="<c:out value="<%=length%>"/>" />
 <script type="text/javascript">
 $(function() {
 	<%-- common.js --%>
 	addNormalConditionItemResetHandler(function(){
-		<%-- 全部削除 --%>
+		<%-- 全部削除 (ダミ行は削除しない)--%>
 		var $ul = $("#" + es("<%=StringUtil.escapeJavaScript(ulId)%>"));
-		$ul.children("li").each(function(){
+		$ul.children("li:not(:hidden)").each(function(){
 			$(this).remove();
 		});
+
+		var propName = "<%=StringUtil.escapeJavaScript(propName) %>";
+		var _propName = propName.replace(/\[/g, "\\[").replace(/\]/g, "\\]").replace(/\./g, "\\.");
+		var multiplicity = -1;
 <%
 		//デフォルトで設定されているものを追加
 		String[] defaultValue = (String[]) request.getAttribute(Constants.EDITOR_DEFAULT_VALUE);
 		if (defaultValue != null && defaultValue.length > 0) {
-%>
-			var _propName = params.propName.replace(/\[/g, "\\[").replace(/\]/g, "\\]").replace(/\./g, "\\.");
-<%			for (int i = 0; i < defaultValue.length; i++) {
+			
+			for (int i = 0; i < defaultValue.length; i++) {
 				String oid = defaultValue[i];
 				Entity entity = em.load(oid, _defName);
 				if (entity == null || getDisplayPropLabel(editor, entity) == null) continue;
 				String displayPropLabel = getDisplayPropLabel(editor, entity);
+				String uniquePropValue = getUniquePropValue(editor, entity);
 
-				String liId = StringUtil.escapeJavaScript("li_" + propName + i);
+				String viewAction = StringUtil.escapeJavaScript(view);
 				String label = StringUtil.escapeJavaScript(displayPropLabel);
 				String key = StringUtil.escapeJavaScript(entity.getOid() + "_" + entity.getVersion());
+				String unique = StringUtil.escapeJavaScript(uniquePropValue);
 %>
 		<%-- common.js --%>
-		addReference("<%=liId%>", params.viewAction, params.defName, "<%=key%>", "<%=label%>", params.propName, "ul_" + _propName, params.refEdit);
+		addUniqueReference("<%=viewAction%>", "<%=key%>", "<%=label%>", "<%=unique%>", "<%=_defName%>", propName, multiplicity, "ul_" + _propName, "<%=dummyRowId%>", false, "id_count_" + _propName);
 <%
 			}
+		} else {
+
+			String viewAction = StringUtil.escapeJavaScript(view);
+			String label = "";
+			String key = "";
+			String unique = "";
+%>
+		<%-- common.js --%>
+		<%-- リセットした後に、最低でも1行を表示します。 --%>
+		addUniqueReference("<%=viewAction%>", "<%=key%>", "<%=label%>", "<%=unique%>", "<%=_defName%>", propName, multiplicity, "ul_" + _propName, "<%=dummyRowId%>", false, "id_count_" + _propName);
+<%
 		}
 %>
 	});

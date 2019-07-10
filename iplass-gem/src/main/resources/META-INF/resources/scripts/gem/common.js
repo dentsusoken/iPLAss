@@ -964,7 +964,11 @@ function addUniqueRefItem(ulId, multiplicity, dummyRowId, propName, countId, fun
 		//inputのidを設定
 		$text.attr("id", "uniq_txt_" + copyId);
 
-		$link.modalWindow();
+		if ($("body.modal-body").length != 0) {
+			$link.subModalWindow();
+		} else {
+			$link.modalWindow();
+		}
 
 		//hiddenにnameとidを指定
 		$hidden.attr({name: propName, id: "i_" + copyId});
@@ -2480,6 +2484,36 @@ function addReference(id, viewAction, defName, key, label, propName, ulId, refEd
 
 	//リンクIDを返す
 	return linkId;
+}
+
+function addUniqueReference(viewAction, key, label, unique, defName, propName, multiplicity, ulId, dummyRowId, refEdit, countId, delCallback) {
+	var tmp = keySplit(key);
+	var oid = tmp.oid;
+	var ver = tmp.version;
+
+	var $copy = addUniqueRefItem(ulId, multiplicity, dummyRowId, propName, countId, function ($copy) {
+
+		var $copyId = $copy.attr("id");
+		var $text = $(":text", $copy);
+		var $link = $("a.modal-lnk", $copy);
+		var $hidden = $("input:hidden:last", $copy);
+	
+		//inputを設定
+		$text.val(unique);
+	
+		//linkを設定
+		var linkId = propName + "_" + tmp.oid;
+		$link.attr("id", linkId).click(function() {
+			showReference(viewAction, defName, oid, ver, linkId, refEdit);
+		});
+		$link.text(label);
+	
+		//hiddenを設定
+		$hidden.val(key);
+	
+		return $copyId;
+
+	}, delCallback);
 }
 
 function updateUniqueReference(id, viewAction, defName, key, label, propName, ulId, refEdit, txtId, uniqueValue) {
