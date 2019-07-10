@@ -159,12 +159,6 @@ function alertErrMessage(XMLHttpRequest) {
 	if (typeof res !== "undeined" && res != null
 			&& res.exceptionType == "org.iplass.mtp.auth.NoPermissionException") {
 		alert(scriptContext.locale.permissionErrOccurred);
-	} else 	if (typeof res !== "undeined" && res != null
-			&& res.exceptionType == "org.iplass.mtp.tenant.available.UnavailableWebApiException") {
-		if (!scriptContext.suppressAlert) {
-			alert(scriptContext.locale.maintenanceErrOccurred);
-			scriptContext.suppressAlert = true;
-		}
 	} else {
 		alert(scriptContext.locale.errOccurred);
 	}
