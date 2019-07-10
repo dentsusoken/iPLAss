@@ -2592,6 +2592,7 @@ $.fn.allInputCheck = function(){
 				addAction:					$v.attr("data-addAction"),
 				urlParam:					$v.attr("data-urlParam"),
 				refDefName:					$v.attr("data-refDefName"),
+				refViewName:				$v.attr("data-refViewName"),
 				refEdit:					$v.attr("data-refEdit"),
 				specVersionKey:				$v.attr("data-specVersionKey"),
 				permitConditionSelectAll:	$v.attr("data-permitConditionSelectAll"),
@@ -2607,17 +2608,27 @@ $.fn.allInputCheck = function(){
 			var $link = $("a.modal-lnk", $v);
 			var $hidden = $(":hidden[name='" + $v.propName + "']", $v);
 
-			$selBtn.modalWindow();
+			if ($("body.modal-body").length != 0) {
+				$selBtn.subModalWindow();
+			} else {
+				$selBtn.modalWindow();
+			}
+
 			for (key in params) {
 				$selBtn.attr("data-" + key, params[key]);
 			}
 			$selBtn.on("click", function() {
 				//選択コールバック
 				var selRefCallback = scriptContext[$v.selUniqueRefCallback];
-				searchUniqueReference($v.attr("id"), $v.selectAction, $v.viewAction, $v.refDefName, $v.propName, $v.urlParam, $v.refEdit, selRefCallback, this, $v.viewName, $v.permitConditionSelectAll, $v.defName, $v.viewName, $v.viewType);
+				searchUniqueReference($v.attr("id"), $v.selectAction, $v.viewAction, $v.refDefName, $v.propName, $v.urlParam, $v.refEdit, selRefCallback, this, $v.refViewName, $v.permitConditionSelectAll, $v.defName, $v.viewName, $v.viewType);
 			});
 
-			$insBtn.modalWindow();
+			if ($("body.modal-body").length != 0) {
+				$insBtn.subModalWindow();
+			} else {
+				$insBtn.modalWindow();
+			}
+
 			for (key in params) {
 				$insBtn.attr("data-" + key, params[key]);
 			}
