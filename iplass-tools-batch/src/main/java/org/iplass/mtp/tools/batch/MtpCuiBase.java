@@ -31,7 +31,7 @@ import java.util.ResourceBundle;
 
 import org.iplass.mtp.SystemException;
 import org.iplass.mtp.impl.core.ExecuteContext;
-import org.iplass.mtp.impl.core.config.ServiceRegistryInitializer;
+import org.iplass.mtp.impl.core.config.BootstrapProps;
 import org.iplass.mtp.impl.rdb.adapter.RdbAdapter;
 import org.iplass.mtp.impl.rdb.adapter.RdbAdapterService;
 import org.iplass.mtp.impl.rdb.connection.ConnectionFactory;
@@ -142,7 +142,7 @@ public abstract class MtpCuiBase {
 
 		try {
 			//Config FileName
-			String configFileName = ServiceRegistryInitializer.getConfigFileName();
+			String configFileName = BootstrapProps.getInstance().getProperty(BootstrapProps.CONFIG_FILE_NAME, BootstrapProps.DEFAULT_CONFIG_FILE_NAME);
 
 			//Rdb Adapter
 			RdbAdapterService adapterService = ServiceRegistry.getRegistry().getService(RdbAdapterService.class);

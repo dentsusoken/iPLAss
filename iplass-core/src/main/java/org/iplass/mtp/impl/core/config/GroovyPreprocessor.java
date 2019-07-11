@@ -51,7 +51,7 @@ public class GroovyPreprocessor implements ConfigPreprocessor {
 				Map<String, Object> binding = new HashMap<>();
 				binding.put("filePath", filePath);
 				
-				xml = tmpl.make(null).toString();
+				xml = tmpl.make(binding).toString();
 				
 			} catch (IOException | CompilationFailedException | ClassNotFoundException e) {
 				throw new ServiceConfigrationException("preprocess failed:" + filePath, e);

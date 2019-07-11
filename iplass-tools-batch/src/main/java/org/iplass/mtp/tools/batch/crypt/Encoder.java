@@ -14,14 +14,14 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Properties;
 
+import org.iplass.mtp.impl.core.config.BootstrapProps;
 import org.iplass.mtp.impl.core.config.PropertyValueCoder;
-import org.iplass.mtp.impl.core.config.ServiceRegistryInitializer;
 
 public class Encoder {
 	
 	
 	private static Properties getProperties() throws IOException {
-		String fileName = ServiceRegistryInitializer.getCryptoConfigFileName();
+		String fileName = BootstrapProps.getInstance().getProperty(BootstrapProps.CRYPT_CONFIG_FILE_NAME);
 		if (fileName != null) {
 			Properties prop = new Properties();
 			Path path = Paths.get(fileName);

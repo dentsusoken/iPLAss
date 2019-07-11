@@ -19,12 +19,6 @@
  */
 package org.iplass.mtp.impl.core.config;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.StringReader;
 import java.io.StringWriter;
 
@@ -41,21 +35,50 @@ public class ServiceDefinitionParser {
 	private static final Logger logger = LoggerFactory.getLogger(ServiceDefinitionParser.class);
 	
 	private JAXBContext context;
+	private ConfigLoader loader;
 	private ConfigPreprocessor[] prepros;
 	
-	public ServiceDefinitionParser(ConfigPreprocessor[] prepros) {
+	public ServiceDefinitionParser() {
 		try {
 			context = JAXBContext.newInstance(NameValue.class, ServiceConfig.class, ServiceDefinition.class);
 		} catch (JAXBException e) {
 			logger.error("JAXBContext can not initialize.", e);
 			throw new ServiceConfigrationException(e);
 		}
-		this.prepros = prepros;
+		this.loader = newConfigLoader();
+		this.prepros = newConfigPreprocessor();
 	}
 	
+	private ConfigLoader newConfigLoader() {
+		String clsName = BootstrapProps.getInstance().getProperty(BootstrapProps.CONFIG_LOADER_CLASS_NAME, BootstrapProps.DEFAULT_CONFIG_LOADER_CLASS_NAME);
+		try {
+			ConfigLoader cls = (ConfigLoader) Class.forName(clsName).newInstance();
+			return cls;
+		} catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
+			throw new ServiceConfigrationException("Can not instanceate ConfigLoader:" + clsName, e);
+		}
+	}
+	
+	private ConfigPreprocessor[] newConfigPreprocessor() {
+		String cpsProp = BootstrapProps.getInstance().getProperty(BootstrapProps.CONFIG_PREPROCESSORS_CLASS_NAME, BootstrapProps.DEFAULT_CONFIG_PREPROCESSORS_CLASS_NAME);
+		String[] cnames = cpsProp.trim().split("\\s*,\\s*");
+		ConfigPreprocessor[] cps = null;
+		if (cnames != null) {
+			cps = new ConfigPreprocessor[cnames.length];
+			for (int i = 0; i < cps.length; i++) {
+				try {
+					cps[i] = (ConfigPreprocessor) Class.forName(cnames[i]).newInstance();
+				} catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
+					throw new ServiceConfigrationException("Can not instanceate ConfigPreprocessor:" + cnames[i], e);
+				}
+			}
+		}
+		return cps;
+	}
+
 	public ServiceDefinition read(String fileName) {
 		
-		String content = readContent(fileName);
+		String content = loader.load(fileName);
 		if (prepros != null) {
 			for (ConfigPreprocessor p: prepros) {
 				content = p.preprocess(content, fileName);
@@ -109,49 +132,6 @@ public class ServiceDefinitionParser {
 		} catch (JAXBException e) {
 			logger.error("Parse failed ConfigFile:" + fileName + ".Can not initialize ServiceRegistry.", e);
 			throw new ServiceConfigrationException(e);
-		}
-	}
-
-	private String readContent(String fileName) {
-		InputStream is = null;
-		try {
-			is = getClass().getResourceAsStream(fileName);
-			if (is == null) {
-				File file = new File(fileName);
-				if (file.exists()) {
-					try {
-						is = new FileInputStream(file);
-					} catch (FileNotFoundException e) {
-						if (logger.isDebugEnabled()) {
-							logger.debug("ConfigFile:" + fileName + " not found.", e);
-						}
-					}
-				}
-			}
-			if (is == null) {
-				logger.error("ConfigFile:" + fileName + " not found.Can not initialize ServiceRegistry.");
-				throw new ServiceConfigrationException("Config File:" + fileName + " Not Found.");
-			}
-			
-			InputStreamReader r = new InputStreamReader(is, "utf-8");
-			StringBuffer str = new StringBuffer();
-			char[] buf = new char[1024];
-			int length = 0;
-			while ((length = r.read(buf)) != -1) {
-				str.append(buf, 0, length);
-			}
-			return str.toString();
-		} catch (IOException e) {
-			logger.error("Cant read ConfigFile:" + fileName + ".Can not initialize ServiceRegistry.", e);
-			throw new ServiceConfigrationException(e);
-		} finally {
-			if (is != null) {
-				try {
-					is.close();
-				} catch (IOException e) {
-					logger.warn("resource close failed. Maybe Resource Leak.", e);
-				}
-			}
 		}
 	}
 

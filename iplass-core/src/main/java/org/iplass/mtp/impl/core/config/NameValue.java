@@ -278,11 +278,11 @@ public class NameValue {
 				} else if (!superConfigPropList.contains(p.getName())
 						|| noInheritPropList.contains(p.getName())) {
 					//親定義では宣言されていないプロパティ、もしくはオーバーライドしないプロパティ
-					if (logger.isDebugEnabled()) {
+					if (logger.isTraceEnabled()) {
 						if (noInheritPropList.contains(p.getName())) {
-							logger.debug(targetName + "." + p.getName() + " is not inherit, so hole override parent's configration.");
+							logger.trace(targetName + "." + p.getName() + " is not inherit, so hole override parent's configration.");
 						} else {
-							logger.debug(targetName + "." + p.getName() + " is added.");
+							logger.trace(targetName + "." + p.getName() + " is added.");
 						}
 					}
 					if (sp == null) {
@@ -299,8 +299,8 @@ public class NameValue {
 					//オーバーライドするプロパティ
 					if (p.isAdditional()) {
 						//additional mode
-						if (logger.isDebugEnabled()) {
-							logger.debug(targetName + "." + p.getName() + " is override(additional mode).");
+						if (logger.isTraceEnabled()) {
+							logger.trace(targetName + "." + p.getName() + " is override(additional mode).");
 						}
 						if (sp instanceof ArrayList) {
 							((ArrayList<NameValue>) sp).add(p);
@@ -315,8 +315,8 @@ public class NameValue {
 							//override
 							
 							if (!resetOverridePropList.contains(p.getName())) {
-								if (logger.isDebugEnabled()) {
-									logger.debug(targetName + "." + p.getName() + " is override.");
+								if (logger.isTraceEnabled()) {
+									logger.trace(targetName + "." + p.getName() + " is override.");
 								}
 								resetOverridePropList.add(p.getName());
 								if (sp instanceof ArrayList) {
@@ -335,8 +335,8 @@ public class NameValue {
 								}
 							}
 						} else {
-							if (logger.isDebugEnabled()) {
-								logger.debug(targetName + "." + p.getName() + " is declared ifnone, so Can not override configration.");
+							if (logger.isTraceEnabled()) {
+								logger.trace(targetName + "." + p.getName() + " is declared ifnone, so Can not override configration.");
 							}
 						}
 					}

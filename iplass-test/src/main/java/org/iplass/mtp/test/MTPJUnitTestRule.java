@@ -34,7 +34,7 @@ import org.iplass.mtp.impl.auth.AuthService;
 import org.iplass.mtp.impl.core.ExecuteContext;
 import org.iplass.mtp.impl.core.TenantContext;
 import org.iplass.mtp.impl.core.TenantContextService;
-import org.iplass.mtp.impl.core.config.ServiceRegistryInitializer;
+import org.iplass.mtp.impl.core.config.BootstrapProps;
 import org.iplass.mtp.impl.rdb.connection.ResourceHolder;
 import org.iplass.mtp.impl.script.GroovyScriptEngine;
 import org.iplass.mtp.impl.transaction.TransactionService;
@@ -294,7 +294,7 @@ public class MTPJUnitTestRule implements TestRule {
 		public void evaluate() throws Throwable {
 			
 			if (configFile != null) {
-				if (ServiceRegistryInitializer.replaceConfigFileName(configFile)) {
+				if (BootstrapProps.getInstance().replaceProperty(BootstrapProps.CONFIG_FILE_NAME, configFile)) {
 					ServiceRegistry.getRegistry().reInit();
 				}
 			}

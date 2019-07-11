@@ -20,66 +20,45 @@
 
 package org.iplass.mtp.impl.core.config;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.util.Enumeration;
 import java.util.LinkedHashSet;
-import java.util.Properties;
 import java.util.Set;
 
 import org.iplass.mtp.spi.ServiceConfigrationException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class ServerEnv {
 	
-	private static Logger logger = LoggerFactory.getLogger(ServerEnv.class);
-	
-	public static final String SERVER_ROLE_DEF_SYSTEM_PROP_NAME = "mtp.server.myserverroles";
-	public static final String SERVER_ID_DEF_SYSTEM_PROP_NAME = "mtp.server.myserverid";
-	public static final String SERVER_NAME_DEF_SYSTEM_PROP_NAME = "mtp.server.myservername";
-	public static final String INTERFACE_NAME_DEF_SYSTEM_PROP_NAME = "mtp.server.myinterfacename";
+	@Deprecated
+	public static final String SERVER_ROLE_DEF_SYSTEM_PROP_NAME = BootstrapProps.SERVER_ROLES;
+	@Deprecated
+	public static final String SERVER_ID_DEF_SYSTEM_PROP_NAME =  BootstrapProps.SERVER_ID;
+	@Deprecated
+	public static final String SERVER_NAME_DEF_SYSTEM_PROP_NAME =  BootstrapProps.SERVER_NAME;
+	@Deprecated
+	public static final String INTERFACE_NAME_DEF_SYSTEM_PROP_NAME =  BootstrapProps.NETWORK_INTERFACE_NAME;
 	
 	private static ServerEnv instance = new ServerEnv();
 	
-	private final Properties props;
 	private String[] serverRoles;
 	private String serverId;
+	private BootstrapProps props;
 	
 	public static ServerEnv getInstance() {
 		return instance;
 	}
 	
 	private ServerEnv() {
-		String fileName = ServiceRegistryInitializer.getServerEnvFileName();
-		if (fileName != null) {
-			try (InputStream is = getClass().getResourceAsStream(fileName)) {
-				if (is == null) {
-					logger.debug("mtp.server.env:" + fileName + " not found.use SystemProperty as server env config.");
-					props = System.getProperties();
-				} else {
-					Properties p = new Properties();
-					p.load(new InputStreamReader(is, "UTF-8"));
-					props = p;
-				}
-			} catch (IOException e) {
-				throw new ServiceConfigrationException("cant load server env file:" + fileName, e);
-			}
-		} else {
-			logger.debug("mtp.server.env not specified.use SystemProperty as server env config.");
-			props = System.getProperties();
-		}
+		props = BootstrapProps.getInstance();
 		
-		String myserverroles = getProperty(SERVER_ROLE_DEF_SYSTEM_PROP_NAME);
+		String myserverroles = props.getProperty(BootstrapProps.SERVER_ROLES);
 		if (myserverroles != null) {
 			serverRoles = myserverroles.trim().split("\\s*,\\s*");
 		}
 		
-		String id = getProperty(SERVER_ID_DEF_SYSTEM_PROP_NAME);
+		String id = props.getProperty(BootstrapProps.SERVER_ID);
 		if (id == null) {
 			try {
 				id = getServerNameAndAddress()[0];
@@ -107,12 +86,12 @@ public class ServerEnv {
 	}
 	
 	public String[] getServerNameAndAddress() throws SocketException {
-		String defHostName = getProperty(SERVER_NAME_DEF_SYSTEM_PROP_NAME);
+		String defHostName = props.getProperty(BootstrapProps.SERVER_NAME);
 		if (defHostName != null) {
 			return new String[]{defHostName};
 		} else {
 			Set<String> list = new LinkedHashSet<>();
-			String networkInterfaceName = getProperty(INTERFACE_NAME_DEF_SYSTEM_PROP_NAME);
+			String networkInterfaceName = props.getProperty(BootstrapProps.NETWORK_INTERFACE_NAME);
 			NetworkInterface ni = null;
 			NetworkInterface loopBack = null;
 			if (networkInterfaceName != null) {

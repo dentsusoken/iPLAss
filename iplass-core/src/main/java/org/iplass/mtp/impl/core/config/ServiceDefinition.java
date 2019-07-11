@@ -104,19 +104,19 @@ public class ServiceDefinition {
 					} else {
 						if (!override.isIfnone()) {
 							if (override.isInherit()) {
-								if (logger.isDebugEnabled()) {
-									logger.debug(sc.id() + " is include and inherit current definition.");
+								if (logger.isTraceEnabled()) {
+									logger.trace(sc.id() + " is include and inherit current definition.");
 								}
 								newList.add(override.merge(sc));
 							} else {
-								if (logger.isDebugEnabled()) {
-									logger.debug(sc.id() + " is replaced by included definition.");
+								if (logger.isTraceEnabled()) {
+									logger.trace(sc.id() + " is replaced by included definition.");
 								}
 								newList.add(override);
 							}
 						} else {
-							if (logger.isDebugEnabled()) {
-								logger.debug(sc.id() + " is exists and including config declared ifnone. so can not include configration.");
+							if (logger.isTraceEnabled()) {
+								logger.trace(sc.id() + " is exists and including config declared ifnone. so can not include configration.");
 							}
 							newList.add(sc);
 						}
@@ -151,19 +151,19 @@ public class ServiceDefinition {
 					} else {
 						if (!override.isIfnone()) {
 							if (override.isInherit()) {
-								if (logger.isDebugEnabled()) {
-									logger.debug(sc.id() + " is override parents definition.");
+								if (logger.isTraceEnabled()) {
+									logger.trace(sc.id() + " is override parents definition.");
 								}
 								newList.add(override.merge(sc));
 							} else {
-								if (logger.isDebugEnabled()) {
-									logger.debug(sc.id() + " is replace parents definition.");
+								if (logger.isTraceEnabled()) {
+									logger.trace(sc.id() + " is replace parents definition.");
 								}
 								newList.add(override);
 							}
 						} else {
-							if (logger.isDebugEnabled()) {
-								logger.debug(sc.id() + " is exists in parents definition and this config declared ifnone. so can not override configration.");
+							if (logger.isTraceEnabled()) {
+								logger.trace(sc.id() + " is exists in parents definition and this config declared ifnone. so can not override configration.");
 							}
 						}
 					}

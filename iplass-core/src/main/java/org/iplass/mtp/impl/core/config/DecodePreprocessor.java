@@ -19,13 +19,8 @@
  */
 package org.iplass.mtp.impl.core.config;
 
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.io.StringReader;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Properties;
@@ -41,7 +36,7 @@ public class DecodePreprocessor implements ConfigPreprocessor {
 	private PropertyValueCoder coder;
 	
 	public DecodePreprocessor() {
-		String cryptConfigFileName = ServiceRegistryInitializer.getCryptoConfigFileName();
+		String cryptConfigFileName = BootstrapProps.getInstance().getProperty(BootstrapProps.CRYPT_CONFIG_FILE_NAME);
 		if (cryptConfigFileName != null) {
 			coder = getPropertyValueCoder(cryptConfigFileName);
 		}
@@ -87,35 +82,19 @@ public class DecodePreprocessor implements ConfigPreprocessor {
 	}
 	
 	private PropertyValueCoder getPropertyValueCoder(String fileName) {
+
 		Properties prop = new Properties();
-		Path path = Paths.get(fileName);
-		if (Files.exists(path)) {
-			if (logger.isDebugEnabled()) {
-				logger.debug("load CryptConfigFile from file path:" + fileName);
+		try {
+			String content = FileUtil.readContent(fileName);
+			if (content == null) {
+				logger.error("CryptConfigFile:" + fileName + " not found.Can not initialize ServiceRegistry.");
+				throw new ServiceConfigrationException("Config File:" + fileName + " Not Found.");
 			}
-			try (InputStreamReader is = new InputStreamReader(new FileInputStream(path.toFile()), "utf-8")) {
-				prop.load(is);
-			} catch (IOException e) {
-				throw new ServiceConfigrationException(e);
-			}
-		} else {
-			if (logger.isDebugEnabled()) {
-				logger.debug("load CryptConfigFile from classpath:" + fileName);
-			}
-			try (InputStream is = getClass().getResourceAsStream(fileName)) {
-				if (is == null) {
-					logger.error("CryptConfigFile:" + fileName + " not found.Can not initialize ServiceRegistry.");
-					throw new ServiceConfigrationException("Config File:" + fileName + " Not Found.");
-				}
-
-				InputStreamReader isr = new InputStreamReader(is, "utf-8");
-				prop.load(isr);
-
-			} catch (IOException e) {
-				throw new ServiceConfigrationException(e);
-			}
+			prop.load(new StringReader(content));
+		} catch (IOException e) {
+			throw new ServiceConfigrationException("can not load CryptConfigFile", e);
 		}
-
+		
 		try {
 
 			String passphraseSupplierName = prop.getProperty(PropertyValueCoder.PASSPHRASE_SUPPLIER, PropertyFilePassphraseSupplier.class.getName());

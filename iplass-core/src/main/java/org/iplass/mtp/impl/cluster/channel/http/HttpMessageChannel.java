@@ -54,6 +54,7 @@ import org.iplass.mtp.impl.cluster.ClusterService;
 import org.iplass.mtp.impl.cluster.Message;
 import org.iplass.mtp.impl.cluster.channel.MessageChannel;
 import org.iplass.mtp.impl.cluster.channel.MessageReceiver;
+import org.iplass.mtp.impl.core.config.BootstrapProps;
 import org.iplass.mtp.impl.core.config.ServerEnv;
 import org.iplass.mtp.spi.Config;
 import org.iplass.mtp.spi.ServiceConfigrationException;
@@ -309,7 +310,7 @@ public class HttpMessageChannel implements MessageChannel, ServiceInitListener<C
 	private String[] getMyServerNameAndAddress() throws SocketException {
 		String defHostName = ServerEnv.getInstance().getProperty(SERVER_NAME_DEF_SYSTEM_PROP_NAME);
 		if (defHostName == null) {
-			defHostName = ServerEnv.getInstance().getProperty(ServerEnv.SERVER_NAME_DEF_SYSTEM_PROP_NAME);
+			defHostName = ServerEnv.getInstance().getProperty(BootstrapProps.SERVER_NAME);
 		}
 		if (defHostName != null) {
 			return new String[]{defHostName};
@@ -317,7 +318,7 @@ public class HttpMessageChannel implements MessageChannel, ServiceInitListener<C
 			Set<String> list = new LinkedHashSet<>();
 			String networkInterfaceName = ServerEnv.getInstance().getProperty(INTERFACE_NAME_DEF_SYSTEM_PROP_NAME);
 			if (networkInterfaceName == null) {
-				networkInterfaceName = ServerEnv.getInstance().getProperty(ServerEnv.INTERFACE_NAME_DEF_SYSTEM_PROP_NAME);
+				networkInterfaceName = ServerEnv.getInstance().getProperty(BootstrapProps.NETWORK_INTERFACE_NAME);
 			}
 			NetworkInterface ni = null;
 			NetworkInterface loopBack = null;

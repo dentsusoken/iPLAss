@@ -26,12 +26,11 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.iplass.mtp.SystemException;
+import org.iplass.mtp.impl.core.config.BootstrapProps;
 import org.iplass.mtp.impl.core.config.ConfigImpl;
-import org.iplass.mtp.impl.core.config.ConfigPreprocessor;
 import org.iplass.mtp.impl.core.config.ServiceConfig;
 import org.iplass.mtp.impl.core.config.ServiceDefinition;
 import org.iplass.mtp.impl.core.config.ServiceDefinitionParser;
-import org.iplass.mtp.impl.core.config.ServiceRegistryInitializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -66,26 +65,14 @@ public class ServiceRegistry {
 
 	private ServiceRegistry() {
 		services = new ConcurrentHashMap<>(32, 0.75f, 1);
-		parser = new ServiceDefinitionParser(newConfigPreprocessor());
-		String configFileName = ServiceRegistryInitializer.getConfigFileName();
-		serviceDefinition = parser.read(configFileName);
+		parser = new ServiceDefinitionParser();
+		serviceDefinition = parser.read(configFileName());
 	}
-
-	private ConfigPreprocessor[] newConfigPreprocessor() {
-		List<String> cnames = ServiceRegistryInitializer.getConfigPreprocessorClassNames();
-		ConfigPreprocessor[] cps = null;
-		if (cnames != null) {
-			cps = new ConfigPreprocessor[cnames.size()];
-			for (int i = 0; i < cps.length; i++) {
-				try {
-					cps[i] = (ConfigPreprocessor) Class.forName(cnames.get(i)).newInstance();
-				} catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
-					throw new ServiceConfigrationException("Can not instanceate ConfigPreprocessor:" + cnames.get(i), e);
-				}
-			}
-		}
-		return cps;
+	
+	private String configFileName() {
+		return BootstrapProps.getInstance().getProperty(BootstrapProps.CONFIG_FILE_NAME, BootstrapProps.DEFAULT_CONFIG_FILE_NAME);
 	}
+	
 
 	private ServiceEntry createService(String serviceName, List<String> dependStack) {
 
@@ -275,8 +262,7 @@ public class ServiceRegistry {
 
 			//reload
 			services.clear();
-			String configFileName = ServiceRegistryInitializer.getConfigFileName();
-			serviceDefinition = parser.read(configFileName);
+			serviceDefinition = parser.read(configFileName());
 
 			for (ServiceEntry se: forDest) {
 				se.destroy();

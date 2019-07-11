@@ -29,7 +29,9 @@ import javax.servlet.ServletContextListener;
 
 import org.iplass.mtp.impl.async.rdb.RdbQueueService;
 import org.iplass.mtp.impl.cache.store.builtin.CacheEntryCleaner;
-import org.iplass.mtp.impl.core.config.ServiceRegistryInitializer;
+import org.iplass.mtp.impl.core.config.BootstrapProps;
+import org.iplass.mtp.runtime.EntryPoint;
+import org.iplass.mtp.runtime.EntryPointBuilder;
 import org.iplass.mtp.spi.ServiceRegistry;
 import org.slf4j.ILoggerFactory;
 import org.slf4j.Logger;
@@ -38,57 +40,77 @@ import org.slf4j.LoggerFactory;
 public class ApplicationInitializer implements ServletContextListener {
 
 	private static Logger logger = LoggerFactory.getLogger(ApplicationInitializer.class);
+	
+	protected EntryPoint entryPoint;
 
 	@Override
 	public void contextDestroyed(ServletContextEvent event) {
-		logger.info("destroy all service");
-		ServiceRegistry.getRegistry().destroyAllService();
-
-		//Builtin CacheEntryCleaner
-		CacheEntryCleaner.shutdown();
 		
-		//logback memory leak prevention
-		ILoggerFactory lf = LoggerFactory.getILoggerFactory();
-		try {
-			Class<?> logbackLoggerContextClass = Class.forName("ch.qos.logback.classic.LoggerContext");
-			if (logbackLoggerContextClass.isAssignableFrom(lf.getClass())) {
-				Method stopMethod = logbackLoggerContextClass.getMethod("stop");
-				if (stopMethod != null) {
-					stopMethod.invoke(lf);
+		if (entryPoint != null) {
+			logger.info("destroy all service");
+			entryPoint.destroy();
+			
+			//Builtin CacheEntryCleaner
+			CacheEntryCleaner.shutdown();
+			//logback memory leak prevention
+			ILoggerFactory lf = LoggerFactory.getILoggerFactory();
+			try {
+				Class<?> logbackLoggerContextClass = Class.forName("ch.qos.logback.classic.LoggerContext");
+				if (logbackLoggerContextClass.isAssignableFrom(lf.getClass())) {
+					Method stopMethod = logbackLoggerContextClass.getMethod("stop");
+					if (stopMethod != null) {
+						stopMethod.invoke(lf);
+					}
 				}
+			} catch (ClassNotFoundException | NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+				//ignore
+				e.printStackTrace();
 			}
-		} catch (ClassNotFoundException | NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-			//ignore
-			e.printStackTrace();
+		}
+	}
+	
+	protected EntryPointBuilder createEntryPointBuilder(ServletContext sc) {
+		EntryPointBuilder builder = EntryPoint.builder();
+		
+		String serverEnvFileName = sc.getInitParameter(BootstrapProps.SERVER_ENV_PROP_FILE_NAME);
+		if (serverEnvFileName != null) {
+			logger.info("use " + serverEnvFileName + " as ServerEnvFile.");
+			builder.serverEnvFile(serverEnvFileName);
+		}
+		String serviceConfigFileName = sc.getInitParameter(BootstrapProps.CONFIG_FILE_NAME);
+		if (serviceConfigFileName != null) {
+			logger.info("initialize with config:" + serviceConfigFileName);
+			builder.config(serviceConfigFileName);
+		}
+		String cryptConfigFileName = sc.getInitParameter(BootstrapProps.CRYPT_CONFIG_FILE_NAME);
+		if (cryptConfigFileName != null) {
+			logger.debug("use cryptConfigFile:" + cryptConfigFileName);
+			builder.crypt(cryptConfigFileName);
+		}
+		String serverRole = sc.getInitParameter(BootstrapProps.SERVER_ROLES);
+		if (serverRole != null) {
+			logger.debug("use serverRoles:" + serverRole);
+			builder.serverRole(serverRole);
+		}
+		String loader = sc.getInitParameter(BootstrapProps.CONFIG_LOADER_CLASS_NAME);
+		if (loader != null) {
+			logger.debug("use configLoader:" + loader);
+			builder.loader(loader);
 		}
 		
+		//TODO get all other InitParameters?
+		
+		return builder;
 	}
 
 	@Override
 	public void contextInitialized(ServletContextEvent e) {
-		ServletContext sc = e.getServletContext();
-
-		String serverEnvFileName = sc.getInitParameter("mtp.server.env");
-		if (serverEnvFileName != null) {
-			logger.info("use " + serverEnvFileName + " as ServerEnvFile.");
-			ServiceRegistryInitializer.setServerEnvFileName(serverEnvFileName);
+		if (!EntryPoint.isInited()) {
+			ServletContext sc = e.getServletContext();
+			EntryPointBuilder builder = createEntryPointBuilder(sc);
+			entryPoint = builder.build();
 		}
-
-		String serviceConfigFileName = sc.getInitParameter("mtp.config");
-		if (serviceConfigFileName != null) {
-			boolean isFinalServiceConfig = Boolean.parseBoolean(sc.getInitParameter("mtp.config.isfinal"));
-			if (!ServiceRegistryInitializer.isSetConfigFileName() || !isFinalServiceConfig) {
-				logger.info("initialize with config:" + serviceConfigFileName);
-				ServiceRegistryInitializer.setConfigFileName(serviceConfigFileName);
-			}
-		}
-		String cryptConfigFileName = sc.getInitParameter("mtp.config.crypt");
-		if (cryptConfigFileName != null) {
-			logger.debug("use cryptConfigFile:" + cryptConfigFileName);
-			ServiceRegistryInitializer.setCryptoConfigFileName(cryptConfigFileName);
-		}
-
-
+		
 		//starting queue service or not
 		ServiceRegistry sr = ServiceRegistry.getRegistry();
 		if (sr.exists(RdbQueueService.class)) {

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2011 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
+ * Copyright (C) 2019 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
  * 
  * Unless you have purchased a commercial license,
  * the following license terms apply:
@@ -18,31 +18,12 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.iplass.mtp.tenant;
+package org.iplass.mtp.impl.core.config;
 
-import org.iplass.mtp.definition.DefinitionModifyResult;
-import org.iplass.mtp.definition.TypedDefinitionManager;
+import org.iplass.mtp.spi.ServiceConfigrationException;
 
-/**
- * テナント定義を管理するクラスのインタフェース。
- *
- */
-public interface TenantManager extends TypedDefinitionManager<Tenant> {
-
-	/**
-	 * テナント情報を取得します。
-	 *
-	 * @return {@link Tenant}
-	 */
-	public Tenant getTenant();
-
-	/**
-	 * テナント情報を更新します。
-	 *
-	 * @param tenant {@link Tenant}
-	 */
-	public DefinitionModifyResult updateTenant(Tenant tenant);
-	public DefinitionModifyResult updateTenant(Tenant tenant, final boolean forceUpdate);
-
+public interface ConfigLoader {
+	
+	public String load(String configFileName) throws ServiceConfigrationException;
 
 }

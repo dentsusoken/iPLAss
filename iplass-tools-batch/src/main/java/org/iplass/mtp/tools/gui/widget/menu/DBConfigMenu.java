@@ -46,7 +46,7 @@ import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 
 import org.iplass.mtp.ApplicationException;
-import org.iplass.mtp.impl.core.config.ServiceRegistryInitializer;
+import org.iplass.mtp.impl.core.config.BootstrapProps;
 import org.iplass.mtp.impl.rdb.adapter.RdbAdapter;
 import org.iplass.mtp.impl.rdb.adapter.RdbAdapterService;
 import org.iplass.mtp.impl.rdb.connection.ConnectionFactory;
@@ -249,7 +249,7 @@ public class DBConfigMenu extends JMenu {
 			initConfig = new ConfigSetting();
 
 			//Config FileName
-			initConfig.configFileName = ServiceRegistryInitializer.getConfigFileName();
+			initConfig.configFileName = BootstrapProps.getInstance().getProperty(BootstrapProps.CONFIG_FILE_NAME, BootstrapProps.DEFAULT_CONFIG_FILE_NAME);
 			txtConfigFileName.setText(initConfig.configFileName);
 
 			//Rdb Adapter

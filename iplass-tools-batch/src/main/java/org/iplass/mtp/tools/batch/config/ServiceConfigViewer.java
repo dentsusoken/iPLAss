@@ -25,19 +25,15 @@ import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.List;
 import java.util.stream.Stream;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 
-import org.iplass.mtp.impl.core.config.ConfigPreprocessor;
-import org.iplass.mtp.impl.core.config.ServerEnv;
+import org.iplass.mtp.impl.core.config.BootstrapProps;
 import org.iplass.mtp.impl.core.config.ServiceDefinition;
 import org.iplass.mtp.impl.core.config.ServiceDefinitionParser;
-import org.iplass.mtp.impl.core.config.ServiceRegistryInitializer;
-import org.iplass.mtp.spi.ServiceConfigrationException;
 import org.iplass.mtp.spi.ServiceRegistry;
 import org.iplass.mtp.util.StringUtil;
 
@@ -82,8 +78,8 @@ public class ServiceConfigViewer {
 			}
 		}
 
-		configFileName = ServerEnv.getInstance().getProperty(
-				ServiceRegistryInitializer.CONFIG_FILE_NAME_SYSTEM_PROPERTY_NAME, ServiceRegistryInitializer.DEFAULT_CONFIG_FILE_NAME);
+		configFileName = BootstrapProps.getInstance().getProperty(
+				BootstrapProps.CONFIG_FILE_NAME, BootstrapProps.DEFAULT_CONFIG_FILE_NAME);
 	}
 
 	/**
@@ -110,11 +106,11 @@ public class ServiceConfigViewer {
 		boolean toFile = StringUtil.isNotBlank(outputFileName);
 
 		try {
-			ServiceDefinitionParser parser = new ServiceDefinitionParser(newConfigPreprocessor());
+			ServiceDefinitionParser parser = new ServiceDefinitionParser();
 			ServiceDefinition sd = parser.read(configFileName);
 
 			if (mode.equals(Mode.PARSE_LOAD)) {
-				ServiceRegistryInitializer.setConfigFileName(configFileName);
+				BootstrapProps.getInstance().setProperty(BootstrapProps.CONFIG_FILE_NAME, configFileName);
 				Stream.of(sd.getService()).forEach(sc -> {
 					// 全てのサービスをロード
 					if (sc.getName() != null) {
@@ -154,22 +150,6 @@ public class ServiceConfigViewer {
 		}
 
 		return isSuccess;
-	}
-
-	private ConfigPreprocessor[] newConfigPreprocessor() {
-		List<String> cnames = ServiceRegistryInitializer.getConfigPreprocessorClassNames();
-		ConfigPreprocessor[] cps = null;
-		if (cnames != null) {
-			cps = new ConfigPreprocessor[cnames.size()];
-			for (int i = 0; i < cps.length; i++) {
-				try {
-					cps[i] = (ConfigPreprocessor) Class.forName(cnames.get(i)).newInstance();
-				} catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
-					throw new ServiceConfigrationException("Can not instanceate ConfigPreprocessor:" + cnames.get(i), e);
-				}
-			}
-		}
-		return cps;
 	}
 
 	private void writeMergedServiceConfig(final ServiceDefinition sd, Writer writer) {
