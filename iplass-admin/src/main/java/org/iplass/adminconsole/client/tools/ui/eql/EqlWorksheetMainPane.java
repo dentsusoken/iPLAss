@@ -70,7 +70,6 @@ public class EqlWorksheetMainPane extends VLayout {
 	private static final String EXPORT_ICON = "[SKIN]/actions/download.png";
 
 	private EQLWorksheetPane worksheetPane;
-
 	private EQLExecutePane executePane;
 
 	/**
@@ -80,129 +79,48 @@ public class EqlWorksheetMainPane extends VLayout {
 	 */
 	public EqlWorksheetMainPane(int tabNum) {
 
-		//レイアウト設定
 		setWidth100();
-
-		VLayout mainLayout = new VLayout();
-		mainLayout.setWidth100();
-		mainLayout.setHeight100();
-
-		HLayout worksheetLayout = new HLayout();
-		worksheetLayout.setHeight(250);
-		worksheetLayout.setWidth100();
-		worksheetLayout.setShowResizeBar(true);		//リサイズ可能
-		worksheetLayout.setResizeBarTarget("next");	//リサイズバーをダブルクリックした際、下を収縮
+		setHeight100();
 
 		worksheetPane = new EQLWorksheetPane();
-		worksheetPane.setWidth100();
-		worksheetPane.setHeight100();
-		worksheetPane.setShowResizeBar(true);	//リサイズ可能
+		worksheetPane.setHeight("30%");
+		worksheetPane.setShowResizeBar(true);		//リサイズ可能
 		worksheetPane.setResizeBarTarget("next");	//リサイズバーをダブルクリックした際、下を収縮
 
-		SectionStack hintStack = new SectionStack();
-		hintStack.setWidth("40%");
-		hintStack.setVisibilityMode(VisibilityMode.MUTEX);
-		SectionStackSection hintSection = new SectionStackSection("Hint");
-		VLayout hintPane = new VLayout();
-		hintPane.setHeight100();
-		hintPane.setWidth100();
-
-		Canvas hintContents = new Canvas();
-		hintContents.setHeight100();
-		hintContents.setWidth100();
-		hintContents.setPadding(5);
-		hintContents.setOverflow(Overflow.AUTO);
-		hintContents.setCanSelectText(true);
-
-		StringBuilder contents = new StringBuilder();
-		contents.append("<style type=\"text/css\"><!--");
-		contents.append("ul.notes{margin-top:5px;padding-left:15px;list-style-type:disc;}");
-		contents.append("ul.notes li{padding:5px 0px;}");
-		contents.append("ul.notes li span.strong {text-decoration:underline;color:red}");
-		contents.append("ul.subnotes {margin-top:5px;padding-left:10px;list-style-type:circle;}");
-		contents.append("--></style>");
-		contents.append("<h3>Notes</h3>");
-		contents.append("<ul class=\"notes\">");
-		contents.append(AdminClientMessageUtil.getString("ui_tools_eql_EqlWorksheetMainPane_contentComment1"));
-		contents.append(AdminClientMessageUtil.getString("ui_tools_eql_EqlWorksheetMainPane_contentComment2"));
-		contents.append(AdminClientMessageUtil.getString("ui_tools_eql_EqlWorksheetMainPane_contentComment3"));
-		contents.append(AdminClientMessageUtil.getString("ui_tools_eql_EqlWorksheetMainPane_contentComment4"));
-		contents.append(AdminClientMessageUtil.getString("ui_tools_eql_EqlWorksheetMainPane_contentComment5"));
-		contents.append(AdminClientMessageUtil.getString("ui_tools_eql_EqlWorksheetMainPane_contentComment6"));
-		contents.append("<ul class=\"subnotes\">");
-		contents.append(AdminClientMessageUtil.getString("ui_tools_eql_EqlWorksheetMainPane_contentComment7"));
-		contents.append(AdminClientMessageUtil.getString("ui_tools_eql_EqlWorksheetMainPane_contentComment8"));
-		contents.append(AdminClientMessageUtil.getString("ui_tools_eql_EqlWorksheetMainPane_contentComment9"));
-		contents.append(AdminClientMessageUtil.getString("ui_tools_eql_EqlWorksheetMainPane_contentComment10"));
-		contents.append(AdminClientMessageUtil.getString("ui_tools_eql_EqlWorksheetMainPane_contentComment11"));
-		contents.append(AdminClientMessageUtil.getString("ui_tools_eql_EqlWorksheetMainPane_contentComment12"));
-		contents.append("</ul>");
-		contents.append("</ul>");
-		hintContents.setContents(contents.toString());
-
-		hintPane.addMember(hintContents);
-		hintSection.addItem(hintPane);
-		hintSection.setExpanded(true);
-		hintStack.addSection(hintSection);
-
-		worksheetLayout.addMember(worksheetPane);
-		worksheetLayout.addMember(hintStack);
-
-		mainLayout.addMember(worksheetLayout);
-
 		executePane = new EQLExecutePane();
-		mainLayout.addMember(executePane);
+		executePane.setHeight("70%");
 
-		addMember(mainLayout);
+		addMember(worksheetPane);
+		addMember(executePane);
 	}
 
-	private void createEntityEql(EntityDefinition def, boolean isExcludeRef, boolean isExcludeInherited, boolean isFormatEql) {
-
-		String formatPrefix = "";
-		String formatSuffix = "";
-		if (isFormatEql) {
-			formatPrefix += "\t";
-			formatSuffix += "\n";
-		}
-
-		StringBuilder builder = new StringBuilder();
-		builder.append("select " + formatSuffix);
-		List<PropertyDefinition> properties = def.getPropertyList();
-		for (PropertyDefinition property : properties) {
-			if (isExcludeInherited) {
-				//oid,name,version以外は対象外にする
-				if (!Entity.OID.equals(property.getName())
-						&& !Entity.NAME.equals(property.getName())
-						&& !Entity.VERSION.equals(property.getName())
-						&& property.isInherited()) {
-					continue;
-				}
-			}
-			if (property instanceof ReferenceProperty) {
-				if (!isExcludeRef) {
-					ReferenceProperty refp = (ReferenceProperty)property;
-					builder.append(formatPrefix + refp.getName() + "." + Entity.OID + ", " + formatSuffix);
-					builder.append(formatPrefix + refp.getName() + "." + Entity.NAME + ", " + formatSuffix);
-					builder.append(formatPrefix + refp.getName() + "." + Entity.VERSION + ", " + formatSuffix);
-				}
-			} else {
-				builder.append(formatPrefix + property.getName() + ", " + formatSuffix);
-			}
-		}
-		//builder.deleteCharAt(builder.length() - (", ".length() + formatSuffix.length()));
-		builder.deleteCharAt(builder.length() - (2 + formatSuffix.length()));
-		builder.append(" from ");
-		builder.append(def.getName());
-		worksheetPane.setEql(builder.toString());
-	}
-
-	private class EQLWorksheetPane extends VLayout {
-
-		TextAreaItem eqlField;
-		CheckboxItem searchAllVersion;
-		Label cursorPositionLabel;
+	private class EQLWorksheetPane extends HLayout {
 
 		public EQLWorksheetPane() {
+
+			setWidth100();
+
+			EQLEditPane worksheetPane = new EQLEditPane();
+			worksheetPane.setWidth("60%");
+			worksheetPane.setShowResizeBar(true);	//リサイズ可能
+			worksheetPane.setResizeBarTarget("next");	//リサイズバーをダブルクリックした際、下を収縮
+
+			EQLHintPane hintPane = new EQLHintPane();
+			hintPane.setWidth("40%");
+
+			addMember(worksheetPane);
+			addMember(hintPane);
+		}
+
+	}
+
+	private class EQLEditPane extends VLayout {
+
+		private TextAreaItem eqlField;
+		private CheckboxItem searchAllVersion;
+		private Label cursorPositionLabel;
+
+		public EQLEditPane() {
 			setWidth100();
 			setHeight100();
 
@@ -280,6 +198,7 @@ public class EqlWorksheetMainPane extends VLayout {
 			eqlField.setHeight("100%");
 			eqlField.setSelectOnFocus(true);
 			eqlField.setShowHintInField(true);
+			eqlField.setBrowserSpellCheck(false);
 
 			eqlField.addKeyPressHandler(new KeyPressHandler() {
 				@Override
@@ -317,10 +236,6 @@ public class EqlWorksheetMainPane extends VLayout {
 			addMember(form);
 
 			setCursorPosition();
-		}
-
-		public void setEql(String eql) {
-			eqlField.setValue(eql);
 		}
 
 		private String getEql() {
@@ -388,6 +303,46 @@ public class EqlWorksheetMainPane extends VLayout {
 			dialog.show();
 		}
 
+		private void createEntityEql(EntityDefinition def, boolean isExcludeRef, boolean isExcludeInherited, boolean isFormatEql) {
+
+			String formatPrefix = "";
+			String formatSuffix = "";
+			if (isFormatEql) {
+				formatPrefix += "\t";
+				formatSuffix += "\n";
+			}
+
+			StringBuilder builder = new StringBuilder();
+			builder.append("select " + formatSuffix);
+			List<PropertyDefinition> properties = def.getPropertyList();
+			for (PropertyDefinition property : properties) {
+				if (isExcludeInherited) {
+					//oid,name,version以外は対象外にする
+					if (!Entity.OID.equals(property.getName())
+							&& !Entity.NAME.equals(property.getName())
+							&& !Entity.VERSION.equals(property.getName())
+							&& property.isInherited()) {
+						continue;
+					}
+				}
+				if (property instanceof ReferenceProperty) {
+					if (!isExcludeRef) {
+						ReferenceProperty refp = (ReferenceProperty)property;
+						builder.append(formatPrefix + refp.getName() + "." + Entity.OID + ", " + formatSuffix);
+						builder.append(formatPrefix + refp.getName() + "." + Entity.NAME + ", " + formatSuffix);
+						builder.append(formatPrefix + refp.getName() + "." + Entity.VERSION + ", " + formatSuffix);
+					}
+				} else {
+					builder.append(formatPrefix + property.getName() + ", " + formatSuffix);
+				}
+			}
+			//builder.deleteCharAt(builder.length() - (", ".length() + formatSuffix.length()));
+			builder.deleteCharAt(builder.length() - (2 + formatSuffix.length()));
+			builder.append(" from ");
+			builder.append(def.getName());
+			eqlField.setValue(builder.toString());
+		}
+
 		private void setCursorPosition() {
 
 			//onKeyPressで文字を追加した場合に、まだカーソルが前の位置のため10ms遅延させる
@@ -408,6 +363,57 @@ public class EqlWorksheetMainPane extends VLayout {
 			}.schedule(10);
 		}
 
+	}
+
+	private class EQLHintPane extends SectionStack {
+
+		public EQLHintPane() {
+
+			setVisibilityMode(VisibilityMode.MUTEX);
+
+			SectionStackSection hintSection = new SectionStackSection("Hint");
+			VLayout hintPane = new VLayout();
+			hintPane.setHeight100();
+			hintPane.setWidth100();
+
+			Canvas hintContents = new Canvas();
+			hintContents.setHeight100();
+			hintContents.setWidth100();
+			hintContents.setPadding(5);
+			hintContents.setOverflow(Overflow.AUTO);
+			hintContents.setCanSelectText(true);
+
+			StringBuilder contents = new StringBuilder();
+			contents.append("<style type=\"text/css\"><!--");
+			contents.append("ul.notes{margin-top:5px;padding-left:15px;list-style-type:disc;}");
+			contents.append("ul.notes li{padding:5px 0px;}");
+			contents.append("ul.notes li span.strong {text-decoration:underline;color:red}");
+			contents.append("ul.subnotes {margin-top:5px;padding-left:10px;list-style-type:circle;}");
+			contents.append("--></style>");
+			contents.append("<h3>Notes</h3>");
+			contents.append("<ul class=\"notes\">");
+			contents.append(AdminClientMessageUtil.getString("ui_tools_eql_EqlWorksheetMainPane_contentComment1"));
+			contents.append(AdminClientMessageUtil.getString("ui_tools_eql_EqlWorksheetMainPane_contentComment2"));
+			contents.append(AdminClientMessageUtil.getString("ui_tools_eql_EqlWorksheetMainPane_contentComment3"));
+			contents.append(AdminClientMessageUtil.getString("ui_tools_eql_EqlWorksheetMainPane_contentComment4"));
+			contents.append(AdminClientMessageUtil.getString("ui_tools_eql_EqlWorksheetMainPane_contentComment5"));
+			contents.append(AdminClientMessageUtil.getString("ui_tools_eql_EqlWorksheetMainPane_contentComment6"));
+			contents.append("<ul class=\"subnotes\">");
+			contents.append(AdminClientMessageUtil.getString("ui_tools_eql_EqlWorksheetMainPane_contentComment7"));
+			contents.append(AdminClientMessageUtil.getString("ui_tools_eql_EqlWorksheetMainPane_contentComment8"));
+			contents.append(AdminClientMessageUtil.getString("ui_tools_eql_EqlWorksheetMainPane_contentComment9"));
+			contents.append(AdminClientMessageUtil.getString("ui_tools_eql_EqlWorksheetMainPane_contentComment10"));
+			contents.append(AdminClientMessageUtil.getString("ui_tools_eql_EqlWorksheetMainPane_contentComment11"));
+			contents.append(AdminClientMessageUtil.getString("ui_tools_eql_EqlWorksheetMainPane_contentComment12"));
+			contents.append("</ul>");
+			contents.append("</ul>");
+			hintContents.setContents(contents.toString());
+
+			hintPane.addMember(hintContents);
+			hintSection.addItem(hintPane);
+			hintSection.setExpanded(true);
+			addSection(hintSection);
+		}
 	}
 
 }
