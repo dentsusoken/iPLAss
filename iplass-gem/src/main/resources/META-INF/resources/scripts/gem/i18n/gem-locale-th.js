@@ -18,7 +18,7 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-scriptContext.locale.requiredMsg = "กรุณาใส่ {0}"
+scriptContext.gem.locale.common.requiredMsg = "กรุณาใส่ {0}"
 scriptContext.locale.ADD_ITEM_BOTTOM = "เพิ่มเงื่อนไขการค้นหา"
 scriptContext.locale.COND = "เงื่อนไข"
 scriptContext.locale.FILTER = "เงื่อนไขการกรอง"

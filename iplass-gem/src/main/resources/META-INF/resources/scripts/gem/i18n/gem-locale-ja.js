@@ -18,7 +18,7 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-scriptContext.locale.requiredMsg = "{0}を入力してください。"
+scriptContext.gem.locale.common.requiredMsg = "{0}を入力してください。"
 scriptContext.locale.ADD_ITEM_BOTTOM = "下部に項目を追加"
 scriptContext.locale.COND = "条件"
 scriptContext.locale.FILTER = "フィルター"

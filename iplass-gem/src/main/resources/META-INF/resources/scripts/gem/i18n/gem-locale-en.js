@@ -18,7 +18,7 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-scriptContext.locale.requiredMsg = "Please enter {0}."
+scriptContext.gem.locale.common.requiredMsg = "Please enter {0}."
 scriptContext.locale.ADD_ITEM_BOTTOM = "Add Search Item"
 scriptContext.locale.COND = "Conditions"
 scriptContext.locale.FILTER = "Filter"

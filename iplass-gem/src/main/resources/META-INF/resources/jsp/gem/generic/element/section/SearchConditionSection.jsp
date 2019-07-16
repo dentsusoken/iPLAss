@@ -915,7 +915,7 @@ $(function() {
 
 		<%-- common.js --%>
 		addDetailValidator(function() {
-			var msg = scriptContext.locale.requiredMsg;
+			var msg = scriptContext.gem.locale.common.requiredMsg;
 			for (var i = 0; i < propList.length; i++) {
 				var propName = es(propList[i]);
 				var displayLabel = $("option[value='" + propName + "']:first", $div).text();

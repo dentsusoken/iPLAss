@@ -18,7 +18,7 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-scriptContext.locale.requiredMsg = "請輸入{0}。"
+scriptContext.gem.locale.common.requiredMsg = "請輸入{0}。"
 scriptContext.locale.ADD_ITEM_BOTTOM = "將項目添加到底部"
 scriptContext.locale.COND = "條件"
 scriptContext.locale.FILTER = "篩選"
