@@ -41,7 +41,6 @@ scriptContext.locale.timepickerBtn = "ป้อนข้อมูลจากแ
 scriptContext.locale.validateDateErrMsg = "กรุณาใส่วันที่ให้ถูกต้อง ({0})"
 scriptContext.locale.validateTimeErrMsg = "กรุณาใส่เวลาให้ถูกต้อง ({0})"
 scriptContext.locale.validateTimestampErrMsg = "กรุณาใส่วันที่หรือเวลาให้ถูกต้อง ({0})"
-scriptContext.locale.passResetConfirm = "คุณต้องการกำหนดรหัสผ่านใหม่หรือไม่?"
 scriptContext.locale.cancel = "ยกเลิก"
 scriptContext.locale.closeLink = "ปิด"
 scriptContext.locale.deleteLabel = "ลบ"
