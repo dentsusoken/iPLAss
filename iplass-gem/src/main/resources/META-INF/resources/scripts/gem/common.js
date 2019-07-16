@@ -2196,7 +2196,7 @@ function searchUniqueReference(id, selectAction, viewAction, defName, propName, 
 		var key = selectArray[0];
 		// 重複チェック （自分を除く）
 		if (key in refs && !$(refs[key]).is("#" + _id)) {
-			alert(scriptContext.locale.duplicateData);
+			alert(scriptContext.gem.locale.reference.duplicateData);
 			return;
 		}
 
@@ -2469,7 +2469,7 @@ function addReference(id, viewAction, defName, key, label, propName, ulId, refEd
 	//削除ボタン追加
 	var deletable = $ul.attr("data-deletable");
 	if (deletable != null && deletable == "true") {
-		var $btn = $(" <input type='button' />").val(scriptContext.locale.deleteBtn).addClass("gr-btn-02 del-btn ml05").appendTo($li);
+		var $btn = $(" <input type='button' />").val(scriptContext.gem.locale.reference.deleteBtn).addClass("gr-btn-02 del-btn ml05").appendTo($li);
 		$btn.click(function() {
 			$(this).parent().remove();
 		});

@@ -1267,9 +1267,9 @@ $.fn.allInputCheck = function(){
 							$(list).each(function(index) {
 								this["id"] = this.orgOid + "_" + this.orgVersion;
 								if ($v.editable && $v.updatable && !$v.changeEditLinkToViewLink) {
-									this["_mtpDetailLink"] = "<a href='javascript:void(0)' class='lnk-mr-01' data-oid='"+ this.orgOid + "' data-version='" + this.orgVersion + "'>" + scriptContext.locale.edit + "</a>";
+									this["_mtpDetailLink"] = "<a href='javascript:void(0)' class='lnk-mr-01' data-oid='"+ this.orgOid + "' data-version='" + this.orgVersion + "'>" + scriptContext.gem.locale.reference.edit + "</a>";
 								} else {
-									this["_mtpDetailLink"] = "<a href='javascript:void(0)' class='lnk-mr-02' data-oid='"+ this.orgOid + "' data-version='" + this.orgVersion + "'>" + scriptContext.locale.detail + "</a>";
+									this["_mtpDetailLink"] = "<a href='javascript:void(0)' class='lnk-mr-02' data-oid='"+ this.orgOid + "' data-version='" + this.orgVersion + "'>" + scriptContext.gem.locale.reference.detail + "</a>";
 								}
 								$v.grid.addRowData(index + 1, this);
 							});
@@ -1891,7 +1891,7 @@ $.fn.allInputCheck = function(){
 				//common.js
 				addNormalValidator(function() {
 					if ($v.val() == "" && $v.siblings("select").children(":selected[value!='']").length > 0) {
-						alert(scriptContext.locale.specifyCondition);
+						alert(scriptContext.gem.locale.reference.specifyCondition);
 						$v.focus();
 						return false;
 					}
@@ -2183,7 +2183,7 @@ $.fn.allInputCheck = function(){
 			$v.on("click", function() {
 				if ($v.linkPropName && $v.linkPropName != "") {
 					if (!getLinkValue($v)) {
-						alert(messageFormat(scriptContext.locale.pleaseSelectAny, $v.linkPropName));
+						alert(messageFormat(scriptContext.gem.locale.reference.pleaseSelectAny, $v.linkPropName));
 						return;
 					}
 				}
@@ -2208,7 +2208,7 @@ $.fn.allInputCheck = function(){
 			var id = uniqueId();
 			var $div = $("<div />").addClass("recursiveTree").attr({id:"container_" + id, title:$v.title}).css("display", "none");
 			$v.after($div);
-			$("<span />").addClass("treeTitle").text(messageFormat(scriptContext.locale.pleaseSelectAny, $v.title)).appendTo($div);
+			$("<span />").addClass("treeTitle").text(messageFormat(scriptContext.gem.locale.reference.pleaseSelectAny, $v.title)).appendTo($div);
 			var $tree = $("<div />").addClass("treeContents").attr("id", "tree_" + id).appendTo($div);
 
 			var $dialog = $div.dialog({
@@ -2243,7 +2243,7 @@ $.fn.allInputCheck = function(){
 									$link.modalWindow();
 								}
 								if ($v.deletable) {
-									$("<input type='button' />").addClass("gr-btn-02 del-btn").val(scriptContext.locale.deleteLabel).on("click", function() {$li.remove();}).appendTo($li);
+									$("<input type='button' />").addClass("gr-btn-02 del-btn").val(scriptContext.gem.locale.reference.deleteLabel).on("click", function() {$li.remove();}).appendTo($li);
 								}
 
 								$("<input type='hidden' />").attr("name", $v.prefix + $v.propName).val(oid + "_" + version).appendTo($li);
@@ -2659,7 +2659,7 @@ $.fn.allInputCheck = function(){
 				});
 
 				if (duplicate) {
-					alert(scriptContext.locale.duplicateData);
+					alert(scriptContext.gem.locale.reference.duplicateData);
 					return;
 				}
 
@@ -2693,7 +2693,7 @@ $.fn.allInputCheck = function(){
 							}
 						}
 					} else {
-						alert(scriptContext.locale.noResult);
+						alert(scriptContext.gem.locale.reference.noResult);
 					}
 				});
 
