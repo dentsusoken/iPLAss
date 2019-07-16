@@ -93,9 +93,9 @@ $(function(){
 		var $under = $("<div class='modal-inner sub-modal-inner' />").appendTo($dialog);
 		var $title = $("<h2 class='hgroup-01' />").appendTo($under);
 		$("<span />").attr({id: "modal-title-" + name}).appendTo($title);
-		$("<p class='modal-maximize sub-modal-maximize' />").text(scriptContext.locale.maximizeLink).appendTo($under);
-		$("<p class='modal-restore sub-modal-restore' />").text(scriptContext.locale.restoreLink).appendTo($under);
-		$("<p class='modal-close sub-modal-close' />").text(scriptContext.locale.closeLink).appendTo($under);
+		$("<p class='modal-maximize sub-modal-maximize' />").text(scriptContext.gem.locale.modal.maximizeLink).appendTo($under);
+		$("<p class='modal-restore sub-modal-restore' />").text(scriptContext.gem.locale.modal.restoreLink).appendTo($under);
+		$("<p class='modal-close sub-modal-close' />").text(scriptContext.gem.locale.modal.closeLink).appendTo($under);
 		var ifrm = "<iframe src=\"about:blank\" height=\"686\" width=\"100%\" frameborder=\"0\" name=\"" + name + "\"/>";
 		var $frame = $(ifrm).appendTo($under);
 

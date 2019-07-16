@@ -362,11 +362,11 @@ $(function() {
 		var $under = $("<div class='modal-inner sub-modal-inner' />").appendTo($dialog);
 		var $title = $("<h2 class='hgroup-01' />").appendTo($under);
 		$("<span />").attr({id: "modal-title-" + name}).appendTo($title);
-		$("<p class='modal-maximize sub-modal-maximize' />").attr("title", scriptContext.locale.maximizeLink).appendTo($under)
+		$("<p class='modal-maximize sub-modal-maximize' />").attr("title", scriptContext.gem.locale.modal.maximizeLink).appendTo($under)
 			.append("<i class='far fa-window-maximize fa-2x'></i>");
-		$("<p class='modal-restore sub-modal-restore' />").attr("title", scriptContext.locale.restoreLink).appendTo($under)
+		$("<p class='modal-restore sub-modal-restore' />").attr("title", scriptContext.gem.locale.modal.restoreLink).appendTo($under)
 			.append("<i class='far fa-window-restore fa-2x'></i>");
-		$("<p class='modal-close sub-modal-close' />").attr("title", scriptContext.locale.closeLink).appendTo($under)
+		$("<p class='modal-close sub-modal-close' />").attr("title", scriptContext.gem.locale.modal.closeLink).appendTo($under)
 			.append("<i class='far fa-window-close fa-2x'></i>");
 		var ifrm = "<iframe src=\"about:blank\" height=\"686\" width=\"100%\" frameborder=\"0\" name=\"" + name + "\"/>";
 		var $frame = $(ifrm).appendTo($under);
