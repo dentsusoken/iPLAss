@@ -1621,7 +1621,7 @@ function uploadFile(file, token) {
 			if (data.result != null) {
 				var result = $(data.result).find("Result").text();
 				if (result == null || result == "") {
-					$span.text(scriptContext.locale.failedToFileUpload).show();
+					$span.text(scriptContext.gem.locale.binary.failedToFileUpload).show();
 				} else {
 					var error = $(data.result).find("error").text();
 					if (error == null || error == "") {
@@ -1639,7 +1639,7 @@ function uploadFile(file, token) {
 					}
 				}
 			} else {
-				$span.text(scriptContext.locale.failedToFileUpload).show();
+				$span.text(scriptContext.gem.locale.binary.failedToFileUpload).show();
 			}
 
 			//全て完了(成功or失敗)してから入力欄コントロール
@@ -1663,7 +1663,7 @@ function uploadFile(file, token) {
 		var uploaded = $("#ul_" + es(propName)).children("li").length;
 
 		if (fileCount + uploaded > max) {
-			alert(messageFormat(scriptContext.locale.filesLimitOver, max));
+			alert(messageFormat(scriptContext.gem.locale.binary.filesLimitOver, max));
 			return false;
 		}
 
@@ -1719,7 +1719,7 @@ function addBinaryGroup(propName, count, fileId, brName, brType, brLobId, displa
 		$li.addClass("noimage");
 	}
 
-	$("<a href='javascript:void(0)' class='binaryDelete del-btn'> " + scriptContext.locale.deleteLink + "</a>").appendTo($li).click(function() {
+	$("<a href='javascript:void(0)' class='binaryDelete del-btn'> " + scriptContext.gem.locale.binary.deleteLink + "</a>").appendTo($li).click(function() {
 		//liを削除
 		$li.remove();
 
@@ -1743,7 +1743,7 @@ function addBinaryGroup(propName, count, fileId, brName, brType, brLobId, displa
 			var width = $input.attr("data-binWidth") - 0;
 			var height = $input.attr("data-binHeight") - 0;
 			var $p = $("<p id='p_" + propName + count + "' class='mb0' />").appendTo($li);
-			var $img = $("<object data='" + ref + "' type='application/x-shockwave-flash' width='" + width + "' height='" + height + "' ><param name='movie' value='" + ref + "' /><param name='quality' value='high'>" + scriptContext.locale.notVewFlash + "</object>").appendTo($p);
+			var $img = $("<object data='" + ref + "' type='application/x-shockwave-flash' width='" + width + "' height='" + height + "' ><param name='movie' value='" + ref + "' /><param name='quality' value='high'>" + scriptContext.gem.locale.binary.notVewFlash + "</object>").appendTo($p);
 		} else if (brType && brType.indexOf("video/mpeg") > -1) {
 			// mpegファイルの場合は動画を表示
 			var width = $input.attr("data-binWidth") - 0;
