@@ -22,6 +22,7 @@ package org.iplass.gem.command.generic.delete;
 
 import java.util.List;
 
+import org.iplass.gem.GemConfigService;
 import org.iplass.gem.command.Constants;
 import org.iplass.gem.command.generic.search.DetailSearchCommand;
 import org.iplass.gem.command.generic.search.FixedSearchCommand;
@@ -38,6 +39,7 @@ import org.iplass.mtp.entity.DeleteOption;
 import org.iplass.mtp.entity.Entity;
 import org.iplass.mtp.entity.SearchResult;
 import org.iplass.mtp.entity.query.Query;
+import org.iplass.mtp.spi.ServiceRegistry;
 import org.iplass.mtp.transaction.Transaction;
 import org.iplass.mtp.view.generic.EntityView;
 import org.iplass.mtp.view.generic.SearchFormView;
@@ -95,15 +97,16 @@ public final class DeleteAllCommand extends DeleteCommandBase {
 			final DeleteOption option = new DeleteOption(false);
 			option.setPurge(isPurge);
 
-			//大量データを考慮してトランザクションを分割(100件毎)
+			//大量データを考慮してトランザクションを分割(batchSize件毎)
+			int batchSize = ServiceRegistry.getRegistry().getService(GemConfigService.class).getDeleteAllCommandBatchSize();
 			List<Entity> list = result.getList();
 			int count = list.size();
-			int countPerHundret = count / 100;
-			if (count % 100 > 0) countPerHundret++;
+			int countPerBatch = count / batchSize;
+			if (count % batchSize > 0) countPerBatch++;
 			int current = 0;
-			for (int i = 0; i < countPerHundret; i++) {
-				current = i * 100;
-				int last = current + 100;
+			for (int i = 0; i < countPerBatch; i++) {
+				current = i * batchSize;
+				int last = current + batchSize;
 				if (last > list.size()) last = list.size();
 				final List<Entity> subList = list.subList(current, last);
 				Boolean ret = Transaction.requiresNew(t -> {

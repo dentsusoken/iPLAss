@@ -93,6 +93,15 @@ public class GemConfigService implements Service {
 	/** ゴミ箱の表示件数上限 */
 	private int recycleBinMaxCount;
 
+	/** 一括削除のコミット件数 */
+	private int deleteAllCommandBatchSize;
+
+	/** 一括更新のコミット件数 (単一) */
+	private int bulkUpdateAllCommandBatchSize;
+
+	/** 一括更新のコミット件数 (並列) */
+	private int multiBulkUpdateAllCommandBatchSize;
+
 	private List<BinaryDownloadLoggingTargetProperty> binaryDownloadLoggingTargetProperty;
 
 	private List<ImageColorSetting> imageColors;
@@ -212,6 +221,27 @@ public class GemConfigService implements Service {
 			recycleBinMaxCount = Integer.valueOf(config.getValue("recycleBinMaxCount"));
 		} else {
 			this.recycleBinMaxCount = 100;
+		}
+
+		String deleteAllCommandBatchSize = config.getValue("deleteAllCommandBatchSize");
+		if (deleteAllCommandBatchSize != null){
+			this.deleteAllCommandBatchSize = Integer.parseInt(deleteAllCommandBatchSize);
+		} else {
+			this.deleteAllCommandBatchSize = 100;
+		}
+
+		String bulkUpdateAllCommandBatchSize = config.getValue("bulkUpdateAllCommandBatchSize");
+		if (bulkUpdateAllCommandBatchSize != null){
+			this.bulkUpdateAllCommandBatchSize = Integer.parseInt(bulkUpdateAllCommandBatchSize);
+		} else {
+			this.bulkUpdateAllCommandBatchSize = 100;
+		}
+
+		String multiBulkUpdateAllCommandBatchSize = config.getValue("multiBulkUpdateAllCommandBatchSize");
+		if (multiBulkUpdateAllCommandBatchSize != null){
+			this.multiBulkUpdateAllCommandBatchSize = Integer.parseInt(multiBulkUpdateAllCommandBatchSize);
+		} else {
+			this.multiBulkUpdateAllCommandBatchSize = 100;
 		}
 
 		skins = (List<Skin>) config.getBeans("skins");
@@ -420,5 +450,29 @@ public class GemConfigService implements Service {
 	 */
 	public int getRecycleBinMaxCount() {
 		return recycleBinMaxCount;
+	}
+
+	/**
+	 * 一括削除のコミット件数を取得します。
+	 * @return 一括削除のコミット件数
+	 */
+	public int getDeleteAllCommandBatchSize() {
+		return deleteAllCommandBatchSize;
+	}
+
+	/**
+	 * 一括更新のコミット件数 (単一)を取得します。
+	 * @return 一括更新のコミット件数 (単一)
+	 */
+	public int getBulkUpdateAllCommandBatchSize() {
+		return bulkUpdateAllCommandBatchSize;
+	}
+
+	/**
+	 * 一括更新のコミット件数 (並列)を取得します。
+	 * @return 一括更新のコミット件数 (並列)
+	 */
+	public int getMultiBulkUpdateAllCommandBatchSize() {
+		return multiBulkUpdateAllCommandBatchSize;
 	}
 }
