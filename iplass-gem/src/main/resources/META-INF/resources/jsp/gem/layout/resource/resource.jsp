@@ -127,7 +127,8 @@ dType="/gem";
 <script src="${staticContentPath}/webjars/jQuery-Timepicker-Addon/1.6.3/jquery-ui-sliderAccess.js?cv=${apiVersion}"></script>
 <script src="${staticContentPath}/webjars/jQuery-contextMenu/2.6.2/dist/jquery.contextMenu.js?cv=${apiVersion}"></script>
 <script src="${staticContentPath}/webjars/momentjs/2.18.1/min/moment-with-locales.js?cv=${apiVersion}"></script>
-<script src="${staticContentPath}/scripts/gem/locale-<%=language%>.js?cv=${apiVersion}"></script>
+<script src="${staticContentPath}/scripts/gem/i18n/gem-locale-migration-<%=language%>.js?cv=${apiVersion}"></script>
+<script src="${staticContentPath}/scripts/gem/i18n/gem-locale-<%=language%>.js?cv=${apiVersion}"></script>
 <script src="${staticContentPath}/webjars/free-jqgrid/4.14.1/js/i18n/min/grid.locale-<%=language%>.js?cv=${apiVersion}"></script>
 <script src="${staticContentPath}/webjars/font-awesome/5.0.9/svg-with-js/js/fontawesome-all.min.js?cv=${apiVersion}"></script>
 <%
