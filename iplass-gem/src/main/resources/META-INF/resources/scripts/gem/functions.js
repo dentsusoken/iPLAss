@@ -1471,8 +1471,8 @@ $.fn.allInputCheck = function(){
 				previewFunc: null,
 				nextFunc: null,
 				searchFunc: null,
-				previousLabel: scriptContext.locale.previous,
-				nextLabel: scriptContext.locale.next
+				previousLabel: scriptContext.gem.locale.pager.previous,
+				nextLabel: scriptContext.gem.locale.pager.next
 		};
 		var options = $.extend(defaults, option);
 		if (!this) return false;
@@ -1522,7 +1522,7 @@ $.fn.allInputCheck = function(){
 				var $current = $("<input />").attr({type:"text", maxlength:7, size:2}).appendTo($quickJump);
 				$("<span />").text(" / ").appendTo($quickJump);
 				var $max = $("<span />").addClass("last-page").appendTo($quickJump);
-				$("<span />").text(scriptContext.locale.page).appendTo($quickJump);
+				$("<span />").text(scriptContext.gem.locale.pager.page).appendTo($quickJump);
 
 				var $btns = $("<li />").appendTo($ul);
 				var $searchBtn = $("<span />").addClass("ui-icon ui-icon-search").appendTo($btns);
@@ -1532,7 +1532,7 @@ $.fn.allInputCheck = function(){
 			if (options.showCurrentPage) {
 				var $currentPage = $("<li />").addClass("mr05").appendTo($ul);
 				$currentLabel = $("<span />").addClass("mr05").appendTo($currentPage);
-				$("<span />").text(scriptContext.locale.page).appendTo($currentPage);
+				$("<span />").text(scriptContext.gem.locale.pager.page).appendTo($currentPage);
 			}
 
 			//ページリンク
@@ -1613,7 +1613,7 @@ $.fn.allInputCheck = function(){
 				var $resultNum = $("<li />").addClass("result-num").appendTo($ul);
 				var $range = $("<span />").addClass("range").appendTo($resultNum);
 				var $count = $("<span />").addClass("count").text(0).appendTo($resultNum);
-				$("<span />").text(scriptContext.locale.item).appendTo($resultNum);
+				$("<span />").text(scriptContext.gem.locale.pager.count).appendTo($resultNum);
 			}
 
 			$.extend($v, {
@@ -1666,7 +1666,7 @@ $.fn.allInputCheck = function(){
 
 						if (count > 0) {
 							if (options.showItemCount) {
-								$range.css("display","").text((offset + 1) + " - " + tail + scriptContext.locale.item + " / ");
+								$range.css("display","").text((offset + 1) + " - " + tail + scriptContext.gem.locale.pager.count + " / ");
 							}
 							if (options.showPageJump) {
 								$quickJump.show();
