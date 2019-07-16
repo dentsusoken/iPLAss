@@ -158,9 +158,9 @@ function alertErrMessage(XMLHttpRequest) {
 
 	if (typeof res !== "undeined" && res != null
 			&& res.exceptionType == "org.iplass.mtp.auth.NoPermissionException") {
-		alert(scriptContext.locale.permissionErrOccurred);
+		alert(scriptContext.gem.locale.error.permissionErrOccurred);
 	} else {
-		alert(scriptContext.locale.errOccurred);
+		alert(scriptContext.gem.locale.error.errOccurred);
 	}
 }
 
@@ -227,7 +227,7 @@ function search(webapi, searchType, formName, isCount, successFunc, errorFunc) {
 				if (response.message != null && response.message != "") {
 					alert(response.message);
 				} else {
-					alert(scriptContext.locale.errOccurred);
+					alert(scriptContext.gem.locale.error.errOccurred);
 				}
 
 				if (errorFunc && $.isFunction(errorFunc)) {
@@ -280,7 +280,7 @@ function searchValidate(webapi, searchType, formName, successFunc, errorFunc) {
 				if (response.message != null && response.message != "") {
 					alert(response.message);
 				} else {
-					alert(scriptContext.locale.errOccurred);
+					alert(scriptContext.gem.locale.error.errOccurred);
 				}
 
 				if (errorFunc && $.isFunction(errorFunc)) {
@@ -514,7 +514,7 @@ function purge(webapi, rbid, _t, func, errFunc) {
 	postAsync(webapi, params, function(results) {
 		if (func && $.isFunction(func)) func.call(this);
 	}, null, function(result) {
-		alert(scriptContext.locale.errOccurred);
+		alert(scriptContext.gem.locale.error.errOccurred);
 		if  (errFunc && $.isFunction(errFunc)) {
 			errFunc.call(this, XMLHttpRequest);
 		}
@@ -544,7 +544,7 @@ function restore(webapi, rbid, _t, func, errFunc) {
 		var errorRbid = results.errorRbid;
 		if (func && $.isFunction(func)) func.call(this, message, errorRbid);
 	}, null, function(result) {
-		alert(scriptContext.locale.errOccurred);
+		alert(scriptContext.gem.locale.error.errOccurred);
 		if  (errFunc && $.isFunction(errFunc)) {
 			errFunc.call(this, XMLHttpRequest);
 		}
