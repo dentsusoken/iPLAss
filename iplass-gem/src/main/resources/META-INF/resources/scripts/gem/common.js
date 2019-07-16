@@ -1016,7 +1016,7 @@ function validateDate(val, dateFormat, errMessage) {
 
 	function getErrorMessage() {
 		if (typeof errMessage === "undefined" || errMessage == null || errMessage == "") {
-			errMessage = scriptContext.locale.validateDateErrMsg;
+			errMessage = scriptContext.gem.locale.date.validateDateErrMsg;
 		}
 		return messageFormat(errMessage, dateFormat);
 	}
@@ -1232,7 +1232,7 @@ function validateTimePicker(val, timeFormat, fixedMin, fixedSec, errMessage) {
 
 	function getErrorMessage() {
 		if (typeof errMessage === "undefined" || errMessage == null || errMessage == "") {
-			errMessage = scriptContext.locale.validateTimeErrMsg;
+			errMessage = scriptContext.gem.locale.date.validateTimeErrMsg;
 		}
 		return messageFormat(errMessage, timeFormat);
 	}
@@ -1482,7 +1482,7 @@ function validateTimestampPicker(val, dateFormat, timeFormat, fixedMin, fixedSec
 
 	function getErrorMessage() {
 		if (typeof errMessage === "undefined" || errMessage == null || errMessage == "") {
-			errMessage = scriptContext.locale.validateTimestampErrMsg;
+			errMessage = scriptContext.gem.locale.date.validateTimestampErrMsg;
 		}
 		return messageFormat(errMessage, dateFormat + " " + timeFormat);
 	}

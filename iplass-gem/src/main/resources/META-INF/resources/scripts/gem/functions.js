@@ -2817,7 +2817,7 @@ function datepicker(selector) {
 		var defaults = {
 			dateFormat: dateUtil.getDatepickerDateFormat(),
 			inputDateFormat: dateUtil.getInputDateFormat(),
-			buttonText: scriptContext.locale.datepickerBtn,
+			buttonText: scriptContext.gem.locale.date.datepickerBtn,
 			buttonImage: null,
 			showErrorMessage: true,
 			validErrMsg: null,
@@ -3013,7 +3013,7 @@ function timepicker(selector) {
 			fixedMin: null,
 			fixedSec: null,
 			fixedMSec: "000",
-			buttonText: scriptContext.locale.timepickerBtn,
+			buttonText: scriptContext.gem.locale.date.timepickerBtn,
 			buttonImage: null,
 			showErrorMessage: true,
 			validErrMsg: null,
@@ -3195,7 +3195,7 @@ function datetimepicker(selector) {
 			fixedMin: null,
 			fixedSec: null,
 			fixedMSec: "000",	//現状未使用
-			buttonText: scriptContext.locale.datepickerBtn,
+			buttonText: scriptContext.gem.locale.date.datepickerBtn,
 			buttonImage: null,
 			showErrorMessage: true,
 			validErrMsg: null,
