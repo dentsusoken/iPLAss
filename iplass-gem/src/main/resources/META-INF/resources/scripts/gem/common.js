@@ -789,7 +789,7 @@ function numcheck(element) {
 	}
 	//数値変換可能かをチェック
 	if (isNaN(v)) {
-		alert(scriptContext.locale.numcheckMsg);
+		alert(scriptContext.gem.locale.common.numcheckMsg);
 		element.value = "";
 		return;
 	}
@@ -922,7 +922,7 @@ function addDateItem(ulId, multiplicity, dummyRowId, propName, countId, func, de
 		$button.click(function() {deleteItem(copyId, delCallback);});
 
 		datepicker($text);
-		
+
 		return $copy;
 	}
 }
@@ -1114,7 +1114,7 @@ function addTimeSelectItem(ulId, multiplicity, dummyRowId, propName, countId, fu
 
 		//削除ボタンのclickを設定
 		$button.click(function() {deleteItem(copyId, delCallback);});
-		
+
 		return $copy;
 	}
 }
@@ -2395,8 +2395,8 @@ function insertUniqueReference(id, addAction, viewAction, defName, propName, mul
 	var target = getModalTarget(isSubModal);
 
 	var parentOid = $(button).attr("data-parentOid");
-	var parentVersion = $(button).attr("data-parentVersion"); 
-	
+	var parentVersion = $(button).attr("data-parentVersion");
+
 	var _id = id.replace(/\[/g, "\\[").replace(/\]/g, "\\]").replace(/\./g, "\\.");
 	var _propName = propName.replace(/\[/g, "\\[").replace(/\]/g, "\\]").replace(/\./g, "\\.");
 
@@ -2497,20 +2497,20 @@ function addUniqueReference(viewAction, key, label, unique, defName, propName, m
 		var $text = $(":text", $copy);
 		var $link = $("a.modal-lnk", $copy);
 		var $hidden = $("input:hidden:last", $copy);
-	
+
 		//inputを設定
 		$text.val(unique);
-	
+
 		//linkを設定
 		var linkId = propName + "_" + tmp.oid;
 		$link.attr("id", linkId).click(function() {
 			showReference(viewAction, defName, oid, ver, linkId, refEdit);
 		});
 		$link.text(label);
-	
+
 		//hiddenを設定
 		$hidden.val(key);
-	
+
 		return $copyId;
 
 	}, delCallback);
@@ -2529,7 +2529,7 @@ function updateUniqueReference(id, viewAction, defName, key, label, propName, ul
 	var $link = $("a", $li).attr("id", linkId).click(function() {
 		showReference(viewAction, defName, oid, ver, linkId, refEdit);
 	});
-	
+
 	$link.text(label);
 	if ($("body.modal-body").length != 0) {
 		$link.subModalWindow();

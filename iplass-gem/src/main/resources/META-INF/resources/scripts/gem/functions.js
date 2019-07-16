@@ -919,7 +919,7 @@ $.fn.allInputCheck = function(){
 				var tb = this;
 				var val = $(tb).val().trim();	//空白だけの場合にNaNになるので除去
 				if(isNaN(val)) {
-					alert(scriptContext.locale.numcheckMsg);
+					alert(scriptContext.gem.locale.common.numcheckMsg);
 					$(tb).val("");
 					return true;
 				}
@@ -1709,7 +1709,7 @@ $.fn.allInputCheck = function(){
 				$current.css("ime-mode", "disabled").on("change", function() {
 					var v = Number($(this).val());
 					if (isNaN(v)) {
-						alert(scriptContext.locale.numcheckMsg);
+						alert(scriptContext.gem.locale.common.numcheckMsg);
 						if ($(this).attr("beforeValue")) {
 							$(this).val($(this).attr("beforeValue"));
 						} else {
@@ -1860,7 +1860,7 @@ $.fn.allInputCheck = function(){
 
 			var pleaseSelectLabel = "";
 			if (scriptContext.locale.showPulldownPleaseSelectLabel === true) {
-				pleaseSelectLabel = scriptContext.locale.pleaseSelect;
+				pleaseSelectLabel = scriptContext.gem.locale.common.pleaseSelect;
 			}
 			$("<option />").attr({value:""}).text(pleaseSelectLabel).appendTo($v);
 
@@ -2044,7 +2044,7 @@ $.fn.allInputCheck = function(){
 			if (!reset) {
 				var pleaseSelectLabel = "";
 				if (scriptContext.locale.showPulldownPleaseSelectLabel === true) {
-					pleaseSelectLabel = scriptContext.locale.pleaseSelect;
+					pleaseSelectLabel = scriptContext.gem.locale.common.pleaseSelect;
 				}
 				$parent = $("<select />").attr("name", name).attr("data-norewrite", true).addClass("form-size-02 inpbr");
 				if ($v.customStyle) {
@@ -2261,7 +2261,7 @@ $.fn.allInputCheck = function(){
 						}
 					}
 				},{
-					text: scriptContext.locale.cancel,
+					text: scriptContext.gem.locale.common.cancel,
 					click: function() {
 						$(this).dialog("close");
 					}
@@ -3523,7 +3523,7 @@ function datetimepicker(selector) {
 				colModels.push({name:"id", index:"id", hidden: true, key:true, label:"id", sortable:false });
 
 				//name
-				colModels.push({name:"name", index:"name", width: 260, label:"<p class='title'>" + scriptContext.locale.name + "</p>", sortable:false, formatter:function(cellValue, opt, rowObject) {
+				colModels.push({name:"name", index:"name", width: 260, label:"<p class='title'>" + scriptContext.gem.locale.common.name + "</p>", sortable:false, formatter:function(cellValue, opt, rowObject) {
 					var dispValue = $.jgrid.htmlEncode(cellValue);
 					if (rowObject.type == "E") {
 						var defName = rowObject.defName;
