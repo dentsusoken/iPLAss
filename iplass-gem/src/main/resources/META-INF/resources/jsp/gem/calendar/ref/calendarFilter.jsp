@@ -1,19 +1,19 @@
 <%--
  Copyright (C) 2014 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
- 
+
  Unless you have purchased a commercial license,
  the following license terms apply:
- 
+
  This program is free software: you can redistribute it and/or modify
  it under the terms of the GNU Affero General Public License as
  published by the Free Software Foundation, either version 3 of the
  License, or (at your option) any later version.
- 
+
  This program is distributed in the hope that it will be useful,
  but WITHOUT ANY WARRANTY; without even the implied warranty of
  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  GNU Affero General Public License for more details.
- 
+
  You should have received a copy of the GNU Affero General Public License
  along with this program. If not, see <https://www.gnu.org/licenses/>.
  --%>
@@ -83,7 +83,7 @@ $(function() {
 				// 除く設定されているエンティティ設定
 				if ($(".without-entity[defname='" + form.attr("defName") + "']").prop("checked")) {
 					formList[defName] = {withoutEntity:true};
-					filterMessage.push(messageFormat(scriptContext.locale.WITHOUT_ENTITY, displayName));
+					filterMessage.push(messageFormat(scriptContext.gem.locale.calendar.WITHOUT_ENTITY, displayName));
 					return true;
 				}
 
@@ -93,7 +93,7 @@ $(function() {
 					if (fixFilter.length > 0) {
 						formList[defName] = {fixFilter:fixFilter.val()};
 						filterMessage.push(displayName);
-						filterMessage.push(scriptContext.locale.ROU_FILTER + ":" + fixFilter.attr("displayName"));
+						filterMessage.push(scriptContext.gem.locale.calendar.ROU_FILTER + ":" + fixFilter.attr("displayName"));
 					}
 				} else {
 					// 通常フィルター設定時
@@ -211,7 +211,7 @@ function createFilterConditionMessage(valueobj) {
 
 	var message = "[";
 	message = message + scriptContext.locale.SEARCH_ITEM + separates + propertyName + " ";
-	message = message + scriptContext.locale.COND + separates + conditionName;
+	message = message + scriptContext.gem.locale.calendar.COND + separates + conditionName;
 	if (keyword) {
 		var from;
 		var to;
@@ -224,9 +224,9 @@ function createFilterConditionMessage(valueobj) {
 		}
 
 		if (conditionValue != "RG") {
-			message = message + " " + scriptContext.locale.KEYWORD + separates + from + "] ";
+			message = message + " " + scriptContext.gem.locale.calendar.KEYWORD + separates + from + "] ";
 		} else {
-			message = message + " " + scriptContext.locale.KEYWORD + separates + from + " " + scriptContext.locale.fromTo + " " + to + "] ";
+			message = message + " " + scriptContext.gem.locale.calendar.KEYWORD + separates + from + " " + scriptContext.locale.fromTo + " " + to + "] ";
 		}
 
 	} else {

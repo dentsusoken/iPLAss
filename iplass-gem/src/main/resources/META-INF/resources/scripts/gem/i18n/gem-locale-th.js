@@ -19,17 +19,17 @@
  */
 
 scriptContext.gem.locale.common.requiredMsg = "กรุณาใส่ {0}";
-scriptContext.locale.ADD_ITEM_BOTTOM = "เพิ่มเงื่อนไขการค้นหา";
-scriptContext.locale.COND = "เงื่อนไข";
-scriptContext.locale.FILTER = "เงื่อนไขการกรอง";
-scriptContext.locale.FILTER_APPOINT_BUTTON = "ระบุเงื่อนไข";
-scriptContext.locale.FILTER_COND_EXIST = "มีเงื่อนไขการกรอง";
-scriptContext.locale.FILTER_RELEASE_BUTTON = "ยกเลิกเงื่อนไข";
-scriptContext.locale.KEYWORD = "คำในการค้นหา";
-scriptContext.locale.ROU_FILTER = "คัดกรองประจำ";
-scriptContext.locale.SEARCH_ITEM = "ค้นหาไอเท็ม";
-scriptContext.locale.searchItem = "ค้นหา";
-scriptContext.locale.WITHOUT_ENTITY = "เอา{0}ออกจากการค้นหา";
+scriptContext.gem.locale.calendar.ADD_ITEM_BOTTOM = "เพิ่มเงื่อนไขการค้นหา";
+scriptContext.gem.locale.calendar.COND = "เงื่อนไข";
+scriptContext.gem.locale.calendar.FILTER = "เงื่อนไขการกรอง";
+scriptContext.gem.locale.calendar.FILTER_APPOINT_BUTTON = "ระบุเงื่อนไข";
+scriptContext.gem.locale.calendar.FILTER_COND_EXIST = "มีเงื่อนไขการกรอง";
+scriptContext.gem.locale.calendar.FILTER_RELEASE_BUTTON = "ยกเลิกเงื่อนไข";
+scriptContext.gem.locale.calendar.KEYWORD = "คำในการค้นหา";
+scriptContext.gem.locale.calendar.ROU_FILTER = "คัดกรองประจำ";
+scriptContext.gem.locale.calendar.SEARCH_ITEM = "ค้นหาไอเท็ม";
+scriptContext.gem.locale.calendar.search = "ค้นหา";
+scriptContext.gem.locale.calendar.WITHOUT_ENTITY = "เอา{0}ออกจากการค้นหา";
 scriptContext.gem.locale.date.datepickerBtn = "ป้อนข้อมูลจากปฏิทิน";
 scriptContext.gem.locale.reference.deleteBtn = "ลบ";
 scriptContext.gem.locale.binary.deleteLink = "ลบ";

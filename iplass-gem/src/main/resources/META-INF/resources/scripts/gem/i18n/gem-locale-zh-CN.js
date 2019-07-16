@@ -19,17 +19,17 @@
  */
 
 scriptContext.gem.locale.common.requiredMsg = "请输入{0}。";
-scriptContext.locale.ADD_ITEM_BOTTOM = "将项目添加到底部";
-scriptContext.locale.COND = "条件";
-scriptContext.locale.FILTER = "筛选";
-scriptContext.locale.FILTER_APPOINT_BUTTON = "指定条件";
-scriptContext.locale.FILTER_COND_EXIST = "筛选条件有";
-scriptContext.locale.FILTER_RELEASE_BUTTON = "释放条件";
-scriptContext.locale.KEYWORD = "关键字";
-scriptContext.locale.ROU_FILTER = "常規筛选";
-scriptContext.locale.SEARCH_ITEM = "检索项目";
-scriptContext.locale.searchItem = "检索";
-scriptContext.locale.WITHOUT_ENTITY = "我从搜索中删除{0}";
+scriptContext.gem.locale.calendar.ADD_ITEM_BOTTOM = "将项目添加到底部";
+scriptContext.gem.locale.calendar.COND = "条件";
+scriptContext.gem.locale.calendar.FILTER = "筛选";
+scriptContext.gem.locale.calendar.FILTER_APPOINT_BUTTON = "指定条件";
+scriptContext.gem.locale.calendar.FILTER_COND_EXIST = "筛选条件有";
+scriptContext.gem.locale.calendar.FILTER_RELEASE_BUTTON = "释放条件";
+scriptContext.gem.locale.calendar.KEYWORD = "关键字";
+scriptContext.gem.locale.calendar.ROU_FILTER = "常規筛选";
+scriptContext.gem.locale.calendar.SEARCH_ITEM = "检索项目";
+scriptContext.gem.locale.calendar.search = "检索";
+scriptContext.gem.locale.calendar.WITHOUT_ENTITY = "我从搜索中删除{0}";
 scriptContext.gem.locale.date.datepickerBtn = "从日历输入";
 scriptContext.gem.locale.reference.deleteBtn = "删除";
 scriptContext.gem.locale.binary.deleteLink = "删除";

@@ -19,17 +19,17 @@
  */
 
 scriptContext.gem.locale.common.requiredMsg = "Please enter {0}.";
-scriptContext.locale.ADD_ITEM_BOTTOM = "Add Search Item";
-scriptContext.locale.COND = "Conditions";
-scriptContext.locale.FILTER = "Filter";
-scriptContext.locale.FILTER_APPOINT_BUTTON = "Conditions specified";
-scriptContext.locale.FILTER_COND_EXIST = "Filter conditions have";
-scriptContext.locale.FILTER_RELEASE_BUTTON = "Release conditions";
-scriptContext.locale.KEYWORD = "Keyword";
-scriptContext.locale.ROU_FILTER = "Routine Filter";
-scriptContext.locale.SEARCH_ITEM = "Search Item";
-scriptContext.locale.searchItem = "Search";
-scriptContext.locale.WITHOUT_ENTITY = "I removed from the search for {0}";
+scriptContext.gem.locale.calendar.ADD_ITEM_BOTTOM = "Add Search Item";
+scriptContext.gem.locale.calendar.COND = "Conditions";
+scriptContext.gem.locale.calendar.FILTER = "Filter";
+scriptContext.gem.locale.calendar.FILTER_APPOINT_BUTTON = "Conditions specified";
+scriptContext.gem.locale.calendar.FILTER_COND_EXIST = "Filter conditions have";
+scriptContext.gem.locale.calendar.FILTER_RELEASE_BUTTON = "Release conditions";
+scriptContext.gem.locale.calendar.KEYWORD = "Keyword";
+scriptContext.gem.locale.calendar.ROU_FILTER = "Routine Filter";
+scriptContext.gem.locale.calendar.SEARCH_ITEM = "Search Item";
+scriptContext.gem.locale.calendar.search = "Search";
+scriptContext.gem.locale.calendar.WITHOUT_ENTITY = "I removed from the search for {0}";
 scriptContext.gem.locale.date.datepickerBtn = "Input from the calendar";
 scriptContext.gem.locale.reference.deleteBtn = "Delete";
 scriptContext.gem.locale.binary.deleteLink = "Delete";
