@@ -2176,7 +2176,9 @@ $.fn.allInputCheck = function(){
 				refDefName     :$v.attr("data-refDefName"),//参照先の定義名
 				refEdit        :$v.attr("data-refEdit") == "true",//ダイアログの編集可否
 				updateRefAction:$v.attr("data-updateRefAction"),//表示画面での更新アクション
-				reloadUrl      :$v.attr("data-reloadUrl")//更新時のリロード用URL
+				reloadUrl      :$v.attr("data-reloadUrl"),//更新時のリロード用URL
+				selCallbackKey :$v.attr("data-selCallbackKey"),//選択コールバック
+				delCallbackKey :$v.attr("data-delCallbackKey")//削除コールバック
 			});
 
 			var $dialog = createDialog($v);
@@ -2230,7 +2232,8 @@ $.fn.allInputCheck = function(){
 						var nodes = $tree.tree('getSelectedNodes');
 						for (var i = 0; i < nodes.length; i++) {
 							(function () {
-								var $li = $("<li />").addClass("list-add").appendTo($container);
+								var id = "li_" + $v.propName + i;
+								var $li = $("<li />").addClass("list-add").attr("id", id).appendTo($container);
 								var oid = nodes[i].oid;
 								var version = nodes[i].version;
 								var linkId = $v.prefix + $v.propName + "_" + oid;
@@ -2243,10 +2246,23 @@ $.fn.allInputCheck = function(){
 									$link.modalWindow();
 								}
 								if ($v.deletable) {
-									$("<input type='button' />").addClass("gr-btn-02 del-btn").val(scriptContext.locale.deleteLabel).on("click", function() {$li.remove();}).appendTo($li);
+									var $delBtn = $("<input type='button' />").addClass("gr-btn-02 del-btn").val(scriptContext.locale.deleteLabel).on("click", function() {$li.remove();}).appendTo($li);
+									if ($v.delCallbackKey) { 
+										var delCallback = scriptContext[$v.delCallbackKey];
+										if (delCallback && $.isFunction(delCallback)) {
+											$delBtn.on("click", function() { delCallback.call(this, $li.attr("id"));});
+										}
+									}
 								}
 
 								$("<input type='hidden' />").attr("name", $v.prefix + $v.propName).val(oid + "_" + version).appendTo($li);
+
+								if ($v.selCallbackKey) {
+									var selCallback = scriptContext[$v.selCallbackKey];
+									if (selCallback && $.isFunction(selCallback)) {
+										selCallback.call(this, $li.attr("id"));
+									}
+								}
 							})();
 						}
 
