@@ -545,8 +545,10 @@ $(function() {
 			if (auth.checkPermission(new EntityPermission(refDefName, EntityPermission.Action.CREATE)) && !nest && !hideRegistButton) {
 				//新規ボタン
 				String insBtnId = "ins_btn_" + propName;
+				String insBtnStyle = "";
+				if (pd.getMultiplicity() != -1 && entityList.size() >= pd.getMultiplicity()) insBtnStyle = "display: none;";
 %>
-<input type="button" value="${m:rs('mtp-gem-messages', 'generic.editor.reference.ReferencePropertyEditor_Edit.new')}" class="gr-btn-02 modal-btn mt05" id="<c:out value="<%=insBtnId %>"/>" />
+<input type="button" value="${m:rs('mtp-gem-messages', 'generic.editor.reference.ReferencePropertyEditor_Edit.new')}" class="gr-btn-02 modal-btn mt05" id="<c:out value="<%=insBtnId %>"/>" style="<c:out value="<%=insBtnStyle %>"/>" />
 <script type="text/javascript">
 $(function() {
 	$(":button[id='<%=StringUtil.escapeJavaScript(insBtnId)%>']").click(function() {

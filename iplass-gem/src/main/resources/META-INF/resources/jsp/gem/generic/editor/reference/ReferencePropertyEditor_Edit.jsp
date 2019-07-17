@@ -448,7 +448,19 @@
 
 		//初期値として設定された際に、NameやVersionが未指定の場合を考慮して詰め直す
 		List<Entity> entityList = getLinkTypeItems(propValue, pd, editor);
+
+		//ネストテーブルに使われる際に、プロパティ名にカッコとドット区切りを入れ替える
+		String _propName = propName.replace("[", "").replace("]","").replace(".", "_");
+		String toggleInsBtnFunc = "toggleInsBtn_" + StringUtil.escapeJavaScript(_propName);
 %>
+<script type="text/javascript">
+<%-- 新規ボタン表示/非表示--%>
+function <%=toggleInsBtnFunc%>() {
+	var _propName = "<%=StringUtil.escapeJavaScript(propName)%>".replace(/\[/g, "\\[").replace(/\]/g, "\\]").replace(/\./g, "\\.");
+	var display = <%=pd.getMultiplicity() == -1 %> || $("#ul_" + _propName).children("li:not(:hidden)").length < <%=pd.getMultiplicity()%>;
+	$("#ins_btn_" + _propName).toggle(display);
+}
+</script>
 <ul id="<c:out value="<%=ulId %>"/>" data-deletable="<c:out value="<%=(!hideDeleteButton && updatable) %>"/>" class="mb05">
 <%
 		for (int i = 0; i < entityList.size(); i++) {
@@ -466,7 +478,7 @@
 <%
 				if (!hideDeleteButton && updatable) {
 %>
-<input type="button" value="${m:rs('mtp-gem-messages', 'generic.editor.reference.ReferencePropertyEditor_Edit.delete')}" class="gr-btn-02 del-btn" onclick="deleteItem('<%=StringUtil.escapeJavaScript(liId)%>')" />
+<input type="button" value="${m:rs('mtp-gem-messages', 'generic.editor.reference.ReferencePropertyEditor_Edit.delete')}" class="gr-btn-02 del-btn" onclick="deleteItem('<%=StringUtil.escapeJavaScript(liId)%>', <%=toggleInsBtnFunc%>)" />
 <%				}
 			} else {
 %>
@@ -509,6 +521,7 @@
 <script type="text/javascript">
 $(function() {
 	var callback = function(entityList, deleteList, propName) {
+		<%=toggleInsBtnFunc%>();
 <%
 				if (editor.getSelectActionCallbackScript() != null) {
 %>
@@ -520,6 +533,7 @@ $(function() {
 	};
 	var key = "selectActionCallback_" + new Date().getTime();
 	scriptContext[key] = callback;
+	var delCallback = <%=toggleInsBtnFunc%>;
 	var params = {
 		selectAction: "<%=StringUtil.escapeJavaScript(selectAction) %>"
 		, viewAction: "<%=StringUtil.escapeJavaScript(viewAction) %>"
@@ -555,7 +569,7 @@ $(function() {
 	}
 	$selBtn.on("click", function() {
 		searchReference(params.selectAction, params.viewAction, params.defName, $(this).attr("data-propName"), params.multiplicity, <%=isMultiple %>,
-				 params.urlParam, params.refEdit, callback, this, params.viewName, params.permitConditionSelectAll, params.parentDefName, params.parentViewName, params.viewType);
+				 params.urlParam, params.refEdit, callback, this, params.viewName, params.permitConditionSelectAll, params.parentDefName, params.parentViewName, params.viewType, delCallback);
 	});
 
 });
@@ -564,11 +578,14 @@ $(function() {
 			}
 			if (auth.checkPermission(new EntityPermission(refDefName, EntityPermission.Action.CREATE)) && !hideRegistButton) {
 				String insBtnId = "ins_btn_" + propName;
+				String insBtnStyle = "";
+				if (pd.getMultiplicity() != -1 && entityList.size() >= pd.getMultiplicity()) insBtnStyle = "display: none;";
 %>
-<input type="button" value="${m:rs('mtp-gem-messages', 'generic.editor.reference.ReferencePropertyEditor_Edit.new')}" class="gr-btn-02 modal-btn ins-btn" id="<c:out value="<%=insBtnId %>"/>" />
+<input type="button" value="${m:rs('mtp-gem-messages', 'generic.editor.reference.ReferencePropertyEditor_Edit.new')}" class="gr-btn-02 modal-btn ins-btn" id="<c:out value="<%=insBtnId %>"/>" style="<c:out value="<%=insBtnStyle %>"/>" />
 <script type="text/javascript">
 $(function() {
 	var callback = function(entity, propName) {
+		<%=toggleInsBtnFunc%>();
 <%
 				if (editor.getInsertActionCallbackScript() != null) {
 %>
@@ -580,6 +597,7 @@ $(function() {
 	};
 	var key = "insertActionCallback_" + new Date().getTime();
 	scriptContext[key] = callback;
+	var delCallback = <%=toggleInsBtnFunc%>;
 	var params = {
 		addAction: "<%=StringUtil.escapeJavaScript(addAction) %>"
 		, viewAction: "<%=StringUtil.escapeJavaScript(viewAction) %>"
@@ -600,7 +618,7 @@ $(function() {
 	}
 	$insBtn.on("click", function() {
 		insertReference(params.addAction, params.viewAction, params.defName, params.propName, params.multiplicity,
-				 params.urlParam, params.parentOid, params.parentVersion, params.parentDefName, params.parentViewName, params.refEdit, callback, this);
+				 params.urlParam, params.parentOid, params.parentVersion, params.parentDefName, params.parentViewName, params.refEdit, callback, this, delCallback);
 	});
 
 });
@@ -819,7 +837,22 @@ data-customStyle="<c:out value="<%=customStyle%>"/>"
 
 		//初期値として設定された際に、NameやVersionが未指定の場合を考慮して詰め直す
 		List<Entity> entityList = getLinkTypeItems(propValue, pd, editor);
+
+		//ネストテーブルに使われる際に、プロパティ名にカッコとドット区切りを入れ替える
+		String _propName = propName.replace("[", "").replace("]","").replace(".", "_");
+		String toggleInsBtnFunc = "toggleInsBtn_" + StringUtil.escapeJavaScript(_propName);
+		//コールバック関数キー
+		String delCallbackKey = "delTreeRefCallback_" + StringUtil.escapeJavaScript(propName);
+		String selCallbackKey = "selTreeRefCallback_" + StringUtil.escapeJavaScript(propName);
 %>
+<script type="text/javascript">
+<%-- 新規ボタン表示/非表示--%>
+function <%=toggleInsBtnFunc%>() {
+	var _propName = "<%=StringUtil.escapeJavaScript(propName)%>".replace(/\[/g, "\\[").replace(/\]/g, "\\]").replace(/\./g, "\\.");
+	var display = <%=pd.getMultiplicity() == -1 %> || $("#ul_" + _propName).children("li:not(:hidden)").length < <%=pd.getMultiplicity()%>;
+	$("#ins_btn_" + _propName).toggle(display);
+}
+</script>
 <ul id="<c:out value="<%=ulId %>"/>" data-deletable="<c:out value="<%=(!hideDeleteButton && updatable) %>"/>" class="mb05">
 <%
 		for (int i = 0; i < entityList.size(); i++) {
@@ -837,7 +870,7 @@ data-customStyle="<c:out value="<%=customStyle%>"/>"
 <%
 				if (!hideDeleteButton && updatable) {
 %>
-<input type="button" value="${m:rs('mtp-gem-messages', 'generic.editor.reference.ReferencePropertyEditor_Edit.delete')}" class="gr-btn-02 del-btn" onclick="deleteItem('<%=StringUtil.escapeJavaScript(liId)%>')" />
+<input type="button" value="${m:rs('mtp-gem-messages', 'generic.editor.reference.ReferencePropertyEditor_Edit.delete')}" class="gr-btn-02 del-btn" onclick="deleteItem('<%=StringUtil.escapeJavaScript(liId)%>', <%=toggleInsBtnFunc%>)" />
 <%				}
 			} else {
 %>
@@ -889,16 +922,21 @@ data-customStyle="<c:out value="<%=customStyle%>"/>"
  data-viewAction="<c:out value="<%=viewAction%>"/>"
  data-refDefName="<c:out value="<%=refDefName%>"/>"
  data-refEdit="<c:out value="<%=refEdit%>"/>"
+ data-selCallbackKey="<c:out value="<%=selCallbackKey%>"/>"
+ data-delCallbackKey="<c:out value="<%=delCallbackKey%>"/>"
  />
 <%
 			}
 			if (auth.checkPermission(new EntityPermission(refDefName, EntityPermission.Action.CREATE)) && !hideRegistButton) {
 				String insBtnId = "ins_btn_" + propName;
+				String insBtnStyle = "";
+				if (pd.getMultiplicity() != -1 && entityList.size() >= pd.getMultiplicity()) insBtnStyle = "display: none;";
 %>
-<input type="button" value="${m:rs('mtp-gem-messages', 'generic.editor.reference.ReferencePropertyEditor_Edit.new')}" class="gr-btn-02 modal-btn ins-btn" id="<c:out value="<%=insBtnId %>"/>" />
+<input type="button" value="${m:rs('mtp-gem-messages', 'generic.editor.reference.ReferencePropertyEditor_Edit.new')}" class="gr-btn-02 modal-btn ins-btn" id="<c:out value="<%=insBtnId %>"/>" style="<c:out value="<%=insBtnStyle %>"/>"/>
 <script type="text/javascript">
 $(function() {
 	var callback = function(entity, propName) {
+		<%=toggleInsBtnFunc%>();
 <%
 				if (editor.getInsertActionCallbackScript() != null) {
 %>
@@ -910,6 +948,18 @@ $(function() {
 	};
 	var key = "insertActionCallback_" + new Date().getTime();
 	scriptContext[key] = callback;
+
+	var delCallback = function() {
+		<%=toggleInsBtnFunc%>();
+	};
+	var delCallbackKey = "<%=delCallbackKey%>";
+	scriptContext[delCallbackKey] = delCallback;
+
+	var selCallback = function() {
+		<%=toggleInsBtnFunc%>();
+	};
+	var selCallbackKey = "<%=selCallbackKey%>";
+	scriptContext[selCallbackKey] = selCallback;
 	var params = {
 		addAction: "<%=StringUtil.escapeJavaScript(addAction) %>"
 		, viewAction: "<%=StringUtil.escapeJavaScript(viewAction) %>"
@@ -930,7 +980,7 @@ $(function() {
 	}
 	$insBtn.on("click", function() {
 		insertReference(params.addAction, params.viewAction, params.defName, params.propName, params.multiplicity,
-				 params.urlParam, params.parentOid, params.parentVersion, params.parentDefName, params.parentViewName, params.refEdit, callback, this);
+				 params.urlParam, params.parentOid, params.parentVersion, params.parentDefName, params.parentViewName, params.refEdit, callback, this, delCallback);
 	});
 
 });

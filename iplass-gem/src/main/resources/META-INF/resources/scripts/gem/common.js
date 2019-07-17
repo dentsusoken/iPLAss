@@ -1906,7 +1906,7 @@ function showReference(viewAction, defName, oid, version, linkId, refEdit, editC
  * @param button
  * @return
  */
-function searchReference(selectAction, viewAction, defName, propName, multiplicity, multi, urlParam, refEdit, callback, button, viewName, permitConditionSelectAll, parentDefName, parentViewName, viewType) {
+function searchReference(selectAction, viewAction, defName, propName, multiplicity, multi, urlParam, refEdit, callback, button, viewName, permitConditionSelectAll, parentDefName, parentViewName, viewType, delCallback) {
 	var _propName = propName.replace(/\[/g, "\\[").replace(/\]/g, "\\]").replace(/\./g, "\\.");
 	document.scriptContext["searchReferenceCallback"] = function(selectArray) {
 		var $ul = $("#ul_" + _propName);
@@ -1947,7 +1947,7 @@ function searchReference(selectAction, viewAction, defName, propName, multiplici
 				for (var i = 0; i < entities.length; i++) {
 					var entity = entities[i];
 					var _key = entity.oid + "_" + entity.version;
-					addReference("li_" + propName + _key, viewAction, defName, _key, entity.name, propName, "ul_" + _propName, refEdit);
+					addReference("li_" + propName + _key, viewAction, defName, _key, entity.name, propName, "ul_" + _propName, refEdit, delCallback);
 				}
 				entityList = entities;
 			});
@@ -2268,7 +2268,7 @@ function searchUniqueReference(id, selectAction, viewAction, defName, propName, 
  * @param multiplicity
  * @return
  */
-function insertReference(addAction, viewAction, defName, propName, multiplicity, urlParam, parentOid, parentVersion, parentDefName, parentViewName, refEdit, callback, button) {
+function insertReference(addAction, viewAction, defName, propName, multiplicity, urlParam, parentOid, parentVersion, parentDefName, parentViewName, refEdit, callback, button, delCallback) {
 	var isSubModal = $("body.modal-body").length != 0;
 	var target = getModalTarget(isSubModal);
 
@@ -2279,7 +2279,7 @@ function insertReference(addAction, viewAction, defName, propName, multiplicity,
 		document.scriptContext["editReferenceCallback"] = function(entity) {
 			var $ul = $("#ul_" + _propName);
 			var key = entity.oid + "_" + entity.version;
-			var linkId = addReference("li_" + propName + key, viewAction, defName, key, entity.name, propName, "ul_" + _propName, refEdit);
+			var linkId = addReference("li_" + propName + key, viewAction, defName, key, entity.name, propName, "ul_" + _propName, refEdit, delCallback);
 
 			//カスタムのCallbackが定義されている場合に呼び出す
 			if (callback && $.isFunction(callback)) {
@@ -2445,7 +2445,7 @@ function insertUniqueReference(id, addAction, viewAction, defName, propName, mul
 	$form.remove();
 }
 
-function addReference(id, viewAction, defName, key, label, propName, ulId, refEdit) {
+function addReference(id, viewAction, defName, key, label, propName, ulId, refEdit, delCallback) {
 	var tmp = keySplit(key);
 	var oid = tmp.oid;
 	var ver = tmp.version;
@@ -2472,6 +2472,7 @@ function addReference(id, viewAction, defName, key, label, propName, ulId, refEd
 		var $btn = $(" <input type='button' />").val(scriptContext.gem.locale.reference.deleteBtn).addClass("gr-btn-02 del-btn ml05").appendTo($li);
 		$btn.click(function() {
 			$(this).parent().remove();
+			if (delCallback && $.isFunction(delCallback)) delCallback.call(this, $(this).parent().attr("id"));
 		});
 	}
 
