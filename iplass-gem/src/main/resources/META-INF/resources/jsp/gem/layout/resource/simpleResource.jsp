@@ -94,6 +94,7 @@ dType="/gem";
 <script src="${staticContentPath}/webjars/momentjs/2.18.1/min/moment-with-locales.js?cv=${apiVersion}"></script>
 <script src="${staticContentPath}/webjars/font-awesome/5.0.9/svg-with-js/js/fontawesome-all.min.js?cv=${apiVersion}"></script>
 <script src="${staticContentPath}/scripts/gem/i18n/gem-locale-migration-<%=language%>.js?cv=${apiVersion}"></script>
+<script src="${staticContentPath}/scripts/gem/i18n/gem-locale.js?cv=${apiVersion}"></script>
 <script src="${staticContentPath}/scripts/gem/i18n/gem-locale-<%=language%>.js?cv=${apiVersion}"></script>
 <%
 	if (!"en".equals(language)) {
