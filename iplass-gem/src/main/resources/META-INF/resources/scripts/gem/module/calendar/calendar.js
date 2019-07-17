@@ -486,8 +486,8 @@
 			if($this.find(".filterButtonBlock").length == 0) {
 				var $filterButtonBlock = $("<div />").addClass("filterButtonBlock").appendTo($(".fc-left"));
 
-				var button = $("<button />").addClass("fc-button fc-state-default fc-corner-left fc-corner-right calendarFilter").text(scriptContext.gem.locale.calendar.FILTER_APPOINT_BUTTON).appendTo($filterButtonBlock);
-				var buttonDel = $("<button />").addClass("fc-button fc-state-default fc-corner-left fc-corner-right fc-state-disabled").text(scriptContext.gem.locale.calendar.FILTER_RELEASE_BUTTON).appendTo($filterButtonBlock);
+				var button = $("<button />").addClass("fc-button fc-state-default fc-corner-left fc-corner-right calendarFilter").text(scriptContext.gem.locale.calendar.filterAppointButton).appendTo($filterButtonBlock);
+				var buttonDel = $("<button />").addClass("fc-button fc-state-default fc-corner-left fc-corner-right fc-state-disabled").text(scriptContext.gem.locale.calendar.filterReleaseButton).appendTo($filterButtonBlock);
 
 				if ($("#filterConditionMassage").length == 0) {
 					createFilterConditionMassageArea(calendarOption.filterConditionMassage, buttonDel);
@@ -527,7 +527,7 @@
 
 					var isSubModal = $("body.modal-body").length != 0;
 					var target = getModalTarget(isSubModal);
-					$("#modal-title").text(scriptContext.gem.locale.calendar.FILTER_APPOINT_BUTTON);
+					$("#modal-title").text(scriptContext.gem.locale.calendar.filterAppointButton);
 					var form = $("<form />").attr({method:"POST", action:addAction, target:target}).appendTo("body");
 					var filterCondition = $("#calendarFilterCondition"); // TODO これ見つからない、必要？
 					if (filterCondition.length > 0) {
@@ -569,7 +569,7 @@
 			$(".fc-clear").after($filterConditionBlock);
 
 			var $sectionHead = $("<div/>").addClass("hgroup-03 sechead").appendTo($filterConditionBlock);
-			$("<span/>").text(scriptContext.gem.locale.calendar.FILTER_COND_EXIST).appendTo($("<h3/>").appendTo($sectionHead));
+			$("<span/>").text(scriptContext.gem.locale.calendar.filterCondExist).appendTo($("<h3/>").appendTo($sectionHead));
 			$sectionHead.after($filterConditionMassage).sectoinToggle().click();
 
 			buttonDel.removeClass("fc-state-disabled");
@@ -816,13 +816,13 @@
 					var boxSearch = $("<div/>").addClass("box-search-01").appendTo(tabWrap);
 
 					// 通常フィルター設定
-					$("<a/>").attr("href", "#").text(scriptContext.gem.locale.calendar.FILTER).appendTo(detailTab = $("<li/>").addClass("detail").appendTo(tabMenu));
+					$("<a/>").attr("href", "#").text(scriptContext.gem.locale.calendar.filter).appendTo(detailTab = $("<li/>").addClass("detail").appendTo(tabMenu));
 					createDeepFilter(boxSearch, $data);
 
 					// 定型フィルター設定
 					var fixTab;
 					if ($data.entityFilterIteList && $data.entityFilterIteList.length > 0) {
-						$("<a/>").attr("href", "#").text(scriptContext.gem.locale.calendar.ROU_FILTER).appendTo($("<li/>").addClass("fixed").appendTo(tabMenu));
+						$("<a/>").attr("href", "#").text(scriptContext.gem.locale.calendar.fixedFilter).appendTo($("<li/>").addClass("fixed").appendTo(tabMenu));
 						createFixFilter(boxSearch, $data);
 					}
 
@@ -839,7 +839,7 @@
 					tabWrap.switchCondition({cunt:cunt});
 
 					var $without = $("<input/>").attr({defName : $data.entityDefinition.name, type : "checkbox"}).addClass("without-entity");
-					$("<label />").text(messageFormat(scriptContext.gem.locale.calendar.WITHOUT_ENTITY, $data.entityDefinition.displayName)).append($without).appendTo($("<div />").addClass("excludeCondition").appendTo(tabWrap));
+					$("<label />").text(messageFormat(scriptContext.gem.locale.calendar.withoutEntity, $data.entityDefinition.displayName)).append($without).appendTo($("<div />").addClass("excludeCondition").appendTo(tabWrap));
 				});
 
 				// 検索ボタン追加
@@ -862,10 +862,10 @@
 				// ヘッダー作成
 				var $tr = $("<tr/>").appendTo($("<thead/>").appendTo($table));
 				$("<th/>").addClass("col1").appendTo($tr);
-				$("<th/>").addClass("col2").text(scriptContext.gem.locale.calendar.SEARCH_ITEM).appendTo($tr);
-				$("<th/>").addClass("col3").text(scriptContext.gem.locale.calendar.COND).appendTo($tr);
-				$("<th/>").addClass("col4").text(scriptContext.gem.locale.calendar.KEYWORD).appendTo($tr);
-				$("<p/>").addClass("btn-toggle-01 tp02 add").attr("title", scriptContext.gem.locale.calendar.ADD_ITEM_BOTTOM).text("＋").appendTo($("<th/>").addClass("col5").appendTo($tr));
+				$("<th/>").addClass("col2").text(scriptContext.gem.locale.calendar.searchItem).appendTo($tr);
+				$("<th/>").addClass("col3").text(scriptContext.gem.locale.calendar.cond).appendTo($tr);
+				$("<th/>").addClass("col4").text(scriptContext.gem.locale.calendar.keyword).appendTo($tr);
+				$("<p/>").addClass("btn-toggle-01 tp02 add").attr("title", scriptContext.gem.locale.calendar.addItemBottom).text("＋").appendTo($("<th/>").addClass("col5").appendTo($tr));
 
 				// ダミーフィルター作成
 				var $tr = $("<tr/>").addClass("dummy-filter-condition display-none").appendTo($("<tbody/>").appendTo($table));

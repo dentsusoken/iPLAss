@@ -83,7 +83,7 @@ $(function() {
 				// 除く設定されているエンティティ設定
 				if ($(".without-entity[defname='" + form.attr("defName") + "']").prop("checked")) {
 					formList[defName] = {withoutEntity:true};
-					filterMessage.push(messageFormat(scriptContext.gem.locale.calendar.WITHOUT_ENTITY, displayName));
+					filterMessage.push(messageFormat(scriptContext.gem.locale.calendar.withoutEntity, displayName));
 					return true;
 				}
 
@@ -93,7 +93,7 @@ $(function() {
 					if (fixFilter.length > 0) {
 						formList[defName] = {fixFilter:fixFilter.val()};
 						filterMessage.push(displayName);
-						filterMessage.push(scriptContext.gem.locale.calendar.ROU_FILTER + ":" + fixFilter.attr("displayName"));
+						filterMessage.push(scriptContext.gem.locale.calendar.fixedFilter + ":" + fixFilter.attr("displayName"));
 					}
 				} else {
 					// 通常フィルター設定時
@@ -210,8 +210,8 @@ function createFilterConditionMessage(valueobj) {
 	var separates = ":";
 
 	var message = "[";
-	message = message + scriptContext.locale.SEARCH_ITEM + separates + propertyName + " ";
-	message = message + scriptContext.gem.locale.calendar.COND + separates + conditionName;
+	message = message + scriptContext.gem.locale.calendar.searchItem + separates + propertyName + " ";
+	message = message + scriptContext.gem.locale.calendar.cond + separates + conditionName;
 	if (keyword) {
 		var from;
 		var to;
@@ -224,9 +224,9 @@ function createFilterConditionMessage(valueobj) {
 		}
 
 		if (conditionValue != "RG") {
-			message = message + " " + scriptContext.gem.locale.calendar.KEYWORD + separates + from + "] ";
+			message = message + " " + scriptContext.gem.locale.calendar.keyword + separates + from + "] ";
 		} else {
-			message = message + " " + scriptContext.gem.locale.calendar.KEYWORD + separates + from + " " + scriptContext.locale.fromTo + " " + to + "] ";
+			message = message + " " + scriptContext.gem.locale.calendar.keyword + separates + from + " " + scriptContext.locale.fromTo + " " + to + "] ";
 		}
 
 	} else {
