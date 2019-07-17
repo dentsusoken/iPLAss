@@ -2457,7 +2457,7 @@ function addReference(id, viewAction, defName, key, label, propName, ulId, refEd
 	//リンク追加
 	var linkId = propName + "_" + tmp.oid;
 	var $link = $("<a href='javascript:void(0)' />").attr("id", linkId).click(function() {
-		showReference(viewAction, defName, oid, ver, linkId, refEdit, delCallback);
+		showReference(viewAction, defName, oid, ver, linkId, refEdit);
 	}).appendTo($li);
 	$link.text(label);
 	if ($("body.modal-body").length != 0) {
