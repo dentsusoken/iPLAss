@@ -226,7 +226,7 @@ function createFilterConditionMessage(valueobj) {
 		if (conditionValue != "RG") {
 			message = message + " " + scriptContext.gem.locale.calendar.keyword + separates + from + "] ";
 		} else {
-			message = message + " " + scriptContext.gem.locale.calendar.keyword + separates + from + " " + scriptContext.locale.fromTo + " " + to + "] ";
+			message = message + " " + scriptContext.gem.locale.calendar.keyword + separates + from + " " + scriptContext.gem.locale.filter.fromTo + " " + to + "] ";
 		}
 
 	} else {

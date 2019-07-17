@@ -914,24 +914,24 @@
 				var dispLike = type ? dispLikeOption(type) : false;
 				var dispIn = type ? dispInOption(type) : false;
 				var dispCompare = type ? dispCompareOption(type) : false;
-				$("<option />").attr({value:"EQ"}).text(scriptContext.locale.EQ).appendTo(conditionSelect);
-				$("<option />").attr({value:"NE"}).text(scriptContext.locale.NE).appendTo(conditionSelect);
+				$("<option />").attr({value:"EQ"}).text(scriptContext.gem.locale.filter.EQ).appendTo(conditionSelect);
+				$("<option />").attr({value:"NE"}).text(scriptContext.gem.locale.filter.NE).appendTo(conditionSelect);
 				if (dispLike) {
-					$("<option />").attr({value:"SW"}).text(scriptContext.locale.SW).appendTo(conditionSelect);
-					$("<option />").attr({value:"LW"}).text(scriptContext.locale.LW).appendTo(conditionSelect);
-					$("<option />").attr({value:"IC"}).text(scriptContext.locale.IC).appendTo(conditionSelect);
-					$("<option />").attr({value:"NIC"}).text(scriptContext.locale.NIC).appendTo(conditionSelect);
+					$("<option />").attr({value:"SW"}).text(scriptContext.gem.locale.filter.SW).appendTo(conditionSelect);
+					$("<option />").attr({value:"LW"}).text(scriptContext.gem.locale.filter.LW).appendTo(conditionSelect);
+					$("<option />").attr({value:"IC"}).text(scriptContext.gem.locale.filter.IC).appendTo(conditionSelect);
+					$("<option />").attr({value:"NIC"}).text(scriptContext.gem.locale.filter.NIC).appendTo(conditionSelect);
 				}
-				if (dispIn)$("<option />").attr({value:"IN"}).text(scriptContext.locale.IN).appendTo(conditionSelect);
+				if (dispIn)$("<option />").attr({value:"IN"}).text(scriptContext.gem.locale.filter.IN).appendTo(conditionSelect);
 				if (dispCompare) {
-					$("<option />").attr({value:"LT"}).text(scriptContext.locale.LT).appendTo(conditionSelect);
-					$("<option />").attr({value:"GT"}).text(scriptContext.locale.GT).appendTo(conditionSelect);
-					$("<option />").attr({value:"LE"}).text(scriptContext.locale.LE).appendTo(conditionSelect);
-					$("<option />").attr({value:"GE"}).text(scriptContext.locale.GE).appendTo(conditionSelect);
-					$("<option />").attr({value:"RG"}).text(scriptContext.locale.RG).appendTo(conditionSelect);
+					$("<option />").attr({value:"LT"}).text(scriptContext.gem.locale.filter.LT).appendTo(conditionSelect);
+					$("<option />").attr({value:"GT"}).text(scriptContext.gem.locale.filter.GT).appendTo(conditionSelect);
+					$("<option />").attr({value:"LE"}).text(scriptContext.gem.locale.filter.LE).appendTo(conditionSelect);
+					$("<option />").attr({value:"GE"}).text(scriptContext.gem.locale.filter.GE).appendTo(conditionSelect);
+					$("<option />").attr({value:"RG"}).text(scriptContext.gem.locale.filter.RG).appendTo(conditionSelect);
 				}
-				$("<option />").attr({value:"NNL"}).text(scriptContext.locale.NNL).appendTo(conditionSelect);
-				$("<option />").attr({value:"NL"}).text(scriptContext.locale.NL).appendTo(conditionSelect);
+				$("<option />").attr({value:"NNL"}).text(scriptContext.gem.locale.filter.NNL).appendTo(conditionSelect);
+				$("<option />").attr({value:"NL"}).text(scriptContext.gem.locale.filter.NL).appendTo(conditionSelect);
 			}
 
 			/**
@@ -1217,7 +1217,7 @@
 			function createStringFiled(filterInputField) {
 				var $from = $("<span/>").addClass("data-range-from").appendTo(filterInputField);
 				$("<input/>").attr("type", "text").addClass("inpbr").appendTo($from);
-				var $to = $("<span/>").addClass("data-range-to display-none").text(scriptContext.locale.fromTo).appendTo(filterInputField);
+				var $to = $("<span/>").addClass("data-range-to display-none").text(scriptContext.gem.locale.filter.fromTo).appendTo(filterInputField);
 				$("<input/>").attr("type", "text").addClass("inpbr").appendTo($to);
 			}
 
@@ -1230,7 +1230,7 @@
 				$inputForm.on("blur", function(){
 					numcheck(this);
 				});
-				var $to = $("<span/>").addClass("data-range-to display-none").text(scriptContext.locale.fromTo).appendTo(filterInputField);
+				var $to = $("<span/>").addClass("data-range-to display-none").text(scriptContext.gem.locale.filter.fromTo).appendTo(filterInputField);
 				var $inputTo = $("<input/>").attr("type", "text").addClass("inpbr").appendTo($to);
 				$inputTo.on("blur", function(){
 					numcheck(this);
@@ -1245,7 +1245,7 @@
 				var $from = $("<span/>").addClass("data-range-from").appendTo(filterInputField);
 				var $inputFrom = $("<input/>").attr("type", "text").addClass("datepicker-form-size-02 inpbr").appendTo($from);
 				$inputFrom.applyDatepicker();
-				var $to = $("<span/>").addClass("data-range-to display-none").text(scriptContext.locale.fromTo).appendTo(filterInputField);
+				var $to = $("<span/>").addClass("data-range-to display-none").text(scriptContext.gem.locale.filter.fromTo).appendTo(filterInputField);
 				var $inputTo = $("<input/>").attr("type", "text").addClass("datepicker-form-size-02 inpbr").appendTo($to);
 				$inputTo.applyDatepicker();
 			}
@@ -1295,7 +1295,7 @@
 					var $from = $("<span/>").addClass("data-range-from").appendTo(filterInputField);
 					var $inputFrom = $("<input/>").attr("type", "text").addClass("datetimepicker-form-size-02 inpbr").appendTo($from);
 
-					var $to = $("<span/>").addClass("data-range-to display-none").text(scriptContext.locale.fromTo).appendTo(filterInputField);
+					var $to = $("<span/>").addClass("data-range-to display-none").text(scriptContext.gem.locale.filter.fromTo).appendTo(filterInputField);
 					var $inputTo = $("<input/>").attr("type", "text").addClass("datetimepicker-form-size-02 inpbr").appendTo($to);
 
 					$inputFrom.applyDatetimepicker({
@@ -1319,7 +1319,7 @@
 					var $from = $("<span/>").addClass("data-range-from").appendTo(filterInputField);
 					var $inputFrom = $("<input/>").attr("type", "text").addClass("inpbr").appendTo($from);
 
-					var $to = $("<span/>").addClass("data-range-to display-none").text(scriptContext.locale.fromTo).appendTo(filterInputField);
+					var $to = $("<span/>").addClass("data-range-to display-none").text(scriptContext.gem.locale.filter.fromTo).appendTo(filterInputField);
 					var $inputTo = $("<input/>").attr("type", "text").addClass("inpbr").appendTo($to);
 
 					$inputFrom.applyTimepicker({
