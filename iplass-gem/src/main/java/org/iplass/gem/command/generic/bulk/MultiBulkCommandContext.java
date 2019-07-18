@@ -85,6 +85,8 @@ public class MultiBulkCommandContext extends RegistrationCommandContext {
 	/** パラメータパターン */
 	private Pattern pattern = Pattern.compile("^(\\d+)\\_(.+)?$");
 
+	/** 一括更新プロパティリスト*/
+	private List<PropertyItem> propList = null;
 	/**
 	 * クライアントから配列で受け取ったパラメータは自動設定する対象外
 	 */
@@ -535,11 +537,6 @@ public class MultiBulkCommandContext extends RegistrationCommandContext {
 		return getParam(Constants.BULK_UPDATE_SELECT_TYPE);
 	}
 
-	public Object getBulkUpdatePropertyValue(String propertyName) {
-		PropertyDefinition p = entityDefinition.getProperty(propertyName);
-		return getPropValue(p, "");
-	}
-
 	public Entity createEntity() {
 		return createEntityInternal("", null);
 	}
@@ -555,6 +552,8 @@ public class MultiBulkCommandContext extends RegistrationCommandContext {
 //		setVirtualPropertyValue(entity);
 		getRegistrationInterrupterHandler().dataMapping(entity);
 		validate(entity);
+		//更新しないプロパティを外す。
+		removePropIfBlank(entity);
 		return entity;
 	}
 
@@ -643,6 +642,14 @@ public class MultiBulkCommandContext extends RegistrationCommandContext {
 	}
 
 	/**
+	 * ブランクの項目は未入力と見なし、更新しないので、一括更新可能なプロパティリストから外す。
+	 * @param entity
+	 */
+	private void removePropIfBlank(Entity entity) {
+		getProperty().removeIf(pi -> entity.getValue(pi.getPropertyName()) == null);
+	}
+
+	/**
 	 * 一括更新するプロパティを取得します。 組み合わせで使うプロパティである場合、通常のプロパティ扱いにします。
 	 *
 	 * @return 一括更新するプロパティ
@@ -650,22 +657,14 @@ public class MultiBulkCommandContext extends RegistrationCommandContext {
 	@SuppressWarnings("unchecked")	
 	@Override
 	public List<PropertyItem> getProperty() {
-		List<PropertyItem> propList = new ArrayList<PropertyItem>();
-		for (Section section : getView().getSections()) {
-			if (section instanceof DefaultSection) {
-				if (section.isDispFlag()) {
-					propList.addAll(getProperty((DefaultSection) section));
+		if (propList == null) {
+			propList = new ArrayList<PropertyItem>();
+			for (Section section : getView().getSections()) {
+				if (section instanceof DefaultSection) {
+					if (section.isDispFlag()) {
+						propList.addAll(getProperty((DefaultSection) section));
+					}
 				}
-			}
-		}
-
-		List<String> propNames = propList.stream().map(PropertyItem::getPropertyName)
-				.collect(Collectors.toList());
-		for (String propName : propNames) {
-			if (skipProps.contains(propName)) continue;
-			// TODO ブランクの項目は未入力と見なし、更新しません。
-			if (getBulkUpdatePropertyValue(propName) == null) {
-				propList.removeIf(pi -> pi.getPropertyName().equals(propName));
 			}
 		}
 		return propList;
