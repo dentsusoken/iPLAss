@@ -138,12 +138,10 @@
 		<!-- 一括削除のコミット件数 -->
 		<property name="deleteAllCommandBatchSize" value="100" />
 
-		<!-- 一括更新のコミット件数 (単一) -->
+		<!-- 一括更新のコミット件数 -->
 		<property name="bulkUpdateAllCommandBatchSize" value="100" />
 
-		<!-- 一括更新のコミット件数 (並列) -->
-		<property name="multiBulkUpdateAllCommandBatchSize" value="100" />
-		
+
 		<property name="binaryDownloadLoggingTargetProperty">
 			<property name="entityName" value="mtp.maintenance.Package" />
 			<property name="propertyName" value="archive" />

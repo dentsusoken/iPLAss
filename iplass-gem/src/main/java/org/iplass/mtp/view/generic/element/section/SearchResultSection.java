@@ -25,6 +25,7 @@ import java.util.List;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlType;
 
 import org.iplass.adminconsole.annotation.MultiLang;
 import org.iplass.adminconsole.view.annotation.IgnoreField;
@@ -36,6 +37,7 @@ import org.iplass.mtp.view.generic.Jsps;
 import org.iplass.mtp.view.generic.PagingPosition;
 import org.iplass.mtp.view.generic.ViewConst;
 import org.iplass.mtp.view.generic.element.Element;
+import org.iplass.mtp.view.generic.element.section.SearchConditionSection.CsvUploadTransactionType;
 
 /**
  * 検索結果を保持するセクション
@@ -53,7 +55,19 @@ public class SearchResultSection extends Section {
 
 	/** 要素 */
 	private List<Element> elements;
-
+	
+	/** 一括削除コミットトランザクション制御設定 */
+	@XmlType(namespace="http://mtp.iplass.org/xml/definition/view/generic")
+	public enum DeleteAllCommandTransactionType {
+		ONCE, DIVISION
+	}
+	
+	/** 一括更新コミットトランザクション制御設定 */
+	@XmlType(namespace="http://mtp.iplass.org/xml/definition/view/generic")
+	public enum BulkUpdateAllCommandTransactionType {
+		ONCE, DIVISION
+	}
+	
 	/** 検索結果の表示行数 */
 	@MetaFieldInfo(
 			displayName="検索結果の表示件数",
@@ -259,6 +273,48 @@ public class SearchResultSection extends Section {
 			descriptionKey="generic_element_section_SearchResultSection_loadEntityInterrupterNameDescriptionKey"
 	)
 	private String loadEntityInterrupterName;
+	
+	/** 一括削除コミットトランザクション制御設定 */
+	@MetaFieldInfo(
+			displayName="一括削除コミットトランザクション制御設定",
+			displayNameKey="generic_element_section_SearchResultSection_deleteAllCommandTransactionTypeDisplaNameKey",
+			inputType=InputType.ENUM,
+			enumClass=DeleteAllCommandTransactionType.class,
+			displayOrder=1040,
+			description="一括削除時に、全部一斉で処理するか、設定した件数で分けて処理かを指定します。",
+			descriptionKey="generic_element_section_SearchConditionSection_deleteAllCommandTransactionTypeDescriptionKey"
+	)
+	private DeleteAllCommandTransactionType deleteAllCommandTransactionType = DeleteAllCommandTransactionType.DIVISION;
+	
+	/** 一括更新コミットトランザクション制御設定 */
+	@MetaFieldInfo(
+			displayName="一括更新コミットトランザクション制御設定",
+			displayNameKey="generic_element_section_SearchResultSection_bulkUpdateAllCommandTransactionTypeDisplaNameKey",
+			inputType=InputType.ENUM,
+			enumClass=BulkUpdateAllCommandTransactionType.class,
+			displayOrder=1050,
+			description="一括更新時に、全部一斉で処理するか、設定した件数で分けて処理かを指定します。",
+			descriptionKey="generic_element_section_SearchConditionSection_bulkUpdateAllCommandTransactionTypeDescriptionKey"
+	)
+	private BulkUpdateAllCommandTransactionType bulkUpdateAllCommandTransactionType = BulkUpdateAllCommandTransactionType.DIVISION;
+	
+	
+	public DeleteAllCommandTransactionType getDeleteAllCommandTransactionType() {
+		return deleteAllCommandTransactionType;
+	}
+
+	public void setDeleteAllCommandTransactionType(DeleteAllCommandTransactionType deleteAllCommandTransactionType) {
+		this.deleteAllCommandTransactionType = deleteAllCommandTransactionType;
+	}
+
+	public BulkUpdateAllCommandTransactionType getBulkUpdateAllCommandTransactionType() {
+		return bulkUpdateAllCommandTransactionType;
+	}
+
+	public void setBulkUpdateAllCommandTransactionType(
+			BulkUpdateAllCommandTransactionType bulkUpdateAllCommandTransactionType) {
+		this.bulkUpdateAllCommandTransactionType = bulkUpdateAllCommandTransactionType;
+	}
 
 	/**
 	 * デフォルトコンストラクタ

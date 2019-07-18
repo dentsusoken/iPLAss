@@ -99,8 +99,6 @@ public class GemConfigService implements Service {
 	/** 一括更新のコミット件数 (単一) */
 	private int bulkUpdateAllCommandBatchSize;
 
-	/** 一括更新のコミット件数 (並列) */
-	private int multiBulkUpdateAllCommandBatchSize;
 
 	private List<BinaryDownloadLoggingTargetProperty> binaryDownloadLoggingTargetProperty;
 
@@ -237,12 +235,6 @@ public class GemConfigService implements Service {
 			this.bulkUpdateAllCommandBatchSize = 100;
 		}
 
-		String multiBulkUpdateAllCommandBatchSize = config.getValue("multiBulkUpdateAllCommandBatchSize");
-		if (multiBulkUpdateAllCommandBatchSize != null){
-			this.multiBulkUpdateAllCommandBatchSize = Integer.parseInt(multiBulkUpdateAllCommandBatchSize);
-		} else {
-			this.multiBulkUpdateAllCommandBatchSize = 100;
-		}
 
 		skins = (List<Skin>) config.getBeans("skins");
 		themes = (List<Theme>) config.getBeans("themes");
@@ -461,18 +453,11 @@ public class GemConfigService implements Service {
 	}
 
 	/**
-	 * 一括更新のコミット件数 (単一)を取得します。
-	 * @return 一括更新のコミット件数 (単一)
+	 * 一括更新のコミット件数を取得します。
+	 * @return 一括更新のコミット件数
 	 */
 	public int getBulkUpdateAllCommandBatchSize() {
 		return bulkUpdateAllCommandBatchSize;
 	}
 
-	/**
-	 * 一括更新のコミット件数 (並列)を取得します。
-	 * @return 一括更新のコミット件数 (並列)
-	 */
-	public int getMultiBulkUpdateAllCommandBatchSize() {
-		return multiBulkUpdateAllCommandBatchSize;
-	}
 }

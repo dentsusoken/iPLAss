@@ -29,6 +29,7 @@ import org.iplass.gem.command.generic.search.FixedSearchCommand;
 import org.iplass.gem.command.generic.search.NormalSearchCommand;
 import org.iplass.gem.command.generic.search.SearchCommandBase;
 import org.iplass.gem.command.generic.search.SearchContext;
+import org.iplass.gem.command.generic.search.SearchContextBase;
 import org.iplass.mtp.ApplicationException;
 import org.iplass.mtp.command.RequestContext;
 import org.iplass.mtp.command.annotation.CommandClass;
@@ -38,13 +39,16 @@ import org.iplass.mtp.command.annotation.webapi.WebApiTokenCheck;
 import org.iplass.mtp.entity.DeleteOption;
 import org.iplass.mtp.entity.Entity;
 import org.iplass.mtp.entity.SearchResult;
+import org.iplass.mtp.entity.definition.EntityDefinition;
 import org.iplass.mtp.entity.query.Query;
 import org.iplass.mtp.spi.ServiceRegistry;
 import org.iplass.mtp.transaction.Transaction;
 import org.iplass.mtp.view.generic.EntityView;
+import org.iplass.mtp.view.generic.FormViewUtil;
 import org.iplass.mtp.view.generic.SearchFormView;
-import org.iplass.mtp.webapi.definition.RequestType;
+import org.iplass.mtp.view.generic.element.section.SearchResultSection.DeleteAllCommandTransactionType;
 import org.iplass.mtp.webapi.definition.MethodType;
+import org.iplass.mtp.webapi.definition.RequestType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -73,7 +77,6 @@ public final class DeleteAllCommand extends DeleteCommandBase {
 	public String execute(final RequestContext request) {
 
 		String searchType = request.getParam(Constants.SEARCH_TYPE);
-
 		SearchCommandBase command = null;
 		if (Constants.SEARCH_TYPE_NORMAL.equals(searchType)) {
 			command = new NormalSearchCommand();
@@ -86,6 +89,13 @@ public final class DeleteAllCommand extends DeleteCommandBase {
 		if (command != null) {
 			SearchContext context = command.getContext(request);
 
+			// トランザクションタイプを取得します
+			EntityDefinition ed = context.getEntityDefinition();
+			EntityView view = evm.get(ed.getName());
+			String viewName = request.getParam(Constants.VIEW_NAME);
+			SearchFormView form= FormViewUtil.getSearchFormView(ed, view, viewName);
+			DeleteAllCommandTransactionType transactionType = form.getResultSection().getDeleteAllCommandTransactionType();
+			
 			Query query = new Query();
 			query.select(Entity.OID, Entity.VERSION);
 			query.from(context.getDefName());
@@ -97,10 +107,15 @@ public final class DeleteAllCommand extends DeleteCommandBase {
 			final DeleteOption option = new DeleteOption(false);
 			option.setPurge(isPurge);
 
-			//大量データを考慮してトランザクションを分割(batchSize件毎)
-			int batchSize = ServiceRegistry.getRegistry().getService(GemConfigService.class).getDeleteAllCommandBatchSize();
 			List<Entity> list = result.getList();
 			int count = list.size();
+
+			//トランザクションタイプによって一括か、分割かを決める(batchSize件毎)
+			int batchSize = ServiceRegistry.getRegistry().getService(GemConfigService.class).getDeleteAllCommandBatchSize();
+			if (transactionType == DeleteAllCommandTransactionType.ONCE) {
+				batchSize = count;
+				}
+			
 			int countPerBatch = count / batchSize;
 			if (count % batchSize > 0) countPerBatch++;
 			int current = 0;
