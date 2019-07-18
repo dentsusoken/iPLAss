@@ -21,8 +21,6 @@
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8" trimDirectiveWhitespaces="true" %>
 <%@ page import="org.iplass.mtp.util.StringUtil" %>
 <%@ page import="org.iplass.mtp.web.template.TemplateUtil" %>
-<%@ page import="org.iplass.gem.command.ViewUtil" %>
-
 <%
 	String serverDateFormat = TemplateUtil.getLocaleFormat().getServerDateFormat();
 	if (StringUtil.isEmpty(serverDateFormat)) {
