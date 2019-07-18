@@ -1859,7 +1859,7 @@ $.fn.allInputCheck = function(){
 			setup($v);
 
 			var pleaseSelectLabel = "";
-			if (scriptContext.locale.showPulldownPleaseSelectLabel === true) {
+			if (scriptContext.gem.showPulldownPleaseSelectLabel === true) {
 				pleaseSelectLabel = scriptContext.gem.locale.common.pleaseSelect;
 			}
 			$("<option />").attr({value:""}).text(pleaseSelectLabel).appendTo($v);
@@ -2043,7 +2043,7 @@ $.fn.allInputCheck = function(){
 			var $parent = null;
 			if (!reset) {
 				var pleaseSelectLabel = "";
-				if (scriptContext.locale.showPulldownPleaseSelectLabel === true) {
+				if (scriptContext.gem.showPulldownPleaseSelectLabel === true) {
 					pleaseSelectLabel = scriptContext.gem.locale.common.pleaseSelect;
 				}
 				$parent = $("<select />").attr("name", name).attr("data-norewrite", true).addClass("form-size-02 inpbr");
@@ -2247,7 +2247,7 @@ $.fn.allInputCheck = function(){
 								}
 								if ($v.deletable) {
 									var $delBtn = $("<input type='button' />").addClass("gr-btn-02 del-btn").val(scriptContext.gem.locale.reference.deleteLabel).on("click", function() {$li.remove();}).appendTo($li);
-									if ($v.delCallbackKey) { 
+									if ($v.delCallbackKey) {
 										var delCallback = scriptContext[$v.delCallbackKey];
 										if (delCallback && $.isFunction(delCallback)) {
 											$delBtn.on("click", function() { delCallback.call(this, $li.attr("id"));});

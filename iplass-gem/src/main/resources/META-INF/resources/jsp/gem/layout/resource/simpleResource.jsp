@@ -45,10 +45,17 @@ contextPath = "${m:tcPath()}";
 sysdate = "<%=DateUtil.getSimpleDateFormat("yyyyMMddHHmmss", true).format(TemplateUtil.getCurrentTimestamp())%>";
 scriptContext = {};
 document.scriptContext = scriptContext;
+scriptContext.gem = {};
+scriptContext.gem.showPulldownPleaseSelectLabel = <%=ViewUtil.isShowPulldownPleaseSelectLabel()%>;
 dType="/gem";
 </script>
 
 <%@include file="./locale.jsp" %>
+
+<%-- For compatibility before 3.0.12  --%>
+<script>
+scriptContext.locale.showPulldownPleaseSelectLabel = <%=ViewUtil.isShowPulldownPleaseSelectLabel()%>;
+</script>
 
 <script src="${staticContentPath}/webjars/jquery/3.2.1/jquery.min.js?cv=${apiVersion}"></script>
 <script src="${staticContentPath}/webjars/jquery-ui/1.12.1/jquery-ui.min.js?cv=${apiVersion}"></script>

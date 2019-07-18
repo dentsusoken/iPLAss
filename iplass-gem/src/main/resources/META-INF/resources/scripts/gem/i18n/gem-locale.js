@@ -18,7 +18,6 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-scriptContext.gem = {};
 scriptContext.gem.locale = {};
 scriptContext.gem.locale.apendCategory = function (category) {
 	if (!scriptContext.gem.locale[category]) {

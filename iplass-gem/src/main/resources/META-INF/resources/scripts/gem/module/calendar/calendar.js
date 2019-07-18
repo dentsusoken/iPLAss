@@ -888,7 +888,7 @@
 
 			function createPropertyList(propertySelect, propertylist, defName) {
 				var pleaseSelectLabel = "";
-				if (scriptContext.locale.showPulldownPleaseSelectLabel === true) {
+				if (scriptContext.gem.showPulldownPleaseSelectLabel === true) {
 					pleaseSelectLabel = scriptContext.gem.locale.common.pleaseSelect;
 				}
 				$("<option/>").attr({value : "", type : ""}).text(pleaseSelectLabel).appendTo(propertySelect);

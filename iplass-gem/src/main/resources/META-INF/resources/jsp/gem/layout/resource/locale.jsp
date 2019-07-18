@@ -93,9 +93,8 @@ scriptContext.locale.inputDateFormat = "<%=inputDateFormat%>";
 scriptContext.locale.inputTimeHourFormat = "<%=inputTimeHourFormat%>";
 scriptContext.locale.inputTimeMinFormat = "<%=inputTimeMinFormat%>";
 scriptContext.locale.inputTimeSecFormat = "<%=inputTimeSecFormat%>";
-scriptContext.locale.showPulldownPleaseSelectLabel = <%=ViewUtil.isShowPulldownPleaseSelectLabel()%>;
 </script>
 <script src="${staticContentPath}/scripts/gem/i18n/gem-locale.js?cv=${apiVersion}"></script>
 <script src="${staticContentPath}/scripts/gem/i18n/gem-locale-${language}.js?cv=${apiVersion}"></script>
-<%-- For compatibility before 3.0.11  --%>
+<%-- For compatibility before 3.0.12  --%>
 <script src="${staticContentPath}/scripts/gem/i18n/gem-locale-migration-${language}.js?cv=${apiVersion}"></script>
