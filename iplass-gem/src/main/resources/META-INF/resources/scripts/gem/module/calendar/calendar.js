@@ -486,8 +486,8 @@
 			if($this.find(".filterButtonBlock").length == 0) {
 				var $filterButtonBlock = $("<div />").addClass("filterButtonBlock").appendTo($(".fc-left"));
 
-				var button = $("<button />").addClass("fc-button fc-state-default fc-corner-left fc-corner-right calendarFilter").text(scriptContext.locale.FILTER_APPOINT_BUTTON).appendTo($filterButtonBlock);
-				var buttonDel = $("<button />").addClass("fc-button fc-state-default fc-corner-left fc-corner-right fc-state-disabled").text(scriptContext.locale.FILTER_RELEASE_BUTTON).appendTo($filterButtonBlock);
+				var button = $("<button />").addClass("fc-button fc-state-default fc-corner-left fc-corner-right calendarFilter").text(scriptContext.gem.locale.calendar.filterAppointButton).appendTo($filterButtonBlock);
+				var buttonDel = $("<button />").addClass("fc-button fc-state-default fc-corner-left fc-corner-right fc-state-disabled").text(scriptContext.gem.locale.calendar.filterReleaseButton).appendTo($filterButtonBlock);
 
 				if ($("#filterConditionMassage").length == 0) {
 					createFilterConditionMassageArea(calendarOption.filterConditionMassage, buttonDel);
@@ -527,7 +527,7 @@
 
 					var isSubModal = $("body.modal-body").length != 0;
 					var target = getModalTarget(isSubModal);
-					$("#modal-title").text(scriptContext.locale.FILTER_APPOINT_BUTTON);
+					$("#modal-title").text(scriptContext.gem.locale.calendar.filterAppointButton);
 					var form = $("<form />").attr({method:"POST", action:addAction, target:target}).appendTo("body");
 					var filterCondition = $("#calendarFilterCondition"); // TODO これ見つからない、必要？
 					if (filterCondition.length > 0) {
@@ -569,7 +569,7 @@
 			$(".fc-clear").after($filterConditionBlock);
 
 			var $sectionHead = $("<div/>").addClass("hgroup-03 sechead").appendTo($filterConditionBlock);
-			$("<span/>").text(scriptContext.locale.FILTER_COND_EXIST).appendTo($("<h3/>").appendTo($sectionHead));
+			$("<span/>").text(scriptContext.gem.locale.calendar.filterCondExist).appendTo($("<h3/>").appendTo($sectionHead));
 			$sectionHead.after($filterConditionMassage).sectoinToggle().click();
 
 			buttonDel.removeClass("fc-state-disabled");
@@ -816,13 +816,13 @@
 					var boxSearch = $("<div/>").addClass("box-search-01").appendTo(tabWrap);
 
 					// 通常フィルター設定
-					$("<a/>").attr("href", "#").text(scriptContext.locale.FILTER).appendTo(detailTab = $("<li/>").addClass("detail").appendTo(tabMenu));
+					$("<a/>").attr("href", "#").text(scriptContext.gem.locale.calendar.filter).appendTo(detailTab = $("<li/>").addClass("detail").appendTo(tabMenu));
 					createDeepFilter(boxSearch, $data);
 
 					// 定型フィルター設定
 					var fixTab;
 					if ($data.entityFilterIteList && $data.entityFilterIteList.length > 0) {
-						$("<a/>").attr("href", "#").text(scriptContext.locale.ROU_FILTER).appendTo($("<li/>").addClass("fixed").appendTo(tabMenu));
+						$("<a/>").attr("href", "#").text(scriptContext.gem.locale.calendar.fixedFilter).appendTo($("<li/>").addClass("fixed").appendTo(tabMenu));
 						createFixFilter(boxSearch, $data);
 					}
 
@@ -839,11 +839,11 @@
 					tabWrap.switchCondition({cunt:cunt});
 
 					var $without = $("<input/>").attr({defName : $data.entityDefinition.name, type : "checkbox"}).addClass("without-entity");
-					$("<label />").text(messageFormat(scriptContext.locale.WITHOUT_ENTITY, $data.entityDefinition.displayName)).append($without).appendTo($("<div />").addClass("excludeCondition").appendTo(tabWrap));
+					$("<label />").text(messageFormat(scriptContext.gem.locale.calendar.withoutEntity, $data.entityDefinition.displayName)).append($without).appendTo($("<div />").addClass("excludeCondition").appendTo(tabWrap));
 				});
 
 				// 検索ボタン追加
-				$("<input />").attr({id:"calendar_search_button", type:"button", value:scriptContext.locale.searchItem}).addClass("gr-btn").appendTo($this);
+				$("<input />").attr({id:"calendar_search_button", type:"button", value:scriptContext.gem.locale.calendar.search}).addClass("gr-btn").appendTo($this);
 
 				// 初期値設定
 				initFilterCondition();
@@ -862,10 +862,10 @@
 				// ヘッダー作成
 				var $tr = $("<tr/>").appendTo($("<thead/>").appendTo($table));
 				$("<th/>").addClass("col1").appendTo($tr);
-				$("<th/>").addClass("col2").text(scriptContext.locale.SEARCH_ITEM).appendTo($tr);
-				$("<th/>").addClass("col3").text(scriptContext.locale.COND).appendTo($tr);
-				$("<th/>").addClass("col4").text(scriptContext.locale.KEYWORD).appendTo($tr);
-				$("<p/>").addClass("btn-toggle-01 tp02 add").attr("title", scriptContext.locale.ADD_ITEM_BOTTOM).text("＋").appendTo($("<th/>").addClass("col5").appendTo($tr));
+				$("<th/>").addClass("col2").text(scriptContext.gem.locale.calendar.searchItem).appendTo($tr);
+				$("<th/>").addClass("col3").text(scriptContext.gem.locale.calendar.cond).appendTo($tr);
+				$("<th/>").addClass("col4").text(scriptContext.gem.locale.calendar.keyword).appendTo($tr);
+				$("<p/>").addClass("btn-toggle-01 tp02 add").attr("title", scriptContext.gem.locale.calendar.addItemBottom).text("＋").appendTo($("<th/>").addClass("col5").appendTo($tr));
 
 				// ダミーフィルター作成
 				var $tr = $("<tr/>").addClass("dummy-filter-condition display-none").appendTo($("<tbody/>").appendTo($table));
@@ -888,8 +888,8 @@
 
 			function createPropertyList(propertySelect, propertylist, defName) {
 				var pleaseSelectLabel = "";
-				if (scriptContext.locale.showPulldownPleaseSelectLabel === true) {
-					pleaseSelectLabel = scriptContext.locale.pleaseSelect;
+				if (scriptContext.gem.showPulldownPleaseSelectLabel === true) {
+					pleaseSelectLabel = scriptContext.gem.locale.common.pleaseSelect;
 				}
 				$("<option/>").attr({value : "", type : ""}).text(pleaseSelectLabel).appendTo(propertySelect);
 				$.each(propertylist, function () {
@@ -914,24 +914,24 @@
 				var dispLike = type ? dispLikeOption(type) : false;
 				var dispIn = type ? dispInOption(type) : false;
 				var dispCompare = type ? dispCompareOption(type) : false;
-				$("<option />").attr({value:"EQ"}).text(scriptContext.locale.EQ).appendTo(conditionSelect);
-				$("<option />").attr({value:"NE"}).text(scriptContext.locale.NE).appendTo(conditionSelect);
+				$("<option />").attr({value:"EQ"}).text(scriptContext.gem.locale.filter.EQ).appendTo(conditionSelect);
+				$("<option />").attr({value:"NE"}).text(scriptContext.gem.locale.filter.NE).appendTo(conditionSelect);
 				if (dispLike) {
-					$("<option />").attr({value:"SW"}).text(scriptContext.locale.SW).appendTo(conditionSelect);
-					$("<option />").attr({value:"LW"}).text(scriptContext.locale.LW).appendTo(conditionSelect);
-					$("<option />").attr({value:"IC"}).text(scriptContext.locale.IC).appendTo(conditionSelect);
-					$("<option />").attr({value:"NIC"}).text(scriptContext.locale.NIC).appendTo(conditionSelect);
+					$("<option />").attr({value:"SW"}).text(scriptContext.gem.locale.filter.SW).appendTo(conditionSelect);
+					$("<option />").attr({value:"LW"}).text(scriptContext.gem.locale.filter.LW).appendTo(conditionSelect);
+					$("<option />").attr({value:"IC"}).text(scriptContext.gem.locale.filter.IC).appendTo(conditionSelect);
+					$("<option />").attr({value:"NIC"}).text(scriptContext.gem.locale.filter.NIC).appendTo(conditionSelect);
 				}
-				if (dispIn)$("<option />").attr({value:"IN"}).text(scriptContext.locale.IN).appendTo(conditionSelect);
+				if (dispIn)$("<option />").attr({value:"IN"}).text(scriptContext.gem.locale.filter.IN).appendTo(conditionSelect);
 				if (dispCompare) {
-					$("<option />").attr({value:"LT"}).text(scriptContext.locale.LT).appendTo(conditionSelect);
-					$("<option />").attr({value:"GT"}).text(scriptContext.locale.GT).appendTo(conditionSelect);
-					$("<option />").attr({value:"LE"}).text(scriptContext.locale.LE).appendTo(conditionSelect);
-					$("<option />").attr({value:"GE"}).text(scriptContext.locale.GE).appendTo(conditionSelect);
-					$("<option />").attr({value:"RG"}).text(scriptContext.locale.RG).appendTo(conditionSelect);
+					$("<option />").attr({value:"LT"}).text(scriptContext.gem.locale.filter.LT).appendTo(conditionSelect);
+					$("<option />").attr({value:"GT"}).text(scriptContext.gem.locale.filter.GT).appendTo(conditionSelect);
+					$("<option />").attr({value:"LE"}).text(scriptContext.gem.locale.filter.LE).appendTo(conditionSelect);
+					$("<option />").attr({value:"GE"}).text(scriptContext.gem.locale.filter.GE).appendTo(conditionSelect);
+					$("<option />").attr({value:"RG"}).text(scriptContext.gem.locale.filter.RG).appendTo(conditionSelect);
 				}
-				$("<option />").attr({value:"NNL"}).text(scriptContext.locale.NNL).appendTo(conditionSelect);
-				$("<option />").attr({value:"NL"}).text(scriptContext.locale.NL).appendTo(conditionSelect);
+				$("<option />").attr({value:"NNL"}).text(scriptContext.gem.locale.filter.NNL).appendTo(conditionSelect);
+				$("<option />").attr({value:"NL"}).text(scriptContext.gem.locale.filter.NL).appendTo(conditionSelect);
 			}
 
 			/**
@@ -1217,7 +1217,7 @@
 			function createStringFiled(filterInputField) {
 				var $from = $("<span/>").addClass("data-range-from").appendTo(filterInputField);
 				$("<input/>").attr("type", "text").addClass("inpbr").appendTo($from);
-				var $to = $("<span/>").addClass("data-range-to display-none").text(scriptContext.locale.fromTo).appendTo(filterInputField);
+				var $to = $("<span/>").addClass("data-range-to display-none").text(scriptContext.gem.locale.filter.fromTo).appendTo(filterInputField);
 				$("<input/>").attr("type", "text").addClass("inpbr").appendTo($to);
 			}
 
@@ -1230,7 +1230,7 @@
 				$inputForm.on("blur", function(){
 					numcheck(this);
 				});
-				var $to = $("<span/>").addClass("data-range-to display-none").text(scriptContext.locale.fromTo).appendTo(filterInputField);
+				var $to = $("<span/>").addClass("data-range-to display-none").text(scriptContext.gem.locale.filter.fromTo).appendTo(filterInputField);
 				var $inputTo = $("<input/>").attr("type", "text").addClass("inpbr").appendTo($to);
 				$inputTo.on("blur", function(){
 					numcheck(this);
@@ -1245,7 +1245,7 @@
 				var $from = $("<span/>").addClass("data-range-from").appendTo(filterInputField);
 				var $inputFrom = $("<input/>").attr("type", "text").addClass("datepicker-form-size-02 inpbr").appendTo($from);
 				$inputFrom.applyDatepicker();
-				var $to = $("<span/>").addClass("data-range-to display-none").text(scriptContext.locale.fromTo).appendTo(filterInputField);
+				var $to = $("<span/>").addClass("data-range-to display-none").text(scriptContext.gem.locale.filter.fromTo).appendTo(filterInputField);
 				var $inputTo = $("<input/>").attr("type", "text").addClass("datepicker-form-size-02 inpbr").appendTo($to);
 				$inputTo.applyDatepicker();
 			}
@@ -1295,7 +1295,7 @@
 					var $from = $("<span/>").addClass("data-range-from").appendTo(filterInputField);
 					var $inputFrom = $("<input/>").attr("type", "text").addClass("datetimepicker-form-size-02 inpbr").appendTo($from);
 
-					var $to = $("<span/>").addClass("data-range-to display-none").text(scriptContext.locale.fromTo).appendTo(filterInputField);
+					var $to = $("<span/>").addClass("data-range-to display-none").text(scriptContext.gem.locale.filter.fromTo).appendTo(filterInputField);
 					var $inputTo = $("<input/>").attr("type", "text").addClass("datetimepicker-form-size-02 inpbr").appendTo($to);
 
 					$inputFrom.applyDatetimepicker({
@@ -1319,7 +1319,7 @@
 					var $from = $("<span/>").addClass("data-range-from").appendTo(filterInputField);
 					var $inputFrom = $("<input/>").attr("type", "text").addClass("inpbr").appendTo($from);
 
-					var $to = $("<span/>").addClass("data-range-to display-none").text(scriptContext.locale.fromTo).appendTo(filterInputField);
+					var $to = $("<span/>").addClass("data-range-to display-none").text(scriptContext.gem.locale.filter.fromTo).appendTo(filterInputField);
 					var $inputTo = $("<input/>").attr("type", "text").addClass("inpbr").appendTo($to);
 
 					$inputFrom.applyTimepicker({

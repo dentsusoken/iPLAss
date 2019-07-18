@@ -235,7 +235,7 @@
 
 		return TemplateUtil.getMultilingualString(fv.getTitle(), fv.getLocalizedTitleList(), ed.getDisplayName(), ed.getLocalizedDisplayNameList());
 	}
-	
+
 	String getDisplayPropLabel(ReferencePropertyEditor editor, Entity refEntity) {
 		String displayPropName = editor.getDisplayLabelItem();
 		if (displayPropName == null) {
@@ -243,7 +243,7 @@
 		}
 		return refEntity.getValue(displayPropName);
 	}
-	
+
 	boolean isUniqueProp(ReferencePropertyEditor editor) {
 		if (editor.getDisplayType() == ReferenceDisplayType.UNIQUE && editor.getUniqueItem() != null) {
 			// OIDをユニークキーフィールドとして使えるように
@@ -396,7 +396,7 @@ $(function() {
 	addNormalValidator(function() {
 		var val = $("select[name='" + es("<%=StringUtil.escapeJavaScript(propName)%>") + "']").val();
 		if (typeof val === "undefined" || val == null || val == "") {
-			alert(scriptContext.locale.requiredMsg.replace("{0}", "<%=StringUtil.escapeJavaScript(displayLabel)%>"));
+			alert(scriptContext.gem.locale.common.requiredMsg.replace("{0}", "<%=StringUtil.escapeJavaScript(displayLabel)%>"));
 			return false;
 		}
 		return true;
@@ -484,7 +484,7 @@ $(function() {
 	addNormalValidator(function() {
 		var val = $(":checkbox[name='" + es("<%=StringUtil.escapeJavaScript(propName)%>") + "']:checked").val();
 		if (typeof val === "undefined" || val == null || val == "") {
-			alert(scriptContext.locale.requiredMsg.replace("{0}", "<%=StringUtil.escapeJavaScript(displayLabel)%>"));
+			alert(scriptContext.gem.locale.common.requiredMsg.replace("{0}", "<%=StringUtil.escapeJavaScript(displayLabel)%>"));
 			return false;
 		}
 		return true;
@@ -566,7 +566,7 @@ $(function() {
 	addNormalValidator(function() {
 		var val = $("select[name='" + es("<%=StringUtil.escapeJavaScript(propName)%>") + "']").val();
 		if (typeof val === "undefined" || val == null || val == "") {
-			alert(scriptContext.locale.requiredMsg.replace("{0}", "<%=StringUtil.escapeJavaScript(displayLabel)%>"));
+			alert(scriptContext.gem.locale.common.requiredMsg.replace("{0}", "<%=StringUtil.escapeJavaScript(displayLabel)%>"));
 			return false;
 		}
 		return true;
@@ -726,7 +726,7 @@ $(function() {
 	addNormalValidator(function() {
 		var $ul = $("#" + es("<%=StringUtil.escapeJavaScript(ulId)%>"));
 		if ($ul.children().length == 0) {
-			alert(scriptContext.locale.requiredMsg.replace("{0}", "<%=StringUtil.escapeJavaScript(displayLabel)%>"));
+			alert(scriptContext.gem.locale.common.requiredMsg.replace("{0}", "<%=StringUtil.escapeJavaScript(displayLabel)%>"));
 			return false;
 		}
 		return true;
@@ -879,7 +879,7 @@ $(function() {
 	addNormalValidator(function() {
 		var $ul = $("#" + es("<%=StringUtil.escapeJavaScript(ulId)%>"));
 		if ($ul.children().length == 0) {
-			alert(scriptContext.locale.requiredMsg.replace("{0}", "<%=StringUtil.escapeJavaScript(displayLabel)%>"));
+			alert(scriptContext.gem.locale.common.requiredMsg.replace("{0}", "<%=StringUtil.escapeJavaScript(displayLabel)%>"));
 			return false;
 		}
 		return true;
@@ -1115,7 +1115,7 @@ $(function() {
 		//デフォルトで設定されているものを追加
 		String[] defaultValue = (String[]) request.getAttribute(Constants.EDITOR_DEFAULT_VALUE);
 		if (defaultValue != null && defaultValue.length > 0) {
-			
+
 			for (int i = 0; i < defaultValue.length; i++) {
 				String oid = defaultValue[i];
 				Entity entity = em.load(oid, _defName);
@@ -1154,7 +1154,7 @@ $(function() {
 	addNormalValidator(function() {
 		var $ul = $("#" + es("<%=StringUtil.escapeJavaScript(ulId)%>"));
 		if ($ul.children().length == 0) {
-			alert(scriptContext.locale.requiredMsg.replace("{0}", "<%=StringUtil.escapeJavaScript(displayLabel)%>"));
+			alert(scriptContext.gem.locale.common.requiredMsg.replace("{0}", "<%=StringUtil.escapeJavaScript(displayLabel)%>"));
 			return false;
 		}
 		return true;

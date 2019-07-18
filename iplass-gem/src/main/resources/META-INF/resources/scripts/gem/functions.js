@@ -93,9 +93,9 @@ $(function(){
 		var $under = $("<div class='modal-inner sub-modal-inner' />").appendTo($dialog);
 		var $title = $("<h2 class='hgroup-01' />").appendTo($under);
 		$("<span />").attr({id: "modal-title-" + name}).appendTo($title);
-		$("<p class='modal-maximize sub-modal-maximize' />").text(scriptContext.locale.maximizeLink).appendTo($under);
-		$("<p class='modal-restore sub-modal-restore' />").text(scriptContext.locale.restoreLink).appendTo($under);
-		$("<p class='modal-close sub-modal-close' />").text(scriptContext.locale.closeLink).appendTo($under);
+		$("<p class='modal-maximize sub-modal-maximize' />").text(scriptContext.gem.locale.modal.maximizeLink).appendTo($under);
+		$("<p class='modal-restore sub-modal-restore' />").text(scriptContext.gem.locale.modal.restoreLink).appendTo($under);
+		$("<p class='modal-close sub-modal-close' />").text(scriptContext.gem.locale.modal.closeLink).appendTo($under);
 		var ifrm = "<iframe src=\"about:blank\" height=\"686\" width=\"100%\" frameborder=\"0\" name=\"" + name + "\"/>";
 		var $frame = $(ifrm).appendTo($under);
 
@@ -919,7 +919,7 @@ $.fn.allInputCheck = function(){
 				var tb = this;
 				var val = $(tb).val().trim();	//空白だけの場合にNaNになるので除去
 				if(isNaN(val)) {
-					alert(scriptContext.locale.numcheckMsg);
+					alert(scriptContext.gem.locale.common.numcheckMsg);
 					$(tb).val("");
 					return true;
 				}
@@ -1267,9 +1267,9 @@ $.fn.allInputCheck = function(){
 							$(list).each(function(index) {
 								this["id"] = this.orgOid + "_" + this.orgVersion;
 								if ($v.editable && $v.updatable && !$v.changeEditLinkToViewLink) {
-									this["_mtpDetailLink"] = "<a href='javascript:void(0)' class='lnk-mr-01' data-oid='"+ this.orgOid + "' data-version='" + this.orgVersion + "'>" + scriptContext.locale.edit + "</a>";
+									this["_mtpDetailLink"] = "<a href='javascript:void(0)' class='lnk-mr-01' data-oid='"+ this.orgOid + "' data-version='" + this.orgVersion + "'>" + scriptContext.gem.locale.reference.edit + "</a>";
 								} else {
-									this["_mtpDetailLink"] = "<a href='javascript:void(0)' class='lnk-mr-02' data-oid='"+ this.orgOid + "' data-version='" + this.orgVersion + "'>" + scriptContext.locale.detail + "</a>";
+									this["_mtpDetailLink"] = "<a href='javascript:void(0)' class='lnk-mr-02' data-oid='"+ this.orgOid + "' data-version='" + this.orgVersion + "'>" + scriptContext.gem.locale.reference.detail + "</a>";
 								}
 								$v.grid.addRowData(index + 1, this);
 							});
@@ -1471,8 +1471,8 @@ $.fn.allInputCheck = function(){
 				previewFunc: null,
 				nextFunc: null,
 				searchFunc: null,
-				previousLabel: scriptContext.locale.previous,
-				nextLabel: scriptContext.locale.next
+				previousLabel: scriptContext.gem.locale.pager.previous,
+				nextLabel: scriptContext.gem.locale.pager.next
 		};
 		var options = $.extend(defaults, option);
 		if (!this) return false;
@@ -1522,7 +1522,7 @@ $.fn.allInputCheck = function(){
 				var $current = $("<input />").attr({type:"text", maxlength:7, size:2}).appendTo($quickJump);
 				$("<span />").text(" / ").appendTo($quickJump);
 				var $max = $("<span />").addClass("last-page").appendTo($quickJump);
-				$("<span />").text(scriptContext.locale.page).appendTo($quickJump);
+				$("<span />").text(scriptContext.gem.locale.pager.page).appendTo($quickJump);
 
 				var $btns = $("<li />").appendTo($ul);
 				var $searchBtn = $("<span />").addClass("ui-icon ui-icon-search").appendTo($btns);
@@ -1532,7 +1532,7 @@ $.fn.allInputCheck = function(){
 			if (options.showCurrentPage) {
 				var $currentPage = $("<li />").addClass("mr05").appendTo($ul);
 				$currentLabel = $("<span />").addClass("mr05").appendTo($currentPage);
-				$("<span />").text(scriptContext.locale.page).appendTo($currentPage);
+				$("<span />").text(scriptContext.gem.locale.pager.page).appendTo($currentPage);
 			}
 
 			//ページリンク
@@ -1613,7 +1613,7 @@ $.fn.allInputCheck = function(){
 				var $resultNum = $("<li />").addClass("result-num").appendTo($ul);
 				var $range = $("<span />").addClass("range").appendTo($resultNum);
 				var $count = $("<span />").addClass("count").text(0).appendTo($resultNum);
-				$("<span />").text(scriptContext.locale.item).appendTo($resultNum);
+				$("<span />").text(scriptContext.gem.locale.pager.count).appendTo($resultNum);
 			}
 
 			$.extend($v, {
@@ -1666,7 +1666,7 @@ $.fn.allInputCheck = function(){
 
 						if (count > 0) {
 							if (options.showItemCount) {
-								$range.css("display","").text((offset + 1) + " - " + tail + scriptContext.locale.item + " / ");
+								$range.css("display","").text((offset + 1) + " - " + tail + scriptContext.gem.locale.pager.count + " / ");
 							}
 							if (options.showPageJump) {
 								$quickJump.show();
@@ -1709,7 +1709,7 @@ $.fn.allInputCheck = function(){
 				$current.css("ime-mode", "disabled").on("change", function() {
 					var v = Number($(this).val());
 					if (isNaN(v)) {
-						alert(scriptContext.locale.numcheckMsg);
+						alert(scriptContext.gem.locale.common.numcheckMsg);
 						if ($(this).attr("beforeValue")) {
 							$(this).val($(this).attr("beforeValue"));
 						} else {
@@ -1859,8 +1859,8 @@ $.fn.allInputCheck = function(){
 			setup($v);
 
 			var pleaseSelectLabel = "";
-			if (scriptContext.locale.showPulldownPleaseSelectLabel === true) {
-				pleaseSelectLabel = scriptContext.locale.pleaseSelect;
+			if (scriptContext.gem.showPulldownPleaseSelectLabel === true) {
+				pleaseSelectLabel = scriptContext.gem.locale.common.pleaseSelect;
 			}
 			$("<option />").attr({value:""}).text(pleaseSelectLabel).appendTo($v);
 
@@ -1891,7 +1891,7 @@ $.fn.allInputCheck = function(){
 				//common.js
 				addNormalValidator(function() {
 					if ($v.val() == "" && $v.siblings("select").children(":selected[value!='']").length > 0) {
-						alert(scriptContext.locale.specifyCondition);
+						alert(scriptContext.gem.locale.reference.specifyCondition);
 						$v.focus();
 						return false;
 					}
@@ -2043,8 +2043,8 @@ $.fn.allInputCheck = function(){
 			var $parent = null;
 			if (!reset) {
 				var pleaseSelectLabel = "";
-				if (scriptContext.locale.showPulldownPleaseSelectLabel === true) {
-					pleaseSelectLabel = scriptContext.locale.pleaseSelect;
+				if (scriptContext.gem.showPulldownPleaseSelectLabel === true) {
+					pleaseSelectLabel = scriptContext.gem.locale.common.pleaseSelect;
 				}
 				$parent = $("<select />").attr("name", name).attr("data-norewrite", true).addClass("form-size-02 inpbr");
 				if ($v.customStyle) {
@@ -2185,7 +2185,7 @@ $.fn.allInputCheck = function(){
 			$v.on("click", function() {
 				if ($v.linkPropName && $v.linkPropName != "") {
 					if (!getLinkValue($v)) {
-						alert(messageFormat(scriptContext.locale.pleaseSelectAny, $v.linkPropName));
+						alert(messageFormat(scriptContext.gem.locale.reference.pleaseSelectAny, $v.linkPropName));
 						return;
 					}
 				}
@@ -2210,7 +2210,7 @@ $.fn.allInputCheck = function(){
 			var id = uniqueId();
 			var $div = $("<div />").addClass("recursiveTree").attr({id:"container_" + id, title:$v.title}).css("display", "none");
 			$v.after($div);
-			$("<span />").addClass("treeTitle").text(messageFormat(scriptContext.locale.pleaseSelectAny, $v.title)).appendTo($div);
+			$("<span />").addClass("treeTitle").text(messageFormat(scriptContext.gem.locale.reference.pleaseSelectAny, $v.title)).appendTo($div);
 			var $tree = $("<div />").addClass("treeContents").attr("id", "tree_" + id).appendTo($div);
 
 			var $dialog = $div.dialog({
@@ -2246,8 +2246,8 @@ $.fn.allInputCheck = function(){
 									$link.modalWindow();
 								}
 								if ($v.deletable) {
-									var $delBtn = $("<input type='button' />").addClass("gr-btn-02 del-btn").val(scriptContext.locale.deleteLabel).on("click", function() {$li.remove();}).appendTo($li);
-									if ($v.delCallbackKey) { 
+									var $delBtn = $("<input type='button' />").addClass("gr-btn-02 del-btn").val(scriptContext.gem.locale.reference.deleteLabel).on("click", function() {$li.remove();}).appendTo($li);
+									if ($v.delCallbackKey) {
 										var delCallback = scriptContext[$v.delCallbackKey];
 										if (delCallback && $.isFunction(delCallback)) {
 											$delBtn.on("click", function() { delCallback.call(this, $li.attr("id"));});
@@ -2277,7 +2277,7 @@ $.fn.allInputCheck = function(){
 						}
 					}
 				},{
-					text: scriptContext.locale.cancel,
+					text: scriptContext.gem.locale.common.cancel,
 					click: function() {
 						$(this).dialog("close");
 					}
@@ -2675,7 +2675,7 @@ $.fn.allInputCheck = function(){
 				});
 
 				if (duplicate) {
-					alert(scriptContext.locale.duplicateData);
+					alert(scriptContext.gem.locale.reference.duplicateData);
 					return;
 				}
 
@@ -2709,7 +2709,7 @@ $.fn.allInputCheck = function(){
 							}
 						}
 					} else {
-						alert(scriptContext.locale.noResult);
+						alert(scriptContext.gem.locale.reference.noResult);
 					}
 				});
 
@@ -2833,7 +2833,7 @@ function datepicker(selector) {
 		var defaults = {
 			dateFormat: dateUtil.getDatepickerDateFormat(),
 			inputDateFormat: dateUtil.getInputDateFormat(),
-			buttonText: scriptContext.locale.datepickerBtn,
+			buttonText: scriptContext.gem.locale.date.datepickerBtn,
 			buttonImage: null,
 			showErrorMessage: true,
 			validErrMsg: null,
@@ -3029,7 +3029,7 @@ function timepicker(selector) {
 			fixedMin: null,
 			fixedSec: null,
 			fixedMSec: "000",
-			buttonText: scriptContext.locale.timepickerBtn,
+			buttonText: scriptContext.gem.locale.date.timepickerBtn,
 			buttonImage: null,
 			showErrorMessage: true,
 			validErrMsg: null,
@@ -3211,7 +3211,7 @@ function datetimepicker(selector) {
 			fixedMin: null,
 			fixedSec: null,
 			fixedMSec: "000",	//現状未使用
-			buttonText: scriptContext.locale.datepickerBtn,
+			buttonText: scriptContext.gem.locale.date.datepickerBtn,
 			buttonImage: null,
 			showErrorMessage: true,
 			validErrMsg: null,
@@ -3539,7 +3539,7 @@ function datetimepicker(selector) {
 				colModels.push({name:"id", index:"id", hidden: true, key:true, label:"id", sortable:false });
 
 				//name
-				colModels.push({name:"name", index:"name", width: 260, label:"<p class='title'>" + scriptContext.locale.name + "</p>", sortable:false, formatter:function(cellValue, opt, rowObject) {
+				colModels.push({name:"name", index:"name", width: 260, label:"<p class='title'>" + scriptContext.gem.locale.common.name + "</p>", sortable:false, formatter:function(cellValue, opt, rowObject) {
 					var dispValue = $.jgrid.htmlEncode(cellValue);
 					if (rowObject.type == "E") {
 						var defName = rowObject.defName;

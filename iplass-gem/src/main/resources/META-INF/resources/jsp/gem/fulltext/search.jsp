@@ -229,9 +229,9 @@ function execSearch(param) {
 
 			if (typeof res !== "undeined" && res != null
 					&& res.exceptionType == "org.iplass.mtp.auth.NoPermissionException") {
-				alert(scriptContext.locale.permissionErrOccurred);
+				alert(scriptContext.gem.locale.error.permissionErrOccurred);
 			} else {
-				alert(scriptContext.locale.errOccurred);
+				alert(scriptContext.gem.locale.error.errOccurred);
 			}
 
 			$("div.fulltext-search-block").show();

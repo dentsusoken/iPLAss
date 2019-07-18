@@ -140,7 +140,7 @@ $(function() {
 	addNormalValidator(function() {
 		var val = $(":checkbox[name='" + es("<%=StringUtil.escapeJavaScript(propName)%>") + "']:checked").val();
 		if (typeof val === "undefined" || val == null || val == "") {
-			alert(scriptContext.locale.requiredMsg.replace("{0}", "<%=StringUtil.escapeJavaScript(displayLabel)%>"));
+			alert(scriptContext.gem.locale.common.requiredMsg.replace("{0}", "<%=StringUtil.escapeJavaScript(displayLabel)%>"));
 			return false;
 		}
 		return true;
@@ -198,7 +198,7 @@ $(function() {
 	addNormalValidator(function() {
 		var val = $(":radio[name='" + es("<%=StringUtil.escapeJavaScript(propName)%>") + "']:checked").val();
 		if (typeof val === "undefined" || val == null || val == "") {
-			alert(scriptContext.locale.requiredMsg.replace("{0}", "<%=StringUtil.escapeJavaScript(displayLabel)%>"));
+			alert(scriptContext.gem.locale.common.requiredMsg.replace("{0}", "<%=StringUtil.escapeJavaScript(displayLabel)%>"));
 			return false;
 		}
 		return true;
@@ -247,7 +247,7 @@ $(function() {
 	addNormalValidator(function() {
 		var val = $("select[name='" + es("<%=StringUtil.escapeJavaScript(propName)%>") + "']").val();
 		if (typeof val === "undefined" || val == null || val == "") {
-			alert(scriptContext.locale.requiredMsg.replace("{0}", "<%=StringUtil.escapeJavaScript(displayLabel)%>"));
+			alert(scriptContext.gem.locale.common.requiredMsg.replace("{0}", "<%=StringUtil.escapeJavaScript(displayLabel)%>"));
 			return false;
 		}
 		return true;

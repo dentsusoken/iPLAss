@@ -789,7 +789,7 @@ function numcheck(element) {
 	}
 	//数値変換可能かをチェック
 	if (isNaN(v)) {
-		alert(scriptContext.locale.numcheckMsg);
+		alert(scriptContext.gem.locale.common.numcheckMsg);
 		element.value = "";
 		return;
 	}
@@ -922,7 +922,7 @@ function addDateItem(ulId, multiplicity, dummyRowId, propName, countId, func, de
 		$button.click(function() {deleteItem(copyId, delCallback);});
 
 		datepicker($text);
-		
+
 		return $copy;
 	}
 }
@@ -1016,7 +1016,7 @@ function validateDate(val, dateFormat, errMessage) {
 
 	function getErrorMessage() {
 		if (typeof errMessage === "undefined" || errMessage == null || errMessage == "") {
-			errMessage = scriptContext.locale.validateDateErrMsg;
+			errMessage = scriptContext.gem.locale.date.validateDateErrMsg;
 		}
 		return messageFormat(errMessage, dateFormat);
 	}
@@ -1114,7 +1114,7 @@ function addTimeSelectItem(ulId, multiplicity, dummyRowId, propName, countId, fu
 
 		//削除ボタンのclickを設定
 		$button.click(function() {deleteItem(copyId, delCallback);});
-		
+
 		return $copy;
 	}
 }
@@ -1232,7 +1232,7 @@ function validateTimePicker(val, timeFormat, fixedMin, fixedSec, errMessage) {
 
 	function getErrorMessage() {
 		if (typeof errMessage === "undefined" || errMessage == null || errMessage == "") {
-			errMessage = scriptContext.locale.validateTimeErrMsg;
+			errMessage = scriptContext.gem.locale.date.validateTimeErrMsg;
 		}
 		return messageFormat(errMessage, timeFormat);
 	}
@@ -1482,7 +1482,7 @@ function validateTimestampPicker(val, dateFormat, timeFormat, fixedMin, fixedSec
 
 	function getErrorMessage() {
 		if (typeof errMessage === "undefined" || errMessage == null || errMessage == "") {
-			errMessage = scriptContext.locale.validateTimestampErrMsg;
+			errMessage = scriptContext.gem.locale.date.validateTimestampErrMsg;
 		}
 		return messageFormat(errMessage, dateFormat + " " + timeFormat);
 	}
@@ -1621,7 +1621,7 @@ function uploadFile(file, token) {
 			if (data.result != null) {
 				var result = $(data.result).find("Result").text();
 				if (result == null || result == "") {
-					$span.text(scriptContext.locale.failedToFileUpload).show();
+					$span.text(scriptContext.gem.locale.binary.failedToFileUpload).show();
 				} else {
 					var error = $(data.result).find("error").text();
 					if (error == null || error == "") {
@@ -1639,7 +1639,7 @@ function uploadFile(file, token) {
 					}
 				}
 			} else {
-				$span.text(scriptContext.locale.failedToFileUpload).show();
+				$span.text(scriptContext.gem.locale.binary.failedToFileUpload).show();
 			}
 
 			//全て完了(成功or失敗)してから入力欄コントロール
@@ -1663,7 +1663,7 @@ function uploadFile(file, token) {
 		var uploaded = $("#ul_" + es(propName)).children("li").length;
 
 		if (fileCount + uploaded > max) {
-			alert(messageFormat(scriptContext.locale.filesLimitOver, max));
+			alert(messageFormat(scriptContext.gem.locale.binary.filesLimitOver, max));
 			return false;
 		}
 
@@ -1719,7 +1719,7 @@ function addBinaryGroup(propName, count, fileId, brName, brType, brLobId, displa
 		$li.addClass("noimage");
 	}
 
-	$("<a href='javascript:void(0)' class='binaryDelete del-btn'> " + scriptContext.locale.deleteLink + "</a>").appendTo($li).click(function() {
+	$("<a href='javascript:void(0)' class='binaryDelete del-btn'> " + scriptContext.gem.locale.binary.deleteLink + "</a>").appendTo($li).click(function() {
 		//liを削除
 		$li.remove();
 
@@ -1743,7 +1743,7 @@ function addBinaryGroup(propName, count, fileId, brName, brType, brLobId, displa
 			var width = $input.attr("data-binWidth") - 0;
 			var height = $input.attr("data-binHeight") - 0;
 			var $p = $("<p id='p_" + propName + count + "' class='mb0' />").appendTo($li);
-			var $img = $("<object data='" + ref + "' type='application/x-shockwave-flash' width='" + width + "' height='" + height + "' ><param name='movie' value='" + ref + "' /><param name='quality' value='high'>" + scriptContext.locale.notVewFlash + "</object>").appendTo($p);
+			var $img = $("<object data='" + ref + "' type='application/x-shockwave-flash' width='" + width + "' height='" + height + "' ><param name='movie' value='" + ref + "' /><param name='quality' value='high'>" + scriptContext.gem.locale.binary.notVewFlash + "</object>").appendTo($p);
 		} else if (brType && brType.indexOf("video/mpeg") > -1) {
 			// mpegファイルの場合は動画を表示
 			var width = $input.attr("data-binWidth") - 0;
@@ -2196,7 +2196,7 @@ function searchUniqueReference(id, selectAction, viewAction, defName, propName, 
 		var key = selectArray[0];
 		// 重複チェック （自分を除く）
 		if (key in refs && !$(refs[key]).is("#" + _id)) {
-			alert(scriptContext.locale.duplicateData);
+			alert(scriptContext.gem.locale.reference.duplicateData);
 			return;
 		}
 
@@ -2395,8 +2395,8 @@ function insertUniqueReference(id, addAction, viewAction, defName, propName, mul
 	var target = getModalTarget(isSubModal);
 
 	var parentOid = $(button).attr("data-parentOid");
-	var parentVersion = $(button).attr("data-parentVersion"); 
-	
+	var parentVersion = $(button).attr("data-parentVersion");
+
 	var _id = id.replace(/\[/g, "\\[").replace(/\]/g, "\\]").replace(/\./g, "\\.");
 	var _propName = propName.replace(/\[/g, "\\[").replace(/\]/g, "\\]").replace(/\./g, "\\.");
 
@@ -2469,7 +2469,7 @@ function addReference(id, viewAction, defName, key, label, propName, ulId, refEd
 	//削除ボタン追加
 	var deletable = $ul.attr("data-deletable");
 	if (deletable != null && deletable == "true") {
-		var $btn = $(" <input type='button' />").val(scriptContext.locale.deleteBtn).addClass("gr-btn-02 del-btn ml05").appendTo($li);
+		var $btn = $(" <input type='button' />").val(scriptContext.gem.locale.reference.deleteBtn).addClass("gr-btn-02 del-btn ml05").appendTo($li);
 		$btn.click(function() {
 			$(this).parent().remove();
 			if (delCallback && $.isFunction(delCallback)) delCallback.call(this, $(this).parent().attr("id"));
@@ -2498,20 +2498,20 @@ function addUniqueReference(viewAction, key, label, unique, defName, propName, m
 		var $text = $(":text", $copy);
 		var $link = $("a.modal-lnk", $copy);
 		var $hidden = $("input:hidden:last", $copy);
-	
+
 		//inputを設定
 		$text.val(unique);
-	
+
 		//linkを設定
 		var linkId = propName + "_" + tmp.oid;
 		$link.attr("id", linkId).click(function() {
 			showReference(viewAction, defName, oid, ver, linkId, refEdit);
 		});
 		$link.text(label);
-	
+
 		//hiddenを設定
 		$hidden.val(key);
-	
+
 		return $copyId;
 
 	}, delCallback);
@@ -2530,7 +2530,7 @@ function updateUniqueReference(id, viewAction, defName, key, label, propName, ul
 	var $link = $("a", $li).attr("id", linkId).click(function() {
 		showReference(viewAction, defName, oid, ver, linkId, refEdit);
 	});
-	
+
 	$link.text(label);
 	if ($("body.modal-body").length != 0) {
 		$link.subModalWindow();

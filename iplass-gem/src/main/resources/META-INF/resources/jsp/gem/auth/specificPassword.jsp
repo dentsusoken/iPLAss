@@ -34,13 +34,13 @@
 	String modalTarget = request.getParameter(Constants.MODAL_TARGET);
 	modalTarget = StringUtil.escapeHtml(modalTarget);
 	if (modalTarget == null) modalTarget = "";
-	
+
 	String oid = request.getParameter(Constants.OID);
 	oid = StringUtil.escapeHtml(oid);
 
 	String execType = request.getParameter(Constants.EXEC_TYPE);
 	execType = StringUtil.escapeHtml(execType);
-	
+
 	Exception e = (Exception) request.getAttribute(AuthCommandConstants.RESULT_ERROR);
 	String errorMessage = null;
 	if (e != null) {
@@ -139,7 +139,7 @@ $(function(){
 		$("#modal-title-" + modalTarget, parent.document).text("${m:rs('mtp-gem-messages', 'auth.SpecificPassword.resetPass')}");
 	}
 	$("#resetSpecificPassForm").submit(function(){
-		if(window.confirm(scriptContext.locale.passResetConfirm)) {
+		if(window.confirm("${m:rs('mtp-gem-messages', 'auth.SpecificPassword.passResetConfirm')}")) {
 			return true;
 		}
 		return false;

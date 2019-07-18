@@ -1,19 +1,19 @@
 <%--
  Copyright (C) 2013 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
- 
+
  Unless you have purchased a commercial license,
  the following license terms apply:
- 
+
  This program is free software: you can redistribute it and/or modify
  it under the terms of the GNU Affero General Public License as
  published by the Free Software Foundation, either version 3 of the
  License, or (at your option) any later version.
- 
+
  This program is distributed in the hope that it will be useful,
  but WITHOUT ANY WARRANTY; without even the implied warranty of
  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  GNU Affero General Public License for more details.
- 
+
  You should have received a copy of the GNU Affero General Public License
  along with this program. If not, see <https://www.gnu.org/licenses/>.
  --%>
@@ -85,7 +85,7 @@ function doRestore() {
 
 	var checkedCount = $(":checkbox[name='rbid']:checked").length;
 	if (checkedCount < 1) {
-		$(".error").text(messageFormat(scriptContext.locale.notSelected));
+		$(".error").text(messageFormat(scriptContext.gem.locale.purge.notSelected));
 		$('body, html').animate({ scrollTop: 0 }, 0);
 		return;
 	}
@@ -105,7 +105,7 @@ function doRestore() {
 			} else {
 				// error
 				var errorCol = $(":checkbox[name='rbid']").index($(":checkbox[name='rbid'][value='" + errorRbid + "']")) + 1;
-				$(".error").text(messageFormat(scriptContext.locale.line, errorCol, message));
+				$(".error").text(messageFormat(scriptContext.gem.locale.purge.line, errorCol, message));
 				$('body, html').animate({ scrollTop: 0 }, 0);
 			}
 			$.unblockUI();
@@ -119,7 +119,7 @@ function doPurge() {
 
 	var checkedCount = $(":checkbox[name='rbid']:checked").length;
 	if (checkedCount < 1) {
-		$(".error").text(messageFormat(scriptContext.locale.notSelected));
+		$(".error").text(messageFormat(scriptContext.gem.locale.purge.notSelected));
 		$('body, html').animate({ scrollTop: 0 }, 0);
 		return;
 	}
