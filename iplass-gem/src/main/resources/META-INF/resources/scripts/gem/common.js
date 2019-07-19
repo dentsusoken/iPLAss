@@ -2061,7 +2061,7 @@ function searchReferenceForBi(webapi, selectAction, viewAction, defName, entityD
 				for (var i = 0; i < entities.length; i++) {
 					var entity = entities[i];
 					var _key = entity.oid + "_" + entity.version;
-					addReference("li_" + propName + _key, viewAction, entityDefName, _key, entity[_displayPropName], propName, "ul_" + _propName, refEdit, null, defName);
+					addReference("li_" + propName + _key, viewAction, entityDefName, _key, entity[_displayPropName], propName, "ul_" + _propName, refEdit);
 				}
 				entityList = entities;
 			});
