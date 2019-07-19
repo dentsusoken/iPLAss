@@ -115,7 +115,7 @@ public class MetaSearchResultSection extends MetaSection {
 	/** 一括削除コミットトランザクション制御設定 */
 	private DeleteAllCommandTransactionType deleteAllCommandTransactionType = DeleteAllCommandTransactionType.DIVISION;
 	
-	/** CSVアップロード時のトランザクション制御設定 */
+	/** 一括更新コミットトランザクション制御設定*/
 	private BulkUpdateAllCommandTransactionType bulkUpdateAllCommandTransactionType = BulkUpdateAllCommandTransactionType.DIVISION;
 	
 
@@ -418,7 +418,7 @@ public class MetaSearchResultSection extends MetaSection {
 	}
 
 	/**
-	 * 一括削除のトランザクションタイプを設定
+	 * 一括更新のトランザクションタイプを設定
 	 * @param トランザクションタイプ
 	 */
 	public void setBulkUpdateAllCommandTransactionType(

@@ -96,7 +96,7 @@ public class GemConfigService implements Service {
 	/** 一括削除のコミット件数 */
 	private int deleteAllCommandBatchSize;
 
-	/** 一括更新のコミット件数 (単一) */
+	/** 一括更新のコミット件数 */
 	private int bulkUpdateAllCommandBatchSize;
 
 
