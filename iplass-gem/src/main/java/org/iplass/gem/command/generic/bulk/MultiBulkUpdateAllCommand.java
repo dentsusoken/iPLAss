@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import org.iplass.gem.GemConfigService;
 import org.iplass.gem.command.Constants;
 import org.iplass.gem.command.generic.search.DetailSearchCommand;
 import org.iplass.gem.command.generic.search.FixedSearchCommand;
@@ -41,8 +42,14 @@ import org.iplass.mtp.command.annotation.action.Result.Type;
 import org.iplass.mtp.command.annotation.action.TokenCheck;
 import org.iplass.mtp.entity.Entity;
 import org.iplass.mtp.entity.SearchResult;
+import org.iplass.mtp.entity.definition.EntityDefinition;
 import org.iplass.mtp.entity.query.Query;
+import org.iplass.mtp.spi.ServiceRegistry;
 import org.iplass.mtp.transaction.Transaction;
+import org.iplass.mtp.view.generic.EntityView;
+import org.iplass.mtp.view.generic.FormViewUtil;
+import org.iplass.mtp.view.generic.SearchFormView;
+import org.iplass.mtp.view.generic.element.section.SearchResultSection.BulkUpdateAllCommandTransactionType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -107,6 +114,13 @@ public class MultiBulkUpdateAllCommand extends MultiBulkCommandBase {
 			query.setVersiond(searchContext.isVersioned());
 			SearchResult<Entity> result = em.searchEntity(query);
 
+			// トランザクションタイプを取得します
+			EntityDefinition ed = context.getEntityDefinition();
+			EntityView view = evm.get(ed.getName());
+			String viewName = request.getParam(Constants.VIEW_NAME);
+			SearchFormView form= FormViewUtil.getSearchFormView(ed, view, viewName);
+			BulkUpdateAllCommandTransactionType transactionType = form.getResultSection().getBulkUpdateAllCommandTransactionType();
+
 			List<Entity> entities = result.getList();
 			if (entities.size() > 0) {
 				// 先頭に「行番号_」を付加する
@@ -120,19 +134,25 @@ public class MultiBulkUpdateAllCommand extends MultiBulkCommandBase {
 						.mapToObj(i -> i + "_" + entities.get(i).getUpdateDate().getTime())
 						.collect(Collectors.toList());
 
-				//大量データを考慮してトランザクションを分割(100件毎)
-				int hundred = 100;
+
 				int count = oid.size();
-				int countPerHundred = count / hundred;
-				if (count % hundred > 0) countPerHundred++;
-				for (int i = 0; i < countPerHundred; i++) {
-					int current = i * hundred;
+
+				//トランザクションタイプによって一括か、分割かを決める(batchSize件毎)
+				int batchSize = ServiceRegistry.getRegistry().getService(GemConfigService.class).getBulkUpdateAllCommandBatchSize();
+				if (transactionType == BulkUpdateAllCommandTransactionType.ONCE) {
+					batchSize = count;
+					}
+
+				int countPerBatch = count / batchSize;
+				if (count % batchSize > 0) countPerBatch++;
+				for (int i = 0; i < countPerBatch; i++) {
+					int current = i * batchSize;
 					List<String> subOidList = oid.stream()
-							.skip(current).limit(hundred).collect(Collectors.toList());
+							.skip(current).limit(batchSize).collect(Collectors.toList());
 					List<String> subVersionList = version.stream()
-							.skip(current).limit(hundred).collect(Collectors.toList());
+							.skip(current).limit(batchSize).collect(Collectors.toList());
 					List<String> subUpdateDate = updateDate.stream()
-							.skip(current).limit(hundred).collect(Collectors.toList());
+							.skip(current).limit(batchSize).collect(Collectors.toList());
 					ret = Transaction.requiresNew(t -> {
 						String r = null;
 						try {

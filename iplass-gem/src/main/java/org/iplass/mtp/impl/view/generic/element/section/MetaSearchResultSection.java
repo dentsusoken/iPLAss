@@ -39,6 +39,8 @@ import org.iplass.mtp.impl.view.generic.element.property.MetaPropertyColumn;
 import org.iplass.mtp.view.generic.PagingPosition;
 import org.iplass.mtp.view.generic.element.Element;
 import org.iplass.mtp.view.generic.element.section.SearchResultSection;
+import org.iplass.mtp.view.generic.element.section.SearchResultSection.BulkUpdateAllCommandTransactionType;
+import org.iplass.mtp.view.generic.element.section.SearchResultSection.DeleteAllCommandTransactionType;
 
 /**
  * 検索結果セクションのメタデータ
@@ -109,6 +111,13 @@ public class MetaSearchResultSection extends MetaSection {
 
 	/** スクリプトのキー(内部用) */
 	private String scriptKey;
+
+	/** 一括削除コミットトランザクション制御設定 */
+	private DeleteAllCommandTransactionType deleteAllCommandTransactionType = DeleteAllCommandTransactionType.DIVISION;
+	
+	/** 一括更新コミットトランザクション制御設定*/
+	private BulkUpdateAllCommandTransactionType bulkUpdateAllCommandTransactionType = BulkUpdateAllCommandTransactionType.DIVISION;
+	
 
 	/**
 	 * 表示行数を取得します。
@@ -383,7 +392,40 @@ public class MetaSearchResultSection extends MetaSection {
 	public void setLoadEntityInterrupterName(String loadEntityInterrupterName) {
 		this.loadEntityInterrupterName = loadEntityInterrupterName;
 	}
+	
+	/**
+	 * 一括削除のトランザクションタイプを取る
+	 * @return トランザクションタイプ
+	 */
+	public DeleteAllCommandTransactionType getDeleteAllCommandTransactionType() {
+		return deleteAllCommandTransactionType;
+	}
+	
+	/**
+	 * 一括削除のトランザクションタイプを設定
+	 * @param トランザクションタイプ
+	 */
+	public void setDeleteAllCommandTransactionType(DeleteAllCommandTransactionType deleteAllCommandTransactionType) {
+		this.deleteAllCommandTransactionType = deleteAllCommandTransactionType;
+	}
+	
+	/**
+	 * 一括更新のトランザクションタイプを取る
+	 * @return　トランザクションタイプ
+	 */
+	public BulkUpdateAllCommandTransactionType getBulkUpdateAllCommandTransactionType() {
+		return bulkUpdateAllCommandTransactionType;
+	}
 
+	/**
+	 * 一括更新のトランザクションタイプを設定
+	 * @param トランザクションタイプ
+	 */
+	public void setBulkUpdateAllCommandTransactionType(
+			BulkUpdateAllCommandTransactionType bulkUpdateAllCommandTransactionType) {
+		this.bulkUpdateAllCommandTransactionType = bulkUpdateAllCommandTransactionType;
+	}
+	
 	/**
 	 * 要素を取得します。
 	 * @return 要素
@@ -436,6 +478,8 @@ public class MetaSearchResultSection extends MetaSection {
 		this.forceUpadte = section.isForceUpadte();
 		this.interrupterName = section.getInterrupterName();
 		this.loadEntityInterrupterName = section.getLoadEntityInterrupterName();
+		this.deleteAllCommandTransactionType = section.getDeleteAllCommandTransactionType();
+		this.bulkUpdateAllCommandTransactionType = section.getBulkUpdateAllCommandTransactionType(); 
 		// 仮想プロパティ追加によりMetaPropertyからMetaElementへフィールドを変更
 //		if (section.getProperties().size() > 0) {
 //			for (PropertyColumn col : section.getProperties()) {
@@ -476,6 +520,8 @@ public class MetaSearchResultSection extends MetaSection {
 		section.setForceUpadte(this.forceUpadte);
 		section.setInterrupterName(this.interrupterName);
 		section.setLoadEntityInterrupterName(this.loadEntityInterrupterName);
+		section.setBulkUpdateAllCommandTransactionType(this.bulkUpdateAllCommandTransactionType);
+		section.setDeleteAllCommandTransactionType(this.deleteAllCommandTransactionType);
 
 		if (this.getElements().size() > 0) {
 			for (MetaElement elem : this.getElements()) {
