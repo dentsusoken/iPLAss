@@ -786,7 +786,6 @@
 		<!-- TODO 本番利用時はRedisCacheStoreFactoryなど利用するように設定変更が必要 -->
 		<property name="cacheOnlyAuthTokenStore" class="org.iplass.mtp.impl.cache.store.builtin.SimpleCacheStoreFactory">
 			<property name="namespacePattern" value="mtp[.]auth[.]cacheOnlyAuthTokenStore/.*" />
-			<property name="cacheKeyResolver" class="org.iplass.mtp.impl.auth.authenticate.token.AuthTokenKeyResolver" />
 			<property name="indexCount" value="2" />
 			<!-- 1時間有効 -->
 			<property name="timeToLive" value="3600000" />
