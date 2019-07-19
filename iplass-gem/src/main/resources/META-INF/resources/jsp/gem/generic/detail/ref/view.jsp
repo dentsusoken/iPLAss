@@ -56,6 +56,18 @@
 	String modalTarget = request.getParameter(Constants.MODAL_TARGET);
 	modalTarget = StringUtil.escapeHtml(modalTarget);
 	if (modalTarget == null) modalTarget = "";
+	String parentDefName = request.getParameter(Constants.PARENT_DEFNAME);
+	parentDefName = StringUtil.escapeHtml(parentDefName);
+	if (parentDefName == null) parentDefName = "";
+	String parentViewName = request.getParameter(Constants.PARENT_VIEWNAME);
+	parentViewName = StringUtil.escapeHtml(parentViewName);
+	if (parentViewName == null) parentViewName = "";
+	String parentPropName = request.getParameter(Constants.PARENT_PROPNAME);
+	parentPropName = StringUtil.escapeHtml(parentPropName);
+	if (parentPropName == null) parentPropName = "";
+	String viewType = request.getParameter(Constants.VIEW_TYPE);
+	viewType = StringUtil.escapeHtml(viewType);
+	if (viewType == null) viewType = "";
 
 	//コマンドから
 	DetailFormViewData data = (DetailFormViewData) request.getAttribute(Constants.DATA);
@@ -212,6 +224,10 @@ function dataUnlock() {
 <input type="hidden" name="<%=Constants.DEF_NAME%>" value="<c:out value="<%=defName%>"/>" />
 <input type="hidden" name="<%=Constants.REF_EDIT%>" value="<c:out value="<%=refEdit%>"/>" />
 <input type="hidden" name="<%=Constants.MODAL_TARGET%>" value="<c:out value="<%=modalTarget%>"/>" />
+<input type="hidden" name="<%=Constants.PARENT_DEFNAME%>" value="<c:out value="<%=parentDefName%>" />" />
+<input type="hidden" name="<%=Constants.PARENT_VIEWNAME%>" value="<c:out value="<%=parentViewName%>" />" />
+<input type="hidden" name="<%=Constants.PARENT_PROPNAME%>" value="<c:out value="<%=parentPropName%>" />" />
+<input type="hidden" name="<%=Constants.VIEW_TYPE%>" value="<c:out value="<%=viewType%>" />" />
 <%	if (oid != null) { %>
 <input type="hidden" name="<%=Constants.OID%>" value="<c:out value="<%=oid%>"/>" />
 <%	}

@@ -48,6 +48,10 @@
 	parentPropName = StringUtil.escapeHtml(parentPropName);
 	if (parentPropName == null) parentPropName = "";
 
+	String viewType = request.getParameter(Constants.VIEW_TYPE);
+	viewType = StringUtil.escapeHtml(viewType);
+	if (viewType == null) viewType = "";
+
 	//コマンドから
 	DetailFormViewData data = (DetailFormViewData) request.getAttribute(Constants.DATA);
 	String message = (String) request.getAttribute(Constants.MESSAGE);
@@ -171,6 +175,7 @@ ${m:outputToken('FORM_XHTML', true)}
 <input type="hidden" name="parentDefName" value="<c:out value="<%=parentDefName%>" />" />
 <input type="hidden" name="parentViewName" value="<c:out value="<%=parentViewName%>" />" />
 <input type="hidden" name="parentPropName" value="<c:out value="<%=parentPropName%>" />" />
+<input type="hidden" name="viewType" value="<c:out value="<%=viewType%>" />" />
 <%
 	if (oid != null) {
 %>

@@ -341,6 +341,13 @@
 	Boolean useBulkView = (Boolean) request.getAttribute(Constants.BULK_UPDATE_USE_BULK_VIEW);
 	if (useBulkView == null) useBulkView = false;
 
+	String viewType = Constants.VIEW_TYPE_DETAIL;
+	if (type == OutputType.BULK && !useBulkView) {
+		viewType = Constants.VIEW_TYPE_BULK;
+	} else if (type == OutputType.BULK && useBulkView) {
+		viewType = Constants.VIEW_TYPE_MULTI_BULK;
+	}
+
 	//本体のEntity
 	Entity parentEntity = (Entity) request.getAttribute(Constants.EDITOR_PARENT_ENTITY);
 	String parentOid = parentEntity != null ? parentEntity.getOid() : "";
@@ -474,7 +481,7 @@ function <%=toggleInsBtnFunc%>() {
 <%
 			if (editPageDetail) {
 %>
-<a href="javascript:void(0)" class="modal-lnk" style="<c:out value="<%=customStyle%>"/>" id="<c:out value="<%=linkId %>"/>" onclick="showReference('<%=StringUtil.escapeJavaScript(viewAction)%>', '<%=StringUtil.escapeJavaScript(refDefName)%>', '<%=StringUtil.escapeJavaScript(refEntity.getOid())%>', '<%=refEntity.getVersion() %>', '<%=StringUtil.escapeJavaScript(linkId)%>', <%=refEdit %>)"><c:out value="<%=dispPropLabel %>" /></a>
+<a href="javascript:void(0)" class="modal-lnk" style="<c:out value="<%=customStyle%>"/>" id="<c:out value="<%=linkId %>"/>" onclick="showReference('<%=StringUtil.escapeJavaScript(viewAction)%>', '<%=StringUtil.escapeJavaScript(refDefName)%>', '<%=StringUtil.escapeJavaScript(refEntity.getOid())%>', '<%=refEntity.getVersion() %>', '<%=StringUtil.escapeJavaScript(linkId)%>', <%=refEdit %>, null, '<%=rootDefName%>', '<%=viewName%>', '<%=propName%>', '<%=viewType%>')"><c:out value="<%=dispPropLabel %>" /></a>
 <%
 				if (!hideDeleteButton && updatable) {
 %>
@@ -547,21 +554,7 @@ $(function() {
 		, permitConditionSelectAll: <%=editor.isPermitConditionSelectAll()%>
 		, parentDefName: "<%=StringUtil.escapeJavaScript(rootDefName)%>"
 		, parentViewName: "<%=StringUtil.escapeJavaScript(viewName)%>"
-<%
-				if (type == OutputType.BULK && !useBulkView) { // 一括更新モード
-%>
-		, viewType: "<%=Constants.VIEW_TYPE_BULK %>"
-<%
-				} else if (type == OutputType.BULK && useBulkView) { // 複数項目一括更新
-%>
-		, viewType: "<%=Constants.VIEW_TYPE_MULTI_BULK %>"
-<%
-				} else {
-%>
-		, viewType: "<%=Constants.VIEW_TYPE_DETAIL %>"
-<%
-				}
-%>
+		, viewType: "<%=StringUtil.escapeJavaScript(viewType)%>"
 	}
 	var $selBtn = $(":button[id='<%=StringUtil.escapeJavaScript(selBtnId) %>']");
 	for (key in params) {
@@ -609,6 +602,7 @@ $(function() {
 		, parentVersion: "<%=StringUtil.escapeJavaScript(parentVersion)%>"
 		, parentDefName: "<%=StringUtil.escapeJavaScript(rootDefName)%>"
 		, parentViewName: "<%=StringUtil.escapeJavaScript(viewName)%>"
+		, viewType: "<%=StringUtil.escapeJavaScript(viewType)%>"
 		, refEdit: <%=refEdit %>
 		, callbackKey: key
 	}
@@ -618,7 +612,7 @@ $(function() {
 	}
 	$insBtn.on("click", function() {
 		insertReference(params.addAction, params.viewAction, params.defName, params.propName, params.multiplicity,
-				 params.urlParam, params.parentOid, params.parentVersion, params.parentDefName, params.parentViewName, params.refEdit, callback, this, delCallback);
+				 params.urlParam, params.parentOid, params.parentVersion, params.parentDefName, params.parentViewName, params.refEdit, callback, this, delCallback, params.viewType);
 	});
 
 });
@@ -671,7 +665,7 @@ $(function() {
 %>
 <select name="<c:out value="<%=propName %>"/>" class="form-size-02 inpbr refLinkSelect" style="<c:out value="<%=customStyle%>"/>" size="<c:out value="<%=size %>"/>"
 data-defName="<c:out value="<%=rootDefName %>"/>"
-data-viewType="<%=Constants.VIEW_TYPE_DETAIL %>"
+data-viewType="<%=viewType %>"
 data-viewName="<c:out value="<%=viewName %>"/>"
 data-propName="<c:out value="<%=pd.getName() %>"/>"
 data-linkName="<c:out value="<%=link.getLinkFromPropertyName() %>"/>"
@@ -763,7 +757,7 @@ data-upperType="<c:out value="<%=upperType %>"/>"
 <ul class="<c:out value="<%=cls %>"/> refLinkRadio"
 data-itemName="<c:out value="<%=propName %>"/>"
 data-defName="<c:out value="<%=rootDefName %>"/>"
-data-viewType="<%=Constants.VIEW_TYPE_DETAIL %>"
+data-viewType="<%=viewType %>"
 data-viewName="<c:out value="<%=viewName %>"/>"
 data-propName="<c:out value="<%=pd.getName() %>"/>"
 data-linkName="<c:out value="<%=link.getLinkFromPropertyName() %>"/>"
@@ -866,7 +860,7 @@ function <%=toggleInsBtnFunc%>() {
 <%
 			if (editPageDetail) {
 %>
-<a href="javascript:void(0)" class="modal-lnk" style="<c:out value="<%=customStyle%>"/>" id="<c:out value="<%=linkId %>"/>" onclick="showReference('<%=StringUtil.escapeJavaScript(viewAction)%>', '<%=StringUtil.escapeJavaScript(refDefName)%>', '<%=StringUtil.escapeJavaScript(refEntity.getOid())%>', '<%=refEntity.getVersion() %>', '<%=StringUtil.escapeJavaScript(linkId)%>', <%=refEdit %>)"><c:out value="<%=displayPropLabel %>" /></a>
+<a href="javascript:void(0)" class="modal-lnk" style="<c:out value="<%=customStyle%>"/>" id="<c:out value="<%=linkId %>"/>" onclick="showReference('<%=StringUtil.escapeJavaScript(viewAction)%>', '<%=StringUtil.escapeJavaScript(refDefName)%>', '<%=StringUtil.escapeJavaScript(refEntity.getOid())%>', '<%=refEntity.getVersion() %>', '<%=StringUtil.escapeJavaScript(linkId)%>', <%=refEdit %>, null, '<%=rootDefName%>', '<%=viewName%>', '<%=propName%>', '<%=viewType%>')"><c:out value="<%=displayPropLabel %>" /></a>
 <%
 				if (!hideDeleteButton && updatable) {
 %>
@@ -907,7 +901,7 @@ function <%=toggleInsBtnFunc%>() {
 %>
 <input type="button" value="${m:rs('mtp-gem-messages', 'generic.editor.reference.ReferencePropertyEditor_Edit.select')}" class="gr-btn-02 sel-btn recursiveTreeTrigger" id="<c:out value="<%=selBtnId %>"/>"
  data-defName="<c:out value="<%=rootDefName%>"/>"
- data-viewType="detail"
+ data-viewType="<c:out value="<%=viewType%>"/>"
  data-viewName="<c:out value="<%=viewName%>"/>"
  data-propName="<c:out value="<%=pd.getName()%>"/>"
  data-prefix="<c:out value="<%=prefix%>"/>"
@@ -971,6 +965,7 @@ $(function() {
 		, parentVersion: "<%=StringUtil.escapeJavaScript(parentVersion)%>"
 		, parentDefName: "<%=StringUtil.escapeJavaScript(defName)%>"
 		, parentViewName: "<%=StringUtil.escapeJavaScript(viewName)%>"
+		, viewType: "<%=StringUtil.escapeJavaScript(viewType)%>"
 		, refEdit: <%=refEdit %>
 		, callbackKey: key
 	}
@@ -980,7 +975,7 @@ $(function() {
 	}
 	$insBtn.on("click", function() {
 		insertReference(params.addAction, params.viewAction, params.defName, params.propName, params.multiplicity,
-				 params.urlParam, params.parentOid, params.parentVersion, params.parentDefName, params.parentViewName, params.refEdit, callback, this, delCallback);
+				 params.urlParam, params.parentOid, params.parentVersion, params.parentDefName, params.parentViewName, params.refEdit, callback, this, delCallback, params.viewType);
 	});
 
 });
@@ -991,13 +986,6 @@ $(function() {
 	} else if (editor.getDisplayType() == ReferenceDisplayType.UNIQUE && isUniqueProp(editor) && updatable && !isMappedby) {
 		//リンク
 		String ulId = "ul_" + propName;
-
-		String viewType = Constants.VIEW_TYPE_DETAIL;
-		if (type == OutputType.BULK && !useBulkView) {
-			viewType = Constants.VIEW_TYPE_BULK;
-		} else if (type == OutputType.BULK && useBulkView) {
-			viewType = Constants.VIEW_TYPE_MULTI_BULK;
-		}
 
 		String specVersionKey = "";
 		if (pd.getVersionControlType() == VersionControlReferenceType.AS_OF_EXPRESSION_BASE) {
@@ -1120,7 +1108,7 @@ $(function() {
 %>
 </span>
 <span class="unique-ref">
-<a href="javascript:void(0)" class="modal-lnk" id="<c:out value="<%=linkId %>"/>" onclick="showReference('<%=StringUtil.escapeJavaScript(viewAction)%>', '<%=StringUtil.escapeJavaScript(refDefName)%>', '<%=StringUtil.escapeJavaScript(refEntity.getOid())%>', '<%=refEntity.getVersion() %>', '<%=StringUtil.escapeJavaScript(linkId)%>', <%=refEdit %>)"><c:out value="<%=dispPropLabel %>" /></a>
+<a href="javascript:void(0)" class="modal-lnk" id="<c:out value="<%=linkId %>"/>" onclick="showReference('<%=StringUtil.escapeJavaScript(viewAction)%>', '<%=StringUtil.escapeJavaScript(refDefName)%>', '<%=StringUtil.escapeJavaScript(refEntity.getOid())%>', '<%=refEntity.getVersion() %>', '<%=StringUtil.escapeJavaScript(linkId)%>', <%=refEdit %>, null, '<%=rootDefName%>', '<%=viewName%>', '<%=propName%>', '<%=viewType%>')"><c:out value="<%=dispPropLabel %>" /></a>
 <%
 
 			if (!hideDeleteButton && updatable) {

@@ -79,7 +79,7 @@ public final class SearchCommand implements Command {
 					if (result != null) {
 						SearchContext sc = command.getContext(request);
 
-						List<Map<String, String>> retList = CreateSearchResultUtil.getHtmlData(result.getList(), sc.getEntityDefinition(), ((SearchContextBase) sc).getResultSection());
+						List<Map<String, String>> retList = CreateSearchResultUtil.getHtmlData(result.getList(), sc.getEntityDefinition(), ((SearchContextBase) sc).getResultSection(), ((SearchContextBase) sc).getViewName());
 						request.setAttribute("htmlData", retList);
 					} else {
 						request.setAttribute("htmlData", new ArrayList<Map<String, String>>());

@@ -104,6 +104,11 @@
 // 		if (pd.getMultiplicity() != 1) {
 //			複数表示不可→検索が出来ない
 // 		} else {
+			String defName = (String) request.getAttribute(Constants.ROOT_DEF_NAME);
+			defName = StringUtil.escapeHtml(defName, true);
+			String viewName = (String) request.getAttribute(Constants.VIEW_NAME);
+			viewName = StringUtil.escapeHtml(viewName, true);
+
 			Entity entity = value instanceof Entity ? (Entity) value : null;
 			if (editor.getNestProperties().size() == 0) {
 				if (entity != null && getDisplayPropLabel(editor, entity) != null) {
@@ -116,7 +121,7 @@
 <%
 					} else {
 %>
-<a href="javascript:void(0)" class="modal-lnk" id="<c:out value="<%=linkId %>" />" onclick="showReference('<%=StringUtil.escapeJavaScript(view)%>', '<%=StringUtil.escapeJavaScript(editor.getObjectName())%>', '<%=StringUtil.escapeJavaScript(entity.getOid())%>', '<%=entity.getVersion() %>', '<%=StringUtil.escapeJavaScript(linkId)%>', <%=refEdit %>)"><c:out value="<%=displayPropLabel %>" /></a>
+<a href="javascript:void(0)" class="modal-lnk" id="<c:out value="<%=linkId %>" />" onclick="showReference('<%=StringUtil.escapeJavaScript(view)%>', '<%=StringUtil.escapeJavaScript(editor.getObjectName())%>', '<%=StringUtil.escapeJavaScript(entity.getOid())%>', '<%=entity.getVersion() %>', '<%=StringUtil.escapeJavaScript(linkId)%>', <%=refEdit %>, null, '<%=defName%>', '<%=viewName%>', '<%=propName%>', 'searchResult')"><c:out value="<%=displayPropLabel %>" /></a>
 <%
 					}
 				}
@@ -142,7 +147,7 @@
 <%
 								} else {
 %>
-<a href="javascript:void(0)" class="modal-lnk" id="<c:out value="<%=linkId %>" />" onclick="showReference('<%=StringUtil.escapeJavaScript(view)%>', '<%=StringUtil.escapeJavaScript(editor.getObjectName())%>', '<%=StringUtil.escapeJavaScript(entity.getOid())%>', '<%=entity.getVersion() %>', '<%=StringUtil.escapeJavaScript(linkId)%>', <%=refEdit %>)"><c:out value="<%=entity.getName() %>" /></a>
+<a href="javascript:void(0)" class="modal-lnk" id="<c:out value="<%=linkId %>" />" onclick="showReference('<%=StringUtil.escapeJavaScript(view)%>', '<%=StringUtil.escapeJavaScript(editor.getObjectName())%>', '<%=StringUtil.escapeJavaScript(entity.getOid())%>', '<%=entity.getVersion() %>', '<%=StringUtil.escapeJavaScript(linkId)%>', <%=refEdit %>, null, '<%=defName%>', '<%=viewName%>', '<%=propName%>', 'searchResult')"><c:out value="<%=entity.getName() %>" /></a>
 <%
 								}
 							}

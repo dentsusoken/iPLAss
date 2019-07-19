@@ -125,7 +125,6 @@
 
 	//各プロパティでの権限チェック用に定義名をリクエストに保存
 	request.setAttribute(Constants.DEF_NAME, defName);
-	request.setAttribute(Constants.VIEW_NAME, viewName);
 	request.setAttribute(Constants.ROOT_DEF_NAME, defName); //NestTableの場合にDEF_NAMEが置き換わるので別名でRootのDefNameをセット
 
 	//section以下で参照するパラメータ

@@ -71,6 +71,7 @@ public class Constants {
 
 	public static final String VIEW_TYPE_DETAIL = "detail";
 	public static final String VIEW_TYPE_SEARCH = "search";
+	public static final String VIEW_TYPE_SEARCH_RESULT = "searchResult";
 	public static final String VIEW_TYPE_BULK = "bulk";
 	public static final String VIEW_TYPE_MULTI_BULK = "multiBulk";
 

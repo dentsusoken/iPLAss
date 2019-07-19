@@ -835,7 +835,8 @@ public final class FullTextSearchCommand implements Command {
 			try {
 				result.setValues(CreateSearchResultUtil.getHtmlData(
 						searchInfo.getSearchResult(), searchInfo.getEntityDefinition(),
-						searchInfo.getSearchFormView().getResultSection()));
+						searchInfo.getSearchFormView().getResultSection(),
+						searchInfo.getSearchFormView().getName()));
 			} catch (IOException e) {
 				throw new SystemException(e);
 			} catch (ServletException e) {
