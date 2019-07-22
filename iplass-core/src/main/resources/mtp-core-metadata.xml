@@ -1,6 +1,15 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <!DOCTYPE metaDataList>
 <metaDataList>
+<contextPath name="/tenant">
+<metaDataEntry name="/tenant/Tenant" overwritable="true" sharable="true" >
+    <metaData xsi:type="metaTenant" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+        <id>Tenant</id>
+        <name>Tenant</name>
+    </metaData>
+</metaDataEntry>
+</contextPath>
+
 <contextPath name="/entity">
 <metaDataEntry name="/entity/Entity" overwritable="false" sharable="true" dataSharable="false" permissionSharable="false">
     <metaData xsi:type="metaEntity" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">

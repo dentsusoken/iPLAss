@@ -21,6 +21,7 @@
 package org.iplass.mtp.impl.tenant;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -221,6 +222,11 @@ public class MetaTenantService extends AbstractTypedMetaDataService<MetaTenant, 
 			return tenant.getTenantConfig(defTypeClass);
 		}
 		return null;
+	}
+
+	@SuppressWarnings("rawtypes")
+	Collection<Class<? extends MetaTenantConfig>> getMetaTenantConfigClasses() {
+		return configTypeMap.values();
 	}
 
 }

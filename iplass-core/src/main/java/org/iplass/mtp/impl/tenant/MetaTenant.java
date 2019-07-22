@@ -20,7 +20,7 @@
 
 package org.iplass.mtp.impl.tenant;
 
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -37,6 +37,8 @@ import org.iplass.mtp.impl.tenant.MetaTenantConfig.MetaTenantConfigRuntime;
 import org.iplass.mtp.impl.util.ObjectUtil;
 import org.iplass.mtp.spi.ServiceRegistry;
 import org.iplass.mtp.tenant.Tenant;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * テナントのメタ情報
@@ -49,6 +51,8 @@ public class MetaTenant extends BaseRootMetaData implements DefinableMetaData<Te
 	/** SerialVersionUID */
 	private static final long serialVersionUID = -891000660283577842L;
 
+	private static Logger logger = LoggerFactory.getLogger(MetaTenant.class);
+	
 	/** テナント設定情報 */
 	@SuppressWarnings("rawtypes")
 	private List<MetaTenantConfig> tenantConfigs;
@@ -163,20 +167,42 @@ public class MetaTenant extends BaseRootMetaData implements DefinableMetaData<Te
 
 		@SuppressWarnings("rawtypes")
 		public MetaTenantHandler() {
-
-			if (tenantConfigs != null) {
-				//coreモジュール外のMetaTenantConfigのサブクラスは参照できない可能性を考慮する
-				tenantConfigsRuntimes = new HashMap<>();
-				for (MetaTenantConfig config: tenantConfigs) {
-					MetaTenantConfigRuntime runtime = config.createRuntime(this);
-					if (runtime != null) {
-						tenantConfigsRuntimes.put(runtime.getClass().getName(), runtime);
+			//存在していないMetaTenantConfigをこのタイミングで初期化する
+			if (tenantConfigs == null) {
+				tenantConfigs = new ArrayList<MetaTenantConfig>();
+			}
+			
+			MetaTenantService mts = ServiceRegistry.getRegistry().getService(MetaTenantService.class);
+			for (Class<? extends MetaTenantConfig> cz: mts.getMetaTenantConfigClasses()) {
+				if (!hasMetaTenantConfig(cz, tenantConfigs)) {
+					try {
+						MetaTenantConfig mtc = cz.newInstance();
+						tenantConfigs.add(mtc);
+					} catch (InstantiationException | IllegalAccessException e) {
+						logger.warn("Can not instantiate " + cz.getName());
 					}
 				}
-			} else {
-				tenantConfigsRuntimes = Collections.emptyMap();
+			}
+			
+			//coreモジュール外のMetaTenantConfigのサブクラスは参照できない可能性を考慮する
+			tenantConfigsRuntimes = new HashMap<>();
+			for (MetaTenantConfig config: tenantConfigs) {
+				MetaTenantConfigRuntime runtime = config.createRuntime(this);
+				if (runtime != null) {
+					tenantConfigsRuntimes.put(runtime.getClass().getName(), runtime);
+				}
 			}
 
+		}
+		
+		@SuppressWarnings("rawtypes")
+		private boolean hasMetaTenantConfig(Class<? extends MetaTenantConfig> cz, List<MetaTenantConfig> list) {
+			for (MetaTenantConfig mtc: list) {
+				if (mtc != null && mtc.getClass().equals(cz)) {
+					return true;
+				}
+			}
+			return false;
 		}
 
 		@SuppressWarnings({ "rawtypes", "unchecked" })
