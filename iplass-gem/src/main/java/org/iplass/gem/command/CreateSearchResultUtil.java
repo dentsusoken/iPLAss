@@ -133,8 +133,8 @@ public class CreateSearchResultUtil {
 				req.setAttribute(Constants.ENTITY_DEFINITION, ed);
 				req.setAttribute(Constants.EDITOR_PROPERTY_DEFINITION, pd);
 				req.setAttribute(Constants.EDITOR_REF_ENTITY_VALUE_MAP, eval); // Reference型用
-				req.setAttribute(Constants.VIEW_NAME, viewName);
-				req.setAttribute(Constants.ROOT_DEF_NAME, ed.getName()); //Reference型ネストテーブル用
+				req.setAttribute(Constants.VIEW_NAME, viewName); //Reference型参照先リンク表示用
+				req.setAttribute(Constants.ROOT_DEF_NAME, ed.getName()); //Reference型参照先リンク表示用
 			}
 		};
 		Func afterFunc = new Func() {
