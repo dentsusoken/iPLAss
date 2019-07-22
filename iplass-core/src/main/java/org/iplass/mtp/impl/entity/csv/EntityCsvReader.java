@@ -101,8 +101,13 @@ public class EntityCsvReader implements Iterable<Entity>, AutoCloseable {
 	public static final int NVL = -1;
 
 	private EntityDefinition definition;
+
+	/** Referenceプロパティの場合はバージョンも指定  */
 	private boolean withReferenceVersion;
+	/** OIDに付けるPrefix  */
 	private String prefixOid;
+	/** 存在しないプロパティは無視  */
+	private boolean ignoreNotExistsProperty;
 
 	private Reader reader;
 	private CsvListReader csvListReader;
@@ -117,40 +122,28 @@ public class EntityCsvReader implements Iterable<Entity>, AutoCloseable {
 	private ObjectMapper mapper;
 	private boolean usePrefixOid;
 
-
 	private EntityDefinitionManager edm = ManagerLocator.manager(EntityDefinitionManager.class);
 	private EntityManager em = ManagerLocator.manager(EntityManager.class);
 
-	public EntityCsvReader(EntityDefinition definition, InputStream inputStream, boolean withReferenceVersion) throws UnsupportedEncodingException {
-		this(definition, inputStream, "UTF-8", withReferenceVersion, null);
+	public EntityCsvReader(EntityDefinition definition, InputStream inputStream) throws UnsupportedEncodingException {
+		this(definition, inputStream, "UTF-8");
 	}
-	public EntityCsvReader(EntityDefinition definition, InputStream inputStream, boolean withReferenceVersion, String prefixOid) throws UnsupportedEncodingException {
-		this(definition, inputStream, "UTF-8", withReferenceVersion, prefixOid);
-	}
-	public EntityCsvReader(EntityDefinition definition, InputStream inputStream, String charset, boolean withReferenceVersion) throws UnsupportedEncodingException {
-		this(definition, inputStream, charset, withReferenceVersion, null);
-	}
-	public EntityCsvReader(EntityDefinition definition, InputStream inputStream, String charset, boolean withReferenceVersion, String prefixOid) throws UnsupportedEncodingException {
+	public EntityCsvReader(EntityDefinition definition, InputStream inputStream, String charset) throws UnsupportedEncodingException {
 		Reader reader = new InputStreamReader(inputStream, charset);
 		BufferedReader buffered = new BufferedReader(reader);
-		config(definition, buffered, withReferenceVersion, prefixOid);
+		this.definition = definition;
+		this.reader = buffered;
 	}
 
-	public EntityCsvReader(EntityDefinition definition, Reader reader, boolean withReferenceVersion) {
+	public EntityCsvReader(EntityDefinition definition, Reader reader) {
 		BufferedReader buffered = null;
 		if (reader instanceof BufferedReader) {
 			buffered = (BufferedReader)reader;
 		} else {
 			buffered = new BufferedReader(reader);
 		}
-		config(definition, buffered, withReferenceVersion, prefixOid);
-	}
-
-	protected void config(EntityDefinition definition, BufferedReader reader, boolean withReferenceVersion, String prefixOid) {
 		this.definition = definition;
-		this.reader = reader;
-		this.withReferenceVersion = withReferenceVersion;
-		this.prefixOid = prefixOid;
+		this.reader = buffered;
 	}
 
 	protected void init() {
@@ -181,6 +174,66 @@ public class EntityCsvReader implements Iterable<Entity>, AutoCloseable {
 		usePrefixOid = StringUtil.isNotEmpty(prefixOid) && CollectionUtil.isEmpty(definition.getOidPropertyName());
 
 		isInit = true;
+	}
+
+	/**
+	 * Referenceプロパティの場合はバージョンも指定するかを設定します。
+	 *
+	 * @param withReferenceVersion Referenceプロパティの場合はバージョンも指定
+	 */
+	public void setWithReferenceVersion(boolean withReferenceVersion) {
+		this.withReferenceVersion = withReferenceVersion;
+	}
+
+	/**
+	 * Referenceプロパティの場合はバージョンも指定するかを設定します。
+	 *
+	 * @param withReferenceVersion Referenceプロパティの場合はバージョンも指定
+	 * @return インスタンス
+	 */
+	public EntityCsvReader withReferenceVersion(boolean withReferenceVersion) {
+		this.withReferenceVersion = withReferenceVersion;
+		return this;
+	}
+
+	/**
+	 * OIDに付けるPrefixを設定します。
+	 *
+	 * @param prefixOid OIDに付けるPrefix
+	 */
+	public void setPrefixOid(String prefixOid) {
+		this.prefixOid = prefixOid;
+	}
+
+	/**
+	 * OIDに付けるPrefixを設定します。
+	 *
+	 * @param prefixOid OIDに付けるPrefix
+	 * @return インスタンス
+	 */
+	public EntityCsvReader prefixOid(String prefixOid) {
+		this.prefixOid = prefixOid;
+		return this;
+	}
+
+	/**
+	 * 存在しないプロパティは無視するかを設定します。
+	 *
+	 * @param ignoreNotExistsProperty 存在しないプロパティは無視するか
+	 */
+	public void setIgnoreNotExistsProperty(boolean ignoreNotExistsProperty) {
+		this.ignoreNotExistsProperty = ignoreNotExistsProperty;
+	}
+
+	/**
+	 * 存在しないプロパティは無視するかを設定します。
+	 *
+	 * @param ignoreNotExistsProperty 存在しないプロパティは無視するか
+	 * @return インスタンス
+	 */
+	public EntityCsvReader ignoreNotExistsProperty(boolean ignoreNotExistsProperty) {
+		this.ignoreNotExistsProperty = ignoreNotExistsProperty;
+		return this;
 	}
 
 	public boolean isUseCtrl() {
@@ -262,21 +315,29 @@ public class EntityCsvReader implements Iterable<Entity>, AutoCloseable {
 						Object propValue = null;
 						if (headerName.contains(".")) {
 							//ReferenceのUniqueKey指定対応
-							propName = references.get(headerName).propName;
-							propValue = references.get(headerName).convEntity(value);
+							if (references.get(headerName) != null) {
+								propName = references.get(headerName).propName;
+								propValue = references.get(headerName).convEntity(value);
+							} else {
+								propValue = conv(value, headerName, null);
+							}
 						} else {
 							propValue = conv(value, headerName, definition.getProperty(propName));
 						}
 						if (arrayIndex.get(i) == NVL) {
 							entity.setValue(propName, propValue);
 						} else {
-							Object[] valArray = (Object[]) entity.getValue(propName);
-							if (valArray == null) {
-								valArray = (Object[]) Array.newInstance(definition.getProperty(propName).getJavaType(), definition.getProperty(propName).getMultiplicity());
-								entity.setValue(propName, valArray);
-								multiProp.add(propName);
+							if (definition.getProperty(propName) != null) {
+								Object[] valArray = (Object[]) entity.getValue(propName);
+								if (valArray == null) {
+									valArray = (Object[]) Array.newInstance(definition.getProperty(propName).getJavaType(), definition.getProperty(propName).getMultiplicity());
+									entity.setValue(propName, valArray);
+									multiProp.add(propName);
+								}
+								valArray[arrayIndex.get(i)] = propValue;
+							} else {
+								entity.setValue(propName, propValue);
 							}
-							valArray[arrayIndex.get(i)] = propValue;
 						}
 					} catch (Exception e) {
 						//変換でエラー
@@ -349,7 +410,11 @@ public class EntityCsvReader implements Iterable<Entity>, AutoCloseable {
 
 			//ReferenceのUniqueKey指定対応
 			if (headerName.contains(".")) {
-				conv(value, headerName, references.get(headerName).unique);
+				if (references.get(headerName) != null) {
+					conv(value, headerName, references.get(headerName).unique);
+				} else {
+					conv(value, headerName, null);
+				}
 			} else {
 				conv(value, headerName, definition.getProperty(headerName));
 			}
@@ -427,45 +492,57 @@ public class EntityCsvReader implements Iterable<Entity>, AutoCloseable {
 				String uniqueKey = headerName.substring(propName.length() + 1);
 				ReferenceProperty rp = (ReferenceProperty)definition.getProperty(propName);
 				if (rp == null) {
-					throw new EntityCsvException("CE2003", rs("impl.csv.EntityCsvReader.invalidHeadNotFindProp", (i + 1), headerName));
-				}
-				EntityDefinition red = edm.get(rp.getObjectDefinitionName());
-				if (red == null) {
-					throw new EntityCsvException("CE2003", rs("impl.csv.EntityCsvReader.invalidHeadNotFindProp", (i + 1), headerName));
-				}
-				PropertyDefinition unique = red.getProperty(uniqueKey);
-				if (unique == null) {
-					throw new EntityCsvException("CE2003", rs("impl.csv.EntityCsvReader.invalidHeadNotFindProp", (i + 1), headerName));
-				}
-				reference = new ReferenceInfo(propName, red, unique);
-				pd = rp;
-			} else {
-				pd = definition.getProperty(headerName);
-				if (pd == null) {
-					throw new EntityCsvException("CE2003", rs("impl.csv.EntityCsvReader.invalidHeadNotFindProp", (i + 1), headerName));
-				}
-				//Referenceの場合、参照Entity定義取得
-				if (pd instanceof ReferenceProperty) {
-					EntityDefinition red = edm.get(((ReferenceProperty)pd).getObjectDefinitionName());
+					if (ignoreNotExistsProperty) {
+						logger.warn(definition.getName() + " has not " + headerName + " property. skip header.");
+					} else {
+						throw new EntityCsvException("CE2003", rs("impl.csv.EntityCsvReader.invalidHeadNotFindProp", (i + 1), headerName));
+					}
+				} else {
+					EntityDefinition red = edm.get(rp.getObjectDefinitionName());
 					if (red == null) {
 						throw new EntityCsvException("CE2003", rs("impl.csv.EntityCsvReader.invalidHeadNotFindProp", (i + 1), headerName));
 					}
-					reference = new ReferenceInfo(headerName, red, null);
+					PropertyDefinition unique = red.getProperty(uniqueKey);
+					if (unique == null) {
+						throw new EntityCsvException("CE2003", rs("impl.csv.EntityCsvReader.invalidHeadNotFindProp", (i + 1), headerName));
+					}
+					reference = new ReferenceInfo(propName, red, unique);
+					pd = rp;
+				}
+			} else {
+				pd = definition.getProperty(headerName);
+				if (pd == null) {
+					if (ignoreNotExistsProperty) {
+						logger.warn(definition.getName() + " has not " + headerName + " property. skip header.");
+					} else {
+						throw new EntityCsvException("CE2003", rs("impl.csv.EntityCsvReader.invalidHeadNotFindProp", (i + 1), headerName));
+					}
+				} else {
+					//Referenceの場合、参照Entity定義取得
+					if (pd instanceof ReferenceProperty) {
+						EntityDefinition red = edm.get(((ReferenceProperty)pd).getObjectDefinitionName());
+						if (red == null) {
+							throw new EntityCsvException("CE2003", rs("impl.csv.EntityCsvReader.invalidHeadNotFindProp", (i + 1), headerName));
+						}
+						reference = new ReferenceInfo(headerName, red, null);
+					}
 				}
 			}
 
-			if (pd instanceof ReferenceProperty) {
-				if (arrayIndex.get(i) != NVL) {
-					throw new EntityCsvException("CE2003", rs("impl.csv.EntityCsvReader.invalidHeadRefProp", (i + 1), headerName));
-				}
-			} else {
-				if (pd.getMultiplicity() == 1) {
+			if (pd != null) {
+				if (pd instanceof ReferenceProperty) {
 					if (arrayIndex.get(i) != NVL) {
-						throw new EntityCsvException("CE2004", rs("impl.csv.EntityCsvReader.invalidHeadSingleProp", (i + 1), headerName));
+						throw new EntityCsvException("CE2003", rs("impl.csv.EntityCsvReader.invalidHeadRefProp", (i + 1), headerName));
 					}
 				} else {
-					if (arrayIndex.get(i) == NVL) {
-						throw new EntityCsvException("CE2005", rs("impl.csv.EntityCsvReader.invalidHeadMultiProp", (i + 1), headerName));
+					if (pd.getMultiplicity() == 1) {
+						if (arrayIndex.get(i) != NVL) {
+							throw new EntityCsvException("CE2004", rs("impl.csv.EntityCsvReader.invalidHeadSingleProp", (i + 1), headerName));
+						}
+					} else {
+						if (arrayIndex.get(i) == NVL) {
+							throw new EntityCsvException("CE2005", rs("impl.csv.EntityCsvReader.invalidHeadMultiProp", (i + 1), headerName));
+						}
 					}
 				}
 			}
@@ -481,6 +558,15 @@ public class EntityCsvReader implements Iterable<Entity>, AutoCloseable {
 	}
 
 	private Object conv(String valStr, String headerName, PropertyDefinition pd) {
+
+		//Propertyが存在しない場合はそのまま文字列を返す
+		if (pd == null) {
+			if (StringUtil.isEmpty(valStr)) {
+				return null;
+			} else {
+				return valStr;
+			}
+		}
 
 		if (pd instanceof BinaryProperty) {
 			if (StringUtil.isEmpty(valStr)) {

@@ -192,6 +192,7 @@ public class CSVFormattedEntityStream implements BulkUpdatable {
 		this.reader = reader;
 	}
 
+	@SuppressWarnings("resource")
 	@Override
 	public Iterator<BulkUpdateEntity> iterator() {
 		if (esReader != null) {
@@ -203,7 +204,7 @@ public class CSVFormattedEntityStream implements BulkUpdatable {
 		if (def == null) {
 			throw new EntityRuntimeException(definitionName + " definition not found.");
 		}
-		esReader = new EntityCsvReader(def, reader, true);
+		esReader = new EntityCsvReader(def, reader).withReferenceVersion(true);
 		return new It(esReader.iterator());
 	}
 
@@ -214,6 +215,15 @@ public class CSVFormattedEntityStream implements BulkUpdatable {
 
 	@Override
 	public void close() {
+		if (esReader != null) {
+			try {
+				esReader.close();
+			} catch (Exception e) {
+				logger.error("Fail to close CSVFormattedEntityStream Resource. Check whether resource is leak or not.", e);
+			}
+			esReader = null;
+			reader = null;
+		}
 		if (reader != null) {
 			try {
 				reader.close();

@@ -142,10 +142,9 @@ public class CsvUploadService implements Service {
 
 		EntityDefinition ed  = edm.get(defName);
 
-		try (EntityCsvReaderForCheck reader = new EntityCsvReaderForCheck(ed, is, ENCODE, withReferenceVersion, errorLimit)){
-
+		try (EntityCsvReaderForCheck reader = new EntityCsvReaderForCheck(ed, is, ENCODE, errorLimit)){
+			reader.withReferenceVersion(withReferenceVersion);
 			reader.check();
-
 		} catch (UnsupportedEncodingException e) {
 			throw new EntityCsvException("CE0001", resourceString("impl.csv.CsvUploadService.invalidFileMsg"));
 		} catch (EntityCsvException e) {
@@ -173,7 +172,8 @@ public class CsvUploadService implements Service {
 		final CsvUploadStatus result = new CsvUploadStatus();
 		final EntityDefinition ed  = edm.get(defName);
 
-		try (EntityCsvReader reader = new EntityCsvReader(ed, is, ENCODE, withReferenceVersion)){
+		try (EntityCsvReader reader = new EntityCsvReader(ed, is, ENCODE)){
+			reader.withReferenceVersion(withReferenceVersion);
 
 			Transaction.with(Propagation.SUPPORTS, t -> {
 

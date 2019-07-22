@@ -61,6 +61,7 @@ import org.iplass.mtp.entity.query.hint.FetchSizeHint;
 import org.iplass.mtp.impl.core.ExecuteContext;
 import org.iplass.mtp.impl.entity.EntityContext;
 import org.iplass.mtp.impl.entity.EntityHandler;
+import org.iplass.mtp.impl.entity.csv.EntityCsvException;
 import org.iplass.mtp.impl.entity.csv.EntityCsvReader;
 import org.iplass.mtp.impl.entity.csv.EntitySearchCsvWriter;
 import org.iplass.mtp.impl.entity.csv.EntityWriteOption;
@@ -314,7 +315,11 @@ public class EntityPortingService implements Service {
 			@Override
 			public Integer apply(Transaction transaction) {
 
-				try (EntityCsvReader reader = new EntityCsvReader(definition, is, true, condition.getPrefixOid())){
+				try (EntityCsvReader reader = new EntityCsvReader(definition, is)){
+					
+					reader.withReferenceVersion(true)
+						.prefixOid(condition.getPrefixOid())
+						.ignoreNotExistsProperty(condition.isIgnoreNotExistsProperty());					
 
 					final Iterator<Entity> iterator = reader.iterator();
 					final List<String> properties = reader.properties();
@@ -421,7 +426,7 @@ public class EntityPortingService implements Service {
 					}
 					result.addMessages(message);
 
-				} catch (EntityDataPortingRuntimeException | IOException e) {
+				} catch (EntityDataPortingRuntimeException | EntityCsvException | IOException e) {
 					logger.error("An error occurred in the process of import the entity data", e);
 					transaction.setRollbackOnly();
 					result.setError(true);

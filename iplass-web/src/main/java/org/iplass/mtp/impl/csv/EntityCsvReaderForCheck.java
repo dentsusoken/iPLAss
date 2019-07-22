@@ -37,18 +37,18 @@ public class EntityCsvReaderForCheck extends EntityCsvReader {
 
 	private int errorLimit;
 
-	public EntityCsvReaderForCheck(EntityDefinition definition, InputStream inputStream, boolean withReferenceVersion, int errorLimit) throws UnsupportedEncodingException {
-		super(definition, inputStream, withReferenceVersion);
+	public EntityCsvReaderForCheck(EntityDefinition definition, InputStream inputStream, int errorLimit) throws UnsupportedEncodingException {
+		super(definition, inputStream);
 		this.errorLimit = errorLimit;
 	}
 
-	public EntityCsvReaderForCheck(EntityDefinition definition, InputStream inputStream, String charset, boolean withReferenceVersion, int errorLimit) throws UnsupportedEncodingException {
-		super(definition, inputStream, charset, withReferenceVersion);
+	public EntityCsvReaderForCheck(EntityDefinition definition, InputStream inputStream, String charset, int errorLimit) throws UnsupportedEncodingException {
+		super(definition, inputStream, charset);
 		this.errorLimit = errorLimit;
 	}
 
-	public EntityCsvReaderForCheck(EntityDefinition definition, Reader reader, boolean withReferenceVersion, int errorLimit) {
-		super(definition, reader, withReferenceVersion);
+	public EntityCsvReaderForCheck(EntityDefinition definition, Reader reader, int errorLimit) {
+		super(definition, reader);
 		this.errorLimit = errorLimit;
 	}
 
