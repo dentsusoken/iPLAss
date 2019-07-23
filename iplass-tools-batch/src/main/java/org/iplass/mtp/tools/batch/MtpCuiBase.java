@@ -29,12 +29,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
+import javax.sql.DataSource;
+
 import org.iplass.mtp.SystemException;
 import org.iplass.mtp.impl.core.ExecuteContext;
 import org.iplass.mtp.impl.core.config.BootstrapProps;
 import org.iplass.mtp.impl.rdb.adapter.RdbAdapter;
 import org.iplass.mtp.impl.rdb.adapter.RdbAdapterService;
 import org.iplass.mtp.impl.rdb.connection.ConnectionFactory;
+import org.iplass.mtp.impl.rdb.connection.DataSourceConnectionFactory;
 import org.iplass.mtp.impl.rdb.connection.DriverManagerConnectionFactory;
 import org.iplass.mtp.impl.tools.tenant.TenantInfo;
 import org.iplass.mtp.impl.tools.tenant.TenantToolService;
@@ -149,16 +152,17 @@ public abstract class MtpCuiBase {
 			RdbAdapter adapter = adapterService.getRdbAdapter();
 
 			//Connection Factory
-			String conenctUrl = null;
+			String conenctInfo = null;
 			ConnectionFactory factory = ServiceRegistry.getRegistry().getService(ConnectionFactory.class);
 			if (factory instanceof DriverManagerConnectionFactory) {
 				DriverManagerConnectionFactory dmFactory = (DriverManagerConnectionFactory) factory;
-				conenctUrl = getDriverUrl(dmFactory);
-			} else {
-				throw new SystemException("unsupport ConnectionFactory class : " + factory.getClass().getName());
+				conenctInfo = getDriverUrl(dmFactory);
+			} else if (factory instanceof DataSourceConnectionFactory) {
+				DataSourceConnectionFactory dsFactory = (DataSourceConnectionFactory) factory;
+				conenctInfo = getDataSourceClass(dsFactory);
 			}
 
-			configSetting = new ConfigSetting(configFileName, adapter, conenctUrl);
+			configSetting = new ConfigSetting(configFileName, adapter, conenctInfo);
 
 		} catch (Throwable e) {
 			throw new SystemException("failed to get config setting", e);
@@ -174,6 +178,13 @@ public abstract class MtpCuiBase {
 		return (String)urlField.get(dmFactory);
 	}
 
+	private String getDataSourceClass(DataSourceConnectionFactory dsFactory) throws Exception {
+		//private フィールドなのでリフレクションでセット
+		Field dataSourceField = dsFactory.getClass().getDeclaredField("dataSource");
+		dataSourceField.setAccessible(true);
+		return ((DataSource)dataSourceField.get(dsFactory)).getClass().getName();
+	}
+
 	/**
 	 * 環境情報を出力します。
 	 */
@@ -184,7 +195,7 @@ public abstract class MtpCuiBase {
 		logInfo("■Environment");
 		logInfo("\tconfig file :" + configSetting.getConfigFileName());
 		logInfo("\trdb adapter type :" + configSetting.getRdbAdapterName());
-		logInfo("\tconnect url :" + configSetting.getConenctUrl());
+		logInfo("\tconnect info :" + configSetting.getConnectionInfo());
 		logInfo("\tlanguage :" + getLanguage());
 		logInfo("-----------------------------------------------------------");
 		logInfo("");
