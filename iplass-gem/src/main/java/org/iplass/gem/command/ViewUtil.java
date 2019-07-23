@@ -200,6 +200,34 @@ public class ViewUtil {
 		return view;
 	}
 
+	public static FormView getFormView(String defName, String viewName, String viewType) {
+		EntityViewManager evm = ManagerLocator.getInstance().getManager(EntityViewManager.class);
+		EntityView ev = evm.get(defName);
+		if (ev == null) return null;
+
+		FormView form = null;
+		if ("detail".equals(viewType)) {
+			if (viewName == null || viewName.isEmpty()) {
+				form = ev.getDefaultDetailFormView();
+			} else {
+				form = ev.getDetailFormView(viewName);
+			}
+		} else if ("search".equals(viewType) || "searchResult".equals(viewType) || "bulk".equals(viewType)) {
+			if (viewName == null || viewName.isEmpty()) {
+				form = ev.getDefaultSearchFormView();
+			} else {
+				form = ev.getSearchFormView(viewName);
+			}
+		} else if ("multiBulk".equals(viewType)) {
+			if (viewName == null || viewName.isEmpty()) {
+				form = ev.getDefaultBulkFormView();
+			} else {
+				form = ev.getBulkFormView(viewName);
+			}
+		}
+		return form;
+	}
+
 	public static String getEntityImageColor(String defName, String viewName, boolean isSearchForm) {
 		FormView view = getFormView(defName, viewName, isSearchForm);
 		return getEntityImageColor(view);

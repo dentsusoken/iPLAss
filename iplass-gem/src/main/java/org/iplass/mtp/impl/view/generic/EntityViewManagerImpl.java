@@ -144,6 +144,14 @@ public class EntityViewManagerImpl extends AbstractTypedDefinitionManager<Entity
 				form = ev.getSearchFormView(viewName);
 			}
 			editor = getEditor(propName, form);
+		} else if ("searchResult".equals(viewType)) {
+			SearchFormView form = null;
+			if (viewName == null || viewName.isEmpty()) {
+				form = ev.getDefaultSearchFormView();
+			} else {
+				form = ev.getSearchFormView(viewName);
+			}
+			editor = getSearchResultEditor(propName, form);
 		} else if ("bulk".equals(viewType)) {
 			SearchFormView form = null;
 			if (viewName == null || viewName.isEmpty()) {
@@ -306,6 +314,47 @@ public class EntityViewManagerImpl extends AbstractTypedDefinitionManager<Entity
 					return nestEditor;
 				} else {
 					return getEditor(subPropName, nestEditor);
+				}
+			}
+		}
+		return null;
+	}
+
+	private PropertyEditor getSearchResultEditor(String propName, SearchFormView form) {
+		String currentPropName = null;
+		String subPropName = null;
+		if (propName.indexOf(".") == -1) {
+			currentPropName = propName;
+		} else {
+			// 子階層Entityのプロパティ
+			SearchResultSection section = form.getResultSection();
+			for (Element element : section.getElements()) {
+				if (!(element instanceof PropertyColumn)) continue;
+				PropertyColumn property = (PropertyColumn) element;
+				if (property.isDispFlag() && property.getPropertyName().equals(propName)) {
+					return property.getEditor();
+				}
+			}
+
+			//ネストテーブルのネストプロパティ
+			currentPropName = propName.substring(0, propName.indexOf("."));
+			subPropName = propName.substring(propName.indexOf(".") + 1);
+		}
+
+		SearchResultSection section = form.getResultSection();
+		for (Element element : section.getElements()) {
+			if (!(element instanceof PropertyColumn)) continue;
+			PropertyColumn property = (PropertyColumn) element;
+			if (property.isDispFlag() && property.getPropertyName().equals(currentPropName)) {
+				//FIXME なぜセットが必要？
+//				if (property.getEditor() instanceof ReferencePropertyEditor) {
+//					property.getEditor().setPropertyName(property.getPropertyName());
+//				}
+				if (subPropName == null) {
+					property.getEditor().setPropertyName(property.getPropertyName());	//念のためセット
+					return property.getEditor();
+				} else {
+					return getEditor(subPropName, property.getEditor());
 				}
 			}
 		}

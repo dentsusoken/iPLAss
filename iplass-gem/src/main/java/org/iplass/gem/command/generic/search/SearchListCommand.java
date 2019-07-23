@@ -108,7 +108,7 @@ public final class SearchListCommand implements Command {
 		request.setAttribute(Constants.USER_INFO_MAP, userInfoMap);
 
 		try {
-			List<Map<String, String>> retList = CreateSearchResultUtil.getHtmlData(result.getList(), context.getEntityDefinition(), context.getResultSection());
+			List<Map<String, String>> retList = CreateSearchResultUtil.getHtmlData(result.getList(), context.getEntityDefinition(), context.getResultSection(), context.getViewName());
 			request.setAttribute(RESULT_PARAM_HTML_DATA, retList);
 		} catch (IOException e) {
 			throw new SystemException(e);

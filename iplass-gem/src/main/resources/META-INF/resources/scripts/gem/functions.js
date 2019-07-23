@@ -2238,7 +2238,7 @@ $.fn.allInputCheck = function(){
 								var version = nodes[i].version;
 								var linkId = $v.prefix + $v.propName + "_" + oid;
 								var $link = $("<a href='javascript:void(0)' />").addClass("modal-lnk").attr({id:linkId, style:$v.customStyle}).text(nodes[i].name).on("click", function() {
-									showReference($v.viewAction, $v.refDefName, oid, version, linkId, $v.refEdit);
+									showReference($v.viewAction, $v.refDefName, oid, version, linkId, $v.refEdit, null, $v.defName, $v.viewName, $v.propName, $v.viewType);
 								}).appendTo($li);
 								if ($("body.modal-body").length != 0) {
 									$link.subModalWindow();
@@ -2651,7 +2651,7 @@ $.fn.allInputCheck = function(){
 			$insBtn.on("click", function() {
 				//新規コールバック
 				var insRefCallback = scriptContext[$v.insUniqueRefCallback];
-				insertUniqueReference($v.attr("id"), $v.addAction, $v.viewAction, $v.refDefName, $v.propName, $v.multiplicity, $v.urlParam, $v.defName, $v.viewName, $v.refEdit, insRefCallback, this);
+				insertUniqueReference($v.attr("id"), $v.addAction, $v.viewAction, $v.refDefName, $v.propName, $v.multiplicity, $v.urlParam, $v.defName, $v.viewName, $v.refEdit, insRefCallback, this, $v.viewType);
 			});
 
 			$hidden.on("change", function() {
@@ -2688,7 +2688,7 @@ $.fn.allInputCheck = function(){
 						var label = entity.name;
 						var key = entity.oid + "_" + entity.version;
 						var func = function() {
-							showReference($v.viewAction, $v.refDefName, entity.oid, entity.version, linkId, $v.refEdit);
+							showReference($v.viewAction, $v.refDefName, entity.oid, entity.version, linkId, $v.refEdit, null, $v.defName, $v.viewName, $v.propName, $v.viewType);
 						};
 
 						$link.attr("id", linkId).text(label).show();

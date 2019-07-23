@@ -23,6 +23,7 @@ package org.iplass.gem.command.generic.common;
 import java.util.List;
 
 import org.iplass.gem.command.Constants;
+import org.iplass.gem.command.ViewUtil;
 import org.iplass.mtp.ManagerLocator;
 import org.iplass.mtp.command.Command;
 import org.iplass.mtp.command.RequestContext;
@@ -41,7 +42,6 @@ import org.iplass.mtp.entity.query.condition.expr.Or;
 import org.iplass.mtp.entity.query.condition.expr.Paren;
 import org.iplass.mtp.entity.query.condition.predicate.Equals;
 import org.iplass.mtp.util.StringUtil;
-import org.iplass.mtp.view.generic.EntityView;
 import org.iplass.mtp.view.generic.EntityViewManager;
 import org.iplass.mtp.view.generic.FormView;
 import org.iplass.mtp.view.generic.editor.JoinPropertyEditor;
@@ -116,7 +116,7 @@ public final class GetEntityNameListCommand implements Command {
 	}
 
 	private String getDisplayLabelItem(String defName, String viewName, String propName, String viewType) {
-		FormView form = getFormView(defName, viewName, viewType);
+		FormView form = ViewUtil.getFormView(defName, viewName, viewType);
 		if (form == null) return null;
 
 		ReferencePropertyEditor rpe = getRefEditor(defName, viewName, propName, viewType);
@@ -127,7 +127,7 @@ public final class GetEntityNameListCommand implements Command {
 	}
 
 	private String getUniqueItem(String defName, String viewName, String propName, String viewType) {
-		FormView form = getFormView(defName, viewName, viewType);
+		FormView form = ViewUtil.getFormView(defName, viewName, viewType);
 		if (form == null) return null;
 
 		ReferencePropertyEditor rpe = getRefEditor(defName, viewName, propName, viewType);
@@ -144,41 +144,6 @@ public final class GetEntityNameListCommand implements Command {
 		}
 
 		return null;
-	}
-
-	private FormView getFormView(String defName, String viewName, String viewType) {
-		EntityViewManager evm = ManagerLocator.getInstance().getManager(EntityViewManager.class);
-		EntityView ev = evm.get(defName);
-		// EntityViewが未設定の場合、表示ラベルプロパティが未設定と同じように扱います。
-		if (ev == null) return null;
-
-		FormView form = null;
-		if ("detail".equals(viewType)) {
-			if (viewName == null || viewName.isEmpty()) {
-				form = ev.getDefaultDetailFormView();
-			} else {
-				form = ev.getDetailFormView(viewName);
-			}
-		} else if ("search".equals(viewType)) {
-			if (viewName == null || viewName.isEmpty()) {
-				form = ev.getDefaultSearchFormView();
-			} else {
-				form = ev.getSearchFormView(viewName);
-			}
-		} else if ("bulk".equals(viewType)) {
-			if (viewName == null || viewName.isEmpty()) {
-				form = ev.getDefaultSearchFormView();
-			} else {
-				form = ev.getSearchFormView(viewName);
-			}
-		} else if ("multiBulk".equals(viewType)) {
-			if (viewName == null || viewName.isEmpty()) {
-				form = ev.getDefaultBulkFormView();
-			} else {
-				form = ev.getBulkFormView(viewName);
-			}
-		}
-		return form;
 	}
 
 	private ReferencePropertyEditor getRefEditor(String defName, String viewName, String propName, String viewType) {

@@ -47,7 +47,7 @@ import org.iplass.mtp.view.generic.element.property.PropertyColumn;
 import org.iplass.mtp.view.generic.element.section.SearchResultSection;
 
 public class CreateSearchResultUtil {
-	public static List<Map<String, String>> getHtmlData(List<Entity> entityList, final EntityDefinition ed, SearchResultSection section) throws IOException, ServletException {
+	public static List<Map<String, String>> getHtmlData(List<Entity> entityList, final EntityDefinition ed, SearchResultSection section, String viewName) throws IOException, ServletException {
 		if (entityList == null) return null;
 
 		List<Map<String, String>> ret = new ArrayList<Map<String,String>>();
@@ -63,10 +63,10 @@ public class CreateSearchResultUtil {
 			for (Element element : elements) {
 				if (element instanceof PropertyColumn) {
 					PropertyColumn property = (PropertyColumn) element;
-					outputPropertyColumn(ed, section, entity, eval, property);
+					outputPropertyColumn(ed, section, entity, eval, property, viewName);
 				} else if (element instanceof VirtualPropertyItem) {
 					VirtualPropertyItem property = (VirtualPropertyItem) element;
-					outputVirtualProperty(ed, section, entity, eval, property);
+					outputVirtualProperty(ed, section, entity, eval, property, viewName);
 				}
 			}
 			ret.add(eval);
@@ -76,7 +76,7 @@ public class CreateSearchResultUtil {
 	}
 
 	private static void outputVirtualProperty(EntityDefinition ed, SearchResultSection section,
-			Entity entity, Map<String, String> eval, VirtualPropertyItem property)
+			Entity entity, Map<String, String> eval, VirtualPropertyItem property, String viewName)
 					throws ServletException, IOException {
 		if (isDispProperty(property)) {
 			PropertyEditor editor = property.getEditor();
@@ -85,7 +85,7 @@ public class CreateSearchResultUtil {
 				String propName = property.getPropertyName();
 				PropertyDefinition pd = EntityViewUtil.getPropertyDefinition(property);
 
-				String html = outputHtml(ed, section, entity, eval, propName, pd, editor, path);
+				String html = outputHtml(ed, section, entity, eval, propName, pd, editor, path, viewName);
 
 				eval.put(propName, html);
 			}
@@ -93,7 +93,7 @@ public class CreateSearchResultUtil {
 	}
 
 	private static void outputPropertyColumn(EntityDefinition ed, SearchResultSection section,
-			Entity entity, Map<String, String> eval, PropertyColumn property)
+			Entity entity, Map<String, String> eval, PropertyColumn property, String viewName)
 					throws ServletException, IOException {
 		if (isDispProperty(property)) {
 			PropertyEditor editor = property.getEditor();
@@ -102,7 +102,7 @@ public class CreateSearchResultUtil {
 				String propName = property.getPropertyName();
 				PropertyDefinition pd = EntityViewUtil.getPropertyDefinition(propName, ed);
 
-				String html = outputHtml(ed, section, entity, eval, propName, pd, editor, path);
+				String html = outputHtml(ed, section, entity, eval, propName, pd, editor, path, viewName);
 
 				WebRequestStack stack = WebRequestStack.getCurrent();
 				HttpServletRequest req = stack.getRequest();
@@ -119,7 +119,7 @@ public class CreateSearchResultUtil {
 
 	private static String outputHtml(final EntityDefinition ed, SearchResultSection section, final Entity entity,
 			final Map<String, String> eval, String propName, final PropertyDefinition pd, final PropertyEditor editor,
-			String path) throws ServletException, IOException {
+			String path, String viewName) throws ServletException, IOException {
 		final Object propValue = entity.getValue(propName);
 		Func beforeFunc = new Func() {
 
@@ -133,6 +133,8 @@ public class CreateSearchResultUtil {
 				req.setAttribute(Constants.ENTITY_DEFINITION, ed);
 				req.setAttribute(Constants.EDITOR_PROPERTY_DEFINITION, pd);
 				req.setAttribute(Constants.EDITOR_REF_ENTITY_VALUE_MAP, eval); // Reference型用
+				req.setAttribute(Constants.VIEW_NAME, viewName); //Reference型参照先リンク表示用
+				req.setAttribute(Constants.ROOT_DEF_NAME, ed.getName()); //Reference型参照先リンク表示用
 			}
 		};
 		Func afterFunc = new Func() {
@@ -146,6 +148,8 @@ public class CreateSearchResultUtil {
 				req.removeAttribute(Constants.EDITOR_PROP_VALUE);
 				req.removeAttribute(Constants.ENTITY_DEFINITION);
 				req.removeAttribute(Constants.EDITOR_REF_ENTITY_VALUE_MAP);
+				req.removeAttribute(Constants.VIEW_NAME);
+				req.removeAttribute(Constants.ROOT_DEF_NAME);
 			}
 		};
 
