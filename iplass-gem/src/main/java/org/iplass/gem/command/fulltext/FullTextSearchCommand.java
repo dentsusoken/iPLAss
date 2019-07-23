@@ -404,6 +404,13 @@ public final class FullTextSearchCommand implements Command {
 								List<NestProperty> _nest = rpe.getNestProperties();
 								addSearchProperty(select, ed, nestPropName, _nest.toArray(new NestProperty[_nest.size()]));
 							}
+						} else if (np.getEditor() instanceof JoinPropertyEditor) {
+							JoinPropertyEditor je = (JoinPropertyEditor) np.getEditor();
+							addSearchProperty(select, ed, nestPropName);
+							if (!je.getProperties().isEmpty()) {
+								List<NestProperty> _nest = je.getProperties();
+								addSearchProperty(select, ed, propName, _nest.toArray(new NestProperty[_nest.size()]));
+							}
 						}
 					}
 				}
