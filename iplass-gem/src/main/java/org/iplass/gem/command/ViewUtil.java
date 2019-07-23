@@ -179,23 +179,11 @@ public class ViewUtil {
 	 * @return
 	 */
 	public static FormView getFormView(String defName, String viewName, boolean isSearchForm) {
-		EntityViewManager evm = ManagerLocator.getInstance().getManager(EntityViewManager.class);
-		EntityView ev = evm.get(defName);
-		if (ev == null) return null;
-
 		FormView view = null;
 		if (isSearchForm) {
-			if (viewName == null || viewName.isEmpty()) {
-				view = ev.getDefaultSearchFormView();
-			} else {
-				view = ev.getSearchFormView(viewName);
-			}
+			view = getFormView(defName, viewName, Constants.VIEW_TYPE_SEARCH);
 		} else {
-			if (viewName == null || viewName.isEmpty()) {
-				view = ev.getDefaultDetailFormView();
-			} else {
-				view = ev.getDetailFormView(viewName);
-			}
+			view = getFormView(defName, viewName, Constants.VIEW_TYPE_DETAIL);
 		}
 		return view;
 	}
@@ -206,19 +194,19 @@ public class ViewUtil {
 		if (ev == null) return null;
 
 		FormView form = null;
-		if ("detail".equals(viewType)) {
+		if (Constants.VIEW_TYPE_DETAIL.equals(viewType)) {
 			if (viewName == null || viewName.isEmpty()) {
 				form = ev.getDefaultDetailFormView();
 			} else {
 				form = ev.getDetailFormView(viewName);
 			}
-		} else if ("search".equals(viewType) || "searchResult".equals(viewType) || "bulk".equals(viewType)) {
+		} else if (Constants.VIEW_TYPE_SEARCH.equals(viewType) || Constants.VIEW_TYPE_SEARCH_RESULT.equals(viewType) || Constants.VIEW_TYPE_BULK.equals(viewType)) {
 			if (viewName == null || viewName.isEmpty()) {
 				form = ev.getDefaultSearchFormView();
 			} else {
 				form = ev.getSearchFormView(viewName);
 			}
-		} else if ("multiBulk".equals(viewType)) {
+		} else if (Constants.VIEW_TYPE_MULTI_BULK.equals(viewType)) {
 			if (viewName == null || viewName.isEmpty()) {
 				form = ev.getDefaultBulkFormView();
 			} else {
