@@ -71,6 +71,7 @@ import org.iplass.mtp.view.generic.SearchFormView;
 import org.iplass.mtp.view.generic.editor.DateRangePropertyEditor;
 import org.iplass.mtp.view.generic.editor.JoinPropertyEditor;
 import org.iplass.mtp.view.generic.editor.NestProperty;
+import org.iplass.mtp.view.generic.editor.PropertyEditor;
 import org.iplass.mtp.view.generic.editor.ReferencePropertyEditor;
 import org.iplass.mtp.view.generic.editor.UserPropertyEditor;
 import org.iplass.mtp.view.generic.element.property.PropertyColumn;
@@ -346,21 +347,21 @@ public final class FullTextSearchCommand implements Command {
 				String propName = p.getPropertyName();
 				if (p.getEditor() instanceof ReferencePropertyEditor) {
 					List<NestProperty> nest = ((ReferencePropertyEditor)p.getEditor()).getNestProperties();
-					addSearchProperty(select, ed, propName, nest.toArray(new NestProperty[nest.size()]));
+					addSearchProperty(select, ed, propName, p.getEditor(), nest.toArray(new NestProperty[nest.size()]));
 				} else if (p.getEditor() instanceof JoinPropertyEditor) {
-					addSearchProperty(select, ed, propName);
+					addSearchProperty(select, ed, propName, p.getEditor());
 					JoinPropertyEditor je = (JoinPropertyEditor) p.getEditor();
 					for (NestProperty nest : je.getProperties()) {
-						addSearchProperty(select, ed, nest.getPropertyName());
+						addSearchProperty(select, ed, nest.getPropertyName(), nest.getEditor());
 					}
 				} else if (p.getEditor() instanceof DateRangePropertyEditor) {
-					addSearchProperty(select, ed, propName);
+					addSearchProperty(select, ed, propName, p.getEditor());
 					DateRangePropertyEditor de = (DateRangePropertyEditor) p.getEditor();
 					if (StringUtil.isNotBlank(de.getToPropertyName())) {
-						addSearchProperty(select, ed, de.getToPropertyName());
+						addSearchProperty(select, ed, de.getToPropertyName(), de.getToEditor());
 					}
 				} else {
-					addSearchProperty(select, ed, propName);
+					addSearchProperty(select, ed, propName, p.getEditor());
 				}
 			}
 		}
@@ -369,7 +370,7 @@ public final class FullTextSearchCommand implements Command {
 		return search;
 	}
 
-	private void addSearchProperty(List<String> select, EntityDefinition ed, String propName, NestProperty... nest) {
+	private void addSearchProperty(List<String> select, EntityDefinition ed, String propName, PropertyEditor editor, NestProperty... nest) {
 		PropertyDefinition pd = EntityViewUtil.getPropertyDefinition(propName, ed);
 		if (pd instanceof ReferenceProperty) {
 			if (!select.contains(propName + "." + Entity.NAME)) {
@@ -380,6 +381,9 @@ public final class FullTextSearchCommand implements Command {
 			}
 			if (!select.contains(propName + "." + Entity.VERSION)) {
 				select.add(propName + "." + Entity.VERSION);
+			}
+			if (editor instanceof ReferencePropertyEditor) {
+				addDisplayLabelProperty(select, ed, propName, (ReferencePropertyEditor) editor);
 			}
 			if (nest != null && nest.length > 0) {
 				EntityDefinition red = getReferenceEntityDefinition((ReferenceProperty) pd);
@@ -409,14 +413,15 @@ public final class FullTextSearchCommand implements Command {
 							ReferencePropertyEditor rpe = (ReferencePropertyEditor) np.getEditor();
 							if (!rpe.getNestProperties().isEmpty()) {
 								List<NestProperty> _nest = rpe.getNestProperties();
-								addSearchProperty(select, ed, nestPropName, _nest.toArray(new NestProperty[_nest.size()]));
+								addSearchProperty(select, ed, nestPropName, rpe, _nest.toArray(new NestProperty[_nest.size()]));
 							}
+							addDisplayLabelProperty(select, ed, nestPropName, rpe);
 						} else if (np.getEditor() instanceof JoinPropertyEditor) {
 							JoinPropertyEditor je = (JoinPropertyEditor) np.getEditor();
-							addSearchProperty(select, ed, nestPropName);
+							addSearchProperty(select, ed, nestPropName, je.getEditor());
 							if (!je.getProperties().isEmpty()) {
 								List<NestProperty> _nest = je.getProperties();
-								addSearchProperty(select, ed, propName, _nest.toArray(new NestProperty[_nest.size()]));
+								addSearchProperty(select, ed, propName, editor, _nest.toArray(new NestProperty[_nest.size()]));
 							}
 						}
 					}
@@ -426,6 +431,17 @@ public final class FullTextSearchCommand implements Command {
 			//検索から外しておく
 		} else {
 			if (!select.contains(propName)) select.add(propName);
+		}
+	}
+
+	protected void addDisplayLabelProperty(List<String> select, EntityDefinition ed, String propName, ReferencePropertyEditor rpe) {
+		if (rpe.getDisplayLabelItem() == null) return;
+
+		PropertyDefinition pd = EntityViewUtil.getPropertyDefinition(propName, ed);
+		if (pd instanceof ReferenceProperty) {
+			if (!select.contains(propName + "." + rpe.getDisplayLabelItem())) {
+				select.add(propName + "." + rpe.getDisplayLabelItem());
+			}
 		}
 	}
 
