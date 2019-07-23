@@ -68,6 +68,7 @@ import org.iplass.mtp.view.generic.EntityViewManager;
 import org.iplass.mtp.view.generic.EntityViewUtil;
 import org.iplass.mtp.view.generic.FormViewUtil;
 import org.iplass.mtp.view.generic.SearchFormView;
+import org.iplass.mtp.view.generic.editor.DateRangePropertyEditor;
 import org.iplass.mtp.view.generic.editor.JoinPropertyEditor;
 import org.iplass.mtp.view.generic.editor.NestProperty;
 import org.iplass.mtp.view.generic.editor.ReferencePropertyEditor;
@@ -351,6 +352,12 @@ public final class FullTextSearchCommand implements Command {
 					JoinPropertyEditor je = (JoinPropertyEditor) p.getEditor();
 					for (NestProperty nest : je.getProperties()) {
 						addSearchProperty(select, ed, nest.getPropertyName());
+					}
+				} else if (p.getEditor() instanceof DateRangePropertyEditor) {
+					addSearchProperty(select, ed, propName);
+					DateRangePropertyEditor de = (DateRangePropertyEditor) p.getEditor();
+					if (StringUtil.isNotBlank(de.getToPropertyName())) {
+						addSearchProperty(select, ed, de.getToPropertyName());
 					}
 				} else {
 					addSearchProperty(select, ed, propName);
