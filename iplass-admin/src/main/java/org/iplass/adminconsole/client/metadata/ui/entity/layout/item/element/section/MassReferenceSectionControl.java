@@ -37,7 +37,6 @@ import org.iplass.mtp.entity.definition.properties.ReferenceProperty;
 import org.iplass.mtp.view.generic.element.section.MassReferenceSection;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.smartgwt.client.types.HeaderControls;
 
 /**
  *
@@ -73,8 +72,6 @@ public class MassReferenceSectionControl extends ItemControl implements SectionC
 		if (pd != null && pd instanceof ReferenceProperty) {
 			refDefName = ((ReferenceProperty) pd).getObjectDefinitionName();
 		}
-
-		setHeaderControls(HeaderControls.MINIMIZE_BUTTON, HeaderControls.HEADER_LABEL, setting, HeaderControls.CLOSE_BUTTON);
 
 		setMetaFieldUpdateHandler(new MetaFieldUpdateHandler() {
 

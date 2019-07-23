@@ -49,11 +49,12 @@ public class EQLExecutePane extends VLayout {
 	public EQLExecutePane() {
 
 		resultTabSet = new EQLResultTabSet();
+		resultTabSet.setHeight("70%");
 		resultTabSet.setShowResizeBar(true);		//リサイズ可能
 		resultTabSet.setResizeBarTarget("next");	//リサイズバーをダブルクリックした際、下を収縮
 
 		messageTabSet = new MessageTabSet();
-		messageTabSet.setHeight(120);
+		messageTabSet.setHeight("30%");
 
 		addMember(resultTabSet);
 		addMember(messageTabSet);

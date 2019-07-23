@@ -24,8 +24,6 @@ import org.iplass.adminconsole.client.metadata.ui.entity.layout.item.ItemControl
 import org.iplass.adminconsole.view.annotation.generic.FieldReferenceType;
 import org.iplass.mtp.view.generic.element.section.VersionSection;
 
-import com.smartgwt.client.types.HeaderControls;
-
 public class VersionSectionControl extends ItemControl implements SectionControl {
 
 	public VersionSectionControl(String defName, FieldReferenceType triggerType, VersionSection section) {
@@ -36,8 +34,6 @@ public class VersionSectionControl extends ItemControl implements SectionControl
 		setDragType("section");
 		setHeight(22);
 		setBorder("1px solid navy");
-
-		setHeaderControls(HeaderControls.MINIMIZE_BUTTON, HeaderControls.HEADER_LABEL, setting, HeaderControls.CLOSE_BUTTON);
 
 		setClassName(section.getClass().getName());
 		setValueObject(section);

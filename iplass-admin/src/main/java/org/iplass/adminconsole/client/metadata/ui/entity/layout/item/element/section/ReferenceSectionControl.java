@@ -34,7 +34,6 @@ import org.iplass.adminconsole.view.annotation.generic.FieldReferenceType;
 import org.iplass.mtp.view.generic.element.section.ReferenceSection;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.smartgwt.client.types.HeaderControls;
 
 /**
  *
@@ -66,8 +65,6 @@ public class ReferenceSectionControl extends ItemControl implements SectionContr
 		setBorder("1px solid navy");
 
 		setValue("name", section.getPropertyName());
-
-		setHeaderControls(HeaderControls.MINIMIZE_BUTTON, HeaderControls.HEADER_LABEL, setting, HeaderControls.CLOSE_BUTTON);
 
 		setMetaFieldUpdateHandler(new MetaFieldUpdateHandler() {
 
