@@ -842,9 +842,8 @@ data-customStyle="<c:out value="<%=customStyle%>"/>"
 <script type="text/javascript">
 <%-- 新規ボタン表示/非表示--%>
 function <%=toggleInsBtnFunc%>() {
-	var _propName = "<%=StringUtil.escapeJavaScript(propName)%>".replace(/\[/g, "\\[").replace(/\]/g, "\\]").replace(/\./g, "\\.");
-	var display = <%=pd.getMultiplicity() == -1 %> || $("#ul_" + _propName).children("li:not(:hidden)").length < <%=pd.getMultiplicity()%>;
-	$("#ins_btn_" + _propName).toggle(display);
+	var _propName = "<%=StringUtil.escapeJavaScript(propName)%>".replace(/\[/g, "\\[").replace(/\]/g, "\\]").replace(/\./g, "\\.");	
+	toggleRefInsertBtn("ul_" + _propName, <%=pd.getMultiplicity()%>, "ins_btn_" + _propName);
 }
 </script>
 <ul id="<c:out value="<%=ulId %>"/>" data-deletable="<c:out value="<%=(!hideDeleteButton && updatable) %>"/>" class="mb05">
