@@ -430,6 +430,12 @@ function countUp(countId, func) {
 	$("#" + countId).val(count + 1);
 }
 
+function toggleRefInsertBtn(ulId, multiplicity, insBtnId) {
+	var display = canAddItem(ulId, multiplicity);
+	$("#" + insBtnId).toggle(display);
+	$(".fixHeight").fixHeight();
+}
+
 function setCookie(name, value, days) {
 	var path = contextPath;
 	if (typeof path === "undefined" || path === null || path === "") {

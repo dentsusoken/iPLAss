@@ -34,6 +34,10 @@ ReferencePropertyEditor editor = (ReferencePropertyEditor) request.getAttribute(
 String viewType = StringUtil.escapeJavaScript((String) request.getAttribute(Constants.AUTOCOMPLETION_VIEW_TYPE));
 Integer multiplicity = (Integer) request.getAttribute(Constants.AUTOCOMPLETION_MULTIPLICTTY);
 if (multiplicity == null) multiplicity = 1;
+String parentDefName = StringUtil.escapeJavaScript((String) request.getAttribute(Constants.AUTOCOMPLETION_DEF_NAME));
+if (parentDefName == null) parentDefName = "";
+String parentViewName = StringUtil.escapeJavaScript((String) request.getAttribute(Constants.AUTOCOMPLETION_VIEW_NAME));
+if (parentViewName == null) parentViewName = "";
 //呼び出し元は/common/Autocompletion.jsp、以降はWebApiの結果を反映する部分のJavascript、結果の変数はvalue
 
 String contextPath = TemplateUtil.getTenantContextPath();
@@ -70,13 +74,19 @@ if (multiplicity == 1) {
 		value = [value];
 	}
 }
+var _propName = propName.replace(/\[/g, "\\[").replace(/\]/g, "\\]").replace(/\./g, "\\.");
 <%
 	if (editor.getDisplayType() == ReferenceDisplayType.LINK) {
 %>
+var callback = function() {
+	toggleRefInsertBtn("ul_" + _propName, multiplicity, "ins_btn_" + _propName);
+};
 for (var i = 0; i < value.length; i++) {
 	var key = value[i].oid + "_" + (value[i].version ? value[i].varsion : "0");
-	addReference("li_" + propName + key, "<%=viewAction%>", "<%=defName%>", key, value[i].name, propName, "ul_" + propName, <%=refEdit%>);
+	var label = <%=editor.getDisplayLabelItem() == null ? "value[i].name" : "value[i]." + editor.getDisplayLabelItem() %>;
+	addReference("li_" + propName + key, "<%=viewAction%>", "<%=defName%>", key, label, propName, "ul_" + _propName, <%=refEdit%>, callback, "<%=parentDefName%>", "<%=parentViewName%>", "<%=viewType%>");
 }
+toggleRefInsertBtn("ul_" + _propName, multiplicity, "ins_btn_" + _propName);
 <%
 	} else if (editor.getDisplayType() == ReferenceDisplayType.CHECKBOX) {
 %>
@@ -105,10 +115,15 @@ for (var i = 0; i < value.length; i++) {
 <%
 	} else if (editor.getDisplayType() == ReferenceDisplayType.TREE) {
 %>
+var callback = function() {
+	toggleRefInsertBtn("ul_" + _propName, multiplicity, "ins_btn_" + _propName);
+};
 for (var i = 0; i < value.length; i++) {
 	var key = value[i].oid + "_" + (value[i].version ? value[i].varsion : "0");
-	addReference("li_" + propName + key, "<%=viewAction%>", "<%=defName%>", key, value[i].name, propName, "ul_" + propName, <%=refEdit%>);
+	var label = <%=editor.getDisplayLabelItem() == null ? "value[i].name" : "value[i]." + editor.getDisplayLabelItem() %>;
+	addReference("li_" + propName + key, "<%=viewAction%>", "<%=defName%>", key, label, propName, "ul_" + _propName, <%=refEdit%>, callback, "<%=parentDefName%>", "<%=parentViewName%>", "<%=viewType%>");
 }
+toggleRefInsertBtn("ul_" + _propName, multiplicity, "ins_btn_" + _propName);
 <%
 	}
 } else {
@@ -145,14 +160,16 @@ for (var i = 0; i < value.length; i++) {
 %>
 for (var i = 0; i < value.length; i++) {
 	var key = value[i].oid + "_" + (value[i].version ? value[i].varsion : "0");
-	addReference("li_sc_" + propName + key, "<%=viewAction%>", "<%=defName%>", key, value[i].name, "sc_" + propName, "ul_sc_" + propName, false);
+	var label = <%=editor.getDisplayLabelItem() == null ? "value[i].name" : "value[i]." + editor.getDisplayLabelItem() %>;
+	addReference("li_sc_" + propName + key, "<%=viewAction%>", "<%=defName%>", key, label, "sc_" + propName, "ul_sc_" + propName, false);
 }
 <%
 	} else if (editor.getDisplayType() == ReferenceDisplayType.TREE) {
 %>
 for (var i = 0; i < value.length; i++) {
 	var key = value[i].oid + "_" + (value[i].version ? value[i].varsion : "0");
-	addReference("li_sc_" + propName + key, "<%=viewAction%>", "<%=defName%>", key, value[i].name, "sc_" + propName, "ul_sc_" + propName, false);
+	var label = <%=editor.getDisplayLabelItem() == null ? "value[i].name" : "value[i]." + editor.getDisplayLabelItem() %>;
+	addReference("li_sc_" + propName + key, "<%=viewAction%>", "<%=defName%>", key, label, "sc_" + propName, "ul_sc_" + propName, false);
 }
 <%
 	}
