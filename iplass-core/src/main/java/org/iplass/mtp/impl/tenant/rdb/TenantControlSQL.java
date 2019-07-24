@@ -18,7 +18,7 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.iplass.mtp.impl.tenant.sql;
+package org.iplass.mtp.impl.tenant.rdb;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;

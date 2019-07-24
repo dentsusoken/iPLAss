@@ -20,20 +20,12 @@
 
 package org.iplass.mtp.impl.tenant;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.List;
 
 import org.iplass.mtp.impl.core.ExecuteContext;
-import org.iplass.mtp.impl.rdb.SqlExecuter;
-import org.iplass.mtp.impl.rdb.adapter.RdbAdapter;
-import org.iplass.mtp.impl.rdb.adapter.RdbAdapterService;
-import org.iplass.mtp.impl.tenant.sql.TenantControlSQL;
-import org.iplass.mtp.impl.tenant.sql.TenantSelectSQL;
+import org.iplass.mtp.impl.tenant.rdb.RdbTenantStore;
 import org.iplass.mtp.spi.Config;
 import org.iplass.mtp.spi.Service;
-import org.iplass.mtp.spi.ServiceRegistry;
 import org.iplass.mtp.tenant.Tenant;
 
 /**
@@ -43,20 +35,18 @@ import org.iplass.mtp.tenant.Tenant;
  *
  */
 public class TenantService implements Service {
-//	private static final Logger log = LoggerFactory.getLogger(TenantService.class);
 
 	//FIXME TenantServiceとMetaTenantServiceの統合
 
-	private RdbAdapter rdb = ServiceRegistry.getRegistry().getService(RdbAdapterService.class).getRdbAdapter();
-	/** テナント検索SQL */
-	private TenantSelectSQL tenantSelect;
-	/** テナント登録・更新用SQL */
-	private TenantControlSQL tenantControl;
-
+	private TenantStore store;
+	
 	@Override
 	public void init(Config config) {
-		tenantSelect = rdb.getQuerySqlCreator(TenantSelectSQL.class);
-		tenantControl = rdb.getUpdateSqlCreator(TenantControlSQL.class);
+		store = config.getValue("store", TenantStore.class);
+		if (store == null) {
+			store = new RdbTenantStore();
+			store.inited(this, config);
+		}
 	}
 
 	@Override
@@ -71,20 +61,7 @@ public class TenantService implements Service {
 	 * @return テナント情報（存在しない場合はNull）
 	 */
 	public Tenant getTenant(final String url) {
-		SqlExecuter<Tenant> exec = new SqlExecuter<Tenant>() {
-			@Override
-			public Tenant logic() throws SQLException {
-				PreparedStatement ps = getPreparedStatement(tenantSelect.createSQL(url));
-				tenantSelect.setParameter(rdb, ps, url);
-				ResultSet rs = ps.executeQuery();
-				try {
-					return tenantSelect.createTenant(rs);
-				} finally {
-					rs.close();
-				}
-			}
-		};
-		return exec.execute(rdb, true);
+		return store.getTenant(url);
 	}
 
 	/**
@@ -95,20 +72,7 @@ public class TenantService implements Service {
 	 * @return テナント情報（存在しない場合はNull）
 	 */
 	public Tenant getTenant(final int id) {
-		SqlExecuter<Tenant> exec = new SqlExecuter<Tenant>() {
-			@Override
-			public Tenant logic() throws SQLException {
-				PreparedStatement ps = getPreparedStatement(tenantSelect.createSQL());
-				tenantSelect.setParameter(rdb, ps, id);
-				ResultSet rs = ps.executeQuery();
-				try {
-					return tenantSelect.createTenant(rs);
-				} finally {
-					rs.close();
-				}
-			}
-		};
-		return exec.execute(rdb, true);
+		return store.getTenant(id);
 	}
 
 	/**
@@ -118,16 +82,7 @@ public class TenantService implements Service {
 	 *            登録するテナント情報
 	 */
 	public void registTenant(final Tenant tenant, final String registId) {
-		SqlExecuter<Void> executer = new SqlExecuter<Void>() {
-			@Override
-			public Void logic() throws SQLException {
-				PreparedStatement ps = getPreparedStatement(tenantControl.createRegistSQL(rdb));
-				tenantControl.setRegistParameter(rdb, ps, tenant, registId);
-				ps.executeUpdate();
-				return null;
-			}
-		};
-		executer.execute(rdb, true);
+		store.registTenant(tenant, registId);
 	}
 
 	/**
@@ -151,36 +106,10 @@ public class TenantService implements Service {
 	 *            テナント情報
 	 */
 	public void updateTenant(final Tenant tenant, final String updateId, final boolean forceUpdate) {
-		SqlExecuter<Void> executer = new SqlExecuter<Void>() {
-			@Override
-			public Void logic() throws SQLException {
-				PreparedStatement ps = getPreparedStatement(tenantControl.createUpdateSQL(rdb, forceUpdate));
-				tenantControl.setUpdateParameter(rdb, ps, tenant, updateId, forceUpdate);
-				int cnt = ps.executeUpdate();
-				if (cnt == 0) {
-					// FIXME 例外処理
-					throw new RuntimeException("すでに更新されているか、削除されている");
-				}
-				return null;
-			}
-		};
-		executer.execute(rdb, true);
+		store.updateTenant(tenant, updateId, forceUpdate);
 	}
 
 	public List<Integer> getAllTenantIdList() {
-		SqlExecuter<List<Integer>> exec = new SqlExecuter<List<Integer>>() {
-			@Override
-			public List<Integer> logic() throws SQLException {
-				PreparedStatement ps = getPreparedStatement(tenantSelect.createAllTenantIdListSQL());
-				tenantSelect.setAllTenantIdListParameter(rdb, ps);
-				ResultSet rs = ps.executeQuery();
-				try {
-					return tenantSelect.getAllTenantIdList(rs);
-				} finally {
-					rs.close();
-				}
-			}
-		};
-		return exec.execute(rdb, true);
+		return store.getAllTenantIdList();
 	}
 }
