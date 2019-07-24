@@ -576,7 +576,7 @@ public abstract class SearchContextBase implements SearchContext {
 							addSearchProperty(select, nestPropName, jpe.getEditor());
 							if (!jpe.getProperties().isEmpty()) {
 								List<NestProperty> _nest = jpe.getProperties();
-								addSearchProperty(select, propName, jpe, _nest.toArray(new NestProperty[_nest.size()]));
+								addSearchProperty(select, propName, editor, _nest.toArray(new NestProperty[_nest.size()]));
 							}
 						}
 					}
