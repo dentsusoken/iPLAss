@@ -54,7 +54,7 @@ import org.slf4j.LoggerFactory;
 		command=@CommandConfig("cmd.checkLoginToken=true"),
 		result={
 			@Result(status="SUCCESS", type=Type.REDIRECT, value="mtp.auth.redirectPath"),
-			@Result(status="ERROR", type=Type.JSP, value=Constants.CMD_RSLT_JSP_PASSWORD_EXPIRE, templateName="gem/auth/Expire"),
+			@Result(status="ERROR", type=Type.TEMPLATE, value=Constants.TEMPLATE_PASSWORD_EXPIRE),
 			@Result(status="TOKEN_ERROR", type=Type.JSP, value=Constants.CMD_RSLT_JSP_LOGIN, templateName="gem/auth/Login")
 			}
 )

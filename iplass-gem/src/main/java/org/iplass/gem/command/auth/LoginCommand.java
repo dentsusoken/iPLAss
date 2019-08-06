@@ -65,7 +65,7 @@ import org.slf4j.LoggerFactory;
 			privilaged=true,
 			result={
 				@Result(status=Constants.CMD_EXEC_SUCCESS, type=Type.REDIRECT, value="mtp.auth.redirectPath"),
-				@Result(status=LoginCommand.CMD_EXEC_EXPIRE, type=Type.JSP, value=Constants.CMD_RSLT_JSP_PASSWORD_EXPIRE, templateName="gem/auth/Expire"),
+				@Result(status=LoginCommand.CMD_EXEC_EXPIRE, type=Type.TEMPLATE, value=Constants.TEMPLATE_PASSWORD_EXPIRE),
 				@Result(status=LoginCommand.CMD_EXEC_TWOSTEP, type=Type.JSP, value="/jsp/gem/auth/Verify2nd.jsp", templateName="gem/auth/Verify2nd"),
 				@Result(status=Constants.CMD_EXEC_ERROR, type=Type.JSP, value=Constants.CMD_RSLT_JSP_LOGIN, templateName="gem/auth/Login"),
 				@Result(exception=ApplicationException.class, type=Type.JSP, value=Constants.CMD_RSLT_JSP_LOGIN, templateName="gem/auth/Login")
@@ -73,6 +73,7 @@ import org.slf4j.LoggerFactory;
 	)
 })
 @Templates({
+	@Template(name=Constants.TEMPLATE_PASSWORD_EXPIRE, path=Constants.CMD_RSLT_JSP_PASSWORD_EXPIRE),
 	@Template(name="gem/auth/LastLoginParts", displayName="最終ログイン日時パーツ", path="/jsp/gem/auth/lastLoginParts.jsp"),
 	@Template(name="gem/generic/editor/EntitySelectPropertyEditorJsp", displayName="エンティティ選択プロパティエディタ",
 		path="/jsp/gem/generic/editor/EntitySelectPropertyEditor.jsp"),

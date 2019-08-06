@@ -319,6 +319,8 @@ public class Constants {
 	public static final String TEMPLATE_SYSTEM_ERROR = "gem/error/system";
 	public static final String TEMPLATE_PERMISSION_ERROR = "gem/auth/PermissionError";
 
+	public static final String TEMPLATE_PASSWORD_EXPIRE = "gem/auth/Expire";
+
 	// LayoutAction
 	public static final String LAYOUT_NORMAL_ACTION = "gem/layout/defaultLayout";
 	public static final String LAYOUT_POPOUT_ACTION = "gem/layout/popupLayout";
