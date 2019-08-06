@@ -324,6 +324,7 @@ public class Constants {
 	public static final String TEMPLATE_PASSWORD_EXPIRE = "gem/auth/Expire";
 	public static final String TEMPLATE_VERIFY2ND = "gem/auth/Verify2nd";
 	public static final String TEMPLATE_UPDATE_PASSWORD = "gem/auth/Password";
+	public static final String TEMPLATE_REAUTH = "gem/auth/ReAuth";
 
 	// LayoutAction
 	public static final String LAYOUT_NORMAL_ACTION = "gem/layout/defaultLayout";
