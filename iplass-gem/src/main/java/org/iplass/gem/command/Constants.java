@@ -309,6 +309,7 @@ public class Constants {
 	public static final String CMD_RSLT_JSP_UPDATE_PASSWORD = "/jsp/gem/auth/Password.jsp";
 	public static final String CMD_RSLT_JSP_RESET_SPECIFIC_PASSWORD = "/jsp/gem/auth/specificPassword.jsp";
 	public static final String CMD_RSLT_JSP_PASSWORD_EXPIRE = "/jsp/gem/auth/Expire.jsp";
+	public static final String CMD_RSLT_JSP_VERIFY2ND = "/jsp/gem/auth/Verify2nd.jsp";
 	public static final String CMD_RSLT_JSP_BULK_EDIT="/jsp/gem/generic/bulk/bulkEdit.jsp";
 	public static final String CMD_RSLT_JSP_BULK_MULTI_EDIT="/jsp/gem/generic/bulk/edit.jsp";
 	public static final String CMD_RSLT_JSP_APP_MAINTENANCE="/jsp/gem/auth/application.jsp";
@@ -321,6 +322,7 @@ public class Constants {
 
 	public static final String TEMPLATE_LOGIN = "gem/auth/Login";
 	public static final String TEMPLATE_PASSWORD_EXPIRE = "gem/auth/Expire";
+	public static final String TEMPLATE_VERIFY2ND = "gem/auth/Verify2nd";
 	public static final String TEMPLATE_UPDATE_PASSWORD = "gem/auth/Password";
 
 	// LayoutAction

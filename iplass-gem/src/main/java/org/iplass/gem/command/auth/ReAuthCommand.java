@@ -54,7 +54,7 @@ import org.slf4j.LoggerFactory;
 			result={
 				@Result(status=Constants.CMD_EXEC_SUCCESS, type=Type.REDIRECT, value="mtp.auth.redirectPath"),
 				@Result(status=ReAuthCommand.CMD_EXEC_EXPIRE, type=Type.DYNAMIC, value="expirePath"),
-				@Result(status=ReAuthCommand.CMD_EXEC_TWOSTEP, type=Type.JSP, value="/jsp/gem/auth/Verify2nd.jsp", templateName="gem/auth/Verify2nd"),
+				@Result(status=ReAuthCommand.CMD_EXEC_TWOSTEP, type=Type.TEMPLATE, value=Constants.TEMPLATE_VERIFY2ND),
 				@Result(status=Constants.CMD_EXEC_ERROR, type=Type.JSP, value=Constants.CMD_RSLT_JSP_REAUTH, templateName="gem/auth/ReAuth"),
 				@Result(exception=ApplicationException.class, type=Type.JSP, value=Constants.CMD_RSLT_JSP_REAUTH, templateName="gem/auth/ReAuth")
 				}
