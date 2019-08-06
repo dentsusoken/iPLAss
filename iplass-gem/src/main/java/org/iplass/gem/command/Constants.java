@@ -283,6 +283,7 @@ public class Constants {
 	public static final String CMD_RSLT_STREAM = "streamData";
 
 	public static final String CMD_RSLT_JSP_ERROR = "/jsp/gem/generic/error.jsp";
+	public static final String CMD_RSLT_JSP_SYSTEM_ERROR = "/jsp/gem/error/Error.jsp";
 
 	public static final String CMD_RSLT_JSP_CALENDAR = "/jsp/gem/calendar/calendarView.jsp";
 	public static final String CMD_RSLT_JSP_CALENDAR_FILTER = "/jsp/gem/calendar/ref/calendarFilter.jsp";
@@ -315,6 +316,8 @@ public class Constants {
 
 	public static final String TEMPLATE_ERROR = "gem/generic/error";
 	public static final String TEMPLATE_COMMON_ERROR = "gem/generic/common/error";
+	public static final String TEMPLATE_SYSTEM_ERROR = "gem/error/system";
+	public static final String TEMPLATE_PERMISSION_ERROR = "gem/auth/PermissionError";
 
 	// LayoutAction
 	public static final String LAYOUT_NORMAL_ACTION = "gem/layout/defaultLayout";

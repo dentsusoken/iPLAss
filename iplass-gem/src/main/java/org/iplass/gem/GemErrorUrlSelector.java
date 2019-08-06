@@ -31,13 +31,13 @@ public class GemErrorUrlSelector implements ErrorUrlSelector {
 	@Override
 	public String getErrorTemplateName(Throwable exception, RequestContext request, String path) {
 		if (exception instanceof NoPermissionException) {
-			return "gem/auth/PermissionError";
+			return Constants.TEMPLATE_PERMISSION_ERROR;
 		}
 		if (exception instanceof ApplicationException) {
 			return Constants.TEMPLATE_ERROR;
 		}
 
-		return "gem/error/system";
+		return Constants.TEMPLATE_SYSTEM_ERROR;
 	}
 
 }

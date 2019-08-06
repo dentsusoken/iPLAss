@@ -117,8 +117,16 @@ import org.iplass.mtp.view.top.TopViewDefinitionManager;
 			displayName="エラー画面（通常）",
 			path=Constants.CMD_RSLT_JSP_ERROR,
 			layoutActionName=Constants.LAYOUT_NORMAL_ACTION),
-	@Template(name="gem/error/system", displayName="エラー画面（システムエラー）", path="/jsp/gem/error/Error.jsp", contentType="text/html; charset=utf-8"),
-	@Template(name="gem/auth/PermissionError", displayName="権限エラー", path="/jsp/gem/error/Error.jsp", contentType="text/html; charset=utf-8")
+	@Template(
+			name=Constants.TEMPLATE_SYSTEM_ERROR,
+			displayName="エラー画面（システムエラー）",
+			path=Constants.CMD_RSLT_JSP_SYSTEM_ERROR,
+			contentType="text/html; charset=utf-8"),
+	@Template(
+			name=Constants.TEMPLATE_PERMISSION_ERROR,
+			displayName="権限エラー",
+			path=Constants.CMD_RSLT_JSP_SYSTEM_ERROR,
+			contentType="text/html; charset=utf-8")
 })
 @CommandClass(name="gem/MenuCommand", displayName="メニュー",
 	localizedDisplayName={
