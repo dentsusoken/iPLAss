@@ -313,6 +313,8 @@ public class Constants {
 	public static final String CMD_RSLT_JSP_APP_MAINTENANCE="/jsp/gem/auth/application.jsp";
 	public static final String CMD_RSLT_HTML_PDFVIEWER_PATH = "/jsp/gem/binary/pdfviewer.jsp";
 
+	public static final String TEMPLATE_ERROR = "gem/generic/error";
+
 	// LayoutAction
 	public static final String LAYOUT_NORMAL_ACTION = "gem/layout/defaultLayout";
 	public static final String LAYOUT_POPOUT_ACTION = "gem/layout/popupLayout";
