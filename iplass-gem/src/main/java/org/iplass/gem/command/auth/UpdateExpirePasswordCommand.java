@@ -55,7 +55,7 @@ import org.slf4j.LoggerFactory;
 		result={
 			@Result(status="SUCCESS", type=Type.REDIRECT, value="mtp.auth.redirectPath"),
 			@Result(status="ERROR", type=Type.TEMPLATE, value=Constants.TEMPLATE_PASSWORD_EXPIRE),
-			@Result(status="TOKEN_ERROR", type=Type.JSP, value=Constants.CMD_RSLT_JSP_LOGIN, templateName="gem/auth/Login")
+			@Result(status="TOKEN_ERROR", type=Type.TEMPLATE, value=Constants.TEMPLATE_LOGIN)
 			}
 )
 @CommandClass(name="gem/auth/UpdateExpirePasswordCommand", displayName="有効期限切れパスワード更新")
