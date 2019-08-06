@@ -72,13 +72,11 @@ import org.iplass.mtp.view.generic.DetailFormView.CopyTarget;
 					value=Constants.CMD_RSLT_JSP_VIEW,
 					templateName="gem/generic/detail/view",
 					layoutActionName=Constants.LAYOUT_NORMAL_ACTION),
-			@Result(status=Constants.CMD_EXEC_ERROR_VIEW, type=Type.JSP,
-					value=Constants.CMD_RSLT_JSP_ERROR,
-					templateName="gem/generic/common/error",
+			@Result(status=Constants.CMD_EXEC_ERROR_VIEW, type=Type.TEMPLATE,
+					value=Constants.TEMPLATE_COMMON_ERROR,
 					layoutActionName=Constants.LAYOUT_NORMAL_ACTION),
-			@Result(status=Constants.CMD_EXEC_ERROR_NODATA, type=Type.JSP,
-					value=Constants.CMD_RSLT_JSP_ERROR,
-					templateName="gem/generic/common/error",
+			@Result(status=Constants.CMD_EXEC_ERROR_NODATA,type=Type.TEMPLATE,
+					value=Constants.TEMPLATE_COMMON_ERROR,
 					layoutActionName=Constants.LAYOUT_NORMAL_ACTION)
 		}
 	),
@@ -101,13 +99,11 @@ import org.iplass.mtp.view.generic.DetailFormView.CopyTarget;
 					value=Constants.CMD_RSLT_JSP_REF_VIEW,
 					templateName="gem/generic/detail/ref/view",
 					layoutActionName=Constants.LAYOUT_POPOUT_ACTION),
-			@Result(status=Constants.CMD_EXEC_ERROR_VIEW, type=Type.JSP,
-					value=Constants.CMD_RSLT_JSP_ERROR,
-					templateName="gem/generic/common/error",
+			@Result(status=Constants.CMD_EXEC_ERROR_VIEW, type=Type.TEMPLATE,
+					value=Constants.TEMPLATE_COMMON_ERROR,
 					layoutActionName=Constants.LAYOUT_POPOUT_ACTION),
-			@Result(status=Constants.CMD_EXEC_ERROR_NODATA, type=Type.JSP,
-					value=Constants.CMD_RSLT_JSP_ERROR,
-					templateName="gem/generic/common/error",
+			@Result(status=Constants.CMD_EXEC_ERROR_NODATA, type=Type.TEMPLATE,
+					value=Constants.TEMPLATE_COMMON_ERROR,
 					layoutActionName=Constants.LAYOUT_POPOUT_ACTION)
 		}
 	),
@@ -132,13 +128,11 @@ import org.iplass.mtp.view.generic.DetailFormView.CopyTarget;
 					value=Constants.CMD_RSLT_JSP_VIEW,
 					templateName="gem/generic/detail/view",
 					layoutActionName=Constants.LAYOUT_NORMAL_ACTION),
-			@Result(status=Constants.CMD_EXEC_ERROR_VIEW, type=Type.JSP,
-					value=Constants.CMD_RSLT_JSP_ERROR,
-					templateName="gem/generic/common/error",
+			@Result(status=Constants.CMD_EXEC_ERROR_VIEW, type=Type.TEMPLATE,
+					value=Constants.TEMPLATE_COMMON_ERROR,
 					layoutActionName=Constants.LAYOUT_NORMAL_ACTION),
-			@Result(status=Constants.CMD_EXEC_ERROR_NODATA, type=Type.JSP,
-					value=Constants.CMD_RSLT_JSP_ERROR,
-					templateName="gem/generic/common/error",
+			@Result(status=Constants.CMD_EXEC_ERROR_NODATA, type=Type.TEMPLATE,
+					value=Constants.TEMPLATE_COMMON_ERROR,
 					layoutActionName=Constants.LAYOUT_NORMAL_ACTION)
 		}
 	),
@@ -159,13 +153,11 @@ import org.iplass.mtp.view.generic.DetailFormView.CopyTarget;
 					value=Constants.CMD_RSLT_JSP_REF_VIEW,
 					templateName="gem/generic/detail/ref/view",
 					layoutActionName=Constants.LAYOUT_POPOUT_ACTION),
-			@Result(status=Constants.CMD_EXEC_ERROR_VIEW, type=Type.JSP,
-					value=Constants.CMD_RSLT_JSP_ERROR,
-					templateName="gem/generic/common/error",
+			@Result(status=Constants.CMD_EXEC_ERROR_VIEW, type=Type.TEMPLATE,
+					value=Constants.TEMPLATE_COMMON_ERROR,
 					layoutActionName=Constants.LAYOUT_POPOUT_ACTION),
-			@Result(status=Constants.CMD_EXEC_ERROR_NODATA, type=Type.JSP,
-					value=Constants.CMD_RSLT_JSP_ERROR,
-					templateName="gem/generic/common/error",
+			@Result(status=Constants.CMD_EXEC_ERROR_NODATA, type=Type.TEMPLATE,
+					value=Constants.TEMPLATE_COMMON_ERROR,
 					layoutActionName=Constants.LAYOUT_POPOUT_ACTION)
 		}
 	)
@@ -379,7 +371,7 @@ public final class DetailViewCommand extends DetailCommandBase {
 	private static String resourceString(String key, Object... arguments) {
 		return GemResourceBundleUtil.resourceString(key, arguments);
 	}
-	
+
 	private String createHierarchyRefPropDispName(EntityValidationException e) {
 		StringBuilder builder = new StringBuilder();
 		for (ValidateError err : e.getValidateResult()) {

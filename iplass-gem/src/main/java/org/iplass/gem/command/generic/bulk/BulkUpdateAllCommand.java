@@ -50,7 +50,6 @@ import org.iplass.mtp.view.generic.EntityView;
 import org.iplass.mtp.view.generic.FormViewUtil;
 import org.iplass.mtp.view.generic.SearchFormView;
 import org.iplass.mtp.view.generic.element.section.SearchResultSection.BulkUpdateAllCommandTransactionType;
-import org.iplass.mtp.view.generic.element.section.SearchResultSection.DeleteAllCommandTransactionType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -71,13 +70,11 @@ import org.slf4j.LoggerFactory;
 						value=Constants.CMD_RSLT_JSP_BULK_EDIT,
 						templateName="gem/generic/bulk/bulkEdit",
 						layoutActionName=Constants.LAYOUT_POPOUT_ACTION),
-				@Result(status=Constants.CMD_EXEC_ERROR_TOKEN, type=Type.JSP,
-						value=Constants.CMD_RSLT_JSP_ERROR,
-						templateName="gem/generic/common/error",
+				@Result(status=Constants.CMD_EXEC_ERROR_TOKEN, type=Type.TEMPLATE,
+						value=Constants.TEMPLATE_COMMON_ERROR,
 						layoutActionName=Constants.LAYOUT_POPOUT_ACTION),
-				@Result(status=Constants.CMD_EXEC_ERROR_VIEW, type=Type.JSP,
-						value=Constants.CMD_RSLT_JSP_ERROR,
-						templateName="gem/generic/common/error",
+				@Result(status=Constants.CMD_EXEC_ERROR_VIEW, type=Type.TEMPLATE,
+						value=Constants.TEMPLATE_COMMON_ERROR,
 						layoutActionName=Constants.LAYOUT_POPOUT_ACTION)
 			},
 			tokenCheck=@TokenCheck

@@ -76,9 +76,8 @@ import org.slf4j.LoggerFactory;
 				value=Constants.CMD_RSLT_JSP_CSV_UPLOAD,
 				templateName="gem/generic/upload/csvUpload",
 				layoutActionName=Constants.LAYOUT_NORMAL_ACTION),
-		@Result(status=Constants.CMD_EXEC_ERROR_VIEW, type=Type.JSP,
-				value=Constants.CMD_RSLT_JSP_ERROR,
-				templateName="gem/generic/common/error",
+		@Result(status=Constants.CMD_EXEC_ERROR_VIEW, type=Type.TEMPLATE,
+				value=Constants.TEMPLATE_COMMON_ERROR,
 				layoutActionName=Constants.LAYOUT_NORMAL_ACTION)
 	},
 	tokenCheck=@TokenCheck

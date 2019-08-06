@@ -104,6 +104,13 @@ import org.iplass.mtp.view.top.TopViewDefinitionManager;
 	@Template(name="gem/layout/navi", displayName="ナビ", path="/jsp/gem/layout/navi.jsp"),
 	@Template(name="gem/menu/menu", displayName="メニュー", path="/jsp/gem/menu/menu.jsp"),
 
+	//FIXME TEMPLATE_ERRORと同等のため、統合
+	@Template(
+			name=Constants.TEMPLATE_COMMON_ERROR,
+			displayName="エラー画面",
+			path=Constants.CMD_RSLT_JSP_ERROR,
+			layoutActionName=Constants.LAYOUT_NORMAL_ACTION),
+
 	//GemErrorUrlSelector用設定
 	@Template(
 			name=Constants.TEMPLATE_ERROR,

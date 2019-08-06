@@ -61,13 +61,11 @@ import org.iplass.mtp.view.generic.BulkFormView;
 						value=Constants.CMD_RSLT_JSP_BULK_MULTI_EDIT,
 						templateName="gem/generic/bulk/edit",
 						layoutActionName=Constants.LAYOUT_POPOUT_ACTION),
-				@Result(status=Constants.CMD_EXEC_ERROR_TOKEN, type=Type.JSP,
-						value=Constants.CMD_RSLT_JSP_ERROR,
-						templateName="gem/generic/common/error",
+				@Result(status=Constants.CMD_EXEC_ERROR_TOKEN, type=Type.TEMPLATE,
+						value=Constants.TEMPLATE_COMMON_ERROR,
 						layoutActionName=Constants.LAYOUT_POPOUT_ACTION),
-				@Result(status=Constants.CMD_EXEC_ERROR_VIEW, type=Type.JSP,
-						value=Constants.CMD_RSLT_JSP_ERROR,
-						templateName="gem/generic/common/error",
+				@Result(status=Constants.CMD_EXEC_ERROR_VIEW, type=Type.TEMPLATE,
+						value=Constants.TEMPLATE_COMMON_ERROR,
 						layoutActionName=Constants.LAYOUT_POPOUT_ACTION)
 			},
 			tokenCheck=@TokenCheck

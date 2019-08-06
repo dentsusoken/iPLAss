@@ -67,13 +67,11 @@ import org.slf4j.LoggerFactory;
 				value=Constants.CMD_RSLT_JSP_REF_EDIT,
 				templateName="gem/generic/detail/ref/edit",
 				layoutActionName=Constants.LAYOUT_POPOUT_ACTION),
-		@Result(status=Constants.CMD_EXEC_ERROR_VIEW, type=Type.JSP,
-				value=Constants.CMD_RSLT_JSP_ERROR,
-				templateName="gem/generic/common/error",
+		@Result(status=Constants.CMD_EXEC_ERROR_VIEW, type=Type.TEMPLATE,
+				value=Constants.TEMPLATE_COMMON_ERROR,
 				layoutActionName=Constants.LAYOUT_POPOUT_ACTION),
-		@Result(status=Constants.CMD_EXEC_ERROR_NODATA, type=Type.JSP,
-				value=Constants.CMD_RSLT_JSP_ERROR,
-				templateName="gem/generic/common/error",
+		@Result(status=Constants.CMD_EXEC_ERROR_NODATA, type=Type.TEMPLATE,
+				value=Constants.TEMPLATE_COMMON_ERROR,
 				layoutActionName=Constants.LAYOUT_POPOUT_ACTION)
 	}
 )

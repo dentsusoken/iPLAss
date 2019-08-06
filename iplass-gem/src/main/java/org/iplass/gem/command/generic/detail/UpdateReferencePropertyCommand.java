@@ -72,13 +72,11 @@ import org.slf4j.LoggerFactory;
 					value=Constants.CMD_RSLT_JSP_VIEW,
 					templateName="gem/generic/detail/view",
 					layoutActionName=Constants.LAYOUT_NORMAL_ACTION),
-			@Result(status=Constants.CMD_EXEC_ERROR_TOKEN, type=Type.JSP,
-					value=Constants.CMD_RSLT_JSP_ERROR,
-					templateName="gem/generic/common/error",
+			@Result(status=Constants.CMD_EXEC_ERROR_TOKEN, type=Type.TEMPLATE,
+					value=Constants.TEMPLATE_COMMON_ERROR,
 					layoutActionName=Constants.LAYOUT_NORMAL_ACTION),
-			@Result(status=Constants.CMD_EXEC_ERROR_VIEW, type=Type.JSP,
-					value=Constants.CMD_RSLT_JSP_ERROR,
-					templateName="gem/generic/common/error",
+			@Result(status=Constants.CMD_EXEC_ERROR_VIEW, type=Type.TEMPLATE,
+					value=Constants.TEMPLATE_COMMON_ERROR,
 					layoutActionName=Constants.LAYOUT_NORMAL_ACTION)
 		}
 	),
@@ -98,13 +96,11 @@ import org.slf4j.LoggerFactory;
 					value=Constants.CMD_RSLT_JSP_REF_VIEW,
 					templateName="gem/generic/detail/ref/view",
 					layoutActionName=Constants.LAYOUT_POPOUT_ACTION),
-			@Result(status=Constants.CMD_EXEC_ERROR_TOKEN, type=Type.JSP,
-					value=Constants.CMD_RSLT_JSP_ERROR,
-					templateName="gem/generic/common/error",
+			@Result(status=Constants.CMD_EXEC_ERROR_TOKEN, type=Type.TEMPLATE,
+					value=Constants.TEMPLATE_COMMON_ERROR,
 					layoutActionName=Constants.LAYOUT_POPOUT_ACTION),
-			@Result(status=Constants.CMD_EXEC_ERROR_VIEW, type=Type.JSP,
-					value=Constants.CMD_RSLT_JSP_ERROR,
-					templateName="gem/generic/common/error",
+			@Result(status=Constants.CMD_EXEC_ERROR_VIEW, type=Type.TEMPLATE,
+					value=Constants.TEMPLATE_COMMON_ERROR,
 					layoutActionName=Constants.LAYOUT_POPOUT_ACTION)
 		}
 	)
