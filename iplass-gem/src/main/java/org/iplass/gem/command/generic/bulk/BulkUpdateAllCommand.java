@@ -30,7 +30,6 @@ import org.iplass.gem.command.generic.search.DetailSearchCommand;
 import org.iplass.gem.command.generic.search.FixedSearchCommand;
 import org.iplass.gem.command.generic.search.NormalSearchCommand;
 import org.iplass.gem.command.generic.search.SearchCommandBase;
-import org.iplass.gem.command.generic.search.SearchContext;
 import org.iplass.mtp.ApplicationException;
 import org.iplass.mtp.command.RequestContext;
 import org.iplass.mtp.command.annotation.CommandClass;
@@ -43,7 +42,6 @@ import org.iplass.mtp.command.annotation.action.TokenCheck;
 import org.iplass.mtp.entity.Entity;
 import org.iplass.mtp.entity.SearchResult;
 import org.iplass.mtp.entity.definition.EntityDefinition;
-import org.iplass.mtp.entity.query.Query;
 import org.iplass.mtp.spi.ServiceRegistry;
 import org.iplass.mtp.transaction.Transaction;
 import org.iplass.mtp.view.generic.EntityView;
@@ -70,6 +68,10 @@ import org.slf4j.LoggerFactory;
 				@Result(status=Constants.CMD_EXEC_ERROR, type=Type.JSP,
 						value=Constants.CMD_RSLT_JSP_BULK_EDIT,
 						templateName="gem/generic/bulk/bulkEdit",
+						layoutActionName=Constants.LAYOUT_POPOUT_ACTION),
+				@Result(status=Constants.CMD_EXEC_ERROR_SEARCH, type=Type.JSP,
+						value=Constants.CMD_RSLT_JSP_ERROR,
+						templateName="gem/generic/common/error",
 						layoutActionName=Constants.LAYOUT_POPOUT_ACTION),
 				@Result(status=Constants.CMD_EXEC_ERROR_TOKEN, type=Type.JSP,
 						value=Constants.CMD_RSLT_JSP_ERROR,
@@ -106,8 +108,6 @@ public class BulkUpdateAllCommand extends BulkCommandBase {
 
 		String ret = Constants.CMD_EXEC_SUCCESS;
 		if (command != null) {
-			SearchContext searchContext = command.getContext(request);
-
 			// トランザクションタイプを取得します
 			EntityDefinition ed = context.getEntityDefinition();
 			EntityView view = evm.get(ed.getName());
@@ -115,13 +115,11 @@ public class BulkUpdateAllCommand extends BulkCommandBase {
 			SearchFormView form= FormViewUtil.getSearchFormView(ed, view, viewName);
 			BulkUpdateAllCommandTransactionType transactionType = form.getResultSection().getBulkUpdateAllCommandTransactionType();
 
-			Query query = new Query();
-			query.select(Entity.OID, Entity.VERSION, Entity.UPDATE_DATE);
-			query.from(searchContext.getDefName());
-			query.setWhere(searchContext.getWhere());
-			query.setVersiond(searchContext.isVersioned());
-			SearchResult<Entity> result = em.searchEntity(query);
+			ret = command.execute(request);
+			if (!Constants.CMD_EXEC_SUCCESS.equals(ret)) return ret;
 
+			@SuppressWarnings("unchecked")
+			SearchResult<Entity> result = (SearchResult<Entity>) request.getAttribute("result");
 			List<Entity> entities = result.getList();
 			if (entities.size() > 0) {
 				// 先頭に「行番号_」を付加する

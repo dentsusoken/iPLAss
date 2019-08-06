@@ -260,6 +260,18 @@ public abstract class SearchContextBase implements SearchContext {
 	}
 
 	@Override
+	public boolean isDelete() {
+		String isDelete = getRequest().getParam("isDelete");
+		return "true".equals(isDelete);
+	}
+
+	@Override
+	public boolean isBulk() {
+		String isBulk = getRequest().getParam("isBulk");
+		return "true".equals(isBulk);
+	}
+
+	@Override
 	public boolean validation() {
 		return true;
 	}

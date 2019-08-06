@@ -301,6 +301,9 @@ $(function() {
 				}
 			}
 		}
+		$("<input />").attr({type:"hidden", name:"isBulk", value:"true"}).appendTo($form);
+		$(":hidden[name='isCount']").val("false");
+		$(":hidden[name='isSearch']").val("false");
 	};
 <%
 	if(isSelectAll) {

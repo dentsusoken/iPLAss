@@ -29,7 +29,6 @@ import org.iplass.gem.command.generic.search.FixedSearchCommand;
 import org.iplass.gem.command.generic.search.NormalSearchCommand;
 import org.iplass.gem.command.generic.search.SearchCommandBase;
 import org.iplass.gem.command.generic.search.SearchContext;
-import org.iplass.gem.command.generic.search.SearchContextBase;
 import org.iplass.mtp.ApplicationException;
 import org.iplass.mtp.command.RequestContext;
 import org.iplass.mtp.command.annotation.CommandClass;
@@ -40,7 +39,6 @@ import org.iplass.mtp.entity.DeleteOption;
 import org.iplass.mtp.entity.Entity;
 import org.iplass.mtp.entity.SearchResult;
 import org.iplass.mtp.entity.definition.EntityDefinition;
-import org.iplass.mtp.entity.query.Query;
 import org.iplass.mtp.spi.ServiceRegistry;
 import org.iplass.mtp.transaction.Transaction;
 import org.iplass.mtp.view.generic.EntityView;
@@ -95,13 +93,12 @@ public final class DeleteAllCommand extends DeleteCommandBase {
 			String viewName = request.getParam(Constants.VIEW_NAME);
 			SearchFormView form= FormViewUtil.getSearchFormView(ed, view, viewName);
 			DeleteAllCommandTransactionType transactionType = form.getResultSection().getDeleteAllCommandTransactionType();
-			
-			Query query = new Query();
-			query.select(Entity.OID, Entity.VERSION);
-			query.from(context.getDefName());
-			query.setWhere(context.getWhere());
-			query.setVersiond(context.isVersioned());
-			SearchResult<Entity> result = em.searchEntity(query);
+
+			String ret = command.execute(request);
+			if (!Constants.CMD_EXEC_SUCCESS.equals(ret)) return ret;
+
+			@SuppressWarnings("unchecked")
+			SearchResult<Entity> result = (SearchResult<Entity>) request.getAttribute("result");
 
 			boolean isPurge = isPurge(context);
 			final DeleteOption option = new DeleteOption(false);
@@ -124,7 +121,7 @@ public final class DeleteAllCommand extends DeleteCommandBase {
 				int last = current + batchSize;
 				if (last > list.size()) last = list.size();
 				final List<Entity> subList = list.subList(current, last);
-				Boolean ret = Transaction.requiresNew(t -> {
+				Boolean _ret = Transaction.requiresNew(t -> {
 					for (Entity entity : subList) {
 						try {
 							em.delete(entity, option);
@@ -139,7 +136,7 @@ public final class DeleteAllCommand extends DeleteCommandBase {
 					}
 					return true;
 				});
-				if (!ret) {
+				if (!_ret) {
 					break;
 				}
 			}
