@@ -73,9 +73,12 @@ import org.slf4j.LoggerFactory;
 	)
 })
 @Templates({
-	@Template(name=Constants.TEMPLATE_LOGIN, path=Constants.CMD_RSLT_JSP_LOGIN),
-	@Template(name=Constants.TEMPLATE_PASSWORD_EXPIRE, path=Constants.CMD_RSLT_JSP_PASSWORD_EXPIRE),
-	@Template(name=Constants.TEMPLATE_VERIFY2ND, path=Constants.CMD_RSLT_JSP_VERIFY2ND),
+	@Template(name=Constants.TEMPLATE_LOGIN, path=Constants.CMD_RSLT_JSP_LOGIN,
+			contentType="text/html; charset=utf-8"),
+	@Template(name=Constants.TEMPLATE_PASSWORD_EXPIRE, path=Constants.CMD_RSLT_JSP_PASSWORD_EXPIRE,
+			contentType="text/html; charset=utf-8"),
+	@Template(name=Constants.TEMPLATE_VERIFY2ND, path=Constants.CMD_RSLT_JSP_VERIFY2ND,
+			contentType="text/html; charset=utf-8"),
 	@Template(name="gem/auth/LastLoginParts", displayName="最終ログイン日時パーツ", path="/jsp/gem/auth/lastLoginParts.jsp"),
 	@Template(name="gem/generic/editor/EntitySelectPropertyEditorJsp", displayName="エンティティ選択プロパティエディタ",
 		path="/jsp/gem/generic/editor/EntitySelectPropertyEditor.jsp"),

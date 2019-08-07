@@ -62,7 +62,7 @@ import org.slf4j.LoggerFactory;
 	)
 })
 @CommandClass(name="gem/auth/ReAuthCommand", displayName="再認証処理")
-@Template(name=Constants.TEMPLATE_REAUTH, path=Constants.CMD_RSLT_JSP_REAUTH)
+@Template(name=Constants.TEMPLATE_REAUTH, path=Constants.CMD_RSLT_JSP_REAUTH, contentType="text/html; charset=utf-8")
 public final class ReAuthCommand implements Command, AuthCommandConstants {
 
 	private static Logger logger = LoggerFactory.getLogger(ReAuthCommand.class);
