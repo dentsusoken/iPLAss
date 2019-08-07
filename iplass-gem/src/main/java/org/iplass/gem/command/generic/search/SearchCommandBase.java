@@ -82,7 +82,17 @@ public abstract class SearchCommandBase implements Command {
 		}
 
 		//Queryを生成して正しくEQLに変換できるかをチェック
-		Query query = toQuery(context);
+		Query query = null;
+		if (context.isDelete()) {
+			// 全削除
+			query = toQueryForDelete(context);
+		} else if (context.isBulk()) {
+			// 全一括更新
+			query = toQueryForBulkUpdate(context);
+		} else {
+			query = toQuery(context);
+		}
+
 		if (query == null) {
 			return Constants.CMD_EXEC_ERROR_SEARCH;
 		}
@@ -97,6 +107,14 @@ public abstract class SearchCommandBase implements Command {
 		}
 
 		if (context.isSearch()) {
+			Query q = query.copy();
+			// 検索時にEQLにOrderByとLimitを付けます。
+			setOrderBy(context, q);
+			setLimit(context, q);
+			search(context, q);
+		} else if (context.isDelete()) {
+			search(context, query.copy());
+		} else if (context.isBulk()) {
 			search(context, query.copy());
 		}
 
@@ -135,6 +153,39 @@ public abstract class SearchCommandBase implements Command {
 		return query;
 	}
 
+	protected Query toQueryForDelete(SearchContext context) {
+		Query query = new Query();
+		// 全削除する場合、抽出項目はSearchResultSectionの定義を見なくて良いです。
+		query.select(Entity.OID, Entity.VERSION);
+		query.from(context.getDefName());
+		query.setWhere(context.getWhere());
+		query.setVersiond(context.isVersioned());
+
+		return query;
+	}
+
+	protected Query toQueryForBulkUpdate(SearchContext context) {
+		Query query = new Query();
+		// 全一括更新する場合、抽出項目はSearchResultSectionの定義を見なくて良いです。
+		query.select(Entity.OID, Entity.VERSION, Entity.UPDATE_DATE);
+		query.from(context.getDefName());
+		query.setWhere(context.getWhere());
+		query.setVersiond(context.isVersioned());
+
+		return query;
+	}
+
+	protected void setLimit(SearchContext context, Query query) {
+		final SearchContextBase _context = (SearchContextBase) context;
+		if (!_context.getResultSection().isHidePaging()) {
+			query.setLimit(context.getLimit());
+		}
+	}
+
+	protected void setOrderBy(SearchContext context, Query query) {
+		query.setOrderBy(context.getOrderBy());
+	}
+
 	/**
 	 * 条件を検証するモードかを返す
 	 */
@@ -153,10 +204,6 @@ public abstract class SearchCommandBase implements Command {
 	final protected void search(SearchContext context, Query query) {
 		final SearchContextBase _context = (SearchContextBase) context;
 		final List<String> userOidList = new ArrayList<>();
-		query.setOrderBy(context.getOrderBy());
-		if (!_context.getResultSection().isHidePaging()) {
-			query.setLimit(context.getLimit());
-		}
 
 		//検索前処理
 		final SearchQueryContext sqContext = _context.beforeSearch(query, SearchQueryType.SEACH);
