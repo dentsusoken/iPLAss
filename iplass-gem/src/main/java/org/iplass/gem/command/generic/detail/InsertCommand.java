@@ -60,15 +60,10 @@ import org.iplass.mtp.view.generic.DetailFormView;
 					value=Constants.CMD_RSLT_JSP_VIEW,
 					templateName="gem/generic/detail/view",
 					layoutActionName=Constants.LAYOUT_NORMAL_ACTION),
-			@Result(status=Constants.CMD_EXEC_ERROR, type=Type.JSP,
-					value=Constants.CMD_RSLT_JSP_EDIT,
-					templateName="gem/generic/detail/edit",
+			@Result(status=Constants.CMD_EXEC_ERROR, type=Type.TEMPLATE, value=Constants.TEMPLATE_EDIT),
+			@Result(status=Constants.CMD_EXEC_ERROR_TOKEN, type=Type.TEMPLATE, value=Constants.TEMPLATE_COMMON_ERROR,
 					layoutActionName=Constants.LAYOUT_NORMAL_ACTION),
-			@Result(status=Constants.CMD_EXEC_ERROR_TOKEN, type=Type.TEMPLATE,
-					value=Constants.TEMPLATE_COMMON_ERROR,
-					layoutActionName=Constants.LAYOUT_NORMAL_ACTION),
-			@Result(status=Constants.CMD_EXEC_ERROR_VIEW, type=Type.TEMPLATE,
-					value=Constants.TEMPLATE_COMMON_ERROR,
+			@Result(status=Constants.CMD_EXEC_ERROR_VIEW, type=Type.TEMPLATE, value=Constants.TEMPLATE_COMMON_ERROR,
 					layoutActionName=Constants.LAYOUT_NORMAL_ACTION)
 		},
 		tokenCheck=@TokenCheck
@@ -88,11 +83,9 @@ import org.iplass.mtp.view.generic.DetailFormView;
 					value=Constants.CMD_RSLT_JSP_REF_EDIT,
 					templateName="gem/generic/detail/ref/edit",
 					layoutActionName=Constants.LAYOUT_POPOUT_ACTION),
-			@Result(status=Constants.CMD_EXEC_ERROR_TOKEN, type=Type.TEMPLATE,
-					value=Constants.TEMPLATE_COMMON_ERROR,
+			@Result(status=Constants.CMD_EXEC_ERROR_TOKEN, type=Type.TEMPLATE, value=Constants.TEMPLATE_COMMON_ERROR,
 					layoutActionName=Constants.LAYOUT_POPOUT_ACTION),
-			@Result(status=Constants.CMD_EXEC_ERROR_VIEW, type=Type.TEMPLATE,
-					value=Constants.TEMPLATE_COMMON_ERROR,
+			@Result(status=Constants.CMD_EXEC_ERROR_VIEW, type=Type.TEMPLATE, value=Constants.TEMPLATE_COMMON_ERROR,
 					layoutActionName=Constants.LAYOUT_POPOUT_ACTION)
 		},
 		tokenCheck=@TokenCheck
