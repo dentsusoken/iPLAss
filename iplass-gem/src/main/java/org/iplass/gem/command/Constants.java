@@ -334,6 +334,7 @@ public class Constants {
 	public static final String TEMPLATE_BULK_EDIT="gem/generic/bulk/bulkEdit";
 	public static final String TEMPLATE_BULK_MULTI_EDIT="gem/generic/bulk/edit";
 	public static final String TEMPLATE_SEARCH = "gem/generic/search/search";
+	public static final String TEMPLATE_CSV_UPLOAD = "gem/generic/upload/csvUpload";
 
 	// LayoutAction
 	public static final String LAYOUT_NORMAL_ACTION = "gem/layout/defaultLayout";
