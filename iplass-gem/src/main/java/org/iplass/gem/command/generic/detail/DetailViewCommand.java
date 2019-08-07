@@ -36,6 +36,7 @@ import org.iplass.mtp.command.annotation.action.ParamMapping;
 import org.iplass.mtp.command.annotation.action.Result;
 import org.iplass.mtp.command.annotation.action.Result.Type;
 import org.iplass.mtp.command.annotation.template.Template;
+import org.iplass.mtp.command.annotation.template.Templates;
 import org.iplass.mtp.entity.BinaryReference;
 import org.iplass.mtp.entity.Entity;
 import org.iplass.mtp.entity.EntityValidationException;
@@ -143,10 +144,7 @@ import org.iplass.mtp.view.generic.DetailFormView.CopyTarget;
 		},
 		command=@CommandConfig(commandClass=DetailViewCommand.class, value="cmd.detail=true;"),
 		result={
-			@Result(status=Constants.CMD_EXEC_SUCCESS, type=Type.JSP,
-					value=Constants.CMD_RSLT_JSP_REF_EDIT,
-					templateName="gem/generic/detail/ref/edit",
-					layoutActionName=Constants.LAYOUT_POPOUT_ACTION),
+			@Result(status=Constants.CMD_EXEC_SUCCESS, type=Type.TEMPLATE, value=Constants.TEMPLATE_REF_EDIT),
 			@Result(status=Constants.CMD_EXEC_ERROR_LOCK, type=Type.JSP,
 					value=Constants.CMD_RSLT_JSP_REF_VIEW,
 					templateName="gem/generic/detail/ref/view",
@@ -161,11 +159,18 @@ import org.iplass.mtp.view.generic.DetailFormView.CopyTarget;
 	)
 })
 @CommandClass(name="gem/generic/detail/DetailViewCommand", displayName="詳細表示")
-@Template(
-		name=Constants.TEMPLATE_EDIT,
-		path=Constants.CMD_RSLT_JSP_EDIT,
-		layoutActionName=Constants.LAYOUT_NORMAL_ACTION
-)
+@Templates({
+	@Template(
+			name=Constants.TEMPLATE_EDIT,
+			path=Constants.CMD_RSLT_JSP_EDIT,
+			layoutActionName=Constants.LAYOUT_NORMAL_ACTION
+	),
+	@Template(
+			name=Constants.TEMPLATE_REF_EDIT,
+			path=Constants.CMD_RSLT_JSP_REF_EDIT,
+			layoutActionName=Constants.LAYOUT_POPOUT_ACTION
+	)
+})
 public final class DetailViewCommand extends DetailCommandBase {
 
 	public static final String VIEW_ACTION_NAME = "gem/generic/detail/view";

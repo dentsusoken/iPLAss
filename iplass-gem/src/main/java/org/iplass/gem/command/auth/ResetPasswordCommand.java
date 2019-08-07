@@ -81,10 +81,7 @@ import org.iplass.mtp.tenant.TenantAuthInfo;
 						value=Constants.CMD_RSLT_JSP_REF_VIEW,
 								templateName="gem/generic/detail/ref/view",
 						layoutActionName=Constants.LAYOUT_POPOUT_ACTION),
-				@Result(status=Constants.CMD_EXEC_ERROR,type=Type.JSP,
-						value=Constants.CMD_RSLT_JSP_REF_EDIT,
-								templateName="gem/generic/detail/ref/edit",
-						layoutActionName=Constants.LAYOUT_POPOUT_ACTION)
+				@Result(status=Constants.CMD_EXEC_ERROR, type=Type.TEMPLATE, value=Constants.TEMPLATE_REF_EDIT)
 				},
 			tokenCheck=@TokenCheck
 	)
