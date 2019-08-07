@@ -39,6 +39,7 @@ import org.iplass.mtp.command.annotation.action.ActionMapping.ClientCacheType;
 import org.iplass.mtp.command.annotation.action.ActionMappings;
 import org.iplass.mtp.command.annotation.action.Result;
 import org.iplass.mtp.command.annotation.action.Result.Type;
+import org.iplass.mtp.command.annotation.template.Template;
 import org.iplass.mtp.web.actionmapping.definition.HttpMethodType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,21 +49,20 @@ import org.slf4j.LoggerFactory;
 		clientCacheType=ClientCacheType.CACHE,
 		needTrustedAuthenticate=true,
 		command={},
-		result=@Result(type=Type.JSP,
-						value=Constants.CMD_RSLT_JSP_UPDATE_PASSWORD,
-						templateName="gem/auth/Password",
-						layoutActionName=Constants.LAYOUT_NORMAL_ACTION)
+		result=@Result(type=Type.TEMPLATE, value=Constants.TEMPLATE_UPDATE_PASSWORD)
 ),
 @ActionMapping(name=UpdatePasswordCommand.ACTION_DO_UPDATE_PASSWORD,
 		allowMethod=HttpMethodType.POST,
 		clientCacheType=ClientCacheType.NO_CACHE,
 		needTrustedAuthenticate=true,
-		result=@Result(type=Type.JSP,
-						value=Constants.CMD_RSLT_JSP_UPDATE_PASSWORD,
-						templateName="gem/auth/Password",
-						layoutActionName=Constants.LAYOUT_NORMAL_ACTION)
+		result=@Result(type=Type.TEMPLATE, value=Constants.TEMPLATE_UPDATE_PASSWORD)
 )})
 @CommandClass(name="gem/auth/UpdatePasswordCommand", displayName="パスワード更新")
+@Template(
+		name=Constants.TEMPLATE_UPDATE_PASSWORD,
+		path=Constants.CMD_RSLT_JSP_UPDATE_PASSWORD,
+		layoutActionName=Constants.LAYOUT_NORMAL_ACTION
+)
 public final class UpdatePasswordCommand implements Command, AuthCommandConstants {
 
 	private static Logger logger = LoggerFactory.getLogger(UpdatePasswordCommand.class);

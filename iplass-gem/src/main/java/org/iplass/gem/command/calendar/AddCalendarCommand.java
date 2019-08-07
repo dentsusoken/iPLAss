@@ -63,17 +63,10 @@ import org.slf4j.LoggerFactory;
 	displayName="追加",
 	paramMapping=@ParamMapping(name=Constants.VIEW_NAME, mapFrom="${0}"),
 	result={
-		@Result(status=Constants.CMD_EXEC_SUCCESS, type=Type.JSP,
-				value=Constants.CMD_RSLT_JSP_REF_EDIT,
-				templateName="gem/generic/detail/ref/edit",
+		@Result(status=Constants.CMD_EXEC_SUCCESS, type=Type.TEMPLATE, value=Constants.TEMPLATE_REF_EDIT),
+		@Result(status=Constants.CMD_EXEC_ERROR_VIEW, type=Type.TEMPLATE, value=Constants.TEMPLATE_COMMON_ERROR,
 				layoutActionName=Constants.LAYOUT_POPOUT_ACTION),
-		@Result(status=Constants.CMD_EXEC_ERROR_VIEW, type=Type.JSP,
-				value=Constants.CMD_RSLT_JSP_ERROR,
-				templateName="gem/generic/common/error",
-				layoutActionName=Constants.LAYOUT_POPOUT_ACTION),
-		@Result(status=Constants.CMD_EXEC_ERROR_NODATA, type=Type.JSP,
-				value=Constants.CMD_RSLT_JSP_ERROR,
-				templateName="gem/generic/common/error",
+		@Result(status=Constants.CMD_EXEC_ERROR_NODATA, type=Type.TEMPLATE, value=Constants.TEMPLATE_COMMON_ERROR,
 				layoutActionName=Constants.LAYOUT_POPOUT_ACTION)
 	}
 )

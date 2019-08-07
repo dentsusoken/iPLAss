@@ -48,7 +48,6 @@ import org.iplass.mtp.view.generic.EntityView;
 import org.iplass.mtp.view.generic.FormViewUtil;
 import org.iplass.mtp.view.generic.SearchFormView;
 import org.iplass.mtp.view.generic.element.section.SearchResultSection.BulkUpdateAllCommandTransactionType;
-import org.iplass.mtp.view.generic.element.section.SearchResultSection.DeleteAllCommandTransactionType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -61,25 +60,18 @@ import org.slf4j.LoggerFactory;
 				@ParamMapping(name=Constants.DEF_NAME, mapFrom="${1}", condition="subPath.length==2")
 			},
 			result={
-				@Result(status=Constants.CMD_EXEC_SUCCESS, type=Type.JSP,
-						value=Constants.CMD_RSLT_JSP_BULK_EDIT,
-						templateName="gem/generic/bulk/bulkEdit",
+				@Result(status=Constants.CMD_EXEC_SUCCESS, type=Type.TEMPLATE,
+						value=Constants.TEMPLATE_BULK_EDIT),
+				@Result(status=Constants.CMD_EXEC_ERROR, type=Type.TEMPLATE,
+						value=Constants.TEMPLATE_BULK_EDIT),
+				@Result(status=Constants.CMD_EXEC_ERROR_SEARCH, type=Type.TEMPLATE,
+						value=Constants.TEMPLATE_COMMON_ERROR,
 						layoutActionName=Constants.LAYOUT_POPOUT_ACTION),
-				@Result(status=Constants.CMD_EXEC_ERROR, type=Type.JSP,
-						value=Constants.CMD_RSLT_JSP_BULK_EDIT,
-						templateName="gem/generic/bulk/bulkEdit",
+				@Result(status=Constants.CMD_EXEC_ERROR_TOKEN, type=Type.TEMPLATE,
+						value=Constants.TEMPLATE_COMMON_ERROR,
 						layoutActionName=Constants.LAYOUT_POPOUT_ACTION),
-				@Result(status=Constants.CMD_EXEC_ERROR_SEARCH, type=Type.JSP,
-						value=Constants.CMD_RSLT_JSP_ERROR,
-						templateName="gem/generic/common/error",
-						layoutActionName=Constants.LAYOUT_POPOUT_ACTION),
-				@Result(status=Constants.CMD_EXEC_ERROR_TOKEN, type=Type.JSP,
-						value=Constants.CMD_RSLT_JSP_ERROR,
-						templateName="gem/generic/common/error",
-						layoutActionName=Constants.LAYOUT_POPOUT_ACTION),
-				@Result(status=Constants.CMD_EXEC_ERROR_VIEW, type=Type.JSP,
-						value=Constants.CMD_RSLT_JSP_ERROR,
-						templateName="gem/generic/common/error",
+				@Result(status=Constants.CMD_EXEC_ERROR_VIEW, type=Type.TEMPLATE,
+						value=Constants.TEMPLATE_COMMON_ERROR,
 						layoutActionName=Constants.LAYOUT_POPOUT_ACTION)
 			},
 			tokenCheck=@TokenCheck

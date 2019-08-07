@@ -58,21 +58,27 @@ import org.slf4j.LoggerFactory;
 			clientCacheType=ClientCacheType.NO_CACHE,
 			privilaged=true,
 			command={},
-			result=@Result(type=Type.JSP, value=Constants.CMD_RSLT_JSP_LOGIN, templateName="gem/auth/Login")),
+			result=@Result(type=Type.TEMPLATE, value=Constants.TEMPLATE_LOGIN)),
 	@ActionMapping(name=LoginCommand.ACTION_LOGIN,
 			allowMethod=HttpMethodType.POST,
 			clientCacheType=ClientCacheType.NO_CACHE,
 			privilaged=true,
 			result={
 				@Result(status=Constants.CMD_EXEC_SUCCESS, type=Type.REDIRECT, value="mtp.auth.redirectPath"),
-				@Result(status=LoginCommand.CMD_EXEC_EXPIRE, type=Type.JSP, value=Constants.CMD_RSLT_JSP_PASSWORD_EXPIRE, templateName="gem/auth/Expire"),
-				@Result(status=LoginCommand.CMD_EXEC_TWOSTEP, type=Type.JSP, value="/jsp/gem/auth/Verify2nd.jsp", templateName="gem/auth/Verify2nd"),
-				@Result(status=Constants.CMD_EXEC_ERROR, type=Type.JSP, value=Constants.CMD_RSLT_JSP_LOGIN, templateName="gem/auth/Login"),
-				@Result(exception=ApplicationException.class, type=Type.JSP, value=Constants.CMD_RSLT_JSP_LOGIN, templateName="gem/auth/Login")
+				@Result(status=LoginCommand.CMD_EXEC_EXPIRE, type=Type.TEMPLATE, value=Constants.TEMPLATE_PASSWORD_EXPIRE),
+				@Result(status=LoginCommand.CMD_EXEC_TWOSTEP, type=Type.TEMPLATE, value=Constants.TEMPLATE_VERIFY2ND),
+				@Result(status=Constants.CMD_EXEC_ERROR, type=Type.TEMPLATE, value=Constants.TEMPLATE_LOGIN),
+				@Result(exception=ApplicationException.class, type=Type.TEMPLATE, value=Constants.TEMPLATE_LOGIN)
 				}
 	)
 })
 @Templates({
+	@Template(name=Constants.TEMPLATE_LOGIN, path=Constants.CMD_RSLT_JSP_LOGIN,
+			contentType="text/html; charset=utf-8"),
+	@Template(name=Constants.TEMPLATE_PASSWORD_EXPIRE, path=Constants.CMD_RSLT_JSP_PASSWORD_EXPIRE,
+			contentType="text/html; charset=utf-8"),
+	@Template(name=Constants.TEMPLATE_VERIFY2ND, path=Constants.CMD_RSLT_JSP_VERIFY2ND,
+			contentType="text/html; charset=utf-8"),
 	@Template(name="gem/auth/LastLoginParts", displayName="最終ログイン日時パーツ", path="/jsp/gem/auth/lastLoginParts.jsp"),
 	@Template(name="gem/generic/editor/EntitySelectPropertyEditorJsp", displayName="エンティティ選択プロパティエディタ",
 		path="/jsp/gem/generic/editor/EntitySelectPropertyEditor.jsp"),

@@ -61,14 +61,8 @@ import org.iplass.mtp.tenant.TenantAuthInfo;
 					@CommandConfig(commandClass=ResetPasswordCommand.class)
 				},
 			result={
-				@Result(status=Constants.CMD_EXEC_SUCCESS,type=Type.JSP,
-						value=Constants.CMD_RSLT_JSP_VIEW,
-						templateName="gem/generic/detail/view",
-						layoutActionName=Constants.LAYOUT_NORMAL_ACTION),
-				@Result(status=Constants.CMD_EXEC_ERROR,type=Type.JSP,
-						value=Constants.CMD_RSLT_JSP_EDIT,
-								templateName="gem/generic/detail/edit",
-						layoutActionName=Constants.LAYOUT_NORMAL_ACTION)
+				@Result(status=Constants.CMD_EXEC_SUCCESS, type=Type.TEMPLATE, value=Constants.TEMPLATE_VIEW),
+				@Result(status=Constants.CMD_EXEC_ERROR, type=Type.TEMPLATE, value=Constants.TEMPLATE_EDIT)
 				},
 			tokenCheck=@TokenCheck
 	),
@@ -80,14 +74,8 @@ import org.iplass.mtp.tenant.TenantAuthInfo;
 					@CommandConfig(commandClass=ResetPasswordCommand.class)
 				},
 			result={
-				@Result(status=Constants.CMD_EXEC_SUCCESS,type=Type.JSP,
-						value=Constants.CMD_RSLT_JSP_REF_VIEW,
-								templateName="gem/generic/detail/ref/view",
-						layoutActionName=Constants.LAYOUT_POPOUT_ACTION),
-				@Result(status=Constants.CMD_EXEC_ERROR,type=Type.JSP,
-						value=Constants.CMD_RSLT_JSP_REF_EDIT,
-								templateName="gem/generic/detail/ref/edit",
-						layoutActionName=Constants.LAYOUT_POPOUT_ACTION)
+				@Result(status=Constants.CMD_EXEC_SUCCESS, type=Type.TEMPLATE, value=Constants.TEMPLATE_REF_VIEW),
+				@Result(status=Constants.CMD_EXEC_ERROR, type=Type.TEMPLATE, value=Constants.TEMPLATE_REF_EDIT)
 				},
 			tokenCheck=@TokenCheck
 	)
@@ -114,7 +102,7 @@ public final class ResetPasswordCommand implements Command, AuthCommandConstants
 				em.searchEntity(new Query().select(User.ACCOUNT_ID, User.ACCOUNT_POLICY)
 						.from(User.DEFINITION_NAME)
 						.where(new Equals(Entity.OID, oid))).getFirst());
-		
+
 		//アカウントID存在チェック
 		String id = null;
 
@@ -157,7 +145,7 @@ public final class ResetPasswordCommand implements Command, AuthCommandConstants
 			request.setAttribute(Constants.MESSAGE, resourceString("command.auth.ResetPasswordCommand.onlyAdmin"));
 			return Constants.CMD_EXEC_ERROR;
 		}
-		
+
 		Credential credential = new IdPasswordCredential(id, null);
 		am.resetCredential(credential, user.getValue(User.ACCOUNT_POLICY));
 		return Constants.CMD_EXEC_SUCCESS;

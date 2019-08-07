@@ -104,10 +104,29 @@ import org.iplass.mtp.view.top.TopViewDefinitionManager;
 	@Template(name="gem/layout/navi", displayName="ナビ", path="/jsp/gem/layout/navi.jsp"),
 	@Template(name="gem/menu/menu", displayName="メニュー", path="/jsp/gem/menu/menu.jsp"),
 
+	//FIXME TEMPLATE_ERRORと同等のため、統合
+	@Template(
+			name=Constants.TEMPLATE_COMMON_ERROR,
+			displayName="エラー画面",
+			path=Constants.CMD_RSLT_JSP_ERROR,
+			layoutActionName=Constants.LAYOUT_NORMAL_ACTION),
+
 	//GemErrorUrlSelector用設定
-	@Template(name="gem/generic/error", displayName="エラー画面（通常）", path="/jsp/gem/generic/error.jsp", layoutActionName=Constants.LAYOUT_NORMAL_ACTION),
-	@Template(name="gem/error/system", displayName="エラー画面（システムエラー）", path="/jsp/gem/error/Error.jsp", contentType="text/html; charset=utf-8"),
-	@Template(name="gem/auth/PermissionError", displayName="権限エラー", path="/jsp/gem/error/Error.jsp", contentType="text/html; charset=utf-8")
+	@Template(
+			name=Constants.TEMPLATE_ERROR,
+			displayName="エラー画面（通常）",
+			path=Constants.CMD_RSLT_JSP_ERROR,
+			layoutActionName=Constants.LAYOUT_NORMAL_ACTION),
+	@Template(
+			name=Constants.TEMPLATE_SYSTEM_ERROR,
+			displayName="エラー画面（システムエラー）",
+			path=Constants.CMD_RSLT_JSP_SYSTEM_ERROR,
+			contentType="text/html; charset=utf-8"),
+	@Template(
+			name=Constants.TEMPLATE_PERMISSION_ERROR,
+			displayName="権限エラー",
+			path=Constants.CMD_RSLT_JSP_SYSTEM_ERROR,
+			contentType="text/html; charset=utf-8")
 })
 @CommandClass(name="gem/MenuCommand", displayName="メニュー",
 	localizedDisplayName={

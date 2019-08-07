@@ -283,6 +283,7 @@ public class Constants {
 	public static final String CMD_RSLT_STREAM = "streamData";
 
 	public static final String CMD_RSLT_JSP_ERROR = "/jsp/gem/generic/error.jsp";
+	public static final String CMD_RSLT_JSP_SYSTEM_ERROR = "/jsp/gem/error/Error.jsp";
 
 	public static final String CMD_RSLT_JSP_CALENDAR = "/jsp/gem/calendar/calendarView.jsp";
 	public static final String CMD_RSLT_JSP_CALENDAR_FILTER = "/jsp/gem/calendar/ref/calendarFilter.jsp";
@@ -308,10 +309,32 @@ public class Constants {
 	public static final String CMD_RSLT_JSP_UPDATE_PASSWORD = "/jsp/gem/auth/Password.jsp";
 	public static final String CMD_RSLT_JSP_RESET_SPECIFIC_PASSWORD = "/jsp/gem/auth/specificPassword.jsp";
 	public static final String CMD_RSLT_JSP_PASSWORD_EXPIRE = "/jsp/gem/auth/Expire.jsp";
+	public static final String CMD_RSLT_JSP_VERIFY2ND = "/jsp/gem/auth/Verify2nd.jsp";
 	public static final String CMD_RSLT_JSP_BULK_EDIT="/jsp/gem/generic/bulk/bulkEdit.jsp";
 	public static final String CMD_RSLT_JSP_BULK_MULTI_EDIT="/jsp/gem/generic/bulk/edit.jsp";
 	public static final String CMD_RSLT_JSP_APP_MAINTENANCE="/jsp/gem/auth/application.jsp";
 	public static final String CMD_RSLT_HTML_PDFVIEWER_PATH = "/jsp/gem/binary/pdfviewer.jsp";
+
+	public static final String TEMPLATE_ERROR = "gem/generic/error";
+	public static final String TEMPLATE_COMMON_ERROR = "gem/generic/common/error";
+	public static final String TEMPLATE_SYSTEM_ERROR = "gem/error/system";
+	public static final String TEMPLATE_PERMISSION_ERROR = "gem/auth/PermissionError";
+
+	public static final String TEMPLATE_LOGIN = "gem/auth/Login";
+	public static final String TEMPLATE_PASSWORD_EXPIRE = "gem/auth/Expire";
+	public static final String TEMPLATE_VERIFY2ND = "gem/auth/Verify2nd";
+	public static final String TEMPLATE_UPDATE_PASSWORD = "gem/auth/Password";
+	public static final String TEMPLATE_REAUTH = "gem/auth/ReAuth";
+
+	public static final String TEMPLATE_VIEW = "gem/generic/detail/view";
+	public static final String TEMPLATE_REF_VIEW = "gem/generic/detail/ref/view";
+	public static final String TEMPLATE_EDIT = "gem/generic/detail/edit";
+	public static final String TEMPLATE_REF_EDIT = "gem/generic/detail/ref/edit";
+	public static final String TEMPLATE_COMPLETED = "gem/generic/detail/ref/completed";
+	public static final String TEMPLATE_BULK_EDIT="gem/generic/bulk/bulkEdit";
+	public static final String TEMPLATE_BULK_MULTI_EDIT="gem/generic/bulk/edit";
+	public static final String TEMPLATE_SEARCH = "gem/generic/search/search";
+	public static final String TEMPLATE_CSV_UPLOAD = "gem/generic/upload/csvUpload";
 
 	// LayoutAction
 	public static final String LAYOUT_NORMAL_ACTION = "gem/layout/defaultLayout";

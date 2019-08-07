@@ -35,6 +35,8 @@ import org.iplass.mtp.command.annotation.action.ActionMappings;
 import org.iplass.mtp.command.annotation.action.ParamMapping;
 import org.iplass.mtp.command.annotation.action.Result;
 import org.iplass.mtp.command.annotation.action.Result.Type;
+import org.iplass.mtp.command.annotation.template.Template;
+import org.iplass.mtp.command.annotation.template.Templates;
 import org.iplass.mtp.entity.BinaryReference;
 import org.iplass.mtp.entity.Entity;
 import org.iplass.mtp.entity.EntityValidationException;
@@ -64,21 +66,11 @@ import org.iplass.mtp.view.generic.DetailFormView.CopyTarget;
 		},
 		command=@CommandConfig(commandClass=DetailViewCommand.class, value="cmd.detail=false;"),
 		result={
-			@Result(status=Constants.CMD_EXEC_SUCCESS, type=Type.JSP,
-					value=Constants.CMD_RSLT_JSP_VIEW,
-					templateName="gem/generic/detail/view",
+			@Result(status=Constants.CMD_EXEC_SUCCESS, type=Type.TEMPLATE, value=Constants.TEMPLATE_VIEW),
+			@Result(status=Constants.CMD_EXEC_ERROR_LOCK, type=Type.TEMPLATE, value=Constants.TEMPLATE_VIEW),
+			@Result(status=Constants.CMD_EXEC_ERROR_VIEW, type=Type.TEMPLATE, value=Constants.TEMPLATE_COMMON_ERROR,
 					layoutActionName=Constants.LAYOUT_NORMAL_ACTION),
-			@Result(status=Constants.CMD_EXEC_ERROR_LOCK, type=Type.JSP,
-					value=Constants.CMD_RSLT_JSP_VIEW,
-					templateName="gem/generic/detail/view",
-					layoutActionName=Constants.LAYOUT_NORMAL_ACTION),
-			@Result(status=Constants.CMD_EXEC_ERROR_VIEW, type=Type.JSP,
-					value=Constants.CMD_RSLT_JSP_ERROR,
-					templateName="gem/generic/common/error",
-					layoutActionName=Constants.LAYOUT_NORMAL_ACTION),
-			@Result(status=Constants.CMD_EXEC_ERROR_NODATA, type=Type.JSP,
-					value=Constants.CMD_RSLT_JSP_ERROR,
-					templateName="gem/generic/common/error",
+			@Result(status=Constants.CMD_EXEC_ERROR_NODATA,type=Type.TEMPLATE, value=Constants.TEMPLATE_COMMON_ERROR,
 					layoutActionName=Constants.LAYOUT_NORMAL_ACTION)
 		}
 	),
@@ -93,21 +85,13 @@ import org.iplass.mtp.view.generic.DetailFormView.CopyTarget;
 		},
 		command=@CommandConfig(commandClass=DetailViewCommand.class, value="cmd.detail=false;"),
 		result={
-			@Result(status=Constants.CMD_EXEC_SUCCESS, type=Type.JSP,
-					value=Constants.CMD_RSLT_JSP_REF_VIEW,
-					templateName="gem/generic/detail/ref/view",
+			@Result(status=Constants.CMD_EXEC_SUCCESS, type=Type.TEMPLATE, value=Constants.TEMPLATE_REF_VIEW),
+			@Result(status=Constants.CMD_EXEC_ERROR_LOCK, type=Type.TEMPLATE, value=Constants.TEMPLATE_REF_VIEW),
+			@Result(status=Constants.CMD_EXEC_ERROR_VIEW, type=Type.TEMPLATE,
+					value=Constants.TEMPLATE_COMMON_ERROR,
 					layoutActionName=Constants.LAYOUT_POPOUT_ACTION),
-			@Result(status=Constants.CMD_EXEC_ERROR_LOCK, type=Type.JSP,
-					value=Constants.CMD_RSLT_JSP_REF_VIEW,
-					templateName="gem/generic/detail/ref/view",
-					layoutActionName=Constants.LAYOUT_POPOUT_ACTION),
-			@Result(status=Constants.CMD_EXEC_ERROR_VIEW, type=Type.JSP,
-					value=Constants.CMD_RSLT_JSP_ERROR,
-					templateName="gem/generic/common/error",
-					layoutActionName=Constants.LAYOUT_POPOUT_ACTION),
-			@Result(status=Constants.CMD_EXEC_ERROR_NODATA, type=Type.JSP,
-					value=Constants.CMD_RSLT_JSP_ERROR,
-					templateName="gem/generic/common/error",
+			@Result(status=Constants.CMD_EXEC_ERROR_NODATA, type=Type.TEMPLATE,
+					value=Constants.TEMPLATE_COMMON_ERROR,
 					layoutActionName=Constants.LAYOUT_POPOUT_ACTION)
 		}
 	),
@@ -120,25 +104,12 @@ import org.iplass.mtp.view.generic.DetailFormView.CopyTarget;
 		},
 		command=@CommandConfig(commandClass=DetailViewCommand.class, value="cmd.detail=true;"),
 		result={
-			@Result(status=Constants.CMD_EXEC_SUCCESS, type=Type.JSP,
-					value=Constants.CMD_RSLT_JSP_EDIT,
-					templateName="gem/generic/detail/edit",
+			@Result(status=Constants.CMD_EXEC_SUCCESS, type=Type.TEMPLATE, value=Constants.TEMPLATE_EDIT),
+			@Result(status=Constants.CMD_EXEC_ERROR_LOCK, type=Type.TEMPLATE, value=Constants.TEMPLATE_VIEW),
+			@Result(status=Constants.CMD_EXEC_ERROR_VALIDATE, type=Type.TEMPLATE, value=Constants.TEMPLATE_VIEW),
+			@Result(status=Constants.CMD_EXEC_ERROR_VIEW, type=Type.TEMPLATE, value=Constants.TEMPLATE_COMMON_ERROR,
 					layoutActionName=Constants.LAYOUT_NORMAL_ACTION),
-			@Result(status=Constants.CMD_EXEC_ERROR_LOCK, type=Type.JSP,
-					value=Constants.CMD_RSLT_JSP_VIEW,
-					templateName="gem/generic/detail/view",
-					layoutActionName=Constants.LAYOUT_NORMAL_ACTION),
-			@Result(status=Constants.CMD_EXEC_ERROR_VALIDATE, type=Type.JSP,
-					value=Constants.CMD_RSLT_JSP_VIEW,
-					templateName="gem/generic/detail/view",
-					layoutActionName=Constants.LAYOUT_NORMAL_ACTION),
-			@Result(status=Constants.CMD_EXEC_ERROR_VIEW, type=Type.JSP,
-					value=Constants.CMD_RSLT_JSP_ERROR,
-					templateName="gem/generic/common/error",
-					layoutActionName=Constants.LAYOUT_NORMAL_ACTION),
-			@Result(status=Constants.CMD_EXEC_ERROR_NODATA, type=Type.JSP,
-					value=Constants.CMD_RSLT_JSP_ERROR,
-					templateName="gem/generic/common/error",
+			@Result(status=Constants.CMD_EXEC_ERROR_NODATA, type=Type.TEMPLATE, value=Constants.TEMPLATE_COMMON_ERROR,
 					layoutActionName=Constants.LAYOUT_NORMAL_ACTION)
 		}
 	),
@@ -151,26 +122,45 @@ import org.iplass.mtp.view.generic.DetailFormView.CopyTarget;
 		},
 		command=@CommandConfig(commandClass=DetailViewCommand.class, value="cmd.detail=true;"),
 		result={
-			@Result(status=Constants.CMD_EXEC_SUCCESS, type=Type.JSP,
-					value=Constants.CMD_RSLT_JSP_REF_EDIT,
-					templateName="gem/generic/detail/ref/edit",
+			@Result(status=Constants.CMD_EXEC_SUCCESS, type=Type.TEMPLATE, value=Constants.TEMPLATE_REF_EDIT),
+			@Result(status=Constants.CMD_EXEC_ERROR_LOCK, type=Type.TEMPLATE, value=Constants.TEMPLATE_REF_VIEW),
+			@Result(status=Constants.CMD_EXEC_ERROR_VIEW, type=Type.TEMPLATE,
+					value=Constants.TEMPLATE_COMMON_ERROR,
 					layoutActionName=Constants.LAYOUT_POPOUT_ACTION),
-			@Result(status=Constants.CMD_EXEC_ERROR_LOCK, type=Type.JSP,
-					value=Constants.CMD_RSLT_JSP_REF_VIEW,
-					templateName="gem/generic/detail/ref/view",
-					layoutActionName=Constants.LAYOUT_POPOUT_ACTION),
-			@Result(status=Constants.CMD_EXEC_ERROR_VIEW, type=Type.JSP,
-					value=Constants.CMD_RSLT_JSP_ERROR,
-					templateName="gem/generic/common/error",
-					layoutActionName=Constants.LAYOUT_POPOUT_ACTION),
-			@Result(status=Constants.CMD_EXEC_ERROR_NODATA, type=Type.JSP,
-					value=Constants.CMD_RSLT_JSP_ERROR,
-					templateName="gem/generic/common/error",
+			@Result(status=Constants.CMD_EXEC_ERROR_NODATA, type=Type.TEMPLATE,
+					value=Constants.TEMPLATE_COMMON_ERROR,
 					layoutActionName=Constants.LAYOUT_POPOUT_ACTION)
 		}
 	)
 })
 @CommandClass(name="gem/generic/detail/DetailViewCommand", displayName="詳細表示")
+@Templates({
+	@Template(
+			name=Constants.TEMPLATE_VIEW,
+			path=Constants.CMD_RSLT_JSP_VIEW,
+			layoutActionName=Constants.LAYOUT_NORMAL_ACTION
+	),
+	@Template(
+			name=Constants.TEMPLATE_REF_VIEW,
+			path=Constants.CMD_RSLT_JSP_REF_VIEW,
+			layoutActionName=Constants.LAYOUT_POPOUT_ACTION
+	),
+	@Template(
+			name=Constants.TEMPLATE_EDIT,
+			path=Constants.CMD_RSLT_JSP_EDIT,
+			layoutActionName=Constants.LAYOUT_NORMAL_ACTION
+	),
+	@Template(
+			name=Constants.TEMPLATE_REF_EDIT,
+			path=Constants.CMD_RSLT_JSP_REF_EDIT,
+			layoutActionName=Constants.LAYOUT_POPOUT_ACTION
+	),
+	@Template(
+			name=Constants.TEMPLATE_COMPLETED,
+			path=Constants.CMD_RSLT_JSP_COMPLETED,
+			contentType="text/html; charset=utf-8"
+	)
+})
 public final class DetailViewCommand extends DetailCommandBase {
 
 	public static final String VIEW_ACTION_NAME = "gem/generic/detail/view";
@@ -379,10 +369,10 @@ public final class DetailViewCommand extends DetailCommandBase {
 	private static String resourceString(String key, Object... arguments) {
 		return GemResourceBundleUtil.resourceString(key, arguments);
 	}
-	
+
 	private String createHierarchyRefPropDispName(EntityValidationException e) {
 		StringBuilder builder = new StringBuilder();
-		for (ValidateError err : e.getValidateResult()) {
+		for (ValidateError err : e.getValidateResults()) {
 			builder.append(err.getPropertyDisplayName() + ".");
 		}
 		builder.deleteCharAt(builder.length() - 1);

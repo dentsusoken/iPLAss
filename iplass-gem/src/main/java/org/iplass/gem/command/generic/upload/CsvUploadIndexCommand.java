@@ -29,6 +29,7 @@ import org.iplass.mtp.command.annotation.action.ActionMapping;
 import org.iplass.mtp.command.annotation.action.ParamMapping;
 import org.iplass.mtp.command.annotation.action.Result;
 import org.iplass.mtp.command.annotation.action.Result.Type;
+import org.iplass.mtp.command.annotation.template.Template;
 import org.iplass.mtp.entity.definition.EntityDefinition;
 
 /**
@@ -43,12 +44,14 @@ import org.iplass.mtp.entity.definition.EntityDefinition;
 			@ParamMapping(name=Constants.VIEW_NAME, mapFrom="${0}", condition="subPath.length==2"),
 			@ParamMapping(name=Constants.DEF_NAME, mapFrom="${1}", condition="subPath.length==2"),
 		},
-		result=@Result(status=Constants.CMD_EXEC_SUCCESS, type=Type.JSP,
-						value=Constants.CMD_RSLT_JSP_CSV_UPLOAD,
-						templateName="gem/generic/upload/csvUpload",
-						layoutActionName=Constants.LAYOUT_NORMAL_ACTION)
-	)
+		result=@Result(status=Constants.CMD_EXEC_SUCCESS, type=Type.TEMPLATE, value=Constants.TEMPLATE_CSV_UPLOAD)
+)
 @CommandClass(name="gem/generic/upload/CsvUploadIndexCommand", displayName="CSVアップロード表示")
+@Template(
+		name=Constants.TEMPLATE_CSV_UPLOAD,
+		path=Constants.CMD_RSLT_JSP_CSV_UPLOAD,
+		layoutActionName=Constants.LAYOUT_NORMAL_ACTION
+)
 public final class CsvUploadIndexCommand extends DetailCommandBase {
 
 	public static final String ACTION_NAME = "gem/generic/upload/index";

@@ -51,9 +51,8 @@ import org.slf4j.LoggerFactory;
 		name=CsvDownloadCommand.ACTION_NAME,
 		result={
 				@Result(status=Constants.CMD_EXEC_SUCCESS, type=Type.STREAM, useContentDisposition=true),
-				@Result(status=Constants.CMD_EXEC_ERROR_PARAMETER, type=Type.JSP,
-						value=Constants.CMD_RSLT_JSP_ERROR,
-						templateName="gem/generic/common/error",
+				@Result(status=Constants.CMD_EXEC_ERROR_PARAMETER, type=Type.TEMPLATE,
+						value=Constants.TEMPLATE_COMMON_ERROR,
 						layoutActionName=Constants.LAYOUT_NORMAL_ACTION)
 		}
 )
