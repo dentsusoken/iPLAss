@@ -33,6 +33,7 @@ import org.iplass.mtp.command.annotation.action.ActionMappings;
 import org.iplass.mtp.command.annotation.action.ParamMapping;
 import org.iplass.mtp.command.annotation.action.Result;
 import org.iplass.mtp.command.annotation.action.Result.Type;
+import org.iplass.mtp.command.annotation.template.Template;
 import org.iplass.mtp.entity.Entity;
 import org.iplass.mtp.view.generic.SearchFormView;
 
@@ -46,10 +47,8 @@ import org.iplass.mtp.view.generic.SearchFormView;
 			},
 			command=@CommandConfig(commandClass=BulkUpdateViewCommand.class, value="cmd.detail=true;"),
 			result={
-				@Result(status=Constants.CMD_EXEC_SUCCESS, type=Type.JSP,
-						value=Constants.CMD_RSLT_JSP_BULK_EDIT,
-						templateName="gem/generic/bulk/bulkEdit",
-						layoutActionName=Constants.LAYOUT_POPOUT_ACTION),
+				@Result(status=Constants.CMD_EXEC_SUCCESS, type=Type.TEMPLATE,
+						value=Constants.TEMPLATE_BULK_EDIT),
 				@Result(status=Constants.CMD_EXEC_ERROR_VIEW, type=Type.TEMPLATE,
 						value=Constants.TEMPLATE_COMMON_ERROR,
 						layoutActionName=Constants.LAYOUT_POPOUT_ACTION),
@@ -60,6 +59,10 @@ import org.iplass.mtp.view.generic.SearchFormView;
 		)
 })
 @CommandClass(name = "gem/generic/bulk/BulkDetailViewCommand", displayName = "一括詳細表示")
+@Template(
+		name=Constants.TEMPLATE_BULK_EDIT,
+		path=Constants.CMD_RSLT_JSP_BULK_EDIT,
+		layoutActionName=Constants.LAYOUT_POPOUT_ACTION)
 public class BulkUpdateViewCommand extends BulkCommandBase {
 
 	public static final String BULK_EDIT_ACTION_NAME = "gem/generic/bulk/bulkEdit";

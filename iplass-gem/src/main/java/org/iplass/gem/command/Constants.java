@@ -326,6 +326,8 @@ public class Constants {
 	public static final String TEMPLATE_UPDATE_PASSWORD = "gem/auth/Password";
 	public static final String TEMPLATE_REAUTH = "gem/auth/ReAuth";
 
+	public static final String TEMPLATE_BULK_EDIT="gem/generic/bulk/bulkEdit";
+
 	// LayoutAction
 	public static final String LAYOUT_NORMAL_ACTION = "gem/layout/defaultLayout";
 	public static final String LAYOUT_POPOUT_ACTION = "gem/layout/popupLayout";

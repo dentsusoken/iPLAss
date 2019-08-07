@@ -56,14 +56,10 @@ import org.iplass.mtp.view.generic.element.property.PropertyColumn;
 				@ParamMapping(name=Constants.DEF_NAME, mapFrom="${1}", condition="subPath.length==2")
 			},
 			result={
-				@Result(status=Constants.CMD_EXEC_SUCCESS, type=Type.JSP,
-						value=Constants.CMD_RSLT_JSP_BULK_EDIT,
-						templateName="gem/generic/bulk/bulkEdit",
-						layoutActionName=Constants.LAYOUT_POPOUT_ACTION),
-				@Result(status=Constants.CMD_EXEC_ERROR, type=Type.JSP,
-						value=Constants.CMD_RSLT_JSP_BULK_EDIT,
-						templateName="gem/generic/bulk/bulkEdit",
-						layoutActionName=Constants.LAYOUT_POPOUT_ACTION),
+				@Result(status=Constants.CMD_EXEC_SUCCESS, type=Type.TEMPLATE,
+						value=Constants.TEMPLATE_BULK_EDIT),
+				@Result(status=Constants.CMD_EXEC_ERROR, type=Type.TEMPLATE,
+						value=Constants.TEMPLATE_BULK_EDIT),
 				@Result(status=Constants.CMD_EXEC_ERROR_TOKEN, type=Type.TEMPLATE,
 						value=Constants.TEMPLATE_COMMON_ERROR,
 						layoutActionName=Constants.LAYOUT_POPOUT_ACTION),
