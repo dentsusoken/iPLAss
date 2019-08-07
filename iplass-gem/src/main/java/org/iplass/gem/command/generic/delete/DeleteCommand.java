@@ -51,10 +51,7 @@ import org.iplass.mtp.view.generic.EntityView;
 		@ParamMapping(name=Constants.DEF_NAME, mapFrom="${1}", condition="subPath.length==2")
 	},
 	result={
-		@Result(status=Constants.CMD_EXEC_SUCCESS, type=Type.JSP,
-				value=Constants.CMD_RSLT_JSP_SEARCH,
-				templateName="gem/generic/search/search",
-				layoutActionName=Constants.LAYOUT_NORMAL_ACTION),
+		@Result(status=Constants.CMD_EXEC_SUCCESS, type=Type.TEMPLATE, value=Constants.TEMPLATE_SEARCH),
 		@Result(status=Constants.CMD_EXEC_ERROR, type=Type.TEMPLATE, value=Constants.TEMPLATE_EDIT),
 		@Result(status=Constants.CMD_EXEC_SUCCESS_BACK_PATH, type=Type.JSP,
 				value=Constants.CMD_RSLT_JSP_BACK_PATH,

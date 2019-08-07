@@ -333,6 +333,7 @@ public class Constants {
 	public static final String TEMPLATE_COMPLETED = "gem/generic/detail/ref/completed";
 	public static final String TEMPLATE_BULK_EDIT="gem/generic/bulk/bulkEdit";
 	public static final String TEMPLATE_BULK_MULTI_EDIT="gem/generic/bulk/edit";
+	public static final String TEMPLATE_SEARCH = "gem/generic/search/search";
 
 	// LayoutAction
 	public static final String LAYOUT_NORMAL_ACTION = "gem/layout/defaultLayout";

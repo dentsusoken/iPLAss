@@ -36,6 +36,7 @@ import org.iplass.mtp.command.annotation.action.ActionMappings;
 import org.iplass.mtp.command.annotation.action.ParamMapping;
 import org.iplass.mtp.command.annotation.action.Result;
 import org.iplass.mtp.command.annotation.action.Result.Type;
+import org.iplass.mtp.command.annotation.template.Template;
 import org.iplass.mtp.entity.definition.EntityDefinition;
 import org.iplass.mtp.entity.definition.EntityDefinitionManager;
 import org.iplass.mtp.util.StringUtil;
@@ -61,12 +62,8 @@ import org.slf4j.LoggerFactory;
 				@ParamMapping(name=Constants.DEF_NAME, mapFrom="${1}", condition="subPath.length==2")
 			},
 			result={
-				@Result(status=Constants.CMD_EXEC_SUCCESS, type=Type.JSP,
-						value=Constants.CMD_RSLT_JSP_SEARCH,
-						templateName="gem/generic/search/search",
-						layoutActionName=Constants.LAYOUT_NORMAL_ACTION),
-				@Result(status=Constants.CMD_EXEC_ERROR_VIEW, type=Type.TEMPLATE,
-						value=Constants.TEMPLATE_COMMON_ERROR,
+				@Result(status=Constants.CMD_EXEC_SUCCESS, type=Type.TEMPLATE, value=Constants.TEMPLATE_SEARCH),
+				@Result(status=Constants.CMD_EXEC_ERROR_VIEW, type=Type.TEMPLATE, value=Constants.TEMPLATE_COMMON_ERROR,
 						layoutActionName=Constants.LAYOUT_NORMAL_ACTION)
 			}
 	),
@@ -90,6 +87,11 @@ import org.slf4j.LoggerFactory;
 	)
 })
 @CommandClass(name="gem/generic/search/SearchviewCommand", displayName="検索画面表示")
+@Template(
+		name=Constants.TEMPLATE_SEARCH,
+		path=Constants.CMD_RSLT_JSP_SEARCH,
+		layoutActionName=Constants.LAYOUT_NORMAL_ACTION
+)
 public final class SearchViewCommand implements Command {
 	private static Logger logger = LoggerFactory.getLogger(SearchViewCommand.class);
 
