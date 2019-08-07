@@ -85,14 +85,8 @@ import org.iplass.mtp.view.generic.DetailFormView.CopyTarget;
 		},
 		command=@CommandConfig(commandClass=DetailViewCommand.class, value="cmd.detail=false;"),
 		result={
-			@Result(status=Constants.CMD_EXEC_SUCCESS, type=Type.JSP,
-					value=Constants.CMD_RSLT_JSP_REF_VIEW,
-					templateName="gem/generic/detail/ref/view",
-					layoutActionName=Constants.LAYOUT_POPOUT_ACTION),
-			@Result(status=Constants.CMD_EXEC_ERROR_LOCK, type=Type.JSP,
-					value=Constants.CMD_RSLT_JSP_REF_VIEW,
-					templateName="gem/generic/detail/ref/view",
-					layoutActionName=Constants.LAYOUT_POPOUT_ACTION),
+			@Result(status=Constants.CMD_EXEC_SUCCESS, type=Type.TEMPLATE, value=Constants.TEMPLATE_REF_VIEW),
+			@Result(status=Constants.CMD_EXEC_ERROR_LOCK, type=Type.TEMPLATE, value=Constants.TEMPLATE_REF_VIEW),
 			@Result(status=Constants.CMD_EXEC_ERROR_VIEW, type=Type.TEMPLATE,
 					value=Constants.TEMPLATE_COMMON_ERROR,
 					layoutActionName=Constants.LAYOUT_POPOUT_ACTION),
@@ -129,10 +123,7 @@ import org.iplass.mtp.view.generic.DetailFormView.CopyTarget;
 		command=@CommandConfig(commandClass=DetailViewCommand.class, value="cmd.detail=true;"),
 		result={
 			@Result(status=Constants.CMD_EXEC_SUCCESS, type=Type.TEMPLATE, value=Constants.TEMPLATE_REF_EDIT),
-			@Result(status=Constants.CMD_EXEC_ERROR_LOCK, type=Type.JSP,
-					value=Constants.CMD_RSLT_JSP_REF_VIEW,
-					templateName="gem/generic/detail/ref/view",
-					layoutActionName=Constants.LAYOUT_POPOUT_ACTION),
+			@Result(status=Constants.CMD_EXEC_ERROR_LOCK, type=Type.TEMPLATE, value=Constants.TEMPLATE_REF_VIEW),
 			@Result(status=Constants.CMD_EXEC_ERROR_VIEW, type=Type.TEMPLATE,
 					value=Constants.TEMPLATE_COMMON_ERROR,
 					layoutActionName=Constants.LAYOUT_POPOUT_ACTION),
@@ -148,6 +139,11 @@ import org.iplass.mtp.view.generic.DetailFormView.CopyTarget;
 			name=Constants.TEMPLATE_VIEW,
 			path=Constants.CMD_RSLT_JSP_VIEW,
 			layoutActionName=Constants.LAYOUT_NORMAL_ACTION
+	),
+	@Template(
+			name=Constants.TEMPLATE_REF_VIEW,
+			path=Constants.CMD_RSLT_JSP_REF_VIEW,
+			layoutActionName=Constants.LAYOUT_POPOUT_ACTION
 	),
 	@Template(
 			name=Constants.TEMPLATE_EDIT,
@@ -371,7 +367,7 @@ public final class DetailViewCommand extends DetailCommandBase {
 
 	private String createHierarchyRefPropDispName(EntityValidationException e) {
 		StringBuilder builder = new StringBuilder();
-		for (ValidateError err : e.getValidateResult()) {
+		for (ValidateError err : e.getValidateResults()) {
 			builder.append(err.getPropertyDisplayName() + ".");
 		}
 		builder.deleteCharAt(builder.length() - 1);
