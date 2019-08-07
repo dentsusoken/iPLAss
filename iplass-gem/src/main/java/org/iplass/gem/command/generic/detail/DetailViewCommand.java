@@ -154,6 +154,10 @@ import org.iplass.mtp.view.generic.DetailFormView.CopyTarget;
 			name=Constants.TEMPLATE_REF_EDIT,
 			path=Constants.CMD_RSLT_JSP_REF_EDIT,
 			layoutActionName=Constants.LAYOUT_POPOUT_ACTION
+	),
+	@Template(
+			name=Constants.TEMPLATE_COMPLETED,
+			path=Constants.CMD_RSLT_JSP_COMPLETED
 	)
 })
 public final class DetailViewCommand extends DetailCommandBase {

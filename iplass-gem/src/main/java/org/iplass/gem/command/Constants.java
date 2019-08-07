@@ -330,6 +330,7 @@ public class Constants {
 	public static final String TEMPLATE_REF_VIEW = "gem/generic/detail/ref/view";
 	public static final String TEMPLATE_EDIT = "gem/generic/detail/edit";
 	public static final String TEMPLATE_REF_EDIT = "gem/generic/detail/ref/edit";
+	public static final String TEMPLATE_COMPLETED = "gem/generic/detail/ref/completed";
 	public static final String TEMPLATE_BULK_EDIT="gem/generic/bulk/bulkEdit";
 	public static final String TEMPLATE_BULK_MULTI_EDIT="gem/generic/bulk/edit";
 

@@ -73,9 +73,7 @@ import org.iplass.mtp.view.generic.DetailFormView;
 			@ParamMapping(name=Constants.DEF_NAME, mapFrom="${1}", condition="subPath.length==2"),
 		},
 		result={
-			@Result(status=Constants.CMD_EXEC_SUCCESS, type=Type.JSP,
-					value=Constants.CMD_RSLT_JSP_COMPLETED,
-					templateName="gem/generic/detail/ref/completed"),
+			@Result(status=Constants.CMD_EXEC_SUCCESS, type=Type.TEMPLATE, value=Constants.TEMPLATE_COMPLETED),
 			@Result(status=Constants.CMD_EXEC_ERROR, type=Type.TEMPLATE, value=Constants.TEMPLATE_REF_EDIT),
 			@Result(status=Constants.CMD_EXEC_ERROR_TOKEN, type=Type.TEMPLATE, value=Constants.TEMPLATE_COMMON_ERROR,
 					layoutActionName=Constants.LAYOUT_POPOUT_ACTION),
