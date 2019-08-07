@@ -64,19 +64,11 @@ import org.slf4j.LoggerFactory;
 		},
 		paramMapping=@ParamMapping(name=Constants.VIEW_NAME, mapFrom="${0}"),
 		result={
-			@Result(status=Constants.CMD_EXEC_SUCCESS, type=Type.JSP,
-					value=Constants.CMD_RSLT_JSP_VIEW,
-					templateName="gem/generic/detail/view",
+			@Result(status=Constants.CMD_EXEC_SUCCESS, type=Type.TEMPLATE, value=Constants.TEMPLATE_VIEW),
+			@Result(status=Constants.CMD_EXEC_ERROR, type=Type.TEMPLATE, value=Constants.TEMPLATE_VIEW),
+			@Result(status=Constants.CMD_EXEC_ERROR_TOKEN, type=Type.TEMPLATE, value=Constants.TEMPLATE_COMMON_ERROR,
 					layoutActionName=Constants.LAYOUT_NORMAL_ACTION),
-			@Result(status=Constants.CMD_EXEC_ERROR, type=Type.JSP,
-					value=Constants.CMD_RSLT_JSP_VIEW,
-					templateName="gem/generic/detail/view",
-					layoutActionName=Constants.LAYOUT_NORMAL_ACTION),
-			@Result(status=Constants.CMD_EXEC_ERROR_TOKEN, type=Type.TEMPLATE,
-					value=Constants.TEMPLATE_COMMON_ERROR,
-					layoutActionName=Constants.LAYOUT_NORMAL_ACTION),
-			@Result(status=Constants.CMD_EXEC_ERROR_VIEW, type=Type.TEMPLATE,
-					value=Constants.TEMPLATE_COMMON_ERROR,
+			@Result(status=Constants.CMD_EXEC_ERROR_VIEW, type=Type.TEMPLATE, value=Constants.TEMPLATE_COMMON_ERROR,
 					layoutActionName=Constants.LAYOUT_NORMAL_ACTION)
 		}
 	),

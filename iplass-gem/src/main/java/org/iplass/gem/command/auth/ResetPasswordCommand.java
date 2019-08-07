@@ -61,10 +61,7 @@ import org.iplass.mtp.tenant.TenantAuthInfo;
 					@CommandConfig(commandClass=ResetPasswordCommand.class)
 				},
 			result={
-				@Result(status=Constants.CMD_EXEC_SUCCESS,type=Type.JSP,
-						value=Constants.CMD_RSLT_JSP_VIEW,
-						templateName="gem/generic/detail/view",
-						layoutActionName=Constants.LAYOUT_NORMAL_ACTION),
+				@Result(status=Constants.CMD_EXEC_SUCCESS, type=Type.TEMPLATE, value=Constants.TEMPLATE_VIEW),
 				@Result(status=Constants.CMD_EXEC_ERROR, type=Type.TEMPLATE, value=Constants.TEMPLATE_EDIT)
 				},
 			tokenCheck=@TokenCheck

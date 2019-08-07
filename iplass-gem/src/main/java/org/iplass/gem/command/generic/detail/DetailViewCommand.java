@@ -66,19 +66,11 @@ import org.iplass.mtp.view.generic.DetailFormView.CopyTarget;
 		},
 		command=@CommandConfig(commandClass=DetailViewCommand.class, value="cmd.detail=false;"),
 		result={
-			@Result(status=Constants.CMD_EXEC_SUCCESS, type=Type.JSP,
-					value=Constants.CMD_RSLT_JSP_VIEW,
-					templateName="gem/generic/detail/view",
+			@Result(status=Constants.CMD_EXEC_SUCCESS, type=Type.TEMPLATE, value=Constants.TEMPLATE_VIEW),
+			@Result(status=Constants.CMD_EXEC_ERROR_LOCK, type=Type.TEMPLATE, value=Constants.TEMPLATE_VIEW),
+			@Result(status=Constants.CMD_EXEC_ERROR_VIEW, type=Type.TEMPLATE, value=Constants.TEMPLATE_COMMON_ERROR,
 					layoutActionName=Constants.LAYOUT_NORMAL_ACTION),
-			@Result(status=Constants.CMD_EXEC_ERROR_LOCK, type=Type.JSP,
-					value=Constants.CMD_RSLT_JSP_VIEW,
-					templateName="gem/generic/detail/view",
-					layoutActionName=Constants.LAYOUT_NORMAL_ACTION),
-			@Result(status=Constants.CMD_EXEC_ERROR_VIEW, type=Type.TEMPLATE,
-					value=Constants.TEMPLATE_COMMON_ERROR,
-					layoutActionName=Constants.LAYOUT_NORMAL_ACTION),
-			@Result(status=Constants.CMD_EXEC_ERROR_NODATA,type=Type.TEMPLATE,
-					value=Constants.TEMPLATE_COMMON_ERROR,
+			@Result(status=Constants.CMD_EXEC_ERROR_NODATA,type=Type.TEMPLATE, value=Constants.TEMPLATE_COMMON_ERROR,
 					layoutActionName=Constants.LAYOUT_NORMAL_ACTION)
 		}
 	),
@@ -119,19 +111,11 @@ import org.iplass.mtp.view.generic.DetailFormView.CopyTarget;
 		command=@CommandConfig(commandClass=DetailViewCommand.class, value="cmd.detail=true;"),
 		result={
 			@Result(status=Constants.CMD_EXEC_SUCCESS, type=Type.TEMPLATE, value=Constants.TEMPLATE_EDIT),
-			@Result(status=Constants.CMD_EXEC_ERROR_LOCK, type=Type.JSP,
-					value=Constants.CMD_RSLT_JSP_VIEW,
-					templateName="gem/generic/detail/view",
+			@Result(status=Constants.CMD_EXEC_ERROR_LOCK, type=Type.TEMPLATE, value=Constants.TEMPLATE_VIEW),
+			@Result(status=Constants.CMD_EXEC_ERROR_VALIDATE, type=Type.TEMPLATE, value=Constants.TEMPLATE_VIEW),
+			@Result(status=Constants.CMD_EXEC_ERROR_VIEW, type=Type.TEMPLATE, value=Constants.TEMPLATE_COMMON_ERROR,
 					layoutActionName=Constants.LAYOUT_NORMAL_ACTION),
-			@Result(status=Constants.CMD_EXEC_ERROR_VALIDATE, type=Type.JSP,
-					value=Constants.CMD_RSLT_JSP_VIEW,
-					templateName="gem/generic/detail/view",
-					layoutActionName=Constants.LAYOUT_NORMAL_ACTION),
-			@Result(status=Constants.CMD_EXEC_ERROR_VIEW, type=Type.TEMPLATE,
-					value=Constants.TEMPLATE_COMMON_ERROR,
-					layoutActionName=Constants.LAYOUT_NORMAL_ACTION),
-			@Result(status=Constants.CMD_EXEC_ERROR_NODATA, type=Type.TEMPLATE,
-					value=Constants.TEMPLATE_COMMON_ERROR,
+			@Result(status=Constants.CMD_EXEC_ERROR_NODATA, type=Type.TEMPLATE, value=Constants.TEMPLATE_COMMON_ERROR,
 					layoutActionName=Constants.LAYOUT_NORMAL_ACTION)
 		}
 	),
@@ -160,6 +144,11 @@ import org.iplass.mtp.view.generic.DetailFormView.CopyTarget;
 })
 @CommandClass(name="gem/generic/detail/DetailViewCommand", displayName="詳細表示")
 @Templates({
+	@Template(
+			name=Constants.TEMPLATE_VIEW,
+			path=Constants.CMD_RSLT_JSP_VIEW,
+			layoutActionName=Constants.LAYOUT_NORMAL_ACTION
+	),
 	@Template(
 			name=Constants.TEMPLATE_EDIT,
 			path=Constants.CMD_RSLT_JSP_EDIT,

@@ -326,6 +326,7 @@ public class Constants {
 	public static final String TEMPLATE_UPDATE_PASSWORD = "gem/auth/Password";
 	public static final String TEMPLATE_REAUTH = "gem/auth/ReAuth";
 
+	public static final String TEMPLATE_VIEW = "gem/generic/detail/view";
 	public static final String TEMPLATE_EDIT = "gem/generic/detail/edit";
 	public static final String TEMPLATE_REF_EDIT = "gem/generic/detail/ref/edit";
 	public static final String TEMPLATE_BULK_EDIT="gem/generic/bulk/bulkEdit";
