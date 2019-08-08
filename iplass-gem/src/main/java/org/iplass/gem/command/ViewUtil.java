@@ -189,6 +189,7 @@ public class ViewUtil {
 	}
 
 	public static FormView getFormView(String defName, String viewName, String viewType) {
+		if (defName == null || defName.isEmpty()) return null;
 		EntityViewManager evm = ManagerLocator.getInstance().getManager(EntityViewManager.class);
 		EntityView ev = evm.get(defName);
 		if (ev == null) return null;
