@@ -100,6 +100,7 @@ public class MultiBulkUpdateAllCommand extends MultiBulkCommandBase {
 
 		String ret = Constants.CMD_EXEC_SUCCESS;
 		if (command != null) {
+			command.setSearchBulk(request, true);
 			ret = command.execute(request);
 			if (!Constants.CMD_EXEC_SUCCESS.equals(ret)) return ret;
 
