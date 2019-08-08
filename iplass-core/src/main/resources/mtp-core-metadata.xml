@@ -2674,7 +2674,7 @@ COPYRIGHT 2011 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. ALL RIGHTS RESE
 </metaDataEntry>
 <metaDataEntry>
     <metaData xsi:type="metaMailTemplate" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-        <id>MT0003</id>
+        <id>MT0004</id>
         <name>mtp/auth/CredentialResetWithSpecifiedPasswordMail</name>
         <displayName>パスワード指定リセット通知メール</displayName>
         <description>標準メール通知リスナーBuiltinMailNotificationListnerのユーザ登録時に通知するメールメッセージ定義です。
