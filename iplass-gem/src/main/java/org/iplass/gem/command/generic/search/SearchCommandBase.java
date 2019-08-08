@@ -187,7 +187,7 @@ public abstract class SearchCommandBase implements Command {
 	}
 
 	/**
-	 * 全削除するかを返す
+	 * 全削除するモードかを返す
 	 */
 	public boolean isSearchDelete(RequestContext request) {
 		return (request.getAttribute("isSearchDelete") != null
@@ -195,14 +195,14 @@ public abstract class SearchCommandBase implements Command {
 	}
 
 	/**
-	 * 全削除するかを設定する
+	 * 全削除するモードかを設定する
 	 */
 	public void setSearchDelete(RequestContext request, boolean isDelete) {
 		request.setAttribute("isSearchDelete", isDelete);
 	}
 
 	/**
-	 * 全一括更新するかを返す
+	 * 全一括更新するモードかを返す
 	 */
 	public boolean isSearchBulk(RequestContext request) {
 		return (request.getAttribute("isSearchBulk") != null
@@ -210,7 +210,7 @@ public abstract class SearchCommandBase implements Command {
 	}
 
 	/**
-	 * 全一括更新するかを設定する
+	 * 全一括更新するモードかを設定する
 	 */
 	public void setSearchBulk(RequestContext request, boolean isBulk) {
 		request.setAttribute("isSearchBulk", isBulk);
