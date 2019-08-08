@@ -1892,7 +1892,9 @@ function showReference(viewAction, defName, oid, version, linkId, refEdit, editC
 //	$("<input />").attr({type:"hidden", name:"oid", value:oid}).appendTo($form);
 	$("<input />").attr({type:"hidden", name:"version", value:version}).appendTo($form);
 	$("<input />").attr({type:"hidden", name:"refEdit", value:refEdit}).appendTo($form);
-	if (refEdit) {
+	// EntityListing画面から参照先エンティティも編集可能なので、その際に、refEditがtrueで、親画面の情報が渡さないので
+	// viewTypeが設定されているかどうかで判断します。
+	if (refEdit && viewType) {
 		var _parentPropName = parentPropName.replace(/\[\w+\]/g, ""); //ネストテーブルプロパティ
 		if (parentDefName) $("<input />").attr({type:"hidden", name:"parentDefName", value:parentDefName}).appendTo($form);
 		if (parentViewName) $("<input />").attr({type:"hidden", name:"parentViewName", value:parentViewName}).appendTo($form);
