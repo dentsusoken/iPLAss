@@ -26,6 +26,15 @@ import org.iplass.mtp.web.actionmapping.definition.result.ResultDefinition;
 /**
  * ResultDefinitionを定義するアノテーションです。
  *
+ * <p>
+ * typeがJSPの場合は、Template定義も作成されます。<br/>
+ * 複数のResult定義で同一のJSP(またはテンプレート名で指定した名前)を指定した場合は、
+ * 解析順により最後の設定が有効になります。<br/>
+ * もし複数のResult定義で同一のTemplate定義を利用したい場合は、
+ * {@link org.iplass.mtp.command.annotation.template.Template}で定義を行い、
+ * Result側はtypeをTEMPLATEにすることで対応可能です。
+ * </p>
+ *
  * @see ResultDefinition
  * @author K.Higuchi
  *
