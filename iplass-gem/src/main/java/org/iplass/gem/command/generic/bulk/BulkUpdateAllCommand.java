@@ -107,6 +107,7 @@ public class BulkUpdateAllCommand extends BulkCommandBase {
 			SearchFormView form= FormViewUtil.getSearchFormView(ed, view, viewName);
 			BulkUpdateAllCommandTransactionType transactionType = form.getResultSection().getBulkUpdateAllCommandTransactionType();
 
+			command.setSearchBulk(request, true);
 			ret = command.execute(request);
 			if (!Constants.CMD_EXEC_SUCCESS.equals(ret)) return ret;
 

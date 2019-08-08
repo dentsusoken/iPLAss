@@ -83,10 +83,10 @@ public abstract class SearchCommandBase implements Command {
 
 		//Queryを生成して正しくEQLに変換できるかをチェック
 		Query query = null;
-		if (context.isDelete()) {
+		if (isSearchDelete(request)) {
 			// 全削除
 			query = toQueryForDelete(context);
-		} else if (context.isBulk()) {
+		} else if (isSearchBulk(request)) {
 			// 全一括更新
 			query = toQueryForBulkUpdate(context);
 		} else {
@@ -106,16 +106,16 @@ public abstract class SearchCommandBase implements Command {
 			count(context, query.copy());
 		}
 
-		if (context.isSearch()) {
+		if (isSearchDelete(request)) {
+			search(context, query.copy());
+		} else if (isSearchBulk(request)) {
+			search(context, query.copy());
+		} else if (context.isSearch()) {
 			Query q = query.copy();
 			// 検索時にEQLにOrderByとLimitを付けます。
 			setOrderBy(context, q);
 			setLimit(context, q);
 			search(context, q);
-		} else if (context.isDelete()) {
-			search(context, query.copy());
-		} else if (context.isBulk()) {
-			search(context, query.copy());
 		}
 
 		return Constants.CMD_EXEC_SUCCESS;
@@ -184,6 +184,36 @@ public abstract class SearchCommandBase implements Command {
 
 	protected void setOrderBy(SearchContext context, Query query) {
 		query.setOrderBy(context.getOrderBy());
+	}
+
+	/**
+	 * 全削除するかを返す
+	 */
+	public boolean isSearchDelete(RequestContext request) {
+		return (request.getAttribute("isSearchDelete") != null
+				&& (Boolean) request.getAttribute("isSearchDelete"));
+	}
+
+	/**
+	 * 全削除するかを設定する
+	 */
+	public void setSearchDelete(RequestContext request, boolean isDelete) {
+		request.setAttribute("isSearchDelete", isDelete);
+	}
+
+	/**
+	 * 全一括更新するかを返す
+	 */
+	public boolean isSearchBulk(RequestContext request) {
+		return (request.getAttribute("isSearchBulk") != null
+				&& (Boolean) request.getAttribute("isSearchBulk"));
+	}
+
+	/**
+	 * 全一括更新するかを設定する
+	 */
+	public void setSearchBulk(RequestContext request, boolean isBulk) {
+		request.setAttribute("isSearchBulk", isBulk);
 	}
 
 	/**

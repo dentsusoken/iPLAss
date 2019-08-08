@@ -94,6 +94,7 @@ public final class DeleteAllCommand extends DeleteCommandBase {
 			SearchFormView form= FormViewUtil.getSearchFormView(ed, view, viewName);
 			DeleteAllCommandTransactionType transactionType = form.getResultSection().getDeleteAllCommandTransactionType();
 
+			command.setSearchDelete(request, true);
 			String ret = command.execute(request);
 			if (!Constants.CMD_EXEC_SUCCESS.equals(ret)) return ret;
 

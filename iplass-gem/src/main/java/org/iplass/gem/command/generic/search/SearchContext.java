@@ -58,10 +58,6 @@ public interface SearchContext {
 
 	public boolean isCount();
 
-	public boolean isDelete();
-
-	public boolean isBulk();
-
 	public boolean checkParameter();
 
 	public boolean validation();

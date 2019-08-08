@@ -422,7 +422,6 @@ function deleteAll(webapi, searchType, formName, _t, func) {
 	data += "&searchType=" + searchType;
 	data += "&isSearch=false";
 	data += "&isCount=true";
-	data += "&isDelete=true";
 	data += "&_t=" + _t;
 	$.ajax({
 		type: "POST",
