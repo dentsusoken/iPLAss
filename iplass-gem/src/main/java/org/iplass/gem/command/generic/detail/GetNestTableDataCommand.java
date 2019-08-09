@@ -96,7 +96,8 @@ public final class GetNestTableDataCommand implements Command {
 		}
 
 		ReferenceProperty rp = (ReferenceProperty) pd;
-		List<String> properties = getNestProperty(context, property, rp);
+		List<String> nestDispLabelProps = new ArrayList<String>();
+		List<String> properties = getNestProperty(context, property, rp, nestDispLabelProps);
 
 		String targetDefName = rp.getObjectDefinitionName();
 		String oid = request.getParam(Constants.OID);
@@ -106,11 +107,12 @@ public final class GetNestTableDataCommand implements Command {
 				.where(new Equals(Entity.OID, oid));
 
 		Entity entity = em.searchEntity(query).getFirst();
+		replaceNestPropOutputName(entity, nestDispLabelProps);
 		request.setAttribute(Constants.DATA, entity);
 		return Constants.CMD_EXEC_SUCCESS;
 	}
 
-	private List<String> getNestProperty(DetailCommandContext context, PropertyItem property, ReferenceProperty rp) {
+	private List<String> getNestProperty(DetailCommandContext context, PropertyItem property, ReferenceProperty rp, List<String> nestDispLabelProps) {
 		ReferencePropertyEditor rpe = (ReferencePropertyEditor) property.getEditor();
 		if (!(property.getEditor() instanceof ReferencePropertyEditor)) {
 			// Propertyの型違い
@@ -139,6 +141,11 @@ public final class GetNestTableDataCommand implements Command {
 				}
 				if (!propNames.contains(np.getPropertyName() + "." + Entity.VERSION)) {
 					propNames.add(np.getPropertyName() + "." + Entity.VERSION);
+				}
+				String displayLabelProp = ((ReferencePropertyEditor) np.getEditor()).getDisplayLabelItem();
+				if (displayLabelProp != null && !propNames.contains(np.getPropertyName() + "." + displayLabelProp)) {
+					propNames.add(np.getPropertyName() + "." + displayLabelProp);
+					nestDispLabelProps.add(np.getPropertyName() + "." + displayLabelProp);
 				}
 			} else if (np.getEditor() instanceof DateRangePropertyEditor) {
 				DateRangePropertyEditor editor = (DateRangePropertyEditor) np.getEditor();
@@ -182,4 +189,18 @@ public final class GetNestTableDataCommand implements Command {
 		return true;
 	}
 
+	private void replaceNestPropOutputName(Entity entity, List<String> nestDisplayLabelProps) {
+		if (entity == null || nestDisplayLabelProps == null || nestDisplayLabelProps.isEmpty()) return;
+
+		for (String displayLabelProp : nestDisplayLabelProps) {
+			String currentPropName = displayLabelProp.substring(0, displayLabelProp.indexOf("."));
+			String subPropName = displayLabelProp.substring(displayLabelProp.indexOf(".") + 1);
+			// 「Name」がラベルプロパティ項目として設定された場合、クリアしません。
+			if (!Entity.NAME.equals(subPropName)) {
+				// ラベルとして扱うプロパティ項目を「name」として返します。
+				entity.setValue(currentPropName + "." + Entity.NAME, entity.getValue(displayLabelProp));
+				entity.setValue(displayLabelProp, null);
+			}
+		}
+	}
 }

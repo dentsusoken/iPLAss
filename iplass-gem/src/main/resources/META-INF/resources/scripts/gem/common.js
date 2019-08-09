@@ -3053,14 +3053,17 @@ function updateNestValue_Reference(type, $node, parentPropName, name, entity) {
 		var $button = $node.children(":button");
 		$node.children("ul").children("li").remove();
 		if (val != null) {
-			var viewAction = $button.attr("viewAction");
-			var propName = $button.attr("propName");
+			var viewAction = $button.attr("data-viewAction");
+			var propName = $button.attr("data-propName");
 			var _propName = propName.replace(/\[/g, "\\[").replace(/\]/g, "\\]").replace(/\./g, "\\.");
-			var defName = $button.attr("defName");
-			var refEdit = $button.attr("refEdit");
+			var defName = $button.attr("data-defName");
+			var refEdit = $button.attr("data-refEdit");
+			var parentDefName = $button.attr("data-parentDefName");
+			var parentViewName = $button.attr("data-parentViewName");
+			var viewType = $button.attr("data-viewType");
 			var key = val.oid + "_" + val.version;
 			var label = val.name;
-			addReference("li_" + propName, viewAction, defName, key, label, propName, "ul_" + _propName, refEdit);
+			addReference("li_" + propName, viewAction, defName, key, label, propName, "ul_" + _propName, refEdit, null, parentDefName, parentViewName, viewType);
 		}
 	} else if (type == "SELECT") {
 		var oid = "";
