@@ -51,6 +51,11 @@
 			<property name="fileFilter" value=".*app\.log.*" />
 		</property>
 
+		<!-- ファイルアップロード時のMAXファイルサイズ(Byte) -->
+		<!--
+		<property name ="maxUploadFileSize" value="1073741824" />
+		-->
+
 	</service>
 
 	<service>

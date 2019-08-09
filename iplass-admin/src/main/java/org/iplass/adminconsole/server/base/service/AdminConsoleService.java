@@ -43,6 +43,9 @@ public class AdminConsoleService implements Service {
 	/** Log設定に指定可能なテナント名に置換する文字パターン */
 	private static final Pattern logTenantNamePattern = Pattern.compile(LOG_TENANT_NAME_FILTER_KEY, Pattern.LITERAL);
 
+	/** ファイルアップロード時のデフォルトMAXファイルサイズ(Byte) */
+	private static final long DEFAULT_MAX_FILE_SIZE = 1024 * 1024 * 1024;
+
 	/** GWTのリソース取得用URLのPrefix */
 	private String resourcePrefixPath;
 
@@ -52,11 +55,15 @@ public class AdminConsoleService implements Service {
 	/** ログ設定情報 */
 	private LogConfig logDownloadConfig;
 
+	/** ファイルアップロード時のMAXファイルサイズ(Byte) */
+	private long maxUploadFileSize;
+
 	@Override
 	public void init(Config config) {
 		resourcePrefixPath = config.getValue("resourcePrefixPath", String.class, "");
 		showServerInfo = config.getValue("showServerInfo", Boolean.class, false);
 		logDownloadConfig = config.getValue("logDownloadConfig", LogConfig.class);
+		maxUploadFileSize = config.getValue("maxUploadFileSize", Long.class, DEFAULT_MAX_FILE_SIZE);
 	}
 
 	@Override
@@ -156,6 +163,10 @@ public class AdminConsoleService implements Service {
 
 	private LogConfig getLogDownloadConfig() {
 		return logDownloadConfig;
+	}
+
+	public long getMaxUploadFileSize() {
+		return maxUploadFileSize;
 	}
 
 }

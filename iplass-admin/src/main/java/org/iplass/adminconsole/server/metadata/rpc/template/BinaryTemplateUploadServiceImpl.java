@@ -27,8 +27,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.servlet.ServletConfig;
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.fileupload.FileItem;
@@ -62,19 +60,6 @@ public class BinaryTemplateUploadServiceImpl extends AdminUploadAction {
 	private static final long serialVersionUID = -7027772304952943415L;
 
 	private static final Logger logger = LoggerFactory.getLogger(BinaryTemplateUploadServiceImpl.class);
-
-	/** デフォルト5Mを1000Mに拡張 */
-	protected static final long DEFAULT_REQUEST_LIMIT_KB = 1000 * 1024 * 1024;
-	//protected static final int DEFAULT_REQUEST_LIMIT_KB = 5 * 1024 * 1024;
-
-	protected static File contextTempDir;
-
-	@Override
-	public void init(ServletConfig config) throws ServletException {
-		maxSize = DEFAULT_REQUEST_LIMIT_KB;
-		contextTempDir = (File)config.getServletContext().getAttribute("javax.servlet.context.tempdir");
-		super.init(config);
-	}
 
 	/* (非 Javadoc)
 	 * @see gwtupload.server.UploadAction#executeAction(javax.servlet.http.HttpServletRequest, java.util.List)
@@ -193,7 +178,7 @@ public class BinaryTemplateUploadServiceImpl extends AdminUploadAction {
 						continue;
 					}
 					//Fileの場合、tempに書きだし
-					File tempFile = UploadUtil.writeFileToTemporary(item, contextTempDir);
+					File tempFile = UploadUtil.writeFileToTemporary(item, getContextTempDir());
 					args.put(BinaryTemplateUploadProperty.FILE_CONTENT_TYPE, item.getContentType());
 
 					//UploadServlet#parsePostRequestでFormFieldではないものには最後に連番(-xxxx)が付加されているので除去

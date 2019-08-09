@@ -1,19 +1,19 @@
 /*
  * Copyright (C) 2012 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
- * 
+ *
  * Unless you have purchased a commercial license,
  * the following license terms apply:
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
@@ -27,8 +27,6 @@ import java.io.InputStream;
 import java.util.HashMap;
 import java.util.List;
 
-import javax.servlet.ServletConfig;
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -63,19 +61,6 @@ import gwtupload.server.exceptions.UploadActionException;
 public class MetaDataConfigUploadServiceImpl extends AdminUploadAction {
 
 	private static final Logger logger = LoggerFactory.getLogger(MetaDataConfigUploadServiceImpl.class);
-
-	/** デフォルト5Mを1000Mに拡張 */
-	protected static final long DEFAULT_REQUEST_LIMIT_KB = 1000 * 1024 * 1024;
-	//protected static final int DEFAULT_REQUEST_LIMIT_KB = 5 * 1024 * 1024;
-
-	protected static File contextTempDir;
-
-	@Override
-	public void init(ServletConfig config) throws ServletException {
-		maxSize = DEFAULT_REQUEST_LIMIT_KB;
-		contextTempDir = (File)config.getServletContext().getAttribute("javax.servlet.context.tempdir");
-		super.init(config);
-	}
 
 	/* (非 Javadoc)
 	 * @see gwtupload.server.UploadAction#executeAction(javax.servlet.http.HttpServletRequest, java.util.List)
@@ -162,7 +147,7 @@ public class MetaDataConfigUploadServiceImpl extends AdminUploadAction {
 				} else {
 					//Fileの場合、tempに書きだし
 					args.put(ConfigUploadProperty.UPLOAD_FILE_NAME, FilenameUtils.getName(item.getName()));
-					File tempFile = UploadUtil.writeFileToTemporary(item, contextTempDir);
+					File tempFile = UploadUtil.writeFileToTemporary(item, getContextTempDir());
 					args.put(ConfigUploadProperty.UPLOAD_FILE, tempFile);
 				}
 			}

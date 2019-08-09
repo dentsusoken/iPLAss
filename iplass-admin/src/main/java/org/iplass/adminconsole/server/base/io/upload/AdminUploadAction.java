@@ -1,19 +1,19 @@
 /*
  * Copyright (C) 2016 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
- * 
+ *
  * Unless you have purchased a commercial license,
  * the following license terms apply:
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
@@ -32,11 +32,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.ServletConfig;
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileItemFactory;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
+import org.iplass.adminconsole.server.base.service.AdminConsoleService;
+import org.iplass.mtp.spi.ServiceRegistry;
 
 import gwtupload.server.HasKey;
 import gwtupload.server.UploadAction;
@@ -46,9 +50,34 @@ import gwtupload.server.exceptions.UploadActionException;
  * gwt-uploadのUploadActionでは、レスポンスに返すSummary情報を生成する際に、
  * 文字コードを指定していないのでマルチバイト文字が化けるため、それを回避する。
  */
-public class AdminUploadAction extends UploadAction {
+public abstract class AdminUploadAction extends UploadAction {
 
 	private static final long serialVersionUID = -5553465242497700877L;
+
+	private File contextTempDir;
+
+	private AdminConsoleService acs = ServiceRegistry.getRegistry().getService(AdminConsoleService.class);
+
+	@Override
+	public void init(ServletConfig config) throws ServletException {
+		super.init(config);
+		contextTempDir = (File)config.getServletContext().getAttribute("javax.servlet.context.tempdir");
+
+		//サイズ制限についてパラメータで指定されていない場合、Serviceの設定値をセット
+		if (getInitParameter("maxSize") == null) {
+			maxSize = acs.getMaxUploadFileSize();
+		}
+		if (getInitParameter("maxFileSize") == null) {
+			maxFileSize = acs.getMaxUploadFileSize();
+		}
+	}
+
+	/**
+	 * @return contextTempDir
+	 */
+	protected File getContextTempDir() {
+		return contextTempDir;
+	}
 
 	@Override
 	protected Map<String, String> getFileItemsSummary(

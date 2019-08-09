@@ -1,19 +1,19 @@
 /*
  * Copyright (C) 2012 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
- * 
+ *
  * Unless you have purchased a commercial license,
  * the following license terms apply:
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
@@ -27,8 +27,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.servlet.ServletConfig;
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.fileupload.FileItem;
@@ -65,18 +63,6 @@ import gwtupload.server.exceptions.UploadActionException;
 public class ReportTemplateUploadServiceImpl extends AdminUploadAction {
 
 	private static final Logger logger = LoggerFactory.getLogger(ReportTemplateUploadServiceImpl.class);
-
-	/** デフォルト5M */
-	protected static final int DEFAULT_REQUEST_LIMIT_KB = 5 * 1024 * 1024;
-
-	protected static File contextTempDir;
-
-	@Override
-	public void init(ServletConfig config) throws ServletException {
-		maxSize = DEFAULT_REQUEST_LIMIT_KB;
-		contextTempDir = (File)config.getServletContext().getAttribute("javax.servlet.context.tempdir");
-		super.init(config);
-	}
 
 	/* (非 Javadoc)
 	 * @see gwtupload.server.UploadAction#executeAction(javax.servlet.http.HttpServletRequest, java.util.List)
@@ -196,7 +182,7 @@ public class ReportTemplateUploadServiceImpl extends AdminUploadAction {
 						continue;
 					}
 					//Fileの場合、tempに書きだし
-					File tempFile = UploadUtil.writeFileToTemporary(item, contextTempDir);
+					File tempFile = UploadUtil.writeFileToTemporary(item, getContextTempDir());
 					args.put(ReportTemplateUploadProperty.FILE_CONTENT_TYPE, item.getContentType());
 
 					//UploadServlet#parsePostRequestでFormFieldではないものには最後に連番(-xxxx)が付加されているので除去
