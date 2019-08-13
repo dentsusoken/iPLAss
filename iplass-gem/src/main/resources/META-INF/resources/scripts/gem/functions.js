@@ -2237,7 +2237,7 @@ $.fn.allInputCheck = function(){
 								var oid = nodes[i].oid;
 								var version = nodes[i].version;
 								var linkId = $v.prefix + $v.propName + "_" + oid;
-								var $link = $("<a href='javascript:void(0)' />").addClass("modal-lnk").attr({id:linkId, style:$v.customStyle}).text(nodes[i].name).on("click", function() {
+								var $link = $("<a href='javascript:void(0)' />").addClass("modal-lnk").attr({"data-linkId":linkId, "style":$v.customStyle}).text(nodes[i].name).on("click", function() {
 									showReference($v.viewAction, $v.refDefName, oid, version, linkId, $v.refEdit, null, $v.defName, $v.viewName, $v.propName, $v.viewType);
 								}).appendTo($li);
 								if ($("body.modal-body").length != 0) {
@@ -2659,7 +2659,7 @@ $.fn.allInputCheck = function(){
 			});
 
 			$txt.on("change", function() {
-				$link.attr("id", "").text("").hide();
+				$link.attr("data-linkId", "").text("").hide();
 				$hidden.val("");
 
 				//ユニークキーフィールドがクリアされた場合は、検索に行かずに、参照リンクの文字とoid、version情報をクリアする
@@ -2691,7 +2691,7 @@ $.fn.allInputCheck = function(){
 							showReference($v.viewAction, $v.refDefName, entity.oid, entity.version, linkId, $v.refEdit, null, $v.defName, $v.viewName, $v.propName, $v.viewType);
 						};
 
-						$link.attr("id", linkId).text(label).show();
+						$link.attr("data-linkId", linkId).text(label).show();
 						$link.removeAttr("onclick").off("click", func);
 						$link.on("click", func);
 						$hidden.val(key);
