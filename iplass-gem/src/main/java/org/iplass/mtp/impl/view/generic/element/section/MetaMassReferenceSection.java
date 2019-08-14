@@ -136,6 +136,9 @@ public class MetaMassReferenceSection extends MetaSection {
 	/** 絞り込み条件設定スクリプト */
 	private String filterConditionScript;
 
+	/** EQLカスタム処理クラス名 */
+	private String interrupterName;
+
 	/** 絞り込み条件設定スクリプトを特定するkey(内部用) */
 	private String filterScriptKey;
 
@@ -557,6 +560,22 @@ public class MetaMassReferenceSection extends MetaSection {
 	}
 
 	/**
+	 * EQLカスタム処理クラス名を取得します。
+	 * @return EQLカスタム処理クラス名
+	 */
+	public String getInterrupterName() {
+	    return interrupterName;
+	}
+
+	/**
+	 * EQLカスタム処理クラス名を設定します。
+	 * @param interrupterName EQLカスタム処理クラス名
+	 */
+	public void setInterrupterName(String interrupterName) {
+	    this.interrupterName = interrupterName;
+	}
+
+	/**
 	 * 多言語設定情報を取得します。
 	 * @return 多言語設定情報
 	 */
@@ -628,6 +647,7 @@ public class MetaMassReferenceSection extends MetaSection {
 		hideView = section.isHideView();
 		editType = section.getEditType();
 		filterConditionScript = section.getFilterConditionScript();
+		interrupterName = section.getInterrupterName();
 		for (NestProperty np : section.getProperties()) {
 			MetaNestProperty mnp = new MetaNestProperty();
 			mnp.applyConfig(np, refEntity, entity);
@@ -696,6 +716,7 @@ public class MetaMassReferenceSection extends MetaSection {
 		section.setHideView(hideView);
 		section.setEditType(editType);
 		section.setFilterConditionScript(filterConditionScript);
+		section.setInterrupterName(interrupterName);
 		section.setFilterScriptKey(filterScriptKey);
 		section.setContentScriptKey(contentScriptKey);
 

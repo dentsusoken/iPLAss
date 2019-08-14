@@ -321,6 +321,16 @@ public class MassReferenceSection extends Section implements HasNestProperty {
 	)
 	private List<SortSetting> sortSetting;
 
+	/** EQLカスタム処理クラス名 */
+	@MetaFieldInfo(
+			displayName="EQLカスタム処理クラス名",
+			displayNameKey="generic_element_section_MassReferenceSection_interrupterNameDisplaNameKey",
+			displayOrder=4020,
+			description="検索実行前にクエリをカスタマイズするためのクラス名を指定します。<br>" +
+					"SearchQueryInterrupterインターフェースを実装するクラスを指定してください。",
+			descriptionKey="generic_element_section_MassReferenceSection_interrupterNameDescriptionKey"
+	)
+	private String interrupterName;
 
 
 
@@ -880,6 +890,22 @@ public class MassReferenceSection extends Section implements HasNestProperty {
 	 */
 	public void setFilterScriptKey(String filterScriptKey) {
 		this.filterScriptKey = filterScriptKey;
+	}
+
+	/**
+	 * EQLカスタム処理クラス名を取得します。
+	 * @return EQLカスタム処理クラス名
+	 */
+	public String getInterrupterName() {
+	    return interrupterName;
+	}
+
+	/**
+	 * EQLカスタム処理クラス名を設定します。
+	 * @param interrupterName EQLカスタム処理クラス名
+	 */
+	public void setInterrupterName(String interrupterName) {
+	    this.interrupterName = interrupterName;
 	}
 
 	/**
