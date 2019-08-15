@@ -24,10 +24,13 @@ import org.iplass.mtp.command.RequestContext;
 import org.iplass.mtp.entity.Entity;
 import org.iplass.mtp.entity.LoadOption;
 import org.iplass.mtp.entity.definition.properties.ReferenceProperty;
+import org.iplass.mtp.entity.query.Query;
 import org.iplass.mtp.view.generic.FormView;
 import org.iplass.mtp.view.generic.LoadEntityContext;
 import org.iplass.mtp.view.generic.LoadEntityInterrupter;
 import org.iplass.mtp.view.generic.LoadEntityInterrupter.LoadType;
+import org.iplass.mtp.view.generic.OutputType;
+import org.iplass.mtp.view.generic.SearchQueryContext;
 
 /**
  * カスタム登録処理ハンドラ
@@ -104,6 +107,32 @@ public class LoadEntityInterrupterHandler {
 		FormView formView = context.getView();
 		loadOption.setLocalized(formView.isLocalizationData());
 		interrupter.afterLoadReference(request, formView, entity, loadOption, property, type);
+	}
+
+	/**
+	 * 大量データ用参照セクションの検索前処理を行います。
+	 *
+	 * @param query 検索用クエリ
+	 * @param outputType 出力タイプ(VIEWまたはEDIT)
+	 * @return 実行結果
+	 */
+	public SearchQueryContext beforeSearchMassReference(Query query, OutputType outputType) {
+		FormView formView = context.getView();
+		query.setLocalized(formView.isLocalizationData());
+		SearchQueryContext ret = interrupter.beforeSearchMassReference(request, formView, query, outputType);
+		return ret;
+	}
+
+	/**
+	 * 大量データ用参照セクションの検索後処理を行います。
+	 *
+	 * @param query 検索用クエリ
+	 * @param entity 検索結果
+	 * @param outputType 出力タイプ(VIEWまたはEDIT)
+	 */
+	public void afterSearchMassReference(Query query, Entity entity, OutputType outputType) {
+		FormView formView = context.getView();
+		interrupter.afterSearchMassReference(request, formView, query, entity, outputType);
 	}
 
 }

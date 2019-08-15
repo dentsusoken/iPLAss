@@ -24,6 +24,7 @@ import org.iplass.mtp.command.RequestContext;
 import org.iplass.mtp.entity.Entity;
 import org.iplass.mtp.entity.LoadOption;
 import org.iplass.mtp.entity.definition.properties.ReferenceProperty;
+import org.iplass.mtp.entity.query.Query;
 
 /**
  * Entityロード時にカスタムで処理を行わせるインターフェース
@@ -51,8 +52,10 @@ public interface LoadEntityInterrupter {
 	 * @param type ロード処理の種類
 	 * @return 実行結果
 	 */
-	public LoadEntityContext beforeLoadEntity(RequestContext request, FormView view,
-			String defName, LoadOption loadOption, LoadType type);
+	default public LoadEntityContext beforeLoadEntity(RequestContext request, FormView view,
+			String defName, LoadOption loadOption, LoadType type) {
+		return new LoadEntityContext(loadOption);
+	}
 
 	/**
 	 * ロード後処理を行います。
@@ -76,8 +79,10 @@ public interface LoadEntityInterrupter {
 	 * @param type ロード処理の種類
 	 * @return 実行結果
 	 */
-	public LoadEntityContext beforeLoadReference(RequestContext request, FormView view,
-			String defName, LoadOption loadOption, ReferenceProperty property, LoadType type);
+	default public LoadEntityContext beforeLoadReference(RequestContext request, FormView view,
+			String defName, LoadOption loadOption, ReferenceProperty property, LoadType type) {
+		return new LoadEntityContext(loadOption);
+	}
 
 	/**
 	 * 参照プロパティに対するロード後処理を行います。
@@ -90,6 +95,33 @@ public interface LoadEntityInterrupter {
 	 */
 	default public void afterLoadReference(RequestContext request, FormView view,
 			Entity entity, LoadOption loadOption, ReferenceProperty property, LoadType type) {
+	}
+
+	/**
+	 * 大量データ用参照セクションの検索前処理を行います。
+	 *
+	 * @param request リクエスト
+	 * @param view 詳細画面定義
+	 * @param query 検索用クエリ
+	 * @param outputType 出力タイプ(VIEWまたはEDIT)
+	 * @return 実行結果
+	 */
+	default public SearchQueryContext beforeSearchMassReference(RequestContext request, FormView view,
+			Query query, OutputType outputType) {
+		return new SearchQueryContext(query);
+	}
+
+	/**
+	 * 大量データ用参照セクションの検索後処理を行います。
+	 *
+	 * @param request リクエスト
+	 * @param view 詳細画面定義
+	 * @param query 検索用クエリ
+	 * @param entity 検索結果
+	 * @param outputType 出力タイプ(VIEWまたはEDIT)
+	 */
+	default public void afterSearchMassReference(RequestContext request, FormView view,
+			Query query, Entity entity, OutputType outputType) {
 	}
 
 }

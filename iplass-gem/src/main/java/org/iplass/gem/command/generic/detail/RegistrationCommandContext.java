@@ -35,7 +35,6 @@ import org.iplass.mtp.entity.Entity;
 import org.iplass.mtp.entity.EntityManager;
 import org.iplass.mtp.entity.EntityRuntimeException;
 import org.iplass.mtp.entity.GenericEntity;
-import org.iplass.mtp.entity.LoadOption;
 import org.iplass.mtp.entity.SelectValue;
 import org.iplass.mtp.entity.ValidateError;
 import org.iplass.mtp.entity.definition.EntityDefinition;
@@ -59,7 +58,6 @@ import org.iplass.mtp.entity.definition.properties.TimeProperty;
 import org.iplass.mtp.util.StringUtil;
 import org.iplass.mtp.utilityclass.definition.UtilityClassDefinitionManager;
 import org.iplass.mtp.view.generic.FormView;
-import org.iplass.mtp.view.generic.LoadEntityContext;
 import org.iplass.mtp.view.generic.LoadEntityInterrupter;
 import org.iplass.mtp.view.generic.RegistrationInterrupter;
 import org.iplass.mtp.view.generic.editor.BooleanPropertyEditor;
@@ -406,21 +404,7 @@ public abstract class RegistrationCommandContext extends GenericCommandContext {
 		if (interrupter == null) {
 			//何もしないデフォルトInterrupter生成
 			getLogger().debug("set defaul load entity interrupter.");
-			interrupter = new LoadEntityInterrupter() {
-
-				@Override
-				public LoadEntityContext beforeLoadEntity(RequestContext request, FormView view, String defName,
-						LoadOption loadOption, LoadType type) {
-					return new LoadEntityContext(loadOption);
-				}
-
-				@Override
-				public LoadEntityContext beforeLoadReference(RequestContext request, FormView view, String defName,
-						LoadOption loadOption, ReferenceProperty property, LoadType type) {
-					return new LoadEntityContext(loadOption);
-				}
-
-			};
+			interrupter = new LoadEntityInterrupter() {};
 		}
 		return interrupter;
 	}
