@@ -58,7 +58,7 @@ import org.slf4j.LoggerFactory;
  * 
  * 
  * &lt;!-- some/actionXアクションのAction権限を保持する場合ボディコンテンツを表示します --&gt;
- * &lt;m:auth permission="<%=new ActionPermission(\"some/actionX\", new MapActionParameter().put(\"defName\",\"Hoge\"))%>"&gt;
+ * &lt;m:auth permission="&lt;%=new ActionPermission(\"some/actionX\", new MapActionParameter().put(\"defName\",\"Hoge\"))%&gt;"&gt;
  *   this content only show with action permission:"some/actionX?defName=Hoge".
  *   :
  *   :
