@@ -453,7 +453,7 @@ public class GroovyTemplateCompiler {
 
 
 	/**
-	 * Parse a <% .... %> section
+	 * Parse a &lt;% .... %&gt; section
 	 */
 	private static void parseSection(final int pendingC, final Reader reader,
 			final boolean writingString, final StringBuilder templateExpressions) throws IOException {
@@ -476,7 +476,7 @@ public class GroovyTemplateCompiler {
 	}
 
 	/**
-	 * Parse a <%= .... %> expression
+	 * Parse a &lt;%= .... %&gt; expression
 	 *
 	 */
 	private static void parseExpression(final Reader reader,

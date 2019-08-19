@@ -1,6 +1,12 @@
 
 ext.localLibDir = file(localLibDirPath)
 ext.javaVersion = "${javaVersion}"
+ext.javadocLang = System.properties['user.language']
+
+import java.nio.file.Files
+import java.nio.file.Paths
+import java.nio.file.StandardCopyOption
+import java.nio.charset.StandardCharsets
 
 allprojects {
 	apply plugin: 'java'
@@ -55,6 +61,58 @@ subprojects { subproject ->
 			attributes 'Build-Date': new Date().format('yyyy/MM/dd HH:mm:ss')
 		}
 	}
+
+	task copyJavadocJava(type: Copy) {
+		from sourceSets['main'].allJava
+		into "${buildDir}/docSrc/${javadocLang}"
+
+		filteringCharset 'UTF-8'
+		filter { String line ->
+			line.replaceAll('<([\\$])', '%lt;$1')
+				.replaceAll('\\$([\\{])', '\\\\\\$$1')
+				.replaceAll('([^\\\\|^\'])\\$', '$1\\\\\\\\\\$')
+		}
+	}
+
+	task processJavadocJava(dependsOn: copyJavadocJava) {
+		doLast {
+			def docSrcs = fileTree("${buildDir}/docSrc/${javadocLang}")
+			docSrcs.each {
+				def reader = Files.newBufferedReader(Paths.get(it.getCanonicalPath()), StandardCharsets.UTF_8)
+				def template = new groovy.text.StreamingTemplateEngine().createTemplate(reader)
+
+				def tempPath = Files.createTempFile(Paths.get(it.getParent()), null, null)
+				def writer = Files.newBufferedWriter(tempPath, StandardCharsets.UTF_8)
+
+				writer.write(template.make([doclang : javadocLang]))
+
+				reader.close()
+				writer.close()
+
+				Files.move(tempPath, Paths.get(it.getCanonicalPath()), StandardCopyOption.REPLACE_EXISTING)
+			}
+		}
+	}
+
+	task javadocI18n(type: Javadoc, dependsOn: processJavadocJava) {
+		source "${buildDir}/docSrc/${javadocLang}"
+		destinationDir file("${docsDir}/javadoc/${javadocLang}")
+
+		options.encoding = 'UTF-8'
+		options.docEncoding = 'UTF-8'
+		options.memberLevel = 'PACKAGE'
+		options.jFlags "-Duser.language=${javadocLang}"
+
+		// https://issues.gradle.org/browse/GRADLE-1228
+		if (System.properties['http.proxyHost'] != null ) {
+			options.jFlags(
+				'-Dhttp.proxyHost=' + System.properties['http.proxyHost'],
+				'-Dhttp.proxyPort=' + System.properties['http.proxyPort']
+			)
+		}
+
+		failOnError = false
+	}
 }
 
 //public api
@@ -66,6 +124,58 @@ javadoc {
 	classpath += project(':iplass-core').sourceSets['main'].compileClasspath
 	classpath += project(':iplass-web').sourceSets['main'].compileClasspath
 	classpath += files(project(':iplass-web').sourceSets['main'].allJava.srcDirs)
+
+	failOnError = false
+}
+
+task copyJavadocJava(type: Copy) {
+	from project(':iplass-core').sourceSets['main'].allJava
+	from project(':iplass-web').sourceSets['main'].allJava
+	into "${buildDir}/docSrc/${javadocLang}"
+	exclude '**/impl/**'
+
+	filteringCharset 'UTF-8'
+	filter { String line ->
+		line.replaceAll('<([\\$])', '%lt;$1')
+			.replaceAll('\\$([\\{])', '\\\\\\$$1')
+			.replaceAll('([^\\\\|^\'])\\$', '$1\\\\\\\\\\$')
+	}
+}
+
+task processJavadocJava(dependsOn: copyJavadocJava) {
+	doLast {
+		def docSrcs = fileTree("${buildDir}/docSrc/${javadocLang}")
+		docSrcs.each {
+			def reader = Files.newBufferedReader(Paths.get(it.getCanonicalPath()), StandardCharsets.UTF_8)
+			def template = new groovy.text.StreamingTemplateEngine().createTemplate(reader)
+
+			def tempPath = Files.createTempFile(Paths.get(it.getParent()), null, null)
+			def writer = Files.newBufferedWriter(tempPath, StandardCharsets.UTF_8)
+
+			writer.write(template.make([doclang : javadocLang]))
+
+			reader.close()
+			writer.close()
+
+			Files.move(tempPath, Paths.get(it.getCanonicalPath()), StandardCopyOption.REPLACE_EXISTING)
+		}
+	}
+}
+
+task javadocI18n(type: Javadoc, dependsOn: processJavadocJava) {
+	source "${buildDir}/docSrc/${javadocLang}"
+	exclude('**/impl/**')
+
+	destinationDir file("${docsDir}/javadoc/${javadocLang}")
+
+	classpath += project(':iplass-core').sourceSets['main'].compileClasspath
+	classpath += project(':iplass-web').sourceSets['main'].compileClasspath
+	classpath += files(project(':iplass-web').sourceSets['main'].allJava.srcDirs)
+
+	options.encoding = 'UTF-8'
+	options.docEncoding = 'UTF-8'
+	options.memberLevel = 'PACKAGE'
+	options.jFlags "-Duser.language=${javadocLang}"
 
 	failOnError = false
 }
