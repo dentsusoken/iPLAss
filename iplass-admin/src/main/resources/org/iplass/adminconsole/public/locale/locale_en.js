@@ -2195,7 +2195,7 @@ LocaleInfo.generic_element_section_SearchResultSection_interrupterNameDisplaName
 LocaleInfo.generic_element_section_SearchResultSection_interrupterNameDescriptionKey = "Specify the class name of a custom registration process used for data registration.<br>Please specify the class that implements the interface org.iplass.mtp.view.generic.RegistrationInterrupter.";
 LocaleInfo.generic_element_section_SearchResultSection_loadEntityInterrupterNameDisplaNameKey = "Custom load process class";
 LocaleInfo.generic_element_section_SearchResultSection_loadEntityInterrupterNameDescriptionKey = "Specify the class name to customize the options for loading in Entity loading process before execution.<br>Please specify the class that implements the interface org.iplass.mtp.view.generic.LoadEntityInterrupter.";
-LocaleInfo.generic_element_section_SearchResultSection_deleteInterrupterNameDisplaNameKey = "Custom delete process class";
+LocaleInfo.generic_element_section_SearchResultSection_deleteInterrupterNameDisplaNameKey = "Custom bulk delete process class";
 LocaleInfo.generic_element_section_SearchResultSection_deleteInterrupterNameDescriptionKey = "Specify the class name of a custom delete process used for data delete.<br>Please specify the class that implements the interface org.iplass.mtp.view.generic.BulkOperationInterrupter.";
 LocaleInfo.generic_element_section_SearchResultSection_bulkUpdateInterrupterNameDisplaNameKey = "Custom bulk update process class";
 LocaleInfo.generic_element_section_SearchResultSection_bulkUpdateInterrupterNameDescriptionKey = "Specify the class name of a custom bulk update process used for data bulk update.<br>Please specify the class that implements the interface org.iplass.mtp.view.generic.BulkOperationInterrupter.";
