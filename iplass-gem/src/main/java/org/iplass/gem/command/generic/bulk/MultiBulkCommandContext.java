@@ -30,8 +30,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import org.iplass.gem.GemConfigService;
@@ -87,9 +85,6 @@ public class MultiBulkCommandContext extends RegistrationCommandContext {
 	private BulkUpdateInterrupterHandler bulkInterrupterHandler = null;
 
 	private List<BulkCommandParams> bulkCommandParams = new ArrayList<>();
-
-	/** パラメータパターン */
-	private Pattern pattern = Pattern.compile("^(\\d+)\\_(.+)?$");
 
 	/** 一括更新プロパティリスト*/
 	private List<PropertyItem> propList = null;
@@ -169,12 +164,13 @@ public class MultiBulkCommandContext extends RegistrationCommandContext {
 	}
 
 	private String[] splitRowParam(String rowParam) {
-		Matcher m = pattern.matcher(rowParam);
-		if (!m.matches()) {
+		if (rowParam.indexOf("_") == -1) {
 			getLogger().error("invalid parameter format. rowParam=" + rowParam);
 			throw new ApplicationException(resourceString("command.generic.bulk.BulkCommandContext.invalidFormat"));
 		}
-		String[] params = new String[] { m.group(1), m.group(2) };
+		String targetRow = rowParam.substring(0, rowParam.indexOf("_"));
+		String targetParam = rowParam.substring(rowParam.indexOf("_") + 1);
+		String[] params = new String[] { targetRow, targetParam };
 		return params;
 	}
 
