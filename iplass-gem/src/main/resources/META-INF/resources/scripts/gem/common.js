@@ -2472,7 +2472,7 @@ function addReference(id, viewAction, defName, key, label, propName, ulId, refEd
 
 	//リンク追加
 	var linkId = propName + "_" + tmp.oid;
-	var $link = $("<a href='javascript:void(0)' />").attr("data-linkId", linkId).click(function() {
+	var $link = $("<a href='javascript:void(0)' />").attr({"id":linkId, "data-linkId":linkId}).click(function() {
 		showReference(viewAction, defName, oid, ver, linkId, refEdit, null, parentDefName, parentViewName, propName, viewType);
 	}).appendTo($li);
 	$link.text(label);
@@ -2520,7 +2520,7 @@ function addUniqueReference(viewAction, key, label, unique, defName, propName, m
 
 		//linkを設定
 		var linkId = propName + "_" + tmp.oid;
-		$link.attr("data-linkId", linkId).click(function() {
+		$link.attr({"id":linkId, "data-linkId":linkId}).click(function() {
 			showReference(viewAction, defName, oid, ver, linkId, refEdit);
 		});
 		$link.text(label);
@@ -2543,7 +2543,7 @@ function updateUniqueReference(id, viewAction, defName, key, label, propName, ul
 	var $txt = $("#" + txtId)
 
 	var linkId = propName + "_" + tmp.oid;
-	var $link = $("a", $li).attr("data-linkId", linkId).click(function() {
+	var $link = $("a", $li).attr({"id":linkId, "data-linkId":linkId}).click(function() {
 		showReference(viewAction, defName, oid, ver, linkId, refEdit, null, parentDefName, parentViewName, propName, viewType);
 	});
 
