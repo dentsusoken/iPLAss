@@ -1872,8 +1872,9 @@ function showReference(viewAction, defName, oid, version, linkId, refEdit, editC
 		}
 
 		//リンク先でEntityの名前が変更されている可能性があるので値を反映
-		var _id = linkId.replace(/\[/g, "\\[").replace(/\]/g, "\\]").replace(/\./g, "\\.");
-		$("#" + _id).text(entity.name);
+//		var _id = linkId.replace(/\[/g, "\\[").replace(/\]/g, "\\]").replace(/\./g, "\\.");
+//		$("#" + _id).text(entity.name);
+		$("[data-linkId = '" + linkId + "']").text(entity.name);
 
 		//起動したtargetに対して再度詳細画面を表示しなおす(versionは戻ってきたentityから)
 		var $form = $("<form />").attr({method:"POST", action:viewAction + "/" + oid, target:target}).appendTo("body");
@@ -2434,7 +2435,7 @@ function insertUniqueReference(id, addAction, viewAction, defName, propName, mul
 		$("[name='" + _propName + "']:eq(0)", $("#" + _id)).trigger("change", {});
 
 		//起動したtargetに対して再度詳細画面を表示しなおす
-		showReference(viewAction, defName, entity.oid, entity.version, _id, refEdit, null, parentDefName, parentViewName, propName, viewType);
+		showReference(viewAction, defName, entity.oid, entity.version, id, refEdit, null, parentDefName, parentViewName, propName, viewType);
 	};
 
 	var parentPropName = propName.replace(/\[\w+\]/g, "");
@@ -2471,7 +2472,7 @@ function addReference(id, viewAction, defName, key, label, propName, ulId, refEd
 
 	//リンク追加
 	var linkId = propName + "_" + tmp.oid;
-	var $link = $("<a href='javascript:void(0)' />").attr("id", linkId).click(function() {
+	var $link = $("<a href='javascript:void(0)' />").attr({"id":linkId, "data-linkId":linkId}).click(function() {
 		showReference(viewAction, defName, oid, ver, linkId, refEdit, null, parentDefName, parentViewName, propName, viewType);
 	}).appendTo($li);
 	$link.text(label);
@@ -2519,7 +2520,7 @@ function addUniqueReference(viewAction, key, label, unique, defName, propName, m
 
 		//linkを設定
 		var linkId = propName + "_" + tmp.oid;
-		$link.attr("id", linkId).click(function() {
+		$link.attr({"id":linkId, "data-linkId":linkId}).click(function() {
 			showReference(viewAction, defName, oid, ver, linkId, refEdit);
 		});
 		$link.text(label);
@@ -2542,7 +2543,7 @@ function updateUniqueReference(id, viewAction, defName, key, label, propName, ul
 	var $txt = $("#" + txtId)
 
 	var linkId = propName + "_" + tmp.oid;
-	var $link = $("a", $li).attr("id", linkId).click(function() {
+	var $link = $("a", $li).attr({"id":linkId, "data-linkId":linkId}).click(function() {
 		showReference(viewAction, defName, oid, ver, linkId, refEdit, null, parentDefName, parentViewName, propName, viewType);
 	});
 
