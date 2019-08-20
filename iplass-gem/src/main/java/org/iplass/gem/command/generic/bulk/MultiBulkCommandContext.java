@@ -55,8 +55,12 @@ import org.iplass.mtp.impl.util.ConvertUtil;
 import org.iplass.mtp.spi.ServiceRegistry;
 import org.iplass.mtp.util.StringUtil;
 import org.iplass.mtp.view.generic.BulkFormView;
+import org.iplass.mtp.view.generic.BulkOperationContext;
+import org.iplass.mtp.view.generic.BulkOperationInterrupter;
 import org.iplass.mtp.view.generic.EntityViewUtil;
+import org.iplass.mtp.view.generic.FormView;
 import org.iplass.mtp.view.generic.FormViewUtil;
+import org.iplass.mtp.view.generic.SearchFormView;
 import org.iplass.mtp.view.generic.editor.DateRangePropertyEditor;
 import org.iplass.mtp.view.generic.editor.JoinPropertyEditor;
 import org.iplass.mtp.view.generic.editor.NestProperty;
@@ -79,6 +83,8 @@ public class MultiBulkCommandContext extends RegistrationCommandContext {
 	private BulkFormView view;
 
 	private GemConfigService gemConfig = null;
+	
+	private BulkUpdateInterrupterHandler bulkInterrupterHandler = null;
 
 	private List<BulkCommandParams> bulkCommandParams = new ArrayList<>();
 
@@ -761,6 +767,69 @@ public class MultiBulkCommandContext extends RegistrationCommandContext {
 			}
 		}
 		return propList;
+	}
+
+	/**
+	 * 更新するエンティティリスト、interrupterで利用されます。
+	 */
+	public List<Entity> getEntities() {
+		List<Entity> entities = new ArrayList<Entity>();
+		for (String oid : getOids()) {
+			for (Long version : getVersions(oid)) {
+				Entity entity = newEntity();
+				entity.setOid(oid);
+				entity.setVersion(version);
+				entity.setUpdateDate(getTimestamp(oid, version));
+				entities.add(entity);
+			}
+		}
+		return entities;
+	}
+	
+	public BulkUpdateInterrupterHandler getBulkUpdateInterrupterHandler() {
+		if (bulkInterrupterHandler == null) {
+			BulkOperationInterrupter bulkInterrupter = createBulkInterrupter(getBulkInterrupterName());
+			bulkInterrupterHandler = new BulkUpdateInterrupterHandler(request, this, bulkInterrupter);
+		}
+		return bulkInterrupterHandler;
+	}
+
+	protected String getBulkInterrupterName() {
+		String viewName = getViewName();
+		//FIXME SearchResult定義からカスタム一括更新クラスを取得します。
+		SearchFormView view = FormViewUtil.getSearchFormView(entityDefinition, entityView, viewName);
+		return view.getResultSection().getBulkUpdateInterrupterName();
+	}
+
+	protected BulkOperationInterrupter createBulkInterrupter(String className) {
+		BulkOperationInterrupter interrupter = null;
+		if (StringUtil.isNotEmpty(className)) {
+			getLogger().debug("set bulk operation interrupter. class=" + className);
+			try {
+				interrupter = ucdm.createInstanceAs(BulkOperationInterrupter.class, className);
+			} catch (ClassNotFoundException e) {
+				getLogger().error(className + " can not instantiate.", e);
+				throw new ApplicationException(resourceString(""));
+			}
+		}
+		if (interrupter == null) {
+			// 何もしないデフォルトInterrupter生成
+			getLogger().debug("set default bulk operation interrupter.");
+			interrupter = new BulkOperationInterrupter() {
+
+				@Override
+				public BulkOperationContext beforeOperation(List<Entity> entities, RequestContext request, EntityDefinition definition, FormView view,
+						BulkOperationType bulkOperationType) {
+					return null;
+				}
+
+				@Override
+				public void afterOperation(List<Entity> entities, RequestContext request, EntityDefinition definition, FormView view,
+						BulkOperationType bulkOperationType) {
+				}
+			};
+		}
+		return interrupter;
 	}
 
 	@SuppressWarnings("unused")

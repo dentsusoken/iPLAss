@@ -106,6 +106,12 @@ public class MetaSearchResultSection extends MetaSection {
 	/** カスタムロード処理クラス名 */
 	private String loadEntityInterrupterName;
 
+	/** カスタム削除処理クラス名 */
+	private String deleteInterrupterName;
+	
+	/** カスタム一括更新処理クラス名*/
+	private String bulkUpdateInterrupterName;
+
 	/** 要素 */
 	private List<MetaElement> elements;
 
@@ -392,7 +398,39 @@ public class MetaSearchResultSection extends MetaSection {
 	public void setLoadEntityInterrupterName(String loadEntityInterrupterName) {
 		this.loadEntityInterrupterName = loadEntityInterrupterName;
 	}
-	
+
+	/**
+	 * カスタム削除処理クラス名を取得します。
+	 * @return カスタム削除処理クラス名
+	 */
+	public String getDeleteInterrupterName() {
+		return deleteInterrupterName;
+	}
+
+	/**
+	 * カスタム削除処理クラス名を設定します。
+	 * @param deleteInterrupterName カスタム削除処理クラス名
+	 */
+	public void setDeleteInterrupterName(String deleteInterrupterName) {
+		this.deleteInterrupterName = deleteInterrupterName;
+	}
+
+	/**
+	 * カスタム一括更新処理クラス名を取得します。
+	 * @return カスタム一括更新処理クラス名
+	 */
+	public String getBulkUpdateInterrupterName() {
+		return bulkUpdateInterrupterName;
+	}
+
+	/**
+	 * カスタム一括更新処理クラス名を設定します。
+	 * @param bulkUpdateInterrupterName カスタム一括更新処理クラス名
+	 */
+	public void setBulkUpdateInterrupterName(String bulkUpdateInterrupterName) {
+		this.bulkUpdateInterrupterName = bulkUpdateInterrupterName;
+	}
+
 	/**
 	 * 一括削除のトランザクションタイプを取る
 	 * @return トランザクションタイプ
@@ -478,6 +516,8 @@ public class MetaSearchResultSection extends MetaSection {
 		this.forceUpadte = section.isForceUpadte();
 		this.interrupterName = section.getInterrupterName();
 		this.loadEntityInterrupterName = section.getLoadEntityInterrupterName();
+		this.deleteInterrupterName = section.getDeleteInterrupterName();
+		this.bulkUpdateInterrupterName = section.getBulkUpdateInterrupterName();
 		this.deleteAllCommandTransactionType = section.getDeleteAllCommandTransactionType();
 		this.bulkUpdateAllCommandTransactionType = section.getBulkUpdateAllCommandTransactionType(); 
 		// 仮想プロパティ追加によりMetaPropertyからMetaElementへフィールドを変更
@@ -520,6 +560,8 @@ public class MetaSearchResultSection extends MetaSection {
 		section.setForceUpadte(this.forceUpadte);
 		section.setInterrupterName(this.interrupterName);
 		section.setLoadEntityInterrupterName(this.loadEntityInterrupterName);
+		section.setDeleteInterrupterName(this.deleteInterrupterName);
+		section.setBulkUpdateInterrupterName(this.bulkUpdateInterrupterName);
 		section.setBulkUpdateAllCommandTransactionType(this.bulkUpdateAllCommandTransactionType);
 		section.setDeleteAllCommandTransactionType(this.deleteAllCommandTransactionType);
 

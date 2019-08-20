@@ -54,7 +54,10 @@ import org.iplass.mtp.entity.definition.properties.ReferenceProperty;
 import org.iplass.mtp.impl.util.ConvertUtil;
 import org.iplass.mtp.spi.ServiceRegistry;
 import org.iplass.mtp.util.StringUtil;
+import org.iplass.mtp.view.generic.BulkOperationContext;
+import org.iplass.mtp.view.generic.BulkOperationInterrupter;
 import org.iplass.mtp.view.generic.EntityViewUtil;
+import org.iplass.mtp.view.generic.FormView;
 import org.iplass.mtp.view.generic.FormViewUtil;
 import org.iplass.mtp.view.generic.SearchFormView;
 import org.iplass.mtp.view.generic.editor.DateRangePropertyEditor;
@@ -77,6 +80,8 @@ public class BulkCommandContext extends RegistrationCommandContext {
 	private SearchFormView view;
 
 	private GemConfigService gemConfig = null;
+
+	private BulkUpdateInterrupterHandler bulkUpdateInterrupterHandler = null;
 
 	private List<BulkCommandParams> bulkCommandParams = new ArrayList<>();
 
@@ -615,8 +620,9 @@ public class BulkCommandContext extends RegistrationCommandContext {
 
 	private Entity createEntityInternal(String paramPrefix, String errorPrefix) {
 		Entity entity = newEntity();
-		for (PropertyDefinition p : getPropertyList()) {
-			if (skipProps.contains(p.getName())) continue;
+		for (PropertyColumn pc : getProperty()) {
+			PropertyDefinition p = getProperty(pc.getPropertyName());
+			if (p == null || skipProps.contains(p.getName())) continue;
 			Object value = getPropValue(p, paramPrefix);
 			entity.setValue(p.getName(), value);
 			if (errorPrefix != null) {
@@ -753,6 +759,23 @@ public class BulkCommandContext extends RegistrationCommandContext {
 		return propList;
 	}
 
+	/**
+	 * 更新するエンティティリスト、interrupterで利用されます。
+	 */
+	public List<Entity> getEntities() {
+		List<Entity> entities = new ArrayList<Entity>();
+		for (String oid : getOids()) {
+			for (Long version : getVersions(oid)) {
+				Entity entity = newEntity();
+				entity.setOid(oid);
+				entity.setVersion(version);
+				entity.setUpdateDate(getTimestamp(oid, version));
+				entities.add(entity);
+			}
+		}
+		return entities;
+	}
+
 	@SuppressWarnings("unused")
 	private class BulkCommandParams {
 
@@ -824,6 +847,49 @@ public class BulkCommandContext extends RegistrationCommandContext {
 		}
 	}
 
+	public BulkUpdateInterrupterHandler getBulkUpdateInterrupterHandler() {
+		if (bulkUpdateInterrupterHandler == null) {
+			BulkOperationInterrupter bulkUpdateInterrupter = createBulkInterrupter(getBulkInterrupterName());
+			bulkUpdateInterrupterHandler = new BulkUpdateInterrupterHandler(request, this, bulkUpdateInterrupter);
+		}
+		return bulkUpdateInterrupterHandler;
+	}
+
+	protected String getBulkInterrupterName() {
+		return getView().getResultSection().getBulkUpdateInterrupterName();
+	}
+
+	protected BulkOperationInterrupter createBulkInterrupter(String className) {
+		BulkOperationInterrupter interrupter = null;
+		if (StringUtil.isNotEmpty(className)) {
+			getLogger().debug("set bulk update operation interrupter. class=" + className);
+			try {
+				interrupter = ucdm.createInstanceAs(BulkOperationInterrupter.class, className);
+			} catch (ClassNotFoundException e) {
+				getLogger().error(className + " can not instantiate.", e);
+				throw new ApplicationException(resourceString("command.generic.detail.BulkCommandContext.internalErr"));
+			}
+		}
+		if (interrupter == null) {
+			// 何もしないデフォルトInterrupter生成
+			getLogger().debug("set default bulk update operation interrupter.");
+			interrupter = new BulkOperationInterrupter() {
+
+				@Override
+				public BulkOperationContext beforeOperation(List<Entity> entities, RequestContext request, EntityDefinition definition, FormView view,
+						BulkOperationType bulkOperationType) {
+					return null;
+				}
+
+				@Override
+				public void afterOperation(List<Entity> entities, RequestContext request, EntityDefinition definition, FormView view,
+						BulkOperationType bulkOperationType) {
+
+				}
+			};
+		}
+		return interrupter;
+	}
 
 	public static class BulkUpdatedProperty {
 

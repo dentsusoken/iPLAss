@@ -23,10 +23,8 @@ package org.iplass.gem.command.generic.bulk;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Set;
 
 import org.iplass.gem.command.Constants;
-import org.iplass.gem.command.GemResourceBundleUtil;
 import org.iplass.gem.command.generic.ResultType;
 import org.iplass.mtp.ManagerLocator;
 import org.iplass.mtp.command.RequestContext;
@@ -43,6 +41,7 @@ import org.iplass.mtp.transaction.Transaction;
 import org.iplass.mtp.transaction.TransactionListener;
 import org.iplass.mtp.transaction.TransactionManager;
 import org.iplass.mtp.view.generic.BulkFormView;
+import org.iplass.mtp.view.generic.BulkOperationContext;
 
 @ActionMappings({
 	@ActionMapping(name=MultiBulkUpdateListCommand.BULK_UPDATE_ACTION_NAME,
@@ -82,8 +81,8 @@ public class MultiBulkUpdateListCommand extends MultiBulkCommandBase {
 	@Override
 	public String execute(RequestContext request) {
 		final MultiBulkCommandContext context = getContext(request);
+		final boolean isSearchCondUpdate = isSearchCondUpdate(request);
 		// 必要なパラメータ取得
-		Set<String> oids = context.getOids();
 		BulkFormView view = context.getView();
 
 		if (view == null) {
@@ -97,16 +96,31 @@ public class MultiBulkUpdateListCommand extends MultiBulkCommandBase {
 			return Constants.CMD_EXEC_ERROR_VIEW;
 		}
 
-		EditResult ret = null;
+		EditResult ret = new EditResult();
 		MultiBulkUpdateFormViewData data = new MultiBulkUpdateFormViewData(context);
 		data.setView(context.getView());
-		for (String oid : oids) {
-			for (Long version : context.getVersions(oid)) {
+
+		List<Entity> entities = context.getEntities();
+		//一括更新する前の処理を呼び出します。
+		List<ValidateError> errors = new ArrayList<ValidateError>();
+		if (!isSearchCondUpdate) {
+			BulkOperationContext bulkContext = context.getBulkUpdateInterrupterHandler().beforeOperation(entities);
+			errors.addAll(bulkContext.getErrors());
+			entities = bulkContext.getEntities();
+		}
+
+		if (!errors.isEmpty()) {
+			ret.setResultType(ResultType.ERROR);
+			ret.setErrors(errors.toArray(new ValidateError[errors.size()]));
+			ret.setMessage(resourceString("command.generic.bulk.BulkUpdateListCommand.inputErr"));
+		} else if (entities.size() > 0) {
+			for (Entity entity : entities) {
+				String oid = entity.getOid();
+				Long version = entity.getVersion();
 				Entity model = context.createEntity(oid, version);
 				Integer row = context.getRow(oid, version);
 				if (context.hasErrors()) {
-					if (ret == null) {
-						ret = new EditResult();
+					if (ret.getResultType() == null) {
 						ret.setResultType(ResultType.ERROR);
 						ret.setErrors(context.getErrors().toArray(new ValidateError[context.getErrors().size()]));
 						ret.setMessage(resourceString("command.generic.bulk.BulkUpdateListCommand.inputErr"));
@@ -114,14 +128,18 @@ public class MultiBulkUpdateListCommand extends MultiBulkCommandBase {
 					data.setEntity(row, model);
 				} else {
 					// 更新
-					if (ret == null || ret.getResultType() == ResultType.SUCCESS) ret = updateEntity(context, model);
+					if (ret.getResultType() == null || ret.getResultType() == ResultType.SUCCESS) ret = updateEntity(context, model);
 					if (ret.getResultType() == ResultType.SUCCESS) {
 						Transaction transaction = ManagerLocator.getInstance().getManager(TransactionManager.class).currentTransaction();
 						transaction.addTransactionListener(new TransactionListener() {
 							@Override
 							public void afterCommit(Transaction t) {
-								// 特定のバージョン指定でロード
-								data.setEntity(row, loadViewEntity(context, oid, version, context.getDefinitionName(), (List<String>) null));
+								// 検索条件で更新ではなければ、特定のバージョン指定でロード
+								if (!isSearchCondUpdate) {
+									data.setEntity(row, loadViewEntity(context, oid, version, context.getDefinitionName(), (List<String>) null));
+								} else {
+									data.setEntity(row, model);
+								}
 							}
 
 							@Override
@@ -136,6 +154,11 @@ public class MultiBulkUpdateListCommand extends MultiBulkCommandBase {
 			}
 		}
 
+		//更新した後の処理を呼び出します。
+		if (!isSearchCondUpdate) {
+			context.getBulkUpdateInterrupterHandler().afterOperation(entities);
+		}
+
 		String retKey = Constants.CMD_EXEC_SUCCESS;
 		if (ret.getResultType() == ResultType.SUCCESS) {
 			request.setAttribute(Constants.MESSAGE, resourceString("command.generic.bulk.BulkUpdateListCommand.successMsg"));
@@ -145,8 +168,8 @@ public class MultiBulkUpdateListCommand extends MultiBulkCommandBase {
 			if (ret.getErrors() != null) {
 				tmpList.addAll(Arrays.asList(ret.getErrors()));
 			}
-			ValidateError[] errors = tmpList.toArray(new ValidateError[tmpList.size()]);
-			request.setAttribute(Constants.ERROR_PROP, errors);
+			ValidateError[] _error = tmpList.toArray(new ValidateError[tmpList.size()]);
+			request.setAttribute(Constants.ERROR_PROP, _error);
 			request.setAttribute(Constants.MESSAGE, ret.getMessage());
 		}
 
@@ -159,7 +182,13 @@ public class MultiBulkUpdateListCommand extends MultiBulkCommandBase {
 		return retKey;
 	}
 
-	private static String resourceString(String key, Object... arguments) {
-		return GemResourceBundleUtil.resourceString(key, arguments);
+	/**
+	 * 検索条件で更新されたかどうか
+	 * @return 検索条件で更新されるかどうか
+	 */
+	public boolean isSearchCondUpdate(RequestContext request) {
+		return request.getAttribute(Constants.OID) != null
+				&& request.getAttribute(Constants.VERSION) != null
+				&& request.getAttribute(Constants.TIMESTAMP) != null;
 	}
 }

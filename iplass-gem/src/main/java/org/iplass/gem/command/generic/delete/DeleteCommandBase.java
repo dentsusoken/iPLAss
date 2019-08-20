@@ -24,10 +24,12 @@ import org.iplass.gem.command.generic.ResultType;
 import org.iplass.mtp.ApplicationException;
 import org.iplass.mtp.ManagerLocator;
 import org.iplass.mtp.command.Command;
+import org.iplass.mtp.command.RequestContext;
 import org.iplass.mtp.entity.DeleteOption;
 import org.iplass.mtp.entity.Entity;
 import org.iplass.mtp.entity.EntityManager;
 import org.iplass.mtp.entity.LoadOption;
+import org.iplass.mtp.entity.definition.EntityDefinitionManager;
 import org.iplass.mtp.view.generic.EntityViewManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,6 +50,7 @@ public abstract class DeleteCommandBase implements Command {
 	/** EntityManager */
 	protected EntityManager em = null;
 	protected EntityViewManager evm = null;
+	protected EntityDefinitionManager edm = null;
 
 	/**
 	 * コンストラクタ
@@ -55,6 +58,15 @@ public abstract class DeleteCommandBase implements Command {
 	public DeleteCommandBase() {
 		em = ManagerLocator.getInstance().getManager(EntityManager.class);
 		evm = ManagerLocator.getInstance().getManager(EntityViewManager.class);
+		edm = ManagerLocator.getInstance().getManager(EntityDefinitionManager.class);
+	}
+
+	public DeleteCommandContext getContext(RequestContext request) {
+		DeleteCommandContext context = new DeleteCommandContext(request);
+		context.setEntityDefinition(edm.get(context.getDefinitionName()));
+		context.setEntityView(evm.get(context.getDefinitionName()));
+
+		return context;
 	}
 
 	/**
