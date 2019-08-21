@@ -273,7 +273,7 @@ public class TenantCreateDialog extends MtpJDialogBase {
 			}
 		});
 
-		JLabel lblDisplayName = new JLabel("*displayName");
+		JLabel lblDisplayName = new JLabel("displayName");
 		txtDisplayName = new JTextField();
 		txtDisplayName.setPreferredSize(new Dimension(200, 25));
 		txtDisplayName.setEditable(false);
@@ -467,13 +467,13 @@ public class TenantCreateDialog extends MtpJDialogBase {
 			txtUrl.setText("/" + txtName.getText());
 		}
 		if (chkDisplayName.isSelected()) {
-			txtDisplayName.setText(txtName.getText());
+			txtDisplayName.setText("");
 		}
 		if (chkTopUrl.isSelected()) {
-			txtTopUrl.setText("/gem/");
+			txtTopUrl.setText("");
 		}
 		if (chkUseLanguages.isSelected()) {
-			txtUseLanguages.setText(getLanguage());
+			txtUseLanguages.setText(defaultEnableLanguages);
 		}
 	}
 
@@ -500,9 +500,6 @@ public class TenantCreateDialog extends MtpJDialogBase {
 
 		if (txtUrl.getText().trim().isEmpty()) {
 			messages.append(rs("Common.requiredMsg", "url") + "\n");
-		}
-		if (txtDisplayName.getText().trim().isEmpty()) {
-			messages.append(rs("Common.requiredMsg", "displayName") + "\n");
 		}
 
 		if (messages.length() > 0) {

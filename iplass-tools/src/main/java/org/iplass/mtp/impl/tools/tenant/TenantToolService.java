@@ -29,6 +29,7 @@ import org.iplass.mtp.impl.auth.authenticate.builtin.BuiltinAuthenticationProvid
 import org.iplass.mtp.impl.core.ExecuteContext;
 import org.iplass.mtp.impl.core.TenantContext;
 import org.iplass.mtp.impl.core.TenantContextService;
+import org.iplass.mtp.impl.i18n.I18nService;
 import org.iplass.mtp.impl.rdb.adapter.RdbAdapter;
 import org.iplass.mtp.impl.rdb.adapter.RdbAdapterService;
 import org.iplass.mtp.impl.tenant.MetaTenant;
@@ -49,6 +50,7 @@ import org.iplass.mtp.tenant.TenantMailInfo;
 import org.iplass.mtp.tenant.gem.TenantGemInfo;
 import org.iplass.mtp.tenant.web.TenantWebInfo;
 import org.iplass.mtp.transaction.Transaction;
+import org.iplass.mtp.util.StringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -63,6 +65,9 @@ public class TenantToolService implements Service {
 	private TenantService tenantService;
 	private MetaTenantService metaTenantService;
 	private AuthService authService;
+	private I18nService i18nService;
+
+	private String defaultEnableLanguages = "";
 
 	private TenantRdbManager rdbManager;
 
@@ -74,6 +79,16 @@ public class TenantToolService implements Service {
 		tenantService = config.getDependentService(TenantService.class);
 		metaTenantService = config.getDependentService(MetaTenantService.class);
 		authService = config.getDependentService(AuthService.class);
+		i18nService = config.getDependentService(I18nService.class);
+
+		if (i18nService.getEnableLanguagesMap() != null) {
+			for (String languageKey : i18nService.getEnableLanguagesMap().keySet()) {
+				defaultEnableLanguages += (languageKey + ",");
+			}
+			if (defaultEnableLanguages.length() > 1) {
+				defaultEnableLanguages = defaultEnableLanguages.substring(0, defaultEnableLanguages.length() - 1);
+			}
+		}
 
 		RdbAdapter rdbAdapter = config.getDependentService(RdbAdapterService.class).getRdbAdapter();
 
@@ -146,8 +161,8 @@ public class TenantToolService implements Service {
 			TenantContext tContext = tenantContextService.getTenantContext(tenant.getId());
 
 			ExecuteContext.executeAs(tContext, () -> {
-				//TenantMeta情報の作成
-				createMetaTenantData(param, tenant, wrapLogger);
+				//TenantMeta情報の更新
+				updateMetaTenantData(param, tenant, wrapLogger);
 				return null;
 			});
 
@@ -216,20 +231,34 @@ public class TenantToolService implements Service {
 	}
 
 	/**
-	 * テナントMeta情報を作成します。
+	 * テナントMeta情報を更新します。
 	 */
-	private void createMetaTenantData(final TenantCreateParameter param, final Tenant tenant, LogHandler logHandler) {
+	private void updateMetaTenantData(final TenantCreateParameter param, final Tenant tenant, LogHandler logHandler) {
+		boolean metaUpdate = false;
 
-		tenant.setDisplayName(param.getTenantDisplayName());
+		if (StringUtil.isNotBlank(param.getTenantDisplayName())) {
+			tenant.setDisplayName(param.getTenantDisplayName());
+			metaUpdate = true;
+		}
 
-		setDefaultTenantInfo(param, tenant);
+		if (StringUtil.isNotBlank(param.getTopUrl())) {
+			setDefaultTenantWebInfo(param, tenant);
+			metaUpdate = true;
+		}
 
-		MetaTenant metaTenant = new MetaTenant();
-		metaTenant.applyConfig(tenant);
+		if (metaUpdate || !defaultEnableLanguages.equals(param.getUseLanguages())) {
+			setDefaultTenantI18nInfo(param, tenant);
+			metaUpdate = true;
+		}
 
-		metaTenantService.createMetaData(metaTenant);
+		if (metaUpdate) {
+			MetaTenant metaTenant = new MetaTenant();
+			metaTenant.applyConfig(tenant);
 
-		logHandler.info(ToolsResourceBundleUtil.resourceString(param.getLoggerLanguage(), "tenant.create.createdTenantMetaMsg", tenant.getId()));
+			metaTenantService.updateMetaData(metaTenant);
+
+			logHandler.info(ToolsResourceBundleUtil.resourceString(param.getLoggerLanguage(), "tenant.create.updatedTenantMetaMsg", tenant.getId()));
+		}
 	}
 
 	/**
@@ -267,6 +296,32 @@ public class TenantToolService implements Service {
 	}
 
 	/**
+	 * テナントMeta情報に多言語のデフォルト値を設定します。
+	 */
+	private void setDefaultTenantI18nInfo(final TenantCreateParameter param, final Tenant tenant) {
+		TenantI18nInfo i18Info = new TenantI18nInfo();
+		if (param.getUseLanguages() != null && !param.getUseLanguages().isEmpty()) {
+			String[] langArray = param.getUseLanguages().split(",");
+			List<String> useLanguageList = new ArrayList<>(langArray.length);
+			for (String lang : langArray) {
+				useLanguageList.add(lang);
+			}
+			i18Info.setUseLanguageList(useLanguageList);
+			i18Info.setUseMultilingual(true);
+		}
+		tenant.setTenantConfig(i18Info);
+	}
+
+	/**
+	 * テナントMeta情報にWebのデフォルト値を設定します。
+	 */
+	private void setDefaultTenantWebInfo(final TenantCreateParameter param, final Tenant tenant) {
+		TenantWebInfo webInfo = new TenantWebInfo();
+		webInfo.setHomeUrl(param.getTopUrl());
+		tenant.setTenantConfig(webInfo);
+	}
+
+	/**
 	 * テナントを削除します。
 	 *
 	 * @param param 削除パラメータ
@@ -287,7 +342,7 @@ public class TenantToolService implements Service {
 
 		LogHandler wrapLogger = new WrappedLogger(logHandler);
 
-		boolean 	isSuccess = Transaction.requiresNew(t -> {
+		boolean isSuccess = Transaction.requiresNew(t -> {
 
 				boolean deleteAccount = false;
 				AuthenticationProvider provider = authService.getAuthenticationProvider();

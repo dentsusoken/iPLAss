@@ -61,8 +61,8 @@ public class TenantCreateParameter {
 		this.adminPassword = adminPassword;
 
 		tenantUrl = "/" + tenantName;
-		tenantDisplayName = tenantName;
-		topUrl = "/gem/";
+		tenantDisplayName = "";
+		topUrl = "";
 		iconUrl = "/favicon.ico";
 	}
 
