@@ -22,6 +22,7 @@ package org.iplass.mtp.tools.batch.tenant;
 
 
 import org.iplass.mtp.impl.core.ExecuteContext;
+import org.iplass.mtp.impl.i18n.I18nService;
 import org.iplass.mtp.impl.tools.tenant.TenantCreateParameter;
 import org.iplass.mtp.impl.tools.tenant.TenantDeleteParameter;
 import org.iplass.mtp.impl.tools.tenant.TenantInfo;
@@ -44,6 +45,7 @@ public class TenantBatch extends MtpCuiBase {
 	//実行モード
 	private TenantBatchExecMode execMode = TenantBatchExecMode.GUI;
 
+	private I18nService i18nService = ServiceRegistry.getRegistry().getService(I18nService.class);
 	private TenantToolService toolService = ServiceRegistry.getRegistry().getService(TenantToolService.class);
 
 	/**
@@ -261,24 +263,32 @@ public class TenantBatch extends MtpCuiBase {
 
 		TenantCreateParameter param = new TenantCreateParameter(tenantName, adminUserId, adminPW);
 		param.setTenantUrl(tenantUrl);
-		param.setUseLanguages(getLanguage());
+
+		String defaultEnableLanguages = "";
+		if (i18nService.getEnableLanguagesMap() != null) {
+			for (String languageKey : i18nService.getEnableLanguagesMap().keySet()) {
+				defaultEnableLanguages += (languageKey + ",");
+			}
+			if (defaultEnableLanguages.length() > 1) {
+				defaultEnableLanguages = defaultEnableLanguages.substring(0, defaultEnableLanguages.length() - 1);
+			}
+		}
+		param.setUseLanguages(defaultEnableLanguages);
 
 		//デフォルトスキップチェック
 		boolean isDefault = readConsoleBoolean(rs("TenantBatch.Create.Wizard.confirmDefaultMsg"), false);
 
 		if (!isDefault) {
-			String tenantDisplayName = readConsole(rs("TenantBatch.Create.Wizard.inputTenantDispNameMsg") + "(" + param.getTenantDisplayName() + ")");
+			String tenantDisplayName = readConsole(rs("TenantBatch.Create.Wizard.inputTenantDispNameMsg"));
 			if (StringUtil.isNotBlank(tenantDisplayName)) {
 				param.setTenantDisplayName(tenantDisplayName);
 			}
-			String topURL = readConsole(rs("TenantBatch.Create.Wizard.inputTopUrlMsg") + "(" + param.getTopUrl() + ")");
+			String topURL = readConsole(rs("TenantBatch.Create.Wizard.inputTopUrlMsg"));
 			if (StringUtil.isNotBlank(topURL)) {
 				param.setTopUrl(topURL);
 			}
 			String lang = readConsole(rs("TenantBatch.Create.Wizard.useMultiLangMsg"));
-			if (StringUtil.isNotBlank(lang)) {
-				param.setUseLanguages(lang);
-			}
+			param.setUseLanguages(lang);
 
 			boolean isBlank = readConsoleBoolean(rs("TenantBatch.Create.Wizard.createBlankTenantMsg"), false);
 			param.setCreateBlankTenant(isBlank);
