@@ -26,24 +26,18 @@ import java.util.List;
 import org.iplass.adminconsole.client.base.event.DataChangedEvent;
 import org.iplass.adminconsole.client.base.event.DataChangedHandler;
 import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
-import org.iplass.adminconsole.client.base.io.upload.AdminUploadStatus;
-import org.iplass.adminconsole.client.base.io.upload.CustomUploaderConstants;
+import org.iplass.adminconsole.client.base.io.upload.AdminSingleUploader;
 import org.iplass.adminconsole.client.base.tenant.TenantInfoHolder;
 import org.iplass.adminconsole.client.base.ui.widget.AbstractWindow;
 import org.iplass.adminconsole.client.base.ui.widget.MessageTabSet;
 import org.iplass.adminconsole.shared.base.dto.io.upload.UploadProperty;
-import org.iplass.adminconsole.shared.metadata.dto.MetaDataConstants;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONParser;
 import com.google.gwt.json.client.JSONValue;
-import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Hidden;
-import com.google.gwt.user.client.ui.Widget;
-import com.google.gwt.xml.client.Document;
-import com.google.gwt.xml.client.XMLParser;
 import com.smartgwt.client.types.VerticalAlignment;
 import com.smartgwt.client.util.SC;
 import com.smartgwt.client.widgets.IButton;
@@ -54,10 +48,6 @@ import com.smartgwt.client.widgets.layout.HLayout;
 import com.smartgwt.client.widgets.layout.VLayout;
 
 import gwtupload.client.IUploadStatus.Status;
-import gwtupload.client.IUploader;
-import gwtupload.client.IUploader.UploadedInfo;
-import gwtupload.client.SingleUploader;
-import gwtupload.client.Utils;
 
 public class MessageItemCsvUploadDialog extends AbstractWindow {
 
@@ -104,61 +94,27 @@ public class MessageItemCsvUploadDialog extends AbstractWindow {
 		fileLabel.setWrap(false);
 		fileComposit.addMember(fileLabel);
 
-		//第2引数に指定したラベルに対してメッセージが表示される。利用しないので空実装
-		final SingleUploader uploader = new SingleUploader(new AdminUploadStatus(), new com.google.gwt.user.client.ui.Label(""));
-		IUploader.UploaderConstants constants = GWT.create(CustomUploaderConstants.class);	//Messageのカスタマイズ
-		uploader.setI18Constants(constants);
-		uploader.setServletPath(GWT.getModuleBaseURL() + UPLOAD_SERVICE);					//Servlet
-		uploader.setAutoSubmit(false);														//自動送信しない
-		uploader.setValidExtensions("csv");													//選択可能拡張子
-		uploader.getFileInput().asWidget().setHeight("20px");
-		uploader.getFileInput().asWidget().setWidth(MetaDataConstants.DEFAULT_FORM_ITEM_WIDTH + "px");
-		uploader.addOnStartUploadHandler(new IUploader.OnStartUploaderHandler() {
-			@Override
-			public void onStart(IUploader uploader) {
-				debugUploader(uploader, "onStart");
-				startUpload();
-			}
+		final AdminSingleUploader uploader = new AdminSingleUploader(UPLOAD_SERVICE);
+		uploader.setValidExtensions("csv");
+		uploader.addOnStartUploadHandler((result) -> {
+			uploader.debugUploader("onStart");
+			startUpload();
 		});
-		uploader.addOnStatusChangedHandler(new IUploader.OnStatusChangedHandler() {
-
-			@Override
-			public void onStatusChanged(IUploader uploader) {
-				debugUploader(uploader, "onStatusChanged");
-			}
+		uploader.addOnStatusChangedHandler((result) -> {
+			uploader.debugUploader("onStatusChanged");
 		});
-		uploader.addOnFinishUploadHandler(new IUploader.OnFinishUploaderHandler() {
+		uploader.addOnFinishUploadHandler((result) -> {
+			uploader.debugUploader("onFinish");
 
-			@Override
-			public void onFinish(IUploader uploaderResult) {
-				debugUploader(uploaderResult, "onFinish");
-				if (uploaderResult.getStatus() == Status.SUCCESS) {
-					showResult(uploaderResult.getServerMessage().getMessage());
-				} else {
-					//ServerResponseからメッセージ作成
-					errorUpload(getErrorMessage(uploaderResult.getServerRawResponse()));
-				}
-
-				//Hidden項目の削除（uploader#reset、clearなどではうまくいかないため下の方法でクリア）
-				Widget form = uploader.getForm().getWidget();
-				if (form instanceof FlowPanel) {
-					FlowPanel formPanel = (FlowPanel)form;
-					for (int i = formPanel.getWidgetCount() - 1; i >= 0; i--) {
-						Widget child = formPanel.getWidget(i);
-						if (child instanceof Hidden) {
-							formPanel.remove(child);
-						}
-					}
-				}
+			if (uploader.getStatus() == Status.SUCCESS) {
+				showResult(uploader.getMessage());
+			} else {
+				errorUpload(uploader.getErrorMessage());
 			}
 
-			private String getErrorMessage(String response) {
-				Document doc = XMLParser.parse(response);
-				return Utils.getXmlNodeValue(doc, "error");
-			}
-
+			//Hidden項目の削除
+			uploader.removeHidden();
 		});
-
 
 		fileComposit.addMember(uploader);
 
@@ -226,20 +182,6 @@ public class MessageItemCsvUploadDialog extends AbstractWindow {
 		disableComponent(true);
 		messageTabSet.clearMessage();
 		messageTabSet.setTabTitleProgress();
-	}
-
-	private void debugUploader(IUploader uploader, String eventName) {
-		UploadedInfo info = uploader.getServerInfo();
-
-		GWT.log(eventName + ": status                   ->" + uploader.getStatus());
-		if (info == null) {
-			GWT.log(eventName + ": UploadedInfo is Null.");
-		} else {
-			GWT.log(eventName + ": File name                ->" + info.name);
-			GWT.log(eventName + ": File content-type        ->" + info.ctype);
-			GWT.log(eventName + ": File size                ->" + info.size);
-		}
-		GWT.log(eventName + ": message                  ->" + uploader.getServerMessage().getMessage());
 	}
 
 	private void showResult(String message) {

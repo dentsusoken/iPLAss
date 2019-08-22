@@ -25,14 +25,13 @@ import java.util.LinkedHashMap;
 import java.util.List;
 
 import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
-import org.iplass.adminconsole.client.base.io.upload.AdminUploadStatus;
+import org.iplass.adminconsole.client.base.io.upload.AdminSingleUploader;
 import org.iplass.adminconsole.client.base.tenant.TenantInfoHolder;
 import org.iplass.adminconsole.client.base.ui.widget.AbstractWindow;
 import org.iplass.adminconsole.client.base.ui.widget.MessageTabSet;
 import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
 import org.iplass.adminconsole.client.tools.data.entityexplorer.UniquePropertyDS;
 import org.iplass.adminconsole.client.tools.ui.entityexplorer.datalist.EntityCsvDownloadDialog.ENCODE;
-import org.iplass.adminconsole.shared.metadata.dto.MetaDataConstants;
 import org.iplass.mtp.entity.Entity;
 import org.iplass.mtp.entity.definition.EntityDefinition;
 
@@ -41,12 +40,8 @@ import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONParser;
 import com.google.gwt.json.client.JSONValue;
-import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Hidden;
 import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.Widget;
-import com.google.gwt.xml.client.Document;
-import com.google.gwt.xml.client.XMLParser;
 import com.smartgwt.client.types.Alignment;
 import com.smartgwt.client.types.VerticalAlignment;
 import com.smartgwt.client.util.BooleanCallback;
@@ -66,10 +61,6 @@ import com.smartgwt.client.widgets.layout.HLayout;
 import com.smartgwt.client.widgets.layout.VLayout;
 
 import gwtupload.client.IUploadStatus.Status;
-import gwtupload.client.IUploader;
-import gwtupload.client.IUploader.UploadedInfo;
-import gwtupload.client.SingleUploader;
-import gwtupload.client.Utils;
 
 /**
  * EntityImportダイアログ
@@ -144,105 +135,28 @@ public class EntityCsvUploadDialog extends AbstractWindow {
 		fileLabel.setWidth("90");
 		fileComposit.addMember(fileLabel);
 
-		//IButton dummy = new IButton();
-		//Label dummy = new Label("&nbsp;");
-		Label dummy = new Label("");
-		final SingleUploader uploader = new SingleUploader(new AdminUploadStatus(), dummy);
-		IUploader.UploaderConstants constants = GWT.create(CustomUploaderConstants.class);
-		uploader.setI18Constants(constants);	//dummyに対してメッセージが表示されるので、空実装
-		uploader.setServletPath(GWT.getModuleBaseURL() + UPLOAD_SERVICE);
-		uploader.setAutoSubmit(false);
-		uploader.getFileInput().asWidget().setHeight("20px");
-		uploader.getFileInput().asWidget().setWidth(MetaDataConstants.DEFAULT_FORM_ITEM_WIDTH + "px");
-//		uploader.setWidth("100%");
+		final AdminSingleUploader uploader = new AdminSingleUploader(UPLOAD_SERVICE);
 		uploader.setValidExtensions("csv");
-		uploader.addOnStartUploadHandler(new IUploader.OnStartUploaderHandler() {
-
-			@Override
-			public void onStart(IUploader uploader) {
-				startExecute();
-			}
+		uploader.addOnStartUploadHandler((result) -> {
+			uploader.debugUploader("onStart");
+			startExecute();
 		});
-		uploader.addOnStatusChangedHandler(new IUploader.OnStatusChangedHandler() {
-
-			@Override
-			public void onStatusChanged(IUploader uploader) {
-				GWT.log("onStatusChanged: status            ->" + uploader.getStatus());
-				UploadedInfo info = uploader.getServerInfo();
-
-				if (info == null) {
-					GWT.log("onStatusChanged: UploadedInfo is Null.");
-				} else {
-					GWT.log("onStatusChanged: File name         ->" + info.name);
-					GWT.log("onStatusChanged: File content-type ->" + info.ctype);
-					GWT.log("onStatusChanged: File size         ->" + info.size);
-				}
-				GWT.log("onStatusChanged: message           ->" + uploader.getServerMessage().getMessage());
-			}
+		uploader.addOnStatusChangedHandler((result) -> {
+			uploader.debugUploader("onStatusChanged");
 		});
-		uploader.addOnFinishUploadHandler(new IUploader.OnFinishUploaderHandler() {
-
-			@Override
-			public void onFinish(IUploader uploaderResult) {
-				if (uploaderResult.getStatus() == Status.SUCCESS) {
-					UploadedInfo info = uploaderResult.getServerInfo();
-
-					GWT.log("onFinish: status                   ->" + uploaderResult.getStatus());
-
-					if (info == null) {
-						GWT.log("onFinish: UploadedInfo is Null.");
-					} else{
-						GWT.log("onFinish: File name                ->" + info.name);
-						GWT.log("onFinish: File content-type        ->" + info.ctype);
-						GWT.log("onFinish: File size                ->" + info.size);
-					}
-					GWT.log("onFinish: message                  ->" + uploaderResult.getServerMessage().getMessage());
-
-					// Here is the string returned in your servlet
-					showResult(uploaderResult.getServerMessage().getMessage());
-				} else {
-					UploadedInfo info = uploaderResult.getServerInfo();
-					GWT.log("onFinish: status                   ->" + uploaderResult.getStatus());
-					GWT.log("onFinish: ServerResponse           ->" + uploaderResult.getServerRawResponse());
-					if (info == null) {
-						GWT.log("onFinish: UploadedInfo is Null.");
-					} else {
-						GWT.log("onFinish: File name                ->" + info.name);
-						GWT.log("onFinish: File content-type        ->" + info.ctype);
-						GWT.log("onFinish: File size                ->" + info.size);
-					}
-					GWT.log("onFinish: message                  ->" + uploaderResult.getServerMessage().getMessage());
-
-					//ServerResponseからメッセージ作成
-					showResultError(getErrorMessage(uploaderResult.getServerRawResponse()));
-				}
-				//Hidden項目の削除（uploader#reset、clearなどではうまくいかないため下の方法でクリア）
-				Widget form = uploader.getForm().getWidget();
-				if (form instanceof FlowPanel) {
-					FlowPanel formPanel = (FlowPanel)form;
-					for (int i = formPanel.getWidgetCount() - 1; i >= 0; i--) {
-						Widget child = formPanel.getWidget(i);
-						if (child instanceof Hidden) {
-							formPanel.remove(child);
-						}
-					}
-				}
+		uploader.addOnFinishUploadHandler((result) -> {
+			uploader.debugUploader("onFinish");
+			if (uploader.getStatus() == Status.SUCCESS) {
+				showResult(uploader.getMessage());
+			} else {
+				showResultError(uploader.getErrorMessage());
 			}
 
-			private String getErrorMessage(String response) {
-				Document doc = XMLParser.parse(response);
-				return Utils.getXmlNodeValue(doc, "error");
-			}
+			//Hidden項目の削除
+			uploader.removeHidden();
 		});
 
 		fileComposit.addMember(uploader);
-//		csvEncodeField = new ListBox();
-//		csvEncodeField.setName("csvEncodeField");
-//		csvEncodeField.addItem("UTF-8", "UTF-8");
-//		csvEncodeField.addItem("MS932", "MS932");
-//		csvEncodeField.setSelectedIndex(0);
-//		csvEncodeField.setEnabled(false);	//UTF-8固定
-//		fileLayout.addMember(csvEncodeField);
 
 		targetLayout.addMember(fileComposit);
 
@@ -452,7 +366,7 @@ public class EntityCsvUploadDialog extends AbstractWindow {
 		messageTabSet.setTabTitleNormal();
 	}
 
-	private void doUpload(final SingleUploader uploader) {
+	private void doUpload(final AdminSingleUploader uploader) {
 		SC.ask(getResourceString("confirm"), getResourceString("startImportConf"), new BooleanCallback() {
 			@Override
 			public void execute(Boolean value) {
