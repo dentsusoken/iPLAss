@@ -203,6 +203,9 @@ public class Constants {
 	public static final String PARENT_VIEWNAME = "parentViewName";
 	public static final String PARENT_PROPNAME = "parentPropName";
 
+	//参照セクション用
+	public static final String REF_SECTION_INDEX = "referenceSectionIndex";
+
 	//自動補完
 	public static final String AUTOCOMPLETION_SETTING = "autocompletionSetting";
 	public static final String AUTOCOMPLETION_DEF_NAME = "autocompletionDefName";

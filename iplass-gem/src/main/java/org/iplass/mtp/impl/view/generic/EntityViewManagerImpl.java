@@ -420,6 +420,18 @@ public class EntityViewManagerImpl extends AbstractTypedDefinitionManager<Entity
 	}
 
 	@Override
+	public PropertyEditor getPropertyEditor(String defName, String viewType, String viewName, String propName, Integer refSectionIndex) {
+		PropertyEditor editor = null;
+		if (refSectionIndex == null) {
+			editor = getPropertyEditor(defName, viewType, viewName, propName);
+		} else {
+			editor = getPropertyEditor(defName, viewName, propName, refSectionIndex);
+		}
+
+		return editor;
+	}
+
+	@Override
 	public void executeTemplate(String name, String templateName, HttpServletRequest req,
 			HttpServletResponse res, ServletContext application, PageContext page) {
 		if (name == null || templateName == null) return;

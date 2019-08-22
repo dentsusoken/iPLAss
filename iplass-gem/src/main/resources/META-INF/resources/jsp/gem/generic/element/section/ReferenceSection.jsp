@@ -324,6 +324,7 @@
 						request.setAttribute(Constants.EDITOR_REF_NEST, true);
 						request.setAttribute(Constants.EDITOR_REF_NEST_VALUE, entity);//JoinProperty用
 						request.setAttribute(Constants.AUTOCOMPLETION_SETTING, property.getAutocompletionSetting());
+						request.setAttribute(Constants.REF_SECTION_INDEX, new Integer(dataIndex));
 %>
 <jsp:include page="<%=path %>" />
 <%
@@ -332,6 +333,7 @@
 						request.removeAttribute(Constants.EDITOR_PROPERTY_DEFINITION);
 						request.removeAttribute(Constants.EDITOR_REF_NEST);
 						request.removeAttribute(Constants.EDITOR_REF_NEST_VALUE);
+						request.removeAttribute(Constants.REF_SECTION_INDEX);
 					}
 					if (showDesc) {
 %>
