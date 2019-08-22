@@ -2226,7 +2226,7 @@ function searchUniqueReference(id, selectAction, viewAction, defName, propName, 
 				var entity = entities[i];
 				var _key = entity.oid + "_" + entity.version;
 				var uniqueValue = entity.uniqueValue;
-				updateUniqueReference(_id, viewAction, defName, _key, entity.name, propName, "ul_" + _propName, refEdit, "uniq_txt_" + _id , uniqueValue, parentDefName, parentViewName, viewType);
+				updateUniqueReference(_id, viewAction, defName, _key, entity.name, propName, "ul_" + _propName, refEdit, "uniq_txt_" + _id , uniqueValue, parentDefName, parentViewName, viewType, refSectionIndex);
 			}
 			entityList = entities;
 		});
@@ -2321,7 +2321,7 @@ function insertReference(addAction, viewAction, defName, propName, multiplicity,
 		$("<input />").attr({type:"hidden", name:"parentViewName", value:parentViewName}).appendTo($form);
 		$("<input />").attr({type:"hidden", name:"parentPropName", value:parentPropName}).appendTo($form);
 		$("<input />").attr({type:"hidden", name:"viewType", value:viewType}).appendTo($form);
-		if (refSectionIndex) $("<input />").attr({type:"hidden", name:"referenceSectionIndex", value:refSectionIndex}).appendTo($form);
+		if (refSectionIndex || refSectionIndex === 0) $("<input />").attr({type:"hidden", name:"referenceSectionIndex", value:refSectionIndex}).appendTo($form);
 		if (isSubModal) $("<input />").attr({type:"hidden", name:"modalTarget", value:target}).appendTo($form);
 		var kv = urlParam.split("&");
 		if (urlParam.length > 0 && kv.length > 0) {
@@ -2422,7 +2422,7 @@ function insertUniqueReference(id, addAction, viewAction, defName, propName, mul
 		var $ul = $("#ul_" + _propName);
 		var key = entity.oid + "_" + entity.version;
 		var uniqueValue = entity.uniqueValue;
-		updateUniqueReference(_id, viewAction, defName, key, entity.name, propName, "ul_" + _propName, refEdit, "uniq_txt_" + _id , uniqueValue, parentDefName, parentViewName, viewType);
+		updateUniqueReference(_id, viewAction, defName, key, entity.name, propName, "ul_" + _propName, refEdit, "uniq_txt_" + _id , uniqueValue, parentDefName, parentViewName, viewType, refSectionIndex);
 
 		//カスタムのCallbackが定義されている場合に呼び出す
 		if (callback && $.isFunction(callback)) {
@@ -2449,6 +2449,7 @@ function insertUniqueReference(id, addAction, viewAction, defName, propName, mul
 	$("<input />").attr({type:"hidden", name:"parentViewName", value:parentViewName}).appendTo($form);
 	$("<input />").attr({type:"hidden", name:"parentPropName", value:parentPropName}).appendTo($form);
 	$("<input />").attr({type:"hidden", name:"viewType", value:viewType}).appendTo($form);
+	if (refSectionIndex || refSectionIndex === 0) $("<input />").attr({type:"hidden", name:"referenceSectionIndex", value:refSectionIndex}).appendTo($form);
 	if (isSubModal) $("<input />").attr({type:"hidden", name:"modalTarget", value:target}).appendTo($form);
 	var kv = urlParam.split("&");
 	if (urlParam.length > 0 && kv.length > 0) {

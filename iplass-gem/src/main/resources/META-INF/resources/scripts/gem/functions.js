@@ -2638,7 +2638,7 @@ $.fn.allInputCheck = function(){
 			$selBtn.on("click", function() {
 				//選択コールバック
 				var selRefCallback = scriptContext[$v.selUniqueRefCallback];
-				searchUniqueReference($v.attr("id"), $v.selectAction, $v.viewAction, $v.refDefName, $v.propName, $v.urlParam, $v.refEdit, selRefCallback, this, $v.refViewName, $v.permitConditionSelectAll, $v.defName, $v.viewName, $v.viewType);
+				searchUniqueReference($v.attr("id"), $v.selectAction, $v.viewAction, $v.refDefName, $v.propName, $v.urlParam, $v.refEdit, selRefCallback, this, $v.refViewName, $v.permitConditionSelectAll, $v.defName, $v.viewName, $v.viewType, $v.refSectionIndex);
 			});
 
 			if ($("body.modal-body").length != 0) {
@@ -2653,7 +2653,7 @@ $.fn.allInputCheck = function(){
 			$insBtn.on("click", function() {
 				//新規コールバック
 				var insRefCallback = scriptContext[$v.insUniqueRefCallback];
-				insertUniqueReference($v.attr("id"), $v.addAction, $v.viewAction, $v.refDefName, $v.propName, $v.multiplicity, $v.urlParam, $v.defName, $v.viewName, $v.refEdit, insRefCallback, this, $v.viewType);
+				insertUniqueReference($v.attr("id"), $v.addAction, $v.viewAction, $v.refDefName, $v.propName, $v.multiplicity, $v.urlParam, $v.defName, $v.viewName, $v.refEdit, insRefCallback, this, $v.viewType, $v.refSectionIndex);
 			});
 
 			$hidden.on("change", function() {
