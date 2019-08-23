@@ -118,7 +118,9 @@ public final class GetMassReferencesCommand extends DetailCommandBase {
 	@Override
 	public String execute(RequestContext request) {
 		DetailCommandContext context = getContext(request);
+		String defName = context.getDefinitionName();
 		String propName = request.getParam(Constants.PROP_NAME);
+		String viewName = request.getParam(Constants.VIEW_NAME);
 		String sortKey = request.getParam(Constants.SEARCH_SORTKEY);
 		String sortType = request.getParam(Constants.SEARCH_SORTTYPE);
 		String offsetStr = request.getParam(Constants.SEARCH_OFFSET);
@@ -165,14 +167,14 @@ public final class GetMassReferencesCommand extends DetailCommandBase {
 
 					PropertyDefinition rpd = red.getProperty(np.getPropertyName());
 					if (rpd instanceof ReferenceProperty) {
-						addReferenceProperty(props, dispInfo, (ReferenceProperty) rpd, np, null, outputType);
+						addReferenceProperty(props, dispInfo, propName, (ReferenceProperty) rpd, np, null, outputType);
 					} else {
 						if (!props.contains(np.getPropertyName())) {
 							props.add(np.getPropertyName());
 						}
 
 						DisplayInfo di = new DisplayInfo();
-						di.setName(np.getPropertyName());
+						di.setName(propName + "." + np.getPropertyName());
 						if (StringUtil.isNotBlank(np.getDisplayLabel())) {
 							di.setDisplayName(TemplateUtil.getMultilingualString(np.getDisplayLabel(), np.getLocalizedDisplayLabelList()));
 						} else {
@@ -189,7 +191,7 @@ public final class GetMassReferencesCommand extends DetailCommandBase {
 				query.from(rp.getObjectDefinitionName());
 				And cond = new And(new Equals(rp.getMappedBy() + ".oid", context.getOid()));
 				if (StringUtil.isNotBlank(condKey)) {
-					Condition filterCond = evm.getMassReferenceSectionCondition(context.getDefinitionName(), condKey);
+					Condition filterCond = evm.getMassReferenceSectionCondition(defName, condKey);
 					if (filterCond != null) {
 						cond.addExpression(filterCond);
 					}
@@ -226,7 +228,7 @@ public final class GetMassReferencesCommand extends DetailCommandBase {
 				}
 
 				try {
-					getHtmlData(request, rp.getObjectDefinitionName(), section.getProperties(), entityList, outputType);
+					getHtmlData(request, defName, viewName, propName, rp, section.getProperties(), entityList, outputType);
 				} catch (IOException e) {
 					throw new SystemException(e);
 				} catch (ServletException e) {
@@ -396,9 +398,9 @@ public final class GetMassReferencesCommand extends DetailCommandBase {
 	 * @throws IOException
 	 * @throws ServletException
 	 */
-	private void getHtmlData(RequestContext request, String defName, List<NestProperty> props, List<Entity> result, OutputType outputType) throws IOException, ServletException {
+	private void getHtmlData(RequestContext request, String defName, String viewName, String propName, ReferenceProperty rp, List<NestProperty> props, List<Entity> result, OutputType outputType) throws IOException, ServletException {
 		List<Map<String, String>> ret = new ArrayList<Map<String,String>>();
-		final EntityDefinition ed = edm.get(defName);
+		final EntityDefinition ed = edm.get(rp.getObjectDefinitionName());
 		for (final Entity entity : result) {
 			final Map<String, String> eval = new LinkedHashMap<String, String>();
 			eval.put("orgOid", entity.getOid());
@@ -422,6 +424,9 @@ public final class GetMassReferencesCommand extends DetailCommandBase {
 								req.setAttribute(Constants.ENTITY_DEFINITION, ed);
 								req.setAttribute(Constants.EDITOR_PROPERTY_DEFINITION, pd);
 								req.setAttribute(Constants.EDITOR_REF_ENTITY_VALUE_MAP, eval);
+								req.setAttribute(Constants.VIEW_NAME, viewName); //Reference型参照先リンク表示用
+								req.setAttribute(Constants.ROOT_DEF_NAME, defName); //Reference型参照先リンク表示用
+								req.setAttribute(Constants.VIEW_TYPE, Constants.VIEW_TYPE_DETAIL);
 							}
 						};
 						Func afterFunc = new Func() {
@@ -435,20 +440,23 @@ public final class GetMassReferencesCommand extends DetailCommandBase {
 								req.removeAttribute(Constants.EDITOR_PROP_VALUE);
 								req.removeAttribute(Constants.ENTITY_DEFINITION);
 								req.removeAttribute(Constants.EDITOR_PROPERTY_DEFINITION);
+								req.removeAttribute(Constants.VIEW_NAME);
+								req.removeAttribute(Constants.ROOT_DEF_NAME);
+								req.removeAttribute(Constants.VIEW_TYPE);
 							}
 						};
 
 						//HTML取得
-						property.getEditor().setPropertyName(property.getPropertyName());
+						property.getEditor().setPropertyName(propName + "." + property.getPropertyName());
 						String html = ResponseUtil.getIncludeJspContents(path, beforeFunc, afterFunc) .replace("\r\n", "").replace("\n", "").replace("\r", "");
 
 						WebRequestStack stack = WebRequestStack.getCurrent();
 						HttpServletRequest req = stack.getRequest();
 						Boolean isNest = (Boolean) req.getAttribute(Constants.EDITOR_REF_NEST_PROPERTY_PREFIX + property.getPropertyName());
 						if (isNest != null && isNest) {
-							eval.put(property.getPropertyName() + ".name", html);
+							eval.put(propName + "." + property.getPropertyName() + ".name", html);
 						} else {
-							eval.put(property.getPropertyName(), html);
+							eval.put(propName + "." + property.getPropertyName(), html);
 						}
 					}
 				}
@@ -511,13 +519,15 @@ public final class GetMassReferencesCommand extends DetailCommandBase {
 		return sections;
 	}
 
-	private void addReferenceProperty(List<String> select, List<DisplayInfo> dispInfo, ReferenceProperty rp, NestProperty np, String parent, OutputType outputType) {
+	private void addReferenceProperty(List<String> select, List<DisplayInfo> dispInfo, String propName, ReferenceProperty rp, NestProperty np, String parent, OutputType outputType) {
 		boolean hasNest = false;
 		List<NestProperty> nest = null;
+		String dispLabelItem = null;
 		if (np.getEditor() instanceof ReferencePropertyEditor) {
 			ReferencePropertyEditor rpe = (ReferencePropertyEditor) np.getEditor();
 			nest = rpe.getNestProperties();
 			hasNest = !nest.isEmpty();
+			dispLabelItem = rpe.getDisplayLabelItem();
 		}
 
 		String name = null;
@@ -537,6 +547,13 @@ public final class GetMassReferencesCommand extends DetailCommandBase {
 			select.add(name + "." + Entity.VERSION);
 		}
 
+		// 表示ラベルとして扱うプロパティ
+		if (dispLabelItem != null) {
+			if (!select.contains(name + "." + dispLabelItem)) {
+				select.add(name + "." + dispLabelItem);
+			}
+		}
+
 		if (hasNest) {
 			EntityDefinition red = getReferenceEntityDefinition(rp);
 
@@ -550,14 +567,14 @@ public final class GetMassReferencesCommand extends DetailCommandBase {
 
 				PropertyDefinition rpd = red.getProperty(_np.getPropertyName());
 				if (rpd instanceof ReferenceProperty) {
-					addReferenceProperty(select, dispInfo, (ReferenceProperty) rpd, _np, name, outputType);
+					addReferenceProperty(select, dispInfo, propName, (ReferenceProperty) rpd, _np, name, outputType);
 				} else {
 					if (!select.contains(name + "." + _np.getPropertyName())) {
 						select.add(name + "." + _np.getPropertyName());
 					}
 
 					DisplayInfo di = new DisplayInfo();
-					di.setName(name + "." + _np.getPropertyName());
+					di.setName(propName + "." + name + "." + _np.getPropertyName());
 					if (StringUtil.isNotBlank(_np.getDisplayLabel())) {
 						di.setDisplayName(TemplateUtil.getMultilingualString(_np.getDisplayLabel(), _np.getLocalizedDisplayLabelList()));
 					} else {
@@ -570,7 +587,7 @@ public final class GetMassReferencesCommand extends DetailCommandBase {
 
 		} else {
 			DisplayInfo di = new DisplayInfo();
-			di.setName(name);
+			di.setName(propName + "." + name);
 			if (StringUtil.isNotBlank(np.getDisplayLabel())) {
 				di.setDisplayName(TemplateUtil.getMultilingualString(np.getDisplayLabel(), np.getLocalizedDisplayLabelList()));
 			} else {
