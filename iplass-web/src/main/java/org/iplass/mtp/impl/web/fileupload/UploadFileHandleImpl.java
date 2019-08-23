@@ -77,7 +77,11 @@ public class UploadFileHandleImpl implements UploadFileHandle {
 					}
 				} catch (RuntimeException | IOException e) {
 					if (tempFile != null) {
-						tempFile.delete();
+						try {
+							Files.delete(tempFile.toPath());
+						} catch (IOException ee) {
+							logger.warn("can not delete temp file:" + fileName + ", cause:" + ee, ee);
+						}
 					}
 					throw e;
 				}
@@ -237,8 +241,10 @@ public class UploadFileHandleImpl implements UploadFileHandle {
 	
 	public void deleteTempFile() {
 		if (tempFile != null) {
-			if (!tempFile.delete()) {
-				logger.warn("maybe not delete file:" + tempFile.getName());
+			try {
+				Files.delete(tempFile.toPath());
+			} catch (Exception e) {
+				logger.warn("can not delete temp file:" + fileName + ", cause:" + e, e);
 			}
 		}
 	}
