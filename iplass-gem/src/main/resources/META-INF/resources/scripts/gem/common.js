@@ -3234,7 +3234,7 @@ function addNestRow(rowId, countId, multiplicy, insertTop, rootDefName, viewName
 			} else if (type[0] == "Binary") {
 				//バイナリ
 				$td.children(":file").each(function() {
-					replaceDummyAttr(this, "pname", idx);
+					replaceDummyAttr(this, "data-pname", idx);
 					var token = $(this).attr("token");
 					uploadFile(this, token);
 				});
