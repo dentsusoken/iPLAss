@@ -62,4 +62,5 @@ GO
 %>CREATE UNIQUE INDEX OBJ_STORE${tableNamePostfix}_${it.prefix}UNIQUE_${it.no} ON OBJ_STORE${tableNamePostfix} (${it.prefix + it.no}_TD, ${it.prefix + it.no}<%if (partition) {%>, TENANT_ID<%}%>) WHERE ${it.prefix + it.no}_TD IS NOT NULL AND ${it.prefix + it.no} IS NOT NULL
 GO
 <%	}
-}%>
+}%>CREATE INDEX OBJ_STORE${tableNamePostfix}_CRE_USER_INDEX ON OBJ_STORE${tableNamePostfix} (CRE_USER, OBJ_DEF_ID, TENANT_ID)
+GO
