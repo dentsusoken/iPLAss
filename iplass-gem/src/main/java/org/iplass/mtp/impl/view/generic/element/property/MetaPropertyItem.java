@@ -334,7 +334,7 @@ public class MetaPropertyItem extends MetaPropertyLayout {
 
 		if (isBlank) {
 			//検索条件のブランク項目の場合は他の項目を使わないのでフラグだけ設定
-			p.setDispFlag(dispFlag);
+			p.setDispFlag(isDispFlag());
 			p.setBlank(isBlank);
 			return p;
 		}

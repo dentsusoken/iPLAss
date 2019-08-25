@@ -61,6 +61,9 @@ public abstract class Element implements Refrectable {
 	)
 	private boolean dispFlag;
 
+	/** 表示スクリプト  */
+	private String dispScript;
+	
 	/** 編集時の表示タイプ */
 	@MetaFieldInfo(
 			displayName="新規/編集時の表示可否",
@@ -76,6 +79,9 @@ public abstract class Element implements Refrectable {
 	)
 	@EntityViewField(referenceTypes=FieldReferenceType.DETAIL)
 	private EditDisplayType editDisplayType;
+
+	/** ElementのRuntimeId */
+	private String elementRuntimeId;
 
 	/**
 	 * 表示フラグを取得します。
@@ -94,6 +100,23 @@ public abstract class Element implements Refrectable {
 	}
 
 	/**
+	 * 表示スクリプトを取得します。
+	 * 
+	 * @return the 表示スクリプト
+	 */
+	public String getDispScript() {
+		return dispScript;
+	}
+
+	/**
+	 * 表示スクリプトを設定します。
+	 * @param dispScript 表示スクリプト
+	 */
+	public void setDispScript(String dispScript) {
+		this.dispScript = dispScript;
+	}
+
+	/**
 	 * 編集時の表示タイプを取得します。
 	 * @return 編集時の表示タイプ
 	 */
@@ -107,6 +130,22 @@ public abstract class Element implements Refrectable {
 	 */
 	public void setEditDisplayType(EditDisplayType editDisplayType) {
 	    this.editDisplayType = editDisplayType;
+	}
+
+	/**
+	 * ElementのRuntimeIdを取得します。
+	 * @return ElementのRuntimeId
+	 */
+	public String getElementRuntimeId() {
+		return elementRuntimeId;
+	}
+
+	/**
+	 * ElementのRuntimeIdを設定します。
+	 * @param elementRuntimeId ElementのRuntimeId
+	 */
+	public void setElementRuntimeId(String elementRuntimeId) {
+		this.elementRuntimeId = elementRuntimeId;
 	}
 
 }
