@@ -254,7 +254,9 @@ public class SearchConditionSectionControl extends ItemControl implements Sectio
 							});
 							dialog.show();
 						} else if (name.equals(BlankSpace.class.getName())) {
-							ElementControl blank = new ElementControl(defName, getTriggerType(), new BlankSpace());
+							BlankSpace space = new BlankSpace();
+							space.setDispFlag(true);
+							ElementControl blank = new ElementControl(defName, getTriggerType(), space);
 							col.addMember(blank);
 						}
 					}
@@ -328,7 +330,9 @@ public class SearchConditionSectionControl extends ItemControl implements Sectio
 			if (elem instanceof PropertyItem) {
 				PropertyItem property = (PropertyItem) elem;
 				if (property.isBlank()) {
-					ElementControl win = new ElementControl(defName, getTriggerType(), new BlankSpace());
+					BlankSpace space = new BlankSpace();
+					space.setDispFlag(true);
+					ElementControl win = new ElementControl(defName, getTriggerType(), space);
 					addMember(win);
 				} else {
 					PropertyControl win = new PropertyControl(defName, getTriggerType(), property);

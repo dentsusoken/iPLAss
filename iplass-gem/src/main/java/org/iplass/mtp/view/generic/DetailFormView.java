@@ -76,6 +76,50 @@ public class DetailFormView extends FormView {
 
 
 
+	/** 編集ボタン非表示 */
+	@MetaFieldInfo(
+			displayName="編集ボタン非表示",
+			displayNameKey="generic_DetailFormView_hideDetailDisplaNameKey",
+			inputType=InputType.CHECKBOX,
+			displayOrder=200,
+			description="編集ボタンを非表示にするかを設定します。",
+			descriptionKey="generic_DetailFormView_hideDetailDescriptionKey"
+	)
+	private boolean hideDetail;
+
+	/** ロックボタン非表示設定 */
+	@MetaFieldInfo(
+			displayName="ロックボタンを非表示",
+			displayNameKey="generic_DetailFormView_hideLockDisplaNameKey",
+			inputType=InputType.CHECKBOX,
+			displayOrder=210,
+			description="ロックボタンを非表示にするかを設定します。",
+			descriptionKey="generic_DetailFormView_hideLockDescriptionKey"
+	)
+	private boolean hideLock;
+
+	/** コピーボタン非表示設定 */
+	@MetaFieldInfo(
+			displayName="コピーボタンを非表示",
+			displayNameKey="generic_DetailFormView_isNoneDispCopyButtonDisplaNameKey",
+			inputType=InputType.CHECKBOX,
+			displayOrder=220,
+			description="コピーボタンを非表示にするかを設定します",
+			descriptionKey="generic_DetailFormView_isNoneDispCopyButtonDescriptionKey"
+	)
+	private boolean isNoneDispCopyButton;
+
+	/** 削除ボタン非表示 */
+	@MetaFieldInfo(
+			displayName="削除ボタン非表示",
+			displayNameKey="generic_DetailFormView_hideDeleteDisplaNameKey",
+			inputType=InputType.CHECKBOX,
+			displayOrder=230,
+			description="削除ボタンを非表示にするかを設定します。",
+			descriptionKey="generic_DetailFormView_hideDeleteDescriptionKey"
+	)
+	private boolean hideDelete;
+
 	/** 編集ボタン表示ラベル */
 	@MetaFieldInfo(
 			displayName="編集ボタン表示ラベル",
@@ -84,7 +128,7 @@ public class DetailFormView extends FormView {
 			descriptionKey="generic_DetailFormView_editDisplayLabelDescriptionKey",
 			inputType=InputType.MULTI_LANG,
 			multiLangField = "localizedEditDisplayLabelList",
-			displayOrder=200
+			displayOrder=240
 	)
 	@MultiLang()
 	private String editDisplayLabel;
@@ -94,7 +138,7 @@ public class DetailFormView extends FormView {
 			displayName="多言語設定",
 			displayNameKey="generic_DetailFormView_localizedEditDisplayLabelListDisplaNameKey",
 			inputType=InputType.MULTI_LANG_LIST,
-			displayOrder=210
+			displayOrder=250
 	)
 	private List<LocalizedStringDefinition> localizedEditDisplayLabelList;
 
@@ -106,7 +150,7 @@ public class DetailFormView extends FormView {
 			descriptionKey="generic_DetailFormView_copyDisplayLabelDescriptionKey",
 			inputType=InputType.MULTI_LANG,
 			multiLangField = "localizedCopyDisplayLabelList",
-			displayOrder=220
+			displayOrder=260
 	)
 	@MultiLang()
 	private String copyDisplayLabel;
@@ -116,7 +160,7 @@ public class DetailFormView extends FormView {
 			displayName="多言語設定",
 			displayNameKey="generic_DetailFormView_localizedCopyDisplayLabelListDisplaNameKey",
 			inputType=InputType.MULTI_LANG_LIST,
-			displayOrder=230
+			displayOrder=270
 	)
 	private List<LocalizedStringDefinition> localizedCopyDisplayLabelList;
 
@@ -128,7 +172,7 @@ public class DetailFormView extends FormView {
 			descriptionKey="generic_DetailFormView_versionupDisplayLabelDescriptionKey",
 			inputType=InputType.MULTI_LANG,
 			multiLangField = "localizedVersionupDisplayLabelList",
-			displayOrder=240
+			displayOrder=280
 	)
 	@MultiLang()
 	private String versionupDisplayLabel;
@@ -138,7 +182,7 @@ public class DetailFormView extends FormView {
 			displayName="多言語設定",
 			displayNameKey="generic_DetailFormView_localizedVersionupDisplayLabelListDisplaNameKey",
 			inputType=InputType.MULTI_LANG_LIST,
-			displayOrder=250
+			displayOrder=290
 	)
 	private List<LocalizedStringDefinition> localizedVersionupDisplayLabelList;
 
@@ -150,7 +194,7 @@ public class DetailFormView extends FormView {
 			descriptionKey="generic_DetailFormView_insertDisplayLabelDescriptionKey",
 			inputType=InputType.MULTI_LANG,
 			multiLangField = "localizedInsertDisplayLabelList",
-			displayOrder=260
+			displayOrder=300
 	)
 	@MultiLang()
 	private String insertDisplayLabel;
@@ -160,7 +204,7 @@ public class DetailFormView extends FormView {
 			displayName="多言語設定",
 			displayNameKey="generic_DetailFormView_localizedInsertDisplayLabelListDisplaNameKey",
 			inputType=InputType.MULTI_LANG_LIST,
-			displayOrder=270
+			displayOrder=310
 	)
 	private List<LocalizedStringDefinition> localizedInsertDisplayLabelList;
 
@@ -172,7 +216,7 @@ public class DetailFormView extends FormView {
 			descriptionKey="generic_DetailFormView_updateDisplayLabelDescriptionKey",
 			inputType=InputType.MULTI_LANG,
 			multiLangField = "localizedUpdateDisplayLabelList",
-			displayOrder=280
+			displayOrder=320
 	)
 	@MultiLang()
 	private String updateDisplayLabel;
@@ -182,7 +226,7 @@ public class DetailFormView extends FormView {
 			displayName="多言語設定",
 			displayNameKey="generic_DetailFormView_localizedUpdateDisplayLabelListDisplaNameKey",
 			inputType=InputType.MULTI_LANG_LIST,
-			displayOrder=290
+			displayOrder=330
 	)
 	private List<LocalizedStringDefinition> localizedUpdateDisplayLabelList;
 
@@ -194,7 +238,7 @@ public class DetailFormView extends FormView {
 			descriptionKey="generic_DetailFormView_deleteDisplayLabelDescriptionKey",
 			inputType=InputType.MULTI_LANG,
 			multiLangField = "localizedDeleteDisplayLabelList",
-			displayOrder=300
+			displayOrder=340
 	)
 	@MultiLang()
 	private String deleteDisplayLabel;
@@ -204,54 +248,9 @@ public class DetailFormView extends FormView {
 			displayName="多言語設定",
 			displayNameKey="generic_DetailFormView_localizedDeleteDisplayLabelListDisplaNameKey",
 			inputType=InputType.MULTI_LANG_LIST,
-			displayOrder=310
+			displayOrder=350
 	)
 	private List<LocalizedStringDefinition> localizedDeleteDisplayLabelList;
-
-	/** 編集ボタン非表示 */
-	@MetaFieldInfo(
-			displayName="編集ボタン非表示",
-			displayNameKey="generic_DetailFormView_hideDetailDisplaNameKey",
-			inputType=InputType.CHECKBOX,
-			displayOrder=320,
-			description="編集ボタンを非表示にするかを設定します。",
-			descriptionKey="generic_DetailFormView_hideDetailDescriptionKey"
-	)
-	private boolean hideDetail;
-
-	/** ロックボタン非表示設定 */
-	@MetaFieldInfo(
-			displayName="ロックボタンを非表示",
-			displayNameKey="generic_DetailFormView_hideLockDisplaNameKey",
-			inputType=InputType.CHECKBOX,
-			displayOrder=330,
-			description="ロックボタンを非表示にするかを設定します。",
-			descriptionKey="generic_DetailFormView_hideLockDescriptionKey"
-	)
-	private boolean hideLock;
-
-	/** コピーボタン非表示設定 */
-	@MetaFieldInfo(
-			displayName="コピーボタンを非表示",
-			displayNameKey="generic_DetailFormView_isNoneDispCopyButtonDisplaNameKey",
-			inputType=InputType.CHECKBOX,
-			displayOrder=340,
-			description="コピーボタンを非表示にするかを設定します",
-			descriptionKey="generic_DetailFormView_isNoneDispCopyButtonDescriptionKey"
-	)
-	private boolean isNoneDispCopyButton;
-
-	/** 削除ボタン非表示 */
-	@MetaFieldInfo(
-			displayName="削除ボタン非表示",
-			displayNameKey="generic_DetailFormView_hideDeleteDisplaNameKey",
-			inputType=InputType.CHECKBOX,
-			displayOrder=350,
-			description="削除ボタンを非表示にするかを設定します。",
-			descriptionKey="generic_DetailFormView_hideDeleteDescriptionKey"
-	)
-	private boolean hideDelete;
-
 
 
 
@@ -451,7 +450,7 @@ public class DetailFormView extends FormView {
 			displayName="カスタムコピースクリプト",
 			displayNameKey="generic_DetailFormView_customCopyScriptDisplaNameKey",
 			inputType=InputType.SCRIPT,
-			mode="groovyscript",
+			mode="groovy_script",
 			displayOrder=1640,
 			description="コピー対象でCustomを選択した際に実行されるGroovyScriptです。<BR />" +
 					"以下のオブジェクトがバインドされています。<BR />" +
@@ -469,7 +468,7 @@ public class DetailFormView extends FormView {
 			displayName="初期化スクリプト ",
 			displayNameKey="generic_DetailFormView_initScriptDisplaNameKey",
 			inputType=InputType.SCRIPT,
-			mode="groovyscript",
+			mode="groovy_script",
 			displayOrder=1650,
 			description="Entityを新規作成する際に実行されるGroovyScriptです。<BR />" +
 					"新規作成画面表示前に呼び出され、空のEntityに対して初期値設定等を行います。<BR />" +
