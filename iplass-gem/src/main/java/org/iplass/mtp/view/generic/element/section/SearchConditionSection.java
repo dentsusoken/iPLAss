@@ -44,7 +44,7 @@ import org.iplass.mtp.view.generic.element.Element;
 @Jsps({
 	@Jsp(path="/jsp/gem/generic/element/section/SearchConditionSection.jsp", key=ViewConst.DESIGN_TYPE_GEM)
 })
-@IgnoreField({"dispFlag"})
+@IgnoreField({"dispFlag", "displayScript"})
 public class SearchConditionSection extends Section {
 
 	/** 検索条件のソートタイプ */
@@ -219,7 +219,7 @@ public class SearchConditionSection extends Section {
 			displayName="CSVファイル名Format",
 			displayNameKey="generic_element_section_SearchConditionSection_csvdownloadFileNameScriptDisplaNameKey",
 			inputType=InputType.SCRIPT,
-			mode="groovyscript",
+			mode="groovy_script",
 			displayOrder=1080,
 			descriptionKey="generic_element_section_SearchConditionSection_csvdownloadFileNameScriptDescriptionKey"
 	)
@@ -310,7 +310,7 @@ public class SearchConditionSection extends Section {
 			displayName="デフォルトプロパティ条件設定スクリプト",
 			displayNameKey="generic_element_section_SearchConditionSection_defaultPropertyConditionScriptDisplaNameKey",
 			inputType=InputType.SCRIPT,
-			mode="groovyscript",
+			mode="groovy_script",
 			displayOrder=3040,
 			description="検索画面初期表示にデフォルトで設定する条件を指定するGroovyScriptです。<BR />" +
 					"変数としてinitCondMap(Map<String, Object>)がバインドされています。<BR />" +

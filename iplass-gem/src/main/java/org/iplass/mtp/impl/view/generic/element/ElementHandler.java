@@ -1,19 +1,19 @@
 /*
  * Copyright (C) 2011 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
- * 
+ *
  * Unless you have purchased a commercial license,
  * the following license terms apply:
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
@@ -50,7 +50,7 @@ public class ElementHandler {
 
 	/** メタデータ */
 	private MetaElement metadata;
-	
+
 	private Script dispGroovyScript;
 
 	/**
@@ -62,16 +62,16 @@ public class ElementHandler {
 		this.metadata = metadata;
 
 		//ElementのRuntimeKEY
-		String elementRuntimeId = ELEMENT_GROOVYSCRIPT_PREFIX 
-				+ "_" + entityView.getMetaData().getId() 
+		String elementRuntimeId = ELEMENT_GROOVYSCRIPT_PREFIX
+				+ "_" + entityView.getMetaData().getId()
 				+ "_" + GroovyTemplateCompiler.randomName().replace("-", "_");
 		metadata.setElementRuntimeId(elementRuntimeId);
-		
-		if (StringUtil.isNotEmpty(metadata.getDispScript())) {
+
+		if (StringUtil.isNotEmpty(metadata.getDisplayScript())) {
 			ScriptEngine scriptEngine = ExecuteContext.getCurrentContext().getTenantContext().getScriptEngine();
-			dispGroovyScript = scriptEngine.createScript(metadata.getDispScript(), elementRuntimeId);
+			dispGroovyScript = scriptEngine.createScript(metadata.getDisplayScript(), elementRuntimeId);
 		}
-		
+
 		entityView.addElementHandler(this);
 	}
 
@@ -82,10 +82,10 @@ public class ElementHandler {
 	public MetaElement getMetaData() {
 		return metadata;
 	}
-	
+
 	/**
 	 * エレメントが表示可能かを返します。
-	 * 
+	 *
 	 * @param outputType 表示タイプ
 	 * @param entity 表示対象のエンティティ
 	 * @return true 表示可能
@@ -94,7 +94,7 @@ public class ElementHandler {
 		if (!metadata.isDispFlag()) {
 			return false;
 		}
-		
+
 		if (dispGroovyScript != null) {
 			UserBinding user = AuthContextHolder.getAuthContext().newUserBinding();
 
@@ -110,7 +110,7 @@ public class ElementHandler {
 			boolean val = (Boolean)dispGroovyScript.eval(sc);
 			return val;
 		}
-		
+
 		return true;
 	}
 }

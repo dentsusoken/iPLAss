@@ -37,7 +37,6 @@ import org.iplass.mtp.view.generic.Jsps;
 import org.iplass.mtp.view.generic.PagingPosition;
 import org.iplass.mtp.view.generic.ViewConst;
 import org.iplass.mtp.view.generic.element.Element;
-import org.iplass.mtp.view.generic.element.section.SearchConditionSection.CsvUploadTransactionType;
 
 /**
  * 検索結果を保持するセクション
@@ -47,7 +46,7 @@ import org.iplass.mtp.view.generic.element.section.SearchConditionSection.CsvUpl
 @Jsps({
 	@Jsp(path="/jsp/gem/generic/element/section/SearchResultSection.jsp", key=ViewConst.DESIGN_TYPE_GEM)
 })
-@IgnoreField({"dispFlag"})
+@IgnoreField({"dispFlag", "displayScript"})
 public class SearchResultSection extends Section {
 
 	/** シリアルバージョンUID */
@@ -55,19 +54,19 @@ public class SearchResultSection extends Section {
 
 	/** 要素 */
 	private List<Element> elements;
-	
+
 	/** 一括削除コミットトランザクション制御設定 */
 	@XmlType(namespace="http://mtp.iplass.org/xml/definition/view/generic")
 	public enum DeleteAllCommandTransactionType {
 		ONCE, DIVISION
 	}
-	
+
 	/** 一括更新コミットトランザクション制御設定 */
 	@XmlType(namespace="http://mtp.iplass.org/xml/definition/view/generic")
 	public enum BulkUpdateAllCommandTransactionType {
 		ONCE, DIVISION
 	}
-	
+
 	/** 検索結果の表示行数 */
 	@MetaFieldInfo(
 			displayName="検索結果の表示件数",
@@ -273,7 +272,7 @@ public class SearchResultSection extends Section {
 			descriptionKey="generic_element_section_SearchResultSection_loadEntityInterrupterNameDescriptionKey"
 	)
 	private String loadEntityInterrupterName;
-	
+
 	/** 一括削除コミットトランザクション制御設定 */
 	@MetaFieldInfo(
 			displayName="一括削除コミットトランザクション制御設定",
@@ -285,7 +284,7 @@ public class SearchResultSection extends Section {
 			descriptionKey="generic_element_section_SearchConditionSection_deleteAllCommandTransactionTypeDescriptionKey"
 	)
 	private DeleteAllCommandTransactionType deleteAllCommandTransactionType = DeleteAllCommandTransactionType.DIVISION;
-	
+
 	/** 一括更新コミットトランザクション制御設定 */
 	@MetaFieldInfo(
 			displayName="一括更新コミットトランザクション制御設定",
@@ -297,8 +296,8 @@ public class SearchResultSection extends Section {
 			descriptionKey="generic_element_section_SearchConditionSection_bulkUpdateAllCommandTransactionTypeDescriptionKey"
 	)
 	private BulkUpdateAllCommandTransactionType bulkUpdateAllCommandTransactionType = BulkUpdateAllCommandTransactionType.DIVISION;
-	
-	
+
+
 	public DeleteAllCommandTransactionType getDeleteAllCommandTransactionType() {
 		return deleteAllCommandTransactionType;
 	}

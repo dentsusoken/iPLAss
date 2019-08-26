@@ -74,11 +74,11 @@ public abstract class MetaElement implements MetaData {
 	private boolean dispFlag;
 
 	/** 表示スクリプト  */
-	private String dispScript;
+	private String displayScript;
 
 	/** 編集時の表示タイプ */
 	private EditDisplayType editDisplayType;
-	
+
 	/** ElementのRuntimeId */
 	private String elementRuntimeId;
 
@@ -100,19 +100,19 @@ public abstract class MetaElement implements MetaData {
 
 	/**
 	 * 表示スクリプトを取得します。
-	 * 
-	 * @return the 表示スクリプト
+	 *
+	 * @return 表示スクリプト
 	 */
-	public String getDispScript() {
-		return dispScript;
+	public String getDisplayScript() {
+		return displayScript;
 	}
 
 	/**
 	 * 表示スクリプトを設定します。
-	 * @param dispScript 表示スクリプト
+	 * @param displayScript 表示スクリプト
 	 */
-	public void setDispScript(String dispScript) {
-		this.dispScript = dispScript;
+	public void setDisplayScript(String displayScript) {
+		this.displayScript = displayScript;
 	}
 
 	/**
@@ -162,7 +162,7 @@ public abstract class MetaElement implements MetaData {
 	 */
 	protected void fillFrom(Element element, String definitionId) {
 		this.dispFlag = element.isDispFlag();
-		this.dispScript = element.getDispScript();
+		this.displayScript = element.getDisplayScript();
 		this.editDisplayType = element.getEditDisplayType();
 	}
 
@@ -180,7 +180,7 @@ public abstract class MetaElement implements MetaData {
 	 */
 	protected void fillTo(Element element, String definitionId) {
 		element.setDispFlag(dispFlag);
-		element.setDispScript(dispScript);
+		element.setDisplayScript(displayScript);
 		element.setEditDisplayType(editDisplayType);
 		element.setElementRuntimeId(elementRuntimeId);
 	}

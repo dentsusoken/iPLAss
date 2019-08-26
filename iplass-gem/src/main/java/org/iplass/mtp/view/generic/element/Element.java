@@ -61,16 +61,26 @@ public abstract class Element implements Refrectable {
 	)
 	private boolean dispFlag;
 
-	/** 表示スクリプト  */
-	private String dispScript;
-	
+	/** 表示判定スクリプト */
+	@MetaFieldInfo(
+			displayName="表示判定スクリプト",
+			displayNameKey="generic_element_Element_displayScriptDisplayNameKey",
+			inputType=InputType.SCRIPT,
+			mode="groovy_script",
+			displayOrder=20,
+			description="表示可否を判定するスクリプトを設定します。",
+			descriptionKey="generic_element_Element_displayScriptDescriptionKey"
+	)
+	@EntityViewField(referenceTypes=FieldReferenceType.ALL)
+	private String displayScript;
+
 	/** 編集時の表示タイプ */
 	@MetaFieldInfo(
 			displayName="新規/編集時の表示可否",
 			displayNameKey="generic_element_Element_editDisplayTypeDisplaNameKey",
 			inputType=InputType.ENUM,
 			enumClass=EditDisplayType.class,
-			displayOrder=100,
+			displayOrder=30,
 			description="新規登録または編集時に項目を表示するかを設定します。<br>" +
 					"INSERT:新規登録時のみ表示します。<br>" +
 					"UPDATE:編集時のみ表示します。<br>" +
@@ -101,19 +111,19 @@ public abstract class Element implements Refrectable {
 
 	/**
 	 * 表示スクリプトを取得します。
-	 * 
-	 * @return the 表示スクリプト
+	 *
+	 * @return 表示スクリプト
 	 */
-	public String getDispScript() {
-		return dispScript;
+	public String getDisplayScript() {
+		return displayScript;
 	}
 
 	/**
 	 * 表示スクリプトを設定します。
-	 * @param dispScript 表示スクリプト
+	 * @param displayScript 表示スクリプト
 	 */
-	public void setDispScript(String dispScript) {
-		this.dispScript = dispScript;
+	public void setDisplayScript(String displayScript) {
+		this.displayScript = displayScript;
 	}
 
 	/**
