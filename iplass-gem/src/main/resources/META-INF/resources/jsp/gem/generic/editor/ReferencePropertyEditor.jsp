@@ -107,6 +107,8 @@
 			String rootDefName = (String) request.getAttribute(Constants.ROOT_DEF_NAME);
 			String viewName = (String) request.getAttribute(Constants.VIEW_NAME);
 			viewName = StringUtil.escapeHtml(viewName, true);
+			// 検索結果である場合は viewType = SearchResult,
+			// 大規模参照プロパティ検索である場合は viewType = Detail
 			String viewType = (String) request.getAttribute(Constants.VIEW_TYPE);
 			viewType = StringUtil.escapeHtml(viewType, true);
 
