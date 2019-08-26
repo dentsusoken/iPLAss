@@ -58,6 +58,7 @@ import org.iplass.mtp.impl.metadata.RootMetaData;
 import org.iplass.mtp.impl.script.template.GroovyTemplate;
 import org.iplass.mtp.impl.script.template.GroovyTemplateBinding;
 import org.iplass.mtp.impl.view.generic.common.MetaAutocompletionSetting.AutocompletionSettingHandler;
+import org.iplass.mtp.impl.view.generic.element.ElementHandler;
 import org.iplass.mtp.impl.view.generic.element.MetaButton.ButtonHandler;
 import org.iplass.mtp.impl.web.WebUtil;
 import org.iplass.mtp.impl.web.template.MetaGroovyTemplate;
@@ -636,6 +637,26 @@ public class EntityViewManagerImpl extends AbstractTypedDefinitionManager<Entity
 		}
 
 		return style;
+	}
+
+	@Override
+	public boolean isDisplayElement(String definitionName, String elementRuntimeId,
+			OutputType outputType, Entity entity) {
+		if (definitionName == null || elementRuntimeId == null || outputType == null) {
+			return false;
+		}
+
+		EntityViewHandler viewHandler = service.getRuntimeByName(definitionName);
+		if (viewHandler == null) {
+			return false;
+		}
+
+		ElementHandler elementHandler = viewHandler.getElementHandler(elementRuntimeId);
+		if (elementHandler == null) {
+			return false;
+		}
+
+		return elementHandler.isDisplay(outputType, entity);
 	}
 
 	@Override
