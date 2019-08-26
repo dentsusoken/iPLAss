@@ -28,6 +28,7 @@ import java.util.Map;
 
 import org.iplass.gem.command.Constants;
 import org.iplass.gem.command.generic.ResultType;
+import org.iplass.mtp.ApplicationException;
 import org.iplass.mtp.ManagerLocator;
 import org.iplass.mtp.command.RequestContext;
 import org.iplass.mtp.command.annotation.CommandClass;
@@ -45,6 +46,8 @@ import org.iplass.mtp.transaction.TransactionManager;
 import org.iplass.mtp.view.generic.BulkOperationContext;
 import org.iplass.mtp.view.generic.SearchFormView;
 import org.iplass.mtp.view.generic.element.property.PropertyColumn;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @ActionMappings({
 	@ActionMapping(name=BulkUpdateListCommand.BULK_UPDATE_ACTION_NAME,
@@ -72,6 +75,8 @@ import org.iplass.mtp.view.generic.element.property.PropertyColumn;
 @CommandClass(name = "gem/generic/bulk/BulkUpdateListCommand", displayName = "一括更新")
 public class BulkUpdateListCommand extends BulkCommandBase {
 
+	private static Logger logger = LoggerFactory.getLogger(BulkUpdateListCommand.class);
+
 	public static final String BULK_UPDATE_ACTION_NAME = "gem/generic/bulk/bulkUpdate";
 
 	/**
@@ -79,6 +84,11 @@ public class BulkUpdateListCommand extends BulkCommandBase {
 	 */
 	public BulkUpdateListCommand() {
 		super();
+	}
+
+	@Override
+	protected Logger getLogger() {
+		return logger;
 	}
 
 	@Override
@@ -105,63 +115,72 @@ public class BulkUpdateListCommand extends BulkCommandBase {
 		data.setExecType(Constants.EXEC_TYPE_UPDATE);
 		data.setView(context.getView());
 
-		List<Entity> entities = context.getEntities();
-		List<ValidateError> errors = new ArrayList<ValidateError>();
-		if (!isSearchCondUpdate) {
-			//一括更新する前の処理を呼び出します。
-			BulkOperationContext bulkContext = context.getBulkUpdateInterrupterHandler().beforeOperation(entities);
-			errors.addAll(bulkContext.getErrors());
-			entities = bulkContext.getEntities();
-		}
-
-		if (!errors.isEmpty()) {
-			ret.setResultType(ResultType.ERROR);
-			ret.setErrors(errors.toArray(new ValidateError[errors.size()]));
-			ret.setMessage(resourceString("command.generic.bulk.BulkUpdateListCommand.inputErr"));
-		} else if (entities.size() > 0) {
-			for (Entity entity : entities) {
-				String oid = entity.getOid();
-				Long version = entity.getVersion();
-				Entity model = context.createEntity(oid, version);
-				Integer row = context.getRow(oid, version);
-				if (context.hasErrors()) {
-					if (ret.getResultType() == null) {
-						ret.setResultType(ResultType.ERROR);
-						ret.setErrors(context.getErrors().toArray(new ValidateError[context.getErrors().size()]));
-						ret.setMessage(resourceString("command.generic.bulk.BulkUpdateListCommand.inputErr"));
-					}
-					data.setEntity(row, model);
-				} else {
-					// 更新
-					if (ret.getResultType() == null || ret.getResultType() == ResultType.SUCCESS) ret = updateEntity(context, model);
-					if (ret.getResultType() == ResultType.SUCCESS) {
-						Transaction transaction = ManagerLocator.getInstance().getManager(TransactionManager.class).currentTransaction();
-						transaction.addTransactionListener(new TransactionListener() {
-							@Override
-							public void afterCommit(Transaction t) {
-								if (!isSearchCondUpdate) {
-									// 検索条件で更新ではなければ、特定のバージョン指定でロード
-									data.setEntity(row, loadViewEntity(context, oid, version, context.getDefinitionName(), (List<String>) null));
-								} else {
+		try {
+			List<Entity> entities = context.getEntities();
+			List<ValidateError> errors = new ArrayList<ValidateError>();
+			if (!isSearchCondUpdate) {
+				//一括更新する前の処理を呼び出します。
+				BulkOperationContext bulkContext = context.getBulkUpdateInterrupterHandler().beforeOperation(entities);
+				errors.addAll(bulkContext.getErrors());
+				entities = bulkContext.getEntities();
+			}
+	
+			if (!errors.isEmpty()) {
+				ret.setResultType(ResultType.ERROR);
+				ret.setErrors(errors.toArray(new ValidateError[errors.size()]));
+				ret.setMessage(resourceString("command.generic.bulk.BulkUpdateListCommand.inputErr"));
+			} else if (entities.size() > 0) {
+				for (Entity entity : entities) {
+					String oid = entity.getOid();
+					Long version = entity.getVersion();
+					Entity model = context.createEntity(oid, version);
+					Integer row = context.getRow(oid, version);
+					if (context.hasErrors()) {
+						if (ret.getResultType() == null) {
+							ret.setResultType(ResultType.ERROR);
+							ret.setErrors(context.getErrors().toArray(new ValidateError[context.getErrors().size()]));
+							ret.setMessage(resourceString("command.generic.bulk.BulkUpdateListCommand.inputErr"));
+						}
+						data.setEntity(row, model);
+					} else {
+						// 更新
+						if (ret.getResultType() == null || ret.getResultType() == ResultType.SUCCESS) ret = updateEntity(context, model);
+						if (ret.getResultType() == ResultType.SUCCESS) {
+							Transaction transaction = ManagerLocator.getInstance().getManager(TransactionManager.class).currentTransaction();
+							transaction.addTransactionListener(new TransactionListener() {
+								@Override
+								public void afterCommit(Transaction t) {
+									if (!isSearchCondUpdate) {
+										// 検索条件で更新ではなければ、特定のバージョン指定でロード
+										data.setEntity(row, loadViewEntity(context, oid, version, context.getDefinitionName(), (List<String>) null));
+									} else {
+										data.setEntity(row, model);
+									}
+								}
+	
+								@Override
+								public void afterRollback(Transaction t) {
 									data.setEntity(row, model);
 								}
-							}
-
-							@Override
-							public void afterRollback(Transaction t) {
-								data.setEntity(row, model);
-							}
-						});
-					} else {
-						data.setEntity(row, model);
+							});
+						} else {
+							data.setEntity(row, model);
+						}
 					}
 				}
 			}
-		}
+	
+			// 更新した後の処理を呼び出します。
+			if (!isSearchCondUpdate) {
+				context.getBulkUpdateInterrupterHandler().afterOperation(entities);
+			}
+		} catch (ApplicationException e) {
+			if (getLogger().isDebugEnabled()) {
+				getLogger().debug(e.getMessage(), e);
+			}
 
-		// 更新した後の処理を呼び出します。
-		if (!isSearchCondUpdate) {
-			context.getBulkUpdateInterrupterHandler().afterOperation(entities);
+			ret.setResultType(ResultType.ERROR);
+			ret.setMessage(e.getMessage());
 		}
 
 		String retKey = Constants.CMD_EXEC_SUCCESS;

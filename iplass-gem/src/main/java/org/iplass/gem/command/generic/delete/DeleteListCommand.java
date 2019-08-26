@@ -29,6 +29,7 @@ import java.util.Set;
 import org.iplass.gem.command.Constants;
 import org.iplass.gem.command.GemResourceBundleUtil;
 import org.iplass.gem.command.generic.ResultType;
+import org.iplass.mtp.ApplicationException;
 import org.iplass.mtp.ManagerLocator;
 import org.iplass.mtp.command.RequestContext;
 import org.iplass.mtp.command.annotation.CommandClass;
@@ -42,8 +43,10 @@ import org.iplass.mtp.transaction.TransactionManager;
 import org.iplass.mtp.view.generic.BulkOperationContext;
 import org.iplass.mtp.view.generic.EntityView;
 import org.iplass.mtp.view.generic.SearchFormView;
-import org.iplass.mtp.webapi.definition.RequestType;
 import org.iplass.mtp.webapi.definition.MethodType;
+import org.iplass.mtp.webapi.definition.RequestType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Entity一括削除コマンド
@@ -61,6 +64,8 @@ import org.iplass.mtp.webapi.definition.MethodType;
 )
 @CommandClass(name="gem/generic/delete/DeleteListCommand", displayName="一括削除")
 public final class DeleteListCommand extends DeleteCommandBase {
+
+	private static Logger logger = LoggerFactory.getLogger(DeleteListCommand.class);
 
 	public static final String WEBAPI_NAME = "gem/generic/delete/deleteList";
 
@@ -87,39 +92,48 @@ public final class DeleteListCommand extends DeleteCommandBase {
 		Map<String, Integer> oidMap = splitOid(oid);
 		List<Entity> list = getEntities(context.getDefinitionName(), oidMap.keySet());
 
-		//削除前の処理を呼び出します。
-		BulkOperationContext bulkContext = context.getDeleteInterrupterHandler().beforeOperation(list);
-		List<ValidateError> errors = bulkContext.getErrors();
-		List<Entity> entities = bulkContext.getEntities();
-
 		String retKey = Constants.CMD_EXEC_SUCCESS;
-		if (!errors.isEmpty()) {
-			request.setAttribute(Constants.MESSAGE, resourceString("command.generic.delete.DeleteListCommand.inputErr"));
-			retKey = Constants.CMD_EXEC_ERROR;
-		} else if (entities.size() > 0) {
-			for (Entity entity : entities) {
-				String targetOid = entity.getOid();
-				Integer targetRow = oidMap.getOrDefault(targetOid, -1);
-				entity = loadEntity(name, targetOid);
-				if (entity != null) {
-					DeleteResult ret = deleteEntity(entity, isPurge);
-					if (ret.getResultType() == ResultType.ERROR) {
-						//削除でエラーが出てたら終了
-						if (targetRow > 0) {
-							request.setAttribute(Constants.MESSAGE,
-									resourceString("command.generic.delete.DeleteListCommand.deleteListErr", ret.getMessage(), targetRow));
-						} else {
-							request.setAttribute(Constants.MESSAGE, ret.getMessage());
+		try {
+			//削除前の処理を呼び出します。
+			BulkOperationContext bulkContext = context.getDeleteInterrupterHandler().beforeOperation(list);
+			List<ValidateError> errors = bulkContext.getErrors();
+			List<Entity> entities = bulkContext.getEntities();
+	
+			if (!errors.isEmpty()) {
+				request.setAttribute(Constants.MESSAGE, resourceString("command.generic.delete.DeleteListCommand.inputErr"));
+				retKey = Constants.CMD_EXEC_ERROR;
+			} else if (entities.size() > 0) {
+				for (Entity entity : entities) {
+					String targetOid = entity.getOid();
+					Integer targetRow = oidMap.getOrDefault(targetOid, -1);
+					entity = loadEntity(name, targetOid);
+					if (entity != null) {
+						DeleteResult ret = deleteEntity(entity, isPurge);
+						if (ret.getResultType() == ResultType.ERROR) {
+							//削除でエラーが出てたら終了
+							if (targetRow > 0) {
+								request.setAttribute(Constants.MESSAGE,
+										resourceString("command.generic.delete.DeleteListCommand.deleteListErr", ret.getMessage(), targetRow));
+							} else {
+								request.setAttribute(Constants.MESSAGE, ret.getMessage());
+							}
+							ManagerLocator.getInstance().getManager(TransactionManager.class).currentTransaction().rollback();
+							break;
 						}
-						ManagerLocator.getInstance().getManager(TransactionManager.class).currentTransaction().rollback();
-						break;
 					}
 				}
 			}
-		}
+	
+			//削除前の処理を呼び出します。
+			context.getDeleteInterrupterHandler().afterOperation(entities);
+		} catch (ApplicationException e) {
+			if (logger.isDebugEnabled()) {
+				logger.debug(e.getMessage(), e);
 
-		//削除前の処理を呼び出します。
-		context.getDeleteInterrupterHandler().afterOperation(entities);
+				retKey = Constants.CMD_EXEC_ERROR;
+				request.setAttribute(Constants.MESSAGE, e.getMessage());
+			}
+		}
 
 		//削除後は一覧画面へ
 		return retKey;

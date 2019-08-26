@@ -108,53 +108,62 @@ public final class DeleteAllCommand extends DeleteCommandBase {
 			final DeleteOption option = new DeleteOption(false);
 			option.setPurge(isPurge);
 
-			//削除前の処理を呼び出します。
-			BulkOperationContext bulkContext = context.getDeleteInterrupterHandler().beforeOperation(result.getList());
-			List<ValidateError> errors = bulkContext.getErrors();
-			List<Entity> list = bulkContext.getEntities();
-			int count = list.size();
-
-			if (!errors.isEmpty()) {
-				request.setAttribute(Constants.MESSAGE, resourceString("command.generic.delete.DeleteAllCommand.inputErr"));
-				ret = Constants.CMD_EXEC_ERROR;
-			} else if (list.size() > 0) {
-				//トランザクションタイプによって一括か、分割かを決める(batchSize件毎)
-				int batchSize = ServiceRegistry.getRegistry().getService(GemConfigService.class).getDeleteAllCommandBatchSize();
-				if (transactionType == DeleteAllCommandTransactionType.ONCE) {
-					batchSize = count;
-				}
-				
-				int countPerBatch = count / batchSize;
-				if (count % batchSize > 0) countPerBatch++;
-				int current = 0;
-				for (int i = 0; i < countPerBatch; i++) {
-					current = i * batchSize;
-					int last = current + batchSize;
-					if (last > list.size()) last = list.size();
-					final List<Entity> subList = list.subList(current, last);
-					Boolean _ret = Transaction.requiresNew(t -> {
-						for (Entity entity : subList) {
-							try {
-								em.delete(entity, option);
-							} catch (ApplicationException e) {
-								if (logger.isDebugEnabled()) {
-									logger.debug(e.getMessage(), e);
+			try {
+				//削除前の処理を呼び出します。
+				BulkOperationContext bulkContext = context.getDeleteInterrupterHandler().beforeOperation(result.getList());
+				List<ValidateError> errors = bulkContext.getErrors();
+				List<Entity> list = bulkContext.getEntities();
+				int count = list.size();
+	
+				if (!errors.isEmpty()) {
+					request.setAttribute(Constants.MESSAGE, resourceString("command.generic.delete.DeleteAllCommand.inputErr"));
+					ret = Constants.CMD_EXEC_ERROR;
+				} else if (list.size() > 0) {
+					//トランザクションタイプによって一括か、分割かを決める(batchSize件毎)
+					int batchSize = ServiceRegistry.getRegistry().getService(GemConfigService.class).getDeleteAllCommandBatchSize();
+					if (transactionType == DeleteAllCommandTransactionType.ONCE) {
+						batchSize = count;
+					}
+					
+					int countPerBatch = count / batchSize;
+					if (count % batchSize > 0) countPerBatch++;
+					int current = 0;
+					for (int i = 0; i < countPerBatch; i++) {
+						current = i * batchSize;
+						int last = current + batchSize;
+						if (last > list.size()) last = list.size();
+						final List<Entity> subList = list.subList(current, last);
+						Boolean _ret = Transaction.requiresNew(t -> {
+							for (Entity entity : subList) {
+								try {
+									em.delete(entity, option);
+								} catch (ApplicationException e) {
+									if (logger.isDebugEnabled()) {
+										logger.debug(e.getMessage(), e);
+									}
+									request.setAttribute(Constants.MESSAGE, e.getMessage());
+									t.rollback();
+									return false;
 								}
-								request.setAttribute(Constants.MESSAGE, e.getMessage());
-								t.rollback();
-								return false;
 							}
+							return true;
+						});
+						if (!_ret) {
+							break;
 						}
-						return true;
-					});
-					if (!_ret) {
-						break;
 					}
 				}
-			}
+	
+				//削除後の処理を呼び出します。
+				context.getDeleteInterrupterHandler().afterOperation(list);
+			} catch (ApplicationException e) {
+				if (logger.isDebugEnabled()) {
+					logger.debug(e.getMessage(), e);
 
-			//削除後の処理を呼び出します。
-			context.getDeleteInterrupterHandler().afterOperation(list);
+					ret = Constants.CMD_EXEC_ERROR;
+					request.setAttribute(Constants.MESSAGE, e.getMessage());
+				}
+			}
 		}
 
 		return ret;
