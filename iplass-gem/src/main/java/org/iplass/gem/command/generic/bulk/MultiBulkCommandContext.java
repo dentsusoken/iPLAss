@@ -53,10 +53,8 @@ import org.iplass.mtp.impl.util.ConvertUtil;
 import org.iplass.mtp.spi.ServiceRegistry;
 import org.iplass.mtp.util.StringUtil;
 import org.iplass.mtp.view.generic.BulkFormView;
-import org.iplass.mtp.view.generic.BulkOperationContext;
 import org.iplass.mtp.view.generic.BulkOperationInterrupter;
 import org.iplass.mtp.view.generic.EntityViewUtil;
-import org.iplass.mtp.view.generic.FormView;
 import org.iplass.mtp.view.generic.FormViewUtil;
 import org.iplass.mtp.view.generic.SearchFormView;
 import org.iplass.mtp.view.generic.editor.DateRangePropertyEditor;
@@ -811,19 +809,7 @@ public class MultiBulkCommandContext extends RegistrationCommandContext {
 		if (interrupter == null) {
 			// 何もしないデフォルトInterrupter生成
 			getLogger().debug("set default bulk operation interrupter.");
-			interrupter = new BulkOperationInterrupter() {
-
-				@Override
-				public BulkOperationContext beforeOperation(List<Entity> entities, RequestContext request, EntityDefinition definition, FormView view,
-						BulkOperationType bulkOperationType) {
-					return null;
-				}
-
-				@Override
-				public void afterOperation(List<Entity> entities, RequestContext request, EntityDefinition definition, FormView view,
-						BulkOperationType bulkOperationType) {
-				}
-			};
+			interrupter = new BulkOperationInterrupter() { };
 		}
 		return interrupter;
 	}

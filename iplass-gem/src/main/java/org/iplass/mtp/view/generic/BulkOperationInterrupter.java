@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.iplass.mtp.command.RequestContext;
 import org.iplass.mtp.entity.Entity;
-import org.iplass.mtp.entity.ValidateError;
 import org.iplass.mtp.entity.definition.EntityDefinition;
 
 public interface BulkOperationInterrupter {
@@ -28,8 +27,10 @@ public interface BulkOperationInterrupter {
 	 * @param bulkOperationType 一括操作処理の種類
 	 * @return BulkOperationContext
 	 */
-	public BulkOperationContext beforeOperation(List<Entity> entities, RequestContext request,
-			EntityDefinition definition, FormView view, BulkOperationType bulkOperationType);
+	public default BulkOperationContext beforeOperation(List<Entity> entities, RequestContext request, EntityDefinition definition, FormView view,
+			BulkOperationType bulkOperationType) {
+		return new BulkOperationContext(entities);
+	}
 
 
 	/**
@@ -40,6 +41,7 @@ public interface BulkOperationInterrupter {
 	 * @param view 画面定義
 	 * @param bulkOperationType 一括操作処理の種類
 	 */
-	public void afterOperation(List<Entity> entities, RequestContext request,
-			EntityDefinition definition, FormView view, BulkOperationType bulkOperationType);
+	public default void afterOperation(List<Entity> entities, RequestContext request,
+			EntityDefinition definition, FormView view, BulkOperationType bulkOperationType) {
+	}
 }

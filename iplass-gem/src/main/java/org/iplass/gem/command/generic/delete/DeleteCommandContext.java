@@ -9,14 +9,10 @@ import org.iplass.gem.command.generic.GenericCommandContext;
 import org.iplass.mtp.ApplicationException;
 import org.iplass.mtp.ManagerLocator;
 import org.iplass.mtp.command.RequestContext;
-import org.iplass.mtp.entity.Entity;
 import org.iplass.mtp.entity.ValidateError;
-import org.iplass.mtp.entity.definition.EntityDefinition;
 import org.iplass.mtp.util.StringUtil;
 import org.iplass.mtp.utilityclass.definition.UtilityClassDefinitionManager;
-import org.iplass.mtp.view.generic.BulkOperationContext;
 import org.iplass.mtp.view.generic.BulkOperationInterrupter;
-import org.iplass.mtp.view.generic.FormView;
 import org.iplass.mtp.view.generic.FormViewUtil;
 import org.iplass.mtp.view.generic.SearchFormView;
 import org.slf4j.Logger;
@@ -92,19 +88,7 @@ public class DeleteCommandContext extends GenericCommandContext {
 		if (interrupter == null) {
 			// 何もしないデフォルトInterrupter生成
 			getLogger().debug("set default delete operation interrupter.");
-			interrupter = new BulkOperationInterrupter() {
-
-				@Override
-				public BulkOperationContext beforeOperation(List<Entity> entities, RequestContext request, EntityDefinition definition, FormView view,
-						BulkOperationType bulkOperationType) {
-					return null;
-				}
-
-				@Override
-				public void afterOperation(List<Entity> entities, RequestContext request, EntityDefinition definition, FormView view,
-						BulkOperationType bulkOperationType) {
-				}
-			};
+			interrupter = new BulkOperationInterrupter() {};
 		}
 		return interrupter;
 	}
