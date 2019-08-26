@@ -167,14 +167,14 @@ public final class GetMassReferencesCommand extends DetailCommandBase {
 
 					PropertyDefinition rpd = red.getProperty(np.getPropertyName());
 					if (rpd instanceof ReferenceProperty) {
-						addReferenceProperty(props, dispInfo, propName, (ReferenceProperty) rpd, np, null, outputType);
+						addReferenceProperty(props, dispInfo, (ReferenceProperty) rpd, np, null, outputType);
 					} else {
 						if (!props.contains(np.getPropertyName())) {
 							props.add(np.getPropertyName());
 						}
 
 						DisplayInfo di = new DisplayInfo();
-						di.setName(propName + "." + np.getPropertyName());
+						di.setName(np.getPropertyName());
 						if (StringUtil.isNotBlank(np.getDisplayLabel())) {
 							di.setDisplayName(TemplateUtil.getMultilingualString(np.getDisplayLabel(), np.getLocalizedDisplayLabelList()));
 						} else {
@@ -454,9 +454,9 @@ public final class GetMassReferencesCommand extends DetailCommandBase {
 						HttpServletRequest req = stack.getRequest();
 						Boolean isNest = (Boolean) req.getAttribute(Constants.EDITOR_REF_NEST_PROPERTY_PREFIX + property.getPropertyName());
 						if (isNest != null && isNest) {
-							eval.put(propName + "." + property.getPropertyName() + ".name", html);
+							eval.put(property.getPropertyName() + ".name", html);
 						} else {
-							eval.put(propName + "." + property.getPropertyName(), html);
+							eval.put(property.getPropertyName(), html);
 						}
 					}
 				}
@@ -519,7 +519,7 @@ public final class GetMassReferencesCommand extends DetailCommandBase {
 		return sections;
 	}
 
-	private void addReferenceProperty(List<String> select, List<DisplayInfo> dispInfo, String propName, ReferenceProperty rp, NestProperty np, String parent, OutputType outputType) {
+	private void addReferenceProperty(List<String> select, List<DisplayInfo> dispInfo, ReferenceProperty rp, NestProperty np, String parent, OutputType outputType) {
 		boolean hasNest = false;
 		List<NestProperty> nest = null;
 		String dispLabelItem = null;
@@ -567,14 +567,14 @@ public final class GetMassReferencesCommand extends DetailCommandBase {
 
 				PropertyDefinition rpd = red.getProperty(_np.getPropertyName());
 				if (rpd instanceof ReferenceProperty) {
-					addReferenceProperty(select, dispInfo, propName, (ReferenceProperty) rpd, _np, name, outputType);
+					addReferenceProperty(select, dispInfo, (ReferenceProperty) rpd, _np, name, outputType);
 				} else {
 					if (!select.contains(name + "." + _np.getPropertyName())) {
 						select.add(name + "." + _np.getPropertyName());
 					}
 
 					DisplayInfo di = new DisplayInfo();
-					di.setName(propName + "." + name + "." + _np.getPropertyName());
+					di.setName(name + "." + _np.getPropertyName());
 					if (StringUtil.isNotBlank(_np.getDisplayLabel())) {
 						di.setDisplayName(TemplateUtil.getMultilingualString(_np.getDisplayLabel(), _np.getLocalizedDisplayLabelList()));
 					} else {
@@ -587,7 +587,7 @@ public final class GetMassReferencesCommand extends DetailCommandBase {
 
 		} else {
 			DisplayInfo di = new DisplayInfo();
-			di.setName(propName + "." + name);
+			di.setName(name);
 			if (StringUtil.isNotBlank(np.getDisplayLabel())) {
 				di.setDisplayName(TemplateUtil.getMultilingualString(np.getDisplayLabel(), np.getLocalizedDisplayLabelList()));
 			} else {

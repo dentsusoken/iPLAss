@@ -237,6 +237,8 @@ public class EntityViewManagerImpl extends AbstractTypedDefinitionManager<Entity
 	}
 
 	private PropertyEditor getEditor(MassReferenceSection section, final String currentPropName, final String subPropName) {
+		if (subPropName == null) return null;
+
 		if (section.getPropertyName().equals(currentPropName)) {
 			for (NestProperty np : section.getProperties()) {
 				if (subPropName.indexOf(".") > -1) {
