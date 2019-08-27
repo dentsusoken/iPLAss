@@ -21,6 +21,7 @@
 package org.iplass.adminconsole.client.metadata.ui.entity.layout.item;
 
 import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
+import org.iplass.adminconsole.client.metadata.ui.entity.layout.EntityViewDragPane;
 import org.iplass.adminconsole.client.metadata.ui.entity.layout.item.element.section.ScriptingSectionControl;
 import org.iplass.adminconsole.client.metadata.ui.entity.layout.item.element.section.SearchConditionSectionControl;
 import org.iplass.adminconsole.client.metadata.ui.entity.layout.item.element.section.SearchResultSectionControl;
@@ -45,6 +46,7 @@ import com.smartgwt.client.widgets.layout.HLayout;
 import com.smartgwt.client.widgets.layout.VLayout;
 
 public class SearchFormViewControl extends ItemControl {
+
 	/** 検索条件 */
 	private SearchConditionSectionControl condition = null;
 
@@ -184,7 +186,7 @@ public class SearchFormViewControl extends ItemControl {
 			dropLayout.setDropLineThickness(4);
 
 			//セクションのみドロップ可能なエリア
-			dropLayout.setDropTypes("section");
+			dropLayout.setDropTypes(EntityViewDragPane.DRAG_TYPE_SECTION);
 
 			//ドロップ先を表示する設定
 			Canvas dropLineProperties = new Canvas();

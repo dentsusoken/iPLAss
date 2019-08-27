@@ -27,6 +27,7 @@ import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
 import org.iplass.adminconsole.client.base.rpc.AdminAsyncCallback;
 import org.iplass.adminconsole.client.base.tenant.TenantInfoHolder;
 import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
+import org.iplass.adminconsole.client.metadata.ui.entity.layout.EntityViewDragPane;
 import org.iplass.adminconsole.client.metadata.ui.entity.layout.HasPropertyOperationHandler;
 import org.iplass.adminconsole.client.metadata.ui.entity.layout.PropertyOperationHandler;
 import org.iplass.adminconsole.client.metadata.ui.entity.layout.item.EntityViewFieldSettingDialog;
@@ -175,7 +176,7 @@ public class PropertyControl extends ItemControl implements HasPropertyOperation
 
 		service = MetaDataServiceFactory.get();
 
-		setDragType("property");
+		setDragType(EntityViewDragPane.DRAG_TYPE_PROPERTY);
 
 		setShowMinimizeButton(false);
 		setBackgroundColor("lightgreen");

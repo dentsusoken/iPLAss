@@ -25,6 +25,7 @@ import java.util.List;
 
 import org.iplass.adminconsole.client.base.event.MTPEvent;
 import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
+import org.iplass.adminconsole.client.metadata.ui.entity.layout.EntityViewDragPane;
 import org.iplass.adminconsole.client.metadata.ui.entity.layout.PropertyOperationContext;
 import org.iplass.adminconsole.client.metadata.ui.entity.layout.PropertyOperationHandler;
 import org.iplass.adminconsole.client.metadata.ui.entity.layout.item.element.section.DefaultSectionControl;
@@ -60,7 +61,7 @@ public class BulkFormViewControl extends ItemControl {
 		//編集用のエリア
 		propertyOperationHandler = new PropertyOperationHandlerImpl();
 		editArea = new BulkDropLayout(defName);
-		editArea.setDropTypes(new String[]{"section"});
+		editArea.setDropTypes(EntityViewDragPane.DRAG_TYPE_SECTION);
 		editArea.setPropertyOperationHandler(propertyOperationHandler);
 		addItem(editArea);
 

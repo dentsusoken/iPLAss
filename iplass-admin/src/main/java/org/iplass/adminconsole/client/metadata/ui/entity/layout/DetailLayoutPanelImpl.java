@@ -145,7 +145,7 @@ public class DetailLayoutPanelImpl extends MetaDataMainEditPane implements Detai
 		layout.addMember(form);
 
 		//ドラッグエリア
-		DragPane dragArea = new DragPane(defName, false, ViewType.DETAIL);
+		EntityViewDragPane dragArea = new EntityViewDragPane(defName, false, ViewType.DETAIL);
 		layout.addMember(dragArea);
 
 		viewEditPane.addMember(viewMenuPane);

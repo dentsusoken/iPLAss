@@ -48,7 +48,12 @@ import com.smartgwt.client.widgets.layout.VLayout;
  * @author lis3wg
  *
  */
-public class DragPane extends VLayout {
+public class EntityViewDragPane extends VLayout {
+	
+	public static final String DRAG_TYPE_PROPERTY = "property";
+	public static final String DRAG_TYPE_SECTION = "section";
+	public static final String DRAG_TYPE_ELEMENT = "element";
+			
 
 	/** プロパティ用のスタック */
 	private SectionStackSection propertySection;
@@ -68,7 +73,7 @@ public class DragPane extends VLayout {
 	 * @param showTree
 	 * @param viewType
 	 */
-	public DragPane(String defName, boolean showTree, ViewType viewType) {
+	public EntityViewDragPane(String defName, boolean showTree, ViewType viewType) {
 		setWidth("25%");
 
     	SectionStack dropItemStack = new SectionStack();
@@ -98,7 +103,7 @@ public class DragPane extends VLayout {
 	private void setElement(ViewType viewType) {
 		final ListGrid grid = new ListGrid();
 		grid.setShowHeader(false);
-		grid.setDragType("element");
+		grid.setDragType(DRAG_TYPE_ELEMENT);
 		grid.setDragDataAction(DragDataAction.NONE);
 		grid.setCanDragRecordsOut(true);
 		grid.setEmptyMessage("no element");
@@ -130,7 +135,7 @@ public class DragPane extends VLayout {
 	private void setSection(ViewType viewType) {
 		final ListGrid grid  =new ListGrid();
 		grid.setShowHeader(false);
-		grid.setDragType("section");
+		grid.setDragType(DRAG_TYPE_SECTION);
 		grid.setDragDataAction(DragDataAction.NONE);
 		grid.setCanDragRecordsOut(true);
 		grid.setEmptyMessage("no section");
@@ -165,14 +170,14 @@ public class DragPane extends VLayout {
 
 		if (showTree) {
 			EntityPropertyTreeGrid grid = new EntityPropertyTreeGrid(false);
-			grid.setDragType("property");	//DragされるItemのType設定
+			grid.setDragType(DRAG_TYPE_PROPERTY);
 			grid.refresh(defName);
 			propertySection.addItem(grid);
 
 			propertyGrid = grid;
 		} else {
 			EntityPropertyListGrid grid = new EntityPropertyListGrid();
-			grid.setDragType("property");
+			grid.setDragType(DRAG_TYPE_PROPERTY);
 			grid.refresh(defName);
 
 			propertySection.addItem(grid);

@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.iplass.adminconsole.client.base.event.MTPEvent;
+import org.iplass.adminconsole.client.metadata.ui.entity.layout.EntityViewDragPane;
 import org.iplass.adminconsole.client.metadata.ui.entity.layout.HasPropertyOperationHandler;
 import org.iplass.adminconsole.client.metadata.ui.entity.layout.PropertyOperationHandler;
 import org.iplass.adminconsole.client.metadata.ui.entity.layout.item.DetailDropLayout;
@@ -80,14 +81,17 @@ public class DefaultSectionControl extends ItemControl implements SectionControl
 			setTitle("Default Section");
 		}
 		setBackgroundColor(bgColor);
-		setDragType("section");
+		setDragType(EntityViewDragPane.DRAG_TYPE_SECTION);
 		setAutoSize(true);
 		setBorder("1px solid navy");
 
 		setHeaderControls(HeaderControls.MINIMIZE_BUTTON, HeaderControls.HEADER_LABEL, setting, HeaderControls.CLOSE_BUTTON);
 
 		layout = new DetailDropLayout(colNum, defName);
-		layout.setDropTypes("section", "property", "element");
+		layout.setDropTypes(
+				EntityViewDragPane.DRAG_TYPE_SECTION, 
+				EntityViewDragPane.DRAG_TYPE_PROPERTY, 
+				EntityViewDragPane.DRAG_TYPE_ELEMENT);
 		layout.setCanDropComponents(true);
 		layout.setPadding(5);
 		layout.setBackgroundColor(bgColor);

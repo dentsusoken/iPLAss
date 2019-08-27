@@ -22,6 +22,7 @@ package org.iplass.adminconsole.client.metadata.ui.entity.layout.item.element;
 
 import org.iplass.adminconsole.client.base.event.MTPEvent;
 import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
+import org.iplass.adminconsole.client.metadata.ui.entity.layout.EntityViewDragPane;
 import org.iplass.adminconsole.client.metadata.ui.entity.layout.HasPropertyOperationHandler;
 import org.iplass.adminconsole.client.metadata.ui.entity.layout.PropertyOperationHandler;
 import org.iplass.adminconsole.client.metadata.ui.entity.layout.item.EntityViewFieldSettingDialog;
@@ -56,7 +57,7 @@ public class VirtualPropertyControl extends ItemControl implements HasPropertyOp
 	private VirtualPropertyControl(String defName, FieldReferenceType triggerType) {
 		super(defName, triggerType);
 
-		setDragType("element");
+		setDragType(EntityViewDragPane.DRAG_TYPE_ELEMENT);
 
 		setShowMinimizeButton(false);
 		setBackgroundColor("#9ACD32");

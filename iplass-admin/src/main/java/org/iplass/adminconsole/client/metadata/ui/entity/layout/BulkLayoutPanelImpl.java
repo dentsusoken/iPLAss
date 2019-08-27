@@ -144,7 +144,7 @@ public class BulkLayoutPanelImpl extends MetaDataMainEditPane implements BulkLay
 		layout.addMember(form);
 
 		//ドラッグエリア
-		DragPane dragArea = new DragPane(defName, false, ViewType.BULK);
+		EntityViewDragPane dragArea = new EntityViewDragPane(defName, false, ViewType.BULK);
 		layout.addMember(dragArea);
 
 		viewEditPane.addMember(viewMenuPane);

@@ -22,6 +22,7 @@ package org.iplass.adminconsole.client.metadata.ui.entity.layout.item.element.se
 
 import org.iplass.adminconsole.client.base.event.MTPEvent;
 import org.iplass.adminconsole.client.base.tenant.TenantInfoHolder;
+import org.iplass.adminconsole.client.metadata.ui.entity.layout.EntityViewDragPane;
 import org.iplass.adminconsole.client.metadata.ui.entity.layout.HasPropertyOperationHandler;
 import org.iplass.adminconsole.client.metadata.ui.entity.layout.PropertyOperationHandler;
 import org.iplass.adminconsole.client.metadata.ui.entity.layout.item.EntityViewFieldSettingDialog;
@@ -64,7 +65,7 @@ public class MassReferenceSectionControl extends ItemControl implements SectionC
 		service = MetaDataServiceFactory.get();
 
 		setBackgroundColor("#88DDBB");
-		setDragType("section");
+		setDragType(EntityViewDragPane.DRAG_TYPE_SECTION);
 		setHeight(22);
 		setBorder("1px solid navy");
 

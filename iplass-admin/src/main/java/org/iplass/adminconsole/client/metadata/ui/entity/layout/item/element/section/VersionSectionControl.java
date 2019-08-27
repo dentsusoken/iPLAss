@@ -20,6 +20,7 @@
 
 package org.iplass.adminconsole.client.metadata.ui.entity.layout.item.element.section;
 
+import org.iplass.adminconsole.client.metadata.ui.entity.layout.EntityViewDragPane;
 import org.iplass.adminconsole.client.metadata.ui.entity.layout.item.ItemControl;
 import org.iplass.adminconsole.view.annotation.generic.FieldReferenceType;
 import org.iplass.mtp.view.generic.element.section.VersionSection;
@@ -31,7 +32,7 @@ public class VersionSectionControl extends ItemControl implements SectionControl
 
 		setTitle("Version Section");
 		setBackgroundColor("#BBBBFF");
-		setDragType("section");
+		setDragType(EntityViewDragPane.DRAG_TYPE_SECTION);
 		setHeight(22);
 		setBorder("1px solid navy");
 

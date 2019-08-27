@@ -22,6 +22,7 @@ package org.iplass.adminconsole.client.metadata.ui.entity.layout.item;
 
 import org.iplass.adminconsole.client.base.event.MTPEvent;
 import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
+import org.iplass.adminconsole.client.metadata.ui.entity.layout.EntityViewDragPane;
 import org.iplass.adminconsole.client.metadata.ui.entity.layout.HasPropertyOperationHandler;
 import org.iplass.adminconsole.client.metadata.ui.entity.layout.MultiColumnDropLayout;
 import org.iplass.adminconsole.client.metadata.ui.entity.layout.PropertyOperationHandler;
@@ -111,7 +112,7 @@ public class DetailDropLayout extends MultiColumnDropLayout implements HasProper
 			//ツリーからのdropはWindowを作成する
 			final Canvas dragTarget = EventHandler.getDragTarget();
 			if (dragTarget instanceof ListGrid) {
-				if ("section".equals(dragTarget.getDragType())) {
+				if (EntityViewDragPane.DRAG_TYPE_SECTION.equals(dragTarget.getDragType())) {
 					//タイトルとカラム数をダイアログ経由で設定
 					ListGridRecord record = ((ListGrid) dragTarget).getSelectedRecord();
 					String name = record.getAttribute("name");
@@ -134,7 +135,7 @@ public class DetailDropLayout extends MultiColumnDropLayout implements HasProper
 						}
 					});
 
-				} else if ("property".equals(dragTarget.getDragType())) {
+				} else if (EntityViewDragPane.DRAG_TYPE_PROPERTY.equals(dragTarget.getDragType())) {
 					ListGridRecord record = ((ListGrid) dragTarget).getSelectedRecord();
 					MTPEvent mtpEvent = new MTPEvent();
 					mtpEvent.setValue("name", record.getAttribute("name"));
@@ -154,7 +155,7 @@ public class DetailDropLayout extends MultiColumnDropLayout implements HasProper
 						col.addMember(newProperty, dropPosition);
 					}
 
-				} else if ("element".equals(dragTarget.getDragType())) {
+				} else if (EntityViewDragPane.DRAG_TYPE_ELEMENT.equals(dragTarget.getDragType())) {
 					ListGridRecord record = ((ListGrid) dragTarget).getSelectedRecord();
 					String name = record.getAttribute("name");
 					if (VirtualPropertyItem.class.getName().equals(name)) {
