@@ -125,7 +125,11 @@ public class MultiBulkUpdateAllCommand extends MultiBulkCommandBase {
 				BulkOperationContext bulkContext = context.getBulkUpdateInterrupterHandler().beforeOperation(result.getList());
 				List<ValidateError> errors = bulkContext.getErrors();
 				List<Entity> entities = bulkContext.getEntities();
-	
+
+				// 更新された件数を0件に初期化します。
+				request.setAttribute(Constants.BULK_UPDATED_COUNT, Integer.valueOf(0));
+				request.setAttribute(Constants.BULK_UPDATE_COUNT, Integer.valueOf(entities.size()));
+
 				if (!errors.isEmpty()) {
 					ret = Constants.CMD_EXEC_ERROR;
 					request.setAttribute(Constants.ERROR_PROP, errors.toArray(new ValidateError[errors.size()]));

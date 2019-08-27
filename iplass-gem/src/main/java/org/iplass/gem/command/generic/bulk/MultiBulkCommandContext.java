@@ -541,6 +541,12 @@ public class MultiBulkCommandContext extends RegistrationCommandContext {
 		return createEntityInternal("", null);
 	}
 
+	/**
+	 * 更新エンティティを作成します。
+	 * @param oid
+	 * @param version
+	 * @return 空のプロパティは更新しないので、更新するプロパティが1件もない場合、nullを返します。
+	 */
 	public Entity createEntity(String oid, Long version) {
 		Entity entity = createEntityInternal("" , null);
 		entity.setOid(oid);
@@ -554,7 +560,9 @@ public class MultiBulkCommandContext extends RegistrationCommandContext {
 		validate(entity);
 		//更新しないプロパティを外す。
 		removePropIfBlank(entity);
-		return entity;
+
+		//更新するプロパティが1件もない場合、nullを返します。
+		return getProperty().size() > 0 ? entity : null;
 	}
 
 	private Entity createEntityInternal(String paramPrefix, String errorPrefix) {

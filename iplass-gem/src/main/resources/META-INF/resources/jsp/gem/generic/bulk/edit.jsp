@@ -75,6 +75,8 @@
 	String selectAllType = (String) request.getAttribute(Constants.BULK_UPDATE_SELECT_TYPE);
 	String searchCond = (String) request.getAttribute(Constants.SEARCH_COND);
 	String message = (String) request.getAttribute(Constants.MESSAGE);
+	Integer count = (Integer) request.getAttribute(Constants.BULK_UPDATE_COUNT);
+	Integer updated = (Integer) request.getAttribute(Constants.BULK_UPDATED_COUNT);
 
 	boolean isSelectAllPage = isSelectAllPage(selectAllPage);
 	//全選択フラグ
@@ -134,15 +136,22 @@
 %>
 <h3 class="hgroup-02 hgroup-02-01"><%=GemResourceBundleUtil.resourceString("generic.bulk.title", displayName)%></h3>
 <%
-	if (StringUtil.isNotBlank(message)) {
+	if (count != null) {
+
 		if ("SUCCESS".equals(request.getAttribute(WebRequestConstants.COMMAND_RESULT))) {
 %>
-<span class="success"><c:out value="<%=message%>"/></span>
+<span class="success"><%=GemResourceBundleUtil.resourceString("command.generic.bulk.BulkUpdateListCommand.successMsg", updated)%></span>
 <%
 		} else {
 %>
 <span class="error"><c:out value="<%=message%>"/></span>
 <%
+			//分割トランザクションの場合、一部データの更新に成功した可能性があります。
+			if (updated > 0) {
+%>
+<span class="error"><%=GemResourceBundleUtil.resourceString("command.generic.bulk.BulkUpdateListCommand.failedMsg", count, count - updated)%></span>
+<%
+			}
 		}
 	}
 
@@ -320,7 +329,7 @@ function onclick_bulkupdate(target){
 	$("#detailForm").submit();
 }
 function onDialogClose() {
-	var edited = ("<%=StringUtil.isNotBlank(message)%>" == "true");
+	var edited = <%=count != null && updated > 0 %>;
 	if (!edited) return true;
 	var func = parent.document.scriptContext["bulkUpdateModalWindowCallback"];
 	if (func && $.isFunction(func)) {

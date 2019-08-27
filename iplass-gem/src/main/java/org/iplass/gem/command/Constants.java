@@ -107,9 +107,13 @@ public class Constants {
 	public static final String BULK_UPDATE_USE_BULK_VIEW = "useBulkView";
 	//一括更新のプロパティ名
 	public static final String BULK_UPDATE_PROP_NM = "bulkUpdatePropNm";
+	//一括更新データの件数
+	public static final String BULK_UPDATE_COUNT = "bulkUpdateCnt";
 	//一括更新されたプロパティ名
 	public static final String BULK_UPDATED_PROP_NM = "bulkUpdatedPropNm";
 	public static final String BULK_UPDATED_PROP_VALUE = "bulkUpdatedPropVl";
+	//一括更新されたデータの件数
+	public static final String BULK_UPDATED_COUNT = "bulkUpdatedCnt";
 
 	/** CSVダウンロード時の文字コード */
 	public static final String CSV_CHARACTER_CODE = "characterCode";

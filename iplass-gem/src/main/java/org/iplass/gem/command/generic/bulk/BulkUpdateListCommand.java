@@ -92,7 +92,7 @@ public class BulkUpdateListCommand extends BulkCommandBase {
 	}
 
 	@Override
-	public String execute(RequestContext request) {
+	public String execute(final RequestContext request) {
 		final BulkCommandContext context = getContext(request);
 		final boolean isSearchCondUpdate = isSearchCondUpdate(request);
 		// 必要なパラメータ取得
@@ -123,6 +123,9 @@ public class BulkUpdateListCommand extends BulkCommandBase {
 				BulkOperationContext bulkContext = context.getBulkUpdateInterrupterHandler().beforeOperation(entities);
 				errors.addAll(bulkContext.getErrors());
 				entities = bulkContext.getEntities();
+				// 更新された件数を0件に初期化します。
+				request.setAttribute(Constants.BULK_UPDATED_COUNT, Integer.valueOf(0));
+				request.setAttribute(Constants.BULK_UPDATE_COUNT, Integer.valueOf(entities.size()));
 			}
 	
 			if (!errors.isEmpty()) {
@@ -156,6 +159,7 @@ public class BulkUpdateListCommand extends BulkCommandBase {
 									} else {
 										data.setEntity(row, model);
 									}
+									countUp(request);
 								}
 	
 								@Override
@@ -199,7 +203,6 @@ public class BulkUpdateListCommand extends BulkCommandBase {
 				Object updatedPropValue = context.getBulkUpdatePropertyValue(updatedPropName);
 				data.addUpdatedProperty(updatedPropName, updatedPropValue);
 			}
-			request.setAttribute(Constants.MESSAGE, resourceString("command.generic.bulk.BulkUpdateListCommand.successMsg"));
 		} else if (ret.getResultType() == ResultType.ERROR) {
 			retKey = Constants.CMD_EXEC_ERROR;
 			List<ValidateError> tmpList = new ArrayList<ValidateError>();
@@ -229,5 +232,14 @@ public class BulkUpdateListCommand extends BulkCommandBase {
 		return request.getAttribute(Constants.OID) != null
 				&& request.getAttribute(Constants.VERSION) != null
 				&& request.getAttribute(Constants.TIMESTAMP) != null;
+	}
+
+	/**
+	 * 更新された件数をカウンタアップ
+	 * @param request
+	 */
+	private void countUp(RequestContext request) {
+		Integer updated = (Integer) request.getAttribute(Constants.BULK_UPDATED_COUNT);
+		request.setAttribute(Constants.BULK_UPDATED_COUNT, updated + 1);
 	}
 }

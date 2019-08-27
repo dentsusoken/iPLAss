@@ -89,7 +89,7 @@ public class MultiBulkUpdateListCommand extends MultiBulkCommandBase {
 	}
 
 	@Override
-	public String execute(RequestContext request) {
+	public String execute(final RequestContext request) {
 		final MultiBulkCommandContext context = getContext(request);
 		final boolean isSearchCondUpdate = isSearchCondUpdate(request);
 		// 必要なパラメータ取得
@@ -110,15 +110,17 @@ public class MultiBulkUpdateListCommand extends MultiBulkCommandBase {
 		MultiBulkUpdateFormViewData data = new MultiBulkUpdateFormViewData(context);
 		data.setView(context.getView());
 
-
 		try {
 			List<Entity> entities = context.getEntities();
-			//一括更新する前の処理を呼び出します。
 			List<ValidateError> errors = new ArrayList<ValidateError>();
 			if (!isSearchCondUpdate) {
+				//一括更新する前の処理を呼び出します。
 				BulkOperationContext bulkContext = context.getBulkUpdateInterrupterHandler().beforeOperation(entities);
 				errors.addAll(bulkContext.getErrors());
 				entities = bulkContext.getEntities();
+				// 更新された件数を0件に初期化します。
+				request.setAttribute(Constants.BULK_UPDATED_COUNT, Integer.valueOf(0));
+				request.setAttribute(Constants.BULK_UPDATE_COUNT, Integer.valueOf(entities.size()));
 			}
 	
 			if (!errors.isEmpty()) {
@@ -130,6 +132,13 @@ public class MultiBulkUpdateListCommand extends MultiBulkCommandBase {
 					String oid = entity.getOid();
 					Long version = entity.getVersion();
 					Entity model = context.createEntity(oid, version);
+					// 更新するプロパティが1件もない場合、更新処理を実行しません。
+					if (model == null) {
+						ret.setResultType(ResultType.ERROR);
+						ret.setMessage(resourceString("command.generic.bulk.BulkUpdateListCommand.pleaseInput"));
+						break;
+					};
+
 					Integer row = context.getRow(oid, version);
 					if (context.hasErrors()) {
 						if (ret.getResultType() == null) {
@@ -152,6 +161,7 @@ public class MultiBulkUpdateListCommand extends MultiBulkCommandBase {
 									} else {
 										data.setEntity(row, model);
 									}
+									countUp(request);
 								}
 	
 								@Override
@@ -180,9 +190,7 @@ public class MultiBulkUpdateListCommand extends MultiBulkCommandBase {
 		}
 
 		String retKey = Constants.CMD_EXEC_SUCCESS;
-		if (ret.getResultType() == ResultType.SUCCESS) {
-			request.setAttribute(Constants.MESSAGE, resourceString("command.generic.bulk.BulkUpdateListCommand.successMsg"));
-		} else if (ret.getResultType() == ResultType.ERROR) {
+		if (ret.getResultType() == ResultType.ERROR) {
 			retKey = Constants.CMD_EXEC_ERROR;
 			List<ValidateError> tmpList = new ArrayList<ValidateError>();
 			if (ret.getErrors() != null) {
@@ -210,5 +218,14 @@ public class MultiBulkUpdateListCommand extends MultiBulkCommandBase {
 		return request.getAttribute(Constants.OID) != null
 				&& request.getAttribute(Constants.VERSION) != null
 				&& request.getAttribute(Constants.TIMESTAMP) != null;
+	}
+
+	/**
+	 * 更新された件数をカウンタアップ
+	 * @param request
+	 */
+	private void countUp(RequestContext request) {
+		Integer updated = (Integer) request.getAttribute(Constants.BULK_UPDATED_COUNT);
+		request.setAttribute(Constants.BULK_UPDATED_COUNT, updated + 1);
 	}
 }
