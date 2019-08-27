@@ -27,8 +27,8 @@ public interface BulkOperationInterrupter {
 	 * @param bulkOperationType 一括操作処理の種類
 	 * @return BulkOperationContext
 	 */
-	public default BulkOperationContext beforeOperation(List<Entity> entities, RequestContext request, EntityDefinition definition, FormView view,
-			BulkOperationType bulkOperationType) {
+	public default BulkOperationContext beforeOperation(List<Entity> entities, RequestContext request,
+			EntityDefinition definition, FormView view, BulkOperationType bulkOperationType) {
 		return new BulkOperationContext(entities);
 	}
 
