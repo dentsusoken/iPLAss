@@ -51,6 +51,19 @@ public class BulkOperationContext {
 		this.errors = errors;
 	}
 
+	public void addError(ValidateError error) {
+		for (ValidateError e : getErrors()) {
+			//同じプロパティのものがあればメッセージだけ追加
+			if (e.getPropertyName().equals(error.getPropertyName())) {
+				e.getErrorMessages().addAll(error.getErrorMessages());
+				return;
+			}
+		}
+
+		//同じプロパティがない場合はエラー自体を追加
+		getErrors().add(error);
+	}
+
 	/**
 	 * 一括操作対象エンティティリストを取得します。
 	 * @return 一括操作対象エンティティリスト
