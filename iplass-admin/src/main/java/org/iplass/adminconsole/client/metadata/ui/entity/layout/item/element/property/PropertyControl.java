@@ -27,6 +27,7 @@ import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
 import org.iplass.adminconsole.client.base.rpc.AdminAsyncCallback;
 import org.iplass.adminconsole.client.base.tenant.TenantInfoHolder;
 import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
+import org.iplass.adminconsole.client.metadata.ui.entity.layout.HasPropertyOperationHandler;
 import org.iplass.adminconsole.client.metadata.ui.entity.layout.PropertyOperationHandler;
 import org.iplass.adminconsole.client.metadata.ui.entity.layout.item.EntityViewFieldSettingDialog;
 import org.iplass.adminconsole.client.metadata.ui.entity.layout.item.EntityViewFieldSettingDialog.PropertyInfo;
@@ -85,10 +86,10 @@ import com.smartgwt.client.widgets.grid.ListGridRecord;
  * @author lis3wg
  *
  */
-public class PropertyControl extends ItemControl {
+public class PropertyControl extends ItemControl implements HasPropertyOperationHandler {
 
 	/** Window破棄前にプロパティの重複チェックリストから削除するためのハンドラ */
-	private PropertyOperationHandler handler;
+	private PropertyOperationHandler propertyOperationHandler;
 
 	/** 参照Propertyの場合の参照先Entity名 */
 	private String refDefName;
@@ -229,23 +230,17 @@ public class PropertyControl extends ItemControl {
 		SmartGWTUtil.addHoverToCanvas(this, getTitle());
 	}
 
-	/**
-	 * チェック用ハンドラの設定。
-	 * @param handler
-	 */
-	public void setHandler(PropertyOperationHandler handler) {
-		this.handler = handler;
+	@Override
+	public void setPropertyOperationHandler(PropertyOperationHandler handler) {
+		this.propertyOperationHandler = handler;
 	}
 
-	/**
-	 * ウィンドウ破棄前の処理。
-	 */
 	@Override
 	protected boolean onPreDestroy() {
-		if (handler != null) {
+		if (propertyOperationHandler != null) {
 			MTPEvent event = new MTPEvent();
 			event.setValue("name", getValue("name"));
-			handler.remove(event);
+			propertyOperationHandler.remove(event);
 		}
 		return true;
 	}

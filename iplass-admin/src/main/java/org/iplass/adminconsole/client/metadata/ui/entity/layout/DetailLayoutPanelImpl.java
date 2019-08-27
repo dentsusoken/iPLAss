@@ -79,9 +79,6 @@ public class DetailLayoutPanelImpl extends MetaDataMainEditPane implements Detai
 
 	private String curDefinitionId;
 
-	/** 編集終了イベントハンドラ */
-	private MTPEventHandler editEndHandler;
-
 	/** ヘッダ部分 */
 	private MetaCommonHeaderPane headerPane;
 	/** 共通属性部分 */
@@ -189,22 +186,6 @@ public class DetailLayoutPanelImpl extends MetaDataMainEditPane implements Detai
 	}
 
 	/**
-	 * 編集開始イベント設定。
-	 * @param handler
-	 */
-	public void setEditStartHandler(MTPEventHandler handler) {
-		form.setEditStartHandler(handler);
-	}
-
-	/**
-	 * 編集終了イベント設定。
-	 * @param handler
-	 */
-	public void setEditEndHandler(MTPEventHandler handler) {
-		editEndHandler = handler;
-	}
-
-	/**
 	 * Viewをリセット。
 	 */
 	private void reset() {
@@ -226,11 +207,6 @@ public class DetailLayoutPanelImpl extends MetaDataMainEditPane implements Detai
 
 		//SharedConfigの再表示
 		commonSection.refreshSharedConfig();
-
-		if (editEndHandler != null) {
-			editEndHandler.execute(new MTPEvent());
-		}
-
 	}
 
 	/**
@@ -381,10 +357,6 @@ public class DetailLayoutPanelImpl extends MetaDataMainEditPane implements Detai
 					SC.say(AdminClientMessageUtil.getString("ui_metadata_entity_layout_DetailLayoutPane_completion"),
 							AdminClientMessageUtil.getString("ui_metadata_entity_layout_DetailLayoutPane_saveDetailLayoutComp"));
 
-					if (editEndHandler != null) {
-						editEndHandler.execute(new MTPEvent());
-					}
-
 					//ステータスチェック
 					StatusCheckUtil.statuCheck(EntityView.class.getName(), defName.replace(".", "/"), DetailLayoutPanelImpl.this);
 
@@ -408,10 +380,6 @@ public class DetailLayoutPanelImpl extends MetaDataMainEditPane implements Detai
 					//追加成功
 					SC.say(AdminClientMessageUtil.getString("ui_metadata_entity_layout_DetailLayoutPane_completion"),
 							AdminClientMessageUtil.getString("ui_metadata_entity_layout_DetailLayoutPane_saveDetailLayoutComp"));
-
-					if (editEndHandler != null) {
-						editEndHandler.execute(new MTPEvent());
-					}
 
 					//ステータスチェック
 					StatusCheckUtil.statuCheck(EntityView.class.getName(), defName.replace(".", "/"), DetailLayoutPanelImpl.this);

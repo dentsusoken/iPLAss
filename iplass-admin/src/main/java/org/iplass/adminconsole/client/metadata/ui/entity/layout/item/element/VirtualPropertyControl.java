@@ -22,6 +22,7 @@ package org.iplass.adminconsole.client.metadata.ui.entity.layout.item.element;
 
 import org.iplass.adminconsole.client.base.event.MTPEvent;
 import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
+import org.iplass.adminconsole.client.metadata.ui.entity.layout.HasPropertyOperationHandler;
 import org.iplass.adminconsole.client.metadata.ui.entity.layout.PropertyOperationHandler;
 import org.iplass.adminconsole.client.metadata.ui.entity.layout.item.EntityViewFieldSettingDialog;
 import org.iplass.adminconsole.client.metadata.ui.entity.layout.item.EntityViewFieldSettingDialog.PropertyInfo;
@@ -40,10 +41,10 @@ import com.smartgwt.client.util.SC;
  * @author lis3wg
  *
  */
-public class VirtualPropertyControl extends ItemControl {
+public class VirtualPropertyControl extends ItemControl implements HasPropertyOperationHandler {
 
 	/** Window破棄前にプロパティの重複チェックリストから削除するためのハンドラ */
-	private PropertyOperationHandler handler = null;
+	private PropertyOperationHandler propertyOperationHandler;
 
 	private String propertyName = null;
 
@@ -71,12 +72,12 @@ public class VirtualPropertyControl extends ItemControl {
 				propertyName = (String) event.getValueMap().get("propertyName");
 
 				if (!oldPropertyName.equals(propertyName)) {
-					if (handler != null) {
+					if (propertyOperationHandler != null) {
 						MTPEvent mtpEvent = new MTPEvent();
 						mtpEvent.setValue("name", propertyName);
 
 						//重複チェック
-						if (handler.check(mtpEvent)) {
+						if (propertyOperationHandler.check(mtpEvent)) {
 							SC.say(AdminClientMessageUtil.getString("ui_metadata_entity_layout_item_VirtualPropertyWindow_checkPropExistsErr"));
 							propertyName = oldPropertyName;
 							getViewElement().setPropertyName(propertyName);
@@ -93,15 +94,15 @@ public class VirtualPropertyControl extends ItemControl {
 
 						//古いのを削除
 						mtpEvent.setValue("name", oldPropertyName);
-						handler.remove(mtpEvent);
+						propertyOperationHandler.remove(mtpEvent);
 
 						//新しいのを追加
 						mtpEvent.setValue("name", propertyName);
-						handler.add(mtpEvent);
+						propertyOperationHandler.add(mtpEvent);
 
 					}
 				}
-				if (handler != null) {
+				if (propertyOperationHandler != null) {
 				}
 
 				//表示名
@@ -137,12 +138,9 @@ public class VirtualPropertyControl extends ItemControl {
 		return (VirtualPropertyItem) getValueObject();
 	}
 
-	/**
-	 * チェック用ハンドラの設定。
-	 * @param handler
-	 */
-	public void setHandler(PropertyOperationHandler handler) {
-		this.handler = handler;
+	@Override
+	public void setPropertyOperationHandler(PropertyOperationHandler handler) {
+		this.propertyOperationHandler = handler;
 	}
 
 	/**
@@ -150,10 +148,10 @@ public class VirtualPropertyControl extends ItemControl {
 	 */
 	@Override
 	protected boolean onPreDestroy() {
-		if (handler != null) {
+		if (propertyOperationHandler != null) {
 			MTPEvent event = new MTPEvent();
 			event.setValue("name", propertyName);
-			handler.remove(event);
+			propertyOperationHandler.remove(event);
 		}
 		return true;
 	}

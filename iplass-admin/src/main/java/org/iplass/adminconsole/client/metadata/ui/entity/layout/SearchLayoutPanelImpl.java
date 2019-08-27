@@ -71,9 +71,6 @@ public class SearchLayoutPanelImpl extends MetaDataMainEditPane implements Searc
 
 	private EntityDefinition ed;
 
-	/** 編集終了イベント */
-	private MTPEventHandler editEndHandler;
-
 	/** ヘッダ部分 */
 	private MetaCommonHeaderPane headerPane;
 	/** 共通属性部分 */
@@ -189,22 +186,6 @@ public class SearchLayoutPanelImpl extends MetaDataMainEditPane implements Searc
 	}
 
 	/**
-	 * 編集開始イベント設定。
-	 * @param handler
-	 */
-	public void setEditStartHandler(MTPEventHandler handler) {
-		form.setEditStartHandler(handler);
-	}
-
-	/**
-	 * 編集終了イベント設定。
-	 * @param handler
-	 */
-	public void setEditEndHandler(MTPEventHandler handler) {
-		editEndHandler = handler;
-	}
-
-	/**
 	 * Viewをリセット。
 	 */
 	private void reset() {
@@ -226,10 +207,6 @@ public class SearchLayoutPanelImpl extends MetaDataMainEditPane implements Searc
 
 		//SharedConfigの再表示
 		commonSection.refreshSharedConfig();
-
-		if (editEndHandler != null) {
-			editEndHandler.execute(new MTPEvent());
-		}
 	}
 
 	/**
@@ -380,10 +357,6 @@ public class SearchLayoutPanelImpl extends MetaDataMainEditPane implements Searc
 					SC.say(AdminClientMessageUtil.getString("ui_metadata_entity_layout_SearchLayoutPane_completion"),
 							AdminClientMessageUtil.getString("ui_metadata_entity_layout_SearchLayoutPane_saveSearchLayoutComp"));
 
-					if (editEndHandler != null) {
-						editEndHandler.execute(new MTPEvent());
-					}
-
 					//ステータスチェック
 					StatusCheckUtil.statuCheck(EntityView.class.getName(), defName.replace(".", "/"), SearchLayoutPanelImpl.this);
 
@@ -406,10 +379,6 @@ public class SearchLayoutPanelImpl extends MetaDataMainEditPane implements Searc
 				protected void afterUpdate(AdminDefinitionModifyResult result) {
 					SC.say(AdminClientMessageUtil.getString("ui_metadata_entity_layout_SearchLayoutPane_completion"),
 							AdminClientMessageUtil.getString("ui_metadata_entity_layout_SearchLayoutPane_saveSearchLayoutComp"));
-
-					if (editEndHandler != null) {
-						editEndHandler.execute(new MTPEvent());
-					}
 
 					//ステータスチェック
 					StatusCheckUtil.statuCheck(EntityView.class.getName(), defName.replace(".", "/"), SearchLayoutPanelImpl.this);

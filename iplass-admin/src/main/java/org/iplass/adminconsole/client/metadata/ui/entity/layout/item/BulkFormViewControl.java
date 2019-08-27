@@ -24,7 +24,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.iplass.adminconsole.client.base.event.MTPEvent;
-import org.iplass.adminconsole.client.base.event.MTPEventHandler;
 import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
 import org.iplass.adminconsole.client.metadata.ui.entity.layout.PropertyOperationContext;
 import org.iplass.adminconsole.client.metadata.ui.entity.layout.PropertyOperationHandler;
@@ -44,9 +43,6 @@ public class BulkFormViewControl extends ItemControl {
 
 	/** 内部のレイアウト */
 	private BulkDropLayout editArea = null;
-
-	/** 編集開始イベントハンドラ */
-	private MTPEventHandler editStartHandler;
 
 	/** プロパティチェック用イベントハンドラ */
 	private PropertyOperationHandler propertyOperationHandler;
@@ -74,15 +70,6 @@ public class BulkFormViewControl extends ItemControl {
 	}
 
 	/**
-	 * 編集開始イベント設定。
-	 * @param handler
-	 */
-	public void setEditStartHandler(MTPEventHandler handler) {
-		editStartHandler = handler;
-		editArea.setEditStartHandler(handler);
-	}
-
-	/**
 	 * Viewをリセット。
 	 */
 	public void reset() {
@@ -107,29 +94,11 @@ public class BulkFormViewControl extends ItemControl {
 			ItemControl window = sectionController.createControl(section, defName, FieldReferenceType.BULK, ed);
 
 			if (window instanceof DefaultSectionControl) {
-				((DefaultSectionControl)window).setHandlers(ed, editStartHandler, propertyOperationHandler);
+				DefaultSectionControl dsChild = (DefaultSectionControl)window;
+				dsChild.setEntityDefinition(ed);
+				dsChild.setPropertyOperationHandler(propertyOperationHandler);
+				dsChild.restoreMember();
 			}
-//			} else if (window instanceof ReferenceSectionControl) {
-//				((ReferenceSectionControl)window).setHandler(propertyOperationHandler);
-//				MTPEvent propEvent = new MTPEvent();
-//				String name = ((ReferenceSection) section).getPropertyName();
-//				propEvent.setValue("name", name);
-//				if (!propertyOperationHandler.check(propEvent)) {
-//					propertyOperationHandler.add(propEvent);
-//
-//					MTPEvent sectionEvent = new MTPEvent();
-//					sectionEvent.setValue("name", name + ReferenceSectionControl.SECTION_SUFFIX);
-//					propertyOperationHandler.add(sectionEvent);
-//				}
-//				Integer count = (Integer) propertyOperationHandler.getContext().get(name + ReferenceSectionControl.SECTION_COUNT_KEY);
-//				if (count == null) count = 0;
-//				propertyOperationHandler.getContext().set(name + ReferenceSectionControl.SECTION_COUNT_KEY, ++count);
-//			} else if (window instanceof MassReferenceSectionControl) {
-//				((MassReferenceSectionControl)window).setHandler(propertyOperationHandler);
-//				MTPEvent event = new MTPEvent();
-//				event.setValue("name", ((MassReferenceSection) section).getPropertyName());
-//				propertyOperationHandler.add(event);
-//			}
 			editArea.addElement(window, 0);
 		}
 	}

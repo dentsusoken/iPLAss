@@ -24,7 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.iplass.adminconsole.client.base.event.MTPEvent;
-import org.iplass.adminconsole.client.base.event.MTPEventHandler;
+import org.iplass.adminconsole.client.metadata.ui.entity.layout.HasPropertyOperationHandler;
 import org.iplass.adminconsole.client.metadata.ui.entity.layout.PropertyOperationHandler;
 import org.iplass.adminconsole.client.metadata.ui.entity.layout.item.DetailDropLayout;
 import org.iplass.adminconsole.client.metadata.ui.entity.layout.item.ItemControl;
@@ -51,11 +51,11 @@ import com.smartgwt.client.widgets.Canvas;
  * @author lis3wg
  *
  */
-public class DefaultSectionControl extends ItemControl implements SectionControl {
+public class DefaultSectionControl extends ItemControl implements SectionControl, HasPropertyOperationHandler {
 
 	/** 内部のレイアウト */
 	private DetailDropLayout layout = null;
-	private MTPEventHandler editStartHandler;
+
 	private PropertyOperationHandler propertyOperationHandler;
 
 	private EntityDefinition ed;
@@ -111,7 +111,6 @@ public class DefaultSectionControl extends ItemControl implements SectionControl
 
 				DetailDropLayout old = layout;
 				layout = new DetailDropLayout(section.getColNum(), defName);
-				layout.setEditStartHandler(editStartHandler);
 				layout.setPropertyOperationHandler(propertyOperationHandler);
 				layout.setEntityDefinition(ed);
 
@@ -149,20 +148,23 @@ public class DefaultSectionControl extends ItemControl implements SectionControl
 		setValueObject(section);
 	}
 
-	public void setHandlers(EntityDefinition ed, MTPEventHandler editStartHandler, PropertyOperationHandler propertyOperationHandler) {
+	public void setEntityDefinition(EntityDefinition ed) {
 		this.ed = ed;
-		this.editStartHandler = editStartHandler;
-		this.propertyOperationHandler = propertyOperationHandler;
 
 		if (layout != null) {
 			//SRB(Null Dereference)対応
-			//this(final String defName, String title, int colNum)で生成されるのであり得ないが
-			layout.setEditStartHandler(editStartHandler);
-			layout.setPropertyOperationHandler(propertyOperationHandler);
 			layout.setEntityDefinition(ed);
 		}
+	}
 
-		restoreMember();
+	@Override
+	public void setPropertyOperationHandler(PropertyOperationHandler handler) {
+		this.propertyOperationHandler = handler;
+
+		if (layout != null) {
+			//SRB(Null Dereference)対応
+			layout.setPropertyOperationHandler(propertyOperationHandler);
+		}
 	}
 
 	@Override
@@ -179,7 +181,7 @@ public class DefaultSectionControl extends ItemControl implements SectionControl
 	 * @param editStartHandler
 	 * @param propertyOperationHandler
 	 */
-	private void restoreMember() {
+	public void restoreMember() {
 		DefaultSection section = (DefaultSection)getValueObject();
 
 		//配下の要素を復元
@@ -187,12 +189,15 @@ public class DefaultSectionControl extends ItemControl implements SectionControl
 			if (element instanceof Section) {
 				ItemControl child = sectionController.createControl((Section)element, defName, getTriggerType(), ed);
 				if (child instanceof DefaultSectionControl) {
-					((DefaultSectionControl)child).setHandlers(ed, editStartHandler, propertyOperationHandler);
+					DefaultSectionControl dsChild = (DefaultSectionControl)child;
+					dsChild.setEntityDefinition(ed);
+					dsChild.setPropertyOperationHandler(propertyOperationHandler);
+					dsChild.restoreMember();
 				}
 				addMember(child);
 			} else if (element instanceof PropertyItem) {
 				PropertyControl child = new PropertyControl(defName, getTriggerType(), (PropertyItem) element);
-				child.setHandler(propertyOperationHandler);
+				child.setPropertyOperationHandler(propertyOperationHandler);
 				MTPEvent event = new MTPEvent();
 				event.setValue("name", ((PropertyItem) element).getPropertyName());
 				if (!propertyOperationHandler.check(event)) {
@@ -201,7 +206,7 @@ public class DefaultSectionControl extends ItemControl implements SectionControl
 				addMember(child);
 			} else if (element instanceof VirtualPropertyItem) {
 				VirtualPropertyControl child = new VirtualPropertyControl(defName, getTriggerType(), ed, (VirtualPropertyItem) element);
-				child.setHandler(propertyOperationHandler);
+				child.setPropertyOperationHandler(propertyOperationHandler);
 				MTPEvent event = new MTPEvent();
 				event.setValue("name", ((VirtualPropertyItem) element).getPropertyName());
 				if (!propertyOperationHandler.check(event)) {

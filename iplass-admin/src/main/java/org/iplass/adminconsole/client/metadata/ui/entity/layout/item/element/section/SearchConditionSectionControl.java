@@ -24,7 +24,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.iplass.adminconsole.client.base.event.MTPEvent;
-import org.iplass.adminconsole.client.base.event.MTPEventHandler;
 import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
 import org.iplass.adminconsole.client.metadata.ui.entity.layout.MultiColumnDropLayout;
 import org.iplass.adminconsole.client.metadata.ui.entity.layout.PropertyOperationContext;
@@ -65,11 +64,9 @@ import com.smartgwt.client.widgets.grid.ListGridRecord;
  *
  */
 public class SearchConditionSectionControl extends ItemControl implements SectionControl {
+
 	/** 重複チェック用のリスト */
 	private List<String> propList = new ArrayList<String>();
-
-	/** 編集開始イベントハンドラ */
-	private MTPEventHandler editStartHandler;
 
 	/** 内部のレイアウト */
 	private DropLayout layout;
@@ -186,7 +183,7 @@ public class SearchConditionSectionControl extends ItemControl implements Sectio
 						if (!propList.contains(name)) {
 							PropertyControl newProperty = new PropertyControl(defName, getTriggerType(), record, new PropertyItem());
 							newProperty.setDragType("property_c");
-							newProperty.setHandler(handler);
+							newProperty.setPropertyOperationHandler(handler);
 							propList.add(name);
 							col.addMember(newProperty, dropPosition);
 						} else {
@@ -222,7 +219,7 @@ public class SearchConditionSectionControl extends ItemControl implements Sectio
 									property.setEditor(editor);
 
 									VirtualPropertyControl newProperty = new VirtualPropertyControl(defName, FieldReferenceType.SEARCHCONDITION, ed, property);
-									newProperty.setHandler(new PropertyOperationHandler() {
+									newProperty.setPropertyOperationHandler(new PropertyOperationHandler() {
 										@Override
 										public boolean check(MTPEvent event) {
 											String name = (String) event.getValue("name");
@@ -264,24 +261,12 @@ public class SearchConditionSectionControl extends ItemControl implements Sectio
 					// cancelしないとdrop元自体が移動してしまう
 					event.cancel();
 				}
-
-				if (editStartHandler != null) {
-					editStartHandler.execute(new MTPEvent());
-				}
 			}
 		}
 	}
 
 	public void setEntityDefinition(EntityDefinition ed) {
 		this.ed = ed;
-	}
-
-	/**
-	 * 編集開始イベントハンドラを設定。
-	 * @param handler
-	 */
-	public void setEditStartHandler(MTPEventHandler handler) {
-		editStartHandler = handler;
 	}
 
 	/**
@@ -340,7 +325,7 @@ public class SearchConditionSectionControl extends ItemControl implements Sectio
 
 					String name = property.getPropertyName();
 
-					win.setHandler(handler);
+					win.setPropertyOperationHandler(handler);
 					addMember(win);
 
 					propList.add(name);
@@ -356,7 +341,6 @@ public class SearchConditionSectionControl extends ItemControl implements Sectio
 		}
 	}
 
-	/**  */
 	private int currentCols = 0;
 
 	@Override

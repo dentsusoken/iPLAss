@@ -22,6 +22,7 @@ package org.iplass.adminconsole.client.metadata.ui.entity.layout.item.element.se
 
 import org.iplass.adminconsole.client.base.event.MTPEvent;
 import org.iplass.adminconsole.client.base.tenant.TenantInfoHolder;
+import org.iplass.adminconsole.client.metadata.ui.entity.layout.HasPropertyOperationHandler;
 import org.iplass.adminconsole.client.metadata.ui.entity.layout.PropertyOperationHandler;
 import org.iplass.adminconsole.client.metadata.ui.entity.layout.item.EntityViewFieldSettingDialog;
 import org.iplass.adminconsole.client.metadata.ui.entity.layout.item.EntityViewFieldSettingDialog.PropertyInfo;
@@ -39,13 +40,14 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  *
  * @author lis3wg
  */
-public class ReferenceSectionControl extends ItemControl implements SectionControl {
+public class ReferenceSectionControl extends ItemControl implements SectionControl, HasPropertyOperationHandler {
 
 	public static final String SECTION_SUFFIX = "_section";
 	public static final String SECTION_COUNT_KEY = "_section_count";
 
 	/** Window破棄前にプロパティの重複チェックリストから削除するためのハンドラ */
-	private PropertyOperationHandler handler = null;
+	private PropertyOperationHandler propertyOperationHandler = null;
+	
 	private MetaDataServiceAsync service = null;
 
 	private String entityPropertyDisplayName = null;
@@ -107,12 +109,9 @@ public class ReferenceSectionControl extends ItemControl implements SectionContr
 		setTitle(title);
 	}
 
-	/**
-	 * チェック用ハンドラの設定。
-	 * @param handler
-	 */
-	public void setHandler(PropertyOperationHandler handler) {
-		this.handler = handler;
+	@Override
+	public void setPropertyOperationHandler(PropertyOperationHandler handler) {
+		this.propertyOperationHandler = handler;
 	}
 
 	/**
@@ -120,24 +119,24 @@ public class ReferenceSectionControl extends ItemControl implements SectionContr
 	 */
 	@Override
 	protected boolean onPreDestroy() {
-		if (handler != null) {
+		if (propertyOperationHandler != null) {
 			Object name = getValue("name");
 
-			if (handler.getContext().get(name + SECTION_COUNT_KEY) != null) {
-				Integer count = (Integer) handler.getContext().get(name + SECTION_COUNT_KEY);
+			if (propertyOperationHandler.getContext().get(name + SECTION_COUNT_KEY) != null) {
+				Integer count = (Integer) propertyOperationHandler.getContext().get(name + SECTION_COUNT_KEY);
 				if (count > 1) {
-					handler.getContext().set(name + SECTION_COUNT_KEY, --count);
+					propertyOperationHandler.getContext().set(name + SECTION_COUNT_KEY, --count);
 				} else {
 					// 同一プロパティ名のセクションが消えたらhandlerからプロパティ名削除
 					MTPEvent propCheck = new MTPEvent();
 					propCheck.setValue("name", name);
-					handler.remove(propCheck);
+					propertyOperationHandler.remove(propCheck);
 
 					MTPEvent sectionCheck = new MTPEvent();
 					sectionCheck.setValue("name", name + SECTION_SUFFIX);
-					handler.remove(sectionCheck);
+					propertyOperationHandler.remove(sectionCheck);
 
-					handler.getContext().set(name + SECTION_COUNT_KEY, null);
+					propertyOperationHandler.getContext().set(name + SECTION_COUNT_KEY, null);
 				}
 			}
 		}

@@ -24,7 +24,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.iplass.adminconsole.client.base.event.MTPEvent;
-import org.iplass.adminconsole.client.base.event.MTPEventHandler;
 import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
 import org.iplass.adminconsole.client.metadata.ui.entity.layout.PropertyOperationContext;
 import org.iplass.adminconsole.client.metadata.ui.entity.layout.PropertyOperationHandler;
@@ -62,11 +61,9 @@ import com.smartgwt.client.widgets.layout.Layout;
  *
  */
 public class SearchResultSectionControl extends ItemControl implements SectionControl {
+
 	/** 重複チェック用のリスト */
 	private List<String> propList = new ArrayList<String>();
-
-	/** 編集開始イベントハンドラ */
-	private MTPEventHandler editStartHandler;
 
 	/** 内部のレイアウト */
 	private DropLayout layout;
@@ -198,7 +195,7 @@ public class SearchResultSectionControl extends ItemControl implements SectionCo
 							PropertyControl newProperty = new PropertyControl(defName, getTriggerType(), record, new PropertyColumn());
 							newProperty.setWidth(getColWidth());
 							newProperty.setDragType("property_r");
-							newProperty.setHandler(handler);
+							newProperty.setPropertyOperationHandler(handler);
 							propList.add(name);
 							addMember(newProperty, dropPosition);
 						} else {
@@ -236,7 +233,7 @@ public class SearchResultSectionControl extends ItemControl implements SectionCo
 
 									VirtualPropertyControl newProperty = new VirtualPropertyControl(defName, FieldReferenceType.SEARCHRESULT, ed, property);
 									newProperty.setWidth(DropLayout.this.getColWidth());
-									newProperty.setHandler(new PropertyOperationHandler() {
+									newProperty.setPropertyOperationHandler(new PropertyOperationHandler() {
 										@Override
 										public boolean check(MTPEvent event) {
 											String name = (String) event.getValue("name");
@@ -274,10 +271,6 @@ public class SearchResultSectionControl extends ItemControl implements SectionCo
 
 					// cancelしないとdrop元自体が移動してしまう
 					event.cancel();
-				}
-
-				if (editStartHandler != null) {
-					editStartHandler.execute(new MTPEvent());
 				}
 			}
 		}
@@ -323,14 +316,6 @@ public class SearchResultSectionControl extends ItemControl implements SectionCo
 	}
 
 	/**
-	 * 編集開始イベントハンドラを設定。
-	 * @param handler
-	 */
-	public void setEditStartHandler(MTPEventHandler handler) {
-		editStartHandler = handler;
-	}
-
-	/**
 	 * 検索結果のプロパティ削除用イベントハンドラ。
 	 */
 	private class PropertyOperationHandlerImpl implements
@@ -373,7 +358,7 @@ public class SearchResultSectionControl extends ItemControl implements SectionCo
 
 				String name = property.getPropertyName();
 
-				win.setHandler(handler);
+				win.setPropertyOperationHandler(handler);
 				layout.addMember(win);
 
 				propList.add(name);

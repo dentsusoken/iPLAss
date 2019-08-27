@@ -21,8 +21,8 @@
 package org.iplass.adminconsole.client.metadata.ui.entity.layout.item;
 
 import org.iplass.adminconsole.client.base.event.MTPEvent;
-import org.iplass.adminconsole.client.base.event.MTPEventHandler;
 import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
+import org.iplass.adminconsole.client.metadata.ui.entity.layout.HasPropertyOperationHandler;
 import org.iplass.adminconsole.client.metadata.ui.entity.layout.MultiColumnDropLayout;
 import org.iplass.adminconsole.client.metadata.ui.entity.layout.PropertyOperationHandler;
 import org.iplass.adminconsole.client.metadata.ui.entity.layout.item.element.ElementControl;
@@ -54,10 +54,8 @@ import com.smartgwt.client.widgets.grid.ListGridRecord;
  * ビュー編集用レイアウト
  * @author lis3wg
  */
-public class DetailDropLayout extends MultiColumnDropLayout {
+public class DetailDropLayout extends MultiColumnDropLayout implements HasPropertyOperationHandler {
 
-	//getMemberの代替用
-	private MTPEventHandler editStartHandler;
 	private PropertyOperationHandler propertyOperationHandler;
 	private String defName;
 
@@ -86,18 +84,7 @@ public class DetailDropLayout extends MultiColumnDropLayout {
 		this.ed = ed;
 	}
 
-	/**
-	 * 編集開始用のイベントハンドラ設定
-	 * @param handler
-	 */
-	public void setEditStartHandler(MTPEventHandler handler) {
-		editStartHandler = handler;
-	}
-
-	/**
-	 * プロパティの重複チェック用ハンドラ設定
-	 * @param handler
-	 */
+	@Override
 	public void setPropertyOperationHandler(PropertyOperationHandler handler) {
 		propertyOperationHandler = handler;
 	}
@@ -134,11 +121,14 @@ public class DetailDropLayout extends MultiColumnDropLayout {
 						@Override
 						public void onCreated(ItemControl window) {
 							if (window instanceof DefaultSectionControl) {
-								((DefaultSectionControl)window).setHandlers(ed, editStartHandler, propertyOperationHandler);
+								DefaultSectionControl dsChild = (DefaultSectionControl)window;
+								dsChild.setEntityDefinition(ed);
+								dsChild.setPropertyOperationHandler(propertyOperationHandler);
+								dsChild.restoreMember();
 							} else if (window instanceof ReferenceSectionControl) {
-								((ReferenceSectionControl)window).setHandler(propertyOperationHandler);
+								((ReferenceSectionControl)window).setPropertyOperationHandler(propertyOperationHandler);
 							} else if (window instanceof MassReferenceSectionControl) {
-								((MassReferenceSectionControl)window).setHandler(propertyOperationHandler);
+								((MassReferenceSectionControl)window).setPropertyOperationHandler(propertyOperationHandler);
 							}
 							col.addMember(window, dropPosition);
 						}
@@ -151,7 +141,7 @@ public class DetailDropLayout extends MultiColumnDropLayout {
 					if (propertyOperationHandler != null) {
 						if (!propertyOperationHandler.check(mtpEvent)) {
 							PropertyControl newProperty = new PropertyControl(defName, FieldReferenceType.DETAIL, record, new PropertyItem());
-							newProperty.setHandler(propertyOperationHandler);
+							newProperty.setPropertyOperationHandler(propertyOperationHandler);
 							propertyOperationHandler.add(mtpEvent);
 							col.addMember(newProperty, dropPosition);
 						} else {
@@ -198,7 +188,7 @@ public class DetailDropLayout extends MultiColumnDropLayout {
 								property.setEditor(editor);
 
 								VirtualPropertyControl newProperty = new VirtualPropertyControl(defName, FieldReferenceType.DETAIL, ed, property);
-								newProperty.setHandler(propertyOperationHandler);
+								newProperty.setPropertyOperationHandler(propertyOperationHandler);
 
 								col.addMember(newProperty, dropPosition);
 								dialog.destroy();
@@ -214,10 +204,6 @@ public class DetailDropLayout extends MultiColumnDropLayout {
 
 				// cancelしないとdrop元自体が移動してしまう
 				event.cancel();
-			}
-
-			if (editStartHandler != null) {
-				editStartHandler.execute(new MTPEvent());
 			}
 		}
 	}

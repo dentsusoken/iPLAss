@@ -20,7 +20,6 @@
 
 package org.iplass.adminconsole.client.metadata.ui.entity.layout.item;
 
-import org.iplass.adminconsole.client.base.event.MTPEventHandler;
 import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
 import org.iplass.adminconsole.client.metadata.ui.entity.layout.item.element.section.ScriptingSectionControl;
 import org.iplass.adminconsole.client.metadata.ui.entity.layout.item.element.section.SearchConditionSectionControl;
@@ -96,15 +95,6 @@ public class SearchFormViewControl extends ItemControl {
 		SearchFormView fv = new SearchFormView();
 		setValueObject(fv);
 		setClassName(fv.getClass().getName());
-	}
-
-	/**
-	 * 編集開始イベント設定。
-	 * @param handler
-	 */
-	public void setEditStartHandler(MTPEventHandler handler) {
-		condition.setEditStartHandler(handler);
-		result.setEditStartHandler(handler);
 	}
 
 	/**
