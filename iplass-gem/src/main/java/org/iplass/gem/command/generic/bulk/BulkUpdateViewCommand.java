@@ -86,7 +86,6 @@ public class BulkUpdateViewCommand extends BulkCommandBase {
 		}
 
 		BulkUpdateFormViewData data = new BulkUpdateFormViewData(context);
-		data.setExecType(Constants.EXEC_TYPE_UPDATE);
 
 		for (String oid : oids) {
 			if (oid != null && oid.length() > 0) {

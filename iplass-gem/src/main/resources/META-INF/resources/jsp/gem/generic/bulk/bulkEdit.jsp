@@ -163,8 +163,6 @@
 	//表示名
 	String displayName = TemplateUtil.getMultilingualString(form.getTitle(), form.getLocalizedTitleList(),
 			data.getEntityDefinition().getDisplayName(), data.getEntityDefinition().getLocalizedDisplayNameList());
-	//新規or更新
-	String execType = data.getExecType();
 
 	//編集対象情報
 	List<String> oids = new ArrayList<String>();
@@ -206,7 +204,6 @@
 	//section以下で参照するパラメータ
 	request.setAttribute(Constants.OUTPUT_TYPE, type);
 	request.setAttribute(Constants.ENTITY_DEFINITION, data.getEntityDefinition());
-	request.setAttribute(Constants.EXEC_TYPE, execType);
 %>
 <h3 class="hgroup-02 hgroup-02-01"><%=GemResourceBundleUtil.resourceString("generic.bulk.title", displayName)%></h3>
 <%
@@ -231,7 +228,6 @@
 %>
 <form id="detailForm" method="post" action="<%=action%>">
 ${m:outputToken('FORM_XHTML', true)}
-<input type="hidden" name="execType" value="<c:out value="<%=execType%>"/>" />
 <%
 	if (!isSelectAll) {
 %>
@@ -381,7 +377,7 @@ $(function() {
 <div class="operation-bar operation-bar_bottom">
 <ul class="list_operation edit-bar">
 <%
-	if (Constants.EXEC_TYPE_UPDATE.equals(execType) && auth.checkPermission(new EntityPermission(defName, EntityPermission.Action.UPDATE))) {
+	if (auth.checkPermission(new EntityPermission(defName, EntityPermission.Action.UPDATE))) {
 		//ボタンの表示ラベル
 		String bulkUpdateDisplayLabel = GemResourceBundleUtil.resourceString("generic.bulk.update");
 %>

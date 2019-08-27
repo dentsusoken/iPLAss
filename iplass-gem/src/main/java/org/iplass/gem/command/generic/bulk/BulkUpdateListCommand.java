@@ -112,7 +112,6 @@ public class BulkUpdateListCommand extends BulkCommandBase {
 		EditResult ret = new EditResult();
 		BulkUpdateFormViewData data = new BulkUpdateFormViewData(context);
 		data.setUpdatedProperties(context.getUpdatedProps());
-		data.setExecType(Constants.EXEC_TYPE_UPDATE);
 		data.setView(context.getView());
 
 		try {

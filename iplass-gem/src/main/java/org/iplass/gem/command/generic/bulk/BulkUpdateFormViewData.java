@@ -37,9 +37,6 @@ public class BulkUpdateFormViewData{
 	/** 詳細画面定義 */
 	private SearchFormView view;
 
-	/** 処理タイプ */
-	private String execType;
-
 	/** 選択された行番号とエンティティ */
 	private List<SelectedRowEntity> entries;
 
@@ -83,22 +80,6 @@ public class BulkUpdateFormViewData{
 	 */
 	public void setView(SearchFormView view) {
 		this.view = view;
-	}
-
-	/**
-	 * 処理タイプを取得します。
-	 * @return 処理タイプ
-	 */
-	public String getExecType() {
-		return execType;
-	}
-
-	/**
-	 * 処理タイプを設定します。
-	 * @param execType 処理タイプ
-	 */
-	public void setExecType(String execType) {
-		this.execType = execType;
 	}
 
 	public List<SelectedRowEntity> getEntries() {
