@@ -21,12 +21,8 @@
 package org.iplass.adminconsole.client.metadata.ui.entity.layout.item.element.section;
 
 import java.util.ArrayList;
-import java.util.List;
-
-import org.iplass.adminconsole.client.base.event.MTPEvent;
 import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
-import org.iplass.adminconsole.client.metadata.ui.entity.layout.PropertyOperationContext;
-import org.iplass.adminconsole.client.metadata.ui.entity.layout.PropertyOperationHandler;
+import org.iplass.adminconsole.client.metadata.ui.entity.layout.EntityViewDragPane;
 import org.iplass.adminconsole.client.metadata.ui.entity.layout.item.ItemControl;
 import org.iplass.adminconsole.client.metadata.ui.entity.layout.item.VirtualPropertyDialog;
 import org.iplass.adminconsole.client.metadata.ui.entity.layout.item.element.VirtualPropertyControl;
@@ -40,7 +36,6 @@ import org.iplass.mtp.view.generic.element.VirtualPropertyItem;
 import org.iplass.mtp.view.generic.element.property.PropertyColumn;
 import org.iplass.mtp.view.generic.element.section.SearchResultSection;
 
-import com.google.gwt.core.client.GWT;
 import com.smartgwt.client.types.HeaderControls;
 import com.smartgwt.client.util.EventHandler;
 import com.smartgwt.client.util.SC;
@@ -62,14 +57,8 @@ import com.smartgwt.client.widgets.layout.Layout;
  */
 public class SearchResultSectionControl extends ItemControl implements SectionControl {
 
-	/** 重複チェック用のリスト */
-	private List<String> propList = new ArrayList<String>();
-
 	/** 内部のレイアウト */
 	private DropLayout layout;
-
-	/** プロパティチェック用のイベントハンドラ */
-	private PropertyOperationHandler handler;
 
 	private EntityDefinition ed;
 
@@ -124,7 +113,6 @@ public class SearchResultSectionControl extends ItemControl implements SectionCo
 		setCanDrag(false);
 		setCanDragReposition(false);
 		layout = new HDropLayout();
-		handler = new PropertyOperationHandlerImpl();
 
 		addItem(layout);
 
@@ -156,7 +144,9 @@ public class SearchResultSectionControl extends ItemControl implements SectionCo
 			setPadding(5);
 
 			//cond<=>resultのD&Dをさせないためにresult内でのみ操作可能なタイプも設定
-			setDropTypes("property", "property_r", "element");
+			setDropTypes(EntityViewDragPane.DRAG_TYPE_PROPERTY,
+					EntityViewDragPane.DRAG_TYPE_ELEMENT,
+					EntityViewDragPane.DRAG_TYPE_PROPERTY + "_r");
 
 			//ドロップ先を表示する設定
 			Canvas dropLineProperties = new Canvas();
@@ -188,20 +178,13 @@ public class SearchResultSectionControl extends ItemControl implements SectionCo
 				Canvas dragTarget = EventHandler.getDragTarget();
 				if (dragTarget instanceof ListGrid) {
 					//ツリーからのdropはWidgetを作成する
-					if ("property".equals(dragTarget.getDragType())) {
+					if (EntityViewDragPane.DRAG_TYPE_PROPERTY.equals(dragTarget.getDragType())) {
 						ListGridRecord record = ((ListGrid) dragTarget).getSelectedRecord();
-						String name = record.getAttribute("name");
-						if (!propList.contains(name)) {
-							PropertyControl newProperty = new PropertyControl(defName, getTriggerType(), record, new PropertyColumn());
-							newProperty.setWidth(getColWidth());
-							newProperty.setDragType("property_r");
-							newProperty.setPropertyOperationHandler(handler);
-							propList.add(name);
-							addMember(newProperty, dropPosition);
-						} else {
-							GWT.log(record.getAttribute("name") + " is already added.");
-						}
-					} else if ("element".equals(dragTarget.getDragType())) {
+						PropertyControl newProperty = new PropertyControl(defName, getTriggerType(), record, new PropertyColumn());
+						newProperty.setWidth(getColWidth());
+						newProperty.setDragType(EntityViewDragPane.DRAG_TYPE_PROPERTY + "_r");
+						addMember(newProperty, dropPosition);
+					} else if (EntityViewDragPane.DRAG_TYPE_ELEMENT.equals(dragTarget.getDragType())) {
 						// 仮想プロパティ
 						ListGridRecord record = ((ListGrid) dragTarget).getSelectedRecord();
 						String name = record.getAttribute("name");
@@ -214,10 +197,6 @@ public class SearchResultSectionControl extends ItemControl implements SectionCo
 									if (!dialog.validate()) return;
 
 									final String name = dialog.getPropertyName();
-									if (propList.contains(name)) {
-										SC.say(AdminClientMessageUtil.getString("ui_metadata_entity_layout_DetailDropLayout_checkPropExistsErr"));
-										return;
-									}
 									if (ed.getProperty(name) != null) {
 										SC.say(AdminClientMessageUtil.getString("ui_metadata_entity_layout_DetailDropLayout_checkPropDefExistsErr"));
 										return;
@@ -233,33 +212,8 @@ public class SearchResultSectionControl extends ItemControl implements SectionCo
 
 									VirtualPropertyControl newProperty = new VirtualPropertyControl(defName, FieldReferenceType.SEARCHRESULT, ed, property);
 									newProperty.setWidth(DropLayout.this.getColWidth());
-									newProperty.setPropertyOperationHandler(new PropertyOperationHandler() {
-										@Override
-										public boolean check(MTPEvent event) {
-											String name = (String) event.getValue("name");
-											return propList.contains(name);
-										}
-
-										@Override
-										public void add(MTPEvent event) {
-											String name = (String) event.getValue("name");
-											propList.add(name);
-										}
-
-										@Override
-										public void remove(MTPEvent event) {
-											String name = (String) event.getValue("name");
-											propList.remove(name);
-										}
-
-										@Override
-										public PropertyOperationContext getContext() {
-											return null;
-										}
-									});
 
 									DropLayout.this.addMember(newProperty, dropPosition);
-									propList.add(name);
 
 									dialog.destroy();
 								}
@@ -316,35 +270,6 @@ public class SearchResultSectionControl extends ItemControl implements SectionCo
 	}
 
 	/**
-	 * 検索結果のプロパティ削除用イベントハンドラ。
-	 */
-	private class PropertyOperationHandlerImpl implements
-			PropertyOperationHandler {
-
-		@Override
-		public void remove(MTPEvent event) {
-			String name = (String) event.getValue("name");
-			propList.remove(name);
-		}
-
-		@Override
-		public boolean check(MTPEvent event) {
-			//使用しない
-			return false;
-		}
-
-		@Override
-		public void add(MTPEvent event) {
-			//使用しない
-		}
-
-		@Override
-		public PropertyOperationContext getContext() {
-			return null;
-		}
-	}
-
-	/**
 	 * 検索結果セクションを復元。
 	 * @param section
 	 */
@@ -354,14 +279,8 @@ public class SearchResultSectionControl extends ItemControl implements SectionCo
 				PropertyColumn property = (PropertyColumn) elem;
 				PropertyControl win = new PropertyControl(defName, getTriggerType(), property);
 				win.setWidth(layout.getColWidth());
-				win.setDragType("property_r");
-
-				String name = property.getPropertyName();
-
-				win.setPropertyOperationHandler(handler);
+				win.setDragType(EntityViewDragPane.DRAG_TYPE_PROPERTY + "_r");
 				layout.addMember(win);
-
-				propList.add(name);
 			} else if (elem instanceof VirtualPropertyItem) {
 				VirtualPropertyItem property = (VirtualPropertyItem) elem;
 				VirtualPropertyControl win = new VirtualPropertyControl(defName, FieldReferenceType.SEARCHRESULT, ed, property);
@@ -401,8 +320,8 @@ public class SearchResultSectionControl extends ItemControl implements SectionCo
 	/**
 	 * 検索結果セクションを初期化。
 	 */
+	@Override
 	public void clear() {
-		propList.clear();
 		for (Canvas canvas : layout.getMembers()) {
 			if (canvas instanceof ItemControl) {
 				((ItemControl) canvas).destroy();

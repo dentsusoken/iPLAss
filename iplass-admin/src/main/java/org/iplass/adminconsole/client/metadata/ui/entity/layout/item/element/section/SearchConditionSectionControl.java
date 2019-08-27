@@ -23,11 +23,9 @@ package org.iplass.adminconsole.client.metadata.ui.entity.layout.item.element.se
 import java.util.ArrayList;
 import java.util.List;
 
-import org.iplass.adminconsole.client.base.event.MTPEvent;
 import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
+import org.iplass.adminconsole.client.metadata.ui.entity.layout.EntityViewDragPane;
 import org.iplass.adminconsole.client.metadata.ui.entity.layout.MultiColumnDropLayout;
-import org.iplass.adminconsole.client.metadata.ui.entity.layout.PropertyOperationContext;
-import org.iplass.adminconsole.client.metadata.ui.entity.layout.PropertyOperationHandler;
 import org.iplass.adminconsole.client.metadata.ui.entity.layout.item.ItemControl;
 import org.iplass.adminconsole.client.metadata.ui.entity.layout.item.VirtualPropertyDialog;
 import org.iplass.adminconsole.client.metadata.ui.entity.layout.item.element.ElementControl;
@@ -45,7 +43,6 @@ import org.iplass.mtp.view.generic.element.VirtualPropertyItem;
 import org.iplass.mtp.view.generic.element.property.PropertyItem;
 import org.iplass.mtp.view.generic.element.section.SearchConditionSection;
 
-import com.google.gwt.core.client.GWT;
 import com.smartgwt.client.types.HeaderControls;
 import com.smartgwt.client.util.EventHandler;
 import com.smartgwt.client.util.SC;
@@ -65,14 +62,8 @@ import com.smartgwt.client.widgets.grid.ListGridRecord;
  */
 public class SearchConditionSectionControl extends ItemControl implements SectionControl {
 
-	/** 重複チェック用のリスト */
-	private List<String> propList = new ArrayList<String>();
-
 	/** 内部のレイアウト */
 	private DropLayout layout;
-
-	/** プロパティチェック用のイベントハンドラ */
-	private PropertyOperationHandler handler;
 
 	private EntityDefinition ed;
 
@@ -81,6 +72,7 @@ public class SearchConditionSectionControl extends ItemControl implements Sectio
 	 */
 	public SearchConditionSectionControl(String defName, FieldReferenceType triggerType) {
 		super(defName, triggerType);
+
 		setHeaderControls(HeaderControls.HEADER_LABEL, setting);
 		setTitle(AdminClientMessageUtil.getString("ui_metadata_entity_layout_item_ConditionWindow_searchCondition"));
 		setHeight("50%");
@@ -88,7 +80,6 @@ public class SearchConditionSectionControl extends ItemControl implements Sectio
 		setMargin(4);
 		setCanDrag(false);
 		setCanDragReposition(false);
-		handler = new PropertyOperationHandlerImpl();
 
 		SearchConditionSection section = new SearchConditionSection();
 		section.setDispFlag(true);
@@ -154,7 +145,9 @@ public class SearchConditionSectionControl extends ItemControl implements Sectio
 			setPadding(5);
 
 			//cond<=>resultのD&DをさせないためにCondition内でのみ操作可能なタイプも設定
-			setDropTypes("property", "property_c", "element");
+			setDropTypes(EntityViewDragPane.DRAG_TYPE_PROPERTY,
+					EntityViewDragPane.DRAG_TYPE_ELEMENT,
+					EntityViewDragPane.DRAG_TYPE_PROPERTY + "_c");
 		}
 
 		@Override
@@ -177,19 +170,12 @@ public class SearchConditionSectionControl extends ItemControl implements Sectio
 				Canvas dragTarget = EventHandler.getDragTarget();
 				if (dragTarget instanceof ListGrid) {
 					//ツリーからのdropはWidgetを作成する
-					if ("property".equals(dragTarget.getDragType())) {
+					if (EntityViewDragPane.DRAG_TYPE_PROPERTY.equals(dragTarget.getDragType())) {
 						ListGridRecord record = ((ListGrid) dragTarget).getSelectedRecord();
-						String name = record.getAttribute("name");
-						if (!propList.contains(name)) {
-							PropertyControl newProperty = new PropertyControl(defName, getTriggerType(), record, new PropertyItem());
-							newProperty.setDragType("property_c");
-							newProperty.setPropertyOperationHandler(handler);
-							propList.add(name);
-							col.addMember(newProperty, dropPosition);
-						} else {
-							GWT.log(record.getAttribute("name") + " is already added.");
-						}
-					} else if ("element".equals(dragTarget.getDragType())) {
+						PropertyControl newProperty = new PropertyControl(defName, getTriggerType(), record, new PropertyItem());
+						newProperty.setDragType(EntityViewDragPane.DRAG_TYPE_PROPERTY + "_c");
+						col.addMember(newProperty, dropPosition);
+					} else if (EntityViewDragPane.DRAG_TYPE_ELEMENT.equals(dragTarget.getDragType())) {
 						ListGridRecord record = ((ListGrid) dragTarget).getSelectedRecord();
 						String name = record.getAttribute("name");
 						if (VirtualPropertyItem.class.getName().equals(name)) {
@@ -201,10 +187,6 @@ public class SearchConditionSectionControl extends ItemControl implements Sectio
 									if (!dialog.validate()) return;
 
 									final String name = dialog.getPropertyName();
-									if (propList.contains(name)) {
-										SC.say(AdminClientMessageUtil.getString("ui_metadata_entity_layout_DetailDropLayout_checkPropExistsErr"));
-										return;
-									}
 									if (ed.getProperty(name) != null) {
 										SC.say(AdminClientMessageUtil.getString("ui_metadata_entity_layout_DetailDropLayout_checkPropDefExistsErr"));
 										return;
@@ -219,33 +201,7 @@ public class SearchConditionSectionControl extends ItemControl implements Sectio
 									property.setEditor(editor);
 
 									VirtualPropertyControl newProperty = new VirtualPropertyControl(defName, FieldReferenceType.SEARCHCONDITION, ed, property);
-									newProperty.setPropertyOperationHandler(new PropertyOperationHandler() {
-										@Override
-										public boolean check(MTPEvent event) {
-											String name = (String) event.getValue("name");
-											return propList.contains(name);
-										}
-
-										@Override
-										public void add(MTPEvent event) {
-											String name = (String) event.getValue("name");
-											propList.add(name);
-										}
-
-										@Override
-										public void remove(MTPEvent event) {
-											String name = (String) event.getValue("name");
-											propList.remove(name);
-										}
-
-										@Override
-										public PropertyOperationContext getContext() {
-											return null;
-										}
-									});
-
 									col.addMember(newProperty, dropPosition);
-									propList.add(name);
 									dialog.destroy();
 								}
 							});
@@ -267,35 +223,6 @@ public class SearchConditionSectionControl extends ItemControl implements Sectio
 
 	public void setEntityDefinition(EntityDefinition ed) {
 		this.ed = ed;
-	}
-
-	/**
-	 * 検索条件のプロパティ削除用イベントハンドラ
-	 */
-	private class PropertyOperationHandlerImpl implements
-			PropertyOperationHandler {
-
-		private PropertyOperationHandlerImpl() {
-		}
-
-		@Override
-		public void remove(MTPEvent event) {
-			String name = (String) event.getValue("name");
-			propList.remove(name);
-		}
-
-		@Override
-		public boolean check(MTPEvent event) {
-			return false;
-		}
-
-		@Override
-		public void add(MTPEvent event) {}
-
-		@Override
-		public PropertyOperationContext getContext() {
-			return null;
-		}
 	}
 
 	/**
@@ -321,14 +248,8 @@ public class SearchConditionSectionControl extends ItemControl implements Sectio
 					addMember(win);
 				} else {
 					PropertyControl win = new PropertyControl(defName, getTriggerType(), property);
-					win.setDragType("property_c");
-
-					String name = property.getPropertyName();
-
-					win.setPropertyOperationHandler(handler);
+					win.setDragType(EntityViewDragPane.DRAG_TYPE_PROPERTY + "_c");
 					addMember(win);
-
-					propList.add(name);
 				}
 			} else if (elem instanceof VirtualPropertyItem) {
 				VirtualPropertyItem property = (VirtualPropertyItem) elem;
@@ -357,6 +278,7 @@ public class SearchConditionSectionControl extends ItemControl implements Sectio
 	 * 検索条件セクションを取得。
 	 * @return
 	 */
+	@Override
 	public SearchConditionSection getSection() {
 		SearchConditionSection section = (SearchConditionSection) getValueObject();
 		if (section.getElements() == null) {
@@ -405,8 +327,8 @@ public class SearchConditionSectionControl extends ItemControl implements Sectio
 	/**
 	 * 検索条件セクションを初期化。
 	 */
+	@Override
 	public void clear() {
-		propList.clear();
 
 		currentCols = 0;
 		if (layout != null && contains(layout)) {
