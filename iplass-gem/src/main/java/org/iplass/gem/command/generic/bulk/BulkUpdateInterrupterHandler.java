@@ -34,7 +34,6 @@ public class BulkUpdateInterrupterHandler {
 	public BulkOperationContext beforeOperation(List<Entity> entities) {
 		FormView view = context.getView();
 		BulkOperationContext ret = interrupter.beforeOperation(entities, request, context.getEntityDefinition(), view, BulkOperationType.UPDATE);
-		if (ret == null) ret = new BulkOperationContext(entities);
 		return ret;
 	}
 
