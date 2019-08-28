@@ -1899,7 +1899,7 @@ function showReference(viewAction, defName, oid, version, linkId, refEdit, editC
 		if (parentViewName) $("<input />").attr({type:"hidden", name:"parentViewName", value:parentViewName}).appendTo($form);
 		if (_parentPropName) $("<input />").attr({type:"hidden", name:"parentPropName", value:_parentPropName}).appendTo($form);
 		if (viewType) $("<input />").attr({type:"hidden", name:"viewType", value:viewType}).appendTo($form);
-		if (refSectionIndex || refSectionIndex === 0) $("<input />").attr({type:"hidden", name:"referenceSectionIndex", value:refSectionIndex}).appendTo($form);
+		if (refSectionIndex) $("<input />").attr({type:"hidden", name:"referenceSectionIndex", value:refSectionIndex}).appendTo($form);
 	}
 	if (isSubModal) $("<input />").attr({type:"hidden", name:"modalTarget", value:target}).appendTo($form);
 	$form.submit();
@@ -2321,7 +2321,7 @@ function insertReference(addAction, viewAction, defName, propName, multiplicity,
 		$("<input />").attr({type:"hidden", name:"parentViewName", value:parentViewName}).appendTo($form);
 		$("<input />").attr({type:"hidden", name:"parentPropName", value:parentPropName}).appendTo($form);
 		$("<input />").attr({type:"hidden", name:"viewType", value:viewType}).appendTo($form);
-		if (refSectionIndex || refSectionIndex === 0) $("<input />").attr({type:"hidden", name:"referenceSectionIndex", value:refSectionIndex}).appendTo($form);
+		if (refSectionIndex) $("<input />").attr({type:"hidden", name:"referenceSectionIndex", value:refSectionIndex}).appendTo($form);
 		if (isSubModal) $("<input />").attr({type:"hidden", name:"modalTarget", value:target}).appendTo($form);
 		var kv = urlParam.split("&");
 		if (urlParam.length > 0 && kv.length > 0) {
@@ -2449,7 +2449,7 @@ function insertUniqueReference(id, addAction, viewAction, defName, propName, mul
 	$("<input />").attr({type:"hidden", name:"parentViewName", value:parentViewName}).appendTo($form);
 	$("<input />").attr({type:"hidden", name:"parentPropName", value:parentPropName}).appendTo($form);
 	$("<input />").attr({type:"hidden", name:"viewType", value:viewType}).appendTo($form);
-	if (refSectionIndex || refSectionIndex === 0) $("<input />").attr({type:"hidden", name:"referenceSectionIndex", value:refSectionIndex}).appendTo($form);
+	if (refSectionIndex) $("<input />").attr({type:"hidden", name:"referenceSectionIndex", value:refSectionIndex}).appendTo($form);
 	if (isSubModal) $("<input />").attr({type:"hidden", name:"modalTarget", value:target}).appendTo($form);
 	var kv = urlParam.split("&");
 	if (urlParam.length > 0 && kv.length > 0) {
@@ -3490,7 +3490,7 @@ function addNestRow_Reference(type, cell, idx) {
 			var refSectionIndex = $selButton.attr("data-refSectionIndex");
 			var refEdit = $insButton.attr("data-refEdit");
 			var callbackKey = $insButton.attr("data-callbackKey");
-			var callback = scriptContext[callbackKey]
+			var callback = scriptContext[callbackKey];
 			insertReference(addAction, viewAction, defName, propName, multiplicity, urlParam, parentOid, parentVersion, parentDefName, parentViewName, refEdit, callback, $insButton, null, viewType, refSectionIndex);
 		});
 	} else if (type == "UNIQUE") {
