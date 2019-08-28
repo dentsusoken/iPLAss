@@ -22,14 +22,11 @@ package org.iplass.adminconsole.client.metadata.ui.entity.layout.item.element.pr
 
 import java.util.ArrayList;
 
-import org.iplass.adminconsole.client.base.event.MTPEvent;
 import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
 import org.iplass.adminconsole.client.base.rpc.AdminAsyncCallback;
 import org.iplass.adminconsole.client.base.tenant.TenantInfoHolder;
 import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
 import org.iplass.adminconsole.client.metadata.ui.entity.layout.EntityViewDragPane;
-import org.iplass.adminconsole.client.metadata.ui.entity.layout.HasPropertyOperationHandler;
-import org.iplass.adminconsole.client.metadata.ui.entity.layout.PropertyOperationHandler;
 import org.iplass.adminconsole.client.metadata.ui.entity.layout.item.EntityViewFieldSettingDialog;
 import org.iplass.adminconsole.client.metadata.ui.entity.layout.item.EntityViewFieldSettingDialog.PropertyInfo;
 import org.iplass.adminconsole.client.metadata.ui.entity.layout.item.ItemControl;
@@ -87,10 +84,7 @@ import com.smartgwt.client.widgets.grid.ListGridRecord;
  * @author lis3wg
  *
  */
-public class PropertyControl extends ItemControl implements HasPropertyOperationHandler {
-
-	/** Window破棄前にプロパティの重複チェックリストから削除するためのハンドラ */
-	private PropertyOperationHandler propertyOperationHandler;
+public class PropertyControl extends ItemControl {
 
 	/** 参照Propertyの場合の参照先Entity名 */
 	private String refDefName;
@@ -229,21 +223,6 @@ public class PropertyControl extends ItemControl implements HasPropertyOperation
 		title = title + "(" + entityPropertyDisplayName + "[" + (String)getValue("name") + "])";
 		setTitle(title);
 		SmartGWTUtil.addHoverToCanvas(this, getTitle());
-	}
-
-	@Override
-	public void setPropertyOperationHandler(PropertyOperationHandler handler) {
-		this.propertyOperationHandler = handler;
-	}
-
-	@Override
-	protected boolean onPreDestroy() {
-		if (propertyOperationHandler != null) {
-			MTPEvent event = new MTPEvent();
-			event.setValue("name", getValue("name"));
-			propertyOperationHandler.remove(event);
-		}
-		return true;
 	}
 
 	/**

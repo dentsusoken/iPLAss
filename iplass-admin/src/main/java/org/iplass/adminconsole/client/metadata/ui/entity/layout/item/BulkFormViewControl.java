@@ -23,11 +23,8 @@ package org.iplass.adminconsole.client.metadata.ui.entity.layout.item;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.iplass.adminconsole.client.base.event.MTPEvent;
 import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
 import org.iplass.adminconsole.client.metadata.ui.entity.layout.EntityViewDragPane;
-import org.iplass.adminconsole.client.metadata.ui.entity.layout.PropertyOperationContext;
-import org.iplass.adminconsole.client.metadata.ui.entity.layout.PropertyOperationHandler;
 import org.iplass.adminconsole.client.metadata.ui.entity.layout.item.element.section.DefaultSectionControl;
 import org.iplass.adminconsole.client.metadata.ui.entity.layout.item.element.section.SectionControl;
 import org.iplass.adminconsole.view.annotation.generic.FieldReferenceType;
@@ -45,9 +42,6 @@ public class BulkFormViewControl extends ItemControl {
 	/** 内部のレイアウト */
 	private BulkDropLayout editArea = null;
 
-	/** プロパティチェック用イベントハンドラ */
-	private PropertyOperationHandler propertyOperationHandler;
-
 	public BulkFormViewControl(String defName) {
 		super(defName, FieldReferenceType.BULK);
 		setHeaderControls(HeaderControls.HEADER_LABEL, setting);
@@ -59,10 +53,8 @@ public class BulkFormViewControl extends ItemControl {
 		setBorder("1px solid navy");
 
 		//編集用のエリア
-		propertyOperationHandler = new PropertyOperationHandlerImpl();
 		editArea = new BulkDropLayout(defName);
 		editArea.setDropTypes(EntityViewDragPane.DRAG_TYPE_SECTION);
-		editArea.setPropertyOperationHandler(propertyOperationHandler);
 		addItem(editArea);
 
 		BulkFormView fv = new BulkFormView();
@@ -97,7 +89,6 @@ public class BulkFormViewControl extends ItemControl {
 			if (window instanceof DefaultSectionControl) {
 				DefaultSectionControl dsChild = (DefaultSectionControl)window;
 				dsChild.setEntityDefinition(ed);
-				dsChild.setPropertyOperationHandler(propertyOperationHandler);
 				dsChild.restoreMember();
 			}
 			editArea.addElement(window, 0);
@@ -127,33 +118,4 @@ public class BulkFormViewControl extends ItemControl {
 		return sections;
 	}
 
-	/**
-	 *  プロパティチェック用イベント
-	 */
-	private final class PropertyOperationHandlerImpl implements PropertyOperationHandler {
-		private PropertyOperationContext context = new PropertyOperationContext();
-
-		@Override
-		public boolean check(MTPEvent event) {
-			String name = (String) event.getValue("name");
-			return propList.contains(name);
-		}
-
-		@Override
-		public void add(MTPEvent event) {
-			String name = (String) event.getValue("name");
-			propList.add(name);
-		}
-
-		@Override
-		public void remove(MTPEvent event) {
-			String name = (String) event.getValue("name");
-			propList.remove(name);
-		}
-
-		@Override
-		public PropertyOperationContext getContext() {
-			return context;
-		}
-	}
 }

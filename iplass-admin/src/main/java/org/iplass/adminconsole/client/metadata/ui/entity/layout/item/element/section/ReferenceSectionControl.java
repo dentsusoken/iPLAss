@@ -20,11 +20,8 @@
 
 package org.iplass.adminconsole.client.metadata.ui.entity.layout.item.element.section;
 
-import org.iplass.adminconsole.client.base.event.MTPEvent;
 import org.iplass.adminconsole.client.base.tenant.TenantInfoHolder;
 import org.iplass.adminconsole.client.metadata.ui.entity.layout.EntityViewDragPane;
-import org.iplass.adminconsole.client.metadata.ui.entity.layout.HasPropertyOperationHandler;
-import org.iplass.adminconsole.client.metadata.ui.entity.layout.PropertyOperationHandler;
 import org.iplass.adminconsole.client.metadata.ui.entity.layout.item.EntityViewFieldSettingDialog;
 import org.iplass.adminconsole.client.metadata.ui.entity.layout.item.EntityViewFieldSettingDialog.PropertyInfo;
 import org.iplass.adminconsole.client.metadata.ui.entity.layout.item.ItemControl;
@@ -41,14 +38,8 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  *
  * @author lis3wg
  */
-public class ReferenceSectionControl extends ItemControl implements SectionControl, HasPropertyOperationHandler {
+public class ReferenceSectionControl extends ItemControl implements SectionControl {
 
-	public static final String SECTION_SUFFIX = "_section";
-	public static final String SECTION_COUNT_KEY = "_section_count";
-
-	/** Window破棄前にプロパティの重複チェックリストから削除するためのハンドラ */
-	private PropertyOperationHandler propertyOperationHandler = null;
-	
 	private MetaDataServiceAsync service = null;
 
 	private String entityPropertyDisplayName = null;
@@ -110,43 +101,6 @@ public class ReferenceSectionControl extends ItemControl implements SectionContr
 		setTitle(title);
 	}
 
-	@Override
-	public void setPropertyOperationHandler(PropertyOperationHandler handler) {
-		this.propertyOperationHandler = handler;
-	}
-
-	/**
-	 * ウィンドウ破棄前の処理。
-	 */
-	@Override
-	protected boolean onPreDestroy() {
-		if (propertyOperationHandler != null) {
-			Object name = getValue("name");
-
-			if (propertyOperationHandler.getContext().get(name + SECTION_COUNT_KEY) != null) {
-				Integer count = (Integer) propertyOperationHandler.getContext().get(name + SECTION_COUNT_KEY);
-				if (count > 1) {
-					propertyOperationHandler.getContext().set(name + SECTION_COUNT_KEY, --count);
-				} else {
-					// 同一プロパティ名のセクションが消えたらhandlerからプロパティ名削除
-					MTPEvent propCheck = new MTPEvent();
-					propCheck.setValue("name", name);
-					propertyOperationHandler.remove(propCheck);
-
-					MTPEvent sectionCheck = new MTPEvent();
-					sectionCheck.setValue("name", name + SECTION_SUFFIX);
-					propertyOperationHandler.remove(sectionCheck);
-
-					propertyOperationHandler.getContext().set(name + SECTION_COUNT_KEY, null);
-				}
-			}
-		}
-		return true;
-	}
-
-	/* (非 Javadoc)
-	 * @see org.iplass.adminconsole.client.metadata.ui.entity.layout.item.SectionWindow#getSection()
-	 */
 	@Override
 	public ReferenceSection getSection() {
 		ReferenceSection section = (ReferenceSection) getValueObject();

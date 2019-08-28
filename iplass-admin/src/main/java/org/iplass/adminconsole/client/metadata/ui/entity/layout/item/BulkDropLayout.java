@@ -20,12 +20,9 @@
 
 package org.iplass.adminconsole.client.metadata.ui.entity.layout.item;
 
-import org.iplass.adminconsole.client.base.event.MTPEvent;
 import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
 import org.iplass.adminconsole.client.metadata.ui.entity.layout.EntityViewDragPane;
-import org.iplass.adminconsole.client.metadata.ui.entity.layout.HasPropertyOperationHandler;
 import org.iplass.adminconsole.client.metadata.ui.entity.layout.MultiColumnDropLayout;
-import org.iplass.adminconsole.client.metadata.ui.entity.layout.PropertyOperationHandler;
 import org.iplass.adminconsole.client.metadata.ui.entity.layout.item.element.ElementControl;
 import org.iplass.adminconsole.client.metadata.ui.entity.layout.item.element.VirtualPropertyControl;
 import org.iplass.adminconsole.client.metadata.ui.entity.layout.item.element.property.PropertyControl;
@@ -49,9 +46,8 @@ import com.smartgwt.client.widgets.events.DropHandler;
 import com.smartgwt.client.widgets.grid.ListGrid;
 import com.smartgwt.client.widgets.grid.ListGridRecord;
 
-public class BulkDropLayout extends MultiColumnDropLayout implements HasPropertyOperationHandler {
+public class BulkDropLayout extends MultiColumnDropLayout {
 
-	private PropertyOperationHandler propertyOperationHandler;
 	private String defName;
 
 	private EntityDefinition ed;
@@ -77,11 +73,6 @@ public class BulkDropLayout extends MultiColumnDropLayout implements HasProperty
 
 	public void setEntityDefinition(EntityDefinition ed) {
 		this.ed = ed;
-	}
-
-	@Override
-	public void setPropertyOperationHandler(PropertyOperationHandler handler) {
-		propertyOperationHandler = handler;
 	}
 
 	@Override
@@ -111,14 +102,13 @@ public class BulkDropLayout extends MultiColumnDropLayout implements HasProperty
 					ListGridRecord record = ((ListGrid) dragTarget).getSelectedRecord();
 					String name = record.getAttribute("name");
 
-					sectionController.createControl(name, defName, FieldReferenceType.BULK, propertyOperationHandler, new SectionController.Callback() {
+					sectionController.createControl(name, defName, FieldReferenceType.BULK, new SectionController.Callback() {
 
 						@Override
 						public void onCreated(ItemControl window) {
 							if (window instanceof DefaultSectionControl) {
 								DefaultSectionControl dsChild = (DefaultSectionControl)window;
 								dsChild.setEntityDefinition(ed);
-								dsChild.setPropertyOperationHandler(propertyOperationHandler);
 								dsChild.restoreMember();
 							}
 							col.addMember(window, dropPosition);
@@ -127,24 +117,8 @@ public class BulkDropLayout extends MultiColumnDropLayout implements HasProperty
 
 				} else if (EntityViewDragPane.DRAG_TYPE_PROPERTY.equals(dragTarget.getDragType())) {
 					ListGridRecord record = ((ListGrid) dragTarget).getSelectedRecord();
-					MTPEvent mtpEvent = new MTPEvent();
-					mtpEvent.setValue("name", record.getAttribute("name"));
-					if (propertyOperationHandler != null) {
-						if (!propertyOperationHandler.check(mtpEvent)) {
-							PropertyControl newProperty = new PropertyControl(defName, FieldReferenceType.BULK, record, new PropertyItem());
-							newProperty.setPropertyOperationHandler(propertyOperationHandler);
-							propertyOperationHandler.add(mtpEvent);
-							col.addMember(newProperty, dropPosition);
-						} else {
-							GWT.log(record.getAttribute("name") + " is already added.");
-						}
-					} else {
-						//プロパティの重複チェックしないケースあるか？？
-						GWT.log(AdminClientMessageUtil.getString("ui_metadata_entity_layout_BulkDropLayout_propCheckThrought"));
-						PropertyControl newProperty = new PropertyControl(defName, FieldReferenceType.BULK, record, new PropertyItem());
-						col.addMember(newProperty, dropPosition);
-					}
-
+					PropertyControl newProperty = new PropertyControl(defName, FieldReferenceType.BULK, record, new PropertyItem());
+					col.addMember(newProperty, dropPosition);
 				} else if (EntityViewDragPane.DRAG_TYPE_ELEMENT.equals(dragTarget.getDragType())) {
 					ListGridRecord record = ((ListGrid) dragTarget).getSelectedRecord();
 					String name = record.getAttribute("name");
@@ -159,12 +133,6 @@ public class BulkDropLayout extends MultiColumnDropLayout implements HasProperty
 								if (!dialog.validate()) return;
 
 								final String name = dialog.getPropertyName();
-								MTPEvent mtpEvent = new MTPEvent();
-								mtpEvent.setValue("name", name);
-								if (propertyOperationHandler.check(mtpEvent)) {
-									SC.say(AdminClientMessageUtil.getString("ui_metadata_entity_layout_BulkDropLayout_checkPropExistsErr"));
-									return;
-								}
 								if (ed.getProperty(name) != null) {
 									SC.say(AdminClientMessageUtil.getString("ui_metadata_entity_layout_BulkDropLayout_checkPropDefExistsErr"));
 									return;
@@ -179,8 +147,6 @@ public class BulkDropLayout extends MultiColumnDropLayout implements HasProperty
 								property.setEditor(editor);
 
 								VirtualPropertyControl newProperty = new VirtualPropertyControl(defName, FieldReferenceType.BULK, ed, property);
-								newProperty.setPropertyOperationHandler(propertyOperationHandler);
-
 								col.addMember(newProperty, dropPosition);
 								dialog.destroy();
 							}

@@ -23,10 +23,7 @@ package org.iplass.adminconsole.client.metadata.ui.entity.layout.item.element.se
 import java.util.ArrayList;
 import java.util.List;
 
-import org.iplass.adminconsole.client.base.event.MTPEvent;
 import org.iplass.adminconsole.client.metadata.ui.entity.layout.EntityViewDragPane;
-import org.iplass.adminconsole.client.metadata.ui.entity.layout.HasPropertyOperationHandler;
-import org.iplass.adminconsole.client.metadata.ui.entity.layout.PropertyOperationHandler;
 import org.iplass.adminconsole.client.metadata.ui.entity.layout.item.DetailDropLayout;
 import org.iplass.adminconsole.client.metadata.ui.entity.layout.item.ItemControl;
 import org.iplass.adminconsole.client.metadata.ui.entity.layout.item.element.ElementControl;
@@ -52,12 +49,10 @@ import com.smartgwt.client.widgets.Canvas;
  * @author lis3wg
  *
  */
-public class DefaultSectionControl extends ItemControl implements SectionControl, HasPropertyOperationHandler {
+public class DefaultSectionControl extends ItemControl implements SectionControl {
 
 	/** 内部のレイアウト */
 	private DetailDropLayout layout = null;
-
-	private PropertyOperationHandler propertyOperationHandler;
 
 	private EntityDefinition ed;
 
@@ -89,8 +84,8 @@ public class DefaultSectionControl extends ItemControl implements SectionControl
 
 		layout = new DetailDropLayout(colNum, defName);
 		layout.setDropTypes(
-				EntityViewDragPane.DRAG_TYPE_SECTION, 
-				EntityViewDragPane.DRAG_TYPE_PROPERTY, 
+				EntityViewDragPane.DRAG_TYPE_SECTION,
+				EntityViewDragPane.DRAG_TYPE_PROPERTY,
 				EntityViewDragPane.DRAG_TYPE_ELEMENT);
 		layout.setCanDropComponents(true);
 		layout.setPadding(5);
@@ -115,7 +110,6 @@ public class DefaultSectionControl extends ItemControl implements SectionControl
 
 				DetailDropLayout old = layout;
 				layout = new DetailDropLayout(section.getColNum(), defName);
-				layout.setPropertyOperationHandler(propertyOperationHandler);
 				layout.setEntityDefinition(ed);
 
 				//カラム変更前のレイアウトからメンバー取得
@@ -162,16 +156,6 @@ public class DefaultSectionControl extends ItemControl implements SectionControl
 	}
 
 	@Override
-	public void setPropertyOperationHandler(PropertyOperationHandler handler) {
-		this.propertyOperationHandler = handler;
-
-		if (layout != null) {
-			//SRB(Null Dereference)対応
-			layout.setPropertyOperationHandler(propertyOperationHandler);
-		}
-	}
-
-	@Override
 	protected boolean onPreDestroy() {
 		for (Canvas canvas : layout.getMembers()) {
 			canvas.destroy();
@@ -195,27 +179,14 @@ public class DefaultSectionControl extends ItemControl implements SectionControl
 				if (child instanceof DefaultSectionControl) {
 					DefaultSectionControl dsChild = (DefaultSectionControl)child;
 					dsChild.setEntityDefinition(ed);
-					dsChild.setPropertyOperationHandler(propertyOperationHandler);
 					dsChild.restoreMember();
 				}
 				addMember(child);
 			} else if (element instanceof PropertyItem) {
 				PropertyControl child = new PropertyControl(defName, getTriggerType(), (PropertyItem) element);
-				child.setPropertyOperationHandler(propertyOperationHandler);
-				MTPEvent event = new MTPEvent();
-				event.setValue("name", ((PropertyItem) element).getPropertyName());
-				if (!propertyOperationHandler.check(event)) {
-					propertyOperationHandler.add(event);
-				}
 				addMember(child);
 			} else if (element instanceof VirtualPropertyItem) {
 				VirtualPropertyControl child = new VirtualPropertyControl(defName, getTriggerType(), ed, (VirtualPropertyItem) element);
-				child.setPropertyOperationHandler(propertyOperationHandler);
-				MTPEvent event = new MTPEvent();
-				event.setValue("name", ((VirtualPropertyItem) element).getPropertyName());
-				if (!propertyOperationHandler.check(event)) {
-					propertyOperationHandler.add(event);
-				}
 				addMember(child);
 			} else {
 				ElementControl child = new ElementControl(defName, getTriggerType(), element);

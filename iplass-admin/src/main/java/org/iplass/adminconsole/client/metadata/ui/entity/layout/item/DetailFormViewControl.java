@@ -23,11 +23,8 @@ package org.iplass.adminconsole.client.metadata.ui.entity.layout.item;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.iplass.adminconsole.client.base.event.MTPEvent;
 import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
 import org.iplass.adminconsole.client.metadata.ui.entity.layout.EntityViewDragPane;
-import org.iplass.adminconsole.client.metadata.ui.entity.layout.PropertyOperationContext;
-import org.iplass.adminconsole.client.metadata.ui.entity.layout.PropertyOperationHandler;
 import org.iplass.adminconsole.client.metadata.ui.entity.layout.item.element.section.DefaultSectionControl;
 import org.iplass.adminconsole.client.metadata.ui.entity.layout.item.element.section.MassReferenceSectionControl;
 import org.iplass.adminconsole.client.metadata.ui.entity.layout.item.element.section.ReferenceSectionControl;
@@ -35,8 +32,6 @@ import org.iplass.adminconsole.client.metadata.ui.entity.layout.item.element.sec
 import org.iplass.adminconsole.view.annotation.generic.FieldReferenceType;
 import org.iplass.mtp.entity.definition.EntityDefinition;
 import org.iplass.mtp.view.generic.DetailFormView;
-import org.iplass.mtp.view.generic.element.section.MassReferenceSection;
-import org.iplass.mtp.view.generic.element.section.ReferenceSection;
 import org.iplass.mtp.view.generic.element.section.Section;
 
 import com.smartgwt.client.types.HeaderControls;
@@ -49,9 +44,6 @@ public class DetailFormViewControl extends ItemControl {
 	/** 内部のレイアウト */
 	private DetailDropLayout editArea = null;
 
-	/** プロパティチェック用イベントハンドラ */
-	private PropertyOperationHandler propertyOperationHandler;
-
 	public DetailFormViewControl(String defName) {
 		super(defName);
 		setHeaderControls(HeaderControls.HEADER_LABEL, setting);
@@ -62,12 +54,8 @@ public class DetailFormViewControl extends ItemControl {
 		setCanDrag(false);
 		setBorder("1px solid navy");
 
-		//編集用のエリア
-		propertyOperationHandler = new PropertyOperationHandlerImpl();
-
 		editArea = new DetailDropLayout(defName);
 		editArea.setDropTypes(EntityViewDragPane.DRAG_TYPE_SECTION);
-		editArea.setPropertyOperationHandler(propertyOperationHandler);
 		addItem(editArea);
 
 		DetailFormView fv = new DetailFormView();
@@ -103,28 +91,9 @@ public class DetailFormViewControl extends ItemControl {
 			if (window instanceof DefaultSectionControl) {
 				DefaultSectionControl dsChild = (DefaultSectionControl)window;
 				dsChild.setEntityDefinition(ed);
-				dsChild.setPropertyOperationHandler(propertyOperationHandler);
 				dsChild.restoreMember();
 			} else if (window instanceof ReferenceSectionControl) {
-				((ReferenceSectionControl)window).setPropertyOperationHandler(propertyOperationHandler);
-				MTPEvent propEvent = new MTPEvent();
-				String name = ((ReferenceSection) section).getPropertyName();
-				propEvent.setValue("name", name);
-				if (!propertyOperationHandler.check(propEvent)) {
-					propertyOperationHandler.add(propEvent);
-
-					MTPEvent sectionEvent = new MTPEvent();
-					sectionEvent.setValue("name", name + ReferenceSectionControl.SECTION_SUFFIX);
-					propertyOperationHandler.add(sectionEvent);
-				}
-				Integer count = (Integer) propertyOperationHandler.getContext().get(name + ReferenceSectionControl.SECTION_COUNT_KEY);
-				if (count == null) count = 0;
-				propertyOperationHandler.getContext().set(name + ReferenceSectionControl.SECTION_COUNT_KEY, ++count);
 			} else if (window instanceof MassReferenceSectionControl) {
-				((MassReferenceSectionControl)window).setPropertyOperationHandler(propertyOperationHandler);
-				MTPEvent event = new MTPEvent();
-				event.setValue("name", ((MassReferenceSection) section).getPropertyName());
-				propertyOperationHandler.add(event);
 			}
 			editArea.addElement(window, 0);
 		}
@@ -153,33 +122,4 @@ public class DetailFormViewControl extends ItemControl {
 		return sections;
 	}
 
-	/**
-	 *  プロパティチェック用イベント
-	 */
-	private final class PropertyOperationHandlerImpl implements PropertyOperationHandler {
-		private PropertyOperationContext context = new PropertyOperationContext();
-
-		@Override
-		public boolean check(MTPEvent event) {
-			String name = (String) event.getValue("name");
-			return propList.contains(name);
-		}
-
-		@Override
-		public void add(MTPEvent event) {
-			String name = (String) event.getValue("name");
-			propList.add(name);
-		}
-
-		@Override
-		public void remove(MTPEvent event) {
-			String name = (String) event.getValue("name");
-			propList.remove(name);
-		}
-
-		@Override
-		public PropertyOperationContext getContext() {
-			return context;
-		}
-	}
 }

@@ -20,11 +20,8 @@
 
 package org.iplass.adminconsole.client.metadata.ui.entity.layout.item.element.section;
 
-import org.iplass.adminconsole.client.base.event.MTPEvent;
 import org.iplass.adminconsole.client.base.tenant.TenantInfoHolder;
 import org.iplass.adminconsole.client.metadata.ui.entity.layout.EntityViewDragPane;
-import org.iplass.adminconsole.client.metadata.ui.entity.layout.HasPropertyOperationHandler;
-import org.iplass.adminconsole.client.metadata.ui.entity.layout.PropertyOperationHandler;
 import org.iplass.adminconsole.client.metadata.ui.entity.layout.item.EntityViewFieldSettingDialog;
 import org.iplass.adminconsole.client.metadata.ui.entity.layout.item.EntityViewFieldSettingDialog.PropertyInfo;
 import org.iplass.adminconsole.client.metadata.ui.entity.layout.item.ItemControl;
@@ -44,10 +41,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  *
  * @author lis3wg
  */
-public class MassReferenceSectionControl extends ItemControl implements SectionControl, HasPropertyOperationHandler {
-
-	/** Window破棄前にプロパティの重複チェックリストから削除するためのハンドラ */
-	private PropertyOperationHandler propertyOperationHandler = null;
+public class MassReferenceSectionControl extends ItemControl implements SectionControl {
 
 	private MetaDataServiceAsync service = null;
 
@@ -115,24 +109,6 @@ public class MassReferenceSectionControl extends ItemControl implements SectionC
 		String title = itemDisplayName != null ? itemDisplayName + " ": "";
 		title = title + "(" + entityPropertyDisplayName + "[" + (String)getValue("name") + "])";
 		setTitle(title);
-	}
-
-	@Override
-	public void setPropertyOperationHandler(PropertyOperationHandler handler) {
-		this.propertyOperationHandler = handler;
-	}
-
-	/**
-	 * ウィンドウ破棄前の処理。
-	 */
-	@Override
-	protected boolean onPreDestroy() {
-		if (propertyOperationHandler != null) {
-			MTPEvent event = new MTPEvent();
-			event.setValue("name", getValue("name"));
-			propertyOperationHandler.remove(event);
-		}
-		return true;
 	}
 
 	/* (非 Javadoc)
