@@ -77,7 +77,7 @@ public abstract class RegistrationCommandContext extends GenericCommandContext {
 
 	protected EntityManager entityManager;
 	protected EntityDefinitionManager definitionManager;
-	private UtilityClassDefinitionManager ucdm;
+	protected UtilityClassDefinitionManager ucdm;
 
 	/** 変換時に発生したエラー情報 */
 	private List<ValidateError> errors;

@@ -39,7 +39,6 @@
 <%@ page import="org.iplass.mtp.web.template.TemplateUtil" %>
 <%@ page import="org.iplass.mtp.web.WebRequestConstants" %>
 <%@ page import="org.iplass.gem.command.generic.bulk.BulkUpdateFormViewData" %>
-<%@ page import="org.iplass.gem.command.generic.bulk.BulkUpdateFormViewData.*" %>
 <%@ page import="org.iplass.gem.command.generic.bulk.BulkCommandContext.BulkUpdatedProperty"%>
 <%@ page import="org.iplass.gem.command.generic.bulk.BulkUpdateListCommand" %>
 <%@ page import="org.iplass.gem.command.generic.bulk.BulkUpdateAllCommand" %>
@@ -142,6 +141,8 @@
 	String searchCond = (String) request.getAttribute(Constants.SEARCH_COND);
 	String message = (String) request.getAttribute(Constants.MESSAGE);
 	String bulkUpdatePropNm = (String) request.getAttribute(Constants.BULK_UPDATE_PROP_NM);
+	Integer count = (Integer) request.getAttribute(Constants.BULK_UPDATE_COUNT);
+	Integer updated = (Integer) request.getAttribute(Constants.BULK_UPDATED_COUNT);
 
 	boolean isSelectAllPage = isSelectAllPage(selectAllPage);
 	//全選択フラグ
@@ -161,8 +162,6 @@
 	//表示名
 	String displayName = TemplateUtil.getMultilingualString(form.getTitle(), form.getLocalizedTitleList(),
 			data.getEntityDefinition().getDisplayName(), data.getEntityDefinition().getLocalizedDisplayNameList());
-	//新規or更新
-	String execType = data.getExecType();
 
 	//編集対象情報
 	List<String> oids = new ArrayList<String>();
@@ -170,12 +169,12 @@
 	List<String> updateDates = new ArrayList<String>();
 	// 検索結果一覧チェックを付け直すため
 	List<String> id = new ArrayList<String>();
-	if (data.getEntries() != null) {
-		for (SelectedRowEntity entry : data.getEntries()) {
-			oids.add(entry.getRow() + "_" + entry.getEntity().getOid());
-			versions.add(entry.getRow() + "_" + entry.getEntity().getVersion());
-			updateDates.add(entry.getRow() + "_" + entry.getEntity().getUpdateDate().getTime());
-			id.add("\"" + entry.getEntity().getOid() + "_" + entry.getEntity().getVersion() + "\"");
+	if (data.getSelected() != null) {
+		for (Map.Entry<Integer, Entity> entry : data.getSelected().entrySet()) {
+			oids.add(entry.getKey() + "_" + entry.getValue().getOid());
+			versions.add(entry.getKey() + "_" + entry.getValue().getVersion());
+			updateDates.add(entry.getKey() + "_" + entry.getValue().getUpdateDate().getTime());
+			id.add("\"" + entry.getValue().getOid() + "_" + entry.getValue().getVersion() + "\"");
 		}
 	}
 
@@ -204,25 +203,30 @@
 	//section以下で参照するパラメータ
 	request.setAttribute(Constants.OUTPUT_TYPE, type);
 	request.setAttribute(Constants.ENTITY_DEFINITION, data.getEntityDefinition());
-	request.setAttribute(Constants.EXEC_TYPE, execType);
 %>
 <h3 class="hgroup-02 hgroup-02-01"><%=GemResourceBundleUtil.resourceString("generic.bulk.title", displayName)%></h3>
 <%
-	if (StringUtil.isNotBlank(message)) {
+	if (count != null) {
+
 		if ("SUCCESS".equals(request.getAttribute(WebRequestConstants.COMMAND_RESULT))) {
 %>
-<span class="success"><c:out value="<%=message%>"/></span>
+<span class="success"><%=GemResourceBundleUtil.resourceString("command.generic.bulk.BulkUpdateListCommand.successMsg", updated)%></span>
 <%
 		} else {
 %>
 <span class="error"><c:out value="<%=message%>"/></span>
 <%
+			//分割トランザクションの場合、一部データの更新に成功した可能性があります。
+			if (updated > 0) {
+%>
+<span class="error"><%=GemResourceBundleUtil.resourceString("command.generic.bulk.BulkUpdateListCommand.failedMsg", count, count - updated)%></span>
+<%
+			}
 		}
 	}
 %>
 <form id="detailForm" method="post" action="<%=action%>">
 ${m:outputToken('FORM_XHTML', true)}
-<input type="hidden" name="execType" value="<c:out value="<%=execType%>"/>" />
 <%
 	if (!isSelectAll) {
 %>
@@ -372,7 +376,7 @@ $(function() {
 <div class="operation-bar operation-bar_bottom">
 <ul class="list_operation edit-bar">
 <%
-	if (Constants.EXEC_TYPE_UPDATE.equals(execType) && auth.checkPermission(new EntityPermission(defName, EntityPermission.Action.UPDATE))) {
+	if (auth.checkPermission(new EntityPermission(defName, EntityPermission.Action.UPDATE))) {
 		//ボタンの表示ラベル
 		String bulkUpdateDisplayLabel = GemResourceBundleUtil.resourceString("generic.bulk.update");
 %>
@@ -463,7 +467,7 @@ function onclick_bulkupdate(target){
 	$("#detailForm").submit();
 }
 function onDialogClose() {
-	var edited = ("<%=StringUtil.isNotBlank(message)%>" == "true");
+	var edited = <%=count != null && updated > 0 %>;
 	if (!edited) return true;
 	var func = parent.document.scriptContext["bulkUpdateModalWindowCallback"];
 	if (func && $.isFunction(func)) {

@@ -24,10 +24,8 @@ import java.util.List;
 import java.util.Set;
 
 import org.iplass.gem.command.Constants;
-import org.iplass.gem.command.GemResourceBundleUtil;
 import org.iplass.mtp.command.RequestContext;
 import org.iplass.mtp.command.annotation.CommandClass;
-import org.iplass.mtp.command.annotation.CommandConfig;
 import org.iplass.mtp.command.annotation.action.ActionMapping;
 import org.iplass.mtp.command.annotation.action.ActionMappings;
 import org.iplass.mtp.command.annotation.action.ParamMapping;
@@ -45,7 +43,6 @@ import org.iplass.mtp.view.generic.SearchFormView;
 				@ParamMapping(name=Constants.VIEW_NAME, mapFrom="${0}", condition="subPath.length==2"),
 				@ParamMapping(name=Constants.DEF_NAME, mapFrom="${1}", condition="subPath.length==2"),
 			},
-			command=@CommandConfig(commandClass=BulkUpdateViewCommand.class, value="cmd.detail=true;"),
 			result={
 				@Result(status=Constants.CMD_EXEC_SUCCESS, type=Type.TEMPLATE,
 						value=Constants.TEMPLATE_BULK_EDIT),
@@ -66,16 +63,6 @@ import org.iplass.mtp.view.generic.SearchFormView;
 public class BulkUpdateViewCommand extends BulkCommandBase {
 
 	public static final String BULK_EDIT_ACTION_NAME = "gem/generic/bulk/bulkEdit";
-
-	private boolean detail;
-
-	public boolean isDetail() {
-		return detail;
-	}
-
-	public void setDetail(boolean detail) {
-		this.detail = detail;
-	}
 
 	/**
 	 * コンストラクタ
@@ -99,7 +86,6 @@ public class BulkUpdateViewCommand extends BulkCommandBase {
 		}
 
 		BulkUpdateFormViewData data = new BulkUpdateFormViewData(context);
-		data.setExecType(Constants.EXEC_TYPE_UPDATE);
 
 		for (String oid : oids) {
 			if (oid != null && oid.length() > 0) {
@@ -110,7 +96,7 @@ public class BulkUpdateViewCommand extends BulkCommandBase {
 						request.setAttribute(Constants.MESSAGE, resourceString("command.generic.bulk.BulkUpdateViewCommand.noPermission"));
 						return Constants.CMD_EXEC_ERROR_NODATA;
 					}
-					data.setEntity(targetRow, entity);
+					data.setSelected(targetRow, entity);
 				}
 			}
 		}
@@ -119,9 +105,5 @@ public class BulkUpdateViewCommand extends BulkCommandBase {
 		request.setAttribute(Constants.SEARCH_COND, context.getSearchCond());
 		request.setAttribute(Constants.BULK_UPDATE_SELECT_ALL_PAGE, context.getSelectAllPage());
 		return Constants.CMD_EXEC_SUCCESS;
-	}
-
-	private static String resourceString(String key, Object... arguments) {
-		return GemResourceBundleUtil.resourceString(key, arguments);
 	}
 }

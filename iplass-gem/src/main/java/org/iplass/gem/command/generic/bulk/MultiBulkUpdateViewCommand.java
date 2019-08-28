@@ -24,7 +24,6 @@ import java.util.List;
 import java.util.Set;
 
 import org.iplass.gem.command.Constants;
-import org.iplass.gem.command.GemResourceBundleUtil;
 import org.iplass.mtp.command.RequestContext;
 import org.iplass.mtp.command.annotation.CommandClass;
 import org.iplass.mtp.command.annotation.CommandConfig;
@@ -100,7 +99,7 @@ public class MultiBulkUpdateViewCommand extends MultiBulkCommandBase {
 						request.setAttribute(Constants.MESSAGE, resourceString("command.generic.bulk.BulkUpdateViewCommand.noPermission"));
 						return Constants.CMD_EXEC_ERROR_NODATA;
 					}
-					data.setEntity(targetRow, entity);
+					data.setSelected(targetRow, entity);
 				}
 			}
 		}
@@ -110,9 +109,5 @@ public class MultiBulkUpdateViewCommand extends MultiBulkCommandBase {
 		request.setAttribute(Constants.SEARCH_COND, context.getSearchCond());
 		request.setAttribute(Constants.BULK_UPDATE_SELECT_ALL_PAGE, context.getSelectAllPage());
 		return Constants.CMD_EXEC_SUCCESS;
-	}
-
-	private static String resourceString(String key, Object... arguments) {
-		return GemResourceBundleUtil.resourceString(key, arguments);
 	}
 }
