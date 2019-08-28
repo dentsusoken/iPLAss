@@ -20,8 +20,8 @@
 
 package org.iplass.gem.command.generic.bulk;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.iplass.mtp.entity.Entity;
 import org.iplass.mtp.entity.definition.EntityDefinition;
@@ -36,12 +36,12 @@ public class MultiBulkUpdateFormViewData{
 	private BulkFormView view;
 
 	/** 選択された行番号とエンティティ */
-	private List<SelectedRowEntity> entries;
+	private Map<Integer, Entity> selected;
 
 	public MultiBulkUpdateFormViewData(MultiBulkCommandContext context) {
 		this.entityDefinition = context.getEntityDefinition();
 		this.view = context.getView();
-		this.entries = new ArrayList<>();
+		this.selected = new HashMap<>();
 	}
 
 	/**
@@ -76,33 +76,11 @@ public class MultiBulkUpdateFormViewData{
 		this.view = view;
 	}
 
-	public List<SelectedRowEntity> getEntries() {
-		return entries;
+	public Map<Integer, Entity> getSelected() {
+		return selected;
 	}
 
-	public void setEntity(Integer row, Entity entity) {
-		this.entries.add(new SelectedRowEntity(row, entity));
-	}
-
-	/**
-	 * 選択された行番号とエンティティ対象のコンポジットクラス
-	 */
-	public static class SelectedRowEntity {
-		// 一括全更新の場合、行番号にはデータが抽出された順番に番号を付けます。
-		private Integer row;
-		private Entity entity;
-
-		public SelectedRowEntity(Integer row, Entity entity) {
-			this.row = row;
-			this.entity = entity;
-		}
-
-		public Integer getRow() {
-			return this.row;
-		}
-
-		public Entity getEntity() {
-			return this.entity;
-		}
+	public void setSelected(Integer row, Entity entity) {
+		this.selected.put(row, entity);
 	}
 }

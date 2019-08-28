@@ -20,6 +20,7 @@
 
 package org.iplass.gem.command.generic.bulk;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -114,6 +115,7 @@ public class MultiBulkUpdateListCommand extends MultiBulkCommandBase {
 			List<Entity> entities = context.getEntities();
 			List<ValidateError> errors = new ArrayList<ValidateError>();
 			if (!isSearchCondUpdate) {
+				setSelectedData(data, entities, context);
 				//一括更新する前の処理を呼び出します。
 				BulkOperationContext bulkContext = context.getBulkUpdateInterrupterHandler().beforeOperation(entities);
 				errors.addAll(bulkContext.getErrors());
@@ -131,7 +133,8 @@ public class MultiBulkUpdateListCommand extends MultiBulkCommandBase {
 				for (Entity entity : entities) {
 					String oid = entity.getOid();
 					Long version = entity.getVersion();
-					Entity model = context.createEntity(oid, version);
+					Timestamp updateDate = entity.getUpdateDate();
+					Entity model = context.createEntity(oid, version, updateDate);
 					// 更新するプロパティが1件もない場合、更新処理を実行しません。
 					if (model == null) {
 						ret.setResultType(ResultType.ERROR);
@@ -139,14 +142,13 @@ public class MultiBulkUpdateListCommand extends MultiBulkCommandBase {
 						break;
 					};
 
-					Integer row = context.getRow(oid, version);
 					if (context.hasErrors()) {
 						if (ret.getResultType() == null) {
 							ret.setResultType(ResultType.ERROR);
 							ret.setErrors(context.getErrors().toArray(new ValidateError[context.getErrors().size()]));
 							ret.setMessage(resourceString("command.generic.bulk.BulkUpdateListCommand.inputErr"));
 						}
-						data.setEntity(row, model);
+						break;
 					} else {
 						// 更新
 						if (ret.getResultType() == null || ret.getResultType() == ResultType.SUCCESS) ret = updateEntity(context, model);
@@ -157,20 +159,14 @@ public class MultiBulkUpdateListCommand extends MultiBulkCommandBase {
 								public void afterCommit(Transaction t) {
 									// 検索条件で更新ではなければ、特定のバージョン指定でロード
 									if (!isSearchCondUpdate) {
-										data.setEntity(row, loadViewEntity(context, oid, version, context.getDefinitionName(), (List<String>) null));
-									} else {
-										data.setEntity(row, model);
+										Integer row = context.getRow(oid, version);
+										if (row != null) {
+											data.setSelected(row, loadViewEntity(context, oid, version, context.getDefinitionName(), (List<String>) null));
+										}
 									}
 									countUp(request);
 								}
-	
-								@Override
-								public void afterRollback(Transaction t) {
-									data.setEntity(row, model);
-								}
 							});
-						} else {
-							data.setEntity(row, model);
 						}
 					}
 				}
@@ -214,10 +210,20 @@ public class MultiBulkUpdateListCommand extends MultiBulkCommandBase {
 	 * 検索条件で更新されたかどうか
 	 * @return 検索条件で更新されるかどうか
 	 */
-	public boolean isSearchCondUpdate(RequestContext request) {
+	private boolean isSearchCondUpdate(RequestContext request) {
 		return request.getAttribute(Constants.OID) != null
 				&& request.getAttribute(Constants.VERSION) != null
 				&& request.getAttribute(Constants.TIMESTAMP) != null;
+	}
+
+	/**
+	 * 更新前のエンティティリストを設定します。
+	 */
+	private void setSelectedData(MultiBulkUpdateFormViewData data, List<Entity> entities, MultiBulkCommandContext context) {
+		for (Entity entity : entities) {
+			Integer row = context.getRow(entity.getOid(), entity.getVersion());
+			data.setSelected(row, entity);
+		}
 	}
 
 	/**

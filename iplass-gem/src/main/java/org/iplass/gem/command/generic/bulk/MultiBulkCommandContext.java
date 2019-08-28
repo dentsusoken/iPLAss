@@ -545,12 +545,13 @@ public class MultiBulkCommandContext extends RegistrationCommandContext {
 	 * 更新エンティティを作成します。
 	 * @param oid
 	 * @param version
+	 * @param updateDate
 	 * @return 空のプロパティは更新しないので、更新するプロパティが1件もない場合、nullを返します。
 	 */
-	public Entity createEntity(String oid, Long version) {
+	public Entity createEntity(String oid, Long version, Timestamp updateDate) {
 		Entity entity = createEntityInternal("" , null);
 		entity.setOid(oid);
-		entity.setUpdateDate(getTimestamp(oid, version));
+		entity.setUpdateDate(updateDate);
 //		if (isVersioned()) {
 		// バージョン管理にかかわらず、セットする問題ないかな..
 		entity.setVersion(version);

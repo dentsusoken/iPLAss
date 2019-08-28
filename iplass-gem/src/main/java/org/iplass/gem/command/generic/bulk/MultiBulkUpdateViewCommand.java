@@ -99,7 +99,7 @@ public class MultiBulkUpdateViewCommand extends MultiBulkCommandBase {
 						request.setAttribute(Constants.MESSAGE, resourceString("command.generic.bulk.BulkUpdateViewCommand.noPermission"));
 						return Constants.CMD_EXEC_ERROR_NODATA;
 					}
-					data.setEntity(targetRow, entity);
+					data.setSelected(targetRow, entity);
 				}
 			}
 		}

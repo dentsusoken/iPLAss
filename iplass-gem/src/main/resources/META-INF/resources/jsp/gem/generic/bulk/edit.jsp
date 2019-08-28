@@ -38,7 +38,6 @@
 <%@ page import="org.iplass.mtp.web.template.TemplateUtil" %>
 <%@ page import="org.iplass.mtp.web.WebRequestConstants" %>
 <%@ page import="org.iplass.gem.command.generic.bulk.MultiBulkUpdateFormViewData" %>
-<%@ page import="org.iplass.gem.command.generic.bulk.MultiBulkUpdateFormViewData.*" %>
 <%@ page import="org.iplass.gem.command.generic.bulk.MultiBulkUpdateListCommand" %>
 <%@ page import="org.iplass.gem.command.generic.bulk.MultiBulkUpdateAllCommand" %>
 <%@ page import="org.iplass.gem.command.Constants" %>
@@ -116,12 +115,12 @@
 	List<String> updateDates = new ArrayList<String>();
 	// 検索結果一覧チェックを付け直すため
 	List<String> id = new ArrayList<String>();
-	if (data.getEntries() != null) {
-		for (SelectedRowEntity entry : data.getEntries()) {
-			oids.add(entry.getRow() + "_" + entry.getEntity().getOid());
-			versions.add(entry.getRow() + "_" + entry.getEntity().getVersion());
-			updateDates.add(entry.getRow() + "_" + entry.getEntity().getUpdateDate().getTime());
-			id.add("\"" + entry.getEntity().getOid() + "_" + entry.getEntity().getVersion() + "\"");
+	if (data.getSelected() != null) {
+		for (Map.Entry<Integer, Entity> entry : data.getSelected().entrySet()) {
+			oids.add(entry.getKey() + "_" + entry.getValue().getOid());
+			versions.add(entry.getKey() + "_" + entry.getValue().getVersion());
+			updateDates.add(entry.getKey() + "_" + entry.getValue().getUpdateDate().getTime());
+			id.add("\"" + entry.getValue().getOid() + "_" + entry.getValue().getVersion() + "\"");
 		}
 	}
 
