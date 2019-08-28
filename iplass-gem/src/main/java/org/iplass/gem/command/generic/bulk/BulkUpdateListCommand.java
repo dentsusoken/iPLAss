@@ -20,6 +20,7 @@
 
 package org.iplass.gem.command.generic.bulk;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
@@ -118,6 +119,7 @@ public class BulkUpdateListCommand extends BulkCommandBase {
 			List<Entity> entities = context.getEntities();
 			List<ValidateError> errors = new ArrayList<ValidateError>();
 			if (!isSearchCondUpdate) {
+				setSelectedData(data, entities, context);
 				//一括更新する前の処理を呼び出します。
 				BulkOperationContext bulkContext = context.getBulkUpdateInterrupterHandler().beforeOperation(entities);
 				errors.addAll(bulkContext.getErrors());
@@ -135,15 +137,16 @@ public class BulkUpdateListCommand extends BulkCommandBase {
 				for (Entity entity : entities) {
 					String oid = entity.getOid();
 					Long version = entity.getVersion();
-					Entity model = context.createEntity(oid, version);
-					Integer row = context.getRow(oid, version);
+					Timestamp updateDate = entity.getUpdateDate();
+					Entity model = context.createEntity(oid, version, updateDate);
+
 					if (context.hasErrors()) {
 						if (ret.getResultType() == null) {
 							ret.setResultType(ResultType.ERROR);
 							ret.setErrors(context.getErrors().toArray(new ValidateError[context.getErrors().size()]));
 							ret.setMessage(resourceString("command.generic.bulk.BulkUpdateListCommand.inputErr"));
 						}
-						data.setEntity(row, model);
+						break;
 					} else {
 						// 更新
 						if (ret.getResultType() == null || ret.getResultType() == ResultType.SUCCESS) ret = updateEntity(context, model);
@@ -154,20 +157,14 @@ public class BulkUpdateListCommand extends BulkCommandBase {
 								public void afterCommit(Transaction t) {
 									if (!isSearchCondUpdate) {
 										// 検索条件で更新ではなければ、特定のバージョン指定でロード
-										data.setEntity(row, loadViewEntity(context, oid, version, context.getDefinitionName(), (List<String>) null));
-									} else {
-										data.setEntity(row, model);
+										Integer row = context.getRow(oid, version);
+										if (row != null) {
+											data.setSelected(row, loadViewEntity(context, oid, version, context.getDefinitionName(), (List<String>) null));
+										}
 									}
 									countUp(request);
 								}
-	
-								@Override
-								public void afterRollback(Transaction t) {
-									data.setEntity(row, model);
-								}
 							});
-						} else {
-							data.setEntity(row, model);
 						}
 					}
 				}
@@ -227,10 +224,20 @@ public class BulkUpdateListCommand extends BulkCommandBase {
 	 * 検索条件で更新されるかどうか
 	 * @return 検索条件で更新されたかどうか
 	 */
-	public boolean isSearchCondUpdate(RequestContext request) {
+	private boolean isSearchCondUpdate(RequestContext request) {
 		return request.getAttribute(Constants.OID) != null
 				&& request.getAttribute(Constants.VERSION) != null
 				&& request.getAttribute(Constants.TIMESTAMP) != null;
+	}
+
+	/**
+	 * 更新前のエンティティリストを設定します。
+	 */
+	private void setSelectedData(BulkUpdateFormViewData data, List<Entity> entities, BulkCommandContext context) {
+		for (Entity entity : entities) {
+			Integer row = context.getRow(entity.getOid(), entity.getVersion());
+			data.setSelected(row, entity);
+		}
 	}
 
 	/**

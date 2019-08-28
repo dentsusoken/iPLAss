@@ -598,10 +598,10 @@ public class BulkCommandContext extends RegistrationCommandContext {
 		return getPropValue(p, "");
 	}
 
-	public Entity createEntity(String oid, Long version) {
+	public Entity createEntity(String oid, Long version, Timestamp updateDate) {
 		Entity entity = createEntityInternal("" , null);
 		entity.setOid(oid);
-		entity.setUpdateDate(getTimestamp(oid, version));
+		entity.setUpdateDate(updateDate);
 //		if (isVersioned()) {
 		// バージョン管理にかかわらず、セットする問題ないかな..
 		entity.setVersion(version);
