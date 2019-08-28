@@ -69,6 +69,7 @@ import org.iplass.mtp.view.generic.BulkFormView;
 import org.iplass.mtp.view.generic.DetailFormView;
 import org.iplass.mtp.view.generic.EntityView;
 import org.iplass.mtp.view.generic.EntityViewManager;
+import org.iplass.mtp.view.generic.EntityViewUtil;
 import org.iplass.mtp.view.generic.FormViewUtil;
 import org.iplass.mtp.view.generic.OutputType;
 import org.iplass.mtp.view.generic.SearchFormView;
@@ -152,7 +153,7 @@ public class EntityViewManagerImpl extends AbstractTypedDefinitionManager<Entity
 			} else {
 				form = ev.getSearchFormView(viewName);
 			}
-			editor = getSearchResultEditor(propName, form);
+			editor = getSearchResultEditor(defName, propName, form);
 		} else if ("bulk".equals(viewType)) {
 			SearchFormView form = null;
 			if (viewName == null || viewName.isEmpty()) {
@@ -321,7 +322,7 @@ public class EntityViewManagerImpl extends AbstractTypedDefinitionManager<Entity
 		return null;
 	}
 
-	private PropertyEditor getSearchResultEditor(String propName, SearchFormView form) {
+	private PropertyEditor getSearchResultEditor(String defName, String propName, SearchFormView form) {
 		String currentPropName = null;
 		String subPropName = null;
 		if (propName.indexOf(".") == -1) {
@@ -332,7 +333,8 @@ public class EntityViewManagerImpl extends AbstractTypedDefinitionManager<Entity
 			for (Element element : section.getElements()) {
 				if (!(element instanceof PropertyColumn)) continue;
 				PropertyColumn property = (PropertyColumn) element;
-				if (property.isDispFlag() && property.getPropertyName().equals(propName)) {
+				if (property.getPropertyName().equals(propName)
+						&& EntityViewUtil.isDisplayElement(defName, property.getElementRuntimeId(), OutputType.SEARCHRESULT)) {
 					return property.getEditor();
 				}
 			}
@@ -346,7 +348,8 @@ public class EntityViewManagerImpl extends AbstractTypedDefinitionManager<Entity
 		for (Element element : section.getElements()) {
 			if (!(element instanceof PropertyColumn)) continue;
 			PropertyColumn property = (PropertyColumn) element;
-			if (property.isDispFlag() && property.getPropertyName().equals(currentPropName)) {
+			if (property.getPropertyName().equals(currentPropName)
+					&& EntityViewUtil.isDisplayElement(defName, property.getElementRuntimeId(), OutputType.SEARCHRESULT)) {
 				//FIXME なぜセットが必要？
 //				if (property.getEditor() instanceof ReferencePropertyEditor) {
 //					property.getEditor().setPropertyName(property.getPropertyName());

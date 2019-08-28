@@ -50,6 +50,7 @@
 <%@ page import="org.iplass.mtp.view.generic.element.section.SearchConditionSection"%>
 <%@ page import="org.iplass.mtp.view.generic.element.section.SearchConditionSection.CsvDownloadSpecifyCharacterCode"%>
 <%@ page import="org.iplass.mtp.view.generic.EntityViewUtil"%>
+<%@ page import="org.iplass.mtp.view.generic.OutputType"%>
 <%@ page import="org.iplass.mtp.view.generic.SearchFormView"%>
 <%@ page import="org.iplass.mtp.view.generic.ViewConst"%>
 <%@ page import="org.iplass.mtp.web.template.TemplateUtil"%>
@@ -229,6 +230,7 @@
 	SearchConditionSection section = view.getCondSection();
 
 	EntityDefinition ed = data.getEntityDefinition();
+	String defName = ed.getName();
 	List<EntityFilterItem> filters = data.getFilters();
 
 	//選択タイプ(selectの場合のみ設定される。see common.js#searchReference)
@@ -536,7 +538,10 @@ $(function() {
 		if (pi.isBlank()) continue;
 		String propName = pi.getPropertyName();
 		PropertyDefinition pd = defMap.get(propName);
-		if (!pi.isDispFlag() || !isDispProperty(pd) || pi.getValidator() == null) continue;
+		if (!EntityViewUtil.isDisplayElement(defName, pi.getElementRuntimeId(), OutputType.SEARCHCONDITION)
+				|| !isDispProperty(pd) || pi.getValidator() == null) {
+			continue;
+		}
 
 		// 種類が増えるようなら分離も検討
 		RequiresAtLeastOneFieldValidator validator = (RequiresAtLeastOneFieldValidator) pi.getValidator();
@@ -627,7 +632,8 @@ $(function() {
 				elementList.add(new BlankSpace());
 			} else {
 				PropertyDefinition pd = defMap.get(property.getPropertyName());
-				if (property.isDispFlag() && !property.isHideNormalCondition() && isDispProperty(pd)) {
+				if (EntityViewUtil.isDisplayElement(defName, property.getElementRuntimeId(), OutputType.SEARCHCONDITION)
+						&& !property.isHideNormalCondition() && isDispProperty(pd)) {
 					elementList.add(property);
 				} else {
 					elementList.add(new BlankSpace());
@@ -646,7 +652,8 @@ $(function() {
 		if (element instanceof PropertyItem) {
 			PropertyItem property = (PropertyItem) element;
 			PropertyDefinition pd = defMap.get(property.getPropertyName());
-			if (property.isDispFlag() && !property.isHideNormalCondition() && isDispProperty(pd)) {
+			if (EntityViewUtil.isDisplayElement(defName, property.getElementRuntimeId(), OutputType.SEARCHCONDITION)
+					&& !property.isHideNormalCondition() && isDispProperty(pd)) {
 				String style = property.getStyle() != null ? property.getStyle() : "";
 				String displayLabel = TemplateUtil.getMultilingualString(property.getDisplayLabel(), property.getLocalizedDisplayLabelList(), pd.getDisplayName(), pd.getLocalizedDisplayNameList());
 %>
@@ -720,7 +727,7 @@ $(function() {
 			}
 		} else if (element instanceof VirtualPropertyItem) {
 			VirtualPropertyItem property = (VirtualPropertyItem) element;
-			if (property.isDispFlag()) {
+			if (EntityViewUtil.isDisplayElement(defName, property.getElementRuntimeId(), OutputType.SEARCHCONDITION)) {
 				PropertyDefinition pd = EntityViewUtil.getPropertyDefinition(property);
 				String style = property.getStyle() != null ? property.getStyle() : "";
 				String displayLabel = TemplateUtil.getMultilingualString(property.getDisplayLabel(), property.getLocalizedDisplayLabelList());
@@ -979,7 +986,8 @@ $(function() {
 //				PropertyDefinition pd = ed.getProperty(propName);
 				PropertyDefinition pd = defMap.get(propName);
 				String displayLabel = TemplateUtil.getMultilingualString(pi.getDisplayLabel(), pi.getLocalizedDisplayLabelList(), pd.getDisplayName(), pd.getLocalizedDisplayNameList());
-				if (!pi.isDispFlag() || pi.isHideDetailCondition() || !isDispProperty(pd)) continue;
+				if (!EntityViewUtil.isDisplayElement(defName, pi.getElementRuntimeId(), OutputType.SEARCHCONDITION)
+						|| pi.isHideDetailCondition() || !isDispProperty(pd)) continue;
 				if (pi.getEditor() instanceof ReferencePropertyEditor) {
 					ReferencePropertyEditor editor = (ReferencePropertyEditor) pi.getEditor();
 

@@ -67,6 +67,7 @@ import org.iplass.mtp.view.generic.EntityView;
 import org.iplass.mtp.view.generic.EntityViewManager;
 import org.iplass.mtp.view.generic.EntityViewUtil;
 import org.iplass.mtp.view.generic.FormViewUtil;
+import org.iplass.mtp.view.generic.OutputType;
 import org.iplass.mtp.view.generic.SearchFormView;
 import org.iplass.mtp.view.generic.editor.DateRangePropertyEditor;
 import org.iplass.mtp.view.generic.editor.JoinPropertyEditor;
@@ -343,7 +344,7 @@ public final class FullTextSearchCommand implements Command {
 				.collect(Collectors.toList());
 
 		for (PropertyColumn p : properties) {
-			if (p.isDispFlag()) {
+			if (EntityViewUtil.isDisplayElement(ed.getName(), p.getElementRuntimeId(), OutputType.SEARCHRESULT)) {
 				String propName = p.getPropertyName();
 				if (p.getEditor() instanceof ReferencePropertyEditor) {
 					List<NestProperty> nest = ((ReferencePropertyEditor)p.getEditor()).getNestProperties();
@@ -541,7 +542,7 @@ public final class FullTextSearchCommand implements Command {
 					property.getDisplayLabel(), property.getLocalizedDisplayLabelList(),
 					pd.getDisplayName(), pd.getLocalizedDisplayNameList());
 
-			if (property.isDispFlag()) {
+			if (EntityViewUtil.isDisplayElement(ed.getName(), property.getElementRuntimeId(), OutputType.SEARCHRESULT)) {
 				if (!(pd instanceof ReferenceProperty)) {
 					String sortPropName = StringUtil.escapeHtml(propName);
 					boolean frozen = false;

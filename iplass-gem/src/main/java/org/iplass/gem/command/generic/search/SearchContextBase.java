@@ -56,8 +56,10 @@ import org.iplass.mtp.impl.util.ObjectUtil;
 import org.iplass.mtp.util.StringUtil;
 import org.iplass.mtp.utilityclass.definition.UtilityClassDefinitionManager;
 import org.iplass.mtp.view.generic.EntityView;
+import org.iplass.mtp.view.generic.EntityViewUtil;
 import org.iplass.mtp.view.generic.FormViewUtil;
 import org.iplass.mtp.view.generic.NullOrderType;
+import org.iplass.mtp.view.generic.OutputType;
 import org.iplass.mtp.view.generic.SearchFormView;
 import org.iplass.mtp.view.generic.SearchQueryContext;
 import org.iplass.mtp.view.generic.SearchQueryInterrupter;
@@ -140,7 +142,7 @@ public abstract class SearchContextBase implements SearchContext {
 
 		List<PropertyColumn> properties = getColumnProperties();
 		for (PropertyColumn p : properties) {
-			if (p.isDispFlag()) {
+			if (EntityViewUtil.isDisplayElement(getDefName(), p.getElementRuntimeId(), OutputType.SEARCHRESULT)) {
 				String propName = p.getPropertyName();
 				if (p.getEditor() instanceof ReferencePropertyEditor) {
 					List<NestProperty> nest = ((ReferencePropertyEditor)p.getEditor()).getNestProperties();

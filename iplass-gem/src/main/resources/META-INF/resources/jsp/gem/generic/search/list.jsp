@@ -48,8 +48,8 @@
 <%@ page import="org.iplass.gem.command.ViewUtil"%>
 
 <%!
-	boolean isDispProperty(PropertyDefinition pd, PropertyColumn property) {
-		if (!property.isDispFlag()) return false;
+	boolean isDispProperty(String defName, PropertyDefinition pd, PropertyColumn property) {
+		if (!EntityViewUtil.isDisplayElement(defName, property.getElementRuntimeId(), OutputType.SEARCHRESULT)) return false;
 		if (property.getEditor() == null) return false;
 		return true;
 	}
@@ -84,6 +84,7 @@
 
 	EntityDefinitionManager edm = ManagerLocator.getInstance().getManager(EntityDefinitionManager.class);
 	EntityDefinition ed = edm.get(parts.getDefName());
+	String defName = parts.getDefName();
 
 	SearchResultSection section = form.getResultSection();
 
@@ -154,7 +155,7 @@ $(function() {
 			PropertyDefinition pd = EntityViewUtil.getPropertyDefinition(propName, ed);
 			String displayLabel = TemplateUtil.getMultilingualString(property.getDisplayLabel(), property.getLocalizedDisplayLabelList(), pd.getDisplayName(), pd.getLocalizedDisplayNameList());
 
-			if (isDispProperty(pd, property)) {
+			if (isDispProperty(defName, pd, property)) {
 				if (!(pd instanceof ReferenceProperty)) {
 					String sortPropName = StringUtil.escapeHtml(propName);
 					String width = "";

@@ -1,19 +1,19 @@
 /*
  * Copyright (C) 2013 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
- * 
+ *
  * Unless you have purchased a commercial license,
  * the following license terms apply:
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
@@ -78,7 +78,7 @@ public class CreateSearchResultUtil {
 	private static void outputVirtualProperty(EntityDefinition ed, SearchResultSection section,
 			Entity entity, Map<String, String> eval, VirtualPropertyItem property, String viewName)
 					throws ServletException, IOException {
-		if (isDispProperty(property)) {
+		if (isDispProperty(ed, property)) {
 			PropertyEditor editor = property.getEditor();
 			String path = EntityViewUtil.getJspPath(editor, ViewConst.DESIGN_TYPE_GEM);
 			if (path != null) {
@@ -95,7 +95,7 @@ public class CreateSearchResultUtil {
 	private static void outputPropertyColumn(EntityDefinition ed, SearchResultSection section,
 			Entity entity, Map<String, String> eval, PropertyColumn property, String viewName)
 					throws ServletException, IOException {
-		if (isDispProperty(property)) {
+		if (isDispProperty(ed, property)) {
 			PropertyEditor editor = property.getEditor();
 			String path = EntityViewUtil.getJspPath(editor, ViewConst.DESIGN_TYPE_GEM);
 			if (path != null) {
@@ -165,8 +165,10 @@ public class CreateSearchResultUtil {
 		return html;
 	}
 
-	private static boolean isDispProperty(Element element) {
-		if (!element.isDispFlag()) return false;
+	private static boolean isDispProperty(EntityDefinition ed, Element element) {
+		if (!EntityViewUtil.isDisplayElement(ed.getName(), element.getElementRuntimeId(), OutputType.SEARCHRESULT)) {
+			return false;
+		}
 		if (element instanceof PropertyColumn) {
 			if (((PropertyColumn) element).getEditor() != null) return true;
 		}

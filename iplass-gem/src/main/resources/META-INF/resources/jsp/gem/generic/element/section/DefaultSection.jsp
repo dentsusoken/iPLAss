@@ -81,6 +81,8 @@
 	Object value = request.getAttribute(Constants.ENTITY_DATA);
 	OutputType type = (OutputType) request.getAttribute(Constants.OUTPUT_TYPE);
 
+	String defName = (String)request.getAttribute(Constants.ROOT_DEF_NAME);
+
 	DefaultSection section = (DefaultSection) element;
 
 	if ((type == OutputType.EDIT && section.isHideDetail())
@@ -143,7 +145,6 @@
 <div style="<c:out value="<%=disclosureStyle %>"/>">
 <%
 	if (StringUtil.isNotBlank(section.getUpperContents())) {
-		String defName = (String)request.getAttribute(Constants.ROOT_DEF_NAME);
 		evm.executeTemplate(defName, section.getContentScriptKey() + "_UpperContent", request, response, application, pageContext);
 	}
 %>
@@ -156,7 +157,9 @@
 		for (int j = 0; j < section.getColNum(); j++) {
 			if (elementList.size() > _index) {
 				Element subElement = elementList.get(_index++);
-				if (!(subElement instanceof BlankSpace) && subElement.isDispFlag() && (type != OutputType.EDIT || ViewUtil.dispElement(subElement))) {
+				if (!(subElement instanceof BlankSpace)
+						&& EntityViewUtil.isDisplayElement(defName, subElement.getElementRuntimeId(), type)
+						&& (type != OutputType.EDIT || ViewUtil.dispElement(subElement))) {
 					isDispRow = true;
 					break;
 				}
@@ -172,7 +175,8 @@
 		for (int j = 0; j < section.getColNum(); j++) {
 			if (elementList.size() > index) {
 				Element subElement = elementList.get(index++);
-				if (subElement.isDispFlag() && (type != OutputType.EDIT || ViewUtil.dispElement(subElement))) {
+				if (EntityViewUtil.isDisplayElement(defName, subElement.getElementRuntimeId(), type)
+						&& (type != OutputType.EDIT || ViewUtil.dispElement(subElement))) {
 					request.setAttribute(Constants.ELEMENT, subElement);
 					request.setAttribute(Constants.COL_NUM, section.getColNum());
 
@@ -209,7 +213,6 @@
 </table>
 <%
 	if (StringUtil.isNotBlank(section.getLowerContents())) {
-		String defName = (String)request.getAttribute(Constants.ROOT_DEF_NAME);
 		evm.executeTemplate(defName, section.getContentScriptKey() + "_LowerContent", request, response, application, pageContext);
 	}
 %>

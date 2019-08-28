@@ -56,6 +56,7 @@ import org.iplass.mtp.spi.ServiceRegistry;
 import org.iplass.mtp.util.StringUtil;
 import org.iplass.mtp.view.generic.EntityViewUtil;
 import org.iplass.mtp.view.generic.FormViewUtil;
+import org.iplass.mtp.view.generic.OutputType;
 import org.iplass.mtp.view.generic.SearchFormView;
 import org.iplass.mtp.view.generic.editor.DateRangePropertyEditor;
 import org.iplass.mtp.view.generic.editor.JoinPropertyEditor;
@@ -441,7 +442,8 @@ public class BulkCommandContext extends RegistrationCommandContext {
 			@Override
 			public boolean isDispProperty(PropertyColumn property) {
 				//一括更新プロパティエディタが未設定の場合、更新対象外
-				return property.isDispFlag() && property.getBulkUpdateEditor() != null;
+				return EntityViewUtil.isDisplayElement(entityDefinition.getName(), property.getElementRuntimeId(), OutputType.BULK)
+						&& property.getBulkUpdateEditor() != null;
 			}
 
 			@Override

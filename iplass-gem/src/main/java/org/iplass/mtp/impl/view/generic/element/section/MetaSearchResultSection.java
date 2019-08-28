@@ -114,10 +114,10 @@ public class MetaSearchResultSection extends MetaSection {
 
 	/** 一括削除コミットトランザクション制御設定 */
 	private DeleteAllCommandTransactionType deleteAllCommandTransactionType = DeleteAllCommandTransactionType.DIVISION;
-	
+
 	/** 一括更新コミットトランザクション制御設定*/
 	private BulkUpdateAllCommandTransactionType bulkUpdateAllCommandTransactionType = BulkUpdateAllCommandTransactionType.DIVISION;
-	
+
 
 	/**
 	 * 表示行数を取得します。
@@ -392,7 +392,7 @@ public class MetaSearchResultSection extends MetaSection {
 	public void setLoadEntityInterrupterName(String loadEntityInterrupterName) {
 		this.loadEntityInterrupterName = loadEntityInterrupterName;
 	}
-	
+
 	/**
 	 * 一括削除のトランザクションタイプを取る
 	 * @return トランザクションタイプ
@@ -400,7 +400,7 @@ public class MetaSearchResultSection extends MetaSection {
 	public DeleteAllCommandTransactionType getDeleteAllCommandTransactionType() {
 		return deleteAllCommandTransactionType;
 	}
-	
+
 	/**
 	 * 一括削除のトランザクションタイプを設定
 	 * @param トランザクションタイプ
@@ -408,7 +408,7 @@ public class MetaSearchResultSection extends MetaSection {
 	public void setDeleteAllCommandTransactionType(DeleteAllCommandTransactionType deleteAllCommandTransactionType) {
 		this.deleteAllCommandTransactionType = deleteAllCommandTransactionType;
 	}
-	
+
 	/**
 	 * 一括更新のトランザクションタイプを取る
 	 * @return　トランザクションタイプ
@@ -425,7 +425,7 @@ public class MetaSearchResultSection extends MetaSection {
 			BulkUpdateAllCommandTransactionType bulkUpdateAllCommandTransactionType) {
 		this.bulkUpdateAllCommandTransactionType = bulkUpdateAllCommandTransactionType;
 	}
-	
+
 	/**
 	 * 要素を取得します。
 	 * @return 要素
@@ -479,7 +479,7 @@ public class MetaSearchResultSection extends MetaSection {
 		this.interrupterName = section.getInterrupterName();
 		this.loadEntityInterrupterName = section.getLoadEntityInterrupterName();
 		this.deleteAllCommandTransactionType = section.getDeleteAllCommandTransactionType();
-		this.bulkUpdateAllCommandTransactionType = section.getBulkUpdateAllCommandTransactionType(); 
+		this.bulkUpdateAllCommandTransactionType = section.getBulkUpdateAllCommandTransactionType();
 		// 仮想プロパティ追加によりMetaPropertyからMetaElementへフィールドを変更
 //		if (section.getProperties().size() > 0) {
 //			for (PropertyColumn col : section.getProperties()) {
@@ -559,6 +559,8 @@ public class MetaSearchResultSection extends MetaSection {
 					.collect(Collectors.toList());
 
 			for (MetaPropertyColumn metaPropertyColumn : properties) {
+				metaPropertyColumn.createRuntime(entityView);
+
 				MetaPropertyEditor editor = metaPropertyColumn.getEditor();
 				PropertyEditorHandler handler = (PropertyEditorHandler)editor.createRuntime(entityView);
 				customStyleMap.put(editor.getOutputCustomStyleScriptKey(), handler.getOutputCustomStyleScript());

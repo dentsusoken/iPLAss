@@ -60,14 +60,17 @@
 	boolean isFirstSelect(String selectAllType) {
 		return StringUtil.isEmpty(selectAllType);
 	}
-	
+
 	boolean isUpdateFailed(String bulkUpdatePropNm) {
 		return StringUtil.isNotEmpty(bulkUpdatePropNm);
 	}
-	
-	boolean canBulkUpdate(PropertyColumn pc) {
-		if (!pc.isDispFlag() || pc.getBulkUpdateEditor() == null || pc.getEditor() instanceof UserPropertyEditor || 
-			pc.getEditor() instanceof ExpressionPropertyEditor || pc.getEditor() instanceof AutoNumberPropertyEditor) {
+
+	boolean canBulkUpdate(String defName, PropertyColumn pc) {
+		if (!EntityViewUtil.isDisplayElement(defName, pc.getElementRuntimeId(), OutputType.BULK)
+				|| pc.getBulkUpdateEditor() == null
+				|| pc.getEditor() instanceof UserPropertyEditor
+				|| pc.getEditor() instanceof ExpressionPropertyEditor
+				|| pc.getEditor() instanceof AutoNumberPropertyEditor) {
 			return false;
 		}
 		return true;
@@ -137,7 +140,7 @@
 
 	//コマンドから
 	BulkUpdateFormViewData data = (BulkUpdateFormViewData) request.getAttribute(Constants.DATA);
-	Boolean selectAllPage = (Boolean) request.getAttribute(Constants.BULK_UPDATE_SELECT_ALL_PAGE);	
+	Boolean selectAllPage = (Boolean) request.getAttribute(Constants.BULK_UPDATE_SELECT_ALL_PAGE);
 	String selectAllType = (String) request.getAttribute(Constants.BULK_UPDATE_SELECT_TYPE);
 	String searchCond = (String) request.getAttribute(Constants.SEARCH_COND);
 	String message = (String) request.getAttribute(Constants.MESSAGE);
@@ -271,8 +274,8 @@ ${m:outputToken('FORM_XHTML', true)}
 <div>
 <table class="tbl-maintenance mb10">
 <tbody>
-<% 
-	if (isSelectAllPage) { 
+<%
+	if (isSelectAllPage) {
 %>
 <tr>
 <th rowspan="2">${m:rs("mtp-gem-messages", "generic.bulk.selectBulkUpdateType")}</th>
@@ -332,7 +335,7 @@ $(function() {
 <option value="" selected="selected"><%= pleaseSelectLabel %></option>
 <%
 	for (PropertyColumn pc : colMap.values()) {
-		if (!canBulkUpdate(pc)) continue;
+		if (!canBulkUpdate(defName, pc)) continue;
 		String propName = pc.getPropertyName();
 		PropertyDefinition pd = defMap.get(propName);
 		String displayLabel = TemplateUtil.getMultilingualString(pc.getDisplayLabel(), pc.getLocalizedDisplayLabelList(), pd.getDisplayName(),
@@ -353,7 +356,7 @@ $(function() {
 <table id="id_tbl_bulkupdate" class="tbl-section">
 <%
 	for (PropertyColumn pc : colMap.values()) {
-		if (canBulkUpdate(pc)) {
+		if (canBulkUpdate(defName, pc)) {
 			request.setAttribute(Constants.ELEMENT, pc);
 
 			String path = EntityViewUtil.getJspPath(pc, ViewConst.DESIGN_TYPE_GEM);
@@ -380,7 +383,7 @@ $(function() {
 <%
 	}
 %>
-<li class="mt05 cancel-link"><a href="javascript:void(0)" onclick="onclick_cancel()">${m:rs("mtp-gem-messages", "generic.bulk.cancel")}</a></li> 
+<li class="mt05 cancel-link"><a href="javascript:void(0)" onclick="onclick_cancel()">${m:rs("mtp-gem-messages", "generic.bulk.cancel")}</a></li>
 </ul>
 </div>
 <div>
@@ -423,7 +426,7 @@ $(function() {
 						tmp.add(convertPropValueToString(EntityViewUtil.getPropertyDefinition(propName, ed), propValue, nestEditor));
 					}
 					updatedPropValue = tmp.toString();
-				} 
+				}
 				updatedPropDispValue = StringUtil.escapeHtml(getPropertyDisplayValue(pd, updatedPropValue, editor));
 			}
 %>
@@ -437,7 +440,7 @@ $(function() {
 <input type="hidden" name="<%=Constants.BULK_UPDATED_PROP_VALUE%>" value="<%=updateNo + "_" + updatedPropDispValue%>"/>
 </td>
 </tr>
-<% 
+<%
 		}
 %>
 </table>
@@ -478,7 +481,7 @@ function propChange(obj) {
 		$(this).css("display", "none").val("");
 	});
 	$("tr#id_tr_" + propName).css("display", "");
-} 
+}
 $(function() {
 <%	if (isUpdateFailed(bulkUpdatePropNm)) { %>
 	//前回で更新に失敗したプロパティに対してエラーメッセージを表示する
@@ -498,6 +501,6 @@ $(function() {
 				$("#bulkUpdateBtn").prop("disabled", true);
 			}
 		});
-	} 
+	}
 })
 </script>

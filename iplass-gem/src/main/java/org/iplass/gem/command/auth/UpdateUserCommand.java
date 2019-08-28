@@ -44,6 +44,8 @@ import org.iplass.mtp.entity.ValidateError;
 import org.iplass.mtp.view.generic.DetailFormView;
 import org.iplass.mtp.view.generic.EntityView;
 import org.iplass.mtp.view.generic.EntityViewManager;
+import org.iplass.mtp.view.generic.EntityViewUtil;
+import org.iplass.mtp.view.generic.OutputType;
 import org.iplass.mtp.view.generic.editor.JoinPropertyEditor;
 import org.iplass.mtp.view.generic.editor.NestProperty;
 import org.iplass.mtp.view.generic.element.Element;
@@ -148,8 +150,10 @@ public final class UpdateUserCommand extends DetailCommandBase {
 	private List<PropertyItem> getProperty(DetailFormView view) {
 		List<PropertyItem> propList = new ArrayList<PropertyItem>();
 		for (Section section : view.getSections()) {
-			if (section instanceof DefaultSection && section.isDispFlag() && ViewUtil.dispElement(Constants.EXEC_TYPE_UPDATE, section)) {
-				propList.addAll(getProperty((DefaultSection) section));
+			if (section instanceof DefaultSection
+					&& EntityViewUtil.isDisplayElement(User.DEFINITION_NAME, section.getElementRuntimeId(), OutputType.EDIT)
+					&& ViewUtil.dispElement(Constants.EXEC_TYPE_UPDATE, section)) {
+				propList.addAll(getProperty((DefaultSection)section));
 			}
 		}
 		return propList;
@@ -176,9 +180,12 @@ public final class UpdateUserCommand extends DetailCommandBase {
 						propList.add(dummy);
 					}
 				}
-				if (prop.isDispFlag() && ViewUtil.dispElement(Constants.EXEC_TYPE_UPDATE, prop)) propList.add(prop);
+				if (EntityViewUtil.isDisplayElement(User.DEFINITION_NAME, prop.getElementRuntimeId(), OutputType.EDIT)
+						&& ViewUtil.dispElement(Constants.EXEC_TYPE_UPDATE, prop)) {
+					propList.add(prop);
+				}
 			} else if (elem instanceof DefaultSection) {
-				propList.addAll(getProperty((DefaultSection) elem));
+				propList.addAll(getProperty((DefaultSection)elem));
 			}
 		}
 		return propList;
