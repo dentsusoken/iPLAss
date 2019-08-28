@@ -36,9 +36,9 @@
 <%@ page import="org.iplass.gem.command.ViewUtil"%>
 <!DOCTYPE html>
 <%!
-	ReferencePropertyEditor getRefEditor(String defName, String viewName, String propName, String viewType) {
+	ReferencePropertyEditor getRefEditor(String defName, String viewName, String propName, String viewType, Integer refSectionIndex) {
 		EntityViewManager evm = ManagerLocator.getInstance().getManager(EntityViewManager.class);
-		PropertyEditor editor = evm.getPropertyEditor(defName, viewType, viewName, propName);
+		PropertyEditor editor = evm.getPropertyEditor(defName, viewType, viewName, propName, refSectionIndex);
 		if (editor instanceof ReferencePropertyEditor) {
 			ReferencePropertyEditor rpe = (ReferencePropertyEditor) editor;
 			return rpe;
@@ -52,21 +52,21 @@
 		return null;
 	}
 
-	String getDisplayLabelItem(String defName, String viewName, String propName, String viewType) {
+	String getDisplayLabelItem(String defName, String viewName, String propName, String viewType, Integer refSectionIndex) {
 		FormView form = ViewUtil.getFormView(defName, viewName, viewType);
 		if (form == null) return null;
 		
-		ReferencePropertyEditor editor = getRefEditor(defName, viewName, propName, viewType);
+		ReferencePropertyEditor editor = getRefEditor(defName, viewName, propName, viewType, refSectionIndex);
 		if (editor != null) return editor.getDisplayLabelItem();
 
 		return null;
 	}
 
-	String getUniqueItem(String defName, String viewName, String propName, String viewType) {
+	String getUniqueItem(String defName, String viewName, String propName, String viewType, Integer refSectionIndex) {
 		FormView form = ViewUtil.getFormView(defName, viewName, viewType);
 		if (form == null) return null;
 
-		ReferencePropertyEditor editor = getRefEditor(defName, viewName, propName, viewType);
+		ReferencePropertyEditor editor = getRefEditor(defName, viewName, propName, viewType, refSectionIndex);
 		if (editor != null) return editor.getUniqueItem();
 
 		return null;
@@ -81,15 +81,21 @@
 	String parentViewName = request.getParameter(Constants.PARENT_VIEWNAME);
 	String parentPropName = request.getParameter(Constants.PARENT_PROPNAME);
 	String viewType = request.getParameter(Constants.VIEW_TYPE);
+	String refSectionIndex = request.getParameter(Constants.REF_SECTION_INDEX);
 
 	if (modalTarget == null) modalTarget = "";
 	else modalTarget = StringUtil.escapeHtml(modalTarget);
+
+	Integer _refSectionIndex = null;
+	if (StringUtil.isNotBlank(refSectionIndex)) {
+		_refSectionIndex = new Integer(refSectionIndex);
+	}
 
 	String title = ViewUtil.getDispTenantName();
 
 	String dispPropLabel = null;
 	if (StringUtil.isNotBlank(parentDefName) && StringUtil.isNotBlank(parentPropName)) {
-		dispPropLabel = getDisplayLabelItem(parentDefName, parentViewName, parentPropName, viewType);
+		dispPropLabel = getDisplayLabelItem(parentDefName, parentViewName, parentPropName, viewType, _refSectionIndex);
 	}
 	if (dispPropLabel == null) {
 		dispPropLabel = Entity.NAME;
@@ -97,7 +103,7 @@
 	
 	String uniqueItem = null;
 	if (StringUtil.isNotBlank(parentDefName) && StringUtil.isNotBlank(parentPropName)) {
-		uniqueItem = getUniqueItem(parentDefName, parentViewName, parentPropName, viewType);
+		uniqueItem = getUniqueItem(parentDefName, parentViewName, parentPropName, viewType, _refSectionIndex);
 	}
 %>
 <html>

@@ -68,6 +68,9 @@
 	String viewType = request.getParameter(Constants.VIEW_TYPE);
 	viewType = StringUtil.escapeHtml(viewType);
 	if (viewType == null) viewType = "";
+	String refSectionIndex = request.getParameter(Constants.REF_SECTION_INDEX);
+	refSectionIndex = StringUtil.escapeHtml(refSectionIndex);
+	if (refSectionIndex == null) refSectionIndex = "";
 
 	//コマンドから
 	DetailFormViewData data = (DetailFormViewData) request.getAttribute(Constants.DATA);
@@ -228,6 +231,7 @@ function dataUnlock() {
 <input type="hidden" name="<%=Constants.PARENT_VIEWNAME%>" value="<c:out value="<%=parentViewName%>" />" />
 <input type="hidden" name="<%=Constants.PARENT_PROPNAME%>" value="<c:out value="<%=parentPropName%>" />" />
 <input type="hidden" name="<%=Constants.VIEW_TYPE%>" value="<c:out value="<%=viewType%>" />" />
+<input type="hidden" name="<%=Constants.REF_SECTION_INDEX %>" value="<c:out value="<%=refSectionIndex%>" />" />
 <%	if (oid != null) { %>
 <input type="hidden" name="<%=Constants.OID%>" value="<c:out value="<%=oid%>"/>" />
 <%	}

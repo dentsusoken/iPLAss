@@ -387,6 +387,9 @@
 		editor.setDisplayType(ReferenceDisplayType.SELECT);
 	}
 
+	//refSectionIndexがnullではなければ、参照セクション内でネストされています。
+	Integer refSectionIndex = (Integer)request.getAttribute(Constants.REF_SECTION_INDEX);
+
 	//Action定義取得
 	String _viewName = editor.getViewName() != null ? editor.getViewName() : "";
 	String urlPath = ViewUtil.getParamMappingPath(refDefName, _viewName);
@@ -481,7 +484,7 @@ function <%=toggleInsBtnFunc%>() {
 <%
 			if (editPageDetail) {
 %>
-<a href="javascript:void(0)" class="modal-lnk" style="<c:out value="<%=customStyle%>"/>" id="<c:out value="<%=linkId %>"/>" data-linkId="<c:out value="<%=linkId %>"/>" onclick="showReference('<%=StringUtil.escapeJavaScript(viewAction)%>', '<%=StringUtil.escapeJavaScript(refDefName)%>', '<%=StringUtil.escapeJavaScript(refEntity.getOid())%>', '<%=refEntity.getVersion() %>', '<%=StringUtil.escapeJavaScript(linkId)%>', <%=refEdit %>, null, '<%=rootDefName%>', '<%=viewName%>', '<%=propName%>', '<%=viewType%>')"><c:out value="<%=dispPropLabel %>" /></a>
+<a href="javascript:void(0)" class="modal-lnk" style="<c:out value="<%=customStyle%>"/>" id="<c:out value="<%=linkId %>"/>" data-linkId="<c:out value="<%=linkId %>"/>" onclick="showReference('<%=StringUtil.escapeJavaScript(viewAction)%>', '<%=StringUtil.escapeJavaScript(refDefName)%>', '<%=StringUtil.escapeJavaScript(refEntity.getOid())%>', '<%=refEntity.getVersion() %>', '<%=StringUtil.escapeJavaScript(linkId)%>', <%=refEdit %>, null, '<%=rootDefName%>', '<%=viewName%>', '<%=propName%>', '<%=viewType%>', '<c:out value="<%=refSectionIndex%>" />')"><c:out value="<%=dispPropLabel %>" /></a>
 <%
 				if (!hideDeleteButton && updatable) {
 %>
@@ -555,6 +558,7 @@ $(function() {
 		, parentDefName: "<%=StringUtil.escapeJavaScript(rootDefName)%>"
 		, parentViewName: "<%=StringUtil.escapeJavaScript(viewName)%>"
 		, viewType: "<%=StringUtil.escapeJavaScript(viewType)%>"
+		, refSectionIndex: "<c:out value="<%=refSectionIndex%>"/>"
 	}
 	var $selBtn = $(":button[id='<%=StringUtil.escapeJavaScript(selBtnId) %>']");
 	for (key in params) {
@@ -562,7 +566,7 @@ $(function() {
 	}
 	$selBtn.on("click", function() {
 		searchReference(params.selectAction, params.viewAction, params.defName, $(this).attr("data-propName"), params.multiplicity, <%=isMultiple %>,
-				 params.urlParam, params.refEdit, callback, this, params.viewName, params.permitConditionSelectAll, params.parentDefName, params.parentViewName, params.viewType, delCallback);
+				 params.urlParam, params.refEdit, callback, this, params.viewName, params.permitConditionSelectAll, params.parentDefName, params.parentViewName, params.viewType, params.refSectionIndex, delCallback);
 	});
 
 });
@@ -603,6 +607,7 @@ $(function() {
 		, parentDefName: "<%=StringUtil.escapeJavaScript(rootDefName)%>"
 		, parentViewName: "<%=StringUtil.escapeJavaScript(viewName)%>"
 		, viewType: "<%=StringUtil.escapeJavaScript(viewType)%>"
+		, refSectionIndex: "<c:out value="<%=refSectionIndex%>"/>"
 		, refEdit: <%=refEdit %>
 		, callbackKey: key
 	}
@@ -612,7 +617,7 @@ $(function() {
 	}
 	$insBtn.on("click", function() {
 		insertReference(params.addAction, params.viewAction, params.defName, params.propName, params.multiplicity,
-				 params.urlParam, params.parentOid, params.parentVersion, params.parentDefName, params.parentViewName, params.refEdit, callback, this, delCallback, params.viewType);
+				 params.urlParam, params.parentOid, params.parentVersion, params.parentDefName, params.parentViewName, params.refEdit, callback, this, delCallback, params.viewType, params.refSectionIndex);
 	});
 
 });
@@ -859,7 +864,7 @@ function <%=toggleInsBtnFunc%>() {
 <%
 			if (editPageDetail) {
 %>
-<a href="javascript:void(0)" class="modal-lnk" style="<c:out value="<%=customStyle%>"/>" id="<c:out value="<%=linkId %>"/>" data-linkId="<c:out value="<%=linkId %>"/>" onclick="showReference('<%=StringUtil.escapeJavaScript(viewAction)%>', '<%=StringUtil.escapeJavaScript(refDefName)%>', '<%=StringUtil.escapeJavaScript(refEntity.getOid())%>', '<%=refEntity.getVersion() %>', '<%=StringUtil.escapeJavaScript(linkId)%>', <%=refEdit %>, null, '<%=rootDefName%>', '<%=viewName%>', '<%=propName%>', '<%=viewType%>')"><c:out value="<%=displayPropLabel %>" /></a>
+<a href="javascript:void(0)" class="modal-lnk" style="<c:out value="<%=customStyle%>"/>" id="<c:out value="<%=linkId %>"/>" data-linkId="<c:out value="<%=linkId %>"/>" onclick="showReference('<%=StringUtil.escapeJavaScript(viewAction)%>', '<%=StringUtil.escapeJavaScript(refDefName)%>', '<%=StringUtil.escapeJavaScript(refEntity.getOid())%>', '<%=refEntity.getVersion() %>', '<%=StringUtil.escapeJavaScript(linkId)%>', <%=refEdit %>, null, '<%=rootDefName%>', '<%=viewName%>', '<%=propName%>', '<%=viewType%>', '<c:out value="<%=refSectionIndex%>" />')"><c:out value="<%=displayPropLabel %>" /></a>
 <%
 				if (!hideDeleteButton && updatable) {
 %>
@@ -917,6 +922,7 @@ function <%=toggleInsBtnFunc%>() {
  data-refEdit="<c:out value="<%=refEdit%>"/>"
  data-selCallbackKey="<c:out value="<%=selCallbackKey%>"/>"
  data-delCallbackKey="<c:out value="<%=delCallbackKey%>"/>"
+ data-refSectionIndex="<c:out value="<%=refSectionIndex%>"/>"
  />
 <%
 			}
@@ -965,6 +971,7 @@ $(function() {
 		, parentDefName: "<%=StringUtil.escapeJavaScript(defName)%>"
 		, parentViewName: "<%=StringUtil.escapeJavaScript(viewName)%>"
 		, viewType: "<%=StringUtil.escapeJavaScript(viewType)%>"
+		, refSectionIndex: "<c:out value="<%=refSectionIndex%>"/>"
 		, refEdit: <%=refEdit %>
 		, callbackKey: key
 	}
@@ -974,7 +981,7 @@ $(function() {
 	}
 	$insBtn.on("click", function() {
 		insertReference(params.addAction, params.viewAction, params.defName, params.propName, params.multiplicity,
-				 params.urlParam, params.parentOid, params.parentVersion, params.parentDefName, params.parentViewName, params.refEdit, callback, this, delCallback, params.viewType);
+				 params.urlParam, params.parentOid, params.parentVersion, params.parentDefName, params.parentViewName, params.refEdit, callback, this, delCallback, params.viewType, params.refSectionIndex);
 	});
 
 });
@@ -1081,6 +1088,7 @@ $(function() {
  data-multiplicity="<%=multiplicity%>"
  data-selUniqueRefCallback="<c:out value="<%=selUniqueRefCallback%>"/>"
  data-insUniqueRefCallback="<c:out value="<%=insUniqueRefCallback%>"/>"
+ data-refSectionIndex="<c:out value="<%=refSectionIndex%>"/>"
 >
 <span class="unique-key">
 <%
@@ -1107,7 +1115,7 @@ $(function() {
 %>
 </span>
 <span class="unique-ref">
-<a href="javascript:void(0)" class="modal-lnk" id="<c:out value="<%=linkId %>"/>" data-linkId="<c:out value="<%=linkId %>"/>" onclick="showReference('<%=StringUtil.escapeJavaScript(viewAction)%>', '<%=StringUtil.escapeJavaScript(refDefName)%>', '<%=StringUtil.escapeJavaScript(refEntity.getOid())%>', '<%=refEntity.getVersion() %>', '<%=StringUtil.escapeJavaScript(linkId)%>', <%=refEdit %>, null, '<%=rootDefName%>', '<%=viewName%>', '<%=propName%>', '<%=viewType%>')"><c:out value="<%=dispPropLabel %>" /></a>
+<a href="javascript:void(0)" class="modal-lnk" id="<c:out value="<%=linkId %>"/>" data-linkId="<c:out value="<%=linkId %>"/>" onclick="showReference('<%=StringUtil.escapeJavaScript(viewAction)%>', '<%=StringUtil.escapeJavaScript(refDefName)%>', '<%=StringUtil.escapeJavaScript(refEntity.getOid())%>', '<%=refEntity.getVersion() %>', '<%=StringUtil.escapeJavaScript(linkId)%>', <%=refEdit %>, null, '<%=rootDefName%>', '<%=viewName%>', '<%=propName%>', '<%=viewType%>', '<c:out value="<%=refSectionIndex%>" />')"><c:out value="<%=dispPropLabel %>" /></a>
 <%
 
 			if (!hideDeleteButton && updatable) {
@@ -1152,6 +1160,7 @@ $(function() {
  data-multiplicity="<%=multiplicity%>"
  data-selUniqueRefCallback="<c:out value="<%=selUniqueRefCallback%>"/>"
  data-insUniqueRefCallback="<c:out value="<%=insUniqueRefCallback%>"/>"
+ data-refSectionIndex="<c:out value="<%=refSectionIndex%>"/>"
 >
 <span class="unique-key">
 <input type="text" style="<c:out value="<%=customStyle%>"/>" class="unique-form-size-01 inpbr" />

@@ -782,7 +782,7 @@ function getEntityName(defName, viewName, oid, version, async, func) {
 }
 
 //汎用画面ReferenceEditor用Entity名前一括取得
-function getEntityNameList(defName, viewName, parentDefName, parentViewName, parentPropName, viewType, list, func) {
+function getEntityNameList(defName, viewName, parentDefName, parentViewName, parentPropName, viewType, refSectionIndex, list, func) {
 	var _viewName = "";
 	if (typeof viewName !== "undefined") {
 		if (viewName === null) {
@@ -824,6 +824,14 @@ function getEntityNameList(defName, viewName, parentDefName, parentViewName, par
 			_viewType = ",\"viewType\":\"" + viewType +"\"";
 		}
 	}
+	var _refSectionIndex = "";
+	if (typeof refSectionIndex !== "undefined") {
+		if (refSectionIndex === null) {
+			_refSectionIndex = ",\"referenceSectionIndex\":null";
+		} else {
+			_refSectionIndex = ",\"referenceSectionIndex\":\"" + refSectionIndex +"\"";
+		}
+	}
 	var params = "{";
 	params += "\"defName\":\"" + defName + "\"";
 	params += _viewName;
@@ -831,6 +839,7 @@ function getEntityNameList(defName, viewName, parentDefName, parentViewName, par
 	params += _parentViewName;
 	params += _parentPropName;
 	params += _viewType;
+	params += _refSectionIndex;
 	params += ",\"list\":" + JSON.stringify(list);
 	params += "}";
 
