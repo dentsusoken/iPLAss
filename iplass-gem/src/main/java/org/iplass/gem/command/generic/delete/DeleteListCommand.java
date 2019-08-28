@@ -21,10 +21,15 @@
 package org.iplass.gem.command.generic.delete;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import org.iplass.gem.command.Constants;
 import org.iplass.gem.command.GemResourceBundleUtil;
 import org.iplass.gem.command.generic.ResultType;
+import org.iplass.mtp.ApplicationException;
 import org.iplass.mtp.ManagerLocator;
 import org.iplass.mtp.command.RequestContext;
 import org.iplass.mtp.command.annotation.CommandClass;
@@ -32,11 +37,16 @@ import org.iplass.mtp.command.annotation.webapi.RestJson;
 import org.iplass.mtp.command.annotation.webapi.WebApi;
 import org.iplass.mtp.command.annotation.webapi.WebApiTokenCheck;
 import org.iplass.mtp.entity.Entity;
+import org.iplass.mtp.entity.GenericEntity;
+import org.iplass.mtp.entity.ValidateError;
 import org.iplass.mtp.transaction.TransactionManager;
+import org.iplass.mtp.view.generic.BulkOperationContext;
 import org.iplass.mtp.view.generic.EntityView;
 import org.iplass.mtp.view.generic.SearchFormView;
-import org.iplass.mtp.webapi.definition.RequestType;
 import org.iplass.mtp.webapi.definition.MethodType;
+import org.iplass.mtp.webapi.definition.RequestType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Entity一括削除コマンド
@@ -54,6 +64,8 @@ import org.iplass.mtp.webapi.definition.MethodType;
 )
 @CommandClass(name="gem/generic/delete/DeleteListCommand", displayName="一括削除")
 public final class DeleteListCommand extends DeleteCommandBase {
+
+	private static Logger logger = LoggerFactory.getLogger(DeleteListCommand.class);
 
 	public static final String WEBAPI_NAME = "gem/generic/delete/deleteList";
 
@@ -73,39 +85,58 @@ public final class DeleteListCommand extends DeleteCommandBase {
 				oid[i] = list.get(i).toString();
 			}
 		}
-		Entity entity = null;
 		boolean isPurge = isPurge(name, viewName);
 
-		DeleteResult ret = null;
-		if (oid != null && oid.length > 0) {
-			for (int i = 0; i < oid.length; i++) {
-				//oidには先頭に「行番号_」が付加されているので分離する
-				int targetRow = -1;
-				String targetOid = oid[i];
-				if (targetOid.indexOf("_") != -1) {
-					targetRow = Integer.parseInt(oid[i].substring(0, targetOid.indexOf("_")));
-					targetOid = oid[i].substring(targetOid.indexOf("_") + 1);
-				}
-				entity = loadEntity(name, targetOid);
-				if (entity != null) {
-					ret = deleteEntity(entity, isPurge);
-					if (ret.getResultType() == ResultType.ERROR) {
-						//削除でエラーが出てたら終了
-						if (targetRow > 0) {
-							request.setAttribute(Constants.MESSAGE,
-									resourceString("command.generic.delete.DeleteListCommand.deleteListErr", ret.getMessage(), targetRow));
-						} else {
-							request.setAttribute(Constants.MESSAGE, ret.getMessage());
+		DeleteCommandContext context = getContext(request);
+		//行番号、oidを保持するマップ
+		Map<String, Integer> oidMap = splitOid(oid);
+		List<Entity> list = getEntities(context.getDefinitionName(), oidMap.keySet());
+
+		String retKey = Constants.CMD_EXEC_SUCCESS;
+		try {
+			//削除前の処理を呼び出します。
+			BulkOperationContext bulkContext = context.getDeleteInterrupterHandler().beforeOperation(list);
+			List<ValidateError> errors = bulkContext.getErrors();
+			List<Entity> entities = bulkContext.getEntities();
+	
+			if (!errors.isEmpty()) {
+				request.setAttribute(Constants.MESSAGE, resourceString("command.generic.delete.DeleteListCommand.inputErr"));
+				retKey = Constants.CMD_EXEC_ERROR;
+			} else if (entities.size() > 0) {
+				for (Entity entity : entities) {
+					String targetOid = entity.getOid();
+					Integer targetRow = oidMap.getOrDefault(targetOid, -1);
+					entity = loadEntity(name, targetOid);
+					if (entity != null) {
+						DeleteResult ret = deleteEntity(entity, isPurge);
+						if (ret.getResultType() == ResultType.ERROR) {
+							//削除でエラーが出てたら終了
+							if (targetRow > 0) {
+								request.setAttribute(Constants.MESSAGE,
+										resourceString("command.generic.delete.DeleteListCommand.deleteListErr", ret.getMessage(), targetRow));
+							} else {
+								request.setAttribute(Constants.MESSAGE, ret.getMessage());
+							}
+							ManagerLocator.getInstance().getManager(TransactionManager.class).currentTransaction().rollback();
+							break;
 						}
-						ManagerLocator.getInstance().getManager(TransactionManager.class).currentTransaction().rollback();
-						break;
 					}
 				}
+			}
+	
+			//削除前の処理を呼び出します。
+			context.getDeleteInterrupterHandler().afterOperation(entities);
+		} catch (ApplicationException e) {
+			if (logger.isDebugEnabled()) {
+				logger.debug(e.getMessage(), e);
+
+				retKey = Constants.CMD_EXEC_ERROR;
+				request.setAttribute(Constants.MESSAGE, e.getMessage());
 			}
 		}
 
 		//削除後は一覧画面へ
-		return Constants.CMD_EXEC_SUCCESS;
+		return retKey;
 	}
 
 	private boolean isPurge(String defName, String viewName) {
@@ -123,6 +154,34 @@ public final class DeleteListCommand extends DeleteCommandBase {
 		}
 		if (view != null) isPurge = view.isPurge();
 		return isPurge;
+	}
+
+	private Map<String, Integer> splitOid(String[] oid) {
+		Map<String, Integer> oidMap = new HashMap<String, Integer>();
+		if (oid != null) {
+			for (int i = 0; i < oid.length; i++) {
+				//oidには先頭に「行番号_」が付加されているので分離する
+				int targetRow = -1;
+				String targetOid = oid[i];
+				if (targetOid.indexOf("_") != -1) {
+					targetRow = Integer.parseInt(oid[i].substring(0, targetOid.indexOf("_")));
+					targetOid = oid[i].substring(targetOid.indexOf("_") + 1);
+				}
+				// 行番号を保存します。 
+				// TODO もし多重度が１より大きい場合、oidが同じで、行番号が異なるデータが存在するので、1件目の行番号のみ保持します。
+				oidMap.putIfAbsent(targetOid, targetRow);
+			}
+		}
+		return oidMap;
+	}
+
+	private List<Entity> getEntities(String defName, Set<String> oidSet) {
+		List<Entity> entities = new ArrayList<Entity>();
+		for (String oid : oidSet) {
+			// OIDのみ設定されるので、エンティティのMappingクラスを見なくてもいいはずです。
+			entities.add(new GenericEntity(defName, oid, null));
+		}
+		return entities;
 	}
 
 	private static String resourceString(String key, Object... arguments) {

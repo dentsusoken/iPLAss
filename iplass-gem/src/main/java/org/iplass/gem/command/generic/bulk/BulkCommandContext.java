@@ -30,8 +30,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import org.iplass.gem.GemConfigService;
@@ -54,6 +52,7 @@ import org.iplass.mtp.entity.definition.properties.ReferenceProperty;
 import org.iplass.mtp.impl.util.ConvertUtil;
 import org.iplass.mtp.spi.ServiceRegistry;
 import org.iplass.mtp.util.StringUtil;
+import org.iplass.mtp.view.generic.BulkOperationInterrupter;
 import org.iplass.mtp.view.generic.EntityViewUtil;
 import org.iplass.mtp.view.generic.FormViewUtil;
 import org.iplass.mtp.view.generic.OutputType;
@@ -79,13 +78,12 @@ public class BulkCommandContext extends RegistrationCommandContext {
 
 	private GemConfigService gemConfig = null;
 
+	private BulkUpdateInterrupterHandler bulkUpdateInterrupterHandler = null;
+
 	private List<BulkCommandParams> bulkCommandParams = new ArrayList<>();
 
 	/** 更新されたプロパティリスト */
 	private List<BulkUpdatedProperty> updatedProps = new ArrayList<>();
-
-	/** パラメータパターン */
-	private Pattern pattern = Pattern.compile("^(\\d+)\\_(.+)?$");
 
 	/**
 	 * クライアントから配列で受け取ったパラメータは自動設定する対象外
@@ -191,12 +189,13 @@ public class BulkCommandContext extends RegistrationCommandContext {
 	}
 
 	private String[] splitRowParam(String rowParam) {
-		Matcher m = pattern.matcher(rowParam);
-		if (!m.matches()) {
+		if (rowParam.indexOf("_") == -1) {
 			getLogger().error("invalid parameter format. rowParam=" + rowParam);
 			throw new ApplicationException(resourceString("command.generic.bulk.BulkCommandContext.invalidFormat"));
 		}
-		String[] params = new String[] { m.group(1), m.group(2) };
+		String targetRow = rowParam.substring(0, rowParam.indexOf("_"));
+		String targetParam = rowParam.substring(rowParam.indexOf("_") + 1);
+		String[] params = new String[] { targetRow, targetParam };
 		return params;
 	}
 
@@ -601,10 +600,10 @@ public class BulkCommandContext extends RegistrationCommandContext {
 		return getPropValue(p, "");
 	}
 
-	public Entity createEntity(String oid, Long version) {
+	public Entity createEntity(String oid, Long version, Timestamp updateDate) {
 		Entity entity = createEntityInternal("" , null);
 		entity.setOid(oid);
-		entity.setUpdateDate(getTimestamp(oid, version));
+		entity.setUpdateDate(updateDate);
 //		if (isVersioned()) {
 		// バージョン管理にかかわらず、セットする問題ないかな..
 		entity.setVersion(version);
@@ -617,8 +616,9 @@ public class BulkCommandContext extends RegistrationCommandContext {
 
 	private Entity createEntityInternal(String paramPrefix, String errorPrefix) {
 		Entity entity = newEntity();
-		for (PropertyDefinition p : getPropertyList()) {
-			if (skipProps.contains(p.getName())) continue;
+		for (PropertyColumn pc : getProperty()) {
+			PropertyDefinition p = getProperty(pc.getPropertyName());
+			if (p == null || skipProps.contains(p.getName())) continue;
 			Object value = getPropValue(p, paramPrefix);
 			entity.setValue(p.getName(), value);
 			if (errorPrefix != null) {
@@ -755,6 +755,23 @@ public class BulkCommandContext extends RegistrationCommandContext {
 		return propList;
 	}
 
+	/**
+	 * 更新するエンティティリスト、interrupterで利用されます。
+	 */
+	public List<Entity> getEntities() {
+		List<Entity> entities = new ArrayList<Entity>();
+		for (String oid : getOids()) {
+			for (Long version : getVersions(oid)) {
+				Entity entity = newEntity();
+				entity.setOid(oid);
+				entity.setVersion(version);
+				entity.setUpdateDate(getTimestamp(oid, version));
+				entities.add(entity);
+			}
+		}
+		return entities;
+	}
+
 	@SuppressWarnings("unused")
 	private class BulkCommandParams {
 
@@ -826,6 +843,36 @@ public class BulkCommandContext extends RegistrationCommandContext {
 		}
 	}
 
+	public BulkUpdateInterrupterHandler getBulkUpdateInterrupterHandler() {
+		if (bulkUpdateInterrupterHandler == null) {
+			BulkOperationInterrupter bulkUpdateInterrupter = createBulkInterrupter(getBulkInterrupterName());
+			bulkUpdateInterrupterHandler = new BulkUpdateInterrupterHandler(request, this, bulkUpdateInterrupter);
+		}
+		return bulkUpdateInterrupterHandler;
+	}
+
+	protected String getBulkInterrupterName() {
+		return getView().getResultSection().getBulkUpdateInterrupterName();
+	}
+
+	protected BulkOperationInterrupter createBulkInterrupter(String className) {
+		BulkOperationInterrupter interrupter = null;
+		if (StringUtil.isNotEmpty(className)) {
+			getLogger().debug("set bulk update operation interrupter. class=" + className);
+			try {
+				interrupter = ucdm.createInstanceAs(BulkOperationInterrupter.class, className);
+			} catch (ClassNotFoundException e) {
+				getLogger().error(className + " can not instantiate.", e);
+				throw new ApplicationException(resourceString("command.generic.detail.BulkCommandContext.internalErr"));
+			}
+		}
+		if (interrupter == null) {
+			// 何もしないデフォルトInterrupter生成
+			getLogger().debug("set default bulk update operation interrupter.");
+			interrupter = new BulkOperationInterrupter() {};
+		}
+		return interrupter;
+	}
 
 	public static class BulkUpdatedProperty {
 

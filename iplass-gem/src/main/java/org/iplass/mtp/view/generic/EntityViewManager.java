@@ -70,6 +70,18 @@ public interface EntityViewManager extends TypedDefinitionManager<EntityView> {
 	public PropertyEditor getPropertyEditor(String defName, String viewType, String viewName, String propName);
 
 	/**
+	 * 指定の画面定義に設定されているEditorを取得します。
+	 *
+	 * @param defName Entity定義の名前
+	 * @param viewType FormViewの種類
+	 * @param viewName View名
+	 * @param propName プロパティ名
+	 * @param refSection 参照セクションインデックス
+	 * @return エディター
+	 */
+	public PropertyEditor getPropertyEditor(String defName, String viewType, String viewName, String propName, Integer refSectionIndex);
+
+	/**
 	 * スクリプトテンプレートを実行します。
 	 * @param name 定義名
 	 * @param templateName テンプレート名

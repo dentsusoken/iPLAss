@@ -135,6 +135,7 @@ public class CreateSearchResultUtil {
 				req.setAttribute(Constants.EDITOR_REF_ENTITY_VALUE_MAP, eval); // Reference型用
 				req.setAttribute(Constants.VIEW_NAME, viewName); //Reference型参照先リンク表示用
 				req.setAttribute(Constants.ROOT_DEF_NAME, ed.getName()); //Reference型参照先リンク表示用
+				req.setAttribute(Constants.VIEW_TYPE, Constants.VIEW_TYPE_SEARCH_RESULT);
 			}
 		};
 		Func afterFunc = new Func() {
@@ -150,6 +151,7 @@ public class CreateSearchResultUtil {
 				req.removeAttribute(Constants.EDITOR_REF_ENTITY_VALUE_MAP);
 				req.removeAttribute(Constants.VIEW_NAME);
 				req.removeAttribute(Constants.ROOT_DEF_NAME);
+				req.removeAttribute(Constants.VIEW_TYPE);
 			}
 		};
 

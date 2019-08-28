@@ -37,6 +37,8 @@ public class GetEntityNameListParameter implements GemWebApiParameter {
 	private String parentPropName;
 	
 	private String viewType;
+	
+	private Integer referenceSectionIndex;
 
 	private List<GetEntityNameListEntityParameter> list;
 
@@ -113,4 +115,13 @@ public class GetEntityNameListParameter implements GemWebApiParameter {
 	public void setList(List<GetEntityNameListEntityParameter> list) {
 		this.list = list;
 	}
+
+	public Integer getReferenceSectionIndex() {
+		return referenceSectionIndex;
+	}
+
+	public void setReferenceSectionIndex(Integer referenceSectionIndex) {
+		this.referenceSectionIndex = referenceSectionIndex;
+	}
+
 }

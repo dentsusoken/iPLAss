@@ -20,6 +20,7 @@
 
 package org.iplass.gem.command.generic.bulk;
 
+import org.iplass.gem.command.GemResourceBundleUtil;
 import org.iplass.gem.command.generic.detail.RegistrationCommandBase;
 import org.iplass.mtp.command.RequestContext;
 import org.iplass.mtp.view.generic.element.property.PropertyColumn;
@@ -44,4 +45,7 @@ public abstract class MultiBulkCommandBase extends RegistrationCommandBase<Multi
 		return context;
 	}
 
+	protected String resourceString(String key, Object... arguments) {
+		return GemResourceBundleUtil.resourceString(key, arguments);
+	}
 }

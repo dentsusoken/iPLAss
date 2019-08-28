@@ -2178,7 +2178,8 @@ $.fn.allInputCheck = function(){
 				updateRefAction:$v.attr("data-updateRefAction"),//表示画面での更新アクション
 				reloadUrl      :$v.attr("data-reloadUrl"),//更新時のリロード用URL
 				selCallbackKey :$v.attr("data-selCallbackKey"),//選択コールバック
-				delCallbackKey :$v.attr("data-delCallbackKey")//削除コールバック
+				delCallbackKey :$v.attr("data-delCallbackKey"),//削除コールバック
+				refSectionIndex:$v.attr("data-refSectionIndex")//参照セクションインデックス
 			});
 
 			var $dialog = createDialog($v);
@@ -2238,7 +2239,7 @@ $.fn.allInputCheck = function(){
 								var version = nodes[i].version;
 								var linkId = $v.prefix + $v.propName + "_" + oid;
 								var $link = $("<a href='javascript:void(0)' />").addClass("modal-lnk").attr({"id":linkId, "data-linkId":linkId, "style":$v.customStyle}).text(nodes[i].name).on("click", function() {
-									showReference($v.viewAction, $v.refDefName, oid, version, linkId, $v.refEdit, null, $v.defName, $v.viewName, $v.propName, $v.viewType);
+									showReference($v.viewAction, $v.refDefName, oid, version, linkId, $v.refEdit, null, $v.defName, $v.viewName, $v.propName, $v.viewType, $v.refSectionIndex);
 								}).appendTo($li);
 								if ($("body.modal-body").length != 0) {
 									$link.subModalWindow();
@@ -2610,6 +2611,7 @@ $.fn.allInputCheck = function(){
 				refDefName:					$v.attr("data-refDefName"),
 				refViewName:				$v.attr("data-refViewName"),
 				refEdit:					$v.attr("data-refEdit"),
+				refSectionIndex:			$v.attr("data-refSectionIndex"),//参照セクションインデックス
 				specVersionKey:				$v.attr("data-specVersionKey"),
 				permitConditionSelectAll:	$v.attr("data-permitConditionSelectAll"),
 				multiplicity:				$v.attr("data-multiplicity"),
@@ -2636,7 +2638,7 @@ $.fn.allInputCheck = function(){
 			$selBtn.on("click", function() {
 				//選択コールバック
 				var selRefCallback = scriptContext[$v.selUniqueRefCallback];
-				searchUniqueReference($v.attr("id"), $v.selectAction, $v.viewAction, $v.refDefName, $v.propName, $v.urlParam, $v.refEdit, selRefCallback, this, $v.refViewName, $v.permitConditionSelectAll, $v.defName, $v.viewName, $v.viewType);
+				searchUniqueReference($v.attr("id"), $v.selectAction, $v.viewAction, $v.refDefName, $v.propName, $v.urlParam, $v.refEdit, selRefCallback, this, $v.refViewName, $v.permitConditionSelectAll, $v.defName, $v.viewName, $v.viewType, $v.refSectionIndex);
 			});
 
 			if ($("body.modal-body").length != 0) {
@@ -2651,7 +2653,7 @@ $.fn.allInputCheck = function(){
 			$insBtn.on("click", function() {
 				//新規コールバック
 				var insRefCallback = scriptContext[$v.insUniqueRefCallback];
-				insertUniqueReference($v.attr("id"), $v.addAction, $v.viewAction, $v.refDefName, $v.propName, $v.multiplicity, $v.urlParam, $v.defName, $v.viewName, $v.refEdit, insRefCallback, this, $v.viewType);
+				insertUniqueReference($v.attr("id"), $v.addAction, $v.viewAction, $v.refDefName, $v.propName, $v.multiplicity, $v.urlParam, $v.defName, $v.viewName, $v.refEdit, insRefCallback, this, $v.viewType, $v.refSectionIndex);
 			});
 
 			$hidden.on("change", function() {
@@ -2688,7 +2690,7 @@ $.fn.allInputCheck = function(){
 						var label = entity.name;
 						var key = entity.oid + "_" + entity.version;
 						var func = function() {
-							showReference($v.viewAction, $v.refDefName, entity.oid, entity.version, linkId, $v.refEdit, null, $v.defName, $v.viewName, $v.propName, $v.viewType);
+							showReference($v.viewAction, $v.refDefName, entity.oid, entity.version, linkId, $v.refEdit, null, $v.defName, $v.viewName, $v.propName, $v.viewType, $v.refSectionIndex);
 						};
 
 						$link.attr({"id":linkId, "data-linkId":linkId}).text(label).show();

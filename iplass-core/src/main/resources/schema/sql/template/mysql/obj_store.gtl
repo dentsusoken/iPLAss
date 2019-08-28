@@ -40,7 +40,7 @@ CREATE TABLE `mtdb`.`obj_store${tableNamePostfix}` (
   <%	}
 	}%>
   ,PRIMARY KEY (`tenant_id`, `obj_def_id`, `obj_id`, `obj_ver`, `pg_no`)
-  <%columns.each {
+<%columns.each {
 	String keyLength = "";
 	switch (it.type) {
 		case "VARCHAR":
@@ -48,11 +48,11 @@ CREATE TABLE `mtdb`.`obj_store${tableNamePostfix}` (
 		break;
 	}
 	if ("INDEX" == it.indexType) {
-%>,INDEX `obj_store${tableNamePostfix}_${it.prefix}index_${it.no}` (`${it.prefix + it.no}`${keyLength}, `${it.prefix + it.no}_TD`(139))
+%>  ,INDEX `obj_store${tableNamePostfix}_${it.prefix}index_${it.no}` (`${it.prefix + it.no}`${keyLength}, `${it.prefix + it.no}_TD`(139))
 <%	} else if ("UNIQUE_INDEX" == it.indexType) {
-%>,UNIQUE INDEX `obj_store${tableNamePostfix}_${it.prefix}unique_${it.no}` (`${it.prefix + it.no}_TD`(139), `${it.prefix + it.no}`${keyLength}, `tenant_id`, `obj_def_id`(128))
+%>  ,UNIQUE INDEX `obj_store${tableNamePostfix}_${it.prefix}unique_${it.no}` (`${it.prefix + it.no}_TD`(139), `${it.prefix + it.no}`${keyLength}, `tenant_id`, `obj_def_id`(128))
 <%	}
-}%>
+}%>  ,INDEX `obj_store${tableNamePostfix}_cre_user_index` (`cre_user`(64), `obj_def_id`(128), `tenant_id`)
 )
 ENGINE = INNODB ROW_FORMAT=DYNAMIC
 

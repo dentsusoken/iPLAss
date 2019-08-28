@@ -52,6 +52,10 @@
 	viewType = StringUtil.escapeHtml(viewType);
 	if (viewType == null) viewType = "";
 
+	String refSectionIndex = request.getParameter(Constants.REF_SECTION_INDEX);
+	refSectionIndex = StringUtil.escapeHtml(refSectionIndex);
+	if (refSectionIndex == null) refSectionIndex = "";
+
 	//コマンドから
 	DetailFormViewData data = (DetailFormViewData) request.getAttribute(Constants.DATA);
 	String message = (String) request.getAttribute(Constants.MESSAGE);
@@ -176,6 +180,7 @@ ${m:outputToken('FORM_XHTML', true)}
 <input type="hidden" name="parentViewName" value="<c:out value="<%=parentViewName%>" />" />
 <input type="hidden" name="parentPropName" value="<c:out value="<%=parentPropName%>" />" />
 <input type="hidden" name="viewType" value="<c:out value="<%=viewType%>" />" />
+<input type="hidden" name="referenceSectionIndex" value="<c:out value="<%=refSectionIndex%>" />" />
 <%
 	if (oid != null) {
 %>

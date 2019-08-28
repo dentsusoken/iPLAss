@@ -57,4 +57,4 @@ SUBPARTITION BY HASH (OBJ_DEF_ID) SUBPARTITIONS 8
 <%	} else if ("UNIQUE_INDEX" == it.indexType) {
 %>CREATE UNIQUE INDEX "OBJ_STORE${tableNamePostfix}_${it.prefix}UNIQUE_${it.no}" ON "OBJ_STORE${tableNamePostfix}" ("${it.prefix + it.no}_TD", "${it.prefix + it.no}") <%if (partition) {%>GLOBAL PARTITION BY HASH ("${it.prefix + it.no}_TD") PARTITIONS 256<%}%>;
 <%	}
-}%>
+}%>CREATE INDEX "OBJ_STORE${tableNamePostfix}_CRE_USER_INDEX" ON "OBJ_STORE${tableNamePostfix}" ("CRE_USER", "OBJ_DEF_ID", "TENANT_ID") <%if (partition) {%>GLOBAL PARTITION BY HASH ("CRE_USER") PARTITIONS 256<%}%>;

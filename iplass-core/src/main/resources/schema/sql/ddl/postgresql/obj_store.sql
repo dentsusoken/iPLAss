@@ -329,6 +329,7 @@ create index "obj_store_istr_index_8" on "obj_store" ("istr_8", "istr_8_td");
 create index "obj_store_inum_index_4" on "obj_store" ("inum_4", "inum_4_td");
 create index "obj_store_its_index_4" on "obj_store" ("its_4", "its_4_td");
 create index "obj_store_idbl_index_4" on "obj_store" ("idbl_4", "idbl_4_td");
+create index "obj_store_cre_user_index" on "obj_store" ("cre_user", "obj_def_id", "tenant_id");
 
 /* drop/create OBJ_STORE */
 drop table if exists "obj_store__mtp" cascade;
@@ -661,6 +662,7 @@ create index "obj_store__mtp_istr_index_8" on "obj_store__mtp" ("istr_8", "istr_
 create index "obj_store__mtp_inum_index_4" on "obj_store__mtp" ("inum_4", "inum_4_td");
 create index "obj_store__mtp_its_index_4" on "obj_store__mtp" ("its_4", "its_4_td");
 create index "obj_store__mtp_idbl_index_4" on "obj_store__mtp" ("idbl_4", "idbl_4_td");
+create index "obj_store__mtp_cre_user_index" on "obj_store__mtp" ("cre_user", "obj_def_id", "tenant_id");
 
 /* drop/create OBJ_STORE */
 drop table if exists "obj_store__user" cascade;
@@ -993,3 +995,4 @@ create index "obj_store__user_istr_index_8" on "obj_store__user" ("istr_8", "ist
 create index "obj_store__user_inum_index_4" on "obj_store__user" ("inum_4", "inum_4_td");
 create index "obj_store__user_its_index_4" on "obj_store__user" ("its_4", "its_4_td");
 create index "obj_store__user_idbl_index_4" on "obj_store__user" ("idbl_4", "idbl_4_td");
+create index "obj_store__user_cre_user_index" on "obj_store__user" ("cre_user", "obj_def_id", "tenant_id");

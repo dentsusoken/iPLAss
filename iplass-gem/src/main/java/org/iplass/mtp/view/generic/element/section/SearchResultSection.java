@@ -285,6 +285,18 @@ public class SearchResultSection extends Section {
 	)
 	private DeleteAllCommandTransactionType deleteAllCommandTransactionType = DeleteAllCommandTransactionType.DIVISION;
 
+	/** カスタム削除処理クラス名 */
+	@MetaFieldInfo(
+			displayName="カスタム削除処理クラス名",
+			displayNameKey="generic_element_section_SearchResultSection_deleteInterrupterNameDisplaNameKey",
+			displayOrder=1045,
+			description="データ削除時に行うカスタム削除処理のクラス名を指定します。<br>" +
+					"BulkOperationInterrupterインターフェースを実装するクラスを指定してください。",
+
+			descriptionKey="generic_element_section_SearchResultSection_deleteInterrupterNameDescriptionKey"
+	)
+	private String deleteInterrupterName;
+
 	/** 一括更新コミットトランザクション制御設定 */
 	@MetaFieldInfo(
 			displayName="一括更新コミットトランザクション制御設定",
@@ -297,6 +309,17 @@ public class SearchResultSection extends Section {
 	)
 	private BulkUpdateAllCommandTransactionType bulkUpdateAllCommandTransactionType = BulkUpdateAllCommandTransactionType.DIVISION;
 
+	/** カスタム一括更新処理クラス名 */
+	@MetaFieldInfo(
+			displayName="カスタム一括更新処理クラス名",
+			displayNameKey="generic_element_section_SearchResultSection_bulkUpdateInterrupterNameDisplaNameKey",
+			displayOrder=1055,
+			description="データ一括更新時に行うカスタム更新処理のクラス名を指定します。<br>" +
+					"BulkOperationInterrupterインターフェースを実装するクラスを指定してください。",
+
+			descriptionKey="generic_element_section_SearchResultSection_bulkUpdateInterrupterNameDescriptionKey"
+	)
+	private String bulkUpdateInterrupterName;
 
 	public DeleteAllCommandTransactionType getDeleteAllCommandTransactionType() {
 		return deleteAllCommandTransactionType;
@@ -640,4 +663,35 @@ public class SearchResultSection extends Section {
 	    this.loadEntityInterrupterName = loadEntityInterrupterName;
 	}
 
+	/**
+	 * カスタム削除処理クラス名を取得します。
+	 * @return カスタム削除処理クラス名
+	 */
+	public String getDeleteInterrupterName() {
+		return deleteInterrupterName;
+	}
+
+	/**
+	 * カスタム削除処理クラス名を設定します。
+	 * @param deleteInterrupterName カスタム削除処理クラス名
+	 */
+	public void setDeleteInterrupterName(String deleteInterrupterName) {
+		this.deleteInterrupterName = deleteInterrupterName;
+	}
+
+	/**
+	 * カスタム一括更新処理クラス名を取得します。
+	 * @return カスタム一括更新処理クラス名
+	 */
+	public String getBulkUpdateInterrupterName() {
+		return bulkUpdateInterrupterName;
+	}
+
+	/**
+	 * カスタム一括更新処理クラス名を設定します。
+	 * @param bulkUpdateInterrupterName カスタム一括更新処理クラス名
+	 */
+	public void setBulkUpdateInterrupterName(String bulkUpdateInterrupterName) {
+		this.bulkUpdateInterrupterName = bulkUpdateInterrupterName;
+	}
 }

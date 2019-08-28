@@ -82,6 +82,7 @@ import org.iplass.mtp.view.generic.element.Element;
 import org.iplass.mtp.view.generic.element.property.PropertyColumn;
 import org.iplass.mtp.view.generic.element.property.PropertyItem;
 import org.iplass.mtp.view.generic.element.section.DefaultSection;
+import org.iplass.mtp.view.generic.element.section.MassReferenceSection;
 import org.iplass.mtp.view.generic.element.section.ReferenceSection;
 import org.iplass.mtp.view.generic.element.section.SearchConditionSection;
 import org.iplass.mtp.view.generic.element.section.SearchResultSection;
@@ -191,6 +192,11 @@ public class EntityViewManagerImpl extends AbstractTypedDefinitionManager<Entity
 				if (editor != null) {
 					return editor;
 				}
+			} else if (section instanceof MassReferenceSection) {
+				PropertyEditor editor = getEditor((MassReferenceSection) section, currentPropName, subPropName);
+				if (editor != null) {
+					return editor;
+				}
 			}
 		}
 		return null;
@@ -226,6 +232,26 @@ public class EntityViewManagerImpl extends AbstractTypedDefinitionManager<Entity
 				PropertyEditor nest = getEditor((DefaultSection)element, currentPropName, subPropName);
 				if (nest != null) {
 					return nest;
+				}
+			}
+		}
+		return null;
+	}
+
+	private PropertyEditor getEditor(MassReferenceSection section, final String currentPropName, final String subPropName) {
+		if (subPropName == null) return null;
+
+		if (section.getPropertyName().equals(currentPropName)) {
+			for (NestProperty np : section.getProperties()) {
+				if (subPropName.indexOf(".") > -1) {
+					PropertyEditor editor = getEditor(subPropName, np.getEditor());
+					if (editor != null) {
+						return editor;
+					}
+				} else {
+					if (np.getPropertyName().equals(subPropName)) {
+						return np.getEditor();
+					}
 				}
 			}
 		}
@@ -421,6 +447,18 @@ public class EntityViewManagerImpl extends AbstractTypedDefinitionManager<Entity
 			}
 		}
 		return null;
+	}
+
+	@Override
+	public PropertyEditor getPropertyEditor(String defName, String viewType, String viewName, String propName, Integer refSectionIndex) {
+		PropertyEditor editor = null;
+		if (refSectionIndex == null) {
+			editor = getPropertyEditor(defName, viewType, viewName, propName);
+		} else {
+			editor = getPropertyEditor(defName, viewName, propName, refSectionIndex);
+		}
+
+		return editor;
 	}
 
 	@Override

@@ -107,6 +107,10 @@
 			String rootDefName = (String) request.getAttribute(Constants.ROOT_DEF_NAME);
 			String viewName = (String) request.getAttribute(Constants.VIEW_NAME);
 			viewName = StringUtil.escapeHtml(viewName, true);
+			// 検索結果である場合は viewType = SearchResult,
+			// 大規模参照プロパティ検索である場合は viewType = Detail
+			String viewType = (String) request.getAttribute(Constants.VIEW_TYPE);
+			viewType = StringUtil.escapeHtml(viewType, true);
 
 			Entity entity = value instanceof Entity ? (Entity) value : null;
 			if (editor.getNestProperties().size() == 0) {
@@ -120,7 +124,7 @@
 <%
 					} else {
 %>
-<a href="javascript:void(0)" class="modal-lnk" id="<c:out value="<%=linkId %>" />" data-linkId="<c:out value="<%=linkId %>" />" onclick="showReference('<%=StringUtil.escapeJavaScript(view)%>', '<%=StringUtil.escapeJavaScript(editor.getObjectName())%>', '<%=StringUtil.escapeJavaScript(entity.getOid())%>', '<%=entity.getVersion() %>', '<%=StringUtil.escapeJavaScript(linkId)%>', <%=refEdit %>, null, '<%=rootDefName%>', '<%=viewName%>', '<%=propName%>', 'searchResult')"><c:out value="<%=displayPropLabel %>" /></a>
+<a href="javascript:void(0)" class="modal-lnk" id="<c:out value="<%=linkId %>" />" data-linkId="<c:out value="<%=linkId %>" />" onclick="showReference('<%=StringUtil.escapeJavaScript(view)%>', '<%=StringUtil.escapeJavaScript(editor.getObjectName())%>', '<%=StringUtil.escapeJavaScript(entity.getOid())%>', '<%=entity.getVersion() %>', '<%=StringUtil.escapeJavaScript(linkId)%>', <%=refEdit %>, null, '<%=rootDefName%>', '<%=viewName%>', '<%=propName%>', '<%=viewType%>')"><c:out value="<%=displayPropLabel %>" /></a>
 <%
 					}
 				}
@@ -146,7 +150,7 @@
 <%
 								} else {
 %>
-<a href="javascript:void(0)" class="modal-lnk" id="<c:out value="<%=linkId %>" />" data-linkId="<c:out value="<%=linkId %>" />" onclick="showReference('<%=StringUtil.escapeJavaScript(view)%>', '<%=StringUtil.escapeJavaScript(editor.getObjectName())%>', '<%=StringUtil.escapeJavaScript(entity.getOid())%>', '<%=entity.getVersion() %>', '<%=StringUtil.escapeJavaScript(linkId)%>', <%=refEdit %>, null, '<%=rootDefName%>', '<%=viewName%>', '<%=propName%>', 'searchResult')"><c:out value="<%=entity.getName() %>" /></a>
+<a href="javascript:void(0)" class="modal-lnk" id="<c:out value="<%=linkId %>" />" data-linkId="<c:out value="<%=linkId %>" />" onclick="showReference('<%=StringUtil.escapeJavaScript(view)%>', '<%=StringUtil.escapeJavaScript(editor.getObjectName())%>', '<%=StringUtil.escapeJavaScript(entity.getOid())%>', '<%=entity.getVersion() %>', '<%=StringUtil.escapeJavaScript(linkId)%>', <%=refEdit %>, null, '<%=rootDefName%>', '<%=viewName%>', '<%=propName%>', '<%=viewType%>')"><c:out value="<%=entity.getName() %>" /></a>
 <%
 								}
 							}

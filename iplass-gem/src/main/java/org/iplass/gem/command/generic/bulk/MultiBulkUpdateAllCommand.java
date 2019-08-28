@@ -41,9 +41,11 @@ import org.iplass.mtp.command.annotation.action.Result.Type;
 import org.iplass.mtp.command.annotation.action.TokenCheck;
 import org.iplass.mtp.entity.Entity;
 import org.iplass.mtp.entity.SearchResult;
+import org.iplass.mtp.entity.ValidateError;
 import org.iplass.mtp.entity.definition.EntityDefinition;
 import org.iplass.mtp.spi.ServiceRegistry;
 import org.iplass.mtp.transaction.Transaction;
+import org.iplass.mtp.view.generic.BulkOperationContext;
 import org.iplass.mtp.view.generic.EntityView;
 import org.iplass.mtp.view.generic.FormViewUtil;
 import org.iplass.mtp.view.generic.SearchFormView;
@@ -85,6 +87,11 @@ public class MultiBulkUpdateAllCommand extends MultiBulkCommandBase {
 	public static final String BULK_UPDATE_ALL_ACTION_NAME = "gem/generic/bulk/updateAll";
 
 	@Override
+	protected Logger getLogger() {
+		return logger;
+	}
+
+	@Override
 	public String execute(RequestContext request) {
 		final MultiBulkCommandContext context = getContext(request);
 		String searchType = request.getParam(Constants.SEARCH_TYPE);
@@ -111,78 +118,108 @@ public class MultiBulkUpdateAllCommand extends MultiBulkCommandBase {
 			SearchFormView form= FormViewUtil.getSearchFormView(ed, view, viewName);
 			BulkUpdateAllCommandTransactionType transactionType = form.getResultSection().getBulkUpdateAllCommandTransactionType();
 
-			@SuppressWarnings("unchecked")
-			SearchResult<Entity> result = (SearchResult<Entity>) request.getAttribute("result");
-			List<Entity> entities = result.getList();
-			if (entities.size() > 0) {
-				// 先頭に「行番号_」を付加する
-				List<String> oid = IntStream.range(0, entities.size())
-						.mapToObj(i -> i + "_" + entities.get(i).getOid())
-						.collect(Collectors.toList());
-				List<String> version = IntStream.range(0, entities.size())
-						.mapToObj(i -> i + "_" + entities.get(i).getVersion())
-						.collect(Collectors.toList());
-				List<String> updateDate = IntStream.range(0, entities.size())
-						.mapToObj(i -> i + "_" + entities.get(i).getUpdateDate().getTime())
-						.collect(Collectors.toList());
+			try {
+				@SuppressWarnings("unchecked")
+				SearchResult<Entity> result = (SearchResult<Entity>) request.getAttribute("result");
+				// 更新する前の処理を呼び出します。
+				BulkOperationContext bulkContext = context.getBulkUpdateInterrupterHandler().beforeOperation(result.getList());
+				List<ValidateError> errors = bulkContext.getErrors();
+				List<Entity> entities = bulkContext.getEntities();
 
+				// 更新された件数を0件に初期化します。
+				request.setAttribute(Constants.BULK_UPDATED_COUNT, Integer.valueOf(0));
+				request.setAttribute(Constants.BULK_UPDATE_COUNT, Integer.valueOf(entities.size()));
 
-				int count = oid.size();
-
-				//トランザクションタイプによって一括か、分割かを決める(batchSize件毎)
-				int batchSize = ServiceRegistry.getRegistry().getService(GemConfigService.class).getBulkUpdateAllCommandBatchSize();
-				if (transactionType == BulkUpdateAllCommandTransactionType.ONCE) {
-					batchSize = count;
+				if (!errors.isEmpty()) {
+					ret = Constants.CMD_EXEC_ERROR;
+					request.setAttribute(Constants.ERROR_PROP, errors.toArray(new ValidateError[errors.size()]));
+					request.setAttribute(Constants.MESSAGE, resourceString("command.generic.bulk.BulkUpdateAllCommand.inputErr"));
+				} else if (entities.size() > 0) {
+					// 先頭に「行番号_」を付加する
+					List<String> oid = IntStream.range(0, entities.size())
+							.mapToObj(i -> i + "_" + entities.get(i).getOid())
+							.collect(Collectors.toList());
+					List<String> version = IntStream.range(0, entities.size())
+							.mapToObj(i -> i + "_" + entities.get(i).getVersion())
+							.collect(Collectors.toList());
+					List<String> updateDate = IntStream.range(0, entities.size())
+							.mapToObj(i -> i + "_" + entities.get(i).getUpdateDate().getTime())
+							.collect(Collectors.toList());
+	
+	
+					int count = oid.size();
+	
+					//トランザクションタイプによって一括か、分割かを決める(batchSize件毎)
+					int batchSize = ServiceRegistry.getRegistry().getService(GemConfigService.class).getBulkUpdateAllCommandBatchSize();
+					if (transactionType == BulkUpdateAllCommandTransactionType.ONCE) {
+						batchSize = count;
 					}
-
-				int countPerBatch = count / batchSize;
-				if (count % batchSize > 0) countPerBatch++;
-				for (int i = 0; i < countPerBatch; i++) {
-					int current = i * batchSize;
-					List<String> subOidList = oid.stream()
-							.skip(current).limit(batchSize).collect(Collectors.toList());
-					List<String> subVersionList = version.stream()
-							.skip(current).limit(batchSize).collect(Collectors.toList());
-					List<String> subUpdateDate = updateDate.stream()
-							.skip(current).limit(batchSize).collect(Collectors.toList());
-					ret = Transaction.requiresNew(t -> {
-						String r = null;
-						try {
-							// 一括全更新の場合、リクエストスコープに一括更新しようとするエンティティ情報をセットします。
-							request.setAttribute(Constants.OID, subOidList.toArray(new String[] {}));
-							request.setAttribute(Constants.VERSION, subVersionList.toArray(new String[] {}));
-							request.setAttribute(Constants.TIMESTAMP, subUpdateDate.toArray(new String[] {}));
-							// 一括更新処理を呼び出します。
-							MultiBulkUpdateListCommand updateCommand = new MultiBulkUpdateListCommand();
-							r = updateCommand.execute(request);
-						} catch (ApplicationException e) {
-							if (logger.isDebugEnabled()) {
-								logger.debug(e.getMessage(), e);
+	
+					int countPerBatch = count / batchSize;
+					if (count % batchSize > 0) countPerBatch++;
+					for (int i = 0; i < countPerBatch; i++) {
+						int current = i * batchSize;
+						List<String> subOidList = oid.stream()
+								.skip(current).limit(batchSize).collect(Collectors.toList());
+						List<String> subVersionList = version.stream()
+								.skip(current).limit(batchSize).collect(Collectors.toList());
+						List<String> subUpdateDate = updateDate.stream()
+								.skip(current).limit(batchSize).collect(Collectors.toList());
+						ret = Transaction.requiresNew(t -> {
+							String r = null;
+							try {
+								// 一括全更新の場合、リクエストスコープに一括更新しようとするエンティティ情報をセットします。
+								request.setAttribute(Constants.OID, subOidList.toArray(new String[] {}));
+								request.setAttribute(Constants.VERSION, subVersionList.toArray(new String[] {}));
+								request.setAttribute(Constants.TIMESTAMP, subUpdateDate.toArray(new String[] {}));
+								// 一括更新処理を呼び出します。
+								MultiBulkUpdateListCommand updateCommand = new MultiBulkUpdateListCommand();
+								r = updateCommand.execute(request);
+							} catch (ApplicationException e) {
+								if (getLogger().isDebugEnabled()) {
+									getLogger().debug(e.getMessage(), e);
+								}
+								request.setAttribute(Constants.MESSAGE, e.getMessage());
+								t.rollback();
+								return Constants.CMD_EXEC_ERROR;
+							} finally {
+								request.removeAttribute(Constants.OID);
+								request.removeAttribute(Constants.VERSION);
+								request.removeAttribute(Constants.TIMESTAMP);
 							}
-							request.setAttribute(Constants.MESSAGE, e.getMessage());
-							t.rollback();
-							return Constants.CMD_EXEC_ERROR;
-						} finally {
-							request.removeAttribute(Constants.OID);
-							request.removeAttribute(Constants.VERSION);
-							request.removeAttribute(Constants.TIMESTAMP);
+							return r;
+						});
+						if (!Constants.CMD_EXEC_SUCCESS.equals(ret)) {
+							break;
 						}
-						return r;
-					});
-					if (!Constants.CMD_EXEC_SUCCESS.equals(ret)) {
-						break;
 					}
+				} else {
+					// 一件もない場合、画面表示するために空のフォームビューデータを設定します。
+					setDefaultViewData(request, context);
 				}
-			} else {
-				// 一件もない場合、画面表示するために空のフォームビューデータを設定します。
-				request.setAttribute(Constants.DATA, new MultiBulkUpdateFormViewData(context));
-				request.setAttribute(Constants.ENTITY_DATA, context.createEntity());
-				request.setAttribute(Constants.SEARCH_COND, context.getSearchCond());
-				request.setAttribute(Constants.BULK_UPDATE_SELECT_TYPE, context.getSelectAllType());
-				request.setAttribute(Constants.BULK_UPDATE_SELECT_ALL_PAGE, context.getSelectAllPage());
+	
+				// 更新した後の処理を呼び出します。
+				context.getBulkUpdateInterrupterHandler().afterOperation(entities);
+			} catch (ApplicationException e) {
+				if (getLogger().isDebugEnabled()) {
+					getLogger().debug(e.getMessage(), e);
+				}
+
+				ret = Constants.CMD_EXEC_ERROR;
+				request.setAttribute(Constants.MESSAGE, e.getMessage());
+				//画面表示用のビューデータを設定します。
+				setDefaultViewData(request, context);
 			}
 		}
 
 		return ret;
+	}
+
+	private void setDefaultViewData(RequestContext request, MultiBulkCommandContext context) {
+		request.setAttribute(Constants.DATA, new MultiBulkUpdateFormViewData(context));
+		request.setAttribute(Constants.ENTITY_DATA, context.createEntity());
+		request.setAttribute(Constants.SEARCH_COND, context.getSearchCond());
+		request.setAttribute(Constants.BULK_UPDATE_SELECT_TYPE, context.getSelectAllType());
+		request.setAttribute(Constants.BULK_UPDATE_SELECT_ALL_PAGE, context.getSelectAllPage());
 	}
 }

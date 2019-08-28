@@ -38,7 +38,6 @@
 <%@ page import="org.iplass.mtp.web.template.TemplateUtil" %>
 <%@ page import="org.iplass.mtp.web.WebRequestConstants" %>
 <%@ page import="org.iplass.gem.command.generic.bulk.MultiBulkUpdateFormViewData" %>
-<%@ page import="org.iplass.gem.command.generic.bulk.MultiBulkUpdateFormViewData.*" %>
 <%@ page import="org.iplass.gem.command.generic.bulk.MultiBulkUpdateListCommand" %>
 <%@ page import="org.iplass.gem.command.generic.bulk.MultiBulkUpdateAllCommand" %>
 <%@ page import="org.iplass.gem.command.Constants" %>
@@ -77,6 +76,8 @@
 	String selectAllType = (String) request.getAttribute(Constants.BULK_UPDATE_SELECT_TYPE);
 	String searchCond = (String) request.getAttribute(Constants.SEARCH_COND);
 	String message = (String) request.getAttribute(Constants.MESSAGE);
+	Integer count = (Integer) request.getAttribute(Constants.BULK_UPDATE_COUNT);
+	Integer updated = (Integer) request.getAttribute(Constants.BULK_UPDATED_COUNT);
 
 	boolean isSelectAllPage = isSelectAllPage(selectAllPage);
 	//全選択フラグ
@@ -116,12 +117,12 @@
 	List<String> updateDates = new ArrayList<String>();
 	// 検索結果一覧チェックを付け直すため
 	List<String> id = new ArrayList<String>();
-	if (data.getEntries() != null) {
-		for (SelectedRowEntity entry : data.getEntries()) {
-			oids.add(entry.getRow() + "_" + entry.getEntity().getOid());
-			versions.add(entry.getRow() + "_" + entry.getEntity().getVersion());
-			updateDates.add(entry.getRow() + "_" + entry.getEntity().getUpdateDate().getTime());
-			id.add("\"" + entry.getEntity().getOid() + "_" + entry.getEntity().getVersion() + "\"");
+	if (data.getSelected() != null) {
+		for (Map.Entry<Integer, Entity> entry : data.getSelected().entrySet()) {
+			oids.add(entry.getKey() + "_" + entry.getValue().getOid());
+			versions.add(entry.getKey() + "_" + entry.getValue().getVersion());
+			updateDates.add(entry.getKey() + "_" + entry.getValue().getUpdateDate().getTime());
+			id.add("\"" + entry.getValue().getOid() + "_" + entry.getValue().getVersion() + "\"");
 		}
 	}
 
@@ -136,15 +137,22 @@
 %>
 <h3 class="hgroup-02 hgroup-02-01"><%=GemResourceBundleUtil.resourceString("generic.bulk.title", displayName)%></h3>
 <%
-	if (StringUtil.isNotBlank(message)) {
+	if (count != null) {
+
 		if ("SUCCESS".equals(request.getAttribute(WebRequestConstants.COMMAND_RESULT))) {
 %>
-<span class="success"><c:out value="<%=message%>"/></span>
+<span class="success"><%=GemResourceBundleUtil.resourceString("command.generic.bulk.BulkUpdateListCommand.successMsg", updated)%></span>
 <%
 		} else {
 %>
 <span class="error"><c:out value="<%=message%>"/></span>
 <%
+			//分割トランザクションの場合、一部データの更新に成功した可能性があります。
+			if (updated > 0) {
+%>
+<span class="error"><%=GemResourceBundleUtil.resourceString("command.generic.bulk.BulkUpdateListCommand.failedMsg", count, count - updated)%></span>
+<%
+			}
 		}
 	}
 
@@ -322,7 +330,7 @@ function onclick_bulkupdate(target){
 	$("#detailForm").submit();
 }
 function onDialogClose() {
-	var edited = ("<%=StringUtil.isNotBlank(message)%>" == "true");
+	var edited = <%=count != null && updated > 0 %>;
 	if (!edited) return true;
 	var func = parent.document.scriptContext["bulkUpdateModalWindowCallback"];
 	if (func && $.isFunction(func)) {

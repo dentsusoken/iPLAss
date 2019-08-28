@@ -234,21 +234,23 @@ public final class WebRequestStack {
 	//FIXME ExecuteCOntextからのfinally呼び出しと、stackのfinallyは分けて呼び出す
 	public void finallyProcess() {
 
-		//クライアント直呼び出しの場合は、合わせてセッションストア＆リソースをクリア
-		if (prevStack == null) {
-			if (webRequestContext != null && webRequestContext instanceof WebRequestContext) {
-				((WebRequestContext) webRequestContext).finallyProcess();
+		try {
+			//クライアント直呼び出しの場合は、合わせてセッションストア＆リソースをクリア
+			if (prevStack == null) {
+				if (webRequestContext != null && webRequestContext instanceof WebRequestContext) {
+					((WebRequestContext) webRequestContext).finallyProcess();
+				}
 			}
-		}
+		} finally {
+			stackAttribute = null;
 
-		stackAttribute = null;
-
-		ExecuteContext ec = ExecuteContext.getCurrentContext();
-		ec.setAttribute(CALL_STACK_NAME, prevStack, true);
-		if (prevStack != null) {
-			RequestContextHolder.setCurrent(prevStack.webRequestContext);
-		} else {
-			RequestContextHolder.setCurrent(null);
+			ExecuteContext ec = ExecuteContext.getCurrentContext();
+			ec.setAttribute(CALL_STACK_NAME, prevStack, true);
+			if (prevStack != null) {
+				RequestContextHolder.setCurrent(prevStack.webRequestContext);
+			} else {
+				RequestContextHolder.setCurrent(null);
+			}
 		}
 	}
 
