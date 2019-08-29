@@ -23,7 +23,6 @@ package org.iplass.adminconsole.client.metadata.ui.entity.layout.item.element.se
 import java.util.ArrayList;
 import java.util.List;
 
-import org.iplass.adminconsole.client.base.event.MTPEvent;
 import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
 import org.iplass.adminconsole.client.base.tenant.TenantInfoHolder;
 import org.iplass.adminconsole.client.base.ui.widget.MtpDialog;
@@ -33,7 +32,6 @@ import org.iplass.adminconsole.client.base.ui.widget.form.MtpTextItem;
 import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
 import org.iplass.adminconsole.client.metadata.data.entity.layout.ViewType;
 import org.iplass.adminconsole.client.metadata.ui.common.EntityPropertySelectItem;
-import org.iplass.adminconsole.client.metadata.ui.entity.layout.PropertyOperationHandler;
 import org.iplass.adminconsole.client.metadata.ui.entity.layout.item.ItemControl;
 import org.iplass.adminconsole.shared.metadata.rpc.MetaDataServiceAsync;
 import org.iplass.adminconsole.shared.metadata.rpc.MetaDataServiceFactory;
@@ -86,7 +84,7 @@ public class SectionControllerImpl implements SectionController {
 	}
 
 	@Override
-	public void createControl(String sectionClassName, String defName, FieldReferenceType triggerType, PropertyOperationHandler propertyOperationHandler, Callback callback) {
+	public void createControl(String sectionClassName, String defName, FieldReferenceType triggerType, Callback callback) {
 
 		if (DefaultSection.class.getName().equals(sectionClassName)) {
 			DefaultSectionDialog dialog = new DefaultSectionDialog(defName, triggerType, callback);
@@ -109,10 +107,10 @@ public class SectionControllerImpl implements SectionController {
 			VersionSectionControl window = new VersionSectionControl(defName, triggerType, section);
 			callback.onCreated(window);
 		} else if (ReferenceSection.class.getName().equals(sectionClassName)) {
-			ReferenceSectionDialog dialog = new ReferenceSectionDialog(defName, triggerType, propertyOperationHandler, callback);
+			ReferenceSectionDialog dialog = new ReferenceSectionDialog(defName, triggerType, callback);
 			dialog.show();
 		} else if (MassReferenceSection.class.getName().equals(sectionClassName)) {
-			MassReferenceSectionDialog dialog = new MassReferenceSectionDialog(defName, triggerType, propertyOperationHandler, callback);
+			MassReferenceSectionDialog dialog = new MassReferenceSectionDialog(defName, triggerType, callback);
 			dialog.show();
 		}
 	}
@@ -189,7 +187,7 @@ public class SectionControllerImpl implements SectionController {
 	 */
 	private class ReferenceSectionDialog extends MtpDialog {
 
-		private ReferenceSectionDialog(final String defName, final FieldReferenceType triggerType, final PropertyOperationHandler propertyOperationHandler, final Callback callback) {
+		private ReferenceSectionDialog(final String defName, final FieldReferenceType triggerType, final Callback callback) {
 
 			setHeight(170);
 			setTitle("Reference Section Setting");
@@ -219,20 +217,6 @@ public class SectionControllerImpl implements SectionController {
 						return;
 					}
 					final String name = propName.getValueAsString();
-					final MTPEvent propCheck = new MTPEvent();
-					propCheck.setValue("name", name);
-					final MTPEvent sectionCheck = new MTPEvent();
-					sectionCheck.setValue("name", name + ReferenceSectionControl.SECTION_SUFFIX);
-					boolean chk = false;
-					if (propertyOperationHandler.check(propCheck)) {
-						if (!propertyOperationHandler.check(sectionCheck)) {
-							// プロパティは重複してるが、セクションとして追加されてないのでエラー
-							SC.say(AdminClientMessageUtil.getString("ui_metadata_entity_layout_DetailDropLayout_checkPropExistsErr"));
-							return;
-						}
-						chk = true;
-					}
-					final boolean addedHandler = chk;
 
 					MetaDataServiceAsync service = MetaDataServiceFactory.get();
 					service.getEntityDefinition(TenantInfoHolder.getId(), defName, new AsyncCallback<EntityDefinition>() {
@@ -245,14 +229,6 @@ public class SectionControllerImpl implements SectionController {
 								return;
 							}
 
-							Integer count = (Integer) propertyOperationHandler.getContext().get(name + ReferenceSectionControl.SECTION_COUNT_KEY);
-							if (count == null) count = 0;
-							if (pd.getMultiplicity() != -1 && pd.getMultiplicity() <= count) {
-								//セクション追加済みだが多重度より多くなる場合はエラー
-								SC.say(AdminClientMessageUtil.getString("ui_metadata_entity_layout_DetailDropLayout_checkPropCountErr"));
-								return;
-							}
-
 							ReferenceProperty rp = (ReferenceProperty) pd;
 							ReferenceSection section = new ReferenceSection();
 							section.setDefintionName(rp.getObjectDefinitionName());
@@ -262,14 +238,6 @@ public class SectionControllerImpl implements SectionController {
 							section.setExpandable(Boolean.parseBoolean(expand.getValue().toString()));
 
 							ReferenceSectionControl window = new ReferenceSectionControl(defName, triggerType, section);
-
-							// handlerに未登録の場合だけ追加
-							if (!addedHandler) {
-								propertyOperationHandler.add(propCheck);
-								propertyOperationHandler.add(sectionCheck);
-							}
-							propertyOperationHandler.getContext().set(name + ReferenceSectionControl.SECTION_COUNT_KEY, ++count);
-
 							callback.onCreated(window);
 							destroy();
 						}
@@ -303,7 +271,7 @@ public class SectionControllerImpl implements SectionController {
 	 */
 	private class MassReferenceSectionDialog extends MtpDialog {
 
-		private MassReferenceSectionDialog(final String defName, final FieldReferenceType triggerType, final PropertyOperationHandler propertyOperationHandler, final Callback callback) {
+		private MassReferenceSectionDialog(final String defName, final FieldReferenceType triggerType, final Callback callback) {
 
 			setHeight(170);
 			setTitle("MassReference Section Setting");
@@ -332,13 +300,8 @@ public class SectionControllerImpl implements SectionController {
 						SC.say(AdminClientMessageUtil.getString("ui_metadata_entity_layout_DetailDropLayout_checkPropNameRequirErr"));
 						return;
 					}
+
 					final String name = propName.getValueAsString();
-					final MTPEvent mtpEvent = new MTPEvent();
-					mtpEvent.setValue("name", name);
-					if (propertyOperationHandler.check(mtpEvent)) {
-						SC.say(AdminClientMessageUtil.getString("ui_metadata_entity_layout_DetailDropLayout_checkPropExistsErr"));
-						return;
-					}
 
 					MetaDataServiceAsync service = MetaDataServiceFactory.get();
 					service.getEntityDefinition(TenantInfoHolder.getId(), defName, new AsyncCallback<EntityDefinition>() {
@@ -365,8 +328,6 @@ public class SectionControllerImpl implements SectionController {
 							section.setExpandable(Boolean.parseBoolean(expand.getValue().toString()));
 
 							MassReferenceSectionControl window = new MassReferenceSectionControl(defName, triggerType, section, result);
-							propertyOperationHandler.add(mtpEvent);
-
 							callback.onCreated(window);
 							destroy();
 						}

@@ -105,7 +105,10 @@
 				if (button.getDisplayType() == DisplayType.CUSTOM) {
 					isDisplayCustomType = evm.isDisplayButton(data.getEntityDefinition().getName(), button.getCustomDisplayTypeScriptKey(), OutputType.VIEW, data.getEntity());
 				}
-				if (button.isDispFlag() && (button.getDisplayType() != null && (button.getDisplayType() == DisplayType.VIEW || button.getDisplayType() == DisplayType.BOTH || isDisplayCustomType))) {
+				if (EntityViewUtil.isDisplayElement(defName, button.getElementRuntimeId(), OutputType.VIEW)
+						&& (button.getDisplayType() != null
+							&& (button.getDisplayType() == DisplayType.VIEW
+								|| button.getDisplayType() == DisplayType.BOTH || isDisplayCustomType))) {
 					String cssClass = button.isPrimary() ? "gr-btn" : "gr-btn-02";
 					if (StringUtil.isNotBlank(button.getStyle())) {
 						cssClass = button.getStyle();

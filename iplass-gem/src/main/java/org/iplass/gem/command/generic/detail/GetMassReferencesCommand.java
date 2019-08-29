@@ -141,7 +141,8 @@ public final class GetMassReferencesCommand extends DetailCommandBase {
 			ReferenceProperty rp = (ReferenceProperty) pd;
 
 			//Section取得
-			List<MassReferenceSection> sections = getMassReferenceSection(context.getEntityDefinition(), context.getView(), context.getViewName());
+			List<MassReferenceSection> sections = getMassReferenceSection(
+					context.getEntityDefinition(), outputType, context.getView(), context.getViewName());
 			MassReferenceSection section = null;
 			for (MassReferenceSection _section : sections) {
 				if (_section.getPropertyName().equals(rp.getName())) {
@@ -489,11 +490,13 @@ public final class GetMassReferencesCommand extends DetailCommandBase {
 	 * @param view 画面定義
 	 * @return プロパティの一覧
 	 */
-	private List<MassReferenceSection> getMassReferenceSection(EntityDefinition entityDefinition, DetailFormView view, String viewName) {
+	private List<MassReferenceSection> getMassReferenceSection(
+			EntityDefinition ed, OutputType outputType, DetailFormView view, String viewName) {
 		List<MassReferenceSection> sections = new ArrayList<MassReferenceSection>();
 		for (Section section : view.getSections()) {
-			if (section instanceof DefaultSection && section.isDispFlag()) {
-				sections.addAll(getMassReferenceSection((DefaultSection) section));
+			if (section instanceof DefaultSection
+					&& EntityViewUtil.isDisplayElement(ed.getName(), section.getElementRuntimeId(), outputType)) {
+				sections.addAll(getMassReferenceSection(ed, outputType, (DefaultSection) section));
 			} else if (section instanceof MassReferenceSection) {
 				sections.add((MassReferenceSection) section);
 			}
@@ -506,14 +509,17 @@ public final class GetMassReferencesCommand extends DetailCommandBase {
 	 * @param section セクション
 	 * @return プロパティの一覧
 	 */
-	private List<MassReferenceSection> getMassReferenceSection(DefaultSection section) {
+	private List<MassReferenceSection> getMassReferenceSection(
+			EntityDefinition ed, OutputType outputType, DefaultSection section) {
 		List<MassReferenceSection> sections = new ArrayList<MassReferenceSection>();
 		for (Element elem : section.getElements()) {
 			if (elem instanceof MassReferenceSection) {
 				MassReferenceSection _section = (MassReferenceSection) elem;
-				if (_section.isDispFlag()) sections.add(_section);
+				if (EntityViewUtil.isDisplayElement(ed.getName(), _section.getElementRuntimeId(), outputType)) {
+					sections.add(_section);
+				}
 			} else if (elem instanceof DefaultSection) {
-				sections.addAll(getMassReferenceSection((DefaultSection) elem));
+				sections.addAll(getMassReferenceSection(ed, outputType, (DefaultSection) elem));
 			}
 		}
 		return sections;

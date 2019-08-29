@@ -40,6 +40,8 @@ import org.iplass.mtp.entity.query.Select;
 import org.iplass.mtp.entity.query.Where;
 import org.iplass.mtp.util.StringUtil;
 import org.iplass.mtp.view.generic.EntityView;
+import org.iplass.mtp.view.generic.EntityViewUtil;
+import org.iplass.mtp.view.generic.OutputType;
 import org.iplass.mtp.view.generic.SearchFormView;
 import org.iplass.mtp.view.generic.SearchQueryContext;
 import org.iplass.mtp.view.generic.SearchQueryInterrupter;
@@ -218,7 +220,7 @@ public class CsvDownloadSearchContext extends SearchContextBase {
 					.filter(e -> e instanceof PropertyColumn).map(e -> (PropertyColumn) e)
 					.collect(Collectors.toList());
 			for (PropertyColumn col : properties) {
-				if (col.isDispFlag()) {
+				if (EntityViewUtil.isDisplayElement(getDefName(), col.getElementRuntimeId(), OutputType.SEARCHRESULT)) {
 					String propName = col.getPropertyName();
 					if (col.getEditor() instanceof ReferencePropertyEditor) {
 						List<NestProperty> nest = ((ReferencePropertyEditor)col.getEditor()).getNestProperties();

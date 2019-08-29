@@ -264,7 +264,10 @@ ${m:outputToken('FORM_XHTML', true)}
 <jsp:include page="sectionNavi.inc.jsp" />
 <%
 	for (Section section : form.getSections()) {
-		if (!section.isDispFlag() || !ViewUtil.dispElement(section)) continue;
+		if (!EntityViewUtil.isDisplayElement(defName, section.getElementRuntimeId(), OutputType.EDIT)
+				|| !ViewUtil.dispElement(section)) {
+			continue;
+		}
 		request.setAttribute(Constants.ELEMENT, section);
 
 		String path = EntityViewUtil.getJspPath(section, ViewConst.DESIGN_TYPE_GEM);

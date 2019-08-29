@@ -78,9 +78,6 @@ public class BulkLayoutPanelImpl extends MetaDataMainEditPane implements BulkLay
 
 	private String curDefinitionId;
 
-	/** 編集終了イベントハンドラ */
-	private MTPEventHandler editEndHandler;
-
 	/** ヘッダ部分 */
 	private MetaCommonHeaderPane headerPane;
 	/** 共通属性部分 */
@@ -147,7 +144,7 @@ public class BulkLayoutPanelImpl extends MetaDataMainEditPane implements BulkLay
 		layout.addMember(form);
 
 		//ドラッグエリア
-		DragPane dragArea = new DragPane(defName, false, ViewType.BULK);
+		EntityViewDragPane dragArea = new EntityViewDragPane(defName, false, ViewType.BULK);
 		layout.addMember(dragArea);
 
 		viewEditPane.addMember(viewMenuPane);
@@ -188,22 +185,6 @@ public class BulkLayoutPanelImpl extends MetaDataMainEditPane implements BulkLay
 	}
 
 	/**
-	 * 編集開始イベント設定。
-	 * @param handler
-	 */
-	public void setEditStartHandler(MTPEventHandler handler) {
-		form.setEditStartHandler(handler);
-	}
-
-	/**
-	 * 編集終了イベント設定。
-	 * @param handler
-	 */
-	public void setEditEndHandler(MTPEventHandler handler) {
-		editEndHandler = handler;
-	}
-
-	/**
 	 * Viewをリセット。
 	 */
 	private void reset() {
@@ -225,11 +206,6 @@ public class BulkLayoutPanelImpl extends MetaDataMainEditPane implements BulkLay
 
 		//SharedConfigの再表示
 		commonSection.refreshSharedConfig();
-
-		if (editEndHandler != null) {
-			editEndHandler.execute(new MTPEvent());
-		}
-
 	}
 
 	/**
@@ -380,10 +356,6 @@ public class BulkLayoutPanelImpl extends MetaDataMainEditPane implements BulkLay
 					SC.say(AdminClientMessageUtil.getString("ui_metadata_entity_layout_BulkLayoutPane_completion"),
 							AdminClientMessageUtil.getString("ui_metadata_entity_layout_BulkLayoutPane_saveBulkLayoutComp"));
 
-					if (editEndHandler != null) {
-						editEndHandler.execute(new MTPEvent());
-					}
-
 					//ステータスチェック
 					StatusCheckUtil.statuCheck(EntityView.class.getName(), defName.replace(".", "/"), BulkLayoutPanelImpl.this);
 
@@ -407,10 +379,6 @@ public class BulkLayoutPanelImpl extends MetaDataMainEditPane implements BulkLay
 					//追加成功
 					SC.say(AdminClientMessageUtil.getString("ui_metadata_entity_layout_BulkLayoutPane_completion"),
 							AdminClientMessageUtil.getString("ui_metadata_entity_layout_BulkLayoutPane_saveBulkLayoutComp"));
-
-					if (editEndHandler != null) {
-						editEndHandler.execute(new MTPEvent());
-					}
 
 					//ステータスチェック
 					StatusCheckUtil.statuCheck(EntityView.class.getName(), defName.replace(".", "/"), BulkLayoutPanelImpl.this);

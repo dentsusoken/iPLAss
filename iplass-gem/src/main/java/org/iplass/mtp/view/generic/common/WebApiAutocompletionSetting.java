@@ -78,7 +78,7 @@ public class WebApiAutocompletionSetting extends AutocompletionSetting {
 		displayName="Groovyscript",
 		displayNameKey="generic_common_WebApiAutocompletionSetting_groovyscriptDisplaNameKey",
 		inputType=InputType.SCRIPT,
-		mode="groovyscript",
+		mode="groovy_script",
 		description="自動補完タイプでGROOVYSCRIPTを選択した際に実行する処理です。<br>"
 				+ "連動元のプロパティの値は以下の名前でバインドされています。<br>"
 				+ "xxx",

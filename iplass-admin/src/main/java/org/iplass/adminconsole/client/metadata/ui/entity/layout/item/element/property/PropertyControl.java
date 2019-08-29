@@ -22,12 +22,11 @@ package org.iplass.adminconsole.client.metadata.ui.entity.layout.item.element.pr
 
 import java.util.ArrayList;
 
-import org.iplass.adminconsole.client.base.event.MTPEvent;
 import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
 import org.iplass.adminconsole.client.base.rpc.AdminAsyncCallback;
 import org.iplass.adminconsole.client.base.tenant.TenantInfoHolder;
 import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
-import org.iplass.adminconsole.client.metadata.ui.entity.layout.PropertyOperationHandler;
+import org.iplass.adminconsole.client.metadata.ui.entity.layout.EntityViewDragPane;
 import org.iplass.adminconsole.client.metadata.ui.entity.layout.item.EntityViewFieldSettingDialog;
 import org.iplass.adminconsole.client.metadata.ui.entity.layout.item.EntityViewFieldSettingDialog.PropertyInfo;
 import org.iplass.adminconsole.client.metadata.ui.entity.layout.item.ItemControl;
@@ -86,9 +85,6 @@ import com.smartgwt.client.widgets.grid.ListGridRecord;
  *
  */
 public class PropertyControl extends ItemControl {
-
-	/** Window破棄前にプロパティの重複チェックリストから削除するためのハンドラ */
-	private PropertyOperationHandler handler;
 
 	/** 参照Propertyの場合の参照先Entity名 */
 	private String refDefName;
@@ -174,7 +170,7 @@ public class PropertyControl extends ItemControl {
 
 		service = MetaDataServiceFactory.get();
 
-		setDragType("property");
+		setDragType(EntityViewDragPane.DRAG_TYPE_PROPERTY);
 
 		setShowMinimizeButton(false);
 		setBackgroundColor("lightgreen");
@@ -227,27 +223,6 @@ public class PropertyControl extends ItemControl {
 		title = title + "(" + entityPropertyDisplayName + "[" + (String)getValue("name") + "])";
 		setTitle(title);
 		SmartGWTUtil.addHoverToCanvas(this, getTitle());
-	}
-
-	/**
-	 * チェック用ハンドラの設定。
-	 * @param handler
-	 */
-	public void setHandler(PropertyOperationHandler handler) {
-		this.handler = handler;
-	}
-
-	/**
-	 * ウィンドウ破棄前の処理。
-	 */
-	@Override
-	protected boolean onPreDestroy() {
-		if (handler != null) {
-			MTPEvent event = new MTPEvent();
-			event.setValue("name", getValue("name"));
-			handler.remove(event);
-		}
-		return true;
 	}
 
 	/**

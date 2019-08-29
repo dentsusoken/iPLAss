@@ -20,9 +20,8 @@
 
 package org.iplass.adminconsole.client.metadata.ui.entity.layout.item.element;
 
-import org.iplass.adminconsole.client.base.event.MTPEvent;
 import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
-import org.iplass.adminconsole.client.metadata.ui.entity.layout.PropertyOperationHandler;
+import org.iplass.adminconsole.client.metadata.ui.entity.layout.EntityViewDragPane;
 import org.iplass.adminconsole.client.metadata.ui.entity.layout.item.EntityViewFieldSettingDialog;
 import org.iplass.adminconsole.client.metadata.ui.entity.layout.item.EntityViewFieldSettingDialog.PropertyInfo;
 import org.iplass.adminconsole.client.metadata.ui.entity.layout.item.ItemControl;
@@ -42,9 +41,6 @@ import com.smartgwt.client.util.SC;
  */
 public class VirtualPropertyControl extends ItemControl {
 
-	/** Window破棄前にプロパティの重複チェックリストから削除するためのハンドラ */
-	private PropertyOperationHandler handler = null;
-
 	private String propertyName = null;
 
 	private EntityDefinition ed;
@@ -55,7 +51,7 @@ public class VirtualPropertyControl extends ItemControl {
 	private VirtualPropertyControl(String defName, FieldReferenceType triggerType) {
 		super(defName, triggerType);
 
-		setDragType("element");
+		setDragType(EntityViewDragPane.DRAG_TYPE_ELEMENT);
 
 		setShowMinimizeButton(false);
 		setBackgroundColor("#9ACD32");
@@ -71,37 +67,13 @@ public class VirtualPropertyControl extends ItemControl {
 				propertyName = (String) event.getValueMap().get("propertyName");
 
 				if (!oldPropertyName.equals(propertyName)) {
-					if (handler != null) {
-						MTPEvent mtpEvent = new MTPEvent();
-						mtpEvent.setValue("name", propertyName);
-
-						//重複チェック
-						if (handler.check(mtpEvent)) {
-							SC.say(AdminClientMessageUtil.getString("ui_metadata_entity_layout_item_VirtualPropertyWindow_checkPropExistsErr"));
-							propertyName = oldPropertyName;
-							getViewElement().setPropertyName(propertyName);
-							return;
-						}
-
-						//本物チェック
-						if (ed.getProperty(propertyName) != null) {
-							SC.say(AdminClientMessageUtil.getString("ui_metadata_entity_layout_item_VirtualPropertyWindow_checkPropDefExistsErr"));
-							propertyName = oldPropertyName;
-							getViewElement().setPropertyName(propertyName);
-							return;
-						}
-
-						//古いのを削除
-						mtpEvent.setValue("name", oldPropertyName);
-						handler.remove(mtpEvent);
-
-						//新しいのを追加
-						mtpEvent.setValue("name", propertyName);
-						handler.add(mtpEvent);
-
+					//本物チェック
+					if (ed.getProperty(propertyName) != null) {
+						SC.say(AdminClientMessageUtil.getString("ui_metadata_entity_layout_item_VirtualPropertyWindow_checkPropDefExistsErr"));
+						propertyName = oldPropertyName;
+						getViewElement().setPropertyName(propertyName);
+						return;
 					}
-				}
-				if (handler != null) {
 				}
 
 				//表示名
@@ -135,27 +107,6 @@ public class VirtualPropertyControl extends ItemControl {
 	 */
 	public VirtualPropertyItem getViewElement() {
 		return (VirtualPropertyItem) getValueObject();
-	}
-
-	/**
-	 * チェック用ハンドラの設定。
-	 * @param handler
-	 */
-	public void setHandler(PropertyOperationHandler handler) {
-		this.handler = handler;
-	}
-
-	/**
-	 * ウィンドウ破棄前の処理。
-	 */
-	@Override
-	protected boolean onPreDestroy() {
-		if (handler != null) {
-			MTPEvent event = new MTPEvent();
-			event.setValue("name", propertyName);
-			handler.remove(event);
-		}
-		return true;
 	}
 
 	@Override

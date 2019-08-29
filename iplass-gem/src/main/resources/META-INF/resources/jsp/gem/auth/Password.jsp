@@ -58,7 +58,9 @@
 	List<PropertyItem> getProperty(DetailFormView view) {
 		List<PropertyItem> propList = new ArrayList<PropertyItem>();
 		for (Section section : view.getSections()) {
-			if (section instanceof DefaultSection && section.isDispFlag() && ViewUtil.dispElement(Constants.EXEC_TYPE_UPDATE, section)) {
+			if (section instanceof DefaultSection
+					&& EntityViewUtil.isDisplayElement(User.DEFINITION_NAME, section.getElementRuntimeId(), OutputType.EDIT)
+					&& ViewUtil.dispElement(Constants.EXEC_TYPE_UPDATE, section)) {
 				propList.addAll(getProperty((DefaultSection) section));
 			}
 		}
@@ -70,7 +72,8 @@
 		for (Element elem : section.getElements()) {
 			if (elem instanceof PropertyItem) {
 				PropertyItem prop = (PropertyItem) elem;
-				if (prop.isDispFlag() && ViewUtil.dispElement(Constants.EXEC_TYPE_UPDATE, prop)) propList.add(prop);
+				if (EntityViewUtil.isDisplayElement(User.DEFINITION_NAME, prop.getElementRuntimeId(), OutputType.EDIT)
+						&& ViewUtil.dispElement(Constants.EXEC_TYPE_UPDATE, prop)) propList.add(prop);
 			} else if (elem instanceof DefaultSection) {
 				propList.addAll(getProperty((DefaultSection) elem));
 			}

@@ -20,9 +20,8 @@
 
 package org.iplass.adminconsole.client.metadata.ui.entity.layout.item.element.section;
 
-import org.iplass.adminconsole.client.base.event.MTPEvent;
 import org.iplass.adminconsole.client.base.tenant.TenantInfoHolder;
-import org.iplass.adminconsole.client.metadata.ui.entity.layout.PropertyOperationHandler;
+import org.iplass.adminconsole.client.metadata.ui.entity.layout.EntityViewDragPane;
 import org.iplass.adminconsole.client.metadata.ui.entity.layout.item.EntityViewFieldSettingDialog;
 import org.iplass.adminconsole.client.metadata.ui.entity.layout.item.EntityViewFieldSettingDialog.PropertyInfo;
 import org.iplass.adminconsole.client.metadata.ui.entity.layout.item.ItemControl;
@@ -44,8 +43,6 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  */
 public class MassReferenceSectionControl extends ItemControl implements SectionControl {
 
-	/** Window破棄前にプロパティの重複チェックリストから削除するためのハンドラ */
-	private PropertyOperationHandler handler = null;
 	private MetaDataServiceAsync service = null;
 
 	private String entityPropertyDisplayName = null;
@@ -62,7 +59,7 @@ public class MassReferenceSectionControl extends ItemControl implements SectionC
 		service = MetaDataServiceFactory.get();
 
 		setBackgroundColor("#88DDBB");
-		setDragType("section");
+		setDragType(EntityViewDragPane.DRAG_TYPE_SECTION);
 		setHeight(22);
 		setBorder("1px solid navy");
 
@@ -112,27 +109,6 @@ public class MassReferenceSectionControl extends ItemControl implements SectionC
 		String title = itemDisplayName != null ? itemDisplayName + " ": "";
 		title = title + "(" + entityPropertyDisplayName + "[" + (String)getValue("name") + "])";
 		setTitle(title);
-	}
-
-	/**
-	 * チェック用ハンドラの設定。
-	 * @param handler
-	 */
-	public void setHandler(PropertyOperationHandler handler) {
-		this.handler = handler;
-	}
-
-	/**
-	 * ウィンドウ破棄前の処理。
-	 */
-	@Override
-	protected boolean onPreDestroy() {
-		if (handler != null) {
-			MTPEvent event = new MTPEvent();
-			event.setValue("name", getValue("name"));
-			handler.remove(event);
-		}
-		return true;
 	}
 
 	/* (非 Javadoc)

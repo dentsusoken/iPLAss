@@ -20,6 +20,7 @@
 
 package org.iplass.adminconsole.client.metadata.ui.entity.layout.item.element.section;
 
+import org.iplass.adminconsole.client.metadata.ui.entity.layout.EntityViewDragPane;
 import org.iplass.adminconsole.client.metadata.ui.entity.layout.item.ItemControl;
 import org.iplass.adminconsole.client.metadata.ui.entity.layout.metafield.MetaFieldUpdateEvent;
 import org.iplass.adminconsole.client.metadata.ui.entity.layout.metafield.MetaFieldUpdateHandler;
@@ -37,7 +38,7 @@ public class ScriptingSectionControl extends ItemControl implements SectionContr
 			setTitle("Script Section");
 		}
 		setBackgroundColor("#BBFFFF");
-		setDragType("section");
+		setDragType(EntityViewDragPane.DRAG_TYPE_SECTION);
 		setHeight(22);
 		setBorder("1px solid navy");
 

@@ -34,6 +34,8 @@ import org.iplass.mtp.entity.definition.PropertyDefinition;
 import org.iplass.mtp.entity.definition.properties.ReferenceProperty;
 import org.iplass.mtp.impl.util.ConvertUtil;
 import org.iplass.mtp.util.StringUtil;
+import org.iplass.mtp.view.generic.EntityViewUtil;
+import org.iplass.mtp.view.generic.OutputType;
 import org.iplass.mtp.view.generic.element.property.PropertyItem;
 
 /**
@@ -112,7 +114,10 @@ public abstract class ReferenceSectionReferenceRegistHandler extends ReferenceRe
 
 		for (ReferenceSectionValue val : references) {
 			//非表示のものは登録しない
-			if (!val.getSection().isDispFlag() || val.getSection().isHideDetail()) continue;
+			if (!EntityViewUtil.isDisplayElement(context.getDefinitionName(), val.getSection().getElementRuntimeId(), OutputType.EDIT)
+					|| val.getSection().isHideDetail()) {
+				continue;
+			}
 
 			setIndex(ed, val);
 
@@ -157,7 +162,10 @@ public abstract class ReferenceSectionReferenceRegistHandler extends ReferenceRe
 		List<UpdateSet> usList = new ArrayList<>();
 		for (ReferenceSectionValue val : references) {
 			//非表示のものは登録しない
-			if (!val.getSection().isDispFlag() || val.getSection().isHideDetail()) continue;
+			if (!EntityViewUtil.isDisplayElement(context.getDefinitionName(), val.getSection().getElementRuntimeId(), OutputType.EDIT)
+					|| val.getSection().isHideDetail()) {
+				continue;
+			}
 
 			setIndex(ed, val);
 

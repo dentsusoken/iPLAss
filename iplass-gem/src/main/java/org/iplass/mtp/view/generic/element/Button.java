@@ -59,11 +59,32 @@ public class Button extends Element {
 			descriptionKey="generic_element_Button_displayTypeDescriptionKey",
 			inputType=InputType.ENUM,
 			enumClass=DisplayType.class,
-			displayOrder=100
+			displayOrder=40
 	)
 	@EntityViewField(referenceTypes=FieldReferenceType.DETAIL)
 	private DisplayType displayType;
 
+	/** 表示判定用スクリプト */
+	@MetaFieldInfo(
+			displayName="ボタン表示判定用スクリプト",
+			displayNameKey="generic_element_Button_customDisplayTypeScriptDisplayNameKey",
+			inputType=InputType.SCRIPT,
+			mode="groovy_script",
+			displayOrder=50,
+			description="表示タイプ：Customの場合に、表示可否を判定するスクリプトを設定します。<BR />" +
+					"スクリプトの実行結果がtrueの場合、ボタンが表示されます。<BR />" +
+					"以下のオブジェクトがバインドされています。<BR />" +
+					"バインド変数名  ：内容<BR />" +
+					"request         ：リクエスト<BR />" +
+					"session         ：セッション<BR />" +
+					"user            ：ユーザ<BR />" +
+					"outputType      ：表示タイプ<BR />" +
+					"entity          ：表示対象のエンティティ",
+
+			descriptionKey="generic_element_Button_customDisplayTypeScriptDescriptionKey"
+	)
+	@EntityViewField(referenceTypes=FieldReferenceType.DETAIL)
+	private String customDisplayTypeScript;
 
 
 
@@ -143,31 +164,6 @@ public class Button extends Element {
 			descriptionKey="generic_element_Button_onclickEventDescriptionKey"
 	)
 	private String onclickEvent;
-
-	/** 表示判定用スクリプト */
-	@MetaFieldInfo(
-			displayName="表示判定用スクリプト",
-			displayNameKey="generic_element_Button_customDisplayTypeScriptDisplayNameKey",
-			inputType=InputType.SCRIPT,
-			mode="groovyscript",
-			displayOrder=1020,
-			description="表示タイプ：Customの場合に、表示可否を判定するスクリプトを設定します。<BR />" +
-					"スクリプトの実行結果がtrueの場合、ボタンが表示されます。<BR />" +
-					"以下のオブジェクトがバインドされています。<BR />" +
-					"バインド変数名  ：内容<BR />" +
-					"request         ：リクエスト<BR />" +
-					"session         ：セッション<BR />" +
-					"user            ：ユーザ<BR />" +
-					"outputType      ：表示タイプ<BR />" +
-					"entity          ：表示対象のエンティティ",
-
-			descriptionKey="generic_element_Button_customDisplayTypeScriptDescriptionKey"
-	)
-	@EntityViewField(referenceTypes=FieldReferenceType.DETAIL)
-	private String customDisplayTypeScript;
-
-
-
 
 	/** 入力カスタムスタイル */
 	@MetaFieldInfo(

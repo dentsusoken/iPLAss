@@ -1,19 +1,19 @@
 /*
  * Copyright (C) 2012 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
- * 
+ *
  * Unless you have purchased a commercial license,
  * the following license terms apply:
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
@@ -50,6 +50,7 @@ import org.iplass.mtp.view.filter.expression.FilterExpressionParser.FilterItemHa
 import org.iplass.mtp.view.filter.expression.FilterValueExpressionChecker;
 import org.iplass.mtp.view.filter.expression.UnsupportedFilterOperationException;
 import org.iplass.mtp.view.generic.EntityViewUtil;
+import org.iplass.mtp.view.generic.OutputType;
 import org.iplass.mtp.view.generic.editor.NestProperty;
 import org.iplass.mtp.view.generic.editor.ReferencePropertyEditor;
 import org.iplass.mtp.view.generic.editor.ReferencePropertyEditor.ReferenceDisplayType;
@@ -138,7 +139,8 @@ public class DetailSearchContext extends SearchContextBase {
 
 					if (property != null) {
 						//非表示設定されてるか、詳細検索条件にない項目であればエラー
-						if (!property.isDispFlag() || property.isHideDetailCondition()) {
+						if (!EntityViewUtil.isDisplayElement(getDefName(), property.getElementRuntimeId(), OutputType.SEARCHCONDITION)
+								|| property.isHideDetailCondition()) {
 							isValid = false;
 						}
 					} else {
@@ -209,7 +211,11 @@ public class DetailSearchContext extends SearchContextBase {
 		List<PropertyItem> properties = getLayoutProperties();
 		for (PropertyItem property : properties) {
 			//ブランクor非表示なので対象外
-			if (property.isBlank() || !property.isDispFlag() || property.isHideDetailCondition()) continue;
+			if (property.isBlank()
+					|| !EntityViewUtil.isDisplayElement(getDefName(), property.getElementRuntimeId(), OutputType.SEARCHCONDITION)
+					|| property.isHideDetailCondition()) {
+				continue;
+			}
 
 			String propName = property.getPropertyName();
 			PropertyDefinition pd = getPropertyDefinition(propName);

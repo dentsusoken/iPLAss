@@ -56,6 +56,7 @@ import org.iplass.mtp.view.generic.BulkFormView;
 import org.iplass.mtp.view.generic.BulkOperationInterrupter;
 import org.iplass.mtp.view.generic.EntityViewUtil;
 import org.iplass.mtp.view.generic.FormViewUtil;
+import org.iplass.mtp.view.generic.OutputType;
 import org.iplass.mtp.view.generic.SearchFormView;
 import org.iplass.mtp.view.generic.editor.DateRangePropertyEditor;
 import org.iplass.mtp.view.generic.editor.JoinPropertyEditor;
@@ -400,7 +401,7 @@ public class MultiBulkCommandContext extends RegistrationCommandContext {
 		return new RegistrationPropertyBaseHandler<PropertyItem>() {
 			@Override
 			public boolean isDispProperty(PropertyItem property) {
-				return property.isDispFlag();
+				return EntityViewUtil.isDisplayElement(entityDefinition.getName(), property.getElementRuntimeId(), OutputType.BULK);
 			}
 
 			@Override
@@ -663,14 +664,14 @@ public class MultiBulkCommandContext extends RegistrationCommandContext {
 	 *
 	 * @return 一括更新するプロパティ
 	 */
-	@SuppressWarnings("unchecked")	
+	@SuppressWarnings("unchecked")
 	@Override
 	public List<PropertyItem> getProperty() {
 		if (propList == null) {
 			propList = new ArrayList<PropertyItem>();
 			for (Section section : getView().getSections()) {
 				if (section instanceof DefaultSection) {
-					if (section.isDispFlag()) {
+					if (EntityViewUtil.isDisplayElement(entityDefinition.getName(), section.getElementRuntimeId(), OutputType.BULK)) {
 						propList.addAll(getProperty((DefaultSection) section));
 					}
 				}
@@ -713,14 +714,14 @@ public class MultiBulkCommandContext extends RegistrationCommandContext {
 					propList.add(prop);
 				}
 			} else if (elem instanceof DefaultSection) {
-				if (elem.isDispFlag()) {
+				if (EntityViewUtil.isDisplayElement(entityDefinition.getName(), elem.getElementRuntimeId(), OutputType.BULK)) {
 					propList.addAll(getProperty((DefaultSection) elem));
 				}
 			}
 		}
 		return propList;
 	}
-	
+
 	/**
 	 * 表示プロパティを取得します。
 	 * @return プロパティの一覧
@@ -729,7 +730,9 @@ public class MultiBulkCommandContext extends RegistrationCommandContext {
 		List<PropertyItem> propList = new ArrayList<PropertyItem>();
 
 		for (Section section : getView().getSections()) {
-			if (!section.isDispFlag()) continue;
+			if (!EntityViewUtil.isDisplayElement(entityDefinition.getName(), section.getElementRuntimeId(), OutputType.BULK)) {
+				continue;
+			}
 
 			if (section instanceof DefaultSection) {
 				DefaultSection ds = (DefaultSection) section;
@@ -748,7 +751,9 @@ public class MultiBulkCommandContext extends RegistrationCommandContext {
 		List<PropertyItem> propList = new ArrayList<PropertyItem>();
 
 		for (Element elem : section.getElements()) {
-			if (!elem.isDispFlag()) continue;
+			if (!EntityViewUtil.isDisplayElement(entityDefinition.getName(), elem.getElementRuntimeId(), OutputType.BULK)) {
+				continue;
+			}
 
 			if (elem instanceof PropertyItem) {
 				PropertyItem prop = (PropertyItem) elem;

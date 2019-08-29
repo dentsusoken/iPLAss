@@ -20,11 +20,9 @@
 
 package org.iplass.adminconsole.client.metadata.ui.entity.layout.item;
 
-import org.iplass.adminconsole.client.base.event.MTPEvent;
-import org.iplass.adminconsole.client.base.event.MTPEventHandler;
 import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
+import org.iplass.adminconsole.client.metadata.ui.entity.layout.EntityViewDragPane;
 import org.iplass.adminconsole.client.metadata.ui.entity.layout.MultiColumnDropLayout;
-import org.iplass.adminconsole.client.metadata.ui.entity.layout.PropertyOperationHandler;
 import org.iplass.adminconsole.client.metadata.ui.entity.layout.item.element.ElementControl;
 import org.iplass.adminconsole.client.metadata.ui.entity.layout.item.element.VirtualPropertyControl;
 import org.iplass.adminconsole.client.metadata.ui.entity.layout.item.element.property.PropertyControl;
@@ -50,9 +48,6 @@ import com.smartgwt.client.widgets.grid.ListGridRecord;
 
 public class BulkDropLayout extends MultiColumnDropLayout {
 
-	//getMemberの代替用
-	private MTPEventHandler editStartHandler;
-	private PropertyOperationHandler propertyOperationHandler;
 	private String defName;
 
 	private EntityDefinition ed;
@@ -80,22 +75,6 @@ public class BulkDropLayout extends MultiColumnDropLayout {
 		this.ed = ed;
 	}
 
-	/**
-	 * 編集開始用のイベントハンドラ設定
-	 * @param handler
-	 */
-	public void setEditStartHandler(MTPEventHandler handler) {
-		editStartHandler = handler;
-	}
-
-	/**
-	 * プロパティの重複チェック用ハンドラ設定
-	 * @param handler
-	 */
-	public void setPropertyOperationHandler(PropertyOperationHandler handler) {
-		propertyOperationHandler = handler;
-	}
-
 	@Override
 	protected DropHandler getDropHandler() {
 		return new DropHandlerImpl();
@@ -118,48 +97,29 @@ public class BulkDropLayout extends MultiColumnDropLayout {
 			//ツリーからのdropはWindowを作成する
 			final Canvas dragTarget = EventHandler.getDragTarget();
 			if (dragTarget instanceof ListGrid) {
-				if ("section".equals(dragTarget.getDragType())) {
+				if (EntityViewDragPane.DRAG_TYPE_SECTION.equals(dragTarget.getDragType())) {
 					//タイトルとカラム数をダイアログ経由で設定
 					ListGridRecord record = ((ListGrid) dragTarget).getSelectedRecord();
 					String name = record.getAttribute("name");
 
-					sectionController.createControl(name, defName, FieldReferenceType.BULK, propertyOperationHandler, new SectionController.Callback() {
+					sectionController.createControl(name, defName, FieldReferenceType.BULK, new SectionController.Callback() {
 
 						@Override
 						public void onCreated(ItemControl window) {
 							if (window instanceof DefaultSectionControl) {
-								((DefaultSectionControl)window).setHandlers(ed, editStartHandler, propertyOperationHandler);
+								DefaultSectionControl dsChild = (DefaultSectionControl)window;
+								dsChild.setEntityDefinition(ed);
+								dsChild.restoreMember();
 							}
-//							} else if (window instanceof ReferenceSectionControl) {
-//								((ReferenceSectionControl)window).setHandler(propertyOperationHandler);
-//							} else if (window instanceof MassReferenceSectionControl) {
-//								((MassReferenceSectionControl)window).setHandler(propertyOperationHandler);
-//							}
 							col.addMember(window, dropPosition);
 						}
 					});
 
-				} else if ("property".equals(dragTarget.getDragType())) {
+				} else if (EntityViewDragPane.DRAG_TYPE_PROPERTY.equals(dragTarget.getDragType())) {
 					ListGridRecord record = ((ListGrid) dragTarget).getSelectedRecord();
-					MTPEvent mtpEvent = new MTPEvent();
-					mtpEvent.setValue("name", record.getAttribute("name"));
-					if (propertyOperationHandler != null) {
-						if (!propertyOperationHandler.check(mtpEvent)) {
-							PropertyControl newProperty = new PropertyControl(defName, FieldReferenceType.BULK, record, new PropertyItem());
-							newProperty.setHandler(propertyOperationHandler);
-							propertyOperationHandler.add(mtpEvent);
-							col.addMember(newProperty, dropPosition);
-						} else {
-							GWT.log(record.getAttribute("name") + " is already added.");
-						}
-					} else {
-						//プロパティの重複チェックしないケースあるか？？
-						GWT.log(AdminClientMessageUtil.getString("ui_metadata_entity_layout_BulkDropLayout_propCheckThrought"));
-						PropertyControl newProperty = new PropertyControl(defName, FieldReferenceType.BULK, record, new PropertyItem());
-						col.addMember(newProperty, dropPosition);
-					}
-
-				} else if ("element".equals(dragTarget.getDragType())) {
+					PropertyControl newProperty = new PropertyControl(defName, FieldReferenceType.BULK, record, new PropertyItem());
+					col.addMember(newProperty, dropPosition);
+				} else if (EntityViewDragPane.DRAG_TYPE_ELEMENT.equals(dragTarget.getDragType())) {
 					ListGridRecord record = ((ListGrid) dragTarget).getSelectedRecord();
 					String name = record.getAttribute("name");
 					if (VirtualPropertyItem.class.getName().equals(name)) {
@@ -173,12 +133,6 @@ public class BulkDropLayout extends MultiColumnDropLayout {
 								if (!dialog.validate()) return;
 
 								final String name = dialog.getPropertyName();
-								MTPEvent mtpEvent = new MTPEvent();
-								mtpEvent.setValue("name", name);
-								if (propertyOperationHandler.check(mtpEvent)) {
-									SC.say(AdminClientMessageUtil.getString("ui_metadata_entity_layout_BulkDropLayout_checkPropExistsErr"));
-									return;
-								}
 								if (ed.getProperty(name) != null) {
 									SC.say(AdminClientMessageUtil.getString("ui_metadata_entity_layout_BulkDropLayout_checkPropDefExistsErr"));
 									return;
@@ -193,8 +147,6 @@ public class BulkDropLayout extends MultiColumnDropLayout {
 								property.setEditor(editor);
 
 								VirtualPropertyControl newProperty = new VirtualPropertyControl(defName, FieldReferenceType.BULK, ed, property);
-								newProperty.setHandler(propertyOperationHandler);
-
 								col.addMember(newProperty, dropPosition);
 								dialog.destroy();
 							}
@@ -209,10 +161,6 @@ public class BulkDropLayout extends MultiColumnDropLayout {
 
 				// cancelしないとdrop元自体が移動してしまう
 				event.cancel();
-			}
-
-			if (editStartHandler != null) {
-				editStartHandler.execute(new MTPEvent());
 			}
 		}
 	}

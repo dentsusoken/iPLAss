@@ -58,6 +58,7 @@ import org.iplass.mtp.impl.metadata.RootMetaData;
 import org.iplass.mtp.impl.script.template.GroovyTemplate;
 import org.iplass.mtp.impl.script.template.GroovyTemplateBinding;
 import org.iplass.mtp.impl.view.generic.common.MetaAutocompletionSetting.AutocompletionSettingHandler;
+import org.iplass.mtp.impl.view.generic.element.ElementHandler;
 import org.iplass.mtp.impl.view.generic.element.MetaButton.ButtonHandler;
 import org.iplass.mtp.impl.web.WebUtil;
 import org.iplass.mtp.impl.web.template.MetaGroovyTemplate;
@@ -68,6 +69,7 @@ import org.iplass.mtp.view.generic.BulkFormView;
 import org.iplass.mtp.view.generic.DetailFormView;
 import org.iplass.mtp.view.generic.EntityView;
 import org.iplass.mtp.view.generic.EntityViewManager;
+import org.iplass.mtp.view.generic.EntityViewUtil;
 import org.iplass.mtp.view.generic.FormViewUtil;
 import org.iplass.mtp.view.generic.OutputType;
 import org.iplass.mtp.view.generic.SearchFormView;
@@ -152,7 +154,7 @@ public class EntityViewManagerImpl extends AbstractTypedDefinitionManager<Entity
 			} else {
 				form = ev.getSearchFormView(viewName);
 			}
-			editor = getSearchResultEditor(propName, form);
+			editor = getSearchResultEditor(defName, propName, form);
 		} else if ("bulk".equals(viewType)) {
 			SearchFormView form = null;
 			if (viewName == null || viewName.isEmpty()) {
@@ -346,7 +348,7 @@ public class EntityViewManagerImpl extends AbstractTypedDefinitionManager<Entity
 		return null;
 	}
 
-	private PropertyEditor getSearchResultEditor(String propName, SearchFormView form) {
+	private PropertyEditor getSearchResultEditor(String defName, String propName, SearchFormView form) {
 		String currentPropName = null;
 		String subPropName = null;
 		if (propName.indexOf(".") == -1) {
@@ -357,7 +359,8 @@ public class EntityViewManagerImpl extends AbstractTypedDefinitionManager<Entity
 			for (Element element : section.getElements()) {
 				if (!(element instanceof PropertyColumn)) continue;
 				PropertyColumn property = (PropertyColumn) element;
-				if (property.isDispFlag() && property.getPropertyName().equals(propName)) {
+				if (property.getPropertyName().equals(propName)
+						&& EntityViewUtil.isDisplayElement(defName, property.getElementRuntimeId(), OutputType.SEARCHRESULT)) {
 					return property.getEditor();
 				}
 			}
@@ -371,7 +374,8 @@ public class EntityViewManagerImpl extends AbstractTypedDefinitionManager<Entity
 		for (Element element : section.getElements()) {
 			if (!(element instanceof PropertyColumn)) continue;
 			PropertyColumn property = (PropertyColumn) element;
-			if (property.isDispFlag() && property.getPropertyName().equals(currentPropName)) {
+			if (property.getPropertyName().equals(currentPropName)
+					&& EntityViewUtil.isDisplayElement(defName, property.getElementRuntimeId(), OutputType.SEARCHRESULT)) {
 				//FIXME なぜセットが必要？
 //				if (property.getEditor() instanceof ReferencePropertyEditor) {
 //					property.getEditor().setPropertyName(property.getPropertyName());
@@ -674,6 +678,26 @@ public class EntityViewManagerImpl extends AbstractTypedDefinitionManager<Entity
 		}
 
 		return style;
+	}
+
+	@Override
+	public boolean isDisplayElement(String definitionName, String elementRuntimeId,
+			OutputType outputType, Entity entity) {
+		if (definitionName == null || elementRuntimeId == null || outputType == null) {
+			return false;
+		}
+
+		EntityViewHandler viewHandler = service.getRuntimeByName(definitionName);
+		if (viewHandler == null) {
+			return false;
+		}
+
+		ElementHandler elementHandler = viewHandler.getElementHandler(elementRuntimeId);
+		if (elementHandler == null) {
+			return false;
+		}
+
+		return elementHandler.isDisplay(outputType, entity);
 	}
 
 	@Override

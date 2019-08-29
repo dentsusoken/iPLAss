@@ -21,6 +21,7 @@
 package org.iplass.adminconsole.client.metadata.ui.entity.layout.item.element.property;
 
 import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
+import org.iplass.adminconsole.client.metadata.ui.entity.layout.EntityViewDragPane;
 import org.iplass.adminconsole.client.metadata.ui.entity.layout.item.ItemControl;
 import org.iplass.adminconsole.view.annotation.generic.FieldReferenceType;
 import org.iplass.mtp.view.generic.element.property.PropertyItem;
@@ -33,7 +34,7 @@ public class BlankSpaceControl extends ItemControl {
 		super(defName, triggerType);
 
 		setTitle(AdminClientMessageUtil.getString("ui_metadata_entity_layout_item_BlankPropertyWindow_space"));
-		setDragType("element");
+		setDragType(EntityViewDragPane.DRAG_TYPE_ELEMENT);
 
 		setShowMinimizeButton(false);
 		setBackgroundColor("#FFFFCC");

@@ -56,9 +56,11 @@
 		return StringUtil.isEmpty(selectAllType);
 	}
 
-	boolean canBulkUpdate(PropertyItem pi) {
-		if (!pi.isDispFlag() || pi.getEditor() instanceof UserPropertyEditor || 
-			pi.getEditor() instanceof ExpressionPropertyEditor || pi.getEditor() instanceof AutoNumberPropertyEditor) {
+	boolean canBulkUpdate(String defName, PropertyItem pi) {
+		if (!EntityViewUtil.isDisplayElement(defName, pi.getElementRuntimeId(), OutputType.BULK)
+				|| pi.getEditor() instanceof UserPropertyEditor
+				|| pi.getEditor() instanceof ExpressionPropertyEditor
+				|| pi.getEditor() instanceof AutoNumberPropertyEditor) {
 			return false;
 		}
 		return true;
@@ -213,7 +215,7 @@ ${m:outputToken('FORM_XHTML', true)}
 <div>
 <table class="tbl-maintenance mb10">
 <tbody>
-<% 
+<%
 	if (isSelectAllPage) {
 %>
 <tr>
@@ -268,7 +270,7 @@ $(function() {
 </div>
 <%
 	for (Section section : form.getSections()) {
-		if (!section.isDispFlag()) continue;
+		if (!EntityViewUtil.isDisplayElement(defName, section.getElementRuntimeId(), OutputType.BULK)) continue;
 		request.setAttribute(Constants.ELEMENT, section);
 
 		String path = EntityViewUtil.getJspPath(section, ViewConst.DESIGN_TYPE_GEM);
@@ -284,7 +286,7 @@ $(function() {
 <%
 	if (form.getButtons().size() > 0) {
 		for (Button button : form.getButtons()) {
-			if (button.isDispFlag()) {
+			if (EntityViewUtil.isDisplayElement(defName, button.getElementRuntimeId(), OutputType.BULK)) {
 				String cssClass = button.isPrimary() ? "gr-btn" : "gr-btn-02";
 				if (StringUtil.isNotBlank(button.getStyle())) {
 					cssClass = button.getStyle();
@@ -359,6 +361,6 @@ $(function() {
 				$("#bulkUpdateBtn").prop("disabled", true);
 			}
 		});
-	} 
+	}
 })
 </script>

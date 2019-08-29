@@ -83,6 +83,21 @@ import org.iplass.mtp.web.template.TemplateUtil;
 public class EntityViewUtil {
 
 	/**
+	 * エレメントの表示可否を判定します。
+	 *
+	 * @param definitionName Entity定義名
+	 * @param elementRuntimeId エレメントのランタイムID
+	 * @param outputType 表示タイプ
+	 * @param entity 表示対象のエンティティ(未対応)
+	 * @return 表示可否
+	 */
+//	public static boolean isDisplayElement(String definitionName, String elementRuntimeId, OutputType outputType, Entity entity) {
+	public static boolean isDisplayElement(String definitionName, String elementRuntimeId, OutputType outputType) {
+		EntityViewManager evm = ManagerLocator.manager(EntityViewManager.class);
+		return evm.isDisplayElement(definitionName, elementRuntimeId, outputType, null);
+	}
+
+	/**
 	 * エレメントのJSPファイルパスを取得します。
 	 * @param element エレメント
 	 * @return JSPファイルパス

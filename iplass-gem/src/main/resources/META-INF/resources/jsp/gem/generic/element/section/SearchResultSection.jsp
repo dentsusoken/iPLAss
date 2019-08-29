@@ -58,8 +58,8 @@
 <%@ page import="org.iplass.gem.command.GemResourceBundleUtil"%>
 <%@ page import="org.iplass.gem.command.ViewUtil"%>
 <%!
-	boolean isDispProperty(PropertyDefinition pd, PropertyColumn property) {
-		if (!property.isDispFlag()) return false;
+	boolean isDispProperty(String defName, PropertyDefinition pd, PropertyColumn property) {
+		if (!EntityViewUtil.isDisplayElement(defName, property.getElementRuntimeId(), OutputType.SEARCHRESULT)) return false;
 		if (property.getEditor() == null) return false;
 		return true;
 	}
@@ -95,6 +95,7 @@
 	SearchFormView view = data.getView();
 	SearchResultSection section = view.getResultSection();
 	EntityDefinition ed = data.getEntityDefinition();
+	String defName = ed.getName();
 
 	EntityDefinitionManager edm = ManagerLocator.getInstance().getManager(EntityDefinitionManager.class);
 
@@ -210,7 +211,7 @@ $(function() {
 			PropertyDefinition pd = EntityViewUtil.getPropertyDefinition(propName, ed);
 			String displayLabel = TemplateUtil.getMultilingualString(property.getDisplayLabel(), property.getLocalizedDisplayLabelList(), pd.getDisplayName(), pd.getLocalizedDisplayNameList());
 
-			if (isDispProperty(pd, property)) {
+			if (isDispProperty(defName, pd, property)) {
 				if (!(pd instanceof ReferenceProperty)) {
 					String sortPropName = StringUtil.escapeHtml(propName);
 					String width = "";
@@ -229,7 +230,7 @@ $(function() {
 %>
 <%-- XSS対応-メタの設定のため対応なし(displayLabel,style) --%>
 	colModel.push({name:"<%=sortPropName%>", index:"<%=sortPropName%>", classes:"<%=style%>", label:"<p class='title'><%=displayLabel%></p>", <%=sortable%><%=width%><%=align%>});
-	
+
 <%
 				//参照プロパティでJoinPropertyEditorを利用する場合
 				} else if (property.getEditor() instanceof JoinPropertyEditor) {
@@ -799,11 +800,11 @@ function doBulkUpdate(target) {
 	}
 
 	var dialogOption = {resizable: true};
-<% 
-	if (!section.isUseBulkView()) { 
+<%
+	if (!section.isUseBulkView()) {
 %>
 		dialogOption.dialogHeight = 450;
-<%	
+<%
 	}
 %>
 	var $bulkUpdateDialogTrigger = getDialogTrigger($(target).parent(), dialogOption);

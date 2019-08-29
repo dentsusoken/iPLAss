@@ -59,6 +59,7 @@ import org.iplass.mtp.view.generic.DetailFormView;
 import org.iplass.mtp.view.generic.DetailFormView.CopyTarget;
 import org.iplass.mtp.view.generic.EntityViewUtil;
 import org.iplass.mtp.view.generic.FormViewUtil;
+import org.iplass.mtp.view.generic.OutputType;
 import org.iplass.mtp.view.generic.editor.DateRangePropertyEditor;
 import org.iplass.mtp.view.generic.editor.JoinPropertyEditor;
 import org.iplass.mtp.view.generic.editor.NestProperty;
@@ -146,7 +147,8 @@ public class DetailCommandContext extends RegistrationCommandContext {
 			@Override
 			public boolean isDispProperty(PropertyItem property) {
 				//詳細編集で非表示なら更新対象外
-				return property.isDispFlag() && !property.isHideDetail();
+				return EntityViewUtil.isDisplayElement(entityDefinition.getName(), property.getElementRuntimeId(), OutputType.EDIT)
+						&& !property.isHideDetail();
 			}
 
 			@Override
@@ -168,13 +170,15 @@ public class DetailCommandContext extends RegistrationCommandContext {
 		List<PropertyItem> propList = new ArrayList<PropertyItem>();
 		for (Section section : getView().getSections()) {
 			if (section instanceof DefaultSection) {
-				if (section.isDispFlag() && !((DefaultSection) section).isHideDetail() && ViewUtil.dispElement(execType, section)) {
+				if (EntityViewUtil.isDisplayElement(getDefinitionName(), section.getElementRuntimeId(), OutputType.EDIT)
+						&& !((DefaultSection) section).isHideDetail() && ViewUtil.dispElement(execType, section)) {
 					propList.addAll(getProperty((DefaultSection) section));
 				}
 			} else if (section instanceof ReferenceSection) {
 				// 参照セクションは同一名の定義が複数の場合があるのでまとめる
 				ReferenceSection rs = (ReferenceSection) section;
-				if (rs.isDispFlag() && !rs.isHideDetail() && ViewUtil.dispElement(execType, rs)) {
+				if (EntityViewUtil.isDisplayElement(getDefinitionName(), section.getElementRuntimeId(), OutputType.EDIT)
+						&& !rs.isHideDetail() && ViewUtil.dispElement(execType, rs)) {
 					Optional<ReferenceSectionPropertyItem> ret = propList.stream().filter(p -> p instanceof ReferenceSectionPropertyItem)
 						.map(p -> (ReferenceSectionPropertyItem) p)
 						.filter(p -> p.getPropertyName().equals(rs.getPropertyName()))
@@ -183,7 +187,7 @@ public class DetailCommandContext extends RegistrationCommandContext {
 					if (ret.isPresent()) {
 						ret.get().getSections().add(rs);
 					} else {
-						propList.add(getReferenceSectionPropertyItem(rs));
+						propList.add(createReferenceSectionPropertyItem(rs));
 					}
 				}
 			}
@@ -197,7 +201,7 @@ public class DetailCommandContext extends RegistrationCommandContext {
 	 * @return プロパティの一覧
 	 */
 	@SuppressWarnings("unchecked")
-	protected List<PropertyItem> getProperty(DefaultSection section) {
+	private List<PropertyItem> getProperty(DefaultSection section) {
 		String execType = getExecType();
 		List<PropertyItem> propList = new ArrayList<PropertyItem>();
 		for (Element elem : section.getElements()) {
@@ -226,13 +230,15 @@ public class DetailCommandContext extends RegistrationCommandContext {
 					propList.add(prop);
 				}
 			} else if (elem instanceof DefaultSection) {
-				if (elem.isDispFlag() && !((DefaultSection) elem).isHideDetail() && ViewUtil.dispElement(execType, elem)) {
+				if (EntityViewUtil.isDisplayElement(getDefinitionName(), elem.getElementRuntimeId(), OutputType.EDIT)
+						&& !((DefaultSection) elem).isHideDetail() && ViewUtil.dispElement(execType, elem)) {
 					propList.addAll(getProperty((DefaultSection) elem));
 				}
 			} else if (elem instanceof ReferenceSection) {
 				// 参照セクションは同一名の定義が複数の場合があるのでまとめる
 				ReferenceSection rs = (ReferenceSection) elem;
-				if (rs.isDispFlag() && !rs.isHideDetail() && ViewUtil.dispElement(execType, rs)) {
+				if (EntityViewUtil.isDisplayElement(getDefinitionName(), elem.getElementRuntimeId(), OutputType.EDIT)
+						&& !rs.isHideDetail() && ViewUtil.dispElement(execType, rs)) {
 					Optional<ReferenceSectionPropertyItem> ret = propList.stream().filter(p -> p instanceof ReferenceSectionPropertyItem)
 						.map(p -> (ReferenceSectionPropertyItem) p)
 						.filter(p -> p.getPropertyName().equals(rs.getPropertyName()))
@@ -241,7 +247,7 @@ public class DetailCommandContext extends RegistrationCommandContext {
 					if (ret.isPresent()) {
 						ret.get().getSections().add(rs);
 					} else {
-						propList.add(getReferenceSectionPropertyItem(rs));
+						propList.add(createReferenceSectionPropertyItem(rs));
 					}
 				}
 			}
@@ -254,7 +260,7 @@ public class DetailCommandContext extends RegistrationCommandContext {
 	 * @param section セクション
 	 * @return プロパティ
 	 */
-	private PropertyItem getReferenceSectionPropertyItem(ReferenceSection section) {
+	private ReferenceSectionPropertyItem createReferenceSectionPropertyItem(ReferenceSection section) {
 		ReferenceSectionPropertyItem property = new ReferenceSectionPropertyItem();
 		property.setPropertyName(section.getPropertyName());
 //		property.setDispFlag(section.getDispFlag());
@@ -338,7 +344,9 @@ public class DetailCommandContext extends RegistrationCommandContext {
 		public boolean isDispFlag() {
 			// dispFlagがfalseのものがあればfalse扱い
 			for (ReferenceSection section : sections) {
-				if (!section.isDispFlag()) return false;
+				if (!EntityViewUtil.isDisplayElement(getDefinitionName(), section.getElementRuntimeId(), OutputType.EDIT)) {
+					return false;
+				}
 			}
 			return true;
 		}
@@ -857,12 +865,13 @@ public class DetailCommandContext extends RegistrationCommandContext {
 	 * @param view 画面定義
 	 * @return 仮想プロパティの一覧
 	 */
-	public List<VirtualPropertyItem> getVirtualProperty() {
+	private List<VirtualPropertyItem> getVirtualProperty() {
 		String execType = getExecType();
 		List<VirtualPropertyItem> propList = new ArrayList<VirtualPropertyItem>();
 		for (Section section : getView().getSections()) {
 			if (section instanceof DefaultSection) {
-				if (section.isDispFlag() && !((DefaultSection) section).isHideDetail() && ViewUtil.dispElement(execType, section)) {
+				if (EntityViewUtil.isDisplayElement(getDefinitionName(), section.getElementRuntimeId(), OutputType.EDIT)
+						&& !((DefaultSection) section).isHideDetail() && ViewUtil.dispElement(execType, section)) {
 					propList.addAll(getVirtualProperty((DefaultSection) section));
 				}
 			}
@@ -881,11 +890,13 @@ public class DetailCommandContext extends RegistrationCommandContext {
 		for (Element elem : section.getElements()) {
 			if (elem instanceof VirtualPropertyItem) {
 				VirtualPropertyItem prop = (VirtualPropertyItem) elem;
-				if (prop.isDispFlag() && !prop.isHideDetail() && ViewUtil.dispElement(execType, prop)) {
+				if (EntityViewUtil.isDisplayElement(getDefinitionName(), prop.getElementRuntimeId(), OutputType.EDIT)
+						&& !prop.isHideDetail() && ViewUtil.dispElement(execType, prop)) {
 					propList.add(prop);
 				}
 			} else if (elem instanceof DefaultSection) {
-				if (elem.isDispFlag() && !((DefaultSection) elem).isHideDetail() && ViewUtil.dispElement(execType, elem)) {
+				if (EntityViewUtil.isDisplayElement(getDefinitionName(), elem.getElementRuntimeId(), OutputType.EDIT)
+						&& !((DefaultSection) elem).isHideDetail() && ViewUtil.dispElement(execType, elem)) {
 					propList.addAll(getVirtualProperty((DefaultSection) elem));
 				}
 			}
@@ -1062,8 +1073,11 @@ public class DetailCommandContext extends RegistrationCommandContext {
 		List<PropertyItem> propList = new ArrayList<PropertyItem>();
 
 		String execType = getExecType();
+		OutputType outputType = isDetail ? OutputType.EDIT : OutputType.VIEW;
 		for (Section section : getView().getSections()) {
-			if (!section.isDispFlag()) continue;
+			if (!EntityViewUtil.isDisplayElement(getDefinitionName(), section.getElementRuntimeId(), outputType)) {
+				continue;
+			}
 
 			if (section instanceof DefaultSection) {
 				DefaultSection ds = (DefaultSection) section;
@@ -1073,7 +1087,7 @@ public class DetailCommandContext extends RegistrationCommandContext {
 			} else if (section instanceof ReferenceSection) {
 				ReferenceSection rs = (ReferenceSection) section;
 				if ((isDetail && !rs.isHideDetail() && ViewUtil.dispElement(execType, rs)) || (!isDetail && !rs.isHideView())) {
-					propList.add(getDisplayProperty(rs, isDetail));
+					propList.add(getDisplayProperty(rs, outputType));
 				}
 			}
 		}
@@ -1090,8 +1104,11 @@ public class DetailCommandContext extends RegistrationCommandContext {
 		List<PropertyItem> propList = new ArrayList<PropertyItem>();
 
 		String execType = getExecType();
+		OutputType outputType = isDetail ? OutputType.EDIT : OutputType.VIEW;
 		for (Element elem : section.getElements()) {
-			if (!elem.isDispFlag()) continue;
+			if (!EntityViewUtil.isDisplayElement(getDefinitionName(), elem.getElementRuntimeId(), outputType)) {
+				continue;
+			}
 
 			if (elem instanceof PropertyItem) {
 				PropertyItem prop = (PropertyItem) elem;
@@ -1117,7 +1134,7 @@ public class DetailCommandContext extends RegistrationCommandContext {
 			} else if (elem instanceof ReferenceSection) {
 				ReferenceSection rs = (ReferenceSection) elem;
 				if ((isDetail && !rs.isHideDetail() && ViewUtil.dispElement(execType, rs)) || (!isDetail && !rs.isHideView())) {
-					propList.add(getDisplayProperty(rs, isDetail));
+					propList.add(getDisplayProperty(rs, outputType));
 				}
 			}
 		}
@@ -1130,10 +1147,12 @@ public class DetailCommandContext extends RegistrationCommandContext {
 	 * @param isDetail true:詳細編集、false:詳細表示
 	 * @return プロパティ
 	 */
-	private PropertyItem getDisplayProperty(ReferenceSection section, boolean isDetail) {
+	private PropertyItem getDisplayProperty(ReferenceSection section, OutputType outputType) {
+
 		PropertyItem property = new PropertyItem();
 		property.setPropertyName(section.getPropertyName());
-		property.setDispFlag(section.isDispFlag());
+		property.setDispFlag(EntityViewUtil.isDisplayElement(getDefinitionName(), section.getElementRuntimeId(), outputType));
+
 		ReferencePropertyEditor editor = new ReferencePropertyEditor();
 		editor.setDisplayType(ReferenceDisplayType.NESTTABLE);
 		editor.setObjectName(section.getDefintionName());

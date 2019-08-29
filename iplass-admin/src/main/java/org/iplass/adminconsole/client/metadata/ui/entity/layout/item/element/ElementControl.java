@@ -21,6 +21,7 @@
 package org.iplass.adminconsole.client.metadata.ui.entity.layout.item.element;
 
 import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
+import org.iplass.adminconsole.client.metadata.ui.entity.layout.EntityViewDragPane;
 import org.iplass.adminconsole.client.metadata.ui.entity.layout.item.ItemControl;
 import org.iplass.adminconsole.view.annotation.generic.FieldReferenceType;
 import org.iplass.mtp.view.generic.element.BlankSpace;
@@ -45,7 +46,7 @@ public class ElementControl extends ItemControl {
 	private ElementControl(String defName, FieldReferenceType triggerType) {
 		super(defName, triggerType);
 
-		setDragType("element");
+		setDragType(EntityViewDragPane.DRAG_TYPE_ELEMENT);
 
 		setShowMinimizeButton(false);
 		setBackgroundColor("#FFFFCC");

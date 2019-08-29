@@ -300,7 +300,7 @@ public class MassReferenceSection extends Section implements HasNestProperty {
 			displayName="絞り込み条件設定スクリプト",
 			displayNameKey="generic_element_section_MassReferenceSection_filterConditionScriptDisplaNameKey",
 			inputType=InputType.SCRIPT,
-			mode="groovyscript",
+			mode="groovy_script",
 			displayOrder=4000,
 			description="参照データ検索時に自動で絞り込みをする条件を指定するGroovyScriptです。",
 			descriptionKey="generic_element_section_MassReferenceSection_filterConditionScriptDescriptionKey"

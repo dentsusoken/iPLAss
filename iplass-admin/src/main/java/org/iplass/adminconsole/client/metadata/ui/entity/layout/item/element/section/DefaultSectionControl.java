@@ -23,9 +23,7 @@ package org.iplass.adminconsole.client.metadata.ui.entity.layout.item.element.se
 import java.util.ArrayList;
 import java.util.List;
 
-import org.iplass.adminconsole.client.base.event.MTPEvent;
-import org.iplass.adminconsole.client.base.event.MTPEventHandler;
-import org.iplass.adminconsole.client.metadata.ui.entity.layout.PropertyOperationHandler;
+import org.iplass.adminconsole.client.metadata.ui.entity.layout.EntityViewDragPane;
 import org.iplass.adminconsole.client.metadata.ui.entity.layout.item.DetailDropLayout;
 import org.iplass.adminconsole.client.metadata.ui.entity.layout.item.ItemControl;
 import org.iplass.adminconsole.client.metadata.ui.entity.layout.item.element.ElementControl;
@@ -55,8 +53,6 @@ public class DefaultSectionControl extends ItemControl implements SectionControl
 
 	/** 内部のレイアウト */
 	private DetailDropLayout layout = null;
-	private MTPEventHandler editStartHandler;
-	private PropertyOperationHandler propertyOperationHandler;
 
 	private EntityDefinition ed;
 
@@ -80,14 +76,17 @@ public class DefaultSectionControl extends ItemControl implements SectionControl
 			setTitle("Default Section");
 		}
 		setBackgroundColor(bgColor);
-		setDragType("section");
+		setDragType(EntityViewDragPane.DRAG_TYPE_SECTION);
 		setAutoSize(true);
 		setBorder("1px solid navy");
 
 		setHeaderControls(HeaderControls.MINIMIZE_BUTTON, HeaderControls.HEADER_LABEL, setting, HeaderControls.CLOSE_BUTTON);
 
 		layout = new DetailDropLayout(colNum, defName);
-		layout.setDropTypes("section", "property", "element");
+		layout.setDropTypes(
+				EntityViewDragPane.DRAG_TYPE_SECTION,
+				EntityViewDragPane.DRAG_TYPE_PROPERTY,
+				EntityViewDragPane.DRAG_TYPE_ELEMENT);
 		layout.setCanDropComponents(true);
 		layout.setPadding(5);
 		layout.setBackgroundColor(bgColor);
@@ -111,8 +110,6 @@ public class DefaultSectionControl extends ItemControl implements SectionControl
 
 				DetailDropLayout old = layout;
 				layout = new DetailDropLayout(section.getColNum(), defName);
-				layout.setEditStartHandler(editStartHandler);
-				layout.setPropertyOperationHandler(propertyOperationHandler);
 				layout.setEntityDefinition(ed);
 
 				//カラム変更前のレイアウトからメンバー取得
@@ -149,20 +146,13 @@ public class DefaultSectionControl extends ItemControl implements SectionControl
 		setValueObject(section);
 	}
 
-	public void setHandlers(EntityDefinition ed, MTPEventHandler editStartHandler, PropertyOperationHandler propertyOperationHandler) {
+	public void setEntityDefinition(EntityDefinition ed) {
 		this.ed = ed;
-		this.editStartHandler = editStartHandler;
-		this.propertyOperationHandler = propertyOperationHandler;
 
 		if (layout != null) {
 			//SRB(Null Dereference)対応
-			//this(final String defName, String title, int colNum)で生成されるのであり得ないが
-			layout.setEditStartHandler(editStartHandler);
-			layout.setPropertyOperationHandler(propertyOperationHandler);
 			layout.setEntityDefinition(ed);
 		}
-
-		restoreMember();
 	}
 
 	@Override
@@ -179,7 +169,7 @@ public class DefaultSectionControl extends ItemControl implements SectionControl
 	 * @param editStartHandler
 	 * @param propertyOperationHandler
 	 */
-	private void restoreMember() {
+	public void restoreMember() {
 		DefaultSection section = (DefaultSection)getValueObject();
 
 		//配下の要素を復元
@@ -187,26 +177,16 @@ public class DefaultSectionControl extends ItemControl implements SectionControl
 			if (element instanceof Section) {
 				ItemControl child = sectionController.createControl((Section)element, defName, getTriggerType(), ed);
 				if (child instanceof DefaultSectionControl) {
-					((DefaultSectionControl)child).setHandlers(ed, editStartHandler, propertyOperationHandler);
+					DefaultSectionControl dsChild = (DefaultSectionControl)child;
+					dsChild.setEntityDefinition(ed);
+					dsChild.restoreMember();
 				}
 				addMember(child);
 			} else if (element instanceof PropertyItem) {
 				PropertyControl child = new PropertyControl(defName, getTriggerType(), (PropertyItem) element);
-				child.setHandler(propertyOperationHandler);
-				MTPEvent event = new MTPEvent();
-				event.setValue("name", ((PropertyItem) element).getPropertyName());
-				if (!propertyOperationHandler.check(event)) {
-					propertyOperationHandler.add(event);
-				}
 				addMember(child);
 			} else if (element instanceof VirtualPropertyItem) {
 				VirtualPropertyControl child = new VirtualPropertyControl(defName, getTriggerType(), ed, (VirtualPropertyItem) element);
-				child.setHandler(propertyOperationHandler);
-				MTPEvent event = new MTPEvent();
-				event.setValue("name", ((VirtualPropertyItem) element).getPropertyName());
-				if (!propertyOperationHandler.check(event)) {
-					propertyOperationHandler.add(event);
-				}
 				addMember(child);
 			} else {
 				ElementControl child = new ElementControl(defName, getTriggerType(), element);
