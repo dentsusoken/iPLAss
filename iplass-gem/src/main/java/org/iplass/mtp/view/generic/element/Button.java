@@ -51,13 +51,26 @@ public class Button extends Element {
 	/** シリアルバージョンUID */
 	private static final long serialVersionUID = -5328561239331062170L;
 
+	/** 表示タイプ */
+	@MetaFieldInfo(
+			displayName="表示タイプ",
+			displayNameKey="generic_element_Button_displayTypeDisplaNameKey",
+			description="詳細編集、詳細表示のどちらに表示するかを設定します。",
+			descriptionKey="generic_element_Button_displayTypeDescriptionKey",
+			inputType=InputType.ENUM,
+			enumClass=DisplayType.class,
+			displayOrder=40
+	)
+	@EntityViewField(referenceTypes=FieldReferenceType.DETAIL)
+	private DisplayType displayType;
+
 	/** 表示判定用スクリプト */
 	@MetaFieldInfo(
 			displayName="ボタン表示判定用スクリプト",
 			displayNameKey="generic_element_Button_customDisplayTypeScriptDisplayNameKey",
 			inputType=InputType.SCRIPT,
 			mode="groovy_script",
-			displayOrder=40,
+			displayOrder=50,
 			description="表示タイプ：Customの場合に、表示可否を判定するスクリプトを設定します。<BR />" +
 					"スクリプトの実行結果がtrueの場合、ボタンが表示されます。<BR />" +
 					"以下のオブジェクトがバインドされています。<BR />" +
@@ -72,20 +85,6 @@ public class Button extends Element {
 	)
 	@EntityViewField(referenceTypes=FieldReferenceType.DETAIL)
 	private String customDisplayTypeScript;
-
-	/** 表示タイプ */
-	@MetaFieldInfo(
-			displayName="表示タイプ",
-			displayNameKey="generic_element_Button_displayTypeDisplaNameKey",
-			description="詳細編集、詳細表示のどちらに表示するかを設定します。",
-			descriptionKey="generic_element_Button_displayTypeDescriptionKey",
-			inputType=InputType.ENUM,
-			enumClass=DisplayType.class,
-			displayOrder=50
-	)
-	@EntityViewField(referenceTypes=FieldReferenceType.DETAIL)
-	private DisplayType displayType;
-
 
 
 
