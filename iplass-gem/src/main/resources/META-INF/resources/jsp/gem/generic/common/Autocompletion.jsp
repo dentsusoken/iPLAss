@@ -145,7 +145,8 @@ $(function() {
 			pValue["refIndex"] = rowIndex;
 		}
 		var propName = "<%=propName%>";
-		getAutocompletionValue("<%=GetAutocompletionValueCommand.WEBAPI_NAME%>", "<%=defName%>", "<%=viewName%>", "<%=Constants.VIEW_TYPE_DETAIL%>", propName, "<%=key%>", null, pValue, function(value) {
+		var tValue = $("[name='" + propName + "']").map(function() {return $(this).val();}).get();
+		getAutocompletionValue("<%=GetAutocompletionValueCommand.WEBAPI_NAME%>", "<%=defName%>", "<%=viewName%>", "<%=Constants.VIEW_TYPE_DETAIL%>", propName, "<%=key%>", null, pValue, tValue, function(value) {
 <jsp:include page="<%=path %>" />
 		});
 	});

@@ -55,7 +55,7 @@ public class GetAutocompletionValueCommand implements Command {
 		AutocompletionParam param = (AutocompletionParam) request.getAttribute("params");
 
 		Object val = evm.getAutocompletionValue(param.getDefName(), param.getViewName(), param.getViewType(),
-				param.getPropName(), param.getAutocompletionKey(), param.getReferenceSectionIndex(), param.getParams());
+				param.getPropName(), param.getAutocompletionKey(), param.getReferenceSectionIndex(), param.getParams(), param.getTarget());
 
 		request.setAttribute("value", val);
 		return null;

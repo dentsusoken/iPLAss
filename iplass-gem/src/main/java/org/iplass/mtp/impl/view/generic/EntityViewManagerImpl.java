@@ -273,6 +273,7 @@ public class EntityViewManagerImpl extends AbstractTypedDefinitionManager<Entity
 	private PropertyEditor getSearchFormViewEditor(String defName, String propName, SearchFormView form) {
 		String currentPropName = null;
 		String subPropName = null;
+
 		if (propName.indexOf(".") == -1) {
 			currentPropName = propName;
 		} else {
@@ -790,7 +791,7 @@ public class EntityViewManagerImpl extends AbstractTypedDefinitionManager<Entity
 	}
 
 	@Override
-	public Object getAutocompletionValue(String definitionName, String viewName, String viewType, String propName, String autocompletionKey, Integer referenceSectionIndex, Map<String, String[]> param) {
+	public Object getAutocompletionValue(String definitionName, String viewName, String viewType, String propName, String autocompletionKey, Integer referenceSectionIndex, Map<String, String[]> param, List<String> target) {
 		EntityViewHandler view = service.getRuntimeByName(definitionName);
 		if (view == null) return null;
 
@@ -804,7 +805,7 @@ public class EntityViewManagerImpl extends AbstractTypedDefinitionManager<Entity
 			editor = getPropertyEditor(definitionName, viewType, viewName, propName);
 		}
 		boolean isReference = editor instanceof ReferencePropertyEditor;
-		Object value = handler.handle(param, isReference);
+		Object value = handler.handle(param, target, isReference);
 
 		Object returnValue = null;
 		if (isReference) {
@@ -1015,4 +1016,5 @@ public class EntityViewManagerImpl extends AbstractTypedDefinitionManager<Entity
 	private static String resourceString(String key, Object... arguments) {
 		return GemResourceBundleUtil.resourceString(key, arguments);
 	}
+
 }

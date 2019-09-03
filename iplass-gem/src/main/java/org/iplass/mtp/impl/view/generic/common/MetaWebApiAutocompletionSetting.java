@@ -146,6 +146,7 @@ public class MetaWebApiAutocompletionSetting extends MetaAutocompletionSetting {
 
 		public static final String USER_BINDING_NAME = "user";
 		public static final String PARAMS_BINDING_NAME = "params";
+		public static final String TARGET_BINDING_NAME = "target";
 
 		public final static String AUTOCOMPLETION_EQL = "WebApiAutocompletion_eql";
 		public final static String AUTOCOMPLETION_GROOVYSCRIPT = "WebApiAutocompletion_groovyscript";
@@ -174,21 +175,22 @@ public class MetaWebApiAutocompletionSetting extends MetaAutocompletionSetting {
 		}
 
 		@Override
-		public Object handle(Map<String, String[]> param, boolean isReference) {
+		public Object handle(Map<String, String[]> param, List<String> target, boolean isReference) {
 			if (AutocompletionType.EQL.equals(getMetaData().getAutocompletionType())) {
-				return handleEql(param, isReference);
+				return handleEql(param, target, isReference);
 			} else if (AutocompletionType.GROOVYSCRIPT.equals(getMetaData().getAutocompletionType())) {
-				return handleGroovyScript(param);
+				return handleGroovyScript(param, target);
 			}
 			return null;
 		}
 
-		private Object handleEql(Map<String, String[]> param, boolean isReference) {
+		private Object handleEql(Map<String, String[]> param, List<String> target, boolean isReference) {
 			if (eqlTemplate == null) return null;
 
 			Map<String, Object> bindings = new HashMap<String, Object>();
 			bindings.put(USER_BINDING_NAME, AuthContextHolder.getAuthContext().newUserBinding());
 			bindings.put(PARAMS_BINDING_NAME, param);
+			bindings.put(TARGET_BINDING_NAME, target);
 
 			StringWriter sw = new StringWriter();
 			try {
@@ -222,7 +224,7 @@ public class MetaWebApiAutocompletionSetting extends MetaAutocompletionSetting {
 			}
 		}
 
-		private Object handleGroovyScript(Map<String, String[]> param) {
+		private Object handleGroovyScript(Map<String, String[]> param, List<String> target) {
 			if (groovyscriptScript == null) return null;
 
 			UserBinding user = AuthContextHolder.getAuthContext().newUserBinding();
@@ -232,6 +234,7 @@ public class MetaWebApiAutocompletionSetting extends MetaAutocompletionSetting {
 
 			sc.setAttribute(USER_BINDING_NAME, user);
 			sc.setAttribute(PARAMS_BINDING_NAME, param);
+			sc.setAttribute(TARGET_BINDING_NAME, target);
 
 			Object val = groovyscriptScript.eval(sc);
 			return val;
