@@ -192,7 +192,7 @@ for (var i = 0; i < value.length; i++) {
 
 		if (editor.isSingleSelect()) {
 %>
-value = value.length > 0 ? value[0] : [];
+value = value.length > 0 ? value.slice(0, 1) : [];
 <%
 		}
 %>
