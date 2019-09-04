@@ -35,6 +35,7 @@ import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.Multipart;
 import javax.mail.NoSuchProviderException;
+import javax.mail.Part;
 import javax.mail.PasswordAuthentication;
 import javax.mail.Session;
 import javax.mail.Store;
@@ -53,6 +54,8 @@ import org.iplass.mtp.impl.definition.DefinitionMetaDataTypeMap;
 import org.iplass.mtp.impl.mail.smime.SmimeHandler;
 import org.iplass.mtp.impl.mail.template.MetaMailTemplate;
 import org.iplass.mtp.impl.mail.template.MetaMailTemplate.MailTemplateRuntime;
+import org.iplass.mtp.mail.HtmlMessage;
+import org.iplass.mtp.mail.InlineContent;
 import org.iplass.mtp.mail.Mail;
 import org.iplass.mtp.mail.MailException;
 import org.iplass.mtp.mail.SendMailListener;
@@ -457,12 +460,7 @@ public class MailServiceImpl extends AbstractTypedMetaDataService<MetaMailTempla
 				} else {
 					//HTMLメッセージ
 					BodyPart htmlMessageBodyPart = new MimeBodyPart();
-					String htmlCharset = mail.getHtmlMessage().getCharset();
-					if (htmlCharset == null) {
-						htmlCharset = charset;
-					}
-					htmlMessageBodyPart.setContent(mail.getHtmlMessage().getContent(), "text/html; charset=" + htmlCharset);
-					htmlMessageBodyPart.setHeader("Content-Transfer-Encoding", "base64");
+					setHtmlMessage(htmlMessageBodyPart, mail.getHtmlMessage(), charset);
 					multipartMixed.addBodyPart(htmlMessageBodyPart);
 				}
 			} else {
@@ -479,12 +477,7 @@ public class MailServiceImpl extends AbstractTypedMetaDataService<MetaMailTempla
 
 				//HTMLメッセージ
 				BodyPart htmlMessageBodyPart = new MimeBodyPart();
-				String htmlCharset = mail.getHtmlMessage().getCharset();
-				if (htmlCharset == null) {
-					htmlCharset = charset;
-				}
-				htmlMessageBodyPart.setContent(mail.getHtmlMessage().getContent(), "text/html; charset=" + htmlCharset);
-				htmlMessageBodyPart.setHeader("Content-Transfer-Encoding", "base64");
+				setHtmlMessage(htmlMessageBodyPart, mail.getHtmlMessage(), charset);
 				multipartAlt.addBodyPart(htmlMessageBodyPart);
 
 				multipartMixed.addBodyPart(altBodyPart);
@@ -527,12 +520,7 @@ public class MailServiceImpl extends AbstractTypedMetaDataService<MetaMailTempla
 					message.setHeader("Content-Transfer-Encoding", mailEncoding);
 				} else {
 					//HTMLメッセージ
-					String htmlCharset = mail.getHtmlMessage().getCharset();
-					if (htmlCharset == null) {
-						htmlCharset = charset;
-					}
-					message.setContent(mail.getHtmlMessage().getContent(), "text/html; charset=\"" + htmlCharset + "\"");
-					message.setHeader("Content-Transfer-Encoding", "base64");
+					setHtmlMessage(message, mail.getHtmlMessage(), charset);
 				}
 			} else {
 				Multipart multipart = new MimeMultipart("alternative");
@@ -545,16 +533,47 @@ public class MailServiceImpl extends AbstractTypedMetaDataService<MetaMailTempla
 
 				//HTMLメッセージ
 				BodyPart htmlMessageBodyPart = new MimeBodyPart();
-				String htmlCharset = mail.getHtmlMessage().getCharset();
-				if (htmlCharset == null) {
-					htmlCharset = charset;
-				}
-				htmlMessageBodyPart.setContent(mail.getHtmlMessage().getContent(), "text/html; charset=\"" + htmlCharset + "\"");
-				htmlMessageBodyPart.setHeader("Content-Transfer-Encoding", "base64");
+				setHtmlMessage(htmlMessageBodyPart, mail.getHtmlMessage(), charset);
 				multipart.addBodyPart(htmlMessageBodyPart);
 
 				message.setContent(multipart);
 			}
+		}
+	}
+
+	private void setHtmlMessage(Part part, HtmlMessage htmlMessage, String charset) throws MessagingException {
+		String htmlCharset = htmlMessage.getCharset();
+		if (htmlCharset == null) {
+			htmlCharset = charset;
+		}
+		
+		if (htmlMessage.getInlineContents() == null || htmlMessage.getInlineContents().size() == 0) {
+			part.setContent(htmlMessage.getContent(), "text/html; charset=\"" + htmlCharset + "\"");
+			part.setHeader("Content-Transfer-Encoding", "base64");
+		} else {
+			//with inline images
+			Multipart multipart = new MimeMultipart("related");
+			
+			MimeBodyPart htmlpart = new MimeBodyPart();
+			htmlpart.setContent(htmlMessage.getContent(), "text/html; charset=\"" + htmlCharset + "\"");
+			htmlpart.setHeader("Content-Transfer-Encoding", "base64");
+			multipart.addBodyPart(htmlpart);
+			
+			for (InlineContent ii: htmlMessage.getInlineContents()) {
+				MimeBodyPart iiBodyPart = new MimeBodyPart();
+				iiBodyPart.setDataHandler(ii.getDataHandler());
+				try {
+					iiBodyPart.setFileName(MimeUtility.encodeWord(ii.getDataHandler().getName()));
+				} catch (UnsupportedEncodingException e) {
+					logger.warn("file name cant encoded... cause " + e.getMessage(), e);
+				}
+				iiBodyPart.setDisposition("inline");
+				iiBodyPart.setContentID(ii.getContentId());
+				iiBodyPart.setHeader("Content-Transfer-Encoding", "base64");
+				multipart.addBodyPart(iiBodyPart);
+			}
+			
+			part.setContent(multipart);
 		}
 	}
 
