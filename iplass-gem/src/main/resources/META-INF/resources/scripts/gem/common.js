@@ -2506,7 +2506,7 @@ function addReference(id, viewAction, defName, key, label, propName, ulId, refEd
 	return linkId;
 }
 
-function addUniqueReference(viewAction, key, label, unique, defName, propName, multiplicity, ulId, dummyRowId, refEdit, countId, delCallback) {
+function addUniqueReference(viewAction, key, label, unique, defName, propName, multiplicity, ulId, dummyRowId, refEdit, countId, delCallback, parentDefName, parentViewName, viewType, refSectionIndex) {
 	var tmp = keySplit(key);
 	var oid = tmp.oid;
 	var ver = tmp.version;
@@ -2524,7 +2524,7 @@ function addUniqueReference(viewAction, key, label, unique, defName, propName, m
 		//linkを設定
 		var linkId = propName + "_" + tmp.oid;
 		$link.attr({"id":linkId, "data-linkId":linkId}).click(function() {
-			showReference(viewAction, defName, oid, ver, linkId, refEdit);
+			showReference(viewAction, defName, oid, ver, linkId, refEdit, delCallback, parentDefName, parentViewName, propName, viewType, refSectionIndex);
 		});
 		$link.text(label);
 
