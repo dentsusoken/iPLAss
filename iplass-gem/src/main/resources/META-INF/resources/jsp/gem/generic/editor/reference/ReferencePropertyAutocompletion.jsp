@@ -57,11 +57,19 @@ function appendIfHasMore(propName, value) {
 		var tmp = keySplit(key);
 <%
 	if (editor.getDisplayType() == ReferenceDisplayType.LINK
-		|| editor.getDisplayType() == ReferenceDisplayType.TREE) {
+		|| editor.getDisplayType() == ReferenceDisplayType.TREE
+		|| editor.getDisplayType() == ReferenceDisplayType.UNIQUE) {
 %>
 		var label = "<%=editor.getDisplayLabelItem() == null ? "name" : editor.getDisplayLabelItem()%>";
 		var linkId = propName + "_" + tmp.oid;
 		tmp[label] = $("[data-linkId='" + linkId +"']").text();
+<%
+	}
+
+	if (editor.getDisplayType() == ReferenceDisplayType.UNIQUE) {
+%>
+		var unique = "<%=editor.getUniqueItem() %>";
+		tmp[unique] = $(this).parent().children("span.unique-key").children("input[type='text']").val();
 <%
 	}
 %>
@@ -153,6 +161,25 @@ for (var i = 0; i < value.length; i++) {
 }
 toggleRefInsertBtn("ul_" + _propName, multiplicity, "ins_btn_" + _propName);
 <%
+	} else if (editor.getDisplayType() == ReferenceDisplayType.UNIQUE) {
+%>
+var callback = function() {
+	<%-- Dummy行が存在するので、 multiplicity + 1 --%>
+	toggleRefInsertBtn("ul_" + _propName, multiplicity + 1, "id_addBtn_" + _propName);
+};
+if (value.length > 0) {
+	$("#ul_" + _propName).children(":visible").remove();
+}
+for (var i = 0; i < value.length; i++) {
+	var key = value[i].oid + "_" + (value[i].version ? value[i].version : "0");
+	var label = <%=editor.getDisplayLabelItem() == null ? "value[i].name" : "value[i]." + editor.getDisplayLabelItem() %>;
+	var unique = <%="value[i]." + editor.getUniqueItem() %>;
+	<%-- Dummy行が存在するので、 multiplicity + 1 --%>
+	addUniqueReference("<%=viewAction %>", key, label, unique, "<%=defName %>", propName, multiplicity + 1, "ul_" + _propName, "id_li_" + _propName + "Dummmy", <%=refEdit%>, "id_count_" + _propName, callback ,"<%=parentDefName%>", "<%=parentViewName%>", "<%=viewType%>");
+}
+<%-- Dummy行が存在するので、 multiplicity + 1 --%>
+toggleRefInsertBtn("ul_" + _propName, multiplicity + 1, "id_addBtn_" + _propName);
+<%
 	}
 } else {
 	// 検索画面
@@ -214,6 +241,19 @@ for (var i = 0; i < value.length; i++) {
 	var key = value[i].oid + "_" + (value[i].version ? value[i].version : "0");
 	var label = <%=editor.getDisplayLabelItem() == null ? "value[i].name" : "value[i]." + editor.getDisplayLabelItem() %>;
 	addReference("li_sc_" + propName + key, "<%=viewAction%>", "<%=defName%>", key, label, "sc_" + propName, "ul_sc_" + _propName, false);
+}
+<%
+	} else if (editor.getDisplayType() == ReferenceDisplayType.UNIQUE) {
+%>
+if (value.length > 0) {
+	$("#ul_sc_" + _propName).children(":visible").remove();
+}
+for (var i = 0; i < value.length; i++) {
+	var key = value[i].oid + "_" + (value[i].version ? value[i].version : "0");
+	var label = <%=editor.getDisplayLabelItem() == null ? "value[i].name" : "value[i]." + editor.getDisplayLabelItem() %>;
+	var unique = <%="value[i]." + editor.getUniqueItem() %>;
+	<%-- Dummy行が存在するので、 multiplicity + 1 --%>
+	addUniqueReference("<%=viewAction %>", key, label, unique, "<%=defName %>", "sc_" + propName, -1, "ul_sc_" + _propName, "id_li_sc_" + _propName + "Dummmy", false, "id_count_sc_" + _propName);
 }
 <%
 	}
