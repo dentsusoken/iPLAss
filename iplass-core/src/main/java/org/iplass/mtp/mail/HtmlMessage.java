@@ -20,16 +20,27 @@
 
 package org.iplass.mtp.mail;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.activation.DataHandler;
+
+import org.iplass.mtp.entity.BinaryReference;
+import org.iplass.mtp.impl.mail.BinaryReferenceDataSource;
+
 /**
- * htmlメールを送信する場合の本文を表す。
+ * <% if (doclang == "ja") {%>
+ * htmlメールを送信する場合の本文を表します。
+ * <%} else {%>
+ * Represents the body text when sending html mail.
+ * <%}%>
  * 
  * @author K.Higuchi
  *
  */
 public class HtmlMessage {
 	
-	//TODO 画像埋め込み対応
-//	private List<BinaryReference> attatchment;
+	private List<InlineContent> inlineContents;
 	
 	private String content;
 	private String charset;
@@ -42,17 +53,16 @@ public class HtmlMessage {
 		this.charset = charset;
 	}
 
-	/**
-	 * html本体を取得。
-	 * 
-	 * @return
-	 */
 	public String getContent() {
 		return content;
 	}
 
 	/**
-	 * html本体をセット。
+	 * <% if (doclang == "ja") {%>
+	 * html本文をセットします。
+	 * <%} else {%>
+	 * Set the html text.
+	 * <%}%>
 	 * 
 	 * @param content
 	 */
@@ -60,17 +70,16 @@ public class HtmlMessage {
 		this.content = content;
 	}
 
-	/**
-	 * htmlのcharsetを取得。
-	 * 
-	 * @return
-	 */
 	public String getCharset() {
 		return charset;
 	}
 
 	/**
-	 * htmlのcharsetをセット。
+	 * <% if (doclang == "ja") {%>
+	 * htmlのcharsetをセットします。
+	 * <%} else {%>
+	 * Set the charset of html.
+	 * <%}%>
 	 * 
 	 * @param charset
 	 */
@@ -78,4 +87,42 @@ public class HtmlMessage {
 		this.charset = charset;
 	}
 	
+	/**
+	 * <% if (doclang == "ja") {%>
+	 * htmlへの埋め込み画像を追加します。
+	 * <%} else {%>
+	 * Add an embedded image to html.
+	 * <%}%>
+	 * 
+	 * @param cid <%=doclang == 'ja' ? 'html内に埋め込む際のContent-ID': 'Content-ID of embedding image in html'%>
+	 * @param bin <%=doclang == 'ja' ? '埋め込むデータを指し示すBinaryReference': 'BinaryReference to embed'%>
+	 */
+	public void addInlineContent(String cid, BinaryReference bin) {
+		addInlineContent(cid, new DataHandler(new BinaryReferenceDataSource(bin)));
+	}
+	
+	/**
+	 * <% if (doclang == "ja") {%>
+	 * htmlへの埋め込み画像を追加します。
+	 * <%} else {%>
+	 * Add an embedded image to html.
+	 * <%}%>
+	 * 
+	 * @param cid <%=doclang == 'ja' ? 'html内に埋め込む際のContent-ID': 'Content-ID of embedding image in html'%>
+	 * @param dataHandler <%=doclang == 'ja' ? '埋め込むデータを指し示すDataHandler': 'DataHandler to embed'%>
+	 */
+	public void addInlineContent(String cid, DataHandler dataHandler) {
+		if (inlineContents == null) {
+			inlineContents = new ArrayList<>();
+		}
+		inlineContents.add(new InlineContent(cid, dataHandler));
+	}
+	
+	public List<InlineContent> getInlineContents() {
+		return inlineContents;
+	}
+
+	public void setInlineContents(List<InlineContent> inlineContents) {
+		this.inlineContents = inlineContents;
+	}
 }

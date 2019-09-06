@@ -355,6 +355,7 @@ public class MetaMailTemplate extends BaseRootMetaData implements DefinableMetaD
 			if (_subjectTemplate != null) {
 				StringWriter sw = new StringWriter();
 				GroovyTemplateBinding gtb = new GroovyTemplateBinding(sw);
+				gtb.setVariable("mail", mail);
 				if (bindings != null) {
 					for (Map.Entry<String, Object> e: bindings.entrySet()) {
 						gtb.setVariable(e.getKey(), e.getValue());
@@ -371,6 +372,7 @@ public class MetaMailTemplate extends BaseRootMetaData implements DefinableMetaD
 			if (_messageTemplate != null) {
 				StringWriter sw = new StringWriter();
 				GroovyTemplateBinding gtb = new GroovyTemplateBinding(sw);
+				gtb.setVariable("mail", mail);
 				if (bindings != null) {
 					for (Map.Entry<String, Object> e: bindings.entrySet()) {
 						gtb.setVariable(e.getKey(), e.getValue());
@@ -385,8 +387,17 @@ public class MetaMailTemplate extends BaseRootMetaData implements DefinableMetaD
 			}
 
 			if (_htmlMessageTemplate != null) {
+				String htmlCharset = htmlMessage.getCharset();
+				if (htmlCharset == null) {
+					htmlCharset = mail.getCharset();
+				}
+				HtmlMessage htmlContent = new HtmlMessage();
+				htmlContent.setCharset(htmlCharset);
+				mail.setHtmlMessage(htmlContent);
+
 				StringWriter sw = new StringWriter();
 				GroovyTemplateBinding gtb = new GroovyTemplateBinding(sw);
+				gtb.setVariable("mail", mail);
 				if (bindings != null) {
 					for (Map.Entry<String, Object> e: bindings.entrySet()) {
 						gtb.setVariable(e.getKey(), e.getValue());
@@ -397,11 +408,11 @@ public class MetaMailTemplate extends BaseRootMetaData implements DefinableMetaD
 				} catch (IOException e) {
 					throw new ScriptRuntimeException(e);
 				}
-				String htmlCharset = htmlMessage.getCharset();
-				if (htmlCharset == null) {
-					htmlCharset = mail.getCharset();
+				if (mail.getHtmlMessage() != null) {
+					mail.getHtmlMessage().setContent(sw.toString());
+				} else {
+					mail.setHtmlMessage(new HtmlMessage(sw.toString(), htmlCharset));
 				}
-				mail.setHtmlMessage(new HtmlMessage(sw.toString(), htmlCharset));
 			}
 
 			return mail;

@@ -25,6 +25,7 @@ import java.util.List;
 import javax.activation.DataHandler;
 import javax.mail.internet.InternetAddress;
 
+import org.iplass.mtp.mail.InlineContent;
 import org.iplass.mtp.mail.Mail;
 import org.iplass.mtp.mail.SendMailListener;
 import org.slf4j.Logger;
@@ -76,6 +77,15 @@ public class LoggingSendMailListener implements SendMailListener {
 			builder.append("PlainMessage:" + mail.getMessage() + "\n");
 			if (mail.getHtmlMessage() != null) {
 				builder.append("HtmlMessage:" + mail.getHtmlMessage().getContent() + "\n");
+				if (mail.getHtmlMessage().getInlineContents() != null) {
+					builder.append("InlineContents:");
+					for (InlineContent ic: mail.getHtmlMessage().getInlineContents()) {
+						if (ic != null) {
+							builder.append(ic.getContentId()).append(", ");
+						}
+					}
+					builder.append("\n");
+				}
 			}
 
 			log.debug(builder.toString());
