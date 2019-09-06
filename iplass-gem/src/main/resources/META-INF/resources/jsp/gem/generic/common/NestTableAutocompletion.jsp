@@ -119,7 +119,8 @@ $(function() {
 			pValue["refIndex"] = refIndex;
 			var propName = prefix + "<%=propName%>";
 			var cValue = $("[name='" + propName + "']").map(function() {return $(this).val();}).get();
-			getAutocompletionValue("<%=GetAutocompletionValueCommand.WEBAPI_NAME%>", "<%=defName%>", "<%=viewName%>", "<%=Constants.VIEW_TYPE_DETAIL%>", propName, "<%=key%>", null, pValue, cValue, function(value) {
+			var _propName = prefix.replace("[" + refIndex + "]", "") + "<%=propName%>";
+			getAutocompletionValue("<%=GetAutocompletionValueCommand.WEBAPI_NAME%>", "<%=defName%>", "<%=viewName%>", "<%=Constants.VIEW_TYPE_DETAIL%>", _propName, "<%=key%>", null, pValue, cValue, function(value) {
 <jsp:include page="<%=path %>" />
 			});
 		} else {

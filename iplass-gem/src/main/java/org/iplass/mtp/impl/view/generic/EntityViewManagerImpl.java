@@ -798,24 +798,15 @@ public class EntityViewManagerImpl extends AbstractTypedDefinitionManager<Entity
 		AutocompletionSettingHandler handler = view.getAutocompletionSettingHandler(autocompletionKey);
 		if (handler == null) return null;
 
-		PropertyDefinition pd = null;
 		PropertyEditor editor = null;
 		if (referenceSectionIndex != null) {
-			String _propName = propName.replace("[" + referenceSectionIndex + "]", "");
-			pd = EntityViewUtil.getPropertyDefinition(_propName, edm.get(definitionName));
-			editor = getPropertyEditor(definitionName, viewName, _propName, referenceSectionIndex);
+			editor = getPropertyEditor(definitionName, viewName, propName, referenceSectionIndex);
 		} else {
-			//NestTable
-			String _propName = propName;
-			if (param.get("refIndex") != null) {
-				String refIndex = param.get("refIndex")[0];
-				_propName = propName.replace("[" + refIndex + "]", "");
-			}
-			pd = EntityViewUtil.getPropertyDefinition(_propName, edm.get(definitionName));
-			editor = getPropertyEditor(definitionName, viewType, viewName, _propName);
+			editor = getPropertyEditor(definitionName, viewType, viewName, propName);
 		}
 		//連動先の多重度が複数の場合、Listで格納
 		//連動先の多重度が単数の場合、値をそのまま格納
+		PropertyDefinition pd = EntityViewUtil.getPropertyDefinition(propName, edm.get(definitionName));
 		Object currValue = pd.getMultiplicity() == 1 ? currentValue.get(0) : currentValue;
 		boolean isReference = editor instanceof ReferencePropertyEditor;
 		Object value = handler.handle(param, currValue, isReference);
