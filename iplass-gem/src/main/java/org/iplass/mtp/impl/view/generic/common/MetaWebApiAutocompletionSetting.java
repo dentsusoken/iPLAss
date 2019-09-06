@@ -249,7 +249,7 @@ public class MetaWebApiAutocompletionSetting extends MetaAutocompletionSetting {
 			return value;
 		}
 
-		private Object handleGroovyScript(Map<String, String[]> param, Object target) {
+		private Object handleGroovyScript(Map<String, String[]> param, Object currentValue) {
 			if (groovyscriptScript == null) return null;
 
 			UserBinding user = AuthContextHolder.getAuthContext().newUserBinding();
@@ -259,7 +259,7 @@ public class MetaWebApiAutocompletionSetting extends MetaAutocompletionSetting {
 
 			sc.setAttribute(USER_BINDING_NAME, user);
 			sc.setAttribute(PARAMS_BINDING_NAME, param);
-			sc.setAttribute(CURRENT_VALUE_BINDING_NAME, target);
+			sc.setAttribute(CURRENT_VALUE_BINDING_NAME, currentValue);
 
 			Object val = groovyscriptScript.eval(sc);
 			return val;
