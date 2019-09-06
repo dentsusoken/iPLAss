@@ -115,11 +115,11 @@ $(function() {
 		<% } %>
 
 		if (prefix != null) {
-			var refIndex = prefix.substr(0, prefix.indexOf("]")).substr(prefix.indexOf("[") + 1)
+			var refIndex = prefix.substr(0, prefix.indexOf("]")).substr(prefix.indexOf("[") + 1);
 			pValue["refIndex"] = refIndex;
 			var propName = prefix + "<%=propName%>";
-			var tValue = $("[name='" + propName + "']").map(function() {return $(this).val();}).get();
-			getAutocompletionValue("<%=GetAutocompletionValueCommand.WEBAPI_NAME%>", "<%=defName%>", "<%=viewName%>", "<%=Constants.VIEW_TYPE_DETAIL%>", propName, "<%=key%>", null, pValue, tValue, function(value) {
+			var cValue = $("[name='" + propName + "']").map(function() {return $(this).val();}).get();
+			getAutocompletionValue("<%=GetAutocompletionValueCommand.WEBAPI_NAME%>", "<%=defName%>", "<%=viewName%>", "<%=Constants.VIEW_TYPE_DETAIL%>", propName, "<%=key%>", null, pValue, cValue, function(value) {
 <jsp:include page="<%=path %>" />
 			});
 		} else {
@@ -128,8 +128,8 @@ $(function() {
 				var refIndex = id.substr("id_tr_<%=refPropName%>".length);
 				pValue["refIndex"] = refIndex;
 				var propName = "<%=refPropName%>[" + refIndex + "].<%=propName%>";
-				var tValue = $("[name='" + propName + "']").map(function() {return $(this).val();}).get();
-				getAutocompletionValue("<%=GetAutocompletionValueCommand.WEBAPI_NAME%>", "<%=defName%>", "<%=viewName%>", "<%=Constants.VIEW_TYPE_DETAIL%>", "<%=refPropName%>.<%=propName%>", "<%=key%>", null, pValue, tValue, function(value) {
+				var cValue = $("[name='" + propName + "']").map(function() {return $(this).val();}).get();
+				getAutocompletionValue("<%=GetAutocompletionValueCommand.WEBAPI_NAME%>", "<%=defName%>", "<%=viewName%>", "<%=Constants.VIEW_TYPE_DETAIL%>", "<%=refPropName%>.<%=propName%>", "<%=key%>", null, pValue, cValue, function(value) {
 <jsp:include page="<%=path %>" />
 				});
 			});

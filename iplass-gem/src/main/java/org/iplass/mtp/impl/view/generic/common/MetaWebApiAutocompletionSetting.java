@@ -23,9 +23,12 @@ package org.iplass.mtp.impl.view.generic.common;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.iplass.mtp.ManagerLocator;
 import org.iplass.mtp.entity.Entity;
@@ -146,7 +149,7 @@ public class MetaWebApiAutocompletionSetting extends MetaAutocompletionSetting {
 
 		public static final String USER_BINDING_NAME = "user";
 		public static final String PARAMS_BINDING_NAME = "params";
-		public static final String TARGET_BINDING_NAME = "target";
+		public static final String CURRENT_VALUE_BINDING_NAME = "currentValue";
 
 		public final static String AUTOCOMPLETION_EQL = "WebApiAutocompletion_eql";
 		public final static String AUTOCOMPLETION_GROOVYSCRIPT = "WebApiAutocompletion_groovyscript";
@@ -175,22 +178,22 @@ public class MetaWebApiAutocompletionSetting extends MetaAutocompletionSetting {
 		}
 
 		@Override
-		public Object handle(Map<String, String[]> param, List<String> target, boolean isReference) {
+		public Object handle(Map<String, String[]> param, Object currentValue, boolean isReference) {
 			if (AutocompletionType.EQL.equals(getMetaData().getAutocompletionType())) {
-				return handleEql(param, target, isReference);
+				return handleEql(param, currentValue, isReference);
 			} else if (AutocompletionType.GROOVYSCRIPT.equals(getMetaData().getAutocompletionType())) {
-				return handleGroovyScript(param, target);
+				return handleGroovyScript(param, currentValue);
 			}
 			return null;
 		}
 
-		private Object handleEql(Map<String, String[]> param, List<String> target, boolean isReference) {
+		private Object handleEql(Map<String, String[]> param, Object currentValue, boolean isReference) {
 			if (eqlTemplate == null) return null;
 
 			Map<String, Object> bindings = new HashMap<String, Object>();
 			bindings.put(USER_BINDING_NAME, AuthContextHolder.getAuthContext().newUserBinding());
-			bindings.put(PARAMS_BINDING_NAME, param);
-			bindings.put(TARGET_BINDING_NAME, target);
+			bindings.put(PARAMS_BINDING_NAME, escapeEql(param));
+			bindings.put(CURRENT_VALUE_BINDING_NAME, escapeEql(currentValue));
 
 			StringWriter sw = new StringWriter();
 			try {
@@ -224,7 +227,29 @@ public class MetaWebApiAutocompletionSetting extends MetaAutocompletionSetting {
 			}
 		}
 
-		private Object handleGroovyScript(Map<String, String[]> param, List<String> target) {
+		@SuppressWarnings("unchecked")
+		private Object escapeEql(Object value) {
+			if (value instanceof String) {
+				return StringUtil.escapeEql((String) value);
+			} else if (value instanceof List<?>) {
+				List<String> list = (List<String>) value;
+				return list.stream()
+							.map(s -> StringUtil.escapeEql(s))
+							.collect(Collectors.toList());
+			} else if (value instanceof String[]) {
+				String[] array = (String[]) value;
+				return Arrays.stream(array)
+							.map(s -> StringUtil.escapeEql(s))
+							.toArray();
+			} else if (value instanceof Map<?, ?>) {
+				Map<String, Object> map = (Map<String, Object>) value;
+				return map.entrySet().stream()
+						.collect(Collectors.toMap(Map.Entry::getKey, entry -> escapeEql(entry.getValue()), (a, b) -> a, LinkedHashMap::new));
+			}
+			return value;
+		}
+
+		private Object handleGroovyScript(Map<String, String[]> param, Object target) {
 			if (groovyscriptScript == null) return null;
 
 			UserBinding user = AuthContextHolder.getAuthContext().newUserBinding();
@@ -234,7 +259,7 @@ public class MetaWebApiAutocompletionSetting extends MetaAutocompletionSetting {
 
 			sc.setAttribute(USER_BINDING_NAME, user);
 			sc.setAttribute(PARAMS_BINDING_NAME, param);
-			sc.setAttribute(TARGET_BINDING_NAME, target);
+			sc.setAttribute(CURRENT_VALUE_BINDING_NAME, target);
 
 			Object val = groovyscriptScript.eval(sc);
 			return val;

@@ -135,6 +135,6 @@ public abstract class MetaAutocompletionSetting implements MetaData {
 			return metadata;
 		}
 
-		public abstract Object handle(Map<String, String[]> param, List<String> target, boolean isReference);
+		public abstract Object handle(Map<String, String[]> param, Object currentValue, boolean isReference);
 	}
 }

@@ -791,21 +791,34 @@ public class EntityViewManagerImpl extends AbstractTypedDefinitionManager<Entity
 	}
 
 	@Override
-	public Object getAutocompletionValue(String definitionName, String viewName, String viewType, String propName, String autocompletionKey, Integer referenceSectionIndex, Map<String, String[]> param, List<String> target) {
+	public Object getAutocompletionValue(String definitionName, String viewName, String viewType, String propName, String autocompletionKey, Integer referenceSectionIndex, Map<String, String[]> param, List<String> currentValue) {
 		EntityViewHandler view = service.getRuntimeByName(definitionName);
 		if (view == null) return null;
 
 		AutocompletionSettingHandler handler = view.getAutocompletionSettingHandler(autocompletionKey);
 		if (handler == null) return null;
 
+		PropertyDefinition pd = null;
 		PropertyEditor editor = null;
 		if (referenceSectionIndex != null) {
-			editor = getPropertyEditor(definitionName, viewName, propName, referenceSectionIndex);
+			String _propName = propName.replace("[" + referenceSectionIndex + "]", "");
+			pd = EntityViewUtil.getPropertyDefinition(_propName, edm.get(definitionName));
+			editor = getPropertyEditor(definitionName, viewName, _propName, referenceSectionIndex);
 		} else {
-			editor = getPropertyEditor(definitionName, viewType, viewName, propName);
+			//NestTable
+			String _propName = propName;
+			if (param.get("refIndex") != null) {
+				String refIndex = param.get("refIndex")[0];
+				_propName = propName.replace("[" + refIndex + "]", "");
+			}
+			pd = EntityViewUtil.getPropertyDefinition(_propName, edm.get(definitionName));
+			editor = getPropertyEditor(definitionName, viewType, viewName, _propName);
 		}
+		//連動先の多重度が複数の場合、Listで格納
+		//連動先の多重度が単数の場合、値をそのまま格納
+		Object currValue = pd.getMultiplicity() == 1 ? currentValue.get(0) : currentValue;
 		boolean isReference = editor instanceof ReferencePropertyEditor;
-		Object value = handler.handle(param, target, isReference);
+		Object value = handler.handle(param, currValue, isReference);
 
 		Object returnValue = null;
 		if (isReference) {

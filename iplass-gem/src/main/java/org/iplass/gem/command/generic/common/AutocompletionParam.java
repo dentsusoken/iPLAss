@@ -41,7 +41,7 @@ public class AutocompletionParam implements GemWebApiParameter {
 
 	private Map<String, String[]> params;
 
-	private List<String> target;
+	private List<String> currentValue;
 
 	public String getDefName() {
 		return defName;
@@ -105,11 +105,12 @@ public class AutocompletionParam implements GemWebApiParameter {
 		this.params = params;
 	}
 
-	public List<String> getTarget() {
-		return target;
+	public List<String> getCurrentValue() {
+		return currentValue;
 	}
 
-	public void setTarget(List<String> target) {
-		this.target = target;
+	public void setCurrentValue(List<String> currentValue) {
+		this.currentValue = currentValue;
 	}
+
 }
