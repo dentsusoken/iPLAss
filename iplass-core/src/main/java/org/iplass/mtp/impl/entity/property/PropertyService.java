@@ -154,7 +154,7 @@ public class PropertyService implements Service {
 		map.put(java.sql.Timestamp.class, new DateTimeType());
 		map.put(java.sql.Date.class, new DateType());
 		map.put(java.sql.Time.class, new TimeType());
-		map.put(BigDecimal.class, new DecimalType());
+		map.put(BigDecimal.class, new DecimalType(Integer.MIN_VALUE, null));
 		map.put(Double.class, new FloatType());
 		map.put(Long.class, new IntegerType());
 		map.put(String.class, new StringType());
@@ -165,7 +165,7 @@ public class PropertyService implements Service {
 		enumMap.put(PropertyDefinitionType.DATETIME, new DateTimeType());
 		enumMap.put(PropertyDefinitionType.DATE, new DateType());
 		enumMap.put(PropertyDefinitionType.TIME, new TimeType());
-		enumMap.put(PropertyDefinitionType.DECIMAL, new DecimalType());
+		enumMap.put(PropertyDefinitionType.DECIMAL, new DecimalType(Integer.MIN_VALUE, null));
 		enumMap.put(PropertyDefinitionType.FLOAT, new FloatType());
 		enumMap.put(PropertyDefinitionType.INTEGER, new IntegerType());
 		enumMap.put(PropertyDefinitionType.STRING, new StringType());

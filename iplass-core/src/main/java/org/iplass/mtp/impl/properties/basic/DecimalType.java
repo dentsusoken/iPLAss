@@ -35,6 +35,7 @@ public class DecimalType extends BasicType {
 
 	private static Logger logger = LoggerFactory.getLogger(DecimalType.class);
 
+	//Integer.MIN_VALUEは桁数未指定の意とする
 	private int scale;
 	private RoundingMode roundingMode;
 	
@@ -176,7 +177,8 @@ public class DecimalType extends BasicType {
 			return toDataStore;
 		}
 		if (toDataStore instanceof BigDecimal) {
-			if (((BigDecimal) toDataStore).scale() != scale) {
+			if (((BigDecimal) toDataStore).scale() != scale
+					&& scale != Integer.MIN_VALUE) {
 				return ((BigDecimal) toDataStore).setScale(scale, roundingMode);
 			} else {
 				return toDataStore;
@@ -191,7 +193,8 @@ public class DecimalType extends BasicType {
 			return null;
 		}
 		
-		if (((BigDecimal) value).scale() != scale) {
+		if (((BigDecimal) value).scale() != scale
+				&& scale != Integer.MIN_VALUE) {
 			return ((BigDecimal) value).setScale(scale, roundingMode).toString();
 		} else {
 			return ((BigDecimal) value).toString();

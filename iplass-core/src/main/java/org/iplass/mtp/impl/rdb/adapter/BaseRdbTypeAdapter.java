@@ -385,7 +385,8 @@ public abstract class BaseRdbTypeAdapter implements RdbTypeAdapter {
 		public BigDecimal toJava(ResultSet rs, int columnIndex)
 				throws SQLException {
 			BigDecimal dec = rs.getBigDecimal(columnIndex);
-			if (dec != null && dec.scale() != ((DecimalType) propertyType).getScale()) {
+			if (dec != null && dec.scale() != ((DecimalType) propertyType).getScale()
+					&& ((DecimalType) propertyType).getScale() != java.lang.Integer.MIN_VALUE) {
 				RoundingMode rm =  ((DecimalType) propertyType).getRoundingMode();
 				if (rm == null) {
 					rm = RoundingMode.HALF_EVEN;
