@@ -273,6 +273,7 @@ public class EntityViewManagerImpl extends AbstractTypedDefinitionManager<Entity
 	private PropertyEditor getSearchFormViewEditor(String defName, String propName, SearchFormView form) {
 		String currentPropName = null;
 		String subPropName = null;
+
 		if (propName.indexOf(".") == -1) {
 			currentPropName = propName;
 		} else {
@@ -790,7 +791,7 @@ public class EntityViewManagerImpl extends AbstractTypedDefinitionManager<Entity
 	}
 
 	@Override
-	public Object getAutocompletionValue(String definitionName, String viewName, String viewType, String propName, String autocompletionKey, Integer referenceSectionIndex, Map<String, String[]> param) {
+	public Object getAutocompletionValue(String definitionName, String viewName, String viewType, String propName, String autocompletionKey, Integer referenceSectionIndex, Map<String, String[]> param, List<String> currentValue) {
 		EntityViewHandler view = service.getRuntimeByName(definitionName);
 		if (view == null) return null;
 
@@ -803,8 +804,12 @@ public class EntityViewManagerImpl extends AbstractTypedDefinitionManager<Entity
 		} else {
 			editor = getPropertyEditor(definitionName, viewType, viewName, propName);
 		}
+		//連動先の多重度が複数の場合、Listで格納
+		//連動先の多重度が単数の場合、値をそのまま格納
+		PropertyDefinition pd = EntityViewUtil.getPropertyDefinition(propName, edm.get(definitionName));
+		Object currValue = pd.getMultiplicity() == 1 ? currentValue.get(0) : currentValue;
 		boolean isReference = editor instanceof ReferencePropertyEditor;
-		Object value = handler.handle(param, isReference);
+		Object value = handler.handle(param, currValue, isReference);
 
 		Object returnValue = null;
 		if (isReference) {
@@ -1015,4 +1020,5 @@ public class EntityViewManagerImpl extends AbstractTypedDefinitionManager<Entity
 	private static String resourceString(String key, Object... arguments) {
 		return GemResourceBundleUtil.resourceString(key, arguments);
 	}
+
 }

@@ -20,6 +20,7 @@
 
 package org.iplass.gem.command.generic.common;
 
+import java.util.List;
 import java.util.Map;
 
 import org.iplass.gem.command.GemWebApiParameter;
@@ -39,6 +40,8 @@ public class AutocompletionParam implements GemWebApiParameter {
 	private Integer referenceSectionIndex;
 
 	private Map<String, String[]> params;
+
+	private List<String> currentValue;
 
 	public String getDefName() {
 		return defName;
@@ -101,4 +104,13 @@ public class AutocompletionParam implements GemWebApiParameter {
 	public void setParams(Map<String, String[]> params) {
 		this.params = params;
 	}
+
+	public List<String> getCurrentValue() {
+		return currentValue;
+	}
+
+	public void setCurrentValue(List<String> currentValue) {
+		this.currentValue = currentValue;
+	}
+
 }

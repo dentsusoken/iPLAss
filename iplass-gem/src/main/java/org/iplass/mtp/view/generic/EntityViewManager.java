@@ -216,9 +216,10 @@ public interface EntityViewManager extends TypedDefinitionManager<EntityView> {
 	 * @param propName プロパティ名
 	 * @param autocompletionKey 自動補完のキー
 	 * @param param 連動元の値
+	 * @param currentValue 連動先の値
 	 * @return 自動補完の値
 	 */
-	public Object getAutocompletionValue(String definitionName, String viewName, String viewType, String propName, String autocompletionKey, Integer referenceSectionIndex, Map<String, String[]> param);
+	public Object getAutocompletionValue(String definitionName, String viewName, String viewType, String propName, String autocompletionKey, Integer referenceSectionIndex, Map<String, String[]> param, List<String> currentValue);
 
 	/**
 	 * <p>

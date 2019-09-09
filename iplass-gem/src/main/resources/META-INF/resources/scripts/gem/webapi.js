@@ -551,7 +551,7 @@ function restore(webapi, rbid, _t, func, errFunc) {
 	});
 }
 
-function getAutocompletionValue(webapi, defName, viewName, viewType, propName, key, refSectionIndex, pValue, func) {
+function getAutocompletionValue(webapi, defName, viewName, viewType, propName, key, refSectionIndex, pValue, cValue, func) {
 	var params = "{";
 	params += "\"defName\":\"" + defName + "\"";
 	params += ",\"viewName\":\"" + viewName + "\"";
@@ -578,6 +578,14 @@ function getAutocompletionValue(webapi, defName, viewName, viewType, propName, k
 		params += "]";
 	}
 	params += "}";
+	params += ",\"currentValue\":[";
+	for (var i = 0; i < cValue.length; i++) {
+		if (i != 0) {
+			params += ",";
+		}
+		params += "\"" + cValue[i] + "\"";
+	}
+	params += "]";
 	params += "}";
 
 	postAsync(webapi, params, function(result) {
