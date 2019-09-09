@@ -227,22 +227,21 @@ public class MetaWebApiAutocompletionSetting extends MetaAutocompletionSetting {
 			}
 		}
 
-		@SuppressWarnings("unchecked")
 		private Object escapeEql(Object value) {
 			if (value instanceof String) {
 				return StringUtil.escapeEql((String) value);
-			} else if (value instanceof List<?>) {
-				List<String> list = (List<String>) value;
-				return list.stream()
-							.map(s -> StringUtil.escapeEql(s))
-							.collect(Collectors.toList());
 			} else if (value instanceof String[]) {
 				String[] array = (String[]) value;
 				return Arrays.stream(array)
 							.map(s -> StringUtil.escapeEql(s))
 							.toArray();
+			} else if (value instanceof List<?>) {
+				List<?> list = (List<?>) value;
+				return list.stream()
+							.map(s -> escapeEql(s))
+							.collect(Collectors.toList());
 			} else if (value instanceof Map<?, ?>) {
-				Map<String, Object> map = (Map<String, Object>) value;
+				Map<?, ?> map = (Map<?, ?>) value;
 				return map.entrySet().stream()
 						.collect(Collectors.toMap(Map.Entry::getKey, entry -> escapeEql(entry.getValue()), (a, b) -> a, LinkedHashMap::new));
 			}
