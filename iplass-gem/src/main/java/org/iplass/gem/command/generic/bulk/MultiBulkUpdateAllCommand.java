@@ -134,6 +134,8 @@ public class MultiBulkUpdateAllCommand extends MultiBulkCommandBase {
 					ret = Constants.CMD_EXEC_ERROR;
 					request.setAttribute(Constants.ERROR_PROP, errors.toArray(new ValidateError[errors.size()]));
 					request.setAttribute(Constants.MESSAGE, resourceString("command.generic.bulk.BulkUpdateAllCommand.inputErr"));
+					//画面表示用のビューデータを設定します。
+					setDefaultViewData(request, context);
 				} else if (entities.size() > 0) {
 					// 先頭に「行番号_」を付加する
 					List<String> oid = IntStream.range(0, entities.size())
