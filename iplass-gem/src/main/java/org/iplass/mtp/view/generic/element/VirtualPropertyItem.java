@@ -191,17 +191,18 @@ public class VirtualPropertyItem extends Element {
 	private List<LocalizedStringDefinition> localizedTooltipList;
 
 	/** 必須属性表示タイプ */
-//	@MetaFieldInfo(
-//			displayName="必須属性表示",
-//			displayNameKey="generic_element_VirtualPropertyItem_requiredDisplayTypeDisplaNameKey",
-//			inputType=InputType.Enum,
-//			enumClass=RequiredDisplayType.class,
-//			description="詳細画面で必須表示を行うかを設定します。<BR />" +
-//					"DEFAULT : プロパティ定義の必須設定に従って必須属性を表示<BR />" +
-//					"DISPLAY : 必須属性を表示<BR />" +
-//					"NONE    : 必須属性を表示しない",
-//			descriptionKey="generic_element_VirtualPropertyItem_requiredDisplayTypeDescriptionKey"
-//	)
+	@MetaFieldInfo(
+			displayName="必須属性表示",
+			displayNameKey="generic_element_VirtualPropertyItem_requiredDisplayTypeDisplaNameKey",
+			inputType=InputType.ENUM,
+			enumClass=RequiredDisplayType.class,
+			displayOrder=440,
+			description="詳細画面で必須表示を行うかを設定します。<BR />" +
+					"DEFAULT : 必須属性を表示しない<BR />" +
+					"DISPLAY : 必須属性を表示<BR />" +
+					"NONE    : 必須属性を表示しない",
+			descriptionKey="generic_element_VirtualPropertyItem_requiredDisplayTypeDescriptionKey"
+	)
 	private RequiredDisplayType requiredDisplayType;
 
 	/** 列幅 */
@@ -209,7 +210,7 @@ public class VirtualPropertyItem extends Element {
 			displayName="列幅",
 			displayNameKey="generic_element_property_PropertyColumn_widthDisplaNameKey",
 			inputType=InputType.NUMBER,
-			displayOrder=440,
+			displayOrder=450,
 			description="列幅を指定します。",
 			descriptionKey="generic_element_property_PropertyColumn_widthDescriptionKey"
 	)
@@ -222,7 +223,7 @@ public class VirtualPropertyItem extends Element {
 			displayNameKey="generic_element_property_PropertyColumn_textAlignDisplaNameKey",
 			inputType=InputType.ENUM,
 			enumClass=TextAlign.class,
-			displayOrder=450,
+			displayOrder=460,
 			description="テキストの配置を指定します。<br>" +
 					"LEFT:左寄せ<br>" +
 					"CENTER:中央寄せ<br>" +
