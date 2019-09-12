@@ -119,6 +119,20 @@ public class JoinPropertyEditor extends CustomPropertyEditor implements HasNestP
 	)
 	private String format;
 
+	@MetaFieldInfo(
+			displayName = "ネストプロパティの検証エラーメッセージをまとめて表示",
+			displayNameKey = "generic_editor_JoinPropertyEditor_showNestPropertyErrorsDisplaNameKey",
+			inputType = InputType.CHECKBOX,
+			displayOrder = 130,
+			description = "チェックの時はネストプロパティの検証エラーメッセージをまとめて表示します。<br>" +
+					"未チェックの時はネストプロパティの検証エラーメッセージをまとめて表示しません。",
+			descriptionKey = "generic_editor_JoinPropertyEditor_showNestPropertyErrorsDescriptionKey"
+	)
+	@EntityViewField(
+			referenceTypes= {FieldReferenceType.DETAIL, FieldReferenceType.BULK}
+	)
+	private boolean showNestPropertyErrors;
+
 	/**
 	 * オブジェクト名を取得します。
 	 * @return オブジェクト名
@@ -165,6 +179,22 @@ public class JoinPropertyEditor extends CustomPropertyEditor implements HasNestP
 	 */
 	public void setEditor(PropertyEditor editor) {
 	    this.editor = editor;
+	}
+
+	/**
+	 * ネストプロパティの検証エラーメッセージをまとめて表示を取得します。
+	 * @return ネストプロパティの検証エラーメッセージをまとめて表示
+	 */
+	public boolean isShowNestPropertyErrors() {
+		return showNestPropertyErrors;
+	}
+
+	/**
+	 * ネストプロパティの検証エラーメッセージをまとめて表示を設定します。
+	 * @param showNestPropertyErrors ネストプロパティの検証エラーメッセージをまとめて表示
+	 */
+	public void setShowNestPropertyErrors(boolean showNestPropertyErrors) {
+		this.showNestPropertyErrors = showNestPropertyErrors;
 	}
 
 	/**

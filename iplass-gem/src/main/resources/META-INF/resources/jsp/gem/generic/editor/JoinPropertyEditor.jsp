@@ -24,6 +24,7 @@
 <%@ page import="org.iplass.mtp.ManagerLocator"%>
 <%@ page import="org.iplass.mtp.entity.Entity"%>
 <%@ page import="org.iplass.mtp.entity.definition.*" %>
+<%@ page import="org.iplass.mtp.entity.ValidateError" %>
 <%@ page import="org.iplass.mtp.util.StringUtil"%>
 <%@ page import="org.iplass.mtp.view.generic.EntityViewUtil" %>
 <%@ page import="org.iplass.mtp.view.generic.OutputType"%>
@@ -45,13 +46,16 @@
 	EntityDefinition ed = (EntityDefinition) request.getAttribute(Constants.ENTITY_DEFINITION);
 	String propName = editor.getPropertyName();
 
+	ValidateError[] errors = (ValidateError[]) request.getAttribute(Constants.ERROR_PROP);
+
+	String prefix = null;
 	if (nest != null && nest) {
 		EntityDefinition _ed = ManagerLocator.getInstance().getManager(EntityDefinitionManager.class).get(editor.getObjectName());
 		request.setAttribute(Constants.ENTITY_DEFINITION, _ed);
 
 		//ダミーのプロパティ名と本来のプロパティ名を分離して、出力時に結合するプロパティを含め再設定する
 		int lastIndex = propName.lastIndexOf(".");
-		String prefix = propName.substring(0, lastIndex);
+		prefix = propName.substring(0, lastIndex);
 		editor.setPropertyName(propName.substring(lastIndex + 1));
 		request.setAttribute(Constants.EDITOR_JOIN_NEST_PREFIX, prefix);
 	}
@@ -74,6 +78,11 @@
 <%
 	}
 
+	if (editor.isShowNestPropertyErrors() && errors != null) {
+		//検証エラーリストをnullに設定します。
+		request.setAttribute(Constants.ERROR_PROP, null);
+	}
+
 	request.setAttribute(ViewConst.DESIGN_TYPE, ViewConst.DESIGN_TYPE_GEM);
 
 	List<Token> tokenList = EntityViewUtil.perse(editor);
@@ -92,6 +101,22 @@
 %>
 </span>
 <%
+	}
+
+	if (editor.isShowNestPropertyErrors() && errors != null) {
+		ValidateError[] tmp = EntityViewUtil.collectNestPropertyErrors(editor, prefix, errors);
+		request.setAttribute(Constants.ERROR_PROP, tmp);
+		String joinPropName = "join_" + propName;
+
+		for (ValidateError error : tmp) {
+%>
+<jsp:include page="ErrorMessage.jsp">
+	<jsp:param value="<%=joinPropName %>" name="propName" />
+</jsp:include>
+<%
+		}
+		// 検証エラーリストを元に戻します。
+		request.setAttribute(Constants.ERROR_PROP, errors);
 	}
 
 	if (StringUtil.isNotEmpty(customStyle)) {
