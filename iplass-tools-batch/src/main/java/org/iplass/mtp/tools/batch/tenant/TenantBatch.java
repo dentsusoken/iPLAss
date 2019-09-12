@@ -21,8 +21,17 @@
 package org.iplass.mtp.tools.batch.tenant;
 
 
+import java.io.IOException;
+import java.io.Reader;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Properties;
+
+import org.iplass.mtp.SystemException;
 import org.iplass.mtp.impl.core.ExecuteContext;
-import org.iplass.mtp.impl.i18n.I18nService;
 import org.iplass.mtp.impl.tools.tenant.TenantCreateParameter;
 import org.iplass.mtp.impl.tools.tenant.TenantDeleteParameter;
 import org.iplass.mtp.impl.tools.tenant.TenantInfo;
@@ -39,13 +48,15 @@ import org.iplass.mtp.util.StringUtil;
  */
 public class TenantBatch extends MtpCuiBase {
 
+	/** Silentモード 設定ファイル名キー */
+	public static final String KEY_CONFIG_FILE = "tenant.config";
+
 	/** 実行モード */
-	public enum TenantBatchExecMode {GUI, CREATE, DELETE, SHOW};
+	public enum TenantBatchExecMode {GUI, CREATE, DELETE, SHOW, SILENT};
 
 	//実行モード
 	private TenantBatchExecMode execMode = TenantBatchExecMode.GUI;
 
-	private I18nService i18nService = ServiceRegistry.getRegistry().getService(I18nService.class);
 	private TenantToolService toolService = ServiceRegistry.getRegistry().getService(TenantToolService.class);
 
 	/**
@@ -117,6 +128,11 @@ public class TenantBatch extends MtpCuiBase {
 			showAllTenantList();
 			logInfo("");
 			return true;
+		case SILENT :
+			logInfo("■Start Silent");
+			logInfo("");
+
+			return startSilent();
 		default :
 			logError("unsupport execute mode : " + getExecMode());
 			return false;
@@ -263,17 +279,7 @@ public class TenantBatch extends MtpCuiBase {
 
 		TenantCreateParameter param = new TenantCreateParameter(tenantName, adminUserId, adminPW);
 		param.setTenantUrl(tenantUrl);
-
-		String defaultEnableLanguages = "";
-		if (i18nService.getEnableLanguagesMap() != null) {
-			for (String languageKey : i18nService.getEnableLanguagesMap().keySet()) {
-				defaultEnableLanguages += (languageKey + ",");
-			}
-			if (defaultEnableLanguages.length() > 1) {
-				defaultEnableLanguages = defaultEnableLanguages.substring(0, defaultEnableLanguages.length() - 1);
-			}
-		}
-		param.setUseLanguages(defaultEnableLanguages);
+		param.setUseLanguages(toolService.getDefaultEnableLanguages());
 
 		//デフォルトスキップチェック
 		boolean isDefault = readConsoleBoolean(rs("TenantBatch.Create.Wizard.confirmDefaultMsg"), false);
@@ -425,6 +431,131 @@ public class TenantBatch extends MtpCuiBase {
 
 		//LogListnerを一度削除
 		removeLogListner(loggingListner);
+
+		return ret;
+	}
+
+	private boolean startCreateSilent(Properties prop) {
+		// テナント名
+		String tenantName = prop.getProperty("tenantName");
+		if (StringUtil.isBlank(tenantName)) {
+			logError(rs("TenantBatch.Silent.requiredTenantNameMsg"));
+			return false;
+		}
+
+		// 管理者ID
+		String adminUserId = prop.getProperty("adminUserId");
+		if (StringUtil.isBlank(adminUserId)) {
+			logError(rs("TenantBatch.Silent.requiredAdminUserIdMsg"));
+			return false;
+		}
+
+		// 管理者パスワード
+		String adminPassword = prop.getProperty("adminPassword");
+		if (StringUtil.isBlank(adminPassword)) {
+			logError(rs("TenantBatch.Silent.requiredAdminPasswordMsg"));
+			return false;
+		}
+
+		TenantCreateParameter createParam = new TenantCreateParameter(tenantName, adminUserId, adminPassword);
+
+		// テナントURL
+		String tenantUrl = prop.getProperty("tenantUrl");
+		if (StringUtil.isNotBlank(tenantUrl)) {
+			createParam.setTenantUrl(tenantUrl);
+		}
+
+		// テナントURL存在チェック
+		if (toolService.existsURL(createParam.getTenantUrl())) {
+			logError(rs("TenantBatch.Silent.existsTenantMsg", createParam.getTenantUrl()));
+			return false;
+		}
+
+		// テナント表示名
+		String tenantDisplayName = prop.getProperty("tenantDisplayName");
+		if (tenantDisplayName != null) {
+			createParam.setTenantDisplayName(tenantDisplayName);
+		}
+
+		// TOP画面URL
+		String topUrl = prop.getProperty("topUrl");
+		if (topUrl != null) {
+			createParam.setTopUrl(topUrl);
+		}
+
+		// 利用言語
+		String useLanguages = prop.getProperty("useLanguages");
+		if (useLanguages != null) {
+			createParam.setUseLanguages(useLanguages);
+		} else {
+			createParam.setUseLanguages(toolService.getDefaultEnableLanguages());
+		}
+
+		// ブランクテナントの作成
+		String createBlankTenant = prop.getProperty("createBlankTenant");
+		if (createBlankTenant != null) {
+			createParam.setCreateBlankTenant(Boolean.parseBoolean(createBlankTenant));
+		}
+
+		// サブパーティション利用有無
+		String mySqlUseSubPartition = prop.getProperty("mySqlUseSubPartition");
+		if (mySqlUseSubPartition != null) {
+			createParam.setMySqlUseSubPartition(Boolean.parseBoolean(mySqlUseSubPartition));
+		}
+
+		// テナント作成者
+		String registId = prop.getProperty("registId");
+		if (registId != null) {
+			createParam.setRegistId(registId);
+		}
+
+		// 実行情報出力
+		logArguments(createParam);
+
+		// テナント作成実行
+		return executeCreate(createParam);
+	}
+
+	private boolean startSilent() {
+		// ConsoleのLogListenerを一度削除してLog出力に切り替え
+		LogListner consoleLogListener = getConsoleLogListner();
+		removeLogListner(consoleLogListener);
+		LogListner loggingListener = getLoggingLogListner();
+		addLogListner(loggingListener);
+
+		// 設定ファイル名取得
+		String configFileName = System.getProperty(KEY_CONFIG_FILE);
+		if (StringUtil.isBlank(configFileName)) {
+			logError(rs("TenantBatch.Silent.requiredConfigFileMsg", KEY_CONFIG_FILE));
+			return false;
+		}
+
+		// 設定ファイルロード
+		Properties prop = new Properties();
+		try {
+			Path path = Paths.get(configFileName);
+			if (Files.exists(path)) {
+				logDebug("load config file from file path:" + configFileName);
+				try (Reader reader = Files.newBufferedReader(path)) {
+					prop.load(reader);
+				}
+			} else {
+				URL url = TenantBatch.class.getResource(configFileName);
+				if (url != null) {
+					logDebug("load config file from classpath:" + configFileName);
+					try (Reader reader = Files.newBufferedReader(Paths.get(url.toURI()))) {
+						prop.load(reader);
+					}
+				} else {
+					logError(rs("TenantBatch.Silent.notExistsConfigFileMsg", configFileName));
+					return false;
+				}
+			}
+		} catch (IOException | URISyntaxException e) {
+			throw new SystemException(e);
+		}
+
+		boolean ret = startCreateSilent(prop);
 
 		return ret;
 	}
