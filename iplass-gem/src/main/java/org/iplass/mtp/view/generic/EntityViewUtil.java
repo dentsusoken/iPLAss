@@ -196,7 +196,16 @@ public class EntityViewUtil {
 				.map(propName -> {
 					// ネストプロパティの検証エラーを取得します。
 					return Arrays.stream(errors)
-							.filter(err -> err.getPropertyName().startsWith(propName))
+							.filter(err -> {
+								String name = err.getPropertyName();
+								// NestTable
+								if (name.indexOf("]") != -1) {
+									Integer refIndex = Integer.parseInt(name.substring(0, name.indexOf("]")).substring(name.indexOf("[") + 1));
+									return name.startsWith(propName + "[" + refIndex + "].");
+								} else {
+									return name.equals(propName);
+								}
+							})
 							.collect(Collectors.toList());
 				})
 				.flatMap(Collection::stream)
