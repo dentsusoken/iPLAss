@@ -29,7 +29,6 @@ import org.iplass.mtp.impl.auth.authenticate.builtin.BuiltinAuthenticationProvid
 import org.iplass.mtp.impl.core.ExecuteContext;
 import org.iplass.mtp.impl.core.TenantContext;
 import org.iplass.mtp.impl.core.TenantContextService;
-import org.iplass.mtp.impl.i18n.I18nService;
 import org.iplass.mtp.impl.rdb.adapter.RdbAdapter;
 import org.iplass.mtp.impl.rdb.adapter.RdbAdapterService;
 import org.iplass.mtp.impl.tenant.MetaTenant;
@@ -65,30 +64,19 @@ public class TenantToolService implements Service {
 	private TenantService tenantService;
 	private MetaTenantService metaTenantService;
 	private AuthService authService;
-	private I18nService i18nService;
 
-	private String defaultEnableLanguages = "";
+	// メタ設定(mtp-core-metadata.xml)のmetaTenantI18NInfoに合わせること
+	private String defaultEnableLanguages = "ja,en,zh-CN,zh-TW,th";
 
 	private TenantRdbManager rdbManager;
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public void init(Config config) {
-
 		tenantContextService = config.getDependentService(TenantContextService.class);
 		tenantService = config.getDependentService(TenantService.class);
 		metaTenantService = config.getDependentService(MetaTenantService.class);
 		authService = config.getDependentService(AuthService.class);
-		i18nService = config.getDependentService(I18nService.class);
-
-		if (i18nService.getEnableLanguagesMap() != null) {
-			for (String languageKey : i18nService.getEnableLanguagesMap().keySet()) {
-				defaultEnableLanguages += (languageKey + ",");
-			}
-			if (defaultEnableLanguages.length() > 1) {
-				defaultEnableLanguages = defaultEnableLanguages.substring(0, defaultEnableLanguages.length() - 1);
-			}
-		}
 
 		RdbAdapter rdbAdapter = config.getDependentService(RdbAdapterService.class).getRdbAdapter();
 
@@ -124,6 +112,10 @@ public class TenantToolService implements Service {
 		return Transaction.required(t -> {
 				return rdbManager.getTenantInfo(url);
 		});
+	}
+
+	public String getDefaultEnableLanguages() {
+		return defaultEnableLanguages;
 	}
 
 	/**
