@@ -23,6 +23,8 @@ package org.iplass.mtp.view.generic;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -32,6 +34,7 @@ import org.iplass.mtp.definition.LocalizedStringDefinition;
 import org.iplass.mtp.entity.Entity;
 import org.iplass.mtp.entity.EntityManager;
 import org.iplass.mtp.entity.SelectValue;
+import org.iplass.mtp.entity.ValidateError;
 import org.iplass.mtp.entity.definition.EntityDefinition;
 import org.iplass.mtp.entity.definition.EntityDefinitionManager;
 import org.iplass.mtp.entity.definition.LocalizedSelectValueDefinition;
@@ -61,6 +64,7 @@ import org.iplass.mtp.view.generic.editor.EditorValue;
 import org.iplass.mtp.view.generic.editor.FloatPropertyEditor;
 import org.iplass.mtp.view.generic.editor.IntegerPropertyEditor;
 import org.iplass.mtp.view.generic.editor.JoinPropertyEditor;
+import org.iplass.mtp.view.generic.editor.NestProperty;
 import org.iplass.mtp.view.generic.editor.PropertyEditor;
 import org.iplass.mtp.view.generic.editor.SelectPropertyEditor;
 import org.iplass.mtp.view.generic.editor.StringPropertyEditor;
@@ -169,6 +173,75 @@ public class EntityViewUtil {
 	public static List<Token> perse(JoinPropertyEditor editor) throws IOException {
 		Parser parser = new Parser(editor.getJoinProperties());
 		return parser.parse(editor.getFormat());
+	}
+
+	public static ValidateError[] collectNestPropertyErrors(JoinPropertyEditor editor, String prefix, final ValidateError[] errors) {
+		ValidateError error = new ValidateError();
+		error.setErrorCodes(new ArrayList<String>());
+		error.setErrorMessages(new ArrayList<String>());
+		if (StringUtil.isNotBlank(prefix)) {
+			error.setPropertyName("join_" + prefix + "." + editor.getPropertyName());
+		} else {
+			error.setPropertyName("join_" + editor.getPropertyName());
+		}
+
+		// ネストプロパティ名を取得します。
+		List<String> nestPropNames = collectNestPropertyNames(editor, prefix);
+		nestPropNames.stream()
+			.map(propName -> {
+				// ネストプロパティの検証エラーを取得します。
+				return Arrays.stream(errors)
+						.filter(err -> {
+							String name = err.getPropertyName();
+							if (name.equals(propName) || name.startsWith(propName + ".")) {
+								return true;
+							}
+							// 多重度が複数の場合、検証エラーメッセージにindex値が含む可能性があります。
+							// メターデータの定義のみからindex値が判断きないので、プロパティ名の文字列で始まるかで判断します。
+							int firstIndex = -1;
+							if (name.startsWith(propName + "[") && (firstIndex = name.indexOf("]", propName.length() + 1)) > -1) {
+								return firstIndex + 1 >= name.length() || name.charAt(firstIndex + 1) == '.';
+							}
+							return false;
+						})
+						.collect(Collectors.toList());
+			})
+			.flatMap(Collection::stream)
+			.forEach(err -> {
+				for (int i = 0; i < err.getErrorMessages().size(); i++) {
+					String errorMessage = err.getErrorMessages().get(i);
+					String errorCode = (i < err.getErrorCodes().size()) ? err.getErrorCodes().get(i) : "";
+					// 重複の検証エラーメッセージを除外します。
+					if ((errorCode.length() > 0 && error.getErrorCodes().contains(errorCode))
+							|| error.getErrorMessages().contains(errorMessage)) {
+						continue;
+					}
+					error.addErrorMessage(errorMessage, errorCode);
+				}
+			});
+
+		return error.getErrorMessages().size() > 0 ? new ValidateError[] { error } : null;
+	}
+
+	/**
+	 * エンティティの定義でJoinPropertyEditorの一番目プロパティと同じ階層のネストプロパティを取得します。
+	 */
+	private static List<String> collectNestPropertyNames(JoinPropertyEditor editor, String prefix) {
+		List<String> nestPropNames = new ArrayList<String>();
+		for (NestProperty np : editor.getJoinProperties()) {
+			if (np.getEditor() instanceof JoinPropertyEditor) {
+				JoinPropertyEditor jpe = (JoinPropertyEditor) np.getEditor();
+				// JoinPropertyにさらにJoinPropertyが定義された場合。。。
+				collectNestPropertyNames(jpe, prefix);
+			} else {
+				if (StringUtil.isNotBlank(prefix)) {
+					nestPropNames.add(prefix + "." + np.getPropertyName());
+				} else {
+					nestPropNames.add(np.getPropertyName());
+				}
+			}
+		}
+		return nestPropNames;
 	}
 
 	public static String getSelectPropertyLabel(

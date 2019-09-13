@@ -55,6 +55,9 @@ public class MetaJoinPropertyEditor extends MetaCustomPropertyEditor implements 
 	/** プロパティ */
 	private List<MetaNestProperty> properties;
 
+	/** ネストプロパティの検証エラーメッセージをまとめて表示 */
+	private boolean showNestPropertyErrors;
+
 	/**
 	 * オブジェクトIDを取得します。
 	 * @return オブジェクトID
@@ -129,6 +132,14 @@ public class MetaJoinPropertyEditor extends MetaCustomPropertyEditor implements 
 		return getProperties();
 	}
 
+	public boolean isShowNestPropertyErrors() {
+		return showNestPropertyErrors;
+	}
+
+	public void setShowNestPropertyErrors(boolean showNestPropertyErrors) {
+		this.showNestPropertyErrors = showNestPropertyErrors;
+	}
+
 	@Override
 	public void applyConfig(PropertyEditor _editor) {
 		super.fillFrom(_editor);
@@ -140,6 +151,7 @@ public class MetaJoinPropertyEditor extends MetaCustomPropertyEditor implements 
 
 		objectId = entity.getMetaData().getId();
 		format = e.getFormat();
+		showNestPropertyErrors = e.isShowNestPropertyErrors();
 		editor = MetaPropertyEditor.createInstance(e.getEditor());
 		if (e.getEditor() != null) {
 			fillCustomPropertyEditor(e.getEditor(), e.getPropertyName(), metaContext, entity);
@@ -177,6 +189,7 @@ public class MetaJoinPropertyEditor extends MetaCustomPropertyEditor implements 
 
 		_editor.setObjectName(entity.getMetaData().getName());
 		_editor.setFormat(format);
+		_editor.setShowNestPropertyErrors(showNestPropertyErrors);
 		if (editor != null) {
 			_editor.setEditor(editor.currentConfig(propertyName));
 		}
