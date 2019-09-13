@@ -108,13 +108,14 @@
 		request.setAttribute(Constants.ERROR_PROP, tmp);
 		String joinPropName = "join_" + propName;
 
-		for (ValidateError error : tmp) {
+		if (tmp != null) {
 %>
 <jsp:include page="ErrorMessage.jsp">
 	<jsp:param value="<%=joinPropName %>" name="propName" />
 </jsp:include>
 <%
 		}
+
 		// 検証エラーリストを元に戻します。
 		request.setAttribute(Constants.ERROR_PROP, errors);
 	}
