@@ -105,6 +105,17 @@ public class DetailCommandContext extends RegistrationCommandContext {
 			EntityDefinitionManager definitionLoader) {
 		super(request, entityLoader, definitionLoader);
 
+		init();
+	}
+
+	public DetailCommandContext(RequestContext request, String defName, String viewName, EntityManager entityLoader,
+			EntityDefinitionManager definitionLoader) {
+		super(request, defName, viewName, entityLoader, definitionLoader);
+
+		init();
+	}
+	
+	private void init() {
 		gemConfig = ServiceRegistry.getRegistry().getService(GemConfigService.class);
 	}
 

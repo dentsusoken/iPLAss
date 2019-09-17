@@ -53,6 +53,9 @@ public abstract class GenericCommandContext {
 	/** Entity定義名 */
 	protected String defName;
 
+	/** View定義名 */
+	protected String viewName;
+
 	/** Entity定義 */
 	protected EntityDefinition entityDefinition;
 
@@ -66,6 +69,7 @@ public abstract class GenericCommandContext {
 	public GenericCommandContext(RequestContext request) {
 		this.request = request;
 		this.defName = getParam(Constants.DEF_NAME);
+		this.viewName = getParam(Constants.VIEW_NAME);
 	}
 
 	/**
@@ -74,8 +78,13 @@ public abstract class GenericCommandContext {
 	 * @param defName Entity定義名
 	 */
 	public GenericCommandContext(RequestContext request, String defName) {
-		this.request = request;
+		this(request);
 		this.defName = defName;
+	}
+
+	public GenericCommandContext(RequestContext request, String defName, String viewName) {
+		this(request, defName);
+		this.viewName = viewName;
 	}
 
 	/**
@@ -456,7 +465,7 @@ public abstract class GenericCommandContext {
 	 * @return 画面名
 	 */
 	public String getViewName() {
-		return getParam(Constants.VIEW_NAME);
+		return viewName;
 	}
 
 	private static String resourceString(String key, Object... arguments) {

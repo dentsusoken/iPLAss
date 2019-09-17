@@ -256,6 +256,8 @@ public class Constants {
 	// ロック処理
 	public static final String LOCK_RESULT = "lockResult";
 
+	//ユーザ情報編集
+	public static final String EDIT_USER_INFO = "editUserInfo";
 	//ユーザ情報変更
 	public static final String UPDATE_USER_INFO = "updateUserInfo";
 

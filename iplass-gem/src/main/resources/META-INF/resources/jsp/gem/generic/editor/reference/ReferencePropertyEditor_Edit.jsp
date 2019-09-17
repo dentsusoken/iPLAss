@@ -190,10 +190,12 @@
 			return Collections.emptyList();
 		}
 
+		String refDefName = editor.getObjectName();
+		String refViewName = editor.getViewName();
 		EntityManager em = ManagerLocator.getInstance().getManager(EntityManager.class);
 		EntityDefinitionManager edm = ManagerLocator.getInstance().getManager(EntityDefinitionManager.class);
 		EntityViewManager evm = ManagerLocator.getInstance().getManager(EntityViewManager.class);
-		LoadEntityInterrupterHandler handler = getLoadEntityInterrupterHandler(em, edm, evm);
+		LoadEntityInterrupterHandler handler = getLoadEntityInterrupterHandler(refDefName, refViewName ,em, edm, evm);
 
 		List<Entity> entityList = new ArrayList<Entity>();
 		if (propValue instanceof Entity[]) {
@@ -218,8 +220,8 @@
 		return entityList;
 	}
 
-	LoadEntityInterrupterHandler getLoadEntityInterrupterHandler(EntityManager em, EntityDefinitionManager edm, EntityViewManager evm) {
-		DetailCommandContext context = new DetailCommandContext(TemplateUtil.getRequestContext(), em, edm);//ここでこれを作るのはちょっと微妙だが・・・
+	LoadEntityInterrupterHandler getLoadEntityInterrupterHandler(String defName, String viewName, EntityManager em, EntityDefinitionManager edm, EntityViewManager evm) {
+		DetailCommandContext context = new DetailCommandContext(TemplateUtil.getRequestContext(), defName, viewName, em, edm);//ここでこれを作るのはちょっと微妙だが・・・
 		context.setEntityDefinition(edm.get(context.getDefinitionName()));
 		context.setEntityView(evm.get(context.getDefinitionName()));
 		return context.getLoadEntityInterrupterHandler();
@@ -329,12 +331,17 @@
 	String scriptKey = (String)request.getAttribute(Constants.SECTION_SCRIPT_KEY);
 	String execType = (String) request.getAttribute(Constants.EXEC_TYPE);
 	OutputType type = (OutputType)request.getAttribute(Constants.OUTPUT_TYPE);
-	String viewName = request.getParameter(Constants.VIEW_NAME);
+	Boolean editUserInfo = (Boolean) request.getAttribute(Constants.EDIT_USER_INFO);
+	if (editUserInfo == null) editUserInfo = false;
+
+	// ツールバーから実行可能な「ユーザー情報変更」で編集する場合、AttributeにセットされたUserMaintenancePartsのViewNameを取得します。
+	String viewName = editUserInfo ? (String)request.getAttribute(Constants.VIEW_NAME) : (String)request.getParameter(Constants.VIEW_NAME);
 	if (viewName == null) {
 		viewName = "";
 	} else {
 		viewName = StringUtil.escapeHtml(viewName);
 	}
+
 	boolean isInsert = Constants.EXEC_TYPE_INSERT.equals(execType);
 	Boolean nest = (Boolean) request.getAttribute(Constants.EDITOR_REF_NEST);
 	if (nest == null) nest = false;
