@@ -185,17 +185,15 @@
 
 	//Linkタイプ、Labelタイプの場合の参照Entityのチェック
 	//初期値として設定された際に、NameやVersionが未指定の場合を考慮して詰め直す
-	List<Entity> getLinkTypeItems(Object propValue, ReferenceProperty pd, ReferencePropertyEditor editor) {
+	List<Entity> getLinkTypeItems(String defName, String viewName, Object propValue, ReferenceProperty pd, ReferencePropertyEditor editor) {
 		if (propValue == null) {
 			return Collections.emptyList();
 		}
 
-		String refDefName = editor.getObjectName();
-		String refViewName = editor.getViewName();
 		EntityManager em = ManagerLocator.getInstance().getManager(EntityManager.class);
 		EntityDefinitionManager edm = ManagerLocator.getInstance().getManager(EntityDefinitionManager.class);
 		EntityViewManager evm = ManagerLocator.getInstance().getManager(EntityViewManager.class);
-		LoadEntityInterrupterHandler handler = getLoadEntityInterrupterHandler(refDefName, refViewName ,em, edm, evm);
+		LoadEntityInterrupterHandler handler = getLoadEntityInterrupterHandler(defName, viewName, em, edm, evm);
 
 		List<Entity> entityList = new ArrayList<Entity>();
 		if (propValue instanceof Entity[]) {
@@ -464,7 +462,7 @@
 		}
 
 		//初期値として設定された際に、NameやVersionが未指定の場合を考慮して詰め直す
-		List<Entity> entityList = getLinkTypeItems(propValue, pd, editor);
+		List<Entity> entityList = getLinkTypeItems(rootDefName, viewName, propValue, pd, editor);
 
 		//ネストテーブルに使われる際に、プロパティ名にカッコとドット区切りを入れ替える
 		String _propName = propName.replace("[", "").replace("]","").replace(".", "_");
@@ -842,7 +840,7 @@ data-customStyle="<c:out value="<%=customStyle%>"/>"
 		}
 
 		//初期値として設定された際に、NameやVersionが未指定の場合を考慮して詰め直す
-		List<Entity> entityList = getLinkTypeItems(propValue, pd, editor);
+		List<Entity> entityList = getLinkTypeItems(rootDefName, viewName, propValue, pd, editor);
 
 		//ネストテーブルに使われる際に、プロパティ名にカッコとドット区切りを入れ替える
 		String _propName = propName.replace("[", "").replace("]","").replace(".", "_");
@@ -1057,7 +1055,7 @@ $(function() {
 <ul id="<c:out value="<%=ulId %>"/>" data-deletable="<c:out value="<%=(!hideDeleteButton && updatable) %>"/>" class="mb05">
 <%
 		//初期値として設定された際に、NameやVersionが未指定の場合を考慮して詰め直す
-		List<Entity> entityList = getLinkTypeItems(propValue, pd, editor);
+		List<Entity> entityList = getLinkTypeItems(rootDefName, viewName, propValue, pd, editor);
 		int length = entityList.size();
 		//多重度が１で、登録されたデータが1件も無い場合、空エンティティ1件を作成します。
 		if (!isMultiple && length == 0) {
