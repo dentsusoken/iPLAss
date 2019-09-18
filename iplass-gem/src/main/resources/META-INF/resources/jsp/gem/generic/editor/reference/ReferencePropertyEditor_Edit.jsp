@@ -329,7 +329,7 @@
 	String scriptKey = (String)request.getAttribute(Constants.SECTION_SCRIPT_KEY);
 	String execType = (String) request.getAttribute(Constants.EXEC_TYPE);
 	OutputType type = (OutputType)request.getAttribute(Constants.OUTPUT_TYPE);
-	String viewName = request.getParameter(Constants.VIEW_NAME);
+	String viewName = (String)request.getAttribute(Constants.VIEW_NAME);
 	if (viewName == null) {
 		viewName = "";
 	} else {

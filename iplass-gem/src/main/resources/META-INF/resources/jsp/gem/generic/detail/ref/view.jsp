@@ -122,6 +122,9 @@
 	request.setAttribute(Constants.DEF_NAME, defName);
 	request.setAttribute(Constants.ROOT_DEF_NAME, defName);	//NestTableの場合にDEF_NAMEが置き換わるので別名でRootのDefNameをセット
 
+	//editor以下で参照するパラメータ
+	request.setAttribute(Constants.VIEW_NAME, viewName);
+
 	//section以下で参照するパラメータ
 	request.setAttribute(Constants.OUTPUT_TYPE, type);
 	request.setAttribute(Constants.ENTITY_DATA, data.getEntity());

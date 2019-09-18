@@ -43,7 +43,7 @@
 	String rootDefName = (String)request.getAttribute(Constants.ROOT_DEF_NAME);
 	String scriptKey = (String)request.getAttribute(Constants.SECTION_SCRIPT_KEY);
 
-	String viewName = StringUtil.escapeHtml(request.getParameter(Constants.VIEW_NAME), true);
+	String viewName = StringUtil.escapeHtml((String)request.getAttribute(Constants.VIEW_NAME), true);
 
 	//カスタムスタイル
 	String customStyle = "";

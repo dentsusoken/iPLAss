@@ -38,7 +38,8 @@
 	Object value = request.getAttribute(Constants.ENTITY_DATA);
 	OutputType type = (OutputType) request.getAttribute(Constants.OUTPUT_TYPE);
 	EntityDefinition ed = (EntityDefinition) request.getAttribute(Constants.ENTITY_DEFINITION);
-	String viewName = request.getParameter(Constants.VIEW_NAME);
+	String viewName = (String) request.getAttribute(Constants.VIEW_NAME);
+	if (viewName == null) viewName = "";
 	Integer colNum = (Integer) request.getAttribute(Constants.COL_NUM);
 
 	PropertyItem property = (PropertyItem) element;
