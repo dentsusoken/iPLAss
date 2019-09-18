@@ -329,11 +329,10 @@
 	String scriptKey = (String)request.getAttribute(Constants.SECTION_SCRIPT_KEY);
 	String execType = (String) request.getAttribute(Constants.EXEC_TYPE);
 	OutputType type = (OutputType)request.getAttribute(Constants.OUTPUT_TYPE);
-	Boolean editUserInfo = (Boolean) request.getAttribute(Constants.EDIT_USER_INFO);
-	if (editUserInfo == null) editUserInfo = false;
 
-	// ツールバーから実行可能な「ユーザー情報変更」で編集する場合、AttributeにセットされたUserMaintenancePartsのViewNameを取得します。
-	String viewName = editUserInfo ? (String)request.getAttribute(Constants.VIEW_NAME) : (String)request.getParameter(Constants.VIEW_NAME);
+	// ツールバーから実行可能な「ユーザー情報変更」で編集する場合、AttributeにセットされたUserMaintenancePartsのViewNameを取得する可能性があります。
+	String viewName = request.getParameter(Constants.VIEW_NAME) != null ? 
+			(String) request.getParameter(Constants.VIEW_NAME) : (String) request.getAttribute(Constants.VIEW_NAME);
 	if (viewName == null) {
 		viewName = "";
 	} else {
@@ -1235,7 +1234,7 @@ function <%=toggleAddBtnFunc%>() {
 <%
 	} else {
 		//初期値として設定された際に、NameやVersionが未指定の場合を考慮して詰め直す
-		List<Entity> entityList = getLinkTypeItems(propValue, pd, editor);
+		List<Entity> entityList = getLinkTypeItems(rootDefName, viewName, propValue, pd, editor);
 		request.setAttribute(Constants.EDITOR_PROP_VALUE, entityList.toArray(new Entity[0]));
 		request.setAttribute(Constants.OUTPUT_HIDDEN, true);
 %>
