@@ -360,6 +360,9 @@
 	Boolean isVirtual = (Boolean) request.getAttribute(Constants.IS_VIRTUAL);
 	if (isVirtual == null) isVirtual = false;
 
+	Boolean required = (Boolean) request.getAttribute(Constants.EDITOR_REQUIRED);
+	if (required == null) required = false;
+	
 	//権限チェック
 	boolean editable = true;
 	if (isVirtual) {
@@ -755,6 +758,9 @@ data-upperType="<c:out value="<%=upperType %>"/>"
 		String cls = "list-check-01";
 		if (!isMultiple) cls = "list-radio-01";
 
+		//選択解除可能か判定
+		String radioTogglable = required ? "" : "radio-togglable";
+		
 		if (editor.getLinkProperty() != null && upperType != null && !isMultiple) {
 			//連動設定(連動元のタイプがサポートの場合のみ、かつ多重度は1のみサポート)
 			LinkProperty link = editor.getLinkProperty();
@@ -785,7 +791,7 @@ data-customStyle="<c:out value="<%=customStyle%>"/>"
 <%
 				} else {
 %>
-<input type="radio" name="<c:out value="<%=propName %>"/>" value="<c:out value="<%=_value %>"/>" <c:out value="<%=checked %>"/> /><c:out value="<%=displayPropLabel %>" />
+<input type="radio" name="<c:out value="<%=propName %>"/>" value="<c:out value="<%=_value %>"/>" class="<%=radioTogglable%>" <c:out value="<%=checked %>"/> /><c:out value="<%=displayPropLabel %>" />
 <%
 				}
 %>
@@ -812,7 +818,7 @@ data-customStyle="<c:out value="<%=customStyle%>"/>"
 <%
 				} else {
 %>
-<input type="radio" name="<c:out value="<%=propName %>"/>" value="<c:out value="<%=_value %>"/>" <c:out value="<%=checked %>"/> /><c:out value="<%=displayPropLabel %>" />
+<input type="radio" name="<c:out value="<%=propName %>"/>" value="<c:out value="<%=_value %>"/>" class="<%=radioTogglable%>" <c:out value="<%=checked %>"/> /><c:out value="<%=displayPropLabel %>" />
 <%
 				}
 %>

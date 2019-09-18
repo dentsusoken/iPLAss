@@ -78,6 +78,9 @@
 	Boolean isVirtual = (Boolean) request.getAttribute(Constants.IS_VIRTUAL);
 	if (isVirtual == null) isVirtual = false;
 
+	Boolean required = (Boolean) request.getAttribute(Constants.EDITOR_REQUIRED);
+	if (required == null) required = false;
+	
 	boolean isInsert = Constants.EXEC_TYPE_INSERT.equals(execType);
 	String propName = editor.getPropertyName();
 	AuthContext auth = AuthContext.getCurrentContext();
@@ -179,8 +182,12 @@
 <%
 				} else {
 					//ラジオボタン
+					
+					//選択解除可能か
+					String cssTogglable = required ? "" : "radio-togglable ";
+					
 %>
-<input type="radio" name="<c:out value="<%=propName %>"/>" class="<c:out value="<%=optStyle %>"/>" value="<c:out value="<%=tmp.getValue() %>"/>" <c:out value="<%=checked %>"/> /><c:out value="<%=label %>" />
+<input type="radio" name="<c:out value="<%=propName %>"/>" class="<%=cssTogglable %><c:out value="<%=optStyle %>"/>" value="<c:out value="<%=tmp.getValue() %>"/>" <c:out value="<%=checked %>"/> /><c:out value="<%=label %>" />
 <%
 				}
 %>

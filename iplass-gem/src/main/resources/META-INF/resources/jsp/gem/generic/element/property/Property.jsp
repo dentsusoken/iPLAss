@@ -125,6 +125,7 @@
 	request.setAttribute(Constants.EDITOR_PROPERTY_DEFINITION, pd);
 	if (OutputType.EDIT == type || OutputType.BULK == type) {
 		request.setAttribute(Constants.AUTOCOMPLETION_SETTING, property.getAutocompletionSetting());
+		request.setAttribute(Constants.EDITOR_REQUIRED, required);
 	}
 	String path =  EntityViewUtil.getJspPath(property.getEditor(), ViewConst.DESIGN_TYPE_GEM);
 	if (path != null) {
@@ -154,6 +155,9 @@
 		request.removeAttribute(Constants.AUTOCOMPLETION_PROP_NAME);
 		request.removeAttribute(Constants.AUTOCOMPLETION_MULTIPLICTTY);
 		request.removeAttribute(Constants.AUTOCOMPLETION_SCRIPT_PATH);
+	}
+	if (OutputType.EDIT == type || OutputType.BULK == type) {
+		request.removeAttribute(Constants.EDITOR_REQUIRED);
 	}
 %>
 </td>

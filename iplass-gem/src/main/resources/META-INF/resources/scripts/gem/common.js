@@ -3274,6 +3274,9 @@ function addNestRow(rowId, countId, multiplicy, insertTop, rootDefName, viewName
 				$($td).children(":button").on("click", function() {deleteRefTableRow(rowId, delCallback);});
 			}
 		});
+		
+		//追加された行のラジオボタン開閉制御
+		$("input.radio-togglable", $copyRow).togglableRadio();
 
 		if (callback && $.isFunction(callback)) callback.call(this, $copyRow.get(0), idx);
 	});

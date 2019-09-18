@@ -75,6 +75,9 @@
 	Boolean isVirtual = (Boolean) request.getAttribute(Constants.IS_VIRTUAL);
 	if (isVirtual == null) isVirtual = false;
 
+	Boolean required = (Boolean) request.getAttribute(Constants.EDITOR_REQUIRED);
+	if (required == null) required = false;
+	
 	boolean isInsert = Constants.EXEC_TYPE_INSERT.equals(execType);
 	String propName = editor.getPropertyName();
 	AuthContext auth = AuthContext.getCurrentContext();
@@ -171,10 +174,17 @@
 							checkedTrue = array[i] != null ? array[i] ? "checked" : "" : "";
 							checkedFalse = array[i] != null ? !array[i] ? "checked" : "" : "";
 						}
+
+						//BooleanPropertyEditorの場合はmultipleでも選択解除可能か判定
+						String cssTogglable = required ? "" : "radio-togglable";
 %>
 <ul class="<c:out value="<%=cls %>"/>">
-<li><label style="<c:out value="<%=customStyle%>"/>" title="<c:out value="<%=trueLabel %>" />"><input type="radio" name="<c:out value="<%=propName + i %>"/>" value="true" <c:out value="<%=checkedTrue %>"/> /><c:out value="<%=trueLabel %>"/></label></li>
-<li><label style="<c:out value="<%=customStyle%>"/>" title="<c:out value="<%=falseLabel %>" />"><input type="radio" name="<c:out value="<%=propName + i %>"/>" value="false" <c:out value="<%=checkedFalse %>"/> /><c:out value="<%=falseLabel %>"/></label></li>
+<li><label style="<c:out value="<%=customStyle%>"/>" title="<c:out value="<%=trueLabel %>" />">
+	<input type="radio" name="<c:out value="<%=propName + i %>"/>" value="true" class="<%=cssTogglable%>" <c:out value="<%=checkedTrue %>"/> /><c:out value="<%=trueLabel %>"/>
+</label></li>
+<li><label style="<c:out value="<%=customStyle%>"/>" title="<c:out value="<%=falseLabel %>" />">
+	<input type="radio" name="<c:out value="<%=propName + i %>"/>" value="false" class="<%=cssTogglable%>" <c:out value="<%=checkedFalse %>"/> /><c:out value="<%=falseLabel %>"/>
+</label></li>
 </ul>
 <%
 					}
@@ -201,10 +211,19 @@
 				//ラジオボタン
 				String checkedTrue = b != null ? b ? "checked" : "" : "";
 				String checkedFalse = b != null ? !b ? "checked" : "" : "";
+				
+				//選択解除可能か
+				String cssTogglable = required ? "" : "radio-togglable";
 %>
 <ul class="list-radio-01">
-<li><label style="<c:out value="<%=customStyle%>"/>" title="<c:out value="<%=trueLabel %>" />"><input type="radio" name="<c:out value="<%=propName %>"/>" value="true" <c:out value="<%=checkedTrue %>"/> /><c:out value="<%=trueLabel %>"/></label></li>
-<li><label style="<c:out value="<%=customStyle%>"/>" title="<c:out value="<%=falseLabel %>" />"><input type="radio" name="<c:out value="<%=propName %>"/>" value="false" <c:out value="<%=checkedFalse %>"/> /><c:out value="<%=falseLabel %>"/></label></li>
+<li><label style="<c:out value="<%=customStyle%>"/>" title="<c:out value="<%=trueLabel %>" />">
+	<input type="radio" name="<c:out value="<%=propName %>"/>" value="true" class="<%=cssTogglable%>" <c:out value="<%=checkedTrue %>"/> />
+	<c:out value="<%=trueLabel %>"/>
+</label></li>
+<li><label style="<c:out value="<%=customStyle%>"/>" title="<c:out value="<%=falseLabel %>" />">
+	<input type="radio" name="<c:out value="<%=propName %>"/>" value="false" class="<%=cssTogglable%>" <c:out value="<%=checkedFalse %>"/> />
+	<c:out value="<%=falseLabel %>"/>
+</label></li>
 </ul>
 <%
 			} else if (editor.getDisplayType() == BooleanDisplayType.SELECT) {
