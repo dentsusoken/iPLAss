@@ -95,10 +95,21 @@ public abstract class RegistrationCommandContext extends GenericCommandContext {
 
 	public RegistrationCommandContext(RequestContext request, EntityManager entityLoader, EntityDefinitionManager definitionLoader) {
 		super(request);
+
+		init(entityLoader, definitionLoader);
+	}
+
+	public RegistrationCommandContext(RequestContext request, String defName, String viewName, EntityManager entityLoader,
+			EntityDefinitionManager definitionLoader) {
+		super(request, defName, viewName);
+
+		init(entityLoader, definitionLoader);
+	}
+
+	private void init(EntityManager entityLoader, EntityDefinitionManager definitionLoader) {
 		this.entityManager = entityLoader;
 		this.definitionManager = definitionLoader;
-
-		ucdm = ManagerLocator.getInstance().getManager(UtilityClassDefinitionManager.class);
+		this.ucdm = ManagerLocator.getInstance().getManager(UtilityClassDefinitionManager.class);
 	}
 
 	protected Entity newEntity() {

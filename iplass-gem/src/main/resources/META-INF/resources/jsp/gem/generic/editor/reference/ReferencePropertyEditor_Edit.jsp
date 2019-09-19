@@ -185,7 +185,7 @@
 
 	//Linkタイプ、Labelタイプの場合の参照Entityのチェック
 	//初期値として設定された際に、NameやVersionが未指定の場合を考慮して詰め直す
-	List<Entity> getLinkTypeItems(Object propValue, ReferenceProperty pd, ReferencePropertyEditor editor) {
+	List<Entity> getLinkTypeItems(String defName, String viewName, Object propValue, ReferenceProperty pd, ReferencePropertyEditor editor) {
 		if (propValue == null) {
 			return Collections.emptyList();
 		}
@@ -193,7 +193,7 @@
 		EntityManager em = ManagerLocator.getInstance().getManager(EntityManager.class);
 		EntityDefinitionManager edm = ManagerLocator.getInstance().getManager(EntityDefinitionManager.class);
 		EntityViewManager evm = ManagerLocator.getInstance().getManager(EntityViewManager.class);
-		LoadEntityInterrupterHandler handler = getLoadEntityInterrupterHandler(em, edm, evm);
+		LoadEntityInterrupterHandler handler = getLoadEntityInterrupterHandler(defName, viewName, em, edm, evm);
 
 		List<Entity> entityList = new ArrayList<Entity>();
 		if (propValue instanceof Entity[]) {
@@ -218,8 +218,8 @@
 		return entityList;
 	}
 
-	LoadEntityInterrupterHandler getLoadEntityInterrupterHandler(EntityManager em, EntityDefinitionManager edm, EntityViewManager evm) {
-		DetailCommandContext context = new DetailCommandContext(TemplateUtil.getRequestContext(), em, edm);//ここでこれを作るのはちょっと微妙だが・・・
+	LoadEntityInterrupterHandler getLoadEntityInterrupterHandler(String defName, String viewName, EntityManager em, EntityDefinitionManager edm, EntityViewManager evm) {
+		DetailCommandContext context = new DetailCommandContext(TemplateUtil.getRequestContext(), defName, viewName, em, edm);//ここでこれを作るのはちょっと微妙だが・・・
 		context.setEntityDefinition(edm.get(context.getDefinitionName()));
 		context.setEntityView(evm.get(context.getDefinitionName()));
 		return context.getLoadEntityInterrupterHandler();
@@ -335,6 +335,7 @@
 	} else {
 		viewName = StringUtil.escapeHtml(viewName);
 	}
+
 	boolean isInsert = Constants.EXEC_TYPE_INSERT.equals(execType);
 	Boolean nest = (Boolean) request.getAttribute(Constants.EDITOR_REF_NEST);
 	if (nest == null) nest = false;
@@ -460,7 +461,7 @@
 		}
 
 		//初期値として設定された際に、NameやVersionが未指定の場合を考慮して詰め直す
-		List<Entity> entityList = getLinkTypeItems(propValue, pd, editor);
+		List<Entity> entityList = getLinkTypeItems(rootDefName, viewName, propValue, pd, editor);
 
 		//ネストテーブルに使われる際に、プロパティ名にカッコとドット区切りを入れ替える
 		String _propName = propName.replace("[", "").replace("]","").replace(".", "_");
@@ -841,7 +842,7 @@ data-customStyle="<c:out value="<%=customStyle%>"/>"
 		}
 
 		//初期値として設定された際に、NameやVersionが未指定の場合を考慮して詰め直す
-		List<Entity> entityList = getLinkTypeItems(propValue, pd, editor);
+		List<Entity> entityList = getLinkTypeItems(rootDefName, viewName, propValue, pd, editor);
 
 		//ネストテーブルに使われる際に、プロパティ名にカッコとドット区切りを入れ替える
 		String _propName = propName.replace("[", "").replace("]","").replace(".", "_");
@@ -1056,7 +1057,7 @@ $(function() {
 <ul id="<c:out value="<%=ulId %>"/>" data-deletable="<c:out value="<%=(!hideDeleteButton && updatable) %>"/>" class="mb05">
 <%
 		//初期値として設定された際に、NameやVersionが未指定の場合を考慮して詰め直す
-		List<Entity> entityList = getLinkTypeItems(propValue, pd, editor);
+		List<Entity> entityList = getLinkTypeItems(rootDefName, viewName, propValue, pd, editor);
 		int length = entityList.size();
 		//多重度が１で、登録されたデータが1件も無い場合、空エンティティ1件を作成します。
 		if (!isMultiple && length == 0) {
@@ -1236,7 +1237,7 @@ function <%=toggleAddBtnFunc%>() {
 <%
 	} else {
 		//初期値として設定された際に、NameやVersionが未指定の場合を考慮して詰め直す
-		List<Entity> entityList = getLinkTypeItems(propValue, pd, editor);
+		List<Entity> entityList = getLinkTypeItems(rootDefName, viewName, propValue, pd, editor);
 		request.setAttribute(Constants.EDITOR_PROP_VALUE, entityList.toArray(new Entity[0]));
 		request.setAttribute(Constants.OUTPUT_HIDDEN, true);
 %>

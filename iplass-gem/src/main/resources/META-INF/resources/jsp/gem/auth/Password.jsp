@@ -204,6 +204,7 @@ if ("true".equals(request.getAttribute(Constants.UPDATE_USER_INFO))) {
 <tbody>
 <%
 			request.setAttribute(Constants.DEF_NAME, defName);
+			request.setAttribute(Constants.ROOT_DEF_NAME, defName); //NestTableの場合にDEF_NAMEが置き換わるので別名でRootのDefNameをセット
 			request.setAttribute(Constants.VIEW_NAME, setting.getViewName());
 			request.setAttribute(Constants.OUTPUT_TYPE, OutputType.EDIT);
 			request.setAttribute(Constants.ENTITY_DEFINITION, ed);
