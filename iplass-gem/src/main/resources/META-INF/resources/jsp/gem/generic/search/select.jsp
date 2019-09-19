@@ -44,7 +44,6 @@
 
 	String defName = data.getEntityDefinition().getName();
 	String viewName = form.getName();
-	if (viewName == null) viewName = "";
 
 	//表示名
 	String displayName = TemplateUtil.getMultilingualString(data.getEntityDefinition().getDisplayName(), data.getEntityDefinition().getLocalizedDisplayNameList());
