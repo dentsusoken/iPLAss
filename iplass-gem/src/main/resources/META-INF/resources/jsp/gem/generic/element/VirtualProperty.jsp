@@ -115,6 +115,9 @@
 		request.setAttribute(Constants.EDITOR_PROP_VALUE, propValue);
 		request.setAttribute(Constants.EDITOR_PROPERTY_DEFINITION, pd);
 		request.setAttribute(Constants.IS_VIRTUAL, true);
+		if (OutputType.EDIT == type) {
+			request.setAttribute(Constants.EDITOR_REQUIRED, required);
+		}
 %>
 <jsp:include page="<%=path %>" />
 <%
@@ -122,6 +125,9 @@
 		request.removeAttribute(Constants.EDITOR_PROP_VALUE);
 		request.removeAttribute(Constants.EDITOR_PROPERTY_DEFINITION);
 		request.removeAttribute(Constants.IS_VIRTUAL);
+		if (OutputType.EDIT == type) {
+			request.removeAttribute(Constants.EDITOR_REQUIRED);
+		}
 	}
 	if (showDesc) {
 %>

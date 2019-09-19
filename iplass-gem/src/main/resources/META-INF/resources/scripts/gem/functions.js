@@ -34,6 +34,7 @@
  * modalWindow
  * subModalWindow
  * commaField
+ * togglableRadio
  * switchCondition
  * massReferenceTable
  * pager
@@ -1055,6 +1056,41 @@ $.fn.allInputCheck = function(){
 			range.select();
 		}
 	}
+})(jQuery);
+
+/**
+ * 編集画面のラジオボタンの選択解除を可能にする。
+ */
+(function($) {
+	var _radioValues = [];
+	$.fn.togglableRadio = function(){
+		if (!this) return false;
+
+		this.each(function(){
+			var $this = $(this);
+
+			$this.on("click", function() {
+				var _this = $(this);
+				var _name = _this.attr('name');
+				var _val  = _this.val();
+				if (_radioValues[_name] === '' || _radioValues[_name] === null || _radioValues[_name] === undefined) {
+					_radioValues[_name] = _val;
+				} else {
+					if (_radioValues[_name] == _val) {
+						_this.prop('checked', false);
+						_radioValues[_name] = '';
+					} else {
+						_radioValues[_name] = _val;
+					}
+				}
+			});
+			//初期値を保持
+			if ($this.prop("checked")) {
+				var _name = $this.attr('name');
+				_radioValues[_name] = $this.val();
+			}
+		});
+	};
 })(jQuery);
 
 /**

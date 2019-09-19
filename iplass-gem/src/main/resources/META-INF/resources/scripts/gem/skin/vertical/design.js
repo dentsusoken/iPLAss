@@ -156,6 +156,9 @@ $(function(){
 		});
 	}
 
+	//編集画面のラジオボタンの選択解除
+	$("input.radio-togglable").togglableRadio();
+
 	//ゴミ箱
 	$(".allInput").allInputCheck();
 

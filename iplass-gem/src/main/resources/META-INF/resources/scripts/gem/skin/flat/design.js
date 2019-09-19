@@ -422,17 +422,22 @@ $(function() {
  * @returns
  */
 function createPseudoObject() {
-	var $this = $(this), isChecked = "";
+	var $this = $(this), isChecked = "", valueTogglable = "";
 
 	//jqgridの選択用checkboxは除外
 	if ($this.hasClass("cbox")) {
 		return;
 	}
+	
+	//値の選択解除が可能か
+	if ($this.hasClass("radio-togglable")) {
+		valueTogglable = "radio-togglable";
+	}
 
 	if ($this.prop("checked")) {
 		isChecked = "checked";
 	}
-	var $pseudo = $("<span class='pseudo-" + $this.attr("type") + " " + isChecked + "'/>").attr("tabIndex", "0").insertBefore(this);
+	var $pseudo = $("<span class='pseudo-" + $this.attr("type") + " " + isChecked + " " + valueTogglable + "'/>").attr("tabIndex", "0").insertBefore(this);
 	$pseudo.on("keydown", function(e) {
 		//Spaceで選択
 		if(e.keyCode === 32) {
@@ -461,7 +466,7 @@ function createPseudoObject() {
 		$(this).prev().trigger("click");
 	});
 }
-
+ 
 /**
  * 偽チェックボックスクリックイベント
  * @returns
@@ -493,6 +498,11 @@ function onClickPseudoRadio() {
 	if (!$this.is(".checked")) {
 		$pseudoSiblings.removeClass("checked");
 		$this.addClass("checked").next("input").prop("checked", true).trigger("change");
+	} else {
+		//選択されている場合は、設定により解除
+		if ($this.hasClass("radio-togglable")) {
+			$this.removeClass("checked").next("input").prop("checked", false).trigger("change");
+		}
 	}
 	return false;
 }

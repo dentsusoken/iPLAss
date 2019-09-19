@@ -230,7 +230,7 @@
 	String rootDefName = (String)request.getAttribute(Constants.ROOT_DEF_NAME);
 	ReferenceProperty pd = (ReferenceProperty) request.getAttribute(Constants.EDITOR_PROPERTY_DEFINITION);
 	String scriptKey = (String)request.getAttribute(Constants.SECTION_SCRIPT_KEY);
-	String viewName = request.getParameter(Constants.VIEW_NAME);
+	String viewName = (String)request.getAttribute(Constants.VIEW_NAME);
 	if (viewName == null) {
 		viewName = "";
 	} else {

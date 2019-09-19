@@ -38,7 +38,8 @@
 	Object value = request.getAttribute(Constants.ENTITY_DATA);
 	OutputType type = (OutputType) request.getAttribute(Constants.OUTPUT_TYPE);
 	EntityDefinition ed = (EntityDefinition) request.getAttribute(Constants.ENTITY_DEFINITION);
-	String viewName = request.getParameter(Constants.VIEW_NAME);
+	String viewName = (String) request.getAttribute(Constants.VIEW_NAME);
+	if (viewName == null) viewName = "";
 	Integer colNum = (Integer) request.getAttribute(Constants.COL_NUM);
 
 	PropertyItem property = (PropertyItem) element;
@@ -125,6 +126,7 @@
 	request.setAttribute(Constants.EDITOR_PROPERTY_DEFINITION, pd);
 	if (OutputType.EDIT == type || OutputType.BULK == type) {
 		request.setAttribute(Constants.AUTOCOMPLETION_SETTING, property.getAutocompletionSetting());
+		request.setAttribute(Constants.EDITOR_REQUIRED, required);
 	}
 	String path =  EntityViewUtil.getJspPath(property.getEditor(), ViewConst.DESIGN_TYPE_GEM);
 	if (path != null) {
@@ -154,6 +156,9 @@
 		request.removeAttribute(Constants.AUTOCOMPLETION_PROP_NAME);
 		request.removeAttribute(Constants.AUTOCOMPLETION_MULTIPLICTTY);
 		request.removeAttribute(Constants.AUTOCOMPLETION_SCRIPT_PATH);
+	}
+	if (OutputType.EDIT == type || OutputType.BULK == type) {
+		request.removeAttribute(Constants.EDITOR_REQUIRED);
 	}
 %>
 </td>
