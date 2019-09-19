@@ -244,6 +244,12 @@ for (var i = 0; i < value.length; i++) {
 }
 <%
 	} else if (editor.getDisplayType() == ReferenceDisplayType.UNIQUE) {
+
+		if (editor.isSingleSelect()) {
+%>
+value = value.length > 0 ? value.slice(0, 1) : [];
+<%
+		}
 %>
 if (value.length > 0) {
 	$("#ul_sc_" + _propName).children(":visible").remove();

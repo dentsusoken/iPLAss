@@ -807,7 +807,7 @@ public class EntityViewManagerImpl extends AbstractTypedDefinitionManager<Entity
 		//連動先の多重度が複数の場合、Listで格納
 		//連動先の多重度が単数の場合、値をそのまま格納
 		PropertyDefinition pd = EntityViewUtil.getPropertyDefinition(propName, edm.get(definitionName));
-		Object currValue = pd.getMultiplicity() == 1 ? currentValue.get(0) : currentValue;
+		Object currValue = pd.getMultiplicity() == 1 ? (currentValue.size() > 0 ? currentValue.get(0) : "") : currentValue;
 		boolean isReference = editor instanceof ReferencePropertyEditor;
 		Object value = handler.handle(param, currValue, isReference);
 

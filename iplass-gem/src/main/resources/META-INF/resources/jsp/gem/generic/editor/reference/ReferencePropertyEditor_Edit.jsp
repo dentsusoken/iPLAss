@@ -1145,8 +1145,6 @@ $(function() {
 		}
 
 		String dummyRowId = "id_li_" + propName + "Dummmy";
-
-		if (isMultiple) {
 %>
 <li id="<c:out value="<%=dummyRowId %>"/>" class="list-add unique-list" style="display: none;"
  data-defName="<c:out value="<%=rootDefName%>"/>"
@@ -1201,10 +1199,8 @@ $(function() {
 </span>
 <input type="hidden" />
 </li>
-<%
-		}
-%>
 </ul>
+<input type="hidden" id="id_count_<c:out value="<%=propName%>"/>" value="<c:out value="<%=entityList.size()%>"/>" />
 <%
 		if (isMultiple) {
 			String addBtnStyle = "";
@@ -1217,7 +1213,6 @@ function <%=toggleAddBtnFunc%>() {
 }
 </script>
 <input type="button" id="id_addBtn_<c:out value="<%=propName%>"/>" value="${m:rs('mtp-gem-messages', 'generic.editor.reference.ReferencePropertyEditor_Edit.add')}" class="gr-btn-02 add-btn" style="<%=addBtnStyle%>" onclick="addUniqueRefItem('<%=StringUtil.escapeJavaScript(ulId)%>', <%=multiplicity%>, '<%=StringUtil.escapeJavaScript(dummyRowId)%>', '<%=StringUtil.escapeJavaScript(propName)%>', 'id_count_<%=StringUtil.escapeJavaScript(propName)%>', <%=toggleAddBtnFunc%>, <%=toggleAddBtnFunc%>)" />
-<input type="hidden" id="id_count_<c:out value="<%=propName%>"/>" value="<c:out value="<%=entityList.size()%>"/>" />
 <%
 		}
 
