@@ -80,7 +80,7 @@
 	String searchCond = request.getParameter(Constants.SEARCH_COND);
 	if (searchCond == null) searchCond = "";
 
-	String viewName = request.getParameter(Constants.VIEW_NAME);
+	String viewName = (String) request.getAttribute(Constants.VIEW_NAME);
 	if (viewName == null) viewName = "";
 
 	HashMap<String, Object> defaultSearchCond = (HashMap<String, Object>) request.getAttribute(Constants.DEFAULT_SEARCH_COND);

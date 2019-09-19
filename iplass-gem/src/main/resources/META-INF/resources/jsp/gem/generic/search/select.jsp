@@ -43,6 +43,7 @@
 	SearchFormView form = data.getView();
 
 	String defName = data.getEntityDefinition().getName();
+	String viewName = form.getName();
 
 	//表示名
 	String displayName = TemplateUtil.getMultilingualString(data.getEntityDefinition().getDisplayName(), data.getEntityDefinition().getLocalizedDisplayNameList());
@@ -75,6 +76,9 @@
 	//権限チェック用に定義名をリクエストに保存
 	request.setAttribute(Constants.DEF_NAME, defName);
 	request.setAttribute(Constants.ROOT_DEF_NAME, defName);	//NestTableの場合にDEF_NAMEが置き換わるので別名でRootのDefNameをセット
+
+	//editor以下で参照するパラメータ
+	request.setAttribute(Constants.VIEW_NAME, viewName);
 
 	String className = defName.replaceAll("\\.", "_");
 %>

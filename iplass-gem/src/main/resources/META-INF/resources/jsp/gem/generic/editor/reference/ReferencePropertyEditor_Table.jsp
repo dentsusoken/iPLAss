@@ -259,7 +259,7 @@
 	} else {
 		updateRefAction = contextPath + "/" + UpdateReferencePropertyCommand.ACTION_NAME;
 	}
-	String viewName = request.getParameter(Constants.VIEW_NAME);
+	String viewName = (String)request.getAttribute(Constants.VIEW_NAME);
 	if (viewName == null) viewName = "";
 	if (StringUtil.isNotBlank(viewName)) {
 		updateRefAction = updateRefAction + "/" + viewName;

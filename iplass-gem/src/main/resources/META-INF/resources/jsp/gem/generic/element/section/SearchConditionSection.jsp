@@ -222,7 +222,7 @@
 
 	//Commandで設定されるパラメータ
 	SearchFormViewData data = (SearchFormViewData) request.getAttribute(Constants.DATA);
-	String viewName = request.getParameter(Constants.VIEW_NAME);
+	String viewName = (String) request.getAttribute(Constants.VIEW_NAME);
 	if (viewName == null) viewName = "";
 	HashMap<String, Object> defaultSearchCond = (HashMap<String, Object>) request.getAttribute(Constants.DEFAULT_SEARCH_COND);
 

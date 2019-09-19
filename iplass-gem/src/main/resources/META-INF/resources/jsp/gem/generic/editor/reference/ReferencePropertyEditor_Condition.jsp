@@ -277,7 +277,8 @@
 	if (required == null) required = false;
 	@SuppressWarnings("unchecked") HashMap<String, Object> defaultSearchCond = (HashMap<String, Object>) request.getAttribute(Constants.DEFAULT_SEARCH_COND);
 
-	String viewName = request.getParameter(Constants.VIEW_NAME);
+	String viewName = (String)request.getAttribute(Constants.VIEW_NAME);
+	if (viewName == null) viewName = "";
 	String searchCond = request.getParameter(Constants.SEARCH_COND);
 	String defName = request.getParameter(Constants.DEF_NAME);
 

@@ -204,6 +204,7 @@ if ("true".equals(request.getAttribute(Constants.UPDATE_USER_INFO))) {
 <tbody>
 <%
 			request.setAttribute(Constants.DEF_NAME, defName);
+			request.setAttribute(Constants.VIEW_NAME, setting.getViewName());
 			request.setAttribute(Constants.OUTPUT_TYPE, OutputType.EDIT);
 			request.setAttribute(Constants.ENTITY_DEFINITION, ed);
 			request.setAttribute(Constants.EXEC_TYPE, Constants.EXEC_TYPE_UPDATE);
