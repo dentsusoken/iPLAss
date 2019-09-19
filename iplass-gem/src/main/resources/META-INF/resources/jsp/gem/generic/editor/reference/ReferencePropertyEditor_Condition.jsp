@@ -280,6 +280,7 @@
 	String viewName = (String)request.getAttribute(Constants.VIEW_NAME);
 	if (viewName == null) viewName = "";
 	String searchCond = request.getParameter(Constants.SEARCH_COND);
+	String defName = request.getParameter(Constants.DEF_NAME);
 
 
 	String propName = Constants.SEARCH_COND_PREFIX + editor.getPropertyName();
@@ -675,7 +676,7 @@ $(function() {
 		, refEdit: false
 		, viewName: "<%=StringUtil.escapeJavaScript(_viewName) %>"
 		, permitConditionSelectAll: <%=editor.isPermitConditionSelectAll()%>
-		, parentDefName: "<%=StringUtil.escapeJavaScript(rootDefName)%>"
+		, parentDefName: "<%=StringUtil.escapeJavaScript(defName)%>"
 		, parentViewName: "<%=StringUtil.escapeJavaScript(viewName)%>"
 		, viewType: "<%=Constants.VIEW_TYPE_SEARCH %>"
 	}
