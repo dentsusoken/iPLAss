@@ -329,10 +329,7 @@
 	String scriptKey = (String)request.getAttribute(Constants.SECTION_SCRIPT_KEY);
 	String execType = (String) request.getAttribute(Constants.EXEC_TYPE);
 	OutputType type = (OutputType)request.getAttribute(Constants.OUTPUT_TYPE);
-
-	// ツールバーから実行可能な「ユーザー情報変更」で編集する場合、AttributeにセットされたUserMaintenancePartsのViewNameを取得する可能性があります。
-	String viewName = request.getParameter(Constants.VIEW_NAME) != null ? 
-			(String) request.getParameter(Constants.VIEW_NAME) : (String) request.getAttribute(Constants.VIEW_NAME);
+	String viewName = (String)request.getAttribute(Constants.VIEW_NAME);
 	if (viewName == null) {
 		viewName = "";
 	} else {
