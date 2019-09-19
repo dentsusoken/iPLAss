@@ -7,7 +7,7 @@ Java-based enterprise-class low-code development platform that have been focused
 
 * https://iplass.org/en/[iPLAss Website]
 * https://iplass.org/en/intro/[Getting Started]
-* https://iplass.org/docs/[Document] _(English version is under constuction)_
+* https://iplass.org/en/docs/[Document] _(English version is under constuction)_
 
 ## Docker
 
