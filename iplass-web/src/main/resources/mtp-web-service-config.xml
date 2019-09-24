@@ -377,6 +377,10 @@
 			<property name="status" value="403" />
 		</property>
 		<property name="statusMap">
+			<property name="exception" value="org.iplass.mtp.impl.web.RequestBodyTooLargeException" />
+			<property name="status" value="413" />
+		</property>
+		<property name="statusMap">
 			<property name="exception" value="org.iplass.mtp.ApplicationException" />
 			<property name="status" value="500" />
 		</property>
@@ -509,6 +513,7 @@
 		<property name="interceptor" class="org.iplass.mtp.impl.web.interceptors.AuthInterceptor" />
 		<property name="interceptor" class="org.iplass.mtp.impl.web.interceptors.ExceptionInterceptor">
 			<property name="noHande" value="org.iplass.mtp.auth.NeedTrustedAuthenticationException" />
+			<property name="noHande" value="org.iplass.mtp.impl.web.RequestBodyTooLargeException" />
 			<property name="eliminate" value="org.apache.catalina.connector.ClientAbortException" />
 			<property name="eliminate" value="org.iplass.mtp.impl.web.WebProcessRuntimeException:org.apache.catalina.connector.ClientAbortException" />
 		</property>

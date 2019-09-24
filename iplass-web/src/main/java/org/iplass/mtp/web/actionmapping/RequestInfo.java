@@ -20,10 +20,13 @@
 
 package org.iplass.mtp.web.actionmapping;
 
+import java.io.BufferedReader;
+import java.io.IOException;
 import java.security.Principal;
 import java.util.Enumeration;
 import java.util.Locale;
 
+import javax.servlet.ServletInputStream;
 import javax.servlet.ServletRequest;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -32,6 +35,7 @@ import org.iplass.mtp.command.RequestContext;
 import org.iplass.mtp.web.WebRequestConstants;
 
 /**
+ * <% if (doclang == "ja") {%>
  * Web経由のリクエストの際の、HttpServletRequestから取得可能な情報を表す。
  * HttpServletRequestの一部メソッドを利用した場合、基盤の挙動を保証することが難しいため、
  * ラップするクラスを定義し、利用可能な情報のみ取得可能にしたもの。
@@ -39,10 +43,58 @@ import org.iplass.mtp.web.WebRequestConstants;
  * Webからの呼び出しの際、CommandもしくはGroovyTemplateにて、
  * {@link RequestContext}のattributeから取得可能（attribute名は、{@link WebRequestConstants}を参照のこと）。
  * 
+ * <%} else {%>
+ * Represents available methods of HttpServletRequest.
+ * When using some methods of HttpServletRequest,
+ * it is difficult to guarantee iPLAss's behavior,
+ * so the interface is defined and only the methods that can be used are defined.
+ * 
+ * When invoke from the web, in Command or GroovyTemplate,
+ * It can be get from the attribute of {@link RequestContext}.
+ * see {@link WebRequestConstants} for attribute name.
+ * 
+ * <%}%>
+ * 
  * @author K.Higuchi
  *
  */
 public interface RequestInfo {
+
+	/**
+	 * <% if (doclang == "ja") {%>
+	 * リクエストボディのInputStreamを取得します。
+	 * リクエストのヘッダーでcontent-typeが指定されていない場合、ボディは空として扱います。
+	 * 
+	 * <%} else {%>
+	 * Get InputStream of request body.
+	 * If content-type is not specified in the request header,
+	 * the body is treated as empty.
+	 * 
+	 * <%}%>
+	 * 
+	 * @see ServletRequest#getInputStream()
+	 * @return
+	 * @throws IOException
+	 */
+	public ServletInputStream getInputStream() throws IOException;
+
+	/**
+	 * <% if (doclang == "ja") {%>
+	 * リクエストボディのReaderを取得します。
+	 * リクエストのヘッダーでcontent-typeが指定されていない場合、ボディは空として扱います。
+	 * 
+	 * <%} else {%>
+	 * Get Reader of request body.
+	 * If content-type is not specified in the request header,
+	 * the body is treated as empty.
+	 * 
+	 * <%}%>
+	 * 
+	 * @see ServletRequest#getReader()
+	 * @return
+	 * @throws IOException
+	 */
+	public BufferedReader getReader() throws IOException;
 
 	/**
 	 * @see ServletRequest#getCharacterEncoding()
@@ -63,7 +115,13 @@ public interface RequestInfo {
 	public String getContentType();
 
 	/**
-	 * 現在のリクエストに最適の言語をLocaleの形式で取得。
+	 * <% if (doclang == "ja") {%>
+	 * 現在のリクエストに最適の言語をLocaleの形式で取得します。
+	 * 
+	 * <%} else {%>
+	 * Get the appropriate locale of language for the current request.
+	 * 
+	 * <%}%>
 	 * 
 	 * @see ServletRequest#getLocale()
 	 * @return

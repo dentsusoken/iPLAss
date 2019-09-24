@@ -41,6 +41,7 @@ public class MtpApplication extends Application {
 		Set<Class<?>> s = new HashSet<Class<?>>();
 		s.add(RestCommandInvoker.class);
 		s.add(MtpExceptionMapper.class);
+		s.add(MtpContainerRequestFilter.class);
 
 		s.add(ObjectMapperProvider.class);
 		s.add(JAXBContextProvider.class);

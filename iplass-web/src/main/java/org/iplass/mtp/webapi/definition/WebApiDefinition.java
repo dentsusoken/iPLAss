@@ -112,6 +112,57 @@ public class WebApiDefinition implements Definition {
 	
 	private String[] oauthScopes;
 
+	private String[] allowRequestContentTypes;
+
+	private Long maxRequestBodySize;
+	private Long maxFileSize;
+
+	public Long getMaxFileSize() {
+		return maxFileSize;
+	}
+
+	/**
+	 * multipart/form-data時のアップロードファイルの最大サイズ。-1の場合は無制限。
+	 * １つのファイルに対する最大サイズなので、複数のファイルの合計サイズを制限したい場合は、
+	 * maxRequestBodySizeを設定します。
+	 * 
+	 * @param maxFileSize
+	 */
+	public void setMaxFileSize(Long maxFileSize) {
+		this.maxFileSize = maxFileSize;
+	}
+
+	public Long getMaxRequestBodySize() {
+		return maxRequestBodySize;
+	}
+
+	/**
+	 * リクエストボディの最大サイズ。-1の場合は無制限。
+	 * 
+	 * @param maxRequestBodySize
+	 */
+	public void setMaxRequestBodySize(Long maxRequestBodySize) {
+		this.maxRequestBodySize = maxRequestBodySize;
+	}
+
+	public String[] getAllowRequestContentTypes() {
+		return allowRequestContentTypes;
+	}
+
+	/**
+	 * 許可するリクエストボディのContentTypeを指定。未指定の場合はすべて許可。<br>
+	 * accepts指定より、allowRequestContentTypesの指定による制限が優先されます。<br>
+	 * 例えば、
+	 * accepts指定によりJSON形式の処理が有効化されている場合において、
+	 * allowRequestContentTypesに"application/json"が含まれない場合は、
+	 * JSON形式によるリクエストは処理されません。
+	 * 
+	 * @param allowRequestContentTypes
+	 */
+	public void setAllowRequestContentTypes(String[] allowRequestContentTypes) {
+		this.allowRequestContentTypes = allowRequestContentTypes;
+	}
+	
 	public String[] getOauthScopes() {
 		return oauthScopes;
 	}

@@ -81,6 +81,35 @@ public @interface WebApi {
 	CommandConfig command() default @CommandConfig;
 	RequestType[] accepts() default{};
 	MethodType[] methods() default{};
+	
+	/**
+	 * 許可するリクエストボディのContentType。デフォルト未指定（＝すべて許可）。<br>
+	 * accepts指定より、allowRequestContentTypesの指定による制限が優先されます。<br>
+	 * 例えば、
+	 * accepts指定によりJSON形式の処理が有効化されている場合において、
+	 * allowRequestContentTypesに"application/json"が含まれない場合は、
+	 * JSON形式によるリクエストは処理されません。
+	 * 
+	 */
+	String[] allowRequestContentTypes() default {};
+	
+	/**
+	 * リクエストボディの最大サイズ（バイト）。-1の場合は無制限を表す。
+	 * annotation上ではデフォルト値はLong.MIN_VALUEだが、これは未指定を表す。
+	 * 
+	 * @return
+	 */
+	long maxRequestBodySize() default Long.MIN_VALUE;
+
+	/**
+	 * multipart/form-dataの際のファイルの最大サイズ（バイト）。-1の場合は無制限を表す。
+	 * annotation上ではデフォルト値はLong.MIN_VALUEだが、これは未指定を表す。
+	 * １つのファイルに対する最大サイズなので、複数のファイルの合計サイズを制限したい場合は、
+	 * maxRequestBodySizeを設定します。
+	 * 
+	 * @return
+	 */
+	long maxFileSize() default Long.MIN_VALUE;
 	StateType state() default StateType.STATEFUL;
 	boolean supportBearerToken() default false;
 	String[] oauthScopes() default{};

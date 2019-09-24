@@ -53,7 +53,7 @@ public class UploadFileHandleImpl implements UploadFileHandle {
 	private static final Logger logger = LoggerFactory.getLogger(UploadFileHandleImpl.class);
 	private static WebFrontendService webFront = ServiceRegistry.getRegistry().getService(WebFrontendService.class);
 
-	public static UploadFileHandleImpl toUploadFileHandle(InputStream is, String fileName, String type, ServletContext servletContext) throws IOException {
+	public static UploadFileHandleImpl toUploadFileHandle(InputStream is, String fileName, String type, ServletContext servletContext, long maxSize) throws IOException {
 		try {
 			UploadFileHandleImpl value = null;
 			
@@ -63,7 +63,6 @@ public class UploadFileHandleImpl implements UploadFileHandle {
 			} else {
 				tempDir = new File(webFront.getTempFileDir());
 			}
-			long maxSize = webFront.getMaxUploadFileSize();
 			
 	    	fileName = delPath(fileName);
 			if (fileName != null && fileName.length() != 0) {
@@ -73,7 +72,20 @@ public class UploadFileHandleImpl implements UploadFileHandle {
 				try {
 					tempFile = File.createTempFile("tmp", ext, tempDir);
 					try (FileOutputStream fos = new FileOutputStream(tempFile)) {
+						//TODO ここでサイズオーバーの場合ぶった切るか？後続のウイルスチェックするため、一旦全部読み込みか？
+						//後者の実装としとく。
 						size = Streams.copy(is, fos, true);
+					}
+					
+					// tempFileのウィルスチェック
+					FileScanner scanHandle = webFront.getUploadFileScanner();
+					if (scanHandle != null) {
+						scanHandle.scan(tempFile.getAbsolutePath());
+						
+						// ウィルスに感染していた場合はファイルを削除する設定になっている事が前提
+						if (!tempFile.exists()) {
+							throw new WebProcessRuntimeException(fileName + " is a file infected with the virus.");
+						}
 					}
 				} catch (RuntimeException | IOException e) {
 					if (tempFile != null) {
@@ -85,18 +97,7 @@ public class UploadFileHandleImpl implements UploadFileHandle {
 					}
 					throw e;
 				}
-				
-				// tempFileのウィルスチェック
-				FileScanner scanHandle = webFront.getUploadFileScanner();
-				
-				if (scanHandle != null) {
-					scanHandle.scan(tempFile.getAbsolutePath());
-					// ウィルスに感染していた場合はファイルを削除する設定になっている事が前提
-					if (!tempFile.exists()) {
-						throw new WebProcessRuntimeException(fileName + " is a file infected with the virus.");
-					}
-				}
-		
+
 				if (maxSize != -1 && size > maxSize) {
 					value = new UploadFileHandleImpl(tempFile, fileName, type, size, true);
 				} else {
@@ -109,7 +110,9 @@ public class UploadFileHandleImpl implements UploadFileHandle {
 				try {
 					is.close();
 				} catch (IOException e) {
-					logger.warn("can not close resource:" + fileName + ", mybe leak...", e);
+					if (logger.isDebugEnabled()) {
+						logger.debug("can not close request's multipart inputstream:" + fileName + ", " + e, e);
+					}
 				}
 			}
 		}

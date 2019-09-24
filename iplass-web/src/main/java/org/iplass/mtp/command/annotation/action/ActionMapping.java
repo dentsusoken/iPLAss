@@ -73,6 +73,27 @@ public @interface ActionMapping {
 	 */
 	HttpMethodType[] allowMethod() default {};
 	
+	/** 許可するリクエストボディのContentType。デフォルト未指定（＝すべて許可） */
+	String[] allowRequestContentTypes() default {};
+	
+	/**
+	 * リクエストボディの最大サイズ（バイト）。-1の場合は無制限を表す。
+	 * annotation上ではデフォルト値はLong.MIN_VALUEだが、これは未指定を表す。
+	 * 
+	 * @return
+	 */
+	long maxRequestBodySize() default Long.MIN_VALUE;
+
+	/**
+	 * multipart/form-dataの際のファイルの最大サイズ（バイト）。-1の場合は無制限を表す。
+	 * annotation上ではデフォルト値はLong.MIN_VALUEだが、これは未指定を表す。
+	 * １つのファイルに対する最大サイズなので、複数のファイルの合計サイズを制限したい場合は、
+	 * maxRequestBodySizeを設定します。
+	 * 
+	 * @return
+	 */
+	long maxFileSize() default Long.MIN_VALUE;
+	
 	boolean needTrustedAuthenticate() default false;
 
 	/**

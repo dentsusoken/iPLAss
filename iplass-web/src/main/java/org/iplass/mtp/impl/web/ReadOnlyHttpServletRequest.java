@@ -22,12 +22,14 @@ package org.iplass.mtp.impl.web;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.util.Collection;
 import java.util.Locale;
 
 import javax.servlet.AsyncContext;
 import javax.servlet.DispatcherType;
+import javax.servlet.ReadListener;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -134,7 +136,12 @@ public class ReadOnlyHttpServletRequest extends HttpServletRequestWrapper implem
 
 	@Override
 	public ServletInputStream getInputStream() throws IOException {
-		throw new UnsupportedOperationException("Unsupported operation on ReadOnlyHttpServletRequest");
+		if (getContentType() != null) {
+			return super.getInputStream();
+		} else {
+			//Do not handle content type not specified
+			return new NullServletInputStream();
+		}
 	}
 
 	@Override
@@ -154,7 +161,12 @@ public class ReadOnlyHttpServletRequest extends HttpServletRequestWrapper implem
 
 	@Override
 	public BufferedReader getReader() throws IOException {
-		throw new UnsupportedOperationException("Unsupported operation on ReadOnlyHttpServletRequest");
+		if (getContentType() != null) {
+			return super.getReader();
+		} else {
+			//Do not handle content type not specified
+			return new BufferedReader(new InputStreamReader(new NullServletInputStream()));
+		}
 	}
 
 	@Override
@@ -227,6 +239,30 @@ public class ReadOnlyHttpServletRequest extends HttpServletRequestWrapper implem
 	public AsyncContext startAsync(ServletRequest servletRequest,
 			ServletResponse servletResponse) throws IllegalStateException {
 		throw new UnsupportedOperationException("Unsupported operation on ReadOnlyHttpServletRequest");
+	}
+	
+	private class NullServletInputStream extends ServletInputStream {
+
+		@Override
+		public boolean isFinished() {
+			return true;
+		}
+
+		@Override
+		public boolean isReady() {
+			return true;
+		}
+
+		@Override
+		public void setReadListener(ReadListener readListener) {
+			//not supported
+		}
+
+		@Override
+		public int read() throws IOException {
+			return -1;
+		}
+		
 	}
 
 }

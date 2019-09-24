@@ -50,6 +50,10 @@ import org.iplass.mtp.impl.script.ScriptRuntimeException;
 import org.iplass.mtp.impl.script.template.GroovyTemplate;
 import org.iplass.mtp.impl.script.template.GroovyTemplateCompiler;
 import org.iplass.mtp.impl.util.ObjectUtil;
+import org.iplass.mtp.impl.web.ParameterValueMap;
+import org.iplass.mtp.impl.web.WebFrontendService;
+import org.iplass.mtp.impl.web.WebRequestContext;
+import org.iplass.mtp.impl.web.fileupload.MultiPartParameterValueMap;
 import org.iplass.mtp.spi.ServiceRegistry;
 import org.iplass.mtp.util.StringUtil;
 import org.iplass.mtp.webapi.WebApiRuntimeException;
@@ -58,11 +62,15 @@ import org.iplass.mtp.webapi.definition.CacheControlType;
 import org.iplass.mtp.webapi.definition.MethodType;
 import org.iplass.mtp.webapi.definition.StateType;
 import org.iplass.mtp.webapi.definition.WebApiDefinition;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 public class MetaWebApi extends BaseRootMetaData implements DefinableMetaData<WebApiDefinition> {
 	private static final long serialVersionUID = 2590900624234333139L;
 
+	private static Logger logger = LoggerFactory.getLogger(MetaWebApi.class);
+	
 //	private static final String X_REQUESTED_WITH = "X-Requested-With";
 //	private static final String XML_HTTP_REQUEST = "XMLHttpRequest";
 //
@@ -114,6 +122,35 @@ public class MetaWebApi extends BaseRootMetaData implements DefinableMetaData<We
 
 	private boolean needTrustedAuthenticate;
 
+	private String[] allowRequestContentTypes;
+	
+	private Long maxRequestBodySize;
+	private Long maxFileSize;
+
+	public Long getMaxFileSize() {
+		return maxFileSize;
+	}
+
+	public void setMaxFileSize(Long maxFileSize) {
+		this.maxFileSize = maxFileSize;
+	}
+
+	public Long getMaxRequestBodySize() {
+		return maxRequestBodySize;
+	}
+
+	public void setMaxRequestBodySize(Long maxRequestBodySize) {
+		this.maxRequestBodySize = maxRequestBodySize;
+	}
+
+	public String[] getAllowRequestContentTypes() {
+		return allowRequestContentTypes;
+	}
+
+	public void setAllowRequestContentTypes(String[] allowRequestContentTypes) {
+		this.allowRequestContentTypes = allowRequestContentTypes;
+	}
+	
 	public String[] getOauthScopes() {
 		return oauthScopes;
 	}
@@ -311,6 +348,9 @@ public class MetaWebApi extends BaseRootMetaData implements DefinableMetaData<We
 
 		private MethodType specificMethod;
 		private String parentName;
+		
+		private List<MediaType> allowedContentTypesRuntime;
+		private long maxFileSizeRuntime;
 
 		public WebApiRuntime() {
 
@@ -360,6 +400,23 @@ public class MetaWebApi extends BaseRootMetaData implements DefinableMetaData<We
 						break;
 					}
 				}
+				
+				//allowRequestContentTypes
+				if (allowRequestContentTypes != null && allowRequestContentTypes.length > 0) {
+					allowedContentTypesRuntime = new ArrayList<>();
+					for (String a: allowRequestContentTypes) {
+						allowedContentTypesRuntime.add(MediaType.valueOf(a));
+					}
+				}
+				
+				//maxFileSize
+				if (maxFileSize == null) {
+					WebFrontendService wfs = ServiceRegistry.getRegistry().getService(WebFrontendService.class);
+					maxFileSizeRuntime = wfs.getMaxUploadFileSize();
+				} else {
+					maxFileSizeRuntime = maxFileSize;
+				}
+
 
 			} catch (RuntimeException e) {
 				setIllegalStateException(e);
@@ -480,6 +537,14 @@ public class MetaWebApi extends BaseRootMetaData implements DefinableMetaData<We
 			checkState();
 			CommandInterceptor[] cmdInterceptors = is.getInterceptors(interceptorName);
 
+			if (req instanceof WebRequestContext) {
+				WebRequestContext webRequestContext = (WebRequestContext) req;
+				ParameterValueMap currentValueMap = webRequestContext.getValueMap();
+				//set maxFileSize
+				if (currentValueMap instanceof MultiPartParameterValueMap) {
+					((MultiPartParameterValueMap) currentValueMap).setMaxFileSize(maxFileSizeRuntime);
+				}
+			}
 
 			if (synchronizeOnSession) {
 				synchronized (req.getSession()) {
@@ -505,17 +570,6 @@ public class MetaWebApi extends BaseRootMetaData implements DefinableMetaData<We
 		}
 
 		public void checkRequestType(RequestType requestAcceptType, HttpServletRequest request) {
-
-//			// JSONPの時のみ利用可能チェック
-//			if (requestAcceptType == AcceptType.REST_JSON) {
-//				String accept = request.getHeader(HEADER_ACCEPT);
-//				if (accept != null && accept.equals(JSONP_MEDIA_TYPE)) {
-//					if (!isPermittedJsonp()) {
-//						throw new WebAPIException("Unsupported request(jsonp request not allowed).");
-//					}
-//				}
-//			}
-
 			if (accepts != null) {
 				for (RequestType a: accepts) {
 					if (a == requestAcceptType) {
@@ -524,7 +578,6 @@ public class MetaWebApi extends BaseRootMetaData implements DefinableMetaData<We
 				}
 			}
 			throw new WebApplicationException(Status.UNSUPPORTED_MEDIA_TYPE);
-//			throw new WebAPIException("Unsupported request(requested Content-Type not supported)");
 		}
 
 		public void checkMethodType(MethodType requestMethodType) {
@@ -538,9 +591,45 @@ public class MetaWebApi extends BaseRootMetaData implements DefinableMetaData<We
 				}
 			}
 			throw new WebApplicationException(Status.METHOD_NOT_ALLOWED);
-//			throw new WebAPIException("Unsupported request(requested method type not allowed)");
 		}
 
+		public void checkContentType(MediaType contentType) {
+			if (contentType == null) {
+				return;
+			}
+
+			if (allowedContentTypesRuntime == null) {
+				return;
+			}
+			
+			if (!contentType.isWildcardType() && !contentType.isWildcardSubtype()) {
+				for (MediaType act: allowedContentTypesRuntime) {
+					if (contentType.isCompatible(act)) {
+						return;
+					}
+				}
+			}
+			
+			throw new WebApplicationException(Status.UNSUPPORTED_MEDIA_TYPE);
+		}
+		
+		public void checkMethodType(String requestMethod) {
+
+			if (methods == null || methods.length == 0) {
+				return;
+			}
+			
+			for (MethodType m: methods) {
+				if (m.name().equals(requestMethod)) {
+					return;
+				}
+			}
+			if (logger.isDebugEnabled()) {
+				logger.debug("reject Request. HTTP Method:" + requestMethod + " not allowed for WebAPI:" + getName());
+			}
+			throw new WebApplicationException(Status.METHOD_NOT_ALLOWED);
+		}
+		
 		public boolean isSufficientOAuthScope(List<String> grantedScopes) {
 			if (oauthScopes == null || oauthScopes.length == 0) {
 				return false;
@@ -564,6 +653,7 @@ public class MetaWebApi extends BaseRootMetaData implements DefinableMetaData<We
 
 			return false;
 		}
+
 	}
 
 	// Meta → Definition
@@ -619,6 +709,14 @@ public class MetaWebApi extends BaseRootMetaData implements DefinableMetaData<We
 		if (oauthScopes != null) {
 			definition.setOauthScopes(Arrays.copyOf(oauthScopes, oauthScopes.length));
 		}
+
+		if (allowRequestContentTypes != null) {
+			definition.setAllowRequestContentTypes(new String[allowRequestContentTypes.length]);
+			System.arraycopy(allowRequestContentTypes, 0, definition.getAllowRequestContentTypes(), 0, allowRequestContentTypes.length);
+		}
+		
+		definition.setMaxRequestBodySize(maxRequestBodySize);
+		definition.setMaxFileSize(maxFileSize);
 
 		return definition;
 	}
@@ -693,5 +791,15 @@ public class MetaWebApi extends BaseRootMetaData implements DefinableMetaData<We
 		} else {
 			oauthScopes = null;
 		}
+		
+		if (definition.getAllowRequestContentTypes() != null) {
+			allowRequestContentTypes = new String[definition.getAllowRequestContentTypes().length];
+			System.arraycopy(definition.getAllowRequestContentTypes(), 0, allowRequestContentTypes, 0, allowRequestContentTypes.length);
+		} else {
+			allowRequestContentTypes = null;
+		}
+		
+		maxRequestBodySize = definition.getMaxRequestBodySize();
+		maxFileSize = definition.getMaxFileSize();
 	}
 }

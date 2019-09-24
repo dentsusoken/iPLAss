@@ -185,7 +185,7 @@ public class DispatcherFilter implements Filter {
 			}
 		}
 
-		WebRequestStack requestStack = new WebRequestStack(path, servletContext, req, res);
+		WebRequestStack requestStack = null;
 
 		try {
 			ActionMappingRuntime actionMapping = amService.getByPathHierarchy(actionPath);
@@ -202,11 +202,23 @@ public class DispatcherFilter implements Filter {
 
 			if (actionMapping != null) {
 				logger.debug("call actionMapping:" + actionMapping.getMetaData().getName());
-				actionMapping.executeCommand(requestStack);
+				
+				if (actionMapping.getMetaData().getMaxRequestBodySize() != null
+						&& actionMapping.getMetaData().getMaxRequestBodySize().longValue() != -1) {
+					req = new LimitRequestBodyHttpServletRequest(req, actionMapping.getMetaData().getMaxRequestBodySize());
+				}
+				
+				requestStack = new WebRequestStack(path, servletContext, req, res);
+				
+				try {
+					actionMapping.executeCommand(requestStack);
+				} catch (RequestBodyTooLargeException e) {
+					res.sendError(HttpServletResponse.SC_REQUEST_ENTITY_TOO_LARGE);
+				}
 			} else {
 				res.sendError(HttpServletResponse.SC_NOT_FOUND);
 			}
-
+			
 		} finally {
 			//テンポラリで使用したリソースを削除。（内部でのincludeの時は削除しない）
 			if (requestStack != null) {

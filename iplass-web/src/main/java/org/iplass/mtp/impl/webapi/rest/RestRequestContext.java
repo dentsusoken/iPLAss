@@ -32,6 +32,9 @@ import org.iplass.mtp.webapi.definition.RequestType;
 import org.iplass.mtp.webapi.definition.MethodType;;
 
 public class RestRequestContext extends WebRequestContext {
+	static final String WEB_API_RUNTIME_NAME = "mtp.restRequestContext.webApiRuntime";;
+	static final String MAX_BODY_SIZE = "mtp.restRequestContext.maxBodySize";;
+	
 	private RequestType requestType;
 	private MethodType methodType;
 	private Request rsRequest;

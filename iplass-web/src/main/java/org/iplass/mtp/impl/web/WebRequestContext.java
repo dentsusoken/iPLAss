@@ -20,7 +20,6 @@
 
 package org.iplass.mtp.impl.web;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
@@ -46,8 +45,6 @@ import org.iplass.mtp.web.WebRequestConstants;
 public class WebRequestContext implements RequestContext {
 	public static final String MARK_USE_OUTPUT_STREAM = "org.iplass.mtp.markUseOutputStream";
 
-	//TODO 理ファクタリング、headerの初期化を遅延する。unmodifableにする。
-
 	//Webからのリクエストパラメータ
 	private ParameterValueMap valueMap;
 	private HttpServletRequest servletRequest;
@@ -61,21 +58,11 @@ public class WebRequestContext implements RequestContext {
 
 	public WebRequestContext(ServletContext servletContext, HttpServletRequest servletRequest) {
 		this.servletRequest = servletRequest;
-		//httpHeader、param、keyだけ入れとく。本体は遅延で初期化
 		if (ServletFileUpload.isMultipartContent(servletRequest)) {
-			try {
-				setValueMap(new MultiPartParameterValueMap(servletContext, servletRequest));
-			} catch (IOException e) {
-				throw new WebProcessRuntimeException(e);
-			}
+			setValueMap(new MultiPartParameterValueMap(servletContext, servletRequest));
 		} else {
 			setValueMap(new SimpleParameterValueMap(servletRequest));
 		}
-		
-//		servletRequest.setAttribute(WebRequestConstants.HTTP_HEADER, new LazyInitMap<String, Object>(this::getHttpHeader));
-//		servletRequest.setAttribute(WebRequestConstants.PARAM, new LazyInitMap<String, Object>(this::getParamMap));
-//		servletRequest.setAttribute(WebRequestConstants.SERVLET_REQUEST, new ReadOnlyHttpServletRequest(servletRequest));
-//		servletRequest.setAttribute(WebRequestConstants.ACTION, Boolean.TRUE);
 	}
 
 	private ReadOnlyHttpServletRequest getReadOnlyHttpServletRequest() {

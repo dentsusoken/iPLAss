@@ -124,6 +124,18 @@ public class MetaWebApiFactory implements AnnotatableMetaDataFactory<WebApi, Com
 
 		meta.setAccepts(webapi.accepts());
 		meta.setMethods(webapi.methods());
+		if (webapi.allowRequestContentTypes().length > 0) {
+			String[] allowRequestContentTypes = new String[webapi.allowRequestContentTypes().length];
+			System.arraycopy(webapi.allowRequestContentTypes(), 0, allowRequestContentTypes, 0, allowRequestContentTypes.length);
+			meta.setAllowRequestContentTypes(allowRequestContentTypes);
+		}
+		if (webapi.maxRequestBodySize() != Long.MIN_VALUE) {
+			meta.setMaxRequestBodySize(webapi.maxRequestBodySize());
+		}
+		if (webapi.maxFileSize() != Long.MIN_VALUE) {
+			meta.setMaxFileSize(webapi.maxFileSize());
+		}
+
 		meta.setResults(webapi.results());
 		meta.setState(webapi.state());
 		meta.setSupportBearerToken(webapi.supportBearerToken());

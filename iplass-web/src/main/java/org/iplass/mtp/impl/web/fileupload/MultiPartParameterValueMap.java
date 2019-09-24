@@ -52,8 +52,32 @@ public class MultiPartParameterValueMap implements ParameterValueMap {
 	private List<UploadFileHandleImpl> tempFiles;
 	//Webからのリクエストパラメータ
 	protected Map<String, Object> valueMap;
+	
+	private boolean init;
+	private ServletContext servletContext;
+	private HttpServletRequest req;
+	private long maxFileSize = -1;
 
-	public MultiPartParameterValueMap(ServletContext servletContext, HttpServletRequest req) throws IOException {
+	public MultiPartParameterValueMap(ServletContext servletContext, HttpServletRequest req) {
+		this.servletContext = servletContext;
+		this.req = req;
+	}
+	
+	public long getMaxFileSize() {
+		return maxFileSize;
+	}
+
+	public void setMaxFileSize(long maxFileSize) {
+		this.maxFileSize = maxFileSize;
+	}
+
+	private void init() {
+		if (init) {
+			return;
+		}
+		
+		init = true;
+		
 		long start = 0L;
 		if (logger.isDebugEnabled()) {
 			start = System.currentTimeMillis();
@@ -84,7 +108,7 @@ public class MultiPartParameterValueMap implements ParameterValueMap {
 						throw new WebProcessRuntimeException(name + " is alerady used as file upload field name.");
 					}
 				} else {
-					UploadFileHandleImpl value = UploadFileHandleImpl.toUploadFileHandle(item.openStream(), item.getName(), item.getContentType(), servletContext);
+					UploadFileHandleImpl value = UploadFileHandleImpl.toUploadFileHandle(item.openStream(), item.getName(), item.getContentType(), servletContext, maxFileSize);
 					if (value != null) {
 						tempFiles.add(value);
 						Object oldValue = valueMap.get(name);
@@ -102,7 +126,7 @@ public class MultiPartParameterValueMap implements ParameterValueMap {
 					}
 			    }
 			}
-		} catch (FileUploadException e) {
+		} catch (FileUploadException | IOException e) {
 			cleanTempResource();
 			throw new WebProcessRuntimeException(e);
 		} catch (RuntimeException | Error e) {
@@ -112,31 +136,35 @@ public class MultiPartParameterValueMap implements ParameterValueMap {
 
 		//変更禁止
 		valueMap = Collections.unmodifiableMap(valueMap);
-
+		
 		if (logger.isDebugEnabled()) {
 			logger.debug("MultiPartRequest parsed. time:" + (System.currentTimeMillis() - start));
 		}
-
 	}
 
 	@Override
 	public void cleanTempResource() {
-		for (UploadFileHandleImpl f: tempFiles) {
-			f.deleteTempFile();
+		if (tempFiles != null) {
+			for (UploadFileHandleImpl f: tempFiles) {
+				f.deleteTempFile();
+			}
 		}
 	}
 
 	public Map<String, Object> getParamMap() {
+		init();
 		return valueMap;
 	}
 
 	@Override
 	public Iterator<String> getParamNames() {
+		init();
 		return valueMap.keySet().iterator();
 	}
 
 	@Override
 	public Object getParam(String name) {
+		init();
 		Object val = valueMap.get(name);
 		if (val instanceof Object[]) {
 			return ((Object[]) val)[0];
@@ -146,6 +174,7 @@ public class MultiPartParameterValueMap implements ParameterValueMap {
 
 	@Override
 	public Object[] getParams(String name) {
+		init();
 		Object val = valueMap.get(name);
 		if (val instanceof String) {
 			return new String[]{(String) val};

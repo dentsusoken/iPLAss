@@ -61,6 +61,7 @@ import javax.xml.transform.sax.SAXSource;
 
 import org.iplass.mtp.command.RequestContext;
 import org.iplass.mtp.impl.session.SessionService;
+import org.iplass.mtp.impl.web.LimitRequestBodyHttpServletRequest;
 import org.iplass.mtp.impl.web.RequestPath;
 import org.iplass.mtp.impl.web.WebRequestStack;
 import org.iplass.mtp.impl.web.WebUtil;
@@ -69,7 +70,6 @@ import org.iplass.mtp.impl.webapi.MetaWebApi.WebApiRuntime;
 import org.iplass.mtp.impl.webapi.WebApiParameter;
 import org.iplass.mtp.impl.webapi.WebApiParameterMap;
 import org.iplass.mtp.impl.webapi.WebApiResponse;
-import org.iplass.mtp.impl.webapi.WebApiService;
 import org.iplass.mtp.impl.webapi.jackson.WebApiObjectMapperService;
 import org.iplass.mtp.impl.webapi.jaxb.WebApiJaxbService;
 import org.iplass.mtp.spi.ServiceRegistry;
@@ -77,7 +77,6 @@ import org.iplass.mtp.util.StringUtil;
 import org.iplass.mtp.webapi.WebApiRequestConstants;
 import org.iplass.mtp.webapi.WebApiRuntimeException;
 import org.iplass.mtp.webapi.definition.RequestType;
-import org.iplass.mtp.webapi.definition.CacheControlType;
 import org.iplass.mtp.webapi.definition.MethodType;
 import org.iplass.mtp.webapi.definition.StateType;
 import org.slf4j.Logger;
@@ -89,7 +88,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Path("/")
 public class RestCommandInvoker {
-
+	
 	private static final String ORIGIN = "Origin";
 	private static final String ACCESS_CONTROL_REQUEST_HEADERS = "Access-Control-Request-Headers";
 	private static final String ACCESS_CONTROL_REQUEST_METHOD = "Access-Control-Request-Method";
@@ -102,26 +101,21 @@ public class RestCommandInvoker {
 	
 	private static WebApiJaxbService jbservice = ServiceRegistry.getRegistry().getService(WebApiJaxbService.class);
 	private static WebApiObjectMapperService omservice = ServiceRegistry.getRegistry().getService(WebApiObjectMapperService.class);
-	private static WebApiService apiservice = ServiceRegistry.getRegistry().getService(WebApiService.class);
 	private static SessionService sessionService = ServiceRegistry.getRegistry().getService(SessionService.class);
 
 	@Context SAXParserFactory sax;//XXE対策されたSAXParserFactory（jerseyの実装）
 	
+	//TODO 共通的な処理をFilterに移動して、methodの数を減らす
+	
 	private <R> R process(String apiName, String httpMethod, ServletContext servletContext, Request rsRequest, HttpServletRequest request, HttpServletResponse response,
 			BiFunction<WebRequestStack, WebApiRuntime, R> func) {
-		RequestPath path = new RequestPath(apiName, (RequestPath) request.getAttribute(RequestPath.ATTR_NAME));
-		request.removeAttribute(RequestPath.ATTR_NAME);
-		String webApiName = path.getTargetPath(true);
 		
-		WebApiRuntime runtime = apiservice.getByPathHierarchy(webApiName, httpMethod);
-		if (runtime == null) {
-			if (logger.isDebugEnabled()) {
-				logger.debug(webApiName + " not defined path.");
-			}
- 			throw new WebApplicationException(Status.NOT_FOUND);
-		}
+		//MtpContainerRequestFilterでセット済み
+		RequestPath path = (RequestPath) request.getAttribute(RequestPath.ATTR_NAME);
+		WebApiRuntime runtime = (WebApiRuntime) request.getAttribute(RestRequestContext.WEB_API_RUNTIME_NAME);
 		
 		RestRequestContext context = new RestRequestContext(servletContext, request, rsRequest, runtime.getMetaData().isSupportBearerToken());
+		
 		WebRequestStack stack = new WebRequestStack(path, context, servletContext, request, response, null);
 		if (runtime.getMetaData().getState() == StateType.STATELESS) {
 			sessionService.setSessionStateless(false);
@@ -203,7 +197,9 @@ public class RestCommandInvoker {
 	
 	private void checkValidRequest(WebRequestStack stack, WebApiRuntime runtime) {
 		RestRequestContext context = (RestRequestContext) stack.getRequestContext();
-		runtime.checkMethodType(context.methodType());
+		//MtpContainerRequestFilterでチェック済み
+		//runtime.checkMethodType(context.methodType());
+		
 		runtime.checkRequestType(context.requestType(), stack.getRequest());
 		if (!handleCrossOriginResourceSharing(runtime, context, stack.getRequest(), stack.getResponse())) {
 			throw new WebApiRuntimeException("Cross Origin Resource Sharing Policy Erorr on WebApi:" + runtime.getMetaData().getName());
@@ -452,6 +448,12 @@ public class RestCommandInvoker {
 			@Context Request coreRequest,
 			@Context HttpServletRequest request, @Context HttpServletResponse response,
 			@PathParam("apiName") String apiName) {
+		
+		//HttpServletRequestから自ら取得するため
+		Long maxBodySize = (Long) request.getAttribute(RestRequestContext.MAX_BODY_SIZE);
+		if (maxBodySize != null) {
+			request = new LimitRequestBodyHttpServletRequest(request, maxBodySize);
+		}
 		
 		return process(apiName, HttpMethod.POST, servletContext, coreRequest, request, response, (stack, runtime) -> {
 			((RestRequestContext) stack.getRequestContext()).setRequestType(RequestType.REST_FORM);

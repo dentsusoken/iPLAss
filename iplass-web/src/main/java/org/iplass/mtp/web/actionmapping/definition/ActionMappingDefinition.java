@@ -104,6 +104,52 @@ public class ActionMappingDefinition implements Definition {
 
 	private boolean needTrustedAuthenticate;
 
+	private String[] allowRequestContentTypes;
+
+	private Long maxRequestBodySize;
+	private Long maxFileSize;
+
+	public Long getMaxFileSize() {
+		return maxFileSize;
+	}
+
+	/**
+	 * multipart/form-data時のアップロードファイルの最大サイズ。-1の場合は無制限。
+	 * １つのファイルに対する最大サイズなので、複数のファイルの合計サイズを制限したい場合は、
+	 * maxRequestBodySizeを設定します。
+	 * 
+	 * @param maxFileSize
+	 */
+	public void setMaxFileSize(Long maxFileSize) {
+		this.maxFileSize = maxFileSize;
+	}
+
+	public Long getMaxRequestBodySize() {
+		return maxRequestBodySize;
+	}
+
+	/**
+	 * リクエストボディの最大サイズ。-1の場合は無制限。
+	 * 
+	 * @param maxRequestBodySize
+	 */
+	public void setMaxRequestBodySize(Long maxRequestBodySize) {
+		this.maxRequestBodySize = maxRequestBodySize;
+	}
+
+	public String[] getAllowRequestContentTypes() {
+		return allowRequestContentTypes;
+	}
+
+	/**
+	 * 許可するリクエストボディのContentTypeを指定。未指定の場合はすべて許可。
+	 * 
+	 * @param allowRequestContentTypes
+	 */
+	public void setAllowRequestContentTypes(String[] allowRequestContentTypes) {
+		this.allowRequestContentTypes = allowRequestContentTypes;
+	}
+
 	/**
 	 * @see #setNeedTrustedAuthenticate(boolean)
 	 * @return
