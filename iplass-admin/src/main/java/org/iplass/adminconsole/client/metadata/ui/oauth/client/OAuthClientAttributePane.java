@@ -21,7 +21,6 @@
 package org.iplass.adminconsole.client.metadata.ui.oauth.client;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -50,7 +49,7 @@ public class OAuthClientAttributePane extends VLayout implements EditablePane<OA
 	/** ClientTypeの種類選択用Map */
 	private static LinkedHashMap<String, String> clientTypeMap;
 	static {
-		clientTypeMap = new LinkedHashMap<String, String>();
+		clientTypeMap = new LinkedHashMap<>();
 		clientTypeMap.put("", "");
 		for (ClientType type : ClientType.values()) {
 			clientTypeMap.put(type.name(), type.name());
@@ -100,15 +99,11 @@ public class OAuthClientAttributePane extends VLayout implements EditablePane<OA
 			selClientType.setValue("");
 		}
 
-		if (definition.getRedirectUris() != null) {
-			String redirectUriText = "";
-			for (String redirectUri : definition.getRedirectUris()) {
-				redirectUriText += redirectUri + "\n";
-			}
-			if (!redirectUriText.isEmpty()) {
-				redirectUriText = redirectUriText.substring(0, redirectUriText.length() - 1);
-			}
+		String redirectUriText = SmartGWTUtil.convertListToString(definition.getRedirectUris(), "\n");
+		if (redirectUriText != null) {
 			txaRedirectUris.setValue(redirectUriText);
+		} else {
+			txaRedirectUris.clearValue();
 		}
 
 		txtSectorIdentifierUri.setValue(definition.getSectorIdentifierUri());
@@ -124,15 +119,11 @@ public class OAuthClientAttributePane extends VLayout implements EditablePane<OA
 		txtClientUri.setValue(definition.getClientUri());
 		txtLogoUri.setValue(definition.getLogoUri());
 
-		if (definition.getContacts() != null) {
-			String contactsText = "";
-			for (String contact : definition.getContacts()) {
-				contactsText += contact + "\n";
-			}
-			if (!contactsText.isEmpty()) {
-				contactsText = contactsText.substring(0, contactsText.length() - 1);
-			}
+		String contactsText = SmartGWTUtil.convertListToString(definition.getContacts(), "\n");
+		if (contactsText != null) {
 			txaContacts.setValue(contactsText);
+		} else {
+			txaContacts.clearValue();
 		}
 
 		txtTosUri.setValue(definition.getTosUri());
@@ -152,16 +143,11 @@ public class OAuthClientAttributePane extends VLayout implements EditablePane<OA
 		}
 
 		String redirectUriText = SmartGWTUtil.getStringValue(txaRedirectUris, true);
-		if (redirectUriText != null && !redirectUriText.trim().isEmpty()) {
-			String[] redirectUriTextArray = redirectUriText.split("\r\n|[\n\r\u2028\u2029\u0085]");
-			definition.setRedirectUris(Arrays.asList(redirectUriTextArray));
-		} else {
-			definition.setRedirectUris(null);
-		}
+		definition.setRedirectUris(SmartGWTUtil.convertStringToList(redirectUriText));
 
 		definition.setSectorIdentifierUri(SmartGWTUtil.getStringValue(txtSectorIdentifierUri, true));
 
-		List<GrantType> grantTypes = new ArrayList<GrantType>();
+		List<GrantType> grantTypes = new ArrayList<>();
 		for (Entry<GrantType, CheckboxItem> entry : mapGrantTypeItems.entrySet()) {
 			if (SmartGWTUtil.getBooleanValue(entry.getValue())) {
 				grantTypes.add(entry.getKey());
@@ -177,12 +163,7 @@ public class OAuthClientAttributePane extends VLayout implements EditablePane<OA
 		definition.setLogoUri(SmartGWTUtil.getStringValue(txtLogoUri, true));
 
 		String contactsText = SmartGWTUtil.getStringValue(txaContacts, true);
-		if (contactsText != null && !contactsText.trim().isEmpty()) {
-			String[] contactsTextArray = contactsText.split("\r\n|[\n\r\u2028\u2029\u0085]");
-			definition.setContacts(Arrays.asList(contactsTextArray));
-		} else {
-			definition.setContacts(null);
-		}
+		definition.setContacts(SmartGWTUtil.convertStringToList(contactsText));
 
 		definition.setTosUri(SmartGWTUtil.getStringValue(txtTosUri, true));
 		definition.setPolicyUri(SmartGWTUtil.getStringValue(txtPolicyUri, true));

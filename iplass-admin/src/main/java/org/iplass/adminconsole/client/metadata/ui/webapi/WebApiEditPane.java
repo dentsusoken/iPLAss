@@ -77,6 +77,9 @@ public class WebApiEditPane extends MetaDataMainEditPane {
 	/** 共通属性部分 */
 	private WebApiAttributePane attributePane;
 
+	/** RestrictionRequest属性部分 */
+	private RestrictionRequestAttributePane restrictionRequestAttributePane;
+
 	/** CORS属性部分 */
 	private CorsAttributePane corsAttributePane;
 
@@ -124,6 +127,9 @@ public class WebApiEditPane extends MetaDataMainEditPane {
 		//属性編集部分
 		attributePane = new WebApiAttributePane();
 
+		//RestrictionRequest属性部分
+		restrictionRequestAttributePane = new RestrictionRequestAttributePane();
+
 		//CORS編集部分
 		corsAttributePane = new CorsAttributePane();
 
@@ -153,8 +159,10 @@ public class WebApiEditPane extends MetaDataMainEditPane {
 		resultPane = new ResultPane();
 
 		//Section設定
-		MetaDataSectionStackSection webApiSection = createSection("WebApi Attribute", attributePane, corsAttributePane,
-				oauthAttributePane, requestTypeGridPane, responseTypePane, requestTypePane, commandConfigPane, resultPane);
+		MetaDataSectionStackSection webApiSection = createSection("WebApi Attribute", attributePane,
+				restrictionRequestAttributePane, corsAttributePane, oauthAttributePane,
+				requestTypeGridPane, requestTypePane, responseTypePane,
+				commandConfigPane, resultPane);
 
 		//Drop設定
 		new AbstractMetaDataDropHandler() {
@@ -221,7 +229,7 @@ public class WebApiEditPane extends MetaDataMainEditPane {
 	 */
 	private void typeChanged(List<RequestType> list) {
 
-		List<HLayout> paramPaneList = new ArrayList<HLayout>();
+		List<HLayout> paramPaneList = new ArrayList<>();
 
 		if (list.contains(RequestType.REST_JSON)) {
 			if (jsonParamPane == null || requestTypePane.getMember(requestTypePane.getMemberNumber(jsonParamPane)) == null) {
@@ -263,6 +271,7 @@ public class WebApiEditPane extends MetaDataMainEditPane {
 
 		commonSection.setDefinition(curDefinition);
 		attributePane.setDefinition(curDefinition);
+		restrictionRequestAttributePane.setDefinition(curDefinition);
 		corsAttributePane.setDefinition(curDefinition);
 		oauthAttributePane.setDefinition(curDefinition);
 		requestTypeGridPane.setDefinition(curDefinition);
@@ -342,10 +351,11 @@ public class WebApiEditPane extends MetaDataMainEditPane {
 		public void onClick(ClickEvent event) {
 			boolean commonValidate = commonSection.validate();
 			boolean attrValidate = attributePane.validate();
+			boolean restrictionValidate = restrictionRequestAttributePane.validate();
 			boolean corsValidate = corsAttributePane.validate();
 			boolean oauthValidate = oauthAttributePane.validate();
 			boolean commandValidate = commandConfigPane.validate();
-			if (!commonValidate || !attrValidate || !corsValidate || !oauthValidate || !commandValidate) {
+			if (!commonValidate || !attrValidate || !restrictionValidate || !corsValidate || !oauthValidate || !commandValidate) {
 				return;
 			}
 			SC.ask(AdminClientMessageUtil.getString("ui_metadata_webapi_WebAPIEditPane_saveConfirm"),
@@ -358,6 +368,7 @@ public class WebApiEditPane extends MetaDataMainEditPane {
 
 						definition = commonSection.getEditDefinition(definition);
 						definition = attributePane.getEditDefinition(definition);
+						definition = restrictionRequestAttributePane.getEditDefinition(definition);
 						definition = corsAttributePane.getEditDefinition(definition);
 						definition = oauthAttributePane.getEditDefinition(definition);
 						definition.setCommandConfig(commandConfigPane.getEditCommandConfig());

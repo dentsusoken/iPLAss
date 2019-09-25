@@ -59,7 +59,7 @@ public class RequestTypePane extends HLayout {
 		form = new DynamicForm();
 		form.setWidth100();
 		form.setHeight(30);
-		form.setNumCols(RequestType.values().length * 2);
+		form.setNumCols(RequestType.values().length * 2 + 1);
 		form.setTitleWidth(0);	//チェックボックスを左に寄せるため。
 		form.setCellPadding(0);
 
@@ -122,7 +122,7 @@ public class RequestTypePane extends HLayout {
 	 * @return
 	 */
 	public List<RequestType> selectedType() {
-		List<RequestType> requestTypeList = new ArrayList<RequestType>();
+		List<RequestType> requestTypeList = new ArrayList<>();
 		for (Entry<RequestType, CheckboxItem> typeEntry : requestTypeItems.entrySet()) {
 			if (SmartGWTUtil.getBooleanValue(typeEntry.getValue())) {
 				requestTypeList.add(typeEntry.getKey());

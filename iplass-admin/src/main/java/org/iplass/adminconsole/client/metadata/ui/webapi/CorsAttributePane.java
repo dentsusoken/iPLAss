@@ -54,15 +54,15 @@ public class CorsAttributePane extends VLayout {
 		form = new DynamicForm();
 		form.setWidth100();
 		form.setPadding(10);
-		form.setNumCols(2);
-		form.setColWidths(80, "*");
+		form.setNumCols(5);
+		form.setColWidths(100, 300, 100, 300, "*");
 		form.setIsGroup(true);
 		form.setGroupTitle("CORS");
 
 		ButtonItem editButton = new ButtonItem("editScript", "Edit");
 		editButton.setWidth(100);
 		editButton.setStartRow(false);
-		editButton.setColSpan(2);
+		editButton.setColSpan(4);
 		editButton.setAlign(Alignment.RIGHT);
 		editButton.addClickHandler(new com.smartgwt.client.widgets.form.fields.events.ClickHandler() {
 
@@ -89,8 +89,10 @@ public class CorsAttributePane extends VLayout {
 		});
 
 		accessControlAllowOriginField = new TextAreaItem("accessControlAllowOriginField", "Access-Control-Allow-Origin");
-		accessControlAllowOriginField.setWidth("*");
-		accessControlAllowOriginField.setHeight(65);
+		accessControlAllowOriginField.setWidth("100%");
+		accessControlAllowOriginField.setHeight(75);
+		accessControlAllowOriginField.setBrowserSpellCheck(false);
+		accessControlAllowOriginField.setColSpan(3);
 		accessControlAllowOriginField.setStartRow(true);
 		accessControlAllowOriginField.setTooltip(SmartGWTUtil.getHoverString(AdminClientMessageUtil.getString("ui_metadata_webapi_CorsAttributePane_accessControlAllowOrigin")));
 		SmartGWTUtil.setReadOnlyTextArea(accessControlAllowOriginField);

@@ -20,8 +20,6 @@
 
 package org.iplass.adminconsole.client.metadata.ui.oauth.authorize;
 
-import java.util.Arrays;
-
 import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
 import org.iplass.adminconsole.client.base.ui.widget.EditablePane;
 import org.iplass.adminconsole.client.base.ui.widget.MetaDataSelectItem;
@@ -60,15 +58,11 @@ public class OAuthAuthorizationAttributePane extends VLayout implements Editable
 	@Override
 	public void setDefinition(OAuthAuthorizationDefinition definition) {
 
-		if (definition.getAvailableRoles() != null) {
-			String roleText = "";
-			for (String roleCode : definition.getAvailableRoles()) {
-				roleText += roleCode + "\n";
-			}
-			if (!roleText.isEmpty()) {
-				roleText = roleText.substring(0, roleText.length() - 1);
-			}
+		String roleText = SmartGWTUtil.convertListToString(definition.getAvailableRoles(), "\n");
+		if (roleText != null) {
 			txaAvailableRoles.setValue(roleText);
+		} else {
+			txaAvailableRoles.clearValue();
 		}
 
 		gridScopes.setDefinition(definition);
@@ -90,12 +84,7 @@ public class OAuthAuthorizationAttributePane extends VLayout implements Editable
 	public OAuthAuthorizationDefinition getEditDefinition(OAuthAuthorizationDefinition definition) {
 
 		String availableRolesText = SmartGWTUtil.getStringValue(txaAvailableRoles, true);
-		if (availableRolesText != null && !availableRolesText.trim().isEmpty()) {
-			String[] availableRolesTextArray = availableRolesText.split("\r\n|[\n\r\u2028\u2029\u0085]");
-			definition.setAvailableRoles(Arrays.asList(availableRolesTextArray));
-		} else {
-			definition.setAvailableRoles(null);
-		}
+		definition.setAvailableRoles(SmartGWTUtil.convertStringToList(availableRolesText));
 
 		gridScopes.getEditDefinition(definition);
 

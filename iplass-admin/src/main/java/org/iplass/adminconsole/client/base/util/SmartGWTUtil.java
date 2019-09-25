@@ -22,12 +22,13 @@ package org.iplass.adminconsole.client.base.util;
 
 import java.sql.Time;
 import java.sql.Timestamp;
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
 import org.iplass.adminconsole.client.base.tenant.TenantInfoHolder;
@@ -93,23 +94,51 @@ public final class SmartGWTUtil {
 	/**
 	 * List<String>を指定セパレータで連結したStringで返します
 	 *
-	 * @param value Listの文字列
+	 * @param values Listの文字列
 	 * @param sepalator セパレータ
 	 * @return セパレータで連結した文字列
 	 */
-	public static String convertListToString(List<String> value, String sepalator) {
+	public static String convertListToString(List<String> values, String sepalator) {
 		StringBuffer sb = new StringBuffer();
-		if (value != null && value.size() > 0) {
-			int size = value.size();
-			sb.append(value.get(0));
-
-			if (size > 1) {
-				for (int i = 1; i < size; i++) {
-					sb.append(sepalator).append(value.get(i));
-				}
+		if (values != null) {
+			for (String value : values) {
+				sb.append(value).append(sepalator);
 			}
 		}
+		if (sb.length() > 0) {
+			sb.substring(0, sb.length() - 1);
+		}
 		return sb.toString();
+	}
+
+	/**
+	 * 配列を指定セパレータで連結したStringで返します
+	 *
+	 * @param values 文字列の配列
+	 * @param sepalator セパレータ
+	 * @return セパレータで連結した文字列
+	 */
+	public static String convertArrayToString(String[] values, String sepalator) {
+		StringBuffer sb = new StringBuffer();
+		if (values != null) {
+			for (String value : values) {
+				sb.append(value).append(sepalator);
+			}
+		}
+		if (sb.length() > 0) {
+			sb.substring(0, sb.length() - 1);
+		}
+		return sb.toString();
+	}
+
+	/**
+	 * Stringを改行で分割したList<String>で返します
+	 *
+	 * @param value String文字列
+	 * @return 改行で分けられたListの文字列
+	 */
+	public static List<String> convertStringToList(String value) {
+		return convertStringToList(value, "\r\n|[\n\r\u2028\u2029\u0085]");
 	}
 
 	/**
@@ -120,18 +149,47 @@ public final class SmartGWTUtil {
 	 * @return セパレータで分けられたListの文字列
 	 */
 	public static List<String> convertStringToList(String value, String sepalator) {
-		List<String> ret = new ArrayList<String>();
-		if (value != null && value.trim().length() > 0) {
-			if (value.contains(sepalator)) {
-				String[] bufs = value.split(sepalator);
-				for (String buf : bufs) {
-					ret.add(buf);
-				}
-			} else {
-				ret.add(value);
-			}
+
+		if (value == null) {
+			return null;
 		}
-		return ret;
+
+		String[] valueArray = value.split(sepalator);
+		//空値の除外
+		List<String> valueList = Arrays.asList(valueArray).stream()
+				.filter( o -> o != null && !o.trim().isEmpty())
+				.collect(Collectors.toList());
+		if (valueList.isEmpty()) {
+			return null;
+		} else {
+			return valueList;
+		}
+	}
+
+	/**
+	 * Stringを改行で分割した配列で返します
+	 *
+	 * @param value String文字列
+	 * @return 改行で分けられた配列
+	 */
+	public static String[] convertStringToArray(String value) {
+		return convertStringToArray(value, "\r\n|[\n\r\u2028\u2029\u0085]");
+	}
+
+	/**
+	 * Stringを指定セパレータで分割した配列で返します
+	 *
+	 * @param value String文字列
+	 * @param sepalator セパレータ
+	 * @return セパレータで分けられた配列
+	 */
+	public static String[] convertStringToArray(String value, String sepalator) {
+
+		List<String> valueList = convertStringToList(value, sepalator);
+		if (valueList == null) {
+			return null;
+		}
+		return valueList.toArray(new String[]{});
 	}
 
 	/**
@@ -572,6 +630,7 @@ public final class SmartGWTUtil {
 
 		animateOutline.animateRect(rect.getLeft(), rect.getTop(),
 				rect.getWidth(), rect.getHeight(), new AnimationCallback() {
+			@Override
 			public void execute(boolean earlyFinish) {
 				animateOutline.hide();
 
@@ -586,7 +645,7 @@ public final class SmartGWTUtil {
 		if (localeMap != null) {
 			return localeMap;
 		}
-		localeMap = new LinkedHashMap<String, String>();
+		localeMap = new LinkedHashMap<>();
 		localeMap.put("", "");
 		localeMap.put("ja_JP", "ja_JP");
 		localeMap.put("en_US", "en_US");
@@ -598,7 +657,7 @@ public final class SmartGWTUtil {
 		if (timeZoneMap != null) {
 			return timeZoneMap;
 		}
-		timeZoneMap = new LinkedHashMap<String, String>();
+		timeZoneMap = new LinkedHashMap<>();
 		timeZoneMap.put("", "");
 		timeZoneMap.put("Asia/Tokyo", "Asia/Tokyo");
 		timeZoneMap.put("Etc/GMT+0", "GMT");

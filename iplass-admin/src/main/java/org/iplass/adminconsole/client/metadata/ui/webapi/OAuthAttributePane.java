@@ -49,8 +49,8 @@ public class OAuthAttributePane extends VLayout {
 		form = new DynamicForm();
 		form.setWidth100();
 		form.setPadding(10);
-		form.setNumCols(2);
-		form.setColWidths(80, "*");
+		form.setNumCols(5);
+		form.setColWidths(100, 300, 100, 300, "*");
 		form.setIsGroup(true);
 		form.setGroupTitle("OAuth");
 
@@ -59,8 +59,10 @@ public class OAuthAttributePane extends VLayout {
 
 		oauthScopesField = new TextAreaItem();
 		oauthScopesField.setTitle("Scopes");
-		oauthScopesField.setWidth("*");
-		oauthScopesField.setHeight(65);
+		oauthScopesField.setWidth("100%");
+		oauthScopesField.setHeight(75);
+		oauthScopesField.setBrowserSpellCheck(false);
+		oauthScopesField.setColSpan(3);
 		oauthScopesField.setStartRow(true);
 		oauthScopesField.setTooltip(SmartGWTUtil.getHoverString(AdminClientMessageUtil.getString("ui_metadata_webapi_OAuthAttributePane_oauthScopes")));
 
@@ -72,28 +74,21 @@ public class OAuthAttributePane extends VLayout {
 	public void setDefinition(WebApiDefinition definition) {
 
 		supportBearerTokenField.setValue(definition.isSupportBearerToken());
-		if (definition.getOauthScopes() != null) {
-			String scopeText = "";
-			for (String scope : definition.getOauthScopes()) {
-				scopeText += scope + "\n";
-			}
-			if (!scopeText.isEmpty()) {
-				scopeText = scopeText.substring(0, scopeText.length() - 1);
-			}
+
+		String scopeText = SmartGWTUtil.convertArrayToString(definition.getOauthScopes(), "\n");
+		if (scopeText != null) {
 			oauthScopesField.setValue(scopeText);
+		} else {
+			oauthScopesField.clearValue();
 		}
 	}
 
 	public WebApiDefinition getEditDefinition(WebApiDefinition definition) {
 
 		definition.setSupportBearerToken(SmartGWTUtil.getBooleanValue(supportBearerTokenField));
+
 		String scopeText = SmartGWTUtil.getStringValue(oauthScopesField, true);
-		if (scopeText != null && !scopeText.trim().isEmpty()) {
-			String[] scopeArray = scopeText.split("\r\n|[\n\r\u2028\u2029\u0085]");
-			definition.setOauthScopes(scopeArray);
-		} else {
-			definition.setOauthScopes(null);
-		}
+		definition.setOauthScopes(SmartGWTUtil.convertStringToArray(scopeText));
 
 		return definition;
 	}
