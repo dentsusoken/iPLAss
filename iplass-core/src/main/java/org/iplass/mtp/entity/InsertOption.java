@@ -29,6 +29,7 @@ public class InsertOption {
 
 	private boolean regenerateOid = true;
 	private boolean regenerateAutoNumber = false;
+	private boolean versionSpecified = false;
 	private boolean withValidation = true;
 	private boolean notifyListeners = true;
 	
@@ -41,6 +42,7 @@ public class InsertOption {
 		InsertOption copy = new InsertOption();
 		copy.regenerateOid = regenerateOid;
 		copy.regenerateAutoNumber = regenerateAutoNumber;
+		copy.versionSpecified = versionSpecified;
 		copy.withValidation = withValidation;
 		copy.notifyListeners = notifyListeners;
 		copy.localized = localized;
@@ -48,6 +50,22 @@ public class InsertOption {
 		return copy;
 	}
 	
+	public boolean isVersionSpecified() {
+		return versionSpecified;
+	}
+
+	/**
+	 * バージョン管理されているEntityをインサートする際に、
+	 * 指定したバージョン番号のデータとしてインサートする場合にtrueをセットします。
+	 * falseの場合はバージョン番号は0としてインサートされます。
+	 * デフォルトはfalseです。
+	 * 
+	 * @param versionSpecified
+	 */
+	public void setVersionSpecified(boolean versionSpecified) {
+		this.versionSpecified = versionSpecified;
+	}
+
 	public boolean isRegenerateOid() {
 		return regenerateOid;
 	}
@@ -155,6 +173,16 @@ public class InsertOption {
 	}
 	
 	/**
+	 * Entityに指定されたバージョンとしてインサートするように設定します。
+	 * （Entityがバージョン管理されている場合）
+	 * @return
+	 */
+	public InsertOption versionSpecified() {
+		this.versionSpecified = true;
+		return this;
+	}
+	
+	/**
 	 * localized=trueに設定します。
 	 * @return
 	 */
@@ -166,8 +194,8 @@ public class InsertOption {
 	@Override
 	public String toString() {
 		return "InsertOption [regenerateOid=" + regenerateOid + ", regenerateAutoNumber=" + regenerateAutoNumber
-				+ ", withValidation=" + withValidation + ", notifyListeners=" + notifyListeners + ", localized="
-				+ localized + "]";
+				+ ", versionSpecified=" + versionSpecified + ", withValidation=" + withValidation
+				+ ", notifyListeners=" + notifyListeners + ", localized=" + localized + "]";
 	}
 
 }

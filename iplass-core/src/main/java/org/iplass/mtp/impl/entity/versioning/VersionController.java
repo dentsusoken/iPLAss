@@ -22,6 +22,7 @@ package org.iplass.mtp.impl.entity.versioning;
 
 import org.iplass.mtp.entity.DeleteOption;
 import org.iplass.mtp.entity.Entity;
+import org.iplass.mtp.entity.InsertOption;
 import org.iplass.mtp.entity.UpdateOption;
 import org.iplass.mtp.entity.query.AsOf;
 import org.iplass.mtp.entity.query.condition.Condition;
@@ -31,7 +32,7 @@ import org.iplass.mtp.impl.entity.property.ReferencePropertyHandler;
 
 public interface VersionController {
 	
-	public void normalizeForInsert(Entity entity, EntityContext entityContext);
+	public void normalizeForInsert(Entity entity, InsertOption option, EntityContext entityContext);
 	
 	public Entity[] normalizeRefEntity(Entity[] refEntity, ReferencePropertyHandler rph, EntityContext context);
 	

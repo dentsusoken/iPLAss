@@ -24,6 +24,7 @@ import java.sql.Timestamp;
 
 import org.iplass.mtp.entity.DeleteOption;
 import org.iplass.mtp.entity.Entity;
+import org.iplass.mtp.entity.InsertOption;
 import org.iplass.mtp.entity.UpdateOption;
 import org.iplass.mtp.entity.query.AsOf;
 import org.iplass.mtp.entity.query.Query;
@@ -53,8 +54,8 @@ public class TimebaseVersionController extends NumberbaseVersionController {
 	}
 
 	@Override
-	public void normalizeForInsert(Entity entity, EntityContext entityContext) {
-		super.normalizeForInsert(entity, entityContext);
+	public void normalizeForInsert(Entity entity, InsertOption option, EntityContext entityContext) {
+		super.normalizeForInsert(entity, option, entityContext);
 		if (entity.getStartDate() == null) {
 			entity.setStartDate(ExecuteContext.getCurrentContext().getCurrentTimestamp());
 		}

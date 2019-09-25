@@ -24,6 +24,7 @@ import java.util.ArrayList;
 
 import org.iplass.mtp.entity.DeleteOption;
 import org.iplass.mtp.entity.Entity;
+import org.iplass.mtp.entity.InsertOption;
 import org.iplass.mtp.entity.UpdateOption;
 import org.iplass.mtp.entity.query.AsOf;
 import org.iplass.mtp.entity.query.condition.Condition;
@@ -36,8 +37,8 @@ import org.iplass.mtp.impl.entity.property.ReferencePropertyHandler;
 public class NonVersionController implements VersionController {
 	
 	@Override
-	public void normalizeForInsert(Entity entity, EntityContext entityContext) {
-		entity.setVersion(Long.valueOf(0));//※Insertはバージョン方式に関係なく0
+	public void normalizeForInsert(Entity entity, InsertOption option,EntityContext entityContext) {
+		entity.setVersion(Long.valueOf(0));
 	}
 
 	@Override

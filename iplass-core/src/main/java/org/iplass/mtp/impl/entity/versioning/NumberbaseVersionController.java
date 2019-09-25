@@ -29,6 +29,7 @@ import org.iplass.mtp.entity.Entity;
 import org.iplass.mtp.entity.EntityApplicationException;
 import org.iplass.mtp.entity.EntityConcurrentUpdateException;
 import org.iplass.mtp.entity.EntityRuntimeException;
+import org.iplass.mtp.entity.InsertOption;
 import org.iplass.mtp.entity.LoadOption;
 import org.iplass.mtp.entity.UpdateOption;
 import org.iplass.mtp.entity.definition.IndexType;
@@ -166,8 +167,17 @@ public class NumberbaseVersionController implements VersionController {
 	}
 
 	@Override
-	public void normalizeForInsert(Entity entity, EntityContext entityContext) {
-		entity.setVersion(Long.valueOf(0));//※Insertはバージョン方式に関係なく0
+	public void normalizeForInsert(Entity entity, InsertOption option, EntityContext entityContext) {
+		if (option.isVersionSpecified()) {
+			Long ver = entity.getVersion();
+			if (ver != null) {
+				entity.setVersion(ver);
+			} else {
+				entity.setVersion(Long.valueOf(0));
+			}
+		} else {
+			entity.setVersion(Long.valueOf(0));
+		}
 	}
 
 	@Override

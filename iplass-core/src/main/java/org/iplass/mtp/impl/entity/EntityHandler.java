@@ -652,7 +652,7 @@ public class EntityHandler extends BaseMetaDataRuntime {
 		}
 
 		//バージョンコントロール種別毎の追加処理
-		service.getVersionController(this).normalizeForInsert(copyEntity, entityContext);
+		service.getVersionController(this).normalizeForInsert(copyEntity, option, entityContext);
 
 		//参照先のバージョンのチェック＆セット
 		for (PropertyHandler ph: getDeclaredPropertyList()) {
@@ -679,7 +679,7 @@ public class EntityHandler extends BaseMetaDataRuntime {
 
 		//TODO oidだけでよいか？？？timestampは？
 		entity.setOid(oid);
-		entity.setVersion(0L);
+		entity.setVersion(copyEntity.getVersion());
 
 		//auto numberを通知
 		if (pList != null) {
