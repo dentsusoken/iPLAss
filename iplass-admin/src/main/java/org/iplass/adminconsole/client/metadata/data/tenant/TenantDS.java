@@ -217,7 +217,7 @@ public class TenantDS extends AbstractAdminDataSource {
 	 */
 	private void createTenantRecords(TenantInfo tenantInfo) {
 
-		records = new LinkedHashMap<String, ListGridRecord>();
+		records = new LinkedHashMap<>();
 
 		Category category = null; //work用
 		LinkedHashMap<String, String> selectList = null; //work用
@@ -322,7 +322,7 @@ public class TenantDS extends AbstractAdminDataSource {
 	}
 
 	private LinkedHashMap<String, String> getBoolList(String trueDisplayName, String falseDisplayName) {
-		LinkedHashMap<String, String> ret = new LinkedHashMap<String, String>(2);
+		LinkedHashMap<String, String> ret = new LinkedHashMap<>(2);
 
 		//Recordに対してセットするMapのKEYはStringでないとエラーになるため、String
 		ret.put(Boolean.TRUE.toString(), trueDisplayName);
@@ -332,7 +332,7 @@ public class TenantDS extends AbstractAdminDataSource {
 	}
 
 	private LinkedHashMap<String, String> getThemeList(List<Theme> themes) {
-		final LinkedHashMap<String, String> themeMap = new LinkedHashMap<String, String>(2);
+		final LinkedHashMap<String, String> themeMap = new LinkedHashMap<>(2);
 		themeMap.put("", "");
 		if (themes != null && !themes.isEmpty()) {
 			for (Theme theme : themes) {
@@ -343,7 +343,7 @@ public class TenantDS extends AbstractAdminDataSource {
 	}
 
 	private LinkedHashMap<String, String> getSkinList(List<Skin> skins) {
-		final LinkedHashMap<String, String> skinMap = new LinkedHashMap<String, String>(2);
+		final LinkedHashMap<String, String> skinMap = new LinkedHashMap<>(2);
 		skinMap.put("", "");
 		if (skins != null && !skins.isEmpty()) {
 			for (Skin skin : skins) {
@@ -620,7 +620,7 @@ public class TenantDS extends AbstractAdminDataSource {
 			tenantAuthInfo.setUseRememberMe(record.getAttributeAsBoolean(valueKey));
 		} else if ("userAdminRoles".equals(name)) {
 			List<String> adminRoles = SmartGWTUtil.convertStringToList(record.getAttributeAsString(valueKey), ",");
-			if (adminRoles.isEmpty()) adminRoles = null;
+			if (adminRoles != null && adminRoles.isEmpty()) adminRoles = null;
 			tenantAuthInfo.setUserAdminRoles(adminRoles);
 		} else if ("sendMailEnable".equals(name)) {
 			tenantMailInfo.setSendMailEnable(record.getAttributeAsBoolean(valueKey));
