@@ -316,10 +316,10 @@ public class EntityPortingService implements Service {
 			public Integer apply(Transaction transaction) {
 
 				try (EntityCsvReader reader = new EntityCsvReader(definition, is)){
-					
+
 					reader.withReferenceVersion(true)
 						.prefixOid(condition.getPrefixOid())
-						.ignoreNotExistsProperty(condition.isIgnoreNotExistsProperty());					
+						.ignoreNotExistsProperty(condition.isIgnoreNotExistsProperty());
 
 					final Iterator<Entity> iterator = reader.iterator();
 					final List<String> properties = reader.properties();
@@ -458,7 +458,7 @@ public class EntityPortingService implements Service {
 				} else if (value instanceof BinaryReference[]) {
 					BinaryReference[] brArray = (BinaryReference[])value;
 					for (int i = 0; i < brArray.length; i++) {
-						brArray[i] = registBinaryReference(definition, (BinaryReference)brArray[i], zipFile);
+						brArray[i] = registBinaryReference(definition, brArray[i], zipFile);
 					}
 					entity.setValue(property.getName(), brArray);
 				}
@@ -500,52 +500,59 @@ public class EntityPortingService implements Service {
 		String uniqueValue = entity.getValue(uniqueKey);
 
 		//更新の判断(指定されたUniqueKeyでチェック)
-		final List<String> storedOidList = new ArrayList<>();
 		TargetVersion updateTargetVersion = null;
+		InsertOption insertOption = null;
 		if (StringUtil.isNotEmpty(uniqueValue)) {
-			if (definition.getVersionControlType().equals(VersionControlType.VERSIONED)
-					&& entity.getVersion() != null) {
-				//バージョン管理かつバージョンが指定されている場合はバージョンで検索
-				Query query = new Query().select(Entity.OID).from(definition.getName());
-				query.where(new And(new Equals(uniqueKey, uniqueValue), new Equals(Entity.VERSION, entity.getVersion())));
-				query.versioned(true);
-				query.getSelect().addHint(new FetchSizeHint(1));
-				entityHandler.search(query, null, new Predicate<Object[]>() {
-					@Override
-					public boolean test(Object[] dataModel) {
-						storedOidList.add((String)dataModel[0]);
-						return false;	//1件でいい（OIDは一意）
-					}
-				});
-			}
 
-			if (!storedOidList.isEmpty()) {
-				updateTargetVersion = TargetVersion.SPECIFIC;
+			if (definition.getVersionControlType().equals(VersionControlType.VERSIONED)) {
+				//バージョン管理している場合
+				if (entity.getVersion() != null) {
+					//バージョン管理かつバージョンが指定されている場合はバージョンで検索
+					String storedOid = getVersionEntityOid(definition.getName(), uniqueKey, uniqueValue, entity.getVersion(), entityHandler);
 
-				//UniqueKeyで検索している可能性があるので登録済のOIDをセット
-				entity.setOid(storedOidList.get(0));
-			} else {
-				//バージョンなしで検索
-				Query query = new Query().select(Entity.OID).from(definition.getName());
-				query.where(new Equals(uniqueKey, uniqueValue));
-				query.getSelect().addHint(new FetchSizeHint(1));
-				entityHandler.search(query, null, new Predicate<Object[]>() {
-					@Override
-					public boolean test(Object[] dataModel) {
-						storedOidList.add((String)dataModel[0]);
-						return false;	//1件でいい（OIDは一意）
-					}
-				});
+					if (StringUtil.isNotEmpty(storedOid)) {
+						//指定されたUniqueKey、Versionが存在するので、そのデータをUpdate
+						updateTargetVersion = TargetVersion.SPECIFIC;
 
-				if (!storedOidList.isEmpty()) {
-					if (definition.getVersionControlType().equals(VersionControlType.VERSIONED)) {
-						updateTargetVersion = TargetVersion.NEW;
+						//UniqueKeyで検索している可能性があるので登録済のOIDをセット
+						entity.setOid(storedOid);
 					} else {
-						updateTargetVersion = TargetVersion.CURRENT_VALID;
+						//指定されたUniqueKey、Versionが存在しないが、Versionは指定されているので指定バージョンでInsert
+						insertOption = new InsertOption();
+						insertOption.setVersionSpecified(true);
+
+						//バージョンなしで検索(UniqueKeyで検索している可能性があるので登録済のOIDを取得)
+						storedOid = getNoneVersionEntityOid(definition.getName(), uniqueKey, uniqueValue, entityHandler);
+						if (StringUtil.isNotEmpty(storedOid)) {
+							//UniqueKeyで検索している可能性があるので登録済のOIDをセット
+							//見つからない場合は、CSVのデータをそのまま利用
+							entity.setOid(storedOid);
+						}
 					}
+				} else {
+					//バージョンが未指定のため、バージョンなしで検索
+					String storedOid = getNoneVersionEntityOid(definition.getName(), uniqueKey, uniqueValue, entityHandler);
+
+					if (StringUtil.isNotEmpty(storedOid)) {
+						//登録済のOidが存在する場合は、新しいVersionとしてUpdate
+						//登録済のOidが存在しない場合は、更新できないので通常Insert
+						updateTargetVersion = TargetVersion.NEW;
+
+						//UniqueKeyで検索している可能性があるので登録済のOIDをセット
+						entity.setOid(storedOid);
+					}
+				}
+			} else {
+				//バージョン管理していない場合
+				//バージョンなしで検索
+				String storedOid = getNoneVersionEntityOid(definition.getName(), uniqueKey, uniqueValue, entityHandler);
+
+				if (StringUtil.isNotEmpty(storedOid)) {
+					//指定されたUniqueKeyが存在するのでUpdate
+					updateTargetVersion = TargetVersion.CURRENT_VALID;
 
 					//UniqueKeyで検索している可能性があるので登録済のOIDをセット
-					entity.setOid(storedOidList.get(0));
+					entity.setOid(storedOid);
 				}
 			}
 		}
@@ -609,16 +616,18 @@ public class EntityPortingService implements Service {
 
 			result.updated();
 		} else {
-			InsertOption option = new InsertOption();
+			if (insertOption == null) {
+				insertOption = new InsertOption();
+			}
 			//OID,AutoNumberは指定されていればそれを利用するためfalse
-			option.setRegenerateOid(false);
-			option.setRegenerateAutoNumber(false);
+			insertOption.setRegenerateOid(false);
+			insertOption.setRegenerateAutoNumber(false);
 
-			option.setNotifyListeners(cond.isNotifyListeners());
-			option.setWithValidation(cond.isWithValidation());
+			insertOption.setNotifyListeners(cond.isNotifyListeners());
+			insertOption.setWithValidation(cond.isWithValidation());
 
-			String oid = em.insert(entity, option);
-			auditLogger.info("insert entity," + definition.getName() + ",oid:" + oid + " " + option);
+			String oid = em.insert(entity, insertOption);
+			auditLogger.info("insert entity," + definition.getName() + ",oid:" + oid + " " + insertOption);
 
 			if (logger.isDebugEnabled()) {
 				logger.debug("insert " + definition.getName() + " data. oid=" + oid + ", csv line no=" + index);
@@ -628,6 +637,40 @@ public class EntityPortingService implements Service {
 		}
 
 		return true;
+	}
+
+	private String getVersionEntityOid(String defName, String uniqueKey, String uniqueValue, Long version, EntityHandler entityHandler) {
+
+		Query query = new Query().select(Entity.OID).from(defName);
+		query.where(new And(new Equals(uniqueKey, uniqueValue), new Equals(Entity.VERSION, version)));
+		query.versioned(true);
+		query.getSelect().addHint(new FetchSizeHint(1));
+
+		final String[] storedOid = new String[1];
+		entityHandler.search(query, null, new Predicate<Object[]>() {
+			@Override
+			public boolean test(Object[] dataModel) {
+				storedOid[0] = (String)dataModel[0];
+				return false;	//1件でいい（OIDは一意）
+			}
+		});
+		return storedOid[0];
+	}
+
+	private String getNoneVersionEntityOid(String defName, String uniqueKey, String uniqueValue, EntityHandler entityHandler) {
+		Query query = new Query().select(Entity.OID).from(defName);
+		query.where(new Equals(uniqueKey, uniqueValue));
+		query.getSelect().addHint(new FetchSizeHint(1));
+
+		final String[] storedOid = new String[1];
+		entityHandler.search(query, null, new Predicate<Object[]>() {
+			@Override
+			public boolean test(Object[] dataModel) {
+				storedOid[0] = (String)dataModel[0];
+				return false;	//1件でいい（OIDは一意）
+			}
+		});
+		return storedOid[0];
 	}
 
 	private UpdateOption getUpdateOption(final EntityDataImportCondition cond, final List<String> properties, TargetVersion updateTargetVersion, EntityContext entityContext, EntityHandler entityHandler) {
@@ -643,7 +686,7 @@ public class EntityPortingService implements Service {
 		}
 
 		//除外対象のプロパティチェック
-		List<String> execOptionProperties = new ArrayList<String>();
+		List<String> execOptionProperties = new ArrayList<>();
 		//headerはmultipleの場合、同じものが含まれるためdistinct(set化で対応)
 		for (String propName : properties.stream().collect(Collectors.toSet())) {
 			PropertyHandler ph = entityHandler.getProperty(propName, entityContext);
