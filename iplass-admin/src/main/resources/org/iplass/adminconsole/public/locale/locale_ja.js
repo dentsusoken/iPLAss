@@ -212,7 +212,7 @@ LocaleInfo.ui_metadata_action_ParamMapGridPane_actionPathParamComment1 = "<li>�
 LocaleInfo.ui_metadata_action_ParamMapGridPane_actionPathParamComment2 = "<li>${paths} でアクション名を除いたパス全体を取得できます。</li>";
 LocaleInfo.ui_metadata_action_ParamMapGridPane_actionPathParamComment3 = "<li>${n} でアクション名を除いたn番目のパスが取得できます (n=1,2,・・・)。</li>";
 LocaleInfo.ui_metadata_action_RestrictionRequestAttributePane_allowRequestContentTypes = "許可するリクエストボディのContentTypeを指定します。<br/>未指定の場合はすべて許可します。<br/>複数指定する場合は改行で区切ってください。";
-LocaleInfo.ui_metadata_action_RestrictionRequestAttributePane_maxRequestBodySize = "リクエストボディの最大サイズを指定します。<br/>contentTypeがapplication/x-www-form-urlencodedの場合は無効です。";
+LocaleInfo.ui_metadata_action_RestrictionRequestAttributePane_maxRequestBodySize = "リクエストボディの最大サイズを指定します。<br/>contentTypeがapplication/x-www-form-urlencodedの場合は適用されません。";
 LocaleInfo.ui_metadata_action_RestrictionRequestAttributePane_maxFileSize = "リクエストするファイルの最大サイズを指定します。";
 LocaleInfo.ui_metadata_action_ResultGridPane_statusComment1 = "<li>ステータス「*」の場合、全てのステータスに適用されます。</li>";
 LocaleInfo.ui_metadata_action_ResultGridPane_showChoiceTemplateMetaDataEdit = "選択TemplateのMetaData編集画面を表示します。";
@@ -1135,7 +1135,7 @@ LocaleInfo.ui_metadata_webapi_MethodTypePane_methodType = "メソッド種別 :"
 LocaleInfo.ui_metadata_webapi_OAuthAttributePane_supportBearerToken = "RFC6750規格に基づいたBearer Tokenによる認証を許可する";
 LocaleInfo.ui_metadata_webapi_OAuthAttributePane_oauthScopes = "許可するスコープ。<br/>複数指定する場合はスペースまたは改行で区切ってください。<br/>スペースで指定されているものはAND条件として、改行されているものはOR条件として判定します。";
 LocaleInfo.ui_metadata_webapi_RestrictionRequestAttributePane_allowRequestContentTypes = "許可するリクエストボディのContentTypeを指定します。<br/>未指定の場合はすべて許可します。<br/>複数指定する場合は改行で区切ってください。";
-LocaleInfo.ui_metadata_webapi_RestrictionRequestAttributePane_maxRequestBodySize = "リクエストボディの最大サイズを指定します。<br/>contentTypeがapplication/x-www-form-urlencodedの場合は無効です。";
+LocaleInfo.ui_metadata_webapi_RestrictionRequestAttributePane_maxRequestBodySize = "リクエストボディの最大サイズを指定します。<br/>contentTypeがapplication/x-www-form-urlencodedの場合は適用されません。";
 LocaleInfo.ui_metadata_webapi_RestrictionRequestAttributePane_maxFileSize = "リクエストするファイルの最大サイズを指定します。";
 LocaleInfo.ui_metadata_webapi_RestJsonParamPane_parameterName = "パラメータ名";
 LocaleInfo.ui_metadata_webapi_RestJsonParamPane_parameterType = "パラメータタイプ";
