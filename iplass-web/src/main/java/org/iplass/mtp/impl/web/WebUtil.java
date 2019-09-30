@@ -433,14 +433,34 @@ public class WebUtil {
 	 * @param cache
 	 */
 	public static void setCacheControlHeader(WebRequestStack req, boolean cache, long maxAge) {
+		setCacheControlHeader(req, cache, false, maxAge);
+	}
+
+	/**
+	 * ResponceHeaderにキャッシュの設定をする。
+	 * ただし、クライアント直リクエストかつレスポンスが未コミットの場合にのみ設定。
+	 *
+	 * @param req
+	 * @param cache
+	 * @param shared 共有キャッシュであるか
+	 */
+	public static void setCacheControlHeader(WebRequestStack req, boolean cache, boolean shared, long maxAge) {
 		// クライアントキャッシュの設定
 		if (req.isClientDirectRequest()
 				&& !req.getResponse().isCommitted()) {
 			if (cache) {
 				if (maxAge < 0) {
-					req.getResponse().setHeader("Cache-Control", "private");
+					if (shared) {
+						req.getResponse().setHeader("Cache-Control", "public");
+					} else {
+						req.getResponse().setHeader("Cache-Control", "private");
+					}
 				} else {
-					req.getResponse().setHeader("Cache-Control", "private, max-age=" + maxAge);
+					if (shared) {
+						req.getResponse().setHeader("Cache-Control", "public, max-age=" + maxAge);
+					} else {
+						req.getResponse().setHeader("Cache-Control", "private, max-age=" + maxAge);
+					}
 				}
 			} else {
 				req.getResponse().setHeader("Cache-Control",

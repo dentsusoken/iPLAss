@@ -730,6 +730,9 @@ public class MetaActionMapping extends BaseRootMetaData implements DefinableMeta
 			case CACHE:
 				WebUtil.setCacheControlHeader(req, true, clientCacheMaxAge);
 				break;
+			case CACHE_PUBLIC:
+				WebUtil.setCacheControlHeader(req, true, true, clientCacheMaxAge);
+				break;
 			case NO_CACHE:
 				WebUtil.setCacheControlHeader(req, false, -1);
 				break;

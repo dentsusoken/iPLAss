@@ -38,6 +38,13 @@ public enum ClientCacheType {
 	CACHE,
 	
 	/**
+	 * キャッシュを許可します。
+	 * 具体的にはCache-Controlをpublic指定します。
+	 * CACHEを指定する場合は、合わせてclientCacheMaxAgeも指定してください。
+	 */
+	CACHE_PUBLIC,
+	
+	/**
 	 * キャッシュを許可しません。
 	 * 具体的にはCache-Controlをno-store,no-cache指定します
 	 * （加えて、HTTP/1.0の場合は、Pragmaをno-cache指定します）。
