@@ -202,6 +202,7 @@ public class ActionAttributePane extends HLayout {
 
 		LinkedHashMap<String, String> casheTypeMap = new LinkedHashMap<String, String>();
 		casheTypeMap.put(ClientCacheType.CACHE.name(), "Cache");
+		casheTypeMap.put(ClientCacheType.CACHE_PUBLIC.name(), "Cache Public");
 		casheTypeMap.put(ClientCacheType.NO_CACHE.name(), "Not Cache");
 		casheTypeMap.put("", "Default");
 		clientCacheTypeField.setValueMap(casheTypeMap);

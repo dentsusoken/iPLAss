@@ -160,6 +160,9 @@ public class RestCommandInvoker {
 			case CACHE:
 				WebUtil.setCacheControlHeader(stack, true, runtime.getMetaData().getCacheControlMaxAge());
 				break;
+			case CACHE_PUBLIC:
+				WebUtil.setCacheControlHeader(stack, true, true, runtime.getMetaData().getCacheControlMaxAge());
+				break;
 			case NO_CACHE:
 				WebUtil.setCacheControlHeader(stack, false, -1);
 				break;

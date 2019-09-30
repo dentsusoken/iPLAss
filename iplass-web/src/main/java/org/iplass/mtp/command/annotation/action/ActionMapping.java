@@ -176,11 +176,12 @@ public @interface ActionMapping {
 	/**
 	 * クライアントのキャッシュ設定のenumです。<br>
 	 * CACHE : "Cache-Control:private"をセット<br>
+	 * CACHE_PUBLIC : "Cache-Control:public"をセット<br>
 	 * NO_CACHE : "Cache-Control:no-store,no-cache"をセット
 	 */
 	public enum ClientCacheType {
 		//TODO mustrevalidate必要か。画像とかの場合使いそう
-		CACHE, NO_CACHE, UNSPECIFIED
+		CACHE, CACHE_PUBLIC, NO_CACHE, UNSPECIFIED
 	}
 
 }

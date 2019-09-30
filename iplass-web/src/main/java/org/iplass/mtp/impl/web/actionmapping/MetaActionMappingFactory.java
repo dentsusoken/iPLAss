@@ -273,6 +273,9 @@ public class MetaActionMappingFactory implements
 				case CACHE:
 					metaActionMapping.setClientCacheType(org.iplass.mtp.web.actionmapping.definition.ClientCacheType.CACHE);
 					break;
+				case CACHE_PUBLIC:
+					metaActionMapping.setClientCacheType(org.iplass.mtp.web.actionmapping.definition.ClientCacheType.CACHE_PUBLIC);
+					break;
 				case NO_CACHE:
 					metaActionMapping.setClientCacheType(org.iplass.mtp.web.actionmapping.definition.ClientCacheType.NO_CACHE);
 					break;

@@ -198,6 +198,7 @@ public class WebApiAttributePane extends HLayout {
 
 		LinkedHashMap<String, String> casheTypeMap = new LinkedHashMap<String, String>();
 		casheTypeMap.put(CacheControlType.CACHE.name(), "Cache");
+		casheTypeMap.put(CacheControlType.CACHE_PUBLIC.name(), "Cache Public");
 		casheTypeMap.put(CacheControlType.NO_CACHE.name(), "Not Cache");
 		casheTypeMap.put("", "Default");
 		cacheControlTypeField.setValueMap(casheTypeMap);
