@@ -26,6 +26,7 @@ import java.util.Map;
 import org.iplass.mtp.command.Command;
 import org.iplass.mtp.command.annotation.CommandClass;
 import org.iplass.mtp.command.annotation.webapi.WebApi;
+import org.iplass.mtp.command.annotation.webapi.WebApiParamMapping;
 import org.iplass.mtp.impl.command.MetaCommand;
 import org.iplass.mtp.impl.command.MetaCommandFactory;
 import org.iplass.mtp.impl.metadata.annotation.AnnotatableMetaDataFactory;
@@ -146,6 +147,18 @@ public class MetaWebApiFactory implements AnnotatableMetaDataFactory<WebApi, Com
 		meta.setPublicWebApi(webapi.publicWebApi());
 		meta.setCheckXRequestedWithHeader(webapi.checkXRequestedWithHeader());
 		meta.setResponseType(webapi.responseType());
+
+		if (webapi.paramMapping().length > 0) {
+			MetaWebApiParamMap[] paramMap = new MetaWebApiParamMap[webapi.paramMapping().length];
+			for (int i = 0; i < paramMap.length; i++) {
+				WebApiParamMapping anoParamMap = webapi.paramMapping()[i];
+				paramMap[i] = new MetaWebApiParamMap(anoParamMap.name(), anoParamMap.mapFrom());
+				if (!DEFAULT.equals(anoParamMap.condition())) {
+					paramMap[i].setCondition(anoParamMap.condition());
+				}
+			}
+			meta.setWebApiParamMap(paramMap);
+		}
 
 		//ValidateToken設定(ActionMappingからチェック)
 		if (webapi.tokenCheck().executeCheck()) {

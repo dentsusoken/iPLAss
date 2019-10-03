@@ -67,6 +67,8 @@ public interface ScriptEditorDialogConstants {
 	public static final String UTILITY_SCRIPT = "UtilityClass.Script";
 
 	public static final String WEBAPI_INIT_SCRIPT = "WebApi.InitScript";
+	
+	public static final String WEBAPI_PARAMMAP_CONDITION = "WebApi.ParamMapCondition";
 
 	public static final String WORKFLOW_QUEUE_CODE_EXPRESSION = "Workflow.QueueCodeExpression";
 
