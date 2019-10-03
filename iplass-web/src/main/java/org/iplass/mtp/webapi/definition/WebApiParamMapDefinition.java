@@ -39,7 +39,7 @@ import java.io.Serializable;
  * それぞれ次の値がパラメータにマップされます。
  * </p>
  * <p>
- * RESTの場合は
+ * RESTで呼び出した場合は
  * <ul>
  * <li>${0} -&gt; path1</li>
  * <li>${1} -&gt; path2</li>
@@ -49,7 +49,7 @@ import java.io.Serializable;
  * </ul>
  * </p>
  * <p>
- * SOAPの場合はqueryStringをサポートしないので、
+ * SOAPで呼び出した場合はqueryStringをサポートしないので、
  * <ul>
  * <li>${0} -&gt; path1</li>
  * <li>${1} -&gt; path2</li>
