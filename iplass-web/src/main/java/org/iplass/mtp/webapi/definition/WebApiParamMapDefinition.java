@@ -34,8 +34,8 @@ import java.io.Serializable;
  * また、mapFromを${paths}とした場合、サブパスすべてマップします。
  * </p>
  * <p>
- * たとえば、WebApi名が"sample/act1"の場合において、
- * "sample/act1/path1/path2/path3?paramX=fuga"を呼び出した場合、mapFromに設定した値によって、
+ * たとえば、WebApi名が"sample/webApi1"の場合において、
+ * "sample/webApi1/path1/path2/path3?paramX=fuga"を呼び出した場合、mapFromに設定した値によって、
  * それぞれ次の値がパラメータにマップされます。
  * </p>
  * <p>
