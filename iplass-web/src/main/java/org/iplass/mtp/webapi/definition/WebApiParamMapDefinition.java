@@ -37,24 +37,11 @@ import java.io.Serializable;
  * たとえば、WebApi名が"sample/webApi1"の場合において、
  * "sample/webApi1/path1/path2/path3?paramX=fuga"を呼び出した場合、mapFromに設定した値によって、
  * それぞれ次の値がパラメータにマップされます。
- * </p>
- * <p>
- * RESTで呼び出した場合は
  * <ul>
  * <li>${0} -&gt; path1</li>
  * <li>${1} -&gt; path2</li>
- * <li>${2} -&gt; path3</li>
  * <li>${paths} -&gt; path1/path2/path3</li>
  * <li>paramX -&gt; fuga</li>
- * </ul>
- * </p>
- * <p>
- * SOAPで呼び出した場合はqueryStringをサポートしないので、
- * <ul>
- * <li>${0} -&gt; path1</li>
- * <li>${1} -&gt; path2</li>
- * <li>${2} -&gt; path3?paramX=fuga</li>
- * <li>${paths} -&gt; path1/path2/path3?paramX=fuga</li>
  * </ul>
  * </p>
  * <p>
