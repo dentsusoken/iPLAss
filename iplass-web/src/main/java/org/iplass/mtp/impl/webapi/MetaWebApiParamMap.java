@@ -33,7 +33,7 @@ import org.iplass.mtp.webapi.definition.WebApiParamMapDefinition;
 
 public class MetaWebApiParamMap implements MetaData {
 
-	private static final long serialVersionUID = -2243263079148107343L;
+	private static final long serialVersionUID = -3370788488772223300L;
 	private static final String SCRIPT_PREFIX = "MetaWebApiParamMap_condition";
 
 	private String name;

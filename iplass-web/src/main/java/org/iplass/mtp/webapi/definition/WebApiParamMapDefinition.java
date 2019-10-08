@@ -82,7 +82,7 @@ import java.io.Serializable;
  */
 public class WebApiParamMapDefinition implements Serializable {
 
-	private static final long serialVersionUID = 963315789461567699L;
+	private static final long serialVersionUID = -8571119343858716267L;
 
 	/**
 	 * WebApiのパスを除いたサブパスの文字列をマップする場合の定数です。
