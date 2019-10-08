@@ -24,6 +24,8 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -53,7 +55,9 @@ import org.iplass.mtp.impl.util.ObjectUtil;
 import org.iplass.mtp.impl.web.ParameterValueMap;
 import org.iplass.mtp.impl.web.WebFrontendService;
 import org.iplass.mtp.impl.web.WebRequestContext;
+import org.iplass.mtp.impl.web.WebRequestStack;
 import org.iplass.mtp.impl.web.fileupload.MultiPartParameterValueMap;
+import org.iplass.mtp.impl.webapi.MetaWebApiParamMap.WebApiParamMapRuntime;
 import org.iplass.mtp.spi.ServiceRegistry;
 import org.iplass.mtp.util.StringUtil;
 import org.iplass.mtp.webapi.WebApiRuntimeException;
@@ -62,6 +66,7 @@ import org.iplass.mtp.webapi.definition.CacheControlType;
 import org.iplass.mtp.webapi.definition.MethodType;
 import org.iplass.mtp.webapi.definition.StateType;
 import org.iplass.mtp.webapi.definition.WebApiDefinition;
+import org.iplass.mtp.webapi.definition.WebApiParamMapDefinition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -79,6 +84,9 @@ public class MetaWebApi extends BaseRootMetaData implements DefinableMetaData<We
 
 	/** このWebAPIが呼び出されたときに実行するCommand。 */
 	private MetaCommand command;
+
+	/** WebからのパラメータのCommand実行時のParameter名のマップの定義 */
+	private MetaWebApiParamMap[] webApiParamMap;
 
 	private String[] results;
 
@@ -272,6 +280,14 @@ public class MetaWebApi extends BaseRootMetaData implements DefinableMetaData<We
 		this.command = command;
 	}
 
+	public MetaWebApiParamMap[] getWebApiParamMap() {
+		return webApiParamMap;
+	}
+
+	public void setWebApiParamMap(MetaWebApiParamMap[] webApiParamMap) {
+		this.webApiParamMap = webApiParamMap;
+	}
+
 	public void setResults(String[] results) {
 		this.results = results;
 	}
@@ -339,6 +355,7 @@ public class MetaWebApi extends BaseRootMetaData implements DefinableMetaData<We
 
 	public class WebApiRuntime extends BaseMetaDataRuntime {
 		private CommandRuntime cmd;
+		private HashMap<String, List<WebApiParamMapRuntime>> webApiParamMapRuntimes;
 
 		private GroovyTemplate accessControlAllowOriginTemplate;
 		private List<Variant> variants;
@@ -374,6 +391,19 @@ public class MetaWebApi extends BaseRootMetaData implements DefinableMetaData<We
 //					variableParamMap = variables.toArray(new ParamMap[variables.size()]);
 //				}
 //			}
+
+				if (webApiParamMap != null) {
+					webApiParamMapRuntimes = new HashMap<>();
+					for (MetaWebApiParamMap p: webApiParamMap) {
+						WebApiParamMapRuntime pmr = p.createRuntime();
+						List<WebApiParamMapRuntime> pmrList = webApiParamMapRuntimes.get(p.getName());
+						if (pmrList == null) {
+							pmrList = new LinkedList<>();
+							webApiParamMapRuntimes.put(p.getName(), pmrList);
+						}
+						pmrList.add(pmr);
+					}
+				}
 
 				ScriptEngine se = ExecuteContext.getCurrentContext().getTenantContext().getScriptEngine();
 				if (accessControlAllowOrigin != null && accessControlAllowOrigin.length() != 0) {
@@ -457,6 +487,11 @@ public class MetaWebApi extends BaseRootMetaData implements DefinableMetaData<We
 			return variants;
 		}
 
+		public Map<String, List<WebApiParamMapRuntime>> getWebApiParamMapRuntimes() {
+			checkState();
+			return webApiParamMapRuntimes;
+		}
+
 		public String getAccessControlAllowOrigin(RequestContext req) {
 			if (accessControlAllowOriginTemplate != null) {
 				StringWriter sw = new StringWriter();
@@ -533,16 +568,22 @@ public class MetaWebApi extends BaseRootMetaData implements DefinableMetaData<We
 			return cmd;
 		}
 
-		public String executeCommand(final RequestContext req, String interceptorName) {
+		public String executeCommand(final WebRequestStack stack, String interceptorName) {
 			checkState();
 			CommandInterceptor[] cmdInterceptors = is.getInterceptors(interceptorName);
 
+			RequestContext req = stack.getRequestContext();
 			if (req instanceof WebRequestContext) {
 				WebRequestContext webRequestContext = (WebRequestContext) req;
 				ParameterValueMap currentValueMap = webRequestContext.getValueMap();
 				//set maxFileSize
 				if (currentValueMap instanceof MultiPartParameterValueMap) {
 					((MultiPartParameterValueMap) currentValueMap).setMaxFileSize(maxFileSizeRuntime);
+				}
+				//parameter map
+				if (webApiParamMap != null) {
+					WebApiVariableParameterValueMap variableValueMap = new WebApiVariableParameterValueMap(currentValueMap, stack.getRequestPath(), this);
+					webRequestContext.setValueMap(variableValueMap);
 				}
 			}
 
@@ -668,6 +709,16 @@ public class MetaWebApi extends BaseRootMetaData implements DefinableMetaData<We
 			definition.setCommandConfig(command.currentConfig());
 		}
 
+		if (webApiParamMap != null) {
+			WebApiParamMapDefinition[] paramMapDefinition = new WebApiParamMapDefinition[webApiParamMap.length];
+			int i = 0;
+			for (MetaWebApiParamMap map : webApiParamMap) {
+				paramMapDefinition[i] = map.currentConfig();
+				i++;
+			}
+			definition.setWebApiParamMap(paramMapDefinition);
+		}
+
 		if (accepts != null) {
 			definition.setAccepts(Arrays.copyOf(accepts, accepts.length));
 		}
@@ -757,6 +808,18 @@ public class MetaWebApi extends BaseRootMetaData implements DefinableMetaData<We
 			command.applyConfig(definition.getCommandConfig());
 		} else {
 			command = null;
+		}
+
+		if (definition.getWebApiParamMap() != null) {
+			webApiParamMap = new MetaWebApiParamMap[definition.getWebApiParamMap().length];
+			int i = 0;
+			for (WebApiParamMapDefinition paramDef : definition.getWebApiParamMap()) {
+				webApiParamMap[i] = new MetaWebApiParamMap();
+				webApiParamMap[i].applyConfig(paramDef);
+				i++;
+			}
+		} else {
+			webApiParamMap = null;
 		}
 
 		restJsonParameterName = definition.getRestJsonParameterName();

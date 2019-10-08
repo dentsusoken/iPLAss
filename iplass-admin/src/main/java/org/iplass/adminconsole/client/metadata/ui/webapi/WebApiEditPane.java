@@ -94,6 +94,9 @@ public class WebApiEditPane extends MetaDataMainEditPane {
 	/** CommandConfig部分 */
 	private CommandConfigGridPane commandConfigPane;
 
+	/** ParamMap部分 */
+	private WebApiParamMapGridPane webApiParamMapPane;
+
 	/** Result部分 */
 	private ResultPane resultPane;
 
@@ -155,13 +158,16 @@ public class WebApiEditPane extends MetaDataMainEditPane {
 		//CommandConfig編集部分
 		commandConfigPane = new CommandConfigGridPane();
 
+		//ParamMap部分
+		webApiParamMapPane = new WebApiParamMapGridPane();
+
 		//Result部分
 		resultPane = new ResultPane();
 
 		//Section設定
 		MetaDataSectionStackSection webApiSection = createSection("WebApi Attribute", attributePane,
 				restrictionRequestAttributePane, corsAttributePane, oauthAttributePane,
-				requestTypeGridPane, requestTypePane, responseTypePane,
+				requestTypeGridPane, requestTypePane, responseTypePane, webApiParamMapPane,
 				commandConfigPane, resultPane);
 
 		//Drop設定
@@ -289,6 +295,7 @@ public class WebApiEditPane extends MetaDataMainEditPane {
 		}
 
 		commandConfigPane.setConfig(curDefinition.getCommandConfig());
+		webApiParamMapPane.setWebApiParamMap(curDefinition.getWebApiParamMap());
 		resultPane.setResults(curDefinition.getResults());
 	}
 
@@ -355,7 +362,8 @@ public class WebApiEditPane extends MetaDataMainEditPane {
 			boolean corsValidate = corsAttributePane.validate();
 			boolean oauthValidate = oauthAttributePane.validate();
 			boolean commandValidate = commandConfigPane.validate();
-			if (!commonValidate || !attrValidate || !restrictionValidate || !corsValidate || !oauthValidate || !commandValidate) {
+			boolean paramMapValidate = webApiParamMapPane.validate();
+			if (!commonValidate || !attrValidate || !restrictionValidate || !corsValidate || !oauthValidate || !commandValidate || !paramMapValidate) {
 				return;
 			}
 			SC.ask(AdminClientMessageUtil.getString("ui_metadata_webapi_WebAPIEditPane_saveConfirm"),
@@ -372,6 +380,7 @@ public class WebApiEditPane extends MetaDataMainEditPane {
 						definition = corsAttributePane.getEditDefinition(definition);
 						definition = oauthAttributePane.getEditDefinition(definition);
 						definition.setCommandConfig(commandConfigPane.getEditCommandConfig());
+						definition = webApiParamMapPane.getEditDefinition(definition);
 						definition = requestTypeGridPane.getEditDefinition(definition);
 						definition = resultPane.getEditDefinition(definition);
 						if (jsonParamPane != null) {

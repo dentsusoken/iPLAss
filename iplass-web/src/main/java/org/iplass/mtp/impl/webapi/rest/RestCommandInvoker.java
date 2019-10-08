@@ -133,7 +133,7 @@ public class RestCommandInvoker {
 		WebApiResponse result = new WebApiResponse();
 		
 		try {
-			result.setStatus(runtime.executeCommand(stack.getRequestContext(), MetaWebApi.COMMAND_INTERCEPTOR_NAME));
+			result.setStatus(runtime.executeCommand(stack, MetaWebApi.COMMAND_INTERCEPTOR_NAME));
 		} catch (WebApplicationException e) {
 			//already handled by code
 			throw e;

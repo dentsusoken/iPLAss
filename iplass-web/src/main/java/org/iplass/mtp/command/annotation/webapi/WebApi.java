@@ -78,6 +78,8 @@ public @interface WebApi {
 	boolean accessControlAllowCredentials() default false;
 	boolean needTrustedAuthenticate() default false;
 
+	WebApiParamMapping[] paramMapping() default {};
+
 	CommandConfig command() default @CommandConfig;
 	RequestType[] accepts() default{};
 	MethodType[] methods() default{};
