@@ -96,7 +96,7 @@ public class XmlResourceMetaDataStore extends AbstractXmlMetaDataStore {
 	}
 
 	@Override
-	public List<MetaDataEntryInfo> definitionList(final int tenantId, final String prefixPath) throws MetaDataRuntimeException {
+	public List<MetaDataEntryInfo> definitionList(final int tenantId, final String prefixPath, boolean withInvalid) throws MetaDataRuntimeException {
 
 		String path = prefixPath;
 		if (path != null) {
@@ -279,8 +279,19 @@ public class XmlResourceMetaDataStore extends AbstractXmlMetaDataStore {
 
 	@Override
 	public List<MetaDataEntryInfo> getHistoryById(int tenantId, String id) {
-		// TODO 未使用
-		return null;
+		//未使用
+		return Collections.emptyList();
+	}
+
+	@Override
+	public void purgeById(int tenantId, String id) throws MetaDataRuntimeException {
+		//未使用
+	}
+
+	@Override
+	public List<Integer> getTenantIdsOf(String id) {
+		//未使用
+		return Collections.emptyList();
 	}
 	
 }

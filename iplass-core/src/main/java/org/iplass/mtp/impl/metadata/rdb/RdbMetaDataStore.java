@@ -27,7 +27,6 @@ import java.sql.Blob;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.xml.bind.JAXBException;
@@ -35,7 +34,6 @@ import javax.xml.bind.Marshaller;
 
 import org.iplass.mtp.impl.metadata.AbstractXmlMetaDataStore;
 import org.iplass.mtp.impl.metadata.MetaDataConfig;
-import org.iplass.mtp.impl.metadata.MetaDataContext;
 import org.iplass.mtp.impl.metadata.MetaDataEntry;
 import org.iplass.mtp.impl.metadata.MetaDataEntry.State;
 import org.iplass.mtp.impl.metadata.MetaDataEntryInfo;
@@ -107,13 +105,13 @@ public class RdbMetaDataStore extends AbstractXmlMetaDataStore {
 	}
 
 	@Override
-	public List<MetaDataEntryInfo> definitionList(final int tenantId, final String prefixPath)
+	public List<MetaDataEntryInfo> definitionList(final int tenantId, final String prefixPath, boolean withInvalid)
 		throws MetaDataRuntimeException {
 		SqlExecuter<List<MetaDataEntryInfo>> exec = new SqlExecuter<List<MetaDataEntryInfo>>() {
 			@Override
 			public List<MetaDataEntryInfo> logic() throws SQLException {
 				// SQLの取得
-				String sql = select.createNodeListSQL(rdb, prefixPath);
+				String sql = select.createNodeListSQL(rdb, prefixPath, withInvalid);
 				PreparedStatement ps = getPreparedStatement(sql);
 				// 条件設定
 				select.setNodeListParameter(rdb, ps, tenantId, prefixPath);
@@ -429,100 +427,22 @@ public class RdbMetaDataStore extends AbstractXmlMetaDataStore {
 		exec.execute(rdb, true);
 	}
 
-	public boolean hasOverwriteMetaData(final int sharedTenantId, final String defId) {
-		SqlExecuter<Boolean> exec = new SqlExecuter<Boolean>() {
-			@Override
-			public Boolean logic() throws SQLException {
-				String sql = select.createCheckOverwriteSQL();
-				PreparedStatement ps = getPreparedStatement(sql);
-				select.setCheckOverwriteParameter(rdb, ps, sharedTenantId, defId);
-				ResultSet rs = ps.executeQuery();
-				int count = -1;
-				try {
-					count = select.getCheckOverwriteCountResultData(rs);
-				} finally {
-					rs.close();
-				}
-				return count != 0;
-			}
-		};
-		return exec.execute(rdb, true);
-	}
-
-	public List<Integer> getOverwriteTenantIdList(final int sharedTenantId,
-			final String metaDataId) {
+	public List<Integer> getTenantIdsOf(String id) {
 		SqlExecuter<List<Integer>> exec = new SqlExecuter<List<Integer>>() {
 			@Override
 			public List<Integer> logic() throws SQLException {
-				String sql = select.createOverwriteTenantIdListSQL();
+				String sql = select.createTenantIdListSQL();
 				PreparedStatement ps = getPreparedStatement(sql);
-				select.setOverwriteTenantIdListParameter(rdb, ps, sharedTenantId, metaDataId);
+				select.setTenantIdListParameter(rdb, ps, id);
 				ResultSet rs = ps.executeQuery();
 				try {
-					return select.getOverwriteTenantIdListResultData(rs);
+					return select.getTenantIdListResultData(rs);
 				} finally {
 					rs.close();
 				}
 			}
 		};
 		return exec.execute(rdb, true);
-	}
-
-	public List<MetaDataEntryInfo> getInvalidEntryList(final int tenantId) {
-
-		//全IDを取得
-		SqlExecuter<List<MetaDataEntryInfo>> exec = new SqlExecuter<List<MetaDataEntryInfo>>() {
-			@Override
-			public List<MetaDataEntryInfo> logic() throws SQLException {
-				// SQLの取得
-				String sql = select.createStoredEntryListSQL();
-				PreparedStatement ps = getPreparedStatement(sql);
-				// 条件設定
-				select.setStoredEntryListParameter(rdb, ps, tenantId);
-				//検索SQL実行
-				ResultSet rs = ps.executeQuery();
-				List<MetaDataEntryInfo> ret;
-				try {
-					ret = select.createStoredEntryListResultData(rs);
-				} finally {
-					rs.close();
-				}
-				return ret;
-			}
-		};
-		List<MetaDataEntryInfo> storedIdList = exec.execute(rdb, true);
-
-		MetaDataContext context = MetaDataContext.getContext();
-
-		//ログをステータスでまとめたいのでListに振り分け
-		List<MetaDataEntryInfo> validEntries = new ArrayList<>();
-		List<MetaDataEntryInfo> invalidEntries = new ArrayList<>();
-		for (MetaDataEntryInfo entry : storedIdList) {
-			//有効チェック（Sharedも含めてチェックするため、MetaDataContextに確認。存在すれば有効）
-			if (context.getMetaDataEntryById(entry.getId()) != null) {
-				validEntries.add(entry);
-			} else {
-				invalidEntries.add(entry);
-			}
-		}
-
-		logger.info("tenant metadata all validate status :"
-			+ " valid = " + validEntries.size()
-			+ ", invalid = " + invalidEntries.size()
-			+ ", all = " + storedIdList.size() + ".");
-
-		if (logger.isDebugEnabled()) {
-			validEntries.forEach(entry -> {
-				logger.debug("metadata status valid. skip purge. tenantId = " + tenantId
-						+ ",id = " + entry.getId() + ",path = " + entry.getPath() + ".");
-			});
-			invalidEntries.forEach(entry -> {
-				logger.debug("metadata status invalid. start execute purge. tenantId = " + tenantId
-						+ ",id = " + entry.getId() + ",path = " + entry.getPath() + ".");
-			});
-		}
-
-		return invalidEntries;
 	}
 
 	public void purgeById(final int tenantId, final String id) throws MetaDataRuntimeException {
@@ -537,8 +457,10 @@ public class RdbMetaDataStore extends AbstractXmlMetaDataStore {
 						delete.setPurgeByIdParameter(rdb, ps, tenantId, id);
 
 						int delCount = ps.executeUpdate();
+						if (delCount <= 0) {
+							logger.warn("purge meta data, but no record deleted. tenant id = " + tenantId + ",defId = " + id);
+						}
 
-						logger.info("purge meta data. tenant id = " + tenantId + ",defId = " + id + ". count = " + delCount);
 
 						return null;
 					}

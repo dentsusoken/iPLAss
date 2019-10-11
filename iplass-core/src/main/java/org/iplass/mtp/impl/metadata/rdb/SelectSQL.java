@@ -93,16 +93,26 @@ public class SelectSQL extends QuerySqlHandler {
 		ps.setString(2, metaDataId);
 	}
 
-	public String createNodeListSQL(RdbAdapter rdb, String prefixPath) {
+	public String createNodeListSQL(RdbAdapter rdb, String prefixPath, boolean withInvalid) {
+		
 		StringBuilder sb = new StringBuilder();
-		sb.append(META_DATA_ENTRY_INFO_SELECT
-				+ " WHERE " + ObjMetaTable.TENANT_ID + "=? "
-				+ " AND " + ObjMetaTable.STATUS + "='V' ");
+		
+		if (withInvalid) {
+			sb.append(META_DATA_ENTRY_INFO_SELECT
+					+ " a"
+					+ " WHERE " + ObjMetaTable.TENANT_ID + "=? "
+					+ " AND " + ObjMetaTable.OBJ_DEF_VER + "=(SELECT MAX(" + ObjMetaTable.OBJ_DEF_VER + ") FROM " + ObjMetaTable.TABLE_NAME
+					+ " WHERE " + ObjMetaTable.TENANT_ID + "=a." + ObjMetaTable.TENANT_ID
+					+ " AND " + ObjMetaTable.OBJ_DEF_ID + "=a." + ObjMetaTable.OBJ_DEF_ID + ")");
+		} else {
+			sb.append(META_DATA_ENTRY_INFO_SELECT
+					+ " WHERE " + ObjMetaTable.TENANT_ID + "=? "
+					+ " AND " + ObjMetaTable.STATUS + "='V'");
+		}
 
 		if (prefixPath != null) {
 			sb.append(" AND " + ObjMetaTable.OBJ_DEF_PATH + " LIKE ? ").append(rdb.escape());
 		}
-		sb.append(" ORDER BY " + ObjMetaTable.OBJ_DEF_PATH);
 		return sb.toString();
 	}
 
@@ -289,77 +299,24 @@ public class SelectSQL extends QuerySqlHandler {
 		return 0;
 	}
 
-	public String createCheckOverwriteSQL() {
-		return "SELECT COUNT(" + ObjMetaTable.OBJ_DEF_ID + ") "
-				+ " FROM " + ObjMetaTable.TABLE_NAME
-				+ " WHERE " + ObjMetaTable.TENANT_ID + " != ? "
-				+ " AND " + ObjMetaTable.OBJ_DEF_ID + " = ? "
-				+ " AND " + ObjMetaTable.STATUS + " = 'V'";
-	}
-
-	public void setCheckOverwriteParameter(RdbAdapter rdb, PreparedStatement ps, int tenantId, String metaDataId) throws SQLException {
-		int num = 1;
-		ps.setInt(num++, tenantId);
-		ps.setString(num++, metaDataId);
-	}
-
-	public int getCheckOverwriteCountResultData(ResultSet rs) throws SQLException {
-		if(rs.next()) {
-			return rs.getInt(1);
-		}
-		return -1;
-	}
-
-	public String createOverwriteTenantIdListSQL() {
+	public String createTenantIdListSQL() {
 		return "SELECT " + ObjMetaTable.TENANT_ID
 				+ " FROM " + ObjMetaTable.TABLE_NAME
-				+ " WHERE " + ObjMetaTable.TENANT_ID + " != ? "
-				+ " AND " + ObjMetaTable.OBJ_DEF_ID + " = ? "
+				+ " WHERE " + ObjMetaTable.OBJ_DEF_ID + " = ? "
 				+ " AND " + ObjMetaTable.STATUS + " = 'V'";
 	}
 
-	public void setOverwriteTenantIdListParameter(RdbAdapter rdb, PreparedStatement ps, int tenantId, String metaDataId) throws SQLException {
+	public void setTenantIdListParameter(RdbAdapter rdb, PreparedStatement ps, String metaDataId) throws SQLException {
 		int num = 1;
-		ps.setInt(num++, tenantId);
 		ps.setString(num++, metaDataId);
 	}
 
-	public List<Integer> getOverwriteTenantIdListResultData(ResultSet rs) throws SQLException {
+	public List<Integer> getTenantIdListResultData(ResultSet rs) throws SQLException {
 		List<Integer> list = new ArrayList<Integer>();
 		while (rs.next()) {
 			list.add(rs.getInt(1));
 		}
 		return list;
-	}
-
-	public String createStoredEntryListSQL() {
-		StringBuilder sb = new StringBuilder();
-		sb.append("SELECT DISTINCT " + ObjMetaTable.OBJ_DEF_ID
-			+ " ," + ObjMetaTable.OBJ_DEF_PATH
-			+ " FROM " + ObjMetaTable.TABLE_NAME
-			+ " WHERE " + ObjMetaTable.TENANT_ID + " = ? "
-		);
-		return sb.toString();
-	}
-
-	public void setStoredEntryListParameter(RdbAdapter rdb, PreparedStatement ps, int tenantId) throws SQLException {
-		int num = 1;
-		ps.setInt(num++, tenantId);
-	}
-
-	public List<MetaDataEntryInfo> createStoredEntryListResultData(ResultSet rs) throws SQLException {
-		List<MetaDataEntryInfo> result = null;
-		while(rs.next()) {
-			if(result == null) {
-				result = new ArrayList<MetaDataEntryInfo>();
-			}
-			//IDとPATHのみセットして返す
-			MetaDataEntryInfo info = new MetaDataEntryInfo();
-			info.setId(rs.getString(1));
-			info.setPath(rs.getString(2));
-			result.add(info);
-		}
-		return result == null ? Collections.<MetaDataEntryInfo>emptyList() : result;
 	}
 
 	public String createMetaHistorySQL() {

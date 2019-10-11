@@ -9,6 +9,7 @@ import java.util.List;
 import org.iplass.mtp.impl.core.ExecuteContext;
 import org.iplass.mtp.impl.core.TenantContextService;
 import org.iplass.mtp.impl.entity.EntityService;
+import org.iplass.mtp.impl.metadata.MetaDataContext;
 import org.iplass.mtp.impl.metadata.MetaDataEntryInfo;
 import org.iplass.mtp.impl.metadata.MetaDataRepository;
 import org.iplass.mtp.impl.tools.tenant.TenantInfo;
@@ -87,7 +88,13 @@ public class InvalidMetaDataCleaner extends MtpCuiBase {
 			logArguments();
 
 			Transaction.required(t -> {
-				List<MetaDataEntryInfo> invalidEntries = repository.getInvalidEntryList(tenantId);
+				List<MetaDataEntryInfo> invalidEntries = MetaDataContext.getContext().invalidDefinitionList("/");
+				if (invalidEntries.size() > 0) {
+					logInfo("purge " + invalidEntries.size() + " invalid metadata.");
+				} else {
+					logInfo("There is no invalid metadata.");
+				}
+				
 				invalidEntries.forEach(entry -> {
 
 					if (entry.getPath() != null && entry.getPath().startsWith(EntityService.ENTITY_META_PATH)) {

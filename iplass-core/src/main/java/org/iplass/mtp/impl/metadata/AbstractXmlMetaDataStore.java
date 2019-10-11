@@ -21,6 +21,8 @@
 package org.iplass.mtp.impl.metadata;
 
 
+import java.util.List;
+
 import javax.xml.bind.JAXBContext;
 
 import org.iplass.mtp.spi.Config;
@@ -38,6 +40,11 @@ public abstract class AbstractXmlMetaDataStore implements MetaDataStore {
 	@Override
 	public void destroyed() {
 		context = null;
+	}
+
+	@Override
+	public List<MetaDataEntryInfo> definitionList(int tenantId, String prefixPath) throws MetaDataRuntimeException {
+		return definitionList(tenantId, prefixPath, false);
 	}
 	
 	

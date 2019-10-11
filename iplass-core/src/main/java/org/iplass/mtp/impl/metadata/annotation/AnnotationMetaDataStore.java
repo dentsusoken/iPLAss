@@ -76,7 +76,12 @@ public class AnnotationMetaDataStore implements MetaDataStore {
 	}
 
 	@Override
-	public List<MetaDataEntryInfo> definitionList(final int tenantId, final String prefixPath)
+	public List<MetaDataEntryInfo> definitionList(int tenantId, String prefixPath) throws MetaDataRuntimeException {
+		return definitionList(tenantId, prefixPath, false);
+	}
+
+	@Override
+	public List<MetaDataEntryInfo> definitionList(final int tenantId, final String prefixPath, boolean withInvalid)
 			throws MetaDataRuntimeException {
 		String path = prefixPath;
 		if (path != null) {
@@ -261,7 +266,17 @@ public class AnnotationMetaDataStore implements MetaDataStore {
 
 	@Override
 	public List<MetaDataEntryInfo> getHistoryById(int tenantId, String id) {
-		// TODO 未使用
+		//unsupported
 		return null;
+	}
+
+	@Override
+	public List<Integer> getTenantIdsOf(String id) {
+		//unsupported
+		return null;
+	}
+
+	public void purgeById(int tenantId, String id) throws MetaDataRuntimeException {
+		//unsupported
 	}
 }
