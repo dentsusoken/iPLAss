@@ -71,6 +71,20 @@
 	font-weight:bold;
 }
 
+
+/**
+--------------------------
+AdminMenuTreeGrid
+--------------------------
+*/
+/* Fixed a bug that icons are not displayed when zooming in chrome. */
+div.adminMenuTreeGrid td.adminMenuTreeNode span:nth-child(2) {
+	/* Change iconSize from 16px to 18px and adjust max-width and max-height to 16px */
+	max-width: 16px;
+	max-height: 16px;
+}
+
+
 /**
 --------------------------
 Entity Inherited Grid
