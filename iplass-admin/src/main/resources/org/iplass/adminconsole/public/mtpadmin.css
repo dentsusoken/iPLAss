@@ -1,6 +1,7 @@
 @charset "utf-8";
 
 /** Add css rules here for your application. */
+/** base css smartgwt.jar#com.smartclient.theme.enterprise.public.sc.skins.Enterprise.skin_styles.css */
 
 /* Custom textItemDisabled */
 .textItemDisabled,
@@ -70,6 +71,76 @@
 	font-size:30px;
 	font-weight:bold;
 }
+
+
+/**
+--------------------------
+AdminMenuTreeGrid
+--------------------------
+*/
+/* Fixed a bug that icons are not displayed when zooming in chrome. */
+td.adminMenuTreeGridRow span:nth-child(2),
+td.adminMenuTreeGridRowOver span:nth-child(2),
+td.adminMenuTreeGridRowSelected span:nth-child(2),
+td.adminMenuTreeGridRowSelectedOver span:nth-child(2),
+td.adminMenuTreeGridRowDisabled span:nth-child(2) {
+	/* Change iconSize from 16px to 18px and adjust max-width and max-height to 16px */
+	max-width: 16px;
+	max-height: 16px;
+}
+
+/* base css class treeCell */
+.adminMenuTreeGridRow,
+.adminMenuTreeGridRowOver,
+.adminMenuTreeGridRowSelected,
+.adminMenuTreeGridRowSelectedOver,
+.adminMenuTreeGridRowDisabled {
+  color: black;
+  font-family: Arial, Verdana, sans-serif;
+  font-size: 11px;
+  text-overflow: ellipsis;
+}
+
+.adminMenuTreeGridRowOver {
+  background-color: #c4ddfd;
+  background-image: url(./images/ListGrid/row_Over.png);
+  background-repeat: repeat-x;
+  background-position: bottom left;
+  background-attachment: scroll;
+  background-image: url('data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4gPHN2ZyB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJncmFkIiBncmFkaWVudFVuaXRzPSJvYmplY3RCb3VuZGluZ0JveCIgeDE9IjAuNSIgeTE9IjAuMCIgeDI9IjAuNSIgeTI9IjEuMCI+PHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iI2M0ZGRmZCIvPjxzdG9wIG9mZnNldD0iOSUiIHN0b3AtY29sb3I9IiNmMGY4ZmYiLz48c3RvcCBvZmZzZXQ9IjE0JSIgc3RvcC1jb2xvcj0iI2U2ZjNmZiIvPjxzdG9wIG9mZnNldD0iODYlIiBzdG9wLWNvbG9yPSIjY2NlNWZmIi8+PHN0b3Agb2Zmc2V0PSIxMDAlIiBzdG9wLWNvbG9yPSIjYzRkZGZkIi8+PC9saW5lYXJHcmFkaWVudD48L2RlZnM+PHJlY3QgeD0iMCIgeT0iMCIgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0idXJsKCNncmFkKSIgLz48L3N2Zz4g');
+  background-size: 100%;
+  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #c4ddfd), color-stop(9%, #f0f8ff), color-stop(14%, #e6f3ff), color-stop(86%, #cce5ff), color-stop(100%, #c4ddfd));
+  background-image: -moz-linear-gradient(top, #c4ddfd 0%, #f0f8ff 9%, #e6f3ff 14%, #cce5ff 86%, #c4ddfd 100%);
+  background-image: -webkit-linear-gradient(top, #c4ddfd 0%, #f0f8ff 9%, #e6f3ff 14%, #cce5ff 86%, #c4ddfd 100%);
+  background-image: linear-gradient(to bottom, #c4ddfd 0%, #f0f8ff 9%, #e6f3ff 14%, #cce5ff 86%, #c4ddfd 100%);
+  -moz-box-shadow: inset #e6f0ff 0 1px 0, inset #e6f0ff 0 -1px 0;
+  -webkit-box-shadow: inset #e6f0ff 0 1px 0, inset #e6f0ff 0 -1px 0;
+  box-shadow: inset #e6f0ff 0 1px 0, inset #e6f0ff 0 -1px 0;
+}
+
+.adminMenuTreeGridRowSelected {
+  background: #d6e8ff;
+}
+
+.adminMenuTreeGridRowSelectedOver {
+  background-color: #c4ddfd;
+  background-image: url(./images/ListGrid/row_Selected_Over.png);
+  background-repeat: repeat-x;
+  background-attachment: scroll;
+  background-position: bottom left;
+  background-image: url('data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4gPHN2ZyB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJncmFkIiBncmFkaWVudFVuaXRzPSJvYmplY3RCb3VuZGluZ0JveCIgeDE9IjAuNSIgeTE9IjAuMCIgeDI9IjAuNSIgeTI9IjEuMCI+PHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iI2M0ZGRmZCIvPjxzdG9wIG9mZnNldD0iOSUiIHN0b3AtY29sb3I9IiNmMGY4ZmYiLz48c3RvcCBvZmZzZXQ9IjE0JSIgc3RvcC1jb2xvcj0iI2U2ZjNmZiIvPjxzdG9wIG9mZnNldD0iODYlIiBzdG9wLWNvbG9yPSIjY2NlNWZmIi8+PHN0b3Agb2Zmc2V0PSIxMDAlIiBzdG9wLWNvbG9yPSIjYzRkZGZkIi8+PC9saW5lYXJHcmFkaWVudD48L2RlZnM+PHJlY3QgeD0iMCIgeT0iMCIgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0idXJsKCNncmFkKSIgLz48L3N2Zz4g');
+  background-size: 100%;
+  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #c4ddfd), color-stop(9%, #f0f8ff), color-stop(14%, #e6f3ff), color-stop(86%, #cce5ff), color-stop(100%, #c4ddfd));
+  background-image: -moz-linear-gradient(top, #c4ddfd 0%, #f0f8ff 9%, #e6f3ff 14%, #cce5ff 86%, #c4ddfd 100%);
+  background-image: -webkit-linear-gradient(top, #c4ddfd 0%, #f0f8ff 9%, #e6f3ff 14%, #cce5ff 86%, #c4ddfd 100%);
+  background-image: linear-gradient(to bottom, #c4ddfd 0%, #f0f8ff 9%, #e6f3ff 14%, #cce5ff 86%, #c4ddfd 100%);
+}
+
+.adminMenuTreeGridRowDisabled {
+  background-color: white;
+  color: #ababab;
+}
+
 
 /**
 --------------------------

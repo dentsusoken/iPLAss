@@ -1,19 +1,19 @@
 /*
  * Copyright (C) 2011 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
- * 
+ *
  * Unless you have purchased a commercial license,
  * the following license terms apply:
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
@@ -83,10 +83,16 @@ public abstract class AdminMenuTreeGrid extends TreeGrid implements ContentState
 	protected AdminMenuTreeGrid(MainWorkspaceTab mainPane) {
 		this.mainPane = mainPane;
 
+		setBaseStyle("adminMenuTreeGridRow");
+
 		setShowHeader(Boolean.FALSE);
 		setLeaveScrollbarGap(Boolean.FALSE);
 		setSelectionType(SelectionStyle.SINGLE);
 		setAutoFetchData(Boolean.FALSE);
+
+		//Chromeで画面zoom設定によってアイコンが表示されないので大きくする
+		//実際のサイズはCSSで調整
+		setIconSize(18); //16->18
 
 		addDoubleClickHandler(new DoubleClickHandler() {
 
@@ -177,7 +183,7 @@ public abstract class AdminMenuTreeGrid extends TreeGrid implements ContentState
 	 */
 	private void createPluginNode() {
 
-		Map<String, AdminMenuTreeNode> folderMap = new LinkedHashMap<String, AdminMenuTreeNode>();
+		Map<String, AdminMenuTreeNode> folderMap = new LinkedHashMap<>();
 
 		AdminMenuTreeNode root = new AdminMenuTreeNode("Root", null, "Root");
 		model.setRoot(root);
