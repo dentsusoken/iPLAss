@@ -83,7 +83,7 @@ public abstract class AdminMenuTreeGrid extends TreeGrid implements ContentState
 	protected AdminMenuTreeGrid(MainWorkspaceTab mainPane) {
 		this.mainPane = mainPane;
 
-		setStyleName("adminMenuTreeGrid");
+		setBaseStyle("adminMenuTreeGridRow");
 
 		setShowHeader(Boolean.FALSE);
 		setLeaveScrollbarGap(Boolean.FALSE);

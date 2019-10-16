@@ -36,8 +36,6 @@ public class AdminMenuTreeNode extends TreeNode {
 
 	public AdminMenuTreeNode(String name, String icon, String type, Boolean canDrag, AdminMenuTreeNode... children) {
 
-		setCustomStyle("adminMenuTreeNode");
-		
 		setName(getSimpleName(name));
 		setType(type);
 		setChildren(children);
