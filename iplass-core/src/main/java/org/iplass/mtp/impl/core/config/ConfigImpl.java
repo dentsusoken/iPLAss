@@ -47,6 +47,7 @@ import java.util.Set;
 
 import org.apache.commons.beanutils.ConvertUtils;
 import org.iplass.mtp.spi.Config;
+import org.iplass.mtp.spi.ObjectBuilder;
 import org.iplass.mtp.spi.Service;
 import org.iplass.mtp.spi.ServiceConfigrationException;
 import org.iplass.mtp.spi.ServiceInitListener;
@@ -102,6 +103,7 @@ public class ConfigImpl implements Config {
 			if (nv.isNull()) {
 				return null;
 			}
+			
 			if (nv.getRef() != null) {
 				Instance bi = beanMap.get(nv.getRef());
 				if (bi == null) {
@@ -111,6 +113,29 @@ public class ConfigImpl implements Config {
 				bi.init(null);
 				return bi.instance;
 			}
+			
+			ObjectBuilder<?> builder = nv.builder();
+			if (builder != null) {
+				builder.setName(nv.getName());
+				if (nv.value() != null) {
+					builder.setValue(nv.value());
+				}
+				if (nv.getClassName() != null) {
+					builder.setClassName(nv.getClassName());
+				}
+				if (nv.getArg() != null) {
+					@SuppressWarnings("unchecked")
+					HashMap<String, Object> argMap = (HashMap<String, Object>) toBean(HashMap.class, nv.getArg(), null);
+					builder.setArgs(argMap);
+				}
+				if (nv.getProperty() != null) {
+					@SuppressWarnings("unchecked")
+					HashMap<String, Object> propMap = (HashMap<String, Object>) toBean(HashMap.class, nv.getProperty(), null);
+					builder.setProperties(propMap);
+				}
+				return builder.build();
+			}
+			
 			if (nv.getClassName() == null) {
 				if (type == null) {
 					return nv.value();
@@ -290,7 +315,7 @@ public class ConfigImpl implements Config {
 					value = null;
 				} else if (p.getType().isArray()) {
 					value = ins.toArray(type);
-				} else if (p.getType() == List.class) {
+				} else if (p.getType() == List.class || p.getType() == Collection.class) {
 					value = ins.toList(type);
 				} else {
 					value = ins.instance;
@@ -390,8 +415,8 @@ public class ConfigImpl implements Config {
 						} else {
 							logger.warn("writeMethod not defined, so can't set array value to " + propName + " on " + bean.getClass().getName());
 						}
-					} else if (pd.getPropertyType() == List.class) {
-						List list = (List) pd.getReadMethod().invoke(bean);
+					} else if (pd.getPropertyType() == List.class || pd.getPropertyType() == Collection.class) {
+						Collection list = (Collection) pd.getReadMethod().invoke(bean);
 						if (list == null) {
 							list = val.toList(type);
 							if (pd.getWriteMethod() != null) {

@@ -28,6 +28,8 @@ import java.util.Map;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 
+import org.iplass.mtp.spi.ObjectBuilder;
+import org.iplass.mtp.spi.ServiceConfigrationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -52,6 +54,9 @@ public class NameValue {
 	private boolean isNull;
 	
 	private String ref;
+	
+	private String builder;
+	private String buildScript;
 	
 	public NameValue() {
 	}
@@ -174,6 +179,23 @@ public class NameValue {
 		this.ref = ref;
 	}
 	
+	@XmlAttribute
+	public String getBuilder() {
+		return builder;
+	}
+
+	public void setBuilder(String builder) {
+		this.builder = builder;
+	}
+
+	public String getBuildScript() {
+		return buildScript;
+	}
+
+	public void setBuildScript(String buildScript) {
+		this.buildScript = buildScript;
+	}
+
 	public String value() {
 		if (value != null && value.length() != 0) {
 			return value;
@@ -219,11 +241,51 @@ public class NameValue {
 			} else {
 				merged.arg = superNameValue.arg;
 			}
+			
+			if (builder != null) {
+				merged.builder = builder;
+			} else {
+				merged.builder = superNameValue.builder;
+			}
+			
+			if (buildScript != null) {
+				merged.buildScript = buildScript;
+			} else {
+				merged.buildScript = superNameValue.buildScript;
+			}
 		}
 		
 		return merged;
 	}
 	
+	public ObjectBuilder<?> builder() {
+		if (builder != null && buildScript != null) {
+			throw new ServiceConfigrationException("specify either builder or buildScript on property/bean element. name:" + name + ", builder:" + builder + ", buildScript:" + concat(buildScript));
+		}
+		if (builder != null) {
+			try {
+				return (ObjectBuilder<?>) Class.forName(builder).newInstance();
+			} catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
+				throw new ServiceConfigrationException(e);
+			}
+		}
+		if (buildScript != null) {
+			return new GroovyScriptObjectBuilder<>(buildScript);
+		}
+		
+		return null;
+	}
+	
+	private String concat(String str) {
+		if (str == null) {
+			return null;
+		}
+		if (str.length() < 256) {
+			return str;
+		} else {
+			return str.substring(0, 256) + "...";
+		}
+	}
 	
 	@SuppressWarnings("unchecked")
 	static NameValue[] mergeNameValueArray(String targetName, NameValue[] myPropArray, NameValue[] superPropArray) {
