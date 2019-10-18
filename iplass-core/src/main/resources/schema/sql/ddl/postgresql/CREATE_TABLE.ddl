@@ -26,11 +26,7 @@
 \i task_queue_hi.sql
 \i task_queue.sql
 \i sequence.sql
-\i trig_lob_store.sql
 \i trig_t_tenant.sql
-\i trig_obj_meta.sql
-\i trig_task_queue_hi.sql
-\i trig_task_queue.sql
 \i crawl_log.sql
 \i delete_log.sql
 \i func_instr.sql
