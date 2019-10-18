@@ -1,7 +1,7 @@
 /* drop/create OBJ_INDEX_DBL */
-drop table if exists "obj_index_dbl${tableNamePostfix}" cascade;
+drop table if exists "obj_index_dbl${tableNamePostfix.toLowerCase()}" cascade;
 
-create table "obj_index_dbl${tableNamePostfix}"
+create table "obj_index_dbl${tableNamePostfix.toLowerCase()}"
 (
     "tenant_id" numeric(7,0) not null,
     "obj_def_id" varchar(128) not null,
@@ -12,5 +12,5 @@ create table "obj_index_dbl${tableNamePostfix}"
 )
 ;
 
-create index "obj_index_dbl${tableNamePostfix}_index1" on "obj_index_dbl${tableNamePostfix}" ("tenant_id", "obj_def_id", "col_name", "val");
-create index "obj_index_dbl${tableNamePostfix}_index2" on "obj_index_dbl${tableNamePostfix}" ("tenant_id", "obj_def_id", "obj_id");
+create index "obj_index_dbl${tableNamePostfix.toLowerCase()}_index1" on "obj_index_dbl${tableNamePostfix.toLowerCase()}" ("tenant_id", "obj_def_id", "col_name", "val");
+create index "obj_index_dbl${tableNamePostfix.toLowerCase()}_index2" on "obj_index_dbl${tableNamePostfix.toLowerCase()}" ("tenant_id", "obj_def_id", "obj_id");

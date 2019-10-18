@@ -1,7 +1,7 @@
 /* drop/create OBJ_REF_RB */
-drop table if exists "obj_ref_rb${tableNamePostfix}" cascade;
+drop table if exists "obj_ref_rb${tableNamePostfix.toLowerCase()}" cascade;
 
-create table "obj_ref_rb${tableNamePostfix}"
+create table "obj_ref_rb${tableNamePostfix.toLowerCase()}"
 (
     "tenant_id" numeric(7,0) not null,
     "obj_def_id" varchar(128) not null,
@@ -15,4 +15,4 @@ create table "obj_ref_rb${tableNamePostfix}"
 )
 ;
 
-create index "obj_ref_rb${tableNamePostfix}_index1" on "obj_ref_rb${tableNamePostfix}" ("tenant_id", "obj_def_id", "rb_id");
+create index "obj_ref_rb${tableNamePostfix.toLowerCase()}_index1" on "obj_ref_rb${tableNamePostfix.toLowerCase()}" ("tenant_id", "obj_def_id", "rb_id");

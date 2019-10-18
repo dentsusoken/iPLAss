@@ -1,7 +1,7 @@
 /* drop/create OBJ_STORE */
-drop table if exists "obj_store${tableNamePostfix}" cascade;
+drop table if exists "obj_store${tableNamePostfix.toLowerCase()}" cascade;
 
-create table "obj_store${tableNamePostfix}"
+create table "obj_store${tableNamePostfix.toLowerCase()}"
 (
     "tenant_id" numeric(7,0) not null,
     "obj_def_id" varchar(128) not null,
@@ -39,14 +39,14 @@ create table "obj_store${tableNamePostfix}"
 		if (it.indexType != "NONE") {
     %>,"${it.prefix + it.no}_td" varchar(139)
     <%	}
-	}%>,constraint "obj_store${tableNamePostfix}_pk" primary key ("tenant_id", "obj_def_id", "obj_id", "obj_ver", "pg_no")
+	}%>,constraint "obj_store${tableNamePostfix.toLowerCase()}_pk" primary key ("tenant_id", "obj_def_id", "obj_id", "obj_ver", "pg_no")
 )
 ;
 
 <%columns.each {
 	if ("INDEX" == it.indexType) {
-%>create index "obj_store${tableNamePostfix}_${it.prefix}index_${it.no}" on "obj_store${tableNamePostfix}" ("${it.prefix + it.no}_td", "${it.prefix + it.no}");
+%>create index "obj_store${tableNamePostfix.toLowerCase()}_${it.prefix}index_${it.no}" on "obj_store${tableNamePostfix.toLowerCase()}" ("${it.prefix + it.no}_td", "${it.prefix + it.no}");
 <%	} else if ("UNIQUE_INDEX" == it.indexType) {
-%>create unique index "obj_store${tableNamePostfix}_${it.prefix}unique_${it.no}" on "obj_store${tableNamePostfix}" ("${it.prefix + it.no}_td", "${it.prefix + it.no}");
+%>create unique index "obj_store${tableNamePostfix.toLowerCase()}_${it.prefix}unique_${it.no}" on "obj_store${tableNamePostfix.toLowerCase()}" ("${it.prefix + it.no}_td", "${it.prefix + it.no}");
 <%	}
-}%>create index "obj_store${tableNamePostfix}_cre_user_index" on "obj_store${tableNamePostfix}" ("cre_user", "obj_def_id", "tenant_id");
+}%>create index "obj_store${tableNamePostfix.toLowerCase()}_cre_user_index" on "obj_store${tableNamePostfix.toLowerCase()}" ("cre_user", "obj_def_id", "tenant_id");

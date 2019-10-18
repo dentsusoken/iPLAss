@@ -1,7 +1,7 @@
 /* drop/create OBJ_STORE_RB */
-drop table if exists "obj_store_rb${tableNamePostfix}" cascade;
+drop table if exists "obj_store_rb${tableNamePostfix.toLowerCase()}" cascade;
 
-create table "obj_store_rb${tableNamePostfix}"
+create table "obj_store_rb${tableNamePostfix.toLowerCase()}"
 (
     "rb_id" numeric(16,0) not null,
     "rb_date" timestamp(3),
@@ -45,4 +45,4 @@ create table "obj_store_rb${tableNamePostfix}"
 	}%>)
 ;
 
-create index "obj_store_rb${tableNamePostfix}_index1" on "obj_store_rb${tableNamePostfix}" ("tenant_id", "obj_def_id", "rb_id");
+create index "obj_store_rb${tableNamePostfix.toLowerCase()}_index1" on "obj_store_rb${tableNamePostfix.toLowerCase()}" ("tenant_id", "obj_def_id", "rb_id");
