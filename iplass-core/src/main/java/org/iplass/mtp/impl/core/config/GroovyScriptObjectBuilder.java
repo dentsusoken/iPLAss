@@ -20,6 +20,7 @@
 
 package org.iplass.mtp.impl.core.config;
 
+import java.util.Collections;
 import java.util.Map;
 
 import org.iplass.mtp.spi.ObjectBuilder;
@@ -28,11 +29,14 @@ import groovy.lang.Binding;
 import groovy.lang.GroovyShell;
 
 public class GroovyScriptObjectBuilder<T> implements ObjectBuilder<T> {
-	private Binding binding = new Binding();
+	private Binding binding;
 	private String script;
 	
 	public GroovyScriptObjectBuilder(String script) {
 		this.script = script;
+		binding = new Binding();
+		binding.setVariable("properties", Collections.emptyMap());
+		binding.setVariable("args", Collections.emptyMap());
 	}
 	
 	@Override
