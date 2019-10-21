@@ -75,6 +75,10 @@
 		return true;
 	}
 
+	boolean isDefaultSelection(SearchResultSection section) {
+		return section.getBulkUpdateDefaultSelection() != null;
+	}
+
 	//プロパティ値の表示値を取得する
 	String getPropertyDisplayValue(PropertyDefinition p, Object propValue, PropertyEditor editor) {
 		String dispValue = "";
@@ -159,6 +163,7 @@
 	}
 	EntityDefinition ed = data.getEntityDefinition();
 	SearchFormView form = data.getView();
+	SearchResultSection section = form.getResultSection();
 
 	String defName = data.getEntityDefinition().getName();
 	String viewName = form.getName();
@@ -182,7 +187,7 @@
 	}
 
 	// プロパティリスト
-	List<PropertyColumn> properties = ViewUtil.filterPropertyColumn(form.getResultSection().getElements());
+	List<PropertyColumn> properties = ViewUtil.filterPropertyColumn(section.getElements());
 	// Property情報
 	Map<String, PropertyDefinition> defMap = new HashMap<String, PropertyDefinition>();
 	Map<String, PropertyColumn> colMap = new HashMap<String, PropertyColumn>();
@@ -347,7 +352,7 @@ $(function() {
 		PropertyDefinition pd = defMap.get(propName);
 		String displayLabel = TemplateUtil.getMultilingualString(pc.getDisplayLabel(), pc.getLocalizedDisplayLabelList(), pd.getDisplayName(),
 				pd.getLocalizedDisplayNameList());
-		String selected = propName.equals(bulkUpdatePropNm) ? "selected" : "";
+		String selected = propName.equals(bulkUpdatePropNm) || propName.equals(section.getBulkUpdateDefaultSelection()) ? "selected" : "";
 %>
 <option value="<c:out value="<%=propName%>"/>" <c:out value="<%=selected%>" />><c:out value="<%=displayLabel%>" /></option>
 <%
@@ -490,10 +495,21 @@ function propChange(obj) {
 	$("tr#id_tr_" + propName).css("display", "");
 }
 $(function() {
-<%	if (isUpdateFailed(bulkUpdatePropNm)) { %>
-	//前回で更新に失敗したプロパティに対してエラーメッセージを表示する
-	$("tr#id_tr_<%=bulkUpdatePropNm%>").css("display", "");
-<%	} %>
+<%
+	String selectPropName = null;
+	if (isUpdateFailed(bulkUpdatePropNm)) {
+		selectPropName = bulkUpdatePropNm;
+	} else if (isDefaultSelection(section)) {
+		selectPropName = section.getBulkUpdateDefaultSelection();
+	}
+	if (selectPropName != null) {
+	//前回で更新に失敗したプロパティに対してエラーメッセージを表示する、
+	//またはデフォルト選択項目が設定された場合、入力項目を表示します。
+%>
+	$("tr#id_tr_<%=selectPropName%>").css("display", "");
+<%
+	}
+%>
 	// タイトルの設定
 	$("#modal-title", parent.document).text("<%=displayName%>");<%-- XSS対応-メタの設定のため対応なし(displayName) --%>
 	// 一括更新件数

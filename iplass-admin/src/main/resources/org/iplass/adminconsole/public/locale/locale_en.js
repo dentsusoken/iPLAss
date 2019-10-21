@@ -2207,6 +2207,8 @@ LocaleInfo.generic_element_section_SearchResultSection_purgeCompositionedEntityD
 LocaleInfo.generic_element_section_SearchResultSection_purgeCompositionedEntityDescriptionKey = "Physical delete in case of parent-child relationship reference when reference data is deleted.";
 LocaleInfo.generic_element_section_SearchResultSection_forceUpadteDisplaNameKey = "Force update processing at update";
 LocaleInfo.generic_element_section_SearchResultSection_forceUpadteDescriptionKey = "Even if there is no change item, update processing (updating date and time, updater is updated) will be forced.";
+LocaleInfo.generic_element_section_SearchResultSection_bulkUpdateDefaultSelectionDisplaNameKey = "Default selection of bulk update";
+LocaleInfo.generic_element_section_SearchResultSection_bulkUpdateDefaultSelectionDescriptionKey = "Default selection of bulk update.<br>Specify the default selection when not using BulkView layout definition.";
 LocaleInfo.generic_element_section_SearchResultSection_interrupterNameDisplaNameKey = "Custom registration process class";
 LocaleInfo.generic_element_section_SearchResultSection_interrupterNameDescriptionKey = "Specify the class name of a custom registration process used for data registration.<br>Please specify the class that implements the interface org.iplass.mtp.view.generic.RegistrationInterrupter.";
 LocaleInfo.generic_element_section_SearchResultSection_loadEntityInterrupterNameDisplaNameKey = "Custom load process class";
