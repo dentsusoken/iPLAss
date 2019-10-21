@@ -221,6 +221,17 @@ public class SearchResultSection extends Section {
 	)
 	private List<LocalizedStringDefinition> localizedBulkUpdateDisplayLabel;
 
+	/** ソートアイテム */
+	@MetaFieldInfo(
+			displayName="一括更新デフォルト選択項目",
+			displayNameKey="generic_element_section_SearchResultSection_bulkUpdateDefaultSelectionDisplaNameKey",
+			inputType=InputType.PROPERTY,
+			displayOrder=320,
+			description="<b>一括更新デフォルト選択項目</b><br>" +
+					"BulkViewレイアウト定義を利用しない場合、デフォルト選択項目を指定します。",
+			descriptionKey="generic_element_section_SearchResultSection_bulkUpdateDefaultSelectionDescriptionKey"
+	)
+	private String bulkUpdateDefaultSelection;
 
 
 
@@ -581,6 +592,22 @@ public class SearchResultSection extends Section {
 	 */
 	public void setLocalizedBulkUpdateDisplayLabel(List<LocalizedStringDefinition> localizedBulkUpdateDisplayLabel) {
 		this.localizedBulkUpdateDisplayLabel = localizedBulkUpdateDisplayLabel;
+	}
+
+	/**
+	 * 一括更新デフォルト選択項目を取得します。
+	 * @return 一括更新デフォルト選択項目
+	 */
+	public String getBulkUpdateDefaultSelection() {
+		return bulkUpdateDefaultSelection;
+	}
+
+	/**
+	 * 一括更新デフォルト選択項目を設定します。
+	 * @param bulkUpdateDefaultSelection 一括更新デフォルト選択項目
+	 */
+	public void setBulkUpdateDefaultSelection(String bulkUpdateDefaultSelection) {
+		this.bulkUpdateDefaultSelection = bulkUpdateDefaultSelection;
 	}
 
 	/**
