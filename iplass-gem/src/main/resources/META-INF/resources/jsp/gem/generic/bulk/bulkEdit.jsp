@@ -503,8 +503,8 @@ $(function() {
 		selectPropName = section.getBulkUpdateDefaultSelection();
 	}
 	if (selectPropName != null) {
-	//前回で更新に失敗したプロパティに対してエラーメッセージを表示する、
-	//またはデフォルト選択項目が設定された場合、入力項目を表示します。
+	//前回の更新に失敗したプロパティに対してエラーメッセージを表示します、
+	//またはデフォルト選択項目が設定された場合、その入力項目を表示します。
 %>
 	$("tr#id_tr_<%=selectPropName%>").css("display", "");
 <%
