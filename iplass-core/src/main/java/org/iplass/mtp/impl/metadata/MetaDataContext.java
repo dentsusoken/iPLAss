@@ -429,6 +429,11 @@ public class MetaDataContext {
 				repository.update(tenantId, toStore);
 
 				if (config != null) {
+					
+					if (current.getRepositryType() == RepositoryType.SHARED) {
+						toStore.setRepositryType(RepositoryType.SHARED_OVERWRITE);
+					}
+
 					updateConfigRepository(toStore, config, false);	//ここではリロードする必要なし
 				}
 
@@ -608,6 +613,7 @@ public class MetaDataContext {
 	 */
 	private void updateConfigRepository(final MetaDataEntry meta, final MetaDataConfig config, final boolean doAutoReload) {
 
+		
 		if (meta.getRepositryType() == RepositoryType.SHARED) {
 			throw new MetaDataRuntimeException(meta.getPath() + "(" + meta.getMetaData().getId() + ") MetaData not allowed change config.");
 		}
