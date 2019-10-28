@@ -1787,7 +1787,7 @@ $.fn.allInputCheck = function(){
 					$(this).removeClass("hover");
 				}).on("click", function() { 
 					var currentPage = $_current.val();
-					//notCount=falseかつshowSearchBtn=trueの場合、maxPageが設定されてません。
+					//notCount=trueかつshowSearchBtn=trueの場合、maxPageが設定されてません。
 					if (!$v.maxPage || $v.maxPage && currentPage > 0 && currentPage <= $v.maxPage) {
 						if ($v.searchFunc && $.isFunction($v.searchFunc)) {
 							$v.searchFunc.call(this, currentPage - 1);
