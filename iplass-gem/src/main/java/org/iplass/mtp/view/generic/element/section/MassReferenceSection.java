@@ -237,6 +237,17 @@ public class MassReferenceSection extends Section implements HasNestProperty {
 	)
 	private boolean hidePageLink;
 
+	/** 検索アイコンを常に表示 */
+	@MetaFieldInfo(
+			displayName="検索アイコンを常に表示",
+			displayNameKey="generic_element_section_MassReferenceSection_showSearchBtnDisplaNameKey",
+			inputType=InputType.CHECKBOX,
+			displayOrder=2035,
+			description="検索アイコンを常に表示にします。",
+			descriptionKey="generic_element_section_MassReferenceSection_showSearchBtnDescriptionKey"
+	)
+	private boolean showSearchBtn;
+
 	/** ページング表示位置 */
 	@MetaFieldInfo(
 			displayName="ページング表示位置",
@@ -754,6 +765,22 @@ public class MassReferenceSection extends Section implements HasNestProperty {
 	 */
 	public void setHidePageJump(boolean hidePageJump) {
 	    this.hidePageJump = hidePageJump;
+	}
+
+	/**
+	 * 検索アイコンを常に表示設定を設定します。
+	 * @return 検索アイコンを常に表示 
+	 */
+	public boolean isShowSearchBtn() {
+		return showSearchBtn;
+	}
+
+	/**
+	 * 検索アイコンを常に表示設定を取得します。
+	 * @param showSearchBtn 検索アイコンを常に表示
+	 */
+	public void setShowSearchBtn(boolean showSearchBtn) {
+		this.showSearchBtn = showSearchBtn;
 	}
 
 	/**

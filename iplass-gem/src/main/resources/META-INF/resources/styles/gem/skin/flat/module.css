@@ -1113,32 +1113,33 @@ span.jqtree_common.jqtree-title.ui-draggable.ui-draggable-dragging {
     .result-nav .quick-jump span {
       margin-left: 5px; }
     .result-nav .quick-jump + li {
+      margin-left: 20px; }
+  .result-nav .search {
+    height: 30px;
+    width: 30px;
+    cursor: pointer; }
+    .result-nav .search span {
+      display: block;
+      float: left;
+      position: relative;
+      height: 100%;
+      width: 100%;
+      background: #ededed;
+      border-radius: 50%;
+      text-indent: 0;
+      transition: background 300ms;
+      margin-top: 0; }
+      .result-nav .search span:hover {
+        background: #d4d4d4; }
+    .result-nav .search span::before {
+      content: '';
+      display: block;
+      position: absolute;
+      top: 0;
+      left: 0;
       height: 30px;
       width: 30px;
-      cursor: pointer;
-      margin-left: 20px; }
-      .result-nav .quick-jump + li span {
-        display: block;
-        float: left;
-        position: relative;
-        height: 100%;
-        width: 100%;
-        background: #ededed;
-        border-radius: 50%;
-        text-indent: 0;
-        transition: background 300ms;
-        margin-top: 0; }
-        .result-nav .quick-jump + li span:hover {
-          background: #d4d4d4; }
-      .result-nav .quick-jump + li span::before {
-        content: '';
-        display: block;
-        position: absolute;
-        top: 0;
-        left: 0;
-        height: 30px;
-        width: 30px;
-        background: url(../../../../images/gem/skin/flat/icon-search.png) center center no-repeat; }
+      background: url(../../../../images/gem/skin/flat/icon-search.png) center center no-repeat; }
   .result-nav .page-links {
     margin-left: 20px;
     font-size: 1rem;

@@ -2083,6 +2083,8 @@ LocaleInfo.generic_element_section_MassReferenceSection_hidePageJumpDisplaNameKe
 LocaleInfo.generic_element_section_MassReferenceSection_hidePageJumpDescriptionKey = "Hide the page jump of paging in list of references.";
 LocaleInfo.generic_element_section_MassReferenceSection_hidePageLinkDisplaNameKey = "Hide Page link on list of references";
 LocaleInfo.generic_element_section_MassReferenceSection_hidePageLinkDescriptionKey = "Hide the page link of paging in list of references.";
+LocaleInfo.generic_element_section_MassReferenceSection_showSearchBtnDisplaNameKey = "Show search icon always";
+LocaleInfo.generic_element_section_MassReferenceSection_showSearchBtnDescriptionKey = "Show the search icon of paging in list of references always.";
 LocaleInfo.generic_element_section_MassReferenceSection_pagingPositionDisplaNameKey = "Paging bar position";
 LocaleInfo.generic_element_section_MassReferenceSection_pagingPositionDescriptionKey = "Specify paging bar position.<br><b>BOTH   :</b> The top and bottom of the grid<br><b>TOP    :</b> The top of the grid<br><b>BOTTOM :</b> The bottom of the grid<br>";
 LocaleInfo.generic_element_section_MassReferenceSection_editTypeDisplaNameKey = "Edit type";
