@@ -72,7 +72,7 @@ public class MetaEntityListParts extends MetaTemplateParts {
 	private Integer height;
 
 	/** 多言語設定情報 */
-	private List<MetaLocalizedString> localizedTitleList = new ArrayList<MetaLocalizedString>();
+	private List<MetaLocalizedString> localizedTitleList = new ArrayList<>();
 
 	/** アイコンタグ */
 	private String iconTag;
@@ -296,7 +296,7 @@ public class MetaEntityListParts extends MetaTemplateParts {
 				request.setAttribute("partsCnt", req.getAttribute("partsCnt"));
 
 				SearchFormView form = null;
-				String title = MetaEntityListParts.this.title;
+				String title = I18nUtil.stringMeta(MetaEntityListParts.this.title, MetaEntityListParts.this.localizedTitleList);
 				EntityHandler handler = context.getHandlerById(definitionId);
 				if (handler != null) {
 					EntityDefinition ed = handler.getMetaData().currentConfig();
