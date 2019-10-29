@@ -130,8 +130,8 @@ public final class SearchViewCommand implements Command {
 		//画面定義の検索条件の項目名でリクエストパラメータがあればsearchCondにする
 		//親とネストの条件が同時に指定される可能性があるため、EntityではなくMapに格納
 		//Entity defaultSearchCond = new GenericEntity(defName);
-		Map<String, Object> defaultSearchCond = new HashMap<String, Object>();
-		applyCommonParam(request, defaultSearchCond);
+		Map<String, Object> defaultSearchCond = new HashMap<>();
+		applyCommonParam(request, defaultSearchCond, view);
 		List<PropertyItem> properties = view.getCondSection().getElements().stream()
 				.filter(e -> e instanceof PropertyItem).map(e -> (PropertyItem) e).collect(Collectors.toList());
 		applyNormalSearchCond(request, defaultSearchCond, properties);
@@ -146,9 +146,14 @@ public final class SearchViewCommand implements Command {
 		return Constants.CMD_EXEC_SUCCESS;
 	}
 
-	private void applyCommonParam(RequestContext request, Map<String, Object> defaultSearchCond) {
+	private void applyCommonParam(RequestContext request, Map<String, Object> defaultSearchCond, SearchFormView view) {
 		String searchType = request.getParam(Constants.SEARCH_TYPE);
 		if (StringUtil.isNotBlank(searchType)) {
+			if (Constants.SEARCH_TYPE_DETAIL.equals(searchType) && view.getCondSection().isHideDetailCondition()) {
+				searchType = Constants.SEARCH_TYPE_NORMAL;
+			} else if (Constants.SEARCH_TYPE_FIXED.equals(searchType) && view.getCondSection().isHideFixedCondition()) {
+				searchType = Constants.SEARCH_TYPE_NORMAL;
+			}
 			defaultSearchCond.put(Constants.SEARCH_TYPE, searchType);
 		}
 		String es = request.getParam(Constants.EXECUTE_SEARCH);
