@@ -165,7 +165,7 @@
  data-targetDefName="<c:out value="<%=rp.getObjectDefinitionName()%>"/>" data-mappedBy="<c:out value="<%=rp.getMappedBy()%>"/>" data-changeEditLinkToViewLink="<%=section.isChangeEditLinkToViewLink() %>"
  data-sortKey="" data-sortType="" data-creatable="<%=creatable %>" data-updatable="<%=updatable %>" data-deletable=<%=deletable%> data-purge=<%=purge %>
  data-showPaging=<%=!section.isHidePaging()%> data-showPageJump=<%=!section.isHidePageJump()%> data-showPageLink=<%=!section.isHidePageLink()%> data-showCount=<%=!section.isHideCount()%>
- data-condKey="<c:out value="<%=key %>" />" data-tokenValue=<%= TemplateUtil.outputToken(TokenOutputType.VALUE)%>>
+ data-showSearchBtn=<%=section.isShowSearchBtn()%> data-condKey="<c:out value="<%=key %>" />" data-tokenValue=<%= TemplateUtil.outputToken(TokenOutputType.VALUE)%>>
 <%
 	if (!PagingPosition.BOTTOM.name().equals(pagingPosition)) {
 %>

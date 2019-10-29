@@ -2083,6 +2083,8 @@ LocaleInfo.generic_element_section_MassReferenceSection_hidePageJumpDisplaNameKe
 LocaleInfo.generic_element_section_MassReferenceSection_hidePageJumpDescriptionKey = "参照の一覧のページングでページジャンプを非表示にします。";
 LocaleInfo.generic_element_section_MassReferenceSection_hidePageLinkDisplaNameKey = "ページリンクを非表示";
 LocaleInfo.generic_element_section_MassReferenceSection_hidePageLinkDescriptionKey = "参照の一覧のページングでページリンクを非表示にします。";
+LocaleInfo.generic_element_section_MassReferenceSection_showSearchBtnDisplaNameKey = "検索アイコンを常に表示";
+LocaleInfo.generic_element_section_MassReferenceSection_showSearchBtnDescriptionKey = "参照の一覧のページングで検索アイコンを常に表示にします。";
 LocaleInfo.generic_element_section_MassReferenceSection_pagingPositionDisplaNameKey = "ページング表示位置";
 LocaleInfo.generic_element_section_MassReferenceSection_pagingPositionDescriptionKey = "ページングの表示位置を指定します。<br><b>BOTH   :</b> グリッドの上下<br><b>TOP    :</b> グリッドの上部<br><b>BOTTOM :</b> グリッドの下部<br>";
 LocaleInfo.generic_element_section_MassReferenceSection_editTypeDisplaNameKey = "編集タイプ";

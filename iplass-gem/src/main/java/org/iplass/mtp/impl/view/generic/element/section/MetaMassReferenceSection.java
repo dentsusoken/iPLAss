@@ -115,6 +115,9 @@ public class MetaMassReferenceSection extends MetaSection {
 	/** ページリンク非表示設定 */
 	private boolean hidePageLink;
 
+	/** 検索アイコンを常に表示 */
+	private boolean showSearchBtn;
+
 	/** ページング表示位置 */
 	private PagingPosition pagingPosition;
 
@@ -479,6 +482,22 @@ public class MetaMassReferenceSection extends MetaSection {
 	}
 
 	/**
+	 * 検索アイコンを常に表示設定を取得します。
+	 * @return 検索アイコンを常に表示設定
+	 */
+	public boolean isShowSearchBtn() {
+		return showSearchBtn;
+	}
+
+	/**
+	 * 検索アイコンを常に表示設定を設定します。
+	 * @param showSearchBtn 検索アイコンを常に表示設定
+	 */
+	public void setShowSearchBtn(boolean showSearchBtn) {
+		this.showSearchBtn = showSearchBtn;
+	}
+
+	/**
 	 * ページング表示位置を取得します。
 	 * @return ページング表示位置
 	 */
@@ -622,6 +641,7 @@ public class MetaMassReferenceSection extends MetaSection {
 		hidePaging = section.isHidePaging();
 		hidePageJump = section.isHidePageJump();
 		hidePageLink = section.isHidePageLink();
+		showSearchBtn = section.isShowSearchBtn();
 		pagingPosition = section.getPagingPosition();
 		hideCount = section.isHideCount();
 		hideDetail = section.isHideDetail();
@@ -690,6 +710,7 @@ public class MetaMassReferenceSection extends MetaSection {
 		section.setHidePaging(hidePaging);
 		section.setHidePageJump(hidePageJump);
 		section.setHidePageLink(hidePageLink);
+		section.setShowSearchBtn(showSearchBtn);
 		section.setPagingPosition(pagingPosition);
 		section.setHideCount(hideCount);
 		section.setHideDetail(hideDetail);
