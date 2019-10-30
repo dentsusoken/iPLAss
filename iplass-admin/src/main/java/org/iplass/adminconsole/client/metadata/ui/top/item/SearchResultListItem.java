@@ -120,10 +120,11 @@ public class SearchResultListItem extends PartsItem {
 		private TextItem iconTagField;
 		private ComboBoxItem viewField;
 		private ComboBoxItem viewForLinkField;
+		private ComboBoxItem viewForDetailField;
 		private SelectItem filterField;
 		private IntegerItem heightField;
 
-		private List<DataChangedHandler> handlers = new ArrayList<DataChangedHandler>();
+		private List<DataChangedHandler> handlers = new ArrayList<>();
 
 		/**
 		 * コンストラクタ
@@ -131,7 +132,7 @@ public class SearchResultListItem extends PartsItem {
 		public EntityListItemSettingDialog() {
 
 			setTitle("SearchResult List");
-			setHeight(300);
+			setHeight(350);
 			centerInPage();
 
 			final DynamicForm form = new MtpForm();
@@ -149,6 +150,10 @@ public class SearchResultListItem extends PartsItem {
 			viewForLinkField.setDisabled(true);
 			viewForLinkField.setValue(parts.getViewNameForLink());
 
+			viewForDetailField = new MtpComboBoxItem("viewForDetail", "Detail Action View");
+			viewForDetailField.setDisabled(true);
+			viewForDetailField.setValue(parts.getViewNameForDetail());
+
 			getViewList(parts.getDefName());
 
 			filterField = new MtpSelectItem("filter", "Filter");
@@ -165,11 +170,14 @@ public class SearchResultListItem extends PartsItem {
 						viewField.setDisabled(true);
 						viewForLinkField.setValue("");
 						viewForLinkField.setDisabled(true);
+						viewForDetailField.setValue("");
+						viewForDetailField.setDisabled(true);
 						filterField.setValue("");
 						filterField.setDisabled(true);
 					} else {
 						viewField.setValue("");
 						viewForLinkField.setValue("");
+						viewForDetailField.setValue("");
 						getViewList((String) event.getValue());
 						filterField.setValue("");
 						getFilterList((String) event.getValue());
@@ -190,18 +198,20 @@ public class SearchResultListItem extends PartsItem {
 			heightField.setWidth("100%");
 			heightField.setValue(parts.getHeight());
 
-			form.setItems(entityField, viewField, viewForLinkField, filterField, titleField, iconTagField, heightField);
+			form.setItems(entityField, viewField, viewForLinkField, viewForDetailField, filterField, titleField, iconTagField, heightField);
 
 			container.addMember(form);
 
 			IButton save = new IButton("OK");
 			save.addClickHandler(new ClickHandler() {
+				@Override
 				public void onClick(ClickEvent event) {
 					if (form.validate()){
 						//入力情報をパーツに
 						parts.setDefName(SmartGWTUtil.getStringValue(entityField));
 						parts.setViewName(SmartGWTUtil.getStringValue(viewField));
 						parts.setViewNameForLink(SmartGWTUtil.getStringValue(viewForLinkField));
+						parts.setViewNameForDetail(SmartGWTUtil.getStringValue(viewForDetailField));
 						parts.setFilterName(SmartGWTUtil.getStringValue(filterField));
 						parts.setTitle(SmartGWTUtil.getStringValue(titleField));
 						parts.setIconTag(SmartGWTUtil.getStringValue(iconTagField));
@@ -215,6 +225,7 @@ public class SearchResultListItem extends PartsItem {
 
 			IButton cancel = new IButton("Cancel");
 			cancel.addClickHandler(new ClickHandler() {
+				@Override
 				public void onClick(ClickEvent event) {
 					destroy();
 				}
@@ -227,6 +238,7 @@ public class SearchResultListItem extends PartsItem {
 			if (defName == null || defName.isEmpty()) {
 				viewField.setValueMap(new LinkedHashMap<String, String>());
 				viewForLinkField.setValueMap(new LinkedHashMap<String, String>());
+				viewForDetailField.setValueMap(new LinkedHashMap<String, String>());
 			} else {
 				service.getDefinition(TenantInfoHolder.getId(), EntityView.class.getName(), defName,
 						new AsyncCallback<EntityView>() {
@@ -235,8 +247,9 @@ public class SearchResultListItem extends PartsItem {
 					public void onSuccess(EntityView result) {
 						viewField.setDisabled(false);
 						viewForLinkField.setDisabled(false);
+						viewForDetailField.setDisabled(false);
 
-						LinkedHashMap<String, String> valueMap = new LinkedHashMap<String, String>();
+						LinkedHashMap<String, String> valueMap = new LinkedHashMap<>();
 						valueMap.put("", "default");
 
 						if (result != null && result.getSearchFormViewNames().length > 0) {
@@ -249,6 +262,7 @@ public class SearchResultListItem extends PartsItem {
 
 						viewField.setValueMap(valueMap);
 						viewForLinkField.setValueMap(valueMap);
+						viewForDetailField.setValueMap(valueMap);
 					}
 
 					@Override
@@ -263,7 +277,7 @@ public class SearchResultListItem extends PartsItem {
 		}
 
 		private void getFilterList(String defName) {
-			final LinkedHashMap<String, String> valueMap = new LinkedHashMap<String, String>();
+			final LinkedHashMap<String, String> valueMap = new LinkedHashMap<>();
 			if (defName == null || defName.isEmpty()) {
 				filterField.setValueMap(valueMap);
 			} else {

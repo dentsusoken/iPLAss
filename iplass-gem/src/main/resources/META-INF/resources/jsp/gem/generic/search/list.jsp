@@ -89,7 +89,8 @@
 	SearchResultSection section = form.getResultSection();
 
 	//ビュー名があればアクションの後につける
-	String urlPath = ViewUtil.getParamMappingPath(parts.getDefName(), parts.getViewName());
+	String urlPath = ViewUtil.getParamMappingPath(parts.getDefName(), 
+			parts.getViewNameForDetail() != null ? parts.getViewNameForDetail() : parts.getViewName());
 
 	//詳細表示アクション
 	String view = "";
