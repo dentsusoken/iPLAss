@@ -138,4 +138,11 @@ public class SearchNameListContext extends SearchContextBase {
 		// 条件は固定なのでチェックしない
 		return true;
 	}
+
+	@Override
+	public boolean isUseUserPropertyEditor() {
+		// 名前のみ検索なので利用しない
+		return false;
+	}
+
 }
