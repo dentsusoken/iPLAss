@@ -17,8 +17,36 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
-package org.iplass.mtp.impl.webapi;
 
-@Deprecated
-public class CorsConfig extends org.iplass.mtp.impl.web.CorsConfig {
+package org.iplass.mtp.impl.web;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class CorsConfig {
+	private List<String> allowOrigin;
+	private boolean allowCredentials;
+	
+	public CorsConfig copy() {
+		CorsConfig copy = new CorsConfig();
+		if (allowOrigin != null) {
+			copy.allowOrigin = new ArrayList<>(allowOrigin);
+		}
+		copy.allowCredentials = allowCredentials;
+		return copy;
+	}
+	
+	public List<String> getAllowOrigin() {
+		return allowOrigin;
+	}
+	public void setAllowOrigin(List<String> allowOrigin) {
+		this.allowOrigin = allowOrigin;
+	}
+	public boolean isAllowCredentials() {
+		return allowCredentials;
+	}
+	public void setAllowCredentials(boolean allowCredentials) {
+		this.allowCredentials = allowCredentials;
+	}
+
 }

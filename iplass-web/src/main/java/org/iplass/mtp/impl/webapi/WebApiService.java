@@ -53,6 +53,7 @@ public class WebApiService extends AbstractTypedMetaDataService<MetaWebApi, WebA
 
 	private Map<Class<? extends Throwable>, Integer> statusMap;
 	private Map<String, String> xRequestedWithMap;
+	@Deprecated
 	private CorsConfig cors;
 	
 	private boolean enableDefinitionApi;
@@ -91,6 +92,7 @@ public class WebApiService extends AbstractTypedMetaDataService<MetaWebApi, WebA
 		return enableBinaryApi;
 	}
 
+	@Deprecated
 	public CorsConfig getCors() {
 		return cors;
 	}

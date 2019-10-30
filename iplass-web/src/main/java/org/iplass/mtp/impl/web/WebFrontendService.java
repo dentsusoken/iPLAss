@@ -21,9 +21,11 @@
 package org.iplass.mtp.impl.web;
 
 import java.io.File;
+import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Pattern;
 
+import org.iplass.mtp.impl.web.RequestPath.PathType;
 import org.iplass.mtp.impl.web.fileupload.FileScanner;
 import org.iplass.mtp.spi.Config;
 import org.iplass.mtp.spi.Service;
@@ -40,7 +42,6 @@ public class WebFrontendService implements Service {
 	private String tempFileDir;
 	private String staticContentPath;
 	private String defaultContentType;
-	private long maxUploadFileSize;
 	private ClientCacheType defaultClientCacheType;
 
 	
@@ -86,6 +87,9 @@ public class WebFrontendService implements Service {
 	 * 
 	 */
 	private Pattern rejectPathes;
+	
+	private List<RequestRestriction> requestRestrictions;
+	private RequestRestriction defaultRequestRestriction;
 	
 	/** ログアウト時にキックするURL */
 	private String logoutUrl;
@@ -234,10 +238,6 @@ public class WebFrontendService implements Service {
 		}
 
 		staticContentPath = config.getValue("staticContentPath");
-//		if (staticContentPath == null) {
-//			staticContentPath = "";
-//		}
-//		this.staticContentPath = staticContentPath;
 
 		String defaultContentType = config.getValue("defaultContentType");
 		if (defaultContentType == null) {
@@ -254,13 +254,6 @@ public class WebFrontendService implements Service {
 			} else {
 				throw new ServiceConfigrationException("defaultClientCacheType incorrect:" + defaultClientCacheType);
 			}
-		}
-
-		String maxUploadFileSize = config.getValue("maxUploadFileSize");
-		if (maxUploadFileSize != null) {
-			this.maxUploadFileSize = Long.parseLong(maxUploadFileSize);
-		} else {
-			this.maxUploadFileSize = -1;
 		}
 
 		errorUrlSelector = (ErrorUrlSelector) config.getBean("errorUrlSelector");
@@ -288,11 +281,23 @@ public class WebFrontendService implements Service {
 			throughPathes = Pattern.compile(String.join("|", throughPathList));
 		}
 
+		requestRestrictions = config.getValues("requestRestriction", RequestRestriction.class);
+		if (requestRestrictions != null) {
+			for (RequestRestriction rr: requestRestrictions) {
+				if (rr.getPathPattern() == null) {
+					defaultRequestRestriction = rr;
+				}
+			}
+		}
+		if (defaultRequestRestriction == null) {
+			defaultRequestRestriction = createDefaultRequestRestriction(config);
+		}
+		
 		restPath = config.getValues("restPath");
 
 		logoutUrl = config.getValue("logoutUrl");
 		if(logoutUrl == null || logoutUrl.length() == 0) {
-			throw new ServiceConfigrationException("ログアウトのURLが設定されていません");
+			throw new ServiceConfigrationException("logoutUrl is not set");
 		}
 
 		contentDispositionPolicies = (List<ContentDispositionPolicy>) config.getBeans("contentDispositionPolicy");
@@ -319,6 +324,69 @@ public class WebFrontendService implements Service {
 
 		fixedTenant = config.getValue("fixedTenant");
 	}
+	
+	private RequestRestriction createDefaultRequestRestriction(Config config) {
+		RequestRestriction rr  =new RequestRestriction();
+		rr.setAllowMethods(Arrays.asList("*"));
+		rr.setAllowContentTypes(Arrays.asList("*/*"));
+		rr.setMaxFileSize(config.getValue("maxUploadFileSize", Long.class, -1L));
+		
+		rr.inited(this, config);
+		return rr;
+	}
+	
+	public RequestRestriction getRequestRestriction(String metaDataName, PathType type) {
+		String path = null;
+		
+		if (requestRestrictions != null) {
+			switch (type) {
+			case ACTION:
+				path = "/" + metaDataName;
+				for (RequestRestriction rr: requestRestrictions) {
+					if (rr.getPathPattern() != null && rr.getPathPatternCompile().matcher(path).matches()) {
+						return rr;
+					}
+				}
+				if (welcomeAction != null) {
+					int slaIndex = path.lastIndexOf('/');
+					String shortName = slaIndex < 0 ? path: path.substring(slaIndex + 1);
+					
+					for (String wa: welcomeAction) {
+						if (wa.equals(shortName)) {
+							String remainPath = path.substring(0, slaIndex + 1);
+							for (RequestRestriction rr: requestRestrictions) {
+								if (rr.getPathPattern() != null && rr.getPathPatternCompile().matcher(remainPath).matches()) {
+									return rr;
+								}
+							}
+						}
+					}
+				}
+				break;
+			case REST:
+				for (String rp : restPath) {
+					path = rp + metaDataName;
+					for (RequestRestriction rr: requestRestrictions) {
+						if (rr.getPathPattern() != null && rr.getPathPatternCompile().matcher(path).matches()) {
+							return rr;
+						}
+					}
+				}
+				break;
+			default:
+				break;
+			}
+		}
+		return defaultRequestRestriction;
+	}
+
+	public List<RequestRestriction> getRequestRestrictions() {
+		return requestRestrictions;
+	}
+
+	public RequestRestriction getDefaultRequestRestriction() {
+		return defaultRequestRestriction;
+	}
 
 	public String getDefaultContentType() {
 		return defaultContentType;
@@ -328,8 +396,9 @@ public class WebFrontendService implements Service {
 		return defaultClientCacheType;
 	}
 
+	@Deprecated
 	public long getMaxUploadFileSize() {
-		return maxUploadFileSize;
+		return defaultRequestRestriction.getMaxFileSize();
 	}
 
 	/**

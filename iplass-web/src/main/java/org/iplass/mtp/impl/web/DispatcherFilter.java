@@ -203,9 +203,8 @@ public class DispatcherFilter implements Filter {
 			if (actionMapping != null) {
 				logger.debug("call actionMapping:" + actionMapping.getMetaData().getName());
 				
-				if (actionMapping.getMetaData().getMaxRequestBodySize() != null
-						&& actionMapping.getMetaData().getMaxRequestBodySize().longValue() != -1) {
-					req = new LimitRequestBodyHttpServletRequest(req, actionMapping.getMetaData().getMaxRequestBodySize());
+				if (actionMapping.getRequestRestriction().maxBodySize() != -1) {
+					req = new LimitRequestBodyHttpServletRequest(req, actionMapping.getRequestRestriction().maxBodySize());
 				}
 				
 				requestStack = new WebRequestStack(path, servletContext, req, res);

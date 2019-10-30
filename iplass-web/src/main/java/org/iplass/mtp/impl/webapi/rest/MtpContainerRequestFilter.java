@@ -62,11 +62,10 @@ public class MtpContainerRequestFilter implements ContainerRequestFilter {
 			runtime.checkContentType(requestContext.getMediaType());
 			
 			//bodySize
-			if (runtime.getMetaData().getMaxRequestBodySize() != null
-					&& runtime.getMetaData().getMaxRequestBodySize().longValue() != -1) {
+			if (runtime.getRequestRestriction().maxBodySize() != -1) {
 				requestContext.setEntityStream(new LimitRequestBodyInputStream(requestContext.getEntityStream(),
-						runtime.getMetaData().getMaxRequestBodySize().longValue(), requestContext.getLength()));
-				requestContext.setProperty(RestRequestContext.MAX_BODY_SIZE, runtime.getMetaData().getMaxRequestBodySize());
+						runtime.getRequestRestriction().maxBodySize(), requestContext.getLength()));
+				requestContext.setProperty(RestRequestContext.MAX_BODY_SIZE, runtime.getRequestRestriction().maxBodySize());
 			}
 		}
 		

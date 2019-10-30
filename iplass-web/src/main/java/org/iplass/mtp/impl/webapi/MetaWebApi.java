@@ -30,6 +30,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.HttpMethod;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response.Status;
@@ -52,10 +53,13 @@ import org.iplass.mtp.impl.script.ScriptRuntimeException;
 import org.iplass.mtp.impl.script.template.GroovyTemplate;
 import org.iplass.mtp.impl.script.template.GroovyTemplateCompiler;
 import org.iplass.mtp.impl.util.ObjectUtil;
+import org.iplass.mtp.impl.web.CorsConfig;
 import org.iplass.mtp.impl.web.ParameterValueMap;
+import org.iplass.mtp.impl.web.RequestRestriction;
 import org.iplass.mtp.impl.web.WebFrontendService;
 import org.iplass.mtp.impl.web.WebRequestContext;
 import org.iplass.mtp.impl.web.WebRequestStack;
+import org.iplass.mtp.impl.web.RequestPath.PathType;
 import org.iplass.mtp.impl.web.fileupload.MultiPartParameterValueMap;
 import org.iplass.mtp.impl.webapi.MetaWebApiParamMap.WebApiParamMapRuntime;
 import org.iplass.mtp.spi.ServiceRegistry;
@@ -76,9 +80,6 @@ public class MetaWebApi extends BaseRootMetaData implements DefinableMetaData<We
 
 	private static Logger logger = LoggerFactory.getLogger(MetaWebApi.class);
 	
-//	private static final String X_REQUESTED_WITH = "X-Requested-With";
-//	private static final String XML_HTTP_REQUEST = "XMLHttpRequest";
-//
 	public static final String HEADER_ACCEPT = "Accept";
 	public static final String COMMAND_INTERCEPTOR_NAME = "webApi";
 
@@ -125,8 +126,6 @@ public class MetaWebApi extends BaseRootMetaData implements DefinableMetaData<We
 	private boolean accessControlAllowCredentials;
 
 	//TODO Access-Control-Max-Age
-
-	//TODO paramMap（pathParam）
 
 	private boolean needTrustedAuthenticate;
 
@@ -366,8 +365,8 @@ public class MetaWebApi extends BaseRootMetaData implements DefinableMetaData<We
 		private MethodType specificMethod;
 		private String parentName;
 		
-		private List<MediaType> allowedContentTypesRuntime;
-		private long maxFileSizeRuntime;
+		private RequestRestriction requestRestrictionRuntime;
+		private String corsAllowString;
 
 		public WebApiRuntime() {
 
@@ -431,26 +430,56 @@ public class MetaWebApi extends BaseRootMetaData implements DefinableMetaData<We
 					}
 				}
 				
-				//allowRequestContentTypes
-				if (allowRequestContentTypes != null && allowRequestContentTypes.length > 0) {
-					allowedContentTypesRuntime = new ArrayList<>();
-					for (String a: allowRequestContentTypes) {
-						allowedContentTypesRuntime.add(MediaType.valueOf(a));
+				WebFrontendService wfs = ServiceRegistry.getRegistry().getService(WebFrontendService.class);
+				requestRestrictionRuntime = wfs.getRequestRestriction(getPublicWebApiName(), PathType.REST);
+				if (!requestRestrictionRuntime.isForce()) {
+					if (maxRequestBodySize != null || maxFileSize != null
+							|| (methods != null && methods.length > 0)
+							|| (allowRequestContentTypes != null && allowRequestContentTypes.length > 0)) {
+						requestRestrictionRuntime = requestRestrictionRuntime.copy();
+						if (maxRequestBodySize != null) {
+							requestRestrictionRuntime.setMaxBodySize(maxRequestBodySize);
+						}
+						if (maxFileSize != null) {
+							requestRestrictionRuntime.setMaxFileSize(maxFileSize);
+						}
+						if (methods != null && methods.length > 0) {
+							ArrayList<String> aml = new ArrayList<>(methods.length);
+							for (MethodType hmt: methods) {
+								aml.add(hmt.toString());
+							}
+							requestRestrictionRuntime.setAllowMethods(aml);
+						}
+						if (allowRequestContentTypes != null && allowRequestContentTypes.length > 0) {
+							requestRestrictionRuntime.setAllowContentTypes(Arrays.asList(allowRequestContentTypes));
+						}
+						
+						requestRestrictionRuntime.init();
 					}
 				}
 				
-				//maxFileSize
-				if (maxFileSize == null) {
-					WebFrontendService wfs = ServiceRegistry.getRegistry().getService(WebFrontendService.class);
-					maxFileSizeRuntime = wfs.getMaxUploadFileSize();
-				} else {
-					maxFileSizeRuntime = maxFileSize;
-				}
+				corsAllowString = corsAllowString();
 
 
 			} catch (RuntimeException e) {
 				setIllegalStateException(e);
 			}
+		}
+		
+		private String corsAllowString() {
+			StringBuilder sb = new StringBuilder();
+			for (String m: requestRestrictionRuntime.getAllowMethods()) {
+				if (sb.length() != 0) {
+					sb.append(", ");
+				}
+				sb.append(m);
+			}
+			sb.append(", " + HttpMethod.OPTIONS);
+			return sb.toString();
+		}
+
+		public RequestRestriction getRequestRestriction() {
+			return requestRestrictionRuntime;
 		}
 
 		public String getPublicWebApiName() {
@@ -492,7 +521,7 @@ public class MetaWebApi extends BaseRootMetaData implements DefinableMetaData<We
 			return webApiParamMapRuntimes;
 		}
 
-		public String getAccessControlAllowOrigin(RequestContext req) {
+		private String getAccessControlAllowOrigin(RequestContext req) {
 			if (accessControlAllowOriginTemplate != null) {
 				StringWriter sw = new StringWriter();
 				WebApiGroovyTemplateBinding gtb = new WebApiGroovyTemplateBinding(sw, req);
@@ -513,33 +542,46 @@ public class MetaWebApi extends BaseRootMetaData implements DefinableMetaData<We
 		}
 
 		public boolean isCorsAllowCredentials() {
-			if (accessControlAllowOriginTemplate == null) {
-				if (service.getCors() != null) {
-					return service.getCors().isAllowCredentials();
-				} else {
-					return false;
-				}
-			} else {
-				return accessControlAllowCredentials;
+			CorsConfig cc = requestRestrictionRuntime.getCors();
+			if (cc == null) {
+				cc = service.getCors();
 			}
+			
+			if (!requestRestrictionRuntime.isForce()) {
+				if (accessControlAllowOriginTemplate != null) {
+					return accessControlAllowCredentials;
+				}
+			}
+			
+			if (cc != null) {
+				return cc.isAllowCredentials();
+			}
+			
+			return false;
 		}
 
 		public boolean isCorsAllowOrigin(String origin, RequestContext req) {
-			String acao = getAccessControlAllowOrigin(req);
-			if (acao == null) {
-				if (service.getCors() != null && service.getCors().getAllowOrigin() != null) {
-					for (String s: service.getCors().getAllowOrigin()) {
-						if (corsAllowOrign(origin, s)) {
-							return true;
-						}
+			CorsConfig cc = requestRestrictionRuntime.getCors();
+			if (cc == null) {
+				cc = service.getCors();
+			}
+			
+			if (!requestRestrictionRuntime.isForce()) {
+				String acao = getAccessControlAllowOrigin(req);
+				if (acao != null) {
+					return corsAllowOrign(origin, acao);
+				}
+			}
+			
+			if (cc != null && cc.getAllowOrigin() != null) {
+				for (String s: cc.getAllowOrigin()) {
+					if (corsAllowOrign(origin, s)) {
+						return true;
 					}
 				}
-
-				return false;
-			} else {
-				return corsAllowOrign(origin, acao);
 			}
-
+			
+			return false;
 		}
 
 		private boolean corsAllowOrign(String origin, String accessControlAllowOrigin) {
@@ -558,6 +600,10 @@ public class MetaWebApi extends BaseRootMetaData implements DefinableMetaData<We
 				}
 			}
 			return false;
+		}
+		
+		public String corsAccessControlAllowMethods() {
+			return corsAllowString;
 		}
 
 		public MetaWebApi getMetaData() {
@@ -578,7 +624,7 @@ public class MetaWebApi extends BaseRootMetaData implements DefinableMetaData<We
 				ParameterValueMap currentValueMap = webRequestContext.getValueMap();
 				//set maxFileSize
 				if (currentValueMap instanceof MultiPartParameterValueMap) {
-					((MultiPartParameterValueMap) currentValueMap).setMaxFileSize(maxFileSizeRuntime);
+					((MultiPartParameterValueMap) currentValueMap).setMaxFileSize(requestRestrictionRuntime.maxFileSize());
 				}
 				//parameter map
 				if (webApiParamMap != null) {
@@ -622,53 +668,30 @@ public class MetaWebApi extends BaseRootMetaData implements DefinableMetaData<We
 		}
 
 		public void checkMethodType(MethodType requestMethodType) {
-
-			if (methods == null || methods.length == 0) {
-				return;
-			}
-			for (MethodType m: methods) {
-				if (m == requestMethodType) {
-					return;
-				}
-			}
-			throw new WebApplicationException(Status.METHOD_NOT_ALLOWED);
+			checkMethodType(requestMethodType.toString());
 		}
 
 		public void checkContentType(MediaType contentType) {
 			if (contentType == null) {
 				return;
 			}
-
-			if (allowedContentTypesRuntime == null) {
-				return;
-			}
 			
-			if (!contentType.isWildcardType() && !contentType.isWildcardSubtype()) {
-				for (MediaType act: allowedContentTypesRuntime) {
-					if (contentType.isCompatible(act)) {
-						return;
-					}
-				}
+			if (!requestRestrictionRuntime.isAllowedContentType(contentType)) {
+				throw new WebApplicationException(Status.UNSUPPORTED_MEDIA_TYPE);
 			}
-			
-			throw new WebApplicationException(Status.UNSUPPORTED_MEDIA_TYPE);
 		}
 		
 		public void checkMethodType(String requestMethod) {
-
-			if (methods == null || methods.length == 0) {
+			if (HttpMethod.OPTIONS.equals(requestMethod)) {
 				return;
 			}
 			
-			for (MethodType m: methods) {
-				if (m.name().equals(requestMethod)) {
-					return;
+			if (!requestRestrictionRuntime.isAllowedMethod(requestMethod)) {
+				if (logger.isDebugEnabled()) {
+					logger.debug("reject Request. HTTP Method:" + requestMethod + " not allowed for WebAPI:" + getName());
 				}
+				throw new WebApplicationException(Status.METHOD_NOT_ALLOWED);
 			}
-			if (logger.isDebugEnabled()) {
-				logger.debug("reject Request. HTTP Method:" + requestMethod + " not allowed for WebAPI:" + getName());
-			}
-			throw new WebApplicationException(Status.METHOD_NOT_ALLOWED);
 		}
 		
 		public boolean isSufficientOAuthScope(List<String> grantedScopes) {
