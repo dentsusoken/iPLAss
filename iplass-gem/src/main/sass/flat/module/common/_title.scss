@@ -53,9 +53,14 @@ h5 {
 	letter-spacing: 0.21429rem;
 	margin-bottom: 15px;
 }
-.hgroup-02 span {
-	font-size: 1rem;
-	letter-spacing: 0.07143rem;
-	margin-left: 20px;
-	color: $color_silver_chalice_approx;
+.hgroup-02 {
+	span {
+		font-size: 1rem;
+		letter-spacing: 0.07143rem;
+		margin-left: 20px;
+		color: $color_silver_chalice_approx;
+	}
+	svg {
+		margin-right: 10px;
+	}
 }
