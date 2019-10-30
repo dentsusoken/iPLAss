@@ -22,6 +22,7 @@
 <%@taglib prefix="m" uri="http://iplass.org/tags/mtp"%>
 <%@page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8" trimDirectiveWhitespaces="true"%>
 
+<%@page import="java.util.ArrayList"%>
 <%@page import="org.iplass.mtp.util.StringUtil"%>
 <%@page import="org.iplass.mtp.view.generic.EntityViewUtil"%>
 <%@page import="org.iplass.mtp.view.generic.editor.BooleanPropertyEditor" %>
@@ -30,12 +31,32 @@
 <%@page import="org.iplass.gem.command.Constants" %>
 <%@page import="org.iplass.gem.command.GemResourceBundleUtil" %>
 <%@page import="org.iplass.gem.command.ViewUtil" %>
+<%!
+	String[] getBooleanValue(String searchCond, String key) {
+		ArrayList<String> list = new ArrayList<String>();
+		if (searchCond != null && searchCond.indexOf(key) > -1) {
+			String[] split = searchCond.split("&");
+			if (split != null && split.length > 0) {
+				for (String tmp : split) {
+					String[] kv = tmp.split("=");
+					if (kv != null && kv.length > 1 && key.equals(kv[0])) {
+						list.add(kv[1]);
+					}
+				}
+			}
+		}
+		return list.size() > 0 ? list.toArray(new String[list.size()]) : null;
+	}
+%>
 <%
 	BooleanPropertyEditor editor = (BooleanPropertyEditor) request.getAttribute(Constants.EDITOR_EDITOR);
 
 	String[] propValue = (String[]) request.getAttribute(Constants.EDITOR_PROP_VALUE);
 	String[] defaultValue = (String[]) request.getAttribute(Constants.EDITOR_DEFAULT_VALUE);
 
+	String searchCond = request.getParameter(Constants.SEARCH_COND);
+	String[] _propValue = getBooleanValue(searchCond, Constants.SEARCH_COND_PREFIX + editor.getPropertyName());
+	
 	String rootDefName = (String)request.getAttribute(Constants.ROOT_DEF_NAME);
 	String scriptKey = (String)request.getAttribute(Constants.SECTION_SCRIPT_KEY);
 	String displayLabel = (String) request.getAttribute(Constants.EDITOR_DISPLAY_LABEL);
@@ -71,11 +92,21 @@
 	String checked1 = "";
 	String checked2 = "";
 	String checked3 = matchStr;
-	if (propValue != null && propValue.length > 0 && "true".equals(propValue[0])) {
+	
+	String value = "";
+	if (_propValue == null || _propValue.length == 0) {
+		if (propValue != null && propValue.length > 0) {
+			value = propValue[0];
+		}
+	} else {
+		value = _propValue[0];
+	}
+	
+	if ("true".equals(value)) {
 		checked1 = matchStr;
 		checked3 = "";
 	}
-	if (propValue != null && propValue.length > 0 && "false".equals(propValue[0])) {
+	if ("false".equals(value)) {
 		checked2 = matchStr;
 		checked3 = "";
 	}

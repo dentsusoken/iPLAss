@@ -153,8 +153,12 @@ $(function() {
 <%
 	} else if (editor.getDisplayType() == SelectDisplayType.RADIO) {
 		String value = "";
-		if (propValue != null && propValue.length > 0) {
-			value = propValue[0];
+		if (_propValue == null || _propValue.length == 0) {
+			if (propValue != null && propValue.length > 0) {
+				value = propValue[0];
+			}
+		} else {
+			value = _propValue[0];
 		}
 		String defaultCheckValue = "";
 		if (defaultValue != null && defaultValue.length > 0) {
