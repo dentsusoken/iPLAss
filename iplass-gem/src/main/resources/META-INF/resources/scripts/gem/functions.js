@@ -2671,7 +2671,7 @@ $.fn.allInputCheck = function(){
 				urlParam:					$v.attr("data-urlParam"),
 				refDefName:					$v.attr("data-refDefName"),
 				refViewName:				$v.attr("data-refViewName"),
-				refEdit:					$v.attr("data-refEdit"),
+				refEdit:					$v.attr("data-refEdit") == "true",
 				refSectionIndex:			$v.attr("data-refSectionIndex"),//参照セクションインデックス
 				specVersionKey:				$v.attr("data-specVersionKey"),
 				permitConditionSelectAll:	$v.attr("data-permitConditionSelectAll"),
