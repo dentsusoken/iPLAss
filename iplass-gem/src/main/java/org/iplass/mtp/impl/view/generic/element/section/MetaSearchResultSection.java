@@ -61,6 +61,9 @@ public class MetaSearchResultSection extends MetaSection {
 	/** 表示高さ */
 	private int dispHeight;
 
+	/** 検索結果をまとめる設定 */
+	private boolean groupingData;
+
 	/** 編集リンク非表示設定 */
 	private boolean hideDetailLink;
 
@@ -159,6 +162,22 @@ public class MetaSearchResultSection extends MetaSection {
 	 */
 	public void setDispHeight(int dispHeight) {
 		this.dispHeight = dispHeight;
+	}
+
+	/**
+	 * 検索結果をまとめる設定を取得します。
+	 * @return 検索結果をまとめる設定 
+	 */
+	public boolean isGroupingData() {
+		return groupingData;
+	}
+
+	/**
+	 * 検索結果をまとめる設定を設定します。
+	 * @param groupingData 検索結果をまとめる設定 
+	 */
+	public void setGroupingData(boolean groupingData) {
+		this.groupingData = groupingData;
 	}
 
 	/**
@@ -520,6 +539,7 @@ public class MetaSearchResultSection extends MetaSection {
 		SearchResultSection section = (SearchResultSection) element;
 		this.dispRowCount = section.getDispRowCount();
 		this.dispHeight = section.getDispHeight();
+		this.groupingData = section.isGroupingData();
 		this.hideDetailLink = section.isHideDetailLink();
 		this.hideDelete = section.isHideDelete();
 		this.hidePaging = section.isHidePaging();
@@ -565,6 +585,7 @@ public class MetaSearchResultSection extends MetaSection {
 		section.setScriptKey(scriptKey);
 		section.setDispRowCount(this.dispRowCount);
 		section.setDispHeight(this.dispHeight);
+		section.setGroupingData(this.isGroupingData());
 		section.setHideDetailLink(hideDetailLink);
 		section.setHideDelete(hideDelete);
 		section.setHidePaging(hidePaging);

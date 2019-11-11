@@ -187,6 +187,50 @@ $(function() {
 		};
 	});
 
+	var cellAttrFunc = function (rowId, val, rowObject, colModel, rdata) {
+<%
+	if (section.isGroupingData()) {
+%>
+		var rowIndex = parseInt(rowId) - 1;
+		var data = grid.getGridParam("_data");
+		var row = data[rowIndex];
+		var colName = colModel.name;
+
+		if (rowIndex > 0) {
+			var beforeRow = data[rowIndex - 1];
+			//先頭の列からこの列まで、前の行と値が同じか確認
+			var dif = false;
+			if (row.orgOid != beforeRow.orgOid || row.orgVersion != beforeRow.orgVersion || row[colName] != beforeRow[colName]) {
+				dif = true;
+			}
+			if (!dif) return " style=\"display:none;\" ";//同じ場合は非表示にする
+		}
+
+		//この行から何行分rowspanを設定するか計算
+		var count = 0;
+		for (var i = rowIndex; i < data.length; i++) {
+			if (i >= data.length) break;
+			var nextRow = data[i];
+			var dif = false;
+			if (row.orgOid != nextRow.orgOid || row.orgVersion != nextRow.orgVersion || row[colName] != nextRow[colName]) {
+				dif = true;
+				break;
+			}
+			if (!dif) count++;
+			else break;
+		}
+		if (count > 1) return " style=\"vertical-align: center !important;\" rowspan=\"" + count + "\"";
+		else return null;
+<%
+	} else {
+%>
+		//definitionの設定がfalseなら結合しない
+		return null;
+<%
+	}
+%>
+	}
+
 	var multiSelect = <%=(OutputType.SEARCHRESULT == type && !section.isHideDelete() && canDelete) || (OutputType.SEARCHRESULT == type && section.isShowBulkUpdate() && canUpdate) || OutputType.MULTISELECT == type%>;
 	var colModel = new Array();
 	colModel.push({name:"orgOid", index:"orgOid", sortable:false, hidden:true, frozen:true, label:"oid"});
@@ -195,12 +239,12 @@ $(function() {
 	if (OutputType.SINGLESELECT == type) {
 		//スタイル調整のため、classes、labelClassesに"sel_radio"を指定
 %>
-	colModel.push({name:'selOid', index:'selOid', width:20, sortable:false, frozen:true, label:"", resizable:false, classes:"sel_radio", labelClasses:"sel_radio"});
+	colModel.push({name:'selOid', index:'selOid', width:20, sortable:false, frozen:true, label:"", resizable:false, classes:"sel_radio", labelClasses:"sel_radio", cellattr: cellAttrFunc});
 <%
 	} else if (OutputType.MULTISELECT == type) {
 	} else if (OutputType.SEARCHRESULT == type) {
 %>
-	colModel.push({name:'_mtpDetailLink', index:'_mtpDetailLink', width:${m:rs("mtp-gem-messages", "generic.element.section.SearchResultSection.detailLinkWidth")}, sortable:false, align:'center', frozen:true, label:"", classes:"detail-links"});
+	colModel.push({name:'_mtpDetailLink', index:'_mtpDetailLink', width:${m:rs("mtp-gem-messages", "generic.element.section.SearchResultSection.detailLinkWidth")}, sortable:false, align:'center', frozen:true, label:"", classes:"detail-links", cellattr: cellAttrFunc});
 <%
 	}
 
@@ -229,7 +273,7 @@ $(function() {
 					}
 %>
 <%-- XSS対応-メタの設定のため対応なし(displayLabel,style) --%>
-	colModel.push({name:"<%=sortPropName%>", index:"<%=sortPropName%>", classes:"<%=style%>", label:"<p class='title'><%=displayLabel%></p>", <%=sortable%><%=width%><%=align%>});
+	colModel.push({name:"<%=sortPropName%>", index:"<%=sortPropName%>", classes:"<%=style%>", label:"<p class='title'><%=displayLabel%></p>", <%=sortable%><%=width%><%=align%>, cellattr: cellAttrFunc});
 
 <%
 				//参照プロパティでJoinPropertyEditorを利用する場合
@@ -354,7 +398,20 @@ colModel.push({name:"<%=propName%>", index:"<%=propName%>", classes:"<%=style%>"
 		,onSelectRow: function(rowid, e) {
 			var row = grid.getRowData(rowid);
 			var value = row.orgOid + "_" + row.orgVersion;
-			$(":radio[name='selOid'][value='" + value + "']").prop("checked", true);
+<%
+		if (section.isGroupingData()) {
+			// 結合されたチェックボタンにチェックを入れます。
+%>
+			$(":radio[name='selOid'][value='" + value + "']:visible").prop("checked", true);
+<% 
+		} else {
+			// 選択された行のチェックボタンにチェックをいれます。
+%>
+			var rowIndex = parseInt(rowid) - 1;
+			$("#gview_searchResult tr.jqgrow:eq(" + rowIndex + ")").find(":radio[name='selOid'][value='" + value + "']").prop("checked", true);
+<%
+		}
+%>
 			selectArray.splice(0, selectArray.length, value);
 		}
 <%
@@ -382,6 +439,19 @@ colModel.push({name:"<%=propName%>", index:"<%=propName%>", classes:"<%=style%>"
 				keepSelectAllStatus = false;
 			}
 		}
+<%
+	}
+	if (section.isGroupingData()) {
+%>
+	,gridComplete: function() {
+		$("#gview_searchResult tr.jqgrow").each(function(index){
+			<%-- 詳細・編集セルの結合情報を取得します。 --%>
+			var lnkCell = $(this).children(".detail-links");
+			var rowspan = lnkCell.attr("rowspan");
+			var display = lnkCell.css("display");
+			$(this).children(".td_cbox").attr("rowspan", rowspan).css("display", display);
+		})
+	}
 <%
 	}
 %>
@@ -456,6 +526,7 @@ colModel.push({name:"<%=propName%>", index:"<%=propName%>", classes:"<%=style%>"
 function setData(list, count) {
 	$("div.result-data").show();
 	grid.clearGridData(true);
+	grid.setGridParam({"_data": list}).trigger("reloadGrid");
 	$(list).each(function(index) {
 		this["searchResultDataId"] = this.orgOid + "_" + this.orgVersion;
 <%	if (type == OutputType.SINGLESELECT) { %>
@@ -489,7 +560,7 @@ function setData(list, count) {
 	if (OutputType.SINGLESELECT == type) {
 %>
 	if (selectArray.length > 0) {
-		$(":radio[name='selOid'][value='" + selectArray[0] + "']").prop("checked", true).trigger("change");
+		$(":radio[name='selOid'][value='" + selectArray[0] + "']:visible").prop("checked", true).trigger("change");
 	}
 <%
 	} else if (OutputType.MULTISELECT == type) {
