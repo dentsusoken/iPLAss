@@ -198,7 +198,7 @@ $(function() {
 
 		if (rowIndex > 0) {
 			var beforeRow = data[rowIndex - 1];
-			//先頭の列からこの列まで、前の行と値が同じか確認
+			//前の行と値が同じか確認
 			var dif = false;
 			if (row.orgOid != beforeRow.orgOid || row.orgVersion != beforeRow.orgVersion || row[colName] != beforeRow[colName]) {
 				dif = true;
@@ -422,8 +422,12 @@ colModel.push({name:"<%=propName%>", index:"<%=propName%>", classes:"<%=style%>"
 				var row = grid.getRowData(rowid);
 				var id = row.orgOid + "_" + row.orgVersion;
 				if (e) {
-					if (multiplicity == -1 || selectArray.length < multiplicity) {
+					<%-- 同じOIDとVersionのレコードを選択配列に追加しません。 --%>
+					if (selectArray.indexOf(id) == -1 && (multiplicity == -1 || selectArray.length < multiplicity)) {
 						selectArray.push(id);
+						<%-- 多重度が複数のデータの場合、行番号が違う同じOIDとVersionのレコードがあるので、チェックを付け直します。 --%>
+						grid.resetSelection();
+						applyGridSelection(false);
 					} else {
 						alert("${m:rs('mtp-gem-messages', 'generic.element.section.SearchResultSection.notSelect')}");
 						grid.setSelection(rowid);
@@ -435,23 +439,65 @@ colModel.push({name:"<%=propName%>", index:"<%=propName%>", classes:"<%=style%>"
 							break;
 						}
 					}
+					<%-- 多重度が複数のデータの場合、行番号が違う同じOIDとVersionのレコードがあるので、チェックを付け直します。 --%>
+					grid.resetSelection();
+					applyGridSelection(false);
 				}
 				keepSelectAllStatus = false;
 			}
 		}
 <%
+	} else if (OutputType.SEARCHRESULT == type && !section.isHideDelete() && canDelete || OutputType.SEARCHRESULT == type && section.isShowBulkUpdate() && canUpdate) {
+%>
+		,onSelectRow: function(rowid, e) {
+			var row = grid.getRowData(rowid);
+			var id = row.orgOid + "_" + row.orgVersion;
+			$("#searchResult tr[id]").each(function() {
+				var _rowid = $(this).attr("id");
+				if (_rowid == rowid) return;
+				var _row = grid.getRowData(_rowid);
+				var _id = _row.orgOid + "_" + _row.orgVersion;
+				<%-- 多重度が複数のデータの場合、行番号が違う同じOIDとVersionのレコードがあるので、チェックを付け直します。 --%>
+				if (id == _id) grid.setSelection(_rowid, false);
+			});
+		}
+<%
 	}
 	if (section.isGroupingData()) {
 %>
-	,gridComplete: function() {
-		$("#gview_searchResult tr.jqgrow").each(function(index){
-			<%-- 詳細・編集セルの結合情報を取得します。 --%>
-			var lnkCell = $(this).children(".detail-links");
-			var rowspan = lnkCell.attr("rowspan");
-			var display = lnkCell.css("display");
-			$(this).children(".td_cbox").attr("rowspan", rowspan).css("display", display);
-		})
-	}
+		,gridComplete: function() {
+			var data = $("#searchResult").getGridParam("_data");
+			if (!data) return;
+			//チェックボタン一覧の結合処理を行います。
+			$("#gview_searchResult tr.jqgrow").each(function(index){
+				var row = data[index];
+				if (index > 0) {
+					var beforeRow = data[index - 1];
+					//前の行と値が同じか確認
+					var dif = false;
+					if (row.orgOid != beforeRow.orgOid || row.orgVersion != beforeRow.orgVersion) {
+						dif = true;
+					}
+					if (!dif) {
+						$(this).children(".td_cbox").hide(); return;
+					}
+				}
+
+				//この行から何行分rowspanを設定するか計算
+				var count = 0;
+				for (var i = index; i < data.length; i++) {
+					var nextRow = data[i];
+					var dif = false;
+					if (row.orgOid != nextRow.orgOid || row.orgVersion != nextRow.orgVersion) {
+						dif = true;
+						break;
+					}
+					if (!dif) count++;
+					else break;
+				}
+				if (count > 1) $(this).children(".td_cbox").attr("rowspan", count);
+			})
+		}
 <%
 	}
 %>
@@ -649,14 +695,18 @@ function setData(list, count) {
 
 	$(".fixHeight").fixHeight();
 }
-function applyGridSelection() {
+function applyGridSelection(onselectrow) {
 	$("#searchResult tr[id]").each(function() {
 		var rowid = $(this).attr("id");
 		var row = grid.getRowData(rowid);
 		var id = row.orgOid + "_" + row.orgVersion;
 		for (var i = 0; i < selectArray.length; i++) {
 			if (id == selectArray[i]) {
-				grid.setSelection(rowid);
+				if (typeof onselectrow === "boolean") {
+					grid.setSelection(rowid, onselectrow);
+				} else {
+					grid.setSelection(rowid);
+				}
 			}
 		}
 	});
@@ -847,7 +897,7 @@ $(function() {
 			// 選択された行を一括更新
 			} else if ($.isArray(id)) {
 				selectArray = id;
-				applyGridSelection();
+				applyGridSelection(false);
 			}
 			$(".result-block").off("iplassAfterSearch", selectAfterBulkUpdate);
 		}
