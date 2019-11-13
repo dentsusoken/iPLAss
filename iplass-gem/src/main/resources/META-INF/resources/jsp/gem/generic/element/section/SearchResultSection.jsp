@@ -803,7 +803,7 @@ $(function() {
 			// 選択された行を一括更新
 			} else if ($.isArray(id)) {
 				selectArray = id;
-				applyGridSelection();
+				applyGridSelection(false);
 			}
 			$(".result-block").off("iplassAfterSearch", selectAfterBulkUpdate);
 		}
