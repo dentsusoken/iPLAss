@@ -398,20 +398,20 @@ colModel.push({name:"<%=propName%>", index:"<%=propName%>", classes:"<%=style%>"
 		,onSelectRow: function(rowid, e) {
 			var row = grid.getRowData(rowid);
 			var value = row.orgOid + "_" + row.orgVersion;
+			var rowIndex = parseInt(rowid) - 1;
 <%
 		if (section.isGroupingData()) {
 			// 結合されたチェックボタンにチェックを入れます。
 %>
-			$(":radio[name='selOid'][value='" + value + "']:visible").prop("checked", true);
+			for (var i = rowIndex; i >= 0; i--) {
+				if ($("#gview_searchResult tr.jqgrow:eq(" + i + ")").find(":radio[name='selOid'][value='" + value + "']").is(":visible")) { 
+					rowIndex = i; break;
+				}
+			}
 <% 
-		} else {
-			// 選択された行のチェックボタンにチェックをいれます。
-%>
-			var rowIndex = parseInt(rowid) - 1;
-			$("#gview_searchResult tr.jqgrow:eq(" + rowIndex + ")").find(":radio[name='selOid'][value='" + value + "']").prop("checked", true);
-<%
 		}
 %>
+			$("#gview_searchResult tr.jqgrow:eq(" + rowIndex + ")").find(":radio[name='selOid'][value='" + value + "']").prop("checked", true);
 			selectArray.splice(0, selectArray.length, value);
 		}
 <%
