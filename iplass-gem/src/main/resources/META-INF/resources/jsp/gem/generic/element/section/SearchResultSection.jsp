@@ -411,7 +411,25 @@ colModel.push({name:"<%=propName%>", index:"<%=propName%>", classes:"<%=style%>"
 <% 
 		}
 %>
-			$("#gview_searchResult tr.jqgrow:eq(" + rowIndex + ")").find(":radio[name='selOid'][value='" + value + "']").prop("checked", true);
+			var $selRow = $("#gview_searchResult tr.jqgrow:eq(" + rowIndex + ")");
+			$selRow.find(":radio[name='selOid'][value='" + value + "']").prop("checked", true);
+<%
+		if (section.isGroupingData()) {
+%>
+			$("#gview_searchResult tr.jqgrow").each(function(index) {
+				if (index != rowIndex) {
+					$(this).removeClass("ui-state-highlight");
+				}
+			});
+			var rowspan = $selRow.children("td.sel_radio").attr("rowspan");
+			if (rowspan && e) {
+				for (var i = rowIndex; i < rowIndex + parseInt(rowspan); i++) {
+					$("#gview_searchResult tr.jqgrow:eq(" + i + ")").addClass("ui-state-highlight");
+				}
+			}
+<%
+		}
+%>
 			selectArray.splice(0, selectArray.length, value);
 		}
 <%
