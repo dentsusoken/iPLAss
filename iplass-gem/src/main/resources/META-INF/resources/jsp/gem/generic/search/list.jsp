@@ -307,6 +307,21 @@ colModel.push({name:"<%=propName%>", index:"<%=propName%>", classes:"<%=style%>"
 			}
 			return "stop";
 		}
+		,onSelectRow: function(rowid, e) {
+			var row = grid.getRowData(rowid);
+			var id = row.orgOid + "_" + row.orgVersion;
+			$("#searchResult_<%=id%> tr[id]").each(function() {
+				var _rowid = $(this).attr("id");
+				if (_rowid == rowid) return;
+				var _row = grid.getRowData(_rowid);
+				var _id = _row.orgOid + "_" + _row.orgVersion;
+				if (id == _id) {
+					$(this).addClass("ui-state-highlight");
+				} else {
+					$(this).removeClass("ui-state-highlight");
+				}
+			});
+		}
 	});
 
 	var offset = 0;

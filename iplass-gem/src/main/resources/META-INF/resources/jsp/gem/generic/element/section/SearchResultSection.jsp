@@ -464,7 +464,7 @@ colModel.push({name:"<%=propName%>", index:"<%=propName%>", classes:"<%=style%>"
 			}
 		}
 <%
-	} else if (OutputType.SEARCHRESULT == type && !section.isHideDelete() && canDelete || OutputType.SEARCHRESULT == type && section.isShowBulkUpdate() && canUpdate) {
+	} else if (OutputType.SEARCHRESULT == type) {
 %>
 		,onSelectRow: function(rowid, e) {
 			var row = grid.getRowData(rowid);
@@ -474,8 +474,20 @@ colModel.push({name:"<%=propName%>", index:"<%=propName%>", classes:"<%=style%>"
 				if (_rowid == rowid) return;
 				var _row = grid.getRowData(_rowid);
 				var _id = _row.orgOid + "_" + _row.orgVersion;
+				if (id == _id) {
+<%
+		if(!section.isHideDelete() && canDelete || section.isShowBulkUpdate() && canUpdate) {
+%>
 				<%-- 多重度が複数のデータの場合、行番号が違う同じOIDとVersionのレコードがあるので、チェックを付け直します。 --%>
-				if (id == _id) grid.setSelection(_rowid, false);
+				grid.setSelection(_rowid, false);
+<%
+		} else {
+%>
+				$(this).addClass("ui-state-highlight");
+<%
+		}
+%>
+				} else $(this).removeClass("ui-state-highlight");
 			});
 		}
 <%
