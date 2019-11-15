@@ -624,7 +624,23 @@ function setData(list, count) {
 	if (OutputType.SINGLESELECT == type) {
 %>
 	if (selectArray.length > 0) {
-		$(":radio[name='selOid'][value='" + selectArray[0] + "']:visible").prop("checked", true).trigger("change");
+		var $radio = $(":radio[name='selOid'][value='" + selectArray[0] + "']:visible").prop("checked", true).trigger("change");
+		var rowIndex = $(":radio[name='selOid']").index($radio);
+
+		$("#gview_searchResult tr.jqgrow:eq(" + rowIndex + ")").addClass("ui-state-highlight");
+<%
+		if (section.isGroupingData()) {
+%>
+		var rowspan = $radio.parents("td.sel_radio").attr("rowspan");
+		if (rowspan) {
+			for (var i = rowIndex + 1; i < rowIndex + parseInt(rowspan); i++) {
+				$("#gview_searchResult tr.jqgrow:eq(" + i + ")").addClass("ui-state-highlight");
+			}
+		}
+		
+<%
+		}
+%>
 	}
 <%
 	} else if (OutputType.MULTISELECT == type) {
