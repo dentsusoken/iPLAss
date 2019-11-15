@@ -625,7 +625,7 @@ function setData(list, count) {
 %>
 	if (selectArray.length > 0) {
 		var $radio = $(":radio[name='selOid'][value='" + selectArray[0] + "']:visible").prop("checked", true).trigger("change");
-		var rowIndex = $(":radio[name='selOid']").index($radio);
+		var rowIndex = $("#gview_searchResult tr.jqgrow").index($radio.parents("tr.jqgrow"));
 
 		$("#gview_searchResult tr.jqgrow:eq(" + rowIndex + ")").addClass("ui-state-highlight");
 <%
@@ -637,7 +637,6 @@ function setData(list, count) {
 				$("#gview_searchResult tr.jqgrow:eq(" + i + ")").addClass("ui-state-highlight");
 			}
 		}
-		
 <%
 		}
 %>
