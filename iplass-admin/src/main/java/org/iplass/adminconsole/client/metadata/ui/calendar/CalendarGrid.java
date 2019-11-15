@@ -31,6 +31,7 @@ import org.iplass.adminconsole.client.base.tenant.TenantInfoHolder;
 import org.iplass.adminconsole.client.base.ui.widget.MetaDataSelectItem;
 import org.iplass.adminconsole.client.base.ui.widget.MetaDataSelectItem.ItemOption;
 import org.iplass.adminconsole.client.base.ui.widget.MtpDialog;
+import org.iplass.adminconsole.client.base.ui.widget.MtpTreeGrid;
 import org.iplass.adminconsole.client.base.ui.widget.ScriptEditorDialogCondition;
 import org.iplass.adminconsole.client.base.ui.widget.ScriptEditorDialogHandler;
 import org.iplass.adminconsole.client.base.ui.widget.ScriptEditorDialogMode;
@@ -81,20 +82,16 @@ import com.smartgwt.client.widgets.grid.ListGridRecord;
 import com.smartgwt.client.widgets.grid.events.RecordDoubleClickEvent;
 import com.smartgwt.client.widgets.grid.events.RecordDoubleClickHandler;
 import com.smartgwt.client.widgets.tree.Tree;
-import com.smartgwt.client.widgets.tree.TreeGrid;
 import com.smartgwt.client.widgets.tree.TreeGridField;
 import com.smartgwt.client.widgets.tree.TreeNode;
 import com.smartgwt.client.widgets.tree.events.FolderDropEvent;
 import com.smartgwt.client.widgets.tree.events.FolderDropHandler;
 
 /**
- * ツリーメニュー編集TreeGrid
- *
- * ツリーメニューを表示します。
- * {@link org.iplass.adminconsole.client.ui.menu.item.MenuItemDragPane}で生成されます。
+ * カレンダー編集TreeGrid
  *
  */
-public class CalendarGrid extends TreeGrid {
+public class CalendarGrid extends MtpTreeGrid {
 
 	/** 内部保持Tree */
 	private Tree tree;
@@ -267,7 +264,7 @@ public class CalendarGrid extends TreeGrid {
 	}
 
 	public List<EntityCalendarItem> getItems() {
-		List<EntityCalendarItem> items = new ArrayList<EntityCalendarItem>();
+		List<EntityCalendarItem> items = new ArrayList<>();
 
 		CalendarNode root = (CalendarNode) tree.getRoot();
 		TreeNode[] children = tree.getChildren(root);
@@ -290,7 +287,7 @@ public class CalendarGrid extends TreeGrid {
 	}
 
 	private CalendarNode[] createEntityCalendarItemNodes(List<EntityCalendarItem> children) {
-		List<CalendarNode> childList = new ArrayList<CalendarNode>(children.size());
+		List<CalendarNode> childList = new ArrayList<>(children.size());
 		for (EntityCalendarItem child : children) {
 			CalendarNode childNode = new CalendarNode(child, "cube_blue.png");
 			childList.add(childNode);
@@ -471,7 +468,7 @@ public class CalendarGrid extends TreeGrid {
 			propertyNameValidator.setErrorMessage(AdminClientMessageUtil.getString("ui_metadata_calendar_CalendarGrid_requiredField"));
 
 			//設定項目の入力フィールド作成
-			List<FormItem> items = new ArrayList<FormItem>();
+			List<FormItem> items = new ArrayList<>();
 
 			defNameField = new MtpTextItem("defName", "Entity Name");
 			SmartGWTUtil.setReadOnly(defNameField);
@@ -620,6 +617,7 @@ public class CalendarGrid extends TreeGrid {
 
 			IButton cancel = new IButton("Cancel");
 			cancel.addClickHandler(new ClickHandler() {
+				@Override
 				public void onClick(ClickEvent event) {
 					destroy();
 				}
@@ -670,7 +668,7 @@ public class CalendarGrid extends TreeGrid {
 						}
 					});
 
-					List<String> params = new ArrayList<String>();
+					List<String> params = new ArrayList<>();
 					for (PropertyDefinition pd : propertyList) {
 						//選択型の項目作成
 						if (pd instanceof DateProperty

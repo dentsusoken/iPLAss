@@ -26,6 +26,7 @@ import java.util.List;
 import org.iplass.adminconsole.client.base.data.DataSourceConstants;
 import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
 import org.iplass.adminconsole.client.base.ui.widget.GridActionImgButton;
+import org.iplass.adminconsole.client.base.ui.widget.MtpTreeGrid;
 import org.iplass.adminconsole.client.metadata.data.menu.MenuItemTreeDS;
 import org.iplass.mtp.view.menu.MenuItem;
 
@@ -45,10 +46,9 @@ import com.smartgwt.client.widgets.grid.ListGridField;
 import com.smartgwt.client.widgets.grid.ListGridRecord;
 import com.smartgwt.client.widgets.grid.events.RecordDoubleClickEvent;
 import com.smartgwt.client.widgets.grid.events.RecordDoubleClickHandler;
-import com.smartgwt.client.widgets.tree.TreeGrid;
 import com.smartgwt.client.widgets.tree.TreeNode;
 
-public class MenuItemTreeGrid extends TreeGrid {
+public class MenuItemTreeGrid extends MtpTreeGrid {
 
 	private MenuItemDragPane owner;
 
@@ -95,7 +95,7 @@ public class MenuItemTreeGrid extends TreeGrid {
 
 			@Override
 			public void onDragStart(DragStartEvent event) {
-				TreeNode node = (TreeNode) getSelectedRecord();
+				TreeNode node = getSelectedRecord();
 				if (getTree().isFolder(node)) {
 					//Folderは対象外
 					event.cancel();
@@ -117,7 +117,7 @@ public class MenuItemTreeGrid extends TreeGrid {
 	}
 
 	private void setGridFields() {
-		List<ListGridField> fields = new ArrayList<ListGridField>();
+		List<ListGridField> fields = new ArrayList<>();
 
 		ListGridField displayNameField = new ListGridField(DataSourceConstants.FIELD_DISPLAY_VALUE);
 		fields.add(displayNameField);

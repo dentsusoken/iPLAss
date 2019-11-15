@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.iplass.adminconsole.client.base.ui.widget.GridActionImgButton;
+import org.iplass.adminconsole.client.base.ui.widget.MtpTreeGrid;
 import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
 import org.iplass.adminconsole.client.tools.data.entityexplorer.SimpleEntityInfoTreeDS;
 import org.iplass.adminconsole.client.tools.data.entityexplorer.SimpleEntityInfoTreeDS.FIELD_NAME;
@@ -33,13 +34,12 @@ import com.smartgwt.client.types.SelectionAppearance;
 import com.smartgwt.client.widgets.Canvas;
 import com.smartgwt.client.widgets.grid.HoverCustomizer;
 import com.smartgwt.client.widgets.grid.ListGridRecord;
-import com.smartgwt.client.widgets.tree.TreeGrid;
 import com.smartgwt.client.widgets.tree.TreeGridField;
 import com.smartgwt.client.widgets.tree.TreeNode;
 import com.smartgwt.client.widgets.tree.events.DataArrivedEvent;
 import com.smartgwt.client.widgets.tree.events.DataArrivedHandler;
 
-public class EntityTreeGrid extends TreeGrid {
+public class EntityTreeGrid extends MtpTreeGrid {
 
 	private static final String ERROR_ICON = "[SKINIMG]/actions/exclamation.png";
 
@@ -47,6 +47,8 @@ public class EntityTreeGrid extends TreeGrid {
 	private List<String> disabledPathList = null;
 
 	public EntityTreeGrid() {
+		super(true);
+
 		setLeaveScrollbarGap(false);
 		setCanSort(false);
 		setCanFreezeFields(false);
@@ -162,7 +164,7 @@ public class EntityTreeGrid extends TreeGrid {
 	public List<String> getSelectedPathList() {
 		//中間レコードは除外して取得
 		ListGridRecord[] records = getSelectedRecords(true);
-		List<String> selectPaths = new ArrayList<String>();
+		List<String> selectPaths = new ArrayList<>();
 		for (ListGridRecord record : records) {
 			String path = record.getAttribute(FIELD_NAME.PATH.name());
 			//Rootは除外

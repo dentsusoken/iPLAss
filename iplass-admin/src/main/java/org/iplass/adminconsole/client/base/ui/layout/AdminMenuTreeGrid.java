@@ -28,6 +28,7 @@ import org.iplass.adminconsole.client.base.plugin.AdminPlugin;
 import org.iplass.adminconsole.client.base.plugin.ContentClosedEvent;
 import org.iplass.adminconsole.client.base.plugin.ContentSelectedEvent;
 import org.iplass.adminconsole.client.base.plugin.ContentStateChangeHandler;
+import org.iplass.adminconsole.client.base.ui.widget.MtpTreeGrid;
 import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
 
 import com.smartgwt.client.types.SelectionStyle;
@@ -36,7 +37,6 @@ import com.smartgwt.client.widgets.events.DoubleClickEvent;
 import com.smartgwt.client.widgets.events.DoubleClickHandler;
 import com.smartgwt.client.widgets.grid.ListGridRecord;
 import com.smartgwt.client.widgets.tree.Tree;
-import com.smartgwt.client.widgets.tree.TreeGrid;
 import com.smartgwt.client.widgets.tree.events.FolderOpenedEvent;
 import com.smartgwt.client.widgets.tree.events.FolderOpenedHandler;
 import com.smartgwt.client.widgets.tree.events.NodeContextClickEvent;
@@ -57,7 +57,7 @@ import com.smartgwt.client.widgets.tree.events.NodeContextClickHandler;
  * @author lis70i
  *
  */
-public abstract class AdminMenuTreeGrid extends TreeGrid implements ContentStateChangeHandler {
+public abstract class AdminMenuTreeGrid extends MtpTreeGrid implements ContentStateChangeHandler {
 
 //	private MetaDataServiceAsync metaService = GWT.create(MetaDataService.class);
 
@@ -81,18 +81,14 @@ public abstract class AdminMenuTreeGrid extends TreeGrid implements ContentState
 	 * コンストラクタ
 	 */
 	protected AdminMenuTreeGrid(MainWorkspaceTab mainPane) {
-		this.mainPane = mainPane;
+		super();
 
-		setBaseStyle("adminMenuTreeGridRow");
+		this.mainPane = mainPane;
 
 		setShowHeader(Boolean.FALSE);
 		setLeaveScrollbarGap(Boolean.FALSE);
 		setSelectionType(SelectionStyle.SINGLE);
 		setAutoFetchData(Boolean.FALSE);
-
-		//Chromeで画面zoom設定によってアイコンが表示されないので大きくする
-		//実際のサイズはCSSで調整
-		setIconSize(18); //16->18
 
 		addDoubleClickHandler(new DoubleClickHandler() {
 

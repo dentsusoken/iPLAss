@@ -25,6 +25,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.iplass.adminconsole.client.base.ui.widget.GridActionImgButton;
+import org.iplass.adminconsole.client.base.ui.widget.MtpTreeGrid;
 import org.iplass.adminconsole.client.base.ui.widget.MtpWidgetConstants;
 import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
 import org.iplass.adminconsole.client.tools.data.metaexplorer.MetaDataTreeDS;
@@ -58,7 +59,6 @@ import com.smartgwt.client.widgets.grid.events.RecordDoubleClickHandler;
 import com.smartgwt.client.widgets.layout.HLayout;
 import com.smartgwt.client.widgets.layout.VLayout;
 import com.smartgwt.client.widgets.tree.Tree;
-import com.smartgwt.client.widgets.tree.TreeGrid;
 import com.smartgwt.client.widgets.tree.TreeGridField;
 import com.smartgwt.client.widgets.tree.TreeNode;
 import com.smartgwt.client.widgets.tree.events.DataArrivedEvent;
@@ -457,11 +457,13 @@ public class MetaDataTreeGridPane extends VLayout {
 
 	}
 
-	public class MetaDataTreeGrid extends TreeGrid {
+	public class MetaDataTreeGrid extends MtpTreeGrid {
 
 		private static final String ERROR_ICON = "[SKINIMG]/actions/exclamation.png";
 
 		public MetaDataTreeGrid() {
+			super(true);
+
 			setLeaveScrollbarGap(false);
 			setCanSort(false);
 			setCanFreezeFields(false);
@@ -634,7 +636,7 @@ public class MetaDataTreeGridPane extends VLayout {
 
 		public List<String> getSelectedPathList() {
 			ListGridRecord[] records = getSelectedRecords(true);
-			List<String> selectPaths = new ArrayList<String>();
+			List<String> selectPaths = new ArrayList<>();
 			for (ListGridRecord record : records) {
 				String path = record.getAttribute(FIELD_NAME.PATH.name());
 				//Rootは除外

@@ -25,6 +25,7 @@ import java.util.List;
 
 import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
 import org.iplass.adminconsole.client.base.tenant.TenantInfoHolder;
+import org.iplass.adminconsole.client.base.ui.widget.MtpTreeGrid;
 import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
 import org.iplass.adminconsole.client.metadata.ui.DefaultMetaDataPlugin;
 import org.iplass.adminconsole.client.metadata.ui.MetaDataItemMenuTreeNode;
@@ -59,7 +60,6 @@ import com.smartgwt.client.widgets.menu.MenuItem;
 import com.smartgwt.client.widgets.menu.events.ClickHandler;
 import com.smartgwt.client.widgets.menu.events.MenuItemClickEvent;
 import com.smartgwt.client.widgets.tree.Tree;
-import com.smartgwt.client.widgets.tree.TreeGrid;
 import com.smartgwt.client.widgets.tree.TreeGridField;
 import com.smartgwt.client.widgets.tree.TreeNode;
 import com.smartgwt.client.widgets.tree.events.DataArrivedEvent;
@@ -291,7 +291,7 @@ public class PrefsEditPane extends MetaDataMainEditPane {
 		return grid.getSelectedRecords(excludePartialSelections);
 	}
 
-	public class PreferenceTreeGrid extends TreeGrid {
+	public class PreferenceTreeGrid extends MtpTreeGrid {
 
 		public PreferenceTreeGrid() {
 			setLeaveScrollbarGap(false);
@@ -338,6 +338,7 @@ public class PrefsEditPane extends MetaDataMainEditPane {
 
 					MenuItem addPrefs = new MenuItem("Add Preference", "[SKINIMG]/MultiUploadItem/icon_add_files.png");
 					addPrefs.addClickHandler(new ClickHandler() {
+						@Override
 						public void onClick(MenuItemClickEvent event) {
 
 							TreeNode[] allTreeNode = tree.getAllNodes();
@@ -355,6 +356,7 @@ public class PrefsEditPane extends MetaDataMainEditPane {
 
 					MenuItem delPrefs = new MenuItem("Delete Preference", "[SKINIMG]/MultiUploadItem/icon_remove_files.png");
 					delPrefs.addClickHandler(new ClickHandler() {
+						@Override
 						public void onClick(MenuItemClickEvent event) {
 
 
@@ -432,7 +434,7 @@ public class PrefsEditPane extends MetaDataMainEditPane {
 				@Override
 				public void onSuccess(Preference preference) {
 
-					List<TreeNode> treeNodeList = new ArrayList<TreeNode>();
+					List<TreeNode> treeNodeList = new ArrayList<>();
 
 					treeNodeList.add(createNodeTree(preference));
 
@@ -473,7 +475,7 @@ public class PrefsEditPane extends MetaDataMainEditPane {
 				treeNode.setAttribute("value", preference.getValue());
 				treeNode.setAttribute("runtimeClassName", preference.getRuntimeClassName());
 
-				List<TreeNode> childList = new ArrayList<TreeNode>();
+				List<TreeNode> childList = new ArrayList<>();
 
 				// PreferenceSetのSubSetがないことは基本的にはありえない（デフォルトメタで設定した場合に読み込みOKとする為）
 				if (preferenceList != null) {
@@ -513,7 +515,7 @@ public class PrefsEditPane extends MetaDataMainEditPane {
 				preference.setValue(node.getAttributeAsString("value"));
 				preference.setRuntimeClassName(node.getAttributeAsString("runtimeClassName"));
 
-				List<Preference> childList = new ArrayList<Preference>();
+				List<Preference> childList = new ArrayList<>();
 				for (TreeNode treeNode : tree.getChildren(node)) {
 					Preference child = getEditMenuItems(treeNode);
 					childList.add(child);
