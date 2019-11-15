@@ -142,11 +142,53 @@ ${m:esc(title)}
 </form>
 <script type="text/javascript">
 $(function() {
+	var cellAttrFunc = function (rowId, val, rowObject, colModel, rdata) {
+<%
+	if (section.isGroupingData()) {
+%>
+		var rowIndex = parseInt(rowId) - 1;
+		var data = grid.getGridParam("_data");
+		var row = data[rowIndex];
+		var colName = colModel.name;
+		if (rowIndex > 0) {
+			var beforeRow = data[rowIndex - 1];
+			//前の行と値が同じか確認
+			var dif = false;
+			if (row.orgOid != beforeRow.orgOid || row.orgVersion != beforeRow.orgVersion || row[colName] != beforeRow[colName]) {
+				dif = true;
+			}
+			if (!dif) return " style=\"display:none;\" ";//同じ場合は非表示にする
+		}
+		//この行から何行分rowspanを設定するか計算
+		var count = 0;
+		for (var i = rowIndex; i < data.length; i++) {
+			if (i >= data.length) break;
+			var nextRow = data[i];
+			var dif = false;
+			if (row.orgOid != nextRow.orgOid || row.orgVersion != nextRow.orgVersion || row[colName] != nextRow[colName]) {
+				dif = true;
+				break;
+			}
+			if (!dif) count++;
+			else break;
+		}
+		if (count > 1) return " style=\"vertical-align: center !important;\" rowspan=\"" + count + "\"";
+		else return null;
+<%
+	} else {
+%>
+		//definitionの設定がfalseなら結合しない
+		return null;
+<%
+	}
+%>
+	}
+
 	var colModel = new Array();
 	var isloaded = false;
 	colModel.push({name:"orgOid", idnex:"orgOid", sortable:false, hidden:true, frozen:true, label:"oid"});
 	colModel.push({name:"orgVersion", idnex:"orgVersion", sortable:false, hidden:true, frozen:true, label:"version"});
-	colModel.push({name:'_mtpDetailLink', index:'_mtpDetailLink', width:${m:rs("mtp-gem-messages", "generic.search.list.detailLinkWidth")}, sortable:false, align:'center', frozen:true, label:"", classes:"detail-links"});
+	colModel.push({name:'_mtpDetailLink', index:'_mtpDetailLink', width:${m:rs("mtp-gem-messages", "generic.search.list.detailLinkWidth")}, sortable:false, align:'center', frozen:true, label:"", classes:"detail-links", cellattr: cellAttrFunc});
 <%
 
 	for (Element element : section.getElements()) {
@@ -173,7 +215,7 @@ $(function() {
 						sortable = "sortable:false";
 					}
 %>
-	colModel.push({name:"<%=sortPropName%>", index:"<%=sortPropName%>", label:"<p class='title'><%=displayLabel%></p>", <%=sortable%><%=width%>});
+	colModel.push({name:"<%=sortPropName%>", index:"<%=sortPropName%>", label:"<p class='title'><%=displayLabel%></p>", <%=sortable%><%=width%>, cellattr: cellAttrFunc});
 <%
 				} else if (property.getEditor() instanceof ReferencePropertyEditor) {
 					//参照型のName以外を表示する場合
@@ -307,6 +349,7 @@ colModel.push({name:"<%=propName%>", index:"<%=propName%>", classes:"<%=style%>"
 			$pager.setPage(offset, list.length, count);
 
 			grid.clearGridData(true);
+			grid.setGridParam({"_data": list}).trigger("reloadGrid");
 			$(list).each(function(index) {
 
 				this["searchResultDataId"] = this.orgOid + "_" + this.orgVersion;
