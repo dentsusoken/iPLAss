@@ -231,6 +231,15 @@ $(function() {
 %>
 	}
 
+	var clearRowHighlight = function(rowIndex) {
+		var $rows = $("#gview_searchResult tr.jqgrow");
+		if (rowIndex >= $rows.length) return;
+		//選択された行以外にハイライトをクリアします。
+		$rows.each(function(index) {
+			if (index != rowIndex) $(this).removeClass("ui-state-highlight");
+		});
+	}
+
 	var multiSelect = <%=(OutputType.SEARCHRESULT == type && !section.isHideDelete() && canDelete) || (OutputType.SEARCHRESULT == type && section.isShowBulkUpdate() && canUpdate) || OutputType.MULTISELECT == type%>;
 	var colModel = new Array();
 	colModel.push({name:"orgOid", index:"orgOid", sortable:false, hidden:true, frozen:true, label:"oid"});
@@ -399,6 +408,8 @@ colModel.push({name:"<%=propName%>", index:"<%=propName%>", classes:"<%=style%>"
 			var row = grid.getRowData(rowid);
 			var value = row.orgOid + "_" + row.orgVersion;
 			var rowIndex = parseInt(rowid) - 1;
+
+			clearRowHighlight(rowIndex);
 <%
 		if (section.isGroupingData()) {
 			// 結合されたチェックボタンにチェックを入れます。
@@ -411,10 +422,6 @@ colModel.push({name:"<%=propName%>", index:"<%=propName%>", classes:"<%=style%>"
 <% 
 		}
 %>
-			//選択ハイライトをクリアします。
-			$("#gview_searchResult tr.jqgrow").each(function(index) {
-				if (index != rowIndex) $(this).removeClass("ui-state-highlight");
-			});
 			var $selRow = $("#gview_searchResult tr.jqgrow:eq(" + rowIndex + ")");
 			$selRow.find(":radio[name='selOid'][value='" + value + "']").prop("checked", true);
 <%
@@ -422,7 +429,7 @@ colModel.push({name:"<%=propName%>", index:"<%=propName%>", classes:"<%=style%>"
 %>
 			var rowspan = $selRow.children("td.sel_radio").attr("rowspan");
 			if (rowspan && e) {
-				for (var i = rowIndex; i < rowIndex + parseInt(rowspan); i++) {
+				for (var i = rowIndex + 1; i < rowIndex + parseInt(rowspan); i++) {
 					$("#gview_searchResult tr.jqgrow:eq(" + i + ")").addClass("ui-state-highlight");
 				}
 			}
@@ -469,25 +476,27 @@ colModel.push({name:"<%=propName%>", index:"<%=propName%>", classes:"<%=style%>"
 		,onSelectRow: function(rowid, e) {
 			var row = grid.getRowData(rowid);
 			var id = row.orgOid + "_" + row.orgVersion;
+			var rowIndex = parseInt(rowid) - 1;
+
+			clearRowHighlight(rowIndex);
+
 			$("#searchResult tr[id]").each(function() {
 				var _rowid = $(this).attr("id");
 				if (_rowid == rowid) return;
 				var _row = grid.getRowData(_rowid);
 				var _id = _row.orgOid + "_" + _row.orgVersion;
-				if (id == _id) {
-<%
-		if(!section.isHideDelete() && canDelete || section.isShowBulkUpdate() && canUpdate) {
-%>
 				<%-- 多重度が複数のデータの場合、行番号が違う同じOIDとVersionのレコードがあるので、チェックを付け直します。 --%>
-				grid.setSelection(_rowid, false);
+<%
+		if (!section.isHideDelete() && canDelete || section.isShowBulkUpdate() && canUpdate) {
+%>				
+				if (id == _id) grid.setSelection(_rowid, false);
 <%
 		} else {
 %>
-				$(this).addClass("ui-state-highlight");
+				if (id == _id) $(this).addClass("ui-state-highlight");
 <%
 		}
 %>
-				} else $(this).removeClass("ui-state-highlight");
 			});
 		}
 <%

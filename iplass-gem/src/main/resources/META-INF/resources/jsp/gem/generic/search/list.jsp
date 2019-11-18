@@ -184,6 +184,15 @@ $(function() {
 %>
 	}
 
+	var clearRowHighlight = function(rowIndex) {
+		var $rows = $("#searchResult_<%=id%> tr.jqgrow");
+		if (rowIndex >= $rows.length) return;
+		//選択された行以外にハイライトをクリアします。
+		$rows.each(function(index) {
+			if (index != rowIndex) $(this).removeClass("ui-state-highlight");
+		});
+	}
+
 	var colModel = new Array();
 	var isloaded = false;
 	colModel.push({name:"orgOid", idnex:"orgOid", sortable:false, hidden:true, frozen:true, label:"oid"});
@@ -310,16 +319,16 @@ colModel.push({name:"<%=propName%>", index:"<%=propName%>", classes:"<%=style%>"
 		,onSelectRow: function(rowid, e) {
 			var row = grid.getRowData(rowid);
 			var id = row.orgOid + "_" + row.orgVersion;
+			var rowIndex = parseInt(rowid) - 1;
+
+			clearRowHighlight(rowIndex);
+
 			$("#searchResult_<%=id%> tr[id]").each(function() {
 				var _rowid = $(this).attr("id");
 				if (_rowid == rowid) return;
 				var _row = grid.getRowData(_rowid);
 				var _id = _row.orgOid + "_" + _row.orgVersion;
-				if (id == _id) {
-					$(this).addClass("ui-state-highlight");
-				} else {
-					$(this).removeClass("ui-state-highlight");
-				}
+				if (id == _id) $(this).addClass("ui-state-highlight");
 			});
 		}
 	});
