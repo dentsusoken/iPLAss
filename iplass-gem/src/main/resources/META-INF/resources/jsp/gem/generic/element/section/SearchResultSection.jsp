@@ -473,37 +473,38 @@ colModel.push({name:"<%=propName%>", index:"<%=propName%>", classes:"<%=style%>"
 		,onSelectRow: function(rowid, e) {
 			var row = grid.getRowData(rowid);
 			var id = row.orgOid + "_" + row.orgVersion;
-			var rowIndex = parseInt(rowid) - 1;
-			
 <%
 		if (!multiSelect) {
 %>
-			clearRowHightlight(rowIndex);
+			var rowIndex = parseInt(rowid) - 1;
+			clearRowHighlight(rowIndex);
+			if (e) {
+				$("#searchResult tr[id]").each(function() {
+					var _rowid = $(this).attr("id");
+					if (_rowid == rowid) return;
+					var _row = grid.getRowData(_rowid);
+					var _id = _row.orgOid + "_" + _row.orgVersion;
+					if (id == _id) $(this).addClass("ui-state-highlight");
+				});
+			}
 <%
-		}
+		} else {
+			// 多重度が複数のデータの場合、行番号が違う同じOIDとVersionのレコードがあるので、チェックを付け直します。 
 %>
-
 			$("#searchResult tr[id]").each(function() {
 				var _rowid = $(this).attr("id");
 				if (_rowid == rowid) return;
 				var _row = grid.getRowData(_rowid);
 				var _id = _row.orgOid + "_" + _row.orgVersion;
-<%
-		// 多重度が複数のデータの場合、行番号が違う同じOIDとVersionのレコードがあるので、チェックを付け直します。 
-		if (multiSelect) {
-%>				
 				if (id == _id) grid.setSelection(_rowid, false);
-<%
-		} else {
-%>
-				if (id == _id) $(this).addClass("ui-state-highlight");
+			});
 <%
 		}
 %>
-			});
 		}
 <%
 	}
+
 	if (section.isGroupingData()) {
 %>
 		,gridComplete: function() {
@@ -649,6 +650,8 @@ function setData(list, count) {
 	if (selectArray.length > 0) {
 		var $radio = $(":radio[name='selOid'][value='" + selectArray[0] + "']:visible").prop("checked", true).trigger("change");
 		var rowIndex = $("#gview_searchResult tr.jqgrow").index($radio.parents("tr.jqgrow"));
+
+		setRowHighlight(rowIndex);
 <%
 		if (section.isGroupingData()) {
 %>
@@ -658,10 +661,6 @@ function setData(list, count) {
 				setRowHighlight(i);
 			}
 		}
-<%
-		} else {
-%>
-		setRowHighlight(rowIndex);
 <%
 		}
 %>
@@ -800,7 +799,7 @@ var clearRowHighlight = function(rowIndex) {
 var setRowHighlight = function (rowIndex) {
 	var $rows = $("#searchResult tr.jqgrow");
 	if (rowIndex >= $rows.length) return;
-	$("#searchResult tr.jqgrow:eq(" + rowIndex + ")").addClass("ui-state-highlight");
+	$rows.eq(rowIndex).addClass("ui-state-highlight");
 }
 var loadingOff = null;
 loadingOff = function(event, src) {

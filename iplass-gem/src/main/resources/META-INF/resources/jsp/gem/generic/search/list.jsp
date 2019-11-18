@@ -323,13 +323,15 @@ colModel.push({name:"<%=propName%>", index:"<%=propName%>", classes:"<%=style%>"
 
 			clearRowHighlight(rowIndex);
 
-			$("#searchResult_<%=id%> tr[id]").each(function() {
-				var _rowid = $(this).attr("id");
-				if (_rowid == rowid) return;
-				var _row = grid.getRowData(_rowid);
-				var _id = _row.orgOid + "_" + _row.orgVersion;
-				if (id == _id) $(this).addClass("ui-state-highlight");
-			});
+			if (e) {
+				$("#searchResult_<%=id%> tr[id]").each(function() {
+					var _rowid = $(this).attr("id");
+					if (_rowid == rowid) return;
+					var _row = grid.getRowData(_rowid);
+					var _id = _row.orgOid + "_" + _row.orgVersion;
+					if (id == _id) $(this).addClass("ui-state-highlight");
+				});
+			}
 		}
 	});
 
