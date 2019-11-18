@@ -155,6 +155,8 @@
 	Boolean showdDetermineButton = (Boolean) request.getAttribute(Constants.SHOW_DETERMINE_BUTTON);
 	if (showdDetermineButton == null) showdDetermineButton = false;
 
+	Boolean multiSelect = OutputType.SEARCHRESULT == type && !section.isHideDelete() && canDelete || OutputType.SEARCHRESULT == type && section.isShowBulkUpdate() && canUpdate || OutputType.MULTISELECT == type;
+	if (multiSelect == null) multiSelect = false;
 %>
 <div class="result-block" style="display:none;">
 <h3 class="hgroup-02">
@@ -231,16 +233,7 @@ $(function() {
 %>
 	}
 
-	var clearRowHighlight = function(rowIndex) {
-		var $rows = $("#gview_searchResult tr.jqgrow");
-		if (rowIndex >= $rows.length) return;
-		//選択された行以外にハイライトをクリアします。
-		$rows.each(function(index) {
-			if (index != rowIndex) $(this).removeClass("ui-state-highlight");
-		});
-	}
-
-	var multiSelect = <%=(OutputType.SEARCHRESULT == type && !section.isHideDelete() && canDelete) || (OutputType.SEARCHRESULT == type && section.isShowBulkUpdate() && canUpdate) || OutputType.MULTISELECT == type%>;
+	var multiSelect = <%=multiSelect%>;
 	var colModel = new Array();
 	colModel.push({name:"orgOid", index:"orgOid", sortable:false, hidden:true, frozen:true, label:"oid"});
 	colModel.push({name:"orgVersion", index:"orgVersion", sortable:false, hidden:true, frozen:true, label:"version"});
@@ -429,10 +422,14 @@ colModel.push({name:"<%=propName%>", index:"<%=propName%>", classes:"<%=style%>"
 %>
 			var rowspan = $selRow.children("td.sel_radio").attr("rowspan");
 			if (rowspan && e) {
-				for (var i = rowIndex + 1; i < rowIndex + parseInt(rowspan); i++) {
-					$("#gview_searchResult tr.jqgrow:eq(" + i + ")").addClass("ui-state-highlight");
+				for (var i = rowIndex; i < rowIndex + parseInt(rowspan); i++) {
+					setRowHighlight(i);
 				}
 			}
+<%
+		} else {
+%>
+			setRowHighlight(rowIndex);
 <%
 		}
 %>
@@ -477,17 +474,23 @@ colModel.push({name:"<%=propName%>", index:"<%=propName%>", classes:"<%=style%>"
 			var row = grid.getRowData(rowid);
 			var id = row.orgOid + "_" + row.orgVersion;
 			var rowIndex = parseInt(rowid) - 1;
-
-			clearRowHighlight(rowIndex);
+			
+<%
+		if (!multiSelect) {
+%>
+			clearRowHightlight(rowIndex);
+<%
+		}
+%>
 
 			$("#searchResult tr[id]").each(function() {
 				var _rowid = $(this).attr("id");
 				if (_rowid == rowid) return;
 				var _row = grid.getRowData(_rowid);
 				var _id = _row.orgOid + "_" + _row.orgVersion;
-				<%-- 多重度が複数のデータの場合、行番号が違う同じOIDとVersionのレコードがあるので、チェックを付け直します。 --%>
 <%
-		if (!section.isHideDelete() && canDelete || section.isShowBulkUpdate() && canUpdate) {
+		// 多重度が複数のデータの場合、行番号が違う同じOIDとVersionのレコードがあるので、チェックを付け直します。 
+		if (multiSelect) {
 %>				
 				if (id == _id) grid.setSelection(_rowid, false);
 <%
@@ -646,17 +649,19 @@ function setData(list, count) {
 	if (selectArray.length > 0) {
 		var $radio = $(":radio[name='selOid'][value='" + selectArray[0] + "']:visible").prop("checked", true).trigger("change");
 		var rowIndex = $("#gview_searchResult tr.jqgrow").index($radio.parents("tr.jqgrow"));
-
-		$("#gview_searchResult tr.jqgrow:eq(" + rowIndex + ")").addClass("ui-state-highlight");
 <%
 		if (section.isGroupingData()) {
 %>
 		var rowspan = $radio.parents("td.sel_radio").attr("rowspan");
 		if (rowspan) {
-			for (var i = rowIndex + 1; i < rowIndex + parseInt(rowspan); i++) {
-				$("#gview_searchResult tr.jqgrow:eq(" + i + ")").addClass("ui-state-highlight");
+			for (var i = rowIndex; i < rowIndex + parseInt(rowspan); i++) {
+				setRowHighlight(i);
 			}
 		}
+<%
+		} else {
+%>
+		setRowHighlight(rowIndex);
 <%
 		}
 %>
@@ -783,6 +788,19 @@ function deselectCurrentPage() {
 			grid.setSelection(rowid);
 		}
 	});
+}
+var clearRowHighlight = function(rowIndex) {
+	var $rows = $("#searchResult tr.jqgrow");
+	if (rowIndex >= $rows.length) return;
+	//選択された行以外にハイライトをクリアします。
+	$rows.each(function(index) {
+		if (index != rowIndex) $(this).removeClass("ui-state-highlight");
+	});
+}
+var setRowHighlight = function (rowIndex) {
+	var $rows = $("#searchResult tr.jqgrow");
+	if (rowIndex >= $rows.length) return;
+	$("#searchResult tr.jqgrow:eq(" + rowIndex + ")").addClass("ui-state-highlight");
 }
 var loadingOff = null;
 loadingOff = function(event, src) {
