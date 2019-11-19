@@ -120,7 +120,7 @@ public class ExceptionInterceptor implements RequestInterceptor, ServiceInitList
 		for (Class<?>[] nha: classList) {
 			Throwable current = e;
 			for (int i = 0; i < nha.length; i++) {
-				if (!nha[i].isAssignableFrom(current.getClass())) {
+				if (current == null || !nha[i].isAssignableFrom(current.getClass())) {
 					break;
 				}
 				if (i == nha.length - 1) {
