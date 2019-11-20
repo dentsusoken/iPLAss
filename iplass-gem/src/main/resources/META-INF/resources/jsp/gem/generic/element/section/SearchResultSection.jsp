@@ -649,21 +649,22 @@ function setData(list, count) {
 %>
 	if (selectArray.length > 0) {
 		var $radio = $(":radio[name='selOid'][value='" + selectArray[0] + "']:visible").prop("checked", true).trigger("change");
-		var rowIndex = $("#gview_searchResult tr.jqgrow").index($radio.parents("tr.jqgrow"));
-
-		setRowHighlight(rowIndex);
+		if ($radio.length > 0) {
+			var rowIndex = $("#gview_searchResult tr.jqgrow").index($radio.parents("tr.jqgrow"));
+			setRowHighlight(rowIndex);
 <%
 		if (section.isGroupingData()) {
 %>
-		var rowspan = $radio.parents("td.sel_radio").attr("rowspan");
-		if (rowspan) {
-			for (var i = rowIndex; i < rowIndex + parseInt(rowspan); i++) {
-				setRowHighlight(i);
+			var rowspan = $radio.parents("td.sel_radio").attr("rowspan");
+			if (rowspan) {
+				for (var i = rowIndex; i < rowIndex + parseInt(rowspan); i++) {
+					setRowHighlight(i);
+				}
 			}
-		}
 <%
 		}
 %>
+		}
 	}
 <%
 	} else if (OutputType.MULTISELECT == type) {
