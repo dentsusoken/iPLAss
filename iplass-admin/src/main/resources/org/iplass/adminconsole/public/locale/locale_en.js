@@ -409,6 +409,8 @@ LocaleInfo.ui_metadata_entity_EventListenerListGrid_withoutMappByRefComment = "P
 LocaleInfo.ui_metadata_entity_EventListenerListGrid_scriptHint = "<ul><li>entity: target entity</li><li>event : EventType(org.iplass.mtp.entity.definition.listeners.EventType)</li><li>context : EntityEventContext</li><li>user : UserBinding</li><li>date : CurrentTimestamp</li></ul>";
 LocaleInfo.ui_metadata_entity_EventListenerListGrid_notificationCondScriptHint = "<ul><li>entity: target entity</li><li>event : EventType(org.iplass.mtp.entity.definition.listeners.EventType)</li><li>context : EntityEventContext</li><li>user : UserBinding</li><li>date : CurrentTimestamp</li></ul>";
 LocaleInfo.ui_metadata_entity_PropertyEditDialog_nameErr = "The name can be used alphanumeric and underscore.\nThe first character can be used alphabets only.";
+LocaleInfo.ui_metadata_entity_PropertyEditDialog_multipleAsterErr = "The multiplicity is invalid.\nOnly numbers greater than 1 or asterisks can be specified.";
+LocaleInfo.ui_metadata_entity_PropertyEditDialog_multipleErr = "Only a numeric value greater than 1 can be specified.";
 LocaleInfo.ui_metadata_entity_PropertyListGrid_failedGetSortSett = "Failed to get the sort setting.<br/>Cause:";
 LocaleInfo.ui_metadata_entity_PropertyListGrid_eachLangDspName = "<div style=\"white-space: nowrap;\">Set the display name for each language.</div>";
 LocaleInfo.ui_metadata_entity_PropertyListGrid_expressionItem = "specify SQL expressions(Such as scalar subquery statement or Case) and arithmetic expressions";

@@ -39,11 +39,11 @@ import com.google.gwt.core.shared.GWT;
 public class CommonAttribute implements PropertyAttribute {
 
 	/** 多重度が-1の時の画面表示・画面入力用値 */
-	private static final String MULTIPLE_ASTER_STR_VALUE = "*";
+	public static final String MULTIPLE_ASTER_STR_VALUE = "*";
 	/** 多重度の入力値が*の時の保存用値 */
-	private static final int MULTIPLE_ASTER_INT_VALUE = -1;
+	public static final int MULTIPLE_ASTER_INT_VALUE = -1;
 	/** boolean値がtrueの場合の画面表示値 */
-	private static final String BOOLEAN_TRUE_DISP_VALUE = "Y";
+	public static final String BOOLEAN_TRUE_DISP_VALUE = "Y";
 
 	private PropertyDefinition attribute;
 
@@ -182,7 +182,7 @@ public class CommonAttribute implements PropertyAttribute {
 	public List<LocalizedStringDefinition> getLocalizedDisplayNameList() {
 		List<LocalizedStringDefinition> list = attribute.getLocalizedDisplayNameList();
 		if (list == null) {
-			list = new ArrayList<LocalizedStringDefinition>();
+			list = new ArrayList<>();
 			attribute.setLocalizedDisplayNameList(list);
 		}
 		return list;

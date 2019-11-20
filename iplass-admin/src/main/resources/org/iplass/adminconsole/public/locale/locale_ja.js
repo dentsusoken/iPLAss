@@ -409,6 +409,8 @@ LocaleInfo.ui_metadata_entity_EventListenerListGrid_withoutMappByRefComment = "E
 LocaleInfo.ui_metadata_entity_EventListenerListGrid_scriptHint = "<ul><li>entity: target entity</li><li>event : EventType(org.iplass.mtp.entity.definition.listeners.EventType)</li><li>context : EntityEventContext</li><li>user : UserBinding</li><li>date : CurrentTimestamp</li></ul>";
 LocaleInfo.ui_metadata_entity_EventListenerListGrid_notificationCondScriptHint = "<ul><li>entity: target entity</li><li>event : EventType(org.iplass.mtp.entity.definition.listeners.EventType)</li><li>context : EntityEventContext</li><li>user : UserBinding</li><li>date : CurrentTimestamp</li></ul>";
 LocaleInfo.ui_metadata_entity_PropertyEditDialog_nameErr = "名前には英数字、アンダースコアのみ利用することができます。\n先頭は英字のみ利用することができます。";
+LocaleInfo.ui_metadata_entity_PropertyEditDialog_multipleAsterErr = "多重度が不正です。1以上の数値かアスタリスクのみ指定できます。";
+LocaleInfo.ui_metadata_entity_PropertyEditDialog_multipleErr = "多重度には1以上の数値のみ指定できます。";
 LocaleInfo.ui_metadata_entity_PropertyListGrid_failedGetSortSett = "ソート設定の取得に失敗しました。<br/>原因：";
 LocaleInfo.ui_metadata_entity_PropertyListGrid_eachLangDspName = "<div style=\"white-space: nowrap;\">言語毎の表示名を設定します。</div>";
 LocaleInfo.ui_metadata_entity_PropertyListGrid_expressionItem = "四則演算式やEQL式(Caseやスカラサブクエリなど)を指定します。";
