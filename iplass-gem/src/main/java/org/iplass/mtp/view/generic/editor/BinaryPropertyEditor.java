@@ -150,7 +150,35 @@ public class BinaryPropertyEditor extends PrimitivePropertyEditor {
 			referenceTypes={FieldReferenceType.SEARCHRESULT, FieldReferenceType.DETAIL}
 	)
 	private boolean usePdfjs;
+	
+	/** ファイル選択ボタンを非表示する */
+	@MetaFieldInfo(
+			displayName="ファイル選択ボタンを非表示",
+			displayNameKey="generic_editor_BinaryPropertyEditor_hideSelectButtonDisplaNameKey",
+			inputType=InputType.CHECKBOX,
+			displayOrder=170,
+			description="編集画面にて当バイナリファイルがいない場合、ファイル選択ボタンを非表示にします。",
+			descriptionKey="generic_editor_BinaryPropertyEditor_hideSelectButtonDescriptionKey"
+	)
+	@EntityViewField(
+			referenceTypes={FieldReferenceType.SEARCHRESULT, FieldReferenceType.DETAIL}
+	)
+	private boolean hideSelectButton;
 
+	/** 削除ボタンを非表示する */
+	@MetaFieldInfo(
+			displayName="削除ボタンを非表示",
+			displayNameKey="generic_editor_BinaryPropertyEditor_hideDeleteButtonDisplaNameKey",
+			inputType=InputType.CHECKBOX,
+			displayOrder=180,
+			description="編集画面にて当バイナリファイルデータを削除するボタンを非表示にします。",
+			descriptionKey="generic_editor_BinaryPropertyEditor_hideDeleteButtonDescriptionKey"
+	)
+	@EntityViewField(
+			referenceTypes={FieldReferenceType.DETAIL}
+	)
+	private boolean hideDeleteButton;
+	
 	/**
 	 * コンストラクタ
 	 */
@@ -267,6 +295,38 @@ public class BinaryPropertyEditor extends PrimitivePropertyEditor {
 	 */
 	public void setUsePdfjs(boolean usePdfjs) {
 	    this.usePdfjs = usePdfjs;
+	}
+	
+	/**
+	 * ファイル選択ボタン非表示設定を取得します
+	 * @return ファイル選択ボタン非表示設定
+	 */
+	public boolean isHideSelectButton() {
+		return hideSelectButton;
+	}
+	
+	/**
+	 * ファイル選択ボタン非表示設定を設定します
+	 * @param ファイル選択ボタン非表示設定
+	 */
+	public void setHideSelectButton(boolean hideSelectButton) {
+		this.hideSelectButton = hideSelectButton;
+	}
+	
+	/**
+	 * 削除ボタン非表示設定を取得します
+	 * @return ファイル選択ボタン非表示設定
+	 */
+	public boolean isHideDeleteButton() {
+		return hideDeleteButton;
+	}
+
+	/**
+	 * 削除ボタン非表示設定を設定します
+	 * @param ファイル選択ボタン非表示設定
+	 */
+	public void setHideDeleteButton(boolean hideDeleteButton) {
+		this.hideDeleteButton = hideDeleteButton;
 	}
 
 	@Override

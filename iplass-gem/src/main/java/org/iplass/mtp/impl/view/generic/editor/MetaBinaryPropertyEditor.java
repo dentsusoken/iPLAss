@@ -59,6 +59,12 @@ public class MetaBinaryPropertyEditor extends MetaPrimitivePropertyEditor {
 	/** PDF表示時にPDF.jsを利用 */
 	private boolean usePdfjs;
 
+	/** ファイル選択ボタンを非表示する */
+	private boolean hideSelectButton;
+	
+	/** 削除ボタンを非表示する */
+	private boolean hideDeleteButton;
+	
 	/**
 	 * 表示タイプを取得します。
 	 * @return 表示タイプ
@@ -171,6 +177,38 @@ public class MetaBinaryPropertyEditor extends MetaPrimitivePropertyEditor {
 	    this.usePdfjs = usePdfjs;
 	}
 
+	/**
+	 * ファイル選択ボタン非表示設定を取得します
+	 * @return ファイル選択ボタン非表示設定
+	 */
+	public boolean isHideSelectButton() {
+		return hideSelectButton;
+	}
+	
+	/**
+	 * ファイル選択ボタン非表示設定を設定します
+	 * @param ファイル選択ボタン非表示設定
+	 */
+	public void setHideSelectButton(boolean hideSelectButton) {
+		this.hideSelectButton = hideSelectButton;
+	}
+	
+	/**
+	 * 削除ボタン非表示設定を取得します
+	 * @return ファイル選択ボタン非表示設定
+	 */
+	public boolean isHideDeleteButton() {
+		return hideDeleteButton;
+	}
+
+	/**
+	 * 削除ボタン非表示設定を設定します
+	 * @param ファイル選択ボタン非表示設定
+	 */
+	public void setHideDeleteButton(boolean hideDeleteButton) {
+		this.hideDeleteButton = hideDeleteButton;
+	}
+
 	@Override
 	public MetaBinaryPropertyEditor copy() {
 		return ObjectUtil.deepCopy(this);
@@ -188,6 +226,8 @@ public class MetaBinaryPropertyEditor extends MetaPrimitivePropertyEditor {
 		downloadActionName = e.getDownloadActionName();
 		openNewTab = e.isOpenNewTab();
 		usePdfjs = e.isUsePdfjs();
+		hideSelectButton = e.isHideSelectButton();
+		hideDeleteButton = e.isHideDeleteButton();
 	}
 
 	@Override
@@ -202,6 +242,8 @@ public class MetaBinaryPropertyEditor extends MetaPrimitivePropertyEditor {
 		editor.setDownloadActionName(downloadActionName);
 		editor.setOpenNewTab(openNewTab);
 		editor.setUsePdfjs(usePdfjs);
+		editor.setHideSelectButton(hideSelectButton);
+		editor.setHideDeleteButton(hideDeleteButton);
 		return editor;
 	}
 

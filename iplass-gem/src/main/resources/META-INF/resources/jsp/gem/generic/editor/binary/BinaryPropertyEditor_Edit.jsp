@@ -74,7 +74,10 @@
 		}
 	}
 	boolean updatable = ((pd == null || pd.isUpdatable()) || isInsert) && isEditable;
-
+	boolean hideDeleteButton = editor.isHideDeleteButton();
+	boolean hideSelectButton = editor.isHideSelectButton();
+	
+	
 	String contextPath = TemplateUtil.getTenantContextPath();
 	String upload = "";
 	if (StringUtil.isNotBlank(editor.getUploadActionName())) {
@@ -138,12 +141,17 @@
 <script type="text/javascript" src="${m:esc(staticContentPath)}/webjars/blueimp-file-upload/9.28.0/js/jquery.iframe-transport.js?cv=<%=TemplateUtil.getAPIVersion()%>"></script>
 <%
 		}
+		if (!hideSelectButton&&!isInsert){
 %>
 <input type="file" id="<c:out value="<%=fileId %>"/>" name="filePath" value="${m:rs('mtp-gem-messages', 'generic.editor.binary.BinaryPropertyEditor_Edit.upload')}"
  style="<c:out value="<%=style %>"/>" class="<c:out value="<%=cls %>"/>" data-pname="<c:out value="<%=propName %>"/>" data-displayType="<c:out value="<%=displayType%>"/>"
  data-binCount="<c:out value="<%=length %>" />" data-uploadUrl="<c:out value="<%=upload %>" />" data-downloadUrl="<c:out value="<%=download %>" />" data-refUrl="<c:out value="<%=ref %>" />"
  data-pdfviewerUrl="<c:out value="<%=pdfviewer %>" />" data-usePdfjs="<%=editor.isUsePdfjs()%>" data-multiplicity="<c:out value="<%=pd.getMultiplicity() %>" />" data-binWidth="<c:out value="<%=editor.getWidth() %>" />"
  data-binHeight="<c:out value="<%=editor.getHeight() %>" />" data-token="${m:fixToken()}" <c:out value="<%=multiple%>" /> />
+ <% 
+		}
+ %>
+ 
 <div>
 <span id="em_<c:out value="<%=propName %>"/>" class="ul_error" style="display:none;" ></span>
 <p id="img_<c:out value="<%=propName %>"/>" class="loading" style="display:none;" />
@@ -172,9 +180,11 @@
 <%
 				}
 			}
+			if (!hideDeleteButton&&!isInsert){
 %>
  <a href="javascript:void(0)" class="binaryDelete del-btn" data-fileId="<c:out value="<%=fileId %>"/>">${m:rs("mtp-gem-messages", "generic.editor.binary.BinaryPropertyEditor_Edit.delete")}</a>
 <%
+			}
 			if (editor.getDisplayType() == BinaryDisplayType.BINARY || editor.getDisplayType() == BinaryDisplayType.PREVIEW) {
 				if (br.getType().indexOf("image") != -1) {
 %>
