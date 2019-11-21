@@ -141,7 +141,7 @@
 <script type="text/javascript" src="${m:esc(staticContentPath)}/webjars/blueimp-file-upload/9.28.0/js/jquery.iframe-transport.js?cv=<%=TemplateUtil.getAPIVersion()%>"></script>
 <%
 		}
-		if (!hideSelectButton&&!isInsert){
+		if (!hideSelectButton){
 %>
 <input type="file" id="<c:out value="<%=fileId %>"/>" name="filePath" value="${m:rs('mtp-gem-messages', 'generic.editor.binary.BinaryPropertyEditor_Edit.upload')}"
  style="<c:out value="<%=style %>"/>" class="<c:out value="<%=cls %>"/>" data-pname="<c:out value="<%=propName %>"/>" data-displayType="<c:out value="<%=displayType%>"/>"
@@ -180,7 +180,7 @@
 <%
 				}
 			}
-			if (!hideDeleteButton&&!isInsert){
+			if (!hideDeleteButton){
 %>
  <a href="javascript:void(0)" class="binaryDelete del-btn" data-fileId="<c:out value="<%=fileId %>"/>">${m:rs("mtp-gem-messages", "generic.editor.binary.BinaryPropertyEditor_Edit.delete")}</a>
 <%

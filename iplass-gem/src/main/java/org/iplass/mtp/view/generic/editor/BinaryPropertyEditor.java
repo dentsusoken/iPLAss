@@ -161,7 +161,7 @@ public class BinaryPropertyEditor extends PrimitivePropertyEditor {
 			descriptionKey="generic_editor_BinaryPropertyEditor_hideSelectButtonDescriptionKey"
 	)
 	@EntityViewField(
-			referenceTypes={FieldReferenceType.SEARCHRESULT, FieldReferenceType.DETAIL}
+			referenceTypes={FieldReferenceType.DETAIL}
 	)
 	private boolean hideSelectButton;
 
