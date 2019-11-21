@@ -409,6 +409,8 @@ LocaleInfo.ui_metadata_entity_EventListenerListGrid_withoutMappByRefComment = "P
 LocaleInfo.ui_metadata_entity_EventListenerListGrid_scriptHint = "<ul><li>entity: target entity</li><li>event : EventType(org.iplass.mtp.entity.definition.listeners.EventType)</li><li>context : EntityEventContext</li><li>user : UserBinding</li><li>date : CurrentTimestamp</li></ul>";
 LocaleInfo.ui_metadata_entity_EventListenerListGrid_notificationCondScriptHint = "<ul><li>entity: target entity</li><li>event : EventType(org.iplass.mtp.entity.definition.listeners.EventType)</li><li>context : EntityEventContext</li><li>user : UserBinding</li><li>date : CurrentTimestamp</li></ul>";
 LocaleInfo.ui_metadata_entity_PropertyEditDialog_nameErr = "The name can be used alphanumeric and underscore.\nThe first character can be used alphabets only.";
+LocaleInfo.ui_metadata_entity_PropertyEditDialog_multipleAsterErr = "Multiplicity is invalid.\nOnly a numeric value 1 or more or an asterisk can be specified.";
+LocaleInfo.ui_metadata_entity_PropertyEditDialog_multipleErr = "Only a numeric value 1 or more can be specified.";
 LocaleInfo.ui_metadata_entity_PropertyListGrid_failedGetSortSett = "Failed to get the sort setting.<br/>Cause:";
 LocaleInfo.ui_metadata_entity_PropertyListGrid_eachLangDspName = "<div style=\"white-space: nowrap;\">Set the display name for each language.</div>";
 LocaleInfo.ui_metadata_entity_PropertyListGrid_expressionItem = "specify SQL expressions(Such as scalar subquery statement or Case) and arithmetic expressions";
@@ -2189,6 +2191,8 @@ LocaleInfo.generic_element_section_SearchResultSection_dispRowCountDisplaNameKey
 LocaleInfo.generic_element_section_SearchResultSection_dispRowCountDescriptionKey = "Specify the number of documents to be displayed in the list of search results.";
 LocaleInfo.generic_element_section_SearchResultSection_dispHeightDisplaNameKey = "Display height of search results";
 LocaleInfo.generic_element_section_SearchResultSection_dispHeightDescriptionKey = "Specify the display height of search results.<br>If set to 0, auto height will be used.";
+LocaleInfo.generic_element_section_SearchResultSection_groupingDataDisplaNameKey = "Summarize search results";
+LocaleInfo.generic_element_section_SearchResultSection_groupingDataDescriptionKey = "Summarize search results to display.<br>Summarize records with same OID and Version.";
 LocaleInfo.generic_element_section_SearchResultSection_hideDetailLinkDisplaNameKey = "Hide Edit Link";
 LocaleInfo.generic_element_section_SearchResultSection_hideDetailLinkDescriptionKey = "Hide the edit link in the search results.";
 LocaleInfo.generic_element_section_SearchResultSection_hideDeleteDisplaNameKey = "Hide Delete Button";
