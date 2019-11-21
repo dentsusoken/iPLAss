@@ -27,6 +27,7 @@ import java.util.List;
 import org.iplass.adminconsole.client.base.data.DataSourceConstants;
 import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
 import org.iplass.adminconsole.client.base.ui.widget.GridActionImgButton;
+import org.iplass.adminconsole.client.base.ui.widget.MtpTreeGrid;
 import org.iplass.adminconsole.client.metadata.data.menu.MenuItemTreeDS;
 import org.iplass.adminconsole.client.metadata.ui.menu.item.MenuItemTreeGrid;
 import org.iplass.mtp.view.menu.ActionMenuItem;
@@ -51,7 +52,6 @@ import com.smartgwt.client.widgets.grid.ListGridRecord;
 import com.smartgwt.client.widgets.grid.events.RecordDoubleClickEvent;
 import com.smartgwt.client.widgets.grid.events.RecordDoubleClickHandler;
 import com.smartgwt.client.widgets.tree.Tree;
-import com.smartgwt.client.widgets.tree.TreeGrid;
 import com.smartgwt.client.widgets.tree.TreeGridField;
 import com.smartgwt.client.widgets.tree.TreeNode;
 import com.smartgwt.client.widgets.tree.events.FolderDropEvent;
@@ -64,7 +64,7 @@ import com.smartgwt.client.widgets.tree.events.FolderDropHandler;
  * {@link org.iplass.adminconsole.client.metadata.ui.menu.item.MenuItemDragPane}で生成されます。
  *
  */
-public class MenuTreeGrid extends TreeGrid {
+public class MenuTreeGrid extends MtpTreeGrid {
 
 	private MenuEditPane.MenuAttributePane owner;
 
@@ -276,7 +276,7 @@ public class MenuTreeGrid extends TreeGrid {
 			return false;
 		}
 		boolean updated = false;
-		List<TreeNode> children = new ArrayList<TreeNode>(tree.getChildren(target).length);
+		List<TreeNode> children = new ArrayList<>(tree.getChildren(target).length);
 		children.addAll(Arrays.asList(tree.getChildren(target)));
 
 		for (int i = 0; i < children.size(); i++) {
@@ -330,7 +330,7 @@ public class MenuTreeGrid extends TreeGrid {
 			return false;
 		}
 		boolean deleted = false;
-		List<TreeNode> children = new ArrayList<TreeNode>(tree.getChildren(target).length);
+		List<TreeNode> children = new ArrayList<>(tree.getChildren(target).length);
 		//children = Arrays.asList(tree.getChildren(target));	//注意。これだとUnsupportedOperationException発生
 		children.addAll(Arrays.asList(tree.getChildren(target)));
 
@@ -374,7 +374,7 @@ public class MenuTreeGrid extends TreeGrid {
 	 */
 	private List<MenuItem> getEditMenuItems(TreeNode node) {
 
-		List<MenuItem> items = new ArrayList<MenuItem>();
+		List<MenuItem> items = new ArrayList<>();
 
 		TreeNode[] children = tree.getChildren(node);
 
@@ -389,7 +389,7 @@ public class MenuTreeGrid extends TreeGrid {
 
 
 	private MenuTreeNode[] createMenuItemTreeNodes(List<MenuItem> children) {
-		List<MenuTreeNode> childList = new ArrayList<MenuTreeNode>(children.size());
+		List<MenuTreeNode> childList = new ArrayList<>(children.size());
 		for (MenuItem child : children) {
 			MenuTreeNode childNode = createMenuItemTreeNode(child);
 			childList.add(childNode);
@@ -504,10 +504,10 @@ public class MenuTreeGrid extends TreeGrid {
 			//Drop先情報の取得
 			TreeNode dropTargetMenuNode = null;
 			if (event.getFolder() instanceof MenuTreeNode) {
-				dropTargetMenuNode = (MenuTreeNode)event.getFolder();
+				dropTargetMenuNode = event.getFolder();
 				GWT.log("drop target(MenuTreeNode):" + dropTargetMenuNode.getName());
 			} else if (event.getFolder() instanceof TreeNode) {
-				dropTargetMenuNode = (TreeNode)event.getFolder();
+				dropTargetMenuNode = event.getFolder();
 				GWT.log("drop target(TreeNode):" + dropTargetMenuNode.getName());
 			} else {
 				GWT.log("cancel drop action. drop target is not MenuTreeNode:" + event.getFolder());
@@ -526,11 +526,11 @@ public class MenuTreeGrid extends TreeGrid {
 				}
 				TreeNode moveMenuNode = null;
 				if (nodes[0] instanceof MenuTreeNode) {
-					moveMenuNode = (MenuTreeNode)nodes[0];
+					moveMenuNode = nodes[0];
 
 					GWT.log("drag moving target(MenuTreeNode):" + moveMenuNode.getName());
 				} else if (nodes[0] instanceof TreeNode) {
-					moveMenuNode = (TreeNode)nodes[0];
+					moveMenuNode = nodes[0];
 
 					GWT.log("drag moving target(TreeNode):" + moveMenuNode.getName());
 				} else {

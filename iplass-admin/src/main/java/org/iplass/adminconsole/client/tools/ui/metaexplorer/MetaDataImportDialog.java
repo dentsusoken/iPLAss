@@ -30,6 +30,7 @@ import org.iplass.adminconsole.client.base.tenant.TenantInfoHolder;
 import org.iplass.adminconsole.client.base.ui.widget.AbstractWindow;
 import org.iplass.adminconsole.client.base.ui.widget.AnimationFullScreenCallback;
 import org.iplass.adminconsole.client.base.ui.widget.MessageTabSet;
+import org.iplass.adminconsole.client.base.ui.widget.MtpTreeGrid;
 import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
 import org.iplass.adminconsole.client.tools.data.metaexplorer.MetaDataImportTreeDS;
 import org.iplass.adminconsole.client.tools.data.metaexplorer.MetaDataImportTreeDS.FIELD_NAME;
@@ -71,7 +72,6 @@ import com.smartgwt.client.widgets.layout.HLayout;
 import com.smartgwt.client.widgets.layout.VLayout;
 import com.smartgwt.client.widgets.toolbar.ToolStrip;
 import com.smartgwt.client.widgets.toolbar.ToolStripButton;
-import com.smartgwt.client.widgets.tree.TreeGrid;
 import com.smartgwt.client.widgets.tree.TreeNode;
 import com.smartgwt.client.widgets.tree.events.DataArrivedEvent;
 import com.smartgwt.client.widgets.tree.events.DataArrivedHandler;
@@ -252,6 +252,7 @@ public class MetaDataImportDialog extends AbstractWindow {
 
 			IButton cancelButton = new IButton("Cancel");
 			cancelButton.addClickHandler(new ClickHandler() {
+				@Override
 				public void onClick(ClickEvent event) {
 					MetaDataImportDialog.this.destroy();
 				}
@@ -302,9 +303,9 @@ public class MetaDataImportDialog extends AbstractWindow {
 		}
 
 		public void setCheckStatusResult(List<ImportMetaDataStatus> resultStatus) {
-			List<ImportMetaDataStatus> errorList = new ArrayList<ImportMetaDataStatus>();
-			List<ImportMetaDataStatus> warnList = new ArrayList<ImportMetaDataStatus>();
-			List<ImportMetaDataStatus> infoList = new ArrayList<ImportMetaDataStatus>();
+			List<ImportMetaDataStatus> errorList = new ArrayList<>();
+			List<ImportMetaDataStatus> warnList = new ArrayList<>();
+			List<ImportMetaDataStatus> infoList = new ArrayList<>();
 
 			grid.applyStatusResult(resultStatus, errorList, warnList, infoList);
 
@@ -319,7 +320,7 @@ public class MetaDataImportDialog extends AbstractWindow {
 
 		public List<ListGridRecord> getSelectedRecords() {
 
-			final List<ListGridRecord> selectRecords = new ArrayList<ListGridRecord>();
+			final List<ListGridRecord> selectRecords = new ArrayList<>();
 
 			//trueを指定することでPathは全て選択されていないと含まれない
 			final ListGridRecord[] records = grid.getSelectedRecords(true);
@@ -356,11 +357,13 @@ public class MetaDataImportDialog extends AbstractWindow {
 
 	}
 
-	private class MetaDataImportTreeGrid extends TreeGrid {
+	private class MetaDataImportTreeGrid extends MtpTreeGrid {
 
 		private MetaDataImportTreeDS dataSource;
 
 		public MetaDataImportTreeGrid(final MetaDataImportSelectPane owner) {
+			super(true);
+
 //			setLeaveScrollbarGap(false);
 			setCanSort(false);
 			setCanFreezeFields(false);
@@ -547,7 +550,7 @@ public class MetaDataImportDialog extends AbstractWindow {
 
 		boolean selectTenant = false;
 
-		final List<String> selectPaths = new ArrayList<String>();
+		final List<String> selectPaths = new ArrayList<>();
 		for (ListGridRecord record : metaSelectPane.getSelectedRecords()) {
 			String path = record.getAttribute(FIELD_NAME.PATH.name());
 			selectPaths.add(path);
@@ -766,7 +769,7 @@ public class MetaDataImportDialog extends AbstractWindow {
 
 		private void setImportFileInfo(ImportFileInfo importInfo) {
 			importTagOid = importInfo.getTagOid();
-			importPathList = new ArrayList<String>();
+			importPathList = new ArrayList<>();
 			getPathList(importInfo.getRootNode());
 		}
 
@@ -792,7 +795,7 @@ public class MetaDataImportDialog extends AbstractWindow {
 		}
 
 		private void startCheck() {
-			resultStatus = new ArrayList<ImportMetaDataStatus>();
+			resultStatus = new ArrayList<>();
 			checkExecute(0);
 		}
 
@@ -803,7 +806,7 @@ public class MetaDataImportDialog extends AbstractWindow {
 				endIndex = importPathList.size();
 			}
 			//subListのままだと、 「com.google.gwt.user.client.rpc.SerializationException: java.util.RandomAccessSubList is not a serializable type」
-			List<String> execPathList = new ArrayList<String>(importPathList.subList(offset * PAGE_SIZE , endIndex));
+			List<String> execPathList = new ArrayList<>(importPathList.subList(offset * PAGE_SIZE , endIndex));
 
 			service.checkImportStatus(TenantInfoHolder.getId(), importTagOid, execPathList, new AsyncCallback<List<ImportMetaDataStatus>>() {
 
@@ -897,6 +900,7 @@ public class MetaDataImportDialog extends AbstractWindow {
 			//------------------------
 			IButton okButton = new IButton("OK");
 			okButton.addClickHandler(new ClickHandler() {
+				@Override
 				public void onClick(ClickEvent event) {
 					destroy();
 				}

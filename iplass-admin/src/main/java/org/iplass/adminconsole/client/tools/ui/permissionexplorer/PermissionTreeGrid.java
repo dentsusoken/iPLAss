@@ -1,19 +1,19 @@
 /*
  * Copyright (C) 2015 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
- * 
+ *
  * Unless you have purchased a commercial license,
  * the following license terms apply:
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
@@ -25,6 +25,7 @@ import java.util.List;
 
 import org.iplass.adminconsole.client.base.event.DataChangedEvent;
 import org.iplass.adminconsole.client.base.event.DataChangedHandler;
+import org.iplass.adminconsole.client.base.ui.widget.MtpTreeGrid;
 import org.iplass.adminconsole.client.tools.data.permissionexplorer.PermissionTreeGridDS;
 import org.iplass.adminconsole.client.tools.data.permissionexplorer.PermissionTreeGridDS.PermissionTreeNode;
 
@@ -36,10 +37,9 @@ import com.smartgwt.client.widgets.grid.events.CellDoubleClickHandler;
 import com.smartgwt.client.widgets.menu.Menu;
 import com.smartgwt.client.widgets.menu.MenuItem;
 import com.smartgwt.client.widgets.menu.events.MenuItemClickEvent;
-import com.smartgwt.client.widgets.tree.TreeGrid;
 import com.smartgwt.client.widgets.tree.TreeNode;
 
-public abstract class PermissionTreeGrid extends TreeGrid implements PermissionGrid {
+public abstract class PermissionTreeGrid extends MtpTreeGrid implements PermissionGrid {
 
 	private PermissionTreeGridDS ds;
 
@@ -176,7 +176,7 @@ public abstract class PermissionTreeGrid extends TreeGrid implements PermissionG
 		if (folders == null || folders.length == 0) {
 			expandRoot();
 		} else {
-			List<String> openDefNameList = new ArrayList<String>();
+			List<String> openDefNameList = new ArrayList<>();
 			for (TreeNode node : folders) {
 				PermissionTreeNode record = (PermissionTreeNode)node;
 				openDefNameList.add(record.getDefinitionName());

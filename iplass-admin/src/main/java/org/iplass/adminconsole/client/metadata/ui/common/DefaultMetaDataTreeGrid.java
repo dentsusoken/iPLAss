@@ -25,6 +25,7 @@ import java.util.List;
 
 import org.iplass.adminconsole.client.base.data.DataSourceConstants;
 import org.iplass.adminconsole.client.base.tenant.TenantInfoHolder;
+import org.iplass.adminconsole.client.base.ui.widget.MtpTreeGrid;
 import org.iplass.adminconsole.shared.metadata.dto.MetaTreeNode;
 import org.iplass.adminconsole.shared.metadata.rpc.MetaDataServiceAsync;
 import org.iplass.adminconsole.shared.metadata.rpc.MetaDataServiceFactory;
@@ -35,10 +36,9 @@ import com.smartgwt.client.types.SelectionStyle;
 import com.smartgwt.client.types.TreeModelType;
 import com.smartgwt.client.widgets.grid.ListGridField;
 import com.smartgwt.client.widgets.tree.Tree;
-import com.smartgwt.client.widgets.tree.TreeGrid;
 import com.smartgwt.client.widgets.tree.TreeNode;
 
-public abstract class DefaultMetaDataTreeGrid extends TreeGrid{
+public abstract class DefaultMetaDataTreeGrid extends MtpTreeGrid {
 
 	protected Tree tree;
 
@@ -70,7 +70,7 @@ public abstract class DefaultMetaDataTreeGrid extends TreeGrid{
 	 * 表示対象フィールド設定
 	 */
 	protected void setGridFields() {
-		List<ListGridField> fields = new ArrayList<ListGridField>();
+		List<ListGridField> fields = new ArrayList<>();
 
 		ListGridField nameField = new ListGridField(DataSourceConstants.FIELD_NAME);
 		fields.add(nameField);
