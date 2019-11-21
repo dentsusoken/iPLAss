@@ -38,6 +38,7 @@ import org.iplass.mtp.impl.async.AsyncTaskContextImpl;
 import org.iplass.mtp.impl.async.AsyncTaskRuntimeException;
 import org.iplass.mtp.impl.async.AsyncTaskService;
 import org.iplass.mtp.impl.async.ExceptionHandleable;
+import org.iplass.mtp.impl.auth.AuthService;
 import org.iplass.mtp.impl.core.Executable;
 import org.iplass.mtp.impl.core.ExecuteContext;
 import org.iplass.mtp.impl.rdb.connection.ResourceHolder;
@@ -122,7 +123,7 @@ public class ThreadingAsyncTaskService extends AsyncTaskService {
 						try {
 							ExecuteContext.setContext(context);
 							//TODO logbackでMDCがスレッド間で引き継がれなくなったので、、、でも記述箇所はここではない気もするので、、要検討
-							MDC.put("user", context.getClientId());
+							MDC.put(AuthService.MDC_USER, context.getClientId());
 
 							try {
 								context.setAttribute(AsyncTaskContextImpl.EXE_CONTEXT_ATTR_NAME, new AsyncTaskContextImpl(-1, null), false);
@@ -147,7 +148,7 @@ public class ThreadingAsyncTaskService extends AsyncTaskService {
 							throw e;
 						} finally {
 							//TODO logbackでMDCがスレッド間で引き継がれなくなったので、、、でも記述箇所はここではない気もするので、、要検討
-							MDC.remove("user");
+							MDC.remove(AuthService.MDC_USER);
 							ExecuteContext.setContext(null);
 						}
 					} finally {

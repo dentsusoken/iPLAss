@@ -29,6 +29,7 @@ import java.util.Map.Entry;
 import org.iplass.mtp.ApplicationException;
 import org.iplass.mtp.command.interceptor.CommandInvocation;
 import org.iplass.mtp.impl.command.InterceptorService;
+import org.iplass.mtp.impl.core.ExecuteContext;
 import org.iplass.mtp.impl.web.WebRequestStack;
 import org.iplass.mtp.impl.web.interceptors.ExceptionInterceptor;
 import org.iplass.mtp.impl.webapi.rest.RestRequestContext;
@@ -106,7 +107,8 @@ public class LoggingInterceptor extends org.iplass.mtp.impl.command.interceptors
 			start = System.currentTimeMillis();
 		}
 		String webApiName = (String) invocation.getRequest().getAttribute(WebApiRequestConstants.API_NAME);
-		MDC.put(MDC_WEBAPI, webApiName);
+		ExecuteContext ec = ExecuteContext.getCurrentContext();
+		ec.mdcPut(MDC_WEBAPI, webApiName);
 		RuntimeException exp = null;
 		try {
 			return super.intercept(invocation);

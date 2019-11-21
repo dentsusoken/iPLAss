@@ -284,6 +284,7 @@
 		<property name="tenantResource" value="org.iplass.mtp.impl.auth.authorize.builtin.TenantAuthorizeContext" />
 		<property name="tenantResource" value="org.iplass.mtp.impl.entity.cache.QueryCacheTenantResource" />
 		<property name="tenantResource" value="org.iplass.mtp.impl.validation.bean.BeanValidationResource" />
+		<property name="tenantResource" value="org.iplass.mtp.impl.logging.LoggingContext" />
 
 		<property name="defaultTenantName" value="iPLAss" />
 		<property name="defaultPasswordPatternErrorMessage" value="パスワードは6文字以上の英数字で入力してください。" />
@@ -297,6 +298,12 @@
 		<property name ="localTenantIds" value="148" />
 		<property name ="localTenantIds" value="149" />
 		 -->
+	</service>
+
+	<service>
+		<interface>org.iplass.mtp.impl.logging.LoggingService</interface>
+		<class>org.iplass.mtp.impl.logging.logback.LogbackLoggingService</class>
+		<property name="enableLogCondition" value="true" />
 	</service>
 
 	<!-- Entity関連 -->
