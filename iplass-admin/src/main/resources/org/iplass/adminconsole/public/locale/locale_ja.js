@@ -2187,6 +2187,8 @@ LocaleInfo.generic_element_section_SearchResultSection_dispRowCountDisplaNameKey
 LocaleInfo.generic_element_section_SearchResultSection_dispRowCountDescriptionKey = "検索結果の一覧に表示する件数を指定します。";
 LocaleInfo.generic_element_section_SearchResultSection_dispHeightDisplaNameKey = "検索結果の高さ";
 LocaleInfo.generic_element_section_SearchResultSection_dispHeightDescriptionKey = "検索結果の高さを指定します。<br>0を指定した場合、高さを自動とします。";
+LocaleInfo.generic_element_section_SearchResultSection_groupingDataDisplaNameKey = "検索結果をまとめる";
+LocaleInfo.generic_element_section_SearchResultSection_groupingDataDescriptionKey = "検索結果をまとめて表示します。<br>OIDとVersionが同じであるレコードをまとめます。";
 LocaleInfo.generic_element_section_SearchResultSection_hideDetailLinkDisplaNameKey = "編集リンクを非表示";
 LocaleInfo.generic_element_section_SearchResultSection_hideDetailLinkDescriptionKey = "検索結果の編集リンクを非表示にします。";
 LocaleInfo.generic_element_section_SearchResultSection_hideDeleteDisplaNameKey = "削除ボタンを非表示";

@@ -94,6 +94,18 @@ public class SearchResultSection extends Section {
 	)
 	private int dispHeight;
 
+	/** 検索結果をまとめる */
+	@MetaFieldInfo(
+			displayName="検索結果をまとめる設定",
+			displayNameKey="generic_element_section_SearchResultSection_groupingDataDisplaNameKey",
+			inputType=InputType.CHECKBOX,
+			displayOrder=215,
+			description="検索結果をまとめて表示します。<br>" +
+					"OIDとVersionが同じであるレコードをまとめます。",
+			descriptionKey="generic_element_section_SearchResultSection_groupingDataDescriptionKey"
+	)
+	private boolean groupingData;
+
 	/** 編集リンク非表示設定 */
 	@MetaFieldInfo(
 			displayName="編集リンク非表示設定",
@@ -403,6 +415,22 @@ public class SearchResultSection extends Section {
 	 */
 	public void setDispHeight(int dispHeight) {
 		this.dispHeight = dispHeight;
+	}
+
+	/**
+	 * 検索結果をまとめる設定を取得します。
+	 * @return 検索結果をまとめる設定
+	 */
+	public boolean isGroupingData() {
+		return groupingData;
+	}
+
+	/**
+	 * 検索結果をまとめる設定を設定します。
+	 * @param groupingData 検索結果をまとめる設定
+	 */
+	public void setGroupingData(boolean groupingData) {
+		this.groupingData = groupingData;
 	}
 
 	/**

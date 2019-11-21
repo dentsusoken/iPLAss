@@ -2187,6 +2187,8 @@ LocaleInfo.generic_element_section_SearchResultSection_dispRowCountDisplaNameKey
 LocaleInfo.generic_element_section_SearchResultSection_dispRowCountDescriptionKey = "Specify the number of documents to be displayed in the list of search results.";
 LocaleInfo.generic_element_section_SearchResultSection_dispHeightDisplaNameKey = "Display height of search results";
 LocaleInfo.generic_element_section_SearchResultSection_dispHeightDescriptionKey = "Specify the display height of search results.<br>If set to 0, auto height will be used.";
+LocaleInfo.generic_element_section_SearchResultSection_groupingDataDisplaNameKey = "Summarize search results";
+LocaleInfo.generic_element_section_SearchResultSection_groupingDataDescriptionKey = "Summarize search results to display.<br>Summarize records with same OID and Version.";
 LocaleInfo.generic_element_section_SearchResultSection_hideDetailLinkDisplaNameKey = "Hide Edit Link";
 LocaleInfo.generic_element_section_SearchResultSection_hideDetailLinkDescriptionKey = "Hide the edit link in the search results.";
 LocaleInfo.generic_element_section_SearchResultSection_hideDeleteDisplaNameKey = "Hide Delete Button";
