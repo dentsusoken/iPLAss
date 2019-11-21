@@ -365,8 +365,12 @@ colModel.push({name:"<%=propName%>", index:"<%=propName%>", classes:"<%=style%>"
 				var row = grid.getRowData(rowid);
 				var id = row.orgOid + "_" + row.orgVersion;
 				if (e) {
-					if (multiplicity == -1 || selectArray.length < multiplicity) {
+					<%-- 同じOIDとVersionのレコードを選択配列に追加しません。 --%>
+					if (selectArray.indexOf(id) == -1 && (multiplicity == -1 || selectArray.length < multiplicity)) {
 						selectArray.push(id);
+						<%-- 多重度が複数のデータの場合、行番号が違う同じOIDとVersionのレコードがあるので、チェックを付け直します。 --%>
+						grid.resetSelection();
+						applyGridSelection(false);
 					} else {
 						alert("${m:rs('mtp-gem-messages', 'generic.element.section.SearchResultSection.notSelect')}");
 						grid.setSelection(rowid);
@@ -378,9 +382,28 @@ colModel.push({name:"<%=propName%>", index:"<%=propName%>", classes:"<%=style%>"
 							break;
 						}
 					}
+					<%-- 多重度が複数のデータの場合、行番号が違う同じOIDとVersionのレコードがあるので、チェックを付け直します。 --%>
+					grid.resetSelection();
+					applyGridSelection(false);
 				}
 				keepSelectAllStatus = false;
 			}
+		}
+<%
+	} else if (OutputType.SEARCHRESULT == type && !section.isHideDelete() && canDelete || OutputType.SEARCHRESULT == type && section.isShowBulkUpdate() && canUpdate) {
+%>
+		,onSelectRow: function(rowid, e) {
+			var row = grid.getRowData(rowid);
+			var id = row.orgOid + "_" + row.orgVersion;
+			$("#searchResult tr[id]").each(function() {
+				var _rowid = $(this).attr("id");
+				if (_rowid == rowid) return;
+
+				var _row = grid.getRowData(_rowid);
+				var _id = _row.orgOid + "_" + _row.orgVersion;
+				<%-- 多重度が複数のデータの場合、行番号が違う同じOIDとVersionのレコードがあるので、チェックを付け直します。 --%>
+				if (id == _id) grid.setSelection(_rowid, false);
+			});
 		}
 <%
 	}
@@ -578,14 +601,18 @@ function setData(list, count) {
 
 	$(".fixHeight").fixHeight();
 }
-function applyGridSelection() {
+function applyGridSelection(onselectrow) {
 	$("#searchResult tr[id]").each(function() {
 		var rowid = $(this).attr("id");
 		var row = grid.getRowData(rowid);
 		var id = row.orgOid + "_" + row.orgVersion;
 		for (var i = 0; i < selectArray.length; i++) {
 			if (id == selectArray[i]) {
-				grid.setSelection(rowid);
+				if (typeof onselectrow === "boolean") {
+					grid.setSelection(rowid, onselectrow);
+				} else {
+					grid.setSelection(rowid);
+				}
 			}
 		}
 	});
@@ -776,7 +803,7 @@ $(function() {
 			// 選択された行を一括更新
 			} else if ($.isArray(id)) {
 				selectArray = id;
-				applyGridSelection();
+				applyGridSelection(false);
 			}
 			$(".result-block").off("iplassAfterSearch", selectAfterBulkUpdate);
 		}
