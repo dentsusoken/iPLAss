@@ -29,8 +29,8 @@ dependencies {
 //	runtime group: 'javax.validation', name: 'validation-api', version: '1.0.0.GA'
 
 	//javax activation for java11
-	compileOnly group: 'javax.activation', name: 'activation', version: '1.1.1'
+	compileOnly group: 'jakarta.activation', name: 'jakarta.activation-api', version: '1.2.1'
 
 	//JAXB for java11
-	compileOnly group: 'javax.xml.bind', name: 'jaxb-api', version: '2.3.1'
+	compileOnly group: 'jakarta.xml.bind', name: 'jakarta.xml.bind-api', version: '2.3.2'
 }
