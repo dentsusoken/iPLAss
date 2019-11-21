@@ -229,8 +229,10 @@ public class CommonAttributeParts1 extends PropertyCommonAttributeParts {
 				if (strValue.equals(CommonAttribute.MULTIPLE_ASTER_STR_VALUE)) {
 					return true;
 				}
+				//アスタリスクを含む不正な入力のチェック
+				//アスタリスクを含む場合はアスタリスクのみ可
 				if (strValue.contains(CommonAttribute.MULTIPLE_ASTER_STR_VALUE)
-						&& strValue.equals(CommonAttribute.MULTIPLE_ASTER_STR_VALUE)) {
+						&& !strValue.equals(CommonAttribute.MULTIPLE_ASTER_STR_VALUE)) {
 					return false;
 				}
 			}
