@@ -36,6 +36,7 @@ import com.smartgwt.client.types.Alignment;
 import com.smartgwt.client.types.SortDirection;
 import com.smartgwt.client.types.VerticalAlignment;
 import com.smartgwt.client.widgets.Canvas;
+import com.smartgwt.client.widgets.Label;
 import com.smartgwt.client.widgets.events.ClickEvent;
 import com.smartgwt.client.widgets.events.ClickHandler;
 import com.smartgwt.client.widgets.grid.CellFormatter;
@@ -50,7 +51,7 @@ import com.smartgwt.client.widgets.layout.VLayout;
 import com.smartgwt.client.widgets.toolbar.ToolStrip;
 import com.smartgwt.client.widgets.toolbar.ToolStripButton;
 
-public class LogExplorerListPane extends VLayout {
+public class LogExplorerFileListPane extends VLayout {
 
 	private static final String REFRESH_ICON = "[SKIN]/actions/refresh.png";
 	private static final String EXPORT_ICON = "[SKINIMG]/actions/download.png";
@@ -60,7 +61,7 @@ public class LogExplorerListPane extends VLayout {
 	/**
 	 * コンストラクタ
 	 */
-	public LogExplorerListPane() {
+	public LogExplorerFileListPane() {
 
 		//レイアウト設定
 		setWidth100();
@@ -70,6 +71,13 @@ public class LogExplorerListPane extends VLayout {
 		toolStrip.setWidth100();
 		toolStrip.setMembersMargin(5);
 		toolStrip.setAlign(VerticalAlignment.BOTTOM);
+
+		Label lblTitle = new Label();
+		lblTitle.setWrap(false);
+		lblTitle.setAutoWidth();
+		lblTitle.setPadding(5);
+		lblTitle.setContents("Log Files");
+		toolStrip.addMember(lblTitle);
 
 		toolStrip.addFill();
 

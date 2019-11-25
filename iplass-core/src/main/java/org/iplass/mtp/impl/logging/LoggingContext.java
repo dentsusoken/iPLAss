@@ -30,43 +30,46 @@ import org.iplass.mtp.impl.core.TenantResource;
 import org.iplass.mtp.spi.ServiceRegistry;
 
 public class LoggingContext implements TenantResource {
-	
+
 	//とりあえず、ローカルのLogレベルを変更できるように
-	
+
 	private static final String LOG_CONDITION = "mtp.loggingContext.logCondition";
-	
+
 	private static LogConditionRuntime NULL_LOG_CONDITION = new LogConditionRuntime(null, null, null, 0);
-	
-	
+
+
 	private TenantContext tc;
 	private volatile List<LogConditionRuntime> list;
-	
+
 	public List<LogCondition> list() {
 		List<LogConditionRuntime> cList = list;
 		if (cList == null) {
 			return Collections.emptyList();
 		}
-		
+
 		List<LogCondition> ret = new ArrayList<>();
 		for (LogConditionRuntime lc: cList) {
 			ret.add(lc.getCondition());
 		}
-		
+
 		return ret;
 	}
-	
+
 	public void apply(List<LogCondition> logConditions) {
 		synchronized (this) {
 			LoggingService loggingService = ServiceRegistry.getRegistry().getService(LoggingService.class);
-			List<LogConditionRuntime> newList = new ArrayList<>();
-			for (int i = 0; i < logConditions.size(); i++) {
-				LogCondition lc = logConditions.get(i);
-				newList.add(new LogConditionRuntime(lc, loggingService.createRuntime(lc), tc, i));
+			List<LogConditionRuntime> newList = null;
+			if (logConditions != null) {
+				newList = new ArrayList<>();
+				for (int i = 0; i < logConditions.size(); i++) {
+					LogCondition lc = logConditions.get(i);
+					newList.add(new LogConditionRuntime(lc, loggingService.createRuntime(lc), tc, i));
+				}
 			}
 			list = newList;
 		}
 	}
-	
+
 	public void clear() {
 		synchronized (this) {
 			list = null;
@@ -76,9 +79,9 @@ public class LoggingContext implements TenantResource {
 	public void resetMatched(ExecuteContext ec) {
 		ec.removeAttribute(LOG_CONDITION);
 	}
-	
+
 	public LogConditionRuntime getMatched(ExecuteContext ec) {
-		
+
 		LogConditionRuntime cache = (LogConditionRuntime) ec.getAttribute(LOG_CONDITION);
 		if (cache != null) {
 			if (NULL_LOG_CONDITION == cache) {
@@ -86,7 +89,7 @@ public class LoggingContext implements TenantResource {
 			}
 			return cache;
 		}
-		
+
 		List<LogConditionRuntime> cList = list;
 		if (cList != null) {
 			long time = System.currentTimeMillis();
@@ -97,11 +100,11 @@ public class LoggingContext implements TenantResource {
 				}
 			}
 		}
-		
+
 		ec.setAttribute(LOG_CONDITION, NULL_LOG_CONDITION, false);
 		return null;
 	}
-	
+
 
 	@Override
 	public void init(TenantContext tenantContext) {
