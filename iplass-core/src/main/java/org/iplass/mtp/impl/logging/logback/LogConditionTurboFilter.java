@@ -61,12 +61,18 @@ public class LogConditionTurboFilter extends TurboFilter {
 			return FilterReply.NEUTRAL;
 		}
 		Level levelCond = (Level) cond.getConcreteServiceRuntime();
-		if (levelCond != null && level.isGreaterOrEqual(levelCond) && cond.isTargetLogger(logger.getName())) {
-			return FilterReply.ACCEPT;
+		if (levelCond == null) {
+			return FilterReply.NEUTRAL;
+		}
+		if (!cond.isTargetLogger(logger.getName())) {
+			return FilterReply.NEUTRAL;
 		}
 		
-		return FilterReply.NEUTRAL;
+		if (level.isGreaterOrEqual(levelCond)) {
+			return FilterReply.ACCEPT;
+		} else {
+			return FilterReply.DENY;
+		}
 	}
-	
 
 }
