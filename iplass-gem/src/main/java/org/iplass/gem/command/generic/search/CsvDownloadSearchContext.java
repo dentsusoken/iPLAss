@@ -29,6 +29,7 @@ import java.util.stream.Collectors;
 import org.iplass.gem.command.Constants;
 import org.iplass.mtp.command.RequestContext;
 import org.iplass.mtp.entity.Entity;
+import org.iplass.mtp.entity.csv.MultipleFormat;
 import org.iplass.mtp.entity.definition.EntityDefinition;
 import org.iplass.mtp.entity.definition.PropertyDefinition;
 import org.iplass.mtp.entity.definition.properties.BinaryProperty;
@@ -63,7 +64,7 @@ public class CsvDownloadSearchContext extends SearchContextBase {
 
 	private SearchContextBase context;
 
-	private HashMap<String, ReferenceDisplayLabelInfo> referenceDisplayLabelMap = new HashMap<String, ReferenceDisplayLabelInfo>();
+	private HashMap<String, ReferenceDisplayLabelInfo> referenceDisplayLabelMap = new HashMap<>();
 
 	public CsvDownloadSearchContext(SearchContextBase context) {
 		this.context = context;
@@ -191,16 +192,18 @@ public class CsvDownloadSearchContext extends SearchContextBase {
 		return Boolean.valueOf(getRequest().getParam(Constants.CSV_IS_OUTPUT_CODE_VALUE));
 	}
 
+	@Override
 	public SearchConditionSection getConditionSection() {
 		return context.getConditionSection();
 	}
 
+	@Override
 	public PropertyDefinition getPropertyDefinition(String propName) {
 		return context.getPropertyDefinition(propName);
 	}
 
 	public List<String> getColumns() {
-		ArrayList<String> cols = new ArrayList<String>();
+		ArrayList<String> cols = new ArrayList<>();
 		if (outputSpecifyProperties() && !isOutputResult()) {
 			String[] properties = getConditionSection().getCsvdownloadProperties().split(",");
 			for (String property : properties) {
@@ -240,6 +243,14 @@ public class CsvDownloadSearchContext extends SearchContextBase {
 		}
 
 		return cols;
+	}
+
+	public MultipleFormat getMultipleFormat() {
+		if (getConditionSection().getCsvMultipleFormat() != null) {
+			return getConditionSection().getCsvMultipleFormat();
+		} else {
+			return MultipleFormat.EACH_COLUMN;
+		}
 	}
 
 	public String getEntityLabel() {

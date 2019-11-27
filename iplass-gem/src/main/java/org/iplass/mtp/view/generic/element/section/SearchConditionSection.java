@@ -31,6 +31,7 @@ import org.iplass.adminconsole.annotation.MultiLang;
 import org.iplass.adminconsole.view.annotation.IgnoreField;
 import org.iplass.adminconsole.view.annotation.InputType;
 import org.iplass.adminconsole.view.annotation.MetaFieldInfo;
+import org.iplass.mtp.entity.csv.MultipleFormat;
 import org.iplass.mtp.view.generic.Jsp;
 import org.iplass.mtp.view.generic.Jsps;
 import org.iplass.mtp.view.generic.ViewConst;
@@ -180,13 +181,25 @@ public class SearchConditionSection extends Section {
 	)
 	private boolean nonOutputReference;
 
+	/** 多重度プロパティのCSV出力フォーマット */
+	@MetaFieldInfo(
+			displayName="多重度プロパティのCSV出力フォーマット",
+			displayNameKey="generic_element_section_SearchConditionSection_csvMultipleFormatNameKey",
+			inputType=InputType.ENUM,
+			enumClass=MultipleFormat.class,
+			displayOrder=1050,
+			description="CSVの多重度プロパティの出力形式を指定します。Referenceは対象外です。",
+			descriptionKey="generic_element_section_SearchConditionSection_csvMultipleFormatDescriptionKey"
+	)
+	private MultipleFormat csvMultipleFormat = MultipleFormat.EACH_COLUMN;
+
 	/** CSVダウンロード時文字コード指定を可能にする */
 	@MetaFieldInfo(
 			displayName="CSVダウンロード時文字コードを指定可能にする ",
 			displayNameKey="generic_element_section_SearchConditionSection_specifyCharacterCodeNameKey",
 			inputType=InputType.ENUM,
 			enumClass=CsvDownloadSpecifyCharacterCode.class,
-			displayOrder=1050,
+			displayOrder=1060,
 			description="CSVダウンロード時に文字コードを指定可能かを設定します。",
 			descriptionKey="generic_element_section_SearchConditionSection_specifyCharacterCodeDescriptionKey"
 	)
@@ -197,7 +210,7 @@ public class SearchConditionSection extends Section {
 			displayName="CSVダウンロード件数の上限値",
 			displayNameKey="generic_element_section_SearchConditionSection_csvdownloadMaxCountDisplaNameKey",
 			inputType=InputType.TEXT,
-			displayOrder=1060,
+			displayOrder=1070,
 			description="CSVダウンロード件数の上限値を設定します。",
 			descriptionKey="generic_element_section_SearchConditionSection_csvdownloadMaxCountDescriptionKey"
 	)
@@ -208,7 +221,7 @@ public class SearchConditionSection extends Section {
 			displayName="CSVダウンロード項目",
 			displayNameKey="generic_element_section_SearchConditionSection_csvdownloadPropertiesDisplaNameKey",
 			inputType=InputType.TEXT,
-			displayOrder=1070,
+			displayOrder=1080,
 			description="CSV出力対象の項目を指定します。",
 			descriptionKey="generic_element_section_SearchConditionSection_csvdownloadPropertiesDescriptionKey"
 	)
@@ -220,7 +233,7 @@ public class SearchConditionSection extends Section {
 			displayNameKey="generic_element_section_SearchConditionSection_csvdownloadFileNameScriptDisplaNameKey",
 			inputType=InputType.SCRIPT,
 			mode="groovy_script",
-			displayOrder=1080,
+			displayOrder=1090,
 			descriptionKey="generic_element_section_SearchConditionSection_csvdownloadFileNameScriptDescriptionKey"
 	)
 	private String csvdownloadFileNameFormat;
@@ -409,6 +422,14 @@ public class SearchConditionSection extends Section {
 		this.csvUploadTransactionType = csvUploadTransactionType;
 	}
 
+	public MultipleFormat getCsvMultipleFormat() {
+		return csvMultipleFormat;
+	}
+
+	public void setCsvMultipleFormat(MultipleFormat csvMultipleFormat) {
+		this.csvMultipleFormat = csvMultipleFormat;
+	}
+
 	public CsvDownloadSpecifyCharacterCode getSpecifyCharacterCode() {
 		return specifyCharacterCode;
 	}
@@ -422,7 +443,7 @@ public class SearchConditionSection extends Section {
 	 * @return 要素
 	 */
 	public List<Element> getElements() {
-		if (elements == null) elements = new ArrayList<Element>();
+		if (elements == null) elements = new ArrayList<>();
 	    return elements;
 	}
 
@@ -639,7 +660,7 @@ public class SearchConditionSection extends Section {
 	}
 
 	public List<SortSetting> getSortSetting() {
-		if (sortSetting == null) sortSetting = new ArrayList<SortSetting>();
+		if (sortSetting == null) sortSetting = new ArrayList<>();
 		return sortSetting;
 	}
 
@@ -669,7 +690,7 @@ public class SearchConditionSection extends Section {
 	 * @return フィルタ設定
 	 */
 	public List<FilterSetting> getFilterSetting() {
-		if (filterSetting == null) filterSetting = new ArrayList<FilterSetting>();
+		if (filterSetting == null) filterSetting = new ArrayList<>();
 	    return filterSetting;
 	}
 
