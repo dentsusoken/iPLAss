@@ -2171,13 +2171,15 @@ LocaleInfo.generic_element_section_SearchConditionSection_nonOutputBinaryRefDisp
 LocaleInfo.generic_element_section_SearchConditionSection_nonOutputBinaryRefDescriptionKey = "Do not output the name of BinaryReference when downloading CSV.";
 LocaleInfo.generic_element_section_SearchConditionSection_nonOutputReferenceDisplaNameKey = "Do not output reference when downloading CSV";
 LocaleInfo.generic_element_section_SearchConditionSection_nonOutputReferenceDescriptionKey = "Do not output reference when downloading CSV.";
+LocaleInfo.generic_element_section_SearchConditionSection_csvMultipleFormatNameKey = "CSV download multiple format";
+LocaleInfo.generic_element_section_SearchConditionSection_csvMultipleFormatDescriptionKey = "Specify the output format of multiplicity property when downloading CSV.<br/>References are not applicable.";
 LocaleInfo.generic_element_section_SearchConditionSection_hideCsvUploadDisplaNameKey = "Hide CSV upload button";
 LocaleInfo.generic_element_section_SearchConditionSection_hideCsvUploadDescriptionKey = "Hide the CSV upload button.";
 LocaleInfo.generic_element_section_SearchConditionSection_csvdownloadMaxCountDisplaNameKey = "Upper limit of downloads CSV number";
 LocaleInfo.generic_element_section_SearchConditionSection_csvdownloadMaxCountDescriptionKey = "Set the upper limit of the CSV download number.";
 LocaleInfo.generic_element_section_SearchConditionSection_csvdownloadPropertiesDisplaNameKey = "CSV download Properties";
 LocaleInfo.generic_element_section_SearchConditionSection_csvdownloadPropertiesDescriptionKey = "Set the properties of the CSV download target.";
-LocaleInfo.generic_element_section_SearchConditionSection_csvdownloadFileNameScriptDisplaNameKey = "Csv file name format";
+LocaleInfo.generic_element_section_SearchConditionSection_csvdownloadFileNameScriptDisplaNameKey = "CSV file name format";
 LocaleInfo.generic_element_section_SearchConditionSection_csvdownloadFileNameScriptDescriptionKey = "<p>Base Variable</p><ul><li>out : Writer</li><li>em : EntityManager</li><li>edm : EntityDefinitionManager</li><li>auth : AuthContext</li><li>user : User information. </br>Can specify the properties of the User entity as ${user.xxxx}.</li></ul><p>Date Variable</p><ul><li>date : Instance of java.sql.Timestamp</li><li>yyyy : Year</li><li>MM : Month</li><li>dd : Day</li><li>HH : Hour, 24 hour notation</li><li>mm : Minute</li><li>ss : Second</li></ul><p>Specific Variable</p><ul><li>csvName : default csv file name.(= ${entityDisplayName})</li><li>entityName : entity name.</li><li>entityDisplayName : entity display name</li><li>viewName : entity view name.<br/>When view is default, [viewName] is null.</li></ul><br/><p>Example</p><li>${csvName}_${yyyy}${MM}${dd}${HH}${mm}${ss}</li>";
 LocaleInfo.generic_element_section_SearchConditionSection_defaultConditionDisplaNameKey = "Default filter condition when searching";
 LocaleInfo.generic_element_section_SearchConditionSection_defaultConditionDescriptionKey = "This condition will not display in the search screen, and be applied automatically during the search.Describe the conditions in the Where clause in the EQL format.";

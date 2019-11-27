@@ -37,6 +37,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Predicate;
+import java.util.regex.Pattern;
 
 import org.apache.commons.text.StringEscapeUtils;
 import org.iplass.gem.GemConfigService;
@@ -48,6 +49,7 @@ import org.iplass.mtp.entity.Entity;
 import org.iplass.mtp.entity.EntityManager;
 import org.iplass.mtp.entity.EntityRuntimeException;
 import org.iplass.mtp.entity.SelectValue;
+import org.iplass.mtp.entity.csv.MultipleFormat;
 import org.iplass.mtp.entity.definition.EntityDefinition;
 import org.iplass.mtp.entity.definition.EntityDefinitionManager;
 import org.iplass.mtp.entity.definition.PropertyDefinition;
@@ -125,17 +127,22 @@ public class CSVDownloadSearchViewWriter implements ResultStreamWriter {
 				int multi = pd.getMultiplicity();
 				if (multi <= 1) {
 					// カラム名を保存
+					//FIXME ReferencePropertyのパターンがあるか(getColumnsでつぶしている)
 					if (pd instanceof ReferenceProperty) {
 						writeText(getColumnName(context, propName + "." + Entity.NAME));
 					} else {
 						writeText(getColumnName(context, propName));
 					}
 				} else {
-					for (int i = 0; i < multi; i++) {
-						if (i != 0) {
-							writeComma();
+					if (context.getMultipleFormat() == MultipleFormat.EACH_COLUMN) {
+						for (int i = 0; i < multi; i++) {
+							if (i != 0) {
+								writeComma();
+							}
+							writeText(getColumnName(context, propName) + "[" + i + "]");
 						}
-						writeText(getColumnName(context, propName) + "[" + i + "]");
+					} else {
+						writeText(getColumnName(context, propName));
 					}
 				}
 				if (columns.indexOf(propName) < columns.size() - 1) {
@@ -154,6 +161,7 @@ public class CSVDownloadSearchViewWriter implements ResultStreamWriter {
 				int multi = pd.getMultiplicity();
 				if (multi <= 1) {
 					// カラム名を保存
+					//FIXME ReferencePropertyのパターンがあるか(getColumnsでつぶしている)
 					if (pd instanceof ReferenceProperty) {
 						if (!section.isNonOutputReference()) {
 							if (!section.isNonOutputOid()) {
@@ -179,11 +187,15 @@ public class CSVDownloadSearchViewWriter implements ResultStreamWriter {
 						}
 					}
 				} else {
-					for (int i = 0; i < multi; i++) {
-						if (i != 0) {
-							writeComma();
+					if (context.getMultipleFormat() == MultipleFormat.EACH_COLUMN) {
+						for (int i = 0; i < multi; i++) {
+							if (i != 0) {
+								writeComma();
+							}
+							writeText(getColumnName(context, propName) + "[" + i + "]");
 						}
-						writeText(getColumnName(context, propName) + "[" + i + "]");
+					} else {
+						writeText(getColumnName(context, propName));
 					}
 					if (columns.indexOf(propName) < columns.size() - 1) {
 						writeComma();
@@ -220,7 +232,7 @@ public class CSVDownloadSearchViewWriter implements ResultStreamWriter {
 		PropertyColumn updateBy = context.getPropertyColumn(Entity.UPDATE_BY);
 		PropertyColumn lockedBy = context.getPropertyColumn(Entity.LOCKED_BY);
 
-		Map<String, Boolean> userMap = new HashMap<String, Boolean>();
+		Map<String, Boolean> userMap = new HashMap<>();
 		userMap.put(Entity.CREATE_BY, createBy != null && createBy.getEditor() instanceof UserPropertyEditor);
 		userMap.put(Entity.UPDATE_BY, updateBy != null && updateBy.getEditor() instanceof UserPropertyEditor);
 		userMap.put(Entity.LOCKED_BY, lockedBy != null && lockedBy.getEditor() instanceof UserPropertyEditor);
@@ -406,7 +418,7 @@ public class CSVDownloadSearchViewWriter implements ResultStreamWriter {
 			}
 
 			// ユーザ情報の検索
-			final Map<String, String> userMap = new HashMap<String, String>();
+			final Map<String, String> userMap = new HashMap<>();
 
 			Query q = new Query().select(Entity.OID, Entity.NAME)
 					 .from(User.DEFINITION_NAME)
@@ -489,25 +501,11 @@ public class CSVDownloadSearchViewWriter implements ResultStreamWriter {
 						Object[] array = (Object[]) value;
 						// TODO Tree型は、getMultiplicity()で-1
 
-						if (pd instanceof SelectProperty) {
-							outputSelectValue(propName, (SelectProperty) pd, multi, array, context.isOutputCodeValue());
-						}else {
-							//SelectProperty以外は通常出力
-							for (int i = 0; i < multi; i++) {
-
-								// 配列の分ループ
-								if (array.length - 1 >= i && array[i] != null) {
-									writer.writeText(getToString(array[i]));
-								}
-
-								if (i < multi - 1) {
-									writer.writeComma();
-								}
-							}
-						}
+						outputMultipleValue(pd, propName, multi, array);
 
 					} else if (value != null && value.toString().length() != 0) {
 						// referenceの場合の処理を追加
+						//FIXME ReferencePropertyのパターンがあるか(getColumnsでつぶしている)
 						if (pd instanceof ReferenceProperty) {
 							Entity reference = (Entity) value;
 							writer.writeText(reference.getName());
@@ -553,22 +551,8 @@ public class CSVDownloadSearchViewWriter implements ResultStreamWriter {
 						Object[] array = (Object[]) value;
 						// TODO Tree型は、getMultiplicity()で-1
 
-						if (pd instanceof SelectProperty) {
-							outputSelectValue(propName, (SelectProperty) pd, multi, array, context.isOutputCodeValue());
-						}else {
-							//SelectProperty以外は通常出力
-							for (int i = 0; i < multi; i++) {
+						outputMultipleValue(pd, propName, multi, array);
 
-								// 配列の分ループ
-								if (array.length - 1 >= i && array[i] != null) {
-									writer.writeText(getToString(array[i]));
-								}
-
-								if (i < multi - 1) {
-									writer.writeComma();
-								}
-							}
-						}
 						if (itc.hasNext()) {	//	次がある場合、カンマを挿入
 							writer.writeComma();
 						}
@@ -576,6 +560,7 @@ public class CSVDownloadSearchViewWriter implements ResultStreamWriter {
 					} else if (value != null && !value.toString().isEmpty()) {
 
 						// referenceの場合の処理を追加
+						//FIXME ReferencePropertyのパターンがあるか(getColumnsでつぶしている)
 						if (pd instanceof ReferenceProperty) {
 
 							Entity reference = (Entity) value;
@@ -623,6 +608,7 @@ public class CSVDownloadSearchViewWriter implements ResultStreamWriter {
 					} else {
 						if (pd instanceof ReferenceProperty) {
 
+							//FIXME ReferencePropertyのパターンがあるか(getColumnsでつぶしている)
 							if (!section.isNonOutputReference()) {
 								if (!section.isNonOutputOid()) {
 									writer.writeComma();
@@ -644,6 +630,68 @@ public class CSVDownloadSearchViewWriter implements ResultStreamWriter {
 			return true;
 		}
 
+		private void outputMultipleValue(PropertyDefinition pd, String propName, int multi, Object[] array) {
+
+			if (pd instanceof SelectProperty) {
+				outputSelectValue(propName, (SelectProperty) pd, multi, array, context.isOutputCodeValue());
+			}else {
+				//SelectProperty以外は通常出力
+				if (context.getMultipleFormat() == MultipleFormat.EACH_COLUMN) {
+					outputMultipleValueSplit(pd, multi, array);
+				} else {
+					outputMultipleValueUnSplit(pd, multi, array);
+				}
+			}
+		}
+
+		private void outputMultipleValueSplit(PropertyDefinition pd, int multi, Object[] array) {
+
+			//SelectProperty以外は通常出力
+			for (int i = 0; i < multi; i++) {
+
+				// 配列の分ループ
+				if (array.length - 1 >= i && array[i] != null) {
+					writer.writeText(getToString(array[i]));
+				}
+
+				if (i < multi - 1) {
+					writer.writeComma();
+				}
+			}
+		}
+
+		private void outputMultipleValueUnSplit(PropertyDefinition pd, int multi, Object[] array) {
+
+			int arrayLen = array.length;
+			StringBuilder sb = new StringBuilder();
+			for (int i = 0; i < multi; i++) {
+				if (i >= arrayLen && context.getMultipleFormat() == MultipleFormat.ONE_COLUMN) {
+					//多重度分値がないので終了
+					break;
+				}
+
+				if (i != 0) {
+					sb.append(",");
+				}
+
+				if (i >= arrayLen) {
+					//多重度分値がないので次へ
+					continue;
+				}
+
+				String strValue = getToString(array[i]);
+				if (StringUtil.isNotEmpty(strValue)) {
+					String outText = StringEscapeUtils.escapeCsv(strValue);
+					//値にダブルクォーテーションが含まれる場合は、最後に２重にエスケープされるので戻す
+					if (strValue.contains("\"")) {
+						outText = outText.replaceAll(Pattern.quote("\"\""), "\"");
+					}
+					sb.append(outText);
+				}
+			}
+			writer.writeText(sb.toString());
+		}
+
 		private void outputSelectValue(String propName, SelectProperty sp, int multi, Object[] array, boolean isOutputCodeValue) {
 			//PropertyColumnのEditorから出力方式を取得
 			boolean sortValue = false;
@@ -656,12 +704,14 @@ public class CSVDownloadSearchViewWriter implements ResultStreamWriter {
 			}
 			if (sortValue) {
 				//ソート出力
+
 				List<SelectValue> selectableValues = sp.getSelectValueList();
+				List<SelectValue> sortedValues = new ArrayList<>(selectableValues.size());
 				for (int i = 0; i < multi; i++) {
 					if (selectableValues.size() < i + 1) {
 						//選択値より多重度が多い場合(念のためチェック)
 						if (i < multi - 1) {
-							writer.writeComma();
+							sortedValues.add(null);
 						}
 						continue;
 					}
@@ -674,35 +724,23 @@ public class CSVDownloadSearchViewWriter implements ResultStreamWriter {
 						}
 					}
 					if (exist) {
-						if (isOutputCodeValue) {
-							writeValue(targetValue, sp);
-						} else {
-							writer.writeText(getToString(targetValue));
-						}
+						sortedValues.add(targetValue);
 					} else {
-						//writer.writeText(getToString(null));
-					}
-
-					if (i < multi - 1) {
-						writer.writeComma();
+						sortedValues.add(null);
 					}
 				}
+				if (context.getMultipleFormat() == MultipleFormat.EACH_COLUMN) {
+					outputMultipleValueSplit(sp, multi, sortedValues.toArray());
+				} else {
+					outputMultipleValueUnSplit(sp, multi, sortedValues.toArray());
+				}
+
 			} else {
 				//通常出力
-				for (int i = 0; i < multi; i++) {
-
-					// 配列の分ループ
-					if (array.length - 1 >= i && array[i] != null) {
-						if (isOutputCodeValue) {
-							writeValue(array[i], sp);
-						} else {
-							writer.writeText(getToString(array[i]));
-						}
-					}
-
-					if (i < multi - 1) {
-						writer.writeComma();
-					}
+				if (context.getMultipleFormat() == MultipleFormat.EACH_COLUMN) {
+					outputMultipleValueSplit(sp, multi, array);
+				} else {
+					outputMultipleValueUnSplit(sp, multi, array);
 				}
 			}
 		}
@@ -715,6 +753,10 @@ public class CSVDownloadSearchViewWriter implements ResultStreamWriter {
 		 * @return toString()またはtoPlainString()した値
 		 */
 		private String getToString(Object obj) {
+			if (obj == null) {
+				return "";
+			}
+
 			if (obj instanceof Entity) {
 				Entity ge = (Entity)obj;
 				return ge.getOid();
@@ -729,7 +771,11 @@ public class CSVDownloadSearchViewWriter implements ResultStreamWriter {
 				return BigDecimal.valueOf((Double)obj).toPlainString();
 			}
 			if (obj instanceof SelectValue) {
-				return ((SelectValue) obj).getDisplayName();
+				if (context.isOutputCodeValue()) {
+					return ((SelectValue) obj).getValue();
+				} else {
+					return ((SelectValue) obj).getDisplayName();
+				}
 			}
 			if (obj instanceof BinaryReference) {
 				return ((BinaryReference) obj).getName();
@@ -811,7 +857,11 @@ public class CSVDownloadSearchViewWriter implements ResultStreamWriter {
 					break;
 				case SELECT:
 					SelectValue sv = (SelectValue) val;
-					writer.writeText(sv.getValue());
+					if (context.isOutputCodeValue()) {
+						writer.writeText(sv.getValue());
+					} else {
+						writer.writeText(sv.getDisplayName());
+					}
 					break;
 				case DECIMAL:
 					writer.writeText(((BigDecimal)val).toPlainString());
