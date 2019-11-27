@@ -303,7 +303,6 @@
 	<service>
 		<interface>org.iplass.mtp.impl.logging.LoggingService</interface>
 		<class>org.iplass.mtp.impl.logging.logback.LogbackLoggingService</class>
-		<property name="enableLogCondition" value="true" />
 	</service>
 
 	<!-- Entity関連 -->
