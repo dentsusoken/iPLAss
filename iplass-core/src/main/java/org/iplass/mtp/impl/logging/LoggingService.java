@@ -27,6 +27,11 @@ import org.iplass.mtp.spi.Service;
 public abstract class LoggingService implements Service {
 	
 	private boolean enableLogCondition;
+	private Long maxAgeSecondsOfLogCondition; 
+
+	public Long getMaxAgeSecondsOfLogCondition() {
+		return maxAgeSecondsOfLogCondition;
+	}
 
 	public boolean isEnableLogCondition() {
 		return enableLogCondition;
@@ -35,6 +40,7 @@ public abstract class LoggingService implements Service {
 	@Override
 	public void init(Config config) {
 		enableLogCondition = config.getValue("enableLogCondition", Boolean.TYPE, Boolean.TRUE);
+		maxAgeSecondsOfLogCondition = config.getValue("maxAgeSecondsOfLogCondition", Long.class, -1L);
 	}
 
 	@Override

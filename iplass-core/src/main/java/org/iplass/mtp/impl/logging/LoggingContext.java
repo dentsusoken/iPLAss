@@ -23,7 +23,9 @@ package org.iplass.mtp.impl.logging;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
+import org.iplass.mtp.SystemException;
 import org.iplass.mtp.impl.core.ExecuteContext;
 import org.iplass.mtp.impl.core.TenantContext;
 import org.iplass.mtp.impl.core.TenantResource;
@@ -60,9 +62,20 @@ public class LoggingContext implements TenantResource {
 			LoggingService loggingService = ServiceRegistry.getRegistry().getService(LoggingService.class);
 			List<LogConditionRuntime> newList = null;
 			if (logConditions != null) {
+				long maxExpires;
+				if (loggingService.getMaxAgeSecondsOfLogCondition() != null && loggingService.getMaxAgeSecondsOfLogCondition() >= 0) {
+					maxExpires = System.currentTimeMillis() + TimeUnit.SECONDS.toMillis(loggingService.getMaxAgeSecondsOfLogCondition());
+				} else {
+					maxExpires = Long.MAX_VALUE;
+				}
+
 				newList = new ArrayList<>();
 				for (int i = 0; i < logConditions.size(); i++) {
 					LogCondition lc = logConditions.get(i);
+					if (lc.getExpiresAt() > maxExpires) {
+						throw new SystemException("The max age of log condition is " + loggingService.getMaxAgeSecondsOfLogCondition() + " seconds.");
+					}
+					
 					newList.add(new LogConditionRuntime(lc, loggingService.createRuntime(lc), tc, i));
 				}
 			}
