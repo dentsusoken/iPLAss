@@ -522,6 +522,15 @@ public class CSVDownloadSearchViewWriter implements ResultStreamWriter {
 						} else {
 							writer.writeText(getToString(value));
 						}
+					} else if (value == null) {
+						//多重度複数の場合
+						int multi = pd.getMultiplicity();
+						if (context.getMultipleFormat() == MultipleFormat.EACH_COLUMN
+								&& !(pd instanceof ReferenceProperty) && multi > 1) {
+							for (int i = 0; i < multi - 1; i++) {
+								writer.writeComma();
+							}
+						}
 					}
 					if (itc.hasNext()) {	//	次がある場合、カンマを挿入
 						writer.writeComma();
@@ -605,9 +614,27 @@ public class CSVDownloadSearchViewWriter implements ResultStreamWriter {
 							}
 						}
 
+					} else if (value == null) {
+						//多重度複数の場合
+						int multi = pd.getMultiplicity();
+						if (context.getMultipleFormat() == MultipleFormat.EACH_COLUMN
+								&& !(pd instanceof ReferenceProperty) && multi > 1) {
+							for (int i = 0; i < multi - 1; i++) {
+								writer.writeComma();
+							}
+						} else if (pd instanceof ReferenceProperty) {
+							//FIXME ReferencePropertyのパターンがあるか(getColumnsでつぶしている)
+							if (!section.isNonOutputReference()) {
+								if (!section.isNonOutputOid()) {
+									writer.writeComma();
+								}
+							}
+						}
+						if (itc.hasNext()) {	//	次がある場合、カンマを挿入
+							writer.writeComma();
+						}
 					} else {
 						if (pd instanceof ReferenceProperty) {
-
 							//FIXME ReferencePropertyのパターンがあるか(getColumnsでつぶしている)
 							if (!section.isNonOutputReference()) {
 								if (!section.isNonOutputOid()) {
