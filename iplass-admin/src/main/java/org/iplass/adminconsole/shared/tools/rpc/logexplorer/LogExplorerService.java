@@ -38,5 +38,5 @@ public interface LogExplorerService extends XsrfProtectedService {
 
 	public List<LogConditionInfo> getLogConditions(final int tenantId);
 
-	public void applyLogConditions(final int tenantId, final List<LogConditionInfo> logConditions);
+	public String applyLogConditions(final int tenantId, final List<LogConditionInfo> logConditions);
 }

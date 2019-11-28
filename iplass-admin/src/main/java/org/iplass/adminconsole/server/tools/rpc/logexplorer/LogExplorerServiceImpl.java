@@ -38,6 +38,7 @@ import org.iplass.adminconsole.server.base.service.AdminConsoleService;
 import org.iplass.adminconsole.shared.tools.dto.logexplorer.LogConditionInfo;
 import org.iplass.adminconsole.shared.tools.dto.logexplorer.LogFile;
 import org.iplass.adminconsole.shared.tools.rpc.logexplorer.LogExplorerService;
+import org.iplass.mtp.MtpException;
 import org.iplass.mtp.impl.core.ExecuteContext;
 import org.iplass.mtp.impl.logging.LogCondition;
 import org.iplass.mtp.impl.logging.LoggingContext;
@@ -332,20 +333,24 @@ public class LogExplorerServiceImpl extends XsrfProtectedServiceServlet implemen
 	}
 
 	@Override
-	public void applyLogConditions(int tenantId, List<LogConditionInfo> logConditions) {
+	public String applyLogConditions(int tenantId, List<LogConditionInfo> logConditions) {
 
-		AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId, new AuthUtil.Callable<Void>() {
+		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId, new AuthUtil.Callable<String>() {
 
 			@Override
-			public Void call() {
+			public String call() {
 				List<LogCondition> conditions = null;
 				if (logConditions != null) {
 					conditions = convertTo(logConditions);
 				}
 
-				ExecuteContext ec = ExecuteContext.getCurrentContext();
-				LoggingContext lc = ls.getLoggingContext(ec.getTenantContext());
-				lc.apply(conditions);
+				try {
+					ExecuteContext ec = ExecuteContext.getCurrentContext();
+					LoggingContext lc = ls.getLoggingContext(ec.getTenantContext());
+					lc.apply(conditions);
+				} catch (MtpException e) {
+					return e.getMessage();
+				}
 
 				return null;
 			}

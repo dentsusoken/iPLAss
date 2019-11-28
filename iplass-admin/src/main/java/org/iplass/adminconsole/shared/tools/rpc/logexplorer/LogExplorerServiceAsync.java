@@ -36,6 +36,6 @@ public interface LogExplorerServiceAsync {
 
 	void getLogConditions(final int tenantId, AsyncCallback<List<LogConditionInfo>> callback);
 
-	void applyLogConditions(final int tenantId, List<LogConditionInfo> logConditions, AsyncCallback<Void> callback);
+	void applyLogConditions(final int tenantId, List<LogConditionInfo> logConditions, AsyncCallback<String> callback);
 
 }

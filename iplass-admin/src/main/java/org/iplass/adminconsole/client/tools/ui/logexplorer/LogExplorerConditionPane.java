@@ -216,12 +216,23 @@ public class LogExplorerConditionPane extends VLayout {
 		}
 
 		private void applyCondition() {
+			SmartGWTUtil.showSaveProgress();
 			List<LogConditionInfo> conditions = grid.getEditConditions();
-			service.applyLogConditions(TenantInfoHolder.getId(), conditions, new AdminAsyncCallback<Void>() {
+			service.applyLogConditions(TenantInfoHolder.getId(), conditions, new AdminAsyncCallback<String>() {
 
 				@Override
-				public void onSuccess(Void result) {
-					SC.say(AdminClientMessageUtil.getString("ui_tools_logexplorer_LogExplorerConditionPane_applyComplete"));
+				protected void beforeFailure(Throwable caught){
+					SmartGWTUtil.hideProgress();
+				};
+
+				@Override
+				public void onSuccess(String errorMessage) {
+					SmartGWTUtil.hideProgress();
+					if (SmartGWTUtil.isNotEmpty(errorMessage)) {
+						SC.warn(errorMessage);
+					} else {
+						SC.say(AdminClientMessageUtil.getString("ui_tools_logexplorer_LogExplorerConditionPane_applyComplete"));
+					}
 				}
 			});
 		}
@@ -284,12 +295,12 @@ public class LogExplorerConditionPane extends VLayout {
 
 			//ボタンを表示したいためListGridFieldを指定
 			ListGridField levelField = new ListGridField(FIELD_NAME.LEVEL.name(), "Level");
+			levelField.setWidth(120);
 			ListGridField expiresAtField = new ListGridField(FIELD_NAME.EXPIRES_AT.name(), "ExpiresAt");
 			expiresAtField.setWidth(120);
 			ListGridField conditionField = new ListGridField(FIELD_NAME.CONDITION.name(), "Condition");
-			conditionField.setWidth(70);
-			ListGridField loggerNamePatternField = new ListGridField(FIELD_NAME.LOGGER_NAME_PATTERN.name(), "loggerName");
-			loggerNamePatternField.setWidth(70);
+			conditionField.setWidth(100);
+			ListGridField loggerNamePatternField = new ListGridField(FIELD_NAME.LOGGER_NAME_PATTERN.name(), "loggerName Pattern");
 
 			setFields(levelField, expiresAtField, conditionField, loggerNamePatternField);
 

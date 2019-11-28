@@ -128,7 +128,7 @@ public class LogConditionDS extends AbstractAdminDataSource {
 			record.setAttribute(FIELD_NAME.EXPIRES_AT.name(), "");
 		}
 		record.setAttribute(FIELD_NAME.CONDITION.name(), condition.getCondition() != null ? "Y" : "");
-		record.setAttribute(FIELD_NAME.LOGGER_NAME_PATTERN.name(), condition.getLoggerNamePattern() != null ? "Y" : "");
+		record.setAttribute(FIELD_NAME.LOGGER_NAME_PATTERN.name(), condition.getLoggerNamePattern());
 		record.setAttribute(FIELD_NAME.VALUE_OBJECT.name(), condition);
 	}
 
