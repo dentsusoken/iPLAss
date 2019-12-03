@@ -112,7 +112,8 @@ public class ColResolver {
 		}
 		RawColType ct = RawColType.typeOf(p.getType());
 		if (p.getEntityStoreProperty() instanceof MetaGRdbMultiplePropertyStore) {
-			for (MetaGRdbPropertyStore col: ((MetaGRdbMultiplePropertyStore) p.getEntityStoreProperty()).getStore()) {
+			for (int i = 0; i < p.getMultiplicity(); i++) {
+				MetaGRdbPropertyStore col = ((MetaGRdbMultiplePropertyStore) p.getEntityStoreProperty()).getStore().get(i);
 				addUsedCol(p, col, ct);
 			}
 		} else {
@@ -345,6 +346,9 @@ public class ColResolver {
 					} else if (old.getEntityStoreProperty() instanceof MetaGRdbMultiplePropertyStore) {
 						MetaGRdbMultiplePropertyStore mulStore = (MetaGRdbMultiplePropertyStore) old.getEntityStoreProperty();
 						for (MetaGRdbPropertyStore s: mulStore.getStore()) {
+							if (needSize <= 0) {
+								break;
+							}
 							MetaGRdbPropertyStore copy = s.copy();
 							copy.resetIndex();
 							cols.add(copy);
@@ -514,6 +518,8 @@ public class ColResolver {
 						default:
 							break;
 						}
+					} else {
+						list.add(toMove);
 					}
 				}
 			}

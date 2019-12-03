@@ -120,8 +120,8 @@ public class MetaGRdbMultiplePropertyStore extends MetaPropertyStore {
 				list = Collections.emptyList();
 			} else {
 				list = new ArrayList<>(store.size());
-				for (MetaGRdbPropertyStore s: store) {
-					list.add(new GRdbPropertyStoreHandler(propertyRuntime, s, metaEntity));
+				for (int i = 0; i < propertyRuntime.getMetaData().getMultiplicity(); i++) {
+					list.add(new GRdbPropertyStoreHandler(propertyRuntime, store.get(i), metaEntity));
 				}
 			}
 		}
@@ -133,7 +133,7 @@ public class MetaGRdbMultiplePropertyStore extends MetaPropertyStore {
 
 		@Override
 		public int getColCount() {
-			return store.size();
+			return list.size();
 		}
 
 		@Override
