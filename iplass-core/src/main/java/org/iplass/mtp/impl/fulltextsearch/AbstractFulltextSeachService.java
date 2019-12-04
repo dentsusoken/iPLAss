@@ -30,6 +30,7 @@ import java.util.Map;
 
 import org.iplass.mtp.entity.fulltextsearch.FulltextSearchRuntimeException;
 import org.iplass.mtp.impl.core.ExecuteContext;
+import org.iplass.mtp.impl.datastore.grdb.MetaGRdbMultiplePropertyStore;
 import org.iplass.mtp.impl.datastore.grdb.MetaGRdbPropertyStore;
 import org.iplass.mtp.impl.entity.EntityHandler;
 import org.iplass.mtp.impl.entity.EntityService;
@@ -325,7 +326,8 @@ public abstract class AbstractFulltextSeachService implements FulltextSearchServ
 						} else {
 							String columnName = "";
 							//FIXME なんか実装が怪しい気がする。。。
-							if (metaProperty.getEntityStoreProperty() instanceof MetaGRdbPropertyStore)  {
+							if (metaProperty.getEntityStoreProperty() instanceof MetaGRdbPropertyStore
+								|| metaProperty.getEntityStoreProperty() instanceof MetaGRdbMultiplePropertyStore)  {
 								columnName = columnStr + columnIndex;
 								columnIndex++;
 //							} else {

@@ -309,13 +309,6 @@ public class FulltextSearchLuceneService extends AbstractFulltextSeachService {
 		EntityManager em = ManagerLocator.getInstance().getManager(EntityManager.class);
 		logger.debug("### EQL : " + query.toString() + "###");
 
-		final SimpleDateFormat dateFormat = DateUtil.getSimpleDateFormat(getLocaleFormat().getOutputDateFormat(), false);
-		dateFormat.setLenient(false);
-		final SimpleDateFormat dateTimeFormat = DateUtil.getSimpleDateFormat(getLocaleFormat().getOutputDatetimeSecFormat(), true);
-		dateTimeFormat.setLenient(false);
-		final SimpleDateFormat timeFormat = DateUtil.getSimpleDateFormat(getLocaleFormat().getOutputTimeSecFormat(), false);
-		timeFormat.setLenient(false);
-
 		final boolean[] isIndexed = new boolean[]{false};
 
 		em.searchEntity(query, entity -> {
@@ -346,20 +339,7 @@ public class FulltextSearchLuceneService extends AbstractFulltextSeachService {
 					Object val = entity.getValue(propName);
 					if (val != null) {
 						String fieldName = e.getValue();
-						String strVal;
-						if (val instanceof Timestamp) {
-							strVal = dateTimeFormat.format((Timestamp) val);
-						} else if (val instanceof Date) {
-							strVal = dateFormat.format((Date) val);
-						} else if (val instanceof Time) {
-							strVal = timeFormat.format((Time) val);
-						} else if (val instanceof BigDecimal) {
-							strVal = ((BigDecimal) val).toPlainString();
-						} else if (val instanceof BinaryReference) {
-							strVal = parseBinaryReference((BinaryReference) val, em);
-						} else {
-							strVal = val.toString();
-						}
+						String strVal = convertValue(val);
 						doc.add(new TextField(fieldName, strVal, Field.Store.NO));
 					}
 				}
@@ -376,7 +356,46 @@ public class FulltextSearchLuceneService extends AbstractFulltextSeachService {
 		return isIndexed[0];
 	}
 
-	private String parseBinaryReference(BinaryReference br, EntityManager em) throws IOException {
+	private String convertValue(Object val) throws IOException {
+		String strVal = null;
+		if (val.getClass().isArray()) {
+			strVal = convertValue((Object[])val);
+		} else if (val instanceof Timestamp) {
+			final SimpleDateFormat dateTimeFormat = DateUtil.getSimpleDateFormat(getLocaleFormat().getOutputDatetimeSecFormat(), true);
+			dateTimeFormat.setLenient(false);
+			strVal = dateTimeFormat.format((Timestamp) val);
+		} else if (val instanceof Date) {
+			final SimpleDateFormat dateFormat = DateUtil.getSimpleDateFormat(getLocaleFormat().getOutputDateFormat(), false);
+			dateFormat.setLenient(false);
+			strVal = dateFormat.format((Date) val);
+		} else if (val instanceof Time) {
+			final SimpleDateFormat timeFormat = DateUtil.getSimpleDateFormat(getLocaleFormat().getOutputTimeSecFormat(), false);
+			timeFormat.setLenient(false);
+			strVal = timeFormat.format((Time) val);
+		} else if (val instanceof BigDecimal) {
+			strVal = ((BigDecimal) val).toPlainString();
+		} else if (val instanceof BinaryReference) {
+			strVal = parseBinaryReference((BinaryReference) val);
+		} else {
+			strVal = val.toString();
+		}
+		return strVal;
+	}
+
+	private String convertValue(Object[] vals) throws IOException {
+		StringBuilder tmp = new StringBuilder();
+		tmp.append("[");
+		for (int i = 0; i < vals.length; i++) {
+			if (i != 0) {
+				tmp.append(",");
+			}
+			tmp.append(convertValue(vals[i]));
+		}
+		tmp.append("]");
+		return tmp.toString();
+	}
+
+	private String parseBinaryReference(BinaryReference br) throws IOException {
 
 		//順番にサポートしているかをチェック
 		for (int i = 0; i < binaryParsers.size(); i++) {
