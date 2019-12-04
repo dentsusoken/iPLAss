@@ -339,8 +339,16 @@ public class FulltextSearchLuceneService extends AbstractFulltextSeachService {
 					Object val = entity.getValue(propName);
 					if (val != null) {
 						String fieldName = e.getValue();
-						String strVal = convertValue(val);
-						doc.add(new TextField(fieldName, strVal, Field.Store.NO));
+						if (val.getClass().isArray()) {
+							Object[] valArray = (Object[]) val;
+							for (int i = 0; i < valArray.length; i++) {
+								String strVal = convertValue(valArray[i]);
+								doc.add(new TextField(fieldName, strVal, Field.Store.NO));
+							}
+						} else {
+							String strVal = convertValue(val);
+							doc.add(new TextField(fieldName, strVal, Field.Store.NO));
+						}
 					}
 				}
 
@@ -358,9 +366,7 @@ public class FulltextSearchLuceneService extends AbstractFulltextSeachService {
 
 	private String convertValue(Object val) throws IOException {
 		String strVal = null;
-		if (val.getClass().isArray()) {
-			strVal = convertValue((Object[])val);
-		} else if (val instanceof Timestamp) {
+		if (val instanceof Timestamp) {
 			final SimpleDateFormat dateTimeFormat = DateUtil.getSimpleDateFormat(getLocaleFormat().getOutputDatetimeSecFormat(), true);
 			dateTimeFormat.setLenient(false);
 			strVal = dateTimeFormat.format((Timestamp) val);
@@ -380,19 +386,6 @@ public class FulltextSearchLuceneService extends AbstractFulltextSeachService {
 			strVal = val.toString();
 		}
 		return strVal;
-	}
-
-	private String convertValue(Object[] vals) throws IOException {
-		StringBuilder tmp = new StringBuilder();
-		tmp.append("[");
-		for (int i = 0; i < vals.length; i++) {
-			if (i != 0) {
-				tmp.append(",");
-			}
-			tmp.append(convertValue(vals[i]));
-		}
-		tmp.append("]");
-		return tmp.toString();
 	}
 
 	private String parseBinaryReference(BinaryReference br) throws IOException {
