@@ -325,7 +325,6 @@ public abstract class AbstractFulltextSeachService implements FulltextSearchServ
 							expCnt += 1;
 						} else {
 							String columnName = "";
-							//FIXME なんか実装が怪しい気がする。。。
 							if (metaProperty.getEntityStoreProperty() instanceof MetaGRdbPropertyStore
 								|| metaProperty.getEntityStoreProperty() instanceof MetaGRdbMultiplePropertyStore)  {
 								columnName = columnStr + columnIndex;
@@ -365,8 +364,8 @@ public abstract class AbstractFulltextSeachService implements FulltextSearchServ
 							//ReferencePropertyは外す
 							if (!(metaProperty instanceof MetaReferenceProperty)) {
 								String columnName = "";
-								//FIXME なんか実装が怪しい気がする。。。
-								if (metaProperty.getEntityStoreProperty() instanceof MetaGRdbPropertyStore)  {
+								if (metaProperty.getEntityStoreProperty() instanceof MetaGRdbPropertyStore
+									|| metaProperty.getEntityStoreProperty() instanceof MetaGRdbMultiplePropertyStore)  {
 									columnName = columnStr + columnIndex;
 									columnIndex++;
 //								} else {
