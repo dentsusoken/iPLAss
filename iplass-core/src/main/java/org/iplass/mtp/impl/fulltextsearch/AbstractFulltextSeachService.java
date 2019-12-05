@@ -326,7 +326,7 @@ public abstract class AbstractFulltextSeachService implements FulltextSearchServ
 						} else {
 							String columnName = "";
 							if (metaProperty.getEntityStoreProperty() instanceof MetaGRdbPropertyStore
-								|| metaProperty.getEntityStoreProperty() instanceof MetaGRdbMultiplePropertyStore)  {
+								|| metaProperty.getEntityStoreProperty() instanceof MetaGRdbMultiplePropertyStore) {
 								columnName = columnStr + columnIndex;
 								columnIndex++;
 //							} else {
@@ -365,7 +365,7 @@ public abstract class AbstractFulltextSeachService implements FulltextSearchServ
 							if (!(metaProperty instanceof MetaReferenceProperty)) {
 								String columnName = "";
 								if (metaProperty.getEntityStoreProperty() instanceof MetaGRdbPropertyStore
-									|| metaProperty.getEntityStoreProperty() instanceof MetaGRdbMultiplePropertyStore)  {
+									|| metaProperty.getEntityStoreProperty() instanceof MetaGRdbMultiplePropertyStore) {
 									columnName = columnStr + columnIndex;
 									columnIndex++;
 //								} else {
