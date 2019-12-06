@@ -22,9 +22,30 @@ dependencies {
 	compile project(':iplass-web')
 }
 
+//gradle-node-plugin options
+//gulpは4にすると「TypeError: gulp.hasTask is not a function」が発生するため3に。
+//これにあわせてNodeのバージョンを調整
+node {
+	//nodeをダウンロード
+	download = true
+	//node version
+	//12にするとReferenceError: primordials is not defined
+	version = '11.15.0'
+	//npm version
+	npmVersion = '6.7.0'
+	
+	workDir = file("${project.buildDir}/nodejs")
+	npmWorkDir = file("${project.buildDir}/npm")
+}
+
 task buildSass(type: NpmTask) {
 	//package.jsonで定義したタスクを実行
 	args = ['run', 'sass:build'];
+}
+
+task rebuildSass(type: NpmTask) {
+	//fix Node Sass could not find a binding for your current environment
+	args = ['run', 'sass:rebuild'];
 }
 
 task buildSassImageColor(type: NpmTask) {

@@ -5,18 +5,19 @@
   "main": "index.js",
   "scripts": {
     "sass:build": "npm install & gulp build",
+    "sass:rebuild": "npm install & npm rebuild node-sass & gulp build",
     "sass:buildImageColor": "npm install & gulp buildImageColor"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {},
   "devDependencies": {
-    "del": "^3.0.0",
-    "gulp": "^3.9.1",
-    "gulp-concat": "^2.6.1",
-    "gulp-plumber": "^1.1.0",
-    "gulp-sass": "^3.1.0",
-    "require-dir": "^0.3.2",
-    "run-sequence": "^2.2.0"
+    "del": "5.x",
+    "gulp": "3.9.x",
+    "gulp-concat": "2.x",
+    "gulp-plumber": "1.x",
+    "gulp-sass": "4.x",
+    "require-dir": "1.x",
+    "run-sequence": "2.x"
   }
 }
