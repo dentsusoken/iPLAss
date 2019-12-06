@@ -13,7 +13,6 @@
 //original selectors
 //.tbl-search-01 th, .tbl-search-01 td
 %extend_gss_1 {
-	height: 40px;
 	//Instead of the line below you could use @include box-sizing($bs)
 	box-sizing: border-box;
 	border-bottom: 1px solid $color_alto_approx;
