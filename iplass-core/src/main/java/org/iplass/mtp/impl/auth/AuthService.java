@@ -53,6 +53,7 @@ import org.iplass.mtp.impl.auth.authorize.AuthorizationContext;
 import org.iplass.mtp.impl.auth.authorize.AuthorizationProvider;
 import org.iplass.mtp.impl.core.ExecuteContext;
 import org.iplass.mtp.impl.core.TenantContextService;
+import org.iplass.mtp.impl.logging.LoggingContext;
 import org.iplass.mtp.impl.util.InternalDateUtil;
 import org.iplass.mtp.spi.Config;
 import org.iplass.mtp.spi.Service;
@@ -64,6 +65,7 @@ import org.slf4j.MDC;
 public class AuthService implements Service {
 	private static Logger logger = LoggerFactory.getLogger(AuthService.class);
 
+	public static final String MDC_USER = "user";
 	public static final String USER_HANDLE_NAME = "mtp.auth.UserHandle";
 	static final String HOLDER_NAME = "mtp.auth.authCotnextHolder";
 
@@ -142,7 +144,7 @@ public class AuthService implements Service {
 		AuthContextHolder prev = (AuthContextHolder) ec.getAttribute(HOLDER_NAME);
 		ec.setAttribute(HOLDER_NAME, doAuthContext, false);
 		ec.setClientId(doAuthContext.getUserContext().getIdForLog());
-		MDC.put("user", ec.getClientId());
+		ec.mdcPut(MDC_USER, ec.getClientId());
 		doAuthContext.setSecuredAction(true);
 		return prev;
 	}
@@ -158,7 +160,7 @@ public class AuthService implements Service {
 		} else {
 			ec.setClientId(null);
 		}
-		MDC.put("user", ec.getClientId());
+		ec.mdcPut(MDC_USER, ec.getClientId());
 	}
 
 	public final void reloadUserEntity() {
@@ -407,7 +409,7 @@ public class AuthService implements Service {
 		ExecuteContext exec = ExecuteContext.getCurrentContext();
 		UserContext uc = AuthContextHolder.getAuthContext().getUserContext();
 		exec.setClientId(uc.getIdForLog());
-		MDC.put("user", exec.getClientId());
+		exec.mdcPut(MDC_USER, exec.getClientId());
 	}
 
 	public void resetCredential(Credential credential) {

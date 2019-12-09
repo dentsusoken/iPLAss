@@ -38,6 +38,7 @@ public class TenantContext {
 	private static MetaTenantService mtService = ServiceRegistry.getRegistry().getService(MetaTenantService.class);
 
 	private final Tenant baseTenantInfo;//Rdb上の不変の定義情報のみ
+	private final String tenantIdString;
 
 	private final boolean isNoMeta;
 
@@ -66,6 +67,7 @@ public class TenantContext {
 		t.setId(tenantId);
 		t.setName("___dummy");
 		t.setUrl("___dummy");
+		tenantIdString = String.valueOf(tenantId);
 		this.baseTenantInfo = t;
 		this.isNoMeta = true;
 
@@ -77,6 +79,7 @@ public class TenantContext {
 	public TenantContext(Tenant tenant, boolean isNoMeta) {
 		this.isNoMeta = isNoMeta;
 		this.baseTenantInfo = tenant;
+		tenantIdString = String.valueOf(tenant.getId());
 		this.scriptEngine = ServiceRegistry.getRegistry().getService(ScriptService.class).createScriptEngine();
 		this.metaDataContext = new MetaDataContext(baseTenantInfo.getId());
 		initResource();
@@ -103,6 +106,10 @@ public class TenantContext {
 
 	public int getTenantId() {
 		return baseTenantInfo.getId();
+	}
+	
+	public String getTenantIdString() {
+		return tenantIdString;
 	}
 
 	public String getTenantName() {

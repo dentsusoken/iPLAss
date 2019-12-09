@@ -36,7 +36,7 @@ public enum CacheControlType {
 	/**
 	 * キャッシュを許可します。
 	 * 具体的にはCache-Controlをpublic指定します。
-	 * CACHEを指定する場合は、合わせてclientCacheMaxAgeも指定してください。
+	 * CACHE_PUBLICを指定する場合は、合わせてclientCacheMaxAgeも指定してください。
 	 */
 	CACHE_PUBLIC,
 	

@@ -2546,7 +2546,8 @@ function updateUniqueReference(id, viewAction, defName, key, label, propName, ul
 	var $txt = $("#" + txtId)
 
 	var linkId = propName + "_" + tmp.oid;
-	var $link = $("a", $li).attr({"id":linkId, "data-linkId":linkId}).click(function() {
+	var $link = $("a", $li).attr({"id":linkId, "data-linkId":linkId}).removeAttr("onclick").off("click");
+	$link.click(function() {
 		showReference(viewAction, defName, oid, ver, linkId, refEdit, null, parentDefName, parentViewName, propName, viewType, refSectionIndex);
 	});
 

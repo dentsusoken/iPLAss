@@ -677,12 +677,15 @@ public class EntityService extends AbstractTypedMetaDataService<MetaEntity, Enti
 
 			DataStore dataStore = storeService.getDataStore();
 			EntityStoreStrategy strategy = dataStore.getEntityStoreStrategy();
+			
+			logger.info("purge by id:" + id + ") process start");
 			strategy.purgeById(eContext, id);
 			if (additionalStoreMaintainer != null) {
 				for (AdditionalStoreMaintainer asm: additionalStoreMaintainer) {
 					asm.clean(context.getClientTenantId(), id);
 				}
 			}
+			logger.info("purge by id:" + id + ") process finish");
 		});
 
 	}

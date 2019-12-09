@@ -1,19 +1,19 @@
 /*
  * Copyright (C) 2011 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
- * 
+ *
  * Unless you have purchased a commercial license,
  * the following license terms apply:
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
@@ -28,6 +28,7 @@ import org.iplass.adminconsole.client.base.plugin.AdminPlugin;
 import org.iplass.adminconsole.client.base.plugin.ContentClosedEvent;
 import org.iplass.adminconsole.client.base.plugin.ContentSelectedEvent;
 import org.iplass.adminconsole.client.base.plugin.ContentStateChangeHandler;
+import org.iplass.adminconsole.client.base.ui.widget.MtpTreeGrid;
 import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
 
 import com.smartgwt.client.types.SelectionStyle;
@@ -36,7 +37,6 @@ import com.smartgwt.client.widgets.events.DoubleClickEvent;
 import com.smartgwt.client.widgets.events.DoubleClickHandler;
 import com.smartgwt.client.widgets.grid.ListGridRecord;
 import com.smartgwt.client.widgets.tree.Tree;
-import com.smartgwt.client.widgets.tree.TreeGrid;
 import com.smartgwt.client.widgets.tree.events.FolderOpenedEvent;
 import com.smartgwt.client.widgets.tree.events.FolderOpenedHandler;
 import com.smartgwt.client.widgets.tree.events.NodeContextClickEvent;
@@ -57,7 +57,7 @@ import com.smartgwt.client.widgets.tree.events.NodeContextClickHandler;
  * @author lis70i
  *
  */
-public abstract class AdminMenuTreeGrid extends TreeGrid implements ContentStateChangeHandler {
+public abstract class AdminMenuTreeGrid extends MtpTreeGrid implements ContentStateChangeHandler {
 
 //	private MetaDataServiceAsync metaService = GWT.create(MetaDataService.class);
 
@@ -81,6 +81,8 @@ public abstract class AdminMenuTreeGrid extends TreeGrid implements ContentState
 	 * コンストラクタ
 	 */
 	protected AdminMenuTreeGrid(MainWorkspaceTab mainPane) {
+		super();
+
 		this.mainPane = mainPane;
 
 		setShowHeader(Boolean.FALSE);
@@ -177,7 +179,7 @@ public abstract class AdminMenuTreeGrid extends TreeGrid implements ContentState
 	 */
 	private void createPluginNode() {
 
-		Map<String, AdminMenuTreeNode> folderMap = new LinkedHashMap<String, AdminMenuTreeNode>();
+		Map<String, AdminMenuTreeNode> folderMap = new LinkedHashMap<>();
 
 		AdminMenuTreeNode root = new AdminMenuTreeNode("Root", null, "Root");
 		model.setRoot(root);

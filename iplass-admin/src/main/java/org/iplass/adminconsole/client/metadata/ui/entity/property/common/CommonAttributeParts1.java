@@ -41,6 +41,7 @@ import com.smartgwt.client.widgets.form.fields.SelectItem;
 import com.smartgwt.client.widgets.form.fields.TextItem;
 import com.smartgwt.client.widgets.form.fields.events.ChangedEvent;
 import com.smartgwt.client.widgets.form.fields.events.ChangedHandler;
+import com.smartgwt.client.widgets.form.validator.CustomValidator;
 import com.smartgwt.client.widgets.form.validator.RegExpValidator;
 
 public class CommonAttributeParts1 extends PropertyCommonAttributeParts {
@@ -58,6 +59,8 @@ public class CommonAttributeParts1 extends PropertyCommonAttributeParts {
 
 	/** 多重度 */
 	private TextItem txtMultipl;
+	private MultipleValidator multipleValidator;
+	private MultipleValidator multipleReferenceValidator;
 
 	private PropertyCommonAttributePane owner;
 
@@ -91,6 +94,9 @@ public class CommonAttributeParts1 extends PropertyCommonAttributeParts {
 		txtMultipl = new MtpTextItem();
 		txtMultipl.setTitle("Multiple");
 		txtMultipl.setKeyPressFilter(KEYFILTER_NUM);
+		multipleValidator = new MultipleValidator(false);
+		multipleReferenceValidator = new MultipleValidator(true);
+		txtMultipl.setValidators(multipleValidator);
 
 		form = new MtpForm2Column();
 		form.setItems(txtName, txtDisplayName, selType, txtMultipl);
@@ -102,7 +108,7 @@ public class CommonAttributeParts1 extends PropertyCommonAttributeParts {
 	public void initialize(PropertyCommonAttributePane owner, PropertyCommonAttributePaneHandler handler) {
 		this.owner = owner;
 
-		LinkedHashMap<String, String> typeMap = new LinkedHashMap<String, String>();
+		LinkedHashMap<String, String> typeMap = new LinkedHashMap<>();
 		for (PropertyDefinitionType type : PropertyDefinitionType.values()) {
 			typeMap.put(type.name(), typeController.getTypeDisplayName(type));
 		}
@@ -178,19 +184,18 @@ public class CommonAttributeParts1 extends PropertyCommonAttributeParts {
 
 		txtMultipl.setDisabled(false);
 		txtMultipl.setKeyPressFilter(KEYFILTER_NUM);
+		txtMultipl.setValidators(multipleValidator);
 
 		switch (type) {
+		case REFERENCE:
+			txtMultipl.setKeyPressFilter(KEYFILTER_NUMANDASTER);
+			txtMultipl.setValidators(multipleReferenceValidator);
+			break;
 		case EXPRESSION:
 			txtMultipl.setDisabled(true);
 			break;
-		case REFERENCE:
-			txtMultipl.setKeyPressFilter(KEYFILTER_NUMANDASTER);
-			break;
 		case AUTONUMBER:
 			txtMultipl.setDisabled(true);
-			break;
-		case BINARY:
-			txtMultipl.setKeyPressFilter(KEYFILTER_NUM);
 			break;
 		default:
 		}
@@ -200,4 +205,49 @@ public class CommonAttributeParts1 extends PropertyCommonAttributeParts {
 		return AdminClientMessageUtil.getString(key);
 	}
 
+	private class MultipleValidator extends CustomValidator {
+
+		private boolean canAster = false;
+
+		public MultipleValidator(boolean canAster) {
+			this.canAster = canAster;
+
+			if (canAster) {
+				setErrorMessage(rs("ui_metadata_entity_PropertyEditDialog_multipleAsterErr"));
+			} else {
+				setErrorMessage(rs("ui_metadata_entity_PropertyEditDialog_multipleErr"));
+			}
+		}
+
+		@Override
+		protected boolean condition(Object value) {
+			if (value == null) {
+				return true;
+			}
+			String strValue = value.toString();
+			if (canAster) {
+				if (strValue.equals(CommonAttribute.MULTIPLE_ASTER_STR_VALUE)) {
+					return true;
+				}
+				//アスタリスクを含む不正な入力のチェック
+				//アスタリスクを含む場合はアスタリスクのみ可
+				if (strValue.contains(CommonAttribute.MULTIPLE_ASTER_STR_VALUE)
+						&& !strValue.equals(CommonAttribute.MULTIPLE_ASTER_STR_VALUE)) {
+					return false;
+				}
+			}
+
+			try {
+				Integer intValue = Integer.parseInt(strValue);
+				if (intValue <= 0) {
+					return false;
+				}
+			} catch (NumberFormatException e) {
+				return false;
+			}
+
+			return true;
+		}
+
+	}
 }

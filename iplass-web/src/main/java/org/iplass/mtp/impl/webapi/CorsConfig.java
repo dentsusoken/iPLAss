@@ -19,23 +19,6 @@
  */
 package org.iplass.mtp.impl.webapi;
 
-import java.util.List;
-
-public class CorsConfig {
-	private List<String> allowOrigin;
-	private boolean allowCredentials;
-	
-	public List<String> getAllowOrigin() {
-		return allowOrigin;
-	}
-	public void setAllowOrigin(List<String> allowOrigin) {
-		this.allowOrigin = allowOrigin;
-	}
-	public boolean isAllowCredentials() {
-		return allowCredentials;
-	}
-	public void setAllowCredentials(boolean allowCredentials) {
-		this.allowCredentials = allowCredentials;
-	}
-
+@Deprecated
+public class CorsConfig extends org.iplass.mtp.impl.web.CorsConfig {
 }

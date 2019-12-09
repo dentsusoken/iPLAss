@@ -133,7 +133,7 @@ public class RestCommandInvoker {
 		WebApiResponse result = new WebApiResponse();
 		
 		try {
-			result.setStatus(runtime.executeCommand(stack.getRequestContext(), MetaWebApi.COMMAND_INTERCEPTOR_NAME));
+			result.setStatus(runtime.executeCommand(stack, MetaWebApi.COMMAND_INTERCEPTOR_NAME));
 		} catch (WebApplicationException e) {
 			//already handled by code
 			throw e;
@@ -218,7 +218,7 @@ public class RestCommandInvoker {
 		} catch (URISyntaxException e) {
 			throw new IllegalArgumentException("requestOrigin not valid:" + requestOrigin, e);
 		}
-		if (!originUri.getHost().equals(request.getServerName())) {
+		if (originUri.getHost() == null || !originUri.getHost().equals(request.getServerName())) {
 			return false;
 		}
 		int port = originUri.getPort();
@@ -260,11 +260,11 @@ public class RestCommandInvoker {
 			if (request.getMethod().equals(HttpMethod.OPTIONS)) {
 				//preflight
 				String accessControlRequestMethod = request.getHeader(ACCESS_CONTROL_REQUEST_METHOD);
-				if (accessControlRequestMethod != null) {
+				if (accessControlRequestMethod != null
+						&& runtime.getRequestRestriction().isAllowedMethod(accessControlRequestMethod)) {
 					
 					//Access-Control-Allow-Methods
-					//TODO 利用可能なmethodをすべて返したほうがよい？
-					response.addHeader(ACCESS_CONTROL_ALLOW_METHODS, accessControlRequestMethod);
+					response.addHeader(ACCESS_CONTROL_ALLOW_METHODS, runtime.corsAccessControlAllowMethods());
 				}
 				String accessControlRequestHeaders = request.getHeader(ACCESS_CONTROL_REQUEST_HEADERS);
 				if (accessControlRequestHeaders != null) {

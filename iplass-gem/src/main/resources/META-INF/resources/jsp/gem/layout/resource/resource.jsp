@@ -75,14 +75,14 @@ scriptContext.locale.showPulldownPleaseSelectLabel = <%=ViewUtil.isShowPulldownP
 	if (!"en".equals(language)) {
 		//enの場合はデフォルトを利用
 %>
-<script src="${staticContentPath}/webjars/jquery-ui-src/1.11.4/ui/i18n/datepicker-${language}.js?cv=${apiVersion}"></script>
+<script src="${staticContentPath}/webjars/jquery-ui/1.12.1/ui/minified/i18n/datepicker-${language}.js?cv=${apiVersion}"></script>
 <script src="${staticContentPath}/webjars/jQuery-Timepicker-Addon/1.6.3/i18n/jquery-ui-timepicker-${language}.js?cv=${apiVersion}"></script>
 <%
 	}
 %>
 <script src="${staticContentPath}/scripts/gem/plugin/jQuery-Timepicker-Addon/jquery-ui-timepicker-addon-mtp.js?cv=${apiVersion}"></script>
 
-<link rel="stylesheet" href="${staticContentPath}/webjars/jquery-ui/1.12.1/jquery-ui.css?cv=${apiVersion}" />
+<link rel="stylesheet" href="${staticContentPath}/webjars/jquery-ui/1.12.1/themes/base/jquery-ui.min.css?cv=${apiVersion}" />
 <link rel="stylesheet" href="${staticContentPath}/webjars/free-jqgrid/4.14.1/css/ui.jqgrid.min.css?cv=${apiVersion}" />
 <link rel="stylesheet" href="${staticContentPath}/webjars/free-jqgrid/4.14.1/plugins/css/ui.multiselect.min.css?cv=${apiVersion}" />
 <link rel="stylesheet" href="${staticContentPath}/webjars/jqtree/1.4.2/jqtree.css?cv=${apiVersion}" />

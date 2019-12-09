@@ -4,7 +4,13 @@
 
 package org.iplass.mtp.tools.batch.metadata;
 
-import static org.iplass.mtp.tools.batch.metadata.MetaDataExportParameter.*;
+import static org.iplass.mtp.tools.batch.metadata.MetaDataExportParameter.PROP_EXPORT_DIR;
+import static org.iplass.mtp.tools.batch.metadata.MetaDataExportParameter.PROP_FILE_NAME;
+import static org.iplass.mtp.tools.batch.metadata.MetaDataExportParameter.PROP_META_EXCLUDE_TENANT;
+import static org.iplass.mtp.tools.batch.metadata.MetaDataExportParameter.PROP_META_LOCAL_ONLY;
+import static org.iplass.mtp.tools.batch.metadata.MetaDataExportParameter.PROP_META_SOURCE;
+import static org.iplass.mtp.tools.batch.metadata.MetaDataExportParameter.PROP_TENANT_ID;
+import static org.iplass.mtp.tools.batch.metadata.MetaDataExportParameter.PROP_TENANT_URL;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -276,7 +282,7 @@ public class MetaDataExport extends MtpCuiBase {
 			List<MetaDataEntryInfo> allMeta = MetaDataContext.getContext().definitionList("/");
 			for (MetaDataEntryInfo info : allMeta) {
 				if (param.isExportLocalMetaDataOnly()) {
-					if (info.getRepositryType() != RepositoryType.TENANT_LOCAL) {
+					if (info.getRepositryType() == RepositoryType.SHARED) {
 						continue;
 					}
 				}
@@ -304,7 +310,7 @@ public class MetaDataExport extends MtpCuiBase {
 					List<MetaDataEntryInfo> allMeta = MetaDataContext.getContext().definitionList(pathStr.substring(0, pathStr.length() - 1));
 					for (MetaDataEntryInfo info : allMeta) {
 						if (param.isExportLocalMetaDataOnly()) {
-							if (info.getRepositryType() != RepositoryType.TENANT_LOCAL) {
+							if (info.getRepositryType() == RepositoryType.SHARED) {
 								continue;
 							}
 						}
@@ -315,7 +321,7 @@ public class MetaDataExport extends MtpCuiBase {
 					MetaDataEntry entry = MetaDataContext.getContext().getMetaDataEntry(pathStr);
 					if (entry != null) {
 						if (param.isExportLocalMetaDataOnly()) {
-							if (entry.getRepositryType() != RepositoryType.TENANT_LOCAL) {
+							if (entry.getRepositryType() == RepositoryType.SHARED) {
 								logWarn(rs("MetaDataExport.excludeNotLocalMetaLog", pathStr));
 								continue;
 							}

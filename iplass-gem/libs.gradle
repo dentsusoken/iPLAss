@@ -6,13 +6,14 @@ configurations {
 	all*.exclude group: 'org.webjars.npm', module: 'jquery'
 	all*.exclude group: 'org.webjars.bower', module: 'jquery'
 	all*.exclude group: 'org.webjars.bower', module: 'moment'
+	
+	// jquery-uiはbowerを利用。ビルドパスが競合してエラーになるのでそれ以外のものは除外(Timepicker-Addonで参照)
+	all*.exclude group: 'org.webjars', module: 'jquery-ui'
 }
 
 dependencies {
 	//js
 	wjRuntime 'org.webjars:jquery:3.2.1'
-	wjRuntime 'org.webjars:jquery-ui:1.12.1'
-	wjRuntime 'org.webjars:jquery-ui-src:1.11.4' //datepickerの多言語ファイル
 	wjRuntime 'org.webjars:pdf-js:1.9.426'
 	wjRuntime 'org.webjars:ckeditor:4.7.3'
 	wjRuntime 'org.webjars:select2:4.0.3'
@@ -23,6 +24,7 @@ dependencies {
 	wjRuntime 'org.webjars.npm:free-jqgrid:4.14.1'
 	wjRuntime 'org.webjars.npm:jqtree:1.4.2'
 
+	wjRuntime 'org.webjars.bower:jquery-ui:1.12.1'
 	wjRuntime 'org.webjars.bower:blueimp-file-upload:9.28.0'
 	wjRuntime 'org.webjars.bower:fullcalendar:3.5.1'
 	wjRuntime 'org.webjars.bower:jQuery-contextMenu:2.6.2'

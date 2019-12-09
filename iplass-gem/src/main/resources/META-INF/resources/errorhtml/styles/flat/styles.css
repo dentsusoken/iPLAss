@@ -264,6 +264,9 @@ h5 {
   margin-left: 20px;
   color: #aaa; }
 
+.hgroup-02 svg {
+  margin-right: 10px; }
+
 .unexpected-error #header #title {
   display: none; }
 

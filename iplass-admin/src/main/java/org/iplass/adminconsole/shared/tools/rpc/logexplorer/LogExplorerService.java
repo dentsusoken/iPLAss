@@ -22,6 +22,7 @@ package org.iplass.adminconsole.shared.tools.rpc.logexplorer;
 
 import java.util.List;
 
+import org.iplass.adminconsole.shared.tools.dto.logexplorer.LogConditionInfo;
 import org.iplass.adminconsole.shared.tools.dto.logexplorer.LogFile;
 
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
@@ -35,4 +36,7 @@ public interface LogExplorerService extends XsrfProtectedService {
 
 	public List<LogFile> getLogfileNames(final int tenantId);
 
+	public List<LogConditionInfo> getLogConditions(final int tenantId);
+
+	public String applyLogConditions(final int tenantId, final List<LogConditionInfo> logConditions);
 }

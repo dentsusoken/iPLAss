@@ -23,6 +23,7 @@ package org.iplass.adminconsole.client.metadata.ui.common;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.iplass.adminconsole.client.base.ui.widget.MtpTreeGrid;
 import org.iplass.adminconsole.client.metadata.data.entity.PropertyTreeDS;
 import org.iplass.mtp.entity.definition.properties.ReferenceProperty;
 
@@ -37,7 +38,6 @@ import com.smartgwt.client.widgets.grid.ListGridField;
 import com.smartgwt.client.widgets.grid.events.CellDoubleClickEvent;
 import com.smartgwt.client.widgets.grid.events.CellDoubleClickHandler;
 import com.smartgwt.client.widgets.tree.Tree;
-import com.smartgwt.client.widgets.tree.TreeGrid;
 import com.smartgwt.client.widgets.tree.TreeNode;
 
 /**
@@ -45,7 +45,7 @@ import com.smartgwt.client.widgets.tree.TreeNode;
  * @author lis3wg
  *
  */
-public class EntityPropertyTreeGrid extends TreeGrid implements EntityPropertyGrid {
+public class EntityPropertyTreeGrid extends MtpTreeGrid implements EntityPropertyGrid {
 
 	private boolean showRoot;
 
@@ -56,6 +56,8 @@ public class EntityPropertyTreeGrid extends TreeGrid implements EntityPropertyGr
 	 * コンストラクタ
 	 */
 	public EntityPropertyTreeGrid(boolean showRoot) {
+		super();
+		
 		this.showRoot = showRoot;
 
 		setLeaveScrollbarGap(false);
@@ -121,7 +123,7 @@ public class EntityPropertyTreeGrid extends TreeGrid implements EntityPropertyGr
 	 * 表示対象フィールド設定
 	 */
 	private void setGridFields() {
-		List<ListGridField> fields = new ArrayList<ListGridField>();
+		List<ListGridField> fields = new ArrayList<>();
 
 		ListGridField displayNameField = new ListGridField("outputDisplayName");
 		fields.add(displayNameField);

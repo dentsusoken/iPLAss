@@ -30,6 +30,7 @@ import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 import java.util.TimeZone;
 
 import org.apache.commons.lang3.time.DateUtils;
@@ -37,6 +38,7 @@ import org.iplass.mtp.auth.AuthContext;
 import org.iplass.mtp.auth.User;
 import org.iplass.mtp.impl.i18n.I18nService;
 import org.iplass.mtp.impl.i18n.LocaleFormat;
+import org.iplass.mtp.impl.logging.LoggingContext;
 import org.iplass.mtp.impl.tenant.MetaTenant.MetaTenantHandler;
 import org.iplass.mtp.impl.tenant.MetaTenantI18nInfo.MetaTenantI18nInfoRuntime;
 import org.iplass.mtp.spi.ServiceRegistry;
@@ -48,6 +50,9 @@ import org.slf4j.MDC;
 
 
 public class ExecuteContext {
+
+	public static final String MDC_TENANT = "tenant";
+	public static final String MDC_TENANT_NAME = "tenantName";
 
 	private static final Logger logger = LoggerFactory.getLogger(ExecuteContext.class);
 
@@ -86,9 +91,6 @@ public class ExecuteContext {
 
 
 		return context.get();
-
-
-//		return context.get();
 	}
 
 	public static boolean isInited() {
@@ -98,8 +100,8 @@ public class ExecuteContext {
 
 	public static <T> T executeAs(TenantContext tenant, Executable<T> exec) {
 		ExecuteContext current = context.get();
-		String currentMdcTenant = MDC.get("tenant");
-		String currentMdcTenantName = MDC.get("tenantName");
+		String currentMdcTenant = MDC.get(MDC_TENANT);
+		String currentMdcTenantName = MDC.get(MDC_TENANT_NAME);
 		ExecuteContext nested = null;
 		try {
 			if (current != null) {
@@ -122,8 +124,8 @@ public class ExecuteContext {
 			}
 
 			context.set(nested);
-			MDC.put("tenant", String.valueOf(nested.getClientTenantId()));
-			MDC.put("tenantName", String.valueOf(nested.getTenantContext().getTenantName()));
+			MDC.put(MDC_TENANT, nested.getTenantContext().getTenantIdString());
+			MDC.put(MDC_TENANT_NAME, nested.getTenantContext().getTenantName());
 
 			if(logger.isDebugEnabled()) {
 				if (current == null) {
@@ -161,14 +163,14 @@ public class ExecuteContext {
 				}
 				context.set(current);
 				if (currentMdcTenant != null) {
-					MDC.put("tenant", currentMdcTenant);
+					MDC.put(MDC_TENANT, currentMdcTenant);
 				} else {
-					MDC.remove("tenant");
+					MDC.remove(MDC_TENANT);
 				}
 				if (currentMdcTenantName != null) {
-					MDC.put("tenantName", currentMdcTenantName);
+					MDC.put(MDC_TENANT_NAME, currentMdcTenantName);
 				} else {
-					MDC.remove("tenantName");
+					MDC.remove(MDC_TENANT_NAME);
 				}
 
 			}
@@ -199,12 +201,10 @@ public class ExecuteContext {
 		}
 		context.set(mtfContext);
 		if (mtfContext != null && mtfContext.getTenantContext() != null) {
-			MDC.put("tenant", String.valueOf(mtfContext.getClientTenantId()));
-			MDC.put("tenantName", mtfContext.getTenantContext().getTenantName());
+			MDC.put(MDC_TENANT, mtfContext.getTenantContext().getTenantIdString());
+			MDC.put(MDC_TENANT_NAME, mtfContext.getTenantContext().getTenantName());
 		} else {
-			MDC.remove("tenant");
-			MDC.remove("tenantName");
-			MDC.remove("user");
+			MDC.clear();
 		}
 	}
 
@@ -215,12 +215,10 @@ public class ExecuteContext {
 		}
 		context.set(mtfContext);
 		if (mtfContext != null && mtfContext.getTenantContext() != null) {
-			MDC.put("tenant", String.valueOf(mtfContext.getClientTenantId()));
-			MDC.put("tenantName", mtfContext.getTenantContext().getTenantName());
+			MDC.put(MDC_TENANT, mtfContext.getTenantContext().getTenantIdString());
+			MDC.put(MDC_TENANT_NAME, mtfContext.getTenantContext().getTenantName());
 		} else {
-			MDC.remove("tenant");
-			MDC.remove("tenantName");
-			MDC.remove("user");
+			MDC.clear();
 		}
 	}
 
@@ -240,6 +238,17 @@ public class ExecuteContext {
 	public ExecuteContext(TenantContext tenantContext) {
 		this.tenantContext = tenantContext;
 //		this.authType = authType;
+	}
+	
+	public void mdcPut(String key, String val) {
+		String preVal = MDC.get(key);
+		MDC.put(key, val);
+		if (!Objects.equals(preVal, val)) {
+			LoggingContext lc = getTenantContext().getResource(LoggingContext.class);
+			if (lc != null) {
+				lc.resetMatched(this);
+			}
+		}
 	}
 
 	public Timestamp getDefaultEndDate() {

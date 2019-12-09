@@ -17,11 +17,12 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
+
 package org.iplass.mtp.impl.metadata.composite;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -32,7 +33,6 @@ import org.iplass.mtp.impl.metadata.MetaDataEntryInfo;
 import org.iplass.mtp.impl.metadata.MetaDataRepository;
 import org.iplass.mtp.impl.metadata.MetaDataRuntimeException;
 import org.iplass.mtp.impl.metadata.MetaDataStore;
-import org.iplass.mtp.impl.metadata.rdb.RdbMetaDataStore;
 import org.iplass.mtp.spi.Config;
 import org.iplass.mtp.spi.ServiceConfigrationException;
 
@@ -50,9 +50,8 @@ public class CompositeMetaDataStore implements MetaDataStore {
 
 	@Override
 	public void destroyed() {
-		// TODO Auto-generated method stub
-		
 	}
+
 	@Override
 	public void inited(MetaDataRepository service, Config config) {
 
@@ -130,15 +129,20 @@ public class CompositeMetaDataStore implements MetaDataStore {
 
 	@Override
 	public List<MetaDataEntryInfo> definitionList(int tenantId, String prefixPath) throws MetaDataRuntimeException {
+		return definitionList(tenantId, prefixPath, false);
+	}
+
+	@Override
+	public List<MetaDataEntryInfo> definitionList(int tenantId, String prefixPath, boolean withInvalid) throws MetaDataRuntimeException {
 		if ("/".equals(prefixPath)) {
 			List<MetaDataEntryInfo> ret = new ArrayList<MetaDataEntryInfo>();
 			for (Map.Entry<String, MetaDataStore> e : container.entrySet()) {
 				// 対象pathでdefinition検索
 				String path = e.getKey();
 				MetaDataStore ds = e.getValue();
-				ret.addAll(ds.definitionList(tenantId, path));
+				ret.addAll(ds.definitionList(tenantId, path, withInvalid));
 			}
-			List<MetaDataEntryInfo> defaultList = defaultStore.definitionList(tenantId, prefixPath);
+			List<MetaDataEntryInfo> defaultList = defaultStore.definitionList(tenantId, prefixPath, withInvalid);
 			Iterator<MetaDataEntryInfo> ite = defaultList.iterator();
 			while(ite.hasNext()) {
 				MetaDataEntryInfo e = ite.next();
@@ -159,9 +163,9 @@ public class CompositeMetaDataStore implements MetaDataStore {
 			key = "/" + key.split("/")[0] + "/";
 			MetaDataStore ds = container.get(key);
 			if (ds != null) {
-				return ds.definitionList(tenantId, prefixPath);
+				return ds.definitionList(tenantId, prefixPath, withInvalid);
 			} else {
-				return defaultStore.definitionList(tenantId, prefixPath);
+				return defaultStore.definitionList(tenantId, prefixPath, withInvalid);
 			}
 		}
 	}
@@ -208,36 +212,23 @@ public class CompositeMetaDataStore implements MetaDataStore {
 		return ds.getHistoryById(tenantId, id);
 	}
 
-	public boolean hasOverwriteMetaData(int sharedTenantId, MetaDataEntry entry) {
-		RdbMetaDataStore rdb = getRdbStore();
-		if(rdb != null) {
-			return rdb.hasOverwriteMetaData(sharedTenantId, entry.getMetaData().getId());
-		} else {
-			return false;
+	@Override
+	public List<Integer> getTenantIdsOf(String id) {
+		HashSet<Integer> set = new HashSet<>();
+		for (Map.Entry<String, MetaDataStore> e : container.entrySet()) {
+			MetaDataStore ds = e.getValue();
+			List<Integer> dsList = ds.getTenantIdsOf(id);
+			if (dsList != null) {
+				set.addAll(dsList);
+			}
 		}
-	}
-
-	public List<Integer> getOverwriteTenantIdList(int sharedTenantId, String metaDataId) {
-		RdbMetaDataStore rdb = getRdbStore();
-		if(rdb != null) {
-			return  rdb.getOverwriteTenantIdList(sharedTenantId, metaDataId);
-		} else {
-			return new ArrayList<Integer>();
-		}
-	}
-
-	public List<MetaDataEntryInfo> getInvalidEntryList(final int tenantId) {
-		RdbMetaDataStore rdb = getRdbStore();
-		if(rdb != null) {
-			return rdb.getInvalidEntryList(tenantId);
-		}
-		return Collections.emptyList();
+		return new ArrayList<>(set);
 	}
 
 	public void purgeById(final int tenantId, final String id) throws MetaDataRuntimeException {
-		RdbMetaDataStore rdb = getRdbStore();
-		if(rdb != null) {
-			rdb.purgeById(tenantId, id);
+		for (Map.Entry<String, MetaDataStore> e : container.entrySet()) {
+			MetaDataStore ds = e.getValue();
+			ds.purgeById(tenantId, id);
 		}
 	}
 
@@ -280,10 +271,6 @@ public class CompositeMetaDataStore implements MetaDataStore {
 			}
 		}
 		return defaultStore;
-	}
-
-	private RdbMetaDataStore getRdbStore() {
-		return getStore(RdbMetaDataStore.class);
 	}
 
 	public MetaDataStore[] getStore() {

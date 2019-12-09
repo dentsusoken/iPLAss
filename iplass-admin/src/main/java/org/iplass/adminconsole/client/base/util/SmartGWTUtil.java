@@ -772,9 +772,41 @@ public final class SmartGWTUtil {
 			//dateTimeField.setDateFormatter(DateDisplayFormat.TOEUROPEANSHORTDATETIME);
 			//dateTimeField.setTooltip("DD/MM/YYYY HH:MM");
 		}
-		dateTimeField.setWidth(120);
+		dateTimeField.setWidth(140);
 
 		return dateTimeField;
+	}
+
+	/**
+	 * DateTimeItemに合わせたフォーマットを行います。
+	 *
+	 * @param date 対象
+	 * @return DateTimeItem
+	 */
+	public static String formatDateTimeItem(Timestamp timestamp) {
+		return formatDateTimeItem(timestamp, TenantInfoHolder.getInputLocale());
+	}
+
+	/**
+	 * DateTimeItemに合わせたフォーマットを行います。
+	 * 指定されたLocaleに合わせたFormatを指定します。
+	 * 現状はja以外はenに合わせて出力します。
+	 *
+	 * @param date 対象
+	 * @param locale Locale
+	 * @return フォーマット値
+	 */
+	public static String formatDateTimeItem(Date date, String locale) {
+		if (date == null) {
+			return null;
+		}
+		if (locale == null || locale.equalsIgnoreCase("ja_JP")) {
+			//現状HH:MM:SSを表示するFormatがないのでHH:MMまで
+			return DateTimeFormat.getFormat("yyyy/MM/dd HH:mm").format(date);
+		} else {
+			//現状HH:MM:SSを表示するFormatがないのでHH:MMまで
+			return DateTimeFormat.getFormat("MM/dd/yyyy HH:mm").format(date);
+		}
 	}
 
 	/**

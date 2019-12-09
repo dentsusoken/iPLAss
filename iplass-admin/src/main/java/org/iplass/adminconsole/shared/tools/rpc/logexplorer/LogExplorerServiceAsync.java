@@ -22,6 +22,7 @@ package org.iplass.adminconsole.shared.tools.rpc.logexplorer;
 
 import java.util.List;
 
+import org.iplass.adminconsole.shared.tools.dto.logexplorer.LogConditionInfo;
 import org.iplass.adminconsole.shared.tools.dto.logexplorer.LogFile;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -32,5 +33,9 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 public interface LogExplorerServiceAsync {
 
 	void getLogfileNames(final int tenantId, AsyncCallback<List<LogFile>> callback);
+
+	void getLogConditions(final int tenantId, AsyncCallback<List<LogConditionInfo>> callback);
+
+	void applyLogConditions(final int tenantId, List<LogConditionInfo> logConditions, AsyncCallback<String> callback);
 
 }

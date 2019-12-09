@@ -25,6 +25,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -428,6 +429,11 @@ public class MetaDataContext {
 				repository.update(tenantId, toStore);
 
 				if (config != null) {
+					
+					if (current.getRepositryType() == RepositoryType.SHARED) {
+						toStore.setRepositryType(RepositoryType.SHARED_OVERWRITE);
+					}
+
 					updateConfigRepository(toStore, config, false);	//ここではリロードする必要なし
 				}
 
@@ -607,6 +613,7 @@ public class MetaDataContext {
 	 */
 	private void updateConfigRepository(final MetaDataEntry meta, final MetaDataConfig config, final boolean doAutoReload) {
 
+		
 		if (meta.getRepositryType() == RepositoryType.SHARED) {
 			throw new MetaDataRuntimeException(meta.getPath() + "(" + meta.getMetaData().getId() + ") MetaData not allowed change config.");
 		}
@@ -642,7 +649,7 @@ public class MetaDataContext {
 					//すでにオーバーライト済みのメタデータが存在する場合、更新できない。
 					if (meta.isSharable() && !config.isSharable()
 							|| meta.isSharable() && meta.isOverwritable() && !config.isOverwritable()) {
-						if (repository.hasOverwriteMetaData(tenantId, meta)) {
+						if (hasOverwriteMetaData(meta)) {
 							throw new MetaDataRuntimeException(meta.getPath() + " MetaData is already shared and overwrote.so can not change config to no share or no overwrite.");
 						}
 					}
@@ -665,6 +672,17 @@ public class MetaDataContext {
 
 		});
 
+	}
+	
+	private boolean hasOverwriteMetaData(MetaDataEntry meta) {
+		List<Integer> list = repository.getTenantIdsOf(meta.getMetaData().getId());
+		if (list.size() == 0) {
+			return false;
+		}
+		if (list.contains(tcService.getSharedTenantId()) && list.size() == 1) {
+			return false;
+		}
+		return true;
 	}
 
 	/**
@@ -765,6 +783,35 @@ public class MetaDataContext {
 		return list;
 	}
 	
+	public List<MetaDataEntryInfo> invalidDefinitionList(final String prefixPath) {
+		String path = prefixPath;
+		if (!path.endsWith("/")) {
+			path = path + "/";
+		}
+		boolean isShared = tcService.getSharedTenantId() == tenantId;
+		MetaDataContext sharedContext = null;
+		if (!isShared) {
+			sharedContext = tcService.getSharedTenantContext().getMetaDataContext();
+		}
+		
+		List<MetaDataEntryInfo> localList = repository.definitionList(tenantId, path, isShared, true);
+		List<MetaDataEntryInfo> invalidList = new LinkedList<>();
+		for (MetaDataEntryInfo e: localList) {
+			if (e.getState() == State.INVALID) {
+				if (!isShared) {
+					MetaDataEntry entry = sharedContext.getMetaDataEntryById(e.getId());
+					if (entry == null || !entry.isSharable()) {
+						invalidList.add(e);
+					}
+				} else {
+					invalidList.add(e);
+				}
+			}
+		}
+		
+		return invalidList;
+	}
+
 	public boolean exists(String prefixPath, String subPath) {
 		if (!prefixPath.endsWith("/")) {
 			prefixPath = prefixPath + "/";
@@ -797,7 +844,9 @@ public class MetaDataContext {
 	 * @return オーバーライトテナントIDのリスト
 	 */
 	public List<Integer> getOverwriteTenantIdList(String metaDataId) {
-		return repository.getOverwriteTenantIdList(tcService.getSharedTenantId(), metaDataId);
+		List<Integer> res = repository.getTenantIdsOf(metaDataId);
+		res.removeIf(tid -> tid.equals(tcService.getSharedTenantId()));
+		return res;
 	}
 
 	/**

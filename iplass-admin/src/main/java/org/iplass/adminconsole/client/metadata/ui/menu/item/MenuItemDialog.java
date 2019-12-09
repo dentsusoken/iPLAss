@@ -101,7 +101,7 @@ public class MenuItemDialog extends MtpDialog {
 	private String urlCustomizeScript;
 
 	/** データ変更ハンドラ */
-	private List<MenuItemDataChangeHandler> handlers = new ArrayList<MenuItemDataChangeHandler>();
+	private List<MenuItemDataChangeHandler> handlers = new ArrayList<>();
 
 	//共通項目
 	private TextItem nameField;
@@ -378,6 +378,7 @@ public class MenuItemDialog extends MtpDialog {
 
 		save = new IButton("Save");
 		save.addClickHandler(new ClickHandler() {
+			@Override
 			public void onClick(ClickEvent event) {
 				//最後に実行したvalidateのエラー箇所にフォーカスがいくので逆から実行
 				boolean isEntityValidate = (entityForm != null ? entityForm.validate() : true);
@@ -391,6 +392,7 @@ public class MenuItemDialog extends MtpDialog {
 
 		IButton cancel = new IButton("Cancel");
 		cancel.addClickHandler(new ClickHandler() {
+			@Override
 			public void onClick(ClickEvent event) {
 				destroy();
 			}
@@ -406,7 +408,7 @@ public class MenuItemDialog extends MtpDialog {
 
 			@Override
 			public void onSuccess(List<String> result) {
-				List<String> imageColors = new ArrayList<String>();
+				List<String> imageColors = new ArrayList<>();
 				imageColors.add("");
 				imageColors.addAll(result);
 				imageColorField.setValueMap(imageColors.toArray(new String[imageColors.size()]));
@@ -444,13 +446,15 @@ public class MenuItemDialog extends MtpDialog {
 
 				if (isCopy) {
 					//タイトルの変更
-					setTitle("(Copy)" + current.getDisplayName());
+					setTitle("Copy MenuItem");
 					nameField.setValue(current.getName() + "_Copy");
-					displayNameField.setValue(current.getDisplayName() + "_Copy");
+					if (current.getDisplayName() != null) {
+						displayNameField.setValue(current.getDisplayName());
+					}
 					displayNameField.setLocalizedList(current.getLocalizedDisplayNameList());
 				} else {
 					//タイトルの変更
-					setTitle(current.getDisplayName());
+					setTitle("Edit MenuItem");
 					SmartGWTUtil.setReadOnly(nameField);
 					nameField.setValue(current.getName());
 					displayNameField.setValue(current.getDisplayName());
@@ -856,7 +860,7 @@ public class MenuItemDialog extends MtpDialog {
 	private void getEntityViewName() {
 		String defName = SmartGWTUtil.getStringValue(entityNameField);
 
-		final LinkedHashMap<String, String> valueMap = new LinkedHashMap<String, String>();
+		final LinkedHashMap<String, String> valueMap = new LinkedHashMap<>();
 		if (SmartGWTUtil.isEmpty(defName)) {
 			entityViewNameField.setValueMap(valueMap);
 		} else {

@@ -21,6 +21,7 @@ package org.iplass.mtp.impl.command.interceptors;
 
 import org.iplass.mtp.command.interceptor.CommandInterceptor;
 import org.iplass.mtp.command.interceptor.CommandInvocation;
+import org.iplass.mtp.impl.core.ExecuteContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
@@ -34,7 +35,8 @@ public class LoggingInterceptor implements CommandInterceptor {
 	@Override
 	public String intercept(CommandInvocation invocation) {
 		String prev = MDC.get(MDC_CMD);
-		MDC.put(MDC_CMD, invocation.getCommandName());
+		ExecuteContext ec = ExecuteContext.getCurrentContext();
+		ec.mdcPut(MDC_CMD, invocation.getCommandName());
 		try {
 			
 			if (commandLogger.isDebugEnabled()) {
@@ -61,7 +63,7 @@ public class LoggingInterceptor implements CommandInterceptor {
 			if (prev == null) {
 				MDC.remove(MDC_CMD);
 			} else {
-				MDC.put(MDC_CMD, prev);
+				ec.mdcPut(MDC_CMD, prev);
 			}
 		}
 	}

@@ -23,6 +23,7 @@ package org.iplass.mtp.impl.web.interceptors;
 import java.util.List;
 
 import org.iplass.mtp.ApplicationException;
+import org.iplass.mtp.impl.core.ExecuteContext;
 import org.iplass.mtp.impl.web.WebRequestStack;
 import org.iplass.mtp.impl.web.actionmapping.ActionMappingService;
 import org.iplass.mtp.spi.Config;
@@ -94,7 +95,8 @@ public class LoggingInterceptor implements RequestInterceptor, ServiceInitListen
 		}
 		
 		String prev = MDC.get(MDC_ACTION);
-		MDC.put(MDC_ACTION, invocation.getActionName());
+		ExecuteContext ec = ExecuteContext.getCurrentContext();
+		ec.mdcPut(MDC_ACTION, invocation.getActionName());
 		Throwable exp = null;
 		try {
 			invocation.proceedRequest();
@@ -143,7 +145,7 @@ public class LoggingInterceptor implements RequestInterceptor, ServiceInitListen
 			if (prev == null) {
 				MDC.remove(MDC_ACTION);
 			} else {
-				MDC.put(MDC_ACTION, prev);
+				ec.mdcPut(MDC_ACTION, prev);
 			}
 		}
 	}

@@ -518,16 +518,19 @@ $(function() {
 		} else {
 %>
 	$("#<%=condKey%> :text").attr("name", "<%=condKey%>");
-	<%
+<%
 		}
 	}
 
 	//初期タブ選択処理
 	//searchCond != nullの場合(検索画面に戻ってきた場合)はSearchResultSectionでセットされる
-	String _searchType = "normal";
+	String _searchType = Constants.SEARCH_TYPE_NORMAL;
 	if (searchCond.isEmpty()) {
 		// xssは起こらないが、セレクタにタグが混ざるとjqueryでエラーになるため、特定文字のみ渡すようにする
-		if ("detail".equals(searchType) || "fixed".equals(searchType)) _searchType = searchType;
+		if (Constants.SEARCH_TYPE_DETAIL.equals(searchType) 
+				|| Constants.SEARCH_TYPE_FIXED.equals(searchType)) {
+			_searchType = searchType;
+		}
 %>
 	setSearchTab("<%=_searchType%>");
 <%
@@ -969,7 +972,7 @@ $(function() {
 
 		for (int i = 0; i < dtlCndCount; i++) {
 			//検索画面に戻ってきた場合で、番号が飛んでいるものは除外
-			if ("detail".equals(searchCondSearchType) && !checkDtlCndData(searchCond, i)) continue;
+			if (Constants.SEARCH_TYPE_DETAIL.equals(searchCondSearchType) && !checkDtlCndData(searchCond, i)) continue;
 			String condPropName = Constants.DETAIL_COND_PROP_NM + i;
 			String rowId = "detailCond_" + i;
 %>

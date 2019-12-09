@@ -51,6 +51,9 @@ public class WebApiDefinition implements Definition {
 	 */
 	private CommandConfig commandConfig;
 
+	/** WebApiからのパラメータのCommand実行時のParameter名のマップの定義 */
+	private WebApiParamMapDefinition[] webApiParamMap;
+
 	/** このWebApiで処理されるCommandを特権（セキュリティ制約を受けない）にて処理するかどうか。デフォルトはfalse。 */
 	private boolean isPrivilaged;
 
@@ -379,6 +382,21 @@ public class WebApiDefinition implements Definition {
 	 */
 	public void setCommandConfig(CommandConfig commandConfig) {
 		this.commandConfig = commandConfig;
+	}
+
+	/**
+	 * @return paramMap
+	 */
+	public WebApiParamMapDefinition[] getWebApiParamMap() {
+		return webApiParamMap;
+	}
+
+	/**
+	 * @param webApiParamMap
+	 *            セットする webApiParamMap
+	 */
+	public void setWebApiParamMap(WebApiParamMapDefinition[] webApiParamMap) {
+		this.webApiParamMap = webApiParamMap;
 	}
 
 	/**

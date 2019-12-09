@@ -25,6 +25,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.iplass.adminconsole.client.base.ui.widget.GridActionImgButton;
+import org.iplass.adminconsole.client.base.ui.widget.MtpTreeGrid;
 import org.iplass.adminconsole.client.base.ui.widget.MtpWidgetConstants;
 import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
 import org.iplass.adminconsole.client.tools.data.metaexplorer.MetaDataTreeDS;
@@ -62,7 +63,6 @@ import com.smartgwt.client.widgets.layout.SectionStack;
 import com.smartgwt.client.widgets.layout.SectionStackSection;
 import com.smartgwt.client.widgets.layout.VLayout;
 import com.smartgwt.client.widgets.tree.Tree;
-import com.smartgwt.client.widgets.tree.TreeGrid;
 import com.smartgwt.client.widgets.tree.TreeGridField;
 import com.smartgwt.client.widgets.tree.TreeNode;
 import com.smartgwt.client.widgets.tree.events.DataArrivedEvent;
@@ -73,7 +73,7 @@ public class LangTreeGridPane extends VLayout {
 	private AdvancedSearchExecHandler handler;
 
 	private MetaDataAdvancedSearchPane searchPane;
-	private MetaDataTreeGrid grid;
+	private LangMetaDataTreeGrid grid;
 
 	public LangTreeGridPane(AdvancedSearchExecHandler handler) {
 		this.handler = handler;
@@ -88,7 +88,7 @@ public class LangTreeGridPane extends VLayout {
 		advancedSearchSection.setExpanded(false);
 		advancedSearchSection.setResizeable(true);
 
-		grid = new MetaDataTreeGrid();
+		grid = new LangMetaDataTreeGrid();
 		grid.setCanDragResize(true);
 
 		SectionStackSection metaDataGridSection = new SectionStackSection();
@@ -467,11 +467,13 @@ public class LangTreeGridPane extends VLayout {
 
 	}
 
-	public class MetaDataTreeGrid extends TreeGrid {
+	private class LangMetaDataTreeGrid extends MtpTreeGrid {
 
 		private static final String ERROR_ICON = "[SKINIMG]/actions/exclamation.png";
 
-		public MetaDataTreeGrid() {
+		public LangMetaDataTreeGrid() {
+			super(true);
+
 			setLeaveScrollbarGap(false);
 			setCanSort(false);
 			setCanFreezeFields(false);
@@ -642,7 +644,7 @@ public class LangTreeGridPane extends VLayout {
 
 		public List<String> getSelectedPathList() {
 			ListGridRecord[] records = getSelectedRecords(true);
-			List<String> selectPaths = new ArrayList<String>();
+			List<String> selectPaths = new ArrayList<>();
 			for (ListGridRecord record : records) {
 				String path = record.getAttribute(FIELD_NAME.PATH.name());
 				//Rootは除外

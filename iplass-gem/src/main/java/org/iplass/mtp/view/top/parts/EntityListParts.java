@@ -93,19 +93,35 @@ public class EntityListParts extends TemplateParts {
 	}
 
 	/**
-	 * リンク用のview名を取得します。
-	 * @return リンク用のview名
+	 * 検索リンク用のview名を取得します。
+	 * @return 検索リンク用のview名
 	 */
 	public String getViewNameForLink() {
 		return getParam("viewNameForLink");
 	}
 
 	/**
-	 * リンク用のview名を設定します。
-	 * @param viewName リンク用のview名
+	 * 検索リンク用のview名を設定します。
+	 * @param viewNameForLink 検索リンク用のview名
 	 */
-	public void setViewNameForLink(String viewName) {
-		setParam("viewNameForLink", viewName);
+	public void setViewNameForLink(String viewNameForLink) {
+		setParam("viewNameForLink", viewNameForLink);
+	}
+
+	/**
+	 * 詳細リンク用のView名を取得します。
+	 * @return 詳細リンク用のView名
+	 */
+	public String getViewNameForDetail() {
+		return getParam("viewNameForDetail");
+	}
+
+	/**
+	 * 詳細リンク用のView名を設定します。
+	 * @param viewNameForDetail 詳細リンク用のView名
+	 */
+	public void setViewNameForDetail(String viewNameForDetail) {
+		setParam("viewNameForDetail", viewNameForDetail);
 	}
 
 	/**
@@ -179,7 +195,7 @@ public class EntityListParts extends TemplateParts {
 	 */
 	public void addLocalizedTitle(LocalizedStringDefinition localizedTitle) {
 		if (localizedTitleList == null) {
-			localizedTitleList = new ArrayList<LocalizedStringDefinition>();
+			localizedTitleList = new ArrayList<>();
 		}
 
 		localizedTitleList.add(localizedTitle);

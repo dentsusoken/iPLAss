@@ -137,6 +137,7 @@ LocaleInfo.datasource_tools_entityexplorer_CrawlEntityInfoDS_number = "件数";
 LocaleInfo.datasource_tools_entityexplorer_CrawlEntityInfoDS_lastCrawlDate = "最終クロール日時";
 LocaleInfo.datasource_tools_entityexplorer_CrawlEntityInfoDS_failedToGetEntityList = "Entity一覧データの取得に失敗しました。<br/>原因：";
 LocaleInfo.datasource_tools_logexplorer_LogFileDS_failedToGetLogFile = "ログファイルの取得に失敗しました。<br/>原因：";
+LocaleInfo.datasource_tools_logexplorer_LogConditionDS_failedToGetLogCondition = "ログ条件の取得に失敗しました。<br/>原因：";
 LocaleInfo.datasource_tools_metaexplorer_MetaDataTagDS_tagName = "タグ名";
 LocaleInfo.datasource_tools_metaexplorer_MetaDataTagDS_createDate = "作成日";
 LocaleInfo.datasource_tools_metaexplorer_MetaDataTagDS_comment = "コメント";
@@ -409,6 +410,8 @@ LocaleInfo.ui_metadata_entity_EventListenerListGrid_withoutMappByRefComment = "E
 LocaleInfo.ui_metadata_entity_EventListenerListGrid_scriptHint = "<ul><li>entity: target entity</li><li>event : EventType(org.iplass.mtp.entity.definition.listeners.EventType)</li><li>context : EntityEventContext</li><li>user : UserBinding</li><li>date : CurrentTimestamp</li></ul>";
 LocaleInfo.ui_metadata_entity_EventListenerListGrid_notificationCondScriptHint = "<ul><li>entity: target entity</li><li>event : EventType(org.iplass.mtp.entity.definition.listeners.EventType)</li><li>context : EntityEventContext</li><li>user : UserBinding</li><li>date : CurrentTimestamp</li></ul>";
 LocaleInfo.ui_metadata_entity_PropertyEditDialog_nameErr = "名前には英数字、アンダースコアのみ利用することができます。\n先頭は英字のみ利用することができます。";
+LocaleInfo.ui_metadata_entity_PropertyEditDialog_multipleAsterErr = "多重度が不正です。1以上の数値かアスタリスクのみ指定できます。";
+LocaleInfo.ui_metadata_entity_PropertyEditDialog_multipleErr = "多重度には1以上の数値のみ指定できます。";
 LocaleInfo.ui_metadata_entity_PropertyListGrid_failedGetSortSett = "ソート設定の取得に失敗しました。<br/>原因：";
 LocaleInfo.ui_metadata_entity_PropertyListGrid_eachLangDspName = "<div style=\"white-space: nowrap;\">言語毎の表示名を設定します。</div>";
 LocaleInfo.ui_metadata_entity_PropertyListGrid_expressionItem = "四則演算式やEQL式(Caseやスカラサブクエリなど)を指定します。";
@@ -1159,6 +1162,11 @@ LocaleInfo.ui_metadata_webapi_WebAPIEditPane_saveConfirm = "保存確認";
 LocaleInfo.ui_metadata_webapi_WebAPIEditPane_saveConfirmComment = "WebApiを保存します。よろしいですか？";
 LocaleInfo.ui_metadata_webapi_WebAPIEditPane_cancelConfirm = "キャンセル確認";
 LocaleInfo.ui_metadata_webapi_WebAPIEditPane_cancelConfirmComment = "編集中の場合、編集内容が破棄されますがよろしいですか？";
+LocaleInfo.ui_metadata_webapi_WebAPIParamMapEditDialog_dispEditDialogCondition = "<div style=\"white-space: nowrap;\">Conditionの編集ダイアログを表示します。</div>";
+LocaleInfo.ui_metadata_webapi_WebAPIParamMapEditDialog_conditionHint = "conditionを指定することにより、パラメータのマッピングを実行する条件を指定することが可能です。<br>conditionはgroovyScriptで記述可能で、次の変数がバインドされており判断に利用可能です。<br><ul><li>subPath : webApiより下層のサブパスを/で分割したString配列</li><li>fullPath : webApiを含めたフルパスを/で分割したString配列</li><li>paramMap : リクエストパラメータのMap</li></ul></p><p>たとえば、次のようなParamMap定義がある場合、</p><table border=1><tr><th>name</th><th>mapFrom</th><th>condition</th></tr><tr><td>defName</td><td>${0}</td><td>subPath.length==1</td></tr><tr><td>viewName</td><td>${0}</td><td>subPath.length==2</td></tr><tr><td>defName</td><td>${1}</td><td>subPath.length==2</td></tr></table><p>webApi1に対するリクエストパスが、<ul><li>webApi1/hogeだった場合、defName=hoge</li><li>webApi1/hoge/fugaだった場合、viewName=hoge, defName=fuga</li></ul>となります。</p>";
+LocaleInfo.ui_metadata_webapi_WebAPIParamMapGridPane_webApiPathParamComment1 = "<li>webApiのパスとしてパラメータを受け取る場合は、${n}、${paths}、{n}(旧形式) の定義が必要です。</li>";
+LocaleInfo.ui_metadata_webapi_WebAPIParamMapGridPane_webApiPathParamComment2 = "<li>${paths} でwebApi名を除いたパス全体を取得できます。</li>";
+LocaleInfo.ui_metadata_webapi_WebAPIParamMapGridPane_webApiPathParamComment3 = "<li>${n} でwebApi名を除いたn番目のパスが取得できます (n=1,2,・・・)。</li>";
 LocaleInfo.ui_metadata_webapi_WebAPIPluginManager_failedToDeleteWebApi = "WebApiの削除に失敗しました。<br/>原因：";
 LocaleInfo.ui_metadata_webapi_WebAPIPluginManager_completion = "完了";
 LocaleInfo.ui_metadata_webapi_WebAPIPluginManager_deleteWebApiComp = "WebApiが削除されました。";
@@ -1320,6 +1328,11 @@ LocaleInfo.ui_tools_langexplorer_LangCsvUploadDialog_importErr = "インポー�
 LocaleInfo.ui_tools_langexplorer_LangCsvUploadDialog_couldNotRetImportResult = "インポート結果が取得できませんでした。";
 LocaleInfo.ui_tools_logexplorer_LogExplorerListPane_refreshFileList = "Fileの一覧を最新にします。";
 LocaleInfo.ui_tools_logexplorer_LogExplorerListPane_fileDownload = "Fileをダウンロードします。";
+LocaleInfo.ui_tools_logexplorer_LogExplorerConditionPane_refreshConditionList = "Conditionの一覧を最新にします。";
+LocaleInfo.ui_tools_logexplorer_LogExplorerConditionPane_editingCondition = "データが編集中です。編集中のデータをOKするかCancelしてください。";
+LocaleInfo.ui_tools_logexplorer_LogExplorerConditionPane_dispEditDialogCondition = "Conditionの編集ダイアログを表示します。";
+LocaleInfo.ui_tools_logexplorer_LogExplorerConditionPane_condition_scriptHint = "<ul><li>mdc: MDC ContextMap</li><li>request : RequestContext</li><li>auth : AuthContext</li></ul>";
+LocaleInfo.ui_tools_logexplorer_LogExplorerConditionPane_applyComplete = "条件を適用しました。"
 LocaleInfo.ui_tools_logexplorer_LogExplorerPluginManager_startLogExplorer = "Log Explorerを起動する";
 LocaleInfo.ui_tools_metaexplorer_MetaDataDeleteDialog_deleteMetaDataSelect = "選択されたMetaDataを削除します。";
 LocaleInfo.ui_tools_metaexplorer_MetaDataDeleteDialog_deleteMetaDataComment = "<br/><br/><font color=\"red\">※Tenantは削除できません(Skipします)。</font><br/><font color=\"red\">※SharedのMetaDataは削除できません(Skipします)。</font><br/><font color=\"red\">※SharedOverwriteのMetaDataは削除するとSharedに変更されます。</font>";
@@ -1662,6 +1675,10 @@ LocaleInfo.generic_editor_BinaryPropertyEditor_openNewTabDisplaNameKey = "新し
 LocaleInfo.generic_editor_BinaryPropertyEditor_openNewTabDescriptionKey = "リンククリック時にバイナリの内容を新しいタブで表示します。";
 LocaleInfo.generic_editor_BinaryPropertyEditor_usePdfjsNameKey = "PDF表示時にPDF.jsを利用";
 LocaleInfo.generic_editor_BinaryPropertyEditor_usePdfjsDescriptionKey = "PDF.jsを利用してPDFの表示を行います。<br>細工されたPDFによる情報詐取(JVNTA#94087669)の対策が必要な場合に利用てください。";
+LocaleInfo.generic_editor_BinaryPropertyEditor_hideSelectButtonDisplaNameKey = "ファイル選択ボタン非表示";
+LocaleInfo.generic_editor_BinaryPropertyEditor_hideSelectButtonDescriptionKey = "編集画面にてファイル選択ボタンを非表示にします。";
+LocaleInfo.generic_editor_BinaryPropertyEditor_hideDeleteButtonDisplaNameKey = "削除ボタン非表示";
+LocaleInfo.generic_editor_BinaryPropertyEditor_hideDeleteButtonDescriptionKey = "編集画面にて当バイナリファイルデータを削除するボタンを非表示にします。";
 LocaleInfo.generic_editor_BooleanPropertyEditor_displayTypeDisplaNameKey = "表示タイプ";
 LocaleInfo.generic_editor_BooleanPropertyEditor_displayTypeDescriptionKey = "画面に表示する方法を選択します。";
 LocaleInfo.generic_editor_BooleanPropertyEditor_trueLabelDisplaNameKey = "真の表示ラベル";
@@ -2078,6 +2095,8 @@ LocaleInfo.generic_element_section_MassReferenceSection_hidePageJumpDisplaNameKe
 LocaleInfo.generic_element_section_MassReferenceSection_hidePageJumpDescriptionKey = "参照の一覧のページングでページジャンプを非表示にします。";
 LocaleInfo.generic_element_section_MassReferenceSection_hidePageLinkDisplaNameKey = "ページリンクを非表示";
 LocaleInfo.generic_element_section_MassReferenceSection_hidePageLinkDescriptionKey = "参照の一覧のページングでページリンクを非表示にします。";
+LocaleInfo.generic_element_section_MassReferenceSection_showSearchBtnDisplaNameKey = "検索アイコンを常に表示";
+LocaleInfo.generic_element_section_MassReferenceSection_showSearchBtnDescriptionKey = "参照の一覧のページングで検索アイコンを常に表示にします。";
 LocaleInfo.generic_element_section_MassReferenceSection_pagingPositionDisplaNameKey = "ページング表示位置";
 LocaleInfo.generic_element_section_MassReferenceSection_pagingPositionDescriptionKey = "ページングの表示位置を指定します。<br><b>BOTH   :</b> グリッドの上下<br><b>TOP    :</b> グリッドの上部<br><b>BOTTOM :</b> グリッドの下部<br>";
 LocaleInfo.generic_element_section_MassReferenceSection_editTypeDisplaNameKey = "編集タイプ";
@@ -2152,6 +2171,8 @@ LocaleInfo.generic_element_section_SearchConditionSection_nonOutputBinaryRefDisp
 LocaleInfo.generic_element_section_SearchConditionSection_nonOutputBinaryRefDescriptionKey = "CSVダウンロード時にBinaryReferenceのnameを出力しないようにします。";
 LocaleInfo.generic_element_section_SearchConditionSection_nonOutputReferenceDisplaNameKey = "CSVダウンロード時referenceを出力しない";
 LocaleInfo.generic_element_section_SearchConditionSection_nonOutputReferenceDescriptionKey = "CSVダウンロード時にreferenceを出力しないようにします。";
+LocaleInfo.generic_element_section_SearchConditionSection_csvMultipleFormatNameKey = "CSV多重度プロパティ出力形式";
+LocaleInfo.generic_element_section_SearchConditionSection_csvMultipleFormatDescriptionKey = "ダウンロード時の多重度プロパティの出力形式を指定します。Referenceは対象外です。";
 LocaleInfo.generic_element_section_SearchConditionSection_hideCsvUploadDisplaNameKey = "CSVアップロードボタンを非表示";
 LocaleInfo.generic_element_section_SearchConditionSection_hideCsvUploadDescriptionKey = "CSVアップロードボタンを非表示にします。";
 LocaleInfo.generic_element_section_SearchConditionSection_csvdownloadMaxCountDisplaNameKey = "CSVダウンロード件数の上限値";
@@ -2178,6 +2199,8 @@ LocaleInfo.generic_element_section_SearchResultSection_dispRowCountDisplaNameKey
 LocaleInfo.generic_element_section_SearchResultSection_dispRowCountDescriptionKey = "検索結果の一覧に表示する件数を指定します。";
 LocaleInfo.generic_element_section_SearchResultSection_dispHeightDisplaNameKey = "検索結果の高さ";
 LocaleInfo.generic_element_section_SearchResultSection_dispHeightDescriptionKey = "検索結果の高さを指定します。<br>0を指定した場合、高さを自動とします。";
+LocaleInfo.generic_element_section_SearchResultSection_groupingDataDisplaNameKey = "検索結果をまとめる";
+LocaleInfo.generic_element_section_SearchResultSection_groupingDataDescriptionKey = "検索結果をまとめて表示します。<br>OIDとVersionが同じであるレコードをまとめます。";
 LocaleInfo.generic_element_section_SearchResultSection_hideDetailLinkDisplaNameKey = "編集リンクを非表示";
 LocaleInfo.generic_element_section_SearchResultSection_hideDetailLinkDescriptionKey = "検索結果の編集リンクを非表示にします。";
 LocaleInfo.generic_element_section_SearchResultSection_hideDeleteDisplaNameKey = "削除ボタンを非表示";
@@ -2202,6 +2225,8 @@ LocaleInfo.generic_element_section_SearchResultSection_purgeCompositionedEntityD
 LocaleInfo.generic_element_section_SearchResultSection_purgeCompositionedEntityDescriptionKey = "参照データを削除した時に親子関係の参照の場合は物理削除します。";
 LocaleInfo.generic_element_section_SearchResultSection_forceUpadteDisplaNameKey = "更新時に強制的に更新処理を行う";
 LocaleInfo.generic_element_section_SearchResultSection_forceUpadteDescriptionKey = "変更項目が一つもなくとも、強制的に更新処理（更新日時、更新者が更新される）を行います。";
+LocaleInfo.generic_element_section_SearchResultSection_bulkUpdateDefaultSelectionDisplaNameKey = "一括更新デフォルト選択項目";
+LocaleInfo.generic_element_section_SearchResultSection_bulkUpdateDefaultSelectionDescriptionKey = "一括更新デフォルト選択項目。<br>BulkViewレイアウト定義を利用しない場合、デフォルト選択項目を指定します。";
 LocaleInfo.generic_element_section_SearchResultSection_interrupterNameDisplaNameKey = "カスタム登録処理クラス名";
 LocaleInfo.generic_element_section_SearchResultSection_interrupterNameDescriptionKey = "データ登録時に行うカスタム登録処理のクラス名を指定します。<br>.org.iplass.mtp.view.generic.RegistrationInterrupterインターフェースを実装するクラスを指定してください。";
 LocaleInfo.generic_element_section_SearchResultSection_loadEntityInterrupterNameDisplaNameKey = "カスタムロード処理クラス名";

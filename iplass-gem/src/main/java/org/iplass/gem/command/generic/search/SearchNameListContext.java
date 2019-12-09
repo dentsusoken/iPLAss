@@ -46,7 +46,6 @@ import org.iplass.mtp.spi.ServiceRegistry;
 import org.iplass.mtp.util.StringUtil;
 import org.iplass.mtp.view.filter.EntityFilter;
 import org.iplass.mtp.view.filter.EntityFilterItem;
-import org.iplass.mtp.view.generic.element.section.SearchConditionSection;
 import org.iplass.mtp.view.generic.element.section.SortSetting;
 
 public class SearchNameListContext extends SearchContextBase {
@@ -75,15 +74,18 @@ public class SearchNameListContext extends SearchContextBase {
 	public Where getWhere() {
 		Where where = new Where();
 
-		List<Condition> conditions = new ArrayList<Condition>();
+		List<Condition> conditions = new ArrayList<>();
 		EntityFilterItem filter = getFilterItem();
 
 		if (filter != null && filter.getCondition() != null) {
 			conditions.add(new PreparedQuery(filter.getCondition()).condition(null));
 		}
-		Condition defaultCond = getCondition();
+		Condition defaultCond = getDefaultCondition();
 		if (defaultCond != null) {
-			conditions.add(defaultCond);
+			if (filter == null
+					|| (filter != null && getConditionSection().isUseDefaultConditionWithFilterDefinition())) {
+				conditions.add(defaultCond);
+			}
 		}
 		if (!conditions.isEmpty()) {
 			And and = new And(conditions);
@@ -91,16 +93,6 @@ public class SearchNameListContext extends SearchContextBase {
 		}
 
 		return where;
-	}
-
-	private Condition getCondition() {
-		SearchConditionSection section = getForm().getCondSection();
-		if (section == null ||
-				!section.isUseDefaultConditionWithFilterDefinition() ||
-				section.getDefaultCondition() == null ||
-				section.getDefaultCondition().isEmpty()) return null;
-
-		return new PreparedQuery(section.getDefaultCondition()).condition(null);
 	}
 
 	@Override
@@ -146,4 +138,11 @@ public class SearchNameListContext extends SearchContextBase {
 		// 条件は固定なのでチェックしない
 		return true;
 	}
+
+	@Override
+	public boolean isUseUserPropertyEditor() {
+		// 名前のみ検索なので利用しない
+		return false;
+	}
+
 }

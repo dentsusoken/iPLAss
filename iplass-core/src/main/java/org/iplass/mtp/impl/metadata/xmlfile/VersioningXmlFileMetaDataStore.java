@@ -23,6 +23,7 @@ package org.iplass.mtp.impl.metadata.xmlfile;
 import java.io.File;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import javax.xml.bind.JAXBException;
@@ -98,12 +99,12 @@ public class VersioningXmlFileMetaDataStore extends AbstractXmlMetaDataStore {
 	 * 
 	 */
 	@Override
-	public List<MetaDataEntryInfo> definitionList(final int tenantId, final String prefixPath) throws MetaDataRuntimeException {
+	public List<MetaDataEntryInfo> definitionList(final int tenantId, final String prefixPath, boolean withInvalid) throws MetaDataRuntimeException {
 		boolean readHistorical = false;
-		return definitionListImpl(tenantId, prefixPath, readHistorical);
+		return definitionListImpl(tenantId, prefixPath, readHistorical, withInvalid);
 	}
 
-	private List<MetaDataEntryInfo> definitionListImpl(final int tenantId, final String prefixPath, boolean readHistorical) throws MetaDataRuntimeException {
+	private List<MetaDataEntryInfo> definitionListImpl(final int tenantId, final String prefixPath, boolean readHistorical, boolean withInvalid) throws MetaDataRuntimeException {
 		String path = prefixPath;
 		if (prefixPath != null) {
 			if (!path.endsWith("/")) {
@@ -114,36 +115,48 @@ public class VersioningXmlFileMetaDataStore extends AbstractXmlMetaDataStore {
 				throw new MetaDataRuntimeException("invalid path:" + path);
 			}
 		}
-		ArrayList<MetaDataEntryInfo> res = new ArrayList<MetaDataEntryInfo>();
+		HashMap<String, MetaDataEntryInfo> res = new HashMap<>();
 		File dir = new File(getFileStorePath() + "/" + tenantId + "/" + path);
-		readMetaDataEntryInfoRecursive(res, tenantId, dir, readHistorical);
-		return res;
+		readMetaDataEntryInfoRecursive(res, tenantId, dir, readHistorical, withInvalid);
+		return new ArrayList<MetaDataEntryInfo>(res.values());
 	}
 	
 	/**
 	 * 
 	 */
-	private void readMetaDataEntryInfoRecursive(ArrayList<MetaDataEntryInfo> res, int tenantId, File f, boolean readHistorical) {
+	private void readMetaDataEntryInfoRecursive(HashMap<String, MetaDataEntryInfo> res, int tenantId, File f, boolean readHistorical, boolean withInvalid) {
 		if(f.exists()) {
 			if (f.isDirectory()) {
 				String[] list = f.list();
 				for (String l : list) {
 					File subdirFile = new File(f, l);
-					readMetaDataEntryInfoRecursive(res, tenantId, subdirFile, readHistorical);
+					readMetaDataEntryInfoRecursive(res, tenantId, subdirFile, readHistorical, withInvalid);
 				}
 			} else {
-				MetaDataFileAttribute atr = new MetaDataFileAttribute(f.getName());
-				if (readHistorical) {
+				if (withInvalid) {
+					MetaDataFileAttribute atr = new MetaDataFileAttribute(f.getName());
 					MetaDataEntryInfo node = makeMetaDataEntryInfo(tenantId, f, atr);
-					res.add(node);	
+					MetaDataEntryInfo preNode = res.get(node.getPath());
+					if (preNode == null) {
+						res.put(node.getPath(), node);
+					} else {
+						if (preNode.getVersion() < node.getVersion()) {
+							res.put(node.getPath(), node);
+						}
+					}
 				} else {
-					final int latestVersion = -1;
-					if(isTargetVersion(atr, latestVersion)) {
+					MetaDataFileAttribute atr = new MetaDataFileAttribute(f.getName());
+					if (readHistorical) {
 						MetaDataEntryInfo node = makeMetaDataEntryInfo(tenantId, f, atr);
-						res.add(node);
+						res.put(node.getPath() + "." + node.getVersion(), node);
+					} else {
+						final int latestVersion = -1;
+						if(isTargetVersion(atr, latestVersion)) {
+							MetaDataEntryInfo node = makeMetaDataEntryInfo(tenantId, f, atr);
+							res.put(node.getPath(), node);
+						}
 					}
 				}
-				
 			}
 		}
 	}
@@ -161,7 +174,11 @@ public class VersioningXmlFileMetaDataStore extends AbstractXmlMetaDataStore {
 		node.setPermissionSharable(e.isPermissionSharable());
 		node.setOverwritable(e.isOverwritable());
 		node.setRepository(MetaDataRepositoryKind.XMLFILE.getDisplayName());
-		node.setState(State.VALID);
+		if (atr.status == FileNameStatePart.DELETED) {
+			node.setState(State.INVALID);
+		} else {
+			node.setState(State.VALID);
+		}
 		node.setVersion(atr.getVersionNum());
 		return node;
 	}
@@ -373,7 +390,7 @@ public class VersioningXmlFileMetaDataStore extends AbstractXmlMetaDataStore {
 		}
 		
 		MetaDataEntryInfo existing = null;
-		for (MetaDataEntryInfo ei : definitionList(tenantId, "/")) {
+		for (MetaDataEntryInfo ei : definitionList(tenantId, "/", true)) {
 			if(ei.getId().equals(id)) {
 				existing = ei;
 			}
@@ -473,6 +490,38 @@ public class VersioningXmlFileMetaDataStore extends AbstractXmlMetaDataStore {
 		}
 	}
 
+	@Override
+	public void purgeById(int tenantId, String id) throws MetaDataRuntimeException {
+		for (MetaDataEntryInfo e : definitionListImpl(tenantId, "/", true, true)) {
+			if(e.getId().equals(id)) {
+				String ver = ".v" + new DecimalFormat(this.versionFormat).format(e.getVersion());
+				String state = (e.getState() == State.VALID) ? FileNameStatePart.VALID.getValue() : FileNameStatePart.DELETED.getValue();
+				File xml = new File(getFileStorePath() + tenantId + "/" + e.getPath() + "." + state	+ ver + suffix);
+				xml.delete();
+			}
+		}
+	}
+
+	@Override
+	public List<Integer> getTenantIdsOf(String id) {
+		ArrayList<Integer> tids = new ArrayList<>();
+		
+		final File dir = new File(getFileStorePath());
+		if (!dir.exists()) {
+			return tids;
+		}
+		
+		String[] list = dir.list();
+		for (String l: list) {
+			int tid = Integer.parseInt(l);
+			if (loadById(tid, id) != null) {
+				tids.add(tid);
+			}
+		}
+		
+		return tids;
+	}
+
 	/**
 	 * 
 	 */
@@ -501,7 +550,7 @@ public class VersioningXmlFileMetaDataStore extends AbstractXmlMetaDataStore {
 		List<MetaDataEntryInfo> result = new ArrayList<MetaDataEntryInfo>();
 		
 		boolean readHistorical = true;
-		for (MetaDataEntryInfo e : definitionListImpl(tenantId, "/", readHistorical)) {
+		for (MetaDataEntryInfo e : definitionListImpl(tenantId, "/", readHistorical, false)) {
 			if(e.getId().equals(id)) {
 				result.add(e);
 			}
@@ -609,4 +658,5 @@ public class VersioningXmlFileMetaDataStore extends AbstractXmlMetaDataStore {
 			return null;
 		}
 	}
+
 }

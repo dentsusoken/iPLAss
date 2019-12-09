@@ -59,8 +59,11 @@ public class MetaEntityListParts extends MetaTemplateParts {
 	/** View名 */
 	private String viewName;
 
-	/** リンク用のView名 */
+	/** 検索リンク用のView名 */
 	private String viewNameForLink;
+
+	/** 詳細リンク用のView名 */
+	private String viewNameForDetail;
 
 	/** フィルタ名*/
 	private String filterName;
@@ -72,7 +75,7 @@ public class MetaEntityListParts extends MetaTemplateParts {
 	private Integer height;
 
 	/** 多言語設定情報 */
-	private List<MetaLocalizedString> localizedTitleList = new ArrayList<MetaLocalizedString>();
+	private List<MetaLocalizedString> localizedTitleList = new ArrayList<>();
 
 	/** アイコンタグ */
 	private String iconTag;
@@ -119,19 +122,35 @@ public class MetaEntityListParts extends MetaTemplateParts {
 	}
 
 	/**
-	 * リンク用のView名を取得します。
-	 * @return リンク用のView名
+	 * 検索リンク用のView名を取得します。
+	 * @return 検索リンク用のView名
 	 */
 	public String getViewNameForLink() {
 	    return viewNameForLink;
 	}
 
 	/**
-	 * リンク用のView名を設定します。
-	 * @param viewNameForLink リンク用のView名
+	 * 検索リンク用のView名を設定します。
+	 * @param viewNameForLink 検索リンク用のView名
 	 */
 	public void setViewNameForLink(String viewNameForLink) {
 	    this.viewNameForLink = viewNameForLink;
+	}
+
+	/**
+	 * 詳細リンク用のView名を取得します。
+	 * @return 詳細リンク用のView名
+	 */
+	public String getViewNameForDetail() {
+	    return viewNameForDetail;
+	}
+
+	/**
+	 * 詳細リンク用のView名を設定します。
+	 * @param viewNameForDetail 詳細リンク用のView名
+	 */
+	public void setViewNameForDetail(String viewNameForDetail) {
+	    this.viewNameForDetail = viewNameForDetail;
 	}
 
 	/**
@@ -224,6 +243,7 @@ public class MetaEntityListParts extends MetaTemplateParts {
 		definitionId = entity.getMetaData().getId();
 		viewName = e.getViewName();
 		viewNameForLink = e.getViewNameForLink();
+		viewNameForDetail = e.getViewNameForDetail();
 		filterName = e.getFilterName();
 		title = e.getTitle();
 		height = e.getHeight();
@@ -247,6 +267,7 @@ public class MetaEntityListParts extends MetaTemplateParts {
 
 		parts.setViewName(viewName);
 		parts.setViewNameForLink(viewNameForLink);
+		parts.setViewNameForDetail(viewNameForDetail);
 		parts.setFilterName(filterName);
 		parts.setTitle(title);
 		parts.setHeight(height);
@@ -296,7 +317,7 @@ public class MetaEntityListParts extends MetaTemplateParts {
 				request.setAttribute("partsCnt", req.getAttribute("partsCnt"));
 
 				SearchFormView form = null;
-				String title = MetaEntityListParts.this.title;
+				String title = I18nUtil.stringMeta(MetaEntityListParts.this.title, MetaEntityListParts.this.localizedTitleList);
 				EntityHandler handler = context.getHandlerById(definitionId);
 				if (handler != null) {
 					EntityDefinition ed = handler.getMetaData().currentConfig();

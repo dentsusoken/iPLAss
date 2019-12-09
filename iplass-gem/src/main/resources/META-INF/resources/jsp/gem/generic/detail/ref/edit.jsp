@@ -219,7 +219,7 @@ ${m:outputToken('FORM_XHTML', true)}
 <%
 	for (Section section : data.getView().getSections()) {
 		if (!EntityViewUtil.isDisplayElement(defName, section.getElementRuntimeId(), OutputType.EDIT)
-				&& ViewUtil.dispElement(section)) {
+				|| !ViewUtil.dispElement(section)) {
 			continue;
 		}
 		request.setAttribute(Constants.ELEMENT, section);

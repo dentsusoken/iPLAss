@@ -318,7 +318,7 @@ public class AuthInterceptor implements RequestInterceptor,ServiceInitListener<A
 	private void showLoginForm(WebInvocationImpl webInvocation, WebFrontendService wfService) throws ServletException, IOException {
 
 		ExecuteContext exec = ExecuteContext.getCurrentContext();
-		if (wfService.isRedirectAfterLogin() && webInvocation.getAction().isAllowedMethod(HttpMethodType.GET)) {
+		if (wfService.isRedirectAfterLogin() && webInvocation.getAction().getRequestRestriction().isAllowedMethod(HttpMethodType.GET.toString())) {
 			//redirectAfterLoginがonかつ、当該ActionがGETを許可する場合
 			String reReqPath = createReRequestPath(webInvocation.getRequestStack().getRequest());
 			webInvocation.getRequest().setAttribute(WebRequestConstants.REDIRECT_PATH, reReqPath);
@@ -365,7 +365,7 @@ public class AuthInterceptor implements RequestInterceptor,ServiceInitListener<A
 	private void showReAuthForm(WebInvocationImpl webInvocation, AuthService authService) throws ServletException, IOException {
 
 		ExecuteContext exec = ExecuteContext.getCurrentContext();
-		if (webInvocation.getAction().isAllowedMethod(HttpMethodType.GET)) {
+		if (webInvocation.getAction().getRequestRestriction().isAllowedMethod(HttpMethodType.GET.toString())) {
 			//当該ActionがGETを許可する場合
 			String reReqPath = createReRequestPath(webInvocation.getRequestStack().getRequest());
 			webInvocation.getRequest().setAttribute(WebRequestConstants.REDIRECT_PATH, reReqPath);

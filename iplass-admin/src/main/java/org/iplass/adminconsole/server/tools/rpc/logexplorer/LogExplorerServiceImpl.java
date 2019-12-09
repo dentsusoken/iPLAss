@@ -35,8 +35,14 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import org.iplass.adminconsole.server.base.rpc.util.AuthUtil;
 import org.iplass.adminconsole.server.base.service.AdminConsoleService;
+import org.iplass.adminconsole.shared.tools.dto.logexplorer.LogConditionInfo;
 import org.iplass.adminconsole.shared.tools.dto.logexplorer.LogFile;
 import org.iplass.adminconsole.shared.tools.rpc.logexplorer.LogExplorerService;
+import org.iplass.mtp.MtpException;
+import org.iplass.mtp.impl.core.ExecuteContext;
+import org.iplass.mtp.impl.logging.LogCondition;
+import org.iplass.mtp.impl.logging.LoggingContext;
+import org.iplass.mtp.impl.logging.LoggingService;
 import org.iplass.mtp.spi.ServiceRegistry;
 import org.iplass.mtp.util.DateUtil;
 import org.iplass.mtp.web.template.TemplateUtil;
@@ -55,6 +61,7 @@ public class LogExplorerServiceImpl extends XsrfProtectedServiceServlet implemen
 	private String initLogHome;
 
 	private AdminConsoleService acs = ServiceRegistry.getRegistry().getService(AdminConsoleService.class);
+	private LoggingService ls = ServiceRegistry.getRegistry().getService(LoggingService.class);
 
 	@Override
 	public void init() throws ServletException {
@@ -95,7 +102,7 @@ public class LogExplorerServiceImpl extends XsrfProtectedServiceServlet implemen
 		List<String> logHomes = acs.getTenantLogHomes(initLogHome);
 		List<String> filters = acs.getTenantLogFileFilters();
 
-		List<LogFile> logFiles = new ArrayList<LogFile>();
+		List<LogFile> logFiles = new ArrayList<>();
 
 		DateFormat dateFormat = DateUtil.getSimpleDateFormat(TemplateUtil.getLocaleFormat().getOutputDatetimeSecFormat(), true);
 		for (String logHome : logHomes) {
@@ -160,8 +167,8 @@ public class LogExplorerServiceImpl extends XsrfProtectedServiceServlet implemen
 	 */
 	private List<LogFile> searchStaticLogFile(String home, String path, List<String> fileFilters, DateFormat dateFormat) {
 
-		List<LogFile> dirList = new ArrayList<LogFile>();
-		List<LogFile> fileList = new ArrayList<LogFile>();
+		List<LogFile> dirList = new ArrayList<>();
+		List<LogFile> fileList = new ArrayList<>();
 
 		File logsDir = new File(path);
 		if (logsDir.exists() && logsDir.isDirectory()) {
@@ -199,7 +206,7 @@ public class LogExplorerServiceImpl extends XsrfProtectedServiceServlet implemen
 		}
 
 		// directy->fileの順番で
-		List<LogFile> list = new ArrayList<LogFile>(dirList.size() + fileList.size());
+		List<LogFile> list = new ArrayList<>(dirList.size() + fileList.size());
 		list.addAll(dirList);
 		list.addAll(fileList);
 
@@ -219,8 +226,8 @@ public class LogExplorerServiceImpl extends XsrfProtectedServiceServlet implemen
 	 */
 	private List<LogFile> searchDynamicLogFile(String fixedPath, String[] homePaths, int index, String path, List<String> fileFilters, DateFormat dateFormat) {
 
-		List<LogFile> dirList = new ArrayList<LogFile>();
-		List<LogFile> fileList = new ArrayList<LogFile>();
+		List<LogFile> dirList = new ArrayList<>();
+		List<LogFile> fileList = new ArrayList<>();
 
 		File logsDir = new File(path);
 		if (logsDir.exists() && logsDir.isDirectory()) {
@@ -271,7 +278,7 @@ public class LogExplorerServiceImpl extends XsrfProtectedServiceServlet implemen
 		}
 
 		// directy->fileの順番で
-		List<LogFile> list = new ArrayList<LogFile>(dirList.size() + fileList.size());
+		List<LogFile> list = new ArrayList<>(dirList.size() + fileList.size());
 		list.addAll(dirList);
 		list.addAll(fileList);
 
@@ -294,4 +301,77 @@ public class LogExplorerServiceImpl extends XsrfProtectedServiceServlet implemen
 		return path;
 	}
 
+	@Override
+	public List<LogConditionInfo> getLogConditions(int tenantId) {
+
+		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId, new AuthUtil.Callable<List<LogConditionInfo>>() {
+
+			@Override
+			public List<LogConditionInfo> call() {
+				ExecuteContext ec = ExecuteContext.getCurrentContext();
+				LoggingContext lc = ls.getLoggingContext(ec.getTenantContext());
+				List<LogCondition> conditions = lc.list();
+				return convertFrom(conditions);
+			};
+		});
+	}
+
+	private List<LogConditionInfo> convertFrom(List<LogCondition> conditions) {
+		if (conditions == null) {
+			return null;
+		}
+		List<LogConditionInfo> infos = new ArrayList<>();
+		for (LogCondition condition : conditions) {
+			LogConditionInfo info = new LogConditionInfo();
+			info.setLevel(condition.getLevel());
+			info.setExpiresAt(condition.getExpiresAt());
+			info.setCondition(condition.getCondition());
+			info.setLoggerNamePattern(condition.getLoggerNamePattern());
+			infos.add(info);
+		}
+		return infos;
+	}
+
+	@Override
+	public String applyLogConditions(int tenantId, List<LogConditionInfo> logConditions) {
+
+		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId, new AuthUtil.Callable<String>() {
+
+			@Override
+			public String call() {
+				List<LogCondition> conditions = null;
+				if (logConditions != null) {
+					conditions = convertTo(logConditions);
+				}
+
+				try {
+					ExecuteContext ec = ExecuteContext.getCurrentContext();
+					LoggingContext lc = ls.getLoggingContext(ec.getTenantContext());
+					lc.apply(conditions);
+				} catch (MtpException e) {
+					return e.getMessage();
+				}
+
+				return null;
+			}
+
+		});
+
+	}
+
+	private List<LogCondition> convertTo(List<LogConditionInfo> infos) {
+		if (infos == null) {
+			return null;
+		}
+		List<LogCondition> conditions = new ArrayList<>();
+		for (LogConditionInfo info : infos) {
+			LogCondition condition = new LogCondition();
+			condition.setLevel(info.getLevel());
+			condition.setExpiresAt(info.getExpiresAt());
+			condition.setCondition(info.getCondition());
+			condition.setLoggerNamePattern(info.getLoggerNamePattern());
+			conditions.add(condition);
+		}
+		return conditions;
+	}
 }

@@ -1220,6 +1220,7 @@ $.fn.allInputCheck = function(){
 				showPageJump: $v.attr("data-showPageJump") == "true",
 				showPageLink: $v.attr("data-showPageLink") == "true",
 				showCount: $v.attr("data-showCount") == "true",
+				showSearchBtn: $v.attr("data-showSearchBtn") == "true",
 				condKey: $v.attr("data-condKey"),
 				tokenValue: $v.attr("data-tokenValue"),
 				purge: $v.attr("data-purge"),
@@ -1345,12 +1346,16 @@ $.fn.allInputCheck = function(){
 			});
 
 			//ページングリンクのイベント処理
-			if ($v.showPaging && $v.limit != null && $v.limit != "") {
+			//「ページングを非表示」「検索アイコンを常に表示」両方チェック⇒検索アイコンは表示
+			if (($v.showPaging || $v.showSearchBtn) && $v.limit != null && $v.limit != "") {
 				var $pager = $(options.pager, $v).pager({
 					limit: $v.limit,
-					showPageLink: $v.showCount ? $v.showPageLink : false,
-					showPageJump: $v.showCount ? $v.showPageJump : false,
-					showItemCount: $v.showCount,
+					showPageLink: $v.showPaging && $v.showCount ? $v.showPageLink : false,
+					showPageJump: $v.showPaging && $v.showCount ? $v.showPageJump : false,
+					showPrev: $v.showPaging,
+					showNext: $v.showPaging,
+					showSearchBtn: $v.showSearchBtn,
+					showItemCount: $v.showPaging && $v.showCount,
 					previewFunc: function(){
 						$v.offset -= $v.limit;
 						$v.getMassReference();
@@ -1504,6 +1509,9 @@ $.fn.allInputCheck = function(){
 				showItemCount: true,
 				showNoPage: true,
 				showCurrentPage: false,
+				showPrev: true,
+				showNext: true,
+				showSearchBtn: false,
 				previewFunc: null,
 				nextFunc: null,
 				searchFunc: null,
@@ -1545,12 +1553,16 @@ $.fn.allInputCheck = function(){
 			var $ul = $("<ul />").css("white-space", "nowrap").appendTo($v);
 
 			//前へ
-			var $preview = $("<li />").addClass("preview").appendTo($ul);
-			createLink($preview, options.previousLabel);
+			if (options.showPrev) {
+				var $preview = $("<li />").addClass("preview").appendTo($ul);
+				createLink($preview, options.previousLabel);
+			}
 
 			//次へ
-			var $next = $("<li />").addClass("next").appendTo($ul);
-			createLink($next, options.nextLabel);
+			if (options.showNext) {
+				var $next = $("<li />").addClass("next").appendTo($ul);
+				createLink($next, options.nextLabel);
+			}
 
 			//入力エリアと検索ボタン
 			if (options.showPageJump) {
@@ -1559,9 +1571,12 @@ $.fn.allInputCheck = function(){
 				$("<span />").text(" / ").appendTo($quickJump);
 				var $max = $("<span />").addClass("last-page").appendTo($quickJump);
 				$("<span />").text(scriptContext.gem.locale.pager.page).appendTo($quickJump);
-
-				var $btns = $("<li />").appendTo($ul);
+			}
+ 
+			if (options.showSearchBtn || options.showPageJump) {
+				var $btns = $("<li />").addClass("search").appendTo($ul);
 				var $searchBtn = $("<span />").addClass("ui-icon ui-icon-search").appendTo($btns);
+				var $_current = $("<input type='hidden' />").appendTo($btns);
 			}
 
 			var $currentLabel = null;
@@ -1717,12 +1732,17 @@ $.fn.allInputCheck = function(){
 							}
 							if (options.showPageJump) {
 								$quickJump.hide();
+							}
+							if (options.showSearchBtn || options.showPageJump) {
 								$searchBtn.hide();
 							}
 						}
 						if (options.showItemCount) {
 							$count.text(count);
 						}
+					}
+					if (options.showSearchBtn || options.showPageJump) {
+						$_current.val(currentPage);
 					}
 					if (options.showCurrentPage) {
 						$currentLabel.text(currentPage);
@@ -1752,18 +1772,23 @@ $.fn.allInputCheck = function(){
 							$(this).val("");
 						}
 					}
+					$_current.val(this.value);
 				}).on("keypress", function(event) {
 					if( event.which === 13 ){
 						$searchBtn.click();
 					}
 				});
+			}
+
+			if (options.showSearchBtn || options.showPageJump) {
 				$searchBtn.on("mouseenter", function() {
 					$(this).addClass("hover");
 				}).on("mouseleave", function() {
 					$(this).removeClass("hover");
-				}).on("click", function() {
-					var currentPage = $current.val();
-					if ($v.maxPage && currentPage > 0 && currentPage <= $v.maxPage) {
+				}).on("click", function() { 
+					var currentPage = $_current.val();
+					//notCount=trueかつshowSearchBtn=trueの場合、maxPageが設定されてません。
+					if (!$v.maxPage || $v.maxPage && currentPage > 0 && currentPage <= $v.maxPage) {
 						if ($v.searchFunc && $.isFunction($v.searchFunc)) {
 							$v.searchFunc.call(this, currentPage - 1);
 						}
@@ -2646,7 +2671,7 @@ $.fn.allInputCheck = function(){
 				urlParam:					$v.attr("data-urlParam"),
 				refDefName:					$v.attr("data-refDefName"),
 				refViewName:				$v.attr("data-refViewName"),
-				refEdit:					$v.attr("data-refEdit"),
+				refEdit:					$v.attr("data-refEdit") == "true",
 				refSectionIndex:			$v.attr("data-refSectionIndex"),//参照セクションインデックス
 				specVersionKey:				$v.attr("data-specVersionKey"),
 				permitConditionSelectAll:	$v.attr("data-permitConditionSelectAll"),

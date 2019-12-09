@@ -30,6 +30,7 @@ import org.iplass.adminconsole.client.base.tenant.TenantInfoHolder;
 import org.iplass.adminconsole.client.base.ui.widget.MetaDataSelectItem;
 import org.iplass.adminconsole.client.base.ui.widget.MetaDataSelectItem.ItemOption;
 import org.iplass.adminconsole.client.base.ui.widget.MtpDialog;
+import org.iplass.adminconsole.client.base.ui.widget.MtpTreeGrid;
 import org.iplass.adminconsole.client.base.ui.widget.form.MtpForm;
 import org.iplass.adminconsole.client.base.ui.widget.form.MtpSelectItem;
 import org.iplass.adminconsole.client.base.ui.widget.form.MtpTextItem;
@@ -79,7 +80,6 @@ import com.smartgwt.client.widgets.layout.HLayout;
 import com.smartgwt.client.widgets.tab.Tab;
 import com.smartgwt.client.widgets.tab.TabSet;
 import com.smartgwt.client.widgets.tree.Tree;
-import com.smartgwt.client.widgets.tree.TreeGrid;
 import com.smartgwt.client.widgets.tree.TreeGridField;
 import com.smartgwt.client.widgets.tree.TreeNode;
 import com.smartgwt.client.widgets.tree.events.FolderDropEvent;
@@ -92,7 +92,7 @@ import com.smartgwt.client.widgets.tree.events.FolderDropHandler;
  * {@link org.iplass.adminconsole.client.ui.menu.item.MenuItemDragPane}で生成されます。
  *
  */
-public class TreeViewGrid extends TreeGrid {
+public class TreeViewGrid extends MtpTreeGrid {
 
 	/** 内部保持Tree */
 	private Tree tree;
@@ -257,7 +257,7 @@ public class TreeViewGrid extends TreeGrid {
 	}
 
 	public List<TreeViewItem> getItems() {
-		List<TreeViewItem> items = new ArrayList<TreeViewItem>();
+		List<TreeViewItem> items = new ArrayList<>();
 
 		TreeViewNode root = (TreeViewNode) tree.getRoot();
 		TreeNode[] children = tree.getChildren(root);
@@ -273,7 +273,7 @@ public class TreeViewGrid extends TreeGrid {
 
 	private List<ReferenceTreeViewItem> getReferenceTreeViewItems(TreeNode node) {
 
-		List<ReferenceTreeViewItem> items = new ArrayList<ReferenceTreeViewItem>();
+		List<ReferenceTreeViewItem> items = new ArrayList<>();
 
 		TreeNode[] children = tree.getChildren(node);
 
@@ -302,7 +302,7 @@ public class TreeViewGrid extends TreeGrid {
 	}
 
 	private TreeViewNode[] createTreeViewItemNodes(List<TreeViewItem> children) {
-		List<TreeViewNode> childList = new ArrayList<TreeViewNode>(children.size());
+		List<TreeViewNode> childList = new ArrayList<>(children.size());
 		for (TreeViewItem child : children) {
 			TreeViewNode childNode = createTreeViewItemNode(child);
 			childList.add(childNode);
@@ -311,7 +311,7 @@ public class TreeViewGrid extends TreeGrid {
 	}
 
 	private TreeViewNode[] createReferenceTreeViewNodes(List<ReferenceTreeViewItem> children) {
-		List<TreeViewNode> childList = new ArrayList<TreeViewNode>(children.size());
+		List<TreeViewNode> childList = new ArrayList<>(children.size());
 		for (ReferenceTreeViewItem child : children) {
 			TreeViewNode childNode = createReferenceTreeViewNode(child);
 			if (child.getReferenceTreeViewItems().size() > 0){
@@ -540,7 +540,7 @@ public class TreeViewGrid extends TreeGrid {
 			tab.setHeight100();
 
 			//設定項目の入力フィールド作成
-			List<FormItem> items = new ArrayList<FormItem>();
+			List<FormItem> items = new ArrayList<>();
 
 			defNameField = new MtpTextItem("defName", AdminClientMessageUtil.getString("ui_metadata_treeview_TreeViewGrid_entityDefName"));
 			defNameField.setValue(item.getDefName());
@@ -652,7 +652,7 @@ public class TreeViewGrid extends TreeGrid {
 
 			widgetForm = new MtpForm();
 
-			items = new ArrayList<FormItem>();
+			items = new ArrayList<>();
 
 			entityNodeIconField = new MtpTextItem("entityNodeIcon", AdminClientMessageUtil.getString("ui_metadata_treeview_TreeViewGrid_icon1"));
 			SmartGWTUtil.addHoverToFormItem(entityNodeIconField,
@@ -737,6 +737,7 @@ public class TreeViewGrid extends TreeGrid {
 
 			IButton cancel = new IButton(AdminClientMessageUtil.getString("ui_metadata_treeview_TreeViewGrid_cancel"));
 			cancel.addClickHandler(new ClickHandler() {
+				@Override
 				public void onClick(ClickEvent event) {
 					destroy();
 				}
@@ -761,8 +762,8 @@ public class TreeViewGrid extends TreeGrid {
 						}
 					});
 
-					List<String> params = new ArrayList<String>();
-					List<FormItem> fields = new ArrayList<FormItem>();
+					List<String> params = new ArrayList<>();
+					List<FormItem> fields = new ArrayList<>();
 					TreeNode[] children = tree.getChildren(node);
 					for (PropertyDefinition pd : propertyList) {
 						//選択型の項目作成
@@ -808,7 +809,7 @@ public class TreeViewGrid extends TreeGrid {
 			FormItem[] items = refForm.getFields();
 			if (items == null || items.length == 0) return;
 
-			List<PropertyDefinition> dispList = new ArrayList<PropertyDefinition>();
+			List<PropertyDefinition> dispList = new ArrayList<>();
 			for (FormItem item : items) {
 				Boolean checked = (Boolean) item.getValue();
 				if (checked != null && checked) {
@@ -819,7 +820,7 @@ public class TreeViewGrid extends TreeGrid {
 			TreeNode[] children = tree.getChildren(node);
 
 			//追加
-			List<TreeNode> childList = new ArrayList<TreeNode>();
+			List<TreeNode> childList = new ArrayList<>();
 			for (PropertyDefinition pd : dispList) {
 				TreeNode child = search(pd, children);
 				if (child != null) {
@@ -1008,7 +1009,7 @@ public class TreeViewGrid extends TreeGrid {
 		 * @return
 		 */
 		public List<TreeViewGridColModelMapping> getDefinition() {
-			List<TreeViewGridColModelMapping> items = new ArrayList<TreeViewGridColModelMapping>();
+			List<TreeViewGridColModelMapping> items = new ArrayList<>();
 			for (ListGridRecord record : getRecords()) {
 				String mappingItemName = record.getAttribute("mappingItemName");
 				if (mappingItemName != null) {

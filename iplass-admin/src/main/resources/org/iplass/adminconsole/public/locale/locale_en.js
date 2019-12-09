@@ -137,6 +137,7 @@ LocaleInfo.datasource_tools_entityexplorer_CrawlEntityInfoDS_number = "Number";
 LocaleInfo.datasource_tools_entityexplorer_CrawlEntityInfoDS_lastCrawlDate = "Last crawl date";
 LocaleInfo.datasource_tools_entityexplorer_CrawlEntityInfoDS_failedToGetEntityList = "Failed to get the Entity list data. <br/>Cause:";
 LocaleInfo.datasource_tools_logexplorer_LogFileDS_failedToGetLogFile = "Failed to get the log file. <br/>Cause:";
+LocaleInfo.datasource_tools_logexplorer_LogConditionDS_failedToGetLogCondition = "Failed to get the log conditions. <br/>Cause:";
 LocaleInfo.datasource_tools_metaexplorer_MetaDataTagDS_tagName = "Tag name";
 LocaleInfo.datasource_tools_metaexplorer_MetaDataTagDS_createDate = "Create Date";
 LocaleInfo.datasource_tools_metaexplorer_MetaDataTagDS_comment = "Comment";
@@ -210,7 +211,7 @@ LocaleInfo.ui_metadata_action_ParamMapEditDialog_dispEditDialogCondition = "<div
 LocaleInfo.ui_metadata_action_ParamMapEditDialog_conditionHint = "By specifying the condition, it is possible to specify the condition to execute parameter mapping.<br>The condition can be described with groovyScript, and the following variables are bound and available for judgment.<br><ul><li>subPath: A String array obtained by dividing a subpath below the actionMapping by /</li><li>fullPath: A String array obtained by dividing the full path including actionMapping by /</li><li>paramMap: Request parameter Map</li></ul></p><p>For example, if you have a ParamMap definition like</p><table border=1><tr><th>name</th><th>mapFrom</th><th>condition</th></tr><tr><td>defName</td><td>${0}</td><td>subPath.length==1</td></tr><tr><td>viewName</td><td>${0}</td><td>subPath.length==2</td></tr><tr><td>defName</td><td>${1}</td><td>subPath.length==2</td></tr></table><p>The request path for action1 is<ul><li>If it was action1/hoge, defName=hoge</li><li>If it was action1/hoge/fuga, viewName=hoge, defName=fuga</li></ul></p>";
 LocaleInfo.ui_metadata_action_ParamMapGridPane_actionPathParamComment1 = "<li>If receive a parameter as the path of action, defined $ {n}, $ {paths}, {n} (old format) is required.</li>";
 LocaleInfo.ui_metadata_action_ParamMapGridPane_actionPathParamComment2 = "<li>Can get the entire path except the action name by the $ {paths}.</li>";
-LocaleInfo.ui_metadata_action_ParamMapGridPane_actionPathParamComment3 = "Can get the path to the n-th excluding the action name by the $ {n}(n = 1,2, ...).";
+LocaleInfo.ui_metadata_action_ParamMapGridPane_actionPathParamComment3 = "<li>Can get the path to the n-th excluding the action name by the $ {n}(n = 1,2, ...).</li>";
 LocaleInfo.ui_metadata_action_RestrictionRequestAttributePane_allowRequestContentTypes = "Specifies the allowed contentType for the request body.<br/>If not specified, all contentTypes are allowed.<br/>If you specify multiple, please separate them with line feed.";
 LocaleInfo.ui_metadata_action_RestrictionRequestAttributePane_maxRequestBodySize = "Specify the maximum size of the request body.<br/>This limit does not apply if contentType is application/x-www-form-urlencoded.";
 LocaleInfo.ui_metadata_action_RestrictionRequestAttributePane_maxFileSize = "Specify the maximum size of the requested file.";
@@ -409,6 +410,8 @@ LocaleInfo.ui_metadata_entity_EventListenerListGrid_withoutMappByRefComment = "P
 LocaleInfo.ui_metadata_entity_EventListenerListGrid_scriptHint = "<ul><li>entity: target entity</li><li>event : EventType(org.iplass.mtp.entity.definition.listeners.EventType)</li><li>context : EntityEventContext</li><li>user : UserBinding</li><li>date : CurrentTimestamp</li></ul>";
 LocaleInfo.ui_metadata_entity_EventListenerListGrid_notificationCondScriptHint = "<ul><li>entity: target entity</li><li>event : EventType(org.iplass.mtp.entity.definition.listeners.EventType)</li><li>context : EntityEventContext</li><li>user : UserBinding</li><li>date : CurrentTimestamp</li></ul>";
 LocaleInfo.ui_metadata_entity_PropertyEditDialog_nameErr = "The name can be used alphanumeric and underscore.\nThe first character can be used alphabets only.";
+LocaleInfo.ui_metadata_entity_PropertyEditDialog_multipleAsterErr = "Multiplicity is invalid.\nOnly a numeric value 1 or more or an asterisk can be specified.";
+LocaleInfo.ui_metadata_entity_PropertyEditDialog_multipleErr = "Only a numeric value 1 or more can be specified.";
 LocaleInfo.ui_metadata_entity_PropertyListGrid_failedGetSortSett = "Failed to get the sort setting.<br/>Cause:";
 LocaleInfo.ui_metadata_entity_PropertyListGrid_eachLangDspName = "<div style=\"white-space: nowrap;\">Set the display name for each language.</div>";
 LocaleInfo.ui_metadata_entity_PropertyListGrid_expressionItem = "specify SQL expressions(Such as scalar subquery statement or Case) and arithmetic expressions";
@@ -1159,6 +1162,11 @@ LocaleInfo.ui_metadata_webapi_WebAPIEditPane_saveConfirm = "The save confirmatio
 LocaleInfo.ui_metadata_webapi_WebAPIEditPane_saveConfirmComment = "Save the WebApi. Would you like?";
 LocaleInfo.ui_metadata_webapi_WebAPIEditPane_cancelConfirm = "Cancellation confirmation";
 LocaleInfo.ui_metadata_webapi_WebAPIEditPane_cancelConfirmComment = "The edits will be discarded if you are editing, are you sure?";
+LocaleInfo.ui_metadata_webapi_WebAPIParamMapEditDialog_dispEditDialogCondition = "<div style=\"white-space: nowrap;\">Display the Edit dialog condition.</div>";
+LocaleInfo.ui_metadata_webapi_WebAPIParamMapEditDialog_conditionHint = "By specifying the condition, it is possible to specify the condition to execute parameter mapping.<br>The condition can be described with groovyScript, and the following variables are bound and available for judgment.<br><ul><li>subPath: A String array obtained by dividing a subpath below the webApi by /</li><li>fullPath: A String array obtained by dividing the full path including webApi by /</li><li>paramMap: Request parameter Map</li></ul></p><p>For example, if you have a ParamMap definition like</p><table border=1><tr><th>name</th><th>mapFrom</th><th>condition</th></tr><tr><td>defName</td><td>${0}</td><td>subPath.length==1</td></tr><tr><td>viewName</td><td>${0}</td><td>subPath.length==2</td></tr><tr><td>defName</td><td>${1}</td><td>subPath.length==2</td></tr></table><p>The request path for webApi1 is<ul><li>If it was webApi1/hoge, defName=hoge</li><li>If it was webApi1/hoge/fuga, viewName=hoge, defName=fuga</li></ul></p>";
+LocaleInfo.ui_metadata_webapi_WebAPIParamMapGridPane_webApiPathParamComment1 = "<li>If receive a parameter as the path of webApi, defined $ {n}, $ {paths}, {n} (old format) is required.</li>";
+LocaleInfo.ui_metadata_webapi_WebAPIParamMapGridPane_webApiPathParamComment2 = "<li>Can get the entire path except the webApi name by the $ {paths}.</li>";
+LocaleInfo.ui_metadata_webapi_WebAPIParamMapGridPane_webApiPathParamComment3 = "<li>Can get the path to the n-th excluding the webApi name by the $ {n}(n = 1,2, ...).</li>";
 LocaleInfo.ui_metadata_webapi_WebAPIPluginManager_failedToDeleteWebApi = "Failed to delete WebApi. <br/>:Cause";
 LocaleInfo.ui_metadata_webapi_WebAPIPluginManager_completion = "Completion";
 LocaleInfo.ui_metadata_webapi_WebAPIPluginManager_deleteWebApiComp = "WebApi has been deleted.";
@@ -1318,8 +1326,13 @@ LocaleInfo.ui_tools_langexplorer_LangCsvUploadDialog_importSuccessful = "Import 
 LocaleInfo.ui_tools_langexplorer_LangCsvUploadDialog_importWarning = "Warning has occurred in the import.";
 LocaleInfo.ui_tools_langexplorer_LangCsvUploadDialog_importErr = "An error has occurred in the import.";
 LocaleInfo.ui_tools_langexplorer_LangCsvUploadDialog_couldNotRetImportResult = "Could not retrieve import result.";
-LocaleInfo.ui_tools_logexplorer_LogExplorerListPane_refreshFileList = "Refresh file list";
+LocaleInfo.ui_tools_logexplorer_LogExplorerListPane_refreshFileList = "Refresh file list.";
 LocaleInfo.ui_tools_logexplorer_LogExplorerListPane_fileDownload = "Download File";
+LocaleInfo.ui_tools_logexplorer_LogExplorerConditionPane_refreshConditionList = "Refresh condition list.";
+LocaleInfo.ui_tools_logexplorer_LogExplorerConditionPane_editingCondition = "Data is being edited. Please OK or Cancel the data being edited.";
+LocaleInfo.ui_tools_logexplorer_LogExplorerConditionPane_dispEditDialogCondition = "Display the Edit dialog condition.";
+LocaleInfo.ui_tools_logexplorer_LogExplorerConditionPane_condition_scriptHint = "<ul><li>mdc: MDC ContextMap</li><li>request : RequestContext</li><li>auth : AuthContext</li></ul>";
+LocaleInfo.ui_tools_logexplorer_LogExplorerConditionPane_applyComplete = "Applying conditions is complete."
 LocaleInfo.ui_tools_logexplorer_LogExplorerPluginManager_startLogExplorer = "Start Log Explorer";
 LocaleInfo.ui_tools_metaexplorer_MetaDataDeleteDialog_deleteMetaDataSelect = "Delete the MetaData that is selected.";
 LocaleInfo.ui_tools_metaexplorer_MetaDataDeleteDialog_deleteMetaDataComment = "<br/><br/><font color=\"red\">Note: Tenant can not Delete(Skip)</font><br/><font color=\"red\">Note: Can not delete the Shared MetaData(Skip)</font><br/><font color=\"red\">Note: If MetaData of SharedOverwrite is deleted, it will be changed to MetaData SharedOverwrite.</font>";
@@ -1662,6 +1675,10 @@ LocaleInfo.generic_editor_BinaryPropertyEditor_openNewTabDisplaNameKey = "Open n
 LocaleInfo.generic_editor_BinaryPropertyEditor_openNewTabDescriptionKey = "Contents of the binary shows in the new tab when link clicked.";
 LocaleInfo.generic_editor_BinaryPropertyEditor_usePdfjsNameKey = "Use the PDF.js at the time of PDF display";
 LocaleInfo.generic_editor_BinaryPropertyEditor_usePdfjsDescriptionKey = "PDF is displayed using PDF.js. <br>Please use it when you need measures of information deception with crafted PDF (JVNTA # 94087669).";
+LocaleInfo.generic_editor_BinaryPropertyEditor_hideSelectButtonDisplaNameKey = "Hide the select file button";
+LocaleInfo.generic_editor_BinaryPropertyEditor_hideSelectButtonDescriptionKey = "Hide the select file button in edit page";
+LocaleInfo.generic_editor_BinaryPropertyEditor_hideDeleteButtonDisplaNameKey = "Hide the delete button";
+LocaleInfo.generic_editor_BinaryPropertyEditor_hideDeleteButtonDescriptionKey = "Hide the delete button of the binary files in edit page.";
 LocaleInfo.generic_editor_BooleanPropertyEditor_displayTypeDisplaNameKey = "Display Type";
 LocaleInfo.generic_editor_BooleanPropertyEditor_displayTypeDescriptionKey = "Select how to display on the screen.";
 LocaleInfo.generic_editor_BooleanPropertyEditor_trueLabelDisplaNameKey = "The display label for the true";
@@ -2078,6 +2095,8 @@ LocaleInfo.generic_element_section_MassReferenceSection_hidePageJumpDisplaNameKe
 LocaleInfo.generic_element_section_MassReferenceSection_hidePageJumpDescriptionKey = "Hide the page jump of paging in list of references.";
 LocaleInfo.generic_element_section_MassReferenceSection_hidePageLinkDisplaNameKey = "Hide Page link on list of references";
 LocaleInfo.generic_element_section_MassReferenceSection_hidePageLinkDescriptionKey = "Hide the page link of paging in list of references.";
+LocaleInfo.generic_element_section_MassReferenceSection_showSearchBtnDisplaNameKey = "Show search icon always";
+LocaleInfo.generic_element_section_MassReferenceSection_showSearchBtnDescriptionKey = "Show the search icon of paging in list of references always.";
 LocaleInfo.generic_element_section_MassReferenceSection_pagingPositionDisplaNameKey = "Paging bar position";
 LocaleInfo.generic_element_section_MassReferenceSection_pagingPositionDescriptionKey = "Specify paging bar position.<br><b>BOTH   :</b> The top and bottom of the grid<br><b>TOP    :</b> The top of the grid<br><b>BOTTOM :</b> The bottom of the grid<br>";
 LocaleInfo.generic_element_section_MassReferenceSection_editTypeDisplaNameKey = "Edit type";
@@ -2152,13 +2171,15 @@ LocaleInfo.generic_element_section_SearchConditionSection_nonOutputBinaryRefDisp
 LocaleInfo.generic_element_section_SearchConditionSection_nonOutputBinaryRefDescriptionKey = "Do not output the name of BinaryReference when downloading CSV.";
 LocaleInfo.generic_element_section_SearchConditionSection_nonOutputReferenceDisplaNameKey = "Do not output reference when downloading CSV";
 LocaleInfo.generic_element_section_SearchConditionSection_nonOutputReferenceDescriptionKey = "Do not output reference when downloading CSV.";
+LocaleInfo.generic_element_section_SearchConditionSection_csvMultipleFormatNameKey = "CSV download multiple format";
+LocaleInfo.generic_element_section_SearchConditionSection_csvMultipleFormatDescriptionKey = "Specify the output format of multiplicity property when downloading CSV.<br/>References are not applicable.";
 LocaleInfo.generic_element_section_SearchConditionSection_hideCsvUploadDisplaNameKey = "Hide CSV upload button";
 LocaleInfo.generic_element_section_SearchConditionSection_hideCsvUploadDescriptionKey = "Hide the CSV upload button.";
 LocaleInfo.generic_element_section_SearchConditionSection_csvdownloadMaxCountDisplaNameKey = "Upper limit of downloads CSV number";
 LocaleInfo.generic_element_section_SearchConditionSection_csvdownloadMaxCountDescriptionKey = "Set the upper limit of the CSV download number.";
 LocaleInfo.generic_element_section_SearchConditionSection_csvdownloadPropertiesDisplaNameKey = "CSV download Properties";
 LocaleInfo.generic_element_section_SearchConditionSection_csvdownloadPropertiesDescriptionKey = "Set the properties of the CSV download target.";
-LocaleInfo.generic_element_section_SearchConditionSection_csvdownloadFileNameScriptDisplaNameKey = "Csv file name format";
+LocaleInfo.generic_element_section_SearchConditionSection_csvdownloadFileNameScriptDisplaNameKey = "CSV file name format";
 LocaleInfo.generic_element_section_SearchConditionSection_csvdownloadFileNameScriptDescriptionKey = "<p>Base Variable</p><ul><li>out : Writer</li><li>em : EntityManager</li><li>edm : EntityDefinitionManager</li><li>auth : AuthContext</li><li>user : User information. </br>Can specify the properties of the User entity as ${user.xxxx}.</li></ul><p>Date Variable</p><ul><li>date : Instance of java.sql.Timestamp</li><li>yyyy : Year</li><li>MM : Month</li><li>dd : Day</li><li>HH : Hour, 24 hour notation</li><li>mm : Minute</li><li>ss : Second</li></ul><p>Specific Variable</p><ul><li>csvName : default csv file name.(= ${entityDisplayName})</li><li>entityName : entity name.</li><li>entityDisplayName : entity display name</li><li>viewName : entity view name.<br/>When view is default, [viewName] is null.</li></ul><br/><p>Example</p><li>${csvName}_${yyyy}${MM}${dd}${HH}${mm}${ss}</li>";
 LocaleInfo.generic_element_section_SearchConditionSection_defaultConditionDisplaNameKey = "Default filter condition when searching";
 LocaleInfo.generic_element_section_SearchConditionSection_defaultConditionDescriptionKey = "This condition will not display in the search screen, and be applied automatically during the search.Describe the conditions in the Where clause in the EQL format.";
@@ -2178,6 +2199,8 @@ LocaleInfo.generic_element_section_SearchResultSection_dispRowCountDisplaNameKey
 LocaleInfo.generic_element_section_SearchResultSection_dispRowCountDescriptionKey = "Specify the number of documents to be displayed in the list of search results.";
 LocaleInfo.generic_element_section_SearchResultSection_dispHeightDisplaNameKey = "Display height of search results";
 LocaleInfo.generic_element_section_SearchResultSection_dispHeightDescriptionKey = "Specify the display height of search results.<br>If set to 0, auto height will be used.";
+LocaleInfo.generic_element_section_SearchResultSection_groupingDataDisplaNameKey = "Summarize search results";
+LocaleInfo.generic_element_section_SearchResultSection_groupingDataDescriptionKey = "Summarize search results to display.<br>Summarize records with same OID and Version.";
 LocaleInfo.generic_element_section_SearchResultSection_hideDetailLinkDisplaNameKey = "Hide Edit Link";
 LocaleInfo.generic_element_section_SearchResultSection_hideDetailLinkDescriptionKey = "Hide the edit link in the search results.";
 LocaleInfo.generic_element_section_SearchResultSection_hideDeleteDisplaNameKey = "Hide Delete Button";
@@ -2202,6 +2225,8 @@ LocaleInfo.generic_element_section_SearchResultSection_purgeCompositionedEntityD
 LocaleInfo.generic_element_section_SearchResultSection_purgeCompositionedEntityDescriptionKey = "Physical delete in case of parent-child relationship reference when reference data is deleted.";
 LocaleInfo.generic_element_section_SearchResultSection_forceUpadteDisplaNameKey = "Force update processing at update";
 LocaleInfo.generic_element_section_SearchResultSection_forceUpadteDescriptionKey = "Even if there is no change item, update processing (updating date and time, updater is updated) will be forced.";
+LocaleInfo.generic_element_section_SearchResultSection_bulkUpdateDefaultSelectionDisplaNameKey = "Default selection of bulk update";
+LocaleInfo.generic_element_section_SearchResultSection_bulkUpdateDefaultSelectionDescriptionKey = "Default selection of bulk update.<br>Specify the default selection when not using BulkView layout definition.";
 LocaleInfo.generic_element_section_SearchResultSection_interrupterNameDisplaNameKey = "Custom registration process class";
 LocaleInfo.generic_element_section_SearchResultSection_interrupterNameDescriptionKey = "Specify the class name of a custom registration process used for data registration.<br>Please specify the class that implements the interface org.iplass.mtp.view.generic.RegistrationInterrupter.";
 LocaleInfo.generic_element_section_SearchResultSection_loadEntityInterrupterNameDisplaNameKey = "Custom load process class";

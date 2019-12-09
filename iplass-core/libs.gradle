@@ -66,8 +66,8 @@ dependencies {
 
 	//slf4j and logback
 	compile 'org.slf4j:slf4j-api:1.7.26'
+	compile 'ch.qos.logback:logback-classic:1.2.3'
 	runtime 'org.slf4j:jcl-over-slf4j:1.7.26'
-	runtime 'ch.qos.logback:logback-classic:1.2.3'
 
 	//jackson
 	compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.9.9.1'

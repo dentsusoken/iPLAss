@@ -122,7 +122,7 @@ public class XmlFileMetaDataStore extends AbstractXmlMetaDataStore {
 	}
 
 	@Override
-	public List<MetaDataEntryInfo> definitionList(final int tenantId, final String prefixPath) throws MetaDataRuntimeException {
+	public List<MetaDataEntryInfo> definitionList(final int tenantId, final String prefixPath, boolean withInvalid) throws MetaDataRuntimeException {
 		if(tenantId != localTenantId) {
 			return new ArrayList<MetaDataEntryInfo>();
 		}
@@ -428,6 +428,15 @@ public class XmlFileMetaDataStore extends AbstractXmlMetaDataStore {
 		return Collections.emptyList();
 	}
 	
+	@Override
+	public void purgeById(int tenantId, String id) throws MetaDataRuntimeException {
+	}
+
+	@Override
+	public List<Integer> getTenantIdsOf(String id) {
+		return Collections.emptyList();
+	}
+
 	/**
 	 * 外部参照のxmlではないメータデータ本体のxmlかどうか.
 	 * @param f
