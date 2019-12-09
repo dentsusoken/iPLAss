@@ -47,6 +47,7 @@ import org.iplass.adminconsole.client.metadata.ui.top.TopViewPlugin;
 import org.iplass.adminconsole.client.metadata.ui.treeview.TreeViewPlugin;
 import org.iplass.adminconsole.client.metadata.ui.utilityclass.UtilityClassPlugin;
 import org.iplass.adminconsole.client.metadata.ui.webapi.WebApiPlugin;
+import org.iplass.adminconsole.client.metadata.ui.webhook.WebHookTemplatePlugin;
 
 public class MetaDataPluginControllerImpl implements MetaDataPluginController {
 
@@ -83,6 +84,7 @@ public class MetaDataPluginControllerImpl implements MetaDataPluginController {
 		plugins.add(new MailTemplatePlugin());
 		plugins.add(new SmsMailTemplatePlugin());
 		plugins.add(new PushNotificationTemplatePlugin());
+		plugins.add(new WebHookTemplatePlugin());
 
 		return plugins;
 	}

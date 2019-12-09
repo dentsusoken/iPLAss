@@ -26,6 +26,8 @@
 		<property name="org.iplass.mtp.tenant.TenantManager" value="org.iplass.mtp.impl.tenant.TenantManagerImpl" />
 		<property name="org.iplass.mtp.transaction.TransactionManager" class="org.iplass.mtp.impl.transaction.TransactionService$TransactionManagerConstructor" />
 		<property name="org.iplass.mtp.utilityclass.definition.UtilityClassDefinitionManager" value="org.iplass.mtp.impl.script.UtilityClassDefinitionManagerImpl" />
+		<property name="org.iplass.mtp.webhook.WebHookManager" value="org.iplass.mtp.impl.webhook.WebHookManagerImpl" />
+		<property name="org.iplass.mtp.webhook.template.definition.WebHookTemplateDefinitionManager" value="org.iplass.mtp.impl.webhook.template.WebHookTemplateDefinitionManagerImpl" />
 	</service>
 
 	<service>
@@ -95,6 +97,7 @@
 		<property name="typeMap" value="org.iplass.mtp.impl.prefs.PreferenceService$TypeMap" />
 		<property name="typeMap" value="org.iplass.mtp.impl.auth.authenticate.builtin.policy.AuthenticationPolicyService$TypeMap" />
 		<property name="typeMap" value="org.iplass.mtp.impl.pushnotification.PushNotificationService$TypeMap" />
+		<property name="typeMap" value="org.iplass.mtp.impl.webhook.WebHookServiceImpl$TypeMap" />
 	</service>
 
 	<!-- 認証関連 -->
@@ -275,7 +278,21 @@
 		<property name="registrationIdHandler" class="org.iplass.mtp.impl.pushnotification.fcm.LoggingRegistrationIdHandler" />
 		 -->
 	</service>
-
+	
+	<!-- WebHook -->
+	<service>
+		<interface>org.iplass.mtp.impl.webhook.WebHookService</interface>
+		<class>org.iplass.mtp.impl.webhook.WebHookServiceImpl</class>
+		
+		<property name="httpClientConfig" class="org.iplass.mtp.impl.http.HttpClientConfig">
+			<property name="proxyHost" value="localhost" />
+			<property name="proxyPort" value="8180" />
+			<property name="poolingMaxTotal" value="100" />
+			<property name="poolingDefaultMaxPerRoute" value="20" />
+			<property name="poolingTimeToLive" value="300" />
+		</property>
+	</service>
+	
 	<!-- Tenant関連 -->
 	<service>
 		<interface>org.iplass.mtp.impl.core.TenantContextService</interface>
