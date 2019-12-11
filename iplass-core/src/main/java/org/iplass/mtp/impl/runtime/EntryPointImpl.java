@@ -22,9 +22,9 @@ package org.iplass.mtp.impl.runtime;
 
 import java.util.Map;
 
-import org.iplass.mtp.SystemException;
 import org.iplass.mtp.impl.core.ExecuteContext;
 import org.iplass.mtp.impl.core.config.BootstrapProps;
+import org.iplass.mtp.runtime.AlreadyInitializedException;
 import org.iplass.mtp.runtime.EntryPoint;
 import org.iplass.mtp.runtime.Runner;
 import org.iplass.mtp.spi.ServiceRegistry;
@@ -43,10 +43,14 @@ public class EntryPointImpl implements EntryPoint {
 		return instance != null;
 	}
 	
+	public static EntryPointImpl getInstance() {
+		return instance;
+	}
+
 	static EntryPointImpl newEntryPointImpl(Map<String, String> customProps) {
 		synchronized (EntryPointImpl.class) {
 			if (instance != null) {
-				throw new SystemException("EntryPoint already initialized");
+				throw new AlreadyInitializedException("EntryPoint already initialized");
 			}
 			
 			try {
