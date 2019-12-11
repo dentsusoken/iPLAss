@@ -21,7 +21,11 @@
 package org.iplass.mtp.runtime;
 
 /**
+ * <% if (doclang == "ja") {%>
  * EntryPointのBuilderです。
+ * <%} else {%>
+ * Builder of EntryPoint.
+ * <%}%>
  * 
  * @author K.Higuchi
  *
@@ -29,17 +33,29 @@ package org.iplass.mtp.runtime;
 public interface EntryPointBuilder {
 	
 	/**
+	 * <% if (doclang == "ja") {%>
 	 * EntryPointを構築します。
 	 * すでに初期化済みのEntryPointが存在する場合、
-	 * SystemExceptionがスローされます。
+	 * AlreadyInitializedExceptionがスローされます。
+	 * <%} else {%>
+	 * Build a EntryPoint.
+	 * If there is an EntryPoint that has already been initialized,
+	 * an AlreadyInitializedException is thrown.
+	 * <%}%>
 	 * 
-	 * @return
+	 * @return <%=doclang == 'ja' ? 'EntryPointのインスタンス': 'EntryPoint instance'%>
+	 * @throws AlreadyInitializedException <%=doclang == 'ja' ? 'EntryPointが既に初期化済みの場合': 'When EntryPoint has already been initialized'%>
 	 */
 	public EntryPoint build();
 	
 	/**
+	 * <% if (doclang == "ja") {%>
 	 * iPLAssのBootstrapプロパティが指定されているプロパティファイルのパスを指定します。
 	 * serverEnvFileが未指定の場合は、システムプロパティをBootstrapプロパティとして利用します。
+	 * <%} else {%>
+	 * Specify the path of the property file where the iPLAss Bootstrap property is specified.
+	 * If serverEnvFile is not specified, system properties are used as Bootstrap properties.
+	 * <%}%>
 	 * 
 	 * @param serverEnvFile
 	 * @return
@@ -47,8 +63,13 @@ public interface EntryPointBuilder {
 	public EntryPointBuilder serverEnvFile(String serverEnvFile);
 	
 	/**
+	 * <% if (doclang == "ja") {%>
 	 * このiPLAsssのインスタンスのserverIdを指定します。
 	 * 未指定の場合は、Host名がserverIdとなります。
+	 * <%} else {%>
+	 * Specify the serverId of this iPLAsss instance.
+	 * If not specified, the Host name will be serverId.
+	 * <%}%>
 	 * 
 	 * @param serverId
 	 * @return
@@ -56,7 +77,11 @@ public interface EntryPointBuilder {
 	public EntryPointBuilder serverId(String serverId);
 	
 	/**
+	 * <% if (doclang == "ja") {%>
 	 * このiPLAsssのインスタンスのserverRoleを必要に応じて指定します。
+	 * <%} else {%>
+	 * Specify the serverRole of this iPLAsss instance as needed.
+	 * <%}%>
 	 * 
 	 * @param serverRole
 	 * @return
@@ -64,8 +89,13 @@ public interface EntryPointBuilder {
 	public EntryPointBuilder serverRole(String... serverRole);
 	
 	/**
+	 * <% if (doclang == "ja") {%>
 	 * 設定ファイル（service-config.xml）のパスを指定します。
 	 * 未指定の場合のデフォルト値は、"/mtp-service-config.xml"です。
+	 * <%} else {%>
+	 * Specify the path of the configuration file (service-config.xml).
+	 * If not specified, the default value is "/mtp-service-config.xml".
+	 * <%}%>
 	 * 
 	 * @param configFileName
 	 * @return
@@ -73,7 +103,12 @@ public interface EntryPointBuilder {
 	public EntryPointBuilder config(String configFileName);
 	
 	/**
+	 * <% if (doclang == "ja") {%>
 	 * service-config.xmlを難読化する場合、難読化設定ファイル（crypt.properties）のパスを指定します。
+	 * <%} else {%>
+	 * To encrypt service-config.xml,
+	 * specify the path of the encryption configuration file (crypt.properties).
+	 * <%}%>
 	 * 
 	 * @param configCryptFileName
 	 * @return
@@ -81,8 +116,13 @@ public interface EntryPointBuilder {
 	public EntryPointBuilder crypt(String configCryptFileName);
 	
 	/**
-	 * 設定ファイルを読み込むloaderClass名を指定します。
+	 * <% if (doclang == "ja") {%>
+	 * 設定ファイルを読み込むConfigLoaderのclass名を指定します。
 	 * 未指定の場合はデフォルトのloaderが利用されます。
+	 * <%} else {%>
+	 * Specify the ConfigLoader class name to load the configuration file.
+	 * If not specified, the default loader will be used.
+	 * <%}%>
 	 * 
 	 * @param loaderClassName
 	 * @return
@@ -90,7 +130,11 @@ public interface EntryPointBuilder {
 	public EntryPointBuilder loader(String loaderClassName);
 	
 	/**
+	 * <% if (doclang == "ja") {%>
 	 * iPLAssのBootstrapプロパティをnameを指定して設定します。
+	 * <%} else {%>
+	 * Set the iPLAss Bootstrap property.
+	 * <%}%>
 	 * 
 	 * @param name
 	 * @param value

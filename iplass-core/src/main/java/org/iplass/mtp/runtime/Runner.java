@@ -26,7 +26,11 @@ import org.iplass.mtp.auth.login.Credential;
 import org.iplass.mtp.command.RequestContext;
 
 /**
+ * <% if (doclang == "ja") {%>
  * EntryPointからiPLAss内でロジックを実行するためのインタフェースです。
+ * <%} else {%>
+ * An interface for executing logic from EntryPoint in iPLAss.
+ * <%}%>
  * 
  * @author K.Higuchi
  *
@@ -34,7 +38,11 @@ import org.iplass.mtp.command.RequestContext;
 public interface Runner {
 	
 	/**
+	 * <% if (doclang == "ja") {%>
 	 * 指定のテナントURLでロジックを実行するよう設定します。
+	 * <%} else {%>
+	 * Set to execute logic with the specified tenant URL.
+	 * <%}%>
 	 * 
 	 * @param tenantUrl
 	 * @return
@@ -42,7 +50,11 @@ public interface Runner {
 	public Runner withTenant(String tenantUrl);
 	
 	/**
+	 * <% if (doclang == "ja") {%>
 	 * 指定のテナントIDでロジックを実行するよう設定します。
+	 * <%} else {%>
+	 * Set to execute logic with the specified tenant ID.
+	 * <%}%>
 	 * 
 	 * @param tenantId
 	 * @return
@@ -50,7 +62,11 @@ public interface Runner {
 	public Runner withTenant(Integer tenantId);
 	
 	/**
+	 * <% if (doclang == "ja") {%>
 	 * 指定のcredentialでログインしてロジックを実行するよう設定します。
+	 * <%} else {%>
+	 * Set to execute the logic by logging in with the specified credentials.
+	 * <%}%>
 	 * 
 	 * @param credential
 	 * @return
@@ -58,7 +74,11 @@ public interface Runner {
 	public Runner withAuth(Credential credential);
 	
 	/**
+	 * <% if (doclang == "ja") {%>
 	 * 指定の言語でロジックを実行するよう設定します。
+	 * <%} else {%>
+	 * Set to execute logic in the specified language.
+	 * <%}%>
 	 * 
 	 * @param lang
 	 * @return
@@ -67,14 +87,22 @@ public interface Runner {
 	
 	
 	/**
+	 * <% if (doclang == "ja") {%>
 	 * ロジックを実行します。
+	 * <%} else {%>
+	 * Execute logic.
+	 * <%}%>
 	 * 
 	 * @param r
 	 */
 	public void run(Runnable r);
 	
 	/**
+	 * <% if (doclang == "ja") {%>
 	 * ロジックを実行します。
+	 * <%} else {%>
+	 * Execute logic.
+	 * <%}%>
 	 * 
 	 * @param s
 	 * @return
@@ -82,7 +110,11 @@ public interface Runner {
 	public <T> T run(Supplier<T> s);
 	
 	/**
+	 * <% if (doclang == "ja") {%>
 	 * CommandInvokerを経由して指定のcommandNameのCommandを実行します。
+	 * <%} else {%>
+	 * Execute the Command with the specified commandName via CommandInvoker.
+	 * <%}%>
 	 * 
 	 * @param commandName
 	 * @param request
