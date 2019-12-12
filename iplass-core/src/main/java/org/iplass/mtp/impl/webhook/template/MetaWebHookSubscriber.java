@@ -66,8 +66,8 @@ public class MetaWebHookSubscriber implements MetaData {
 	public WebHookSubscriber currentConfig() {
 		WebHookSubscriber definition = new WebHookSubscriber();
 		definition.setUrl(this.url);
-		definition.setSubscriberName(this.subscriberName);;
-		definition.setSubscriberPassword(this.subscriberPassword);;
+		definition.setSubscriberName(this.subscriberName);
+		definition.setSubscriberPassword(this.subscriberPassword);
 		return definition;
 	}
 }

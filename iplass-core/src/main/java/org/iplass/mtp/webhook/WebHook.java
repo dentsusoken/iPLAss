@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.concurrent.Callable;
 
 import org.iplass.mtp.webhook.template.definition.WebHookContent;
+import org.iplass.mtp.webhook.template.definition.WebHookHeader;
 import org.iplass.mtp.webhook.template.definition.WebHookSubscriber;
 
 /**
@@ -34,7 +35,7 @@ public class WebHook  {
 	private ArrayList<WebHookSubscriber> subscribers;
 
 	/** headers */
-	private HashMap<String, String> headers;
+	private ArrayList<WebHookHeader> headers;
 	
 	/** SSL token 、未実装、 */
 
@@ -125,11 +126,11 @@ public class WebHook  {
 		this.retryInterval = retryInterval;
 	}
 
-	public HashMap<String, String> getHeaders() {
+	public ArrayList<WebHookHeader> getHeaders() {
 		return headers;
 	}
 
-	public void setHeaders(HashMap<String, String> headers) {
+	public void setHeaders(ArrayList<WebHookHeader> headers) {
 		this.headers = headers;
 	}
 

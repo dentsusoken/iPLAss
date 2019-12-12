@@ -32,6 +32,7 @@ import org.iplass.mtp.impl.webhook.template.MetaWebHookTemplate.WebHookTemplateR
 import org.iplass.mtp.spi.Config;
 import org.iplass.mtp.tenant.Tenant;
 import org.iplass.mtp.webhook.WebHook;
+import org.iplass.mtp.webhook.template.definition.WebHookHeader;
 import org.iplass.mtp.webhook.template.definition.WebHookSubscriber;
 import org.iplass.mtp.webhook.template.definition.WebHookTemplateDefinition;
 import org.iplass.mtp.webhook.template.definition.WebHookTemplateDefinitionManager;
@@ -55,9 +56,6 @@ public class WebHookServiceImpl extends AbstractTypedMetaDataService<MetaWebHook
 		}
 	}
 
-	// TODO
-	private Map<String, Object> sendProperties;
-
 	public static String getFixedPath() {
 		return WEBHOOK_TEMPLATE_META_PATH;
 	}
@@ -75,7 +73,7 @@ public class WebHookServiceImpl extends AbstractTypedMetaDataService<MetaWebHook
 	@Override
 	public void init(Config config) {
 		httpClientConfig = new HttpClientConfig();
-		httpClientConfig.setProxyHost("http://sg-sd27b-1.isid.co.jp");
+		httpClientConfig.setProxyHost("http://sg-sd27b-1.isid.co.jp");//TODO: 設置できるように
 		httpClientConfig.setProxyPort(8080);
 		httpClientConfig.setConnectionTimeout(10000);
 		httpClientConfig.setPoolingMaxTotal(100);
@@ -105,7 +103,7 @@ public class WebHookServiceImpl extends AbstractTypedMetaDataService<MetaWebHook
 	public void sendWebHook(Tenant tenant, WebHook webHook) {
 		try {
 			//if proxy is set
-			HttpHost proxy = new HttpHost("sg-sd27b-1.isid.co.jp", 8080, "http");//TODO read from config files
+			HttpHost proxy = new HttpHost("sg-sd27b-1.isid.co.jp", 8080, "http");//TODO: 設置できるように
 
 			HttpClientBuilder httpClientBuilder = HttpClientBuilder.create().setProxy(proxy);
 			if (webHook.isRetry()) {
@@ -138,10 +136,12 @@ public class WebHookServiceImpl extends AbstractTypedMetaDataService<MetaWebHook
 				CloseableHttpClient httpClient= httpClientBuilder.build();
 				ArrayList<WebHookSubscriber> receivers = new ArrayList<WebHookSubscriber>(webHook.getSubscribers());
 
-				//fill in webhook payload and headers
+				//fill in webhook payload
 				String payload = webHook.getContent().getContent();
 				StringEntity se = new StringEntity(payload);
 				se.setContentType(webHook.getContent().getContentTypeString());
+				
+				
 				
 				//se.setContentEncoding(webHook.getContent().getCharset());
 				
@@ -151,7 +151,12 @@ public class WebHookServiceImpl extends AbstractTypedMetaDataService<MetaWebHook
 				for (int j = 0; j < receivers.size();j++) {
 					//TODO: fill in info to post
 					HttpPost httpPost = new HttpPost(new URI(receivers.get(j).getUrl()));
+					// and payload and headers
 					httpPost.setEntity(se);
+					for(WebHookHeader headerEntry: webHook.getHeaders()) {
+						httpPost.setHeader(headerEntry.getKey(), headerEntry.getValue());
+					}
+					
 					CloseableHttpResponse response = httpClient.execute(httpPost);
 					try {
 						StatusLine statusLine= response.getStatusLine();

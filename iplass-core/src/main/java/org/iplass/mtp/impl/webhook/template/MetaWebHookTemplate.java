@@ -24,6 +24,7 @@ import org.iplass.mtp.impl.webhook.WebHookService;
 import org.iplass.mtp.spi.ServiceRegistry;
 import org.iplass.mtp.webhook.WebHook;
 import org.iplass.mtp.webhook.template.definition.WebHookContent;
+import org.iplass.mtp.webhook.template.definition.WebHookHeader;
 import org.iplass.mtp.webhook.template.definition.WebHookSubscriber;
 import org.iplass.mtp.webhook.template.definition.WebHookTemplateDefinition;
 
@@ -46,7 +47,7 @@ public class MetaWebHookTemplate extends BaseRootMetaData implements DefinableMe
 	/** サブスクライバー：このwebhookを要求した方達 */
 	private ArrayList<WebHookSubscriber> subscribers;
 	
-	private HashMap<String, String> headers;
+	private ArrayList<WebHookHeader> headers;
 	
 	/**　リトライ関連　*/
 	/** 失敗したらやり直ししますか */
@@ -244,11 +245,11 @@ public class MetaWebHookTemplate extends BaseRootMetaData implements DefinableMe
 		this.retryInterval = retryInterval;
 	}
 	
-	public HashMap<String, String> getHeaders() {
+	public ArrayList<WebHookHeader> getHeaders() {
 		return headers;
 	}
 
-	public void setHeaders(HashMap<String, String> headers) {
+	public void setHeaders(ArrayList<WebHookHeader> headers) {
 		this.headers = headers;
 	}
 

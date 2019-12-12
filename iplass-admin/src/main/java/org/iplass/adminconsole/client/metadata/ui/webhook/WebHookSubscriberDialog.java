@@ -56,7 +56,7 @@ public class WebHookSubscriberDialog extends MtpDialog {
 			public void onClick(com.smartgwt.client.widgets.events.ClickEvent event) {
 				WebHookSubscriber definition = curWebHookSubscriber;
 
-				definition = subscriberAttrEditPane.getEditDefinition(curWebHookSubscriber);
+				definition = subscriberAttrEditPane.getEditDefinition(definition);
 				fireDataChanged(definition);
 				destroy();
 			}

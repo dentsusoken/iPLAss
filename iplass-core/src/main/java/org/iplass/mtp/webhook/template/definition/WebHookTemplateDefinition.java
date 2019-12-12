@@ -2,9 +2,11 @@ package org.iplass.mtp.webhook.template.definition;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
+import org.apache.commons.lang3.tuple.MutablePair;
 import org.iplass.mtp.definition.Definition;
 
 @XmlRootElement
@@ -26,7 +28,7 @@ public class WebHookTemplateDefinition implements Definition {
 	private ArrayList<WebHookSubscriber> subscribers;
 	
 	/** headers */
-	private HashMap<String, String> headers;
+	private ArrayList<WebHookHeader> headers;
 	
 
 
@@ -147,12 +149,19 @@ public class WebHookTemplateDefinition implements Definition {
 		this.synchronous = synchronous;
 	}
 	
-	public HashMap<String, String> getHeaders() {
+	public ArrayList<WebHookHeader> getHeaders() {
 		return headers;
 	}
 
-	public void setHeaders(HashMap<String, String> headers) {
+	public void setHeaders(ArrayList<WebHookHeader> headers) {
 		this.headers = headers;
+	}
+	
+	public void addHeaders(WebHookHeader entry) {
+		if (headers == null) {
+			headers = new ArrayList<WebHookHeader>();
+		}
+		this.headers.add(entry);
 	}
 }
 

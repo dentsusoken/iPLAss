@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.tuple.MutablePair;
 import org.iplass.adminconsole.client.base.event.DataChangedEvent;
 import org.iplass.adminconsole.client.base.event.DataChangedHandler;
 import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
@@ -25,6 +26,7 @@ import org.iplass.adminconsole.shared.metadata.rpc.MetaDataServiceFactory;
 import org.iplass.gwt.ace.client.EditorMode;
 import org.iplass.mtp.definition.DefinitionEntry;
 import org.iplass.mtp.webhook.template.definition.WebHookContent;
+import org.iplass.mtp.webhook.template.definition.WebHookHeader;
 import org.iplass.mtp.webhook.template.definition.WebHookSubscriber;
 import org.iplass.mtp.webhook.template.definition.WebHookTemplateDefinition;
 import com.google.gwt.core.client.GWT;
@@ -58,6 +60,11 @@ public class WebHookTemplateEditPane extends MetaDataMainEditPane {
 		SUBSCRIBER,
 		SUBSCRIBERURL,
 		VERIFICATIONMETHOD,
+	}
+	
+	private enum HEADER_FIELD_NAME{
+		HEADERNAME,
+		HEADERVALUE,
 	}
 	
 	private final MetaDataServiceAsync service;
@@ -219,7 +226,7 @@ public class WebHookTemplateEditPane extends MetaDataMainEditPane {
         private CheckboxItem isSynchronous;
 		
         //ヘッダー関連
-        private DynamicForm headerForm;
+        //private DynamicForm headerForm;//TODO:!
 		public HeaderMapGrid headerGrid;
 		
 		//リトライ関連
@@ -240,11 +247,10 @@ public class WebHookTemplateEditPane extends MetaDataMainEditPane {
 		private ScriptEditorPane urlEditor;
 		*/
 		
-		private Tab headerTab; //CustomHeader はセキュリティ以外でも使われるかと、単独にします
-		private ScriptEditorPane headerEditor;
+		
 				
 		public WebHookTemplateAttributePane () {
-			setOverflow(Overflow.AUTO);
+			setOverflow(Overflow.AUTO);//FIXME: overflow必要ないgrid,paneを探して修正してください
 			
 			VLayout mainPane = new VLayout();
 			mainPane.setMargin(5);
@@ -252,6 +258,12 @@ public class WebHookTemplateEditPane extends MetaDataMainEditPane {
 			
 			HLayout topPane = new HLayout();
 			topPane.setMembersMargin(5);
+			
+			VLayout headerPane = new VLayout();
+			headerPane.setMargin(5);
+			headerPane.setMembersMargin(5);
+			headerPane.setWidth(500);
+			headerPane.setHeight100();
 			
 			retryForm = new DynamicForm();
 			retryForm.setWidth(270);
@@ -299,10 +311,67 @@ public class WebHookTemplateEditPane extends MetaDataMainEditPane {
 			contentTypeField.setValueMap("JSON", "XML", "FORM", "PLAINTEXT", "MULTIPART");  
 			contentTypeField.setDefaultValue("JSON");
 			
+//			headerForm = new DynamicForm();
+//			headerForm.setWidth100();
+//			headerForm.setNumCols(4);
+//			headerForm.setColWidths(100, "*", "*", "*");
+			
+			
+			
+			headerGrid = new HeaderMapGrid();
+			headerGrid.addRecordDoubleClickHandler(new RecordDoubleClickHandler() {
+				public void onRecordDoubleClick(RecordDoubleClickEvent event) {
+					editMap((ListGridRecord)event.getRecord());
+				}
+			});
+			
+			
+			IButton addMap = new IButton("Add");
+			addMap.addClickHandler(new ClickHandler() {
+				public void onClick(ClickEvent event) {
+					addMap();
+				}
+			});
+
+			IButton delMap = new IButton("Remove");
+			delMap.addClickHandler(new ClickHandler() {
+				public void onClick(ClickEvent event) {
+					ListGridRecord record = headerGrid.getSelectedRecord();
+					if (record == null) {
+						return;
+					}
+					String _headerName = record.getAttribute(HEADER_FIELD_NAME.HEADERNAME.name());
+					headerGrid.removeSelectedData();
+
+					ArrayList<WebHookHeader> _headers = new ArrayList<WebHookHeader>();
+
+					for (WebHookHeader hd : curDefinition.getHeaders() ) {
+						String _key = hd.getKey();
+						if (_key.equals(_headerName)) {
+							continue;
+						}
+						String _value = hd.getValue();
+						WebHookHeader temp= new WebHookHeader(_key, _value);
+						_headers.add(temp);
+					}
+					curDefinition.setHeaders(_headers);
+				}
+			});
+			
+			HLayout mapButtonPane = new HLayout(5);
+			mapButtonPane.setMargin(5);
+			mapButtonPane.addMember(addMap);
+			mapButtonPane.addMember(delMap);
+			mapButtonPane.setWidth100();
+			
+			headerPane.addMember(headerGrid);
+			headerPane.addMember(mapButtonPane);
+			
 			templateInfoForm.setItems(isSynchronous, charsetField, contentTypeField);
 			
 			topPane.addMember(templateInfoForm);
 			topPane.addMember(retryForm);
+			topPane.addMember(headerPane);
 			
 			messageTabSet = new TabSet();
 			messageTabSet.setWidth100();
@@ -323,7 +392,78 @@ public class WebHookTemplateEditPane extends MetaDataMainEditPane {
 	        
 	        
 		}
+		protected void addMap() {
+			editMap(null);
+		}
+
+		protected void editMap(final ListGridRecord record) {//FIXME　同じヘッダー複数にならないようにしてください。
+			WebHookHeader temp = null;
+			
+			//dialog のためのtemp
+			if (record == null) {
+
+			} else {
+				temp = new WebHookHeader(
+						record.getAttributeAsString(HEADER_FIELD_NAME.HEADERNAME.name()),
+						record.getAttributeAsString(HEADER_FIELD_NAME.HEADERVALUE.name()));
+			}
+			final WebHookHeaderDialog dialog = new WebHookHeaderDialog(temp);
+			dialog.addDataChangeHandler(new DataChangedHandler() {
+				@Override
+				public void onDataChanged(DataChangedEvent event) {
+					@SuppressWarnings("unchecked")
+					WebHookHeader param = event.getValueObject(WebHookHeader.class);
+					ListGridRecord newRecord = createRecord(param, record, false);
+					if (record != null) {
+						headerGrid.updateData(newRecord);
+					} else {
+						ArrayList<WebHookHeader>_headers = curDefinition.getHeaders();
+						HashMap<String, WebHookHeader> tempMap = new HashMap<String, WebHookHeader>();
+						for (WebHookHeader entry :_headers) {
+							tempMap.put(entry.getKey(), entry);
+						} 
+						tempMap.remove(param.getKey());
+						tempMap.put(param.getKey(), param);
+						ArrayList<WebHookHeader> newList = new ArrayList<WebHookHeader>(); 
+						for (WebHookHeader headerEntry: tempMap.values()) {
+							newList.add(headerEntry);
+						}
+						curDefinition.setHeaders(newList);
+						
+						headerGrid.addData(newRecord);
+					}
+					headerGrid.refreshFields();
+				}
+			});
 		
+			dialog.show();
+			
+		}
+		protected ListGridRecord createRecord(WebHookHeader param, ListGridRecord record, boolean init) {
+			if (record == null) {
+				record = new ListGridRecord();
+
+				if (!init) {
+					curDefinition.addHeaders(param);
+				}
+			} else {
+				ArrayList<WebHookHeader>_headers = curDefinition.getHeaders();
+				HashMap<String, WebHookHeader> tempMap = new HashMap<String, WebHookHeader>();
+				for (WebHookHeader entry :_headers) {
+					tempMap.put(entry.getKey(), entry);
+				} 
+				tempMap.remove(param.getKey());
+				tempMap.put(param.getKey(), param);
+				ArrayList<WebHookHeader> newList = new ArrayList<WebHookHeader>(); 
+				for (WebHookHeader headerEntry: tempMap.values()) {
+					newList.add(headerEntry);
+				}
+				curDefinition.setHeaders(newList);
+			}
+			record.setAttribute(HEADER_FIELD_NAME.HEADERNAME.name(), param.getKey());
+			record.setAttribute(HEADER_FIELD_NAME.HEADERVALUE.name(), param.getValue());
+			return record;
+		}
 		public boolean validate() {
 			// TODO add input related forms
 			return true;
@@ -348,11 +488,12 @@ public class WebHookTemplateEditPane extends MetaDataMainEditPane {
 			definition.setRetryLimit(SmartGWTUtil.getIntegerValue(retryLimitField)!=null?SmartGWTUtil.getIntegerValue(retryLimitField):0);
 			definition.setRetry(SmartGWTUtil.getBooleanValue(isRetryField));
 			definition.setSynchronous(SmartGWTUtil.getBooleanValue(isSynchronous));
-			
+			//TODO header
 			return definition;
 		}
 	
-		public void setDefinition(WebHookTemplateDefinition definition) {
+		public void setDefinition(WebHookTemplateDefinition definition) {//TODO header
+			headerGrid.setData(new ListGridRecord[] {});
 			if (definition != null) {
 				charsetField.setValue(definition.getContentBody().getCharset());
 				isSynchronous.setValue(definition.isSynchronous());
@@ -365,6 +506,17 @@ public class WebHookTemplateEditPane extends MetaDataMainEditPane {
 				} else {
 					plainEditor.setText(definition.getContentBody().getContent());
 				}
+				
+				List<WebHookHeader> definitionList = definition.getHeaders();
+				ListGridRecord[] temp = new ListGridRecord[definitionList.size()];
+
+				int cnt = 0;
+				for (WebHookHeader header : definitionList) {
+					ListGridRecord newRecord = createRecord(header, null, true);
+					temp[cnt] = newRecord;
+					cnt ++;
+				}
+				headerGrid.setData(temp);
 				
 			} else {
 				charsetField.clearValue();
@@ -392,22 +544,23 @@ public class WebHookTemplateEditPane extends MetaDataMainEditPane {
 		
 		//private SelectItem securityMethodField;//bearer,BASIC,
 		
-		private CheckboxItem isPublic;//サブスクライブを公開するかどうか。TODO：公開サブ、今後作る
-		private DynamicForm subscriberForm;
+		//private CheckboxItem isPublic;//サブスクライブを公開するかどうか。TODO：公開サブ、今後作る
+		//private DynamicForm subscriberForm;
 		public SubscriberMapGrid grid;
 		
 		
 		public WebHookTemplateSubscriberPane() {
 			setMembersMargin(5);
 			
-			subscriberForm = new DynamicForm();
-			subscriberForm.setWidth100();
-			subscriberForm.setNumCols(4);
-			subscriberForm.setColWidths(100, "*", "*", "*");
-			
+//			subscriberForm = new DynamicForm();
+//			subscriberForm.setWidth100();
+//			subscriberForm.setNumCols(4);
+//			subscriberForm.setColWidths(100, "*", "*", "*");
+//			subscriberForm.setHeight(400);
 			
 			
 			grid = new SubscriberMapGrid();
+			grid.setWidth100();
 			grid.addRecordDoubleClickHandler(new RecordDoubleClickHandler() {
 				public void onRecordDoubleClick(RecordDoubleClickEvent event) {
 					editMap((ListGridRecord)event.getRecord());
@@ -439,7 +592,7 @@ public class WebHookTemplateEditPane extends MetaDataMainEditPane {
 					for (WebHookSubscriber sub : curDefinition.getSubscribers() ) {
 						if (sub.getUrl().equals(url)) {
 							if (sub.getSubscriberName().equals(subscriberName)) {
-								break;
+								continue;
 							}
 						}
 						subscriberList.add(sub);
@@ -577,7 +730,35 @@ public class WebHookTemplateEditPane extends MetaDataMainEditPane {
 	}
 
 	public class HeaderMapGrid extends ListGrid{
-		
+		public HeaderMapGrid() {
+			setWidth(500);
+			setHeight(1);
+
+			setShowAllColumns(true);
+			setShowAllRecords(true);
+			setCanResizeFields(true);
+			setCanSort(true);	
+			setCanPickFields(false);
+			setCanGroupBy(false);
+			setAutoFitWidthApproach(AutoFitWidthApproach.BOTH);	
+			setLeaveScrollbarGap(false);
+			setBodyOverflow(Overflow.VISIBLE);
+			setOverflow(Overflow.VISIBLE);
+
+			//TODO:名前をlocale に追加改変
+			ListGridField headerNameField = new ListGridField(HEADER_FIELD_NAME.HEADERNAME.name(), "Name Key");
+			ListGridField headerValueField = new ListGridField(HEADER_FIELD_NAME.HEADERVALUE.name(), "Value");
+			//後はセキュリティの追加設定をdialogして、ボタンを追加しようかと
+			
+			setFields(headerNameField, headerValueField);
+		}
+//		public WebHookTemplateDefinition getEditDefinition(WebHookTemplateDefinition definition) {
+//			ListGridRecord[] records = getRecords();
+//			for (ListGridRecord record : records) {
+//				//definition.addSubscriber(new WebHookSubscriber());
+//			}
+//			return null;
+//		}
 	}
 	
 	private class SubscriberMapGrid extends ListGrid{
@@ -605,13 +786,13 @@ public class WebHookTemplateEditPane extends MetaDataMainEditPane {
 			
 			setFields(subscriberNameField, subscriberUrlField, subscriberVerificationMethod);
 		}
-		public WebHookTemplateDefinition getEditDefinition(WebHookTemplateDefinition definition) {
-			ListGridRecord[] records = getRecords();
-			for (ListGridRecord record : records) {
-				definition.addSubscriber(new WebHookSubscriber());
-			}
-			return null;
-		}
+//		public WebHookTemplateDefinition getEditDefinition(WebHookTemplateDefinition definition) {
+//			ListGridRecord[] records = getRecords();
+//			for (ListGridRecord record : records) {
+//				definition.addSubscriber(new WebHookSubscriber());
+//			}
+//			return null;
+//		}
 	}
 	
 	
