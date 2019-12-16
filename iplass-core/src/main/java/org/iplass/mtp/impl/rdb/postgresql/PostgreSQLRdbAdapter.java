@@ -380,18 +380,28 @@ public class PostgreSQLRdbAdapter extends RdbAdapter {
 
 	@Override
 	public boolean isSupportGroupingExtention(RollType rollType) {
-		return false;
+		return true;
 	}
 
 	@Override
 	public String rollUpStart(RollType rollType) {
-		//TODO postgresqlにExtended grouping capabilitiesは実装されていない
-		return "";
+		switch (rollType) {
+		case ROLLUP:
+			return " ROLLUP(";
+		case CUBE:
+			return " CUBE(";
+		default:
+			return "";
+		}
 	}
 
 	@Override
 	public String rollUpEnd(RollType rollType) {
+		if (rollType != null) {
+			return ") ";
+		} else {
 			return "";
+		}
 	}
 
 	@Override
@@ -562,12 +572,12 @@ public class PostgreSQLRdbAdapter extends RdbAdapter {
 
 	@Override
 	public boolean isSupportGroupingExtentionWithOrderBy() {
-		return false;
+		return true;
 	}
 
 	@Override
 	public boolean isSupportGroupingExtention() {
-		return false;
+		return true;
 	}
 
 	@Override
