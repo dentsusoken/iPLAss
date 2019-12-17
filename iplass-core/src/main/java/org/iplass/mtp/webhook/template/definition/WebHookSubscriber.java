@@ -17,16 +17,27 @@ public class WebHookSubscriber implements Serializable{
 	
 	/** このサブが使いたい安全対策 */
 	private String securityMethod;
+	
+	
+	/** セキュリティ関連 */
+	private String securityUsername;
+	private String securityPassword;
+	private String securityToken;
+	
+	
 	//何らかしらの認証用物、他の設置なと TODO:
+
 
 
 	public WebHookSubscriber() {
 	}
 	
-	public WebHookSubscriber(String url, String subscriberName, String securityMethod) {
+	public WebHookSubscriber(String url, String subscriberName,String   securityUsername, String securityPassword, String securityToken) {
 		this.url = url;
 		this.subscriberName = subscriberName;
-		this.securityMethod = securityMethod;
+		this.securityUsername = securityUsername;
+		this.securityPassword = securityPassword;
+		this.securityToken = securityToken;
 	}
 
 	public String getUrl() {
@@ -60,4 +71,29 @@ public class WebHookSubscriber implements Serializable{
 	public void setSecurityMethod(String securityMethod) {
 		this.securityMethod = securityMethod;
 	}
+	
+	public String getSecurityUsername() {
+		return securityUsername;
+	}
+
+	public void setSecurityUsername(String securityUsername) {
+		this.securityUsername = securityUsername;
+	}
+
+	public String getSecurityPassword() {
+		return securityPassword;
+	}
+
+	public void setSecurityPassword(String securityPassword) {
+		this.securityPassword = securityPassword;
+	}
+
+	public String getSecurityToken() {
+		return securityToken;
+	}
+
+	public void setSecurityToken(String securityToken) {
+		this.securityToken = securityToken;
+	}
+
 }

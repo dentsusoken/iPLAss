@@ -127,6 +127,9 @@ public class WebHookTemplateDefinition implements Definition {
 	}
 
 	public ArrayList<WebHookSubscriber> getSubscribers() {
+		if (subscribers == null) {
+			return new ArrayList<WebHookSubscriber>();
+		}
 		return subscribers;
 	}
 
@@ -139,6 +142,20 @@ public class WebHookTemplateDefinition implements Definition {
 			this.subscribers = new ArrayList <WebHookSubscriber>();
 		}
 		this.subscribers.add(newSubscriber);
+	}
+	
+	/***
+	 * 特定のsubscriberオブジェを取得。
+	 * 見つけないならnullが返される 
+	 */
+	public WebHookSubscriber getSubscriberByNameURL (String name, String url){
+		
+		for (WebHookSubscriber temp : subscribers) {
+			if (temp.getUrl()==url&&temp.getSubscriberName()==name) {
+				return temp;
+			}
+		} 
+		return null;
 	}
 
 	public Boolean isSynchronous() {

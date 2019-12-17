@@ -14,9 +14,10 @@ import org.iplass.adminconsole.client.base.ui.widget.form.MtpForm2Column;
 import org.iplass.adminconsole.client.base.ui.widget.form.MtpTextItem;
 import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
 import org.iplass.mtp.webhook.template.definition.WebHookSubscriber;
-
+import com.google.gwt.user.client.ui.TextArea;
 import com.smartgwt.client.widgets.IButton;
 import com.smartgwt.client.widgets.form.DynamicForm;
+import com.smartgwt.client.widgets.form.fields.TextAreaItem;
 import com.smartgwt.client.widgets.form.fields.TextItem;
 import com.smartgwt.client.widgets.layout.VLayout;
 
@@ -76,38 +77,70 @@ public class WebHookSubscriberDialog extends MtpDialog {
 		private DynamicForm form;
 		private TextItem subscriberNameField;
 		private TextItem subscriberUrlField;
-		private TextItem subscriberSecurityMethodField;//TODO:いまは簡単のボックス、今後対応のパーツも作る必要がある。
+		private TextItem subscriberSecurityMethodField;
+		//basic authentication
+		private TextItem subscriberSecurityUsernameField;
+		private TextItem subscriberSecurityPasswordField;
+		
+		//token authentication
+		private TextAreaItem subscriberSecurityTokenField;//will be passed to sha256 in UTF8 and then passed to the user as iplass-token:[xxxx]
+		
 
 		public SubscriberAttributePane() {
 			
 			form = new MtpForm2Column();
 			subscriberNameField = new MtpTextItem("subscribername", "Subscriber");//TODO: add message AdminClientMessageUtil.getString("ui_metadata_webhook_WebHookSubscriberDialog_subscriberName"));
 			subscriberUrlField = new MtpTextItem("subscriberurl", "Subscriber's URL");//TODO: add message AdminClientMessageUtil.getString("ui_metadata_webhook_WebHookSubscriberDialog_subscriberUrl"));
-			subscriberSecurityMethodField = new MtpTextItem("subscribersecuritymethod", "Subscriber's Security Option");//TODO: add message AdminClientMessageUtil.getString("ui_metadata_webhook_WebHookSubscriberDialog_subscriberSecurityMethod"));
 			
-			form.setItems(subscriberNameField, subscriberUrlField, subscriberSecurityMethodField);
+			subscriberSecurityUsernameField = new MtpTextItem("securityusername","Security Username");
+			subscriberSecurityPasswordField = new MtpTextItem("securitypassword","Security Password");
+			
+			subscriberSecurityTokenField = new TextAreaItem("subscribersecuritytoken","Security Token");
+			subscriberSecurityTokenField.setColSpan("*");
+			subscriberSecurityTokenField.setWidth("*");
+			subscriberSecurityTokenField.setHeight(300);
+			
+			
+			form.setItems(
+					subscriberNameField, 
+					subscriberUrlField, 
+					subscriberSecurityMethodField,
+					subscriberSecurityUsernameField,
+					subscriberSecurityPasswordField,
+					subscriberSecurityTokenField
+					);
 			addMember(form);
 			
 			setDefinition(curWebHookSubscriber);
 		}
+		
 		/** definition -> dialog */
 		public void setDefinition(WebHookSubscriber definition) {
 			if (definition != null) {
 				subscriberNameField.setValue(definition.getSubscriberName());
 				subscriberUrlField.setValue(definition.getUrl());
 				subscriberSecurityMethodField.setValue(definition.getSecurityMethod());
+				subscriberSecurityUsernameField.setValue(definition.getSecurityUsername());
+				subscriberSecurityPasswordField.setValue(definition.getSecurityPassword());
+				subscriberSecurityTokenField.setValue(definition.getSecurityToken());
 			} else {
 				subscriberNameField.clearValue();
 				subscriberUrlField.clearValue();
 				subscriberSecurityMethodField.clearValue();
+				subscriberSecurityUsernameField.clearValue();
+				subscriberSecurityPasswordField.clearValue();
+				subscriberSecurityTokenField.clearValue();
 			}
 		}
 
 		/** dialog -> definition */
 		public WebHookSubscriber getEditDefinition(WebHookSubscriber definition) {
-			definition.setSecurityMethod(SmartGWTUtil.getStringValue(subscriberSecurityMethodField));
 			definition.setSubscriberName(SmartGWTUtil.getStringValue(subscriberNameField));
 			definition.setUrl(SmartGWTUtil.getStringValue(subscriberUrlField));
+			definition.setSecurityUsername(SmartGWTUtil.getStringValue(subscriberSecurityUsernameField));
+			definition.setSecurityPassword(SmartGWTUtil.getStringValue(subscriberSecurityPasswordField));
+			definition.setSecurityToken(SmartGWTUtil.getStringValue(subscriberSecurityTokenField));
+			
 			return definition;
 		}
 	//set title?

@@ -10,10 +10,14 @@ import org.iplass.adminconsole.client.base.ui.widget.form.MtpForm2Column;
 import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
 import org.iplass.mtp.webhook.template.definition.WebHookHeader;
 
+import com.smartgwt.client.data.DataSource;
+import com.smartgwt.client.data.Record;
+import com.smartgwt.client.data.fields.DataSourceTextField;
 import com.smartgwt.client.widgets.IButton;
 import com.smartgwt.client.widgets.form.DynamicForm;
 import com.smartgwt.client.widgets.form.fields.ComboBoxItem;
 import com.smartgwt.client.widgets.form.fields.TextItem;
+import com.smartgwt.client.widgets.form.validator.CustomValidator;
 import com.smartgwt.client.widgets.layout.VLayout;
 
 /**
@@ -29,7 +33,7 @@ public class WebHookHeaderDialog extends MtpDialog {
 	private List<DataChangedHandler> handlers = new ArrayList<DataChangedHandler>();
 	
 	
-	public WebHookHeaderDialog(WebHookHeader headerDefinition) {
+	public WebHookHeaderDialog(WebHookHeader headerDefinition, ArrayList<WebHookHeader> headers) {
 		curHeaderDefinition = headerDefinition;
 		if (curHeaderDefinition==null) {
 			curHeaderDefinition = new WebHookHeader();
@@ -48,7 +52,7 @@ public class WebHookHeaderDialog extends MtpDialog {
 		save.addClickHandler(new com.smartgwt.client.widgets.events.ClickHandler() {
 			public void onClick(com.smartgwt.client.widgets.events.ClickEvent event) {
 				WebHookHeader definition = curHeaderDefinition;
-
+				//TODO: prevent clicking if header is duplicated
 				definition = headerAttrEditPane.getEditDefinition(definition);
 				fireDataChanged(definition);
 				destroy();
@@ -67,11 +71,21 @@ public class WebHookHeaderDialog extends MtpDialog {
 	private class HeaderAttributePane extends VLayout {
 		private DynamicForm form;
 		private ComboBoxItem headerNameField;
+
 		private TextItem headerValueField;
 		
 		public HeaderAttributePane() {
 			form = new MtpForm2Column();
 			headerNameField = new ComboBoxItem("headerName", "Header");
+			DataSource ds = new DataSource();
+			ds.setFields(new DataSourceTextField("headerName"));
+			Record rc = new Record();
+			rc.setAttribute("headerName", "header");
+			ds.addData(rc);
+			ds.setClientOnly(true);
+			headerNameField.setOptionDataSource(ds);
+			
+			headerNameField.setRequired(true);//FIXME: no effect
 			headerValueField = new TextItem("headerValue","Value");
 			
 			form.setItems(headerNameField, headerValueField);
@@ -96,7 +110,16 @@ public class WebHookHeaderDialog extends MtpDialog {
 			_curHeaderDefinition.setValue(SmartGWTUtil.getStringValue(headerValueField));
 			return _curHeaderDefinition;
 		}
+		
+		public ComboBoxItem getHeaderNameField() {
+			return headerNameField;
+		}
+
 	}
+	
+	public void setValidatorForHeader(CustomValidator validator) {
+		headerAttrEditPane.getHeaderNameField().setValidators(validator);
+	} 
 	
 	/**
 	 * {@link DataChangedHandler} を追加します。

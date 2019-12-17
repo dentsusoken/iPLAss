@@ -1,6 +1,8 @@
 package org.iplass.mtp.impl.webhook;
 
 import java.io.IOException;
+
+import org.apache.commons.codec.binary.Base64;
 import java.io.InterruptedIOException;
 import java.net.ConnectException;
 import java.net.URI;
@@ -11,6 +13,7 @@ import java.util.concurrent.TimeUnit;
 
 import javax.net.ssl.SSLException;
 
+import org.apache.http.HttpHeaders;
 import org.apache.http.HttpHost;
 import org.apache.http.HttpStatus;
 import org.apache.http.StatusLine;
@@ -105,7 +108,7 @@ public class WebHookServiceImpl extends AbstractTypedMetaDataService<MetaWebHook
 			//if proxy is set
 			HttpHost proxy = new HttpHost("sg-sd27b-1.isid.co.jp", 8080, "http");//TODO: 設置できるように
 
-			HttpClientBuilder httpClientBuilder = HttpClientBuilder.create().setProxy(proxy);
+			HttpClientBuilder httpClientBuilder = null;
 			if (webHook.isRetry()) {
 				int retryCount = webHook.getRetryLimit();
 				int retryInterval = webHook.getRetryInterval();
@@ -128,8 +131,9 @@ public class WebHookServiceImpl extends AbstractTypedMetaDataService<MetaWebHook
 						return false;
 						}
 					};
+					httpClientBuilder = HttpClientBuilder.create().setRetryHandler(requestRetryHandler).setProxy(proxy);
 			} else {
-				httpClientBuilder.disableAutomaticRetries();
+				httpClientBuilder = HttpClientBuilder.create().disableAutomaticRetries().setProxy(proxy);
 			}
 			
 			try {
@@ -149,6 +153,7 @@ public class WebHookServiceImpl extends AbstractTypedMetaDataService<MetaWebHook
 
 					//TODO: sync か　asyn,なんかsyncは珍しいみたいで
 				for (int j = 0; j < receivers.size();j++) {
+					WebHookSubscriber temp= receivers.get(j);
 					//TODO: fill in info to post
 					HttpPost httpPost = new HttpPost(new URI(receivers.get(j).getUrl()));
 					// and payload and headers
@@ -156,7 +161,15 @@ public class WebHookServiceImpl extends AbstractTypedMetaDataService<MetaWebHook
 					for(WebHookHeader headerEntry: webHook.getHeaders()) {
 						httpPost.setHeader(headerEntry.getKey(), headerEntry.getValue());
 					}
-					
+					if (temp.getSecurityToken()!=null) {
+						String tokenTemp = temp.getSecurityToken();
+						httpPost.setHeader("iplass-token", tokenTemp);//tokenがヘッダーに表示する名前
+					}
+					if (temp.getSecurityUsername()!=null&&temp.getSecurityPassword()!=null) {
+						String basic = temp.getSecurityUsername()+":"+ temp.getSecurityPassword();
+						basic ="Basic " + Base64.encodeBase64String(basic.getBytes());
+						httpPost.setHeader(HttpHeaders.AUTHORIZATION, basic);
+					}
 					CloseableHttpResponse response = httpClient.execute(httpPost);
 					try {
 						StatusLine statusLine= response.getStatusLine();
