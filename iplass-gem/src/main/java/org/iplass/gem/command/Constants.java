@@ -102,6 +102,8 @@ public class Constants {
 	public static final String DETAIL_COND_COUNT = "dtlCndCount";
 	public static final String DETAIL_COND_FILTER_EXPRESSION = "dtlCndFilterExpression";
 
+	//排他制御チェックエラー(更新ダイアログが開く時)
+	public static final String BULK_UPDATE_EXCHECK_ERR = "bulkUpdateExCheckErr";
 	public static final String BULK_UPDATE_SELECT_TYPE = "selectAllType";
 	public static final String BULK_UPDATE_SELECT_ALL_PAGE = "selectAllPage";
 	public static final String BULK_UPDATE_USE_BULK_VIEW = "useBulkView";

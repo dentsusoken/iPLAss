@@ -65,6 +65,7 @@ import org.iplass.mtp.view.generic.editor.ReferencePropertyEditor;
 import org.iplass.mtp.view.generic.editor.ReferencePropertyEditor.ReferenceDisplayType;
 import org.iplass.mtp.view.generic.element.property.PropertyColumn;
 import org.iplass.mtp.view.generic.element.section.SearchResultSection;
+import org.iplass.mtp.view.generic.element.section.SearchResultSection.ExclusiveControlPoint;
 import org.iplass.mtp.web.template.TemplateUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -476,6 +477,14 @@ public class BulkCommandContext extends RegistrationCommandContext {
 	 */
 	public void setView(SearchFormView view) {
 		this.view = view;
+	}
+
+	/**
+	 * 一括更新の排他制御起点を取得します。
+	 * @return 一括更新の排他制御起点
+	 */
+	public ExclusiveControlPoint getExclusiveControlPoint() {
+		return getView().getResultSection().getExclusiveControlPoint();
 	}
 
 	/**

@@ -57,6 +57,9 @@ public class CreateSearchResultUtil {
 			eval.put("orgOid", entity.getOid());
 			eval.put("orgVersion", entity.getVersion().toString());
 
+			if (entity.getUpdateDate() != null) {
+				eval.put("orgTimestamp", String.valueOf(entity.getUpdateDate().getTime()));
+			}
 			if (entity.getValue("score") != null) {
 				eval.put("score", entity.getValue("score").toString());
 			}

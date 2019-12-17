@@ -20,8 +20,13 @@
 
 package org.iplass.gem.command.generic.bulk;
 
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.iplass.gem.command.Constants;
 import org.iplass.mtp.command.RequestContext;
@@ -34,6 +39,7 @@ import org.iplass.mtp.command.annotation.action.Result.Type;
 import org.iplass.mtp.command.annotation.template.Template;
 import org.iplass.mtp.entity.Entity;
 import org.iplass.mtp.view.generic.SearchFormView;
+import org.iplass.mtp.view.generic.element.section.SearchResultSection.ExclusiveControlPoint;
 
 @ActionMappings({
 	@ActionMapping(name=BulkUpdateViewCommand.BULK_EDIT_ACTION_NAME,
@@ -45,6 +51,8 @@ import org.iplass.mtp.view.generic.SearchFormView;
 			},
 			result={
 				@Result(status=Constants.CMD_EXEC_SUCCESS, type=Type.TEMPLATE,
+						value=Constants.TEMPLATE_BULK_EDIT),
+				@Result(status=Constants.CMD_EXEC_ERROR_VALIDATE, type=Type.TEMPLATE,
 						value=Constants.TEMPLATE_BULK_EDIT),
 				@Result(status=Constants.CMD_EXEC_ERROR_VIEW, type=Type.TEMPLATE,
 						value=Constants.TEMPLATE_COMMON_ERROR,
@@ -86,6 +94,7 @@ public class BulkUpdateViewCommand extends BulkCommandBase {
 		}
 
 		BulkUpdateFormViewData data = new BulkUpdateFormViewData(context);
+		List<Integer> alreadyUpdated = new ArrayList<>();
 
 		for (String oid : oids) {
 			if (oid != null && oid.length() > 0) {
@@ -96,6 +105,15 @@ public class BulkUpdateViewCommand extends BulkCommandBase {
 						request.setAttribute(Constants.MESSAGE, resourceString("command.generic.bulk.BulkUpdateViewCommand.noPermission"));
 						return Constants.CMD_EXEC_ERROR_NODATA;
 					}
+					if (context.getExclusiveControlPoint() == ExclusiveControlPoint.WHEN_SEARCH) {
+						Timestamp targetTimestamp = context.getTimestamp(oid, targetVersion);
+						// 更新日時をチェックします、一致しなければ、行番号を保持します。
+						if (!entity.getUpdateDate().equals(targetTimestamp)) {
+							alreadyUpdated.add(targetRow);
+							// 最新の更新日時を隠すために、クライアント側の更新日時をセットします。
+							entity.setUpdateDate(targetTimestamp);
+						}
+					}
 					data.setSelected(targetRow, entity);
 				}
 			}
@@ -104,6 +122,23 @@ public class BulkUpdateViewCommand extends BulkCommandBase {
 		request.setAttribute(Constants.DATA, data);
 		request.setAttribute(Constants.SEARCH_COND, context.getSearchCond());
 		request.setAttribute(Constants.BULK_UPDATE_SELECT_ALL_PAGE, context.getSelectAllPage());
+		if (alreadyUpdated.size() > 0) {
+			String param = convertRowListToStr(alreadyUpdated);
+			request.setAttribute(Constants.MESSAGE, resourceString("command.generic.bulk.BulkUpdateViewCommand.alreadyUpdated", param));
+			request.setAttribute(Constants.BULK_UPDATE_EXCHECK_ERR, Boolean.TRUE);
+			return Constants.CMD_EXEC_ERROR_VALIDATE;
+		}
 		return Constants.CMD_EXEC_SUCCESS;
+	}
+
+	private String convertRowListToStr(List<Integer> alreadyUpdated) {
+		Collections.sort(alreadyUpdated, new Comparator<Integer>() {
+			@Override
+			public int compare(Integer o1, Integer o2) {
+				return o1.compareTo(o2);
+			}
+		});
+		List<String> tmp = alreadyUpdated.stream().map(i -> i.toString()).collect(Collectors.toList());
+		return String.join(",", tmp);
 	}
 }
