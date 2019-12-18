@@ -1,8 +1,6 @@
 package org.iplass.mtp.impl.webhook;
 
 import org.iplass.mtp.impl.definition.TypedMetaDataService;
-import org.iplass.mtp.impl.mail.template.MetaMailTemplate;
-import org.iplass.mtp.impl.mail.template.MetaMailTemplate.MailTemplateRuntime;
 import org.iplass.mtp.impl.webhook.template.MetaWebHookTemplate;
 import org.iplass.mtp.impl.webhook.template.MetaWebHookTemplate.WebHookTemplateRuntime;
 import org.iplass.mtp.tenant.Tenant;

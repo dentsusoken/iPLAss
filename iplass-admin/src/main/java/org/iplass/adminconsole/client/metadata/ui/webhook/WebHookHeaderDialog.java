@@ -70,22 +70,12 @@ public class WebHookHeaderDialog extends MtpDialog {
 	}
 	private class HeaderAttributePane extends VLayout {
 		private DynamicForm form;
-		private ComboBoxItem headerNameField;
-
+		private TextItem headerNameField;
 		private TextItem headerValueField;
 		
 		public HeaderAttributePane() {
 			form = new MtpForm2Column();
-			headerNameField = new ComboBoxItem("headerName", "Header");
-			DataSource ds = new DataSource();
-			ds.setFields(new DataSourceTextField("headerName"));
-			Record rc = new Record();
-			rc.setAttribute("headerName", "header");
-			ds.addData(rc);
-			ds.setClientOnly(true);
-			headerNameField.setOptionDataSource(ds);
-			
-			headerNameField.setRequired(true);//FIXME: no effect
+			headerNameField = new TextItem("headerName", "Header");
 			headerValueField = new TextItem("headerValue","Value");
 			
 			form.setItems(headerNameField, headerValueField);
@@ -110,16 +100,7 @@ public class WebHookHeaderDialog extends MtpDialog {
 			_curHeaderDefinition.setValue(SmartGWTUtil.getStringValue(headerValueField));
 			return _curHeaderDefinition;
 		}
-		
-		public ComboBoxItem getHeaderNameField() {
-			return headerNameField;
-		}
-
 	}
-	
-	public void setValidatorForHeader(CustomValidator validator) {
-		headerAttrEditPane.getHeaderNameField().setValidators(validator);
-	} 
 	
 	/**
 	 * {@link DataChangedHandler} を追加します。

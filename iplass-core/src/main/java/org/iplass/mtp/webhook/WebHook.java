@@ -7,6 +7,7 @@ package org.iplass.mtp.webhook;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.Callable;
 
 import org.iplass.mtp.webhook.template.definition.WebHookContent;
@@ -37,9 +38,11 @@ public class WebHook  {
 	/** headers */
 	private ArrayList<WebHookHeader> headers;
 	
-	/** SSL token 、未実装、 */
+	Map<String, Object> binding;
+	
 
 	// private String SSL;
+
 
 	/** 失敗したらやり直ししますか */
 	private boolean retry;
@@ -145,4 +148,12 @@ public class WebHook  {
 	public void addSubscriber(WebHookSubscriber subscriber) {
 		this.subscribers.add(subscriber);
 	}
+	public Map<String, Object> getBinding() {
+		return binding;
+	}
+
+	public void setBinding(Map<String, Object> binding) {
+		this.binding = binding;
+	}
+
 }

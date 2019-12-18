@@ -72,4 +72,38 @@ public class WebHookManagerImpl implements WebHookManager {
 		}
 	}
 
+	@Override
+	public WebHook createWebHook(String webHookDefinitionName, Map<String, Object> binding) {
+		WebHookTemplateRuntime runtime = getWebHookTemplateRuntme(webHookDefinitionName);
+		if (runtime == null) {
+			throw new SystemException("WebHookTemplate:" + webHookDefinitionName + " not found");
+		}
+		return runtime.createWebHook(binding);
+		
+	}
+
+	@Override
+	public void sendWebHook(WebHook webHook) {
+		try { 
+			if (webHook.getSubscribers() == null || webHook.getSubscribers().isEmpty()) {//テストや、新規の時よくあるケース
+				logger.warn("The WebHook: was attempted without valid receiver url.");
+				return;
+			}
+			Tenant tenant = ExecuteContext.getCurrentContext().getCurrentTenant();
+			webHookService.sendWebHook(tenant, webHook);
+			
+		} catch (ApplicationException e) {
+			throw e;
+		} catch (RuntimeException e) {
+			setRollbackOnly();
+			logger.error(e.getMessage(), e);
+			throw new WebHookRuntimeException("開始処理でエラーが発生しました。", e);
+		} catch (Error e) {
+			setRollbackOnly();
+			logger.error(e.getMessage(), e);
+			throw new WebHookRuntimeException("開始処理でエラーが発生しました。", e);
+		}
+		
+	}
+
 }

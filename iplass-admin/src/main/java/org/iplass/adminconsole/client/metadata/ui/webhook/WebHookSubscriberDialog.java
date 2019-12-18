@@ -77,7 +77,6 @@ public class WebHookSubscriberDialog extends MtpDialog {
 		private DynamicForm form;
 		private TextItem subscriberNameField;
 		private TextItem subscriberUrlField;
-		private TextItem subscriberSecurityMethodField;
 		//basic authentication
 		private TextItem subscriberSecurityUsernameField;
 		private TextItem subscriberSecurityPasswordField;
@@ -96,7 +95,7 @@ public class WebHookSubscriberDialog extends MtpDialog {
 			subscriberSecurityPasswordField = new MtpTextItem("securitypassword","Security Password");
 			
 			subscriberSecurityTokenField = new TextAreaItem("subscribersecuritytoken","Security Token");
-			subscriberSecurityTokenField.setColSpan("*");
+			//subscriberSecurityTokenField.setColSpan("*");
 			subscriberSecurityTokenField.setWidth("*");
 			subscriberSecurityTokenField.setHeight(300);
 			
@@ -104,7 +103,6 @@ public class WebHookSubscriberDialog extends MtpDialog {
 			form.setItems(
 					subscriberNameField, 
 					subscriberUrlField, 
-					subscriberSecurityMethodField,
 					subscriberSecurityUsernameField,
 					subscriberSecurityPasswordField,
 					subscriberSecurityTokenField
@@ -119,14 +117,12 @@ public class WebHookSubscriberDialog extends MtpDialog {
 			if (definition != null) {
 				subscriberNameField.setValue(definition.getSubscriberName());
 				subscriberUrlField.setValue(definition.getUrl());
-				subscriberSecurityMethodField.setValue(definition.getSecurityMethod());
 				subscriberSecurityUsernameField.setValue(definition.getSecurityUsername());
 				subscriberSecurityPasswordField.setValue(definition.getSecurityPassword());
 				subscriberSecurityTokenField.setValue(definition.getSecurityToken());
 			} else {
 				subscriberNameField.clearValue();
 				subscriberUrlField.clearValue();
-				subscriberSecurityMethodField.clearValue();
 				subscriberSecurityUsernameField.clearValue();
 				subscriberSecurityPasswordField.clearValue();
 				subscriberSecurityTokenField.clearValue();

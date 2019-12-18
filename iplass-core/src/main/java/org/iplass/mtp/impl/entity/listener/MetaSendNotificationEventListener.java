@@ -50,6 +50,8 @@ import org.iplass.mtp.transaction.Transaction;
 import org.iplass.mtp.transaction.TransactionManager;
 import org.iplass.mtp.transaction.TransactionStatus;
 import org.iplass.mtp.util.StringUtil;
+import org.iplass.mtp.webhook.WebHook;
+import org.iplass.mtp.webhook.WebHookManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -196,6 +198,8 @@ public class MetaSendNotificationEventListener extends MetaEventListener {
 			return new SendSMSNotificationEventListenerHandler(entity);
 		} else if (notificationType == SendNotificationType.PUSH) {
 			return new SendPushNotificationEventListenerHandler(entity);
+		} else if (notificationType == SendNotificationType.WEBHOOK) {
+			return new SendWebHookNotificationEventListenerHandler(entity);
 		}
 		return null;
 	}
@@ -499,6 +503,26 @@ public class MetaSendNotificationEventListener extends MetaEventListener {
 		@Override
 		protected void sendNotification(Object mail) {
 			pm.push((PushNotification) mail);
+		}
+	}
+	
+	public class SendWebHookNotificationEventListenerHandler extends SendNotificationListenerEventHandler {
+
+		private WebHookManager wm = ManagerLocator.getInstance().getManager(WebHookManager.class);
+
+		public SendWebHookNotificationEventListenerHandler(MetaEntity entity) {
+			super(entity);
+		}
+
+		@Override
+		protected Object createNotification(Entity entity, EventType type, EntityEventContext context) {
+			Map<String, Object> bindings = generateBindings(entity, type, context);
+			return wm.createWebHook(tmplDefName, bindings);
+		}
+
+		@Override
+		protected void sendNotification(Object webHook) {
+			wm.sendWebHook((WebHook)webHook);
 		}
 	}
 }

@@ -24,6 +24,7 @@ import org.iplass.mtp.definition.Definition;
 import org.iplass.mtp.mail.template.definition.MailTemplateDefinition;
 import org.iplass.mtp.pushnotification.template.definition.PushNotificationTemplateDefinition;
 import org.iplass.mtp.sms.template.definition.SmsMailTemplateDefinition;
+import org.iplass.mtp.webhook.template.definition.WebHookTemplateDefinition;
 
 /**
  * 送信種別を表すenum。
@@ -32,7 +33,8 @@ public enum SendNotificationType {
 
 	MAIL("Mail", MailTemplateDefinition.class),
 	SMS("SMS", SmsMailTemplateDefinition.class),
-	PUSH("PushNotification", PushNotificationTemplateDefinition.class);
+	PUSH("PushNotification", PushNotificationTemplateDefinition.class),
+	WEBHOOK("WebHook", WebHookTemplateDefinition.class);
 
 	private String displayName;
 	private Class<? extends Definition> definitionClass;

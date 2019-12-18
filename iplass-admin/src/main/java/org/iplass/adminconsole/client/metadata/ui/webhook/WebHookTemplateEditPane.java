@@ -599,8 +599,6 @@ public class WebHookTemplateEditPane extends MetaDataMainEditPane {
 
 		//セキュリティ設定、サブのそれぞれ対応
 		
-		//private SelectItem securityMethodField;//bearer,BASIC,
-		
 		//private CheckboxItem isPublic;//サブスクライブを公開するかどうか。TODO：公開サブ、今後作る
 		//private DynamicForm subscriberForm;
 		public SubscriberMapGrid grid;

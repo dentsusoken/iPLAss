@@ -15,10 +15,6 @@ public class WebHookSubscriber implements Serializable{
 	/**　申し込んだ方のパスワード */
 	private String subscriberPassword;
 	
-	/** このサブが使いたい安全対策 */
-	private String securityMethod;
-	
-	
 	/** セキュリティ関連 */
 	private String securityUsername;
 	private String securityPassword;
@@ -62,14 +58,6 @@ public class WebHookSubscriber implements Serializable{
 
 	public void setSubscriberPassword(String subscriberPassword) {
 		this.subscriberPassword = subscriberPassword;
-	}
-	
-	public String getSecurityMethod() {
-		return securityMethod;
-	}
-
-	public void setSecurityMethod(String securityMethod) {
-		this.securityMethod = securityMethod;
 	}
 	
 	public String getSecurityUsername() {

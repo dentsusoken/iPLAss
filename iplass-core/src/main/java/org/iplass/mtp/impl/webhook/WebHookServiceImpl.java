@@ -8,8 +8,6 @@ import java.net.ConnectException;
 import java.net.URI;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
-import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 import javax.net.ssl.SSLException;
 
@@ -163,7 +161,7 @@ public class WebHookServiceImpl extends AbstractTypedMetaDataService<MetaWebHook
 					}
 					if (temp.getSecurityToken()!=null) {
 						String tokenTemp = temp.getSecurityToken();
-						httpPost.setHeader("iplass-token", tokenTemp);//tokenがヘッダーに表示する名前
+						httpPost.setHeader("iplass-token", tokenTemp);//TODO sha256 tokenがヘッダーに表示する名前
 					}
 					if (temp.getSecurityUsername()!=null&&temp.getSecurityPassword()!=null) {
 						String basic = temp.getSecurityUsername()+":"+ temp.getSecurityPassword();
