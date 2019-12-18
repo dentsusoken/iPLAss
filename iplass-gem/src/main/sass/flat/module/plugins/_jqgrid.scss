@@ -65,6 +65,30 @@
 }
 
 
+//Fixed a bug that borders are not displayed when zooming in chrome.
+%extend_jqgrid_border_adjust {
+	.ui-jqgrid {
+		.ui-jqgrid-htable th.ui-th-ltr {
+			border: none;
+			outline-width: 0.5px;
+			outline-style: solid;
+			outline-color: $color_alto_approx;
+		}
+		.ui-jqgrid-bdiv tr.ui-row-ltr {
+			border: none;
+			> td {
+				border-bottom-width: 0;
+				border-right-width: 0;
+				
+				outline-width: 0.5px;
+				outline-style: solid;
+				outline-color: $color_alto_approx;
+			}
+		}
+	}
+}
+
+
 .ui-jqgrid {
 	display: block;
 	float: left;
@@ -94,7 +118,7 @@
 			color: $color_venice_blue_approx;
 			//Instead of the line below you could use @include transition($transition-1, $transition-2, $transition-3, $transition-4, $transition-5, $transition-6, $transition-7, $transition-8, $transition-9, $transition-10)
 			transition: background 300ms;
-			border-right: 1px solid $white !important;
+border-right: 1px solid $white;
 			position: relative;
 			div {
 				margin: 0 !important;
@@ -259,10 +283,7 @@
 		padding: 10px;
 		background: $white;
 		border-color: $color_alto_approx;
-		&:first-child {
-			border-left: 1px solid $color_alto_approx !important;
-		}
-	}
+			}
 	&.jqgfirstrow > td {
 		padding: 0;
 	}
