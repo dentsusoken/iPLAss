@@ -649,6 +649,21 @@ body.modal-body input.btn-csv-01 {
   width: 40px !important;
   text-align: center; }
 
+.result-data .ui-jqgrid .ui-jqgrid-htable th.ui-th-ltr, .entity-list .ui-jqgrid .ui-jqgrid-htable th.ui-th-ltr {
+  border: none;
+  outline-width: 0.5px;
+  outline-style: solid;
+  outline-color: #ddd; }
+
+.result-data .ui-jqgrid .ui-jqgrid-bdiv tr.ui-row-ltr, .entity-list .ui-jqgrid .ui-jqgrid-bdiv tr.ui-row-ltr {
+  border: none; }
+  .result-data .ui-jqgrid .ui-jqgrid-bdiv tr.ui-row-ltr > td, .entity-list .ui-jqgrid .ui-jqgrid-bdiv tr.ui-row-ltr > td {
+    border-bottom-width: 0;
+    border-right-width: 0;
+    outline-width: 0.5px;
+    outline-style: solid;
+    outline-color: #ddd; }
+
 .ui-jqgrid {
   display: block;
   float: left;
@@ -672,7 +687,7 @@ body.modal-body input.btn-csv-01 {
     background: #ededed;
     color: #115d85;
     transition: background 300ms;
-    border-right: 1px solid #fff !important;
+    border-right: 1px solid #ddd;
     position: relative; }
     .ui-jqgrid .ui-jqgrid-htable th div {
       margin: 0 !important;
@@ -751,12 +766,12 @@ body.modal-body input.btn-csv-01 {
   .ui-jqgrid .cell-wrapper {
     display: inline; }
   .ui-jqgrid .frozen-div.ui-jqgrid-hdiv th.ui-th-column:last-child {
-    border-bottom: #fff 1px solid; }
+    border-bottom: #ddd 1px solid; }
   .ui-jqgrid .frozen-bdiv.ui-jqgrid-bdiv tr.ui-row-ltr > td {
     background: #ededed !important;
     color: #115d85; }
   .ui-jqgrid .frozen-bdiv.ui-jqgrid-bdiv tr.ui-row-ltr:not(:last-child) > td {
-    border-bottom: 1px solid #fff !important; }
+    border-bottom: 1px solid #ddd !important; }
 
 .ui-jqgrid-view {
   border: 1px solid #ddd; }
@@ -765,8 +780,6 @@ body.modal-body input.btn-csv-01 {
   padding: 10px;
   background: #fff;
   border-color: #ddd; }
-  .ui-jqgrid-jquery-ui.ui-jqgrid .ui-jqgrid-bdiv tr.ui-row-ltr > td:first-child {
-    border-left: 1px solid #ddd !important; }
 
 .ui-jqgrid-jquery-ui.ui-jqgrid .ui-jqgrid-bdiv tr.ui-row-ltr.jqgfirstrow > td {
   padding: 0; }
