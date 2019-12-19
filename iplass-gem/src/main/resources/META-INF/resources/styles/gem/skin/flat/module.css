@@ -687,7 +687,7 @@ body.modal-body input.btn-csv-01 {
     background: #ededed;
     color: #115d85;
     transition: background 300ms;
-    border-right: 1px solid #fff;
+    border-right: 1px solid #ddd;
     position: relative; }
     .ui-jqgrid .ui-jqgrid-htable th div {
       margin: 0 !important;
@@ -766,12 +766,12 @@ body.modal-body input.btn-csv-01 {
   .ui-jqgrid .cell-wrapper {
     display: inline; }
   .ui-jqgrid .frozen-div.ui-jqgrid-hdiv th.ui-th-column:last-child {
-    border-bottom: #fff 1px solid; }
+    border-bottom: #ddd 1px solid; }
   .ui-jqgrid .frozen-bdiv.ui-jqgrid-bdiv tr.ui-row-ltr > td {
     background: #ededed !important;
     color: #115d85; }
   .ui-jqgrid .frozen-bdiv.ui-jqgrid-bdiv tr.ui-row-ltr:not(:last-child) > td {
-    border-bottom: 1px solid #fff !important; }
+    border-bottom: 1px solid #ddd !important; }
 
 .ui-jqgrid-view {
   border: 1px solid #ddd; }
