@@ -3,9 +3,14 @@ package org.iplass.mtp.impl.webhook;
 import java.io.IOException;
 import org.apache.commons.codec.binary.Base64;
 import java.io.InterruptedIOException;
+import java.io.UnsupportedEncodingException;
+import java.math.BigInteger;
 import java.net.ConnectException;
 import java.net.URI;
 import java.net.UnknownHostException;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import javax.net.ssl.SSLException;
 import org.apache.http.HttpHeaders;
@@ -162,8 +167,9 @@ public class WebHookServiceImpl extends AbstractTypedMetaDataService<MetaWebHook
 						httpPost.setHeader(headerEntry.getKey(), headerEntry.getValue());
 					}
 					if (temp.getSecurityToken()!=null) {
-						String tokenTemp = temp.getSecurityToken();
-						httpPost.setHeader("iplass-token", tokenTemp);//TODO sha256 tokenがヘッダーに表示する名前
+						String tokenTemp = temp.getSecurityToken()+payload;
+						String sha256Token= getHexSha256(tokenTemp);
+						httpPost.setHeader("iplass-token", sha256Token);//FIXME: need more testing
 					}
 					if (temp.getSecurityUsername()!=null&&temp.getSecurityPassword()!=null) {
 						String basic = temp.getSecurityUsername()+":"+ temp.getSecurityPassword();
@@ -185,13 +191,39 @@ public class WebHookServiceImpl extends AbstractTypedMetaDataService<MetaWebHook
 			} finally {
 				
 			}
-		}catch(
+		}catch(Exception e)
+		{
+			// handleException
+		}
 
-	Exception e)
-	{
-		// handleException
 	}
-
-}
+	/**
+	 * Stringのinputを、sha256で暗号化して返します
+	 * @param: String 暗号化したいもの
+	 * @return: 
+	 * */
+	public String getHexSha256(String input) {
+		MessageDigest md = null;
+		try {
+			md = MessageDigest.getInstance("SHA-256");
+			byte[] sha256Byte = md.digest(input.getBytes("UTF-8"));
+	        BigInteger number = new BigInteger(1, sha256Byte);  
+	        StringBuilder hexString = new StringBuilder(number.toString(16));  
+	  
+	        //zero padding
+	        while (hexString.length() < 32)  
+	        {  
+	            hexString.insert(0, '0');  
+	        }  
+	  
+	        return hexString.toString();  
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}  
+		return null;
+		
+	}
+	
 
 }
