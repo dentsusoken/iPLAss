@@ -51,6 +51,7 @@ public class WebHookManagerImpl implements WebHookManager {
 				logger.warn("The WebHook:"+ webHookDefinitionName + " was attempted without valid receiver url.");
 				return;
 			}
+			temp.setTemplateName(webHookDefinitionName);
 			webHookService.sendWebHook(tenant, temp);
 			
 		} catch (ApplicationException e) {
@@ -78,7 +79,9 @@ public class WebHookManagerImpl implements WebHookManager {
 		if (runtime == null) {
 			throw new SystemException("WebHookTemplate:" + webHookDefinitionName + " not found");
 		}
-		return runtime.createWebHook(binding);
+		 WebHook temp = runtime.createWebHook(binding);
+		 temp.setTemplateName(webHookDefinitionName);
+		 return temp;
 		
 	}
 

@@ -43,7 +43,6 @@ import org.slf4j.LoggerFactory;
 
 public class WebHookServiceImpl extends AbstractTypedMetaDataService<MetaWebHookTemplate, WebHookTemplateRuntime>
 		implements WebHookService {
-	
 	public static final String WEBHOOK_PROXY_HOST= "webHook.Proxy.Host";
 	public static final String WEBHOOK_PROXY_PORT= "webHook.Proxy.Port";
 	public static final String WEBHOOK_USE_PROXY= "webHook.Use.Proxy";
@@ -103,13 +102,14 @@ public class WebHookServiceImpl extends AbstractTypedMetaDataService<MetaWebHook
 
 	@Override
 	public WebHook createWebHook(Tenant tenant, String charset) {
+		logger.info("empty webhook created.");
 		return new WebHook();
 	}
 
 	@Override
 	public void sendWebHook(Tenant tenant, WebHook webHook) {
 		try {
-
+			logger.info("WebHook:"+webHook.getTemplateName()+" Attempted.");
 			HttpClientBuilder httpClientBuilder = null;
 			if (webHook.isRetry()) {
 				int retryCount = webHook.getRetryLimit();
@@ -130,6 +130,7 @@ public class WebHookServiceImpl extends AbstractTypedMetaDataService<MetaWebHook
 								return true;
 							}//TODO log retryInterval exceeded
 						}
+						logger.info("WebHook:"+webHook.getTemplateName()+"retry limit exceeded");
 						return false;
 						}
 					};
@@ -138,7 +139,7 @@ public class WebHookServiceImpl extends AbstractTypedMetaDataService<MetaWebHook
 				httpClientBuilder = HttpClientBuilder.create().disableAutomaticRetries();
 			}
 			if (this.webHookUseProxy) {
-				HttpHost proxy = new HttpHost(this.webHookProxyHost,this.webHookProxyPort,"http");//new HttpHost("sg-sd27b-1.isid.co.jp", 8080, "http");//TODO: 設置できるように
+				HttpHost proxy = new HttpHost(this.webHookProxyHost,this.webHookProxyPort,"http");
 				httpClientBuilder.setProxy(proxy);
 			}
 			try {

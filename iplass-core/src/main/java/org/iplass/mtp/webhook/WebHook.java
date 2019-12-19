@@ -40,10 +40,6 @@ public class WebHook  {
 	
 	Map<String, Object> binding;
 	
-
-	// private String SSL;
-
-
 	/** 失敗したらやり直ししますか */
 	private boolean retry;
 
@@ -56,6 +52,23 @@ public class WebHook  {
 	/**　同期非同期　*/
 	private boolean synchronous;
 	
+	/**
+	 * 記録用
+	 * */
+	private String TemplateName;
+	
+	
+	public String getTemplateName() {
+		if (TemplateName == null) {
+			return "";
+		}
+		return TemplateName;
+	}
+
+	public void setTemplateName(String templateName) {
+		TemplateName = templateName;
+	}
+
 	public String getAddressUrl() {
 		return addressUrl;
 	}
