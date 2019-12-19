@@ -1,16 +1,13 @@
 package org.iplass.mtp.impl.webhook;
 
 import java.io.IOException;
-
 import org.apache.commons.codec.binary.Base64;
 import java.io.InterruptedIOException;
 import java.net.ConnectException;
 import java.net.URI;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
-
 import javax.net.ssl.SSLException;
-
 import org.apache.http.HttpHeaders;
 import org.apache.http.HttpHost;
 import org.apache.http.HttpStatus;
@@ -21,7 +18,6 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.http.impl.client.HttpClients;
 import org.apache.http.protocol.HttpContext;
 import org.iplass.mtp.ManagerLocator;
 import org.iplass.mtp.definition.TypedDefinitionManager;
@@ -42,7 +38,14 @@ import org.slf4j.LoggerFactory;
 
 public class WebHookServiceImpl extends AbstractTypedMetaDataService<MetaWebHookTemplate, WebHookTemplateRuntime>
 		implements WebHookService {
-	private HttpClientConfig httpClientConfig;
+	
+	public static final String WEBHOOK_PROXY_HOST= "webHook.Proxy.Host";
+	public static final String WEBHOOK_PROXY_PORT= "webHook.Proxy.Port";
+	public static final String WEBHOOK_USE_PROXY= "webHook.Use.Proxy";
+	
+	private String webHookProxyHost;
+	private int webHookProxyPort;
+	private boolean webHookUseProxy;
 	private static Logger logger = LoggerFactory.getLogger(WebHookServiceImpl.class);
 	public static final String WEBHOOK_TEMPLATE_META_PATH = "/webhook/template/";
 
@@ -73,22 +76,20 @@ public class WebHookServiceImpl extends AbstractTypedMetaDataService<MetaWebHook
 
 	@Override
 	public void init(Config config) {
-		httpClientConfig = new HttpClientConfig();
-		httpClientConfig.setProxyHost("http://sg-sd27b-1.isid.co.jp");//TODO: 設置できるように
-		httpClientConfig.setProxyPort(8080);
-		httpClientConfig.setConnectionTimeout(10000);
-		httpClientConfig.setPoolingMaxTotal(100);
-		httpClientConfig.setPoolingTimeToLive(30000);
-
-		/**
-		 * httpClientConfig = (HttpClientConfig)
-		 * config.getValue("httpClientConfig",null); if (httpClientConfig == null) {
-		 * httpClientConfig = new HttpClientConfig(); httpClientConfig.inited(this,
-		 * config);
-		 * 
-		 * }
-		 */
-		httpClientConfig.inited(this, config);
+		for (String name: config.getNames()) {
+			switch (name) {
+			case WEBHOOK_PROXY_HOST:
+				webHookProxyHost = config.getValue(WEBHOOK_PROXY_HOST);
+			case WEBHOOK_PROXY_PORT:
+				webHookProxyPort = Integer.valueOf(config.getValue(WEBHOOK_PROXY_PORT));
+			case WEBHOOK_USE_PROXY:
+				 String temp = config.getValue(WEBHOOK_USE_PROXY);
+				 if (temp.replaceAll("\\s","").toLowerCase().equals("true")) {
+					 webHookUseProxy = true;
+				 }
+			}
+			
+		}
 	}
 
 	@Override
@@ -103,8 +104,6 @@ public class WebHookServiceImpl extends AbstractTypedMetaDataService<MetaWebHook
 	@Override
 	public void sendWebHook(Tenant tenant, WebHook webHook) {
 		try {
-			//if proxy is set
-			HttpHost proxy = new HttpHost("sg-sd27b-1.isid.co.jp", 8080, "http");//TODO: 設置できるように
 
 			HttpClientBuilder httpClientBuilder = null;
 			if (webHook.isRetry()) {
@@ -129,11 +128,14 @@ public class WebHookServiceImpl extends AbstractTypedMetaDataService<MetaWebHook
 						return false;
 						}
 					};
-					httpClientBuilder = HttpClientBuilder.create().setRetryHandler(requestRetryHandler).setProxy(proxy);
+					httpClientBuilder = HttpClientBuilder.create().setRetryHandler(requestRetryHandler);
 			} else {
-				httpClientBuilder = HttpClientBuilder.create().disableAutomaticRetries().setProxy(proxy);
+				httpClientBuilder = HttpClientBuilder.create().disableAutomaticRetries();
 			}
-			
+			if (this.webHookUseProxy) {
+				HttpHost proxy = new HttpHost(this.webHookProxyHost,this.webHookProxyPort,"http");//new HttpHost("sg-sd27b-1.isid.co.jp", 8080, "http");//TODO: 設置できるように
+				httpClientBuilder.setProxy(proxy);
+			}
 			try {
 				CloseableHttpClient httpClient= httpClientBuilder.build();
 				ArrayList<WebHookSubscriber> receivers = new ArrayList<WebHookSubscriber>(webHook.getSubscribers());

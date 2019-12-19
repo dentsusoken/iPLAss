@@ -20,8 +20,6 @@ import org.iplass.mtp.impl.script.template.GroovyTemplate;
 import org.iplass.mtp.impl.script.template.GroovyTemplateBinding;
 import org.iplass.mtp.impl.script.template.GroovyTemplateCompiler;
 import org.iplass.mtp.impl.util.ObjectUtil;
-import org.iplass.mtp.impl.webhook.WebHookService;
-import org.iplass.mtp.spi.ServiceRegistry;
 import org.iplass.mtp.webhook.WebHook;
 import org.iplass.mtp.webhook.template.definition.WebHookContent;
 import org.iplass.mtp.webhook.template.definition.WebHookHeader;
@@ -168,7 +166,7 @@ public class MetaWebHookTemplate extends BaseRootMetaData implements DefinableMe
 				} catch (IOException e) {
 					throw new ScriptRuntimeException(e);
 				}
-				WebHookContent content = contentBody;
+				WebHookContent content = contentBody.copy();
 				content.setContent(sw.toString());
 				webHook.setContent(content);
 			}

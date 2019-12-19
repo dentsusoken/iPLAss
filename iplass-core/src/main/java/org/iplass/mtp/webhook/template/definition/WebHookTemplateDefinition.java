@@ -1,12 +1,7 @@
 package org.iplass.mtp.webhook.template.definition;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-
 import javax.xml.bind.annotation.XmlRootElement;
-
-import org.apache.commons.lang3.tuple.MutablePair;
 import org.iplass.mtp.definition.Definition;
 
 @XmlRootElement
@@ -159,6 +154,10 @@ public class WebHookTemplateDefinition implements Definition {
 	}
 
 	public Boolean isSynchronous() {
+		if (synchronous == null) {
+			return false;
+		}
+		
 		return synchronous;
 	}
 

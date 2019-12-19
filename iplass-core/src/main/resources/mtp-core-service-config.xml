@@ -283,14 +283,12 @@
 	<service>
 		<interface>org.iplass.mtp.impl.webhook.WebHookService</interface>
 		<class>org.iplass.mtp.impl.webhook.WebHookServiceImpl</class>
-		
-		<property name="httpClientConfig" class="org.iplass.mtp.impl.http.HttpClientConfig">
-			<property name="proxyHost" value="localhost" />
-			<property name="proxyPort" value="8180" />
-			<property name="poolingMaxTotal" value="100" />
-			<property name="poolingDefaultMaxPerRoute" value="20" />
-			<property name="poolingTimeToLive" value="300" />
-		</property>
+		<property name="webHook.Proxy.Host" value="localhost" />
+		<property name="webHook.Proxy.Port" value="8080" />
+		<property name="webHook.Use.Proxy" value="true" />
+<!-- 		<property name="poolingMaxTotal" value="100" /> -->
+<!-- 		<property name="poolingDefaultMaxPerRoute" value="20" /> -->
+<!-- 		<property name="poolingTimeToLive" value="300" /> -->
 	</service>
 	
 	<!-- Tenant関連 -->

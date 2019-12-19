@@ -2,6 +2,8 @@ package org.iplass.mtp.webhook.template.definition;
 
 import java.io.Serializable;
 
+import org.iplass.mtp.impl.util.ObjectUtil;
+
 public class WebHookContent implements Serializable {
 
 	private static final long serialVersionUID = -344879145295664096L;
@@ -67,7 +69,7 @@ public class WebHookContent implements Serializable {
 	}
 	
 	public String getContent() {
-		return this.content;
+		return String.valueOf(this.content);
 	}
 	
 	public String getContentTypeString() {
@@ -104,6 +106,10 @@ public class WebHookContent implements Serializable {
 
 	public void setContentType(webHookContentType contentType) {
 		this.contentType = contentType;
+	}
+	
+	public WebHookContent copy() {
+		return new WebHookContent(this.content, this.contentType, this.charset);
 	}
 
 }
