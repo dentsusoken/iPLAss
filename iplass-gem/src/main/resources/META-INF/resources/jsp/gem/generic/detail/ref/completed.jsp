@@ -34,7 +34,6 @@
 <%@ page import="org.iplass.gem.command.generic.detail.DetailFormViewData" %>
 <%@ page import="org.iplass.gem.command.Constants"%>
 <%@ page import="org.iplass.gem.command.ViewUtil"%>
-<!DOCTYPE html>
 <%!
 	ReferencePropertyEditor getRefEditor(String defName, String viewName, String propName, String viewType, Integer refSectionIndex) {
 		EntityViewManager evm = ManagerLocator.getInstance().getManager(EntityViewManager.class);
@@ -106,9 +105,11 @@
 		uniqueItem = getUniqueItem(parentDefName, parentViewName, parentPropName, viewType, _refSectionIndex);
 	}
 %>
+<!DOCTYPE html>
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+<meta http-equiv="x-ua-compatible" content="IE=edge" />
 <title><c:out value="<%= title %>"/></title>
 <%@include file="../../../layout/resource/simpleResource.jsp" %>
 <%@include file="../../../layout/resource/skin.jsp" %>

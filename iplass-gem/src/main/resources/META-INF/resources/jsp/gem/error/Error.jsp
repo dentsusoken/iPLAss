@@ -35,10 +35,10 @@ request.setAttribute("title", ViewUtil.getDispTenantNameWithDispChecked());
 request.setAttribute("imgUrl", ViewUtil.getTenantImgUrlWithDispChecked());
 %>
 <!DOCTYPE html>
-
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+<meta http-equiv="x-ua-compatible" content="IE=edge" />
 <title>${m:rs("mtp-gem-messages", "error.Error.err")}</title>
 <%@include file="../layout/resource/simpleResource.jsp" %>
 <%@include file="../layout/resource/skin.jsp" %>

@@ -51,7 +51,8 @@ String largeImageUrl = ViewUtil.getTenantLargeImgUrl();
 <!DOCTYPE html>
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+<meta http-equiv="x-ua-compatible" content="IE=edge" />
 <title>${m:esc(title)}</title>
 <%@include file="../layout/resource/simpleResource.jsp" %>
 <%@include file="../layout/resource/skin.jsp" %>
