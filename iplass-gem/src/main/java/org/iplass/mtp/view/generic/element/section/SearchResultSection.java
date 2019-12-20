@@ -50,6 +50,7 @@ import org.iplass.mtp.view.generic.element.Element;
 public class SearchResultSection extends Section {
 
 	/** 一括更新の排他制御起点 */
+	@XmlType(namespace="http://mtp.iplass.org/xml/definition/view/generic")
 	public enum ExclusiveControlPoint {
 
 		/** 更新ダイアログが開く時 */

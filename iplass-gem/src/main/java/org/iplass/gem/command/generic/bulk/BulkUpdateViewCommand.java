@@ -132,13 +132,9 @@ public class BulkUpdateViewCommand extends BulkCommandBase {
 	}
 
 	private String convertRowListToStr(List<Integer> alreadyUpdated) {
-		Collections.sort(alreadyUpdated, new Comparator<Integer>() {
-			@Override
-			public int compare(Integer o1, Integer o2) {
-				return o1.compareTo(o2);
-			}
-		});
-		List<String> tmp = alreadyUpdated.stream().map(i -> i.toString()).collect(Collectors.toList());
-		return String.join(",", tmp);
+		return alreadyUpdated.stream()
+				.sorted((o1, o2) -> o1.compareTo(o2))
+				.map(i -> i.toString())
+				.collect(Collectors.joining(","));
 	}
 }

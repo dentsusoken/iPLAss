@@ -83,7 +83,7 @@
 	Boolean isExCheckErr = (Boolean) request.getAttribute(Constants.BULK_UPDATE_EXCHECK_ERR);
 	if (isExCheckErr == null) isExCheckErr = false;
 
-	boolean isSuccess = "SUCCESS".equals(request.getAttribute(WebRequestConstants.COMMAND_RESULT));
+	boolean isSuccess = Constants.CMD_EXEC_SUCCESS.equals(request.getAttribute(WebRequestConstants.COMMAND_RESULT));
 	boolean isSelectAllPage = isSelectAllPage(selectAllPage);
 	//全選択フラグ
 	boolean isSelectAll = isSelectAll(selectAllType);
