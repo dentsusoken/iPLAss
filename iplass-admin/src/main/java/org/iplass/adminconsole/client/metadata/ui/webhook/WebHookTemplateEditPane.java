@@ -223,7 +223,6 @@ public class WebHookTemplateEditPane extends MetaDataMainEditPane {
 		//テンプレに関する情報
 		private DynamicForm templateInfoForm;
 		private TextItem charsetField;//ほぼ常にutf-8
-		private RadioGroupItem contentTypeField;//Json,xml,formなど
         private CheckboxItem isSynchronous;
 		
         //ヘッダー関連
@@ -307,11 +306,6 @@ public class WebHookTemplateEditPane extends MetaDataMainEditPane {
 			charsetField = new TextItem("webhookCharset", "charset");//add message
 			charsetField.setWidth(150);
 			
-			contentTypeField = new RadioGroupItem(); 
-			contentTypeField.setShowTitle(false);
-			contentTypeField.setValueMap("JSON", "XML", "FORM", "PLAINTEXT", "MULTIPART");  
-			contentTypeField.setDefaultValue("JSON");
-			
 //			headerForm = new DynamicForm();
 //			headerForm.setWidth100();
 //			headerForm.setNumCols(4);
@@ -368,7 +362,7 @@ public class WebHookTemplateEditPane extends MetaDataMainEditPane {
 			headerPane.addMember(headerGrid);
 			headerPane.addMember(mapButtonPane);
 			
-			templateInfoForm.setItems(isSynchronous, charsetField, contentTypeField);
+			templateInfoForm.setItems(isSynchronous, charsetField);
 			
 			topPane.addMember(templateInfoForm);
 			topPane.addMember(retryForm);
@@ -526,7 +520,6 @@ public class WebHookTemplateEditPane extends MetaDataMainEditPane {
 			
 			WebHookContent wc = new WebHookContent(
 					plainEditor.getText(), 
-					SmartGWTUtil.getStringValue(contentTypeField), 
 					SmartGWTUtil.getStringValue(charsetField)
 					);
 			definition.setContentBody(wc);
@@ -549,7 +542,6 @@ public class WebHookTemplateEditPane extends MetaDataMainEditPane {
 				retryLimitField.setValue(definition.getRetryLimit());
 				retryIntervalField.setValue(definition.getRetryInterval());
 				isRetryField.setValue(definition.isRetry());
-				contentTypeField.setValue(definition.getContentBody().getContentTypeString().toString());
 				if (definition.getContentBody().getContent()==null) {
 					plainEditor.setText("");
 				} else {
@@ -561,7 +553,6 @@ public class WebHookTemplateEditPane extends MetaDataMainEditPane {
 				
 			} else {
 				charsetField.clearValue();
-				contentTypeField.clearValue();
 				isSynchronous.clearValue();
 				retryLimitField.clearValue();
 				retryIntervalField.clearValue();

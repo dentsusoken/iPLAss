@@ -12,6 +12,9 @@ import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+
+import javax.crypto.Mac;
+import javax.crypto.spec.SecretKeySpec;
 import javax.net.ssl.SSLException;
 import org.apache.http.HttpHeaders;
 import org.apache.http.HttpHost;
@@ -28,7 +31,6 @@ import org.iplass.mtp.ManagerLocator;
 import org.iplass.mtp.definition.TypedDefinitionManager;
 import org.iplass.mtp.impl.definition.AbstractTypedMetaDataService;
 import org.iplass.mtp.impl.definition.DefinitionMetaDataTypeMap;
-import org.iplass.mtp.impl.http.HttpClientConfig;
 import org.iplass.mtp.impl.webhook.template.MetaWebHookTemplate;
 import org.iplass.mtp.impl.webhook.template.MetaWebHookTemplate.WebHookTemplateRuntime;
 import org.iplass.mtp.spi.Config;
@@ -149,7 +151,7 @@ public class WebHookServiceImpl extends AbstractTypedMetaDataService<MetaWebHook
 				//fill in webhook payload
 				String payload = webHook.getContent().getContent();
 				StringEntity se = new StringEntity(payload);
-				se.setContentType(webHook.getContent().getContentTypeString());
+				se.setContentType(webHook.getContent().getCharset());
 				
 				
 				
@@ -168,9 +170,9 @@ public class WebHookServiceImpl extends AbstractTypedMetaDataService<MetaWebHook
 						httpPost.setHeader(headerEntry.getKey(), headerEntry.getValue());
 					}
 					if (temp.getSecurityToken()!=null) {
-						String tokenTemp = temp.getSecurityToken()+payload;
-						String sha256Token= getHexSha256(tokenTemp);
-						httpPost.setHeader("iplass-token", sha256Token);//FIXME: need more testing
+						String hmacToken= getHmacSha256(temp.getSecurityToken(), payload);
+						httpPost.setHeader("iplass-token", hmacToken);//FIXME:iplass-token should be configurable.
+						//TODO: need more testing
 					}
 					if (temp.getSecurityUsername()!=null&&temp.getSecurityPassword()!=null) {
 						String basic = temp.getSecurityUsername()+":"+ temp.getSecurityPassword();
@@ -198,33 +200,26 @@ public class WebHookServiceImpl extends AbstractTypedMetaDataService<MetaWebHook
 		}
 
 	}
+
+	
 	/**
-	 * Stringのinputを、sha256で暗号化して返します
-	 * @param: String 暗号化したいもの
-	 * @return: 
+	 * Stringのtokenとpayloadでhmac暗号化する
+	 * @param: String token
+	 * @param: String message
+	 * @return: base64String
 	 * */
-	public String getHexSha256(String input) {
-		MessageDigest md = null;
+	public String getHmacSha256(String token, String message) {
 		try {
-			md = MessageDigest.getInstance("SHA-256");
-			byte[] sha256Byte = md.digest(input.getBytes("UTF-8"));
-	        BigInteger number = new BigInteger(1, sha256Byte);  
-	        StringBuilder hexString = new StringBuilder(number.toString(16));  
-	  
-	        //zero padding
-	        while (hexString.length() < 32)  
-	        {  
-	            hexString.insert(0, '0');  
-	        }  
-	  
-	        return hexString.toString();  
-			
+		    Mac sha256_HMAC = Mac.getInstance("HmacSHA256");
+		    SecretKeySpec secret_key = new SecretKeySpec(token.getBytes(), "HmacSHA256");
+		    sha256_HMAC.init(secret_key);
+
+		    String hash = Base64.encodeBase64String(sha256_HMAC.doFinal(message.getBytes()));
+			return hash;
 		} catch (Exception e) {
 			e.printStackTrace();
 		}  
 		return null;
 		
 	}
-	
-
 }
