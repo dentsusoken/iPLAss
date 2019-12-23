@@ -151,6 +151,11 @@
 	Integer count = (Integer) request.getAttribute(Constants.BULK_UPDATE_COUNT);
 	Integer updated = (Integer) request.getAttribute(Constants.BULK_UPDATED_COUNT);
 
+	//排他制御チェックエラー（更新ダイアログが開く時）
+	Boolean isExCheckErr = (Boolean) request.getAttribute(Constants.BULK_UPDATE_EXCHECK_ERR);
+	if (isExCheckErr == null) isExCheckErr = false;
+
+	boolean isSuccess = Constants.CMD_EXEC_SUCCESS.equals(request.getAttribute(WebRequestConstants.COMMAND_RESULT));
 	boolean isSelectAllPage = isSelectAllPage(selectAllPage);
 	//全選択フラグ
 	boolean isSelectAll = isSelectAll(selectAllType);
@@ -169,7 +174,7 @@
 	String viewName = form.getName();
 	//表示名
 	String displayName = TemplateUtil.getMultilingualString(form.getTitle(), form.getLocalizedTitleList(),
-			data.getEntityDefinition().getDisplayName(), data.getEntityDefinition().getLocalizedDisplayNameList());
+	data.getEntityDefinition().getDisplayName(), data.getEntityDefinition().getLocalizedDisplayNameList());
 
 	//編集対象情報
 	List<String> oids = new ArrayList<String>();
@@ -217,22 +222,22 @@
 %>
 <h3 class="hgroup-02 hgroup-02-01"><%=GemResourceBundleUtil.resourceString("generic.bulk.title", displayName)%></h3>
 <%
-	if (count != null) {
-
-		if ("SUCCESS".equals(request.getAttribute(WebRequestConstants.COMMAND_RESULT))) {
+	if (isSuccess) {
+		//更新に成功した場合
+		if (count != null) {
 %>
 <span class="success"><%=GemResourceBundleUtil.resourceString("command.generic.bulk.BulkUpdateListCommand.successMsg", updated)%></span>
 <%
-		} else {
+		}
+	} else {
 %>
 <span class="error"><c:out value="<%=message%>"/></span>
 <%
-			//分割トランザクションの場合、一部データの更新に成功した可能性があります。
-			if (updated > 0) {
+		//分割トランザクションの場合、一部データの更新に成功した可能性があります。
+		if (count != null && updated > 0) {
 %>
 <span class="error"><%=GemResourceBundleUtil.resourceString("command.generic.bulk.BulkUpdateListCommand.failedMsg", count, count - updated)%></span>
 <%
-			}
 		}
 	}
 %>
@@ -390,9 +395,16 @@ $(function() {
 	if (auth.checkPermission(new EntityPermission(defName, EntityPermission.Action.UPDATE))) {
 		//ボタンの表示ラベル
 		String bulkUpdateDisplayLabel = GemResourceBundleUtil.resourceString("generic.bulk.update");
+
+		if (isExCheckErr) {
+%>
+<li class="btn save-btn"><input id="bulkUpdateBtn" type="button" class="gr-btn-02" value="<c:out value="<%=bulkUpdateDisplayLabel %>" />" disabled="disabled" /></li>
+<%
+		} else {
 %>
 <li class="btn save-btn"><input id="bulkUpdateBtn" type="button" class="gr-btn" value="<c:out value="<%=bulkUpdateDisplayLabel %>" />" onclick="onclick_bulkupdate(this)" /></li>
 <%
+		}
 	}
 %>
 <li class="mt05 cancel-link"><a href="javascript:void(0)" onclick="onclick_cancel()">${m:rs("mtp-gem-messages", "generic.bulk.cancel")}</a></li>

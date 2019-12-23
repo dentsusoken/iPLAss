@@ -74,6 +74,7 @@ import org.iplass.mtp.view.generic.element.property.PropertyColumn;
 import org.iplass.mtp.view.generic.element.property.PropertyItem;
 import org.iplass.mtp.view.generic.element.section.SearchConditionSection;
 import org.iplass.mtp.view.generic.element.section.SearchConditionSection.ConditionSortType;
+import org.iplass.mtp.view.generic.element.section.SearchResultSection.ExclusiveControlPoint;
 import org.iplass.mtp.view.generic.element.section.SearchResultSection;
 import org.iplass.mtp.view.generic.element.section.SortSetting;
 import org.slf4j.Logger;
@@ -139,6 +140,10 @@ public abstract class SearchContextBase implements SearchContext {
 		select.add(Entity.OID);
 		select.add(Entity.NAME);
 		select.add(Entity.VERSION);
+
+		if (getResultSection().getExclusiveControlPoint() == ExclusiveControlPoint.WHEN_SEARCH) {
+			select.add(Entity.UPDATE_DATE);
+		}
 
 		List<PropertyColumn> properties = getColumnProperties();
 		for (PropertyColumn p : properties) {

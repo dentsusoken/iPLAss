@@ -2217,6 +2217,8 @@ LocaleInfo.generic_element_section_SearchResultSection_pagingPositionDisplaNameK
 LocaleInfo.generic_element_section_SearchResultSection_pagingPositionDescriptionKey = "Specify paging bar position.<br><b>BOTH   :</b> The top and bottom of the grid<br><b>TOP    :</b> The top of the grid<br><b>BOTTOM :</b> The bottom of the grid<br>";
 LocaleInfo.generic_element_section_SearchResultSection_showBulkUpdateDisplaNameKey = "Show Bulk Update Button";
 LocaleInfo.generic_element_section_SearchResultSection_showBulkUpdateDescriptionKey = "Show the check box of search results and bulk update button.";
+LocaleInfo.generic_element_section_SearchResultSection_exclusiveControlPointDisplaNameKey = "Exclusive control point for bulk update";
+LocaleInfo.generic_element_section_SearchResultSection_exclusiveControlPointDescriptionKey = "Exclusive control point for bulk update.<br><b>WHEN_DIALOG_OPEN :</b> when bulk update dialog open<br><b>WHEN_SEARCH      :</b> when search data<br>";
 LocaleInfo.generic_element_section_SearchResultSection_bulkUpdateDisplayLabelDisplaNameKey = "Label of Bulk Update Button";
 LocaleInfo.generic_element_section_SearchResultSection_bulkUpdateDisplayLabelDescriptionKey = "Set the label to be displayed on the bulk update button.";
 LocaleInfo.generic_element_section_SearchResultSection_useBulkViewDisplaNameKey = "Use BulkView layout definition";

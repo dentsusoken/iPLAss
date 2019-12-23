@@ -2217,6 +2217,8 @@ LocaleInfo.generic_element_section_SearchResultSection_pagingPositionDisplaNameK
 LocaleInfo.generic_element_section_SearchResultSection_pagingPositionDescriptionKey = "ページングの表示位置を指定します。<br><b>BOTH   :</b> グリッドの上下<br><b>TOP    :</b> グリッドの上部<br><b>BOTTOM :</b> グリッドの下部<br>";
 LocaleInfo.generic_element_section_SearchResultSection_showBulkUpdateDisplaNameKey = "一括更新ボタンを表示";
 LocaleInfo.generic_element_section_SearchResultSection_showBulkUpdateDescriptionKey = "一括更新ボタンと検索結果のチェックボックスを表示にします。";
+LocaleInfo.generic_element_section_SearchResultSection_exclusiveControlPointDisplaNameKey = "一括更新の排他制御起点";
+LocaleInfo.generic_element_section_SearchResultSection_exclusiveControlPointDescriptionKey = "一括更新の排他制御起点。<br><b>WHEN_DIALOG_OPEN :</b> 更新ダイアログが開く時<br><b>WHEN_SEARCH      :</b> 検索実行時<br>";
 LocaleInfo.generic_element_section_SearchResultSection_bulkUpdateDisplayLabelDisplaNameKey = "一括更新ボタン表示ラベル";
 LocaleInfo.generic_element_section_SearchResultSection_bulkUpdateDisplayLabelDescriptionKey = "一括更新ボタンに表示するラベルを設定します。";
 LocaleInfo.generic_element_section_SearchResultSection_useBulkViewDisplaNameKey = "BulkViewレイアウト定義を利用";

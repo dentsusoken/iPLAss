@@ -41,6 +41,7 @@ import org.iplass.mtp.view.generic.element.Element;
 import org.iplass.mtp.view.generic.element.section.SearchResultSection;
 import org.iplass.mtp.view.generic.element.section.SearchResultSection.BulkUpdateAllCommandTransactionType;
 import org.iplass.mtp.view.generic.element.section.SearchResultSection.DeleteAllCommandTransactionType;
+import org.iplass.mtp.view.generic.element.section.SearchResultSection.ExclusiveControlPoint;
 
 /**
  * 検索結果セクションのメタデータ
@@ -90,6 +91,9 @@ public class MetaSearchResultSection extends MetaSection {
 
 	/** Bulk Viewの定義を利用*/
 	private boolean useBulkView;
+
+	/** 一括更新の排他制御起点 */
+	private ExclusiveControlPoint exclusiveControlPoint = ExclusiveControlPoint.WHEN_DIALOG_OPEN;
 
 	/** 一括更新ボタン表示ラベル */
 	private String bulkUpdateDisplayLabel;
@@ -326,6 +330,22 @@ public class MetaSearchResultSection extends MetaSection {
 	}
 
 	/**
+	 * 一括更新の排他制御起点を取得します。
+	 * @return 一括更新の排他制御起点
+	 */
+	public ExclusiveControlPoint isExclusiveControlPoint() {
+		return exclusiveControlPoint;
+	}
+
+	/**
+	 * 一括更新の排他制御起点を設定します。
+	 * @param exclusiveControlPoint 一括更新の排他制御起点
+	 */
+	public void setExclusiveControlPoint(ExclusiveControlPoint exclusiveControlPoint) {
+		this.exclusiveControlPoint = exclusiveControlPoint;
+	}
+
+	/**
 	 * 一括更新ボタン表示ラベルを取得します。
 	 * @return 一括更新ボタン表示ラベル
 	 */
@@ -548,6 +568,7 @@ public class MetaSearchResultSection extends MetaSection {
 		this.hideCount = section.isHideCount();
 		this.pagingPosition = section.getPagingPosition();
 		this.showBulkUpdate = section.isShowBulkUpdate();
+		this.exclusiveControlPoint = section.getExclusiveControlPoint();
 		this.useBulkView = section.isUseBulkView();
 		this.bulkUpdateDisplayLabel = section.getBulkUpdateDisplayLabel();
 		this.localizedBulkUpdateDisplayLabel = I18nUtil.toMeta(section.getLocalizedBulkUpdateDisplayLabel());
@@ -594,6 +615,7 @@ public class MetaSearchResultSection extends MetaSection {
 		section.setHideCount(this.hideCount);
 		section.setPagingPosition(pagingPosition);
 		section.setShowBulkUpdate(this.showBulkUpdate);
+		section.setExclusiveControlPoint(this.exclusiveControlPoint);
 		section.setUseBulkView(this.useBulkView);
 		section.setBulkUpdateDisplayLabel(this.bulkUpdateDisplayLabel);
 		section.setLocalizedBulkUpdateDisplayLabel(I18nUtil.toDef(this.localizedBulkUpdateDisplayLabel));

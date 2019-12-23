@@ -67,6 +67,7 @@ import org.iplass.mtp.view.generic.editor.ReferencePropertyEditor.ReferenceDispl
 import org.iplass.mtp.view.generic.element.Element;
 import org.iplass.mtp.view.generic.element.property.PropertyItem;
 import org.iplass.mtp.view.generic.element.section.DefaultSection;
+import org.iplass.mtp.view.generic.element.section.SearchResultSection.ExclusiveControlPoint;
 import org.iplass.mtp.view.generic.element.section.Section;
 import org.iplass.mtp.web.template.TemplateUtil;
 import org.slf4j.Logger;
@@ -427,6 +428,16 @@ public class MultiBulkCommandContext extends RegistrationCommandContext {
 			view = FormViewUtil.getBulkFormView(entityDefinition, entityView, viewName);
 		}
 		return view;
+	}
+
+	/**
+	 * 一括更新の排他制御起点を取得します。
+	 * @return 一括更新の排他制御起点
+	 */
+	public ExclusiveControlPoint getExclusiveControlPoint() {
+		String viewName = getViewName();
+		SearchFormView view = FormViewUtil.getSearchFormView(entityDefinition, entityView, viewName);
+		return view.getResultSection().getExclusiveControlPoint();
 	}
 
 	/**

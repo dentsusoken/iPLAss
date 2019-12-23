@@ -49,6 +49,17 @@ import org.iplass.mtp.view.generic.element.Element;
 @IgnoreField({"dispFlag", "displayScript"})
 public class SearchResultSection extends Section {
 
+	/** 一括更新の排他制御起点 */
+	@XmlType(namespace="http://mtp.iplass.org/xml/definition/view/generic")
+	public enum ExclusiveControlPoint {
+
+		/** 更新ダイアログが開く時 */
+		WHEN_DIALOG_OPEN,
+
+		/** 検索実行時 */
+		WHEN_SEARCH
+	}
+
 	/** シリアルバージョンUID */
 	private static final long serialVersionUID = -700624023196624864L;
 
@@ -210,6 +221,19 @@ public class SearchResultSection extends Section {
 			descriptionKey="generic_element_section_SearchResultSection_useBulkViewDescriptionKey"
 	)
 	private boolean useBulkView;
+
+	@MetaFieldInfo(
+			displayName="一括更新の排他制御起点",
+			displayNameKey="generic_element_section_SearchResultSection_exclusiveControlPointDisplaNameKey",
+			inputType=InputType.ENUM,
+			enumClass=ExclusiveControlPoint.class,
+			displayOrder=296,
+			description="一括更新の排他制御起点。<br>" +
+					"<b>WHEN_DIALOG_OPEN :</b> 更新ダイアログが開く時<br>" +
+					"<b>WHEN_SEARCH      :</b> 検索実行時<br>",
+			descriptionKey="generic_element_section_SearchResultSection_exclusiveControlPointDescriptionKey"
+	)
+	private ExclusiveControlPoint exclusiveControlPoint = ExclusiveControlPoint.WHEN_DIALOG_OPEN;
 
 	/** 一括更新ボタン表示ラベル */
 	@MetaFieldInfo(
@@ -588,6 +612,22 @@ public class SearchResultSection extends Section {
 	 */
 	public void setUseBulkView(boolean useBulkView) {
 		this.useBulkView = useBulkView;
+	}
+
+	/**
+	 * 一括更新の排他制御起点を取得します。
+	 * @return 一括更新の排他制御起点
+	 */
+	public ExclusiveControlPoint getExclusiveControlPoint() {
+		return exclusiveControlPoint;
+	}
+
+	/**
+	 * 一括更新の排他制御起点を設定します。
+	 * @param exclusiveControlPoint 一括更新の排他制御起点
+	 */
+	public void setExclusiveControlPoint(ExclusiveControlPoint exclusiveControlPoint) {
+		this.exclusiveControlPoint = exclusiveControlPoint;
 	}
 
 	/**

@@ -37,6 +37,7 @@
 <%@ page import="org.iplass.mtp.view.generic.editor.ReferencePropertyEditor"%>
 <%@ page import="org.iplass.mtp.view.generic.element.property.PropertyColumn"%>
 <%@ page import="org.iplass.mtp.view.generic.element.section.SearchResultSection"%>
+<%@ page import="org.iplass.mtp.view.generic.element.section.SearchResultSection.ExclusiveControlPoint"%>
 <%@ page import="org.iplass.mtp.view.generic.element.Element"%>
 <%@ page import="org.iplass.mtp.view.generic.element.VirtualPropertyItem"%>
 <%@ page import="org.iplass.mtp.view.generic.EntityViewUtil"%>
@@ -238,6 +239,11 @@ $(function() {
 	colModel.push({name:"orgOid", index:"orgOid", sortable:false, hidden:true, frozen:true, label:"oid"});
 	colModel.push({name:"orgVersion", index:"orgVersion", sortable:false, hidden:true, frozen:true, label:"version"});
 <%
+	if (section.getExclusiveControlPoint() == ExclusiveControlPoint.WHEN_SEARCH) {
+%>
+	colModel.push({name:"orgTimestamp", index:"orgTimestamp", sortable:false, hidden:true, frozen:true, label:"timestamp"});
+<%
+	}
 	if (OutputType.SINGLESELECT == type) {
 		//スタイル調整のため、classes、labelClassesに"sel_radio"を指定
 %>
@@ -989,6 +995,9 @@ function doBulkUpdate(target) {
 	if(ids.length <= 0) {
 		alert("${m:rs('mtp-gem-messages', 'generic.element.section.SearchResultSection.selectBulkUpdateMsg')}");
 		return false;
+	} else {
+		<%-- 選択行をソートします --%>
+		ids.sort((a, b) => parseInt(a) - parseInt(b));
 	}
 
 	var dialogOption = {resizable: true};
@@ -1004,11 +1013,41 @@ function doBulkUpdate(target) {
 
 	var oid = [];
 	var version = [];
+<%
+	if (section.getExclusiveControlPoint() == ExclusiveControlPoint.WHEN_SEARCH) {
+%>
+	var timestamp = [];
+<%
+	}
+%>
 	for(var i=0; i< ids.length; ++i) {
 		var id = ids[i];
 		var row = grid.getRowData(id);
+<%
+	if (section.isGroupingData()) {
+%>
+		if (i > 0) {
+			var beforeRow = grid.getRowData(ids[i - 1]);
+			if (beforeRow.orgOid == row.orgOid && beforeRow.orgVersion == row.orgVersion) {
+				<%-- 重複データを送信しないように --%>
+				continue;
+			}
+		}
+		<%-- まとめモードの場合、何番目の選択項目を行番号として設定します。 --%>
+		<%-- 更新ダイアログが開く時に、排他エラーメッセージのパラメータなどとして利用します。 --%>
+		id = oid.length + 1;
+<%
+	}
+%>
 		oid.push(id + "_" + row.orgOid);
 		version.push(id + "_" + row.orgVersion);
+<%
+	if (section.getExclusiveControlPoint() == ExclusiveControlPoint.WHEN_SEARCH) {
+%>		
+		timestamp.push(id + "_" + row.orgTimestamp);
+<%
+	}
+%>
 	}
 
 	var target = getModalTarget(isSubModal);
@@ -1017,11 +1056,19 @@ function doBulkUpdate(target) {
 
 	$(oid).each(function() {
 		$("<input />").attr({type:"hidden", name:"oid", value:this}).appendTo($form);
-	})
+	});
 	$(version).each(function() {
 		$("<input />").attr({type:"hidden", name:"version", value:this}).appendTo($form);
-	})
-
+	});
+<%
+	if (section.getExclusiveControlPoint() == ExclusiveControlPoint.WHEN_SEARCH) {
+%>	
+	$(timestamp).each(function() {
+		$("<input />").attr({type:"hidden", name:"timestamp", value:this}).appendTo($form);
+	});
+<%
+	}
+%>
 	var searchCond = $(":hidden[name='searchCond']").val();
 	$("<input />").attr({type:"hidden", name:"searchCond", value:searchCond}).appendTo($form);
 
