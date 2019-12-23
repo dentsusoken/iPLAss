@@ -12,6 +12,7 @@ import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.concurrent.Callable;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
@@ -28,6 +29,7 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.protocol.HttpContext;
 import org.iplass.mtp.ManagerLocator;
+import org.iplass.mtp.async.AsyncTaskManager;
 import org.iplass.mtp.definition.TypedDefinitionManager;
 import org.iplass.mtp.impl.definition.AbstractTypedMetaDataService;
 import org.iplass.mtp.impl.definition.DefinitionMetaDataTypeMap;
@@ -48,6 +50,8 @@ public class WebHookServiceImpl extends AbstractTypedMetaDataService<MetaWebHook
 	public static final String WEBHOOK_PROXY_HOST= "webHook.Proxy.Host";
 	public static final String WEBHOOK_PROXY_PORT= "webHook.Proxy.Port";
 	public static final String WEBHOOK_USE_PROXY= "webHook.Use.Proxy";
+	
+	private AsyncTaskManager atm;
 	
 	private String webHookProxyHost;
 	private int webHookProxyPort;
@@ -108,9 +112,24 @@ public class WebHookServiceImpl extends AbstractTypedMetaDataService<MetaWebHook
 		return new WebHook();
 	}
 
+	/**
+	 * 同期非同期を判断してからsendWebHook(WebHook webHook)を呼びます
+	 * AsyncTaskManagerのローカルスレッドをつっかています
+	 * */
 	@Override
 	public void sendWebHook(Tenant tenant, WebHook webHook) {
+		atm = ManagerLocator.getInstance().getManager(AsyncTaskManager.class);
+		if (webHook.isSynchronous()) {
+			sendWebHook(webHook);
+		} else {
+			atm.executeOnThread(new WebHookCallable(webHook));
+		}
+	}
+	
+
+	private void sendWebHook(WebHook webHook) {
 		try {
+
 			logger.info("WebHook:"+webHook.getTemplateName()+" Attempted.");
 			HttpClientBuilder httpClientBuilder = null;
 			if (webHook.isRetry()) {
@@ -198,7 +217,6 @@ public class WebHookServiceImpl extends AbstractTypedMetaDataService<MetaWebHook
 		{
 			// handleException
 		}
-
 	}
 
 	
@@ -220,6 +238,19 @@ public class WebHookServiceImpl extends AbstractTypedMetaDataService<MetaWebHook
 			e.printStackTrace();
 		}  
 		return null;
+		
+	}
+	
+	private class WebHookCallable implements Callable<Void>{
+		WebHook webHook;
+		public WebHookCallable(WebHook webHook) {
+			this.webHook = webHook;
+		}
+		@Override
+		public Void call() throws Exception {
+			sendWebHook(webHook);
+			return null;
+		}
 		
 	}
 }
