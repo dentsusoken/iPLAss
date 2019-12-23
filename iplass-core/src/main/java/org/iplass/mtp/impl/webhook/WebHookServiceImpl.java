@@ -189,14 +189,24 @@ public class WebHookServiceImpl extends AbstractTypedMetaDataService<MetaWebHook
 						httpPost.setHeader(headerEntry.getKey(), headerEntry.getValue());
 					}
 					if (temp.getSecurityToken()!=null) {
-						String hmacToken= getHmacSha256(temp.getSecurityToken(), payload);
-						httpPost.setHeader("iplass-token", hmacToken);//FIXME:iplass-token should be configurable.
+						if (!temp.getSecurityToken().isEmpty()) {
+							String hmacToken= getHmacSha256(temp.getSecurityToken(), payload);
+							httpPost.setHeader("iplass-token", hmacToken);//FIXME:iplass-token should be configurable.
+						}
+						//TODO: need more testing
+					}
+					if (temp.getSecurityBearerToken()!=null) {
+						if (!temp.getSecurityBearerToken().isEmpty()) {
+							httpPost.setHeader(HttpHeaders.AUTHORIZATION, "Basic " +temp.getSecurityBearerToken());
+						}
 						//TODO: need more testing
 					}
 					if (temp.getSecurityUsername()!=null&&temp.getSecurityPassword()!=null) {
-						String basic = temp.getSecurityUsername()+":"+ temp.getSecurityPassword();
-						basic ="Basic " + Base64.encodeBase64String(basic.getBytes());
-						httpPost.setHeader(HttpHeaders.AUTHORIZATION, basic);
+						if(!temp.getSecurityUsername().isEmpty()&&!temp.getSecurityPassword().isEmpty()) {
+							String basic = temp.getSecurityUsername()+":"+ temp.getSecurityPassword();
+							basic ="Basic " + Base64.encodeBase64String(basic.getBytes());
+							httpPost.setHeader(HttpHeaders.AUTHORIZATION, basic);
+						}
 					}
 					CloseableHttpResponse response = httpClient.execute(httpPost);
 					try {

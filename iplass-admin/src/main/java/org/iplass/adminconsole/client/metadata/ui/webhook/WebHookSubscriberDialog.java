@@ -80,10 +80,11 @@ public class WebHookSubscriberDialog extends MtpDialog {
 		//basic authentication
 		private TextItem subscriberSecurityUsernameField;
 		private TextItem subscriberSecurityPasswordField;
+
 		
 		//token authentication
 		private TextAreaItem subscriberSecurityTokenField;//will be passed to sha256 in UTF8 and then passed to the user as iplass-token:[xxxx]
-		
+		private TextAreaItem subscriberSecurityBearerTokenField;
 
 		public SubscriberAttributePane() {
 			
@@ -95,17 +96,20 @@ public class WebHookSubscriberDialog extends MtpDialog {
 			subscriberSecurityPasswordField = new MtpTextItem("securitypassword","Security Password");
 			
 			subscriberSecurityTokenField = new TextAreaItem("subscribersecuritytoken","Security Token");
-			//subscriberSecurityTokenField.setColSpan("*");
 			subscriberSecurityTokenField.setWidth("*");
-			subscriberSecurityTokenField.setHeight(300);
+			subscriberSecurityTokenField.setHeight(200);
 			
+			subscriberSecurityBearerTokenField = new TextAreaItem("subscribersecuritybearertoken","Bearer Token");
+			subscriberSecurityBearerTokenField.setWidth("*");
+			subscriberSecurityBearerTokenField.setHeight(200);
 			
 			form.setItems(
 					subscriberNameField, 
 					subscriberUrlField, 
 					subscriberSecurityUsernameField,
 					subscriberSecurityPasswordField,
-					subscriberSecurityTokenField
+					subscriberSecurityTokenField,
+					subscriberSecurityBearerTokenField
 					);
 			addMember(form);
 			
@@ -120,12 +124,14 @@ public class WebHookSubscriberDialog extends MtpDialog {
 				subscriberSecurityUsernameField.setValue(definition.getSecurityUsername());
 				subscriberSecurityPasswordField.setValue(definition.getSecurityPassword());
 				subscriberSecurityTokenField.setValue(definition.getSecurityToken());
+				subscriberSecurityBearerTokenField.setValue(definition.getSecurityBearerToken());
 			} else {
 				subscriberNameField.clearValue();
 				subscriberUrlField.clearValue();
 				subscriberSecurityUsernameField.clearValue();
 				subscriberSecurityPasswordField.clearValue();
 				subscriberSecurityTokenField.clearValue();
+				subscriberSecurityBearerTokenField.clearValue();
 			}
 		}
 
@@ -136,10 +142,9 @@ public class WebHookSubscriberDialog extends MtpDialog {
 			definition.setSecurityUsername(SmartGWTUtil.getStringValue(subscriberSecurityUsernameField));
 			definition.setSecurityPassword(SmartGWTUtil.getStringValue(subscriberSecurityPasswordField));
 			definition.setSecurityToken(SmartGWTUtil.getStringValue(subscriberSecurityTokenField));
-			
+			definition.setSecurityBearerToken(SmartGWTUtil.getStringValue(subscriberSecurityBearerTokenField));
 			return definition;
 		}
-	//set title?
 	}
 	
 	/**
