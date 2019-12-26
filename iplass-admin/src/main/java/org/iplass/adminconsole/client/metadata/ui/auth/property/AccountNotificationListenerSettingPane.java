@@ -1,19 +1,19 @@
 /*
  * Copyright (C) 2017 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
- * 
+ *
  * Unless you have purchased a commercial license,
  * the following license terms apply:
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
@@ -25,6 +25,7 @@ import java.util.List;
 
 import org.iplass.adminconsole.client.base.event.DataChangedEvent;
 import org.iplass.adminconsole.client.base.event.DataChangedHandler;
+import org.iplass.adminconsole.client.base.ui.widget.form.MtpCanvasItem;
 import org.iplass.adminconsole.client.metadata.ui.auth.listener.AuthenticationListenerEditDialog;
 import org.iplass.mtp.auth.policy.definition.AccountNotificationListenerDefinition;
 import org.iplass.mtp.auth.policy.definition.AuthenticationPolicyDefinition;
@@ -35,15 +36,16 @@ import org.iplass.mtp.auth.policy.definition.listeners.ScriptingAccountNotificat
 import com.smartgwt.client.types.AutoFitWidthApproach;
 import com.smartgwt.client.types.Overflow;
 import com.smartgwt.client.widgets.IButton;
-import com.smartgwt.client.widgets.Label;
 import com.smartgwt.client.widgets.events.ClickEvent;
 import com.smartgwt.client.widgets.events.ClickHandler;
+import com.smartgwt.client.widgets.form.fields.CanvasItem;
 import com.smartgwt.client.widgets.grid.ListGrid;
 import com.smartgwt.client.widgets.grid.ListGridField;
 import com.smartgwt.client.widgets.grid.ListGridRecord;
 import com.smartgwt.client.widgets.grid.events.RecordDoubleClickEvent;
 import com.smartgwt.client.widgets.grid.events.RecordDoubleClickHandler;
 import com.smartgwt.client.widgets.layout.HLayout;
+import com.smartgwt.client.widgets.layout.VLayout;
 
 public class AccountNotificationListenerSettingPane extends AbstractSettingPane {
 
@@ -51,23 +53,19 @@ public class AccountNotificationListenerSettingPane extends AbstractSettingPane 
 
 	public AccountNotificationListenerSettingPane() {
 
-		HLayout captionComposit = new HLayout(5);
-		captionComposit.setHeight(25);
-
-		Label caption = new Label("Account Notification Listener Setting:");
-		caption.setWrap(false);
-		caption.setHeight(21);
-		captionComposit.addMember(caption);
+		form.setGroupTitle("Account Notification Listener Setting");
 
 		grid = new ListenerGrid();
 		grid.addRecordDoubleClickHandler(new RecordDoubleClickHandler() {
+			@Override
 			public void onRecordDoubleClick(RecordDoubleClickEvent event) {
-				editListener((ListGridRecord)event.getRecord());
+				editListener(event.getRecord());
 			}
 		});
 
 		IButton addListener = new IButton("Add");
 		addListener.addClickHandler(new ClickHandler() {
+			@Override
 			public void onClick(ClickEvent event) {
 				addListener();
 			}
@@ -75,6 +73,7 @@ public class AccountNotificationListenerSettingPane extends AbstractSettingPane 
 
 		IButton delListener = new IButton("Remove");
 		delListener.addClickHandler(new ClickHandler() {
+			@Override
 			public void onClick(ClickEvent event) {
 				deleteListener();
 			}
@@ -85,9 +84,19 @@ public class AccountNotificationListenerSettingPane extends AbstractSettingPane 
 		listenerButtonPane.addMember(addListener);
 		listenerButtonPane.addMember(delListener);
 
-		addMember(captionComposit);
-		addMember(grid);
-		addMember(listenerButtonPane);
+		VLayout gridLayout = new VLayout();
+		gridLayout.addMember(grid);
+		gridLayout.addMember(listenerButtonPane);
+
+		CanvasItem canvasGrid = new MtpCanvasItem();
+		canvasGrid.setTitle("Listener");
+		canvasGrid.setCanvas(gridLayout);
+		canvasGrid.setColSpan(3);
+		canvasGrid.setStartRow(true);
+
+		form.setItems(canvasGrid);
+
+		addMember(form);
 	}
 
 	@Override
@@ -95,7 +104,7 @@ public class AccountNotificationListenerSettingPane extends AbstractSettingPane 
 
 		List<AccountNotificationListenerDefinition> nortificationListnerList = definition.getNotificationListener();
 		if (nortificationListnerList != null) {
-			List<ListGridRecord> records = new ArrayList<ListGridRecord>();
+			List<ListGridRecord> records = new ArrayList<>();
 			for (AccountNotificationListenerDefinition listener : nortificationListnerList) {
 					records.add(createRecord(listener, null));
 			}
@@ -117,7 +126,7 @@ public class AccountNotificationListenerSettingPane extends AbstractSettingPane 
 			return definition;
 		}
 
-		List<AccountNotificationListenerDefinition> nortificationListnerList = new ArrayList<AccountNotificationListenerDefinition>();
+		List<AccountNotificationListenerDefinition> nortificationListnerList = new ArrayList<>();
 
 		for (ListGridRecord record : records) {
 			AccountNotificationListenerDefinition accountNotificationListenerDefinition = (AccountNotificationListenerDefinition)record.getAttributeAsObject(FIELD_NAME.VALUE_OBJECT.name());
@@ -131,6 +140,10 @@ public class AccountNotificationListenerSettingPane extends AbstractSettingPane 
 	@Override
 	public boolean validate() {
 		return true;
+	}
+
+	@Override
+	public void clearErrors() {
 	}
 
 	private ListGridRecord createRecord(AccountNotificationListenerDefinition definition, ListGridRecord record) {
