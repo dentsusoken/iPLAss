@@ -171,7 +171,7 @@ public class CreateSearchResultUtil {
 	}
 
 	private static boolean isDispProperty(EntityDefinition ed, Element element) {
-		if (!EntityViewUtil.isDisplayElement(ed.getName(), element.getElementRuntimeId(), OutputType.SEARCHRESULT)) {
+		if (!EntityViewUtil.isDisplayElement(ed.getName(), element.getElementRuntimeId(), OutputType.SEARCHRESULT, null)) {
 			return false;
 		}
 		if (element instanceof PropertyColumn) {

@@ -248,6 +248,10 @@
 	String parentOid = parentEntity != null ? parentEntity.getOid() : "";
 	String parentVersion = parentEntity != null && parentEntity.getVersion() != null ? parentEntity.getVersion().toString() : "";
 
+	Entity rootEntity = (Entity) request.getAttribute(Constants.ROOT_ENTITY);
+	String rootOid = rootEntity != null ? rootEntity.getOid() : "";
+	String rootVersion = rootEntity != null && rootEntity.getVersion() != null ? rootEntity.getVersion().toString() : "";
+
 	//refSectionIndexがnullではなければ、参照セクション内でネストされています。
 	Integer refSectionIndex = (Integer)request.getAttribute(Constants.REF_SECTION_INDEX);
 
@@ -542,6 +546,8 @@ $(function() {
  data-refSectionIndex="<c:out value="<%=refSectionIndex%>"/>"
  data-updateRefAction="<c:out value="<%=updateRefAction%>"/>"
  data-reloadUrl="<c:out value="<%=reloadUrl%>"/>"
+ data-entityOid="<c:out value="<%=rootOid%>"/>"
+ data-entityVersion="<c:out value="<%=rootVersion%>"/>"
  />
 <%
 				}

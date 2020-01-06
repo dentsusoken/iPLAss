@@ -114,7 +114,7 @@ public abstract class ReferenceSectionReferenceRegistHandler extends ReferenceRe
 
 		for (ReferenceSectionValue val : references) {
 			//非表示のものは登録しない
-			if (!EntityViewUtil.isDisplayElement(context.getDefinitionName(), val.getSection().getElementRuntimeId(), OutputType.EDIT)
+			if (!EntityViewUtil.isDisplayElement(context.getDefinitionName(), val.getSection().getElementRuntimeId(), OutputType.EDIT, inputEntity)
 					|| val.getSection().isHideDetail()) {
 				continue;
 			}
@@ -162,7 +162,7 @@ public abstract class ReferenceSectionReferenceRegistHandler extends ReferenceRe
 		List<UpdateSet> usList = new ArrayList<>();
 		for (ReferenceSectionValue val : references) {
 			//非表示のものは登録しない
-			if (!EntityViewUtil.isDisplayElement(context.getDefinitionName(), val.getSection().getElementRuntimeId(), OutputType.EDIT)
+			if (!EntityViewUtil.isDisplayElement(context.getDefinitionName(), val.getSection().getElementRuntimeId(), OutputType.EDIT, inputEntity)
 					|| val.getSection().isHideDetail()) {
 				continue;
 			}

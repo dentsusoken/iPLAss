@@ -26,9 +26,12 @@ import org.iplass.mtp.command.RequestContext;
 import org.iplass.mtp.command.annotation.CommandClass;
 import org.iplass.mtp.command.annotation.webapi.RestJson;
 import org.iplass.mtp.command.annotation.webapi.WebApi;
+import org.iplass.mtp.entity.Entity;
+import org.iplass.mtp.entity.GenericEntity;
+import org.iplass.mtp.util.StringUtil;
 import org.iplass.mtp.view.generic.EntityViewManager;
-import org.iplass.mtp.webapi.definition.RequestType;
 import org.iplass.mtp.webapi.definition.MethodType;
+import org.iplass.mtp.webapi.definition.RequestType;
 
 @WebApi(
 		name=GetAutocompletionValueCommand.WEBAPI_NAME,
@@ -54,11 +57,22 @@ public class GetAutocompletionValueCommand implements Command {
 	public String execute(RequestContext request) {
 		AutocompletionParam param = (AutocompletionParam) request.getAttribute("params");
 
+		Entity entity = getCurrentEntity(param);
 		Object val = evm.getAutocompletionValue(param.getDefName(), param.getViewName(), param.getViewType(),
-				param.getPropName(), param.getAutocompletionKey(), param.getReferenceSectionIndex(), param.getParams(), param.getCurrentValue());
+				param.getPropName(), param.getAutocompletionKey(), param.getReferenceSectionIndex(), param.getParams(), param.getCurrentValue(), entity);
 
 		request.setAttribute("value", val);
 		return null;
 	}
 
+	private Entity getCurrentEntity(AutocompletionParam param) {
+		AutocompletionEntityParam entity = param.getEntity();
+		if (entity != null) {
+			Entity e = new GenericEntity(param.getDefName());
+			e.setOid(entity.getOid());
+			e.setVersion(Long.valueOf(entity.getVersion()));
+			return e;
+		}
+		return null;
+	}
 }

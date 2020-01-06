@@ -27,6 +27,9 @@ import org.iplass.mtp.command.RequestContext;
 import org.iplass.mtp.command.annotation.CommandClass;
 import org.iplass.mtp.command.annotation.webapi.RestJson;
 import org.iplass.mtp.command.annotation.webapi.WebApi;
+import org.iplass.mtp.entity.Entity;
+import org.iplass.mtp.entity.GenericEntity;
+import org.iplass.mtp.util.StringUtil;
 import org.iplass.mtp.view.generic.EntityViewManager;
 import org.iplass.mtp.view.generic.editor.PropertyEditor;
 import org.iplass.mtp.view.generic.editor.ReferencePropertyEditor;
@@ -60,8 +63,9 @@ public final class GetEditorCommand implements Command {
 		String propName = request.getParam(Constants.PROP_NAME);
 		String viewType = request.getParam(Constants.VIEW_TYPE);
 
+		Entity entity = getCurrentEntity(request);
 		//Editor取得
-		PropertyEditor editor = evm.getPropertyEditor(defName, viewType, viewName, propName);
+		PropertyEditor editor = evm.getPropertyEditor(defName, viewType, viewName, propName, entity);
 		ReferencePropertyEditor rpe = null;
 		if (editor instanceof ReferencePropertyEditor) {
 			rpe = (ReferencePropertyEditor)editor;
@@ -72,6 +76,20 @@ public final class GetEditorCommand implements Command {
 
 		request.setAttribute("editor", rpe);
 		return "OK";
+	}
+
+	private Entity getCurrentEntity(RequestContext request) {
+		String defName = request.getParam(Constants.DEF_NAME);
+		String entityOid = request.getParam(Constants.DISPLAY_SCRIPT_ENTITY_OID);
+		String entityVersion = request.getParam(Constants.DISPLAY_SCRIPT_ENTITY_VERSION);
+
+		if (StringUtil.isNotBlank(entityOid) && StringUtil.isNotBlank(entityVersion)) {
+			Entity e = new GenericEntity(defName);
+			e.setOid(entityOid);
+			e.setVersion(Long.valueOf(entityVersion));
+			return e;
+		}
+		return null;
 	}
 
 }

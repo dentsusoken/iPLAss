@@ -22,6 +22,7 @@
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8" trimDirectiveWhitespaces="true"%>
 
 <%@ page import="java.util.*" %>
+<%@ page import="org.iplass.mtp.entity.Entity" %>
 <%@ page import="org.iplass.mtp.ManagerLocator"%>
 <%@ page import="org.iplass.mtp.util.*" %>
 <%@ page import="org.iplass.mtp.view.generic.*" %>
@@ -79,6 +80,7 @@
 <%
 	Element element = (Element) request.getAttribute(Constants.ELEMENT);
 	Object value = request.getAttribute(Constants.ENTITY_DATA);
+	Entity entity = value instanceof Entity ? (Entity)value : null;
 	OutputType type = (OutputType) request.getAttribute(Constants.OUTPUT_TYPE);
 
 	String defName = (String)request.getAttribute(Constants.ROOT_DEF_NAME);
@@ -158,7 +160,7 @@
 			if (elementList.size() > _index) {
 				Element subElement = elementList.get(_index++);
 				if (!(subElement instanceof BlankSpace)
-						&& EntityViewUtil.isDisplayElement(defName, subElement.getElementRuntimeId(), type)
+						&& EntityViewUtil.isDisplayElement(defName, subElement.getElementRuntimeId(), type, entity)
 						&& (type != OutputType.EDIT || ViewUtil.dispElement(subElement))) {
 					isDispRow = true;
 					break;
@@ -175,7 +177,7 @@
 		for (int j = 0; j < section.getColNum(); j++) {
 			if (elementList.size() > index) {
 				Element subElement = elementList.get(index++);
-				if (EntityViewUtil.isDisplayElement(defName, subElement.getElementRuntimeId(), type)
+				if (EntityViewUtil.isDisplayElement(defName, subElement.getElementRuntimeId(), type, entity)
 						&& (type != OutputType.EDIT || ViewUtil.dispElement(subElement))) {
 					request.setAttribute(Constants.ELEMENT, subElement);
 					request.setAttribute(Constants.COL_NUM, section.getColNum());

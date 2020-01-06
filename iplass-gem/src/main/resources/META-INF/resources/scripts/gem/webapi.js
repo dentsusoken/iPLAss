@@ -439,7 +439,7 @@ function deleteAll(webapi, searchType, formName, _t, func) {
 	});
 }
 
-function getMassReferenceData(webapi, oid, defName, propName, viewName, offset, sortKey, sortType, isCount, condKey, outputType, func) {
+function getMassReferenceData(webapi, oid, defName, propName, viewName, offset, sortKey, sortType, isCount, condKey, outputType, entity, func) {
 	var params = "{";
 	params += "\"oid\":\"" + oid + "\"";
 	params += ",\"defName\":\"" + defName + "\"";
@@ -452,6 +452,10 @@ function getMassReferenceData(webapi, oid, defName, propName, viewName, offset, 
 	params += ",\"outputType\":\"" + outputType + "\"";
 	if (typeof condKey !== "undefined" && condKey != null) {
 		params += ",\"condKey\":\"" + condKey + "\"";
+	}
+	if (typeof entity !== "undefined" && entity !== null) {
+		params += ",\"entityOid\":\"" + entity.oid +"\"";
+		params += ",\"entityVersion\":\"" + entity.version +"\"";
 	}
 	params += "}";
 	postAsync(webapi, params, function(results){
@@ -551,7 +555,7 @@ function restore(webapi, rbid, _t, func, errFunc) {
 	});
 }
 
-function getAutocompletionValue(webapi, defName, viewName, viewType, propName, key, refSectionIndex, pValue, cValue, func) {
+function getAutocompletionValue(webapi, defName, viewName, viewType, propName, key, refSectionIndex, pValue, cValue, entity, func) {
 	var params = "{";
 	params += "\"defName\":\"" + defName + "\"";
 	params += ",\"viewName\":\"" + viewName + "\"";
@@ -559,6 +563,7 @@ function getAutocompletionValue(webapi, defName, viewName, viewType, propName, k
 	params += ",\"propName\":\"" + propName + "\"";
 	params += ",\"autocompletionKey\":\"" + key + "\"";
 	params += ",\"referenceSectionIndex\":" + refSectionIndex;
+	params += ",\"entity\":" + JSON.stringify(entity);
 	params += ",\"params\":{";
 	var isFirst = true;
 	for (key in pValue) {
@@ -593,7 +598,7 @@ function getAutocompletionValue(webapi, defName, viewName, viewType, propName, k
 	});
 }
 
-function getUniqueItem(webapi, defName, viewName, viewType, propName, uniqueValue, func) {
+function getUniqueItem(webapi, defName, viewName, viewType, propName, uniqueValue, entity, func) {
 	var params = "{";
 	params += "\"defName\":\"" + defName + "\"";
 	params += ",\"viewName\":\"" + viewName + "\"";
@@ -603,6 +608,10 @@ function getUniqueItem(webapi, defName, viewName, viewType, propName, uniqueValu
 		params += ",\"uniqueValue\":null";
 	} else {
 		params += ",\"uniqueValue\":\"" + uniqueValue + "\"";
+	}
+	if (typeof entity !== "undefined" && entity !== null) {
+		params += ",\"entityOid\":\"" + entity.oid +"\"";
+		params += ",\"entityVersion\":\"" + entity.version +"\"";
 	}
 	params += "}";
 
@@ -669,12 +678,16 @@ function refComboChange(webapi, defName, viewName, propName, _params, viewType, 
 	});
 }
 
-function getPropertyEditor(webapi, defName, viewName, propName, viewType, func) {
+function getPropertyEditor(webapi, defName, viewName, propName, viewType, entity, func) {
 	var params = "{";
 	params += "\"defName\":\"" + defName + "\"";
 	params += ",\"viewName\":\"" + viewName + "\"";
 	params += ",\"propName\":\"" + propName + "\"";
 	params += ",\"viewType\":\"" + viewType + "\"";
+	if (typeof entity !== "undefined" && entity !== null) {
+		params += ",\"entityOid\":\"" + entity.oid +"\"";
+		params += ",\"entityVersion\":\"" + entity.version +"\"";
+	}
 	params += "}";
 	postAsync(webapi, params, function(results) {
 		var editor = results.editor;
@@ -682,7 +695,7 @@ function getPropertyEditor(webapi, defName, viewName, propName, viewType, func) 
 	});
 }
 
-function searchParent(webapi, defName, viewName, propName, viewType, currentName, oid, func) {
+function searchParent(webapi, defName, viewName, propName, viewType, currentName, oid, entity, func) {
 	var params = "{";
 	params += "\"defName\":\"" + defName + "\"";
 	params += ",\"viewName\":\"" + viewName + "\"";
@@ -690,6 +703,10 @@ function searchParent(webapi, defName, viewName, propName, viewType, currentName
 	params += ",\"viewType\":\"" + viewType + "\"";
 	params += ",\"currentName\":\"" + currentName + "\"";
 	params += ",\"oid\":\"" + oid + "\"";
+	if (typeof entity !== "undefined" && entity !== null) {
+		params += ",\"entityOid\":\"" + entity.oid +"\"";
+		params += ",\"entityVersion\":\"" + entity.version +"\"";
+	}
 	params += "}";
 	postAsync(webapi, params, function(results) {
 		var parent = results.parent;
@@ -700,7 +717,7 @@ function searchParent(webapi, defName, viewName, propName, viewType, currentName
 ////////////////////////////////////////////////////////
 //連動プロパティ用のJavascript
 ////////////////////////////////////////////////////////
-function getLinkItems(webapi, defName, viewType, viewName, propName, linkValue, callback) {
+function getLinkItems(webapi, defName, viewType, viewName, propName, linkValue, entity, callback) {
 
 	var params = "{";
 	params += "\"defName\":\"" + defName + "\"";
@@ -708,6 +725,10 @@ function getLinkItems(webapi, defName, viewType, viewName, propName, linkValue, 
 	params += ",\"viewName\":\"" + viewName + "\"";
 	params += ",\"propName\":\"" + propName + "\"";
 	params += ",\"linkValue\":\"" + linkValue + "\"";
+	if (typeof entity !== "undefined" && entity !== null) {
+		params += ",\"entityOid\":\"" + entity.oid +"\"";
+		params += ",\"entityVersion\":\"" + entity.version +"\"";
+	}
 	params += "}";
 	postAsync(webapi, params, function(results) {
 		var entities = results.data;
@@ -790,7 +811,7 @@ function getEntityName(defName, viewName, oid, version, async, func) {
 }
 
 //汎用画面ReferenceEditor用Entity名前一括取得
-function getEntityNameList(defName, viewName, parentDefName, parentViewName, parentPropName, viewType, refSectionIndex, list, func) {
+function getEntityNameList(defName, viewName, parentDefName, parentViewName, parentPropName, viewType, refSectionIndex, list, entity, func) {
 	var _viewName = "";
 	if (typeof viewName !== "undefined") {
 		if (viewName === null) {
@@ -849,6 +870,7 @@ function getEntityNameList(defName, viewName, parentDefName, parentViewName, par
 	params += _viewType;
 	params += _refSectionIndex;
 	params += ",\"list\":" + JSON.stringify(list);
+	params += ",\"entity\":" + JSON.stringify(entity);
 	params += "}";
 
 	postAsync("gem/generic/common/getEntityNameList", params, function(results) {

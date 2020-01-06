@@ -45,6 +45,10 @@
 
 	String viewName = StringUtil.escapeHtml((String)request.getAttribute(Constants.VIEW_NAME), true);
 
+	Entity rootEntity = (Entity) request.getAttribute(Constants.ROOT_ENTITY);
+	String rootOid = rootEntity != null ? rootEntity.getOid() : "";
+	String rootVersion = rootEntity != null && rootEntity.getVersion() != null ? rootEntity.getVersion().toString() : "";
+
 	//カスタムスタイル
 	String customStyle = "";
 	if (StringUtil.isNotEmpty(editor.getInputCustomStyle())) {
@@ -59,7 +63,8 @@
  data-propName="${m:esc(propertyDefinition.name)}" data-defName="${m:esc(defName)}"
  data-viewName="<%=viewName %>" data-webapiName="<%=ReferenceComboCommand.WEBAPI_NAME%>"
  data-getEditorWebapiName="<%=GetEditorCommand.WEBAPI_NAME %>" data-searchParentWebapiName="<%=SearchParentCommand.WEBAPI_NAME %>"
- data-viewType="<%=Constants.VIEW_TYPE_DETAIL %>" data-prefix="" data-searchType="NONE" data-upperName="" data-upperOid="" data-customStyle="<c:out value="<%=customStyle%>"/>">
+ data-viewType="<%=Constants.VIEW_TYPE_DETAIL %>" data-prefix="" data-searchType="NONE" data-upperName="" data-upperOid="" data-customStyle="<c:out value="<%=customStyle%>"/>"
+ data-entityOid="<%=rootOid%>" data-entityVersion="<%=rootVersion%>">
 </select>
 <%
 	} else {
@@ -75,7 +80,8 @@
  data-propName="${m:esc(propertyDefinition.name)}" data-defName="${m:esc(defName)}"
  data-viewName="<%=viewName %>" data-webapiName="<%=ReferenceComboCommand.WEBAPI_NAME%>"
  data-getEditorWebapiName="<%=GetEditorCommand.WEBAPI_NAME %>" data-searchParentWebapiName="<%=SearchParentCommand.WEBAPI_NAME %>"
- data-viewType="<%=Constants.VIEW_TYPE_DETAIL %>" data-prefix="" data-searchType="NONE" data-upperName="" data-upperOid="" data-customStyle="<c:out value="<%=customStyle%>"/>">
+ data-viewType="<%=Constants.VIEW_TYPE_DETAIL %>" data-prefix="" data-searchType="NONE" data-upperName="" data-upperOid="" data-customStyle="<c:out value="<%=customStyle%>"/>"
+ data-entityOid="<%=rootOid%>" data-entityVersion="<%=rootVersion%>">
 </select> <input type="button" value="${m:rs('mtp-gem-messages', 'generic.editor.reference.ReferencePropertyEditor_RefCombo.delete')}" class="gr-btn-02 del-btn" />
 </li>
 <%
@@ -92,7 +98,8 @@
  data-propName="${m:esc(propertyDefinition.name)}" data-defName="${m:esc(defName)}"
  data-viewName="<%=viewName %>" data-webapiName="<%=ReferenceComboCommand.WEBAPI_NAME%>"
  data-getEditorWebapiName="<%=GetEditorCommand.WEBAPI_NAME %>" data-searchParentWebapiName="<%=SearchParentCommand.WEBAPI_NAME %>"
- data-viewType="<%=Constants.VIEW_TYPE_DETAIL %>" data-prefix="" data-searchType="NONE" data-upperName="" data-upperOid="" data-customStyle="<c:out value="<%=customStyle%>"/>">
+ data-viewType="<%=Constants.VIEW_TYPE_DETAIL %>" data-prefix="" data-searchType="NONE" data-upperName="" data-upperOid="" data-customStyle="<c:out value="<%=customStyle%>"/>"
+ data-entityOid="<%=rootOid%>" data-entityVersion="<%=rootVersion%>">
 </select> <input type="button" value="${m:rs('mtp-gem-messages', 'generic.editor.reference.ReferencePropertyEditor_RefCombo.delete')}" class="gr-btn-02 del-btn" onclick="deleteItem('<%=StringUtil.escapeJavaScript(liId)%>')" />
 </li>
 <%

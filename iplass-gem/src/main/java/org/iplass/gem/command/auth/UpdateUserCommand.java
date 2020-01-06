@@ -125,7 +125,7 @@ public final class UpdateUserCommand extends DetailCommandBase {
 //			Object propValue = newEntity.getValue(pd.getName());
 //			if (propValue != null) updateEntity.setValue(pd.getName(), propValue);
 //		}
-		List<PropertyItem> properties = getProperty(view);
+		List<PropertyItem> properties = getProperty(view, newEntity);
 		for (PropertyItem property : properties) {
 			Object propValue = newEntity.getValue(property.getPropertyName());
 			updateEntity.setValue(property.getPropertyName(), propValue);
@@ -147,13 +147,13 @@ public final class UpdateUserCommand extends DetailCommandBase {
 		return Constants.CMD_EXEC_SUCCESS;
 	}
 
-	private List<PropertyItem> getProperty(DetailFormView view) {
+	private List<PropertyItem> getProperty(DetailFormView view, Entity entity) {
 		List<PropertyItem> propList = new ArrayList<PropertyItem>();
 		for (Section section : view.getSections()) {
 			if (section instanceof DefaultSection
-					&& EntityViewUtil.isDisplayElement(User.DEFINITION_NAME, section.getElementRuntimeId(), OutputType.EDIT)
+					&& EntityViewUtil.isDisplayElement(User.DEFINITION_NAME, section.getElementRuntimeId(), OutputType.EDIT, entity)
 					&& ViewUtil.dispElement(Constants.EXEC_TYPE_UPDATE, section)) {
-				propList.addAll(getProperty((DefaultSection)section));
+				propList.addAll(getProperty((DefaultSection)section, entity));
 			}
 		}
 		return propList;
@@ -164,7 +164,7 @@ public final class UpdateUserCommand extends DetailCommandBase {
 	 * @param section セクション
 	 * @return プロパティの一覧
 	 */
-	private List<PropertyItem> getProperty(DefaultSection section) {
+	private List<PropertyItem> getProperty(DefaultSection section, Entity entity) {
 		List<PropertyItem> propList = new ArrayList<PropertyItem>();
 		for (Element elem : section.getElements()) {
 			if (elem instanceof PropertyItem) {
@@ -180,12 +180,12 @@ public final class UpdateUserCommand extends DetailCommandBase {
 						propList.add(dummy);
 					}
 				}
-				if (EntityViewUtil.isDisplayElement(User.DEFINITION_NAME, prop.getElementRuntimeId(), OutputType.EDIT)
+				if (EntityViewUtil.isDisplayElement(User.DEFINITION_NAME, prop.getElementRuntimeId(), OutputType.EDIT, entity)
 						&& ViewUtil.dispElement(Constants.EXEC_TYPE_UPDATE, prop)) {
 					propList.add(prop);
 				}
 			} else if (elem instanceof DefaultSection) {
-				propList.addAll(getProperty((DefaultSection)elem));
+				propList.addAll(getProperty((DefaultSection)elem, entity));
 			}
 		}
 		return propList;

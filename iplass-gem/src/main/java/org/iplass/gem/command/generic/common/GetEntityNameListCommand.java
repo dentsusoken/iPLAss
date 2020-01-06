@@ -32,6 +32,7 @@ import org.iplass.mtp.command.annotation.webapi.RestJson;
 import org.iplass.mtp.command.annotation.webapi.WebApi;
 import org.iplass.mtp.entity.Entity;
 import org.iplass.mtp.entity.EntityManager;
+import org.iplass.mtp.entity.GenericEntity;
 import org.iplass.mtp.entity.definition.EntityDefinition;
 import org.iplass.mtp.entity.definition.EntityDefinitionManager;
 import org.iplass.mtp.entity.definition.IndexType;
@@ -83,10 +84,11 @@ public final class GetEntityNameListCommand implements Command {
 		Object ret = null;
 		if (defName != null && !defName.isEmpty()
 				&& list != null && !list.isEmpty()) {
+			Entity e = getCurrentEntity(param);
 			// 表示ラベルとして扱うプロパティを取得します
-			String dispLabelProp = getDisplayLabelItem(parentDefName, parentViewName, parentPropName, viewType, refSectionIndex);
+			String dispLabelProp = getDisplayLabelItem(parentDefName, parentViewName, parentPropName, viewType, refSectionIndex, e);
 			// ユニークキー項目
-			String uniqueProp = getUniqueItem(parentDefName, parentViewName, parentPropName, viewType, refSectionIndex);
+			String uniqueProp = getUniqueItem(parentDefName, parentViewName, parentPropName, viewType, refSectionIndex, e);
 
 			Query query = new Query();
 			query.select(Entity.OID, Entity.VERSION).from(defName);
@@ -116,22 +118,37 @@ public final class GetEntityNameListCommand implements Command {
 		return "OK";
 	}
 
-	private String getDisplayLabelItem(String defName, String viewName, String propName, String viewType, Integer refSectionIndex) {
+	private Entity getCurrentEntity(GetEntityNameListParameter param) {
+		GetEntityNameListEntityParameter entity = param.getEntity();
+		if (entity != null) {
+			Entity e = new GenericEntity(param.getDefName());
+			if (StringUtil.isNotBlank(entity.getOid())) {
+				e.setOid(entity.getOid());
+			}
+			if (StringUtil.isNotBlank(entity.getVersion())) {
+				e.setVersion(Long.valueOf(entity.getVersion()));
+			}
+			return e;
+		}
+		return null;
+	}
+
+	private String getDisplayLabelItem(String defName, String viewName, String propName, String viewType, Integer refSectionIndex, Entity entity) {
 		FormView form = ViewUtil.getFormView(defName, viewName, viewType);
 		if (form == null) return null;
 
-		ReferencePropertyEditor rpe = getRefEditor(defName, viewName, propName, viewType, refSectionIndex);
+		ReferencePropertyEditor rpe = getRefEditor(defName, viewName, propName, viewType, refSectionIndex, entity);
 		// エディター定義が見つからなかった場合、空文字を返します。
 		if (rpe == null) return "";
 
 		return rpe.getDisplayLabelItem();
 	}
 
-	private String getUniqueItem(String defName, String viewName, String propName, String viewType, Integer refSectionIndex) {
+	private String getUniqueItem(String defName, String viewName, String propName, String viewType, Integer refSectionIndex, Entity entity) {
 		FormView form = ViewUtil.getFormView(defName, viewName, viewType);
 		if (form == null) return null;
 
-		ReferencePropertyEditor rpe = getRefEditor(defName, viewName, propName, viewType, refSectionIndex);
+		ReferencePropertyEditor rpe = getRefEditor(defName, viewName, propName, viewType, refSectionIndex, entity);
 		if (rpe == null || rpe.getDisplayType() != ReferenceDisplayType.UNIQUE || rpe.getUniqueItem() == null) {
 			return null;
 		}
@@ -147,9 +164,9 @@ public final class GetEntityNameListCommand implements Command {
 		return null;
 	}
 
-	private ReferencePropertyEditor getRefEditor(String defName, String viewName, String propName, String viewType, Integer refSectionIndex) {
+	private ReferencePropertyEditor getRefEditor(String defName, String viewName, String propName, String viewType, Integer refSectionIndex, Entity entity) {
 		EntityViewManager evm = ManagerLocator.getInstance().getManager(EntityViewManager.class);
-		PropertyEditor editor = evm.getPropertyEditor(defName, viewType, viewName, propName, refSectionIndex);
+		PropertyEditor editor = evm.getPropertyEditor(defName, viewType, viewName, propName, refSectionIndex, entity);
 
 		if (editor instanceof ReferencePropertyEditor) { 
 			return (ReferencePropertyEditor) editor;

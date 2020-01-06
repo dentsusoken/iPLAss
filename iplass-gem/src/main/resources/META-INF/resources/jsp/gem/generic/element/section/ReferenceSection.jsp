@@ -349,6 +349,7 @@
 						request.setAttribute(Constants.AUTOCOMPLETION_MULTIPLICTTY, 1);
 						request.setAttribute(Constants.AUTOCOMPLETION_REF_NEST_PROP_NAME, section.getPropertyName());
 						request.setAttribute(Constants.AUTOCOMPLETION_REF_SECTION_INDEX, new Integer(dataIndex));
+						request.setAttribute(Constants.AUTOCOMPLETION_ROOT_ENTITY_DATA, parent);
 
 						String autocompletionPath = "/jsp/gem/generic/common/ReferenceSectionAutocompletion.jsp";
 %>
@@ -362,6 +363,7 @@
 						request.removeAttribute(Constants.AUTOCOMPLETION_MULTIPLICTTY);
 						request.removeAttribute(Constants.AUTOCOMPLETION_REF_NEST_PROP_NAME);
 						request.removeAttribute(Constants.AUTOCOMPLETION_REF_SECTION_INDEX);
+						request.removeAttribute(Constants.AUTOCOMPLETION_ROOT_ENTITY_DATA);
 						request.removeAttribute(Constants.AUTOCOMPLETION_SCRIPT_PATH);
 					}
 %>

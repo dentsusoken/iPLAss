@@ -152,9 +152,9 @@
 		}
 	}
 
-	PropertyEditor getLinkUpperPropertyEditor(String defName, String viewName, LinkProperty linkProperty) {
+	PropertyEditor getLinkUpperPropertyEditor(String defName, String viewName, LinkProperty linkProperty, Entity entity) {
 		EntityViewManager evm = ManagerLocator.getInstance().getManager(EntityViewManager.class);
-		return evm.getPropertyEditor(defName, Constants.VIEW_TYPE_DETAIL, viewName, linkProperty.getLinkFromPropertyName());
+		return evm.getPropertyEditor(defName, Constants.VIEW_TYPE_DETAIL, viewName, linkProperty.getLinkFromPropertyName(), entity);
 	}
 
 	String getLinkUpperType(PropertyEditor editor) {
@@ -353,6 +353,10 @@
 	Entity parentEntity = (Entity) request.getAttribute(Constants.EDITOR_PARENT_ENTITY);
 	String parentOid = parentEntity != null ? parentEntity.getOid() : "";
 	String parentVersion = parentEntity != null && parentEntity.getVersion() != null ? parentEntity.getVersion().toString() : "";
+
+	Entity rootEntity = (Entity) request.getAttribute(Constants.ROOT_ENTITY);
+	String rootOid = rootEntity != null ? rootEntity.getOid() : "";
+	String rootVersion = rootEntity != null && rootEntity.getVersion() != null ? rootEntity.getVersion().toString() : "";
 
 	//Property情報取得
 	boolean isMappedby = pd.getMappedBy() != null;
@@ -561,6 +565,8 @@ $(function() {
 		, permitConditionSelectAll: <%=editor.isPermitConditionSelectAll()%>
 		, parentDefName: "<%=StringUtil.escapeJavaScript(rootDefName)%>"
 		, parentViewName: "<%=StringUtil.escapeJavaScript(viewName)%>"
+		, parentOid: "<%=StringUtil.escapeJavaScript(rootOid)%>"
+		, parentVersion: "<%=StringUtil.escapeJavaScript(rootVersion)%>"
 		, viewType: "<%=StringUtil.escapeJavaScript(viewType)%>"
 		, refSectionIndex: "<c:out value="<%=refSectionIndex%>"/>"
 	}
@@ -570,7 +576,7 @@ $(function() {
 	}
 	$selBtn.on("click", function() {
 		searchReference(params.selectAction, params.viewAction, params.defName, $(this).attr("data-propName"), params.multiplicity, <%=isMultiple %>,
-				 params.urlParam, params.refEdit, callback, this, params.viewName, params.permitConditionSelectAll, params.parentDefName, params.parentViewName, params.viewType, params.refSectionIndex, delCallback);
+				 params.urlParam, params.refEdit, callback, this, params.viewName, params.permitConditionSelectAll, params.parentOid, params.parentVersion, params.parentDefName, params.parentViewName, params.viewType, params.refSectionIndex, delCallback);
 	});
 
 });
@@ -634,7 +640,7 @@ $(function() {
 		PropertyEditor upperEditor = null;
 		String upperType = null;
 		if (editor.getLinkProperty() != null) {
-			upperEditor = getLinkUpperPropertyEditor(rootDefName, viewName, editor.getLinkProperty());
+			upperEditor = getLinkUpperPropertyEditor(rootDefName, viewName, editor.getLinkProperty(), rootEntity);
 			upperType = getLinkUpperType(upperEditor);
 		}
 
@@ -681,6 +687,8 @@ data-linkName="<c:out value="<%=link.getLinkFromPropertyName() %>"/>"
 data-prefix=""
 data-getItemWebapiName="<%=GetReferenceLinkItemCommand.WEBAPI_NAME %>"
 data-upperType="<c:out value="<%=upperType %>"/>"
+data-entityOid="<c:out value="<%=rootOid %>"/>"
+data-entityVersion="<c:out value="<%=rootVersion %>"/>"
 >
 <%
 			if (!isMultiple) {
@@ -727,7 +735,7 @@ data-upperType="<c:out value="<%=upperType %>"/>"
 		PropertyEditor upperEditor = null;
 		String upperType = null;
 		if (editor.getLinkProperty() != null) {
-			upperEditor = getLinkUpperPropertyEditor(rootDefName, viewName, editor.getLinkProperty());
+			upperEditor = getLinkUpperPropertyEditor(rootDefName, viewName, editor.getLinkProperty(), rootEntity);
 			upperType = getLinkUpperType(upperEditor);
 		}
 
@@ -777,6 +785,8 @@ data-prefix=""
 data-getItemWebapiName="<%=GetReferenceLinkItemCommand.WEBAPI_NAME %>"
 data-upperType="<c:out value="<%=upperType %>"/>"
 data-customStyle="<c:out value="<%=customStyle%>"/>"
+data-entityOid="<c:out value="<%=rootOid%>"/>"
+data-entityVersion="<c:out value="<%=rootVersion%>"/>"
 >
 <%
 			for (Entity refEntity : entityList) {
@@ -906,7 +916,7 @@ function <%=toggleInsBtnFunc%>() {
 				String upperType = "";
 				if (editor.getLinkProperty() != null) {
 					linkPropName = editor.getLinkProperty().getLinkFromPropertyName();
-					PropertyEditor upperEditor = getLinkUpperPropertyEditor(rootDefName, viewName, editor.getLinkProperty());
+					PropertyEditor upperEditor = getLinkUpperPropertyEditor(rootDefName, viewName, editor.getLinkProperty(), rootEntity);
 					upperType = getLinkUpperType(upperEditor);
 				}
 %>
@@ -930,6 +940,8 @@ function <%=toggleInsBtnFunc%>() {
  data-selCallbackKey="<c:out value="<%=selCallbackKey%>"/>"
  data-delCallbackKey="<c:out value="<%=delCallbackKey%>"/>"
  data-refSectionIndex="<c:out value="<%=refSectionIndex%>"/>"
+ data-entityOid="<c:out value="<%=rootOid%>"/>"
+ data-entityVersion="<c:out value="<%=rootVersion%>"/>"
  />
 <%
 			}
@@ -1096,6 +1108,8 @@ $(function() {
  data-selUniqueRefCallback="<c:out value="<%=selUniqueRefCallback%>"/>"
  data-insUniqueRefCallback="<c:out value="<%=insUniqueRefCallback%>"/>"
  data-refSectionIndex="<c:out value="<%=refSectionIndex%>"/>"
+ data-entityOid="<c:out value="<%=rootOid%>"/>"
+ data-entityVersion="<c:out value="<%=rootVersion%>"/>"
 >
 <span class="unique-key">
 <%
@@ -1166,6 +1180,8 @@ $(function() {
  data-selUniqueRefCallback="<c:out value="<%=selUniqueRefCallback%>"/>"
  data-insUniqueRefCallback="<c:out value="<%=insUniqueRefCallback%>"/>"
  data-refSectionIndex="<c:out value="<%=refSectionIndex%>"/>"
+ data-entityOid="<c:out value="<%=rootOid%>"/>"
+ data-entityVersion="<c:out value="<%=rootVersion%>"/>"
 >
 <span class="unique-key">
 <input type="text" style="<c:out value="<%=customStyle%>"/>" class="unique-form-size-01 inpbr" />

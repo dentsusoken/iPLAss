@@ -147,7 +147,7 @@ public abstract class SearchContextBase implements SearchContext {
 
 		List<PropertyColumn> properties = getColumnProperties();
 		for (PropertyColumn p : properties) {
-			if (EntityViewUtil.isDisplayElement(getDefName(), p.getElementRuntimeId(), OutputType.SEARCHRESULT)) {
+			if (EntityViewUtil.isDisplayElement(getDefName(), p.getElementRuntimeId(), OutputType.SEARCHRESULT, null)) {
 				String propName = p.getPropertyName();
 				if (p.getEditor() instanceof ReferencePropertyEditor) {
 					List<NestProperty> nest = ((ReferencePropertyEditor)p.getEditor()).getNestProperties();

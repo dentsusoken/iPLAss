@@ -46,7 +46,7 @@
 	EntityViewManager evm = ManagerLocator.getInstance().getManager(EntityViewManager.class);
 
 	boolean isDispBitton = false;
-	if (EntityViewUtil.isDisplayElement(rootDefName, button.getElementRuntimeId(), type)
+	if (EntityViewUtil.isDisplayElement(rootDefName, button.getElementRuntimeId(), type, entity)
 			&& (type != OutputType.EDIT || ViewUtil.dispElement(button))) {
 		if (button.getDisplayType() == DisplayType.CUSTOM) {
 			//スクリプトで判定

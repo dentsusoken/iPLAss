@@ -93,10 +93,12 @@
 	if (form.getButtons().size() > 0) {
 		for (Button button : form.getButtons()) {
 			boolean isDisplayCustomType = false;
+			Object value = request.getAttribute(Constants.ENTITY_DATA);
+			Entity entity = value instanceof Entity ? (Entity) value : null;
 			if (button.getDisplayType() == DisplayType.CUSTOM) {
 				isDisplayCustomType = evm.isDisplayButton(data.getEntityDefinition().getName(), button.getCustomDisplayTypeScriptKey(), OutputType.EDIT, data.getEntity());
 			}
-			if (EntityViewUtil.isDisplayElement(defName, button.getElementRuntimeId(), OutputType.EDIT)
+			if (EntityViewUtil.isDisplayElement(defName, button.getElementRuntimeId(), OutputType.EDIT, entity)
 					&& (button.getDisplayType() == null || button.getDisplayType() == DisplayType.DETAIL
 						|| button.getDisplayType() == DisplayType.BOTH || isDisplayCustomType)
 					&& ViewUtil.dispElement(button)) {
@@ -106,8 +108,6 @@
 				}
 				String customStyle = "";
 				if (StringUtil.isNotBlank(button.getInputCustomStyle())) {
-					Object value = request.getAttribute(Constants.ENTITY_DATA);
-					Entity entity = value instanceof Entity ? (Entity) value : null;
 					String scriptKey = (String)request.getAttribute(Constants.FORM_SCRIPT_KEY);
 					customStyle = EntityViewUtil.getCustomStyle(defName, scriptKey, button.getInputCustomStyleScriptKey(), entity, null);
 				}

@@ -1921,7 +1921,7 @@ function showReference(viewAction, defName, oid, version, linkId, refEdit, editC
  * @param button
  * @return
  */
-function searchReference(selectAction, viewAction, defName, propName, multiplicity, multi, urlParam, refEdit, callback, button, viewName, permitConditionSelectAll, parentDefName, parentViewName, viewType, refSectionIndex, delCallback) {
+function searchReference(selectAction, viewAction, defName, propName, multiplicity, multi, urlParam, refEdit, callback, button, viewName, permitConditionSelectAll, parentOid, parentVersion, parentDefName, parentViewName, viewType, refSectionIndex, delCallback) {
 	var _propName = propName.replace(/\[/g, "\\[").replace(/\]/g, "\\]").replace(/\./g, "\\.");
 	document.scriptContext["searchReferenceCallback"] = function(selectArray) {
 		var $ul = $("#ul_" + _propName);
@@ -1956,9 +1956,15 @@ function searchReference(selectAction, viewAction, defName, propName, multiplici
 
 			list.push(keySplit(key));
 		}
+
+		var parentEntity = null;
+		if (typeof parentOid !== "undefined" && typeof parentVersion !== "undefined") {
+			parentEntity = {oid: parentOid, version: parentVersion};
+		}
+
 		if (list.length > 0) {
 			var parentPropName = propName.replace(/^sc_/, "").replace(/\[\w+\]/g, "");
-			getEntityNameList(defName, viewName, parentDefName, parentViewName, parentPropName, viewType, refSectionIndex, list, function(entities) {
+			getEntityNameList(defName, viewName, parentDefName, parentViewName, parentPropName, viewType, refSectionIndex, list, parentEntity, function(entities) {
 				for (var i = 0; i < entities.length; i++) {
 					var entity = entities[i];
 					var _key = entity.oid + "_" + entity.version;
@@ -2198,7 +2204,7 @@ function searchReferenceFromView(selectAction, updateAction, defName, id, propNa
 	$form.remove();
 }
 
-function searchUniqueReference(id, selectAction, viewAction, defName, propName, urlParam, refEdit, callback, button, viewName, permitConditionSelectAll, parentDefName, parentViewName, viewType, refSectionIndex) {
+function searchUniqueReference(id, selectAction, viewAction, defName, propName, urlParam, refEdit, callback, button, viewName, permitConditionSelectAll, parentDefName, parentViewName, viewType, refSectionIndex, parentEntity) {
 	var _id = id.replace(/\[/g, "\\[").replace(/\]/g, "\\]").replace(/\./g, "\\.");
 	var _propName = propName.replace(/\[/g, "\\[").replace(/\]/g, "\\]").replace(/\./g, "\\.");
 	document.scriptContext["searchReferenceCallback"] = function(selectArray) {
@@ -2221,7 +2227,7 @@ function searchUniqueReference(id, selectAction, viewAction, defName, propName, 
 		//参照の名前を一括取得
 		var entityList = new Array();
 		var parentPropName = propName.replace(/^sc_/, "").replace(/\[\w+\]/g, "");
-		getEntityNameList(defName, viewName, parentDefName, parentViewName, parentPropName, viewType, refSectionIndex, list, function(entities) {
+		getEntityNameList(defName, viewName, parentDefName, parentViewName, parentPropName, viewType, refSectionIndex, list, parentEntity, function(entities) {
 			for (var i = 0; i < entities.length; i++) {
 				var entity = entities[i];
 				var _key = entity.oid + "_" + entity.version;
@@ -2309,7 +2315,7 @@ function insertReference(addAction, viewAction, defName, propName, multiplicity,
 			$("[name='" + _propName + "']:eq(0)").trigger("change", {});
 
 			//起動したtargetに対して再度詳細画面を表示しなおす
-			showReference(viewAction, defName, entity.oid, entity.version, linkId, refEdit, null, parentDefName, parentViewName, propName, viewType, refSectionIndex);
+			showReference(viewAction, defName, entity.oid, entity.version, linkId, refEdit, null, parentDefName, parentViewName, parentOid, parentVersion, propName, viewType, refSectionIndex);
 		};
 
 		var parentPropName = propName.replace(/\[\w+\]/g, "");
@@ -3440,11 +3446,13 @@ function addNestRow_Reference(type, cell, idx) {
 			var viewName = $selButton.attr("data-viewName");
 			var permitConditionSelectAll = $selButton.attr("data-permitConditionSelectAll");
 			var callback = scriptContext[callbackKey];
+			var parentOid = $selButton.attr("data-parentOid");
+			var parentVersion = $selButton.attr("data-parentVersion");
 			var parentDefName = $selButton.attr("data-parentDefName");
 			var parentViewName = $selButton.attr("data-parentViewName");
 			var viewType = $selButton.attr("data-viewType");
 			var refSectionIndex = $selButton.attr("data-refSectionIndex");
-			searchReference(selectAction, viewAction, defName, propName, multiplicity, false, urlParam, refEdit, callback, $selButton, viewName, permitConditionSelectAll, parentDefName, parentViewName, viewType, refSectionIndex);
+			searchReference(selectAction, viewAction, defName, propName, multiplicity, false, urlParam, refEdit, callback, $selButton, viewName, permitConditionSelectAll, parentOid, parentVersion, parentDefName, parentViewName, viewType, refSectionIndex);
 		});
 
 		$insButton.on("click", function() {

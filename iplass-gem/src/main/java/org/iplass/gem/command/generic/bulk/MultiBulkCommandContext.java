@@ -402,7 +402,7 @@ public class MultiBulkCommandContext extends RegistrationCommandContext {
 		return new RegistrationPropertyBaseHandler<PropertyItem>() {
 			@Override
 			public boolean isDispProperty(PropertyItem property) {
-				return EntityViewUtil.isDisplayElement(entityDefinition.getName(), property.getElementRuntimeId(), OutputType.BULK);
+				return EntityViewUtil.isDisplayElement(entityDefinition.getName(), property.getElementRuntimeId(), OutputType.BULK, getCurrentEntity());
 			}
 
 			@Override
@@ -446,6 +446,11 @@ public class MultiBulkCommandContext extends RegistrationCommandContext {
 	 */
 	public void setView(BulkFormView view) {
 		this.view = view;
+	}
+
+	@Override
+	public Entity getCurrentEntity() {
+		return null;
 	}
 
 	/**
@@ -682,7 +687,7 @@ public class MultiBulkCommandContext extends RegistrationCommandContext {
 			propList = new ArrayList<PropertyItem>();
 			for (Section section : getView().getSections()) {
 				if (section instanceof DefaultSection) {
-					if (EntityViewUtil.isDisplayElement(entityDefinition.getName(), section.getElementRuntimeId(), OutputType.BULK)) {
+					if (EntityViewUtil.isDisplayElement(entityDefinition.getName(), section.getElementRuntimeId(), OutputType.BULK, getCurrentEntity())) {
 						propList.addAll(getProperty((DefaultSection) section));
 					}
 				}
@@ -725,7 +730,7 @@ public class MultiBulkCommandContext extends RegistrationCommandContext {
 					propList.add(prop);
 				}
 			} else if (elem instanceof DefaultSection) {
-				if (EntityViewUtil.isDisplayElement(entityDefinition.getName(), elem.getElementRuntimeId(), OutputType.BULK)) {
+				if (EntityViewUtil.isDisplayElement(entityDefinition.getName(), elem.getElementRuntimeId(), OutputType.BULK, getCurrentEntity())) {
 					propList.addAll(getProperty((DefaultSection) elem));
 				}
 			}
@@ -741,7 +746,7 @@ public class MultiBulkCommandContext extends RegistrationCommandContext {
 		List<PropertyItem> propList = new ArrayList<PropertyItem>();
 
 		for (Section section : getView().getSections()) {
-			if (!EntityViewUtil.isDisplayElement(entityDefinition.getName(), section.getElementRuntimeId(), OutputType.BULK)) {
+			if (!EntityViewUtil.isDisplayElement(entityDefinition.getName(), section.getElementRuntimeId(), OutputType.BULK, getCurrentEntity())) {
 				continue;
 			}
 
@@ -762,7 +767,7 @@ public class MultiBulkCommandContext extends RegistrationCommandContext {
 		List<PropertyItem> propList = new ArrayList<PropertyItem>();
 
 		for (Element elem : section.getElements()) {
-			if (!EntityViewUtil.isDisplayElement(entityDefinition.getName(), elem.getElementRuntimeId(), OutputType.BULK)) {
+			if (!EntityViewUtil.isDisplayElement(entityDefinition.getName(), elem.getElementRuntimeId(), OutputType.BULK, getCurrentEntity())) {
 				continue;
 			}
 

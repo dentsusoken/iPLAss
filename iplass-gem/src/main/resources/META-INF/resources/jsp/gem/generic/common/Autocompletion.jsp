@@ -20,6 +20,7 @@
 
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8" trimDirectiveWhitespaces="true"%>
+<%@ page import="org.iplass.mtp.entity.Entity" %>
 <%@ page import="org.iplass.mtp.util.StringUtil"%>
 <%@ page import="org.iplass.mtp.view.generic.common.*" %>
 <%@ page import="org.iplass.mtp.web.template.TemplateUtil"%>
@@ -33,6 +34,9 @@ String viewName = StringUtil.escapeJavaScript((String) request.getAttribute(Cons
 if (viewName == null) viewName = "";
 String propName = StringUtil.escapeJavaScript((String) request.getAttribute(Constants.AUTOCOMPLETION_PROP_NAME));
 if (setting == null) return;
+
+Object value = request.getAttribute(Constants.AUTOCOMPLETION_ROOT_ENTITY_DATA);
+Entity rootEntity = value instanceof Entity ? (Entity)value : null;
 
 StringBuilder sb = new StringBuilder();
 for (AutocompletionProperty prop : setting.getProperties()) {
@@ -146,7 +150,12 @@ $(function() {
 		}
 		var propName = "<%=propName%>";
 		var cValue = $("[name='" + propName + "']").map(function() {return $(this).val();}).get();
-		getAutocompletionValue("<%=GetAutocompletionValueCommand.WEBAPI_NAME%>", "<%=defName%>", "<%=viewName%>", "<%=Constants.VIEW_TYPE_DETAIL%>", propName, "<%=key%>", null, pValue, cValue, function(value) {
+<%	if (rootEntity == null) { %>
+		var entity = null;
+<% } else { %>
+		var entity = {oid: "<%=rootEntity.getOid()%>", version: "<%=rootEntity.getVersion()%>"};
+<% } %>
+		getAutocompletionValue("<%=GetAutocompletionValueCommand.WEBAPI_NAME%>", "<%=defName%>", "<%=viewName%>", "<%=Constants.VIEW_TYPE_DETAIL%>", propName, "<%=key%>", null, pValue, cValue, entity, function(value) {
 <jsp:include page="<%=path %>" />
 		});
 	});

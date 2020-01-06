@@ -139,7 +139,7 @@ public class DetailSearchContext extends SearchContextBase {
 
 					if (property != null) {
 						//非表示設定されてるか、詳細検索条件にない項目であればエラー
-						if (!EntityViewUtil.isDisplayElement(getDefName(), property.getElementRuntimeId(), OutputType.SEARCHCONDITION)
+						if (!EntityViewUtil.isDisplayElement(getDefName(), property.getElementRuntimeId(), OutputType.SEARCHCONDITION, null)
 								|| property.isHideDetailCondition()) {
 							isValid = false;
 						}
@@ -212,7 +212,7 @@ public class DetailSearchContext extends SearchContextBase {
 		for (PropertyItem property : properties) {
 			//ブランクor非表示なので対象外
 			if (property.isBlank()
-					|| !EntityViewUtil.isDisplayElement(getDefName(), property.getElementRuntimeId(), OutputType.SEARCHCONDITION)
+					|| !EntityViewUtil.isDisplayElement(getDefName(), property.getElementRuntimeId(), OutputType.SEARCHCONDITION, null)
 					|| property.isHideDetailCondition()) {
 				continue;
 			}

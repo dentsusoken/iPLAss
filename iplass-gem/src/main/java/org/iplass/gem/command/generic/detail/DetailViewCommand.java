@@ -256,6 +256,9 @@ public final class DetailViewCommand extends DetailCommandBase {
 			}
 		}
 
+		//対象エンティティを設定します。
+		context.setCurrentEntity(entity);
+
 		String ret = Constants.CMD_EXEC_SUCCESS;
 		if (context.isCopy()) {
 			if (context.getCopyTarget() == CopyTarget.SHALLOW) {

@@ -1224,6 +1224,8 @@ $.fn.allInputCheck = function(){
 				condKey: $v.attr("data-condKey"),
 				tokenValue: $v.attr("data-tokenValue"),
 				purge: $v.attr("data-purge"),
+				entityOid: $v.attr("data-entityOid"),
+				entityVersion: $v.attr("data-entityVersion"),
 				setTableId: function(table) {
 					$(table).each(function() {
 						var index = 0, prefix = "massReferenceTable_";
@@ -1293,8 +1295,13 @@ $.fn.allInputCheck = function(){
 
 					if ($table.length > 0) {
 
+						var entity = null;
+						if (typeof $v.entityOid !== "undefined" && typeof $v.entityVersion !== "undefined") {
+							entity = {oid: $v.entityOid, version: $v.entityVersion};
+						}
+
 						//参照プロパティ取得
-						getMassReferenceData($v.webapiName, $v.oid, $v.defName, $v.propName, $v.viewName, $v.offset, $v.sortKey, $v.sortType, $v.showCount, $v.condKey, $v.orgOutputType, function(dispInfo, count, list) {
+						getMassReferenceData($v.webapiName, $v.oid, $v.defName, $v.propName, $v.viewName, $v.offset, $v.sortKey, $v.sortType, $v.showCount, $v.condKey, $v.orgOutputType, entity, function(dispInfo, count, list) {
 							//テーブル作成
 							if (!$v.grid) {
 								$v.grid = $table.build(dispInfo, count, list);
@@ -1925,7 +1932,9 @@ $.fn.allInputCheck = function(){
 			}
 			$("<option />").attr({value:""}).text(pleaseSelectLabel).appendTo($v);
 
-			getPropertyEditor($v.getEditorWebapiName, $v.defName, $v.viewName, $v.propName, $v.viewType, function(editor) {
+			var entity = getEntity($v.entityOid, $v.entityVersion);
+
+			getPropertyEditor($v.getEditorWebapiName, $v.defName, $v.viewName, $v.propName, $v.viewType, entity, function(editor) {
 				var setting = editor.referenceComboSetting;
 
 				//連動コンボの設定がない場合は、連動できないので表示しない
@@ -1979,7 +1988,9 @@ $.fn.allInputCheck = function(){
 				$(this).children("option[value!='']").remove();
 			});
 
-			getPropertyEditor($v.getEditorWebapiName, $v.defName, $v.viewName, $v.propName, $v.viewType, function(editor) {
+			var entity = getEntity($v.entityOid, $v.entityVersion);
+
+			getPropertyEditor($v.getEditorWebapiName, $v.defName, $v.viewName, $v.propName, $v.viewType, entity, function(editor) {
 				var setting = editor.referenceComboSetting;
 
 				//連動コンボの設定がない場合は、連動できないので表示しない
@@ -2023,7 +2034,9 @@ $.fn.allInputCheck = function(){
 				searchType:$v.attr("data-searchType"),
 				upperName:$v.attr("data-upperName"),
 				upperOid:$v.attr("data-upperOid"),
-				customStyle:$v.attr("data-customStyle")
+				customStyle:$v.attr("data-customStyle"),
+				entityOid:$v.attr("data-entityOid"),
+				entityVersion:$v.attr("data-entityVersion")
 			});
 		}
 
@@ -2061,8 +2074,9 @@ $.fn.allInputCheck = function(){
 
 				createNode($v, parentName, props, reset, func);
 			} else {
+				var entity = getEntity($v.entityOid, $v.entityVersion);
 				//子から親を検索
-				searchParent($v.searchParentWebapiName, $v.defName, $v.viewName, $v.propName, $v.viewType, parentName, childOid, function(parentEntity) {
+				searchParent($v.searchParentWebapiName, $v.defName, $v.viewName, $v.propName, $v.viewType, parentName, childOid, entity, function(parentEntity) {
 					var parentOid = getOid(parentEntity);
 					if (setting.parent && setting.parent.propertyName && setting.parent.propertyName != "") {
 						//更に上位がいれば先に生成
@@ -2095,6 +2109,17 @@ $.fn.allInputCheck = function(){
 			var oid = entity.oid;
 			if (typeof oid === "undefined" || oid == null) return "";
 			return oid;
+		}
+
+		/*
+		 * 対象エンティティ取得
+		 */
+		function getEntity(oid, version) {
+			var entity = null;
+			if (typeof oid !== "undefined" && typeof version !== "undefined") {
+				entity = {oid: oid, version: version};
+			}
+			return entity;
 		}
 
 		/*
@@ -2145,6 +2170,11 @@ $.fn.allInputCheck = function(){
 				if (!val) val = "";
 				params.push({key:props[i], value:val});
 			}
+			if (typeof $v.entityOid !== "undefined" && typeof $v.entityVersion !== "undefined") {
+				params.push({key: "entityOid", value: $v.entityOid});
+				params.push({key: "entityVersion", value: $v.entityVersion});
+			}
+
 			refComboChange($v.webapiName, $v.defName, $v.viewName, $v.propName, params, $v.viewType, function(selName, entities) {
 				if (entities == null || entities.length == 0) return;
 
@@ -2240,7 +2270,9 @@ $.fn.allInputCheck = function(){
 				reloadUrl      :$v.attr("data-reloadUrl"),//更新時のリロード用URL
 				selCallbackKey :$v.attr("data-selCallbackKey"),//選択コールバック
 				delCallbackKey :$v.attr("data-delCallbackKey"),//削除コールバック
-				refSectionIndex:$v.attr("data-refSectionIndex")//参照セクションインデックス
+				refSectionIndex:$v.attr("data-refSectionIndex"),//参照セクションインデックス
+				entityOid      :$v.attr("data-entityOid"),
+				entityVersion  :$v.attr("data-entityVersion")
 			});
 
 			var $dialog = createDialog($v);
@@ -2360,6 +2392,10 @@ $.fn.allInputCheck = function(){
 						data += "&viewType=" + $v.viewType;
 						data += "&viewName=" + $v.viewName;
 						data += "&propName=" + formatPropNameChainString($v.prefix + $v.propName);
+						if (typeof $v.entityOid !== "undefined" && typeof $v.entityVersion !== "undefined") {
+							data += "&entityOid=" + $v.entityOid;
+							data += "&entityVersion=" + $v.entityVersion;
+						}
 						if (node) {
 							//子階層
 							data += "&oid=" + node.oid;
@@ -2469,7 +2505,9 @@ $.fn.allInputCheck = function(){
 				linkName:$v.attr("data-linkName"),
 				prefix:$v.attr("data-prefix"),
 				getItemWebapiName:$v.attr("data-getItemWebapiName"),
-				upperType:$v.attr("data-upperType")
+				upperType:$v.attr("data-upperType"),
+				entityOid:$v.attr("data-entityOid"),
+				entityVersion:$v.attr("data-entityVersion")
 			});
 
 			//リンク元のアイテムを取得
@@ -2516,8 +2554,12 @@ $.fn.allInputCheck = function(){
 			}
 
 			if (linkValue && linkValue != "") {
+				var _entity = null;
+				if (typeof $v.entityOid !== "undefined" && typeof $v.entityVersion !== "undefined") {
+					_entity = {oid: $v.entityOid, version: $v.entityVersion};
+				}
 				//アイテムの検索(webapi)
-				getLinkItems($v.getItemWebapiName, $v.defName, $v.viewType, $v.viewName, $v.propName, linkValue, function(entities) {
+				getLinkItems($v.getItemWebapiName, $v.defName, $v.viewType, $v.viewName, $v.propName, linkValue, _entity, function(entities) {
 					if (entities == null || entities.length == 0) return;
 
 					for (var i = 0; i < entities.length; i++) {
@@ -2565,7 +2607,9 @@ $.fn.allInputCheck = function(){
 				prefix:$v.attr("data-prefix"),
 				getItemWebapiName:$v.attr("data-getItemWebapiName"),
 				upperType:$v.attr("data-upperType"),
-				customStyle:$v.attr("data-customStyle")
+				customStyle:$v.attr("data-customStyle"),
+				entityOid:$v.attr("data-entityOid"),
+				entityVersion:$v.attr("data-entityVersion")
 			});
 
 			//リンク元のアイテムを取得
@@ -2616,8 +2660,12 @@ $.fn.allInputCheck = function(){
 			}
 
 			if (linkValue && linkValue != "") {
+				var _entity = null;
+				if (typeof $v.entityOid !== "undefined" && typeof $v.entityVersion !== "undefined") {
+					_entity = {oid: $v.entityOid, version: $v.entityVersion};
+				}
 				//アイテムの検索(webapi)
-				getLinkItems($v.getItemWebapiName, $v.defName, $v.viewType, $v.viewName, $v.propName, linkValue, function(entities) {
+				getLinkItems($v.getItemWebapiName, $v.defName, $v.viewType, $v.viewName, $v.propName, linkValue, _entity, function(entities) {
 					if (entities == null || entities.length == 0) return;
 
 					for (var i = 0; i < entities.length; i++) {
@@ -2677,7 +2725,9 @@ $.fn.allInputCheck = function(){
 				permitConditionSelectAll:	$v.attr("data-permitConditionSelectAll"),
 				multiplicity:				$v.attr("data-multiplicity"),
 				selUniqueRefCallback:		$v.attr("data-selUniqueRefCallback"),
-				insUniqueRefCallback:		$v.attr("data-insUniqueRefCallback")
+				insUniqueRefCallback:		$v.attr("data-insUniqueRefCallback"),
+				entityOid:					$v.attr("data-entityOid"),
+				entityVersion:				$v.attr("data-entityVersion")
 			};
 			$.extend($v, params);
 
@@ -2686,6 +2736,11 @@ $.fn.allInputCheck = function(){
 			var $insBtn = $(":button.ins-btn", $v);
 			var $link = $("a.modal-lnk", $v);
 			var $hidden = $(":hidden[name='" + $v.propName + "']", $v);
+
+			var _entity = null;
+			if (typeof $v.entityOid !== "undefined" && typeof $v.entityVersion !== "undefined") {
+				_entity = {oid: $v.entityOid, version: $v.entityVersion};
+			}
 
 			if ($("body.modal-body").length != 0) {
 				$selBtn.subModalWindow();
@@ -2699,7 +2754,7 @@ $.fn.allInputCheck = function(){
 			$selBtn.on("click", function() {
 				//選択コールバック
 				var selRefCallback = scriptContext[$v.selUniqueRefCallback];
-				searchUniqueReference($v.attr("id"), $v.selectAction, $v.viewAction, $v.refDefName, $v.propName, $v.urlParam, $v.refEdit, selRefCallback, this, $v.refViewName, $v.permitConditionSelectAll, $v.defName, $v.viewName, $v.viewType, $v.refSectionIndex);
+				searchUniqueReference($v.attr("id"), $v.selectAction, $v.viewAction, $v.refDefName, $v.propName, $v.urlParam, $v.refEdit, selRefCallback, this, $v.refViewName, $v.permitConditionSelectAll, $v.defName, $v.viewName, $v.viewType, $v.refSectionIndex, _entity);
 			});
 
 			if ($("body.modal-body").length != 0) {
@@ -2744,7 +2799,7 @@ $.fn.allInputCheck = function(){
 
 				var _propName = $v.propName.replace(/^sc_/, "").replace(/\[\w+\]/g, "");
 				var uniqueValue = $txt.val().length == 0 ? null : $txt.val();
-				getUniqueItem($v.webapiName, $v.defName, $v.viewName, $v.viewType, _propName, uniqueValue, function(entity) {
+				getUniqueItem($v.webapiName, $v.defName, $v.viewName, $v.viewType, _propName, uniqueValue, _entity, function(entity) {
 					var entityList = new Array();
 					if(entity && !$.isEmptyObject(entity)) {
 						var linkId = $v.propName + "_" + entity.oid;

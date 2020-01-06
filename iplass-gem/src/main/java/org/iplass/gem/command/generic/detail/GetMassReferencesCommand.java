@@ -47,6 +47,7 @@ import org.iplass.mtp.command.annotation.webapi.RestJson;
 import org.iplass.mtp.command.annotation.webapi.WebApi;
 import org.iplass.mtp.entity.Entity;
 import org.iplass.mtp.entity.EntityManager;
+import org.iplass.mtp.entity.GenericEntity;
 import org.iplass.mtp.entity.definition.EntityDefinition;
 import org.iplass.mtp.entity.definition.EntityDefinitionManager;
 import org.iplass.mtp.entity.definition.PropertyDefinition;
@@ -140,9 +141,10 @@ public final class GetMassReferencesCommand extends DetailCommandBase {
 		if (pd instanceof ReferenceProperty) {
 			ReferenceProperty rp = (ReferenceProperty) pd;
 
+			Entity entity = getCurrentEntity(request);
 			//Section取得
 			List<MassReferenceSection> sections = getMassReferenceSection(
-					context.getEntityDefinition(), outputType, context.getView(), context.getViewName());
+					context.getEntityDefinition(), outputType, context.getView(), context.getViewName(), entity);
 			MassReferenceSection section = null;
 			for (MassReferenceSection _section : sections) {
 				if (_section.getPropertyName().equals(rp.getName())) {
@@ -240,6 +242,21 @@ public final class GetMassReferencesCommand extends DetailCommandBase {
 		}
 		return null;
 	}
+
+	private Entity getCurrentEntity(RequestContext request) {
+		String defName = request.getParam(Constants.DEF_NAME);
+		String entityOid = request.getParam(Constants.DISPLAY_SCRIPT_ENTITY_OID);
+		String entityVersion = request.getParam(Constants.DISPLAY_SCRIPT_ENTITY_VERSION);
+
+		if (StringUtil.isNotBlank(entityOid) && StringUtil.isNotBlank(entityVersion)) {
+			Entity e = new GenericEntity(defName);
+			e.setOid(entityOid);
+			e.setVersion(Long.valueOf(entityVersion));
+			return e;
+		}
+		return null;
+	}
+
 
 	private OrderBy getOrderBy(MassReferenceSection section, EntityDefinition red, String sortKey, String sortType) {
 		OrderBy orderBy = new OrderBy();
@@ -491,12 +508,12 @@ public final class GetMassReferencesCommand extends DetailCommandBase {
 	 * @return プロパティの一覧
 	 */
 	private List<MassReferenceSection> getMassReferenceSection(
-			EntityDefinition ed, OutputType outputType, DetailFormView view, String viewName) {
+			EntityDefinition ed, OutputType outputType, DetailFormView view, String viewName, Entity entity) {
 		List<MassReferenceSection> sections = new ArrayList<MassReferenceSection>();
 		for (Section section : view.getSections()) {
 			if (section instanceof DefaultSection
-					&& EntityViewUtil.isDisplayElement(ed.getName(), section.getElementRuntimeId(), outputType)) {
-				sections.addAll(getMassReferenceSection(ed, outputType, (DefaultSection) section));
+					&& EntityViewUtil.isDisplayElement(ed.getName(), section.getElementRuntimeId(), outputType, entity)) {
+				sections.addAll(getMassReferenceSection(ed, outputType, (DefaultSection) section, entity));
 			} else if (section instanceof MassReferenceSection) {
 				sections.add((MassReferenceSection) section);
 			}
@@ -510,16 +527,16 @@ public final class GetMassReferencesCommand extends DetailCommandBase {
 	 * @return プロパティの一覧
 	 */
 	private List<MassReferenceSection> getMassReferenceSection(
-			EntityDefinition ed, OutputType outputType, DefaultSection section) {
+			EntityDefinition ed, OutputType outputType, DefaultSection section, Entity entity) {
 		List<MassReferenceSection> sections = new ArrayList<MassReferenceSection>();
 		for (Element elem : section.getElements()) {
 			if (elem instanceof MassReferenceSection) {
 				MassReferenceSection _section = (MassReferenceSection) elem;
-				if (EntityViewUtil.isDisplayElement(ed.getName(), _section.getElementRuntimeId(), outputType)) {
+				if (EntityViewUtil.isDisplayElement(ed.getName(), _section.getElementRuntimeId(), outputType, entity)) {
 					sections.add(_section);
 				}
 			} else if (elem instanceof DefaultSection) {
-				sections.addAll(getMassReferenceSection(ed, outputType, (DefaultSection) elem));
+				sections.addAll(getMassReferenceSection(ed, outputType, (DefaultSection) elem, entity));
 			}
 		}
 		return sections;

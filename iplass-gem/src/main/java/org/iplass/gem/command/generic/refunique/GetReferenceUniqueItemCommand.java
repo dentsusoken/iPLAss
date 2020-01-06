@@ -1,3 +1,23 @@
+/*
+ * Copyright (C) 2019 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
+ *
+ * Unless you have purchased a commercial license,
+ * the following license terms apply:
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
 package org.iplass.gem.command.generic.refunique;
 
 import java.util.function.Predicate;
@@ -11,6 +31,7 @@ import org.iplass.mtp.command.annotation.webapi.RestJson;
 import org.iplass.mtp.command.annotation.webapi.WebApi;
 import org.iplass.mtp.entity.Entity;
 import org.iplass.mtp.entity.EntityManager;
+import org.iplass.mtp.entity.GenericEntity;
 import org.iplass.mtp.entity.definition.EntityDefinition;
 import org.iplass.mtp.entity.definition.EntityDefinitionManager;
 import org.iplass.mtp.entity.definition.IndexType;
@@ -19,6 +40,7 @@ import org.iplass.mtp.entity.query.Query;
 import org.iplass.mtp.entity.query.condition.predicate.Equals;
 import org.iplass.mtp.entity.query.condition.predicate.IsNull;
 import org.iplass.mtp.impl.util.ConvertUtil;
+import org.iplass.mtp.util.StringUtil;
 import org.iplass.mtp.view.generic.EntityViewManager;
 import org.iplass.mtp.view.generic.editor.PropertyEditor;
 import org.iplass.mtp.view.generic.editor.ReferencePropertyEditor;
@@ -57,8 +79,9 @@ public class GetReferenceUniqueItemCommand implements Command {
 		String viewType = request.getParam(Constants.VIEW_TYPE);
 		String uniqueValue = request.getParam(Constants.REF_UNIQUE_VALUE);
 
+		Entity entity = getCurrentEntity(request);
 		// Editor取得
-		PropertyEditor editor = evm.getPropertyEditor(defName, viewType, viewName, propName);
+		PropertyEditor editor = evm.getPropertyEditor(defName, viewType, viewName, propName, entity);
 		ReferencePropertyEditor rpe = null;
 		if (editor instanceof ReferencePropertyEditor) {
 			rpe = (ReferencePropertyEditor) editor;
@@ -74,6 +97,20 @@ public class GetReferenceUniqueItemCommand implements Command {
 		request.setAttribute(Constants.DATA, data);
 
 		return Constants.CMD_EXEC_SUCCESS;
+	}
+
+	private Entity getCurrentEntity(RequestContext request) {
+		String defName = request.getParam(Constants.DEF_NAME);
+		String entityOid = request.getParam(Constants.DISPLAY_SCRIPT_ENTITY_OID);
+		String entityVersion = request.getParam(Constants.DISPLAY_SCRIPT_ENTITY_VERSION);
+
+		if (StringUtil.isNotBlank(entityOid) && StringUtil.isNotBlank(entityVersion)) {
+			Entity e = new GenericEntity(defName);
+			e.setOid(entityOid);
+			e.setVersion(Long.valueOf(entityVersion));
+			return e;
+		}
+		return null;
 	}
 
 	private boolean isUniqueProp(ReferencePropertyEditor editor) {

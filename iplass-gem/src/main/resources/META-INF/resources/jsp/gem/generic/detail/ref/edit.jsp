@@ -94,6 +94,7 @@
 	//権限チェック用に定義名をリクエストに保存
 	request.setAttribute(Constants.DEF_NAME, defName);
 	request.setAttribute(Constants.ROOT_DEF_NAME, defName);	//NestTableの場合にDEF_NAMEが置き換わるので別名でRootのDefNameをセット
+	request.setAttribute(Constants.ROOT_ENTITY, data.getEntity()); //NestTableの場合に内部の表示判定スクリプトで利用
 
 	//editor以下で参照するパラメータ
 	request.setAttribute(Constants.VIEW_NAME, viewName);
@@ -218,7 +219,7 @@ ${m:outputToken('FORM_XHTML', true)}
 <jsp:include page="../sectionNavi.inc.jsp" />
 <%
 	for (Section section : data.getView().getSections()) {
-		if (!EntityViewUtil.isDisplayElement(defName, section.getElementRuntimeId(), OutputType.EDIT)
+		if (!EntityViewUtil.isDisplayElement(defName, section.getElementRuntimeId(), OutputType.EDIT, data.getEntity())
 				|| !ViewUtil.dispElement(section)) {
 			continue;
 		}
