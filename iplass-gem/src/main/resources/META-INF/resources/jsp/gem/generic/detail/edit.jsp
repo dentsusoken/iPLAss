@@ -133,7 +133,7 @@
 	request.setAttribute(Constants.ROOT_DEF_NAME, defName);	//NestTableの場合にDEF_NAMEが置き換わるので別名でRootのDefNameをセット
 	
 	Entity rootEntity = null;
-	//更新の時のみ、エンティティを設定します。新規の場合はnullを設定します。
+	//FIXME 更新の時のみ、エンティティを設定します。新規の場合はnullを設定します。
 	if (Constants.EXEC_TYPE_UPDATE.equals(execType)) {
 		rootEntity = data.getEntity();
 	}

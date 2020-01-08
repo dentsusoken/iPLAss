@@ -521,6 +521,7 @@ public class DetailCommandContext extends RegistrationCommandContext {
 		setVirtualPropertyValue(entity);
 		getRegistrationInterrupterHandler().dataMapping(entity);
 		validate(entity);
+		//FIXME 更新の時のみ対象エンティティを設定します。
 		setCurrentEntity(entity);
 		return entity;
 	}

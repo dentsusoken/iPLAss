@@ -254,7 +254,7 @@ public final class DetailViewCommand extends DetailCommandBase {
 					}
 				}
 			}
-			//更新の時のみ対象エンティティを設定します。
+			//FIXME 更新の時のみ対象エンティティを設定します。
 			context.setCurrentEntity(entity);
 		}
 
