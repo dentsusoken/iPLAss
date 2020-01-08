@@ -36,6 +36,8 @@
 	OutputType type = (OutputType) request.getAttribute(Constants.OUTPUT_TYPE);
 
 	Entity entity = request.getAttribute(Constants.ENTITY_DATA) instanceof Entity ? (Entity) request.getAttribute(Constants.ENTITY_DATA) : null;
+	//表示判定スクリプトバインド用エンティティ
+	Entity rootEntity = request.getAttribute(Constants.ROOT_ENTITY) instanceof Entity ? (Entity) request.getAttribute(Constants.ROOT_ENTITY) : null;
 
 	String rootDefName = (String)request.getAttribute(Constants.ROOT_DEF_NAME);
 	String scriptKey = (String)request.getAttribute(Constants.SECTION_SCRIPT_KEY);
@@ -46,7 +48,7 @@
 	EntityViewManager evm = ManagerLocator.getInstance().getManager(EntityViewManager.class);
 
 	boolean isDispBitton = false;
-	if (EntityViewUtil.isDisplayElement(rootDefName, button.getElementRuntimeId(), type, entity)
+	if (EntityViewUtil.isDisplayElement(rootDefName, button.getElementRuntimeId(), type, rootEntity)
 			&& (type != OutputType.EDIT || ViewUtil.dispElement(button))) {
 		if (button.getDisplayType() == DisplayType.CUSTOM) {
 			//スクリプトで判定

@@ -22,6 +22,7 @@
 <%@ taglib prefix="m" uri="http://iplass.org/tags/mtp"%>
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8" trimDirectiveWhitespaces="true"%>
 
+<%@ page import="org.iplass.mtp.entity.Entity"%>
 <%@ page import="org.iplass.mtp.util.StringUtil" %>
 <%@ page import="org.iplass.mtp.view.generic.*"%>
 <%@ page import="org.iplass.mtp.view.generic.element.section.*"%>
@@ -94,7 +95,13 @@
 	//権限チェック用に定義名をリクエストに保存
 	request.setAttribute(Constants.DEF_NAME, defName);
 	request.setAttribute(Constants.ROOT_DEF_NAME, defName);	//NestTableの場合にDEF_NAMEが置き換わるので別名でRootのDefNameをセット
-	request.setAttribute(Constants.ROOT_ENTITY, data.getEntity()); //NestTableの場合に内部の表示判定スクリプトで利用
+
+	Entity rootEntity = null;
+	//更新の時のみ、エンティティを設定します。新規の場合はnullを設定します。
+	if (Constants.EXEC_TYPE_UPDATE.equals(execType)) {
+		rootEntity = data.getEntity();
+	}
+	request.setAttribute(Constants.ROOT_ENTITY, rootEntity); //NestTableの場合に内部の表示判定スクリプトで利用
 
 	//editor以下で参照するパラメータ
 	request.setAttribute(Constants.VIEW_NAME, viewName);
@@ -219,7 +226,7 @@ ${m:outputToken('FORM_XHTML', true)}
 <jsp:include page="../sectionNavi.inc.jsp" />
 <%
 	for (Section section : data.getView().getSections()) {
-		if (!EntityViewUtil.isDisplayElement(defName, section.getElementRuntimeId(), OutputType.EDIT, data.getEntity())
+		if (!EntityViewUtil.isDisplayElement(defName, section.getElementRuntimeId(), OutputType.EDIT, rootEntity)
 				|| !ViewUtil.dispElement(section)) {
 			continue;
 		}

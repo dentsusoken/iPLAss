@@ -135,6 +135,10 @@
 		key = section.getFilterScriptKey();
 	}
 
+	Entity rootEntity = (Entity) request.getAttribute(Constants.ROOT_ENTITY);
+	String rootOid = rootEntity != null ? rootEntity.getOid() : "";
+	String rootVersion = rootEntity != null && rootEntity.getVersion() != null ? rootEntity.getVersion().toString() : "";
+
 	//追加、編集、削除の権限を参照先のEntityの権限で判断
 	AuthContext auth = AuthContext.getCurrentContext();
 	boolean creatable = auth.checkPermission(new EntityPermission(rp.getObjectDefinitionName(), EntityPermission.Action.CREATE)) && !section.isHideAddButton();
@@ -166,7 +170,7 @@
  data-sortKey="" data-sortType="" data-creatable="<%=creatable %>" data-updatable="<%=updatable %>" data-deletable=<%=deletable%> data-purge=<%=purge %>
  data-showPaging=<%=!section.isHidePaging()%> data-showPageJump=<%=!section.isHidePageJump()%> data-showPageLink=<%=!section.isHidePageLink()%> data-showCount=<%=!section.isHideCount()%>
  data-showSearchBtn=<%=section.isShowSearchBtn()%> data-condKey="<c:out value="<%=key %>" />" data-tokenValue=<%= TemplateUtil.outputToken(TokenOutputType.VALUE)%>
- data-entityOid="<c:out value="<%=entity.getOid() %>"/>" data-entityVersion="<c:out value="<%=entity.getVersion() %>"/>" >
+ data-entityOid="<c:out value="<%=rootOid %>"/>" data-entityVersion="<c:out value="<%=rootVersion %>"/>" >
 <%
 	if (!PagingPosition.BOTTOM.name().equals(pagingPosition)) {
 %>

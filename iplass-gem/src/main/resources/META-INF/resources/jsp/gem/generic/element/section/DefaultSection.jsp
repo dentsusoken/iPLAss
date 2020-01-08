@@ -85,6 +85,9 @@
 
 	String defName = (String)request.getAttribute(Constants.ROOT_DEF_NAME);
 
+	//表示判定スクリプトバインド用エンティティ
+	Entity rootEntity = (Entity) request.getAttribute(Constants.ROOT_ENTITY);
+
 	DefaultSection section = (DefaultSection) element;
 
 	if ((type == OutputType.EDIT && section.isHideDetail())
@@ -160,7 +163,7 @@
 			if (elementList.size() > _index) {
 				Element subElement = elementList.get(_index++);
 				if (!(subElement instanceof BlankSpace)
-						&& EntityViewUtil.isDisplayElement(defName, subElement.getElementRuntimeId(), type, entity)
+						&& EntityViewUtil.isDisplayElement(defName, subElement.getElementRuntimeId(), type, rootEntity)
 						&& (type != OutputType.EDIT || ViewUtil.dispElement(subElement))) {
 					isDispRow = true;
 					break;
@@ -177,7 +180,7 @@
 		for (int j = 0; j < section.getColNum(); j++) {
 			if (elementList.size() > index) {
 				Element subElement = elementList.get(index++);
-				if (EntityViewUtil.isDisplayElement(defName, subElement.getElementRuntimeId(), type, entity)
+				if (EntityViewUtil.isDisplayElement(defName, subElement.getElementRuntimeId(), type, rootEntity)
 						&& (type != OutputType.EDIT || ViewUtil.dispElement(subElement))) {
 					request.setAttribute(Constants.ELEMENT, subElement);
 					request.setAttribute(Constants.COL_NUM, section.getColNum());

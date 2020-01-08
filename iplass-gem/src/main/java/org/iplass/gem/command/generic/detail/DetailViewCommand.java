@@ -254,10 +254,9 @@ public final class DetailViewCommand extends DetailCommandBase {
 					}
 				}
 			}
+			//更新の時のみ対象エンティティを設定します。
+			context.setCurrentEntity(entity);
 		}
-
-		//対象エンティティを設定します。
-		context.setCurrentEntity(entity);
 
 		String ret = Constants.CMD_EXEC_SUCCESS;
 		if (context.isCopy()) {
