@@ -1860,11 +1860,27 @@ function createAudioElement($parent, brType, id, src) {
 // 参照型用のJavascript
 ////////////////////////////////////////////////////////
 
-function showReference(viewAction, defName, oid, version, linkId, refEdit, editCallback, parentDefName, parentViewName, parentPropName, viewType, refSectionIndex) {
+function showReference(viewAction, defName, oid, version, linkId, refEdit, editCallback, parentDefName, parentViewName, parentPropName, parentOid, parentVersion, viewType, refSectionIndex) {
 
 	var isSubModal = $("body.modal-body").length != 0;
 	var target = getModalTarget(isSubModal);
 
+	var setPostParams = function ($form) {
+		$("<input />").attr({type:"hidden", name:"version", value:version}).appendTo($form);
+		$("<input />").attr({type:"hidden", name:"refEdit", value:refEdit}).appendTo($form);
+		if (refEdit && parentPropName) {
+			var _parentPropName = parentPropName.replace(/\[\w+\]/g, ""); //ネストテーブルプロパティ
+			if (parentDefName) $("<input />").attr({type:"hidden", name:"parentDefName", value:parentDefName}).appendTo($form);
+			if (parentViewName) $("<input />").attr({type:"hidden", name:"parentViewName", value:parentViewName}).appendTo($form);
+			if (_parentPropName) $("<input />").attr({type:"hidden", name:"parentPropName", value:_parentPropName}).appendTo($form);
+			if (parentOid) $("<input />").attr({type:"hidden", name:"entityOid", value:parentOid}).appendTo($form);
+			if (parentVersion) $("<input />").attr({type:"hidden", name:"entityVersion", value:parentVersion}).appendTo($form);
+			if (viewType) $("<input />").attr({type:"hidden", name:"viewType", value:viewType}).appendTo($form);
+			if (refSectionIndex) $("<input />").attr({type:"hidden", name:"referenceSectionIndex", value:refSectionIndex}).appendTo($form);
+		}
+		if (isSubModal) $("<input />").attr({type:"hidden", name:"modalTarget", value:target}).appendTo($form);
+	}
+	
 	document.scriptContext["editReferenceCallback"] = function(entity) {
 		//callbackが指定されていたら呼び出し
 		if (editCallback && $.isFunction(editCallback)) {
@@ -1880,9 +1896,10 @@ function showReference(viewAction, defName, oid, version, linkId, refEdit, editC
 		var $form = $("<form />").attr({method:"POST", action:viewAction + "/" + oid, target:target}).appendTo("body");
 //		$("<input />").attr({type:"hidden", name:"defName", value:defName}).appendTo($form);
 //		$("<input />").attr({type:"hidden", name:"oid", value:oid}).appendTo($form);
-		$("<input />").attr({type:"hidden", name:"version", value:entity.version}).appendTo($form);
-		$("<input />").attr({type:"hidden", name:"refEdit", value:refEdit}).appendTo($form);
-		if (isSubModal) $("<input />").attr({type:"hidden", name:"modalTarget", value:target}).appendTo($form);
+//		$("<input />").attr({type:"hidden", name:"version", value:entity.version}).appendTo($form);
+//		$("<input />").attr({type:"hidden", name:"refEdit", value:refEdit}).appendTo($form);
+//		if (isSubModal) $("<input />").attr({type:"hidden", name:"modalTarget", value:target}).appendTo($form);
+		setPostParams($form);
 		$form.submit();
 		$form.remove();
 
@@ -1891,17 +1908,18 @@ function showReference(viewAction, defName, oid, version, linkId, refEdit, editC
 	var $form = $("<form />").attr({method:"POST", action:viewAction + "/" + oid, target:target}).appendTo("body");
 //	$("<input />").attr({type:"hidden", name:"defName", value:defName}).appendTo($form);
 //	$("<input />").attr({type:"hidden", name:"oid", value:oid}).appendTo($form);
-	$("<input />").attr({type:"hidden", name:"version", value:version}).appendTo($form);
-	$("<input />").attr({type:"hidden", name:"refEdit", value:refEdit}).appendTo($form);
-	if (refEdit && parentPropName) {
-		var _parentPropName = parentPropName.replace(/\[\w+\]/g, ""); //ネストテーブルプロパティ
-		if (parentDefName) $("<input />").attr({type:"hidden", name:"parentDefName", value:parentDefName}).appendTo($form);
-		if (parentViewName) $("<input />").attr({type:"hidden", name:"parentViewName", value:parentViewName}).appendTo($form);
-		if (_parentPropName) $("<input />").attr({type:"hidden", name:"parentPropName", value:_parentPropName}).appendTo($form);
-		if (viewType) $("<input />").attr({type:"hidden", name:"viewType", value:viewType}).appendTo($form);
-		if (refSectionIndex) $("<input />").attr({type:"hidden", name:"referenceSectionIndex", value:refSectionIndex}).appendTo($form);
-	}
-	if (isSubModal) $("<input />").attr({type:"hidden", name:"modalTarget", value:target}).appendTo($form);
+//	$("<input />").attr({type:"hidden", name:"version", value:version}).appendTo($form);
+//	$("<input />").attr({type:"hidden", name:"refEdit", value:refEdit}).appendTo($form);
+//	if (refEdit && parentPropName) {
+//		var _parentPropName = parentPropName.replace(/\[\w+\]/g, ""); //ネストテーブルプロパティ
+//		if (parentDefName) $("<input />").attr({type:"hidden", name:"parentDefName", value:parentDefName}).appendTo($form);
+//		if (parentViewName) $("<input />").attr({type:"hidden", name:"parentViewName", value:parentViewName}).appendTo($form);
+//		if (_parentPropName) $("<input />").attr({type:"hidden", name:"parentPropName", value:_parentPropName}).appendTo($form);
+//		if (viewType) $("<input />").attr({type:"hidden", name:"viewType", value:viewType}).appendTo($form);
+//		if (refSectionIndex) $("<input />").attr({type:"hidden", name:"referenceSectionIndex", value:refSectionIndex}).appendTo($form);
+//	}
+//	if (isSubModal) $("<input />").attr({type:"hidden", name:"modalTarget", value:target}).appendTo($form);
+	setPostParams($form);
 	$form.submit();
 	$form.remove();
 }
@@ -1968,7 +1986,7 @@ function searchReference(selectAction, viewAction, defName, propName, multiplici
 				for (var i = 0; i < entities.length; i++) {
 					var entity = entities[i];
 					var _key = entity.oid + "_" + entity.version;
-					addReference("li_" + propName + _key, viewAction, defName, _key, entity.name, propName, "ul_" + _propName, refEdit, delCallback, parentDefName, parentViewName, viewType);
+					addReference("li_" + propName + _key, viewAction, defName, _key, entity.name, propName, "ul_" + _propName, refEdit, delCallback, parentDefName, parentViewName, parentOid, parentVersion, viewType);
 				}
 				entityList = entities;
 			});
@@ -2227,12 +2245,14 @@ function searchUniqueReference(id, selectAction, viewAction, defName, propName, 
 		//参照の名前を一括取得
 		var entityList = new Array();
 		var parentPropName = propName.replace(/^sc_/, "").replace(/\[\w+\]/g, "");
+		var parentOid = parentEntity.oid;
+		var parentVersion = parentEntity.version;
 		getEntityNameList(defName, viewName, parentDefName, parentViewName, parentPropName, viewType, refSectionIndex, list, parentEntity, function(entities) {
 			for (var i = 0; i < entities.length; i++) {
 				var entity = entities[i];
 				var _key = entity.oid + "_" + entity.version;
 				var uniqueValue = entity.uniqueValue;
-				updateUniqueReference(_id, viewAction, defName, _key, entity.name, propName, "ul_" + _propName, refEdit, "uniq_txt_" + _id , uniqueValue, parentDefName, parentViewName, viewType, refSectionIndex);
+				updateUniqueReference(_id, viewAction, defName, _key, entity.name, propName, "ul_" + _propName, refEdit, "uniq_txt_" + _id , uniqueValue, parentDefName, parentViewName, parentOid, parentVersion, viewType, refSectionIndex);
 			}
 			entityList = entities;
 		});
@@ -2300,7 +2320,7 @@ function insertReference(addAction, viewAction, defName, propName, multiplicity,
 		document.scriptContext["editReferenceCallback"] = function(entity) {
 			var $ul = $("#ul_" + _propName);
 			var key = entity.oid + "_" + entity.version;
-			var linkId = addReference("li_" + propName + key, viewAction, defName, key, entity.name, propName, "ul_" + _propName, refEdit, delCallback, parentDefName, parentViewName, viewType);
+			var linkId = addReference("li_" + propName + key, viewAction, defName, key, entity.name, propName, "ul_" + _propName, refEdit, delCallback, parentDefName, parentViewName, parentOid, parentVersion, viewType);
 
 			//カスタムのCallbackが定義されている場合に呼び出す
 			if (callback && $.isFunction(callback)) {
@@ -2428,7 +2448,7 @@ function insertUniqueReference(id, addAction, viewAction, defName, propName, mul
 		var $ul = $("#ul_" + _propName);
 		var key = entity.oid + "_" + entity.version;
 		var uniqueValue = entity.uniqueValue;
-		updateUniqueReference(_id, viewAction, defName, key, entity.name, propName, "ul_" + _propName, refEdit, "uniq_txt_" + _id , uniqueValue, parentDefName, parentViewName, viewType, refSectionIndex);
+		updateUniqueReference(_id, viewAction, defName, key, entity.name, propName, "ul_" + _propName, refEdit, "uniq_txt_" + _id , uniqueValue, parentDefName, parentViewName, parentOid, parentVersion, viewType, refSectionIndex);
 
 		//カスタムのCallbackが定義されている場合に呼び出す
 		if (callback && $.isFunction(callback)) {
@@ -2443,7 +2463,7 @@ function insertUniqueReference(id, addAction, viewAction, defName, propName, mul
 		$("[name='" + _propName + "']:eq(0)", $("#" + _id)).trigger("change", {});
 
 		//起動したtargetに対して再度詳細画面を表示しなおす
-		showReference(viewAction, defName, entity.oid, entity.version, id, refEdit, null, parentDefName, parentViewName, propName, viewType, refSectionIndex);
+		showReference(viewAction, defName, entity.oid, entity.version, id, refEdit, null, parentDefName, parentViewName, propName, parentOid, parentVersion, viewType, refSectionIndex);
 	};
 
 	var parentPropName = propName.replace(/\[\w+\]/g, "");
@@ -2470,7 +2490,7 @@ function insertUniqueReference(id, addAction, viewAction, defName, propName, mul
 	$form.remove();
 }
 
-function addReference(id, viewAction, defName, key, label, propName, ulId, refEdit, delCallback, parentDefName, parentViewName, viewType, refSectionIndex) {
+function addReference(id, viewAction, defName, key, label, propName, ulId, refEdit, delCallback, parentDefName, parentViewName, parentOid, parentVersion, viewType, refSectionIndex) {
 	var tmp = keySplit(key);
 	var oid = tmp.oid;
 	var ver = tmp.version;
@@ -2482,7 +2502,7 @@ function addReference(id, viewAction, defName, key, label, propName, ulId, refEd
 	//リンク追加
 	var linkId = propName + "_" + tmp.oid;
 	var $link = $("<a href='javascript:void(0)' />").attr({"id":linkId, "data-linkId":linkId}).click(function() {
-		showReference(viewAction, defName, oid, ver, linkId, refEdit, null, parentDefName, parentViewName, propName, viewType, refSectionIndex);
+		showReference(viewAction, defName, oid, ver, linkId, refEdit, null, parentDefName, parentViewName, propName, parentOid, parentVersion, viewType, refSectionIndex);
 	}).appendTo($li);
 	$link.text(label);
 	if ($("body.modal-body").length != 0) {
@@ -2512,7 +2532,7 @@ function addReference(id, viewAction, defName, key, label, propName, ulId, refEd
 	return linkId;
 }
 
-function addUniqueReference(viewAction, key, label, unique, defName, propName, multiplicity, ulId, dummyRowId, refEdit, countId, delCallback, parentDefName, parentViewName, viewType, refSectionIndex) {
+function addUniqueReference(viewAction, key, label, unique, defName, propName, multiplicity, ulId, dummyRowId, refEdit, countId, delCallback, parentDefName, parentViewName, parentOid, parentVersion, viewType, refSectionIndex) {
 	var tmp = keySplit(key);
 	var oid = tmp.oid;
 	var ver = tmp.version;
@@ -2530,7 +2550,7 @@ function addUniqueReference(viewAction, key, label, unique, defName, propName, m
 		//linkを設定
 		var linkId = propName + "_" + tmp.oid;
 		$link.attr({"id":linkId, "data-linkId":linkId}).click(function() {
-			showReference(viewAction, defName, oid, ver, linkId, refEdit, delCallback, parentDefName, parentViewName, propName, viewType, refSectionIndex);
+			showReference(viewAction, defName, oid, ver, linkId, refEdit, delCallback, parentDefName, parentViewName, propName, parentOid, parentVersion, viewType, refSectionIndex);
 		});
 		$link.text(label);
 
@@ -2542,7 +2562,7 @@ function addUniqueReference(viewAction, key, label, unique, defName, propName, m
 	}, delCallback);
 }
 
-function updateUniqueReference(id, viewAction, defName, key, label, propName, ulId, refEdit, txtId, uniqueValue, parentDefName, parentViewName, viewType, refSectionIndex) {
+function updateUniqueReference(id, viewAction, defName, key, label, propName, ulId, refEdit, txtId, uniqueValue, parentDefName, parentViewName, parentOid, parentVersion, viewType, refSectionIndex) {
 	var tmp = keySplit(key);
 	var oid = tmp.oid;
 	var ver = tmp.version;
@@ -2554,7 +2574,7 @@ function updateUniqueReference(id, viewAction, defName, key, label, propName, ul
 	var linkId = propName + "_" + tmp.oid;
 	var $link = $("a", $li).attr({"id":linkId, "data-linkId":linkId}).removeAttr("onclick").off("click");
 	$link.click(function() {
-		showReference(viewAction, defName, oid, ver, linkId, refEdit, null, parentDefName, parentViewName, propName, viewType, refSectionIndex);
+		showReference(viewAction, defName, oid, ver, linkId, refEdit, null, parentDefName, parentViewName, propName, parentOid, parentVersion, viewType, refSectionIndex);
 	});
 
 	$link.text(label);
@@ -3071,10 +3091,12 @@ function updateNestValue_Reference(type, $node, parentPropName, name, entity) {
 			var refEdit = $button.attr("data-refEdit");
 			var parentDefName = $button.attr("data-parentDefName");
 			var parentViewName = $button.attr("data-parentViewName");
+			var parentOid = $button.attr("data-parentOid");
+			var parentVersion = $button.attr("data-parentVersion");
 			var viewType = $button.attr("data-viewType");
 			var key = val.oid + "_" + val.version;
 			var label = val.name;
-			addReference("li_" + propName, viewAction, defName, key, label, propName, "ul_" + _propName, refEdit, null, parentDefName, parentViewName, viewType);
+			addReference("li_" + propName, viewAction, defName, key, label, propName, "ul_" + _propName, refEdit, null, parentDefName, parentViewName, parentOid, parentVersion, viewType);
 		}
 	} else if (type == "SELECT") {
 		var oid = "";

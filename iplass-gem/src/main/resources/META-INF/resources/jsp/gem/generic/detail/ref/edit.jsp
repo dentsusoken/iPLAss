@@ -49,6 +49,14 @@
 	parentPropName = StringUtil.escapeHtml(parentPropName);
 	if (parentPropName == null) parentPropName = "";
 
+	String parentOid = request.getParameter(Constants.DISPLAY_SCRIPT_ENTITY_OID);
+	parentOid = StringUtil.escapeHtml(parentOid);
+	if (parentOid == null) parentOid = "";
+
+	String parentVersion = request.getParameter(Constants.DISPLAY_SCRIPT_ENTITY_VERSION);
+	parentVersion = StringUtil.escapeHtml(parentVersion);
+	if (parentVersion == null) parentVersion = "";
+
 	String viewType = request.getParameter(Constants.VIEW_TYPE);
 	viewType = StringUtil.escapeHtml(viewType);
 	if (viewType == null) viewType = "";
@@ -191,6 +199,8 @@ ${m:outputToken('FORM_XHTML', true)}
 <input type="hidden" name="parentDefName" value="<c:out value="<%=parentDefName%>" />" />
 <input type="hidden" name="parentViewName" value="<c:out value="<%=parentViewName%>" />" />
 <input type="hidden" name="parentPropName" value="<c:out value="<%=parentPropName%>" />" />
+<input type="hidden" name="entityOid" value="<c:out value="<%=parentOid%>" />" />
+<input type="hidden" name="entityVersion" value="<c:out value="<%=parentVersion%>" />" />
 <input type="hidden" name="viewType" value="<c:out value="<%=viewType%>" />" />
 <input type="hidden" name="referenceSectionIndex" value="<c:out value="<%=refSectionIndex%>" />" />
 <%

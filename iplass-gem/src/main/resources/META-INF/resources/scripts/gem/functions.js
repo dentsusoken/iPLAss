@@ -2332,7 +2332,7 @@ $.fn.allInputCheck = function(){
 								var version = nodes[i].version;
 								var linkId = $v.prefix + $v.propName + "_" + oid;
 								var $link = $("<a href='javascript:void(0)' />").addClass("modal-lnk").attr({"id":linkId, "data-linkId":linkId, "style":$v.customStyle}).text(nodes[i].name).on("click", function() {
-									showReference($v.viewAction, $v.refDefName, oid, version, linkId, $v.refEdit, null, $v.defName, $v.viewName, $v.propName, $v.viewType, $v.refSectionIndex);
+									showReference($v.viewAction, $v.refDefName, oid, version, linkId, $v.refEdit, null, $v.defName, $v.viewName, $v.propName, $v.entityOid, $v.entityVersion, $v.viewType, $v.refSectionIndex);
 								}).appendTo($li);
 								if ($("body.modal-body").length != 0) {
 									$link.subModalWindow();
@@ -2806,7 +2806,7 @@ $.fn.allInputCheck = function(){
 						var label = entity.name;
 						var key = entity.oid + "_" + entity.version;
 						var func = function() {
-							showReference($v.viewAction, $v.refDefName, entity.oid, entity.version, linkId, $v.refEdit, null, $v.defName, $v.viewName, $v.propName, $v.viewType, $v.refSectionIndex);
+							showReference($v.viewAction, $v.refDefName, entity.oid, entity.version, linkId, $v.refEdit, null, $v.defName, $v.viewName, $v.propName, $v.entityOid, $v.entityVersion, $v.viewType, $v.refSectionIndex);
 						};
 
 						$link.attr({"id":linkId, "data-linkId":linkId}).text(label).show();
