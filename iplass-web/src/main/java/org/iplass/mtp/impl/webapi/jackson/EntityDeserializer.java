@@ -20,6 +20,7 @@
 package org.iplass.mtp.impl.webapi.jackson;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Iterator;
@@ -45,7 +46,6 @@ import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
-import com.ibm.icu.math.BigDecimal;
 
 /**
  * Entity-JSONマッピングのためのカスタムのJsonDeserializer。
