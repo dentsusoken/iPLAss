@@ -141,7 +141,10 @@
 	String parentOid = parentEntity != null ? parentEntity.getOid() : "";
 	String parentVersion = parentEntity != null && parentEntity.getVersion() != null ? parentEntity.getVersion().toString() : "";
 
+	//表示判断スクリプトEntity
 	Entity rootEntity = (Entity) request.getAttribute(Constants.ROOT_ENTITY);
+	String rootOid = parentEntity != null ? parentEntity.getOid() : "";
+	String rootVersion = parentEntity != null && parentEntity.getVersion() != null ? parentEntity.getVersion().toString() : "";
 
 	//Property情報取得
 	boolean isMappedby = pd.getMappedBy() != null;
@@ -1081,7 +1084,8 @@ $(function() {
 		insertReferenceFromView("<%=StringUtil.escapeJavaScript(addAction) %>", "<%=StringUtil.escapeJavaScript(refDefName) %>", "<%=StringUtil.escapeJavaScript(tableId) %>", <%=pd.getMultiplicity() %>,
 				"<%=StringUtil.escapeJavaScript(urlParam)%>", "<%=StringUtil.escapeJavaScript(parentOid)%>", "<%=StringUtil.escapeJavaScript(parentVersion)%>", "<%=StringUtil.escapeJavaScript(defName)%>",
 				"<%=StringUtil.escapeJavaScript(mappedBy) %>", $(":hidden[name='oid']").val(), "<%=StringUtil.escapeJavaScript(updateRefAction)%>",
-				"<%=StringUtil.escapeJavaScript(propName) %>", "<%=StringUtil.escapeJavaScript(reloadUrl)%>");
+				"<%=StringUtil.escapeJavaScript(propName) %>", "<%=StringUtil.escapeJavaScript(reloadUrl)%>", "<%=StringUtil.escapeJavaScript(rootOid)%>",
+				"<%=StringUtil.escapeJavaScript(rootVersion)%>");
 	});
 });
 </script>

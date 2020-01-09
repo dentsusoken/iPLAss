@@ -566,8 +566,8 @@ $(function() {
 		, permitConditionSelectAll: <%=editor.isPermitConditionSelectAll()%>
 		, parentDefName: "<%=StringUtil.escapeJavaScript(rootDefName)%>"
 		, parentViewName: "<%=StringUtil.escapeJavaScript(viewName)%>"
-		, parentOid: "<%=StringUtil.escapeJavaScript(rootOid)%>"
-		, parentVersion: "<%=StringUtil.escapeJavaScript(rootVersion)%>"
+		, entityOid: "<%=StringUtil.escapeJavaScript(rootOid)%>"
+		, entityVersion: "<%=StringUtil.escapeJavaScript(rootVersion)%>"
 		, viewType: "<%=StringUtil.escapeJavaScript(viewType)%>"
 		, refSectionIndex: "<c:out value="<%=refSectionIndex%>"/>"
 	}
@@ -619,6 +619,8 @@ $(function() {
 		, parentViewName: "<%=StringUtil.escapeJavaScript(viewName)%>"
 		, viewType: "<%=StringUtil.escapeJavaScript(viewType)%>"
 		, refSectionIndex: "<c:out value="<%=refSectionIndex%>"/>"
+		, entityOid: "<%=StringUtil.escapeJavaScript(rootOid)%>"
+		, entityVersion: "<%=StringUtil.escapeJavaScript(rootVersion)%>"
 		, refEdit: <%=refEdit %>
 		, callbackKey: key
 	}
@@ -628,7 +630,7 @@ $(function() {
 	}
 	$insBtn.on("click", function() {
 		insertReference(params.addAction, params.viewAction, params.defName, params.propName, params.multiplicity,
-				 params.urlParam, params.parentOid, params.parentVersion, params.parentDefName, params.parentViewName, params.refEdit, callback, this, delCallback, params.viewType, params.refSectionIndex);
+				 params.urlParam, params.parentOid, params.parentVersion, params.parentDefName, params.parentViewName, params.refEdit, callback, this, delCallback, params.viewType, params.refSectionIndex, params.entityOid, params.entityVersion);
 	});
 
 });
@@ -992,6 +994,8 @@ $(function() {
 		, parentViewName: "<%=StringUtil.escapeJavaScript(viewName)%>"
 		, viewType: "<%=StringUtil.escapeJavaScript(viewType)%>"
 		, refSectionIndex: "<c:out value="<%=refSectionIndex%>"/>"
+		, entityOid: "<%=StringUtil.escapeJavaScript(rootOid)%>"
+		, entityVersion: "<%=StringUtil.escapeJavaScript(rootVersion)%>"
 		, refEdit: <%=refEdit %>
 		, callbackKey: key
 	}
@@ -1001,7 +1005,7 @@ $(function() {
 	}
 	$insBtn.on("click", function() {
 		insertReference(params.addAction, params.viewAction, params.defName, params.propName, params.multiplicity,
-				 params.urlParam, params.parentOid, params.parentVersion, params.parentDefName, params.parentViewName, params.refEdit, callback, this, delCallback, params.viewType, params.refSectionIndex);
+				 params.urlParam, params.parentOid, params.parentVersion, params.parentDefName, params.parentViewName, params.refEdit, callback, this, delCallback, params.viewType, params.refSectionIndex, params.entityOid, params.entityVersion);
 	});
 
 });
