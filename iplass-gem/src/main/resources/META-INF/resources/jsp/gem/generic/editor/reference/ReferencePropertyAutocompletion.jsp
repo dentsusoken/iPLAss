@@ -41,10 +41,10 @@ String parentViewName = StringUtil.escapeJavaScript((String) request.getAttribut
 if (parentViewName == null) parentViewName = "";
 
 Entity rootEntity = (Entity) request.getAttribute(Constants.ROOT_ENTITY);
-String parentOid = null;
-if (rootEntity != null && rootEntity.getOid() != null) parentOid = rootEntity.getOid();
-Long parentVersion = null;
-if (rootEntity != null && rootEntity.getVersion() != null) parentVersion = rootEntity.getVersion();
+String entityOid = null;
+if (rootEntity != null && rootEntity.getOid() != null) entityOid = rootEntity.getOid();
+Long entityVersion = null;
+if (rootEntity != null && rootEntity.getVersion() != null) entityVersion = rootEntity.getVersion();
 //呼び出し元は/common/Autocompletion.jsp、以降はWebApiの結果を反映する部分のJavascript、結果の変数はvalue
 
 String contextPath = TemplateUtil.getTenantContextPath();
@@ -124,7 +124,7 @@ if (value.length > 0) {
 for (var i = 0; i < value.length; i++) {
 	var key = value[i].oid + "_" + (value[i].version ? value[i].version : "0");
 	var label = <%=editor.getDisplayLabelItem() == null ? "value[i].name" : "value[i]." + editor.getDisplayLabelItem() %>;
-	addReference("li_" + propName + key, "<%=viewAction%>", "<%=defName%>", key, label, propName, "ul_" + _propName, <%=refEdit%>, callback, "<%=parentDefName%>", "<%=parentViewName%>", "<%=parentOid%>", "<%=parentVersion%>", "<%=viewType%>");
+	addReference("li_" + propName + key, "<%=viewAction%>", "<%=defName%>", key, label, propName, "ul_" + _propName, <%=refEdit%>, callback, "<%=parentDefName%>", "<%=parentViewName%>", "<%=entityOid%>", "<%=entityVersion%>", "<%=viewType%>");
 }
 toggleRefInsertBtn("ul_" + _propName, multiplicity, "ins_btn_" + _propName);
 <%
@@ -164,7 +164,7 @@ if (value.length > 0) {
 for (var i = 0; i < value.length; i++) {
 	var key = value[i].oid + "_" + (value[i].version ? value[i].version : "0");
 	var label = <%=editor.getDisplayLabelItem() == null ? "value[i].name" : "value[i]." + editor.getDisplayLabelItem() %>;
-	addReference("li_" + propName + key, "<%=viewAction%>", "<%=defName%>", key, label, propName, "ul_" + _propName, <%=refEdit%>, callback, "<%=parentDefName%>", "<%=parentViewName%>", "<%=parentOid%>", "<%=parentVersion%>", "<%=viewType%>");
+	addReference("li_" + propName + key, "<%=viewAction%>", "<%=defName%>", key, label, propName, "ul_" + _propName, <%=refEdit%>, callback, "<%=parentDefName%>", "<%=parentViewName%>", "<%=entityOid%>", "<%=entityVersion%>", "<%=viewType%>");
 }
 toggleRefInsertBtn("ul_" + _propName, multiplicity, "ins_btn_" + _propName);
 <%
@@ -182,7 +182,7 @@ for (var i = 0; i < value.length; i++) {
 	var label = <%=editor.getDisplayLabelItem() == null ? "value[i].name" : "value[i]." + editor.getDisplayLabelItem() %>;
 	var unique = <%="value[i]." + editor.getUniqueItem() %>;
 	<%-- Dummy行が存在するので、 multiplicity + 1 --%>
-	addUniqueReference("<%=viewAction %>", key, label, unique, "<%=defName %>", propName, multiplicity + 1, "ul_" + _propName, "id_li_" + _propName + "Dummmy", <%=refEdit%>, "id_count_" + _propName, callback ,"<%=parentDefName%>", "<%=parentViewName%>", "<%=parentOid%>", "<%=parentVersion%>", "<%=viewType%>");
+	addUniqueReference("<%=viewAction %>", key, label, unique, "<%=defName %>", propName, multiplicity + 1, "ul_" + _propName, "id_li_" + _propName + "Dummmy", <%=refEdit%>, "id_count_" + _propName, callback ,"<%=parentDefName%>", "<%=parentViewName%>", "<%=entityOid%>", "<%=entityVersion%>", "<%=viewType%>");
 }
 <%-- Dummy行が存在するので、 multiplicity + 1 --%>
 toggleRefInsertBtn("ul_" + _propName, multiplicity + 1, "id_addBtn_" + _propName);

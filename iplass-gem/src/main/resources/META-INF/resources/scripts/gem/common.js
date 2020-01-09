@@ -1860,7 +1860,7 @@ function createAudioElement($parent, brType, id, src) {
 // 参照型用のJavascript
 ////////////////////////////////////////////////////////
 
-function showReference(viewAction, defName, oid, version, linkId, refEdit, editCallback, parentDefName, parentViewName, parentPropName, parentOid, parentVersion, viewType, refSectionIndex) {
+function showReference(viewAction, defName, oid, version, linkId, refEdit, editCallback, parentDefName, parentViewName, parentPropName, entityOid, entityVersion, viewType, refSectionIndex) {
 
 	var isSubModal = $("body.modal-body").length != 0;
 	var target = getModalTarget(isSubModal);
@@ -1873,8 +1873,8 @@ function showReference(viewAction, defName, oid, version, linkId, refEdit, editC
 			if (parentDefName) $("<input />").attr({type:"hidden", name:"parentDefName", value:parentDefName}).appendTo($form);
 			if (parentViewName) $("<input />").attr({type:"hidden", name:"parentViewName", value:parentViewName}).appendTo($form);
 			if (_parentPropName) $("<input />").attr({type:"hidden", name:"parentPropName", value:_parentPropName}).appendTo($form);
-			if (parentOid) $("<input />").attr({type:"hidden", name:"entityOid", value:parentOid}).appendTo($form);
-			if (parentVersion) $("<input />").attr({type:"hidden", name:"entityVersion", value:parentVersion}).appendTo($form);
+			if (entityOid) $("<input />").attr({type:"hidden", name:"entityOid", value:entityOid}).appendTo($form);
+			if (entityVersion) $("<input />").attr({type:"hidden", name:"entityVersion", value:entityVersion}).appendTo($form);
 			if (viewType) $("<input />").attr({type:"hidden", name:"viewType", value:viewType}).appendTo($form);
 			if (refSectionIndex) $("<input />").attr({type:"hidden", name:"referenceSectionIndex", value:refSectionIndex}).appendTo($form);
 		}

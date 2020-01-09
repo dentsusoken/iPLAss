@@ -65,12 +65,12 @@
 	String parentPropName = request.getParameter(Constants.PARENT_PROPNAME);
 	parentPropName = StringUtil.escapeHtml(parentPropName);
 	if (parentPropName == null) parentPropName = "";
-	String parentOid = request.getParameter(Constants.DISPLAY_SCRIPT_ENTITY_OID);
-	parentOid = StringUtil.escapeHtml(parentOid);
-	if (parentOid == null) parentOid = "";
-	String parentVersion = request.getParameter(Constants.DISPLAY_SCRIPT_ENTITY_VERSION);
-	parentVersion = StringUtil.escapeHtml(parentVersion);
-	if (parentVersion == null) parentVersion = "";
+	String entityOid = request.getParameter(Constants.DISPLAY_SCRIPT_ENTITY_OID);
+	entityOid = StringUtil.escapeHtml(entityOid);
+	if (entityOid == null) entityOid = "";
+	String entityVersion = request.getParameter(Constants.DISPLAY_SCRIPT_ENTITY_VERSION);
+	entityVersion = StringUtil.escapeHtml(entityVersion);
+	if (entityVersion == null) entityVersion = "";
 	String viewType = request.getParameter(Constants.VIEW_TYPE);
 	viewType = StringUtil.escapeHtml(viewType);
 	if (viewType == null) viewType = "";
@@ -240,8 +240,8 @@ function dataUnlock() {
 <input type="hidden" name="<%=Constants.PARENT_DEFNAME%>" value="<c:out value="<%=parentDefName%>" />" />
 <input type="hidden" name="<%=Constants.PARENT_VIEWNAME%>" value="<c:out value="<%=parentViewName%>" />" />
 <input type="hidden" name="<%=Constants.PARENT_PROPNAME%>" value="<c:out value="<%=parentPropName%>" />" />
-<input type="hidden" name="<%=Constants.DISPLAY_SCRIPT_ENTITY_OID%>" value="<c:out value="<%=parentOid%>" />" />
-<input type="hidden" name="<%=Constants.DISPLAY_SCRIPT_ENTITY_VERSION%>" value="<c:out value="<%=parentVersion%>" />" />
+<input type="hidden" name="<%=Constants.DISPLAY_SCRIPT_ENTITY_OID%>" value="<c:out value="<%=entityOid%>" />" />
+<input type="hidden" name="<%=Constants.DISPLAY_SCRIPT_ENTITY_VERSION%>" value="<c:out value="<%=entityVersion%>" />" />
 <input type="hidden" name="<%=Constants.VIEW_TYPE%>" value="<c:out value="<%=viewType%>" />" />
 <input type="hidden" name="<%=Constants.REF_SECTION_INDEX %>" value="<c:out value="<%=refSectionIndex%>" />" />
 <%	if (oid != null) { %>
