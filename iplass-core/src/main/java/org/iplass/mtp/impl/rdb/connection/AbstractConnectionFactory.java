@@ -22,8 +22,10 @@ package org.iplass.mtp.impl.rdb.connection;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 
+import org.iplass.mtp.impl.core.ExecuteContext;
 import org.iplass.mtp.impl.transaction.LocalTransaction;
 import org.iplass.mtp.impl.transaction.LocalTransactionManager;
 import org.iplass.mtp.impl.transaction.TransactionService;
@@ -41,6 +43,7 @@ public abstract class AbstractConnectionFactory extends ConnectionFactory {
 	private static final Logger logger = LoggerFactory.getLogger(AbstractConnectionFactory.class);
 	private int warnLogThreshold;
 	private boolean warnLogBefore;
+	private boolean countSqlExecution;
 	private TransactionIsolationLevel transactionIsolationLevel;
 
 	private boolean isDefault;
@@ -66,10 +69,10 @@ public abstract class AbstractConnectionFactory extends ConnectionFactory {
 							if (rh == null || rh.isInUse()) {
 								//ResourceHolder使ってない場合/既にResourceHolder利用されている場合は物理Connection
 								t.setCon(new LocalTransactionConnectionWrapper(
-										getPhysicalConnection(afterGetPhysicalConnectionHandler), true, null, warnLogThreshold, warnLogBefore));
+										getPhysicalConnection(afterGetPhysicalConnectionHandler), true, null, warnLogThreshold, warnLogBefore, countSqlExecution));
 							} else {
 								t.setCon(new LocalTransactionConnectionWrapper(
-										getHoldingConnection(rh, afterGetPhysicalConnectionHandler), true, rh, warnLogThreshold, warnLogBefore));
+										getHoldingConnection(rh, afterGetPhysicalConnectionHandler), true, rh, warnLogThreshold, warnLogBefore, countSqlExecution));
 							}
 						} catch (SQLException e) {
 							throw new ConnectionException(e);
@@ -79,11 +82,11 @@ public abstract class AbstractConnectionFactory extends ConnectionFactory {
 				} else {
 					if (rh == null || rh.isInUse()) {
 						return new LocalTransactionConnectionWrapper(
-								getPhysicalConnection(afterGetPhysicalConnectionHandler), false, null, warnLogThreshold, warnLogBefore);
+								getPhysicalConnection(afterGetPhysicalConnectionHandler), false, null, warnLogThreshold, warnLogBefore, countSqlExecution);
 					} else {
 						//未使用のResourceHolderのコネクション
 						return new LocalTransactionConnectionWrapper(
-								getHoldingConnection(rh, afterGetPhysicalConnectionHandler), false, rh, warnLogThreshold, warnLogBefore);
+								getHoldingConnection(rh, afterGetPhysicalConnectionHandler), false, rh, warnLogThreshold, warnLogBefore, countSqlExecution);
 					}
 				}
 			}
@@ -92,17 +95,17 @@ public abstract class AbstractConnectionFactory extends ConnectionFactory {
 			if (tm instanceof LocalTransactionManager) {
 				if (rh == null || rh.isInUse()) {
 					return new LocalTransactionConnectionWrapper(
-							getPhysicalConnection(afterGetPhysicalConnectionHandler), false, null, warnLogThreshold, warnLogBefore);
+							getPhysicalConnection(afterGetPhysicalConnectionHandler), false, null, warnLogThreshold, warnLogBefore, countSqlExecution);
 				} else {
 					return new LocalTransactionConnectionWrapper(
-							getHoldingConnection(rh, afterGetPhysicalConnectionHandler), false, rh, warnLogThreshold, warnLogBefore);
+							getHoldingConnection(rh, afterGetPhysicalConnectionHandler), false, rh, warnLogThreshold, warnLogBefore, countSqlExecution);
 				}
 			}
 		}
 		//デフォルトのConnectionFactoryでない場合、、LocalTransactionでない場合、そのまま素直に生成
 		//TODO トランザクション管理
 		return new LocalTransactionConnectionWrapper(
-				getPhysicalConnection(afterGetPhysicalConnectionHandler), false, null, warnLogThreshold, warnLogBefore);
+				getPhysicalConnection(afterGetPhysicalConnectionHandler), false, null, warnLogThreshold, warnLogBefore, countSqlExecution);
 	}
 
 	Connection getHoldingConnection(ResourceHolder rh, Function<Connection, Connection> afterGetPhysicalConnectionHandler) {
@@ -142,6 +145,8 @@ public abstract class AbstractConnectionFactory extends ConnectionFactory {
 
 		warnLogThreshold = config.getValue("warnLogThreshold", Integer.TYPE, 0);
 		warnLogBefore = config.getValue("warnLogBefore", Boolean.TYPE, true);
+		countSqlExecution = config.getValue("countSqlExecution", Boolean.TYPE, true);
+		
 		transactionIsolationLevel = config.getValue("transactionIsolationLevel", TransactionIsolationLevel.class);
 	}
 
@@ -155,6 +160,24 @@ public abstract class AbstractConnectionFactory extends ConnectionFactory {
 
 	public TransactionIsolationLevel getTransactionIsolationLevel() {
 		return transactionIsolationLevel;
+	}
+	
+	public boolean isCountSqlExecution() {
+		return countSqlExecution;
+	}
+	
+	public AtomicInteger getCounterOfSqlExecution() {
+		if (countSqlExecution) {
+			ExecuteContext ec = ExecuteContext.getCurrentContext();
+			AtomicInteger sqlCount = (AtomicInteger) ec.getAttribute(ConnectionFactory.SQL_COUNT_KEY);
+			if (sqlCount == null) {
+				sqlCount = new AtomicInteger();
+				ec.setAttribute(ConnectionFactory.SQL_COUNT_KEY, sqlCount, true);
+			}
+			return sqlCount;
+		} else {
+			return null;
+		}
 	}
 
 }

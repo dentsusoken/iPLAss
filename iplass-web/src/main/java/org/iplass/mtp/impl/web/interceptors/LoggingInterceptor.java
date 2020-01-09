@@ -21,13 +21,15 @@
 package org.iplass.mtp.impl.web.interceptors;
 
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.iplass.mtp.ApplicationException;
 import org.iplass.mtp.impl.core.ExecuteContext;
-import org.iplass.mtp.impl.web.WebRequestStack;
+import org.iplass.mtp.impl.rdb.connection.ConnectionFactory;
 import org.iplass.mtp.impl.web.actionmapping.ActionMappingService;
 import org.iplass.mtp.spi.Config;
 import org.iplass.mtp.spi.ServiceInitListener;
+import org.iplass.mtp.spi.ServiceRegistry;
 import org.iplass.mtp.web.WebRequestConstants;
 import org.iplass.mtp.web.interceptor.RequestInterceptor;
 import org.iplass.mtp.web.interceptor.RequestInvocation;
@@ -47,6 +49,9 @@ public class LoggingInterceptor implements RequestInterceptor, ServiceInitListen
 	private boolean actionTrace = true;//infoで出力
 	private boolean partsTrace = true;//debugで出力
 
+	private int warnLogThresholdOfSqlExecutionCount = -1;
+	private ConnectionFactory rdbConFactory;
+
 	private String[] paramName;
 	
 	private List<String> noStackTrace;
@@ -54,7 +59,10 @@ public class LoggingInterceptor implements RequestInterceptor, ServiceInitListen
 	
 	@Override
 	public void inited(ActionMappingService service, Config config) {
-		noStackTraceClass = ExceptionInterceptor.toClassList(noStackTrace);
+		if (noStackTrace != null) {
+			noStackTraceClass = ExceptionInterceptor.toClassList(noStackTrace);
+		}
+		rdbConFactory = ServiceRegistry.getRegistry().getService(ConnectionFactory.class);
 	}
 
 	@Override
@@ -85,6 +93,14 @@ public class LoggingInterceptor implements RequestInterceptor, ServiceInitListen
 		this.partsTrace = partsTrace;
 	}
 
+	public int getWarnLogThresholdOfSqlExecutionCount() {
+		return warnLogThresholdOfSqlExecutionCount;
+	}
+
+	public void setWarnLogThresholdOfSqlExecutionCount(int warnLogThresholdOfSqlExecutionCount) {
+		this.warnLogThresholdOfSqlExecutionCount = warnLogThresholdOfSqlExecutionCount;
+	}
+
 	@Override
 	public void intercept(RequestInvocation invocation) {
 		
@@ -98,6 +114,8 @@ public class LoggingInterceptor implements RequestInterceptor, ServiceInitListen
 		ExecuteContext ec = ExecuteContext.getCurrentContext();
 		ec.mdcPut(MDC_ACTION, invocation.getActionName());
 		Throwable exp = null;
+		AtomicInteger sqlCounter = rdbConFactory.getCounterOfSqlExecution();
+
 		try {
 			invocation.proceedRequest();
 			exp = (Throwable) invocation.getRequest().getAttribute(WebRequestConstants.EXCEPTION);
@@ -105,6 +123,12 @@ public class LoggingInterceptor implements RequestInterceptor, ServiceInitListen
 			exp = t;
 			throw t;
 		} finally {
+			int sqlCount;
+			if (sqlCounter == null) {
+				sqlCount = -1;
+			} else {
+				sqlCount = sqlCounter.get();
+			}
 			
 			if (exp != null && !(exp instanceof ApplicationException)) {
 				Logger log = null;
@@ -113,31 +137,21 @@ public class LoggingInterceptor implements RequestInterceptor, ServiceInitListen
 				} else {
 					log = actionLogger;
 				}
-				if (actionTrace) {
-					if (ExceptionInterceptor.match(noStackTraceClass, exp)) {
-						log.error(getActionNameAndParam(invocation) + "," + (System.currentTimeMillis() - start) + "ms,Error," + exp.toString());
-					} else {
-						log.error(getActionNameAndParam(invocation) + "," + (System.currentTimeMillis() - start) + "ms,Error," + exp.toString(), exp);
-					}
+				if (ExceptionInterceptor.match(noStackTraceClass, exp)) {
+					log.error(logStr(invocation, start, sqlCount, exp));
 				} else {
-					if (ExceptionInterceptor.match(noStackTraceClass, exp)) {
-						log.error(getActionNameAndParam(invocation) + ",Error," + exp.toString());
-					} else {
-						log.error(getActionNameAndParam(invocation) + ",Error," + exp.toString(), exp);
-					}
+					log.error(logStr(invocation, start, sqlCount, exp), exp);
 				}
 			} else {
 				if (actionTrace && !invocation.isInclude()) {
-					if (exp != null) {
-						actionLogger.info(getActionNameAndParam(invocation) + "," + (System.currentTimeMillis() - start) + "ms,AppError," + exp.toString());
+					if (warnLogThresholdOfSqlExecutionCount >= 0 && sqlCount > warnLogThresholdOfSqlExecutionCount) {
+						actionLogger.warn(logStr(invocation, start, sqlCount, exp));
 					} else {
-						actionLogger.info(getActionNameAndParam(invocation) + "," + (System.currentTimeMillis() - start) + "ms");
+						actionLogger.info(logStr(invocation, start, sqlCount, exp));
 					}
 				} else if (partsTrace && invocation.isInclude()) {
-					if (exp != null) {
-						partsLogger.debug(invocation.getActionName() + "," + (System.currentTimeMillis() - start) + "ms,AppError," + exp.toString());
-					} else {
-						partsLogger.debug(invocation.getActionName() + "," + (System.currentTimeMillis() - start) + "ms");
+					if (partsLogger.isDebugEnabled()) {
+						partsLogger.debug(logStr(invocation, start, sqlCount, exp));
 					}
 				}
 			}
@@ -150,8 +164,39 @@ public class LoggingInterceptor implements RequestInterceptor, ServiceInitListen
 		}
 	}
 	
-	private String getActionNameAndParam(RequestInvocation invocation) {
-		String actionName = WebRequestStack.getCurrent().getRequestPath().getTargetPath(true);
+	private String logStr(RequestInvocation invocation, long startTime, int sqlCount, Throwable exp) {
+		
+		CharSequence requestPath;
+		if (invocation.isInclude()) {
+			requestPath = invocation.getActionName();
+		} else {
+			requestPath = getRequestPathAndParam(invocation);
+		}
+		
+		StringBuilder sb = new StringBuilder();
+		sb.append(requestPath);
+		if (startTime >= 0) {
+			sb.append(',');
+			sb.append((System.currentTimeMillis() - startTime)).append("ms");
+		}
+		if (sqlCount >= 0 && !invocation.isInclude()) {
+			sb.append(',');
+			sb.append(sqlCount).append("times(sql)");
+		}
+		if (exp != null) {
+			if (exp instanceof ApplicationException) {
+				sb.append(",AppError,");
+			} else {
+				sb.append(",Error,");
+			}
+			sb.append(exp.toString());
+		}
+		
+		return sb.toString();
+	}
+	
+	private CharSequence getRequestPathAndParam(RequestInvocation invocation) {
+		String actionName = invocation.getRequestPath().getTargetPath(true);
 		if (paramName == null) {
 			return actionName;
 		} else {
@@ -180,7 +225,7 @@ public class LoggingInterceptor implements RequestInterceptor, ServiceInitListen
 					}
 				}
 			}
-			return sb.toString();
+			return sb;
 		}
 	}
 

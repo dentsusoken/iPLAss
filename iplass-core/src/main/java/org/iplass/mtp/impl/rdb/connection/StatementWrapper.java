@@ -25,30 +25,45 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.SQLWarning;
 import java.sql.Statement;
+import java.util.concurrent.atomic.AtomicInteger;
 
+import org.iplass.mtp.impl.core.ExecuteContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class StatementWrapper implements Statement {
 
 	private static Logger logger = LoggerFactory.getLogger(StatementWrapper.class);
-//	private double warnLogThreshold = ServiceRegistry.getRegistry().getService(TransactionService.class).getWarnLogThreshold();
 
 	private Statement wrapped;
 	private ConnectionWrapper con;
 	protected int warnLogThreshold;
 	protected boolean warnLogBefore;
+	protected boolean countSqlExecution;
 	
 	protected AdditionalWarnLogInfo additionalWarnLogInfo;
+	protected AtomicInteger sqlCount;
 
-	StatementWrapper(Statement wrapped, ConnectionWrapper con, int warnLogThreshold, boolean warnLogBefore) {
+	StatementWrapper(Statement wrapped, ConnectionWrapper con, int warnLogThreshold, boolean warnLogBefore, boolean countSqlExecution) {
 		this.wrapped = wrapped;
 		this.con = con;
 		this.warnLogThreshold = warnLogThreshold;
 		this.warnLogBefore = warnLogBefore;
+		this.countSqlExecution = countSqlExecution;
 	}
 	
 	private <T> T withLog(String method, String sql, SQLExecution<T> s) throws SQLException {
+		
+		if (countSqlExecution) {
+			if (sqlCount == null) {
+				ExecuteContext ec = ExecuteContext.getCurrentContext();
+				sqlCount = (AtomicInteger) ec.getAttribute(ConnectionFactory.SQL_COUNT_KEY);
+			}
+			if (sqlCount != null) {
+				sqlCount.incrementAndGet();
+			}
+		}
+		
 		long start = System.currentTimeMillis();
 		try {
 			if (warnLogBefore && additionalWarnLogInfo != null && additionalWarnLogInfo.logBefore()) {

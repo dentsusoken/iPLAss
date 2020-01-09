@@ -21,12 +21,16 @@
 package org.iplass.mtp.impl.rdb.connection;
 
 import java.sql.Connection;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 
 import org.iplass.mtp.spi.Service;
 
 
 public abstract class ConnectionFactory implements Service {
+	//TODO change to interface
+	
+	public static final String SQL_COUNT_KEY = "mtp.rdb.log.sqlCount";
 
 	public abstract Connection getConnection();
 
@@ -34,6 +38,9 @@ public abstract class ConnectionFactory implements Service {
 
 	public abstract int getWarnLogThreshold();
 	public abstract boolean isWarnLogBefore();
+	public abstract boolean isCountSqlExecution();
+	
+	public abstract AtomicInteger getCounterOfSqlExecution();
 
 	public abstract TransactionIsolationLevel getTransactionIsolationLevel();
 }

@@ -28,6 +28,7 @@ import org.iplass.mtp.command.RequestContext;
 import org.iplass.mtp.command.interceptor.CommandInterceptor;
 import org.iplass.mtp.impl.command.InvocationImpl;
 import org.iplass.mtp.impl.command.MetaCommand.CommandRuntime;
+import org.iplass.mtp.impl.web.RequestPath;
 import org.iplass.mtp.impl.web.WebProcessRuntimeException;
 import org.iplass.mtp.impl.web.WebRequestStack;
 import org.iplass.mtp.impl.web.actionmapping.MetaActionMapping.ActionMappingRuntime;
@@ -242,6 +243,11 @@ public class WebInvocationImpl extends InvocationImpl implements RequestInvocati
 		} else {
 			throw new WebProcessRuntimeException("Can not find Action:" + actionName);
 		}
+	}
+
+	@Override
+	public RequestPath getRequestPath() {
+		return requestStack.getRequestPath();
 	}
 
 }
