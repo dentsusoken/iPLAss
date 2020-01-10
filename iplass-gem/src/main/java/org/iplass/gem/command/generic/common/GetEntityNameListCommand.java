@@ -121,7 +121,7 @@ public final class GetEntityNameListCommand implements Command {
 	private Entity getCurrentEntity(GetEntityNameListParameter param) {
 		GetEntityNameListEntityParameter entity = param.getEntity();
 		if (entity != null) {
-			Entity e = new GenericEntity(param.getDefName());
+			Entity e = new GenericEntity(param.getParentDefName());
 			if (StringUtil.isNotBlank(entity.getOid())) {
 				e.setOid(entity.getOid());
 			}
