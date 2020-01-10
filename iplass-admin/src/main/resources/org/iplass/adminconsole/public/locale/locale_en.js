@@ -1198,6 +1198,7 @@ LocaleInfo.ui_tools_entityexplorer_EntityCrawlListPane_crawlingComp = "Crawling 
 LocaleInfo.ui_tools_entityexplorer_EntityCrawlListPane_refreshingComp = "Refreshing is complete.";
 LocaleInfo.ui_tools_entityexplorer_EntityCsvUploadDialog_selectImportFile = "Please select the import file.";
 LocaleInfo.ui_tools_entityexplorer_EntityCsvUploadDialog_truncate = "Delete all the existing data";
+LocaleInfo.ui_tools_entityexplorer_EntityCsvUploadDialog_bulkUpdate = "Use bulkUpdate";
 LocaleInfo.ui_tools_entityexplorer_EntityCsvUploadDialog_forceUpdate = "Even when there is no change, force an update (forceUpdate)";
 LocaleInfo.ui_tools_entityexplorer_EntityCsvUploadDialog_errorDataSkip = "Error data continue to import to skip";
 LocaleInfo.ui_tools_entityexplorer_EntityCsvUploadDialog_ignoreNotExistsProperty = "Property data that does not exist in the Entity definition is ignored";
@@ -1424,6 +1425,7 @@ LocaleInfo.ui_tools_pack_PackageImportDialog_stopImportEntityData = "Stop the im
 LocaleInfo.ui_tools_pack_PackageImportDialog_completeImportAllEntityData = "Import Entity data has been completed.";
 LocaleInfo.ui_tools_pack_PackageImportDialog_necessarySettEntityData = "<font color=\"red\">Note: It is necessary to set only if the Entity Data exists.</font>";
 LocaleInfo.ui_tools_pack_PackageImportDialog_truncate = "Delete all the existing data";
+LocaleInfo.ui_tools_pack_PackageImportDialog_bulkUpdate = "Use bulkUpdate";
 LocaleInfo.ui_tools_pack_PackageImportDialog_forceUpdate = "Even when there is no change, force an update (forceUpdate)";
 LocaleInfo.ui_tools_pack_PackageImportDialog_errorDataSkip = "Error data continue to import to skip";
 LocaleInfo.ui_tools_pack_PackageImportDialog_ignoreNotExistsProperty = "Property data that does not exist in the Entity definition is ignored";

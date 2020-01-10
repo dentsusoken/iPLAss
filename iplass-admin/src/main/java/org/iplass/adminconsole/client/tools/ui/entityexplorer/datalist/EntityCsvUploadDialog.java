@@ -67,7 +67,6 @@ import gwtupload.client.IUploadStatus.Status;
  */
 public class EntityCsvUploadDialog extends AbstractWindow {
 
-	private static final String RESOURCE_PREFIX = "ui_tools_entityexplorer_EntityCsvUploadDialog_";
 	private static final String UPLOAD_SERVICE = "service/entityupload";
 
 	private String defName;
@@ -75,6 +74,7 @@ public class EntityCsvUploadDialog extends AbstractWindow {
 	private VLayout mainLayout;
 
 	private CheckboxItem chkTruncateField;
+	private CheckboxItem chkBulkUpdateField;
 	private CheckboxItem chkForceUpdateField;
 	private CheckboxItem chkErrorSkipField;
 	private CheckboxItem chkIgnoreNotExistsPropertyField;
@@ -124,7 +124,7 @@ public class EntityCsvUploadDialog extends AbstractWindow {
 		targetLayout = new VLayout(5);
 		targetLayout.setWidth100();
 		targetLayout.setMargin(5);
-		targetLayout.setHeight(150);
+		targetLayout.setHeight(200);
 
 		HLayout fileComposit = new HLayout(5);
 		fileComposit.setWidth100();
@@ -165,7 +165,7 @@ public class EntityCsvUploadDialog extends AbstractWindow {
 			@Override
 			public void onClick(ClickEvent event) {
 				if (uploader.getFileName() == null || uploader.getFileName().isEmpty()) {
-					SC.warn(getResourceString("selectImportFile"));
+					SC.warn(rs("ui_tools_entityexplorer_EntityCsvUploadDialog_selectImportFile"));
 					return;
 				}
 				//if (User.DEFINITION_NAME.equals(EntityCsvUploadDialog.this.defName)
@@ -173,7 +173,7 @@ public class EntityCsvUploadDialog extends AbstractWindow {
 						&& SmartGWTUtil.getBooleanValue(chkTruncateField)) {
 					//ユーザEntityを削除する場合は警告
 
-					SC.ask(getResourceString("confirm"), getResourceString("userTruncateConfirm"), new BooleanCallback() {
+					SC.ask(rs("ui_tools_entityexplorer_EntityCsvUploadDialog_confirm"), rs("ui_tools_entityexplorer_EntityCsvUploadDialog_userTruncateConfirm"), new BooleanCallback() {
 
 						@Override
 						public void execute(Boolean value) {
@@ -200,32 +200,36 @@ public class EntityCsvUploadDialog extends AbstractWindow {
 		entityForm.setColWidths("*");
 
 		chkTruncateField = new CheckboxItem();
-		chkTruncateField.setTitle(getResourceString("truncate"));
+		chkTruncateField.setTitle(rs("ui_tools_entityexplorer_EntityCsvUploadDialog_truncate"));
 		chkTruncateField.setShowTitle(false);
 
+		chkBulkUpdateField = new CheckboxItem();
+		chkBulkUpdateField.setTitle(rs("ui_tools_entityexplorer_EntityCsvUploadDialog_bulkUpdate"));
+		chkBulkUpdateField.setShowTitle(false);
+
 		chkForceUpdateField = new CheckboxItem();
-		chkForceUpdateField.setTitle(getResourceString("forceUpdate"));
+		chkForceUpdateField.setTitle(rs("ui_tools_entityexplorer_EntityCsvUploadDialog_forceUpdate"));
 		chkForceUpdateField.setShowTitle(false);
 
 		chkErrorSkipField = new CheckboxItem();
-		chkErrorSkipField.setTitle(getResourceString("errorDataSkip"));
+		chkErrorSkipField.setTitle(rs("ui_tools_entityexplorer_EntityCsvUploadDialog_errorDataSkip"));
 		chkErrorSkipField.setShowTitle(false);
 
 		chkIgnoreNotExistsPropertyField = new CheckboxItem();
-		chkIgnoreNotExistsPropertyField.setTitle(getResourceString("ignoreNotExistsProperty"));
+		chkIgnoreNotExistsPropertyField.setTitle(rs("ui_tools_entityexplorer_EntityCsvUploadDialog_ignoreNotExistsProperty"));
 		chkIgnoreNotExistsPropertyField.setShowTitle(false);
 		chkIgnoreNotExistsPropertyField.setValue(true);	//デフォルトtrue
 
 		chkNotifyListenersField = new CheckboxItem();
-		chkNotifyListenersField.setTitle(getResourceString("notifyListener"));
+		chkNotifyListenersField.setTitle(rs("ui_tools_entityexplorer_EntityCsvUploadDialog_notifyListener"));
 		chkNotifyListenersField.setShowTitle(false);
 
 		chkWithValidationField = new CheckboxItem();
-		chkWithValidationField.setTitle(getResourceString("withValidation"));
+		chkWithValidationField.setTitle(rs("ui_tools_entityexplorer_EntityCsvUploadDialog_withValidation"));
 		chkWithValidationField.setShowTitle(false);
 
 		chkUpdateDisupdatablePropertyField = new CheckboxItem();
-		chkUpdateDisupdatablePropertyField.setTitle(getResourceString("updateDisupdatableProperty"));
+		chkUpdateDisupdatablePropertyField.setTitle(rs("ui_tools_entityexplorer_EntityCsvUploadDialog_updateDisupdatableProperty"));
 		chkUpdateDisupdatablePropertyField.setShowTitle(false);
 		chkUpdateDisupdatablePropertyField.addChangedHandler(new ChangedHandler() {
 			@Override
@@ -246,20 +250,20 @@ public class EntityCsvUploadDialog extends AbstractWindow {
 		uniqueKeyField.setValue(Entity.OID);
 
 		commitLimitField = new SelectItem();
-		commitLimitField.setTitle(getResourceString("commitUnit"));
-		LinkedHashMap<String, String> commitValues = new LinkedHashMap<String, String>();
-		commitValues.put("1", getResourceString("one"));
-		commitValues.put("10", getResourceString("ten"));
-		commitValues.put("100", getResourceString("hundred"));
-		commitValues.put("1000", getResourceString("thousand"));
-		commitValues.put("-1", getResourceString("all"));
+		commitLimitField.setTitle(rs("ui_tools_entityexplorer_EntityCsvUploadDialog_commitUnit"));
+		LinkedHashMap<String, String> commitValues = new LinkedHashMap<>();
+		commitValues.put("1", rs("ui_tools_entityexplorer_EntityCsvUploadDialog_one"));
+		commitValues.put("10", rs("ui_tools_entityexplorer_EntityCsvUploadDialog_ten"));
+		commitValues.put("100", rs("ui_tools_entityexplorer_EntityCsvUploadDialog_hundred"));
+		commitValues.put("1000", rs("ui_tools_entityexplorer_EntityCsvUploadDialog_thousand"));
+		commitValues.put("-1", rs("ui_tools_entityexplorer_EntityCsvUploadDialog_all"));
 		commitLimitField.setDefaultValue("100");
 		commitLimitField.setValueMap(commitValues);
 
 		prefixOidField = new TextItem();
 		prefixOidField.setTitle("OID Prefix");
 		prefixOidField.setKeyPressFilter("[A-Za-z0-9]");	//英数字のみ
-		prefixOidField.setHint(getResourceString("preOidHint"));
+		prefixOidField.setHint(rs("ui_tools_entityexplorer_EntityCsvUploadDialog_preOidHint"));
 
 		HLayout settingLayout = new HLayout();
 		CanvasItem settingItem = new CanvasItem();
@@ -282,7 +286,7 @@ public class EntityCsvUploadDialog extends AbstractWindow {
 		settingLayout.addMember(leftForm);
 		settingLayout.addMember(rightForm);
 
-		leftForm.setItems(chkTruncateField, chkNotifyListenersField, chkWithValidationField, chkUpdateDisupdatablePropertyField,
+		leftForm.setItems(chkTruncateField, chkBulkUpdateField, chkNotifyListenersField, chkWithValidationField, chkUpdateDisupdatablePropertyField,
 				chkForceUpdateField, chkErrorSkipField, chkIgnoreNotExistsPropertyField);
 
 		rightForm.setItems(prefixOidField, uniqueKeyField, commitLimitField);
@@ -292,13 +296,13 @@ public class EntityCsvUploadDialog extends AbstractWindow {
 		hintItem.setShowTitle(false);
 		hintItem.setCanvas(hintLayout);
 
-		hintLayout.addMember(getLabel("truncateComment"));
-		hintLayout.addMember(getLabel("listenerComment"));
-		hintLayout.addMember(getLabel("updateDisupdatablePropertyComment1"));
-		hintLayout.addMember(getLabel("preOidComment1"));
-		hintLayout.addMember(getLabel("preOidComment2"));
-		hintLayout.addMember(getLabel("useCtrlComment1"));
-		hintLayout.addMember(getLabel("binaryComment"));
+		hintLayout.addMember(getLabel("ui_tools_entityexplorer_EntityCsvUploadDialog_truncateComment"));
+		hintLayout.addMember(getLabel("ui_tools_entityexplorer_EntityCsvUploadDialog_listenerComment"));
+		hintLayout.addMember(getLabel("ui_tools_entityexplorer_EntityCsvUploadDialog_updateDisupdatablePropertyComment1"));
+		hintLayout.addMember(getLabel("ui_tools_entityexplorer_EntityCsvUploadDialog_preOidComment1"));
+		hintLayout.addMember(getLabel("ui_tools_entityexplorer_EntityCsvUploadDialog_preOidComment2"));
+		hintLayout.addMember(getLabel("ui_tools_entityexplorer_EntityCsvUploadDialog_useCtrlComment1"));
+		hintLayout.addMember(getLabel("ui_tools_entityexplorer_EntityCsvUploadDialog_binaryComment"));
 
 		entityForm.setItems(settingItem, hintItem);
 
@@ -335,6 +339,7 @@ public class EntityCsvUploadDialog extends AbstractWindow {
 
 		cancel = new IButton("Cancel");
 		cancel.addClickHandler(new ClickHandler() {
+			@Override
 			public void onClick(ClickEvent event) {
 				destroy();
 			}
@@ -367,7 +372,7 @@ public class EntityCsvUploadDialog extends AbstractWindow {
 	}
 
 	private void doUpload(final AdminSingleUploader uploader) {
-		SC.ask(getResourceString("confirm"), getResourceString("startImportConf"), new BooleanCallback() {
+		SC.ask(rs("ui_tools_entityexplorer_EntityCsvUploadDialog_confirm"), rs("ui_tools_entityexplorer_EntityCsvUploadDialog_startImportConf"), new BooleanCallback() {
 			@Override
 			public void execute(Boolean value) {
 				if (value) {
@@ -375,6 +380,9 @@ public class EntityCsvUploadDialog extends AbstractWindow {
 					uploader.add(new Hidden("tenantId", Integer.toString(TenantInfoHolder.getId())));
 					if (SmartGWTUtil.getBooleanValue(chkTruncateField)) {
 						uploader.add(new Hidden("chkTruncate", "1"));
+					}
+					if (SmartGWTUtil.getBooleanValue(chkBulkUpdateField)) {
+						uploader.add(new Hidden("chkBulkUpdate", "1"));
 					}
 					if (SmartGWTUtil.getBooleanValue(chkForceUpdateField)) {
 						uploader.add(new Hidden("chkForceUpdate", "1"));
@@ -409,8 +417,8 @@ public class EntityCsvUploadDialog extends AbstractWindow {
 	}
 
 	private void showResultError(String message) {
-		List<String> errors = new ArrayList<String>(1);
-		errors.add(getResourceString("errorImport"));
+		List<String> errors = new ArrayList<>(1);
+		errors.add(rs("ui_tools_entityexplorer_EntityCsvUploadDialog_errorImport"));
 		errors.add(message);
 		messageTabSet.setErrorMessage(errors);
 
@@ -433,7 +441,7 @@ public class EntityCsvUploadDialog extends AbstractWindow {
 			return;
 		}
 
-		List<String> logs = new ArrayList<String>();
+		List<String> logs = new ArrayList<>();
 
 		String status = getStatus(rootValue);
 		logs.add(getStatusMessage(status));
@@ -456,13 +464,13 @@ public class EntityCsvUploadDialog extends AbstractWindow {
 
 	private String getStatusMessage(String status) {
 		if ("SUCCESS".equals(status)) {
-			return getResourceString("importSuccessful");
+			return rs("ui_tools_entityexplorer_EntityCsvUploadDialog_importSuccessful");
 		} else if ("WARN".equals(status)) {
-			return getResourceString("importWarning");
+			return rs("ui_tools_entityexplorer_EntityCsvUploadDialog_importWarning");
 		} else if ("ERROR".equals(status)) {
-			return getResourceString("importErr");
+			return rs("ui_tools_entityexplorer_EntityCsvUploadDialog_importErr");
 		} else {
-			return getResourceString("couldNotRetImportResult");
+			return rs("ui_tools_entityexplorer_EntityCsvUploadDialog_couldNotRetImportResult");
 		}
 	}
 
@@ -471,7 +479,7 @@ public class EntityCsvUploadDialog extends AbstractWindow {
 	}
 
 	private List<String> getMessageInfo(JSONValue root) {
-		List<String> messages = new ArrayList<String>();
+		List<String> messages = new ArrayList<>();
 		JSONArray messageArray = getValue("messages", root).isArray();
 		for (int i = 0; i < messageArray.size(); i++) {
 			JSONValue child = messageArray.get(i);
@@ -494,22 +502,13 @@ public class EntityCsvUploadDialog extends AbstractWindow {
 	}
 
 	private com.smartgwt.client.widgets.Label getLabel(String key) {
-		com.smartgwt.client.widgets.Label label = new com.smartgwt.client.widgets.Label(getResourceString(key));
+		com.smartgwt.client.widgets.Label label = new com.smartgwt.client.widgets.Label(rs(key));
 		label.setHeight(20);
 		return label;
 	}
 
-	private String getResourceString(String key) {
-		return AdminClientMessageUtil.getString(RESOURCE_PREFIX + key);
+	private String rs(String key) {
+		return AdminClientMessageUtil.getString(key);
 	}
 
-//	public interface CustomUploaderConstants extends IUploader.UploaderConstants {
-//
-//	    @DefaultStringValue("")
-//	    String uploaderSend();
-//
-//	    @DefaultStringValue("ファイル拡張子が異なります。\n以下の拡張子のみ対応しています。:\n")
-//	    String uploaderInvalidExtension();
-//
-//	}
 }

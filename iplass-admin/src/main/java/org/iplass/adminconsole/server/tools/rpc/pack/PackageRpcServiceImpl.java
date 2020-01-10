@@ -66,7 +66,7 @@ public class PackageRpcServiceImpl extends XsrfProtectedServiceServlet implement
 			@Override
 			public List<PackageEntryStatusInfo> call() {
 
-				List<PackageEntryStatusInfo> result = new ArrayList<PackageEntryStatusInfo>();
+				List<PackageEntryStatusInfo> result = new ArrayList<>();
 				SearchResult<Entity> list = service.getPackageList();
 				if (list.getList() != null) {
 					for (Entity entity : list.getList()) {
@@ -207,6 +207,8 @@ public class PackageRpcServiceImpl extends XsrfProtectedServiceServlet implement
 
 				//EntityImportCondition(DTO) -> EntityDataImportCondition
 				EntityDataImportCondition cond = new EntityDataImportCondition();
+				cond.setTruncate(condition.isTruncate());
+				cond.setBulkUpdate(condition.isBulkUpdate());
 				cond.setCommitLimit(condition.getCommitLimit());
 				cond.setNotifyListeners(condition.isNotifyListeners());
 				if (condition.isUpdateDisupdatableProperty()) {
@@ -219,7 +221,6 @@ public class PackageRpcServiceImpl extends XsrfProtectedServiceServlet implement
 				cond.setErrorSkip(condition.isErrorSkip());
 				cond.setIgnoreNotExistsProperty(condition.isIgnoreNotExistsProperty());
 				cond.setPrefixOid(condition.getPrefixOid());
-				cond.setTruncate(condition.isTruncate());
 				cond.setFourceUpdate(condition.isFourceUpdate());
 				if (StringUtil.isNotEmpty(condition.getLocale())) {
 					cond.setLocale(condition.getLocale());

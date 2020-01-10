@@ -1198,6 +1198,7 @@ LocaleInfo.ui_tools_entityexplorer_EntityCrawlListPane_crawlingComp = "クロー
 LocaleInfo.ui_tools_entityexplorer_EntityCrawlListPane_refreshingComp = "リフレッシュが完了しました。";
 LocaleInfo.ui_tools_entityexplorer_EntityCsvUploadDialog_selectImportFile = "インポートファイルを選択してください。";
 LocaleInfo.ui_tools_entityexplorer_EntityCsvUploadDialog_truncate = "既存データを全て削除する";
+LocaleInfo.ui_tools_entityexplorer_EntityCsvUploadDialog_bulkUpdate = "bulkUpdateを利用する";
 LocaleInfo.ui_tools_entityexplorer_EntityCsvUploadDialog_forceUpdate = "変更がない場合も強制的に更新する(forceUpdate)";
 LocaleInfo.ui_tools_entityexplorer_EntityCsvUploadDialog_errorDataSkip = "エラーデータはスキップしてインポートを続ける";
 LocaleInfo.ui_tools_entityexplorer_EntityCsvUploadDialog_ignoreNotExistsProperty = "Entity定義に存在しないプロパティデータは無視する";
@@ -1424,6 +1425,7 @@ LocaleInfo.ui_tools_pack_PackageImportDialog_stopImportEntityData = "予期せ�
 LocaleInfo.ui_tools_pack_PackageImportDialog_completeImportAllEntityData = "Entityデータの取り込みが完了しました。";
 LocaleInfo.ui_tools_pack_PackageImportDialog_necessarySettEntityData = "<font color=\"red\">※Entity Dataがある場合のみ設定が必要です。</font>";
 LocaleInfo.ui_tools_pack_PackageImportDialog_truncate = "既存データを全て削除する";
+LocaleInfo.ui_tools_pack_PackageImportDialog_bulkUpdate = "bulkUpdateを利用する";
 LocaleInfo.ui_tools_pack_PackageImportDialog_forceUpdate = "変更がない場合も強制的に更新する(forceUpdate)";
 LocaleInfo.ui_tools_pack_PackageImportDialog_errorDataSkip = "エラーデータはスキップしてインポートを続ける";
 LocaleInfo.ui_tools_pack_PackageImportDialog_ignoreNotExistsProperty = "Entity定義に存在しないプロパティデータは無視する";

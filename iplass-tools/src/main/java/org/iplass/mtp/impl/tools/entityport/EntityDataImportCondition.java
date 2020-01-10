@@ -1,19 +1,19 @@
 /*
  * Copyright (C) 2012 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
- * 
+ *
  * Unless you have purchased a commercial license,
  * the following license terms apply:
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
@@ -31,6 +31,9 @@ public class EntityDataImportCondition implements Serializable {
 
 	/** Truncate */
 	private boolean truncate = false;
+
+	/** BulkUpdateで更新 */
+	private boolean bulkUpdate = false;
 
 	/** エラーデータはSkipし処理を続行 */
 	private boolean errorSkip = false;
@@ -69,6 +72,13 @@ public class EntityDataImportCondition implements Serializable {
 	}
 	public void setTruncate(boolean truncate) {
 		this.truncate = truncate;
+	}
+
+	public boolean isBulkUpdate() {
+		return bulkUpdate;
+	}
+	public void setBulkUpdate(boolean bulkUpdate) {
+		this.bulkUpdate = bulkUpdate;
 	}
 
 	public boolean isErrorSkip() {
