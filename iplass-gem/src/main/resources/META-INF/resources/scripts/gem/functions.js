@@ -2332,7 +2332,7 @@ $.fn.allInputCheck = function(){
 								var version = nodes[i].version;
 								var linkId = $v.prefix + $v.propName + "_" + oid;
 								var $link = $("<a href='javascript:void(0)' />").addClass("modal-lnk").attr({"id":linkId, "data-linkId":linkId, "style":$v.customStyle}).text(nodes[i].name).on("click", function() {
-									showReference($v.viewAction, $v.refDefName, oid, version, linkId, $v.refEdit, null, $v.defName, $v.viewName, $v.propName, $v.entityOid, $v.entityVersion, $v.viewType, $v.refSectionIndex);
+									showReference($v.viewAction, $v.refDefName, oid, version, linkId, $v.refEdit, null, $v.defName, $v.viewName, $v.propName, $v.viewType, $v.refSectionIndex, $v.entityOid, $v.entityVersion);
 								}).appendTo($li);
 								if ($("body.modal-body").length != 0) {
 									$link.subModalWindow();
@@ -2737,11 +2737,6 @@ $.fn.allInputCheck = function(){
 			var $link = $("a.modal-lnk", $v);
 			var $hidden = $(":hidden[name='" + $v.propName + "']", $v);
 
-			var _entity = null;
-			if (typeof $v.entityOid !== "undefined" && typeof $v.entityVersion !== "undefined") {
-				_entity = {oid: $v.entityOid, version: $v.entityVersion};
-			}
-
 			if ($("body.modal-body").length != 0) {
 				$selBtn.subModalWindow();
 			} else {
@@ -2754,7 +2749,7 @@ $.fn.allInputCheck = function(){
 			$selBtn.on("click", function() {
 				//選択コールバック
 				var selRefCallback = scriptContext[$v.selUniqueRefCallback];
-				searchUniqueReference($v.attr("id"), $v.selectAction, $v.viewAction, $v.refDefName, $v.propName, $v.urlParam, $v.refEdit, selRefCallback, this, $v.refViewName, $v.permitConditionSelectAll, $v.defName, $v.viewName, $v.viewType, $v.refSectionIndex, _entity);
+				searchUniqueReference($v.attr("id"), $v.selectAction, $v.viewAction, $v.refDefName, $v.propName, $v.urlParam, $v.refEdit, selRefCallback, this, $v.refViewName, $v.permitConditionSelectAll, $v.defName, $v.viewName, $v.viewType, $v.refSectionIndex, $v.entityOid, $v.entityVersion);
 			});
 
 			if ($("body.modal-body").length != 0) {
@@ -2806,7 +2801,7 @@ $.fn.allInputCheck = function(){
 						var label = entity.name;
 						var key = entity.oid + "_" + entity.version;
 						var func = function() {
-							showReference($v.viewAction, $v.refDefName, entity.oid, entity.version, linkId, $v.refEdit, null, $v.defName, $v.viewName, $v.propName, $v.entityOid, $v.entityVersion, $v.viewType, $v.refSectionIndex);
+							showReference($v.viewAction, $v.refDefName, entity.oid, entity.version, linkId, $v.refEdit, null, $v.defName, $v.viewName, $v.propName, $v.viewType, $v.refSectionIndex, $v.entityOid, $v.entityVersion);
 						};
 
 						$link.attr({"id":linkId, "data-linkId":linkId}).text(label).show();
