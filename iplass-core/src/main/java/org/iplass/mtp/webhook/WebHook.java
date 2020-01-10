@@ -37,7 +37,8 @@ public class WebHook  {
 
 	/** headers */
 	private ArrayList<WebHookHeader> headers;
-	
+	private String tokenHeader;
+
 	Map<String, Object> binding;
 	
 	/** 失敗したらやり直ししますか */
@@ -57,7 +58,19 @@ public class WebHook  {
 	 * */
 	private String TemplateName;
 	
+	/**
+	 * ｄｂ接続用
+	 * */
+	private String metaDataId;
 	
+	public String getMetaDataId() {
+		return metaDataId;
+	}
+
+	public void setMetaDataId(String metaDataId) {
+		this.metaDataId = metaDataId;
+	}
+
 	public String getTemplateName() {
 		if (TemplateName == null) {
 			return "";
@@ -167,6 +180,14 @@ public class WebHook  {
 
 	public void setBinding(Map<String, Object> binding) {
 		this.binding = binding;
+	}
+	
+	public String getTokenHeader() {
+		return tokenHeader;
+	}
+
+	public void setTokenHeader(String tokenHeader) {
+		this.tokenHeader = tokenHeader;
 	}
 
 }

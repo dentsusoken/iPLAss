@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.iplass.adminconsole.client.base.event.DataChangedEvent;
 import org.iplass.adminconsole.client.base.event.DataChangedHandler;
+import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
 import org.iplass.adminconsole.client.base.ui.widget.MtpDialog;
 import org.iplass.adminconsole.client.base.ui.widget.form.MtpForm2Column;
 import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
@@ -13,6 +14,7 @@ import org.iplass.mtp.webhook.template.definition.WebHookHeader;
 import com.smartgwt.client.data.DataSource;
 import com.smartgwt.client.data.Record;
 import com.smartgwt.client.data.fields.DataSourceTextField;
+import com.smartgwt.client.util.SC;
 import com.smartgwt.client.widgets.IButton;
 import com.smartgwt.client.widgets.form.DynamicForm;
 import com.smartgwt.client.widgets.form.fields.ComboBoxItem;
@@ -52,8 +54,12 @@ public class WebHookHeaderDialog extends MtpDialog {
 		save.addClickHandler(new com.smartgwt.client.widgets.events.ClickHandler() {
 			public void onClick(com.smartgwt.client.widgets.events.ClickEvent event) {
 				WebHookHeader definition = curHeaderDefinition;
-				//TODO: prevent clicking if header is duplicated
+				if (headerAttrEditPane.isHeaderNameFieldEmpty()) {
+					SC.warn(AdminClientMessageUtil.getString("ui_metadata_webhook_WebHookTemplateEditPane_emptyHeaderKey"));//TODO:add message
+					return;
+				}
 				definition = headerAttrEditPane.getEditDefinition(definition);
+				
 				fireDataChanged(definition);
 				destroy();
 			}
@@ -99,6 +105,12 @@ public class WebHookHeaderDialog extends MtpDialog {
 			_curHeaderDefinition.setKey(SmartGWTUtil.getStringValue(headerNameField));
 			_curHeaderDefinition.setValue(SmartGWTUtil.getStringValue(headerValueField));
 			return _curHeaderDefinition;
+		}
+		public boolean isHeaderNameFieldEmpty() {
+			if (SmartGWTUtil.getStringValue(headerNameField)==null||SmartGWTUtil.getStringValue(headerNameField).replaceAll("\\s+","").isEmpty()) {
+				return true;
+			}
+			return false;
 		}
 	}
 	

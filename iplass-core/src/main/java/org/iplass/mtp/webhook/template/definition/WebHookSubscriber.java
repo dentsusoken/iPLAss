@@ -1,19 +1,20 @@
 package org.iplass.mtp.webhook.template.definition;
 
 import java.io.Serializable;
+import java.util.UUID;
 
 public class WebHookSubscriber implements Serializable{
 
 	private static final long serialVersionUID = 921157612085724142L;
-
+	
+	/** 固有id、metaのと同じ内容になるはずです */
+	private String webHookSubscriberId;
+	
 	/** 送り先 */
 	private String url;
 	
 	/** 申し込んだ方の名前 */
 	private String subscriberName;
-	
-	/**　申し込んだ方のパスワード */
-	private String subscriberPassword;
 	
 	/** セキュリティ関連 */
 	private String securityUsername;
@@ -21,7 +22,14 @@ public class WebHookSubscriber implements Serializable{
 	private String securityToken;
 	private String securityBearerToken;
 	
-	
+	public enum WEBHOOKSUBSCRIBERSTATE  {
+			MODIFIED,
+			DELETE,
+			UNCHANGED,
+			CREATED,
+	}
+
+	private WEBHOOKSUBSCRIBERSTATE state;
 	
 	//何らかしらの認証用物、他の設置なと TODO:
 
@@ -53,14 +61,6 @@ public class WebHookSubscriber implements Serializable{
 
 	public void setSubscriberName(String subscriberName) {
 		this.subscriberName = subscriberName;
-	}
-
-	public String getSubscriberPassword() {
-		return subscriberPassword;
-	}
-
-	public void setSubscriberPassword(String subscriberPassword) {
-		this.subscriberPassword = subscriberPassword;
 	}
 	
 	public String getSecurityUsername() {
@@ -94,5 +94,43 @@ public class WebHookSubscriber implements Serializable{
 	public void setSecurityBearerToken(String securityBearerToken) {
 		this.securityBearerToken = securityBearerToken;
 	}
+	
+	public String getWebHookSubscriberId() {
+		return webHookSubscriberId;
+	}
+
+	public void setWebHookSubscriberId(String webHookSubscriberId) {
+		this.webHookSubscriberId = webHookSubscriberId;
+	}
+
+	public WEBHOOKSUBSCRIBERSTATE getState() {
+		return state;
+	}
+
+	public void setState(WEBHOOKSUBSCRIBERSTATE state) {
+		this.state = state;
+	}
+	
+	public boolean isCreate() {
+		if (state == WEBHOOKSUBSCRIBERSTATE.CREATED) {
+			return true;
+		}
+		return false;
+	}
+	
+	public boolean isDelete() {
+		if (state == WEBHOOKSUBSCRIBERSTATE.DELETE) {
+			return true;
+		}
+		return false;
+	}
+	
+	public boolean isChanged() {
+		if (state == WEBHOOKSUBSCRIBERSTATE.MODIFIED) {
+			return true;
+		}
+		return false;
+	}
+	
 
 }

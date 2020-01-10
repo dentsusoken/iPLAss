@@ -8,6 +8,7 @@ import org.iplass.mtp.webhook.template.definition.WebHookSubscriber;
 public class MetaWebHookSubscriber implements MetaData {
 
 	private static final long serialVersionUID = 3954182014266471233L;
+	private String webHookSubscriberId;
 	
 	/** 送り先 */
 	private String url;
@@ -15,21 +16,28 @@ public class MetaWebHookSubscriber implements MetaData {
 	/** 申し込んだ方の名前 */
 	private String subscriberName;
 	
-	/**　申し込んだ方のパスワード (多分いらない、実案件の設計に依る)*/
-	private String subscriberPassword;
+	
+	
+	/**　申し込んだ方のパスワード */
+//	private String subscriberPassword;
 	
 	/** セキュリティ関連 */
-	private String securityUsername;
-	private String securityPassword;
-	private String securityToken;
+	//refer to WebHookAuthTokenHandler for authentication type
+//	private String securityUsername;
+//	private String securityPassword;
+//	private String securityToken;
+//	private String securityBearerToken;
 
 	public MetaWebHookSubscriber()  {
 	}
 	
-	public MetaWebHookSubscriber(String url, String subscriberName, String subscriberPassword)  {
+	public MetaWebHookSubscriber(String url, String subscriberName,String   securityUsername, String securityPassword, String securityToken, String securityBearerToken) {
 		this.url = url;
 		this.subscriberName = subscriberName;
-		this.subscriberPassword = subscriberPassword;
+//		this.securityUsername = securityUsername;
+//		this.securityPassword = securityPassword;
+//		this.securityToken = securityToken;
+//		this.securityBearerToken = securityBearerToken;
 	}
 
 	public String getUrl() {
@@ -48,38 +56,52 @@ public class MetaWebHookSubscriber implements MetaData {
 		this.subscriberName = subscriberName;
 	}
 
-	public String getSubscriberPassword() {
-		return subscriberPassword;
+//	public String getSubscriberPassword() {
+//		return subscriberPassword;
+//	}
+//
+//	public void setSubscriberPassword(String subscriberPassword) {
+//		this.subscriberPassword = subscriberPassword;
+//	}
+//
+//	public String getSecurityUsername() {
+//		return securityUsername;
+//	}
+//
+//	public void setSecurityUsername(String securityUsername) {
+//		this.securityUsername = securityUsername;
+//	}
+//
+//	public String getSecurityPassword() {
+//		return securityPassword;
+//	}
+//
+//	public void setSecurityPassword(String securityPassword) {
+//		this.securityPassword = securityPassword;
+//	}
+//
+//	public String getSecurityToken() {
+//		return securityToken;
+//	}
+//
+//	public void setSecurityToken(String securityToken) {
+//		this.securityToken = securityToken;
+//	}
+//
+//	public String getSecurityBearerToken() {
+//		return securityBearerToken;
+//	}
+//
+//	public void setSecurityBearerToken(String securityBearerToken) {
+//		this.securityBearerToken = securityBearerToken;
+//	}
+	public String getWebHookSubscriberId() {
+		return webHookSubscriberId;
 	}
 
-	public void setSubscriberPassword(String subscriberPassword) {
-		this.subscriberPassword = subscriberPassword;
+	public void setWebHookSubscriberId(String webHookSubscriberId) {
+		this.webHookSubscriberId = webHookSubscriberId;
 	}
-
-	public String getSecurityUsername() {
-		return securityUsername;
-	}
-
-	public void setSecurityUsername(String securityUsername) {
-		this.securityUsername = securityUsername;
-	}
-
-	public String getSecurityPassword() {
-		return securityPassword;
-	}
-
-	public void setSecurityPassword(String securityPassword) {
-		this.securityPassword = securityPassword;
-	}
-
-	public String getSecurityToken() {
-		return securityToken;
-	}
-
-	public void setSecurityToken(String securityToken) {
-		this.securityToken = securityToken;
-	}
-
 	@Override
 	public MetaWebHookSubscriber copy() {
 		return ObjectUtil.deepCopy(this);
@@ -87,11 +109,12 @@ public class MetaWebHookSubscriber implements MetaData {
 	//Definition → Meta
 	public void applyConfig(WebHookSubscriber definition) {
 		this.subscriberName = definition.getSubscriberName();
-		this.subscriberPassword = definition.getSubscriberPassword();
 		this.url = definition.getUrl();
-		this.securityUsername = definition.getSecurityUsername();
-		this.securityPassword = definition.getSecurityPassword();
-		this.securityToken = definition.getSecurityToken();
+		this.webHookSubscriberId = definition.getWebHookSubscriberId();
+//		this.securityUsername = definition.getSecurityUsername();
+//		this.securityPassword = definition.getSecurityPassword();
+//		this.securityToken = definition.getSecurityToken();
+//		this.securityBearerToken = definition.getSecurityBearerToken();
 	}
 
 	//Meta → Definition
@@ -99,11 +122,13 @@ public class MetaWebHookSubscriber implements MetaData {
 		WebHookSubscriber definition = new WebHookSubscriber();
 		definition.setUrl(this.url);
 		definition.setSubscriberName(this.subscriberName);
-		definition.setSubscriberPassword(this.subscriberPassword);
-		definition.setSecurityUsername(this.securityUsername);
-		definition.setSecurityPassword(this.securityPassword);
-		definition.setSecurityToken(this.securityToken);
+		definition.setWebHookSubscriberId(webHookSubscriberId);
+//		definition.setSecurityUsername(this.securityUsername);
+//		definition.setSecurityPassword(this.securityPassword);
+//		definition.setSecurityToken(this.securityToken);
+//		definition.setSecurityBearerToken(securityBearerToken);
 		
 		return definition;
 	}
+
 }

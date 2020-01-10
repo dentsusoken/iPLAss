@@ -8,6 +8,7 @@ import org.iplass.mtp.definition.Definition;
 public class WebHookTemplateDefinition implements Definition {
 
 	private static final long serialVersionUID = 4835431145639526016L;
+	private String metaDataId;
 	
 	private String name;
 	private String displayName;
@@ -16,12 +17,13 @@ public class WebHookTemplateDefinition implements Definition {
 	private WebHookContent contentBody;
 	private String sender;
 	private String addressUrl;
-	
+	private String tokenHeader;//セキュリテぃトークンのヘッダー名を設置
+
 	private Boolean synchronous;
 
 	/** サブスクライバー：このwebhookを要求した方達 */
 	private ArrayList<WebHookSubscriber> subscribers;
-	
+
 	/** headers */
 	private ArrayList<WebHookHeader> headers;
 	
@@ -143,10 +145,10 @@ public class WebHookTemplateDefinition implements Definition {
 	 * 特定のsubscriberオブジェを取得。
 	 * 見つけないならnullが返される 
 	 */
-	public WebHookSubscriber getSubscriberByNameURL (String name, String url){
+	public WebHookSubscriber getSubscriberById (String subscriberUid){
 		
 		for (WebHookSubscriber temp : subscribers) {
-			if (temp.getUrl()==url&&temp.getSubscriberName()==name) {
+			if (temp.getWebHookSubscriberId()==subscriberUid) {
 				return temp;
 			}
 		} 
@@ -166,6 +168,9 @@ public class WebHookTemplateDefinition implements Definition {
 	}
 	
 	public ArrayList<WebHookHeader> getHeaders() {
+		if (headers==null) {
+			this.headers = new ArrayList<WebHookHeader>();
+		}
 		return headers;
 	}
 
@@ -179,5 +184,22 @@ public class WebHookTemplateDefinition implements Definition {
 		}
 		this.headers.add(entry);
 	}
+	
+	public String getMetaDataId() {
+		return metaDataId;
+	}
+
+	public void setMetaDataId(String id) {
+		this.metaDataId = id;
+	}
+	
+	public String getTokenHeader() {
+		return tokenHeader;
+	}
+
+	public void setTokenHeader(String tokenHeader) {
+		this.tokenHeader = tokenHeader;
+	}
+
 }
 

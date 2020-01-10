@@ -15,6 +15,7 @@ import org.iplass.adminconsole.client.base.ui.widget.form.MtpTextItem;
 import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
 import org.iplass.mtp.webhook.template.definition.WebHookSubscriber;
 import com.google.gwt.user.client.ui.TextArea;
+import com.smartgwt.client.util.SC;
 import com.smartgwt.client.widgets.IButton;
 import com.smartgwt.client.widgets.form.DynamicForm;
 import com.smartgwt.client.widgets.form.fields.TextAreaItem;
@@ -56,7 +57,10 @@ public class WebHookSubscriberDialog extends MtpDialog {
 		save.addClickHandler(new com.smartgwt.client.widgets.events.ClickHandler() {
 			public void onClick(com.smartgwt.client.widgets.events.ClickEvent event) {
 				WebHookSubscriber definition = curWebHookSubscriber;
-
+				if ( subscriberAttrEditPane.isSubscriberUrlFieldEmpty()) {//urlは必要,nullか""ならwarnして、ダイアログはそのまま
+					SC.warn(AdminClientMessageUtil.getString("ui_metadata_webhook_WebHookTemplateEditPane_emptySubscriberUrl"));//TODO:add message
+					return;
+				}
 				definition = subscriberAttrEditPane.getEditDefinition(definition);
 				fireDataChanged(definition);
 				destroy();
@@ -139,11 +143,18 @@ public class WebHookSubscriberDialog extends MtpDialog {
 		public WebHookSubscriber getEditDefinition(WebHookSubscriber definition) {
 			definition.setSubscriberName(SmartGWTUtil.getStringValue(subscriberNameField));
 			definition.setUrl(SmartGWTUtil.getStringValue(subscriberUrlField));
-			definition.setSecurityUsername(SmartGWTUtil.getStringValue(subscriberSecurityUsernameField));
-			definition.setSecurityPassword(SmartGWTUtil.getStringValue(subscriberSecurityPasswordField));
-			definition.setSecurityToken(SmartGWTUtil.getStringValue(subscriberSecurityTokenField));
-			definition.setSecurityBearerToken(SmartGWTUtil.getStringValue(subscriberSecurityBearerTokenField));
+			definition.setSecurityUsername(SmartGWTUtil.getStringValue(subscriberSecurityUsernameField)==null?"":SmartGWTUtil.getStringValue(subscriberSecurityUsernameField));
+			definition.setSecurityPassword(SmartGWTUtil.getStringValue(subscriberSecurityPasswordField)==null?"":SmartGWTUtil.getStringValue(subscriberSecurityPasswordField));
+			definition.setSecurityToken(SmartGWTUtil.getStringValue(subscriberSecurityTokenField)==null?"":SmartGWTUtil.getStringValue(subscriberSecurityTokenField));
+			definition.setSecurityBearerToken(SmartGWTUtil.getStringValue(subscriberSecurityBearerTokenField)==null?"":SmartGWTUtil.getStringValue(subscriberSecurityBearerTokenField));
 			return definition;
+		}
+		
+		public boolean isSubscriberUrlFieldEmpty() {
+			if (SmartGWTUtil.getStringValue(subscriberUrlField)==null||SmartGWTUtil.getStringValue(subscriberUrlField).replaceAll("\\s+","").isEmpty()) {
+				return true;
+			}
+			return false;
 		}
 	}
 	
