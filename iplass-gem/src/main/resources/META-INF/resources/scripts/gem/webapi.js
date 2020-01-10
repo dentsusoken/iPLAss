@@ -439,7 +439,7 @@ function deleteAll(webapi, searchType, formName, _t, func) {
 	});
 }
 
-function getMassReferenceData(webapi, oid, defName, propName, viewName, offset, sortKey, sortType, isCount, condKey, outputType, entity, func) {
+function getMassReferenceData(webapi, oid, defName, propName, viewName, offset, sortKey, sortType, isCount, condKey, outputType, entityOid, entityVersion, func) {
 	var params = "{";
 	params += "\"oid\":\"" + oid + "\"";
 	params += ",\"defName\":\"" + defName + "\"";
@@ -453,9 +453,11 @@ function getMassReferenceData(webapi, oid, defName, propName, viewName, offset, 
 	if (typeof condKey !== "undefined" && condKey != null) {
 		params += ",\"condKey\":\"" + condKey + "\"";
 	}
-	if (typeof entity !== "undefined" && entity !== null) {
-		params += ",\"entityOid\":\"" + entity.oid +"\"";
-		params += ",\"entityVersion\":\"" + entity.version +"\"";
+	if (typeof entityOid !== "undefined" && entityOid != null) {
+		params += ",\"entityOid\":\"" + entityOid + "\"";
+	}
+	if (typeof entityVersion !== "undefined" && entityVersion != null) {
+		params += ",\"entityVersion\":\"" + entityVersion + "\"";
 	}
 	params += "}";
 	postAsync(webapi, params, function(results){
@@ -598,7 +600,7 @@ function getAutocompletionValue(webapi, defName, viewName, viewType, propName, k
 	});
 }
 
-function getUniqueItem(webapi, defName, viewName, viewType, propName, uniqueValue, entity, func) {
+function getUniqueItem(webapi, defName, viewName, viewType, propName, uniqueValue, entityOid, entityVersion, func) {
 	var params = "{";
 	params += "\"defName\":\"" + defName + "\"";
 	params += ",\"viewName\":\"" + viewName + "\"";
@@ -609,9 +611,15 @@ function getUniqueItem(webapi, defName, viewName, viewType, propName, uniqueValu
 	} else {
 		params += ",\"uniqueValue\":\"" + uniqueValue + "\"";
 	}
-	if (typeof entity !== "undefined" && entity !== null) {
-		params += ",\"entityOid\":\"" + entity.oid +"\"";
-		params += ",\"entityVersion\":\"" + entity.version +"\"";
+	if (entityOid == null) {
+		params += ",\"entityOid\":null";
+	} else {
+		params += ",\"entityOid\":\"" + entityOid + "\"";
+	}
+	if (entityVersion == null) {
+		params += ",\"entityVersion\":null";
+	} else {
+		params += ",\"entityVersion\":\"" + entityVersion + "\"";
 	}
 	params += "}";
 
@@ -678,15 +686,17 @@ function refComboChange(webapi, defName, viewName, propName, _params, viewType, 
 	});
 }
 
-function getPropertyEditor(webapi, defName, viewName, propName, viewType, entity, func) {
+function getPropertyEditor(webapi, defName, viewName, propName, viewType, entityOid, entityVersion, func) {
 	var params = "{";
 	params += "\"defName\":\"" + defName + "\"";
 	params += ",\"viewName\":\"" + viewName + "\"";
 	params += ",\"propName\":\"" + propName + "\"";
 	params += ",\"viewType\":\"" + viewType + "\"";
-	if (typeof entity !== "undefined" && entity !== null) {
-		params += ",\"entityOid\":\"" + entity.oid +"\"";
-		params += ",\"entityVersion\":\"" + entity.version +"\"";
+	if (typeof entityOid !== "undefined" && entityOid != null) {
+		params += ",\"entityOid\":\"" + entityOid + "\"";
+	}
+	if (typeof entityVersion !== "undefined" && entityVersion != null) {
+		params += ",\"entityVersion\":\"" + entityVersion + "\"";
 	}
 	params += "}";
 	postAsync(webapi, params, function(results) {
@@ -695,7 +705,7 @@ function getPropertyEditor(webapi, defName, viewName, propName, viewType, entity
 	});
 }
 
-function searchParent(webapi, defName, viewName, propName, viewType, currentName, oid, entity, func) {
+function searchParent(webapi, defName, viewName, propName, viewType, currentName, oid, entityOid, entityVersion, func) {
 	var params = "{";
 	params += "\"defName\":\"" + defName + "\"";
 	params += ",\"viewName\":\"" + viewName + "\"";
@@ -703,9 +713,11 @@ function searchParent(webapi, defName, viewName, propName, viewType, currentName
 	params += ",\"viewType\":\"" + viewType + "\"";
 	params += ",\"currentName\":\"" + currentName + "\"";
 	params += ",\"oid\":\"" + oid + "\"";
-	if (typeof entity !== "undefined" && entity !== null) {
-		params += ",\"entityOid\":\"" + entity.oid +"\"";
-		params += ",\"entityVersion\":\"" + entity.version +"\"";
+	if (typeof entityOid !== "undefined" && entityOid !== null) {
+		params += ",\"entityOid\":\"" + entityOid + "\"";
+	}
+	if (typeof entityVersion !== "undefined" && entityVersion !== null) {
+		params += ",\"entityVersion\":\"" + entityVersion + "\"";
 	}
 	params += "}";
 	postAsync(webapi, params, function(results) {
@@ -717,7 +729,7 @@ function searchParent(webapi, defName, viewName, propName, viewType, currentName
 ////////////////////////////////////////////////////////
 //連動プロパティ用のJavascript
 ////////////////////////////////////////////////////////
-function getLinkItems(webapi, defName, viewType, viewName, propName, linkValue, entity, callback) {
+function getLinkItems(webapi, defName, viewType, viewName, propName, linkValue, entityOid, entityVersion, callback) {
 
 	var params = "{";
 	params += "\"defName\":\"" + defName + "\"";
@@ -725,9 +737,11 @@ function getLinkItems(webapi, defName, viewType, viewName, propName, linkValue, 
 	params += ",\"viewName\":\"" + viewName + "\"";
 	params += ",\"propName\":\"" + propName + "\"";
 	params += ",\"linkValue\":\"" + linkValue + "\"";
-	if (typeof entity !== "undefined" && entity !== null) {
-		params += ",\"entityOid\":\"" + entity.oid +"\"";
-		params += ",\"entityVersion\":\"" + entity.version +"\"";
+	if (typeof entityOid !== "undefined" && entityOid != null) {
+		params += ",\"entityOid\":\"" + entityOid + "\"";
+	}
+	if (typeof entityVersion !== "undefined" && entityVersion != null) {
+		params += ",\"entityVersion\":\"" + entityVersion + "\"";
 	}
 	params += "}";
 	postAsync(webapi, params, function(results) {

@@ -1975,18 +1975,18 @@ function searchReference(selectAction, viewAction, defName, propName, multiplici
 			list.push(keySplit(key));
 		}
 
-		var parentEntity = null;
+		var rootEntity = null;
 		if (typeof entityOid !== "undefined" && typeof entityVersion !== "undefined") {
-			parentEntity = {oid: entityOid, version: entityVersion};
+			rootEntity = {oid: entityOid, version: entityVersion};
 		}
 
 		if (list.length > 0) {
 			var parentPropName = propName.replace(/^sc_/, "").replace(/\[\w+\]/g, "");
-			getEntityNameList(defName, viewName, parentDefName, parentViewName, parentPropName, viewType, refSectionIndex, list, parentEntity, function(entities) {
+			getEntityNameList(defName, viewName, parentDefName, parentViewName, parentPropName, viewType, refSectionIndex, list, rootEntity, function(entities) {
 				for (var i = 0; i < entities.length; i++) {
 					var entity = entities[i];
 					var _key = entity.oid + "_" + entity.version;
-					addReference("li_" + propName + _key, viewAction, defName, _key, entity.name, propName, "ul_" + _propName, refEdit, delCallback, parentDefName, parentViewName, viewType, entityOid, entityVersion);
+					addReference("li_" + propName + _key, viewAction, defName, _key, entity.name, propName, "ul_" + _propName, refEdit, delCallback, parentDefName, parentViewName, viewType, null, entityOid, entityVersion);
 				}
 				entityList = entities;
 			});
@@ -2245,7 +2245,12 @@ function searchUniqueReference(id, selectAction, viewAction, defName, propName, 
 		//参照の名前を一括取得
 		var entityList = new Array();
 		var parentPropName = propName.replace(/^sc_/, "").replace(/\[\w+\]/g, "");
-		getEntityNameList(defName, viewName, parentDefName, parentViewName, parentPropName, viewType, refSectionIndex, list, parentEntity, function(entities) {
+		var rootEntity = null;
+		if (typeof entityOid !== "undefined" && typeof entityVersion !== "undefined") {
+			rootEntity = {oid: entityOid, version: entityVersion};
+		}
+
+		getEntityNameList(defName, viewName, parentDefName, parentViewName, parentPropName, viewType, refSectionIndex, list, rootEntity, function(entities) {
 			for (var i = 0; i < entities.length; i++) {
 				var entity = entities[i];
 				var _key = entity.oid + "_" + entity.version;
@@ -2318,7 +2323,7 @@ function insertReference(addAction, viewAction, defName, propName, multiplicity,
 		document.scriptContext["editReferenceCallback"] = function(entity) {
 			var $ul = $("#ul_" + _propName);
 			var key = entity.oid + "_" + entity.version;
-			var linkId = addReference("li_" + propName + key, viewAction, defName, key, entity.name, propName, "ul_" + _propName, refEdit, delCallback, parentDefName, parentViewName, viewType, entityOid, entityVersion);
+			var linkId = addReference("li_" + propName + key, viewAction, defName, key, entity.name, propName, "ul_" + _propName, refEdit, delCallback, parentDefName, parentViewName, viewType, null, entityOid, entityVersion);
 
 			//カスタムのCallbackが定義されている場合に呼び出す
 			if (callback && $.isFunction(callback)) {
@@ -3104,7 +3109,7 @@ function updateNestValue_Reference(type, $node, parentPropName, name, entity) {
 			var viewType = $button.attr("data-viewType");
 			var key = val.oid + "_" + val.version;
 			var label = val.name;
-			addReference("li_" + propName, viewAction, defName, key, label, propName, "ul_" + _propName, refEdit, null, parentDefName, parentViewName, viewType, entityOid, entityVersion);
+			addReference("li_" + propName, viewAction, defName, key, label, propName, "ul_" + _propName, refEdit, null, parentDefName, parentViewName, viewType, null, entityOid, entityVersion);
 		}
 	} else if (type == "SELECT") {
 		var oid = "";

@@ -124,7 +124,7 @@ if (value.length > 0) {
 for (var i = 0; i < value.length; i++) {
 	var key = value[i].oid + "_" + (value[i].version ? value[i].version : "0");
 	var label = <%=editor.getDisplayLabelItem() == null ? "value[i].name" : "value[i]." + editor.getDisplayLabelItem() %>;
-	addReference("li_" + propName + key, "<%=viewAction%>", "<%=defName%>", key, label, propName, "ul_" + _propName, <%=refEdit%>, callback, "<%=parentDefName%>", "<%=parentViewName%>", "<%=viewType%>", "<%=entityOid%>", "<%=entityVersion%>");
+	addReference("li_" + propName + key, "<%=viewAction%>", "<%=defName%>", key, label, propName, "ul_" + _propName, <%=refEdit%>, callback, "<%=parentDefName%>", "<%=parentViewName%>", "<%=viewType%>", null, "<%=entityOid%>", "<%=entityVersion%>");
 }
 toggleRefInsertBtn("ul_" + _propName, multiplicity, "ins_btn_" + _propName);
 <%
@@ -164,7 +164,7 @@ if (value.length > 0) {
 for (var i = 0; i < value.length; i++) {
 	var key = value[i].oid + "_" + (value[i].version ? value[i].version : "0");
 	var label = <%=editor.getDisplayLabelItem() == null ? "value[i].name" : "value[i]." + editor.getDisplayLabelItem() %>;
-	addReference("li_" + propName + key, "<%=viewAction%>", "<%=defName%>", key, label, propName, "ul_" + _propName, <%=refEdit%>, callback, "<%=parentDefName%>", "<%=parentViewName%>", "<%=viewType%>", "<%=entityOid%>", "<%=entityVersion%>");
+	addReference("li_" + propName + key, "<%=viewAction%>", "<%=defName%>", key, label, propName, "ul_" + _propName, <%=refEdit%>, callback, "<%=parentDefName%>", "<%=parentViewName%>", "<%=viewType%>", null, "<%=entityOid%>", "<%=entityVersion%>");
 }
 toggleRefInsertBtn("ul_" + _propName, multiplicity, "ins_btn_" + _propName);
 <%
