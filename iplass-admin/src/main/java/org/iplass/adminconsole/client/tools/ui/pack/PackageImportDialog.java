@@ -61,8 +61,6 @@ import com.smartgwt.client.widgets.form.fields.CheckboxItem;
 import com.smartgwt.client.widgets.form.fields.ComboBoxItem;
 import com.smartgwt.client.widgets.form.fields.SelectItem;
 import com.smartgwt.client.widgets.form.fields.TextItem;
-import com.smartgwt.client.widgets.form.fields.events.ChangedEvent;
-import com.smartgwt.client.widgets.form.fields.events.ChangedHandler;
 import com.smartgwt.client.widgets.layout.HLayout;
 import com.smartgwt.client.widgets.layout.VLayout;
 import com.smartgwt.client.widgets.tab.Tab;
@@ -239,6 +237,8 @@ public class PackageImportDialog extends AbstractWindow {
 				@Override
 				public void onSuccess(PackageEntryInfo result) {
 					packageInfo = result;
+
+					PackageImportDialog.this.setTitle("Import Package : " + packageInfo.getPackageName());
 
 					if (SmartGWTUtil.isNotEmpty(result.getMetaDataPaths())) {
 						//メタデータ取り込みあり
@@ -658,14 +658,14 @@ public class PackageImportDialog extends AbstractWindow {
 
 		private CheckboxItem chkTruncateField;
 		private CheckboxItem chkBulkUpdateField;
-		private CheckboxItem chkForceUpdateField;
-		private CheckboxItem chkErrorSkipField;
-		private CheckboxItem chkIgnoreNotExistsPropertyField;
 		private CheckboxItem chkNotifyListenersField;
 		private CheckboxItem chkWithValidationField;
 		private CheckboxItem chkUpdateDisupdatablePropertyField;
-		private SelectItem commitLimitField;
+		private CheckboxItem chkForceUpdateField;
+		private CheckboxItem chkErrorSkipField;
+		private CheckboxItem chkIgnoreNotExistsPropertyField;
 		private TextItem prefixOidField;
+		private SelectItem commitLimitField;
 
 		private ComboBoxItem localeField;
 		private ComboBoxItem timeZoneField;
@@ -676,7 +676,6 @@ public class PackageImportDialog extends AbstractWindow {
 			setOverflow(Overflow.AUTO);	//Resize可能にするため
 
 			DynamicForm entityForm = new DynamicForm();
-			//entityForm.setMargin(10);
 			entityForm.setPadding(5);
 			entityForm.setWidth100();
 			entityForm.setAlign(Alignment.CENTER);
@@ -700,6 +699,57 @@ public class PackageImportDialog extends AbstractWindow {
 			chkBulkUpdateField.setTitle(rs("ui_tools_pack_PackageImportDialog_bulkUpdate"));
 			chkBulkUpdateField.setShowTitle(false);
 			chkBulkUpdateField.setColSpan(2);
+			chkBulkUpdateField.addChangedHandler((e)->{
+
+				if (SmartGWTUtil.getBooleanValue(chkBulkUpdateField)) {
+					//bulkUpdateモード
+					chkNotifyListenersField.setValue(false);
+					chkNotifyListenersField.setDisabled(true);
+					chkWithValidationField.setValue(false);
+					chkWithValidationField.setDisabled(true);
+					chkForceUpdateField.setValue(false);
+					chkForceUpdateField.setDisabled(true);
+					chkErrorSkipField.setValue(false);
+					chkErrorSkipField.setDisabled(true);
+				} else {
+					chkNotifyListenersField.setDisabled(false);
+					if (SmartGWTUtil.getBooleanValue(chkUpdateDisupdatablePropertyField)) {
+						chkWithValidationField.setDisabled(true);
+					} else {
+						chkWithValidationField.setDisabled(false);
+					}
+					chkForceUpdateField.setDisabled(false);
+					chkErrorSkipField.setDisabled(false);
+				}
+			});
+
+			chkNotifyListenersField = new CheckboxItem();
+			chkNotifyListenersField.setTitle(rs("ui_tools_pack_PackageImportDialog_notifyListener"));
+			chkNotifyListenersField.setShowTitle(false);
+			chkNotifyListenersField.setColSpan(2);
+
+			chkWithValidationField = new CheckboxItem();
+			chkWithValidationField.setTitle(rs("ui_tools_pack_PackageImportDialog_withValidation"));
+			chkWithValidationField.setShowTitle(false);
+			chkWithValidationField.setColSpan(2);
+
+			chkUpdateDisupdatablePropertyField = new CheckboxItem();
+			chkUpdateDisupdatablePropertyField.setTitle(rs("ui_tools_pack_PackageImportDialog_updateDisupdatableProperty"));
+			chkUpdateDisupdatablePropertyField.setShowTitle(false);
+			chkUpdateDisupdatablePropertyField.setColSpan(2);
+			chkUpdateDisupdatablePropertyField.addChangedHandler((e) -> {
+				//更新不可項目も更新する場合は、Validationをfalseに設定、入力不可にする
+				if (SmartGWTUtil.getBooleanValue(chkUpdateDisupdatablePropertyField)) {
+					chkWithValidationField.setValue(false);
+					chkWithValidationField.setDisabled(true);
+				} else {
+					if (SmartGWTUtil.getBooleanValue(chkBulkUpdateField)) {
+						chkWithValidationField.setDisabled(true);
+					} else {
+						chkWithValidationField.setDisabled(false);
+					}
+				}
+			});
 
 			chkForceUpdateField = new CheckboxItem();
 			chkForceUpdateField.setTitle(rs("ui_tools_pack_PackageImportDialog_forceUpdate"));
@@ -717,32 +767,10 @@ public class PackageImportDialog extends AbstractWindow {
 			chkIgnoreNotExistsPropertyField.setColSpan(2);
 			chkIgnoreNotExistsPropertyField.setValue(true);	//デフォルトtrue
 
-			chkNotifyListenersField = new CheckboxItem();
-			chkNotifyListenersField.setTitle(rs("ui_tools_pack_PackageImportDialog_notifyListener"));
-			chkNotifyListenersField.setShowTitle(false);
-			chkNotifyListenersField.setColSpan(2);
-
-			chkWithValidationField = new CheckboxItem();
-			chkWithValidationField.setTitle(rs("ui_tools_pack_PackageImportDialog_withValidation"));
-			chkWithValidationField.setShowTitle(false);
-			chkWithValidationField.setColSpan(2);
-
-			chkUpdateDisupdatablePropertyField = new CheckboxItem();
-			chkUpdateDisupdatablePropertyField.setTitle(rs("ui_tools_pack_PackageImportDialog_updateDisupdatableProperty"));
-			chkUpdateDisupdatablePropertyField.setShowTitle(false);
-			chkUpdateDisupdatablePropertyField.setColSpan(2);
-			chkUpdateDisupdatablePropertyField.addChangedHandler(new ChangedHandler() {
-				@Override
-				public void onChanged(ChangedEvent event) {
-					//更新不可項目も更新する場合は、Validationをfalseに設定、入力不可にする
-					if (SmartGWTUtil.getBooleanValue(chkUpdateDisupdatablePropertyField)) {
-						chkWithValidationField.setValue(false);
-						chkWithValidationField.setDisabled(true);
-					} else {
-						chkWithValidationField.setDisabled(false);
-					}
-				}
-			});
+			prefixOidField = new TextItem();
+			prefixOidField.setTitle("OID Prefix");
+			prefixOidField.setKeyPressFilter("[A-Za-z0-9]");	//英数字のみ
+			prefixOidField.setHint(rs("ui_tools_pack_PackageImportDialog_preOidHint"));
 
 			commitLimitField = new SelectItem();
 			commitLimitField.setTitle(rs("ui_tools_pack_PackageImportDialog_commitUnit"));
@@ -754,13 +782,6 @@ public class PackageImportDialog extends AbstractWindow {
 			commitValues.put("-1", rs("ui_tools_pack_PackageImportDialog_all"));
 			commitLimitField.setDefaultValue("100");
 			commitLimitField.setValueMap(commitValues);
-//			commitLimitField.setDisabled(true);	//暫定
-//			commitLimitField.setHint("（Not Released）");
-
-			prefixOidField = new TextItem();
-			prefixOidField.setTitle("OID Prefix");
-			prefixOidField.setKeyPressFilter("[A-Za-z0-9]");	//英数字のみ
-			prefixOidField.setHint(rs("ui_tools_pack_PackageImportDialog_preOidHint"));
 
 			VLayout hintLayout = new VLayout();
 			CanvasItem hintItem = new CanvasItem();
@@ -769,6 +790,7 @@ public class PackageImportDialog extends AbstractWindow {
 			hintItem.setCanvas(hintLayout);
 
 			hintLayout.addMember(getLabel("ui_tools_pack_PackageImportDialog_truncateComment"));
+			hintLayout.addMember(getLabel("ui_tools_pack_PackageImportDialog_bulkUpdateComment"));
 			hintLayout.addMember(getLabel("ui_tools_pack_PackageImportDialog_listenerComment"));
 			hintLayout.addMember(getLabel("ui_tools_pack_PackageImportDialog_updateDisupdatablePropertyComment1"));
 			hintLayout.addMember(getLabel("ui_tools_pack_PackageImportDialog_preOidComment1"));
@@ -850,8 +872,9 @@ public class PackageImportDialog extends AbstractWindow {
 			return cond;
 		}
 
-		private com.smartgwt.client.widgets.Label getLabel(String key) {
-			com.smartgwt.client.widgets.Label label = new com.smartgwt.client.widgets.Label(rs(key));
+		private Label getLabel(String key) {
+			String content = "<font color=\"red\">" + rs(key) + "</font>";
+			Label label = new Label(content);
 			label.setHeight(20);
 			return label;
 		}

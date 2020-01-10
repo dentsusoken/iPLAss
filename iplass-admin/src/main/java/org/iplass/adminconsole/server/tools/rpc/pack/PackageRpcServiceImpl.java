@@ -168,6 +168,7 @@ public class PackageRpcServiceImpl extends XsrfProtectedServiceServlet implement
 
 				//PackageInfo -> PackageEntryInfo(DTO)
 				PackageEntryInfo entry = new PackageEntryInfo();
+				entry.setPackageName(info.getPackageName());
 				entry.setMetaDataPaths(info.getMetaDataPaths());
 				entry.setTenant(info.getTenant());
 				entry.setWarningTenant(info.isWarningTenant());
