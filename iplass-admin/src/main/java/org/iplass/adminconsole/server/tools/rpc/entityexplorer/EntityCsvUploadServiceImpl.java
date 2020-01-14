@@ -69,7 +69,7 @@ public class EntityCsvUploadServiceImpl extends AdminUploadAction {
 			final List<FileItem> sessionFiles) throws UploadActionException {
 
 		final EntityImportResponseInfo result = new EntityImportResponseInfo();
-		final HashMap<String,Object> args = new HashMap<String,Object>();
+		final HashMap<String,Object> args = new HashMap<>();
 		try {
 
 			//リクエスト情報の取得
@@ -91,6 +91,8 @@ public class EntityCsvUploadServiceImpl extends AdminUploadAction {
 
 				    //リクエスト->EntityDataImportCondition
 				    EntityDataImportCondition cond = new EntityDataImportCondition();
+					cond.setTruncate(args.containsKey("chkTruncate"));
+					cond.setBulkUpdate(args.containsKey("chkBulkUpdate"));
 					if (args.containsKey("commitLimit")) {
 						cond.setCommitLimit(Integer.parseInt((String)args.get("commitLimit")));
 					}
@@ -105,7 +107,6 @@ public class EntityCsvUploadServiceImpl extends AdminUploadAction {
 					}
 					cond.setErrorSkip(args.containsKey("chkErrorSkip"));
 					cond.setIgnoreNotExistsProperty(args.containsKey("chkIgnoreNotExistsProperty"));
-					cond.setTruncate(args.containsKey("chkTruncate"));
 					cond.setFourceUpdate(args.containsKey("chkForceUpdate"));
 					if (args.containsKey("prefixOid")) {
 						cond.setPrefixOid((String)args.get("prefixOid"));

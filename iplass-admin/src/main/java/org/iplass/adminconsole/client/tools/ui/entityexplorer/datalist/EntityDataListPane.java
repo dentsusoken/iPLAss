@@ -202,7 +202,7 @@ public class EntityDataListPane extends VLayout {
 			@Override
 			public void onFailure(Throwable caught) {
 				GWT.log("error!!!", caught);
-				List<String> messages = new ArrayList<String>();
+				List<String> messages = new ArrayList<>();
 				messages.add(AdminClientMessageUtil.getString("ui_tools_entityexplorer_EntityDataListPane_failedToGetEntityDef"));
 				messages.add(caught.getMessage());
 
@@ -311,8 +311,7 @@ public class EntityDataListPane extends VLayout {
 				return;
 			}
 
-			EntityCsvUploadDialog dialog = new EntityCsvUploadDialog(curDefinition);
-			dialog.show();
+			EntityCsvUploadDialog.showFullScreen(curDefinition);
 		}
 
 	}
@@ -721,7 +720,7 @@ public class EntityDataListPane extends VLayout {
 
 			//選択OIDの取得
 			ListGridRecord[] records = grid.getSelectedRecords();
-			List<String> oids = new ArrayList<String>(records.length);
+			List<String> oids = new ArrayList<>(records.length);
 			for (ListGridRecord record : records) {
 				oids.add(record.getAttribute("oid"));
 			}
@@ -1067,7 +1066,7 @@ public class EntityDataListPane extends VLayout {
 				@Override
 				public void onFailure(Throwable caught) {
 					GWT.log("error!!!", caught);
-					List<String> messages = new ArrayList<String>();
+					List<String> messages = new ArrayList<>();
 					messages.add(AdminClientMessageUtil.getString("ui_tools_entityexplorer_EntityDataListPane_runEqlErr"));
 					messages.add(caught.getMessage());
 
@@ -1103,7 +1102,7 @@ public class EntityDataListPane extends VLayout {
 				@Override
 				public void onFailure(Throwable caught) {
 					GWT.log("error!!!", caught);
-					List<String> messages = new ArrayList<String>();
+					List<String> messages = new ArrayList<>();
 					messages.add(AdminClientMessageUtil.getString("ui_tools_entityexplorer_EntityDataListPane_runEqlErr"));
 					messages.add(caught.getMessage());
 

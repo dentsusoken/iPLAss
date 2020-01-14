@@ -61,8 +61,6 @@ import com.smartgwt.client.widgets.form.fields.CheckboxItem;
 import com.smartgwt.client.widgets.form.fields.ComboBoxItem;
 import com.smartgwt.client.widgets.form.fields.SelectItem;
 import com.smartgwt.client.widgets.form.fields.TextItem;
-import com.smartgwt.client.widgets.form.fields.events.ChangedEvent;
-import com.smartgwt.client.widgets.form.fields.events.ChangedHandler;
 import com.smartgwt.client.widgets.layout.HLayout;
 import com.smartgwt.client.widgets.layout.VLayout;
 import com.smartgwt.client.widgets.tab.Tab;
@@ -72,8 +70,6 @@ import com.smartgwt.client.widgets.tab.TabSet;
  * PackageをImportするダイアログ
  */
 public class PackageImportDialog extends AbstractWindow {
-
-	private static final String RESOURCE_PREFIX = "ui_tools_pack_PackageImportDialog_";
 
 	private static final int MIN_WIDTH = 800;
 	private static final int MIN_HEIGHT = 600;
@@ -152,7 +148,7 @@ public class PackageImportDialog extends AbstractWindow {
 			//------------------------
 			//Operation Pane
 			//------------------------
-			description = new HTMLFlow(getResourceString("importPackageDesc"));
+			description = new HTMLFlow(rs("ui_tools_pack_PackageImportDialog_importPackageDesc"));
 			description.setAutoHeight();
 			description.setWidth100();
 			description.setPadding(5);
@@ -203,6 +199,7 @@ public class PackageImportDialog extends AbstractWindow {
 			});
 			cancel = new IButton("Cancel");
 			cancel.addClickHandler(new ClickHandler() {
+				@Override
 				public void onClick(ClickEvent event) {
 					PackageImportDialog.this.destroy();
 				}
@@ -241,6 +238,8 @@ public class PackageImportDialog extends AbstractWindow {
 				public void onSuccess(PackageEntryInfo result) {
 					packageInfo = result;
 
+					PackageImportDialog.this.setTitle("Import Package : " + packageInfo.getPackageName());
+
 					if (SmartGWTUtil.isNotEmpty(result.getMetaDataPaths())) {
 						//メタデータ取り込みあり
 						metadataTab.setMessage(result.getMetaDataPaths());
@@ -263,7 +262,7 @@ public class PackageImportDialog extends AbstractWindow {
 					SmartGWTUtil.hideProgress();
 
 					GWT.log(caught.toString(), caught);
-					SC.warn(getResourceString("failedToGetPackage") + caught.getMessage());
+					SC.warn(rs("ui_tools_pack_PackageImportDialog_failedToGetPackage") + caught.getMessage());
 				}
 			});
 		}
@@ -319,7 +318,7 @@ public class PackageImportDialog extends AbstractWindow {
 				if (packageInfo.getEntityPaths().contains("mtp.auth.User" + ".csv")) {
 					PackageImportCondition cond = entityImportPane.getCondition();
 					if (cond.isTruncate()) {
-						SC.ask(getResourceString("confirm"), getResourceString("userTruncateConfirm"), new BooleanCallback() {
+						SC.ask(rs("ui_tools_pack_PackageImportDialog_confirm"), rs("ui_tools_pack_PackageImportDialog_userTruncateConfirm"), new BooleanCallback() {
 							@Override
 							public void execute(Boolean value) {
 								if (value) {
@@ -336,7 +335,7 @@ public class PackageImportDialog extends AbstractWindow {
 		}
 
 		private void doExecuteImport(final Tenant importTenant) {
-			SC.ask(getResourceString("confirm"), getResourceString("startImportConf"), new BooleanCallback() {
+			SC.ask(rs("ui_tools_pack_PackageImportDialog_confirm"), rs("ui_tools_pack_PackageImportDialog_startImportConf"), new BooleanCallback() {
 
 				@Override
 				public void execute(Boolean value) {
@@ -364,21 +363,21 @@ public class PackageImportDialog extends AbstractWindow {
 
 		private void importMetaData(Tenant importTenant) {
 
-			resultDialog.addMessage(getResourceString("startImportMetaData"));
+			resultDialog.addMessage(rs("ui_tools_pack_PackageImportDialog_startImportMetaData"));
 
 			service.importPackageMetaData(TenantInfoHolder.getId(), fileOid, importTenant, new AsyncCallback<MetaDataImportResultInfo>() {
 
 				@Override
 				public void onSuccess(MetaDataImportResultInfo result) {
 					if (result.isError()) {
-						resultDialog.addErrorMessage(getResourceString("failedToImportMetaData"));
+						resultDialog.addErrorMessage(rs("ui_tools_pack_PackageImportDialog_failedToImportMetaData"));
 						resultDialog.addErrorMessage(result.getMessages());
 
 						disableComponent(false);
 						resultDialog.finish();
 					} else {
 						resultDialog.addMessage(result.getMessages());
-						resultDialog.addMessage(getResourceString("importMetaDataComp"));
+						resultDialog.addMessage(rs("ui_tools_pack_PackageImportDialog_importMetaDataComp"));
 						resultDialog.addMessage("--------------------------------------");
 						if (SmartGWTUtil.isNotEmpty(packageInfo.getEntityPaths())) {
 							//Entityデータ取り込み
@@ -393,7 +392,7 @@ public class PackageImportDialog extends AbstractWindow {
 				@Override
 				public void onFailure(Throwable caught) {
 					GWT.log(caught.toString(), caught);
-					resultDialog.addErrorMessage(getResourceString("failedToImportMetaDataCause") + caught.getMessage());
+					resultDialog.addErrorMessage(rs("ui_tools_pack_PackageImportDialog_failedToImportMetaDataCause") + caught.getMessage());
 
 					disableComponent(false);
 					resultDialog.finish();
@@ -404,7 +403,7 @@ public class PackageImportDialog extends AbstractWindow {
 		private void importEntityData() {
 
 			//Role、RoleConditionチェック
-			List<String> execList = new ArrayList<String>(packageInfo.getEntityPaths().size());
+			List<String> execList = new ArrayList<>(packageInfo.getEntityPaths().size());
 			boolean hasRole = false;
 			for (String path : packageInfo.getEntityPaths()) {
 				if (path.equals(MetaDataConstants.ENTITY_NAME_ROLE + ".csv")) {
@@ -422,7 +421,7 @@ public class PackageImportDialog extends AbstractWindow {
 			}
 
 			//開始メッセージ
-			resultDialog.addMessage(getResourceString("startImportAllEntityData"));
+			resultDialog.addMessage(rs("ui_tools_pack_PackageImportDialog_startImportAllEntityData"));
 
 			PackageImportCondition cond = entityImportPane.getCondition();
 			importEntityData(execList, 0, cond);
@@ -433,7 +432,7 @@ public class PackageImportDialog extends AbstractWindow {
 			if (pathList.size() > index) {
 				final String path = pathList.get(index);
 
-				resultDialog.addMessage("[" + path + "]" + getResourceString("startImportEntityData"));
+				resultDialog.addMessage("[" + path + "]" + rs("ui_tools_pack_PackageImportDialog_startImportEntityData"));
 
 				service.importPackageEntityData(TenantInfoHolder.getId(), fileOid, path, cond, new AsyncCallback<EntityDataImportResultInfo>() {
 
@@ -441,13 +440,13 @@ public class PackageImportDialog extends AbstractWindow {
 					public void onSuccess(EntityDataImportResultInfo result) {
 						if (result.isError()) {
 							resultDialog.addErrorMessage(result.getMessages());
-							resultDialog.addErrorMessage("[" + path + "]" + getResourceString("failedImportEntityData"));
+							resultDialog.addErrorMessage("[" + path + "]" + rs("ui_tools_pack_PackageImportDialog_failedImportEntityData"));
 
 							if (cond.isErrorSkip()) {
 								//エラースキップの場合は次へ
 								importEntityData(pathList, index + 1, cond);
 							} else {
-								resultDialog.addErrorMessage(getResourceString("stopImportEntityData"));
+								resultDialog.addErrorMessage(rs("ui_tools_pack_PackageImportDialog_stopImportEntityData"));
 
 								disableComponent(false);
 								resultDialog.finish();
@@ -455,7 +454,7 @@ public class PackageImportDialog extends AbstractWindow {
 
 						} else {
 							resultDialog.addMessage(result.getMessages());
-							resultDialog.addMessage("[" + path + "]" + getResourceString("completeImportEntityData"));
+							resultDialog.addMessage("[" + path + "]" + rs("ui_tools_pack_PackageImportDialog_completeImportEntityData"));
 
 							//次のEntity処理
 							importEntityData(pathList, index + 1, cond);
@@ -465,9 +464,9 @@ public class PackageImportDialog extends AbstractWindow {
 					@Override
 					public void onFailure(Throwable caught) {
 						GWT.log(caught.toString(), caught);
-						resultDialog.addErrorMessage("[" + path + "]" + getResourceString("failedImportEntityDataCause") + caught.getMessage());
+						resultDialog.addErrorMessage("[" + path + "]" + rs("ui_tools_pack_PackageImportDialog_failedImportEntityDataCause") + caught.getMessage());
 
-						resultDialog.addErrorMessage(getResourceString("stopImportEntityData"));
+						resultDialog.addErrorMessage(rs("ui_tools_pack_PackageImportDialog_stopImportEntityData"));
 
 						disableComponent(false);
 						resultDialog.finish();
@@ -475,7 +474,7 @@ public class PackageImportDialog extends AbstractWindow {
 				});
 
 			} else {
-				resultDialog.addMessage(getResourceString("completeImportAllEntityData"));
+				resultDialog.addMessage(rs("ui_tools_pack_PackageImportDialog_completeImportAllEntityData"));
 				disableComponent(false);
 				resultDialog.finish();
 			}
@@ -571,7 +570,7 @@ public class PackageImportDialog extends AbstractWindow {
 //			}
 
 			public void setMessage(String message) {
-				List<String> messages = new ArrayList<String>();
+				List<String> messages = new ArrayList<>();
 				messages.add(message);
 				setMessage(messages);
 			}
@@ -658,14 +657,15 @@ public class PackageImportDialog extends AbstractWindow {
 	private class EntityImportPane extends VLayout {
 
 		private CheckboxItem chkTruncateField;
-		private CheckboxItem chkForceUpdateField;
-		private CheckboxItem chkErrorSkipField;
-		private CheckboxItem chkIgnoreNotExistsPropertyField;
+		private CheckboxItem chkBulkUpdateField;
 		private CheckboxItem chkNotifyListenersField;
 		private CheckboxItem chkWithValidationField;
 		private CheckboxItem chkUpdateDisupdatablePropertyField;
-		private SelectItem commitLimitField;
+		private CheckboxItem chkForceUpdateField;
+		private CheckboxItem chkErrorSkipField;
+		private CheckboxItem chkIgnoreNotExistsPropertyField;
 		private TextItem prefixOidField;
+		private SelectItem commitLimitField;
 
 		private ComboBoxItem localeField;
 		private ComboBoxItem timeZoneField;
@@ -676,7 +676,6 @@ public class PackageImportDialog extends AbstractWindow {
 			setOverflow(Overflow.AUTO);	//Resize可能にするため
 
 			DynamicForm entityForm = new DynamicForm();
-			//entityForm.setMargin(10);
 			entityForm.setPadding(5);
 			entityForm.setWidth100();
 			entityForm.setAlign(Alignment.CENTER);
@@ -686,52 +685,65 @@ public class PackageImportDialog extends AbstractWindow {
 			entityForm.setColWidths(90, "*");
 
 			CanvasItem caption = new CanvasItem();
-			caption.setCanvas(new Label(getResourceString("necessarySettEntityData")));
+			caption.setCanvas(new Label(rs("ui_tools_pack_PackageImportDialog_necessarySettEntityData")));
 			caption.setShowTitle(false);
 			caption.setColSpan(2);
 			caption.setHeight(20);
 
 			chkTruncateField = new CheckboxItem();
-			chkTruncateField.setTitle(getResourceString("truncate"));
+			chkTruncateField.setTitle(rs("ui_tools_pack_PackageImportDialog_truncate"));
 			chkTruncateField.setShowTitle(false);
 			chkTruncateField.setColSpan(2);
 
-			chkForceUpdateField = new CheckboxItem();
-			chkForceUpdateField.setTitle(getResourceString("forceUpdate"));
-			chkForceUpdateField.setShowTitle(false);
-			chkForceUpdateField.setColSpan(2);
+			chkBulkUpdateField = new CheckboxItem();
+			chkBulkUpdateField.setTitle(rs("ui_tools_pack_PackageImportDialog_bulkUpdate"));
+			chkBulkUpdateField.setShowTitle(false);
+			chkBulkUpdateField.setColSpan(2);
+			chkBulkUpdateField.addChangedHandler((e)->{
 
-			chkErrorSkipField = new CheckboxItem();
-			chkErrorSkipField.setTitle(getResourceString("errorDataSkip"));
-			chkErrorSkipField.setShowTitle(false);
-			chkErrorSkipField.setColSpan(2);
-
-			chkIgnoreNotExistsPropertyField = new CheckboxItem();
-			chkIgnoreNotExistsPropertyField.setTitle(getResourceString("ignoreNotExistsProperty"));
-			chkIgnoreNotExistsPropertyField.setShowTitle(false);
-			chkIgnoreNotExistsPropertyField.setColSpan(2);
-			chkIgnoreNotExistsPropertyField.setValue(true);	//デフォルトtrue
+				if (SmartGWTUtil.getBooleanValue(chkBulkUpdateField)) {
+					//bulkUpdateモード
+					chkNotifyListenersField.setValue(false);
+					chkNotifyListenersField.setDisabled(true);
+					chkWithValidationField.setValue(false);
+					chkWithValidationField.setDisabled(true);
+					chkForceUpdateField.setValue(false);
+					chkForceUpdateField.setDisabled(true);
+					chkErrorSkipField.setValue(false);
+					chkErrorSkipField.setDisabled(true);
+				} else {
+					chkNotifyListenersField.setDisabled(false);
+					if (SmartGWTUtil.getBooleanValue(chkUpdateDisupdatablePropertyField)) {
+						chkWithValidationField.setDisabled(true);
+					} else {
+						chkWithValidationField.setDisabled(false);
+					}
+					chkForceUpdateField.setDisabled(false);
+					chkErrorSkipField.setDisabled(false);
+				}
+			});
 
 			chkNotifyListenersField = new CheckboxItem();
-			chkNotifyListenersField.setTitle(getResourceString("notifyListener"));
+			chkNotifyListenersField.setTitle(rs("ui_tools_pack_PackageImportDialog_notifyListener"));
 			chkNotifyListenersField.setShowTitle(false);
 			chkNotifyListenersField.setColSpan(2);
 
 			chkWithValidationField = new CheckboxItem();
-			chkWithValidationField.setTitle(getResourceString("withValidation"));
+			chkWithValidationField.setTitle(rs("ui_tools_pack_PackageImportDialog_withValidation"));
 			chkWithValidationField.setShowTitle(false);
 			chkWithValidationField.setColSpan(2);
 
 			chkUpdateDisupdatablePropertyField = new CheckboxItem();
-			chkUpdateDisupdatablePropertyField.setTitle(getResourceString("updateDisupdatableProperty"));
+			chkUpdateDisupdatablePropertyField.setTitle(rs("ui_tools_pack_PackageImportDialog_updateDisupdatableProperty"));
 			chkUpdateDisupdatablePropertyField.setShowTitle(false);
 			chkUpdateDisupdatablePropertyField.setColSpan(2);
-			chkUpdateDisupdatablePropertyField.addChangedHandler(new ChangedHandler() {
-				@Override
-				public void onChanged(ChangedEvent event) {
-					//更新不可項目も更新する場合は、Validationをfalseに設定、入力不可にする
-					if (SmartGWTUtil.getBooleanValue(chkUpdateDisupdatablePropertyField)) {
-						chkWithValidationField.setValue(false);
+			chkUpdateDisupdatablePropertyField.addChangedHandler((e) -> {
+				//更新不可項目も更新する場合は、Validationをfalseに設定、入力不可にする
+				if (SmartGWTUtil.getBooleanValue(chkUpdateDisupdatablePropertyField)) {
+					chkWithValidationField.setValue(false);
+					chkWithValidationField.setDisabled(true);
+				} else {
+					if (SmartGWTUtil.getBooleanValue(chkBulkUpdateField)) {
 						chkWithValidationField.setDisabled(true);
 					} else {
 						chkWithValidationField.setDisabled(false);
@@ -739,23 +751,37 @@ public class PackageImportDialog extends AbstractWindow {
 				}
 			});
 
-			commitLimitField = new SelectItem();
-			commitLimitField.setTitle(getResourceString("commitUnit"));
-			LinkedHashMap<String, String> commitValues = new LinkedHashMap<String, String>();
-			commitValues.put("1", getResourceString("one"));
-			commitValues.put("10", getResourceString("ten"));
-			commitValues.put("100", getResourceString("hundred"));
-			commitValues.put("1000", getResourceString("thousand"));
-			commitValues.put("-1", getResourceString("all"));
-			commitLimitField.setDefaultValue("100");
-			commitLimitField.setValueMap(commitValues);
-//			commitLimitField.setDisabled(true);	//暫定
-//			commitLimitField.setHint("（Not Released）");
+			chkForceUpdateField = new CheckboxItem();
+			chkForceUpdateField.setTitle(rs("ui_tools_pack_PackageImportDialog_forceUpdate"));
+			chkForceUpdateField.setShowTitle(false);
+			chkForceUpdateField.setColSpan(2);
+
+			chkErrorSkipField = new CheckboxItem();
+			chkErrorSkipField.setTitle(rs("ui_tools_pack_PackageImportDialog_errorDataSkip"));
+			chkErrorSkipField.setShowTitle(false);
+			chkErrorSkipField.setColSpan(2);
+
+			chkIgnoreNotExistsPropertyField = new CheckboxItem();
+			chkIgnoreNotExistsPropertyField.setTitle(rs("ui_tools_pack_PackageImportDialog_ignoreNotExistsProperty"));
+			chkIgnoreNotExistsPropertyField.setShowTitle(false);
+			chkIgnoreNotExistsPropertyField.setColSpan(2);
+			chkIgnoreNotExistsPropertyField.setValue(true);	//デフォルトtrue
 
 			prefixOidField = new TextItem();
 			prefixOidField.setTitle("OID Prefix");
 			prefixOidField.setKeyPressFilter("[A-Za-z0-9]");	//英数字のみ
-			prefixOidField.setHint(getResourceString("preOidHint"));
+			prefixOidField.setHint(rs("ui_tools_pack_PackageImportDialog_preOidHint"));
+
+			commitLimitField = new SelectItem();
+			commitLimitField.setTitle(rs("ui_tools_pack_PackageImportDialog_commitUnit"));
+			LinkedHashMap<String, String> commitValues = new LinkedHashMap<>();
+			commitValues.put("1", rs("ui_tools_pack_PackageImportDialog_one"));
+			commitValues.put("10", rs("ui_tools_pack_PackageImportDialog_ten"));
+			commitValues.put("100", rs("ui_tools_pack_PackageImportDialog_hundred"));
+			commitValues.put("1000", rs("ui_tools_pack_PackageImportDialog_thousand"));
+			commitValues.put("-1", rs("ui_tools_pack_PackageImportDialog_all"));
+			commitLimitField.setDefaultValue("100");
+			commitLimitField.setValueMap(commitValues);
 
 			VLayout hintLayout = new VLayout();
 			CanvasItem hintItem = new CanvasItem();
@@ -763,14 +789,15 @@ public class PackageImportDialog extends AbstractWindow {
 			hintItem.setColSpan(2);
 			hintItem.setCanvas(hintLayout);
 
-			hintLayout.addMember(getLabel("truncateComment"));
-			hintLayout.addMember(getLabel("listenerComment"));
-			hintLayout.addMember(getLabel("updateDisupdatablePropertyComment1"));
-			hintLayout.addMember(getLabel("preOidComment1"));
-			hintLayout.addMember(getLabel("preOidComment2"));
-			hintLayout.addMember(getLabel("useCtrlComment1"));
+			hintLayout.addMember(getLabel("ui_tools_pack_PackageImportDialog_truncateComment"));
+			hintLayout.addMember(getLabel("ui_tools_pack_PackageImportDialog_bulkUpdateComment"));
+			hintLayout.addMember(getLabel("ui_tools_pack_PackageImportDialog_listenerComment"));
+			hintLayout.addMember(getLabel("ui_tools_pack_PackageImportDialog_updateDisupdatablePropertyComment1"));
+			hintLayout.addMember(getLabel("ui_tools_pack_PackageImportDialog_preOidComment1"));
+			hintLayout.addMember(getLabel("ui_tools_pack_PackageImportDialog_preOidComment2"));
+			hintLayout.addMember(getLabel("ui_tools_pack_PackageImportDialog_useCtrlComment1"));
 
-			entityForm.setItems(caption, chkTruncateField,
+			entityForm.setItems(caption, chkTruncateField, chkBulkUpdateField,
 					chkNotifyListenersField, chkWithValidationField, chkUpdateDisupdatablePropertyField,
 					chkForceUpdateField, chkErrorSkipField, chkIgnoreNotExistsPropertyField,
 					prefixOidField, commitLimitField, hintItem);
@@ -809,7 +836,7 @@ public class PackageImportDialog extends AbstractWindow {
 //			entityForm.setColWidths(90, "*");
 //
 //			chkAsyncField = new CheckboxItem();
-//			chkAsyncField.setTitle(getResourceString("runAsynchronously"));
+//			chkAsyncField.setTitle(rs("ui_tools_pack_PackageImportDialog_runAsynchronously"));
 //			chkAsyncField.setShowTitle(false);
 //			chkAsyncField.setColSpan(2);
 //			chkAsyncField.setDisabled(true);	//暫定
@@ -830,6 +857,7 @@ public class PackageImportDialog extends AbstractWindow {
 		public PackageImportCondition getCondition() {
 			PackageImportCondition cond = new PackageImportCondition();
 			cond.setTruncate(SmartGWTUtil.getBooleanValue(chkTruncateField));
+			cond.setBulkUpdate(SmartGWTUtil.getBooleanValue(chkBulkUpdateField));
 			cond.setFourceUpdate(SmartGWTUtil.getBooleanValue(chkForceUpdateField));
 			cond.setErrorSkip(SmartGWTUtil.getBooleanValue(chkErrorSkipField));
 			cond.setIgnoreNotExistsProperty(SmartGWTUtil.getBooleanValue(chkIgnoreNotExistsPropertyField));
@@ -844,8 +872,9 @@ public class PackageImportDialog extends AbstractWindow {
 			return cond;
 		}
 
-		private com.smartgwt.client.widgets.Label getLabel(String key) {
-			com.smartgwt.client.widgets.Label label = new com.smartgwt.client.widgets.Label(getResourceString(key));
+		private Label getLabel(String key) {
+			String content = "<font color=\"red\">" + rs(key) + "</font>";
+			Label label = new Label(content);
 			label.setHeight(20);
 			return label;
 		}
@@ -879,6 +908,7 @@ public class PackageImportDialog extends AbstractWindow {
 			//------------------------
 			okButton = new IButton("OK");
 			okButton.addClickHandler(new ClickHandler() {
+				@Override
 				public void onClick(ClickEvent event) {
 					destroy();
 				}
@@ -938,8 +968,8 @@ public class PackageImportDialog extends AbstractWindow {
 		}
 	}
 
-	private String getResourceString(String key) {
-		return AdminClientMessageUtil.getString(RESOURCE_PREFIX + key);
+	private String rs(String key) {
+		return AdminClientMessageUtil.getString(key);
 	}
 
 }
