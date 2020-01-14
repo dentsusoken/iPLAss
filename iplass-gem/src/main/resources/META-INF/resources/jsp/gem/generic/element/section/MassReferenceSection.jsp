@@ -170,7 +170,7 @@
  data-sortKey="" data-sortType="" data-creatable="<%=creatable %>" data-updatable="<%=updatable %>" data-deletable=<%=deletable%> data-purge=<%=purge %>
  data-showPaging=<%=!section.isHidePaging()%> data-showPageJump=<%=!section.isHidePageJump()%> data-showPageLink=<%=!section.isHidePageLink()%> data-showCount=<%=!section.isHideCount()%>
  data-showSearchBtn=<%=section.isShowSearchBtn()%> data-condKey="<c:out value="<%=key %>" />" data-tokenValue=<%= TemplateUtil.outputToken(TokenOutputType.VALUE)%>
- data-entityOid="<c:out value="<%=rootOid %>"/>" data-entityVersion="<c:out value="<%=rootVersion %>"/>" >
+ data-entityOid="<c:out value="<%=StringUtil.escapeJavaScript(rootOid) %>"/>" data-entityVersion="<c:out value="<%=StringUtil.escapeJavaScript(rootVersion) %>"/>" >
 <%
 	if (!PagingPosition.BOTTOM.name().equals(pagingPosition)) {
 %>

@@ -64,7 +64,7 @@
  data-viewName="<%=viewName %>" data-webapiName="<%=ReferenceComboCommand.WEBAPI_NAME%>"
  data-getEditorWebapiName="<%=GetEditorCommand.WEBAPI_NAME %>" data-searchParentWebapiName="<%=SearchParentCommand.WEBAPI_NAME %>"
  data-viewType="<%=Constants.VIEW_TYPE_DETAIL %>" data-prefix="" data-searchType="NONE" data-upperName="" data-upperOid="" data-customStyle="<c:out value="<%=customStyle%>"/>"
- data-entityOid="<%=rootOid%>" data-entityVersion="<%=rootVersion%>">
+ data-entityOid="<%=StringUtil.escapeJavaScript(rootOid)%>" data-entityVersion="<%=StringUtil.escapeJavaScript(rootVersion)%>">
 </select>
 <%
 	} else {
@@ -81,7 +81,7 @@
  data-viewName="<%=viewName %>" data-webapiName="<%=ReferenceComboCommand.WEBAPI_NAME%>"
  data-getEditorWebapiName="<%=GetEditorCommand.WEBAPI_NAME %>" data-searchParentWebapiName="<%=SearchParentCommand.WEBAPI_NAME %>"
  data-viewType="<%=Constants.VIEW_TYPE_DETAIL %>" data-prefix="" data-searchType="NONE" data-upperName="" data-upperOid="" data-customStyle="<c:out value="<%=customStyle%>"/>"
- data-entityOid="<%=rootOid%>" data-entityVersion="<%=rootVersion%>">
+ data-entityOid="<%=StringUtil.escapeJavaScript(rootOid)%>" data-entityVersion="<%=StringUtil.escapeJavaScript(rootVersion)%>">
 </select> <input type="button" value="${m:rs('mtp-gem-messages', 'generic.editor.reference.ReferencePropertyEditor_RefCombo.delete')}" class="gr-btn-02 del-btn" />
 </li>
 <%
@@ -99,7 +99,7 @@
  data-viewName="<%=viewName %>" data-webapiName="<%=ReferenceComboCommand.WEBAPI_NAME%>"
  data-getEditorWebapiName="<%=GetEditorCommand.WEBAPI_NAME %>" data-searchParentWebapiName="<%=SearchParentCommand.WEBAPI_NAME %>"
  data-viewType="<%=Constants.VIEW_TYPE_DETAIL %>" data-prefix="" data-searchType="NONE" data-upperName="" data-upperOid="" data-customStyle="<c:out value="<%=customStyle%>"/>"
- data-entityOid="<%=rootOid%>" data-entityVersion="<%=rootVersion%>">
+ data-entityOid="<%=StringUtil.escapeJavaScript(rootOid)%>" data-entityVersion="<%=StringUtil.escapeJavaScript(rootVersion)%>">
 </select> <input type="button" value="${m:rs('mtp-gem-messages', 'generic.editor.reference.ReferencePropertyEditor_RefCombo.delete')}" class="gr-btn-02 del-btn" onclick="deleteItem('<%=StringUtil.escapeJavaScript(liId)%>')" />
 </li>
 <%
