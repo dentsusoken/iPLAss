@@ -686,7 +686,7 @@ $(function() {
 	}
 	$selBtn.on("click", function() {
 		searchReference(params.selectAction, params.viewAction, params.defName, params.propName, params.multiplicity, <%=isMultiple%>,
-				 params.urlParam, params.refEdit, function(){}, null, params.viewName, params.permitConditionSelectAll, null, null, params.parentDefName, params.parentViewName, params.viewType);
+				 params.urlParam, params.refEdit, function(){}, null, params.viewName, params.permitConditionSelectAll, params.parentDefName, params.parentViewName, params.viewType);
 	});
 
 	<%-- common.js --%>
