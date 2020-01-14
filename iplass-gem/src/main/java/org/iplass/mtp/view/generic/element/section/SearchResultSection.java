@@ -245,7 +245,10 @@ public class SearchResultSection extends Section {
 			multiLangField = "localizedBulkUpdateDisplayLabel",
 			displayOrder=300
 	)
-	@MultiLang()
+	@MultiLang(
+			multiLangGetter="getLocalizedBulkUpdateDisplayLabel",
+			multiLangSetter = "setLocalizedBulkUpdateDisplayLabel"
+	)
 	private String bulkUpdateDisplayLabel;
 
 	/** 多言語設定情報 */
@@ -396,7 +399,7 @@ public class SearchResultSection extends Section {
 	 * @return 要素
 	 */
 	public List<Element> getElements() {
-		if (elements == null) elements = new ArrayList<Element>();
+		if (elements == null) elements = new ArrayList<>();
 		return elements;
 	}
 
