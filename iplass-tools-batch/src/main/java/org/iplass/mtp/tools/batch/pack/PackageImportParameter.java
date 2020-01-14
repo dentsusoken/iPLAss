@@ -23,6 +23,8 @@ public class PackageImportParameter {
 
 	/** Silentモード Entityデータ Truncate */
 	public static final String PROP_ENTITY_TRUNCATE = "entity.truncate";
+	/** Silentモード Entityデータ bulkUpdate */
+	public static final String PROP_ENTITY_BULK_UPDATE = "entity.bulkUpdate";
 	/** Silentモード Entityデータ Listnerを実行 */
 	public static final String PROP_ENTITY_NOTIFY_LISTENER = "entity.notifyListener";
 	/** Silentモード Entityデータ Validationを実行(更新不可項目を対象にする場合はfalseに強制設定) */
