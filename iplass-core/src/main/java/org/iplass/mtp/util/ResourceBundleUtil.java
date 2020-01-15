@@ -24,11 +24,15 @@ import java.util.Locale;
 import java.util.ResourceBundle;
 
 import org.iplass.mtp.impl.util.ResourceBundleWrapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * ResourceBundle取得用のユーティリティ。
  */
 public class ResourceBundleUtil {
+	
+	private static Logger logger = LoggerFactory.getLogger(ResourceBundleUtil.class);
 
 	/**
 	 * ResourceBundleに定義された文字列を返します。
@@ -42,6 +46,7 @@ public class ResourceBundleUtil {
 		try {
 			return ResourceBundleWrapper.getString(key, arguments);
 		} catch (Exception e) {
+			logger.error("cant get resource string of key: " + key + ". cause:" + e);
 			return "";
 		}
 	}
@@ -58,6 +63,7 @@ public class ResourceBundleUtil {
 		try {
 			return ResourceBundleWrapper.getString(langLocale, key, arguments);
 		} catch (Exception e) {
+			logger.error("cant get resource string of key: " + key + ". cause:" + e);
 			return "";
 		}
 	}
@@ -96,6 +102,7 @@ public class ResourceBundleUtil {
 		try {
 			return ResourceBundleWrapper.getString(resource, key, arguments);
 		} catch (Exception e) {
+			logger.error("cant get resource string of bundleName: " + resource.getBaseBundleName() + " key: " + key + ". cause:" + e);
 			return "";
 		}
 	}
@@ -114,6 +121,7 @@ public class ResourceBundleUtil {
 			ResourceBundle bundle = getResourceBundle(bundleBaseName, langLocale);
 			return resourceString(bundle, key, arguments);
 		} catch (Exception e) {
+			logger.error("cant get resource string of bundleName: " + bundleBaseName + " key: " + key + ". cause:" + e);
 			return "";
 		}
 	}

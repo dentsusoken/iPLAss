@@ -22,7 +22,6 @@ package org.iplass.mtp.impl.util;
 
 import java.text.MessageFormat;
 import java.util.Locale;
-import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
 import org.iplass.mtp.impl.core.ExecuteContext;
@@ -59,18 +58,14 @@ public class ResourceBundleWrapper {
 	 * @return
 	 */
 	public static String getString(Locale langLocale, String key, Object... arguments) {
-		try {
-			ResourceBundle resource = getResourceBundle(RESOURCE_FILE_NAME, langLocale);
-			String resourceString = resource.getString(key);
+		ResourceBundle resource = getResourceBundle(RESOURCE_FILE_NAME, langLocale);
+		String resourceString = resource.getString(key);
 
-			if (resourceString != null && arguments != null && arguments.length > 0) {
-				return MessageFormat.format(resourceString, arguments);
-			}
-
-			return resourceString;
-		} catch (MissingResourceException e) {
-			return "";
+		if (resourceString != null && arguments != null && arguments.length > 0) {
+			return MessageFormat.format(resourceString, arguments);
 		}
+
+		return resourceString;
 	}
 
 	public static String getString(ResourceBundle resource, String key, Object... arguments) {

@@ -900,7 +900,7 @@
 		<interface>org.iplass.mtp.impl.message.MessageService</interface>
 		<class>org.iplass.mtp.impl.message.MessageService</class>
 		<property name="resourceBundle">
-			<property name="baseBundleNamePattern" value="^org/iplass/.*$" />
+			<property name="baseBundleNamePattern" value="^mtp-.*$" />
 			<property name="formats" value="java.class" />
 			<property name="formats" value="java.properties" />
 			<property name="fallbackToSystemLocale" value="false" />
