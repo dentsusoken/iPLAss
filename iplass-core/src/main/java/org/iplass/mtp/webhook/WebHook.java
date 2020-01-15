@@ -32,6 +32,9 @@ public class WebHook  {
 
 	/** 送る内容 */
 	private WebHookContent content;
+	
+	/** 送るメソッド */
+	private String httpMethod;
 
 	private ArrayList<WebHookSubscriber> subscribers;
 
@@ -97,7 +100,6 @@ public class WebHook  {
 	public void setSynchronous(boolean synchronous) {
 		this.synchronous = synchronous;
 	}
-
 
 	public String getName() {
 		return name;
@@ -188,6 +190,14 @@ public class WebHook  {
 
 	public void setTokenHeader(String tokenHeader) {
 		this.tokenHeader = tokenHeader;
+	}
+	
+	public String getHttpMethod() {
+		return httpMethod;
+	}
+
+	public void setHttpMethod(String httpMethod) {
+		this.httpMethod = httpMethod;
 	}
 
 }

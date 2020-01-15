@@ -18,6 +18,7 @@ public class WebHookTemplateDefinition implements Definition {
 	private String sender;
 	private String addressUrl;
 	private String tokenHeader;//セキュリテぃトークンのヘッダー名を設置
+	private String httpMethod;
 
 	private Boolean synchronous;
 
@@ -199,6 +200,14 @@ public class WebHookTemplateDefinition implements Definition {
 
 	public void setTokenHeader(String tokenHeader) {
 		this.tokenHeader = tokenHeader;
+	}
+	
+	public String getHttpMethod() {
+		return httpMethod;
+	}
+
+	public void setHttpMethod(String httpMethod) {
+		this.httpMethod = httpMethod;
 	}
 
 }

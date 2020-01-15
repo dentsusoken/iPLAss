@@ -22,11 +22,21 @@ import javax.crypto.spec.SecretKeySpec;
 import javax.net.ssl.SSLException;
 import org.apache.http.HttpHeaders;
 import org.apache.http.HttpHost;
+import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.StatusLine;
 import org.apache.http.client.HttpRequestRetryHandler;
 import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpDelete;
+import org.apache.http.client.methods.HttpEntityEnclosingRequestBase;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpHead;
+import org.apache.http.client.methods.HttpOptions;
+import org.apache.http.client.methods.HttpPatch;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpPut;
+import org.apache.http.client.methods.HttpRequestBase;
+import org.apache.http.client.methods.HttpTrace;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
@@ -60,7 +70,6 @@ public class WebHookServiceImpl extends AbstractTypedMetaDataService<MetaWebHook
 	public static final String WEBHOOK_USE_PROXY= "webHook.Use.Proxy";
 	
 	private AsyncTaskManager atm;
-	private WebHookAuthTokenHandler authTokenHandler;
 	
 	private String webHookProxyHost;
 	private int webHookProxyPort;
@@ -151,6 +160,8 @@ public class WebHookServiceImpl extends AbstractTypedMetaDataService<MetaWebHook
 
 	private void sendWebHook(WebHook webHook) {
 		try {
+			ArrayList<WebHookSubscriber> receivers = new ArrayList<WebHookSubscriber>(webHook.getSubscribers());
+			for (WebHookSubscriber receiver : receivers) {
 
 			
 			logger.info("WebHook:"+webHook.getTemplateName()+" Attempted.");
@@ -188,7 +199,7 @@ public class WebHookServiceImpl extends AbstractTypedMetaDataService<MetaWebHook
 			}
 			try {
 				CloseableHttpClient httpClient= httpClientBuilder.build();
-				ArrayList<WebHookSubscriber> receivers = new ArrayList<WebHookSubscriber>(webHook.getSubscribers());
+
 
 				//fill in webhook payload
 				String payload = webHook.getContent().getContent();
@@ -201,15 +212,17 @@ public class WebHookServiceImpl extends AbstractTypedMetaDataService<MetaWebHook
 				
 				Exception ex = null;
 
-					//TODO: sync か　asyn,なんかsyncは珍しいみたいで
-				for (int j = 0; j < receivers.size();j++) {
-					WebHookSubscriber temp= receivers.get(j);
-					//TODO: fill in info to post
-					HttpPost httpPost = new HttpPost(new URI(receivers.get(j).getUrl()));
+				
+					WebHookSubscriber temp= receiver;
+					HttpRequestBase httpRequest = getReqestMethodObject(webHook.getHttpMethod());
+					httpRequest.setURI(new URI(receiver.getUrl()));
+					
 					// and payload and headers
-					httpPost.setEntity(se);
+					if (isEnclosingRequest(httpRequest)) {
+						((HttpEntityEnclosingRequestBase) httpRequest).setEntity(se);
+					}
 					for(WebHookHeader headerEntry: webHook.getHeaders()) {
-						httpPost.setHeader(headerEntry.getKey(), headerEntry.getValue());
+						httpRequest.setHeader(headerEntry.getKey(), headerEntry.getValue());
 					}
 					if (temp.getSecurityToken()!=null) {
 						if (!temp.getSecurityToken().isEmpty()) {
@@ -220,13 +233,12 @@ public class WebHookServiceImpl extends AbstractTypedMetaDataService<MetaWebHook
 							} else {
 								tokenHeader = webHook.getTokenHeader();
 							}
-							httpPost.setHeader(tokenHeader, hmacToken);//FIXME:iplass-token should be configurable.
+							httpRequest.setHeader(tokenHeader, hmacToken);
 						}
-						//TODO: need more testing
 					}
 					if (temp.getSecurityBearerToken()!=null) {
 						if (!temp.getSecurityBearerToken().isEmpty()) {
-							httpPost.setHeader(HttpHeaders.AUTHORIZATION, "Bearer " +temp.getSecurityBearerToken());
+							httpRequest.setHeader(HttpHeaders.AUTHORIZATION, "Bearer " +temp.getSecurityBearerToken());
 						}
 						//TODO: need more testing
 					}
@@ -234,24 +246,24 @@ public class WebHookServiceImpl extends AbstractTypedMetaDataService<MetaWebHook
 						if(!temp.getSecurityUsername().isEmpty()&&!temp.getSecurityPassword().isEmpty()) {
 							String basic = temp.getSecurityUsername()+":"+ temp.getSecurityPassword();
 							basic ="Basic " + Base64.encodeBase64String(basic.getBytes());
-							httpPost.setHeader(HttpHeaders.AUTHORIZATION, basic);
+							httpRequest.setHeader(HttpHeaders.AUTHORIZATION, basic);
 						}
 					}
-					CloseableHttpResponse response = httpClient.execute(httpPost);
+					CloseableHttpResponse response = httpClient.execute(httpRequest);
 					logger.debug("\n---------------------------\n response headers: \n"+response.getAllHeaders().toString()+"\n response entity: \n"+ response.getEntity().getContentType()+"\n"+response.getEntity().getContent()+"\n---------------------------");
 					try {
+						//TODO: response handler?
 						StatusLine statusLine= response.getStatusLine();
 						if (statusLine.getStatusCode() == HttpStatus.SC_OK) {//普通に成功
-							receivers.remove(j);
+							logger.debug("webHook to :"+temp.getSecurityUsername()+" success");
 						}
 					} finally {
 						response.close();
 						httpClient.close();
 					}
+				} finally{
+					
 				}
-				
-			} finally {
-				
 			}
 		}catch(Exception e)
 		{
@@ -381,7 +393,7 @@ public class WebHookServiceImpl extends AbstractTypedMetaDataService<MetaWebHook
 				temp.setState(WebHookSubscriber.WEBHOOKSUBSCRIBERSTATE.UNCHANGED);
 				newList.add(temp);	
 			}else {
-				//ここに来ると、UNCHANGED確定
+				//UNCHANGED確定
 				newList.add(temp);
 			}
 		}
@@ -392,5 +404,36 @@ public class WebHookServiceImpl extends AbstractTypedMetaDataService<MetaWebHook
 	public String generateUuid() {
 		UUID uuid = UUID.randomUUID();
 		return uuid.toString();
+	}
+	
+	private HttpRequestBase getReqestMethodObject(String methodName){
+		if (methodName.equals("GET")) {
+			return new HttpGet();
+		}else if (methodName.equals("POST")) {
+			return new HttpPost();
+		}else if (methodName.equals("DELETE")) {
+			return new HttpDelete();
+		}else if (methodName.equals("PUT")) {
+			return new HttpPut();
+		}else if (methodName.equals("PATCH")) {
+			return new HttpPatch();
+		}else if (methodName.equals("HEAD")) {
+			return new HttpHead();
+		}else if (methodName.equals("OPTIONS")) {
+			return new HttpOptions();
+		}else if (methodName.equals("TRACE")) {
+			return new HttpTrace();
+		}else {
+			return new HttpPost();
+		}
+	}
+	private boolean isEnclosingRequest(HttpRequestBase request) {
+		if (request.getMethod().equals("PATCH")
+				|| request.getMethod().equals("POST")
+				|| request.getMethod().equals("PUT")) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 }

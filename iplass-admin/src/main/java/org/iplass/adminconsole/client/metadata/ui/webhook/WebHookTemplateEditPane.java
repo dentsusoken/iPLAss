@@ -25,8 +25,6 @@ import org.iplass.adminconsole.shared.metadata.rpc.MetaDataServiceAsync;
 import org.iplass.adminconsole.shared.metadata.rpc.MetaDataServiceFactory;
 import org.iplass.gwt.ace.client.EditorMode;
 import org.iplass.mtp.definition.DefinitionEntry;
-import org.iplass.mtp.impl.webhook.WebHookService;
-import org.iplass.mtp.spi.ServiceRegistry;
 import org.iplass.mtp.webhook.template.definition.WebHookContent;
 import org.iplass.mtp.webhook.template.definition.WebHookHeader;
 import org.iplass.mtp.webhook.template.definition.WebHookSubscriber;
@@ -45,7 +43,7 @@ import com.smartgwt.client.widgets.events.ClickHandler;
 import com.smartgwt.client.widgets.form.DynamicForm;
 import com.smartgwt.client.widgets.form.fields.CheckboxItem;
 import com.smartgwt.client.widgets.form.fields.IntegerItem;
-import com.smartgwt.client.widgets.form.fields.RadioGroupItem;
+import com.smartgwt.client.widgets.form.fields.SelectItem;
 import com.smartgwt.client.widgets.form.fields.TextItem;
 import com.smartgwt.client.widgets.grid.ListGrid;
 import com.smartgwt.client.widgets.grid.ListGridField;
@@ -57,7 +55,6 @@ import com.smartgwt.client.widgets.layout.SectionStackSection;
 import com.smartgwt.client.widgets.layout.VLayout;
 import com.smartgwt.client.widgets.tab.Tab;
 import com.smartgwt.client.widgets.tab.TabSet;
-import com.smartgwt.client.widgets.form.validator.CustomValidator;
 public class WebHookTemplateEditPane extends MetaDataMainEditPane {
 
 	private enum FIELD_NAME {
@@ -119,9 +116,10 @@ public class WebHookTemplateEditPane extends MetaDataMainEditPane {
 		
 		webHookTemplateAttrPane = new WebHookTemplateAttributePane();
 		webHookTemplateSubscriberPane = new WebHookTemplateSubscriberPane();
+		webHookTemplateSubscriberPane.setDefaultHeight(400);
 		
 		SectionStackSection defaultWebHookSection = createSection("Default WebHookTemplate", webHookTemplateAttrPane);		
-		SectionStackSection subScrioberSection = createSection("Subscribers", webHookTemplateSubscriberPane);
+		SectionStackSection subScrioberSection = createSection("Subscribers",false, webHookTemplateSubscriberPane);
 		setMainSections(commonSection, defaultWebHookSection, subScrioberSection);
 		addMember(headerPane);
 		addMember(mainStack);
@@ -246,7 +244,8 @@ public class WebHookTemplateEditPane extends MetaDataMainEditPane {
 		
 		//送る情報を編集
 		private TabSet messageTabSet;
-		
+		//request method
+		private SelectItem webHookMethodField; 
 		private Tab plainContentTab;
 		private ScriptEditorPane plainEditor;
 		
@@ -267,7 +266,7 @@ public class WebHookTemplateEditPane extends MetaDataMainEditPane {
 			
 			HLayout topPane = new HLayout();
 			topPane.setMembersMargin(5);
-			topPane.setHeight(300);
+			topPane.setHeight(200);
 			
 			VLayout headerPane = new VLayout();
 			headerPane.setMargin(5);
@@ -282,6 +281,7 @@ public class WebHookTemplateEditPane extends MetaDataMainEditPane {
 			retryForm.setColWidths(100,"*");
 			retryForm.setIsGroup(true);
 			retryForm.setGroupTitle("Retry");
+			
 			
 			//TODO: add the message to AdminClientMessageUtil
 			isRetryField = new CheckboxItem("webhookIsRetry", "Enable Retry");//AdminClientMessageUtil.getString("ui_metadata_webhook_WebHookTemplateEditPane_isRetry")
@@ -298,8 +298,8 @@ public class WebHookTemplateEditPane extends MetaDataMainEditPane {
 			retryIntervalField.setKeyPressFilter("^[0-9]*$");
 			
 			retryForm.setItems(isRetryField, retryLimitField, retryIntervalField);
-			
-			
+
+
 			templateInfoForm = new DynamicForm();
 			templateInfoForm.setWidth(300);
 			templateInfoForm.setPadding(10);
@@ -317,6 +317,10 @@ public class WebHookTemplateEditPane extends MetaDataMainEditPane {
 			charsetField.setWidth(150);
 			tokenNameField = new TextItem("webhookTokenName", "Security Token Name");
 			tokenNameField.setWidth(150);
+			
+			webHookMethodField = new SelectItem("webHookMethodField","Http Request Method");
+			webHookMethodField.setValueMap("GET", "POST", "DELETE", "PUT","PATCH","HEAD","OPTIONS","TRACE");
+			webHookMethodField.setWidth(150);
 //			headerForm = new DynamicForm();
 //			headerForm.setWidth100();
 //			headerForm.setNumCols(4);
@@ -371,7 +375,7 @@ public class WebHookTemplateEditPane extends MetaDataMainEditPane {
 			headerPane.addMember(headerGrid);
 			headerPane.addMember(mapButtonPane);
 			
-			templateInfoForm.setItems(isSynchronous, charsetField, tokenNameField);
+			templateInfoForm.setItems(isSynchronous, charsetField, tokenNameField,webHookMethodField);
 			
 			topPane.addMember(templateInfoForm);
 			topPane.addMember(retryForm);
@@ -379,7 +383,7 @@ public class WebHookTemplateEditPane extends MetaDataMainEditPane {
 			
 			messageTabSet = new TabSet();
 			messageTabSet.setWidth100();
-			messageTabSet.setHeight(450);
+			messageTabSet.setHeight(550);
 			messageTabSet.setPaneContainerOverflow(Overflow.HIDDEN);	
 			
 			plainContentTab = new Tab();
@@ -517,6 +521,7 @@ public class WebHookTemplateEditPane extends MetaDataMainEditPane {
 			definition.setRetry(SmartGWTUtil.getBooleanValue(isRetryField));
 			definition.setSynchronous(SmartGWTUtil.getBooleanValue(isSynchronous));
 			definition.setTokenHeader(SmartGWTUtil.getStringValue(tokenNameField));
+			definition.setHttpMethod(SmartGWTUtil.getStringValue(webHookMethodField));
 
 			return definition;
 		}
@@ -531,6 +536,7 @@ public class WebHookTemplateEditPane extends MetaDataMainEditPane {
 				retryIntervalField.setValue(definition.getRetryInterval());
 				isRetryField.setValue(definition.isRetry());
 				tokenNameField.setValue(definition.getTokenHeader());
+				webHookMethodField.setValue(definition.getHttpMethod());
 				if (definition.getContentBody().getContent()==null) {
 					plainEditor.setText("");
 				} else {
@@ -547,7 +553,9 @@ public class WebHookTemplateEditPane extends MetaDataMainEditPane {
 				retryIntervalField.clearValue();
 				isRetryField.clearValue();
 				tokenNameField.clearValue();
+				webHookMethodField.clearValue();
 				messageTabSet.selectTab(plainContentTab);
+				
 			}
 		}
 		/**
@@ -588,15 +596,9 @@ public class WebHookTemplateEditPane extends MetaDataMainEditPane {
 		public WebHookTemplateSubscriberPane() {
 			setMembersMargin(5);
 			
-//			subscriberForm = new DynamicForm();
-//			subscriberForm.setWidth100();
-//			subscriberForm.setNumCols(4);
-//			subscriberForm.setColWidths(100, "*", "*", "*");
-//			subscriberForm.setHeight(400);
-			
-			
 			grid = new SubscriberMapGrid();
 			grid.setWidth100();
+			grid.setHeight("85%");
 			grid.addRecordDoubleClickHandler(new RecordDoubleClickHandler() {
 				public void onRecordDoubleClick(RecordDoubleClickEvent event) {
 					editMap((ListGridRecord)event.getRecord());

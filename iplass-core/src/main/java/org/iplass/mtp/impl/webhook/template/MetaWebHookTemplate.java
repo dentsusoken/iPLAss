@@ -26,8 +26,6 @@ import org.iplass.mtp.impl.script.template.GroovyTemplate;
 import org.iplass.mtp.impl.script.template.GroovyTemplateBinding;
 import org.iplass.mtp.impl.script.template.GroovyTemplateCompiler;
 import org.iplass.mtp.impl.util.ObjectUtil;
-import org.iplass.mtp.impl.webhook.WebHookServiceImpl;
-import org.iplass.mtp.spi.ServiceRegistry;
 import org.iplass.mtp.webhook.WebHook;
 import org.iplass.mtp.webhook.template.definition.WebHookContent;
 import org.iplass.mtp.webhook.template.definition.WebHookHeader;
@@ -51,7 +49,8 @@ public class MetaWebHookTemplate extends BaseRootMetaData implements DefinableMe
 	private WebHookContent contentBody;
 	private String sender;
 	private String addressUrl;
-	
+	private String httpMethod;
+
 	/** サブスクライバー：このwebhookを要求した方達 */
 	private ArrayList<MetaWebHookSubscriber> subscribers;
 
@@ -100,7 +99,7 @@ public class MetaWebHookTemplate extends BaseRootMetaData implements DefinableMe
 			subscribers.add(mws);
 		}
 		
-		
+		httpMethod = definition.getHttpMethod();
 		retry = definition.isRetry();
 		retryInterval = definition.getRetryInterval();
 		retryLimit = definition.getRetryLimit();
@@ -139,7 +138,7 @@ public class MetaWebHookTemplate extends BaseRootMetaData implements DefinableMe
 		}
 		definition.setSubscribers(tempList);
 
-		
+		definition.setHttpMethod(httpMethod);
 		definition.setRetry(retry);
 		definition.setRetryInterval(retryInterval);
 		definition.setRetryLimit(retryLimit);
@@ -230,14 +229,22 @@ public class MetaWebHookTemplate extends BaseRootMetaData implements DefinableMe
 	public void setTokenHeader(String tokenHeader) {
 		this.tokenHeader = tokenHeader;
 	}
+	
+	public String getHttpMethod() {
+		return httpMethod;
+	}
+
+	public void setHttpMethod(String httpMethod) {
+		this.httpMethod = httpMethod;
+	}
 
 	public class WebHookTemplateRuntime extends BaseMetaDataRuntime {
 
 		public WebHookTemplateRuntime() {
 			super();
 			try {
-			ScriptEngine se = ExecuteContext.getCurrentContext().getTenantContext().getScriptEngine();
-			contentTemplate = GroovyTemplateCompiler.compile(contentBody.getContent(), "WebHookTemplate_Text" + getName(), (GroovyScriptEngine) se);
+				ScriptEngine se = ExecuteContext.getCurrentContext().getTenantContext().getScriptEngine();
+				contentTemplate = GroovyTemplateCompiler.compile(contentBody.getContent(), "WebHookTemplate_Text" + getName(), (GroovyScriptEngine) se);
 			} catch (RuntimeException e) {
 				setIllegalStateException(e);
 			}
@@ -268,6 +275,7 @@ public class MetaWebHookTemplate extends BaseRootMetaData implements DefinableMe
 			webHook.setHeaders(headers);
 			webHook.setTokenHeader(tokenHeader);
 
+			webHook.setHttpMethod(httpMethod);
 			webHook.setSynchronous(synchronous);
 
 			if (contentTemplate != null) {

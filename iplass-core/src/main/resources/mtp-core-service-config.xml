@@ -169,6 +169,10 @@
 				<property name="hashAlgorithm" value="SHA-256" />
 			</property>
 		</property>
+				<property name="handler" class="org.iplass.mtp.impl.webhook.WebHookAuthTokenHandler">
+			<property name="type" value="WEBHOOKATH" />
+			<property name="store" value="default" />
+		</property>
 	</service>
 
 	<!-- Mail関連 -->
