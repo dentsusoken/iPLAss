@@ -242,16 +242,21 @@ public class MetaWebHookTemplate extends BaseRootMetaData implements DefinableMe
 
 		public WebHookTemplateRuntime() {
 			super();
+			subscriberUrlTemplates = new HashMap<String, GroovyTemplate>();
 			try {
 				ScriptEngine se = ExecuteContext.getCurrentContext().getTenantContext().getScriptEngine();
 				contentTemplate = GroovyTemplateCompiler.compile(contentBody.getContent(), "WebHookTemplate_Text" + getName(), (GroovyScriptEngine) se);
+				for (MetaWebHookSubscriber subscriber:subscribers) {
+					GroovyTemplate _urlTemp = GroovyTemplateCompiler.compile(subscriber.getUrl(), "WebHookTemplate_Subscriber_" + subscriber.getWebHookSubscriberId() + "_" + getName(), (GroovyScriptEngine) se);
+					subscriberUrlTemplates.put(subscriber.getWebHookSubscriberId(), _urlTemp);
+				}
 			} catch (RuntimeException e) {
 				setIllegalStateException(e);
 			}
 		}
 
 		private GroovyTemplate contentTemplate;
-		
+		private HashMap<String, GroovyTemplate> subscriberUrlTemplates;
 		@Override
 		public MetaWebHookTemplate getMetaData() {
 			return MetaWebHookTemplate.this;
@@ -277,16 +282,20 @@ public class MetaWebHookTemplate extends BaseRootMetaData implements DefinableMe
 
 			webHook.setHttpMethod(httpMethod);
 			webHook.setSynchronous(synchronous);
+			
+			//common binding
+			Map<String, Object> bindings = new HashMap<String, Object>();
+			if (parameter != null) {
+				for (Map.Entry<String, Object> e: parameter.entrySet()) {
+					bindings.put(e.getKey(), e.getValue());
+				}
+			}
+			bindings.put("webHook", webHook);
 
+			//groovy template
 			if (contentTemplate != null) {
 				StringWriter sw = new StringWriter();
-				GroovyTemplateBinding gtb = new GroovyTemplateBinding(sw);
-				gtb.setVariable("webHook", webHook);
-				if (parameter != null) {
-					for (Map.Entry<String, Object> e: parameter.entrySet()) {
-						gtb.setVariable(e.getKey(), e.getValue());
-					}
-				}
+				GroovyTemplateBinding gtb = new GroovyTemplateBinding(sw,bindings);
 				try {
 					contentTemplate.doTemplate(gtb);
 				} catch (IOException e) {
@@ -301,8 +310,16 @@ public class MetaWebHookTemplate extends BaseRootMetaData implements DefinableMe
 				for (MetaWebHookSubscriber metaSubscriber : subscribers) {
 					WebHookSubscriber ws = new WebHookSubscriber();
 					ws.setSubscriberName(metaSubscriber.getSubscriberName());
-					ws.setUrl(metaSubscriber.getUrl());
 					ws.setWebHookSubscriberId(metaSubscriber.getWebHookSubscriberId());
+					StringWriter sw = new StringWriter();
+					GroovyTemplateBinding gtb = new GroovyTemplateBinding(sw,bindings);
+					try {
+						subscriberUrlTemplates.get(ws.getWebHookSubscriberId()).doTemplate(gtb);
+					} catch (IOException e) {
+						throw new ScriptRuntimeException(e);
+					}
+					//ws.setUrl(metaSubscriber.getUrl());
+					ws.setUrl(sw.toString());
 					tempList.add(ws);
 				}
 			}

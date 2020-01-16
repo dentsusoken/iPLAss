@@ -675,7 +675,12 @@ public class WebHookTemplateEditPane extends MetaDataMainEditPane {
 					WebHookSubscriber param = event.getValueObject(WebHookSubscriber.class);
 
 					if (record != null) {
-						param.setState(WEBHOOKSUBSCRIBERSTATE.MODIFIED);
+						if(param.getState().equals(WEBHOOKSUBSCRIBERSTATE.CREATED)) {
+							//do nothing
+						}
+						else {
+							param.setState(WEBHOOKSUBSCRIBERSTATE.MODIFIED);
+						}
 					} else {
 						//新規追加
 						param.setState(WEBHOOKSUBSCRIBERSTATE.CREATED);
