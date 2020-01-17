@@ -186,7 +186,7 @@ public class DefaultUserEntityResolver implements UserEntityResolver {
 			em.search(q, new Predicate<Object[]>() {
 				@Override
 				public boolean test(Object[] data) {
-					eb.handle(data);
+					eb.handle(data, null);
 					return true;
 				}
 			});

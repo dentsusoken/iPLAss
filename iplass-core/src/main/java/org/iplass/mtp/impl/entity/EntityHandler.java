@@ -1643,7 +1643,7 @@ public class EntityHandler extends BaseMetaDataRuntime {
 							row[i] = vpa.getValue(select.get(i));
 						}
 
-						builder.handle(row);
+						builder.handle(row, null);
 					}
 					builder.finished();
 					for (Entity entity: builder.getCollection()) {
