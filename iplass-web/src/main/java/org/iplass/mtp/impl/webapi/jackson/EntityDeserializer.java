@@ -23,11 +23,13 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
 import org.iplass.mtp.entity.BinaryReference;
 import org.iplass.mtp.entity.Entity;
+import org.iplass.mtp.entity.GenericEntity;
 import org.iplass.mtp.entity.SelectValue;
 import org.iplass.mtp.entity.definition.PropertyDefinitionType;
 import org.iplass.mtp.impl.entity.EntityContext;
@@ -152,7 +154,8 @@ public class EntityDeserializer extends StdDeserializer<Entity> {
 	}
 	
 	private Entity toEntity(EntityContext ec, EntityHandler eh, JsonNode node, DeserializationContext ctxt) throws IOException {
-		Entity entity = eh.newInstance();
+		GenericEntity entity = (GenericEntity) eh.newInstance();
+		HashMap<String, Object> props = new HashMap<>();
 		
 		for (Iterator<Map.Entry<String, JsonNode>> it = node.fields(); it.hasNext();) {
 			Map.Entry<String, JsonNode> e = it.next();
@@ -163,40 +166,45 @@ public class EntityDeserializer extends StdDeserializer<Entity> {
 					logger.warn("unknown property name:" + e.getKey() + " of Entity:" + eh.getMetaData().getName() + ", so ignore value");
 				}
 			} else {
-				Object propVal = null;
-				Object[] arrayVal = null;
 				JsonNode value = e.getValue();
-				if (value != null && !value.isNull()) {
-					if (value.isArray()) {
-						if (ph.getMetaData().getMultiplicity() == 1) {
-							if (value.size() > 0) {
-								propVal = getValue(ec, eh, ph, value.get(0), ctxt);
+				if (value != null) {
+					if (value.isNull()) {
+						props.put(e.getKey(), null);
+					} else {
+						Object propVal = null;
+						Object[] arrayVal = null;
+						
+						if (value.isArray()) {
+							if (ph.getMetaData().getMultiplicity() == 1) {
+								if (value.size() > 0) {
+									propVal = getValue(ec, eh, ph, value.get(0), ctxt);
+								}
+							} else {
+								arrayVal = ph.newArrayInstance(value.size(), ec);
+								for (int i = 0; i < arrayVal.length; i++) {
+									arrayVal[i] = getValue(ec, eh, ph, value.get(i), ctxt);
+								}
 							}
 						} else {
-							arrayVal = ph.newArrayInstance(value.size(), ec);
-							for (int i = 0; i < arrayVal.length; i++) {
-								arrayVal[i] = getValue(ec, eh, ph, value.get(i), ctxt);
+							if (ph.getMetaData().getMultiplicity() == 1) {
+								propVal = getValue(ec, eh, ph, value, ctxt);
+							} else {
+								arrayVal = ph.newArrayInstance(1, ec);
+								arrayVal[0] = getValue(ec, eh, ph, value, ctxt);
 							}
 						}
-					} else {
-						if (ph.getMetaData().getMultiplicity() == 1) {
-							propVal = getValue(ec, eh, ph, value, ctxt);
-						} else {
-							arrayVal = ph.newArrayInstance(1, ec);
-							arrayVal[0] = getValue(ec, eh, ph, value, ctxt);
+						if (propVal != null) {
+							props.put(e.getKey(), propVal);
+						}
+						if (arrayVal != null) {
+							props.put(e.getKey(), arrayVal);
 						}
 					}
-				}
-				
-				if (propVal != null) {
-					entity.setValue(e.getKey(), propVal);
-				}
-				if (arrayVal != null) {
-					entity.setValue(e.getKey(), arrayVal);
 				}
 			}
 		}
 		
+		entity.applyProperties(props);
 		return entity;
 	}
 
