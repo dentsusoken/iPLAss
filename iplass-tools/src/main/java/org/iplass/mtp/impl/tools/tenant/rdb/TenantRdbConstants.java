@@ -72,9 +72,11 @@ public interface TenantRdbConstants {
 		,"task_queue"
 	).collect(Collectors.toSet());
 
-	/** SubPartition数 */
-	public static int MAX_SUBPARTITION = 8;
+	/** 最大(デフォルト)SubPartition数 */
+	public static final int MAX_SUBPARTITION = 8;
 
+	/** 最小SubPartition数 */
+	public static final int MIN_SUBPARTITION = 0;
 
 	/**
 	 * <p>SubPartition除外テーブルリスト</p>

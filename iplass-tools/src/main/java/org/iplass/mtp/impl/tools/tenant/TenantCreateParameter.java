@@ -20,6 +20,8 @@
 
 package org.iplass.mtp.impl.tools.tenant;
 
+import org.iplass.mtp.impl.tools.tenant.rdb.TenantRdbConstants;
+
 /**
  * テナント作成用パラメータ情報
  *
@@ -48,6 +50,9 @@ public class TenantCreateParameter {
 
 	//TODO 暫定対応 サブパーティション利用有無 (MySQL時のみ利用)
 	private boolean isMySqlUseSubPartition = false;
+
+	//サブパーティション数
+	private int subPartitionSize = TenantRdbConstants.MAX_SUBPARTITION;
 
 	//テナント作成者（誰が使ってるテナントかわかるよう、出来れば変えたい）
 	private String registId = "program";
@@ -144,6 +149,14 @@ public class TenantCreateParameter {
 
 	public void setMySqlUseSubPartition(boolean isMySqlUseSubPartition) {
 	    this.isMySqlUseSubPartition = isMySqlUseSubPartition;
+	}
+
+	public int getSubPartitionSize() {
+		return subPartitionSize;
+	}
+
+	public void setSubPartitionSize(int subPartitionSize) {
+		this.subPartitionSize = subPartitionSize;
 	}
 
 	public String getUseLanguages() {
