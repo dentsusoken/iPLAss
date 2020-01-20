@@ -39,6 +39,8 @@ import java.util.concurrent.Callable;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import javax.net.ssl.SSLException;
+
+import org.apache.http.HttpEntity;
 import org.apache.http.HttpHeaders;
 import org.apache.http.HttpHost;
 import org.apache.http.HttpResponse;
@@ -62,13 +64,12 @@ import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.protocol.HttpContext;
 import org.iplass.mtp.ManagerLocator;
 import org.iplass.mtp.async.AsyncTaskManager;
-import org.iplass.mtp.definition.DefinitionEntry;
 import org.iplass.mtp.definition.TypedDefinitionManager;
-import org.iplass.mtp.entity.definition.EntityDefinitionManager;
 import org.iplass.mtp.impl.auth.authenticate.token.AuthTokenService;
 import org.iplass.mtp.impl.core.ExecuteContext;
 import org.iplass.mtp.impl.definition.AbstractTypedMetaDataService;
 import org.iplass.mtp.impl.definition.DefinitionMetaDataTypeMap;
+import org.iplass.mtp.impl.http.HttpClientConfig;
 import org.iplass.mtp.impl.webhook.template.MetaWebHookTemplate;
 import org.iplass.mtp.impl.webhook.template.MetaWebHookTemplate.WebHookTemplateRuntime;
 import org.iplass.mtp.spi.Config;
@@ -84,15 +85,23 @@ import org.slf4j.LoggerFactory;
 
 public class WebHookServiceImpl extends AbstractTypedMetaDataService<MetaWebHookTemplate, WebHookTemplateRuntime>
 		implements WebHookService {
-	public static final String WEBHOOK_PROXY_HOST= "webHook.Proxy.Host";
-	public static final String WEBHOOK_PROXY_PORT= "webHook.Proxy.Port";
-	public static final String WEBHOOK_USE_PROXY= "webHook.Use.Proxy";
-	
+	public final String WEBHOOK_USE_PROXY= "webHook.Use.Proxy";
+	public final String WEBHOOK_ISRETRY= "webHook.IsRetry";
+	public final String WEBHOOK_RETRY_MAXIMUMATTEMPTS = "webHook.Retry.MaximumAttempts";
+	public final String WEBHOOK_RETRY_INTERVAL = "webHook.Retry.Interval";
+	public final String WEBHOOK_HMACTOKEN_ALGORITHM = "webHook.HmacToken.Algorithm";
+	public final String WEBHOOK_HMACTOKEN_DEFAULTNAME = "webHook.HmacToken.DefaultName";
+	public final String WEBHOOK_HTTP_CLIENT_CONFIG = "httpClientConfig";
 	private AsyncTaskManager atm;
 	
-	private String webHookProxyHost;
-	private int webHookProxyPort;
 	private boolean webHookUseProxy;
+	private boolean webHookIsRetry;
+	private int webHookRetryMaximumAttpempts;
+	private int webHookRetryInterval;
+	private String webHookHmacTokenAlgorithm;
+	private String webHookHmacTokenDefaultName;
+	private HttpClientConfig webHookHttpClientConfig;
+	
 	private static Logger logger = LoggerFactory.getLogger(WebHookServiceImpl.class);
 	public static final String WEBHOOK_TEMPLATE_META_PATH = "/webhook/template/";
 
@@ -134,18 +143,45 @@ public class WebHookServiceImpl extends AbstractTypedMetaDataService<MetaWebHook
 	public void init(Config config) {
 		for (String name: config.getNames()) {
 			switch (name) {
-			case WEBHOOK_PROXY_HOST:
-				webHookProxyHost = config.getValue(WEBHOOK_PROXY_HOST);
-			case WEBHOOK_PROXY_PORT:
-				webHookProxyPort = Integer.valueOf(config.getValue(WEBHOOK_PROXY_PORT));
 			case WEBHOOK_USE_PROXY:
-				 String temp = config.getValue(WEBHOOK_USE_PROXY);
-				 if (temp.replaceAll("\\s","").toLowerCase().equals("true")) {
+				 String tempUseProxy = config.getValue(WEBHOOK_USE_PROXY);
+				 if (tempUseProxy.replaceAll("\\s","").toLowerCase().equals("true")) {
 					 webHookUseProxy = true;
+				 } else {
+					 webHookUseProxy = false;
 				 }
+				 break;
+			case WEBHOOK_ISRETRY:
+				 String tempIsRetry = config.getValue(WEBHOOK_ISRETRY);
+				 if (tempIsRetry.replaceAll("\\s","").toLowerCase().equals("true")) {
+					 webHookIsRetry = true;
+				 } else {
+					 webHookIsRetry = false;
+				 }
+				break;
+			case WEBHOOK_RETRY_MAXIMUMATTEMPTS:
+				webHookRetryMaximumAttpempts = Integer.valueOf(config.getValue(WEBHOOK_RETRY_MAXIMUMATTEMPTS));
+				break;
+			case WEBHOOK_RETRY_INTERVAL:
+				webHookRetryInterval = Integer.valueOf(config.getValue(WEBHOOK_RETRY_INTERVAL));
+				break;
+			case WEBHOOK_HMACTOKEN_ALGORITHM:
+				webHookHmacTokenAlgorithm = config.getValue(WEBHOOK_HMACTOKEN_ALGORITHM);
+				break;
+			case WEBHOOK_HMACTOKEN_DEFAULTNAME:
+				webHookHmacTokenDefaultName = config.getValue(WEBHOOK_HMACTOKEN_DEFAULTNAME);
+				break;
+			case WEBHOOK_HTTP_CLIENT_CONFIG:
+				webHookHttpClientConfig = config.getValue(WEBHOOK_HTTP_CLIENT_CONFIG, HttpClientConfig.class);
+				if (webHookHttpClientConfig == null) {
+					webHookHttpClientConfig = new HttpClientConfig();
+					webHookHttpClientConfig.inited(this, config);
+				}
+				break;
 			}
-			
 		}
+		//TODO:add default values to the necessary items, such as hmac algorithm
+		atm = ManagerLocator.getInstance().getManager(AsyncTaskManager.class);
 	}
 
 	@Override
@@ -154,7 +190,6 @@ public class WebHookServiceImpl extends AbstractTypedMetaDataService<MetaWebHook
 
 	@Override
 	public WebHook createWebHook(Tenant tenant, String charset) {
-		logger.info("empty webhook created.");
 		return new WebHook();
 	}
 
@@ -168,7 +203,6 @@ public class WebHookServiceImpl extends AbstractTypedMetaDataService<MetaWebHook
 				.getRegistry().getService(AuthTokenService.class)
 				.getHandler(WebHookAuthTokenHandler.TYPE_WEBHOOK_AUTHTOKEN_HANDLER);
 		this.fillData(tenant.getId(), webHook.getMetaDataId(), tokenHandler, webHook.getSubscribers());
-		atm = ManagerLocator.getInstance().getManager(AsyncTaskManager.class);
 		if (webHook.isSynchronous()) {
 			sendWebHook(webHook);
 		} else {
@@ -185,9 +219,9 @@ public class WebHookServiceImpl extends AbstractTypedMetaDataService<MetaWebHook
 			
 			logger.info("WebHook:"+webHook.getTemplateName()+" Attempted.");
 			HttpClientBuilder httpClientBuilder = null;
-			if (webHook.isRetry()) {
-				int retryCount = webHook.getRetryLimit();
-				int retryInterval = webHook.getRetryInterval();
+			if (webHookIsRetry) {
+				int retryCount = webHookRetryMaximumAttpempts;
+				int retryInterval = webHookRetryInterval;
 				HttpRequestRetryHandler requestRetryHandler=new HttpRequestRetryHandler(){
 					public boolean retryRequest(final IOException exception, int executionCount, final HttpContext context){
 						//特定の失敗ケースだけリトライ
@@ -213,7 +247,7 @@ public class WebHookServiceImpl extends AbstractTypedMetaDataService<MetaWebHook
 				httpClientBuilder = HttpClientBuilder.create().disableAutomaticRetries();
 			}
 			if (this.webHookUseProxy) {
-				HttpHost proxy = new HttpHost(this.webHookProxyHost,this.webHookProxyPort,"http");
+				HttpHost proxy = new HttpHost(webHookHttpClientConfig.getProxyHost(),webHookHttpClientConfig.getProxyPort(),"http");
 				httpClientBuilder.setProxy(proxy);
 			}
 			try {
@@ -248,7 +282,7 @@ public class WebHookServiceImpl extends AbstractTypedMetaDataService<MetaWebHook
 							String hmacToken= getHmacSha256(temp.getSecurityToken(), payload);
 							String tokenHeader;
 							if (webHook.getTokenHeader()==null||webHook.getTokenHeader().replaceAll("\\s","").isEmpty()) {
-								tokenHeader = "security-token";
+								tokenHeader = webHookHmacTokenDefaultName;
 							} else {
 								tokenHeader = webHook.getTokenHeader();
 							}
@@ -259,7 +293,6 @@ public class WebHookServiceImpl extends AbstractTypedMetaDataService<MetaWebHook
 						if (!temp.getSecurityBearerToken().isEmpty()) {
 							httpRequest.setHeader(HttpHeaders.AUTHORIZATION, "Bearer " +temp.getSecurityBearerToken());
 						}
-						//TODO: need more testing
 					}
 					if (temp.getSecurityUsername()!=null&&temp.getSecurityPassword()!=null) {
 						if(!temp.getSecurityUsername().isEmpty()&&!temp.getSecurityPassword().isEmpty()) {
@@ -276,6 +309,8 @@ public class WebHookServiceImpl extends AbstractTypedMetaDataService<MetaWebHook
 						if (statusLine.getStatusCode() == HttpStatus.SC_OK) {//普通に成功
 							logger.debug("webHook to :"+temp.getSecurityUsername()+" success");
 						}
+						HttpEntity entity = response.getEntity();
+						logger.debug("entity :"+entity.getContent().toString()+" success");
 					} finally {
 						response.close();
 						httpClient.close();
@@ -299,11 +334,11 @@ public class WebHookServiceImpl extends AbstractTypedMetaDataService<MetaWebHook
 	 * */
 	public String getHmacSha256(String token, String message) {
 		try {
-		    Mac sha256_HMAC = Mac.getInstance("HmacSHA256");
-		    SecretKeySpec secret_key = new SecretKeySpec(token.getBytes(), "HmacSHA256");
-		    sha256_HMAC.init(secret_key);
+		    Mac Hmac = Mac.getInstance(this.webHookHmacTokenAlgorithm);
+		    SecretKeySpec secret_key = new SecretKeySpec(token.getBytes("UTF-8"), this.webHookHmacTokenAlgorithm);
+		    Hmac.init(secret_key);
 
-		    String hash = Base64.encodeBase64String(sha256_HMAC.doFinal(message.getBytes()));
+		    String hash = Base64.encodeBase64String(Hmac.doFinal(message.getBytes("UTF-8")));
 			return hash;
 		} catch (Exception e) {
 			e.printStackTrace();

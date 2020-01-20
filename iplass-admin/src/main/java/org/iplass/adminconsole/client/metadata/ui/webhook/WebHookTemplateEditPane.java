@@ -255,12 +255,6 @@ public class WebHookTemplateEditPane extends MetaDataMainEditPane {
         //private DynamicForm headerForm;//TODO:!
 		public HeaderMapGrid headerGrid;
 		
-		//リトライ関連
-		private DynamicForm retryForm;
-		private IntegerItem retryLimitField;
-		private IntegerItem retryIntervalField;
-		private CheckboxItem isRetryField;
-		
 		//送る情報を編集
 		private TabSet messageTabSet;
 		//request method
@@ -292,32 +286,6 @@ public class WebHookTemplateEditPane extends MetaDataMainEditPane {
 			headerPane.setMembersMargin(5);
 			headerPane.setWidth(500);
 			headerPane.setHeight100();
-			
-			retryForm = new DynamicForm();
-			retryForm.setWidth(270);
-			retryForm.setPadding(10);
-			retryForm.setNumCols(2);
-			retryForm.setColWidths(100,"*");
-			retryForm.setIsGroup(true);
-			retryForm.setGroupTitle("Retry");
-			
-			
-			//TODO: add the message to AdminClientMessageUtil
-			isRetryField = new CheckboxItem("webhookIsRetry", "Enable Retry");//AdminClientMessageUtil.getString("ui_metadata_webhook_WebHookTemplateEditPane_isRetry")
-			isRetryField.setColSpan(2);
-			SmartGWTUtil.addHoverToFormItem(isRetryField, "Whether to resend the message if the inital attempt fails or receives unsuccessful response");//AdminClientMessageUtil.getString("ui_metadata_webhook_WebHookTemplateEditPane_isRetryTooltip")
-			isRetryField.setWidth(150);
-			
-			retryLimitField = new IntegerItem("webhookRetryLimit", "Maximum Retry Attempts");//AdminClientMessageUtil.getString("ui_metadata_webhook_WebHookTemplateEditPane_retryLimit")
-			retryLimitField.setWidth(150);
-			
-			retryIntervalField =  new IntegerItem("webhookRetryInterval", "Retry Interval(ms)");//AdminClientMessageUtil.getString("ui_metadata_webhook_WebHookTemplateEditPane_retryInterval")
-			SmartGWTUtil.addHoverToFormItem(retryIntervalField, "The waiting time between each attempt of retry");//AdminClientMessageUtil.getString("ui_metadata_webhook_WebHookTemplateEditPane_retryIntervalTooltip")
-			retryIntervalField.setWidth(150);
-			retryIntervalField.setKeyPressFilter("^[0-9]*$");
-			
-			retryForm.setItems(isRetryField, retryLimitField, retryIntervalField);
-
 
 			templateInfoForm = new DynamicForm();
 			templateInfoForm.setWidth(300);
@@ -397,7 +365,6 @@ public class WebHookTemplateEditPane extends MetaDataMainEditPane {
 			templateInfoForm.setItems(isSynchronous, charsetField, tokenNameField,webHookMethodField);
 			
 			topPane.addMember(templateInfoForm);
-			topPane.addMember(retryForm);
 			topPane.addMember(headerPane);
 			
 			messageTabSet = new TabSet();
@@ -534,10 +501,6 @@ public class WebHookTemplateEditPane extends MetaDataMainEditPane {
 					);
 			definition.setContentBody(wc);
 			
-			
-			definition.setRetryInterval(SmartGWTUtil.getIntegerValue(retryIntervalField)!=null?SmartGWTUtil.getIntegerValue(retryIntervalField):0);
-			definition.setRetryLimit(SmartGWTUtil.getIntegerValue(retryLimitField)!=null?SmartGWTUtil.getIntegerValue(retryLimitField):0);
-			definition.setRetry(SmartGWTUtil.getBooleanValue(isRetryField));
 			definition.setSynchronous(SmartGWTUtil.getBooleanValue(isSynchronous));
 			definition.setTokenHeader(SmartGWTUtil.getStringValue(tokenNameField));
 			definition.setHttpMethod(SmartGWTUtil.getStringValue(webHookMethodField));
@@ -551,9 +514,6 @@ public class WebHookTemplateEditPane extends MetaDataMainEditPane {
 			if (definition != null) {
 				charsetField.setValue(definition.getContentBody().getCharset());
 				isSynchronous.setValue(definition.isSynchronous());
-				retryLimitField.setValue(definition.getRetryLimit());
-				retryIntervalField.setValue(definition.getRetryInterval());
-				isRetryField.setValue(definition.isRetry());
 				tokenNameField.setValue(definition.getTokenHeader());
 				webHookMethodField.setValue(definition.getHttpMethod());
 				if (definition.getContentBody().getContent()==null) {
@@ -568,9 +528,6 @@ public class WebHookTemplateEditPane extends MetaDataMainEditPane {
 			} else {
 				charsetField.clearValue();
 				isSynchronous.clearValue();
-				retryLimitField.clearValue();
-				retryIntervalField.clearValue();
-				isRetryField.clearValue();
 				tokenNameField.clearValue();
 				webHookMethodField.clearValue();
 				messageTabSet.selectTab(plainContentTab);

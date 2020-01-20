@@ -76,13 +76,6 @@ public class MetaWebHookTemplate extends BaseRootMetaData implements DefinableMe
 	private ArrayList<WebHookHeader> headers;
 	private String tokenHeader;
 	
-	/**　リトライ関連　*/
-	/** 失敗したらやり直ししますか */
-	private boolean retry;
-	/** やり直しの最大回数 */
-	private int retryLimit;
-	/** やり直す度の待ち時間(ms)*/
-	private int retryInterval;
 	/**　同期非同期　*/
 	private boolean synchronous;
 
@@ -119,9 +112,6 @@ public class MetaWebHookTemplate extends BaseRootMetaData implements DefinableMe
 		}
 		
 		httpMethod = definition.getHttpMethod();
-		retry = definition.isRetry();
-		retryInterval = definition.getRetryInterval();
-		retryLimit = definition.getRetryLimit();
 		synchronous = definition.isSynchronous();
 		
 		headers = definition.getHeaders();
@@ -158,9 +148,6 @@ public class MetaWebHookTemplate extends BaseRootMetaData implements DefinableMe
 		definition.setSubscribers(tempList);
 
 		definition.setHttpMethod(httpMethod);
-		definition.setRetry(retry);
-		definition.setRetryInterval(retryInterval);
-		definition.setRetryLimit(retryLimit);
 		definition.setSynchronous(synchronous);
 
 		definition.setHeaders(headers);
@@ -201,18 +188,6 @@ public class MetaWebHookTemplate extends BaseRootMetaData implements DefinableMe
 		this.subscribers = subscribers;
 	}
 
-	public boolean isRetry() {
-		return retry;
-	}
-
-	public void setRetry(boolean retry) {
-		this.retry = retry;
-	}
-
-	public int getRetryLimit() {
-		return retryLimit;
-	}
-
 	public boolean isSynchronous() {
 		return synchronous;
 	}
@@ -221,18 +196,6 @@ public class MetaWebHookTemplate extends BaseRootMetaData implements DefinableMe
 		this.synchronous = synchronous;
 	}
 
-	public void setRetryLimit(int retryLimit) {
-		this.retryLimit = retryLimit;
-	}
-
-	public int getRetryInterval() {
-		return retryInterval;
-	}
-
-	public void setRetryInterval(int retryInterval) {
-		this.retryInterval = retryInterval;
-	}
-	
 	public ArrayList<WebHookHeader> getHeaders() {
 		return headers;
 	}
@@ -291,10 +254,6 @@ public class MetaWebHookTemplate extends BaseRootMetaData implements DefinableMe
 			WebHook webHook = new WebHook(); 
 			//webHook.setContent(contentBody); TODO modify with contentTemplate
 			webHook.setName(name);
-			webHook.setAddressUrl(addressUrl);
-			webHook.setRetry(retry);
-			webHook.setRetryInterval(retryInterval);
-			webHook.setRetryLimit(retryLimit);
 
 			webHook.setHeaders(headers);
 			webHook.setTokenHeader(tokenHeader);

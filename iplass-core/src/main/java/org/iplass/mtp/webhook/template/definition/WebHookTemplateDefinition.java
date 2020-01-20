@@ -47,17 +47,6 @@ public class WebHookTemplateDefinition implements Definition {
 	/** headers */
 	private ArrayList<WebHookHeader> headers;
 	
-
-
-	/**　リトライ関連　*/
-	/** 失敗したらやり直ししますか */
-	private boolean retry;
-	/** やり直しの最大回数 */
-	private int retryLimit;
-	/** やり直す度の待ち時間(ms)*/
-	private int retryInterval;
-	
-	
 	public WebHookTemplateDefinition() {
 	}
 
@@ -87,31 +76,6 @@ public class WebHookTemplateDefinition implements Definition {
 	public void setAddressUrl(String addressUrl) {
 		this.addressUrl = addressUrl;
 	}
-
-	public boolean isRetry() {
-		return retry;
-	}
-
-	public void setRetry(boolean retry) {
-		this.retry = retry;
-	}
-
-	public int getRetryLimit() {
-		return retryLimit;
-	}
-
-	public void setRetryLimit(int retryLimit) {
-		this.retryLimit = retryLimit;
-	}
-
-	public int getRetryInterval() {
-		return retryInterval;
-	}
-
-	public void setRetryInterval(int retryInterval) {
-		this.retryInterval = retryInterval;
-	}
-
 
 	@Override
 	public String getName() {
