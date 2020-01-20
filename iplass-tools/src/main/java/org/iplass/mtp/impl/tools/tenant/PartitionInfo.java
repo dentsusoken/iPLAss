@@ -28,11 +28,20 @@ public class PartitionInfo implements Serializable {
 	private static final long serialVersionUID = 5858708032465988275L;
 
 	private String tableName;
+	private String postfix;
 	private Integer maxTenantId;
 	private Set<String> partitionNames;
 
 	public PartitionInfo(final String tableName, final Set<String> partitionNames, final Integer maxTenantId) {
 		this.tableName = tableName;
+		this.postfix = null;
+		this.partitionNames = partitionNames;
+		this.maxTenantId = maxTenantId;
+	}
+
+	public PartitionInfo(final String tableName, final String postfix, final Set<String> partitionNames, final Integer maxTenantId) {
+		this.tableName = tableName;
+		this.postfix = postfix;
 		this.partitionNames = partitionNames;
 		this.maxTenantId = maxTenantId;
 	}
@@ -42,6 +51,12 @@ public class PartitionInfo implements Serializable {
 	}
 	public void setTableName(String tableName) {
 		this.tableName = tableName;
+	}
+	public String getPostfix() {
+		return postfix;
+	}
+	public void setPostfix(String postfix) {
+		this.postfix = postfix;
 	}
 	public Integer getMaxTenantId() {
 		return maxTenantId;

@@ -32,7 +32,7 @@ import org.iplass.mtp.tools.batch.MtpCuiBase;
 import org.iplass.mtp.tools.gui.partition.MySQLPartitionManagerApp;
 import org.iplass.mtp.util.StringUtil;
 
-public class MySQLPartitionBatch extends MtpCuiBase {
+public class MySQLPartitionBatch extends MtpCuiBase implements PartitionBatch {
 
 	/** 実行モード */
 	public enum MySQLPartitionBatchExecMode {GUI, CREATE};

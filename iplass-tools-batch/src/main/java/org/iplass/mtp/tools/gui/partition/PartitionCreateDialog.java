@@ -55,9 +55,13 @@ import javax.swing.event.ChangeListener;
 import org.iplass.mtp.impl.rdb.adapter.RdbAdapter;
 import org.iplass.mtp.impl.rdb.adapter.RdbAdapterService;
 import org.iplass.mtp.impl.rdb.mysql.MysqlRdbAdaptor;
+import org.iplass.mtp.impl.rdb.postgresql.PostgreSQLRdbAdapter;
 import org.iplass.mtp.impl.tools.tenant.PartitionCreateParameter;
+import org.iplass.mtp.impl.tools.tenant.rdb.TenantRdbConstants;
 import org.iplass.mtp.spi.ServiceRegistry;
 import org.iplass.mtp.tools.batch.partition.MySQLPartitionBatch;
+import org.iplass.mtp.tools.batch.partition.PartitionBatch;
+import org.iplass.mtp.tools.batch.partition.PostgreSQLPartitionBatch;
 import org.iplass.mtp.tools.batch.tenant.TenantBatch.TenantBatchExecMode;
 import org.iplass.mtp.tools.gui.MtpJDialogBase;
 import org.slf4j.Logger;
@@ -72,12 +76,16 @@ public class PartitionCreateDialog extends MtpJDialogBase {
 	private JTextField txtMaxTenantId;
 	private JCheckBox chkMySQLSubPartition;
 
+	private JTextField txtSubPartitionSize;
+
 	private JButton btnCreate;
 	private JButton btnCancel;
 
 	private JTextArea txtMessageArea;
 
 	private List<ChangeListener> dataChangeListners = new ArrayList<ChangeListener>();
+
+	private final RdbAdapter adapter = ServiceRegistry.getRegistry().getService(RdbAdapterService.class).getRdbAdapter();
 
 	public PartitionCreateDialog(Frame owner) {
 		super(owner);
@@ -175,12 +183,17 @@ public class PartitionCreateDialog extends MtpJDialogBase {
 		txtMaxTenantId.setPreferredSize(new Dimension(200, 25));
 		createLableText(lblMaxTenantId, txtMaxTenantId, null, 0, gridbag, constraints, inputPane);
 
-		RdbAdapterService adapterService = ServiceRegistry.getRegistry().getService(RdbAdapterService.class);
-		RdbAdapter adapter = adapterService.getRdbAdapter();
 		if (adapter instanceof MysqlRdbAdaptor) {
 			chkMySQLSubPartition = new JCheckBox("SubPartition Use");
 			chkMySQLSubPartition.setSelected(true);
 			createCheckBoxRow(chkMySQLSubPartition, 1, gridbag, constraints, inputPane);
+		}
+		if (adapter instanceof PostgreSQLRdbAdapter) {
+			JLabel lblSubPartitionSize = new JLabel("SubPartition Size");
+			txtSubPartitionSize = new JTextField();
+			txtSubPartitionSize.setPreferredSize(new Dimension(200, 25));
+			txtSubPartitionSize.setText(String.valueOf(TenantRdbConstants.MAX_SUBPARTITION));
+			createLableText(lblSubPartitionSize, txtSubPartitionSize, null, 1, gridbag, constraints, inputPane);
 		}
 
 		return inputPane;
@@ -259,6 +272,30 @@ public class PartitionCreateDialog extends MtpJDialogBase {
 					return;
 				}
 
+				if (txtSubPartitionSize != null) {
+					String strSubPartitionSize = txtSubPartitionSize.getText().trim();
+					if (strSubPartitionSize.isEmpty()) {
+						JOptionPane.showMessageDialog(PartitionCreateDialog.this,
+								rs("PartitionManagerApp.PartitionCreateDialog.inputSubPartitionSizeMsg"),
+								"ERROR", JOptionPane.ERROR_MESSAGE);
+						return;
+					}
+					try {
+						int subPartitionSize = Integer.parseInt(strSubPartitionSize);
+						if (subPartitionSize < TenantRdbConstants.MIN_SUBPARTITION) {
+							JOptionPane.showMessageDialog(PartitionCreateDialog.this,
+									rs("PartitionManagerApp.PartitionCreateDialog.invalidValueSubPartitionSizeMsg", TenantRdbConstants.MIN_SUBPARTITION),
+									"ERROR", JOptionPane.ERROR_MESSAGE);
+							return;
+						}
+					} catch (NumberFormatException ex) {
+						JOptionPane.showMessageDialog(PartitionCreateDialog.this,
+								rs("PartitionManagerApp.PartitionCreateDialog.invalidSubPartitionSizeMsg"),
+								"ERROR", JOptionPane.ERROR_MESSAGE);
+						return;
+					}
+				}
+
 				if (JOptionPane.showConfirmDialog(PartitionCreateDialog.this,
 						rs("MySQLPartitionManagerApp.PartitionCreateDialog.confirmCreatePartitionMsg"),
 						"CONFIRM", JOptionPane.YES_NO_OPTION,
@@ -321,7 +358,14 @@ public class PartitionCreateDialog extends MtpJDialogBase {
 		protected Boolean doInBackground() throws Exception {
 
 			try {
-				MySQLPartitionBatch manager = new MySQLPartitionBatch(TenantBatchExecMode.CREATE.name());
+				PartitionBatch manager = null;
+				if (adapter instanceof MysqlRdbAdaptor) {
+					manager = new MySQLPartitionBatch(TenantBatchExecMode.CREATE.name());
+				}
+				if (adapter instanceof PostgreSQLRdbAdapter) {
+					manager = new PostgreSQLPartitionBatch(TenantBatchExecMode.CREATE.name());
+				}
+
 				manager.addLogListner(new MySQLPartitionBatch.LogListner() {
 
 					@Override
@@ -414,9 +458,15 @@ public class PartitionCreateDialog extends MtpJDialogBase {
 
 	private PartitionCreateParameter createParameter() {
 		PartitionCreateParameter param = new PartitionCreateParameter();
+		param.setOnlyPartitionCreate(true);
 		int tenantId = Integer.parseInt(txtMaxTenantId.getText());
 		param.setTenantId(tenantId);
-		param.setMySqlUseSubPartition(chkMySQLSubPartition.isSelected());
+		if (chkMySQLSubPartition != null) {
+			param.setMySqlUseSubPartition(chkMySQLSubPartition.isSelected());
+		}
+		if (txtSubPartitionSize != null) {
+			param.setSubPartitionSize(Integer.parseInt(txtSubPartitionSize.getText().trim()));
+		}
 		return param;
 	}
 

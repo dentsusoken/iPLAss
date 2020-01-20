@@ -397,11 +397,11 @@ public class ObjStoreDDLGenerateBatch extends MtpCuiBase {
 				}
 			}
 		}
-		if (getConfigSetting().isPostgreSQL()) {
-			// PostgreSQLの場合、パーティションの利用はなし
-			checkPartition = false;
-		}
 		if (checkPartition) {
+			if (getConfigSetting().isPostgreSQL()) {
+				// PostgreSQLの場合、パーティションの利用はデフォルトではしない
+				param.setUsePartition(false);
+			}
 			if (getConfigSetting().isSQLServer()) {
 				// SQL Serverの場合、パーティションの利用はデフォルトではしない
 				param.setUsePartition(false);
