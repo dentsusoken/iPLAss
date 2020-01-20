@@ -41,9 +41,12 @@ import org.slf4j.LoggerFactory;
  */
 public class WebHookAuthTokenHandler extends AuthTokenHandler{
 	private static Logger logger = LoggerFactory.getLogger(WebHookAuthTokenHandler.class);
+	
+	//WebHookAuthToken Type
 	public static final String BASIC_AUTHENTICATION_TYPE = "WHBA";
 	public static final String BEARER_AUTHENTICATION_TYPE = "WHBT";
 	public static final String HMAC_AUTHENTICATION_TYPE = "WHHM";
+	
 	public static final String TYPE_WEBHOOK_AUTHTOKEN_HANDLER="WEBHOOKATH";
 	@Override
 	protected Serializable createDetails(String seriesString, String tokenString, String userUniqueId,
@@ -70,6 +73,7 @@ public class WebHookAuthTokenHandler extends AuthTokenHandler{
 	 * basicはbase64(userName:Password)形式、そのまま使える
 	 * */
 	public String getSecret(final int tenantId,final String series,final String type) {
+		checkTypeValidity(type);
 		AuthToken token = authTokenStore().getBySeries(tenantId, type, series);
 		return token.getToken();
 	}
@@ -79,6 +83,7 @@ public class WebHookAuthTokenHandler extends AuthTokenHandler{
 	 * 外側でseries生成してください
 	 */
 	public void insertSecret(final int tenantId, final String type, final String metaDataId, final String series, final String tokenSecret) {
+		checkTypeValidity(type);
 		Timestamp startDate = new Timestamp(java.lang.System.currentTimeMillis());
 		AuthToken token = new AuthToken(tenantId, type, metaDataId, series, tokenSecret, "", startDate, null);
 		authTokenStore().create(token);
@@ -88,6 +93,7 @@ public class WebHookAuthTokenHandler extends AuthTokenHandler{
 	 * raw data -> database
 	 */
 	public void updateSecret(final int tenantId, final String type, final String metaDataId, final String series, final String tokenSecret) {
+		checkTypeValidity(type);
 		AuthToken oldToken = authTokenStore().getBySeries(tenantId, type, series);
 		Timestamp startDate = new Timestamp(java.lang.System.currentTimeMillis());
 		AuthToken newToken = new AuthToken(tenantId, type, metaDataId, series, tokenSecret, "", startDate, null);
@@ -99,10 +105,11 @@ public class WebHookAuthTokenHandler extends AuthTokenHandler{
 	 * 特定のデータを削除する
 	 */
 	public void deleteSecret(final int tenantId, final String type, final String series) {
+		checkTypeValidity(type);
 		authTokenStore().deleteBySeries(tenantId, type, series);
 	}
 	/**
-	 * do not use
+	 * do not use, TODO:marked for delete
 	 * */
 	@Override
 	public Credential toCredential(AuthToken newToken) {
@@ -110,4 +117,21 @@ public class WebHookAuthTokenHandler extends AuthTokenHandler{
 		return null;
 	}
 	
+	/**
+	 * 
+	 * throw runtime Exception if invalid.
+	 **/
+	private boolean checkTypeValidity(String type) {
+		if (BASIC_AUTHENTICATION_TYPE.equals(type)) {
+			return true;
+		}
+		if (BEARER_AUTHENTICATION_TYPE.equals(type)) {
+			return true;
+		}
+		if (HMAC_AUTHENTICATION_TYPE.equals(type)) {
+			return true;
+		}
+		//セキュリティ情報に関するDB交互なので、見送りはできない
+		throw new RuntimeException("The type is not an acceptable WebHookAuthToken Type");
+	}
 }
