@@ -26,7 +26,6 @@ package org.iplass.mtp.webhook;
 import java.util.ArrayList;
 import java.util.Map;
 
-import org.iplass.mtp.webhook.template.definition.WebHookContent;
 import org.iplass.mtp.webhook.template.definition.WebHookHeader;
 import org.iplass.mtp.webhook.template.definition.WebHookSubscriber;
 
@@ -40,7 +39,8 @@ public class WebHook  {
 	private String name;
 
 	/** 送る内容 */
-	private WebHookContent content;
+	private String contentType;
+	private String webHookContent;
 	
 	/** 送るメソッド */
 	private String httpMethod;
@@ -113,14 +113,6 @@ public class WebHook  {
 		this.webHookId = webHookId;
 	}
 
-	public WebHookContent getContent() {
-		return content;
-	}
-
-	public void setContent(WebHookContent content) {
-		this.content = content;
-	}
-
 	public ArrayList<WebHookHeader> getHeaders() {
 		return headers;
 	}
@@ -162,6 +154,21 @@ public class WebHook  {
 
 	public void setHttpMethod(String httpMethod) {
 		this.httpMethod = httpMethod;
+	}
+	public String getContentType() {
+		return contentType;
+	}
+
+	public void setContentType(String contentType) {
+		this.contentType = contentType;
+	}
+
+	public String getWebHookContent() {
+		return webHookContent;
+	}
+
+	public void setWebHookContent(String webHookContent) {
+		this.webHookContent = webHookContent;
 	}
 
 }

@@ -46,7 +46,6 @@ import org.iplass.mtp.impl.script.template.GroovyTemplateBinding;
 import org.iplass.mtp.impl.script.template.GroovyTemplateCompiler;
 import org.iplass.mtp.impl.util.ObjectUtil;
 import org.iplass.mtp.webhook.WebHook;
-import org.iplass.mtp.webhook.template.definition.WebHookContent;
 import org.iplass.mtp.webhook.template.definition.WebHookHeader;
 import org.iplass.mtp.webhook.template.definition.WebHookSubscriber;
 import org.iplass.mtp.webhook.template.definition.WebHookTemplateDefinition;
@@ -58,14 +57,11 @@ public class MetaWebHookTemplate extends BaseRootMetaData implements DefinableMe
 
 	private static final long serialVersionUID = 6383360434482999137L;
 	private static Logger logger = LoggerFactory.getLogger(MetaWebHookTemplate.class);
-	/**
-	//BaseRootMetaData にいる内容
-	private String name;
-	private String displayName;
-	private String description;
-	*/
 	
-	private WebHookContent contentBody;
+	/** webHook 内容部分 */
+	private String contentType;
+	private String webHookContent;
+
 	private String sender;
 	private String addressUrl;
 	private String httpMethod;
@@ -98,7 +94,9 @@ public class MetaWebHookTemplate extends BaseRootMetaData implements DefinableMe
 		displayName = definition.getDisplayName();
 		description = definition.getDescription();
 		
-		contentBody = definition.getContentBody();
+		contentType = definition.getContentType();
+		webHookContent = definition.getWebHookContent();
+		
 		addressUrl = definition.getAddressUrl();
 		sender = definition.getSender();
 		tokenHeader = definition.getTokenHeader();
@@ -131,7 +129,9 @@ public class MetaWebHookTemplate extends BaseRootMetaData implements DefinableMe
 		definition.setDisplayName(displayName);
 		definition.setDescription(description);
 		
-		definition.setContentBody(contentBody);
+		definition.setContentType(contentType);
+		definition.setWebHookContent(webHookContent);
+		
 		definition.setAddressUrl(addressUrl);
 		definition.setSender(sender);
 		definition.setTokenHeader(tokenHeader);
@@ -156,14 +156,7 @@ public class MetaWebHookTemplate extends BaseRootMetaData implements DefinableMe
 		return definition;
 	}
 	
-	public WebHookContent getContentBody() {
-		return contentBody;
-	}
-
-	public void setContentBody(WebHookContent contentBody) {
-		this.contentBody = contentBody;
-	}
-
+	
 	public String getSender() {
 		return sender;
 	}
@@ -181,6 +174,9 @@ public class MetaWebHookTemplate extends BaseRootMetaData implements DefinableMe
 	}
 
 	public ArrayList<MetaWebHookSubscriber> getSubscribers() {
+		if (subscribers == null) {
+			subscribers = new ArrayList<MetaWebHookSubscriber>();
+		}
 		return subscribers;
 	}
 
@@ -219,6 +215,28 @@ public class MetaWebHookTemplate extends BaseRootMetaData implements DefinableMe
 	public void setHttpMethod(String httpMethod) {
 		this.httpMethod = httpMethod;
 	}
+	
+	public String getContentType() {
+		if (contentType == null) {
+			contentType = "";
+		}
+		return contentType;
+	}
+
+	public void setContentType(String contentType) {
+		this.contentType = contentType;
+	}
+
+	public String getWebHookContent() {
+		if (webHookContent == null) {
+			webHookContent = "";
+		}
+		return webHookContent;
+	}
+
+	public void setWebHookContent(String webHookContent) {
+		this.webHookContent = webHookContent;
+	}
 
 	public class WebHookTemplateRuntime extends BaseMetaDataRuntime {
 
@@ -227,8 +245,9 @@ public class MetaWebHookTemplate extends BaseRootMetaData implements DefinableMe
 			subscriberUrlTemplates = new HashMap<String, GroovyTemplate>();
 			try {
 				ScriptEngine se = ExecuteContext.getCurrentContext().getTenantContext().getScriptEngine();
-				contentTemplate = GroovyTemplateCompiler.compile(contentBody.getContent(), "WebHookTemplate_Text" + getName(), (GroovyScriptEngine) se);
-				for (MetaWebHookSubscriber subscriber:subscribers) {
+				contentTemplate = GroovyTemplateCompiler.compile(getWebHookContent(), "WebHookTemplate_Text" + getName(), (GroovyScriptEngine) se);
+				
+				for (MetaWebHookSubscriber subscriber:getSubscribers()) {
 					GroovyTemplate _urlTemp = GroovyTemplateCompiler.compile(subscriber.getUrl(), "WebHookTemplate_Subscriber_" + subscriber.getWebHookSubscriberId() + "_" + getName(), (GroovyScriptEngine) se);
 					subscriberUrlTemplates.put(subscriber.getWebHookSubscriberId(), _urlTemp);
 				}
@@ -279,9 +298,8 @@ public class MetaWebHookTemplate extends BaseRootMetaData implements DefinableMe
 				} catch (IOException e) {
 					throw new ScriptRuntimeException(e);
 				}
-				WebHookContent content = contentBody.copy();
-				content.setContent(sw.toString());
-				webHook.setContent(content);
+				webHook.setContentType(contentType);
+				webHook.setWebHookContent(sw.toString());
 			}
 			ArrayList<WebHookSubscriber> tempList = new ArrayList<WebHookSubscriber>();
 			if (subscribers !=null) {

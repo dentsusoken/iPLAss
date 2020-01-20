@@ -33,7 +33,10 @@ public class WebHookTemplateDefinition implements Definition {
 	private String displayName;
 	private String description;
 	
-	private WebHookContent contentBody;
+	/** webHook 内容部分 */
+	private String contentType;
+	private String webHookContent;
+
 	private String sender;
 	private String addressUrl;
 	private String tokenHeader;//セキュリテぃトークンのヘッダー名を設置
@@ -48,17 +51,6 @@ public class WebHookTemplateDefinition implements Definition {
 	private ArrayList<WebHookHeader> headers;
 	
 	public WebHookTemplateDefinition() {
-	}
-
-	public WebHookContent getContentBody() {
-		if (contentBody == null) {
-			this.contentBody=new WebHookContent();
-		}
-		return contentBody;
-	}
-
-	public void setContentBody(WebHookContent contentBody) {
-		this.contentBody = contentBody;
 	}
 
 	public String getSender() {
@@ -191,6 +183,29 @@ public class WebHookTemplateDefinition implements Definition {
 
 	public void setHttpMethod(String httpMethod) {
 		this.httpMethod = httpMethod;
+	}
+
+	
+	public String getContentType() {
+		if (contentType == null) {
+			contentType = "";
+		}
+		return contentType;
+	}
+
+	public void setContentType(String contentType) {
+		this.contentType = contentType;
+	}
+
+	public String getWebHookContent() {
+		if (webHookContent == null) {
+			webHookContent = "";
+		}
+		return webHookContent;
+	}
+
+	public void setWebHookContent(String webHookContent) {
+		this.webHookContent = webHookContent;
 	}
 
 }

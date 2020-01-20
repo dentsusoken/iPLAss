@@ -22,17 +22,10 @@ package org.iplass.mtp.impl.webhook;
 import java.io.IOException;
 import org.apache.commons.codec.binary.Base64;
 import java.io.InterruptedIOException;
-import java.io.UnsupportedEncodingException;
-import java.lang.Thread.State;
-import java.math.BigInteger;
 import java.net.ConnectException;
 import java.net.URI;
 import java.net.UnknownHostException;
-import java.nio.charset.StandardCharsets;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.UUID;
 import java.util.concurrent.Callable;
 
@@ -196,15 +189,20 @@ public class WebHookServiceImpl extends AbstractTypedMetaDataService<MetaWebHook
 	/**
 	 * 同期非同期を判断してからsendWebHook(WebHook webHook)を呼びます
 	 * AsyncTaskManagerのローカルスレッドをつっかています
+	 * 
 	 * */
 	@Override
-	public void sendWebHook(Tenant tenant, WebHook webHook) {
+	public void sendWebHook(Tenant tenant, WebHook webHook){
 		WebHookAuthTokenHandler tokenHandler = (WebHookAuthTokenHandler)ServiceRegistry
 				.getRegistry().getService(AuthTokenService.class)
 				.getHandler(WebHookAuthTokenHandler.TYPE_WEBHOOK_AUTHTOKEN_HANDLER);
 		this.fillData(tenant.getId(), webHook.getMetaDataId(), tokenHandler, webHook.getSubscribers());
 		if (webHook.isSynchronous()) {
-			sendWebHook(webHook);
+			try {
+				sendWebHook(webHook);
+			} catch (Exception e) {
+				throw e;
+			}
 		} else {
 			atm.executeOnThread(new WebHookCallable(webHook));
 		}
@@ -255,13 +253,9 @@ public class WebHookServiceImpl extends AbstractTypedMetaDataService<MetaWebHook
 
 
 				//fill in webhook payload
-				String payload = webHook.getContent().getContent();
+				String payload = webHook.getWebHookContent();
 				StringEntity se = new StringEntity(payload);
-				se.setContentType(webHook.getContent().getCharset());
-				
-				
-				
-				//se.setContentEncoding(webHook.getContent().getCharset());
+				se.setContentType(webHook.getContentType());
 				
 				Exception ex = null;
 
@@ -321,7 +315,7 @@ public class WebHookServiceImpl extends AbstractTypedMetaDataService<MetaWebHook
 			}
 		}catch(Exception e)
 		{
-			// handleException
+			
 		}
 	}
 

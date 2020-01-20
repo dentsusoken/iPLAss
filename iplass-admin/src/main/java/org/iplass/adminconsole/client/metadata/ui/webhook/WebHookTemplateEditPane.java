@@ -44,12 +44,10 @@ import org.iplass.adminconsole.shared.metadata.rpc.MetaDataServiceAsync;
 import org.iplass.adminconsole.shared.metadata.rpc.MetaDataServiceFactory;
 import org.iplass.gwt.ace.client.EditorMode;
 import org.iplass.mtp.definition.DefinitionEntry;
-import org.iplass.mtp.webhook.template.definition.WebHookContent;
 import org.iplass.mtp.webhook.template.definition.WebHookHeader;
 import org.iplass.mtp.webhook.template.definition.WebHookSubscriber;
 import org.iplass.mtp.webhook.template.definition.WebHookTemplateDefinition;
 import org.iplass.mtp.webhook.template.definition.WebHookSubscriber.WEBHOOKSUBSCRIBERSTATE;
-
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.smartgwt.client.types.AutoFitWidthApproach;
@@ -61,7 +59,6 @@ import com.smartgwt.client.widgets.events.ClickEvent;
 import com.smartgwt.client.widgets.events.ClickHandler;
 import com.smartgwt.client.widgets.form.DynamicForm;
 import com.smartgwt.client.widgets.form.fields.CheckboxItem;
-import com.smartgwt.client.widgets.form.fields.IntegerItem;
 import com.smartgwt.client.widgets.form.fields.SelectItem;
 import com.smartgwt.client.widgets.form.fields.TextItem;
 import com.smartgwt.client.widgets.grid.ListGrid;
@@ -247,7 +244,7 @@ public class WebHookTemplateEditPane extends MetaDataMainEditPane {
 		
 		//テンプレに関する情報
 		private DynamicForm templateInfoForm;
-		private TextItem charsetField;//ほぼ常にutf-8
+		private TextItem contentTypeField;
         private CheckboxItem isSynchronous;
         private TextItem tokenNameField;
 		
@@ -300,8 +297,8 @@ public class WebHookTemplateEditPane extends MetaDataMainEditPane {
 			isSynchronous.setWidth(150);
 			SmartGWTUtil.addHoverToFormItem(isSynchronous, "Whether to resend the message in synchronous mode");//AdminClientMessageUtil.getString("ui_metadata_webhook_WebHookTemplateEditPane_isSynchronous")
 			
-			charsetField = new TextItem("webhookCharset", "charset");//add message
-			charsetField.setWidth(150);
+			contentTypeField = new TextItem("webhookContentType", "Content-Type");//add message
+			contentTypeField.setWidth(150);
 			tokenNameField = new TextItem("webhookTokenName", "Security Token Name");
 			tokenNameField.setWidth(150);
 			
@@ -362,7 +359,7 @@ public class WebHookTemplateEditPane extends MetaDataMainEditPane {
 			headerPane.addMember(headerGrid);
 			headerPane.addMember(mapButtonPane);
 			
-			templateInfoForm.setItems(isSynchronous, charsetField, tokenNameField,webHookMethodField);
+			templateInfoForm.setItems(isSynchronous, contentTypeField, tokenNameField,webHookMethodField);
 			
 			topPane.addMember(templateInfoForm);
 			topPane.addMember(headerPane);
@@ -495,11 +492,8 @@ public class WebHookTemplateEditPane extends MetaDataMainEditPane {
 		//pane -> definition
 		public WebHookTemplateDefinition getEditDefinition(WebHookTemplateDefinition definition) {
 			
-			WebHookContent wc = new WebHookContent(
-					plainEditor.getText(), 
-					SmartGWTUtil.getStringValue(charsetField)
-					);
-			definition.setContentBody(wc);
+			definition.setContentType(SmartGWTUtil.getStringValue(contentTypeField));
+			definition.setWebHookContent(plainEditor.getText());
 			
 			definition.setSynchronous(SmartGWTUtil.getBooleanValue(isSynchronous));
 			definition.setTokenHeader(SmartGWTUtil.getStringValue(tokenNameField));
@@ -512,21 +506,21 @@ public class WebHookTemplateEditPane extends MetaDataMainEditPane {
 		public void setDefinition(WebHookTemplateDefinition definition) {
 			headerGrid.setData(new ListGridRecord[] {});
 			if (definition != null) {
-				charsetField.setValue(definition.getContentBody().getCharset());
+				contentTypeField.setValue(definition.getContentType());
 				isSynchronous.setValue(definition.isSynchronous());
 				tokenNameField.setValue(definition.getTokenHeader());
 				webHookMethodField.setValue(definition.getHttpMethod());
-				if (definition.getContentBody().getContent()==null) {
+				if (definition.getWebHookContent()==null) {
 					plainEditor.setText("");
 				} else {
-					plainEditor.setText(definition.getContentBody().getContent());
+					plainEditor.setText(definition.getWebHookContent());
 				}
 				
 				ListGridRecord[] temp = getHeaderRecordList(definition);
 				headerGrid.setData(temp);
 				
 			} else {
-				charsetField.clearValue();
+				contentTypeField.clearValue();
 				isSynchronous.clearValue();
 				tokenNameField.clearValue();
 				webHookMethodField.clearValue();

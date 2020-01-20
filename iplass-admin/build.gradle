@@ -221,7 +221,6 @@ task copyGwtTransSrc(type: Sync) {
 		include 'mtp/mail/template/definition/MailTemplateDefinitionModifyResult.java'
 		include 'mtp/mail/template/definition/PlainTextBodyPart.java'
 
-		include 'mtp/webhook/template/definition/WebHookContent.java'
 		include 'mtp/webhook/template/definition/WebHookSubscriber.java'
 		include 'mtp/webhook/template/definition/WebHookTemplateDefinition.java'
 		include 'mtp/webhook/template/definition/WebHookHeader.java'
