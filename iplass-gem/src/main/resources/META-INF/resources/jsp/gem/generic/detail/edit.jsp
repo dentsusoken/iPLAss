@@ -131,13 +131,13 @@
 	//各プロパティでの権限チェック用に定義名をリクエストに保存
 	request.setAttribute(Constants.DEF_NAME, defName);
 	request.setAttribute(Constants.ROOT_DEF_NAME, defName);	//NestTableの場合にDEF_NAMEが置き換わるので別名でRootのDefNameをセット
-	
+
 	Entity rootEntity = null;
-	//FIXME 更新の時のみ、エンティティを設定します。新規の場合はnullを設定します。
+	//更新の時のみ、エンティティを設定します。新規の場合はnullを設定します。
 	if (Constants.EXEC_TYPE_UPDATE.equals(execType)) {
 		rootEntity = data.getEntity();
 	}
-	//FIXME 新規時に初期化スクリプト定義が存在する場合、data.getEntity()がnullにならないので、nullに統一するために別のキー名としてスコープに保持しなければなりません。。
+	//新規時に初期化スクリプト定義が存在する場合、data.getEntity()がnullにならないので、nullに統一するために別のキー名としてスコープに保持しなければなりません。。
 	request.setAttribute(Constants.ROOT_ENTITY, rootEntity); //NestTableの場合に内部の表示判定スクリプトで利用
 
 	//editor以下で参照するパラメータ
