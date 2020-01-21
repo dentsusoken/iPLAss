@@ -29,7 +29,6 @@ import org.iplass.mtp.command.annotation.webapi.RestJson;
 import org.iplass.mtp.command.annotation.webapi.WebApi;
 import org.iplass.mtp.entity.Entity;
 import org.iplass.mtp.entity.GenericEntity;
-import org.iplass.mtp.util.StringUtil;
 import org.iplass.mtp.view.generic.EntityViewManager;
 import org.iplass.mtp.webapi.definition.MethodType;
 import org.iplass.mtp.webapi.definition.RequestType;
