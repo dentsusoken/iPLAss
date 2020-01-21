@@ -152,9 +152,9 @@
 		}
 	}
 
-	PropertyEditor getLinkUpperPropertyEditor(String defName, String viewName, LinkProperty linkProperty) {
+	PropertyEditor getLinkUpperPropertyEditor(String defName, String viewName, LinkProperty linkProperty, Entity entity) {
 		EntityViewManager evm = ManagerLocator.getInstance().getManager(EntityViewManager.class);
-		return evm.getPropertyEditor(defName, Constants.VIEW_TYPE_DETAIL, viewName, linkProperty.getLinkFromPropertyName());
+		return evm.getPropertyEditor(defName, Constants.VIEW_TYPE_DETAIL, viewName, linkProperty.getLinkFromPropertyName(), entity);
 	}
 
 	String getLinkUpperType(PropertyEditor editor) {
@@ -354,6 +354,11 @@
 	String parentOid = parentEntity != null ? parentEntity.getOid() : "";
 	String parentVersion = parentEntity != null && parentEntity.getVersion() != null ? parentEntity.getVersion().toString() : "";
 
+	//表示判断スクリプトエンティティ
+	Entity rootEntity = (Entity) request.getAttribute(Constants.ROOT_ENTITY);
+	String rootOid = rootEntity != null ? rootEntity.getOid() : "";
+	String rootVersion = rootEntity != null && rootEntity.getVersion() != null ? rootEntity.getVersion().toString() : "";
+
 	//Property情報取得
 	boolean isMappedby = pd.getMappedBy() != null;
 	boolean isMultiple = pd.getMultiplicity() != 1;
@@ -488,7 +493,7 @@ function <%=toggleInsBtnFunc%>() {
 <%
 			if (editPageDetail) {
 %>
-<a href="javascript:void(0)" class="modal-lnk" style="<c:out value="<%=customStyle%>"/>" id="<c:out value="<%=linkId %>"/>" data-linkId="<c:out value="<%=linkId %>"/>" onclick="showReference('<%=StringUtil.escapeJavaScript(viewAction)%>', '<%=StringUtil.escapeJavaScript(refDefName)%>', '<%=StringUtil.escapeJavaScript(refEntity.getOid())%>', '<%=refEntity.getVersion() %>', '<%=StringUtil.escapeJavaScript(linkId)%>', <%=refEdit %>, null, '<%=rootDefName%>', '<%=viewName%>', '<%=propName%>', '<%=viewType%>', '<c:out value="<%=refSectionIndex%>" />')"><c:out value="<%=dispPropLabel %>" /></a>
+<a href="javascript:void(0)" class="modal-lnk" style="<c:out value="<%=customStyle%>"/>" id="<c:out value="<%=linkId %>"/>" data-linkId="<c:out value="<%=linkId %>"/>" onclick="showReference('<%=StringUtil.escapeJavaScript(viewAction)%>', '<%=StringUtil.escapeJavaScript(refDefName)%>', '<%=StringUtil.escapeJavaScript(refEntity.getOid())%>', '<%=refEntity.getVersion() %>', '<%=StringUtil.escapeJavaScript(linkId)%>', <%=refEdit %>, null, '<%=rootDefName%>', '<%=viewName%>', '<%=propName%>', '<%=viewType%>', '<c:out value="<%=refSectionIndex%>" />', '<%=StringUtil.escapeJavaScript(rootOid) %>', '<%=StringUtil.escapeJavaScript(rootVersion) %>')"><c:out value="<%=dispPropLabel %>" /></a>
 <%
 				if (!hideDeleteButton && updatable) {
 %>
@@ -561,6 +566,8 @@ $(function() {
 		, permitConditionSelectAll: <%=editor.isPermitConditionSelectAll()%>
 		, parentDefName: "<%=StringUtil.escapeJavaScript(rootDefName)%>"
 		, parentViewName: "<%=StringUtil.escapeJavaScript(viewName)%>"
+		, entityOid: "<%=StringUtil.escapeJavaScript(rootOid)%>"
+		, entityVersion: "<%=StringUtil.escapeJavaScript(rootVersion)%>"
 		, viewType: "<%=StringUtil.escapeJavaScript(viewType)%>"
 		, refSectionIndex: "<c:out value="<%=refSectionIndex%>"/>"
 	}
@@ -570,7 +577,7 @@ $(function() {
 	}
 	$selBtn.on("click", function() {
 		searchReference(params.selectAction, params.viewAction, params.defName, $(this).attr("data-propName"), params.multiplicity, <%=isMultiple %>,
-				 params.urlParam, params.refEdit, callback, this, params.viewName, params.permitConditionSelectAll, params.parentDefName, params.parentViewName, params.viewType, params.refSectionIndex, delCallback);
+				 params.urlParam, params.refEdit, callback, this, params.viewName, params.permitConditionSelectAll, params.parentDefName, params.parentViewName, params.viewType, params.refSectionIndex, delCallback, params.entityOid, params.entityVersion);
 	});
 
 });
@@ -612,6 +619,8 @@ $(function() {
 		, parentViewName: "<%=StringUtil.escapeJavaScript(viewName)%>"
 		, viewType: "<%=StringUtil.escapeJavaScript(viewType)%>"
 		, refSectionIndex: "<c:out value="<%=refSectionIndex%>"/>"
+		, entityOid: "<%=StringUtil.escapeJavaScript(rootOid)%>"
+		, entityVersion: "<%=StringUtil.escapeJavaScript(rootVersion)%>"
 		, refEdit: <%=refEdit %>
 		, callbackKey: key
 	}
@@ -621,7 +630,7 @@ $(function() {
 	}
 	$insBtn.on("click", function() {
 		insertReference(params.addAction, params.viewAction, params.defName, params.propName, params.multiplicity,
-				 params.urlParam, params.parentOid, params.parentVersion, params.parentDefName, params.parentViewName, params.refEdit, callback, this, delCallback, params.viewType, params.refSectionIndex);
+				 params.urlParam, params.parentOid, params.parentVersion, params.parentDefName, params.parentViewName, params.refEdit, callback, this, delCallback, params.viewType, params.refSectionIndex, params.entityOid, params.entityVersion);
 	});
 
 });
@@ -634,7 +643,7 @@ $(function() {
 		PropertyEditor upperEditor = null;
 		String upperType = null;
 		if (editor.getLinkProperty() != null) {
-			upperEditor = getLinkUpperPropertyEditor(rootDefName, viewName, editor.getLinkProperty());
+			upperEditor = getLinkUpperPropertyEditor(rootDefName, viewName, editor.getLinkProperty(), rootEntity);
 			upperType = getLinkUpperType(upperEditor);
 		}
 
@@ -681,6 +690,8 @@ data-linkName="<c:out value="<%=link.getLinkFromPropertyName() %>"/>"
 data-prefix=""
 data-getItemWebapiName="<%=GetReferenceLinkItemCommand.WEBAPI_NAME %>"
 data-upperType="<c:out value="<%=upperType %>"/>"
+data-entityOid="<c:out value="<%=StringUtil.escapeJavaScript(rootOid) %>"/>"
+data-entityVersion="<c:out value="<%=StringUtil.escapeJavaScript(rootVersion) %>"/>"
 >
 <%
 			if (!isMultiple) {
@@ -727,7 +738,7 @@ data-upperType="<c:out value="<%=upperType %>"/>"
 		PropertyEditor upperEditor = null;
 		String upperType = null;
 		if (editor.getLinkProperty() != null) {
-			upperEditor = getLinkUpperPropertyEditor(rootDefName, viewName, editor.getLinkProperty());
+			upperEditor = getLinkUpperPropertyEditor(rootDefName, viewName, editor.getLinkProperty(), rootEntity);
 			upperType = getLinkUpperType(upperEditor);
 		}
 
@@ -777,6 +788,8 @@ data-prefix=""
 data-getItemWebapiName="<%=GetReferenceLinkItemCommand.WEBAPI_NAME %>"
 data-upperType="<c:out value="<%=upperType %>"/>"
 data-customStyle="<c:out value="<%=customStyle%>"/>"
+data-entityOid="<c:out value="<%=StringUtil.escapeJavaScript(rootOid)%>"/>"
+data-entityVersion="<c:out value="<%=StringUtil.escapeJavaScript(rootVersion)%>"/>"
 >
 <%
 			for (Entity refEntity : entityList) {
@@ -871,7 +884,7 @@ function <%=toggleInsBtnFunc%>() {
 <%
 			if (editPageDetail) {
 %>
-<a href="javascript:void(0)" class="modal-lnk" style="<c:out value="<%=customStyle%>"/>" id="<c:out value="<%=linkId %>"/>" data-linkId="<c:out value="<%=linkId %>"/>" onclick="showReference('<%=StringUtil.escapeJavaScript(viewAction)%>', '<%=StringUtil.escapeJavaScript(refDefName)%>', '<%=StringUtil.escapeJavaScript(refEntity.getOid())%>', '<%=refEntity.getVersion() %>', '<%=StringUtil.escapeJavaScript(linkId)%>', <%=refEdit %>, null, '<%=rootDefName%>', '<%=viewName%>', '<%=propName%>', '<%=viewType%>', '<c:out value="<%=refSectionIndex%>" />')"><c:out value="<%=displayPropLabel %>" /></a>
+<a href="javascript:void(0)" class="modal-lnk" style="<c:out value="<%=customStyle%>"/>" id="<c:out value="<%=linkId %>"/>" data-linkId="<c:out value="<%=linkId %>"/>" onclick="showReference('<%=StringUtil.escapeJavaScript(viewAction)%>', '<%=StringUtil.escapeJavaScript(refDefName)%>', '<%=StringUtil.escapeJavaScript(refEntity.getOid())%>', '<%=refEntity.getVersion() %>', '<%=StringUtil.escapeJavaScript(linkId)%>', <%=refEdit %>, null, '<%=rootDefName%>', '<%=viewName%>', '<%=propName%>', '<%=viewType%>', '<c:out value="<%=refSectionIndex%>" />', '<%=StringUtil.escapeJavaScript(rootOid) %>', '<%=StringUtil.escapeJavaScript(rootVersion) %>')"><c:out value="<%=displayPropLabel %>" /></a>
 <%
 				if (!hideDeleteButton && updatable) {
 %>
@@ -906,7 +919,7 @@ function <%=toggleInsBtnFunc%>() {
 				String upperType = "";
 				if (editor.getLinkProperty() != null) {
 					linkPropName = editor.getLinkProperty().getLinkFromPropertyName();
-					PropertyEditor upperEditor = getLinkUpperPropertyEditor(rootDefName, viewName, editor.getLinkProperty());
+					PropertyEditor upperEditor = getLinkUpperPropertyEditor(rootDefName, viewName, editor.getLinkProperty(), rootEntity);
 					upperType = getLinkUpperType(upperEditor);
 				}
 %>
@@ -930,6 +943,8 @@ function <%=toggleInsBtnFunc%>() {
  data-selCallbackKey="<c:out value="<%=selCallbackKey%>"/>"
  data-delCallbackKey="<c:out value="<%=delCallbackKey%>"/>"
  data-refSectionIndex="<c:out value="<%=refSectionIndex%>"/>"
+ data-entityOid="<c:out value="<%=StringUtil.escapeJavaScript(rootOid)%>"/>"
+ data-entityVersion="<c:out value="<%=StringUtil.escapeJavaScript(rootVersion)%>"/>"
  />
 <%
 			}
@@ -979,6 +994,8 @@ $(function() {
 		, parentViewName: "<%=StringUtil.escapeJavaScript(viewName)%>"
 		, viewType: "<%=StringUtil.escapeJavaScript(viewType)%>"
 		, refSectionIndex: "<c:out value="<%=refSectionIndex%>"/>"
+		, entityOid: "<%=StringUtil.escapeJavaScript(rootOid)%>"
+		, entityVersion: "<%=StringUtil.escapeJavaScript(rootVersion)%>"
 		, refEdit: <%=refEdit %>
 		, callbackKey: key
 	}
@@ -988,7 +1005,7 @@ $(function() {
 	}
 	$insBtn.on("click", function() {
 		insertReference(params.addAction, params.viewAction, params.defName, params.propName, params.multiplicity,
-				 params.urlParam, params.parentOid, params.parentVersion, params.parentDefName, params.parentViewName, params.refEdit, callback, this, delCallback, params.viewType, params.refSectionIndex);
+				 params.urlParam, params.parentOid, params.parentVersion, params.parentDefName, params.parentViewName, params.refEdit, callback, this, delCallback, params.viewType, params.refSectionIndex, params.entityOid, params.entityVersion);
 	});
 
 });
@@ -1096,6 +1113,8 @@ $(function() {
  data-selUniqueRefCallback="<c:out value="<%=selUniqueRefCallback%>"/>"
  data-insUniqueRefCallback="<c:out value="<%=insUniqueRefCallback%>"/>"
  data-refSectionIndex="<c:out value="<%=refSectionIndex%>"/>"
+ data-entityOid="<c:out value="<%=StringUtil.escapeJavaScript(rootOid)%>"/>"
+ data-entityVersion="<c:out value="<%=StringUtil.escapeJavaScript(rootVersion)%>"/>"
 >
 <span class="unique-key">
 <%
@@ -1122,7 +1141,7 @@ $(function() {
 %>
 </span>
 <span class="unique-ref">
-<a href="javascript:void(0)" class="modal-lnk" id="<c:out value="<%=linkId %>"/>" data-linkId="<c:out value="<%=linkId %>"/>" onclick="showReference('<%=StringUtil.escapeJavaScript(viewAction)%>', '<%=StringUtil.escapeJavaScript(refDefName)%>', '<%=StringUtil.escapeJavaScript(refEntity.getOid())%>', '<%=refEntity.getVersion() %>', '<%=StringUtil.escapeJavaScript(linkId)%>', <%=refEdit %>, null, '<%=rootDefName%>', '<%=viewName%>', '<%=propName%>', '<%=viewType%>', '<c:out value="<%=refSectionIndex%>" />')"><c:out value="<%=dispPropLabel %>" /></a>
+<a href="javascript:void(0)" class="modal-lnk" id="<c:out value="<%=linkId %>"/>" data-linkId="<c:out value="<%=linkId %>"/>" onclick="showReference('<%=StringUtil.escapeJavaScript(viewAction)%>', '<%=StringUtil.escapeJavaScript(refDefName)%>', '<%=StringUtil.escapeJavaScript(refEntity.getOid())%>', '<%=refEntity.getVersion() %>', '<%=StringUtil.escapeJavaScript(linkId)%>', <%=refEdit %>, null, '<%=rootDefName%>', '<%=viewName%>', '<%=propName%>', '<%=viewType%>', '<c:out value="<%=refSectionIndex%>" />', '<%=StringUtil.escapeJavaScript(rootOid) %>', '<%=StringUtil.escapeJavaScript(rootVersion) %>')"><c:out value="<%=dispPropLabel %>" /></a>
 <%
 
 			if (!hideDeleteButton && updatable) {
@@ -1166,6 +1185,8 @@ $(function() {
  data-selUniqueRefCallback="<c:out value="<%=selUniqueRefCallback%>"/>"
  data-insUniqueRefCallback="<c:out value="<%=insUniqueRefCallback%>"/>"
  data-refSectionIndex="<c:out value="<%=refSectionIndex%>"/>"
+ data-entityOid="<c:out value="<%=StringUtil.escapeJavaScript(rootOid)%>"/>"
+ data-entityVersion="<c:out value="<%=StringUtil.escapeJavaScript(rootVersion)%>"/>"
 >
 <span class="unique-key">
 <input type="text" style="<c:out value="<%=customStyle%>"/>" class="unique-form-size-01 inpbr" />

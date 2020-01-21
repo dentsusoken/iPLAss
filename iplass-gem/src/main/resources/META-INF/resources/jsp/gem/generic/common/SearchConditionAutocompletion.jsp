@@ -87,7 +87,7 @@ $(function() {
 		<% } %>
 		var propName = "<%=propName%>";
 		var cValue = $("[name='" + propName + "']").map(function() {return $(this).val();}).get();
-		getAutocompletionValue("<%=GetAutocompletionValueCommand.WEBAPI_NAME%>", "<%=defName%>", "<%=viewName%>", "<%=Constants.VIEW_TYPE_SEARCH%>", propName, "<%=key%>", null, pValue, cValue, function(value) {
+		getAutocompletionValue("<%=GetAutocompletionValueCommand.WEBAPI_NAME%>", "<%=defName%>", "<%=viewName%>", "<%=Constants.VIEW_TYPE_SEARCH%>", propName, "<%=key%>", null, pValue, cValue, null, function(value) {
 <jsp:include page="<%=path %>" />
 		});
 	});

@@ -60,7 +60,7 @@
 <%@ page import="org.iplass.gem.command.ViewUtil"%>
 <%!
 	boolean isDispProperty(String defName, PropertyDefinition pd, PropertyColumn property) {
-		if (!EntityViewUtil.isDisplayElement(defName, property.getElementRuntimeId(), OutputType.SEARCHRESULT)) return false;
+		if (!EntityViewUtil.isDisplayElement(defName, property.getElementRuntimeId(), OutputType.SEARCHRESULT, null)) return false;
 		if (property.getEditor() == null) return false;
 		return true;
 	}

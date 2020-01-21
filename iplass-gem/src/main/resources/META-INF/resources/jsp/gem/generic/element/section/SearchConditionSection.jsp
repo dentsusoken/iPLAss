@@ -541,7 +541,7 @@ $(function() {
 		if (pi.isBlank()) continue;
 		String propName = pi.getPropertyName();
 		PropertyDefinition pd = defMap.get(propName);
-		if (!EntityViewUtil.isDisplayElement(defName, pi.getElementRuntimeId(), OutputType.SEARCHCONDITION)
+		if (!EntityViewUtil.isDisplayElement(defName, pi.getElementRuntimeId(), OutputType.SEARCHCONDITION, null)
 				|| !isDispProperty(pd) || pi.getValidator() == null) {
 			continue;
 		}
@@ -635,7 +635,7 @@ $(function() {
 				elementList.add(new BlankSpace());
 			} else {
 				PropertyDefinition pd = defMap.get(property.getPropertyName());
-				if (EntityViewUtil.isDisplayElement(defName, property.getElementRuntimeId(), OutputType.SEARCHCONDITION)
+				if (EntityViewUtil.isDisplayElement(defName, property.getElementRuntimeId(), OutputType.SEARCHCONDITION, null)
 						&& !property.isHideNormalCondition() && isDispProperty(pd)) {
 					elementList.add(property);
 				} else {
@@ -655,7 +655,7 @@ $(function() {
 		if (element instanceof PropertyItem) {
 			PropertyItem property = (PropertyItem) element;
 			PropertyDefinition pd = defMap.get(property.getPropertyName());
-			if (EntityViewUtil.isDisplayElement(defName, property.getElementRuntimeId(), OutputType.SEARCHCONDITION)
+			if (EntityViewUtil.isDisplayElement(defName, property.getElementRuntimeId(), OutputType.SEARCHCONDITION, null)
 					&& !property.isHideNormalCondition() && isDispProperty(pd)) {
 				String style = property.getStyle() != null ? property.getStyle() : "";
 				String displayLabel = TemplateUtil.getMultilingualString(property.getDisplayLabel(), property.getLocalizedDisplayLabelList(), pd.getDisplayName(), pd.getLocalizedDisplayNameList());
@@ -730,7 +730,7 @@ $(function() {
 			}
 		} else if (element instanceof VirtualPropertyItem) {
 			VirtualPropertyItem property = (VirtualPropertyItem) element;
-			if (EntityViewUtil.isDisplayElement(defName, property.getElementRuntimeId(), OutputType.SEARCHCONDITION)) {
+			if (EntityViewUtil.isDisplayElement(defName, property.getElementRuntimeId(), OutputType.SEARCHCONDITION, null)) {
 				PropertyDefinition pd = EntityViewUtil.getPropertyDefinition(property);
 				String style = property.getStyle() != null ? property.getStyle() : "";
 				String displayLabel = TemplateUtil.getMultilingualString(property.getDisplayLabel(), property.getLocalizedDisplayLabelList());
@@ -989,7 +989,7 @@ $(function() {
 //				PropertyDefinition pd = ed.getProperty(propName);
 				PropertyDefinition pd = defMap.get(propName);
 				String displayLabel = TemplateUtil.getMultilingualString(pi.getDisplayLabel(), pi.getLocalizedDisplayLabelList(), pd.getDisplayName(), pd.getLocalizedDisplayNameList());
-				if (!EntityViewUtil.isDisplayElement(defName, pi.getElementRuntimeId(), OutputType.SEARCHCONDITION)
+				if (!EntityViewUtil.isDisplayElement(defName, pi.getElementRuntimeId(), OutputType.SEARCHCONDITION, null)
 						|| pi.isHideDetailCondition() || !isDispProperty(pd)) continue;
 				if (pi.getEditor() instanceof ReferencePropertyEditor) {
 					ReferencePropertyEditor editor = (ReferencePropertyEditor) pi.getEditor();

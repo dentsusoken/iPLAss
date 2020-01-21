@@ -41,6 +41,7 @@
 	String viewName = (String) request.getAttribute(Constants.VIEW_NAME);
 	if (viewName == null) viewName = "";
 	Integer colNum = (Integer) request.getAttribute(Constants.COL_NUM);
+	Entity rootEntity = (Entity) request.getAttribute(Constants.ROOT_ENTITY);
 
 	PropertyItem property = (PropertyItem) element;
 	String propName = property.getPropertyName();
@@ -126,6 +127,7 @@
 	request.setAttribute(Constants.EDITOR_PROPERTY_DEFINITION, pd);
 	if (OutputType.EDIT == type || OutputType.BULK == type) {
 		request.setAttribute(Constants.AUTOCOMPLETION_SETTING, property.getAutocompletionSetting());
+		request.setAttribute(Constants.AUTOCOMPLETION_ROOT_ENTITY_DATA, rootEntity);
 		request.setAttribute(Constants.EDITOR_REQUIRED, required);
 	}
 	String path =  EntityViewUtil.getJspPath(property.getEditor(), ViewConst.DESIGN_TYPE_GEM);
@@ -151,6 +153,7 @@
 <jsp:include page="<%=autocompletionPath%>" />
 <%
 		request.removeAttribute(Constants.AUTOCOMPLETION_SETTING);
+		request.removeAttribute(Constants.AUTOCOMPLETION_ROOT_ENTITY_DATA);
 		request.removeAttribute(Constants.AUTOCOMPLETION_DEF_NAME);
 		request.removeAttribute(Constants.AUTOCOMPLETION_VIEW_NAME);
 		request.removeAttribute(Constants.AUTOCOMPLETION_PROP_NAME);

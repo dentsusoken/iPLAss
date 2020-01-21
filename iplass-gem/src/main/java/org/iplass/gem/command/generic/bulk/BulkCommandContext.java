@@ -442,7 +442,7 @@ public class BulkCommandContext extends RegistrationCommandContext {
 			@Override
 			public boolean isDispProperty(PropertyColumn property) {
 				//一括更新プロパティエディタが未設定の場合、更新対象外
-				return EntityViewUtil.isDisplayElement(entityDefinition.getName(), property.getElementRuntimeId(), OutputType.BULK)
+				return EntityViewUtil.isDisplayElement(entityDefinition.getName(), property.getElementRuntimeId(), OutputType.BULK, getCurrentEntity())
 						&& property.getBulkUpdateEditor() != null;
 			}
 
@@ -477,6 +477,11 @@ public class BulkCommandContext extends RegistrationCommandContext {
 	 */
 	public void setView(SearchFormView view) {
 		this.view = view;
+	}
+
+	@Override
+	public Entity getCurrentEntity() {
+		return null;
 	}
 
 	/**

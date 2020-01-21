@@ -65,7 +65,7 @@
 	}
 
 	boolean canBulkUpdate(String defName, PropertyColumn pc) {
-		if (!EntityViewUtil.isDisplayElement(defName, pc.getElementRuntimeId(), OutputType.BULK)
+		if (!EntityViewUtil.isDisplayElement(defName, pc.getElementRuntimeId(), OutputType.BULK, null)
 				|| pc.getBulkUpdateEditor() == null
 				|| pc.getEditor() instanceof UserPropertyEditor
 				|| pc.getEditor() instanceof ExpressionPropertyEditor

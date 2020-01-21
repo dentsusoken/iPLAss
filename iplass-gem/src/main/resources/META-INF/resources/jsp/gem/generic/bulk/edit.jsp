@@ -57,7 +57,7 @@
 	}
 
 	boolean canBulkUpdate(String defName, PropertyItem pi) {
-		if (!EntityViewUtil.isDisplayElement(defName, pi.getElementRuntimeId(), OutputType.BULK)
+		if (!EntityViewUtil.isDisplayElement(defName, pi.getElementRuntimeId(), OutputType.BULK, null)
 				|| pi.getEditor() instanceof UserPropertyEditor
 				|| pi.getEditor() instanceof ExpressionPropertyEditor
 				|| pi.getEditor() instanceof AutoNumberPropertyEditor) {
@@ -278,7 +278,7 @@ $(function() {
 </div>
 <%
 	for (Section section : form.getSections()) {
-		if (!EntityViewUtil.isDisplayElement(defName, section.getElementRuntimeId(), OutputType.BULK)) continue;
+		if (!EntityViewUtil.isDisplayElement(defName, section.getElementRuntimeId(), OutputType.BULK, null)) continue;
 		request.setAttribute(Constants.ELEMENT, section);
 
 		String path = EntityViewUtil.getJspPath(section, ViewConst.DESIGN_TYPE_GEM);
@@ -294,7 +294,7 @@ $(function() {
 <%
 	if (form.getButtons().size() > 0) {
 		for (Button button : form.getButtons()) {
-			if (EntityViewUtil.isDisplayElement(defName, button.getElementRuntimeId(), OutputType.BULK)) {
+			if (EntityViewUtil.isDisplayElement(defName, button.getElementRuntimeId(), OutputType.BULK, null)) {
 				String cssClass = button.isPrimary() ? "gr-btn" : "gr-btn-02";
 				if (StringUtil.isNotBlank(button.getStyle())) {
 					cssClass = button.getStyle();

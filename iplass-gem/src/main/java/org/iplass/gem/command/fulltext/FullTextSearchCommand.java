@@ -344,7 +344,7 @@ public final class FullTextSearchCommand implements Command {
 				.collect(Collectors.toList());
 
 		for (PropertyColumn p : properties) {
-			if (EntityViewUtil.isDisplayElement(ed.getName(), p.getElementRuntimeId(), OutputType.SEARCHRESULT)) {
+			if (EntityViewUtil.isDisplayElement(ed.getName(), p.getElementRuntimeId(), OutputType.SEARCHRESULT, null)) {
 				String propName = p.getPropertyName();
 				if (p.getEditor() instanceof ReferencePropertyEditor) {
 					List<NestProperty> nest = ((ReferencePropertyEditor)p.getEditor()).getNestProperties();
@@ -542,7 +542,7 @@ public final class FullTextSearchCommand implements Command {
 					property.getDisplayLabel(), property.getLocalizedDisplayLabelList(),
 					pd.getDisplayName(), pd.getLocalizedDisplayNameList());
 
-			if (EntityViewUtil.isDisplayElement(ed.getName(), property.getElementRuntimeId(), OutputType.SEARCHRESULT)) {
+			if (EntityViewUtil.isDisplayElement(ed.getName(), property.getElementRuntimeId(), OutputType.SEARCHRESULT, null)) {
 				if (!(pd instanceof ReferenceProperty)) {
 					String sortPropName = StringUtil.escapeHtml(propName);
 					boolean frozen = false;

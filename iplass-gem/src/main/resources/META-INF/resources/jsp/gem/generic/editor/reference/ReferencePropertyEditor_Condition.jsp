@@ -105,7 +105,7 @@
 
 	PropertyEditor getLinkUpperPropertyEditor(String defName, String viewName, LinkProperty linkProperty) {
 		EntityViewManager evm = ManagerLocator.getInstance().getManager(EntityViewManager.class);
-		return evm.getPropertyEditor(defName, Constants.VIEW_TYPE_SEARCH, viewName, linkProperty.getLinkFromPropertyName());
+		return evm.getPropertyEditor(defName, Constants.VIEW_TYPE_SEARCH, viewName, linkProperty.getLinkFromPropertyName(), null);
 	}
 
 	String getLinkUpperType(PropertyEditor editor) {

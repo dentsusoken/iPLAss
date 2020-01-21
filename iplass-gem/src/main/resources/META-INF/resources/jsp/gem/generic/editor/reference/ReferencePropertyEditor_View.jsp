@@ -248,6 +248,10 @@
 	String parentOid = parentEntity != null ? parentEntity.getOid() : "";
 	String parentVersion = parentEntity != null && parentEntity.getVersion() != null ? parentEntity.getVersion().toString() : "";
 
+	Entity rootEntity = (Entity) request.getAttribute(Constants.ROOT_ENTITY);
+	String rootOid = rootEntity != null ? rootEntity.getOid() : "";
+	String rootVersion = rootEntity != null && rootEntity.getVersion() != null ? rootEntity.getVersion().toString() : "";
+
 	//refSectionIndexがnullではなければ、参照セクション内でネストされています。
 	Integer refSectionIndex = (Integer)request.getAttribute(Constants.REF_SECTION_INDEX);
 
@@ -452,14 +456,14 @@ $(function() {
 					//参照のみ
 					String linkId = propName + "_" + refEntity.getOid();
 %>
-<a href="javascript:void(0)" class="modal-lnk" style="<c:out value="<%=customStyle%>"/>" id="<c:out value="<%=linkId %>"/>" data-linkId="<c:out value="<%=linkId %>" />" onclick="showReference('<%=StringUtil.escapeJavaScript(viewAction)%>', '<%=StringUtil.escapeJavaScript(refDefName)%>', '<%=StringUtil.escapeJavaScript(refEntity.getOid())%>', '<%=refEntity.getVersion()%>', '<%=StringUtil.escapeJavaScript(linkId)%>', <%=refEdit %>, null, '<%=rootDefName%>', '<%=viewName%>', '<%=propName%>', 'detail', '<c:out value="<%=refSectionIndex%>" />')"><c:out value="<%=displayPropLabel %>" /></a>
+<a href="javascript:void(0)" class="modal-lnk" style="<c:out value="<%=customStyle%>"/>" id="<c:out value="<%=linkId %>"/>" data-linkId="<c:out value="<%=linkId %>" />" onclick="showReference('<%=StringUtil.escapeJavaScript(viewAction)%>', '<%=StringUtil.escapeJavaScript(refDefName)%>', '<%=StringUtil.escapeJavaScript(refEntity.getOid())%>', '<%=refEntity.getVersion()%>', '<%=StringUtil.escapeJavaScript(linkId)%>', <%=refEdit %>, null, '<%=rootDefName%>', '<%=viewName%>', '<%=propName%>', 'detail', '<c:out value="<%=refSectionIndex%>" />', '<%=StringUtil.escapeJavaScript(rootOid) %>', '<%=StringUtil.escapeJavaScript(rootVersion) %>')"><c:out value="<%=displayPropLabel %>" /></a>
 <%
 				}
 			} else {
 				//Select,Checkbox,RefCombo
 				String linkId = propName + "_" + refEntity.getOid();
 %>
-<a href="javascript:void(0)" class="modal-lnk" style="<c:out value="<%=customStyle%>"/>" id="<c:out value="<%=linkId %>"/>" data-linkId="<c:out value="<%=linkId %>" />" onclick="showReference('<%=StringUtil.escapeJavaScript(viewAction)%>', '<%=StringUtil.escapeJavaScript(refDefName)%>', '<%=StringUtil.escapeJavaScript(refEntity.getOid())%>', '<%=refEntity.getVersion() %>', '<%=StringUtil.escapeJavaScript(linkId)%>', <%=refEdit %>, null, '<%=rootDefName%>', '<%=viewName%>', '<%=propName%>', 'detail', '<c:out value="<%=refSectionIndex%>" />')"><c:out value="<%=displayPropLabel %>" /></a>
+<a href="javascript:void(0)" class="modal-lnk" style="<c:out value="<%=customStyle%>"/>" id="<c:out value="<%=linkId %>"/>" data-linkId="<c:out value="<%=linkId %>" />" onclick="showReference('<%=StringUtil.escapeJavaScript(viewAction)%>', '<%=StringUtil.escapeJavaScript(refDefName)%>', '<%=StringUtil.escapeJavaScript(refEntity.getOid())%>', '<%=refEntity.getVersion() %>', '<%=StringUtil.escapeJavaScript(linkId)%>', <%=refEdit %>, null, '<%=rootDefName%>', '<%=viewName%>', '<%=propName%>', 'detail', '<c:out value="<%=refSectionIndex%>" />', '<%=StringUtil.escapeJavaScript(rootOid) %>', '<%=StringUtil.escapeJavaScript(rootVersion) %>')"><c:out value="<%=displayPropLabel %>" /></a>
 <%
 			}
 			if (outputHidden) {
@@ -542,6 +546,8 @@ $(function() {
  data-refSectionIndex="<c:out value="<%=refSectionIndex%>"/>"
  data-updateRefAction="<c:out value="<%=updateRefAction%>"/>"
  data-reloadUrl="<c:out value="<%=reloadUrl%>"/>"
+ data-entityOid="<c:out value="<%=StringUtil.escapeJavaScript(rootOid)%>"/>"
+ data-entityVersion="<c:out value="<%=StringUtil.escapeJavaScript(rootVersion)%>"/>"
  />
 <%
 				}
@@ -559,7 +565,8 @@ $(function() {
 		insertReferenceFromView("<%=StringUtil.escapeJavaScript(addAction)%>", "<%=StringUtil.escapeJavaScript(refDefName)%>", "<%=StringUtil.escapeJavaScript(ulId)%>", <%=pd.getMultiplicity() %>,
 				"<%=StringUtil.escapeJavaScript(urlParam)%>", "<%=StringUtil.escapeJavaScript(parentOid)%>", "<%=StringUtil.escapeJavaScript(parentVersion)%>", "<%=StringUtil.escapeJavaScript(defName)%>",
 				"<%=StringUtil.escapeJavaScript(mappedBy)%>", $(":hidden[name='oid']").val(), "<%=StringUtil.escapeJavaScript(updateRefAction)%>",
-				"<%=StringUtil.escapeJavaScript(propName)%>", "<%=StringUtil.escapeJavaScript(reloadUrl)%>");
+				"<%=StringUtil.escapeJavaScript(propName)%>", "<%=StringUtil.escapeJavaScript(reloadUrl)%>", "<%=StringUtil.escapeJavaScript(rootOid)%>",
+				"<%=StringUtil.escapeJavaScript(rootVersion)%>");
 	});
 });
 </script>
@@ -598,7 +605,7 @@ $(function() {
 
 			String linkId = propName + "_" + refEntity.getOid();
 %>
-<a href="javascript:void(0)" class="modal-lnk" style="<c:out value="<%=customStyle%>"/>" id="<c:out value="<%=linkId %>"/>" data-linkId="<c:out value="<%=linkId %>" />" onclick="showReference('<%=StringUtil.escapeJavaScript(viewAction)%>', '<%=StringUtil.escapeJavaScript(refDefName)%>', '<%=StringUtil.escapeJavaScript(refEntity.getOid())%>', '<%=refEntity.getVersion() %>', '<%=StringUtil.escapeJavaScript(linkId)%>', <%=refEdit %>, null, '<%=rootDefName%>', '<%=viewName%>', '<%=propName%>', 'detail', '<c:out value="<%=refSectionIndex%>" />')"><c:out value="<%=displayPropLabel %>" /></a>
+<a href="javascript:void(0)" class="modal-lnk" style="<c:out value="<%=customStyle%>"/>" id="<c:out value="<%=linkId %>"/>" data-linkId="<c:out value="<%=linkId %>" />" onclick="showReference('<%=StringUtil.escapeJavaScript(viewAction)%>', '<%=StringUtil.escapeJavaScript(refDefName)%>', '<%=StringUtil.escapeJavaScript(refEntity.getOid())%>', '<%=refEntity.getVersion() %>', '<%=StringUtil.escapeJavaScript(linkId)%>', <%=refEdit %>, null, '<%=rootDefName%>', '<%=viewName%>', '<%=propName%>', 'detail', '<c:out value="<%=refSectionIndex%>" />', '<%=StringUtil.escapeJavaScript(rootOid) %>', '<%=StringUtil.escapeJavaScript(rootVersion) %>')"><c:out value="<%=displayPropLabel %>" /></a>
 <%
 			if (outputHidden) {
 				String _value = refEntity.getOid() + "_" + refEntity.getVersion();

@@ -20,6 +20,7 @@
 
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8" trimDirectiveWhitespaces="true"%>
+<%@ page import="org.iplass.mtp.entity.Entity" %>
 <%@ page import="org.iplass.mtp.util.StringUtil"%>
 <%@ page import="org.iplass.mtp.view.generic.common.*" %>
 <%@ page import="org.iplass.mtp.web.template.TemplateUtil"%>
@@ -34,6 +35,9 @@ if (viewName == null) viewName = "";
 String propName = StringUtil.escapeJavaScript((String) request.getAttribute(Constants.AUTOCOMPLETION_PROP_NAME));
 if (setting == null) return;
 String refPropName = (String) request.getAttribute(Constants.AUTOCOMPLETION_REF_NEST_PROP_NAME);
+
+Object value = request.getAttribute(Constants.AUTOCOMPLETION_ROOT_ENTITY_DATA);
+Entity rootEntity = value instanceof Entity ? (Entity)value : null;
 
 StringBuilder sb = new StringBuilder();
 for (AutocompletionProperty prop : setting.getProperties()) {
@@ -114,13 +118,19 @@ $(function() {
 		<% } %>
 		<% } %>
 
+		<% if (rootEntity == null) { %>
+		var entity = null;
+		<% } else { %>
+		var entity = {oid: "<%=rootEntity.getOid()%>", version: "<%=rootEntity.getVersion()%>"};
+		<% } %>
+
 		if (prefix != null) {
 			var refIndex = prefix.substr(0, prefix.indexOf("]")).substr(prefix.indexOf("[") + 1);
 			pValue["refIndex"] = refIndex;
 			var propName = prefix + "<%=propName%>";
 			var _propName = prefix.replace("[" + refIndex + "]", "") + "<%=propName%>";
 			var cValue = $("[name='" + propName + "']").map(function() {return $(this).val();}).get();
-			getAutocompletionValue("<%=GetAutocompletionValueCommand.WEBAPI_NAME%>", "<%=defName%>", "<%=viewName%>", "<%=Constants.VIEW_TYPE_DETAIL%>", _propName, "<%=key%>", null, pValue, cValue, function(value) {
+			getAutocompletionValue("<%=GetAutocompletionValueCommand.WEBAPI_NAME%>", "<%=defName%>", "<%=viewName%>", "<%=Constants.VIEW_TYPE_DETAIL%>", _propName, "<%=key%>", null, pValue, cValue, entity, function(value) {
 <jsp:include page="<%=path %>" />
 			});
 		} else {
@@ -130,7 +140,7 @@ $(function() {
 				pValue["refIndex"] = refIndex;
 				var propName = "<%=refPropName%>[" + refIndex + "].<%=propName%>";
 				var cValue = $("[name='" + propName + "']").map(function() {return $(this).val();}).get();
-				getAutocompletionValue("<%=GetAutocompletionValueCommand.WEBAPI_NAME%>", "<%=defName%>", "<%=viewName%>", "<%=Constants.VIEW_TYPE_DETAIL%>", "<%=refPropName%>.<%=propName%>", "<%=key%>", null, pValue, cValue, function(value) {
+				getAutocompletionValue("<%=GetAutocompletionValueCommand.WEBAPI_NAME%>", "<%=defName%>", "<%=viewName%>", "<%=Constants.VIEW_TYPE_DETAIL%>", "<%=refPropName%>.<%=propName%>", "<%=key%>", null, pValue, cValue, entity, function(value) {
 <jsp:include page="<%=path %>" />
 				});
 			});
