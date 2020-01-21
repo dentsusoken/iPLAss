@@ -65,6 +65,7 @@ public interface EntityViewManager extends TypedDefinitionManager<EntityView> {
 	 * @param viewType FormViewの種類
 	 * @param viewName View名
 	 * @param propName プロパティ名
+	 * @param entity エンティティ
 	 * @return エディター
 	 */
 	public PropertyEditor getPropertyEditor(String defName, String viewType, String viewName, String propName, Entity entity);
@@ -77,6 +78,7 @@ public interface EntityViewManager extends TypedDefinitionManager<EntityView> {
 	 * @param viewName View名
 	 * @param propName プロパティ名
 	 * @param refSection 参照セクションインデックス
+	 * @param entity エンティティ
 	 * @return エディター
 	 */
 	public PropertyEditor getPropertyEditor(String defName, String viewType, String viewName, String propName, Integer refSectionIndex, Entity entity);
@@ -217,6 +219,7 @@ public interface EntityViewManager extends TypedDefinitionManager<EntityView> {
 	 * @param autocompletionKey 自動補完のキー
 	 * @param param 連動元の値
 	 * @param currentValue 連動先の値
+	 * @param entity エンティティ
 	 * @return 自動補完の値
 	 */
 	public Object getAutocompletionValue(String definitionName, String viewName, String viewType, String propName, String autocompletionKey, Integer referenceSectionIndex, Map<String, String[]> param, List<String> currentValue, Entity entity);
