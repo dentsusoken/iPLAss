@@ -85,6 +85,7 @@ public class MysqlRdbAdaptor extends RdbAdapter {
 	private int thresholdCountOfUsePrepareStatement = -1;
 	private int maxFetchSize = 100;
 	private int defaultQueryTimeout;
+	private int defaultFetchSize;
 
 	long dateMin;
 	long dateMax;
@@ -172,6 +173,15 @@ public class MysqlRdbAdaptor extends RdbAdapter {
 
 	public void setDefaultQueryTimeout(int defaultQueryTimeout) {
 		this.defaultQueryTimeout = defaultQueryTimeout;
+	}
+
+	@Override
+	public int getDefaultFetchSize() {
+		return defaultFetchSize;
+	}
+
+	public void setDefaultFetchSize(int defaultFetchSize) {
+		this.defaultFetchSize = defaultFetchSize;
 	}
 
 	@Override

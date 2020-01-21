@@ -60,8 +60,11 @@ public abstract class SqlExecuter<R> {
 			pstmt = new ArrayList<PreparedStatement>();
 		}
 		PreparedStatement ps = getConnection().prepareStatement(sql, columnNames);
-		if (rdb.getDefaultQueryTimeout() > 0) {
+		if (rdb.getDefaultQueryTimeout() != ps.getQueryTimeout()) {
 			ps.setQueryTimeout(rdb.getDefaultQueryTimeout());
+		}
+		if (rdb.getDefaultFetchSize() != ps.getFetchSize()) {
+			ps.setFetchSize(rdb.getDefaultFetchSize());
 		}
 		pstmt.add(ps);
 
@@ -73,8 +76,11 @@ public abstract class SqlExecuter<R> {
 			pstmt = new ArrayList<PreparedStatement>();
 		}
 		PreparedStatement ps = getConnection().prepareStatement(sql);
-		if (rdb.getDefaultQueryTimeout() > 0) {
+		if (rdb.getDefaultQueryTimeout() != ps.getQueryTimeout()) {
 			ps.setQueryTimeout(rdb.getDefaultQueryTimeout());
+		}
+		if (rdb.getDefaultFetchSize() != ps.getFetchSize()) {
+			ps.setFetchSize(rdb.getDefaultFetchSize());
 		}
 		pstmt.add(ps);
 
@@ -84,8 +90,11 @@ public abstract class SqlExecuter<R> {
 	public Statement getStatement() throws SQLException {
 		if (stmt == null) {
 			stmt = getConnection().createStatement();
-			if (rdb.getDefaultQueryTimeout() > 0) {
+			if (rdb.getDefaultQueryTimeout() != stmt.getQueryTimeout()) {
 				stmt.setQueryTimeout(rdb.getDefaultQueryTimeout());
+			}
+			if (rdb.getDefaultFetchSize() != stmt.getFetchSize()) {
+				stmt.setFetchSize(rdb.getDefaultFetchSize());
 			}
 		}
 		return stmt;

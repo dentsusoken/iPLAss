@@ -282,6 +282,11 @@ public class NoopRdbAdapter extends RdbAdapter {
 	}
 
 	@Override
+	public int getDefaultFetchSize() {
+		return 0;
+	}
+
+	@Override
 	public int getThresholdCountOfUsePrepareStatement() {
 		return 0;
 	}

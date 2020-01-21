@@ -83,6 +83,7 @@ public class PostgreSQLRdbAdapter extends RdbAdapter {
 	private boolean enableBindHint;
 	private int maxFetchSize = 100;
 	private int defaultQueryTimeout;
+	private int defaultFetchSize = 10;//set default to 10
 	private int lockTimeout = 0;
 
 	public PostgreSQLRdbAdapter() {
@@ -138,6 +139,15 @@ public class PostgreSQLRdbAdapter extends RdbAdapter {
 
 	public void setDefaultQueryTimeout(int defaultQueryTimeout) {
 		this.defaultQueryTimeout = defaultQueryTimeout;
+	}
+
+	@Override
+	public int getDefaultFetchSize() {
+		return defaultFetchSize;
+	}
+
+	public void setDefaultFetchSize(int defaultFetchSize) {
+		this.defaultFetchSize = defaultFetchSize;
 	}
 
 	@Override

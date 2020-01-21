@@ -166,7 +166,7 @@ public class GRdbEntityStoreStrategy implements EntityStoreStrategy {
 					Statement stmt = getStatement();
 					stmt.setFetchSize(1);
 					QueryOption qo = QueryOption.getQueryOption(query);
-					if (qo != null) {
+					if (qo != null && qo.getQueryTimeout() != 0) {
 						qo.setQueryTimeout(qo.getQueryTimeout());
 					}
 					if (stmt instanceof StatementWrapper) {
@@ -191,7 +191,7 @@ public class GRdbEntityStoreStrategy implements EntityStoreStrategy {
 					}
 					stmt.setFetchSize(1);
 					QueryOption qo = QueryOption.getQueryOption(query);
-					if (qo != null) {
+					if (qo != null && qo.getQueryTimeout() != 0) {
 						qo.setQueryTimeout(qo.getQueryTimeout());
 					}
 					try (ResultSet rs = stmt.executeQuery()) {
@@ -540,16 +540,15 @@ public class GRdbEntityStoreStrategy implements EntityStoreStrategy {
 					if (stmt instanceof StatementWrapper) {
 						((StatementWrapper) stmt).setAdditionalWarnLogInfo(new EQLAdditionalWarnLogInfo(query, false, handler, context));
 					}
-					if (option != null) {
+					if (option != null && option.getFetchSize() != 0) {
 						if (rdb.getMaxFetchSize() < option.getFetchSize()) {
 							stmt.setFetchSize(rdb.getMaxFetchSize());
 						} else {
 							stmt.setFetchSize(option.getFetchSize());
 						}
+					}
+					if (option != null && option.getQueryTimeout() != 0) {
 						stmt.setQueryTimeout(option.getQueryTimeout());
-					} else {
-						stmt.setFetchSize(0);//default
-						stmt.setQueryTimeout(0);//default
 					}
 					rs = getStatement().executeQuery(sql.sql);
 					if (stmt instanceof StatementWrapper) {
@@ -566,16 +565,15 @@ public class GRdbEntityStoreStrategy implements EntityStoreStrategy {
 						val.type.setParameter(index, val.value, stmt);
 						index++;
 					}
-					if (option != null) {
+					if (option != null && option.getFetchSize() != 0) {
 						if (rdb.getMaxFetchSize() < option.getFetchSize()) {
 							stmt.setFetchSize(rdb.getMaxFetchSize());
 						} else {
 							stmt.setFetchSize(option.getFetchSize());
 						}
+					}
+					if (option != null && option.getQueryTimeout() != 0) {
 						stmt.setQueryTimeout(option.getQueryTimeout());
-					} else {
-						stmt.setFetchSize(0);//default
-						stmt.setQueryTimeout(0);//default
 					}
 					rs = stmt.executeQuery();
 					if (stmt instanceof PreparedStatementWrapper) {

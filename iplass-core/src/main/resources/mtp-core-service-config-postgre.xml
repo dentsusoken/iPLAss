@@ -28,6 +28,7 @@
 		<!-- for postgresql -->
 		<property name="adapter" class="org.iplass.mtp.impl.rdb.postgresql.PostgreSQLRdbAdapter" inherit="false">
 			<property name="lockTimeout" value="0" />
+			<property name="defaultFetchSize" value="10" />
 		</property>
 	</service>
 
