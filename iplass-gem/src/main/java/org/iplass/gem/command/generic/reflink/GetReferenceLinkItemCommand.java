@@ -27,6 +27,7 @@ import java.util.function.Predicate;
 
 import org.iplass.gem.command.CommandUtil;
 import org.iplass.gem.command.Constants;
+import org.iplass.gem.command.generic.HasDisplayScriptBindings;
 import org.iplass.mtp.ManagerLocator;
 import org.iplass.mtp.command.Command;
 import org.iplass.mtp.command.RequestContext;
@@ -35,7 +36,6 @@ import org.iplass.mtp.command.annotation.webapi.RestJson;
 import org.iplass.mtp.command.annotation.webapi.WebApi;
 import org.iplass.mtp.entity.Entity;
 import org.iplass.mtp.entity.EntityManager;
-import org.iplass.mtp.entity.GenericEntity;
 import org.iplass.mtp.entity.definition.EntityDefinition;
 import org.iplass.mtp.entity.definition.EntityDefinitionManager;
 import org.iplass.mtp.entity.definition.PropertyDefinition;
@@ -64,7 +64,7 @@ import org.iplass.mtp.webapi.definition.RequestType;
 		checkXRequestedWithHeader=true
 	)
 @CommandClass(name="gem/generic/link/GetReferenceLinkItemCommand", displayName="連動アイテム取得")
-public final class GetReferenceLinkItemCommand implements Command {
+public final class GetReferenceLinkItemCommand implements Command, HasDisplayScriptBindings {
 
 	public static final String WEBAPI_NAME = "gem/generic/link/getLinkItem";
 
@@ -90,7 +90,7 @@ public final class GetReferenceLinkItemCommand implements Command {
 		String propName = request.getParam(Constants.PROP_NAME);
 		String linkValue = request.getParam(Constants.REF_LINK_VALUE);
 
-		Entity entity = getCurrentEntity(request);
+		Entity entity = getBindingEntity(request);
 		//Editor取得
 		PropertyEditor editor = evm.getPropertyEditor(defName, viewType, viewName, propName, entity);
 		ReferencePropertyEditor rpe = null;
@@ -103,20 +103,6 @@ public final class GetReferenceLinkItemCommand implements Command {
 		}
 
 		return Constants.CMD_EXEC_SUCCESS;
-	}
-
-	private Entity getCurrentEntity(RequestContext request) {
-		String defName = request.getParam(Constants.DEF_NAME);
-		String entityOid = request.getParam(Constants.DISPLAY_SCRIPT_ENTITY_OID);
-		String entityVersion = request.getParam(Constants.DISPLAY_SCRIPT_ENTITY_VERSION);
-
-		if (StringUtil.isNotBlank(entityOid) && StringUtil.isNotBlank(entityVersion)) {
-			Entity e = new GenericEntity(defName);
-			e.setOid(entityOid);
-			e.setVersion(Long.valueOf(entityVersion));
-			return e;
-		}
-		return null;
 	}
 
 	private List<SimpleEntity> getData(ReferencePropertyEditor editor, String linkValue, RequestContext request) {

@@ -20,6 +20,7 @@
 
 package org.iplass.gem.command.generic.common;
 
+import org.iplass.gem.command.generic.HasDisplayScriptBindings;
 import org.iplass.mtp.ManagerLocator;
 import org.iplass.mtp.command.Command;
 import org.iplass.mtp.command.RequestContext;
@@ -43,7 +44,7 @@ import org.iplass.mtp.webapi.definition.RequestType;
 		checkXRequestedWithHeader=true
 	)
 @CommandClass(name="gem/generic/common/GetAutocompletionValueCommand", displayName="自動補完値取得")
-public class GetAutocompletionValueCommand implements Command {
+public class GetAutocompletionValueCommand implements Command, HasDisplayScriptBindings {
 
 	public static final String WEBAPI_NAME = "gem/generic/common/getAutocompletionValue";
 
@@ -57,7 +58,7 @@ public class GetAutocompletionValueCommand implements Command {
 	public String execute(RequestContext request) {
 		AutocompletionParam param = (AutocompletionParam) request.getAttribute("params");
 
-		Entity entity = getCurrentEntity(param);
+		Entity entity = getBindingEntity(request);
 		Object val = evm.getAutocompletionValue(param.getDefName(), param.getViewName(), param.getViewType(),
 				param.getPropName(), param.getAutocompletionKey(), param.getReferenceSectionIndex(), param.getParams(), param.getCurrentValue(), entity);
 
@@ -65,7 +66,9 @@ public class GetAutocompletionValueCommand implements Command {
 		return null;
 	}
 
-	private Entity getCurrentEntity(AutocompletionParam param) {
+	@Override
+	public Entity getBindingEntity(RequestContext request) {
+		AutocompletionParam param = (AutocompletionParam) request.getAttribute("params");
 		AutocompletionEntityParam entity = param.getEntity();
 		if (entity != null) {
 			Entity e = new GenericEntity(param.getDefName());

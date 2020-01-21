@@ -23,6 +23,7 @@ package org.iplass.gem.command.generic.refunique;
 import java.util.function.Predicate;
 
 import org.iplass.gem.command.Constants;
+import org.iplass.gem.command.generic.HasDisplayScriptBindings;
 import org.iplass.mtp.ManagerLocator;
 import org.iplass.mtp.command.Command;
 import org.iplass.mtp.command.RequestContext;
@@ -31,7 +32,6 @@ import org.iplass.mtp.command.annotation.webapi.RestJson;
 import org.iplass.mtp.command.annotation.webapi.WebApi;
 import org.iplass.mtp.entity.Entity;
 import org.iplass.mtp.entity.EntityManager;
-import org.iplass.mtp.entity.GenericEntity;
 import org.iplass.mtp.entity.definition.EntityDefinition;
 import org.iplass.mtp.entity.definition.EntityDefinitionManager;
 import org.iplass.mtp.entity.definition.IndexType;
@@ -40,7 +40,6 @@ import org.iplass.mtp.entity.query.Query;
 import org.iplass.mtp.entity.query.condition.predicate.Equals;
 import org.iplass.mtp.entity.query.condition.predicate.IsNull;
 import org.iplass.mtp.impl.util.ConvertUtil;
-import org.iplass.mtp.util.StringUtil;
 import org.iplass.mtp.view.generic.EntityViewManager;
 import org.iplass.mtp.view.generic.editor.PropertyEditor;
 import org.iplass.mtp.view.generic.editor.ReferencePropertyEditor;
@@ -56,7 +55,7 @@ import org.iplass.mtp.webapi.definition.RequestType;
 		checkXRequestedWithHeader = true
 	)
 @CommandClass(name = "gem/generic/refunique/ReferenceUniqueCommand", displayName = "参照ユニークキーコマンド")
-public class GetReferenceUniqueItemCommand implements Command {
+public class GetReferenceUniqueItemCommand implements Command, HasDisplayScriptBindings {
 
 	public static final String WEBAPI_NAME = "gem/generic/refunique/getUniqueItem";
 
@@ -79,7 +78,7 @@ public class GetReferenceUniqueItemCommand implements Command {
 		String viewType = request.getParam(Constants.VIEW_TYPE);
 		String uniqueValue = request.getParam(Constants.REF_UNIQUE_VALUE);
 
-		Entity entity = getCurrentEntity(request);
+		Entity entity = getBindingEntity(request);
 		// Editor取得
 		PropertyEditor editor = evm.getPropertyEditor(defName, viewType, viewName, propName, entity);
 		ReferencePropertyEditor rpe = null;
@@ -97,20 +96,6 @@ public class GetReferenceUniqueItemCommand implements Command {
 		request.setAttribute(Constants.DATA, data);
 
 		return Constants.CMD_EXEC_SUCCESS;
-	}
-
-	private Entity getCurrentEntity(RequestContext request) {
-		String defName = request.getParam(Constants.DEF_NAME);
-		String entityOid = request.getParam(Constants.DISPLAY_SCRIPT_ENTITY_OID);
-		String entityVersion = request.getParam(Constants.DISPLAY_SCRIPT_ENTITY_VERSION);
-
-		if (StringUtil.isNotBlank(entityOid) && StringUtil.isNotBlank(entityVersion)) {
-			Entity e = new GenericEntity(defName);
-			e.setOid(entityOid);
-			e.setVersion(Long.valueOf(entityVersion));
-			return e;
-		}
-		return null;
 	}
 
 	private boolean isUniqueProp(ReferencePropertyEditor editor) {

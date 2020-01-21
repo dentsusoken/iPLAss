@@ -35,6 +35,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.iplass.gem.command.Constants;
+import org.iplass.gem.command.generic.HasDisplayScriptBindings;
 import org.iplass.gem.command.generic.search.ResponseUtil;
 import org.iplass.gem.command.generic.search.ResponseUtil.Func;
 import org.iplass.mtp.ManagerLocator;
@@ -47,7 +48,6 @@ import org.iplass.mtp.command.annotation.webapi.RestJson;
 import org.iplass.mtp.command.annotation.webapi.WebApi;
 import org.iplass.mtp.entity.Entity;
 import org.iplass.mtp.entity.EntityManager;
-import org.iplass.mtp.entity.GenericEntity;
 import org.iplass.mtp.entity.definition.EntityDefinition;
 import org.iplass.mtp.entity.definition.EntityDefinitionManager;
 import org.iplass.mtp.entity.definition.PropertyDefinition;
@@ -94,7 +94,7 @@ import org.iplass.mtp.webapi.definition.RequestType;
 		checkXRequestedWithHeader=true
 	)
 @CommandClass(name="gem/generic/detail/GetMassReferencesCommand", displayName="参照プロパティ検索")
-public final class GetMassReferencesCommand extends DetailCommandBase {
+public final class GetMassReferencesCommand extends DetailCommandBase implements HasDisplayScriptBindings{
 
 	public static final String WEBAPI_NAME = "gem/generic/detail/getMassReference";
 
@@ -141,7 +141,7 @@ public final class GetMassReferencesCommand extends DetailCommandBase {
 		if (pd instanceof ReferenceProperty) {
 			ReferenceProperty rp = (ReferenceProperty) pd;
 
-			Entity entity = getCurrentEntity(request);
+			Entity entity = getBindingEntity(request);
 			//Section取得
 			List<MassReferenceSection> sections = getMassReferenceSection(
 					context.getEntityDefinition(), outputType, context.getView(), context.getViewName(), entity);
@@ -242,21 +242,6 @@ public final class GetMassReferencesCommand extends DetailCommandBase {
 		}
 		return null;
 	}
-
-	private Entity getCurrentEntity(RequestContext request) {
-		String defName = request.getParam(Constants.DEF_NAME);
-		String entityOid = request.getParam(Constants.DISPLAY_SCRIPT_ENTITY_OID);
-		String entityVersion = request.getParam(Constants.DISPLAY_SCRIPT_ENTITY_VERSION);
-
-		if (StringUtil.isNotBlank(entityOid) && StringUtil.isNotBlank(entityVersion)) {
-			Entity e = new GenericEntity(defName);
-			e.setOid(entityOid);
-			e.setVersion(Long.valueOf(entityVersion));
-			return e;
-		}
-		return null;
-	}
-
 
 	private OrderBy getOrderBy(MassReferenceSection section, EntityDefinition red, String sortKey, String sortType) {
 		OrderBy orderBy = new OrderBy();

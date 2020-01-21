@@ -27,6 +27,7 @@ import java.util.Map;
 import java.util.function.Predicate;
 
 import org.iplass.gem.command.Constants;
+import org.iplass.gem.command.generic.HasDisplayScriptBindings;
 import org.iplass.mtp.ManagerLocator;
 import org.iplass.mtp.command.Command;
 import org.iplass.mtp.command.RequestContext;
@@ -35,7 +36,6 @@ import org.iplass.mtp.command.annotation.webapi.RestJson;
 import org.iplass.mtp.command.annotation.webapi.WebApi;
 import org.iplass.mtp.entity.Entity;
 import org.iplass.mtp.entity.EntityManager;
-import org.iplass.mtp.entity.GenericEntity;
 import org.iplass.mtp.entity.definition.EntityDefinition;
 import org.iplass.mtp.entity.definition.EntityDefinitionManager;
 import org.iplass.mtp.entity.definition.properties.ReferenceProperty;
@@ -47,7 +47,6 @@ import org.iplass.mtp.entity.query.condition.Condition;
 import org.iplass.mtp.entity.query.condition.expr.And;
 import org.iplass.mtp.entity.query.condition.predicate.ComparisonPredicate;
 import org.iplass.mtp.entity.query.condition.predicate.Equals;
-import org.iplass.mtp.util.StringUtil;
 import org.iplass.mtp.view.generic.EntityViewManager;
 import org.iplass.mtp.view.generic.editor.PropertyEditor;
 import org.iplass.mtp.view.generic.editor.ReferenceComboSetting;
@@ -69,7 +68,7 @@ import org.iplass.mtp.webapi.definition.RequestType;
 		checkXRequestedWithHeader=true
 	)
 @CommandClass(name="gem/generic/refcombo/ReferenceComboCommand", displayName="参照コンボコマンド")
-public final class ReferenceComboCommand implements Command {
+public final class ReferenceComboCommand implements Command, HasDisplayScriptBindings {
 
 	public static final String WEBAPI_NAME = "gem/generic/refcombo/referenceCombo";
 
@@ -94,7 +93,7 @@ public final class ReferenceComboCommand implements Command {
 		String propName = request.getParam(Constants.PROP_NAME);
 		String viewType = request.getParam(Constants.VIEW_TYPE);
 
-		Entity entity = getCurrentEntity(request);
+		Entity entity = getBindingEntity(request);
 		//Editor取得
 		PropertyEditor editor = evm.getPropertyEditor(defName, viewType, viewName, propName, entity);
 		ReferencePropertyEditor rpe = null;
@@ -114,20 +113,6 @@ public final class ReferenceComboCommand implements Command {
 		}
 
 		return Constants.CMD_EXEC_SUCCESS;
-	}
-
-	private Entity getCurrentEntity(RequestContext request) {
-		String defName = request.getParam(Constants.DEF_NAME);
-		String entityOid = request.getParam(Constants.DISPLAY_SCRIPT_ENTITY_OID);
-		String entityVersion = request.getParam(Constants.DISPLAY_SCRIPT_ENTITY_VERSION);
-
-		if (StringUtil.isNotBlank(entityOid) && StringUtil.isNotBlank(entityVersion)) {
-			Entity e = new GenericEntity(defName);
-			e.setOid(entityOid);
-			e.setVersion(Long.valueOf(entityVersion));
-			return e;
-		}
-		return null;
 	}
 
 	/**

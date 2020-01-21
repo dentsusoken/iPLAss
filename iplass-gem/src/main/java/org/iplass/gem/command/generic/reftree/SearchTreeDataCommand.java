@@ -26,6 +26,7 @@ import java.util.List;
 import org.iplass.gem.command.Constants;
 import org.iplass.gem.command.common.JqTreeData;
 import org.iplass.gem.command.common.JsonStreamingOutput;
+import org.iplass.gem.command.generic.HasDisplayScriptBindings;
 import org.iplass.mtp.ManagerLocator;
 import org.iplass.mtp.command.Command;
 import org.iplass.mtp.command.RequestContext;
@@ -34,7 +35,6 @@ import org.iplass.mtp.command.annotation.webapi.RestJson;
 import org.iplass.mtp.command.annotation.webapi.WebApi;
 import org.iplass.mtp.entity.Entity;
 import org.iplass.mtp.entity.EntityManager;
-import org.iplass.mtp.entity.GenericEntity;
 import org.iplass.mtp.entity.query.PreparedQuery;
 import org.iplass.mtp.entity.query.Query;
 import org.iplass.mtp.entity.query.SortSpec;
@@ -61,7 +61,7 @@ import org.iplass.mtp.webapi.definition.RequestType;
 		checkXRequestedWithHeader=true
 	)
 @CommandClass(name="gem/generic/reftree/SearchTreeDataCommand")
-public class SearchTreeDataCommand implements Command {
+public class SearchTreeDataCommand implements Command, HasDisplayScriptBindings {
 
 	public static final String WEBAPI_NAME = "gem/generic/reftree/searchReferenceTreeData";
 
@@ -82,7 +82,7 @@ public class SearchTreeDataCommand implements Command {
 		String oid = request.getParam(Constants.OID);
 		String linkValue = request.getParam("linkValue");
 
-		Entity entity = getCurrentEntity(request);
+		Entity entity = getBindingEntity(request);
 		PropertyEditor editor = evm.getPropertyEditor(defName, viewType, viewName, propName, entity);
 
 		//検索
@@ -92,20 +92,6 @@ public class SearchTreeDataCommand implements Command {
 		request.setAttribute(Constants.DATA, new JsonStreamingOutput(ret));
 
 		return Constants.CMD_EXEC_SUCCESS;
-	}
-
-	private Entity getCurrentEntity(RequestContext request) {
-		String defName = request.getParam(Constants.DEF_NAME);
-		String entityOid = request.getParam(Constants.DISPLAY_SCRIPT_ENTITY_OID);
-		String entityVersion = request.getParam(Constants.DISPLAY_SCRIPT_ENTITY_VERSION);
-
-		if (StringUtil.isNotBlank(entityOid) && StringUtil.isNotBlank(entityVersion)) {
-			Entity e = new GenericEntity(defName);
-			e.setOid(entityOid);
-			e.setVersion(Long.valueOf(entityVersion));
-			return e;
-		}
-		return null;
 	}
 
 	private List<RefTreeJqTreeData > search(ReferencePropertyEditor editor, String oid, String linkValue) {

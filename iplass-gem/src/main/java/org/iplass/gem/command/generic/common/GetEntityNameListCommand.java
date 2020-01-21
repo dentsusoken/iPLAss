@@ -24,6 +24,7 @@ import java.util.List;
 
 import org.iplass.gem.command.Constants;
 import org.iplass.gem.command.ViewUtil;
+import org.iplass.gem.command.generic.HasDisplayScriptBindings;
 import org.iplass.mtp.ManagerLocator;
 import org.iplass.mtp.command.Command;
 import org.iplass.mtp.command.RequestContext;
@@ -64,7 +65,7 @@ import org.iplass.mtp.webapi.definition.RequestType;
 	checkXRequestedWithHeader=true
 )
 @CommandClass(name="gem/generic/common/GetEntityNameListCommand", displayName="参照データ名前一括取得")
-public final class GetEntityNameListCommand implements Command {
+public final class GetEntityNameListCommand implements Command, HasDisplayScriptBindings {
 
 	public static final String WEBAPI_NAME = "gem/generic/common/getEntityNameList";
 
@@ -84,7 +85,7 @@ public final class GetEntityNameListCommand implements Command {
 		Object ret = null;
 		if (defName != null && !defName.isEmpty()
 				&& list != null && !list.isEmpty()) {
-			Entity e = getCurrentEntity(param);
+			Entity e = getBindingEntity(request);
 			// 表示ラベルとして扱うプロパティを取得します
 			String dispLabelProp = getDisplayLabelItem(parentDefName, parentViewName, parentPropName, viewType, refSectionIndex, e);
 			// ユニークキー項目
@@ -118,7 +119,9 @@ public final class GetEntityNameListCommand implements Command {
 		return "OK";
 	}
 
-	private Entity getCurrentEntity(GetEntityNameListParameter param) {
+	@Override
+	public Entity getBindingEntity(RequestContext request) {
+		GetEntityNameListParameter param = (GetEntityNameListParameter) request.getAttribute("params");
 		GetEntityNameListEntityParameter entity = param.getEntity();
 		if (entity != null) {
 			Entity e = new GenericEntity(param.getParentDefName());
