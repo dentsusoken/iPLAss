@@ -2385,7 +2385,9 @@ function insertReference(addAction, viewAction, defName, propName, multiplicity,
  * @param entityOid
  * @param entityVersion
  */
-function insertReferenceFromView(addAction, defName, id, multiplicity, urlParam, parentOid, parentVersion, parentDefName, mappedBy, oid, updateAction, propName, reloadUrl, entityOid, entityVersion) {
+function insertReferenceFromView(addAction, defName, id, multiplicity, urlParam, 
+		parentOid, parentVersion, parentDefName, mappedBy, 
+		oid, updateAction, propName, reloadUrl, entityOid, entityVersion) {
 	var _propName = propName.replace(/\[/g, "\\[").replace(/\]/g, "\\]").replace(/\./g, "\\.");
 
 	var isMappedBy = mappedBy != null && mappedBy != "";
@@ -2705,7 +2707,7 @@ function viewEditableReference(viewAction, defName, oid, reloadUrl, refEdit) {
 
 	$("iframe[name='" + target + "']").parents(".modal-dialog").off("closeModalDialog").on("closeModalDialog", function() {
 		if (edited) {
-			submitForm(reloadUrl + "/" + $(":hidden[name='oid']").val(), {
+			submitForm(reloadUrl, {
 				"defName":$(":hidden[name='defName']").val(),
 				"oid":$(":hidden[name='oid']").val()
 			});
