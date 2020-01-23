@@ -55,6 +55,8 @@ public class LoggingInterceptor extends org.iplass.mtp.impl.command.interceptors
 	private boolean webapiTrace = true;//infoで出力
 
 	private int warnLogThresholdOfSqlExecutionCount = -1;
+	private long warnLogThresholdOfExecutionTimeMillis = -1;
+
 	private ConnectionFactory rdbConFactory;
 
 	private List<String> noStackTrace;
@@ -103,6 +105,14 @@ public class LoggingInterceptor extends org.iplass.mtp.impl.command.interceptors
 		this.warnLogThresholdOfSqlExecutionCount = warnLogThresholdOfSqlExecutionCount;
 	}
 
+	public long getWarnLogThresholdOfExecutionTimeMillis() {
+		return warnLogThresholdOfExecutionTimeMillis;
+	}
+
+	public void setWarnLogThresholdOfExecutionTimeMillis(long warnLogThresholdOfExecutionTimeMillis) {
+		this.warnLogThresholdOfExecutionTimeMillis = warnLogThresholdOfExecutionTimeMillis;
+	}
+
 	@Override
 	public void inited(InterceptorService service, Config config) {
 		if (noStackTrace != null) {
@@ -134,6 +144,13 @@ public class LoggingInterceptor extends org.iplass.mtp.impl.command.interceptors
 			exp = t;
 			throw t;
 		} finally {
+			long executionTime;
+			if (start == -1) {
+				executionTime = start;
+			} else {
+				executionTime = System.currentTimeMillis() - start;
+			}
+			
 			int sqlCount;
 			if (sqlCounter == null) {
 				sqlCount = -1;
@@ -143,31 +160,41 @@ public class LoggingInterceptor extends org.iplass.mtp.impl.command.interceptors
 
 			if (exp != null && !(exp instanceof ApplicationException)) {
 				if (ExceptionInterceptor.match(noStackTraceClass, exp)) {
-					webapiLogger.error(logStr(invocation, start, sqlCount, exp));
+					webapiLogger.error(logStr(invocation, executionTime, sqlCount, exp));
 				} else {
-					webapiLogger.error(logStr(invocation, start, sqlCount, exp), exp);
+					webapiLogger.error(logStr(invocation, executionTime, sqlCount, exp), exp);
 				}
 			} else {
-				if (warnLogThresholdOfSqlExecutionCount >= 0 && sqlCount > warnLogThresholdOfSqlExecutionCount) {
-					webapiLogger.warn(logStr(invocation, start, sqlCount, exp));
+				if (isWarnLog(executionTime, sqlCount)) {
+					webapiLogger.warn(logStr(invocation, executionTime, sqlCount, exp));
 				} else {
-					webapiLogger.info(logStr(invocation, start, sqlCount, exp));
+					webapiLogger.info(logStr(invocation, executionTime, sqlCount, exp));
 				}
 			}
 			
 			MDC.remove(MDC_WEBAPI);
 		}
 	}
-	
-	private String logStr(CommandInvocation invocation, long startTime, int sqlCount, Throwable exp) {
+
+	private boolean isWarnLog(long executionTime, int sqlCount) {
+		if (warnLogThresholdOfSqlExecutionCount >= 0 && sqlCount > warnLogThresholdOfSqlExecutionCount) {
+			return true;
+		}
+		if (warnLogThresholdOfExecutionTimeMillis >= 0 && executionTime > warnLogThresholdOfExecutionTimeMillis) {
+			return true;
+		}
+		return false;
+	}
+
+	private String logStr(CommandInvocation invocation, long executionTime, int sqlCount, Throwable exp) {
 		
 		CharSequence requestPath = makeWebApiName((RestRequestContext) invocation.getRequest());
 		
 		StringBuilder sb = new StringBuilder();
 		sb.append(requestPath);
-		if (startTime >= 0) {
+		if (executionTime >= 0) {
 			sb.append(',');
-			sb.append((System.currentTimeMillis() - startTime)).append("ms");
+			sb.append(executionTime).append("ms");
 		}
 		if (sqlCount >= 0) {
 			sb.append(',');

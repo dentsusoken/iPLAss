@@ -50,6 +50,8 @@ public class LoggingInterceptor implements RequestInterceptor, ServiceInitListen
 	private boolean partsTrace = true;//debugで出力
 
 	private int warnLogThresholdOfSqlExecutionCount = -1;
+	private long warnLogThresholdOfExecutionTimeMillis = -1;
+
 	private ConnectionFactory rdbConFactory;
 
 	private String[] paramName;
@@ -101,6 +103,14 @@ public class LoggingInterceptor implements RequestInterceptor, ServiceInitListen
 		this.warnLogThresholdOfSqlExecutionCount = warnLogThresholdOfSqlExecutionCount;
 	}
 
+	public long getWarnLogThresholdOfExecutionTimeMillis() {
+		return warnLogThresholdOfExecutionTimeMillis;
+	}
+
+	public void setWarnLogThresholdOfExecutionTimeMillis(long warnLogThresholdOfExecutionTimeMillis) {
+		this.warnLogThresholdOfExecutionTimeMillis = warnLogThresholdOfExecutionTimeMillis;
+	}
+
 	@Override
 	public void intercept(RequestInvocation invocation) {
 		
@@ -123,6 +133,13 @@ public class LoggingInterceptor implements RequestInterceptor, ServiceInitListen
 			exp = t;
 			throw t;
 		} finally {
+			long executionTime;
+			if (start == -1) {
+				executionTime = start;
+			} else {
+				executionTime = System.currentTimeMillis() - start;
+			}
+			
 			int sqlCount;
 			if (sqlCounter == null) {
 				sqlCount = -1;
@@ -138,20 +155,20 @@ public class LoggingInterceptor implements RequestInterceptor, ServiceInitListen
 					log = actionLogger;
 				}
 				if (ExceptionInterceptor.match(noStackTraceClass, exp)) {
-					log.error(logStr(invocation, start, sqlCount, exp));
+					log.error(logStr(invocation, executionTime, sqlCount, exp));
 				} else {
-					log.error(logStr(invocation, start, sqlCount, exp), exp);
+					log.error(logStr(invocation, executionTime, sqlCount, exp), exp);
 				}
 			} else {
 				if (actionTrace && !invocation.isInclude()) {
-					if (warnLogThresholdOfSqlExecutionCount >= 0 && sqlCount > warnLogThresholdOfSqlExecutionCount) {
-						actionLogger.warn(logStr(invocation, start, sqlCount, exp));
+					if (isWarnLog(executionTime, sqlCount)) {
+						actionLogger.warn(logStr(invocation, executionTime, sqlCount, exp));
 					} else {
-						actionLogger.info(logStr(invocation, start, sqlCount, exp));
+						actionLogger.info(logStr(invocation, executionTime, sqlCount, exp));
 					}
 				} else if (partsTrace && invocation.isInclude()) {
 					if (partsLogger.isDebugEnabled()) {
-						partsLogger.debug(logStr(invocation, start, sqlCount, exp));
+						partsLogger.debug(logStr(invocation, executionTime, sqlCount, exp));
 					}
 				}
 			}
@@ -163,8 +180,18 @@ public class LoggingInterceptor implements RequestInterceptor, ServiceInitListen
 			}
 		}
 	}
-	
-	private String logStr(RequestInvocation invocation, long startTime, int sqlCount, Throwable exp) {
+
+	private boolean isWarnLog(long executionTime, int sqlCount) {
+		if (warnLogThresholdOfSqlExecutionCount >= 0 && sqlCount > warnLogThresholdOfSqlExecutionCount) {
+			return true;
+		}
+		if (warnLogThresholdOfExecutionTimeMillis >= 0 && executionTime > warnLogThresholdOfExecutionTimeMillis) {
+			return true;
+		}
+		return false;
+	}
+
+	private String logStr(RequestInvocation invocation, long executionTime, int sqlCount, Throwable exp) {
 		
 		CharSequence requestPath;
 		if (invocation.isInclude()) {
@@ -175,9 +202,9 @@ public class LoggingInterceptor implements RequestInterceptor, ServiceInitListen
 		
 		StringBuilder sb = new StringBuilder();
 		sb.append(requestPath);
-		if (startTime >= 0) {
+		if (executionTime >= 0) {
 			sb.append(',');
-			sb.append((System.currentTimeMillis() - startTime)).append("ms");
+			sb.append(executionTime).append("ms");
 		}
 		if (sqlCount >= 0 && !invocation.isInclude()) {
 			sb.append(',');
