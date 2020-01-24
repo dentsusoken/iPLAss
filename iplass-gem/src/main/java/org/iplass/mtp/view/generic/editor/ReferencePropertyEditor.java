@@ -91,6 +91,12 @@ public class ReferencePropertyEditor extends PropertyEditor implements HasNestPr
 		NONE,UPPER,ALERT
 	}
 
+	/** URLパラメータのActionタイプ */
+	@XmlType(namespace="http://mtp.iplass.org/xml/definition/view/generic")
+	public enum UrlParameterActionType {
+		SELECT,ADD,VIEW
+	}
+
 	/** 表示タイプ */
 	@MetaFieldInfo(displayName="表示タイプ",
 			displayNameKey="generic_editor_ReferencePropertyEditor_displayTypeDisplaNameKey",
@@ -435,6 +441,21 @@ public class ReferencePropertyEditor extends PropertyEditor implements HasNestPr
 	)
 	private String urlParameter;
 
+	/** URLパラメータAction */
+	@MetaFieldInfo(
+			displayName="URLパラメータAction",
+			displayNameKey="generic_editor_ReferencePropertyEditor_urlParameterActionDisplaNameKey",
+			descriptionKey="generic_editor_ReferencePropertyEditor_urlParameterActionDescriptionKey",
+			inputType=InputType.ENUM,
+			enumClass=UrlParameterActionType.class,
+			multiple = true,
+			displayOrder=615
+	)
+	@EntityViewField(
+			referenceTypes={FieldReferenceType.SEARCHCONDITION, FieldReferenceType.DETAIL}
+	)
+	private List<UrlParameterActionType> urlParameterAction;
+
 	/** 新規アクションコールバックスクリプト */
 	@MetaFieldInfo(
 			displayName="新規アクションコールバックスクリプト",
@@ -752,7 +773,7 @@ public class ReferencePropertyEditor extends PropertyEditor implements HasNestPr
 	 * @return 参照型の表示プロパティ
 	 */
 	public List<NestProperty> getNestProperties() {
-		if (nestProperties == null) nestProperties = new ArrayList<NestProperty>();
+		if (nestProperties == null) nestProperties = new ArrayList<>();
 		return nestProperties;
 	}
 
@@ -938,6 +959,22 @@ public class ReferencePropertyEditor extends PropertyEditor implements HasNestPr
 	 */
 	public void setUrlParameter(String urlParameter) {
 		this.urlParameter = urlParameter;
+	}
+
+	/**
+	 * URLパラメータActionを取得します。
+	 * @return URLパラメータAction
+	 */
+	public List<UrlParameterActionType> getUrlParameterAction() {
+		return urlParameterAction;
+	}
+
+	/**
+	 * URLパラメータActionを設定します。
+	 * @param urlParameterAction URLパラメータAction
+	 */
+	public void setUrlParameterAction(List<UrlParameterActionType> urlParameterAction) {
+		this.urlParameterAction = urlParameterAction;
 	}
 
 	/**

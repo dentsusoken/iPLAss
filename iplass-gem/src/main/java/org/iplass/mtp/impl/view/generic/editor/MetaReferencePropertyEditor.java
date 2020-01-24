@@ -46,6 +46,7 @@ import org.iplass.mtp.view.generic.editor.ReferencePropertyEditor.InsertType;
 import org.iplass.mtp.view.generic.editor.ReferencePropertyEditor.RefComboSearchType;
 import org.iplass.mtp.view.generic.editor.ReferencePropertyEditor.RefSortType;
 import org.iplass.mtp.view.generic.editor.ReferencePropertyEditor.ReferenceDisplayType;
+import org.iplass.mtp.view.generic.editor.ReferencePropertyEditor.UrlParameterActionType;
 
 /**
  * 参照型プロパティエディタのメタデータ
@@ -114,6 +115,9 @@ public class MetaReferencePropertyEditor extends MetaPropertyEditor implements H
 	/** URLパラメータ */
 	private String urlParameter;
 
+	/** URLパラメータAction */
+	private List<UrlParameterActionType> urlParameterAction;
+
 	/** URLパラメータをコンパイルした際に生成したキー */
 	@XmlTransient
 	private String urlParameterScriptKey;
@@ -165,7 +169,7 @@ public class MetaReferencePropertyEditor extends MetaPropertyEditor implements H
 
 	/** 検索条件での全選択を許可 */
 	private boolean permitConditionSelectAll = true;
-	
+
 	private String displayLabelItem;
 
 	/** ユニークプロパティ */
@@ -273,7 +277,7 @@ public class MetaReferencePropertyEditor extends MetaPropertyEditor implements H
 	 */
 	@Override
 	public List<MetaNestProperty> getNestProperties() {
-		if (nestProperties == null) nestProperties = new ArrayList<MetaNestProperty>();
+		if (nestProperties == null) nestProperties = new ArrayList<>();
 		return nestProperties;
 	}
 
@@ -463,6 +467,22 @@ public class MetaReferencePropertyEditor extends MetaPropertyEditor implements H
 	 */
 	public void setUrlParameter(String urlParameter) {
 		this.urlParameter = urlParameter;
+	}
+
+	/**
+	 * URLパラメータActionを取得します。
+	 * @return URLパラメータAction
+	 */
+	public List<UrlParameterActionType> getUrlParameterAction() {
+		return urlParameterAction;
+	}
+
+	/**
+	 * URLパラメータActionを設定します。
+	 * @param urlParameterAction URLパラメータAction
+	 */
+	public void setUrlParameterAction(List<UrlParameterActionType> urlParameterAction) {
+		this.urlParameterAction = urlParameterAction;
 	}
 
 	/**
@@ -790,6 +810,7 @@ public class MetaReferencePropertyEditor extends MetaPropertyEditor implements H
 		addActionName = rpe.getAddActionName();
 		viewName = rpe.getViewName();
 		urlParameter = rpe.getUrlParameter();
+		urlParameterAction = rpe.getUrlParameterAction();
 		sortItem = sortProperty != null ? sortProperty.getId() : null;
 		sortType = rpe.getSortType();
 		editPage = rpe.getEditPage();
@@ -885,6 +906,7 @@ public class MetaReferencePropertyEditor extends MetaPropertyEditor implements H
 		editor.setAddActionName(addActionName);
 		editor.setViewName(viewName);
 		editor.setUrlParameter(urlParameter);
+		editor.setUrlParameterAction(urlParameterAction);
 		editor.setUrlParameterScriptKey(urlParameterScriptKey);
 		editor.setSortItem(sortProperty != null ? sortProperty.getName() : null);
 		editor.setSortType(sortType);
