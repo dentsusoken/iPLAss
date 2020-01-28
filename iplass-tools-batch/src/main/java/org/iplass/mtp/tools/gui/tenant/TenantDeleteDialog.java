@@ -36,7 +36,6 @@ import java.util.List;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
-import javax.swing.JCheckBox;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
@@ -71,8 +70,6 @@ public class TenantDeleteDialog extends MtpJDialogBase {
 	private static Logger logger = LoggerFactory.getLogger(TenantDeleteDialog.class);
 
 	private TenantDialogTableModel model;
-
-	protected JCheckBox chkMySQLDropPartition;
 
 	private JButton btnDelete;
 	private JButton btnCancel;
@@ -212,14 +209,6 @@ public class TenantDeleteDialog extends MtpJDialogBase {
 		dummy.setPreferredSize(new Dimension(15, 15));
 		gridbag.setConstraints(dummy, constraints);
 		inputPane.add(dummy);
-
-		RdbAdapterService adapterService = ServiceRegistry.getRegistry().getService(RdbAdapterService.class);
-		RdbAdapter adapter = adapterService.getRdbAdapter();
-		if (adapter instanceof MysqlRdbAdaptor) {
-			chkMySQLDropPartition = new JCheckBox("MySQL Drop Partition");
-			chkMySQLDropPartition.setSelected(true);
-			createCheckBoxRow(chkMySQLDropPartition, 0, gridbag, constraints, inputPane);
-		}
 
 		return inputPane;
 	}
@@ -453,9 +442,6 @@ public class TenantDeleteDialog extends MtpJDialogBase {
 		TenantDeleteParameter param = new TenantDeleteParameter();
 		param.setTenantId(tenant.getId());
 		param.setTenantName(tenant.getName());
-		if (chkMySQLDropPartition != null) {
-			param.setMySqlDropPartition(chkMySQLDropPartition.isSelected());
-		}
 		return param;
 	}
 

@@ -249,18 +249,6 @@ public class MySQLTenantRdbManager extends DefaultTenantRdbManager {
 		final StringBuilder sql = new StringBuilder("alter table " + tableName
 				+ " add partition (partition " + partitionName
 				+ " values less than (" + (tenantId + 1) + ") ");
-
-		if(param.isMySqlUseSubPartition() && isSubPartitionTargetTable(tableName)){
-			sql.append("(");
-			//サブパーティション分作成
-			for(int subPartCnt = 0 ; subPartCnt < getMaxSubPartitionCount() ; subPartCnt++){
-				sql.append("subpartition "+ partitionName + "_" + subPartCnt );
-				if(subPartCnt < getMaxSubPartitionCount() - 1){
-					sql.append(",");
-				}
-			}
-			sql.append(")");
-		}
 		sql.append(")");
 
 		//Partitionの作成を別Transactionで実行

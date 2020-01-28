@@ -36,7 +36,6 @@ import java.util.List;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
-import javax.swing.JCheckBox;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
@@ -74,7 +73,6 @@ public class PartitionCreateDialog extends MtpJDialogBase {
 	private static Logger logger = LoggerFactory.getLogger(PartitionCreateDialog.class);
 
 	private JTextField txtMaxTenantId;
-	private JCheckBox chkMySQLSubPartition;
 
 	private JTextField txtSubPartitionSize;
 
@@ -183,11 +181,6 @@ public class PartitionCreateDialog extends MtpJDialogBase {
 		txtMaxTenantId.setPreferredSize(new Dimension(200, 25));
 		createLableText(lblMaxTenantId, txtMaxTenantId, null, 0, gridbag, constraints, inputPane);
 
-		if (adapter instanceof MysqlRdbAdaptor) {
-			chkMySQLSubPartition = new JCheckBox("SubPartition Use");
-			chkMySQLSubPartition.setSelected(true);
-			createCheckBoxRow(chkMySQLSubPartition, 1, gridbag, constraints, inputPane);
-		}
 		if (adapter instanceof PostgreSQLRdbAdapter) {
 			JLabel lblSubPartitionSize = new JLabel("SubPartition Size");
 			txtSubPartitionSize = new JTextField();
@@ -461,9 +454,6 @@ public class PartitionCreateDialog extends MtpJDialogBase {
 		param.setOnlyPartitionCreate(true);
 		int tenantId = Integer.parseInt(txtMaxTenantId.getText());
 		param.setTenantId(tenantId);
-		if (chkMySQLSubPartition != null) {
-			param.setMySqlUseSubPartition(chkMySQLSubPartition.isSelected());
-		}
 		if (txtSubPartitionSize != null) {
 			param.setSubPartitionSize(Integer.parseInt(txtSubPartitionSize.getText().trim()));
 		}

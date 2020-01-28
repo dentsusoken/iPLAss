@@ -104,8 +104,6 @@ public class TenantCreateDialog extends MtpJDialogBase {
 
 	protected JCheckBox chkBlankTenant;
 
-	protected JCheckBox chkMySQLSubPartition;
-
 	protected JTextField txtSubPartitionSize;
 	protected JCheckBox chkSubPartitionSize;
 
@@ -365,12 +363,6 @@ public class TenantCreateDialog extends MtpJDialogBase {
 		chkBlankTenant = new JCheckBox("create blank Tenant");
 		chkBlankTenant.setSelected(false);
 		createCheckBoxRow(chkBlankTenant, rowIndex++, gridbag, constraints, inputPane);
-
-		if (adapter instanceof MysqlRdbAdaptor) {
-			chkMySQLSubPartition = new JCheckBox("MySQL SubPartition Use");
-			chkMySQLSubPartition.setSelected(true);
-			createCheckBoxRow(chkMySQLSubPartition, rowIndex++, gridbag, constraints, inputPane);
-		}
 
 		return inputPane;
 	}
@@ -690,9 +682,6 @@ public class TenantCreateDialog extends MtpJDialogBase {
 			param.setUseLanguages(txtUseLanguages.getText().trim());
 		}
 		param.setCreateBlankTenant(chkBlankTenant.isSelected());
-		if (chkMySQLSubPartition != null) {
-			param.setMySqlUseSubPartition(chkMySQLSubPartition.isSelected());
-		}
 		if (chkSubPartitionSize != null && !chkSubPartitionSize.isSelected()) {
 			String strSubPartitionSize = txtSubPartitionSize.getText().trim();
 			if (StringUtil.isNotEmpty(strSubPartitionSize)) {

@@ -216,7 +216,6 @@ public class TenantToolService implements Service {
 
 		PartitionCreateParameter partitionParam = new PartitionCreateParameter();
 		partitionParam.setTenantId(tenant.getId());
-		partitionParam.setMySqlUseSubPartition(param.isMySqlUseSubPartition());
 		partitionParam.setSubPartitionSize(param.getSubPartitionSize());
 		partitionParam.setOnlyPartitionCreate(false);
 		partitionParam.setLoggerLanguage(param.getLoggerLanguage());

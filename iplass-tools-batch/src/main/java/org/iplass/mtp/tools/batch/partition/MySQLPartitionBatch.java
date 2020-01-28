@@ -215,10 +215,6 @@ public class MySQLPartitionBatch extends MtpCuiBase implements PartitionBatch {
 			return startCreateWizard();
 		}
 
-		//サブパーティション利用有無
-		boolean isUseSubPartition = readConsoleBoolean(rs("MySQLPartitionManager.Create.useSubPartitionMsg"), param.isMySqlUseSubPartition());
-		param.setMySqlUseSubPartition(isUseSubPartition);
-
 		//実行情報出力
 		logArguments(param);
 
@@ -265,7 +261,6 @@ public class MySQLPartitionBatch extends MtpCuiBase implements PartitionBatch {
 		logInfo("-----------------------------------------------------------");
 		logInfo("■Execute Argument");
 		logInfo("\tmax tenant id :" + param.getTenantId());
-		logInfo("\tuse sub partition :" + param.isMySqlUseSubPartition());
 		logInfo("-----------------------------------------------------------");
 		logInfo("");
 	}

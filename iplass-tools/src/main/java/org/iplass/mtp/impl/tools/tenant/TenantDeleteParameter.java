@@ -30,8 +30,6 @@ public class TenantDeleteParameter {
 	private int tenantId;
 	// テナント名
 	private String tenantName;
-	//パーティション削除 (MySQL時のみ利用)
-	private boolean isMySqlDropPartition = true;
 
 	//ログ出力時のLang
 	private String loggerLanguage;
@@ -53,14 +51,6 @@ public class TenantDeleteParameter {
 
 	public void setTenantName(String tenantName) {
 		this.tenantName = tenantName;
-	}
-
-	public boolean isMySqlDropPartition() {
-		return isMySqlDropPartition;
-	}
-
-	public void setMySqlDropPartition(boolean isMySqlDropPartition) {
-		this.isMySqlDropPartition = isMySqlDropPartition;
 	}
 
 	public String getLoggerLanguage() {

@@ -27,9 +27,6 @@ public class PartitionCreateParameter {
 	//作成するテナントのID
 	private int tenantId;
 
-	//サブパーティション利用有無 (MySQL時のみ利用)
-	private boolean isMySqlUseSubPartition = true;
-
 	//サブパーティション数
 	private int subPartitionSize = TenantRdbConstants.MAX_SUBPARTITION;
 
@@ -48,14 +45,6 @@ public class PartitionCreateParameter {
 
 	public void setTenantId(int tenantId) {
 		this.tenantId = tenantId;
-	}
-
-	public boolean isMySqlUseSubPartition() {
-		return isMySqlUseSubPartition;
-	}
-
-	public void setMySqlUseSubPartition(boolean isMySqlUseSubPartition) {
-		this.isMySqlUseSubPartition = isMySqlUseSubPartition;
 	}
 
 	public int getSubPartitionSize() {

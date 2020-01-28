@@ -48,9 +48,6 @@ public class TenantCreateParameter {
 	//ブランクテナントの作成（Tenant情報、管理者のみ作成）
 	private boolean createBlankTenant = false;
 
-	//TODO 暫定対応 サブパーティション利用有無 (MySQL時のみ利用)
-	private boolean isMySqlUseSubPartition = false;
-
 	//サブパーティション数
 	private int subPartitionSize = TenantRdbConstants.MAX_SUBPARTITION;
 
@@ -141,14 +138,6 @@ public class TenantCreateParameter {
 
 	public void setCreateBlankTenant(boolean createBlankTenant) {
 		this.createBlankTenant = createBlankTenant;
-	}
-
-	public boolean isMySqlUseSubPartition() {
-	    return isMySqlUseSubPartition;
-	}
-
-	public void setMySqlUseSubPartition(boolean isMySqlUseSubPartition) {
-	    this.isMySqlUseSubPartition = isMySqlUseSubPartition;
 	}
 
 	public int getSubPartitionSize() {
