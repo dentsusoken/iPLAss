@@ -437,7 +437,7 @@ public class ReferencePropertyEditor extends PropertyEditor implements HasNestPr
 			displayOrder=610
 	)
 	@EntityViewField(
-			referenceTypes={FieldReferenceType.SEARCHCONDITION, FieldReferenceType.DETAIL}
+			referenceTypes={FieldReferenceType.SEARCHCONDITION, FieldReferenceType.DETAIL, FieldReferenceType.BULK}
 	)
 	private String urlParameter;
 
@@ -452,7 +452,7 @@ public class ReferencePropertyEditor extends PropertyEditor implements HasNestPr
 			displayOrder=615
 	)
 	@EntityViewField(
-			referenceTypes={FieldReferenceType.SEARCHCONDITION, FieldReferenceType.DETAIL}
+			referenceTypes={FieldReferenceType.SEARCHCONDITION, FieldReferenceType.DETAIL, FieldReferenceType.BULK}
 	)
 	private List<UrlParameterActionType> urlParameterAction;
 

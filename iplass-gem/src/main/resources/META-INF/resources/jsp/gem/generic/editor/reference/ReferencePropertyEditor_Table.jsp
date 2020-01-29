@@ -39,6 +39,7 @@
 <%@ page import="org.iplass.mtp.view.generic.editor.*" %>
 <%@ page import="org.iplass.mtp.view.generic.editor.ReferencePropertyEditor.EditPage"%>
 <%@ page import="org.iplass.mtp.view.generic.editor.ReferencePropertyEditor.InsertType" %>
+<%@ page import="org.iplass.mtp.view.generic.editor.ReferencePropertyEditor.UrlParameterActionType"%>
 <%@ page import="org.iplass.mtp.view.generic.LoadEntityInterrupter.LoadType"%>
 <%@ page import="org.iplass.mtp.web.template.TemplateUtil"%>
 <%@ page import="org.iplass.mtp.ApplicationException"%>
@@ -170,7 +171,7 @@
 
 	OutputType execOutputType = outputType;
 	if (editPageView) {
-		//Viewモードの場合は、DetailでもViewとして出力させる
+		//Viewモードの場合は、EDITでもVIEWとして出力させる
 		execOutputType = OutputType.VIEW;
 		request.setAttribute(Constants.OUTPUT_TYPE, execOutputType);
 	}
@@ -268,11 +269,6 @@
 	if (viewName == null) viewName = "";
 	if (StringUtil.isNotBlank(viewName)) {
 		updateRefAction = updateRefAction + "/" + viewName;
-	}
-
-	String urlParam = "";
-	if (StringUtil.isNotBlank(editor.getUrlParameterScriptKey())) {
-		urlParam = ManagerLocator.getInstance().getManager(EntityViewManager.class).getUrlParameter(rootDefName, editor.getUrlParameterScriptKey(), parentEntity);
 	}
 
 	//リロード用URL
@@ -598,7 +594,11 @@ ${m:rs("mtp-gem-messages", "generic.editor.reference.ReferencePropertyEditor_Tab
 			//追加できるということは新規で編集できるので、更新権限がなくても編集側のActionを呼び出す
 %>
 <td nowrap="nowrap" class="colLink center">
-<a href="javascript:void(0);" data-name="<c:out value="<%=idxPropName%>" />" data-defName="<c:out value="<%=refDefName%>" />" data-action="<c:out value="<%=detailAction%>" />" data-view="<c:out value="<%=viewAction%>" />">${m:rs("mtp-gem-messages", "generic.editor.reference.ReferencePropertyEditor_Table.edit")}</a>
+<a href="javascript:void(0);" data-name="<c:out value="<%=idxPropName%>" />" 
+ data-defName="<c:out value="<%=refDefName%>" />" 
+ data-action="<c:out value="<%=detailAction%>" />" 
+ data-view="<c:out value="<%=viewAction%>" />">
+ ${m:rs("mtp-gem-messages", "generic.editor.reference.ReferencePropertyEditor_Table.edit")}</a>
 </td>
 <%
 		}
@@ -739,14 +739,18 @@ ${m:rs("mtp-gem-messages", "generic.editor.reference.ReferencePropertyEditor_Tab
 					//編集リンク
 %>
 <td nowrap="nowrap" class="colLink center">
-<a href="javascript:void(0);" class="modal-lnk" onclick="editReference('<%=_detailAction%>', '<%=_refDefName%>', '<%=_entityOid%>', '<%=_trId%>', '<%=_idxPropName%>', <%=i%>, '<%=_viewAction%>', '<%=_rootDefName%>', '<%=_viewName%>', '<%=_propName%>')">${m:rs("mtp-gem-messages", "generic.editor.reference.ReferencePropertyEditor_Table.edit")}</a>
+<a href="javascript:void(0);" class="modal-lnk" 
+ onclick="editReference('<%=_detailAction%>', '<%=_refDefName%>', '<%=_entityOid%>', '<%=_trId%>', '<%=_idxPropName%>', <%=i%>, '<%=_viewAction%>', '<%=_rootDefName%>', '<%=_viewName%>', '<%=_propName%>')">
+ ${m:rs("mtp-gem-messages", "generic.editor.reference.ReferencePropertyEditor_Table.edit")}</a>
 </td>
 <%
 				} else {
 					//詳細リンク
 %>
 <td nowrap="nowrap" class="colLink center">
-<a href="javascript:void(0);" class="modal-lnk" onclick="viewEditableReference('<%=_viewAction%>', '<%=_refDefName%>', '<%=_entityOid%>', '<%=_reloadUrl%>', true)">${m:rs("mtp-gem-messages", "generic.editor.reference.ReferencePropertyEditor_Table.detail")}</a>
+<a href="javascript:void(0);" class="modal-lnk" 
+ onclick="viewEditableReference('<%=_viewAction%>', '<%=_refDefName%>', '<%=_entityOid%>', '<%=_reloadUrl%>', true)">
+ ${m:rs("mtp-gem-messages", "generic.editor.reference.ReferencePropertyEditor_Table.detail")}</a>
 </td>
 <%
 				}
@@ -985,7 +989,9 @@ ${m:rs("mtp-gem-messages", "generic.editor.reference.ReferencePropertyEditor_Tab
 				String _reloadUrl = StringUtil.escapeJavaScript(reloadUrl);
 %>
 <td nowrap="nowrap" class="colLink center">
-<a href="javascript:void(0);" class="modal-lnk" onclick="viewEditableReference('<%=_viewAction%>', '<%=_refDefName%>', '<%=_entityOid%>', '<%=_reloadUrl%>', <%=refEditParam%>)"><%= GemResourceBundleUtil.resourceString(strKey) %></a>
+<a href="javascript:void(0);" class="modal-lnk" 
+ onclick="viewEditableReference('<%=_viewAction%>', '<%=_refDefName%>', '<%=_entityOid%>', '<%=_reloadUrl%>', <%=refEditParam%>)">
+ <%= GemResourceBundleUtil.resourceString(strKey) %></a>
 </td>
 <%
 			}
@@ -1001,8 +1007,12 @@ ${m:rs("mtp-gem-messages", "generic.editor.reference.ReferencePropertyEditor_Tab
 				String _viewName = StringUtil.escapeJavaScript(viewName);
 %>
 <td class="orderCol">
-<span class="order-icon up-icon"><i class="fas fa-caret-up" onclick="shiftOrder('<%=UpdateTableOrderCommand.WEBAPI_NAME%>', '<%=_trId%>', '<%=_orderPropName%>', '<%=_propName%>', '<%=_refDefName%>', true, '<%=_reloadUrl%>', '<%=_rootDefName%>', '<%=_viewName%>')"></i></span>
-<span class="order-icon down-icon"><i class="fas fa-caret-down" onclick="shiftOrder('<%=UpdateTableOrderCommand.WEBAPI_NAME%>', '<%=_trId%>', '<%=_orderPropName%>', '<%=_propName%>', '<%=_refDefName%>', false, '<%=_reloadUrl%>', '<%=_rootDefName%>', '<%=_viewName%>')"></i></span>
+<span class="order-icon up-icon"><i class="fas fa-caret-up" 
+ onclick="shiftOrder('<%=UpdateTableOrderCommand.WEBAPI_NAME%>', '<%=_trId%>', '<%=_orderPropName%>', '<%=_propName%>', '<%=_refDefName%>', true, '<%=_reloadUrl%>', '<%=_rootDefName%>', '<%=_viewName%>')">
+</i></span>
+<span class="order-icon down-icon"><i class="fas fa-caret-down" 
+ onclick="shiftOrder('<%=UpdateTableOrderCommand.WEBAPI_NAME%>', '<%=_trId%>', '<%=_orderPropName%>', '<%=_propName%>', '<%=_refDefName%>', false, '<%=_reloadUrl%>', '<%=_rootDefName%>', '<%=_viewName%>')">
+</i></span>
 </td>
 <%
 			}
@@ -1061,13 +1071,15 @@ $(function() {
 						}
 					}
 				}
+				
+				String selBtnUrlParam = evm.getUrlParameter(rootDefName, editor, parentEntity, UrlParameterActionType.SELECT);
 %>
 <input type="button" value="${m:rs('mtp-gem-messages', 'generic.editor.reference.ReferencePropertyEditor_Table.select')}" class="gr-btn-02 modal-btn mt05" id="<c:out value="<%=selBtnId %>"/>" data-specVersionKey="<c:out value="<%=specVersionKey%>" />" />
 <script type="text/javascript">
 $(function() {
 	$(":button[id='<%=StringUtil.escapeJavaScript(selBtnId)%>']").click(function() {
 		searchReferenceFromView("<%=StringUtil.escapeJavaScript(selectAction)%>", "<%=StringUtil.escapeJavaScript(updateRefAction)%>", "<%=StringUtil.escapeJavaScript(refDefName) %>", "<%=StringUtil.escapeJavaScript(tableId) %>", "<%=StringUtil.escapeJavaScript(propName)%>",
-				<%=pd.getMultiplicity() %>, <%=isMultiple %>, "<%=StringUtil.escapeJavaScript(urlParam) %>", "<%=StringUtil.escapeJavaScript(reloadUrl)%>", this, <%=editor.isPermitConditionSelectAll()%>);
+				<%=pd.getMultiplicity() %>, <%=isMultiple %>, "<%=StringUtil.escapeJavaScript(selBtnUrlParam) %>", "<%=StringUtil.escapeJavaScript(reloadUrl)%>", this, <%=editor.isPermitConditionSelectAll()%>);
 	});
 });
 </script>
@@ -1076,13 +1088,15 @@ $(function() {
 			//新規ボタン
 			if (showInsertBtn) {
 				String insBtnId = "ins_btn_" + propName;
+
+				String insBtnUrlParam = evm.getUrlParameter(rootDefName, editor, parentEntity, UrlParameterActionType.ADD);
 %>
 <input type="button" value="${m:rs('mtp-gem-messages', 'generic.editor.reference.ReferencePropertyEditor_Table.new')}" class="gr-btn-02 modal-btn mt05" id="<c:out value="<%=insBtnId %>"/>" />
 <script type="text/javascript">
 $(function() {
 	$(":button[id='<%=StringUtil.escapeJavaScript(insBtnId)%>']").click(function() {
 		insertReferenceFromView("<%=StringUtil.escapeJavaScript(addAction) %>", "<%=StringUtil.escapeJavaScript(refDefName) %>", "<%=StringUtil.escapeJavaScript(tableId) %>", <%=pd.getMultiplicity() %>,
-				"<%=StringUtil.escapeJavaScript(urlParam)%>", "<%=StringUtil.escapeJavaScript(parentOid)%>", "<%=StringUtil.escapeJavaScript(parentVersion)%>", "<%=StringUtil.escapeJavaScript(defName)%>",
+				"<%=StringUtil.escapeJavaScript(insBtnUrlParam)%>", "<%=StringUtil.escapeJavaScript(parentOid)%>", "<%=StringUtil.escapeJavaScript(parentVersion)%>", "<%=StringUtil.escapeJavaScript(defName)%>",
 				"<%=StringUtil.escapeJavaScript(mappedBy) %>", $(":hidden[name='oid']").val(), "<%=StringUtil.escapeJavaScript(updateRefAction)%>",
 				"<%=StringUtil.escapeJavaScript(propName) %>", "<%=StringUtil.escapeJavaScript(reloadUrl)%>", "<%=StringUtil.escapeJavaScript(rootOid)%>",
 				"<%=StringUtil.escapeJavaScript(rootVersion)%>");

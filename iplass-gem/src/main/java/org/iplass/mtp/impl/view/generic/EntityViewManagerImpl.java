@@ -78,6 +78,7 @@ import org.iplass.mtp.view.generic.editor.JoinPropertyEditor;
 import org.iplass.mtp.view.generic.editor.NestProperty;
 import org.iplass.mtp.view.generic.editor.PropertyEditor;
 import org.iplass.mtp.view.generic.editor.ReferencePropertyEditor;
+import org.iplass.mtp.view.generic.editor.ReferencePropertyEditor.UrlParameterActionType;
 import org.iplass.mtp.view.generic.element.Element;
 import org.iplass.mtp.view.generic.element.property.PropertyColumn;
 import org.iplass.mtp.view.generic.element.property.PropertyItem;
@@ -690,7 +691,7 @@ public class EntityViewManagerImpl extends AbstractTypedDefinitionManager<Entity
 			return "";
 		}
 
-		Map<String, Object> bindings = new HashMap<String, Object>();
+		Map<String, Object> bindings = new HashMap<>();
 		bindings.put("today", DateUtil.getCurrentTimestamp());
 		bindings.put("entity", entity);
 		bindings.put("value", propValue);
@@ -753,17 +754,31 @@ public class EntityViewManagerImpl extends AbstractTypedDefinitionManager<Entity
 	}
 
 	@Override
-	public String getUrlParameter(String name, String templateName, Entity entity) {
-		if (name == null || templateName == null) return "";
+	public String getUrlParameter(String definitionName, ReferencePropertyEditor editor, Entity entity, UrlParameterActionType actionType) {
+		if (definitionName == null || editor == null || actionType == null) return "";
 
-		EntityViewHandler handler = service.getRuntimeByName(name);
+		EntityViewHandler handler = service.getRuntimeByName(definitionName);
 		if (handler == null) return "";
 
-		GroovyTemplate template = handler.getTemplate(templateName);
+		//ActionTypeの検証
+		List<UrlParameterActionType> actions = editor.getUrlParameterAction();
+		if (actions == null) {
+			//未指定の場合は、SELECTとADDはOK
+			if (actionType != UrlParameterActionType.SELECT && actionType != UrlParameterActionType.ADD) {
+				return "";
+			}
+		} else {
+			//指定されている場合は、対象かどうかをチェック
+			if (!actions.contains(actionType)) {
+				return "";
+			}
+		}
+
+		GroovyTemplate template = handler.getTemplate(editor.getUrlParameterScriptKey());
 		StringWriter sw = new StringWriter();
 		if (template != null) {
 			try {
-				template.doTemplate(new UrlParameterGroovyTemplateBinding(sw, entity));
+				template.doTemplate(new UrlParameterGroovyTemplateBinding(sw, entity, actionType));
 			} catch (IOException e) {
 				throw new RuntimeException(e);
 			}
@@ -780,13 +795,14 @@ public class EntityViewManagerImpl extends AbstractTypedDefinitionManager<Entity
 
 	private class UrlParameterGroovyTemplateBinding extends GroovyTemplateBinding {
 
-		public UrlParameterGroovyTemplateBinding(Writer writer, Entity entity) {
+		public UrlParameterGroovyTemplateBinding(Writer writer, Entity entity, UrlParameterActionType actionType) {
 			super(writer);
 
 			RequestContext request = WebUtil.getRequestContext();
 			setVariable("request", request);
 			setVariable("session", request.getSession());
 			setVariable("parent", entity);
+			setVariable("actionType", actionType);
 		}
 	}
 
