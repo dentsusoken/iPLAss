@@ -53,6 +53,7 @@ import org.iplass.mtp.entity.query.hint.IndexHint;
 import org.iplass.mtp.entity.query.hint.NativeHint;
 import org.iplass.mtp.entity.query.hint.NoBindHint;
 import org.iplass.mtp.entity.query.hint.NoIndexHint;
+import org.iplass.mtp.entity.query.hint.SuppressWarningsHint;
 import org.iplass.mtp.entity.query.hint.TimeoutHint;
 import org.iplass.mtp.entity.query.value.RowValueList;
 import org.iplass.mtp.entity.query.value.ValueExpression;
@@ -772,6 +773,11 @@ public abstract class ASTTransformerSupport implements ASTTransformer {
 	@Override
 	public ASTNode visit(TimeoutHint timeoutHint) {
 		return new TimeoutHint(timeoutHint.getSeconds());
+	}
+
+	@Override
+	public ASTNode visit(SuppressWarningsHint suppressWarningsHint) {
+		return new SuppressWarningsHint();
 	}
 
 	@Override

@@ -74,6 +74,7 @@ import org.iplass.mtp.impl.query.hint.HintCommentSyntax;
  * @see CacheHint
  * @see FetchSizeHint
  * @see TimeoutHint
+ * @see SuppressWarningsHint
  * @see NativeHint
  * 
  * @author K.Higuchi
