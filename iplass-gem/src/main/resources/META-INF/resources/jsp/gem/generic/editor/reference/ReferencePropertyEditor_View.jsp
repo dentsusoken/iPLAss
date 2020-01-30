@@ -421,13 +421,21 @@
 <span><c:out value="<%=getUniquePropValue(editor, refEntity) %>" /></span>&nbsp;&nbsp;
 <%
 				}
-				//Viewで編集モードの場合の削除ボタン制御
+
+				//Viewで編集モードの場合の詳細リンク、削除ボタン制御
 				if (updatable && editPageView && outputType == OutputType.VIEW) {
 					String _value = refEntity.getOid() + "_" + refEntity.getVersion();
 
+					String _viewAction = StringUtil.escapeJavaScript(viewAction);
+					String _refDefName = StringUtil.escapeJavaScript(refDefName);
+					String _entityOid = refEntity.getOid() == null ? "" : StringUtil.escapeJavaScript(refEntity.getOid());
+					String _reloadUrl = StringUtil.escapeJavaScript(reloadUrl);
+					EntityViewManager evm = ManagerLocator.getInstance().getManager(EntityViewManager.class);
+					String _viewUrlParam = StringUtil.escapeJavaScript( 
+							evm.getUrlParameter(rootDefName, editor, parentEntity, UrlParameterActionType.VIEW));
 %>
 <a href="javascript:void(0)" class="modal-lnk" style="<c:out value="<%=customStyle%>"/>" 
- onclick="viewEditableReference('<%=StringUtil.escapeJavaScript(viewAction)%>', '<%=StringUtil.escapeJavaScript(refDefName)%>', '<%=StringUtil.escapeJavaScript(refEntity.getOid())%>', '<%=StringUtil.escapeJavaScript(reloadUrl)%>', true)">
+ onclick="viewEditableReference('<%=_viewAction%>', '<%=_refDefName%>', '<%=_entityOid%>', '<%=_reloadUrl%>', true, '<%=_viewUrlParam%>')">
  <c:out value="<%=displayPropLabel %>" /></a>
 <input type="hidden" name="<c:out value="<%=propName %>"/>" value="<c:out value="<%=_value %>"/>" />
 <%

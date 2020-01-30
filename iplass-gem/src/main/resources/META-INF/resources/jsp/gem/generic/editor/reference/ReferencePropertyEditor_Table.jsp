@@ -746,10 +746,12 @@ ${m:rs("mtp-gem-messages", "generic.editor.reference.ReferencePropertyEditor_Tab
 <%
 				} else {
 					//詳細リンク
+					String _viewUrlParam = StringUtil.escapeJavaScript(
+							evm.getUrlParameter(rootDefName, editor, parentEntity, UrlParameterActionType.VIEW));
 %>
 <td nowrap="nowrap" class="colLink center">
 <a href="javascript:void(0);" class="modal-lnk" 
- onclick="viewEditableReference('<%=_viewAction%>', '<%=_refDefName%>', '<%=_entityOid%>', '<%=_reloadUrl%>', true)">
+ onclick="viewEditableReference('<%=_viewAction%>', '<%=_refDefName%>', '<%=_entityOid%>', '<%=_reloadUrl%>', true, '<%=_viewUrlParam%>')">
  ${m:rs("mtp-gem-messages", "generic.editor.reference.ReferencePropertyEditor_Table.detail")}</a>
 </td>
 <%
@@ -987,10 +989,12 @@ ${m:rs("mtp-gem-messages", "generic.editor.reference.ReferencePropertyEditor_Tab
 				String _refDefName = StringUtil.escapeJavaScript(refDefName);
 				String _entityOid = entity.getOid() == null ? "" : StringUtil.escapeJavaScript(entity.getOid());
 				String _reloadUrl = StringUtil.escapeJavaScript(reloadUrl);
+				String _viewUrlParam = StringUtil.escapeJavaScript(
+						evm.getUrlParameter(rootDefName, editor, parentEntity, UrlParameterActionType.VIEW));
 %>
 <td nowrap="nowrap" class="colLink center">
 <a href="javascript:void(0);" class="modal-lnk" 
- onclick="viewEditableReference('<%=_viewAction%>', '<%=_refDefName%>', '<%=_entityOid%>', '<%=_reloadUrl%>', <%=refEditParam%>)">
+ onclick="viewEditableReference('<%=_viewAction%>', '<%=_refDefName%>', '<%=_entityOid%>', '<%=_reloadUrl%>', <%=refEditParam%>, '<%=_viewUrlParam%>')">
  <%= GemResourceBundleUtil.resourceString(strKey) %></a>
 </td>
 <%
