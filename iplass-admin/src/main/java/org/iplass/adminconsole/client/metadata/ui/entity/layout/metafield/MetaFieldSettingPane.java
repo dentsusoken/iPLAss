@@ -23,6 +23,7 @@ package org.iplass.adminconsole.client.metadata.ui.entity.layout.metafield;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
 import org.iplass.adminconsole.client.base.rpc.AdminAsyncCallback;
@@ -43,6 +44,7 @@ import com.smartgwt.client.widgets.events.ClickEvent;
 import com.smartgwt.client.widgets.events.ClickHandler;
 import com.smartgwt.client.widgets.form.DynamicForm;
 import com.smartgwt.client.widgets.form.fields.FormItem;
+import com.smartgwt.client.widgets.form.fields.SelectItem;
 import com.smartgwt.client.widgets.form.validator.IntegerRangeValidator;
 import com.smartgwt.client.widgets.layout.VLayout;
 
@@ -60,7 +62,7 @@ public class MetaFieldSettingPane extends VLayout {
 	private static final String DEFAULT_WEBAPI_NAME = "#default";
 
 	/** Definitionの各フィールドの値を保持するマップ */
-	private HashMap<String, Serializable> defValueMap = new HashMap<String, Serializable>();
+	private HashMap<String, Serializable> defValueMap = new HashMap<>();
 
 	/** OKボタン押下時のイベント */
 	private MetaFieldUpdateHandler okHandler = null;
@@ -300,7 +302,7 @@ public class MetaFieldSettingPane extends VLayout {
 		}
 
 		// 解析結果から入力フィールドを生成
-		ArrayList<FormItem> items = new ArrayList<FormItem>();
+		ArrayList<FormItem> items = new ArrayList<>();
 		for (FieldInfo info : result.getFields()) {
 			if (!isVisileField(info)) {
 				continue;
@@ -432,7 +434,7 @@ public class MetaFieldSettingPane extends VLayout {
 			}
 
 			// 更新サービス呼び出し
-			HashMap<String, Serializable> valueMap = new HashMap<String, Serializable>();
+			HashMap<String, Serializable> valueMap = new HashMap<>();
 			valueMap.putAll(defValueMap);// defValueMapのままだと値が古い？
 			service.update(TenantInfoHolder.getId(), value, valueMap, new AsyncCallback<Refrectable>() {
 
@@ -465,10 +467,21 @@ public class MetaFieldSettingPane extends VLayout {
 			} else if (info.getInputType() == InputType.CHECKBOX) {
 				return Boolean.parseBoolean(form.getValue(info.getName()).toString());
 			} else if (info.getInputType() == InputType.ENUM) {
-				String val = (String) form.getValue(info.getName());
-				if ("".equals(val))
-					return null;
-				return val;
+				if (info.isMultiple()) {
+					SelectItem selectItem = (SelectItem)form.getItem(info.getName());
+					@SuppressWarnings("unchecked")
+					List<String> values = (List<String>)selectItem.getValue();
+					if (values == null || values.isEmpty()) {
+						return null;
+					}
+					return (Serializable)values;
+				} else {
+					String val = (String) form.getValue(info.getName());
+					if (SmartGWTUtil.isEmpty(val)) {
+						return null;
+					}
+					return val;
+				}
 			} else if (info.getInputType() == InputType.ACTION) {
 				String val = (String) form.getValue(info.getName());
 				if (DEFAULT_ACTION_NAME.equals(val))

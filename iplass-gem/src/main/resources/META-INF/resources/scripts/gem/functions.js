@@ -2687,7 +2687,8 @@ $.fn.allInputCheck = function(){
 				selectAction:				$v.attr("data-selectAction"),
 				viewAction:					$v.attr("data-viewAction"),
 				addAction:					$v.attr("data-addAction"),
-				urlParam:					$v.attr("data-urlParam"),
+				selectUrlParam:				$v.attr("data-selectUrlParam"),
+				insertUrlParam:				$v.attr("data-insertUrlParam"),
 				refDefName:					$v.attr("data-refDefName"),
 				refViewName:				$v.attr("data-refViewName"),
 				refEdit:					$v.attr("data-refEdit") == "true",
@@ -2720,7 +2721,7 @@ $.fn.allInputCheck = function(){
 			$selBtn.on("click", function() {
 				//選択コールバック
 				var selRefCallback = scriptContext[$v.selUniqueRefCallback];
-				searchUniqueReference($v.attr("id"), $v.selectAction, $v.viewAction, $v.refDefName, $v.propName, $v.urlParam, $v.refEdit, selRefCallback, this, $v.refViewName, $v.permitConditionSelectAll, $v.defName, $v.viewName, $v.viewType, $v.refSectionIndex, $v.entityOid, $v.entityVersion);
+				searchUniqueReference($v.attr("id"), $v.selectAction, $v.viewAction, $v.refDefName, $v.propName, $v.selectUrlParam, $v.refEdit, selRefCallback, this, $v.refViewName, $v.permitConditionSelectAll, $v.defName, $v.viewName, $v.viewType, $v.refSectionIndex, $v.entityOid, $v.entityVersion);
 			});
 
 			if ($("body.modal-body").length != 0) {
@@ -2735,7 +2736,7 @@ $.fn.allInputCheck = function(){
 			$insBtn.on("click", function() {
 				//新規コールバック
 				var insRefCallback = scriptContext[$v.insUniqueRefCallback];
-				insertUniqueReference($v.attr("id"), $v.addAction, $v.viewAction, $v.refDefName, $v.propName, $v.multiplicity, $v.urlParam, $v.defName, $v.viewName, $v.refEdit, insRefCallback, this, $v.viewType, $v.refSectionIndex);
+				insertUniqueReference($v.attr("id"), $v.addAction, $v.viewAction, $v.refDefName, $v.propName, $v.multiplicity, $v.insertUrlParam, $v.defName, $v.viewName, $v.refEdit, insRefCallback, this, $v.viewType, $v.refSectionIndex);
 			});
 
 			$hidden.on("change", function() {

@@ -33,6 +33,8 @@ import org.iplass.mtp.definition.TypedDefinitionManager;
 import org.iplass.mtp.entity.Entity;
 import org.iplass.mtp.entity.query.condition.Condition;
 import org.iplass.mtp.view.generic.editor.PropertyEditor;
+import org.iplass.mtp.view.generic.editor.ReferencePropertyEditor;
+import org.iplass.mtp.view.generic.editor.ReferencePropertyEditor.UrlParameterActionType;
 
 /**
  * 画面定義を管理するクラスのインターフェース。
@@ -200,15 +202,14 @@ public interface EntityViewManager extends TypedDefinitionManager<EntityView> {
 
 	/**
 	 * 参照ダイアログ用のURLパラメータを取得します。
-	 * @param name 定義名
-	 * @param templateName テンプレート名
-	 * @param entity Entity
-	 * @param req リクエスト
-	 * @param res レスポンス
-	 * @param application サーブレットコンテキスト
-	 * @param page ページコンテキスト
+	 *
+	 * @param definitionName Entity定義名
+	 * @param editor ReferencePropertyEditor
+	 * @param entity 参照元Entity
+	 * @param actionType URLパラメータActionタイプ
+	 * @return URLパラメータ
 	 */
-	public String getUrlParameter(String name, String templateName, Entity entity);
+	public String getUrlParameter(String definitionName, ReferencePropertyEditor editor, Entity entity, UrlParameterActionType actionType);
 
 	/**
 	 * 自動補完の値を取得します。

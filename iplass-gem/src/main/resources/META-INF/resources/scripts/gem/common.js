@@ -2674,7 +2674,7 @@ function getDialogTrigger($v, option) {
 	return $dialogTrigger;
 }
 
-function viewEditableReference(viewAction, defName, oid, reloadUrl, refEdit) {
+function viewEditableReference(viewAction, defName, oid, reloadUrl, refEdit, urlParam) {
 
 	var isSubModal = $("body.modal-body").length != 0;
 	var target = getModalTarget(isSubModal);
@@ -2717,6 +2717,18 @@ function viewEditableReference(viewAction, defName, oid, reloadUrl, refEdit) {
 	var $form = $("<form />").attr({method:"POST", action:viewAction + "/" + oid, target:target}).appendTo("body");
 	$("<input />").attr({type:"hidden", name:"refEdit", value:refEdit}).appendTo($form);
 	if (isSubModal) $("<input />").attr({type:"hidden", name:"modalTarget", value:target}).appendTo($form);
+
+	if (typeof urlParam === "undefined" || urlParam === null || urlParam === "") urlParam = "";	
+	var kv = urlParam.split("&");
+	if (urlParam.length > 0 && kv.length > 0) {
+		for (var i = 0; i < kv.length; i++) {
+			var _kv = kv[i].split("=");
+			if (_kv.length > 0) {
+				$("<input />").attr({type:"hidden", name:_kv[0], value:_kv[1]}).appendTo($form);
+			}
+		}
+	}
+	
 	$form.submit();
 	$form.remove();
 }
