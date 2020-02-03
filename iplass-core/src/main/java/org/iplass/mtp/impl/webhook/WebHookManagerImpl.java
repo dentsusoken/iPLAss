@@ -64,12 +64,12 @@ public class WebHookManagerImpl implements WebHookManager {
 		if (runtime == null) {
 			throw new SystemException("WebHookTemplate:" + webHookDefinitionName + " not found");
 		}
-		try { 
+		try {
 			WebHook temp = runtime.createWebHook(parameters);
-			if (temp.getSubscribers() == null || temp.getSubscribers().isEmpty()) {//テストや、新規の時よくあるケース
-				logger.warn("The WebHook:"+ webHookDefinitionName + " was attempted without valid receiver url.");
-				return;
-			}
+//			if (temp.getSubscribers() == null || temp.getSubscribers().isEmpty()) {//テストや、新規の時よくあるケース
+//				logger.warn("The WebHook:"+ webHookDefinitionName + " was attempted without valid receiver url.");
+//				return;
+//			}
 			temp.setTemplateName(webHookDefinitionName);
 			webHookService.sendWebHook(tenant, temp);
 			
@@ -107,10 +107,10 @@ public class WebHookManagerImpl implements WebHookManager {
 	@Override
 	public void sendWebHook(WebHook webHook) {
 		try { 
-			if (webHook.getSubscribers() == null || webHook.getSubscribers().isEmpty()) {//テストや、新規の時よくあるケース
-				logger.warn("The WebHook: was attempted without valid receiver url.");
-				return;
-			}
+//			if (webHook.getSubscribers() == null || webHook.getSubscribers().isEmpty()) {//テストや、新規の時よくあるケース
+//				logger.warn("The WebHook: was attempted without valid receiver url.");
+//				return;
+//			}
 			Tenant tenant = ExecuteContext.getCurrentContext().getCurrentTenant();
 			webHookService.sendWebHook(tenant, webHook);
 			

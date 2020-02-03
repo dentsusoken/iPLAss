@@ -26,9 +26,6 @@ import org.iplass.mtp.auth.login.Credential;
 import org.iplass.mtp.auth.token.AuthTokenInfo;
 import org.iplass.mtp.impl.auth.authenticate.token.AuthToken;
 import org.iplass.mtp.impl.auth.authenticate.token.AuthTokenHandler;
-import org.iplass.mtp.impl.auth.authenticate.token.AuthTokenService;
-import org.iplass.mtp.impl.auth.authenticate.token.AuthTokenStore;
-import org.iplass.mtp.spi.Config;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -75,6 +72,9 @@ public class WebHookAuthTokenHandler extends AuthTokenHandler{
 	public String getSecret(final int tenantId,final String series,final String type) {
 		checkTypeValidity(type);
 		AuthToken token = authTokenStore().getBySeries(tenantId, type, series);
+		if(token ==null) {
+			return null;
+		}
 		return token.getToken();
 	}
 	

@@ -17,17 +17,16 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
-package org.iplass.mtp.impl.webhook;
+package org.iplass.mtp.webhook.template.endpointaddress;
 
-import org.iplass.mtp.impl.definition.TypedMetaDataService;
-import org.iplass.mtp.impl.webhook.template.MetaWebHookTemplate;
-import org.iplass.mtp.impl.webhook.template.MetaWebHookTemplate.WebHookTemplateRuntime;
-import org.iplass.mtp.tenant.Tenant;
-import org.iplass.mtp.webhook.WebHook;
+import org.iplass.mtp.definition.TypedDefinitionManager;
 
-public interface WebHookService extends TypedMetaDataService<MetaWebHookTemplate, WebHookTemplateRuntime>{
+public interface WebEndPointDefinitionManager extends TypedDefinitionManager<WebEndPointDefinition> {
 
-	WebHook createWebHook(Tenant tenant, String charset);
-	
-	void sendWebHook(Tenant tenant, WebHook webHook);
+	void modifySecurityToken(int tenantId,String metaDataId, String secret, String TokenType);
+
+	public String getSecurityToken(int tenantId, String metaDataId, String TokenType);
+
+	public String generateHmacTokenString();
+
 }

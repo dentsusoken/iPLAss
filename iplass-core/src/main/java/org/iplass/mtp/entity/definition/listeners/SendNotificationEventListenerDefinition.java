@@ -32,6 +32,12 @@ public class SendNotificationEventListenerDefinition extends EventListenerDefini
 	private String notificationCondScript;
 	private List<EventType> listenEvent;
 
+	
+	/**ウェッブフックだけの設定項目*/
+	private boolean isSynchronous;
+	private List<String> endPointDefList;
+	private String webHookResultHandlerDef;
+
 	public SendNotificationType getNotificationType() {
 		return notificationType;
 	}
@@ -64,4 +70,27 @@ public class SendNotificationEventListenerDefinition extends EventListenerDefini
 		this.listenEvent = listenEvent;
 	}
 
+	public boolean getIsSynchronous() {
+		return isSynchronous;
+	}
+
+	public void setIsSynchronous(boolean isSynchronous) {
+		this.isSynchronous = isSynchronous;
+	}
+
+	public List<String> getEndPointDefList() {
+		return endPointDefList;
+	}
+
+	public void setEndPointDefList(List<String> endPointDefList) {
+		this.endPointDefList = endPointDefList;
+	}
+
+	public String getWebHookResultHandlerDef() {
+		return webHookResultHandlerDef;
+	}
+
+	public void setWebHookResultHandlerDef(String webHookResultHandlerDef) {
+		this.webHookResultHandlerDef = webHookResultHandlerDef;
+	}
 }

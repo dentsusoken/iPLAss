@@ -44,9 +44,6 @@ public class WebHookTemplateDefinition implements Definition {
 
 	private Boolean synchronous;
 
-	/** サブスクライバー：このwebhookを要求した方達 */
-	private ArrayList<WebHookSubscriber> subscribers;
-
 	/** headers */
 	private ArrayList<WebHookHeader> headers;
 	
@@ -97,38 +94,6 @@ public class WebHookTemplateDefinition implements Definition {
 	@Override
 	public void setDescription(String description) {
 		this.description = description;
-	}
-
-	public ArrayList<WebHookSubscriber> getSubscribers() {
-		if (subscribers == null) {
-			return new ArrayList<WebHookSubscriber>();
-		}
-		return subscribers;
-	}
-
-	public void setSubscribers(ArrayList<WebHookSubscriber> subscribers) {
-		this.subscribers = subscribers;
-	}
-	
-	public void addSubscriber(WebHookSubscriber newSubscriber) {
-		if (this.subscribers==null) {
-			this.subscribers = new ArrayList <WebHookSubscriber>();
-		}
-		this.subscribers.add(newSubscriber);
-	}
-	
-	/***
-	 * 特定のsubscriberオブジェを取得。
-	 * 見つけないならnullが返される 
-	 */
-	public WebHookSubscriber getSubscriberById (String subscriberUid){
-		
-		for (WebHookSubscriber temp : subscribers) {
-			if (temp.getWebHookSubscriberId()==subscriberUid) {
-				return temp;
-			}
-		} 
-		return null;
 	}
 
 	public Boolean isSynchronous() {

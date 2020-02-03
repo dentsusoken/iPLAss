@@ -17,17 +17,27 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
-package org.iplass.mtp.impl.webhook;
+package org.iplass.mtp.impl.webhook.endpointaddress;
 
 import org.iplass.mtp.impl.definition.TypedMetaDataService;
-import org.iplass.mtp.impl.webhook.template.MetaWebHookTemplate;
-import org.iplass.mtp.impl.webhook.template.MetaWebHookTemplate.WebHookTemplateRuntime;
-import org.iplass.mtp.tenant.Tenant;
-import org.iplass.mtp.webhook.WebHook;
+import org.iplass.mtp.impl.webhook.endpointaddress.MetaWebEndPointDefinition.WebEndPointRuntime;
 
-public interface WebHookService extends TypedMetaDataService<MetaWebHookTemplate, WebHookTemplateRuntime>{
+public interface WebEndPointService extends TypedMetaDataService<MetaWebEndPointDefinition, WebEndPointRuntime>{
 
-	WebHook createWebHook(Tenant tenant, String charset);
+	public void deleteSecurityTokenByDef(String metaDataId);
+
+	public void updateBasicSecurityTokenByDef(int tenantId,String metaDataId, String basic);
+
+	public void updateHmacSecurityTokenByDef(int tenantId,String metaDataId, String secret);
+
+	public void updateBearerSecurityTokenByDef(int tenantId,String metaDataId, String secret);
 	
-	void sendWebHook(Tenant tenant, WebHook webHook);
+	public String getHmacTokenByDef(int tenantId,String metaDataId);
+
+	public String getBearerTokenByDef(int tenantId,String metaDataId);
+
+	public String getBasicTokenByDef(int tenantId,String metaDataId);
+
+	String generateHmacTokenString();
+
 }

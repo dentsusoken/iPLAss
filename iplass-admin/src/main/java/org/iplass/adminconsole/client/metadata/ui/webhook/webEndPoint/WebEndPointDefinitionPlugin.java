@@ -17,7 +17,8 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
-package org.iplass.adminconsole.client.metadata.ui.webhook;
+package org.iplass.adminconsole.client.metadata.ui.webhook.webEndPoint;
+
 import org.iplass.adminconsole.client.base.event.DataChangedEvent;
 import org.iplass.adminconsole.client.base.event.DataChangedHandler;
 import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
@@ -29,52 +30,49 @@ import org.iplass.adminconsole.shared.metadata.dto.AdminDefinitionModifyResult;
 import org.iplass.adminconsole.shared.metadata.dto.MetaDataConstants;
 import org.iplass.adminconsole.shared.metadata.rpc.MetaDataServiceAsync;
 import org.iplass.adminconsole.shared.metadata.rpc.MetaDataServiceFactory;
-import org.iplass.mtp.webhook.template.definition.WebHookTemplateDefinition;
+import org.iplass.mtp.webhook.template.endpointaddress.WebEndPointDefinition;
+
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.smartgwt.client.util.SC;
 
-/**
- * @author lisf06
- *
- */
-public class WebHookTemplatePlugin extends DefaultMetaDataPlugin {
-	
+public class WebEndPointDefinitionPlugin extends DefaultMetaDataPlugin{
 	/** カテゴリ名 */
 	private static final String CATEGORY_NAME = MetaDataConstants.META_CATEGORY_NOTIFICATION +"/" + "WebHook";
 
 	/** ノード名 */
-	private static final String NODE_NAME = "WebHookTemplate";
+	private static final String NODE_NAME = "WebEndPointDefinition";
 
 	/** ノードアイコン */
-	private static final String NODE_ICON = "";//webhook.png?
-
+	private static final String NODE_ICON = "";//webendpoint.png?
 	@Override
 	protected String nodeName() {
-		return NODE_NAME ;
+		return NODE_NAME;
 	}
 
 	@Override
 	protected String nodeDisplayName() {
-		// TODO Auto-generated method stub, add this message to util
-		return AdminClientMessageUtil.getString("ui_metadata_webhook_WebHookTemplatePluginManager_WebHookTemplate");
+		// TODO add string
+		return AdminClientMessageUtil.getString("ui_metadata_webhook_WebEndPointDefinitionPlugin_WebEndPointDefinition");
 	}
 
 	public String getCategoryName() {
 		return CATEGORY_NAME;
 	}
+
 	@Override
 	protected String nodeIcon() {
 		return NODE_ICON;
 	}
 
+
 	@Override
 	protected String definitionClassName() {
-		return WebHookTemplateDefinition.class.getName();
+		return WebEndPointDefinition.class.getName();
 	}
 
 	@Override
 	protected void itemCreateAction(String folderPath) {
-		CreateWebHookTemplateDialog dialog = new CreateWebHookTemplateDialog(definitionClassName(), nodeDisplayName(), folderPath, false);
+		CreateWebEndPointDefinitionDialog dialog = new CreateWebEndPointDefinitionDialog(definitionClassName(), nodeDisplayName(), folderPath, false);
 		dialog.setNamePolicy(isPathSlash(), isNameAcceptPeriod());
 		dialog.addDataChangeHandler(new DataChangedHandler() {
 			@Override
@@ -87,7 +85,7 @@ public class WebHookTemplatePlugin extends DefaultMetaDataPlugin {
 
 	@Override
 	protected void itemCopyAction(MetaDataItemMenuTreeNode itemNode) {
-		CreateWebHookTemplateDialog dialog = new CreateWebHookTemplateDialog(definitionClassName(), nodeDisplayName(), "", false);
+		CreateWebEndPointDefinitionDialog dialog = new CreateWebEndPointDefinitionDialog(definitionClassName(), nodeDisplayName(), "", false);
 		dialog.setNamePolicy(isPathSlash(), isNameAcceptPeriod());
 		dialog.addDataChangeHandler(new DataChangedHandler() {
 			@Override
@@ -97,36 +95,38 @@ public class WebHookTemplatePlugin extends DefaultMetaDataPlugin {
 		});
 		dialog.setSourceName(itemNode.getDefName());
 		dialog.show();
+		
 	}
 
 	@Override
-	protected void itemDelete(final MetaDataItemMenuTreeNode itemNode) {
+	protected void itemDelete(MetaDataItemMenuTreeNode itemNode) {
 		MetaDataServiceAsync service = MetaDataServiceFactory.get();
-		service.deleteDefinition(TenantInfoHolder.getId(), WebHookTemplateDefinition.class.getName(), itemNode.getDefName(), new AsyncCallback<AdminDefinitionModifyResult>() {
+		service.deleteDefinition(TenantInfoHolder.getId(), WebEndPointDefinition.class.getName(), itemNode.getDefName(), new AsyncCallback<AdminDefinitionModifyResult>() {
 			public void onFailure(Throwable caught) {//TODO add this message
-				SC.warn(AdminClientMessageUtil.getString("ui_metadata_mail_WebHookTemplatePluginManager_failedToDeleteWebHookTemplate" + caught.getMessage()));
+				SC.warn(AdminClientMessageUtil.getString("ui_metadata_WebEndPointDefinitionPlugin_failedToDeleteWebEndPointDefinition" + caught.getMessage()));
 			}
 			public void onSuccess(AdminDefinitionModifyResult result) {
 				if (result.isSuccess()) {
-					SC.say(AdminClientMessageUtil.getString("ui_metadata_mail_WebHookTemplatePluginManager_completion"),
-							AdminClientMessageUtil.getString("ui_metadata_mail_WebHookTemplatePluginManager_deleteWebHookTemplateComp"));
+					SC.say(AdminClientMessageUtil.getString("ui_metadata_WebEndPointDefinitionPlugin_completion"),
+							AdminClientMessageUtil.getString("ui_metadata_WebEndPointDefinitionPlugin_deleteWebEndPointDefinitionComp"));
 					refresh();
 					removeTab(itemNode);
 				} else {
-					SC.warn(AdminClientMessageUtil.getString("ui_metadata_mail_WebHookTemplatePluginManager_failedToDeleteWebHookTemplate" + result.getMessage()));
+					SC.warn(AdminClientMessageUtil.getString("ui_metadata_WebEndPointDefinitionPlugin_failedToDeleteWebEndPointDefinition" + result.getMessage()));
 				}
 			}
 		});
+		
 	}
 
 	@Override
 	protected MetaDataMainEditPane workSpaceContents(MetaDataItemMenuTreeNode itemNode) {
-		return new WebHookTemplateEditPane(itemNode, this);
+		return new WebEndPointEditPane(itemNode, this);
 	}
 
 	@Override
 	protected Class<?>[] workspaceContentsPaneClass() {
-		return new Class[] {WebHookTemplateEditPane.class};
+		return new Class[] {WebEndPointEditPane.class};
 	}
 
 }

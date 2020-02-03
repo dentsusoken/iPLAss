@@ -28,6 +28,7 @@
 		<property name="org.iplass.mtp.utilityclass.definition.UtilityClassDefinitionManager" value="org.iplass.mtp.impl.script.UtilityClassDefinitionManagerImpl" />
 		<property name="org.iplass.mtp.webhook.WebHookManager" value="org.iplass.mtp.impl.webhook.WebHookManagerImpl" />
 		<property name="org.iplass.mtp.webhook.template.definition.WebHookTemplateDefinitionManager" value="org.iplass.mtp.impl.webhook.template.WebHookTemplateDefinitionManagerImpl" />
+		<property name="org.iplass.mtp.webhook.template.endpointaddress.WebEndPointDefinitionManager" value="org.iplass.mtp.impl.webhook.endpointaddress.WebEndPointDefinitionManagerImpl" />
 	</service>
 
 	<service>
@@ -98,6 +99,7 @@
 		<property name="typeMap" value="org.iplass.mtp.impl.auth.authenticate.builtin.policy.AuthenticationPolicyService$TypeMap" />
 		<property name="typeMap" value="org.iplass.mtp.impl.pushnotification.PushNotificationService$TypeMap" />
 		<property name="typeMap" value="org.iplass.mtp.impl.webhook.WebHookServiceImpl$TypeMap" />
+		<property name="typeMap" value="org.iplass.mtp.impl.webhook.endpointaddress.WebEndPointServiceImpl$TypeMap" />
 	</service>
 
 	<!-- 認証関連 -->
@@ -301,7 +303,12 @@
 			<property name="poolingTimeToLive" value="50000" />
 		</property>
 	</service>
-	
+	<!-- WebHookのEndPoint(サブスクライバー) -->
+	<service>
+		<interface>org.iplass.mtp.impl.webhook.endpointaddress.WebEndPointService</interface>
+		<class>org.iplass.mtp.impl.webhook.endpointaddress.WebEndPointServiceImpl</class>
+	</service>
+		
 	<!-- Tenant関連 -->
 	<service>
 		<interface>org.iplass.mtp.impl.core.TenantContextService</interface>

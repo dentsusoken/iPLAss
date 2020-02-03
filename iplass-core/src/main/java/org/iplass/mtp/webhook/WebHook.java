@@ -27,7 +27,7 @@ import java.util.ArrayList;
 import java.util.Map;
 
 import org.iplass.mtp.webhook.template.definition.WebHookHeader;
-import org.iplass.mtp.webhook.template.definition.WebHookSubscriber;
+import org.iplass.mtp.webhook.template.endpointaddress.WebEndPointDefinition;
 
 /**
  * @author lisf06
@@ -45,8 +45,11 @@ public class WebHook  {
 	/** 送るメソッド */
 	private String httpMethod;
 
-	private ArrayList<WebHookSubscriber> subscribers;
+	/**definition name, 後でserviceで情報をとる*/
+	private ArrayList<String> endPoints;
+	private String resultHandler;
 
+	
 	/** headers */
 	private ArrayList<WebHookHeader> headers;
 	private String tokenHeader;
@@ -121,17 +124,6 @@ public class WebHook  {
 		this.headers = headers;
 	}
 
-	public ArrayList<WebHookSubscriber> getSubscribers() {
-		return subscribers;
-	}
-
-	public void setSubscribers(ArrayList<WebHookSubscriber> subscriber) {
-		this.subscribers = subscriber;
-	}
-
-	public void addSubscriber(WebHookSubscriber subscriber) {
-		this.subscribers.add(subscriber);
-	}
 	public Map<String, Object> getBinding() {
 		return binding;
 	}
@@ -170,5 +162,22 @@ public class WebHook  {
 	public void setWebHookContent(String webHookContent) {
 		this.webHookContent = webHookContent;
 	}
+
+	public ArrayList<String> getEndPoints() {
+		return endPoints;
+	}
+
+	public void setEndPoints(ArrayList<String> endPoints) {
+		this.endPoints = endPoints;
+	}
+
+	public String getResultHandler() {
+		return resultHandler;
+	}
+
+	public void setResultHandler(String resultHandler) {
+		this.resultHandler = resultHandler;
+	}
+
 
 }

@@ -140,6 +140,8 @@ import org.iplass.mtp.web.template.report.definition.ReportTemplateDefinition;
 import org.iplass.mtp.webapi.definition.EntityWebApiDefinition;
 import org.iplass.mtp.webapi.definition.EntityWebApiDefinitionManager;
 import org.iplass.mtp.webapi.definition.WebApiDefinition;
+import org.iplass.mtp.webhook.template.endpointaddress.WebEndPointDefinition;
+import org.iplass.mtp.webhook.template.endpointaddress.WebEndPointDefinitionManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -164,7 +166,8 @@ public class MetaDataServiceImpl extends XsrfProtectedServiceServlet implements 
 	private MenuTreeManager mtm = ManagerLocator.getInstance().getManager(MenuTreeManager.class);
 	private EntityWebApiDefinitionManager ewdm = ManagerLocator.getInstance().getManager(EntityWebApiDefinitionManager.class);
 	private DefinitionManager dm = ManagerLocator.getInstance().getManager(DefinitionManager.class);
-
+	private WebEndPointDefinitionManager wepdm = ManagerLocator.getInstance().getManager(WebEndPointDefinitionManager.class);
+			
 	private EntityManager em = AdminEntityManager.getInstance();
 	private AsyncTaskManager atm = ManagerLocator.getInstance().getManager(AsyncTaskManager.class);
 
@@ -177,6 +180,7 @@ public class MetaDataServiceImpl extends XsrfProtectedServiceServlet implements 
 
 	private OAuthClientService oacs = ServiceRegistry.getRegistry().getService(OAuthClientService.class);
 	private OAuthResourceServerService oars = ServiceRegistry.getRegistry().getService(OAuthResourceServerService.class);
+
 
 	/* ---------------------------------------
 	 * 共通
@@ -1985,5 +1989,34 @@ public class MetaDataServiceImpl extends XsrfProtectedServiceServlet implements 
 			}
 		});
 	}
-
+	
+	/* ---------------------------------------
+	 * WebHook EndPoint Security Info
+	 --------------------------------------- */
+	@Override
+	public void updateWebEndPointSecurityInfo(final int tenantId, final String metaDataId, final String secret, final String TokenType) {
+		wepdm.modifySecurityToken(tenantId,metaDataId,secret,TokenType);
+	}
+	
+	@Override
+	public String getWebEndPointSecurityInfo(final int tenantId, final String metaDataId, final String TokenType) {
+		return wepdm.getSecurityToken(tenantId,metaDataId, TokenType);
+	}
+	@Override
+	public String generateHmacTokenString() {
+		return wepdm.generateHmacTokenString();
+	}
+	/**
+	 * 
+	 * returns a map of <defName->Url>
+	 * */
+	public HashMap<String, String> getEndPointFullListWithUrl(int tenantId){
+		HashMap<String, String> endPointMap = new HashMap<String, String>();
+		List<Name> tempNameList = getDefinitionNameList(tenantId, WebEndPointDefinition.class.getName());
+		for (Name name : tempNameList) {
+			WebEndPointDefinition temp = getDefinition(tenantId,WebEndPointDefinition.class.getName(),name.getName());
+			endPointMap.put(name.getName(), temp.getUrl());
+		}
+		return endPointMap;
+	}
 }

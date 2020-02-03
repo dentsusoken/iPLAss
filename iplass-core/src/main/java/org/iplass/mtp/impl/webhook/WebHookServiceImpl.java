@@ -26,7 +26,7 @@ import java.net.ConnectException;
 import java.net.URI;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
-import java.util.UUID;
+import java.util.HashSet;
 import java.util.concurrent.Callable;
 
 import javax.crypto.Mac;
@@ -36,7 +36,6 @@ import javax.net.ssl.SSLException;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpHeaders;
 import org.apache.http.HttpHost;
-import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.StatusLine;
 import org.apache.http.client.HttpRequestRetryHandler;
@@ -58,21 +57,19 @@ import org.apache.http.protocol.HttpContext;
 import org.iplass.mtp.ManagerLocator;
 import org.iplass.mtp.async.AsyncTaskManager;
 import org.iplass.mtp.definition.TypedDefinitionManager;
-import org.iplass.mtp.impl.auth.authenticate.token.AuthTokenService;
-import org.iplass.mtp.impl.core.ExecuteContext;
 import org.iplass.mtp.impl.definition.AbstractTypedMetaDataService;
 import org.iplass.mtp.impl.definition.DefinitionMetaDataTypeMap;
 import org.iplass.mtp.impl.http.HttpClientConfig;
 import org.iplass.mtp.impl.webhook.template.MetaWebHookTemplate;
 import org.iplass.mtp.impl.webhook.template.MetaWebHookTemplate.WebHookTemplateRuntime;
 import org.iplass.mtp.spi.Config;
-import org.iplass.mtp.spi.ServiceRegistry;
 import org.iplass.mtp.tenant.Tenant;
 import org.iplass.mtp.webhook.WebHook;
 import org.iplass.mtp.webhook.template.definition.WebHookHeader;
-import org.iplass.mtp.webhook.template.definition.WebHookSubscriber;
 import org.iplass.mtp.webhook.template.definition.WebHookTemplateDefinition;
 import org.iplass.mtp.webhook.template.definition.WebHookTemplateDefinitionManager;
+import org.iplass.mtp.webhook.template.endpointaddress.WebEndPointDefinition;
+import org.iplass.mtp.webhook.template.endpointaddress.WebEndPointDefinitionManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -86,7 +83,7 @@ public class WebHookServiceImpl extends AbstractTypedMetaDataService<MetaWebHook
 	public final String WEBHOOK_HMACTOKEN_DEFAULTNAME = "webHook.HmacToken.DefaultName";
 	public final String WEBHOOK_HTTP_CLIENT_CONFIG = "httpClientConfig";
 	private AsyncTaskManager atm;
-	
+	private WebEndPointDefinitionManager wepdm;
 	private boolean webHookUseProxy;
 	private boolean webHookIsRetry;
 	private int webHookRetryMaximumAttpempts;
@@ -99,15 +96,6 @@ public class WebHookServiceImpl extends AbstractTypedMetaDataService<MetaWebHook
 	public static final String WEBHOOK_TEMPLATE_META_PATH = "/webhook/template/";
 
 	public static class TypeMap extends DefinitionMetaDataTypeMap<WebHookTemplateDefinition, MetaWebHookTemplate> {
-		
-		@Override
-		public WebHookTemplateDefinition toDefinition(MetaWebHookTemplate metaData) {
-			WebHookService ws = ServiceRegistry.getRegistry().getService(WebHookService.class);
-			WebHookTemplateDefinition definition = super.toDefinition(metaData);
-			definition = ws.fillSubscriberListByDef(definition);
-			return definition;
-		}
-
 		public TypeMap() {
 			super(getFixedPath(), MetaWebHookTemplate.class, WebHookTemplateDefinition.class);
 		}
@@ -175,6 +163,7 @@ public class WebHookServiceImpl extends AbstractTypedMetaDataService<MetaWebHook
 		}
 		//TODO:add default values to the necessary items, such as hmac algorithm
 		atm = ManagerLocator.getInstance().getManager(AsyncTaskManager.class);
+		wepdm = ManagerLocator.getInstance().getManager(WebEndPointDefinitionManager.class);
 	}
 
 	@Override
@@ -193,76 +182,69 @@ public class WebHookServiceImpl extends AbstractTypedMetaDataService<MetaWebHook
 	 * */
 	@Override
 	public void sendWebHook(Tenant tenant, WebHook webHook){
-		WebHookAuthTokenHandler tokenHandler = (WebHookAuthTokenHandler)ServiceRegistry
-				.getRegistry().getService(AuthTokenService.class)
-				.getHandler(WebHookAuthTokenHandler.TYPE_WEBHOOK_AUTHTOKEN_HANDLER);
-		this.fillData(tenant.getId(), webHook.getMetaDataId(), tokenHandler, webHook.getSubscribers());
 		if (webHook.isSynchronous()) {
 			try {
-				sendWebHook(webHook);
+				sendWebHook(webHook,tenant);
 			} catch (Exception e) {
 				throw e;
 			}
 		} else {
-			atm.executeOnThread(new WebHookCallable(webHook));
+			atm.executeOnThread(new WebHookCallable(webHook, tenant));
 		}
 	}
 	
 
-	private void sendWebHook(WebHook webHook) {
+	private void sendWebHook(WebHook webHook,Tenant tenant) {
+		HashSet<Subscriber> endPointSet= generateSubscriberList(webHook.getEndPoints(),tenant.getId());
+		
 		try {
-			ArrayList<WebHookSubscriber> receivers = new ArrayList<WebHookSubscriber>(webHook.getSubscribers());
-			for (WebHookSubscriber receiver : receivers) {
-
-			
-			logger.info("WebHook:"+webHook.getTemplateName()+" Attempted.");
-			HttpClientBuilder httpClientBuilder = null;
-			if (webHookIsRetry) {
-				int retryCount = webHookRetryMaximumAttpempts;
-				int retryInterval = webHookRetryInterval;
-				HttpRequestRetryHandler requestRetryHandler=new HttpRequestRetryHandler(){
-					public boolean retryRequest(final IOException exception, int executionCount, final HttpContext context){
-						//特定の失敗ケースだけリトライ
-						if (exception.getClass() == InterruptedIOException.class 
-								||exception.getClass() == UnknownHostException.class 
-								||exception.getClass() == ConnectException.class
-								||exception.getClass() == SSLException.class)	{
-							if (executionCount < retryCount) {
-								try {
-									Thread.sleep(retryInterval);
-								} catch (InterruptedException e) {
-									e.printStackTrace();
-								}
-								return true;
-							}//TODO log retryInterval exceeded
-						}
-						logger.info("WebHook:"+webHook.getTemplateName()+"retry limit exceeded");
-						return false;
-						}
-					};
-					httpClientBuilder = HttpClientBuilder.create().setRetryHandler(requestRetryHandler);
-			} else {
-				httpClientBuilder = HttpClientBuilder.create().disableAutomaticRetries();
-			}
-			if (this.webHookUseProxy) {
-				HttpHost proxy = new HttpHost(webHookHttpClientConfig.getProxyHost(),webHookHttpClientConfig.getProxyPort(),"http");
-				httpClientBuilder.setProxy(proxy);
-			}
-			try {
-				CloseableHttpClient httpClient= httpClientBuilder.build();
-
-
-				//fill in webhook payload
-				String payload = webHook.getWebHookContent();
-				StringEntity se = new StringEntity(payload);
-				se.setContentType(webHook.getContentType());
-				
-				Exception ex = null;
-
-				
-					WebHookSubscriber temp= receiver;
+			for (Subscriber subscriber : endPointSet) {
+				logger.info("WebHook:"+webHook.getTemplateName()+" Attempted.");
+				HttpClientBuilder httpClientBuilder = null;
+				if (webHookIsRetry) {
+					int retryCount = webHookRetryMaximumAttpempts;
+					int retryInterval = webHookRetryInterval;
+					HttpRequestRetryHandler requestRetryHandler=new HttpRequestRetryHandler(){
+						public boolean retryRequest(final IOException exception, int executionCount, final HttpContext context){
+							//特定の失敗ケースだけリトライ
+							if (exception.getClass() == InterruptedIOException.class 
+									||exception.getClass() == UnknownHostException.class 
+									||exception.getClass() == ConnectException.class
+									||exception.getClass() == SSLException.class)	{
+								if (executionCount < retryCount) {
+									try {
+										Thread.sleep(retryInterval);
+									} catch (InterruptedException e) {
+										e.printStackTrace();
+									}
+									return true;
+								}//TODO log retryInterval exceeded
+							}
+							logger.info("WebHook:"+webHook.getTemplateName()+"retry limit exceeded");
+							return false;
+							}
+						};
+						httpClientBuilder = HttpClientBuilder.create().setRetryHandler(requestRetryHandler);
+				} else {
+					httpClientBuilder = HttpClientBuilder.create().disableAutomaticRetries();
+				}
+				if (this.webHookUseProxy) {
+					HttpHost proxy = new HttpHost(webHookHttpClientConfig.getProxyHost(),webHookHttpClientConfig.getProxyPort(),"http");
+					httpClientBuilder.setProxy(proxy);
+				}
+				try {
+					CloseableHttpClient httpClient= httpClientBuilder.build();
+	
+	
+					//fill in webhook payload
+					String payload = webHook.getWebHookContent();
+					StringEntity se = new StringEntity(payload);
+					se.setContentType(webHook.getContentType());
+					
+					Exception ex = null;
+					
 					HttpRequestBase httpRequest = getReqestMethodObject(webHook.getHttpMethod());
-					httpRequest.setURI(new URI(receiver.getUrl()));
+					httpRequest.setURI(new URI(subscriber.getUrl()));
 					
 					// and payload and headers
 					if (isEnclosingRequest(httpRequest)) {
@@ -271,9 +253,10 @@ public class WebHookServiceImpl extends AbstractTypedMetaDataService<MetaWebHook
 					for(WebHookHeader headerEntry: webHook.getHeaders()) {
 						httpRequest.setHeader(headerEntry.getKey(), headerEntry.getValue());
 					}
-					if (temp.getSecurityToken()!=null) {
-						if (!temp.getSecurityToken().isEmpty()) {
-							String hmacToken= getHmacSha256(temp.getSecurityToken(), payload);
+					//hmac
+					if (subscriber.getHmac()!=null) {
+						if (!subscriber.getHmac().isEmpty()) {
+							String hmacToken= getHmacSha256(subscriber.getHmac(), payload);
 							String tokenHeader;
 							if (webHook.getTokenHeader()==null||webHook.getTokenHeader().replaceAll("\\s","").isEmpty()) {
 								tokenHeader = webHookHmacTokenDefaultName;
@@ -283,16 +266,14 @@ public class WebHookServiceImpl extends AbstractTypedMetaDataService<MetaWebHook
 							httpRequest.setHeader(tokenHeader, hmacToken);
 						}
 					}
-					if (temp.getSecurityBearerToken()!=null) {
-						if (!temp.getSecurityBearerToken().isEmpty()) {
-							httpRequest.setHeader(HttpHeaders.AUTHORIZATION, "Bearer " +temp.getSecurityBearerToken());
-						}
-					}
-					if (temp.getSecurityUsername()!=null&&temp.getSecurityPassword()!=null) {
-						if(!temp.getSecurityUsername().isEmpty()&&!temp.getSecurityPassword().isEmpty()) {
-							String basic = temp.getSecurityUsername()+":"+ temp.getSecurityPassword();
-							basic ="Basic " + Base64.encodeBase64String(basic.getBytes());
-							httpRequest.setHeader(HttpHeaders.AUTHORIZATION, basic);
+					//headerのauthorizationでの認証情報
+					if (subscriber.getHeaderAuthType()==null || subscriber.getHeaderAuthType().isEmpty()) {
+						
+					}else {
+						if (subscriber.getHeaderAuthType()=="WHBT") {
+							httpRequest.setHeader(HttpHeaders.AUTHORIZATION, "Bearer " +subscriber.getHeaderAuthContent());
+						} else if(subscriber.getHeaderAuthType()=="WHBA") {
+							httpRequest.setHeader(HttpHeaders.AUTHORIZATION, "Basic " +subscriber.getHeaderAuthContent());
 						}
 					}
 					CloseableHttpResponse response = httpClient.execute(httpRequest);
@@ -301,7 +282,7 @@ public class WebHookServiceImpl extends AbstractTypedMetaDataService<MetaWebHook
 						//TODO: response handler?
 						StatusLine statusLine= response.getStatusLine();
 						if (statusLine.getStatusCode() == HttpStatus.SC_OK) {//普通に成功
-							logger.debug("webHook to :"+temp.getSecurityUsername()+" success");
+							//TODO:add handler to command?
 						}
 						HttpEntity entity = response.getEntity();
 						logger.debug("entity :"+entity.getContent().toString()+" success");
@@ -343,115 +324,17 @@ public class WebHookServiceImpl extends AbstractTypedMetaDataService<MetaWebHook
 	
 	private class WebHookCallable implements Callable<Void>{
 		WebHook webHook;
-		public WebHookCallable(WebHook webHook) {
+		Tenant tenant;
+		public WebHookCallable(WebHook webHook,Tenant tenant) {
 			this.webHook = webHook;
+			this.tenant = tenant;
 		}
 		@Override
 		public Void call() throws Exception {
-			sendWebHook(webHook);
+			sendWebHook(webHook,tenant);
 			return null;
 		}
 		
-	}
-	
-	public String composeSeries(final String metaDataId, final String subscriberId) {
-		return metaDataId+subscriberId;
-	}
-	
-	/**
-	 * @param: データベースを読む必要の webHookTemplate Definition.
-	 * @return: WebHookSubscriberのリスト
-	 * */
-	public WebHookTemplateDefinition fillSubscriberListByDef(WebHookTemplateDefinition definition){
-		int tenantId = ExecuteContext.getCurrentContext().getClientTenantId();
-		String metaDataId = definition.getMetaDataId();
-		WebHookAuthTokenHandler tokenHandler = (WebHookAuthTokenHandler)ServiceRegistry
-				.getRegistry().getService(AuthTokenService.class)
-				.getHandler(WebHookAuthTokenHandler.TYPE_WEBHOOK_AUTHTOKEN_HANDLER);
-		ArrayList<WebHookSubscriber> tempList = definition.getSubscribers();
-		
-		tempList = fillData(tenantId, metaDataId, tokenHandler, tempList);
-		
-		definition.setSubscribers(tempList);
-		return definition;
-	}
-
-	/**
-	 * ArrayList<WebHookSubscriber>に対して,セキュリティ情報を取得して書き込みます
-	 * */
-	private ArrayList<WebHookSubscriber> fillData(int tenantId, String metaDataId, WebHookAuthTokenHandler tokenHandler, ArrayList<WebHookSubscriber> tempList) {
-		for (WebHookSubscriber temp : tempList) {
-			String subscriberId = temp.getWebHookSubscriberId();
-			temp.setSecurityBearerToken(tokenHandler.getSecret(tenantId, composeSeries(metaDataId, subscriberId), WebHookAuthTokenHandler.BEARER_AUTHENTICATION_TYPE));
-			temp.setSecurityToken(tokenHandler.getSecret(tenantId, composeSeries(metaDataId, subscriberId), WebHookAuthTokenHandler.HMAC_AUTHENTICATION_TYPE));
-			String basic64=tokenHandler.getSecret(tenantId, composeSeries(metaDataId, subscriberId), WebHookAuthTokenHandler.BASIC_AUTHENTICATION_TYPE);
-			String basic = new String(Base64.decodeBase64(basic64));
-			String[] basicArray = basic.split(":");
-			if (basicArray.length<2) {
-				temp.setSecurityUsername("");
-				temp.setSecurityPassword("");
-			} else {
-				temp.setSecurityUsername(basicArray[0].replaceAll(" ", ""));
-				temp.setSecurityPassword(basicArray[1].replaceAll(" ", ""));
-			}
-		}
-		return tempList;
-	}
-	
-	/**
-	 * definitionに応じ、データベースのエントリーを更新します
-	 * @param: webHookTemplate Definition.
-	 * */
-	public WebHookTemplateDefinition updateSubscriberListByDef(WebHookTemplateDefinition definition) {
-		//definition のsubscribersに記録したstateによって、insertや、delete,updateなとを行う
-		int tenantId = ExecuteContext.getCurrentContext().getClientTenantId();
-		String metaDataId = definition.getMetaDataId();
-		WebHookAuthTokenHandler tokenHandler = (WebHookAuthTokenHandler)ServiceRegistry
-				.getRegistry().getService(AuthTokenService.class)
-				.getHandler(WebHookAuthTokenHandler.TYPE_WEBHOOK_AUTHTOKEN_HANDLER);
-		ArrayList<WebHookSubscriber> newList = new ArrayList<WebHookSubscriber>();
-		for (WebHookSubscriber temp : definition.getSubscribers()) {
-			
-			
-			if (temp.isDelete()) {
-				String subscriberId = temp.getWebHookSubscriberId();
-				String series = composeSeries(metaDataId, subscriberId);
-				tokenHandler.deleteSecret(tenantId, WebHookAuthTokenHandler.BASIC_AUTHENTICATION_TYPE, series);
-				tokenHandler.deleteSecret(tenantId, WebHookAuthTokenHandler.BEARER_AUTHENTICATION_TYPE, series);
-				tokenHandler.deleteSecret(tenantId, WebHookAuthTokenHandler.HMAC_AUTHENTICATION_TYPE, series);
-			} else if(temp.isCreate()) {
-				temp.setWebHookSubscriberId(generateUuid());
-				String subscriberId = temp.getWebHookSubscriberId();
-				String series = composeSeries(metaDataId, subscriberId);
-				String basic = temp.getSecurityUsername()+":"+ temp.getSecurityPassword();
-				String basicTokenSecret = Base64.encodeBase64String(basic.getBytes());
-				tokenHandler.insertSecret(tenantId, WebHookAuthTokenHandler.BASIC_AUTHENTICATION_TYPE, metaDataId, series, basicTokenSecret);
-				tokenHandler.insertSecret(tenantId, WebHookAuthTokenHandler.BEARER_AUTHENTICATION_TYPE, metaDataId, series, temp.getSecurityBearerToken()==null?"":temp.getSecurityBearerToken());
-				tokenHandler.insertSecret(tenantId, WebHookAuthTokenHandler.HMAC_AUTHENTICATION_TYPE, metaDataId, series, temp.getSecurityToken()==null?"":temp.getSecurityToken());
-				temp.setState(WebHookSubscriber.WEBHOOKSUBSCRIBERSTATE.UNCHANGED);
-				newList.add(temp);
-			} else if (temp.isChanged()) {
-				String subscriberId = temp.getWebHookSubscriberId();
-				String series = composeSeries(metaDataId, subscriberId);
-				String basic = temp.getSecurityUsername()+":"+ temp.getSecurityPassword();
-				String basicTokenSecret = Base64.encodeBase64String(basic.getBytes());
-				tokenHandler.updateSecret(tenantId, WebHookAuthTokenHandler.BASIC_AUTHENTICATION_TYPE, metaDataId, series, basicTokenSecret);
-				tokenHandler.updateSecret(tenantId, WebHookAuthTokenHandler.BEARER_AUTHENTICATION_TYPE, metaDataId, series, temp.getSecurityBearerToken()==null?"":temp.getSecurityBearerToken());
-				tokenHandler.updateSecret(tenantId, WebHookAuthTokenHandler.HMAC_AUTHENTICATION_TYPE, metaDataId, series, temp.getSecurityToken()==null?"":temp.getSecurityToken());
-				temp.setState(WebHookSubscriber.WEBHOOKSUBSCRIBERSTATE.UNCHANGED);
-				newList.add(temp);	
-			}else {
-				//UNCHANGED確定
-				newList.add(temp);
-			}
-		}
-		definition.setSubscribers(newList);
-		return definition;
-	}
-
-	public String generateUuid() {
-		UUID uuid = UUID.randomUUID();
-		return uuid.toString();
 	}
 	
 	private HttpRequestBase getReqestMethodObject(String methodName){
@@ -484,4 +367,53 @@ public class WebHookServiceImpl extends AbstractTypedMetaDataService<MetaWebHook
 			return false;
 		}
 	}
+	
+	private HashSet<Subscriber> generateSubscriberList(ArrayList<String> arrayList, int tenantId){
+		HashSet<Subscriber> set= new HashSet<Subscriber>();
+		for (String wepDefName: arrayList) {
+			WebEndPointDefinition temp = wepdm.get(wepDefName);
+			Subscriber sb = new Subscriber();
+			String metaDataId = temp.getWebEndPointId();
+			sb.setUrl(temp.getUrl());
+			sb.setHeaderAuthType(temp.getHeaderAuthType());
+			sb.setHeaderAuthContent(wepdm.getSecurityToken(tenantId, metaDataId, sb.getHeaderAuthType()));
+			sb.setHmac(wepdm.getSecurityToken(tenantId, metaDataId, "WHHM"));
+			set.add(sb);
+		}
+		return set;		
+	}
+	
+	private class Subscriber{
+
+		String url;
+		String hmac;
+		String headerAuthContent;
+		String headerAuthType;
+		
+		public String getUrl() {
+			return url;
+		}
+		public void setUrl(String url) {
+			this.url = url;
+		}
+		public String getHmac() {
+			return hmac;
+		}
+		public void setHmac(String hmac) {
+			this.hmac = hmac;
+		}
+		public String getHeaderAuthContent() {
+			return headerAuthContent;
+		}
+		public void setHeaderAuthContent(String headerAuthContent) {
+			this.headerAuthContent = headerAuthContent;
+		}
+		public String getHeaderAuthType() {
+			return headerAuthType;
+		}
+		public void setHeaderAuthType(String headerAuthType) {
+			this.headerAuthType = headerAuthType;
+		}
+	}
+
 }

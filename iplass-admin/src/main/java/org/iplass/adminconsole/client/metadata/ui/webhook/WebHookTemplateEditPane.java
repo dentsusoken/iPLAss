@@ -45,9 +45,7 @@ import org.iplass.adminconsole.shared.metadata.rpc.MetaDataServiceFactory;
 import org.iplass.gwt.ace.client.EditorMode;
 import org.iplass.mtp.definition.DefinitionEntry;
 import org.iplass.mtp.webhook.template.definition.WebHookHeader;
-import org.iplass.mtp.webhook.template.definition.WebHookSubscriber;
 import org.iplass.mtp.webhook.template.definition.WebHookTemplateDefinition;
-import org.iplass.mtp.webhook.template.definition.WebHookSubscriber.WEBHOOKSUBSCRIBERSTATE;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.smartgwt.client.types.AutoFitWidthApproach;
@@ -104,8 +102,6 @@ public class WebHookTemplateEditPane extends MetaDataMainEditPane {
 	
 	/** 個別属性部分（デフォルト） */
 	private WebHookTemplateAttributePane webHookTemplateAttrPane;
-
-	private WebHookTemplateSubscriberPane webHookTemplateSubscriberPane;
 	
 	public WebHookTemplateEditPane(MetaDataItemMenuTreeNode targetNode, DefaultMetaDataPlugin plugin) {
 		super(targetNode, plugin);
@@ -131,12 +127,9 @@ public class WebHookTemplateEditPane extends MetaDataMainEditPane {
 		commonSection = new MetaCommonAttributeSection<>(targetNode, WebHookTemplateDefinition.class);
 		
 		webHookTemplateAttrPane = new WebHookTemplateAttributePane();
-		webHookTemplateSubscriberPane = new WebHookTemplateSubscriberPane();
-		webHookTemplateSubscriberPane.setDefaultHeight(400);
 		
 		SectionStackSection defaultWebHookSection = createSection("Default WebHookTemplate", webHookTemplateAttrPane);		
-		SectionStackSection subScrioberSection = createSection("Subscribers",false, webHookTemplateSubscriberPane);
-		setMainSections(commonSection, defaultWebHookSection, subScrioberSection);
+		setMainSections(commonSection, defaultWebHookSection);
 		addMember(headerPane);
 		addMember(mainStack);
 		
@@ -186,7 +179,6 @@ public class WebHookTemplateEditPane extends MetaDataMainEditPane {
 		this.curDefinitionId = entry.getDefinitionInfo().getObjDefId();
 		
 		commonSection.setDefinition(curDefinition);
-		webHookTemplateSubscriberPane.setDefinition(curDefinition);
 		webHookTemplateAttrPane.setDefinition(curDefinition);
 		
 	}
@@ -548,207 +540,6 @@ public class WebHookTemplateEditPane extends MetaDataMainEditPane {
 	}
 
 
-
-	/**
-	 * 
-	 * 当フックをサブスクライブした方のリスト
-	 * この方が管理し易いかと
-	 * */
-	public class WebHookTemplateSubscriberPane extends VLayout {
-
-		//セキュリティ設定、サブのそれぞれ対応
-		
-		//private CheckboxItem isPublic;//サブスクライブを公開するかどうか。TODO：公開して、ユーザーから自己登録ができるように
-		//private DynamicForm subscriberForm;
-		public SubscriberMapGrid grid;
-		
-		
-		public WebHookTemplateSubscriberPane() {
-			setMembersMargin(5);
-			
-			grid = new SubscriberMapGrid();
-			grid.setWidth100();
-			grid.setHeight("85%");
-			grid.addRecordDoubleClickHandler(new RecordDoubleClickHandler() {
-				public void onRecordDoubleClick(RecordDoubleClickEvent event) {
-					editMap((ListGridRecord)event.getRecord());
-				}
-			});
-			
-			
-			IButton addMap = new IButton("Add");
-			addMap.addClickHandler(new ClickHandler() {
-				public void onClick(ClickEvent event) {
-					addMap();
-				}
-			});
-
-			IButton delMap = new IButton("Remove");
-			delMap.addClickHandler(new ClickHandler() {
-				public void onClick(ClickEvent event) {
-					ListGridRecord record = grid.getSelectedRecord();
-					if (record == null) {
-						return;
-					}
-					String _subscriberUid=record.getAttributeAsString(FIELD_NAME.SUBSCRIBERUID.name());
-					grid.removeSelectedData();
-
-					ArrayList<WebHookSubscriber> subscriberList = new ArrayList<WebHookSubscriber>();
-
-					for (WebHookSubscriber sub : curDefinition.getSubscribers() ) {
-						if (sub.getWebHookSubscriberId().equals(_subscriberUid)) {
-							sub.setState(WEBHOOKSUBSCRIBERSTATE.DELETE);
-						}
-						subscriberList.add(sub);
-					}
-					curDefinition.setSubscribers(subscriberList);
-				}
-			});
-			
-			IButton testHook = new IButton("TestHook");
-			addMap.addClickHandler(new ClickHandler() {
-				public void onClick(ClickEvent event) {
-					//add handler!! TODO:
-				}
-			});
-			
-			HLayout mapButtonPane = new HLayout(5);
-			mapButtonPane.setMargin(5);
-			mapButtonPane.addMember(addMap);
-			mapButtonPane.addMember(delMap);
-			mapButtonPane.addMember(testHook);
-			
-			addMember(grid);
-			addMember(mapButtonPane);
-			
-		}
-		
-		protected void addMap() {
-			editMap(null);
-		}
-
-		protected void editMap(final ListGridRecord record) {
-			WebHookSubscriber temp = null;
-			
-			//dialog のためのtemp
-			if (record == null) {
-
-			} else {
-				String _subscriberUid=record.getAttributeAsString(FIELD_NAME.SUBSCRIBERUID.name());
-				temp =curDefinition.getSubscriberById(_subscriberUid);
-			}
-			final WebHookSubscriberDialog dialog = new WebHookSubscriberDialog(temp);
-			
-			dialog.addDataChangeHandler(new DataChangedHandler() {
-				@Override
-				public void onDataChanged(DataChangedEvent event) {
-					WebHookSubscriber param = event.getValueObject(WebHookSubscriber.class);
-
-					if (record != null) {
-						if(param.getState().equals(WEBHOOKSUBSCRIBERSTATE.CREATED)) {
-							//do nothing
-						}
-						else {
-							param.setState(WEBHOOKSUBSCRIBERSTATE.MODIFIED);
-						}
-					} else {
-						//新規追加
-						param.setState(WEBHOOKSUBSCRIBERSTATE.CREATED);
-						Date d = new Date();
-						String tempId =String.valueOf(String.valueOf(d.getTime()));
-						param.setWebHookSubscriberId(tempId);
-						curDefinition.getSubscribers().add(param);
-					}
-					
-					grid.setData(getSubscriberRecordList(curDefinition));
-					grid.refreshFields();
-				}
-			});
-		
-			dialog.show();
-			
-		}
-
-		public boolean validate() {
-			// TODO Auto-generated method stub
-			return true;
-		}
-
-		public void clearErrors() {
-			// TODO Auto-generated method stub
-			
-		}
-
-		public WebHookTemplateDefinition getEditDefinition(WebHookTemplateDefinition definition) {
-			return definition;
-		}
-	
-		public void setDefinition(WebHookTemplateDefinition definition) {
-			grid.setData(new ListGridRecord[] {});
-			if (definition != null) {
-				grid.setData(getSubscriberRecordList(curDefinition));
-			} 
-			grid.refreshFields();
-		}
-
-		private ListGridRecord[] getSubscriberRecordList(WebHookTemplateDefinition definition) {
-			List<WebHookSubscriber> definitionList = definition.getSubscribers();
-			if (definitionList != null && definitionList.size() > 0) {
-				ListGridRecord[] temp = new ListGridRecord[definitionList.size()];
-
-				int cnt = 0;
-				for (WebHookSubscriber subscriber : definitionList) {
-					if (subscriber.getState()!=WEBHOOKSUBSCRIBERSTATE.DELETE) {
-						ListGridRecord newRecord = createRecord(subscriber, null, true);
-						temp[cnt] = newRecord;
-						cnt ++;
-					}
-				}
-				return temp;
-			} else {
-				return new ListGridRecord[] {};
-			}
-		}
-		
-		public ListGridRecord createRecord(WebHookSubscriber param, ListGridRecord record, boolean init) {
-			if (record == null) {
-				record = new ListGridRecord();
-
-				if (!init) {
-					curDefinition.addSubscriber(param);
-				}
-			} else {
-				//may need modification later TODO:
-				String key = record.getAttribute(FIELD_NAME.SUBSCRIBERUID.name());
-
-				// 一旦更新レコードのDefinitionを削除
-				Map<String, WebHookSubscriber> map = new HashMap<String, WebHookSubscriber>();
-				for (WebHookSubscriber def : curDefinition.getSubscribers()) {
-					map.put(def.getWebHookSubscriberId(), def);
-				}
-
-				map.remove(key);
-
-				// 更新した内容を追加
-				map.put(key, param);
-
-				ArrayList<WebHookSubscriber> newList = new ArrayList<WebHookSubscriber>();
-
-				for(Map.Entry<String, WebHookSubscriber> e : map.entrySet()) {
-					newList.add(e.getValue());
-				}
-
-				curDefinition.setSubscribers(newList);
-
-			}
-			record.setAttribute(FIELD_NAME.SUBSCRIBER.name(), param.getSubscriberName());
-			record.setAttribute(FIELD_NAME.SUBSCRIBERURL.name(), param.getUrl());
-			record.setAttribute(FIELD_NAME.SUBSCRIBERUID.name(), param.getWebHookSubscriberId());
-
-			return record;
-		}
-	}
-
 	public class HeaderMapGrid extends ListGrid{
 		public HeaderMapGrid() {
 			setWidth(500);
@@ -784,42 +575,6 @@ public class WebHookTemplateEditPane extends MetaDataMainEditPane {
 //		}
 	}
 	
-	private class SubscriberMapGrid extends ListGrid{
-		public SubscriberMapGrid() {
-			setWidth100();
-			setHeight(500);
-
-			setShowAllColumns(true);
-			setShowAllRecords(true);
-			setCanResizeFields(true);
-			setCanSort(true);	
-			setCanPickFields(false);
-			setCanGroupBy(false);
-			setAutoFitWidthApproach(AutoFitWidthApproach.BOTH);	
-			setLeaveScrollbarGap(false);
-			setBodyOverflow(Overflow.SCROLL);
-			setOverflow(Overflow.VISIBLE);
-
-			//url	name	pass	id	security related
-			//名前をlocale に追加改変
-			ListGridField subscriberNameField = new ListGridField(FIELD_NAME.SUBSCRIBER.name(), "Subscriber");
-			ListGridField subscriberUrlField = new ListGridField(FIELD_NAME.SUBSCRIBERURL.name(), "URL");
-			ListGridField subscriberUid = new ListGridField(FIELD_NAME.SUBSCRIBERUID.name(), "uid");
-			subscriberUid.setHidden(true);
-			subscriberUid.setCanHide(false);
-			//後はセキュリティの追加設定をdialogして、ボタンを追加しようかと
-			
-			setFields(subscriberNameField, subscriberUrlField, subscriberUid);
-		}
-//		public WebHookTemplateDefinition getEditDefinition(WebHookTemplateDefinition definition) {
-//			ListGridRecord[] records = getRecords();
-//			for (ListGridRecord record : records) {
-//				definition.addSubscriber(new WebHookSubscriber());
-//			}
-//			return null;
-//		}
-	}
-	
 	
 	/**
 	 * 保存ボタンイベント
@@ -843,7 +598,6 @@ public class WebHookTemplateEditPane extends MetaDataMainEditPane {
 						WebHookTemplateDefinition definition = curDefinition;
 						definition = commonSection.getEditDefinition(definition);
 						definition = webHookTemplateAttrPane.getEditDefinition(definition);
-						definition = webHookTemplateSubscriberPane.getEditDefinition(definition);
 
 						updateWebHookTemplate(definition, true);
 					}

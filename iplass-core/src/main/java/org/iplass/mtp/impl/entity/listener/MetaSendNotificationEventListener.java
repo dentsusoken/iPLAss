@@ -72,6 +72,11 @@ public class MetaSendNotificationEventListener extends MetaEventListener {
 	private String notificationCondScript;
 	private List<EventType> listenEvent;
 
+	/**ウェッブフックだけの設定項目*/
+	private boolean isSynchronous;
+	private List<String> endPointDefList;
+	private String webHookResultHandlerDef;
+
 	public SendNotificationType getNotificationType() {
 		return notificationType;
 	}
@@ -104,6 +109,30 @@ public class MetaSendNotificationEventListener extends MetaEventListener {
 		this.listenEvent = listenEvent;
 	}
 
+	public List<String> getEndPointDefList() {
+		return endPointDefList;
+	}
+
+	public void setEndPointDefList(List<String> endPointDefList) {
+		this.endPointDefList = endPointDefList;
+	}
+	
+	public String getWebHookResultHandlerDef() {
+		return webHookResultHandlerDef;
+	}
+
+	public void setWebHookResultHandlerDef(String webHookResultHandlerDef) {
+		this.webHookResultHandlerDef = webHookResultHandlerDef;
+	}
+
+	public boolean getIsSynchronous() {
+		return isSynchronous;
+	}
+
+	public void setIsSynchronous(boolean isSynchronous) {
+		this.isSynchronous = isSynchronous;
+	}
+
 	@Override
 	public MetaEventListener copy() {
 		MetaSendNotificationEventListener copy = new MetaSendNotificationEventListener();
@@ -111,11 +140,16 @@ public class MetaSendNotificationEventListener extends MetaEventListener {
 		copy.notificationType = notificationType;
 		copy.tmplDefName = tmplDefName;
 		copy.notificationCondScript = notificationCondScript;
+		copy.webHookResultHandlerDef = webHookResultHandlerDef;
 		if (listenEvent != null) {
 			copy.listenEvent = new ArrayList<EventType>();
 			copy.listenEvent.addAll(listenEvent);
 		}
-
+		copy.setIsSynchronous(isSynchronous);
+		if (endPointDefList !=null) {
+			copy.endPointDefList = new ArrayList<>(endPointDefList );
+			copy.endPointDefList.addAll(endPointDefList);
+		}		
 		return copy;
 	}
 
@@ -154,8 +188,25 @@ public class MetaSendNotificationEventListener extends MetaEventListener {
 		if (tmplDefName == null) {
 			if (other.tmplDefName != null)
 				return false;
-		} else if (!tmplDefName.equals(other.tmplDefName))
+		} else if (!tmplDefName.equals(other.tmplDefName)) {
 			return false;
+			
+		} else if (!isSynchronous==other.isSynchronous) {
+			return false;
+		} else if (endPointDefList==null) {
+			if (other.endPointDefList!=null) {
+				return false;
+			}
+		} else if(!endPointDefList.equals(other.endPointDefList)) {
+			return false;
+		} else if (webHookResultHandlerDef==null) {
+			if (other.webHookResultHandlerDef!=null) {
+				return false;
+			}
+		} else if (!webHookResultHandlerDef.equals(other.webHookResultHandlerDef)) {
+			return false;
+		}
+		
 		return true;
 	}
 
@@ -166,6 +217,7 @@ public class MetaSendNotificationEventListener extends MetaEventListener {
 		notificationType = d.getNotificationType();
 		tmplDefName = d.getTmplDefName();
 		notificationCondScript = d.getNotificationCondScript();
+		webHookResultHandlerDef = d.getWebHookResultHandlerDef();
 		if (d.getListenEvent() != null) {
 			listenEvent = new ArrayList<EventType>();
 			listenEvent.addAll(d.getListenEvent());
@@ -173,6 +225,13 @@ public class MetaSendNotificationEventListener extends MetaEventListener {
 			// listenEventをnullにクリアする
 			listenEvent = null;
 		}
+		if (d.getEndPointDefList() != null) {
+			endPointDefList = new ArrayList<String>();
+			endPointDefList.addAll(d.getEndPointDefList());
+		} else {
+			endPointDefList = null;
+		}
+
 	}
 
 	@Override
@@ -182,10 +241,18 @@ public class MetaSendNotificationEventListener extends MetaEventListener {
 		d.setNotificationType(notificationType);
 		d.setTmplDefName(tmplDefName);
 		d.setNotificationCondScript(notificationCondScript);
+		d.setWebHookResultHandlerDef(webHookResultHandlerDef);
+		
 		if (listenEvent != null) {
 			List<EventType> es = new ArrayList<EventType>();
 			es.addAll(listenEvent);
 			d.setListenEvent(es);
+		}
+		d.setIsSynchronous(isSynchronous);
+		if (endPointDefList != null) {
+			List<String> es = new ArrayList<String>();
+			es.addAll(endPointDefList);
+			d.setEndPointDefList(es);
 		}
 		return d;
 	}
@@ -517,7 +584,12 @@ public class MetaSendNotificationEventListener extends MetaEventListener {
 		@Override
 		protected Object createNotification(Entity entity, EventType type, EntityEventContext context) {
 			Map<String, Object> bindings = generateBindings(entity, type, context);
-			return wm.createWebHook(tmplDefName, bindings);
+			WebHook wh = wm.createWebHook(tmplDefName, bindings);
+			wh.setResultHandler(webHookResultHandlerDef);
+			wh.setSynchronous(isSynchronous);
+			wh.setEndPoints((ArrayList<String>)endPointDefList);
+			
+			return wh;
 		}
 
 		@Override

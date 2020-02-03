@@ -44,6 +44,7 @@ import org.iplass.mtp.web.template.definition.TemplateDefinition;
 import org.iplass.mtp.webapi.definition.EntityWebApiDefinition;
 import org.iplass.mtp.webapi.definition.WebApiDefinition;
 import org.iplass.mtp.webhook.template.definition.WebHookTemplateDefinition;
+import org.iplass.mtp.webhook.template.endpointaddress.WebEndPointDefinition;
 
 @XmlSeeAlso({
 	DefinitionSummary.class,
@@ -65,6 +66,7 @@ import org.iplass.mtp.webhook.template.definition.WebHookTemplateDefinition;
 	,PushNotificationTemplateDefinition.class
 	,SmsMailTemplateDefinition.class
 	,WebHookTemplateDefinition.class
+	,WebEndPointDefinition.class
 
 	//FIXME 今はTenantで参照しているが、参照しなくなるので追加
 	,TenantAuthInfo.class
