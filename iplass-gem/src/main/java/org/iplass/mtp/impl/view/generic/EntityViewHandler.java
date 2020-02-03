@@ -1,19 +1,19 @@
 /*
  * Copyright (C) 2011 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
- * 
+ *
  * Unless you have purchased a commercial license,
  * the following license terms apply:
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
@@ -81,12 +81,12 @@ public class EntityViewHandler extends BaseMetaDataRuntime {
 	 * @param formView レイアウト情報
 	 */
 	private void addFormView(FormViewHandler formView) {
-		if (this.formViews == null) this.formViews = new ArrayList<FormViewHandler>();
+		if (this.formViews == null) this.formViews = new ArrayList<>();
 		this.formViews.add(formView);
 	}
 
 	public List<FormViewHandler> getFormViews() {
-		if (this.formViews == null) this.formViews = new ArrayList<FormViewHandler>();
+		if (this.formViews == null) this.formViews = new ArrayList<>();
 		return formViews;
 	}
 
@@ -97,7 +97,7 @@ public class EntityViewHandler extends BaseMetaDataRuntime {
 	 */
 	public void addTemplate(String key, GroovyTemplate template) {
 		checkState();
-		if (templates == null) templates = new HashMap<String, GroovyTemplate>();
+		if (templates == null) templates = new HashMap<>();
 		templates.put(key, template);
 	}
 
@@ -108,6 +108,10 @@ public class EntityViewHandler extends BaseMetaDataRuntime {
 	 */
 	public GroovyTemplate getTemplate(String key) {
 		checkState();
+
+		if (templates == null) {
+			return null;
+		}
 		return templates.get(key);
 	}
 
@@ -118,7 +122,7 @@ public class EntityViewHandler extends BaseMetaDataRuntime {
 	 */
 	public void addQuery(String key, PreparedQuery query) {
 		checkState();
-		if (queries == null) queries = new HashMap<String, PreparedQuery>();
+		if (queries == null) queries = new HashMap<>();
 		queries.put(key, query);
 	}
 
@@ -129,6 +133,9 @@ public class EntityViewHandler extends BaseMetaDataRuntime {
 	 */
 	public PreparedQuery getQuery(String key) {
 		checkState();
+		if (queries == null) {
+			return null;
+		}
 		return queries.get(key);
 	}
 
@@ -136,6 +143,7 @@ public class EntityViewHandler extends BaseMetaDataRuntime {
 	 * メタデータを取得します。
 	 * @return メタデータ
 	 */
+	@Override
 	public MetaEntityView getMetaData() {
 		return this.metaData;
 	}
@@ -146,7 +154,7 @@ public class EntityViewHandler extends BaseMetaDataRuntime {
 	 * @param customStyleMap カスタムスタイルの格納されたマップ
 	 */
 	public void addCustomStyle(String key, Map<String, GroovyTemplate> customStyleMap) {
-		if (customStylesMap == null) customStylesMap = new HashMap<String, Map<String, GroovyTemplate>>();
+		if (customStylesMap == null) customStylesMap = new HashMap<>();
 		customStylesMap.put(key, customStyleMap);
 	}
 
@@ -155,6 +163,9 @@ public class EntityViewHandler extends BaseMetaDataRuntime {
 	 * @return カスタムスタイルの格納されたマップ
 	 */
 	public Map<String, GroovyTemplate> getCustomStyleScriptMap(String key) {
+		if (customStylesMap == null) {
+			return null;
+		}
 		return customStylesMap.get(key);
 	}
 
@@ -163,7 +174,7 @@ public class EntityViewHandler extends BaseMetaDataRuntime {
 	 * @param handler エレメントハンドラ
 	 */
 	public void addElementHandler(ElementHandler handler) {
-		if (elementHandlerMap == null) elementHandlerMap = new HashMap<String, ElementHandler>();
+		if (elementHandlerMap == null) elementHandlerMap = new HashMap<>();
 		if (handler.getMetaData().getElementRuntimeId() != null) {
 			elementHandlerMap.put(handler.getMetaData().getElementRuntimeId(), handler);
 		}
@@ -184,7 +195,7 @@ public class EntityViewHandler extends BaseMetaDataRuntime {
 	 * @param handler
 	 */
 	public void addButtonHandler(ButtonHandler handler) {
-		if (buttonHandlerMap == null) buttonHandlerMap = new HashMap<String, ButtonHandler>();
+		if (buttonHandlerMap == null) buttonHandlerMap = new HashMap<>();
 		if (handler.getMetaData().getCustomDisplayTypeScriptKey() != null) {
 			buttonHandlerMap.put(handler.getMetaData().getCustomDisplayTypeScriptKey(), handler);
 		}
@@ -205,7 +216,7 @@ public class EntityViewHandler extends BaseMetaDataRuntime {
 	 * @param handler
 	 */
 	public void addAutocompletionSettingHandler(AutocompletionSettingHandler handler) {
-		if (autocompletionSettingMap == null) autocompletionSettingMap = new HashMap<String, AutocompletionSettingHandler>();
+		if (autocompletionSettingMap == null) autocompletionSettingMap = new HashMap<>();
 		if (handler.getMetaData().getRuntimeKey() != null) {
 			autocompletionSettingMap.put(handler.getMetaData().getRuntimeKey(), handler);
 		}
@@ -217,6 +228,9 @@ public class EntityViewHandler extends BaseMetaDataRuntime {
 	 * @return
 	 */
 	public AutocompletionSettingHandler getAutocompletionSettingHandler(String key) {
+		if (autocompletionSettingMap == null) {
+			return null;
+		}
 		return autocompletionSettingMap.get(key);
 	}
 }

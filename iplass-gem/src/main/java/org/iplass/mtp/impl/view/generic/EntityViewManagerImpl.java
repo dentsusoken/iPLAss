@@ -755,7 +755,7 @@ public class EntityViewManagerImpl extends AbstractTypedDefinitionManager<Entity
 
 	@Override
 	public String getUrlParameter(String definitionName, ReferencePropertyEditor editor, Entity entity, UrlParameterActionType actionType) {
-		if (definitionName == null || editor == null || actionType == null) return "";
+		if (definitionName == null || editor == null || editor.getUrlParameterScriptKey() == null || actionType == null) return "";
 
 		EntityViewHandler handler = service.getRuntimeByName(definitionName);
 		if (handler == null) return "";
