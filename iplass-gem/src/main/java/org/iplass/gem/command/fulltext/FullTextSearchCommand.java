@@ -150,32 +150,14 @@ public final class FullTextSearchCommand implements Command {
 		}
 
 		// Entityごとの検索条件情報取得
-		List<EntitySearchInfo> searchCondList = getEntitySearchInfo(roleName, defNameList);
+		List<EntitySearchInfo> searchCondList = getEntitySearchInfo(roleName, defNameList, sortKeyMap, sortTypeMap);
 
-		// 画面でソート条件があれば、追加します。
-		searchCondList.stream().forEach(info -> {
-				String sortKey = sortKeyMap.get(info.getDefinitionName());
-				String sortType = sortTypeMap.get(info.getDefinitionName());
-				if (StringUtil.isNotEmpty(sortKey) && StringUtil.isNotEmpty(sortType)) {
-					info.setSortKey(sortKey);
-					info.setSortType(sortType);
-				}
-			});
+		//ソート条件
+		Map<String, OrderBy> orderByMap = getOrderByMap(searchCondList);
 
 		//Entity毎の検索対象プロパティ情報を取得
 		Map<String, List<String>> entityProperties = searchCondList.stream()
 			.collect(Collectors.toMap(EntitySearchInfo::getDefinitionName, info -> info.getProperties()));
-
-		//ソート条件
-		Map<String, OrderBy> orderByMap = new HashMap<>();
-		searchCondList.stream().forEach(info -> {
-				List<SortSetting> sortSettings = getSortSetting(info);
-				EntityDefinition ed = info.getEntityDefinition();
-				OrderBy orderBy = getOrderBy(ed, sortSettings);
-				if (orderBy != null) {
-					orderByMap.put(ed.getName(), orderBy);
-				}
-			});
 
 		//検索処理
 		EntityManager em = ManagerLocator.getInstance().getManager(EntityManager.class);
@@ -294,9 +276,11 @@ public final class FullTextSearchCommand implements Command {
 	 *
 	 * @param roleName ロール名
 	 * @param selectedDefNameList 選択Entity名のリスト
+	 * @param sortKeyMap エンティティ名とソート項目名のマップ
+	 * @param sortTypeMap エンティティ名と並べ順のマップ
 	 * @return 検索対象Entity情報
 	 */
-	private List<EntitySearchInfo> getEntitySearchInfo(String roleName, List<String> selectedDefNameList) {
+	private List<EntitySearchInfo> getEntitySearchInfo(String roleName, List<String> selectedDefNameList, Map<String, String> sortKeyMap, Map<String, String> sortTypeMap) {
 
 		//FulltextSearchViewPartsの取得
 		FulltextSearchViewParts parts = getTopViewParts(roleName);
@@ -312,7 +296,12 @@ public final class FullTextSearchCommand implements Command {
 			return defList.stream()
 				.map(defName -> edm.get(defName))	//EntityDefinitionにする
 				.filter(ed -> ed != null && ed.isCrawl())	//検索対象のみ
-				.map(ed -> getSearchInfo(ed, null, evm, edm))	// Partsがないため、Viewはデフォルト
+				.map(ed -> {
+					//画面からのソート項目
+					String sortKey = sortKeyMap.get(ed.getName());
+					String sortType = sortTypeMap.get(ed.getName());
+					return getSearchInfo(ed, null, evm, edm, sortKey, sortType); // Partsがないため、Viewはデフォルト
+				})	
 				.filter(i -> i != null)
 				.collect(Collectors.toList());
 
@@ -337,14 +326,30 @@ public final class FullTextSearchCommand implements Command {
 						if (viewNames != null) {
 							viewName = viewNames.get(ed.getName());
 						}
+						//画面からのソート項目
+						String sortKey = sortKeyMap.get(ed.getName());
+						String sortType = sortTypeMap.get(ed.getName());
 						//EntitySearchInfoを取得
-						return getSearchInfo(ed, viewName, evm, edm);
+						return getSearchInfo(ed, viewName, evm, edm, sortKey, sortType);
 					})
 					.filter(i -> i != null)
 					.collect(Collectors.toList());
 			}
 		}
 		return Collections.emptyList();
+	}
+
+	private Map<String, OrderBy> getOrderByMap(List<EntitySearchInfo> searchCondList) {
+		Map<String, OrderBy> orderByMap = new HashMap<>();
+		searchCondList.stream().forEach(info -> {
+			List<SortSetting> sortSettings = getSortSetting(info);
+			EntityDefinition ed = info.getEntityDefinition();
+			OrderBy orderBy = getOrderBy(ed, sortSettings);
+			if (orderBy != null) {
+				orderByMap.put(ed.getName(), orderBy);
+			}
+		});
+		return orderByMap;
 	}
 
 	private FulltextSearchViewParts getTopViewParts(String roleName) {
@@ -366,7 +371,7 @@ public final class FullTextSearchCommand implements Command {
 		return null;
 	}
 
-	private EntitySearchInfo getSearchInfo(EntityDefinition ed, String viewName, EntityViewManager evm, EntityDefinitionManager edm) {
+	private EntitySearchInfo getSearchInfo(EntityDefinition ed, String viewName, EntityViewManager evm, EntityDefinitionManager edm, String sortKey, String sortType) {
 
 		EntitySearchInfo search = new EntitySearchInfo(ed);
 
@@ -386,6 +391,8 @@ public final class FullTextSearchCommand implements Command {
 		search.setSearchFormView(searchFormView);
 //		search.setDetailViewName(detailViewName);
 		search.setDetailViewName(viewName);
+		search.setSortKey(sortKey);
+		search.setSortType(sortType);
 
 		//SearchResultSection
 		SearchResultSection resultSection = searchFormView.getResultSection();
@@ -898,7 +905,6 @@ public final class FullTextSearchCommand implements Command {
 			this.sortType = sortType;
 		}
 
-		
 	}
 
 	/**
