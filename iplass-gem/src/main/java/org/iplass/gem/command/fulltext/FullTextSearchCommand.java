@@ -175,7 +175,9 @@ public final class FullTextSearchCommand implements Command {
 				List<SortSetting> sortSettings = getSortSetting(info);
 				EntityDefinition ed = info.getEntityDefinition();
 				OrderBy orderBy = getOrderBy(ed, sortSettings);
-				orderByMap.put(ed.getName(), orderBy);
+				if (orderBy != null) {
+					orderByMap.put(ed.getName(), orderBy);
+				}
 			});
 
 		//検索処理
