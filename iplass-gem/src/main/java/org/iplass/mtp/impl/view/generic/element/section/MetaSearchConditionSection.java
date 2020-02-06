@@ -66,6 +66,9 @@ public class MetaSearchConditionSection extends MetaSection {
 	/** 検索時にソートしないか */
 	private boolean unsorted;
 
+	/** 全文検索時にソートしないか */
+	private boolean fulltextSearchUnsorted;
+
 	/** 重複行をまとめるか */
 	private boolean distinct;
 
@@ -243,6 +246,22 @@ public class MetaSearchConditionSection extends MetaSection {
 	 */
 	public void setUnsorted(boolean unsorted) {
 		this.unsorted = unsorted;
+	}
+
+	/**
+	 * 全文検索時にソートしないかを取得します。
+	 * @return 全文検索時にソートしないか
+	 */
+	public boolean isFulltextSearchUnsorted() {
+		return fulltextSearchUnsorted;
+	}
+
+	/**
+	 * 全文検索時にソートしないかを設定します。
+	 * @param fulltextSearchUnsorted 全文検索時にソートしないか
+	 */
+	public void setFulltextSearchUnsorted(boolean fulltextSearchUnsorted) {
+		this.fulltextSearchUnsorted = fulltextSearchUnsorted;
 	}
 
 	/**
@@ -481,6 +500,7 @@ public class MetaSearchConditionSection extends MetaSection {
 		this.conditionDispCount = section.getConditionDispCount();
 		this.colNum = section.getColNum();
 		this.unsorted = section.isUnsorted();
+		this.fulltextSearchUnsorted = section.isFulltextSearchUnsorted();
 		this.distinct = section.isDistinct();
 		this.hideDetailCondition = section.isHideDetailCondition();
 		this.hideFixedCondition = section.isHideFixedCondition();
@@ -546,6 +566,7 @@ public class MetaSearchConditionSection extends MetaSection {
 		section.setConditionDispCount(this.conditionDispCount);
 		section.setColNum(this.colNum);
 		section.setUnsorted(unsorted);
+		section.setFulltextSearchUnsorted(this.fulltextSearchUnsorted);
 		section.setDistinct(distinct);
 		section.setHideDetailCondition(this.hideDetailCondition);
 		section.setHideFixedCondition(this.hideFixedCondition);

@@ -33,6 +33,7 @@ import org.iplass.mtp.Manager;
 import org.iplass.mtp.SystemException;
 import org.iplass.mtp.entity.bulkupdate.BulkUpdatable;
 import org.iplass.mtp.entity.bulkupdate.BulkUpdateEntity;
+import org.iplass.mtp.entity.query.OrderBy;
 import org.iplass.mtp.entity.query.Query;
 
 
@@ -474,6 +475,17 @@ public interface EntityManager extends Manager {
 	 * @return 検索キーワードを含むエンティティデータのリスト
 	 */
 	public <T extends Entity> SearchResult<T> fulltextSearchEntity(Map<String, List<String>> entityProperties, String keyword);
+
+	/**
+	 * 指定のワードで全文検索し、指定プロパティのみを取得します。
+	 * entityPropertiesが未指定の場合は利用テナントの全エンティティに対して全文検索を実施します。
+	 *
+	 * @param entityProperties Entity定義毎に取得するプロパティ
+	 * @param keyword 全文検索用キーワード
+	 * @param orderByMap ソート条件をセットしたマップ
+	 * @return 検索キーワードを含むエンティティデータのリスト
+	 */
+	public <T extends Entity> SearchResult<T> fulltextSearchEntity(Map<String, List<String>> entityProperties, String keyword, Map<String, OrderBy> orderByMap);
 
 	/**
 	 * クエリ実行結果に対して、指定のワードで全文検索します。
