@@ -219,21 +219,15 @@ public class MetaWebHookTemplate extends BaseRootMetaData implements DefinableMe
 		
 		public WebHook createWebHook(Map<String, Object> parameter) {
 			checkState();
-//			WebHookService ws = ServiceRegistry.getRegistry().getService(WebHookService.class);
-//			ExecuteContext ex = ExecuteContext.getCurrentContext();
-//			WebHookTemplate webHook = ws.createWebHook(ex.getCurrentTenant(), _charset);
 			
 			//fill up the info to webhooktemplate
 			WebHook webHook = new WebHook(); 
-			//webHook.setContent(contentBody); TODO modify with contentTemplate
 			webHook.setName(name);
-
 			webHook.setHeaders(headers);
 			webHook.setTokenHeader(tokenHeader);
-
 			webHook.setHttpMethod(httpMethod);
 			webHook.setSynchronous(synchronous);
-			
+			webHook.setContentType(contentType);
 			//common binding
 			Map<String, Object> bindings = new HashMap<String, Object>();
 			if (parameter != null) {
@@ -242,6 +236,7 @@ public class MetaWebHookTemplate extends BaseRootMetaData implements DefinableMe
 				}
 			}
 			bindings.put("webHook", webHook);
+			webHook.setBinding(bindings);
 
 			//groovy template
 			if (contentTemplate != null) {

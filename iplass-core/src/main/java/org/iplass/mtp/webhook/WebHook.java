@@ -27,7 +27,6 @@ import java.util.ArrayList;
 import java.util.Map;
 
 import org.iplass.mtp.webhook.template.definition.WebHookHeader;
-import org.iplass.mtp.webhook.template.endpointaddress.WebEndPointDefinition;
 
 /**
  * @author lisf06
@@ -56,6 +55,7 @@ public class WebHook  {
 
 	Map<String, Object> binding;
 
+	String responseHandler;
 	//---------------------------------
 	/**　同期非同期　*/
 	private boolean synchronous;
@@ -178,6 +178,5 @@ public class WebHook  {
 	public void setResultHandler(String resultHandler) {
 		this.resultHandler = resultHandler;
 	}
-
 
 }

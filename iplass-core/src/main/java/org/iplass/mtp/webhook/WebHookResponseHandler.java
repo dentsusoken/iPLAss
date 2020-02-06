@@ -17,19 +17,15 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
-package org.iplass.mtp.impl.webhook;
+package org.iplass.mtp.webhook;
 
-import org.iplass.mtp.impl.definition.TypedMetaDataService;
-import org.iplass.mtp.impl.webhook.template.MetaWebHookTemplate;
-import org.iplass.mtp.impl.webhook.template.MetaWebHookTemplate.WebHookTemplateRuntime;
-import org.iplass.mtp.tenant.Tenant;
-import org.iplass.mtp.webhook.WebHook;
+import org.apache.http.HttpResponse;
 
-public interface WebHookService extends TypedMetaDataService<MetaWebHookTemplate, WebHookTemplateRuntime>{
+/**
+ * sendWebHookが成功したらこのHandlerを呼んでhandleResponseをする
+ * 全部実行完了したら終わりとなります
+ * */
+public interface WebHookResponseHandler {
+	public void handleResponse(HttpResponse response);
 
-	WebHook createWebHook(Tenant tenant, String charset);
-	
-	void sendWebHook(Tenant tenant, WebHook webHook);
-
-	void sendWebHookAsync(Tenant tenant, WebHook webHook);
 }

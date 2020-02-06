@@ -20,11 +20,8 @@
 package org.iplass.adminconsole.client.metadata.ui.webhook;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-
 import org.iplass.adminconsole.client.base.event.DataChangedEvent;
 import org.iplass.adminconsole.client.base.event.DataChangedHandler;
 import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
@@ -71,15 +68,6 @@ import com.smartgwt.client.widgets.tab.Tab;
 import com.smartgwt.client.widgets.tab.TabSet;
 public class WebHookTemplateEditPane extends MetaDataMainEditPane {
 
-	private enum FIELD_NAME {
-		SUBSCRIBER,
-		SUBSCRIBERURL,
-		SECURITYUSERNAME,
-		SECURITYPASSWORD,
-		SECURITYTOKEN, 
-		SUBSCRIBERUID,
-		
-	}
 	
 	private enum HEADER_FIELD_NAME{
 		HEADERNAME,

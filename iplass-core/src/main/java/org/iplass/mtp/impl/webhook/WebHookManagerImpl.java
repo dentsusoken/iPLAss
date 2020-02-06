@@ -22,9 +22,7 @@ package org.iplass.mtp.impl.webhook;
 import java.util.Map;
 
 import org.iplass.mtp.ApplicationException;
-import org.iplass.mtp.ManagerLocator;
 import org.iplass.mtp.SystemException;
-import org.iplass.mtp.entity.EntityManager;
 import org.iplass.mtp.impl.auth.AuthContextHolder;
 import org.iplass.mtp.impl.core.ExecuteContext;
 import org.iplass.mtp.impl.transaction.TransactionService;
@@ -44,7 +42,6 @@ public class WebHookManagerImpl implements WebHookManager {
 	private static Logger logger = LoggerFactory.getLogger(WebHookManagerImpl.class);
 
 	private WebHookService webHookService = ServiceRegistry.getRegistry().getService(WebHookService.class);
-	private EntityManager em = ManagerLocator.getInstance().getManager(EntityManager.class);
 	
 	private WebHookTemplateRuntime getWebHookTemplateRuntme(String defName) {
 		WebHookTemplateRuntime runtime = webHookService.getRuntimeByName(defName);
@@ -112,7 +109,12 @@ public class WebHookManagerImpl implements WebHookManager {
 //				return;
 //			}
 			Tenant tenant = ExecuteContext.getCurrentContext().getCurrentTenant();
-			webHookService.sendWebHook(tenant, webHook);
+			if (webHook.isSynchronous()) {
+				webHookService.sendWebHook(tenant, webHook);
+			} else {
+				webHookService.sendWebHookAsync(tenant, webHook);
+			}
+			
 			
 		} catch (ApplicationException e) {
 			throw e;

@@ -407,6 +407,7 @@ public class WebEndPointEditPane extends MetaDataMainEditPane {
 			dialog.addDataChangeHandler(new DataChangedHandler() {
 				@Override
 				public void onDataChanged(DataChangedEvent event) {
+					curDefinition = getEditDefinition(curDefinition);
 					Map<String, Serializable> valueMap = event.getValueMap();
 					String type =(String) valueMap.get("type");
 					String content =(String) valueMap.get("content");
@@ -446,6 +447,7 @@ public class WebEndPointEditPane extends MetaDataMainEditPane {
 							};
 						});
 					}
+					webEndPointAttributePane.markForRedraw();
 				}
 			});
 			dialog.show();

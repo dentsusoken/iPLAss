@@ -20,10 +20,8 @@
 package org.iplass.mtp.impl.webhook.endpointaddress;
 
 import java.security.NoSuchAlgorithmException;
-
 import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
-
 import org.apache.commons.codec.binary.Base64;
 import org.iplass.mtp.ManagerLocator;
 import org.iplass.mtp.definition.TypedDefinitionManager;
