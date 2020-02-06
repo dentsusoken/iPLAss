@@ -168,10 +168,7 @@ public final class FullTextSearchCommand implements Command {
 
 		//ソート条件
 		Map<String, OrderBy> orderByMap = new HashMap<>();
-		searchCondList.stream().filter(info -> {
-				SearchConditionSection condSection = getConditionSection(info.getSearchFormView());
-				return condSection != null && condSection.isFulltextSearchUnsorted() == false; // 全文検索時にソートしないかをチェックします。
-			}).forEach(info -> {
+		searchCondList.stream().forEach(info -> {
 				List<SortSetting> sortSettings = getSortSetting(info);
 				EntityDefinition ed = info.getEntityDefinition();
 				OrderBy orderBy = getOrderBy(ed, sortSettings);
@@ -546,7 +543,7 @@ public final class FullTextSearchCommand implements Command {
 		}
 
 		SearchConditionSection section = info.getSearchFormView().getCondSection();
-		if (section != null && !section.getSortSetting().isEmpty()) {
+		if (section != null && !section.isFulltextSearchUnsorted() && !section.getSortSetting().isEmpty()) {
 			setting.addAll(section.getSortSetting());
 		}
 		return setting;
