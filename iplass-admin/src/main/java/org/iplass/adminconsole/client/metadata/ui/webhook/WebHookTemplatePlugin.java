@@ -46,7 +46,7 @@ public class WebHookTemplatePlugin extends DefaultMetaDataPlugin {
 	private static final String NODE_NAME = "WebHookTemplate";
 
 	/** ノードアイコン */
-	private static final String NODE_ICON = "";//webhook.png?
+	private static final String NODE_ICON = "webhook.png";
 
 	@Override
 	protected String nodeName() {
@@ -55,7 +55,6 @@ public class WebHookTemplatePlugin extends DefaultMetaDataPlugin {
 
 	@Override
 	protected String nodeDisplayName() {
-		// TODO Auto-generated method stub, add this message to util
 		return AdminClientMessageUtil.getString("ui_metadata_webhook_WebHookTemplatePluginManager_WebHookTemplate");
 	}
 
@@ -103,7 +102,7 @@ public class WebHookTemplatePlugin extends DefaultMetaDataPlugin {
 	protected void itemDelete(final MetaDataItemMenuTreeNode itemNode) {
 		MetaDataServiceAsync service = MetaDataServiceFactory.get();
 		service.deleteDefinition(TenantInfoHolder.getId(), WebHookTemplateDefinition.class.getName(), itemNode.getDefName(), new AsyncCallback<AdminDefinitionModifyResult>() {
-			public void onFailure(Throwable caught) {//TODO add this message
+			public void onFailure(Throwable caught) {
 				SC.warn(AdminClientMessageUtil.getString("ui_metadata_mail_WebHookTemplatePluginManager_failedToDeleteWebHookTemplate" + caught.getMessage()));
 			}
 			public void onSuccess(AdminDefinitionModifyResult result) {

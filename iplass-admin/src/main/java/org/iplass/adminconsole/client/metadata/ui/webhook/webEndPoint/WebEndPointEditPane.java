@@ -199,8 +199,6 @@ public class WebEndPointEditPane extends MetaDataMainEditPane {
 	 * 保存ボタンイベント
 	 */
 	private final class SaveClickHandler implements ClickHandler {
-		//FIXME add service to communicate with db
-
 		@Override
 		public void onClick(ClickEvent event) {
 			boolean commonValidate = commonSection.validate();
@@ -281,14 +279,14 @@ public class WebEndPointEditPane extends MetaDataMainEditPane {
 			webEndPointUrlField.setWidth("100%");
 			webEndPointUrlField.setHeight(200);
 			webEndPointUrlField.setBrowserSpellCheck(false);
+			webEndPointUrlField.setPrompt(AdminClientMessageUtil.getString("ui_metadata_webhook_WebEndPointEditPane_webEndPointUrlFieldHoverInfo"));
 			SmartGWTUtil.setRequired(webEndPointUrlField);
 			urlForm.setItems(webEndPointUrlField);
 			
 			VLayout authPane = new VLayout();
 			authPane.setMargin(5);
 			authPane.setMembersMargin(5);
-			
-			//FIXME:add editbutton, basic と Bearerは切り替え制
+
 			//TODO:現在はBasic, Bearerだけ、今後追加かと
 			//authorizationでよく使うタイプ: Basic, Bearer, Digest, HOBA, Mutual, Client, Form Basedとか、
 			headerAuthForm =new DynamicForm();
@@ -316,6 +314,8 @@ public class WebEndPointEditPane extends MetaDataMainEditPane {
 			webEndPointBearerTokenField.setCanFocus(false);
 			webEndPointBearerTokenField.setTextBoxStyle("textItemDisabled");
 			ButtonItem editHeaderAuthButton = new ButtonItem(AdminClientMessageUtil.getString("ui_metadata_webhook_WebEndPointEditPane_editHeaderAuthButton"));
+			editHeaderAuthButton.setWidth(150);
+			editHeaderAuthButton.setPrompt(AdminClientMessageUtil.getString("ui_metadata_webhook_WebEndPointEditPane_headerAuthFormHoverInfo"));
 			editHeaderAuthButton.addClickHandler(new com.smartgwt.client.widgets.form.fields.events.ClickHandler() {
 				@Override
 				public void onClick(com.smartgwt.client.widgets.form.fields.events.ClickEvent event) {
@@ -351,6 +351,7 @@ public class WebEndPointEditPane extends MetaDataMainEditPane {
 			SmartGWTUtil.setReadOnlyTextArea(webEndPointHmacTokenField);
 			
 			ButtonItem generateHmacButton = new ButtonItem(AdminClientMessageUtil.getString("ui_metadata_webhook_WebEndPointEditPane_generateHmacButton"));
+			generateHmacButton.setWidth(150);
 			generateHmacButton.addClickHandler(new com.smartgwt.client.widgets.form.fields.events.ClickHandler() {
 				@Override
 				public void onClick(com.smartgwt.client.widgets.form.fields.events.ClickEvent event) {
@@ -358,6 +359,7 @@ public class WebEndPointEditPane extends MetaDataMainEditPane {
 				}
 			});
 			ButtonItem editHmacButton = new ButtonItem(AdminClientMessageUtil.getString("ui_metadata_webhook_WebEndPointEditPane_editHmacButton"));
+			editHmacButton.setWidth(150);
 			editHmacButton.addClickHandler(new com.smartgwt.client.widgets.form.fields.events.ClickHandler() {
 				@Override
 				public void onClick(com.smartgwt.client.widgets.form.fields.events.ClickEvent event) {
@@ -375,6 +377,9 @@ public class WebEndPointEditPane extends MetaDataMainEditPane {
 					});
 				}
 			});
+			generateHmacButton.setPrompt(AdminClientMessageUtil.getString("ui_metadata_webhook_WebEndPointEditPane_HmacButtonHoverInfo"));
+			editHmacButton.setPrompt(AdminClientMessageUtil.getString("ui_metadata_webhook_WebEndPointEditPane_HmacButtonHoverInfo"));
+			
 			hmacForm.setItems(webEndPointHmacTokenField,generateHmacButton,editHmacButton);
 
 
@@ -551,13 +556,13 @@ public class WebEndPointEditPane extends MetaDataMainEditPane {
 		}
 		
 		public boolean validate() {
-			// TODO add input related forms
 			return true;
 		}
 
 		public void clearErrors() {
-			// TODO add input related forms
-			
+//			urlForm.clearErrors(true);
+//			headerAuthForm.clearErrors(true);
+//			hmacForm.clearErrors(true);
 		}
 	}
 }

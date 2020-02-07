@@ -68,7 +68,7 @@ public class WebHookHeaderDialog extends MtpDialog {
 			public void onClick(com.smartgwt.client.widgets.events.ClickEvent event) {
 				WebHookHeader definition = curHeaderDefinition;
 				if (headerAttrEditPane.isHeaderNameFieldEmpty()) {
-					SC.warn(AdminClientMessageUtil.getString("ui_metadata_webhook_WebHookTemplateEditPane_emptyHeaderKey"));//TODO:add message
+					//SC.warn(AdminClientMessageUtil.getString("ui_metadata_webhook_WebHookTemplateEditPane_emptyHeaderKey")); もうpaneレベルでheader null チェックはいらないかな
 					return;
 				}
 				definition = headerAttrEditPane.getEditDefinition(definition);

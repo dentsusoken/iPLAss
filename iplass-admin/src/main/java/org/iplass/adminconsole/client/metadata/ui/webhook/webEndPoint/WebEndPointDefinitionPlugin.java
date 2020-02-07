@@ -43,7 +43,7 @@ public class WebEndPointDefinitionPlugin extends DefaultMetaDataPlugin{
 	private static final String NODE_NAME = "WebEndPointDefinition";
 
 	/** ノードアイコン */
-	private static final String NODE_ICON = "";//webendpoint.png?
+	private static final String NODE_ICON = "webendpoint.png";
 	@Override
 	protected String nodeName() {
 		return NODE_NAME;
@@ -51,7 +51,6 @@ public class WebEndPointDefinitionPlugin extends DefaultMetaDataPlugin{
 
 	@Override
 	protected String nodeDisplayName() {
-		// TODO add string
 		return AdminClientMessageUtil.getString("ui_metadata_webhook_WebEndPointDefinitionPlugin_WebEndPointDefinition");
 	}
 
@@ -102,7 +101,7 @@ public class WebEndPointDefinitionPlugin extends DefaultMetaDataPlugin{
 	protected void itemDelete(MetaDataItemMenuTreeNode itemNode) {
 		MetaDataServiceAsync service = MetaDataServiceFactory.get();
 		service.deleteDefinition(TenantInfoHolder.getId(), WebEndPointDefinition.class.getName(), itemNode.getDefName(), new AsyncCallback<AdminDefinitionModifyResult>() {
-			public void onFailure(Throwable caught) {//TODO add this message
+			public void onFailure(Throwable caught) {
 				SC.warn(AdminClientMessageUtil.getString("ui_metadata_WebEndPointDefinitionPlugin_failedToDeleteWebEndPointDefinition" + caught.getMessage()));
 			}
 			public void onSuccess(AdminDefinitionModifyResult result) {

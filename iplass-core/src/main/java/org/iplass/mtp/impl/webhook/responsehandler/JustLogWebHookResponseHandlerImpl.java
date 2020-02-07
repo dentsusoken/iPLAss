@@ -51,17 +51,31 @@ public class JustLogWebHookResponseHandlerImpl implements WebHookResponseHandler
 
 	private String getStringHeader(Header[] headers) {
 		String result= "Headers: ";
-		for (Header hd:headers) {
-			result += hd.getName();
-			result += hd.getValue();
-			result += "|";
+		if (headers==null) {
+			result+= "null;";
+		} else {
+			for (Header hd:headers) {
+				result += hd.getName();
+				result += hd.getValue();
+				result += "|";
+			}
+			result = result.substring(0, result.length()) +";";
 		}
-		result = result.substring(0, result.length()) +";";
 		return result;
 	}
 	private String getStringEntity(HttpEntity entity) {
 		String result = "";
-		result += "Entity(" + entity.getContentType().getName() + entity.getContentType().getValue() + "):";
+		if (entity == null) {
+			
+		} else if(entity.getContentType()==null){
+			result += "Entity(nullContentType):";
+		} else {
+			result += "Entity(";
+			result += entity.getContentType().getName()==null?"nullTypeName":entity.getContentType().getName();
+			result += ":";
+			result += entity.getContentType().getValue()==null?"nullTypeName":entity.getContentType().getValue();
+			result += "):";
+		}
 		try {
 			result += EntityUtils.toString(entity);
 		}catch (Exception e) {

@@ -53,7 +53,6 @@ import com.smartgwt.client.widgets.IButton;
 import com.smartgwt.client.widgets.events.ClickEvent;
 import com.smartgwt.client.widgets.events.ClickHandler;
 import com.smartgwt.client.widgets.form.DynamicForm;
-import com.smartgwt.client.widgets.form.fields.CheckboxItem;
 import com.smartgwt.client.widgets.form.fields.SelectItem;
 import com.smartgwt.client.widgets.form.fields.TextItem;
 import com.smartgwt.client.widgets.grid.ListGrid;
@@ -135,7 +134,7 @@ public class WebHookTemplateEditPane extends MetaDataMainEditPane {
 		service.getDefinitionEntry(TenantInfoHolder.getId(), WebHookTemplateDefinition.class.getName(), defName, new AsyncCallback<DefinitionEntry>() {
 
 			@Override
-			public void onFailure(Throwable caught) {//TODO add these message
+			public void onFailure(Throwable caught) {
 				SC.say(AdminClientMessageUtil.getString("ui_metadata_webhook_WebHookTemplateEditPane_failed"),
 						AdminClientMessageUtil.getString("ui_metadata_webhook_WebHookTemplateEditPane_failedGetScreenInfo"));
 
@@ -198,7 +197,6 @@ public class WebHookTemplateEditPane extends MetaDataMainEditPane {
 	 * @param definition 更新対象
 	 */
 	private void updateComplete(WebHookTemplateDefinition definition) {
-		//TODO add message
 		SC.say(AdminClientMessageUtil.getString("ui_metadata_webhook_WebHookTemplateEditPane_completion"),
 				AdminClientMessageUtil.getString("ui_metadata_webhook_WebHookTemplateEditPane_saveWebHookTemplate"));
 
@@ -225,11 +223,9 @@ public class WebHookTemplateEditPane extends MetaDataMainEditPane {
 		//テンプレに関する情報
 		private DynamicForm templateInfoForm;
 		private TextItem contentTypeField;
-        private CheckboxItem isSynchronous;
         private TextItem tokenNameField;
 		
         //ヘッダー関連
-        //private DynamicForm headerForm;//TODO:!
 		public HeaderMapGrid headerGrid;
 		
 		//送る情報を編集
@@ -239,16 +235,8 @@ public class WebHookTemplateEditPane extends MetaDataMainEditPane {
 		private Tab plainContentTab;
 		private ScriptEditorPane plainEditor;
 		
-		//TODO:check
-		/**forget why I set urlconfig here.
-		private Tab urlConfigTab; 
-		private ScriptEditorPane urlEditor;
-		*/
-		
-		
-				
 		public WebHookTemplateAttributePane () {
-			setOverflow(Overflow.AUTO);//FIXME: overflow必要ないgrid/paneを探して修正してください
+			setOverflow(Overflow.AUTO);
 			
 			VLayout mainPane = new VLayout();
 			mainPane.setMargin(5);
@@ -271,29 +259,22 @@ public class WebHookTemplateEditPane extends MetaDataMainEditPane {
 			templateInfoForm.setColWidths(100,"*");
 			templateInfoForm.setIsGroup(true);
 			templateInfoForm.setGroupTitle("Template Settings");
-			
-			isSynchronous = new CheckboxItem("webhookIsSynchronous", "Synchronous");//add message
-			isSynchronous.setColSpan(2);
-			isSynchronous.setWidth(150);
-			SmartGWTUtil.addHoverToFormItem(isSynchronous, "Whether to resend the message in synchronous mode");//AdminClientMessageUtil.getString("ui_metadata_webhook_WebHookTemplateEditPane_isSynchronous")
-			
-			contentTypeField = new TextItem("webhookContentType", "Content-Type");//add message
+			contentTypeField = new TextItem("webhookContentType", "Content-Type");
 			contentTypeField.setWidth(150);
+			SmartGWTUtil.addHoverToFormItem(contentTypeField, AdminClientMessageUtil.getString("ui_metadata_webhook_WebHookTemplateEditPane_contentTypeFieldHoverInfo"));
 			tokenNameField = new TextItem("webhookTokenName", "Security Token Name");
 			tokenNameField.setWidth(150);
-			
+			SmartGWTUtil.addHoverToFormItem(tokenNameField, AdminClientMessageUtil.getString("ui_metadata_webhook_WebHookTemplateEditPane_tokenNameFieldHoverInfo"));
+
 			webHookMethodField = new SelectItem("webHookMethodField","Http Request Method");
 			webHookMethodField.setValueMap("GET", "POST", "DELETE", "PUT","PATCH","HEAD","OPTIONS","TRACE");
 			webHookMethodField.setWidth(150);
-//			headerForm = new DynamicForm();
-//			headerForm.setWidth100();
-//			headerForm.setNumCols(4);
-//			headerForm.setColWidths(100, "*", "*", "*");
-			
-			
-			
+			SmartGWTUtil.addHoverToFormItem(webHookMethodField, AdminClientMessageUtil.getString("ui_metadata_webhook_WebHookTemplateEditPane_webHookMethodFieldHoverInfo"));
+
 			headerGrid = new HeaderMapGrid();
 			headerGrid.setHeight100();
+			headerGrid.setTitle(AdminClientMessageUtil.getString("ui_metadata_webhook_WebHookTemplateEditPane_headerGridTitle"));
+			headerGrid.setPrompt(AdminClientMessageUtil.getString("ui_metadata_webhook_WebHookTemplateEditPane_headerGridHoverInfo"));
 			headerGrid.addRecordDoubleClickHandler(new RecordDoubleClickHandler() {
 				public void onRecordDoubleClick(RecordDoubleClickEvent event) {
 					editMap((ListGridRecord)event.getRecord());
@@ -339,7 +320,7 @@ public class WebHookTemplateEditPane extends MetaDataMainEditPane {
 			headerPane.addMember(headerGrid);
 			headerPane.addMember(mapButtonPane);
 			
-			templateInfoForm.setItems(isSynchronous, contentTypeField, tokenNameField,webHookMethodField);
+			templateInfoForm.setItems(contentTypeField, tokenNameField,webHookMethodField);
 			
 			topPane.addMember(templateInfoForm);
 			topPane.addMember(headerPane);
@@ -348,9 +329,10 @@ public class WebHookTemplateEditPane extends MetaDataMainEditPane {
 			messageTabSet.setWidth100();
 			messageTabSet.setHeight(550);
 			messageTabSet.setPaneContainerOverflow(Overflow.HIDDEN);	
-			
 			plainContentTab = new Tab();
-			plainContentTab.setTitle("Webhook Content");//add message
+			plainContentTab.setPrompt(AdminClientMessageUtil.getString("ui_metadata_webhook_WebHookTemplateEditPane_webhookContentTabHoverInfo"));
+			plainContentTab.setTitle(AdminClientMessageUtil.getString("ui_metadata_webhook_WebHookTemplateEditPane_webhookContentTabTitle"));
+			
 			plainEditor = new ScriptEditorPane();
 			plainEditor.setMode(EditorMode.TEXT);
 			plainContentTab.setPane(plainEditor);
@@ -460,22 +442,21 @@ public class WebHookTemplateEditPane extends MetaDataMainEditPane {
 			return record;
 		}
 		public boolean validate() {
-			// TODO add input related forms
 			return true;
 		}
 
 		public void clearErrors() {
-			// TODO add input related forms
-			
-		}
+//			templateInfoForm.clearErrors(true);
+//			contentTypeField.clearErrors();
+//	        tokenNameField.clearErrors();
+//	        webHookMethodField.clearErrors();
+	    }
 
 		//pane -> definition
 		public WebHookTemplateDefinition getEditDefinition(WebHookTemplateDefinition definition) {
 			
 			definition.setContentType(SmartGWTUtil.getStringValue(contentTypeField));
 			definition.setWebHookContent(plainEditor.getText());
-			
-			definition.setSynchronous(SmartGWTUtil.getBooleanValue(isSynchronous));
 			definition.setTokenHeader(SmartGWTUtil.getStringValue(tokenNameField));
 			definition.setHttpMethod(SmartGWTUtil.getStringValue(webHookMethodField));
 
@@ -487,7 +468,6 @@ public class WebHookTemplateEditPane extends MetaDataMainEditPane {
 			headerGrid.setData(new ListGridRecord[] {});
 			if (definition != null) {
 				contentTypeField.setValue(definition.getContentType());
-				isSynchronous.setValue(definition.isSynchronous());
 				tokenNameField.setValue(definition.getTokenHeader());
 				webHookMethodField.setValue(definition.getHttpMethod());
 				if (definition.getWebHookContent()==null) {
@@ -501,7 +481,6 @@ public class WebHookTemplateEditPane extends MetaDataMainEditPane {
 				
 			} else {
 				contentTypeField.clearValue();
-				isSynchronous.clearValue();
 				tokenNameField.clearValue();
 				webHookMethodField.clearValue();
 				messageTabSet.selectTab(plainContentTab);
@@ -544,23 +523,14 @@ public class WebHookTemplateEditPane extends MetaDataMainEditPane {
 			setBodyOverflow(Overflow.VISIBLE);
 			setOverflow(Overflow.VISIBLE);
 
-			//TODO:名前をlocale に追加改変
 			ListGridField headerNameField = new ListGridField(HEADER_FIELD_NAME.HEADERNAME.name(), "Name Key");
 			ListGridField headerValueField = new ListGridField(HEADER_FIELD_NAME.HEADERVALUE.name(), "Value");
 			ListGridField headerIdField = new ListGridField(HEADER_FIELD_NAME.HEADERID.name(), "HeaderId");//前端でheaderを区別するためのkeyみたいなもの
 			headerIdField.setHidden(true);
 			headerIdField.setCanHide(false);
-			//後はセキュリティの追加設定をdialogして、ボタンを追加しようかと
 			
 			setFields(headerNameField, headerValueField,headerIdField);
 		}
-//		public WebHookTemplateDefinition getEditDefinition(WebHookTemplateDefinition definition) {
-//			ListGridRecord[] records = getRecords();
-//			for (ListGridRecord record : records) {
-//				//definition.addSubscriber(new WebHookSubscriber());
-//			}
-//			return null;
-//		}
 	}
 	
 	
@@ -576,7 +546,6 @@ public class WebHookTemplateEditPane extends MetaDataMainEditPane {
 			if (!commonValidate || !webHookValidate) {
 				return;
 			}
-//TODO add these message
 			SC.ask(AdminClientMessageUtil.getString("ui_metadata_webhook_WebHookTemplateEditPane_saveConfirm"),
 					AdminClientMessageUtil.getString("ui_metadata_webhook_WebHookTemplateEditPane_saveWebHookTemplateComment"), new BooleanCallback() {
 
@@ -601,7 +570,6 @@ public class WebHookTemplateEditPane extends MetaDataMainEditPane {
 
 		@Override
 		public void onClick(ClickEvent event) {
-			//TODO add these messages
 			SC.ask(AdminClientMessageUtil.getString("ui_metadata_webhook_WebHookTemplateEditPane_cancelConfirm"),
 					AdminClientMessageUtil.getString("ui_metadata_webhook_WebHookTemplateEditPane_cancelConfirmComment")
 					, new BooleanCallback() {

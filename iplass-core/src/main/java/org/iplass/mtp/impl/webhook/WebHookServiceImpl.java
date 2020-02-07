@@ -239,7 +239,7 @@ public class WebHookServiceImpl extends AbstractTypedMetaDataService<MetaWebHook
 					String url = subscriber.getUrl()+ "?" + payload;
 					httpRequest.setURI(new URI(url ));
 				} else	if (isEnclosingRequest(httpRequest)) {
-					StringEntity se = new StringEntity(payload);
+					StringEntity se = new StringEntity(payload,"UTF-8");
 					se.setContentType(webHook.getContentType());
 					((HttpEntityEnclosingRequestBase) httpRequest).setEntity(se);
 				} 
@@ -267,9 +267,9 @@ public class WebHookServiceImpl extends AbstractTypedMetaDataService<MetaWebHook
 				if (subscriber.getHeaderAuthType()==null || subscriber.getHeaderAuthType().isEmpty()) {
 					
 				}else {
-					if (subscriber.getHeaderAuthType()=="WHBT") {
+					if (subscriber.getHeaderAuthType().equals("WHBT")) {
 						httpRequest.setHeader(HttpHeaders.AUTHORIZATION, "Bearer " +subscriber.getHeaderAuthContent());
-					} else if(subscriber.getHeaderAuthType()=="WHBA") {
+					} else if(subscriber.getHeaderAuthType().equals("WHBA")) {
 						httpRequest.setHeader(HttpHeaders.AUTHORIZATION, "Basic " +subscriber.getHeaderAuthContent());
 					}
 				}

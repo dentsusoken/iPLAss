@@ -58,7 +58,7 @@ public class WebEndPointSecurityInfoEditDialog extends MtpDialog {
 		securityAttributePane.setHeight100();
 		container.addMember(securityAttributePane);
 		
-		IButton save = new IButton("Save");
+		IButton save = new IButton("UpdateDB");
 		save.addClickHandler(new com.smartgwt.client.widgets.events.ClickHandler() {
 			public void onClick(com.smartgwt.client.widgets.events.ClickEvent event) {
 				
