@@ -543,9 +543,8 @@ public final class FullTextSearchCommand implements Command {
 				PropertyColumn property = getLayoutPropertyColumn(sortKey, section);
 				if (property != null) {
 					ss.setNullOrderType(property.getNullOrderType());
+					setting.add(ss);
 				}
-
-				setting.add(ss);
 			}
 		}
 

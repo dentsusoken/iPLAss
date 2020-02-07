@@ -230,13 +230,14 @@ public abstract class SearchContextBase implements SearchContext {
 				}
 			}
 		} else {
-			String sortKey = getSortKey();
-			if (sortKey != null) {
+			String sortKey = request.getParam(Constants.SEARCH_SORTKEY);
+			if (StringUtil.isNotBlank(sortKey)) {
 				PropertyColumn property = getLayoutPropertyColumn(sortKey);
-				NullOrderingSpec nullOrderingSpec = null;
-				if (property != null) nullOrderingSpec = getNullOrderingSpec(property.getNullOrderType());
-				orderBy = new OrderBy();
-				orderBy.add(getSortKey(), getSortType(), nullOrderingSpec);
+				if (property != null) {
+					NullOrderingSpec nullOrderingSpec = getNullOrderingSpec(property.getNullOrderType());
+					orderBy = new OrderBy();
+					orderBy.add(getSortKey(), getSortType(), nullOrderingSpec);
+				}
 			}
 		}
 		return orderBy;
@@ -486,9 +487,8 @@ public abstract class SearchContextBase implements SearchContext {
 				PropertyColumn property = getLayoutPropertyColumn(sortKey);
 				if (property != null) {
 					ss.setNullOrderType(property.getNullOrderType());
+					setting.add(ss);
 				}
-
-				setting.add(ss);
 			}
 		}
 
