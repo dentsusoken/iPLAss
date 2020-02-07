@@ -319,7 +319,8 @@ function setData(grid, listId, data, viewUrl, detailUrl, detailLink) {
 		grid.addRowData(index + 1, this);
 	});
 
-	grid.setGridParam({sortname:"score", sortorder:"desc"}).trigger("reloadGrid");
+	<%-- サーバのソート順で表示します。 --%>
+//	grid.setGridParam({sortname:"score", sortorder:"desc"}).trigger("reloadGrid");
 
 	var isSubModal = $("body.modal-body").length != 0;
 	if (isSubModal) {
