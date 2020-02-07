@@ -33,7 +33,6 @@ import org.iplass.mtp.Manager;
 import org.iplass.mtp.SystemException;
 import org.iplass.mtp.entity.bulkupdate.BulkUpdatable;
 import org.iplass.mtp.entity.bulkupdate.BulkUpdateEntity;
-import org.iplass.mtp.entity.query.OrderBy;
 import org.iplass.mtp.entity.query.Query;
 
 
@@ -477,17 +476,6 @@ public interface EntityManager extends Manager {
 	public <T extends Entity> SearchResult<T> fulltextSearchEntity(Map<String, List<String>> entityProperties, String keyword);
 
 	/**
-	 * 指定のワードで全文検索し、指定プロパティのみを取得します。
-	 * entityPropertiesが未指定の場合は利用テナントの全エンティティに対して全文検索を実施します。
-	 *
-	 * @param entityProperties Entity定義毎に取得するプロパティ
-	 * @param keyword 全文検索用キーワード
-	 * @param orderByMap ソート条件をセットしたマップ
-	 * @return 検索キーワードを含むエンティティデータのリスト
-	 */
-	public <T extends Entity> SearchResult<T> fulltextSearchEntity(Map<String, List<String>> entityProperties, String keyword, Map<String, OrderBy> orderByMap);
-
-	/**
 	 * クエリ実行結果に対して、指定のワードで全文検索します。
 	 *<pre><b>メモリを大量消費する恐れがありますので、絞り込む条件とリミット条件を指定した上でご利用してください。</b></pre>
 	 *
@@ -496,4 +484,15 @@ public interface EntityManager extends Manager {
 	 * @return SearchOption 検索時のオプション、countTotal=trueの場合総件数を積み上げる
 	 */
 	public <T extends Entity> SearchResult<T> fulltextSearchEntity(Query query, String keyword, SearchOption option);
+
+	/**
+	 * 指定のワードで全文検索し、指定プロパティのみを取得します。
+	 * FulltextSearchOptionのconditionsが未指定の場合は利用テナントの全エンティティに対して全文検索を実施します。
+	 *
+	 * @param keyword 全文検索用キーワード
+	 * @param option 全文検索時のオプション
+	 * @return 検索キーワードを含むエンティティデータのリスト
+	 */
+	public <T extends Entity> SearchResult<T> fulltextSearchEntity(String keyword, FulltextSearchOption option);
+
 }

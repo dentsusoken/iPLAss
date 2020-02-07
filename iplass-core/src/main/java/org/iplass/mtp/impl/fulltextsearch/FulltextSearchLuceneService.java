@@ -81,6 +81,8 @@ import org.iplass.mtp.definition.DefinitionSummary;
 import org.iplass.mtp.entity.BinaryReference;
 import org.iplass.mtp.entity.Entity;
 import org.iplass.mtp.entity.EntityManager;
+import org.iplass.mtp.entity.FulltextSearchOption;
+import org.iplass.mtp.entity.FulltextSearchOption.FulltextSearchCondition;
 import org.iplass.mtp.entity.SearchResult;
 import org.iplass.mtp.entity.definition.EntityDefinition;
 import org.iplass.mtp.entity.definition.EntityDefinitionManager;
@@ -562,21 +564,26 @@ public class FulltextSearchLuceneService extends AbstractFulltextSeachService {
 
 	@Override
 	public <T extends Entity> SearchResult<T> fulltextSearchEntity(String searchDefName, String fulltext) {
-		Map<String, List<String>> entityProperties = new HashMap<String, List<String>>();
+		FulltextSearchOption option = new FulltextSearchOption();
 		if (StringUtil.isNotEmpty(searchDefName)) {
-			entityProperties.put(searchDefName, null);
+			option.getConditions().put(searchDefName, null);
 		}
-		return fulltextSearchEntity(entityProperties, fulltext);
+		return fulltextSearchEntity(fulltext, option);
 	}
 
 	@Override
 	public <T extends Entity> SearchResult<T> fulltextSearchEntity(Map<String, List<String>> entityProperties, String fulltext) {
-		return fulltextSearchEntity(entityProperties, fulltext, null);
+		FulltextSearchOption option = new FulltextSearchOption();
+		for (Map.Entry<String, List<String>> data : entityProperties.entrySet()) {
+			FulltextSearchCondition cond = new FulltextSearchCondition(data.getValue());
+			option.getConditions().put(data.getKey(), cond);
+		}
+		return fulltextSearchEntity(fulltext, option);
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public <T extends Entity> SearchResult<T> fulltextSearchEntity(Map<String, List<String>> entityProperties, String fulltext, Map<String, OrderBy> orderByMap) {
+	public <T extends Entity> SearchResult<T> fulltextSearchEntity(String fulltext, FulltextSearchOption option) {
 		if (searcherManager == null) {
 			return new SearchResult<T>(-1, null);
 		}
@@ -599,10 +606,9 @@ public class FulltextSearchLuceneService extends AbstractFulltextSeachService {
 
 			luceneQuery = setTenantCondition(qp, luceneQuery);
 
-			List<String> defNameList = new ArrayList<String>();
-			for (Map.Entry<String, List<String>> data : entityProperties.entrySet()) {
-				defNameList.add(data.getKey());
-			}
+			Map<String, FulltextSearchCondition> conditions = option.getConditions();
+
+			List<String> defNameList = new ArrayList<>(conditions.keySet());
 			luceneQuery = setEntityDefCondition(luceneQuery, defNameList.toArray(new String[defNameList.size()]));
 
 			if (logger.isDebugEnabled()) {
@@ -656,19 +662,21 @@ public class FulltextSearchLuceneService extends AbstractFulltextSeachService {
 			List<T> tempSortList = new ArrayList<T>();
 			for(FulltextSearchDto dto : tempList) {
 				String tempDefName = dto.getDefName();
-				if ((entityProperties == null || entityProperties.size() < 1) || entityProperties.containsKey(tempDefName)) {
+				if ((conditions == null || conditions.size() < 1) || conditions.containsKey(tempDefName)) {
+
+					FulltextSearchCondition cond = conditions.get(tempDefName);
 
 					Query query = new Query();
 
 					OrderBy order = null;
-					if (orderByMap != null && orderByMap.containsKey(tempDefName)) {
-						order = orderByMap.get(tempDefName);
+					if (cond.getOrder() != null) {
+						order = cond.getOrder();
 						query.setOrderBy(order);
 					}
 
 					List<String> properties = null;
-					if (entityProperties.containsKey(tempDefName)) {
-						properties = entityProperties.get(tempDefName);
+					if (cond.getProperties() != null) {
+						properties = cond.getProperties();
 					}
 
 					if (properties != null && properties.size() > 0) {

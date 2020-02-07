@@ -52,6 +52,8 @@ import org.iplass.mtp.command.annotation.CommandClass;
 import org.iplass.mtp.command.annotation.webapi.WebApi;
 import org.iplass.mtp.entity.Entity;
 import org.iplass.mtp.entity.EntityManager;
+import org.iplass.mtp.entity.FulltextSearchOption;
+import org.iplass.mtp.entity.FulltextSearchOption.FulltextSearchCondition;
 import org.iplass.mtp.entity.definition.EntityDefinition;
 import org.iplass.mtp.entity.definition.EntityDefinitionManager;
 import org.iplass.mtp.entity.definition.PropertyDefinition;
@@ -152,18 +154,14 @@ public final class FullTextSearchCommand implements Command {
 		// Entityごとの検索条件情報取得
 		List<EntitySearchInfo> searchCondList = getEntitySearchInfo(roleName, defNameList, sortKeyMap, sortTypeMap);
 
-		//ソート条件
-		Map<String, OrderBy> orderByMap = getOrderByMap(searchCondList);
-
 		//Entity毎の検索対象プロパティ情報を取得
-		Map<String, List<String>> entityProperties = searchCondList.stream()
-			.collect(Collectors.toMap(EntitySearchInfo::getDefinitionName, info -> info.getProperties()));
+		FulltextSearchOption option = getFulltextSearchOption(searchCondList);
 
 		//検索処理
 		EntityManager em = ManagerLocator.getInstance().getManager(EntityManager.class);
 		List<Entity> searchResult = null;
 		try {
-			searchResult = em.fulltextSearchEntity(entityProperties, fulltextKey, orderByMap).getList();
+			searchResult = em.fulltextSearchEntity(fulltextKey, option).getList();
 		} catch (FulltextSearchRuntimeException e) {
 			logger.error("fulltext search error.", e);
 			request.setAttribute(Constants.MESSAGE, getRS("validString"));
@@ -190,7 +188,7 @@ public final class FullTextSearchCommand implements Command {
 
 		//Crawl時間を取得
 		Map<String, Timestamp> crawlDateMap = fsm.getLastCrawlTimestamp(
-				entityProperties.keySet().toArray(new String[0]));
+				option.getConditions().keySet().toArray(new String[0]));
 
 		//検索結果をentity定義ごとに整理
 		Map<String, List<Entity>> entityMap = searchResult.parallelStream()
@@ -339,17 +337,16 @@ public final class FullTextSearchCommand implements Command {
 		return Collections.emptyList();
 	}
 
-	private Map<String, OrderBy> getOrderByMap(List<EntitySearchInfo> searchCondList) {
-		Map<String, OrderBy> orderByMap = new HashMap<>();
+	private FulltextSearchOption getFulltextSearchOption(List<EntitySearchInfo> searchCondList) {
+		FulltextSearchOption option = new FulltextSearchOption();
 		searchCondList.stream().forEach(info -> {
-			List<SortSetting> sortSettings = getSortSetting(info);
-			EntityDefinition ed = info.getEntityDefinition();
-			OrderBy orderBy = getOrderBy(ed, sortSettings);
-			if (orderBy != null) {
-				orderByMap.put(ed.getName(), orderBy);
-			}
-		});
-		return orderByMap;
+				List<SortSetting> sortSettings = getSortSetting(info);
+				EntityDefinition ed = info.getEntityDefinition();
+				OrderBy order = getOrderBy(ed, sortSettings);
+				FulltextSearchCondition cond = new FulltextSearchCondition(info.getProperties(), order);
+				option.getConditions().put(info.getDefinitionName(), cond);
+			});
+		return option;
 	}
 
 	private FulltextSearchViewParts getTopViewParts(String roleName) {

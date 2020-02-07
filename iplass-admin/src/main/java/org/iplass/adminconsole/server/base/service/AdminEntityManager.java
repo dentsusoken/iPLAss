@@ -35,6 +35,7 @@ import org.iplass.mtp.entity.DeleteCondition;
 import org.iplass.mtp.entity.DeleteOption;
 import org.iplass.mtp.entity.Entity;
 import org.iplass.mtp.entity.EntityManager;
+import org.iplass.mtp.entity.FulltextSearchOption;
 import org.iplass.mtp.entity.InsertOption;
 import org.iplass.mtp.entity.LoadOption;
 import org.iplass.mtp.entity.SearchOption;
@@ -43,7 +44,6 @@ import org.iplass.mtp.entity.UpdateCondition;
 import org.iplass.mtp.entity.UpdateOption;
 import org.iplass.mtp.entity.ValidateResult;
 import org.iplass.mtp.entity.bulkupdate.BulkUpdatable;
-import org.iplass.mtp.entity.query.OrderBy;
 import org.iplass.mtp.entity.query.Query;
 import org.iplass.mtp.impl.entity.auditlog.AuditLogInterceptor;
 import org.iplass.mtp.spi.ServiceRegistry;
@@ -310,9 +310,8 @@ public class AdminEntityManager implements EntityManager {
 	}
 
 	@Override
-	public <T extends Entity> SearchResult<T> fulltextSearchEntity(Map<String, List<String>> entityProperties, String keyword,
-			Map<String, OrderBy> orderByMap) {
-		return em.fulltextSearchEntity(entityProperties, keyword, orderByMap);
+	public <T extends Entity> SearchResult<T> fulltextSearchEntity(String keyword, FulltextSearchOption option) {
+		return em.fulltextSearchEntity(keyword, option);
 	}
 
 }
