@@ -275,8 +275,8 @@ function createTemplate(listId, defName, displayName, crawlDate, colModels) {
 			var curSortType = $sortType.val();
 
 			<%-- アイコンは表示されていない可能性があるので必ずやる --%>
-//			$("#gview_searchResult tr.ui-jqgrid-labels th .ui-jqgrid-sortable").removeClass('asc desc');
-//			$("#gview_searchResult tr.ui-jqgrid-labels th:eq(" + iCol + ") .ui-jqgrid-sortable").addClass(sortType.toLowerCase());
+			<%-- $("#gview_searchResult tr.ui-jqgrid-labels th .ui-jqgrid-sortable").removeClass('asc desc'); --%>
+			<%-- $("#gview_searchResult tr.ui-jqgrid-labels th:eq(" + iCol + ") .ui-jqgrid-sortable").addClass(sortType.toLowerCase()); --%>
 
 			<%-- ソート条件に変更がある場合のみ実施
 				(結果表示用のsetData関数でsortGrid呼び出しによって発生するため) --%>
@@ -320,7 +320,7 @@ function setData(grid, listId, data, viewUrl, detailUrl, detailLink) {
 	});
 
 	<%-- サーバのソート順で表示します。 --%>
-//	grid.setGridParam({sortname:"score", sortorder:"desc"}).trigger("reloadGrid");
+	<%-- grid.setGridParam({sortname:"score", sortorder:"desc"}).trigger("reloadGrid"); --%>
 
 	var isSubModal = $("body.modal-body").length != 0;
 	if (isSubModal) {
