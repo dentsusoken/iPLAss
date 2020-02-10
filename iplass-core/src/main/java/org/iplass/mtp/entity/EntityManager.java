@@ -33,6 +33,7 @@ import org.iplass.mtp.Manager;
 import org.iplass.mtp.SystemException;
 import org.iplass.mtp.entity.bulkupdate.BulkUpdatable;
 import org.iplass.mtp.entity.bulkupdate.BulkUpdateEntity;
+import org.iplass.mtp.entity.fulltextsearch.FulltextSearchOption;
 import org.iplass.mtp.entity.query.Query;
 
 

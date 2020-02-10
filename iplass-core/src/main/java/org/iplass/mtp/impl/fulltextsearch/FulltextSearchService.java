@@ -25,8 +25,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.iplass.mtp.entity.Entity;
-import org.iplass.mtp.entity.FulltextSearchOption;
 import org.iplass.mtp.entity.SearchResult;
+import org.iplass.mtp.entity.fulltextsearch.FulltextSearchOption;
 import org.iplass.mtp.spi.Service;
 
 public interface FulltextSearchService extends Service {
