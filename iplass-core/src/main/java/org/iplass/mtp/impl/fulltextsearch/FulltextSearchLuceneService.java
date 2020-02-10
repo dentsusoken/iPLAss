@@ -662,20 +662,20 @@ public class FulltextSearchLuceneService extends AbstractFulltextSeachService {
 			List<T> tempSortList = new ArrayList<T>();
 			for(FulltextSearchDto dto : tempList) {
 				String tempDefName = dto.getDefName();
-				if ((conditions == null || conditions.size() < 1) || conditions.containsKey(tempDefName)) {
+				if (conditions.isEmpty() || conditions.containsKey(tempDefName)) {
 
 					FulltextSearchCondition cond = conditions.get(tempDefName);
 
 					Query query = new Query();
 
 					OrderBy order = null;
-					if (cond.getOrder() != null) {
+					if (cond != null && cond.getOrder() != null) {
 						order = cond.getOrder();
 						query.setOrderBy(order);
 					}
 
 					List<String> properties = null;
-					if (cond.getProperties() != null) {
+					if (cond != null && cond.getProperties() != null) {
 						properties = cond.getProperties();
 					}
 
