@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
+ * Copyright (C) 2020 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
  *
  * Unless you have purchased a commercial license,
  * the following license terms apply:
