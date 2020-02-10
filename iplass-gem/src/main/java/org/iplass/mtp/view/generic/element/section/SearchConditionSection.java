@@ -364,15 +364,15 @@ public class SearchConditionSection extends Section {
 	private boolean unsorted;
 
 	@MetaFieldInfo(
-			displayName="全文検索時にソートしないか",
-			displayNameKey="generic_element_section_SearchConditionSection_fulltextSearchUnsortedDisplaNameKey",
+			displayName="全文検索時にソートするか",
+			displayNameKey="generic_element_section_SearchConditionSection_fulltextSearchSortedDisplaNameKey",
 			inputType=InputType.CHECKBOX,
 			displayOrder=3070,
-			description="全文検索時にソートしないかを設定します。<br>" +
+			description="全文検索時にソートするかを設定します。<br>" +
 					"全文検索結果からソート項目を指定した場合はソートされます。",
-			descriptionKey="generic_element_section_SearchConditionSection_fulltextSearchUnsortedDescriptionKey"
+			descriptionKey="generic_element_section_SearchConditionSection_fulltextSearchSortedDescriptionKey"
 	)
-	private boolean fulltextSearchUnsorted;
+	private boolean fulltextSearchSorted;
 
 	/** カスタムスタイルキー */
 	private String scriptKey;
@@ -483,19 +483,19 @@ public class SearchConditionSection extends Section {
 	}
 
 	/**
-	 * 全文検索時にソートしないかを取得します。
-	 * @return 全文検索時にソートしないか
+	 * 全文検索時にソートするかを取得します。
+	 * @return 全文検索時にソートするか
 	 */
-	public boolean isFulltextSearchUnsorted() {
-		return fulltextSearchUnsorted;
+	public boolean isFulltextSearchSorted() {
+		return fulltextSearchSorted;
 	}
 
 	/**
-	 * 全文検索時にソートしないかを設定します。
-	 * @param fulltextSearchUnsorted 全文検索時にソートしないか
+	 * 全文検索時にソートするかを設定します。
+	 * @param fulltextSearchSorted 全文検索時にソートするか
 	 */
-	public void setFulltextSearchUnsorted(boolean fulltextSearchUnsorted) {
-		this.fulltextSearchUnsorted = fulltextSearchUnsorted;
+	public void setFulltextSearchSorted(boolean fulltextSearchSorted) {
+		this.fulltextSearchSorted = fulltextSearchSorted;
 	}
 
 	/**

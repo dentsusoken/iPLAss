@@ -545,7 +545,7 @@ public final class FullTextSearchCommand implements Command {
 		}
 
 		SearchConditionSection section = info.getSearchFormView().getCondSection();
-		if (section != null && !section.isFulltextSearchUnsorted() && !section.getSortSetting().isEmpty()) {
+		if (section != null && section.isFulltextSearchSorted() && !section.getSortSetting().isEmpty()) {
 			setting.addAll(section.getSortSetting());
 		}
 		return setting;

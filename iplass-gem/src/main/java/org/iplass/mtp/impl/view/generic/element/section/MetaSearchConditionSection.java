@@ -66,8 +66,8 @@ public class MetaSearchConditionSection extends MetaSection {
 	/** 検索時にソートしないか */
 	private boolean unsorted;
 
-	/** 全文検索時にソートしないか */
-	private boolean fulltextSearchUnsorted;
+	/** 全文検索時にソートするか */
+	private boolean fulltextSearchSorted;
 
 	/** 重複行をまとめるか */
 	private boolean distinct;
@@ -249,19 +249,19 @@ public class MetaSearchConditionSection extends MetaSection {
 	}
 
 	/**
-	 * 全文検索時にソートしないかを取得します。
-	 * @return 全文検索時にソートしないか
+	 * 全文検索時にソートするかを取得します。
+	 * @return 全文検索時にソートするか
 	 */
-	public boolean isFulltextSearchUnsorted() {
-		return fulltextSearchUnsorted;
+	public boolean isFulltextSearchSorted() {
+		return fulltextSearchSorted;
 	}
 
 	/**
-	 * 全文検索時にソートしないかを設定します。
-	 * @param fulltextSearchUnsorted 全文検索時にソートしないか
+	 * 全文検索時にソートするかを設定します。
+	 * @param fulltextSearchSorted 全文検索時にソートするか
 	 */
-	public void setFulltextSearchUnsorted(boolean fulltextSearchUnsorted) {
-		this.fulltextSearchUnsorted = fulltextSearchUnsorted;
+	public void setFulltextSearchSorted(boolean fulltextSearchSorted) {
+		this.fulltextSearchSorted = fulltextSearchSorted;
 	}
 
 	/**
@@ -500,7 +500,7 @@ public class MetaSearchConditionSection extends MetaSection {
 		this.conditionDispCount = section.getConditionDispCount();
 		this.colNum = section.getColNum();
 		this.unsorted = section.isUnsorted();
-		this.fulltextSearchUnsorted = section.isFulltextSearchUnsorted();
+		this.fulltextSearchSorted = section.isFulltextSearchSorted();
 		this.distinct = section.isDistinct();
 		this.hideDetailCondition = section.isHideDetailCondition();
 		this.hideFixedCondition = section.isHideFixedCondition();
@@ -566,7 +566,7 @@ public class MetaSearchConditionSection extends MetaSection {
 		section.setConditionDispCount(this.conditionDispCount);
 		section.setColNum(this.colNum);
 		section.setUnsorted(unsorted);
-		section.setFulltextSearchUnsorted(this.fulltextSearchUnsorted);
+		section.setFulltextSearchSorted(this.fulltextSearchSorted);
 		section.setDistinct(distinct);
 		section.setHideDetailCondition(this.hideDetailCondition);
 		section.setHideFixedCondition(this.hideFixedCondition);
