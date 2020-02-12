@@ -945,12 +945,6 @@ span.jqtree_common.jqtree-title.ui-draggable.ui-draggable-dragging {
   font-size: 1rem;
   display: block; }
 
-.tbl-maintenance input[type=text], .tbl-maintenance input[type=password], .tbl-maintenance textarea {
-  border: 1px solid #ddd;
-  font-size: 1rem;
-  padding: 2px 5px;
-  box-sizing: border-box; }
-
 .user-profile .formArchive {
   display: block;
   float: left;
@@ -958,26 +952,13 @@ span.jqtree_common.jqtree-title.ui-draggable.ui-draggable-dragging {
   .user-profile .formArchive + p {
     margin-bottom: 20px; }
 
-.tbl-maintenance {
-  margin-bottom: 20px; }
-  .tbl-maintenance th {
-    width: 180px;
-    background: #ededed;
-    padding: 12px 10px;
-    border: 1px solid #ddd;
-    border-right: 0;
-    vertical-align: middle; }
-  .tbl-maintenance td {
-    padding: 8px 10px;
-    border: 1px solid #ddd;
-    border-left: 0;
-    vertical-align: middle; }
-  .tbl-maintenance input[type=text] {
-    width: 100%; }
-  .tbl-maintenance input[type=password] {
-    width: 160px; }
-  .tbl-maintenance textarea {
-    width: 100%; }
+.user-profile .tbl-section td.section-data {
+  padding: 8px 10px; }
+
+.user-profile .tbl-section .data-label {
+  display: inline-block;
+  padding: 2px 0;
+  margin: 2px 0; }
 
 .auth-application .detailForm > div, .auth-application .detailForm .formArchive > div, #detailForm > div, #detailForm .formArchive > div {
   display: block;
@@ -1530,7 +1511,7 @@ span.jqtree_common.jqtree-title.ui-draggable.ui-draggable-dragging {
   float: left;
   width: 100%; }
 
-.tbl-section input[type=text], .tbl-section textarea {
+.tbl-section input[type=text], .tbl-section input[type=password], .tbl-section textarea {
   border: 1px solid #ddd;
   font-size: 1rem;
   width: 100%;
@@ -1884,6 +1865,14 @@ a + .binaryDelete {
     border: 1px solid #ddd;
     padding: 10px;
     vertical-align: top; }
+
+.bulk-edit .tbl-section td.section-data {
+  padding: 8px 10px; }
+
+.bulk-edit .tbl-section .data-label {
+  display: inline-block;
+  padding: 2px 0;
+  margin: 2px 0; }
 
 /* カレンダー */
 .fc {

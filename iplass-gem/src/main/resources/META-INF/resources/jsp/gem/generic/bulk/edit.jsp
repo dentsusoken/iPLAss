@@ -143,6 +143,7 @@
 	request.setAttribute(Constants.BULK_UPDATE_USE_BULK_VIEW, true); //BulkView利用フラグ
 	request.setAttribute(Constants.ENTITY_DEFINITION, data.getEntityDefinition());
 %>
+<div class="bulk-edit">
 <h3 class="hgroup-02 hgroup-02-01"><%=GemResourceBundleUtil.resourceString("generic.bulk.title", displayName)%></h3>
 <%
 	if (isSuccess) {
@@ -221,17 +222,17 @@ ${m:outputToken('FORM_XHTML', true)}
 %>
 <div class="formArchive">
 <div>
-<table class="tbl-maintenance mb10">
+<table class="tbl-section mb10">
 <tbody>
 <%
 	if (isSelectAllPage) {
 %>
 <tr>
-<th rowspan="2">${m:rs("mtp-gem-messages", "generic.bulk.selectBulkUpdateType")}</th>
-<td><label><input type="radio" name="selectAllType" value="select" <%=!isSelectAll ? "checked" : ""%>>${m:rs("mtp-gem-messages", "generic.bulk.updateRow")}</label></td>
+<th class="section-data" rowspan="2">${m:rs("mtp-gem-messages", "generic.bulk.selectBulkUpdateType")}</th>
+<td class="section-data"><label><input type="radio" name="selectAllType" value="select" <%=!isSelectAll ? "checked" : ""%>>${m:rs("mtp-gem-messages", "generic.bulk.updateRow")}</label></td>
 </tr>
 <tr>
-<td><label><input type="radio" name="selectAllType" value="all" <%=isSelectAll ? "checked" : ""%>>${m:rs("mtp-gem-messages", "generic.bulk.updateAll")}<span id="bulkUpdateCount"></span></label></td>
+<td class="section-data"><label><input type="radio" name="selectAllType" value="all" <%=isSelectAll ? "checked" : ""%>>${m:rs("mtp-gem-messages", "generic.bulk.updateAll")}<span id="bulkUpdateCount"></span></label></td>
 </tr>
 <script>
 $(function() {
@@ -378,3 +379,4 @@ $(function() {
 	}
 })
 </script>
+</div>
