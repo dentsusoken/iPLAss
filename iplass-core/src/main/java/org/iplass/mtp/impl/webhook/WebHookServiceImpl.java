@@ -25,7 +25,6 @@ import java.io.InterruptedIOException;
 import java.io.StringWriter;
 import java.net.ConnectException;
 import java.net.URI;
-import java.net.URLEncoder;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -39,7 +38,6 @@ import javax.net.ssl.SSLException;
 import org.apache.http.HttpHeaders;
 import org.apache.http.HttpHost;
 import org.apache.http.client.HttpRequestRetryHandler;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpEntityEnclosingRequestBase;
@@ -106,6 +104,12 @@ public class WebHookServiceImpl extends AbstractTypedMetaDataService<MetaWebHook
 	public static CloseableHttpClient webHookHttpClient;
 	public static Logger logger = LoggerFactory.getLogger(WebHookServiceImpl.class);
 	public static final String WEBHOOK_TEMPLATE_META_PATH = "/webhook/template/";
+	public static final String WEBHOOK_SECURITY_BINDING_HMACRESULT ="webhookHmacResult";
+	public static final String WEBHOOK_SECURITY_BINDING_HMACTOKEN ="webhookHmacToken";
+	public static final String WEBHOOK_SECURITY_BINDING_BASIC ="webhookBasic";
+	public static final String WEBHOOK_SECURITY_BINDING_BASICNAME ="webhookBasicName";
+	public static final String WEBHOOK_SECURITY_BINDING_BASICPASSWORD ="webhookBasicPassword";
+	public static final String WEBHOOK_SECURITY_BINDING_BEARER ="webhookBearer";
 
 	public static class TypeMap extends DefinitionMetaDataTypeMap<WebHookTemplateDefinition, MetaWebHookTemplate> {
 		public TypeMap() {
@@ -219,41 +223,68 @@ public class WebHookServiceImpl extends AbstractTypedMetaDataService<MetaWebHook
 	
 
 	private void sendWebHook(WebHook webHook,Tenant tenant) {
-		HashSet<Subscriber> endPointSet= generateSubscriberList(webHook.getEndPoints(),tenant.getId(),webHook.getBinding());
-		logger.info("WebHook:"+webHook.getTemplateName()+" Attempted.");
+		String urlQuery = "";
+		if (isUrlQueryAllowed(webHook.getHttpMethod())) {
+			urlQuery = webHook.getUrlQuery();
+		}
+		HashSet<Subscriber> endPointSet= generateSubscriberList(webHook.getEndPoints(),tenant.getId(),webHook.getBinding(),urlQuery);
+		logger.debug("WebHook:"+webHook.getTemplateName()+" Attempted.");
 		try {
 			//fill in webhook configures
-			for (Subscriber subscriber : endPointSet) {
-				String payload = webHook.getWebHookContent();
-			
+			for (Subscriber subscriber : endPointSet) {			
 				HttpRequestBase httpRequest = getReqestMethodObject(webHook.getHttpMethod());
-				httpRequest.setURI(new URI(subscriber.getUrl()));
+				
 				HttpContext httpContext = new BasicHttpContext();
 				httpContext.setAttribute(WEBHOOK_ISRETRY, webHookIsRetry);
 				httpContext.setAttribute(WEBHOOK_RETRY_MAXIMUMATTEMPTS, webHookRetryMaximumAttpempts);
 				httpContext.setAttribute(WEBHOOK_RETRY_INTERVAL, webHookRetryInterval);
 				
+				
+				String payLoadContent = null;
+				GroovyTemplate contentTemplate = webHook.getGroovyTemplateContent();
+				if (contentTemplate != null) {
+					StringWriter sw = new StringWriter();
+					GroovyTemplateBinding gtb = new GroovyTemplateBinding(sw,webHook.getBinding());
+					gtb.setVariable(WEBHOOK_SECURITY_BINDING_HMACTOKEN, subscriber.getHmac());
+					if (subscriber.getHeaderAuthType().equals("WHBA")) {
+						String[] basicArray = subscriber.getHeaderAuthContent().replaceAll("\\s","").split(":");
+						if (basicArray==null||basicArray.length<2) {
+						} else {
+							gtb.setVariable(WEBHOOK_SECURITY_BINDING_BASICNAME, basicArray[0]);
+							gtb.setVariable(WEBHOOK_SECURITY_BINDING_BASICPASSWORD, basicArray[1]);
+							gtb.setVariable(WEBHOOK_SECURITY_BINDING_BEARER, "");	
+						}
+					} else if (subscriber.getHeaderAuthType().equals("WHBT")){
+						gtb.setVariable(WEBHOOK_SECURITY_BINDING_BASICNAME, "");
+						gtb.setVariable(WEBHOOK_SECURITY_BINDING_BASICPASSWORD, "");
+						gtb.setVariable(WEBHOOK_SECURITY_BINDING_BEARER, subscriber.getHeaderAuthContent());	
+					}
+					try {
+						contentTemplate.doTemplate(gtb);
+					} catch (IOException e) {
+						throw new ScriptRuntimeException(e);
+					}
+					payLoadContent = sw.toString();
+				}
 				//payload
-				if (webHook.getContentType().equals(CONTENT_TYPE_FORM_URLENCODED)) {
-//					String encodedPayload = URLEncoder.encode(payload. replaceAll("\\s",""), "UTF-8");slackのapiテストで見ると、いらないかな
-					String url = subscriber.getUrl()+ "?" + payload;
-					httpRequest.setURI(new URI(url ));
-				} else	if (isEnclosingRequest(httpRequest)) {
-					StringEntity se = new StringEntity(payload,"UTF-8");
+				if (isEnclosingRequest(httpRequest)) {
+					StringEntity se = new StringEntity(payLoadContent,"UTF-8");
 					se.setContentType(webHook.getContentType());
 					((HttpEntityEnclosingRequestBase) httpRequest).setEntity(se);
-				} 
-				
+				}
+
 				//and headers
 				if (webHook.getHeaders()!=null) {
 					for(WebHookHeader headerEntry: webHook.getHeaders()) {
 						httpRequest.setHeader(headerEntry.getKey(), headerEntry.getValue());
 					}
 				}
+				
 				//hmac
+				String hmacToken =null;
 				if (subscriber.getHmac()!=null) {
 					if (!subscriber.getHmac().isEmpty()) {
-						String hmacToken= getHmacSha256(subscriber.getHmac(), payload);
+						hmacToken= getHmacSha256(subscriber.getHmac(), payLoadContent);
 						String tokenHeader;
 						if (webHook.getTokenHeader()==null||webHook.getTokenHeader().replaceAll("\\s","").isEmpty()) {
 							tokenHeader = webHookHmacTokenDefaultName;
@@ -267,18 +298,68 @@ public class WebHookServiceImpl extends AbstractTypedMetaDataService<MetaWebHook
 				if (subscriber.getHeaderAuthType()==null || subscriber.getHeaderAuthType().isEmpty()) {
 					
 				}else {
+					String scheme = null;
 					if (subscriber.getHeaderAuthType().equals("WHBT")) {
-						httpRequest.setHeader(HttpHeaders.AUTHORIZATION, "Bearer " +subscriber.getHeaderAuthContent());
-					} else if(subscriber.getHeaderAuthType().equals("WHBA")) {
-						httpRequest.setHeader(HttpHeaders.AUTHORIZATION, "Basic " +subscriber.getHeaderAuthContent());
+						scheme = "Bearer";
+					} else if (subscriber.getHeaderAuthType().equals("WHBA")) {
+						scheme = "Basic";
 					}
+					if (subscriber.getHeaderAuthTypeName()!=null) {
+						String authTypeName = subscriber.getHeaderAuthTypeName().replace("\n", "").replaceAll("\\s+", "");
+						if (!authTypeName.isEmpty()) {
+							scheme = authTypeName;
+						}
+					}
+					httpRequest.setHeader(HttpHeaders.AUTHORIZATION, scheme+ " " + subscriber.getHeaderAuthContent());
 				}
+				
+				
+				if (subscriber.getUrlTemplate()!=null) {
+					StringWriter sw = new StringWriter();
+					GroovyTemplateBinding gtb = new GroovyTemplateBinding(sw,webHook.getBinding());
+					gtb.setVariable(WEBHOOK_SECURITY_BINDING_HMACTOKEN, subscriber.getHmac());
+					
+					gtb.setVariable(WEBHOOK_SECURITY_BINDING_HMACRESULT, (hmacToken==null||hmacToken.length()==0)?null:hmacToken);
+					if (subscriber.getHeaderAuthType().equals("WHBA")) {
+						String[] basicArray = subscriber.getHeaderAuthContent().replaceAll("\\s","").split(":");
+						if (basicArray==null||basicArray.length<2) {
+						} else {
+							gtb.setVariable(WEBHOOK_SECURITY_BINDING_BASICNAME, basicArray[0]);
+							gtb.setVariable(WEBHOOK_SECURITY_BINDING_BASICPASSWORD, basicArray[1]);
+							gtb.setVariable(WEBHOOK_SECURITY_BINDING_BEARER, "");	
+						}
+					} else if (subscriber.getHeaderAuthType().equals("WHBT")){
+						gtb.setVariable(WEBHOOK_SECURITY_BINDING_BASICNAME, "");
+						gtb.setVariable(WEBHOOK_SECURITY_BINDING_BASICPASSWORD, "");
+						gtb.setVariable(WEBHOOK_SECURITY_BINDING_BEARER, subscriber.getHeaderAuthContent());	
+					}
+					try {
+						subscriber.getUrlTemplate().doTemplate(gtb);
+					} catch (IOException e) {
+						throw new ScriptRuntimeException(e);
+					}
+					subscriber.setUrl(sw.toString());
+				}
+				
+				httpRequest.setURI(new URI(subscriber.getUrl()));
 				CloseableHttpResponse response = webHookHttpClient.execute(httpRequest,httpContext);
 				logger.debug("\n---------------------------\n response headers: \n"+response.getAllHeaders().toString()+"\n response entity: \n"+ response.getEntity().getContentType()+"\n"+response.getEntity().getContent()+"\n---------------------------");
 				try {
-					//TODO: response handler?
-					WebHookResponseHandler whrh= new JustLogWebHookResponseHandlerImpl();
-					whrh.handleResponse(response);
+					if (webHook.getResultHandler()==null||webHook.getResultHandler().isEmpty()) {
+						WebHookResponseHandler whrh= new JustLogWebHookResponseHandlerImpl();
+						whrh.handleResponse(response);
+					} else {
+						try {
+							WebHookResponseHandler whrh= (WebHookResponseHandler) Class.forName(webHook.getResultHandler()).newInstance();
+							whrh.handleResponse(response);
+						} catch (Exception e) {
+							logger.info("Unexpected error has occered when handling the webHook result. Name of the Result Handler :"+webHook.getResultHandler()+" ; and the stacktrace:");
+							e.printStackTrace();
+							logger.debug("Debug: the causing httpResult is:");
+							WebHookResponseHandler whrh= new JustLogWebHookResponseHandlerImpl();
+							whrh.handleResponse(response);
+						}
+					}
 				} finally {
 					response.close();
 				}
@@ -307,7 +388,6 @@ public class WebHookServiceImpl extends AbstractTypedMetaDataService<MetaWebHook
 			e.printStackTrace();
 		}  
 		return null;
-		
 	}
 	
 	private class WebHookCallable implements Callable<Void>{
@@ -346,6 +426,15 @@ public class WebHookServiceImpl extends AbstractTypedMetaDataService<MetaWebHook
 			return new HttpPost();
 		}
 	}
+	private boolean isUrlQueryAllowed(String methodName){
+		if (methodName.equals("GET")) {
+			return true;
+		}else if (methodName.equals("DELETE")) {
+			return true;
+		}else {
+			return false;
+		}
+	}
 	private boolean isEnclosingRequest(HttpRequestBase request) {
 		if (request.getMethod().equals("PATCH")
 				|| request.getMethod().equals("POST")
@@ -356,29 +445,24 @@ public class WebHookServiceImpl extends AbstractTypedMetaDataService<MetaWebHook
 		}
 	}
 	
-	private HashSet<Subscriber> generateSubscriberList(ArrayList<String> arrayList, int tenantId, Map<String, Object>bindings){
+	private HashSet<Subscriber> generateSubscriberList(ArrayList<String> arrayList, int tenantId, Map<String, Object>bindings,String urlQuery){
 		HashSet<Subscriber> set= new HashSet<Subscriber>();
 		ScriptEngine se = ExecuteContext.getCurrentContext().getTenantContext().getScriptEngine();
 		for (String wepDefName: arrayList) {
-			
 			WebEndPointDefinition temp = wepdm.get(wepDefName);
 			Subscriber sb = new Subscriber();
-
-			//ws.setUrl(metaSubscriber.getUrl());
+			String tempUrl = temp.getUrl() + urlQuery;
+			tempUrl = tempUrl.replace("\n", "");
+			tempUrl= tempUrl.replaceAll("\\s+", "");
+			GroovyTemplate _urlTemp = GroovyTemplateCompiler.compile(tempUrl, "WebHookTemplate_Subscriber_" + temp.getWebEndPointId() + "_" + temp.getName(), (GroovyScriptEngine) se);
 			
 			String metaDataId = temp.getWebEndPointId();
-			sb.setHeaderAuthType(temp.getHeaderAuthType());
+			sb.setHeaderAuthType(temp.getHeaderAuthType()==null?"":temp.getHeaderAuthType());//headerAuthがないなら""のは、.equals()の使用を邪魔されせないため
 			sb.setHeaderAuthContent(wepdm.getSecurityToken(tenantId, metaDataId, sb.getHeaderAuthType()));
 			sb.setHmac(wepdm.getSecurityToken(tenantId, metaDataId, "WHHM"));
-			StringWriter sw = new StringWriter();
-			GroovyTemplateBinding gtb = new GroovyTemplateBinding(sw,bindings);
-			GroovyTemplate _urlTemp = GroovyTemplateCompiler.compile(temp.getUrl(), "WebHookTemplate_Subscriber_" + temp.getWebEndPointId() + "_" + temp.getName(), (GroovyScriptEngine) se);
-			try {
-				_urlTemp.doTemplate(gtb);
-			} catch (IOException e) {
-				throw new ScriptRuntimeException(e);
-			}
-			sb.setUrl(sw.toString());
+			sb.setUrlTemplate(_urlTemp);
+			sb.setHeaderAuthTypeName(temp.getHeaderAuthTypeName());
+
 			set.add(sb);
 		}
 		return set;
@@ -429,7 +513,15 @@ public class WebHookServiceImpl extends AbstractTypedMetaDataService<MetaWebHook
 		String hmac;
 		String headerAuthContent;
 		String headerAuthType;
-		
+		GroovyTemplate urlTemplate;
+		String headerAuthTypeName;
+
+		public GroovyTemplate getUrlTemplate() {
+			return urlTemplate;
+		}
+		public void setUrlTemplate(GroovyTemplate urlTemplate) {
+			this.urlTemplate = urlTemplate;
+		}
 		public String getUrl() {
 			return url;
 		}
@@ -454,5 +546,12 @@ public class WebHookServiceImpl extends AbstractTypedMetaDataService<MetaWebHook
 		public void setHeaderAuthType(String headerAuthType) {
 			this.headerAuthType = headerAuthType;
 		}
+		public String getHeaderAuthTypeName() {
+			return headerAuthTypeName;
+		}
+		public void setHeaderAuthTypeName(String headerAuthTypeName) {
+			this.headerAuthTypeName = headerAuthTypeName;
+		}
+
 	}
 }

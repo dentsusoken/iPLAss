@@ -40,7 +40,7 @@ public class WebEndPointDefinitionPlugin extends DefaultMetaDataPlugin{
 	private static final String CATEGORY_NAME = MetaDataConstants.META_CATEGORY_NOTIFICATION +"/" + "WebHook";
 
 	/** ノード名 */
-	private static final String NODE_NAME = "WebEndPointDefinition";
+	private static final String NODE_NAME = "WebHookEndPoint";
 
 	/** ノードアイコン */
 	private static final String NODE_ICON = "webendpoint.png";
@@ -84,7 +84,7 @@ public class WebEndPointDefinitionPlugin extends DefaultMetaDataPlugin{
 
 	@Override
 	protected void itemCopyAction(MetaDataItemMenuTreeNode itemNode) {
-		CreateWebEndPointDefinitionDialog dialog = new CreateWebEndPointDefinitionDialog(definitionClassName(), nodeDisplayName(), "", false);
+		CreateWebEndPointDefinitionDialog dialog = new CreateWebEndPointDefinitionDialog(definitionClassName(), nodeDisplayName(), "", true);
 		dialog.setNamePolicy(isPathSlash(), isNameAcceptPeriod());
 		dialog.addDataChangeHandler(new DataChangedHandler() {
 			@Override

@@ -24,8 +24,10 @@
 package org.iplass.mtp.webhook;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 
+import org.iplass.mtp.impl.script.template.GroovyTemplate;
 import org.iplass.mtp.webhook.template.definition.WebHookHeader;
 
 /**
@@ -47,15 +49,16 @@ public class WebHook  {
 	/**definition name, 後でserviceで情報をとる*/
 	private ArrayList<String> endPoints;
 	private String resultHandler;
+	String urlQuery;
+	private String headerAuthTypeName;
 
-	
 	/** headers */
 	private ArrayList<WebHookHeader> headers;
 	private String tokenHeader;
 
-	Map<String, Object> binding;
+	private Map<String, Object> binding;
 
-	String responseHandler;
+	private GroovyTemplate groovyTemplateContent;
 	//---------------------------------
 	/**　同期非同期　*/
 	private boolean synchronous;
@@ -132,6 +135,13 @@ public class WebHook  {
 		this.binding = binding;
 	}
 	
+	public void addBinding(String bindingName, Object object) {
+		if (binding == null) {
+			binding = new HashMap<String, Object>();
+		}
+		binding.put(bindingName, object);
+	}
+	
 	public String getTokenHeader() {
 		return tokenHeader;
 	}
@@ -177,6 +187,30 @@ public class WebHook  {
 
 	public void setResultHandler(String resultHandler) {
 		this.resultHandler = resultHandler;
+	}
+
+	public GroovyTemplate getGroovyTemplateContent() {
+		return groovyTemplateContent;
+	}
+
+	public void setGroovyTemplateContent(GroovyTemplate groovyTemplateContent) {
+		this.groovyTemplateContent = groovyTemplateContent;
+	}
+
+	public String getUrlQuery() {
+		return urlQuery;
+	}
+
+	public void setUrlQuery(String urlQuery) {
+		this.urlQuery = urlQuery;
+	}
+	
+	public String getHeaderAuthTypeName() {
+		return headerAuthTypeName;
+	}
+
+	public void setHeaderAuthTypeName(String headerAuthTypeName) {
+		this.headerAuthTypeName = headerAuthTypeName;
 	}
 
 }

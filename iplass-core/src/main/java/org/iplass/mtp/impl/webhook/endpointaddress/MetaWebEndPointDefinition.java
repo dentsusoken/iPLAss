@@ -37,6 +37,8 @@ public class MetaWebEndPointDefinition extends BaseRootMetaData implements Defin
 	private String webEndPointId;
 	private String headerAuthType;
 
+	private String headerAuthTypeName;
+
 	/** 送り先 */
 	private String url;
 	
@@ -51,6 +53,7 @@ public class MetaWebEndPointDefinition extends BaseRootMetaData implements Defin
 		this.headerAuthType = definition.getHeaderAuthType();
 		this.url = definition.getUrl();
 		this.webEndPointId = definition.getWebEndPointId();
+		this.headerAuthTypeName = definition.getHeaderAuthTypeName();
 	}
 	
 	//Meta → Definition
@@ -61,6 +64,7 @@ public class MetaWebEndPointDefinition extends BaseRootMetaData implements Defin
 		definition.setDisplayName(displayName);
 		definition.setDescription(description);
 		definition.setHeaderAuthType(headerAuthType);
+		definition.setHeaderAuthTypeName(headerAuthTypeName);
 		
 		definition.setUrl(url);
 		definition.setWebEndPointId(this.id);
@@ -97,6 +101,15 @@ public class MetaWebEndPointDefinition extends BaseRootMetaData implements Defin
 	public void setHeaderAuthType(String headerAuthType) {
 		this.headerAuthType = headerAuthType;
 	}
+	
+	public String getHeaderAuthTypeName() {
+		return headerAuthTypeName;
+	}
+
+	public void setHeaderAuthTypeName(String headerAuthTypeName) {
+		this.headerAuthTypeName = headerAuthTypeName;
+	}
+
 
 	@Override
 	public WebEndPointRuntime createRuntime(MetaDataConfig metaDataConfig) {

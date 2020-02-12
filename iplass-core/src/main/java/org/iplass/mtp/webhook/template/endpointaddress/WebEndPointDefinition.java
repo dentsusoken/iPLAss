@@ -32,6 +32,7 @@ public class WebEndPointDefinition implements Definition{
 	private String displayName;
 	private String description;
 	private String headerAuthType;
+	private String headerAuthTypeName;// 例：Authorizationヘッダーでbasic認証時、内容のbasic username:passwordのbasicをほかの名前にしたいなら
 
 	/** 固有id、metaのidと同じ内容になるはずです */
 	private String webEndPointId;
@@ -93,4 +94,13 @@ public class WebEndPointDefinition implements Definition{
 	public void setHeaderAuthType(String headerAuthType) {
 		this.headerAuthType = headerAuthType;
 	}
+	
+	public String getHeaderAuthTypeName() {
+		return headerAuthTypeName;
+	}
+
+	public void setHeaderAuthTypeName(String headerAuthTypeName) {
+		this.headerAuthTypeName = headerAuthTypeName;
+	}
+
 }

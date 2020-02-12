@@ -707,8 +707,9 @@ LocaleInfo.ui_metadata_webhook_WebHookTemplateEditPane_contentTypeFieldHoverInfo
 LocaleInfo.ui_metadata_webhook_WebHookTemplateEditPane_webHookMethodFieldHoverInfo = "Please choose based on the requirements. Note: If it is non-enclosing method such as GET, the webhook content below will not be attached except for urlencoded content type.";
 LocaleInfo.ui_metadata_webhook_WebHookTemplateEditPane_headerGridTitle = "Custom Header";
 LocaleInfo.ui_metadata_webhook_WebHookTemplateEditPane_headerGridHoverInfo = "Enter the Header in the format of headerName, HeaderValue. Some headers are occupied by the environment so the settings here will not make effect. (i.e. connection:keep-alive won't change even if you modified it here)";
+LocaleInfo.ui_metadata_webhook_WebHookTemplateEditPane_urlQueryFieldHoverInfo = "When doing GET or DELETE requests, you can define the URL query dynamically here.<br/> Don't forget the [?] at the beginning.<br/>The authentication information is also in the bindings, however, it is not recommanded to put security information inside the URLs. Please use it at your own risk.";
 LocaleInfo.ui_metadata_webhook_WebHookTemplateEditPane_webhookContentTabTitle = "WebHook Payload Content";
-LocaleInfo.ui_metadata_webhook_WebHookTemplateEditPane_webhookContentTabHoverInfo = "Edit the payload content by GroovyTemplate, the binding will be inserted.<br/>please follow the standard format for the corresponding content-type.<br/> For instance, if it's json then it should be braketed with {}, <br/>if it's urlEncode then it should be a string of name=value&name=value<br/>beware that the space and newline will be ignored if it's urlEncode. and the frontal ? is not needed here";
+LocaleInfo.ui_metadata_webhook_WebHookTemplateEditPane_webhookContentTabHoverInfo = "Edit the payload content by GroovyTemplate, the binding will be inserted.<br/>please follow the standard format for the corresponding content-type.<br/> For instance, if it's JSON then it should be braketed with {}. <br/> The authentication information is also in the bindings. Please use it at your own risk.";
 LocaleInfo.ui_metadata_webhook_WebHookTemplateEditPane_saveConfirm ="Save Confirmation";
 LocaleInfo.ui_metadata_webhook_WebHookTemplateEditPane_saveWebHookTemplateComment = "WebHook template will be saved and will override previous record, are you sure you want to do so?";
 LocaleInfo.ui_metadata_webhook_WebHookTemplateEditPane_cancelConfirm="Cancel Confirmation";
@@ -726,11 +727,12 @@ LocaleInfo.ui_metadata_webhook_webEndPointEditPane_saveWebHookTemplateComment="T
 LocaleInfo.ui_metadata_webhook_WebEndPointEditPane_cancelConfirm="Cancel confirmation";
 LocaleInfo.ui_metadata_webhook_WebEndPointEditPane_cancelConfirmComment="The edited content will be discarded, are you sure?";
 LocaleInfo.ui_metadata_webhook_WebEndPointEditPane_webEndPointUrlFieldHoverInfo = "Edit the destination url, it can be edited dyanmically by GroovyTemplate. The urlEncoded webHook url query will be attached to the end of this url.";
+LocaleInfo.ui_metadata_webhook_WebEndPointEditPane_webEndPointAuthorizationAltTokenTypeNameField = "Customize the beginning scheme string in Authorization header. <br/> As there is API such as github, requiring [token] instead of [bearer].<br/> If not inputted, the default scheme name will be used for the corresponding authentication method.";
 LocaleInfo.ui_metadata_webhook_WebEndPointEditPane_editHeaderAuthButton="Edit Header Authentication";
-LocaleInfo.ui_metadata_webhook_WebEndPointEditPane_headerAuthFormHoverInfo = "The content for Authorization header can be edit here. There are two choices: Basic(WHBA) and Bearer(WHBT). <br/>It will update the DB right when you click the UpdateDB button.";
+LocaleInfo.ui_metadata_webhook_WebEndPointEditPane_headerAuthFormHoverInfo = "The content for Authorization header can be edit here. There are two choices: Basic and Bearer. <br/>It will update the DB right when you click the Save button.";
 LocaleInfo.ui_metadata_webhook_WebEndPointEditPane_editHmacButton="Edit HMAC Token";
 LocaleInfo.ui_metadata_webhook_WebEndPointEditPane_generateHmacButton="Generate HMAC Token";
-LocaleInfo.ui_metadata_webhook_WebEndPointEditPane_HmacButtonHoverInfo = "It will update the DB right when you click the UpdateDB button.";
+LocaleInfo.ui_metadata_webhook_WebEndPointEditPane_HmacButtonHoverInfo = "It will update the DB right when you click the Save button.";
 LocaleInfo.ui_metadata_menu_MenuPluginManager_menu = "Menu";
 LocaleInfo.ui_metadata_menu_MenuPluginManager_failedToDeleteMenu = "Failed to delete Menu.<br/>:Cause";
 LocaleInfo.ui_metadata_menu_MenuPluginManager_completion = "Completion";

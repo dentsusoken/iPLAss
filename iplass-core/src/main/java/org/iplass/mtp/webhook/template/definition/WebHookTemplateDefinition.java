@@ -37,6 +37,8 @@ public class WebHookTemplateDefinition implements Definition {
 	private String contentType;
 	private String webHookContent;
 
+	private String urlQuery;
+
 	private String sender;
 	private String addressUrl;
 	private String tokenHeader;//セキュリテぃトークンのヘッダー名を設置
@@ -171,6 +173,14 @@ public class WebHookTemplateDefinition implements Definition {
 
 	public void setWebHookContent(String webHookContent) {
 		this.webHookContent = webHookContent;
+	}
+	
+	public String getUrlQuery() {
+		return urlQuery;
+	}
+
+	public void setUrlQuery(String urlQuery) {
+		this.urlQuery = urlQuery;
 	}
 
 }

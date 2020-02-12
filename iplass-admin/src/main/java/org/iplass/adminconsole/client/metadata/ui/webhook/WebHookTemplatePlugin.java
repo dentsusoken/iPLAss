@@ -86,7 +86,7 @@ public class WebHookTemplatePlugin extends DefaultMetaDataPlugin {
 
 	@Override
 	protected void itemCopyAction(MetaDataItemMenuTreeNode itemNode) {
-		CreateWebHookTemplateDialog dialog = new CreateWebHookTemplateDialog(definitionClassName(), nodeDisplayName(), "", false);
+		CreateWebHookTemplateDialog dialog = new CreateWebHookTemplateDialog(definitionClassName(), nodeDisplayName(), "", true);
 		dialog.setNamePolicy(isPathSlash(), isNameAcceptPeriod());
 		dialog.addDataChangeHandler(new DataChangedHandler() {
 			@Override

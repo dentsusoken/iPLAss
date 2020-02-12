@@ -43,6 +43,15 @@ public class WebEndPointSecurityInfoEditDialog extends MtpDialog {
 	String securityType;
 	String tokenContent;
 	
+	private final String BASIC = "Basic Authentication";
+	private final String BEARER= "Bearer Authentication";		
+	private final String HMAC= "HMAC Token";
+	@SuppressWarnings("serial")
+	private final HashMap<String,String> codeTrans = new HashMap<String,String>() {{
+		put(BASIC,"WHBA");
+		put(BEARER,"WHBT");
+		put(HMAC,"WHHM");
+	}};
 	/** データ変更ハンドラ */
 	private List<DataChangedHandler> handlers = new ArrayList<DataChangedHandler>();
 	
@@ -58,7 +67,7 @@ public class WebEndPointSecurityInfoEditDialog extends MtpDialog {
 		securityAttributePane.setHeight100();
 		container.addMember(securityAttributePane);
 		
-		IButton save = new IButton("UpdateDB");
+		IButton save = new IButton("Save");
 		save.addClickHandler(new com.smartgwt.client.widgets.events.ClickHandler() {
 			public void onClick(com.smartgwt.client.widgets.events.ClickEvent event) {
 				
@@ -132,15 +141,15 @@ public class WebEndPointSecurityInfoEditDialog extends MtpDialog {
 				basicUsernameField.setVisible(false);
 				basicPasswordField.setVisible(false);
 				tokenContentField.setVisible(false);
-			}else if (securityType.equals("WHBA")) {
+			}else if (codeTrans.get(securityType).equals("WHBA")) {
 				tokenContentField.setVisible(false);
 				basicUsernameField.setVisible(true);
 				basicPasswordField.setVisible(true);
-			}else if (securityType.equals("WHBT")) {
+			}else if (codeTrans.get(securityType).equals("WHBT")) {
 				basicUsernameField.setVisible(false);
 				basicPasswordField.setVisible(false);
 				tokenContentField.setVisible(true);
-			}else if (securityType.equals("WHHM")) {
+			}else if (codeTrans.get(securityType).equals("WHHM")) {
 				basicUsernameField.setVisible(false);
 				basicPasswordField.setVisible(false);
 				tokenContentField.setVisible(true);
@@ -156,14 +165,14 @@ public class WebEndPointSecurityInfoEditDialog extends MtpDialog {
 		 * @param securityType */
 		public void setDefinition(String securityType, String tokenContent) {
 			if (securityType == null || securityType.isEmpty()) {
-				typeItemField.setValueMap("WHBA","WHBT");
+				typeItemField.setValueMap(BASIC,BEARER);
 				typeItemField.setCanEdit(true);
 				return;
 			}
 			if (securityType.equals("WHHM")) {
 				//hmac
-				typeItemField.setValueMap("WHHM");
-				typeItemField.setValue("WHHM");
+				typeItemField.setValueMap(HMAC);
+				typeItemField.setValue(HMAC);
 				typeItemField.setCanEdit(false);
 				if (tokenContent!=null) {
 					tokenContentField.setValue(tokenContent);
@@ -171,12 +180,12 @@ public class WebEndPointSecurityInfoEditDialog extends MtpDialog {
 					tokenContentField.clearValue();
 				}
 			} else { 
-				typeItemField.setValueMap("WHBA","WHBT");
+				typeItemField.setValueMap(BASIC,BEARER);
 				typeItemField.setCanEdit(true);
 				if (securityType.equals("WHBA")) {
-					//TODO:調整して、こんなに回りくどくしないように
+					//TODO:調整して、こんなに回りくどくないように
 					//basic
-					typeItemField.setValue("WHBA");
+					typeItemField.setValue(BASIC);
 					String[] basic;
 					if (tokenContent!=null) {
 						basic= tokenContent.split(":");
@@ -194,7 +203,7 @@ public class WebEndPointSecurityInfoEditDialog extends MtpDialog {
 					}
 				} else if (securityType.equals("WHBT")) {
 					//bearer
-					typeItemField.setValue("WHBT");
+					typeItemField.setValue(BEARER);
 					if (tokenContent!=null) {
 						tokenContentField.setValue(tokenContent);
 					} else {
@@ -208,7 +217,7 @@ public class WebEndPointSecurityInfoEditDialog extends MtpDialog {
 		/** dialog -> definition */
 		public Map<String, Serializable> getEditDefinition(){
 			Map<String, Serializable> valueMap = new HashMap<String, Serializable>();
-			valueMap.put("type", SmartGWTUtil.getStringValue(typeItemField));
+			valueMap.put("type", codeTrans.get(SmartGWTUtil.getStringValue(typeItemField)));
 			if(valueMap.get("type")==null||((String)valueMap.get("type")).isEmpty()) {
 				valueMap.put("content",null);
 				return valueMap;

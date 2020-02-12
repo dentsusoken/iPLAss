@@ -19,8 +19,6 @@
  */
 package org.iplass.mtp.impl.webhook.template;
 
-import java.io.IOException;
-import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -34,9 +32,7 @@ import org.iplass.mtp.impl.metadata.BaseRootMetaData;
 import org.iplass.mtp.impl.metadata.MetaDataConfig;
 import org.iplass.mtp.impl.script.GroovyScriptEngine;
 import org.iplass.mtp.impl.script.ScriptEngine;
-import org.iplass.mtp.impl.script.ScriptRuntimeException;
 import org.iplass.mtp.impl.script.template.GroovyTemplate;
-import org.iplass.mtp.impl.script.template.GroovyTemplateBinding;
 import org.iplass.mtp.impl.script.template.GroovyTemplateCompiler;
 import org.iplass.mtp.impl.util.ObjectUtil;
 import org.iplass.mtp.webhook.WebHook;
@@ -62,6 +58,8 @@ public class MetaWebHookTemplate extends BaseRootMetaData implements DefinableMe
 	private ArrayList<WebHookHeader> headers;
 	private String tokenHeader;
 	
+	private String urlQuery;
+
 	/**　同期非同期　*/
 	private boolean synchronous;
 
@@ -93,6 +91,7 @@ public class MetaWebHookTemplate extends BaseRootMetaData implements DefinableMe
 		
 		httpMethod = definition.getHttpMethod();
 		synchronous = definition.isSynchronous();
+		urlQuery = definition.getUrlQuery();
 		
 		headers = definition.getHeaders();
 		
@@ -113,6 +112,7 @@ public class MetaWebHookTemplate extends BaseRootMetaData implements DefinableMe
 		
 		definition.setContentType(contentType);
 		definition.setWebHookContent(webHookContent);
+		definition.setUrlQuery(urlQuery);
 		
 		definition.setAddressUrl(addressUrl);
 		definition.setSender(sender);
@@ -194,6 +194,14 @@ public class MetaWebHookTemplate extends BaseRootMetaData implements DefinableMe
 		return webHookContent;
 	}
 
+	public String getUrlQuery() {
+		return urlQuery;
+	}
+
+	public void setUrlQuery(String urlQuery) {
+		this.urlQuery = urlQuery;
+	}
+
 	public void setWebHookContent(String webHookContent) {
 		this.webHookContent = webHookContent;
 	}
@@ -228,6 +236,7 @@ public class MetaWebHookTemplate extends BaseRootMetaData implements DefinableMe
 			webHook.setHttpMethod(httpMethod);
 			webHook.setSynchronous(synchronous);
 			webHook.setContentType(contentType);
+			webHook.setUrlQuery(urlQuery);
 			//common binding
 			Map<String, Object> bindings = new HashMap<String, Object>();
 			if (parameter != null) {
@@ -235,22 +244,15 @@ public class MetaWebHookTemplate extends BaseRootMetaData implements DefinableMe
 					bindings.put(e.getKey(), e.getValue());
 				}
 			}
+			webHook.setContentType(contentType);
+			webHook.setMetaDataId(id);
 			bindings.put("webHook", webHook);
 			webHook.setBinding(bindings);
 
-			//groovy template
-			if (contentTemplate != null) {
-				StringWriter sw = new StringWriter();
-				GroovyTemplateBinding gtb = new GroovyTemplateBinding(sw,bindings);
-				try {
-					contentTemplate.doTemplate(gtb);
-				} catch (IOException e) {
-					throw new ScriptRuntimeException(e);
-				}
-				webHook.setContentType(contentType);
-				webHook.setWebHookContent(sw.toString());
-			}
-			webHook.setMetaDataId(id);
+			webHook.setGroovyTemplateContent(contentTemplate);
+
+			//template
+			
 			return webHook;
 		}
 		

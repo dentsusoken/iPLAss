@@ -257,6 +257,7 @@ public class WebEndPointEditPane extends MetaDataMainEditPane {
 		private TextItem webEndPointBasicUsernameField;
 		private TextItem webEndPointBasicPasswordField;
 
+		private TextItem webEndPointAuthorizationAltTokenTypeNameField;
 		
 		//token authentication
 		private TextAreaItem webEndPointHmacTokenField;
@@ -269,15 +270,15 @@ public class WebEndPointEditPane extends MetaDataMainEditPane {
 			mainPane.setMembersMargin(5);
 
 			urlForm =new DynamicForm();
-			urlForm.setWidth("100%");
 			urlForm.setPadding(10);
 			urlForm.setNumCols(2);
 			urlForm.setColWidths(100,"*");
 			urlForm.setIsGroup(true);
 			urlForm.setGroupTitle("EndPoint Address");
+			urlForm.setWidth(850);
 			webEndPointUrlField = new TextAreaItem("subscriberurl", "EndPoint URL Template");
 			webEndPointUrlField.setWidth("100%");
-			webEndPointUrlField.setHeight(200);
+			webEndPointUrlField.setHeight(80);
 			webEndPointUrlField.setBrowserSpellCheck(false);
 			webEndPointUrlField.setPrompt(AdminClientMessageUtil.getString("ui_metadata_webhook_WebEndPointEditPane_webEndPointUrlFieldHoverInfo"));
 			SmartGWTUtil.setRequired(webEndPointUrlField);
@@ -290,12 +291,17 @@ public class WebEndPointEditPane extends MetaDataMainEditPane {
 			//TODO:現在はBasic, Bearerだけ、今後追加かと
 			//authorizationでよく使うタイプ: Basic, Bearer, Digest, HOBA, Mutual, Client, Form Basedとか、
 			headerAuthForm =new DynamicForm();
-			headerAuthForm.setWidth("100%");
 			headerAuthForm.setPadding(10);
 			headerAuthForm.setNumCols(2);
 			headerAuthForm.setColWidths(100,"*");
 			headerAuthForm.setIsGroup(true);
 			headerAuthForm.setGroupTitle("Header Authentication");
+			headerAuthForm.setWidth(800);
+			
+			webEndPointAuthorizationAltTokenTypeNameField = new MtpTextItem("alterTokenTypeName","Customize Token Type Name");
+			webEndPointAuthorizationAltTokenTypeNameField.setPrompt(AdminClientMessageUtil.getString("ui_metadata_webhook_WebEndPointEditPane_webEndPointAuthorizationAltTokenTypeNameField"));
+			webEndPointAuthorizationAltTokenTypeNameField.setCanEdit(true);
+			
 			
 			webEndPointBasicUsernameField = new MtpTextItem("basicusername","Basic Username");
 			webEndPointBasicUsernameField.setCanEdit(false);
@@ -309,7 +315,7 @@ public class WebEndPointEditPane extends MetaDataMainEditPane {
 
 			webEndPointBearerTokenField = new TextAreaItem("subscribersecuritybearertoken","Bearer Token");
 			webEndPointBearerTokenField.setWidth("*");
-			webEndPointBearerTokenField.setHeight(300);
+			webEndPointBearerTokenField.setHeight(100);
 			webEndPointBearerTokenField.setCanEdit(false);
 			webEndPointBearerTokenField.setCanFocus(false);
 			webEndPointBearerTokenField.setTextBoxStyle("textItemDisabled");
@@ -336,18 +342,18 @@ public class WebEndPointEditPane extends MetaDataMainEditPane {
 					});
 				}
 			});
-			headerAuthForm.setItems(webEndPointBasicUsernameField,webEndPointBasicPasswordField, webEndPointBearerTokenField, editHeaderAuthButton);
+			headerAuthForm.setItems(webEndPointAuthorizationAltTokenTypeNameField, webEndPointBasicUsernameField,webEndPointBasicPasswordField, webEndPointBearerTokenField, editHeaderAuthButton);
 
 			hmacForm =new DynamicForm();
-			hmacForm.setWidth("100%");
 			hmacForm.setPadding(10);
 			hmacForm.setNumCols(2);
 			hmacForm.setColWidths(100,"*");
 			hmacForm.setIsGroup(true);
 			hmacForm.setGroupTitle("Hmac Token Authentication");
+			hmacForm.setWidth(800);
 			webEndPointHmacTokenField = new TextAreaItem("securityhmactoken","HMAC Token");
 			webEndPointHmacTokenField.setWidth("*");
-			webEndPointHmacTokenField.setHeight(300);
+			webEndPointHmacTokenField.setHeight(100);
 			SmartGWTUtil.setReadOnlyTextArea(webEndPointHmacTokenField);
 			
 			ButtonItem generateHmacButton = new ButtonItem(AdminClientMessageUtil.getString("ui_metadata_webhook_WebEndPointEditPane_generateHmacButton"));
@@ -481,6 +487,7 @@ public class WebEndPointEditPane extends MetaDataMainEditPane {
 		public void setDefinition(WebEndPointDefinition definition) {
 			if (definition != null) {
 				webEndPointUrlField.setValue(curDefinition.getUrl());
+				webEndPointAuthorizationAltTokenTypeNameField.setValue(curDefinition.getHeaderAuthTypeName());
 				service.getWebEndPointSecurityInfo(TenantInfoHolder.getId(), curDefinition.getWebEndPointId(), "WHHM", new AdminAsyncCallback<String>() {
 					@Override
 					public void onSuccess(String result) {
@@ -545,6 +552,7 @@ public class WebEndPointEditPane extends MetaDataMainEditPane {
 				webEndPointBasicPasswordField.clearValue();
 				webEndPointHmacTokenField.clearValue();
 				webEndPointBearerTokenField.clearValue();
+				webEndPointAuthorizationAltTokenTypeNameField.clearValue();
 			}
 			setHeaderAuthTokenVisibility();
 		}
@@ -552,6 +560,7 @@ public class WebEndPointEditPane extends MetaDataMainEditPane {
 		/** pane -> definition */
 		public WebEndPointDefinition getEditDefinition(WebEndPointDefinition definition) {
 			definition.setUrl(SmartGWTUtil.getStringValue(webEndPointUrlField));
+			definition.setHeaderAuthTypeName(SmartGWTUtil.getStringValue(webEndPointAuthorizationAltTokenTypeNameField));
 			return definition;
 		}
 		

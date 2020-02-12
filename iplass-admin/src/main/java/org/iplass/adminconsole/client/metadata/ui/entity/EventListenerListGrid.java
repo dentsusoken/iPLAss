@@ -583,7 +583,7 @@ public class EventListenerListGrid extends ListGrid {
 			webhookLayout.setWidth("100%");
 			webHookSettingsForm = new MtpForm();
 			webHookSettingsForm.setNumCols(2);
-			webHookResultHandlerItem = new TextItem("webHookResultHandler","ResuleHandlerCommandDefName");
+			webHookResultHandlerItem = new TextItem("webHookResultHandler","ResuleHandlerImplClassName");
 			webHookResultHandlerItem.setWidth(575);
 			webHookSettingsForm.setItems(webHookResultHandlerItem);
 			
@@ -772,6 +772,11 @@ public class EventListenerListGrid extends ListGrid {
 			webHookEndPointGrid.initializeGrid(target.getWebEndPointList(), false);
 
 			withoutMappedByReferenceItem.setValue(target.isWithoutMappedByReference());
+			
+			//既にnotificationTypeがあったらtemplateの選択肢もロードします
+			if (notificationTypeItem.getValueAsString()!=null&&!notificationTypeItem.getValueAsString().isEmpty()) {
+				MetaTemplateChange();
+			}
 		}
 
 		private void formVisibleChange() {
@@ -934,7 +939,6 @@ public class EventListenerListGrid extends ListGrid {
 				target.setNotifyAfterP(SmartGWTUtil.getBooleanValue(notifyAfterPItem));
 				target.setNotifyOnLoad(SmartGWTUtil.getBooleanValue(notifyOnLoadItem));
 				target.setNotifyBeforeValidate(SmartGWTUtil.getBooleanValue(notifyBeforeValidateItem));
-//				target.setWebEndPointList(webHookEndPointGrid.getDefinition());TODO;いらない
 				target.setWebHookResultHandler(SmartGWTUtil.getStringValue(webHookResultHandlerItem));
 				target.setIsSyncrhonous(SmartGWTUtil.getBooleanValue(webHookIsSynchronousItem));
 			}
