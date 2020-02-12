@@ -261,7 +261,7 @@ public final class FullTextSearchCommand implements Command {
 		if (searchDefNames != null) {
 			return Arrays.stream(searchDefNames)
 					.filter(defName -> StringUtil.isNotEmpty(defName) //ブランク除去
-							&& StringUtil.isNotBlank(request.getParam("sortType_" + defName)))
+							&& StringUtil.isNotEmpty(request.getParam("sortType_" + defName)))
 					.collect(Collectors.toMap(defName -> defName, defName -> request.getParam("sortType_" + defName)));
 		} else {
 			return Collections.emptyMap();
