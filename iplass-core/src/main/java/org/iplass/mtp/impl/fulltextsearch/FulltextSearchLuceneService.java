@@ -84,9 +84,13 @@ import org.iplass.mtp.entity.EntityManager;
 import org.iplass.mtp.entity.SearchResult;
 import org.iplass.mtp.entity.definition.EntityDefinition;
 import org.iplass.mtp.entity.definition.EntityDefinitionManager;
+import org.iplass.mtp.entity.fulltextsearch.FulltextSearchCondition;
+import org.iplass.mtp.entity.fulltextsearch.FulltextSearchOption;
 import org.iplass.mtp.entity.fulltextsearch.FulltextSearchRuntimeException;
+import org.iplass.mtp.entity.query.OrderBy;
 import org.iplass.mtp.entity.query.Query;
 import org.iplass.mtp.entity.query.Select;
+import org.iplass.mtp.entity.query.SortSpec;
 import org.iplass.mtp.entity.query.condition.predicate.GreaterEqual;
 import org.iplass.mtp.entity.query.condition.predicate.In;
 import org.iplass.mtp.entity.query.value.ValueExpression;
@@ -560,16 +564,26 @@ public class FulltextSearchLuceneService extends AbstractFulltextSeachService {
 
 	@Override
 	public <T extends Entity> SearchResult<T> fulltextSearchEntity(String searchDefName, String fulltext) {
-		Map<String, List<String>> entityProperties = new HashMap<String, List<String>>();
+		FulltextSearchOption option = new FulltextSearchOption();
 		if (StringUtil.isNotEmpty(searchDefName)) {
-			entityProperties.put(searchDefName, null);
+			option.getConditions().put(searchDefName, null);
 		}
-		return fulltextSearchEntity(entityProperties, fulltext);
+		return fulltextSearchEntity(fulltext, option);
+	}
+
+	@Override
+	public <T extends Entity> SearchResult<T> fulltextSearchEntity(Map<String, List<String>> entityProperties, String fulltext) {
+		FulltextSearchOption option = new FulltextSearchOption();
+		for (Map.Entry<String, List<String>> data : entityProperties.entrySet()) {
+			FulltextSearchCondition cond = new FulltextSearchCondition(data.getValue());
+			option.getConditions().put(data.getKey(), cond);
+		}
+		return fulltextSearchEntity(fulltext, option);
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public <T extends Entity> SearchResult<T> fulltextSearchEntity(Map<String, List<String>> entityProperties, String fulltext) {
+	public <T extends Entity> SearchResult<T> fulltextSearchEntity(String fulltext, FulltextSearchOption option) {
 		if (searcherManager == null) {
 			return new SearchResult<T>(-1, null);
 		}
@@ -592,10 +606,9 @@ public class FulltextSearchLuceneService extends AbstractFulltextSeachService {
 
 			luceneQuery = setTenantCondition(qp, luceneQuery);
 
-			List<String> defNameList = new ArrayList<String>();
-			for (Map.Entry<String, List<String>> data : entityProperties.entrySet()) {
-				defNameList.add(data.getKey());
-			}
+			Map<String, FulltextSearchCondition> conditions = option.getConditions();
+
+			List<String> defNameList = new ArrayList<>(conditions.keySet());
 			luceneQuery = setEntityDefCondition(luceneQuery, defNameList.toArray(new String[defNameList.size()]));
 
 			if (logger.isDebugEnabled()) {
@@ -645,14 +658,25 @@ public class FulltextSearchLuceneService extends AbstractFulltextSeachService {
 
 			// Entity毎にsearchする
 			List<T> resultList = new ArrayList<T>();
+			// スコアでソースする
+			List<T> tempSortList = new ArrayList<T>();
 			for(FulltextSearchDto dto : tempList) {
 				String tempDefName = dto.getDefName();
-				if ((entityProperties == null || entityProperties.size() < 1) || entityProperties.containsKey(tempDefName)) {
+				if (conditions.isEmpty() || conditions.containsKey(tempDefName)) {
+
+					FulltextSearchCondition cond = conditions.get(tempDefName);
 
 					Query query = new Query();
+
+					OrderBy order = null;
+					if (cond != null && cond.getOrder() != null) {
+						order = cond.getOrder();
+						query.setOrderBy(order);
+					}
+
 					List<String> properties = null;
-					if (entityProperties.containsKey(tempDefName)) {
-						properties = entityProperties.get(tempDefName);
+					if (cond != null && cond.getProperties() != null) {
+						properties = cond.getProperties();
 					}
 
 					if (properties != null && properties.size() > 0) {
@@ -660,6 +684,14 @@ public class FulltextSearchLuceneService extends AbstractFulltextSeachService {
 							.select(properties.toArray(new Object[properties.size()]))
 							.from(tempDefName)
 							.where(new In("oid", dto.getOidArray()));
+
+						if (order != null) {
+							for (SortSpec sortSpec : order.getSortSpecList()) {
+								String sortKey = sortSpec.getSortKey().toString();
+								if (!properties.contains(sortKey)) query.select().add(sortKey);
+							}
+						}
+
 					} else {
 						query.selectAll(tempDefName, true, true, true).where(new In("oid", dto.getOidArray()));
 					}
@@ -670,28 +702,37 @@ public class FulltextSearchLuceneService extends AbstractFulltextSeachService {
 						Entity entity = (Entity) t;
 						if (entity != null) {
 							entity.setValue("score", dto.getScore().get(entity.getOid()));
-							// score情報も入れる
-							resultList.add((T) entity);
+							if (order == null) {
+								// score情報も入れる
+								tempSortList.add((T) entity);
+							} else {
+								// EQLのソート順で入れる
+								resultList.add((T) entity);
+							}
 						}
 					}
 				}
 			}
 
-			Collections.sort(resultList, new Comparator<T>() {
-				public int compare(T e1, T e2) {
-					Float score1 = ((Entity) e1).getValue("score");
-					Float score2 = ((Entity) e2).getValue("score");
+			if (!tempSortList.isEmpty()) {
+				// EQLのソート順がない場合、スコアでソートします。
+				Collections.sort(tempSortList, new Comparator<T>() {
+					public int compare(T e1, T e2) {
+						Float score1 = ((Entity) e1).getValue("score");
+						Float score2 = ((Entity) e2).getValue("score");
 
-					if (score1 != null && score2 != null) {
-						return score2.compareTo(score1);
-					} else if (score1 != null) {
-						return -1;
-					} else {
-						return 1;
+						if (score1 != null && score2 != null) {
+							return score2.compareTo(score1);
+						} else if (score1 != null) {
+							return -1;
+						} else {
+							return 1;
+						}
+
 					}
-
-				}
-			});
+				});
+				resultList.addAll(tempSortList);
+			}
 
 			return new SearchResult<T>(-1, resultList);
 		} catch (CorruptIndexException e) {

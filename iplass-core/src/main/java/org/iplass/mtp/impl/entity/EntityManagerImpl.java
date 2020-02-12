@@ -66,6 +66,7 @@ import org.iplass.mtp.entity.definition.properties.BinaryProperty;
 import org.iplass.mtp.entity.definition.properties.ReferenceProperty;
 import org.iplass.mtp.entity.definition.properties.ReferenceType;
 import org.iplass.mtp.entity.definition.properties.StringProperty;
+import org.iplass.mtp.entity.fulltextsearch.FulltextSearchOption;
 import org.iplass.mtp.entity.interceptor.InvocationType;
 import org.iplass.mtp.entity.query.Limit;
 import org.iplass.mtp.entity.query.Query;
@@ -1389,6 +1390,11 @@ public class EntityManagerImpl implements EntityManager {
 	public <T extends Entity> SearchResult<T> fulltextSearchEntity(Map<String, List<String>> entityProperties,
 			String fulltext) {
 		return fulltextSearchService.fulltextSearchEntity(entityProperties, fulltext);
+	}
+
+	@Override
+	public <T extends Entity> SearchResult<T> fulltextSearchEntity(String fulltext, FulltextSearchOption option) {
+		return fulltextSearchService.fulltextSearchEntity(fulltext, option);
 	}
 
 	@Override

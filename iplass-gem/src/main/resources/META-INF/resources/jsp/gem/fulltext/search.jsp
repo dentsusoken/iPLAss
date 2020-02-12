@@ -155,8 +155,17 @@
 	}
 %>
 		</select>
+<%
+	for (Map.Entry<String, String> dispEntity : dispEntitiesMap.entrySet()) {
+		String targetDefName = dispEntity.getKey();
+%>
+		<input type="hidden" id="sortKey_<%=targetDefName %>" name="sortKey_<%=targetDefName %>" />
+		<input type="hidden" id="sortType_<%=targetDefName %>" name="sortType_<%=targetDefName %>" />
+<%
+	}
+%>
 		<input class="form-size inpbr" type="text" name="fulltextKey" id="fulltext" onkeypress="if(event.keyCode == 13){return false;}" />
-		<input type="button"  class="btn-search-01 gr-btn" value="${m:rs('mtp-gem-messages', 'fulltext.search.search')}" onclick="fulltextSearchResultView()"/>
+		<input type="button"  class="btn-search-01 gr-btn" value="${m:rs('mtp-gem-messages', 'fulltext.search.search')}" onclick="resetSortCondition(); fulltextSearchResultView()"/>
 		<img src="${m:esc(skinImagePath)}/icon-help-01.png" class="vm tp" alt="" title="${m:rs('mtp-gem-messages', 'fulltext.search.hint')}" />
 	</form>
 </div>
@@ -199,7 +208,7 @@ function execSearch(param) {
 				var grid = null;
 				for (var i=0; i<resultData.length; i++) {
 					var entityResult = resultData[i];
-					grid = createTemplate("list" + i, entityResult.displayName, entityResult.crawlDate, entityResult.colModels);
+					grid = createTemplate("list" + i, entityResult.defName, entityResult.displayName, entityResult.crawlDate, entityResult.colModels);
 					setData(grid, "list" + i, entityResult.values, entityResult.viewAction, entityResult.detailAction, entityResult.showDetailLink);
 				}
 				var message = commandResult.message;
@@ -242,11 +251,13 @@ function execSearch(param) {
 
 }
 
-function createTemplate(listId, displayName, crawlDate, colModels) {
+function createTemplate(listId, defName, displayName, crawlDate, colModels) {
 	$("#entityList").append("<div class='entity-result'><div class='result-title'>"
 			+ "<h3 class='hgroup-02'>" + displayName + "</h3>"
 			+ "<span class='crawl-date'>" + crawlDate + "</span>"
 			+ "</div><table id='" + listId + "'></table></div>");
+	var $sortKey = $("#fulltextSearchForm").find(":hidden#" + $.escapeSelector("sortKey_" + defName));
+	var $sortType = $("#fulltextSearchForm").find(":hidden#" + $.escapeSelector("sortType_" + defName));
 	var grid = $("#" + listId).jqGrid({
 		datatype: "local",
 		height: "auto",
@@ -255,7 +266,39 @@ function createTemplate(listId, displayName, crawlDate, colModels) {
 		caption: "Fulltext Search Result",
 		viewrecords: true,
 		altRows: true,
-		altclass:'myAltRowClass'
+		altclass:'myAltRowClass',
+		onSortCol: function(index, iCol, sortorder) {
+			var sortKey = index;
+			var sortType = sortorder.toUpperCase();
+
+			var curSortKey = $sortKey.val();
+			var curSortType = $sortType.val();
+
+			<%-- アイコンは表示されていない可能性があるので必ずやる --%>
+			<%-- $("#gview_searchResult tr.ui-jqgrid-labels th .ui-jqgrid-sortable").removeClass('asc desc'); --%>
+			<%-- $("#gview_searchResult tr.ui-jqgrid-labels th:eq(" + iCol + ") .ui-jqgrid-sortable").addClass(sortType.toLowerCase()); --%>
+
+			<%-- ソート条件に変更がある場合のみ実施
+				(結果表示用のsetData関数でsortGrid呼び出しによって発生するため) --%>
+			if (sortKey !== curSortKey || sortType !== curSortType) {
+				$sortKey.val(sortKey);
+				$sortType.val(sortType);
+				fulltextSearchResultView();
+			}
+			return "stop";
+		},
+		gridComplete: function() {
+			var curSortKey = $sortKey.val();
+			var curSortType = $sortType.val();
+
+			if (curSortKey !== "" && curSortType !== "") {
+				$(".ui-jqgrid-htable tr.ui-jqgrid-labels th[id^=" + listId + "] .ui-jqgrid-sortable").removeClass("asc desc");
+				var $sortable = $(".ui-jqgrid-htable tr.ui-jqgrid-labels th#" + $.escapeSelector(listId + "_" + curSortKey) + " .ui-jqgrid-sortable");
+				$sortable.addClass(curSortType.toLowerCase());
+				$(".s-ico", $sortable).show();
+				$(".ui-icon-" + curSortType.toLowerCase(), $sortable).removeClass("ui-state-disabled");
+			}
+		}
 	});
 	return grid;
 }
@@ -276,7 +319,8 @@ function setData(grid, listId, data, viewUrl, detailUrl, detailLink) {
 		grid.addRowData(index + 1, this);
 	});
 
-	grid.setGridParam({sortname:"score", sortorder:"desc"}).trigger("reloadGrid");
+	<%-- サーバのソート順で表示します。 --%>
+	<%-- grid.setGridParam({sortname:"score", sortorder:"desc"}).trigger("reloadGrid"); --%>
 
 	var isSubModal = $("body.modal-body").length != 0;
 	if (isSubModal) {
@@ -344,6 +388,12 @@ function fulltextSearchResultView() {
 		$("div.fulltext-search-block").hide();
 		execSearch(param);
 	}
+}
+
+function resetSortCondition() {
+	var $form = $("#fulltextSearchForm");
+	$(":hidden[name^='sortKey_']", $form).val("");
+	$(":hidden[name^='sortType_']", $form).val("");
 }
 </script>
 </div>
