@@ -146,18 +146,18 @@ if (!"true".equals(request.getAttribute(Constants.UPDATE_USER_INFO))) {
 <div>
 <table class="tbl-maintenance tbl-section mb10">
 <tbody><tr>
-<th class="section-data">${m:rs("mtp-gem-messages", "auth.Password.curPass")}</th>
-<td class="section-data">
+<th class="section-data col1">${m:rs("mtp-gem-messages", "auth.Password.curPass")}</th>
+<td class="section-data col1">
 <input type="password" name="<%= AuthCommandConstants.PARAM_PASSWORD %>" value="" class="form-size-01 inpbr" />
 </td>
 </tr>
 <tr>
-<th class="section-data">${m:rs("mtp-gem-messages", "auth.Password.newPass")}</th>
-<td class="section-data"><input type="password" name="<%= AuthCommandConstants.PARAM_NEW_PASSWORD %>" value="" class="form-size-01 inpbr" /></td>
+<th class="section-data col1">${m:rs("mtp-gem-messages", "auth.Password.newPass")}</th>
+<td class="section-data col1"><input type="password" name="<%= AuthCommandConstants.PARAM_NEW_PASSWORD %>" value="" class="form-size-01 inpbr" /></td>
 </tr>
 <tr>
-<th class="section-data">${m:rs("mtp-gem-messages", "auth.Password.cnfrmNewPass")}</th>
-<td class="section-data"><input type="password" name="<%= AuthCommandConstants.PARAM_CONFIRM_PASSWORD %>" value="" class="form-size-01 inpbr" /></td>
+<th class="section-data col1">${m:rs("mtp-gem-messages", "auth.Password.cnfrmNewPass")}</th>
+<td class="section-data col1"><input type="password" name="<%= AuthCommandConstants.PARAM_CONFIRM_PASSWORD %>" value="" class="form-size-01 inpbr" /></td>
 </tr>
 </tbody>
 </table>

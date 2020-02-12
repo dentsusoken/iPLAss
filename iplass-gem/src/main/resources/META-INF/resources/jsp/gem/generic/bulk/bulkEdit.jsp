@@ -296,11 +296,11 @@ ${m:outputToken('FORM_XHTML', true)}
 	if (isSelectAllPage) {
 %>
 <tr>
-<th class="section-data" rowspan="2">${m:rs("mtp-gem-messages", "generic.bulk.selectBulkUpdateType")}</th>
-<td class="section-data"><label><input type="radio" name="selectAllType" value="select" <%=!isSelectAll ? "checked" : ""%>>${m:rs("mtp-gem-messages", "generic.bulk.updateRow")}</label></td>
+<th class="section-data col1" rowspan="2">${m:rs("mtp-gem-messages", "generic.bulk.selectBulkUpdateType")}</th>
+<td class="section-data col1"><label><input type="radio" name="selectAllType" value="select" <%=!isSelectAll ? "checked" : ""%>>${m:rs("mtp-gem-messages", "generic.bulk.updateRow")}</label></td>
 </tr>
 <tr>
-<td class="section-data"><label><input type="radio" name="selectAllType" value="all" <%=isSelectAll ? "checked" : ""%>>${m:rs("mtp-gem-messages", "generic.bulk.updateAll")}<span id="bulkUpdateCount"></span></label></td>
+<td class="section-data col1"><label><input type="radio" name="selectAllType" value="all" <%=isSelectAll ? "checked" : ""%>>${m:rs("mtp-gem-messages", "generic.bulk.updateAll")}<span id="bulkUpdateCount"></span></label></td>
 </tr>
 <script>
 $(function() {
@@ -347,8 +347,8 @@ $(function() {
 	}
 %>
 <tr>
-<th class="section-data">${m:rs("mtp-gem-messages", "generic.bulk.updatePropName")}</th>
-<td class="section-data">
+<th class="section-data col1">${m:rs("mtp-gem-messages", "generic.bulk.updatePropName")}</th>
+<td class="section-data col1">
 <select id="sel_<c:out value="<%=Constants.BULK_UPDATE_PROP_NM%>"/>" name="<c:out value="<%=Constants.BULK_UPDATE_PROP_NM%>"/>" class="inpbr form-size" onchange="propChange(this)">
 <option value="" selected="selected"><%= pleaseSelectLabel %></option>
 <%
