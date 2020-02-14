@@ -33,6 +33,7 @@
 /*--------------------------*/
 
 /* 認証系 */
+@import "auth/login";
 @import "auth/lastlogin";
 @import "auth/maintenance";
 @import "auth/application";

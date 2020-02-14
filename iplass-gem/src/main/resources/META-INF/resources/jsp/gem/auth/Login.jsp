@@ -33,12 +33,11 @@
 <%@ page import="org.iplass.gem.command.auth.LoginCommand"%>
 <%@ page import="org.iplass.gem.command.ViewUtil"%>
 <%
+String errorMessage = null;
 Exception e = (Exception) request.getAttribute(AuthCommandConstants.RESULT_ERROR);
 if (e == null) {
 	e = (Exception) request.getAttribute(WebRequestConstants.EXCEPTION);
 }
-
-String errorMessage = null;
 if (e != null) {
 	errorMessage = e.getMessage();
 }
@@ -58,10 +57,12 @@ boolean isRememberMe = ExecuteContext.getCurrentContext().getCurrentTenant().get
 <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
 <meta http-equiv="x-ua-compatible" content="IE=edge" />
 <title>${m:esc(title)}</title>
+
 <%@include file="../layout/resource/simpleResource.jsp" %>
 <%@include file="../layout/resource/skin.jsp" %>
 <%@include file="../layout/resource/theme.jsp" %>
 <%@include file="../layout/resource/tenant.jsp" %>
+
 <%if (isRememberMe) {%>
 <script type="text/javascript">
 <!--
@@ -89,6 +90,7 @@ $(function() {
 //-->
 </script>
 <%}%>
+
 <%if (StringUtil.isNotBlank(largeImageUrl)){%>
 <style>
 #login #main #header {
@@ -97,20 +99,33 @@ height: auto;
 }
 </style>
 <%}%>
+
 </head>
+
 <body id="login">
 <div id="container">
+
 <%
 request.setAttribute("showNavi", false);
 TemplateUtil.includeTemplate("gem/layout/header", pageContext);
 %>
+
 <div id="content">
 <div id="main">
+
 <%if (StringUtil.isNotBlank(largeImageUrl)){%>
 <img src="<%=largeImageUrl%>" class="login-logo" />
 <%}%>
-<form name="loginForm" method="post" action="${m:tcPath()}/<%=LoginCommand.ACTION_LOGIN%>">
+
 <h2>${m:rs("mtp-gem-messages", "auth.Login.login")}</h2>
+
+<%if (errorMessage != null) {%>
+<div class="error">
+<span class="error"><%= errorMessage %></span>
+</div>
+<%}%>
+
+<form name="loginForm" method="post" action="${m:tcPath()}/<%=LoginCommand.ACTION_LOGIN%>">
 <table class="tbl-login-01">
 <tr>
 <th>${m:rs("mtp-gem-messages", "auth.Login.id")}</th>
@@ -127,24 +142,23 @@ TemplateUtil.includeTemplate("gem/layout/header", pageContext);
 </tr>
 <%}%>
 </table>
+
 <p class="nav-login-01">
 <input type="submit" class="gr-btn" value="${m:rs('mtp-gem-messages', 'auth.Login.login')}" />
 </p>
-<div style="color:red;">
-<%if (errorMessage != null) {%>
-<%=errorMessage%>
-<%}%>
-</div>
+
 <%if (orgUrl != null) {%>
 <input type="hidden" name="<%=AuthCommandConstants.PARAM_BACK_URL%>" value="<c:out value="<%=orgUrl%>"/>" />
 <%}%>
-<%=TemplateUtil.outputToken(TemplateUtil.TokenOutputType.FORM_XHTML)%>
+
+${m:outputToken('FORM_XHTML', true)}
 </form>
 </div><!-- main -->
 </div><!-- content -->
+
 <%
 TemplateUtil.includeTemplate("gem/layout/footer", pageContext);
 %>
-</div>
+</div><!-- container -->
 </body>
 </html>
