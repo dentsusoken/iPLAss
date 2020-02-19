@@ -225,7 +225,14 @@ public class WebEndPointSecurityInfoEditDialog extends MtpDialog {
 			if (valueMap.get("type").equals("WHBA")) {
 				String basicName = SmartGWTUtil.getStringValue(basicUsernameField);
 				String basicPass = SmartGWTUtil.getStringValue(basicPasswordField);
-				valueMap.put("content", basicName+":"+basicPass);
+				if (basicName==null
+						||basicPass==null
+						||basicName.replaceAll("\\s","").isEmpty()
+						||basicPass.replaceAll("\\s","").isEmpty()) {
+					valueMap.put("content","");
+				} else {
+					valueMap.put("content", basicName+":"+basicPass);
+				}
 			} else if (valueMap.get("type").equals("WHBT")){
 				valueMap.put("content", SmartGWTUtil.getStringValue(tokenContentField));
 			} else {

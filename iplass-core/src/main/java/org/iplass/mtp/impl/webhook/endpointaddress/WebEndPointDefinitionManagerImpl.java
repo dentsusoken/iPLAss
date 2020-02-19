@@ -98,7 +98,7 @@ public class WebEndPointDefinitionManagerImpl extends AbstractTypedDefinitionMan
 	 * */
 	@Override
 	public String getSecurityToken(int tenantId, String metaDataId,  String tokenType) {
-		if(tokenType==null) {
+		if(tokenType==null||tokenType.replaceAll("\\s","").isEmpty()) {
 			return null;
 			}
 		if( tokenType.equals("WHHM")){

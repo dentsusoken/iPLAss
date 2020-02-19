@@ -132,6 +132,35 @@ public class WebEndPointEditPane extends MetaDataMainEditPane {
 	}
 	
 	/**
+	 * version更新
+	 */
+	private void refreshVersion() {
+//		エラーのクリア
+		commonSection.clearErrors();
+		webEndPointAttributePane.clearErrors();
+
+		service.getDefinitionEntry(TenantInfoHolder.getId(), WebEndPointDefinition.class.getName(), defName, new AsyncCallback<DefinitionEntry>() {
+
+			@Override
+			public void onFailure(Throwable caught) {
+				SC.say(AdminClientMessageUtil.getString("ui_metadata_webhook_WebEndPointEditPane_failed"),
+						AdminClientMessageUtil.getString("ui_metadata_webhook_WebEndPointEditPane_failedGetScreenInfo"));
+
+				GWT.log(caught.toString(), caught);
+			}
+
+			@Override
+			public void onSuccess(DefinitionEntry result) {
+				curVersion = result.getDefinitionInfo().getVersion();
+			}
+
+		});
+
+//		ステータスチェック
+		StatusCheckUtil.statuCheck(WebEndPointDefinition.class.getName(), defName, this);
+	}
+	
+	/**
 	 * Definition画面設定内容入り
 	 *
 	 * @param definition 編集対象
@@ -441,7 +470,7 @@ public class WebEndPointEditPane extends MetaDataMainEditPane {
 							};
 						});
 					} else {
-						curDefinition.setHeaderAuthType(type);
+						//dbに新情報の登録
 						service.updateWebEndPointSecurityInfo(TenantInfoHolder.getId(), curDefinition.getWebEndPointId(), content, type,new AdminAsyncCallback<Void>() {
 
 							@Override
@@ -454,10 +483,46 @@ public class WebEndPointEditPane extends MetaDataMainEditPane {
 
 							@Override
 							protected void beforeFailure(Throwable caught){
+								SC.warn("error happened when registering new token");
 								SmartGWTUtil.hideProgress();
 							};
 						});
+						
 					}
+					if (curDefinition.getHeaderAuthType()!=type) {//タイプ変わったら旧タイプの削除
+						service.updateWebEndPointSecurityInfo(TenantInfoHolder.getId(), curDefinition.getWebEndPointId(), null, 
+								type=="WHBA"?"WHBT":"WHBA",
+								new AdminAsyncCallback<Void>() {
+							@Override
+							public void onSuccess(Void result) {
+							}
+							@Override
+							protected void beforeFailure(Throwable caught){
+								SC.warn("error happened when deleting old token");
+							};
+						});
+					}
+					if (content==null||content.replaceAll("\\s","").isEmpty()) {//contentがnullかemptyでしたら、data消しになるので、HeaderAuthTypeもなしに
+						curDefinition.setHeaderAuthType(null);
+						webEndPointBasicUsernameField.clearValue();
+						webEndPointBasicPasswordField.clearValue();
+						webEndPointBearerTokenField.clearValue();
+					} else {
+						curDefinition.setHeaderAuthType(type);
+					}
+					service.updateDefinition(TenantInfoHolder.getId(), curDefinition, curVersion, true, new MetaDataUpdateCallback() {
+
+						@Override
+						protected void overwriteUpdate() {
+							updateWebEndPointDefinition(curDefinition, false);
+						}
+
+						@Override
+						protected void afterUpdate(AdminDefinitionModifyResult result) {
+							refreshVersion();
+						}
+					});
+					setHeaderAuthTokenVisibility();
 					webEndPointAttributePane.markForRedraw();
 				}
 			});

@@ -30,11 +30,9 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.concurrent.Callable;
-
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import javax.net.ssl.SSLException;
-
 import org.apache.http.HttpHeaders;
 import org.apache.http.HttpHost;
 import org.apache.http.client.HttpRequestRetryHandler;
@@ -67,7 +65,7 @@ import org.iplass.mtp.impl.script.ScriptRuntimeException;
 import org.iplass.mtp.impl.script.template.GroovyTemplate;
 import org.iplass.mtp.impl.script.template.GroovyTemplateBinding;
 import org.iplass.mtp.impl.script.template.GroovyTemplateCompiler;
-import org.iplass.mtp.impl.webhook.responsehandler.JustLogWebHookResponseHandlerImpl;
+import org.iplass.mtp.impl.webhook.responsehandler.DefaultWebHookResponseHandlerImpl;
 import org.iplass.mtp.impl.webhook.template.MetaWebHookTemplate;
 import org.iplass.mtp.impl.webhook.template.MetaWebHookTemplate.WebHookTemplateRuntime;
 import org.iplass.mtp.spi.Config;
@@ -164,9 +162,15 @@ public class WebHookServiceImpl extends AbstractTypedMetaDataService<MetaWebHook
 				break;
 			case WEBHOOK_HMACTOKEN_ALGORITHM:
 				webHookHmacTokenAlgorithm = config.getValue(WEBHOOK_HMACTOKEN_ALGORITHM);
+				if (webHookHmacTokenAlgorithm==null||webHookHmacTokenAlgorithm.replaceAll("\\s","").isEmpty()) {
+					webHookHmacTokenAlgorithm="HmacSHA256";
+				}
 				break;
 			case WEBHOOK_HMACTOKEN_DEFAULTNAME:
 				webHookHmacTokenDefaultName = config.getValue(WEBHOOK_HMACTOKEN_DEFAULTNAME);
+				if (webHookHmacTokenDefaultName==null||webHookHmacTokenDefaultName.replaceAll("\\s","").isEmpty()) {
+					webHookHmacTokenDefaultName="X-IPLASS-HMAC";
+				}
 				break;
 			case WEBHOOK_HTTP_CLIENT_CONFIG:
 				webHookHttpClientConfig = config.getValue(WEBHOOK_HTTP_CLIENT_CONFIG, HttpClientConfig.class);
@@ -177,7 +181,7 @@ public class WebHookServiceImpl extends AbstractTypedMetaDataService<MetaWebHook
 				break;
 			}
 		}
-		//TODO:add default values to the necessary items, such as hmac algorithm
+
 		atm = ManagerLocator.getInstance().getManager(AsyncTaskManager.class);
 		wepdm = ManagerLocator.getInstance().getManager(WebEndPointDefinitionManager.class);
 		
@@ -299,10 +303,13 @@ public class WebHookServiceImpl extends AbstractTypedMetaDataService<MetaWebHook
 					
 				}else {
 					String scheme = null;
+					String authContent = null;
 					if (subscriber.getHeaderAuthType().equals("WHBT")) {
 						scheme = "Bearer";
+						authContent = subscriber.getHeaderAuthContent();
 					} else if (subscriber.getHeaderAuthType().equals("WHBA")) {
 						scheme = "Basic";
+						authContent = Base64.encodeBase64String(subscriber.getHeaderAuthContent().getBytes());
 					}
 					if (subscriber.getHeaderAuthTypeName()!=null) {
 						String authTypeName = subscriber.getHeaderAuthTypeName().replace("\n", "").replaceAll("\\s+", "");
@@ -310,7 +317,7 @@ public class WebHookServiceImpl extends AbstractTypedMetaDataService<MetaWebHook
 							scheme = authTypeName;
 						}
 					}
-					httpRequest.setHeader(HttpHeaders.AUTHORIZATION, scheme+ " " + subscriber.getHeaderAuthContent());
+					httpRequest.setHeader(HttpHeaders.AUTHORIZATION, scheme+ " " + authContent);
 				}
 				
 				
@@ -338,15 +345,15 @@ public class WebHookServiceImpl extends AbstractTypedMetaDataService<MetaWebHook
 					} catch (IOException e) {
 						throw new ScriptRuntimeException(e);
 					}
-					subscriber.setUrl(sw.toString());
+					subscriber.setUrl(sw.toString().replaceAll("\\s",""));//スベース抜き。でないとurlになれない
 				}
 				
 				httpRequest.setURI(new URI(subscriber.getUrl()));
 				CloseableHttpResponse response = webHookHttpClient.execute(httpRequest,httpContext);
 				logger.debug("\n---------------------------\n response headers: \n"+response.getAllHeaders().toString()+"\n response entity: \n"+ response.getEntity().getContentType()+"\n"+response.getEntity().getContent()+"\n---------------------------");
 				try {
-					if (webHook.getResultHandler()==null||webHook.getResultHandler().isEmpty()) {
-						WebHookResponseHandler whrh= new JustLogWebHookResponseHandlerImpl();
+					if (webHook.getResultHandler()==null||webHook.getResultHandler().isEmpty()) {//FIXME テストの便利性のために存在しています。リリース前に削除をわすれないで
+						WebHookResponseHandler whrh= new DefaultWebHookResponseHandlerImpl();
 						whrh.handleResponse(response);
 					} else {
 						try {
@@ -356,7 +363,7 @@ public class WebHookServiceImpl extends AbstractTypedMetaDataService<MetaWebHook
 							logger.info("Unexpected error has occered when handling the webHook result. Name of the Result Handler :"+webHook.getResultHandler()+" ; and the stacktrace:");
 							e.printStackTrace();
 							logger.debug("Debug: the causing httpResult is:");
-							WebHookResponseHandler whrh= new JustLogWebHookResponseHandlerImpl();
+							WebHookResponseHandler whrh= new DefaultWebHookResponseHandlerImpl();
 							whrh.handleResponse(response);
 						}
 					}

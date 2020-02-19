@@ -29,14 +29,14 @@ import org.iplass.mtp.impl.webhook.WebHookServiceImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class JustLogWebHookResponseHandlerImpl implements WebHookResponseHandler{
+public class DefaultWebHookResponseHandlerImpl implements WebHookResponseHandler{
 	Logger logger;
 	@Override
 	public void handleResponse(HttpResponse response) {
 		String msg = "";
 		logger = LoggerFactory.getLogger(WebHookServiceImpl.class);
 		msg += getStringStatus(response.getStatusLine());
-		msg += getStringHeader(response.getAllHeaders());
+//		msg += getStringHeader(response.getAllHeaders());
 		msg += getStringEntity(response.getEntity());
 		logger.debug(msg);
 	}
