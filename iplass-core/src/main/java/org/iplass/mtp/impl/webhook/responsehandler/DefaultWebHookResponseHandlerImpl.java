@@ -30,18 +30,22 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class DefaultWebHookResponseHandlerImpl implements WebHookResponseHandler{
-	Logger logger;
+
 	@Override
 	public void handleResponse(HttpResponse response) {
+		writeLog(response);
+	}
+
+	private void writeLog(HttpResponse response) {
+		Logger logger =  LoggerFactory.getLogger(WebHookServiceImpl.class);
 		String msg = "";
-		logger = LoggerFactory.getLogger(WebHookServiceImpl.class);
-		msg += getStringStatus(response.getStatusLine());
-//		msg += getStringHeader(response.getAllHeaders());
-		msg += getStringEntity(response.getEntity());
+		msg += makeStatusString(response.getStatusLine());
+//		msg += makeHeaderString(response.getAllHeaders());
+		msg += makeEntityString(response.getEntity());
 		logger.debug(msg);
 	}
 	
-	private String getStringStatus(StatusLine statusLine) {
+	private String makeStatusString(StatusLine statusLine) {
 		String result= "Response Code ";
 		result += statusLine.getStatusCode();
 		result += ":"+statusLine.getReasonPhrase();
@@ -49,7 +53,7 @@ public class DefaultWebHookResponseHandlerImpl implements WebHookResponseHandler
 		return result;
 	}
 
-	private String getStringHeader(Header[] headers) {
+	private String makeHeaderString(Header[] headers) {
 		String result= "Headers: ";
 		if (headers==null) {
 			result+= "null;";
@@ -63,7 +67,7 @@ public class DefaultWebHookResponseHandlerImpl implements WebHookResponseHandler
 		}
 		return result;
 	}
-	private String getStringEntity(HttpEntity entity) {
+	private String makeEntityString(HttpEntity entity) {
 		String result = "";
 		if (entity == null) {
 			

@@ -371,7 +371,18 @@ public class WebEndPointEditPane extends MetaDataMainEditPane {
 					});
 				}
 			});
-			headerAuthForm.setItems(webEndPointAuthorizationAltTokenTypeNameField, webEndPointBasicUsernameField,webEndPointBasicPasswordField, webEndPointBearerTokenField, editHeaderAuthButton);
+			ButtonItem deleteHeaderAuthButton = new ButtonItem(AdminClientMessageUtil.getString("ui_metadata_webhook_WebEndPointEditPane_deleteHeaderAuthButton"));
+			deleteHeaderAuthButton.setWidth(150);
+			deleteHeaderAuthButton.addClickHandler(new com.smartgwt.client.widgets.form.fields.events.ClickHandler() {
+				@Override
+				public void onClick(com.smartgwt.client.widgets.form.fields.events.ClickEvent event) {
+					if (curDefinition.getHeaderAuthType()==null||!(curDefinition.getHeaderAuthType().equals("WHBT")||curDefinition.getHeaderAuthType().equals("WHBA"))) {
+						curDefinition.setHeaderAuthType(null);
+					}
+					delMap(curDefinition.getHeaderAuthType());
+				}
+			});
+			headerAuthForm.setItems(webEndPointAuthorizationAltTokenTypeNameField, webEndPointBasicUsernameField,webEndPointBasicPasswordField, webEndPointBearerTokenField, editHeaderAuthButton,deleteHeaderAuthButton);
 
 			hmacForm =new DynamicForm();
 			hmacForm.setPadding(10);
@@ -414,8 +425,15 @@ public class WebEndPointEditPane extends MetaDataMainEditPane {
 			});
 			generateHmacButton.setPrompt(AdminClientMessageUtil.getString("ui_metadata_webhook_WebEndPointEditPane_HmacButtonHoverInfo"));
 			editHmacButton.setPrompt(AdminClientMessageUtil.getString("ui_metadata_webhook_WebEndPointEditPane_HmacButtonHoverInfo"));
-			
-			hmacForm.setItems(webEndPointHmacTokenField,generateHmacButton,editHmacButton);
+			ButtonItem deleteHmacButton = new ButtonItem(AdminClientMessageUtil.getString("ui_metadata_webhook_WebEndPointEditPane_deleteHmacButton"));
+			deleteHmacButton.setWidth(150);
+			deleteHmacButton.addClickHandler(new com.smartgwt.client.widgets.form.fields.events.ClickHandler() {
+				@Override
+				public void onClick(com.smartgwt.client.widgets.form.fields.events.ClickEvent event) {
+					delMap("WHHM");
+				}
+			});
+			hmacForm.setItems(webEndPointHmacTokenField,generateHmacButton,editHmacButton,deleteHmacButton);
 
 
 			
@@ -447,7 +465,6 @@ public class WebEndPointEditPane extends MetaDataMainEditPane {
 			dialog.addDataChangeHandler(new DataChangedHandler() {
 				@Override
 				public void onDataChanged(DataChangedEvent event) {
-					curDefinition = getEditDefinition(curDefinition);
 					Map<String, Serializable> valueMap = event.getValueMap();
 					String type =(String) valueMap.get("type");
 					String content =(String) valueMap.get("content");
@@ -458,7 +475,7 @@ public class WebEndPointEditPane extends MetaDataMainEditPane {
 
 							@Override
 							public void onSuccess(Void result) {
-								setDefinition(curDefinition);
+								refreshSecurityInfo();
 								webEndPointAttributePane.markForRedraw();
 								dialog.destroy();
 								SmartGWTUtil.hideProgress();
@@ -470,12 +487,13 @@ public class WebEndPointEditPane extends MetaDataMainEditPane {
 							};
 						});
 					} else {
+						
 						//dbに新情報の登録
 						service.updateWebEndPointSecurityInfo(TenantInfoHolder.getId(), curDefinition.getWebEndPointId(), content, type,new AdminAsyncCallback<Void>() {
 
 							@Override
 							public void onSuccess(Void result) {
-								setDefinition(curDefinition);
+								refreshSecurityInfo();
 								webEndPointAttributePane.markForRedraw();
 								dialog.destroy();
 								SmartGWTUtil.hideProgress();
@@ -487,52 +505,105 @@ public class WebEndPointEditPane extends MetaDataMainEditPane {
 								SmartGWTUtil.hideProgress();
 							};
 						});
+						if (curDefinition.getHeaderAuthType()!=type) {//タイプ変わったら旧タイプの削除
+							service.updateWebEndPointSecurityInfo(TenantInfoHolder.getId(), curDefinition.getWebEndPointId(), null, 
+									type=="WHBA"?"WHBT":"WHBA",
+									new AdminAsyncCallback<Void>() {
+								@Override
+								public void onSuccess(Void result) {
+								}
+								@Override
+								protected void beforeFailure(Throwable caught){
+									SC.warn("error happened when deleting old token");
+								};
+							});
+						}
+						if (content==null||content.replaceAll("\\s","").isEmpty()) {//contentがnullかemptyでしたら、data消しになるので、HeaderAuthTypeもなしに
+							curDefinition.setHeaderAuthType(null);
+							webEndPointBasicUsernameField.clearValue();
+							webEndPointBasicPasswordField.clearValue();
+							webEndPointBearerTokenField.clearValue();
+						} else {
+							curDefinition.setHeaderAuthType(type);
+						}
 						
-					}
-					if (curDefinition.getHeaderAuthType()!=type) {//タイプ変わったら旧タイプの削除
-						service.updateWebEndPointSecurityInfo(TenantInfoHolder.getId(), curDefinition.getWebEndPointId(), null, 
-								type=="WHBA"?"WHBT":"WHBA",
-								new AdminAsyncCallback<Void>() {
+						service.updateDefinition(TenantInfoHolder.getId(), curDefinition, curVersion, true, new MetaDataUpdateCallback() {
+
 							@Override
-							public void onSuccess(Void result) {
+							protected void overwriteUpdate() {
+								updateWebEndPointDefinition(curDefinition, false);
 							}
+
 							@Override
-							protected void beforeFailure(Throwable caught){
-								SC.warn("error happened when deleting old token");
-							};
+							protected void afterUpdate(AdminDefinitionModifyResult result) {
+								refreshVersion();
+							}
+							
 						});
+						
+						setHeaderAuthTokenVisibility();
 					}
-					if (content==null||content.replaceAll("\\s","").isEmpty()) {//contentがnullかemptyでしたら、data消しになるので、HeaderAuthTypeもなしに
-						curDefinition.setHeaderAuthType(null);
-						webEndPointBasicUsernameField.clearValue();
-						webEndPointBasicPasswordField.clearValue();
-						webEndPointBearerTokenField.clearValue();
-					} else {
-						curDefinition.setHeaderAuthType(type);
-					}
-					service.updateDefinition(TenantInfoHolder.getId(), curDefinition, curVersion, true, new MetaDataUpdateCallback() {
-
-						@Override
-						protected void overwriteUpdate() {
-							updateWebEndPointDefinition(curDefinition, false);
-						}
-
-						@Override
-						protected void afterUpdate(AdminDefinitionModifyResult result) {
-							refreshVersion();
-						}
-					});
-					setHeaderAuthTokenVisibility();
-					webEndPointAttributePane.markForRedraw();
 				}
 			});
 			dialog.show();
+		}
+		
+		protected void delMap(String tokenType) {
+			//confirmation
+			SC.ask(AdminClientMessageUtil.getString("Warning"),
+					AdminClientMessageUtil.getString("ui_metadata_webhook_webEndPointEditPane_deleteSecurityInfoComment"), new BooleanCallback() {
+
+				@Override
+				public void execute(Boolean value) {
+					if (value) {
+						if (tokenType!=null) {
+							
+						
+							//delete data
+							service.updateWebEndPointSecurityInfo(TenantInfoHolder.getId(), curDefinition.getWebEndPointId(), null, tokenType, new AdminAsyncCallback<Void>() {
+								@Override
+								public void onSuccess(Void result) {
+								}
+								@Override
+								protected void beforeFailure(Throwable caught){
+									SC.warn("error happened when Communicating with Database");
+									SmartGWTUtil.hideProgress();
+								};
+							});
+							
+							//refresh curdef and redraw
+							if(tokenType.equals("WHBA")||tokenType.equals("WHBT")) {
+								String tempUrl= SmartGWTUtil.getStringValue(webEndPointUrlField);//編集中のurlに影響しないため
+								curDefinition.setHeaderAuthType(null);
+								service.updateDefinition(TenantInfoHolder.getId(), curDefinition, curVersion, true, new MetaDataUpdateCallback() {
+
+									@Override
+									protected void overwriteUpdate() {
+										updateWebEndPointDefinition(curDefinition, false);
+									}
+
+									@Override
+									protected void afterUpdate(AdminDefinitionModifyResult result) {
+										refreshVersion();
+									}
+								});
+								webEndPointUrlField.setValue(tempUrl);
+								setHeaderAuthTokenVisibility();
+							} else if (tokenType.equals("WHHM")) {
+								webEndPointHmacTokenField.clearValue();
+							}
+						}
+					}
+				}
+			});
+			webEndPointAttributePane.markForRedraw();
 		}
 		
 		public void setHeaderAuthTokenVisibility() {
 			if (curDefinition.getHeaderAuthType()!=null) {
 				if (curDefinition.getHeaderAuthType().equals("WHBA")){
 					webEndPointBearerTokenField.setVisible(false);
+					webEndPointBearerTokenField.clearValue();
 					webEndPointBasicPasswordField.setVisible(true);
 					webEndPointBasicUsernameField.setVisible(true);
 				}
@@ -540,11 +611,16 @@ public class WebEndPointEditPane extends MetaDataMainEditPane {
 					webEndPointBearerTokenField.setVisible(true);
 					webEndPointBasicPasswordField.setVisible(false);
 					webEndPointBasicUsernameField.setVisible(false);
+					webEndPointBasicPasswordField.clearValue();
+					webEndPointBasicUsernameField.clearValue();
 				}
 			} else {
 				webEndPointBearerTokenField.setVisible(true);
 				webEndPointBasicPasswordField.setVisible(true);
 				webEndPointBasicUsernameField.setVisible(true);
+				webEndPointBearerTokenField.clearValue();
+				webEndPointBasicPasswordField.clearValue();
+				webEndPointBasicUsernameField.clearValue();
 			}
 			webEndPointAttributePane.markForRedraw();
 		}
@@ -553,64 +629,7 @@ public class WebEndPointEditPane extends MetaDataMainEditPane {
 			if (definition != null) {
 				webEndPointUrlField.setValue(curDefinition.getUrl());
 				webEndPointAuthorizationAltTokenTypeNameField.setValue(curDefinition.getHeaderAuthTypeName());
-				service.getWebEndPointSecurityInfo(TenantInfoHolder.getId(), curDefinition.getWebEndPointId(), "WHHM", new AdminAsyncCallback<String>() {
-					@Override
-					public void onSuccess(String result) {
-						if (result==null||result.isEmpty()) {
-							webEndPointHmacTokenField.clearValue();
-						}
-						else {
-							webEndPointHmacTokenField.setValue(result);
-						}
-					}
-					@Override
-					protected void beforeFailure(Throwable caught){
-						SmartGWTUtil.hideProgress();
-					};
-				});
-				if (curDefinition.getHeaderAuthType()!=null||curDefinition.getHeaderAuthType().isEmpty()) {
-					if (curDefinition.getHeaderAuthType().equals("WHBA")) {
-						service.getWebEndPointSecurityInfo(TenantInfoHolder.getId(), curDefinition.getWebEndPointId(), "WHBA", new AdminAsyncCallback<String>() {
-							@Override
-							public void onSuccess(String result) {
-								if (result==null||result.isEmpty()) {
-									webEndPointBasicUsernameField.clearValue();
-									webEndPointBasicPasswordField.clearValue();
-								}
-								else {
-									String[] basics = result.split(":");
-									if (basics.length < 2) {
-										webEndPointBasicUsernameField.clearValue();
-										webEndPointBasicPasswordField.clearValue();
-									} else {
-										webEndPointBasicUsernameField.setValue(basics[0]);
-										webEndPointBasicPasswordField.setValue(basics[1]);
-									}
-								}
-							}
-							@Override
-							protected void beforeFailure(Throwable caught){
-								SmartGWTUtil.hideProgress();
-							};
-						});
-					} else if (curDefinition.getHeaderAuthType().equals("WHBT")) {
-						service.getWebEndPointSecurityInfo(TenantInfoHolder.getId(),curDefinition.getWebEndPointId(), "WHBT", new AdminAsyncCallback<String>() {
-							@Override
-							public void onSuccess(String result) {
-								if (result==null||result.isEmpty()) {
-									webEndPointBearerTokenField.clearValue();
-								}
-								else {
-									webEndPointBearerTokenField.setValue(result);
-								}
-							}
-							@Override
-							protected void beforeFailure(Throwable caught){
-								SmartGWTUtil.hideProgress();
-							};
-						});
-					}
-				}
+				refreshSecurityInfo();
 			} else {
 				webEndPointUrlField.clearValue();
 				webEndPointBasicUsernameField.clearValue();
@@ -620,6 +639,67 @@ public class WebEndPointEditPane extends MetaDataMainEditPane {
 				webEndPointAuthorizationAltTokenTypeNameField.clearValue();
 			}
 			setHeaderAuthTokenVisibility();
+		}
+		
+		private void refreshSecurityInfo() {
+			service.getWebEndPointSecurityInfo(TenantInfoHolder.getId(), curDefinition.getWebEndPointId(), "WHHM", new AdminAsyncCallback<String>() {
+				@Override
+				public void onSuccess(String result) {
+					if (result==null||result.isEmpty()) {
+						webEndPointHmacTokenField.clearValue();
+					}
+					else {
+						webEndPointHmacTokenField.setValue(result);
+					}
+				}
+				@Override
+				protected void beforeFailure(Throwable caught){
+					SmartGWTUtil.hideProgress();
+				};
+			});
+			if (curDefinition.getHeaderAuthType()!=null||curDefinition.getHeaderAuthType().isEmpty()) {
+				if (curDefinition.getHeaderAuthType().equals("WHBA")) {
+					service.getWebEndPointSecurityInfo(TenantInfoHolder.getId(), curDefinition.getWebEndPointId(), "WHBA", new AdminAsyncCallback<String>() {
+						@Override
+						public void onSuccess(String result) {
+							if (result==null||result.isEmpty()) {
+								webEndPointBasicUsernameField.clearValue();
+								webEndPointBasicPasswordField.clearValue();
+							}
+							else {
+								String[] basics = result.split(":");
+								if (basics.length < 2) {
+									webEndPointBasicUsernameField.clearValue();
+									webEndPointBasicPasswordField.clearValue();
+								} else {
+									webEndPointBasicUsernameField.setValue(basics[0]);
+									webEndPointBasicPasswordField.setValue(basics[1]);
+								}
+							}
+						}
+						@Override
+						protected void beforeFailure(Throwable caught){
+							SmartGWTUtil.hideProgress();
+						};
+					});
+				} else if (curDefinition.getHeaderAuthType().equals("WHBT")) {
+					service.getWebEndPointSecurityInfo(TenantInfoHolder.getId(),curDefinition.getWebEndPointId(), "WHBT", new AdminAsyncCallback<String>() {
+						@Override
+						public void onSuccess(String result) {
+							if (result==null||result.isEmpty()) {
+								webEndPointBearerTokenField.clearValue();
+							}
+							else {
+								webEndPointBearerTokenField.setValue(result);
+							}
+						}
+						@Override
+						protected void beforeFailure(Throwable caught){
+							SmartGWTUtil.hideProgress();
+						};
+					});
+				}
+			}
 		}
 
 		/** pane -> definition */
