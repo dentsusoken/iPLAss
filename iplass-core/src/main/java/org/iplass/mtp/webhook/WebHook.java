@@ -48,7 +48,8 @@ public class WebHook  {
 
 	/**definition name, 後でserviceで情報をとる*/
 	private ArrayList<String> endPoints;
-	private String resultHandler;
+
+	private WebHookResponseHandler resultHandler;
 	String urlQuery;
 	private String headerAuthTypeName;
 
@@ -181,14 +182,6 @@ public class WebHook  {
 		this.endPoints = endPoints;
 	}
 
-	public String getResultHandler() {
-		return resultHandler;
-	}
-
-	public void setResultHandler(String resultHandler) {
-		this.resultHandler = resultHandler;
-	}
-
 	public GroovyTemplate getGroovyTemplateContent() {
 		return groovyTemplateContent;
 	}
@@ -211,6 +204,14 @@ public class WebHook  {
 
 	public void setHeaderAuthTypeName(String headerAuthTypeName) {
 		this.headerAuthTypeName = headerAuthTypeName;
+	}
+	
+	public WebHookResponseHandler getResultHandler() {
+		return resultHandler;
+	}
+
+	public void setResultHandler(WebHookResponseHandler resultHandler) {
+		this.resultHandler = resultHandler;
 	}
 
 }

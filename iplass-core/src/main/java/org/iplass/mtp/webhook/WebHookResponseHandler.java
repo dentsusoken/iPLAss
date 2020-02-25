@@ -19,13 +19,12 @@
  */
 package org.iplass.mtp.webhook;
 
-import org.apache.http.HttpResponse;
+import org.iplass.mtp.impl.webhook.WebHookResponse;
 
 /**
  * sendWebHookが成功したらこのHandlerを呼んでhandleResponseをする
  * 全部実行完了したら終わりとなります
  * */
 public interface WebHookResponseHandler {
-	public void handleResponse(HttpResponse response);
-
+	public void handleResponse(WebHookResponse response);
 }

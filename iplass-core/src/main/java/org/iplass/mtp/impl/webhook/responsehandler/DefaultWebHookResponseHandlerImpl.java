@@ -19,47 +19,47 @@
  */
 package org.iplass.mtp.impl.webhook.responsehandler;
 
-import org.apache.http.Header;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.StatusLine;
-import org.apache.http.util.EntityUtils;
+import java.util.Map;
 import org.iplass.mtp.webhook.WebHookResponseHandler;
+import org.iplass.mtp.impl.webhook.WebHookResponse;
 import org.iplass.mtp.impl.webhook.WebHookServiceImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class DefaultWebHookResponseHandlerImpl implements WebHookResponseHandler{
-
 	@Override
-	public void handleResponse(HttpResponse response) {
-		writeLog(response);
+	public void handleResponse(WebHookResponse response) {
+		if (200<=response.getStatusCode()||response.getStatusCode()<300) {
+			writeLog(response);	
+		} else {
+			throw new RuntimeException("UnHandled Response Status Code: "+response.getStatusCode()+"("+response.getReasonPhrase()+")");
+		}
 	}
 
-	private void writeLog(HttpResponse response) {
+	private void writeLog(WebHookResponse response) {
 		Logger logger =  LoggerFactory.getLogger(WebHookServiceImpl.class);
 		String msg = "";
-		msg += makeStatusString(response.getStatusLine());
-//		msg += makeHeaderString(response.getAllHeaders());
-		msg += makeEntityString(response.getEntity());
+		msg += makeStatusString(response);
+		msg += makeHeaderString(response);
+		msg += makeEntityString(response);
 		logger.debug(msg);
 	}
 	
-	private String makeStatusString(StatusLine statusLine) {
+	private String makeStatusString(WebHookResponse whr) {
 		String result= "Response Code ";
-		result += statusLine.getStatusCode();
-		result += ":"+statusLine.getReasonPhrase();
+		result += whr.getStatusCode();
+		result += ":"+whr.getReasonPhrase();
 		result += ";";
 		return result;
 	}
 
-	private String makeHeaderString(Header[] headers) {
+	private String makeHeaderString(WebHookResponse response) {
 		String result= "Headers: ";
-		if (headers==null) {
+		if (response.getHeaders()==null) {
 			result+= "null;";
 		} else {
-			for (Header hd:headers) {
-				result += hd.getName();
+			for (Map.Entry<String, String> hd:response.getHeaders().entrySet()) {
+				result += hd.getKey()+":";
 				result += hd.getValue();
 				result += "|";
 			}
@@ -67,25 +67,20 @@ public class DefaultWebHookResponseHandlerImpl implements WebHookResponseHandler
 		}
 		return result;
 	}
-	private String makeEntityString(HttpEntity entity) {
+	private String makeEntityString(WebHookResponse whr) {
 		String result = "";
-		if (entity == null) {
-			
-		} else if(entity.getContentType()==null){
-			result += "Entity(nullContentType):";
+		if ( whr.getResponseBody() == null) {
+			result += "Entity(null);";
 		} else {
 			result += "Entity(";
-			result += entity.getContentType().getName()==null?"nullTypeName":entity.getContentType().getName();
+			result += whr.getContentType()==null?"nullTypeName":whr.getContentType();
 			result += ":";
-			result += entity.getContentType().getValue()==null?"nullTypeName":entity.getContentType().getValue();
+			result += whr.getContentEncoding()==null?"nullEncodeName":whr.getContentEncoding();
 			result += "):";
-		}
-		try {
-			result += EntityUtils.toString(entity);
-		}catch (Exception e) {
-			e.printStackTrace();
+			result += whr.getResponseBody();
 		}
 		result += ";";
 		return result;
 	}
+
 }

@@ -497,51 +497,52 @@ public class WebEndPointEditPane extends MetaDataMainEditPane {
 								webEndPointAttributePane.markForRedraw();
 								dialog.destroy();
 								SmartGWTUtil.hideProgress();
+
+							if (curDefinition.getHeaderAuthType()!=type) {//タイプ変わったら旧タイプの削除
+								service.updateWebEndPointSecurityInfo(TenantInfoHolder.getId(), curDefinition.getWebEndPointId(), null, 
+										type=="WHBA"?"WHBT":"WHBA",
+										new AdminAsyncCallback<Void>() {
+									@Override
+									public void onSuccess(Void result) {
+									}
+									@Override
+									protected void beforeFailure(Throwable caught){
+										SC.warn("error happened when deleting old token");
+									};
+								});
 							}
-
-							@Override
-							protected void beforeFailure(Throwable caught){
-								SC.warn("error happened when registering new token");
-								SmartGWTUtil.hideProgress();
-							};
-						});
-						if (curDefinition.getHeaderAuthType()!=type) {//タイプ変わったら旧タイプの削除
-							service.updateWebEndPointSecurityInfo(TenantInfoHolder.getId(), curDefinition.getWebEndPointId(), null, 
-									type=="WHBA"?"WHBT":"WHBA",
-									new AdminAsyncCallback<Void>() {
-								@Override
-								public void onSuccess(Void result) {
-								}
-								@Override
-								protected void beforeFailure(Throwable caught){
-									SC.warn("error happened when deleting old token");
-								};
-							});
-						}
-						if (content==null||content.replaceAll("\\s","").isEmpty()) {//contentがnullかemptyでしたら、data消しになるので、HeaderAuthTypeもなしに
-							curDefinition.setHeaderAuthType(null);
-							webEndPointBasicUsernameField.clearValue();
-							webEndPointBasicPasswordField.clearValue();
-							webEndPointBearerTokenField.clearValue();
-						} else {
-							curDefinition.setHeaderAuthType(type);
-						}
-						
-						service.updateDefinition(TenantInfoHolder.getId(), curDefinition, curVersion, true, new MetaDataUpdateCallback() {
-
-							@Override
-							protected void overwriteUpdate() {
-								updateWebEndPointDefinition(curDefinition, false);
-							}
-
-							@Override
-							protected void afterUpdate(AdminDefinitionModifyResult result) {
-								refreshVersion();
+							if (content==null||content.replaceAll("\\s","").isEmpty()) {//contentがnullかemptyでしたら、data消しになるので、HeaderAuthTypeもなしに
+								curDefinition.setHeaderAuthType(null);
+								webEndPointBasicUsernameField.clearValue();
+								webEndPointBasicPasswordField.clearValue();
+								webEndPointBearerTokenField.clearValue();
+							} else {
+								curDefinition.setHeaderAuthType(type);
 							}
 							
-						});
-						
-						setHeaderAuthTokenVisibility();
+							service.updateDefinition(TenantInfoHolder.getId(), curDefinition, curVersion, true, new MetaDataUpdateCallback() {
+	
+								@Override
+								protected void overwriteUpdate() {
+									updateWebEndPointDefinition(curDefinition, false);
+								}
+	
+								@Override
+								protected void afterUpdate(AdminDefinitionModifyResult result) {
+									refreshVersion();
+								}
+								
+							});
+							
+							setHeaderAuthTokenVisibility();
+							}
+
+						@Override
+						protected void beforeFailure(Throwable caught){
+							SC.warn("error happened when registering new token");
+							SmartGWTUtil.hideProgress();
+						};
+					});
 					}
 				}
 			});

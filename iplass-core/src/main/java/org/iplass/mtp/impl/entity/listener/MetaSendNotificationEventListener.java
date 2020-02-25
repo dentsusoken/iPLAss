@@ -40,6 +40,7 @@ import org.iplass.mtp.impl.entity.MetaEventListener;
 import org.iplass.mtp.impl.script.Script;
 import org.iplass.mtp.impl.script.ScriptContext;
 import org.iplass.mtp.impl.script.ScriptEngine;
+import org.iplass.mtp.impl.webhook.responsehandler.DefaultWebHookResponseHandlerImpl;
 import org.iplass.mtp.mail.Mail;
 import org.iplass.mtp.mail.MailManager;
 import org.iplass.mtp.pushnotification.PushNotification;
@@ -52,6 +53,7 @@ import org.iplass.mtp.transaction.TransactionStatus;
 import org.iplass.mtp.util.StringUtil;
 import org.iplass.mtp.webhook.WebHook;
 import org.iplass.mtp.webhook.WebHookManager;
+import org.iplass.mtp.webhook.WebHookResponseHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -585,10 +587,20 @@ public class MetaSendNotificationEventListener extends MetaEventListener {
 		protected Object createNotification(Entity entity, EventType type, EntityEventContext context) {
 			Map<String, Object> bindings = generateBindings(entity, type, context);
 			WebHook wh = wm.createWebHook(tmplDefName, bindings);
-			wh.setResultHandler(webHookResultHandlerDef);
+
 			wh.setSynchronous(isSynchronous);
 			wh.setEndPoints((ArrayList<String>)endPointDefList);
-			
+			WebHookResponseHandler whrh;
+			if (webHookResultHandlerDef==null||webHookResultHandlerDef.isEmpty()) {
+				whrh= new DefaultWebHookResponseHandlerImpl();
+			} else {
+				try {
+					whrh= (WebHookResponseHandler) Class.forName(webHookResultHandlerDef).newInstance();
+				} catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
+					whrh= new DefaultWebHookResponseHandlerImpl();
+				}
+			}
+			wh.setResultHandler(whrh);
 			return wh;
 		}
 

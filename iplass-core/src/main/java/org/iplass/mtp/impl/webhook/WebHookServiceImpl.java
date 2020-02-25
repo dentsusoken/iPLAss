@@ -27,14 +27,19 @@ import java.net.ConnectException;
 import java.net.URI;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.concurrent.Callable;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import javax.net.ssl.SSLException;
+
+import org.apache.http.Header;
 import org.apache.http.HttpHeaders;
 import org.apache.http.HttpHost;
+import org.apache.http.HttpResponse;
+import org.apache.http.ParseException;
 import org.apache.http.client.HttpRequestRetryHandler;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpDelete;
@@ -52,6 +57,7 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.protocol.HttpContext;
+import org.apache.http.util.EntityUtils;
 import org.iplass.mtp.ManagerLocator;
 import org.iplass.mtp.async.AsyncTaskManager;
 import org.iplass.mtp.definition.TypedDefinitionManager;
@@ -65,13 +71,11 @@ import org.iplass.mtp.impl.script.ScriptRuntimeException;
 import org.iplass.mtp.impl.script.template.GroovyTemplate;
 import org.iplass.mtp.impl.script.template.GroovyTemplateBinding;
 import org.iplass.mtp.impl.script.template.GroovyTemplateCompiler;
-import org.iplass.mtp.impl.webhook.responsehandler.DefaultWebHookResponseHandlerImpl;
 import org.iplass.mtp.impl.webhook.template.MetaWebHookTemplate;
 import org.iplass.mtp.impl.webhook.template.MetaWebHookTemplate.WebHookTemplateRuntime;
 import org.iplass.mtp.spi.Config;
 import org.iplass.mtp.tenant.Tenant;
 import org.iplass.mtp.webhook.WebHook;
-import org.iplass.mtp.webhook.WebHookResponseHandler;
 import org.iplass.mtp.webhook.template.definition.WebHookHeader;
 import org.iplass.mtp.webhook.template.definition.WebHookTemplateDefinition;
 import org.iplass.mtp.webhook.template.definition.WebHookTemplateDefinitionManager;
@@ -352,21 +356,8 @@ public class WebHookServiceImpl extends AbstractTypedMetaDataService<MetaWebHook
 				CloseableHttpResponse response = webHookHttpClient.execute(httpRequest,httpContext);
 				logger.debug("\n---------------------------\n response headers: \n"+response.getAllHeaders().toString()+"\n response entity: \n"+ response.getEntity().getContentType()+"\n"+response.getEntity().getContent()+"\n---------------------------");
 				try {
-					if (webHook.getResultHandler()==null||webHook.getResultHandler().isEmpty()) {//FIXME テストの便利性のために存在しています。リリース前に削除をわすれないで
-						WebHookResponseHandler whrh= new DefaultWebHookResponseHandlerImpl();
-						whrh.handleResponse(response);
-					} else {
-						try {
-							WebHookResponseHandler whrh= (WebHookResponseHandler) Class.forName(webHook.getResultHandler()).newInstance();
-							whrh.handleResponse(response);
-						} catch (Exception e) {
-							logger.info("Unexpected error has occered when handling the webHook result. Name of the Result Handler :"+webHook.getResultHandler()+" ; and the stacktrace:");
-							e.printStackTrace();
-							logger.debug("Debug: the causing httpResult is:");
-							WebHookResponseHandler whrh= new DefaultWebHookResponseHandlerImpl();
-							whrh.handleResponse(response);
-						}
-					}
+					WebHookResponse whr = generateWebHookResponse(response);
+					webHook.getResultHandler().handleResponse(whr);
 				} finally {
 					response.close();
 				}
@@ -437,6 +428,8 @@ public class WebHookServiceImpl extends AbstractTypedMetaDataService<MetaWebHook
 		if (methodName.equals("GET")) {
 			return true;
 		}else if (methodName.equals("DELETE")) {
+			return true;
+		}else if (methodName.equals("POST")) {
 			return true;
 		}else {
 			return false;
@@ -514,6 +507,37 @@ public class WebHookServiceImpl extends AbstractTypedMetaDataService<MetaWebHook
 			}
 		}
 	}
+	private WebHookResponse generateWebHookResponse(HttpResponse response) {
+		WebHookResponse whr = new WebHookResponse();
+		if (response.getStatusLine()== null) {
+			whr.setStatusCode(0);
+			whr.setReasonPhrase(null);
+		} else {
+			whr.setStatusCode(response.getStatusLine().getStatusCode());
+			whr.setReasonPhrase(response.getStatusLine().getReasonPhrase());
+		}
+		if (response.getEntity()==null) {
+			whr.setContentType(null);
+			whr.setContentEncoding(null);
+			whr.setResponseBody(null);
+		}else {
+			try {
+				String entity = EntityUtils.toString(response.getEntity());
+				whr.setResponseBody(entity);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			whr.setContentType(response.getEntity().getContentType()==null?null:response.getEntity().getContentType().getValue());
+			whr.setContentEncoding(response.getEntity().getContentEncoding()==null?null:response.getEntity().getContentEncoding().getValue());
+		}
+		HashMap<String,String> headers = new HashMap<String,String>();
+		for (Header hd : response.getAllHeaders()) {
+			headers.put(hd.getName(), hd.getValue());
+		}
+		whr.setHeaders(headers);
+		return whr;
+	}
+		
 	private class Subscriber{
 
 		String url;

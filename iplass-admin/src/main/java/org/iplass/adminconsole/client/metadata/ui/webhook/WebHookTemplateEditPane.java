@@ -274,12 +274,10 @@ public class WebHookTemplateEditPane extends MetaDataMainEditPane {
 			webHookMethodField = new SelectItem("webHookMethodField","Http Request Method");
 			webHookMethodField.setValueMap("GET", "POST", "DELETE", "PUT","PATCH","HEAD","OPTIONS","TRACE");
 			webHookMethodField.setWidth(150);
-			SmartGWTUtil.addHoverToFormItem(webHookMethodField, AdminClientMessageUtil.getString("ui_metadata_webhook_WebHookTemplateEditPane_webHookMethodFieldHoverInfo"));
 
 			headerGrid = new HeaderMapGrid();
 			headerGrid.setHeight100();
 			headerGrid.setTitle(AdminClientMessageUtil.getString("ui_metadata_webhook_WebHookTemplateEditPane_headerGridTitle"));
-			headerGrid.setPrompt(AdminClientMessageUtil.getString("ui_metadata_webhook_WebHookTemplateEditPane_headerGridHoverInfo"));
 			headerGrid.addRecordDoubleClickHandler(new RecordDoubleClickHandler() {
 				public void onRecordDoubleClick(RecordDoubleClickEvent event) {
 					editMap((ListGridRecord)event.getRecord());
