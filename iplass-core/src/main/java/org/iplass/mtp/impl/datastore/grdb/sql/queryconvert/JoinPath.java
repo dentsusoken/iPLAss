@@ -64,6 +64,7 @@ public class JoinPath {
 	int dataTenantId;
 
 	private boolean joinWithVersionCol;
+	private boolean joinRefWithDataTable;
 
 	private String additionalCondition;
 	private List<BindValue> bindVariables;
@@ -92,6 +93,7 @@ public class JoinPath {
 	public void merge(JoinPath another) {
 		isUse = isUse || another.isUse;
 		joinWithVersionCol = joinWithVersionCol || another.joinWithVersionCol;
+		joinRefWithDataTable = joinRefWithDataTable || another.joinRefWithDataTable;
 
 		if (another.children != null) {
 			if (children == null) {
@@ -242,6 +244,10 @@ public class JoinPath {
 					matched.objRefTableName = ((GRdbEntityStoreRuntime) dataModelHandler.getEntityStoreRuntime()).OBJ_REF();
 					matched.refTenantId = context.getTenantId(dataModelHandler);
 				}
+				
+				if (dataModelHandler.isVersioned() && !matched.isMappedBy) {
+					matched.joinRefWithDataTable = true;
+				}
 
 //				if (pHandler.getMetaData().getVersionControlType() == VersionControlReferenceType.RECORD_BASE) {
 //					matched.joinWithVersionCol = true;
@@ -333,9 +339,16 @@ public class JoinPath {
 //			appendRefColEquals("OBJ_DEF_ID", "TARGET_OBJ_DEF_ID", sb);
 			//オブジェクトID
 			sb.append(" AND ");
-			appendRefColEquals("OBJ_ID", "TARGET_OBJ_ID", sb);
-			sb.append(" AND ");
-			appendRefColEquals("OBJ_VER", "TARGET_OBJ_VER", sb);
+			if (joinRefWithDataTable) {
+				//バージョン管理されている場合
+				appendDataColEquals("OBJ_ID", "TARGET_OBJ_ID", sb);
+				sb.append(" AND ");
+				appendDataColEquals("OBJ_VER", "TARGET_OBJ_VER", sb);
+			} else {
+				appendRefColEquals("OBJ_ID", "TARGET_OBJ_ID", sb);
+				sb.append(" AND ");
+				appendRefColEquals("OBJ_VER", "TARGET_OBJ_VER", sb);
+			}
 			//リファレンス定義ID
 			sb.append(" AND ");
 			appendRefTablePrefix(this, sb);
@@ -389,7 +402,7 @@ public class JoinPath {
 				sb.append(".OBJ_ID");
 				//オブジェクトversion
 				//version
-				if (isRoot || joinWithVersionCol) {
+				if (isRoot || joinWithVersionCol || isMappedBy) {
 					sb.append(" AND ");
 					appendRefTablePrefix(this, sb);
 					if (isMappedBy) {
@@ -495,6 +508,23 @@ public class JoinPath {
 				sb.append(targetColName);
 			}
 		}
+		sb.append("=");
+		appendRefTablePrefix(this, sb);
+		if (isMappedBy) {
+			sb.append(targetColName);
+		} else {
+			sb.append(ownerColName);
+		}
+	}
+
+	private void appendDataColEquals(String ownerColName, String targetColName, StringBuilder sb) {
+		if (parent.isRoot) {
+			sb.append(aliases.getAlias(null)).append(".");
+		} else {
+			parent.appendPath(sb);
+			sb.append(".");
+		}
+		sb.append(ownerColName);
 		sb.append("=");
 		appendRefTablePrefix(this, sb);
 		if (isMappedBy) {
