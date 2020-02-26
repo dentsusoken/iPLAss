@@ -70,7 +70,7 @@ dependencies {
 	runtime 'org.slf4j:jcl-over-slf4j:1.7.26'
 
 	//jackson
-	compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.9.10.1'
+	compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.9.10.3'
 
 	//hibernate validator
 	compile group: 'org.hibernate', name: 'hibernate-validator', version: '5.4.1.Final'
