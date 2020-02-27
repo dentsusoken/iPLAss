@@ -37,7 +37,6 @@ import org.apache.http.Header;
 import org.apache.http.HttpHeaders;
 import org.apache.http.HttpHost;
 import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpRequestRetryHandler;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpEntityEnclosingRequestBase;
@@ -286,13 +285,42 @@ public class WebHookServiceImpl extends AbstractTypedMetaDataService<MetaWebHook
 				}
 
 				httpRequest.setURI(new URI(subscriber.getUrl()));
-				CloseableHttpResponse response = webHookHttpClient.execute(httpRequest,httpContext);
-				logger.debug("\n---------------------------\n response headers: \n"+response.getAllHeaders().toString()+"\n response entity: \n"+ response.getEntity().getContentType()+"\n"+response.getEntity().getContent()+"\n---------------------------");
+				
+				CloseableHttpResponse response = null;
+				//if retry
+				if (webHookIsRetry) {
+					for(int i=0; i<webHookRetryMaximumAttpempts; i++) {
+						try {
+							response = webHookHttpClient.execute(httpRequest,httpContext);
+							break;
+						} catch (Exception e) {
+							if (e.getClass() == InterruptedIOException.class 
+									||e.getClass() == UnknownHostException.class 
+									||e.getClass() == ConnectException.class
+									||e.getClass() == SSLException.class)	{//リトライ不可のException
+								logger.info("WebHook:"+e.getClass().getName()+" has occured. Stop retrying.");
+								break;
+							}else{
+								try {
+									Thread.sleep(webHookRetryInterval);
+								} catch (InterruptedException exception) {
+									exception.printStackTrace();
+								}
+							}
+						}
+					}
+				} else {
+					response = webHookHttpClient.execute(httpRequest,httpContext);
+				}
 				try {
-					WebHookResponse whr = generateWebHookResponse(response);
-					webHook.getResultHandler().handleResponse(whr);
+					if (response != null) {
+						WebHookResponse whr = generateWebHookResponse(response);
+						webHook.getResultHandler().handleResponse(whr);
+					}
 				} finally {
-					response.close();
+					if (response!=null) {
+						response.close();
+					}
 				}
 			}
 		} catch (Exception e) {
@@ -381,39 +409,15 @@ public class WebHookServiceImpl extends AbstractTypedMetaDataService<MetaWebHook
 	private void initWebHookHttpClient() {
 		if (webHookHttpClient == null) {
 			try {
-				HttpRequestRetryHandler requestRetryHandler=new HttpRequestRetryHandler(){
-				public boolean retryRequest(final IOException exception, int executionCount, final HttpContext context){
-					if (!(boolean)context.getAttribute(WEBHOOK_ISRETRY)) {
-						return false;
-					}
-					//特定の失敗ケースだけリトライ
-					if (exception.getClass() == InterruptedIOException.class 
-							||exception.getClass() == UnknownHostException.class 
-							||exception.getClass() == ConnectException.class
-							||exception.getClass() == SSLException.class)	{		
-						logger.info("WebHook:"+exception.getClass().getName()+" has occured. Stop retrying.");
-					}else{
-						if (executionCount < (int)context.getAttribute(WEBHOOK_RETRY_MAXIMUMATTEMPTS)) {
-							try {
-								Thread.sleep((int)context.getAttribute(WEBHOOK_RETRY_MAXIMUMATTEMPTS));
-							} catch (InterruptedException e) {
-								e.printStackTrace();
-							}
-							return true;
-						}
-					}
-						return false;
-					}
-				};
-				HttpClientBuilder httpClientBuilder = HttpClientBuilder.create().setRetryHandler(requestRetryHandler);
-				httpClientBuilder = HttpClientBuilder.create().disableAutomaticRetries();
+
+				HttpClientBuilder httpClientBuilder = HttpClientBuilder.create().disableAutomaticRetries();
 				
 				if (this.webHookUseProxy) {
 					HttpHost proxy = new HttpHost(webHookHttpClientConfig.getProxyHost(),webHookHttpClientConfig.getProxyPort(),"http");
 					httpClientBuilder.setProxy(proxy);
 				}
-				webHookHttpClient= httpClientBuilder.build();
-			} catch(Exception e){
+				webHookHttpClient = httpClientBuilder.build();
+				} catch(Exception e){
 				throw e;
 			}
 		}
@@ -462,7 +466,7 @@ public class WebHookServiceImpl extends AbstractTypedMetaDataService<MetaWebHook
 		ScriptEngine se = ExecuteContext.getCurrentContext().getTenantContext().getScriptEngine();
 		String urlQuery = "";
 		if (isUrlQueryAllowed(webHook.getHttpMethod())) {
-			urlQuery = webHook.getUrlQuery();
+			urlQuery = webHook.getUrlQuery()!=null?webHook.getUrlQuery():"";
 		}
 		binding.put("webhook", webHook);
 

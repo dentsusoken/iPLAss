@@ -202,8 +202,11 @@ public class MetaWebEndPointDefinition extends BaseRootMetaData implements Defin
 		public void setEndPointName(String endPointName) {
 			this.endPointName = endPointName;
 		}
+		public WebEndPointRuntime copy() {
+			return new WebEndPointRuntime();
+		}
 
-		
+
 	}
 
 }

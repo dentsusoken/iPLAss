@@ -128,7 +128,7 @@ public class WebEndPointDefinitionManagerImpl extends AbstractTypedDefinitionMan
 		Tenant tenant = ExecuteContext.getCurrentContext().getCurrentTenant();
 		int tenantId = tenant.getId();
 		for (String wepDefName: endPointName) {
-			WebEndPointRuntime endPointRuntime = service.getRuntimeByName(wepDefName);
+			WebEndPointRuntime endPointRuntime = (service.getRuntimeByName(wepDefName)).copy();
 			endPointRuntime.setHeaderAuthContent(getSecurityToken(tenantId, endPointRuntime.getEndPointId(), endPointRuntime.getHeaderAuthType()));
 			endPointRuntime.setHmac(getSecurityToken(tenantId, endPointRuntime.getEndPointId(), "WHHM"));	
 			result.add(endPointRuntime);
