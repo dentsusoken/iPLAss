@@ -19,8 +19,8 @@
  */
 package org.iplass.mtp.impl.webhook.responsehandler;
 
-import java.util.Map;
 import org.iplass.mtp.webhook.WebHookResponseHandler;
+import org.iplass.mtp.webhook.template.definition.WebHookHeader;
 import org.iplass.mtp.impl.webhook.WebHookResponse;
 import org.iplass.mtp.impl.webhook.WebHookServiceImpl;
 import org.slf4j.Logger;
@@ -58,7 +58,7 @@ public class DefaultWebHookResponseHandlerImpl implements WebHookResponseHandler
 		if (response.getHeaders()==null) {
 			result+= "null;";
 		} else {
-			for (Map.Entry<String, String> hd:response.getHeaders().entrySet()) {
+			for (WebHookHeader hd:response.getHeaders()) {
 				result += hd.getKey()+":";
 				result += hd.getValue();
 				result += "|";

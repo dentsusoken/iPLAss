@@ -27,19 +27,16 @@ import java.net.ConnectException;
 import java.net.URI;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import javax.net.ssl.SSLException;
-
 import org.apache.http.Header;
 import org.apache.http.HttpHeaders;
 import org.apache.http.HttpHost;
 import org.apache.http.HttpResponse;
-import org.apache.http.ParseException;
 import org.apache.http.client.HttpRequestRetryHandler;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpDelete;
@@ -59,6 +56,7 @@ import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.protocol.HttpContext;
 import org.apache.http.util.EntityUtils;
 import org.iplass.mtp.ManagerLocator;
+import org.iplass.mtp.SystemException;
 import org.iplass.mtp.async.AsyncTaskManager;
 import org.iplass.mtp.definition.TypedDefinitionManager;
 import org.iplass.mtp.impl.core.ExecuteContext;
@@ -71,6 +69,7 @@ import org.iplass.mtp.impl.script.ScriptRuntimeException;
 import org.iplass.mtp.impl.script.template.GroovyTemplate;
 import org.iplass.mtp.impl.script.template.GroovyTemplateBinding;
 import org.iplass.mtp.impl.script.template.GroovyTemplateCompiler;
+import org.iplass.mtp.impl.webhook.endpointaddress.MetaWebEndPointDefinition.WebEndPointRuntime;
 import org.iplass.mtp.impl.webhook.template.MetaWebHookTemplate;
 import org.iplass.mtp.impl.webhook.template.MetaWebHookTemplate.WebHookTemplateRuntime;
 import org.iplass.mtp.spi.Config;
@@ -79,7 +78,6 @@ import org.iplass.mtp.webhook.WebHook;
 import org.iplass.mtp.webhook.template.definition.WebHookHeader;
 import org.iplass.mtp.webhook.template.definition.WebHookTemplateDefinition;
 import org.iplass.mtp.webhook.template.definition.WebHookTemplateDefinitionManager;
-import org.iplass.mtp.webhook.template.endpointaddress.WebEndPointDefinition;
 import org.iplass.mtp.webhook.template.endpointaddress.WebEndPointDefinitionManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -231,52 +229,18 @@ public class WebHookServiceImpl extends AbstractTypedMetaDataService<MetaWebHook
 	
 
 	private void sendWebHook(WebHook webHook,Tenant tenant) {
-		String urlQuery = "";
-		if (isUrlQueryAllowed(webHook.getHttpMethod())) {
-			urlQuery = webHook.getUrlQuery();
-		}
-		HashSet<Subscriber> endPointSet= generateSubscriberList(webHook.getEndPoints(),tenant.getId(),webHook.getBinding(),urlQuery);
 		logger.debug("WebHook:"+webHook.getTemplateName()+" Attempted.");
 		try {
-			//fill in webhook configures
-			for (Subscriber subscriber : endPointSet) {			
+			for (WebEndPointRuntime subscriber : webHook.getWebHookEndPointRuntimeList()) {
 				HttpRequestBase httpRequest = getReqestMethodObject(webHook.getHttpMethod());
-				
 				HttpContext httpContext = new BasicHttpContext();
 				httpContext.setAttribute(WEBHOOK_ISRETRY, webHookIsRetry);
 				httpContext.setAttribute(WEBHOOK_RETRY_MAXIMUMATTEMPTS, webHookRetryMaximumAttpempts);
 				httpContext.setAttribute(WEBHOOK_RETRY_INTERVAL, webHookRetryInterval);
-				
-				
-				String payLoadContent = null;
-				GroovyTemplate contentTemplate = webHook.getGroovyTemplateContent();
-				if (contentTemplate != null) {
-					StringWriter sw = new StringWriter();
-					GroovyTemplateBinding gtb = new GroovyTemplateBinding(sw,webHook.getBinding());
-					gtb.setVariable(WEBHOOK_SECURITY_BINDING_HMACTOKEN, subscriber.getHmac());
-					if (subscriber.getHeaderAuthType().equals("WHBA")) {
-						String[] basicArray = subscriber.getHeaderAuthContent().replaceAll("\\s","").split(":");
-						if (basicArray==null||basicArray.length<2) {
-						} else {
-							gtb.setVariable(WEBHOOK_SECURITY_BINDING_BASICNAME, basicArray[0]);
-							gtb.setVariable(WEBHOOK_SECURITY_BINDING_BASICPASSWORD, basicArray[1]);
-							gtb.setVariable(WEBHOOK_SECURITY_BINDING_BEARER, "");	
-						}
-					} else if (subscriber.getHeaderAuthType().equals("WHBT")){
-						gtb.setVariable(WEBHOOK_SECURITY_BINDING_BASICNAME, "");
-						gtb.setVariable(WEBHOOK_SECURITY_BINDING_BASICPASSWORD, "");
-						gtb.setVariable(WEBHOOK_SECURITY_BINDING_BEARER, subscriber.getHeaderAuthContent());	
-					}
-					try {
-						contentTemplate.doTemplate(gtb);
-					} catch (IOException e) {
-						throw new ScriptRuntimeException(e);
-					}
-					payLoadContent = sw.toString();
-				}
+
 				//payload
 				if (isEnclosingRequest(httpRequest)) {
-					StringEntity se = new StringEntity(payLoadContent,"UTF-8");
+					StringEntity se = new StringEntity(subscriber.getContentForThisEndPoint(),"UTF-8");
 					se.setContentType(webHook.getContentType());
 					((HttpEntityEnclosingRequestBase) httpRequest).setEntity(se);
 				}
@@ -288,23 +252,20 @@ public class WebHookServiceImpl extends AbstractTypedMetaDataService<MetaWebHook
 					}
 				}
 				
-				//hmac
-				String hmacToken =null;
 				if (subscriber.getHmac()!=null) {
 					if (!subscriber.getHmac().isEmpty()) {
-						hmacToken= getHmacSha256(subscriber.getHmac(), payLoadContent);
 						String tokenHeader;
 						if (webHook.getTokenHeader()==null||webHook.getTokenHeader().replaceAll("\\s","").isEmpty()) {
 							tokenHeader = webHookHmacTokenDefaultName;
 						} else {
 							tokenHeader = webHook.getTokenHeader();
 						}
-						httpRequest.setHeader(tokenHeader, hmacToken);
+						httpRequest.setHeader(tokenHeader, subscriber.getHmacResult());
 					}
 				}
 				//headerのauthorizationでの認証情報
 				if (subscriber.getHeaderAuthType()==null || subscriber.getHeaderAuthType().isEmpty()) {
-					
+
 				}else {
 					String scheme = null;
 					String authContent = null;
@@ -323,35 +284,7 @@ public class WebHookServiceImpl extends AbstractTypedMetaDataService<MetaWebHook
 					}
 					httpRequest.setHeader(HttpHeaders.AUTHORIZATION, scheme+ " " + authContent);
 				}
-				
-				
-				if (subscriber.getUrlTemplate()!=null) {
-					StringWriter sw = new StringWriter();
-					GroovyTemplateBinding gtb = new GroovyTemplateBinding(sw,webHook.getBinding());
-					gtb.setVariable(WEBHOOK_SECURITY_BINDING_HMACTOKEN, subscriber.getHmac());
-					
-					gtb.setVariable(WEBHOOK_SECURITY_BINDING_HMACRESULT, (hmacToken==null||hmacToken.length()==0)?null:hmacToken);
-					if (subscriber.getHeaderAuthType().equals("WHBA")) {
-						String[] basicArray = subscriber.getHeaderAuthContent().replaceAll("\\s","").split(":");
-						if (basicArray==null||basicArray.length<2) {
-						} else {
-							gtb.setVariable(WEBHOOK_SECURITY_BINDING_BASICNAME, basicArray[0]);
-							gtb.setVariable(WEBHOOK_SECURITY_BINDING_BASICPASSWORD, basicArray[1]);
-							gtb.setVariable(WEBHOOK_SECURITY_BINDING_BEARER, "");	
-						}
-					} else if (subscriber.getHeaderAuthType().equals("WHBT")){
-						gtb.setVariable(WEBHOOK_SECURITY_BINDING_BASICNAME, "");
-						gtb.setVariable(WEBHOOK_SECURITY_BINDING_BASICPASSWORD, "");
-						gtb.setVariable(WEBHOOK_SECURITY_BINDING_BEARER, subscriber.getHeaderAuthContent());	
-					}
-					try {
-						subscriber.getUrlTemplate().doTemplate(gtb);
-					} catch (IOException e) {
-						throw new ScriptRuntimeException(e);
-					}
-					subscriber.setUrl(sw.toString().replaceAll("\\s",""));//スベース抜き。でないとurlになれない
-				}
-				
+
 				httpRequest.setURI(new URI(subscriber.getUrl()));
 				CloseableHttpResponse response = webHookHttpClient.execute(httpRequest,httpContext);
 				logger.debug("\n---------------------------\n response headers: \n"+response.getAllHeaders().toString()+"\n response entity: \n"+ response.getEntity().getContentType()+"\n"+response.getEntity().getContent()+"\n---------------------------");
@@ -444,29 +377,7 @@ public class WebHookServiceImpl extends AbstractTypedMetaDataService<MetaWebHook
 			return false;
 		}
 	}
-	
-	private HashSet<Subscriber> generateSubscriberList(ArrayList<String> arrayList, int tenantId, Map<String, Object>bindings,String urlQuery){
-		HashSet<Subscriber> set= new HashSet<Subscriber>();
-		ScriptEngine se = ExecuteContext.getCurrentContext().getTenantContext().getScriptEngine();
-		for (String wepDefName: arrayList) {
-			WebEndPointDefinition temp = wepdm.get(wepDefName);
-			Subscriber sb = new Subscriber();
-			String tempUrl = temp.getUrl() + urlQuery;
-			tempUrl = tempUrl.replace("\n", "");
-			tempUrl= tempUrl.replaceAll("\\s+", "");
-			GroovyTemplate _urlTemp = GroovyTemplateCompiler.compile(tempUrl, "WebHookTemplate_Subscriber_" + temp.getWebEndPointId() + "_" + temp.getName(), (GroovyScriptEngine) se);
-			
-			String metaDataId = temp.getWebEndPointId();
-			sb.setHeaderAuthType(temp.getHeaderAuthType()==null?"":temp.getHeaderAuthType());//headerAuthがないなら""のは、.equals()の使用を邪魔されせないため
-			sb.setHeaderAuthContent(wepdm.getSecurityToken(tenantId, metaDataId, sb.getHeaderAuthType()));
-			sb.setHmac(wepdm.getSecurityToken(tenantId, metaDataId, "WHHM"));
-			sb.setUrlTemplate(_urlTemp);
-			sb.setHeaderAuthTypeName(temp.getHeaderAuthTypeName());
 
-			set.add(sb);
-		}
-		return set;
-	}
 	private void initWebHookHttpClient() {
 		if (webHookHttpClient == null) {
 			try {
@@ -530,59 +441,91 @@ public class WebHookServiceImpl extends AbstractTypedMetaDataService<MetaWebHook
 			whr.setContentType(response.getEntity().getContentType()==null?null:response.getEntity().getContentType().getValue());
 			whr.setContentEncoding(response.getEntity().getContentEncoding()==null?null:response.getEntity().getContentEncoding().getValue());
 		}
-		HashMap<String,String> headers = new HashMap<String,String>();
+		ArrayList<WebHookHeader> headers = new ArrayList<WebHookHeader>();
 		for (Header hd : response.getAllHeaders()) {
-			headers.put(hd.getName(), hd.getValue());
+			headers.add(new WebHookHeader(hd.getName(), hd.getValue()));
 		}
 		whr.setHeaders(headers);
 		return whr;
 	}
-		
-	private class Subscriber{
 
-		String url;
-		String hmac;
-		String headerAuthContent;
-		String headerAuthType;
-		GroovyTemplate urlTemplate;
-		String headerAuthTypeName;
+	public WebHook generateWebHook(String webHookDefinitionName, Map<String, Object> binding,List<String> endPointDefName) {
+		List<WebEndPointRuntime> webHookEndPointRuntimeList = wepdm.generateRuntimeInstanceList(endPointDefName);
+		WebHookTemplateRuntime runtime = this.getRuntimeByName(webHookDefinitionName);
+		if (runtime == null) {
+			throw new SystemException("WebHookTemplate:" + webHookDefinitionName + " not found");
+		}
+		WebHook webHook = runtime.createWebHook(binding);
+		webHook.setTemplateName(webHookDefinitionName);
+		webHook.setWebHookEndPointRuntimeList(webHookEndPointRuntimeList);
+		GroovyTemplate contentTemplate = runtime.getContentTemplate();
+		ScriptEngine se = ExecuteContext.getCurrentContext().getTenantContext().getScriptEngine();
+		String urlQuery = "";
+		if (isUrlQueryAllowed(webHook.getHttpMethod())) {
+			urlQuery = webHook.getUrlQuery();
+		}
+		binding.put("webhook", webHook);
 
-		public GroovyTemplate getUrlTemplate() {
-			return urlTemplate;
-		}
-		public void setUrlTemplate(GroovyTemplate urlTemplate) {
-			this.urlTemplate = urlTemplate;
-		}
-		public String getUrl() {
-			return url;
-		}
-		public void setUrl(String url) {
-			this.url = url;
-		}
-		public String getHmac() {
-			return hmac;
-		}
-		public void setHmac(String hmac) {
-			this.hmac = hmac;
-		}
-		public String getHeaderAuthContent() {
-			return headerAuthContent;
-		}
-		public void setHeaderAuthContent(String headerAuthContent) {
-			this.headerAuthContent = headerAuthContent;
-		}
-		public String getHeaderAuthType() {
-			return headerAuthType;
-		}
-		public void setHeaderAuthType(String headerAuthType) {
-			this.headerAuthType = headerAuthType;
-		}
-		public String getHeaderAuthTypeName() {
-			return headerAuthTypeName;
-		}
-		public void setHeaderAuthTypeName(String headerAuthTypeName) {
-			this.headerAuthTypeName = headerAuthTypeName;
-		}
+		for (WebEndPointRuntime ws: webHook.getWebHookEndPointRuntimeList()) {
+			if (contentTemplate != null) {
+				StringWriter sw = new StringWriter();
+				GroovyTemplateBinding gtb = new GroovyTemplateBinding(sw,binding);
+				gtb.setVariable(WEBHOOK_SECURITY_BINDING_HMACTOKEN, ws.getHmac());
+				if (ws.getHeaderAuthType().equals("WHBA")) {
+					String[] basicArray = ws.getHeaderAuthContent().replaceAll("\\s","").split(":");
+					if (basicArray==null||basicArray.length<2) {
+					} else {
+						gtb.setVariable(WEBHOOK_SECURITY_BINDING_BASICNAME, basicArray[0]);
+						gtb.setVariable(WEBHOOK_SECURITY_BINDING_BASICPASSWORD, basicArray[1]);
+					}
+				} else if (ws.getHeaderAuthType().equals("WHBT")){
+					gtb.setVariable(WEBHOOK_SECURITY_BINDING_BEARER, ws.getHeaderAuthContent());	
+				}
+				try {
+					contentTemplate.doTemplate(gtb);
+				} catch (IOException e) {
+					throw new ScriptRuntimeException(e);
+				}
+				ws.setContentForThisEndPoint(sw.toString());
+			}
 
+			//process hmac
+			String hmacResult =null;
+			if (ws.getHmac()!=null) {
+				if (!ws.getHmac().isEmpty()) {
+					hmacResult= getHmacSha256(ws.getHmac(), ws.getContentForThisEndPoint());
+					ws.setHmacResult(hmacResult);
+				}
+			}
+			
+			//retrieve url and compose it with string query-> complete url template
+			String fullUrl = new String(ws.getUrl() + urlQuery);
+			fullUrl = fullUrl.replace("\n", "").replaceAll("\\s+", "");
+			ws.setUrl(fullUrl);
+			GroovyTemplate urlTemp = GroovyTemplateCompiler.compile(fullUrl, "WebHookTemplate_Subscriber_" + ws.getEndPointId() + "_" + ws.getEndPointId(), (GroovyScriptEngine) se);
+			if (urlTemp!=null) {
+				StringWriter sw = new StringWriter();
+				GroovyTemplateBinding gtb = new GroovyTemplateBinding(sw,binding);
+				gtb.setVariable(WEBHOOK_SECURITY_BINDING_HMACTOKEN, ws.getHmac());
+				gtb.setVariable(WEBHOOK_SECURITY_BINDING_HMACRESULT, (ws.getHmacResult()==null||ws.getHmacResult().length()==0)?null:ws.getHmacResult());
+				if (ws.getHeaderAuthType().equals("WHBA")) {
+					String[] basicArray = ws.getHeaderAuthContent().replaceAll("\\s","").split(":");
+					if (basicArray==null||basicArray.length<2) {
+					} else {
+						gtb.setVariable(WEBHOOK_SECURITY_BINDING_BASICNAME, basicArray[0]);
+						gtb.setVariable(WEBHOOK_SECURITY_BINDING_BASICPASSWORD, basicArray[1]);
+					}
+				} else if (ws.getHeaderAuthType().equals("WHBT")){
+					gtb.setVariable(WEBHOOK_SECURITY_BINDING_BEARER, ws.getHeaderAuthContent());
+				}
+				try {
+					urlTemp.doTemplate(gtb);
+				} catch (IOException e) {
+					throw new ScriptRuntimeException(e);
+				}
+				ws.setUrl(sw.toString().replace("\n", "").replaceAll("\\s",""));//スベース、改行抜き。
+			}
+		}
+		return webHook;
 	}
 }

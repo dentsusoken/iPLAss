@@ -24,7 +24,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.iplass.mtp.ManagerLocator;
 import org.iplass.mtp.entity.Entity;
 import org.iplass.mtp.entity.EntityEventContext;
@@ -586,10 +585,8 @@ public class MetaSendNotificationEventListener extends MetaEventListener {
 		@Override
 		protected Object createNotification(Entity entity, EventType type, EntityEventContext context) {
 			Map<String, Object> bindings = generateBindings(entity, type, context);
-			WebHook wh = wm.createWebHook(tmplDefName, bindings);
-
+			WebHook wh = wm.createWebHook(tmplDefName, bindings, endPointDefList);
 			wh.setSynchronous(isSynchronous);
-			wh.setEndPoints((ArrayList<String>)endPointDefList);
 			WebHookResponseHandler whrh;
 			if (webHookResultHandlerDef==null||webHookResultHandlerDef.isEmpty()) {
 				whrh= new DefaultWebHookResponseHandlerImpl();
@@ -601,6 +598,8 @@ public class MetaSendNotificationEventListener extends MetaEventListener {
 				}
 			}
 			wh.setResultHandler(whrh);
+			
+			//wh.processGroovyTemplate(); //should do for both url and payload
 			return wh;
 		}
 

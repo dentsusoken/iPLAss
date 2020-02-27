@@ -19,7 +19,10 @@
  */
 package org.iplass.mtp.webhook.template.endpointaddress;
 
+import java.util.List;
+
 import org.iplass.mtp.definition.TypedDefinitionManager;
+import org.iplass.mtp.impl.webhook.endpointaddress.MetaWebEndPointDefinition.WebEndPointRuntime;
 
 public interface WebEndPointDefinitionManager extends TypedDefinitionManager<WebEndPointDefinition> {
 
@@ -28,5 +31,7 @@ public interface WebEndPointDefinitionManager extends TypedDefinitionManager<Web
 	public String getSecurityToken(int tenantId, String metaDataId, String TokenType);
 
 	public String generateHmacTokenString();
+
+	List<WebEndPointRuntime> generateRuntimeInstanceList(List<String> endPointDefList);
 
 }

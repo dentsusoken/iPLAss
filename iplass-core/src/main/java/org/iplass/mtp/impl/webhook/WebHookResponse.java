@@ -19,14 +19,15 @@
  */
 package org.iplass.mtp.impl.webhook;
 
-import java.util.HashMap;
 import java.util.List;
+
+import org.iplass.mtp.webhook.template.definition.WebHookHeader;
 
 public class WebHookResponse {
 
 	private int statusCode;
-	private String ReasonPhrase;
-	private HashMap<String, String> headers;
+	private String reasonPhrase;
+	private List<WebHookHeader> headers;
 	private String contentType;
 	private String contentEncoding;//nullable
 	private String responseBody;
@@ -37,15 +38,15 @@ public class WebHookResponse {
 		this.statusCode = statusCode;
 	}
 	public String getReasonPhrase() {
-		return ReasonPhrase;
+		return reasonPhrase;
 	}
 	public void setReasonPhrase(String reasonPhrase) {
-		ReasonPhrase = reasonPhrase;
+		this.reasonPhrase = reasonPhrase;
 	}
-	public HashMap<String, String> getHeaders() {
+	public List<WebHookHeader> getHeaders() {
 		return headers;
 	}
-	public void setHeaders(HashMap<String, String> headers) {
+	public void setHeaders(List<WebHookHeader> headers) {
 		this.headers = headers;
 	}
 	public String getContentType() {

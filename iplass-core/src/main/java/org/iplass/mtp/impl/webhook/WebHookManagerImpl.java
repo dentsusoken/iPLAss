@@ -19,11 +19,10 @@
  */
 package org.iplass.mtp.impl.webhook;
 
+import java.util.List;
 import java.util.Map;
-
 import org.iplass.mtp.ApplicationException;
 import org.iplass.mtp.SystemException;
-import org.iplass.mtp.impl.auth.AuthContextHolder;
 import org.iplass.mtp.impl.core.ExecuteContext;
 import org.iplass.mtp.impl.transaction.TransactionService;
 import org.iplass.mtp.impl.webhook.template.MetaWebHookTemplate.WebHookTemplateRuntime;
@@ -43,6 +42,7 @@ public class WebHookManagerImpl implements WebHookManager {
 
 	private WebHookService webHookService = ServiceRegistry.getRegistry().getService(WebHookService.class);
 	
+	
 	private WebHookTemplateRuntime getWebHookTemplateRuntme(String defName) {
 		WebHookTemplateRuntime runtime = webHookService.getRuntimeByName(defName);
 		if (runtime == null) {
@@ -53,9 +53,7 @@ public class WebHookManagerImpl implements WebHookManager {
 
 	@Override
 	public void sendWebHook(String webHookDefinitionName, Map<String, Object> parameters) {
-		AuthContextHolder account = AuthContextHolder.getAuthContext();//check if is permit, TODO:
-		//boolean isPermitted = account.checkPermission(whPermission);
-		//if permited
+		
 		Tenant tenant = ExecuteContext.getCurrentContext().getCurrentTenant();
 		WebHookTemplateRuntime runtime = getWebHookTemplateRuntme(webHookDefinitionName);
 		if (runtime == null) {
@@ -69,7 +67,6 @@ public class WebHookManagerImpl implements WebHookManager {
 //			}
 			temp.setTemplateName(webHookDefinitionName);
 			webHookService.sendWebHook(tenant, temp);
-			
 		} catch (ApplicationException e) {
 			throw e;
 		} catch (RuntimeException e) {
@@ -90,24 +87,13 @@ public class WebHookManagerImpl implements WebHookManager {
 	}
 
 	@Override
-	public WebHook createWebHook(String webHookDefinitionName, Map<String, Object> binding) {
-		WebHookTemplateRuntime runtime = getWebHookTemplateRuntme(webHookDefinitionName);
-		if (runtime == null) {
-			throw new SystemException("WebHookTemplate:" + webHookDefinitionName + " not found");
-		}
-		WebHook temp = runtime.createWebHook(binding);
-		temp.setTemplateName(webHookDefinitionName);
-		return temp;
-		
+	public WebHook createWebHook(String webHookDefinitionName, Map<String, Object> binding,List<String> endPointDefName) {
+		return webHookService.generateWebHook(webHookDefinitionName, binding, endPointDefName);
 	}
 
 	@Override
 	public void sendWebHook(WebHook webHook) {
 		try { 
-//			if (webHook.getSubscribers() == null || webHook.getSubscribers().isEmpty()) {//テストや、新規の時よくあるケース
-//				logger.warn("The WebHook: was attempted without valid receiver url.");
-//				return;
-//			}
 			Tenant tenant = ExecuteContext.getCurrentContext().getCurrentTenant();
 			if (webHook.isSynchronous()) {
 				webHookService.sendWebHook(tenant, webHook);
@@ -130,4 +116,5 @@ public class WebHookManagerImpl implements WebHookManager {
 		
 	}
 
+	
 }

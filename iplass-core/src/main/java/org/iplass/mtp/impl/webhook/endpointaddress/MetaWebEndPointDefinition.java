@@ -65,7 +65,6 @@ public class MetaWebEndPointDefinition extends BaseRootMetaData implements Defin
 		definition.setDescription(description);
 		definition.setHeaderAuthType(headerAuthType);
 		definition.setHeaderAuthTypeName(headerAuthTypeName);
-		
 		definition.setUrl(url);
 		definition.setWebEndPointId(this.id);
 		return definition;
@@ -123,16 +122,87 @@ public class MetaWebEndPointDefinition extends BaseRootMetaData implements Defin
 
 
 	public class WebEndPointRuntime extends BaseMetaDataRuntime{
-		//FIXME add
+		String url;
+		String hmac;
+		String hmacResult;
+		String headerAuthContent;
+		String headerAuthType;
+		String headerAuthTypeName;
+		String contentForThisEndPoint;
+		String endPointId;
+		String endPointName;
 		
 		public WebEndPointRuntime() {
 			super();
+			url = MetaWebEndPointDefinition.this.url;
+			endPointName = MetaWebEndPointDefinition.this.name;
+			endPointId = MetaWebEndPointDefinition.this.webEndPointId;
+			headerAuthType = MetaWebEndPointDefinition.this.headerAuthType;
+			headerAuthTypeName = MetaWebEndPointDefinition.this.headerAuthTypeName;
 		}
 
 		@Override
 		public MetaWebEndPointDefinition getMetaData() {
 			return MetaWebEndPointDefinition.this;
 		}
+
+		public String getUrl() {
+			return url;
+		}
+		public void setUrl(String url) {
+			this.url = url;
+		}
+		public String getHmac() {
+			return hmac;
+		}
+		public void setHmac(String hmac) {
+			this.hmac = hmac;
+		}
+		public String getHeaderAuthContent() {
+			return headerAuthContent;
+		}
+		public void setHeaderAuthContent(String headerAuthContent) {
+			this.headerAuthContent = headerAuthContent;
+		}
+		public String getHeaderAuthType() {
+			return headerAuthType;
+		}
+		public void setHeaderAuthType(String headerAuthType) {
+			this.headerAuthType = headerAuthType;
+		}
+		public String getHeaderAuthTypeName() {
+			return headerAuthTypeName;
+		}
+		public void setHeaderAuthTypeName(String headerAuthTypeName) {
+			this.headerAuthTypeName = headerAuthTypeName;
+		}
+		
+		public String getContentForThisEndPoint() {
+			return contentForThisEndPoint;
+		}
+		public void setContentForThisEndPoint(String contentForThisEndPoint) {
+			this.contentForThisEndPoint = contentForThisEndPoint;
+		}
+		
+		public String getHmacResult() {
+			return hmacResult;
+		}
+		public void setHmacResult(String hmacResult) {
+			this.hmacResult = hmacResult;
+		}
+		public String getEndPointId() {
+			return endPointId;
+		}
+		public void setEndPointId(String endPointId) {
+			this.endPointId = endPointId;
+		}
+		public String getEndPointName() {
+			return endPointName;
+		}
+		public void setEndPointName(String endPointName) {
+			this.endPointName = endPointName;
+		}
+
 		
 	}
 

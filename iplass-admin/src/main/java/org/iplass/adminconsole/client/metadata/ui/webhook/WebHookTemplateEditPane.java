@@ -72,7 +72,6 @@ public class WebHookTemplateEditPane extends MetaDataMainEditPane {
 	private enum HEADER_FIELD_NAME{
 		HEADERNAME,
 		HEADERVALUE,
-		HEADERID,
 	}
 	
 	private final MetaDataServiceAsync service;
@@ -299,18 +298,13 @@ public class WebHookTemplateEditPane extends MetaDataMainEditPane {
 					if (record == null) {
 						return;
 					}
-					String _headerid = record.getAttribute(HEADER_FIELD_NAME.HEADERID.name());
 					headerGrid.removeSelectedData();
 
-					ArrayList<WebHookHeader> _headers = new ArrayList<WebHookHeader>();
-
-					for (WebHookHeader hd : curDefinition.getHeaders() ) {
-						if (hd.getId().equals(_headerid)) {
-							continue;
-						}
-						_headers.add(hd);
+					ArrayList<WebHookHeader> headers = new ArrayList<WebHookHeader>();
+					for (ListGridRecord  records: headerGrid.getRecords()) {
+						headers.add(new WebHookHeader(records.getAttribute(HEADER_FIELD_NAME.HEADERNAME.name()),records.getAttribute(HEADER_FIELD_NAME.HEADERVALUE.name())));
 					}
-					curDefinition.setHeaders(_headers);
+					curDefinition.setHeaders(headers);
 				}
 			});
 			
@@ -382,59 +376,29 @@ public class WebHookTemplateEditPane extends MetaDataMainEditPane {
 						record.getAttributeAsString(HEADER_FIELD_NAME.HEADERNAME.name()),
 						record.getAttributeAsString(HEADER_FIELD_NAME.HEADERVALUE.name()));
 			}
-			final WebHookHeaderDialog dialog = new WebHookHeaderDialog(temp, curDefinition.getHeaders());
+			final WebHookHeaderDialog dialog = new WebHookHeaderDialog(temp);
 			dialog.addDataChangeHandler(new DataChangedHandler() {
 				@Override
 				public void onDataChanged(DataChangedEvent event) {
 					WebHookHeader param = event.getValueObject(WebHookHeader.class);
-					param.setKey(param.getKey().replaceAll("\\s+",""));//space抜き
 					if (record != null) {//既存
-						ArrayList<WebHookHeader>_headers = curDefinition.getHeaders();
-						HashMap<String, WebHookHeader> tempMap = new HashMap<String, WebHookHeader>();
-						for (WebHookHeader entry :_headers) {
-							if (entry.getKey().equals(param.getKey())) {//被りのheaderエントリー消します
-								continue;
-							}
-							if (entry.getId().equals(record.getAttributeAsObject(HEADER_FIELD_NAME.HEADERID.name()))) {
-								continue;
-							}
-							tempMap.put(entry.getId(), entry);
-						}
-
-						tempMap.put(param.getKey(), param);
-
-						ArrayList<WebHookHeader> newList = new ArrayList<WebHookHeader>(); 
-						for (WebHookHeader headerEntry: tempMap.values()) {
-							newList.add(headerEntry);
-						}
-						curDefinition.setHeaders(newList);
-					} else {//新規
-						ArrayList<WebHookHeader>_headers = curDefinition.getHeaders();
-						HashMap<String, WebHookHeader> tempMap = new HashMap<String, WebHookHeader>();
-						for (WebHookHeader entry :_headers) {
-							
-							tempMap.put(entry.getKey(), entry);
-						} 
-						tempMap.remove(param.getKey());//被りのheaderエントリー消します
-
-						tempMap.put(param.getKey(), param);
-
-						ArrayList<WebHookHeader> newList = new ArrayList<WebHookHeader>(); 
-						for (WebHookHeader headerEntry: tempMap.values()) {
-							newList.add(headerEntry);
-						}
-						curDefinition.setHeaders(newList);
-						
+						headerGrid.removeData(record);	
 					}
+					ArrayList<WebHookHeader> headers = new ArrayList<WebHookHeader>();
+					for (ListGridRecord  records: headerGrid.getRecords()) {
+						headers.add(new WebHookHeader(records.getAttribute(HEADER_FIELD_NAME.HEADERNAME.name()),records.getAttribute(HEADER_FIELD_NAME.HEADERVALUE.name())));
+					}
+					headers.add(param);
+					curDefinition.setHeaders(headers);
 					ListGridRecord[] temp = getHeaderRecordList(curDefinition);
 					headerGrid.setData(temp);
 					headerGrid.refreshFields();
 				}
 			});
-		
 			dialog.show();
 			
 		}
+		
 		protected ListGridRecord createRecord(WebHookHeader param, ListGridRecord record, boolean init) {
 			if (record == null) {
 				record = new ListGridRecord();
@@ -460,7 +424,6 @@ public class WebHookTemplateEditPane extends MetaDataMainEditPane {
 			}
 			record.setAttribute(HEADER_FIELD_NAME.HEADERNAME.name(), param.getKey());
 			record.setAttribute(HEADER_FIELD_NAME.HEADERVALUE.name(), param.getValue());
-			record.setAttribute(HEADER_FIELD_NAME.HEADERID.name(), param.getId());
 			return record;
 		}
 		public boolean validate() {
@@ -520,7 +483,6 @@ public class WebHookTemplateEditPane extends MetaDataMainEditPane {
 
 			int cnt = 0;
 			for (WebHookHeader header : definitionList) {
-				header.setId(Integer.toString(cnt));
 				ListGridRecord newRecord = createRecord(header, null, true);
 				temp[cnt] = newRecord;
 				cnt ++;
@@ -548,11 +510,8 @@ public class WebHookTemplateEditPane extends MetaDataMainEditPane {
 
 			ListGridField headerNameField = new ListGridField(HEADER_FIELD_NAME.HEADERNAME.name(), "Name Key");
 			ListGridField headerValueField = new ListGridField(HEADER_FIELD_NAME.HEADERVALUE.name(), "Value");
-			ListGridField headerIdField = new ListGridField(HEADER_FIELD_NAME.HEADERID.name(), "HeaderId");//前端でheaderを区別するためのkeyみたいなもの
-			headerIdField.setHidden(true);
-			headerIdField.setCanHide(false);
 			
-			setFields(headerNameField, headerValueField,headerIdField);
+			setFields(headerNameField, headerValueField);
 		}
 	}
 	

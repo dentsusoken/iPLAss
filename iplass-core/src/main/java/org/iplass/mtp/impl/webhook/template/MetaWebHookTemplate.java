@@ -220,6 +220,9 @@ public class MetaWebHookTemplate extends BaseRootMetaData implements DefinableMe
 
 		private GroovyTemplate contentTemplate;
 		
+		public GroovyTemplate getContentTemplate() {
+			return contentTemplate;
+		}
 		@Override
 		public MetaWebHookTemplate getMetaData() {
 			return MetaWebHookTemplate.this;
@@ -247,9 +250,6 @@ public class MetaWebHookTemplate extends BaseRootMetaData implements DefinableMe
 			webHook.setContentType(contentType);
 			webHook.setMetaDataId(id);
 			bindings.put("webHook", webHook);
-			webHook.setBinding(bindings);
-
-			webHook.setGroovyTemplateContent(contentTemplate);
 
 			//template
 			

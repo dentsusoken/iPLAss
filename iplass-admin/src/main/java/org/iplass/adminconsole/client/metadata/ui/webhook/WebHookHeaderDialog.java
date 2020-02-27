@@ -46,7 +46,7 @@ public class WebHookHeaderDialog extends MtpDialog {
 	private List<DataChangedHandler> handlers = new ArrayList<DataChangedHandler>();
 	
 	
-	public WebHookHeaderDialog(WebHookHeader headerDefinition, ArrayList<WebHookHeader> headers) {
+	public WebHookHeaderDialog(WebHookHeader headerDefinition) {
 		curHeaderDefinition = headerDefinition;
 		if (curHeaderDefinition==null) {
 			curHeaderDefinition = new WebHookHeader();
@@ -112,10 +112,10 @@ public class WebHookHeaderDialog extends MtpDialog {
 		}
 		
 		/** dialog -> definition */
-		public WebHookHeader getEditDefinition(WebHookHeader _curHeaderDefinition){
-			_curHeaderDefinition.setKey(SmartGWTUtil.getStringValue(headerNameField));
-			_curHeaderDefinition.setValue(SmartGWTUtil.getStringValue(headerValueField));
-			return _curHeaderDefinition;
+		public WebHookHeader getEditDefinition(WebHookHeader curHeaderDefinition){
+			curHeaderDefinition.setKey((SmartGWTUtil.getStringValue(headerNameField)).replaceAll("\\s+",""));
+			curHeaderDefinition.setValue((SmartGWTUtil.getStringValue(headerValueField)).replaceAll("\\s+",""));
+			return curHeaderDefinition;
 		}
 		public boolean isHeaderNameFieldEmpty() {
 			if (SmartGWTUtil.getStringValue(headerNameField)==null||SmartGWTUtil.getStringValue(headerNameField).replaceAll("\\s+","").isEmpty()) {

@@ -24,10 +24,8 @@
 package org.iplass.mtp.webhook;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-
-import org.iplass.mtp.impl.script.template.GroovyTemplate;
+import java.util.List;
+import org.iplass.mtp.impl.webhook.endpointaddress.MetaWebEndPointDefinition.WebEndPointRuntime;
 import org.iplass.mtp.webhook.template.definition.WebHookHeader;
 
 /**
@@ -35,19 +33,17 @@ import org.iplass.mtp.webhook.template.definition.WebHookHeader;
  */
 
 public class WebHook  {
-	
+
 	/** このwebhookの名前 */
 	private String name;
 
 	/** 送る内容 */
 	private String contentType;
-	private String webHookContent;
 	
 	/** 送るメソッド */
 	private String httpMethod;
 
-	/**definition name, 後でserviceで情報をとる*/
-	private ArrayList<String> endPoints;
+	private List<WebEndPointRuntime> webHookEndPointRuntimeList;
 
 	private WebHookResponseHandler resultHandler;
 	String urlQuery;
@@ -56,10 +52,8 @@ public class WebHook  {
 	/** headers */
 	private ArrayList<WebHookHeader> headers;
 	private String tokenHeader;
+	
 
-	private Map<String, Object> binding;
-
-	private GroovyTemplate groovyTemplateContent;
 	//---------------------------------
 	/**　同期非同期　*/
 	private boolean synchronous;
@@ -127,21 +121,6 @@ public class WebHook  {
 	public void setHeaders(ArrayList<WebHookHeader> headers) {
 		this.headers = headers;
 	}
-
-	public Map<String, Object> getBinding() {
-		return binding;
-	}
-
-	public void setBinding(Map<String, Object> binding) {
-		this.binding = binding;
-	}
-	
-	public void addBinding(String bindingName, Object object) {
-		if (binding == null) {
-			binding = new HashMap<String, Object>();
-		}
-		binding.put(bindingName, object);
-	}
 	
 	public String getTokenHeader() {
 		return tokenHeader;
@@ -166,30 +145,6 @@ public class WebHook  {
 		this.contentType = contentType;
 	}
 
-	public String getWebHookContent() {
-		return webHookContent;
-	}
-
-	public void setWebHookContent(String webHookContent) {
-		this.webHookContent = webHookContent;
-	}
-
-	public ArrayList<String> getEndPoints() {
-		return endPoints;
-	}
-
-	public void setEndPoints(ArrayList<String> endPoints) {
-		this.endPoints = endPoints;
-	}
-
-	public GroovyTemplate getGroovyTemplateContent() {
-		return groovyTemplateContent;
-	}
-
-	public void setGroovyTemplateContent(GroovyTemplate groovyTemplateContent) {
-		this.groovyTemplateContent = groovyTemplateContent;
-	}
-
 	public String getUrlQuery() {
 		return urlQuery;
 	}
@@ -212,6 +167,14 @@ public class WebHook  {
 
 	public void setResultHandler(WebHookResponseHandler resultHandler) {
 		this.resultHandler = resultHandler;
+	}
+
+	public List<WebEndPointRuntime> getWebHookEndPointRuntimeList() {
+		return webHookEndPointRuntimeList;
+	}
+
+	public void setWebHookEndPointRuntimeList(List<WebEndPointRuntime> webHookEndPointRuntimeList) {
+		this.webHookEndPointRuntimeList = webHookEndPointRuntimeList;
 	}
 
 }
