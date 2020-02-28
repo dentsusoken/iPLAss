@@ -289,12 +289,11 @@
 	<service>
 		<interface>org.iplass.mtp.impl.webhook.WebHookService</interface>
 		<class>org.iplass.mtp.impl.webhook.WebHookServiceImpl</class>
-		<property name="webHook.Use.Proxy" value="true" />
-		<property name="webHook.IsRetry" value="true" />
-		<property name="webHook.Retry.MaximumAttempts" value="10" />
-		<property name="webHook.Retry.Interval" value="500" />
-		<property name="webHook.HmacToken.Algorithm" value="HmacSHA256" />
-		<property name="webHook.HmacToken.DefaultName" value="X-IPLASS-HMAC" />
+		<property name="webHookIsRetry" value="true" />
+		<property name="webHookRetryMaximumAttempts" value="10" />
+		<property name="webHookRetryInterval" value="500" />
+		<property name="webHookHmacHashAlgorithm" value="HmacSHA256" />
+		<property name="webHookHmacTokenDefaultName" value="X-IPLASS-HMAC" />
 		<property name="httpClientConfig" class="org.iplass.mtp.impl.http.HttpClientConfig">
 			<property name="proxyHost" value="localhost" />
 			<property name="proxyPort" value="8080" />
