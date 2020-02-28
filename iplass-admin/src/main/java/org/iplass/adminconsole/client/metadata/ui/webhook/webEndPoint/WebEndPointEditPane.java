@@ -138,7 +138,6 @@ public class WebEndPointEditPane extends MetaDataMainEditPane {
 //		エラーのクリア
 		commonSection.clearErrors();
 		webEndPointAttributePane.clearErrors();
-
 		service.getDefinitionEntry(TenantInfoHolder.getId(), WebEndPointDefinition.class.getName(), defName, new AsyncCallback<DefinitionEntry>() {
 
 			@Override
@@ -317,8 +316,6 @@ public class WebEndPointEditPane extends MetaDataMainEditPane {
 			authPane.setMargin(5);
 			authPane.setMembersMargin(5);
 
-			//TODO:現在はBasic, Bearerだけ、今後追加かと
-			//authorizationでよく使うタイプ: Basic, Bearer, Digest, HOBA, Mutual, Client, Form Basedとか、
 			headerAuthForm =new DynamicForm();
 			headerAuthForm.setPadding(10);
 			headerAuthForm.setNumCols(2);
@@ -468,8 +465,11 @@ public class WebEndPointEditPane extends MetaDataMainEditPane {
 					Map<String, Serializable> valueMap = event.getValueMap();
 					String type =(String) valueMap.get("type");
 					String content =(String) valueMap.get("content");
+					
 					if (type == null || type.isEmpty()) {
-
+					} else if (content==null||content.replaceAll("\\s", "").isEmpty()) {
+						delMap(type);
+						dialog.destroy();
 					} else if (type.equals("WHHM")) {
 						service.updateWebEndPointSecurityInfo(TenantInfoHolder.getId(), curDefinition.getWebEndPointId(), content, type,new AdminAsyncCallback<Void>() {
 
@@ -493,56 +493,42 @@ public class WebEndPointEditPane extends MetaDataMainEditPane {
 
 							@Override
 							public void onSuccess(Void result) {
-								refreshSecurityInfo();
-								webEndPointAttributePane.markForRedraw();
-								dialog.destroy();
-								SmartGWTUtil.hideProgress();
-
-							if (curDefinition.getHeaderAuthType()!=type) {//タイプ変わったら旧タイプの削除
-								service.updateWebEndPointSecurityInfo(TenantInfoHolder.getId(), curDefinition.getWebEndPointId(), null, 
-										type=="WHBA"?"WHBT":"WHBA",
-										new AdminAsyncCallback<Void>() {
+								if (curDefinition.getHeaderAuthType()!=type) {//タイプ変わったら旧タイプの削除
+									service.updateWebEndPointSecurityInfo(TenantInfoHolder.getId(), curDefinition.getWebEndPointId(), null, 
+											type=="WHBA"?"WHBT":"WHBA",
+											new AdminAsyncCallback<Void>() {
+										@Override
+										public void onSuccess(Void result) {
+										}
+										@Override
+										protected void beforeFailure(Throwable caught){
+											SC.warn("error happened when deleting old token");
+										};
+									});
+								}
+								curDefinition.setHeaderAuthType(type);
+								service.updateDefinition(TenantInfoHolder.getId(), curDefinition, curVersion, true, new MetaDataUpdateCallback() {
 									@Override
-									public void onSuccess(Void result) {
+									protected void overwriteUpdate() {
+										updateWebEndPointDefinition(curDefinition, false);
 									}
 									@Override
-									protected void beforeFailure(Throwable caught){
-										SC.warn("error happened when deleting old token");
-									};
+									protected void afterUpdate(AdminDefinitionModifyResult result) {
+										refreshVersion();
+										refreshSecurityInfo();
+										webEndPointAttributePane.markForRedraw();
+										SmartGWTUtil.hideProgress();
+										setHeaderAuthTokenVisibility();
+										dialog.destroy();
+									}
 								});
 							}
-							if (content==null||content.replaceAll("\\s","").isEmpty()) {//contentがnullかemptyでしたら、data消しになるので、HeaderAuthTypeもなしに
-								curDefinition.setHeaderAuthType(null);
-								webEndPointBasicUsernameField.clearValue();
-								webEndPointBasicPasswordField.clearValue();
-								webEndPointBearerTokenField.clearValue();
-							} else {
-								curDefinition.setHeaderAuthType(type);
+							@Override
+							protected void beforeFailure(Throwable caught){
+								SC.warn("error happened when registering new token");
+								SmartGWTUtil.hideProgress();
 							}
-							
-							service.updateDefinition(TenantInfoHolder.getId(), curDefinition, curVersion, true, new MetaDataUpdateCallback() {
-	
-								@Override
-								protected void overwriteUpdate() {
-									updateWebEndPointDefinition(curDefinition, false);
-								}
-	
-								@Override
-								protected void afterUpdate(AdminDefinitionModifyResult result) {
-									refreshVersion();
-								}
-								
-							});
-							
-							setHeaderAuthTokenVisibility();
-							}
-
-						@Override
-						protected void beforeFailure(Throwable caught){
-							SC.warn("error happened when registering new token");
-							SmartGWTUtil.hideProgress();
-						};
-					});
+						});
 					}
 				}
 			});
@@ -558,8 +544,13 @@ public class WebEndPointEditPane extends MetaDataMainEditPane {
 				public void execute(Boolean value) {
 					if (value) {
 						if (tokenType!=null) {
-							
-						
+							if (tokenType!="WHHM") {
+								if (curDefinition.getHeaderAuthType()!=null&&!curDefinition.getHeaderAuthType().replaceAll("\\s", "").isEmpty()) {
+									if (tokenType!=curDefinition.getHeaderAuthType()) {
+										return;
+									}
+								}
+							}
 							//delete data
 							service.updateWebEndPointSecurityInfo(TenantInfoHolder.getId(), curDefinition.getWebEndPointId(), null, tokenType, new AdminAsyncCallback<Void>() {
 								@Override
