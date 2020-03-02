@@ -22,6 +22,7 @@ package org.iplass.gem.command.generic.detail;
 
 import java.util.List;
 
+import org.iplass.gem.GemConfigService;
 import org.iplass.gem.command.Constants;
 import org.iplass.gem.command.GemResourceBundleUtil;
 import org.iplass.mtp.ApplicationException;
@@ -46,6 +47,7 @@ import org.iplass.mtp.entity.definition.PropertyDefinition;
 import org.iplass.mtp.entity.definition.properties.BinaryProperty;
 import org.iplass.mtp.entity.definition.properties.ReferenceProperty;
 import org.iplass.mtp.entity.definition.properties.ReferenceType;
+import org.iplass.mtp.spi.ServiceRegistry;
 import org.iplass.mtp.util.StringUtil;
 import org.iplass.mtp.view.generic.DetailFormView;
 import org.iplass.mtp.view.generic.DetailFormView.CopyTarget;
@@ -343,18 +345,21 @@ public final class DetailViewCommand extends DetailCommandBase {
 
 			if (isReset) entity.setValue(pd.getName(), null);
 			else {
+				boolean isShallow = ServiceRegistry.getRegistry().getService(GemConfigService.class).isShallowCopyLob();
 				//バイナリの場合はデータもコピー
 				if (pd instanceof BinaryProperty) {
 					Object value = null;
 					if (pd.getMultiplicity() == 1) {
 						BinaryReference br = entity.getValue(pd.getName());
-						if (br != null) value = copyBinary(br);
+						// データをシャッローコピーするか判断します。
+						if (br != null) value = isShallow ? shallowCopyBinary(br) : copyBinary(br);
 					} else {
 						BinaryReference[] br = entity.getValue(pd.getName());
 						if (br != null && br.length > 0) {
 							BinaryReference[] _br = new BinaryReference[br.length];
 							for (int i = 0; i < br.length; i++) {
-								_br[i] = copyBinary(br[i]);
+								// データをシャッローコピーするか判断します。
+								_br[i] = isShallow ? shallowCopyBinary(br[i]) : copyBinary(br[i]);
 							}
 							value = _br;
 						}
@@ -366,6 +371,9 @@ public final class DetailViewCommand extends DetailCommandBase {
 	}
 	private BinaryReference copyBinary(BinaryReference br) {
 		return em.createBinaryReference(br.getName(), br.getType(), em.getInputStream(br));
+	}
+	private BinaryReference shallowCopyBinary(BinaryReference br) {
+		return br.copy();
 	}
 
 	private static String resourceString(String key, Object... arguments) {
