@@ -292,11 +292,7 @@ function createTemplate(listId, defName, displayName, crawlDate, colModels) {
 			var curSortType = $sortType.val();
 
 			if (curSortKey !== "" && curSortType !== "") {
-				$(".ui-jqgrid-htable tr.ui-jqgrid-labels th[id^=" + listId + "] .ui-jqgrid-sortable").removeClass("asc desc");
-				var $sortable = $(".ui-jqgrid-htable tr.ui-jqgrid-labels th#" + $.escapeSelector(listId + "_" + curSortKey) + " .ui-jqgrid-sortable");
-				$sortable.addClass(curSortType.toLowerCase());
-				$(".s-ico", $sortable).show();
-				$(".ui-icon-" + curSortType.toLowerCase(), $sortable).removeClass("ui-state-disabled");
+				$("#" + listId).sortGrid(curSortKey, false, curSortType.toLowerCase());
 			}
 		}
 	});
