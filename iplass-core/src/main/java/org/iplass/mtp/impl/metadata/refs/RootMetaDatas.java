@@ -38,6 +38,8 @@ import org.iplass.mtp.impl.tenant.MetaTenant;
 import org.iplass.mtp.impl.tenant.MetaTenantAuthInfo;
 import org.iplass.mtp.impl.tenant.MetaTenantI18nInfo;
 import org.iplass.mtp.impl.tenant.MetaTenantMailInfo;
+import org.iplass.mtp.impl.webhook.endpointaddress.MetaWebEndPointDefinition;
+import org.iplass.mtp.impl.webhook.template.MetaWebHookTemplate;
 
 @XmlSeeAlso({
 	BaseRootMetaData.class
@@ -54,6 +56,8 @@ import org.iplass.mtp.impl.tenant.MetaTenantMailInfo;
 	,MetaPreference.class
 	,MetaAuthenticationPolicy.class
 	,MetaPushNotificationTemplate.class
+	,MetaWebHookTemplate.class
+	,MetaWebEndPointDefinition.class
 
 	,MetaTenantAuthInfo.class
 	,MetaTenantMailInfo.class

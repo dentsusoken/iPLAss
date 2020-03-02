@@ -20,6 +20,7 @@
 
 package org.iplass.adminconsole.shared.metadata.rpc;
 
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -491,5 +492,16 @@ public interface MetaDataService extends XsrfProtectedService {
 	public String generateCredentialOAuthResourceServer(final int tenantId, final String definitionName);
 
 	public void deleteOldCredentialOAuthResourceServer(final int tenantId, final String definitionName);
+
+	/* ---------------------------------------
+	 * WebHook EndPoint Security Info
+	 --------------------------------------- */
+	public void updateWebEndPointSecurityInfo(final int tenantId, final String metaDataId, final String secret, final String TokenType);
+
+	public String getWebEndPointSecurityInfo(final int tenantId, final String metaDataId, final String TokenType);
+
+	public String generateHmacTokenString();
+	
+	public HashMap<String, String> getEndPointFullListWithUrl(int tenantId);
 
 }

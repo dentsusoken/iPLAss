@@ -20,6 +20,8 @@
 
 package org.iplass.adminconsole.client.metadata.ui.entity;
 
+import java.util.List;
+
 import com.smartgwt.client.widgets.grid.ListGridRecord;
 
 public class EventListenerListGridRecord extends ListGridRecord {
@@ -51,6 +53,9 @@ public class EventListenerListGridRecord extends ListGridRecord {
 	public static final String NAFTERP = "notifyAfterP";
 	public static final String NONLOAD = "notifyOnLoad";
 	public static final String NBEFOREVALIDATE = "notifyBeforeValidate";
+	public static final String WEBENDPOINTLIST="webEndPointList";
+	public static final String WEBHOOKRESULTHANLDER="webHookResultHandler";
+	public static final String ISSYNCHRONOUS="isSyncrhonous";
 
 	public static final String GP = "gp";
 
@@ -276,5 +281,30 @@ public class EventListenerListGridRecord extends ListGridRecord {
 
 	public void setGeneralPurpus(String value) {
 		setAttribute(GP, value);
+	}
+	
+	public void setWebEndPointList(List<String> webEndPointList) {
+		setAttributeAsJavaObject(WEBENDPOINTLIST, webEndPointList);
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<String> getWebEndPointList(){
+		return (List<String>) getAttributeAsObject(WEBENDPOINTLIST);
+	}
+	
+	public void setWebHookResultHandler(String webHookResultHandler) {
+		setAttribute(WEBHOOKRESULTHANLDER, webHookResultHandler);
+	}
+	
+	public String getWebHookResultHandler(){
+		return getAttribute(WEBHOOKRESULTHANLDER);
+	}
+
+	public void setIsSyncrhonous(boolean value) {
+		setAttribute(ISSYNCHRONOUS, value);
+	}
+
+	public boolean isSyncrhonous() {
+		return getAttributeAsBoolean(ISSYNCHRONOUS);
 	}
 }

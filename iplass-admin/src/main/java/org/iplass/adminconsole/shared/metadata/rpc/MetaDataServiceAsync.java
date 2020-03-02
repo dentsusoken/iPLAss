@@ -20,6 +20,7 @@
 
 package org.iplass.adminconsole.shared.metadata.rpc;
 
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -467,4 +468,14 @@ public interface MetaDataServiceAsync {
 
 	void deleteOldCredentialOAuthResourceServer(final int tenantId, final String definitionName, AsyncCallback<Void> callback);
 
+	/* ---------------------------------------
+	 * WebHook EndPoint Security Info
+	 --------------------------------------- */
+	public void updateWebEndPointSecurityInfo(final int tenantId, final String metaDataId, final String secret, final String TokenType,AsyncCallback<Void> callback);
+
+	public void getWebEndPointSecurityInfo(final int tenantId, final String metaDataId, final String TokenType,AsyncCallback<String> callback);
+	
+	public void generateHmacTokenString(AsyncCallback<String> callback);
+	
+	public void getEndPointFullListWithUrl(final int tenantId, final AsyncCallback<HashMap<String, String>>callback);
 }

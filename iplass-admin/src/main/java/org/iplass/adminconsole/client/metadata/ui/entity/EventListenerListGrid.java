@@ -21,10 +21,14 @@
 package org.iplass.adminconsole.client.metadata.ui.entity;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
-
+import java.util.Map;
+import org.iplass.adminconsole.client.base.event.DataChangedHandler;
+import org.iplass.adminconsole.client.base.event.DataChangedEvent;
 import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
+import org.iplass.adminconsole.client.base.tenant.TenantInfoHolder;
 import org.iplass.adminconsole.client.base.ui.widget.MtpDialog;
 import org.iplass.adminconsole.client.base.ui.widget.ScriptEditorDialogCondition;
 import org.iplass.adminconsole.client.base.ui.widget.ScriptEditorDialogHandler;
@@ -37,6 +41,8 @@ import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
 import org.iplass.adminconsole.client.metadata.data.MetaDataNameDS;
 import org.iplass.adminconsole.client.metadata.data.MetaDataNameDS.MetaDataNameDSOption;
 import org.iplass.adminconsole.client.metadata.ui.MetaDataUtil;
+import org.iplass.adminconsole.shared.metadata.rpc.MetaDataServiceAsync;
+import org.iplass.adminconsole.shared.metadata.rpc.MetaDataServiceFactory;
 import org.iplass.mtp.entity.definition.EntityDefinition;
 import org.iplass.mtp.entity.definition.EventListenerDefinition;
 import org.iplass.mtp.entity.definition.listeners.EventType;
@@ -44,8 +50,10 @@ import org.iplass.mtp.entity.definition.listeners.JavaClassEventListenerDefiniti
 import org.iplass.mtp.entity.definition.listeners.ScriptingEventListenerDefinition;
 import org.iplass.mtp.entity.definition.listeners.SendNotificationEventListenerDefinition;
 import org.iplass.mtp.entity.definition.listeners.SendNotificationType;
-
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.smartgwt.client.types.Alignment;
+import com.smartgwt.client.types.ListGridFieldType;
 import com.smartgwt.client.types.Overflow;
 import com.smartgwt.client.widgets.IButton;
 import com.smartgwt.client.widgets.events.ClickEvent;
@@ -217,6 +225,10 @@ public class EventListenerListGrid extends ListGrid {
 			record.setGeneralPurpus(snDef.getNotificationType().name());
 			record.setTmplDefName(snDef.getTmplDefName());
 			record.setNotificationCondScript(snDef.getNotificationCondScript());
+			
+			record.setIsSyncrhonous(snDef.getIsSynchronous());
+			record.setWebEndPointList(snDef.getEndPointDefList());
+			record.setWebHookResultHandler(snDef.getWebHookResultHandlerDef());
 
 			List<EventType> lstEType = snDef.getListenEvent();
 			if (lstEType != null) {
@@ -303,6 +315,10 @@ public class EventListenerListGrid extends ListGrid {
 				snDef.setTmplDefName(record.getTmplDefName());
 				snDef.setNotificationCondScript(record.getNotificationCondScript());
 
+				snDef.setIsSynchronous(record.isSyncrhonous());
+				snDef.setEndPointDefList(record.getWebEndPointList());
+				snDef.setWebHookResultHandlerDef(record.getWebHookResultHandler());
+
 				List<EventType> lstEType = new ArrayList<EventType>();
 				if (record.isNotifyAfterD()) { lstEType.add(EventType.AFTER_DELETE); }
 				if (record.isNotifyAfterI()) { lstEType.add(EventType.AFTER_INSERT); }
@@ -381,6 +397,13 @@ public class EventListenerListGrid extends ListGrid {
 		private DynamicForm sendNotificationForm;
 		private SelectItem notificationTypeItem;
 		private SelectItem tmplDefNameItem;
+		//webhook
+		private VLayout webhookLayout;
+		private DynamicForm webHookSettingsForm;
+		private CheckboxItem webHookIsSynchronousItem;
+		private TextItem webHookResultHandlerItem;
+		private WebHookEndPointGrid webHookEndPointGrid;
+
 		//NotificationCondition
 		private DynamicForm notificationCondForm;
 		private TextAreaItem notificationCondScriptItem;
@@ -396,6 +419,10 @@ public class EventListenerListGrid extends ListGrid {
 		private CheckboxItem notifyAfterPItem;
 		private CheckboxItem notifyOnLoadItem;
 		private CheckboxItem notifyBeforeValidateItem;
+
+		
+		
+		
 
 		//withoutMappedByReference
 		private DynamicForm withoutMappedByReferenceItemForm;
@@ -531,20 +558,61 @@ public class EventListenerListGrid extends ListGrid {
 			notificationTypeItem.setTitle("Notification type");
 			SmartGWTUtil.setRequired(notificationTypeItem);
 			notificationTypeItem.addChangedHandler(new ChangedHandler() {
-
 				@Override
 				public void onChanged(ChangedEvent event) {
 					MetaTemplateChange();
 				}
 			});
-
+			notificationTypeItem.addChangedHandler(new ChangedHandler() {
+				@Override
+				public void onChanged(ChangedEvent event) {
+					formVisibleChange();
+				}
+			});
+			
 			tmplDefNameItem = new MtpSelectItem("template", "Template");
 			SmartGWTUtil.setRequired(tmplDefNameItem);
 
 			sendNotificationForm = new MtpForm();
 			sendNotificationForm.setHeight(50);
 			sendNotificationForm.setItems(notificationTypeItem, tmplDefNameItem);
+			//---------------------------------
+			//WebHook
+			//---------------------------------
+			webhookLayout = new VLayout();
+			webhookLayout.setWidth("100%");
+			webHookSettingsForm = new MtpForm();
+			webHookSettingsForm.setNumCols(2);
+			webHookResultHandlerItem = new TextItem("webHookResultHandler","ResuleHandlerImplClassName");
+			webHookResultHandlerItem.setWidth(575);
+			webHookSettingsForm.setItems(webHookResultHandlerItem);
+			
+			webHookIsSynchronousItem = new CheckboxItem("webHookIsSynchronous","Synchronous");
+			webHookIsSynchronousItem.setShowTitle(false);
+			MtpForm webHookIsSynchronousForm = new MtpForm();
+			webHookIsSynchronousForm.setHeight(25);
+			webHookIsSynchronousForm.setItems(webHookIsSynchronousItem);
+			
+			VLayout editEndPointButtonLayout =  new VLayout();
+			editEndPointButtonLayout.setLeft(660);
+			editEndPointButtonLayout.setWidth100();
+			editEndPointButtonLayout.setLayoutBottomMargin(3);
+			IButton editEndPointButton = new IButton("Edit End Point");
+			editEndPointButton.addClickHandler(new ClickHandler() {
+				public void onClick(ClickEvent event) {
+					webHookEndPointEditMap();
+				}
+			});
+			editEndPointButtonLayout.addMember(editEndPointButton);
+			
+			
+			webHookEndPointGrid = new WebHookEndPointGrid();
+			webHookEndPointGrid.setWidth("100%");
+			webHookEndPointGrid.setHeight(300);
+			webHookEndPointGrid.setTitle("End Point Address");
 
+			webhookLayout.addMembers(webHookSettingsForm,webHookIsSynchronousForm,editEndPointButtonLayout,webHookEndPointGrid);
+			
 			//---------------------------------
 			//Notification Condition
 			//---------------------------------
@@ -682,6 +750,7 @@ public class EventListenerListGrid extends ListGrid {
 			notificationTypeMap.put(SendNotificationType.MAIL.name(), SendNotificationType.MAIL.displayName());
 			notificationTypeMap.put(SendNotificationType.SMS.name(), SendNotificationType.SMS.displayName());
 			notificationTypeMap.put(SendNotificationType.PUSH.name(), SendNotificationType.PUSH.displayName());
+			notificationTypeMap.put(SendNotificationType.WEBHOOK.name(), SendNotificationType.WEBHOOK.displayName());
 			notificationTypeItem.setValueMap(notificationTypeMap);
 
 			notificationTypeItem.setValue(target.getNotificationType());
@@ -697,8 +766,17 @@ public class EventListenerListGrid extends ListGrid {
 			notifyAfterPItem.setValue(target.isNotifyAfterP());
 			notifyOnLoadItem.setValue(target.isNotifyOnLoad());
 			notifyBeforeValidateItem.setValue(target.isNotifyBeforeValidate());
+			
+			webHookIsSynchronousItem.setValue(target.isSyncrhonous());
+			webHookResultHandlerItem.setValue(target.getWebHookResultHandler());
+			webHookEndPointGrid.initializeGrid(target.getWebEndPointList(), false);
 
 			withoutMappedByReferenceItem.setValue(target.isWithoutMappedByReference());
+			
+			//既にnotificationTypeがあったらtemplateの選択肢もロードします
+			if (notificationTypeItem.getValueAsString()!=null&&!notificationTypeItem.getValueAsString().isEmpty()) {
+				MetaTemplateChange();
+			}
 		}
 
 		private void formVisibleChange() {
@@ -732,6 +810,9 @@ public class EventListenerListGrid extends ListGrid {
 				withoutMappedByReferenceItemForm.clearErrors(true);
 				typeLayout.removeMember(withoutMappedByReferenceItemForm);
 			}
+			if (typeLayout.contains(webhookLayout)) {
+				typeLayout.removeMember(webhookLayout);
+			}
 
 			String selectValType = SmartGWTUtil.getStringValue(typeItem);
 			if (SCRIPT.equals(selectValType)) {
@@ -745,15 +826,24 @@ public class EventListenerListGrid extends ListGrid {
 				typeLayout.addMember(withoutMappedByReferenceItemForm);
 				setHeight(190);
 			} else if (SENDNOTIFICATION.equals(selectValType)) {
+				setHeight(470);
 				typeLayout.addMember(sendNotificationForm);
 				typeLayout.addMember(notificationCondForm);
+				if (notificationTypeItem.getValueAsString()!=null) {
+					if (notificationTypeItem.getValueAsString().equals(SendNotificationType.WEBHOOK.name())) {
+						typeLayout.addMember(webhookLayout);
+						setHeight(800);
+					}
+				}
 				typeLayout.addMember(notifyEventItemForm);
 				typeLayout.addMember(withoutMappedByReferenceItemForm);
-				setHeight(470);
+				
+
 				centerInPage();
 			} else {
 				setHeight(200);
 			}
+			typeLayout.markForRedraw();
 		}
 
 		private void MetaTemplateChange() {
@@ -803,6 +893,13 @@ public class EventListenerListGrid extends ListGrid {
 					isValidate = false;
 				}
 			}
+			if (typeLayout.contains(webhookLayout)) {
+				if (webhookLayout.contains(webHookSettingsForm)) {
+					if(!webHookSettingsForm.validate()) {
+						isValidate = false;
+					}
+				}
+			}
 			return isValidate;
 		}
 
@@ -842,10 +939,181 @@ public class EventListenerListGrid extends ListGrid {
 				target.setNotifyAfterP(SmartGWTUtil.getBooleanValue(notifyAfterPItem));
 				target.setNotifyOnLoad(SmartGWTUtil.getBooleanValue(notifyOnLoadItem));
 				target.setNotifyBeforeValidate(SmartGWTUtil.getBooleanValue(notifyBeforeValidateItem));
+				target.setWebHookResultHandler(SmartGWTUtil.getStringValue(webHookResultHandlerItem));
+				target.setIsSyncrhonous(SmartGWTUtil.getBooleanValue(webHookIsSynchronousItem));
 			}
 			target.setWithoutMappedByReference(SmartGWTUtil.getBooleanValue(withoutMappedByReferenceItem));
 			updateData(target);
 			refreshFields();
+		}
+
+		private void webHookEndPointEditMap() {
+			List<String> tempList = target.getWebEndPointList();
+			if (tempList==null) {
+				tempList = new ArrayList<String>();
+			}
+			WebHookEndPointDialog endPointDialog = new WebHookEndPointDialog(tempList);
+
+			
+			endPointDialog.addDataChangeHandler(new DataChangedHandler() {
+				@Override
+				public void onDataChanged(DataChangedEvent event) {
+					@SuppressWarnings("unchecked")
+					HashMap<String, String> tempMap = (HashMap<String, String>)event.getValueObject(Object.class);
+					ArrayList<String> tempList = new ArrayList<String>();
+					if (tempMap ==null || tempMap.keySet()==null) {
+					} else {
+						tempList = new ArrayList<String>(tempMap.keySet());
+					}
+					target.setWebEndPointList(tempList);
+					webHookEndPointGrid.setData(webHookEndPointGrid.createWebEndPointRecord(tempMap,(ArrayList<String>)target.getWebEndPointList(),false));
+					webHookEndPointGrid.markForRedraw();
+					endPointDialog.destroy();
+				}
+			});
+			endPointDialog.show();
+			endPointDialog.markForRedraw();
+		}
+
+		private class WebHookEndPointGrid extends ListGrid{
+			MetaDataServiceAsync metaDataService;
+			ListGridField endPointNameField;
+			ListGridField endPointUrlField;
+			ListGridField endPointSelectedField;
+			private WebHookEndPointGrid(){
+				metaDataService=MetaDataServiceFactory.get();
+				setTitle("WebEndPont");
+				setBodyOverflow(Overflow.SCROLL);
+				endPointNameField = new ListGridField("webHookEndPoint", "EndPoint");
+				endPointNameField.setCanEdit(false);
+				endPointUrlField= new ListGridField("webHookUrl", "URL");
+				endPointUrlField.setCanEdit(false);
+				endPointSelectedField = new ListGridField("webHookendPointSelected","Selected");
+				endPointSelectedField.setWidth(40);
+				endPointSelectedField.setType(ListGridFieldType.BOOLEAN);
+				endPointSelectedField.setCanEdit(true);
+			}
+
+			private void initializeGrid(List<String> endPontNameList, boolean isEdit) {
+				metaDataService.getEndPointFullListWithUrl(TenantInfoHolder.getId(), new AsyncCallback<HashMap<String,String>>() {
+
+					@Override
+					public void onFailure(Throwable caught) {
+						GWT.log("Failed to fetch WebEndPointData.", caught);
+					}
+					@Override
+					public void onSuccess(HashMap<String, String> result) {
+						if(isEdit) {
+							WebHookEndPointGrid.this.setFields(endPointSelectedField,endPointNameField,endPointUrlField);
+						} else {
+							WebHookEndPointGrid.this.setFields(endPointNameField,endPointUrlField);
+						}
+						WebHookEndPointGrid.this.setData(createWebEndPointRecord(result,endPontNameList,isEdit));
+						WebHookEndPointGrid.this.markForRedraw();
+					}
+				});
+			}
+			private ListGridRecord[] createWebEndPointRecord(HashMap<String,String> result, List<String> endPontNameList, boolean isEdit) {
+				if (isEdit) {
+					if (result!=null) {
+						ListGridRecord[] temp= new ListGridRecord[result.size()];
+						int i = 0;
+						for(Map.Entry<String, String> entry : result.entrySet()) {
+							ListGridRecord record = new ListGridRecord();
+						    String key = entry.getKey();
+						    String value = entry.getValue();
+							record.setAttribute("webHookEndPoint", key);
+							record.setAttribute("webHookUrl", value);
+							if (endPontNameList==null) {
+								record.setAttribute("webHookendPointSelected", false);
+							} else if (endPontNameList.contains(key)) {
+								record.setAttribute("webHookendPointSelected", true);
+							} else {
+								record.setAttribute("webHookendPointSelected", false);
+							}
+							temp[i] = record;
+							i++;
+						}
+						return temp;
+					} else {
+						return null;
+					}
+				} else {
+					if (result!=null) {
+						ListGridRecord[] temp= new ListGridRecord[endPontNameList.size()];
+						int i = 0;
+						for(String endPointDefName : endPontNameList) {
+						    ListGridRecord record = new ListGridRecord();
+							record.setAttribute("webHookEndPoint", endPointDefName);
+							record.setAttribute("webHookUrl", result.get(endPointDefName));
+							temp[i] = record;
+							i++;
+						}
+						return temp;	
+					} else {
+						return null;
+					}
+				}
+			}
+			private HashMap<String, String> getSelectedEndPointNameUrlPair() {
+				HashMap<String, String> selectedEndPointDefName = new HashMap<String, String>();
+				ListGridRecord[] result = this.getRecords();
+				if (result!=null) {
+					for (int i =0; i<result.length;i++) {
+						if (result[i].getAttributeAsBoolean("webHookendPointSelected")) {
+							selectedEndPointDefName.put(result[i].getAttributeAsString("webHookEndPoint"), result[i].getAttributeAsString("webHookUrl"));
+						}
+					}
+				}
+				return selectedEndPointDefName;
+			}
+		}
+		private class WebHookEndPointDialog extends MtpDialog{
+			WebHookEndPointGrid editGrid;
+
+			private List<DataChangedHandler> handlers = new ArrayList<DataChangedHandler>();
+			WebHookEndPointDialog(List<String>endPontNameList){
+				setHeight("80%");
+				setWidth("60%");
+				centerInPage();
+				setTitle("Edit End Point");
+				editGrid = new WebHookEndPointGrid();
+				editGrid.setWidth100();
+				editGrid.setHeight100();
+				editGrid.initializeGrid(endPontNameList, true);
+				container.addMember(editGrid);
+				
+				IButton save = new IButton("Save");
+				save.addClickHandler(new com.smartgwt.client.widgets.events.ClickHandler() {
+					public void onClick(com.smartgwt.client.widgets.events.ClickEvent event) {
+						HashMap<String, String> selectedEndPointDefName = editGrid.getSelectedEndPointNameUrlPair();
+						fireDataChanged(selectedEndPointDefName);
+						destroy();
+					}
+
+
+				});
+
+				IButton cancel = new IButton("Cancel");
+				cancel.addClickHandler(new com.smartgwt.client.widgets.events.ClickHandler() {
+					public void onClick(com.smartgwt.client.widgets.events.ClickEvent event) {
+						destroy();
+					}
+				});
+				footer.setMembers(save, cancel);
+			}
+			
+			public void addDataChangeHandler(DataChangedHandler handler) {
+				handlers.add(0, handler);
+			}
+			
+			private void fireDataChanged(HashMap<String, String> selectedEndPointDefNameAndUrl) {
+				DataChangedEvent event = new DataChangedEvent();
+				event.setValueObject(selectedEndPointDefNameAndUrl);
+				for (DataChangedHandler handler : handlers) {
+					handler.onDataChanged(event);
+				}
+			}
 		}
 	}
 }
