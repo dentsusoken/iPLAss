@@ -1,19 +1,19 @@
 /*
  * Copyright (C) 2012 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
- * 
+ *
  * Unless you have purchased a commercial license,
  * the following license terms apply:
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
@@ -38,6 +38,8 @@ public class EntityDataImportResult implements Serializable {
 	private long updateCount = 0;
 	private long deleteCount = 0;
 	private long errorCount = 0;
+	private long mergeCount = 0;
+
 
 	/**
 	 * コンストラクタ
@@ -63,7 +65,7 @@ public class EntityDataImportResult implements Serializable {
 
 	public void addMessages(String message) {
 		if (messages == null) {
-			messages = new ArrayList<String>();
+			messages = new ArrayList<>();
 		}
 		messages.add(message);
 	}
@@ -122,6 +124,20 @@ public class EntityDataImportResult implements Serializable {
 		this.errorCount = errorCount;
 	}
 
+	/**
+	 * @return mergeCount
+	 */
+	public long getMergeCount() {
+		return mergeCount;
+	}
+
+	/**
+	 * @param mergeCount セットする mergeCount
+	 */
+	public void setMergeCount(long mergeCount) {
+		this.mergeCount = mergeCount;
+	}
+
 	public void inserted() {
 		insertCount++;
 	}
@@ -136,6 +152,10 @@ public class EntityDataImportResult implements Serializable {
 
 	public void errored() {
 		errorCount++;
+	}
+
+	public void merged() {
+		mergeCount++;
 	}
 
 }

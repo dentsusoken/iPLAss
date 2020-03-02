@@ -43,6 +43,8 @@ public class AutocompletionParam implements GemWebApiParameter {
 
 	private List<String> currentValue;
 
+	private AutocompletionEntityParam entity;
+
 	public String getDefName() {
 		return defName;
 	}
@@ -111,6 +113,14 @@ public class AutocompletionParam implements GemWebApiParameter {
 
 	public void setCurrentValue(List<String> currentValue) {
 		this.currentValue = currentValue;
+	}
+
+	public AutocompletionEntityParam getEntity() {
+		return entity;
+	}
+
+	public void setEntity(AutocompletionEntityParam entity) {
+		this.entity = entity;
 	}
 
 }

@@ -47,6 +47,7 @@ public class MetaFieldSettingPartsControllerImpl implements MetaFieldSettingPart
 	private static final String DEFAULT_ACTION_NAME = "#default";
 	private static final String DEFAULT_WEBAPI_NAME = "#default";
 
+	@Override
 	@SuppressWarnings("unchecked")
 	public FormItem createItem(MetaFieldSettingPane pane, FieldInfo info) {
 		FormItem item = null;
@@ -76,7 +77,7 @@ public class MetaFieldSettingPartsControllerImpl implements MetaFieldSettingPart
 			}
 		} else if (info.getInputType() == InputType.ENUM) {
 			item = new MtpSelectItem();
-			ArrayList<String> enms = new ArrayList<String>();
+			ArrayList<String> enms = new ArrayList<>();
 			enms.add("");
 			for (int i = 0; i < info.getEnumValues().length; i++) {
 				enms.add(info.getEnumValues()[i].toString());
@@ -88,7 +89,16 @@ public class MetaFieldSettingPartsControllerImpl implements MetaFieldSettingPart
 				SmartGWTUtil.setRequired(item);
 			}
 			if (pane.getValue(info.getName()) != null) {
-				item.setValue(pane.getValue(info.getName()).toString());
+				if (info.isMultiple()) {
+					List<Object> values = (List<Object>)pane.getValue(info.getName());
+					List<String> strValues = new ArrayList<>();
+					for (Object value : values) {
+						strValues.add(value.toString());
+					}
+					((SelectItem) item).setValues(strValues.toArray(new String[0]));
+				} else {
+					item.setValue(pane.getValue(info.getName()).toString());
+				}
 			}
 		} else if (info.getInputType() == InputType.ACTION) {
 			item = createActionList(info);

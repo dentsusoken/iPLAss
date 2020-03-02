@@ -29,6 +29,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.iplass.mtp.entity.Entity;
+import org.iplass.mtp.entity.EntityRuntimeException;
 import org.iplass.mtp.entity.definition.PropertyDefinition;
 import org.iplass.mtp.entity.query.value.ValueExpression;
 import org.iplass.mtp.entity.query.value.primary.EntityField;
@@ -117,6 +118,10 @@ public class EntityBuilder {
 				references.add(new Object[]{e.getKey(), eb});
 			}
 		}
+		
+		if (oidIndex == -1) {
+			throw new EntityRuntimeException(eh.getMetaData().getName() + "'s oid must specify.");
+		}
 
 	}
 
@@ -143,7 +148,7 @@ public class EntityBuilder {
 		}
 	}
 
-	public Entity handle(Object[] datas) {
+	public Entity handle(Object[] datas, String parentKey) {
 		if (datas[oidIndex] == null) {
 			return null;
 		}
@@ -151,8 +156,15 @@ public class EntityBuilder {
 		String key;
 		if (versionIndex == -1) {
 			key = (String) datas[oidIndex];
+			if (parentKey != null) {
+				key = parentKey + ":" + key;
+			}
 		} else {
-			key = datas[oidIndex] + "-" + datas[versionIndex];
+			if (parentKey == null) {
+				key = datas[oidIndex] + "-" + datas[versionIndex];
+			} else {
+				key = parentKey + ":" + datas[oidIndex] + "-" + datas[versionIndex];
+			}
 		}
 
 		boolean isNew = false;
@@ -170,7 +182,7 @@ public class EntityBuilder {
 		if (references != null) {
 			for (Object[] nameAndBuilder: references) {
 				EntityBuilder eb = (EntityBuilder) nameAndBuilder[1];
-				Entity ref = eb.handle(datas);
+				Entity ref = eb.handle(datas, key);
 				if (ref != null) {
 					if (!eb.isMulti) {
 						e.setValue((String) nameAndBuilder[0], ref);

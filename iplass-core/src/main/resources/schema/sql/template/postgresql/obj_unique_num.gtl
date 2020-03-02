@@ -9,7 +9,19 @@ create table "obj_unique_num${tableNamePostfix.toLowerCase()}"
     "obj_id" varchar(64) not null,
     "val" numeric
 )
+<%if (partition) {%>partition by range ("tenant_id")<%}%>
 ;
 
 create unique index "obj_unique_num${tableNamePostfix.toLowerCase()}_index1" on "obj_unique_num${tableNamePostfix.toLowerCase()}" ("tenant_id", "obj_def_id", "col_name", "val");
 create index "obj_unique_num${tableNamePostfix.toLowerCase()}_index2" on "obj_unique_num${tableNamePostfix.toLowerCase()}" ("tenant_id", "obj_def_id", "obj_id");
+<%if (partition) {%>
+create table "obj_unique_num${tableNamePostfix.toLowerCase()}_0" partition of "obj_unique_num${tableNamePostfix.toLowerCase()}" for values from (0) to (1) partition by hash ("obj_def_id");
+create table "obj_unique_num${tableNamePostfix.toLowerCase()}_0_0" partition of "obj_unique_num${tableNamePostfix.toLowerCase()}_0" for values with (modulus 8, remainder 0);
+create table "obj_unique_num${tableNamePostfix.toLowerCase()}_0_1" partition of "obj_unique_num${tableNamePostfix.toLowerCase()}_0" for values with (modulus 8, remainder 1);
+create table "obj_unique_num${tableNamePostfix.toLowerCase()}_0_2" partition of "obj_unique_num${tableNamePostfix.toLowerCase()}_0" for values with (modulus 8, remainder 2);
+create table "obj_unique_num${tableNamePostfix.toLowerCase()}_0_3" partition of "obj_unique_num${tableNamePostfix.toLowerCase()}_0" for values with (modulus 8, remainder 3);
+create table "obj_unique_num${tableNamePostfix.toLowerCase()}_0_4" partition of "obj_unique_num${tableNamePostfix.toLowerCase()}_0" for values with (modulus 8, remainder 4);
+create table "obj_unique_num${tableNamePostfix.toLowerCase()}_0_5" partition of "obj_unique_num${tableNamePostfix.toLowerCase()}_0" for values with (modulus 8, remainder 5);
+create table "obj_unique_num${tableNamePostfix.toLowerCase()}_0_6" partition of "obj_unique_num${tableNamePostfix.toLowerCase()}_0" for values with (modulus 8, remainder 6);
+create table "obj_unique_num${tableNamePostfix.toLowerCase()}_0_7" partition of "obj_unique_num${tableNamePostfix.toLowerCase()}_0" for values with (modulus 8, remainder 7);
+<%}%>

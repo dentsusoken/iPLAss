@@ -737,11 +737,13 @@ public class ObjStoreUpdateSql extends UpdateSqlHandler {
 					GRdbPropertyStoreRuntime col = (GRdbPropertyStoreRuntime) pHandler.getStoreSpecProperty();
 					ValueExpression val = uv.getValue();
 
-					List<GRdbPropertyStoreHandler> cols = col.asList();
-					for (int i = 0; i < cols.size(); i++) {
-						GRdbPropertyStoreHandler tcol = cols.get(i);
-						if (tcol.getMetaData().getPageNo() == myPageNo) {
-							val.accept(this);
+					if (val != null) {
+						List<GRdbPropertyStoreHandler> cols = col.asList();
+						for (int i = 0; i < cols.size(); i++) {
+							GRdbPropertyStoreHandler tcol = cols.get(i);
+							if (tcol.getMetaData().getPageNo() == myPageNo) {
+								val.accept(this);
+							}
 						}
 					}
 				}

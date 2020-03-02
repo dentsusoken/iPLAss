@@ -27,6 +27,7 @@ import java.util.function.Predicate;
 
 import org.iplass.gem.command.CommandUtil;
 import org.iplass.gem.command.Constants;
+import org.iplass.gem.command.generic.HasDisplayScriptBindings;
 import org.iplass.mtp.ManagerLocator;
 import org.iplass.mtp.command.Command;
 import org.iplass.mtp.command.RequestContext;
@@ -63,7 +64,7 @@ import org.iplass.mtp.webapi.definition.RequestType;
 		checkXRequestedWithHeader=true
 	)
 @CommandClass(name="gem/generic/link/GetReferenceLinkItemCommand", displayName="連動アイテム取得")
-public final class GetReferenceLinkItemCommand implements Command {
+public final class GetReferenceLinkItemCommand implements Command, HasDisplayScriptBindings {
 
 	public static final String WEBAPI_NAME = "gem/generic/link/getLinkItem";
 
@@ -89,8 +90,9 @@ public final class GetReferenceLinkItemCommand implements Command {
 		String propName = request.getParam(Constants.PROP_NAME);
 		String linkValue = request.getParam(Constants.REF_LINK_VALUE);
 
+		Entity entity = getBindingEntity(request);
 		//Editor取得
-		PropertyEditor editor = evm.getPropertyEditor(defName, viewType, viewName, propName);
+		PropertyEditor editor = evm.getPropertyEditor(defName, viewType, viewName, propName, entity);
 		ReferencePropertyEditor rpe = null;
 		if (editor instanceof ReferencePropertyEditor) {
 			rpe = (ReferencePropertyEditor)editor;

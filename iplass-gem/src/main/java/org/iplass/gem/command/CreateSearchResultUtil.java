@@ -57,6 +57,9 @@ public class CreateSearchResultUtil {
 			eval.put("orgOid", entity.getOid());
 			eval.put("orgVersion", entity.getVersion().toString());
 
+			if (entity.getUpdateDate() != null) {
+				eval.put("orgTimestamp", String.valueOf(entity.getUpdateDate().getTime()));
+			}
 			if (entity.getValue("score") != null) {
 				eval.put("score", entity.getValue("score").toString());
 			}
@@ -168,7 +171,7 @@ public class CreateSearchResultUtil {
 	}
 
 	private static boolean isDispProperty(EntityDefinition ed, Element element) {
-		if (!EntityViewUtil.isDisplayElement(ed.getName(), element.getElementRuntimeId(), OutputType.SEARCHRESULT)) {
+		if (!EntityViewUtil.isDisplayElement(ed.getName(), element.getElementRuntimeId(), OutputType.SEARCHRESULT, null)) {
 			return false;
 		}
 		if (element instanceof PropertyColumn) {

@@ -32,6 +32,7 @@ public class Constants {
 	public static final String DEF_NAME = "defName";
 	public static final String ENTITY_DEF_NAME = "entityDefName";
 	public static final String ROOT_DEF_NAME = "rootDefName";
+	public static final String ROOT_ENTITY = "rootEntity";
 	public static final String NAME = "name";
 	public static final String PROP_NAME = "propName";
 	public static final String VIEW_NAME = "viewName";
@@ -102,6 +103,8 @@ public class Constants {
 	public static final String DETAIL_COND_COUNT = "dtlCndCount";
 	public static final String DETAIL_COND_FILTER_EXPRESSION = "dtlCndFilterExpression";
 
+	//排他制御チェックエラー(更新ダイアログが開く時)
+	public static final String BULK_UPDATE_EXCHECK_ERR = "bulkUpdateExCheckErr";
 	public static final String BULK_UPDATE_SELECT_TYPE = "selectAllType";
 	public static final String BULK_UPDATE_SELECT_ALL_PAGE = "selectAllPage";
 	public static final String BULK_UPDATE_USE_BULK_VIEW = "useBulkView";
@@ -221,6 +224,7 @@ public class Constants {
 	public static final String AUTOCOMPLETION_MULTIPLICTTY = "autocompletionMultiplicity";
 	public static final String AUTOCOMPLETION_REF_NEST_PROP_NAME = "autocompletionNestPropName";
 	public static final String AUTOCOMPLETION_REF_SECTION_INDEX = "autocompletionReferenceSectionIndex";
+	public static final String AUTOCOMPLETION_ROOT_ENTITY_DATA = "autocompletionRootEntityData";
 
 	// お知らせ用
 	public static final String DATA_ENTITY = "entity";
@@ -267,6 +271,10 @@ public class Constants {
 
 	//リクエストのattributeに設定している項目
 	public static final String VALID_ERROR_LIST = "validErrorList";
+
+	//アイテム表示判定スクリプト用
+	public static final String DISPLAY_SCRIPT_ENTITY_OID = "entityOid";
+	public static final String DISPLAY_SCRIPT_ENTITY_VERSION = "entityVersion";
 
 	// コマンド実行結果
 	public static final String CMD_EXEC_SUCCESS = "SUCCESS";

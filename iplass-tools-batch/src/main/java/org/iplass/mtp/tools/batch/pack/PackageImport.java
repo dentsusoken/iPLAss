@@ -557,30 +557,46 @@ public class PackageImport extends MtpCuiBase {
 				boolean isTruncate = readConsoleBoolean(rs("PackageImport.Wizard.confirmTrancateDataMsg"), condition.isTruncate());
 				condition.setTruncate(isTruncate);
 
+				//bulkUpdate
+				boolean isBulkUpdate = readConsoleBoolean(rs("PackageImport.Wizard.confirmBulkUpdateMsg"), condition.isBulkUpdate());
+				condition.setBulkUpdate(isBulkUpdate);
+
 				//ForceUpdate
-				boolean isForceUpdate = readConsoleBoolean(rs("PackageImport.Wizard.confirmForceUpdateMsg"), condition.isFourceUpdate());
-				condition.setFourceUpdate(isForceUpdate);
+				if (isBulkUpdate) {
+					condition.setFourceUpdate(false);
+				} else {
+					boolean isForceUpdate = readConsoleBoolean(rs("PackageImport.Wizard.confirmForceUpdateMsg"), condition.isFourceUpdate());
+					condition.setFourceUpdate(isForceUpdate);
+				}
 
 				//Errorスキップ
-				boolean isErrorSkip = readConsoleBoolean(rs("PackageImport.Wizard.confirmSkipErrorDataMsg"), condition.isErrorSkip());
-				condition.setErrorSkip(isErrorSkip);
+				if (isBulkUpdate) {
+					condition.setErrorSkip(false);
+				} else {
+					boolean isErrorSkip = readConsoleBoolean(rs("PackageImport.Wizard.confirmSkipErrorDataMsg"), condition.isErrorSkip());
+					condition.setErrorSkip(isErrorSkip);
+				}
 
 				//存在しないプロパティは無視
 				boolean isIgnoreNotExistsProperty = readConsoleBoolean(rs("PackageImport.Wizard.confirmIgnoreNotExistsPropertyMsg"), condition.isIgnoreNotExistsProperty());
 				condition.setIgnoreNotExistsProperty(isIgnoreNotExistsProperty);
 
 				//Listner実行
-				boolean isNotifyListner = readConsoleBoolean(rs("PackageImport.Wizard.confirmNotifyListenerMsg"), condition.isNotifyListeners());
-				condition.setNotifyListeners(isNotifyListner);
+				if (isBulkUpdate) {
+					condition.setNotifyListeners(false);
+				} else {
+					boolean isNotifyListner = readConsoleBoolean(rs("PackageImport.Wizard.confirmNotifyListenerMsg"), condition.isNotifyListeners());
+					condition.setNotifyListeners(isNotifyListner);
+				}
 
 				//更新不可項目の更新
 				boolean isUpdateDisupdatableProperty = readConsoleBoolean(rs("PackageImport.Wizard.confirmUpdateDisupdatablePropertyMsg"), condition.isUpdateDisupdatableProperty());
 				condition.setUpdateDisupdatableProperty(isUpdateDisupdatableProperty);
 
-				if (isUpdateDisupdatableProperty) {
+				//Validationの実行
+				if (isBulkUpdate || isUpdateDisupdatableProperty) {
 					condition.setWithValidation(false);
 				} else {
-					//Validationの実行
 					boolean isWithValidation = readConsoleBoolean(rs("PackageImport.Wizard.confirmWithValidationMsg"), condition.isWithValidation());
 					condition.setWithValidation(isWithValidation);
 				}
@@ -800,16 +816,30 @@ public class PackageImport extends MtpCuiBase {
 					condition.setTruncate(Boolean.valueOf(truncate));
 				}
 
+				//bulkUpdate
+				String bulkUpdate = prop.getProperty(PROP_ENTITY_BULK_UPDATE);
+				if (StringUtil.isNotEmpty(bulkUpdate)) {
+					condition.setBulkUpdate(Boolean.valueOf(bulkUpdate));
+				}
+
 				//ForceUpdate
-				String forceUpdate = prop.getProperty(PROP_ENTITY_FORCE_UPDATE);
-				if (StringUtil.isNotEmpty(forceUpdate)) {
-					condition.setFourceUpdate(Boolean.valueOf(forceUpdate));
+				if (condition.isBulkUpdate()) {
+					condition.setFourceUpdate(false);
+				} else {
+					String forceUpdate = prop.getProperty(PROP_ENTITY_FORCE_UPDATE);
+					if (StringUtil.isNotEmpty(forceUpdate)) {
+						condition.setFourceUpdate(Boolean.valueOf(forceUpdate));
+					}
 				}
 
 				//Errorスキップ
-				String errorSkip = prop.getProperty(PROP_ENTITY_ERROR_SKIP);
-				if (StringUtil.isNotEmpty(errorSkip)) {
-					condition.setErrorSkip(Boolean.valueOf(errorSkip));
+				if (condition.isBulkUpdate()) {
+					condition.setErrorSkip(false);
+				} else {
+					String errorSkip = prop.getProperty(PROP_ENTITY_ERROR_SKIP);
+					if (StringUtil.isNotEmpty(errorSkip)) {
+						condition.setErrorSkip(Boolean.valueOf(errorSkip));
+					}
 				}
 
 				//存在しないプロパティは無視
@@ -819,9 +849,13 @@ public class PackageImport extends MtpCuiBase {
 				}
 
 				//Listner実行
-				String notifyListener = prop.getProperty(PROP_ENTITY_NOTIFY_LISTENER);
-				if (StringUtil.isNotEmpty(notifyListener)) {
-					condition.setNotifyListeners(Boolean.valueOf(notifyListener));
+				if (condition.isBulkUpdate()) {
+					condition.setNotifyListeners(false);
+				} else {
+					String notifyListener = prop.getProperty(PROP_ENTITY_NOTIFY_LISTENER);
+					if (StringUtil.isNotEmpty(notifyListener)) {
+						condition.setNotifyListeners(Boolean.valueOf(notifyListener));
+					}
 				}
 
 				//更新不可項目の更新
@@ -830,10 +864,10 @@ public class PackageImport extends MtpCuiBase {
 					condition.setUpdateDisupdatableProperty(Boolean.valueOf(updateDisupdatableProperty));
 				}
 
-				if (condition.isUpdateDisupdatableProperty()) {
+				//Validationの実行
+				if (condition.isBulkUpdate() || condition.isUpdateDisupdatableProperty()) {
 					condition.setWithValidation(false);
 				} else {
-					//Validationの実行
 					String withValidation = prop.getProperty(PROP_ENTITY_WITH_VALIDATION);
 					if (StringUtil.isNotEmpty(withValidation)) {
 						condition.setWithValidation(Boolean.valueOf(withValidation));

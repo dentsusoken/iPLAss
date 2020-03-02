@@ -120,7 +120,7 @@ public class NormalSearchContext extends SearchContextBase {
 				PropertySearchCondition propertyCondition = null;
 				if (property != null) {
 					//非表示設定されてるか、通常検索条件にない項目で値があればエラー
-					if (!EntityViewUtil.isDisplayElement(getDefName(), property.getElementRuntimeId(), OutputType.SEARCHCONDITION)
+					if (!EntityViewUtil.isDisplayElement(getDefName(), property.getElementRuntimeId(), OutputType.SEARCHCONDITION, null)
 							|| property.isHideNormalCondition()) {
 						Object value = condition.getValue(property.getPropertyName());
 						if (value != null) {
@@ -173,7 +173,7 @@ public class NormalSearchContext extends SearchContextBase {
 				if (property.isBlank() || getEntityDefinition().getProperty(property.getPropertyName()) != null) continue;
 
 				//非表示設定されてるか、通常検索条件にない項目で値があればエラー
-				if (!EntityViewUtil.isDisplayElement(getDefName(), property.getElementRuntimeId(), OutputType.SEARCHCONDITION)
+				if (!EntityViewUtil.isDisplayElement(getDefName(), property.getElementRuntimeId(), OutputType.SEARCHCONDITION, null)
 						|| property.isHideNormalCondition()) {
 					Object value = condition.getValue(property.getPropertyName());
 					if (value != null) {
@@ -213,7 +213,7 @@ public class NormalSearchContext extends SearchContextBase {
 		List<PropertyItem> properties = getLayoutProperties();
 		for (PropertyItem property : properties) {
 			if (!property.isBlank()
-					&& EntityViewUtil.isDisplayElement(getDefName(), property.getElementRuntimeId(), OutputType.SEARCHCONDITION)
+					&& EntityViewUtil.isDisplayElement(getDefName(), property.getElementRuntimeId(), OutputType.SEARCHCONDITION, null)
 					&& !property.isHideNormalCondition()) {
 				PropertyDefinition pd = getPropertyDefinition(property.getPropertyName());
 

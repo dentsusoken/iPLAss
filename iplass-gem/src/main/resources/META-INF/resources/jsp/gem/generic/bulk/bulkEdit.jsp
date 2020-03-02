@@ -65,7 +65,7 @@
 	}
 
 	boolean canBulkUpdate(String defName, PropertyColumn pc) {
-		if (!EntityViewUtil.isDisplayElement(defName, pc.getElementRuntimeId(), OutputType.BULK)
+		if (!EntityViewUtil.isDisplayElement(defName, pc.getElementRuntimeId(), OutputType.BULK, null)
 				|| pc.getBulkUpdateEditor() == null
 				|| pc.getEditor() instanceof UserPropertyEditor
 				|| pc.getEditor() instanceof ExpressionPropertyEditor
@@ -151,6 +151,11 @@
 	Integer count = (Integer) request.getAttribute(Constants.BULK_UPDATE_COUNT);
 	Integer updated = (Integer) request.getAttribute(Constants.BULK_UPDATED_COUNT);
 
+	//排他制御チェックエラー（更新ダイアログが開く時）
+	Boolean isExCheckErr = (Boolean) request.getAttribute(Constants.BULK_UPDATE_EXCHECK_ERR);
+	if (isExCheckErr == null) isExCheckErr = false;
+
+	boolean isSuccess = Constants.CMD_EXEC_SUCCESS.equals(request.getAttribute(WebRequestConstants.COMMAND_RESULT));
 	boolean isSelectAllPage = isSelectAllPage(selectAllPage);
 	//全選択フラグ
 	boolean isSelectAll = isSelectAll(selectAllType);
@@ -169,7 +174,7 @@
 	String viewName = form.getName();
 	//表示名
 	String displayName = TemplateUtil.getMultilingualString(form.getTitle(), form.getLocalizedTitleList(),
-			data.getEntityDefinition().getDisplayName(), data.getEntityDefinition().getLocalizedDisplayNameList());
+	data.getEntityDefinition().getDisplayName(), data.getEntityDefinition().getLocalizedDisplayNameList());
 
 	//編集対象情報
 	List<String> oids = new ArrayList<String>();
@@ -215,24 +220,25 @@
 	request.setAttribute(Constants.OUTPUT_TYPE, type);
 	request.setAttribute(Constants.ENTITY_DEFINITION, data.getEntityDefinition());
 %>
+<div class="bulk-edit">
 <h3 class="hgroup-02 hgroup-02-01"><%=GemResourceBundleUtil.resourceString("generic.bulk.title", displayName)%></h3>
 <%
-	if (count != null) {
-
-		if ("SUCCESS".equals(request.getAttribute(WebRequestConstants.COMMAND_RESULT))) {
+	if (isSuccess) {
+		//更新に成功した場合
+		if (count != null) {
 %>
 <span class="success"><%=GemResourceBundleUtil.resourceString("command.generic.bulk.BulkUpdateListCommand.successMsg", updated)%></span>
 <%
-		} else {
+		}
+	} else {
 %>
 <span class="error"><c:out value="<%=message%>"/></span>
 <%
-			//分割トランザクションの場合、一部データの更新に成功した可能性があります。
-			if (updated > 0) {
+		//分割トランザクションの場合、一部データの更新に成功した可能性があります。
+		if (count != null && updated > 0) {
 %>
 <span class="error"><%=GemResourceBundleUtil.resourceString("command.generic.bulk.BulkUpdateListCommand.failedMsg", count, count - updated)%></span>
 <%
-			}
 		}
 	}
 %>
@@ -284,17 +290,17 @@ ${m:outputToken('FORM_XHTML', true)}
 %>
 <div class="formArchive">
 <div>
-<table class="tbl-maintenance mb10">
+<table class="tbl-section mb10">
 <tbody>
 <%
 	if (isSelectAllPage) {
 %>
 <tr>
-<th rowspan="2">${m:rs("mtp-gem-messages", "generic.bulk.selectBulkUpdateType")}</th>
-<td><label><input type="radio" name="selectAllType" value="select" <%=!isSelectAll ? "checked" : ""%>>${m:rs("mtp-gem-messages", "generic.bulk.updateRow")}</label></td>
+<th class="section-data col1" rowspan="2">${m:rs("mtp-gem-messages", "generic.bulk.selectBulkUpdateType")}</th>
+<td class="section-data col1"><label><input type="radio" name="selectAllType" value="select" <%=!isSelectAll ? "checked" : ""%>>${m:rs("mtp-gem-messages", "generic.bulk.updateRow")}</label></td>
 </tr>
 <tr>
-<td><label><input type="radio" name="selectAllType" value="all" <%=isSelectAll ? "checked" : ""%>>${m:rs("mtp-gem-messages", "generic.bulk.updateAll")}<span id="bulkUpdateCount"></span></label></td>
+<td class="section-data col1"><label><input type="radio" name="selectAllType" value="all" <%=isSelectAll ? "checked" : ""%>>${m:rs("mtp-gem-messages", "generic.bulk.updateAll")}<span id="bulkUpdateCount"></span></label></td>
 </tr>
 <script>
 $(function() {
@@ -341,8 +347,8 @@ $(function() {
 	}
 %>
 <tr>
-<th>${m:rs("mtp-gem-messages", "generic.bulk.updatePropName")}</th>
-<td>
+<th class="section-data col1">${m:rs("mtp-gem-messages", "generic.bulk.updatePropName")}</th>
+<td class="section-data col1">
 <select id="sel_<c:out value="<%=Constants.BULK_UPDATE_PROP_NM%>"/>" name="<c:out value="<%=Constants.BULK_UPDATE_PROP_NM%>"/>" class="inpbr form-size" onchange="propChange(this)">
 <option value="" selected="selected"><%= pleaseSelectLabel %></option>
 <%
@@ -390,9 +396,16 @@ $(function() {
 	if (auth.checkPermission(new EntityPermission(defName, EntityPermission.Action.UPDATE))) {
 		//ボタンの表示ラベル
 		String bulkUpdateDisplayLabel = GemResourceBundleUtil.resourceString("generic.bulk.update");
+
+		if (isExCheckErr) {
+%>
+<li class="btn save-btn"><input id="bulkUpdateBtn" type="button" class="gr-btn-02" value="<c:out value="<%=bulkUpdateDisplayLabel %>" />" disabled="disabled" /></li>
+<%
+		} else {
 %>
 <li class="btn save-btn"><input id="bulkUpdateBtn" type="button" class="gr-btn" value="<c:out value="<%=bulkUpdateDisplayLabel %>" />" onclick="onclick_bulkupdate(this)" /></li>
 <%
+		}
 	}
 %>
 <li class="mt05 cancel-link"><a href="javascript:void(0)" onclick="onclick_cancel()">${m:rs("mtp-gem-messages", "generic.bulk.cancel")}</a></li>
@@ -527,3 +540,4 @@ $(function() {
 	}
 })
 </script>
+</div>

@@ -50,6 +50,7 @@ public class EqlServiceImpl extends XsrfProtectedServiceServlet implements EqlSe
 	private static final Logger logger = LoggerFactory.getLogger(EqlServiceImpl.class);
 	private static final Logger fatalLogger = LoggerFactory.getLogger("mtp.fatal");
 
+	@Override
 	public EqlResultInfo execute(int tenantId, final String eql, final boolean isSearchAllVersion) {
 		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId, new AuthUtil.Callable<EqlResultInfo>() {
 			@Override
@@ -59,7 +60,7 @@ public class EqlServiceImpl extends XsrfProtectedServiceServlet implements EqlSe
 
 				result.setEql(eql);
 				result.setSearchAllVersion(isSearchAllVersion);
-				result.addLogMessage(resourceString("runEql") + eql + (isSearchAllVersion ? " versioned" : ""));
+				result.addLogMessage(rs("tools.eql.EqlServiceImpl.runEql") + eql + (isSearchAllVersion ? " versioned" : ""));
 
 				Query query = null;
 				try {
@@ -70,7 +71,7 @@ public class EqlServiceImpl extends XsrfProtectedServiceServlet implements EqlSe
 					}
 				} catch (QueryException e) {
 					logger.warn(e.getMessage(), e);
-					result.addLogMessage(resourceString("errEqlAnalysis"));
+					result.addLogMessage(rs("tools.eql.EqlServiceImpl.errEqlAnalysis"));
 					result.addLogMessage(e.getMessage());
 					result.setError(true);
 					return result;
@@ -80,7 +81,7 @@ public class EqlServiceImpl extends XsrfProtectedServiceServlet implements EqlSe
 				    } else {
 				        logger.error(e.getMessage(), e);
 				    }
-					result.addLogMessage(resourceString("errEqlAnalysis"));
+					result.addLogMessage(rs("tools.eql.EqlServiceImpl.errEqlAnalysis"));
 					result.addLogMessage(e.getMessage());
 					result.setError(true);
 					return result;
@@ -117,7 +118,7 @@ public class EqlServiceImpl extends XsrfProtectedServiceServlet implements EqlSe
 					em.search(query, callback);
 				} catch (QueryException e) {
 					logger.warn(e.getMessage(), e);
-					result.addLogMessage(resourceString("errRunEql"));
+					result.addLogMessage(rs("tools.eql.EqlServiceImpl.errRunEql"));
 					result.addLogMessage(e.getMessage());
 					result.setError(true);
 					return result;
@@ -127,16 +128,16 @@ public class EqlServiceImpl extends XsrfProtectedServiceServlet implements EqlSe
 				    } else {
 				        logger.error(e.getMessage(), e);
 				    }
-					result.addLogMessage(resourceString("errRunEql"));
+					result.addLogMessage(rs("tools.eql.EqlServiceImpl.errRunEql"));
 					result.addLogMessage(e.getMessage());
 					result.setError(true);
 					return result;
 				}
-				result.addLogMessage(resourceString("runTime") + ((double)(System.nanoTime() - start)) / 1000000 + "ms");
+				result.addLogMessage(rs("tools.eql.EqlServiceImpl.runTime") + ((double)(System.nanoTime() - start)) / 1000000 + "ms");
 
 				//クライアントに返すためValueExpressionをStringに変換
 				List<ValueExpression> colValues = query.getSelect().getSelectValues();
-				List<String> colList = new ArrayList<String>(colValues.size());
+				List<String> colList = new ArrayList<>(colValues.size());
 				for (ValueExpression colValue : colValues) {
 					colList.add(colValue.toString());
 				}
@@ -146,13 +147,13 @@ public class EqlServiceImpl extends XsrfProtectedServiceServlet implements EqlSe
 				result.setRecords(callback.getStrRecordList());
 
 				if (callback.getStrRecordList().isEmpty()) {
-					result.addLogMessage(resourceString("noData"));
+					result.addLogMessage(rs("tools.eql.EqlServiceImpl.noData"));
 				} else {
 					if (callback.isLimitSearchResult()) {
-						result.addLogMessage(resourceString("resultOutput", String.valueOf(callback.getLimitSize())));
+						result.addLogMessage(rs("tools.eql.EqlServiceImpl.resultOutput", String.valueOf(callback.getLimitSize())));
 					}
 
-					result.addLogMessage(resourceString("exeResult") + result.getRecords().size());
+					result.addLogMessage(rs("tools.eql.EqlServiceImpl.exeResult") + result.getRecords().size());
 				}
 
 				return result;
@@ -160,8 +161,8 @@ public class EqlServiceImpl extends XsrfProtectedServiceServlet implements EqlSe
 		});
 	}
 
-	private static String resourceString(String suffix, Object... arguments) {
-		return AdminResourceBundleUtil.resourceString("tools.eql.EqlServiceImpl." + suffix, arguments);
+	private static String rs(String key, Object... arguments) {
+		return AdminResourceBundleUtil.resourceString(key, arguments);
 	}
 
 }

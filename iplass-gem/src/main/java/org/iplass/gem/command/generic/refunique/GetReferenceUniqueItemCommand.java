@@ -1,8 +1,29 @@
+/*
+ * Copyright (C) 2019 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
+ *
+ * Unless you have purchased a commercial license,
+ * the following license terms apply:
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
 package org.iplass.gem.command.generic.refunique;
 
 import java.util.function.Predicate;
 
 import org.iplass.gem.command.Constants;
+import org.iplass.gem.command.generic.HasDisplayScriptBindings;
 import org.iplass.mtp.ManagerLocator;
 import org.iplass.mtp.command.Command;
 import org.iplass.mtp.command.RequestContext;
@@ -34,7 +55,7 @@ import org.iplass.mtp.webapi.definition.RequestType;
 		checkXRequestedWithHeader = true
 	)
 @CommandClass(name = "gem/generic/refunique/ReferenceUniqueCommand", displayName = "参照ユニークキーコマンド")
-public class GetReferenceUniqueItemCommand implements Command {
+public class GetReferenceUniqueItemCommand implements Command, HasDisplayScriptBindings {
 
 	public static final String WEBAPI_NAME = "gem/generic/refunique/getUniqueItem";
 
@@ -57,8 +78,9 @@ public class GetReferenceUniqueItemCommand implements Command {
 		String viewType = request.getParam(Constants.VIEW_TYPE);
 		String uniqueValue = request.getParam(Constants.REF_UNIQUE_VALUE);
 
+		Entity entity = getBindingEntity(request);
 		// Editor取得
-		PropertyEditor editor = evm.getPropertyEditor(defName, viewType, viewName, propName);
+		PropertyEditor editor = evm.getPropertyEditor(defName, viewType, viewName, propName, entity);
 		ReferencePropertyEditor rpe = null;
 		if (editor instanceof ReferencePropertyEditor) {
 			rpe = (ReferencePropertyEditor) editor;

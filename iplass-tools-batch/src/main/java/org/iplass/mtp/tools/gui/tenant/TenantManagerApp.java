@@ -53,11 +53,13 @@ import javax.swing.table.DefaultTableModel;
 import org.iplass.mtp.impl.rdb.adapter.RdbAdapter;
 import org.iplass.mtp.impl.rdb.adapter.RdbAdapterService;
 import org.iplass.mtp.impl.rdb.mysql.MysqlRdbAdaptor;
+import org.iplass.mtp.impl.rdb.postgresql.PostgreSQLRdbAdapter;
 import org.iplass.mtp.impl.tools.tenant.TenantInfo;
 import org.iplass.mtp.impl.tools.tenant.TenantToolService;
 import org.iplass.mtp.spi.ServiceRegistry;
 import org.iplass.mtp.tools.gui.MtpJFrameBase;
 import org.iplass.mtp.tools.gui.partition.MySQLPartitionManagerApp;
+import org.iplass.mtp.tools.gui.partition.PostgreSQLPartitionManagerApp;
 import org.iplass.mtp.tools.gui.widget.menu.BasicMenuBar;
 
 public class TenantManagerApp extends MtpJFrameBase {
@@ -184,13 +186,17 @@ public class TenantManagerApp extends MtpJFrameBase {
 		RdbAdapter adapter = adapterService.getRdbAdapter();
 
 		//TODO SQLServerはどうする？
-		if (adapter != null && adapter instanceof MysqlRdbAdaptor) {
+		if (adapter instanceof MysqlRdbAdaptor || adapter instanceof PostgreSQLRdbAdapter) {
 			JButton btnPartitionList = new JButton("Partition List");
 			btnPartitionList.addActionListener(new ActionListener() {
 
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					MySQLPartitionManagerApp.main(new String[]{});
+					if (adapter instanceof MysqlRdbAdaptor) {
+						MySQLPartitionManagerApp.main(new String[]{});
+					} else if (adapter instanceof PostgreSQLRdbAdapter) {
+						PostgreSQLPartitionManagerApp.main(new String[]{});
+					}
 
 					//自身を消す
 					dispose();

@@ -105,7 +105,7 @@
 				if (button.getDisplayType() == DisplayType.CUSTOM) {
 					isDisplayCustomType = evm.isDisplayButton(data.getEntityDefinition().getName(), button.getCustomDisplayTypeScriptKey(), OutputType.VIEW, data.getEntity());
 				}
-				if (EntityViewUtil.isDisplayElement(defName, button.getElementRuntimeId(), OutputType.VIEW)
+				if (EntityViewUtil.isDisplayElement(defName, button.getElementRuntimeId(), OutputType.VIEW, data.getEntity())
 						&& (button.getDisplayType() != null
 							&& (button.getDisplayType() == DisplayType.VIEW
 								|| button.getDisplayType() == DisplayType.BOTH || isDisplayCustomType))) {

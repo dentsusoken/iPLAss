@@ -32,7 +32,7 @@ import org.iplass.mtp.tools.batch.MtpCuiBase;
 import org.iplass.mtp.tools.gui.partition.MySQLPartitionManagerApp;
 import org.iplass.mtp.util.StringUtil;
 
-public class MySQLPartitionBatch extends MtpCuiBase {
+public class MySQLPartitionBatch extends MtpCuiBase implements PartitionBatch {
 
 	/** 実行モード */
 	public enum MySQLPartitionBatchExecMode {GUI, CREATE};
@@ -215,10 +215,6 @@ public class MySQLPartitionBatch extends MtpCuiBase {
 			return startCreateWizard();
 		}
 
-		//サブパーティション利用有無
-		boolean isUseSubPartition = readConsoleBoolean(rs("MySQLPartitionManager.Create.useSubPartitionMsg"), param.isMySqlUseSubPartition());
-		param.setMySqlUseSubPartition(isUseSubPartition);
-
 		//実行情報出力
 		logArguments(param);
 
@@ -265,7 +261,6 @@ public class MySQLPartitionBatch extends MtpCuiBase {
 		logInfo("-----------------------------------------------------------");
 		logInfo("■Execute Argument");
 		logInfo("\tmax tenant id :" + param.getTenantId());
-		logInfo("\tuse sub partition :" + param.isMySqlUseSubPartition());
 		logInfo("-----------------------------------------------------------");
 		logInfo("");
 	}

@@ -33,6 +33,8 @@ import org.iplass.mtp.definition.TypedDefinitionManager;
 import org.iplass.mtp.entity.Entity;
 import org.iplass.mtp.entity.query.condition.Condition;
 import org.iplass.mtp.view.generic.editor.PropertyEditor;
+import org.iplass.mtp.view.generic.editor.ReferencePropertyEditor;
+import org.iplass.mtp.view.generic.editor.ReferencePropertyEditor.UrlParameterActionType;
 
 /**
  * 画面定義を管理するクラスのインターフェース。
@@ -65,9 +67,10 @@ public interface EntityViewManager extends TypedDefinitionManager<EntityView> {
 	 * @param viewType FormViewの種類
 	 * @param viewName View名
 	 * @param propName プロパティ名
+	 * @param entity エンティティ
 	 * @return エディター
 	 */
-	public PropertyEditor getPropertyEditor(String defName, String viewType, String viewName, String propName);
+	public PropertyEditor getPropertyEditor(String defName, String viewType, String viewName, String propName, Entity entity);
 
 	/**
 	 * 指定の画面定義に設定されているEditorを取得します。
@@ -77,9 +80,10 @@ public interface EntityViewManager extends TypedDefinitionManager<EntityView> {
 	 * @param viewName View名
 	 * @param propName プロパティ名
 	 * @param refSection 参照セクションインデックス
+	 * @param entity エンティティ
 	 * @return エディター
 	 */
-	public PropertyEditor getPropertyEditor(String defName, String viewType, String viewName, String propName, Integer refSectionIndex);
+	public PropertyEditor getPropertyEditor(String defName, String viewType, String viewName, String propName, Integer refSectionIndex, Entity entity);
 
 	/**
 	 * スクリプトテンプレートを実行します。
@@ -198,15 +202,14 @@ public interface EntityViewManager extends TypedDefinitionManager<EntityView> {
 
 	/**
 	 * 参照ダイアログ用のURLパラメータを取得します。
-	 * @param name 定義名
-	 * @param templateName テンプレート名
-	 * @param entity Entity
-	 * @param req リクエスト
-	 * @param res レスポンス
-	 * @param application サーブレットコンテキスト
-	 * @param page ページコンテキスト
+	 *
+	 * @param definitionName Entity定義名
+	 * @param editor ReferencePropertyEditor
+	 * @param entity 参照元Entity
+	 * @param actionType URLパラメータActionタイプ
+	 * @return URLパラメータ
 	 */
-	public String getUrlParameter(String name, String templateName, Entity entity);
+	public String getUrlParameter(String definitionName, ReferencePropertyEditor editor, Entity entity, UrlParameterActionType actionType);
 
 	/**
 	 * 自動補完の値を取得します。
@@ -217,9 +220,10 @@ public interface EntityViewManager extends TypedDefinitionManager<EntityView> {
 	 * @param autocompletionKey 自動補完のキー
 	 * @param param 連動元の値
 	 * @param currentValue 連動先の値
+	 * @param entity エンティティ
 	 * @return 自動補完の値
 	 */
-	public Object getAutocompletionValue(String definitionName, String viewName, String viewType, String propName, String autocompletionKey, Integer referenceSectionIndex, Map<String, String[]> param, List<String> currentValue);
+	public Object getAutocompletionValue(String definitionName, String viewName, String viewType, String propName, String autocompletionKey, Integer referenceSectionIndex, Map<String, String[]> param, List<String> currentValue, Entity entity);
 
 	/**
 	 * <p>

@@ -20,13 +20,18 @@
 
 package org.iplass.mtp.impl.tools.tenant;
 
+import org.iplass.mtp.impl.tools.tenant.rdb.TenantRdbConstants;
+
 public class PartitionCreateParameter {
 
 	//作成するテナントのID
 	private int tenantId;
 
-	//サブパーティション利用有無 (MySQL時のみ利用)
-	private boolean isMySqlUseSubPartition = true;
+	//サブパーティション数
+	private int subPartitionSize = TenantRdbConstants.MAX_SUBPARTITION;
+
+	//パーティション作成のみ
+	private boolean onlyPartitionCreate;
 
 	//ログ出力時のLang
 	private String loggerLanguage;
@@ -42,12 +47,20 @@ public class PartitionCreateParameter {
 		this.tenantId = tenantId;
 	}
 
-	public boolean isMySqlUseSubPartition() {
-		return isMySqlUseSubPartition;
+	public int getSubPartitionSize() {
+		return subPartitionSize;
 	}
 
-	public void setMySqlUseSubPartition(boolean isMySqlUseSubPartition) {
-		this.isMySqlUseSubPartition = isMySqlUseSubPartition;
+	public void setSubPartitionSize(int subPartitionSize) {
+		this.subPartitionSize = subPartitionSize;
+	}
+
+	public boolean isOnlyPartitionCreate() {
+		return onlyPartitionCreate;
+	}
+
+	public void setOnlyPartitionCreate(boolean onlyPartitionCreate) {
+		this.onlyPartitionCreate = onlyPartitionCreate;
 	}
 
 	public String getLoggerLanguage() {

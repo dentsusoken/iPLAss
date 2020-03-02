@@ -28,6 +28,7 @@ import java.util.regex.Pattern;
 
 import org.iplass.mtp.impl.core.ExecuteContext;
 import org.iplass.mtp.impl.tenant.MetaTenantI18nInfo.MetaTenantI18nInfoRuntime;
+import org.iplass.mtp.impl.util.UTF8ResourceBundleControl;
 import org.iplass.mtp.spi.Config;
 import org.iplass.mtp.spi.ServiceInitListener;
 
@@ -74,14 +75,13 @@ public class ResourceBundleConfig implements ServiceInitListener<MessageService>
 		if (formats.contains(MessageResourceBundleControl.MESSAGE_FORMAT_TYPE)) {
 			control = new MessageResourceBundleControl(fallbackToSystemLocale, formats);
 		} else {
-			control = new ResourceBundle.Control() {
+			control = new UTF8ResourceBundleControl() {
 				@Override
 				public List<String> getFormats(String baseName) {
 					return formats;
 				}
 				@Override
 				public Locale getFallbackLocale(String baseName, Locale locale) {
-//					Locale l = ExecuteContext.getCurrentContext().getTenantContext().getTenantRuntime().getLangLocale();
 					Locale l = ExecuteContext.getCurrentContext().getTenantContext().getTenantRuntime()
 							.getConfigRuntime(MetaTenantI18nInfoRuntime.class).getLangLocale();
 					if (l != null && !locale.equals(l)) {

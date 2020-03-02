@@ -57,7 +57,7 @@
 	}
 
 	boolean canBulkUpdate(String defName, PropertyItem pi) {
-		if (!EntityViewUtil.isDisplayElement(defName, pi.getElementRuntimeId(), OutputType.BULK)
+		if (!EntityViewUtil.isDisplayElement(defName, pi.getElementRuntimeId(), OutputType.BULK, null)
 				|| pi.getEditor() instanceof UserPropertyEditor
 				|| pi.getEditor() instanceof ExpressionPropertyEditor
 				|| pi.getEditor() instanceof AutoNumberPropertyEditor) {
@@ -79,6 +79,11 @@
 	Integer count = (Integer) request.getAttribute(Constants.BULK_UPDATE_COUNT);
 	Integer updated = (Integer) request.getAttribute(Constants.BULK_UPDATED_COUNT);
 
+	//排他制御チェックエラー（更新ダイアログが開く時）
+	Boolean isExCheckErr = (Boolean) request.getAttribute(Constants.BULK_UPDATE_EXCHECK_ERR);
+	if (isExCheckErr == null) isExCheckErr = false;
+
+	boolean isSuccess = Constants.CMD_EXEC_SUCCESS.equals(request.getAttribute(WebRequestConstants.COMMAND_RESULT));
 	boolean isSelectAllPage = isSelectAllPage(selectAllPage);
 	//全選択フラグ
 	boolean isSelectAll = isSelectAll(selectAllType);
@@ -91,7 +96,7 @@
 	String viewName = form.getName();
 	//表示名
 	String displayName = TemplateUtil.getMultilingualString(form.getTitle(), form.getLocalizedTitleList(),
-			data.getEntityDefinition().getDisplayName(), data.getEntityDefinition().getLocalizedDisplayNameList());
+	data.getEntityDefinition().getDisplayName(), data.getEntityDefinition().getLocalizedDisplayNameList());
 
 	String contextPath = TemplateUtil.getTenantContextPath();
 
@@ -138,24 +143,25 @@
 	request.setAttribute(Constants.BULK_UPDATE_USE_BULK_VIEW, true); //BulkView利用フラグ
 	request.setAttribute(Constants.ENTITY_DEFINITION, data.getEntityDefinition());
 %>
+<div class="bulk-edit">
 <h3 class="hgroup-02 hgroup-02-01"><%=GemResourceBundleUtil.resourceString("generic.bulk.title", displayName)%></h3>
 <%
-	if (count != null) {
-
-		if ("SUCCESS".equals(request.getAttribute(WebRequestConstants.COMMAND_RESULT))) {
+	if (isSuccess) {
+		//更新に成功した場合
+		if (count != null) {
 %>
 <span class="success"><%=GemResourceBundleUtil.resourceString("command.generic.bulk.BulkUpdateListCommand.successMsg", updated)%></span>
 <%
-		} else {
+		}
+	} else {
 %>
 <span class="error"><c:out value="<%=message%>"/></span>
 <%
-			//分割トランザクションの場合、一部データの更新に成功した可能性があります。
-			if (updated > 0) {
+		//分割トランザクションの場合、一部データの更新に成功した可能性があります。
+		if (count != null && updated > 0) {
 %>
 <span class="error"><%=GemResourceBundleUtil.resourceString("command.generic.bulk.BulkUpdateListCommand.failedMsg", count, count - updated)%></span>
 <%
-			}
 		}
 	}
 
@@ -216,17 +222,17 @@ ${m:outputToken('FORM_XHTML', true)}
 %>
 <div class="formArchive">
 <div>
-<table class="tbl-maintenance mb10">
+<table class="tbl-section mb10">
 <tbody>
 <%
 	if (isSelectAllPage) {
 %>
 <tr>
-<th rowspan="2">${m:rs("mtp-gem-messages", "generic.bulk.selectBulkUpdateType")}</th>
-<td><label><input type="radio" name="selectAllType" value="select" <%=!isSelectAll ? "checked" : ""%>>${m:rs("mtp-gem-messages", "generic.bulk.updateRow")}</label></td>
+<th class="section-data col1" rowspan="2">${m:rs("mtp-gem-messages", "generic.bulk.selectBulkUpdateType")}</th>
+<td class="section-data col1"><label><input type="radio" name="selectAllType" value="select" <%=!isSelectAll ? "checked" : ""%>>${m:rs("mtp-gem-messages", "generic.bulk.updateRow")}</label></td>
 </tr>
 <tr>
-<td><label><input type="radio" name="selectAllType" value="all" <%=isSelectAll ? "checked" : ""%>>${m:rs("mtp-gem-messages", "generic.bulk.updateAll")}<span id="bulkUpdateCount"></span></label></td>
+<td class="section-data col1"><label><input type="radio" name="selectAllType" value="all" <%=isSelectAll ? "checked" : ""%>>${m:rs("mtp-gem-messages", "generic.bulk.updateAll")}<span id="bulkUpdateCount"></span></label></td>
 </tr>
 <script>
 $(function() {
@@ -273,7 +279,7 @@ $(function() {
 </div>
 <%
 	for (Section section : form.getSections()) {
-		if (!EntityViewUtil.isDisplayElement(defName, section.getElementRuntimeId(), OutputType.BULK)) continue;
+		if (!EntityViewUtil.isDisplayElement(defName, section.getElementRuntimeId(), OutputType.BULK, null)) continue;
 		request.setAttribute(Constants.ELEMENT, section);
 
 		String path = EntityViewUtil.getJspPath(section, ViewConst.DESIGN_TYPE_GEM);
@@ -289,7 +295,7 @@ $(function() {
 <%
 	if (form.getButtons().size() > 0) {
 		for (Button button : form.getButtons()) {
-			if (EntityViewUtil.isDisplayElement(defName, button.getElementRuntimeId(), OutputType.BULK)) {
+			if (EntityViewUtil.isDisplayElement(defName, button.getElementRuntimeId(), OutputType.BULK, null)) {
 				String cssClass = button.isPrimary() ? "gr-btn" : "gr-btn-02";
 				if (StringUtil.isNotBlank(button.getStyle())) {
 					cssClass = button.getStyle();
@@ -314,9 +320,15 @@ $(function() {
 		if (StringUtil.isNotBlank(localizedUpdateDisplayLabel)) {
 			bulkUpdateDisplayLabel = localizedUpdateDisplayLabel;
 		}
+		if (isExCheckErr) {
+%>
+<li class="btn save-btn"><input id="bulkUpdateBtn" type="button" class="gr-btn-02" value="<c:out value="<%=bulkUpdateDisplayLabel %>" />" disabled="disabled" /></li>
+<%
+		} else {
 %>
 <li class="btn save-btn"><input id="bulkUpdateBtn" type="button" class="gr-btn" value="<c:out value="<%=bulkUpdateDisplayLabel %>" />" onclick="onclick_bulkupdate(this)" /></li>
 <%
+		}
 	}
 %>
 <li class="mt05 cancel-link"><a href="javascript:void(0)" onclick="onclick_cancel()">${m:rs("mtp-gem-messages", "generic.bulk.cancel")}</a></li>
@@ -367,3 +379,4 @@ $(function() {
 	}
 })
 </script>
+</div>

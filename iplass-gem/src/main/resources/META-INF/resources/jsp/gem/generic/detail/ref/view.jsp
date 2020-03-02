@@ -65,6 +65,12 @@
 	String parentPropName = request.getParameter(Constants.PARENT_PROPNAME);
 	parentPropName = StringUtil.escapeHtml(parentPropName);
 	if (parentPropName == null) parentPropName = "";
+	String entityOid = request.getParameter(Constants.DISPLAY_SCRIPT_ENTITY_OID);
+	entityOid = StringUtil.escapeHtml(entityOid);
+	if (entityOid == null) entityOid = "";
+	String entityVersion = request.getParameter(Constants.DISPLAY_SCRIPT_ENTITY_VERSION);
+	entityVersion = StringUtil.escapeHtml(entityVersion);
+	if (entityVersion == null) entityVersion = "";
 	String viewType = request.getParameter(Constants.VIEW_TYPE);
 	viewType = StringUtil.escapeHtml(viewType);
 	if (viewType == null) viewType = "";
@@ -121,6 +127,8 @@
 	//各プロパティでの権限チェック用に定義名をリクエストに保存
 	request.setAttribute(Constants.DEF_NAME, defName);
 	request.setAttribute(Constants.ROOT_DEF_NAME, defName);	//NestTableの場合にDEF_NAMEが置き換わるので別名でRootのDefNameをセット
+	//新規時に初期化スクリプト定義が存在する場合、data.getEntity()がnullにならないので、nullに統一するために別のキー名としてスコープに保持しなければなりません。。
+	request.setAttribute(Constants.ROOT_ENTITY, data.getEntity()); //NestTableの場合に内部の表示判定スクリプトで利用
 
 	//editor以下で参照するパラメータ
 	request.setAttribute(Constants.VIEW_NAME, viewName);
@@ -233,6 +241,8 @@ function dataUnlock() {
 <input type="hidden" name="<%=Constants.PARENT_DEFNAME%>" value="<c:out value="<%=parentDefName%>" />" />
 <input type="hidden" name="<%=Constants.PARENT_VIEWNAME%>" value="<c:out value="<%=parentViewName%>" />" />
 <input type="hidden" name="<%=Constants.PARENT_PROPNAME%>" value="<c:out value="<%=parentPropName%>" />" />
+<input type="hidden" name="<%=Constants.DISPLAY_SCRIPT_ENTITY_OID%>" value="<c:out value="<%=entityOid%>" />" />
+<input type="hidden" name="<%=Constants.DISPLAY_SCRIPT_ENTITY_VERSION%>" value="<c:out value="<%=entityVersion%>" />" />
 <input type="hidden" name="<%=Constants.VIEW_TYPE%>" value="<c:out value="<%=viewType%>" />" />
 <input type="hidden" name="<%=Constants.REF_SECTION_INDEX %>" value="<c:out value="<%=refSectionIndex%>" />" />
 <%	if (oid != null) { %>
@@ -262,7 +272,7 @@ function dataUnlock() {
 <jsp:include page="../sectionNavi.inc.jsp" />
 <%
 	for (Section section : data.getView().getSections()) {
-		if (!EntityViewUtil.isDisplayElement(defName, section.getElementRuntimeId(), OutputType.VIEW)) continue;
+		if (!EntityViewUtil.isDisplayElement(defName, section.getElementRuntimeId(), OutputType.VIEW, data.getEntity())) continue;
 		request.setAttribute(Constants.ELEMENT, section);
 
 		String path = EntityViewUtil.getJspPath(section, ViewConst.DESIGN_TYPE_GEM);

@@ -28,22 +28,28 @@
 <%@ page import="org.iplass.gem.command.auth.UpdateExpirePasswordCommand"%>
 <%@ page import="org.iplass.gem.command.ViewUtil"%>
 <%
-Exception e = (Exception) request.getAttribute(AuthCommandConstants.RESULT_ERROR);
 String errorMessage = null;
+Exception e = (Exception) request.getAttribute(AuthCommandConstants.RESULT_ERROR);
+if (e == null) {
+	e = (Exception) request.getAttribute(WebRequestConstants.EXCEPTION);
+}
 if (e != null) {
 	errorMessage = e.getMessage();
 }
-if (errorMessage == null) {
-	errorMessage = "";
-}
 
-String title = ViewUtil.getDispTenantName();
+request.setAttribute("title", ViewUtil.getDispTenantNameWithDispChecked());
+request.setAttribute("imgUrl", ViewUtil.getTenantImgUrlWithDispChecked());
+
+String largeImageUrl = ViewUtil.getTenantLargeImgUrl();
 %>
+
 <!DOCTYPE html>
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<title><c:out value="<%= title %>"/></title>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+<meta http-equiv="x-ua-compatible" content="IE=edge" />
+<title>${m:esc(title)}</title>
+
 <%@include file="../layout/resource/simpleResource.jsp" %>
 <%@include file="../layout/resource/skin.jsp" %>
 <%@include file="../layout/resource/theme.jsp" %>
@@ -55,20 +61,41 @@ function changePassword() {
 }
 //-->
 </script>
+
+<%if (StringUtil.isNotBlank(largeImageUrl)){%>
+<style>
+#login #main #header {
+background: none;
+height: auto;
+}
+</style>
+<%}%>
+
 </head>
+
 <body id="login">
 <div id="container">
+
 <%
 request.setAttribute("showNavi", false);
 TemplateUtil.includeTemplate("gem/layout/header", pageContext);
 %>
+
 <div id="content">
 <div id="main" class="expire">
+
+<%if (StringUtil.isNotBlank(largeImageUrl)){%>
+<img src="<%=largeImageUrl%>" class="login-logo" />
+<%}%>
+
 <h2 class="hgroup-01">${m:rs("mtp-gem-messages", "auth.Expire.passChng")}</h2>
-<div class="error" style="color:red;">
-<%= errorMessage %>
+
+<%if (errorMessage != null) {%>
+<div class="error">
+<span class="error"><%= errorMessage %></span>
 </div>
-<br>
+<%}%>
+
 <form name="passwordForm" method="post" action="${m:tcPath()}/<%=UpdateExpirePasswordCommand.ACTION_UPDATE_EXP_PASSWORD%>">
 <table class="tbl-login-01">
 <tr>
@@ -84,13 +111,16 @@ TemplateUtil.includeTemplate("gem/layout/header", pageContext);
 <td><input type="password" name="<%=AuthCommandConstants.PARAM_CONFIRM_PASSWORD%>" value="" /></td>
 </tr>
 </table>
+
 <p class="nav-login-01">
 <input type="button" value="${m:rs('mtp-gem-messages', 'auth.Expire.change')}" class="gr-btn" onclick="changePassword();return false;" />
 </p>
+
 ${m:outputToken('FORM_XHTML', true)}
 </form>
 </div><!-- main -->
 </div><!-- content -->
+
 <%
 TemplateUtil.includeTemplate("gem/layout/footer", pageContext);
 %>

@@ -152,11 +152,11 @@ public class EntityHandler extends BaseMetaDataRuntime {
 
 			this.metaDataConfig = metaDataConfig;
 
-			propertyHandlers = new ArrayList<PropertyHandler>();
-			propertyHandlerMap = new HashMap<String, PropertyHandler>();
-			propertyHandlerMapById = new HashMap<String, PropertyHandler>();
-			eventListenerHandlers = new ArrayList<EventListenerRuntime>();
-			localizedStringMap = new HashMap<String, String>();
+			propertyHandlers = new ArrayList<>();
+			propertyHandlerMap = new HashMap<>();
+			propertyHandlerMapById = new HashMap<>();
+			eventListenerHandlers = new ArrayList<>();
+			localizedStringMap = new HashMap<>();
 
 			dataStore = ServiceRegistry.getRegistry().getService(StoreService.class).getDataStore();
 
@@ -317,6 +317,7 @@ public class EntityHandler extends BaseMetaDataRuntime {
 		this.isRoot = isRoot;
 	}
 
+	@Override
 	public MetaEntity getMetaData() {
 		return metaData;
 	}
@@ -532,7 +533,7 @@ public class EntityHandler extends BaseMetaDataRuntime {
 		if (superHandler == null) {
 			return getDeclaredPropertyList();
 		} else {
-			ArrayList<PropertyHandler> propList = new ArrayList<PropertyHandler>();
+			ArrayList<PropertyHandler> propList = new ArrayList<>();
 			propList.addAll(superHandler.getPropertyList(context));
 			propList.addAll(getDeclaredPropertyList());
 			return propList;
@@ -551,7 +552,7 @@ public class EntityHandler extends BaseMetaDataRuntime {
 		//4.メタデータの定義に従い、プロパティのバリデーションの実施
 		//  [エラーの場合]例外をスロー（例外内部にエラー内容を含める）
 
-		ArrayList<ValidateError> validateResults = new ArrayList<ValidateError>();
+		ArrayList<ValidateError> validateResults = new ArrayList<>();
 
 		//プロパティのチェック
 		EntityHandler superHandler = getSuperDataModelHandler(context);
@@ -836,7 +837,7 @@ public class EntityHandler extends BaseMetaDataRuntime {
 		//更新対象のものに絞る。
 		if (option != null) {
 			//TODO できれば、copyEntityからも、updateしない値は取り除いておいた方が無難か
-			List<PropertyHandler> updatePropList = new ArrayList<PropertyHandler>();
+			List<PropertyHandler> updatePropList = new ArrayList<>();
 			for (String pName: option.getUpdateProperties()) {
 				for (PropertyHandler ph: complexWrapperTypePropList) {
 					if (ph.getName().equals(pName)) {
@@ -871,7 +872,7 @@ public class EntityHandler extends BaseMetaDataRuntime {
 				ComplexWrapperType type = (ComplexWrapperType) ((PrimitivePropertyHandler) ph).getMetaData().getType();
 				Object val = entity.getValue(ph.getName());
 				Object beforeVal = null;
-				if (type.isNeedPrevStoreTypeValueOnToStoreTypeValue()) {
+				if (beforeUpdateEntity != null && type.isNeedPrevStoreTypeValueOnToStoreTypeValue()) {
 					beforeVal = beforeUpdateEntity.getValue(ph.getName());
 				}
 				if (ph.getMetaData().getMultiplicity() == 1) {
@@ -1147,7 +1148,7 @@ public class EntityHandler extends BaseMetaDataRuntime {
 		//oid単位に1回だけ
 		List<PropertyHandler> wrapperPropList = getPropertyListByPropertyType(ComplexWrapperType.class, entityContext);
 		if (wrapperPropList.size() > 0) {
-			HashSet<Class<? extends ComplexWrapperType>> called = new HashSet<Class<? extends ComplexWrapperType>>();
+			HashSet<Class<? extends ComplexWrapperType>> called = new HashSet<>();
 			for (PropertyHandler ph: wrapperPropList) {
 				ComplexWrapperType type = (ComplexWrapperType) ((PrimitivePropertyHandler) ph).getMetaData().getType();
 				if (!called.contains(type.getClass())) {
@@ -1185,7 +1186,7 @@ public class EntityHandler extends BaseMetaDataRuntime {
 		//oid単位に1回だけ
 		List<PropertyHandler> wrapperPropList = getPropertyListByPropertyType(ComplexWrapperType.class, entityContext);
 		if (wrapperPropList.size() > 0) {
-			HashSet<Class<? extends ComplexWrapperType>> called = new HashSet<Class<? extends ComplexWrapperType>>();
+			HashSet<Class<? extends ComplexWrapperType>> called = new HashSet<>();
 			for (PropertyHandler ph: wrapperPropList) {
 				ComplexWrapperType type = (ComplexWrapperType) ((PrimitivePropertyHandler) ph).getMetaData().getType();
 				if (!called.contains(type.getClass())) {
@@ -1260,7 +1261,7 @@ public class EntityHandler extends BaseMetaDataRuntime {
 		}
 
 		List<ReferencePropertyHandler> refPropList = getReferencePropertyList(ReferenceType.COMPOSITION, entityContext);
-		Map<String, Set<String>> cascadeDelMap = new HashMap<String, Set<String>>();
+		Map<String, Set<String>> cascadeDelMap = new HashMap<>();
 		if (refPropList.size() > 0) {
 			for (ReferencePropertyHandler rph: refPropList) {
 				EntityHandler refEh = rph.getReferenceEntityHandler(entityContext);
@@ -1268,7 +1269,7 @@ public class EntityHandler extends BaseMetaDataRuntime {
 				if (cascadeOids != null) {
 					Set<String> oids = cascadeDelMap.get(refEh.getMetaData().getName());
 					if (oids == null) {
-						oids = new HashSet<String>();
+						oids = new HashSet<>();
 						cascadeDelMap.put(refEh.getMetaData().getName(), oids);
 					}
 					oids.addAll(Arrays.asList(cascadeOids));
@@ -1401,9 +1402,9 @@ public class EntityHandler extends BaseMetaDataRuntime {
 
 		//件数が読めない（複数の参照定義があると掛け算になる）ので、multipleな参照先のEntityは個別のsqlで持ってくる。
 
-		ArrayList<String> select = new ArrayList<String>();
-		ArrayList<String> refSingle = new ArrayList<String>();
-		final ArrayList<ReferencePropertyHandler> refList = new ArrayList<ReferencePropertyHandler>();
+		ArrayList<String> select = new ArrayList<>();
+		ArrayList<String> refSingle = new ArrayList<>();
+		final ArrayList<ReferencePropertyHandler> refList = new ArrayList<>();
 
 		Query searchCond = new Query();
 		searchCond.from(getMetaData().getName());
@@ -1509,7 +1510,7 @@ public class EntityHandler extends BaseMetaDataRuntime {
 		}
 //		searchCond.setVersiond(true);
 
-		final ArrayList<Entity> refList = new ArrayList<Entity>();
+		final ArrayList<Entity> refList = new ArrayList<>();
 		//セキュリティロジックを通したいので、Invocation経由でQuery
 		new EntityQueryInvocationImpl(searchCond, new SearchOption().unnotifyListeners(), new Predicate<Object[]>() {
 			@Override
@@ -1642,7 +1643,7 @@ public class EntityHandler extends BaseMetaDataRuntime {
 							row[i] = vpa.getValue(select.get(i));
 						}
 
-						builder.handle(row);
+						builder.handle(row, null);
 					}
 					builder.finished();
 					for (Entity entity: builder.getCollection()) {
@@ -1764,7 +1765,7 @@ public class EntityHandler extends BaseMetaDataRuntime {
 				throw new EntityRuntimeException("can not updateAll because not support of Reference");
 			}
 		}
-		
+
 		VirtualPropertyAdapter vpa = service.getExtendPropertyAdapterFactory().create(cond, entityContext, this);
 
 		return getStrategy().updateAll(vpa.getTransformedUpdateCondition(), entityContext, this, context.getClientId());
@@ -1801,7 +1802,7 @@ public class EntityHandler extends BaseMetaDataRuntime {
 		if (!canDeleteAll()) {
 			throw new EntityRuntimeException("can not deleteAll because not support of COMPOSITION type or LOB type");
 		}
-		
+
 		VirtualPropertyAdapter vpa = service.getExtendPropertyAdapterFactory().create(cond, entityContext, this);
 
 		return getStrategy().deleteAll(vpa.getTransformedDeleteCondition(), entityContext, this, context.getClientId());

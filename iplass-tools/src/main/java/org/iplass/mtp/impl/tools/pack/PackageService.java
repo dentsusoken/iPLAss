@@ -135,7 +135,9 @@ public class PackageService implements Service {
 			archive = getPackageArchiveFile(packEntity);
 
 			//Package情報取得
-			return getPackageInfo(archive);
+			PackageInfo info = getPackageInfo(archive);
+			info.setPackageName(packEntity.getName());
+			return info;
 		} finally {
 			if (archive != null) {
 				if (!archive.delete()) {
@@ -248,7 +250,7 @@ public class PackageService implements Service {
 
 		try (CheckedInputStream is = new CheckedInputStream(zipFile.getInputStream(zipEntry), new CRC32())){
 			byte[] buf = new byte[1024];
-			while ((int) (is.read(buf)) >= 0) {
+			while ((is.read(buf)) >= 0) {
 			}
 			if (is.getChecksum().getValue() == expected) {
 				return true;
@@ -266,7 +268,7 @@ public class PackageService implements Service {
 	private PackageMetaDataInfo getMetaDataList(InputStream is) {
 
 		XMLEntryInfo entryInfo = metaService.getXMLMetaDataEntryInfo(is);
-		List<String> entryPathList = new ArrayList<String>(entryInfo.getPathEntryMap().keySet());
+		List<String> entryPathList = new ArrayList<>(entryInfo.getPathEntryMap().keySet());
 
 		entryPathList.sort((String o1, String o2) -> {
 			//大文字・小文字区別しない

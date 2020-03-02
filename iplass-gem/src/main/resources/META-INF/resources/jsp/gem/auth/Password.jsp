@@ -24,6 +24,7 @@
 
 <%@ page import="java.util.ArrayList"%>
 <%@ page import="java.util.List"%>
+<%@ page import="org.iplass.mtp.entity.Entity" %>
 <%@ page import="org.iplass.mtp.entity.permission.EntityPermission"%>
 <%@ page import="org.iplass.mtp.entity.permission.EntityPropertyPermission"%>
 <%@ page import="org.iplass.mtp.auth.AuthContext"%>
@@ -55,27 +56,27 @@
 <%@ page import="org.iplass.gem.command.ViewUtil"%>
 <%!
 
-	List<PropertyItem> getProperty(DetailFormView view) {
+	List<PropertyItem> getProperty(DetailFormView view, Entity entity) {
 		List<PropertyItem> propList = new ArrayList<PropertyItem>();
 		for (Section section : view.getSections()) {
 			if (section instanceof DefaultSection
-					&& EntityViewUtil.isDisplayElement(User.DEFINITION_NAME, section.getElementRuntimeId(), OutputType.EDIT)
+					&& EntityViewUtil.isDisplayElement(User.DEFINITION_NAME, section.getElementRuntimeId(), OutputType.EDIT, entity)
 					&& ViewUtil.dispElement(Constants.EXEC_TYPE_UPDATE, section)) {
-				propList.addAll(getProperty((DefaultSection) section));
+				propList.addAll(getProperty((DefaultSection) section, entity));
 			}
 		}
 		return propList;
 	}
 
-	List<PropertyItem> getProperty(DefaultSection section) {
+	List<PropertyItem> getProperty(DefaultSection section, Entity entity) {
 		List<PropertyItem> propList = new ArrayList<PropertyItem>();
 		for (Element elem : section.getElements()) {
 			if (elem instanceof PropertyItem) {
 				PropertyItem prop = (PropertyItem) elem;
-				if (EntityViewUtil.isDisplayElement(User.DEFINITION_NAME, prop.getElementRuntimeId(), OutputType.EDIT)
+				if (EntityViewUtil.isDisplayElement(User.DEFINITION_NAME, prop.getElementRuntimeId(), OutputType.EDIT, entity)
 						&& ViewUtil.dispElement(Constants.EXEC_TYPE_UPDATE, prop)) propList.add(prop);
 			} else if (elem instanceof DefaultSection) {
-				propList.addAll(getProperty((DefaultSection) elem));
+				propList.addAll(getProperty((DefaultSection) elem, entity));
 			}
 		}
 		return propList;
@@ -143,20 +144,20 @@ if (!"true".equals(request.getAttribute(Constants.UPDATE_USER_INFO))) {
 <form method="POST" action="${m:tcPath()}/<%=UpdatePasswordCommand.ACTION_DO_UPDATE_PASSWORD%>">
 <div class="formArchive">
 <div>
-<table class="tbl-maintenance mb10">
+<table class="tbl-maintenance tbl-section mb10">
 <tbody><tr>
-<th class="col1">${m:rs("mtp-gem-messages", "auth.Password.curPass")}</th>
-<td class="col1">
+<th class="section-data col1">${m:rs("mtp-gem-messages", "auth.Password.curPass")}</th>
+<td class="section-data col1">
 <input type="password" name="<%= AuthCommandConstants.PARAM_PASSWORD %>" value="" class="form-size-01 inpbr" />
 </td>
 </tr>
 <tr>
-<th>${m:rs("mtp-gem-messages", "auth.Password.newPass")}</th>
-<td><input type="password" name="<%= AuthCommandConstants.PARAM_NEW_PASSWORD %>" value="" class="form-size-01 inpbr" /></td>
+<th class="section-data col1">${m:rs("mtp-gem-messages", "auth.Password.newPass")}</th>
+<td class="section-data col1"><input type="password" name="<%= AuthCommandConstants.PARAM_NEW_PASSWORD %>" value="" class="form-size-01 inpbr" /></td>
 </tr>
 <tr>
-<th>${m:rs("mtp-gem-messages", "auth.Password.cnfrmNewPass")}</th>
-<td><input type="password" name="<%= AuthCommandConstants.PARAM_CONFIRM_PASSWORD %>" value="" class="form-size-01 inpbr" /></td>
+<th class="section-data col1">${m:rs("mtp-gem-messages", "auth.Password.cnfrmNewPass")}</th>
+<td class="section-data col1"><input type="password" name="<%= AuthCommandConstants.PARAM_CONFIRM_PASSWORD %>" value="" class="form-size-01 inpbr" /></td>
 </tr>
 </tbody>
 </table>
@@ -169,7 +170,7 @@ if (!"true".equals(request.getAttribute(Constants.UPDATE_USER_INFO))) {
 		EntityDefinition ed = edm.get(defName);
 		EntityView view = evm.get(defName);
 		DetailFormView form = view.getDetailFormView(setting.getViewName());
-		List<PropertyItem> propList = getProperty(form);
+		List<PropertyItem> propList = getProperty(form, user);
 		if (propList.size() > 0) {
 			// 自身の情報更新は特権実行で行う
 %>
@@ -200,11 +201,12 @@ if ("true".equals(request.getAttribute(Constants.UPDATE_USER_INFO))) {
 %>
 <div class="formArchive">
 <div>
-<table class="tbl-maintenance">
+<table class="tbl-maintenance tbl-section">
 <tbody>
 <%
 			request.setAttribute(Constants.DEF_NAME, defName);
 			request.setAttribute(Constants.ROOT_DEF_NAME, defName); //NestTableの場合にDEF_NAMEが置き換わるので別名でRootのDefNameをセット
+			request.setAttribute(Constants.ROOT_ENTITY, user); //NestTableの場合に内部の表示判定スクリプトで利用
 			request.setAttribute(Constants.VIEW_NAME, setting.getViewName());
 			request.setAttribute(Constants.OUTPUT_TYPE, OutputType.EDIT);
 			request.setAttribute(Constants.ENTITY_DEFINITION, ed);

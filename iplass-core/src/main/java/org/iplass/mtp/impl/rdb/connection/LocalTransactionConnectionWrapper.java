@@ -37,8 +37,8 @@ public class LocalTransactionConnectionWrapper extends ConnectionWrapper {
 	private boolean isClosed = false;
 	private volatile boolean isClosePhysical;
 	
-	LocalTransactionConnectionWrapper(Connection wrapped, boolean inTransaction, ResourceHolder resourceHolder, int warnLogThreshold, boolean warnLogBefore) {
-		super(wrapped, warnLogThreshold, warnLogBefore);
+	LocalTransactionConnectionWrapper(Connection wrapped, boolean inTransaction, ResourceHolder resourceHolder, int warnLogThreshold, boolean warnLogBefore, boolean countSqlExecution) {
+		super(wrapped, warnLogThreshold, warnLogBefore, countSqlExecution);
 		this.inTransaction = inTransaction;
 		this.resourceHolder = resourceHolder;
 	}

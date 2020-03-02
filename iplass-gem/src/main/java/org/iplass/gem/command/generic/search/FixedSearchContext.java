@@ -151,12 +151,10 @@ public class FixedSearchContext extends SearchContextBase {
 				type = SortType.valueOf(sortType);
 			}
 
-			sortSpec = new SortSpec(key, type);
-
-			NullOrderingSpec nullOrderingSpec = null;
 			PropertyColumn property = getLayoutPropertyColumn(sortKey);
 			if (property != null) {
-				nullOrderingSpec = getNullOrderingSpec(property.getNullOrderType());
+				NullOrderingSpec nullOrderingSpec = getNullOrderingSpec(property.getNullOrderType());
+				sortSpec = new SortSpec(key, type);
 				sortSpec.setNullOrderingSpec(nullOrderingSpec);
 			}
 		}

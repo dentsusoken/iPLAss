@@ -166,12 +166,16 @@
 	//Instead of the line below you could use @include box-sizing($bs)
 	box-sizing: border-box;
 	padding: 20px;
+
 	.result-nav {
 		margin-bottom: 20px;
 		&.mb15 {
 			margin-top: 20px;
 		}
 	}
+	
+	//jqgrid adjust borders
+	@extend %extend_jqgrid_border_adjust;
 }
 .data-fixed-search .tbl-search-01 .list-radio-01 li {
 	display: block;
@@ -224,3 +228,4 @@
 	width: 100%;
 	padding: 0 0 5px 5px;
 }
+

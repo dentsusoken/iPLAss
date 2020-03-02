@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import org.iplass.mtp.SystemException;
+import org.iplass.mtp.async.TaskStatus;
 import org.iplass.mtp.command.RequestContext;
 import org.iplass.mtp.command.UploadFileHandle;
 import org.iplass.mtp.command.annotation.CommandClass;
@@ -33,6 +34,7 @@ import org.iplass.mtp.entity.Entity;
 import org.iplass.mtp.impl.csv.CsvUploadService;
 import org.iplass.mtp.impl.csv.CsvUploadStatus;
 import org.iplass.mtp.impl.csv.TransactionType;
+import org.iplass.mtp.impl.entity.csv.EntityCsvException;
 import org.iplass.mtp.impl.web.WebRequestContext;
 import org.iplass.mtp.impl.web.fileupload.MultiPartParameterValueMap;
 import org.iplass.mtp.spi.ServiceRegistry;
@@ -128,6 +130,9 @@ public final class CreateEntityCommand extends AbstractEntityCommand {
 			// 同期アップロード(トランザクション分割なし)
 			try (InputStream is = file.getInputStream()) {
 				CsvUploadStatus result = service.upload(is, defName, uniqueKey, TransactionType.ONCE, 0, true);
+				if (result.getStatus() != TaskStatus.COMPLETED) {
+					throw new EntityCsvException(result.getCode(), result.getMessage());
+				}
 
 				request.setAttribute(RESULT_UPLOAD_INSERT, result.getInsertCount());
 				request.setAttribute(RESULT_UPLOAD_UPDATE, result.getUpdateCount());

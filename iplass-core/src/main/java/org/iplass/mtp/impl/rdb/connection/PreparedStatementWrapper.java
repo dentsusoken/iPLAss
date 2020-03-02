@@ -42,7 +42,9 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
+import org.iplass.mtp.impl.core.ExecuteContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -59,8 +61,8 @@ public class PreparedStatementWrapper extends StatementWrapper implements
 	private List<Integer> indexs;
 
 	PreparedStatementWrapper(PreparedStatement wrapped,
-			ConnectionWrapper con, String sql, int warnLogThreshold, boolean warnLogBefore) {
-		super(wrapped, con, warnLogThreshold, warnLogBefore);
+			ConnectionWrapper con, String sql, int warnLogThreshold, boolean warnLogBefore, boolean countSqlExecution) {
+		super(wrapped, con, warnLogThreshold, warnLogBefore, countSqlExecution);
 		this.wrapped = wrapped;
 		this.con = con;
 		this.sql = sql;
@@ -69,6 +71,17 @@ public class PreparedStatementWrapper extends StatementWrapper implements
 	}
 
 	protected <T> T withLog(String method, String sql, boolean withParam, SQLExecution<T> s) throws SQLException {
+		
+		if (countSqlExecution) {
+			if (sqlCount == null) {
+				ExecuteContext ec = ExecuteContext.getCurrentContext();
+				sqlCount = (AtomicInteger) ec.getAttribute(ConnectionFactory.SQL_COUNT_KEY);
+			}
+			if (sqlCount != null) {
+				sqlCount.incrementAndGet();
+			}
+		}
+		
 		long start = System.currentTimeMillis();
 		try {
 			if (warnLogBefore && additionalWarnLogInfo != null && additionalWarnLogInfo.logBefore()) {

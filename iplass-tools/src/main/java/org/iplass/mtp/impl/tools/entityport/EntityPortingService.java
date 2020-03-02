@@ -46,6 +46,9 @@ import org.iplass.mtp.entity.EntityRuntimeException;
 import org.iplass.mtp.entity.InsertOption;
 import org.iplass.mtp.entity.TargetVersion;
 import org.iplass.mtp.entity.UpdateOption;
+import org.iplass.mtp.entity.bulkupdate.BulkUpdatable;
+import org.iplass.mtp.entity.bulkupdate.BulkUpdateEntity;
+import org.iplass.mtp.entity.bulkupdate.BulkUpdateEntity.UpdateMethod;
 import org.iplass.mtp.entity.definition.EntityDefinition;
 import org.iplass.mtp.entity.definition.EntityDefinitionManager;
 import org.iplass.mtp.entity.definition.VersionControlType;
@@ -217,8 +220,12 @@ public class EntityPortingService implements Service {
 				toolLogger.info("finish entity data truncate. {target:{}, entity:{}, count:{}}", targetName, entry.getPath(), delCount);
 			}
 
-			//データ読み込み
-			readCSV(is, definition, condition, zipFile, result);
+			//インポート
+			if (condition.isBulkUpdate()) {
+				bulkImportCSV(is, definition, condition, zipFile, result);
+			} else {
+				sequenceImportCSV(is, definition, condition, zipFile, result);
+			}
 
 			return result;
 		} finally {
@@ -305,7 +312,8 @@ public class EntityPortingService implements Service {
 		});
 	}
 
-	private int readCSV(final InputStream is, final EntityDefinition definition, final EntityDataImportCondition condition, final ZipFile zipFile, final EntityDataImportResult result) {
+	private int sequenceImportCSV(final InputStream is, final EntityDefinition definition, final EntityDataImportCondition condition,
+			final ZipFile zipFile, final EntityDataImportResult result) {
 
 		return Transaction.required(new Function<Transaction, Integer>() {
 
@@ -322,7 +330,7 @@ public class EntityPortingService implements Service {
 						.ignoreNotExistsProperty(condition.isIgnoreNotExistsProperty());
 
 					final Iterator<Entity> iterator = reader.iterator();
-					final List<String> properties = reader.properties();
+					final List<String> headerProperties = reader.properties();
 					final boolean useCtrl = reader.isUseCtrl();
 
 					while (iterator.hasNext()) {
@@ -354,7 +362,7 @@ public class EntityPortingService implements Service {
 											registBinaryReference(definition, entity, zipFile);
 
 											//Entityの登録
-											if (registEntity(condition, entity, definition, useCtrl, properties, currentCount, result)){
+											if (registEntity(condition, entity, definition, useCtrl, headerProperties, currentCount, result)){
 												registCount++;
 											}
 										} catch (EntityDataPortingRuntimeException e) {
@@ -489,7 +497,7 @@ public class EntityPortingService implements Service {
 	}
 
 	private boolean registEntity(final EntityDataImportCondition cond, final Entity entity,
-			final EntityDefinition definition, final boolean useCtrl, final List<String> properties,
+			final EntityDefinition definition, final boolean useCtrl, final List<String> headerProperties,
 			int index, final EntityDataImportResult result) {
 
 		ExecuteContext executeContext = ExecuteContext.getCurrentContext();
@@ -606,7 +614,7 @@ public class EntityPortingService implements Service {
 
 		//登録、更新処理
 		if (updateTargetVersion != null) {
-			UpdateOption option = getUpdateOption(cond, properties, updateTargetVersion, entityContext, entityHandler);
+			UpdateOption option = getUpdateOption(cond, headerProperties, updateTargetVersion, entityContext, entityHandler);
 			em.update(entity, option);
 			auditLogger.info("update entity," + definition.getName() + ",oid:" + entity.getOid() + " " + option);
 
@@ -673,7 +681,8 @@ public class EntityPortingService implements Service {
 		return storedOid[0];
 	}
 
-	private UpdateOption getUpdateOption(final EntityDataImportCondition cond, final List<String> properties, TargetVersion updateTargetVersion, EntityContext entityContext, EntityHandler entityHandler) {
+	private UpdateOption getUpdateOption(final EntityDataImportCondition cond, final List<String> headerProperties,
+			final TargetVersion updateTargetVersion, final EntityContext entityContext, final EntityHandler entityHandler) {
 
 		UpdateOption option = new UpdateOption(false);
 		option.setNotifyListeners(cond.isNotifyListeners());
@@ -685,10 +694,20 @@ public class EntityPortingService implements Service {
 			option.setWithValidation(cond.isWithValidation());
 		}
 
+		option.setUpdateProperties(getUpdateProperty(cond, headerProperties, entityContext, entityHandler));
+		option.setTargetVersion(updateTargetVersion);
+		option.setForceUpdate(cond.isFourceUpdate());
+
+		return option;
+	}
+
+	private List<String> getUpdateProperty(final EntityDataImportCondition cond, final List<String> headerProperties,
+			final EntityContext entityContext, final EntityHandler entityHandler) {
+
 		//除外対象のプロパティチェック
-		List<String> execOptionProperties = new ArrayList<>();
+		List<String> updateProperties = new ArrayList<>();
 		//headerはmultipleの場合、同じものが含まれるためdistinct(set化で対応)
-		for (String propName : properties.stream().collect(Collectors.toSet())) {
+		for (String propName : headerProperties.stream().collect(Collectors.toSet())) {
 			PropertyHandler ph = entityHandler.getProperty(propName, entityContext);
 			if (ph != null) {
 				if (cond.isUpdateDisupdatableProperty()) {
@@ -708,29 +727,245 @@ public class EntityPortingService implements Service {
 							&& ((MetaPrimitiveProperty) ph.getMetaData()).getType().isVirtual()) {
 						continue;
 					}
-					execOptionProperties.add(propName);
+					updateProperties.add(propName);
 				} else {
 					//更新不可項目を含まない場合
 					if (ph.getMetaData().isUpdatable()) {
-						execOptionProperties.add(propName);
+						updateProperties.add(propName);
 					}
 				}
 			}
 		}
-
-		option.setUpdateProperties(execOptionProperties);
-		option.setTargetVersion(updateTargetVersion);
-		option.setForceUpdate(cond.isFourceUpdate());
-
-		return option;
+		return updateProperties;
 	}
 
-	private String getOidStatus(Entity entity) {
+	private String getOidStatus(final Entity entity) {
 		return (entity == null ? "UnRead" : entity.getOid() != null ? entity.getOid() : "New");
+	}
+
+	private int bulkImportCSV(final InputStream is, final EntityDefinition definition, final EntityDataImportCondition condition,
+			final ZipFile zipFile, final EntityDataImportResult result) {
+
+		return Transaction.required(new Function<Transaction, Integer>() {
+
+			private int registCount = 0;
+
+			@Override
+			public Integer apply(Transaction transaction) {
+
+				try (EntityCsvReader reader = new EntityCsvReader(definition, is)){
+
+					reader.withReferenceVersion(true)
+						.prefixOid(condition.getPrefixOid())
+						.ignoreNotExistsProperty(condition.isIgnoreNotExistsProperty());
+
+					final Iterator<Entity> iterator = reader.iterator();
+
+					final EntityContext entityContext = EntityContext.getCurrentContext();
+					final EntityHandler entityHandler = entityContext.getHandlerByName(definition.getName());
+					final List<String> updateProperties = getUpdateProperty(condition, reader.properties(), entityContext, entityHandler);
+
+					while (iterator.hasNext()) {
+
+						int count = Transaction.requiresNew(new Function<Transaction, Integer>() {
+
+							@Override
+							public Integer apply(Transaction transaction) {
+
+								try {
+									PortingBulkUpdatable bulkUpdatable = new PortingBulkUpdatable(
+											iterator, updateProperties, definition, condition, zipFile, result);
+									em.bulkUpdate(bulkUpdatable);
+
+									return bulkUpdatable.getRegistCount();
+
+								} catch (Throwable e) {
+									logger.error("An error occurred in the process of import the entity data", e);
+									transaction.setRollbackOnly();
+									result.setError(true);
+									if (e.getMessage() != null) {
+										result.addMessages(e.getMessage());
+									} else {
+										result.addMessages(rs("entityport.importErrMessage", definition.getName(), e.getClass().getName()));
+									}
+
+									return 0;
+								}
+							}
+						});
+
+						registCount += count;
+
+						//Loop内でエラー終了していた場合は抜ける
+						if (result.isError()) {
+							break;
+						}
+
+						if (logger.isDebugEnabled()) {
+							logger.debug("commit " + definition.getName() + " data. currentCount=" + count);
+						}
+						result.addMessages(rs("entityport.commitData", definition.getName(), count));
+					}
+
+					if (result.getErrorCount() != 0) {
+						result.setError(true);
+					}
+
+					String message = rs("entityport.bulkResultInfo", definition.getName(), result.getInsertCount(), result.getUpdateCount(), result.getDeleteCount(), result.getMergeCount());
+					result.addMessages(message);
+
+				} catch (EntityDataPortingRuntimeException | EntityCsvException | IOException e) {
+					logger.error("An error occurred in the process of import the entity data", e);
+					transaction.setRollbackOnly();
+					result.setError(true);
+					if (e.getMessage() != null) {
+						result.addMessages(e.getMessage());
+					} else {
+						result.addMessages(rs("entityport.importErrMessage", definition.getName(), e.getClass().getName()));
+					}
+				}
+				return registCount;
+			}
+
+		});
 	}
 
 	private String rs(String key, Object... args) {
 		return ToolsResourceBundleUtil.resourceString(key, args);
 	}
 
+	private class PortingBulkUpdatable implements BulkUpdatable {
+
+		private Iterator<Entity> internal;
+		private List<String> updateProperties;
+
+		private EntityDefinition definition;
+		private EntityDataImportCondition condition;
+		private ZipFile zipFile;
+		private EntityDataImportResult result;
+
+		private int registCount = 0;
+
+		public PortingBulkUpdatable(Iterator<Entity> internal, List<String> updateProperties,
+				EntityDefinition definition, EntityDataImportCondition condition, ZipFile zipFile, EntityDataImportResult result) {
+			this.internal = internal;
+			this.updateProperties = updateProperties;
+			this.definition = definition;
+			this.condition = condition;
+			this.zipFile = zipFile;
+			this.result = result;
+		}
+
+		@Override
+		public Iterator<BulkUpdateEntity> iterator() {
+			return new BulkIterator(internal, definition, condition, zipFile);
+		}
+
+		@Override
+		public String getDefinitionName() {
+			return definition.getName();
+		}
+
+		@Override
+		public List<String> getUpdateProperties() {
+			return updateProperties;
+		}
+
+		@Override
+		public void updated(BulkUpdateEntity updatedEntity) {
+			registCount = getRegistCount() + 1;
+
+			switch (updatedEntity.getMethod()) {
+			case DELETE:
+				result.deleted();
+				break;
+			case INSERT:
+				result.inserted();
+				break;
+			case UPDATE:
+				result.updated();
+				break;
+			case MERGE:
+				//InsertかUpdateか不明のため
+				result.merged();
+				break;
+			default:
+			}
+		}
+
+		public int getRegistCount() {
+			return registCount;
+		}
+
+	}
+
+	private class BulkIterator implements Iterator<BulkUpdateEntity> {
+
+		private Iterator<Entity> internal;
+		private EntityDefinition definition;
+		private EntityDataImportCondition condition;
+		private ZipFile zipFile;
+
+		private int storeCount = 0;
+
+		private BulkIterator(Iterator<Entity> internal, EntityDefinition definition,
+				EntityDataImportCondition condition, ZipFile zipFile) {
+			this.internal = internal;
+			this.definition = definition;
+			this.condition = condition;
+			this.zipFile = zipFile;
+		}
+
+		@Override
+		public boolean hasNext() {
+			if (internal.hasNext()) {
+				storeCount++;
+
+				//Commit件数チェック
+				if (condition.getCommitLimit() > 0
+						&& (storeCount % (condition.getCommitLimit() + 1) == 0)) {
+					return false;
+				}
+
+				return true;
+			} else {
+				return false;
+			}
+		}
+
+		@Override
+		public BulkUpdateEntity next() {
+			Entity entity = internal.next();
+
+			String ctrl = entity.getValue(EntityCsvReader.CTRL_CODE_KEY);
+			if (condition.isTruncate()) {
+				//全件削除している場合は無条件でINSERTに変更
+				ctrl = EntityCsvReader.CTRL_INSERT;
+			} else {
+				if (ctrl == null) {
+					if (entity.getValue(Entity.OID) == null) {
+						ctrl = EntityCsvReader.CTRL_INSERT;
+					} else {
+						ctrl = EntityCsvReader.CTRL_MERGE;
+					}
+				}
+			}
+
+			//バイナリファイルの登録
+			registBinaryReference(definition, entity, zipFile);
+
+			switch (ctrl) {
+			case EntityCsvReader.CTRL_DELETE:
+				return new BulkUpdateEntity(UpdateMethod.DELETE, entity);
+			case EntityCsvReader.CTRL_INSERT:
+				return new BulkUpdateEntity(UpdateMethod.INSERT, entity);
+			case EntityCsvReader.CTRL_MERGE:
+				return new BulkUpdateEntity(UpdateMethod.MERGE, entity);
+			case EntityCsvReader.CTRL_UPDATE:
+				return new BulkUpdateEntity(UpdateMethod.UPDATE, entity);
+			default:
+				throw new IllegalArgumentException("unsupprot controll flag");
+			}
+		}
+	}
 }

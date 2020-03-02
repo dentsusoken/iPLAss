@@ -65,6 +65,7 @@ import org.iplass.mtp.view.generic.editor.ReferencePropertyEditor;
 import org.iplass.mtp.view.generic.editor.ReferencePropertyEditor.ReferenceDisplayType;
 import org.iplass.mtp.view.generic.element.property.PropertyColumn;
 import org.iplass.mtp.view.generic.element.section.SearchResultSection;
+import org.iplass.mtp.view.generic.element.section.SearchResultSection.ExclusiveControlPoint;
 import org.iplass.mtp.web.template.TemplateUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -441,7 +442,7 @@ public class BulkCommandContext extends RegistrationCommandContext {
 			@Override
 			public boolean isDispProperty(PropertyColumn property) {
 				//一括更新プロパティエディタが未設定の場合、更新対象外
-				return EntityViewUtil.isDisplayElement(entityDefinition.getName(), property.getElementRuntimeId(), OutputType.BULK)
+				return EntityViewUtil.isDisplayElement(entityDefinition.getName(), property.getElementRuntimeId(), OutputType.BULK, getCurrentEntity())
 						&& property.getBulkUpdateEditor() != null;
 			}
 
@@ -476,6 +477,19 @@ public class BulkCommandContext extends RegistrationCommandContext {
 	 */
 	public void setView(SearchFormView view) {
 		this.view = view;
+	}
+
+	@Override
+	public Entity getCurrentEntity() {
+		return null;
+	}
+
+	/**
+	 * 一括更新の排他制御起点を取得します。
+	 * @return 一括更新の排他制御起点
+	 */
+	public ExclusiveControlPoint getExclusiveControlPoint() {
+		return getView().getResultSection().getExclusiveControlPoint();
 	}
 
 	/**

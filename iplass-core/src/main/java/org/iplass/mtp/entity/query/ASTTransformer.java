@@ -44,6 +44,7 @@ import org.iplass.mtp.entity.query.hint.IndexHint;
 import org.iplass.mtp.entity.query.hint.NativeHint;
 import org.iplass.mtp.entity.query.hint.NoBindHint;
 import org.iplass.mtp.entity.query.hint.NoIndexHint;
+import org.iplass.mtp.entity.query.hint.SuppressWarningsHint;
 import org.iplass.mtp.entity.query.hint.TimeoutHint;
 import org.iplass.mtp.entity.query.value.RowValueList;
 import org.iplass.mtp.entity.query.value.aggregate.Avg;
@@ -157,5 +158,6 @@ public interface ASTTransformer {
 	public ASTNode visit(FetchSizeHint fetchSizeHint);
 	public ASTNode visit(TimeoutHint timeoutHint);
 	public ASTNode visit(NoBindHint noBindHint);
+	public ASTNode visit(SuppressWarningsHint suppressWarningsHint);
 
 }

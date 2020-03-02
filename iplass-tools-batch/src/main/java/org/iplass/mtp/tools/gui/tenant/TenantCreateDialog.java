@@ -61,8 +61,10 @@ import org.iplass.mtp.impl.i18n.I18nService;
 import org.iplass.mtp.impl.rdb.adapter.RdbAdapter;
 import org.iplass.mtp.impl.rdb.adapter.RdbAdapterService;
 import org.iplass.mtp.impl.rdb.mysql.MysqlRdbAdaptor;
+import org.iplass.mtp.impl.rdb.postgresql.PostgreSQLRdbAdapter;
 import org.iplass.mtp.impl.tools.tenant.TenantCreateParameter;
 import org.iplass.mtp.impl.tools.tenant.TenantToolService;
+import org.iplass.mtp.impl.tools.tenant.rdb.TenantRdbConstants;
 import org.iplass.mtp.spi.ServiceRegistry;
 import org.iplass.mtp.tools.batch.tenant.TenantBatch;
 import org.iplass.mtp.tools.batch.tenant.TenantBatch.TenantBatchExecMode;
@@ -102,7 +104,8 @@ public class TenantCreateDialog extends MtpJDialogBase {
 
 	protected JCheckBox chkBlankTenant;
 
-	protected JCheckBox chkMySQLSubPartition;
+	protected JTextField txtSubPartitionSize;
+	protected JCheckBox chkSubPartitionSize;
 
 	protected JButton btnCreate;
 	protected JButton btnCancel;
@@ -334,17 +337,32 @@ public class TenantCreateDialog extends MtpJDialogBase {
 			}
 		});
 
+		RdbAdapterService adapterService = ServiceRegistry.getRegistry().getService(RdbAdapterService.class);
+		RdbAdapter adapter = adapterService.getRdbAdapter();
+		if (adapter instanceof PostgreSQLRdbAdapter) {
+			JLabel lblNumSubPartition = new JLabel("Sub-Partition size");
+			txtSubPartitionSize = new JTextField();
+			txtSubPartitionSize.setEditable(false);
+			txtSubPartitionSize.setPreferredSize(new Dimension(200, 25));
+			chkSubPartitionSize = new JCheckBox("default");
+			chkSubPartitionSize.setEnabled(true);
+			chkSubPartitionSize.setSelected(true);
+			createLableText(lblNumSubPartition, txtSubPartitionSize, chkSubPartitionSize, rowIndex++, gridbag, constraints, inputPane);
+			chkSubPartitionSize.addItemListener(new ItemListener() {
+
+				@Override
+				public void itemStateChanged(ItemEvent e) {
+					if (chkSubPartitionSize.isSelected()) {
+						setDefaultValues();
+					}
+					txtSubPartitionSize.setEditable(!chkSubPartitionSize.isSelected());
+				}
+			});
+		}
+
 		chkBlankTenant = new JCheckBox("create blank Tenant");
 		chkBlankTenant.setSelected(false);
 		createCheckBoxRow(chkBlankTenant, rowIndex++, gridbag, constraints, inputPane);
-
-		RdbAdapterService adapterService = ServiceRegistry.getRegistry().getService(RdbAdapterService.class);
-		RdbAdapter adapter = adapterService.getRdbAdapter();
-		if (adapter instanceof MysqlRdbAdaptor) {
-			chkMySQLSubPartition = new JCheckBox("MySQL SubPartition Use");
-			chkMySQLSubPartition.setSelected(true);
-			createCheckBoxRow(chkMySQLSubPartition, rowIndex++, gridbag, constraints, inputPane);
-		}
 
 		return inputPane;
 	}
@@ -475,6 +493,9 @@ public class TenantCreateDialog extends MtpJDialogBase {
 		if (chkUseLanguages.isSelected()) {
 			txtUseLanguages.setText(defaultEnableLanguages);
 		}
+		if (chkSubPartitionSize != null && chkSubPartitionSize.isSelected()) {
+			txtSubPartitionSize.setText(String.valueOf(TenantRdbConstants.MAX_SUBPARTITION));
+		}
 	}
 
 	protected boolean inputValidate() {
@@ -500,6 +521,18 @@ public class TenantCreateDialog extends MtpJDialogBase {
 
 		if (txtUrl.getText().trim().isEmpty()) {
 			messages.append(rs("Common.requiredMsg", "url") + "\n");
+		}
+
+		if (txtSubPartitionSize != null && !txtSubPartitionSize.getText().trim().isEmpty()) {
+			String strSubPartitionSize = txtSubPartitionSize.getText().trim();
+			try {
+				int subPartitionSize = Integer.parseInt(strSubPartitionSize);
+				if (subPartitionSize < TenantRdbConstants.MIN_SUBPARTITION) {
+					messages.append(rs("TenantManagerApp.TenantCreateDialog.invalidValueSubPartitionSizeMsg", TenantRdbConstants.MIN_SUBPARTITION) + "\n");
+				}
+			} catch (NumberFormatException nfe) {
+				messages.append(rs("TenantManagerApp.TenantCreateDialog.invalidSubPartitionSizeMsg") + "\n");
+			}
 		}
 
 		if (messages.length() > 0) {
@@ -649,8 +682,11 @@ public class TenantCreateDialog extends MtpJDialogBase {
 			param.setUseLanguages(txtUseLanguages.getText().trim());
 		}
 		param.setCreateBlankTenant(chkBlankTenant.isSelected());
-		if (chkMySQLSubPartition != null) {
-			param.setMySqlUseSubPartition(chkMySQLSubPartition.isSelected());
+		if (chkSubPartitionSize != null && !chkSubPartitionSize.isSelected()) {
+			String strSubPartitionSize = txtSubPartitionSize.getText().trim();
+			if (StringUtil.isNotEmpty(strSubPartitionSize)) {
+				param.setSubPartitionSize(Integer.parseInt(strSubPartitionSize));
+			}
 		}
 
 		return param;

@@ -37,6 +37,7 @@ import org.iplass.mtp.impl.tools.tenant.TenantDeleteParameter;
 import org.iplass.mtp.impl.tools.tenant.TenantInfo;
 import org.iplass.mtp.impl.tools.tenant.TenantToolService;
 import org.iplass.mtp.impl.tools.tenant.log.LogHandler;
+import org.iplass.mtp.impl.tools.tenant.rdb.TenantRdbConstants;
 import org.iplass.mtp.spi.ServiceRegistry;
 import org.iplass.mtp.tools.batch.MtpCuiBase;
 import org.iplass.mtp.tools.gui.tenant.TenantManagerApp;
@@ -192,8 +193,8 @@ public class TenantBatch extends MtpCuiBase {
 		logInfo("\ttopUrl :" + param.getTopUrl());
 		logInfo("\tuseLanguages :" + param.getUseLanguages());
 		logInfo("\tcreateBlankTenant :" + param.isCreateBlankTenant());
-		if (getConfigSetting().isMySQL()) {
-			logInfo("\tmysql use subpartition :" + param.isMySqlUseSubPartition());
+		if (getConfigSetting().isPostgreSQL()) {
+			logInfo("\tsubpartition size :" + param.getSubPartitionSize());
 		}
 		logInfo("-----------------------------------------------------------");
 		logInfo("");
@@ -299,9 +300,17 @@ public class TenantBatch extends MtpCuiBase {
 			boolean isBlank = readConsoleBoolean(rs("TenantBatch.Create.Wizard.createBlankTenantMsg"), false);
 			param.setCreateBlankTenant(isBlank);
 
-			if (getConfigSetting().isMySQL()) {
-				boolean isSubPartition = readConsoleBoolean(rs("TenantBatch.Create.Wizard.useSubPartitionMsg"), false);
-				param.setMySqlUseSubPartition(isSubPartition);
+			if (getConfigSetting().isPostgreSQL()) {
+				boolean invalidateSubPartitionSize = true;
+				do {
+					int subPartitionSize = readConsoleInteger(rs("TenantBatch.Create.Wizard.inputSubPartitionSizeMsg"), TenantRdbConstants.MAX_SUBPARTITION);
+					if (subPartitionSize < TenantRdbConstants.MIN_SUBPARTITION) {
+						logWarn(rs("TenantBatch.Create.Wizard.invalidValueSubPartitionSizeMsg", TenantRdbConstants.MIN_SUBPARTITION));
+					} else {
+						param.setSubPartitionSize(subPartitionSize);
+						invalidateSubPartitionSize = false;
+					}
+				} while(invalidateSubPartitionSize);
 			}
 		}
 
@@ -367,9 +376,6 @@ public class TenantBatch extends MtpCuiBase {
 		logInfo("■Execute Argument");
 		logInfo("\ttenant name :" + param.getTenantName());
 		logInfo("\ttenant id :" + param.getTenantId());
-		if (getConfigSetting().isMySQL()) {
-			logInfo("\tmysql drop partition :" + param.isMySqlDropPartition());
-		}
 		logInfo("-----------------------------------------------------------");
 		logInfo("");
 	}
@@ -405,11 +411,6 @@ public class TenantBatch extends MtpCuiBase {
 		TenantDeleteParameter param = new TenantDeleteParameter();
 		param.setTenantId(tenant.getId());
 		param.setTenantName(tenant.getName());
-
-		if (getConfigSetting().isMySQL()) {
-			boolean isPartitionDelete = readConsoleBoolean(rs("TenantBatch.Delete.Wizard.confirmDropPartitionMsg"), true);
-			param.setMySqlDropPartition(isPartitionDelete);
-		}
 
 		//実行情報出力
 		logArguments(param);
@@ -497,10 +498,20 @@ public class TenantBatch extends MtpCuiBase {
 			createParam.setCreateBlankTenant(Boolean.parseBoolean(createBlankTenant));
 		}
 
-		// サブパーティション利用有無
-		String mySqlUseSubPartition = prop.getProperty("mySqlUseSubPartition");
-		if (mySqlUseSubPartition != null) {
-			createParam.setMySqlUseSubPartition(Boolean.parseBoolean(mySqlUseSubPartition));
+		// サブパーティション数
+		String strSubPartitionSize = prop.getProperty("subPartitionSize");
+		if (strSubPartitionSize != null && StringUtil.isNotBlank(strSubPartitionSize)) {
+			try {
+				int subPartitionSize = Integer.parseInt(strSubPartitionSize);
+				if (subPartitionSize < TenantRdbConstants.MIN_SUBPARTITION) {
+					logError(rs("TenantBatch.Silent.invalidValueSubPartitionSizeMsg", TenantRdbConstants.MIN_SUBPARTITION));
+					return false;
+				}
+				createParam.setSubPartitionSize(subPartitionSize);
+			} catch (NumberFormatException e) {
+				logError(rs("TenantBatch.Silent.invalidSubPartitionSizeMsg"));
+				return false;
+			}
 		}
 
 		// テナント作成者

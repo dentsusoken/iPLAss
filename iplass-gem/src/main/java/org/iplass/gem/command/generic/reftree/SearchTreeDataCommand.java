@@ -26,6 +26,7 @@ import java.util.List;
 import org.iplass.gem.command.Constants;
 import org.iplass.gem.command.common.JqTreeData;
 import org.iplass.gem.command.common.JsonStreamingOutput;
+import org.iplass.gem.command.generic.HasDisplayScriptBindings;
 import org.iplass.mtp.ManagerLocator;
 import org.iplass.mtp.command.Command;
 import org.iplass.mtp.command.RequestContext;
@@ -60,7 +61,7 @@ import org.iplass.mtp.webapi.definition.RequestType;
 		checkXRequestedWithHeader=true
 	)
 @CommandClass(name="gem/generic/reftree/SearchTreeDataCommand")
-public class SearchTreeDataCommand implements Command {
+public class SearchTreeDataCommand implements Command, HasDisplayScriptBindings {
 
 	public static final String WEBAPI_NAME = "gem/generic/reftree/searchReferenceTreeData";
 
@@ -81,7 +82,8 @@ public class SearchTreeDataCommand implements Command {
 		String oid = request.getParam(Constants.OID);
 		String linkValue = request.getParam("linkValue");
 
-		PropertyEditor editor = evm.getPropertyEditor(defName, viewType, viewName, propName);
+		Entity entity = getBindingEntity(request);
+		PropertyEditor editor = evm.getPropertyEditor(defName, viewType, viewName, propName, entity);
 
 		//検索
 		List<RefTreeJqTreeData > ret = new ArrayList<>();

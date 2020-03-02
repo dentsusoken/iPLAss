@@ -40,6 +40,8 @@ public class GetEntityNameListParameter implements GemWebApiParameter {
 	
 	private Integer referenceSectionIndex;
 
+	private GetEntityNameListEntityParameter entity;
+
 	private List<GetEntityNameListEntityParameter> list;
 
 	/**
@@ -124,4 +126,11 @@ public class GetEntityNameListParameter implements GemWebApiParameter {
 		this.referenceSectionIndex = referenceSectionIndex;
 	}
 
+	public GetEntityNameListEntityParameter getEntity() {
+		return entity;
+	}
+
+	public void setEntity(GetEntityNameListEntityParameter entity) {
+		this.entity = entity;
+	}
 }

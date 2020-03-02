@@ -93,6 +93,10 @@ public class GenericEntity implements Entity, Serializable {
 		this.definitionName = dataModelDefinition.getName();
 	}
 
+	public void applyProperties(Map<String, Object> properties) {
+		this.properties = new HashMap<>(properties);
+	}
+	
 	private void toString(StringBuilder sb, LinkedList<Entity> stack) {
 		if (stack.contains(this)) {
 			sb.append("{\"definitionName\":\"").append(definitionName).append("\"");
@@ -367,6 +371,8 @@ public class GenericEntity implements Entity, Serializable {
 			
 		} else {
 			if (value == null) {
+				//TODO 現状、null値のセットができないが、
+				//次回以降のマイナーバージョンアップでnull値を明示的にセットできるようにする方向で検討する
 				properties.remove(propName);
 			} else {
 				properties.put(propName, value);

@@ -223,7 +223,7 @@ public class CsvDownloadSearchContext extends SearchContextBase {
 					.filter(e -> e instanceof PropertyColumn).map(e -> (PropertyColumn) e)
 					.collect(Collectors.toList());
 			for (PropertyColumn col : properties) {
-				if (EntityViewUtil.isDisplayElement(getDefName(), col.getElementRuntimeId(), OutputType.SEARCHRESULT)) {
+				if (EntityViewUtil.isDisplayElement(getDefName(), col.getElementRuntimeId(), OutputType.SEARCHRESULT, null)) {
 					String propName = col.getPropertyName();
 					if (col.getEditor() instanceof ReferencePropertyEditor) {
 						List<NestProperty> nest = ((ReferencePropertyEditor)col.getEditor()).getNestProperties();

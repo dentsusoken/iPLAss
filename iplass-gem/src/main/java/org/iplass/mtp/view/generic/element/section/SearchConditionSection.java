@@ -363,6 +363,17 @@ public class SearchConditionSection extends Section {
 	)
 	private boolean unsorted;
 
+	@MetaFieldInfo(
+			displayName="全文検索時にソートするか",
+			displayNameKey="generic_element_section_SearchConditionSection_fulltextSearchSortedDisplaNameKey",
+			inputType=InputType.CHECKBOX,
+			displayOrder=3070,
+			description="全文検索時にソートするかを設定します。<br>" +
+					"全文検索結果からソート項目を指定した場合はソートされます。",
+			descriptionKey="generic_element_section_SearchConditionSection_fulltextSearchSortedDescriptionKey"
+	)
+	private boolean fulltextSearchSorted;
+
 	/** カスタムスタイルキー */
 	private String scriptKey;
 
@@ -469,6 +480,22 @@ public class SearchConditionSection extends Section {
 	 */
 	public void setUnsorted(boolean unsorted) {
 		this.unsorted = unsorted;
+	}
+
+	/**
+	 * 全文検索時にソートするかを取得します。
+	 * @return 全文検索時にソートするか
+	 */
+	public boolean isFulltextSearchSorted() {
+		return fulltextSearchSorted;
+	}
+
+	/**
+	 * 全文検索時にソートするかを設定します。
+	 * @param fulltextSearchSorted 全文検索時にソートするか
+	 */
+	public void setFulltextSearchSorted(boolean fulltextSearchSorted) {
+		this.fulltextSearchSorted = fulltextSearchSorted;
 	}
 
 	/**

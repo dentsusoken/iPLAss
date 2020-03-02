@@ -140,7 +140,7 @@ function closeModal() {
 
 	Section topSection1 = form.getTopSection1();
 	if (topSection1 != null
-			&& EntityViewUtil.isDisplayElement(defName, topSection1.getElementRuntimeId(), OutputType.SEARCHCONDITION)) {
+			&& EntityViewUtil.isDisplayElement(defName, topSection1.getElementRuntimeId(), OutputType.SEARCHCONDITION, null)) {
 		request.setAttribute(Constants.ELEMENT, topSection1);
 		String topPath1 = EntityViewUtil.getJspPath(topSection1, ViewConst.DESIGN_TYPE_GEM);
 %>
@@ -149,7 +149,7 @@ function closeModal() {
 	}
 	Section topSection2 = form.getTopSection2();
 	if (topSection2 != null
-			&& EntityViewUtil.isDisplayElement(defName, topSection2.getElementRuntimeId(), OutputType.SEARCHCONDITION)) {
+			&& EntityViewUtil.isDisplayElement(defName, topSection2.getElementRuntimeId(), OutputType.SEARCHCONDITION, null)) {
 		request.setAttribute(Constants.ELEMENT, topSection2);
 		String topPath2 = EntityViewUtil.getJspPath(topSection2, ViewConst.DESIGN_TYPE_GEM);
 %>
@@ -170,7 +170,7 @@ function closeModal() {
 
 	Section centerSection = form.getCenterSection();
 	if (centerSection != null
-			&& EntityViewUtil.isDisplayElement(defName, centerSection.getElementRuntimeId(), OutputType.SEARCHCONDITION)) {
+			&& EntityViewUtil.isDisplayElement(defName, centerSection.getElementRuntimeId(), OutputType.SEARCHCONDITION, null)) {
 		request.setAttribute(Constants.ELEMENT, centerSection);
 		String centerPath = EntityViewUtil.getJspPath(centerSection, ViewConst.DESIGN_TYPE_GEM);
 %>
@@ -193,7 +193,7 @@ function closeModal() {
 
 	Section bottomSection = form.getBottomSection();
 	if (bottomSection != null
-			&& EntityViewUtil.isDisplayElement(defName, bottomSection.getElementRuntimeId(), OutputType.SEARCHCONDITION)) {
+			&& EntityViewUtil.isDisplayElement(defName, bottomSection.getElementRuntimeId(), OutputType.SEARCHCONDITION, null)) {
 		request.setAttribute(Constants.ELEMENT, bottomSection);
 		String bottomPath = EntityViewUtil.getJspPath(bottomSection, ViewConst.DESIGN_TYPE_GEM);
 %>

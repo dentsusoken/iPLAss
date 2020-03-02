@@ -22,6 +22,7 @@ package org.iplass.mtp.web.interceptor;
 
 import org.iplass.mtp.command.Command;
 import org.iplass.mtp.command.RequestContext;
+import org.iplass.mtp.impl.web.RequestPath;
 
 public interface RequestInvocation {
 	
@@ -41,5 +42,7 @@ public interface RequestInvocation {
 	public boolean isInclude();
 	
 	public String getActionName();
+	
+	public RequestPath getRequestPath();
 
 }

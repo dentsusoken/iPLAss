@@ -55,10 +55,15 @@ import org.iplass.mtp.entity.definition.EntityDefinition;
 import org.iplass.mtp.entity.definition.EntityDefinitionManager;
 import org.iplass.mtp.entity.definition.PropertyDefinition;
 import org.iplass.mtp.entity.definition.properties.ReferenceProperty;
+import org.iplass.mtp.entity.fulltextsearch.FulltextSearchCondition;
 import org.iplass.mtp.entity.fulltextsearch.FulltextSearchManager;
+import org.iplass.mtp.entity.fulltextsearch.FulltextSearchOption;
 import org.iplass.mtp.entity.fulltextsearch.FulltextSearchRuntimeException;
 import org.iplass.mtp.entity.permission.EntityPermission;
+import org.iplass.mtp.entity.query.OrderBy;
 import org.iplass.mtp.entity.query.Query;
+import org.iplass.mtp.entity.query.SortSpec.NullOrderingSpec;
+import org.iplass.mtp.entity.query.SortSpec.SortType;
 import org.iplass.mtp.entity.query.condition.predicate.In;
 import org.iplass.mtp.util.CollectionUtil;
 import org.iplass.mtp.util.DateUtil;
@@ -67,6 +72,7 @@ import org.iplass.mtp.view.generic.EntityView;
 import org.iplass.mtp.view.generic.EntityViewManager;
 import org.iplass.mtp.view.generic.EntityViewUtil;
 import org.iplass.mtp.view.generic.FormViewUtil;
+import org.iplass.mtp.view.generic.NullOrderType;
 import org.iplass.mtp.view.generic.OutputType;
 import org.iplass.mtp.view.generic.SearchFormView;
 import org.iplass.mtp.view.generic.editor.DateRangePropertyEditor;
@@ -76,7 +82,10 @@ import org.iplass.mtp.view.generic.editor.PropertyEditor;
 import org.iplass.mtp.view.generic.editor.ReferencePropertyEditor;
 import org.iplass.mtp.view.generic.editor.UserPropertyEditor;
 import org.iplass.mtp.view.generic.element.property.PropertyColumn;
+import org.iplass.mtp.view.generic.element.section.SearchConditionSection;
+import org.iplass.mtp.view.generic.element.section.SearchConditionSection.ConditionSortType;
 import org.iplass.mtp.view.generic.element.section.SearchResultSection;
+import org.iplass.mtp.view.generic.element.section.SortSetting;
 import org.iplass.mtp.view.top.TopViewDefinition;
 import org.iplass.mtp.view.top.TopViewDefinitionManager;
 import org.iplass.mtp.view.top.parts.FulltextSearchViewParts;
@@ -120,6 +129,8 @@ public final class FullTextSearchCommand implements Command {
 
 		String[] searchDefNames =request.getParams("searchDefName");
 		final List<String> defNameList = getSelectedDefNameList(searchDefNames);
+		final Map<String, String> sortKeyMap = getSelectedSortKeyMap(searchDefNames, request);
+		final Map<String, String> sortTypeMap = getSelectedSortTypeMap(searchDefNames, request);
 
 		//詳細画面に遷移した時のための検索条件保持
 		StringBuilder searchCond = new StringBuilder();
@@ -140,17 +151,16 @@ public final class FullTextSearchCommand implements Command {
 		}
 
 		// Entityごとの検索条件情報取得
-		List<EntitySearchInfo> searchCondList = getEntitySearchInfo(roleName, defNameList);
+		List<EntitySearchInfo> searchCondList = getEntitySearchInfo(roleName, defNameList, sortKeyMap, sortTypeMap);
 
 		//Entity毎の検索対象プロパティ情報を取得
-		Map<String, List<String>> entityProperties = searchCondList.stream()
-			.collect(Collectors.toMap(EntitySearchInfo::getDefinitionName, info -> info.getProperties()));
+		FulltextSearchOption option = getFulltextSearchOption(searchCondList);
 
 		//検索処理
 		EntityManager em = ManagerLocator.getInstance().getManager(EntityManager.class);
 		List<Entity> searchResult = null;
 		try {
-			searchResult = em.fulltextSearchEntity(entityProperties, fulltextKey).getList();
+			searchResult = em.fulltextSearchEntity(fulltextKey, option).getList();
 		} catch (FulltextSearchRuntimeException e) {
 			logger.error("fulltext search error.", e);
 			request.setAttribute(Constants.MESSAGE, getRS("validString"));
@@ -177,7 +187,7 @@ public final class FullTextSearchCommand implements Command {
 
 		//Crawl時間を取得
 		Map<String, Timestamp> crawlDateMap = fsm.getLastCrawlTimestamp(
-				entityProperties.keySet().toArray(new String[0]));
+				option.getConditions().keySet().toArray(new String[0]));
 
 		//検索結果をentity定義ごとに整理
 		Map<String, List<Entity>> entityMap = searchResult.parallelStream()
@@ -234,14 +244,40 @@ public final class FullTextSearchCommand implements Command {
 		}
 	}
 
+	private Map<String, String> getSelectedSortKeyMap(String[] searchDefNames, RequestContext request) {
+
+		if (searchDefNames != null) {
+			return Arrays.stream(searchDefNames)
+					.filter(defName -> StringUtil.isNotEmpty(defName) //ブランク除去
+							&& StringUtil.isNotEmpty(request.getParam("sortKey_" + defName)))
+					.collect(Collectors.toMap(defName -> defName, defName -> request.getParam("sortKey_" + defName)));
+		} else {
+			return Collections.emptyMap();
+		} 
+	}
+
+	private Map<String, String> getSelectedSortTypeMap(String[] searchDefNames, RequestContext request) {
+
+		if (searchDefNames != null) {
+			return Arrays.stream(searchDefNames)
+					.filter(defName -> StringUtil.isNotEmpty(defName) //ブランク除去
+							&& StringUtil.isNotEmpty(request.getParam("sortType_" + defName)))
+					.collect(Collectors.toMap(defName -> defName, defName -> request.getParam("sortType_" + defName)));
+		} else {
+			return Collections.emptyMap();
+		} 
+	}
+
 	/**
 	 * 検索対象のEntityとそのPropertyを取得
 	 *
 	 * @param roleName ロール名
 	 * @param selectedDefNameList 選択Entity名のリスト
+	 * @param sortKeyMap エンティティ名とソート項目名のマップ
+	 * @param sortTypeMap エンティティ名と並べ順のマップ
 	 * @return 検索対象Entity情報
 	 */
-	private List<EntitySearchInfo> getEntitySearchInfo(String roleName, List<String> selectedDefNameList) {
+	private List<EntitySearchInfo> getEntitySearchInfo(String roleName, List<String> selectedDefNameList, Map<String, String> sortKeyMap, Map<String, String> sortTypeMap) {
 
 		//FulltextSearchViewPartsの取得
 		FulltextSearchViewParts parts = getTopViewParts(roleName);
@@ -257,7 +293,12 @@ public final class FullTextSearchCommand implements Command {
 			return defList.stream()
 				.map(defName -> edm.get(defName))	//EntityDefinitionにする
 				.filter(ed -> ed != null && ed.isCrawl())	//検索対象のみ
-				.map(ed -> getSearchInfo(ed, null, evm, edm))	// Partsがないため、Viewはデフォルト
+				.map(ed -> {
+					//画面からのソート項目
+					String sortKey = sortKeyMap.get(ed.getName());
+					String sortType = sortTypeMap.get(ed.getName());
+					return getSearchInfo(ed, null, evm, edm, sortKey, sortType); // Partsがないため、Viewはデフォルト
+				})	
 				.filter(i -> i != null)
 				.collect(Collectors.toList());
 
@@ -282,14 +323,29 @@ public final class FullTextSearchCommand implements Command {
 						if (viewNames != null) {
 							viewName = viewNames.get(ed.getName());
 						}
+						//画面からのソート項目
+						String sortKey = sortKeyMap.get(ed.getName());
+						String sortType = sortTypeMap.get(ed.getName());
 						//EntitySearchInfoを取得
-						return getSearchInfo(ed, viewName, evm, edm);
+						return getSearchInfo(ed, viewName, evm, edm, sortKey, sortType);
 					})
 					.filter(i -> i != null)
 					.collect(Collectors.toList());
 			}
 		}
 		return Collections.emptyList();
+	}
+
+	private FulltextSearchOption getFulltextSearchOption(List<EntitySearchInfo> searchCondList) {
+		FulltextSearchOption option = new FulltextSearchOption();
+		searchCondList.stream().forEach(info -> {
+				List<SortSetting> sortSettings = getSortSetting(info);
+				EntityDefinition ed = info.getEntityDefinition();
+				OrderBy order = getOrderBy(ed, sortSettings);
+				FulltextSearchCondition cond = new FulltextSearchCondition(info.getProperties(), order);
+				option.getConditions().put(info.getDefinitionName(), cond);
+			});
+		return option;
 	}
 
 	private FulltextSearchViewParts getTopViewParts(String roleName) {
@@ -311,7 +367,7 @@ public final class FullTextSearchCommand implements Command {
 		return null;
 	}
 
-	private EntitySearchInfo getSearchInfo(EntityDefinition ed, String viewName, EntityViewManager evm, EntityDefinitionManager edm) {
+	private EntitySearchInfo getSearchInfo(EntityDefinition ed, String viewName, EntityViewManager evm, EntityDefinitionManager edm, String sortKey, String sortType) {
 
 		EntitySearchInfo search = new EntitySearchInfo(ed);
 
@@ -331,6 +387,8 @@ public final class FullTextSearchCommand implements Command {
 		search.setSearchFormView(searchFormView);
 //		search.setDetailViewName(detailViewName);
 		search.setDetailViewName(viewName);
+		search.setSortKey(sortKey);
+		search.setSortType(sortType);
 
 		//SearchResultSection
 		SearchResultSection resultSection = searchFormView.getResultSection();
@@ -344,7 +402,7 @@ public final class FullTextSearchCommand implements Command {
 				.collect(Collectors.toList());
 
 		for (PropertyColumn p : properties) {
-			if (EntityViewUtil.isDisplayElement(ed.getName(), p.getElementRuntimeId(), OutputType.SEARCHRESULT)) {
+			if (EntityViewUtil.isDisplayElement(ed.getName(), p.getElementRuntimeId(), OutputType.SEARCHRESULT, null)) {
 				String propName = p.getPropertyName();
 				if (p.getEditor() instanceof ReferencePropertyEditor) {
 					List<NestProperty> nest = ((ReferencePropertyEditor)p.getEditor()).getNestProperties();
@@ -456,6 +514,75 @@ public final class FullTextSearchCommand implements Command {
 		return edm.get(rp.getObjectDefinitionName());
 	}
 
+	protected SearchConditionSection getConditionSection(SearchFormView form) {
+		return form != null ? form.getCondSection() : null;
+	}
+	
+	protected List<SortSetting> getSortSetting(EntitySearchInfo info) {
+		List<SortSetting> setting = new ArrayList<>();
+
+		//画面でソート条件が指定されれば第1キーに
+		String sortKey = info.getSortKey();
+		if (StringUtil.isNotBlank(sortKey)) {
+			PropertyDefinition pd = EntityViewUtil.getPropertyDefinition(sortKey, info.getEntityDefinition());
+			if (pd != null) {
+				// 有効なプロパティのみ対象にする
+				SortSetting ss = new SortSetting();
+				ss.setSortKey(sortKey);
+				String sortType = info.getSortType();
+				if (StringUtil.isBlank(sortType)) {
+					ss.setSortType(ConditionSortType.DESC);
+				} else {
+					ss.setSortType(ConditionSortType.valueOf(sortType));
+				}
+				SearchResultSection section = info.getSearchFormView().getResultSection();
+				PropertyColumn property = getLayoutPropertyColumn(sortKey, section);
+				if (property != null) {
+					ss.setNullOrderType(property.getNullOrderType());
+					setting.add(ss);
+				}
+			}
+		}
+
+		SearchConditionSection section = info.getSearchFormView().getCondSection();
+		if (section != null && section.isFulltextSearchSorted() && !section.getSortSetting().isEmpty()) {
+			setting.addAll(section.getSortSetting());
+		}
+		return setting;
+	}
+
+	protected PropertyColumn getLayoutPropertyColumn(String propName, SearchResultSection section) {
+		Optional<PropertyColumn> property = section.getElements().stream()
+				.filter(e -> e instanceof PropertyColumn).map(e -> (PropertyColumn) e)
+				.filter(e -> propName.equals(e.getPropertyName())).findFirst();
+		if (property.isPresent()) {
+			return property.get();
+		}
+		return null;
+	}
+
+	private OrderBy getOrderBy(EntityDefinition ed, List<SortSetting> setting) {
+		OrderBy orderBy = null;
+		if (setting != null && !setting.isEmpty()) {
+			for (SortSetting ss : setting) {
+				if (ss.getSortKey() != null) {
+					String key = null;
+					PropertyDefinition pd = EntityViewUtil.getPropertyDefinition(ss.getSortKey(), ed);
+					if (pd instanceof ReferenceProperty) {
+						key = ss.getSortKey() + "." + Entity.OID;
+					} else {
+						key = ss.getSortKey();
+					}
+					SortType type = SortType.valueOf(ss.getSortType().name());
+					NullOrderingSpec nullOrderingSpec = getNullOrderingSpec(ss.getNullOrderType());
+					if (orderBy == null) orderBy = new OrderBy();
+					orderBy.add(key, type, nullOrderingSpec);
+				}
+			}
+		}
+		return orderBy;
+	}
+
 	private EntityResultInfo getResultInfo(EntitySearchInfo serchCond, EntityDefinitionManager edm, AuthContext auth) {
 
 		EntityResultInfo result = new EntityResultInfo(serchCond);
@@ -542,7 +669,7 @@ public final class FullTextSearchCommand implements Command {
 					property.getDisplayLabel(), property.getLocalizedDisplayLabelList(),
 					pd.getDisplayName(), pd.getLocalizedDisplayNameList());
 
-			if (EntityViewUtil.isDisplayElement(ed.getName(), property.getElementRuntimeId(), OutputType.SEARCHRESULT)) {
+			if (EntityViewUtil.isDisplayElement(ed.getName(), property.getElementRuntimeId(), OutputType.SEARCHRESULT, null)) {
 				if (!(pd instanceof ReferenceProperty)) {
 					String sortPropName = StringUtil.escapeHtml(propName);
 					boolean frozen = false;
@@ -560,6 +687,7 @@ public final class FullTextSearchCommand implements Command {
 					colModel.setWidth(width);
 					colModel.setAlign(align);
 					colModel.setClasses(style);
+					colModel.setSortable(true);
 					colModels.add(colModel);
 
 				} else if (property.getEditor() instanceof ReferencePropertyEditor) {
@@ -577,6 +705,7 @@ public final class FullTextSearchCommand implements Command {
 						colModel.setWidth(width);
 						colModel.setAlign(align);
 						colModel.setClasses(style);
+						colModel.setSortable(true);
 						colModels.add(colModel);
 					} else {
 						//参照型のName以外を表示する場合
@@ -653,6 +782,19 @@ public final class FullTextSearchCommand implements Command {
 				.collect(Collectors.toMap(Entity :: getOid, entity -> entity));
 	}
 
+	protected NullOrderingSpec getNullOrderingSpec(NullOrderType type) {
+		if (type == null) return null;
+		switch (type) {
+		case FIRST:
+			return NullOrderingSpec.FIRST;
+		case LAST:
+			return NullOrderingSpec.LAST;
+		default:
+			break;
+		}
+		return null;
+	}
+
 	private String getRS(String key, Object... args) {
 		return resourceString("command.fulltext.FullTextSearchCommand." + key, args);
 	}
@@ -679,6 +821,12 @@ public final class FullTextSearchCommand implements Command {
 
 		/**	Crawl日時 */
 		private Timestamp crawlDate;
+
+		/** ソート項目（画面）*/
+		private String sortKey;
+
+		/** ソートタイプ（画面）*/
+		private String sortType;
 
 		public EntitySearchInfo(EntityDefinition ed) {
 			setEntityDefinition(ed);
@@ -734,6 +882,22 @@ public final class FullTextSearchCommand implements Command {
 
 		public void setCrawlDate(Timestamp crawlDate) {
 			this.crawlDate = crawlDate;
+		}
+
+		public String getSortKey() {
+			return sortKey;
+		}
+
+		public void setSortKey(String sortKey) {
+			this.sortKey = sortKey;
+		}
+
+		public String getSortType() {
+			return sortType;
+		}
+
+		public void setSortType(String sortType) {
+			this.sortType = sortType;
 		}
 
 	}

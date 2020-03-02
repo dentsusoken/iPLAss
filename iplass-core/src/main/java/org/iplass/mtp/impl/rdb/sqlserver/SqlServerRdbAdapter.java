@@ -86,6 +86,7 @@ public class SqlServerRdbAdapter extends RdbAdapter {
 	private int thresholdCountOfUsePrepareStatement = 50;
 	private int maxFetchSize = 100;
 	private int defaultQueryTimeout;
+	private int defaultFetchSize;
 
 	private static final String DATE_MIN = "17530101000000000";
 	private static final String DATE_MAX = "99991231235959999";
@@ -141,6 +142,15 @@ public class SqlServerRdbAdapter extends RdbAdapter {
 
 	public void setDefaultQueryTimeout(int defaultQueryTimeout) {
 		this.defaultQueryTimeout = defaultQueryTimeout;
+	}
+
+	@Override
+	public int getDefaultFetchSize() {
+		return defaultFetchSize;
+	}
+
+	public void setDefaultFetchSize(int defaultFetchSize) {
+		this.defaultFetchSize = defaultFetchSize;
 	}
 
 	@Override

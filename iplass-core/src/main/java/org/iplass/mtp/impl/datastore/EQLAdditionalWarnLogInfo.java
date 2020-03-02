@@ -21,17 +21,18 @@
 package org.iplass.mtp.impl.datastore;
 
 import org.iplass.mtp.entity.Entity;
+import org.iplass.mtp.entity.definition.PropertyDefinitionType;
 import org.iplass.mtp.entity.query.Query;
 import org.iplass.mtp.entity.query.QueryVisitorSupport;
 import org.iplass.mtp.entity.query.Refer;
 import org.iplass.mtp.entity.query.SubQuery;
 import org.iplass.mtp.entity.query.condition.Condition;
-import org.iplass.mtp.entity.query.condition.expr.And;
 import org.iplass.mtp.entity.query.condition.expr.Or;
 import org.iplass.mtp.entity.query.condition.predicate.Contains;
 import org.iplass.mtp.entity.query.condition.predicate.IsNotNull;
 import org.iplass.mtp.entity.query.condition.predicate.IsNull;
 import org.iplass.mtp.entity.query.condition.predicate.Like;
+import org.iplass.mtp.entity.query.hint.SuppressWarningsHint;
 import org.iplass.mtp.entity.query.value.RowValueList;
 import org.iplass.mtp.entity.query.value.aggregate.Avg;
 import org.iplass.mtp.entity.query.value.aggregate.Count;
@@ -73,7 +74,13 @@ public class EQLAdditionalWarnLogInfo implements AdditionalWarnLogInfo {
 	
 	private EntityHandler eh;
 	private EntityContext ec;
-	private Boolean noIndex;
+	
+	private boolean checked;
+	
+	private boolean doLog;
+	private boolean noIndex;
+	private boolean weakIndex;
+	private boolean correlatedSubqueryCondition;
 	
 	public EQLAdditionalWarnLogInfo(Query query, boolean count, EntityHandler eh, EntityContext ec) {
 		this.query = query;
@@ -84,12 +91,24 @@ public class EQLAdditionalWarnLogInfo implements AdditionalWarnLogInfo {
 	
 	@Override
 	public String toString() {
-		if (noIndex != null && noIndex) {
-			if (count) {
-				return "!WITHOUT INDEX QUERY! eql(count)=" + query;
-			} else {
-				return "!WITHOUT INDEX QUERY! eql=" + query;
+		if (doLog) {
+			StringBuilder sb = new StringBuilder();
+			if (noIndex) {
+				sb.append("!WITHOUT INDEX QUERY! ");
+			} else if (weakIndex) {
+				sb.append("!LOW CARDINALITY INDEX QUERY! ");
 			}
+			if (correlatedSubqueryCondition) {
+				sb.append("!CORRELATED SUBQUERY IN CONDITION QUERY! ");
+			}
+			
+			if (count) {
+				sb.append("eql(count)=");
+			} else {
+				sb.append("eql=");
+			}
+			sb.append(query);
+			return sb.toString();
 		} else {
 			if (count) {
 				return "eql(count)=" + query;
@@ -101,33 +120,49 @@ public class EQLAdditionalWarnLogInfo implements AdditionalWarnLogInfo {
 
 	@Override
 	public boolean logBefore() {
-		if (noIndex == null) {
-			noIndex = !new CheckIndex(eh, ec).isIndex(query) || !new SubQueryCheckIndex(ec).isSubqueryAllIndex(query);
+		if (!checked) {
+			CheckWarning checkWarning = new CheckWarning(eh, ec);
+			checkWarning.check(query);
+			if (checkWarning.suppressWarnings) {
+				doLog = false;
+			} else {
+				SubQueryCheckWarning subQueryCheckWarning = new SubQueryCheckWarning(ec);
+				subQueryCheckWarning.check(query);
+				noIndex = !checkWarning.index || !subQueryCheckWarning.index;
+				weakIndex = !checkWarning.highCardinality || !subQueryCheckWarning.highCardinality;
+				correlatedSubqueryCondition = checkWarning.correlatedSubqueryCondition || subQueryCheckWarning.correlatedSubqueryCondition;
+				doLog = noIndex || weakIndex || correlatedSubqueryCondition;
+			}
+			
+			checked = true;
 		}
 		
-		return noIndex;
+		return doLog;
 	}
 	
-	private static class SubQueryCheckIndex extends QueryVisitorSupport {
+	
+	private static class SubQueryCheckWarning extends QueryVisitorSupport {
 		private EntityContext ec;
 		
 		private boolean index = true;
+		private boolean highCardinality = true;
+		private boolean correlatedSubqueryCondition = false;
 		
-		SubQueryCheckIndex(EntityContext ec) {
+		SubQueryCheckWarning(EntityContext ec) {
 			this.ec = ec;
 		}
 
 		@Override
 		public boolean visit(SubQuery subQuery) {
 			if (subQuery.getQuery() != null) {
-				CheckIndex sub = new CheckIndex(ec.getHandlerByName(subQuery.getQuery().getFrom().getEntityName()), ec);
-				boolean subIndex = sub.isIndex(subQuery.getQuery());
-				if (!subIndex) {
-					if (subQuery.getOn() != null) {
-						subIndex = sub.isIndex(subQuery.getOn());
-					}
+				CheckWarning sub = new CheckWarning(ec.getHandlerByName(subQuery.getQuery().getFrom().getEntityName()), ec);
+				sub.check(subQuery.getQuery());
+				if (subQuery.getOn() != null) {
+					sub.checkOn(subQuery.getOn());
 				}
-				index &= subIndex;
+				index &= sub.index;
+				highCardinality &= sub.highCardinality;
+				correlatedSubqueryCondition |= sub.correlatedSubqueryCondition;
 				if (!index) {
 					return false;
 				}
@@ -135,41 +170,56 @@ public class EQLAdditionalWarnLogInfo implements AdditionalWarnLogInfo {
 			return false;
 		}
 		
-		boolean isSubqueryAllIndex(Query q) {
+		void check(Query q) {
 			q.accept(this);
-			return index;
 		}
 		
 	}
 	
-	private static class CheckIndex extends QueryVisitorSupport {
+	private static class CheckWarning extends QueryVisitorSupport {
 		private EntityHandler eh;
 		private EntityContext ec;
-		
+
 		private boolean index;
+		private boolean highCardinality;
+		private boolean suppressWarnings;
+		private boolean correlatedSubqueryCondition;
+
 		private boolean enableRef;
-		
-		CheckIndex(EntityHandler eh, EntityContext ec) {
+
+		CheckWarning(EntityHandler eh, EntityContext ec) {
 			this.eh = eh;
 			this.ec = ec;
 		}
-		
-		boolean isIndex(Query q) {
+
+		void check(Query q) {
 			index = false;
+			highCardinality = false;
+			suppressWarnings = false;
 			enableRef = false;
 			q.accept(this);
-			return index;
 		}
-		
-		boolean isIndex(Condition on) {
-			index = false;
+
+		void checkOn(Condition on) {
 			enableRef = true;
 			on.accept(this);
-			return index;
 		}
-		
+
+		@Override
+		public boolean visit(SuppressWarningsHint suppressWarningsHint) {
+			suppressWarnings = true;
+			return super.visit(suppressWarningsHint);
+		}
+
 		@Override
 		public boolean visit(Query query) {
+			if (query.getSelect().getHintComment() != null) {
+				query.getSelect().getHintComment().accept(this);
+				if (suppressWarnings) {
+					return false;
+				}
+			}
+			
 			if (query.getRefer() != null) {
 				for (Refer r: query.getRefer()) {
 					r.accept(this);
@@ -178,20 +228,6 @@ public class EQLAdditionalWarnLogInfo implements AdditionalWarnLogInfo {
 			if (query.getWhere() != null) {
 				query.getWhere().accept(this);
 			}
-			return false;
-		}
-
-		@Override
-		public boolean visit(And and) {
-			if (and.getChildExpressions() != null) {
-				for (Condition c: and.getChildExpressions()) {
-					c.accept(this);
-					if (index) {
-						return false;
-					}
-				}
-			}
-			
 			return false;
 		}
 
@@ -213,13 +249,17 @@ public class EQLAdditionalWarnLogInfo implements AdditionalWarnLogInfo {
 		@Override
 		public boolean visit(Or or) {
 			if (or.getChildExpressions() != null) {
+				boolean hc = true;
 				for (Condition c: or.getChildExpressions()) {
 					index = false;
+					highCardinality = false;
 					c.accept(this);
 					if (!index) {
 						return false;
 					}
+					hc &= highCardinality;
 				}
+				highCardinality = hc;
 			}
 			
 			return false;
@@ -242,6 +282,7 @@ public class EQLAdditionalWarnLogInfo implements AdditionalWarnLogInfo {
 			}
 			if (enableRef && entityField.getPropertyName().equalsIgnoreCase(SubQuery.THIS)) {
 				index = true;
+				highCardinality = true;
 				return false;
 			}
 			
@@ -252,6 +293,7 @@ public class EQLAdditionalWarnLogInfo implements AdditionalWarnLogInfo {
 			if (ph instanceof ReferencePropertyHandler) {
 				if (enableRef) {
 					index = true;
+					highCardinality = true;
 					return false;
 				} else {
 					return false;
@@ -260,14 +302,21 @@ public class EQLAdditionalWarnLogInfo implements AdditionalWarnLogInfo {
 			
 			if (ph.isIndexed()) {
 				index = true;
+				if (ph.getEnumType() != PropertyDefinitionType.BOOLEAN
+						&&  ph.getEnumType() != PropertyDefinitionType.SELECT) {
+					highCardinality = true;
+				}
 			} else {
-				if (ph.getName().equals(Entity.OID)) {
+				if (ph.getName().equals(Entity.OID)
+						|| ph.getName().equals(Entity.CREATE_BY)) {
 					index = true;
+					highCardinality = true;
 				} else if (ph.getStoreSpecProperty() instanceof GRdbPropertyStoreRuntime) {
 					GRdbPropertyStoreRuntime psr = (GRdbPropertyStoreRuntime) ph.getStoreSpecProperty();
 					if (psr.isNative() && ph.getParent().getSuperDataModelHandler(ec) != null) {
 						//カスタムのnativeカラムの場合は適切にINDEXされているものとする
 						index = true;
+						highCardinality = true;
 					}
 				}
 			}
@@ -307,6 +356,7 @@ public class EQLAdditionalWarnLogInfo implements AdditionalWarnLogInfo {
 
 		@Override
 		public boolean visit(ScalarSubQuery scalarSubQuery) {
+			correlatedSubqueryCondition = true;
 			return false;
 		}
 

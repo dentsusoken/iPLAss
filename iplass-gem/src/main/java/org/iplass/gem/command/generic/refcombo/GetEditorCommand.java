@@ -21,12 +21,14 @@
 package org.iplass.gem.command.generic.refcombo;
 
 import org.iplass.gem.command.Constants;
+import org.iplass.gem.command.generic.HasDisplayScriptBindings;
 import org.iplass.mtp.ManagerLocator;
 import org.iplass.mtp.command.Command;
 import org.iplass.mtp.command.RequestContext;
 import org.iplass.mtp.command.annotation.CommandClass;
 import org.iplass.mtp.command.annotation.webapi.RestJson;
 import org.iplass.mtp.command.annotation.webapi.WebApi;
+import org.iplass.mtp.entity.Entity;
 import org.iplass.mtp.view.generic.EntityViewManager;
 import org.iplass.mtp.view.generic.editor.PropertyEditor;
 import org.iplass.mtp.view.generic.editor.ReferencePropertyEditor;
@@ -42,7 +44,7 @@ import org.iplass.mtp.webapi.definition.MethodType;
 		checkXRequestedWithHeader=true
 	)
 @CommandClass(name="gem/generic/refcombo/GetEditorCommand", displayName="プロパティエディタ取得マンド")
-public final class GetEditorCommand implements Command {
+public final class GetEditorCommand implements Command, HasDisplayScriptBindings{
 
 	public static final String CMD_NAME = "gem/generic/refcombo/GetEditorCommand";
 	public static final String WEBAPI_NAME = "gem/generic/refcombo/getEditor";
@@ -60,8 +62,9 @@ public final class GetEditorCommand implements Command {
 		String propName = request.getParam(Constants.PROP_NAME);
 		String viewType = request.getParam(Constants.VIEW_TYPE);
 
+		Entity entity = getBindingEntity(request);
 		//Editor取得
-		PropertyEditor editor = evm.getPropertyEditor(defName, viewType, viewName, propName);
+		PropertyEditor editor = evm.getPropertyEditor(defName, viewType, viewName, propName, entity);
 		ReferencePropertyEditor rpe = null;
 		if (editor instanceof ReferencePropertyEditor) {
 			rpe = (ReferencePropertyEditor)editor;

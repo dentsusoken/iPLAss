@@ -67,6 +67,7 @@ import org.iplass.mtp.view.generic.editor.ReferencePropertyEditor.ReferenceDispl
 import org.iplass.mtp.view.generic.element.Element;
 import org.iplass.mtp.view.generic.element.property.PropertyItem;
 import org.iplass.mtp.view.generic.element.section.DefaultSection;
+import org.iplass.mtp.view.generic.element.section.SearchResultSection.ExclusiveControlPoint;
 import org.iplass.mtp.view.generic.element.section.Section;
 import org.iplass.mtp.web.template.TemplateUtil;
 import org.slf4j.Logger;
@@ -401,7 +402,7 @@ public class MultiBulkCommandContext extends RegistrationCommandContext {
 		return new RegistrationPropertyBaseHandler<PropertyItem>() {
 			@Override
 			public boolean isDispProperty(PropertyItem property) {
-				return EntityViewUtil.isDisplayElement(entityDefinition.getName(), property.getElementRuntimeId(), OutputType.BULK);
+				return EntityViewUtil.isDisplayElement(entityDefinition.getName(), property.getElementRuntimeId(), OutputType.BULK, getCurrentEntity());
 			}
 
 			@Override
@@ -430,11 +431,26 @@ public class MultiBulkCommandContext extends RegistrationCommandContext {
 	}
 
 	/**
+	 * 一括更新の排他制御起点を取得します。
+	 * @return 一括更新の排他制御起点
+	 */
+	public ExclusiveControlPoint getExclusiveControlPoint() {
+		String viewName = getViewName();
+		SearchFormView view = FormViewUtil.getSearchFormView(entityDefinition, entityView, viewName);
+		return view.getResultSection().getExclusiveControlPoint();
+	}
+
+	/**
 	 * 編集画面用のFormレイアウト情報を設定します。
 	 * @param view 編集画面用のFormレイアウト情報
 	 */
 	public void setView(BulkFormView view) {
 		this.view = view;
+	}
+
+	@Override
+	public Entity getCurrentEntity() {
+		return null;
 	}
 
 	/**
@@ -671,7 +687,7 @@ public class MultiBulkCommandContext extends RegistrationCommandContext {
 			propList = new ArrayList<PropertyItem>();
 			for (Section section : getView().getSections()) {
 				if (section instanceof DefaultSection) {
-					if (EntityViewUtil.isDisplayElement(entityDefinition.getName(), section.getElementRuntimeId(), OutputType.BULK)) {
+					if (EntityViewUtil.isDisplayElement(entityDefinition.getName(), section.getElementRuntimeId(), OutputType.BULK, getCurrentEntity())) {
 						propList.addAll(getProperty((DefaultSection) section));
 					}
 				}
@@ -714,7 +730,7 @@ public class MultiBulkCommandContext extends RegistrationCommandContext {
 					propList.add(prop);
 				}
 			} else if (elem instanceof DefaultSection) {
-				if (EntityViewUtil.isDisplayElement(entityDefinition.getName(), elem.getElementRuntimeId(), OutputType.BULK)) {
+				if (EntityViewUtil.isDisplayElement(entityDefinition.getName(), elem.getElementRuntimeId(), OutputType.BULK, getCurrentEntity())) {
 					propList.addAll(getProperty((DefaultSection) elem));
 				}
 			}
@@ -730,7 +746,7 @@ public class MultiBulkCommandContext extends RegistrationCommandContext {
 		List<PropertyItem> propList = new ArrayList<PropertyItem>();
 
 		for (Section section : getView().getSections()) {
-			if (!EntityViewUtil.isDisplayElement(entityDefinition.getName(), section.getElementRuntimeId(), OutputType.BULK)) {
+			if (!EntityViewUtil.isDisplayElement(entityDefinition.getName(), section.getElementRuntimeId(), OutputType.BULK, getCurrentEntity())) {
 				continue;
 			}
 
@@ -751,7 +767,7 @@ public class MultiBulkCommandContext extends RegistrationCommandContext {
 		List<PropertyItem> propList = new ArrayList<PropertyItem>();
 
 		for (Element elem : section.getElements()) {
-			if (!EntityViewUtil.isDisplayElement(entityDefinition.getName(), elem.getElementRuntimeId(), OutputType.BULK)) {
+			if (!EntityViewUtil.isDisplayElement(entityDefinition.getName(), elem.getElementRuntimeId(), OutputType.BULK, getCurrentEntity())) {
 				continue;
 			}
 

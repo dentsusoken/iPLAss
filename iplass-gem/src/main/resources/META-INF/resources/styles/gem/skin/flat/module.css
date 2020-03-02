@@ -649,6 +649,21 @@ body.modal-body input.btn-csv-01 {
   width: 40px !important;
   text-align: center; }
 
+.result-data .ui-jqgrid .ui-jqgrid-htable th.ui-th-ltr, .entity-list .ui-jqgrid .ui-jqgrid-htable th.ui-th-ltr {
+  border: none;
+  outline-width: 0.5px;
+  outline-style: solid;
+  outline-color: #ddd; }
+
+.result-data .ui-jqgrid .ui-jqgrid-bdiv tr.ui-row-ltr, .entity-list .ui-jqgrid .ui-jqgrid-bdiv tr.ui-row-ltr {
+  border: none; }
+  .result-data .ui-jqgrid .ui-jqgrid-bdiv tr.ui-row-ltr > td, .entity-list .ui-jqgrid .ui-jqgrid-bdiv tr.ui-row-ltr > td {
+    border-bottom-width: 0;
+    border-right-width: 0;
+    outline-width: 0.5px;
+    outline-style: solid;
+    outline-color: #ddd; }
+
 .ui-jqgrid {
   display: block;
   float: left;
@@ -672,7 +687,7 @@ body.modal-body input.btn-csv-01 {
     background: #ededed;
     color: #115d85;
     transition: background 300ms;
-    border-right: 1px solid #fff !important;
+    border-right: 1px solid #ddd;
     position: relative; }
     .ui-jqgrid .ui-jqgrid-htable th div {
       margin: 0 !important;
@@ -751,12 +766,12 @@ body.modal-body input.btn-csv-01 {
   .ui-jqgrid .cell-wrapper {
     display: inline; }
   .ui-jqgrid .frozen-div.ui-jqgrid-hdiv th.ui-th-column:last-child {
-    border-bottom: #fff 1px solid; }
+    border-bottom: #ddd 1px solid; }
   .ui-jqgrid .frozen-bdiv.ui-jqgrid-bdiv tr.ui-row-ltr > td {
     background: #ededed !important;
     color: #115d85; }
   .ui-jqgrid .frozen-bdiv.ui-jqgrid-bdiv tr.ui-row-ltr:not(:last-child) > td {
-    border-bottom: 1px solid #fff !important; }
+    border-bottom: 1px solid #ddd !important; }
 
 .ui-jqgrid-view {
   border: 1px solid #ddd; }
@@ -765,8 +780,6 @@ body.modal-body input.btn-csv-01 {
   padding: 10px;
   background: #fff;
   border-color: #ddd; }
-  .ui-jqgrid-jquery-ui.ui-jqgrid .ui-jqgrid-bdiv tr.ui-row-ltr > td:first-child {
-    border-left: 1px solid #ddd !important; }
 
 .ui-jqgrid-jquery-ui.ui-jqgrid .ui-jqgrid-bdiv tr.ui-row-ltr.jqgfirstrow > td {
   padding: 0; }
@@ -918,6 +931,138 @@ span.jqtree_common.jqtree-title.ui-draggable.ui-draggable-dragging {
 /* contents */
 /*--------------------------*/
 /* 認証系 */
+#login {
+  background: #ededed; }
+  #login #container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center; }
+  #login #header-container {
+    display: none; }
+  #login #main {
+    height: auto !important; }
+    #login #main #header {
+      display: block;
+      float: none;
+      margin-left: auto;
+      margin-right: auto;
+      height: 69px;
+      padding: 0;
+      border: 0;
+      background: url(../../../../images/gem/skin/flat/login-title.png) center center no-repeat transparent;
+      margin-bottom: 65px; }
+      #login #main #header #title {
+        display: none; }
+  #login h2 {
+    display: none; }
+  #login form {
+    float: none;
+    margin: 0 auto;
+    width: 316px;
+    padding-bottom: 0; }
+  #login th {
+    display: none; }
+  #login td {
+    display: block;
+    float: left;
+    height: 40px;
+    width: 316px;
+    margin-bottom: 10px;
+    background: #fff;
+    border-radius: 20px; }
+    #login td input:not([type=checkbox]) {
+      display: block;
+      float: none;
+      margin-left: auto;
+      margin-right: auto;
+      height: 40px;
+      width: 280px;
+      font-size: 1.14286rem;
+      border: 0;
+      background: none;
+      outline: none;
+      padding: 0 5px; }
+  #login .login-logo {
+    margin: 0 auto;
+    display: block; }
+  #login .error {
+    margin: 0 auto;
+    width: 316px; }
+  #login .remember-row {
+    height: auto !important;
+    margin-top: 5px; }
+    #login .remember-row td {
+      height: auto !important;
+      background: none;
+      font-size: 0.78571rem;
+      line-height: 22px;
+      margin-bottom: 0; }
+  #login .pseudo-checkbox {
+    margin-right: 10px;
+    background: none; }
+    #login .pseudo-checkbox:hover {
+      border-color: #01b0c0; }
+    #login .pseudo-checkbox.checked {
+      border-color: #01b0c0; }
+  #login input[type='submit'] {
+    display: block;
+    float: none;
+    margin-left: auto;
+    margin-right: auto;
+    height: 84px;
+    width: 84px;
+    background: #01b0c0;
+    border-radius: 42px;
+    font-size: 1.07143rem;
+    color: #fff;
+    outline: none;
+    transition: 300ms;
+    cursor: pointer;
+    min-width: 0;
+    padding: 0; }
+    #login input[type='submit']:hover {
+      background: #0d909b; }
+  #login #footer {
+    position: absolute;
+    bottom: 1px;
+    border: 0;
+    background: none;
+    left: 0;
+    padding: 0; }
+    #login #footer p {
+      text-align: center;
+      letter-spacing: 0.07143rem; }
+
+.tbl-login-01 th {
+  font-weight: bold;
+  text-align: left;
+  width: 80px; }
+
+.tbl-login-01 td {
+  width: 255px; }
+
+.tbl-login-01 input {
+  width: 250px; }
+
+.tbl-login-01 input[type=checkbox] {
+  width: 20px; }
+
+.reauthid {
+  height: 40px;
+  line-height: 40px;
+  font-size: 1.14rem;
+  padding-left: 20px;
+  display: inline-block; }
+
+p.nav-login-01 {
+  margin-top: 20px;
+  text-align: center; }
+
 .last-login-title {
   margin-right: 10px; }
 
@@ -932,12 +1077,6 @@ span.jqtree_common.jqtree-title.ui-draggable.ui-draggable-dragging {
   font-size: 1rem;
   display: block; }
 
-.tbl-maintenance input[type=text], .tbl-maintenance input[type=password], .tbl-maintenance textarea {
-  border: 1px solid #ddd;
-  font-size: 1rem;
-  padding: 2px 5px;
-  box-sizing: border-box; }
-
 .user-profile .formArchive {
   display: block;
   float: left;
@@ -945,26 +1084,13 @@ span.jqtree_common.jqtree-title.ui-draggable.ui-draggable-dragging {
   .user-profile .formArchive + p {
     margin-bottom: 20px; }
 
-.tbl-maintenance {
-  margin-bottom: 20px; }
-  .tbl-maintenance th {
-    width: 180px;
-    background: #ededed;
-    padding: 12px 10px;
-    border: 1px solid #ddd;
-    border-right: 0;
-    vertical-align: middle; }
-  .tbl-maintenance td {
-    padding: 8px 10px;
-    border: 1px solid #ddd;
-    border-left: 0;
-    vertical-align: middle; }
-  .tbl-maintenance input[type=text] {
-    width: 100%; }
-  .tbl-maintenance input[type=password] {
-    width: 160px; }
-  .tbl-maintenance textarea {
-    width: 100%; }
+.user-profile .tbl-section td.section-data {
+  padding: 8px 10px; }
+
+.user-profile .tbl-section .data-label {
+  display: inline-block;
+  padding: 2px 0;
+  margin: 2px 0; }
 
 .auth-application .detailForm > div, .auth-application .detailForm .formArchive > div, #detailForm > div, #detailForm .formArchive > div {
   display: block;
@@ -1517,7 +1643,7 @@ span.jqtree_common.jqtree-title.ui-draggable.ui-draggable-dragging {
   float: left;
   width: 100%; }
 
-.tbl-section input[type=text], .tbl-section textarea {
+.tbl-section input[type=text], .tbl-section input[type=password], .tbl-section textarea {
   border: 1px solid #ddd;
   font-size: 1rem;
   width: 100%;
@@ -1871,6 +1997,14 @@ a + .binaryDelete {
     border: 1px solid #ddd;
     padding: 10px;
     vertical-align: top; }
+
+.bulk-edit .tbl-section td.section-data {
+  padding: 8px 10px; }
+
+.bulk-edit .tbl-section .data-label {
+  display: inline-block;
+  padding: 2px 0;
+  margin: 2px 0; }
 
 /* カレンダー */
 .fc {

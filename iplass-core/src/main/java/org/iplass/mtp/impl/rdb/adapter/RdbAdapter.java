@@ -443,6 +443,8 @@ public abstract class RdbAdapter {
 
 	public abstract int getDefaultQueryTimeout();
 
+	public abstract int getDefaultFetchSize();
+
 	/**
 	 * 複数の更新（追加）を一括で処理する際の、PrepareStatementを利用するか否かを判断するための閾値。
 	 *

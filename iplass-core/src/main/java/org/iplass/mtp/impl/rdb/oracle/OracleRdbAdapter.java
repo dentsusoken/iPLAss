@@ -86,6 +86,7 @@ public class OracleRdbAdapter extends RdbAdapter {
 	private int thresholdCountOfUsePrepareStatement = 50;
 	private int maxFetchSize = 100;
 	private int defaultQueryTimeout;
+	private int defaultFetchSize;
 	
 	//Oracle 12cから利用可能なFETCH FIRST句を使うか否か
 	private boolean useFetchFirstClause;
@@ -160,6 +161,15 @@ public class OracleRdbAdapter extends RdbAdapter {
 
 	public void setDefaultQueryTimeout(int defaultQueryTimeout) {
 		this.defaultQueryTimeout = defaultQueryTimeout;
+	}
+
+	@Override
+	public int getDefaultFetchSize() {
+		return defaultFetchSize;
+	}
+
+	public void setDefaultFetchSize(int defaultFetchSize) {
+		this.defaultFetchSize = defaultFetchSize;
 	}
 
 	@Override

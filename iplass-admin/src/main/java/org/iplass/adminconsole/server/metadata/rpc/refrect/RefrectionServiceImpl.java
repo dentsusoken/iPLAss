@@ -50,6 +50,7 @@ import org.iplass.adminconsole.view.annotation.Refrectable;
 import org.iplass.adminconsole.view.annotation.generic.EntityViewField;
 import org.iplass.mtp.impl.view.generic.EntityViewService;
 import org.iplass.mtp.spi.ServiceRegistry;
+import org.iplass.mtp.util.StringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -179,7 +180,7 @@ public class RefrectionServiceImpl extends XsrfProtectedServiceServlet implement
 
 					@Override
 					public Name[] call() {
-						List<Name> nameList = new ArrayList<Name>();
+						List<Name> nameList = new ArrayList<>();
 						try {
 							Class<?> cls = Class.forName(rootClassName);
 							int mod = cls.getModifiers();
@@ -269,13 +270,13 @@ public class RefrectionServiceImpl extends XsrfProtectedServiceServlet implement
 	 * @return
 	 */
 	private FieldInfo[] getFieldInfo(Class<?> cls) {
-		List<String> ignoreFields = new ArrayList<String>();
+		List<String> ignoreFields = new ArrayList<>();
 		IgnoreField ignoreField = cls.getAnnotation(IgnoreField.class);
 		if (ignoreField != null) {
 			ignoreFields.addAll(Arrays.asList(ignoreField.value()));
 		}
 
-		List<FieldInfo> list = new ArrayList<FieldInfo>();
+		List<FieldInfo> list = new ArrayList<>();
 		getFieldInfo(list, cls, ignoreFields);
 
 		List<FieldInfo> result = null;
@@ -287,8 +288,8 @@ public class RefrectionServiceImpl extends XsrfProtectedServiceServlet implement
 					.collect(Collectors.toList());
 		} else {
 			//必須を先頭に移動
-			result = new ArrayList<FieldInfo>();
-			List<FieldInfo> required = new ArrayList<FieldInfo>();
+			result = new ArrayList<>();
+			List<FieldInfo> required = new ArrayList<>();
 			for (FieldInfo info : list) {
 				if (info.isRequired()) {
 					required.add(info);
@@ -330,7 +331,7 @@ public class RefrectionServiceImpl extends XsrfProtectedServiceServlet implement
 				info.setMultiple(annotation.multiple());
 				info.setReferenceClassName(annotation.referenceClass().getName());
 				if (annotation.fixedReferenceClass().length > 0) {
-					List<Name> nameList = new ArrayList<Name>();
+					List<Name> nameList = new ArrayList<>();
 					for (Class<?> fixedReferenceClass : annotation.fixedReferenceClass()) {
 						int mod = fixedReferenceClass.getModifiers();
 						if (!Modifier.isAbstract(mod) && !Modifier.isInterface(mod)) {
@@ -341,9 +342,8 @@ public class RefrectionServiceImpl extends XsrfProtectedServiceServlet implement
 				}
 				if (annotation.inputType() == InputType.ENUM && annotation.enumClass() != null
 						&& annotation.enumClass().isEnum()) {
-//					info.setEnumValues((Serializable[]) annotation.enumClass().getEnumConstants());
 					info.setEnumClassName(annotation.enumClass().getName());
-					List<Serializable> enumValues = new ArrayList<Serializable>();
+					List<Serializable> enumValues = new ArrayList<>();
 					for (Object constants : annotation.enumClass().getEnumConstants()) {
 						// Deprecatedなメソッドは選択させない
 						try {
@@ -385,35 +385,13 @@ public class RefrectionServiceImpl extends XsrfProtectedServiceServlet implement
 		}
 	}
 
-//	private String getDisplayName(MetaFieldInfo annotation) {
-//		if (annotation.displayNameKey() == null || annotation.displayNameKey().isEmpty()) {
-//			return annotation.displayName();
-//		}
-//		String displayName = TemplateUtil.getString(annotation.displayNameKey());
-//		if (displayName != null && !displayName.isEmpty()) {
-//			return displayName;
-//		}
-//		return annotation.displayName();
-//	}
-//
-//	private String getDescription(MetaFieldInfo annotation) {
-//		if (annotation.descriptionKey() == null || annotation.descriptionKey().isEmpty()) {
-//			return annotation.description();
-//		}
-//		String description = TemplateUtil.getString(annotation.descriptionKey());
-//		if (description != null && !description.isEmpty()) {
-//			return description;
-//		}
-//		return annotation.description();
-//	}
-
 	/**
 	 *
 	 * @param valueList
 	 * @return
 	 */
 	private List<RefrectableInfo> getListFieldValues(List<Refrectable> valueList) {
-		List<RefrectableInfo> ret = new ArrayList<RefrectableInfo>();
+		List<RefrectableInfo> ret = new ArrayList<>();
 		for (Refrectable value : valueList) {
 			RefrectableInfo info = new RefrectableInfo();
 			info.setValue(value);
@@ -463,7 +441,7 @@ public class RefrectionServiceImpl extends XsrfProtectedServiceServlet implement
 	 * @return
 	 */
 	private Map<String, Serializable> getFieldValues(Class<?> cls, Refrectable object, FieldInfo[] fields) {
-		Map<String, Serializable> valueMap = new HashMap<String, Serializable>();
+		Map<String, Serializable> valueMap = new HashMap<>();
 		if (object == null || cls.getName().equals(Object.class.getName()))
 			return valueMap;
 
@@ -526,12 +504,32 @@ public class RefrectionServiceImpl extends XsrfProtectedServiceServlet implement
 					Field field = cls.getDeclaredField(info.getName());
 					field.setAccessible(true);
 					if (info.getInputType() == InputType.ENUM) {
-						Method valueOf = field.getType().getMethod("valueOf", String.class);
 						if (valueMap.get(info.getName()) != null) {
-							field.set(value, valueOf.invoke(value, valueMap.get(info.getName())));
+							Class<?> enumClass = Class.forName(info.getEnumClassName());
+							Method enumValueOf = enumClass.getMethod("valueOf", String.class);
+							if (field.getType() == List.class) {
+								@SuppressWarnings("unchecked")
+								List<String> strValues = (List<String>)valueMap.get(info.getName());
+								List<Object> enumValues = new ArrayList<>(strValues.size());
+								for (String strValue : strValues) {
+									//ブランクは除外
+									if (StringUtil.isEmpty(strValue)) {
+										continue;
+									}
+									enumValues.add(enumValueOf.invoke(value, strValue));
+								}
+								if (enumValues.isEmpty()) {
+									field.set(value, null);
+								} else {
+									field.set(value, enumValues);
+								}
+							} else {
+								field.set(value, enumValueOf.invoke(value, valueMap.get(info.getName())));
+							}
 						} else {
 							field.set(value, null);
 						}
+
 					} else {
 						field.set(value, valueMap.get(info.getName()));
 					}
@@ -547,13 +545,15 @@ public class RefrectionServiceImpl extends XsrfProtectedServiceServlet implement
 					logger.error(e.getMessage(), e);
 				} catch (InvocationTargetException e) {
 					logger.error(e.getMessage(), e);
+				} catch (ClassNotFoundException e) {
+					logger.error(e.getMessage(), e);
 				}
 			}
 		}
 	}
 
 	private List<Name> getXmlSeeAlsoClass(Class<?> cls) {
-		List<Name> nameList = new ArrayList<Name>();
+		List<Name> nameList = new ArrayList<>();
 		XmlSeeAlso annotation = cls.getAnnotation(XmlSeeAlso.class);
 		if (annotation != null) {
 			for (Class<?> seeClass : annotation.value()) {

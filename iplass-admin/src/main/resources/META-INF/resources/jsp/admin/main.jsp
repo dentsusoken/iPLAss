@@ -30,7 +30,8 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+<meta http-equiv="x-ua-compatible" content="IE=edge" />
 <title>Admin Console</title>
 
 <%!

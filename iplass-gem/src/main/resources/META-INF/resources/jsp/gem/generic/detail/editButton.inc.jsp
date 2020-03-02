@@ -108,7 +108,8 @@
 			if (button.getDisplayType() == DisplayType.CUSTOM) {
 				isDisplayCustomType = evm.isDisplayButton(data.getEntityDefinition().getName(), button.getCustomDisplayTypeScriptKey(), OutputType.EDIT, data.getEntity());
 			}
-			if (EntityViewUtil.isDisplayElement(defName, button.getElementRuntimeId(), OutputType.EDIT)
+			Entity rootEntity = (Entity) request.getAttribute(Constants.ROOT_ENTITY);
+			if (EntityViewUtil.isDisplayElement(defName, button.getElementRuntimeId(), OutputType.EDIT, rootEntity)
 					&& (button.getDisplayType() == null || button.getDisplayType() == DisplayType.DETAIL
 						|| button.getDisplayType() == DisplayType.BOTH || isDisplayCustomType)
 					&& ViewUtil.dispElement(button)) {

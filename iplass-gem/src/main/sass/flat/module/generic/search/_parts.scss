@@ -43,4 +43,7 @@
 		//Instead of the line below you could use @include box-sizing($bs)
 		box-sizing: border-box;
 	}
+	
+	//jqgrid adjust borders
+	@extend %extend_jqgrid_border_adjust;
 }

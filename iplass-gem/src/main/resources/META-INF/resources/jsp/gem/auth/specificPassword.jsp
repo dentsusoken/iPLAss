@@ -96,19 +96,19 @@ ${m:outputToken('FORM_XHTML', true)}
 <% }%>
 <div class="formArchive">
 <div>
-<table class="tbl-maintenance mb10">
+<table class="tbl-maintenance tbl-section mb10">
 <tbody>
 <tr>
-<th>${m:rs("mtp-gem-messages", "auth.Password.newPass")}</th>
-<td><input type="password" name="<%=AuthCommandConstants.PARAM_NEW_PASSWORD%>" value="" class="form-size-01 inpbr" /></td>
+<th class="section-data col1">${m:rs("mtp-gem-messages", "auth.Password.newPass")}</th>
+<td class="section-data col1"><input type="password" name="<%=AuthCommandConstants.PARAM_NEW_PASSWORD%>" value="" class="form-size-01 inpbr" /></td>
 </tr>
 <tr>
-<th>${m:rs("mtp-gem-messages", "auth.Password.cnfrmNewPass")}</th>
-<td><input type="password" name="<%=AuthCommandConstants.PARAM_CONFIRM_PASSWORD%>" value="" class="form-size-01 inpbr" /></td>
+<th class="section-data col1">${m:rs("mtp-gem-messages", "auth.Password.cnfrmNewPass")}</th>
+<td class="section-data col1"><input type="password" name="<%=AuthCommandConstants.PARAM_CONFIRM_PASSWORD%>" value="" class="form-size-01 inpbr" /></td>
 </tr>
 <tr>
-<th></th>
-<td><label><input type="checkbox" id="resetRandomPassword" name="<%=AuthCommandConstants.PARAM_RESET_RANDOM_PASSWORD%>" value="1" />${m:rs("mtp-gem-messages", "auth.SpecificPassword.resetRandomPass")}</label></td>
+<th class="section-data col1"></th>
+<td class="section-data col1"><label><input type="checkbox" id="resetRandomPassword" name="<%=AuthCommandConstants.PARAM_RESET_RANDOM_PASSWORD%>" value="1" />${m:rs("mtp-gem-messages", "auth.SpecificPassword.resetRandomPass")}</label></td>
 </tr>
 </tbody>
 </table>

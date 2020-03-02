@@ -23,7 +23,7 @@
 }
 
 //original selectors
-//.tbl-section input[type=text], .tbl-section textarea
+//.tbl-section input[type=text], .tbl-section input[type=password], .tbl-section textarea
 %extend_gdd_2 {
 	border: 1px solid $color_alto_approx;
 	font-size: 1rem;
@@ -157,6 +157,9 @@
 		width: 100%;
 	}
 	input[type=text] {
+		@extend %extend_gdd_2;
+	}
+	input[type=password] {
 		@extend %extend_gdd_2;
 	}
 	textarea {

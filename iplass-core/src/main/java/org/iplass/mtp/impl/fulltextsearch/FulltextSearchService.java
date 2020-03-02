@@ -26,6 +26,7 @@ import java.util.Map;
 
 import org.iplass.mtp.entity.Entity;
 import org.iplass.mtp.entity.SearchResult;
+import org.iplass.mtp.entity.fulltextsearch.FulltextSearchOption;
 import org.iplass.mtp.spi.Service;
 
 public interface FulltextSearchService extends Service {
@@ -116,6 +117,18 @@ public interface FulltextSearchService extends Service {
 	 * @return 検索結果のEntityデータリスト
 	 */
 	<T extends Entity> SearchResult<T> fulltextSearchEntity(Map<String, List<String>> entityProperties, String keyword);
+
+	/**
+	 * 全文検索を実行し、検索結果を返す。
+	 *
+	 * {@literal option}のkeyで指定したEntity定義名を検索対象とする。
+	 * また返すEntityデータに含まれるPropertyは{@literal conditions}のpropertiesで指定したProperty名のリストを対象とする。
+	 *
+	 * @param keyword キーワード
+	 * @param option 全文検索時のオプション
+	 * @return 検索結果のEntityデータリスト
+	 */
+	<T extends Entity> SearchResult<T> fulltextSearchEntity(String keyword, FulltextSearchOption option);
 
 	/**
 	 * 全文検索を実行し、検索結果のOIDリストを返す。

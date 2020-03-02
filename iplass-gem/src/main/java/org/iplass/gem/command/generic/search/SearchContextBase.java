@@ -74,6 +74,7 @@ import org.iplass.mtp.view.generic.element.property.PropertyColumn;
 import org.iplass.mtp.view.generic.element.property.PropertyItem;
 import org.iplass.mtp.view.generic.element.section.SearchConditionSection;
 import org.iplass.mtp.view.generic.element.section.SearchConditionSection.ConditionSortType;
+import org.iplass.mtp.view.generic.element.section.SearchResultSection.ExclusiveControlPoint;
 import org.iplass.mtp.view.generic.element.section.SearchResultSection;
 import org.iplass.mtp.view.generic.element.section.SortSetting;
 import org.slf4j.Logger;
@@ -140,9 +141,13 @@ public abstract class SearchContextBase implements SearchContext {
 		select.add(Entity.NAME);
 		select.add(Entity.VERSION);
 
+		if (getResultSection().getExclusiveControlPoint() == ExclusiveControlPoint.WHEN_SEARCH) {
+			select.add(Entity.UPDATE_DATE);
+		}
+
 		List<PropertyColumn> properties = getColumnProperties();
 		for (PropertyColumn p : properties) {
-			if (EntityViewUtil.isDisplayElement(getDefName(), p.getElementRuntimeId(), OutputType.SEARCHRESULT)) {
+			if (EntityViewUtil.isDisplayElement(getDefName(), p.getElementRuntimeId(), OutputType.SEARCHRESULT, null)) {
 				String propName = p.getPropertyName();
 				if (p.getEditor() instanceof ReferencePropertyEditor) {
 					List<NestProperty> nest = ((ReferencePropertyEditor)p.getEditor()).getNestProperties();
@@ -225,13 +230,14 @@ public abstract class SearchContextBase implements SearchContext {
 				}
 			}
 		} else {
-			String sortKey = getSortKey();
-			if (sortKey != null) {
+			String sortKey = request.getParam(Constants.SEARCH_SORTKEY);
+			if (StringUtil.isNotBlank(sortKey)) {
 				PropertyColumn property = getLayoutPropertyColumn(sortKey);
-				NullOrderingSpec nullOrderingSpec = null;
-				if (property != null) nullOrderingSpec = getNullOrderingSpec(property.getNullOrderType());
-				orderBy = new OrderBy();
-				orderBy.add(getSortKey(), getSortType(), nullOrderingSpec);
+				if (property != null) {
+					NullOrderingSpec nullOrderingSpec = getNullOrderingSpec(property.getNullOrderType());
+					orderBy = new OrderBy();
+					orderBy.add(getSortKey(), getSortType(), nullOrderingSpec);
+				}
 			}
 		}
 		return orderBy;
@@ -481,9 +487,8 @@ public abstract class SearchContextBase implements SearchContext {
 				PropertyColumn property = getLayoutPropertyColumn(sortKey);
 				if (property != null) {
 					ss.setNullOrderType(property.getNullOrderType());
+					setting.add(ss);
 				}
-
-				setting.add(ss);
 			}
 		}
 
