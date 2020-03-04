@@ -90,4 +90,24 @@ public interface MetaDataPortingService extends Service {
 	 */
 	boolean isTenantMeta(String importPath);
 
+	/**
+	 * Entityデータのパッチ処理を行います。
+	 * 
+	 * @param param MetaEntityDataパッチパラメータ
+	 */
+	void patchEntityData(PatchEntityDataParameter param);
+
+	/**
+	 * Entityデータのパッチ処理を特権モードで行います。
+	 * 
+	 * @param param EntityDataパッチパラメータ
+	 */
+	void patchEntityDataWithPrivilegedAuth(PatchEntityDataParameter param);
+
+	/**
+	 * Entityデータのパッチ処理をユーザ認証モードで行います。
+	 * 
+	 * @param param EntityDataパッチパラメータ
+	 */
+	void patchEntityDataWithUserAuth(PatchEntityDataParameter param, String userId, String password);
 }
