@@ -206,6 +206,7 @@ public class GRdbApplyMetaDataStrategy implements ApplyMetaDataStrategy {
 			EntityContext context, final int targetTenantId) {
 		final UpdEntity updateDiff = new UpdEntity(previous, newOne, context, dataStore.getStorageSpaceMapOrDefault((MetaSchemalessRdbStoreMapping) newOne.getStoreMapping()), rdb);
 		if (updateDiff.needDataModify()) {
+			updateDiff.modifyMetaData();
 			SqlExecuter<Void> exec = new SqlExecuter<Void>() {
 				@Override
 				public Void logic() throws SQLException {
