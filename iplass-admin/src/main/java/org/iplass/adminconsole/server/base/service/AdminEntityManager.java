@@ -31,6 +31,7 @@ import java.util.function.Predicate;
 import org.iplass.adminconsole.server.base.service.auditlog.AdminAuditLoggingService;
 import org.iplass.mtp.ManagerLocator;
 import org.iplass.mtp.entity.BinaryReference;
+import org.iplass.mtp.entity.DeepCopyOption;
 import org.iplass.mtp.entity.DeleteCondition;
 import org.iplass.mtp.entity.DeleteOption;
 import org.iplass.mtp.entity.Entity;
@@ -286,6 +287,11 @@ public class AdminEntityManager implements EntityManager {
 	@Override
 	public Entity deepCopy(String oid, String definitionName) {
 		return em.deepCopy(oid, definitionName);
+	}
+
+	@Override
+	public Entity deepCopy(String oid, String definitionName, DeepCopyOption option) {
+		return em.deepCopy(oid, definitionName, option);
 	}
 
 	@Override

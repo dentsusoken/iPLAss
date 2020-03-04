@@ -22,7 +22,6 @@ package org.iplass.gem.command.generic.detail;
 
 import java.util.List;
 
-import org.iplass.gem.GemConfigService;
 import org.iplass.gem.command.Constants;
 import org.iplass.gem.command.GemResourceBundleUtil;
 import org.iplass.mtp.ApplicationException;
@@ -39,6 +38,7 @@ import org.iplass.mtp.command.annotation.action.Result.Type;
 import org.iplass.mtp.command.annotation.template.Template;
 import org.iplass.mtp.command.annotation.template.Templates;
 import org.iplass.mtp.entity.BinaryReference;
+import org.iplass.mtp.entity.DeepCopyOption;
 import org.iplass.mtp.entity.Entity;
 import org.iplass.mtp.entity.EntityValidationException;
 import org.iplass.mtp.entity.GenericEntity;
@@ -47,7 +47,6 @@ import org.iplass.mtp.entity.definition.PropertyDefinition;
 import org.iplass.mtp.entity.definition.properties.BinaryProperty;
 import org.iplass.mtp.entity.definition.properties.ReferenceProperty;
 import org.iplass.mtp.entity.definition.properties.ReferenceType;
-import org.iplass.mtp.spi.ServiceRegistry;
 import org.iplass.mtp.util.StringUtil;
 import org.iplass.mtp.view.generic.DetailFormView;
 import org.iplass.mtp.view.generic.DetailFormView.CopyTarget;
@@ -270,7 +269,9 @@ public final class DetailViewCommand extends DetailCommandBase {
 			} else if (context.getCopyTarget() == CopyTarget.DEEP) {
 				try {
 					// ディープコピーの場合はデータ登録を行う
-					entity = em.deepCopy(oid, context.getDefinitionName());
+					DeepCopyOption option = new DeepCopyOption();
+					option.setShallowCopyLobData(context.isShallowCopyLobData());
+					entity = em.deepCopy(oid, context.getDefinitionName(), option);
 					data.setEntity((GenericEntity) entity);
 					data.setExecType(Constants.EXEC_TYPE_UPDATE);
 				} catch (EntityValidationException e) {
@@ -345,21 +346,20 @@ public final class DetailViewCommand extends DetailCommandBase {
 
 			if (isReset) entity.setValue(pd.getName(), null);
 			else {
-				boolean isShallow = ServiceRegistry.getRegistry().getService(GemConfigService.class).isShallowCopyLob();
 				//バイナリの場合はデータもコピー
 				if (pd instanceof BinaryProperty) {
 					Object value = null;
 					if (pd.getMultiplicity() == 1) {
 						BinaryReference br = entity.getValue(pd.getName());
 						// データをシャッローコピーするか判断します。
-						if (br != null) value = isShallow ? shallowCopyBinary(br) : copyBinary(br);
+						if (br != null) value = context.isShallowCopyLobData() ? shallowCopyBinary(br) : copyBinary(br);
 					} else {
 						BinaryReference[] br = entity.getValue(pd.getName());
 						if (br != null && br.length > 0) {
 							BinaryReference[] _br = new BinaryReference[br.length];
 							for (int i = 0; i < br.length; i++) {
 								// データをシャッローコピーするか判断します。
-								_br[i] = isShallow ? shallowCopyBinary(br[i]) : copyBinary(br[i]);
+								_br[i] = context.isShallowCopyLobData() ? shallowCopyBinary(br[i]) : copyBinary(br[i]);
 							}
 							value = _br;
 						}
