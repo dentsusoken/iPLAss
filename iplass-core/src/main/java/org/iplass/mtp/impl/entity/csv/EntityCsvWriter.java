@@ -269,12 +269,14 @@ public class EntityCsvWriter implements AutoCloseable, Flushable {
 				if (outText.startsWith("\"") && outText.endsWith("\"")) {
 					writer.write(outText);
 				} else {
-					writer.write(DOUBLE_QUOT);
-					writer.write(outText);
-					writer.write(DOUBLE_QUOT);
+					writer.write(DOUBLE_QUOT + outText + DOUBLE_QUOT);
 				}
 			} else {
-				writer.write(outText);
+				if (outText.startsWith(" ") || outText.endsWith(" ")) {
+					writer.write(DOUBLE_QUOT + outText + DOUBLE_QUOT);
+				} else {
+					writer.write(outText);
+				}
 			}
 		} catch (IOException e) {
 			throw new EntityCsvException(e);
@@ -341,7 +343,7 @@ public class EntityCsvWriter implements AutoCloseable, Flushable {
 				break;
 			case BINARY:
 				BinaryReference br = (BinaryReference)val;
-				Map<String, String> valueMap = new LinkedHashMap<String, String>();
+				Map<String, String> valueMap = new LinkedHashMap<>();
 				valueMap.put("lobid", String.valueOf((br.getLobId())));
 				valueMap.put("name", br.getName());
 				valueMap.put("type", br.getType());

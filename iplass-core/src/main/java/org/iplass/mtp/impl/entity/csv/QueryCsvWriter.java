@@ -239,7 +239,7 @@ public class QueryCsvWriter implements AutoCloseable {
 			return sv.getValue();
 		} else if (value instanceof BinaryReference) {
 			BinaryReference br = (BinaryReference)value;
-			Map<String, String> valueMap = new LinkedHashMap<String, String>();
+			Map<String, String> valueMap = new LinkedHashMap<>();
 			valueMap.put("lobid", String.valueOf((br.getLobId())));
 			valueMap.put("name", br.getName());
 			valueMap.put("type", br.getType());
@@ -300,12 +300,14 @@ public class QueryCsvWriter implements AutoCloseable {
 				if (outText.startsWith("\"") && outText.endsWith("\"")) {
 					writer.write(outText);
 				} else {
-					writer.write(DOUBLE_QUOT);
-					writer.write(outText);
-					writer.write(DOUBLE_QUOT);
+					writer.write(DOUBLE_QUOT + outText + DOUBLE_QUOT);
 				}
 			} else {
-				writer.write(outText);
+				if (outText.startsWith(" ") || outText.endsWith(" ")) {
+					writer.write(DOUBLE_QUOT + outText + DOUBLE_QUOT);
+				} else {
+					writer.write(outText);
+				}
 			}
 		} catch (IOException e) {
 			throw new EntityCsvException(e);
