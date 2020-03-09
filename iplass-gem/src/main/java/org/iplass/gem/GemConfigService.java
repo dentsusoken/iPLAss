@@ -99,7 +99,7 @@ public class GemConfigService implements Service {
 	/** 一括更新のコミット件数 */
 	private int bulkUpdateAllCommandBatchSize;
 
-	/** エンティティのコピーでLobをシャッローコピーするか */
+	/** エンティティをコピーする際にLobデータをシャッローコピーするか */
 	private boolean shallowCopyLobData;
 
 	private List<BinaryDownloadLoggingTargetProperty> binaryDownloadLoggingTargetProperty;
@@ -468,8 +468,8 @@ public class GemConfigService implements Service {
 	}
 
 	/**
-	 * エンティティのコピーでLobをシャッローコピーするかを取得します。
-	 * @return エンティティのコピーでLobをシャッローコピーするか
+	 * エンティティをコピーする際にLobデータをシャッローコピーするかを取得します。
+	 * @return エンティティをコピーする際にLobデータをシャッローコピーするか
 	 */
 	public boolean isShallowCopyLobData() {
 		return shallowCopyLobData;
