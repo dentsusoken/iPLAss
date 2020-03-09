@@ -99,6 +99,8 @@ public class GemConfigService implements Service {
 	/** 一括更新のコミット件数 */
 	private int bulkUpdateAllCommandBatchSize;
 
+	/** エンティティをコピーする際にLobデータをシャッローコピーするか */
+	private boolean shallowCopyLobData;
 
 	private List<BinaryDownloadLoggingTargetProperty> binaryDownloadLoggingTargetProperty;
 
@@ -235,6 +237,11 @@ public class GemConfigService implements Service {
 			this.bulkUpdateAllCommandBatchSize = 100;
 		}
 
+		if (config.getValue("shallowCopyLobData") != null) {
+			this.shallowCopyLobData = Boolean.valueOf(config.getValue("shallowCopyLobData"));
+		} else {
+			this.shallowCopyLobData = false;
+		}
 
 		skins = (List<Skin>) config.getBeans("skins");
 		themes = (List<Theme>) config.getBeans("themes");
@@ -458,6 +465,14 @@ public class GemConfigService implements Service {
 	 */
 	public int getBulkUpdateAllCommandBatchSize() {
 		return bulkUpdateAllCommandBatchSize;
+	}
+
+	/**
+	 * エンティティをコピーする際にLobデータをシャッローコピーするかを取得します。
+	 * @return エンティティをコピーする際にLobデータをシャッローコピーするか
+	 */
+	public boolean isShallowCopyLobData() {
+		return shallowCopyLobData;
 	}
 
 }

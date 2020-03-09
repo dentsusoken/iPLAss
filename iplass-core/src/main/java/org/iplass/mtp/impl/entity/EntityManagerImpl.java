@@ -39,6 +39,7 @@ import org.iplass.mtp.ApplicationException;
 import org.iplass.mtp.auth.AuthContext;
 import org.iplass.mtp.auth.User;
 import org.iplass.mtp.entity.BinaryReference;
+import org.iplass.mtp.entity.DeepCopyOption;
 import org.iplass.mtp.entity.DeleteCondition;
 import org.iplass.mtp.entity.DeleteOption;
 import org.iplass.mtp.entity.Entity;
@@ -1160,10 +1161,15 @@ public class EntityManagerImpl implements EntityManager {
 
 	@Override
 	public Entity deepCopy(String oid, String definitionName) {
+		return deepCopy(oid, definitionName, new DeepCopyOption());
+	}
+
+	@Override
+	public Entity deepCopy(String oid, String definitionName, DeepCopyOption option) {
 		try {
 			ArrayList<EntityProcessCallback> callbacks = new ArrayList<EntityProcessCallback>();
 			Entity entity = load(oid, definitionName);
-			resetProperty(entity, callbacks);
+			resetProperty(entity, callbacks, option.isShallowCopyLobData());
 			String copyOid = insert(entity);
 
 			for (EntityProcessCallback callback : callbacks) {
@@ -1184,7 +1190,7 @@ public class EntityManagerImpl implements EntityManager {
 	}
 
 	@SuppressWarnings("unchecked")
-	private void resetProperty(Entity entity, ArrayList<EntityProcessCallback> callbacks) {
+	private void resetProperty(Entity entity, ArrayList<EntityProcessCallback> callbacks, boolean shallowCopyLobData) {
 //		ExecuteContext ctx = ExecuteContext.getCurrentContext();
 		EntityContext entityContext = EntityContext.getCurrentContext();
 		EntityDefinition ed = getEntityHandler(entity.getDefinitionName()).getMetaData().currentConfig(entityContext);
@@ -1199,13 +1205,13 @@ public class EntityManagerImpl implements EntityManager {
 				Object value = null;
 				if (pd.getMultiplicity() == 1) {
 					BinaryReference br = entity.getValue(pd.getName());
-					if (br != null) value = createBinaryReference(br.getName(), br.getType(), getInputStream(br));
+					if (br != null) value = shallowCopyLobData ? br.copy() : createBinaryReference(br.getName(), br.getType(), getInputStream(br));
 				} else {
 					BinaryReference[] br = entity.getValue(pd.getName());
 					if (br != null && br.length > 0) {
 						BinaryReference[] _br = new BinaryReference[br.length];
 						for (int i = 0; i < br.length; i++) {
-							_br[i] = createBinaryReference(br[i].getName(), br[i].getType(), getInputStream(br[i]));
+							_br[i] = shallowCopyLobData ? br[i].copy() : createBinaryReference(br[i].getName(), br[i].getType(), getInputStream(br[i]));
 						}
 						value = _br;
 					}
@@ -1220,7 +1226,7 @@ public class EntityManagerImpl implements EntityManager {
 				if (pd.getMultiplicity() == 1) {
 					Entity ref = entity.getValue(pd.getName());
 					try {
-						value = copyReference(ref, rp, callbacks);
+						value = copyReference(ref, rp, callbacks, shallowCopyLobData);
 					} catch (EntityValidationException e) {
 						setParentPropNameToValidateResult(e, rp);
 						throw e;
@@ -1231,7 +1237,7 @@ public class EntityManagerImpl implements EntityManager {
 					if (_ref != null) {
 						try {
 							for (Entity ref : _ref) {
-								Entity ret = copyReference(ref, rp, callbacks);
+								Entity ret = copyReference(ref, rp, callbacks, shallowCopyLobData);
 								if (ret != null)
 									array.add(ret);
 							}
@@ -1275,7 +1281,7 @@ public class EntityManagerImpl implements EntityManager {
 		}
 	}
 
-	private Entity copyReference(final Entity entity, final ReferenceProperty rp, ArrayList<EntityProcessCallback> callbacks) {
+	private Entity copyReference(final Entity entity, final ReferenceProperty rp, ArrayList<EntityProcessCallback> callbacks, boolean shallowCopyLobData) {
 		if (entity == null) return null;
 		Entity ret = null;
 		EntityDefinition ed = getEntityHandler(rp.getObjectDefinitionName()).getMetaData().currentConfig(EntityContext.getCurrentContext());
@@ -1293,7 +1299,7 @@ public class EntityManagerImpl implements EntityManager {
 			//親子関係
 			if (rp.getMappedBy() == null || rp.getMappedBy().isEmpty()) {
 				//参照、この時点で登録を行う
-				ret = deepCopy(entity.getOid(), entity.getDefinitionName());
+				ret = deepCopy(entity.getOid(), entity.getDefinitionName(), new DeepCopyOption(shallowCopyLobData));
 			} else {
 				//被参照、参照元が登録された後に登録する
 				//戻りはnull、callback内で追加後に親にデータを設定
@@ -1307,7 +1313,7 @@ public class EntityManagerImpl implements EntityManager {
 						//参照先の再設定があるので直接deepCopyを呼べない
 						ArrayList<EntityProcessCallback> callbacks = new ArrayList<EntityProcessCallback>();
 						Entity ref = load(entity.getOid(), entity.getDefinitionName());
-						resetProperty(ref, callbacks);
+						resetProperty(ref, callbacks, shallowCopyLobData);
 						ref.setValue(rp.getMappedBy(), dataModel);
 						try {
 							insert(ref);
