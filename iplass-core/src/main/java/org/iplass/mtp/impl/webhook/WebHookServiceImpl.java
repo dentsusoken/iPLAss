@@ -220,6 +220,9 @@ public class WebHookServiceImpl extends AbstractTypedMetaDataService<MetaWebHook
 		logger.debug("WebHook:"+webHook.getTemplateName()+" Attempted.");
 		try {
 			for (WebEndPointRuntime subscriber : webHook.getWebHookEndPointRuntimeList()) {
+				if (webHook.getHttpMethod()==null) {
+					logger.debug("WebHook:"+webHook.getTemplateName()+" request method undefined.");
+				}
 				HttpRequestBase httpRequest = getReqestMethodObject(webHook.getHttpMethod());
 				HttpContext httpContext = new BasicHttpContext();
 				httpContext.setAttribute(WEBHOOK_ISRETRY, webHookIsRetry);
@@ -227,10 +230,16 @@ public class WebHookServiceImpl extends AbstractTypedMetaDataService<MetaWebHook
 				httpContext.setAttribute(WEBHOOK_RETRY_INTERVAL, webHookRetryInterval);
 
 				//payload
-				if (isEnclosingRequest(httpRequest)) {
-					StringEntity se = new StringEntity(subscriber.getContentForThisEndPoint(),"UTF-8");
-					se.setContentType(webHook.getContentType());
-					((HttpEntityEnclosingRequestBase) httpRequest).setEntity(se);
+				if (subscriber.getContentForThisEndPoint()!=null&&!subscriber.getContentForThisEndPoint().replaceAll("\\s","").isEmpty()) {
+					if (isEnclosingRequest(httpRequest)) {
+						StringEntity se = new StringEntity(subscriber.getContentForThisEndPoint(),"UTF-8");
+						se.setContentType(webHook.getContentType());
+						((HttpEntityEnclosingRequestBase) httpRequest).setEntity(se);
+					}
+				} else {
+					if (webHook.getContentType()!=null&&webHook.getContentType().replaceAll("\\s","").isEmpty()) {
+						httpRequest.setHeader(HttpHeaders.CONTENT_TYPE, webHook.getContentType());
+					}
 				}
 
 				//and headers
@@ -452,64 +461,74 @@ public class WebHookServiceImpl extends AbstractTypedMetaDataService<MetaWebHook
 		}
 		binding.put("webhook", webHook);
 
-		for (WebEndPointRuntime ws: webHook.getWebHookEndPointRuntimeList()) {
+		for (WebEndPointRuntime webEndPointRuntime: webHook.getWebHookEndPointRuntimeList()) {
 			if (contentTemplate != null) {
 				StringWriter sw = new StringWriter();
 				GroovyTemplateBinding gtb = new GroovyTemplateBinding(sw,binding);
-				gtb.setVariable(WEBHOOK_SECURITY_BINDING_HMACTOKEN, ws.getHmac());
-				if (ws.getHeaderAuthType().equals("WHBA")) {
-					String[] basicArray = ws.getHeaderAuthContent().replaceAll("\\s","").split(":");
-					if (basicArray==null||basicArray.length<2) {
-					} else {
-						gtb.setVariable(WEBHOOK_SECURITY_BINDING_BASICNAME, basicArray[0]);
-						gtb.setVariable(WEBHOOK_SECURITY_BINDING_BASICPASSWORD, basicArray[1]);
+				gtb.setVariable(WEBHOOK_SECURITY_BINDING_HMACTOKEN, webEndPointRuntime.getHmac());
+				if (webEndPointRuntime.getHeaderAuthType()!=null) {
+					if (webEndPointRuntime.getHeaderAuthType().equals("WHBA")) {
+						String[] basicArray = null;
+						if (webEndPointRuntime.getHeaderAuthContent()!=null) {
+							basicArray = webEndPointRuntime.getHeaderAuthContent().replaceAll("\\s","").split(":");
+						} 
+						if (basicArray==null||basicArray.length<2) {
+						} else {
+							gtb.setVariable(WEBHOOK_SECURITY_BINDING_BASICNAME, basicArray[0]);
+							gtb.setVariable(WEBHOOK_SECURITY_BINDING_BASICPASSWORD, basicArray[1]);
+						}
+					} else if (webEndPointRuntime.getHeaderAuthType().equals("WHBT")){
+						gtb.setVariable(WEBHOOK_SECURITY_BINDING_BEARER, webEndPointRuntime.getHeaderAuthContent());	
 					}
-				} else if (ws.getHeaderAuthType().equals("WHBT")){
-					gtb.setVariable(WEBHOOK_SECURITY_BINDING_BEARER, ws.getHeaderAuthContent());	
 				}
 				try {
 					contentTemplate.doTemplate(gtb);
 				} catch (IOException e) {
 					throw new ScriptRuntimeException(e);
 				}
-				ws.setContentForThisEndPoint(sw.toString());
+				webEndPointRuntime.setContentForThisEndPoint(sw.toString());
 			}
 
 			//process hmac
 			String hmacResult =null;
-			if (ws.getHmac()!=null) {
-				if (!ws.getHmac().isEmpty()) {
-					hmacResult= getHmacSha256(ws.getHmac(), ws.getContentForThisEndPoint());
-					ws.setHmacResult(hmacResult);
+			if (webEndPointRuntime.getHmac()!=null) {
+				if (!webEndPointRuntime.getHmac().isEmpty()) {
+					hmacResult= getHmacSha256(webEndPointRuntime.getHmac(), webEndPointRuntime.getContentForThisEndPoint());
+					webEndPointRuntime.setHmacResult(hmacResult);
 				}
 			}
 			
 			//retrieve url and compose it with string query-> complete url template
-			String fullUrl = new String(ws.getUrl() + urlQuery);
+			String fullUrl = new String(webEndPointRuntime.getUrl() + urlQuery);
 			fullUrl = fullUrl.replace("\n", "").replaceAll("\\s+", "");
-			ws.setUrl(fullUrl);
-			GroovyTemplate urlTemp = GroovyTemplateCompiler.compile(fullUrl, "WebHookTemplate_Subscriber_" + ws.getEndPointId() + "_" + ws.getEndPointId(), (GroovyScriptEngine) se);
+			webEndPointRuntime.setUrl(fullUrl);
+			GroovyTemplate urlTemp = GroovyTemplateCompiler.compile(fullUrl, "WebHookTemplate_Subscriber_" + webEndPointRuntime.getEndPointId() + "_" + webEndPointRuntime.getEndPointId(), (GroovyScriptEngine) se);
 			if (urlTemp!=null) {
 				StringWriter sw = new StringWriter();
 				GroovyTemplateBinding gtb = new GroovyTemplateBinding(sw,binding);
-				gtb.setVariable(WEBHOOK_SECURITY_BINDING_HMACTOKEN, ws.getHmac());
-				gtb.setVariable(WEBHOOK_SECURITY_BINDING_HMACRESULT, (ws.getHmacResult()==null||ws.getHmacResult().length()==0)?null:ws.getHmacResult());
-				if (ws.getHeaderAuthType().equals("WHBA")) {
-					String[] basicArray = ws.getHeaderAuthContent().replaceAll("\\s","").split(":");
-					if (basicArray==null||basicArray.length<2) {
-					} else {
-						gtb.setVariable(WEBHOOK_SECURITY_BINDING_BASICNAME, basicArray[0]);
-						gtb.setVariable(WEBHOOK_SECURITY_BINDING_BASICPASSWORD, basicArray[1]);
+				gtb.setVariable(WEBHOOK_SECURITY_BINDING_HMACTOKEN, webEndPointRuntime.getHmac());
+				gtb.setVariable(WEBHOOK_SECURITY_BINDING_HMACRESULT, (webEndPointRuntime.getHmacResult()==null||webEndPointRuntime.getHmacResult().length()==0)?null:webEndPointRuntime.getHmacResult());
+				if (webEndPointRuntime.getHeaderAuthType()!=null) {
+					if (webEndPointRuntime.getHeaderAuthType().equals("WHBA")) {
+						String[] basicArray = null;
+						if (webEndPointRuntime.getHeaderAuthContent()!=null) {
+							basicArray = webEndPointRuntime.getHeaderAuthContent().replaceAll("\\s","").split(":");
+						} 
+						if (basicArray==null||basicArray.length<2) {
+						} else {
+							gtb.setVariable(WEBHOOK_SECURITY_BINDING_BASICNAME, basicArray[0]);
+							gtb.setVariable(WEBHOOK_SECURITY_BINDING_BASICPASSWORD, basicArray[1]);
+						}
+					} else if (webEndPointRuntime.getHeaderAuthType().equals("WHBT")){
+						gtb.setVariable(WEBHOOK_SECURITY_BINDING_BEARER, webEndPointRuntime.getHeaderAuthContent());
 					}
-				} else if (ws.getHeaderAuthType().equals("WHBT")){
-					gtb.setVariable(WEBHOOK_SECURITY_BINDING_BEARER, ws.getHeaderAuthContent());
 				}
 				try {
 					urlTemp.doTemplate(gtb);
 				} catch (IOException e) {
 					throw new ScriptRuntimeException(e);
 				}
-				ws.setUrl(sw.toString().replace("\n", "").replaceAll("\\s",""));//スベース、改行抜き。
+				webEndPointRuntime.setUrl(sw.toString().replace("\n", "").replaceAll("\\s",""));//スベース、改行抜き。
 			}
 		}
 		return webHook;
