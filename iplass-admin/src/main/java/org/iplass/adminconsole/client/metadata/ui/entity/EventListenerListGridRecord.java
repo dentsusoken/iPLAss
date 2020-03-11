@@ -55,7 +55,7 @@ public class EventListenerListGridRecord extends ListGridRecord {
 	public static final String NBEFOREVALIDATE = "notifyBeforeValidate";
 	public static final String WEBENDPOINTLIST="webEndPointList";
 	public static final String WEBHOOKRESULTHANLDER="webHookResultHandler";
-	public static final String ISSYNCHRONOUS="isSyncrhonous";
+	public static final String SYNCHRONOUS="syncrhonous";
 
 	public static final String GP = "gp";
 
@@ -300,11 +300,11 @@ public class EventListenerListGridRecord extends ListGridRecord {
 		return getAttribute(WEBHOOKRESULTHANLDER);
 	}
 
-	public void setIsSyncrhonous(boolean value) {
-		setAttribute(ISSYNCHRONOUS, value);
+	public void setSyncrhonous(boolean value) {
+		setAttribute(SYNCHRONOUS, value);
 	}
 
 	public boolean isSyncrhonous() {
-		return getAttributeAsBoolean(ISSYNCHRONOUS);
+		return getAttributeAsBoolean(SYNCHRONOUS);
 	}
 }

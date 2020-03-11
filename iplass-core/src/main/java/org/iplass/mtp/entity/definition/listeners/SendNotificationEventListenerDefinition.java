@@ -34,9 +34,9 @@ public class SendNotificationEventListenerDefinition extends EventListenerDefini
 
 	
 	/**ウェッブフックだけの設定項目*/
-	private boolean isSynchronous;
+	private boolean synchronous;
 	private List<String> endPointDefList;
-	private String webHookResultHandlerDef;
+	private String resultHandler;
 
 	public SendNotificationType getNotificationType() {
 		return notificationType;
@@ -70,12 +70,12 @@ public class SendNotificationEventListenerDefinition extends EventListenerDefini
 		this.listenEvent = listenEvent;
 	}
 
-	public boolean getIsSynchronous() {
-		return isSynchronous;
+	public boolean isSynchronous() {
+		return synchronous;
 	}
 
-	public void setIsSynchronous(boolean isSynchronous) {
-		this.isSynchronous = isSynchronous;
+	public void setSynchronous(boolean isSynchronous) {
+		this.synchronous = isSynchronous;
 	}
 
 	public List<String> getEndPointDefList() {
@@ -86,11 +86,11 @@ public class SendNotificationEventListenerDefinition extends EventListenerDefini
 		this.endPointDefList = endPointDefList;
 	}
 
-	public String getWebHookResultHandlerDef() {
-		return webHookResultHandlerDef;
+	public String getResultHandler() {
+		return resultHandler;
 	}
 
-	public void setWebHookResultHandlerDef(String webHookResultHandlerDef) {
-		this.webHookResultHandlerDef = webHookResultHandlerDef;
+	public void setResultHandler(String resultHandler) {
+		this.resultHandler = resultHandler;
 	}
 }

@@ -72,7 +72,9 @@ import org.iplass.mtp.impl.webhook.template.MetaWebHookTemplate.WebHookTemplateR
 import org.iplass.mtp.spi.Config;
 import org.iplass.mtp.tenant.Tenant;
 import org.iplass.mtp.webhook.WebHook;
-import org.iplass.mtp.webhook.template.definition.WebHookHeader;
+import org.iplass.mtp.webhook.WebHookHeader;
+import org.iplass.mtp.webhook.WebHookResponse;
+import org.iplass.mtp.webhook.template.definition.WebHookHeaderDefinition;
 import org.iplass.mtp.webhook.template.definition.WebHookTemplateDefinition;
 import org.iplass.mtp.webhook.template.definition.WebHookTemplateDefinitionManager;
 import org.iplass.mtp.webhook.template.endpointaddress.WebEndPointDefinitionManager;
@@ -88,7 +90,6 @@ public class WebHookServiceImpl extends AbstractTypedMetaDataService<MetaWebHook
 	public final String WEBHOOK_HMACTOKEN_ALGORITHM = "webHookHmacHashAlgorithm";
 	public final String WEBHOOK_HMACTOKEN_DEFAULTNAME = "webHookHmacTokenDefaultName";
 	public final String WEBHOOK_HTTP_CLIENT_CONFIG = "httpClientConfig";
-	public final String CONTENT_TYPE_FORM_URLENCODED= "application/x-www-form-urlencoded";
 	private AsyncTaskManager atm;
 	private WebEndPointDefinitionManager wepdm;
 	private boolean webHookIsRetry;
@@ -138,7 +139,7 @@ public class WebHookServiceImpl extends AbstractTypedMetaDataService<MetaWebHook
 			switch (name) {
 			case WEBHOOK_ISRETRY:
 				 String tempIsRetry = config.getValue(WEBHOOK_ISRETRY);
-				 if (tempIsRetry.replaceAll("\\s","").toLowerCase().equals("true")) {
+				 if ("true".equals(tempIsRetry.replaceAll("\\s","").toLowerCase())) {
 					 webHookIsRetry = true;
 				 } else {
 					 webHookIsRetry = false;
@@ -244,7 +245,7 @@ public class WebHookServiceImpl extends AbstractTypedMetaDataService<MetaWebHook
 
 				//and headers
 				if (webHook.getHeaders()!=null) {
-					for(WebHookHeader headerEntry: webHook.getHeaders()) {
+					for(WebHookHeaderDefinition headerEntry: webHook.getHeaders()) {
 						httpRequest.setHeader(headerEntry.getKey(), headerEntry.getValue());
 					}
 				}
@@ -266,10 +267,10 @@ public class WebHookServiceImpl extends AbstractTypedMetaDataService<MetaWebHook
 				}else {
 					String scheme = null;
 					String authContent = null;
-					if (subscriber.getHeaderAuthType().equals("WHBT")) {
+					if ("WHBT".equals(subscriber.getHeaderAuthType())) {
 						scheme = "Bearer";
 						authContent = subscriber.getHeaderAuthContent();
-					} else if (subscriber.getHeaderAuthType().equals("WHBA")) {
+					} else if ("WHBA".equals(subscriber.getHeaderAuthType())) {
 						scheme = "Basic";
 						authContent = Base64.encodeBase64String(subscriber.getHeaderAuthContent().getBytes());
 					}
@@ -437,8 +438,10 @@ public class WebHookServiceImpl extends AbstractTypedMetaDataService<MetaWebHook
 			whr.setContentEncoding(response.getEntity().getContentEncoding()==null?null:response.getEntity().getContentEncoding().getValue());
 		}
 		ArrayList<WebHookHeader> headers = new ArrayList<WebHookHeader>();
-		for (Header hd : response.getAllHeaders()) {
-			headers.add(new WebHookHeader(hd.getName(), hd.getValue()));
+		if (response.getAllHeaders()!=null) {
+			for (Header hd : response.getAllHeaders()) {
+				headers.add(new WebHookHeader(hd.getName(), hd.getValue()));
+			}
 		}
 		whr.setHeaders(headers);
 		return whr;
@@ -467,7 +470,7 @@ public class WebHookServiceImpl extends AbstractTypedMetaDataService<MetaWebHook
 				GroovyTemplateBinding gtb = new GroovyTemplateBinding(sw,binding);
 				gtb.setVariable(WEBHOOK_SECURITY_BINDING_HMACTOKEN, webEndPointRuntime.getHmac());
 				if (webEndPointRuntime.getHeaderAuthType()!=null) {
-					if (webEndPointRuntime.getHeaderAuthType().equals("WHBA")) {
+					if ("WHBA".equals(webEndPointRuntime.getHeaderAuthType())) {
 						String[] basicArray = null;
 						if (webEndPointRuntime.getHeaderAuthContent()!=null) {
 							basicArray = webEndPointRuntime.getHeaderAuthContent().replaceAll("\\s","").split(":");
@@ -477,7 +480,7 @@ public class WebHookServiceImpl extends AbstractTypedMetaDataService<MetaWebHook
 							gtb.setVariable(WEBHOOK_SECURITY_BINDING_BASICNAME, basicArray[0]);
 							gtb.setVariable(WEBHOOK_SECURITY_BINDING_BASICPASSWORD, basicArray[1]);
 						}
-					} else if (webEndPointRuntime.getHeaderAuthType().equals("WHBT")){
+					} else if ("WHBT".equals(webEndPointRuntime.getHeaderAuthType())){
 						gtb.setVariable(WEBHOOK_SECURITY_BINDING_BEARER, webEndPointRuntime.getHeaderAuthContent());	
 					}
 				}
@@ -509,7 +512,7 @@ public class WebHookServiceImpl extends AbstractTypedMetaDataService<MetaWebHook
 				gtb.setVariable(WEBHOOK_SECURITY_BINDING_HMACTOKEN, webEndPointRuntime.getHmac());
 				gtb.setVariable(WEBHOOK_SECURITY_BINDING_HMACRESULT, (webEndPointRuntime.getHmacResult()==null||webEndPointRuntime.getHmacResult().length()==0)?null:webEndPointRuntime.getHmacResult());
 				if (webEndPointRuntime.getHeaderAuthType()!=null) {
-					if (webEndPointRuntime.getHeaderAuthType().equals("WHBA")) {
+					if ("WHBA".equals(webEndPointRuntime.getHeaderAuthType())) {
 						String[] basicArray = null;
 						if (webEndPointRuntime.getHeaderAuthContent()!=null) {
 							basicArray = webEndPointRuntime.getHeaderAuthContent().replaceAll("\\s","").split(":");
@@ -519,9 +522,10 @@ public class WebHookServiceImpl extends AbstractTypedMetaDataService<MetaWebHook
 							gtb.setVariable(WEBHOOK_SECURITY_BINDING_BASICNAME, basicArray[0]);
 							gtb.setVariable(WEBHOOK_SECURITY_BINDING_BASICPASSWORD, basicArray[1]);
 						}
-					} else if (webEndPointRuntime.getHeaderAuthType().equals("WHBT")){
+					} else if ("WHBT".equals(webEndPointRuntime.getHeaderAuthType())){
 						gtb.setVariable(WEBHOOK_SECURITY_BINDING_BEARER, webEndPointRuntime.getHeaderAuthContent());
 					}
+
 				}
 				try {
 					urlTemp.doTemplate(gtb);

@@ -44,10 +44,10 @@ public class WebHookTemplateDefinition implements Definition {
 	private String tokenHeader;//セキュリテぃトークンのヘッダー名を設置
 	private String httpMethod;
 
-	private Boolean synchronous;
+	private boolean synchronous;
 
 	/** headers */
-	private ArrayList<WebHookHeader> headers;
+	private ArrayList<WebHookHeaderDefinition> headers;
 	
 	public WebHookTemplateDefinition() {
 	}
@@ -98,32 +98,28 @@ public class WebHookTemplateDefinition implements Definition {
 		this.description = description;
 	}
 
-	public Boolean isSynchronous() {
-		if (synchronous == null) {
-			return false;
-		}
-		
+	public boolean isSynchronous() {
 		return synchronous;
 	}
 
-	public void setSynchronous(Boolean synchronous) {
+	public void setSynchronous(boolean synchronous) {
 		this.synchronous = synchronous;
 	}
 	
-	public ArrayList<WebHookHeader> getHeaders() {
+	public ArrayList<WebHookHeaderDefinition> getHeaders() {
 		if (headers==null) {
-			this.headers = new ArrayList<WebHookHeader>();
+			this.headers = new ArrayList<WebHookHeaderDefinition>();
 		}
 		return headers;
 	}
 
-	public void setHeaders(ArrayList<WebHookHeader> headers) {
+	public void setHeaders(ArrayList<WebHookHeaderDefinition> headers) {
 		this.headers = headers;
 	}
 	
-	public void addHeaders(WebHookHeader entry) {
+	public void addHeaders(WebHookHeaderDefinition entry) {
 		if (headers == null) {
-			headers = new ArrayList<WebHookHeader>();
+			headers = new ArrayList<WebHookHeaderDefinition>();
 		}
 		this.headers.add(entry);
 	}

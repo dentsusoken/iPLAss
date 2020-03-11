@@ -23,10 +23,9 @@
  */
 package org.iplass.mtp.webhook;
 
-import java.util.ArrayList;
 import java.util.List;
 import org.iplass.mtp.impl.webhook.endpointaddress.MetaWebEndPointDefinition.WebEndPointRuntime;
-import org.iplass.mtp.webhook.template.definition.WebHookHeader;
+import org.iplass.mtp.webhook.template.definition.WebHookHeaderDefinition;
 
 /**
  * @author lisf06
@@ -46,11 +45,11 @@ public class WebHook  {
 	private List<WebEndPointRuntime> webHookEndPointRuntimeList;
 
 	private WebHookResponseHandler resultHandler;
-	String urlQuery;
+	private String urlQuery;
 	private String headerAuthTypeName;
 
 	/** headers */
-	private ArrayList<WebHookHeader> headers;
+	private List<WebHookHeaderDefinition> headers;
 	private String tokenHeader;
 	
 
@@ -114,11 +113,11 @@ public class WebHook  {
 		this.webHookId = webHookId;
 	}
 
-	public ArrayList<WebHookHeader> getHeaders() {
+	public List<WebHookHeaderDefinition> getHeaders() {
 		return headers;
 	}
 
-	public void setHeaders(ArrayList<WebHookHeader> headers) {
+	public void setHeaders(List<WebHookHeaderDefinition> headers) {
 		this.headers = headers;
 	}
 	

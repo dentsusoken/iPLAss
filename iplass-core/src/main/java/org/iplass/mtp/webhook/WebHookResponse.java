@@ -17,11 +17,9 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
-package org.iplass.mtp.impl.webhook;
+package org.iplass.mtp.webhook;
 
 import java.util.List;
-
-import org.iplass.mtp.webhook.template.definition.WebHookHeader;
 
 public class WebHookResponse {
 

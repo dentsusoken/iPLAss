@@ -39,7 +39,7 @@ import org.iplass.mtp.impl.entity.MetaEventListener;
 import org.iplass.mtp.impl.script.Script;
 import org.iplass.mtp.impl.script.ScriptContext;
 import org.iplass.mtp.impl.script.ScriptEngine;
-import org.iplass.mtp.impl.webhook.responsehandler.DefaultWebHookResponseHandlerImpl;
+import org.iplass.mtp.webhook.responsehandler.DefaultWebHookResponseHandlerImpl;
 import org.iplass.mtp.mail.Mail;
 import org.iplass.mtp.mail.MailManager;
 import org.iplass.mtp.pushnotification.PushNotification;
@@ -74,9 +74,9 @@ public class MetaSendNotificationEventListener extends MetaEventListener {
 	private List<EventType> listenEvent;
 
 	/**ウェッブフックだけの設定項目*/
-	private boolean isSynchronous;
+	private boolean synchronous;
 	private List<String> endPointDefList;
-	private String webHookResultHandlerDef;
+	private String resultHandler;
 
 	public SendNotificationType getNotificationType() {
 		return notificationType;
@@ -118,20 +118,20 @@ public class MetaSendNotificationEventListener extends MetaEventListener {
 		this.endPointDefList = endPointDefList;
 	}
 	
-	public String getWebHookResultHandlerDef() {
-		return webHookResultHandlerDef;
+	public String getResultHandler() {
+		return resultHandler;
 	}
 
-	public void setWebHookResultHandlerDef(String webHookResultHandlerDef) {
-		this.webHookResultHandlerDef = webHookResultHandlerDef;
+	public void setResultHandler(String resultHandler) {
+		this.resultHandler = resultHandler;
 	}
 
-	public boolean getIsSynchronous() {
-		return isSynchronous;
+	public boolean isSynchronous() {
+		return synchronous;
 	}
 
-	public void setIsSynchronous(boolean isSynchronous) {
-		this.isSynchronous = isSynchronous;
+	public void setSynchronous(boolean isSynchronous) {
+		this.synchronous = isSynchronous;
 	}
 
 	@Override
@@ -141,12 +141,12 @@ public class MetaSendNotificationEventListener extends MetaEventListener {
 		copy.notificationType = notificationType;
 		copy.tmplDefName = tmplDefName;
 		copy.notificationCondScript = notificationCondScript;
-		copy.webHookResultHandlerDef = webHookResultHandlerDef;
+		copy.resultHandler = resultHandler;
 		if (listenEvent != null) {
 			copy.listenEvent = new ArrayList<EventType>();
 			copy.listenEvent.addAll(listenEvent);
 		}
-		copy.setIsSynchronous(isSynchronous);
+		copy.setSynchronous(synchronous);
 		if (endPointDefList !=null) {
 			copy.endPointDefList = new ArrayList<>(endPointDefList );
 			copy.endPointDefList.addAll(endPointDefList);
@@ -192,7 +192,7 @@ public class MetaSendNotificationEventListener extends MetaEventListener {
 		} else if (!tmplDefName.equals(other.tmplDefName)) {
 			return false;
 			
-		} else if (!isSynchronous==other.isSynchronous) {
+		} else if (!synchronous==other.synchronous) {
 			return false;
 		} else if (endPointDefList==null) {
 			if (other.endPointDefList!=null) {
@@ -200,11 +200,11 @@ public class MetaSendNotificationEventListener extends MetaEventListener {
 			}
 		} else if(!endPointDefList.equals(other.endPointDefList)) {
 			return false;
-		} else if (webHookResultHandlerDef==null) {
-			if (other.webHookResultHandlerDef!=null) {
+		} else if (resultHandler==null) {
+			if (other.resultHandler!=null) {
 				return false;
 			}
-		} else if (!webHookResultHandlerDef.equals(other.webHookResultHandlerDef)) {
+		} else if (!resultHandler.equals(other.resultHandler)) {
 			return false;
 		}
 		
@@ -218,7 +218,7 @@ public class MetaSendNotificationEventListener extends MetaEventListener {
 		notificationType = d.getNotificationType();
 		tmplDefName = d.getTmplDefName();
 		notificationCondScript = d.getNotificationCondScript();
-		webHookResultHandlerDef = d.getWebHookResultHandlerDef();
+		resultHandler = d.getResultHandler();
 		if (d.getListenEvent() != null) {
 			listenEvent = new ArrayList<EventType>();
 			listenEvent.addAll(d.getListenEvent());
@@ -242,14 +242,14 @@ public class MetaSendNotificationEventListener extends MetaEventListener {
 		d.setNotificationType(notificationType);
 		d.setTmplDefName(tmplDefName);
 		d.setNotificationCondScript(notificationCondScript);
-		d.setWebHookResultHandlerDef(webHookResultHandlerDef);
+		d.setResultHandler(resultHandler);
 		
 		if (listenEvent != null) {
 			List<EventType> es = new ArrayList<EventType>();
 			es.addAll(listenEvent);
 			d.setListenEvent(es);
 		}
-		d.setIsSynchronous(isSynchronous);
+		d.setSynchronous(synchronous);
 		if (endPointDefList != null) {
 			List<String> es = new ArrayList<String>();
 			es.addAll(endPointDefList);
@@ -586,13 +586,13 @@ public class MetaSendNotificationEventListener extends MetaEventListener {
 		protected Object createNotification(Entity entity, EventType type, EntityEventContext context) {
 			Map<String, Object> bindings = generateBindings(entity, type, context);
 			WebHook wh = wm.createWebHook(tmplDefName, bindings, endPointDefList);
-			wh.setSynchronous(isSynchronous);
+			wh.setSynchronous(synchronous);
 			WebHookResponseHandler whrh;
-			if (webHookResultHandlerDef==null||webHookResultHandlerDef.isEmpty()) {
+			if (resultHandler==null||resultHandler.isEmpty()) {
 				whrh= new DefaultWebHookResponseHandlerImpl();
 			} else {
 				try {
-					whrh= (WebHookResponseHandler) Class.forName(webHookResultHandlerDef).newInstance();
+					whrh= (WebHookResponseHandler) Class.forName(resultHandler).newInstance();
 				} catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
 					whrh= new DefaultWebHookResponseHandlerImpl();
 				}

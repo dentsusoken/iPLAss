@@ -226,9 +226,9 @@ public class EventListenerListGrid extends ListGrid {
 			record.setTmplDefName(snDef.getTmplDefName());
 			record.setNotificationCondScript(snDef.getNotificationCondScript());
 			
-			record.setIsSyncrhonous(snDef.getIsSynchronous());
+			record.setSyncrhonous(snDef.isSynchronous());
 			record.setWebEndPointList(snDef.getEndPointDefList());
-			record.setWebHookResultHandler(snDef.getWebHookResultHandlerDef());
+			record.setWebHookResultHandler(snDef.getResultHandler());
 
 			List<EventType> lstEType = snDef.getListenEvent();
 			if (lstEType != null) {
@@ -315,9 +315,9 @@ public class EventListenerListGrid extends ListGrid {
 				snDef.setTmplDefName(record.getTmplDefName());
 				snDef.setNotificationCondScript(record.getNotificationCondScript());
 
-				snDef.setIsSynchronous(record.isSyncrhonous());
+				snDef.setSynchronous(record.isSyncrhonous());
 				snDef.setEndPointDefList(record.getWebEndPointList());
-				snDef.setWebHookResultHandlerDef(record.getWebHookResultHandler());
+				snDef.setResultHandler(record.getWebHookResultHandler());
 
 				List<EventType> lstEType = new ArrayList<EventType>();
 				if (record.isNotifyAfterD()) { lstEType.add(EventType.AFTER_DELETE); }
@@ -401,7 +401,7 @@ public class EventListenerListGrid extends ListGrid {
 		private VLayout webhookLayout;
 		private DynamicForm webHookSettingsForm;
 		private CheckboxItem webHookIsSynchronousItem;
-		private TextItem webHookResultHandlerItem;
+		private TextItem notificationResultHandlerItem;
 		private WebHookEndPointGrid webHookEndPointGrid;
 
 		//NotificationCondition
@@ -583,9 +583,9 @@ public class EventListenerListGrid extends ListGrid {
 			webhookLayout.setWidth("100%");
 			webHookSettingsForm = new MtpForm();
 			webHookSettingsForm.setNumCols(2);
-			webHookResultHandlerItem = new TextItem("webHookResultHandler","ResuleHandlerImplClassName");
-			webHookResultHandlerItem.setWidth(575);
-			webHookSettingsForm.setItems(webHookResultHandlerItem);
+			notificationResultHandlerItem = new TextItem("ResultHandler","ResuleHandlerImplClassName");
+			notificationResultHandlerItem.setWidth(575);
+			webHookSettingsForm.setItems(notificationResultHandlerItem);
 			
 			webHookIsSynchronousItem = new CheckboxItem("webHookIsSynchronous","Synchronous");
 			webHookIsSynchronousItem.setShowTitle(false);
@@ -768,7 +768,7 @@ public class EventListenerListGrid extends ListGrid {
 			notifyBeforeValidateItem.setValue(target.isNotifyBeforeValidate());
 			
 			webHookIsSynchronousItem.setValue(target.isSyncrhonous());
-			webHookResultHandlerItem.setValue(target.getWebHookResultHandler());
+			notificationResultHandlerItem.setValue(target.getWebHookResultHandler());
 			webHookEndPointGrid.initializeGrid(target.getWebEndPointList(), false);
 
 			withoutMappedByReferenceItem.setValue(target.isWithoutMappedByReference());
@@ -939,8 +939,8 @@ public class EventListenerListGrid extends ListGrid {
 				target.setNotifyAfterP(SmartGWTUtil.getBooleanValue(notifyAfterPItem));
 				target.setNotifyOnLoad(SmartGWTUtil.getBooleanValue(notifyOnLoadItem));
 				target.setNotifyBeforeValidate(SmartGWTUtil.getBooleanValue(notifyBeforeValidateItem));
-				target.setWebHookResultHandler(SmartGWTUtil.getStringValue(webHookResultHandlerItem));
-				target.setIsSyncrhonous(SmartGWTUtil.getBooleanValue(webHookIsSynchronousItem));
+				target.setWebHookResultHandler(SmartGWTUtil.getStringValue(notificationResultHandlerItem));
+				target.setSyncrhonous(SmartGWTUtil.getBooleanValue(webHookIsSynchronousItem));
 			}
 			target.setWithoutMappedByReference(SmartGWTUtil.getBooleanValue(withoutMappedByReferenceItem));
 			updateData(target);

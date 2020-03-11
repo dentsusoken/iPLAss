@@ -21,17 +21,17 @@ package org.iplass.mtp.webhook.template.definition;
 
 import java.io.Serializable;
 
-public class WebHookHeader implements Serializable {
+public class WebHookHeaderDefinition implements Serializable {
 	
 	private static final long serialVersionUID = 3511112860153636065L;
 	
 	private String key;
 	private String value;
 
-	public WebHookHeader () {
+	public WebHookHeaderDefinition () {
 		
 	}
-	public WebHookHeader(String key, String value) {
+	public WebHookHeaderDefinition(String key, String value) {
 		this.key=key;
 		this.value=value;
 	}

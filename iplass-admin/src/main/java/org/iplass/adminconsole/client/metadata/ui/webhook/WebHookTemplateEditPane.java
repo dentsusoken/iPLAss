@@ -41,7 +41,7 @@ import org.iplass.adminconsole.shared.metadata.rpc.MetaDataServiceAsync;
 import org.iplass.adminconsole.shared.metadata.rpc.MetaDataServiceFactory;
 import org.iplass.gwt.ace.client.EditorMode;
 import org.iplass.mtp.definition.DefinitionEntry;
-import org.iplass.mtp.webhook.template.definition.WebHookHeader;
+import org.iplass.mtp.webhook.template.definition.WebHookHeaderDefinition;
 import org.iplass.mtp.webhook.template.definition.WebHookTemplateDefinition;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -300,9 +300,9 @@ public class WebHookTemplateEditPane extends MetaDataMainEditPane {
 					}
 					headerGrid.removeSelectedData();
 
-					ArrayList<WebHookHeader> headers = new ArrayList<WebHookHeader>();
+					ArrayList<WebHookHeaderDefinition> headers = new ArrayList<WebHookHeaderDefinition>();
 					for (ListGridRecord  records: headerGrid.getRecords()) {
-						headers.add(new WebHookHeader(records.getAttribute(HEADER_FIELD_NAME.HEADERNAME.name()),records.getAttribute(HEADER_FIELD_NAME.HEADERVALUE.name())));
+						headers.add(new WebHookHeaderDefinition(records.getAttribute(HEADER_FIELD_NAME.HEADERNAME.name()),records.getAttribute(HEADER_FIELD_NAME.HEADERVALUE.name())));
 					}
 					curDefinition.setHeaders(headers);
 				}
@@ -366,13 +366,13 @@ public class WebHookTemplateEditPane extends MetaDataMainEditPane {
 		}
 
 		protected void editMap(final ListGridRecord record) {
-			WebHookHeader temp = null;
+			WebHookHeaderDefinition temp = null;
 			
 			//dialog のためのtemp
 			if (record == null) {
 
 			} else {
-				temp = new WebHookHeader(
+				temp = new WebHookHeaderDefinition(
 						record.getAttributeAsString(HEADER_FIELD_NAME.HEADERNAME.name()),
 						record.getAttributeAsString(HEADER_FIELD_NAME.HEADERVALUE.name()));
 			}
@@ -380,13 +380,13 @@ public class WebHookTemplateEditPane extends MetaDataMainEditPane {
 			dialog.addDataChangeHandler(new DataChangedHandler() {
 				@Override
 				public void onDataChanged(DataChangedEvent event) {
-					WebHookHeader param = event.getValueObject(WebHookHeader.class);
+					WebHookHeaderDefinition param = event.getValueObject(WebHookHeaderDefinition.class);
 					if (record != null) {//既存
 						headerGrid.removeData(record);	
 					}
-					ArrayList<WebHookHeader> headers = new ArrayList<WebHookHeader>();
+					ArrayList<WebHookHeaderDefinition> headers = new ArrayList<WebHookHeaderDefinition>();
 					for (ListGridRecord  records: headerGrid.getRecords()) {
-						headers.add(new WebHookHeader(records.getAttribute(HEADER_FIELD_NAME.HEADERNAME.name()),records.getAttribute(HEADER_FIELD_NAME.HEADERVALUE.name())));
+						headers.add(new WebHookHeaderDefinition(records.getAttribute(HEADER_FIELD_NAME.HEADERNAME.name()),records.getAttribute(HEADER_FIELD_NAME.HEADERVALUE.name())));
 					}
 					headers.add(param);
 					curDefinition.setHeaders(headers);
@@ -399,7 +399,7 @@ public class WebHookTemplateEditPane extends MetaDataMainEditPane {
 			
 		}
 		
-		protected ListGridRecord createRecord(WebHookHeader param, ListGridRecord record, boolean init) {
+		protected ListGridRecord createRecord(WebHookHeaderDefinition param, ListGridRecord record, boolean init) {
 			if (record == null) {
 				record = new ListGridRecord();
 
@@ -407,17 +407,17 @@ public class WebHookTemplateEditPane extends MetaDataMainEditPane {
 					curDefinition.addHeaders(param);
 				}
 			} else {
-				ArrayList<WebHookHeader>_headers = curDefinition.getHeaders();
-				HashMap<String, WebHookHeader> tempMap = new HashMap<String, WebHookHeader>();
+				ArrayList<WebHookHeaderDefinition>_headers = curDefinition.getHeaders();
+				HashMap<String, WebHookHeaderDefinition> tempMap = new HashMap<String, WebHookHeaderDefinition>();
 				if (_headers !=null) {
-					for (WebHookHeader entry :_headers) {
+					for (WebHookHeaderDefinition entry :_headers) {
 						tempMap.put(entry.getKey(), entry);
 					}
 				}
 				tempMap.remove(param.getKey());
 				tempMap.put(param.getKey(), param);
-				ArrayList<WebHookHeader> newList = new ArrayList<WebHookHeader>(); 
-				for (WebHookHeader headerEntry: tempMap.values()) {
+				ArrayList<WebHookHeaderDefinition> newList = new ArrayList<WebHookHeaderDefinition>(); 
+				for (WebHookHeaderDefinition headerEntry: tempMap.values()) {
 					newList.add(headerEntry);
 				}
 				curDefinition.setHeaders(newList);
@@ -478,11 +478,11 @@ public class WebHookTemplateEditPane extends MetaDataMainEditPane {
 		 * @return ListGridRecord[] of headers
 		 */
 		private ListGridRecord[] getHeaderRecordList(WebHookTemplateDefinition definition) {
-			List<WebHookHeader> definitionList = definition.getHeaders();
+			List<WebHookHeaderDefinition> definitionList = definition.getHeaders();
 			ListGridRecord[] temp = new ListGridRecord[definitionList.size()];
 
 			int cnt = 0;
-			for (WebHookHeader header : definitionList) {
+			for (WebHookHeaderDefinition header : definitionList) {
 				ListGridRecord newRecord = createRecord(header, null, true);
 				temp[cnt] = newRecord;
 				cnt ++;

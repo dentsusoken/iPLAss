@@ -36,7 +36,7 @@ import org.iplass.mtp.impl.script.template.GroovyTemplate;
 import org.iplass.mtp.impl.script.template.GroovyTemplateCompiler;
 import org.iplass.mtp.impl.util.ObjectUtil;
 import org.iplass.mtp.webhook.WebHook;
-import org.iplass.mtp.webhook.template.definition.WebHookHeader;
+import org.iplass.mtp.webhook.template.definition.WebHookHeaderDefinition;
 import org.iplass.mtp.webhook.template.definition.WebHookTemplateDefinition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -55,7 +55,7 @@ public class MetaWebHookTemplate extends BaseRootMetaData implements DefinableMe
 	private String addressUrl;
 	private String httpMethod;
 
-	private ArrayList<WebHookHeader> headers;
+	private ArrayList<MetaWebHookHeader> headers;
 	private String tokenHeader;
 	
 	private String urlQuery;
@@ -93,7 +93,15 @@ public class MetaWebHookTemplate extends BaseRootMetaData implements DefinableMe
 		synchronous = definition.isSynchronous();
 		urlQuery = definition.getUrlQuery();
 		
-		headers = definition.getHeaders();
+		ArrayList<MetaWebHookHeader> newHeaders = new ArrayList<MetaWebHookHeader>();
+		if (definition.getHeaders()!=null) {
+			for (WebHookHeaderDefinition headerDefinition: definition.getHeaders()) {
+				MetaWebHookHeader temp = new MetaWebHookHeader();
+				temp.applyConfig(headerDefinition);
+				newHeaders.add(temp);
+			}
+		}
+		headers = newHeaders;
 		
 		if (definition.getMetaDataId()!=this.getId()) {
 			logger.warn("Definition<->Meta id mismatch. template:"+definition.getMetaDataId()+"; Meta:"+this.getId()+"\n");
@@ -120,8 +128,15 @@ public class MetaWebHookTemplate extends BaseRootMetaData implements DefinableMe
 
 		definition.setHttpMethod(httpMethod);
 		definition.setSynchronous(synchronous);
-
-		definition.setHeaders(headers);
+		
+		ArrayList<WebHookHeaderDefinition> newHeaders = new ArrayList<WebHookHeaderDefinition>();
+		if (headers!=null) {
+			for (MetaWebHookHeader metaHeader: headers) {
+				newHeaders.add(metaHeader.currentConfig());
+			}
+		}
+		definition.setHeaders(newHeaders);
+		
 		definition.setMetaDataId(id);
 		
 		return definition;
@@ -152,11 +167,11 @@ public class MetaWebHookTemplate extends BaseRootMetaData implements DefinableMe
 		this.synchronous = synchronous;
 	}
 
-	public ArrayList<WebHookHeader> getHeaders() {
+	public ArrayList<MetaWebHookHeader> getHeaders() {
 		return headers;
 	}
 
-	public void setHeaders(ArrayList<WebHookHeader> headers) {
+	public void setHeaders(ArrayList<MetaWebHookHeader> headers) {
 		this.headers = headers;
 	}
 	
@@ -234,7 +249,14 @@ public class MetaWebHookTemplate extends BaseRootMetaData implements DefinableMe
 			//fill up the info to webhooktemplate
 			WebHook webHook = new WebHook(); 
 			webHook.setName(name);
-			webHook.setHeaders(headers);
+			
+			ArrayList<WebHookHeaderDefinition> newHeaders = new ArrayList<WebHookHeaderDefinition>();
+			if (headers !=null) {
+				for (MetaWebHookHeader metaHeader: headers) {
+					newHeaders.add(metaHeader.currentConfig());
+				}
+			}
+			webHook.setHeaders(newHeaders);
 			webHook.setTokenHeader(tokenHeader);
 			webHook.setHttpMethod(httpMethod);
 			webHook.setSynchronous(synchronous);
