@@ -407,7 +407,7 @@ public class WebHookTemplateEditPane extends MetaDataMainEditPane {
 					curDefinition.addHeaders(param);
 				}
 			} else {
-				ArrayList<WebHookHeaderDefinition>_headers = curDefinition.getHeaders();
+				List<WebHookHeaderDefinition>_headers = curDefinition.getHeaders();
 				HashMap<String, WebHookHeaderDefinition> tempMap = new HashMap<String, WebHookHeaderDefinition>();
 				if (_headers !=null) {
 					for (WebHookHeaderDefinition entry :_headers) {

@@ -20,6 +20,8 @@
 package org.iplass.mtp.webhook.template.definition;
 
 import java.util.ArrayList;
+import java.util.List;
+
 import javax.xml.bind.annotation.XmlRootElement;
 import org.iplass.mtp.definition.Definition;
 
@@ -47,7 +49,7 @@ public class WebHookTemplateDefinition implements Definition {
 	private boolean synchronous;
 
 	/** headers */
-	private ArrayList<WebHookHeaderDefinition> headers;
+	private List<WebHookHeaderDefinition> headers;
 	
 	public WebHookTemplateDefinition() {
 	}
@@ -106,14 +108,14 @@ public class WebHookTemplateDefinition implements Definition {
 		this.synchronous = synchronous;
 	}
 	
-	public ArrayList<WebHookHeaderDefinition> getHeaders() {
+	public List<WebHookHeaderDefinition> getHeaders() {
 		if (headers==null) {
 			this.headers = new ArrayList<WebHookHeaderDefinition>();
 		}
 		return headers;
 	}
 
-	public void setHeaders(ArrayList<WebHookHeaderDefinition> headers) {
+	public void setHeaders(List<WebHookHeaderDefinition> headers) {
 		this.headers = headers;
 	}
 	

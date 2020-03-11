@@ -21,6 +21,7 @@ package org.iplass.mtp.impl.webhook.template;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.xml.bind.annotation.XmlRootElement;
@@ -55,7 +56,7 @@ public class MetaWebHookTemplate extends BaseRootMetaData implements DefinableMe
 	private String addressUrl;
 	private String httpMethod;
 
-	private ArrayList<MetaWebHookHeader> headers;
+	private List<MetaWebHookHeader> headers;
 	private String tokenHeader;
 	
 	private String urlQuery;
@@ -167,11 +168,11 @@ public class MetaWebHookTemplate extends BaseRootMetaData implements DefinableMe
 		this.synchronous = synchronous;
 	}
 
-	public ArrayList<MetaWebHookHeader> getHeaders() {
+	public List<MetaWebHookHeader> getHeaders() {
 		return headers;
 	}
 
-	public void setHeaders(ArrayList<MetaWebHookHeader> headers) {
+	public void setHeaders(List<MetaWebHookHeader> headers) {
 		this.headers = headers;
 	}
 	

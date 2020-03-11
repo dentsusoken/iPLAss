@@ -36,5 +36,5 @@ public interface WebHookService extends TypedMetaDataService<MetaWebHookTemplate
 
 	void sendWebHookAsync(Tenant tenant, WebHook webHook);
 	
-	WebHook generateWebHook(String webHookDefinitionName, Map<String, Object> binding,List<String> endPointDefName);
+	WebHook generateWebHook(String webHookDefinitionName, Map<String, Object> binding, List<String> endPointDefName);
 }
