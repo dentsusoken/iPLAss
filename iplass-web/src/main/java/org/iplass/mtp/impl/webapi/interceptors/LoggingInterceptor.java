@@ -166,9 +166,17 @@ public class LoggingInterceptor extends org.iplass.mtp.impl.command.interceptors
 				}
 			} else {
 				if (isWarnLog(executionTime, sqlCount)) {
-					webapiLogger.warn(logStr(invocation, executionTime, sqlCount, exp));
+					if (exp != null && webapiLogger.isDebugEnabled()) {
+						webapiLogger.warn(logStr(invocation, executionTime, sqlCount, exp), exp);
+					} else {
+						webapiLogger.warn(logStr(invocation, executionTime, sqlCount, exp));
+					}
 				} else {
-					webapiLogger.info(logStr(invocation, executionTime, sqlCount, exp));
+					if (exp != null && webapiLogger.isDebugEnabled()) {
+						webapiLogger.info(logStr(invocation, executionTime, sqlCount, exp), exp);
+					} else {
+						webapiLogger.info(logStr(invocation, executionTime, sqlCount, exp));
+					}
 				}
 			}
 			
