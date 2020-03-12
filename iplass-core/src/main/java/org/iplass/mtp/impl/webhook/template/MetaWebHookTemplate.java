@@ -39,14 +39,11 @@ import org.iplass.mtp.impl.util.ObjectUtil;
 import org.iplass.mtp.webhook.WebHook;
 import org.iplass.mtp.webhook.template.definition.WebHookHeaderDefinition;
 import org.iplass.mtp.webhook.template.definition.WebHookTemplateDefinition;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 @XmlRootElement
 public class MetaWebHookTemplate extends BaseRootMetaData implements DefinableMetaData<WebHookTemplateDefinition> {
 
 	private static final long serialVersionUID = 6383360434482999137L;
-	private static Logger logger = LoggerFactory.getLogger(MetaWebHookTemplate.class);
 	
 	/** webHook 内容部分 */
 	private String contentType;
@@ -103,10 +100,6 @@ public class MetaWebHookTemplate extends BaseRootMetaData implements DefinableMe
 			}
 		}
 		headers = newHeaders;
-		
-		if (definition.getMetaDataId()!=this.getId()) {
-			logger.warn("Definition<->Meta id mismatch. template:"+definition.getMetaDataId()+"; Meta:"+this.getId()+"\n");
-		}
 	}
 
 
@@ -137,8 +130,6 @@ public class MetaWebHookTemplate extends BaseRootMetaData implements DefinableMe
 			}
 		}
 		definition.setHeaders(newHeaders);
-		
-		definition.setMetaDataId(id);
 		
 		return definition;
 	}
@@ -271,7 +262,6 @@ public class MetaWebHookTemplate extends BaseRootMetaData implements DefinableMe
 				}
 			}
 			webHook.setContentType(contentType);
-			webHook.setMetaDataId(id);
 			bindings.put("webHook", webHook);
 
 			//template

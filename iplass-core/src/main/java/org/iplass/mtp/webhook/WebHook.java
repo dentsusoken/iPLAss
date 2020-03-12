@@ -62,21 +62,9 @@ public class WebHook  {
 	 * */
 	private String TemplateName;
 	
-	/**
-	 * ｄｂ接続用
-	 * */
-	private String metaDataId;
-	
 	/** 記録用のid */
 	private int webHookId;
 	//----------------------------------
-	public String getMetaDataId() {
-		return metaDataId;
-	}
-
-	public void setMetaDataId(String metaDataId) {
-		this.metaDataId = metaDataId;
-	}
 
 	public String getTemplateName() {
 		if (TemplateName == null) {

@@ -29,7 +29,6 @@ import org.iplass.mtp.definition.Definition;
 public class WebHookTemplateDefinition implements Definition {
 
 	private static final long serialVersionUID = 4835431145639526016L;
-	private String metaDataId;
 	
 	private String name;
 	private String displayName;
@@ -124,14 +123,6 @@ public class WebHookTemplateDefinition implements Definition {
 			headers = new ArrayList<WebHookHeaderDefinition>();
 		}
 		this.headers.add(entry);
-	}
-	
-	public String getMetaDataId() {
-		return metaDataId;
-	}
-
-	public void setMetaDataId(String id) {
-		this.metaDataId = id;
 	}
 	
 	public String getTokenHeader() {
