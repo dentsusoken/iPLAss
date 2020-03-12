@@ -74,6 +74,9 @@ public class MetaMailTemplate extends BaseRootMetaData implements DefinableMetaD
 	private String replyTo;
 	private String returnPath;
 
+	private String fromDisplayName;
+	private String replyToDisplayName;
+
 	private String langOrUserBindingName;
 
 	private boolean smimeSign;
@@ -96,6 +99,19 @@ public class MetaMailTemplate extends BaseRootMetaData implements DefinableMetaD
 	}
 	public void setReturnPath(String returnPath) {
 		this.returnPath = returnPath;
+	}
+
+	public String getFromDisplayName() {
+		return this.fromDisplayName;
+	}
+	public void setFromDisplayName(String fromDisplayName) {
+		this.fromDisplayName = fromDisplayName;
+	}
+	public String getReplyToDisplayName() {
+		return this.replyToDisplayName;
+	}
+	public void setReplyToDisplayName(String replyToDisplayName) {
+		this.replyToDisplayName = replyToDisplayName;
 	}
 
 	public List<MetaLocalizedMailTemplate> getLocalizedMailTemplateList() {
@@ -169,6 +185,8 @@ public class MetaMailTemplate extends BaseRootMetaData implements DefinableMetaD
 		from = definition.getFrom();
 		replyTo = definition.getReplyTo();
 		returnPath = definition.getReturnPath();
+		fromDisplayName = definition.getFromDisplayName();
+		replyToDisplayName = definition.getReplyToDisplayName();
 
 		if (definition.getPlainMessage() != null) {
 			message = new MetaPlainTextBodyPart();
@@ -216,6 +234,8 @@ public class MetaMailTemplate extends BaseRootMetaData implements DefinableMetaD
 		definition.setFrom(from);
 		definition.setReplyTo(replyTo);
 		definition.setReturnPath(returnPath);
+		definition.setFromDisplayName(fromDisplayName);
+		definition.setReplyToDisplayName(replyToDisplayName);
 		if (message != null) {
 			definition.setPlainMessage(message.currentConfig());
 		}
@@ -341,10 +361,10 @@ public class MetaMailTemplate extends BaseRootMetaData implements DefinableMetaD
 			Mail mail = ms.createMail(ex.getCurrentTenant(), _charset);
 
 			if (from != null && from.length() != 0) {
-				mail.setFrom(from);
+				mail.setFrom(from, StringUtil.isNotEmpty(fromDisplayName) ? fromDisplayName : null);
 			}
 			if (replyTo != null && replyTo.length() != 0) {
-				mail.setReplyTo(replyTo);
+				mail.setReplyTo(replyTo, StringUtil.isNotEmpty(replyToDisplayName) ? replyToDisplayName : null);
 			}
 			if (returnPath != null && returnPath.length() != 0) {
 				mail.setReturnPath(returnPath);

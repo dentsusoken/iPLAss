@@ -196,10 +196,20 @@ public class Mail {
 	 *
 	 * @param address 返信先アドレス
 	 */
-	public void setReplyTo(String address) {
-		replyToAddress = createAddress(address, null, charset);
+	public void setReplyTo(String address) throws MailException {
+		setReplyTo(address, null);
 	}
-	
+
+	/**
+	 * 返信先アドレスを設定します。
+	 * 
+	 * @param address 返信先アドレス
+	 * @param personal 個人名
+	 */
+	public void setReplyTo(String address, String personal) throws MailException {
+		replyToAddress = createAddress(address, personal, charset);
+	}
+
 	/**
 	 * 返信先アドレスを設定します。
 	 * @param address
