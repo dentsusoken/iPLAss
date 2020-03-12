@@ -995,14 +995,14 @@ public class EventListenerListGrid extends ListGrid {
 			}
 
 			private void initializeGrid(List<String> endPontNameList, boolean isEdit) {
-				metaDataService.getEndPointFullListWithUrl(TenantInfoHolder.getId(), new AsyncCallback<HashMap<String,String>>() {
+				metaDataService.getEndPointFullListWithUrl(TenantInfoHolder.getId(), new AsyncCallback<Map<String,String>>() {
 
 					@Override
 					public void onFailure(Throwable caught) {
 						GWT.log("Failed to fetch WebEndPointData.", caught);
 					}
 					@Override
-					public void onSuccess(HashMap<String, String> result) {
+					public void onSuccess(Map<String, String> result) {
 						if(isEdit) {
 							WebHookEndPointGrid.this.setFields(endPointSelectedField,endPointNameField,endPointUrlField);
 						} else {
@@ -1013,7 +1013,7 @@ public class EventListenerListGrid extends ListGrid {
 					}
 				});
 			}
-			private ListGridRecord[] createWebEndPointRecord(HashMap<String,String> result, List<String> endPontNameList, boolean isEdit) {
+			private ListGridRecord[] createWebEndPointRecord(Map<String,String> result, List<String> endPontNameList, boolean isEdit) {
 				if (isEdit) {
 					if (result!=null) {
 						ListGridRecord[] temp= new ListGridRecord[result.size()];

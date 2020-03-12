@@ -20,7 +20,6 @@
 
 package org.iplass.adminconsole.shared.metadata.rpc;
 
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -502,6 +501,6 @@ public interface MetaDataService extends XsrfProtectedService {
 
 	public String generateHmacTokenString();
 	
-	public HashMap<String, String> getEndPointFullListWithUrl(int tenantId);
+	public Map<String, String> getEndPointFullListWithUrl(int tenantId);
 
 }

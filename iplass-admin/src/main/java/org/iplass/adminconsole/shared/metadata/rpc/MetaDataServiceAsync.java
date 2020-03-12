@@ -20,7 +20,6 @@
 
 package org.iplass.adminconsole.shared.metadata.rpc;
 
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -477,5 +476,5 @@ public interface MetaDataServiceAsync {
 	
 	public void generateHmacTokenString(AsyncCallback<String> callback);
 	
-	public void getEndPointFullListWithUrl(final int tenantId, final AsyncCallback<HashMap<String, String>>callback);
+	public void getEndPointFullListWithUrl(final int tenantId, final AsyncCallback<Map<String, String>>callback);
 }
