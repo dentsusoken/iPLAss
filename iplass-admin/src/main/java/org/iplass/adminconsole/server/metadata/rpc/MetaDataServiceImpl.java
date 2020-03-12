@@ -1994,13 +1994,24 @@ public class MetaDataServiceImpl extends XsrfProtectedServiceServlet implements 
 	 * WebHook EndPoint Security Info
 	 --------------------------------------- */
 	@Override
-	public void updateWebEndPointSecurityInfo(final int tenantId, final String metaDataId, final String secret, final String TokenType) {
-		wepdm.modifySecurityToken(tenantId,metaDataId,secret,TokenType);
+	public void updateWebEndPointSecurityInfo(final int tenantId, final String definitionName, final String secret, final String TokenType) {
+		AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId, new AuthUtil.Callable<Void>() {
+			@Override
+			public Void call() {
+				wepdm.modifySecurityToken(tenantId, definitionName, secret, TokenType);
+				return null;
+			}
+		});
 	}
 	
 	@Override
-	public String getWebEndPointSecurityInfo(final int tenantId, final String metaDataId, final String TokenType) {
-		return wepdm.getSecurityToken(tenantId,metaDataId, TokenType);
+	public String getWebEndPointSecurityInfo(final int tenantId, final String definitionName, final String TokenType) {
+		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId, new AuthUtil.Callable<String>() {
+			@Override
+			public String call() {
+				return wepdm.getSecurityToken(tenantId, definitionName, TokenType);
+			}
+		});
 	}
 	@Override
 	public String generateHmacTokenString() {
@@ -2010,13 +2021,19 @@ public class MetaDataServiceImpl extends XsrfProtectedServiceServlet implements 
 	 * 
 	 * returns a map of <defName->Url>
 	 * */
-	public HashMap<String, String> getEndPointFullListWithUrl(int tenantId){
-		HashMap<String, String> endPointMap = new HashMap<String, String>();
-		List<Name> tempNameList = getDefinitionNameList(tenantId, WebEndPointDefinition.class.getName());
-		for (Name name : tempNameList) {
-			WebEndPointDefinition temp = getDefinition(tenantId,WebEndPointDefinition.class.getName(),name.getName());
-			endPointMap.put(name.getName(), temp.getUrl());
-		}
-		return endPointMap;
+	public Map<String, String> getEndPointFullListWithUrl(int tenantId){
+		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId, new AuthUtil.Callable<HashMap<String, String>>() {
+			@Override
+			public HashMap<String, String> call() {
+				HashMap<String, String> endPointMap = new HashMap<String, String>();
+				List<Name> tempNameList = getDefinitionNameList(tenantId, WebEndPointDefinition.class.getName());
+				for (Name name : tempNameList) {
+					WebEndPointDefinition temp = getDefinition(tenantId,WebEndPointDefinition.class.getName(),name.getName());
+					endPointMap.put(name.getName(), temp.getUrl());
+				}
+				return endPointMap;
+			}
+		});
+
 	}
 }

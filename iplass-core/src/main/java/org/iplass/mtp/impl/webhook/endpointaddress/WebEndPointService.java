@@ -24,20 +24,35 @@ import org.iplass.mtp.impl.webhook.endpointaddress.MetaWebEndPointDefinition.Web
 
 public interface WebEndPointService extends TypedMetaDataService<MetaWebEndPointDefinition, WebEndPointRuntime>{
 
-	public void deleteSecurityTokenByDef(String metaDataId);
+	public void deleteSecurityTokenByDefinitionName(String definitionName);
 
-	public void updateBasicSecurityTokenByDef(int tenantId,String metaDataId, String basic);
+	public void updateBasicSecurityTokenByDefinitionName(int tenantId,String definitionName, String basic);
 
-	public void updateHmacSecurityTokenByDef(int tenantId,String metaDataId, String secret);
+	public void updateHmacSecurityTokenByDefinitionName(int tenantId,String definitionName, String secret);
 
-	public void updateBearerSecurityTokenByDef(int tenantId,String metaDataId, String secret);
+	public void updateBearerSecurityTokenByDefinitionName(int tenantId,String definitionName, String secret);
 	
-	public String getHmacTokenByDef(int tenantId,String metaDataId);
+	public String getHmacTokenByDefinitionName(int tenantId,String definitionName);
 
-	public String getBearerTokenByDef(int tenantId,String metaDataId);
+	public String getBearerTokenByDefinitionName(int tenantId,String definitionName);
 
-	public String getBasicTokenByDef(int tenantId,String metaDataId);
+	public String getBasicTokenByDefinitionName(int tenantId,String definitionName);
+	
 
+	public void deleteSecurityTokenById(String metaDataId);
+
+	public void updateBasicSecurityTokenById(int tenantId,String metaDataId, String basic);
+
+	public void updateHmacSecurityTokenById(int tenantId,String metaDataId, String secret);
+
+	public void updateBearerSecurityTokenById(int tenantId,String metaDataId, String secret);
+	
+	public String getHmacTokenById(int tenantId,String metaDataId);
+
+	public String getBearerTokenById(int tenantId,String metaDataId);
+
+	public String getBasicTokenById(int tenantId,String metaDataId);
+	
 	String generateHmacTokenString();
 
 }

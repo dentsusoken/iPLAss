@@ -34,9 +34,7 @@ public class MetaWebEndPointDefinition extends BaseRootMetaData implements Defin
 
 	private static final long serialVersionUID = 7029271819447338103L;
 	/** 固有id、metaのidと同じ内容になるはずです */
-	private String webEndPointId;
 	private String headerAuthType;
-
 	private String headerAuthTypeName;
 
 	/** 送り先 */
@@ -52,7 +50,6 @@ public class MetaWebEndPointDefinition extends BaseRootMetaData implements Defin
 		this.description = definition.getDescription();
 		this.headerAuthType = definition.getHeaderAuthType();
 		this.url = definition.getUrl();
-		this.webEndPointId = definition.getWebEndPointId();
 		this.headerAuthTypeName = definition.getHeaderAuthTypeName();
 	}
 	
@@ -66,7 +63,6 @@ public class MetaWebEndPointDefinition extends BaseRootMetaData implements Defin
 		definition.setHeaderAuthType(headerAuthType);
 		definition.setHeaderAuthTypeName(headerAuthTypeName);
 		definition.setUrl(url);
-		definition.setWebEndPointId(this.id);
 		return definition;
 	}
 	public MetaWebEndPointDefinition() {
@@ -76,15 +72,7 @@ public class MetaWebEndPointDefinition extends BaseRootMetaData implements Defin
 	public MetaWebEndPointDefinition(String url) {
 		this.url = url;
 	}
-
-	public String getWebEndPointId() {
-		return webEndPointId;
-	}
-
-	public void setWebEndPointId(String webEndPointId) {
-		this.webEndPointId = webEndPointId;
-	}
-
+	
 	public String getUrl() {
 		return url;
 	}
@@ -129,14 +117,12 @@ public class MetaWebEndPointDefinition extends BaseRootMetaData implements Defin
 		String headerAuthType;
 		String headerAuthTypeName;
 		String contentForThisEndPoint;
-		String endPointId;
 		String endPointName;
-		
+
 		public WebEndPointRuntime() {
 			super();
 			url = MetaWebEndPointDefinition.this.url;
 			endPointName = MetaWebEndPointDefinition.this.name;
-			endPointId = MetaWebEndPointDefinition.this.webEndPointId;
 			headerAuthType = MetaWebEndPointDefinition.this.headerAuthType;
 			headerAuthTypeName = MetaWebEndPointDefinition.this.headerAuthTypeName;
 		}
@@ -190,12 +176,6 @@ public class MetaWebEndPointDefinition extends BaseRootMetaData implements Defin
 		public void setHmacResult(String hmacResult) {
 			this.hmacResult = hmacResult;
 		}
-		public String getEndPointId() {
-			return endPointId;
-		}
-		public void setEndPointId(String endPointId) {
-			this.endPointId = endPointId;
-		}
 		public String getEndPointName() {
 			return endPointName;
 		}
@@ -205,8 +185,6 @@ public class MetaWebEndPointDefinition extends BaseRootMetaData implements Defin
 		public WebEndPointRuntime copy() {
 			return new WebEndPointRuntime();
 		}
-
-
 	}
 
 }

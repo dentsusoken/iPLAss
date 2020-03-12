@@ -29,6 +29,9 @@ import org.iplass.mtp.impl.auth.authenticate.token.AuthTokenService;
 import org.iplass.mtp.impl.core.ExecuteContext;
 import org.iplass.mtp.impl.definition.AbstractTypedMetaDataService;
 import org.iplass.mtp.impl.definition.DefinitionMetaDataTypeMap;
+import org.iplass.mtp.impl.definition.DefinitionService;
+import org.iplass.mtp.impl.metadata.MetaDataContext;
+import org.iplass.mtp.impl.metadata.MetaDataEntry;
 import org.iplass.mtp.impl.webhook.WebHookAuthTokenHandler;
 import org.iplass.mtp.impl.webhook.endpointaddress.MetaWebEndPointDefinition.WebEndPointRuntime;
 import org.iplass.mtp.spi.Config;
@@ -75,7 +78,7 @@ public class WebEndPointServiceImpl extends AbstractTypedMetaDataService<MetaWeb
 	}
 
 	@Override
-	public void deleteSecurityTokenByDef(String metaDataId) {
+	public void deleteSecurityTokenById(String metaDataId) {
 		int tenantId = ExecuteContext.getCurrentContext().getClientTenantId();
 		WebHookAuthTokenHandler tokenHandler = (WebHookAuthTokenHandler)ServiceRegistry
 				.getRegistry().getService(AuthTokenService.class)
@@ -91,11 +94,11 @@ public class WebEndPointServiceImpl extends AbstractTypedMetaDataService<MetaWeb
 	 * basic = basicName+":"+basicPassword;
 	 * */	
 	@Override
-	public void updateBasicSecurityTokenByDef(int tenantId,String metaDataId, String basic) {
+	public void updateBasicSecurityTokenById(int tenantId,String metaDataId, String basic) {
 		
 		if (basic == null || basic.isEmpty()) {
 			tokenHandler.deleteSecret(tenantId, WebHookAuthTokenHandler.BASIC_AUTHENTICATION_TYPE, metaDataId);
-		} else if (getBasicTokenByDef(tenantId,metaDataId)==null) {
+		} else if (getBasicTokenById(tenantId,metaDataId)==null) {
 			String secret = Base64.encodeBase64String(basic.getBytes());
 			tokenHandler.insertSecret(tenantId, WebHookAuthTokenHandler.BASIC_AUTHENTICATION_TYPE, metaDataId, metaDataId, secret);
 		} else {
@@ -104,27 +107,27 @@ public class WebEndPointServiceImpl extends AbstractTypedMetaDataService<MetaWeb
 		}
 	}
 	@Override
-	public void updateBearerSecurityTokenByDef(int tenantId,String metaDataId, String secret) {
+	public void updateBearerSecurityTokenById(int tenantId,String metaDataId, String secret) {
 		if (secret == null || secret.isEmpty()) {
 			tokenHandler.deleteSecret(tenantId, WebHookAuthTokenHandler.BEARER_AUTHENTICATION_TYPE, metaDataId);
-		} else if (getBearerTokenByDef(tenantId, metaDataId)==null) {
+		} else if (getBearerTokenById(tenantId, metaDataId)==null) {
 			tokenHandler.insertSecret(tenantId, WebHookAuthTokenHandler.BEARER_AUTHENTICATION_TYPE, metaDataId, metaDataId, secret);
 		} else {
 			tokenHandler.updateSecret(tenantId, WebHookAuthTokenHandler.BEARER_AUTHENTICATION_TYPE, metaDataId, metaDataId, secret);
 		}
 	}
 	@Override
-	public void updateHmacSecurityTokenByDef(int tenantId,String metaDataId, String secret) {
+	public void updateHmacSecurityTokenById(int tenantId,String metaDataId, String secret) {
 		if (secret == null || secret.isEmpty()) {
 			tokenHandler.deleteSecret(tenantId, WebHookAuthTokenHandler.HMAC_AUTHENTICATION_TYPE, metaDataId);
-		} else if (getHmacTokenByDef(tenantId, metaDataId)==null) {
+		} else if (getHmacTokenById(tenantId, metaDataId)==null) {
 			tokenHandler.insertSecret(tenantId, WebHookAuthTokenHandler.HMAC_AUTHENTICATION_TYPE, metaDataId, metaDataId, secret);
 		} else {
 			tokenHandler.updateSecret(tenantId, WebHookAuthTokenHandler.HMAC_AUTHENTICATION_TYPE, metaDataId, metaDataId, secret);
 		}
 	}
 	@Override
-	public String getBasicTokenByDef(int tenantId,String metaDataId){
+	public String getBasicTokenById(int tenantId,String metaDataId){
 		String base64 = tokenHandler.getSecret(tenantId, metaDataId, WebHookAuthTokenHandler.BASIC_AUTHENTICATION_TYPE);
 		if (base64 ==null || base64.isEmpty()) {
 			return null;
@@ -133,12 +136,12 @@ public class WebEndPointServiceImpl extends AbstractTypedMetaDataService<MetaWeb
 		return token;
 	}
 	@Override
-	public String getBearerTokenByDef(int tenantId,String metaDataId){
+	public String getBearerTokenById(int tenantId,String metaDataId){
 		String token = tokenHandler.getSecret(tenantId, metaDataId, WebHookAuthTokenHandler.BEARER_AUTHENTICATION_TYPE);
 		return token;
 	}
 	@Override
-	public String getHmacTokenByDef(int tenantId,String metaDataId){
+	public String getHmacTokenById(int tenantId,String metaDataId){
 		String token = tokenHandler.getSecret(tenantId, metaDataId, WebHookAuthTokenHandler.HMAC_AUTHENTICATION_TYPE);
 		return token;
 	}
@@ -154,5 +157,50 @@ public class WebEndPointServiceImpl extends AbstractTypedMetaDataService<MetaWeb
 			SecretKey secretKey = keyGen.generateKey();
 			String encodedKey = java.util.Base64.getEncoder().encodeToString(secretKey.getEncoded());
 		return encodedKey;
+	}
+
+	@Override
+	public void deleteSecurityTokenByDefinitionName(String definitionName) {
+		
+		deleteSecurityTokenById(getMetaIdByDefinitionName(definitionName));
+	}
+
+	@Override
+	public void updateBasicSecurityTokenByDefinitionName(int tenantId, String definitionName, String basic) {
+		updateBasicSecurityTokenById(tenantId,getMetaIdByDefinitionName(definitionName),basic);
+		
+	}
+
+	@Override
+	public void updateHmacSecurityTokenByDefinitionName(int tenantId, String definitionName, String secret) {
+		
+		updateHmacSecurityTokenById(tenantId,getMetaIdByDefinitionName(definitionName),secret);
+	}
+
+	@Override
+	public void updateBearerSecurityTokenByDefinitionName(int tenantId, String definitionName, String secret) {
+		updateBearerSecurityTokenById(tenantId, getMetaIdByDefinitionName(definitionName), secret);
+		
+	}
+
+	@Override
+	public String getHmacTokenByDefinitionName(int tenantId, String definitionName) {
+		return getHmacTokenById(tenantId, getMetaIdByDefinitionName(definitionName));
+	}
+
+	@Override
+	public String getBearerTokenByDefinitionName(int tenantId, String definitionName) {
+		return getBearerTokenById(tenantId, getMetaIdByDefinitionName(definitionName));
+	}
+
+	@Override
+	public String getBasicTokenByDefinitionName(int tenantId, String definitionName) {
+		return getBasicTokenById(tenantId, getMetaIdByDefinitionName(definitionName));
+	}
+	
+	private String getMetaIdByDefinitionName(String definitionName) {
+		String path = DefinitionService.getInstance().getPathByMeta(MetaWebEndPointDefinition.class, definitionName);
+		MetaDataEntry entry = MetaDataContext.getContext().getMetaDataEntry(path);
+		return entry.getMetaData().getId();
 	}
 }

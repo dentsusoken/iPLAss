@@ -505,7 +505,7 @@ public class WebHookServiceImpl extends AbstractTypedMetaDataService<MetaWebHook
 			String fullUrl = new String(webEndPointRuntime.getUrl() + urlQuery);
 			fullUrl = fullUrl.replace("\n", "").replaceAll("\\s+", "");
 			webEndPointRuntime.setUrl(fullUrl);
-			GroovyTemplate urlTemp = GroovyTemplateCompiler.compile(fullUrl, "WebHookTemplate_Subscriber_" + webEndPointRuntime.getEndPointId() + "_" + webEndPointRuntime.getEndPointId(), (GroovyScriptEngine) se);
+			GroovyTemplate urlTemp = GroovyTemplateCompiler.compile(fullUrl, "WebHookTemplate_Subscriber_" + webEndPointRuntime.getEndPointName() + "_" + webEndPointRuntime.getMetaData(), (GroovyScriptEngine) se);
 			if (urlTemp!=null) {
 				StringWriter sw = new StringWriter();
 				GroovyTemplateBinding gtb = new GroovyTemplateBinding(sw,binding);

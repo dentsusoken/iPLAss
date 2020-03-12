@@ -355,7 +355,7 @@ public class WebEndPointEditPane extends MetaDataMainEditPane {
 						editMap(null, null);
 						return;
 					}
-					service.getWebEndPointSecurityInfo(TenantInfoHolder.getId(), curDefinition.getWebEndPointId(), curDefinition.getHeaderAuthType(), new AdminAsyncCallback<String>() {
+					service.getWebEndPointSecurityInfo(TenantInfoHolder.getId(), curDefinition.getName(), curDefinition.getHeaderAuthType(), new AdminAsyncCallback<String>() {
 						@Override
 						public void onSuccess(String result) {
 							editMap(curDefinition.getHeaderAuthType(), result);
@@ -406,7 +406,7 @@ public class WebEndPointEditPane extends MetaDataMainEditPane {
 			editHmacButton.addClickHandler(new com.smartgwt.client.widgets.form.fields.events.ClickHandler() {
 				@Override
 				public void onClick(com.smartgwt.client.widgets.form.fields.events.ClickEvent event) {
-					service.getWebEndPointSecurityInfo(TenantInfoHolder.getId(), curDefinition.getWebEndPointId(), "WHHM", new AdminAsyncCallback<String>() {
+					service.getWebEndPointSecurityInfo(TenantInfoHolder.getId(), curDefinition.getName(), "WHHM", new AdminAsyncCallback<String>() {
 
 						@Override
 						public void onSuccess(String result) {
@@ -471,7 +471,7 @@ public class WebEndPointEditPane extends MetaDataMainEditPane {
 						delMap(type);
 						dialog.destroy();
 					} else if (type.equals("WHHM")) {
-						service.updateWebEndPointSecurityInfo(TenantInfoHolder.getId(), curDefinition.getWebEndPointId(), content, type,new AdminAsyncCallback<Void>() {
+						service.updateWebEndPointSecurityInfo(TenantInfoHolder.getId(), curDefinition.getName(), content, type,new AdminAsyncCallback<Void>() {
 
 							@Override
 							public void onSuccess(Void result) {
@@ -489,12 +489,12 @@ public class WebEndPointEditPane extends MetaDataMainEditPane {
 					} else {
 						
 						//dbに新情報の登録
-						service.updateWebEndPointSecurityInfo(TenantInfoHolder.getId(), curDefinition.getWebEndPointId(), content, type,new AdminAsyncCallback<Void>() {
+						service.updateWebEndPointSecurityInfo(TenantInfoHolder.getId(), curDefinition.getName(), content, type,new AdminAsyncCallback<Void>() {
 
 							@Override
 							public void onSuccess(Void result) {
 								if (curDefinition.getHeaderAuthType()!=type) {//タイプ変わったら旧タイプの削除
-									service.updateWebEndPointSecurityInfo(TenantInfoHolder.getId(), curDefinition.getWebEndPointId(), null, 
+									service.updateWebEndPointSecurityInfo(TenantInfoHolder.getId(), curDefinition.getName(), null, 
 											type=="WHBA"?"WHBT":"WHBA",
 											new AdminAsyncCallback<Void>() {
 										@Override
@@ -552,7 +552,7 @@ public class WebEndPointEditPane extends MetaDataMainEditPane {
 								}
 							}
 							//delete data
-							service.updateWebEndPointSecurityInfo(TenantInfoHolder.getId(), curDefinition.getWebEndPointId(), null, tokenType, new AdminAsyncCallback<Void>() {
+							service.updateWebEndPointSecurityInfo(TenantInfoHolder.getId(), curDefinition.getName(), null, tokenType, new AdminAsyncCallback<Void>() {
 								@Override
 								public void onSuccess(Void result) {
 								}
@@ -634,7 +634,7 @@ public class WebEndPointEditPane extends MetaDataMainEditPane {
 		}
 		
 		private void refreshSecurityInfo() {
-			service.getWebEndPointSecurityInfo(TenantInfoHolder.getId(), curDefinition.getWebEndPointId(), "WHHM", new AdminAsyncCallback<String>() {
+			service.getWebEndPointSecurityInfo(TenantInfoHolder.getId(), curDefinition.getName(), "WHHM", new AdminAsyncCallback<String>() {
 				@Override
 				public void onSuccess(String result) {
 					if (result==null||result.isEmpty()) {
@@ -651,7 +651,7 @@ public class WebEndPointEditPane extends MetaDataMainEditPane {
 			});
 			if (curDefinition.getHeaderAuthType()!=null||curDefinition.getHeaderAuthType().isEmpty()) {
 				if (curDefinition.getHeaderAuthType().equals("WHBA")) {
-					service.getWebEndPointSecurityInfo(TenantInfoHolder.getId(), curDefinition.getWebEndPointId(), "WHBA", new AdminAsyncCallback<String>() {
+					service.getWebEndPointSecurityInfo(TenantInfoHolder.getId(), curDefinition.getName(), "WHBA", new AdminAsyncCallback<String>() {
 						@Override
 						public void onSuccess(String result) {
 							if (result==null||result.isEmpty()) {
@@ -675,7 +675,7 @@ public class WebEndPointEditPane extends MetaDataMainEditPane {
 						};
 					});
 				} else if (curDefinition.getHeaderAuthType().equals("WHBT")) {
-					service.getWebEndPointSecurityInfo(TenantInfoHolder.getId(),curDefinition.getWebEndPointId(), "WHBT", new AdminAsyncCallback<String>() {
+					service.getWebEndPointSecurityInfo(TenantInfoHolder.getId(),curDefinition.getName(), "WHBT", new AdminAsyncCallback<String>() {
 						@Override
 						public void onSuccess(String result) {
 							if (result==null||result.isEmpty()) {

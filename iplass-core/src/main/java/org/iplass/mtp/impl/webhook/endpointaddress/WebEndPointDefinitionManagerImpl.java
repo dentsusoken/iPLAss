@@ -67,7 +67,7 @@ public class WebEndPointDefinitionManagerImpl extends AbstractTypedDefinitionMan
 		
 		WebEndPointService weps = (WebEndPointService) getService();
 		try {
-		weps.deleteSecurityTokenByDef(definition.getWebEndPointId());
+			weps.deleteSecurityTokenByDefinitionName(definition.getName());
 		} catch (Exception e) {
 			logger.warn("Exception occured while removing the data from Database for :"+definitionName+". Caused by: "+e.getCause()+". With following message : "+e.getCause().getMessage());
 			throw (RuntimeException) e;
@@ -82,19 +82,19 @@ public class WebEndPointDefinitionManagerImpl extends AbstractTypedDefinitionMan
 	 * 
 	 * */
 	@Override
-	public void modifySecurityToken(int tenantId, String metaDataId, String secret, String tokenType) {
+	public void modifySecurityToken(int tenantId, String definitionName, String secret, String tokenType) {
 		if(tokenType==null) {
 			throw new RuntimeException("null TokenType");
-			}
+		}
 		if( tokenType.equals("WHHM")){
-			service.updateHmacSecurityTokenByDef(tenantId,metaDataId,secret);
-			}
+			service.updateHmacSecurityTokenByDefinitionName(tenantId,definitionName,secret);
+		}
 		if( tokenType.equals("WHBT")){
-			service.updateBearerSecurityTokenByDef(tenantId,metaDataId,secret);
-			}
+			service.updateBearerSecurityTokenByDefinitionName(tenantId,definitionName,secret);
+		}
 		if( tokenType.equals("WHBA")){
-			service.updateBasicSecurityTokenByDef(tenantId,metaDataId,secret);
-			}
+			service.updateBasicSecurityTokenByDefinitionName(tenantId,definitionName,secret);
+		}
 	}
 	
 	/**
@@ -102,19 +102,19 @@ public class WebEndPointDefinitionManagerImpl extends AbstractTypedDefinitionMan
 	 * トークンタイプ:WHHM,WHBT,WHBA
 	 * */
 	@Override
-	public String getSecurityToken(int tenantId, String metaDataId,  String tokenType) {
+	public String getSecurityToken(int tenantId, String definitionName,  String tokenType) {
 		if(tokenType==null||tokenType.replaceAll("\\s","").isEmpty()) {
 			return null;
-			}
+		}
 		if( tokenType.equals("WHHM")){
-			return service.getHmacTokenByDef(tenantId,metaDataId);
-			}
+			return service.getHmacTokenByDefinitionName(tenantId,definitionName);
+		}
 		if( tokenType.equals("WHBT")){
-			return service.getBearerTokenByDef(tenantId,metaDataId);
-			}
+			return service.getBearerTokenByDefinitionName(tenantId,definitionName);
+		}
 		if( tokenType.equals("WHBA")){
-			return service.getBasicTokenByDef(tenantId,metaDataId);
-			}
+			return service.getBasicTokenByDefinitionName(tenantId,definitionName);
+		}
 		throw new RuntimeException("unknown TokenType");
 	}
 	
@@ -129,8 +129,8 @@ public class WebEndPointDefinitionManagerImpl extends AbstractTypedDefinitionMan
 		int tenantId = tenant.getId();
 		for (String wepDefName: endPointName) {
 			WebEndPointRuntime endPointRuntime = (service.getRuntimeByName(wepDefName)).copy();
-			endPointRuntime.setHeaderAuthContent(getSecurityToken(tenantId, endPointRuntime.getEndPointId(), endPointRuntime.getHeaderAuthType()));
-			endPointRuntime.setHmac(getSecurityToken(tenantId, endPointRuntime.getEndPointId(), "WHHM"));	
+			endPointRuntime.setHeaderAuthContent(getSecurityToken(tenantId, endPointRuntime.getEndPointName(), endPointRuntime.getHeaderAuthType()));
+			endPointRuntime.setHmac(getSecurityToken(tenantId, endPointRuntime.getEndPointName(), "WHHM"));	
 			result.add(endPointRuntime);
 		}
 		return result;
