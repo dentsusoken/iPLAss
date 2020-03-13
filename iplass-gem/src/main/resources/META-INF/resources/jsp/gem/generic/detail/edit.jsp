@@ -94,22 +94,32 @@
 
 	//キャンセルアクション
 	String cancel = "";
-	if (StringUtil.isEmpty(backPath)) {
-		if (StringUtil.isNotBlank(form.getCancelActionName())) {
-			cancel = form.getCancelActionName() + urlPath;
-		} else if (fromView) {
-			//詳細表示アクション
+	boolean moveToSearchList = false;
+	if (StringUtil.isNotBlank(form.getCancelActionName())) {
+		//指定Actionに遷移
+		cancel = form.getCancelActionName() + urlPath;
+	} else if (fromView) {
+		if (StringUtil.isNotEmpty(backPath) && ViewUtil.isTopViewEditCancelBackToTop()) {
+			//backPathに遷移
+			cancel = backPath;
+		} else {
+			//詳細画面に遷移
 			SearchFormView searchView = (SearchFormView)ViewUtil.getFormView(defName, viewName, true);
 			String viewAction = DetailViewCommand.VIEW_ACTION_NAME;
 			if (searchView != null && StringUtil.isNotBlank(searchView.getViewActionName())) {
 				viewAction = searchView.getViewActionName();
 			}
 			cancel = viewAction + urlPath + "/" + oid;
-		} else {
-			cancel = SearchViewCommand.SEARCH_ACTION_NAME + urlPath;
 		}
 	} else {
-		cancel = backPath;
+		if (StringUtil.isEmpty(backPath)) {
+			//検索画面に遷移(検索結果から直接編集画面を起動。TopViewからの場合はbackPath指定あり)
+			cancel = SearchViewCommand.SEARCH_ACTION_NAME + urlPath;
+			moveToSearchList = true;
+		} else {
+			//backPathに遷移
+			cancel = backPath;
+		}
 	}
 
 	//formにセットする初期アクション（Enter押下時に実行）
@@ -200,8 +210,8 @@ function cancel() {
 	}
 
 	submitForm(contextPath + "/<%=StringUtil.escapeJavaScript(cancel)%>", {
-<% if (fromView) { %>
-		//詳細画面表示用
+<% if (!moveToSearchList) { %>
+		//一覧に戻らない場合
 		<%=Constants.VERSION%>:$(":hidden[name='version']").val(),
 		<%=Constants.BACK_PATH%>:$(":hidden[name='backPath']").val(),
 <% } %>

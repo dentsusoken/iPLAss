@@ -69,6 +69,10 @@ public class GemConfigService implements Service {
 	/** 編集画面でキャンセル時に確認ダイアログを表示するか */
 	private boolean confirmEditCancel;
 
+	/** 編集画面でキャンセル時にTopViewに戻るか */
+	@Deprecated
+	private boolean topViewEditCancelBackToTop;
+
 	/** 検索画面でリセットボタンを表示するか */
 	private boolean showSeachCondResetButton;
 
@@ -177,6 +181,8 @@ public class GemConfigService implements Service {
 		}
 
 		confirmEditCancel = Boolean.valueOf(config.getValue("confirmEditCancel"));
+
+		topViewEditCancelBackToTop = config.getValue("topViewEditCancelBackToTop", Boolean.class, false);
 
 		showSeachCondResetButton = Boolean.valueOf(config.getValue("showSeachCondResetButton"));
 
@@ -339,6 +345,16 @@ public class GemConfigService implements Service {
 	 */
 	public boolean isConfirmEditCancel() {
 		return confirmEditCancel;
+	}
+
+	/**
+	 * 詳細画面から編集画面に遷移した際にキャンセル時にTopViewに戻るかを取得します。
+	 * @return 編集画面でキャンセル時にTopViewに戻るか
+	 * @deprecated 3.0.20までの互換設定です。今後は詳細画面に遷移する動作に統一する予定です。
+	 */
+	@Deprecated
+	public boolean isTopViewEditCancelBackToTop() {
+		return topViewEditCancelBackToTop;
 	}
 
 	/**

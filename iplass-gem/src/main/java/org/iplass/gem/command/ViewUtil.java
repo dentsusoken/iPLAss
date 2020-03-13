@@ -259,6 +259,17 @@ public class ViewUtil {
 	}
 
 	/**
+	 * 詳細画面から編集画面に遷移した際にキャンセル時にTopViewに戻るか
+	 * @return 編集画面でキャンセル時にTopViewに戻るか
+	 * @deprecated 3.0.20までの互換設定です。今後は詳細画面に遷移する動作に統一する予定です。
+	 */
+	@Deprecated
+	public static boolean isTopViewEditCancelBackToTop() {
+		GemConfigService gemConfigService = ServiceRegistry.getRegistry().getService(GemConfigService.class);
+		return gemConfigService.isTopViewEditCancelBackToTop();
+	}
+
+	/**
 	 * 検索画面でリセットボタンを表示するか
 	 * @return
 	 */
