@@ -32,6 +32,7 @@ import org.iplass.mtp.entity.definition.PropertyDefinitionType;
 import org.iplass.mtp.entity.definition.ValidationDefinition;
 import org.iplass.mtp.entity.definition.validations.BinarySizeValidation;
 import org.iplass.mtp.entity.definition.validations.BinaryTypeValidation;
+import org.iplass.mtp.entity.definition.validations.ExistsValidation;
 import org.iplass.mtp.entity.definition.validations.JavaClassValidation;
 import org.iplass.mtp.entity.definition.validations.LengthValidation;
 import org.iplass.mtp.entity.definition.validations.NotNullValidation;
@@ -128,7 +129,7 @@ public class ValidationListPane extends VLayout implements PropertyAttributePane
 		}
 
 		if (record.getValidationList() != null && record.getValidationList().size() > 0) {
-			List<ValidationListGridRecord> valRecordList = new ArrayList<ValidationListGridRecord>();
+			List<ValidationListGridRecord> valRecordList = new ArrayList<>();
 
 			for (ValidationDefinition vd : record.getValidationList()) {
 				ValidationListGridRecord validateRecord = new ValidationListGridRecord();
@@ -186,6 +187,8 @@ public class ValidationListPane extends VLayout implements PropertyAttributePane
 					if (bsVd.getMin() != null) {
 						validateRecord.setMin(String.valueOf(bsVd.getMin()));
 					}
+				} else if (vd instanceof ExistsValidation) {
+					validateRecord.setValType(ValidationType.EXISTS.name());
 				} else {
 					continue;
 				}
@@ -212,7 +215,7 @@ public class ValidationListPane extends VLayout implements PropertyAttributePane
 	@Override
 	public void applyTo(PropertyListGridRecord record) {
 
-		List<ValidationDefinition> vdList = new ArrayList<ValidationDefinition>();
+		List<ValidationDefinition> vdList = new ArrayList<>();
 		for (ListGridRecord valRecord : validationGrid.getRecords()) {
 			ValidationListGridRecord vRecord = (ValidationListGridRecord)valRecord;
 			ValidationType valType = ValidationType.valueOf(vRecord.getValType());
@@ -249,6 +252,8 @@ public class ValidationListPane extends VLayout implements PropertyAttributePane
 			} else if (ValidationType.BINARYTYPE.equals(valType)) {
 				validation = new BinaryTypeValidation(vRecord.getPtrn(),
 						vRecord.getErrorMessage(), vRecord.getErrorCode());
+			} else if (ValidationType.EXISTS.equals(valType)) {
+				validation = new ExistsValidation();
 			} else {
 				GWT.log("un support validation type. type=" + valType.name());
 			}

@@ -36,7 +36,7 @@ import org.iplass.mtp.impl.metadata.MetaData;
 
 @XmlSeeAlso({MetaValidationNotNull.class, MetaValidationRange.class, MetaValidationLength.class,
 	MetaValidationRegex.class, MetaValidationScripting.class, MetaValidationJavaClass.class,
-	MetaValidationBinarySize.class, MetaValidationBinaryType.class})
+	MetaValidationBinarySize.class, MetaValidationBinaryType.class, MetaValidationExists.class})
 public abstract class MetaValidation implements MetaData {
 	private static final long serialVersionUID = -5030970640762393766L;
 
@@ -48,7 +48,7 @@ public abstract class MetaValidation implements MetaData {
 	private String messageCategory;
 	private String messageId;
 
-	private List<MetaLocalizedString> localizedErrorMessageList = new ArrayList<MetaLocalizedString>();
+	private List<MetaLocalizedString> localizedErrorMessageList = new ArrayList<>();
 
 	public String getDescription() {
 		return description;
@@ -124,6 +124,7 @@ public abstract class MetaValidation implements MetaData {
 
 	public abstract ValidationDefinition currentConfig(EntityContext context);
 
+	@Override
 	public abstract MetaValidation copy();
 
 	public abstract ValidationHandler createRuntime(MetaEntity entity, MetaProperty property);

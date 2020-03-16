@@ -3280,6 +3280,33 @@ COPYRIGHT 2011 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. ALL RIGHTS RESE
                     <messageId>SizeMin</messageId>
                 </value>
             </entry>
+            <entry>
+                <key>ReferenceNotExists</key>
+                <value>
+                    <localizedMessageList>
+                        <localeName>th</localeName>
+                        <stringValue>ไม่มีข้อมูล (${reference})</stringValue>
+                    </localizedMessageList>
+                    <localizedMessageList>
+                        <localeName>zh-TW</localeName>
+                        <stringValue>資料不存在 (${reference})</stringValue>
+                    </localizedMessageList>
+                    <localizedMessageList>
+                        <localeName>ja</localeName>
+                        <stringValue>データが存在しません (${reference})</stringValue>
+                    </localizedMessageList>
+                    <localizedMessageList>
+                        <localeName>en</localeName>
+                        <stringValue>Data does not exist (${reference})</stringValue>
+                    </localizedMessageList>
+                    <localizedMessageList>
+                        <localeName>zh-CN</localeName>
+                        <stringValue>资料不存在 (${reference})</stringValue>
+                    </localizedMessageList>
+                    <message>データが存在しません (${reference})</message>
+                    <messageId>ReferenceNotExists</messageId>
+                </value>
+            </entry>
         </messages>
     </metaData>
 </metaDataEntry>

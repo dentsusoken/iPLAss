@@ -208,6 +208,7 @@ task copyGwtTransSrc(type: Sync) {
 
 		include 'mtp/entity/definition/validations/BinarySizeValidation.java'
 		include 'mtp/entity/definition/validations/BinaryTypeValidation.java'
+		include 'mtp/entity/definition/validations/ExistsValidation.java'
 		include 'mtp/entity/definition/validations/JavaClassValidation.java'
 		include 'mtp/entity/definition/validations/LengthValidation.java'
 		include 'mtp/entity/definition/validations/NotNullValidation.java'

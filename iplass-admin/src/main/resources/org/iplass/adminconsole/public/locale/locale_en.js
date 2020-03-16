@@ -487,6 +487,7 @@ LocaleInfo.ui_metadata_entity_PropertyListGrid_propName = "Property name";
 LocaleInfo.ui_metadata_entity_PropertyListGrid_entityName = "Entity name";
 LocaleInfo.ui_metadata_entity_PropertyListGrid_lengthRangeTypeMin = "Value that set to the minimum value of the Length type or Range type or Binary Size type";
 LocaleInfo.ui_metadata_entity_PropertyListGrid_lengthRangeTypeMax = "Value that set to the maximum value of the Length type or Range type or Binary Size type";
+LocaleInfo.ui_metadata_entity_PropertyListGrid_referenceTypeExists = "Reference data value of the Exists type";
 LocaleInfo.ui_metadata_entity_PropertyListGrid_name = "Name";
 LocaleInfo.ui_metadata_entity_PropertyListGrid_globalSelectValueComment = "When Local Value is defined, the value selected by Global Value is cleared. ";
 LocaleInfo.ui_metadata_entity_AutoNumberValueListDialog_description = "The already registered KEY value can not be changed or deleted.<br/>Only values can be changed.";
