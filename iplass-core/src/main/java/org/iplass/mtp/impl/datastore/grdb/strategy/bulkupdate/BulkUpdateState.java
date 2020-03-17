@@ -36,8 +36,11 @@ import org.iplass.mtp.impl.datastore.grdb.strategy.GRdbEntityStoreStrategy;
 import org.iplass.mtp.impl.entity.EntityContext;
 import org.iplass.mtp.impl.entity.EntityHandler;
 import org.iplass.mtp.impl.rdb.adapter.RdbAdapter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class BulkUpdateState implements AutoCloseable {
+	private static Logger logger = LoggerFactory.getLogger(BulkUpdateState.class);
 	
 	GRdbEntityStoreStrategy storeStrategy;
 	int tenantId;
@@ -88,7 +91,8 @@ public class BulkUpdateState implements AutoCloseable {
 		if (mergeList != null) {
 			if (search == null) {
 				search = con.createStatement();
-				search.setFetchSize(mergeList.size());
+				int fetchSize = bufferSize < rdb.getMaxFetchSize() ? bufferSize: rdb.getMaxFetchSize();
+				search.setFetchSize(fetchSize);
 			}
 			try (ResultSet rs = search.executeQuery(ObjStoreSearchSql.checkExistsByKeysSql(tenantId, eh, mergeList, rdb))) {
 				while (rs.next()) {
@@ -162,6 +166,14 @@ public class BulkUpdateState implements AutoCloseable {
 	}
 	
 	public void close() {
+		if (search != null) {
+			try {
+				search.close();
+			} catch (SQLException e) {
+				logger.error("fail to BulkUpdateState close. maybe resource leak.", e);
+			}
+		}
+
 		if (insert != null) {
 			insert.close();
 		}
