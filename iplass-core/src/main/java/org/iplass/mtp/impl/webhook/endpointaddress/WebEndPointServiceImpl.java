@@ -32,12 +32,14 @@ import org.iplass.mtp.impl.definition.DefinitionMetaDataTypeMap;
 import org.iplass.mtp.impl.definition.DefinitionService;
 import org.iplass.mtp.impl.metadata.MetaDataContext;
 import org.iplass.mtp.impl.metadata.MetaDataEntry;
+import org.iplass.mtp.impl.script.template.GroovyTemplate;
 import org.iplass.mtp.impl.webhook.WebHookAuthTokenHandler;
 import org.iplass.mtp.impl.webhook.endpointaddress.MetaWebEndPointDefinition.WebEndPointRuntime;
 import org.iplass.mtp.spi.Config;
 import org.iplass.mtp.spi.ServiceRegistry;
 import org.iplass.mtp.webhook.template.endpointaddress.WebEndPointDefinition;
 import org.iplass.mtp.webhook.template.endpointaddress.WebEndPointDefinitionManager;
+import org.iplass.mtp.webhook.template.endpointaddress.WebHookEndPoint;
 
 public class WebEndPointServiceImpl extends AbstractTypedMetaDataService<MetaWebEndPointDefinition, WebEndPointRuntime> implements WebEndPointService {
 	WebHookAuthTokenHandler tokenHandler;
@@ -202,5 +204,13 @@ public class WebEndPointServiceImpl extends AbstractTypedMetaDataService<MetaWeb
 		String path = DefinitionService.getInstance().getPathByMeta(MetaWebEndPointDefinition.class, definitionName);
 		MetaDataEntry entry = MetaDataContext.getContext().getMetaDataEntry(path);
 		return entry.getMetaData().getId();
+	}
+	
+	public GroovyTemplate  getUrlTemplateByName(String definitionName) {
+		return this.getRuntimeByName(definitionName).getUrlTemplate();
+	}
+	
+	public WebHookEndPoint getWebHookEndPointByName(String definitionName) {
+		return this.getRuntimeByName(definitionName).createWebHookEndPoint();
 	}
 }

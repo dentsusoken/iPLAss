@@ -473,8 +473,8 @@ public interface MetaDataServiceAsync {
 	public void updateWebEndPointSecurityInfo(final int tenantId, final String definitionName, final String secret, final String TokenType,AsyncCallback<Void> callback);
 
 	public void getWebEndPointSecurityInfo(final int tenantId, final String definitionName, final String TokenType,AsyncCallback<String> callback);
-	
+
 	public void generateHmacTokenString(AsyncCallback<String> callback);
-	
+
 	public void getEndPointFullListWithUrl(final int tenantId, final AsyncCallback<Map<String, String>>callback);
 }

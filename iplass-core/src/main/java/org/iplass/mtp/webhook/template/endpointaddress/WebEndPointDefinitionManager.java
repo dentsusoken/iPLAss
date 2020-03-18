@@ -19,19 +19,19 @@
  */
 package org.iplass.mtp.webhook.template.endpointaddress;
 
-import java.util.List;
-
 import org.iplass.mtp.definition.TypedDefinitionManager;
-import org.iplass.mtp.impl.webhook.endpointaddress.MetaWebEndPointDefinition.WebEndPointRuntime;
+import org.iplass.mtp.impl.script.template.GroovyTemplate;
 
 public interface WebEndPointDefinitionManager extends TypedDefinitionManager<WebEndPointDefinition> {
 
 	void modifySecurityToken(int tenantId,String metaDataId, String secret, String TokenType);
 
-	public String getSecurityToken(int tenantId, String metaDataId, String TokenType);
+	String getSecurityToken(int tenantId, String metaDataId, String TokenType);
 
-	public String generateHmacTokenString();
+	String generateHmacTokenString();
 
-	List<WebEndPointRuntime> generateRuntimeInstanceList(List<String> endPointDefList);
+	WebHookEndPoint generateEndPointInstance(String definitionName);
+	
+	GroovyTemplate  getUrlTemplateByName(String definitionName);
 
 }

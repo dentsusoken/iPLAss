@@ -21,13 +21,19 @@ package org.iplass.mtp.impl.webhook.endpointaddress;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
+import org.iplass.mtp.impl.core.ExecuteContext;
 import org.iplass.mtp.impl.definition.DefinableMetaData;
 import org.iplass.mtp.impl.metadata.BaseMetaDataRuntime;
 import org.iplass.mtp.impl.metadata.BaseRootMetaData;
 import org.iplass.mtp.impl.metadata.MetaDataConfig;
 import org.iplass.mtp.impl.metadata.RootMetaData;
+import org.iplass.mtp.impl.script.GroovyScriptEngine;
+import org.iplass.mtp.impl.script.ScriptEngine;
+import org.iplass.mtp.impl.script.template.GroovyTemplate;
+import org.iplass.mtp.impl.script.template.GroovyTemplateCompiler;
 import org.iplass.mtp.impl.util.ObjectUtil;
 import org.iplass.mtp.webhook.template.endpointaddress.WebEndPointDefinition;
+import org.iplass.mtp.webhook.template.endpointaddress.WebHookEndPoint;
 
 @XmlRootElement
 public class MetaWebEndPointDefinition extends BaseRootMetaData implements DefinableMetaData<WebEndPointDefinition>{
@@ -74,6 +80,9 @@ public class MetaWebEndPointDefinition extends BaseRootMetaData implements Defin
 	}
 	
 	public String getUrl() {
+		if (url == null) {
+			url = "";
+		}
 		return url;
 	}
 
@@ -110,81 +119,34 @@ public class MetaWebEndPointDefinition extends BaseRootMetaData implements Defin
 
 
 	public class WebEndPointRuntime extends BaseMetaDataRuntime{
-		String url;
-		String hmac;
-		String hmacResult;
-		String headerAuthContent;
-		String headerAuthType;
-		String headerAuthTypeName;
-		String contentForThisEndPoint;
-		String endPointName;
+		private GroovyTemplate urlTemplate;
 
+		
 		public WebEndPointRuntime() {
 			super();
-			url = MetaWebEndPointDefinition.this.url;
-			endPointName = MetaWebEndPointDefinition.this.name;
-			headerAuthType = MetaWebEndPointDefinition.this.headerAuthType;
-			headerAuthTypeName = MetaWebEndPointDefinition.this.headerAuthTypeName;
+			try {
+				ScriptEngine se = ExecuteContext.getCurrentContext().getTenantContext().getScriptEngine();
+				urlTemplate = GroovyTemplateCompiler.compile(getUrl(), "WebHookTemplate_Subscriber_" + getName() + "_" + id, (GroovyScriptEngine) se);
+			} catch (RuntimeException e) {
+				setIllegalStateException(e);
+			}
 		}
-
+		public WebHookEndPoint createWebHookEndPoint() {
+			WebHookEndPoint webHookEndPoint = new WebHookEndPoint();
+			webHookEndPoint.setUrl(getUrl());
+			webHookEndPoint.setHeaderAuthSchemeName(getHeaderAuthTypeName());
+			webHookEndPoint.setHeaderAuthType(getHeaderAuthType());
+			webHookEndPoint.setEndPointName(getName());
+			return webHookEndPoint;
+		}
 		@Override
 		public MetaWebEndPointDefinition getMetaData() {
 			return MetaWebEndPointDefinition.this;
 		}
-
-		public String getUrl() {
-			return url;
-		}
-		public void setUrl(String url) {
-			this.url = url;
-		}
-		public String getHmac() {
-			return hmac;
-		}
-		public void setHmac(String hmac) {
-			this.hmac = hmac;
-		}
-		public String getHeaderAuthContent() {
-			return headerAuthContent;
-		}
-		public void setHeaderAuthContent(String headerAuthContent) {
-			this.headerAuthContent = headerAuthContent;
-		}
-		public String getHeaderAuthType() {
-			return headerAuthType;
-		}
-		public void setHeaderAuthType(String headerAuthType) {
-			this.headerAuthType = headerAuthType;
-		}
-		public String getHeaderAuthTypeName() {
-			return headerAuthTypeName;
-		}
-		public void setHeaderAuthTypeName(String headerAuthTypeName) {
-			this.headerAuthTypeName = headerAuthTypeName;
-		}
-		
-		public String getContentForThisEndPoint() {
-			return contentForThisEndPoint;
-		}
-		public void setContentForThisEndPoint(String contentForThisEndPoint) {
-			this.contentForThisEndPoint = contentForThisEndPoint;
-		}
-		
-		public String getHmacResult() {
-			return hmacResult;
-		}
-		public void setHmacResult(String hmacResult) {
-			this.hmacResult = hmacResult;
-		}
-		public String getEndPointName() {
-			return endPointName;
-		}
-		public void setEndPointName(String endPointName) {
-			this.endPointName = endPointName;
-		}
-		public WebEndPointRuntime copy() {
-			return new WebEndPointRuntime();
+		public GroovyTemplate getUrlTemplate() {
+			return urlTemplate;
 		}
 	}
+
 
 }

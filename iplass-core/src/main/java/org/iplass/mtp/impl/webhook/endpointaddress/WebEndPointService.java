@@ -20,39 +20,44 @@
 package org.iplass.mtp.impl.webhook.endpointaddress;
 
 import org.iplass.mtp.impl.definition.TypedMetaDataService;
+import org.iplass.mtp.impl.script.template.GroovyTemplate;
 import org.iplass.mtp.impl.webhook.endpointaddress.MetaWebEndPointDefinition.WebEndPointRuntime;
+import org.iplass.mtp.webhook.template.endpointaddress.WebHookEndPoint;
 
 public interface WebEndPointService extends TypedMetaDataService<MetaWebEndPointDefinition, WebEndPointRuntime>{
 
-	public void deleteSecurityTokenByDefinitionName(String definitionName);
+	void deleteSecurityTokenByDefinitionName(String definitionName);
 
-	public void updateBasicSecurityTokenByDefinitionName(int tenantId,String definitionName, String basic);
+	void updateBasicSecurityTokenByDefinitionName(int tenantId,String definitionName, String basic);
 
-	public void updateHmacSecurityTokenByDefinitionName(int tenantId,String definitionName, String secret);
+	void updateHmacSecurityTokenByDefinitionName(int tenantId,String definitionName, String secret);
 
-	public void updateBearerSecurityTokenByDefinitionName(int tenantId,String definitionName, String secret);
+	void updateBearerSecurityTokenByDefinitionName(int tenantId,String definitionName, String secret);
 	
-	public String getHmacTokenByDefinitionName(int tenantId,String definitionName);
+	String getHmacTokenByDefinitionName(int tenantId,String definitionName);
 
-	public String getBearerTokenByDefinitionName(int tenantId,String definitionName);
+	String getBearerTokenByDefinitionName(int tenantId,String definitionName);
 
-	public String getBasicTokenByDefinitionName(int tenantId,String definitionName);
+	String getBasicTokenByDefinitionName(int tenantId,String definitionName);
+
+	void deleteSecurityTokenById(String metaDataId);
+
+	void updateBasicSecurityTokenById(int tenantId,String metaDataId, String basic);
+
+	void updateHmacSecurityTokenById(int tenantId,String metaDataId, String secret);
+
+	void updateBearerSecurityTokenById(int tenantId,String metaDataId, String secret);
 	
+	String getHmacTokenById(int tenantId,String metaDataId);
 
-	public void deleteSecurityTokenById(String metaDataId);
+	String getBearerTokenById(int tenantId,String metaDataId);
 
-	public void updateBasicSecurityTokenById(int tenantId,String metaDataId, String basic);
-
-	public void updateHmacSecurityTokenById(int tenantId,String metaDataId, String secret);
-
-	public void updateBearerSecurityTokenById(int tenantId,String metaDataId, String secret);
+	String getBasicTokenById(int tenantId,String metaDataId);
 	
-	public String getHmacTokenById(int tenantId,String metaDataId);
-
-	public String getBearerTokenById(int tenantId,String metaDataId);
-
-	public String getBasicTokenById(int tenantId,String metaDataId);
+	GroovyTemplate getUrlTemplateByName(String definitionName);
 	
 	String generateHmacTokenString();
+	
+	WebHookEndPoint getWebHookEndPointByName(String definitionName);
 
 }

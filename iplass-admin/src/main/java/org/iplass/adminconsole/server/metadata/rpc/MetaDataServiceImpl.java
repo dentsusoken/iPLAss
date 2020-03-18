@@ -1989,7 +1989,7 @@ public class MetaDataServiceImpl extends XsrfProtectedServiceServlet implements 
 			}
 		});
 	}
-	
+
 	/* ---------------------------------------
 	 * WebHook EndPoint Security Info
 	 --------------------------------------- */
@@ -2003,7 +2003,7 @@ public class MetaDataServiceImpl extends XsrfProtectedServiceServlet implements 
 			}
 		});
 	}
-	
+
 	@Override
 	public String getWebEndPointSecurityInfo(final int tenantId, final String definitionName, final String TokenType) {
 		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId, new AuthUtil.Callable<String>() {
@@ -2013,13 +2013,15 @@ public class MetaDataServiceImpl extends XsrfProtectedServiceServlet implements 
 			}
 		});
 	}
+
 	@Override
 	public String generateHmacTokenString() {
 		return wepdm.generateHmacTokenString();
 	}
+
 	/**
 	 * 
-	 * returns a map of <defName->Url>
+	 * returns a map of <defName,Url>
 	 * */
 	public Map<String, String> getEndPointFullListWithUrl(int tenantId){
 		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId, new AuthUtil.Callable<HashMap<String, String>>() {
@@ -2034,6 +2036,5 @@ public class MetaDataServiceImpl extends XsrfProtectedServiceServlet implements 
 				return endPointMap;
 			}
 		});
-
 	}
 }

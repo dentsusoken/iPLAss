@@ -202,6 +202,9 @@ public class MetaWebHookTemplate extends BaseRootMetaData implements DefinableMe
 	}
 
 	public String getUrlQuery() {
+		if (urlQuery == null) {
+			urlQuery = "";
+		}
 		return urlQuery;
 	}
 
@@ -214,18 +217,24 @@ public class MetaWebHookTemplate extends BaseRootMetaData implements DefinableMe
 	}
 
 	public class WebHookTemplateRuntime extends BaseMetaDataRuntime {
-
+		private GroovyTemplate contentTemplate;
+		private GroovyTemplate urlQueryTemplate;
+		
 		public WebHookTemplateRuntime() {
 			super();
 			try {
 				ScriptEngine se = ExecuteContext.getCurrentContext().getTenantContext().getScriptEngine();
 				contentTemplate = GroovyTemplateCompiler.compile(getWebHookContent(), "WebHookTemplate_Text" + getName(), (GroovyScriptEngine) se);
+				urlQueryTemplate = GroovyTemplateCompiler.compile(getUrlQuery(), "WebHookUrlQueryTemplate_Text" + getName(), (GroovyScriptEngine) se);
 			} catch (RuntimeException e) {
 				setIllegalStateException(e);
 			}
 		}
 
-		private GroovyTemplate contentTemplate;
+
+		public GroovyTemplate getUrlQueryTemplate() {
+			return urlQueryTemplate;
+		}
 		
 		public GroovyTemplate getContentTemplate() {
 			return contentTemplate;

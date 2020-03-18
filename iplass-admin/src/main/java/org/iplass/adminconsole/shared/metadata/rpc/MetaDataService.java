@@ -500,7 +500,6 @@ public interface MetaDataService extends XsrfProtectedService {
 	public String getWebEndPointSecurityInfo(final int tenantId, final String definitionName, final String TokenType);
 
 	public String generateHmacTokenString();
-	
-	public Map<String, String> getEndPointFullListWithUrl(int tenantId);
 
+	public Map<String, String> getEndPointFullListWithUrl(int tenantId);
 }

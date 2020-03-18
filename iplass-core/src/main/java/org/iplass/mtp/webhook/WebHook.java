@@ -24,8 +24,8 @@
 package org.iplass.mtp.webhook;
 
 import java.util.List;
-import org.iplass.mtp.impl.webhook.endpointaddress.MetaWebEndPointDefinition.WebEndPointRuntime;
 import org.iplass.mtp.webhook.template.definition.WebHookHeaderDefinition;
+import org.iplass.mtp.webhook.template.endpointaddress.WebHookEndPoint;
 
 /**
  * @author lisf06
@@ -42,8 +42,8 @@ public class WebHook  {
 	/** 送るメソッド */
 	private String httpMethod;
 
-	private List<WebEndPointRuntime> webHookEndPointRuntimeList;
-
+	private List<WebHookEndPoint> webHookEndPointList;
+	
 	private WebHookResponseHandler resultHandler;
 	private String urlQuery;
 	private String headerAuthTypeName;
@@ -51,17 +51,17 @@ public class WebHook  {
 	/** headers */
 	private List<WebHookHeaderDefinition> headers;
 	private String tokenHeader;
-	
+
 
 	//---------------------------------
 	/**　同期非同期　*/
 	private boolean synchronous;
-	
+
 	/**
 	 * 記録用
 	 * */
 	private String TemplateName;
-	
+
 	/** 記録用のid */
 	private int webHookId;
 	//----------------------------------
@@ -108,7 +108,7 @@ public class WebHook  {
 	public void setHeaders(List<WebHookHeaderDefinition> headers) {
 		this.headers = headers;
 	}
-	
+
 	public String getTokenHeader() {
 		return tokenHeader;
 	}
@@ -116,7 +116,7 @@ public class WebHook  {
 	public void setTokenHeader(String tokenHeader) {
 		this.tokenHeader = tokenHeader;
 	}
-	
+
 	public String getHttpMethod() {
 		return httpMethod;
 	}
@@ -124,6 +124,7 @@ public class WebHook  {
 	public void setHttpMethod(String httpMethod) {
 		this.httpMethod = httpMethod;
 	}
+
 	public String getContentType() {
 		return contentType;
 	}
@@ -139,7 +140,7 @@ public class WebHook  {
 	public void setUrlQuery(String urlQuery) {
 		this.urlQuery = urlQuery;
 	}
-	
+
 	public String getHeaderAuthTypeName() {
 		return headerAuthTypeName;
 	}
@@ -147,7 +148,7 @@ public class WebHook  {
 	public void setHeaderAuthTypeName(String headerAuthTypeName) {
 		this.headerAuthTypeName = headerAuthTypeName;
 	}
-	
+
 	public WebHookResponseHandler getResultHandler() {
 		return resultHandler;
 	}
@@ -156,12 +157,11 @@ public class WebHook  {
 		this.resultHandler = resultHandler;
 	}
 
-	public List<WebEndPointRuntime> getWebHookEndPointRuntimeList() {
-		return webHookEndPointRuntimeList;
+	public List<WebHookEndPoint> getWebHookEndPointList() {
+		return webHookEndPointList;
 	}
 
-	public void setWebHookEndPointRuntimeList(List<WebEndPointRuntime> webHookEndPointRuntimeList) {
-		this.webHookEndPointRuntimeList = webHookEndPointRuntimeList;
+	public void setWebHookEndPointList(List<WebHookEndPoint> webHookEndPointList) {
+		this.webHookEndPointList = webHookEndPointList;
 	}
-
 }

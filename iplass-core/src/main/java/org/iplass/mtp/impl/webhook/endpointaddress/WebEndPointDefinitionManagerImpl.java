@@ -19,18 +19,17 @@
  */
 package org.iplass.mtp.impl.webhook.endpointaddress;
 
-import java.util.ArrayList;
-import java.util.List;
 import org.iplass.mtp.definition.DefinitionModifyResult;
 import org.iplass.mtp.impl.core.ExecuteContext;
 import org.iplass.mtp.impl.definition.AbstractTypedDefinitionManager;
 import org.iplass.mtp.impl.definition.TypedMetaDataService;
 import org.iplass.mtp.impl.metadata.RootMetaData;
-import org.iplass.mtp.impl.webhook.endpointaddress.MetaWebEndPointDefinition.WebEndPointRuntime;
+import org.iplass.mtp.impl.script.template.GroovyTemplate;
 import org.iplass.mtp.spi.ServiceRegistry;
 import org.iplass.mtp.tenant.Tenant;
 import org.iplass.mtp.webhook.template.endpointaddress.WebEndPointDefinition;
 import org.iplass.mtp.webhook.template.endpointaddress.WebEndPointDefinitionManager;
+import org.iplass.mtp.webhook.template.endpointaddress.WebHookEndPoint;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -123,17 +122,16 @@ public class WebEndPointDefinitionManagerImpl extends AbstractTypedDefinitionMan
 		return service.generateHmacTokenString();
 	}
 	
-	public List<WebEndPointRuntime> generateRuntimeInstanceList(List<String> endPointName){
-		ArrayList<WebEndPointRuntime> result = new ArrayList<WebEndPointRuntime>();
+	public WebHookEndPoint generateEndPointInstance(String definitionName){
 		Tenant tenant = ExecuteContext.getCurrentContext().getCurrentTenant();
 		int tenantId = tenant.getId();
-		for (String wepDefName: endPointName) {
-			WebEndPointRuntime endPointRuntime = (service.getRuntimeByName(wepDefName)).copy();
-			endPointRuntime.setHeaderAuthContent(getSecurityToken(tenantId, endPointRuntime.getEndPointName(), endPointRuntime.getHeaderAuthType()));
-			endPointRuntime.setHmac(getSecurityToken(tenantId, endPointRuntime.getEndPointName(), "WHHM"));	
-			result.add(endPointRuntime);
-		}
-		return result;
+		WebHookEndPoint endPoint = service.getWebHookEndPointByName(definitionName);
+		endPoint.setHeaderAuthContent(getSecurityToken(tenantId, endPoint.getEndPointName(), endPoint.getHeaderAuthType()));
+		endPoint.setHmac(getSecurityToken(tenantId, endPoint.getEndPointName(), "WHHM"));	
+		return endPoint;
 	}
 
+	public GroovyTemplate  getUrlTemplateByName(String definitionName) {
+		return service.getUrlTemplateByName(definitionName);
+	}
 }
