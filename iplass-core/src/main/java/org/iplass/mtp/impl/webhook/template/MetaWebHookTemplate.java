@@ -37,6 +37,7 @@ import org.iplass.mtp.impl.script.template.GroovyTemplate;
 import org.iplass.mtp.impl.script.template.GroovyTemplateCompiler;
 import org.iplass.mtp.impl.util.ObjectUtil;
 import org.iplass.mtp.webhook.WebHook;
+import org.iplass.mtp.webhook.WebHookHeader;
 import org.iplass.mtp.webhook.template.definition.WebHookHeaderDefinition;
 import org.iplass.mtp.webhook.template.definition.WebHookTemplateDefinition;
 
@@ -251,10 +252,10 @@ public class MetaWebHookTemplate extends BaseRootMetaData implements DefinableMe
 			WebHook webHook = new WebHook(); 
 			webHook.setName(name);
 			
-			ArrayList<WebHookHeaderDefinition> newHeaders = new ArrayList<WebHookHeaderDefinition>();
+			ArrayList<WebHookHeader> newHeaders = new ArrayList<WebHookHeader>();
 			if (headers !=null) {
 				for (MetaWebHookHeader metaHeader: headers) {
-					newHeaders.add(metaHeader.currentConfig());
+					newHeaders.add(new WebHookHeader(metaHeader.getKey(),metaHeader.getValue()));
 				}
 			}
 			webHook.setHeaders(newHeaders);

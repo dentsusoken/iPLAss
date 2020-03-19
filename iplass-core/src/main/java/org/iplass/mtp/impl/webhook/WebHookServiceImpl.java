@@ -69,10 +69,9 @@ import org.iplass.mtp.tenant.Tenant;
 import org.iplass.mtp.webhook.WebHook;
 import org.iplass.mtp.webhook.WebHookHeader;
 import org.iplass.mtp.webhook.WebHookResponse;
-import org.iplass.mtp.webhook.template.definition.WebHookHeaderDefinition;
 import org.iplass.mtp.webhook.template.definition.WebHookTemplateDefinition;
 import org.iplass.mtp.webhook.template.definition.WebHookTemplateDefinitionManager;
-import org.iplass.mtp.webhook.template.endpointaddress.WebEndPointDefinitionManager;
+import org.iplass.mtp.webhook.template.endpointaddress.WebHookEndPointDefinitionManager;
 import org.iplass.mtp.webhook.template.endpointaddress.WebHookEndPoint;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -87,7 +86,7 @@ public class WebHookServiceImpl extends AbstractTypedMetaDataService<MetaWebHook
 	public final String WEBHOOK_HMACTOKEN_DEFAULTNAME = "webHookHmacTokenDefaultName";
 	public final String WEBHOOK_HTTP_CLIENT_CONFIG = "httpClientConfig";
 	private AsyncTaskManager atm;
-	private WebEndPointDefinitionManager wepdm;
+	private WebHookEndPointDefinitionManager wepdm;
 	private boolean webHookIsRetry;
 	private int webHookRetryMaximumAttpempts;
 	private int webHookRetryInterval;
@@ -170,7 +169,7 @@ public class WebHookServiceImpl extends AbstractTypedMetaDataService<MetaWebHook
 		}
 
 		atm = ManagerLocator.getInstance().getManager(AsyncTaskManager.class);
-		wepdm = ManagerLocator.getInstance().getManager(WebEndPointDefinitionManager.class);
+		wepdm = ManagerLocator.getInstance().getManager(WebHookEndPointDefinitionManager.class);
 		
 		//再利用の為、httpclientをstaticにします
 		initWebHookHttpClient();
@@ -241,7 +240,7 @@ public class WebHookServiceImpl extends AbstractTypedMetaDataService<MetaWebHook
 
 				//and headers
 				if (webHook.getHeaders()!=null) {
-					for(WebHookHeaderDefinition headerEntry: webHook.getHeaders()) {
+					for(WebHookHeader headerEntry: webHook.getHeaders()) {
 						httpRequest.setHeader(headerEntry.getKey(), headerEntry.getValue());
 					}
 				}

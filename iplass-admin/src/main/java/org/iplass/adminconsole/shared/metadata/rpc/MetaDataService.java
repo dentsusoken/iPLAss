@@ -495,9 +495,9 @@ public interface MetaDataService extends XsrfProtectedService {
 	/* ---------------------------------------
 	 * WebHook EndPoint Security Info
 	 --------------------------------------- */
-	public void updateWebEndPointSecurityInfo(final int tenantId, final String definitionName, final String secret, final String TokenType);
+	public void updateWebHookEndPointSecurityInfo(final int tenantId, final String definitionName, final String secret, final String TokenType);
 
-	public String getWebEndPointSecurityInfo(final int tenantId, final String definitionName, final String TokenType);
+	public String getWebHookEndPointSecurityInfo(final int tenantId, final String definitionName, final String TokenType);
 
 	public String generateHmacTokenString();
 

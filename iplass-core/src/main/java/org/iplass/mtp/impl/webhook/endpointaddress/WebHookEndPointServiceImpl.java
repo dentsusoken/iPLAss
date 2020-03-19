@@ -34,38 +34,38 @@ import org.iplass.mtp.impl.metadata.MetaDataContext;
 import org.iplass.mtp.impl.metadata.MetaDataEntry;
 import org.iplass.mtp.impl.script.template.GroovyTemplate;
 import org.iplass.mtp.impl.webhook.WebHookAuthTokenHandler;
-import org.iplass.mtp.impl.webhook.endpointaddress.MetaWebEndPointDefinition.WebEndPointRuntime;
+import org.iplass.mtp.impl.webhook.endpointaddress.MetaWebHookEndPointDefinition.WebHookEndPointRuntime;
 import org.iplass.mtp.spi.Config;
 import org.iplass.mtp.spi.ServiceRegistry;
-import org.iplass.mtp.webhook.template.endpointaddress.WebEndPointDefinition;
-import org.iplass.mtp.webhook.template.endpointaddress.WebEndPointDefinitionManager;
+import org.iplass.mtp.webhook.template.endpointaddress.WebHookEndPointDefinition;
+import org.iplass.mtp.webhook.template.endpointaddress.WebHookEndPointDefinitionManager;
 import org.iplass.mtp.webhook.template.endpointaddress.WebHookEndPoint;
 
-public class WebEndPointServiceImpl extends AbstractTypedMetaDataService<MetaWebEndPointDefinition, WebEndPointRuntime> implements WebEndPointService {
+public class WebHookEndPointServiceImpl extends AbstractTypedMetaDataService<MetaWebHookEndPointDefinition, WebHookEndPointRuntime> implements WebHookEndPointService {
 	WebHookAuthTokenHandler tokenHandler;
 
-	public static final String WEBENDPOINT_DEFINITION_META_PATH = "/webhook/endpointaddress/";
-	public static class TypeMap extends DefinitionMetaDataTypeMap<WebEndPointDefinition, MetaWebEndPointDefinition>{
+	public static final String WEBHOOKENDPOINT_DEFINITION_META_PATH = "/webhook/endpointaddress/";
+	public static class TypeMap extends DefinitionMetaDataTypeMap<WebHookEndPointDefinition, MetaWebHookEndPointDefinition>{
 		public TypeMap() {
-			super(getFixedPath(), MetaWebEndPointDefinition.class, WebEndPointDefinition.class);
+			super(getFixedPath(), MetaWebHookEndPointDefinition.class, WebHookEndPointDefinition.class);
 		}
 		public static String getFixedPath() {
-			return WEBENDPOINT_DEFINITION_META_PATH;
+			return WEBHOOKENDPOINT_DEFINITION_META_PATH;
 		}
 		@Override
-		public TypedDefinitionManager<WebEndPointDefinition> typedDefinitionManager() {
-			return ManagerLocator.getInstance().getManager(WebEndPointDefinitionManager.class);
+		public TypedDefinitionManager<WebHookEndPointDefinition> typedDefinitionManager() {
+			return ManagerLocator.getInstance().getManager(WebHookEndPointDefinitionManager.class);
 		}
 	}
 	
 	@Override
-	public Class<MetaWebEndPointDefinition> getMetaDataType() {
-		return MetaWebEndPointDefinition.class;
+	public Class<MetaWebHookEndPointDefinition> getMetaDataType() {
+		return MetaWebHookEndPointDefinition.class;
 	}
 
 	@Override
-	public Class<WebEndPointRuntime> getRuntimeType() {
-		return WebEndPointRuntime.class;
+	public Class<WebHookEndPointRuntime> getRuntimeType() {
+		return WebHookEndPointRuntime.class;
 	}
 
 	@Override
@@ -201,7 +201,7 @@ public class WebEndPointServiceImpl extends AbstractTypedMetaDataService<MetaWeb
 	}
 	
 	private String getMetaIdByDefinitionName(String definitionName) {
-		String path = DefinitionService.getInstance().getPathByMeta(MetaWebEndPointDefinition.class, definitionName);
+		String path = DefinitionService.getInstance().getPathByMeta(MetaWebHookEndPointDefinition.class, definitionName);
 		MetaDataEntry entry = MetaDataContext.getContext().getMetaDataEntry(path);
 		return entry.getMetaData().getId();
 	}

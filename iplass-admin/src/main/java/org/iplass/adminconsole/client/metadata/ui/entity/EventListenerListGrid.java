@@ -227,7 +227,7 @@ public class EventListenerListGrid extends ListGrid {
 			record.setNotificationCondScript(snDef.getNotificationCondScript());
 			
 			record.setSyncrhonous(snDef.isSynchronous());
-			record.setWebEndPointList(snDef.getEndPointDefList());
+			record.setWebHookEndPointList(snDef.getEndPointDefList());
 			record.setWebHookResultHandler(snDef.getResultHandler());
 
 			List<EventType> lstEType = snDef.getListenEvent();
@@ -316,7 +316,7 @@ public class EventListenerListGrid extends ListGrid {
 				snDef.setNotificationCondScript(record.getNotificationCondScript());
 
 				snDef.setSynchronous(record.isSyncrhonous());
-				snDef.setEndPointDefList(record.getWebEndPointList());
+				snDef.setEndPointDefList(record.getWebHookEndPointList());
 				snDef.setResultHandler(record.getWebHookResultHandler());
 
 				List<EventType> lstEType = new ArrayList<EventType>();
@@ -769,7 +769,7 @@ public class EventListenerListGrid extends ListGrid {
 			
 			webHookIsSynchronousItem.setValue(target.isSyncrhonous());
 			notificationResultHandlerItem.setValue(target.getWebHookResultHandler());
-			webHookEndPointGrid.initializeGrid(target.getWebEndPointList(), false);
+			webHookEndPointGrid.initializeGrid(target.getWebHookEndPointList(), false);
 
 			withoutMappedByReferenceItem.setValue(target.isWithoutMappedByReference());
 			
@@ -948,7 +948,7 @@ public class EventListenerListGrid extends ListGrid {
 		}
 
 		private void webHookEndPointEditMap() {
-			List<String> tempList = target.getWebEndPointList();
+			List<String> tempList = target.getWebHookEndPointList();
 			if (tempList==null) {
 				tempList = new ArrayList<String>();
 			}
@@ -965,8 +965,8 @@ public class EventListenerListGrid extends ListGrid {
 					} else {
 						tempList = new ArrayList<String>(tempMap.keySet());
 					}
-					target.setWebEndPointList(tempList);
-					webHookEndPointGrid.setData(webHookEndPointGrid.createWebEndPointRecord(tempMap,(ArrayList<String>)target.getWebEndPointList(),false));
+					target.setWebHookEndPointList(tempList);
+					webHookEndPointGrid.setData(webHookEndPointGrid.createWebHookEndPointRecord(tempMap,(ArrayList<String>)target.getWebHookEndPointList(),false));
 					webHookEndPointGrid.markForRedraw();
 					endPointDialog.destroy();
 				}
@@ -999,7 +999,7 @@ public class EventListenerListGrid extends ListGrid {
 
 					@Override
 					public void onFailure(Throwable caught) {
-						GWT.log("Failed to fetch WebEndPointData.", caught);
+						GWT.log("Failed to fetch WebHookEndPointData.", caught);
 					}
 					@Override
 					public void onSuccess(Map<String, String> result) {
@@ -1008,12 +1008,12 @@ public class EventListenerListGrid extends ListGrid {
 						} else {
 							WebHookEndPointGrid.this.setFields(endPointNameField,endPointUrlField);
 						}
-						WebHookEndPointGrid.this.setData(createWebEndPointRecord(result,endPontNameList,isEdit));
+						WebHookEndPointGrid.this.setData(createWebHookEndPointRecord(result,endPontNameList,isEdit));
 						WebHookEndPointGrid.this.markForRedraw();
 					}
 				});
 			}
-			private ListGridRecord[] createWebEndPointRecord(Map<String,String> result, List<String> endPontNameList, boolean isEdit) {
+			private ListGridRecord[] createWebHookEndPointRecord(Map<String,String> result, List<String> endPontNameList, boolean isEdit) {
 				if (isEdit) {
 					if (result!=null) {
 						ListGridRecord[] temp= new ListGridRecord[result.size()];

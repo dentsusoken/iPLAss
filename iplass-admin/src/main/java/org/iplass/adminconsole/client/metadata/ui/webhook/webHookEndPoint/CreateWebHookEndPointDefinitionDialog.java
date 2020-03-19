@@ -17,16 +17,16 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
-package org.iplass.adminconsole.client.metadata.ui.webhook.webEndPoint;
+package org.iplass.adminconsole.client.metadata.ui.webhook.webHookEndPoint;
 
 import org.iplass.adminconsole.client.base.tenant.TenantInfoHolder;
 import org.iplass.adminconsole.client.metadata.ui.common.Callable;
 import org.iplass.adminconsole.client.metadata.ui.common.MetaDataCreateDialog;
-import org.iplass.mtp.webhook.template.endpointaddress.WebEndPointDefinition;
+import org.iplass.mtp.webhook.template.endpointaddress.WebHookEndPointDefinition;
 
-public class CreateWebEndPointDefinitionDialog extends MetaDataCreateDialog{
+public class CreateWebHookEndPointDefinitionDialog extends MetaDataCreateDialog{
 	
-	public CreateWebEndPointDefinitionDialog(String definitionClassName, String nodeDisplayName, String folderPath,
+	public CreateWebHookEndPointDefinitionDialog(String definitionClassName, String nodeDisplayName, String folderPath,
 			boolean isCopyMode) {
 		super(definitionClassName, nodeDisplayName, folderPath, isCopyMode);
 	}
@@ -37,18 +37,18 @@ public class CreateWebEndPointDefinitionDialog extends MetaDataCreateDialog{
 		checkExist(saveInfo.getName(), new Callable<Void>() {
 			@Override
 			public Void call() {
-				createWebEndPointDefinition(saveInfo, isCopyMode);
+				createWebHookEndPointDefinition(saveInfo, isCopyMode);
 				return null;
 			}
 		});
 	}
 	
 	
-	private void createWebEndPointDefinition(SaveInfo saveInfo, boolean isCopyMode) {
+	private void createWebHookEndPointDefinition(SaveInfo saveInfo, boolean isCopyMode) {
 		if (isCopyMode) {
 			service.copyDefinition(TenantInfoHolder.getId(), getDefinitionClassName(), getSourceName(), saveInfo.getName(), saveInfo.getDisplayName(), saveInfo.getDescription(), new SaveResultCallback());
 		} else {
-			WebEndPointDefinition definition = new WebEndPointDefinition();
+			WebHookEndPointDefinition definition = new WebHookEndPointDefinition();
 			
 			definition.setName(saveInfo.getName());
 			definition.setDisplayName(saveInfo.getDisplayName());

@@ -32,9 +32,9 @@ public interface WebHookManager extends Manager {
 	
 	WebHook createWebHook(String webHookDefinitionName, Map<String, Object> binding, List<String> endPointDefName);
 	
-	public void sendWebHook(WebHook webHook);
+	void sendWebHook(WebHook webHook);
 	
 	/** 送る */
-	public void sendWebHook(String webHookDefinitionName, Map<String, Object> parameters); 
+	void sendWebHook(String webHookDefinitionName, Map<String, Object> parameters); 
 
 }

@@ -53,7 +53,7 @@ public class EventListenerListGridRecord extends ListGridRecord {
 	public static final String NAFTERP = "notifyAfterP";
 	public static final String NONLOAD = "notifyOnLoad";
 	public static final String NBEFOREVALIDATE = "notifyBeforeValidate";
-	public static final String WEBENDPOINTLIST="webEndPointList";
+	public static final String WEBHOOKENDPOINTLIST="webHookEndPointList";
 	public static final String WEBHOOKRESULTHANLDER="webHookResultHandler";
 	public static final String SYNCHRONOUS="syncrhonous";
 
@@ -283,13 +283,13 @@ public class EventListenerListGridRecord extends ListGridRecord {
 		setAttribute(GP, value);
 	}
 	
-	public void setWebEndPointList(List<String> webEndPointList) {
-		setAttributeAsJavaObject(WEBENDPOINTLIST, webEndPointList);
+	public void setWebHookEndPointList(List<String> webHookEndPointList) {
+		setAttributeAsJavaObject(WEBHOOKENDPOINTLIST, webHookEndPointList);
 	}
 	
 	@SuppressWarnings("unchecked")
-	public List<String> getWebEndPointList(){
-		return (List<String>) getAttributeAsObject(WEBENDPOINTLIST);
+	public List<String> getWebHookEndPointList(){
+		return (List<String>) getAttributeAsObject(WEBHOOKENDPOINTLIST);
 	}
 	
 	public void setWebHookResultHandler(String webHookResultHandler) {

@@ -140,8 +140,8 @@ import org.iplass.mtp.web.template.report.definition.ReportTemplateDefinition;
 import org.iplass.mtp.webapi.definition.EntityWebApiDefinition;
 import org.iplass.mtp.webapi.definition.EntityWebApiDefinitionManager;
 import org.iplass.mtp.webapi.definition.WebApiDefinition;
-import org.iplass.mtp.webhook.template.endpointaddress.WebEndPointDefinition;
-import org.iplass.mtp.webhook.template.endpointaddress.WebEndPointDefinitionManager;
+import org.iplass.mtp.webhook.template.endpointaddress.WebHookEndPointDefinition;
+import org.iplass.mtp.webhook.template.endpointaddress.WebHookEndPointDefinitionManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -166,7 +166,7 @@ public class MetaDataServiceImpl extends XsrfProtectedServiceServlet implements 
 	private MenuTreeManager mtm = ManagerLocator.getInstance().getManager(MenuTreeManager.class);
 	private EntityWebApiDefinitionManager ewdm = ManagerLocator.getInstance().getManager(EntityWebApiDefinitionManager.class);
 	private DefinitionManager dm = ManagerLocator.getInstance().getManager(DefinitionManager.class);
-	private WebEndPointDefinitionManager wepdm = ManagerLocator.getInstance().getManager(WebEndPointDefinitionManager.class);
+	private WebHookEndPointDefinitionManager wepdm = ManagerLocator.getInstance().getManager(WebHookEndPointDefinitionManager.class);
 			
 	private EntityManager em = AdminEntityManager.getInstance();
 	private AsyncTaskManager atm = ManagerLocator.getInstance().getManager(AsyncTaskManager.class);
@@ -1994,7 +1994,7 @@ public class MetaDataServiceImpl extends XsrfProtectedServiceServlet implements 
 	 * WebHook EndPoint Security Info
 	 --------------------------------------- */
 	@Override
-	public void updateWebEndPointSecurityInfo(final int tenantId, final String definitionName, final String secret, final String TokenType) {
+	public void updateWebHookEndPointSecurityInfo(final int tenantId, final String definitionName, final String secret, final String TokenType) {
 		AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId, new AuthUtil.Callable<Void>() {
 			@Override
 			public Void call() {
@@ -2005,7 +2005,7 @@ public class MetaDataServiceImpl extends XsrfProtectedServiceServlet implements 
 	}
 
 	@Override
-	public String getWebEndPointSecurityInfo(final int tenantId, final String definitionName, final String TokenType) {
+	public String getWebHookEndPointSecurityInfo(final int tenantId, final String definitionName, final String TokenType) {
 		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId, new AuthUtil.Callable<String>() {
 			@Override
 			public String call() {
@@ -2028,9 +2028,9 @@ public class MetaDataServiceImpl extends XsrfProtectedServiceServlet implements 
 			@Override
 			public HashMap<String, String> call() {
 				HashMap<String, String> endPointMap = new HashMap<String, String>();
-				List<Name> tempNameList = getDefinitionNameList(tenantId, WebEndPointDefinition.class.getName());
+				List<Name> tempNameList = getDefinitionNameList(tenantId, WebHookEndPointDefinition.class.getName());
 				for (Name name : tempNameList) {
-					WebEndPointDefinition temp = getDefinition(tenantId,WebEndPointDefinition.class.getName(),name.getName());
+					WebHookEndPointDefinition temp = getDefinition(tenantId,WebHookEndPointDefinition.class.getName(),name.getName());
 					endPointMap.put(name.getName(), temp.getUrl());
 				}
 				return endPointMap;

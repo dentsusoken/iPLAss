@@ -32,11 +32,11 @@ import org.iplass.mtp.impl.script.ScriptEngine;
 import org.iplass.mtp.impl.script.template.GroovyTemplate;
 import org.iplass.mtp.impl.script.template.GroovyTemplateCompiler;
 import org.iplass.mtp.impl.util.ObjectUtil;
-import org.iplass.mtp.webhook.template.endpointaddress.WebEndPointDefinition;
+import org.iplass.mtp.webhook.template.endpointaddress.WebHookEndPointDefinition;
 import org.iplass.mtp.webhook.template.endpointaddress.WebHookEndPoint;
 
 @XmlRootElement
-public class MetaWebEndPointDefinition extends BaseRootMetaData implements DefinableMetaData<WebEndPointDefinition>{
+public class MetaWebHookEndPointDefinition extends BaseRootMetaData implements DefinableMetaData<WebHookEndPointDefinition>{
 
 	private static final long serialVersionUID = 7029271819447338103L;
 	/** 固有id、metaのidと同じ内容になるはずです */
@@ -50,7 +50,7 @@ public class MetaWebEndPointDefinition extends BaseRootMetaData implements Defin
 	
 	//Definition → Meta
 	@Override
-	public void applyConfig(WebEndPointDefinition definition) {
+	public void applyConfig(WebHookEndPointDefinition definition) {
 		this.name = definition.getName();
 		this.displayName = definition.getDisplayName();
 		this.description = definition.getDescription();
@@ -61,8 +61,8 @@ public class MetaWebEndPointDefinition extends BaseRootMetaData implements Defin
 	
 	//Meta → Definition
 	@Override
-	public WebEndPointDefinition currentConfig() {
-		WebEndPointDefinition definition = new WebEndPointDefinition();
+	public WebHookEndPointDefinition currentConfig() {
+		WebHookEndPointDefinition definition = new WebHookEndPointDefinition();
 		definition.setName(name);
 		definition.setDisplayName(displayName);
 		definition.setDescription(description);
@@ -71,11 +71,11 @@ public class MetaWebEndPointDefinition extends BaseRootMetaData implements Defin
 		definition.setUrl(url);
 		return definition;
 	}
-	public MetaWebEndPointDefinition() {
+	public MetaWebHookEndPointDefinition() {
 		
 	}
 	
-	public MetaWebEndPointDefinition(String url) {
+	public MetaWebHookEndPointDefinition(String url) {
 		this.url = url;
 	}
 	
@@ -108,8 +108,8 @@ public class MetaWebEndPointDefinition extends BaseRootMetaData implements Defin
 
 
 	@Override
-	public WebEndPointRuntime createRuntime(MetaDataConfig metaDataConfig) {
-		return new WebEndPointRuntime();
+	public WebHookEndPointRuntime createRuntime(MetaDataConfig metaDataConfig) {
+		return new WebHookEndPointRuntime();
 	}
 
 	@Override
@@ -118,11 +118,11 @@ public class MetaWebEndPointDefinition extends BaseRootMetaData implements Defin
 	}
 
 
-	public class WebEndPointRuntime extends BaseMetaDataRuntime{
+	public class WebHookEndPointRuntime extends BaseMetaDataRuntime{
 		private GroovyTemplate urlTemplate;
 
 		
-		public WebEndPointRuntime() {
+		public WebHookEndPointRuntime() {
 			super();
 			try {
 				ScriptEngine se = ExecuteContext.getCurrentContext().getTenantContext().getScriptEngine();
@@ -140,8 +140,8 @@ public class MetaWebEndPointDefinition extends BaseRootMetaData implements Defin
 			return webHookEndPoint;
 		}
 		@Override
-		public MetaWebEndPointDefinition getMetaData() {
-			return MetaWebEndPointDefinition.this;
+		public MetaWebHookEndPointDefinition getMetaData() {
+			return MetaWebHookEndPointDefinition.this;
 		}
 		public GroovyTemplate getUrlTemplate() {
 			return urlTemplate;

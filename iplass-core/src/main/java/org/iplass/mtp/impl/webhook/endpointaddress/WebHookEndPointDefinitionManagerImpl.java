@@ -27,28 +27,28 @@ import org.iplass.mtp.impl.metadata.RootMetaData;
 import org.iplass.mtp.impl.script.template.GroovyTemplate;
 import org.iplass.mtp.spi.ServiceRegistry;
 import org.iplass.mtp.tenant.Tenant;
-import org.iplass.mtp.webhook.template.endpointaddress.WebEndPointDefinition;
-import org.iplass.mtp.webhook.template.endpointaddress.WebEndPointDefinitionManager;
+import org.iplass.mtp.webhook.template.endpointaddress.WebHookEndPointDefinition;
+import org.iplass.mtp.webhook.template.endpointaddress.WebHookEndPointDefinitionManager;
 import org.iplass.mtp.webhook.template.endpointaddress.WebHookEndPoint;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class WebEndPointDefinitionManagerImpl extends AbstractTypedDefinitionManager<WebEndPointDefinition> implements WebEndPointDefinitionManager{
-	private static final Logger logger = LoggerFactory.getLogger(WebEndPointDefinitionManager.class);
-	private WebEndPointService service;
+public class WebHookEndPointDefinitionManagerImpl extends AbstractTypedDefinitionManager<WebHookEndPointDefinition> implements WebHookEndPointDefinitionManager{
+	private static final Logger logger = LoggerFactory.getLogger(WebHookEndPointDefinitionManager.class);
+	private WebHookEndPointService service;
 	
-	public WebEndPointDefinitionManagerImpl() {
-		this.service = ServiceRegistry.getRegistry().getService(WebEndPointService.class);
+	public WebHookEndPointDefinitionManagerImpl() {
+		this.service = ServiceRegistry.getRegistry().getService(WebHookEndPointService.class);
 	}
 	
 	@Override
-	public Class<WebEndPointDefinition> getDefinitionType() {
-		return WebEndPointDefinition.class; 
+	public Class<WebHookEndPointDefinition> getDefinitionType() {
+		return WebHookEndPointDefinition.class; 
 	}
 
 	@Override
-	protected RootMetaData newInstance(WebEndPointDefinition definition) {
-		return new MetaWebEndPointDefinition();
+	protected RootMetaData newInstance(WebHookEndPointDefinition definition) {
+		return new MetaWebHookEndPointDefinition();
 	}
 
 	@SuppressWarnings("rawtypes")
@@ -62,9 +62,9 @@ public class WebEndPointDefinitionManagerImpl extends AbstractTypedDefinitionMan
 	 * */
 	@Override
 	public DefinitionModifyResult remove(String definitionName) {
-		WebEndPointDefinition definition = super.get(definitionName);
+		WebHookEndPointDefinition definition = super.get(definitionName);
 		
-		WebEndPointService weps = (WebEndPointService) getService();
+		WebHookEndPointService weps = (WebHookEndPointService) getService();
 		try {
 			weps.deleteSecurityTokenByDefinitionName(definition.getName());
 		} catch (Exception e) {

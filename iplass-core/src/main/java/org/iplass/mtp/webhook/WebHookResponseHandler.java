@@ -26,5 +26,5 @@ import org.iplass.mtp.webhook.WebHookResponse;
  * 全部実行完了したら終わりとなります
  * */
 public interface WebHookResponseHandler {
-	public void handleResponse(WebHookResponse response);
+	void handleResponse(WebHookResponse response);
 }

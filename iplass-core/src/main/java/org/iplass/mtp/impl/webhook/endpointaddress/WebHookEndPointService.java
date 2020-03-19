@@ -21,10 +21,10 @@ package org.iplass.mtp.impl.webhook.endpointaddress;
 
 import org.iplass.mtp.impl.definition.TypedMetaDataService;
 import org.iplass.mtp.impl.script.template.GroovyTemplate;
-import org.iplass.mtp.impl.webhook.endpointaddress.MetaWebEndPointDefinition.WebEndPointRuntime;
+import org.iplass.mtp.impl.webhook.endpointaddress.MetaWebHookEndPointDefinition.WebHookEndPointRuntime;
 import org.iplass.mtp.webhook.template.endpointaddress.WebHookEndPoint;
 
-public interface WebEndPointService extends TypedMetaDataService<MetaWebEndPointDefinition, WebEndPointRuntime>{
+public interface WebHookEndPointService extends TypedMetaDataService<MetaWebHookEndPointDefinition, WebHookEndPointRuntime>{
 
 	void deleteSecurityTokenByDefinitionName(String definitionName);
 

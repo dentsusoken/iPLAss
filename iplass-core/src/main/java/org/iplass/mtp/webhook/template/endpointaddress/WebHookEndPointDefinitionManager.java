@@ -22,7 +22,7 @@ package org.iplass.mtp.webhook.template.endpointaddress;
 import org.iplass.mtp.definition.TypedDefinitionManager;
 import org.iplass.mtp.impl.script.template.GroovyTemplate;
 
-public interface WebEndPointDefinitionManager extends TypedDefinitionManager<WebEndPointDefinition> {
+public interface WebHookEndPointDefinitionManager extends TypedDefinitionManager<WebHookEndPointDefinition> {
 
 	void modifySecurityToken(int tenantId,String metaDataId, String secret, String TokenType);
 

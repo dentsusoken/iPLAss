@@ -17,7 +17,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
-package org.iplass.adminconsole.client.metadata.ui.webhook.webEndPoint;
+package org.iplass.adminconsole.client.metadata.ui.webhook.webHookEndPoint;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -38,7 +38,7 @@ import com.smartgwt.client.widgets.form.fields.events.ChangedEvent;
 import com.smartgwt.client.widgets.form.fields.events.ChangedHandler;
 import com.smartgwt.client.widgets.layout.VLayout;
 
-public class WebEndPointSecurityInfoEditDialog extends MtpDialog {
+public class WebHookEndPointSecurityInfoEditDialog extends MtpDialog {
 	SecurityAttributePane securityAttributePane;
 	String securityType;
 	String tokenContent;
@@ -55,7 +55,7 @@ public class WebEndPointSecurityInfoEditDialog extends MtpDialog {
 	/** データ変更ハンドラ */
 	private List<DataChangedHandler> handlers = new ArrayList<DataChangedHandler>();
 	
-	public WebEndPointSecurityInfoEditDialog(String targetSecurityType, String existedTokenContent ) {
+	public WebHookEndPointSecurityInfoEditDialog(String targetSecurityType, String existedTokenContent ) {
 		securityType=targetSecurityType;
 		tokenContent=existedTokenContent;
 		

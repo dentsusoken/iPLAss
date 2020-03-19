@@ -24,7 +24,6 @@
 package org.iplass.mtp.webhook;
 
 import java.util.List;
-import org.iplass.mtp.webhook.template.definition.WebHookHeaderDefinition;
 import org.iplass.mtp.webhook.template.endpointaddress.WebHookEndPoint;
 
 /**
@@ -49,7 +48,7 @@ public class WebHook  {
 	private String headerAuthTypeName;
 
 	/** headers */
-	private List<WebHookHeaderDefinition> headers;
+	private List<WebHookHeader> headers;
 	private String tokenHeader;
 
 
@@ -101,11 +100,11 @@ public class WebHook  {
 		this.webHookId = webHookId;
 	}
 
-	public List<WebHookHeaderDefinition> getHeaders() {
+	public List<WebHookHeader> getHeaders() {
 		return headers;
 	}
 
-	public void setHeaders(List<WebHookHeaderDefinition> headers) {
+	public void setHeaders(List<WebHookHeader> headers) {
 		this.headers = headers;
 	}
 

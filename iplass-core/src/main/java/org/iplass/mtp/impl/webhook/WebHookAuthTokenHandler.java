@@ -31,7 +31,6 @@ import org.slf4j.LoggerFactory;
 
 /**
  * データベースでwebHookのパスワードや、トークンを管理するシークレットサービス
- * rdb使用です。
  * 
  * @author lisf06
  *

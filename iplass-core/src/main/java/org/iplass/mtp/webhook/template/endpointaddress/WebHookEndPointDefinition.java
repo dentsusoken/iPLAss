@@ -24,7 +24,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import org.iplass.mtp.definition.Definition;
 
 @XmlRootElement
-public class WebEndPointDefinition implements Definition{
+public class WebHookEndPointDefinition implements Definition{
 
 	private static final long serialVersionUID = 8660365992932082923L;
 
@@ -37,10 +37,10 @@ public class WebEndPointDefinition implements Definition{
 	/** 送り先 */
 	private String url;
 	
-	public WebEndPointDefinition() {
+	public WebHookEndPointDefinition() {
 	}
 	
-	public WebEndPointDefinition(String url) {
+	public WebHookEndPointDefinition(String url) {
 		this.url = url;
 	}
 
