@@ -117,6 +117,7 @@ public class ValidationEditDialog extends MtpDialog {
 		selType.setTitle("Type");
 		SmartGWTUtil.setRequired(selType);
 		selType.addChangedHandler(new ChangedHandler() {
+			@Override
 			public void onChanged(ChangedEvent event) {
 
 				formVisibleChange();
@@ -136,9 +137,10 @@ public class ValidationEditDialog extends MtpDialog {
 		container.addMember(form);
 
 		//FIXME ここで追加したくない。ValidationTypeに寄せたい
-		List<ValidationAttributePane> typePaneList = new ArrayList<ValidationAttributePane>();
+		List<ValidationAttributePane> typePaneList = new ArrayList<>();
 		typePaneList.add(new BinarySizeAttributePane());
 		typePaneList.add(new BinaryTypeAttributePane());
+		typePaneList.add(new ExistsAttributePane());
 		typePaneList.add(new LengthAttributePane());
 		typePaneList.add(new NotNullAttributePane());
 		typePaneList.add(new RangeAttributePane());
@@ -146,7 +148,7 @@ public class ValidationEditDialog extends MtpDialog {
 		typePaneList.add(new ScriptAttributePane());
 		typePaneList.add(new JavaClassAttributePane());
 
-		mapTypePanes = new HashMap<ValidationListGridRecord.ValidationType, ValidationAttributePane>();
+		mapTypePanes = new HashMap<>();
 		for (ValidationAttributePane typePane : typePaneList) {
 			mapTypePanes.put(typePane.getType(), typePane);
 		}
@@ -155,6 +157,7 @@ public class ValidationEditDialog extends MtpDialog {
 
 		IButton ok = new IButton("OK");
 		ok.addClickHandler(new ClickHandler() {
+			@Override
 			public void onClick(ClickEvent event) {
 				if (!form.validate()) {
 					return;
@@ -168,6 +171,7 @@ public class ValidationEditDialog extends MtpDialog {
 		}
 		IButton cancel = new IButton("Cancel");
 		cancel.addClickHandler(new ClickHandler() {
+			@Override
 			public void onClick(ClickEvent event) {
 				destroy();
 			}
@@ -270,6 +274,7 @@ public class ValidationEditDialog extends MtpDialog {
 					+ "<tr><td " + tableStyle + ">entityName</td><td "+ tableStyle + ">" + rs("ui_metadata_entity_PropertyListGrid_entityName") + "</td></tr>"
 					+ "<tr><td " + tableStyle + ">min</td><td "+ tableStyle + ">" + rs("ui_metadata_entity_PropertyListGrid_lengthRangeTypeMin") + "</td></tr>"
 					+ "<tr><td " + tableStyle + ">max</td><td "+ tableStyle + ">" + rs("ui_metadata_entity_PropertyListGrid_lengthRangeTypeMax") + "</td></tr>"
+					+ "<tr><td " + tableStyle + ">reference</td><td "+ tableStyle + ">" + rs("ui_metadata_entity_PropertyListGrid_referenceTypeExists") + "</td></tr>"
 					+ "</table></div></div>"
 					);
 			errorMessageItem = new MetaDataLangTextItem(hintIcon);

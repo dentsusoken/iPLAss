@@ -499,7 +499,9 @@ public class MailTemplateEditPane extends MetaDataMainEditPane {
 
 		private DynamicForm sendFromForm;
 		private TextItem fromField;
+		private TextItem fromDisplayNameField;
 		private TextItem replyToField;
+		private TextItem replyToDisplayNameField;
 		private TextItem returnPathField;
 
 		private DynamicForm smimeForm;
@@ -553,13 +555,19 @@ public class MailTemplateEditPane extends MetaDataMainEditPane {
 			fromField = new TextItem("from", AdminClientMessageUtil.getString("ui_metadata_mail_MailTemplateEditPane_sendFrom"));
 			fromField.setWidth(MetaDataConstants.DEFAULT_FORM_ITEM_WIDTH);
 
+			fromDisplayNameField = new TextItem("fromDisplayName", AdminClientMessageUtil.getString("ui_metadata_mail_MailTemplateEditPane_sendFromDisplayName"));
+			fromDisplayNameField.setWidth(MetaDataConstants.DEFAULT_FORM_ITEM_WIDTH);
+
 			replyToField = new TextItem("replyTo", AdminClientMessageUtil.getString("ui_metadata_mail_MailTemplateEditPane_replyTo"));
 			replyToField.setWidth(MetaDataConstants.DEFAULT_FORM_ITEM_WIDTH);
+
+			replyToDisplayNameField = new TextItem("replyToDisplayName", AdminClientMessageUtil.getString("ui_metadata_mail_MailTemplateEditPane_replyToDisplayName"));
+			replyToDisplayNameField.setWidth(MetaDataConstants.DEFAULT_FORM_ITEM_WIDTH);
 
 			returnPathField = new TextItem("returnPath", AdminClientMessageUtil.getString("ui_metadata_mail_MailTemplateEditPane_returnPath"));
 			returnPathField.setWidth(MetaDataConstants.DEFAULT_FORM_ITEM_WIDTH);
 
-			sendFromForm.setItems(fromField, replyToField, returnPathField);
+			sendFromForm.setItems(fromField, fromDisplayNameField, replyToField, replyToDisplayNameField, returnPathField);
 
 			smimeForm = new DynamicForm();
 			smimeForm.setWidth(180);
@@ -640,7 +648,9 @@ public class MailTemplateEditPane extends MetaDataMainEditPane {
 				subjectField.setValue(definition.getSubject());
 				charsetField.setValue(definition.getCharset());
 				fromField.setValue(definition.getFrom());
+				fromDisplayNameField.setValue(definition.getFromDisplayName());
 				replyToField.setValue(definition.getReplyTo());
+				replyToDisplayNameField.setValue(definition.getReplyToDisplayName());
 				returnPathField.setValue(definition.getReturnPath());
 				smimeSignField.setValue(definition.isSmimeSign());
 				smimeEncryptField.setValue(definition.isSmimeEncrypt());
@@ -679,7 +689,9 @@ public class MailTemplateEditPane extends MetaDataMainEditPane {
 				subjectField.clearValue();
 				charsetField.clearValue();
 				fromField.clearValue();
+				fromDisplayNameField.clearValue();
 				replyToField.clearValue();
+				replyToDisplayNameField.clearValue();
 				returnPathField.clearValue();
 				plainEditor.setText("");
 				htmlEditor.setText("");
@@ -704,7 +716,9 @@ public class MailTemplateEditPane extends MetaDataMainEditPane {
 			definition.setSubject(SmartGWTUtil.getStringValue(subjectField));
 			definition.setCharset(SmartGWTUtil.getStringValue(charsetField));
 			definition.setFrom(SmartGWTUtil.getStringValue(fromField));
+			definition.setFromDisplayName(SmartGWTUtil.getStringValue(fromDisplayNameField));
 			definition.setReplyTo(SmartGWTUtil.getStringValue(replyToField));
+			definition.setReplyToDisplayName(SmartGWTUtil.getStringValue(replyToDisplayNameField));
 			definition.setReturnPath(SmartGWTUtil.getStringValue(returnPathField));
 			PlainTextBodyPart plainPart = new  PlainTextBodyPart();
 			plainPart.setContent(plainEditor.getText());

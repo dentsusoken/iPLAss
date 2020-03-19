@@ -104,6 +104,9 @@
 		<!-- 編集画面でキャンセル時に確認ダイアログを表示するか -->
 		<property name="confirmEditCancel" value="true"/>
 
+		<!-- 編集画面でキャンセル時にTopViewに戻るか -->
+		<property name="topViewEditCancelBackToTop" value="false"/>
+
 		<!-- 検索画面でリセットボタンを表示するか -->
 		<property name="showSeachCondResetButton" value="true"/>
 

@@ -447,6 +447,20 @@ public interface EntityManager extends Manager {
 	public Entity deepCopy(String oid, String definitionName);
 
 	/**
+	 * 指定のoid（オブジェクトID）で一意に特定されるデータを取得し、参照先を含めたコピーを行います。
+	 * 親子関係の参照先のエンティティはoidが新たに採番され、
+	 * 通常の参照の場合、被参照ならコピー対象外になり、被参照でなければそのまま参照されます。
+	 * また制約として、変更不可の項目についてはコピー後に変更はできなくなり、
+	 * 文字列以外のプロパティでユニーク指定されている場合はコピー自体ができません。
+	 *
+	 * @param oid オブジェクトID
+	 * @param definitionName Entity定義名
+	 * @param option コピー時のオプション
+	 * @return コピーされたデータ
+	 */
+	public Entity deepCopy(String oid, String definitionName, DeepCopyOption option);
+
+	/**
 	 * 指定のワードで全文検索します。
 	 * defNameが未指定の場合は利用テナントの全エンティティに対して全文検索を実施します。
 	 *

@@ -55,7 +55,6 @@ public class WebHook  {
 	//---------------------------------
 	/**　同期非同期　*/
 	private boolean synchronous;
-
 	/**
 	 * 記録用
 	 * */
@@ -115,7 +114,6 @@ public class WebHook  {
 	public void setTokenHeader(String tokenHeader) {
 		this.tokenHeader = tokenHeader;
 	}
-
 	public String getHttpMethod() {
 		return httpMethod;
 	}
@@ -123,7 +121,6 @@ public class WebHook  {
 	public void setHttpMethod(String httpMethod) {
 		this.httpMethod = httpMethod;
 	}
-
 	public String getContentType() {
 		return contentType;
 	}
@@ -139,7 +136,6 @@ public class WebHook  {
 	public void setUrlQuery(String urlQuery) {
 		this.urlQuery = urlQuery;
 	}
-
 	public String getHeaderAuthTypeName() {
 		return headerAuthTypeName;
 	}
@@ -147,7 +143,6 @@ public class WebHook  {
 	public void setHeaderAuthTypeName(String headerAuthTypeName) {
 		this.headerAuthTypeName = headerAuthTypeName;
 	}
-
 	public WebHookResponseHandler getResultHandler() {
 		return resultHandler;
 	}

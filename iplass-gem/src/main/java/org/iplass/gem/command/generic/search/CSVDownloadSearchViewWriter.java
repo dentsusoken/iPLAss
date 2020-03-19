@@ -270,12 +270,14 @@ public class CSVDownloadSearchViewWriter implements ResultStreamWriter {
 				if (outText.startsWith("\"") && outText.endsWith("\"")) {
 					writer.write(outText);
 				} else {
-					writer.write(DOUBLE_QUOT);
-					writer.write(outText);
-					writer.write(DOUBLE_QUOT);
+					writer.write(DOUBLE_QUOT + outText + DOUBLE_QUOT);
 				}
 			} else {
-				writer.write(outText);
+				if (outText.startsWith(" ") || outText.endsWith(" ")) {
+					writer.write(DOUBLE_QUOT + outText + DOUBLE_QUOT);
+				} else {
+					writer.write(outText);
+				}
 			}
 		} catch (IOException e) {
 			throw new EntityCsvException(e);

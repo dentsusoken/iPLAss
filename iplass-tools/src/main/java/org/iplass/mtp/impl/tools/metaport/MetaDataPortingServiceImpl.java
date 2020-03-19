@@ -38,10 +38,19 @@ import javax.xml.parsers.SAXParserFactory;
 import javax.xml.transform.sax.SAXSource;
 
 import org.iplass.mtp.ManagerLocator;
+import org.iplass.mtp.auth.login.IdPasswordCredential;
+import org.iplass.mtp.impl.auth.AuthContextHolder;
+import org.iplass.mtp.impl.auth.AuthService;
+import org.iplass.mtp.impl.auth.authenticate.internal.InternalCredential;
 import org.iplass.mtp.impl.command.MetaMetaCommand;
 import org.iplass.mtp.impl.core.ExecuteContext;
 import org.iplass.mtp.impl.core.TenantContext;
 import org.iplass.mtp.impl.core.TenantContextService;
+import org.iplass.mtp.impl.core.config.ConfigImpl;
+import org.iplass.mtp.impl.core.config.NameValue;
+import org.iplass.mtp.impl.datastore.DataStore;
+import org.iplass.mtp.impl.datastore.StoreService;
+import org.iplass.mtp.impl.entity.EntityContext;
 import org.iplass.mtp.impl.entity.EntityService;
 import org.iplass.mtp.impl.entity.MetaEntity;
 import org.iplass.mtp.impl.metadata.MetaDataContext;
@@ -49,11 +58,14 @@ import org.iplass.mtp.impl.metadata.MetaDataContextListener;
 import org.iplass.mtp.impl.metadata.MetaDataEntry;
 import org.iplass.mtp.impl.metadata.MetaDataEntry.RepositoryType;
 import org.iplass.mtp.impl.metadata.MetaDataEntry.State;
+import org.iplass.mtp.impl.metadata.MetaDataEntryInfo;
 import org.iplass.mtp.impl.metadata.MetaDataJAXBService;
 import org.iplass.mtp.impl.metadata.RootMetaData;
+import org.iplass.mtp.impl.metadata.xmlfile.XmlFileMetaDataStore;
 import org.iplass.mtp.impl.metadata.xmlresource.ContextPath;
 import org.iplass.mtp.impl.metadata.xmlresource.MetaDataEntryList;
 import org.iplass.mtp.impl.metadata.xmlresource.XmlResourceMetaDataEntryThinWrapper;
+import org.iplass.mtp.impl.metadata.xmlresource.XmlResourceMetaDataStore;
 import org.iplass.mtp.impl.script.GroovyScriptService;
 import org.iplass.mtp.impl.script.MetaUtilityClass;
 import org.iplass.mtp.impl.tenant.MetaTenant;
@@ -66,6 +78,7 @@ import org.iplass.mtp.impl.view.generic.EntityViewService;
 import org.iplass.mtp.impl.webapi.EntityWebApiService;
 import org.iplass.mtp.impl.xml.jaxb.SecureSAXParserFactory;
 import org.iplass.mtp.spi.Config;
+import org.iplass.mtp.spi.ServiceRegistry;
 import org.iplass.mtp.tenant.Tenant;
 import org.iplass.mtp.transaction.Transaction;
 import org.iplass.mtp.transaction.TransactionManager;
@@ -84,6 +97,7 @@ public class MetaDataPortingServiceImpl implements MetaDataPortingService {
 	private static Logger logger = LoggerFactory.getLogger(MetaDataPortingServiceImpl.class);
 	private static Logger toolLogger = LoggerFactory.getLogger("mtp.tools.metadata");
 
+	private AuthService authService;
 	private MetaDataJAXBService jaxbService;
 	private MetaTenantService metaTenantService;
 	private TenantContextService tContextService;
@@ -91,6 +105,7 @@ public class MetaDataPortingServiceImpl implements MetaDataPortingService {
 
 	@Override
 	public void init(Config config) {
+		authService = config.getDependentService(AuthService.class);
 		jaxbService = config.getDependentService(MetaDataJAXBService.class);
 		metaTenantService = config.getDependentService(MetaTenantService.class);
 		tContextService = config.getDependentService(TenantContextService.class);
@@ -1044,6 +1059,68 @@ public class MetaDataPortingServiceImpl implements MetaDataPortingService {
 				return -1;
 			}
 			return o1.path.compareTo(o2.path);
+		}
+	}
+
+	@Override
+	public void patchEntityData(final PatchEntityDataParameter param) {
+		ConfigImpl newConfig = new ConfigImpl("forPatchNew", new NameValue[] {new NameValue("filePath", param.getNewMetaDataFilePath())}, null);
+		newConfig.addDependentService(MetaDataJAXBService.class.getName(), jaxbService);
+		XmlResourceMetaDataStore newRepo = new XmlResourceMetaDataStore();
+		newRepo.inited(null, newConfig);
+
+		ConfigImpl oldConfig = new ConfigImpl("forPatchOld", new NameValue[] {new NameValue("filePath", param.getOldMetaDataFilePath())}, null);
+		oldConfig.addDependentService(MetaDataJAXBService.class.getName(), jaxbService);
+		XmlResourceMetaDataStore oldRepo = new XmlResourceMetaDataStore();
+		oldRepo.inited(null, oldConfig);
+
+		Transaction t = ManagerLocator.getInstance().getManager(TransactionManager.class).newTransaction();
+		try {
+			List<MetaDataEntryInfo> entityList = newRepo.definitionList(param.getTenantId(), "/entity");
+			if (entityList != null) {
+				entityList.forEach(entry -> {
+					MetaEntity newMetaEntity = (MetaEntity) newRepo.load(param.getTenantId(), entry.getPath()).getMetaData();
+					MetaEntity oldMetaEntity = (MetaEntity) oldRepo.load(param.getTenantId(), entry.getPath()).getMetaData();
+
+					if (oldMetaEntity != null) {
+						StoreService storeService = ServiceRegistry.getRegistry().getService(StoreService.class);
+						DataStore srds = storeService.getDataStore();
+						EntityContext ec = EntityContext.getCurrentContext();
+						srds.getApplyMetaDataStrategy().patchData(newMetaEntity, oldMetaEntity, ec, EntityContext.getCurrentContext().getLocalTenantId());
+					}
+				});
+			}
+		} catch (Exception e) {
+			if (t.getStatus() == TransactionStatus.ACTIVE) {
+				t.rollback();
+				throw e;
+			}
+		} finally {
+			if (t.getStatus() == TransactionStatus.ACTIVE) {
+				t.commit();
+			}
+		}
+	}
+
+	@Override
+	public void patchEntityDataWithPrivilegedAuth(final PatchEntityDataParameter param) {
+		authService.doSecuredAction(AuthContextHolder.getAuthContext().privilegedAuthContextHolder(), () -> {
+			patchEntityData(param);
+			return null;
+		});
+	}
+
+	@Override
+	public void patchEntityDataWithUserAuth(final PatchEntityDataParameter param, String userId, String password) {
+		try {
+			authService.login(StringUtil.isNotEmpty(password) ?
+					new IdPasswordCredential(userId, password) : new InternalCredential(userId));
+			authService.doSecuredAction(AuthContextHolder.getAuthContext(), () -> {
+				patchEntityData(param);
+				return null;
+			});
+		} finally {
+			authService.logout();
 		}
 	}
 

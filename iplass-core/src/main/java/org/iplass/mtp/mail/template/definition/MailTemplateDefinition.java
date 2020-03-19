@@ -55,6 +55,9 @@ public class MailTemplateDefinition implements Definition {
 	private String replyTo;
 	private String returnPath;
 
+	private String fromDisplayName;
+	private String replyToDisplayName;
+
 	private boolean smimeSign;
 	private boolean smimeEncrypt;
 
@@ -80,6 +83,22 @@ public class MailTemplateDefinition implements Definition {
 
 	public void setReturnPath(String returnPath) {
 		this.returnPath = returnPath;
+	}
+
+	public String getFromDisplayName() {
+		return this.fromDisplayName;
+	}
+
+	public void setFromDisplayName(String fromDisplayName) {
+		this.fromDisplayName = fromDisplayName;
+	}
+
+	public String getReplyToDisplayName() {
+		return this.replyToDisplayName;
+	}
+
+	public void setReplyToDisplayName(String replyToDisplayName) {
+		this.replyToDisplayName = replyToDisplayName;
 	}
 
 	public String getLangOrUserBindingName() {

@@ -81,6 +81,7 @@ public class PostgreSQLRdbAdapter extends RdbAdapter {
 
 	private boolean escapeBackslash = false;
 	private boolean enableBindHint;
+	private int batchSize = 100;
 	private int maxFetchSize = 100;
 	private int defaultQueryTimeout;
 	private int defaultFetchSize = 10;//set default to 10
@@ -606,7 +607,11 @@ public class PostgreSQLRdbAdapter extends RdbAdapter {
 
 	@Override
 	public int getBatchSize() {
-		return 0;
+		return batchSize;
+	}
+
+	public void setBatchSize(int batchSize) {
+		this.batchSize = batchSize;
 	}
 
 	@Override

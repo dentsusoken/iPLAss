@@ -38,6 +38,7 @@ import org.iplass.mtp.command.annotation.action.Result.Type;
 import org.iplass.mtp.command.annotation.template.Template;
 import org.iplass.mtp.command.annotation.template.Templates;
 import org.iplass.mtp.entity.BinaryReference;
+import org.iplass.mtp.entity.DeepCopyOption;
 import org.iplass.mtp.entity.Entity;
 import org.iplass.mtp.entity.EntityValidationException;
 import org.iplass.mtp.entity.GenericEntity;
@@ -268,7 +269,9 @@ public final class DetailViewCommand extends DetailCommandBase {
 			} else if (context.getCopyTarget() == CopyTarget.DEEP) {
 				try {
 					// ディープコピーの場合はデータ登録を行う
-					entity = em.deepCopy(oid, context.getDefinitionName());
+					DeepCopyOption option = new DeepCopyOption();
+					option.setShallowCopyLobData(context.isShallowCopyLobData());
+					entity = em.deepCopy(oid, context.getDefinitionName(), option);
 					data.setEntity((GenericEntity) entity);
 					data.setExecType(Constants.EXEC_TYPE_UPDATE);
 				} catch (EntityValidationException e) {
@@ -348,13 +351,15 @@ public final class DetailViewCommand extends DetailCommandBase {
 					Object value = null;
 					if (pd.getMultiplicity() == 1) {
 						BinaryReference br = entity.getValue(pd.getName());
-						if (br != null) value = copyBinary(br);
+						// データをシャッローコピーするか判断します。
+						if (br != null) value = context.isShallowCopyLobData() ? shallowCopyBinary(br) : copyBinary(br);
 					} else {
 						BinaryReference[] br = entity.getValue(pd.getName());
 						if (br != null && br.length > 0) {
 							BinaryReference[] _br = new BinaryReference[br.length];
 							for (int i = 0; i < br.length; i++) {
-								_br[i] = copyBinary(br[i]);
+								// データをシャッローコピーするか判断します。
+								_br[i] = context.isShallowCopyLobData() ? shallowCopyBinary(br[i]) : copyBinary(br[i]);
 							}
 							value = _br;
 						}
@@ -366,6 +371,9 @@ public final class DetailViewCommand extends DetailCommandBase {
 	}
 	private BinaryReference copyBinary(BinaryReference br) {
 		return em.createBinaryReference(br.getName(), br.getType(), em.getInputStream(br));
+	}
+	private BinaryReference shallowCopyBinary(BinaryReference br) {
+		return br.copy();
 	}
 
 	private static String resourceString(String key, Object... arguments) {

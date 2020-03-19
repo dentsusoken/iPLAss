@@ -69,6 +69,10 @@ public class GemConfigService implements Service {
 	/** 編集画面でキャンセル時に確認ダイアログを表示するか */
 	private boolean confirmEditCancel;
 
+	/** 編集画面でキャンセル時にTopViewに戻るか */
+	@Deprecated
+	private boolean topViewEditCancelBackToTop;
+
 	/** 検索画面でリセットボタンを表示するか */
 	private boolean showSeachCondResetButton;
 
@@ -99,6 +103,8 @@ public class GemConfigService implements Service {
 	/** 一括更新のコミット件数 */
 	private int bulkUpdateAllCommandBatchSize;
 
+	/** エンティティをコピーする際にLobデータをシャッローコピーするか */
+	private boolean shallowCopyLobData;
 
 	private List<BinaryDownloadLoggingTargetProperty> binaryDownloadLoggingTargetProperty;
 
@@ -176,6 +182,8 @@ public class GemConfigService implements Service {
 
 		confirmEditCancel = Boolean.valueOf(config.getValue("confirmEditCancel"));
 
+		topViewEditCancelBackToTop = config.getValue("topViewEditCancelBackToTop", Boolean.class, false);
+
 		showSeachCondResetButton = Boolean.valueOf(config.getValue("showSeachCondResetButton"));
 
 		String searchResultDispRowCount = config.getValue("searchResultDispRowCount");
@@ -235,6 +243,11 @@ public class GemConfigService implements Service {
 			this.bulkUpdateAllCommandBatchSize = 100;
 		}
 
+		if (config.getValue("shallowCopyLobData") != null) {
+			this.shallowCopyLobData = Boolean.valueOf(config.getValue("shallowCopyLobData"));
+		} else {
+			this.shallowCopyLobData = false;
+		}
 
 		skins = (List<Skin>) config.getBeans("skins");
 		themes = (List<Theme>) config.getBeans("themes");
@@ -332,6 +345,16 @@ public class GemConfigService implements Service {
 	 */
 	public boolean isConfirmEditCancel() {
 		return confirmEditCancel;
+	}
+
+	/**
+	 * 詳細画面から編集画面に遷移した際にキャンセル時にTopViewに戻るかを取得します。
+	 * @return 編集画面でキャンセル時にTopViewに戻るか
+	 * @deprecated 3.0.20までの互換設定です。今後は詳細画面に遷移する動作に統一する予定です。
+	 */
+	@Deprecated
+	public boolean isTopViewEditCancelBackToTop() {
+		return topViewEditCancelBackToTop;
 	}
 
 	/**
@@ -458,6 +481,14 @@ public class GemConfigService implements Service {
 	 */
 	public int getBulkUpdateAllCommandBatchSize() {
 		return bulkUpdateAllCommandBatchSize;
+	}
+
+	/**
+	 * エンティティをコピーする際にLobデータをシャッローコピーするかを取得します。
+	 * @return エンティティをコピーする際にLobデータをシャッローコピーするか
+	 */
+	public boolean isShallowCopyLobData() {
+		return shallowCopyLobData;
 	}
 
 }

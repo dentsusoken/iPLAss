@@ -162,9 +162,17 @@ public class LoggingInterceptor implements RequestInterceptor, ServiceInitListen
 			} else {
 				if (actionTrace && !invocation.isInclude()) {
 					if (isWarnLog(executionTime, sqlCount)) {
-						actionLogger.warn(logStr(invocation, executionTime, sqlCount, exp));
+						if (exp != null && actionLogger.isDebugEnabled()) {
+							actionLogger.warn(logStr(invocation, executionTime, sqlCount, exp), exp);
+						} else {
+							actionLogger.warn(logStr(invocation, executionTime, sqlCount, exp));
+						}
 					} else {
-						actionLogger.info(logStr(invocation, executionTime, sqlCount, exp));
+						if (exp != null && actionLogger.isDebugEnabled()) {
+							actionLogger.info(logStr(invocation, executionTime, sqlCount, exp), exp);
+						} else {
+							actionLogger.info(logStr(invocation, executionTime, sqlCount, exp));
+						}
 					}
 				} else if (partsTrace && invocation.isInclude()) {
 					if (partsLogger.isDebugEnabled()) {

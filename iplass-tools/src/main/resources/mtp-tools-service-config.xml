@@ -40,6 +40,7 @@
 		<depend>org.iplass.mtp.impl.tenant.MetaTenantService</depend>
 		<depend>org.iplass.mtp.impl.core.TenantContextService</depend>
 		<depend>org.iplass.mtp.impl.entity.EntityService</depend>
+		<depend>org.iplass.mtp.impl.auth.AuthService</depend>
 
 		<property name="importHandler" class="org.iplass.mtp.impl.tools.metaport.MetaDataImportHandlerImpl" />
 	</service>

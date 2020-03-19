@@ -37,6 +37,7 @@ public class ValidationListGridRecord extends ListGridRecord {
 		REGEX("Regex (for String, Number)"),
 		BINARYSIZE("Binary Size (for Binary)"),
 		BINARYTYPE("Binary Type (for Binary)"),
+		EXISTS("Exists (for Reference)"),
 		SCRIPT("Script"),
 		JAVA_CLASS("Java Class");
 
@@ -51,7 +52,7 @@ public class ValidationListGridRecord extends ListGridRecord {
 		}
 
 		public static LinkedHashMap<String, String> allTypeMap() {
-			LinkedHashMap<String, String> typeMap = new LinkedHashMap<String, String>();
+			LinkedHashMap<String, String> typeMap = new LinkedHashMap<>();
 			for (ValidationType type : values()) {
 				typeMap.put(type.name(), type.displayName());
 			}

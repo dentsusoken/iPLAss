@@ -25,6 +25,7 @@ import javax.validation.Validator;
 import org.iplass.mtp.entity.definition.ValidationDefinition;
 import org.iplass.mtp.entity.definition.validations.BinarySizeValidation;
 import org.iplass.mtp.entity.definition.validations.BinaryTypeValidation;
+import org.iplass.mtp.entity.definition.validations.ExistsValidation;
 import org.iplass.mtp.entity.definition.validations.JavaClassValidation;
 import org.iplass.mtp.entity.definition.validations.LengthValidation;
 import org.iplass.mtp.entity.definition.validations.NotNullValidation;
@@ -83,6 +84,8 @@ public class ValidationService implements Service {
 			meta = new MetaValidationBinarySize();
 		} else if (def instanceof BinaryTypeValidation) {
 			meta = new MetaValidationBinaryType();
+		} else if (def instanceof ExistsValidation) {
+			meta = new MetaValidationExists();
 		}
 
 		if (meta != null) {
@@ -92,11 +95,13 @@ public class ValidationService implements Service {
 		return meta;
 	}
 
+	@Override
 	public void destroy() {
 		// TODO Auto-generated method stub
 
 	}
 
+	@Override
 	public void init(Config config) {
 		//TODO どっか（MetaDataRepository？）から、validatorのリストを取得
 		// TODO Auto-generated method stub

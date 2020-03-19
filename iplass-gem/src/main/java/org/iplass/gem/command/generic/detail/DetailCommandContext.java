@@ -1193,4 +1193,7 @@ public class DetailCommandContext extends RegistrationCommandContext {
 		return property;
 	}
 
+	public boolean isShallowCopyLobData() {
+		return gemConfig.isShallowCopyLobData();
+	}
 }

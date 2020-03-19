@@ -619,48 +619,28 @@ public class FulltextSearchLuceneService extends AbstractFulltextSeachService {
 			ScoreDoc[] hits = docs.scoreDocs;
 
 			// 検索結果からoidを取得
-			EntityManager em = ManagerLocator.getInstance().getManager(EntityManager.class);
-
-			int index = 0;
-			FulltextSearchDto fulltextSearchDto = new FulltextSearchDto();
-			List<FulltextSearchDto> tempList = new ArrayList<FulltextSearchDto>();
-			List<String> oidList = new ArrayList<String>();
-			Map<String, Float> score = new HashMap<String, Float>();
-			String defName;
+			Map<String, FulltextSearchDto> tempDtoMap = new HashMap<>();
 			for (ScoreDoc hit : hits) {
 				// entity毎にsearchMapに詰め込む
 				Document doc = searcher.doc(hit.doc);
 				String oid = doc.get("OBJ_ID");
-				defName = doc.get("def_name");
+				String defName = doc.get("def_name");
 
-				String curDef = defName;
-				String nexDef = null;
-
-				if (index < hits.length -1) {
-					Document nexDoc = searcher.doc(hits[index + 1].doc);
-					nexDef = nexDoc.get("def_name");
+				if (!tempDtoMap.containsKey(defName)) {
+					tempDtoMap.put(defName, new FulltextSearchDto(defName));
 				}
 
-				oidList.add(oid);
-				score.put(oid, hit.score);
-
-				if (!curDef.equals(nexDef)) {
-					fulltextSearchDto.setDefName(defName);
-					fulltextSearchDto.setOidArray(oidList.toArray());
-					fulltextSearchDto.setScore(score);
-					tempList.add(fulltextSearchDto);
-					fulltextSearchDto = new FulltextSearchDto();
-					oidList = new ArrayList<String>();
-				}
-
-				index ++;
+				FulltextSearchDto dto = tempDtoMap.get(defName);
+				dto.addOid(oid);
+				dto.addScore(oid, hit.score);
 			}
 
+			EntityManager em = ManagerLocator.getInstance().getManager(EntityManager.class);
 			// Entity毎にsearchする
 			List<T> resultList = new ArrayList<T>();
 			// スコアでソースする
 			List<T> tempSortList = new ArrayList<T>();
-			for(FulltextSearchDto dto : tempList) {
+			for(FulltextSearchDto dto : tempDtoMap.values()) {
 				String tempDefName = dto.getDefName();
 				if (conditions.isEmpty() || conditions.containsKey(tempDefName)) {
 
@@ -683,7 +663,7 @@ public class FulltextSearchLuceneService extends AbstractFulltextSeachService {
 						query
 							.select(properties.toArray(new Object[properties.size()]))
 							.from(tempDefName)
-							.where(new In("oid", dto.getOidArray()));
+							.where(new In("oid", dto.getOidList().toArray()));
 
 						if (order != null) {
 							for (SortSpec sortSpec : order.getSortSpecList()) {
@@ -693,7 +673,7 @@ public class FulltextSearchLuceneService extends AbstractFulltextSeachService {
 						}
 
 					} else {
-						query.selectAll(tempDefName, true, true, true).where(new In("oid", dto.getOidArray()));
+						query.selectAll(tempDefName, true, true, true).where(new In("oid", dto.getOidList().toArray()));
 					}
 					// luceneの返却したoidを利用してEntityを検索
 					SearchResult<T> temp = em.searchEntity(query);
@@ -950,12 +930,17 @@ public class FulltextSearchLuceneService extends AbstractFulltextSeachService {
 	/**
 	 * 取得データの整理で利用するDTO
 	 */
+	@SuppressWarnings("unused")
 	private class FulltextSearchDto {
 		private String defName;
 
-		private Object[] oidArray;
+		private List<String> oidList;
 
 		private Map<String, Float> score;
+
+		public FulltextSearchDto(String defName) {
+			this.defName = defName;
+		}
 
 		public String getDefName() {
 			return defName;
@@ -965,12 +950,19 @@ public class FulltextSearchLuceneService extends AbstractFulltextSeachService {
 			this.defName = defName;
 		}
 
-		public Object[] getOidArray() {
-			return oidArray;
+		public List<String> getOidList() {
+			return oidList;
 		}
 
-		public void setOidArray(Object[] oidArray) {
-			this.oidArray = oidArray;
+		public void setOidList(List<String> oidList) {
+			this.oidList = oidList;
+		}
+
+		public void addOid(String oid) {
+			if (this.oidList == null) {
+				this.oidList = new ArrayList<>();
+			}
+			this.oidList.add(oid);
 		}
 
 		public Map<String, Float> getScore() {
@@ -979,6 +971,13 @@ public class FulltextSearchLuceneService extends AbstractFulltextSeachService {
 
 		public void setScore(Map<String, Float> score) {
 			this.score = score;
+		}
+
+		public void addScore(String oid, Float score) {
+			if (this.score == null) {
+				this.score = new HashMap<>();
+			}
+			this.score.put(oid, score);
 		}
 	}
 

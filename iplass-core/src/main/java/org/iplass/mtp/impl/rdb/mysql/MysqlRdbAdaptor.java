@@ -61,6 +61,7 @@ import org.iplass.mtp.impl.rdb.connection.ConnectionException;
 import org.iplass.mtp.impl.rdb.connection.ConnectionFactory;
 import org.iplass.mtp.impl.rdb.mysql.function.MysqlDateAddFunctionAdapter;
 import org.iplass.mtp.impl.rdb.mysql.function.MysqlDateDiffFunctionAdapter;
+import org.iplass.mtp.impl.rdb.mysql.function.MysqlTruncateFunctionAdapter;
 import org.iplass.mtp.spi.ServiceRegistry;
 
 public class MysqlRdbAdaptor extends RdbAdapter {
@@ -103,7 +104,7 @@ public class MysqlRdbAdaptor extends RdbAdapter {
 		addFunction(new StaticTypedFunctionAdapter("CEIL", Long.class));
 		addFunction(new StaticTypedFunctionAdapter("FLOOR", Long.class));
 		addFunction(new RoundTruncFunctionAdapter("ROUND", "ROUND"));
-		addFunction(new RoundTruncFunctionAdapter("TRUNCATE", "TRUNCATE"));
+		addFunction(new MysqlTruncateFunctionAdapter("TRUNCATE"));
 		addFunction(new StaticTypedFunctionAdapter("UPPER", String.class));
 		addFunction(new StaticTypedFunctionAdapter("LOWER", String.class));
 		addFunction(new ExtractDateFunctionAdapter("SECOND"));

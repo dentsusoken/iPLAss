@@ -59,13 +59,14 @@ import org.iplass.mtp.impl.rdb.common.function.CurrentDateFunctionAdapter;
 import org.iplass.mtp.impl.rdb.common.function.CurrentDateTimeFunctionAdapter;
 import org.iplass.mtp.impl.rdb.common.function.CurrentTimeFunctionAdapter;
 import org.iplass.mtp.impl.rdb.common.function.LocalTimeFunctionAdapter;
-import org.iplass.mtp.impl.rdb.common.function.RoundTruncFunctionAdapter;
 import org.iplass.mtp.impl.rdb.sqlserver.function.SqlServerDateAddFunctionAdapter;
 import org.iplass.mtp.impl.rdb.sqlserver.function.SqlServerDateDiffFunctionAdapter;
 import org.iplass.mtp.impl.rdb.sqlserver.function.SqlServerExtractDateFunctionAdapter;
 import org.iplass.mtp.impl.rdb.sqlserver.function.SqlServerInstrFunctionAdapter;
 import org.iplass.mtp.impl.rdb.sqlserver.function.SqlServerModFunctionAdapter;
+import org.iplass.mtp.impl.rdb.sqlserver.function.SqlServerRoundFunctionAdapter;
 import org.iplass.mtp.impl.rdb.sqlserver.function.SqlServerSubstrFunctionAdapter;
+import org.iplass.mtp.impl.rdb.sqlserver.function.SqlServerTruncateFunctionAdapter;
 import org.iplass.mtp.spi.ServiceRegistry;
 
 public class SqlServerRdbAdapter extends RdbAdapter {
@@ -105,9 +106,10 @@ public class SqlServerRdbAdapter extends RdbAdapter {
 		addFunction(new DynamicTypedFunctionAdapter("ABS", new int[]{0}));
 		addFunction(new StaticTypedFunctionAdapter("CEIL", "CEILING", Long.class));
 		addFunction(new StaticTypedFunctionAdapter("FLOOR", Long.class));
-		addFunction(new RoundTruncFunctionAdapter("ROUND", "ROUND"));
-		addFunction(new RoundTruncFunctionAdapter("TRUNCATE", "ROUND"));	// FIXME 引数を2個目を0以外で渡す必要がある。
+		addFunction(new SqlServerRoundFunctionAdapter("ROUND"));
+//		addFunction(new RoundTruncFunctionAdapter("TRUNCATE", "ROUND"));	// 引数を2個目を0以外で渡す必要がある。
 //		addFunction(new RoundTruncFunctionAdapter("TRUNCATE", "FLOOR"));	// 数値のみ。Oracleみたいに日付を指定することは出来ない。2個めの引数を指定してエラーとなるためダメ。
+		addFunction(new SqlServerTruncateFunctionAdapter("TRUNCATE"));
 		addFunction(new StaticTypedFunctionAdapter("UPPER", String.class));
 		addFunction(new StaticTypedFunctionAdapter("LOWER", String.class));
 		addFunction(new SqlServerExtractDateFunctionAdapter("SECOND"));
