@@ -32,6 +32,7 @@ import org.iplass.mtp.impl.script.ScriptEngine;
 import org.iplass.mtp.impl.script.template.GroovyTemplate;
 import org.iplass.mtp.impl.script.template.GroovyTemplateCompiler;
 import org.iplass.mtp.impl.util.ObjectUtil;
+import org.iplass.mtp.spi.ServiceRegistry;
 import org.iplass.mtp.webhook.template.endpointaddress.WebHookEndPointDefinition;
 import org.iplass.mtp.webhook.template.endpointaddress.WebHookEndPoint;
 
@@ -120,10 +121,24 @@ public class MetaWebHookEndPointDefinition extends BaseRootMetaData implements D
 
 	public class WebHookEndPointRuntime extends BaseMetaDataRuntime{
 		private GroovyTemplate urlTemplate;
+		private String hmacKey;
+		private String headerAuthToken;
+		private String authType;//TODO change to enum
 
-		
 		public WebHookEndPointRuntime() {
 			super();
+			
+			WebHookEndPointService service = ServiceRegistry.getRegistry().getService(WebHookEndPointService.class);
+			int tenantId = ExecuteContext.getCurrentContext().getTenantContext().getTenantId();
+
+			hmacKey = service.getHmacTokenById(tenantId, getId());
+			authType = getHeaderAuthType();
+			if ("WHBA".equals(authType)) {
+				headerAuthToken = service.getBasicTokenById(tenantId, getId());
+			} else if ("WHBT".equals(authType)) {
+				headerAuthToken = service.getBearerTokenById(tenantId, getId());
+			}
+
 			try {
 				ScriptEngine se = ExecuteContext.getCurrentContext().getTenantContext().getScriptEngine();
 				urlTemplate = GroovyTemplateCompiler.compile(getUrl(), "WebHookTemplate_Subscriber_" + getName() + "_" + id, (GroovyScriptEngine) se);
@@ -131,20 +146,31 @@ public class MetaWebHookEndPointDefinition extends BaseRootMetaData implements D
 				setIllegalStateException(e);
 			}
 		}
+		
 		public WebHookEndPoint createWebHookEndPoint() {
 			WebHookEndPoint webHookEndPoint = new WebHookEndPoint();
 			webHookEndPoint.setUrl(getUrl());
 			webHookEndPoint.setHeaderAuthSchemeName(getHeaderAuthTypeName());
-			webHookEndPoint.setHeaderAuthType(getHeaderAuthType());
 			webHookEndPoint.setEndPointName(getName());
 			return webHookEndPoint;
 		}
+		
 		@Override
 		public MetaWebHookEndPointDefinition getMetaData() {
 			return MetaWebHookEndPointDefinition.this;
 		}
+		
 		public GroovyTemplate getUrlTemplate() {
 			return urlTemplate;
+		}
+		public String getHmacKey() {
+			return hmacKey;
+		}
+		public String getHeaderAuthToken() {
+			return headerAuthToken;
+		}
+		public String getAuthType() {
+			return authType;
 		}
 	}
 

@@ -30,11 +30,16 @@ import org.iplass.mtp.Manager;
  */
 public interface WebHookManager extends Manager {
 	
-	WebHook createWebHook(String webHookDefinitionName, Map<String, Object> binding, List<String> endPointDefName);
-	
-	void sendWebHook(WebHook webHook);
+	/** WebHookオブジェを取得（作る） */
+	List<WebHook> createWebHookList(String webHookDefinitionName, Map<String, Object> binding, List<String> endPointDefinitionNameList);
+	WebHook createWebHook(String webHookDefinitionName, Map<String, Object> binding, String endPointDefinitionName);
 	
 	/** 送る */
-	void sendWebHook(String webHookDefinitionName, Map<String, Object> parameters); 
+	void sendWebHookAsync(WebHook wh);
+	void sendWebHookSync(WebHook wh);
+	void sendWebHookListSync(List<WebHook> webHook);
+	void sendWebHookListAsync(List<WebHook> webHook);
 
+	/** resultHandlerを取得（作る） */
+	WebHookResponseHandler getResponseHandler(String handlerName);
 }

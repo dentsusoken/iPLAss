@@ -317,9 +317,9 @@ public class EventListenerListGrid extends ListGrid {
 				snDef.setNotificationCondScript(record.getNotificationCondScript());
 				snDef.setNotificationDestination(record.getNotificationDestination());
 
-				snDef.setIsSynchronous(record.isSyncrhonous());
-				snDef.setEndPointDefList(record.getWebEndPointList());
-				snDef.setWebHookResultHandlerDef(record.getWebHookResultHandler());
+				snDef.setSynchronous(record.isSyncrhonous());
+				snDef.setEndPointDefList(record.getWebHookEndPointList());
+				snDef.setResultHandler(record.getWebHookResultHandler());
 
 				snDef.setSynchronous(record.isSyncrhonous());
 				snDef.setEndPointDefList(record.getWebHookEndPointList());

@@ -37,12 +37,13 @@ public class WebHook  {
 
 	/** 送る内容 */
 	private String contentType;
+	private String payloadContent;
 	
 	/** 送るメソッド */
 	private String httpMethod;
 
-	private List<WebHookEndPoint> webHookEndPointList;
-	
+	private WebHookEndPoint webHookEndPoint;
+
 	private WebHookResponseHandler resultHandler;
 	private String urlQuery;
 	private String headerAuthTypeName;
@@ -151,11 +152,20 @@ public class WebHook  {
 		this.resultHandler = resultHandler;
 	}
 
-	public List<WebHookEndPoint> getWebHookEndPointList() {
-		return webHookEndPointList;
+	public String getPayloadContent() {
+		return payloadContent;
 	}
 
-	public void setWebHookEndPointList(List<WebHookEndPoint> webHookEndPointList) {
-		this.webHookEndPointList = webHookEndPointList;
+	public void setPayloadContent(String payloadContent) {
+		this.payloadContent = payloadContent;
 	}
+
+	public WebHookEndPoint getWebHookEndPoint() {
+		return webHookEndPoint;
+	}
+
+	public void setWebHookEndPoint(WebHookEndPoint webHookEndPoint) {
+		this.webHookEndPoint = webHookEndPoint;
+	}
+
 }

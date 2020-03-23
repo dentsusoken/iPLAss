@@ -20,13 +20,11 @@
 package org.iplass.mtp.impl.webhook.endpointaddress;
 
 import org.iplass.mtp.definition.DefinitionModifyResult;
-import org.iplass.mtp.impl.core.ExecuteContext;
 import org.iplass.mtp.impl.definition.AbstractTypedDefinitionManager;
 import org.iplass.mtp.impl.definition.TypedMetaDataService;
 import org.iplass.mtp.impl.metadata.RootMetaData;
 import org.iplass.mtp.impl.script.template.GroovyTemplate;
 import org.iplass.mtp.spi.ServiceRegistry;
-import org.iplass.mtp.tenant.Tenant;
 import org.iplass.mtp.webhook.template.endpointaddress.WebHookEndPointDefinition;
 import org.iplass.mtp.webhook.template.endpointaddress.WebHookEndPointDefinitionManager;
 import org.iplass.mtp.webhook.template.endpointaddress.WebHookEndPoint;
@@ -123,11 +121,7 @@ public class WebHookEndPointDefinitionManagerImpl extends AbstractTypedDefinitio
 	}
 	
 	public WebHookEndPoint generateEndPointInstance(String definitionName){
-		Tenant tenant = ExecuteContext.getCurrentContext().getCurrentTenant();
-		int tenantId = tenant.getId();
 		WebHookEndPoint endPoint = service.getWebHookEndPointByName(definitionName);
-		endPoint.setHeaderAuthContent(getSecurityToken(tenantId, endPoint.getEndPointName(), endPoint.getHeaderAuthType()));
-		endPoint.setHmac(getSecurityToken(tenantId, endPoint.getEndPointName(), "WHHM"));	
 		return endPoint;
 	}
 

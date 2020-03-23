@@ -27,13 +27,8 @@ package org.iplass.mtp.webhook.template.endpointaddress;
 public class WebHookEndPoint {
 	String url;
 	String endPointName;
-	String hmac;
-	String hmacResult;
-	String headerAuthContent;
-	String headerAuthType;
 	String headerAuthSchemeName;
-	String payloadContent;
-	
+
 	public String getUrl() {
 		return url;
 	}
@@ -46,40 +41,10 @@ public class WebHookEndPoint {
 	public void setEndPointName(String endPointName) {
 		this.endPointName = endPointName;
 	}
-	public String getHmac() {
-		return hmac;
-	}
-	public void setHmac(String hmac) {
-		this.hmac = hmac;
-	}
-	public String getHmacResult() {
-		return hmacResult;
-	}
-	public void setHmacResult(String hmacResult) {
-		this.hmacResult = hmacResult;
-	}
-	public String getHeaderAuthContent() {
-		return headerAuthContent;
-	}
-	public void setHeaderAuthContent(String headerAuthContent) {
-		this.headerAuthContent = headerAuthContent;
-	}
-	public String getHeaderAuthType() {
-		return headerAuthType;
-	}
-	public void setHeaderAuthType(String headerAuthType) {
-		this.headerAuthType = headerAuthType;
-	}
 	public String getHeaderAuthSchemeName() {
 		return headerAuthSchemeName;
 	}
 	public void setHeaderAuthSchemeName(String headerAuthSchemeName) {
 		this.headerAuthSchemeName = headerAuthSchemeName;
-	}
-	public String getPayloadContent() {
-		return payloadContent;
-	}
-	public void setPayloadContent(String payloadContent) {
-		this.payloadContent = payloadContent;
 	}
 }

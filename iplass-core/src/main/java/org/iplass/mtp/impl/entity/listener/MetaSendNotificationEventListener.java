@@ -42,7 +42,9 @@ import org.iplass.mtp.impl.script.GroovyScriptEngine;
 import org.iplass.mtp.impl.script.Script;
 import org.iplass.mtp.impl.script.ScriptContext;
 import org.iplass.mtp.impl.script.ScriptEngine;
-import org.iplass.mtp.webhook.responsehandler.DefaultWebHookResponseHandlerImpl;
+import org.iplass.mtp.impl.script.template.GroovyTemplate;
+import org.iplass.mtp.impl.script.template.GroovyTemplateBinding;
+import org.iplass.mtp.impl.script.template.GroovyTemplateCompiler;
 import org.iplass.mtp.mail.Mail;
 import org.iplass.mtp.mail.MailManager;
 import org.iplass.mtp.pushnotification.PushNotification;
@@ -625,27 +627,24 @@ public class MetaSendNotificationEventListener extends MetaEventListener {
 		@Override
 		protected Object createNotification(Entity entity, EventType type, EntityEventContext context) {
 			Map<String, Object> bindings = generateBindings(entity, type, context);
-			WebHook wh = wm.createWebHook(tmplDefName, bindings, endPointDefList);
-			wh.setSynchronous(synchronous);
-			WebHookResponseHandler whrh;
-			if (resultHandler==null||resultHandler.isEmpty()) {
-				whrh= new DefaultWebHookResponseHandlerImpl();
-			} else {
-				try {
-					whrh= (WebHookResponseHandler) Class.forName(resultHandler).newInstance();
-				} catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
-					whrh= new DefaultWebHookResponseHandlerImpl();
-				}
+			List<WebHook> wh = wm.createWebHookList(tmplDefName, bindings, endPointDefList);
+			WebHookResponseHandler whrh = wm.getResponseHandler(resultHandler);
+			for (WebHook webHook : wh) {
+				webHook.setResultHandler(whrh);
 			}
-			wh.setResultHandler(whrh);
-			
-			//wh.processGroovyTemplate(); //should do for both url and payload
 			return wh;
 		}
 
+		@SuppressWarnings("unchecked")
 		@Override
 		protected void sendNotification(Object webHook) {
-			wm.sendWebHook((WebHook)webHook);
+			//call async and sync
+			if (synchronous) {
+				wm.sendWebHookListSync((List<WebHook>)webHook);
+			} else {
+				wm.sendWebHookListAsync((List<WebHook>)webHook);
+			}
+			
 		}
 	}
 }
