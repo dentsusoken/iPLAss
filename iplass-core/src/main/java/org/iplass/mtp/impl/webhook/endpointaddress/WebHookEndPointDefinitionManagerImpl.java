@@ -27,7 +27,6 @@ import org.iplass.mtp.impl.script.template.GroovyTemplate;
 import org.iplass.mtp.spi.ServiceRegistry;
 import org.iplass.mtp.webhook.template.endpointaddress.WebHookEndPointDefinition;
 import org.iplass.mtp.webhook.template.endpointaddress.WebHookEndPointDefinitionManager;
-import org.iplass.mtp.webhook.template.endpointaddress.WebHookEndPoint;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -124,11 +123,6 @@ public class WebHookEndPointDefinitionManagerImpl extends AbstractTypedDefinitio
 	@Override
 	public String generateHmacTokenString() {
 		return service.generateHmacTokenString();
-	}
-	
-	public WebHookEndPoint generateEndPointInstance(String definitionName){
-		WebHookEndPoint endPoint = service.getWebHookEndPointByName(definitionName);
-		return endPoint;
 	}
 
 	public GroovyTemplate  getUrlTemplateByName(String definitionName) {

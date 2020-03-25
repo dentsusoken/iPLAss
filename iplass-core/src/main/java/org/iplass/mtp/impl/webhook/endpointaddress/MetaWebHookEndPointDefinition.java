@@ -34,7 +34,6 @@ import org.iplass.mtp.impl.script.template.GroovyTemplateCompiler;
 import org.iplass.mtp.impl.util.ObjectUtil;
 import org.iplass.mtp.spi.ServiceRegistry;
 import org.iplass.mtp.webhook.template.endpointaddress.WebHookEndPointDefinition;
-import org.iplass.mtp.webhook.template.endpointaddress.WebHookEndPoint;
 
 @XmlRootElement
 public class MetaWebHookEndPointDefinition extends BaseRootMetaData implements DefinableMetaData<WebHookEndPointDefinition>{
@@ -166,14 +165,6 @@ public class MetaWebHookEndPointDefinition extends BaseRootMetaData implements D
 			} catch (RuntimeException e) {
 				setIllegalStateException(e);
 			}
-		}
-		
-		public WebHookEndPoint createWebHookEndPoint() {
-			WebHookEndPoint webHookEndPoint = new WebHookEndPoint();
-			webHookEndPoint.setUrl(getUrl());
-			webHookEndPoint.setHeaderAuthSchemeName(getHeaderAuthCustomTypeName());
-			webHookEndPoint.setEndPointName(getName());
-			return webHookEndPoint;
 		}
 		
 		@Override

@@ -101,6 +101,11 @@ public class WebHookManagerImpl implements WebHookManager {
 		return whrh;
 	}
 
+	@Override
+	public WebHook getEmptyWebHook() {
+		return new WebHook();
+	}
+
 
 
 	

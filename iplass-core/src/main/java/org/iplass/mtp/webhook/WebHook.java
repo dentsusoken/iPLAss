@@ -24,7 +24,6 @@
 package org.iplass.mtp.webhook;
 
 import java.util.List;
-import org.iplass.mtp.webhook.template.endpointaddress.WebHookEndPoint;
 
 /**
  * @author lisf06
@@ -42,8 +41,6 @@ public class WebHook  {
 	/** 送るメソッド */
 	private String httpMethod;
 
-	private WebHookEndPoint webHookEndPoint;
-
 	private WebHookResponseHandler resultHandler;
 	private String urlQuery;
 	private String headerAuthTypeName;
@@ -52,6 +49,9 @@ public class WebHook  {
 	private List<WebHookHeader> headers;
 	private String hmacHashHeader;
 
+	/**WebHookEndPointだったもの*/
+	private String url;
+	private String endPointName;
 
 	//---------------------------------
 	/**　同期非同期　*/
@@ -164,12 +164,20 @@ public class WebHook  {
 		this.payloadContent = payloadContent;
 	}
 
-	public WebHookEndPoint getWebHookEndPoint() {
-		return webHookEndPoint;
+	public String getUrl() {
+		return url;
 	}
 
-	public void setWebHookEndPoint(WebHookEndPoint webHookEndPoint) {
-		this.webHookEndPoint = webHookEndPoint;
+	public void setUrl(String url) {
+		this.url = url;
+	}
+
+	public String getEndPointName() {
+		return endPointName;
+	}
+
+	public void setEndPointName(String endPointName) {
+		this.endPointName = endPointName;
 	}
 
 }

@@ -30,6 +30,7 @@ public interface WebHookManager extends Manager {
 	
 	/** WebHookオブジェを取得（作る） */
 	WebHook createWebHook(String webHookDefinitionName, Map<String, Object> binding, String endPointDefinitionName);
+	WebHook getEmptyWebHook();
 
 	/** 送る */
 	void sendWebHookAsync(WebHook wh);

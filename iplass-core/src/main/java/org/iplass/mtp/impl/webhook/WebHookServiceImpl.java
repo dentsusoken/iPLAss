@@ -69,7 +69,6 @@ import org.iplass.mtp.webhook.WebHookHeader;
 import org.iplass.mtp.webhook.WebHookResponse;
 import org.iplass.mtp.webhook.template.definition.WebHookTemplateDefinition;
 import org.iplass.mtp.webhook.template.definition.WebHookTemplateDefinitionManager;
-import org.iplass.mtp.webhook.template.endpointaddress.WebHookEndPoint;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -197,11 +196,17 @@ public class WebHookServiceImpl extends AbstractTypedMetaDataService<MetaWebHook
 	}
 	
 	private void sendWebHook(WebHook webHook) {
-		logger.debug("WebHook:"+webHook.getTemplateName()+"->"+webHook.getWebHookEndPoint().getEndPointName()+" Attempted.");
 		try {
-			WebHookEndPoint subscriber = webHook.getWebHookEndPoint();
 			WebHookEndPointRuntime endPointRuntime = null;
-			endPointRuntime = wheps.getRuntimeByName(subscriber.getEndPointName());
+			if (webHook.getEndPointName()==null||webHook.getEndPointName().isEmpty()) {
+				endPointRuntime = null;
+			} else {
+				endPointRuntime = wheps.getRuntimeByName(webHook.getEndPointName());
+				if (endPointRuntime==null) {
+					throw new SystemException("WebHookTemplate:" + webHook.getEndPointName() + " not found");
+				}
+			}
+			logger.debug("WebHook:"+webHook.getTemplateName()+"->"+webHook.getEndPointName()+" Attempted.");
 			
 			if (webHook.getHttpMethod()==null) {
 				logger.debug("WebHook:"+webHook.getTemplateName()+" request method undefined. Post will be used.");
@@ -260,8 +265,8 @@ public class WebHookServiceImpl extends AbstractTypedMetaDataService<MetaWebHook
 						scheme = "Basic";
 						authContent = Base64.encodeBase64String(endPointRuntime.getHeaderAuthToken().getBytes());
 					} else if ("WHCT".equals(endPointRuntime.getAuthType())) {
-						if (subscriber.getHeaderAuthSchemeName()!=null) {
-							String authTypeName = subscriber.getHeaderAuthSchemeName().replace("\n", "").replaceAll("\\s+", "");
+						if (endPointRuntime.getHeaderAuthCustomTypeName()!=null) {
+							String authTypeName = endPointRuntime.getHeaderAuthCustomTypeName().replace("\n", "").replaceAll("\\s+", "");
 							if (!authTypeName.isEmpty()) {
 								scheme = authTypeName;
 							}
@@ -270,7 +275,9 @@ public class WebHookServiceImpl extends AbstractTypedMetaDataService<MetaWebHook
 					httpRequest.setHeader(HttpHeaders.AUTHORIZATION, scheme+ " " + authContent);
 				}
 			}
-			String url = subscriber.getUrl()+webHook.getUrlQuery();
+
+
+			String url = webHook.getUrl()+webHook.getUrlQuery();
 			httpRequest.setURI(new URI(url));
 
 			CloseableHttpResponse response = null;
@@ -417,43 +424,60 @@ public class WebHookServiceImpl extends AbstractTypedMetaDataService<MetaWebHook
 
 	public WebHook generateWebHook(String webHookDefinitionName, Map<String, Object> binding, String endPointDefinitionName) {
 		WebHookTemplateRuntime webHookRuntime = this.getRuntimeByName(webHookDefinitionName);
-		WebHookEndPointRuntime endPointRuntime = wheps.getRuntimeByName(endPointDefinitionName);
-
+		WebHookEndPointRuntime endPointRuntime;
+		if (endPointDefinitionName==null||endPointDefinitionName.isEmpty()) {
+			endPointRuntime = null;
+		} else {
+			endPointRuntime = wheps.getRuntimeByName(endPointDefinitionName);
+			if (endPointRuntime == null) {
+				throw new SystemException("End Point Template:" + endPointDefinitionName + " not found");
+			}
+		}
 		if (webHookRuntime == null) {
 			throw new SystemException("WebHookTemplate:" + webHookDefinitionName + " not found");
 		}
-		if (endPointRuntime == null) {
-			throw new SystemException("End Point Template:" + endPointDefinitionName + " not found");
-			
-		}
+
 		
 		WebHook webHook = webHookRuntime.createWebHook(binding);
 		webHook.setTemplateName(webHookDefinitionName);
-		WebHookEndPoint webHookEndPoint = endPointRuntime.createWebHookEndPoint();
-		webHookEndPoint.setEndPointName(endPointDefinitionName);
+
 		
 		GroovyTemplate contentTemplate = webHookRuntime.getContentTemplate();
 		GroovyTemplate urlQueryTemplate = webHookRuntime.getUrlQueryTemplate();
-		GroovyTemplate urlTemplate = endPointRuntime.getUrlTemplate();
-		binding.put("webhook", webHook);
-		
-		binding.put(WEBHOOK_SECURITY_BINDING_HMACTOKEN, endPointRuntime.getHmacKey());
-		if (endPointRuntime.getAuthType()!=null) {
-			if ("WHBA".equals(endPointRuntime.getAuthType())) {
-				String[] basicArray = null;
-				if (endPointRuntime.getHeaderAuthToken()!=null) {
-					basicArray = endPointRuntime.getHeaderAuthToken().replaceAll("\\s","").split(":");
-				} 
-				if (basicArray==null||basicArray.length<2) {
-				} else {
-					binding.put(WEBHOOK_SECURITY_BINDING_BASICNAME, basicArray[0]);
-					binding.put(WEBHOOK_SECURITY_BINDING_BASICPASSWORD, basicArray[1]);
-				}
-			} else if ("WHBT".equals(endPointRuntime.getAuthType())){
-				binding.put(WEBHOOK_SECURITY_BINDING_BEARER, endPointRuntime.getHeaderAuthToken());	
-			}
-		}
 
+		binding.put("webhook", webHook);
+		if (endPointRuntime !=null) {
+			webHook.setEndPointName(endPointDefinitionName);
+			GroovyTemplate urlTemplate = endPointRuntime.getUrlTemplate();
+			binding.put(WEBHOOK_SECURITY_BINDING_HMACTOKEN, endPointRuntime.getHmacKey());
+			if (endPointRuntime.getAuthType()!=null) {
+				if ("WHBA".equals(endPointRuntime.getAuthType())) {
+					String[] basicArray = null;
+					if (endPointRuntime.getHeaderAuthToken()!=null) {
+						basicArray = endPointRuntime.getHeaderAuthToken().replaceAll("\\s","").split(":");
+					} 
+					if (basicArray==null||basicArray.length<2) {
+					} else {
+						binding.put(WEBHOOK_SECURITY_BINDING_BASICNAME, basicArray[0]);
+						binding.put(WEBHOOK_SECURITY_BINDING_BASICPASSWORD, basicArray[1]);
+					}
+				} else if ("WHBT".equals(endPointRuntime.getAuthType())){
+					binding.put(WEBHOOK_SECURITY_BINDING_BEARER, endPointRuntime.getHeaderAuthToken());	
+				}
+			}
+			if (urlTemplate!=null) {
+				StringWriter sw = new StringWriter();
+				GroovyTemplateBinding gtb = new GroovyTemplateBinding(sw,binding);
+				try {
+					urlTemplate.doTemplate(gtb);
+				} catch (IOException e) {
+					throw new ScriptRuntimeException(e);
+				}
+				webHook.setUrl(sw.toString());
+			}
+			
+			webHook.setHmacHashHeader(endPointRuntime.getHmacHashHeader());
+		}
 		if (contentTemplate != null) {
 			StringWriter sw = new StringWriter();
 			GroovyTemplateBinding gtb = new GroovyTemplateBinding(sw,binding);
@@ -474,18 +498,6 @@ public class WebHookServiceImpl extends AbstractTypedMetaDataService<MetaWebHook
 			}
 			webHook.setUrlQuery(sw.toString());
 		}
-		if (urlTemplate!=null) {
-			StringWriter sw = new StringWriter();
-			GroovyTemplateBinding gtb = new GroovyTemplateBinding(sw,binding);
-			try {
-				urlTemplate.doTemplate(gtb);
-			} catch (IOException e) {
-				throw new ScriptRuntimeException(e);
-			}
-			webHookEndPoint.setUrl(sw.toString());
-		}
-		webHook.setWebHookEndPoint(webHookEndPoint);
-		webHook.setHmacHashHeader(endPointRuntime.getHmacHashHeader());
 		return webHook;
 	}
 }

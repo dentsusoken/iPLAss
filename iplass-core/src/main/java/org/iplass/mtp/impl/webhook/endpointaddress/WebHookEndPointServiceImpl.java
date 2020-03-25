@@ -39,7 +39,6 @@ import org.iplass.mtp.spi.Config;
 import org.iplass.mtp.spi.ServiceRegistry;
 import org.iplass.mtp.webhook.template.endpointaddress.WebHookEndPointDefinition;
 import org.iplass.mtp.webhook.template.endpointaddress.WebHookEndPointDefinitionManager;
-import org.iplass.mtp.webhook.template.endpointaddress.WebHookEndPoint;
 
 public class WebHookEndPointServiceImpl extends AbstractTypedMetaDataService<MetaWebHookEndPointDefinition, WebHookEndPointRuntime> implements WebHookEndPointService {
 	WebHookAuthTokenHandler tokenHandler;
@@ -211,10 +210,6 @@ public class WebHookEndPointServiceImpl extends AbstractTypedMetaDataService<Met
 		return this.getRuntimeByName(definitionName).getUrlTemplate();
 	}
 	
-	public WebHookEndPoint getWebHookEndPointByName(String definitionName) {
-		return this.getRuntimeByName(definitionName).createWebHookEndPoint();
-	}
-
 	@Override
 	public void updateCustomSecurityTokenByDefinitionName(int tenantId, String definitionName, String secret) {
 		updateCustomSecurityTokenById(tenantId,getMetaIdByDefinitionName(definitionName),secret);
