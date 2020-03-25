@@ -145,6 +145,22 @@ $(function() {
 <%} else {%>
 	var opt = { readOnly: true, allowedContent:<%=allowedContent%> };
 <%}%>
+
+<% if (editor.isHideRichtextEditorToolBar()) { %>
+	var parent = $("textarea[name='<%=StringUtil.escapeJavaScript(propName)%>']").parent().hide();
+	var readyOpt = {
+		on: {
+			instanceReady: function (evt) {
+				var html = $("#cke_<%=StringUtil.escapeJavaScript(propName)%>").hide().find(".cke_inner iframe").contents().find("html").html();
+				var preview = $("<iframe id='preview_<%=StringUtil.escapeJavaScript(propName)%>' style='width: 100%; height: 100%;' frameborder='0' />");				
+				parent.append(preview).show();
+				preview.contents().find("html").html(html);
+			}
+		}
+	}
+	$.extend(opt, readyOpt);
+<% } %>
+
 	$("textarea[name='<%=StringUtil.escapeJavaScript(propName)%>']").ckeditor(
 		function() {}, opt
 	);
