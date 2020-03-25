@@ -114,6 +114,11 @@ $(function(){
 				}
 				$(overlay).css({zIndex:this.nextZindex()}).addClass("modal-overlay").attr("overlay-id", this.zindex);
 				this.overlays.push(overlay);
+				
+				//スクロール無効化
+				if (this.overlays.length == 1) {
+					$("body").css('overflow','hidden');
+				}
 			},
 			removeOverlay:function($overlay){
 				for (var i = this.overlays.length - 1; i >= 0; i--) {
@@ -125,6 +130,11 @@ $(function(){
 						}
 						this.overlays.splice(i, 1);
 						this.zindex -= 2;
+
+						//スクロール有効化
+						if (this.overlays.length == 0) {
+							$("body").css('overflow','auto');
+						}
 						return;
 					}
 				}
@@ -719,36 +729,42 @@ $.fn.allInputCheck = function(){
 
 			function setModalWindowToCenter(){
 				if ($under.hasClass("fullWindow")) {
+					var dialogHeight = $window.height() - 40;
+					//frameはheader分減らす
+					var frameHeight = dialogHeight - 50;
+					
 					$under.css({
-//						height : $document.height() - 40,
-						height : $window.height() - 40,
+						height : dialogHeight,
 						width : $window.width() - 30,
-//						top: 0,
 						top: $document.scrollTop(),
 						left: 0,
 						marginLeft: 0
 					});
-					$frame.height("95%");
+					$frame.height(frameHeight);
 				} else {
-					var scTop = $document.scrollTop(),
-						wh = $window.height(),//$document.height(),
-						ww = $window.width(),
-						boxH,
-						pos;
+					var windowHeight = $window.height();
+					var windowWidth = $window.width();
 
-					boxH = options.dialogHeight;
-					pos = (scTop+wh)-(wh+boxH)/2;
-
-					if(pos<0)pos = 0;
+					var dialogHeight = options.dialogHeight;
+					//windowの高さより大きい場合はwindowの高さに設定
+					if (dialogHeight > (windowHeight -80)) {
+						dialogHeight = windowHeight -80;
+					}
+					//最小高さを200
+					if (dialogHeight < 200) {
+						dialogHeight = 200;
+					}
+					//frameはheader分減らす
+					var frameHeight = dialogHeight - 50;
 
 					$under.css({
-						height: options.dialogHeight,
+						height: dialogHeight,
 						width: options.dialogWidth,
-						top:pos - 20,
+						top: $document.scrollTop() + 20,
 						left: "auto",
-						marginLeft:(ww-options.dialogWidth - 30)/2
+						marginLeft:(windowWidth - options.dialogWidth - 30)/2
 					});
-					$frame.height(686);
+					$frame.height(frameHeight);
 				}
 			}
 		});
@@ -867,37 +883,43 @@ $.fn.allInputCheck = function(){
 		function setModalWindowToCenter(pw){
 			if ($under.hasClass("fullWindow")) {
 				var pwd = rootWindow.scriptContext.getWindow();
+				var dialogHeight = $(pwd).height() - 40;
+				//frameはheader分減らす
+				var frameHeight = dialogHeight - 50;
+				
 				$under.css({
-//					height : $(rootWindow).height() - 40,
-					height : $(pwd).height() - 40,
-					width : $(rootWindow).width() - 30,
-//					top: 0,
-					top: $(rootWindow).scrollTop(),
+					height : dialogHeight,
+					width : $(pwd).width() - 30,
+					top: $(pwd).scrollTop(),
 					left: 0,
 					marginLeft: 0
 				});
-				$frame.height("95%");
+				$frame.height(frameHeight);
 			} else {
 				var pwd = rootWindow.scriptContext.getWindow();
-				var scTop = $(pwd).scrollTop(),
-					wh = $(pwd).height(),//$(rootWindow).height(),
-					ww = pw != null ? pw : $(rootWindow).width(),
-					boxH,
-					pos;
+				var windowHeight = $(pwd).height();
+				var windowWidth = pw != null ? pw : $(pwd).width();
 
-				boxH = options.dialogHeight;
-				pos = (scTop+wh)-(wh+boxH)/2;
-
-				if(pos<0)pos = 0;
+				var dialogHeight = options.dialogHeight;
+				//windowの高さより大きい場合はwindowの高さに設定
+				if (dialogHeight > (windowHeight -80)) {
+					dialogHeight = windowHeight -80;
+				}
+				//最小高さを200
+				if (dialogHeight < 200) {
+					dialogHeight = 200;
+				}
+				//frameはheader分減らす
+				var frameHeight = dialogHeight - 50;
 
 				$under.css({
-					height: options.dialogHeight,
+					height: dialogHeight,
 					width: options.dialogWidth,
-					top:pos - 20,
+					top: $(pwd).scrollTop() + 20,
 					left:"auto",
-					marginLeft:(ww-options.dialogWidth - 30)/2
+					marginLeft:(windowWidth - options.dialogWidth - 30)/2
 				});
-				$frame.height(686);
+				$frame.height(frameHeight);
 			}
 		}
 	};
