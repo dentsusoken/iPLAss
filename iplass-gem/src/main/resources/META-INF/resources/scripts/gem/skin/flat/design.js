@@ -374,19 +374,15 @@ $(function() {
 		callback.call(this);
 	};
 
-	//Checkbox and Radio button
-	$("input[type=radio],input[type=checkbox]").each(createPseudoObject);
-	$("input[type=radio],input[type=checkbox]").parent("label").on("click", function(e) {
-		var $pseudo = $(this).children(".pseudo-radio,.pseudo-checkbox");
-		if ($pseudo.is(":visible")) {
-			// ラベル部分クリックでイベントが2重発生しないよう抑制
-			$pseudo.trigger("click");
-			e.preventDefault();
-		}
-	});
+	// calendar条件指定
+	if ($(".calendarFilter").length > 0) {
+		$(".calendarFilter").on("changeFilter", function() {
+			$("input[type=radio]:not('.applied-pseudo'),input[type=checkbox]:not('.applied-pseudo')").each(createPseudoObject);
+		});
+	}
 
-	$(".pseudo-radio").on("click", onClickPseudoRadio);
-	$(".pseudo-checkbox").on("click", onClickPseudoCheckbox);
+	//Checkbox and Radio button
+	$("input[type=radio]:not('.applied-pseudo'),input[type=checkbox]:not('.applied-pseudo')").each(createPseudoObject);
 
 	$("#content").show();
 	$(".fixHeight").fixHeight(); //高さ揃え実行
@@ -438,6 +434,18 @@ function createPseudoObject() {
 		isChecked = "checked";
 	}
 	var $pseudo = $("<span class='pseudo-" + $this.attr("type") + " " + isChecked + " " + valueTogglable + "'/>").attr("tabIndex", "0").insertBefore(this);
+
+	//疑似化済にする
+	$this.addClass("applied-pseudo");
+	
+	$this.parent("label").on("click", function(e) {
+		if ($pseudo.is(":visible")) {
+			// ラベル部分クリックでイベントが2重発生しないよう抑制
+			$pseudo.trigger("click");
+			e.preventDefault();
+		}
+	});
+	
 	$pseudo.on("keydown", function(e) {
 		//Spaceで選択
 		if(e.keyCode === 32) {
@@ -446,6 +454,13 @@ function createPseudoObject() {
 			e.preventDefault();
 		}
 	});
+
+	if ($this.attr("type") == "radio") {
+		$pseudo.on("click", onClickPseudoRadio);
+	} else if ($this.attr("type") == "checkbox") {
+		$pseudo.on("click", onClickPseudoCheckbox);
+	}
+	
 	$pseudo.parent().addClass("pseudo-parent");
 	if ($this.prop("disabled")) {
 		$pseudo.parent().addClass("disabled");

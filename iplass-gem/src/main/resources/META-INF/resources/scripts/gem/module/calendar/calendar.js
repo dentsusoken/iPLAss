@@ -774,6 +774,7 @@
 	$.fn.calendarFilterView = function(calendarName) {
 
 		var $this = $(this);
+		var init = false;
 		if (calendarName) {
 			build();
 		}
@@ -796,6 +797,7 @@
 					// カレンダーフィルターの生成
 					var calendarFilterData = results.calendarFilterData;
 					if (calendarFilterData == null || calendarFilterData.length == 0) {
+						init = true;
 						return;
 					}
 
@@ -839,7 +841,7 @@
 					tabWrap.switchCondition({cunt:cunt});
 
 					var $without = $("<input/>").attr({defName : $data.entityDefinition.name, type : "checkbox"}).addClass("without-entity");
-					$("<label />").text(messageFormat(scriptContext.gem.locale.calendar.withoutEntity, $data.entityDefinition.displayName)).append($without).appendTo($("<div />").addClass("excludeCondition").appendTo(tabWrap));
+					$("<label />").text(messageFormat(scriptContext.gem.locale.calendar.withoutEntity, $data.entityDefinition.displayName)).prepend($without).appendTo($("<div />").addClass("excludeCondition").appendTo(tabWrap));
 				});
 
 				// 検索ボタン追加
@@ -847,6 +849,10 @@
 
 				// 初期値設定
 				initFilterCondition();
+				
+				//画面構築が終わったのでイベント実行
+				$(".calendarFilter").trigger(new $.Event('changeFilter', {}));
+				init = true;
 			}
 
 			/**
@@ -1110,6 +1116,12 @@
 					createConditionList(filterCondition, selectType);
 					filterCondition.val("EQ");
 					createInputField(filterInputField, selectValue, selectType, "EQ");
+					
+					//条件が変わったのでイベント実行
+					//初期化後のみ。初期表示時に条件復元の際に選択値を先に反映させるため
+					if (init) {
+						$(".calendarFilter").trigger(new $.Event('changeFilter', {}));
+					}
 				});
 			}
 
@@ -1154,6 +1166,12 @@
 								}
 							}
 						}
+					}
+					
+					//条件が変わったのでイベント実行
+					//初期化後のみ。初期表示時に条件復元の際に選択値を先に反映させるため
+					if (init) {
+						$(".calendarFilter").trigger(new $.Event('changeFilter', {}));
 					}
 				});
 			}

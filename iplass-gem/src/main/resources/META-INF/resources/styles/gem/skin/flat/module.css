@@ -2175,6 +2175,9 @@ a + .binaryDelete {
 .calendar-filter .filter-input-field .inpbr {
   width: 100%; }
 
+.calendar-filter .filter-input-field > span {
+  display: table-cell; }
+
 .data-deep-search .calendar-filter th.col3 {
   width: 20%; }
 
