@@ -25,8 +25,8 @@ import org.iplass.mtp.impl.definition.TypedMetaDataService;
 import org.iplass.mtp.impl.metadata.RootMetaData;
 import org.iplass.mtp.impl.script.template.GroovyTemplate;
 import org.iplass.mtp.spi.ServiceRegistry;
-import org.iplass.mtp.webhook.template.endpointaddress.WebHookEndPointDefinition;
-import org.iplass.mtp.webhook.template.endpointaddress.WebHookEndPointDefinitionManager;
+import org.iplass.mtp.webhook.endpoint.definition.WebHookEndPointDefinition;
+import org.iplass.mtp.webhook.endpoint.definition.WebHookEndPointDefinitionManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -95,33 +95,9 @@ public class WebHookEndPointDefinitionManagerImpl extends AbstractTypedDefinitio
 			service.updateCustomSecurityTokenByDefinitionName(tenantId,definitionName,secret);
 		}
 	}
-	
-	/**
-	 * <p>getToken</p> 
-	 * トークンタイプ:WHHM,WHBT,WHBA
-	 * */
+
 	@Override
-	public String getSecurityToken(int tenantId, String definitionName,  String tokenType) {
-		if(tokenType==null||tokenType.replaceAll("\\s","").isEmpty()) {
-			return null;
-		}
-		if( tokenType.equals("WHHM")){
-			return service.getHmacTokenByDefinitionName(tenantId,definitionName);
-		}
-		if( tokenType.equals("WHBT")){
-			return service.getBearerTokenByDefinitionName(tenantId,definitionName);
-		}
-		if( tokenType.equals("WHBA")){
-			return service.getBasicTokenByDefinitionName(tenantId,definitionName);
-		}
-		if( tokenType.equals("WHCT")){
-			return service.getCustomTokenByDefinitionName(tenantId,definitionName);
-		}
-		throw new RuntimeException("unknown TokenType");
-	}
-	
-	@Override
-	public String generateHmacTokenString() {
+	public String generateHmacKey() {
 		return service.generateHmacTokenString();
 	}
 

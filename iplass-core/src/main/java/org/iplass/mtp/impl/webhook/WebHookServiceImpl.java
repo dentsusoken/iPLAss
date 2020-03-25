@@ -271,6 +271,7 @@ public class WebHookServiceImpl extends AbstractTypedMetaDataService<MetaWebHook
 								scheme = authTypeName;
 							}
 						}
+						authContent = endPointRuntime.getHeaderAuthToken();
 					}
 					httpRequest.setHeader(HttpHeaders.AUTHORIZATION, scheme+ " " + authContent);
 				}

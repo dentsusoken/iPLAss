@@ -44,7 +44,7 @@ import org.iplass.mtp.web.template.definition.TemplateDefinition;
 import org.iplass.mtp.webapi.definition.EntityWebApiDefinition;
 import org.iplass.mtp.webapi.definition.WebApiDefinition;
 import org.iplass.mtp.webhook.template.definition.WebHookTemplateDefinition;
-import org.iplass.mtp.webhook.template.endpointaddress.WebHookEndPointDefinition;
+import org.iplass.mtp.webhook.endpoint.definition.WebHookEndPointDefinition;
 
 @XmlSeeAlso({
 	DefinitionSummary.class,

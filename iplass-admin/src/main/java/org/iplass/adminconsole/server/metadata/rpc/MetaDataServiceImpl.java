@@ -110,6 +110,7 @@ import org.iplass.mtp.impl.query.QueryServiceHolder;
 import org.iplass.mtp.impl.report.ReportingEngineService;
 import org.iplass.mtp.impl.report.ReportingType;
 import org.iplass.mtp.impl.web.actionmapping.cache.ContentCacheContext;
+import org.iplass.mtp.impl.webhook.endpointaddress.WebHookEndPointService;
 import org.iplass.mtp.spi.ServiceRegistry;
 import org.iplass.mtp.transaction.Transaction;
 import org.iplass.mtp.util.StringUtil;
@@ -140,8 +141,8 @@ import org.iplass.mtp.web.template.report.definition.ReportTemplateDefinition;
 import org.iplass.mtp.webapi.definition.EntityWebApiDefinition;
 import org.iplass.mtp.webapi.definition.EntityWebApiDefinitionManager;
 import org.iplass.mtp.webapi.definition.WebApiDefinition;
-import org.iplass.mtp.webhook.template.endpointaddress.WebHookEndPointDefinition;
-import org.iplass.mtp.webhook.template.endpointaddress.WebHookEndPointDefinitionManager;
+import org.iplass.mtp.webhook.endpoint.definition.WebHookEndPointDefinition;
+import org.iplass.mtp.webhook.endpoint.definition.WebHookEndPointDefinitionManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -167,7 +168,8 @@ public class MetaDataServiceImpl extends XsrfProtectedServiceServlet implements 
 	private EntityWebApiDefinitionManager ewdm = ManagerLocator.getInstance().getManager(EntityWebApiDefinitionManager.class);
 	private DefinitionManager dm = ManagerLocator.getInstance().getManager(DefinitionManager.class);
 	private WebHookEndPointDefinitionManager wepdm = ManagerLocator.getInstance().getManager(WebHookEndPointDefinitionManager.class);
-			
+	private WebHookEndPointService wheps = ServiceRegistry.getRegistry().getService(WebHookEndPointService.class);
+
 	private EntityManager em = AdminEntityManager.getInstance();
 	private AsyncTaskManager atm = ManagerLocator.getInstance().getManager(AsyncTaskManager.class);
 
@@ -2010,14 +2012,14 @@ public class MetaDataServiceImpl extends XsrfProtectedServiceServlet implements 
 		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId, new AuthUtil.Callable<String>() {
 			@Override
 			public String call() {
-				return wepdm.getSecurityToken(tenantId, definitionName, TokenType);
+				return wheps.getSecurityToken(tenantId, definitionName, TokenType);
 			}
 		});
 	}
 
 	@Override
 	public String generateHmacTokenString() {
-		return wepdm.generateHmacTokenString();
+		return wepdm.generateHmacKey();
 	}
 
 	/**

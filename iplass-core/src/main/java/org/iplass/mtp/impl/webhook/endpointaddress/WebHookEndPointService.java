@@ -40,6 +40,9 @@ public interface WebHookEndPointService extends TypedMetaDataService<MetaWebHook
 	void updateBearerSecurityTokenById(int tenantId,String metaDataId, String secret);
 	void updateCustomSecurityTokenById(int tenantId,String metaDataId, String secret);
 	
+	//secret getter
+	String getSecurityToken(int tenantId, String definitionName,  String tokenType);//総合メソッド。tokenTypeで下記単体メソッドを呼ぶ
+	
 	String getHmacTokenByDefinitionName(int tenantId,String definitionName);
 	String getBearerTokenByDefinitionName(int tenantId,String definitionName);
 	String getBasicTokenByDefinitionName(int tenantId,String definitionName);
@@ -52,4 +55,5 @@ public interface WebHookEndPointService extends TypedMetaDataService<MetaWebHook
 
 	GroovyTemplate getUrlTemplateByName(String definitionName);
 	String generateHmacTokenString();
+	
 }

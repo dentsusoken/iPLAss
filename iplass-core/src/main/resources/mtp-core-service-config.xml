@@ -28,7 +28,7 @@
 		<property name="org.iplass.mtp.utilityclass.definition.UtilityClassDefinitionManager" value="org.iplass.mtp.impl.script.UtilityClassDefinitionManagerImpl" />
 		<property name="org.iplass.mtp.webhook.WebHookManager" value="org.iplass.mtp.impl.webhook.WebHookManagerImpl" />
 		<property name="org.iplass.mtp.webhook.template.definition.WebHookTemplateDefinitionManager" value="org.iplass.mtp.impl.webhook.template.WebHookTemplateDefinitionManagerImpl" />
-		<property name="org.iplass.mtp.webhook.template.endpointaddress.WebHookEndPointDefinitionManager" value="org.iplass.mtp.impl.webhook.endpointaddress.WebHookEndPointDefinitionManagerImpl" />
+		<property name="org.iplass.mtp.webhook.endpoint.definition.WebHookEndPointDefinitionManager" value="org.iplass.mtp.impl.webhook.endpointaddress.WebHookEndPointDefinitionManagerImpl" />
 	</service>
 
 	<service>

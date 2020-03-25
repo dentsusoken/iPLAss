@@ -130,6 +130,9 @@ public class WebHookAuthTokenHandler extends AuthTokenHandler{
 		if (HMAC_AUTHENTICATION_TYPE.equals(type)) {
 			return true;
 		}
+		if (CUSTOM_AUTHENTICATION_TYPE.equals(type)) {
+			return true;
+		}
 		//セキュリティ情報に関するDB交互なので、見送りはできない
 		throw new RuntimeException("The type is not an acceptable WebHookAuthToken Type");
 	}

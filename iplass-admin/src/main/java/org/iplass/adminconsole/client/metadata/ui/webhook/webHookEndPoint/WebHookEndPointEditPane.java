@@ -38,7 +38,7 @@ import org.iplass.adminconsole.shared.metadata.dto.AdminDefinitionModifyResult;
 import org.iplass.adminconsole.shared.metadata.rpc.MetaDataServiceAsync;
 import org.iplass.adminconsole.shared.metadata.rpc.MetaDataServiceFactory;
 import org.iplass.mtp.definition.DefinitionEntry;
-import org.iplass.mtp.webhook.template.endpointaddress.WebHookEndPointDefinition;
+import org.iplass.mtp.webhook.endpoint.definition.WebHookEndPointDefinition;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.smartgwt.client.types.Alignment;
@@ -264,7 +264,7 @@ public class WebHookEndPointEditPane extends MetaDataMainEditPane {
 		private DynamicForm urlForm;
 		private DynamicForm headerAuthForm;
 		private DynamicForm hmacForm;
-		
+		DynamicForm headerAuthCustomSchemeForm;
 		private TextItem webHookEndPointUrlField;
 		
 		//header auth
@@ -316,9 +316,14 @@ public class WebHookEndPointEditPane extends MetaDataMainEditPane {
 			headerAuthForm.setNumCols(2);
 			headerAuthForm.setColWidths(100,"*");
 
+			headerAuthCustomSchemeForm =new DynamicForm();
+			headerAuthCustomSchemeForm.setPadding(10);
+			headerAuthCustomSchemeForm.setNumCols(2);
+			headerAuthCustomSchemeForm.setColWidths(100,"*");
 			webHookEndPointAuthorizationAltTokenTypeNameField = new MtpTextItem("alterTokenTypeName","Customize Token Type Name");
 			webHookEndPointAuthorizationAltTokenTypeNameField.setPrompt(AdminClientMessageUtil.getString("ui_metadata_webhook_WebHookEndPointEditPane_webHookEndPointAuthorizationAltTokenTypeNameField"));
 			webHookEndPointAuthorizationAltTokenTypeNameField.setCanEdit(true);
+			headerAuthCustomSchemeForm.setItems(webHookEndPointAuthorizationAltTokenTypeNameField);
 
 			authTypeItemField = new SelectItem("tokenType","Token Type");
 			authTypeItemField.setWidth("100%");
@@ -388,8 +393,8 @@ public class WebHookEndPointEditPane extends MetaDataMainEditPane {
 
 			headerAuthButtonForm.setItems(editHeaderAuthButton, deleteHeaderAuthButton);
 			headerAuthContentLayout.setChildren(headerAuthButtonForm, authHeaderSecretStatusLabel);
-			headerAuthForm.setItems(authTypeItemField, webHookEndPointAuthorizationAltTokenTypeNameField);
-			headerAuthPane.setChildren(headerAuthForm, headerAuthContentLayout);
+			headerAuthForm.setItems(authTypeItemField);
+			headerAuthPane.setChildren(headerAuthForm, headerAuthCustomSchemeForm, headerAuthContentLayout);
 
 			/**hmac settings*/
 			VLayout hmacPane = new VLayout();
@@ -585,6 +590,7 @@ public class WebHookEndPointEditPane extends MetaDataMainEditPane {
 				isHmacEnabledField.clearValue();
 				setHmacLabelStatus(false);
 				setHeaderAuthLabelStatus(false);
+				toggleCustomHeaderName();
 			}
 		}
 
@@ -633,9 +639,9 @@ public class WebHookEndPointEditPane extends MetaDataMainEditPane {
 
 		private void toggleCustomHeaderName() {
 			if("WHCT".equals(curDefinition.getHeaderAuthType())) {
-				webHookEndPointAuthorizationAltTokenTypeNameField.setVisible(true);
+				headerAuthCustomSchemeForm.setVisible(true);
 			} else {
-				webHookEndPointAuthorizationAltTokenTypeNameField.setVisible(false);
+				headerAuthCustomSchemeForm.setVisible(false);
 			}
 		}
 		/** pane -> definition */

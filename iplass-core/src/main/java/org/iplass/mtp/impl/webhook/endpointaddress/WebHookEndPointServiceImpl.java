@@ -37,8 +37,8 @@ import org.iplass.mtp.impl.webhook.WebHookAuthTokenHandler;
 import org.iplass.mtp.impl.webhook.endpointaddress.MetaWebHookEndPointDefinition.WebHookEndPointRuntime;
 import org.iplass.mtp.spi.Config;
 import org.iplass.mtp.spi.ServiceRegistry;
-import org.iplass.mtp.webhook.template.endpointaddress.WebHookEndPointDefinition;
-import org.iplass.mtp.webhook.template.endpointaddress.WebHookEndPointDefinitionManager;
+import org.iplass.mtp.webhook.endpoint.definition.WebHookEndPointDefinition;
+import org.iplass.mtp.webhook.endpoint.definition.WebHookEndPointDefinitionManager;
 
 public class WebHookEndPointServiceImpl extends AbstractTypedMetaDataService<MetaWebHookEndPointDefinition, WebHookEndPointRuntime> implements WebHookEndPointService {
 	WebHookAuthTokenHandler tokenHandler;
@@ -219,7 +219,7 @@ public class WebHookEndPointServiceImpl extends AbstractTypedMetaDataService<Met
 	public void updateCustomSecurityTokenById(int tenantId, String metaDataId, String secret) {
 		if (secret == null || secret.isEmpty()) {
 			tokenHandler.deleteSecret(tenantId, WebHookAuthTokenHandler.CUSTOM_AUTHENTICATION_TYPE, metaDataId);
-		} else if (getBearerTokenById(tenantId, metaDataId)==null) {
+		} else if (getCustomTokenById(tenantId, metaDataId)==null) {
 			tokenHandler.insertSecret(tenantId, WebHookAuthTokenHandler.CUSTOM_AUTHENTICATION_TYPE, metaDataId, metaDataId, secret);
 		} else {
 			tokenHandler.updateSecret(tenantId, WebHookAuthTokenHandler.CUSTOM_AUTHENTICATION_TYPE, metaDataId, metaDataId, secret);
@@ -236,4 +236,29 @@ public class WebHookEndPointServiceImpl extends AbstractTypedMetaDataService<Met
 		String token = tokenHandler.getSecret(tenantId, metaDataId, WebHookAuthTokenHandler.CUSTOM_AUTHENTICATION_TYPE);
 		return token;
 	}
+	
+	/**
+	 * <p>getToken</p> 
+	 * トークンタイプ:WHHM,WHBT,WHBA,WHCT
+	 * */
+	@Override
+	public String getSecurityToken(int tenantId, String definitionName,  String tokenType) {
+		if(tokenType==null||tokenType.replaceAll("\\s","").isEmpty()) {
+			return null;
+		}
+		if( tokenType.equals("WHHM")){
+			return getHmacTokenByDefinitionName(tenantId,definitionName);
+		}
+		if( tokenType.equals("WHBT")){
+			return getBearerTokenByDefinitionName(tenantId,definitionName);
+		}
+		if( tokenType.equals("WHBA")){
+			return getBasicTokenByDefinitionName(tenantId,definitionName);
+		}
+		if( tokenType.equals("WHCT")){
+			return getCustomTokenByDefinitionName(tenantId,definitionName);
+		}
+		throw new RuntimeException("unknown TokenType");
+	}
+	
 }

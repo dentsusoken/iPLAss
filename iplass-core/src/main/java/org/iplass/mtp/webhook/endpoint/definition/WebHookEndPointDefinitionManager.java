@@ -17,15 +17,13 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
-package org.iplass.mtp.webhook.template.endpointaddress;
+package org.iplass.mtp.webhook.endpoint.definition;
 
 import org.iplass.mtp.definition.TypedDefinitionManager;
 
 public interface WebHookEndPointDefinitionManager extends TypedDefinitionManager<WebHookEndPointDefinition> {
 
-	void modifySecurityToken(int tenantId,String metaDataId, String secret, String TokenType);
+	void modifySecurityToken(int tenantId,String definitionName, String secret, String TokenType);
 
-	String getSecurityToken(int tenantId, String metaDataId, String TokenType);
-
-	String generateHmacTokenString();
+	String generateHmacKey();
 }

@@ -22,7 +22,7 @@ package org.iplass.adminconsole.client.metadata.ui.webhook.webHookEndPoint;
 import org.iplass.adminconsole.client.base.tenant.TenantInfoHolder;
 import org.iplass.adminconsole.client.metadata.ui.common.Callable;
 import org.iplass.adminconsole.client.metadata.ui.common.MetaDataCreateDialog;
-import org.iplass.mtp.webhook.template.endpointaddress.WebHookEndPointDefinition;
+import org.iplass.mtp.webhook.endpoint.definition.WebHookEndPointDefinition;
 
 public class CreateWebHookEndPointDefinitionDialog extends MetaDataCreateDialog{
 	

@@ -33,7 +33,7 @@ import org.iplass.mtp.impl.script.template.GroovyTemplate;
 import org.iplass.mtp.impl.script.template.GroovyTemplateCompiler;
 import org.iplass.mtp.impl.util.ObjectUtil;
 import org.iplass.mtp.spi.ServiceRegistry;
-import org.iplass.mtp.webhook.template.endpointaddress.WebHookEndPointDefinition;
+import org.iplass.mtp.webhook.endpoint.definition.WebHookEndPointDefinition;
 
 @XmlRootElement
 public class MetaWebHookEndPointDefinition extends BaseRootMetaData implements DefinableMetaData<WebHookEndPointDefinition>{
@@ -157,6 +157,8 @@ public class MetaWebHookEndPointDefinition extends BaseRootMetaData implements D
 				headerAuthToken = service.getBasicTokenById(tenantId, getId());
 			} else if ("WHBT".equals(getHeaderAuthType())) {
 				headerAuthToken = service.getBearerTokenById(tenantId, getId());
+			} else if ("WHCT".equals(getHeaderAuthType())) {
+				headerAuthToken = service.getCustomTokenById(tenantId, getId());
 			}
 
 			try {
