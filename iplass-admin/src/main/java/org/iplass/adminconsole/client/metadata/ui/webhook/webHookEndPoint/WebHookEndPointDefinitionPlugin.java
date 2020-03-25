@@ -43,7 +43,7 @@ public class WebHookEndPointDefinitionPlugin extends DefaultMetaDataPlugin{
 	private static final String NODE_NAME = "WebHookEndPoint";
 
 	/** ノードアイコン */
-	private static final String NODE_ICON = "webhookendpoint.png";
+	private static final String NODE_ICON = "door_in.png";
 	@Override
 	protected String nodeName() {
 		return NODE_NAME;

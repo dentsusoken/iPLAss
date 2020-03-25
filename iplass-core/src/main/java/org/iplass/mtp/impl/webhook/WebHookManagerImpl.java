@@ -19,7 +19,6 @@
  */
 package org.iplass.mtp.impl.webhook;
 
-import java.util.List;
 import java.util.Map;
 import org.iplass.mtp.ApplicationException;
 import org.iplass.mtp.impl.transaction.TransactionService;
@@ -48,11 +47,6 @@ public class WebHookManagerImpl implements WebHookManager {
 	}
 
 	@Override
-	public List<WebHook> createWebHookList(String webHookDefinitionName, Map<String, Object> binding,List<String> endPointDefinitionNameList) {
-		return webHookService.generateWebHookList(webHookDefinitionName, binding, endPointDefinitionNameList);
-	}
-	
-	@Override
 	public WebHook createWebHook(String webHookDefinitionName, Map<String, Object> binding, String endPointDefinitionName) {
 		return webHookService.generateWebHook(webHookDefinitionName, binding, endPointDefinitionName);
 	}
@@ -78,40 +72,6 @@ public class WebHookManagerImpl implements WebHookManager {
 	public void sendWebHookSync(WebHook webHook) {
 		try { 
 			webHookService.sendWebHookSync(webHook);
-		} catch (ApplicationException e) {
-			throw e;
-		} catch (RuntimeException e) {
-			setRollbackOnly();
-			logger.error(e.getMessage(), e);
-			throw new WebHookRuntimeException("開始処理でエラーが発生しました。", e);
-		} catch (Error e) {
-			setRollbackOnly();
-			logger.error(e.getMessage(), e);
-			throw new WebHookRuntimeException("開始処理でエラーが発生しました。", e);
-		}
-	}
-
-	@Override
-	public void sendWebHookListSync(List<WebHook> webHookList) {
-		try { 
-			webHookService.sendWebHookListSync(webHookList);
-		} catch (ApplicationException e) {
-			throw e;
-		} catch (RuntimeException e) {
-			setRollbackOnly();
-			logger.error(e.getMessage(), e);
-			throw new WebHookRuntimeException("開始処理でエラーが発生しました。", e);
-		} catch (Error e) {
-			setRollbackOnly();
-			logger.error(e.getMessage(), e);
-			throw new WebHookRuntimeException("開始処理でエラーが発生しました。", e);
-		}
-	}
-
-	@Override
-	public void sendWebHookListAsync(List<WebHook> webHookList) {
-		try { 
-			webHookService.sendWebHookListAsync(webHookList);
 		} catch (ApplicationException e) {
 			throw e;
 		} catch (RuntimeException e) {

@@ -27,7 +27,6 @@ import java.net.ConnectException;
 import java.net.URI;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
 import javax.crypto.Mac;
@@ -40,13 +39,10 @@ import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpEntityEnclosingRequestBase;
 import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpHead;
-import org.apache.http.client.methods.HttpOptions;
 import org.apache.http.client.methods.HttpPatch;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
 import org.apache.http.client.methods.HttpRequestBase;
-import org.apache.http.client.methods.HttpTrace;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.protocol.BasicHttpContext;
@@ -79,16 +75,14 @@ import org.slf4j.LoggerFactory;
 
 public class WebHookServiceImpl extends AbstractTypedMetaDataService<MetaWebHookTemplate, WebHookTemplateRuntime>
 		implements WebHookService {
-	public final String WEBHOOK_USE_PROXY= "webHookUseProxy";
-	public final String WEBHOOK_ISRETRY= "webHookIsRetry";
-	public final String WEBHOOK_RETRY_MAXIMUMATTEMPTS = "webHookRetryMaximumAttempts";
-	public final String WEBHOOK_RETRY_INTERVAL = "webHookRetryInterval";
-	public final String WEBHOOK_HMACTOKEN_ALGORITHM = "webHookHmacHashAlgorithm";
-	public final String WEBHOOK_HMACTOKEN_DEFAULTNAME = "webHookHmacTokenDefaultName";
-	public final String WEBHOOK_HTTP_CLIENT_CONFIG = "httpClientConfig";
+	private final String WEBHOOK_ISRETRY= "webHookIsRetry";
+	private final String WEBHOOK_RETRY_MAXIMUMATTEMPTS = "webHookRetryMaximumAttempts";
+	private final String WEBHOOK_RETRY_INTERVAL = "webHookRetryInterval";
+	private final String WEBHOOK_HMACTOKEN_ALGORITHM = "webHookHmacHashAlgorithm";
+	private final String WEBHOOK_HMACTOKEN_DEFAULTNAME = "webHookHmacTokenDefaultName";
+	private final String WEBHOOK_HTTP_CLIENT_CONFIG = "httpClientConfig";
 	private AsyncTaskManager atm;
-//	private WebHookEndPointDefinitionManager wepdm;
-	WebHookEndPointService wheps;
+	private WebHookEndPointService wheps;
 	private boolean webHookIsRetry;
 	private int webHookRetryMaximumAttpempts;
 	private int webHookRetryInterval;
@@ -171,9 +165,7 @@ public class WebHookServiceImpl extends AbstractTypedMetaDataService<MetaWebHook
 		}
 
 		atm = ManagerLocator.getInstance().getManager(AsyncTaskManager.class);
-//		wepdm = ManagerLocator.getInstance().getManager(WebHookEndPointDefinitionManager.class);
 		wheps = ServiceRegistry.getRegistry().getService(WebHookEndPointService.class);
-		//再利用の為、httpclientをstaticにします
 		initWebHookHttpClient();
 	}
 
@@ -195,13 +187,6 @@ public class WebHookServiceImpl extends AbstractTypedMetaDataService<MetaWebHook
 			sendWebHook(webHook);
 	}
 
-	@Override
-	public void sendWebHookListSync(List<WebHook> webHookList) {
-		for (WebHook wh: webHookList) {
-			sendWebHookSync(wh);
-		}
-	}
-	
 	/**
 	 * 非同期sendWebHook
 	 * AsyncTaskManagerのローカルスレッドをつっかています
@@ -211,18 +196,13 @@ public class WebHookServiceImpl extends AbstractTypedMetaDataService<MetaWebHook
 			atm.executeOnThread(new WebHookCallable(webHook));
 	}
 	
-	public void sendWebHookListAsync(List<WebHook> webHookList) {
-		for (WebHook wh: webHookList) {
-			sendWebHookAsync(wh);
-		}
-	}
-	
-
 	private void sendWebHook(WebHook webHook) {
 		logger.debug("WebHook:"+webHook.getTemplateName()+"->"+webHook.getWebHookEndPoint().getEndPointName()+" Attempted.");
 		try {
 			WebHookEndPoint subscriber = webHook.getWebHookEndPoint();
-			WebHookEndPointRuntime endpointRuntime = wheps.getRuntimeByName(subscriber.getEndPointName());
+			WebHookEndPointRuntime endPointRuntime = null;
+			endPointRuntime = wheps.getRuntimeByName(subscriber.getEndPointName());
+			
 			if (webHook.getHttpMethod()==null) {
 				logger.debug("WebHook:"+webHook.getTemplateName()+" request method undefined. Post will be used.");
 			}
@@ -251,46 +231,46 @@ public class WebHookServiceImpl extends AbstractTypedMetaDataService<MetaWebHook
 					httpRequest.setHeader(headerEntry.getKey(), headerEntry.getValue());
 				}
 			}
-			
-			if (endpointRuntime.getHmacKey()!=null) {
-				if (!endpointRuntime.getHmacKey().isEmpty()) {
-					String hmacHeader;
-					if (webHook.getTokenHeader()==null||webHook.getTokenHeader().replaceAll("\\s","").isEmpty()) {
-						hmacHeader = webHookHmacTokenDefaultName;
-					} else {
-						hmacHeader = webHook.getTokenHeader();
-					}
-					httpRequest.setHeader(hmacHeader, this.getHmacSha256(endpointRuntime.getHmacKey(), webHook.getPayloadContent()));
-				}
-			}
-			//headerのauthorizationでの認証情報
-			if (endpointRuntime.getAuthType()==null || endpointRuntime.getAuthType().isEmpty()) {
+			if (endPointRuntime!=null) {
 
-			} else {
-				String scheme = null;
-				String authContent = null;
-				if ("WHBT".equals(endpointRuntime.getAuthType())) {
-					scheme = "Bearer";
-					authContent = endpointRuntime.getHeaderAuthToken();
-				} else if ("WHBA".equals(endpointRuntime.getAuthType())) {
-					scheme = "Basic";
-					authContent = Base64.encodeBase64String(endpointRuntime.getHeaderAuthToken().getBytes());
-				}
-				if (subscriber.getHeaderAuthSchemeName()!=null) {
-					String authTypeName = subscriber.getHeaderAuthSchemeName().replace("\n", "").replaceAll("\\s+", "");
-					if (!authTypeName.isEmpty()) {
-						scheme = authTypeName;
+				//hmac
+				if (endPointRuntime.isHmacEnabled()) {
+					if (endPointRuntime.getHmacKey()!=null) {
+						if (!endPointRuntime.getHmacKey().isEmpty()) {
+							String hmacHeader;
+							if (webHook.getHmacHashHeader()==null||webHook.getHmacHashHeader().replaceAll("\\s","").isEmpty()) {
+								hmacHeader = webHookHmacTokenDefaultName;
+							} else {
+								hmacHeader = webHook.getHmacHashHeader();
+							}
+							httpRequest.setHeader(hmacHeader, this.getHmacSha256(endPointRuntime.getHmacKey(), webHook.getPayloadContent()));
+						}
 					}
 				}
-				httpRequest.setHeader(HttpHeaders.AUTHORIZATION, scheme+ " " + authContent);
+				//headerのauthorizationでの認証情報
+				if (endPointRuntime.getAuthType()==null || endPointRuntime.getAuthType().isEmpty()) {
+	
+				} else {
+					String scheme = "";
+					String authContent = "";
+					if ("WHBT".equals(endPointRuntime.getAuthType())) {
+						scheme = "Bearer";
+						authContent = endPointRuntime.getHeaderAuthToken();
+					} else if ("WHBA".equals(endPointRuntime.getAuthType())) {
+						scheme = "Basic";
+						authContent = Base64.encodeBase64String(endPointRuntime.getHeaderAuthToken().getBytes());
+					} else if ("WHCT".equals(endPointRuntime.getAuthType())) {
+						if (subscriber.getHeaderAuthSchemeName()!=null) {
+							String authTypeName = subscriber.getHeaderAuthSchemeName().replace("\n", "").replaceAll("\\s+", "");
+							if (!authTypeName.isEmpty()) {
+								scheme = authTypeName;
+							}
+						}
+					}
+					httpRequest.setHeader(HttpHeaders.AUTHORIZATION, scheme+ " " + authContent);
+				}
 			}
-
-			String url;
-			if (isUrlQueryAllowed(webHook.getHttpMethod())) {
-				url = subscriber.getUrl()+webHook.getUrlQuery();
-			} else {
-				url = subscriber.getUrl();
-			}
+			String url = subscriber.getUrl()+webHook.getUrlQuery();
 			httpRequest.setURI(new URI(url));
 
 			CloseableHttpResponse response = null;
@@ -341,10 +321,10 @@ public class WebHookServiceImpl extends AbstractTypedMetaDataService<MetaWebHook
 	 * @param: String message
 	 * @return: base64String
 	 * */
-	public String getHmacSha256(String token, String message) {
+	public String getHmacSha256(String secret, String message) {
 		try {
 		    Mac Hmac = Mac.getInstance(this.webHookHmacHashAlgorithm);
-		    SecretKeySpec secret_key = new SecretKeySpec(token.getBytes("UTF-8"), this.webHookHmacHashAlgorithm);
+		    SecretKeySpec secret_key = new SecretKeySpec(secret.getBytes("UTF-8"), this.webHookHmacHashAlgorithm);
 		    Hmac.init(secret_key);
 
 		    String hash = Base64.encodeBase64String(Hmac.doFinal(message.getBytes("UTF-8")));
@@ -378,27 +358,11 @@ public class WebHookServiceImpl extends AbstractTypedMetaDataService<MetaWebHook
 			return new HttpPut();
 		}else if (methodName.equals("PATCH")) {
 			return new HttpPatch();
-		}else if (methodName.equals("HEAD")) {
-			return new HttpHead();
-		}else if (methodName.equals("OPTIONS")) {
-			return new HttpOptions();
-		}else if (methodName.equals("TRACE")) {
-			return new HttpTrace();
 		}else {
 			return new HttpPost();
 		}
 	}
-	private boolean isUrlQueryAllowed(String methodName){
-		if (methodName.equals("GET")) {
-			return true;
-		}else if (methodName.equals("DELETE")) {
-			return true;
-		}else if (methodName.equals("POST")) {
-			return true;
-		}else {
-			return false;
-		}
-	}
+
 	private boolean isEnclosingRequest(HttpRequestBase request) {
 		if (request.getMethod().equals("PATCH")
 				|| request.getMethod().equals("POST")
@@ -454,7 +418,7 @@ public class WebHookServiceImpl extends AbstractTypedMetaDataService<MetaWebHook
 	public WebHook generateWebHook(String webHookDefinitionName, Map<String, Object> binding, String endPointDefinitionName) {
 		WebHookTemplateRuntime webHookRuntime = this.getRuntimeByName(webHookDefinitionName);
 		WebHookEndPointRuntime endPointRuntime = wheps.getRuntimeByName(endPointDefinitionName);
-		
+
 		if (webHookRuntime == null) {
 			throw new SystemException("WebHookTemplate:" + webHookDefinitionName + " not found");
 		}
@@ -471,8 +435,6 @@ public class WebHookServiceImpl extends AbstractTypedMetaDataService<MetaWebHook
 		GroovyTemplate contentTemplate = webHookRuntime.getContentTemplate();
 		GroovyTemplate urlQueryTemplate = webHookRuntime.getUrlQueryTemplate();
 		GroovyTemplate urlTemplate = endPointRuntime.getUrlTemplate();
-		
-		
 		binding.put("webhook", webHook);
 		
 		binding.put(WEBHOOK_SECURITY_BINDING_HMACTOKEN, endPointRuntime.getHmacKey());
@@ -523,20 +485,7 @@ public class WebHookServiceImpl extends AbstractTypedMetaDataService<MetaWebHook
 			webHookEndPoint.setUrl(sw.toString());
 		}
 		webHook.setWebHookEndPoint(webHookEndPoint);
+		webHook.setHmacHashHeader(endPointRuntime.getHmacHashHeader());
 		return webHook;
 	}
-	
-	/**
-	 * 宛先が複数である場合、ListのWebHookを作ります。
-	 * */
-	public List<WebHook> generateWebHookList(String webHookDefinitionName, Map<String, Object> binding, List<String> endPointDefinitionNameList) {
-		ArrayList<WebHook> webHookList = new ArrayList<WebHook>();
-		for (String endPointDefinitionName:endPointDefinitionNameList) {
-			WebHook webHook = generateWebHook(webHookDefinitionName, binding, endPointDefinitionName);
-			webHookList.add(webHook);
-		}
-		return webHookList;
-	}
-
-
 }

@@ -55,7 +55,6 @@ public class MetaWebHookTemplate extends BaseRootMetaData implements DefinableMe
 	private String httpMethod;
 
 	private List<MetaWebHookHeader> headers;
-	private String tokenHeader;
 	
 	private String urlQuery;
 
@@ -86,7 +85,6 @@ public class MetaWebHookTemplate extends BaseRootMetaData implements DefinableMe
 		
 		addressUrl = definition.getAddressUrl();
 		sender = definition.getSender();
-		tokenHeader = definition.getTokenHeader();
 		
 		httpMethod = definition.getHttpMethod();
 		synchronous = definition.isSynchronous();
@@ -119,7 +117,6 @@ public class MetaWebHookTemplate extends BaseRootMetaData implements DefinableMe
 		
 		definition.setAddressUrl(addressUrl);
 		definition.setSender(sender);
-		definition.setTokenHeader(tokenHeader);
 
 		definition.setHttpMethod(httpMethod);
 		definition.setSynchronous(synchronous);
@@ -167,15 +164,7 @@ public class MetaWebHookTemplate extends BaseRootMetaData implements DefinableMe
 	public void setHeaders(List<MetaWebHookHeader> headers) {
 		this.headers = headers;
 	}
-	
-	public String getTokenHeader() {
-		return tokenHeader;
-	}
 
-	public void setTokenHeader(String tokenHeader) {
-		this.tokenHeader = tokenHeader;
-	}
-	
 	public String getHttpMethod() {
 		return httpMethod;
 	}
@@ -259,7 +248,6 @@ public class MetaWebHookTemplate extends BaseRootMetaData implements DefinableMe
 				}
 			}
 			webHook.setHeaders(newHeaders);
-			webHook.setTokenHeader(tokenHeader);
 			webHook.setHttpMethod(httpMethod);
 			webHook.setSynchronous(synchronous);
 			webHook.setContentType(contentType);

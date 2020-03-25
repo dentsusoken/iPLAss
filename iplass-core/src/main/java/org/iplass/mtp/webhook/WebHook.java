@@ -50,7 +50,7 @@ public class WebHook  {
 
 	/** headers */
 	private List<WebHookHeader> headers;
-	private String tokenHeader;
+	private String hmacHashHeader;
 
 
 	//---------------------------------
@@ -107,13 +107,17 @@ public class WebHook  {
 	public void setHeaders(List<WebHookHeader> headers) {
 		this.headers = headers;
 	}
-
-	public String getTokenHeader() {
-		return tokenHeader;
+	
+	public void addHeader(WebHookHeader header) {
+		headers.add(header);
 	}
 
-	public void setTokenHeader(String tokenHeader) {
-		this.tokenHeader = tokenHeader;
+	public String getHmacHashHeader() {
+		return hmacHashHeader;
+	}
+
+	public void setHmacHashHeader(String tokenHeader) {
+		this.hmacHashHeader = tokenHeader;
 	}
 	public String getHttpMethod() {
 		return httpMethod;

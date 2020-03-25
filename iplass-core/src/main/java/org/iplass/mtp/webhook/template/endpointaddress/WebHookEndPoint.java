@@ -25,10 +25,9 @@ package org.iplass.mtp.webhook.template.endpointaddress;
  * エンドポイント
  * */
 public class WebHookEndPoint {
-	String url;
-	String endPointName;
-	String headerAuthSchemeName;
-
+	private String url;
+	private String endPointName;
+	private String headerAuthSchemeName;
 	public String getUrl() {
 		return url;
 	}

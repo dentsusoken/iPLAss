@@ -223,7 +223,6 @@ public class WebHookTemplateEditPane extends MetaDataMainEditPane {
 		//テンプレに関する情報
 		private DynamicForm templateInfoForm;
 		private TextItem contentTypeField;
-        private TextItem tokenNameField;
 		
         //ヘッダー関連
 		public HeaderMapGrid headerGrid;
@@ -266,12 +265,9 @@ public class WebHookTemplateEditPane extends MetaDataMainEditPane {
 			contentTypeField = new TextItem("webhookContentType", "Content-Type");
 			contentTypeField.setWidth(150);
 			SmartGWTUtil.addHoverToFormItem(contentTypeField, AdminClientMessageUtil.getString("ui_metadata_webhook_WebHookTemplateEditPane_contentTypeFieldHoverInfo"));
-			tokenNameField = new TextItem("webhookTokenName", "Security Token Name");
-			tokenNameField.setWidth(150);
-			SmartGWTUtil.addHoverToFormItem(tokenNameField, AdminClientMessageUtil.getString("ui_metadata_webhook_WebHookTemplateEditPane_tokenNameFieldHoverInfo"));
 
 			webHookMethodField = new SelectItem("webHookMethodField","Http Request Method");
-			webHookMethodField.setValueMap("GET", "POST", "DELETE", "PUT","PATCH","HEAD","OPTIONS","TRACE");
+			webHookMethodField.setValueMap("GET", "POST", "DELETE", "PUT", "PATCH");
 			webHookMethodField.setWidth(150);
 
 			headerGrid = new HeaderMapGrid();
@@ -320,14 +316,14 @@ public class WebHookTemplateEditPane extends MetaDataMainEditPane {
 			headerPane.setPadding(10);
 			headerPane.setGroupTitle("Custom Header");
 			
-			templateInfoForm.setItems(contentTypeField, tokenNameField,webHookMethodField);
+			templateInfoForm.setItems(contentTypeField, webHookMethodField);
 			
 			urlQueryForm = new DynamicForm();
 			urlQueryForm.setWidth(500);
 			urlQueryForm.setPadding(10);
 			urlQueryForm.setNumCols(1);
 			urlQueryForm.setIsGroup(true);
-			urlQueryForm.setGroupTitle("Url Query String");
+			urlQueryForm.setGroupTitle("Sub Path/Query String");
 			urlQueryField = new TextAreaItem();
 			urlQueryField.setPrompt(AdminClientMessageUtil.getString("ui_metadata_webhook_WebHookTemplateEditPane_urlQueryFieldHoverInfo"));
 			urlQueryField.setWidth("*");
@@ -442,7 +438,6 @@ public class WebHookTemplateEditPane extends MetaDataMainEditPane {
 			
 			definition.setContentType(SmartGWTUtil.getStringValue(contentTypeField));
 			definition.setWebHookContent(plainEditor.getText());
-			definition.setTokenHeader(SmartGWTUtil.getStringValue(tokenNameField));
 			definition.setHttpMethod(SmartGWTUtil.getStringValue(webHookMethodField));
 			definition.setUrlQuery(SmartGWTUtil.getStringValue(urlQueryField));
 
@@ -454,7 +449,6 @@ public class WebHookTemplateEditPane extends MetaDataMainEditPane {
 			headerGrid.setData(new ListGridRecord[] {});
 			if (definition != null) {
 				contentTypeField.setValue(definition.getContentType());
-				tokenNameField.setValue(definition.getTokenHeader());
 				webHookMethodField.setValue(definition.getHttpMethod());
 				if (definition.getWebHookContent()==null) {
 					plainEditor.setText("");
@@ -467,7 +461,6 @@ public class WebHookTemplateEditPane extends MetaDataMainEditPane {
 				urlQueryField.setValue(definition.getUrlQuery());
 			} else {
 				contentTypeField.clearValue();
-				tokenNameField.clearValue();
 				webHookMethodField.clearValue();
 				messageTabSet.selectTab(plainContentTab);
 				urlQueryField.clearErrors();

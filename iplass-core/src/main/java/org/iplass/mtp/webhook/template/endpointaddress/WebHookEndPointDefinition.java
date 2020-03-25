@@ -32,8 +32,9 @@ public class WebHookEndPointDefinition implements Definition{
 	private String displayName;
 	private String description;
 	private String headerAuthType;
-	private String headerAuthTypeName;// 例：Authorizationヘッダーでbasic認証時、内容のbasic username:passwordのbasicをほかの名前にしたいなら
-	
+	private String headerAuthCustomTypeName;// custom scheme Name
+	private String hmacHashHeader;//hmacの計算結果のヘッダー名
+	private boolean hmacEnabled;
 	/** 送り先 */
 	private String url;
 	
@@ -84,12 +85,28 @@ public class WebHookEndPointDefinition implements Definition{
 		this.headerAuthType = headerAuthType;
 	}
 	
-	public String getHeaderAuthTypeName() {
-		return headerAuthTypeName;
+	public String getHeaderAuthCustomTypeName() {
+		return headerAuthCustomTypeName;
 	}
 
-	public void setHeaderAuthTypeName(String headerAuthTypeName) {
-		this.headerAuthTypeName = headerAuthTypeName;
+	public void setHeaderAuthCustomTypeName(String headerAuthCustomTypeName) {
+		this.headerAuthCustomTypeName = headerAuthCustomTypeName;
+	}
+
+	public String getHmacHashHeader() {
+		return hmacHashHeader;
+	}
+
+	public void setHmacHashHeader(String hmacHashHeader) {
+		this.hmacHashHeader = hmacHashHeader;
+	}
+
+	public boolean isHmacEnabled() {
+		return hmacEnabled;
+	}
+
+	public void setHmacEnabled(boolean hmacEnabled) {
+		this.hmacEnabled = hmacEnabled;
 	}
 
 }

@@ -42,11 +42,13 @@ public class MetaWebHookEndPointDefinition extends BaseRootMetaData implements D
 	private static final long serialVersionUID = 7029271819447338103L;
 	/** 固有id、metaのidと同じ内容になるはずです */
 	private String headerAuthType;
-	private String headerAuthTypeName;
+	private String headerAuthCustomTypeName;
 
 	/** 送り先 */
 	private String url;
-	
+
+	private boolean hmacEnabled;
+	private String hmacHashHeader;
 	/** セキュリティ関連部分はtemplateManagerによってdbで管理しています */
 	
 	//Definition → Meta
@@ -57,7 +59,9 @@ public class MetaWebHookEndPointDefinition extends BaseRootMetaData implements D
 		this.description = definition.getDescription();
 		this.headerAuthType = definition.getHeaderAuthType();
 		this.url = definition.getUrl();
-		this.headerAuthTypeName = definition.getHeaderAuthTypeName();
+		this.headerAuthCustomTypeName = definition.getHeaderAuthCustomTypeName();
+		this.hmacHashHeader = definition.getHmacHashHeader();
+		this.hmacEnabled = definition.isHmacEnabled();
 	}
 	
 	//Meta → Definition
@@ -68,8 +72,10 @@ public class MetaWebHookEndPointDefinition extends BaseRootMetaData implements D
 		definition.setDisplayName(displayName);
 		definition.setDescription(description);
 		definition.setHeaderAuthType(headerAuthType);
-		definition.setHeaderAuthTypeName(headerAuthTypeName);
+		definition.setHeaderAuthCustomTypeName(headerAuthCustomTypeName);
 		definition.setUrl(url);
+		definition.setHmacHashHeader(hmacHashHeader);
+		definition.setHmacEnabled(hmacEnabled);
 		return definition;
 	}
 	public MetaWebHookEndPointDefinition() {
@@ -99,14 +105,13 @@ public class MetaWebHookEndPointDefinition extends BaseRootMetaData implements D
 		this.headerAuthType = headerAuthType;
 	}
 	
-	public String getHeaderAuthTypeName() {
-		return headerAuthTypeName;
+	public String getHeaderAuthCustomTypeName() {
+		return headerAuthCustomTypeName;
 	}
 
-	public void setHeaderAuthTypeName(String headerAuthTypeName) {
-		this.headerAuthTypeName = headerAuthTypeName;
+	public void setHeaderAuthCustomTypeName(String headerAuthCustomTypeName) {
+		this.headerAuthCustomTypeName = headerAuthCustomTypeName;
 	}
-
 
 	@Override
 	public WebHookEndPointRuntime createRuntime(MetaDataConfig metaDataConfig) {
@@ -119,11 +124,28 @@ public class MetaWebHookEndPointDefinition extends BaseRootMetaData implements D
 	}
 
 
+	public String getHmacHashHeader() {
+		return hmacHashHeader;
+	}
+
+	public void setHmacHashHeader(String hmacHashHeader) {
+		this.hmacHashHeader = hmacHashHeader;
+	}
+
+
+	public boolean isHmacEnabled() {
+		return hmacEnabled;
+	}
+
+	public void setHmacEnabled(boolean hmacEnabled) {
+		this.hmacEnabled = hmacEnabled;
+	}
+
+
 	public class WebHookEndPointRuntime extends BaseMetaDataRuntime{
 		private GroovyTemplate urlTemplate;
 		private String hmacKey;
 		private String headerAuthToken;
-		private String authType;//TODO change to enum
 
 		public WebHookEndPointRuntime() {
 			super();
@@ -132,10 +154,9 @@ public class MetaWebHookEndPointDefinition extends BaseRootMetaData implements D
 			int tenantId = ExecuteContext.getCurrentContext().getTenantContext().getTenantId();
 
 			hmacKey = service.getHmacTokenById(tenantId, getId());
-			authType = getHeaderAuthType();
-			if ("WHBA".equals(authType)) {
+			if ("WHBA".equals(getHeaderAuthType())) {
 				headerAuthToken = service.getBasicTokenById(tenantId, getId());
-			} else if ("WHBT".equals(authType)) {
+			} else if ("WHBT".equals(getHeaderAuthType())) {
 				headerAuthToken = service.getBearerTokenById(tenantId, getId());
 			}
 
@@ -150,7 +171,7 @@ public class MetaWebHookEndPointDefinition extends BaseRootMetaData implements D
 		public WebHookEndPoint createWebHookEndPoint() {
 			WebHookEndPoint webHookEndPoint = new WebHookEndPoint();
 			webHookEndPoint.setUrl(getUrl());
-			webHookEndPoint.setHeaderAuthSchemeName(getHeaderAuthTypeName());
+			webHookEndPoint.setHeaderAuthSchemeName(getHeaderAuthCustomTypeName());
 			webHookEndPoint.setEndPointName(getName());
 			return webHookEndPoint;
 		}
@@ -170,7 +191,16 @@ public class MetaWebHookEndPointDefinition extends BaseRootMetaData implements D
 			return headerAuthToken;
 		}
 		public String getAuthType() {
-			return authType;
+			return headerAuthType;
+		}
+		public String getHmacHashHeader() {
+			return hmacHashHeader;
+		}
+		public String getHeaderAuthCustomTypeName() {
+			return headerAuthCustomTypeName;
+		}
+		public boolean isHmacEnabled() {
+			return hmacEnabled;
 		}
 	}
 

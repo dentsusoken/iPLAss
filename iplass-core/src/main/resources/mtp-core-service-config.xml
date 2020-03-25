@@ -294,13 +294,13 @@
 		<property name="webHookRetryInterval" value="500" />
 		<property name="webHookHmacHashAlgorithm" value="HmacSHA256" />
 		<property name="webHookHmacTokenDefaultName" value="X-IPLASS-HMAC" />
-		<property name="httpClientConfig" class="org.iplass.mtp.impl.http.HttpClientConfig">
-			<property name="proxyHost" value="localhost" />
-			<property name="proxyPort" value="8080" />
-			<property name="poolingMaxTotal" value="20" />
-			<property name="poolingDefaultMaxPerRoute" value="20" />
-			<property name="poolingTimeToLive" value="50000" />
-		</property>
+<!-- 		<property name="httpClientConfig" class="org.iplass.mtp.impl.http.HttpClientConfig"> -->
+<!-- 			<property name="proxyHost" value="localhost" /> -->
+<!-- 			<property name="proxyPort" value="8080" /> -->
+<!-- 			<property name="poolingMaxTotal" value="20" /> -->
+<!-- 			<property name="poolingDefaultMaxPerRoute" value="20" /> -->
+<!-- 			<property name="poolingTimeToLive" value="50000" /> -->
+<!-- 		</property> -->
 	</service>
 	<!-- WebHookのEndPoint(サブスクライバー) -->
 	<service>

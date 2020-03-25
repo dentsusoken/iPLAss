@@ -92,6 +92,9 @@ public class WebHookEndPointDefinitionManagerImpl extends AbstractTypedDefinitio
 		if( tokenType.equals("WHBA")){
 			service.updateBasicSecurityTokenByDefinitionName(tenantId,definitionName,secret);
 		}
+		if( tokenType.equals("WHCT")){
+			service.updateCustomSecurityTokenByDefinitionName(tenantId,definitionName,secret);
+		}
 	}
 	
 	/**
@@ -111,6 +114,9 @@ public class WebHookEndPointDefinitionManagerImpl extends AbstractTypedDefinitio
 		}
 		if( tokenType.equals("WHBA")){
 			return service.getBasicTokenByDefinitionName(tenantId,definitionName);
+		}
+		if( tokenType.equals("WHCT")){
+			return service.getCustomTokenByDefinitionName(tenantId,definitionName);
 		}
 		throw new RuntimeException("unknown TokenType");
 	}

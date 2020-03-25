@@ -90,6 +90,7 @@ public class WebHookEndPointServiceImpl extends AbstractTypedMetaDataService<Met
 		tokenHandler.deleteSecret(tenantId, WebHookAuthTokenHandler.BASIC_AUTHENTICATION_TYPE, series);
 		tokenHandler.deleteSecret(tenantId, WebHookAuthTokenHandler.BEARER_AUTHENTICATION_TYPE, series);
 		tokenHandler.deleteSecret(tenantId, WebHookAuthTokenHandler.HMAC_AUTHENTICATION_TYPE, series);
+		tokenHandler.deleteSecret(tenantId, WebHookAuthTokenHandler.CUSTOM_AUTHENTICATION_TYPE, series);
 	}
 	/**
 	 * 
@@ -212,5 +213,32 @@ public class WebHookEndPointServiceImpl extends AbstractTypedMetaDataService<Met
 	
 	public WebHookEndPoint getWebHookEndPointByName(String definitionName) {
 		return this.getRuntimeByName(definitionName).createWebHookEndPoint();
+	}
+
+	@Override
+	public void updateCustomSecurityTokenByDefinitionName(int tenantId, String definitionName, String secret) {
+		updateCustomSecurityTokenById(tenantId,getMetaIdByDefinitionName(definitionName),secret);
+	}
+
+	@Override
+	public void updateCustomSecurityTokenById(int tenantId, String metaDataId, String secret) {
+		if (secret == null || secret.isEmpty()) {
+			tokenHandler.deleteSecret(tenantId, WebHookAuthTokenHandler.CUSTOM_AUTHENTICATION_TYPE, metaDataId);
+		} else if (getBearerTokenById(tenantId, metaDataId)==null) {
+			tokenHandler.insertSecret(tenantId, WebHookAuthTokenHandler.CUSTOM_AUTHENTICATION_TYPE, metaDataId, metaDataId, secret);
+		} else {
+			tokenHandler.updateSecret(tenantId, WebHookAuthTokenHandler.CUSTOM_AUTHENTICATION_TYPE, metaDataId, metaDataId, secret);
+		}
+	}
+
+	@Override
+	public String getCustomTokenByDefinitionName(int tenantId, String definitionName) {
+		return getCustomTokenById(tenantId, getMetaIdByDefinitionName(definitionName));
+	}
+
+	@Override
+	public String getCustomTokenById(int tenantId, String metaDataId) {
+		String token = tokenHandler.getSecret(tenantId, metaDataId, WebHookAuthTokenHandler.CUSTOM_AUTHENTICATION_TYPE);
+		return token;
 	}
 }

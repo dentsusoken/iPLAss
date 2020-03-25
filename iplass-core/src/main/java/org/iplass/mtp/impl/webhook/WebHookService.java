@@ -19,7 +19,6 @@
  */
 package org.iplass.mtp.impl.webhook;
 
-import java.util.List;
 import java.util.Map;
 import org.iplass.mtp.impl.definition.TypedMetaDataService;
 import org.iplass.mtp.impl.webhook.template.MetaWebHookTemplate;
@@ -28,10 +27,6 @@ import org.iplass.mtp.webhook.WebHook;
 
 public interface WebHookService extends TypedMetaDataService<MetaWebHookTemplate, WebHookTemplateRuntime>{
 	WebHook generateWebHook(String webHookDefinitionName, Map<String, Object> binding, String endPointDefinitionName);
-	List<WebHook> generateWebHookList(String webHookDefinitionName, Map<String, Object> binding, List<String> endPointDefName);
-		
 	void sendWebHookAsync(WebHook webHook);
 	void sendWebHookSync(WebHook webHook);
-	void sendWebHookListAsync(List<WebHook> webHookList);
-	void sendWebHookListSync(List<WebHook> webHookList);
 }

@@ -20,7 +20,6 @@
 package org.iplass.mtp.webhook.template.endpointaddress;
 
 import org.iplass.mtp.definition.TypedDefinitionManager;
-import org.iplass.mtp.impl.script.template.GroovyTemplate;
 
 public interface WebHookEndPointDefinitionManager extends TypedDefinitionManager<WebHookEndPointDefinition> {
 
@@ -29,9 +28,4 @@ public interface WebHookEndPointDefinitionManager extends TypedDefinitionManager
 	String getSecurityToken(int tenantId, String metaDataId, String TokenType);
 
 	String generateHmacTokenString();
-
-	WebHookEndPoint generateEndPointInstance(String definitionName);
-	
-	GroovyTemplate  getUrlTemplateByName(String definitionName);
-
 }

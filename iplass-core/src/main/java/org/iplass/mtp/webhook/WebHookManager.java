@@ -19,9 +19,7 @@
  */
 package org.iplass.mtp.webhook;
 
-import java.util.List;
 import java.util.Map;
-
 import org.iplass.mtp.Manager;
 
 /**
@@ -31,14 +29,11 @@ import org.iplass.mtp.Manager;
 public interface WebHookManager extends Manager {
 	
 	/** WebHookオブジェを取得（作る） */
-	List<WebHook> createWebHookList(String webHookDefinitionName, Map<String, Object> binding, List<String> endPointDefinitionNameList);
 	WebHook createWebHook(String webHookDefinitionName, Map<String, Object> binding, String endPointDefinitionName);
-	
+
 	/** 送る */
 	void sendWebHookAsync(WebHook wh);
 	void sendWebHookSync(WebHook wh);
-	void sendWebHookListSync(List<WebHook> webHook);
-	void sendWebHookListAsync(List<WebHook> webHook);
 
 	/** resultHandlerを取得（作る） */
 	WebHookResponseHandler getResponseHandler(String handlerName);

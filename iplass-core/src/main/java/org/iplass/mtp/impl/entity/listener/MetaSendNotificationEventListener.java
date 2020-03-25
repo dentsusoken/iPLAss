@@ -240,6 +240,7 @@ public class MetaSendNotificationEventListener extends MetaEventListener {
 		notificationCondScript = d.getNotificationCondScript();
 		resultHandler = d.getResultHandler();
 		notificationDestination = d.getNotificationDestination();
+		synchronous = d.isSynchronous();
 		if (d.getListenEvent() != null) {
 			listenEvent = new ArrayList<EventType>();
 			listenEvent.addAll(d.getListenEvent());
@@ -623,28 +624,32 @@ public class MetaSendNotificationEventListener extends MetaEventListener {
 		public SendWebHookNotificationEventListenerHandler(MetaEntity entity) {
 			super(entity);
 		}
-
 		@Override
 		protected Object createNotification(Entity entity, EventType type, EntityEventContext context) {
 			Map<String, Object> bindings = generateBindings(entity, type, context);
-			List<WebHook> wh = wm.createWebHookList(tmplDefName, bindings, endPointDefList);
-			WebHookResponseHandler whrh = wm.getResponseHandler(resultHandler);
-			for (WebHook webHook : wh) {
+			ArrayList<WebHook> webHookList = new ArrayList<WebHook>();
+			for (String endPoint : endPointDefList) {
+				WebHook webHook = wm.createWebHook(tmplDefName, bindings, endPoint);
+				WebHookResponseHandler whrh = wm.getResponseHandler(resultHandler);
 				webHook.setResultHandler(whrh);
+				webHookList.add(webHook);
 			}
-			return wh;
+			return webHookList;
 		}
 
 		@SuppressWarnings("unchecked")
 		@Override
-		protected void sendNotification(Object webHook) {
+		protected void sendNotification(Object webHookList) {
 			//call async and sync
 			if (synchronous) {
-				wm.sendWebHookListSync((List<WebHook>)webHook);
+				for (WebHook wh : (List<WebHook>)webHookList) {
+					wm.sendWebHookSync(wh);
+				}
 			} else {
-				wm.sendWebHookListAsync((List<WebHook>)webHook);
+				for (WebHook wh : (List<WebHook>)webHookList) {
+					wm.sendWebHookAsync(wh);
+				}
 			}
-			
 		}
 	}
 }
