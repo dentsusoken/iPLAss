@@ -78,6 +78,7 @@ public class WebHookEndPointEditPane extends MetaDataMainEditPane {
 	private final String BASIC_DISPLAY_NAME = "Basic Authentication";
 	private final String BEARER_DISPLAY_NAME = "Bearer Authentication";
 	private final String CUSTOM_DISPLAY_NAME = "Custom Authentication";
+	private final String NO_HEADER_AUTH_DISPLAY_NAME = "Disabled";
 	
 	//FIXME use enum?
 	private final String BASIC_TYPE_CODE = "WHBA";
@@ -327,7 +328,7 @@ public class WebHookEndPointEditPane extends MetaDataMainEditPane {
 
 			authTypeItemField = new SelectItem("tokenType","Token Type");
 			authTypeItemField.setWidth("100%");
-			authTypeItemField.setValueMap(BASIC_DISPLAY_NAME, BEARER_DISPLAY_NAME, CUSTOM_DISPLAY_NAME);
+			authTypeItemField.setValueMap(BASIC_DISPLAY_NAME, BEARER_DISPLAY_NAME, CUSTOM_DISPLAY_NAME, NO_HEADER_AUTH_DISPLAY_NAME);
 			authTypeItemField.addChangedHandler(new ChangedHandler() {
 				public void onChanged(ChangedEvent event) {
 					
@@ -338,6 +339,8 @@ public class WebHookEndPointEditPane extends MetaDataMainEditPane {
 						curDefinition.setHeaderAuthType(BEARER_TYPE_CODE);
 					}else if (CUSTOM_DISPLAY_NAME.equals(selectedValue)) {
 						curDefinition.setHeaderAuthType(CUSTOM_TYPE_CODE);
+					} else if (NO_HEADER_AUTH_DISPLAY_NAME.equals(selectedValue)) {
+						curDefinition.setHeaderAuthType(null);
 					}
 					refreshSecretIsStoredStatus(curDefinition.getHeaderAuthType());
 					toggleCustomHeaderName();
