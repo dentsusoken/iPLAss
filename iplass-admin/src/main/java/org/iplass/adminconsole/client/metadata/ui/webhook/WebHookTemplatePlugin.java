@@ -46,7 +46,7 @@ public class WebHookTemplatePlugin extends DefaultMetaDataPlugin {
 	private static final String NODE_NAME = "WebHookTemplate";
 
 	/** ノードアイコン */
-	private static final String NODE_ICON = "webhook.png";
+	private static final String NODE_ICON = "feed_edit.png";
 
 	@Override
 	protected String nodeName() {

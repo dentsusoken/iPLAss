@@ -20,7 +20,6 @@
 
 package org.iplass.adminconsole.shared.metadata.rpc;
 
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -471,11 +470,11 @@ public interface MetaDataServiceAsync {
 	/* ---------------------------------------
 	 * WebHook EndPoint Security Info
 	 --------------------------------------- */
-	public void updateWebEndPointSecurityInfo(final int tenantId, final String metaDataId, final String secret, final String TokenType,AsyncCallback<Void> callback);
+	public void updateWebHookEndPointSecurityInfo(final int tenantId, final String definitionName, final String secret, final String TokenType,AsyncCallback<Void> callback);
 
-	public void getWebEndPointSecurityInfo(final int tenantId, final String metaDataId, final String TokenType,AsyncCallback<String> callback);
-	
+	public void getWebHookEndPointSecurityInfo(final int tenantId, final String definitionName, final String TokenType,AsyncCallback<String> callback);
+
 	public void generateHmacTokenString(AsyncCallback<String> callback);
-	
-	public void getEndPointFullListWithUrl(final int tenantId, final AsyncCallback<HashMap<String, String>>callback);
+
+	public void getEndPointFullListWithUrl(final int tenantId, final AsyncCallback<Map<String, String>>callback);
 }

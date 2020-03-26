@@ -21,6 +21,7 @@ package org.iplass.mtp.impl.webhook.template;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.xml.bind.annotation.XmlRootElement;
@@ -36,16 +37,14 @@ import org.iplass.mtp.impl.script.template.GroovyTemplate;
 import org.iplass.mtp.impl.script.template.GroovyTemplateCompiler;
 import org.iplass.mtp.impl.util.ObjectUtil;
 import org.iplass.mtp.webhook.WebHook;
-import org.iplass.mtp.webhook.template.definition.WebHookHeader;
+import org.iplass.mtp.webhook.WebHookHeader;
+import org.iplass.mtp.webhook.template.definition.WebHookHeaderDefinition;
 import org.iplass.mtp.webhook.template.definition.WebHookTemplateDefinition;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 @XmlRootElement
 public class MetaWebHookTemplate extends BaseRootMetaData implements DefinableMetaData<WebHookTemplateDefinition> {
 
 	private static final long serialVersionUID = 6383360434482999137L;
-	private static Logger logger = LoggerFactory.getLogger(MetaWebHookTemplate.class);
 	
 	/** webHook 内容部分 */
 	private String contentType;
@@ -55,8 +54,7 @@ public class MetaWebHookTemplate extends BaseRootMetaData implements DefinableMe
 	private String addressUrl;
 	private String httpMethod;
 
-	private ArrayList<WebHookHeader> headers;
-	private String tokenHeader;
+	private List<MetaWebHookHeader> headers;
 	
 	private String urlQuery;
 
@@ -87,17 +85,20 @@ public class MetaWebHookTemplate extends BaseRootMetaData implements DefinableMe
 		
 		addressUrl = definition.getAddressUrl();
 		sender = definition.getSender();
-		tokenHeader = definition.getTokenHeader();
 		
 		httpMethod = definition.getHttpMethod();
 		synchronous = definition.isSynchronous();
 		urlQuery = definition.getUrlQuery();
 		
-		headers = definition.getHeaders();
-		
-		if (definition.getMetaDataId()!=this.getId()) {
-			logger.warn("Definition<->Meta id mismatch. template:"+definition.getMetaDataId()+"; Meta:"+this.getId()+"\n");
+		ArrayList<MetaWebHookHeader> newHeaders = new ArrayList<MetaWebHookHeader>();
+		if (definition.getHeaders()!=null) {
+			for (WebHookHeaderDefinition headerDefinition: definition.getHeaders()) {
+				MetaWebHookHeader temp = new MetaWebHookHeader();
+				temp.applyConfig(headerDefinition);
+				newHeaders.add(temp);
+			}
 		}
+		headers = newHeaders;
 	}
 
 
@@ -116,13 +117,17 @@ public class MetaWebHookTemplate extends BaseRootMetaData implements DefinableMe
 		
 		definition.setAddressUrl(addressUrl);
 		definition.setSender(sender);
-		definition.setTokenHeader(tokenHeader);
 
 		definition.setHttpMethod(httpMethod);
 		definition.setSynchronous(synchronous);
-
-		definition.setHeaders(headers);
-		definition.setMetaDataId(id);
+		
+		ArrayList<WebHookHeaderDefinition> newHeaders = new ArrayList<WebHookHeaderDefinition>();
+		if (headers!=null) {
+			for (MetaWebHookHeader metaHeader: headers) {
+				newHeaders.add(metaHeader.currentConfig());
+			}
+		}
+		definition.setHeaders(newHeaders);
 		
 		return definition;
 	}
@@ -152,22 +157,14 @@ public class MetaWebHookTemplate extends BaseRootMetaData implements DefinableMe
 		this.synchronous = synchronous;
 	}
 
-	public ArrayList<WebHookHeader> getHeaders() {
+	public List<MetaWebHookHeader> getHeaders() {
 		return headers;
 	}
 
-	public void setHeaders(ArrayList<WebHookHeader> headers) {
+	public void setHeaders(List<MetaWebHookHeader> headers) {
 		this.headers = headers;
 	}
-	
-	public String getTokenHeader() {
-		return tokenHeader;
-	}
 
-	public void setTokenHeader(String tokenHeader) {
-		this.tokenHeader = tokenHeader;
-	}
-	
 	public String getHttpMethod() {
 		return httpMethod;
 	}
@@ -195,6 +192,9 @@ public class MetaWebHookTemplate extends BaseRootMetaData implements DefinableMe
 	}
 
 	public String getUrlQuery() {
+		if (urlQuery == null) {
+			urlQuery = "";
+		}
 		return urlQuery;
 	}
 
@@ -207,18 +207,24 @@ public class MetaWebHookTemplate extends BaseRootMetaData implements DefinableMe
 	}
 
 	public class WebHookTemplateRuntime extends BaseMetaDataRuntime {
-
+		private GroovyTemplate contentTemplate;
+		private GroovyTemplate urlQueryTemplate;
+		
 		public WebHookTemplateRuntime() {
 			super();
 			try {
 				ScriptEngine se = ExecuteContext.getCurrentContext().getTenantContext().getScriptEngine();
 				contentTemplate = GroovyTemplateCompiler.compile(getWebHookContent(), "WebHookTemplate_Text" + getName(), (GroovyScriptEngine) se);
+				urlQueryTemplate = GroovyTemplateCompiler.compile(getUrlQuery(), "WebHookUrlQueryTemplate_Text" + getName(), (GroovyScriptEngine) se);
 			} catch (RuntimeException e) {
 				setIllegalStateException(e);
 			}
 		}
 
-		private GroovyTemplate contentTemplate;
+
+		public GroovyTemplate getUrlQueryTemplate() {
+			return urlQueryTemplate;
+		}
 		
 		public GroovyTemplate getContentTemplate() {
 			return contentTemplate;
@@ -234,8 +240,14 @@ public class MetaWebHookTemplate extends BaseRootMetaData implements DefinableMe
 			//fill up the info to webhooktemplate
 			WebHook webHook = new WebHook(); 
 			webHook.setName(name);
-			webHook.setHeaders(headers);
-			webHook.setTokenHeader(tokenHeader);
+			
+			ArrayList<WebHookHeader> newHeaders = new ArrayList<WebHookHeader>();
+			if (headers !=null) {
+				for (MetaWebHookHeader metaHeader: headers) {
+					newHeaders.add(new WebHookHeader(metaHeader.getKey(),metaHeader.getValue()));
+				}
+			}
+			webHook.setHeaders(newHeaders);
 			webHook.setHttpMethod(httpMethod);
 			webHook.setSynchronous(synchronous);
 			webHook.setContentType(contentType);
@@ -248,7 +260,6 @@ public class MetaWebHookTemplate extends BaseRootMetaData implements DefinableMe
 				}
 			}
 			webHook.setContentType(contentType);
-			webHook.setMetaDataId(id);
 			bindings.put("webHook", webHook);
 
 			//template

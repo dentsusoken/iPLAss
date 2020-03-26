@@ -31,7 +31,6 @@ import org.slf4j.LoggerFactory;
 
 /**
  * データベースでwebHookのパスワードや、トークンを管理するシークレットサービス
- * rdb使用です。
  * 
  * @author lisf06
  *
@@ -43,12 +42,12 @@ public class WebHookAuthTokenHandler extends AuthTokenHandler{
 	public static final String BASIC_AUTHENTICATION_TYPE = "WHBA";
 	public static final String BEARER_AUTHENTICATION_TYPE = "WHBT";
 	public static final String HMAC_AUTHENTICATION_TYPE = "WHHM";
-	
+	public static final String CUSTOM_AUTHENTICATION_TYPE = "WHCT";
 	public static final String TYPE_WEBHOOK_AUTHTOKEN_HANDLER="WEBHOOKATH";
 	@Override
 	protected Serializable createDetails(String seriesString, String tokenString, String userUniqueId,
 			String policyName, AuthTokenInfo tokenInfo) {
-		// TODO Auto-generated method stub
+		//使わないはず
 		return null;
 	}
 
@@ -129,6 +128,9 @@ public class WebHookAuthTokenHandler extends AuthTokenHandler{
 			return true;
 		}
 		if (HMAC_AUTHENTICATION_TYPE.equals(type)) {
+			return true;
+		}
+		if (CUSTOM_AUTHENTICATION_TYPE.equals(type)) {
 			return true;
 		}
 		//セキュリティ情報に関するDB交互なので、見送りはできない

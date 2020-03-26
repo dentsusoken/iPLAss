@@ -19,23 +19,27 @@
  */
 package org.iplass.mtp.webhook;
 
-import java.util.Map;
-import org.iplass.mtp.Manager;
-
-/**
- * @author lisf06
- *
- */
-public interface WebHookManager extends Manager {
+public class WebHookHeader {
+	private String key;
+	private String value;
 	
-	/** WebHookオブジェを取得（作る） */
-	WebHook createWebHook(String webHookDefinitionName, Map<String, Object> binding, String endPointDefinitionName);
-	WebHook getEmptyWebHook();
-
-	/** 送る */
-	void sendWebHookAsync(WebHook wh);
-	void sendWebHookSync(WebHook wh);
-
-	/** resultHandlerを取得（作る） */
-	WebHookResponseHandler getResponseHandler(String handlerName);
+	public WebHookHeader () {
+		
+	}
+	public WebHookHeader(String key, String value) {
+		this.key=key;
+		this.value=value;
+	}
+	public String getKey() {
+		return key;
+	}
+	public void setKey(String key) {
+		this.key = key;
+	}
+	public String getValue() {
+		return value;
+	}
+	public void setValue(String value) {
+		this.value = value;
+	}
 }

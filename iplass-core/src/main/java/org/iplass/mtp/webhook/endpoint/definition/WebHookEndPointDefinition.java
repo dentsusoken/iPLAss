@@ -17,14 +17,14 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
-package org.iplass.mtp.webhook.template.endpointaddress;
+package org.iplass.mtp.webhook.endpoint.definition;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
 import org.iplass.mtp.definition.Definition;
 
 @XmlRootElement
-public class WebEndPointDefinition implements Definition{
+public class WebHookEndPointDefinition implements Definition{
 
 	private static final long serialVersionUID = 8660365992932082923L;
 
@@ -32,18 +32,16 @@ public class WebEndPointDefinition implements Definition{
 	private String displayName;
 	private String description;
 	private String headerAuthType;
-	private String headerAuthTypeName;// 例：Authorizationヘッダーでbasic認証時、内容のbasic username:passwordのbasicをほかの名前にしたいなら
-
-	/** 固有id、metaのidと同じ内容になるはずです */
-	private String webEndPointId;
-
+	private String headerAuthCustomTypeName;// custom scheme Name
+	private String hmacHashHeader;//hmacの計算結果のヘッダー名
+	private boolean hmacEnabled;
 	/** 送り先 */
 	private String url;
 	
-	public WebEndPointDefinition() {
+	public WebHookEndPointDefinition() {
 	}
 	
-	public WebEndPointDefinition(String url) {
+	public WebHookEndPointDefinition(String url) {
 		this.url = url;
 	}
 
@@ -55,14 +53,6 @@ public class WebEndPointDefinition implements Definition{
 		this.url = url;
 	}
 	
-	public String getWebEndPointId() {
-		return webEndPointId;
-	}
-
-	public void setWebEndPointId(String webEndPointId) {
-		this.webEndPointId = webEndPointId;
-	}
-
 	public String getName() {
 		return name;
 	}
@@ -95,12 +85,28 @@ public class WebEndPointDefinition implements Definition{
 		this.headerAuthType = headerAuthType;
 	}
 	
-	public String getHeaderAuthTypeName() {
-		return headerAuthTypeName;
+	public String getHeaderAuthCustomTypeName() {
+		return headerAuthCustomTypeName;
 	}
 
-	public void setHeaderAuthTypeName(String headerAuthTypeName) {
-		this.headerAuthTypeName = headerAuthTypeName;
+	public void setHeaderAuthCustomTypeName(String headerAuthCustomTypeName) {
+		this.headerAuthCustomTypeName = headerAuthCustomTypeName;
+	}
+
+	public String getHmacHashHeader() {
+		return hmacHashHeader;
+	}
+
+	public void setHmacHashHeader(String hmacHashHeader) {
+		this.hmacHashHeader = hmacHashHeader;
+	}
+
+	public boolean isHmacEnabled() {
+		return hmacEnabled;
+	}
+
+	public void setHmacEnabled(boolean hmacEnabled) {
+		this.hmacEnabled = hmacEnabled;
 	}
 
 }

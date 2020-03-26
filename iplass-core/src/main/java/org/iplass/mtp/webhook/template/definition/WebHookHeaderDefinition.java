@@ -17,21 +17,34 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
-package org.iplass.mtp.webhook.template.endpointaddress;
+package org.iplass.mtp.webhook.template.definition;
 
-import java.util.List;
+import java.io.Serializable;
 
-import org.iplass.mtp.definition.TypedDefinitionManager;
-import org.iplass.mtp.impl.webhook.endpointaddress.MetaWebEndPointDefinition.WebEndPointRuntime;
+public class WebHookHeaderDefinition implements Serializable {
+	
+	private static final long serialVersionUID = 3511112860153636065L;
+	
+	private String key;
+	private String value;
 
-public interface WebEndPointDefinitionManager extends TypedDefinitionManager<WebEndPointDefinition> {
-
-	void modifySecurityToken(int tenantId,String metaDataId, String secret, String TokenType);
-
-	public String getSecurityToken(int tenantId, String metaDataId, String TokenType);
-
-	public String generateHmacTokenString();
-
-	List<WebEndPointRuntime> generateRuntimeInstanceList(List<String> endPointDefList);
-
+	public WebHookHeaderDefinition () {
+		
+	}
+	public WebHookHeaderDefinition(String key, String value) {
+		this.key=key;
+		this.value=value;
+	}
+	public String getKey() {
+		return key;
+	}
+	public void setKey(String key) {
+		this.key = key;
+	}
+	public String getValue() {
+		return value;
+	}
+	public void setValue(String value) {
+		this.value = value;
+	}
 }

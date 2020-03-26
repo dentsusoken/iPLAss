@@ -225,11 +225,10 @@ public class EventListenerListGrid extends ListGrid {
 			record.setGeneralPurpus(snDef.getNotificationType().name());
 			record.setTmplDefName(snDef.getTmplDefName());
 			record.setNotificationCondScript(snDef.getNotificationCondScript());
-			record.setNotificationDestination(snDef.getNotificationDestination());
-			
-			record.setIsSyncrhonous(snDef.getIsSynchronous());
-			record.setWebEndPointList(snDef.getEndPointDefList());
-			record.setWebHookResultHandler(snDef.getWebHookResultHandlerDef());
+
+			record.setSyncrhonous(snDef.isSynchronous());
+			record.setWebHookEndPointList(snDef.getEndPointDefList());
+			record.setWebHookResultHandler(snDef.getResultHandler());
 
 			List<EventType> lstEType = snDef.getListenEvent();
 			if (lstEType != null) {
@@ -315,11 +314,14 @@ public class EventListenerListGrid extends ListGrid {
 				snDef.setNotificationType(SendNotificationType.valueOf(record.getNotificationType()));
 				snDef.setTmplDefName(record.getTmplDefName());
 				snDef.setNotificationCondScript(record.getNotificationCondScript());
-				snDef.setNotificationDestination(record.getNotificationDestination());
 
-				snDef.setIsSynchronous(record.isSyncrhonous());
-				snDef.setEndPointDefList(record.getWebEndPointList());
-				snDef.setWebHookResultHandlerDef(record.getWebHookResultHandler());
+				snDef.setSynchronous(record.isSyncrhonous());
+				snDef.setEndPointDefList(record.getWebHookEndPointList());
+				snDef.setResultHandler(record.getWebHookResultHandler());
+
+				snDef.setSynchronous(record.isSyncrhonous());
+				snDef.setEndPointDefList(record.getWebHookEndPointList());
+				snDef.setResultHandler(record.getWebHookResultHandler());
 
 				List<EventType> lstEType = new ArrayList<EventType>();
 				if (record.isNotifyAfterD()) { lstEType.add(EventType.AFTER_DELETE); }
@@ -399,19 +401,12 @@ public class EventListenerListGrid extends ListGrid {
 		private DynamicForm sendNotificationForm;
 		private SelectItem notificationTypeItem;
 		private SelectItem tmplDefNameItem;
-		
 		//webhook
 		private VLayout webhookLayout;
 		private DynamicForm webHookSettingsForm;
 		private CheckboxItem webHookIsSynchronousItem;
-		private TextItem webHookResultHandlerItem;
+		private TextItem notificationResultHandlerItem;
 		private WebHookEndPointGrid webHookEndPointGrid;
-
-		//"toAddress". text item for mail/sms, text area for push
-		private DynamicForm notificationDestinationForm;
-		private TextItem notificationDestinationItem;
-		private DynamicForm notificationDestinationAreaForm;
-		private TextAreaItem notificationDestinationArea;
 
 		//NotificationCondition
 		private DynamicForm notificationCondForm;
@@ -588,58 +583,15 @@ public class EventListenerListGrid extends ListGrid {
 			sendNotificationForm.setItems(notificationTypeItem, tmplDefNameItem);
 			
 			//---------------------------------
-			//toAddress
-			//---------------------------------
-			notificationDestinationForm = new MtpForm();
-			notificationDestinationForm.setHeight(25);
-			notificationDestinationItem = new MtpTextItem();
-			notificationDestinationItem.setTitle("Destination");
-			notificationDestinationForm.setItems(notificationDestinationItem);
-			
-			notificationDestinationAreaForm = new MtpForm();
-			notificationDestinationAreaForm .setHeight(150);
-			notificationDestinationArea = new MtpTextAreaItem();
-			notificationDestinationArea.setHeight("*");
-			notificationDestinationArea.setTitle("Destination");
-			notificationDestinationArea.setColSpan(2);
-			SmartGWTUtil.setReadOnlyTextArea(notificationDestinationArea);
-			
-			ButtonItem editDestinationButton = new ButtonItem("editDestinationButton", "editDestination");
-			editDestinationButton.setWidth(100);
-			editDestinationButton.setStartRow(false);
-			editDestinationButton.setColSpan(3);
-			editDestinationButton.setAlign(Alignment.RIGHT);
-			editDestinationButton.addClickHandler(new com.smartgwt.client.widgets.form.fields.events.ClickHandler() {
-				@Override
-				public void onClick(com.smartgwt.client.widgets.form.fields.events.ClickEvent event) {
-					MetaDataUtil.showScriptEditDialog(ScriptEditorDialogMode.GROOVY_SCRIPT,
-							SmartGWTUtil.getStringValue(notificationDestinationArea),
-							ScriptEditorDialogCondition.ENTITY_EVENT_LISTNER,
-							"ui_metadata_entity_EventListenerListGrid_notificationDestinationScriptHint",
-							null,
-							new ScriptEditorDialogHandler() {
-								@Override
-								public void onSave(String text) {
-									notificationDestinationArea.setValue(text);
-								}
-								@Override
-								public void onCancel() {
-								}
-							});
-				}
-			});
-			notificationDestinationAreaForm.setItems(editDestinationButton, notificationDestinationArea);
-			
-			//---------------------------------
 			//WebHook
 			//---------------------------------
 			webhookLayout = new VLayout();
 			webhookLayout.setWidth("100%");
 			webHookSettingsForm = new MtpForm();
 			webHookSettingsForm.setNumCols(2);
-			webHookResultHandlerItem = new TextItem("webHookResultHandler","ResuleHandlerImplClassName");
-			webHookResultHandlerItem.setWidth(575);
-			webHookSettingsForm.setItems(webHookResultHandlerItem);
+			notificationResultHandlerItem = new TextItem("ResultHandler","ResuleHandlerImplClassName");
+			notificationResultHandlerItem.setWidth(575);
+			webHookSettingsForm.setItems(notificationResultHandlerItem);
 			
 			webHookIsSynchronousItem = new CheckboxItem("webHookIsSynchronous","Synchronous");
 			webHookIsSynchronousItem.setShowTitle(false);
@@ -804,7 +756,7 @@ public class EventListenerListGrid extends ListGrid {
 			notificationTypeMap.put(SendNotificationType.MAIL.name(), SendNotificationType.MAIL.displayName());
 			notificationTypeMap.put(SendNotificationType.SMS.name(), SendNotificationType.SMS.displayName());
 			notificationTypeMap.put(SendNotificationType.PUSH.name(), SendNotificationType.PUSH.displayName());
-			notificationTypeMap.put(SendNotificationType.WEBHOOK.name(), SendNotificationType.WEBHOOK.displayName());
+//			notificationTypeMap.put(SendNotificationType.WEBHOOK.name(), SendNotificationType.WEBHOOK.displayName());
 			notificationTypeItem.setValueMap(notificationTypeMap);
 
 			notificationTypeItem.setValue(target.getNotificationType());
@@ -822,14 +774,9 @@ public class EventListenerListGrid extends ListGrid {
 			notifyBeforeValidateItem.setValue(target.isNotifyBeforeValidate());
 			
 			webHookIsSynchronousItem.setValue(target.isSyncrhonous());
-			webHookResultHandlerItem.setValue(target.getWebHookResultHandler());
-			webHookEndPointGrid.initializeGrid(target.getWebEndPointList(), false);
-
-			if(SendNotificationType.MAIL.name().equals(target.getNotificationType())||SendNotificationType.SMS.name().equals(target.getNotificationType())) {
-				notificationDestinationItem.setValue(target.getNotificationDestination());
-			} else if (SendNotificationType.PUSH.name().equals(target.getNotificationType())) {
-				notificationDestinationArea.setValue(target.getNotificationDestination());
-			}
+			notificationResultHandlerItem.setValue(target.getWebHookResultHandler());
+			
+			webHookEndPointGrid.initializeGrid(target.getWebHookEndPointList(), false);
 			withoutMappedByReferenceItem.setValue(target.isWithoutMappedByReference());
 			
 			//既にnotificationTypeがあったらtemplateの選択肢もロードします
@@ -872,12 +819,6 @@ public class EventListenerListGrid extends ListGrid {
 			if (typeLayout.contains(webhookLayout)) {
 				typeLayout.removeMember(webhookLayout);
 			}
-			if (typeLayout.contains(notificationDestinationForm)) {
-				typeLayout.removeMember(notificationDestinationForm);
-			}
-			if (typeLayout.contains(notificationDestinationAreaForm)) {
-				typeLayout.removeMember(notificationDestinationAreaForm);
-			}
 
 			String selectValType = SmartGWTUtil.getStringValue(typeItem);
 			if (SCRIPT.equals(selectValType)) {
@@ -898,15 +839,15 @@ public class EventListenerListGrid extends ListGrid {
 					if (notificationTypeItem.getValueAsString().equals(SendNotificationType.WEBHOOK.name())) {
 						typeLayout.addMember(webhookLayout);
 						setHeight(800);
-					} else if (notificationTypeItem.getValueAsString().equals(SendNotificationType.PUSH.name())) {
-						typeLayout.addMember(notificationDestinationAreaForm);
-						setHeight(650);
-					} else {
-						typeLayout.addMember(notificationDestinationForm);
-						setHeight(500);
 					}
 				}
 				typeLayout.addMember(notificationCondForm);
+				if (notificationTypeItem.getValueAsString()!=null) {
+					if (notificationTypeItem.getValueAsString().equals(SendNotificationType.WEBHOOK.name())) {
+						typeLayout.addMember(webhookLayout);
+						setHeight(800);
+					}
+				}
 				typeLayout.addMember(notifyEventItemForm);
 				typeLayout.addMember(withoutMappedByReferenceItemForm);
 				
@@ -972,16 +913,6 @@ public class EventListenerListGrid extends ListGrid {
 					}
 				}
 			}
-			if (typeLayout.contains(notificationDestinationForm)) {
-				if (!notificationDestinationForm.validate()) {
-					isValidate = false;
-				}
-			}
-			if (typeLayout.contains(notificationDestinationAreaForm)) {
-				if (!notificationDestinationAreaForm.validate()) {
-					isValidate = false;
-				}
-			}
 			return isValidate;
 		}
 
@@ -1011,13 +942,6 @@ public class EventListenerListGrid extends ListGrid {
 				target.setGeneralPurpus(SmartGWTUtil.getStringValue(notificationTypeItem));
 				target.setNotificationCondScript(SmartGWTUtil.getStringValue(notificationCondScriptItem));
 				
-				if (SendNotificationType.PUSH.name().equals(SmartGWTUtil.getStringValue(notificationTypeItem))) {
-					target.setNotificationDestination(SmartGWTUtil.getStringValue(notificationDestinationArea));
-				} else if (SendNotificationType.SMS.name().equals(SmartGWTUtil.getStringValue(notificationTypeItem))
-						||SendNotificationType.MAIL.name().equals(SmartGWTUtil.getStringValue(notificationTypeItem))) {
-					target.setNotificationDestination(SmartGWTUtil.getStringValue(notificationDestinationItem));
-				}
-
 				target.setNotifyAfterD(SmartGWTUtil.getBooleanValue(notifyAfterDItem));
 				target.setNotifyAfterI(SmartGWTUtil.getBooleanValue(notifyAfterIItem));
 				target.setNotifyAfterU(SmartGWTUtil.getBooleanValue(notifyAfterUItem));
@@ -1028,8 +952,8 @@ public class EventListenerListGrid extends ListGrid {
 				target.setNotifyAfterP(SmartGWTUtil.getBooleanValue(notifyAfterPItem));
 				target.setNotifyOnLoad(SmartGWTUtil.getBooleanValue(notifyOnLoadItem));
 				target.setNotifyBeforeValidate(SmartGWTUtil.getBooleanValue(notifyBeforeValidateItem));
-				target.setWebHookResultHandler(SmartGWTUtil.getStringValue(webHookResultHandlerItem));
-				target.setIsSyncrhonous(SmartGWTUtil.getBooleanValue(webHookIsSynchronousItem));
+				target.setWebHookResultHandler(SmartGWTUtil.getStringValue(notificationResultHandlerItem));
+				target.setSyncrhonous(SmartGWTUtil.getBooleanValue(webHookIsSynchronousItem));
 			}
 			target.setWithoutMappedByReference(SmartGWTUtil.getBooleanValue(withoutMappedByReferenceItem));
 			updateData(target);
@@ -1037,7 +961,7 @@ public class EventListenerListGrid extends ListGrid {
 		}
 
 		private void webHookEndPointEditMap() {
-			List<String> tempList = target.getWebEndPointList();
+			List<String> tempList = target.getWebHookEndPointList();
 			if (tempList==null) {
 				tempList = new ArrayList<String>();
 			}
@@ -1054,8 +978,8 @@ public class EventListenerListGrid extends ListGrid {
 					} else {
 						tempList = new ArrayList<String>(tempMap.keySet());
 					}
-					target.setWebEndPointList(tempList);
-					webHookEndPointGrid.setData(webHookEndPointGrid.createWebEndPointRecord(tempMap,(ArrayList<String>)target.getWebEndPointList(),false));
+					target.setWebHookEndPointList(tempList);
+					webHookEndPointGrid.setData(webHookEndPointGrid.createWebHookEndPointRecord(tempMap,(ArrayList<String>)target.getWebHookEndPointList(),false));
 					webHookEndPointGrid.markForRedraw();
 					endPointDialog.destroy();
 				}
@@ -1084,25 +1008,25 @@ public class EventListenerListGrid extends ListGrid {
 			}
 
 			private void initializeGrid(List<String> endPontNameList, boolean isEdit) {
-				metaDataService.getEndPointFullListWithUrl(TenantInfoHolder.getId(), new AsyncCallback<HashMap<String,String>>() {
+				metaDataService.getEndPointFullListWithUrl(TenantInfoHolder.getId(), new AsyncCallback<Map<String,String>>() {
 
 					@Override
 					public void onFailure(Throwable caught) {
-						GWT.log("Failed to fetch WebEndPointData.", caught);
+						GWT.log("Failed to fetch WebHookEndPointData.", caught);
 					}
 					@Override
-					public void onSuccess(HashMap<String, String> result) {
+					public void onSuccess(Map<String, String> result) {
 						if(isEdit) {
 							WebHookEndPointGrid.this.setFields(endPointSelectedField,endPointNameField,endPointUrlField);
 						} else {
 							WebHookEndPointGrid.this.setFields(endPointNameField,endPointUrlField);
 						}
-						WebHookEndPointGrid.this.setData(createWebEndPointRecord(result,endPontNameList,isEdit));
+						WebHookEndPointGrid.this.setData(createWebHookEndPointRecord(result,endPontNameList,isEdit));
 						WebHookEndPointGrid.this.markForRedraw();
 					}
 				});
 			}
-			private ListGridRecord[] createWebEndPointRecord(HashMap<String,String> result, List<String> endPontNameList, boolean isEdit) {
+			private ListGridRecord[] createWebHookEndPointRecord(Map<String,String> result, List<String> endPontNameList, boolean isEdit) {
 				if (isEdit) {
 					if (result!=null) {
 						ListGridRecord[] temp= new ListGridRecord[result.size()];

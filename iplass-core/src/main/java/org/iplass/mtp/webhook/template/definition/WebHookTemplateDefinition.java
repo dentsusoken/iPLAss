@@ -20,6 +20,8 @@
 package org.iplass.mtp.webhook.template.definition;
 
 import java.util.ArrayList;
+import java.util.List;
+
 import javax.xml.bind.annotation.XmlRootElement;
 import org.iplass.mtp.definition.Definition;
 
@@ -27,7 +29,6 @@ import org.iplass.mtp.definition.Definition;
 public class WebHookTemplateDefinition implements Definition {
 
 	private static final long serialVersionUID = 4835431145639526016L;
-	private String metaDataId;
 	
 	private String name;
 	private String displayName;
@@ -41,13 +42,12 @@ public class WebHookTemplateDefinition implements Definition {
 
 	private String sender;
 	private String addressUrl;
-	private String tokenHeader;//セキュリテぃトークンのヘッダー名を設置
 	private String httpMethod;
 
-	private Boolean synchronous;
+	private boolean synchronous;
 
 	/** headers */
-	private ArrayList<WebHookHeader> headers;
+	private List<WebHookHeaderDefinition> headers;
 	
 	public WebHookTemplateDefinition() {
 	}
@@ -98,50 +98,30 @@ public class WebHookTemplateDefinition implements Definition {
 		this.description = description;
 	}
 
-	public Boolean isSynchronous() {
-		if (synchronous == null) {
-			return false;
-		}
-		
+	public boolean isSynchronous() {
 		return synchronous;
 	}
 
-	public void setSynchronous(Boolean synchronous) {
+	public void setSynchronous(boolean synchronous) {
 		this.synchronous = synchronous;
 	}
 	
-	public ArrayList<WebHookHeader> getHeaders() {
+	public List<WebHookHeaderDefinition> getHeaders() {
 		if (headers==null) {
-			this.headers = new ArrayList<WebHookHeader>();
+			this.headers = new ArrayList<WebHookHeaderDefinition>();
 		}
 		return headers;
 	}
 
-	public void setHeaders(ArrayList<WebHookHeader> headers) {
+	public void setHeaders(List<WebHookHeaderDefinition> headers) {
 		this.headers = headers;
 	}
 	
-	public void addHeaders(WebHookHeader entry) {
+	public void addHeaders(WebHookHeaderDefinition entry) {
 		if (headers == null) {
-			headers = new ArrayList<WebHookHeader>();
+			headers = new ArrayList<WebHookHeaderDefinition>();
 		}
 		this.headers.add(entry);
-	}
-	
-	public String getMetaDataId() {
-		return metaDataId;
-	}
-
-	public void setMetaDataId(String id) {
-		this.metaDataId = id;
-	}
-	
-	public String getTokenHeader() {
-		return tokenHeader;
-	}
-
-	public void setTokenHeader(String tokenHeader) {
-		this.tokenHeader = tokenHeader;
 	}
 	
 	public String getHttpMethod() {

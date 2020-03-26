@@ -17,11 +17,11 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
-package org.iplass.mtp.impl.webhook.responsehandler;
+package org.iplass.mtp.webhook.responsehandler;
 
 import org.iplass.mtp.webhook.WebHookResponseHandler;
-import org.iplass.mtp.webhook.template.definition.WebHookHeader;
-import org.iplass.mtp.impl.webhook.WebHookResponse;
+import org.iplass.mtp.webhook.WebHookHeader;
+import org.iplass.mtp.webhook.WebHookResponse;
 import org.iplass.mtp.impl.webhook.WebHookServiceImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

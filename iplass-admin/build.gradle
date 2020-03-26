@@ -224,8 +224,8 @@ task copyGwtTransSrc(type: Sync) {
 
 		include 'mtp/webhook/template/definition/WebHookSubscriber.java'
 		include 'mtp/webhook/template/definition/WebHookTemplateDefinition.java'
-		include 'mtp/webhook/template/definition/WebHookHeader.java'
-		include 'mtp/webhook/template/endpointaddress/WebEndPointDefinition.java'
+		include 'mtp/webhook/template/definition/WebHookHeaderDefinition.java'
+		include 'mtp/webhook/endpoint/definition/WebHookEndPointDefinition.java'
 
 		include 'mtp/message/MessageCategory.java'
 		include 'mtp/message/MessageItem.java'

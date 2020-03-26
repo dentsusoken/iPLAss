@@ -27,7 +27,7 @@ import org.iplass.adminconsole.client.base.event.DataChangedHandler;
 import org.iplass.adminconsole.client.base.ui.widget.MtpDialog;
 import org.iplass.adminconsole.client.base.ui.widget.form.MtpForm2Column;
 import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
-import org.iplass.mtp.webhook.template.definition.WebHookHeader;
+import org.iplass.mtp.webhook.template.definition.WebHookHeaderDefinition;
 import com.smartgwt.client.widgets.IButton;
 import com.smartgwt.client.widgets.form.DynamicForm;
 import com.smartgwt.client.widgets.form.fields.TextItem;
@@ -40,16 +40,16 @@ import com.smartgwt.client.widgets.layout.VLayout;
 public class WebHookHeaderDialog extends MtpDialog {
 	private HeaderAttributePane headerAttrEditPane;
 	
-	private WebHookHeader curHeaderDefinition;
+	private WebHookHeaderDefinition curHeaderDefinition;
 	
 	/** データ変更ハンドラ */
 	private List<DataChangedHandler> handlers = new ArrayList<DataChangedHandler>();
 	
 	
-	public WebHookHeaderDialog(WebHookHeader headerDefinition) {
+	public WebHookHeaderDialog(WebHookHeaderDefinition headerDefinition) {
 		curHeaderDefinition = headerDefinition;
 		if (curHeaderDefinition==null) {
-			curHeaderDefinition = new WebHookHeader();
+			curHeaderDefinition = new WebHookHeaderDefinition();
 		}
 		
 		setTitle("Header Editor");
@@ -64,7 +64,7 @@ public class WebHookHeaderDialog extends MtpDialog {
 		IButton save = new IButton("Save");
 		save.addClickHandler(new com.smartgwt.client.widgets.events.ClickHandler() {
 			public void onClick(com.smartgwt.client.widgets.events.ClickEvent event) {
-				WebHookHeader definition = curHeaderDefinition;
+				WebHookHeaderDefinition definition = curHeaderDefinition;
 				if (headerAttrEditPane.isHeaderNameFieldEmpty()) {
 					//SC.warn(AdminClientMessageUtil.getString("ui_metadata_webhook_WebHookTemplateEditPane_emptyHeaderKey")); もうpaneレベルでheader null チェックはいらないかな
 					return;
@@ -101,7 +101,7 @@ public class WebHookHeaderDialog extends MtpDialog {
 		}
 		
 		/** definition -> dialog */
-		public void setDefinition(WebHookHeader _curHeaderDefinition) {
+		public void setDefinition(WebHookHeaderDefinition _curHeaderDefinition) {
 			if ( _curHeaderDefinition!=null) {
 				headerNameField.setValue(_curHeaderDefinition.getKey());
 				headerValueField.setValue(_curHeaderDefinition.getValue());
@@ -112,7 +112,7 @@ public class WebHookHeaderDialog extends MtpDialog {
 		}
 		
 		/** dialog -> definition */
-		public WebHookHeader getEditDefinition(WebHookHeader curHeaderDefinition){
+		public WebHookHeaderDefinition getEditDefinition(WebHookHeaderDefinition curHeaderDefinition){
 			curHeaderDefinition.setKey((SmartGWTUtil.getStringValue(headerNameField)).replaceAll("\\s+",""));
 			curHeaderDefinition.setValue((SmartGWTUtil.getStringValue(headerValueField)).replaceAll("\\s+",""));
 			return curHeaderDefinition;
@@ -137,7 +137,7 @@ public class WebHookHeaderDialog extends MtpDialog {
 	/**
 	 * データ変更通知処理
 	 */
-	private void fireDataChanged(WebHookHeader paramMap) {
+	private void fireDataChanged(WebHookHeaderDefinition paramMap) {
 		DataChangedEvent event = new DataChangedEvent();
 		event.setValueObject(paramMap);
 		for (DataChangedHandler handler : handlers) {

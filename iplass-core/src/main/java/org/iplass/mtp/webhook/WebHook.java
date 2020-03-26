@@ -23,10 +23,7 @@
  */
 package org.iplass.mtp.webhook;
 
-import java.util.ArrayList;
 import java.util.List;
-import org.iplass.mtp.impl.webhook.endpointaddress.MetaWebEndPointDefinition.WebEndPointRuntime;
-import org.iplass.mtp.webhook.template.definition.WebHookHeader;
 
 /**
  * @author lisf06
@@ -39,45 +36,34 @@ public class WebHook  {
 
 	/** 送る内容 */
 	private String contentType;
+	private String payloadContent;
 	
 	/** 送るメソッド */
 	private String httpMethod;
 
-	private List<WebEndPointRuntime> webHookEndPointRuntimeList;
-
 	private WebHookResponseHandler resultHandler;
-	String urlQuery;
+	private String urlQuery;
 	private String headerAuthTypeName;
 
 	/** headers */
-	private ArrayList<WebHookHeader> headers;
-	private String tokenHeader;
-	
+	private List<WebHookHeader> headers;
+	private String hmacHashHeader;
+
+	/**WebHookEndPointだったもの*/
+	private String url;
+	private String endPointName;
 
 	//---------------------------------
 	/**　同期非同期　*/
 	private boolean synchronous;
-	
 	/**
 	 * 記録用
 	 * */
 	private String TemplateName;
-	
-	/**
-	 * ｄｂ接続用
-	 * */
-	private String metaDataId;
-	
+
 	/** 記録用のid */
 	private int webHookId;
 	//----------------------------------
-	public String getMetaDataId() {
-		return metaDataId;
-	}
-
-	public void setMetaDataId(String metaDataId) {
-		this.metaDataId = metaDataId;
-	}
 
 	public String getTemplateName() {
 		if (TemplateName == null) {
@@ -114,22 +100,25 @@ public class WebHook  {
 		this.webHookId = webHookId;
 	}
 
-	public ArrayList<WebHookHeader> getHeaders() {
+	public List<WebHookHeader> getHeaders() {
 		return headers;
 	}
 
-	public void setHeaders(ArrayList<WebHookHeader> headers) {
+	public void setHeaders(List<WebHookHeader> headers) {
 		this.headers = headers;
 	}
 	
-	public String getTokenHeader() {
-		return tokenHeader;
+	public void addHeader(WebHookHeader header) {
+		headers.add(header);
 	}
 
-	public void setTokenHeader(String tokenHeader) {
-		this.tokenHeader = tokenHeader;
+	public String getHmacHashHeader() {
+		return hmacHashHeader;
 	}
-	
+
+	public void setHmacHashHeader(String tokenHeader) {
+		this.hmacHashHeader = tokenHeader;
+	}
 	public String getHttpMethod() {
 		return httpMethod;
 	}
@@ -152,7 +141,6 @@ public class WebHook  {
 	public void setUrlQuery(String urlQuery) {
 		this.urlQuery = urlQuery;
 	}
-	
 	public String getHeaderAuthTypeName() {
 		return headerAuthTypeName;
 	}
@@ -160,7 +148,6 @@ public class WebHook  {
 	public void setHeaderAuthTypeName(String headerAuthTypeName) {
 		this.headerAuthTypeName = headerAuthTypeName;
 	}
-	
 	public WebHookResponseHandler getResultHandler() {
 		return resultHandler;
 	}
@@ -169,12 +156,28 @@ public class WebHook  {
 		this.resultHandler = resultHandler;
 	}
 
-	public List<WebEndPointRuntime> getWebHookEndPointRuntimeList() {
-		return webHookEndPointRuntimeList;
+	public String getPayloadContent() {
+		return payloadContent;
 	}
 
-	public void setWebHookEndPointRuntimeList(List<WebEndPointRuntime> webHookEndPointRuntimeList) {
-		this.webHookEndPointRuntimeList = webHookEndPointRuntimeList;
+	public void setPayloadContent(String payloadContent) {
+		this.payloadContent = payloadContent;
+	}
+
+	public String getUrl() {
+		return url;
+	}
+
+	public void setUrl(String url) {
+		this.url = url;
+	}
+
+	public String getEndPointName() {
+		return endPointName;
+	}
+
+	public void setEndPointName(String endPointName) {
+		this.endPointName = endPointName;
 	}
 
 }

@@ -53,10 +53,9 @@ public class EventListenerListGridRecord extends ListGridRecord {
 	public static final String NAFTERP = "notifyAfterP";
 	public static final String NONLOAD = "notifyOnLoad";
 	public static final String NBEFOREVALIDATE = "notifyBeforeValidate";
-	public static final String WEBENDPOINTLIST="webEndPointList";
+	public static final String WEBHOOKENDPOINTLIST="webHookEndPointList";
 	public static final String WEBHOOKRESULTHANLDER="webHookResultHandler";
-	public static final String ISSYNCHRONOUS="isSyncrhonous";
-	public static final String NOTIFICATIONDESTINATION="notificationDestination";
+	public static final String SYNCHRONOUS="syncrhonous";
 
 	public static final String GP = "gp";
 
@@ -284,13 +283,13 @@ public class EventListenerListGridRecord extends ListGridRecord {
 		setAttribute(GP, value);
 	}
 	
-	public void setWebEndPointList(List<String> webEndPointList) {
-		setAttributeAsJavaObject(WEBENDPOINTLIST, webEndPointList);
+	public void setWebHookEndPointList(List<String> webHookEndPointList) {
+		setAttributeAsJavaObject(WEBHOOKENDPOINTLIST, webHookEndPointList);
 	}
 	
 	@SuppressWarnings("unchecked")
-	public List<String> getWebEndPointList(){
-		return (List<String>) getAttributeAsObject(WEBENDPOINTLIST);
+	public List<String> getWebHookEndPointList(){
+		return (List<String>) getAttributeAsObject(WEBHOOKENDPOINTLIST);
 	}
 	
 	public void setWebHookResultHandler(String webHookResultHandler) {
@@ -300,19 +299,12 @@ public class EventListenerListGridRecord extends ListGridRecord {
 	public String getWebHookResultHandler(){
 		return getAttribute(WEBHOOKRESULTHANLDER);
 	}
-	
-	public void setNotificationDestination(String notificationDestination) {
-		setAttribute(NOTIFICATIONDESTINATION, notificationDestination);
-	}
-	
-	public String getNotificationDestination(){
-		return getAttribute(NOTIFICATIONDESTINATION);
-	}
-	public void setIsSyncrhonous(boolean value) {
-		setAttribute(ISSYNCHRONOUS, value);
+
+	public void setSyncrhonous(boolean value) {
+		setAttribute(SYNCHRONOUS, value);
 	}
 
 	public boolean isSyncrhonous() {
-		return getAttributeAsBoolean(ISSYNCHRONOUS);
+		return getAttributeAsBoolean(SYNCHRONOUS);
 	}
 }

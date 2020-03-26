@@ -21,7 +21,7 @@ package org.iplass.mtp.impl.webhook.template;
 
 import org.iplass.mtp.impl.metadata.MetaData;
 import org.iplass.mtp.impl.util.ObjectUtil;
-import org.iplass.mtp.webhook.template.definition.WebHookHeader;
+import org.iplass.mtp.webhook.template.definition.WebHookHeaderDefinition;
 
 /**
  * @author lisf06
@@ -64,13 +64,13 @@ public class MetaWebHookHeader implements MetaData {
 	}
 	
 	//Definition → Meta
-	public void applyConfig (WebHookHeader definition) {
+	public void applyConfig (WebHookHeaderDefinition definition) {
 		this.key = definition.getKey();
 		this.Value = definition.getValue();
 	}
 	//Meta → Definition
-	public WebHookHeader currentConfig() {
-		WebHookHeader definition = new WebHookHeader();
+	public WebHookHeaderDefinition currentConfig() {
+		WebHookHeaderDefinition definition = new WebHookHeaderDefinition();
 		definition.setKey(this.key);
 		definition.setValue(this.Value);
 		return definition;

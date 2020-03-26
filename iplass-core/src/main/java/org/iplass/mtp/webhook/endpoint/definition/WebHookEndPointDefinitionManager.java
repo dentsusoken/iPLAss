@@ -17,25 +17,13 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
-package org.iplass.mtp.webhook;
+package org.iplass.mtp.webhook.endpoint.definition;
 
-import java.util.Map;
-import org.iplass.mtp.Manager;
+import org.iplass.mtp.definition.TypedDefinitionManager;
 
-/**
- * @author lisf06
- *
- */
-public interface WebHookManager extends Manager {
-	
-	/** WebHookオブジェを取得（作る） */
-	WebHook createWebHook(String webHookDefinitionName, Map<String, Object> binding, String endPointDefinitionName);
-	WebHook getEmptyWebHook();
+public interface WebHookEndPointDefinitionManager extends TypedDefinitionManager<WebHookEndPointDefinition> {
 
-	/** 送る */
-	void sendWebHookAsync(WebHook wh);
-	void sendWebHookSync(WebHook wh);
+	void modifySecurityToken(int tenantId,String definitionName, String secret, String TokenType);
 
-	/** resultHandlerを取得（作る） */
-	WebHookResponseHandler getResponseHandler(String handlerName);
+	String generateHmacKey();
 }
