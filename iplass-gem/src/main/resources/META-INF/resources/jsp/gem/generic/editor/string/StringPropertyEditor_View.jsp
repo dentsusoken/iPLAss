@@ -145,6 +145,26 @@ $(function() {
 <%} else {%>
 	var opt = { readOnly: true, allowedContent:<%=allowedContent%> };
 <%}%>
+
+<% if (editor.isHideRichtextEditorToolBar()) { %>
+	var parent = $("textarea[name='<%=StringUtil.escapeJavaScript(propName)%>']").parent().hide();
+	var readyOpt = {
+		on: {
+			instanceReady: function (evt) {
+				var id = evt.editor.id;
+				var contents = $("#cke_<%=StringUtil.escapeJavaScript(propName)%>").hide().find("#" + id + "_contents");
+				var preview = $("<iframe id='preview_<%=StringUtil.escapeJavaScript(propName)%>' style='width: 100%; height: 100%;' frameborder='0' />");
+				$("<div>").attr("style", contents.attr("style")).appendTo(parent).append(preview);
+				parent.show();
+				<%-- プレビュー表示を設定します。 --%>
+				var html = contents.children("iframe").contents().find("html").html();
+				preview.contents().find("html").html(html);
+			}
+		}
+	}
+	$.extend(opt, readyOpt);
+<% } %>
+
 	$("textarea[name='<%=StringUtil.escapeJavaScript(propName)%>']").ckeditor(
 		function() {}, opt
 	);

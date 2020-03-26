@@ -150,6 +150,20 @@ public class StringPropertyEditor extends PrimitivePropertyEditor {
 	)
 	private boolean allowedContent;
 
+	/** RickTextで表示モードの場合、ツールバーなどを表示しないか */
+	@MetaFieldInfo(
+			displayName="RickTextで表示モードの場合、ツールバーなどを表示しないか",
+			displayNameKey="generic_editor_StringPropertyEditor_hideRichtextEditorToolBarDisplaNameKey",
+			inputType=InputType.CHECKBOX,
+			displayOrder=155,
+			description="RickTextで表示モードの場合、ツールバーなどを表示しないかを設定します。",
+			descriptionKey="generic_editor_StringPropertyEditor_hideRichtextEditorToolBarDescriptionKey"
+	)
+	@EntityViewField(
+			referenceTypes={FieldReferenceType.DETAIL}
+	)
+	private boolean hideRichtextEditorToolBar;
+
 	/** リッチテキストエディタオプション */
 	@MetaFieldInfo(
 			displayName="リッチテキストエディタオプション",
@@ -260,6 +274,22 @@ public class StringPropertyEditor extends PrimitivePropertyEditor {
 	 */
 	public void setAllowedContent(boolean allowedContent) {
 		this.allowedContent = allowedContent;
+	}
+
+	/**
+	 * RickTextで表示モードの場合、ツールバーなどを表示しないかを取得します。
+	 * @return RickTextで表示モードの場合、ツールバーなどを表示しないか
+	 */
+	public boolean isHideRichtextEditorToolBar() {
+		return hideRichtextEditorToolBar;
+	}
+
+	/**
+	 * RickTextで表示モードの場合、ツールバーなどを表示しないかを設定します。
+	 * @param hideRichtextEditorToolBar RickTextで表示モードの場合、ツールバーなどを表示しないか
+	 */
+	public void setHideRichtextEditorToolBar(boolean hideRichtextEditorToolBar) {
+		this.hideRichtextEditorToolBar = hideRichtextEditorToolBar;
 	}
 
 	/**

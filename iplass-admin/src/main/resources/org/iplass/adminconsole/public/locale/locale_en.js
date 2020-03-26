@@ -1926,6 +1926,8 @@ LocaleInfo.generic_editor_StringPropertyEditor_searchExactMatchConditionDisplaNa
 LocaleInfo.generic_editor_StringPropertyEditor_searchExactMatchConditionDescriptionKey = "Search by exact match.<br>The like search if not check.<br>The exact search regardless of the setting if the display type is Select.";
 LocaleInfo.generic_editor_StringPropertyEditor_allowedContentDisplaNameKey = "RichText tag display permission settings";
 LocaleInfo.generic_editor_StringPropertyEditor_allowedContentDescriptionKey = "<b> Display type: RichText</b><br>So that you can use a tag that is not allowed by the rich text editor.<br>If you want to embed the Javascript and CSS in the body, please describe directly from the press the source button.";
+LocaleInfo.generic_editor_StringPropertyEditor_hideRichtextEditorToolBarDisplaNameKey = "When using RickText in display mode, hide toolbars etc.";
+LocaleInfo.generic_editor_StringPropertyEditor_hideRichtextEditorToolBarDescriptionKey = "Set whether to hide the toolbar etc. in the display mode when using RickText.";
 LocaleInfo.generic_editor_StringPropertyEditor_richtextEditorOptionDisplaNameKey = "RichTextEditor option";
 LocaleInfo.generic_editor_StringPropertyEditor_richtextEditorOptionDescriptionKey = "Specify options for generating a rich text editor with Javascript's object literal.<br>Please refer to CKEDITOR config for specifiable options.";
 LocaleInfo.generic_editor_AutoNumberPropertyEditor_searchExactMatchConditionDisplaNameKey = "Search by exact match";

@@ -64,6 +64,9 @@ public class MetaStringPropertyEditor extends MetaPrimitivePropertyEditor {
 	/** 検索条件完全一致設定有無 */
 	private boolean searchExactMatchCondition;
 
+	/** RickTextで表示モードの場合、ツールバーなどを表示しないか */
+	private boolean hideRichtextEditorToolBar;
+	
 	/** リッチテキストエディタオプション */
 	private String richtextEditorOption;
 
@@ -143,6 +146,14 @@ public class MetaStringPropertyEditor extends MetaPrimitivePropertyEditor {
 		this.searchExactMatchCondition = searchExactMatchCondition;
 	}
 
+	public boolean isHideRichtextEditorToolBar() {
+		return hideRichtextEditorToolBar;
+	}
+
+	public void setHideRichtextEditorToolBar(boolean hideRichtextEditorToolBar) {
+		this.hideRichtextEditorToolBar = hideRichtextEditorToolBar;
+	}
+
 	/**
 	 * リッチテキストエディタオプションを取得します。
 	 * @return リッチテキストエディタオプション
@@ -169,6 +180,7 @@ public class MetaStringPropertyEditor extends MetaPrimitivePropertyEditor {
 		maxlength = e.getMaxlength();
 		values = e.getValues();
 		searchExactMatchCondition = e.isSearchExactMatchCondition();
+		hideRichtextEditorToolBar = e.isHideRichtextEditorToolBar();
 		richtextEditorOption = e.getRichtextEditorOption();
 	}
 
@@ -182,6 +194,7 @@ public class MetaStringPropertyEditor extends MetaPrimitivePropertyEditor {
 		maxlength = e.getMaxlength();
 		values = e.getValues();
 		searchExactMatchCondition = e.isSearchExactMatchCondition();
+		hideRichtextEditorToolBar = e.isHideRichtextEditorToolBar();
 		richtextEditorOption = e.getRichtextEditorOption();
 	}
 
@@ -195,6 +208,7 @@ public class MetaStringPropertyEditor extends MetaPrimitivePropertyEditor {
 		editor.setMaxlength(maxlength);
 		editor.setValues(values);
 		editor.setSearchExactMatchCondition(searchExactMatchCondition);
+		editor.setHideRichtextEditorToolBar(hideRichtextEditorToolBar);
 		editor.setRichtextEditorOption(richtextEditorOption);
 		return editor;
 	}
@@ -209,6 +223,7 @@ public class MetaStringPropertyEditor extends MetaPrimitivePropertyEditor {
 		e.setMaxlength(maxlength);
 		e.setValues(values);
 		e.setSearchExactMatchCondition(searchExactMatchCondition);
+		e.setHideRichtextEditorToolBar(hideRichtextEditorToolBar);
 		e.setRichtextEditorOption(richtextEditorOption);
 	}
 
