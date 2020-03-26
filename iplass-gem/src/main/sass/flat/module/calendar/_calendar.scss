@@ -208,8 +208,14 @@
 .fc-agendaWeek-view .fc-slats tr {
 	height: 200px;
 }
-.calendar-filter .filter-input-field .inpbr {
-	width: 100%;
+.calendar-filter .filter-input-field { 
+	.inpbr {
+		width: 100%;
+	}
+	//IE11で条件値のcheckboxとradioが下にズレるため対応
+	> span {
+		display: table-cell;
+	}
 }
 .data-deep-search .calendar-filter th.col3 {
 	width: 20%;
