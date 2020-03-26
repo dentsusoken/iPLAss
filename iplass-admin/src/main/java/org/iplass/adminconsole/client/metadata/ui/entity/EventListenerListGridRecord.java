@@ -56,7 +56,6 @@ public class EventListenerListGridRecord extends ListGridRecord {
 	public static final String WEBHOOKENDPOINTLIST="webHookEndPointList";
 	public static final String WEBHOOKRESULTHANLDER="webHookResultHandler";
 	public static final String SYNCHRONOUS="syncrhonous";
-	public static final String NOTIFICATIONDESTINATION="notificationDestination";
 
 	public static final String GP = "gp";
 
@@ -299,14 +298,6 @@ public class EventListenerListGridRecord extends ListGridRecord {
 	
 	public String getWebHookResultHandler(){
 		return getAttribute(WEBHOOKRESULTHANLDER);
-	}
-	
-	public void setNotificationDestination(String notificationDestination) {
-		setAttribute(NOTIFICATIONDESTINATION, notificationDestination);
-	}
-	
-	public String getNotificationDestination(){
-		return getAttribute(NOTIFICATIONDESTINATION);
 	}
 
 	public void setSyncrhonous(boolean value) {

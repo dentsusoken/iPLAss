@@ -20,8 +20,6 @@
 
 package org.iplass.mtp.impl.entity.listener;
 
-import java.io.IOException;
-import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -38,13 +36,9 @@ import org.iplass.mtp.impl.core.ExecuteContext;
 import org.iplass.mtp.impl.core.TenantContext;
 import org.iplass.mtp.impl.entity.MetaEntity;
 import org.iplass.mtp.impl.entity.MetaEventListener;
-import org.iplass.mtp.impl.script.GroovyScriptEngine;
 import org.iplass.mtp.impl.script.Script;
 import org.iplass.mtp.impl.script.ScriptContext;
 import org.iplass.mtp.impl.script.ScriptEngine;
-import org.iplass.mtp.impl.script.template.GroovyTemplate;
-import org.iplass.mtp.impl.script.template.GroovyTemplateBinding;
-import org.iplass.mtp.impl.script.template.GroovyTemplateCompiler;
 import org.iplass.mtp.mail.Mail;
 import org.iplass.mtp.mail.MailManager;
 import org.iplass.mtp.pushnotification.PushNotification;
@@ -77,7 +71,6 @@ public class MetaSendNotificationEventListener extends MetaEventListener {
 	private String tmplDefName;
 	private String notificationCondScript;
 	private List<EventType> listenEvent;
-	private String notificationDestination;
 
 	/**ウェッブフックだけの設定項目*/
 	private boolean synchronous;
@@ -140,13 +133,6 @@ public class MetaSendNotificationEventListener extends MetaEventListener {
 		this.synchronous = isSynchronous;
 	}
 
-	public String getNotificationDestination() {
-		return notificationDestination;
-	}
-
-	public void setNotificationDestination(String notificationDestination) {
-		this.notificationDestination = notificationDestination;
-	}
 	@Override
 	public MetaEventListener copy() {
 		MetaSendNotificationEventListener copy = new MetaSendNotificationEventListener();
@@ -155,7 +141,6 @@ public class MetaSendNotificationEventListener extends MetaEventListener {
 		copy.tmplDefName = tmplDefName;
 		copy.notificationCondScript = notificationCondScript;
 		copy.resultHandler = resultHandler;
-		copy.notificationDestination= notificationDestination;
 		if (listenEvent != null) {
 			copy.listenEvent = new ArrayList<EventType>();
 			copy.listenEvent.addAll(listenEvent);
@@ -221,13 +206,6 @@ public class MetaSendNotificationEventListener extends MetaEventListener {
 		} else if (!resultHandler.equals(other.resultHandler)) {
 			return false;
 		}
-		if (notificationDestination==null) {
-			if (other.getNotificationDestination()!=null) {
-				return false;
-			}
-		} else if (!notificationDestination.equals(other.notificationDestination)) {
-			return false;
-		}
 		return true;
 	}
 
@@ -239,7 +217,6 @@ public class MetaSendNotificationEventListener extends MetaEventListener {
 		tmplDefName = d.getTmplDefName();
 		notificationCondScript = d.getNotificationCondScript();
 		resultHandler = d.getResultHandler();
-		notificationDestination = d.getNotificationDestination();
 		synchronous = d.isSynchronous();
 		if (d.getListenEvent() != null) {
 			listenEvent = new ArrayList<EventType>();
@@ -265,7 +242,6 @@ public class MetaSendNotificationEventListener extends MetaEventListener {
 		d.setTmplDefName(tmplDefName);
 		d.setNotificationCondScript(notificationCondScript);
 		d.setResultHandler(resultHandler);
-		d.setNotificationDestination(notificationDestination);
 		
 		if (listenEvent != null) {
 			List<EventType> es = new ArrayList<EventType>();
@@ -549,7 +525,6 @@ public class MetaSendNotificationEventListener extends MetaEventListener {
 		protected Object createNotification(Entity entity, EventType type, EntityEventContext context) {
 			Map<String, Object> bindings = generateBindings(entity, type, context);
 			Mail mail = mm.createMail(tmplDefName, bindings);
-			mail.addRecipientTo(notificationDestination);
 			return mail;
 		}
 
@@ -571,7 +546,6 @@ public class MetaSendNotificationEventListener extends MetaEventListener {
 		protected Object createNotification(Entity entity, EventType type, EntityEventContext context) {
 			Map<String, Object> bindings = generateBindings(entity, type, context);
 			SmsMail smsMail = smm.createMail(tmplDefName, bindings);
-			smsMail.setTo(notificationDestination);
 			return smsMail;
 		}
 
@@ -593,21 +567,7 @@ public class MetaSendNotificationEventListener extends MetaEventListener {
 		protected Object createNotification(Entity entity, EventType type, EntityEventContext context) {
 			Map<String, Object> bindings = generateBindings(entity, type, context);
 			PushNotification pushNotification = pm.createNotification(tmplDefName, bindings);
-			
-			if (notificationDestination!=null&&!notificationDestination.replace("\n", "").replaceAll("\\s", "").isEmpty()) {
-				ScriptEngine se = ExecuteContext.getCurrentContext().getTenantContext().getScriptEngine();
-				GroovyTemplate destinationTemplate = GroovyTemplateCompiler.compile(notificationDestination, "pushNotificationDestinationTemplate_Text" + tmplDefName, (GroovyScriptEngine) se);
-				StringWriter sw = new StringWriter();
-				GroovyTemplateBinding gtb = new GroovyTemplateBinding(sw, bindings);
-				try {
-					destinationTemplate.doTemplate(gtb);
-					ArrayList<String> toList = new ArrayList<String>();
-					toList.add(sw.toString());
-					pushNotification.setToList(toList);
-				} catch (IOException e) {
-					throw new RuntimeException(e);
-				}
-			}
+
 			return pushNotification;
 		}
 

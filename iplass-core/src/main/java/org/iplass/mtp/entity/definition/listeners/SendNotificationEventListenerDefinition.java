@@ -31,7 +31,6 @@ public class SendNotificationEventListenerDefinition extends EventListenerDefini
 	private String tmplDefName;
 	private String notificationCondScript;
 	private List<EventType> listenEvent;
-	private String notificationDestination;
 	
 	/**ウェッブフックだけの設定項目*/
 	private boolean synchronous;
@@ -92,13 +91,5 @@ public class SendNotificationEventListenerDefinition extends EventListenerDefini
 
 	public void setResultHandler(String resultHandler) {
 		this.resultHandler = resultHandler;
-	}
-
-	public String getNotificationDestination() {
-		return notificationDestination;
-	}
-
-	public void setNotificationDestination(String notificationDestination) {
-		this.notificationDestination = notificationDestination;
 	}
 }
