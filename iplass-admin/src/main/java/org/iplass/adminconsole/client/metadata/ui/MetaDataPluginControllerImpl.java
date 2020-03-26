@@ -85,8 +85,8 @@ public class MetaDataPluginControllerImpl implements MetaDataPluginController {
 		plugins.add(new MailTemplatePlugin());
 		plugins.add(new SmsMailTemplatePlugin());
 		plugins.add(new PushNotificationTemplatePlugin());
-		plugins.add(new WebHookTemplatePlugin());
-		plugins.add(new WebHookEndPointDefinitionPlugin());
+//		plugins.add(new WebHookTemplatePlugin());
+//		plugins.add(new WebHookEndPointDefinitionPlugin());
 
 		return plugins;
 	}

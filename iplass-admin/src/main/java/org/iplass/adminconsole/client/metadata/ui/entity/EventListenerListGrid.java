@@ -756,7 +756,7 @@ public class EventListenerListGrid extends ListGrid {
 			notificationTypeMap.put(SendNotificationType.MAIL.name(), SendNotificationType.MAIL.displayName());
 			notificationTypeMap.put(SendNotificationType.SMS.name(), SendNotificationType.SMS.displayName());
 			notificationTypeMap.put(SendNotificationType.PUSH.name(), SendNotificationType.PUSH.displayName());
-			notificationTypeMap.put(SendNotificationType.WEBHOOK.name(), SendNotificationType.WEBHOOK.displayName());
+//			notificationTypeMap.put(SendNotificationType.WEBHOOK.name(), SendNotificationType.WEBHOOK.displayName());
 			notificationTypeItem.setValueMap(notificationTypeMap);
 
 			notificationTypeItem.setValue(target.getNotificationType());
