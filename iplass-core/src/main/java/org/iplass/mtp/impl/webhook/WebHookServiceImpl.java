@@ -125,6 +125,7 @@ public class WebHookServiceImpl extends AbstractTypedMetaDataService<MetaWebHook
 
 	@Override
 	public void init(Config config) {
+		webHookHttpClientConfig = new HttpClientConfig();
 		for (String name: config.getNames()) {
 			switch (name) {
 			case WEBHOOK_ISRETRY:
