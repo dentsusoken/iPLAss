@@ -731,7 +731,7 @@ $.fn.allInputCheck = function(){
 				if ($under.hasClass("fullWindow")) {
 					var dialogHeight = $window.height() - 40;
 					//frameはheader分減らす
-					var frameHeight = dialogHeight - 50;
+					var frameHeight = dialogHeight - 49;
 					
 					$under.css({
 						height : dialogHeight,
@@ -755,7 +755,7 @@ $.fn.allInputCheck = function(){
 						dialogHeight = 200;
 					}
 					//frameはheader分減らす
-					var frameHeight = dialogHeight - 50;
+					var frameHeight = dialogHeight - 49;
 
 					$under.css({
 						height: dialogHeight,
@@ -885,7 +885,7 @@ $.fn.allInputCheck = function(){
 				var pwd = rootWindow.scriptContext.getWindow();
 				var dialogHeight = $(pwd).height() - 40;
 				//frameはheader分減らす
-				var frameHeight = dialogHeight - 50;
+				var frameHeight = dialogHeight - 49;
 				
 				$under.css({
 					height : dialogHeight,
@@ -910,7 +910,7 @@ $.fn.allInputCheck = function(){
 					dialogHeight = 200;
 				}
 				//frameはheader分減らす
-				var frameHeight = dialogHeight - 50;
+				var frameHeight = dialogHeight - 49;
 
 				$under.css({
 					height: dialogHeight,
