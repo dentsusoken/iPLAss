@@ -74,12 +74,12 @@ import org.slf4j.LoggerFactory;
 
 public class WebHookServiceImpl extends AbstractTypedMetaDataService<MetaWebHookTemplate, WebHookTemplateRuntime>
 		implements WebHookService {
-	private final String WEBHOOK_ISRETRY= "webHookIsRetry";
-	private final String WEBHOOK_RETRY_MAXIMUMATTEMPTS = "webHookRetryMaximumAttempts";
-	private final String WEBHOOK_RETRY_INTERVAL = "webHookRetryInterval";
-	private final String WEBHOOK_HMACTOKEN_ALGORITHM = "webHookHmacHashAlgorithm";
-	private final String WEBHOOK_HMACTOKEN_DEFAULTNAME = "webHookHmacTokenDefaultName";
-	private final String WEBHOOK_HTTP_CLIENT_CONFIG = "httpClientConfig";
+	private final static String WEBHOOK_ISRETRY= "webHookIsRetry";
+	private final static String WEBHOOK_RETRY_MAXIMUMATTEMPTS = "webHookRetryMaximumAttempts";
+	private final static String WEBHOOK_RETRY_INTERVAL = "webHookRetryInterval";
+	private final static String WEBHOOK_HMACTOKEN_ALGORITHM = "webHookHmacHashAlgorithm";
+	private final static String WEBHOOK_HMACTOKEN_DEFAULTNAME = "webHookHmacTokenDefaultName";
+	private final static String WEBHOOK_HTTP_CLIENT_CONFIG = "httpClientConfig";
 	private AsyncTaskManager atm;
 	private WebHookEndPointService wheps;
 	private boolean webHookIsRetry;

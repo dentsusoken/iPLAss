@@ -75,16 +75,16 @@ public class WebHookEndPointEditPane extends MetaDataMainEditPane {
 	/** 個別属性 */
 	private WebHookEndPointAttributePane webHookEndPointAttributePane;
 	
-	private final String BASIC_DISPLAY_NAME = "Basic Authentication";
-	private final String BEARER_DISPLAY_NAME = "Bearer Authentication";
-	private final String CUSTOM_DISPLAY_NAME = "Custom Authentication";
-	private final String NO_HEADER_AUTH_DISPLAY_NAME = "Disabled";
+	private final static String BASIC_DISPLAY_NAME = "Basic Authentication";
+	private final static String BEARER_DISPLAY_NAME = "Bearer Authentication";
+	private final static String CUSTOM_DISPLAY_NAME = "Custom Authentication";
+	private final static String NO_HEADER_AUTH_DISPLAY_NAME = "Disabled";
 	
 	//FIXME use enum?
-	private final String BASIC_TYPE_CODE = "WHBA";
-	private final String BEARER_TYPE_CODE = "WHBT";
-	private final String CUSTOM_TYPE_CODE = "WHCT";
-	private final String HMAC_TYPE_CODE = "WHHM";
+	private final static String BASIC_TYPE_CODE = "WHBA";
+	private final static String BEARER_TYPE_CODE = "WHBT";
+	private final static String CUSTOM_TYPE_CODE = "WHCT";
+	private final static String HMAC_TYPE_CODE = "WHHM";
 	
 	public WebHookEndPointEditPane(MetaDataItemMenuTreeNode targetNode, DefaultMetaDataPlugin plugin) {
 		super(targetNode, plugin);
