@@ -36,7 +36,8 @@ public class TenantInfoHolder {
 	private static DateTimeFormat outputDateFormat;
 	private static DateTimeFormat outputTimeFormat;
 	private static DateTimeFormat outputDateTimeFormat;
-	private static TimeZone timeZone;
+	private static TimeZone tenantTimeZone;
+	private static TimeZone serverTimeZone;
 
 	public static void init(TenantEnv env, String lang) {
 		tenantEnv = env;
@@ -44,7 +45,8 @@ public class TenantInfoHolder {
 		outputDateFormat = null;
 		outputTimeFormat = null;
 		outputDateTimeFormat = null;
-		timeZone = null;
+		tenantTimeZone = null;
+		serverTimeZone = null;
 	}
 
 	public static void reload(TenantEnv env) {
@@ -52,7 +54,8 @@ public class TenantInfoHolder {
 		outputDateFormat = null;
 		outputTimeFormat = null;
 		outputDateTimeFormat = null;
-		timeZone = null;
+		tenantTimeZone = null;
+		serverTimeZone = null;
 	}
 
 	public static Tenant getTenant() {
@@ -108,17 +111,32 @@ public class TenantInfoHolder {
 		return outputDateTimeFormat;
 	}
 
-	public static TimeZone getTimeZone() {
-		if (timeZone == null) {
+	public static TimeZone getTenantTimeZone() {
+		if (tenantTimeZone == null) {
 			//GWTのTimeZoneを生成
 			if (tenantEnv.getTenantTimeZoneInfo() != null) {
 				//TimeZone情報が見つかった場合
-				timeZone = TimeZone.createTimeZone(tenantEnv.getTenantTimeZoneInfo());
+				tenantTimeZone = TimeZone.createTimeZone(tenantEnv.getTenantTimeZoneInfo());
 			} else {
 				//TimeZone情報が見つからなかった場合
-				timeZone = TimeZone.createTimeZone(tenantEnv.getTenantTimeZoneOffsetInMinutes());
+				tenantTimeZone = TimeZone.createTimeZone(tenantEnv.getTenantTimeZoneOffsetInMinutes());
 			}
 		}
-		return timeZone;
+		return tenantTimeZone;
 	}
+
+	public static TimeZone getServerTimeZone() {
+		if (serverTimeZone == null) {
+			//GWTのTimeZoneを生成
+			if (tenantEnv.getServerTimeZoneInfo() != null) {
+				//TimeZone情報が見つかった場合
+				serverTimeZone = TimeZone.createTimeZone(tenantEnv.getServerTimeZoneInfo());
+			} else {
+				//TimeZone情報が見つからなかった場合
+				serverTimeZone = TimeZone.createTimeZone(tenantEnv.getServerTimeZoneOffsetInMinutes());
+			}
+		}
+		return serverTimeZone;
+	}
+
 }

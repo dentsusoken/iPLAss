@@ -350,6 +350,20 @@ public class TenantServiceImpl extends XsrfProtectedServiceServlet implements Te
 				env.setTenantTimeZoneOffsetInMinutes(offsetMinutes);
 			}
 
+			//デフォルトのTimeZone情報を取得(Date、Timeの変換用)
+			TimeZone defaultTimeZone = TimeZone.getDefault();
+			if (timezoneMap.containsKey(defaultTimeZone.getID())) {
+				env.setServerTimeZoneInfo(timezoneMap.get(defaultTimeZone.getID()));
+			} else {
+				//IDがマッチしない場合はoffsetで求める（この場合サマータイムに対応できない）
+				int offsetMinutes = (defaultTimeZone.getRawOffset() / (1000 * 60)) * -1;	//分に変換してマイナス
+				if (defaultTimeZone.useDaylightTime()) {
+					logger.warn("not found timezone matched data. id=" + defaultTimeZone.getID() + ". not support daylight time.");
+				}
+				logger.debug("not found timezone matched data. id=" + defaultTimeZone.getID() + ". use offset pattern. offset(min)=" + offsetMinutes);
+				env.setServerTimeZoneOffsetInMinutes(offsetMinutes);
+			}
+
 			//Inputは3種類あるが、とりあえずja_JPかen_USに分類（他はヨーロッパ系）
 			String inputLocale = env.getTenantLocale();
 			if (inputLocale.equalsIgnoreCase("ja")){
@@ -413,7 +427,7 @@ public class TenantServiceImpl extends XsrfProtectedServiceServlet implements Te
 					info.setSkins(gcs.getSkins());
 					info.setThemes(gcs.getThemes());
 
-					LinkedHashMap<String, String> enableLanguageMap = new LinkedHashMap<String, String>();
+					LinkedHashMap<String, String> enableLanguageMap = new LinkedHashMap<>();
 					for (EnableLanguages lang : i18n.getEnableLanguages()) {
 						enableLanguageMap.put(lang.getLanguageKey(), lang.getLanguageName());
 					}
