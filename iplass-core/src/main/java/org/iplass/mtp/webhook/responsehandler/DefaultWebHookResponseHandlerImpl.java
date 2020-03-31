@@ -42,7 +42,9 @@ public class DefaultWebHookResponseHandlerImpl implements WebHookResponseHandler
 		msg += makeStatusString(response);
 		msg += makeHeaderString(response);
 		msg += makeEntityString(response);
-		logger.debug(msg);
+		if (logger.isDebugEnabled()) {
+			logger.debug(msg);
+		}
 	}
 	
 	private String makeStatusString(WebHookResponse whr) {

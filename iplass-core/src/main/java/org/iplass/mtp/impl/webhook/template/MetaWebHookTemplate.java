@@ -239,7 +239,6 @@ public class MetaWebHookTemplate extends BaseRootMetaData implements DefinableMe
 			
 			//fill up the info to webhooktemplate
 			WebHook webHook = new WebHook(); 
-			webHook.setName(name);
 			
 			ArrayList<WebHookHeader> newHeaders = new ArrayList<WebHookHeader>();
 			if (headers !=null) {

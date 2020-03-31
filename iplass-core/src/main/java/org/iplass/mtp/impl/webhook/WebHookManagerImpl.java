@@ -94,7 +94,9 @@ public class WebHookManagerImpl implements WebHookManager {
 			try {
 				whrh= (WebHookResponseHandler) Class.forName(handlerName).newInstance();
 			} catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
-				logger.debug("The response handler: "+handlerName+" does not exist. Creating DefaultWebHookResponseHandler.");
+				if (logger.isDebugEnabled()) {
+					logger.debug("The response handler: "+handlerName+" does not exist. Creating DefaultWebHookResponseHandler.");
+				}
 				whrh= new DefaultWebHookResponseHandlerImpl();
 			}
 		}

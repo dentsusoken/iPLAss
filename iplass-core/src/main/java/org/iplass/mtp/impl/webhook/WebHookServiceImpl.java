@@ -207,10 +207,11 @@ public class WebHookServiceImpl extends AbstractTypedMetaDataService<MetaWebHook
 					throw new SystemException("WebHookTemplate:" + webHook.getEndPointName() + " not found");
 				}
 			}
-			logger.debug("WebHook:"+webHook.getTemplateName()+"->"+webHook.getEndPointName()+" Attempted.");
 			
 			if (webHook.getHttpMethod()==null) {
-				logger.debug("WebHook:"+webHook.getTemplateName()+" request method undefined. Post will be used.");
+				if (logger.isDebugEnabled()) {
+					logger.debug("WebHook: request method undefined. Post will be used.");
+				}
 			}
 			HttpRequestBase httpRequest = getReqestMethodObject(webHook.getHttpMethod());
 			HttpContext httpContext = new BasicHttpContext();
@@ -441,8 +442,6 @@ public class WebHookServiceImpl extends AbstractTypedMetaDataService<MetaWebHook
 
 		
 		WebHook webHook = webHookRuntime.createWebHook(binding);
-		webHook.setTemplateName(webHookDefinitionName);
-
 		
 		GroovyTemplate contentTemplate = webHookRuntime.getContentTemplate();
 		GroovyTemplate urlQueryTemplate = webHookRuntime.getUrlQueryTemplate();

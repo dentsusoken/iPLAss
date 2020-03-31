@@ -31,9 +31,6 @@ import java.util.List;
 
 public class WebHook  {
 
-	/** このwebhookの名前 */
-	private String name;
-
 	/** 送る内容 */
 	private String contentType;
 	private String payloadContent;
@@ -53,51 +50,16 @@ public class WebHook  {
 	private String url;
 	private String endPointName;
 
-	//---------------------------------
 	/**　同期非同期　*/
 	private boolean synchronous;
-	/**
-	 * 記録用
-	 * */
-	private String TemplateName;
-
-	/** 記録用のid */
-	private int webHookId;
+	
 	//----------------------------------
-
-	public String getTemplateName() {
-		if (TemplateName == null) {
-			return "";
-		}
-		return TemplateName;
-	}
-
-	public void setTemplateName(String templateName) {
-		TemplateName = templateName;
-	}
-
 	public boolean isSynchronous() {
 		return synchronous;
 	}
 
 	public void setSynchronous(boolean synchronous) {
 		this.synchronous = synchronous;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public int getWebHookId() {
-		return webHookId;
-	}
-
-	public void setWebHookId(int webHookId) {
-		this.webHookId = webHookId;
 	}
 
 	public List<WebHookHeader> getHeaders() {
