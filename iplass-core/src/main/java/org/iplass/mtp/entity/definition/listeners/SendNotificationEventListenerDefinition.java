@@ -32,6 +32,7 @@ public class SendNotificationEventListenerDefinition extends EventListenerDefini
 	private String notificationCondScript;
 	private List<EventType> listenEvent;
 	
+	private boolean sendTogether;
 	/**ウェッブフックだけの設定項目*/
 	private boolean synchronous;
 	private List<String> endPointDefList;
@@ -91,5 +92,13 @@ public class SendNotificationEventListenerDefinition extends EventListenerDefini
 
 	public void setResultHandler(String resultHandler) {
 		this.resultHandler = resultHandler;
+	}
+
+	public boolean isSendTogether() {
+		return sendTogether;
+	}
+
+	public void setSendTogether(boolean isSendTogether) {
+		sendTogether = isSendTogether;
 	}
 }
