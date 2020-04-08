@@ -230,8 +230,8 @@ public abstract class SearchContextBase implements SearchContext {
 				}
 			}
 		} else {
-			String sortKey = request.getParam(Constants.SEARCH_SORTKEY);
-			if (StringUtil.isNotBlank(sortKey)) {
+			String sortKey = getSortKey();
+			if (sortKey != null) {
 				PropertyColumn property = getLayoutPropertyColumn(sortKey);
 				if (property != null) {
 					NullOrderingSpec nullOrderingSpec = getNullOrderingSpec(property.getNullOrderType());
