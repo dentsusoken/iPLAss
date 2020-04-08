@@ -61,7 +61,7 @@ public class PropertyColumnValue extends DynamicColumnValue {
 	
 	@Override
 	public void setParameter(Object value, int index, PreparedStatement ps) throws SQLException {
-		type.setParameter(index, value == null ? defaultValue: value, ps);
+		type.setParameter(index, value == null ? defaultValue: value, ps, rdb);
 	}
 
 

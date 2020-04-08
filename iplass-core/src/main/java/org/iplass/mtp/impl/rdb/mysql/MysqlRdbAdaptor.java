@@ -314,9 +314,15 @@ public class MysqlRdbAdaptor extends RdbAdapter {
 		checkDateRange(date);
 		if (useFractionalSecondsOnTimestamp) {
 			SimpleDateFormat fmt = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+			if (rdbTimeZone() != null) {
+				fmt.setTimeZone(rdbTimeZone());
+			}
 			return "STR_TO_DATE('" + fmt.format(date) + "','%Y-%m-%d %H:%i:%s.%f')";
 		} else {
 			SimpleDateFormat fmt = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			if (rdbTimeZone() != null) {
+				fmt.setTimeZone(rdbTimeZone());
+			}
 			return "STR_TO_DATE('" + fmt.format(date) + "','%Y-%m-%d %H:%i:%s')";
 		}
 	}

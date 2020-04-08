@@ -107,7 +107,7 @@ public class TenantControlSQL extends UpdateSqlHandler {
 
 		if (!forceUpdate) {
 			// 更新日付
-			ps.setTimestamp(num++, tenant.getUpdateDate());
+			ps.setTimestamp(num++, tenant.getUpdateDate(), rdb.rdbCalendar());
 		}
 	}
 }

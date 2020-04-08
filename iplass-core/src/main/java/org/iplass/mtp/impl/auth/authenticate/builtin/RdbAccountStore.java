@@ -155,7 +155,7 @@ public class RdbAccountStore implements AccountStore {
 						.createAccountSQL());
 				accountSelect.setAccountParameter(rdb, ps, tenantId, accountId);
 				try (ResultSet rs = ps.executeQuery()) {
-					return accountSelect.getAccount(rs);
+					return accountSelect.getAccount(rs, rdb);
 				}
 			}
 		};
@@ -171,7 +171,7 @@ public class RdbAccountStore implements AccountStore {
 						.createAccountFromOidSQL());
 				accountSelect.setAccountFromOidParameter(rdb, ps, tenantId, oid);
 				try (ResultSet rs = ps.executeQuery()) {
-					return accountSelect.getAccount(rs);
+					return accountSelect.getAccount(rs, rdb);
 				}
 			}
 		};
@@ -202,7 +202,7 @@ public class RdbAccountStore implements AccountStore {
 				List<Password> res = new ArrayList<>();
 				try (ResultSet rs = ps.executeQuery()) {
 					while (rs.next()) {
-						res.add(passSelect.toPassword(rs));
+						res.add(passSelect.toPassword(rs, rdb));
 					}
 				}
 				return res;

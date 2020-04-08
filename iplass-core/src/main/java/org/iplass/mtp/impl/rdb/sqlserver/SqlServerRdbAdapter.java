@@ -239,6 +239,9 @@ public class SqlServerRdbAdapter extends RdbAdapter {
 	public String toTimeStampExpression(Timestamp date) {
 		checkDateRange(date);
 		SimpleDateFormat fmt = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+		if (rdbTimeZone() != null) {
+			fmt.setTimeZone(rdbTimeZone());
+		}
 		return "CONVERT(DATETIME2, '" + fmt.format(date) + "')";
 	}
 

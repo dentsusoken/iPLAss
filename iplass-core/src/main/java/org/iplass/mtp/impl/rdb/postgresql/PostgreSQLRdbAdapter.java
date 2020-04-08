@@ -236,11 +236,18 @@ public class PostgreSQLRdbAdapter extends RdbAdapter {
 	public String toTimeStampExpression(Timestamp date) {
 		checkDateRange(date);
 		SimpleDateFormat fmt = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+		if (rdbTimeZone() != null) {
+			fmt.setTimeZone(rdbTimeZone());
+		}
 		return "CAST('" + fmt.format(date) + "' AS TIMESTAMP(3))";
 	}
 
 	public String systimestamp() {
-		return timestampFunction;
+		if (rdbTimeZone() == null) {
+			return timestampFunction;
+		} else {
+			return timestampFunction + " AT TIME ZONE '" + rdbTimeZone().getID() + "'";
+		}
 	}
 
 	public MultiInsertContext createMultiInsertContext(Statement stmt) {

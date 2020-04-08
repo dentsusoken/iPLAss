@@ -681,7 +681,12 @@ public class CallableStatementWrapper implements CallableStatement {
 
 	public void setDate(int parameterIndex, Date x, Calendar cal)
 			throws SQLException {
-		wrapped.setDate(parameterIndex, x, cal);
+		//driverによってnullの場合の挙動が異なるので、ここで吸収。。
+		if (cal == null) {
+			wrapped.setDate(parameterIndex, x);
+		} else {
+			wrapped.setDate(parameterIndex, x, cal);
+		}
 	}
 
 	public void setDate(int parameterIndex, Date x) throws SQLException {
@@ -690,7 +695,12 @@ public class CallableStatementWrapper implements CallableStatement {
 
 	public void setDate(String parameterName, Date x, Calendar cal)
 			throws SQLException {
-		wrapped.setDate(parameterName, x, cal);
+		//driverによってnullの場合の挙動が異なるので、ここで吸収。。
+		if (cal == null) {
+			wrapped.setDate(parameterName, x);
+		} else {
+			wrapped.setDate(parameterName, x, cal);
+		}
 	}
 
 	public void setDate(String parameterName, Date x) throws SQLException {
@@ -900,7 +910,12 @@ public class CallableStatementWrapper implements CallableStatement {
 
 	public void setTime(int parameterIndex, Time x, Calendar cal)
 			throws SQLException {
-		wrapped.setTime(parameterIndex, x, cal);
+		//driverによってnullの場合の挙動が異なるので、ここで吸収。。
+		if (cal == null) {
+			wrapped.setTime(parameterIndex, x);
+		} else {
+			wrapped.setTime(parameterIndex, x, cal);
+		}
 	}
 
 	public void setTime(int parameterIndex, Time x) throws SQLException {
@@ -909,7 +924,12 @@ public class CallableStatementWrapper implements CallableStatement {
 
 	public void setTime(String parameterName, Time x, Calendar cal)
 			throws SQLException {
-		wrapped.setTime(parameterName, x, cal);
+		//driverによってnullの場合の挙動が異なるので、ここで吸収。。
+		if (cal == null) {
+			wrapped.setTime(parameterName, x);
+		} else {
+			wrapped.setTime(parameterName, x, cal);
+		}
 	}
 
 	public void setTime(String parameterName, Time x) throws SQLException {
@@ -918,7 +938,12 @@ public class CallableStatementWrapper implements CallableStatement {
 
 	public void setTimestamp(int parameterIndex, Timestamp x, Calendar cal)
 			throws SQLException {
-		wrapped.setTimestamp(parameterIndex, x, cal);
+		//driverによってnullの場合の挙動が異なるので、ここで吸収。。
+		if (cal == null) {
+			wrapped.setTimestamp(parameterIndex, x);
+		} else {
+			wrapped.setTimestamp(parameterIndex, x, cal);
+		}
 	}
 
 	public void setTimestamp(int parameterIndex, Timestamp x)
@@ -928,7 +953,12 @@ public class CallableStatementWrapper implements CallableStatement {
 
 	public void setTimestamp(String parameterName, Timestamp x, Calendar cal)
 			throws SQLException {
-		wrapped.setTimestamp(parameterName, x, cal);
+		//driverによってnullの場合の挙動が異なるので、ここで吸収。。
+		if (cal == null) {
+			wrapped.setTimestamp(parameterName, x);
+		} else {
+			wrapped.setTimestamp(parameterName, x, cal);
+		}
 	}
 
 	public void setTimestamp(String parameterName, Timestamp x)

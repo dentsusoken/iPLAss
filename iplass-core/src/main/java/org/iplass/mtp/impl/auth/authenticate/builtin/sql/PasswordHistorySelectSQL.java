@@ -40,8 +40,8 @@ public class PasswordHistorySelectSQL extends QuerySqlHandler {
 		ps.setInt(1, tenantId);
 		ps.setString(2, accountId);
 	}
-	public Password toPassword(ResultSet rs) throws SQLException {
-		return new Password(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getTimestamp(5));
+	public Password toPassword(ResultSet rs, RdbAdapter rdb) throws SQLException {
+		return new Password(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getTimestamp(5, rdb.rdbCalendar()));
 	}
 
 }

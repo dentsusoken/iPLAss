@@ -51,8 +51,8 @@ public class AuthTokenSelectSQL extends QuerySqlHandler {
 		ps.setString(2, type);
 		ps.setString(3, series);
 	}
-	public AuthToken toAuthToken(ResultSet rs, boolean saveDetailAsJson, ObjectMapper om) throws SQLException {
-		AuthToken at = new AuthToken(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5), rs.getString(6), rs.getTimestamp(7), null);
+	public AuthToken toAuthToken(ResultSet rs, boolean saveDetailAsJson, ObjectMapper om, RdbAdapter rdb) throws SQLException {
+		AuthToken at = new AuthToken(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5), rs.getString(6), rs.getTimestamp(7, rdb.rdbCalendar()), null);
 		byte[] tiByte = rs.getBytes(8);
 		if (tiByte != null && tiByte.length > 0) {
 			try {

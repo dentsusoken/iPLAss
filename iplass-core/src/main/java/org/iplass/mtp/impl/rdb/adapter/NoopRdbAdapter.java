@@ -26,6 +26,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Time;
 import java.sql.Timestamp;
+import java.util.TimeZone;
 
 import org.iplass.mtp.entity.query.GroupBy.RollType;
 import org.iplass.mtp.entity.query.SortSpec.NullOrderingSpec;
@@ -303,6 +304,11 @@ public class NoopRdbAdapter extends RdbAdapter {
 
 	@Override
 	public ResultSet getTableNames(String tableNamePattern, Connection con) throws SQLException {
+		return null;
+	}
+
+	@Override
+	public TimeZone rdbTimeZone() {
 		return null;
 	}
 

@@ -1298,7 +1298,7 @@ public class EntityExplorerServiceImpl extends XsrfProtectedServiceServlet imple
 				Map<String, Timestamp> map = new LinkedHashMap<String, Timestamp>();
 				try {
 					while(rs.next()) {
-						map.put(rs.getString(1), rs.getTimestamp(2));
+						map.put(rs.getString(1), rs.getTimestamp(2, rdb.rdbCalendar()));
 					}
 				} finally {
 					rs.close();

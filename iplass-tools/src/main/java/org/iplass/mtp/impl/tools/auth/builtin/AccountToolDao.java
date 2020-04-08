@@ -92,7 +92,7 @@ public class AccountToolDao {
 				PreparedStatement ps = getPreparedStatement(sql);
 				accountMaintenance.setAccountSearchParameter(rdb, ps, tenant, cond, authPolicy);
 				try (ResultSet rs = ps.executeQuery()) {
-					accountMaintenance.getAccountSearchResultData(rs, callback);
+					accountMaintenance.getAccountSearchResultData(rdb, rs, callback);
 				}
 				return null;
 			}
@@ -108,7 +108,7 @@ public class AccountToolDao {
 				PreparedStatement ps = getPreparedStatement(accountSelect.createAccountSQL());
 				accountSelect.setAccountParameter(rdb, ps, tenant.getId(), accountId);
 				try (ResultSet rs = ps.executeQuery()) {
-					return accountSelect.getAccount(rs);
+					return accountSelect.getAccount(rs, rdb);
 				}
 			}
 		};

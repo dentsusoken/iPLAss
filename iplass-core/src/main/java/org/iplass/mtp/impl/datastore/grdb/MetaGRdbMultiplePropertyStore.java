@@ -107,13 +107,14 @@ public class MetaGRdbMultiplePropertyStore extends MetaPropertyStore {
 	public class GRdbMultiplePropertyStoreHandler extends PropertyStoreHandler implements GRdbPropertyStoreRuntime {
 
 		private BaseRdbTypeAdapter typeMapping;
+		private RdbAdapter rdb;
 		private PrimitivePropertyHandler propertyRuntime;
 		private List<GRdbPropertyStoreHandler> list;
 
 		private GRdbMultiplePropertyStoreHandler(PropertyHandler propertyRuntime, MetaEntity metaEntity) {
 			//Primitive型しかないはず
 			this.propertyRuntime = (PrimitivePropertyHandler) propertyRuntime;
-			RdbAdapter rdb = ServiceRegistry.getRegistry().getService(RdbAdapterService.class).getRdbAdapter();
+			rdb = ServiceRegistry.getRegistry().getService(RdbAdapterService.class).getRdbAdapter();
 			PropertyType type = this.propertyRuntime.getMetaData().getType();
 			typeMapping = rdb.getRdbTypeAdapter(type);
 			if (store == null) {
@@ -165,7 +166,7 @@ public class MetaGRdbMultiplePropertyStore extends MetaPropertyStore {
 			ArrayList<Object> vals = new ArrayList<Object>(store.size());
 			int nullCount = 0;
 			for (int i = 0; i < propertyRuntime.getMetaData().getMultiplicity(); i++) {
-				Object val = getSingleColumnRdbTypeAdapter().fromDataStore(rs, colNum + i);
+				Object val = getSingleColumnRdbTypeAdapter().fromDataStore(rs, colNum + i, rdb);
 				if (val == null) {
 					nullCount++;
 				} else {

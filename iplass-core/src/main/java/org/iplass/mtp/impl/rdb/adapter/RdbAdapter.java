@@ -31,7 +31,9 @@ import java.sql.Statement;
 import java.sql.Time;
 import java.sql.Timestamp;
 import java.sql.Types;
+import java.util.Calendar;
 import java.util.HashMap;
+import java.util.TimeZone;
 
 import org.iplass.mtp.entity.EntityRuntimeException;
 import org.iplass.mtp.entity.query.GroupBy.RollType;
@@ -73,6 +75,9 @@ import org.iplass.mtp.util.StringUtil;
 
 
 public abstract class RdbAdapter {
+
+	private String rdbTimeZone;
+	private TimeZone rdbTimeZoneInstance;
 
 	private HashMap<String, FunctionAdapter> functionMap = new HashMap<String, FunctionAdapter>();
 
@@ -245,7 +250,7 @@ public abstract class RdbAdapter {
 		} else if (rdbValue instanceof Time) {
 			ps.setTime(index, (Time) rdbValue);
 		} else if (rdbValue instanceof Timestamp) {
-			ps.setTimestamp(index, (Timestamp) rdbValue);
+			ps.setTimestamp(index, (Timestamp) rdbValue, rdbCalendar());
 		} else {
 			ps.setObject(index, rdbValue);
 		}
@@ -378,6 +383,41 @@ public abstract class RdbAdapter {
 
 	public abstract void appendSortSpecExpression(StringBuilder sb, CharSequence sortValue, SortType sortType, NullOrderingSpec nullOrderingSpec);
 
+	public String getRdbTimeZone() {
+		return rdbTimeZone;
+	}
+
+	public void setRdbTimeZone(String rdbTimeZone) {
+		this.rdbTimeZone = rdbTimeZone;
+		if (rdbTimeZone == null) {
+			rdbTimeZoneInstance = null;
+		} else {
+			rdbTimeZoneInstance = TimeZone.getTimeZone(rdbTimeZone);
+		}
+		
+	}
+
+	public TimeZone rdbTimeZone() {
+		return rdbTimeZoneInstance;
+	}
+
+	public Calendar rdbCalendar() {
+		TimeZone tz = rdbTimeZone();
+		if (tz == null) {
+			return null;
+		}
+		return Calendar.getInstance(tz);
+	}
+	
+	public Calendar javaCalendar() {
+		TimeZone tz = rdbTimeZone();
+		if (tz == null) {
+			return null;
+		} else {
+			return Calendar.getInstance();
+		}
+	}
+	
 	/**
 	 * timezoneを変更したtimestampを取得する関数。
 	 * 変換前のtimestampはデフォルトタイムゾーン（DBのタイムゾーンもしくはDBセッションのタイムゾーン）と同一である想定。

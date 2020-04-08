@@ -44,7 +44,7 @@ public class PasswordHistoryUpdateSQL extends UpdateSqlHandler {
 		// SALT
 		ps.setString(num++, pass.getSalt());
 		//UP_DATE
-		ps.setTimestamp(num++, pass.getUpdateDate());
+		ps.setTimestamp(num++, pass.getUpdateDate(), rdb.rdbCalendar());
 	}
 
 	public String createDeleteSQL(RdbAdapter rdb) {
@@ -63,7 +63,7 @@ public class PasswordHistoryUpdateSQL extends UpdateSqlHandler {
 			int tenantId, String accountId, Timestamp date) throws SQLException {
 		ps.setInt(1, tenantId);
 		ps.setString(2, accountId);
-		ps.setTimestamp(3, date);
+		ps.setTimestamp(3, date, rdb.rdbCalendar());
 	}
 	public String createUpdateAccountIdSQL(RdbAdapter rdb) {
 		return "UPDATE T_PASS_HI SET ACCOUNT_ID=? WHERE TENANT_ID=? AND ACCOUNT_ID=?";

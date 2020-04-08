@@ -64,7 +64,7 @@ public class TaskQueueDeleteSql extends UpdateSqlHandler {
 	public void setDelParameterForDate(Timestamp date,
 			RdbAdapter rdb, PreparedStatement ps, boolean isDirectTenant) throws SQLException {
 
-		ps.setTimestamp(1, date);
+		ps.setTimestamp(1, date, rdb.rdbCalendar());
 
 		if (isDirectTenant) {
 			int tenantId = ExecuteContext.getCurrentContext().getClientTenantId();

@@ -306,7 +306,12 @@ public class PreparedStatementWrapper extends StatementWrapper implements
 
 	public void setDate(int parameterIndex, Date x, Calendar cal)
 			throws SQLException {
-		wrapped.setDate(parameterIndex, x, cal);
+		//driverによってnullの場合の挙動が異なるので、ここで吸収。。
+		if (cal == null) {
+			wrapped.setDate(parameterIndex, x);
+		} else {
+			wrapped.setDate(parameterIndex, x, cal);
+		}
 		setValues(parameterIndex, x);
 	}
 
@@ -425,7 +430,12 @@ public class PreparedStatementWrapper extends StatementWrapper implements
 
 	public void setTime(int parameterIndex, Time x, Calendar cal)
 			throws SQLException {
-		wrapped.setTime(parameterIndex, x, cal);
+		//driverによってnullの場合の挙動が異なるので、ここで吸収。。
+		if (cal == null) {
+			wrapped.setTime(parameterIndex, x);
+		} else {
+			wrapped.setTime(parameterIndex, x, cal);
+		}
 		setValues(parameterIndex, x);
 	}
 
@@ -436,7 +446,12 @@ public class PreparedStatementWrapper extends StatementWrapper implements
 
 	public void setTimestamp(int parameterIndex, Timestamp x, Calendar cal)
 			throws SQLException {
-		wrapped.setTimestamp(parameterIndex, x, cal);
+		//driverによってnullの場合の挙動が異なるので、ここで吸収。。
+		if (cal == null) {
+			wrapped.setTimestamp(parameterIndex, x);
+		} else {
+			wrapped.setTimestamp(parameterIndex, x, cal);
+		}
 		setValues(parameterIndex, x);
 	}
 
