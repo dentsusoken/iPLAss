@@ -394,7 +394,7 @@ public abstract class RdbAdapter {
 		} else {
 			rdbTimeZoneInstance = TimeZone.getTimeZone(rdbTimeZone);
 		}
-		
+
 	}
 
 	public TimeZone rdbTimeZone() {
@@ -408,7 +408,7 @@ public abstract class RdbAdapter {
 		}
 		return Calendar.getInstance(tz);
 	}
-	
+
 	public Calendar javaCalendar() {
 		TimeZone tz = rdbTimeZone();
 		if (tz == null) {
@@ -417,7 +417,7 @@ public abstract class RdbAdapter {
 			return Calendar.getInstance();
 		}
 	}
-	
+
 	/**
 	 * timezoneを変更したtimestampを取得する関数。
 	 * 変換前のtimestampはデフォルトタイムゾーン（DBのタイムゾーンもしくはDBセッションのタイムゾーン）と同一である想定。
@@ -574,5 +574,14 @@ public abstract class RdbAdapter {
 	 */
 	public boolean isSupportBlobType() {
 		return true;
+	}
+
+	/**
+	 * LIMIT句のための省略時のOrderBy句を取得します。
+	 *
+	 * @return OrderBy句
+	 */
+	public String getDefaultOrderByForLimit() {
+		return "";
 	}
 }

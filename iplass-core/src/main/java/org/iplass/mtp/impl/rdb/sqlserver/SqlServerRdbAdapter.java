@@ -305,7 +305,7 @@ public class SqlServerRdbAdapter extends RdbAdapter {
 			return null;
 		}
 	}
-	
+
 	@Override
 	public CharSequence cast(int fromSqlType, int toSqlType, CharSequence valExpr, Integer lengthOrPrecision, Integer scale) {
 		//-のscale指定ができないので、ROUNDで対応
@@ -313,7 +313,7 @@ public class SqlServerRdbAdapter extends RdbAdapter {
 			CharSequence castString = super.cast(fromSqlType, toSqlType, valExpr, lengthOrPrecision, 0);
 			return "ROUND(" + castString + "," + scale + ")";
 		}
-		
+
 		return super.cast(fromSqlType, toSqlType, valExpr, lengthOrPrecision, scale);
 	}
 
@@ -733,5 +733,10 @@ public class SqlServerRdbAdapter extends RdbAdapter {
 	@Override
 	public boolean isNeedFromClauseTableAliasUpdateStatement() {
 		return true;
+	}
+
+	@Override
+	public String getDefaultOrderByForLimit() {
+		return " ORDER BY (SELECT NULL) ";
 	}
 }
