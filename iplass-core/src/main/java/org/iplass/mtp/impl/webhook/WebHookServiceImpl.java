@@ -159,11 +159,10 @@ public class WebHookServiceImpl extends AbstractTypedMetaDataService<MetaWebHook
 				if (webHookHttpClientConfig == null) {
 					webHookHttpClientConfig = new HttpClientConfig();
 				}
-				webHookHttpClientConfig.inited(this, config);
 				break;
 			}
 		}
-
+		webHookHttpClientConfig.inited(this, config);
 		atm = ManagerLocator.getInstance().getManager(AsyncTaskManager.class);
 		wheps = ServiceRegistry.getRegistry().getService(WebHookEndPointService.class);
 		initWebHookHttpClient();
