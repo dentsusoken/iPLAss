@@ -19,9 +19,11 @@
  */
 package org.iplass.mtp.impl.webhook.endpointaddress;
 
+import java.util.Map;
+
 import org.iplass.mtp.impl.definition.TypedMetaDataService;
-import org.iplass.mtp.impl.script.template.GroovyTemplate;
 import org.iplass.mtp.impl.webhook.endpointaddress.MetaWebHookEndPointDefinition.WebHookEndPointRuntime;
+import org.iplass.mtp.webhook.endpoint.WebhookEndPoint;
 
 public interface WebHookEndPointService extends TypedMetaDataService<MetaWebHookEndPointDefinition, WebHookEndPointRuntime>{
 
@@ -41,7 +43,7 @@ public interface WebHookEndPointService extends TypedMetaDataService<MetaWebHook
 	void updateCustomSecurityTokenById(int tenantId,String metaDataId, String secret);
 	
 	//secret getter
-	String getSecurityToken(int tenantId, String definitionName,  String tokenType);//総合メソッド。tokenTypeで下記単体メソッドを呼ぶ
+	String getSecurityToken(int tenantId, String definitionName, String tokenType);//総合メソッド。tokenTypeで下記単体メソッドを呼ぶ
 	
 	String getHmacTokenByDefinitionName(int tenantId,String definitionName);
 	String getBearerTokenByDefinitionName(int tenantId,String definitionName);
@@ -53,7 +55,8 @@ public interface WebHookEndPointService extends TypedMetaDataService<MetaWebHook
 	String getBasicTokenById(int tenantId,String metaDataId);
 	String getCustomTokenById(int tenantId,String metaDataId);
 
-	GroovyTemplate getUrlTemplateByName(String definitionName);
 	String generateHmacTokenString();
+	
+	WebhookEndPoint getWebhookEndPointByDefinitionName(String definitionName, Map<String, Object> binding);
 	
 }

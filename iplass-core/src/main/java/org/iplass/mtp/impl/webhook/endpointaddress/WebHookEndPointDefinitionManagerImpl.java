@@ -19,12 +19,15 @@
  */
 package org.iplass.mtp.impl.webhook.endpointaddress;
 
+import java.util.Map;
+
 import org.iplass.mtp.definition.DefinitionModifyResult;
 import org.iplass.mtp.impl.definition.AbstractTypedDefinitionManager;
 import org.iplass.mtp.impl.definition.TypedMetaDataService;
 import org.iplass.mtp.impl.metadata.RootMetaData;
-import org.iplass.mtp.impl.script.template.GroovyTemplate;
+import org.iplass.mtp.impl.webhook.WebHookAuthTokenHandler;
 import org.iplass.mtp.spi.ServiceRegistry;
+import org.iplass.mtp.webhook.endpoint.WebhookEndPoint;
 import org.iplass.mtp.webhook.endpoint.definition.WebHookEndPointDefinition;
 import org.iplass.mtp.webhook.endpoint.definition.WebHookEndPointDefinitionManager;
 import org.slf4j.Logger;
@@ -82,16 +85,16 @@ public class WebHookEndPointDefinitionManagerImpl extends AbstractTypedDefinitio
 		if(tokenType==null) {
 			throw new RuntimeException("null TokenType");
 		}
-		if( tokenType.equals("WHHM")){
+		if( WebHookAuthTokenHandler.HMAC_AUTHENTICATION_TYPE.equals(tokenType)){
 			service.updateHmacSecurityTokenByDefinitionName(tenantId,definitionName,secret);
 		}
-		if( tokenType.equals("WHBT")){
+		if( WebHookAuthTokenHandler.BEARER_AUTHENTICATION_TYPE.equals(tokenType)){
 			service.updateBearerSecurityTokenByDefinitionName(tenantId,definitionName,secret);
 		}
-		if( tokenType.equals("WHBA")){
+		if( WebHookAuthTokenHandler.BASIC_AUTHENTICATION_TYPE.equals(tokenType)){
 			service.updateBasicSecurityTokenByDefinitionName(tenantId,definitionName,secret);
 		}
-		if( tokenType.equals("WHCT")){
+		if( WebHookAuthTokenHandler.CUSTOM_AUTHENTICATION_TYPE.equals(tokenType)){
 			service.updateCustomSecurityTokenByDefinitionName(tenantId,definitionName,secret);
 		}
 	}
@@ -101,7 +104,8 @@ public class WebHookEndPointDefinitionManagerImpl extends AbstractTypedDefinitio
 		return service.generateHmacTokenString();
 	}
 
-	public GroovyTemplate  getUrlTemplateByName(String definitionName) {
-		return service.getUrlTemplateByName(definitionName);
+	@Override
+	public WebhookEndPoint getEndpointByDefinitionName(String definitionName, Map<String, Object> binding) {
+		return service.getWebhookEndPointByDefinitionName(definitionName, binding);
 	}
 }

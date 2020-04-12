@@ -19,8 +19,6 @@
  */
 package org.iplass.mtp.webhook;
 
-import org.iplass.mtp.webhook.WebHookResponse;
-
 /**
  * sendWebHookが成功したらこのHandlerを呼んでhandleResponseをする
  * 全部実行完了したら終わりとなります

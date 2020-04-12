@@ -39,33 +39,11 @@ public class WebHookTemplateDefinition implements Definition {
 	private String webHookContent;
 
 	private String urlQuery;
-
-	private String sender;
-	private String addressUrl;
 	private String httpMethod;
 
-	private boolean synchronous;
-
-	/** headers */
 	private List<WebHookHeaderDefinition> headers;
 	
 	public WebHookTemplateDefinition() {
-	}
-
-	public String getSender() {
-		return sender;
-	}
-
-	public void setSender(String sender) {
-		this.sender = sender;
-	}
-
-	public String getAddressUrl() {
-		return addressUrl;
-	}
-
-	public void setAddressUrl(String addressUrl) {
-		this.addressUrl = addressUrl;
 	}
 
 	@Override
@@ -98,14 +76,6 @@ public class WebHookTemplateDefinition implements Definition {
 		this.description = description;
 	}
 
-	public boolean isSynchronous() {
-		return synchronous;
-	}
-
-	public void setSynchronous(boolean synchronous) {
-		this.synchronous = synchronous;
-	}
-	
 	public List<WebHookHeaderDefinition> getHeaders() {
 		if (headers==null) {
 			this.headers = new ArrayList<WebHookHeaderDefinition>();

@@ -17,17 +17,27 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
-package org.iplass.mtp.webhook.endpoint.definition;
+package org.iplass.mtp.webhook.endpoint;
 
-import java.util.Map;
+public enum WebhookAuthenticationType {
+	BEARER("Basic Authentication","WHBT"),//username:password形式
+	BASIC("Bearer Authentication","WHBA"),
+	CUSTOM("Custom Authentication","WHCT");
 
-import org.iplass.mtp.definition.TypedDefinitionManager;
-import org.iplass.mtp.webhook.endpoint.WebhookEndPoint;
 
-public interface WebHookEndPointDefinitionManager extends TypedDefinitionManager<WebHookEndPointDefinition> {
+	private String displayName;
+	private String typeCode;
 
-	void modifySecurityToken(int tenantId,String definitionName, String secret, String TokenType);
-	
-	WebhookEndPoint getEndpointByDefinitionName(String definitionName, Map<String, Object> binding);
-	String generateHmacKey();
+	WebhookAuthenticationType(String displayName, String typeCode){
+		this.displayName = displayName;
+		this.typeCode = typeCode;
+	}
+
+	public String displayName() {
+		return displayName;
+	}
+
+	public String typeCode() {
+		return typeCode;
+	}	
 }

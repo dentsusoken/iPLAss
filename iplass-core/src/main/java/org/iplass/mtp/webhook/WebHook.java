@@ -25,6 +25,8 @@ package org.iplass.mtp.webhook;
 
 import java.util.List;
 
+import org.iplass.mtp.webhook.endpoint.WebhookEndPoint;
+
 /**
  * @author lisf06
  */
@@ -34,7 +36,7 @@ public class WebHook  {
 	/** 送る内容 */
 	private String contentType;
 	private String payloadContent;
-	
+
 	/** 送るメソッド */
 	private String httpMethod;
 
@@ -42,25 +44,11 @@ public class WebHook  {
 	private String urlQuery;
 	private String headerAuthTypeName;
 
-	/** headers */
 	private List<WebHookHeader> headers;
-	private String hmacHashHeader;
 
-	/**WebHookEndPointだったもの*/
-	private String url;
-	private String endPointName;
+	/** エンドポイント */
+	private WebhookEndPoint webhookEndPoint;
 
-	/**　同期非同期　*/
-	private boolean synchronous;
-	
-	//----------------------------------
-	public boolean isSynchronous() {
-		return synchronous;
-	}
-
-	public void setSynchronous(boolean synchronous) {
-		this.synchronous = synchronous;
-	}
 
 	public List<WebHookHeader> getHeaders() {
 		return headers;
@@ -74,13 +62,6 @@ public class WebHook  {
 		headers.add(header);
 	}
 
-	public String getHmacHashHeader() {
-		return hmacHashHeader;
-	}
-
-	public void setHmacHashHeader(String tokenHeader) {
-		this.hmacHashHeader = tokenHeader;
-	}
 	public String getHttpMethod() {
 		return httpMethod;
 	}
@@ -126,20 +107,11 @@ public class WebHook  {
 		this.payloadContent = payloadContent;
 	}
 
-	public String getUrl() {
-		return url;
+	public WebhookEndPoint getWebhookEndPoint() {
+		return webhookEndPoint;
 	}
 
-	public void setUrl(String url) {
-		this.url = url;
+	public void setWebhookEndPoint(WebhookEndPoint webhookEndPoint) {
+		this.webhookEndPoint = webhookEndPoint;
 	}
-
-	public String getEndPointName() {
-		return endPointName;
-	}
-
-	public void setEndPointName(String endPointName) {
-		this.endPointName = endPointName;
-	}
-
 }

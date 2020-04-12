@@ -79,8 +79,7 @@ public class WebHookEndPointEditPane extends MetaDataMainEditPane {
 	private final static String BEARER_DISPLAY_NAME = "Bearer Authentication";
 	private final static String CUSTOM_DISPLAY_NAME = "Custom Authentication";
 	private final static String NO_HEADER_AUTH_DISPLAY_NAME = "Disabled";
-	
-	//FIXME use enum?
+
 	private final static String BASIC_TYPE_CODE = "WHBA";
 	private final static String BEARER_TYPE_CODE = "WHBT";
 	private final static String CUSTOM_TYPE_CODE = "WHCT";
@@ -446,11 +445,11 @@ public class WebHookEndPointEditPane extends MetaDataMainEditPane {
 			editHmacButton.addClickHandler(new com.smartgwt.client.widgets.form.fields.events.ClickHandler() {
 				@Override
 				public void onClick(com.smartgwt.client.widgets.form.fields.events.ClickEvent event) {
-					service.getWebHookEndPointSecurityInfo(TenantInfoHolder.getId(), curDefinition.getName(), "WHHM", new AdminAsyncCallback<String>() {
+					service.getWebHookEndPointSecurityInfo(TenantInfoHolder.getId(), curDefinition.getName(), HMAC_TYPE_CODE, new AdminAsyncCallback<String>() {
 
 						@Override
 						public void onSuccess(String result) {
-							editMap("WHHM", result);
+							editMap(HMAC_TYPE_CODE, result);
 						}
 
 						@Override
@@ -467,7 +466,7 @@ public class WebHookEndPointEditPane extends MetaDataMainEditPane {
 			deleteHmacButton.addClickHandler(new com.smartgwt.client.widgets.form.fields.events.ClickHandler() {
 				@Override
 				public void onClick(com.smartgwt.client.widgets.form.fields.events.ClickEvent event) {
-					delMap("WHHM");
+					delMap(HMAC_TYPE_CODE);
 				}
 			});
 			
@@ -493,7 +492,7 @@ public class WebHookEndPointEditPane extends MetaDataMainEditPane {
 
 				@Override
 				public void onSuccess(String result) {
-					editMap("WHHM", result);
+					editMap(HMAC_TYPE_CODE, result);
 				}
 
 				@Override
@@ -555,7 +554,7 @@ public class WebHookEndPointEditPane extends MetaDataMainEditPane {
 									SmartGWTUtil.hideProgress();
 								};
 							});
-							if ("WHHM".equals(tokenType)) {
+							if (HMAC_TYPE_CODE.equals(tokenType)) {
 								setHmacLabelStatus(false);
 							} else {
 								setHeaderAuthLabelStatus(false);
@@ -616,13 +615,13 @@ public class WebHookEndPointEditPane extends MetaDataMainEditPane {
 				@Override
 				public void onSuccess(String result) {
 					if (result==null||result.isEmpty()) {
-						if ("WHHM".equals(type)) {
+						if (HMAC_TYPE_CODE.equals(type)) {
 							setHmacLabelStatus(false);
 						} else {
 							setHeaderAuthLabelStatus(false);
 						}
 					} else {
-						if ("WHHM".equals(type)) {
+						if (HMAC_TYPE_CODE.equals(type)) {
 							setHmacLabelStatus(true);
 						} else {
 							setHeaderAuthLabelStatus(true);
@@ -636,7 +635,7 @@ public class WebHookEndPointEditPane extends MetaDataMainEditPane {
 			});
 		}
 		private void refreshSecurityInfo() {
-			refreshSecretIsStoredStatus("WHHM");
+			refreshSecretIsStoredStatus(HMAC_TYPE_CODE);
 			refreshSecretIsStoredStatus(curDefinition.getHeaderAuthType());
 		}
 

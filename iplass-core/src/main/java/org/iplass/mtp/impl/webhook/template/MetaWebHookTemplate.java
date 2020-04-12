@@ -19,6 +19,8 @@
  */
 package org.iplass.mtp.impl.webhook.template;
 
+import java.io.IOException;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -33,7 +35,9 @@ import org.iplass.mtp.impl.metadata.BaseRootMetaData;
 import org.iplass.mtp.impl.metadata.MetaDataConfig;
 import org.iplass.mtp.impl.script.GroovyScriptEngine;
 import org.iplass.mtp.impl.script.ScriptEngine;
+import org.iplass.mtp.impl.script.ScriptRuntimeException;
 import org.iplass.mtp.impl.script.template.GroovyTemplate;
+import org.iplass.mtp.impl.script.template.GroovyTemplateBinding;
 import org.iplass.mtp.impl.script.template.GroovyTemplateCompiler;
 import org.iplass.mtp.impl.util.ObjectUtil;
 import org.iplass.mtp.webhook.WebHook;
@@ -49,20 +53,12 @@ public class MetaWebHookTemplate extends BaseRootMetaData implements DefinableMe
 	/** webHook 内容部分 */
 	private String contentType;
 	private String webHookContent;
-
-	private String sender;
-	private String addressUrl;
 	private String httpMethod;
 
 	private List<MetaWebHookHeader> headers;
 	
 	private String urlQuery;
 
-	/**　同期非同期　*/
-	private boolean synchronous;
-
-
-	
 	@Override
 	public WebHookTemplateRuntime createRuntime(MetaDataConfig metaDataConfig) {
 		return new WebHookTemplateRuntime();
@@ -82,12 +78,7 @@ public class MetaWebHookTemplate extends BaseRootMetaData implements DefinableMe
 		
 		contentType = definition.getContentType();
 		webHookContent = definition.getWebHookContent();
-		
-		addressUrl = definition.getAddressUrl();
-		sender = definition.getSender();
-		
 		httpMethod = definition.getHttpMethod();
-		synchronous = definition.isSynchronous();
 		urlQuery = definition.getUrlQuery();
 		
 		ArrayList<MetaWebHookHeader> newHeaders = new ArrayList<MetaWebHookHeader>();
@@ -114,12 +105,7 @@ public class MetaWebHookTemplate extends BaseRootMetaData implements DefinableMe
 		definition.setContentType(contentType);
 		definition.setWebHookContent(webHookContent);
 		definition.setUrlQuery(urlQuery);
-		
-		definition.setAddressUrl(addressUrl);
-		definition.setSender(sender);
-
 		definition.setHttpMethod(httpMethod);
-		definition.setSynchronous(synchronous);
 		
 		ArrayList<WebHookHeaderDefinition> newHeaders = new ArrayList<WebHookHeaderDefinition>();
 		if (headers!=null) {
@@ -130,31 +116,6 @@ public class MetaWebHookTemplate extends BaseRootMetaData implements DefinableMe
 		definition.setHeaders(newHeaders);
 		
 		return definition;
-	}
-	
-	
-	public String getSender() {
-		return sender;
-	}
-
-	public void setSender(String sender) {
-		this.sender = sender;
-	}
-
-	public String getAddressUrl() {
-		return addressUrl;
-	}
-
-	public void setAddressUrl(String addressUrl) {
-		this.addressUrl = addressUrl;
-	}
-
-	public boolean isSynchronous() {
-		return synchronous;
-	}
-
-	public void setSynchronous(boolean synchronous) {
-		this.synchronous = synchronous;
 	}
 
 	public List<MetaWebHookHeader> getHeaders() {
@@ -248,21 +209,39 @@ public class MetaWebHookTemplate extends BaseRootMetaData implements DefinableMe
 			}
 			webHook.setHeaders(newHeaders);
 			webHook.setHttpMethod(httpMethod);
-			webHook.setSynchronous(synchronous);
 			webHook.setContentType(contentType);
 			webHook.setUrlQuery(urlQuery);
 			//common binding
-			Map<String, Object> bindings = new HashMap<String, Object>();
+			Map<String, Object> binding = new HashMap<String, Object>();
 			if (parameter != null) {
 				for (Map.Entry<String, Object> e: parameter.entrySet()) {
-					bindings.put(e.getKey(), e.getValue());
+					binding.put(e.getKey(), e.getValue());
 				}
 			}
 			webHook.setContentType(contentType);
-			bindings.put("webHook", webHook);
+			binding.put("webHook", webHook);
 
 			//template
-			
+			if (contentTemplate != null) {
+				StringWriter sw = new StringWriter();
+				GroovyTemplateBinding gtb = new GroovyTemplateBinding(sw,binding);
+				try {
+					contentTemplate.doTemplate(gtb);
+				} catch (IOException e) {
+					throw new ScriptRuntimeException(e);
+				}
+				webHook.setPayloadContent(sw.toString());
+			}
+			if (urlQueryTemplate!=null) {
+				StringWriter sw = new StringWriter();
+				GroovyTemplateBinding gtb = new GroovyTemplateBinding(sw,binding);
+				try {
+					urlQueryTemplate.doTemplate(gtb);
+				} catch (IOException e) {
+					throw new ScriptRuntimeException(e);
+				}
+				webHook.setUrlQuery(sw.toString());
+			}
 			return webHook;
 		}
 		

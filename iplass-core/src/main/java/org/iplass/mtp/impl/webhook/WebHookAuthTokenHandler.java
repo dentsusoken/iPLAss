@@ -91,11 +91,11 @@ public class WebHookAuthTokenHandler extends AuthTokenHandler{
 	/**
 	 * raw data -> database
 	 */
-	public void updateSecret(final int tenantId, final String type, final String metaDataId, final String series, final String tokenSecret) {
-		checkTypeValidity(type);
-		AuthToken oldToken = authTokenStore().getBySeries(tenantId, type, series);
+	public void updateSecret(final int tenantId, final String typeCode, final String metaDataId, final String series, final String tokenSecret) {
+		checkTypeValidity(typeCode);
+		AuthToken oldToken = authTokenStore().getBySeries(tenantId, typeCode, series);
 		Timestamp startDate = new Timestamp(java.lang.System.currentTimeMillis());
-		AuthToken newToken = new AuthToken(tenantId, type, metaDataId, series, tokenSecret, "", startDate, null);
+		AuthToken newToken = new AuthToken(tenantId, typeCode, metaDataId, series, tokenSecret, "", startDate, null);
 		authTokenStore().update(newToken, oldToken);
 	}
 	
@@ -103,12 +103,12 @@ public class WebHookAuthTokenHandler extends AuthTokenHandler{
 	 * raw data -> database
 	 * 特定のデータを削除する
 	 */
-	public void deleteSecret(final int tenantId, final String type, final String series) {
-		checkTypeValidity(type);
-		authTokenStore().deleteBySeries(tenantId, type, series);
+	public void deleteSecret(final int tenantId, final String typeCode, final String series) {
+		checkTypeValidity(typeCode);
+		authTokenStore().deleteBySeries(tenantId, typeCode, series);
 	}
 	/**
-	 * do not use, TODO:marked for delete
+	 * do not use
 	 * */
 	@Override
 	public Credential toCredential(AuthToken newToken) {
@@ -120,17 +120,17 @@ public class WebHookAuthTokenHandler extends AuthTokenHandler{
 	 * 
 	 * throw runtime Exception if invalid.
 	 **/
-	private boolean checkTypeValidity(String type) {
-		if (BASIC_AUTHENTICATION_TYPE.equals(type)) {
+	private boolean checkTypeValidity(String typeCode) {
+		if (BASIC_AUTHENTICATION_TYPE.equals(typeCode)) {
 			return true;
 		}
-		if (BEARER_AUTHENTICATION_TYPE.equals(type)) {
+		if (BEARER_AUTHENTICATION_TYPE.equals(typeCode)) {
 			return true;
 		}
-		if (HMAC_AUTHENTICATION_TYPE.equals(type)) {
+		if (HMAC_AUTHENTICATION_TYPE.equals(typeCode)) {
 			return true;
 		}
-		if (CUSTOM_AUTHENTICATION_TYPE.equals(type)) {
+		if (CUSTOM_AUTHENTICATION_TYPE.equals(typeCode)) {
 			return true;
 		}
 		//セキュリティ情報に関するDB交互なので、見送りはできない

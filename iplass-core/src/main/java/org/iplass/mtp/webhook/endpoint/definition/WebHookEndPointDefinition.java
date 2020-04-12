@@ -84,7 +84,7 @@ public class WebHookEndPointDefinition implements Definition{
 	public void setHeaderAuthType(String headerAuthType) {
 		this.headerAuthType = headerAuthType;
 	}
-	
+
 	public String getHeaderAuthCustomTypeName() {
 		return headerAuthCustomTypeName;
 	}

@@ -20,6 +20,8 @@
 package org.iplass.mtp.impl.webhook.endpointaddress;
 
 import java.security.NoSuchAlgorithmException;
+import java.util.Map;
+
 import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
 import org.apache.commons.codec.binary.Base64;
@@ -37,6 +39,7 @@ import org.iplass.mtp.impl.webhook.WebHookAuthTokenHandler;
 import org.iplass.mtp.impl.webhook.endpointaddress.MetaWebHookEndPointDefinition.WebHookEndPointRuntime;
 import org.iplass.mtp.spi.Config;
 import org.iplass.mtp.spi.ServiceRegistry;
+import org.iplass.mtp.webhook.endpoint.WebhookEndPoint;
 import org.iplass.mtp.webhook.endpoint.definition.WebHookEndPointDefinition;
 import org.iplass.mtp.webhook.endpoint.definition.WebHookEndPointDefinitionManager;
 
@@ -246,19 +249,24 @@ public class WebHookEndPointServiceImpl extends AbstractTypedMetaDataService<Met
 		if(tokenType==null||tokenType.replaceAll("\\s","").isEmpty()) {
 			return null;
 		}
-		if( tokenType.equals("WHHM")){
+		if( WebHookAuthTokenHandler.HMAC_AUTHENTICATION_TYPE.equals(tokenType)){
 			return getHmacTokenByDefinitionName(tenantId,definitionName);
 		}
-		if( tokenType.equals("WHBT")){
+		if( WebHookAuthTokenHandler.BEARER_AUTHENTICATION_TYPE.equals(tokenType)){
 			return getBearerTokenByDefinitionName(tenantId,definitionName);
 		}
-		if( tokenType.equals("WHBA")){
+		if( WebHookAuthTokenHandler.BASIC_AUTHENTICATION_TYPE.equals(tokenType)){
 			return getBasicTokenByDefinitionName(tenantId,definitionName);
 		}
-		if( tokenType.equals("WHCT")){
+		if( WebHookAuthTokenHandler.CUSTOM_AUTHENTICATION_TYPE.equals(tokenType)){
 			return getCustomTokenByDefinitionName(tenantId,definitionName);
 		}
 		throw new RuntimeException("unknown TokenType");
+	}
+
+	@Override
+	public WebhookEndPoint getWebhookEndPointByDefinitionName(String definitionName, Map<String, Object> binding) {
+		return getRuntimeByName(definitionName).createWebhookEndPoint(binding);
 	}
 	
 }
