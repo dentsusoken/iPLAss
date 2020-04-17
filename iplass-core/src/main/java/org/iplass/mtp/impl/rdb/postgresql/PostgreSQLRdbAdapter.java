@@ -538,10 +538,15 @@ public class PostgreSQLRdbAdapter extends RdbAdapter {
 
 	@Override
 	public String[] convertTZ(String to) {
-		String[] ret = {
-				"TIMEZONE('" + to + "',CAST(",
-				" AS TIMESTAMPTZ(3)))"};
-		return ret;
+		if (rdbTimeZone() == null) {
+			return new String[] {
+					"TIMEZONE('" + to + "',CAST(",
+					" AS TIMESTAMPTZ(3)))"};
+		} else {
+			return new String[] {
+					"TIMEZONE('" + to + "',TIMEZONE('" + rdbTimeZone().getID() + "',",
+					"))"};
+		}
 	}
 
 	@Override

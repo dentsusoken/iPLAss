@@ -675,10 +675,15 @@ public class OracleRdbAdapter extends RdbAdapter {
 
 	@Override
 	public String[] convertTZ(String to) {
-		String[] ret = {
-				"CAST(FROM_TZ(",
-				",SESSIONTIMEZONE) AT TIME ZONE '" + to + "' AS TIMESTAMP)"};
-		return ret;
+		if (rdbTimeZone() == null) {
+			return new String[] {
+					"CAST(FROM_TZ(",
+					",SESSIONTIMEZONE) AT TIME ZONE '" + to + "' AS TIMESTAMP)"};
+		} else {
+			return new String[] {
+					"CAST(FROM_TZ(",
+					",'" + rdbTimeZone().getID() + "') AT TIME ZONE '" + to + "' AS TIMESTAMP)"};
+		}
 	}
 
 	@Override
