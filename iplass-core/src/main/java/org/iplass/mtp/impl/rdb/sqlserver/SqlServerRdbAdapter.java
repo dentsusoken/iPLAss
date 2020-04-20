@@ -32,6 +32,7 @@ import java.sql.Timestamp;
 import java.sql.Types;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Map;
 
 import org.iplass.mtp.entity.query.GroupBy.RollType;
 import org.iplass.mtp.entity.query.SortSpec.NullOrderingSpec;
@@ -88,6 +89,7 @@ public class SqlServerRdbAdapter extends RdbAdapter {
 	private int maxFetchSize = 100;
 	private int defaultQueryTimeout;
 	private int defaultFetchSize;
+	private Map<String, String> timeZoneMap;
 
 	private static final String DATE_MIN = "17530101000000000";
 	private static final String DATE_MAX = "99991231235959999";
@@ -532,9 +534,30 @@ public class SqlServerRdbAdapter extends RdbAdapter {
 
 	@Override
 	public String[] convertTZ(String to) {
-		// 「AT TIME ZONE」SQL Server 2016からサポートのため未対応
-		String[] ret = {"", ""};
-		return ret;
+		// 「AT TIME ZONE」SQL Server 2016からサポート
+
+		if (rdbTimeZone() == null) {
+			//CURRENT_TIMEZONE()は、SQL Serverでは未サポートなので、rdbTimeZone指定されている前提で
+			String[] ret = {"", ""};
+			return ret;
+		} else {
+			return new String[] {
+					"",
+					" AT TIME ZONE '" + maptz(rdbTimeZone().getID()) + "' AT TIME ZONE '" + maptz(to) + "'"
+					};
+		}
+	}
+	
+	private String maptz(String timeZone) {
+		if (timeZoneMap == null) {
+			return timeZone;
+		}
+		String mapped = timeZoneMap.get(timeZone);
+		if (mapped == null) {
+			return timeZone;
+		} else {
+			return mapped;
+		}
 	}
 
 	@Override
@@ -739,4 +762,13 @@ public class SqlServerRdbAdapter extends RdbAdapter {
 	public String getDefaultOrderByForLimit() {
 		return " ORDER BY (SELECT NULL) ";
 	}
+	
+	public Map<String, String> getTimeZoneMap() {
+		return timeZoneMap;
+	}
+
+	public void setTimeZoneMap(Map<String, String> timeZoneMap) {
+		this.timeZoneMap = timeZoneMap;
+	}
+
 }
