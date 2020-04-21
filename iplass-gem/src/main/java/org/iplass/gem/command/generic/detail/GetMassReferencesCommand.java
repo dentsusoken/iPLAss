@@ -29,6 +29,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -154,11 +155,11 @@ public final class GetMassReferencesCommand extends DetailCommandBase implements
 			}
 
 			if (section != null) {
-				List<String> props = new ArrayList<String>();
+				List<String> props = new ArrayList<>();
 				props.add(Entity.OID);
 				props.add(Entity.NAME);
 				props.add(Entity.VERSION);
-				List<DisplayInfo> dispInfo = new ArrayList<GetMassReferencesCommand.DisplayInfo>();
+				List<DisplayInfo> dispInfo = new ArrayList<>();
 				EntityDefinition red = edm.get(rp.getObjectDefinitionName());
 				for (NestProperty np : section.getProperties()) {
 					//表示設定確認
@@ -401,11 +402,14 @@ public final class GetMassReferencesCommand extends DetailCommandBase implements
 	 * @throws IOException
 	 * @throws ServletException
 	 */
-	private void getHtmlData(RequestContext request, String defName, String viewName, String propName, ReferenceProperty rp, List<NestProperty> props, List<Entity> result, OutputType outputType) throws IOException, ServletException {
-		List<Map<String, String>> ret = new ArrayList<Map<String,String>>();
+	private void getHtmlData(RequestContext request, String defName, String viewName,
+			String propName, ReferenceProperty rp, List<NestProperty> props,
+			List<Entity> result, OutputType outputType) throws IOException, ServletException {
+
+		List<Map<String, String>> ret = new ArrayList<>();
 		final EntityDefinition ed = edm.get(rp.getObjectDefinitionName());
 		for (final Entity entity : result) {
-			final Map<String, String> eval = new LinkedHashMap<String, String>();
+			final Map<String, String> eval = new LinkedHashMap<>();
 			eval.put("orgOid", entity.getOid());
 			eval.put("orgVersion", entity.getVersion().toString());
 			for (NestProperty property : props) {
@@ -464,7 +468,20 @@ public final class GetMassReferencesCommand extends DetailCommandBase implements
 					}
 				}
 			}
-			ret.add(eval);
+
+			//参照プロパティに対するNestプロパティに対してJSPで生成されたhtmlのKEYに
+			//被参照のプロパティ名が付加されているので除去する
+			Map<String, String> ajustData = eval.entrySet().stream().collect(Collectors.toMap(
+					e -> {
+						if (e.getKey().startsWith(propName + ".")) {
+							return e.getKey().substring((propName + ".").length());
+						} else {
+							return e.getKey();
+						}
+					},
+					Map.Entry::getValue));
+
+			ret.add(ajustData);
 		}
 
 		request.setAttribute("htmlData", ret);
@@ -494,7 +511,7 @@ public final class GetMassReferencesCommand extends DetailCommandBase implements
 	 */
 	private List<MassReferenceSection> getMassReferenceSection(
 			EntityDefinition ed, OutputType outputType, DetailFormView view, String viewName, Entity entity) {
-		List<MassReferenceSection> sections = new ArrayList<MassReferenceSection>();
+		List<MassReferenceSection> sections = new ArrayList<>();
 		for (Section section : view.getSections()) {
 			if (section instanceof DefaultSection
 					&& EntityViewUtil.isDisplayElement(ed.getName(), section.getElementRuntimeId(), outputType, entity)) {
@@ -513,7 +530,7 @@ public final class GetMassReferencesCommand extends DetailCommandBase implements
 	 */
 	private List<MassReferenceSection> getMassReferenceSection(
 			EntityDefinition ed, OutputType outputType, DefaultSection section, Entity entity) {
-		List<MassReferenceSection> sections = new ArrayList<MassReferenceSection>();
+		List<MassReferenceSection> sections = new ArrayList<>();
 		for (Element elem : section.getElements()) {
 			if (elem instanceof MassReferenceSection) {
 				MassReferenceSection _section = (MassReferenceSection) elem;
@@ -651,7 +668,7 @@ public final class GetMassReferencesCommand extends DetailCommandBase implements
 
 	private void setUserInfoMap(DetailCommandContext context, final List<String> userOidList) {
 		//UserEntityを検索してリクエストに格納
-		final Map<String, Entity> userMap = new HashMap<String, Entity>();
+		final Map<String, Entity> userMap = new HashMap<>();
 
 		Query q = new Query().select(Entity.OID, Entity.NAME)
 							 .from(User.DEFINITION_NAME)
