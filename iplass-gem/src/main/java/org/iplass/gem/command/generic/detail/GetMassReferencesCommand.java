@@ -406,8 +406,13 @@ public final class GetMassReferencesCommand extends DetailCommandBase implements
 			String propName, ReferenceProperty rp, List<NestProperty> props,
 			List<Entity> result, OutputType outputType) throws IOException, ServletException {
 
-		List<Map<String, String>> ret = new ArrayList<>();
 		final EntityDefinition ed = edm.get(rp.getObjectDefinitionName());
+
+		//EditorのProperty名には被参照プロパティ名を付加
+		//参照ダイアログでの編集保存時にSectionからEditorを取得するため
+		final String editorPrefix = propName + ".";
+
+		List<Map<String, String>> ret = new ArrayList<>();
 		for (final Entity entity : result) {
 			final Map<String, String> eval = new LinkedHashMap<>();
 			eval.put("orgOid", entity.getOid());
@@ -454,12 +459,12 @@ public final class GetMassReferencesCommand extends DetailCommandBase implements
 						};
 
 						//HTML取得
-						property.getEditor().setPropertyName(propName + "." + property.getPropertyName());
+						property.getEditor().setPropertyName(editorPrefix + property.getPropertyName());
 						String html = ResponseUtil.getIncludeJspContents(path, beforeFunc, afterFunc) .replace("\r\n", "").replace("\n", "").replace("\r", "");
 
 						WebRequestStack stack = WebRequestStack.getCurrent();
 						HttpServletRequest req = stack.getRequest();
-						Boolean isNest = (Boolean) req.getAttribute(Constants.EDITOR_REF_NEST_PROPERTY_PREFIX + property.getPropertyName());
+						Boolean isNest = (Boolean) req.getAttribute(Constants.EDITOR_REF_NEST_PROPERTY_PREFIX + editorPrefix + property.getPropertyName());
 						if (isNest != null && isNest) {
 							eval.put(property.getPropertyName() + ".name", html);
 						} else {
@@ -473,8 +478,8 @@ public final class GetMassReferencesCommand extends DetailCommandBase implements
 			//被参照のプロパティ名が付加されているので除去する
 			Map<String, String> ajustData = eval.entrySet().stream().collect(Collectors.toMap(
 					e -> {
-						if (e.getKey().startsWith(propName + ".")) {
-							return e.getKey().substring((propName + ".").length());
+						if (e.getKey().startsWith(editorPrefix)) {
+							return e.getKey().substring(editorPrefix.length());
 						} else {
 							return e.getKey();
 						}
