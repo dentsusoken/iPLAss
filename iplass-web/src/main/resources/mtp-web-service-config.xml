@@ -459,6 +459,12 @@
 	<service>
 		<interface>org.iplass.mtp.impl.webapi.EntityWebApiService</interface>
 		<property name="maxLimit" value="1000" />
+		<!-- Entity CRUD APIのQuery検索でCSV形式の結果を返す際の日付フォーマット。未指定の場合は、実行時のLocaleFormatを利用-->
+		<!-- 
+		<property name="csvDateTimeFormat" value="yyyy/MM/dd HH:mm:ss" />
+		<property name="csvDateFormat" value="yyyy/MM/dd" />
+		<property name="csvTimeFormat" value="HH:mm:ss" />
+		 -->
 	</service>
 
 	<service>
