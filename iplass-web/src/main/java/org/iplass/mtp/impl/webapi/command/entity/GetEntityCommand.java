@@ -144,13 +144,14 @@ public final class GetEntityCommand extends AbstractEntityCommand {
 		checkPermission(query.getFrom().getEntityName(), def -> def.getMetaData().isQuery());
 
 		StreamingOutput stream = out -> {
-
-			EntityWriteOption option = new EntityWriteOption().where(query.getWhere()).orderBy(query.getOrderBy());
+			
+			EntityWriteOption option = new EntityWriteOption()
+					.where(query.getWhere())
+					.orderBy(query.getOrderBy());
 			option.setDateFormat(entityWebApiService.getCsvDateFormat());
 			option.setDatetimeSecFormat(entityWebApiService.getCsvDateTimeFormat());
 			option.setTimeSecFormat(entityWebApiService.getCsvTimeFormat());
-			try (EntitySearchCsvWriter writer = new EntitySearchCsvWriter(out, query.getFrom().getEntityName(),
-					option)) {
+			try (EntitySearchCsvWriter writer = new EntitySearchCsvWriter(out, query.getFrom().getEntityName(), option)) {
 				writer.write();
 			}
 		};
