@@ -35,7 +35,7 @@ import org.iplass.mtp.webapi.definition.EntityWebApiDefinitionManager;
  * @author lis7gv
  */
 public class EntityWebApiService extends AbstractTypedMetaDataService<MetaEntityWebApi, EntityWebApiHandler> implements Service {
-	
+
 	/** メタデータのパス */
 	public static final String META_PATH = "/entityWebapi/";
 
@@ -56,10 +56,26 @@ public class EntityWebApiService extends AbstractTypedMetaDataService<MetaEntity
 			return path.substring(pathPrefix.length()).replace("/", ".");
 		}
 	}
+
 	private int maxLimit;
-	
+	private String csvDateTimeFormat;
+	private String csvDateFormat;
+	private String csvTimeFormat;
+
 	public int getMaxLimit() {
 		return maxLimit;
+	}
+
+	public String getCsvDateTimeFormat() {
+		return csvDateTimeFormat;
+	}
+
+	public String getCsvDateFormat() {
+		return csvDateFormat;
+	}
+
+	public String getCsvTimeFormat() {
+		return csvTimeFormat;
 	}
 
 	@Override
@@ -69,6 +85,9 @@ public class EntityWebApiService extends AbstractTypedMetaDataService<MetaEntity
 	@Override
 	public void init(Config config) {
 		maxLimit = config.getValue("maxLimit", Integer.class, 1000);
+		csvDateTimeFormat = config.getValue("csvDateTimeFormat", String.class, null);
+		csvDateFormat = config.getValue("csvDateFormat", String.class, null);
+		csvTimeFormat = config.getValue("csvTimeFormat", String.class, null);
 	}
 
 	public static String getFixedPath() {
