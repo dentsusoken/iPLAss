@@ -222,10 +222,10 @@ task copyGwtTransSrc(type: Sync) {
 		include 'mtp/mail/template/definition/MailTemplateDefinitionModifyResult.java'
 		include 'mtp/mail/template/definition/PlainTextBodyPart.java'
 
-		include 'mtp/webhook/template/definition/WebHookSubscriber.java'
-		include 'mtp/webhook/template/definition/WebHookTemplateDefinition.java'
-		include 'mtp/webhook/template/definition/WebHookHeaderDefinition.java'
-		include 'mtp/webhook/endpoint/definition/WebHookEndPointDefinition.java'
+		include 'mtp/webhook/template/definition/WebhookSubscriber.java'
+		include 'mtp/webhook/template/definition/WebhookTemplateDefinition.java'
+		include 'mtp/webhook/template/definition/WebhookHeaderDefinition.java'
+		include 'mtp/webhook/endpoint/definition/WebhookEndpointDefinition.java'
 
 		include 'mtp/message/MessageCategory.java'
 		include 'mtp/message/MessageItem.java'

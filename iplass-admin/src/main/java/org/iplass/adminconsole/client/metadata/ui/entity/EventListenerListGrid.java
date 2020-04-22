@@ -220,8 +220,8 @@ public class EventListenerListGrid extends ListGrid {
 			record.setNotificationCondScript(snDef.getNotificationCondScript());
 
 			record.setSyncrhonous(snDef.isSynchronous());
-			record.setWebHookEndPointList(snDef.getEndPointDefList());
-			record.setWebHookResultHandler(snDef.getResultHandler());
+			record.setDestinationList(snDef.getDestinationList());
+			record.setWebhookResultHandler(snDef.getResultHandler());
 			record.setSendTogether(snDef.isSendTogether());
 
 			List<EventType> lstEType = snDef.getListenEvent();
@@ -310,12 +310,12 @@ public class EventListenerListGrid extends ListGrid {
 				snDef.setNotificationCondScript(record.getNotificationCondScript());
 
 				snDef.setSynchronous(record.isSyncrhonous());
-				snDef.setEndPointDefList(record.getWebHookEndPointList());
-				snDef.setResultHandler(record.getWebHookResultHandler());
+				snDef.setDestinationList(record.getDestinationList());
+				snDef.setResultHandler(record.getWebhookResultHandler());
 
 				snDef.setSynchronous(record.isSyncrhonous());
-				snDef.setEndPointDefList(record.getWebHookEndPointList());
-				snDef.setResultHandler(record.getWebHookResultHandler());
+				snDef.setDestinationList(record.getDestinationList());
+				snDef.setResultHandler(record.getWebhookResultHandler());
 				snDef.setSendTogether(record.isSendTogether());
 
 				List<EventType> lstEType = new ArrayList<EventType>();
@@ -406,8 +406,8 @@ public class EventListenerListGrid extends ListGrid {
 
 		//webhook
 		private VLayout webhookLayout;
-		private DynamicForm webHookSettingsForm;
-		private CheckboxItem webHookIsSynchronousItem;
+		private DynamicForm webhookSettingsForm;
+		private CheckboxItem webhookIsSynchronousItem;
 		private TextItem notificationResultHandlerItem;
 
 		//NotificationCondition
@@ -633,18 +633,18 @@ public class EventListenerListGrid extends ListGrid {
 			sendTogetherForm.setItems(isSendTogetherItem);
 
 			//---------------------------------
-			//WebHook
+			//Webhook
 			//---------------------------------
 			webhookLayout = new VLayout();
 			webhookLayout.setWidth("100%");
-			webHookSettingsForm = new MtpForm();
-			webHookSettingsForm.setNumCols(2);
+			webhookSettingsForm = new MtpForm();
+			webhookSettingsForm.setNumCols(2);
 			notificationResultHandlerItem = new TextItem("ResultHandler","ResuleHandlerImplClassName");
 			notificationResultHandlerItem.setWidth(575);
-			webHookIsSynchronousItem = new CheckboxItem("webHookIsSynchronous","Synchronous");
-			webHookIsSynchronousItem.setShowTitle(false);
-			webHookSettingsForm.setItems(notificationResultHandlerItem,webHookIsSynchronousItem);
-			webhookLayout.addMembers(webHookSettingsForm);
+			webhookIsSynchronousItem = new CheckboxItem("webhookIsSynchronous","Synchronous");
+			webhookIsSynchronousItem.setShowTitle(false);
+			webhookSettingsForm.setItems(notificationResultHandlerItem,webhookIsSynchronousItem);
+			webhookLayout.addMembers(webhookSettingsForm);
 			
 			//---------------------------------
 			//Notification Condition
@@ -799,10 +799,10 @@ public class EventListenerListGrid extends ListGrid {
 			notifyAfterPItem.setValue(target.isNotifyAfterP());
 			notifyOnLoadItem.setValue(target.isNotifyOnLoad());
 			notifyBeforeValidateItem.setValue(target.isNotifyBeforeValidate());
-			notificationDestinationGrid.initializeGrid(target.getWebHookEndPointList());
+			notificationDestinationGrid.initializeGrid(target.getDestinationList());
 			isSendTogetherItem.setValue(target.isSendTogether());
-			webHookIsSynchronousItem.setValue(target.isSyncrhonous());
-			notificationResultHandlerItem.setValue(target.getWebHookResultHandler());
+			webhookIsSynchronousItem.setValue(target.isSyncrhonous());
+			notificationResultHandlerItem.setValue(target.getWebhookResultHandler());
 			withoutMappedByReferenceItem.setValue(target.isWithoutMappedByReference());
 			
 			//既にnotificationTypeがあったらtemplateの選択肢もロードします
@@ -948,8 +948,8 @@ public class EventListenerListGrid extends ListGrid {
 				}
 			}
 			if (typeLayout.contains(webhookLayout)) {
-				if (webhookLayout.contains(webHookSettingsForm)) {
-					if(!webHookSettingsForm.validate()) {
+				if (webhookLayout.contains(webhookSettingsForm)) {
+					if(!webhookSettingsForm.validate()) {
 						isValidate = false;
 					}
 				}
@@ -993,8 +993,8 @@ public class EventListenerListGrid extends ListGrid {
 				target.setNotifyOnLoad(SmartGWTUtil.getBooleanValue(notifyOnLoadItem));
 				target.setNotifyBeforeValidate(SmartGWTUtil.getBooleanValue(notifyBeforeValidateItem));
 				target.setSendTogether(SmartGWTUtil.getBooleanValue(isSendTogetherItem));
-				target.setWebHookResultHandler(SmartGWTUtil.getStringValue(notificationResultHandlerItem));
-				target.setSyncrhonous(SmartGWTUtil.getBooleanValue(webHookIsSynchronousItem));
+				target.setWebhookResultHandler(SmartGWTUtil.getStringValue(notificationResultHandlerItem));
+				target.setSyncrhonous(SmartGWTUtil.getBooleanValue(webhookIsSynchronousItem));
 			}
 			target.setWithoutMappedByReference(SmartGWTUtil.getBooleanValue(withoutMappedByReferenceItem));
 			updateData(target);
@@ -1013,7 +1013,7 @@ public class EventListenerListGrid extends ListGrid {
 							notificationDestinationGrid.getRecordList().remove(record);
 						}
 						notificationDestinationGrid.addDestination(text);
-						target.setWebHookEndPointList(notificationDestinationGrid.getDestination());
+						target.setDestinationList(notificationDestinationGrid.getDestination());
 						notificationDestinationGrid.redraw();
 					}
 					@Override
@@ -1023,7 +1023,7 @@ public class EventListenerListGrid extends ListGrid {
 		}
 		private void destinationDelMap(){
 			notificationDestinationGrid.removeSelectedData();
-			target.setWebHookEndPointList(notificationDestinationGrid.getDestination());
+			target.setDestinationList(notificationDestinationGrid.getDestination());
 			notificationDestinationGrid.markForRedraw();
 		}
 
@@ -1038,10 +1038,10 @@ public class EventListenerListGrid extends ListGrid {
 				this.setFields(destinationField);
 			}
 			private void initializeGrid(List<String> destinationList) {
-				this.setData(createWebHookEndPointRecord(destinationList));
+				this.setData(createWebhookEndpointRecord(destinationList));
 			}
 			
-			private ListGridRecord[] createWebHookEndPointRecord(List<String> destinationList) {
+			private ListGridRecord[] createWebhookEndpointRecord(List<String> destinationList) {
 				if (destinationList == null || destinationList.size()==0) {
 					return null;
 				}

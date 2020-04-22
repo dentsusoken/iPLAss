@@ -55,9 +55,9 @@ import org.iplass.mtp.transaction.Transaction;
 import org.iplass.mtp.transaction.TransactionManager;
 import org.iplass.mtp.transaction.TransactionStatus;
 import org.iplass.mtp.util.StringUtil;
-import org.iplass.mtp.webhook.WebHook;
-import org.iplass.mtp.webhook.WebHookManager;
-import org.iplass.mtp.webhook.WebHookResponseHandler;
+import org.iplass.mtp.webhook.Webhook;
+import org.iplass.mtp.webhook.WebhookManager;
+import org.iplass.mtp.webhook.WebhookResponseHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -81,7 +81,7 @@ public class MetaSendNotificationEventListener extends MetaEventListener {
 
 	/**ウェッブフックだけの設定項目*/
 	private boolean synchronous;
-	private List<String> endPointDefList;
+	private List<String> destinationList;
 	private String resultHandler;
 
 	public SendNotificationType getNotificationType() {
@@ -116,12 +116,12 @@ public class MetaSendNotificationEventListener extends MetaEventListener {
 		this.listenEvent = listenEvent;
 	}
 
-	public List<String> getEndPointDefList() {
-		return endPointDefList;
+	public List<String> getDestinationList() {
+		return destinationList;
 	}
 
-	public void setEndPointDefList(List<String> endPointDefList) {
-		this.endPointDefList = endPointDefList;
+	public void setDestinationList(List<String> destinationList) {
+		this.destinationList = destinationList;
 	}
 	
 	public String getResultHandler() {
@@ -162,9 +162,9 @@ public class MetaSendNotificationEventListener extends MetaEventListener {
 			copy.listenEvent.addAll(listenEvent);
 		}
 		copy.setSynchronous(synchronous);
-		if (endPointDefList !=null) {
-			copy.endPointDefList = new ArrayList<>(endPointDefList );
-			copy.endPointDefList.addAll(endPointDefList);
+		if (destinationList !=null) {
+			copy.destinationList = new ArrayList<>(destinationList );
+			copy.destinationList.addAll(destinationList);
 		}		
 		return copy;
 	}
@@ -209,11 +209,11 @@ public class MetaSendNotificationEventListener extends MetaEventListener {
 			
 		} else if (!synchronous==other.synchronous) {
 			return false;
-		} else if (endPointDefList==null) {
-			if (other.endPointDefList!=null) {
+		} else if (destinationList==null) {
+			if (other.destinationList!=null) {
 				return false;
 			}
-		} else if(!endPointDefList.equals(other.endPointDefList)) {
+		} else if(!destinationList.equals(other.destinationList)) {
 			return false;
 		} else if (resultHandler==null) {
 			if (other.resultHandler!=null) {
@@ -244,11 +244,11 @@ public class MetaSendNotificationEventListener extends MetaEventListener {
 			// listenEventをnullにクリアする
 			listenEvent = null;
 		}
-		if (d.getEndPointDefList() != null) {
-			endPointDefList = new ArrayList<String>();
-			endPointDefList.addAll(d.getEndPointDefList());
+		if (d.getDestinationList() != null) {
+			destinationList = new ArrayList<String>();
+			destinationList.addAll(d.getDestinationList());
 		} else {
-			endPointDefList = null;
+			destinationList = null;
 		}
 
 	}
@@ -269,10 +269,10 @@ public class MetaSendNotificationEventListener extends MetaEventListener {
 			d.setListenEvent(es);
 		}
 		d.setSynchronous(synchronous);
-		if (endPointDefList != null) {
+		if (destinationList != null) {
 			List<String> es = new ArrayList<String>();
-			es.addAll(endPointDefList);
-			d.setEndPointDefList(es);
+			es.addAll(destinationList);
+			d.setDestinationList(es);
 		}
 		return d;
 	}
@@ -286,7 +286,7 @@ public class MetaSendNotificationEventListener extends MetaEventListener {
 		} else if (notificationType == SendNotificationType.PUSH) {
 			return new SendPushNotificationEventListenerHandler(entity);
 		} else if (notificationType == SendNotificationType.WEBHOOK) {
-			return new SendWebHookNotificationEventListenerHandler(entity);
+			return new SendWebhookNotificationEventListenerHandler(entity);
 		}
 		return null;
 	}
@@ -536,7 +536,7 @@ public class MetaSendNotificationEventListener extends MetaEventListener {
 
 	private List<String> processDestinationGroovyTemplate(Map<String, Object> bindings) {
 		List<String> processedDestinationList = new ArrayList<String>();
-		for (String script : endPointDefList) {
+		for (String script : destinationList) {
 			ScriptEngine se = ExecuteContext.getCurrentContext().getTenantContext().getScriptEngine();
 			GroovyTemplate destinationTemplate = GroovyTemplateCompiler.compile(script, "SendNotificationDestinationTemplate_Text" + tmplDefName, (GroovyScriptEngine) se);
 			StringWriter sw = new StringWriter();
@@ -660,38 +660,38 @@ public class MetaSendNotificationEventListener extends MetaEventListener {
 		}
 	}
 
-	public class SendWebHookNotificationEventListenerHandler extends SendNotificationListenerEventHandler {
+	public class SendWebhookNotificationEventListenerHandler extends SendNotificationListenerEventHandler {
 
-		private WebHookManager wm = ManagerLocator.getInstance().getManager(WebHookManager.class);
+		private WebhookManager wm = ManagerLocator.getInstance().getManager(WebhookManager.class);
 
-		public SendWebHookNotificationEventListenerHandler(MetaEntity entity) {
+		public SendWebhookNotificationEventListenerHandler(MetaEntity entity) {
 			super(entity);
 		}
 		@Override
 		protected Object createNotification(Entity entity, EventType type, EntityEventContext context) {
 			Map<String, Object> bindings = generateBindings(entity, type, context);
 			List<String> processedDestinationList = processDestinationGroovyTemplate(bindings);
-			ArrayList<WebHook> webHookList = new ArrayList<WebHook>();
-			for (String endPoint : processedDestinationList) {
-				WebHook webHook = wm.createWebHook(tmplDefName, bindings, endPoint);
-				WebHookResponseHandler whrh = wm.getResponseHandler(resultHandler);
-				webHook.setResultHandler(whrh);
-				webHookList.add(webHook);
+			ArrayList<Webhook> webhookList = new ArrayList<Webhook>();
+			for (String endpoint : processedDestinationList) {
+				Webhook webhook = wm.createWebhook(tmplDefName, bindings, endpoint);
+				WebhookResponseHandler whrh = wm.getResponseHandler(resultHandler);
+				webhook.setResultHandler(whrh);
+				webhookList.add(webhook);
 			}
-			return webHookList;
+			return webhookList;
 		}
 
 		@SuppressWarnings("unchecked")
 		@Override
-		protected void sendNotification(Object webHookList) {
+		protected void sendNotification(Object webhookList) {
 			//call async and sync
 			if (synchronous) {
-				for (WebHook wh : (List<WebHook>)webHookList) {
-					wm.sendWebHookSync(wh);
+				for (Webhook wh : (List<Webhook>)webhookList) {
+					wm.sendWebhookSync(wh);
 				}
 			} else {
-				for (WebHook wh : (List<WebHook>)webHookList) {
-					wm.sendWebHookAsync(wh);
+				for (Webhook wh : (List<Webhook>)webhookList) {
+					wm.sendWebhookAsync(wh);
 				}
 			}
 		}

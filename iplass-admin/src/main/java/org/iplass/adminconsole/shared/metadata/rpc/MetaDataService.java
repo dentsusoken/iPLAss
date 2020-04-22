@@ -493,13 +493,13 @@ public interface MetaDataService extends XsrfProtectedService {
 	public void deleteOldCredentialOAuthResourceServer(final int tenantId, final String definitionName);
 
 	/* ---------------------------------------
-	 * WebHook EndPoint Security Info
+	 * Webhook Endpoint Security Info
 	 --------------------------------------- */
-	public void updateWebHookEndPointSecurityInfo(final int tenantId, final String definitionName, final String secret, final String TokenType);
+	public void updateWebhookEndpointSecurityInfo(final int tenantId, final String definitionName, final String secret, final String TokenType);
 
-	public String getWebHookEndPointSecurityInfo(final int tenantId, final String definitionName, final String TokenType);
+	public String getWebhookEndpointSecurityInfo(final int tenantId, final String definitionName, final String TokenType);
 
 	public String generateHmacTokenString();
 
-	public Map<String, String> getEndPointFullListWithUrl(int tenantId);
+	public Map<String, String> getEndpointFullListWithUrl(int tenantId);
 }

@@ -53,8 +53,8 @@ public class EventListenerListGridRecord extends ListGridRecord {
 	public static final String NAFTERP = "notifyAfterP";
 	public static final String NONLOAD = "notifyOnLoad";
 	public static final String NBEFOREVALIDATE = "notifyBeforeValidate";
-	public static final String WEBHOOKENDPOINTLIST="webHookEndPointList";
-	public static final String WEBHOOKRESULTHANLDER="webHookResultHandler";
+	public static final String DESTINATIONLIST="destinationList";
+	public static final String WEBHOOKRESULTHANLDER="webhookResultHandler";
 	public static final String SYNCHRONOUS="syncrhonous";
 	public static final String SENDTOGETHER="sendTogether";
 
@@ -284,20 +284,20 @@ public class EventListenerListGridRecord extends ListGridRecord {
 		setAttribute(GP, value);
 	}
 	
-	public void setWebHookEndPointList(List<String> webHookEndPointList) {
-		setAttributeAsJavaObject(WEBHOOKENDPOINTLIST, webHookEndPointList);
+	public void setDestinationList(List<String> destinationList) {
+		setAttributeAsJavaObject(DESTINATIONLIST, destinationList);
 	}
 	
 	@SuppressWarnings("unchecked")
-	public List<String> getWebHookEndPointList(){
-		return (List<String>) getAttributeAsObject(WEBHOOKENDPOINTLIST);
+	public List<String> getDestinationList(){
+		return (List<String>) getAttributeAsObject(DESTINATIONLIST);
 	}
 	
-	public void setWebHookResultHandler(String webHookResultHandler) {
-		setAttribute(WEBHOOKRESULTHANLDER, webHookResultHandler);
+	public void setWebhookResultHandler(String webhookResultHandler) {
+		setAttribute(WEBHOOKRESULTHANLDER, webhookResultHandler);
 	}
 	
-	public String getWebHookResultHandler(){
+	public String getWebhookResultHandler(){
 		return getAttribute(WEBHOOKRESULTHANLDER);
 	}
 

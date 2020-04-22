@@ -110,7 +110,7 @@ import org.iplass.mtp.impl.query.QueryServiceHolder;
 import org.iplass.mtp.impl.report.ReportingEngineService;
 import org.iplass.mtp.impl.report.ReportingType;
 import org.iplass.mtp.impl.web.actionmapping.cache.ContentCacheContext;
-import org.iplass.mtp.impl.webhook.endpointaddress.WebHookEndPointService;
+import org.iplass.mtp.impl.webhook.endpointaddress.WebhookEndpointService;
 import org.iplass.mtp.spi.ServiceRegistry;
 import org.iplass.mtp.transaction.Transaction;
 import org.iplass.mtp.util.StringUtil;
@@ -141,8 +141,8 @@ import org.iplass.mtp.web.template.report.definition.ReportTemplateDefinition;
 import org.iplass.mtp.webapi.definition.EntityWebApiDefinition;
 import org.iplass.mtp.webapi.definition.EntityWebApiDefinitionManager;
 import org.iplass.mtp.webapi.definition.WebApiDefinition;
-import org.iplass.mtp.webhook.endpoint.definition.WebHookEndPointDefinition;
-import org.iplass.mtp.webhook.endpoint.definition.WebHookEndPointDefinitionManager;
+import org.iplass.mtp.webhook.endpoint.definition.WebhookEndpointDefinition;
+import org.iplass.mtp.webhook.endpoint.definition.WebhookEndpointDefinitionManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -167,8 +167,8 @@ public class MetaDataServiceImpl extends XsrfProtectedServiceServlet implements 
 	private MenuTreeManager mtm = ManagerLocator.getInstance().getManager(MenuTreeManager.class);
 	private EntityWebApiDefinitionManager ewdm = ManagerLocator.getInstance().getManager(EntityWebApiDefinitionManager.class);
 	private DefinitionManager dm = ManagerLocator.getInstance().getManager(DefinitionManager.class);
-	private WebHookEndPointDefinitionManager wepdm = ManagerLocator.getInstance().getManager(WebHookEndPointDefinitionManager.class);
-	private WebHookEndPointService wheps = ServiceRegistry.getRegistry().getService(WebHookEndPointService.class);
+	private WebhookEndpointDefinitionManager wepdm = ManagerLocator.getInstance().getManager(WebhookEndpointDefinitionManager.class);
+	private WebhookEndpointService wheps = ServiceRegistry.getRegistry().getService(WebhookEndpointService.class);
 
 	private EntityManager em = AdminEntityManager.getInstance();
 	private AsyncTaskManager atm = ManagerLocator.getInstance().getManager(AsyncTaskManager.class);
@@ -1994,10 +1994,10 @@ public class MetaDataServiceImpl extends XsrfProtectedServiceServlet implements 
 
 	
 	/* ---------------------------------------
-	 * WebHook EndPoint Security Info
+	 * Webhook Endpoint Security Info
 	 --------------------------------------- */
 	@Override
-	public void updateWebHookEndPointSecurityInfo(final int tenantId, final String definitionName, final String secret, final String TokenType) {
+	public void updateWebhookEndpointSecurityInfo(final int tenantId, final String definitionName, final String secret, final String TokenType) {
 		AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId, new AuthUtil.Callable<Void>() {
 			@Override
 			public Void call() {
@@ -2008,7 +2008,7 @@ public class MetaDataServiceImpl extends XsrfProtectedServiceServlet implements 
 	}
 
 	@Override
-	public String getWebHookEndPointSecurityInfo(final int tenantId, final String definitionName, final String TokenType) {
+	public String getWebhookEndpointSecurityInfo(final int tenantId, final String definitionName, final String TokenType) {
 		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId, new AuthUtil.Callable<String>() {
 			@Override
 			public String call() {
@@ -2026,17 +2026,17 @@ public class MetaDataServiceImpl extends XsrfProtectedServiceServlet implements 
 	 * 
 	 * returns a map of <defName,Url>
 	 * */
-	public Map<String, String> getEndPointFullListWithUrl(int tenantId){
+	public Map<String, String> getEndpointFullListWithUrl(int tenantId){
 		return AuthUtil.authCheckAndInvoke(getServletContext(), this.getThreadLocalRequest(), this.getThreadLocalResponse(), tenantId, new AuthUtil.Callable<HashMap<String, String>>() {
 			@Override
 			public HashMap<String, String> call() {
-				HashMap<String, String> endPointMap = new HashMap<String, String>();
-				List<Name> tempNameList = getDefinitionNameList(tenantId, WebHookEndPointDefinition.class.getName());
+				HashMap<String, String> endpointMap = new HashMap<String, String>();
+				List<Name> tempNameList = getDefinitionNameList(tenantId, WebhookEndpointDefinition.class.getName());
 				for (Name name : tempNameList) {
-					WebHookEndPointDefinition temp = getDefinition(tenantId,WebHookEndPointDefinition.class.getName(),name.getName());
-					endPointMap.put(name.getName(), temp.getUrl());
+					WebhookEndpointDefinition temp = getDefinition(tenantId,WebhookEndpointDefinition.class.getName(),name.getName());
+					endpointMap.put(name.getName(), temp.getUrl());
 				}
-				return endPointMap;
+				return endpointMap;
 			}
 		});
 	}
