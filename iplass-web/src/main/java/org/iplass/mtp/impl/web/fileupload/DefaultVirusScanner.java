@@ -20,13 +20,13 @@
 
 package org.iplass.mtp.impl.web.fileupload;
 
+import static org.iplass.mtp.impl.web.WebResourceBundleUtil.resourceString;
+
 import java.io.IOException;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import org.iplass.mtp.ApplicationException;
-import org.iplass.mtp.impl.web.WebResourceBundleUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,7 +36,28 @@ public class DefaultVirusScanner implements FileScanner {
 
 	private String commandPath;
 
+	//TODO change to Long
 	private String timeout;
+	private boolean errorOnTimeout;
+	private List<Integer> successExitValue;
+	
+	private Long timeoutVal;
+
+	public boolean isErrorOnTimeout() {
+		return errorOnTimeout;
+	}
+
+	public void setErrorOnTimeout(boolean errorOnTimeout) {
+		this.errorOnTimeout = errorOnTimeout;
+	}
+
+	public List<Integer> getSuccessExitValue() {
+		return successExitValue;
+	}
+
+	public void setSuccessExitValue(List<Integer> successExitValue) {
+		this.successExitValue = successExitValue;
+	}
 
 	public String getTimeout() {
 		return timeout;
@@ -44,6 +65,11 @@ public class DefaultVirusScanner implements FileScanner {
 
 	public void setTimeout(String timeout) {
 		this.timeout = timeout;
+		if (timeout != null) {
+			this.timeoutVal = Long.valueOf(timeout);
+		} else {
+			this.timeoutVal = null;
+		}
 	}
 
 	public String getCommandPath() {
@@ -57,46 +83,39 @@ public class DefaultVirusScanner implements FileScanner {
 	@Override
 	public void scan(String filePath) {
 		String command = commandPath.replace("${file}", filePath);
+		Process proc = null;
 		try {
 
-			Process proc = Runtime.getRuntime().exec(command);
-
-			TimerTask task = new ProcessDestroyer(proc);
-			Timer timer = new Timer("タイムアウト設定");
-			timer.schedule(task, TimeUnit.SECONDS.toMillis(new Long(timeout)));
-
-			while (true) {
-				proc.waitFor();
-				break;
+			proc = Runtime.getRuntime().exec(command);
+			if (timeoutVal == null) {
+				throw new NullPointerException("timeout must be specified");
+			}
+			boolean ret = proc.waitFor(timeoutVal, TimeUnit.SECONDS);
+			if (ret) {
+				int exitVal = proc.exitValue();
+				if (successExitValue != null && successExitValue.size() > 0) {
+					for (Integer i: successExitValue) {
+						if (i.intValue() == exitVal) {
+							return;
+						}
+					}
+					throw new RuntimeException("Scan failed. Illegal exit value:" + exitVal + ", file: " + filePath);
+				}
+			} else {
+				if (errorOnTimeout) {
+					throw new RuntimeException("Scan failed (timeouted). file: " + filePath);
+				} else {
+					logger.warn(resourceString("impl.web.fileupload.DefaultVirusScanHandle.timeout"));
+				}
 			}
 
-			timer.cancel();
-
-		} catch (IOException e) {
-			throw new ApplicationException(resourceString("impl.web.fileupload.DefaultVirusScanHandle.failed"));
-		} catch (NumberFormatException e) {
-			throw new ApplicationException(resourceString("impl.web.fileupload.DefaultVirusScanHandle.failed"));
-		} catch (InterruptedException e) {
-			throw new ApplicationException(resourceString("impl.web.fileupload.DefaultVirusScanHandle.failed"));
+		} catch (IOException | InterruptedException | RuntimeException e) {
+			throw new ApplicationException(resourceString("impl.web.fileupload.DefaultVirusScanHandle.failed"), e);
+		} finally {
+			if (proc != null && proc.isAlive()) {
+				proc.destroy();
+			}
 		}
 	}
 
-	private class ProcessDestroyer extends TimerTask {
-
-		private Process p;
-
-		public ProcessDestroyer(Process p) {
-			this.p = p;
-		}
-
-		@Override
-		public void run() {
-			p.destroy();
-			logger.warn(resourceString("impl.web.fileupload.DefaultVirusScanHandle.timeout"));
-		}
-	}
-
-	private static String resourceString(String key, Object... arguments) {
-		return WebResourceBundleUtil.resourceString(key, arguments);
-	}
 }
