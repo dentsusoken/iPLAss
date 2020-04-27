@@ -110,6 +110,7 @@ public class DefaultVirusScanner implements FileScanner {
 			}
 
 		} catch (IOException | InterruptedException | RuntimeException e) {
+			logger.error(e.getMessage(), e);
 			throw new ApplicationException(resourceString("impl.web.fileupload.DefaultVirusScanHandle.failed"), e);
 		} finally {
 			if (proc != null && proc.isAlive()) {
