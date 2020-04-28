@@ -41,8 +41,6 @@ import org.iplass.adminconsole.view.annotation.Refrectable;
 import org.iplass.adminconsole.view.annotation.generic.FieldReferenceType;
 import org.iplass.mtp.entity.definition.PropertyDefinition;
 import org.iplass.mtp.entity.definition.properties.ReferenceProperty;
-import org.iplass.mtp.view.generic.HasNestProperty;
-import org.iplass.mtp.view.generic.editor.NestProperty;
 
 import com.smartgwt.client.widgets.form.DynamicForm;
 import com.smartgwt.client.widgets.form.fields.FormItem;
@@ -177,6 +175,11 @@ public class EntityViewFieldSettingPane extends MetaFieldSettingPane {
 	}
 
 	@Override
+	protected EntityViewFieldSettingDialog getOwner() {
+		return (EntityViewFieldSettingDialog)super.getOwner();
+	}
+
+	@Override
 	protected MetaFieldSettingDialog createSubDialog(String className, Refrectable value, FieldInfo info) {
 		FieldReferenceType triggerType = this.triggerType;
 		// EntityViewFieldアノテーションを利用しないフィールドの場合、上書きをしません。
@@ -186,20 +189,17 @@ public class EntityViewFieldSettingPane extends MetaFieldSettingPane {
 		EntityViewFieldSettingDialog dialog = null;
 		if (childRefDefName != null) {
 			// サブダイアログの参照Entityとして指定されたEntityを設定
-			dialog = new EntityViewFieldSettingDialog(className, value, triggerType, defName, childRefDefName);
-		} else if (value instanceof NestProperty) {
-			//NestPropertyの場合は起動元から対象Entity名を取得
-			String nestBaseDefName = refDefName;
-			if (getOwner().getValue() instanceof HasNestProperty) {
-				nestBaseDefName = ((HasNestProperty)getOwner().getValue()).getEntityName();
-			}
-			dialog = new EntityViewFieldSettingDialog(className, value, triggerType, defName, nestBaseDefName);
+			dialog = new EntityViewFieldSettingDialog(className, value, triggerType, defName, childRefDefName, this);
+		} else if (getOwner().hasNestProperty()) {
+			//DialogがNestPropertyを持っている場合はDialogから取得
+			String nestBaseDefName = getOwner().getNestPropertyReferenceEntityName();
+			dialog = new EntityViewFieldSettingDialog(className, value, triggerType, defName, nestBaseDefName, this);
 		} else {
 			// refDefNameが指定されていればサブダイアログの参照Entityとして対象の参照Entityを設定
-			dialog = new EntityViewFieldSettingDialog(className, value, triggerType, defName, refDefName);
+			dialog = new EntityViewFieldSettingDialog(className, value, triggerType, defName, refDefName, this);
 		}
 
-		EntityViewFieldSettingDialog owner = (EntityViewFieldSettingDialog)getOwner();
+		EntityViewFieldSettingDialog owner = getOwner();
 		PropertyInfo ownerPropertyInfo = owner.getTitlePropertyInfo();
 		if (childRefPropertyDisplayName != null) {
 			//タイトル説明を基準になるプロパティ名に変更

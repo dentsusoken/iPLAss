@@ -25,20 +25,4 @@ package org.iplass.mtp.view.generic;
  */
 public interface HasNestProperty {
 
-	/**
-	 * プロパティ情報を返します。
-	 *
-	 * @return プロパティ情報
-	 */
-	//TODO ReferencePropertyEditorがIFが違うため無効化
-	//List<NestProperty> getProperties();
-
-
-	/**
-	 * Entity名を返します。
-	 *
-	 * @return Entity名
-	 */
-	String getEntityName();
-
 }
