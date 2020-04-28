@@ -41,6 +41,11 @@ import com.smartgwt.client.widgets.tree.TreeNode;
 
 public abstract class PermissionTreeGrid extends MtpTreeGrid implements PermissionGrid {
 
+	static final String TREE_CELL_STYLE_DEFAULT = "permissionExplorerTreeGridRow";
+	static final String TREE_CELL_STYLE_CONFIGURED = "permissionExplorerTreeGridConfiguredRow";
+	static final String TREE_CELL_STYLE_EDITING = "permissionExplorerTreeGridEditingRow";
+	static final String TREE_CELL_STYLE_DELETING = "permissionExplorerTreeGridDeletingRow";
+
 	private PermissionTreeGridDS ds;
 
 	/**
@@ -198,20 +203,20 @@ public abstract class PermissionTreeGrid extends MtpTreeGrid implements Permissi
 
 		//名前列は無視
 		if (colNum < 1) {
-			return CELL_STYLE_DEFAULT;
+			return TREE_CELL_STYLE_DEFAULT;
 		}
 
 		PermissionTreeNode precord = (PermissionTreeNode)record;
 		int roleIndex = ds.getColRoleCodeIndex(colNum);
 
 		if (ds.isDeletingPermission(precord, roleIndex)) {
-			return CELL_STYLE_DELETING;
+			return TREE_CELL_STYLE_DELETING;
 		} else if (ds.isEditingPermission(precord, roleIndex)) {
-			return CELL_STYLE_EDITING;
+			return TREE_CELL_STYLE_EDITING;
 		} else if (ds.isConfiguredPermission(precord, roleIndex)) {
-			return CELL_STYLE_CONFIGURED;
+			return TREE_CELL_STYLE_CONFIGURED;
 		} else {
-			return CELL_STYLE_DEFAULT;
+			return TREE_CELL_STYLE_DEFAULT;
 		}
 	}
 

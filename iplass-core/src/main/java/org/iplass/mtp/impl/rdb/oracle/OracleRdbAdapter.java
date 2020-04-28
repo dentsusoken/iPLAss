@@ -267,11 +267,18 @@ public class OracleRdbAdapter extends RdbAdapter {
 	public String toTimeStampExpression(Timestamp date) {
 		checkDateRange(date);
 		SimpleDateFormat fmt = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+		if (rdbTimeZone() != null) {
+			fmt.setTimeZone(rdbTimeZone());
+		}
 		return "TO_TIMESTAMP('" + fmt.format(date) + "','YYYY-MM-DD HH24:MI:SS.FF')";
 	}
 
 	public String systimestamp() {
-		return timestampFunction;
+		if (rdbTimeZone() == null) {
+			return timestampFunction;
+		} else {
+			return timestampFunction + " AT TIME ZONE '" + rdbTimeZone().getID() + "'";
+		}
 	}
 
 	private static final String[] CAST_VARCHAR = {"CAST(", " AS VARCHAR2(4000))"};
@@ -668,10 +675,15 @@ public class OracleRdbAdapter extends RdbAdapter {
 
 	@Override
 	public String[] convertTZ(String to) {
-		String[] ret = {
-				"CAST(FROM_TZ(",
-				",SESSIONTIMEZONE) AT TIME ZONE '" + to + "' AS TIMESTAMP)"};
-		return ret;
+		if (rdbTimeZone() == null) {
+			return new String[] {
+					"CAST(FROM_TZ(",
+					",SESSIONTIMEZONE) AT TIME ZONE '" + to + "' AS TIMESTAMP)"};
+		} else {
+			return new String[] {
+					"CAST(FROM_TZ(",
+					",'" + rdbTimeZone().getID() + "') AT TIME ZONE '" + to + "' AS TIMESTAMP)"};
+		}
 	}
 
 	@Override

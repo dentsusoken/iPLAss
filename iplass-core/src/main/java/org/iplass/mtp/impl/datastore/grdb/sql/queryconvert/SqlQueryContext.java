@@ -531,6 +531,9 @@ public class SqlQueryContext {
 			if (getLimitOffset() != -1) {
 				limitOffset = getLimitOffset();
 			}
+			if (orderBySb.length() == 0) {
+				sb.append(rdb.getDefaultOrderByForLimit());
+			}
 			sql = rdb.toLimitSql(sb.toString(), getLimitCount(), limitOffset, enableBindVariable && limitBind);
 		} else {
 			sql = sb;

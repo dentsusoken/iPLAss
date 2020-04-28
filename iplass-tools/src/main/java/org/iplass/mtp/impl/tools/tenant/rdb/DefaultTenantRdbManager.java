@@ -173,12 +173,12 @@ public abstract class DefaultTenantRdbManager implements TenantRdbManager {
 		tenant.setDescription(rs.getString(3));
 		tenant.setHostName(rs.getString(4));
 		tenant.setUrl(rs.getString(5));
-		tenant.setYukoDateFrom(rs.getDate(6));
-		tenant.setYukoDateTo(rs.getDate(7));
+		tenant.setYukoDateFrom(rs.getDate(6, adapter.javaCalendar()));
+		tenant.setYukoDateTo(rs.getDate(7, adapter.javaCalendar()));
 		tenant.setCreateUser(rs.getString(8));
-		tenant.setCreateDate(rs.getTimestamp(9));
+		tenant.setCreateDate(rs.getTimestamp(9, adapter.rdbCalendar()));
 		tenant.setUpdateUser(rs.getString(10));
-		tenant.setUpdateDate(rs.getTimestamp(11));
+		tenant.setUpdateDate(rs.getTimestamp(11, adapter.rdbCalendar()));
 
 		return tenant;
 	}

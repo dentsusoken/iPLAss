@@ -230,13 +230,19 @@ public abstract class SearchContextBase implements SearchContext {
 				}
 			}
 		} else {
-			String sortKey = request.getParam(Constants.SEARCH_SORTKEY);
-			if (StringUtil.isNotBlank(sortKey)) {
-				PropertyColumn property = getLayoutPropertyColumn(sortKey);
-				if (property != null) {
-					NullOrderingSpec nullOrderingSpec = getNullOrderingSpec(property.getNullOrderType());
+			String sortKey = getSortKey();
+			if (sortKey != null) {
+				if (Entity.OID.equals(sortKey)) {
 					orderBy = new OrderBy();
-					orderBy.add(getSortKey(), getSortType(), nullOrderingSpec);
+					orderBy.add(sortKey, getSortType());
+				} else {
+					//OID以外はSearchResultに定義されているもののみ許可します。
+					PropertyColumn property = getLayoutPropertyColumn(sortKey);
+					if (property != null) {
+						NullOrderingSpec nullOrderingSpec = getNullOrderingSpec(property.getNullOrderType());
+						orderBy = new OrderBy();
+						orderBy.add(sortKey, getSortType(), nullOrderingSpec);
+					}
 				}
 			}
 		}

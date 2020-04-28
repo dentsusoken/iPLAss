@@ -855,7 +855,7 @@ public final class SmartGWTUtil {
 		if (timestamp == null) {
 			return "";
 		}
-		return TenantInfoHolder.getOutputDateTimeSecFormat().format(timestamp, TenantInfoHolder.getTimeZone());
+		return TenantInfoHolder.getOutputDateTimeSecFormat().format(timestamp, TenantInfoHolder.getTenantTimeZone());
 	}
 
 	/**
@@ -868,7 +868,7 @@ public final class SmartGWTUtil {
 		if (date == null) {
 			return "";
 		}
-		return TenantInfoHolder.getOutputDateFormat().format(date);
+		return TenantInfoHolder.getOutputDateFormat().format(date, TenantInfoHolder.getServerTimeZone());
 	}
 
 	/**
@@ -881,7 +881,7 @@ public final class SmartGWTUtil {
 		if (time == null) {
 			return "";
 		}
-		return TenantInfoHolder.getOutputTimeSecFormat().format(time);
+		return TenantInfoHolder.getOutputTimeSecFormat().format(time, TenantInfoHolder.getServerTimeZone());
 	}
 
 	/**

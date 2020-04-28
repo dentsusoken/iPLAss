@@ -220,6 +220,7 @@ public class MetaGRdbPropertyStore extends MetaPropertyStore {
 	public static class GRdbPropertyStoreHandler extends PropertyStoreHandler implements GRdbPropertyStoreRuntime {
 		
 		private BaseRdbTypeAdapter typeMapping;
+		private RdbAdapter rdb;
 		private PrimitivePropertyHandler propertyRuntime;
 		
 		private String indexColName;
@@ -233,7 +234,7 @@ public class MetaGRdbPropertyStore extends MetaPropertyStore {
 			//Primitive型しかないはず
 			this.propertyRuntime = (PrimitivePropertyHandler) propertyRuntime;
 			this.meta = meta;
-			RdbAdapter rdb = ServiceRegistry.getRegistry().getService(RdbAdapterService.class).getRdbAdapter();
+			rdb = ServiceRegistry.getRegistry().getService(RdbAdapterService.class).getRdbAdapter();
 			PropertyType type = this.propertyRuntime.getMetaData().getType();
 			typeMapping = rdb.getRdbTypeAdapter(type);
 			
@@ -359,7 +360,7 @@ public class MetaGRdbPropertyStore extends MetaPropertyStore {
 
 		@Override
 		public Object fromDataStore(ResultSet rs, int colNum) throws SQLException {
-			return getSingleColumnRdbTypeAdapter().fromDataStore(rs, colNum);
+			return getSingleColumnRdbTypeAdapter().fromDataStore(rs, colNum, rdb);
 		}
 
 		@Override

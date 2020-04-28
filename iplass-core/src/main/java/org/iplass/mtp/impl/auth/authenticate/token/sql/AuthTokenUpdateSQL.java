@@ -55,7 +55,7 @@ public class AuthTokenUpdateSQL extends UpdateSqlHandler {
 		// POL_NAME
 		ps.setString(6, token.getPolicyName());
 		//S_DATE
-		ps.setTimestamp(7, token.getStartDate());
+		ps.setTimestamp(7, token.getStartDate(), rdb.rdbCalendar());
 		// T_INFO
 		if (token.getDetails() == null) {
 			ps.setBytes(8, null);
@@ -93,7 +93,7 @@ public class AuthTokenUpdateSQL extends UpdateSqlHandler {
 			int tenantId, String type, Timestamp date) throws SQLException {
 		ps.setInt(1, tenantId);
 		ps.setString(2, type);
-		ps.setTimestamp(3, date);
+		ps.setTimestamp(3, date, rdb.rdbCalendar());
 	}
 
 	public String createUpdateStrictSQL() {
@@ -101,7 +101,7 @@ public class AuthTokenUpdateSQL extends UpdateSqlHandler {
 	}
 	public void setUpdateStrictParameter(RdbAdapter rdb, PreparedStatement ps, AuthToken newToken, AuthToken currentToken, boolean saveDetailAsJson, ObjectMapper om) throws SQLException, JsonProcessingException {
 		ps.setString(1, newToken.getToken());
-		ps.setTimestamp(2, newToken.getStartDate());
+		ps.setTimestamp(2, newToken.getStartDate(), rdb.rdbCalendar());
 		if (newToken.getDetails() == null) {
 			ps.setBytes(3, null);
 		} else if (saveDetailAsJson) {

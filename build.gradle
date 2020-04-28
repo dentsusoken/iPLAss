@@ -119,6 +119,7 @@ subprojects { subproject ->
 javadoc {
 	source(project(':iplass-core').sourceSets['main'].allJava)
 	source(project(':iplass-web').sourceSets['main'].allJava)
+	exclude('org/iplass/mtp/webhook/**')
 	exclude('**/impl/**')
 
 	classpath += project(':iplass-core').sourceSets['main'].compileClasspath
@@ -164,6 +165,7 @@ task processJavadocJava(dependsOn: copyJavadocJava) {
 
 task javadocI18n(type: Javadoc, dependsOn: processJavadocJava) {
 	source "${buildDir}/docSrc/${javadocLang}"
+	exclude('org/iplass/mtp/webhook/**')
 	exclude('**/impl/**')
 
 	destinationDir file("${docsDir}/javadoc/${javadocLang}")

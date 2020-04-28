@@ -85,27 +85,27 @@ public class AccountMaintenanceSelectSQL extends QuerySqlHandler {
 			ps.setString(index++, authPolicy.getName());
 			ps.setInt(index++, lockCount);
 			if (duration != 0) {
-				ps.setTimestamp(index++, new Timestamp(DateUtils.addMinutes(InternalDateUtil.getNow(), duration * -1).getTime()));
+				ps.setTimestamp(index++, new Timestamp(DateUtils.addMinutes(InternalDateUtil.getNow(), duration * -1).getTime()), rdb.rdbCalendar());
 			}
 			if (faulureInterval != 0) {
-				ps.setTimestamp(index++, new Timestamp(DateUtils.addMinutes(InternalDateUtil.getNow(), faulureInterval * -1).getTime()));
+				ps.setTimestamp(index++, new Timestamp(DateUtils.addMinutes(InternalDateUtil.getNow(), faulureInterval * -1).getTime()), rdb.rdbCalendar());
 			}
 		} else if (SpecificType.EXPIRED_PASSWORD == cond.getType()) {
 			ps.setString(index++, authPolicy.getName());
 			//SQL側で設定
 		} else if (SpecificType.LAST_LOGIN == cond.getType()) {
 			if (cond.getLastLoginFromDate() != null) {
-				ps.setTimestamp(index++, new Timestamp(adjustTimes(cond.getLastLoginFromDate(), 0, 0, 0, 0).getTime()));
+				ps.setTimestamp(index++, new Timestamp(adjustTimes(cond.getLastLoginFromDate(), 0, 0, 0, 0).getTime()), rdb.rdbCalendar());
 			}
 			if (cond.getLastLoginToDate() != null) {
-				ps.setTimestamp(index++, new Timestamp(adjustTimes(cond.getLastLoginToDate(), 23, 59, 59, 999).getTime()));
+				ps.setTimestamp(index++, new Timestamp(adjustTimes(cond.getLastLoginToDate(), 23, 59, 59, 999).getTime()), rdb.rdbCalendar());
 			}
 		}
 	}
 
-	public void getAccountSearchResultData(ResultSet rs, Predicate<BuiltinAccount> callback) throws SQLException {
+	public void getAccountSearchResultData(RdbAdapter rdb, ResultSet rs, Predicate<BuiltinAccount> callback) throws SQLException {
 		while(rs.next()) {
-			BuiltinAccount account = getAccount(rs);
+			BuiltinAccount account = getAccount(rs, rdb);
 			if (!callback.test(account)) {
 				break;
 			}
@@ -166,21 +166,21 @@ public class AccountMaintenanceSelectSQL extends QuerySqlHandler {
 		return new java.sql.Date(cal.getTimeInMillis());
 	}
 
-	private BuiltinAccount getAccount(ResultSet rs) throws SQLException {
+	private BuiltinAccount getAccount(ResultSet rs, RdbAdapter rdb) throws SQLException {
 		BuiltinAccount ret = new BuiltinAccount();
 		int index = 1;
 		ret.setTenantId(rs.getInt(index++));
 		ret.setAccountId(rs.getString(index++));
 		ret.setPolicyName(rs.getString(index++));
 		ret.setOid(rs.getString(index++));
-		ret.setLastLoginOn(rs.getTimestamp(index++));
+		ret.setLastLoginOn(rs.getTimestamp(index++, rdb.rdbCalendar()));
 		ret.setLoginErrorCnt(rs.getInt(index++));
-		ret.setLoginErrorDate(rs.getTimestamp(index++));
-		ret.setLastPasswordChange(rs.getDate(index++));
+		ret.setLoginErrorDate(rs.getTimestamp(index++, rdb.rdbCalendar()));
+		ret.setLastPasswordChange(rs.getDate(index++, rdb.javaCalendar()));
 		ret.setCreateUser(rs.getString(index++));
-		ret.setCreateDate(rs.getTimestamp(index++));
+		ret.setCreateDate(rs.getTimestamp(index++, rdb.rdbCalendar()));
 		ret.setUpdateUser(rs.getString(index++));
-		ret.setUpdateDate(rs.getTimestamp(index++));
+		ret.setUpdateDate(rs.getTimestamp(index++, rdb.rdbCalendar()));
 		return ret;
 	}
 

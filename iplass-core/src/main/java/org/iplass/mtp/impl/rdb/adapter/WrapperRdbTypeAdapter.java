@@ -47,13 +47,13 @@ public class WrapperRdbTypeAdapter extends BaseRdbTypeAdapter {
 	}
 
 	@Override
-	protected Object toJava(ResultSet rs, int columnIndex) throws SQLException {
-		return wrappedAdapter.toJava(rs, columnIndex);
+	protected Object toJava(ResultSet rs, int columnIndex, RdbAdapter rdb) throws SQLException {
+		return wrappedAdapter.toJava(rs, columnIndex, rdb);
 	}
 
 	@Override
-	protected Object toRdb(Object javaTypeValue) {
-		return wrappedAdapter.toRdb(javaTypeValue);
+	protected Object toRdb(Object javaTypeValue, RdbAdapter rdb) {
+		return wrappedAdapter.toRdb(javaTypeValue, rdb);
 	}
 
 //	@Override
@@ -63,9 +63,9 @@ public class WrapperRdbTypeAdapter extends BaseRdbTypeAdapter {
 
 	@Override
 	public void setParameter(int index, Object javaTypeValue,
-			PreparedStatement stmt) throws SQLException {
+			PreparedStatement stmt, RdbAdapter rdb) throws SQLException {
 		Object val = propertyType.toDataStore(javaTypeValue);
-		wrappedAdapter.setParameter(index, val, stmt);
+		wrappedAdapter.setParameter(index, val, stmt, rdb);
 	}
 
 }

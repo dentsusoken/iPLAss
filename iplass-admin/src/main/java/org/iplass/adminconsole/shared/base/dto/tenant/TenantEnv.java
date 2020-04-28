@@ -1,19 +1,19 @@
 /*
  * Copyright (C) 2013 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
- * 
+ *
  * Unless you have purchased a commercial license,
  * the following license terms apply:
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
@@ -39,6 +39,12 @@ public class TenantEnv implements Serializable {
 
 	/** テナントTimeZoneのオフセット(分) */
 	private int tenantTimeZoneOffsetInMinutes;
+
+	/** サーバデフォルトTimeZoneInfo */
+	private String serverTimeZoneInfo;
+
+	/** サーバデフォルトTimeZoneのオフセット(分) */
+	private int serverTimeZoneOffsetInMinutes;
 
 	/** Adminの入力用ロケール */
 	private String inputLocale;
@@ -75,6 +81,19 @@ public class TenantEnv implements Serializable {
 	}
 	public void setTenantTimeZoneOffsetInMinutes(int tenantTimeZoneOffsetInMinutes) {
 		this.tenantTimeZoneOffsetInMinutes = tenantTimeZoneOffsetInMinutes;
+	}
+
+	public String getServerTimeZoneInfo() {
+		return serverTimeZoneInfo;
+	}
+	public void setServerTimeZoneInfo(String serverTimeZoneInfo) {
+		this.serverTimeZoneInfo = serverTimeZoneInfo;
+	}
+	public int getServerTimeZoneOffsetInMinutes() {
+		return serverTimeZoneOffsetInMinutes;
+	}
+	public void setServerTimeZoneOffsetInMinutes(int serverTimeZoneOffsetInMinutes) {
+		this.serverTimeZoneOffsetInMinutes = serverTimeZoneOffsetInMinutes;
 	}
 
 	public String getInputLocale() {

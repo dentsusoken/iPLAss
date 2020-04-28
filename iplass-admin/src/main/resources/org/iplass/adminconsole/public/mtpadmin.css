@@ -434,7 +434,10 @@ PermissionExplorer Grid
 /* 奇数行 */
 .permissionExplorerGridRow,
 .permissionExplorerGridRowSelected,
-.permissionExplorerGridRowDisabled {
+.permissionExplorerGridRowDisabled,
+.permissionExplorerTreeGridRow,
+.permissionExplorerTreeGridRowSelected,
+.permissionExplorerTreeGridRowDisabled {
 	border-right: 1px solid #eeeeee;
 	border-bottom:1px solid #EDEDED;
 }
@@ -442,7 +445,10 @@ PermissionExplorer Grid
 /* 偶数行 */
 .permissionExplorerGridRowDark,
 .permissionExplorerGridRowSelectedDark,
-.permissionExplorerGridRowDisabledDark {
+.permissionExplorerGridRowDisabledDark,
+.permissionExplorerTreeGridRowDark,
+.permissionExplorerTreeGridRowSelectedDark,
+.permissionExplorerTreeGridRowDisabledDark {
 	background-color:#FAFAFA;
 	border-right: 1px solid #eeeeee;
 	border-bottom:1px solid #EDEDED;
@@ -452,7 +458,11 @@ PermissionExplorer Grid
 .permissionExplorerGridRowOver,
 .permissionExplorerGridRowOverDark,
 .permissionExplorerGridRowSelectedOver,
-.permissionExplorerGridRowSelectedOverDark {
+.permissionExplorerGridRowSelectedOverDark,
+.permissionExplorerTreeGridRowOver,
+.permissionExplorerTreeGridRowOverDark,
+.permissionExplorerTreeGridRowSelectedOver,
+.permissionExplorerTreeGridRowSelectedOverDark {
 	background-color:#DBEDFF;
 	border-right: 1px solid #eeeeee;
 	border-bottom:1px solid #EDEDED;
@@ -464,7 +474,13 @@ PermissionExplorer Grid
 .permissionExplorerGridConfiguredRowDisabled,
 .permissionExplorerGridConfiguredRowDark,
 .permissionExplorerGridConfiguredRowSelectedDark,
-.permissionExplorerGridConfiguredRowDisabledDark {
+.permissionExplorerGridConfiguredRowDisabledDark,
+.permissionExplorerTreeGridConfiguredRow,
+.permissionExplorerTreeGridConfiguredRowSelected,
+.permissionExplorerTreeGridConfiguredRowDisabled,
+.permissionExplorerTreeGridConfiguredRowDark,
+.permissionExplorerTreeGridConfiguredRowSelectedDark,
+.permissionExplorerTreeGridConfiguredRowDisabledDark {
 	text-align: center;
 	background-color:#CCFFCC;
 	border-right: 1px solid #eeeeee;
@@ -473,7 +489,11 @@ PermissionExplorer Grid
 .permissionExplorerGridConfiguredRowOver,
 .permissionExplorerGridConfiguredRowOverDark,
 .permissionExplorerGridConfiguredRowSelectedOver,
-.permissionExplorerGridConfiguredRowSelectedOverDark {
+.permissionExplorerGridConfiguredRowSelectedOverDark,
+.permissionExplorerTreeGridConfiguredRowOver,
+.permissionExplorerTreeGridConfiguredRowOverDark,
+.permissionExplorerTreeGridConfiguredRowSelectedOver,
+.permissionExplorerTreeGridConfiguredRowSelectedOverDark {
 	text-align: center;
 	background-color:#DBEDFF;
 	border-right: 1px solid #eeeeee;
@@ -486,7 +506,13 @@ PermissionExplorer Grid
 .permissionExplorerGridEditingRowDisabled,
 .permissionExplorerGridEditingRowDark,
 .permissionExplorerGridEditingRowSelectedDark,
-.permissionExplorerGridEditingRowDisabledDark {
+.permissionExplorerGridEditingRowDisabledDark,
+.permissionExplorerTreeGridEditingRow,
+.permissionExplorerTreeGridEditingRowSelected,
+.permissionExplorerTreeGridEditingRowDisabled,
+.permissionExplorerTreeGridEditingRowDark,
+.permissionExplorerTreeGridEditingRowSelectedDark,
+.permissionExplorerTreeGridEditingRowDisabledDark {
 	text-align: center;
 	background-color:#FFCC99;
 	border-right: 1px solid #eeeeee;
@@ -495,7 +521,11 @@ PermissionExplorer Grid
 .permissionExplorerGridEditingRowOver,
 .permissionExplorerGridEditingRowOverDark,
 .permissionExplorerGridEditingRowSelectedOver,
-.permissionExplorerGridEditingRowSelectedOverDark {
+.permissionExplorerGridEditingRowSelectedOverDark,
+.permissionExplorerTreeGridEditingRowOver,
+.permissionExplorerTreeGridEditingRowOverDark,
+.permissionExplorerTreeGridEditingRowSelectedOver,
+.permissionExplorerTreeGridEditingRowSelectedOverDark {
 	text-align: center;
 	background-color:#DBEDFF;
 	border-right: 1px solid #eeeeee;
@@ -508,7 +538,13 @@ PermissionExplorer Grid
 .permissionExplorerGridDeletingRowDisabled,
 .permissionExplorerGridDeletingRowDark,
 .permissionExplorerGridDeletingRowSelectedDark,
-.permissionExplorerGridDeletingRowDisabledDark {
+.permissionExplorerGridDeletingRowDisabledDark,
+.permissionExplorerTreeGridDeletingRow,
+.permissionExplorerTreeGridDeletingRowSelected,
+.permissionExplorerTreeGridDeletingRowDisabled,
+.permissionExplorerTreeGridDeletingRowDark,
+.permissionExplorerTreeGridDeletingRowSelectedDark,
+.permissionExplorerTreeGridDeletingRowDisabledDark {
 	text-align: center;
 	background-color:#FF9999;
 	border-right: 1px solid #eeeeee;
@@ -517,7 +553,11 @@ PermissionExplorer Grid
 .permissionExplorerGridDeletingRowOver,
 .permissionExplorerGridDeletingRowOverDark,
 .permissionExplorerGridDeletingRowSelectedOver,
-.permissionExplorerGridDeletingRowSelectedOverDark {
+.permissionExplorerGridDeletingRowSelectedOverDark,
+.permissionExplorerTreeGridDeletingRowOver,
+.permissionExplorerTreeGridDeletingRowOverDark,
+.permissionExplorerTreeGridDeletingRowSelectedOver,
+.permissionExplorerTreeGridDeletingRowSelectedOverDark {
 	text-align: center;
 	background-color:#DBEDFF;
 	border-right: 1px solid #eeeeee;
@@ -562,4 +602,48 @@ PermissionExplorer Grid
 	background-color:#DBEDFF;
 	border-right: 1px solid #eeeeee;
 	border-bottom:1px solid #EDEDED;
+}
+
+/* TreeGridの固定列のずれ対応 */
+td.permissionExplorerTreeGridRow,
+td.permissionExplorerTreeGridRowSelected,
+td.permissionExplorerTreeGridRowDisabled,
+td.permissionExplorerTreeGridRowDark,
+td.permissionExplorerTreeGridRowSelectedDark,
+td.permissionExplorerTreeGridRowDisabledDark,
+td.permissionExplorerTreeGridRowOver,
+td.permissionExplorerTreeGridRowOverDark,
+td.permissionExplorerTreeGridRowSelectedOver,
+td.permissionExplorerTreeGridRowSelectedOverDark,
+td.permissionExplorerTreeGridConfiguredRow,
+td.permissionExplorerTreeGridConfiguredRowSelected,
+td.permissionExplorerTreeGridConfiguredRowDisabled,
+td.permissionExplorerTreeGridConfiguredRowDark,
+td.permissionExplorerTreeGridConfiguredRowSelectedDark,
+td.permissionExplorerTreeGridConfiguredRowDisabledDark,
+td.permissionExplorerTreeGridConfiguredRowOver,
+td.permissionExplorerTreeGridConfiguredRowOverDark,
+td.permissionExplorerTreeGridConfiguredRowSelectedOver,
+td.permissionExplorerTreeGridConfiguredRowSelectedOverDark,
+td.permissionExplorerTreeGridEditingRow,
+td.permissionExplorerTreeGridEditingRowSelected,
+td.permissionExplorerTreeGridEditingRowDisabled,
+td.permissionExplorerTreeGridEditingRowDark,
+td.permissionExplorerTreeGridEditingRowSelectedDark,
+td.permissionExplorerTreeGridEditingRowDisabledDark,
+td.permissionExplorerTreeGridEditingRowOver,
+td.permissionExplorerTreeGridEditingRowOverDark,
+td.permissionExplorerTreeGridEditingRowSelectedOver,
+td.permissionExplorerTreeGridEditingRowSelectedOverDark,
+td.permissionExplorerTreeGridDeletingRow,
+td.permissionExplorerTreeGridDeletingRowSelected,
+td.permissionExplorerTreeGridDeletingRowDisabled,
+td.permissionExplorerTreeGridDeletingRowDark,
+td.permissionExplorerTreeGridDeletingRowSelectedDark,
+td.permissionExplorerTreeGridDeletingRowDisabledDark,
+td.permissionExplorerTreeGridDeletingRowOver,
+td.permissionExplorerTreeGridDeletingRowOverDark,
+td.permissionExplorerTreeGridDeletingRowSelectedOver,
+td.permissionExplorerTreeGridDeletingRowSelectedOverDark {
+	height: 22px !important;
 }

@@ -141,7 +141,7 @@ public abstract class AbstractFulltextSeachService implements FulltextSearchServ
 				ResultSet rs = getStatement().executeQuery(sql);
 				try {
 					while(rs.next()) {
-						return rs.getTimestamp(1);
+						return rs.getTimestamp(1, rdb.rdbCalendar());
 					}
 				} finally {
 					rs.close();
@@ -168,7 +168,7 @@ public abstract class AbstractFulltextSeachService implements FulltextSearchServ
 				try {
 					while(rs.next()) {
 
-						CrawlTimestampDto dto = crawlLogSearchSql.toFulltextSearchCrawlTimestampDto(rs);
+						CrawlTimestampDto dto = crawlLogSearchSql.toFulltextSearchCrawlTimestampDto(rs, rdb);
 						data.put(dto.getObjDefId(), dto);
 					}
 				} finally {

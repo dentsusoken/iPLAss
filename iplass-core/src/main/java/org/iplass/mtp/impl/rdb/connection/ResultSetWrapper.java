@@ -189,7 +189,12 @@ public class ResultSetWrapper implements ResultSet {
 	}
 
 	public Date getDate(int columnIndex, Calendar cal) throws SQLException {
-		return wrapped.getDate(columnIndex, cal);
+		//driverによってnullの場合の挙動が異なるので、ここで吸収。。
+		if (cal == null) {
+			return wrapped.getDate(columnIndex);
+		} else {
+			return wrapped.getDate(columnIndex, cal);
+		}
 	}
 
 	public Date getDate(int columnIndex) throws SQLException {
@@ -197,7 +202,12 @@ public class ResultSetWrapper implements ResultSet {
 	}
 
 	public Date getDate(String columnLabel, Calendar cal) throws SQLException {
-		return wrapped.getDate(columnLabel, cal);
+		//driverによってnullの場合の挙動が異なるので、ここで吸収。。
+		if (cal == null) {
+			return wrapped.getDate(columnLabel);
+		} else {
+			return wrapped.getDate(columnLabel, cal);
+		}
 	}
 
 	public Date getDate(String columnLabel) throws SQLException {
@@ -343,7 +353,12 @@ public class ResultSetWrapper implements ResultSet {
 	}
 
 	public Time getTime(int columnIndex, Calendar cal) throws SQLException {
-		return wrapped.getTime(columnIndex, cal);
+		//driverによってnullの場合の挙動が異なるので、ここで吸収。。
+		if (cal == null) {
+			return wrapped.getTime(columnIndex);
+		} else {
+			return wrapped.getTime(columnIndex, cal);
+		}
 	}
 
 	public Time getTime(int columnIndex) throws SQLException {
@@ -351,7 +366,12 @@ public class ResultSetWrapper implements ResultSet {
 	}
 
 	public Time getTime(String columnLabel, Calendar cal) throws SQLException {
-		return wrapped.getTime(columnLabel, cal);
+		//driverによってnullの場合の挙動が異なるので、ここで吸収。。
+		if (cal == null) {
+			return wrapped.getTime(columnLabel);
+		} else {
+			return wrapped.getTime(columnLabel, cal);
+		}
 	}
 
 	public Time getTime(String columnLabel) throws SQLException {
@@ -360,7 +380,12 @@ public class ResultSetWrapper implements ResultSet {
 
 	public Timestamp getTimestamp(int columnIndex, Calendar cal)
 			throws SQLException {
-		return wrapped.getTimestamp(columnIndex, cal);
+		//driverによってnullの場合の挙動が異なるので、ここで吸収。。
+		if (cal == null) {
+			return wrapped.getTimestamp(columnIndex);
+		} else {
+			return wrapped.getTimestamp(columnIndex, cal);
+		}
 	}
 
 	public Timestamp getTimestamp(int columnIndex) throws SQLException {
@@ -369,7 +394,12 @@ public class ResultSetWrapper implements ResultSet {
 
 	public Timestamp getTimestamp(String columnLabel, Calendar cal)
 			throws SQLException {
-		return wrapped.getTimestamp(columnLabel, cal);
+		//driverによってnullの場合の挙動が異なるので、ここで吸収。。
+		if (cal == null) {
+			return wrapped.getTimestamp(columnLabel);
+		} else {
+			return wrapped.getTimestamp(columnLabel, cal);
+		}
 	}
 
 	public Timestamp getTimestamp(String columnLabel) throws SQLException {

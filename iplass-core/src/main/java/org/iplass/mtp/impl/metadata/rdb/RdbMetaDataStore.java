@@ -119,7 +119,7 @@ public class RdbMetaDataStore extends AbstractXmlMetaDataStore {
 				ResultSet rs = ps.executeQuery();
 				List<MetaDataEntryInfo> ret;
 				try {
-					ret = select.createNodeListResultData(rs);
+					ret = select.createNodeListResultData(rs, rdb);
 				} finally {
 					rs.close();
 				}
@@ -276,7 +276,7 @@ public class RdbMetaDataStore extends AbstractXmlMetaDataStore {
 					select.setGetMetadataInfoParameter(rdb, ps, tenantId, metaDataEntry.getMetaData().getId());
 					try (ResultSet rs = ps.executeQuery()) {
 						if (rs.next()) {
-							info = select.createMetaDataEntryInfo(rs);
+							info = select.createMetaDataEntryInfo(rs, rdb);
 						}
 					}
 				}
@@ -484,7 +484,7 @@ public class RdbMetaDataStore extends AbstractXmlMetaDataStore {
 				ResultSet rs = ps.executeQuery();
 				List<MetaDataEntryInfo> ret;
 				try {
-					ret = select.createNodeListResultData(rs);
+					ret = select.createNodeListResultData(rs, rdb);
 				} finally {
 					rs.close();
 				}
