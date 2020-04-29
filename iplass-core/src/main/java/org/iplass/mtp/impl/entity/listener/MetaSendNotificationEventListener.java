@@ -536,11 +536,19 @@ public class MetaSendNotificationEventListener extends MetaEventListener {
 
 	private List<String> processDestinationGroovyTemplate(Map<String, Object> bindings) {
 		List<String> processedDestinationList = new ArrayList<String>();
+		if (endPointDefList==null) {
+			return processedDestinationList;
+		}
 		for (String script : endPointDefList) {
 			ScriptEngine se = ExecuteContext.getCurrentContext().getTenantContext().getScriptEngine();
 			GroovyTemplate destinationTemplate = GroovyTemplateCompiler.compile(script, "SendNotificationDestinationTemplate_Text" + tmplDefName, (GroovyScriptEngine) se);
 			StringWriter sw = new StringWriter();
-			GroovyTemplateBinding gtb = new GroovyTemplateBinding(sw, bindings);
+			GroovyTemplateBinding gtb = new GroovyTemplateBinding(sw);
+			if (bindings != null) {
+				for (Map.Entry<String, Object> e: bindings.entrySet()) {
+					gtb.setVariable(e.getKey(), e.getValue());
+				}
+			}
 			try {
 				destinationTemplate.doTemplate(gtb);
 			} catch (IOException e) {
@@ -565,8 +573,13 @@ public class MetaSendNotificationEventListener extends MetaEventListener {
 		@Override
 		protected Object createNotification(Entity entity, EventType type, EntityEventContext context) {
 			Map<String, Object> bindings = generateBindings(entity, type, context);
-			List<String> processedDestinationList = processDestinationGroovyTemplate(bindings);
 			List<Mail> mailList= new ArrayList<Mail>();
+			if (endPointDefList==null||endPointDefList.isEmpty()) {
+				Mail mail = mm.createMail(tmplDefName, bindings);
+				mailList.add(mail);
+				return mailList;
+			}
+			List<String> processedDestinationList = processDestinationGroovyTemplate(bindings);
 			if(sendTogether) {
 				Mail mail = mm.createMail(tmplDefName, bindings);
 				for (String destination : processedDestinationList) {
@@ -603,8 +616,13 @@ public class MetaSendNotificationEventListener extends MetaEventListener {
 		@Override
 		protected Object createNotification(Entity entity, EventType type, EntityEventContext context) {
 			Map<String, Object> bindings = generateBindings(entity, type, context);
-			List<String> processedDestinationList = processDestinationGroovyTemplate(bindings);
 			List<SmsMail> smsMailList = new ArrayList<SmsMail>();
+			if (endPointDefList==null||endPointDefList.isEmpty()) {
+				SmsMail smsMail = smm.createMail(tmplDefName, bindings);
+				smsMailList.add(smsMail);
+				return smsMailList;
+			}
+			List<String> processedDestinationList = processDestinationGroovyTemplate(bindings);
 			for (String desination : processedDestinationList) {
 				SmsMail smsMail = smm.createMail(tmplDefName, bindings);
 				smsMail.setTo(desination);
@@ -634,6 +652,11 @@ public class MetaSendNotificationEventListener extends MetaEventListener {
 		protected Object createNotification(Entity entity, EventType type, EntityEventContext context) {
 			Map<String, Object> bindings = generateBindings(entity, type, context);
 			List<PushNotification> pushNotificationList= new ArrayList<PushNotification>();
+			if (endPointDefList==null||endPointDefList.isEmpty()) {
+				PushNotification pushNotification = pm.createNotification(tmplDefName, bindings);
+				pushNotificationList.add(pushNotification);
+				return pushNotificationList;
+			}
 			List<String> processedDestinationList = processDestinationGroovyTemplate(bindings);
 			if(sendTogether) {
 				PushNotification pushNotification = pm.createNotification(tmplDefName, bindings);
