@@ -56,6 +56,7 @@ public class EventListenerListGridRecord extends ListGridRecord {
 	public static final String WEBHOOKENDPOINTLIST="webHookEndPointList";
 	public static final String WEBHOOKRESULTHANLDER="webHookResultHandler";
 	public static final String SYNCHRONOUS="syncrhonous";
+	public static final String SENDTOGETHER="sendTogether";
 
 	public static final String GP = "gp";
 
@@ -306,5 +307,13 @@ public class EventListenerListGridRecord extends ListGridRecord {
 
 	public boolean isSyncrhonous() {
 		return getAttributeAsBoolean(SYNCHRONOUS);
+	}
+
+	public void setSendTogether(boolean value) {
+		setAttribute(SENDTOGETHER, value);
+	}
+
+	public boolean isSendTogether() {
+		return getAttributeAsBoolean(SENDTOGETHER);
 	}
 }

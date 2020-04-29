@@ -20,6 +20,8 @@
 
 package org.iplass.mtp.impl.entity.listener;
 
+import java.io.IOException;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -36,9 +38,13 @@ import org.iplass.mtp.impl.core.ExecuteContext;
 import org.iplass.mtp.impl.core.TenantContext;
 import org.iplass.mtp.impl.entity.MetaEntity;
 import org.iplass.mtp.impl.entity.MetaEventListener;
+import org.iplass.mtp.impl.script.GroovyScriptEngine;
 import org.iplass.mtp.impl.script.Script;
 import org.iplass.mtp.impl.script.ScriptContext;
 import org.iplass.mtp.impl.script.ScriptEngine;
+import org.iplass.mtp.impl.script.template.GroovyTemplate;
+import org.iplass.mtp.impl.script.template.GroovyTemplateBinding;
+import org.iplass.mtp.impl.script.template.GroovyTemplateCompiler;
 import org.iplass.mtp.mail.Mail;
 import org.iplass.mtp.mail.MailManager;
 import org.iplass.mtp.pushnotification.PushNotification;
@@ -71,6 +77,7 @@ public class MetaSendNotificationEventListener extends MetaEventListener {
 	private String tmplDefName;
 	private String notificationCondScript;
 	private List<EventType> listenEvent;
+	private boolean sendTogether;
 
 	/**ウェッブフックだけの設定項目*/
 	private boolean synchronous;
@@ -133,6 +140,14 @@ public class MetaSendNotificationEventListener extends MetaEventListener {
 		this.synchronous = isSynchronous;
 	}
 
+	public boolean isSendTogether() {
+		return sendTogether;
+	}
+
+	public void setSendTogether(boolean isSendTogether) {
+		this.sendTogether = isSendTogether;
+	}
+
 	@Override
 	public MetaEventListener copy() {
 		MetaSendNotificationEventListener copy = new MetaSendNotificationEventListener();
@@ -141,6 +156,7 @@ public class MetaSendNotificationEventListener extends MetaEventListener {
 		copy.tmplDefName = tmplDefName;
 		copy.notificationCondScript = notificationCondScript;
 		copy.resultHandler = resultHandler;
+		copy.setSendTogether(sendTogether);
 		if (listenEvent != null) {
 			copy.listenEvent = new ArrayList<EventType>();
 			copy.listenEvent.addAll(listenEvent);
@@ -205,6 +221,8 @@ public class MetaSendNotificationEventListener extends MetaEventListener {
 			}
 		} else if (!resultHandler.equals(other.resultHandler)) {
 			return false;
+		} else if (!sendTogether==other.sendTogether) {
+			return false;
 		}
 		return true;
 	}
@@ -218,6 +236,7 @@ public class MetaSendNotificationEventListener extends MetaEventListener {
 		notificationCondScript = d.getNotificationCondScript();
 		resultHandler = d.getResultHandler();
 		synchronous = d.isSynchronous();
+		sendTogether = d.isSendTogether();
 		if (d.getListenEvent() != null) {
 			listenEvent = new ArrayList<EventType>();
 			listenEvent.addAll(d.getListenEvent());
@@ -242,6 +261,7 @@ public class MetaSendNotificationEventListener extends MetaEventListener {
 		d.setTmplDefName(tmplDefName);
 		d.setNotificationCondScript(notificationCondScript);
 		d.setResultHandler(resultHandler);
+		d.setSendTogether(sendTogether);
 		
 		if (listenEvent != null) {
 			List<EventType> es = new ArrayList<EventType>();
@@ -513,6 +533,35 @@ public class MetaSendNotificationEventListener extends MetaEventListener {
 		}
 	}
 
+
+	private List<String> processDestinationGroovyTemplate(Map<String, Object> bindings) {
+		List<String> processedDestinationList = new ArrayList<String>();
+		if (endPointDefList==null) {
+			return processedDestinationList;
+		}
+		for (String script : endPointDefList) {
+			ScriptEngine se = ExecuteContext.getCurrentContext().getTenantContext().getScriptEngine();
+			GroovyTemplate destinationTemplate = GroovyTemplateCompiler.compile(script, "SendNotificationDestinationTemplate_Text" + tmplDefName, (GroovyScriptEngine) se);
+			StringWriter sw = new StringWriter();
+			GroovyTemplateBinding gtb = new GroovyTemplateBinding(sw);
+			if (bindings != null) {
+				for (Map.Entry<String, Object> e: bindings.entrySet()) {
+					gtb.setVariable(e.getKey(), e.getValue());
+				}
+			}
+			try {
+				destinationTemplate.doTemplate(gtb);
+			} catch (IOException e) {
+				throw new RuntimeException(e);
+			}
+			String temp = sw.toString();
+			if (temp != null && !temp.replace("\n", "").replaceAll("\\s+", "").isEmpty()) {
+				processedDestinationList.add(temp);
+			}
+		}
+		return processedDestinationList;
+	}
+	
 	public class SendMailNotificationEventListenerHandler extends SendNotificationListenerEventHandler {
 
 		private MailManager mm = ManagerLocator.getInstance().getManager(MailManager.class);
@@ -524,13 +573,35 @@ public class MetaSendNotificationEventListener extends MetaEventListener {
 		@Override
 		protected Object createNotification(Entity entity, EventType type, EntityEventContext context) {
 			Map<String, Object> bindings = generateBindings(entity, type, context);
-			Mail mail = mm.createMail(tmplDefName, bindings);
-			return mail;
+			List<Mail> mailList= new ArrayList<Mail>();
+			if (endPointDefList==null||endPointDefList.isEmpty()) {
+				Mail mail = mm.createMail(tmplDefName, bindings);
+				mailList.add(mail);
+				return mailList;
+			}
+			List<String> processedDestinationList = processDestinationGroovyTemplate(bindings);
+			if(sendTogether) {
+				Mail mail = mm.createMail(tmplDefName, bindings);
+				for (String destination : processedDestinationList) {
+					mail.addRecipientTo(destination, "");
+				}
+				mailList.add(mail);
+			} else {
+				for (String destination : processedDestinationList) {
+					Mail mail = mm.createMail(tmplDefName, bindings);
+					mail.addRecipientTo(destination, "");
+					mailList.add(mail);
+				}
+			}
+			return mailList;
 		}
 
+		@SuppressWarnings("unchecked")
 		@Override
 		protected void sendNotification(Object mail) {
-			mm.sendMail((Mail) mail);
+			for (Mail m : (List<Mail>) mail) {
+				mm.sendMail(m);
+			}
 		}
 	}
 
@@ -545,13 +616,27 @@ public class MetaSendNotificationEventListener extends MetaEventListener {
 		@Override
 		protected Object createNotification(Entity entity, EventType type, EntityEventContext context) {
 			Map<String, Object> bindings = generateBindings(entity, type, context);
-			SmsMail smsMail = smm.createMail(tmplDefName, bindings);
-			return smsMail;
+			List<SmsMail> smsMailList = new ArrayList<SmsMail>();
+			if (endPointDefList==null||endPointDefList.isEmpty()) {
+				SmsMail smsMail = smm.createMail(tmplDefName, bindings);
+				smsMailList.add(smsMail);
+				return smsMailList;
+			}
+			List<String> processedDestinationList = processDestinationGroovyTemplate(bindings);
+			for (String desination : processedDestinationList) {
+				SmsMail smsMail = smm.createMail(tmplDefName, bindings);
+				smsMail.setTo(desination);
+				smsMailList.add(smsMail);
+			}
+			return smsMailList;
 		}
 
+		@SuppressWarnings("unchecked")
 		@Override
 		protected void sendNotification(Object mail) {
-			smm.sendMail((SmsMail) mail);
+			for (SmsMail m : (List<SmsMail>) mail) {
+				smm.sendMail((SmsMail) m);
+			}
 		}
 	}
 
@@ -566,17 +651,38 @@ public class MetaSendNotificationEventListener extends MetaEventListener {
 		@Override
 		protected Object createNotification(Entity entity, EventType type, EntityEventContext context) {
 			Map<String, Object> bindings = generateBindings(entity, type, context);
-			PushNotification pushNotification = pm.createNotification(tmplDefName, bindings);
-
-			return pushNotification;
+			List<PushNotification> pushNotificationList= new ArrayList<PushNotification>();
+			if (endPointDefList==null||endPointDefList.isEmpty()) {
+				PushNotification pushNotification = pm.createNotification(tmplDefName, bindings);
+				pushNotificationList.add(pushNotification);
+				return pushNotificationList;
+			}
+			List<String> processedDestinationList = processDestinationGroovyTemplate(bindings);
+			if(sendTogether) {
+				PushNotification pushNotification = pm.createNotification(tmplDefName, bindings);
+				for (String destination : processedDestinationList) {
+					pushNotification.addTo(destination);
+				}
+				pushNotificationList.add(pushNotification);
+			} else {
+				for (String destination : processedDestinationList) {
+					PushNotification pushNotification = pm.createNotification(tmplDefName, bindings);
+					pushNotification.addTo(destination);
+					pushNotificationList.add(pushNotification);
+				}
+			}
+			return pushNotificationList;
 		}
 
+		@SuppressWarnings("unchecked")
 		@Override
 		protected void sendNotification(Object mail) {
-			pm.push((PushNotification) mail);
+			for (PushNotification m : (List<PushNotification>) mail) {
+				pm.push(m);
+			}
 		}
 	}
-	
+
 	public class SendWebHookNotificationEventListenerHandler extends SendNotificationListenerEventHandler {
 
 		private WebHookManager wm = ManagerLocator.getInstance().getManager(WebHookManager.class);
@@ -587,8 +693,9 @@ public class MetaSendNotificationEventListener extends MetaEventListener {
 		@Override
 		protected Object createNotification(Entity entity, EventType type, EntityEventContext context) {
 			Map<String, Object> bindings = generateBindings(entity, type, context);
+			List<String> processedDestinationList = processDestinationGroovyTemplate(bindings);
 			ArrayList<WebHook> webHookList = new ArrayList<WebHook>();
-			for (String endPoint : endPointDefList) {
+			for (String endPoint : processedDestinationList) {
 				WebHook webHook = wm.createWebHook(tmplDefName, bindings, endPoint);
 				WebHookResponseHandler whrh = wm.getResponseHandler(resultHandler);
 				webHook.setResultHandler(whrh);
