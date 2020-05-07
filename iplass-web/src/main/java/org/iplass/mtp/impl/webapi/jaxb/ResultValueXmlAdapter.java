@@ -36,7 +36,7 @@ public class ResultValueXmlAdapter extends XmlAdapter<Object, Object> {
 			List<?> vList = (List<?>) v;
 			List<Object> bList = new ArrayList<>(vList.size());
 			for (Object lv: vList) {
-				bList.add(dateAdapter.marshal(lv));
+				bList.add(marshal(lv));
 			}
 			return new JaxbListValue(bList);
 		}
@@ -50,7 +50,7 @@ public class ResultValueXmlAdapter extends XmlAdapter<Object, Object> {
 			List<?> bList = (List<?>) b;
 			List<Object> vList = new ArrayList<>(bList.size());
 			for (Object lv: bList) {
-				vList.add(dateAdapter.unmarshal(lv));
+				vList.add(unmarshal(lv));
 			}
 			
 			return vList;
