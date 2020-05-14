@@ -19,6 +19,7 @@
  */
 package org.iplass.mtp.impl.entity;
 
+import java.sql.Timestamp;
 import java.util.Iterator;
 import java.util.List;
 
@@ -43,6 +44,7 @@ class BulkUpdateAdapter implements BulkUpdatable {
 	private EntityContext ec;
 	
 	private UpdateOption op;
+	private Timestamp sysdate;
 	
 	private List<PropertyHandler> complexWrapperTypePropList;
 	private List<PropertyHandler> autoNumPropList;
@@ -108,6 +110,12 @@ class BulkUpdateAdapter implements BulkUpdatable {
 		return actual.getUpdateProperties();
 	}
 
+	@Override
+	public boolean isEnableAuditPropertySpecification() {
+		return actual.isEnableAuditPropertySpecification();
+	}
+
+
 	private static class BulkUpdateEntityWrapper extends BulkUpdateEntity {
 		BulkUpdateEntity actualBulkUpdateEntity;
 		
@@ -133,6 +141,13 @@ class BulkUpdateAdapter implements BulkUpdatable {
 		public boolean hasNext() {
 			return actualIt.hasNext();
 		}
+		
+		private Timestamp sysdate() {
+			if (sysdate == null) {
+				sysdate = new Timestamp(System.currentTimeMillis());
+			}
+			return sysdate;
+		}
 
 		@Override
 		public BulkUpdateEntity next() {
@@ -140,12 +155,31 @@ class BulkUpdateAdapter implements BulkUpdatable {
 			if (forInternalUse.getEntity().getVersion() == null) {
 				forInternalUse.getEntity().setVersion(Long.valueOf(0));
 			}
-			forInternalUse.getEntity().setCreateBy(clientId);
-			forInternalUse.getEntity().setUpdateBy(clientId);
+			if (isEnableAuditPropertySpecification()) {
+				if (forInternalUse.getEntity().getCreateBy() == null) {
+					forInternalUse.getEntity().setCreateBy(clientId);
+				}
+				if (forInternalUse.getEntity().getUpdateBy() == null) {
+					forInternalUse.getEntity().setUpdateBy(clientId);
+				}
+			} else {
+				forInternalUse.getEntity().setCreateBy(clientId);
+				forInternalUse.getEntity().setUpdateBy(clientId);
+			}
+			
 			if (forInternalUse.getEntity().getState() == null) {
 				forInternalUse.getEntity().setState(new SelectValue(Entity.STATE_VALID_VALUE));
 			}
 
+			if (isEnableAuditPropertySpecification()) {
+				if (forInternalUse.getEntity().getCreateDate() == null) {
+					forInternalUse.getEntity().setCreateDate(sysdate());
+				}
+				if (forInternalUse.getEntity().getUpdateDate() == null) {
+					forInternalUse.getEntity().setUpdateDate(sysdate());
+				}
+			}
+			
 			switch (forInternalUse.actualBulkUpdateEntity.getMethod()) {
 			case INSERT:
 				eh.preprocessInsertDirect(forInternalUse.getEntity(), ec, complexWrapperTypePropList);

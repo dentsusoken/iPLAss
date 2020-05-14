@@ -115,6 +115,7 @@ public class CSVFormattedEntityStream implements BulkUpdatable {
 
 	private String definitionName;
 	private List<String> updateProperties;
+	private boolean enableAuditPropertySpecification;
 	private Reader reader;
 	private EntityCsvReader esReader;
 
@@ -238,6 +239,16 @@ public class CSVFormattedEntityStream implements BulkUpdatable {
 	public List<String> getUpdateProperties() {
 		return updateProperties;
 	}
+
+	@Override
+	public boolean isEnableAuditPropertySpecification() {
+		return enableAuditPropertySpecification;
+	}
+
+	public void setEnableAuditPropertySpecification(boolean enableAuditPropertySpecification) {
+		this.enableAuditPropertySpecification = enableAuditPropertySpecification;
+	}
+
 
 	private class It implements Iterator<BulkUpdateEntity> {
 

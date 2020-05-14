@@ -59,7 +59,7 @@ class BulkInsertHandler {
 	Statement searchExtIndex;
 
 	@SuppressWarnings("unchecked")
-	BulkInsertHandler(BulkUpdateState state) throws SQLException {
+	BulkInsertHandler(BulkUpdateState state, boolean timestampFromEntity) throws SQLException {
 		GRdbEntityStoreRuntime store = (GRdbEntityStoreRuntime) state.eh.getEntityStoreRuntime();
 		//本体
 		String tableName = store.OBJ_STORE();
@@ -68,7 +68,7 @@ class BulkInsertHandler {
 		colSize = new int[objStoreInsertMapper.length];
 		for (int i = 0; i <= store.getCurrentMaxPage(); i++) {
 			if (i == 0) {
-				objStoreInsertMapper[i] = ObjStoreBulkInsertSql.insertMain(state.tenantId, state.eh, state.rdb, state.entityContext);
+				objStoreInsertMapper[i] = ObjStoreBulkInsertSql.insertMain(state.tenantId, state.eh, state.rdb, state.entityContext, timestampFromEntity);
 			} else {
 				objStoreInsertMapper[i] = ObjStoreBulkInsertSql.insertSubPage(state.tenantId, state.eh, i, state.rdb, state.entityContext);
 			}

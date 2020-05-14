@@ -87,7 +87,7 @@ public class ObjStoreBulkInsertSql {
 	}
 	
 	public static List<ColumnValueMapper> insertMain(int tenantId, EntityHandler eh,
-			RdbAdapter rdb, EntityContext context) {
+			RdbAdapter rdb, EntityContext context, boolean timestampFromEntity) {
 		List<ColumnValueMapper> ret = new ArrayList<>();
 		ret.add(new FixedExpressionColumnValueMapper(ObjStoreTable.TENANT_ID, Integer.toString(tenantId)));
 		ret.add(new FixedExpressionColumnValueMapper(ObjStoreTable.OBJ_DEF_ID, rdb.toSqlExp(eh.getMetaData().getId())));
@@ -98,8 +98,13 @@ public class ObjStoreBulkInsertSql {
 		ret.add(new PropertyColumnValueMapper(tenantId, eh, (PrimitivePropertyHandler) eh.getProperty(Entity.STATE, context), 0));
 		ret.add(new PropertyColumnValueMapper(tenantId, eh, (PrimitivePropertyHandler) eh.getProperty(Entity.NAME, context), 0));
 		ret.add(new PropertyColumnValueMapper(tenantId, eh, (PrimitivePropertyHandler) eh.getProperty(Entity.DESCRIPTION, context), 0));
-		ret.add(new FixedExpressionColumnValueMapper(ObjStoreTable.CRE_DATE, rdb.systimestamp()));
-		ret.add(new FixedExpressionColumnValueMapper(ObjStoreTable.UP_DATE, rdb.systimestamp()));
+		if (timestampFromEntity) {
+			ret.add(new PropertyColumnValueMapper(tenantId, eh, (PrimitivePropertyHandler) eh.getProperty(Entity.CREATE_DATE, context), 0));
+			ret.add(new PropertyColumnValueMapper(tenantId, eh, (PrimitivePropertyHandler) eh.getProperty(Entity.UPDATE_DATE, context), 0));
+		} else {
+			ret.add(new FixedExpressionColumnValueMapper(ObjStoreTable.CRE_DATE, rdb.systimestamp()));
+			ret.add(new FixedExpressionColumnValueMapper(ObjStoreTable.UP_DATE, rdb.systimestamp()));
+		}
 		ret.add(new PropertyColumnValueMapper(tenantId, eh, (PrimitivePropertyHandler) eh.getProperty(Entity.START_DATE, context), 0));
 		ret.add(new PropertyColumnValueMapper(tenantId, eh, (PrimitivePropertyHandler) eh.getProperty(Entity.END_DATE, context), 0));
 		ret.add(new PropertyColumnValueMapper(tenantId, eh, (PrimitivePropertyHandler) eh.getProperty(Entity.LOCKED_BY, context), 0));

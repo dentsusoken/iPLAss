@@ -62,6 +62,7 @@ public class FunctionalEntityStream implements BulkUpdatable {
 	
 	private String definitionName;
 	private List<String> updateProperties;
+	private boolean enableAuditPropertySpecification;
 	private Supplier<BulkUpdateEntity> onNext;
 	private Runnable onClose;
 	private Consumer<BulkUpdateEntity> onUpdated;
@@ -108,7 +109,20 @@ public class FunctionalEntityStream implements BulkUpdatable {
 		}
 		return this;
 	}
-	
+
+	/**
+	 * バルク更新（INSERT時）の際、EntityにcreateBy,createDate,updateBy,updateDateの値を
+	 * 指定してその値のまま登録するように指定します。
+	 * このフラグを利用する場合、
+	 * 当該処理を呼び出すユーザがadmin権限を保持している必要があります。
+	 * 
+	 * @return
+	 */
+	public FunctionalEntityStream auditPropertySpecified() {
+		this.enableAuditPropertySpecification = true;
+		return this;
+	}
+
 	/**
 	 * BulkUpdatableのクローズ処理を記述。
 	 * 
@@ -179,6 +193,11 @@ public class FunctionalEntityStream implements BulkUpdatable {
 	@Override
 	public String getDefinitionName() {
 		return definitionName;
+	}
+
+	@Override
+	public boolean isEnableAuditPropertySpecification() {
+		return enableAuditPropertySpecification;
 	}
 
 	@Override
