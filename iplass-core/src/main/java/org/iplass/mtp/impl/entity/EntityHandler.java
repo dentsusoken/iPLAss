@@ -631,13 +631,24 @@ public class EntityHandler extends BaseMetaDataRuntime {
 		Entity copyEntity = ((GenericEntity) entity).copy();
 
 		//システム設定項目のセット
-		copyEntity.setCreateBy(mtfContext.getClientId());
-		copyEntity.setUpdateBy(mtfContext.getClientId());
+		if (option.isEnableAuditPropertySpecification()) {
+			if (copyEntity.getCreateBy() == null) {
+				copyEntity.setCreateBy(mtfContext.getClientId());
+			}
+			if (copyEntity.getUpdateBy() == null) {
+				copyEntity.setUpdateBy(mtfContext.getClientId());
+			}
+		} else {
+			copyEntity.setCreateBy(mtfContext.getClientId());
+			copyEntity.setUpdateBy(mtfContext.getClientId());
+		}
 		if (copyEntity.getState() == null) {
 			copyEntity.setState(new SelectValue(Entity.STATE_VALID_VALUE));
 		}
-		copyEntity.setCreateDate(null);
-		copyEntity.setUpdateDate(null);
+		if (!option.isEnableAuditPropertySpecification()) {
+			copyEntity.setCreateDate(null);
+			copyEntity.setUpdateDate(null);
+		}
 
 		if (option.isRegenerateOid()) {
 			//自動採番するためnullセット

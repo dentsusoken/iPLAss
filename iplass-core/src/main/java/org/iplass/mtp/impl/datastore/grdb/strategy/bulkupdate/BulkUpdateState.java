@@ -125,7 +125,7 @@ public class BulkUpdateState implements AutoCloseable {
 				break;
 			case INSERT:
 				if (insert == null) {
-					insert = new BulkInsertHandler(this);
+					insert = new BulkInsertHandler(this, bulkUpdatable.isEnableAuditPropertySpecification());
 				}
 				if (bue.getEntity().getOid() == null) {
 					bue.getEntity().setOid(storeStrategy.newOid(entityContext, eh));
@@ -136,6 +136,9 @@ public class BulkUpdateState implements AutoCloseable {
 				if (update == null) {
 					update = new BulkUpdateHandler(this);
 				}
+				//このタイミングでしかUPDATEか否かわからないので。
+				//UPDATEの場合、updateByの指定はできないように
+				bue.getEntity().setUpdateBy(clientId);
 				update.addValue(this, bue.getEntity());
 				break;
 			default:

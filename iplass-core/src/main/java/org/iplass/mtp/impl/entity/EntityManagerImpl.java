@@ -493,6 +493,15 @@ public class EntityManagerImpl implements EntityManager {
 			}
 
 			EntityHandler handler = getEntityHandler(entity.getDefinitionName());
+			
+			if (option.isEnableAuditPropertySpecification()) {
+				//adminのみ可能
+				AuthContext auth = AuthContext.getCurrentContext();
+				User user = auth.getUser();
+				if (user == null || !auth.getUser().isAdmin()) {
+					throw new EntityRuntimeException("Only admin user can set enableAuditPropertySpecification to true.");
+				}
+			}
 
 			//バリデーション
 			if (option.isWithValidation()) {
@@ -1463,6 +1472,15 @@ public class EntityManagerImpl implements EntityManager {
 			}
 
 			EntityHandler handler = getEntityHandler(bulkUpdatable.getDefinitionName());
+
+			if (bulkUpdatable.isEnableAuditPropertySpecification()) {
+				//adminのみ可能
+				AuthContext auth = AuthContext.getCurrentContext();
+				User user = auth.getUser();
+				if (user == null || !auth.getUser().isAdmin()) {
+					throw new EntityRuntimeException("Only admin user can set enableAuditPropertySpecification to true.");
+				}
+			}
 
 			//追加
 			EntityBulkUpdateInvocationImpl invocation = new EntityBulkUpdateInvocationImpl(bulkUpdatable, ehService.getInterceptors(), handler);

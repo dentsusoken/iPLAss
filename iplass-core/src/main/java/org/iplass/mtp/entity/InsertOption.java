@@ -32,6 +32,7 @@ public class InsertOption {
 	private boolean versionSpecified = false;
 	private boolean withValidation = true;
 	private boolean notifyListeners = true;
+	private boolean enableAuditPropertySpecification = false;
 	
 	private boolean localized = false;
 	
@@ -45,11 +46,29 @@ public class InsertOption {
 		copy.versionSpecified = versionSpecified;
 		copy.withValidation = withValidation;
 		copy.notifyListeners = notifyListeners;
+		copy.enableAuditPropertySpecification = enableAuditPropertySpecification;
 		copy.localized = localized;
 		
 		return copy;
 	}
 	
+	public boolean isEnableAuditPropertySpecification() {
+		return enableAuditPropertySpecification;
+	}
+
+	/**
+	 * インサートするEntityにcreateBy,createDate,updateBy,updateDateの値を
+	 * 指定してその値のまま登録する場合にtrueを指定します。
+	 * デフォルトはfalseです。
+	 * このフラグを利用する場合、
+	 * 当該処理を呼び出すユーザがadmin権限を保持している必要があります。
+	 * 
+	 * @param enableAuditPropertySpecification
+	 */
+	public void setEnableAuditPropertySpecification(boolean enableAuditPropertySpecification) {
+		this.enableAuditPropertySpecification = enableAuditPropertySpecification;
+	}
+
 	public boolean isVersionSpecified() {
 		return versionSpecified;
 	}
@@ -183,6 +202,19 @@ public class InsertOption {
 	}
 	
 	/**
+	 * インサートするEntityにcreateBy,createDate,updateBy,updateDateの値を
+	 * 指定してその値のまま登録するように設定します。
+	 * このフラグを利用する場合、
+	 * 当該処理を呼び出すユーザがadmin権限を保持している必要があります。
+	 * 
+	 * @return
+	 */
+	public InsertOption auditPropertySpecified() {
+		this.enableAuditPropertySpecification = true;
+		return this;
+	}
+	
+	/**
 	 * localized=trueに設定します。
 	 * @return
 	 */
@@ -195,7 +227,8 @@ public class InsertOption {
 	public String toString() {
 		return "InsertOption [regenerateOid=" + regenerateOid + ", regenerateAutoNumber=" + regenerateAutoNumber
 				+ ", versionSpecified=" + versionSpecified + ", withValidation=" + withValidation
-				+ ", notifyListeners=" + notifyListeners + ", localized=" + localized + "]";
+				+ ", notifyListeners=" + notifyListeners + ", enableAuditPropertySpecification=" + enableAuditPropertySpecification
+				+ ", localized=" + localized + "]";
 	}
 
 }
