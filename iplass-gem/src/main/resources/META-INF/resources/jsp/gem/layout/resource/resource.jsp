@@ -65,26 +65,15 @@ scriptContext.locale.showPulldownPleaseSelectLabel = <%=ViewUtil.isShowPulldownP
 <script src="${staticContentPath}/scripts/gem/plugin/fixHeight.js?cv=${apiVersion}"></script>
 <script src="${staticContentPath}/webjars/free-jqgrid/4.14.1/js/jquery.jqgrid.min.js?cv=${apiVersion}"></script>
 <script src="${staticContentPath}/webjars/jqtree/1.4.2/tree.jquery.js?cv=${apiVersion}"></script>
-<script src="${staticContentPath}/webjars/jQuery-Timepicker-Addon/1.6.3/jquery-ui-timepicker-addon.js?cv=${apiVersion}"></script>
-<script src="${staticContentPath}/webjars/jQuery-Timepicker-Addon/1.6.3/jquery-ui-sliderAccess.js?cv=${apiVersion}"></script>
 <script src="${staticContentPath}/webjars/jQuery-contextMenu/2.6.2/dist/jquery.contextMenu.js?cv=${apiVersion}"></script>
 <script src="${staticContentPath}/webjars/momentjs/2.18.1/min/moment-with-locales.js?cv=${apiVersion}"></script>
 <script src="${staticContentPath}/webjars/free-jqgrid/4.14.1/js/i18n/min/grid.locale-${language}.js?cv=${apiVersion}"></script>
 <script src="${staticContentPath}/webjars/font-awesome/5.0.9/svg-with-js/js/fontawesome-all.min.js?cv=${apiVersion}"></script>
-<%
-	if (!"en".equals(language)) {
-		//enの場合はデフォルトを利用
-%>
-<script src="${staticContentPath}/webjars/jquery-ui/1.12.1/ui/minified/i18n/datepicker-${language}.js?cv=${apiVersion}"></script>
-<script src="${staticContentPath}/webjars/jQuery-Timepicker-Addon/1.6.3/i18n/jquery-ui-timepicker-${language}.js?cv=${apiVersion}"></script>
-<%
-	}
-%>
-<script src="${staticContentPath}/scripts/gem/plugin/jQuery-Timepicker-Addon/jquery-ui-timepicker-addon-mtp.js?cv=${apiVersion}"></script>
 
 <link rel="stylesheet" href="${staticContentPath}/webjars/jquery-ui/1.12.1/themes/base/jquery-ui.min.css?cv=${apiVersion}" />
 <link rel="stylesheet" href="${staticContentPath}/webjars/free-jqgrid/4.14.1/css/ui.jqgrid.min.css?cv=${apiVersion}" />
 <link rel="stylesheet" href="${staticContentPath}/webjars/free-jqgrid/4.14.1/plugins/css/ui.multiselect.min.css?cv=${apiVersion}" />
 <link rel="stylesheet" href="${staticContentPath}/webjars/jqtree/1.4.2/jqtree.css?cv=${apiVersion}" />
-<link rel="stylesheet" href="${staticContentPath}/webjars/jQuery-Timepicker-Addon/1.6.3/jquery-ui-timepicker-addon.css?cv=${apiVersion}" />
 <link rel="stylesheet" href="${staticContentPath}/webjars/jQuery-contextMenu/2.6.2/dist/jquery.contextMenu.css?cv=${apiVersion}" />
+
+<%@include file="./datepickerResource.inc.jsp" %> 

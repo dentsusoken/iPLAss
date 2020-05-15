@@ -94,6 +94,9 @@ public class GemConfigService implements Service {
 	/** プルダウンの「選択してください」を表示するか */
 	private boolean showPulldownPleaseSelectLabel;
 
+	/** DatePickerのデフォルトオプション */
+	private String datePickerDefaultOption;
+
 	/** ゴミ箱の表示件数上限 */
 	private int recycleBinMaxCount;
 
@@ -118,7 +121,6 @@ public class GemConfigService implements Service {
 	/** EntityViewHelper */
 	private EntityViewHelper entityViewHelper;
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public void init(Config config) {
 		binaryDownloadLoggingTargetProperty = config.getValues("binaryDownloadLoggingTargetProperty", BinaryDownloadLoggingTargetProperty.class);
@@ -223,6 +225,8 @@ public class GemConfigService implements Service {
 			showPulldownPleaseSelectLabel = true;
 		}
 
+		datePickerDefaultOption = config.getValue("datePickerDefaultOption", String.class, null);
+
 		if (config.getValue("recycleBinMaxCount") != null) {
 			recycleBinMaxCount = Integer.valueOf(config.getValue("recycleBinMaxCount"));
 		} else {
@@ -249,10 +253,10 @@ public class GemConfigService implements Service {
 			this.shallowCopyLobData = false;
 		}
 
-		skins = (List<Skin>) config.getBeans("skins");
-		themes = (List<Theme>) config.getBeans("themes");
+		skins = config.getValues("skins", Skin.class);
+		themes = config.getValues("themes", Theme.class);
 
-		entityViewHelper = (EntityViewHelper) config.getBean("entityViewHelper");
+		entityViewHelper = config.getValue("entityViewHelper", EntityViewHelper.class);
 	}
 
 	@Override
@@ -411,6 +415,15 @@ public class GemConfigService implements Service {
 	 */
 	public boolean isShowPulldownPleaseSelectLabel() {
 		return showPulldownPleaseSelectLabel;
+	}
+
+	/**
+	 * DatePickerのデフォルトオプションを返します。
+	 *
+	 * @return DatePickerのデフォルトオプション
+	 */
+	public String getDatePickerDefaultOption() {
+		return datePickerDefaultOption;
 	}
 
 	public List<BinaryDownloadLoggingTargetProperty> getBinaryDownloadLoggingTargetProperty() {
