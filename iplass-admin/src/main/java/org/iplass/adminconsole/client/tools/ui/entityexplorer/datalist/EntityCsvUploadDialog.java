@@ -113,6 +113,7 @@ public class EntityCsvUploadDialog extends AbstractWindow {
 		private CheckboxItem chkNotifyListenersField;
 		private CheckboxItem chkWithValidationField;
 		private CheckboxItem chkUpdateDisupdatablePropertyField;
+		private CheckboxItem chkInsertEnableAuditPropertySpecification;
 		private CheckboxItem chkForceUpdateField;
 		private CheckboxItem chkErrorSkipField;
 		private CheckboxItem chkIgnoreNotExistsPropertyField;
@@ -257,6 +258,11 @@ public class EntityCsvUploadDialog extends AbstractWindow {
 				}
 			});
 
+			chkInsertEnableAuditPropertySpecification = new CheckboxItem();
+			chkInsertEnableAuditPropertySpecification.setTitle(rs("ui_tools_entityexplorer_EntityCsvUploadDialog_insertEnableAuditPropertySpecification"));
+			chkInsertEnableAuditPropertySpecification.setShowTitle(false);
+			chkInsertEnableAuditPropertySpecification.setColSpan(2);
+
 			chkForceUpdateField = new CheckboxItem();
 			chkForceUpdateField.setTitle(rs("ui_tools_entityexplorer_EntityCsvUploadDialog_forceUpdate"));
 			chkForceUpdateField.setShowTitle(false);
@@ -304,6 +310,7 @@ public class EntityCsvUploadDialog extends AbstractWindow {
 			hintLayout.addMember(getLabel("ui_tools_entityexplorer_EntityCsvUploadDialog_bulkUpdateComment"));
 			hintLayout.addMember(getLabel("ui_tools_entityexplorer_EntityCsvUploadDialog_listenerComment"));
 			hintLayout.addMember(getLabel("ui_tools_entityexplorer_EntityCsvUploadDialog_updateDisupdatablePropertyComment1"));
+			hintLayout.addMember(getLabel("ui_tools_entityexplorer_EntityCsvUploadDialog_insertEnableAuditPropertySpecificationComment1"));
 			hintLayout.addMember(getLabel("ui_tools_entityexplorer_EntityCsvUploadDialog_preOidComment1"));
 			hintLayout.addMember(getLabel("ui_tools_entityexplorer_EntityCsvUploadDialog_preOidComment2"));
 			hintLayout.addMember(getLabel("ui_tools_entityexplorer_EntityCsvUploadDialog_useCtrlComment1"));
@@ -311,6 +318,7 @@ public class EntityCsvUploadDialog extends AbstractWindow {
 
 			entityForm.setItems(chkTruncateField, chkBulkUpdateField, chkNotifyListenersField,
 					chkWithValidationField, chkUpdateDisupdatablePropertyField,
+					chkInsertEnableAuditPropertySpecification,
 					chkForceUpdateField, chkErrorSkipField, chkIgnoreNotExistsPropertyField,
 					prefixOidField, uniqueKeyField, commitLimitField, hintItem);
 
@@ -448,6 +456,9 @@ public class EntityCsvUploadDialog extends AbstractWindow {
 						}
 						if (SmartGWTUtil.getBooleanValue(chkUpdateDisupdatablePropertyField)) {
 							uploader.add(new Hidden("chkUpdateDisupdatableProperty", "1"));
+						}
+						if (SmartGWTUtil.getBooleanValue(chkInsertEnableAuditPropertySpecification)) {
+							uploader.add(new Hidden("chkInsertEnableAuditPropertySpecification", "1"));
 						}
 						uploader.add(new Hidden("locale", SmartGWTUtil.getStringValue(localeField)));
 						uploader.add(new Hidden("timeZone", SmartGWTUtil.getStringValue(timeZoneField)));

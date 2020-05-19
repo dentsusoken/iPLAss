@@ -327,7 +327,8 @@ public class EntityPortingService implements Service {
 
 					reader.withReferenceVersion(true)
 						.prefixOid(condition.getPrefixOid())
-						.ignoreNotExistsProperty(condition.isIgnoreNotExistsProperty());
+						.ignoreNotExistsProperty(condition.isIgnoreNotExistsProperty())
+						.enableAuditPropertySpecification(condition.isInsertEnableAuditPropertySpecification());
 
 					final Iterator<Entity> iterator = reader.iterator();
 					final List<String> headerProperties = reader.properties();
@@ -631,6 +632,7 @@ public class EntityPortingService implements Service {
 			insertOption.setRegenerateOid(false);
 			insertOption.setRegenerateAutoNumber(false);
 
+			insertOption.setEnableAuditPropertySpecification(cond.isInsertEnableAuditPropertySpecification());
 			insertOption.setNotifyListeners(cond.isNotifyListeners());
 			insertOption.setWithValidation(cond.isWithValidation());
 
@@ -757,7 +759,8 @@ public class EntityPortingService implements Service {
 
 					reader.withReferenceVersion(true)
 						.prefixOid(condition.getPrefixOid())
-						.ignoreNotExistsProperty(condition.isIgnoreNotExistsProperty());
+						.ignoreNotExistsProperty(condition.isIgnoreNotExistsProperty())
+						.enableAuditPropertySpecification(condition.isInsertEnableAuditPropertySpecification());
 
 					final Iterator<Entity> iterator = reader.iterator();
 
@@ -869,6 +872,11 @@ public class EntityPortingService implements Service {
 		@Override
 		public List<String> getUpdateProperties() {
 			return updateProperties;
+		}
+
+		@Override
+		public boolean isEnableAuditPropertySpecification() {
+			return condition.isInsertEnableAuditPropertySpecification();
 		}
 
 		@Override

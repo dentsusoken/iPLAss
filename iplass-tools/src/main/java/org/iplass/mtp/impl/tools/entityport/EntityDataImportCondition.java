@@ -50,6 +50,9 @@ public class EntityDataImportCondition implements Serializable {
 	/** 更新不可項目を更新対象にする */
 	private boolean updateDisupdatableProperty = false;
 
+	/** InsertするEntityにcreateBy,createDate,updateBy,updateDateの値を指定 */
+	private boolean insertEnableAuditPropertySpecification = false;
+
 	/** Import時にOIDに付与するPrefix */
 	private String prefixOid = "";
 
@@ -114,6 +117,13 @@ public class EntityDataImportCondition implements Serializable {
 	}
 	public void setUpdateDisupdatableProperty(boolean updateDisupdatableProperty) {
 		this.updateDisupdatableProperty = updateDisupdatableProperty;
+	}
+
+	public boolean isInsertEnableAuditPropertySpecification() {
+		return insertEnableAuditPropertySpecification;
+	}
+	public void setInsertEnableAuditPropertySpecification(boolean insertEnableAuditPropertySpecification) {
+		this.insertEnableAuditPropertySpecification = insertEnableAuditPropertySpecification;
 	}
 
 	public Integer getCommitLimit() {
