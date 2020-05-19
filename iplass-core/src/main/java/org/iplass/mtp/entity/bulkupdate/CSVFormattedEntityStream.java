@@ -205,7 +205,9 @@ public class CSVFormattedEntityStream implements BulkUpdatable {
 		if (def == null) {
 			throw new EntityRuntimeException(definitionName + " definition not found.");
 		}
-		esReader = new EntityCsvReader(def, reader).withReferenceVersion(true);
+		esReader = new EntityCsvReader(def, reader)
+				.withReferenceVersion(true)
+				.enableAuditPropertySpecification(enableAuditPropertySpecification);
 		return new It(esReader.iterator());
 	}
 

@@ -31,6 +31,12 @@ public class PackageImportParameter {
 	public static final String PROP_ENTITY_WITH_VALIDATION = "entity.withValidation";
 	/** Silentモード Entityデータ 更新不可項目を更新対象 */
 	public static final String PROP_ENTITY_UPDATE_DISUPDATABLE = "entity.updateDisupdatableProperty";
+	/** Silentモード Entityデータ InsertするEntityにcreateBy,createDate,updateBy,updateDateの値を指定 */
+	public static final String PROP_ENTITY_INSERT_AUDIT_PROPERTY_SPECIFICATION = "entity.insertEnableAuditPropertySpecification";
+	/** Silentモード Entityデータ InsertするEntityにcreateBy,createDate,updateBy,updateDateの値を指定時に実行するユーザID */
+	public static final String PROP_ENTITY_INSERT_AUDIT_PROPERTY_SPECIFICATION_EXEC_USER_ID = "entity.insertEnableAuditPropertySpecificationUserId";
+	/** Silentモード Entityデータ InsertするEntityにcreateBy,createDate,updateBy,updateDateの値を指定時に実行するユーザPW */
+	public static final String PROP_ENTITY_INSERT_AUDIT_PROPERTY_SPECIFICATION_EXEC_USER_PW = "entity.insertEnableAuditPropertySpecificationUserPW";
 	/** Silentモード Entityデータ 強制更新 */
 	public static final String PROP_ENTITY_FORCE_UPDATE = "entity.forceUpdate";
 	/** Silentモード Entityデータ エラーデータはSkip */

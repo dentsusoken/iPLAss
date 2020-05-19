@@ -108,6 +108,8 @@ public class EntityCsvReader implements Iterable<Entity>, AutoCloseable {
 	private String prefixOid;
 	/** 存在しないプロパティは無視  */
 	private boolean ignoreNotExistsProperty;
+	/** InsertするEntityにcreateBy,createDate,updateBy,updateDateの値を指定 */
+	private boolean enableAuditPropertySpecification;
 
 	private Reader reader;
 	private CsvListReader csvListReader;
@@ -236,6 +238,26 @@ public class EntityCsvReader implements Iterable<Entity>, AutoCloseable {
 		return this;
 	}
 
+	/**
+	 * InsertするEntityにcreateBy,createDate,updateBy,updateDateの値を指定するかを設定します。
+	 *
+	 * @param enableAuditPropertySpecification 指定するか
+	 */
+	public void setEnableAuditPropertySpecification(boolean enableAuditPropertySpecification) {
+		this.enableAuditPropertySpecification = enableAuditPropertySpecification;
+	}
+
+	/**
+	 * InsertするEntityにcreateBy,createDate,updateBy,updateDateの値を指定するかを設定します。
+	 *
+	 * @param enableAuditPropertySpecification 指定するか
+	 * @return インスタンス
+	 */
+	public EntityCsvReader enableAuditPropertySpecification(boolean enableAuditPropertySpecification) {
+		this.enableAuditPropertySpecification = enableAuditPropertySpecification;
+		return this;
+	}
+
 	public boolean isUseCtrl() {
 		init();
 		return useCtrl;
@@ -290,16 +312,17 @@ public class EntityCsvReader implements Iterable<Entity>, AutoCloseable {
 				Entity entity = generateEntity(mapping, null);
 				entity.setDefinitionName(definition.getName());
 
-				Set<String> multiProp = new HashSet<String>();
+				Set<String> multiProp = new HashSet<>();
 				for (int i = 0; i < header.size(); i++) {
 
 					String headerName = header.get(i);
 
-					if (headerName.equals(Entity.UPDATE_BY)
+					if (!enableAuditPropertySpecification &&
+							(headerName.equals(Entity.UPDATE_BY)
 							|| headerName.equals(Entity.UPDATE_DATE)
 							|| headerName.equals(Entity.LOCKED_BY)
 							|| headerName.equals(Entity.CREATE_BY)
-							|| headerName.equals(Entity.CREATE_DATE)) {
+							|| headerName.equals(Entity.CREATE_DATE))) {
 						continue;
 					}
 
@@ -400,11 +423,12 @@ public class EntityCsvReader implements Iterable<Entity>, AutoCloseable {
 		init();
 
 		try {
-			if (headerName.equals(Entity.UPDATE_BY)
+			if (!enableAuditPropertySpecification &&
+					(headerName.equals(Entity.UPDATE_BY)
 					|| headerName.equals(Entity.UPDATE_DATE)
 					|| headerName.equals(Entity.LOCKED_BY)
 					|| headerName.equals(Entity.CREATE_BY)
-					|| headerName.equals(Entity.CREATE_DATE)) {
+					|| headerName.equals(Entity.CREATE_DATE))) {
 				return;
 			}
 
@@ -665,7 +689,7 @@ public class EntityCsvReader implements Iterable<Entity>, AutoCloseable {
 				if (StringUtil.isEmpty(valStr)) {
 					return new Entity[0];
 				}
-				ArrayList<Entity> eList = new ArrayList<Entity>();
+				ArrayList<Entity> eList = new ArrayList<>();
 				String[] oidList = valStr.split(",");
 				for (String oid: oidList) {
 					oid = oid.trim();
@@ -827,7 +851,7 @@ public class EntityCsvReader implements Iterable<Entity>, AutoCloseable {
 					return new Entity[0];
 				}
 
-				ArrayList<Entity> eList = new ArrayList<Entity>();
+				ArrayList<Entity> eList = new ArrayList<>();
 				String[] uniqueList = value.split(",");
 				for (String uniqueStr: uniqueList) {
 					uniqueStr = uniqueStr.trim();
