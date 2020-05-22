@@ -33,12 +33,12 @@ import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.namespace.QName;
-import javax.xml.stream.FactoryConfigurationError;
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
 import org.iplass.mtp.ManagerLocator;
+import org.iplass.mtp.SystemException;
 import org.iplass.mtp.entity.EntityManager;
 import org.iplass.mtp.entity.SearchOption;
 import org.iplass.mtp.entity.query.Limit;
@@ -84,22 +84,17 @@ public class QueryXmlWriter implements AutoCloseable, Constants {
 		this.nameSpaceList = nameSpaceList;
 		em = ManagerLocator.manager(EntityManager.class);
 		
-		XMLOutputFactory factory;
+		XMLOutputFactory factory = XMLOutputFactory.newInstance();
 		try {
-			factory = XMLOutputFactory.newInstance();
 			factory.setProperty(XMLOutputFactory.IS_REPAIRING_NAMESPACES, Boolean.TRUE);
 			
 			marshaller = context.createMarshaller();
 			// marshal時にXML宣言を生成しないように
 			marshaller.setProperty(Marshaller.JAXB_FRAGMENT, Boolean.TRUE);
-		} catch (JAXBException e) {
-			throw new EntityXmlException(e);
-		}
-
-		try {
+			
 			writer = factory.createXMLStreamWriter(new BufferedWriter(new OutputStreamWriter(out, option.getCharset())));
-		} catch (XMLStreamException | FactoryConfigurationError e) {
-			throw new EntityXmlException(e);
+		} catch (JAXBException | XMLStreamException e) {
+			throw new SystemException(e);
 		}
 	}
 
@@ -121,7 +116,7 @@ public class QueryXmlWriter implements AutoCloseable, Constants {
 			writer.writeAttribute("key", "list");
 			writer.writeStartElement("value");
 		} catch (XMLStreamException e) {
-			throw new EntityXmlException(e);
+			throw new SystemException(e);
 		}
 
 		// XMLレコードを出力
@@ -142,19 +137,15 @@ public class QueryXmlWriter implements AutoCloseable, Constants {
 
 	private void writeValues(final Object[] values) {
 		List<Object> vList = new ArrayList<>(values.length);
-		for (Object lv : values) {
-			try {
-				vList.add(dateAdapter.marshal(lv));
-			} catch (Exception e) {
-				throw new EntityXmlException(e);
-			}
-		}
 		try {
-			JAXBElement<JaxbListValue> root = new JAXBElement<>(new QName("http://mtp.iplass.org/xml/webapi", "list"), 
-					JaxbListValue.class, new JaxbListValue(vList));
+			for (Object lv : values) {
+				vList.add(dateAdapter.marshal(lv));
+			}
+			
+			JAXBElement<JaxbListValue> root = new JAXBElement<>(new QName("http://mtp.iplass.org/xml/webapi", "list"), JaxbListValue.class, new JaxbListValue(vList));
 			marshaller.marshal(root, writer);
-		} catch (JAXBException e) {
-			throw new EntityXmlException(e);
+		} catch (Exception e) {
+			throw new SystemException(e);
 		}
 	}
 
@@ -200,7 +191,7 @@ public class QueryXmlWriter implements AutoCloseable, Constants {
 			
 			writer.writeEndDocument();
 		} catch (XMLStreamException e) {
-			throw new EntityXmlException(e);
+			throw new SystemException(e);
 		}
 
 		return count[0];

@@ -55,6 +55,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 
+import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -83,24 +84,26 @@ public final class GetEntityCommand extends AbstractEntityCommand {
 	
 	private final JAXBContext context;
 	private final Map<String, String> nameSpaceMap;
+	private final JsonFactory jsonFactory;
+	private final ObjectMapper mapper;
 
 	public GetEntityCommand() {
 		context = ServiceRegistry.getRegistry().getService(WebApiJaxbService.class).getJAXBContext();
 		nameSpaceMap = new HashMap<String, String>();
+		jsonFactory = new JsonFactory();
+		mapper = ServiceRegistry.getRegistry().getService(WebApiObjectMapperService.class).getObjectMapper().copy();
+		// write,read時の自動closeを無効に設定
+		mapper.disable(JsonGenerator.Feature.AUTO_CLOSE_TARGET);
+		mapper.disable(JsonParser.Feature.AUTO_CLOSE_SOURCE);
 
 		WebApiResponse webApiResponse = new WebApiResponse();
 		Document doc;
 		Marshaller marshaller;
 		try { 
 			doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
-		} catch (ParserConfigurationException e) {
-			throw new SystemException(e);
-		}
-		
-		try {
 			marshaller = context.createMarshaller();
 			marshaller.marshal(webApiResponse, doc);
-		} catch (JAXBException e) {
+		} catch (ParserConfigurationException | JAXBException e) {
 			throw new SystemException(e);
 		}
 		
@@ -120,10 +123,11 @@ public final class GetEntityCommand extends AbstractEntityCommand {
 			throw new NullPointerException("query must specify");
 		}
 		Query query = Query.newQuery(eql);
+		String accept = ((HttpServletRequest) request.getAttribute(WebApiRequestConstants.SERVLET_REQUEST)).getHeader("Accept");
 
-		boolean isCSV = isCSV(request);
+		boolean isCSV = isCSV(accept);
 		if (!isCSV) {
-			queryImpl(query, request);
+			queryImpl(query, request, accept);
 		} else {
 			queryCsv(query, request);
 		}
@@ -136,22 +140,22 @@ public final class GetEntityCommand extends AbstractEntityCommand {
 		if (filter != null) {
 			query.where(filter);
 		}
+		
+		String accept = ((HttpServletRequest) request.getAttribute(WebApiRequestConstants.SERVLET_REQUEST)).getHeader("Accept");
+		boolean isCSV = isCSV(accept);
 
-		boolean isCSV = isCSV(request);
 		if (!isCSV) {
-			queryImpl(query, request);
+			queryImpl(query, request, accept);
 		} else {
 			listCsv(query, request);
 		}
 	}
 
-	private void queryImpl(Query query, RequestContext request) {
+	private void queryImpl(Query query, RequestContext request, String accept) {
 		checkPermission(query.getFrom().getEntityName(), def -> def.getMetaData().isQuery());
 	
 		boolean tabular = request.getParam(PARAM_TABLE_MODE, Boolean.class, false);
 		boolean countTotal = request.getParam(PARAM_COUNT_TOTAL, Boolean.class, false);
-		boolean isJSON = isJSON(request);
-		boolean isXML = isXML(request);
 		
 		SearchOption option = new SearchOption();
 
@@ -159,12 +163,14 @@ public final class GetEntityCommand extends AbstractEntityCommand {
 			option.setCountTotal(true);
 		}
 
-		if (tabular && isJSON) {
-			option.setReturnStructuredEntity(true);
-			queryJson(query, request, option);
-		} else if (tabular && isXML) {
-			option.setReturnStructuredEntity(true);
-			queryXml(query, request, option);
+		if (tabular) {
+			if (isJSON(accept)) {
+				option.setReturnStructuredEntity(true);
+				queryJson(query, request, option);
+			} else if (isXML(accept)) {
+				option.setReturnStructuredEntity(true);
+				queryXml(query, request, option);
+			}
 		} else {
 			if (query.getLimit() == null) {
 				query.limit(entityWebApiService.getMaxLimit());
@@ -219,15 +225,10 @@ public final class GetEntityCommand extends AbstractEntityCommand {
 
 	private void queryJson(Query query, RequestContext request, SearchOption option) {
 		checkPermission(query.getFrom().getEntityName(), def -> def.getMetaData().isQuery());
-
-		ObjectMapper mapper = ServiceRegistry.getRegistry().getService(WebApiObjectMapperService.class).getObjectMapper().copy();
-		// write,read時の自動closeを無効に設定
-		mapper.disable(JsonGenerator.Feature.AUTO_CLOSE_TARGET);
-		mapper.disable(JsonParser.Feature.AUTO_CLOSE_SOURCE);
 		
 		StreamingOutput stream = out -> {
 			
-			try (QueryJsonWriter writer = new QueryJsonWriter(out, query, option, mapper)) {
+			try (QueryJsonWriter writer = new QueryJsonWriter(out, query, option, mapper, jsonFactory)) {
 				writer.write();
 			}
 		};
@@ -246,18 +247,15 @@ public final class GetEntityCommand extends AbstractEntityCommand {
 		request.setAttribute(RESULT_XML, stream);
 	}
 
-	private boolean isCSV(RequestContext request) {
-		String accept = ((HttpServletRequest) request.getAttribute(WebApiRequestConstants.SERVLET_REQUEST)).getHeader("Accept");
+	private boolean isCSV(String accept) {
 		return accept != null && accept.startsWith("text/csv");
 	}
 	
-	private boolean isJSON(RequestContext request) {
-		String accept = ((HttpServletRequest) request.getAttribute(WebApiRequestConstants.SERVLET_REQUEST)).getHeader("Accept");
+	private boolean isJSON(String accept) {
 		return accept != null && accept.startsWith("application/json");
 	}
 	
-	private boolean isXML(RequestContext request) {
-		String accept = ((HttpServletRequest) request.getAttribute(WebApiRequestConstants.SERVLET_REQUEST)).getHeader("Accept");
+	private boolean isXML(String accept) {
 		return accept != null && accept.startsWith("application/xml");
 	}
 

@@ -26,6 +26,7 @@ import java.io.OutputStreamWriter;
 import java.util.function.Predicate;
 
 import org.iplass.mtp.ManagerLocator;
+import org.iplass.mtp.SystemException;
 import org.iplass.mtp.entity.EntityManager;
 import org.iplass.mtp.entity.SearchOption;
 import org.iplass.mtp.entity.query.Limit;
@@ -37,7 +38,6 @@ import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class QueryJsonWriter implements AutoCloseable, Constants {
@@ -51,21 +51,20 @@ public class QueryJsonWriter implements AutoCloseable, Constants {
 	private ObjectMapper mapper;
 	private SearchOption searchOption;
 	private JsonGenerator gen;
-
-	public QueryJsonWriter(OutputStream out, Query query, SearchOption searchOption, ObjectMapper mapper) throws IOException {
-		this(out, query, searchOption, new QueryWriteOption(), mapper);
+	
+	public QueryJsonWriter(OutputStream out, Query query, SearchOption searchOption, ObjectMapper mapper,
+			JsonFactory jsonFactory) throws IOException {
+		this(out, query, searchOption, new QueryWriteOption(), mapper, jsonFactory);
 	}
 
 	public QueryJsonWriter(OutputStream out, Query query, SearchOption searchOption, QueryWriteOption option,
-			ObjectMapper mapper) throws IOException {
+			ObjectMapper mapper, JsonFactory jsonFactory) throws IOException {
 		this.query = query;
 		this.option = option;
 		this.searchOption = searchOption;
 		this.mapper = mapper;
-
 		em = ManagerLocator.manager(EntityManager.class);
-
-		gen = new JsonFactory().createGenerator(new BufferedWriter(new OutputStreamWriter(out, option.getCharset())));
+		gen = jsonFactory.createGenerator(new BufferedWriter(new OutputStreamWriter(out, option.getCharset())));
 	}
 
 	public int write() throws IOException {
@@ -95,12 +94,9 @@ public class QueryJsonWriter implements AutoCloseable, Constants {
 
 		try {
 			mapper.writeValue(gen, values);
-		} catch (JsonProcessingException e) {
-			throw new EntityJsonException(e);
 		} catch (IOException e) {
-			throw new EntityJsonException(e);
-		}
-
+			throw new SystemException(e);
+		} 
 	}
 
 	private int search() throws IOException {
