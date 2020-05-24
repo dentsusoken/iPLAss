@@ -19,6 +19,13 @@
  */
 package org.iplass.mtp.webhook;
 
+/**
+ * <% if (doclang == "ja") {%>
+ * カスタムヘッダーを表するクラス。
+ * <%} else {%>
+ * Class of the custom headers.
+ * <%}%>
+ */
 public class WebhookHeader {
 	private String key;
 	private String value;
@@ -26,19 +33,57 @@ public class WebhookHeader {
 	public WebhookHeader () {
 		
 	}
+
+	/**
+	 * @param key <%=doclang == 'ja' ? 'ヘッダー名': 'Header Name'%>
+	 * @param value <%=doclang == 'ja' ? 'ヘッダーに置く内容': 'Content for this header'%>
+	 */
 	public WebhookHeader(String key, String value) {
 		this.key=key;
 		this.value=value;
 	}
+	/**
+	 * <% if (doclang == "ja") {%>
+	 * ヘッダー名を取得する。
+	 * <%} else {%>
+	 * Get the header name.
+	 * <%}%>
+	 */
 	public String getKey() {
 		return key;
 	}
+
+	/**
+	 * <% if (doclang == "ja") {%>
+	 * ヘッダー名を設置する。
+	 * <%} else {%>
+	 * Set the header name.
+	 * <%}%>
+	 * @param key <%=doclang == 'ja' ? 'ヘッダー名': 'Header Name'%>
+	 */
 	public void setKey(String key) {
 		this.key = key;
 	}
+
+	/**
+	 * <% if (doclang == "ja") {%>
+	 * ヘッダーに置く内容を取得する。
+	 * <%} else {%>
+	 * Get the content for this header.
+	 * <%}%>
+	 */
 	public String getValue() {
 		return value;
 	}
+
+	/**
+	 * <% if (doclang == "ja") {%>
+	 * ヘッダーに置く内容を設置する。
+	 * <%} else {%>
+	 * Set the content for this header.
+	 * <%}%>
+	 * @param value <%=doclang == 'ja' ? 'ヘッダー内容': 'Header value'%>
+	 */
 	public void setValue(String value) {
 		this.value = value;
 	}

@@ -20,9 +20,12 @@
 package org.iplass.mtp.webhook;
 
 /**
- * sendWebhookが成功したらこのHandlerを呼んでhandleResponseをする
- * 全部実行完了したら終わりとなります
- * */
+ * <% if (doclang == "ja") {%>
+ * sendWebhookが成功したらこのHandlerを呼んでResponseを処理する
+ * <%} else {%>
+ * Once the Webhook was sent, this handler will be called to handle the response.
+ * <%}%>
+ */
 public interface WebhookResponseHandler {
 	void handleResponse(WebhookResponse response);
 }

@@ -18,26 +18,27 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 package org.iplass.mtp.webhook.endpoint;
-
+/**
+ * <% if (doclang == "ja") {%>
+ * Authorizationヘッダーに使う認証タイプ
+ * <%} else {%>
+ * The available method to use in Authorization Header.
+ * <%}%>
+ */
 public enum WebhookAuthenticationType {
-	BEARER("Basic Authentication","WHBT"),//username:password形式
-	BASIC("Bearer Authentication","WHBA"),
-	CUSTOM("Custom Authentication","WHCT");
+	BEARER("Basic Authentication"),//username:password
+	BASIC("Bearer Authentication"),
+	CUSTOM("Custom Authentication");
 
 
 	private String displayName;
-	private String typeCode;
 
-	WebhookAuthenticationType(String displayName, String typeCode){
+	WebhookAuthenticationType(String displayName){
 		this.displayName = displayName;
-		this.typeCode = typeCode;
 	}
 
 	public String displayName() {
 		return displayName;
 	}
 
-	public String typeCode() {
-		return typeCode;
-	}	
 }

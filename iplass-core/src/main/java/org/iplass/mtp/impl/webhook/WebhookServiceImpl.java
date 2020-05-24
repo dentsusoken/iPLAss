@@ -293,7 +293,9 @@ public class WebhookServiceImpl extends AbstractTypedMetaDataService<MetaWebhook
 			try {
 				if (response != null) {
 					WebhookResponse whr = generateWebhookResponse(response);
-					webhook.getResultHandler().handleResponse(whr);
+					if (webhook.getResultHandler()!=null) {
+						webhook.getResultHandler().handleResponse(whr);
+					}
 				}
 			} finally {
 				if (response!=null) {

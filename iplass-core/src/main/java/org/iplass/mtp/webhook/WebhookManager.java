@@ -23,24 +23,59 @@ import java.util.Map;
 import org.iplass.mtp.Manager;
 import org.iplass.mtp.webhook.endpoint.WebhookEndpoint;
 
-/**
- * @author lisf06
- *
- */
 public interface WebhookManager extends Manager {
 	
-	/** Webhookオブジェを取得（作る） */
+	/**
+	 * <% if (doclang == "ja") {%>
+	 * 定義からWebhookを作る。
+	 * <%} else {%>
+	 * Create the Webhook from definition.
+	 * <%}%>
+	 * @param webhookDefinitionName <%=doclang == 'ja' ? 'Webhook定義名': 'Webhook definition name'%>
+	 * @param binding <%=doclang == 'ja' ? 'binding内容': 'Content bindings'%>
+	 * @param endpointDefinitionName <%=doclang == 'ja' ? 'WebhookEndpoint定義名': 'WebhookEndpoint definition name'%>
+	 */
 	Webhook createWebhook(String webhookDefinitionName, Map<String, Object> binding, String endpointDefinitionName);
-	Webhook getEmptyWebhook();
-	Webhook getWebhookByName(String webhookDefinitionName, Map<String, Object> binding);
 
-	/** Endpointオブジェを取得（作る） */
-	WebhookEndpoint getEndpointByName(String definitionName, Map<String, Object> binding);
-	
-	/** 送る */
+	/**
+	 * <% if (doclang == "ja") {%>
+	 * 定義からWebhookを作る。
+	 * <%} else {%>
+	 * Create the Webhook from definition.
+	 * <%}%>
+	 * @param webhookDefinitionName <%=doclang == 'ja' ? 'Webhook定義名': 'Webhook definition name'%>
+	 * @param binding <%=doclang == 'ja' ? 'binding内容': 'Content bindings'%>
+	 */
+	Webhook createWebhook(String webhookDefinitionName, Map<String, Object> binding);
+
+	/**
+	 * <% if (doclang == "ja") {%>
+	 * 名前からエンドポイントを取得する。
+	 * <%} else {%>
+	 * Create the WebhookEndpoint class by name.
+	 * <%}%>
+	 * @param definitionName <%=doclang == 'ja' ? 'WebhookEndpoint定義名': 'WebhookEndpoint definition name'%>
+	 * @param binding <%=doclang == 'ja' ? 'binding内容': 'Content bindings'%>
+	 */
+	WebhookEndpoint getEndpoint(String definitionName, Map<String, Object> binding);
+
+	/**
+	 * <% if (doclang == "ja") {%>
+	 * 非同期でWebhookを送る。
+	 * <%} else {%>
+	 * Send Webhook asynchronously
+	 * <%}%>
+	 * @param wh <%=doclang == 'ja' ? 'Webhookインスタンス': 'Webhook instance'%>
+	 */
 	void sendWebhookAsync(Webhook wh);
-	void sendWebhookSync(Webhook wh);
 
-	/** resultHandlerを取得（作る） */
-	WebhookResponseHandler getResponseHandler(String handlerName);
+	/**
+	 * <% if (doclang == "ja") {%>
+	 * 同期でWebhookを送る。
+	 * <%} else {%>
+	 * Send Webhook synchronously
+	 * <%}%>
+	 * @param wh <%=doclang == 'ja' ? 'Webhookインスタンス': 'Webhook instance'%>
+	 */
+	void sendWebhookSync(Webhook wh);
 }

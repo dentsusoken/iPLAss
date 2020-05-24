@@ -58,6 +58,7 @@ import org.iplass.mtp.util.StringUtil;
 import org.iplass.mtp.webhook.Webhook;
 import org.iplass.mtp.webhook.WebhookManager;
 import org.iplass.mtp.webhook.WebhookResponseHandler;
+import org.iplass.mtp.webhook.responsehandler.DefaultWebhookResponseHandlerImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -674,7 +675,16 @@ public class MetaSendNotificationEventListener extends MetaEventListener {
 			ArrayList<Webhook> webhookList = new ArrayList<Webhook>();
 			for (String endpoint : processedDestinationList) {
 				Webhook webhook = wm.createWebhook(tmplDefName, bindings, endpoint);
-				WebhookResponseHandler whrh = wm.getResponseHandler(resultHandler);
+				WebhookResponseHandler whrh;
+				if (resultHandler==null||resultHandler.isEmpty()) {
+					whrh= new DefaultWebhookResponseHandlerImpl();
+				} else {
+					try {
+						whrh= (WebhookResponseHandler) Class.forName(resultHandler).newInstance();
+					} catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
+						whrh= new DefaultWebhookResponseHandlerImpl();
+					}
+				}
 				webhook.setResultHandler(whrh);
 				webhookList.add(webhook);
 			}

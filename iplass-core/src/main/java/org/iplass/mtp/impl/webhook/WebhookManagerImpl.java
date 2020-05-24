@@ -28,10 +28,8 @@ import org.iplass.mtp.transaction.Transaction;
 import org.iplass.mtp.transaction.TransactionStatus;
 import org.iplass.mtp.webhook.Webhook;
 import org.iplass.mtp.webhook.WebhookManager;
-import org.iplass.mtp.webhook.WebhookResponseHandler;
 import org.iplass.mtp.webhook.endpoint.WebhookEndpoint;
 import org.iplass.mtp.webhook.endpoint.definition.WebhookEndpointDefinitionManager;
-import org.iplass.mtp.webhook.responsehandler.DefaultWebhookResponseHandlerImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -88,35 +86,12 @@ public class WebhookManagerImpl implements WebhookManager {
 	}
 
 	@Override
-	public WebhookResponseHandler getResponseHandler(String handlerName) {
-		WebhookResponseHandler whrh;
-		if (handlerName==null||handlerName.isEmpty()) {
-			whrh= new DefaultWebhookResponseHandlerImpl();
-		} else {
-			try {
-				whrh= (WebhookResponseHandler) Class.forName(handlerName).newInstance();
-			} catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
-				if (logger.isDebugEnabled()) {
-					logger.debug("The response handler: "+handlerName+" does not exist. Creating DefaultWebhookResponseHandler.");
-				}
-				whrh= new DefaultWebhookResponseHandlerImpl();
-			}
-		}
-		return whrh;
-	}
-
-	@Override
-	public Webhook getEmptyWebhook() {
-		return new Webhook();
-	}
-
-	@Override
-	public Webhook getWebhookByName(String webhookDefinitionName, Map<String, Object> binding) {
+	public Webhook createWebhook(String webhookDefinitionName, Map<String, Object> binding) {
 		return webhookService.getWebhookByName(webhookDefinitionName, binding);
 	}
 
 	@Override
-	public WebhookEndpoint getEndpointByName(String definitionName, Map<String, Object> binding) {
+	public WebhookEndpoint getEndpoint(String definitionName, Map<String, Object> binding) {
 		WebhookEndpointDefinitionManager manager = ManagerLocator.getInstance().getManager(WebhookEndpointDefinitionManager.class);
 		return manager.getEndpointByDefinitionName(definitionName, binding);
 	}

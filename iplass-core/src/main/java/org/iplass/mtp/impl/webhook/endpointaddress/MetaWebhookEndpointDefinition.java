@@ -150,13 +150,13 @@ public class MetaWebhookEndpointDefinition extends BaseRootMetaData implements D
 	}
 
 	private WebhookAuthenticationType getByTypeCode(String typeCode) {
-		if (WebhookAuthenticationType.BASIC.typeCode().equals(typeCode)) {
+		if ("WHBA".equals(typeCode)) {
 			return WebhookAuthenticationType.BASIC;
 		}
-		if (WebhookAuthenticationType.BEARER.typeCode().equals(typeCode)) {
+		if ("WHBT".equals(typeCode)) {
 			return WebhookAuthenticationType.BEARER;
 		}
-		if (WebhookAuthenticationType.CUSTOM.typeCode().equals(typeCode)) {
+		if ("WHCT".equals(typeCode)) {
 			return WebhookAuthenticationType.CUSTOM;
 		}
 		return null;
@@ -166,7 +166,16 @@ public class MetaWebhookEndpointDefinition extends BaseRootMetaData implements D
 		if (type==null) {
 			return null;
 		} else {
-			return type.typeCode();
+			if (WebhookAuthenticationType.BASIC.equals(type)) {
+				return "WHBA";
+			}
+			if (WebhookAuthenticationType.BEARER.equals(type)) {
+				return "WHBT";
+			}
+			if (WebhookAuthenticationType.CUSTOM.equals(type)) {
+				return "WHCT";
+			}
+			return null;
 		}
 	}
 	public class WebhookEndpointRuntime extends BaseMetaDataRuntime{
@@ -222,7 +231,7 @@ public class MetaWebhookEndpointDefinition extends BaseRootMetaData implements D
 				endpoint.setHmacHashHeader(hmacHashHeader.replaceAll("\\s",""));
 			}
 			if (headerAuthCustomTypeName!=null && !headerAuthCustomTypeName.replaceAll("\\s","").isEmpty()) {
-				endpoint.setHmacHashHeader(headerAuthCustomTypeName.replaceAll("\\s",""));
+				endpoint.setHeaderAuthCustomTypeName(headerAuthCustomTypeName.replaceAll("\\s",""));
 			}
 			return endpoint;
 		}
