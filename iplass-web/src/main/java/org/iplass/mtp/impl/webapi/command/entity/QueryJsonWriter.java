@@ -67,15 +67,23 @@ public class QueryJsonWriter implements AutoCloseable, Constants {
 		gen = jsonFactory.createGenerator(new BufferedWriter(new OutputStreamWriter(out, option.getCharset())));
 	}
 
-	public int write() throws IOException {
+	public void write() throws IOException {
 		
 		gen.writeStartObject();
 		gen.writeStringField("status", CMD_EXEC_SUCCESS);
 		gen.writeFieldName("list");
 		gen.writeStartArray();
 
-		// JSONレコードを出力
-		return search();
+		// 検索結果のJSONレコードを出力
+		int countTotal = search();
+		
+		gen.writeEndArray();
+		
+		if (searchOption.isCountTotal()) {
+			gen.writeNumberField("count", countTotal);
+		}
+
+		gen.writeEndObject();
 	}
 
 	@Override
@@ -120,13 +128,6 @@ public class QueryJsonWriter implements AutoCloseable, Constants {
 				return true;
 			}
 		});
-		gen.writeEndArray();
-
-		if (searchOption.isCountTotal()) {
-			gen.writeNumberField("count", count[0]);
-		}
-
-		gen.writeEndObject();
 		return count[0];
 	}
 }

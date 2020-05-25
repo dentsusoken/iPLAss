@@ -84,6 +84,7 @@ public class QueryXmlWriter implements AutoCloseable, Constants {
 		this.nameSpaceList = nameSpaceList;
 		em = ManagerLocator.manager(EntityManager.class);
 		
+		//TODO できればインスタンス共有したいが、スレッドセーフ否かは実装依存なので、対応方法要検討
 		XMLOutputFactory factory = XMLOutputFactory.newInstance();
 		try {
 			factory.setProperty(XMLOutputFactory.IS_REPAIRING_NAMESPACES, Boolean.TRUE);
@@ -98,7 +99,7 @@ public class QueryXmlWriter implements AutoCloseable, Constants {
 		}
 	}
 
-	public int write() throws IOException {
+	public void write() throws IOException {
 		try {
 			writer.writeProcessingInstruction("xml", "version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"");
 
@@ -119,8 +120,31 @@ public class QueryXmlWriter implements AutoCloseable, Constants {
 			throw new SystemException(e);
 		}
 
-		// XMLレコードを出力
-		return search();
+		// 検索結果のXMLレコードを出力
+		int countTotal = search();
+
+		try {
+			writer.writeEndElement();
+			
+			if (searchOption.isCountTotal()) {
+				writer.writeEndElement();
+				
+				writer.writeStartElement("result");
+				writer.writeAttribute("key", "count");
+				
+				writer.writeStartElement("value");
+				
+				writer.writeNamespace("xsi", "http://www.w3.org/2001/XMLSchema-instance");
+				writer.writeNamespace("xs", "http://www.w3.org/2001/XMLSchema");
+				writer.writeAttribute("http://www.w3.org/2001/XMLSchema-instance", "type", "xs:int");
+				writer.writeCharacters(String.valueOf(countTotal));
+			}
+			
+			writer.writeEndDocument();
+		} catch (XMLStreamException e) {
+			throw new SystemException(e);
+		}
+		
 	}
 
 	@Override
@@ -171,28 +195,6 @@ public class QueryXmlWriter implements AutoCloseable, Constants {
 				return true;
 			}
 		});
-
-		try {
-			writer.writeEndElement();
-			
-			if (searchOption.isCountTotal()) {
-				writer.writeEndElement();
-				
-				writer.writeStartElement("result");
-				writer.writeAttribute("key", "count");
-				
-				writer.writeStartElement("value");
-				
-				writer.writeNamespace("xsi", "http://www.w3.org/2001/XMLSchema-instance");
-				writer.writeNamespace("xs", "http://www.w3.org/2001/XMLSchema");
-				writer.writeAttribute("http://www.w3.org/2001/XMLSchema-instance", "type", "xs:int");
-				writer.writeCharacters(String.valueOf(count[0]));
-			}
-			
-			writer.writeEndDocument();
-		} catch (XMLStreamException e) {
-			throw new SystemException(e);
-		}
 
 		return count[0];
 	}

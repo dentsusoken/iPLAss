@@ -124,12 +124,28 @@ public final class GetEntityCommand extends AbstractEntityCommand {
 		}
 		Query query = Query.newQuery(eql);
 		String accept = ((HttpServletRequest) request.getAttribute(WebApiRequestConstants.SERVLET_REQUEST)).getHeader("Accept");
-
-		boolean isCSV = isCSV(accept);
-		if (!isCSV) {
-			queryImpl(query, request, accept);
-		} else {
+		
+		if (isCSV(accept)) {
 			queryCsv(query, request);
+		} else {
+			boolean tabular = request.getParam(PARAM_TABLE_MODE, Boolean.class, false);
+			boolean countTotal = request.getParam(PARAM_COUNT_TOTAL, Boolean.class, false);
+			SearchOption option = new SearchOption();
+			
+			if (countTotal) {
+				option.setCountTotal(true);
+			}
+			
+			if (tabular) {
+				if(isJSON(accept)) {
+					queryJson(query, request, option);
+				} else if (isXML(accept)) {
+					queryXml(query, request, option);
+				} 
+			}else {
+				option.setReturnStructuredEntity(true);
+				queryImpl(query, request, option);
+			}
 		}
 	}
 
@@ -142,50 +158,48 @@ public final class GetEntityCommand extends AbstractEntityCommand {
 		}
 		
 		String accept = ((HttpServletRequest) request.getAttribute(WebApiRequestConstants.SERVLET_REQUEST)).getHeader("Accept");
-		boolean isCSV = isCSV(accept);
 
-		if (!isCSV) {
-			queryImpl(query, request, accept);
-		} else {
+		if (isCSV(accept)) {
 			listCsv(query, request);
+		} else {
+			boolean tabular = request.getParam(PARAM_TABLE_MODE, Boolean.class, false);
+			boolean countTotal = request.getParam(PARAM_COUNT_TOTAL, Boolean.class, false);
+			SearchOption option = new SearchOption();
+			
+			if (countTotal) {
+				option.setCountTotal(true);
+			}
+			
+			if (tabular) {
+				if(isJSON(accept)) {
+					queryJson(query, request, option);
+				} else if (isXML(accept)) {
+					queryXml(query, request, option);
+				} 
+			}else {
+				option.setReturnStructuredEntity(true);
+				queryImpl(query, request, option);
+			}
 		}
+		
 	}
 
-	private void queryImpl(Query query, RequestContext request, String accept) {
+	private void queryImpl(Query query, RequestContext request, SearchOption option) {
 		checkPermission(query.getFrom().getEntityName(), def -> def.getMetaData().isQuery());
-	
-		boolean tabular = request.getParam(PARAM_TABLE_MODE, Boolean.class, false);
-		boolean countTotal = request.getParam(PARAM_COUNT_TOTAL, Boolean.class, false);
-		
-		SearchOption option = new SearchOption();
 
-		if (countTotal) {
-			option.setCountTotal(true);
+		if (query.getLimit() == null) {
+			query.limit(entityWebApiService.getMaxLimit());
 		}
-
-		if (tabular) {
-			if (isJSON(accept)) {
-				option.setReturnStructuredEntity(true);
-				queryJson(query, request, option);
-			} else if (isXML(accept)) {
-				option.setReturnStructuredEntity(true);
-				queryXml(query, request, option);
-			}
-		} else {
-			if (query.getLimit() == null) {
-				query.limit(entityWebApiService.getMaxLimit());
-			}
-			
-			if (query.getLimit().getLimit() > entityWebApiService.getMaxLimit()) {
-				throw new IllegalArgumentException("Can not specify limit more than " + entityWebApiService.getMaxLimit());
-			}
-			
-			SearchResult<?> res = em.searchEntity(query, option);
-			
-			request.setAttribute(RESULT_ENTITY_LIST, res.getList());
-			if (countTotal) {
-				request.setAttribute(RESULT_COUNT, res.getTotalCount());
-			}
+		
+		if (query.getLimit().getLimit() > entityWebApiService.getMaxLimit()) {
+			throw new IllegalArgumentException("Can not specify limit more than " + entityWebApiService.getMaxLimit());
+		}
+		
+		SearchResult<?> res = em.searchEntity(query, option);
+		
+		request.setAttribute(RESULT_ENTITY_LIST, res.getList());
+		if (option.isCountTotal()) {
+			request.setAttribute(RESULT_COUNT, res.getTotalCount());
 		}
 	}
 
