@@ -19,9 +19,18 @@
  */
 package org.iplass.mtp.impl.webapi.command.entity;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.StreamingOutput;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 
+import org.iplass.mtp.SystemException;
 import org.iplass.mtp.command.RequestContext;
 import org.iplass.mtp.command.annotation.CommandClass;
 import org.iplass.mtp.command.annotation.webapi.WebApi;
@@ -34,15 +43,28 @@ import org.iplass.mtp.impl.entity.csv.EntitySearchCsvWriter;
 import org.iplass.mtp.impl.entity.csv.EntityWriteOption;
 import org.iplass.mtp.impl.entity.csv.QueryCsvWriter;
 import org.iplass.mtp.impl.entity.csv.QueryWriteOption;
+import org.iplass.mtp.impl.webapi.WebApiResponse;
+import org.iplass.mtp.impl.webapi.jackson.WebApiObjectMapperService;
+import org.iplass.mtp.impl.webapi.jaxb.WebApiJaxbService;
+import org.iplass.mtp.impl.xml.jaxb.DateXmlAdapter;
+import org.iplass.mtp.spi.ServiceRegistry;
 import org.iplass.mtp.webapi.WebApiRequestConstants;
 import org.iplass.mtp.webapi.definition.MethodType;
 import org.iplass.mtp.webapi.definition.RequestType;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
+
+import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @WebApi(name="mtp/entity/GET",
 		accepts={RequestType.REST_FORM},
 		methods={MethodType.GET},
-		results={GetEntityCommand.RESULT_ENTITY_LIST, GetEntityCommand.RESULT_COUNT,
-				GetEntityCommand.RESULT_ENTITY, GetEntityCommand.RESULT_CSV},
+		results={GetEntityCommand.RESULT_ENTITY_LIST, GetEntityCommand.RESULT_COUNT, GetEntityCommand.RESULT_ENTITY, 
+				GetEntityCommand.RESULT_CSV, GetEntityCommand.RESULT_JSON, GetEntityCommand.RESULT_XML},
 		responseType="application/json, application/xml, text/csv;charset=utf-8",
 		overwritable=false)
 @CommandClass(name="mtp/entity/GetEntityCommand", displayName="Entity Query/Load Web API", overwritable=false)
@@ -57,6 +79,42 @@ public final class GetEntityCommand extends AbstractEntityCommand {
 	public static final String RESULT_COUNT = "count";
 	public static final String RESULT_ENTITY = "entity";
 	public static final String RESULT_CSV = "csv";
+	public static final String RESULT_JSON = "json";
+	public static final String RESULT_XML = "xml";
+	
+	private final JAXBContext context;
+	private final Map<String, String> nameSpaceMap;
+	private final JsonFactory jsonFactory;
+	private final ObjectMapper mapper;
+
+	public GetEntityCommand() {
+		context = ServiceRegistry.getRegistry().getService(WebApiJaxbService.class).getJAXBContext();
+		nameSpaceMap = new HashMap<String, String>();
+		jsonFactory = new JsonFactory();
+		mapper = ServiceRegistry.getRegistry().getService(WebApiObjectMapperService.class).getObjectMapper().copy();
+		// write,read時の自動closeを無効に設定
+		mapper.disable(JsonGenerator.Feature.AUTO_CLOSE_TARGET);
+		mapper.disable(JsonParser.Feature.AUTO_CLOSE_SOURCE);
+
+		WebApiResponse webApiResponse = new WebApiResponse();
+		Document doc;
+		Marshaller marshaller;
+		try { 
+			doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
+			marshaller = context.createMarshaller();
+			marshaller.marshal(webApiResponse, doc);
+		} catch (ParserConfigurationException | JAXBException e) {
+			throw new SystemException(e);
+		}
+		
+		Element element = doc.getDocumentElement();
+		NamedNodeMap namedNodeMap = element.getAttributes();
+		
+		for(int i=0;i<namedNodeMap.getLength();i++) {
+			String[] str = namedNodeMap.item(i).getNodeName().split(":");
+			nameSpaceMap.put(str[1], namedNodeMap.item(i).getNodeValue());
+		}	
+	}
 
 	// api/entity?query=SELECT...
 	private void query(RequestContext request) {
@@ -65,13 +123,8 @@ public final class GetEntityCommand extends AbstractEntityCommand {
 			throw new NullPointerException("query must specify");
 		}
 		Query query = Query.newQuery(eql);
-
-		boolean isCSV = isCSV(request);
-		if (!isCSV) {
-			queryImpl(query, request);
-		} else {
-			queryCsv(query, request);
-		}
+		
+		queryImpl(query, request, true);
 	}
 
 	// api/entity/[definitionName]?filter=[where clause]
@@ -81,51 +134,64 @@ public final class GetEntityCommand extends AbstractEntityCommand {
 		if (filter != null) {
 			query.where(filter);
 		}
+		
+		queryImpl(query, request, false);
+	}
 
-		boolean isCSV = isCSV(request);
-		if (!isCSV) {
-			queryImpl(query, request);
+	private void queryImpl(Query query, RequestContext request, boolean byQuery) {
+		String accept = ((HttpServletRequest) request.getAttribute(WebApiRequestConstants.SERVLET_REQUEST)).getHeader("Accept");
+
+		checkPermission(query.getFrom().getEntityName(), def -> def.getMetaData().isQuery());
+
+		SearchOption option = new SearchOption();
+		option.setReturnStructuredEntity(true);
+		
+		if (isCSV(accept)) {
+			if (byQuery) {
+				queryCsv(query, request);
+			} else {
+				listCsv(query, request);
+			}
 		} else {
-			listCsv(query, request);
+			boolean tabular = request.getParam(PARAM_TABLE_MODE, Boolean.class, false);
+			boolean countTotal = request.getParam(PARAM_COUNT_TOTAL, Boolean.class, false);
+			
+			if (tabular) {
+				if (isJSON(accept)) {
+					queryJson(query, request, countTotal);
+				} else if (isXML(accept)) {
+					queryXml(query, request, countTotal);
+				}
+			} else {
+				queryOther(query, request, countTotal);
+			}
 		}
 	}
 
-	private void queryImpl(Query query, RequestContext request) {
-		checkPermission(query.getFrom().getEntityName(), def -> def.getMetaData().isQuery());
-
-		if (query.getLimit() == null) {
-			query.limit(entityWebApiService.getMaxLimit());
-		}
-		if (query.getLimit().getLimit() > entityWebApiService.getMaxLimit()) {
-			throw new IllegalArgumentException("Can not specify limit more than " + entityWebApiService.getMaxLimit());
-		}
-
-		boolean tabular = request.getParam(PARAM_TABLE_MODE, Boolean.class, false);
-		boolean countTotal = request.getParam(PARAM_COUNT_TOTAL, Boolean.class, false);
+	private void queryOther(Query query, RequestContext request, boolean countTotal) {
 		SearchOption option = new SearchOption();
-
-		if (!tabular) {
-			option.setReturnStructuredEntity(true);
-		}
+		option.setReturnStructuredEntity(true);
 		if (countTotal) {
 			option.setCountTotal(true);
 		}
-
-		SearchResult<?> res;
-		if (tabular) {
-			res = em.search(query, option);
-		} else {
-			res = em.searchEntity(query, option);
+		
+		if (query.getLimit() == null) {
+			query.limit(entityWebApiService.getMaxLimit());
 		}
-
+		
+		if (query.getLimit().getLimit() > entityWebApiService.getMaxLimit()) {
+			throw new IllegalArgumentException("Can not specify limit more than " + entityWebApiService.getMaxLimit());
+		}
+		
+		SearchResult<?> res = em.searchEntity(query, option);
 		request.setAttribute(RESULT_ENTITY_LIST, res.getList());
+		
 		if (countTotal) {
 			request.setAttribute(RESULT_COUNT, res.getTotalCount());
 		}
 	}
 
 	private void queryCsv(Query query, RequestContext request) {
-		checkPermission(query.getFrom().getEntityName(), def -> def.getMetaData().isQuery());
 
 		StreamingOutput stream = out -> {
 
@@ -141,7 +207,6 @@ public final class GetEntityCommand extends AbstractEntityCommand {
 	}
 
 	private void listCsv(Query query, RequestContext request) {
-		checkPermission(query.getFrom().getEntityName(), def -> def.getMetaData().isQuery());
 
 		StreamingOutput stream = out -> {
 			
@@ -158,9 +223,38 @@ public final class GetEntityCommand extends AbstractEntityCommand {
 		request.setAttribute(RESULT_CSV, stream);
 	}
 
-	private boolean isCSV(RequestContext request) {
-		String accept = ((HttpServletRequest) request.getAttribute(WebApiRequestConstants.SERVLET_REQUEST)).getHeader("Accept");
+	private void queryJson(Query query, RequestContext request, boolean countTotal) {
+
+		StreamingOutput stream = out -> {
+			
+			try (QueryJsonWriter writer = new QueryJsonWriter(out, query, countTotal, mapper, jsonFactory)) {
+				writer.write();
+			}
+		};
+		request.setAttribute(RESULT_JSON, stream);
+	}
+	
+	private void queryXml(Query query, RequestContext request,  boolean countTotal) {
+		
+		StreamingOutput stream = out -> {
+			
+			try (QueryXmlWriter writer = new QueryXmlWriter(out, query, countTotal, context, nameSpaceMap, new DateXmlAdapter())) {
+				writer.write();
+			}
+		};
+		request.setAttribute(RESULT_XML, stream);
+	}
+
+	private boolean isCSV(String accept) {
 		return accept != null && accept.startsWith("text/csv");
+	}
+	
+	private boolean isJSON(String accept) {
+		return accept != null && accept.startsWith("application/json");
+	}
+	
+	private boolean isXML(String accept) {
+		return accept != null && accept.startsWith("application/xml");
 	}
 
 	// api/entity/[definitionName]/[oid]
