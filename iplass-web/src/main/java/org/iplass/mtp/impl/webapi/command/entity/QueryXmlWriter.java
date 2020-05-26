@@ -40,7 +40,6 @@ import javax.xml.stream.XMLStreamWriter;
 import org.iplass.mtp.ManagerLocator;
 import org.iplass.mtp.SystemException;
 import org.iplass.mtp.entity.EntityManager;
-import org.iplass.mtp.entity.SearchOption;
 import org.iplass.mtp.entity.query.Limit;
 import org.iplass.mtp.entity.query.Query;
 import org.iplass.mtp.impl.entity.csv.QueryWriteOption;
@@ -63,22 +62,22 @@ public class QueryXmlWriter implements AutoCloseable, Constants {
 	private final Query query;
 	private final QueryWriteOption option;
 	private final EntityManager em;
+	private final boolean isCountTotal;
 	
 	private DateXmlAdapter dateAdapter;
 	private Marshaller marshaller;
-	private SearchOption searchOption;
 	private XMLStreamWriter writer;
 	private Map<String, String> nameSpaceList;
 
-	public QueryXmlWriter(OutputStream out, Query query, SearchOption searchOption, JAXBContext context, 
+	public QueryXmlWriter(OutputStream out, Query query, boolean isCountTotal, JAXBContext context, 
 			Map<String, String> nameSpaceMap ,DateXmlAdapter dateAdapter) throws IOException {
-		this(out, query, searchOption, new QueryWriteOption(), context, nameSpaceMap, dateAdapter);
+		this(out, query, isCountTotal, new QueryWriteOption(), context, nameSpaceMap, dateAdapter);
 	}
 
-	public QueryXmlWriter(OutputStream out, Query query, SearchOption searchOption, QueryWriteOption option,
+	public QueryXmlWriter(OutputStream out, Query query, boolean isCountTotal, QueryWriteOption option,
 			JAXBContext context, Map<String, String> nameSpaceList ,DateXmlAdapter dateAdapter) throws IOException {
 		this.query = query;
-		this.searchOption = searchOption;
+		this.isCountTotal = isCountTotal;
 		this.option = option;
 		this.dateAdapter = dateAdapter;
 		this.nameSpaceList = nameSpaceList;
@@ -116,17 +115,13 @@ public class QueryXmlWriter implements AutoCloseable, Constants {
 			writer.writeStartElement("result");
 			writer.writeAttribute("key", "list");
 			writer.writeStartElement("value");
-		} catch (XMLStreamException e) {
-			throw new SystemException(e);
-		}
 
-		// 検索結果のXMLレコードを出力
-		int countTotal = search();
+			// 検索結果のXMLレコードを出力
+			int countTotal = search();
 
-		try {
 			writer.writeEndElement();
 			
-			if (searchOption.isCountTotal()) {
+			if (isCountTotal) {
 				writer.writeEndElement();
 				
 				writer.writeStartElement("result");
@@ -182,7 +177,7 @@ public class QueryXmlWriter implements AutoCloseable, Constants {
 		}
 
 		final int[] count = new int[1];
-		em.search(optQuery, searchOption, new Predicate<Object[]>() {
+		em.search(optQuery, new Predicate<Object[]>() {
 
 			@Override
 			public boolean test(Object[] values) {

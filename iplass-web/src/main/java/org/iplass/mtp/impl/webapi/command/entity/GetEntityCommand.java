@@ -64,7 +64,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 		accepts={RequestType.REST_FORM},
 		methods={MethodType.GET},
 		results={GetEntityCommand.RESULT_ENTITY_LIST, GetEntityCommand.RESULT_COUNT, GetEntityCommand.RESULT_ENTITY, 
-				GetEntityCommand.RESULT_CSV, GetEntityCommand.RESULT_JSON, GetEntityCommand.RESULT_XML },
+				GetEntityCommand.RESULT_CSV, GetEntityCommand.RESULT_JSON, GetEntityCommand.RESULT_XML},
 		responseType="application/json, application/xml, text/csv;charset=utf-8",
 		overwritable=false)
 @CommandClass(name="mtp/entity/GetEntityCommand", displayName="Entity Query/Load Web API", overwritable=false)
@@ -113,7 +113,7 @@ public final class GetEntityCommand extends AbstractEntityCommand {
 		for(int i=0;i<namedNodeMap.getLength();i++) {
 			String[] str = namedNodeMap.item(i).getNodeName().split(":");
 			nameSpaceMap.put(str[1], namedNodeMap.item(i).getNodeValue());
-		}
+		}	
 	}
 
 	// api/entity?query=SELECT...
@@ -123,30 +123,8 @@ public final class GetEntityCommand extends AbstractEntityCommand {
 			throw new NullPointerException("query must specify");
 		}
 		Query query = Query.newQuery(eql);
-		String accept = ((HttpServletRequest) request.getAttribute(WebApiRequestConstants.SERVLET_REQUEST)).getHeader("Accept");
 		
-		if (isCSV(accept)) {
-			queryCsv(query, request);
-		} else {
-			boolean tabular = request.getParam(PARAM_TABLE_MODE, Boolean.class, false);
-			boolean countTotal = request.getParam(PARAM_COUNT_TOTAL, Boolean.class, false);
-			SearchOption option = new SearchOption();
-			
-			if (countTotal) {
-				option.setCountTotal(true);
-			}
-			
-			if (tabular) {
-				if(isJSON(accept)) {
-					queryJson(query, request, option);
-				} else if (isXML(accept)) {
-					queryXml(query, request, option);
-				} 
-			}else {
-				option.setReturnStructuredEntity(true);
-				queryImpl(query, request, option);
-			}
-		}
+		queryImpl(query, request, true);
 	}
 
 	// api/entity/[definitionName]?filter=[where clause]
@@ -157,36 +135,46 @@ public final class GetEntityCommand extends AbstractEntityCommand {
 			query.where(filter);
 		}
 		
+		queryImpl(query, request, false);
+	}
+
+	private void queryImpl(Query query, RequestContext request, boolean byQuery) {
 		String accept = ((HttpServletRequest) request.getAttribute(WebApiRequestConstants.SERVLET_REQUEST)).getHeader("Accept");
 
+		checkPermission(query.getFrom().getEntityName(), def -> def.getMetaData().isQuery());
+
+		SearchOption option = new SearchOption();
+		option.setReturnStructuredEntity(true);
+		
 		if (isCSV(accept)) {
-			listCsv(query, request);
+			if (byQuery) {
+				queryCsv(query, request);
+			} else {
+				listCsv(query, request);
+			}
 		} else {
 			boolean tabular = request.getParam(PARAM_TABLE_MODE, Boolean.class, false);
 			boolean countTotal = request.getParam(PARAM_COUNT_TOTAL, Boolean.class, false);
-			SearchOption option = new SearchOption();
-			
-			if (countTotal) {
-				option.setCountTotal(true);
-			}
 			
 			if (tabular) {
-				if(isJSON(accept)) {
-					queryJson(query, request, option);
+				if (isJSON(accept)) {
+					queryJson(query, request, countTotal);
 				} else if (isXML(accept)) {
-					queryXml(query, request, option);
-				} 
-			}else {
-				option.setReturnStructuredEntity(true);
-				queryImpl(query, request, option);
+					queryXml(query, request, countTotal);
+				}
+			} else {
+				queryOther(query, request, countTotal);
 			}
 		}
-		
 	}
 
-	private void queryImpl(Query query, RequestContext request, SearchOption option) {
-		checkPermission(query.getFrom().getEntityName(), def -> def.getMetaData().isQuery());
-
+	private void queryOther(Query query, RequestContext request, boolean countTotal) {
+		SearchOption option = new SearchOption();
+		option.setReturnStructuredEntity(true);
+		if (countTotal) {
+			option.setCountTotal(true);
+		}
+		
 		if (query.getLimit() == null) {
 			query.limit(entityWebApiService.getMaxLimit());
 		}
@@ -196,15 +184,14 @@ public final class GetEntityCommand extends AbstractEntityCommand {
 		}
 		
 		SearchResult<?> res = em.searchEntity(query, option);
-		
 		request.setAttribute(RESULT_ENTITY_LIST, res.getList());
-		if (option.isCountTotal()) {
+		
+		if (countTotal) {
 			request.setAttribute(RESULT_COUNT, res.getTotalCount());
 		}
 	}
 
 	private void queryCsv(Query query, RequestContext request) {
-		checkPermission(query.getFrom().getEntityName(), def -> def.getMetaData().isQuery());
 
 		StreamingOutput stream = out -> {
 
@@ -220,7 +207,6 @@ public final class GetEntityCommand extends AbstractEntityCommand {
 	}
 
 	private void listCsv(Query query, RequestContext request) {
-		checkPermission(query.getFrom().getEntityName(), def -> def.getMetaData().isQuery());
 
 		StreamingOutput stream = out -> {
 			
@@ -237,24 +223,22 @@ public final class GetEntityCommand extends AbstractEntityCommand {
 		request.setAttribute(RESULT_CSV, stream);
 	}
 
-	private void queryJson(Query query, RequestContext request, SearchOption option) {
-		checkPermission(query.getFrom().getEntityName(), def -> def.getMetaData().isQuery());
-		
+	private void queryJson(Query query, RequestContext request, boolean countTotal) {
+
 		StreamingOutput stream = out -> {
 			
-			try (QueryJsonWriter writer = new QueryJsonWriter(out, query, option, mapper, jsonFactory)) {
+			try (QueryJsonWriter writer = new QueryJsonWriter(out, query, countTotal, mapper, jsonFactory)) {
 				writer.write();
 			}
 		};
 		request.setAttribute(RESULT_JSON, stream);
 	}
 	
-	private void queryXml(Query query, RequestContext request, SearchOption option) {
-		checkPermission(query.getFrom().getEntityName(), def -> def.getMetaData().isQuery());
+	private void queryXml(Query query, RequestContext request,  boolean countTotal) {
 		
 		StreamingOutput stream = out -> {
 			
-			try (QueryXmlWriter writer = new QueryXmlWriter(out, query, option, context, nameSpaceMap, new DateXmlAdapter())) {
+			try (QueryXmlWriter writer = new QueryXmlWriter(out, query, countTotal, context, nameSpaceMap, new DateXmlAdapter())) {
 				writer.write();
 			}
 		};

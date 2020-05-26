@@ -28,7 +28,6 @@ import java.util.function.Predicate;
 import org.iplass.mtp.ManagerLocator;
 import org.iplass.mtp.SystemException;
 import org.iplass.mtp.entity.EntityManager;
-import org.iplass.mtp.entity.SearchOption;
 import org.iplass.mtp.entity.query.Limit;
 import org.iplass.mtp.entity.query.Query;
 import org.iplass.mtp.impl.entity.csv.QueryWriteOption;
@@ -47,21 +46,21 @@ public class QueryJsonWriter implements AutoCloseable, Constants {
 	private final Query query;
 	private final QueryWriteOption option;
 	private final EntityManager em;
+	private final boolean isCountTotal;
 	
 	private ObjectMapper mapper;
-	private SearchOption searchOption;
 	private JsonGenerator gen;
 	
-	public QueryJsonWriter(OutputStream out, Query query, SearchOption searchOption, ObjectMapper mapper,
+	public QueryJsonWriter(OutputStream out, Query query, boolean isCountTotal, ObjectMapper mapper,
 			JsonFactory jsonFactory) throws IOException {
-		this(out, query, searchOption, new QueryWriteOption(), mapper, jsonFactory);
+		this(out, query, isCountTotal, new QueryWriteOption(), mapper, jsonFactory);
 	}
 
-	public QueryJsonWriter(OutputStream out, Query query, SearchOption searchOption, QueryWriteOption option,
+	public QueryJsonWriter(OutputStream out, Query query, boolean isCountTotal, QueryWriteOption option,
 			ObjectMapper mapper, JsonFactory jsonFactory) throws IOException {
 		this.query = query;
 		this.option = option;
-		this.searchOption = searchOption;
+		this.isCountTotal = isCountTotal;
 		this.mapper = mapper;
 		em = ManagerLocator.manager(EntityManager.class);
 		gen = jsonFactory.createGenerator(new BufferedWriter(new OutputStreamWriter(out, option.getCharset())));
@@ -79,7 +78,7 @@ public class QueryJsonWriter implements AutoCloseable, Constants {
 		
 		gen.writeEndArray();
 		
-		if (searchOption.isCountTotal()) {
+		if (isCountTotal) {
 			gen.writeNumberField("count", countTotal);
 		}
 
@@ -116,7 +115,7 @@ public class QueryJsonWriter implements AutoCloseable, Constants {
 		}
 
 		final int[] count = new int[1];
-		em.search(optQuery, searchOption, new Predicate<Object[]>() {
+		em.search(optQuery, new Predicate<Object[]>() {
 
 			@Override
 			public boolean test(Object[] values) {
