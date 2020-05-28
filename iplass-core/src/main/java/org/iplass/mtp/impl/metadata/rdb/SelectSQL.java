@@ -124,18 +124,18 @@ public class SelectSQL extends QuerySqlHandler {
 		}
 	}
 
-	public List<MetaDataEntryInfo> createNodeListResultData(ResultSet rs) throws SQLException {
+	public List<MetaDataEntryInfo> createNodeListResultData(ResultSet rs, RdbAdapter rdb) throws SQLException {
 		List<MetaDataEntryInfo> result = null;
 		while(rs.next()) {
 			if(result == null) {
 				result = new ArrayList<MetaDataEntryInfo>();
 			}
-			result.add(createMetaDataEntryInfo(rs));
+			result.add(createMetaDataEntryInfo(rs, rdb));
 		}
 		return result == null ? Collections.<MetaDataEntryInfo>emptyList() : result;
 	}
 
-	public MetaDataEntryInfo createMetaDataEntryInfo(ResultSet rs) throws SQLException {
+	public MetaDataEntryInfo createMetaDataEntryInfo(ResultSet rs, RdbAdapter rdb) throws SQLException {
 		MetaDataEntryInfo node = new MetaDataEntryInfo();
 		int num = 1;
 		node.setId(rs.getString(num++));
@@ -155,8 +155,8 @@ public class SelectSQL extends QuerySqlHandler {
 		} else {
 			node.setState(State.INVALID);
 		}
-		node.setCreateDate(rs.getTimestamp(num++));
-		node.setUpdateDate(rs.getTimestamp(num++));
+		node.setCreateDate(rs.getTimestamp(num++, rdb.rdbCalendar()));
+		node.setUpdateDate(rs.getTimestamp(num++, rdb.rdbCalendar()));
 		node.setCreateUser(rs.getString(num++));
 		node.setUpdateUser(rs.getString(num++));
 

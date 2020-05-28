@@ -75,5 +75,17 @@ public interface BulkUpdatable extends Iterable<BulkUpdateEntity>, AutoCloseable
 		return null;
 	}
 	
+	/**
+	 * バルク更新（INSERT時）の際、EntityにcreateBy,createDate,updateBy,updateDateの値を
+	 * 指定してその値のまま登録する場合にtrueを指定します。
+	 * デフォルトはfalseです。
+	 * このフラグを利用する場合、
+	 * 当該処理を呼び出すユーザがadmin権限を保持している必要があります。
+	 * 
+	 * @return
+	 */
+	public default boolean isEnableAuditPropertySpecification() {
+		return false;
+	}
 	
 }

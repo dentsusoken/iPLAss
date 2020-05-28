@@ -69,7 +69,7 @@ public class TenantSelectSQL extends QuerySqlHandler  {
 		ps.setDate(index++, now);
 	}
 
-	public Tenant createTenant(ResultSet rs) throws SQLException {
+	public Tenant createTenant(ResultSet rs, RdbAdapter rdb) throws SQLException {
 		if(!rs.next()) {
 			return null;
 		}
@@ -79,13 +79,13 @@ public class TenantSelectSQL extends QuerySqlHandler  {
 		tenant.setDescription(rs.getString("DESCRIPTION"));
 		String url = rs.getString("URL");
 		tenant.setUrl(url == null ? "": url);
-		tenant.setFrom(rs.getDate("YUKO_DATE_FROM"));
-		tenant.setTo(rs.getDate("YUKO_DATE_TO"));
+		tenant.setFrom(rs.getDate("YUKO_DATE_FROM", rdb.javaCalendar()));
+		tenant.setTo(rs.getDate("YUKO_DATE_TO", rdb.javaCalendar()));
 		
 		tenant.setCreateUser(rs.getString("CRE_USER"));
-		tenant.setCreateDate(rs.getTimestamp("CRE_DATE"));
+		tenant.setCreateDate(rs.getTimestamp("CRE_DATE", rdb.rdbCalendar()));
 		tenant.setUpdateUser(rs.getString("UP_USER"));
-		tenant.setUpdateDate(rs.getTimestamp("UP_DATE"));
+		tenant.setUpdateDate(rs.getTimestamp("UP_DATE", rdb.rdbCalendar()));
 		
 		if(rs.next()) {
 			throw new IllegalStateException("Tenant情報が複数あります");

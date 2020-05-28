@@ -120,12 +120,13 @@ public class GRdbSearchResultIterator implements SearchResultIterator {
 				GRdbPropertyStoreRuntime colDef = (GRdbPropertyStoreRuntime) ph.getStoreSpecProperty();
 				return colDef.fromDataStore(rs, colNum);
 			} else {
+				//TODO 型の解決をキャッシュする
 				PropertyType type = resolver.resolve(propName);
 				if (type == null) {
 					return rs.getObject(colNum);
 				} else {
 					BaseRdbTypeAdapter adapter = (BaseRdbTypeAdapter) rdb.getRdbTypeAdapter(type);
-					return adapter.fromDataStore(rs, colNum);
+					return adapter.fromDataStore(rs, colNum, rdb);
 				}
 			}
 		} catch (SQLException e) {

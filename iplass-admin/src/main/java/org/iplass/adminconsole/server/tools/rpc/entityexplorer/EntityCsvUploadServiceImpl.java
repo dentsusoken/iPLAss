@@ -105,6 +105,7 @@ public class EntityCsvUploadServiceImpl extends AdminUploadAction {
 						cond.setUpdateDisupdatableProperty(false);
 						cond.setWithValidation(args.containsKey("chkWithValidation"));
 					}
+					cond.setInsertEnableAuditPropertySpecification(args.containsKey("chkInsertEnableAuditPropertySpecification"));
 					cond.setErrorSkip(args.containsKey("chkErrorSkip"));
 					cond.setIgnoreNotExistsProperty(args.containsKey("chkIgnoreNotExistsProperty"));
 					cond.setFourceUpdate(args.containsKey("chkForceUpdate"));

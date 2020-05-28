@@ -73,6 +73,7 @@ public class SqlServerDateAddFunctionAdapter implements FunctionAdapter, DateTim
 			context.append(",");
 			context.appendArgument(function.getArguments().get(0));
 			context.append(")");
+			break;
 		case HOUR:
 			context.append(((SqlServerRdbAdapter) rdb).getAddMonthsFunction());
 			context.append("(hour,");
@@ -80,6 +81,7 @@ public class SqlServerDateAddFunctionAdapter implements FunctionAdapter, DateTim
 			context.append(",");
 			context.appendArgument(function.getArguments().get(0));
 			context.append(")");
+			break;
 		case MINUTE:
 			context.append(((SqlServerRdbAdapter) rdb).getAddMonthsFunction());
 			context.append("(minute,");
@@ -87,6 +89,7 @@ public class SqlServerDateAddFunctionAdapter implements FunctionAdapter, DateTim
 			context.append(",");
 			context.appendArgument(function.getArguments().get(0));
 			context.append(")");
+			break;
 		case SECOND:
 			context.append(((SqlServerRdbAdapter) rdb).getAddMonthsFunction());
 			context.append("(second,");
@@ -135,6 +138,7 @@ public class SqlServerDateAddFunctionAdapter implements FunctionAdapter, DateTim
 			context.append(",");
 			context.append(args.get(0));
 			context.append(")");
+			break;
 		case HOUR:
 			context.append(((SqlServerRdbAdapter) rdb).getAddMonthsFunction());
 			context.append("(hour,");
@@ -142,6 +146,7 @@ public class SqlServerDateAddFunctionAdapter implements FunctionAdapter, DateTim
 			context.append(",");
 			context.append(args.get(0));
 			context.append(")");
+			break;
 		case MINUTE:
 			context.append(((SqlServerRdbAdapter) rdb).getAddMonthsFunction());
 			context.append("(minute,");
@@ -149,6 +154,7 @@ public class SqlServerDateAddFunctionAdapter implements FunctionAdapter, DateTim
 			context.append(",");
 			context.append(args.get(0));
 			context.append(")");
+			break;
 		case SECOND:
 			context.append(((SqlServerRdbAdapter) rdb).getAddMonthsFunction());
 			context.append("(second,");

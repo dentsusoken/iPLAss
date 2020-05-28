@@ -219,6 +219,7 @@ public class PackageRpcServiceImpl extends XsrfProtectedServiceServlet implement
 					cond.setUpdateDisupdatableProperty(false);
 					cond.setWithValidation(condition.isWithValidation());
 				}
+				cond.setInsertEnableAuditPropertySpecification(condition.isInsertEnableAuditPropertySpecification());
 				cond.setErrorSkip(condition.isErrorSkip());
 				cond.setIgnoreNotExistsProperty(condition.isIgnoreNotExistsProperty());
 				cond.setPrefixOid(condition.getPrefixOid());

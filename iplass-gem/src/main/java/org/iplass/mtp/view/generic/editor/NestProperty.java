@@ -1,19 +1,19 @@
 /*
  * Copyright (C) 2011 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
- * 
+ *
  * Unless you have purchased a commercial license,
  * the following license terms apply:
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
@@ -175,6 +175,9 @@ public class NestProperty implements Refrectable {
 					"この設定は参照テーブル、参照セクション、大量データ用参照セクションで有効になります。",
 			descriptionKey="generic_editor_NestProperty_hideDetailDescriptionKey"
 	)
+	@EntityViewField(
+			referenceTypes={FieldReferenceType.DETAIL}
+	)
 	private boolean hideDetail;
 
 	/** 詳細表示非表示設定 */
@@ -185,6 +188,9 @@ public class NestProperty implements Refrectable {
 			description="詳細表示の項目として非表示にするかを設定します。<BR />" +
 					"この設定は参照テーブル、参照セクション、大量データ用参照セクションで有効になります。",
 			descriptionKey="generic_editor_NestProperty_hideViewDescriptionKey"
+	)
+	@EntityViewField(
+			referenceTypes={FieldReferenceType.DETAIL}
 	)
 	private boolean hideView;
 
@@ -497,7 +503,7 @@ public class NestProperty implements Refrectable {
 	 */
 	public void addLocalizedTitle(LocalizedStringDefinition localizedTitle) {
 		if (localizedDisplayLabelList == null) {
-			localizedDisplayLabelList = new ArrayList<LocalizedStringDefinition>();
+			localizedDisplayLabelList = new ArrayList<>();
 		}
 
 		localizedDisplayLabelList.add(localizedTitle);
@@ -525,7 +531,7 @@ public class NestProperty implements Refrectable {
 	 */
 	public void addLocalizedDescription(LocalizedStringDefinition localizedDescription) {
 		if (localizedDescriptionList == null) {
-			localizedDescriptionList = new ArrayList<LocalizedStringDefinition>();
+			localizedDescriptionList = new ArrayList<>();
 		}
 
 		localizedDescriptionList.add(localizedDescription);
@@ -553,7 +559,7 @@ public class NestProperty implements Refrectable {
 	 */
 	public void addLocalizedTooltip(LocalizedStringDefinition localizedTooltip) {
 		if (localizedTooltipList == null) {
-			localizedTooltipList = new ArrayList<LocalizedStringDefinition>();
+			localizedTooltipList = new ArrayList<>();
 		}
 
 		localizedTooltipList.add(localizedTooltip);

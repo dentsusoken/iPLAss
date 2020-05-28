@@ -1414,24 +1414,77 @@ public class SqlConverter extends QueryVisitorSupport {
 				//複数カラムに対するものなので、Indexテーブルは使えない
 				if (in.getSubQuery() != null) {
 					//subquery
-					context.append("(");
-					for (int i = 0; i < propList.size(); i++) {
-						if (i != 0) {
-							context.append(",");
+					if (rdbAdaptor.isSupportRowValueConstructor()) {
+						context.append("(");
+						for (int i = 0; i < propList.size(); i++) {
+							if (i != 0) {
+								context.append(",");
+							}
+							ValueExpression propVal = propList.get(i);
+							if (propVal instanceof EntityField) {
+								String propName = ((EntityField) propVal).getPropertyName();
+								PropertyHandler prop = context.getProperty(propName);
+								if (prop.getMetaData().getMultiplicity() != 1) {
+									throw new QueryException(
+									"multi column IN clause can not use multiple valued property:" + propName);
+								}
+							}
+							propVal.accept(this);
 						}
-						ValueExpression propVal = propList.get(i);
-						if (propVal instanceof EntityField) {
-							String propName = ((EntityField) propVal).getPropertyName();
-							PropertyHandler prop = context.getProperty(propName);
-							if (prop.getMetaData().getMultiplicity() != 1) {
-								throw new QueryException(
-								"multi column IN clause can not use multiple valued property:" + propName);
+						context.append(") IN");
+						in.getSubQuery().accept(SqlConverter.this);
+					} else {
+						// RDBが行値構成子(行値式)を未サポート
+						context.append("EXISTS");
+						SubQuery copySubQuery = new SubQuery(in.getSubQuery().getQuery().copy());
+
+						List<Condition> onCondList = new ArrayList<>();
+						if (in.getSubQuery().getOn() != null) {
+							onCondList.add(in.getSubQuery().getOn());
+						}
+
+						List<Condition> havingCondList = new ArrayList<>();
+						if (in.getSubQuery().getQuery().getHaving() != null) {
+							havingCondList.add(in.getSubQuery().getQuery().getHaving().getCondition());
+						}
+
+						for (int i = 0; i < propList.size(); i++) {
+							Condition cond = null;
+							ValueExpression propVal = propList.get(i);
+							ValueExpression selectVal = in.getSubQuery().getQuery().select().getSelectValues().get(i);
+							if (propVal instanceof EntityField) {
+								String propName = ((EntityField) propVal).getPropertyName();
+								PropertyHandler prop = context.getProperty(propName);
+								if (prop.getMetaData().getMultiplicity() != 1) {
+									throw new QueryException(
+									"multi column IN clause can not use multiple valued property:" + propName);
+								}
+								cond = new Equals(new EntityField("." + propName), selectVal);
+							} else {
+								cond = new Equals(propVal, selectVal);
+							}
+							if (selectVal instanceof Aggregate) {
+								// 集計関数の場合はHAVING句とする
+								havingCondList.add(cond);
+							} else {
+								onCondList.add(cond);
 							}
 						}
-						propVal.accept(this);
+
+						Condition onCond = null;
+						if (!onCondList.isEmpty()) {
+							onCond = onCondList.size() > 1 ? new And(onCondList) : onCondList.get(0);
+						}
+						copySubQuery.on(onCond);
+
+						Condition havingCond = null;
+						if (!havingCondList.isEmpty()) {
+							havingCond = havingCondList.size() > 1 ? new And(havingCondList) : havingCondList.get(0);
+						}
+						copySubQuery.getQuery().setHaving(havingCond != null ? new Having(havingCond) : null);
+
+						visit(copySubQuery, false, true);
 					}
-					context.append(") IN");
-					in.getSubQuery().accept(SqlConverter.this);
 				} else {
 					//rowValueList
 					boolean enableInPart = rdbAdaptor.isEnableInPartitioning() && in.getValue().size() > rdbAdaptor.getInPartitioningSize();
@@ -1458,30 +1511,59 @@ public class SqlConverter extends QueryVisitorSupport {
 							}
 						}
 						
-						context.append("(");
-						for (int i = 0; i < propList.size(); i++) {
-							if (i != 0) {
-								context.append(",");
-							}
-							ValueExpression propVal = propList.get(i);
-							if (propVal instanceof EntityField) {
-								String propName = ((EntityField) propVal).getPropertyName();
-								PropertyHandler prop = context.getProperty(propName);
-								if (prop.getMetaData().getMultiplicity() != 1) {
-									throw new QueryException(
-									"multi column IN clause can not use multiple valued property:" + propName);
+						if (rdbAdaptor.isSupportRowValueConstructor()) {
+							context.append("(");
+							for (int i = 0; i < propList.size(); i++) {
+								if (i != 0) {
+									context.append(",");
 								}
+								ValueExpression propVal = propList.get(i);
+								if (propVal instanceof EntityField) {
+									String propName = ((EntityField) propVal).getPropertyName();
+									PropertyHandler prop = context.getProperty(propName);
+									if (prop.getMetaData().getMultiplicity() != 1) {
+										throw new QueryException(
+										"multi column IN clause can not use multiple valued property:" + propName);
+									}
+								}
+								propVal.accept(this);
 							}
-							propVal.accept(this);
-						}
-						context.append(") IN(");
-						for (int i = offset; i < partLimit; i++) {
-							if (i != offset) {
-								context.append(",");
+							context.append(") IN(");
+							for (int i = offset; i < partLimit; i++) {
+								if (i != offset) {
+									context.append(",");
+								}
+								in.getValue().get(i).accept(this);
 							}
-							in.getValue().get(i).accept(this);
+							context.append(")");
+						} else {
+							// RDBが行値構成子(行値式)を未サポート
+							context.append("(");
+							for (int i = offset; i < partLimit; i++) {
+								if (i != 0) {
+									context.append(" OR ");
+								}
+								ValueExpression rvl = in.getValue().get(i);
+								context.append("(");
+								for (int j = 0; j < propList.size(); j++) {
+									if (j != 0) {
+										context.append(" AND ");
+									}
+									ValueExpression propVal = propList.get(j);
+									if (propVal instanceof EntityField) {
+										String propName = ((EntityField) propVal).getPropertyName();
+										PropertyHandler prop = context.getProperty(propName);
+										if (prop.getMetaData().getMultiplicity() != 1) {
+											throw new QueryException(
+											"multi column IN clause can not use multiple valued property:" + propName);
+										}
+									}
+									new Equals(propVal, ((RowValueList) rvl).getRowValues().get(j)).accept(this);
+								}
+								context.append(")");
+							}
+							context.append(")");
 						}
-						context.append(")");
 					}
 					if (enableInPart) {
 						context.append(")");
@@ -1735,6 +1817,10 @@ public class SqlConverter extends QueryVisitorSupport {
 	}
 	
 	private boolean visit(SubQuery subQuery, boolean treatSelectAsRawColType) {
+		return visit(subQuery, treatSelectAsRawColType, false);
+	}
+
+	private boolean visit(SubQuery subQuery, boolean treatSelectAsRawColType, boolean groupingCorrelation) {
 		push(subQuery);
 		try {
 			
@@ -1790,11 +1876,19 @@ public class SqlConverter extends QueryVisitorSupport {
 				}
 			}
 			
+			if (groupingCorrelation) {
+				subContext.setEnableCorrelation(true);
+				subContext.setUseIndexTable(false);
+			}
 			if (subQuery.getQuery().getGroupBy() != null) {
 				subQuery.getQuery().getGroupBy().accept(this);
 			}
 			if (subQuery.getQuery().getHaving() != null) {
 				subQuery.getQuery().getHaving().accept(this);
+			}
+			if (groupingCorrelation) {
+				subContext.setEnableCorrelation(false);
+				subContext.setUseIndexTable(true);
 			}
 			if (subQuery.getQuery().getOrderBy() != null) {
 				subQuery.getQuery().getOrderBy().accept(this);

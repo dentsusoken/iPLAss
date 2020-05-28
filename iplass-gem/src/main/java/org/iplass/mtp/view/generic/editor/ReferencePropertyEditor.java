@@ -1297,9 +1297,4 @@ public class ReferencePropertyEditor extends PropertyEditor implements HasNestPr
 	    this.urlParameterScriptKey = urlParameterScriptKey;
 	}
 
-	@Override
-	public String getEntityName() {
-		return objectName;
-	}
-
 }

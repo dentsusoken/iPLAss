@@ -94,25 +94,25 @@ public abstract class BaseRdbTypeAdapter implements RdbTypeAdapter {
 
 	public abstract int sqlType();
 
-	public Object toDataStore(Object javaTypeValue) {
-		return toRdb(propertyType.toDataStore(javaTypeValue));
+	public Object toDataStore(Object javaTypeValue, RdbAdapter rdb) {
+		return toRdb(propertyType.toDataStore(javaTypeValue), rdb);
 	}
 
-	public Object fromDataStore(ResultSet rs, int columnIndex) throws SQLException {
-		return propertyType.fromDataStore(toJava(rs, columnIndex));
+	public Object fromDataStore(ResultSet rs, int columnIndex, RdbAdapter rdb) throws SQLException {
+		return propertyType.fromDataStore(toJava(rs, columnIndex, rdb));
 	}
 
-	protected abstract Object toRdb(Object javaTypeValue);
+	protected abstract Object toRdb(Object javaTypeValue, RdbAdapter rdb);
 
-	protected abstract Object toJava(ResultSet rs, int columnIndex) throws SQLException;
+	protected abstract Object toJava(ResultSet rs, int columnIndex, RdbAdapter rdb) throws SQLException;
 
 	public abstract String getColOfIndex();
 
 	public void appendToSqlAsRealType(Object javaTypeValue, StringBuilder context, RdbAdapter rdb) {
-		context.append(rdb.toSqlExp(toDataStore(javaTypeValue)));
+		context.append(rdb.toSqlExp(toDataStore(javaTypeValue, rdb)));
 	}
 	
-	public abstract void setParameter(int index, Object javaTypeValue, PreparedStatement stmt) throws SQLException;
+	public abstract void setParameter(int index, Object javaTypeValue, PreparedStatement stmt, RdbAdapter rdb) throws SQLException;
 
 	public void appendToTypedCol(StringBuilder context, RdbAdapter rdb, ValueHandleLogic callback) {
 		callback.run();
@@ -137,13 +137,13 @@ public abstract class BaseRdbTypeAdapter implements RdbTypeAdapter {
 		}
 
 		@Override
-		public Object fromDataStore(ResultSet rs, int columnIndex)
+		public Object fromDataStore(ResultSet rs, int columnIndex, RdbAdapter rdb)
 				throws SQLException {
 			return null;
 		}
 
 		@Override
-		public Object toDataStore(Object javaTypeValue) {
+		public Object toDataStore(Object javaTypeValue, RdbAdapter rdb) {
 			return null;
 		}
 
@@ -153,12 +153,12 @@ public abstract class BaseRdbTypeAdapter implements RdbTypeAdapter {
 		}
 
 		@Override
-		public Object toJava(ResultSet rs, int columnIndex) throws SQLException {
+		protected Object toJava(ResultSet rs, int columnIndex, RdbAdapter rdb) throws SQLException {
 			return null;
 		}
 
 		@Override
-		public Object toRdb(Object javaTypeValue) {
+		protected Object toRdb(Object javaTypeValue, RdbAdapter rdb) {
 			return null;
 		}
 
@@ -174,26 +174,25 @@ public abstract class BaseRdbTypeAdapter implements RdbTypeAdapter {
 
 		@Override
 		public void setParameter(int index, Object javaTypeValue,
-				PreparedStatement stmt) throws SQLException {
+				PreparedStatement stmt, RdbAdapter rdb) throws SQLException {
 			stmt.setNull(index, Types.NULL);
 		}
 
 	}
 
 	public static class DateTime extends BaseRdbTypeAdapter {
-
 		public DateTime(PropertyType propertyType) {
 			super(propertyType);
 		}
 
 		@Override
-		public Timestamp toJava(ResultSet rs, int columnIndex)
+		protected Timestamp toJava(ResultSet rs, int columnIndex, RdbAdapter rdb)
 				throws SQLException {
-			return rs.getTimestamp(columnIndex);
+			return rs.getTimestamp(columnIndex, rdb.rdbCalendar());
 		}
 
 		@Override
-		public Timestamp toRdb(Object javaTypeValue) {
+		protected Timestamp toRdb(Object javaTypeValue, RdbAdapter rdb) {
 			if (javaTypeValue == null) {
 				return null;
 			}
@@ -213,7 +212,7 @@ public abstract class BaseRdbTypeAdapter implements RdbTypeAdapter {
 
 		@Override
 		public void appendToSqlAsRealType(Object javaTypeValue, StringBuilder context, RdbAdapter rdb) {
-			Timestamp ts = toRdb(javaTypeValue);
+			Timestamp ts = toRdb(javaTypeValue, rdb);
 			if (ts == null) {
 				context.append("null");
 			} else {
@@ -233,9 +232,9 @@ public abstract class BaseRdbTypeAdapter implements RdbTypeAdapter {
 
 		@Override
 		public void setParameter(int index, Object javaTypeValue,
-				PreparedStatement stmt) throws SQLException {
-			Timestamp val = toRdb(javaTypeValue);
-			stmt.setTimestamp(index, val);
+				PreparedStatement stmt, RdbAdapter rdb) throws SQLException {
+			Timestamp val = toRdb(javaTypeValue, rdb);
+			stmt.setTimestamp(index, val, rdb.rdbCalendar());
 		}
 	}
 
@@ -246,13 +245,13 @@ public abstract class BaseRdbTypeAdapter implements RdbTypeAdapter {
 		}
 
 		@Override
-		public java.sql.Date toJava(ResultSet rs, int columnIndex)
+		protected java.sql.Date toJava(ResultSet rs, int columnIndex, RdbAdapter rdb)
 				throws SQLException {
-			return rs.getDate(columnIndex);
+			return rs.getDate(columnIndex, rdb.javaCalendar());
 		}
 
 		@Override
-		public java.sql.Date toRdb(Object javaTypeValue) {
+		protected java.sql.Date toRdb(Object javaTypeValue, RdbAdapter rdb) {
 			if (javaTypeValue == null) {
 				return null;
 			}
@@ -272,7 +271,7 @@ public abstract class BaseRdbTypeAdapter implements RdbTypeAdapter {
 
 		@Override
 		public void appendToSqlAsRealType(Object javaTypeValue, StringBuilder context, RdbAdapter rdb) {
-			java.sql.Date date = toRdb(javaTypeValue);
+			java.sql.Date date = toRdb(javaTypeValue, rdb);
 			if (date == null) {
 				context.append("null");
 			} else {
@@ -294,8 +293,8 @@ public abstract class BaseRdbTypeAdapter implements RdbTypeAdapter {
 
 		@Override
 		public void setParameter(int index, Object javaTypeValue,
-				PreparedStatement stmt) throws SQLException {
-			java.sql.Date val = toRdb(javaTypeValue);
+				PreparedStatement stmt, RdbAdapter rdb) throws SQLException {
+			java.sql.Date val = toRdb(javaTypeValue, rdb);
 			stmt.setDate(index, val);
 		}
 
@@ -382,7 +381,7 @@ public abstract class BaseRdbTypeAdapter implements RdbTypeAdapter {
 		}
 
 		@Override
-		public BigDecimal toJava(ResultSet rs, int columnIndex)
+		protected BigDecimal toJava(ResultSet rs, int columnIndex, RdbAdapter rdb)
 				throws SQLException {
 			BigDecimal dec = rs.getBigDecimal(columnIndex);
 			if (dec != null && dec.scale() != ((DecimalType) propertyType).getScale()
@@ -397,7 +396,7 @@ public abstract class BaseRdbTypeAdapter implements RdbTypeAdapter {
 		}
 
 		@Override
-		public BigDecimal toRdb(Object javaTypeValue) {
+		protected BigDecimal toRdb(Object javaTypeValue, RdbAdapter rdb) {
 			return (BigDecimal) javaTypeValue;
 		}
 
@@ -413,8 +412,8 @@ public abstract class BaseRdbTypeAdapter implements RdbTypeAdapter {
 
 		@Override
 		public void setParameter(int index, Object javaTypeValue,
-				PreparedStatement stmt) throws SQLException {
-			BigDecimal val = (BigDecimal) toDataStore(javaTypeValue);
+				PreparedStatement stmt, RdbAdapter rdb) throws SQLException {
+			BigDecimal val = (BigDecimal) toDataStore(javaTypeValue, rdb);
 			stmt.setBigDecimal(index, val);
 		}
 	}
@@ -426,7 +425,7 @@ public abstract class BaseRdbTypeAdapter implements RdbTypeAdapter {
 		}
 
 		@Override
-		public Double toJava(ResultSet rs, int columnIndex) throws SQLException {
+		public Double toJava(ResultSet rs, int columnIndex, RdbAdapter rdb) throws SQLException {
 			if (rs.getObject(columnIndex) == null) {
 				return null;
 			} else {
@@ -435,7 +434,7 @@ public abstract class BaseRdbTypeAdapter implements RdbTypeAdapter {
 		}
 
 		@Override
-		public Double toRdb(Object javaTypeValue) {
+		protected Double toRdb(Object javaTypeValue, RdbAdapter rdb) {
 			if (javaTypeValue == null) {
 				return null;
 			}
@@ -460,8 +459,8 @@ public abstract class BaseRdbTypeAdapter implements RdbTypeAdapter {
 
 		@Override
 		public void setParameter(int index, Object javaTypeValue,
-				PreparedStatement stmt) throws SQLException {
-			Double val = toRdb(javaTypeValue);
+				PreparedStatement stmt, RdbAdapter rdb) throws SQLException {
+			Double val = toRdb(javaTypeValue, rdb);
 			if (val == null) {
 				stmt.setNull(index, sqlType());
 			} else {
@@ -477,7 +476,7 @@ public abstract class BaseRdbTypeAdapter implements RdbTypeAdapter {
 		}
 
 		@Override
-		public Long toJava(ResultSet rs, int columnIndex) throws SQLException {
+		protected Long toJava(ResultSet rs, int columnIndex, RdbAdapter rdb) throws SQLException {
 			if (rs.getObject(columnIndex) == null) {
 				return null;
 			} else {
@@ -486,7 +485,7 @@ public abstract class BaseRdbTypeAdapter implements RdbTypeAdapter {
 		}
 
 		@Override
-		public Long toRdb(Object javaTypeValue) {
+		protected Long toRdb(Object javaTypeValue, RdbAdapter rdb) {
 			if (javaTypeValue == null) {
 				return null;
 			}
@@ -511,8 +510,8 @@ public abstract class BaseRdbTypeAdapter implements RdbTypeAdapter {
 
 		@Override
 		public void setParameter(int index, Object javaTypeValue,
-				PreparedStatement stmt) throws SQLException {
-			Long val = toRdb(javaTypeValue);
+				PreparedStatement stmt, RdbAdapter rdb) throws SQLException {
+			Long val = toRdb(javaTypeValue, rdb);
 			if (val == null) {
 				stmt.setNull(index, sqlType());
 			} else {
@@ -522,19 +521,18 @@ public abstract class BaseRdbTypeAdapter implements RdbTypeAdapter {
 	}
 
 	public static class Time extends BaseRdbTypeAdapter {
-
 		public Time(PropertyType propertyType) {
 			super(propertyType);
 		}
 
 		@Override
-		public java.sql.Time toJava(ResultSet rs, int columnIndex)
+		protected java.sql.Time toJava(ResultSet rs, int columnIndex, RdbAdapter rdb)
 				throws SQLException {
-			return rs.getTime(columnIndex);
+			return rs.getTime(columnIndex, rdb.javaCalendar());
 		}
 
 		@Override
-		public java.sql.Time toRdb(Object javaTypeValue) {
+		protected java.sql.Time toRdb(Object javaTypeValue, RdbAdapter rdb) {
 			if (javaTypeValue == null) {
 				return null;
 			}
@@ -550,7 +548,7 @@ public abstract class BaseRdbTypeAdapter implements RdbTypeAdapter {
 
 		@Override
 		public void appendToSqlAsRealType(Object javaTypeValue, StringBuilder context, RdbAdapter rdb) {
-			java.sql.Time val = toRdb(javaTypeValue);
+			java.sql.Time val = toRdb(javaTypeValue, rdb);
 			if (val == null) {
 				context.append("null");
 			} else {
@@ -572,8 +570,8 @@ public abstract class BaseRdbTypeAdapter implements RdbTypeAdapter {
 
 		@Override
 		public void setParameter(int index, Object javaTypeValue,
-				PreparedStatement stmt) throws SQLException {
-			java.sql.Time val = toRdb(javaTypeValue);
+				PreparedStatement stmt, RdbAdapter rdb) throws SQLException {
+			java.sql.Time val = toRdb(javaTypeValue, rdb);
 			if (val != null) {
 				//日付部分を切り捨て
 				SimpleDateFormat fmt = new SimpleDateFormat("HH:mm:ss");
@@ -591,13 +589,13 @@ public abstract class BaseRdbTypeAdapter implements RdbTypeAdapter {
 		}
 
 		@Override
-		public String toJava(ResultSet rs, int columnIndex) throws SQLException {
+		protected String toJava(ResultSet rs, int columnIndex, RdbAdapter rdb) throws SQLException {
 			return rs.getString(columnIndex);
 //			return rs.getNString(columnIndex);
 		}
 
 		@Override
-		public String toRdb(Object javaTypeValue) {
+		protected String toRdb(Object javaTypeValue, RdbAdapter rdb) {
 			if (javaTypeValue == null) {
 				return null;
 			}
@@ -606,7 +604,7 @@ public abstract class BaseRdbTypeAdapter implements RdbTypeAdapter {
 
 		@Override
 		public void appendToSqlAsRealType(Object javaTypeValue, StringBuilder context, RdbAdapter rdb) {
-			String val = toRdb(javaTypeValue);
+			String val = toRdb(javaTypeValue, rdb);
 			if (val == null) {
 				context.append("null");
 			} else {
@@ -627,8 +625,8 @@ public abstract class BaseRdbTypeAdapter implements RdbTypeAdapter {
 
 		@Override
 		public void setParameter(int index, Object javaTypeValue,
-				PreparedStatement stmt) throws SQLException {
-			String val = toRdb(javaTypeValue);
+				PreparedStatement stmt, RdbAdapter rdb) throws SQLException {
+			String val = toRdb(javaTypeValue, rdb);
 			stmt.setString(index, val);
 		}
 
@@ -641,7 +639,7 @@ public abstract class BaseRdbTypeAdapter implements RdbTypeAdapter {
 		}
 
 		@Override
-		public Boolean toJava(ResultSet rs, int columnIndex) throws SQLException {
+		protected Boolean toJava(ResultSet rs, int columnIndex, RdbAdapter rdb) throws SQLException {
 			String val = rs.getString(columnIndex);
 
 			if (val == null) {
@@ -661,7 +659,7 @@ public abstract class BaseRdbTypeAdapter implements RdbTypeAdapter {
 		}
 
 		@Override
-		public String toRdb(Object javaTypeValue) {
+		protected String toRdb(Object javaTypeValue, RdbAdapter rdb) {
 			if (javaTypeValue == null) {
 				return null;
 			}
@@ -681,7 +679,7 @@ public abstract class BaseRdbTypeAdapter implements RdbTypeAdapter {
 
 		@Override
 		public void appendToSqlAsRealType(Object javaTypeValue, StringBuilder context, RdbAdapter rdb) {
-			String val = toRdb(javaTypeValue);
+			String val = toRdb(javaTypeValue,rdb);
 			if (val == null) {
 				context.append("null");
 			} else {
@@ -700,8 +698,8 @@ public abstract class BaseRdbTypeAdapter implements RdbTypeAdapter {
 
 		@Override
 		public void setParameter(int index, Object javaTypeValue,
-				PreparedStatement stmt) throws SQLException {
-			String val = toRdb(javaTypeValue);
+				PreparedStatement stmt, RdbAdapter rdb) throws SQLException {
+			String val = toRdb(javaTypeValue, rdb);
 			stmt.setString(index, val);
 		}
 	}

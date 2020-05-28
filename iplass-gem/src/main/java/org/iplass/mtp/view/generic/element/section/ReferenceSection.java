@@ -372,6 +372,7 @@ public class ReferenceSection extends Section implements HasNestProperty {
 	 * リンクを表示するかを取得します。
 	 * @return リンクを表示するか
 	 */
+	@Override
 	public boolean isShowLink() {
 	    return showLink;
 	}
@@ -469,7 +470,7 @@ public class ReferenceSection extends Section implements HasNestProperty {
 	 * @return 表示プロパティ
 	 */
 	public List<NestProperty> getProperties() {
-		if (properties == null) properties = new ArrayList<NestProperty>();
+		if (properties == null) properties = new ArrayList<>();
 	    return properties;
 	}
 
@@ -511,7 +512,7 @@ public class ReferenceSection extends Section implements HasNestProperty {
 	 */
 	public void addLocalizedTitleList(LocalizedStringDefinition localizedTitle) {
 		if (localizedTitleList == null) {
-			localizedTitleList = new ArrayList<LocalizedStringDefinition>();
+			localizedTitleList = new ArrayList<>();
 		}
 
 		localizedTitleList.add(localizedTitle);
@@ -563,11 +564,6 @@ public class ReferenceSection extends Section implements HasNestProperty {
 	 */
 	public void setContentScriptKey(String contentScriptKey) {
 		this.contentScriptKey = contentScriptKey;
-	}
-
-	@Override
-	public String getEntityName() {
-		return defintionName;
 	}
 
 }

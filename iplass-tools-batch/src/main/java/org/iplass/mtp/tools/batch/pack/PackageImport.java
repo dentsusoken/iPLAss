@@ -4,7 +4,22 @@
 
 package org.iplass.mtp.tools.batch.pack;
 
-import static org.iplass.mtp.tools.batch.pack.PackageImportParameter.*;
+import static org.iplass.mtp.tools.batch.pack.PackageImportParameter.PROP_ENTITY_BULK_UPDATE;
+import static org.iplass.mtp.tools.batch.pack.PackageImportParameter.PROP_ENTITY_COMMIT_LIMIT;
+import static org.iplass.mtp.tools.batch.pack.PackageImportParameter.PROP_ENTITY_ERROR_SKIP;
+import static org.iplass.mtp.tools.batch.pack.PackageImportParameter.PROP_ENTITY_FORCE_UPDATE;
+import static org.iplass.mtp.tools.batch.pack.PackageImportParameter.PROP_ENTITY_IGNORE_INVALID_PROPERTY;
+import static org.iplass.mtp.tools.batch.pack.PackageImportParameter.PROP_ENTITY_INSERT_AUDIT_PROPERTY_SPECIFICATION;
+import static org.iplass.mtp.tools.batch.pack.PackageImportParameter.PROP_ENTITY_INSERT_AUDIT_PROPERTY_SPECIFICATION_EXEC_USER_ID;
+import static org.iplass.mtp.tools.batch.pack.PackageImportParameter.PROP_ENTITY_INSERT_AUDIT_PROPERTY_SPECIFICATION_EXEC_USER_PW;
+import static org.iplass.mtp.tools.batch.pack.PackageImportParameter.PROP_ENTITY_NOTIFY_LISTENER;
+import static org.iplass.mtp.tools.batch.pack.PackageImportParameter.PROP_ENTITY_PREFIX_OID;
+import static org.iplass.mtp.tools.batch.pack.PackageImportParameter.PROP_ENTITY_TRUNCATE;
+import static org.iplass.mtp.tools.batch.pack.PackageImportParameter.PROP_ENTITY_UPDATE_DISUPDATABLE;
+import static org.iplass.mtp.tools.batch.pack.PackageImportParameter.PROP_ENTITY_WITH_VALIDATION;
+import static org.iplass.mtp.tools.batch.pack.PackageImportParameter.PROP_IMPORT_FILE;
+import static org.iplass.mtp.tools.batch.pack.PackageImportParameter.PROP_TENANT_ID;
+import static org.iplass.mtp.tools.batch.pack.PackageImportParameter.PROP_TENANT_URL;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -18,8 +33,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 import org.iplass.mtp.SystemException;
+import org.iplass.mtp.auth.login.IdPasswordCredential;
+import org.iplass.mtp.impl.auth.AuthContextHolder;
+import org.iplass.mtp.impl.auth.AuthService;
+import org.iplass.mtp.impl.auth.authenticate.internal.InternalCredential;
 import org.iplass.mtp.impl.core.ExecuteContext;
 import org.iplass.mtp.impl.core.TenantContext;
 import org.iplass.mtp.impl.core.TenantContextService;
@@ -58,9 +78,16 @@ public class PackageImport extends MtpCuiBase {
 	//インポートファイル(引数)
 	private String importFile;
 
+	/** ユーザID(InsertするEntityにAuditプロパティの値を指定する場合、必須) */
+	private String userId;
+
+	/** パスワード */
+	private String password;
+
 	private TenantService ts = ServiceRegistry.getRegistry().getService(TenantService.class);
 	private TenantContextService tcs = ServiceRegistry.getRegistry().getService(TenantContextService.class);
 	private PackageService ps = ServiceRegistry.getRegistry().getService(PackageService.class);
+	private AuthService as = ServiceRegistry.getRegistry().getService(AuthService.class);
 
 	/**
 	 * args[0]・・・execMode
@@ -189,66 +216,11 @@ public class PackageImport extends MtpCuiBase {
 					final List<String> messageSummary = new ArrayList<>();
 
 					boolean ret = Transaction.requiresNew(tt->{
+						//Fileのアップロード
+						oid = executeTask(param, new UploadTask(param, messageSummary));
 
-						TenantContext tc  = tcs.getTenantContext(param.getTenantId());
-						return ExecuteContext.executeAs(tc, ()->{
-							ExecuteContext.getCurrentContext().setLanguage(getLanguage());
-
-							String logMessage = null;	//work用
-
-							//Fileのアップロード
-							oid = ps.uploadPackage(
-									param.getPackageName(), null, param.getImportFile(), PackageEntity.TYPE_OFFLINE);
-
-							logMessage = rs("PackageImport.createdPackageInfoLog", oid);
-							logInfo(logMessage);
-							logInfo("");
-
-							messageSummary.add(logMessage);
-
-							//メタデータの登録
-							if (CollectionUtil.isNotEmpty(param.getPackInfo().getMetaDataPaths())) {
-								logInfo(rs("PackageImport.startImportMetaLog"));
-
-								MetaDataImportResult metaResult
-									= ps.importPackageMetaData(oid, param.getImportTenant());
-
-								if (metaResult.isError()) {
-									if (metaResult.getMessages() != null) {
-										for (String message : metaResult.getMessages()) {
-											logError(message);
-										}
-										logInfo("");
-									}
-
-									logError(rs("Common.errorMsg", ""));
-									return false;
-								}
-
-								if (metaResult.getMessages() != null) {
-									for (String message : metaResult.getMessages()) {
-										logInfo(message);
-										messageSummary.add(message);
-									}
-									logInfo("");
-								}
-
-								//途中段階で一度メッセージ出力
-								logMessage = rs("PackageImport.completedImportMetaLog");
-								logInfo(logMessage);
-								logInfo("");
-
-								messageSummary.add(logMessage);
-							} else {
-								//途中段階で一度メッセージ出力
-								logMessage = rs("PackageImport.notIncludeMetaLog");
-								logInfo(logMessage);
-								logInfo("");
-
-								messageSummary.add(logMessage);
-							}
-							return true;
-						});
+						//メタデータの登録
+						return executeTask(param, new MetaDataImportTask(param, messageSummary, oid));
 					});
 
 					if (!ret) {
@@ -258,75 +230,8 @@ public class PackageImport extends MtpCuiBase {
 					//Entityデータのインポートはトランザクションを別にして、TenantContextを再取得して実行
 					//インポートのメタデータにUtilityClassが含まれるとTenantContextがreloadされてメタデータが取得できなくなるため
 					ret = Transaction.requiresNew(tt->{
-
-						TenantContext reloadTc = tcs.getTenantContext(param.getTenantId());
-						return ExecuteContext.executeAs(reloadTc, ()->{
-							ExecuteContext.getCurrentContext().setLanguage(getLanguage());
-
-							String logMessage = null;	//work用
-
-							//Entityデータの登録
-							if (CollectionUtil.isNotEmpty(param.getPackInfo().getEntityPaths())) {
-								logInfo(rs("PackageImport.startImportEntityLog"));
-
-								for (String path : param.getPackInfo().getEntityPaths()) {
-									//.csvを除く
-									String entityPath =  EntityService.ENTITY_META_PATH + path.substring(0, path.length() - 4).replace(".", "/");
-									logInfo(rs("PackageImport.startImportEntityDataLog", entityPath));
-
-
-									EntityDataImportResult entityResult
-											= ps.importPackageEntityData(oid, entityPath, param.getEntityImportCondition());
-
-									if (entityResult.isError()) {
-										if (entityResult.getMessages() != null) {
-											for (String message : entityResult.getMessages()) {
-												logError(message);
-											}
-											logInfo("");
-										}
-
-										logMessage = rs("PackageImport.errorImportEntityDataLog", entityPath);
-										logError(logMessage);
-										messageSummary.add("[ERROR]" + logMessage);
-
-										//エラースキップしない場合は、ここで終了
-										if (!param.getEntityImportCondition().isErrorSkip()) {
-											logError(rs("Common.errorMsg", ""));
-											return false;
-										}
-										logInfo(rs("PackageImport.continueLog"));
-									} else {
-										if (entityResult.getMessages() != null) {
-											for (String message : entityResult.getMessages()) {
-												logInfo(message);
-											}
-											logInfo("");
-										}
-
-										//途中段階で一度メッセージ出力
-										logMessage = rs("PackageImport.completedImportEntityDataLog", entityPath,
-												entityResult.getInsertCount(), entityResult.getUpdateCount(), entityResult.getErrorCount());
-										logInfo(logMessage);
-										logInfo("");
-										messageSummary.add(logMessage);
-									}
-								}
-
-								logMessage = rs("PackageImport.completedImportEntityLog");
-								logInfo(logMessage);
-								logInfo("");
-								messageSummary.add(logMessage);
-							} else {
-								logMessage = rs("PackageImport.notIncludeEntityLog");
-								logInfo(logMessage);
-								logInfo("");
-
-								messageSummary.add(logMessage);
-							}
-
-							return true;
-						});
+						//Entityデータの登録
+						return executeTask(param, new EntityDataImportTask(param, messageSummary, oid));
 					});
 
 					logInfo("-----------------------------------------------------------");
@@ -382,16 +287,223 @@ public class PackageImport extends MtpCuiBase {
 			logInfo("\tentity ignore not exists property :" + condition.isIgnoreNotExistsProperty());
 			logInfo("\tentity execute listner :" + condition.isNotifyListeners());
 			logInfo("\tentity update disupdatable property :" + condition.isUpdateDisupdatableProperty());
+			logInfo("\tentity insert audit property specification :" + condition.isInsertEnableAuditPropertySpecification());
 			logInfo("\tentity execute validation :" + condition.isWithValidation());
 			logInfo("\tentity commit limit :" + condition.getCommitLimit());
 			logInfo("\tentity oid prefix :" + condition.getPrefixOid());
 
+			if (condition.isInsertEnableAuditPropertySpecification()) {
+				logInfo("\tentity import execute user id :" + userId);
+			}
 		} else {
 			logInfo("\tentity count :" + "0");
 		}
 
 		logInfo("-----------------------------------------------------------");
 		logInfo("");
+	}
+
+	/**
+	 * タスクを実行します。
+	 */
+	private <T> T executeTask(PackageImportParameter param, Supplier<T> task) {
+
+		TenantContext tc  = tcs.getTenantContext(param.getTenantId());
+		return ExecuteContext.executeAs(tc, ()->{
+			ExecuteContext.getCurrentContext().setLanguage(getLanguage());
+
+			if (StringUtil.isEmpty(userId)) {
+				return task.get();
+			} else {
+				//ログインして実行
+				try {
+					as.login(StringUtil.isNotEmpty(password) ? new IdPasswordCredential(userId, password) : new InternalCredential(userId));
+					return as.doSecuredAction(AuthContextHolder.getAuthContext(), () -> {
+						return task.get();
+					});
+				} finally {
+					as.logout();
+				}
+			}
+		});
+	}
+
+	/**
+	 * Packageをアップロード(登録)します。
+	 */
+	private class UploadTask implements Supplier<String> {
+
+		private final PackageImportParameter param;
+		private final List<String> messageSummary;
+
+		public UploadTask(final PackageImportParameter param, final List<String> messageSummary) {
+			this.param = param;
+			this.messageSummary = messageSummary;
+		}
+
+		@Override
+		public String get() {
+			//Fileのアップロード
+			String oid = ps.uploadPackage(
+					param.getPackageName(), null, param.getImportFile(), PackageEntity.TYPE_OFFLINE);
+
+			String logMessage = rs("PackageImport.createdPackageInfoLog", oid);
+			logInfo(logMessage);
+			logInfo("");
+
+			messageSummary.add(logMessage);
+
+			return oid;
+		}
+	}
+
+	/**
+	 * メタデータをインポートします。
+	 */
+	private class MetaDataImportTask implements Supplier<Boolean> {
+
+		private final PackageImportParameter param;
+		private final List<String> messageSummary;
+		private final String oid;
+
+		public MetaDataImportTask(final PackageImportParameter param, final List<String> messageSummary, String oid) {
+			this.param = param;
+			this.messageSummary = messageSummary;
+			this.oid = oid;
+		}
+
+		@Override
+		public Boolean get() {
+
+			//メタデータの登録
+			if (CollectionUtil.isNotEmpty(param.getPackInfo().getMetaDataPaths())) {
+				logInfo(rs("PackageImport.startImportMetaLog"));
+
+				MetaDataImportResult metaResult
+					= ps.importPackageMetaData(oid, param.getImportTenant());
+
+				if (metaResult.isError()) {
+					if (metaResult.getMessages() != null) {
+						for (String message : metaResult.getMessages()) {
+							logError(message);
+						}
+						logInfo("");
+					}
+
+					logError(rs("Common.errorMsg", ""));
+					return false;
+				}
+
+				if (metaResult.getMessages() != null) {
+					for (String message : metaResult.getMessages()) {
+						logInfo(message);
+						messageSummary.add(message);
+					}
+					logInfo("");
+				}
+
+				//途中段階で一度メッセージ出力
+				String logMessage = rs("PackageImport.completedImportMetaLog");
+				logInfo(logMessage);
+				logInfo("");
+
+				messageSummary.add(logMessage);
+
+			} else {
+				//途中段階で一度メッセージ出力
+				String logMessage = rs("PackageImport.notIncludeMetaLog");
+				logInfo(logMessage);
+				logInfo("");
+
+				messageSummary.add(logMessage);
+			}
+			return true;
+		}
+	}
+
+	/**
+	 * Entityデータをインポートします。
+	 */
+	private class EntityDataImportTask implements Supplier<Boolean> {
+
+		private final PackageImportParameter param;
+		private final List<String> messageSummary;
+		private final String oid;
+
+		public EntityDataImportTask(final PackageImportParameter param, final List<String> messageSummary, String oid) {
+			this.param = param;
+			this.messageSummary = messageSummary;
+			this.oid = oid;
+		}
+
+		@Override
+		public Boolean get() {
+
+			String logMessage = null;	//work用
+
+			//Entityデータの登録
+			if (CollectionUtil.isNotEmpty(param.getPackInfo().getEntityPaths())) {
+				logInfo(rs("PackageImport.startImportEntityLog"));
+
+				for (String path : param.getPackInfo().getEntityPaths()) {
+					//.csvを除く
+					String entityPath =  EntityService.ENTITY_META_PATH + path.substring(0, path.length() - 4).replace(".", "/");
+					logInfo(rs("PackageImport.startImportEntityDataLog", entityPath));
+
+
+					EntityDataImportResult entityResult
+							= ps.importPackageEntityData(oid, entityPath, param.getEntityImportCondition());
+
+					if (entityResult.isError()) {
+						if (entityResult.getMessages() != null) {
+							for (String message : entityResult.getMessages()) {
+								logError(message);
+							}
+							logInfo("");
+						}
+
+						logMessage = rs("PackageImport.errorImportEntityDataLog", entityPath);
+						logError(logMessage);
+						messageSummary.add("[ERROR]" + logMessage);
+
+						//エラースキップしない場合は、ここで終了
+						if (!param.getEntityImportCondition().isErrorSkip()) {
+							logError(rs("Common.errorMsg", ""));
+							return false;
+						}
+						logInfo(rs("PackageImport.continueLog"));
+					} else {
+						if (entityResult.getMessages() != null) {
+							for (String message : entityResult.getMessages()) {
+								logInfo(message);
+							}
+							logInfo("");
+						}
+
+						//途中段階で一度メッセージ出力
+						logMessage = rs("PackageImport.completedImportEntityDataLog", entityPath,
+								entityResult.getInsertCount(), entityResult.getUpdateCount(), entityResult.getErrorCount());
+						logInfo(logMessage);
+						logInfo("");
+						messageSummary.add(logMessage);
+					}
+				}
+
+				logMessage = rs("PackageImport.completedImportEntityLog");
+				logInfo(logMessage);
+				logInfo("");
+				messageSummary.add(logMessage);
+
+			} else {
+				logMessage = rs("PackageImport.notIncludeEntityLog");
+				logInfo(logMessage);
+				logInfo("");
+
+				messageSummary.add(logMessage);
+			}
+
+			return true;
+		}
 	}
 
 	/**
@@ -592,6 +704,25 @@ public class PackageImport extends MtpCuiBase {
 				//更新不可項目の更新
 				boolean isUpdateDisupdatableProperty = readConsoleBoolean(rs("PackageImport.Wizard.confirmUpdateDisupdatablePropertyMsg"), condition.isUpdateDisupdatableProperty());
 				condition.setUpdateDisupdatableProperty(isUpdateDisupdatableProperty);
+
+				//追加時に監査プロパティを指定した値で登録
+				boolean isInsertEnableAuditPropertySpecification = readConsoleBoolean(rs("PackageImport.Wizard.confirmInsertEnableAuditPropertySpecification"), condition.isInsertEnableAuditPropertySpecification());
+				condition.setInsertEnableAuditPropertySpecification(isInsertEnableAuditPropertySpecification);
+
+				if (condition.isInsertEnableAuditPropertySpecification()) {
+					//ユーザ情報の入力
+					do {
+						String executeUserId = readConsole(rs("PackageImport.Wizard.confirmExecuteUserId"));
+						if (StringUtil.isNotEmpty(executeUserId)) {
+							userId = executeUserId;
+
+							String executeUserPW = readConsole(rs("PackageImport.Wizard.confirmExecuteUserPW"));
+							if (StringUtil.isNotEmpty(executeUserPW)) {
+								password = executeUserPW;
+							}
+						}
+					} while(userId == null);
+				}
 
 				//Validationの実行
 				if (isBulkUpdate || isUpdateDisupdatableProperty) {
@@ -862,6 +993,23 @@ public class PackageImport extends MtpCuiBase {
 				String updateDisupdatableProperty = prop.getProperty(PROP_ENTITY_UPDATE_DISUPDATABLE);
 				if (StringUtil.isNotEmpty(updateDisupdatableProperty)) {
 					condition.setUpdateDisupdatableProperty(Boolean.valueOf(updateDisupdatableProperty));
+				}
+
+				//InsertするEntityにAuditPropertyの値を指定
+				String insertEnableAuditPropertySpecification = prop.getProperty(PROP_ENTITY_INSERT_AUDIT_PROPERTY_SPECIFICATION);
+				if (StringUtil.isNotEmpty(insertEnableAuditPropertySpecification)) {
+					condition.setUpdateDisupdatableProperty(Boolean.valueOf(insertEnableAuditPropertySpecification));
+				}
+				if (condition.isInsertEnableAuditPropertySpecification()) {
+					//実行ユーザID、PWを取得
+					String execUserId = prop.getProperty(PROP_ENTITY_INSERT_AUDIT_PROPERTY_SPECIFICATION_EXEC_USER_ID);
+					if (StringUtil.isNotEmpty(execUserId)) {
+						userId = execUserId;
+					}
+					String execUserPW = prop.getProperty(PROP_ENTITY_INSERT_AUDIT_PROPERTY_SPECIFICATION_EXEC_USER_PW);
+					if (StringUtil.isNotEmpty(execUserPW)) {
+						password = execUserPW;
+					}
 				}
 
 				//Validationの実行

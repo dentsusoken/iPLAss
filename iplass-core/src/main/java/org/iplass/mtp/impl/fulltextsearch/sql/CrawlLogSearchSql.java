@@ -58,12 +58,12 @@ public class CrawlLogSearchSql extends QuerySqlHandler {
 				.toString();
 	}
 
-	public CrawlTimestampDto toFulltextSearchCrawlTimestampDto(ResultSet rs) throws SQLException {
+	public CrawlTimestampDto toFulltextSearchCrawlTimestampDto(ResultSet rs, RdbAdapter rdb) throws SQLException {
 
 		CrawlTimestampDto dto = new CrawlTimestampDto();
 		dto.setObjDefId(rs.getString(1));
 		dto.setObjDefVer(rs.getString(2));
-		dto.setUpDate(rs.getTimestamp(3));
+		dto.setUpDate(rs.getTimestamp(3, rdb.rdbCalendar()));
 		return dto;
 	}
 

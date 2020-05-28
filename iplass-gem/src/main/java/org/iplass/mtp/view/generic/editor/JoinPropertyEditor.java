@@ -202,7 +202,7 @@ public class JoinPropertyEditor extends CustomPropertyEditor implements HasNestP
 	 * @return プロパティ
 	 */
 	public List<NestProperty> getProperties() {
-		if (properties == null) properties = new ArrayList<NestProperty>();
+		if (properties == null) properties = new ArrayList<>();
 	    return properties;
 	}
 
@@ -224,7 +224,7 @@ public class JoinPropertyEditor extends CustomPropertyEditor implements HasNestP
 	}
 
 	public List<NestProperty> getJoinProperties() {
-		List<NestProperty> nestProperties = new ArrayList<NestProperty>();
+		List<NestProperty> nestProperties = new ArrayList<>();
 		NestProperty property = new NestProperty();
 		property.setPropertyName(propertyName);
 		property.setEditor(getEditor());
@@ -234,8 +234,4 @@ public class JoinPropertyEditor extends CustomPropertyEditor implements HasNestP
 		return nestProperties;
 	}
 
-	@Override
-	public String getEntityName() {
-		return objectName;
-	}
 }

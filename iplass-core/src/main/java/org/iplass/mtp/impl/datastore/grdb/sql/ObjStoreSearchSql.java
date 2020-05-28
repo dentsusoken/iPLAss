@@ -239,7 +239,10 @@ public class ObjStoreSearchSql extends QuerySqlHandler {
 			EntityContext context,
 			Query query, boolean enableBindVariable, RdbAdapter rdbAdaptor) {
 
-		ToSqlResult res = query(metaData, context, query, false, enableBindVariable, null, rdbAdaptor);
+		Query subQuery = query.copy();
+		subQuery.setOrderBy(null);
+
+		ToSqlResult res = query(metaData, context, subQuery, false, enableBindVariable, null, rdbAdaptor);
 		res.sql = "SELECT COUNT(*) FROM (" + res.sql + ") CT";
 		return res;
 	}

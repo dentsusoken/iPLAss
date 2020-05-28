@@ -81,7 +81,7 @@ public class RdbTenantStore implements TenantStore {
 				tenantSelect.setParameter(rdb, ps, url);
 				ResultSet rs = ps.executeQuery();
 				try {
-					return tenantSelect.createTenant(rs);
+					return tenantSelect.createTenant(rs, rdb);
 				} finally {
 					rs.close();
 				}
@@ -99,7 +99,7 @@ public class RdbTenantStore implements TenantStore {
 				tenantSelect.setParameter(rdb, ps, id);
 				ResultSet rs = ps.executeQuery();
 				try {
-					return tenantSelect.createTenant(rs);
+					return tenantSelect.createTenant(rs, rdb);
 				} finally {
 					rs.close();
 				}

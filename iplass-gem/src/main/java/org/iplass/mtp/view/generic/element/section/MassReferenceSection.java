@@ -473,7 +473,7 @@ public class MassReferenceSection extends Section implements HasNestProperty {
 	 */
 	public void addLocalizedTitleList(LocalizedStringDefinition localizedTitle) {
 		if (localizedTitleList == null) {
-			localizedTitleList = new ArrayList<LocalizedStringDefinition>();
+			localizedTitleList = new ArrayList<>();
 		}
 
 		localizedTitleList.add(localizedTitle);
@@ -531,6 +531,7 @@ public class MassReferenceSection extends Section implements HasNestProperty {
 	 * リンクを表示するかを取得します。
 	 * @return リンクを表示するか
 	 */
+	@Override
 	public boolean isShowLink() {
 	    return showLink;
 	}
@@ -769,7 +770,7 @@ public class MassReferenceSection extends Section implements HasNestProperty {
 
 	/**
 	 * 検索アイコンを常に表示設定を設定します。
-	 * @return 検索アイコンを常に表示 
+	 * @return 検索アイコンを常に表示
 	 */
 	public boolean isShowSearchBtn() {
 		return showSearchBtn;
@@ -836,7 +837,7 @@ public class MassReferenceSection extends Section implements HasNestProperty {
 	 * @return 表示プロパティ
 	 */
 	public List<NestProperty> getProperties() {
-		if (properties == null) properties = new ArrayList<NestProperty>();
+		if (properties == null) properties = new ArrayList<>();
 	    return properties;
 	}
 
@@ -861,7 +862,7 @@ public class MassReferenceSection extends Section implements HasNestProperty {
 	 * @return ソート設定
 	 */
 	public List<SortSetting> getSortSetting() {
-		if (sortSetting == null) sortSetting = new ArrayList<SortSetting>();
+		if (sortSetting == null) sortSetting = new ArrayList<>();
 		return sortSetting;
 	}
 
@@ -925,8 +926,4 @@ public class MassReferenceSection extends Section implements HasNestProperty {
 		this.contentScriptKey = contentScriptKey;
 	}
 
-	@Override
-	public String getEntityName() {
-		return defintionName;
-	}
 }

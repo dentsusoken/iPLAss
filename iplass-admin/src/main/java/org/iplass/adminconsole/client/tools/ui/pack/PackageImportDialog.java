@@ -661,6 +661,7 @@ public class PackageImportDialog extends AbstractWindow {
 		private CheckboxItem chkNotifyListenersField;
 		private CheckboxItem chkWithValidationField;
 		private CheckboxItem chkUpdateDisupdatablePropertyField;
+		private CheckboxItem chkInsertEnableAuditPropertySpecification;
 		private CheckboxItem chkForceUpdateField;
 		private CheckboxItem chkErrorSkipField;
 		private CheckboxItem chkIgnoreNotExistsPropertyField;
@@ -751,6 +752,11 @@ public class PackageImportDialog extends AbstractWindow {
 				}
 			});
 
+			chkInsertEnableAuditPropertySpecification = new CheckboxItem();
+			chkInsertEnableAuditPropertySpecification.setTitle(rs("ui_tools_pack_PackageImportDialog_insertEnableAuditPropertySpecification"));
+			chkInsertEnableAuditPropertySpecification.setShowTitle(false);
+			chkInsertEnableAuditPropertySpecification.setColSpan(2);
+
 			chkForceUpdateField = new CheckboxItem();
 			chkForceUpdateField.setTitle(rs("ui_tools_pack_PackageImportDialog_forceUpdate"));
 			chkForceUpdateField.setShowTitle(false);
@@ -793,12 +799,14 @@ public class PackageImportDialog extends AbstractWindow {
 			hintLayout.addMember(getLabel("ui_tools_pack_PackageImportDialog_bulkUpdateComment"));
 			hintLayout.addMember(getLabel("ui_tools_pack_PackageImportDialog_listenerComment"));
 			hintLayout.addMember(getLabel("ui_tools_pack_PackageImportDialog_updateDisupdatablePropertyComment1"));
+			hintLayout.addMember(getLabel("ui_tools_pack_PackageImportDialog_insertEnableAuditPropertySpecificationComment1"));
 			hintLayout.addMember(getLabel("ui_tools_pack_PackageImportDialog_preOidComment1"));
 			hintLayout.addMember(getLabel("ui_tools_pack_PackageImportDialog_preOidComment2"));
 			hintLayout.addMember(getLabel("ui_tools_pack_PackageImportDialog_useCtrlComment1"));
 
 			entityForm.setItems(caption, chkTruncateField, chkBulkUpdateField,
 					chkNotifyListenersField, chkWithValidationField, chkUpdateDisupdatablePropertyField,
+					chkInsertEnableAuditPropertySpecification,
 					chkForceUpdateField, chkErrorSkipField, chkIgnoreNotExistsPropertyField,
 					prefixOidField, commitLimitField, hintItem);
 
@@ -864,6 +872,7 @@ public class PackageImportDialog extends AbstractWindow {
 			cond.setNotifyListeners(SmartGWTUtil.getBooleanValue(chkNotifyListenersField));
 			cond.setWithValidation(SmartGWTUtil.getBooleanValue(chkWithValidationField));
 			cond.setUpdateDisupdatableProperty(SmartGWTUtil.getBooleanValue(chkUpdateDisupdatablePropertyField));
+			cond.setInsertEnableAuditPropertySpecification(SmartGWTUtil.getBooleanValue(chkInsertEnableAuditPropertySpecification));
 			cond.setCommitLimit(Integer.parseInt(SmartGWTUtil.getStringValue(commitLimitField)));
 			cond.setPrefixOid(SmartGWTUtil.getStringValue(prefixOidField));
 

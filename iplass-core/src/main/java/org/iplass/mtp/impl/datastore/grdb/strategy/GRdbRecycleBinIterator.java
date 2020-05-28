@@ -29,6 +29,7 @@ import java.sql.Timestamp;
 import org.iplass.mtp.entity.EntityRuntimeException;
 import org.iplass.mtp.impl.datastore.grdb.sql.table.ObjStoreTable;
 import org.iplass.mtp.impl.datastore.strategy.RecycleBinIterator;
+import org.iplass.mtp.impl.rdb.adapter.RdbAdapter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,9 +37,11 @@ import org.slf4j.LoggerFactory;
 public class GRdbRecycleBinIterator implements RecycleBinIterator {
 	
 	private ResultSet rs;
+	private RdbAdapter rdb;
 
-	public GRdbRecycleBinIterator(ResultSet rs) {
+	public GRdbRecycleBinIterator(ResultSet rs, RdbAdapter rdb) {
 		this.rs = rs;
+		this.rdb = rdb;
 	}
 
 	@Override
@@ -80,7 +83,7 @@ public class GRdbRecycleBinIterator implements RecycleBinIterator {
 	@Override
 	public Timestamp getRbDate() {
 		try {
-			return rs.getTimestamp(ObjStoreTable.RB_DATE);
+			return rs.getTimestamp(ObjStoreTable.RB_DATE, rdb.rdbCalendar());
 		} catch (Exception e) {
 			throw new EntityRuntimeException(e);
 		}

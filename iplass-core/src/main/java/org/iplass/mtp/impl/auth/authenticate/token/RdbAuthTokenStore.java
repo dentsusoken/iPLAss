@@ -150,7 +150,7 @@ public class RdbAuthTokenStore implements AuthTokenStore {
 				selectSql.setSelectParameter(rdb, ps, tenantId, type, series);
 				try (ResultSet rs = ps.executeQuery()) {
 					if (rs.next()) {
-						return selectSql.toAuthToken(rs, saveDetailAsJson, objectMapper);
+						return selectSql.toAuthToken(rs, saveDetailAsJson, objectMapper, rdb);
 					} else {
 						return null;
 					}
@@ -185,7 +185,7 @@ public class RdbAuthTokenStore implements AuthTokenStore {
 				
 				try (ResultSet rs = ps.executeQuery()) {
 					while (rs.next()) {
-						res.add(selectSql.toAuthToken(rs, saveDetailAsJson, objectMapper));
+						res.add(selectSql.toAuthToken(rs, saveDetailAsJson, objectMapper, rdb));
 					}
 				}
 				return res;

@@ -347,7 +347,7 @@ public class TaskQueueSearchSql extends QuerySqlHandler {
 		task.setGroupingKey(rs.getString(TaskQueueTable.GROUPING_KEY));
 		task.setVirtualWorkerId(rs.getInt(TaskQueueTable.VIRTUAL_WORKER_ID));
 		task.setVersion(rs.getLong(TaskQueueTable.VERSION));
-		task.setUpdateTime(rs.getTimestamp(TaskQueueTable.UPDATE));
+		task.setUpdateTime(rs.getTimestamp(TaskQueueTable.UPDATE, rdb.rdbCalendar()));
 		task.setExceptionHandlingMode(toExpMode(rs.getString(TaskQueueTable.EXP_MODE)));
 		task.setReturnResult(toFlag(rs.getString(TaskQueueTable.RESULT_FLG)));
 		task.setServerId(rs.getString(TaskQueueTable.SERVER_ID));

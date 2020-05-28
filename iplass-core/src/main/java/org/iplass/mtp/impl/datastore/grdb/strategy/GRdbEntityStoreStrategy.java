@@ -186,7 +186,7 @@ public class GRdbEntityStoreStrategy implements EntityStoreStrategy {
 					}
 					int index = 1;
 					for (BindValue val: sql.bindVariables) {
-						val.type.setParameter(index, val.value, stmt);
+						val.type.setParameter(index, val.value, stmt, rdb);
 						index++;
 					}
 					stmt.setFetchSize(1);
@@ -562,7 +562,7 @@ public class GRdbEntityStoreStrategy implements EntityStoreStrategy {
 
 					int index = 1;
 					for (BindValue val: sql.bindVariables) {
-						val.type.setParameter(index, val.value, stmt);
+						val.type.setParameter(index, val.value, stmt, rdb);
 						index++;
 					}
 					if (option != null && option.getFetchSize() != 0) {
@@ -1087,7 +1087,7 @@ public class GRdbEntityStoreStrategy implements EntityStoreStrategy {
 			public RecycleBinIterator logic() throws SQLException {
 				String sql = recycleBinSql.searchRB(context.getTenantId(handler), handler, rbid, rdb);
 				ResultSet rs = getStatement().executeQuery(sql);
-				return new GRdbRecycleBinIterator(rs);
+				return new GRdbRecycleBinIterator(rs, rdb);
 			}
 		};
 

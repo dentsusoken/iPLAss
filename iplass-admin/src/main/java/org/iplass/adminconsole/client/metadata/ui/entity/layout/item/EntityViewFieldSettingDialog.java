@@ -23,6 +23,8 @@ package org.iplass.adminconsole.client.metadata.ui.entity.layout.item;
 import org.iplass.adminconsole.client.metadata.ui.entity.layout.metafield.MetaFieldSettingDialog;
 import org.iplass.adminconsole.view.annotation.Refrectable;
 import org.iplass.adminconsole.view.annotation.generic.FieldReferenceType;
+import org.iplass.mtp.view.generic.HasNestProperty;
+import org.iplass.mtp.view.generic.editor.JoinPropertyEditor;
 
 /**
  * EntityView用のプロパティ編集用View
@@ -35,6 +37,9 @@ public class EntityViewFieldSettingDialog extends MetaFieldSettingDialog {
 	private String defName;
 	private String refDefName;
 
+	//起動元
+	private EntityViewFieldSettingPane prev;
+
 	/** クラス名のタイトル */
 	private String classNameTitle;
 	/** プロパティの情報 */
@@ -42,18 +47,21 @@ public class EntityViewFieldSettingDialog extends MetaFieldSettingDialog {
 
 	public EntityViewFieldSettingDialog(String className, Refrectable value, FieldReferenceType triggerType,
 			String defName) {
-		super(className, value);
-		this.triggerType = triggerType;
-		this.defName = defName;
-		init();
+		this(className, value, triggerType, defName, null, null);
 	}
 
 	public EntityViewFieldSettingDialog(String className, Refrectable value, FieldReferenceType triggerType,
 			String defName, String refDefName) {
+		this(className, value, triggerType, defName, refDefName, null);
+	}
+
+	public EntityViewFieldSettingDialog(String className, Refrectable value, FieldReferenceType triggerType,
+			String defName, String refDefName, EntityViewFieldSettingPane prev) {
 		super(className, value);
 		this.triggerType = triggerType;
 		this.defName = defName;
 		this.refDefName = refDefName;
+		this.prev = prev;
 		init();
 	}
 
@@ -91,6 +99,32 @@ public class EntityViewFieldSettingDialog extends MetaFieldSettingDialog {
 	 */
 	public PropertyInfo getTitlePropertyInfo() {
 		return propertyInfo;
+	}
+
+	/**
+	 * NestPropertyをサポートしているかを返します。
+	 *
+	 * @return NestPropertyをサポートしているか
+	 */
+	public boolean hasNestProperty() {
+		return getValue() instanceof HasNestProperty;
+	}
+
+	/**
+	 * NestPropertyの対象Entity名を返します。
+	 *
+	 * @return NestPropertyの対象Entity名
+	 */
+	public String getNestPropertyReferenceEntityName() {
+		if (hasNestProperty()) {
+			if (getValue() instanceof JoinPropertyEditor) {
+				//JoinPropertyEditorのNestPropertyは前画面のEntityが対象
+				if (prev != null) {
+					return prev.getOwner().getNestPropertyReferenceEntityName();
+				}
+			}
+		}
+		return refDefName;
 	}
 
 	/**
