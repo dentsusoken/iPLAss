@@ -537,6 +537,9 @@ public class MetaSendNotificationEventListener extends MetaEventListener {
 
 	private List<String> processDestinationGroovyTemplate(Map<String, Object> bindings) {
 		List<String> processedDestinationList = new ArrayList<String>();
+		if (destinationList == null) {
+			return processedDestinationList;
+		}
 		for (String script : destinationList) {
 			ScriptEngine se = ExecuteContext.getCurrentContext().getTenantContext().getScriptEngine();
 			GroovyTemplate destinationTemplate = GroovyTemplateCompiler.compile(script, "SendNotificationDestinationTemplate_Text" + tmplDefName, (GroovyScriptEngine) se);
