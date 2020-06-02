@@ -236,6 +236,7 @@ public class Constants {
 
 	// カレンダー用
 	public static final String CALENDAR_NAME = org.iplass.mtp.impl.view.top.parts.Constants.CALENDAR_NAME;
+	public static final String CALENDAR_SETTING = org.iplass.mtp.impl.view.top.parts.Constants.CALENDAR_SETTING;
 	public static final String CALENDAR_TYPE = "calendarType";
 	public static final String CALENDAR_DATE = "date";
 	public static final String CALENDAR_FROM = "from";

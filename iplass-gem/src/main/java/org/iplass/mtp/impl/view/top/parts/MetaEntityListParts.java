@@ -48,7 +48,7 @@ import org.iplass.mtp.web.template.TemplateUtil;
  * お知らせ一覧パーツ
  * @author lis3wg
  */
-public class MetaEntityListParts extends MetaTemplateParts {
+public class MetaEntityListParts extends MetaTopViewContentParts {
 
 	/** SerialVersionUID */
 	private static final long serialVersionUID = 9029097706504538709L;
@@ -239,7 +239,6 @@ public class MetaEntityListParts extends MetaTemplateParts {
 		EntityContext context = EntityContext.getCurrentContext();
 		EntityHandler entity = context.getHandlerByName(e.getDefName());
 		if (entity == null) return;
-
 		definitionId = entity.getMetaData().getId();
 		viewName = e.getViewName();
 		viewNameForLink = e.getViewNameForLink();
@@ -251,6 +250,7 @@ public class MetaEntityListParts extends MetaTemplateParts {
 		// 言語毎の文字情報設定
 		localizedTitleList = I18nUtil.toMeta(e.getLocalizedTitleList());
 		iconTag = e.getIconTag();
+		style = e.getStyle();
 	}
 
 	@Override
@@ -273,6 +273,7 @@ public class MetaEntityListParts extends MetaTemplateParts {
 		parts.setHeight(height);
 		parts.setLocalizedTitleList(I18nUtil.toDef(localizedTitleList));
 		parts.setIconTag(iconTag);
+		parts.setStyle(style);
 		return parts;
 	}
 
@@ -282,8 +283,8 @@ public class MetaEntityListParts extends MetaTemplateParts {
 	}
 
 	@Override
-	public TemplatePartsHandler createRuntime() {
-		return new TemplatePartsHandler(this) {
+	public TopViewContentPartsHandler createRuntime() {
+		return new TopViewContentPartsHandler(this) {
 			private static final String TEMPLATE_PATH = "gem/generic/search/list";
 			private static final String TEMPLATE_PATH_WIDGET = "gem/generic/search/listWidget";
 

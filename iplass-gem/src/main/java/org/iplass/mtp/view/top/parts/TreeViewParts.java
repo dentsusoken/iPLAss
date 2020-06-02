@@ -24,7 +24,7 @@ package org.iplass.mtp.view.top.parts;
  * ツリービューパーツ
  * @author lis3wg
  */
-public class TreeViewParts extends TemplateParts {
+public class TreeViewParts extends TopViewContentParts {
 
 	/** SerialVersionUID */
 	private static final long serialVersionUID = 2930181295501742814L;

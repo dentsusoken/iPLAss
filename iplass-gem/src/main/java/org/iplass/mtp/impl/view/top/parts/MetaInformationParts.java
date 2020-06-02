@@ -291,6 +291,7 @@ public class MetaInformationParts extends MetaActionParts {
 		// 言語毎の文字情報設定
 		localizedTitleList = I18nUtil.toMeta(definition.getLocalizedTitleList());
 		iconTag = definition.getIconTag();
+		style = definition.getStyle();
 
 		showWarningPasswordAge = definition.isShowWarningPasswordAge();
 		passwordWarningAge = definition.getPasswordWarningAge();
@@ -317,6 +318,7 @@ public class MetaInformationParts extends MetaActionParts {
 		parts.setPasswordWarnMarkStyleClass(passwordWarnMarkStyleClass);
 		parts.setEnableHtmlTag(availableHtmlTag);
 		parts.setNumberOfDisplay(numberOfDisplay);
+		parts.setStyle(style);
 
 		return parts;
 	}

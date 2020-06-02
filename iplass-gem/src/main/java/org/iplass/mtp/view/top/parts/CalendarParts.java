@@ -24,7 +24,7 @@ package org.iplass.mtp.view.top.parts;
  * カレンダーパーツ
  * @author lis3wg
  */
-public class CalendarParts extends TemplateParts {
+public class CalendarParts extends TopViewContentParts {
 
 	/** SerialVersionUID */
 	private static final long serialVersionUID = 2930181295501742814L;

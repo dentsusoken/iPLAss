@@ -20,13 +20,10 @@
 
 package org.iplass.mtp.view.top.parts;
 
-import javax.xml.bind.annotation.XmlSeeAlso;
-
 /**
  * テンプレート系のパーツ
  * @author lis3wg
  */
-@XmlSeeAlso({CalendarParts.class, LastLoginParts.class, TreeViewParts.class})
 public class TemplateParts extends TopViewParts {
 
 	/** SerialVersionUID */

@@ -53,8 +53,18 @@ String contextPath = TemplateUtil.getTenantContextPath();
 String action = contextPath + "/" + CalendarCommand.ACTION_NANE;
 String params = "{\"calendarName\": \"" + StringUtil.escapeJavaScript(calendarName) + "\"}";
 String defaultDate = (String) request.getParameter("targetDate");
+
+//設定情報取得
+CalendarParts parts = (CalendarParts) request.getAttribute(Constants.CALENDAR_SETTING);
+
+//スタイルシートのクラス名
+String style = "topview-widget";
+if (StringUtil.isNotBlank(parts.getStyle())) {
+	style = style + " " + parts.getStyle();
+}
+
 %>
-<div class="topview-widget">
+<div class="<c:out value="<%=style %>"/>">
 <%
 if (request.getAttribute(Constants.CALENDAR_LIB_LOADED) == null) {
 	request.setAttribute(Constants.CALENDAR_LIB_LOADED, true);

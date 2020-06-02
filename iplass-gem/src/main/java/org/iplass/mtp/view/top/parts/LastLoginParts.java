@@ -25,7 +25,7 @@ package org.iplass.mtp.view.top.parts;
  *
  * @author lis3wg
  */
-public class LastLoginParts extends TemplateParts {
+public class LastLoginParts extends TopViewContentParts {
 
 	private static final long serialVersionUID = 3191008058807684364L;
 

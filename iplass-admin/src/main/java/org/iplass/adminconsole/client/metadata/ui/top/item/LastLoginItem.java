@@ -21,8 +21,21 @@
 package org.iplass.adminconsole.client.metadata.ui.top.item;
 
 import org.iplass.adminconsole.client.base.event.MTPEvent;
+import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
+import org.iplass.adminconsole.client.base.ui.widget.MtpDialog;
+import org.iplass.adminconsole.client.base.ui.widget.form.MtpForm;
+import org.iplass.adminconsole.client.base.ui.widget.form.MtpTextItem;
+import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
 import org.iplass.adminconsole.client.metadata.ui.top.PartsOperationHandler;
 import org.iplass.mtp.view.top.parts.LastLoginParts;
+
+import com.smartgwt.client.types.HeaderControls;
+import com.smartgwt.client.widgets.HeaderControl;
+import com.smartgwt.client.widgets.IButton;
+import com.smartgwt.client.widgets.events.ClickEvent;
+import com.smartgwt.client.widgets.events.ClickHandler;
+import com.smartgwt.client.widgets.form.DynamicForm;
+import com.smartgwt.client.widgets.form.fields.TextItem;
 
 /**
  *
@@ -38,8 +51,20 @@ public class LastLoginItem extends PartsItem {
 	public LastLoginItem(LastLoginParts parts, PartsOperationHandler controler) {
 		this.parts = parts;
 		this.controler = controler;
-		setBackgroundColor("#F5F5F5");
+		
 		setTitle("Last Login");
+		setBackgroundColor("#F5F5F5");
+		
+		setHeaderControls(HeaderControls.HEADER_LABEL, new HeaderControl(HeaderControl.SETTINGS, new ClickHandler() {
+
+			@Override
+			public void onClick(ClickEvent event) {
+				LastLoginItemSettingDialog dialog = new LastLoginItemSettingDialog();
+				dialog.show();
+			}
+
+		}), HeaderControls.CLOSE_BUTTON);
+		
 	}
 
 	@Override
@@ -53,6 +78,54 @@ public class LastLoginItem extends PartsItem {
 		e.setValue("key", dropAreaType + "_" + LastLoginParts.class.getName() + "_");
 		controler.remove(e);
 		return true;
+	}
+	
+	private class LastLoginItemSettingDialog extends MtpDialog {
+
+		private TextItem styleField;
+
+		/**
+		 * コンストラクタ
+		 */
+		public LastLoginItemSettingDialog() {
+
+			setTitle("Last Login");
+			setHeight(130);
+			centerInPage();
+
+			final DynamicForm form = new MtpForm();
+			form.setAutoFocus(true);
+
+			styleField = new MtpTextItem("style", "Class");
+			styleField.setValue(parts.getStyle());
+			SmartGWTUtil.addHoverToFormItem(styleField, AdminClientMessageUtil.getString("ui_metadata_top_item_LastLoginItem_styleDescriptionKey"));
+
+			form.setItems(styleField);
+
+			container.addMember(form);
+
+			IButton save = new IButton("OK");
+			save.addClickHandler(new ClickHandler() {
+				@Override
+				public void onClick(ClickEvent event) {
+					if (form.validate()){
+						//入力情報をパーツに
+						parts.setStyle(SmartGWTUtil.getStringValue(styleField));
+						destroy();
+					}
+				}
+			});
+
+			IButton cancel = new IButton("Cancel");
+			cancel.addClickHandler(new ClickHandler() {
+				@Override
+				public void onClick(ClickEvent event) {
+					destroy();
+				}
+			});
+
+			footer.setMembers(save, cancel);
+		}
 	}
 
 }

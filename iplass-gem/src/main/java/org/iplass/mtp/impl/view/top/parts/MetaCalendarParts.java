@@ -31,7 +31,7 @@ import org.iplass.mtp.view.top.parts.TopViewParts;
  * カレンダーパーツ
  * @author lis3wg
  */
-public class MetaCalendarParts extends MetaTemplateParts {
+public class MetaCalendarParts extends MetaTopViewContentParts {
 
 	/** SerialVersionUID */
 	private static final long serialVersionUID = -1412208019553670440L;
@@ -88,6 +88,7 @@ public class MetaCalendarParts extends MetaTemplateParts {
 		CalendarParts calendar = (CalendarParts) parts;
 		calendarName = calendar.getCalendarName();
 		iconTag = calendar.getIconTag();
+		style = calendar.getStyle();
 	}
 
 	@Override
@@ -95,6 +96,7 @@ public class MetaCalendarParts extends MetaTemplateParts {
 		CalendarParts calendar = new CalendarParts();
 		calendar.setCalendarName(calendarName);
 		calendar.setIconTag(iconTag);
+		calendar.setStyle(style);
 		return calendar;
 	}
 
@@ -104,8 +106,8 @@ public class MetaCalendarParts extends MetaTemplateParts {
 	}
 
 	@Override
-	public TemplatePartsHandler createRuntime() {
-		return new TemplatePartsHandler(this) {
+	public TopViewContentPartsHandler createRuntime() {
+		return new TopViewContentPartsHandler(this) {
 			private static final String TEMPLATE_PATH_GEM = "gem/calendar/calendarParts";
 			private static final String TEMPLATE_PATH_GEM_WIDGET = "gem/calendar/calendarWidget";
 
@@ -131,14 +133,14 @@ public class MetaCalendarParts extends MetaTemplateParts {
 
 			@Override
 			public void setAttribute(HttpServletRequest req) {
-				req.setAttribute("calendarName", calendarName);
-				req.setAttribute("calendarParts", currentConfig());
+				req.setAttribute(Constants.CALENDAR_NAME, calendarName);
+				req.setAttribute(Constants.CALENDAR_SETTING, currentConfig());
 			}
 
 			@Override
 			public void clearAttribute(HttpServletRequest req) {
-				req.removeAttribute("calendarName");
-				req.removeAttribute("calendarParts");
+				req.removeAttribute(Constants.CALENDAR_NAME);
+				req.removeAttribute(Constants.CALENDAR_SETTING);
 			}
 		};
 	}

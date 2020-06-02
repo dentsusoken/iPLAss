@@ -79,6 +79,7 @@ public class TreeViewItem extends PartsItem {
 	private class TreeViewItemSettingDialog extends MtpDialog {
 
 		private TextItem iconTagField;
+		private TextItem styleField;
 
 		/**
 		 * コンストラクタ
@@ -86,7 +87,7 @@ public class TreeViewItem extends PartsItem {
 		public TreeViewItemSettingDialog() {
 
 			setTitle("TreeView(" + parts.getTreeViewName() + ")");
-			setHeight(130);
+			setHeight(200);
 			centerInPage();
 
 			final DynamicForm form = new MtpForm();
@@ -95,8 +96,12 @@ public class TreeViewItem extends PartsItem {
 			iconTagField = new MtpTextItem("iconTag", "Icon Tag");
 			iconTagField.setValue(parts.getIconTag());
 			SmartGWTUtil.addHoverToFormItem(iconTagField, AdminClientMessageUtil.getString("ui_metadata_top_item_TreeViewItem_iconTagComment"));
+			
+			styleField = new MtpTextItem("style", "Class");
+			styleField.setValue(parts.getStyle());
+			SmartGWTUtil.addHoverToFormItem(styleField, AdminClientMessageUtil.getString("ui_metadata_top_item_TreeViewItem_styleDescriptionKey"));
 
-			form.setItems(iconTagField);
+			form.setItems(iconTagField, styleField);
 
 			container.addMember(form);
 
@@ -106,6 +111,7 @@ public class TreeViewItem extends PartsItem {
 					if (form.validate()){
 						//入力情報をパーツに
 						parts.setIconTag(SmartGWTUtil.getStringValue(iconTagField));
+						parts.setStyle(SmartGWTUtil.getStringValue(styleField));
 						destroy();
 					}
 				}
