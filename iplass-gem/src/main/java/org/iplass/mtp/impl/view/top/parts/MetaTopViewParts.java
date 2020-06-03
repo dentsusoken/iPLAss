@@ -36,9 +36,8 @@ import org.iplass.mtp.view.top.parts.UserMaintenanceParts;
  * TOP画面パーツ
  * @author lis3wg
  */
-@XmlSeeAlso({MetaTopViewContentParts.class, MetaTemplateParts.class, MetaScriptParts.class, 
-	MetaUserMaintenanceParts.class, MetaFulltextSearchViewParts.class, 
-	MetaCsvDownloadSettingsParts.class, MetaApplicationMaintenanceParts.class})
+@XmlSeeAlso({MetaTopViewContentParts.class, MetaScriptParts.class, MetaUserMaintenanceParts.class, 
+	MetaFulltextSearchViewParts.class, MetaCsvDownloadSettingsParts.class, MetaApplicationMaintenanceParts.class})
 public abstract class MetaTopViewParts implements MetaData {
 
 	/** SerialVersionUID */

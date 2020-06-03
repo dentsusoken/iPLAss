@@ -27,6 +27,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.PageContext;
+import javax.xml.bind.annotation.XmlSeeAlso;
 
 import org.iplass.mtp.impl.metadata.MetaData;
 import org.iplass.mtp.impl.util.ObjectUtil;
@@ -38,6 +39,8 @@ import org.iplass.mtp.view.top.parts.TopViewParts;
  * テンプレート系のパーツ
  * @author lis3wg
  */
+@XmlSeeAlso({MetaCalendarParts.class, MetaEntityListParts.class, 
+	MetaLastLoginParts.class, MetaTreeViewParts.class})
 public class MetaTemplateParts extends MetaTopViewContentParts {
 
 	/** SerialVersionUID */

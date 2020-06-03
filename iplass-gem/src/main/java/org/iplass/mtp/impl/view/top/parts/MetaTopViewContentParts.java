@@ -35,8 +35,7 @@ import org.iplass.mtp.view.top.parts.TreeViewParts;
  * 画面表示パーツ
  * @author li3369
  */
-@XmlSeeAlso({MetaActionParts.class, MetaEntityListParts.class, MetaCalendarParts.class, 
-	MetaLastLoginParts.class, MetaTreeViewParts.class, MetaSeparatorParts.class})
+@XmlSeeAlso({MetaActionParts.class, MetaTemplateParts.class,  MetaSeparatorParts.class})
 public abstract class MetaTopViewContentParts extends MetaTopViewParts{
 
 	/** SerialVersionUID */
