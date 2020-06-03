@@ -79,7 +79,7 @@ public class MetaWebhookTemplate extends BaseRootMetaData implements DefinableMe
 		contentType = definition.getContentType();
 		webhookContent = definition.getWebhookContent();
 		httpMethod = definition.getHttpMethod();
-		urlQuery = definition.getUrlQuery();
+		urlQuery = definition.getPathAndQuery();
 		
 		ArrayList<MetaWebhookHeader> newHeaders = new ArrayList<MetaWebhookHeader>();
 		if (definition.getHeaders()!=null) {
@@ -104,7 +104,7 @@ public class MetaWebhookTemplate extends BaseRootMetaData implements DefinableMe
 		
 		definition.setContentType(contentType);
 		definition.setWebhookContent(webhookContent);
-		definition.setUrlQuery(urlQuery);
+		definition.setPathAndQuery(urlQuery);
 		definition.setHttpMethod(httpMethod);
 		
 		ArrayList<WebhookHeaderDefinition> newHeaders = new ArrayList<WebhookHeaderDefinition>();
@@ -210,7 +210,7 @@ public class MetaWebhookTemplate extends BaseRootMetaData implements DefinableMe
 			webhook.setHeaders(newHeaders);
 			webhook.setHttpMethod(httpMethod);
 			webhook.setContentType(contentType);
-			webhook.setUrlQuery(urlQuery);
+			webhook.setPathAndQuery(urlQuery);
 			//common binding
 			Map<String, Object> binding = new HashMap<String, Object>();
 			if (parameter != null) {
@@ -240,7 +240,7 @@ public class MetaWebhookTemplate extends BaseRootMetaData implements DefinableMe
 				} catch (IOException e) {
 					throw new ScriptRuntimeException(e);
 				}
-				webhook.setUrlQuery(sw.toString());
+				webhook.setPathAndQuery(sw.toString());
 			}
 			return webhook;
 		}

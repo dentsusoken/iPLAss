@@ -31,11 +31,11 @@ public class SendNotificationEventListenerDefinition extends EventListenerDefini
 	private String tmplDefName;
 	private String notificationCondScript;
 	private List<EventType> listenEvent;
-	
+	private List<String> destinationList;
 	private boolean sendTogether;
+	
 	/**ウェッブフックだけの設定項目*/
 	private boolean synchronous;
-	private List<String> destinationList;
 	private String resultHandler;
 
 	public SendNotificationType getNotificationType() {

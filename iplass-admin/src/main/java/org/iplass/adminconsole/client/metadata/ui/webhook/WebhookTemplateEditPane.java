@@ -438,7 +438,7 @@ public class WebhookTemplateEditPane extends MetaDataMainEditPane {
 			definition.setContentType(SmartGWTUtil.getStringValue(contentTypeField));
 			definition.setWebhookContent(plainEditor.getText());
 			definition.setHttpMethod(SmartGWTUtil.getStringValue(webhookMethodField));
-			definition.setUrlQuery(SmartGWTUtil.getStringValue(urlQueryField));
+			definition.setPathAndQuery(SmartGWTUtil.getStringValue(urlQueryField));
 
 			return definition;
 		}
@@ -457,7 +457,7 @@ public class WebhookTemplateEditPane extends MetaDataMainEditPane {
 				
 				ListGridRecord[] temp = getHeaderRecordList(definition);
 				headerGrid.setData(temp);
-				urlQueryField.setValue(definition.getUrlQuery());
+				urlQueryField.setValue(definition.getPathAndQuery());
 			} else {
 				contentTypeField.clearValue();
 				webhookMethodField.clearValue();

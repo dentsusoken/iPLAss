@@ -19,15 +19,12 @@
  */
 package org.iplass.mtp.impl.webhook.endpointaddress;
 
-import java.util.Map;
-
 import org.iplass.mtp.definition.DefinitionModifyResult;
 import org.iplass.mtp.impl.definition.AbstractTypedDefinitionManager;
 import org.iplass.mtp.impl.definition.TypedMetaDataService;
 import org.iplass.mtp.impl.metadata.RootMetaData;
 import org.iplass.mtp.impl.webhook.WebhookAuthTokenHandler;
 import org.iplass.mtp.spi.ServiceRegistry;
-import org.iplass.mtp.webhook.endpoint.WebhookEndpoint;
 import org.iplass.mtp.webhook.endpoint.definition.WebhookEndpointDefinition;
 import org.iplass.mtp.webhook.endpoint.definition.WebhookEndpointDefinitionManager;
 import org.slf4j.Logger;
@@ -102,10 +99,5 @@ public class WebhookEndpointDefinitionManagerImpl extends AbstractTypedDefinitio
 	@Override
 	public String generateHmacKey() {
 		return service.generateHmacTokenString();
-	}
-
-	@Override
-	public WebhookEndpoint getEndpointByDefinitionName(String definitionName, Map<String, Object> binding) {
-		return service.getWebhookEndpointByDefinitionName(definitionName, binding);
 	}
 }

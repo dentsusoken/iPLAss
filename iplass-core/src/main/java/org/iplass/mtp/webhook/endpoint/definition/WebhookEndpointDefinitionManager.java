@@ -19,15 +19,10 @@
  */
 package org.iplass.mtp.webhook.endpoint.definition;
 
-import java.util.Map;
-
 import org.iplass.mtp.definition.TypedDefinitionManager;
-import org.iplass.mtp.webhook.endpoint.WebhookEndpoint;
 
 public interface WebhookEndpointDefinitionManager extends TypedDefinitionManager<WebhookEndpointDefinition> {
 
 	void modifySecurityToken(int tenantId,String definitionName, String secret, String TokenType);
-	
-	WebhookEndpoint getEndpointByDefinitionName(String definitionName, Map<String, Object> binding);
 	String generateHmacKey();
 }

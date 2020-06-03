@@ -62,6 +62,7 @@ import org.iplass.mtp.webhook.Webhook;
 import org.iplass.mtp.webhook.WebhookHeader;
 import org.iplass.mtp.webhook.WebhookResponse;
 import org.iplass.mtp.webhook.endpoint.WebhookAuthenticationType;
+import org.iplass.mtp.webhook.responsehandler.DefaultWebhookResponseHandler;
 import org.iplass.mtp.webhook.template.definition.WebhookTemplateDefinition;
 import org.iplass.mtp.webhook.template.definition.WebhookTemplateDefinitionManager;
 import org.slf4j.Logger;
@@ -261,7 +262,7 @@ public class WebhookServiceImpl extends AbstractTypedMetaDataService<MetaWebhook
 				}
 			}
 
-			String url = webhook.getWebhookEndpoint().getUrl()+webhook.getUrlQuery();
+			String url = webhook.getWebhookEndpoint().getUrl()+webhook.getPathAndQuery();
 			httpRequest.setURI(new URI(url));
 
 			CloseableHttpResponse response = null;
@@ -293,9 +294,10 @@ public class WebhookServiceImpl extends AbstractTypedMetaDataService<MetaWebhook
 			try {
 				if (response != null) {
 					WebhookResponse whr = generateWebhookResponse(response);
-					if (webhook.getResultHandler()!=null) {
-						webhook.getResultHandler().handleResponse(whr);
-					}
+					if (webhook.getResultHandler()==null) {//設定しないなら必ずデフォルトに通します
+						webhook.setResultHandler(new DefaultWebhookResponseHandler());
+					} 
+					webhook.getResultHandler().handleResponse(whr);
 				}
 			} finally {
 				if (response!=null) {

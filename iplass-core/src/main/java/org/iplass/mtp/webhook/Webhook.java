@@ -41,7 +41,7 @@ public class Webhook  {
 	private String payloadContent;
 	private String httpMethod;
 	private WebhookResponseHandler resultHandler;
-	private String urlQuery;
+	private String pathAndQuery;
 	private List<WebhookHeader> headers;
 	private WebhookEndpoint webhookEndpoint;
 
@@ -129,25 +129,25 @@ public class Webhook  {
 
 	/**
 	 * <% if (doclang == "ja") {%>
-	 * Url クエリ―を取得します。
+	 * Urlのパスとクエリ―を取得します。
 	 * <%} else {%>
-	 * Get the UrlQuery.
+	 * Get the path and query.
 	 * <%}%>
 	 */
-	public String getUrlQuery() {
-		return urlQuery;
+	public String getPathAndQuery() {
+		return pathAndQuery;
 	}
 
 	/**
 	 * <% if (doclang == "ja") {%>
-	 * Url クエリ―を設置します。最初に"?" を付けてください。
+	 * Urlのパスとクエリ―を設置します。"?"の付けをご注意ください。
 	 * <%} else {%>
-	 * Set the UrlQuery. Start with "?"
+	 * Set the UrlQuery. Beware to put "?" appropriately.
 	 * <%}%>
-	 * @param urlQuery <%=doclang == 'ja' ? 'クエリ―内容': 'Query content'%>
+	 * @param pathAndQuery <%=doclang == 'ja' ? 'クエリ―内容': 'Query content'%>
 	 */
-	public void setUrlQuery(String urlQuery) {
-		this.urlQuery = urlQuery;
+	public void setPathAndQuery(String pathAndQuery) {
+		this.pathAndQuery = pathAndQuery;
 	}
 
 	/**

@@ -38,7 +38,7 @@ public class WebhookTemplateDefinition implements Definition {
 	private String contentType;
 	private String webhookContent;
 
-	private String urlQuery;
+	private String pathAndQuery;
 	private String httpMethod;
 
 	private List<WebhookHeaderDefinition> headers;
@@ -125,12 +125,12 @@ public class WebhookTemplateDefinition implements Definition {
 		this.webhookContent = webhookContent;
 	}
 	
-	public String getUrlQuery() {
-		return urlQuery;
+	public String getPathAndQuery() {
+		return pathAndQuery;
 	}
 
-	public void setUrlQuery(String urlQuery) {
-		this.urlQuery = urlQuery;
+	public void setPathAndQuery(String pathAndQuery) {
+		this.pathAndQuery = pathAndQuery;
 	}
 
 }

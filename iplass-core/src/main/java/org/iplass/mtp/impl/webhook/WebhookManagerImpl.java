@@ -20,31 +20,17 @@
 package org.iplass.mtp.impl.webhook;
 
 import java.util.Map;
-import org.iplass.mtp.ApplicationException;
-import org.iplass.mtp.ManagerLocator;
-import org.iplass.mtp.impl.transaction.TransactionService;
+import org.iplass.mtp.impl.webhook.endpointaddress.WebhookEndpointService;
 import org.iplass.mtp.spi.ServiceRegistry;
-import org.iplass.mtp.transaction.Transaction;
-import org.iplass.mtp.transaction.TransactionStatus;
 import org.iplass.mtp.webhook.Webhook;
 import org.iplass.mtp.webhook.WebhookManager;
 import org.iplass.mtp.webhook.endpoint.WebhookEndpoint;
-import org.iplass.mtp.webhook.endpoint.definition.WebhookEndpointDefinitionManager;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class WebhookManagerImpl implements WebhookManager {
-	
-	private static Logger logger = LoggerFactory.getLogger(WebhookManagerImpl.class);
 
 	private WebhookService webhookService = ServiceRegistry.getRegistry().getService(WebhookService.class);
-	
-	private void setRollbackOnly() {
-		Transaction t = ServiceRegistry.getRegistry().getService(TransactionService.class).getTransacitonManager().currentTransaction();
-		if (t != null && t.getStatus() == TransactionStatus.ACTIVE) {
-			t.setRollbackOnly();
-		}
-	}
+	private WebhookEndpointService webhookEndpointService = ServiceRegistry.getRegistry().getService(WebhookEndpointService.class);
+
 
 	@Override
 	public Webhook createWebhook(String webhookDefinitionName, Map<String, Object> binding, String endpointDefinitionName) {
@@ -53,36 +39,12 @@ public class WebhookManagerImpl implements WebhookManager {
 
 	@Override
 	public void sendWebhookAsync(Webhook webhook) {
-		try { 
-			webhookService.sendWebhookAsync(webhook);
-		} catch (ApplicationException e) {
-			throw e;
-		} catch (RuntimeException e) {
-			setRollbackOnly();
-			logger.error(e.getMessage(), e);
-			throw new WebhookRuntimeException("開始処理でエラーが発生しました。", e);
-		} catch (Error e) {
-			setRollbackOnly();
-			logger.error(e.getMessage(), e);
-			throw new WebhookRuntimeException("開始処理でエラーが発生しました。", e);
-		}
+		webhookService.sendWebhookAsync(webhook);
 	}
 
 	@Override
 	public void sendWebhookSync(Webhook webhook) {
-		try { 
-			webhookService.sendWebhookSync(webhook);
-		} catch (ApplicationException e) {
-			throw e;
-		} catch (RuntimeException e) {
-			setRollbackOnly();
-			logger.error(e.getMessage(), e);
-			throw new WebhookRuntimeException("開始処理でエラーが発生しました。", e);
-		} catch (Error e) {
-			setRollbackOnly();
-			logger.error(e.getMessage(), e);
-			throw new WebhookRuntimeException("開始処理でエラーが発生しました。", e);
-		}
+		webhookService.sendWebhookSync(webhook);
 	}
 
 	@Override
@@ -92,7 +54,6 @@ public class WebhookManagerImpl implements WebhookManager {
 
 	@Override
 	public WebhookEndpoint getEndpoint(String definitionName, Map<String, Object> binding) {
-		WebhookEndpointDefinitionManager manager = ManagerLocator.getInstance().getManager(WebhookEndpointDefinitionManager.class);
-		return manager.getEndpointByDefinitionName(definitionName, binding);
+		return webhookEndpointService.getWebhookEndpointByDefinitionName(definitionName, binding);
 	}
 }

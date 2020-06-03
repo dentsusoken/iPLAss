@@ -20,69 +20,76 @@
 package org.iplass.mtp.webhook.responsehandler;
 
 import org.iplass.mtp.webhook.WebhookResponseHandler;
+import org.iplass.mtp.webhook.WebhookException;
 import org.iplass.mtp.webhook.WebhookHeader;
 import org.iplass.mtp.webhook.WebhookResponse;
 import org.iplass.mtp.impl.webhook.WebhookServiceImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class DefaultWebhookResponseHandlerImpl implements WebhookResponseHandler{
+public class DefaultWebhookResponseHandler implements WebhookResponseHandler{
+	static Logger logger =  LoggerFactory.getLogger(WebhookServiceImpl.class);
 	@Override
 	public void handleResponse(WebhookResponse response) {
 		if (200<=response.getStatusCode()||response.getStatusCode()<300) {
 			writeLog(response);	
 		} else {
-			throw new RuntimeException("UnHandled Response Status Code: "+response.getStatusCode()+"("+response.getReasonPhrase()+")");
+			throw new WebhookException("UnHandled Response Status Code: "+response.getStatusCode()+"("+response.getReasonPhrase()+")");
 		}
 	}
 
 	private void writeLog(WebhookResponse response) {
-		Logger logger =  LoggerFactory.getLogger(WebhookServiceImpl.class);
-		String msg = "";
-		msg += makeStatusString(response);
-		msg += makeHeaderString(response);
-		msg += makeEntityString(response);
 		if (logger.isDebugEnabled()) {
-			logger.debug(msg);
+	        StringBuilder msg = new StringBuilder(); 
+	        msg.append(makeStatusString(response));
+	        msg.append(makeHeaderString(response));
+	        msg.append(makeEntityString(response));
+		
+			logger.debug(msg.toString());
 		}
 	}
 	
 	private String makeStatusString(WebhookResponse whr) {
-		String result= "Response Code ";
-		result += whr.getStatusCode();
-		result += ":"+whr.getReasonPhrase();
-		result += ";";
-		return result;
+		StringBuilder result = new StringBuilder(); 
+		result.append("Response Code ");
+		result.append(whr.getStatusCode());
+		result.append(":");
+		result.append(whr.getReasonPhrase());
+		result.append(";");
+		return result.toString();
 	}
 
 	private String makeHeaderString(WebhookResponse response) {
-		String result= "Headers: ";
+		StringBuilder result = new StringBuilder(); 
+		result.append("Headers: ");
 		if (response.getHeaders()==null) {
-			result+= "null;";
+			result.append("null;");
 		} else {
 			for (WebhookHeader hd:response.getHeaders()) {
-				result += hd.getKey()+":";
-				result += hd.getValue();
-				result += "|";
+				result.append(hd.getKey());
+				result.append(":");
+				result.append(hd.getValue());
+				result.append("|");
 			}
-			result = result.substring(0, result.length()) +";";
+			result.substring(0, result.length()-1);
+			result.append(";");
 		}
-		return result;
+		return result.toString();
 	}
 	private String makeEntityString(WebhookResponse whr) {
-		String result = "";
+		StringBuilder result = new StringBuilder(); 
 		if ( whr.getResponseBody() == null) {
-			result += "Entity(null);";
+			result.append("Entity(null);");
 		} else {
-			result += "Entity(";
-			result += whr.getContentType()==null?"nullTypeName":whr.getContentType();
-			result += ":";
-			result += whr.getContentEncoding()==null?"nullEncodeName":whr.getContentEncoding();
-			result += "):";
-			result += whr.getResponseBody();
+			result.append("Entity(");
+			result.append(whr.getContentType()==null?"nullTypeName":whr.getContentType());
+			result.append(":");
+			result.append(whr.getContentEncoding()==null?"nullEncodeName":whr.getContentEncoding());
+			result.append("):");
+			result.append(whr.getResponseBody());
 		}
-		result += ";";
-		return result;
+		result.append(";");
+		return result.toString();
 	}
 
 }
