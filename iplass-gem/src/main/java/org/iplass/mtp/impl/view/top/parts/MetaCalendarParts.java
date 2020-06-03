@@ -31,7 +31,7 @@ import org.iplass.mtp.view.top.parts.TopViewParts;
  * カレンダーパーツ
  * @author lis3wg
  */
-public class MetaCalendarParts extends MetaTopViewContentParts {
+public class MetaCalendarParts extends MetaTemplateParts {
 
 	/** SerialVersionUID */
 	private static final long serialVersionUID = -1412208019553670440L;
@@ -86,17 +86,20 @@ public class MetaCalendarParts extends MetaTopViewContentParts {
 	@Override
 	public void applyConfig(TopViewParts parts) {
 		CalendarParts calendar = (CalendarParts) parts;
+		fillFrom(calendar);
+		
 		calendarName = calendar.getCalendarName();
 		iconTag = calendar.getIconTag();
-		style = calendar.getStyle();
 	}
 
 	@Override
 	public TopViewParts currentConfig() {
 		CalendarParts calendar = new CalendarParts();
+		fillTo(calendar);
+		
 		calendar.setCalendarName(calendarName);
 		calendar.setIconTag(iconTag);
-		calendar.setStyle(style);
+		
 		return calendar;
 	}
 
@@ -106,8 +109,8 @@ public class MetaCalendarParts extends MetaTopViewContentParts {
 	}
 
 	@Override
-	public TopViewContentPartsHandler createRuntime() {
-		return new TopViewContentPartsHandler(this) {
+	public TemplatePartsHandler createRuntime() {
+		return new TemplatePartsHandler(this) {
 			private static final String TEMPLATE_PATH_GEM = "gem/calendar/calendarParts";
 			private static final String TEMPLATE_PATH_GEM_WIDGET = "gem/calendar/calendarWidget";
 

@@ -95,16 +95,20 @@ public class MetaSeparatorParts extends MetaTopViewContentParts {
 	@Override
 	public void applyConfig(TopViewParts parts) {
 		SeparatorParts separator = (SeparatorParts) parts;
+		fillFrom(separator);
+		
 		this.leftParts = MetaTopViewParts.createInstance(separator.getLeftParts());
 		if (leftParts != null) leftParts.applyConfig(separator.getLeftParts());
 		this.rightParts = MetaTopViewParts.createInstance(separator.getRightParts());
 		if (rightParts != null) rightParts.applyConfig(separator.getRightParts());
-		style = separator.getStyle();
+		
 	}
 
 	@Override
 	public SeparatorParts currentConfig() {
 		SeparatorParts parts = new SeparatorParts();
+		fillTo(parts);
+		
 		if (leftParts != null) {
 			TopViewParts lp = leftParts.currentConfig();
 			if (lp != null) parts.setLeftParts(lp);
@@ -113,7 +117,7 @@ public class MetaSeparatorParts extends MetaTopViewContentParts {
 			TopViewParts rp = rightParts.currentConfig();
 			if (rp != null) parts.setRightParts(rp);
 		}
-		parts.setStyle(style);
+		//
 		return parts;
 	}
 

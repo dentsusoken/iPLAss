@@ -285,14 +285,15 @@ public class MetaInformationParts extends MetaActionParts {
 	@Override
 	public void applyConfig(TopViewParts parts) {
 		InformationParts definition = (InformationParts)parts;
+		fillFrom(definition);
+		
 		title = definition.getTitle();
 		dispRange = definition.getDispRange();
 
 		// 言語毎の文字情報設定
 		localizedTitleList = I18nUtil.toMeta(definition.getLocalizedTitleList());
 		iconTag = definition.getIconTag();
-		style = definition.getStyle();
-
+		
 		showWarningPasswordAge = definition.isShowWarningPasswordAge();
 		passwordWarningAge = definition.getPasswordWarningAge();
 		passwordWarningMessage = definition.getPasswordWarningMessage();
@@ -306,6 +307,8 @@ public class MetaInformationParts extends MetaActionParts {
 	@Override
 	public TopViewParts currentConfig() {
 		InformationParts parts = new InformationParts();
+		fillTo(parts);
+		
 		parts.setTitle(title);
 		parts.setDispRange(dispRange);
 		parts.setLocalizedTitleList(I18nUtil.toDef(localizedTitleList));
@@ -318,7 +321,6 @@ public class MetaInformationParts extends MetaActionParts {
 		parts.setPasswordWarnMarkStyleClass(passwordWarnMarkStyleClass);
 		parts.setEnableHtmlTag(availableHtmlTag);
 		parts.setNumberOfDisplay(numberOfDisplay);
-		parts.setStyle(style);
 
 		return parts;
 	}

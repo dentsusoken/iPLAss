@@ -48,7 +48,7 @@ import org.iplass.mtp.web.template.TemplateUtil;
  * お知らせ一覧パーツ
  * @author lis3wg
  */
-public class MetaEntityListParts extends MetaTopViewContentParts {
+public class MetaEntityListParts extends MetaTemplateParts {
 
 	/** SerialVersionUID */
 	private static final long serialVersionUID = 9029097706504538709L;
@@ -238,6 +238,8 @@ public class MetaEntityListParts extends MetaTopViewContentParts {
 		EntityListParts e = (EntityListParts) parts;
 		EntityContext context = EntityContext.getCurrentContext();
 		EntityHandler entity = context.getHandlerByName(e.getDefName());
+		fillFrom(e);
+		
 		if (entity == null) return;
 		definitionId = entity.getMetaData().getId();
 		viewName = e.getViewName();
@@ -250,7 +252,7 @@ public class MetaEntityListParts extends MetaTopViewContentParts {
 		// 言語毎の文字情報設定
 		localizedTitleList = I18nUtil.toMeta(e.getLocalizedTitleList());
 		iconTag = e.getIconTag();
-		style = e.getStyle();
+		//
 	}
 
 	@Override
@@ -258,6 +260,8 @@ public class MetaEntityListParts extends MetaTopViewContentParts {
 		EntityListParts parts = new EntityListParts();
 		EntityContext context = EntityContext.getCurrentContext();
 		EntityHandler entity = null;
+		fillTo(parts);
+		
 		if (definitionId != null) {
 			entity = context.getHandlerById(definitionId);
 			if (entity != null) {
@@ -273,7 +277,7 @@ public class MetaEntityListParts extends MetaTopViewContentParts {
 		parts.setHeight(height);
 		parts.setLocalizedTitleList(I18nUtil.toDef(localizedTitleList));
 		parts.setIconTag(iconTag);
-		parts.setStyle(style);
+		
 		return parts;
 	}
 
@@ -283,8 +287,8 @@ public class MetaEntityListParts extends MetaTopViewContentParts {
 	}
 
 	@Override
-	public TopViewContentPartsHandler createRuntime() {
-		return new TopViewContentPartsHandler(this) {
+	public TemplatePartsHandler createRuntime() {
+		return new TemplatePartsHandler(this) {
 			private static final String TEMPLATE_PATH = "gem/generic/search/list";
 			private static final String TEMPLATE_PATH_WIDGET = "gem/generic/search/listWidget";
 

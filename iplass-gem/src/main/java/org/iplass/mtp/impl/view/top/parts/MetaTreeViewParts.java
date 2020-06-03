@@ -31,7 +31,7 @@ import org.iplass.mtp.view.top.parts.TreeViewParts;
  * ツリービューパーツ
  * @author lis3wg
  */
-public class MetaTreeViewParts extends MetaTopViewContentParts {
+public class MetaTreeViewParts extends MetaTemplateParts {
 
 	/** SerialVersionUID */
 	private static final long serialVersionUID = -1412208019553670440L;
@@ -86,17 +86,20 @@ public class MetaTreeViewParts extends MetaTopViewContentParts {
 	@Override
 	public void applyConfig(TopViewParts parts) {
 		TreeViewParts tree = (TreeViewParts) parts;
+		fillFrom(tree);
+		
 		treeViewName = tree.getTreeViewName();
 		iconTag = tree.getIconTag();
-		style = tree.getStyle();
 	}
 
 	@Override
 	public TopViewParts currentConfig() {
 		TreeViewParts tree = new TreeViewParts();
+		fillTo(tree);
+		
 		tree.setTreeViewName(treeViewName);
 		tree.setIconTag(iconTag);
-		tree.setStyle(style);
+		
 		return tree;
 	}
 
@@ -106,8 +109,8 @@ public class MetaTreeViewParts extends MetaTopViewContentParts {
 	}
 
 	@Override
-	public TopViewContentPartsHandler createRuntime() {
-		return new TopViewContentPartsHandler(this) {
+	public TemplatePartsHandler createRuntime() {
+		return new TemplatePartsHandler(this) {
 			private static final String TEMPLATE_PATH_WIDGET = "gem/treeview/treeViewWidget";
 			private static final String TEMPLATE_PATH_PARTS = "gem/treeview/treeViewParts";
 

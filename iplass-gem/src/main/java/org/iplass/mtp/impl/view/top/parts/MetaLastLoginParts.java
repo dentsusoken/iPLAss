@@ -29,7 +29,7 @@ import org.iplass.mtp.view.top.parts.LastLoginParts;
 import org.iplass.mtp.view.top.parts.TopViewParts;
 import org.iplass.mtp.web.template.TemplateUtil;
 
-public class MetaLastLoginParts extends MetaTopViewContentParts {
+public class MetaLastLoginParts extends MetaTemplateParts {
 
 	private static final long serialVersionUID = 4013739635261402238L;
 
@@ -45,19 +45,20 @@ public class MetaLastLoginParts extends MetaTopViewContentParts {
 	@Override
 	public void applyConfig(TopViewParts parts) {
 		LastLoginParts login = (LastLoginParts) parts;
-		style = login.getStyle();
+		fillFrom(login);
 	}
 
 	@Override
 	public TopViewParts currentConfig() {
 		LastLoginParts parts = new LastLoginParts();
-		parts.setStyle(style);
+		fillTo(parts);
+		
 		return parts;
 	}
 
 	@Override
-	public TopViewContentPartsHandler createRuntime() {
-		return new TopViewContentPartsHandler(this) {
+	public TemplatePartsHandler createRuntime() {
+		return new TemplatePartsHandler(this) {
 
 			private final String TEMPLATE_PATH = "gem/auth/LastLoginParts";
 

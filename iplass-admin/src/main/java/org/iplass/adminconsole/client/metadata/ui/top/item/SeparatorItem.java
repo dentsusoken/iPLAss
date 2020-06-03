@@ -20,11 +20,6 @@
 
 package org.iplass.adminconsole.client.metadata.ui.top.item;
 
-import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
-import org.iplass.adminconsole.client.base.ui.widget.MtpDialog;
-import org.iplass.adminconsole.client.base.ui.widget.form.MtpForm;
-import org.iplass.adminconsole.client.base.ui.widget.form.MtpTextItem;
-import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
 import org.iplass.adminconsole.client.metadata.ui.top.PartsOperationHandler;
 import org.iplass.adminconsole.client.metadata.ui.top.TopViewDropAreaPane;
 import org.iplass.adminconsole.client.metadata.ui.top.node.TopViewNode;
@@ -33,11 +28,8 @@ import org.iplass.mtp.view.top.parts.TopViewParts;
 
 import com.smartgwt.client.types.HeaderControls;
 import com.smartgwt.client.widgets.HeaderControl;
-import com.smartgwt.client.widgets.IButton;
 import com.smartgwt.client.widgets.events.ClickEvent;
 import com.smartgwt.client.widgets.events.ClickHandler;
-import com.smartgwt.client.widgets.form.DynamicForm;
-import com.smartgwt.client.widgets.form.fields.TextItem;
 import com.smartgwt.client.widgets.layout.HLayout;
 
 /**
@@ -63,7 +55,8 @@ public class SeparatorItem extends PartsItem {
 
 			@Override
 			public void onClick(ClickEvent event) {
-				SeparatorItemSettingDialog dialog = new SeparatorItemSettingDialog();
+				TopViewContentItemSettingDialog dialog = new TopViewContentItemSettingDialog(parts);
+				dialog.setTitle("Separator");
 				dialog.show();
 			}
 
@@ -82,54 +75,6 @@ public class SeparatorItem extends PartsItem {
 		}
 		if (parts.getRightParts() != null) {
 			rightArea.setParts(parts.getRightParts());
-		}
-	}
-	
-	private class SeparatorItemSettingDialog extends MtpDialog {
-
-		private TextItem styleField;
-
-		/**
-		 * コンストラクタ
-		 */
-		public SeparatorItemSettingDialog() {
-
-			setTitle("Separator");
-			setHeight(130);
-			centerInPage();
-
-			final DynamicForm form = new MtpForm();
-			form.setAutoFocus(true);
-
-			styleField = new MtpTextItem("style", "Class");
-			styleField.setValue(parts.getStyle());
-			SmartGWTUtil.addHoverToFormItem(styleField, AdminClientMessageUtil.getString("ui_metadata_top_item_SeparatorItem_styleDescriptionKey"));
-
-			form.setItems(styleField);
-
-			container.addMember(form);
-
-			IButton save = new IButton("OK");
-			save.addClickHandler(new ClickHandler() {
-				@Override
-				public void onClick(ClickEvent event) {
-					if (form.validate()){
-						//入力情報をパーツに
-						parts.setStyle(SmartGWTUtil.getStringValue(styleField));
-						destroy();
-					}
-				}
-			});
-
-			IButton cancel = new IButton("Cancel");
-			cancel.addClickHandler(new ClickHandler() {
-				@Override
-				public void onClick(ClickEvent event) {
-					destroy();
-				}
-			});
-
-			footer.setMembers(save, cancel);
 		}
 	}
 

@@ -197,7 +197,7 @@ public class SearchResultListItem extends PartsItem {
 			
 			styleField = new MtpTextItem("style", "Class");
 			styleField.setValue(parts.getStyle());
-			SmartGWTUtil.addHoverToFormItem(styleField, AdminClientMessageUtil.getString("ui_metadata_top_item_EntityListItem_styleDescriptionKey"));
+			SmartGWTUtil.addHoverToFormItem(styleField, AdminClientMessageUtil.getString("ui_metadata_top_item_TopViewContentParts_styleDescriptionKey"));
 
 			heightField = new IntegerItem("height", "Height");
 			heightField.setWidth("100%");

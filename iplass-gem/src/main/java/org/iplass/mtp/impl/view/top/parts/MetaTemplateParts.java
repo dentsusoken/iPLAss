@@ -38,7 +38,7 @@ import org.iplass.mtp.view.top.parts.TopViewParts;
  * テンプレート系のパーツ
  * @author lis3wg
  */
-public class MetaTemplateParts extends MetaTopViewParts {
+public class MetaTemplateParts extends MetaTopViewContentParts {
 
 	/** SerialVersionUID */
 	private static final long serialVersionUID = -940660706127581642L;

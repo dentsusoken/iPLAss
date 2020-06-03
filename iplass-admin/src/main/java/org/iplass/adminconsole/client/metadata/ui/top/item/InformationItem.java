@@ -126,7 +126,7 @@ public class InformationItem extends PartsItem {
 			SmartGWTUtil.addHoverToFormItem(iconTagField, AdminClientMessageUtil.getString("ui_metadata_top_item_InformationItem_iconTagComment"));
 			
 			styleField = new MtpTextItem("style", "Class");
-			SmartGWTUtil.addHoverToFormItem(styleField, AdminClientMessageUtil.getString("ui_metadata_top_item_InformationItem_styleDescriptionKey"));
+			SmartGWTUtil.addHoverToFormItem(styleField, AdminClientMessageUtil.getString("ui_metadata_top_item_TopViewContentParts_styleDescriptionKey"));
 
 			commonForm.setItems(titleField, iconTagField, styleField);
 

@@ -20,21 +20,14 @@
 
 package org.iplass.mtp.impl.view.top.parts;
 
-import java.io.IOException;
-
-import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.jsp.PageContext;
 import javax.xml.bind.annotation.XmlSeeAlso;
 
-import org.iplass.mtp.impl.web.WebUtil;
 import org.iplass.mtp.view.top.parts.ActionParts;
 import org.iplass.mtp.view.top.parts.CalendarParts;
 import org.iplass.mtp.view.top.parts.EntityListParts;
 import org.iplass.mtp.view.top.parts.LastLoginParts;
 import org.iplass.mtp.view.top.parts.SeparatorParts;
+import org.iplass.mtp.view.top.parts.TopViewContentParts;
 import org.iplass.mtp.view.top.parts.TopViewParts;
 import org.iplass.mtp.view.top.parts.TreeViewParts;
 
@@ -90,64 +83,16 @@ public abstract class MetaTopViewContentParts extends MetaTopViewParts{
 		this.style = style;
 	}
 	
-	/**
-	 * 画面表示パーツランタイム
-	 * @author li3369
-	 */
-	public abstract class TopViewContentPartsHandler extends TopViewPartsHandler {
-
-		/**
-		 * コンストラクタ
-		 * @param metadata
-		 */
-		public TopViewContentPartsHandler(MetaTopViewParts metadata) {
-			super(metadata);
-		}
-
-		/**
-		 * パーツかどうか
-		 * @return パーツかどうか
-		 */
-		public abstract boolean isParts();
-
-		/**
-		 * ウィジェットかどうか
-		 * @return ウィジェットかどうか
-		 */
-		public abstract boolean isWidget();
-
-		/**
-		 * パーツのテンプレートパスを取得します。
-		 * @return パーツのテンプレートパス
-		 */
-		public abstract String getTemplatePathForParts(HttpServletRequest req);
-
-		/**
-		 * ウィジェットのテンプレートパスを取得します。
-		 * @return ウィジェットのテンプレートパス
-		 */
-		public abstract String getTemplatePathForWidget(HttpServletRequest req);
-		
-		@Override
-		public void loadParts(HttpServletRequest req, HttpServletResponse res,
-				ServletContext application, PageContext page) throws IOException, ServletException {
-			if (isParts()) {
-				String path = getTemplatePathForParts(req);
-				if (path != null) {
-					WebUtil.includeTemplate(path, req, res, application, page);
-				}
-			}
-		}
-
-		@Override
-		public void loadWidgets(HttpServletRequest req, HttpServletResponse res,
-				ServletContext application, PageContext page) throws IOException, ServletException {
-			if (isWidget()) {
-				String path = getTemplatePathForWidget(req);
-				if (path != null) {
-					WebUtil.includeTemplate(path, req, res, application, page);
-				}
-			}
-		}
+	@Override
+	protected void fillFrom(TopViewParts parts) {
+		TopViewContentParts contentParts = (TopViewContentParts) parts;
+		style = contentParts.getStyle();
 	}
+	
+	@Override
+	protected void fillTo(TopViewParts parts) {
+		TopViewContentParts contentParts = (TopViewContentParts) parts;
+		contentParts.setStyle(style);
+	}
+	
 }
