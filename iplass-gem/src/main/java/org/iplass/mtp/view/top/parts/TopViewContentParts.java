@@ -26,8 +26,7 @@ import javax.xml.bind.annotation.XmlSeeAlso;
  * 画面表示パーツ
  * @author li3369
  */
-@XmlSeeAlso({ActionParts.class, EntityListParts.class, CalendarParts.class, 
-	LastLoginParts.class, TreeViewParts.class, SeparatorParts.class})
+@XmlSeeAlso({ActionParts.class, TemplateParts.class, SeparatorParts.class})
 public abstract class TopViewContentParts extends TopViewParts {
 
 	/** SerialVersionUID */

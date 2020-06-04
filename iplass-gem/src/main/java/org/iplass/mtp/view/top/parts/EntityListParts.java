@@ -30,7 +30,7 @@ import org.iplass.mtp.definition.LocalizedStringDefinition;
  * Entity一覧パーツ
  * @author lis3wg
  */
-public class EntityListParts extends TopViewContentParts {
+public class EntityListParts extends TemplateParts {
 
 	/** SerialVersionUID */
 	private static final long serialVersionUID = 2468488513006879707L;
