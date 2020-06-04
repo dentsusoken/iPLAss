@@ -23,13 +23,10 @@ package org.iplass.mtp.impl.view.top.parts;
 import javax.xml.bind.annotation.XmlSeeAlso;
 
 import org.iplass.mtp.view.top.parts.ActionParts;
-import org.iplass.mtp.view.top.parts.CalendarParts;
-import org.iplass.mtp.view.top.parts.EntityListParts;
-import org.iplass.mtp.view.top.parts.LastLoginParts;
 import org.iplass.mtp.view.top.parts.SeparatorParts;
+import org.iplass.mtp.view.top.parts.TemplateParts;
 import org.iplass.mtp.view.top.parts.TopViewContentParts;
 import org.iplass.mtp.view.top.parts.TopViewParts;
-import org.iplass.mtp.view.top.parts.TreeViewParts;
 
 /**
  * 画面表示パーツ
@@ -49,14 +46,8 @@ public abstract class MetaTopViewContentParts extends MetaTopViewParts{
 	public static MetaTopViewContentParts createInstance(TopViewParts parts) {
 		if (parts instanceof ActionParts) {
 			return MetaActionParts.createInstance(parts);
-		} else if (parts instanceof EntityListParts) {
-			return MetaEntityListParts.createInstance(parts);
-		} else if (parts instanceof CalendarParts) {
-			return MetaCalendarParts.createInstance(parts);
-		} else if (parts instanceof LastLoginParts) {
-			return MetaLastLoginParts.createInstance(parts);
-		} else if (parts instanceof TreeViewParts) {
-			return MetaTreeViewParts.createInstance(parts);
+		} else if (parts instanceof TemplateParts) {
+			return MetaTemplateParts.createInstance(parts);
 		} else if (parts instanceof SeparatorParts) {
 			return MetaSeparatorParts.createInstance(parts);
 		}
@@ -84,12 +75,14 @@ public abstract class MetaTopViewContentParts extends MetaTopViewParts{
 	
 	@Override
 	protected void fillFrom(TopViewParts parts) {
+		super.fillFrom(parts);
 		TopViewContentParts contentParts = (TopViewContentParts) parts;
 		style = contentParts.getStyle();
 	}
 	
 	@Override
 	protected void fillTo(TopViewParts parts) {
+		super.fillTo(parts);
 		TopViewContentParts contentParts = (TopViewContentParts) parts;
 		contentParts.setStyle(style);
 	}

@@ -32,8 +32,12 @@ import javax.xml.bind.annotation.XmlSeeAlso;
 import org.iplass.mtp.impl.metadata.MetaData;
 import org.iplass.mtp.impl.util.ObjectUtil;
 import org.iplass.mtp.impl.web.WebUtil;
+import org.iplass.mtp.view.top.parts.CalendarParts;
+import org.iplass.mtp.view.top.parts.EntityListParts;
+import org.iplass.mtp.view.top.parts.LastLoginParts;
 import org.iplass.mtp.view.top.parts.TemplateParts;
 import org.iplass.mtp.view.top.parts.TopViewParts;
+import org.iplass.mtp.view.top.parts.TreeViewParts;
 
 /**
  * テンプレート系のパーツ
@@ -52,6 +56,15 @@ public class MetaTemplateParts extends MetaTopViewContentParts {
 	 * @return インスタンス
 	 */
 	public static MetaTemplateParts createInstance(TopViewParts parts) {
+		if (parts instanceof CalendarParts) {
+			return MetaCalendarParts.createInstance(parts);
+		} else if (parts instanceof EntityListParts) {
+			return MetaEntityListParts.createInstance(parts);
+		} else if (parts instanceof LastLoginParts) {
+			return MetaLastLoginParts.createInstance(parts);
+		} else if (parts instanceof TreeViewParts) {
+			return MetaTreeViewParts.createInstance(parts);
+		}
 		return new MetaTemplateParts();
 	}
 

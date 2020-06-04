@@ -27,7 +27,6 @@ import org.iplass.mtp.view.top.parts.ApplicationMaintenanceParts;
 import org.iplass.mtp.view.top.parts.CsvDownloadSettingsParts;
 import org.iplass.mtp.view.top.parts.FulltextSearchViewParts;
 import org.iplass.mtp.view.top.parts.ScriptParts;
-import org.iplass.mtp.view.top.parts.TemplateParts;
 import org.iplass.mtp.view.top.parts.TopViewContentParts;
 import org.iplass.mtp.view.top.parts.TopViewParts;
 import org.iplass.mtp.view.top.parts.UserMaintenanceParts;
@@ -52,8 +51,6 @@ public abstract class MetaTopViewParts implements MetaData {
 		if (parts == null) return null;
 		if (parts instanceof TopViewContentParts) {
 			return MetaTopViewContentParts.createInstance(parts);
-		} else if (parts instanceof TemplateParts) {
-			return MetaTemplateParts.createInstance(parts);
 		} else if (parts instanceof ScriptParts) {
 			return MetaScriptParts.createInstance(parts);
 		} else if (parts instanceof UserMaintenanceParts) {
