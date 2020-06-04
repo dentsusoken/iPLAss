@@ -86,6 +86,8 @@ public class MetaCalendarParts extends MetaTemplateParts {
 	@Override
 	public void applyConfig(TopViewParts parts) {
 		CalendarParts calendar = (CalendarParts) parts;
+		fillFrom(calendar);
+		
 		calendarName = calendar.getCalendarName();
 		iconTag = calendar.getIconTag();
 	}
@@ -93,8 +95,11 @@ public class MetaCalendarParts extends MetaTemplateParts {
 	@Override
 	public TopViewParts currentConfig() {
 		CalendarParts calendar = new CalendarParts();
+		fillTo(calendar);
+		
 		calendar.setCalendarName(calendarName);
 		calendar.setIconTag(iconTag);
+		
 		return calendar;
 	}
 
@@ -131,14 +136,14 @@ public class MetaCalendarParts extends MetaTemplateParts {
 
 			@Override
 			public void setAttribute(HttpServletRequest req) {
-				req.setAttribute("calendarName", calendarName);
-				req.setAttribute("calendarParts", currentConfig());
+				req.setAttribute(Constants.CALENDAR_NAME, calendarName);
+				req.setAttribute(Constants.CALENDAR_SETTING, currentConfig());
 			}
 
 			@Override
 			public void clearAttribute(HttpServletRequest req) {
-				req.removeAttribute("calendarName");
-				req.removeAttribute("calendarParts");
+				req.removeAttribute(Constants.CALENDAR_NAME);
+				req.removeAttribute(Constants.CALENDAR_SETTING);
 			}
 		};
 	}

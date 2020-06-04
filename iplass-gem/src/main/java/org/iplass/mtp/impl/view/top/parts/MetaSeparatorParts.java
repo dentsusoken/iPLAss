@@ -31,6 +31,7 @@ import javax.servlet.jsp.PageContext;
 
 import org.iplass.mtp.impl.metadata.MetaData;
 import org.iplass.mtp.impl.util.ObjectUtil;
+import org.iplass.mtp.util.StringUtil;
 import org.iplass.mtp.view.generic.ViewConst;
 import org.iplass.mtp.view.top.parts.SeparatorParts;
 import org.iplass.mtp.view.top.parts.TopViewParts;
@@ -39,7 +40,7 @@ import org.iplass.mtp.view.top.parts.TopViewParts;
  * 2分割パーツ
  * @author lis3wg
  */
-public class MetaSeparatorParts extends MetaTopViewParts {
+public class MetaSeparatorParts extends MetaTopViewContentParts {
 
 	/** SerialVersionUID */
 	private static final long serialVersionUID = 7481198924024805153L;
@@ -94,15 +95,20 @@ public class MetaSeparatorParts extends MetaTopViewParts {
 	@Override
 	public void applyConfig(TopViewParts parts) {
 		SeparatorParts separator = (SeparatorParts) parts;
+		fillFrom(separator);
+		
 		this.leftParts = MetaTopViewParts.createInstance(separator.getLeftParts());
 		if (leftParts != null) leftParts.applyConfig(separator.getLeftParts());
 		this.rightParts = MetaTopViewParts.createInstance(separator.getRightParts());
 		if (rightParts != null) rightParts.applyConfig(separator.getRightParts());
+		
 	}
 
 	@Override
 	public SeparatorParts currentConfig() {
 		SeparatorParts parts = new SeparatorParts();
+		fillTo(parts);
+		
 		if (leftParts != null) {
 			TopViewParts lp = leftParts.currentConfig();
 			if (lp != null) parts.setLeftParts(lp);
@@ -111,6 +117,7 @@ public class MetaSeparatorParts extends MetaTopViewParts {
 			TopViewParts rp = rightParts.currentConfig();
 			if (rp != null) parts.setRightParts(rp);
 		}
+		//
 		return parts;
 	}
 
@@ -157,6 +164,9 @@ public class MetaSeparatorParts extends MetaTopViewParts {
 			String designType = (String) req.getAttribute(ViewConst.DESIGN_TYPE);
 			if (ViewConst.DESIGN_TYPE_GEM.equals(designType)) {
 				separatorClass = "col2-wrap";
+				if(StringUtil.isNotBlank(getStyle())) {
+					separatorClass = separatorClass + " " + getStyle(); 
+				}
 				separatorLeftClass = "col-left";
 				separatorRightClass = "col-right";
 			}

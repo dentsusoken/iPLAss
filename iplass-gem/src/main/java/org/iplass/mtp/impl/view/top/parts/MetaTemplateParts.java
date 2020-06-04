@@ -43,9 +43,9 @@ import org.iplass.mtp.view.top.parts.TreeViewParts;
  * テンプレート系のパーツ
  * @author lis3wg
  */
-@XmlSeeAlso({MetaCalendarParts.class, MetaEntityListParts.class,
+@XmlSeeAlso({MetaCalendarParts.class, MetaEntityListParts.class, 
 	MetaLastLoginParts.class, MetaTreeViewParts.class})
-public class MetaTemplateParts extends MetaTopViewParts {
+public class MetaTemplateParts extends MetaTopViewContentParts {
 
 	/** SerialVersionUID */
 	private static final long serialVersionUID = -940660706127581642L;
@@ -60,10 +60,10 @@ public class MetaTemplateParts extends MetaTopViewParts {
 			return MetaCalendarParts.createInstance(parts);
 		} else if (parts instanceof EntityListParts) {
 			return MetaEntityListParts.createInstance(parts);
-		} else if (parts instanceof TreeViewParts) {
-			return MetaTreeViewParts.createInstance(parts);
 		} else if (parts instanceof LastLoginParts) {
 			return MetaLastLoginParts.createInstance(parts);
+		} else if (parts instanceof TreeViewParts) {
+			return MetaTreeViewParts.createInstance(parts);
 		}
 		return new MetaTemplateParts();
 	}

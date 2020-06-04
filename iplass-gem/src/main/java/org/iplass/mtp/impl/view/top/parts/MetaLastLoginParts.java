@@ -22,8 +22,12 @@ package org.iplass.mtp.impl.view.top.parts;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.iplass.mtp.command.RequestContext;
+import org.iplass.mtp.impl.metadata.MetaData;
+import org.iplass.mtp.impl.util.ObjectUtil;
 import org.iplass.mtp.view.top.parts.LastLoginParts;
 import org.iplass.mtp.view.top.parts.TopViewParts;
+import org.iplass.mtp.web.template.TemplateUtil;
 
 public class MetaLastLoginParts extends MetaTemplateParts {
 
@@ -32,14 +36,23 @@ public class MetaLastLoginParts extends MetaTemplateParts {
 	public static MetaLastLoginParts createInstance(TopViewParts parts) {
 		return new MetaLastLoginParts();
 	}
+	
+	@Override
+	public MetaData copy() {
+		return ObjectUtil.deepCopy(this);
+	}
 
 	@Override
 	public void applyConfig(TopViewParts parts) {
+		LastLoginParts login = (LastLoginParts) parts;
+		fillFrom(login);
 	}
 
 	@Override
 	public TopViewParts currentConfig() {
 		LastLoginParts parts = new LastLoginParts();
+		fillTo(parts);
+		
 		return parts;
 	}
 
@@ -51,10 +64,14 @@ public class MetaLastLoginParts extends MetaTemplateParts {
 
 			@Override
 			public void setAttribute(HttpServletRequest req) {
+				RequestContext request = TemplateUtil.getRequestContext();
+				request.setAttribute("lastLoginParts", currentConfig());
 			}
 
 			@Override
 			public void clearAttribute(HttpServletRequest req) {
+				RequestContext request = TemplateUtil.getRequestContext();
+				request.setAttribute("lastLoginParts", null);
 			}
 
 			@Override

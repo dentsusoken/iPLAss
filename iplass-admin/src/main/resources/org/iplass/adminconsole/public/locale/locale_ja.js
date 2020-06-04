@@ -1045,6 +1045,7 @@ LocaleInfo.ui_metadata_tenant_TenantPropertyEditDialog_reAuthUrlSelectorComment 
 LocaleInfo.ui_metadata_tenant_TenantPropertyEditDialog_errorUrlSelectorComment = "<p>Template名を返却するScriptを指定します。システム内で例外が発生した場合に、このTemplate名を利用してエラー画面を表示します。</p><p>以下の変数がバインドされます。</p><ul><li>path: リクエストされたパス。Action名を表す（テナントコンテキストパスは含まない）</li><li>request: RequestContextのインスタンス</li><li>exception: Exceptionのインスタンス</li></ul>";
 LocaleInfo.ui_metadata_tenant_TenantPropertyEditDialog_setting = "設定あり";
 LocaleInfo.ui_metadata_tenant_TenantPropertyEditDialog_noSetting = "設定なし";
+LocaleInfo.ui_metadata_top_item_TopViewContentParts_styleDescriptionKey = "スタイルシートのクラス名を指定します。複数指定する場合は半角スペースで区切ってください。";
 LocaleInfo.ui_metadata_top_TopViewDragPane_refreshList = "一覧を最新にします。";
 LocaleInfo.ui_metadata_top_TopViewDragPane_nodeName = "ノード名";
 LocaleInfo.ui_metadata_top_TopViewDropAreaPane_canNotArrangMultiple = "このパーツは複数配置できません。";

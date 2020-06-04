@@ -24,11 +24,17 @@
 
 <%@ page import="org.iplass.mtp.view.treeview.*" %>
 <%@ page import="org.iplass.mtp.web.template.TemplateUtil" %>
+<%@ page import="org.iplass.mtp.util.StringUtil" %>
 <%@ page import="org.iplass.mtp.ManagerLocator" %>
 <%@ page import="org.iplass.gem.command.generic.detail.DetailViewCommand"%>
 <%@ page import="org.iplass.gem.command.treeview.GetTreeViewListDataCommand"%>
+<%@ page import="org.iplass.mtp.view.top.parts.TreeViewParts"%>
 
 <%
+	//設定情報取得
+	TreeViewParts parts = (TreeViewParts) request.getAttribute("treeViewParts");
+
+
 	String treeViewName = (String) request.getAttribute("treeViewName");
 	if (treeViewName == null) return;
 
@@ -37,8 +43,14 @@
 	if (treeView == null || treeView.getItems().size() == 0) return;
 
 	String displayName = TemplateUtil.getMultilingualString(treeView.getDisplayName(), treeView.getLocalizedDisplayNameList());
+	
+	//スタイルシートのクラス名
+	String style = "topview-widget";
+	if (StringUtil.isNotBlank(parts.getStyle())) {
+		style = style + " " + parts.getStyle();
+	}
 %>
-<div class="topview-widget">
+<div class="<c:out value="<%=style %>"/>">
 <%
 %>
 <div class="lyt-shortcut-01">

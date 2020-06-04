@@ -18,6 +18,7 @@
  along with this program. If not, see <https://www.gnu.org/licenses/>.
  --%>
 
+<%@page import="org.iplass.mtp.view.top.parts.CalendarParts"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="m" uri="http://iplass.org/tags/mtp"%>
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8" trimDirectiveWhitespaces="true"%>
@@ -39,8 +40,18 @@
 
 	//表示名
 	String displayName = TemplateUtil.getMultilingualString(ec.getDisplayName(), ec.getLocalizedDisplayNameList());
+	
+	//設定情報取得
+	CalendarParts parts = (CalendarParts) request.getAttribute(Constants.CALENDAR_SETTING);
+	
+	//スタイルシートのクラス名
+	String style = "topview-parts";
+	if (StringUtil.isNotBlank(parts.getStyle())) {
+		style = style + " " + parts.getStyle();
+	}
+
 %>
-<div class="topview-parts">
+<div class="<c:out value="<%=style %>"/>">
 <h3 class="hgroup-02">
 ${calendarParts.iconTag}
 <c:out value="<%=displayName %>"/>

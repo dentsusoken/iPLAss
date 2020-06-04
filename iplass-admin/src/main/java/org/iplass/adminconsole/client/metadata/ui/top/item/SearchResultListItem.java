@@ -118,6 +118,7 @@ public class SearchResultListItem extends PartsItem {
 	private class EntityListItemSettingDialog extends MtpDialog {
 
 		private TextItem iconTagField;
+		private TextItem styleField;
 		private ComboBoxItem viewField;
 		private ComboBoxItem viewForLinkField;
 		private ComboBoxItem viewForDetailField;
@@ -132,7 +133,7 @@ public class SearchResultListItem extends PartsItem {
 		public EntityListItemSettingDialog() {
 
 			setTitle("SearchResult List");
-			setHeight(350);
+			setHeight(370);
 			centerInPage();
 
 			final DynamicForm form = new MtpForm();
@@ -193,12 +194,16 @@ public class SearchResultListItem extends PartsItem {
 			iconTagField = new MtpTextItem("iconTag", "Icon Tag");
 			iconTagField.setValue(parts.getIconTag());
 			SmartGWTUtil.addHoverToFormItem(iconTagField, AdminClientMessageUtil.getString("ui_metadata_top_item_EntityListItem_iconTagComment"));
+			
+			styleField = new MtpTextItem("style", "Class");
+			styleField.setValue(parts.getStyle());
+			SmartGWTUtil.addHoverToFormItem(styleField, AdminClientMessageUtil.getString("ui_metadata_top_item_TopViewContentParts_styleDescriptionKey"));
 
 			heightField = new IntegerItem("height", "Height");
 			heightField.setWidth("100%");
 			heightField.setValue(parts.getHeight());
 
-			form.setItems(entityField, viewField, viewForLinkField, viewForDetailField, filterField, titleField, iconTagField, heightField);
+			form.setItems(entityField, viewField, viewForLinkField, viewForDetailField, filterField, titleField, iconTagField, styleField, heightField);
 
 			container.addMember(form);
 
@@ -215,6 +220,7 @@ public class SearchResultListItem extends PartsItem {
 						parts.setFilterName(SmartGWTUtil.getStringValue(filterField));
 						parts.setTitle(SmartGWTUtil.getStringValue(titleField));
 						parts.setIconTag(SmartGWTUtil.getStringValue(iconTagField));
+						parts.setStyle(SmartGWTUtil.getStringValue(styleField));
 						parts.setHeight(heightField.getValueAsInteger());
 						parts.setLocalizedTitleList(titleField.getLocalizedList());
 						fireDataChanged();
