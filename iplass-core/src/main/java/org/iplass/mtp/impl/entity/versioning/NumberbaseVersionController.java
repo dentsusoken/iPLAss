@@ -235,7 +235,7 @@ public class NumberbaseVersionController implements VersionController {
 		SearchResultIterator it = eh.getStrategy().search(entityContext, q, eh);
 		try {
 			if (it.next()) {
-				return (Long) it.getValue(val);
+				return (Long) it.getValue(0);
 			} else {
 				return null;
 			}
@@ -339,7 +339,7 @@ public class NumberbaseVersionController implements VersionController {
 		ArrayList<DeleteTarget> res = new ArrayList<DeleteTarget>();
 		try {
 			while (it.next()) {
-				res.add(new DeleteTarget(entity.getOid(), (Long) it.getValue(version), (Timestamp) it.getValue(updateDate)));
+				res.add(new DeleteTarget(entity.getOid(), (Long) it.getValue(0), (Timestamp) it.getValue(1)));
 			}
 		} finally {
 			it.close();
@@ -363,7 +363,7 @@ public class NumberbaseVersionController implements VersionController {
 		ArrayList<String> res = new ArrayList<String>();
 		try {
 			while (it.next()) {
-				res.add((String) it.getValue(refOid));
+				res.add((String) it.getValue(0));
 			}
 		} finally {
 			it.close();
@@ -512,7 +512,7 @@ public class NumberbaseVersionController implements VersionController {
 		ArrayList<String> searched = new ArrayList<String>();
 		try {
 			while (it.next()) {
-				searched.add((String) it.getValue(refOid));
+				searched.add((String) it.getValue(0));
 			}
 		} finally {
 			it.close();

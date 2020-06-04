@@ -221,7 +221,7 @@ public class EntityStreamSearchHandler<T> {
 				List<ValueExpression> select = q.getSelect().getSelectValues();
 				Object[] row = new Object[select.size()];
 				for (int i = 0; i < row.length; i++) {
-					row[i] = sri.getValue(select.get(i));
+					row[i] = sri.getValue(i);
 				}
 				t = (T) row;
 			} else if (resultType == Entity.class) {

@@ -1574,7 +1574,7 @@ public class EntityHandler extends BaseMetaDataRuntime {
 					List<ValueExpression> select = cond.getSelect().getSelectValues();
 					Object[] row = new Object[select.size()];
 					for (int i = 0; i < row.length; i++) {
-						row[i] = vpa.getValue(select.get(i));
+						row[i] = vpa.getValue(i);
 					}
 
 					if (!callback.test(row)) {
@@ -1651,7 +1651,7 @@ public class EntityHandler extends BaseMetaDataRuntime {
 						List<ValueExpression> select = cond.getSelect().getSelectValues();
 						Object[] row = new Object[select.size()];
 						for (int i = 0; i < row.length; i++) {
-							row[i] = vpa.getValue(select.get(i));
+							row[i] = vpa.getValue(i);
 						}
 
 						builder.handle(row, null);
@@ -1722,10 +1722,11 @@ public class EntityHandler extends BaseMetaDataRuntime {
 
 		Entity model = eh.newInstance();
 
-		for (ValueExpression propName: query.getSelect().getSelectValues()) {
+		for (int i = 0; i < query.getSelect().getSelectValues().size(); i++) {
+			ValueExpression propName = query.getSelect().getSelectValues().get(i);
 			if (propName instanceof EntityField) {
 				EntityField ef = (EntityField) propName;
-				model.setValue(ef.getPropertyName(), it.getValue(ef));
+				model.setValue(ef.getPropertyName(), it.getValue(i));
 			}
 		}
 		return model;

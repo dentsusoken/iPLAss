@@ -29,6 +29,8 @@ public interface SearchResultIterator {
 	
 	public Object getValue(ValueExpression propName);
 	
+	public Object getValue(int colIndex);//indexは0から
+	
 	public void close();
 
 }
