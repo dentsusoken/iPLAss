@@ -54,7 +54,7 @@ public class EventListenerListGridRecord extends ListGridRecord {
 	public static final String NONLOAD = "notifyOnLoad";
 	public static final String NBEFOREVALIDATE = "notifyBeforeValidate";
 	public static final String DESTINATIONLIST="destinationList";
-	public static final String WEBHOOKRESULTHANLDER="webhookResultHandler";
+	public static final String WEBHOOKRESPONSEHANLDER="webhookResponseHandler";
 	public static final String SYNCHRONOUS="syncrhonous";
 	public static final String SENDTOGETHER="sendTogether";
 
@@ -293,12 +293,12 @@ public class EventListenerListGridRecord extends ListGridRecord {
 		return (List<String>) getAttributeAsObject(DESTINATIONLIST);
 	}
 	
-	public void setWebhookResultHandler(String webhookResultHandler) {
-		setAttribute(WEBHOOKRESULTHANLDER, webhookResultHandler);
+	public void setWebhookResponseHandler(String webhookResponseHandler) {
+		setAttribute(WEBHOOKRESPONSEHANLDER, webhookResponseHandler);
 	}
 	
-	public String getWebhookResultHandler(){
-		return getAttribute(WEBHOOKRESULTHANLDER);
+	public String getWebhookResponseHandler(){
+		return getAttribute(WEBHOOKRESPONSEHANLDER);
 	}
 
 	public void setSyncrhonous(boolean value) {

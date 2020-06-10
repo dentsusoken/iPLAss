@@ -218,10 +218,9 @@ public class EventListenerListGrid extends ListGrid {
 			record.setGeneralPurpus(snDef.getNotificationType().name());
 			record.setTmplDefName(snDef.getTmplDefName());
 			record.setNotificationCondScript(snDef.getNotificationCondScript());
-
-			record.setSyncrhonous(snDef.isSynchronous());
 			record.setDestinationList(snDef.getDestinationList());
-			record.setWebhookResultHandler(snDef.getResultHandler());
+			record.setSyncrhonous(snDef.isSynchronous());
+			record.setWebhookResponseHandler(snDef.getResponseHandler());
 			record.setSendTogether(snDef.isSendTogether());
 
 			List<EventType> lstEType = snDef.getListenEvent();
@@ -308,14 +307,9 @@ public class EventListenerListGrid extends ListGrid {
 				snDef.setNotificationType(SendNotificationType.valueOf(record.getNotificationType()));
 				snDef.setTmplDefName(record.getTmplDefName());
 				snDef.setNotificationCondScript(record.getNotificationCondScript());
-
-				snDef.setSynchronous(record.isSyncrhonous());
 				snDef.setDestinationList(record.getDestinationList());
-				snDef.setResultHandler(record.getWebhookResultHandler());
-
 				snDef.setSynchronous(record.isSyncrhonous());
-				snDef.setDestinationList(record.getDestinationList());
-				snDef.setResultHandler(record.getWebhookResultHandler());
+				snDef.setResponseHandler(record.getWebhookResponseHandler());
 				snDef.setSendTogether(record.isSendTogether());
 
 				List<EventType> lstEType = new ArrayList<EventType>();
@@ -639,7 +633,7 @@ public class EventListenerListGrid extends ListGrid {
 			webhookLayout.setWidth("100%");
 			webhookSettingsForm = new MtpForm();
 			webhookSettingsForm.setNumCols(2);
-			notificationResultHandlerItem = new TextItem("ResultHandler","ResuleHandlerImplClassName");
+			notificationResultHandlerItem = new TextItem("ResponseHandler","ResponseHandlerImplClassName");
 			notificationResultHandlerItem.setWidth(575);
 			webhookIsSynchronousItem = new CheckboxItem("webhookIsSynchronous","Synchronous");
 			webhookIsSynchronousItem.setShowTitle(false);
@@ -802,7 +796,7 @@ public class EventListenerListGrid extends ListGrid {
 			notificationDestinationGrid.initializeGrid(target.getDestinationList());
 			isSendTogetherItem.setValue(target.isSendTogether());
 			webhookIsSynchronousItem.setValue(target.isSyncrhonous());
-			notificationResultHandlerItem.setValue(target.getWebhookResultHandler());
+			notificationResultHandlerItem.setValue(target.getWebhookResponseHandler());
 			withoutMappedByReferenceItem.setValue(target.isWithoutMappedByReference());
 			
 			//既にnotificationTypeがあったらtemplateの選択肢もロードします
@@ -993,7 +987,7 @@ public class EventListenerListGrid extends ListGrid {
 				target.setNotifyOnLoad(SmartGWTUtil.getBooleanValue(notifyOnLoadItem));
 				target.setNotifyBeforeValidate(SmartGWTUtil.getBooleanValue(notifyBeforeValidateItem));
 				target.setSendTogether(SmartGWTUtil.getBooleanValue(isSendTogetherItem));
-				target.setWebhookResultHandler(SmartGWTUtil.getStringValue(notificationResultHandlerItem));
+				target.setWebhookResponseHandler(SmartGWTUtil.getStringValue(notificationResultHandlerItem));
 				target.setSyncrhonous(SmartGWTUtil.getBooleanValue(webhookIsSynchronousItem));
 			}
 			target.setWithoutMappedByReference(SmartGWTUtil.getBooleanValue(withoutMappedByReferenceItem));

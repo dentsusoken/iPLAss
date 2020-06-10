@@ -709,7 +709,7 @@ LocaleInfo.ui_metadata_webhook_WebhookTemplateEditPane_saveWebhookTemplate = "We
 LocaleInfo.ui_metadata_webhook_WebhookTemplateEditPane_tokenNameFieldHoverInfo = "HMACの値をセットするヘッダ名を指定します。";
 LocaleInfo.ui_metadata_webhook_WebhookTemplateEditPane_contentTypeFieldHoverInfo = "リクエストのコンテントタイプ。例：application/x-www-form-urlencoded, application/jsonなど";
 LocaleInfo.ui_metadata_webhook_WebhookTemplateEditPane_headerGridTitle = "カスタムヘッダー";
-LocaleInfo.ui_metadata_webhook_WebhookTemplateEditPane_urlQueryFieldHoverInfo = "EndpointのURLに以下のサブパス/クエリストリングを指定可能です。<br/>GroovyTemplate形式でバインド変数を埋め込むことが可能です。<br/>クエリストリングのみを指定する場合は、?から記述します。<br/>例：?paramA=${entity.oid}&...";
+LocaleInfo.ui_metadata_webhook_WebhookTemplateEditPane_pathAndQueryFieldHoverInfo = "EndpointのURLに以下のサブパス/クエリストリングを指定可能です。<br/>GroovyTemplate形式でバインド変数を埋め込むことが可能です。<br/>クエリストリングのみを指定する場合は、?から記述します。<br/>例：?paramA=${entity.oid}&...";
 LocaleInfo.ui_metadata_webhook_WebhookTemplateEditPane_webhookContentTabTitle = "Webhook Payload Content";
 LocaleInfo.ui_metadata_webhook_WebhookTemplateEditPane_webhookContentTabHoverInfo = "リクエストボディのコンテンツを指定します。<br/>GroovyTemplate形式でバインド変数を埋め込むことが可能です。<br/>Content-Typeに応じた内容を記述してください。";
 LocaleInfo.ui_metadata_webhook_WebhookTemplateEditPane_saveConfirm ="保存確認";

@@ -36,7 +36,7 @@ public class SendNotificationEventListenerDefinition extends EventListenerDefini
 	
 	/**ウェッブフックだけの設定項目*/
 	private boolean synchronous;
-	private String resultHandler;
+	private String responseHandler;
 
 	public SendNotificationType getNotificationType() {
 		return notificationType;
@@ -86,12 +86,12 @@ public class SendNotificationEventListenerDefinition extends EventListenerDefini
 		this.destinationList = destinationList;
 	}
 
-	public String getResultHandler() {
-		return resultHandler;
+	public String getResponseHandler() {
+		return responseHandler;
 	}
 
-	public void setResultHandler(String resultHandler) {
-		this.resultHandler = resultHandler;
+	public void setResponseHandler(String responseHandler) {
+		this.responseHandler = responseHandler;
 	}
 
 	public boolean isSendTogether() {

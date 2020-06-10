@@ -17,18 +17,17 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
-package org.iplass.mtp.webhook.responsehandler;
+package org.iplass.mtp.impl.webhook;
 
 import org.iplass.mtp.webhook.WebhookResponseHandler;
 import org.iplass.mtp.webhook.WebhookException;
 import org.iplass.mtp.webhook.WebhookHeader;
 import org.iplass.mtp.webhook.WebhookResponse;
-import org.iplass.mtp.impl.webhook.WebhookServiceImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class DefaultWebhookResponseHandler implements WebhookResponseHandler{
-	static Logger logger =  LoggerFactory.getLogger(WebhookServiceImpl.class);
+	private static Logger logger =  LoggerFactory.getLogger(WebhookServiceImpl.class);
 	@Override
 	public void handleResponse(WebhookResponse response) {
 		if (200<=response.getStatusCode()||response.getStatusCode()<300) {
@@ -49,17 +48,17 @@ public class DefaultWebhookResponseHandler implements WebhookResponseHandler{
 		}
 	}
 	
-	private String makeStatusString(WebhookResponse whr) {
+	private StringBuilder makeStatusString(WebhookResponse whr) {
 		StringBuilder result = new StringBuilder(); 
 		result.append("Response Code ");
 		result.append(whr.getStatusCode());
 		result.append(":");
 		result.append(whr.getReasonPhrase());
 		result.append(";");
-		return result.toString();
+		return result;
 	}
 
-	private String makeHeaderString(WebhookResponse response) {
+	private StringBuilder makeHeaderString(WebhookResponse response) {
 		StringBuilder result = new StringBuilder(); 
 		result.append("Headers: ");
 		if (response.getHeaders()==null) {
@@ -74,9 +73,9 @@ public class DefaultWebhookResponseHandler implements WebhookResponseHandler{
 			result.substring(0, result.length()-1);
 			result.append(";");
 		}
-		return result.toString();
+		return result;
 	}
-	private String makeEntityString(WebhookResponse whr) {
+	private StringBuilder makeEntityString(WebhookResponse whr) {
 		StringBuilder result = new StringBuilder(); 
 		if ( whr.getResponseBody() == null) {
 			result.append("Entity(null);");
@@ -89,7 +88,7 @@ public class DefaultWebhookResponseHandler implements WebhookResponseHandler{
 			result.append(whr.getResponseBody());
 		}
 		result.append(";");
-		return result.toString();
+		return result;
 	}
 
 }

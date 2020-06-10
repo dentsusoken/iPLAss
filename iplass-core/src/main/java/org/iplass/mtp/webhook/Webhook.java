@@ -40,10 +40,10 @@ public class Webhook  {
 	private String contentType;
 	private String payloadContent;
 	private String httpMethod;
-	private WebhookResponseHandler resultHandler;
+	private WebhookResponseHandler responseHandler;
 	private String pathAndQuery;
 	private List<WebhookHeader> headers;
-	private WebhookEndpoint webhookEndpoint;
+	private WebhookEndpoint endpoint;
 
 	/**
 	 * <% if (doclang == "ja") {%>
@@ -142,7 +142,7 @@ public class Webhook  {
 	 * <% if (doclang == "ja") {%>
 	 * Urlのパスとクエリ―を設置します。"?"の付けをご注意ください。
 	 * <%} else {%>
-	 * Set the UrlQuery. Beware to put "?" appropriately.
+	 * Set the pathAndQuery. Beware to put "?" appropriately.
 	 * <%}%>
 	 * @param pathAndQuery <%=doclang == 'ja' ? 'クエリ―内容': 'Query content'%>
 	 */
@@ -152,25 +152,25 @@ public class Webhook  {
 
 	/**
 	 * <% if (doclang == "ja") {%>
-	 * 結果処理のオブジェクトを取得する。
+	 * 返事結果処理のオブジェクトを取得する。
 	 * <%} else {%>
-	 * Get the result handler object.
+	 * Get the response handler object.
 	 * <%}%>
 	 */
-	public WebhookResponseHandler getResultHandler() {
-		return resultHandler;
+	public WebhookResponseHandler getResponseHandler() {
+		return responseHandler;
 	}
 
 	/**
 	 * <% if (doclang == "ja") {%>
-	 * 結果処理のオブジェクトを設置する。
+	 * 返事結果処理のオブジェクトを設置する。
 	 * <%} else {%>
-	 * Set the result handler object.
+	 * Set the response handler object.
 	 * <%}%>
-	 * @param resultHandler <%=doclang == 'ja' ? 'WebhookResponseHandlerオブジェクト': 'WebhookResponseHandler object'%>
+	 * @param responseHandler <%=doclang == 'ja' ? 'WebhookResponseHandlerオブジェクト': 'WebhookResponseHandler object'%>
 	 */
-	public void setResultHandler(WebhookResponseHandler resultHandler) {
-		this.resultHandler = resultHandler;
+	public void setResponseHandler(WebhookResponseHandler responseHandler) {
+		this.responseHandler = responseHandler;
 	}
 
 	/**
@@ -203,8 +203,8 @@ public class Webhook  {
 	 * Get the Destination class WebhookEndpoint object.
 	 * <%}%>
 	 */
-	public WebhookEndpoint getWebhookEndpoint() {
-		return webhookEndpoint;
+	public WebhookEndpoint getEndpoint() {
+		return endpoint;
 	}
 
 	/**
@@ -213,9 +213,9 @@ public class Webhook  {
 	 * <%} else {%>
 	 * Set the Destination.
 	 * <%}%>
-	 * @param WebhookEndpoint <%=doclang == 'ja' ? 'WebhookEndpoint オブジェクト': 'WebhookEndpoint object'%>
+	 * @param endpoint <%=doclang == 'ja' ? 'WebhookEndpoint オブジェクト': 'WebhookEndpoint object'%>
 	 */
-	public void setWebhookEndpoint(WebhookEndpoint webhookEndpoint) {
-		this.webhookEndpoint = webhookEndpoint;
+	public void setEndpoint(WebhookEndpoint endpoint) {
+		this.endpoint = endpoint;
 	}
 }

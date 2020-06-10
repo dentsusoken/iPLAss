@@ -227,9 +227,9 @@ public class WebhookTemplateEditPane extends MetaDataMainEditPane {
         //ヘッダー関連
 		public HeaderMapGrid headerGrid;
 		
-		//url query
-		private DynamicForm urlQueryForm;
-		private TextAreaItem urlQueryField;
+		//エンドポイントのurlの後に付けるリソースpathとquery,
+		private DynamicForm pathAndQueryForm;
+		private TextAreaItem pathAndQueryField;
 		
 		//送る情報を編集
 		private TabSet messageTabSet;
@@ -318,22 +318,22 @@ public class WebhookTemplateEditPane extends MetaDataMainEditPane {
 			
 			templateInfoForm.setItems(contentTypeField, webhookMethodField);
 			
-			urlQueryForm = new DynamicForm();
-			urlQueryForm.setWidth(500);
-			urlQueryForm.setPadding(10);
-			urlQueryForm.setNumCols(1);
-			urlQueryForm.setIsGroup(true);
-			urlQueryForm.setGroupTitle("Sub Path/Query String");
-			urlQueryField = new TextAreaItem();
-			urlQueryField.setPrompt(AdminClientMessageUtil.getString("ui_metadata_webhook_WebhookTemplateEditPane_urlQueryFieldHoverInfo"));
-			urlQueryField.setWidth("*");
-			urlQueryField.setHeight(180);
-			urlQueryField.setShowTitle(false);
-			urlQueryForm.setItems(urlQueryField);
+			pathAndQueryForm = new DynamicForm();
+			pathAndQueryForm.setWidth(500);
+			pathAndQueryForm.setPadding(10);
+			pathAndQueryForm.setNumCols(1);
+			pathAndQueryForm.setIsGroup(true);
+			pathAndQueryForm.setGroupTitle("Sub Path/Query String");
+			pathAndQueryField = new TextAreaItem();
+			pathAndQueryField.setPrompt(AdminClientMessageUtil.getString("ui_metadata_webhook_WebhookTemplateEditPane_pathAndQueryFieldHoverInfo"));
+			pathAndQueryField.setWidth("*");
+			pathAndQueryField.setHeight(180);
+			pathAndQueryField.setShowTitle(false);
+			pathAndQueryForm.setItems(pathAndQueryField);
 			
 			topPane.addMember(templateInfoForm);
 			topPane.addMember(headerPane);
-			topPane.addMember(urlQueryForm);
+			topPane.addMember(pathAndQueryForm);
 			
 			
 			
@@ -438,7 +438,7 @@ public class WebhookTemplateEditPane extends MetaDataMainEditPane {
 			definition.setContentType(SmartGWTUtil.getStringValue(contentTypeField));
 			definition.setWebhookContent(plainEditor.getText());
 			definition.setHttpMethod(SmartGWTUtil.getStringValue(webhookMethodField));
-			definition.setPathAndQuery(SmartGWTUtil.getStringValue(urlQueryField));
+			definition.setPathAndQuery(SmartGWTUtil.getStringValue(pathAndQueryField));
 
 			return definition;
 		}
@@ -457,12 +457,12 @@ public class WebhookTemplateEditPane extends MetaDataMainEditPane {
 				
 				ListGridRecord[] temp = getHeaderRecordList(definition);
 				headerGrid.setData(temp);
-				urlQueryField.setValue(definition.getPathAndQuery());
+				pathAndQueryField.setValue(definition.getPathAndQuery());
 			} else {
 				contentTypeField.clearValue();
 				webhookMethodField.clearValue();
 				messageTabSet.selectTab(plainContentTab);
-				urlQueryField.clearErrors();
+				pathAndQueryField.clearErrors();
 			}
 		}
 		/**

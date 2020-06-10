@@ -45,6 +45,7 @@ import org.iplass.mtp.impl.script.ScriptEngine;
 import org.iplass.mtp.impl.script.template.GroovyTemplate;
 import org.iplass.mtp.impl.script.template.GroovyTemplateBinding;
 import org.iplass.mtp.impl.script.template.GroovyTemplateCompiler;
+import org.iplass.mtp.impl.webhook.DefaultWebhookResponseHandler;
 import org.iplass.mtp.mail.Mail;
 import org.iplass.mtp.mail.MailManager;
 import org.iplass.mtp.pushnotification.PushNotification;
@@ -58,7 +59,6 @@ import org.iplass.mtp.util.StringUtil;
 import org.iplass.mtp.webhook.Webhook;
 import org.iplass.mtp.webhook.WebhookManager;
 import org.iplass.mtp.webhook.WebhookResponseHandler;
-import org.iplass.mtp.webhook.responsehandler.DefaultWebhookResponseHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -79,11 +79,12 @@ public class MetaSendNotificationEventListener extends MetaEventListener {
 	private String notificationCondScript;
 	private List<EventType> listenEvent;
 	private boolean sendTogether;
+	private List<String> destinationList;
+
 
 	/**ウェッブフックだけの設定項目*/
 	private boolean synchronous;
-	private List<String> destinationList;
-	private String resultHandler;
+	private String responseHandler;
 
 	public SendNotificationType getNotificationType() {
 		return notificationType;
@@ -124,13 +125,13 @@ public class MetaSendNotificationEventListener extends MetaEventListener {
 	public void setDestinationList(List<String> destinationList) {
 		this.destinationList = destinationList;
 	}
-	
-	public String getResultHandler() {
-		return resultHandler;
+
+	public String getResponseHandler() {
+		return responseHandler;
 	}
 
-	public void setResultHandler(String resultHandler) {
-		this.resultHandler = resultHandler;
+	public void setResponseHandler(String responseHandler) {
+		this.responseHandler = responseHandler;
 	}
 
 	public boolean isSynchronous() {
@@ -156,7 +157,7 @@ public class MetaSendNotificationEventListener extends MetaEventListener {
 		copy.notificationType = notificationType;
 		copy.tmplDefName = tmplDefName;
 		copy.notificationCondScript = notificationCondScript;
-		copy.resultHandler = resultHandler;
+		copy.responseHandler = responseHandler;
 		copy.setSendTogether(sendTogether);
 		if (listenEvent != null) {
 			copy.listenEvent = new ArrayList<EventType>();
@@ -216,11 +217,11 @@ public class MetaSendNotificationEventListener extends MetaEventListener {
 			}
 		} else if(!destinationList.equals(other.destinationList)) {
 			return false;
-		} else if (resultHandler==null) {
-			if (other.resultHandler!=null) {
+		} else if (responseHandler==null) {
+			if (other.responseHandler!=null) {
 				return false;
 			}
-		} else if (!resultHandler.equals(other.resultHandler)) {
+		} else if (!responseHandler.equals(other.responseHandler)) {
 			return false;
 		} else if (!sendTogether==other.sendTogether) {
 			return false;
@@ -235,7 +236,7 @@ public class MetaSendNotificationEventListener extends MetaEventListener {
 		notificationType = d.getNotificationType();
 		tmplDefName = d.getTmplDefName();
 		notificationCondScript = d.getNotificationCondScript();
-		resultHandler = d.getResultHandler();
+		responseHandler = d.getResponseHandler();
 		synchronous = d.isSynchronous();
 		sendTogether = d.isSendTogether();
 		if (d.getListenEvent() != null) {
@@ -261,7 +262,7 @@ public class MetaSendNotificationEventListener extends MetaEventListener {
 		d.setNotificationType(notificationType);
 		d.setTmplDefName(tmplDefName);
 		d.setNotificationCondScript(notificationCondScript);
-		d.setResultHandler(resultHandler);
+		d.setResponseHandler(responseHandler);
 		d.setSendTogether(sendTogether);
 		
 		if (listenEvent != null) {
@@ -298,6 +299,7 @@ public class MetaSendNotificationEventListener extends MetaEventListener {
 
 		private Script compiledScript;
 		private ScriptEngine scriptEngine;
+		private List<GroovyTemplate> destinationTemplateList;
 
 		private boolean isNotifyAfterDelete;
 		private boolean isNotifyAfterInsert;
@@ -328,6 +330,8 @@ public class MetaSendNotificationEventListener extends MetaEventListener {
 				compiledScript = scriptEngine.createScript(scriptWithImport, scriptName);
 			}
 
+			setDestinationTemplateList(createDestinationTemplate(destinationList));
+			
 			if (listenEvent != null) {
 				for (EventType eType : listenEvent) {
 					switch (eType) {
@@ -520,6 +524,14 @@ public class MetaSendNotificationEventListener extends MetaEventListener {
 			return MetaSendNotificationEventListener.this;
 		}
 
+		public List<GroovyTemplate> getDestinationTemplateList() {
+			return destinationTemplateList;
+		}
+
+		public void setDestinationTemplateList(List<GroovyTemplate> destinationTemplateList) {
+			this.destinationTemplateList = destinationTemplateList;
+		}
+		
 		protected Map<String, Object> generateBindings(Entity entity, EventType type, EntityEventContext context) {
 			ExecuteContext ex = ExecuteContext.getCurrentContext();
 
@@ -532,32 +544,42 @@ public class MetaSendNotificationEventListener extends MetaEventListener {
 			bindings.put(DATE_BINGING_NAME, ex.getCurrentTimestamp());
 			return bindings;
 		}
-	}
 
-
-	private List<String> processDestinationGroovyTemplate(Map<String, Object> bindings) {
-		List<String> processedDestinationList = new ArrayList<String>();
-		if (destinationList == null) {
+		protected List<String> processDestinationGroovyTemplate(Map<String, Object> bindings) {
+			List<String> processedDestinationList = new ArrayList<String>();
+			if (destinationTemplateList == null) {
+				return processedDestinationList;
+			}
+			for (GroovyTemplate destinationTemplate : destinationTemplateList) {
+				StringWriter sw = new StringWriter();
+				GroovyTemplateBinding gtb = new GroovyTemplateBinding(sw, bindings);
+				try {
+					destinationTemplate.doTemplate(gtb);
+				} catch (IOException e) {
+					throw new RuntimeException(e);
+				}
+				String temp = sw.toString();
+				if (temp != null && !temp.replaceAll("\\s+", "").isEmpty()) {
+					processedDestinationList.add(temp);
+				}
+			}
 			return processedDestinationList;
 		}
-		for (String script : destinationList) {
-			ScriptEngine se = ExecuteContext.getCurrentContext().getTenantContext().getScriptEngine();
-			GroovyTemplate destinationTemplate = GroovyTemplateCompiler.compile(script, "SendNotificationDestinationTemplate_Text" + tmplDefName, (GroovyScriptEngine) se);
-			StringWriter sw = new StringWriter();
-			GroovyTemplateBinding gtb = new GroovyTemplateBinding(sw, bindings);
-			try {
-				destinationTemplate.doTemplate(gtb);
-			} catch (IOException e) {
-				throw new RuntimeException(e);
+
+		private List<GroovyTemplate> createDestinationTemplate(List<String> destinationList){
+			List<GroovyTemplate> templateList = new ArrayList<GroovyTemplate>();
+			if (destinationList == null) {
+				return templateList;
 			}
-			String temp = sw.toString();
-			if (temp != null && !temp.replace("\n", "").replaceAll("\\s+", "").isEmpty()) {
-				processedDestinationList.add(temp);
+			for (String script : destinationList) {
+				ScriptEngine se = ExecuteContext.getCurrentContext().getTenantContext().getScriptEngine();
+				GroovyTemplate destinationTemplate = GroovyTemplateCompiler.compile(script, "SendNotificationDestinationTemplate_Text" + tmplDefName, (GroovyScriptEngine) se);
+				templateList.add(destinationTemplate);
 			}
+			return templateList;
 		}
-		return processedDestinationList;
 	}
-	
+
 	public class SendMailNotificationEventListenerHandler extends SendNotificationListenerEventHandler {
 
 		private MailManager mm = ManagerLocator.getInstance().getManager(MailManager.class);
@@ -679,16 +701,16 @@ public class MetaSendNotificationEventListener extends MetaEventListener {
 			for (String endpoint : processedDestinationList) {
 				Webhook webhook = wm.createWebhook(tmplDefName, bindings, endpoint);
 				WebhookResponseHandler whrh;
-				if (resultHandler==null||resultHandler.isEmpty()) {
+				if (responseHandler==null||responseHandler.isEmpty()) {
 					whrh= new DefaultWebhookResponseHandler();
 				} else {
 					try {
-						whrh= (WebhookResponseHandler) Class.forName(resultHandler).newInstance();
+						whrh= (WebhookResponseHandler) Class.forName(responseHandler).newInstance();
 					} catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
 						whrh= new DefaultWebhookResponseHandler();
 					}
 				}
-				webhook.setResultHandler(whrh);
+				webhook.setResponseHandler(whrh);
 				webhookList.add(webhook);
 			}
 			return webhookList;

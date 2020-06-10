@@ -48,7 +48,6 @@ import org.iplass.mtp.webhook.endpoint.definition.WebhookEndpointDefinition;
 public class MetaWebhookEndpointDefinition extends BaseRootMetaData implements DefinableMetaData<WebhookEndpointDefinition>{
 
 	private static final long serialVersionUID = 7029271819447338103L;
-	/** 固有id、metaのidと同じ内容になるはずです */
 	private WebhookAuthenticationType headerAuthType;
 	private String headerAuthCustomTypeName;
 

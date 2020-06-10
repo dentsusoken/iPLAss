@@ -709,7 +709,7 @@ LocaleInfo.ui_metadata_webhook_WebhookTemplateEditPane_saveWebhookTemplate = "Th
 LocaleInfo.ui_metadata_webhook_WebhookTemplateEditPane_tokenNameFieldHoverInfo = "The name of the header to hold the HMAC token.";
 LocaleInfo.ui_metadata_webhook_WebhookTemplateEditPane_contentTypeFieldHoverInfo = "The content type of the reuqest. i.e. application/x-www-form-urlencoded, and application/json and so on.";
 LocaleInfo.ui_metadata_webhook_WebhookTemplateEditPane_headerGridTitle = "Custom Header";
-LocaleInfo.ui_metadata_webhook_WebhookTemplateEditPane_urlQueryFieldHoverInfo = "The sub path/query string can be defined for URL of Endpoint.<br/>It is possible to embed variables in as GroovyTemplate. <br/>When using as query string, please start with `?`.<br/>Example：?paramA=${entity.oid}&...";
+LocaleInfo.ui_metadata_webhook_WebhookTemplateEditPane_pathAndQueryFieldHoverInfo = "The sub path/query string can be defined for URL of Endpoint.<br/>It is possible to embed variables in as GroovyTemplate. <br/>When using as query string, please start with `?`.<br/>Example：?paramA=${entity.oid}&...";
 LocaleInfo.ui_metadata_webhook_WebhookTemplateEditPane_webhookContentTabTitle = "Webhook Payload Content";
 LocaleInfo.ui_metadata_webhook_WebhookTemplateEditPane_webhookContentTabHoverInfo = "Specify the contents for the request body.<br/>It is possible to embed variables in as GroovyTemplate.<br/>Please make sure the content is in appropriate format according to Content-Type.";
 LocaleInfo.ui_metadata_webhook_WebhookTemplateEditPane_saveConfirm ="Save Confirmation";

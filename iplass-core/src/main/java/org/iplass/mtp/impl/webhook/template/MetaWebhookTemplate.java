@@ -57,7 +57,7 @@ public class MetaWebhookTemplate extends BaseRootMetaData implements DefinableMe
 
 	private List<MetaWebhookHeader> headers;
 	
-	private String urlQuery;
+	private String pathAndQuery;
 
 	@Override
 	public WebhookTemplateRuntime createRuntime(MetaDataConfig metaDataConfig) {
@@ -79,7 +79,7 @@ public class MetaWebhookTemplate extends BaseRootMetaData implements DefinableMe
 		contentType = definition.getContentType();
 		webhookContent = definition.getWebhookContent();
 		httpMethod = definition.getHttpMethod();
-		urlQuery = definition.getPathAndQuery();
+		pathAndQuery = definition.getPathAndQuery();
 		
 		ArrayList<MetaWebhookHeader> newHeaders = new ArrayList<MetaWebhookHeader>();
 		if (definition.getHeaders()!=null) {
@@ -104,7 +104,7 @@ public class MetaWebhookTemplate extends BaseRootMetaData implements DefinableMe
 		
 		definition.setContentType(contentType);
 		definition.setWebhookContent(webhookContent);
-		definition.setPathAndQuery(urlQuery);
+		definition.setPathAndQuery(pathAndQuery);
 		definition.setHttpMethod(httpMethod);
 		
 		ArrayList<WebhookHeaderDefinition> newHeaders = new ArrayList<WebhookHeaderDefinition>();
@@ -152,15 +152,15 @@ public class MetaWebhookTemplate extends BaseRootMetaData implements DefinableMe
 		return webhookContent;
 	}
 
-	public String getUrlQuery() {
-		if (urlQuery == null) {
-			urlQuery = "";
+	public String getPathAndQuery() {
+		if (pathAndQuery == null) {
+			pathAndQuery = "";
 		}
-		return urlQuery;
+		return pathAndQuery;
 	}
 
-	public void setUrlQuery(String urlQuery) {
-		this.urlQuery = urlQuery;
+	public void setPathAndQuery(String pathAndQuery) {
+		this.pathAndQuery = pathAndQuery;
 	}
 
 	public void setWebhookContent(String webhookContent) {
@@ -169,22 +169,22 @@ public class MetaWebhookTemplate extends BaseRootMetaData implements DefinableMe
 
 	public class WebhookTemplateRuntime extends BaseMetaDataRuntime {
 		private GroovyTemplate contentTemplate;
-		private GroovyTemplate urlQueryTemplate;
+		private GroovyTemplate pathAndQueryTemplate;
 		
 		public WebhookTemplateRuntime() {
 			super();
 			try {
 				ScriptEngine se = ExecuteContext.getCurrentContext().getTenantContext().getScriptEngine();
 				contentTemplate = GroovyTemplateCompiler.compile(getWebhookContent(), "WebhookTemplate_Text" + getName(), (GroovyScriptEngine) se);
-				urlQueryTemplate = GroovyTemplateCompiler.compile(getUrlQuery(), "WebhookUrlQueryTemplate_Text" + getName(), (GroovyScriptEngine) se);
+				pathAndQueryTemplate = GroovyTemplateCompiler.compile(getPathAndQuery(), "WebhookPathAndQueryTemplate_Text" + getName(), (GroovyScriptEngine) se);
 			} catch (RuntimeException e) {
 				setIllegalStateException(e);
 			}
 		}
 
 
-		public GroovyTemplate getUrlQueryTemplate() {
-			return urlQueryTemplate;
+		public GroovyTemplate getPathAndQueryTemplate() {
+			return pathAndQueryTemplate;
 		}
 		
 		public GroovyTemplate getContentTemplate() {
@@ -210,7 +210,7 @@ public class MetaWebhookTemplate extends BaseRootMetaData implements DefinableMe
 			webhook.setHeaders(newHeaders);
 			webhook.setHttpMethod(httpMethod);
 			webhook.setContentType(contentType);
-			webhook.setPathAndQuery(urlQuery);
+			webhook.setPathAndQuery(pathAndQuery);
 			//common binding
 			Map<String, Object> binding = new HashMap<String, Object>();
 			if (parameter != null) {
@@ -232,11 +232,11 @@ public class MetaWebhookTemplate extends BaseRootMetaData implements DefinableMe
 				}
 				webhook.setPayloadContent(sw.toString());
 			}
-			if (urlQueryTemplate!=null) {
+			if (pathAndQueryTemplate!=null) {
 				StringWriter sw = new StringWriter();
 				GroovyTemplateBinding gtb = new GroovyTemplateBinding(sw,binding);
 				try {
-					urlQueryTemplate.doTemplate(gtb);
+					pathAndQueryTemplate.doTemplate(gtb);
 				} catch (IOException e) {
 					throw new ScriptRuntimeException(e);
 				}

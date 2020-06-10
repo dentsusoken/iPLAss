@@ -26,8 +26,8 @@ package org.iplass.mtp.webhook.endpoint;
  * <%}%>
  */
 public enum WebhookAuthenticationType {
-	BEARER("Bearer Authentication"),//username:password
-	BASIC("Basic Authentication"),
+	BEARER("Bearer Authentication"),
+	BASIC("Basic Authentication"),//"username:password"
 	CUSTOM("Custom Authentication");
 
 
