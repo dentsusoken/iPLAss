@@ -31,17 +31,15 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.core.MediaType;
 
 import org.apache.commons.io.IOUtils;
 import org.iplass.adminconsole.server.base.i18n.AdminResourceBundleUtil;
+import org.iplass.adminconsole.server.base.io.download.AdminDownloadService;
 import org.iplass.adminconsole.server.base.io.download.DownloadRuntimeException;
 import org.iplass.adminconsole.server.base.io.download.DownloadUtil;
-import org.iplass.adminconsole.server.base.rpc.util.AuthUtil;
 import org.iplass.adminconsole.server.base.service.AdminEntityManager;
 import org.iplass.adminconsole.server.base.service.auditlog.AdminAuditLoggingService;
 import org.iplass.adminconsole.shared.base.dto.io.download.DownloadProperty.FILETYPE;
@@ -64,69 +62,38 @@ import org.slf4j.LoggerFactory;
 /**
  * MetaDataConfigExport用Service実装クラス
  */
-public class MetaDataConfigDownloadServiceImpl extends HttpServlet {
+public class MetaDataConfigDownloadServiceImpl extends AdminDownloadService {
 
 	private static final long serialVersionUID = -3459617043325559477L;
 
 	private static final Logger logger = LoggerFactory.getLogger(MetaDataConfigDownloadServiceImpl.class);
 
-	public MetaDataConfigDownloadServiceImpl() {
-		super();
-	}
-
 	@Override
-	public void init() throws ServletException {
-		super.init();
-	}
-
-	@Override
-	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
-			throws ServletException, IOException {
-		download(req, resp);
-	}
-
-	@Override
-	protected void doPost(final HttpServletRequest req, final HttpServletResponse resp)
-			throws ServletException, IOException {
-		download(req, resp);
-	}
-
-	private void download(final HttpServletRequest req, final HttpServletResponse resp) {
+	protected void doDownload(final HttpServletRequest req, final HttpServletResponse resp, final int tenantId) {
 
 		//パラメータの取得
-		final int tenantId = Integer.parseInt(req.getParameter(ConfigDownloadProperty.TENANT_ID));
 		final String mode = req.getParameter(ConfigDownloadProperty.TARGET_MODE);
 
-		AuthUtil.authCheckAndInvoke(getServletContext(), req, resp, tenantId, new AuthUtil.Callable<Void>() {
+		TargetMode targetMode = TargetMode.valueOf(mode);
+		if (TargetMode.LIVE.equals(targetMode)) {
+			//Repository Download
 
-			@Override
-			public Void call() {
+			final String paths = req.getParameter(ConfigDownloadProperty.TARGET_PATH);
+			final String fileType = req.getParameter(ConfigDownloadProperty.FILE_TYPE);
+			final String repoType = req.getParameter(ConfigDownloadProperty.REPOSITORY_TYPE);
 
-				TargetMode targetMode = TargetMode.valueOf(mode);
-				if (TargetMode.LIVE.equals(targetMode)) {
-					//Repository Download
+			repositoryDownload(tenantId, paths, fileType, repoType, resp);
+		} else if (TargetMode.TAG.equals(targetMode)) {
+			//Tag Download
 
-					String paths = req.getParameter(ConfigDownloadProperty.TARGET_PATH);
-					String fileType = req.getParameter(ConfigDownloadProperty.FILE_TYPE);
-					String repoType = req.getParameter(ConfigDownloadProperty.REPOSITORY_TYPE);
-
-					repositoryDownload(tenantId, paths, fileType, repoType, resp);
-				} else if (TargetMode.TAG.equals(targetMode)) {
-					//Tag Download
-
-					String fileOid = req.getParameter(ConfigDownloadProperty.FILE_OID);
-					if (fileOid == null) {
-						throw new IllegalArgumentException(rs("tools.metaexplorer.MetaDataConfigDownloadServiceImpl.canNotGetData"));
-					}
-
-					tagDownload(tenantId, fileOid, resp);
-
-				}
-
-				return null;
+			final String fileOid = req.getParameter(ConfigDownloadProperty.FILE_OID);
+			if (fileOid == null) {
+				throw new IllegalArgumentException(rs("tools.metaexplorer.MetaDataConfigDownloadServiceImpl.canNotGetData"));
 			}
 
-		});
+			tagDownload(tenantId, fileOid, resp);
+
+		}
 	}
 
 	private void repositoryDownload(int tenantId, String paths, String fileType, String repoType, HttpServletResponse resp) {
@@ -160,14 +127,14 @@ public class MetaDataConfigDownloadServiceImpl extends HttpServlet {
 		//Repository種類取得
 		RepositoryType repositoryType = RepositoryType.valueOfTypeName(repoType);
 
-		List<String> entryPaths = new ArrayList<String>();
+		List<String> entryPaths = new ArrayList<>();
 		for (String path : paths) {
 			if (path.endsWith("*")) {
 				//ContextPathの全体選択の場合
 				String contextPath = path.substring(0, path.length() - 1);
 
 				List<MetaDataEntryInfo> nodes = MetaDataContext.getContext().definitionList(contextPath);
-				entryPaths = new ArrayList<String>();
+				entryPaths = new ArrayList<>();
 				for (MetaDataEntryInfo node : nodes) {
 					if (RepositoryType.SHARED.equals(repositoryType)
 							&& !node.isSharable()) {

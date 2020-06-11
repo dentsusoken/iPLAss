@@ -33,16 +33,15 @@ import javax.activation.DataHandler;
 import javax.activation.FileDataSource;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.core.MediaType;
 
 import org.apache.commons.io.IOUtils;
 import org.iplass.adminconsole.server.base.i18n.AdminResourceBundleUtil;
+import org.iplass.adminconsole.server.base.io.download.AdminDownloadService;
 import org.iplass.adminconsole.server.base.io.download.DownloadRuntimeException;
 import org.iplass.adminconsole.server.base.io.download.DownloadUtil;
-import org.iplass.adminconsole.server.base.rpc.util.AuthUtil;
 import org.iplass.adminconsole.server.base.service.AdminConsoleService;
 import org.iplass.adminconsole.server.base.service.auditlog.AdminAuditLoggingService;
 import org.iplass.adminconsole.shared.base.dto.io.download.DownloadProperty.ENCODE;
@@ -55,7 +54,7 @@ import org.slf4j.LoggerFactory;
 /**
  * LogFileExport用Service実装クラス
  */
-public class LogFileDownloadServiceImpl extends HttpServlet {
+public class LogFileDownloadServiceImpl extends AdminDownloadService {
 
 	private static final long serialVersionUID = 3148092411762538617L;
 
@@ -66,10 +65,6 @@ public class LogFileDownloadServiceImpl extends HttpServlet {
 
 	private AdminConsoleService acs = ServiceRegistry.getRegistry().getService(AdminConsoleService.class);
 	private AdminAuditLoggingService aals = ServiceRegistry.getRegistry().getService(AdminAuditLoggingService.class);
-
-	public LogFileDownloadServiceImpl() {
-		super();
-	}
 
 	@Override
 	public void init() throws ServletException {
@@ -84,35 +79,9 @@ public class LogFileDownloadServiceImpl extends HttpServlet {
 	}
 
 	@Override
-	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
-			throws ServletException, IOException {
-		download(req, resp);
-	}
+	protected void doDownload(final HttpServletRequest req, final HttpServletResponse resp, final int tenantId) {
 
-	@Override
-	protected void doPost(final HttpServletRequest req, final HttpServletResponse resp)
-			throws ServletException, IOException {
-		download(req, resp);
-	}
-
-	private void download(final HttpServletRequest req, final HttpServletResponse resp) {
-
-		//パラメータの取得
-		final int tenantId = Integer.parseInt(req.getParameter(LogFileDownloadProperty.TENANT_ID));
-
-		AuthUtil.authCheckAndInvoke(getServletContext(), req, resp, tenantId, new AuthUtil.Callable<Void>() {
-
-			@Override
-			public Void call() {
-				String filePath = req.getParameter(LogFileDownloadProperty.TARGET_PATH);
-				logDownload(tenantId, filePath, resp);
-				return null;
-			}
-
-		});
-	}
-
-	private void logDownload(final int tenantId, final String filePath, final HttpServletResponse resp) {
+		final String filePath = req.getParameter(LogFileDownloadProperty.TARGET_PATH);
 
 		//利用可否チェック
 		if (!acs.isLogDownloadEnabled()) {

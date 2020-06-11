@@ -1,19 +1,19 @@
 /*
  * Copyright (C) 2014 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
- * 
+ *
  * Unless you have purchased a commercial license,
  * the following license terms apply:
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
@@ -26,15 +26,13 @@ import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
 
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.core.MediaType;
 
 import org.iplass.adminconsole.server.base.i18n.AdminResourceBundleUtil;
+import org.iplass.adminconsole.server.base.io.download.AdminDownloadService;
 import org.iplass.adminconsole.server.base.io.download.DownloadUtil;
-import org.iplass.adminconsole.server.base.rpc.util.AuthUtil;
 import org.iplass.adminconsole.server.base.service.auditlog.AdminAuditLoggingService;
 import org.iplass.mtp.impl.metadata.MetaDataContext;
 import org.iplass.mtp.impl.metadata.MetaDataEntry;
@@ -44,60 +42,21 @@ import org.iplass.mtp.spi.ServiceRegistry;
 /**
  * HistoryDialogのconfig export用Service実装クラス
  */
-public class MetaDataHistoryConfigDownloadServiceImpl extends HttpServlet {
+public class MetaDataHistoryConfigDownloadServiceImpl extends AdminDownloadService {
 
 	private static final long serialVersionUID = -5549154268159682022L;
 
-	public MetaDataHistoryConfigDownloadServiceImpl() {
-		super();
-	}
-
 	@Override
-	public void init() throws ServletException {
-		super.init();
-	}
-
-	@Override
-	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
-			throws ServletException, IOException {
-		export(req, resp);
-	}
-
-	@Override
-	protected void doPost(final HttpServletRequest req, final HttpServletResponse resp)
-			throws ServletException, IOException {
-		export(req, resp);
-	}
-
-	public void export(final HttpServletRequest req, final HttpServletResponse resp) {
+	protected void doDownload(final HttpServletRequest req, final HttpServletResponse resp, final int tenantId) {
 
 		//パラメータの取得
-		final int tenantId = Integer.parseInt(req.getParameter("tenantId"));
-		final String versions = req.getParameter("versions");
-		final String defName = req.getParameter("metadataPath");
+		final String versionStr = req.getParameter("versions");
+		final String definitionId = req.getParameter("metadataPath");
 
-		AuthUtil.authCheckAndInvoke(getServletContext(), req, resp, tenantId, new AuthUtil.Callable<Void>() {
-
-			@Override
-			public Void call() {
-
-				xmlDownload(tenantId, getVersions(versions), defName, resp);
-
-				return null;
-			}
-
-		});
-	}
-
-	private String[] getVersions(String versions) {
-
-		if (versions == null || versions.isEmpty()) {
-			throw new IllegalArgumentException(resourceString("canNotGetExportTargetVersion"));
+		if (versionStr == null || versionStr.isEmpty()) {
+			throw new IllegalArgumentException(rs("MetaDataHistoryConfigDownloadServiceImpl.canNotGetExportTargetVersion"));
 		}
-		return versions.split(",");
-	}
-
-	private void xmlDownload(final int tenantId, final String[] versions, final String definitionId, final HttpServletResponse resp) {
+		final String[] versions =  versionStr.split(",");
 
 		MetaDataEntry entry = MetaDataContext.getContext().getMetaDataEntryById(definitionId);
 		String defName = entry.getMetaData().getName();
@@ -143,8 +102,8 @@ public class MetaDataHistoryConfigDownloadServiceImpl extends HttpServlet {
 		}
 	}
 
-	private static String resourceString(String suffix, Object... arguments) {
-		return AdminResourceBundleUtil.resourceString("MetaDataHistoryConfigDownloadServiceImpl." + suffix, arguments);
+	private static String rs(String key, Object... arguments) {
+		return AdminResourceBundleUtil.resourceString(key, arguments);
 	}
 
 }

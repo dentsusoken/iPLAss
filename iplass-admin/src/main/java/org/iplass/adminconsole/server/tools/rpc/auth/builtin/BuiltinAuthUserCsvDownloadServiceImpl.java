@@ -1,19 +1,19 @@
 /*
  * Copyright (C) 2015 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
- * 
+ *
  * Unless you have purchased a commercial license,
  * the following license terms apply:
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
@@ -24,14 +24,12 @@ import java.io.IOException;
 import java.util.Calendar;
 import java.util.Date;
 
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.iplass.adminconsole.server.base.io.download.AdminDownloadService;
 import org.iplass.adminconsole.server.base.io.download.DownloadRuntimeException;
 import org.iplass.adminconsole.server.base.io.download.DownloadUtil;
-import org.iplass.adminconsole.server.base.rpc.util.AuthUtil;
 import org.iplass.adminconsole.server.base.service.auditlog.AdminAuditLoggingService;
 import org.iplass.adminconsole.shared.tools.dto.auth.builtin.BuiltinAuthUserSearchOperator;
 import org.iplass.adminconsole.shared.tools.dto.auth.builtin.BuiltinAuthUserSearchType;
@@ -51,38 +49,15 @@ import org.slf4j.LoggerFactory;
 /**
  * Builtin Auth User CSV Export用Service実装クラス
  */
-public class BuiltinAuthUserCsvDownloadServiceImpl extends HttpServlet {
+public class BuiltinAuthUserCsvDownloadServiceImpl extends AdminDownloadService {
 
 	private static final Logger logger = LoggerFactory.getLogger(BuiltinAuthUserCsvDownloadServiceImpl.class);
 
 	/** シリアルバージョンNo */
 	private static final long serialVersionUID = 7829298292170482278L;
 
-	public BuiltinAuthUserCsvDownloadServiceImpl() {
-		super();
-	}
-
 	@Override
-	public void init() throws ServletException {
-		super.init();
-	}
-
-	@Override
-	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
-			throws ServletException, IOException {
-		download(req, resp);
-	}
-
-	@Override
-	protected void doPost(final HttpServletRequest req, final HttpServletResponse resp)
-			throws ServletException, IOException {
-		download(req, resp);
-	}
-
-	private void download(final HttpServletRequest req, final HttpServletResponse resp) {
-
-		//パラメータの取得、BuiltinAuthUserSearchParameterの生成
-		final int tenantId = Integer.parseInt(req.getParameter("tenantId"));
+	protected void doDownload(final HttpServletRequest req, final HttpServletResponse resp, final int tenantId) {
 
 		final BuiltinAuthUserSearchParameter param = new BuiltinAuthUserSearchParameter();
 		BuiltinAuthUserSearchType searchType = BuiltinAuthUserSearchType.valueOf(req.getParameter("searchType"));
@@ -148,29 +123,19 @@ public class BuiltinAuthUserCsvDownloadServiceImpl extends HttpServlet {
 
 		final String fileName = tenantId + "-user.csv";
 
-		AuthUtil.authCheckAndInvoke(getServletContext(), req, resp, tenantId, new AuthUtil.Callable<Void>() {
+		AdminAuditLoggingService aals = ServiceRegistry.getRegistry().getService(AdminAuditLoggingService.class);
+		aals.logDownload("AuthExplorerCsvDownload", fileName, param.getCondition());
 
-			@Override
-			public Void call() {
+		//Export
+		try {
+			DownloadUtil.setCsvResponseHeader(resp, fileName);
 
-				AdminAuditLoggingService aals = ServiceRegistry.getRegistry().getService(AdminAuditLoggingService.class);
-				aals.logDownload("AuthExplorerCsvDownload", fileName, param.getCondition());
-
-				//Export
-				try {
-					DownloadUtil.setCsvResponseHeader(resp, fileName);
-
-					BuiltinAuthToolService service = ServiceRegistry.getRegistry().getService(BuiltinAuthToolService.class);
-					service.exportCsv(resp.getOutputStream(), param);
-				} catch (IOException e) {
-					logger.error("failed to export user.", e);
-					throw new DownloadRuntimeException(e);
-				}
-
-				return null;
-			}
-
-		});
+			BuiltinAuthToolService service = ServiceRegistry.getRegistry().getService(BuiltinAuthToolService.class);
+			service.exportCsv(resp.getOutputStream(), param);
+		} catch (IOException e) {
+			logger.error("failed to export user.", e);
+			throw new DownloadRuntimeException(e);
+		}
 	}
 
 	private java.sql.Date convertDate(java.util.Date date) {
