@@ -30,16 +30,14 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.iplass.adminconsole.server.base.i18n.AdminResourceBundleUtil;
+import org.iplass.adminconsole.server.base.io.download.AdminDownloadService;
 import org.iplass.adminconsole.server.base.io.download.DownloadRuntimeException;
 import org.iplass.adminconsole.server.base.io.download.DownloadUtil;
 import org.iplass.adminconsole.server.base.rpc.i18n.LangDataLogic;
-import org.iplass.adminconsole.server.base.rpc.util.AuthUtil;
 import org.iplass.adminconsole.server.base.service.auditlog.AdminAuditLoggingService;
 import org.iplass.adminconsole.shared.tools.dto.langexplorer.OutputMode;
 import org.iplass.adminconsole.shared.tools.dto.metaexplorer.RepositoryType;
@@ -56,64 +54,33 @@ import org.slf4j.LoggerFactory;
 /**
  * 多言語情報Export用Service実装クラス
  */
-public class LangCsvDownloadServiceImpl extends HttpServlet {
+public class LangCsvDownloadServiceImpl extends AdminDownloadService {
 
 	/** シリアルバージョンNo */
 	private static final long serialVersionUID = 5784071407365401948L;
 
 	private static final Logger logger = LoggerFactory.getLogger(LangCsvDownloadServiceImpl.class);
 
-	public LangCsvDownloadServiceImpl() {
-		super();
-	}
-
 	@Override
-	public void init() throws ServletException {
-		super.init();
-	}
-
-	@Override
-	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
-			throws ServletException, IOException {
-		download(req, resp);
-	}
-
-	@Override
-	protected void doPost(final HttpServletRequest req, final HttpServletResponse resp)
-			throws ServletException, IOException {
-		download(req, resp);
-	}
-
-	private void download(final HttpServletRequest req, final HttpServletResponse resp) {
+	protected void doDownload(final HttpServletRequest req, final HttpServletResponse resp, final int tenantId) {
 
 		//パラメータの取得
-		final int tenantId = Integer.parseInt(req.getParameter("tenantId"));
 		final String mode = req.getParameter("mode");
 
+		// LangDataを取得
+		if (OutputMode.SINGLE.name().equals(mode)) {
+			String path = req.getParameter("path");
+			String definitionName = req.getParameter("definitionName");
+			String fileName = tenantId + "-lang-data-" + definitionName + "_" + new SimpleDateFormat("yyyyMMdd-HHmmss").format(new Date()) + ".csv";
 
-		AuthUtil.authCheckAndInvoke(getServletContext(), req, resp, tenantId, new AuthUtil.Callable<Void>() {
+			outputSingleMeta(resp, tenantId, path, definitionName, fileName);
+		} else {
+			String repoType = req.getParameter("repoType");
+			String paths = req.getParameter("paths");
+			String fileName = tenantId + "-lang-data" + "_" + new SimpleDateFormat("yyyyMMdd-HHmmss").format(new Date()) + ".csv";
 
-			@Override
-			public Void call() {
-				// LangDataを取得
-				if (OutputMode.SINGLE.name().equals(mode)) {
-					String path = req.getParameter("path");
-					String definitionName = req.getParameter("definitionName");
-					String fileName = tenantId + "-lang-data-" + definitionName + "_" + new SimpleDateFormat("yyyyMMdd-HHmmss").format(new Date()) + ".csv";
-
-					outputSingleMeta(resp, tenantId, path, definitionName, fileName);
-				} else {
-					String repoType = req.getParameter("repoType");
-					String paths = req.getParameter("paths");
-					String fileName = tenantId + "-lang-data" + "_" + new SimpleDateFormat("yyyyMMdd-HHmmss").format(new Date()) + ".csv";
-
-					outputMultiMeta(req, resp, tenantId, getPathArray(paths), fileName, repoType);
-				}
-
-				return null;
-			}
-
-		});
+			outputMultiMeta(resp, tenantId, getPathArray(paths), fileName, repoType);
+		}
 	}
 
 	private String[] getPathArray(String paths) {
@@ -134,26 +101,26 @@ public class LangCsvDownloadServiceImpl extends HttpServlet {
 
 	private void outputSingleMeta(HttpServletResponse resp, int tenantId, String path, String definitionName, String fileName) {
 		//Pathの取得
-		List<String> entryPaths = new ArrayList<String>();
+		List<String> entryPaths = new ArrayList<>();
 		entryPaths.add(path);
 
 		//CSV出力
 		writeCsv(resp, fileName, entryPaths);
 	}
 
-	private void outputMultiMeta(HttpServletRequest req, HttpServletResponse resp, int tenantId, String[] paths, String fileName, String repoType) {
+	private void outputMultiMeta(HttpServletResponse resp, int tenantId, String[] paths, String fileName, String repoType) {
 		//Repository種類取得
 		RepositoryType repositoryType = RepositoryType.valueOfTypeName(repoType);
 
 		//Pathの取得
-		List<String> entryPaths = new ArrayList<String>();
+		List<String> entryPaths = new ArrayList<>();
 		for (String path : paths) {
 			if (path.endsWith("*")) {
 				//ContextPathの全体選択の場合
 				String contextPath = path.substring(0, path.length() - 1);
 
 				List<MetaDataEntryInfo> nodes = MetaDataContext.getContext().definitionList(contextPath);
-				entryPaths = new ArrayList<String>();
+				entryPaths = new ArrayList<>();
 				for (MetaDataEntryInfo node : nodes) {
 					if (RepositoryType.SHARED.equals(repositoryType)
 							&& !node.isSharable()) {
@@ -196,7 +163,7 @@ public class LangCsvDownloadServiceImpl extends HttpServlet {
 
 				// 多言語情報出力
 				for (LangDataPortingInfo langDataInfo : infoList) {
-					Map<String, List<LocalizedStringDefinition>> localizedStringMap = new LinkedHashMap<String, List<LocalizedStringDefinition>>();
+					Map<String, List<LocalizedStringDefinition>> localizedStringMap = new LinkedHashMap<>();
 					logic.createMultiLangInfo(localizedStringMap, langDataInfo.getDefinition().getClass(), langDataInfo.getDefinition(), null);
 					writer.writeRecord(localizedStringMap, langDataInfo.getContextPath() + langDataInfo.getName());
 				}

@@ -24,14 +24,12 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.iplass.adminconsole.server.base.io.download.AdminDownloadService;
 import org.iplass.adminconsole.server.base.io.download.DownloadRuntimeException;
 import org.iplass.adminconsole.server.base.io.download.DownloadUtil;
-import org.iplass.adminconsole.server.base.rpc.util.AuthUtil;
 import org.iplass.adminconsole.server.base.service.auditlog.AdminAuditLoggingService;
 import org.iplass.mtp.entity.query.PreparedQuery;
 import org.iplass.mtp.entity.query.Query;
@@ -45,38 +43,17 @@ import org.slf4j.LoggerFactory;
 /**
  * EQL結果Export用Service実装クラス
  */
-public class EqlCsvDownloadServiceImpl extends HttpServlet {
+public class EqlCsvDownloadServiceImpl extends AdminDownloadService {
 
 	/** シリアルバージョンNo */
 	private static final long serialVersionUID = 5418054754659157087L;
 
 	private static final Logger logger = LoggerFactory.getLogger(EqlCsvDownloadServiceImpl.class);
 
-	public EqlCsvDownloadServiceImpl() {
-		super();
-	}
-
 	@Override
-	public void init() throws ServletException {
-		super.init();
-	}
-
-	@Override
-	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
-			throws ServletException, IOException {
-		download(req, resp);
-	}
-
-	@Override
-	protected void doPost(final HttpServletRequest req, final HttpServletResponse resp)
-			throws ServletException, IOException {
-		download(req, resp);
-	}
-
-	private void download(final HttpServletRequest req, final HttpServletResponse resp) {
+	protected void doDownload(final HttpServletRequest req, final HttpServletResponse resp, final int tenantId) {
 
 		//パラメータの取得
-		final int tenantId = Integer.parseInt(req.getParameter("tenantId"));
 		final String eql = req.getParameter("eql");
 		final boolean isSearchAllVersion = Boolean.valueOf(req.getParameter("isSearchAllVersion"));
 
@@ -109,38 +86,28 @@ public class EqlCsvDownloadServiceImpl extends HttpServlet {
 		//実行Queryの設定
 		query.setVersiond(isSearchAllVersion);
 
-		AuthUtil.authCheckAndInvoke(getServletContext(), req, resp, tenantId, new AuthUtil.Callable<Void>() {
+		AdminAuditLoggingService aals = ServiceRegistry.getRegistry().getService(AdminAuditLoggingService.class);
+		aals.logDownload("EqlWorkSheetCsvDownload", filename, query);
 
-			@Override
-			public Void call() {
+		try (QueryCsvWriter writer = new QueryCsvWriter(resp.getOutputStream(), query)){
 
-				AdminAuditLoggingService aals = ServiceRegistry.getRegistry().getService(AdminAuditLoggingService.class);
-				aals.logDownload("EqlWorkSheetCsvDownload", filename, query);
+			DownloadUtil.setCsvResponseHeader(resp, filename);
 
-				try (QueryCsvWriter writer = new QueryCsvWriter(resp.getOutputStream(), query)){
+			try {
+				int count = writer.write();
 
-					DownloadUtil.setCsvResponseHeader(resp, filename);
+				logger.debug(count + " records eql result exported.");
 
-					try {
-						int count = writer.write();
-
-						logger.debug(count + " records eql result exported.");
-
-					} catch (QueryException e) {
-						//実行時のEQLエラー(プロパティがない場合など)
-						logger.error("failed to export eql result.", e);
-						writer.writeError(e.getMessage());
-					}
-
-				} catch (IOException e) {
-					logger.error("failed to export eql result.", e);
-		        	throw new DownloadRuntimeException(e);
-				}
-
-				return null;
+			} catch (QueryException e) {
+				//実行時のEQLエラー(プロパティがない場合など)
+				logger.error("failed to export eql result.", e);
+				writer.writeError(e.getMessage());
 			}
 
-		});
+		} catch (IOException e) {
+			logger.error("failed to export eql result.", e);
+        	throw new DownloadRuntimeException(e);
+		}
 	}
 
 }

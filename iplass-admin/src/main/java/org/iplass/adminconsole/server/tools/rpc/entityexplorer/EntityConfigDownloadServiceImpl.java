@@ -1,19 +1,19 @@
 /*
  * Copyright (C) 2011 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
- * 
+ *
  * Unless you have purchased a commercial license,
  * the following license terms apply:
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
@@ -30,15 +30,14 @@ import java.util.Comparator;
 import java.util.List;
 
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.core.MediaType;
 
 import org.iplass.adminconsole.server.base.i18n.AdminResourceBundleUtil;
+import org.iplass.adminconsole.server.base.io.download.AdminDownloadService;
 import org.iplass.adminconsole.server.base.io.download.DownloadRuntimeException;
 import org.iplass.adminconsole.server.base.io.download.DownloadUtil;
-import org.iplass.adminconsole.server.base.rpc.util.AuthUtil;
 import org.iplass.adminconsole.server.base.service.auditlog.AdminAuditLoggingService;
 import org.iplass.adminconsole.shared.base.dto.io.download.DownloadProperty.ENCODE;
 import org.iplass.adminconsole.shared.base.dto.io.download.DownloadProperty.FILETYPE;
@@ -62,7 +61,7 @@ import org.iplass.mtp.webapi.definition.EntityWebApiDefinition;
 /**
  * EntityConfigExport用Service実装クラス
  */
-public class EntityConfigDownloadServiceImpl extends HttpServlet {
+public class EntityConfigDownloadServiceImpl extends AdminDownloadService {
 
 	private static final long serialVersionUID = -3459617043325559477L;
 
@@ -70,10 +69,6 @@ public class EntityConfigDownloadServiceImpl extends HttpServlet {
 	private EntityViewManager evm;
 	private DefinitionService ds;
 	private AdminAuditLoggingService aals;
-
-	public EntityConfigDownloadServiceImpl() {
-		super();
-	}
 
 	@Override
 	public void init() throws ServletException {
@@ -86,21 +81,9 @@ public class EntityConfigDownloadServiceImpl extends HttpServlet {
 	}
 
 	@Override
-	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
-			throws ServletException, IOException {
-		download(req, resp);
-	}
-
-	@Override
-	protected void doPost(final HttpServletRequest req, final HttpServletResponse resp)
-			throws ServletException, IOException {
-		download(req, resp);
-	}
-
-	private void download(final HttpServletRequest req, final HttpServletResponse resp) {
+	protected void doDownload(final HttpServletRequest req, final HttpServletResponse resp, final int tenantId) {
 
 		//パラメータの取得
-		final int tenantId = Integer.parseInt(req.getParameter("tenantId"));
 		final String fileType = req.getParameter("fileType");
 		final String defName = req.getParameter("definitionName");
 		final String defNames = req.getParameter("definitionNames");
@@ -111,29 +94,21 @@ public class EntityConfigDownloadServiceImpl extends HttpServlet {
 		final String xmlEntityMenuItem = req.getParameter("xmlEntityMenuItem");
 		final String xmlEntityWebAPI = req.getParameter("xmlEntityWebAPI");
 
-		AuthUtil.authCheckAndInvoke(getServletContext(), req, resp, tenantId, new AuthUtil.Callable<Void>() {
-
-			@Override
-			public Void call() {
-				if (FILETYPE.CSV.equals(FILETYPE.valueOf(fileType))) {
-					String execEncode = null;
-					if (ENCODE.valueOfByValue(csvEncode) == null) {
-						execEncode = ENCODE.UTF8.getValue();
-					} else {
-						execEncode = csvEncode;
-					}
-					csvDownload(tenantId, getDefNames(defName, defNames), csvOutputTarget, execEncode, resp);
-				} else if (FILETYPE.XML.equals(FILETYPE.valueOf(fileType))) {
-					boolean isOutEntityView = Boolean.valueOf(xmlEntityView);
-					boolean isOutEntityFilter = Boolean.valueOf(xmlEntityFilter);
-					boolean isOutEntityMenuItem = Boolean.valueOf(xmlEntityMenuItem);
-					boolean isOutEntityWebAPI = Boolean.valueOf(xmlEntityWebAPI);
-					xmlDownload(tenantId, getDefNames(defName, defNames), isOutEntityView, isOutEntityFilter, isOutEntityMenuItem, isOutEntityWebAPI, resp);
-				}
-				return null;
+		if (FILETYPE.CSV.equals(FILETYPE.valueOf(fileType))) {
+			String execEncode = null;
+			if (ENCODE.valueOfByValue(csvEncode) == null) {
+				execEncode = ENCODE.UTF8.getValue();
+			} else {
+				execEncode = csvEncode;
 			}
-
-		});
+			csvDownload(tenantId, getDefNames(defName, defNames), csvOutputTarget, execEncode, resp);
+		} else if (FILETYPE.XML.equals(FILETYPE.valueOf(fileType))) {
+			boolean isOutEntityView = Boolean.valueOf(xmlEntityView);
+			boolean isOutEntityFilter = Boolean.valueOf(xmlEntityFilter);
+			boolean isOutEntityMenuItem = Boolean.valueOf(xmlEntityMenuItem);
+			boolean isOutEntityWebAPI = Boolean.valueOf(xmlEntityWebAPI);
+			xmlDownload(tenantId, getDefNames(defName, defNames), isOutEntityView, isOutEntityFilter, isOutEntityMenuItem, isOutEntityWebAPI, resp);
+		}
 	}
 
 	private String[] getDefNames(String defName, String defNames) {
@@ -159,8 +134,8 @@ public class EntityConfigDownloadServiceImpl extends HttpServlet {
 			final boolean isOutEntityView, final boolean isOutEntityFilter, final boolean isOutEntityMenuItem, final boolean isOutEntityWebAPI,
 			final HttpServletResponse resp) {
 
-		List<String> entryPaths = new ArrayList<String>();
-		List<String> entityIds = new ArrayList<String>();
+		List<String> entryPaths = new ArrayList<>();
+		List<String> entityIds = new ArrayList<>();
 
 		for (String defName : defNames) {
 
