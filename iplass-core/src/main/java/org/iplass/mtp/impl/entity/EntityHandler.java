@@ -762,9 +762,10 @@ public class EntityHandler extends BaseMetaDataRuntime {
 
 	void preprocessInsertDirect(Entity entity, EntityContext entityContext, List<PropertyHandler> complexWrapperTypePropList) {
 		//AutoNumberTypeが、name,oidに利用されている場合、このタイミングで採番
-		if (entity.getOid() == null) {
+		String oid = entity.getOid();
+		if (oid == null) {
 			if (getMetaData().getOidPropertyId() == null || getMetaData().getOidPropertyId().size() == 0) {
-				String oid = getStrategy().newOid(entityContext, this);
+				oid = getStrategy().newOid(entityContext, this);
 				entity.setOid(oid);
 			} else {
 				//oidに生成されたidをセット
@@ -785,10 +786,14 @@ public class EntityHandler extends BaseMetaDataRuntime {
 							throw new EntityRuntimeException(pph.getName() + " must not null.");
 						}
 					}
-					sb.append(pph.getMetaData().getType().toString(oidVal));
+					String oidValStr = pph.getMetaData().getType().toString(oidVal);
+					service.checkValidOidPattern(oidValStr);
+					sb.append(oidValStr);
 				}
 				entity.setOid(sb.toString());
 			}
+		} else {
+			service.checkValidOidPattern(oid);
 		}
 
 		if (getMetaData().getNamePropertyId() != null) {

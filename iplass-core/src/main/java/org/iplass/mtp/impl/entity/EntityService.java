@@ -29,6 +29,7 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
 import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
+import java.util.regex.Pattern;
 
 import org.iplass.mtp.ManagerLocator;
 import org.iplass.mtp.definition.TypedDefinitionManager;
@@ -103,6 +104,7 @@ public class EntityService extends AbstractTypedMetaDataService<MetaEntity, Enti
 
 	private int limitOfReferences = 1000;
 	private int purgeTargetDate;
+	private Pattern oidValidationPattern;
 
 	private final EnumMap<VersionControlType, VersionController> versionControllers;
 	private ExtendPropertyAdapterFactory extendPropertyAdapterFactory;
@@ -803,6 +805,22 @@ public class EntityService extends AbstractTypedMetaDataService<MetaEntity, Enti
 		extendPropertyAdapterFactory = config.getValue("extendPropertyAdapterFactory", ExtendPropertyAdapterFactory.class);
 		if (extendPropertyAdapterFactory == null) {
 			extendPropertyAdapterFactory = new ExtendPropertyAdapterFactory();
+		}
+		
+		if (config.getValue("oidValidationPattern") != null) {
+			oidValidationPattern = Pattern.compile(config.getValue("oidValidationPattern"));
+		}
+	}
+	
+	public Pattern getOidValidationPattern() {
+		return oidValidationPattern;
+	}
+	
+	public void checkValidOidPattern(String oid) {
+		if (oidValidationPattern != null) {
+			if (!oidValidationPattern.matcher(oid).matches()) {
+				throw new EntityRuntimeException("OidProperty value must match pattern: " + oidValidationPattern.pattern());
+			}
 		}
 	}
 
