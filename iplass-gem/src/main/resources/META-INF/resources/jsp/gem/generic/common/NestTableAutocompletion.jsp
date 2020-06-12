@@ -43,7 +43,9 @@ StringBuilder sb = new StringBuilder();
 for (AutocompletionProperty prop : setting.getProperties()) {
 	if (sb.length() > 0) sb.append(",");
 	if (prop.isNestProperty()) {
-		sb.append("[name*='.").append(prop.getPropertyName()).append("']");
+		//NestTableの場合、先頭がreferenece名かをチェック
+		sb.append("[name^='").append(refPropName + "\\[").append("']");
+		sb.append("[name$='.").append(prop.getPropertyName()).append("']");
 	} else {
 		sb.append("[name='").append(prop.getPropertyName()).append("']");
 	}
@@ -66,19 +68,22 @@ $(function() {
 		}
 
 		var sourceVales = {};
-		<% for (AutocompletionProperty prop : setting.getProperties()) { %>
-		<% String acPropName = prop.getPropertyName(); %>
-		<% if (prop.isNestProperty()) { %>
+
+<%	for (AutocompletionProperty prop : setting.getProperties()) {
+		String acPropName = prop.getPropertyName();
+		if (prop.isNestProperty()) { 
+%>
 		if (prefix != null) {
 			sourceVales[prefix + "<%=acPropName%>"] = $("[name='" + prefix + "<%=acPropName%>']").map(function() {return $(this).val();}).get();
 		} else {
 			sourceVales["<%=refPropName%>.<%=acPropName%>"] = $("[name*='.<%=acPropName%>']").map(function() {return $(this).val();}).get();
 		}
-		<% } else { %>
+<% 		} else { %>
 		sourceVales["<%=acPropName%>"] = $("[name='<%=acPropName%>']").map(function() {return $(this).val();}).get();
-		<% } %>
-		<% } %>
-		<%=js.getJavascript()%>
+<% 		}
+	} 
+%>
+<%=	js.getJavascript()%>
 	});
 });
 </script>
@@ -105,24 +110,26 @@ $(function() {
 		}
 
 		var pValue = {};
-		<% for (AutocompletionProperty prop : setting.getProperties()) { %>
-		<% String acPropName = prop.getPropertyName(); %>
-		<% if (prop.isNestProperty()) { %>
+<% 	for (AutocompletionProperty prop : setting.getProperties()) {
+		String acPropName = prop.getPropertyName();
+		if (prop.isNestProperty()) { 
+%>
 		if (prefix != null) {
 			pValue[prefix + "<%=acPropName%>"] = $("[name='" + prefix + "<%=acPropName%>']").map(function() {return $(this).val();}).get();
 		} else {
 			pValue["<%=refPropName%>.<%=acPropName%>"] = $("[name*='.<%=acPropName%>']").map(function() {return $(this).val();}).get();
 		}
-		<% } else { %>
+<% 		} else { %>
 		pValue["<%=acPropName%>"] = $("[name='<%=acPropName%>']").map(function() {return $(this).val();}).get();
-		<% } %>
-		<% } %>
+<% 		}
+	}
 
-		<% if (rootEntity == null) { %>
+	if (rootEntity == null) { 
+%>
 		var entity = null;
-		<% } else { %>
+<% 	} else { %>
 		var entity = {oid: "<%=rootEntity.getOid()%>", version: "<%=rootEntity.getVersion()%>"};
-		<% } %>
+<%	} %>
 
 		if (prefix != null) {
 			var refIndex = prefix.substr(0, prefix.indexOf("]")).substr(prefix.indexOf("[") + 1);
