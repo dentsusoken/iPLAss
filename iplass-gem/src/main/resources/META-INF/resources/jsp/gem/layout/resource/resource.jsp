@@ -57,7 +57,7 @@ dType="/gem";
 scriptContext.locale.showPulldownPleaseSelectLabel = <%=ViewUtil.isShowPulldownPleaseSelectLabel()%>;
 </script>
 
-<script src="${staticContentPath}/webjars/jquery/3.2.1/jquery.min.js?cv=${apiVersion}"></script>
+<script src="${staticContentPath}/webjars/jquery/3.5.1/jquery.min.js?cv=${apiVersion}"></script>
 <script src="${staticContentPath}/webjars/jquery-ui/1.12.1/jquery-ui.min.js?cv=${apiVersion}"></script>
 <script src="${staticContentPath}/scripts/gem/functions.js?cv=${apiVersion}"></script>
 <script src="${staticContentPath}/scripts/gem/common.js?cv=${apiVersion}"></script>

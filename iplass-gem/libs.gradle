@@ -13,7 +13,7 @@ configurations {
 
 dependencies {
 	//js
-	wjRuntime 'org.webjars:jquery:3.2.1'
+	wjRuntime 'org.webjars:jquery:3.5.1'
 	wjRuntime 'org.webjars:pdf-js:1.9.426'
 	wjRuntime 'org.webjars:ckeditor:4.7.3'
 	wjRuntime 'org.webjars:select2:4.0.3'
