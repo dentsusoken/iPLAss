@@ -16,8 +16,6 @@ dependencies {
 	wjRuntime 'org.webjars.npm:ace-builds:1.4.5'
 	runtime configurations.wjRuntime
 
-	compileOnly "com.google.gwt:gwt-user:${gwtVersion}"
-	compileOnly "com.google.gwt:gwt-dev:${gwtVersion}"
 	//smart gwt has no public maven repository
 	compileOnly fileTree(rootProject.ext.localLibDir) {
 		include 'smartgwt/**'
