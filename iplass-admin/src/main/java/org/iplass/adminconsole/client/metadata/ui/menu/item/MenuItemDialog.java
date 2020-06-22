@@ -21,8 +21,14 @@
 package org.iplass.adminconsole.client.metadata.ui.menu.item;
 
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
 import org.iplass.adminconsole.client.base.tenant.TenantInfoHolder;
@@ -49,6 +55,7 @@ import org.iplass.mtp.definition.DefinitionInfo;
 import org.iplass.mtp.definition.SharedConfig;
 import org.iplass.mtp.entity.definition.EntityDefinition;
 import org.iplass.mtp.view.generic.EntityView;
+import org.iplass.mtp.view.generic.ViewControlSetting;
 import org.iplass.mtp.view.menu.ActionMenuItem;
 import org.iplass.mtp.view.menu.EntityMenuItem;
 import org.iplass.mtp.view.menu.MenuItem;
@@ -860,23 +867,39 @@ public class MenuItemDialog extends MtpDialog {
 	private void getEntityViewName() {
 		String defName = SmartGWTUtil.getStringValue(entityNameField);
 
-		final LinkedHashMap<String, String> valueMap = new LinkedHashMap<>();
 		if (SmartGWTUtil.isEmpty(defName)) {
-			entityViewNameField.setValueMap(valueMap);
+			entityViewNameField.setValueMap(Collections.emptyMap());
 		} else {
 			service.getDefinition(TenantInfoHolder.getId(), EntityView.class.getName(), defName,
 					new AsyncCallback<EntityView>() {
 
 				@Override
-				public void onSuccess(EntityView result) {
-					valueMap.put("", "default");
-					if (result != null) {
-						for (String viewName : result.getSearchFormViewNames()) {
-							if (!viewName.isEmpty()) {
-								valueMap.put(viewName, viewName);
+				public void onSuccess(EntityView entityView) {
+					Set<String> viewNames = new HashSet<>();
+					if (entityView != null) {
+						//登録SearchFormを追加
+						viewNames.addAll(Arrays.asList(entityView.getSearchFormViewNames()));
+						//管理設定がある場合あ、自動生成分のみ追加
+						if (entityView.getViewControlSettings() != null) {
+							for (ViewControlSetting setting : entityView.getViewControlSettings()) {
+								if (setting.isAutoGenerateSearchView()) {
+									viewNames.add(setting.getName() != null ? setting.getName() : "");
+								}
 							}
 						}
 					}
+					//１つもない場合はデフォルト追加
+					if (viewNames.isEmpty()) {
+						viewNames.add("");
+					}
+					
+					//ソートして、Map生成
+					Map<String, String> valueMap = viewNames.stream()
+						.sorted(Comparator.nullsFirst(Comparator.naturalOrder()))
+						.collect(Collectors.toMap(viewName -> viewName, viewName -> {
+							return viewName.isEmpty() ? "(default)" : viewName;
+						}));
+
 					entityViewNameField.setValueMap(valueMap);
 				}
 
