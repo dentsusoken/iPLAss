@@ -52,6 +52,7 @@ public final class GetEntityCommand extends AbstractEntityCommand {
 	public static final String PARAM_TABLE_MODE = "tabular";
 	public static final String PARAM_COUNT_TOTAL = "countTotal";
 	public static final String PARAM_FILTER = "filter";
+	public static final String PARAM_WITH_MAPPED_BY_REFERENCE = "withMappedByReference";
 
 	public static final String RESULT_ENTITY_LIST = "list";
 	public static final String RESULT_COUNT = "count";
@@ -76,17 +77,19 @@ public final class GetEntityCommand extends AbstractEntityCommand {
 
 	// api/entity/[definitionName]?filter=[where clause]
 	private void list(String entityDef, RequestContext request) {
-		Query query = new Query().selectAll(entityDef, false, true);
+		boolean isCSV = isCSV(request);
+		boolean withMappedBy = withMappedByReference(request,
+				isCSV ? entityWebApiService.isCsvListWithMappedByReference(): entityWebApiService.isListWithMappedByReference());
+		Query query = new Query().selectAll(entityDef, false, true, false, withMappedBy);
 		String filter = request.getParam(PARAM_FILTER);
 		if (filter != null) {
 			query.where(filter);
 		}
 
-		boolean isCSV = isCSV(request);
 		if (!isCSV) {
 			queryImpl(query, request);
 		} else {
-			listCsv(query, request);
+			listCsv(query, request, withMappedBy);
 		}
 	}
 
@@ -140,7 +143,7 @@ public final class GetEntityCommand extends AbstractEntityCommand {
 		request.setAttribute(RESULT_CSV, stream);
 	}
 
-	private void listCsv(Query query, RequestContext request) {
+	private void listCsv(Query query, RequestContext request, boolean withMappedBy) {
 		checkPermission(query.getFrom().getEntityName(), def -> def.getMetaData().isQuery());
 
 		StreamingOutput stream = out -> {
@@ -151,6 +154,7 @@ public final class GetEntityCommand extends AbstractEntityCommand {
 			option.setDateFormat(entityWebApiService.getCsvDateFormat());
 			option.setDatetimeSecFormat(entityWebApiService.getCsvDateTimeFormat());
 			option.setTimeSecFormat(entityWebApiService.getCsvTimeFormat());
+			option.setWithMappedByReference(withMappedBy);
 			try (EntitySearchCsvWriter writer = new EntitySearchCsvWriter(out, query.getFrom().getEntityName(), option)) {
 				writer.write();
 			}
@@ -173,9 +177,18 @@ public final class GetEntityCommand extends AbstractEntityCommand {
 			version = Long.parseLong(ver);
 		}
 
-		Entity e = em.load(oid, version, entityDef, new LoadOption(true, false));
+		Entity e = em.load(oid, version, entityDef, new LoadOption(true, withMappedByReference(request, entityWebApiService.isLoadWithMappedByReference())));
 		if (e != null) {
 			request.setAttribute(RESULT_ENTITY, e);
+		}
+	}
+	
+	private boolean withMappedByReference(RequestContext request, boolean defaultVale) {
+		Boolean wmbr = request.getParamAsBoolean(PARAM_WITH_MAPPED_BY_REFERENCE);
+		if (wmbr == null) {
+			return defaultVale;
+		} else {
+			return wmbr.booleanValue();
 		}
 	}
 

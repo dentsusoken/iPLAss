@@ -212,7 +212,7 @@ public class EntitySearchCsvWriter implements AutoCloseable {
 				//多重度複数のReferenceがある場合はLoadする
 				if (hasMultiReference) {
 					LoadOption loadOption = new LoadOption();
-					loadOption.setWithMappedByReference(false);
+					loadOption.setWithMappedByReference(option.isWithMappedByReference());
 
 					entity = em.load(entity.getOid(), entity.getVersion(), entity.getDefinitionName(), loadOption);
 				}

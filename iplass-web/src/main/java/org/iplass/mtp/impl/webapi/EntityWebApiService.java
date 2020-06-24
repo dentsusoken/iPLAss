@@ -61,6 +61,22 @@ public class EntityWebApiService extends AbstractTypedMetaDataService<MetaEntity
 	private String csvDateTimeFormat;
 	private String csvDateFormat;
 	private String csvTimeFormat;
+	
+	private boolean csvListWithMappedByReference;
+	private boolean listWithMappedByReference;
+	private boolean loadWithMappedByReference;
+
+	public boolean isLoadWithMappedByReference() {
+		return loadWithMappedByReference;
+	}
+
+	public boolean isCsvListWithMappedByReference() {
+		return csvListWithMappedByReference;
+	}
+
+	public boolean isListWithMappedByReference() {
+		return listWithMappedByReference;
+	}
 
 	public int getMaxLimit() {
 		return maxLimit;
@@ -88,6 +104,11 @@ public class EntityWebApiService extends AbstractTypedMetaDataService<MetaEntity
 		csvDateTimeFormat = config.getValue("csvDateTimeFormat", String.class, null);
 		csvDateFormat = config.getValue("csvDateFormat", String.class, null);
 		csvTimeFormat = config.getValue("csvTimeFormat", String.class, null);
+		
+		//TODO 3.0.xでは互換性のため、以下のデフォルト値とする
+		listWithMappedByReference = config.getValue("listWithMappedByReference", Boolean.TYPE, Boolean.TRUE).booleanValue();
+		csvListWithMappedByReference = config.getValue("csvListWithMappedByReference", Boolean.TYPE, Boolean.FALSE).booleanValue();
+		loadWithMappedByReference = config.getValue("loadWithMappedByReference", Boolean.TYPE, Boolean.FALSE).booleanValue();
 	}
 
 	public static String getFixedPath() {
