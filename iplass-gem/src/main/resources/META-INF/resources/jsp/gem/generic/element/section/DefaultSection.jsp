@@ -82,7 +82,9 @@
 	Object value = request.getAttribute(Constants.ENTITY_DATA);
 	Entity entity = value instanceof Entity ? (Entity)value : null;
 	OutputType type = (OutputType) request.getAttribute(Constants.OUTPUT_TYPE);
-
+	String execType = (String)request.getAttribute(Constants.EXEC_TYPE);
+	boolean isInsert = Constants.EXEC_TYPE_INSERT.equals(execType);
+	
 	String defName = (String)request.getAttribute(Constants.ROOT_DEF_NAME);
 
 	//表示判定スクリプトバインド用エンティティ
@@ -92,6 +94,11 @@
 
 	if ((type == OutputType.EDIT && section.isHideDetail())
 			|| (type == OutputType.VIEW && section.isHideView())) return;
+	
+	//新規の場合、システム項目は非表示
+	if (isInsert && Constants.AUTO_GENERATE_DETAIL_SYSTEM_SECTION_CSS_CLASS.equals(section.getStyle())) {
+		return;
+	}
 
 	EntityViewManager evm = ManagerLocator.manager(EntityViewManager.class);
 
