@@ -278,7 +278,8 @@ public class GemConfigService implements Service {
 				String systemPropertiesStr = config.getValue("autoGenerateSystemProperties");
 				String[] inputArray = systemPropertiesStr.split(",");
 				String[] validArray = Arrays.stream(inputArray)
-					.filter(property -> supports.contains(property))
+					.filter(property -> supports.contains(property.trim()))
+					.map(String::trim)
 					.toArray(String[]::new);
 				autoGenerateSetting.setSystemProperties(validArray);
 			}
