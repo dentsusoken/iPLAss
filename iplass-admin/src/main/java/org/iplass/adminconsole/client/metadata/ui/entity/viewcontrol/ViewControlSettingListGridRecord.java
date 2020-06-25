@@ -20,6 +20,8 @@
 
 package org.iplass.adminconsole.client.metadata.ui.entity.viewcontrol;
 
+import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
+
 import com.smartgwt.client.widgets.grid.ListGridRecord;
 
 public class ViewControlSettingListGridRecord extends ListGridRecord {
@@ -44,13 +46,20 @@ public class ViewControlSettingListGridRecord extends ListGridRecord {
 
 	public void setSettingName(String value) {
 		setAttribute(AGNAME, value);
+
+		//表示名を設定
+		if (SmartGWTUtil.isEmpty(value)) {
+			setDisplayName("(defailt)");
+		} else {
+			setDisplayName(value);
+		}
 	}
 
 	public String getDisplayName() {
 		return getAttribute(DISPLAY_NAME);
 	}
 
-	public void setDisplayName(String value) {
+	private void setDisplayName(String value) {
 		setAttribute(DISPLAY_NAME, value);
 	}
 
@@ -85,7 +94,7 @@ public class ViewControlSettingListGridRecord extends ListGridRecord {
 	public void setAutoGenerateSearchView(boolean value) {
 		setAttribute(AGSVIEW, value);
 	}
-	
+
 	public boolean isExistBulkView() {
 		return getAttributeAsBoolean(EXISTBVIEW);
 	}
