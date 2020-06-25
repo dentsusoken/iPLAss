@@ -95,11 +95,10 @@ public class FormViewUtil {
 			} else {
 				form = ev.getSearchFormView(viewName);
 			}
-		} else {
-			if (StringUtil.isEmpty(viewName)) {
-				//defaultの場合、何もなければ自動生成
-				form = createDefaultSearchFormView(ed);
-			}
+		}
+		if (form == null && StringUtil.isEmpty(viewName)) {
+			//defaultの場合、何もなければ自動生成
+			form = createDefaultSearchFormView(ed);
 		}
 		return form;
 	}
@@ -123,11 +122,10 @@ public class FormViewUtil {
 			} else {
 				form = ev.getBulkFormView(viewName);
 			}
-		} else {
-			if (StringUtil.isEmpty(viewName)) {
-				//defaultの場合、何もなければ自動生成
-				form = createDefaultBulkFormView(ed);
-			}
+		}
+		if (form == null && StringUtil.isEmpty(viewName)) {
+			//defaultの場合、何もなければ自動生成
+			form = createDefaultBulkFormView(ed);
 		}
 		return form;
 	}
@@ -267,11 +265,10 @@ public class FormViewUtil {
 			} else {
 				form = ev.getDetailFormView(viewName);
 			}
-		} else {
-			if (StringUtil.isEmpty(viewName)) {
-				//defaultの場合、何もなければ自動生成
-				form = createDefaultDetailFormView(ed);
-			}
+		}
+		if (form == null && StringUtil.isEmpty(viewName)) {
+			//defaultの場合、何もなければ自動生成
+			form = createDefaultDetailFormView(ed);
 		}
 		return form;
 	}
