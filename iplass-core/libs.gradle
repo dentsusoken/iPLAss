@@ -44,9 +44,9 @@ dependencies {
 	compile group: 'org.apache.pdfbox', name: 'pdfbox', version: '2.0.3', transitive : false
 	compile group: 'org.apache.pdfbox', name: 'fontbox', version: '2.0.3', transitive : false
 	compile group: 'org.apache.pdfbox', name: 'pdfbox-tools', version: '2.0.3', transitive : false
-	compile group: 'org.apache.poi', name: 'poi', version: '3.16'
-	compile group: 'org.apache.poi', name: 'poi-scratchpad', version: '3.16'
-	compile(group: 'org.apache.poi', name: 'poi-ooxml', version:'3.16') {
+	compile group: 'org.apache.poi', name: 'poi', version: '4.1.2'
+	compile group: 'org.apache.poi', name: 'poi-scratchpad', version: '4.1.2'
+	compile(group: 'org.apache.poi', name: 'poi-ooxml', version:'4.1.2') {
 		//java8 include stax-api
 		exclude(group: 'stax', module: 'stax-api')
 	}
