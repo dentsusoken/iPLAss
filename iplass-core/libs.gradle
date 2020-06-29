@@ -2,7 +2,7 @@ dependencies {
 
 	//apache commons
 	compile 'commons-io:commons-io:2.6'
-	compile(group: 'commons-beanutils', name: 'commons-beanutils', version:'1.9.3') {
+	compile(group: 'commons-beanutils', name: 'commons-beanutils', version:'1.9.4') {
 		//use jcl-over-slf4j
 		exclude(group: 'commons-logging', module: 'commons-logging')
 	}
