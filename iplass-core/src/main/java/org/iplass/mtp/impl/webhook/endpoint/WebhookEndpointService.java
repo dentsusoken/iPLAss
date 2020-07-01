@@ -17,15 +17,15 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
-package org.iplass.mtp.impl.webhook.endpointaddress;
+package org.iplass.mtp.impl.webhook.endpoint;
 
 import java.util.Map;
 
 import org.iplass.mtp.impl.definition.TypedMetaDataService;
-import org.iplass.mtp.impl.webhook.endpointaddress.MetaWebhookEndpointDefinition.WebhookEndpointRuntime;
+import org.iplass.mtp.impl.webhook.endpoint.MetaWebhookEndpoint.WebhookEndpointRuntime;
 import org.iplass.mtp.webhook.endpoint.WebhookEndpoint;
 
-public interface WebhookEndpointService extends TypedMetaDataService<MetaWebhookEndpointDefinition, WebhookEndpointRuntime>{
+public interface WebhookEndpointService extends TypedMetaDataService<MetaWebhookEndpoint, WebhookEndpointRuntime>{
 
 	/** delete all */
 	void deleteSecurityTokenByDefinitionName(String definitionName);

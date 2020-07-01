@@ -27,7 +27,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class DefaultWebhookResponseHandler implements WebhookResponseHandler{
-	private static Logger logger =  LoggerFactory.getLogger(WebhookServiceImpl.class);
+	private static Logger logger =  LoggerFactory.getLogger(DefaultWebhookResponseHandler.class);
 	@Override
 	public void handleResponse(WebhookResponse response) {
 		if (200<=response.getStatusCode()||response.getStatusCode()<300) {
@@ -40,55 +40,49 @@ public class DefaultWebhookResponseHandler implements WebhookResponseHandler{
 	private void writeLog(WebhookResponse response) {
 		if (logger.isDebugEnabled()) {
 	        StringBuilder msg = new StringBuilder(); 
-	        msg.append(makeStatusString(response));
-	        msg.append(makeHeaderString(response));
-	        msg.append(makeEntityString(response));
+	        makeStatusString(response, msg);
+	        makeHeaderString(response, msg);
+	        makeEntityString(response, msg);
 		
 			logger.debug(msg.toString());
 		}
 	}
 	
-	private StringBuilder makeStatusString(WebhookResponse whr) {
-		StringBuilder result = new StringBuilder(); 
-		result.append("Response Code ");
-		result.append(whr.getStatusCode());
-		result.append(":");
-		result.append(whr.getReasonPhrase());
-		result.append(";");
-		return result;
+	private void makeStatusString(WebhookResponse whr, StringBuilder msg) {
+		msg.append("Response Code ");
+		msg.append(whr.getStatusCode());
+		msg.append(":");
+		msg.append(whr.getReasonPhrase());
+		msg.append(";");
 	}
 
-	private StringBuilder makeHeaderString(WebhookResponse response) {
-		StringBuilder result = new StringBuilder(); 
-		result.append("Headers: ");
+	private void makeHeaderString(WebhookResponse response, StringBuilder msg) {
+		msg.append("Headers: ");
 		if (response.getHeaders()==null) {
-			result.append("null;");
+			msg.append("null;");
 		} else {
 			for (WebhookHeader hd:response.getHeaders()) {
-				result.append(hd.getKey());
-				result.append(":");
-				result.append(hd.getValue());
-				result.append("|");
+				msg.append(hd.getKey());
+				msg.append(":");
+				msg.append(hd.getValue());
+				msg.append("|");
 			}
-			result.substring(0, result.length()-1);
-			result.append(";");
+			msg.substring(0, msg.length()-1);
+			msg.append(";");
 		}
-		return result;
 	}
-	private StringBuilder makeEntityString(WebhookResponse whr) {
-		StringBuilder result = new StringBuilder(); 
+	private void makeEntityString(WebhookResponse whr, StringBuilder msg) {
 		if ( whr.getResponseBody() == null) {
-			result.append("Entity(null);");
+			msg.append("Entity(null);");
 		} else {
-			result.append("Entity(");
-			result.append(whr.getContentType()==null?"nullTypeName":whr.getContentType());
-			result.append(":");
-			result.append(whr.getContentEncoding()==null?"nullEncodeName":whr.getContentEncoding());
-			result.append("):");
-			result.append(whr.getResponseBody());
+			msg.append("Entity(");
+			msg.append(whr.getContentType()==null?"nullTypeName":whr.getContentType());
+			msg.append(":");
+			msg.append(whr.getContentEncoding()==null?"nullEncodeName":whr.getContentEncoding());
+			msg.append("):");
+			msg.append(whr.getResponseBody());
 		}
-		result.append(";");
-		return result;
+		msg.append(";");
 	}
 
 }

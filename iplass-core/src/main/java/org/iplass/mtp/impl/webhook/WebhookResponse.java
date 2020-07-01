@@ -21,7 +21,7 @@ package org.iplass.mtp.impl.webhook;
 
 import java.util.List;
 
-import org.iplass.mtp.webhook.template.definition.WebhookHeader;
+import org.iplass.mtp.webhook.WebhookHeader;
 
 public class WebhookResponse {
 

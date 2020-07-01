@@ -62,6 +62,16 @@ import com.smartgwt.client.widgets.layout.VLayout;
 
 public class WebhookEndpointEditPane extends MetaDataMainEditPane {
 	
+	
+	private final static String BASIC_DISPLAY_NAME = "Basic Authentication";
+	private final static String BEARER_DISPLAY_NAME = "Bearer Authentication";
+	private final static String CUSTOM_DISPLAY_NAME = "Custom Authentication";
+	private final static String NO_HEADER_AUTH_DISPLAY_NAME = "Disabled";
+	private final static String BASIC_TYPE_CODE = "WHBA";
+	private final static String BEARER_TYPE_CODE = "WHBT";
+	private final static String CUSTOM_TYPE_CODE = "WHCT";
+	private final static String HMAC_TYPE_CODE = "WHHM";
+	
 	private final MetaDataServiceAsync service;
 	/** 編集対象 */
 	private WebhookEndpointDefinition curDefinition;
@@ -74,17 +84,8 @@ public class WebhookEndpointEditPane extends MetaDataMainEditPane {
 	
 	/** 個別属性 */
 	private WebhookEndpointAttributePane webhookEndpointAttributePane;
-	
-	private final static String BASIC_DISPLAY_NAME = "Basic Authentication";
-	private final static String BEARER_DISPLAY_NAME = "Bearer Authentication";
-	private final static String CUSTOM_DISPLAY_NAME = "Custom Authentication";
-	private final static String NO_HEADER_AUTH_DISPLAY_NAME = "Disabled";
 
-	private final static String BASIC_TYPE_CODE = "WHBA";
-	private final static String BEARER_TYPE_CODE = "WHBT";
-	private final static String CUSTOM_TYPE_CODE = "WHCT";
-	private final static String HMAC_TYPE_CODE = "WHHM";
-	
+
 	public WebhookEndpointEditPane(MetaDataItemMenuTreeNode targetNode, DefaultMetaDataPlugin plugin) {
 		super(targetNode, plugin);
 		service = MetaDataServiceFactory.get();
@@ -114,6 +115,23 @@ public class WebhookEndpointEditPane extends MetaDataMainEditPane {
 		
 		initializeData();
 	}
+
+	/**
+	 * Definition画面設定内容入り
+	 *
+	 * @param definition 編集対象
+	 */
+	protected void setDefinition(DefinitionEntry entry) {
+		
+		this.curDefinition = (WebhookEndpointDefinition) entry.getDefinition();
+		this.curVersion = entry.getDefinitionInfo().getVersion();
+		this.curDefinitionId = entry.getDefinitionInfo().getObjDefId();
+		
+		commonSection.setDefinition(curDefinition);
+		webhookEndpointAttributePane.setDefinition(curDefinition);
+		
+	}
+
 	/**
 	 * データ初期化処理
 	 */
@@ -143,22 +161,6 @@ public class WebhookEndpointEditPane extends MetaDataMainEditPane {
 
 //		ステータスチェック
 		StatusCheckUtil.statuCheck(WebhookEndpointDefinition.class.getName(), defName, this);
-	}
-	
-	/**
-	 * Definition画面設定内容入り
-	 *
-	 * @param definition 編集対象
-	 */
-	protected void setDefinition(DefinitionEntry entry) {
-		
-		this.curDefinition = (WebhookEndpointDefinition) entry.getDefinition();
-		this.curVersion = entry.getDefinitionInfo().getVersion();
-		this.curDefinitionId = entry.getDefinitionInfo().getObjDefId();
-		
-		commonSection.setDefinition(curDefinition);
-		webhookEndpointAttributePane.setDefinition(curDefinition);
-		
 	}
 
 	/**
@@ -264,17 +266,19 @@ public class WebhookEndpointEditPane extends MetaDataMainEditPane {
 		private DynamicForm urlForm;
 		private DynamicForm headerAuthForm;
 		private DynamicForm hmacForm;
-		DynamicForm headerAuthCustomSchemeForm;
+		private DynamicForm headerAuthCustomSchemeForm;
 		private TextItem webhookEndpointUrlField;
 		
 		//header auth
+		private VLayout headerAuthPane = new VLayout();
 		private SelectItem authTypeItemField;
 		private Label authHeaderSecretStatusLabel;
 		private Label hmacSecretStatusLabel;
 		private CheckboxItem isHmacEnabledField;
-		
-		
+
 		private TextItem webhookEndpointAuthorizationAltTokenTypeNameField;//scheme for Authorization header
+
+		private VLayout hmacPane = new VLayout();
 		private TextItem hmacHeaderNameField;//key for hmac header
 		
 		public WebhookEndpointAttributePane() {
@@ -298,7 +302,6 @@ public class WebhookEndpointEditPane extends MetaDataMainEditPane {
 			urlForm.setItems(webhookEndpointUrlField);
 
 			/**Authorization header*/
-			VLayout headerAuthPane = new VLayout();
 			headerAuthPane.setMargin(5);
 			headerAuthPane.setMembersMargin(5);
 			headerAuthPane.setIsGroup(true);
@@ -399,7 +402,6 @@ public class WebhookEndpointEditPane extends MetaDataMainEditPane {
 			headerAuthPane.setChildren(headerAuthForm, headerAuthCustomSchemeForm, headerAuthContentLayout);
 
 			/**hmac settings*/
-			VLayout hmacPane = new VLayout();
 			hmacPane.setMargin(5);
 			hmacPane.setMembersMargin(5);
 			hmacPane.setIsGroup(true);
@@ -487,6 +489,56 @@ public class WebhookEndpointEditPane extends MetaDataMainEditPane {
 			
 			addMember(mainPane);
 		}
+
+		/** definition -> pane */
+		public void setDefinition(WebhookEndpointDefinition definition) {
+			if (definition != null) {
+				webhookEndpointUrlField.setValue(definition.getUrl());
+				webhookEndpointAuthorizationAltTokenTypeNameField.setValue(definition.getHeaderAuthCustomTypeName());
+				if(BASIC_TYPE_CODE.equals(definition.getHeaderAuthType())) {
+					authTypeItemField.setValue(BASIC_DISPLAY_NAME);
+				} else if(BEARER_TYPE_CODE.equals(definition.getHeaderAuthType())) {
+					authTypeItemField.setValue(BEARER_DISPLAY_NAME);
+				} else if(CUSTOM_TYPE_CODE.equals(definition.getHeaderAuthType())) {
+					authTypeItemField.setValue(CUSTOM_DISPLAY_NAME);
+				} else {
+					authTypeItemField.setValue(NO_HEADER_AUTH_DISPLAY_NAME);
+				}
+				hmacHeaderNameField.setValue(definition.getHmacHashHeader());
+				isHmacEnabledField.setValue(definition.isHmacEnabled());
+				refreshSecurityInfo();
+				toggleCustomHeaderName();
+			} else {
+				hmacHeaderNameField.clearValue();
+				webhookEndpointUrlField.clearValue();
+				webhookEndpointAuthorizationAltTokenTypeNameField.clearValue();
+				authTypeItemField.clearValue();
+				isHmacEnabledField.clearValue();
+				setHmacLabelStatus(false);
+				setHeaderAuthLabelStatus(false);
+				toggleCustomHeaderName();
+			}
+		}
+		/** pane -> definition */
+		public WebhookEndpointDefinition getEditDefinition(WebhookEndpointDefinition definition) {
+			definition.setUrl(SmartGWTUtil.getStringValue(webhookEndpointUrlField));
+			//authTypeItemFieldはcurDefinition随時更新のため、ここには何もしないで済む
+			definition.setHeaderAuthCustomTypeName(SmartGWTUtil.getStringValue(webhookEndpointAuthorizationAltTokenTypeNameField));
+			definition.setHmacHashHeader(SmartGWTUtil.getStringValue(hmacHeaderNameField));
+			definition.setHmacEnabled(SmartGWTUtil.getBooleanValue(isHmacEnabledField));
+			return definition;
+		}
+		
+		public boolean validate() {
+			return true;
+		}
+
+		public void clearErrors() {
+			urlForm.clearErrors(true);
+			headerAuthForm.clearErrors(true);
+			hmacForm.clearErrors(true);
+			headerAuthCustomSchemeForm.clearErrors(true);
+		}
 		protected void generateHmac() {
 			service.generateHmacTokenString(new AdminAsyncCallback<String>() {
 
@@ -566,36 +618,6 @@ public class WebhookEndpointEditPane extends MetaDataMainEditPane {
 			webhookEndpointAttributePane.markForRedraw();
 		}
 
-		/** definition -> pane */
-		public void setDefinition(WebhookEndpointDefinition definition) {
-			if (definition != null) {
-				webhookEndpointUrlField.setValue(definition.getUrl());
-				webhookEndpointAuthorizationAltTokenTypeNameField.setValue(definition.getHeaderAuthCustomTypeName());
-				if(BASIC_TYPE_CODE.equals(definition.getHeaderAuthType())) {
-					authTypeItemField.setValue(BASIC_DISPLAY_NAME);
-				} else if(BEARER_TYPE_CODE.equals(definition.getHeaderAuthType())) {
-					authTypeItemField.setValue(BEARER_DISPLAY_NAME);
-				} else if(CUSTOM_TYPE_CODE.equals(definition.getHeaderAuthType())) {
-					authTypeItemField.setValue(CUSTOM_DISPLAY_NAME);
-				} else {
-					authTypeItemField.setValue(NO_HEADER_AUTH_DISPLAY_NAME);
-				}
-				hmacHeaderNameField.setValue(definition.getHmacHashHeader());
-				isHmacEnabledField.setValue(definition.isHmacEnabled());
-				refreshSecurityInfo();
-				toggleCustomHeaderName();
-			} else {
-				hmacHeaderNameField.clearValue();
-				webhookEndpointUrlField.clearValue();
-				webhookEndpointAuthorizationAltTokenTypeNameField.clearValue();
-				authTypeItemField.clearValue();
-				isHmacEnabledField.clearValue();
-				setHmacLabelStatus(false);
-				setHeaderAuthLabelStatus(false);
-				toggleCustomHeaderName();
-			}
-		}
-
 		private void setHmacLabelStatus(boolean isSecretStored) {
 			if (isSecretStored) {
 				hmacSecretStatusLabel.setContents(AdminClientMessageUtil.getString("ui_metadata_webhook_WebhookEndpointEditPane_hmacSecretStoredTrue"));
@@ -646,24 +668,6 @@ public class WebhookEndpointEditPane extends MetaDataMainEditPane {
 				headerAuthCustomSchemeForm.setVisible(false);
 			}
 		}
-		/** pane -> definition */
-		public WebhookEndpointDefinition getEditDefinition(WebhookEndpointDefinition definition) {
-			definition.setUrl(SmartGWTUtil.getStringValue(webhookEndpointUrlField));
-			//authTypeItemFieldはcurDefinition随時更新のため、ここには何もしないで済む
-			definition.setHeaderAuthCustomTypeName(SmartGWTUtil.getStringValue(webhookEndpointAuthorizationAltTokenTypeNameField));
-			definition.setHmacHashHeader(SmartGWTUtil.getStringValue(hmacHeaderNameField));
-			definition.setHmacEnabled(SmartGWTUtil.getBooleanValue(isHmacEnabledField));
-			return definition;
-		}
-		
-		public boolean validate() {
-			return true;
-		}
 
-		public void clearErrors() {
-//			urlForm.clearErrors(true);
-//			headerAuthForm.clearErrors(true);
-//			hmacForm.clearErrors(true);
-		}
 	}
 }

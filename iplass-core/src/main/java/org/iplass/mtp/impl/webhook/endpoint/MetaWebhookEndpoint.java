@@ -17,7 +17,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
-package org.iplass.mtp.impl.webhook.endpointaddress;
+package org.iplass.mtp.impl.webhook.endpoint;
 
 import java.io.IOException;
 import java.io.StringWriter;
@@ -45,7 +45,7 @@ import org.iplass.mtp.webhook.endpoint.WebhookEndpoint;
 import org.iplass.mtp.webhook.endpoint.definition.WebhookEndpointDefinition;
 
 @XmlRootElement
-public class MetaWebhookEndpointDefinition extends BaseRootMetaData implements DefinableMetaData<WebhookEndpointDefinition>{
+public class MetaWebhookEndpoint extends BaseRootMetaData implements DefinableMetaData<WebhookEndpointDefinition>{
 
 	private static final long serialVersionUID = 7029271819447338103L;
 	private WebhookAuthenticationType headerAuthType;
@@ -85,11 +85,11 @@ public class MetaWebhookEndpointDefinition extends BaseRootMetaData implements D
 		definition.setHmacEnabled(hmacEnabled);
 		return definition;
 	}
-	public MetaWebhookEndpointDefinition() {
+	public MetaWebhookEndpoint() {
 		
 	}
 	
-	public MetaWebhookEndpointDefinition(String url) {
+	public MetaWebhookEndpoint(String url) {
 		this.url = url;
 	}
 	
@@ -236,8 +236,8 @@ public class MetaWebhookEndpointDefinition extends BaseRootMetaData implements D
 		}
 
 		@Override
-		public MetaWebhookEndpointDefinition getMetaData() {
-			return MetaWebhookEndpointDefinition.this;
+		public MetaWebhookEndpoint getMetaData() {
+			return MetaWebhookEndpoint.this;
 		}
 		public GroovyTemplate getUrlTemplate() {
 			return urlTemplate;

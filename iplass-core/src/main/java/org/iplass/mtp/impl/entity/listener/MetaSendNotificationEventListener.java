@@ -330,7 +330,7 @@ public class MetaSendNotificationEventListener extends MetaEventListener {
 				compiledScript = scriptEngine.createScript(scriptWithImport, scriptName);
 			}
 
-			setDestinationTemplateList(createDestinationTemplate(destinationList));
+			destinationTemplateList = createDestinationTemplate(destinationList);
 			
 			if (listenEvent != null) {
 				for (EventType eType : listenEvent) {
@@ -522,14 +522,6 @@ public class MetaSendNotificationEventListener extends MetaEventListener {
 
 		public MetaSendNotificationEventListener getMetaData() {
 			return MetaSendNotificationEventListener.this;
-		}
-
-		public List<GroovyTemplate> getDestinationTemplateList() {
-			return destinationTemplateList;
-		}
-
-		public void setDestinationTemplateList(List<GroovyTemplate> destinationTemplateList) {
-			this.destinationTemplateList = destinationTemplateList;
 		}
 		
 		protected Map<String, Object> generateBindings(Entity entity, EventType type, EntityEventContext context) {

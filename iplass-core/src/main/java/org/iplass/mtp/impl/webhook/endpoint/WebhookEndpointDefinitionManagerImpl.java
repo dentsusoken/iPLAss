@@ -17,7 +17,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
-package org.iplass.mtp.impl.webhook.endpointaddress;
+package org.iplass.mtp.impl.webhook.endpoint;
 
 import org.iplass.mtp.definition.DefinitionModifyResult;
 import org.iplass.mtp.impl.definition.AbstractTypedDefinitionManager;
@@ -41,17 +41,6 @@ public class WebhookEndpointDefinitionManagerImpl extends AbstractTypedDefinitio
 	@Override
 	public Class<WebhookEndpointDefinition> getDefinitionType() {
 		return WebhookEndpointDefinition.class; 
-	}
-
-	@Override
-	protected RootMetaData newInstance(WebhookEndpointDefinition definition) {
-		return new MetaWebhookEndpointDefinition();
-	}
-
-	@SuppressWarnings("rawtypes")
-	@Override
-	protected TypedMetaDataService getService() {
-		return service;
 	}
 
 	/**
@@ -99,5 +88,16 @@ public class WebhookEndpointDefinitionManagerImpl extends AbstractTypedDefinitio
 	@Override
 	public String generateHmacKey() {
 		return service.generateHmacTokenString();
+	}
+
+	@Override
+	protected RootMetaData newInstance(WebhookEndpointDefinition definition) {
+		return new MetaWebhookEndpoint();
+	}
+
+	@SuppressWarnings("rawtypes")
+	@Override
+	protected TypedMetaDataService getService() {
+		return service;
 	}
 }

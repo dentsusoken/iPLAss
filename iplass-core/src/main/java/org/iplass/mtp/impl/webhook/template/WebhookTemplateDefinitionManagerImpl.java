@@ -26,14 +26,11 @@ import org.iplass.mtp.impl.webhook.WebhookService;
 import org.iplass.mtp.spi.ServiceRegistry;
 import org.iplass.mtp.webhook.template.definition.WebhookTemplateDefinition;
 import org.iplass.mtp.webhook.template.definition.WebhookTemplateDefinitionManager;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
 
 public class WebhookTemplateDefinitionManagerImpl extends AbstractTypedDefinitionManager<WebhookTemplateDefinition> implements
 WebhookTemplateDefinitionManager{
 
-
-	private static final Logger logger = LoggerFactory.getLogger(WebhookTemplateDefinitionManager.class);
 	private WebhookService service;
 	
 	public WebhookTemplateDefinitionManagerImpl() {

@@ -52,8 +52,8 @@ import org.iplass.mtp.definition.TypedDefinitionManager;
 import org.iplass.mtp.impl.definition.AbstractTypedMetaDataService;
 import org.iplass.mtp.impl.definition.DefinitionMetaDataTypeMap;
 import org.iplass.mtp.impl.http.HttpClientConfig;
-import org.iplass.mtp.impl.webhook.endpointaddress.MetaWebhookEndpointDefinition.WebhookEndpointRuntime;
-import org.iplass.mtp.impl.webhook.endpointaddress.WebhookEndpointService;
+import org.iplass.mtp.impl.webhook.endpoint.WebhookEndpointService;
+import org.iplass.mtp.impl.webhook.endpoint.MetaWebhookEndpoint.WebhookEndpointRuntime;
 import org.iplass.mtp.impl.webhook.template.MetaWebhookTemplate;
 import org.iplass.mtp.impl.webhook.template.MetaWebhookTemplate.WebhookTemplateRuntime;
 import org.iplass.mtp.spi.Config;
@@ -92,6 +92,16 @@ public class WebhookServiceImpl extends AbstractTypedMetaDataService<MetaWebhook
 	public static String getFixedPath() {
 		return WEBHOOK_TEMPLATE_META_PATH;
 	}
+
+	private AsyncTaskManager atm;
+	private WebhookEndpointService wheps;
+	private boolean webhookIsRetry;
+	private int webhookRetryMaximumAttpempts;
+	private int webhookRetryInterval;
+	private String webhookHmacHashAlgorithm;
+	private String webhookHmacTokenDefaultName;
+	private HttpClientConfig webhookHttpClientConfig;
+	private CloseableHttpClient webhookHttpClient;
 
 	@Override
 	public void init(Config config) {
@@ -138,14 +148,6 @@ public class WebhookServiceImpl extends AbstractTypedMetaDataService<MetaWebhook
 		initWebhookHttpClient();
 	}
 
-	@Override
-	public void destroy() {
-		try {
-			webhookHttpClient.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
 
 	private void initWebhookHttpClient() {
 		if (webhookHttpClient == null) {
@@ -157,16 +159,14 @@ public class WebhookServiceImpl extends AbstractTypedMetaDataService<MetaWebhook
 		}
 	}
 
-	private AsyncTaskManager atm;
-	private WebhookEndpointService wheps;
-	private boolean webhookIsRetry;
-	private int webhookRetryMaximumAttpempts;
-	private int webhookRetryInterval;
-	private String webhookHmacHashAlgorithm;
-	private String webhookHmacTokenDefaultName;
-	private HttpClientConfig webhookHttpClientConfig;
-	private CloseableHttpClient webhookHttpClient;
-
+	@Override
+	public void destroy() {
+		try {
+			webhookHttpClient.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
 	@Override
 	public Class<MetaWebhookTemplate> getMetaDataType() {
 		return MetaWebhookTemplate.class;
@@ -292,7 +292,6 @@ public class WebhookServiceImpl extends AbstractTypedMetaDataService<MetaWebhook
 			httpRequest.setURI(new URI(url));
 
 			CloseableHttpResponse response = null;
-			//if retry
 			if (webhookIsRetry) {
 				for(int i=0; i<webhookRetryMaximumAttpempts; i++) {
 					try {
@@ -302,7 +301,7 @@ public class WebhookServiceImpl extends AbstractTypedMetaDataService<MetaWebhook
 						if (e.getClass() == InterruptedIOException.class 
 								||e.getClass() == UnknownHostException.class 
 								||e.getClass() == ConnectException.class
-								||e.getClass() == SSLException.class)	{//リトライ不可のException
+								||e.getClass() == SSLException.class)	{//リトライ不可のExceptions
 							logger.info("Webhook:"+e.getClass().getName()+" has occured. Stop retrying.");
 							break;
 						}else{

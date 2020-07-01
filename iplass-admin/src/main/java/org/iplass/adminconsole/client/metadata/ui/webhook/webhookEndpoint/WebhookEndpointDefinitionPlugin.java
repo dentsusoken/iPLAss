@@ -44,6 +44,12 @@ public class WebhookEndpointDefinitionPlugin extends DefaultMetaDataPlugin{
 
 	/** ノードアイコン */
 	private static final String NODE_ICON = "door_in.png";
+
+	public String getCategoryName() {
+		return CATEGORY_NAME;
+	}
+
+	
 	@Override
 	protected String nodeName() {
 		return NODE_NAME;
@@ -52,10 +58,6 @@ public class WebhookEndpointDefinitionPlugin extends DefaultMetaDataPlugin{
 	@Override
 	protected String nodeDisplayName() {
 		return AdminClientMessageUtil.getString("ui_metadata_webhook_WebhookEndpointDefinitionPlugin_WebhookEndpointDefinition");
-	}
-
-	public String getCategoryName() {
-		return CATEGORY_NAME;
 	}
 
 	@Override

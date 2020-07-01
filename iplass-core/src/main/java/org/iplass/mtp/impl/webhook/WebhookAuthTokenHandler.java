@@ -26,8 +26,6 @@ import org.iplass.mtp.auth.login.Credential;
 import org.iplass.mtp.auth.token.AuthTokenInfo;
 import org.iplass.mtp.impl.auth.authenticate.token.AuthToken;
 import org.iplass.mtp.impl.auth.authenticate.token.AuthTokenHandler;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * データベースでwebhookのパスワードや、トークンを管理するシークレットサービス
@@ -36,20 +34,12 @@ import org.slf4j.LoggerFactory;
  *
  */
 public class WebhookAuthTokenHandler extends AuthTokenHandler{
-	private static Logger logger = LoggerFactory.getLogger(WebhookAuthTokenHandler.class);
-	
-	//WebhookAuthToken Type
+
 	public static final String BASIC_AUTHENTICATION_TYPE = "WHBA";
 	public static final String BEARER_AUTHENTICATION_TYPE = "WHBT";
 	public static final String HMAC_AUTHENTICATION_TYPE = "WHHM";
 	public static final String CUSTOM_AUTHENTICATION_TYPE = "WHCT";
 	public static final String TYPE_WEBHOOK_AUTHTOKEN_HANDLER="WEBHOOKATH";
-	@Override
-	protected Serializable createDetails(String seriesString, String tokenString, String userUniqueId,
-			String policyName, AuthTokenInfo tokenInfo) {
-		//使わないはず
-		return null;
-	}
 
 	@Override
 	public AuthTokenInfo toAuthTokenInfo(AuthToken authToken) {
@@ -60,9 +50,6 @@ public class WebhookAuthTokenHandler extends AuthTokenHandler{
 		return info;
 	}
 
-	//retrieve token with tenantid, series and type. from : super.getBySeries(int tenantId, String type, String series)
-	
-	//creeateToken, from : super.create(AuthToken token)
 	/**
 	 * database->raw data
 	 * 対応の認証の情報Stringを取得
@@ -115,7 +102,14 @@ public class WebhookAuthTokenHandler extends AuthTokenHandler{
 		// TODO Auto-generated method stub
 		return null;
 	}
-	
+
+	@Override
+	protected Serializable createDetails(String seriesString, String tokenString, String userUniqueId,
+			String policyName, AuthTokenInfo tokenInfo) {
+		//使わないはず
+		return null;
+	}
+
 	/**
 	 * 
 	 * throw runtime Exception if invalid.

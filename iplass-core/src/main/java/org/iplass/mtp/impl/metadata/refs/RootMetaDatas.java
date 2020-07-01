@@ -38,7 +38,7 @@ import org.iplass.mtp.impl.tenant.MetaTenant;
 import org.iplass.mtp.impl.tenant.MetaTenantAuthInfo;
 import org.iplass.mtp.impl.tenant.MetaTenantI18nInfo;
 import org.iplass.mtp.impl.tenant.MetaTenantMailInfo;
-import org.iplass.mtp.impl.webhook.endpointaddress.MetaWebhookEndpointDefinition;
+import org.iplass.mtp.impl.webhook.endpoint.MetaWebhookEndpoint;
 import org.iplass.mtp.impl.webhook.template.MetaWebhookTemplate;
 
 @XmlSeeAlso({
@@ -57,7 +57,7 @@ import org.iplass.mtp.impl.webhook.template.MetaWebhookTemplate;
 	,MetaAuthenticationPolicy.class
 	,MetaPushNotificationTemplate.class
 	,MetaWebhookTemplate.class
-	,MetaWebhookEndpointDefinition.class
+	,MetaWebhookEndpoint.class
 
 	,MetaTenantAuthInfo.class
 	,MetaTenantMailInfo.class

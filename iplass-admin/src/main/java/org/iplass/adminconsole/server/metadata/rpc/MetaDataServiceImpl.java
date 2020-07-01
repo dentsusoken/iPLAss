@@ -110,7 +110,7 @@ import org.iplass.mtp.impl.query.QueryServiceHolder;
 import org.iplass.mtp.impl.report.ReportingEngineService;
 import org.iplass.mtp.impl.report.ReportingType;
 import org.iplass.mtp.impl.web.actionmapping.cache.ContentCacheContext;
-import org.iplass.mtp.impl.webhook.endpointaddress.WebhookEndpointService;
+import org.iplass.mtp.impl.webhook.endpoint.WebhookEndpointService;
 import org.iplass.mtp.spi.ServiceRegistry;
 import org.iplass.mtp.transaction.Transaction;
 import org.iplass.mtp.util.StringUtil;

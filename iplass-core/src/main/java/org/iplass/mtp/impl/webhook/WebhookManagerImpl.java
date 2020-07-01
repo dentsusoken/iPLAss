@@ -20,7 +20,8 @@
 package org.iplass.mtp.impl.webhook;
 
 import java.util.Map;
-import org.iplass.mtp.impl.webhook.endpointaddress.WebhookEndpointService;
+
+import org.iplass.mtp.impl.webhook.endpoint.WebhookEndpointService;
 import org.iplass.mtp.spi.ServiceRegistry;
 import org.iplass.mtp.webhook.Webhook;
 import org.iplass.mtp.webhook.WebhookManager;

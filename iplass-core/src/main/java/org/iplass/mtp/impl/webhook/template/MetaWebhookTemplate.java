@@ -54,9 +54,7 @@ public class MetaWebhookTemplate extends BaseRootMetaData implements DefinableMe
 	private String contentType;
 	private String webhookContent;
 	private String httpMethod;
-
 	private List<MetaWebhookHeader> headers;
-	
 	private String pathAndQuery;
 
 	@Override
@@ -197,8 +195,7 @@ public class MetaWebhookTemplate extends BaseRootMetaData implements DefinableMe
 		
 		public Webhook createWebhook(Map<String, Object> parameter) {
 			checkState();
-			
-			//fill up the info to webhooktemplate
+
 			Webhook webhook = new Webhook(); 
 			
 			ArrayList<WebhookHeader> newHeaders = new ArrayList<WebhookHeader>();

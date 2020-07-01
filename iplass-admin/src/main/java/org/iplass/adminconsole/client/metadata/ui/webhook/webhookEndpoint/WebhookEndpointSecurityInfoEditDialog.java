@@ -32,9 +32,9 @@ import com.smartgwt.client.widgets.form.fields.TextItem;
 import com.smartgwt.client.widgets.layout.VLayout;
 
 public class WebhookEndpointSecurityInfoEditDialog extends MtpDialog {
-	SecurityAttributePane securityAttributePane;
-	String securityType;
-	String tokenContent;
+	private SecurityAttributePane securityAttributePane;
+	private String securityType;
+	private String tokenContent;
 
 	/** データ変更ハンドラ */
 	private List<DataChangedHandler> handlers = new ArrayList<DataChangedHandler>();
@@ -91,6 +91,7 @@ public class WebhookEndpointSecurityInfoEditDialog extends MtpDialog {
 			handler.onDataChanged(event);
 		}
 	}
+
 	public class SecurityAttributePane extends VLayout{
 		private DynamicForm form;
 
