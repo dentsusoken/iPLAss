@@ -173,8 +173,8 @@ public class MetaWebhookTemplate extends BaseRootMetaData implements DefinableMe
 			super();
 			try {
 				ScriptEngine se = ExecuteContext.getCurrentContext().getTenantContext().getScriptEngine();
-				contentTemplate = GroovyTemplateCompiler.compile(getWebhookContent(), "WebhookTemplate_Text" + getName(), (GroovyScriptEngine) se);
-				pathAndQueryTemplate = GroovyTemplateCompiler.compile(getPathAndQuery(), "WebhookPathAndQueryTemplate_Text" + getName(), (GroovyScriptEngine) se);
+				contentTemplate = GroovyTemplateCompiler.compile(getWebhookContent(), "WebhookTemplate_Content_" + id, (GroovyScriptEngine) se);
+				pathAndQueryTemplate = GroovyTemplateCompiler.compile(getPathAndQuery(), "WebhookTemplate_PathAndQuery_" + id, (GroovyScriptEngine) se);
 			} catch (RuntimeException e) {
 				setIllegalStateException(e);
 			}

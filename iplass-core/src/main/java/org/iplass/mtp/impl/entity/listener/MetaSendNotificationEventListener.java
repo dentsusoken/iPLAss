@@ -179,6 +179,10 @@ public class MetaSendNotificationEventListener extends MetaEventListener {
 		result = prime * result + ((notificationCondScript == null) ? 0 : notificationCondScript.hashCode());
 		result = prime * result + ((notificationType == null) ? 0 : notificationType.hashCode());
 		result = prime * result + ((tmplDefName == null) ? 0 : tmplDefName.hashCode());
+		result = prime * result + ((sendTogether) ? 1231 : 1237);
+		result = prime * result + ((destinationList == null) ? 0 : destinationList.hashCode());
+		result = prime * result + ((synchronous) ? 1231 : 1237);
+		result = prime * result + ((responseHandler == null) ? 0 : responseHandler.hashCode());
 		return result;
 	}
 
@@ -296,6 +300,7 @@ public class MetaSendNotificationEventListener extends MetaEventListener {
 	private abstract class SendNotificationListenerEventHandler extends EventListenerRuntime {
 
 		private static final String SCRIPT_PREFIX = "SendNotificationListenerEventHandler_notificationCondScript";
+		private static final String DESTINATION_PREFIX = "SendNotificationListenerEventHandler_destinationList";
 
 		private Script compiledScript;
 		private ScriptEngine scriptEngine;
@@ -330,7 +335,7 @@ public class MetaSendNotificationEventListener extends MetaEventListener {
 				compiledScript = scriptEngine.createScript(scriptWithImport, scriptName);
 			}
 
-			destinationTemplateList = createDestinationTemplate(destinationList);
+			destinationTemplateList = createDestinationTemplate(destinationList, entity);
 			
 			if (listenEvent != null) {
 				for (EventType eType : listenEvent) {
@@ -558,14 +563,24 @@ public class MetaSendNotificationEventListener extends MetaEventListener {
 			return processedDestinationList;
 		}
 
-		private List<GroovyTemplate> createDestinationTemplate(List<String> destinationList){
+		private List<GroovyTemplate> createDestinationTemplate(List<String> destinationList, MetaEntity entity){
 			List<GroovyTemplate> templateList = new ArrayList<GroovyTemplate>();
 			if (destinationList == null) {
 				return templateList;
 			}
-			for (String script : destinationList) {
+			String entityId = new String(entity.getInheritedEntityMetaDataId());
+			
+			//何番目のeventlisterのかを計算
+			int i = 0;
+			for (; i < entity.getEventListenerList().size(); i++) {
+				if (MetaSendNotificationEventListener.this == entity.getEventListenerList().get(i)) {
+					break;
+				}
+			}
+			for (int j = 0; i< destinationList.size(); i++) {
+				String script = destinationList.get(i);
 				ScriptEngine se = ExecuteContext.getCurrentContext().getTenantContext().getScriptEngine();
-				GroovyTemplate destinationTemplate = GroovyTemplateCompiler.compile(script, "SendNotificationDestinationTemplate_Text" + tmplDefName, (GroovyScriptEngine) se);
+				GroovyTemplate destinationTemplate = GroovyTemplateCompiler.compile(script, DESTINATION_PREFIX + "_" + entityId + "_listener" + i + "_List" + j, (GroovyScriptEngine) se);
 				templateList.add(destinationTemplate);
 			}
 			return templateList;

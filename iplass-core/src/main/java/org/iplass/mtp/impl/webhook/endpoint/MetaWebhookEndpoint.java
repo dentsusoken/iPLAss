@@ -199,7 +199,7 @@ public class MetaWebhookEndpoint extends BaseRootMetaData implements DefinableMe
 
 			try {
 				ScriptEngine se = ExecuteContext.getCurrentContext().getTenantContext().getScriptEngine();
-				urlTemplate = GroovyTemplateCompiler.compile(getUrl(), "WebhookTemplate_Subscriber_" + getName() + "_" + id, (GroovyScriptEngine) se);
+				urlTemplate = GroovyTemplateCompiler.compile(getUrl(), "WebhookEndpointTemplate_Url_" + id, (GroovyScriptEngine) se);
 			} catch (RuntimeException e) {
 				setIllegalStateException(e);
 			}
