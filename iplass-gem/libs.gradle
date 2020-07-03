@@ -21,7 +21,7 @@ dependencies {
 	wjRuntime 'org.webjars:momentjs:2.18.1'
 
 	wjRuntime 'org.webjars.npm:free-jqgrid:4.14.1'
-	wjRuntime 'org.webjars.npm:jqtree:1.4.2'
+	wjRuntime 'org.webjars.npm:jqtree:1.4.9'
 
 	wjRuntime 'org.webjars.bower:jquery-ui:1.12.1'
 	wjRuntime 'org.webjars.bower:blueimp-file-upload:9.28.0'
