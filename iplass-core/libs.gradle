@@ -2,13 +2,13 @@ dependencies {
 
 	//apache commons
 	compile 'commons-io:commons-io:2.6'
-	compile(group: 'commons-beanutils', name: 'commons-beanutils', version:'1.9.3') {
+	compile(group: 'commons-beanutils', name: 'commons-beanutils', version:'1.9.4') {
 		//use jcl-over-slf4j
 		exclude(group: 'commons-logging', module: 'commons-logging')
 	}
 	compile 'org.apache.commons:commons-lang3:3.7'
 	compile 'org.apache.commons:commons-text:1.2'
-	compile 'commons-codec:commons-codec:1.11'
+	compile 'commons-codec:commons-codec:1.13'
 
 	//apache http clients
 	compile(group: 'org.apache.httpcomponents', name: 'httpmime', version:'4.5.2') {
@@ -38,15 +38,15 @@ dependencies {
 	//tika(依存関係多いので明示的に指定する)
 	compile group: 'org.apache.tika', name: 'tika-core', version: '1.14', transitive : false
 	compile group: 'org.apache.tika', name: 'tika-parsers', version: '1.14', transitive : false
-	compile group: 'org.apache.commons', name: 'commons-compress', version: '1.12', transitive : false
+	compile group: 'org.apache.commons', name: 'commons-compress', version: '1.19', transitive : false
 	compile group: 'org.apache.pdfbox', name: 'jempbox', version: '1.8.12', transitive : false
 	compile group: 'org.json', name: 'json', version: '20140107', transitive : false
 	compile group: 'org.apache.pdfbox', name: 'pdfbox', version: '2.0.3', transitive : false
 	compile group: 'org.apache.pdfbox', name: 'fontbox', version: '2.0.3', transitive : false
 	compile group: 'org.apache.pdfbox', name: 'pdfbox-tools', version: '2.0.3', transitive : false
-	compile group: 'org.apache.poi', name: 'poi', version: '3.16'
-	compile group: 'org.apache.poi', name: 'poi-scratchpad', version: '3.16'
-	compile(group: 'org.apache.poi', name: 'poi-ooxml', version:'3.16') {
+	compile group: 'org.apache.poi', name: 'poi', version: '4.1.2'
+	compile group: 'org.apache.poi', name: 'poi-scratchpad', version: '4.1.2'
+	compile(group: 'org.apache.poi', name: 'poi-ooxml', version:'4.1.2') {
 		//java8 include stax-api
 		exclude(group: 'stax', module: 'stax-api')
 	}

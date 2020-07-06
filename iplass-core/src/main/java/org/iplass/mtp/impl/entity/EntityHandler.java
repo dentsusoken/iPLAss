@@ -762,9 +762,10 @@ public class EntityHandler extends BaseMetaDataRuntime {
 
 	void preprocessInsertDirect(Entity entity, EntityContext entityContext, List<PropertyHandler> complexWrapperTypePropList) {
 		//AutoNumberTypeが、name,oidに利用されている場合、このタイミングで採番
-		if (entity.getOid() == null) {
+		String oid = entity.getOid();
+		if (oid == null) {
 			if (getMetaData().getOidPropertyId() == null || getMetaData().getOidPropertyId().size() == 0) {
-				String oid = getStrategy().newOid(entityContext, this);
+				oid = getStrategy().newOid(entityContext, this);
 				entity.setOid(oid);
 			} else {
 				//oidに生成されたidをセット
@@ -785,10 +786,14 @@ public class EntityHandler extends BaseMetaDataRuntime {
 							throw new EntityRuntimeException(pph.getName() + " must not null.");
 						}
 					}
-					sb.append(pph.getMetaData().getType().toString(oidVal));
+					String oidValStr = pph.getMetaData().getType().toString(oidVal);
+					service.checkValidOidPattern(oidValStr);
+					sb.append(oidValStr);
 				}
 				entity.setOid(sb.toString());
 			}
+		} else {
+			service.checkValidOidPattern(oid);
 		}
 
 		if (getMetaData().getNamePropertyId() != null) {
@@ -1574,7 +1579,7 @@ public class EntityHandler extends BaseMetaDataRuntime {
 					List<ValueExpression> select = cond.getSelect().getSelectValues();
 					Object[] row = new Object[select.size()];
 					for (int i = 0; i < row.length; i++) {
-						row[i] = vpa.getValue(select.get(i));
+						row[i] = vpa.getValue(i);
 					}
 
 					if (!callback.test(row)) {
@@ -1651,7 +1656,7 @@ public class EntityHandler extends BaseMetaDataRuntime {
 						List<ValueExpression> select = cond.getSelect().getSelectValues();
 						Object[] row = new Object[select.size()];
 						for (int i = 0; i < row.length; i++) {
-							row[i] = vpa.getValue(select.get(i));
+							row[i] = vpa.getValue(i);
 						}
 
 						builder.handle(row, null);
@@ -1722,10 +1727,11 @@ public class EntityHandler extends BaseMetaDataRuntime {
 
 		Entity model = eh.newInstance();
 
-		for (ValueExpression propName: query.getSelect().getSelectValues()) {
+		for (int i = 0; i < query.getSelect().getSelectValues().size(); i++) {
+			ValueExpression propName = query.getSelect().getSelectValues().get(i);
 			if (propName instanceof EntityField) {
 				EntityField ef = (EntityField) propName;
-				model.setValue(ef.getPropertyName(), it.getValue(ef));
+				model.setValue(ef.getPropertyName(), it.getValue(i));
 			}
 		}
 		return model;

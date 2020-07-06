@@ -86,6 +86,8 @@ public class MetaTreeViewParts extends MetaTemplateParts {
 	@Override
 	public void applyConfig(TopViewParts parts) {
 		TreeViewParts tree = (TreeViewParts) parts;
+		fillFrom(tree);
+		
 		treeViewName = tree.getTreeViewName();
 		iconTag = tree.getIconTag();
 	}
@@ -93,8 +95,11 @@ public class MetaTreeViewParts extends MetaTemplateParts {
 	@Override
 	public TopViewParts currentConfig() {
 		TreeViewParts tree = new TreeViewParts();
+		fillTo(tree);
+		
 		tree.setTreeViewName(treeViewName);
 		tree.setIconTag(iconTag);
+		
 		return tree;
 	}
 

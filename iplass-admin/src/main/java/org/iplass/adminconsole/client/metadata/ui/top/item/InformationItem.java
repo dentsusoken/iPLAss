@@ -95,6 +95,7 @@ public class InformationItem extends PartsItem {
 
 		private MetaDataLangTextItem titleField;
 		private TextItem iconTagField;
+		private TextItem styleField;
 		private SelectItem dispRangeField;
 
 		private CheckboxItem showPasswordWarnField;
@@ -108,7 +109,7 @@ public class InformationItem extends PartsItem {
 		public InformationItemSettingDialog() {
 
 			setTitle("Information List");
-			setHeight(580);
+			setHeight(600);
 			centerInPage();
 
 			//------------------------------
@@ -123,8 +124,11 @@ public class InformationItem extends PartsItem {
 
 			iconTagField = new MtpTextItem("iconTag", "Icon Tag");
 			SmartGWTUtil.addHoverToFormItem(iconTagField, AdminClientMessageUtil.getString("ui_metadata_top_item_InformationItem_iconTagComment"));
+			
+			styleField = new MtpTextItem("style", "Class");
+			SmartGWTUtil.addHoverToFormItem(styleField, AdminClientMessageUtil.getString("ui_metadata_top_item_TopViewContentParts_styleDescriptionKey"));
 
-			commonForm.setItems(titleField, iconTagField);
+			commonForm.setItems(titleField, iconTagField, styleField);
 
 			//------------------------------
 			//Information List
@@ -200,6 +204,7 @@ public class InformationItem extends PartsItem {
 						parts.setTitle(SmartGWTUtil.getStringValue(titleField));
 						parts.setLocalizedTitleList(titleField.getLocalizedList());
 						parts.setIconTag(SmartGWTUtil.getStringValue(iconTagField));
+						parts.setStyle(SmartGWTUtil.getStringValue(styleField));
 						if (dispRangeField.getValue() != null && !dispRangeField.getValueAsString().isEmpty()) {
 							parts.setDispRange(TimeDispRange.valueOf(SmartGWTUtil.getStringValue(dispRangeField)));
 						} else {
@@ -267,6 +272,7 @@ public class InformationItem extends PartsItem {
 			titleField.setValue(parts.getTitle());
 			titleField.setLocalizedList(parts.getLocalizedTitleList());
 			iconTagField.setValue(parts.getIconTag());
+			styleField.setValue(parts.getStyle());
 
 			if (parts.getDispRange() != null) {
 				dispRangeField.setValue(parts.getDispRange().name());

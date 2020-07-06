@@ -53,6 +53,8 @@ public class EntityWriteOption extends ParseOption {
 	/** 出力上限値。0以下は無制限 */
 	private int limit = 0;
 
+	private boolean withMappedByReference;
+
 	/** 列の表示名出力文字列 */
 	private Function<PropertyDefinition, String> columnDisplayName = property -> "";
 
@@ -64,6 +66,14 @@ public class EntityWriteOption extends ParseOption {
 
 	/** 検索実行後Query処理 */
 	private BiConsumer<Query, Entity> afterSearch = (query, entity) -> {};
+
+	public boolean isWithMappedByReference() {
+		return withMappedByReference;
+	}
+
+	public void setWithMappedByReference(boolean withMappedByReference) {
+		this.withMappedByReference = withMappedByReference;
+	}
 
 	public String getCharset() {
 		return charset;

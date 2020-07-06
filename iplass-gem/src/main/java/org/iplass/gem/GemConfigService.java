@@ -21,12 +21,17 @@
 package org.iplass.gem;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.iplass.gem.AutoGenerateSetting.DisplayPosition;
+import org.iplass.mtp.entity.Entity;
 import org.iplass.mtp.spi.Config;
 import org.iplass.mtp.spi.Service;
 
@@ -120,6 +125,9 @@ public class GemConfigService implements Service {
 
 	/** EntityViewHelper */
 	private EntityViewHelper entityViewHelper;
+
+	/** 自動生成設定 */
+	private AutoGenerateSetting autoGenerateSetting;
 
 	@Override
 	public void init(Config config) {
@@ -257,6 +265,36 @@ public class GemConfigService implements Service {
 		themes = config.getValues("themes", Theme.class);
 
 		entityViewHelper = config.getValue("entityViewHelper", EntityViewHelper.class);
+
+		autoGenerateSetting = new AutoGenerateSetting();
+		autoGenerateSetting.setShowSystemProperty(config.getValue("autoGenerateShowSystemProperty", Boolean.class, false));
+		if (autoGenerateSetting.isShowSystemProperty()) {
+			if (config.getValue("autoGenerateSystemProperties") != null) {
+				Set<String> supports = new HashSet<>(Arrays.asList(
+						Entity.OID,
+						Entity.VERSION,
+						Entity.CREATE_BY,
+						Entity.CREATE_DATE,
+						Entity.UPDATE_BY,
+						Entity.UPDATE_DATE,
+						Entity.LOCKED_BY
+						));
+				String systemPropertiesStr = config.getValue("autoGenerateSystemProperties");
+				String[] inputArray = systemPropertiesStr.split(",");
+				String[] validArray = Arrays.stream(inputArray)
+						.filter(property -> supports.contains(property.trim()))
+						.map(String::trim)
+						.toArray(String[]::new);
+				autoGenerateSetting.setSystemProperties(validArray);
+			}
+			if (config.getValue("autoGenerateSystemPropertyDisplayPosition") != null) {
+				String displayPosition = config.getValue("autoGenerateSystemPropertyDisplayPosition");
+				autoGenerateSetting.setSystemPropertyDisplayPosition(DisplayPosition.valueOf(displayPosition));
+			}
+			autoGenerateSetting.setExcludeOidWhenCustomOid(config.getValue("autoGenerateExcludeOidWhenCustomOid", Boolean.class, true));
+			autoGenerateSetting.setUseUserPropertyEditor(config.getValue("autoGenerateUseUserPropertyEditor", Boolean.class, true));
+		}
+
 	}
 
 	@Override
@@ -502,6 +540,14 @@ public class GemConfigService implements Service {
 	 */
 	public boolean isShallowCopyLobData() {
 		return shallowCopyLobData;
+	}
+
+	/**
+	 * 自動生成設定を取得します。
+	 * @return 自動生成設定
+	 */
+	public AutoGenerateSetting getAutoGenerateSetting() {
+		return autoGenerateSetting;
 	}
 
 }

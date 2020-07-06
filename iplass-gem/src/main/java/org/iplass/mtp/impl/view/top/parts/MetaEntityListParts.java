@@ -238,8 +238,9 @@ public class MetaEntityListParts extends MetaTemplateParts {
 		EntityListParts e = (EntityListParts) parts;
 		EntityContext context = EntityContext.getCurrentContext();
 		EntityHandler entity = context.getHandlerByName(e.getDefName());
+		fillFrom(e);
+		
 		if (entity == null) return;
-
 		definitionId = entity.getMetaData().getId();
 		viewName = e.getViewName();
 		viewNameForLink = e.getViewNameForLink();
@@ -251,6 +252,7 @@ public class MetaEntityListParts extends MetaTemplateParts {
 		// 言語毎の文字情報設定
 		localizedTitleList = I18nUtil.toMeta(e.getLocalizedTitleList());
 		iconTag = e.getIconTag();
+		//
 	}
 
 	@Override
@@ -258,6 +260,8 @@ public class MetaEntityListParts extends MetaTemplateParts {
 		EntityListParts parts = new EntityListParts();
 		EntityContext context = EntityContext.getCurrentContext();
 		EntityHandler entity = null;
+		fillTo(parts);
+		
 		if (definitionId != null) {
 			entity = context.getHandlerById(definitionId);
 			if (entity != null) {
@@ -273,6 +277,7 @@ public class MetaEntityListParts extends MetaTemplateParts {
 		parts.setHeight(height);
 		parts.setLocalizedTitleList(I18nUtil.toDef(localizedTitleList));
 		parts.setIconTag(iconTag);
+		
 		return parts;
 	}
 

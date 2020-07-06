@@ -33,7 +33,7 @@ node {
 	version = '11.15.0'
 	//npm version
 	npmVersion = '6.7.0'
-	
+
 	workDir = file("${project.buildDir}/nodejs")
 	npmWorkDir = file("${project.buildDir}/npm")
 }
@@ -89,7 +89,7 @@ task compileJsp(dependsOn: ["compileJava"]) {
 			classpath {
 				pathelement(path: configurations.jasper.asPath)
 				pathelement(path: files(configurations.compile.files.findAll{it.name != 'note.txt'}).asPath)
-				pathelement(path: sourceSets.main.output.classesDir)
+				pathelement(path: sourceSets.main.output.classesDirs.asPath)
 			}
 		}
 		def outDir = "${buildDir}/deploy/gem/classes"

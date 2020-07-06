@@ -3,7 +3,7 @@ buildscript {
 		jcenter()
 	}
 	dependencies {
-		classpath 'de.richsource.gradle.plugins:gwt-gradle-plugin:0.6'
+		classpath 'org.wisepersist:gwt-gradle-plugin:1.0.13'
 	}
 }
 
@@ -32,6 +32,7 @@ dependencies {
 }
 
 apply plugin: 'gwt-compiler'
+apply plugin: 'eclipse'
 
 sourceSets {
 	main {
@@ -62,7 +63,7 @@ processResources {
 
 gwt {
 	src = files("${buildDir}/src/gwt")
-	gwtVersion=gwtVersion
+	gwtVersion = this.gwtVersion
 	modules 'org.iplass.adminconsole.AdminConsole'
 	minHeapSize = '32M'
 	maxHeapSize = '2048M'
@@ -70,6 +71,10 @@ gwt {
 	sourceLevel = 'auto'
 	compiler {
 		strict = true;
+	}
+	// The following is only needed if you don't use the Google Plugin for Eclipse.
+	eclipse {
+		addGwtContainer = false // Default set to true
 	}
 }
 
@@ -446,6 +451,7 @@ task copyGwtTransSrc(type: Sync) {
 		include 'mtp/view/top/TopViewDefinition.java'
 		include 'mtp/view/top/TopViewDefinitionModifyResult.java'
 		include 'mtp/view/top/parts/ActionParts.java'
+		include 'mtp/view/top/parts/TopViewContentParts.java'
 		include 'mtp/view/top/parts/ApplicationMaintenanceParts.java'
 		include 'mtp/view/top/parts/CalendarParts.java'
 		include 'mtp/view/top/parts/CsvDownloadSettingsParts.java'

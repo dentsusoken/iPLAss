@@ -24,6 +24,7 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.IdentityHashMap;
 import java.util.List;
 
@@ -52,7 +53,15 @@ public class GRdbSearchResultIterator implements SearchResultIterator {
 	private Query query;
 	private RdbAdapter rdb;
 	private RdbBaseValueTypeResolver resolver;
-	private IdentityHashMap<ValueExpression, Integer> valIndexMap;
+	private IdentityHashMap<ValueExpression, SelectCol> colMap;
+	private List<SelectCol> colList;
+	
+	private static class SelectCol {
+		ValueExpression val;
+		int colNum;
+		GRdbPropertyStoreRuntime colDef;
+		BaseRdbTypeAdapter adapter;
+	}
 	
 	public GRdbSearchResultIterator(ResultSet rs, EntityHandler dataModelHandler, EntityContext context, Query query, RdbAdapter rdb) {
 		this.rs = rs;
@@ -61,23 +70,33 @@ public class GRdbSearchResultIterator implements SearchResultIterator {
 		this.query = query;
 		this.rdb = rdb;
 		resolver = new RdbBaseValueTypeResolver(dataModelHandler, context, rdb);
-		createIndexMap();
+		createCol();
 	}
 	
-	private void createIndexMap() {
+	private void createCol() {
 		List<ValueExpression> select = query.getSelect().getSelectValues();
-		valIndexMap = new IdentityHashMap<>(select.size());
+		colMap = new IdentityHashMap<>(select.size());
+		colList = new ArrayList<>(select.size());
 		int res = 1;
 		for (ValueExpression v: select) {
-			valIndexMap.put(v, res);
+			SelectCol col = new SelectCol();
+			col.val = v;
+			col.colNum = res;
+			
 			if (!(v instanceof EntityField)) {
+				PropertyType type = resolver.resolve(v);
+				if (type != null) {
+					col.adapter = (BaseRdbTypeAdapter) rdb.getRdbTypeAdapter(type);
+				}
 				res += 1;
 			} else {
-				EntityField current = (EntityField) v;
-				PropertyHandler ph = dataModelHandler.getPropertyCascade(current.getPropertyName(), context);
-				GRdbPropertyStoreRuntime psh = (GRdbPropertyStoreRuntime) ph.getStoreSpecProperty();
-				res += psh.getColCount();
+				PropertyHandler ph = dataModelHandler.getPropertyCascade(((EntityField) v).getPropertyName(), context);
+				col.colDef = (GRdbPropertyStoreRuntime) ph.getStoreSpecProperty();
+				res += col.colDef.getColCount();
 			}
+			
+			colMap.put(v, col);
+			colList.add(col);
 		}
 	}
 	
@@ -113,37 +132,34 @@ public class GRdbSearchResultIterator implements SearchResultIterator {
 	
 	public Object getValue(ValueExpression propName) {
 		
-		int colNum = getIndex(propName);
+		SelectCol col = colMap.get(propName);
+		if (col == null) {
+			throw new EntityRuntimeException(propName + " is not contains select clause.");
+		}
+		
+		return getValueImpl(col);
+	}
+	
+	private Object getValueImpl(SelectCol col) {
+		
 		try {
-			if (propName instanceof EntityField) {
-				PropertyHandler ph = dataModelHandler.getPropertyCascade(((EntityField) propName).getPropertyName(), context);
-				GRdbPropertyStoreRuntime colDef = (GRdbPropertyStoreRuntime) ph.getStoreSpecProperty();
-				return colDef.fromDataStore(rs, colNum);
+			if (col.colDef != null) {
+				return col.colDef.fromDataStore(rs, col.colNum);
+			} else if (col.adapter != null) {
+				return col.adapter.fromDataStore(rs, col.colNum, rdb);
 			} else {
-				//TODO 型の解決をキャッシュする
-				PropertyType type = resolver.resolve(propName);
-				if (type == null) {
-					return rs.getObject(colNum);
-				} else {
-					BaseRdbTypeAdapter adapter = (BaseRdbTypeAdapter) rdb.getRdbTypeAdapter(type);
-					return adapter.fromDataStore(rs, colNum, rdb);
-				}
+				return rs.getObject(col.colNum);
 			}
 		} catch (SQLException e) {
-			throw new EntityRuntimeException(propName + " can not convert.", e);
+			throw new EntityRuntimeException(col.val + " can not convert.", e);
 		}
 	}
-	
 
-	private int getIndex(ValueExpression propName) {
-		Integer index = valIndexMap.get(propName);
-		if (index == null) {
-			throw new EntityRuntimeException(propName + " is not contains select clause.");
-		} else {
-			return index;
-		}
+	@Override
+	public Object getValue(int index) {
+		return getValueImpl(colList.get(index));
 	}
-	
+
 	public boolean next() {
 		try {
 			return rs.next();

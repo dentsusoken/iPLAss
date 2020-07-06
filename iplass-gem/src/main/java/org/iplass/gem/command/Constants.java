@@ -199,6 +199,14 @@ public class Constants {
 	public static final String PROPERTY_ITEM = "propertyItem";
 	public static final String COND_PROP_NAME = "condPropName";
 
+	// 編集画面用
+	/** 自動生成、基本項目Section CSS Class名 */
+	public static final String AUTO_GENERATE_DETAIL_BASIC_SECTION_CSS_CLASS = "auto-generate-basic-info";
+	/** 自動生成、オブジェクト情報Section CSS Class名 */
+	public static final String AUTO_GENERATE_DETAIL_OBJECT_SECTION_CSS_CLASS = "auto-generate-object-info";
+	/** 自動生成、システム情報Section CSS Class名。このクラスが指定されている場合、編集画面で新規の場合に表示除外される */
+	public static final String AUTO_GENERATE_DETAIL_SYSTEM_SECTION_CSS_CLASS = "auto-generate-system-info";
+
 	// 選択画面用
 	public static final String ROOT_NAME = "rootName";
 	public static final String SELECT_MULTI = "multiplicity";
@@ -236,6 +244,7 @@ public class Constants {
 
 	// カレンダー用
 	public static final String CALENDAR_NAME = org.iplass.mtp.impl.view.top.parts.Constants.CALENDAR_NAME;
+	public static final String CALENDAR_SETTING = org.iplass.mtp.impl.view.top.parts.Constants.CALENDAR_SETTING;
 	public static final String CALENDAR_TYPE = "calendarType";
 	public static final String CALENDAR_DATE = "date";
 	public static final String CALENDAR_FROM = "from";

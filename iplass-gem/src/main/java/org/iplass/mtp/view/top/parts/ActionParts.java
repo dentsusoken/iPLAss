@@ -26,8 +26,8 @@ import javax.xml.bind.annotation.XmlSeeAlso;
  * アクション系のパーツ
  * @author lis3wg
  */
-@XmlSeeAlso({InformationParts.class, EntityListParts.class})
-public abstract class ActionParts extends TopViewParts {
+@XmlSeeAlso({InformationParts.class})
+public abstract class ActionParts extends TopViewContentParts {
 
 	/** SerialVersionUID */
 	private static final long serialVersionUID = -5225972555509380983L;

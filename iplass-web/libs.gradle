@@ -1,7 +1,7 @@
 dependencies {
 
 	//apache POI
-	compile(group: 'org.apache.poi', name: 'poi-ooxml', version:'3.16') {
+	compile(group: 'org.apache.poi', name: 'poi-ooxml', version:'4.1.2') {
 		//java8 include stax-api
 		exclude(group: 'stax', module: 'stax-api')
     }

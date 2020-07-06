@@ -1045,6 +1045,7 @@ LocaleInfo.ui_metadata_tenant_TenantPropertyEditDialog_reAuthUrlSelectorComment 
 LocaleInfo.ui_metadata_tenant_TenantPropertyEditDialog_errorUrlSelectorComment = "<p>Specify Script to return Template name.When an exception occurs in the system, an error screen is displayed using this Template name.</p><p>The following variables are bound.</p><ul><li>path: The requested path. Represents Action name (does not include tenant context path)</li><li>request: Instance of RequestContext</li><li>exception: Instance of Exception</li></ul>";
 LocaleInfo.ui_metadata_tenant_TenantPropertyEditDialog_setting = "Setting";
 LocaleInfo.ui_metadata_tenant_TenantPropertyEditDialog_noSetting = "No setting";
+LocaleInfo.ui_metadata_top_item_TopViewContentParts_styleDescriptionKey = "Specify the class name of the style sheet. Please, separated by a space if want to specify more than one.";
 LocaleInfo.ui_metadata_top_TopViewDragPane_refreshList = "Refresh the list.";
 LocaleInfo.ui_metadata_top_TopViewDragPane_nodeName = "Node name";
 LocaleInfo.ui_metadata_top_TopViewDropAreaPane_canNotArrangMultiple = "Can not arranging multiple this parts .";

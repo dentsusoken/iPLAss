@@ -70,20 +70,23 @@ public class VirtualPropertyAdapter extends ASTTransformerSupport implements Sea
 		boolean needTrans;
 		ValueExpression field;
 		ValueExpression actualField;
+		int actualIndex;
 		PrimitivePropertyHandler ph;
 		LoadAdapterMapping lam;
 		
 		boolean isSelectCast;
 
-		public FieldMapping(ValueExpression field, ValueExpression actualField,
+		public FieldMapping(int actualIndex, ValueExpression field, ValueExpression actualField,
 				PrimitivePropertyHandler ph) {
+			this.actualIndex = actualIndex;
 			this.field = field;
 			this.actualField = actualField;
 			this.ph = ph;
 		}
 		
-		public FieldMapping(ValueExpression field, ValueExpression actualField,
+		public FieldMapping(int actualIndex, ValueExpression field, ValueExpression actualField,
 				boolean isSelectCast) {
+			this.actualIndex = actualIndex;
 			this.field = field;
 			this.actualField = actualField;
 			this.isSelectCast = isSelectCast;
@@ -189,6 +192,7 @@ public class VirtualPropertyAdapter extends ASTTransformerSupport implements Sea
 	}
 
 	private Map<ValueExpression, FieldMapping> selectFieldMap;
+	private List<FieldMapping> selectFieldList;
 	private Map<ComplexWrapperType, LoadAdapterMapping> loadAdaptorMap;
 
 	private Query query;
@@ -211,6 +215,7 @@ public class VirtualPropertyAdapter extends ASTTransformerSupport implements Sea
 	
 	public VirtualPropertyAdapter(Query query, EntityContext ec, EntityHandler eh) {
 		selectFieldMap = new HashMap<ValueExpression, FieldMapping>();
+		selectFieldList = new ArrayList<>(query.getSelect().getSelectValues().size());
 		this.query = query;
 		this.ec = ec;
 		this.eh = eh;
@@ -295,6 +300,7 @@ public class VirtualPropertyAdapter extends ASTTransformerSupport implements Sea
 		}
 	}
 
+	@Override
 	public boolean next() {
 		if (iterator == null) {
 			return false;
@@ -305,7 +311,7 @@ public class VirtualPropertyAdapter extends ASTTransformerSupport implements Sea
 				for (Map.Entry<ComplexWrapperType, LoadAdapterMapping> e: loadAdaptorMap.entrySet()) {
 					List<Object> values = new ArrayList<Object>();
 					for (FieldMapping f: e.getValue().fields) {
-						Object val = iterator.getValue(f.actualField);
+						Object val = iterator.getValue(f.actualIndex);
 						if (val != null) {
 							if (val instanceof Object[]) {
 								for (Object v: (Object[]) val) {
@@ -325,10 +331,20 @@ public class VirtualPropertyAdapter extends ASTTransformerSupport implements Sea
 		return isNext;
 	}
 
+	@Override
 	public Object getValue(ValueExpression propName) {
 		FieldMapping mappedProp = selectFieldMap.get(propName);
-		ValueExpression mappedPropName = (ValueExpression) mappedProp.actualField;
-		Object value = iterator.getValue(mappedPropName);
+		return getValueImpl(mappedProp);
+	}
+
+	@Override
+	public Object getValue(int index) {
+		FieldMapping mappedProp = selectFieldList.get(index);
+		return getValueImpl(mappedProp);
+	}
+	
+	private Object getValueImpl(FieldMapping mappedProp) {
+		Object value = iterator.getValue(mappedProp.actualIndex);
 
 		if (mappedProp.needTrans) {
 			if (mappedProp.isSelectCast) {
@@ -415,8 +431,9 @@ public class VirtualPropertyAdapter extends ASTTransformerSupport implements Sea
 						}
 						PropertyHandler ph = handler.getPropertyCascade(((EntityField) v).getPropertyName(), ec);
 						if (ph instanceof PrimitivePropertyHandler) {
-							FieldMapping fMap = new FieldMapping(v, transV, (PrimitivePropertyHandler) ph);
+							FieldMapping fMap = new FieldMapping(selectValues.size() - 1, v, transV, (PrimitivePropertyHandler) ph);
 							selectFieldMap.put(v, fMap);
+							selectFieldList.add(fMap);
 							PropertyType type = fMap.ph.getMetaData().getType();
 							if (type instanceof ComplexWrapperType) {
 								LoadAdapterMapping laMap = null;
@@ -437,9 +454,13 @@ public class VirtualPropertyAdapter extends ASTTransformerSupport implements Sea
 							}
 						}
 					} else if (v instanceof Cast && ((Cast) v).getType() == PropertyDefinitionType.SELECT) {
-						selectFieldMap.put(v, new FieldMapping(v, transV, true));
+						FieldMapping fMap = new FieldMapping(selectValues.size() - 1, v, transV, true);
+						selectFieldMap.put(v, fMap);
+						selectFieldList.add(fMap);
 					} else {
-						selectFieldMap.put(v, new FieldMapping(v, transV, null));
+						FieldMapping fMap = new FieldMapping(selectValues.size() - 1, v, transV, null);
+						selectFieldMap.put(v, fMap);
+						selectFieldList.add(fMap);
 					}
 				}
 			}
@@ -579,6 +600,5 @@ public class VirtualPropertyAdapter extends ASTTransformerSupport implements Sea
 		}
 		return super.visit(order);
 	}
-	
-	
+
 }

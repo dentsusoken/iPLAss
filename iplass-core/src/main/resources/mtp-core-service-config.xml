@@ -345,6 +345,7 @@
 		<depend>org.iplass.mtp.impl.entity.auditlog.AuditLoggingService</depend>
 
 		<property name="limitOfReferences" value="1000" />
+		<property name="oidValidationPattern" value="^[0-9a-zA-Z_\-]+$" />
 
 		<!--
 			ごみ箱データのクリーナー用日付です。日数を指定して下さい。

@@ -38,7 +38,7 @@ import org.iplass.mtp.view.top.parts.TopViewParts;
  * @author lis3wg
  */
 @XmlSeeAlso({MetaInformationParts.class})
-public abstract class MetaActionParts extends MetaTopViewParts {
+public abstract class MetaActionParts extends MetaTopViewContentParts {
 
 	/** SerialVersionUID */
 	private static final long serialVersionUID = 8063378979184525848L;

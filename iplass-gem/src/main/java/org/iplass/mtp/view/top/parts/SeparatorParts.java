@@ -24,7 +24,7 @@ package org.iplass.mtp.view.top.parts;
  * 2分割パーツ
  * @author lis3wg
  */
-public class SeparatorParts extends TopViewParts {
+public class SeparatorParts extends TopViewContentParts {
 
 	/** SerialVersionUID */
 	private static final long serialVersionUID = 2637987444272245310L;

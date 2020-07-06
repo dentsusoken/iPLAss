@@ -22,5 +22,6 @@ package org.iplass.mtp.impl.view.top.parts;
 public interface Constants {
 	public static final String CALENDAR_NAME = "calendarName";
 	public static final String INFO_SETTING = "infoSetting";
+	public static final String CALENDAR_SETTING = "calendarParts";
 
 }

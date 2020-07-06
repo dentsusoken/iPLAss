@@ -128,8 +128,14 @@
 	AuthContext auth = AuthContext.getCurrentContext();
 	boolean canUpdate = auth.checkPermission(new EntityPermission(ed.getName(), EntityPermission.Action.UPDATE));
 	boolean canDelete = auth.checkPermission(new EntityPermission(ed.getName(), EntityPermission.Action.DELETE));
+	
+	//スタイルシートのクラス名
+	String cellStyle = "entity-list topview-parts";
+	if (StringUtil.isNotBlank(parts.getStyle())) {
+		cellStyle = cellStyle + " " + parts.getStyle();
+	}
 %>
-<div class="entity-list topview-parts" id="topview-parts-id_${partsCnt}" style="display:none;">
+<div class="<c:out value="<%=cellStyle %>"/>" id="topview-parts-id_${partsCnt}" style="display:none;">
 <h3 class="hgroup-02">
 ${entityListParts.iconTag}
 ${m:esc(title)}

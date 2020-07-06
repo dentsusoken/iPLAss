@@ -60,8 +60,14 @@
 
 	String prevLabel = GemResourceBundleUtil.resourceString("generic.search.listWidget.previous");
 	String nextLabel = GemResourceBundleUtil.resourceString("generic.search.listWidget.next");
+	
+	//スタイルシートのクラス名
+	String style = "entity-list-widget topview-widget";
+	if (StringUtil.isNotBlank(parts.getStyle())) {
+		style = style + " " + parts.getStyle();
+	}
 %>
-<div class="entity-list-widget topview-widget" data-defName="${m:escJs(entityListParts.defName)}" data-viewName="${m:escJs(entityListParts.viewName)}" data-filterName="${m:escJs(entityListParts.filterName)}"
+<div class="<c:out value="<%=style %>"/>" data-defName="${m:escJs(entityListParts.defName)}" data-viewName="${m:escJs(entityListParts.viewName)}" data-filterName="${m:escJs(entityListParts.filterName)}"
  data-limit="<%=limit%>" data-prevLabel="<c:out value="<%=prevLabel%>"/>" data-nextLabel="<c:out value="<%=nextLabel%>"/>">
 <div class="lyt-shortcut-01 mb05">
 ${entityListParts.iconTag}

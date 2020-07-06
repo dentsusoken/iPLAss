@@ -78,6 +78,7 @@ public class CalendarItem extends PartsItem {
 	private class CalendarItemSettingDialog extends MtpDialog {
 
 		private TextItem iconTagField;
+		private TextItem styleField;
 
 		/**
 		 * コンストラクタ
@@ -85,7 +86,7 @@ public class CalendarItem extends PartsItem {
 		public CalendarItemSettingDialog() {
 
 			setTitle("Calendar(" + parts.getCalendarName() + ")");
-			setHeight(130);
+			setHeight(200);
 			centerInPage();
 
 			final DynamicForm form = new MtpForm();
@@ -94,8 +95,12 @@ public class CalendarItem extends PartsItem {
 			iconTagField = new MtpTextItem("iconTag", "Icon Tag");
 			iconTagField.setValue(parts.getIconTag());
 			SmartGWTUtil.addHoverToFormItem(iconTagField, AdminClientMessageUtil.getString("ui_metadata_top_item_CalendarItem_iconTagComment"));
+			
+			styleField = new MtpTextItem("style", "Class");
+			styleField.setValue(parts.getStyle());
+			SmartGWTUtil.addHoverToFormItem(styleField, AdminClientMessageUtil.getString("ui_metadata_top_item_TopViewContentParts_styleDescriptionKey"));
 
-			form.setItems(iconTagField);
+			form.setItems(iconTagField, styleField);
 
 			container.addMember(form);
 
@@ -105,6 +110,7 @@ public class CalendarItem extends PartsItem {
 					if (form.validate()){
 						//入力情報をパーツに
 						parts.setIconTag(SmartGWTUtil.getStringValue(iconTagField));
+						parts.setStyle(SmartGWTUtil.getStringValue(styleField));
 						destroy();
 					}
 				}

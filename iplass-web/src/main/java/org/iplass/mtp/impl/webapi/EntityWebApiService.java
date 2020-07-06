@@ -62,6 +62,24 @@ public class EntityWebApiService extends AbstractTypedMetaDataService<MetaEntity
 	private String csvDateFormat;
 	private String csvTimeFormat;
 
+	//for backward compatibility
+	private boolean csvListWithMappedByReference;
+	private boolean listWithMappedByReference;
+	private boolean loadWithMappedByReference;
+
+	public boolean isLoadWithMappedByReference() {
+		return loadWithMappedByReference;
+	}
+
+	//for backward compatibility
+	public boolean isCsvListWithMappedByReference() {
+		return csvListWithMappedByReference;
+	}
+
+	public boolean isListWithMappedByReference() {
+		return listWithMappedByReference;
+	}
+
 	public int getMaxLimit() {
 		return maxLimit;
 	}
@@ -88,6 +106,18 @@ public class EntityWebApiService extends AbstractTypedMetaDataService<MetaEntity
 		csvDateTimeFormat = config.getValue("csvDateTimeFormat", String.class, null);
 		csvDateFormat = config.getValue("csvDateFormat", String.class, null);
 		csvTimeFormat = config.getValue("csvTimeFormat", String.class, null);
+		
+		listWithMappedByReference = config.getValue("listWithMappedByReference", Boolean.TYPE, Boolean.FALSE).booleanValue();
+		
+		//for backward compatibility
+		//基本的には、listWithMappedByReferenceと同じ設定値を参照。csvListWithMappedByReferenceが明示的に指定された場合のみ適用
+		Boolean valOfCsvList = config.getValue("csvListWithMappedByReference", Boolean.TYPE);
+		if (valOfCsvList != null) {
+			csvListWithMappedByReference = valOfCsvList.booleanValue();
+		} else {
+			csvListWithMappedByReference = listWithMappedByReference;
+		}
+		loadWithMappedByReference = config.getValue("loadWithMappedByReference", Boolean.TYPE, Boolean.FALSE).booleanValue();
 	}
 
 	public static String getFixedPath() {

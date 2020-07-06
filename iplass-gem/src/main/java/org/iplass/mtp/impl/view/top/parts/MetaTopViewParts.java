@@ -23,13 +23,11 @@ package org.iplass.mtp.impl.view.top.parts;
 import javax.xml.bind.annotation.XmlSeeAlso;
 
 import org.iplass.mtp.impl.metadata.MetaData;
-import org.iplass.mtp.view.top.parts.ActionParts;
 import org.iplass.mtp.view.top.parts.ApplicationMaintenanceParts;
 import org.iplass.mtp.view.top.parts.CsvDownloadSettingsParts;
 import org.iplass.mtp.view.top.parts.FulltextSearchViewParts;
 import org.iplass.mtp.view.top.parts.ScriptParts;
-import org.iplass.mtp.view.top.parts.SeparatorParts;
-import org.iplass.mtp.view.top.parts.TemplateParts;
+import org.iplass.mtp.view.top.parts.TopViewContentParts;
 import org.iplass.mtp.view.top.parts.TopViewParts;
 import org.iplass.mtp.view.top.parts.UserMaintenanceParts;
 
@@ -37,9 +35,8 @@ import org.iplass.mtp.view.top.parts.UserMaintenanceParts;
  * TOP画面パーツ
  * @author lis3wg
  */
-@XmlSeeAlso({MetaActionParts.class, MetaTemplateParts.class, MetaScriptParts.class,
-	MetaSeparatorParts.class, MetaUserMaintenanceParts.class, MetaFulltextSearchViewParts.class,
-	MetaCsvDownloadSettingsParts.class, MetaApplicationMaintenanceParts.class})
+@XmlSeeAlso({MetaTopViewContentParts.class, MetaScriptParts.class, MetaUserMaintenanceParts.class, 
+	MetaFulltextSearchViewParts.class, MetaCsvDownloadSettingsParts.class, MetaApplicationMaintenanceParts.class})
 public abstract class MetaTopViewParts implements MetaData {
 
 	/** SerialVersionUID */
@@ -52,14 +49,10 @@ public abstract class MetaTopViewParts implements MetaData {
 	 */
 	public static MetaTopViewParts createInstance(TopViewParts parts) {
 		if (parts == null) return null;
-		if (parts instanceof ActionParts) {
-			return MetaActionParts.createInstance(parts);
-		} else if (parts instanceof TemplateParts) {
-			return MetaTemplateParts.createInstance(parts);
+		if (parts instanceof TopViewContentParts) {
+			return MetaTopViewContentParts.createInstance(parts);
 		} else if (parts instanceof ScriptParts) {
 			return MetaScriptParts.createInstance(parts);
-		} else if (parts instanceof SeparatorParts) {
-			return MetaSeparatorParts.createInstance(parts);
 		} else if (parts instanceof UserMaintenanceParts) {
 			return MetaUserMaintenanceParts.createInstance(parts);
 		} else if (parts instanceof FulltextSearchViewParts) {

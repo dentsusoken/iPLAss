@@ -26,6 +26,10 @@ import org.iplass.adminconsole.client.metadata.ui.top.node.TopViewNode;
 import org.iplass.mtp.view.top.parts.SeparatorParts;
 import org.iplass.mtp.view.top.parts.TopViewParts;
 
+import com.smartgwt.client.types.HeaderControls;
+import com.smartgwt.client.widgets.HeaderControl;
+import com.smartgwt.client.widgets.events.ClickEvent;
+import com.smartgwt.client.widgets.events.ClickHandler;
 import com.smartgwt.client.widgets.layout.HLayout;
 
 /**
@@ -46,6 +50,17 @@ public class SeparatorItem extends PartsItem {
 		setTitle("Separator");
 		setBackgroundColor("#FFFFFF");
 		setHeight(56);
+		
+		setHeaderControls(HeaderControls.HEADER_LABEL, new HeaderControl(HeaderControl.SETTINGS, new ClickHandler() {
+
+			@Override
+			public void onClick(ClickEvent event) {
+				TopViewContentItemSettingDialog dialog = new TopViewContentItemSettingDialog(parts);
+				dialog.setTitle("Separator");
+				dialog.show();
+			}
+
+		}), HeaderControls.CLOSE_BUTTON);
 
 		HLayout layout = new HLayout();
 		layout.setMembersMargin(2);
