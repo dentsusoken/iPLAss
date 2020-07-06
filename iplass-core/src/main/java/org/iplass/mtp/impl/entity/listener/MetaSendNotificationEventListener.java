@@ -568,7 +568,7 @@ public class MetaSendNotificationEventListener extends MetaEventListener {
 			if (destinationList == null) {
 				return templateList;
 			}
-			String entityId = new String(entity.getInheritedEntityMetaDataId());
+			String entityName = new String(entity.getName());
 			
 			//何番目のeventlisterのかを計算
 			int i = 0;
@@ -577,10 +577,10 @@ public class MetaSendNotificationEventListener extends MetaEventListener {
 					break;
 				}
 			}
-			for (int j = 0; i< destinationList.size(); i++) {
-				String script = destinationList.get(i);
+			for (int j = 0; j< destinationList.size(); j++) {
+				String script = destinationList.get(j);
 				ScriptEngine se = ExecuteContext.getCurrentContext().getTenantContext().getScriptEngine();
-				GroovyTemplate destinationTemplate = GroovyTemplateCompiler.compile(script, DESTINATION_PREFIX + "_" + entityId + "_listener" + i + "_List" + j, (GroovyScriptEngine) se);
+				GroovyTemplate destinationTemplate = GroovyTemplateCompiler.compile(script, DESTINATION_PREFIX + "_Entity_" + entityName + "_listener" + i + "_destination" + j, (GroovyScriptEngine) se);
 				templateList.add(destinationTemplate);
 			}
 			return templateList;
