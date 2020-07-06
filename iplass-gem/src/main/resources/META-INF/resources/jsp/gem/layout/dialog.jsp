@@ -39,6 +39,7 @@ String title = ViewUtil.getDispTenantName();
 <%@include file="./resource/resource.jsp" %>
 <%@include file="./resource/skin.jsp" %>
 <%@include file="./resource/theme.jsp" %>
+<%@include file="./resource/langfont.jsp" %>
 <%@include file="./resource/tenant.jsp" %>
 <style>
 html {

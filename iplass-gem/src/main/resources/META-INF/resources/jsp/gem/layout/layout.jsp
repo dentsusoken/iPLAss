@@ -40,6 +40,7 @@ String title = ViewUtil.getDispTenantName();
 <jsp:include page="./resource/resource.jsp" />
 <jsp:include page="./resource/skin.jsp" />
 <jsp:include page="./resource/theme.jsp" />
+<jsp:include page="./resource/langfont.jsp" />
 <jsp:include page="./resource/tenant.jsp" />
 </head>
 <body class="${skinName}">
