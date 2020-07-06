@@ -468,13 +468,13 @@ public interface MetaDataServiceAsync {
 	void deleteOldCredentialOAuthResourceServer(final int tenantId, final String definitionName, AsyncCallback<Void> callback);
 
 	/* ---------------------------------------
-	 * WebHook EndPoint Security Info
+	 * Webhook Endpoint Security Info
 	 --------------------------------------- */
-	public void updateWebHookEndPointSecurityInfo(final int tenantId, final String definitionName, final String secret, final String TokenType,AsyncCallback<Void> callback);
+	public void updateWebhookEndpointSecurityInfo(final int tenantId, final String definitionName, final String secret, final String TokenType,AsyncCallback<Void> callback);
 
-	public void getWebHookEndPointSecurityInfo(final int tenantId, final String definitionName, final String TokenType,AsyncCallback<String> callback);
+	public void getWebhookEndpointSecurityInfo(final int tenantId, final String definitionName, final String TokenType,AsyncCallback<String> callback);
 
 	public void generateHmacTokenString(AsyncCallback<String> callback);
 
-	public void getEndPointFullListWithUrl(final int tenantId, final AsyncCallback<Map<String, String>>callback);
+	public void getEndpointFullListWithUrl(final int tenantId, final AsyncCallback<Map<String, String>>callback);
 }

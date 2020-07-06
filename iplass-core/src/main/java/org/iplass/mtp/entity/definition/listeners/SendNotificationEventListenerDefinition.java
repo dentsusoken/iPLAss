@@ -31,12 +31,12 @@ public class SendNotificationEventListenerDefinition extends EventListenerDefini
 	private String tmplDefName;
 	private String notificationCondScript;
 	private List<EventType> listenEvent;
-	
+	private List<String> destinationList;
 	private boolean sendTogether;
+	
 	/**ウェッブフックだけの設定項目*/
 	private boolean synchronous;
-	private List<String> endPointDefList;
-	private String resultHandler;
+	private String responseHandler;
 
 	public SendNotificationType getNotificationType() {
 		return notificationType;
@@ -78,20 +78,20 @@ public class SendNotificationEventListenerDefinition extends EventListenerDefini
 		this.synchronous = isSynchronous;
 	}
 
-	public List<String> getEndPointDefList() {
-		return endPointDefList;
+	public List<String> getDestinationList() {
+		return destinationList;
 	}
 
-	public void setEndPointDefList(List<String> endPointDefList) {
-		this.endPointDefList = endPointDefList;
+	public void setDestinationList(List<String> destinationList) {
+		this.destinationList = destinationList;
 	}
 
-	public String getResultHandler() {
-		return resultHandler;
+	public String getResponseHandler() {
+		return responseHandler;
 	}
 
-	public void setResultHandler(String resultHandler) {
-		this.resultHandler = resultHandler;
+	public void setResponseHandler(String responseHandler) {
+		this.responseHandler = responseHandler;
 	}
 
 	public boolean isSendTogether() {
