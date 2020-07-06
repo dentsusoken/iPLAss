@@ -26,7 +26,7 @@ dependencies {
 	wjRuntime 'org.webjars.bower:jquery-ui:1.12.1'
 	wjRuntime 'org.webjars.bower:blueimp-file-upload:9.28.0'
 	wjRuntime 'org.webjars.bower:fullcalendar:3.5.1'
-	wjRuntime 'org.webjars.bower:jQuery-contextMenu:2.6.2'
+	wjRuntime 'org.webjars.bower:jQuery-contextMenu:2.8.0'
 	wjRuntime 'org.webjars.bower:mediaelement:4.2.5'
 
 	//css
