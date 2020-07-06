@@ -83,7 +83,7 @@
 	String className = defName.replaceAll("\\.", "_");
 %>
 <div class="generic_select s_<c:out value="<%=className %>"/>">
-<%@include file="../../layout/resource/mediaelementResource.jsp" %>
+<%@include file="../../layout/resource/mediaelementResource.inc.jsp" %>
 <script type="text/javascript">
 var selectArray = new Array();
 var multiplicity = <%=_multiplicity%>;

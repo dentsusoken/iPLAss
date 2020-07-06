@@ -143,7 +143,7 @@
 %>
 <%-- XSS対応-メタの設定のため対応なし(displayName) --%>
 <div class="generic_detail detail_view d_<c:out value="<%=className %>"/>">
-<%@include file="../../../layout/resource/mediaelementResource.jsp" %>
+<%@include file="../../../layout/resource/mediaelementResource.inc.jsp" %>
 <script type="text/javascript">
 var key = "<%=modalTarget%>";
 var modalTarget = key != "" ? key : null;

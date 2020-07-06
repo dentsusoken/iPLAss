@@ -178,7 +178,7 @@
 	</div>
 </div>
 
-<%@include file="../layout/resource/dropdownchecklistResource.jsp"%>
+<%@include file="../layout/resource/dropdownCheckListResource.inc.jsp"%>
 
 <script type="text/javascript">
 $(function(){

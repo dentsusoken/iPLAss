@@ -126,7 +126,7 @@
 %>
 <%-- XSS対応-メタの設定のため対応なし(displayName) --%>
 <div class="generic_detail detail_edit d_<c:out value="<%=className %>"/>">
-<%@include file="../../../layout/resource/mediaelementResource.jsp" %>
+<%@include file="../../../layout/resource/mediaelementResource.inc.jsp" %>
 <script type="text/javascript">
 separator = "<%= separator %>";
 var key = "<%=modalTarget%>";
