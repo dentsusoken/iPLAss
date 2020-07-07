@@ -19,6 +19,8 @@
  */
 package org.iplass.mtp.impl.webapi.command.entity;
 
+import static org.iplass.mtp.impl.web.WebResourceBundleUtil.resourceString;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.StreamingOutput;
 
@@ -37,6 +39,7 @@ import org.iplass.mtp.impl.entity.csv.QueryWriteOption;
 import org.iplass.mtp.webapi.WebApiRequestConstants;
 import org.iplass.mtp.webapi.definition.MethodType;
 import org.iplass.mtp.webapi.definition.RequestType;
+import org.iplass.mtp.webapi.entity.SearchResultLimitExceededException;
 
 @WebApi(name="mtp/entity/GET",
 		accepts={RequestType.REST_FORM},
@@ -96,7 +99,8 @@ public final class GetEntityCommand extends AbstractEntityCommand {
 	private void queryImpl(Query query, RequestContext request) {
 		checkPermission(query.getFrom().getEntityName(), def -> def.getMetaData().isQuery());
 
-		if (query.getLimit() == null) {
+		boolean noLimit = (query.getLimit() == null);
+		if (noLimit) {
 			query.limit(entityWebApiService.getMaxLimit());
 		}
 		if (query.getLimit().getLimit() > entityWebApiService.getMaxLimit()) {
@@ -110,7 +114,7 @@ public final class GetEntityCommand extends AbstractEntityCommand {
 		if (!tabular) {
 			option.setReturnStructuredEntity(true);
 		}
-		if (countTotal) {
+		if (countTotal || (entityWebApiService.isThrowSearchResultLimitExceededException() && noLimit)) {
 			option.setCountTotal(true);
 		}
 
@@ -121,6 +125,12 @@ public final class GetEntityCommand extends AbstractEntityCommand {
 			res = em.searchEntity(query, option);
 		}
 
+		if (entityWebApiService.isThrowSearchResultLimitExceededException()
+				&& noLimit
+				&& res.getTotalCount() > entityWebApiService.getMaxLimit()) {
+			throw new SearchResultLimitExceededException(resourceString("impl.webapi.command.entity.GetEntityCommand.limitExceeded"));
+		}
+		
 		request.setAttribute(RESULT_ENTITY_LIST, res.getList());
 		if (countTotal) {
 			request.setAttribute(RESULT_COUNT, res.getTotalCount());
