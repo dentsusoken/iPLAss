@@ -37,11 +37,11 @@ String title = ViewUtil.getDispTenantName();
 %>
 <title><c:out value="<%= title %>"/></title>
 
-<jsp:include page="./resource/resource.jsp" />
-<jsp:include page="./resource/skin.jsp" />
-<jsp:include page="./resource/theme.jsp" />
-<jsp:include page="./resource/langfont.jsp" />
-<jsp:include page="./resource/tenant.jsp" />
+<%@include file="./resource/resource.jsp" %>
+<%@include file="./resource/skin.jsp" %>
+<%@include file="./resource/theme.jsp" %>
+<%@include file="./resource/langfont.jsp" %>
+<%@include file="./resource/tenant.jsp" %>
 </head>
 <body class="${skinName}">
 <div id="dialog_parent"></div>
