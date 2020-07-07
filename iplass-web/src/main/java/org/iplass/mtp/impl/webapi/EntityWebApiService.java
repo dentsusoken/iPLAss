@@ -67,6 +67,12 @@ public class EntityWebApiService extends AbstractTypedMetaDataService<MetaEntity
 	private boolean listWithMappedByReference;
 	private boolean loadWithMappedByReference;
 
+	private boolean throwSearchResultLimitExceededException;
+
+	public boolean isThrowSearchResultLimitExceededException() {
+		return throwSearchResultLimitExceededException;
+	}
+
 	public boolean isLoadWithMappedByReference() {
 		return loadWithMappedByReference;
 	}
@@ -117,7 +123,9 @@ public class EntityWebApiService extends AbstractTypedMetaDataService<MetaEntity
 		} else {
 			csvListWithMappedByReference = listWithMappedByReference;
 		}
-		loadWithMappedByReference = config.getValue("loadWithMappedByReference", Boolean.TYPE, Boolean.FALSE).booleanValue();
+		loadWithMappedByReference = config.getValue("loadWithMappedByReference", Boolean.TYPE, Boolean.FALSE);
+
+		throwSearchResultLimitExceededException = config.getValue("throwSearchResultLimitExceededException", Boolean.TYPE, Boolean.FALSE);
 	}
 
 	public static String getFixedPath() {

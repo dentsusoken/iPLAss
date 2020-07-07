@@ -19,6 +19,8 @@
  */
 package org.iplass.mtp.impl.webapi.command.entity;
 
+import static org.iplass.mtp.impl.web.WebResourceBundleUtil.resourceString;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -51,6 +53,7 @@ import org.iplass.mtp.spi.ServiceRegistry;
 import org.iplass.mtp.webapi.WebApiRequestConstants;
 import org.iplass.mtp.webapi.definition.MethodType;
 import org.iplass.mtp.webapi.definition.RequestType;
+import org.iplass.mtp.webapi.entity.SearchResultLimitExceededException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
@@ -182,11 +185,13 @@ public final class GetEntityCommand extends AbstractEntityCommand {
 	private void queryOther(Query query, RequestContext request, boolean countTotal) {
 		SearchOption option = new SearchOption();
 		option.setReturnStructuredEntity(true);
-		if (countTotal) {
+		
+		boolean noLimit = (query.getLimit() == null);
+		if (countTotal || (entityWebApiService.isThrowSearchResultLimitExceededException() && noLimit)) {
 			option.setCountTotal(true);
 		}
 		
-		if (query.getLimit() == null) {
+		if (noLimit) {
 			query.limit(entityWebApiService.getMaxLimit());
 		}
 		
@@ -195,6 +200,13 @@ public final class GetEntityCommand extends AbstractEntityCommand {
 		}
 		
 		SearchResult<?> res = em.searchEntity(query, option);
+		
+		if (entityWebApiService.isThrowSearchResultLimitExceededException()
+				&& noLimit
+				&& res.getTotalCount() > entityWebApiService.getMaxLimit()) {
+			throw new SearchResultLimitExceededException(resourceString("impl.webapi.command.entity.GetEntityCommand.limitExceeded"));
+		}
+		
 		request.setAttribute(RESULT_ENTITY_LIST, res.getList());
 		
 		if (countTotal) {
