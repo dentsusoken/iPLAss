@@ -23,9 +23,7 @@
 <script src="${staticContentPath}/webjars/free-jqgrid/4.14.1/js/jquery.jqgrid.min.js?cv=${apiVersion}"></script>
 <script src="${staticContentPath}/webjars/free-jqgrid/4.14.1/js/i18n/min/grid.locale-${language}.js?cv=${apiVersion}"></script>
 <script src="${staticContentPath}/webjars/jqtree/1.4.9/tree.jquery.js?cv=${apiVersion}"></script>
-<script src="${staticContentPath}/webjars/jQuery-contextMenu/2.8.0/dist/jquery.contextMenu.min.js?cv=${apiVersion}"></script>
 
 <link rel="stylesheet" href="${staticContentPath}/webjars/free-jqgrid/4.14.1/css/ui.jqgrid.min.css?cv=${apiVersion}" />
 <link rel="stylesheet" href="${staticContentPath}/webjars/free-jqgrid/4.14.1/plugins/css/ui.multiselect.min.css?cv=${apiVersion}" />
 <link rel="stylesheet" href="${staticContentPath}/webjars/jqtree/1.4.9/jqtree.css?cv=${apiVersion}" />
-<link rel="stylesheet" href="${staticContentPath}/webjars/jQuery-contextMenu/2.8.0/dist/jquery.contextMenu.min.css?cv=${apiVersion}" />

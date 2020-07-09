@@ -31,8 +31,8 @@ scriptContext.languageFonts = '<%=languageFonts%>';
 </script>
 <style>
 body, input, textarea, .ui-widget,
-.ui-dialog label, .ui-dialog span, .ui-dialog input, .ui-dialog textarea, .ui-dialog button, .ui-dialog select,
-ul.context-menu-list li.context-menu-item span {
+.ui-dialog label, .ui-dialog span, .ui-dialog input, 
+.ui-dialog textarea, .ui-dialog button, .ui-dialog select {
 font-family: <%=languageFonts%>;
 }
 </style>
