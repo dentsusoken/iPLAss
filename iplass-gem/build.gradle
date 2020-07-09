@@ -5,13 +5,13 @@ buildscript {
 		}
 	}
 	dependencies {
-		classpath "com.moowork.gradle:gradle-node-plugin:1.2.0"
+		classpath "com.github.node-gradle:gradle-node-plugin:2.2.4"
 	}
 }
 
 // sassのコンパイルにgradle-node-pluginを使用
 plugins {
-	id "com.moowork.node" version "1.2.0"
+	id "com.github.node-gradle.node" version "2.2.4"
 }
 
 apply from: '../javaeecoreapis.gradle'
