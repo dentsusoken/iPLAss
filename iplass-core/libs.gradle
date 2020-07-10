@@ -61,16 +61,14 @@ dependencies {
 	// caffeine
 	compile 'com.github.ben-manes.caffeine:caffeine:2.6.2'
 
-	//mapdb
-	compile 'org.mapdb:mapdb:1.0.9'
-
 	//slf4j and logback
 	compile 'org.slf4j:slf4j-api:1.7.26'
 	compile 'ch.qos.logback:logback-classic:1.2.3'
 	runtime 'org.slf4j:jcl-over-slf4j:1.7.26'
 
 	//jackson
-	compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.10.3'
+	compile platform('com.fasterxml.jackson:jackson-bom:2.11.1')
+	compile 'com.fasterxml.jackson.core:jackson-databind'
 
 	//hibernate validator
 	compile group: 'org.hibernate', name: 'hibernate-validator', version: '5.4.1.Final'
