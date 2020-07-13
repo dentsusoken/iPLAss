@@ -20,6 +20,8 @@
 
 package org.iplass.mtp.impl.webapi;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -39,6 +41,7 @@ public class WebApiVariableParameterValueMap implements ParameterValueMap {
 	
 	private boolean noSubPath;
 	private String subPath;
+	private String rawSubPath;//encoded path
 	private String[] fullPaths;
 	private String[] subPaths;
 	
@@ -55,39 +58,64 @@ public class WebApiVariableParameterValueMap implements ParameterValueMap {
 	}
 	
 	String getSubPath() {
+		initRawSubPath();
+		
 		if (noSubPath) {
 			return null;
 		}
 		
 		if (subPath == null) {
-			//WebApi名除去
-			String path = reqPath.getTargetPath(true);
-			String webApiName = webApi.getMetaData().getName();
-			if (path.length() > webApiName.length()) {
-				subPath = path.substring(webApiName.length() + 1);
-			} else {
-				noSubPath = true;
-			}
+			subPath = decodePath(rawSubPath);
 		}
 		
 		return subPath;
 	}
 	
+	private String decodePath(String path) {
+		try {
+			//pathは+は空白にしない
+			return URLDecoder.decode(path.replace("+", "%2B"), "UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			throw new RuntimeException(e);
+		}
+		
+	}
+	
+	private void initRawSubPath() {
+		if (noSubPath == false && rawSubPath == null) {
+			String path = reqPath.getTargetPath(true);
+			String webApiName = webApi.getMetaData().getName();
+			if (path.length() > webApiName.length()) {
+				rawSubPath = path.substring(webApiName.length() + 1);
+			} else {
+				noSubPath = true;
+			}
+		}
+	}
+
 	String[] getFullPaths() {
 		if (fullPaths == null) {
 			String path = reqPath.getTargetPath(true);
 			fullPaths = path.split("/");
+			for (int i = 0; i < fullPaths.length; i++) {
+				fullPaths[i] = decodePath(fullPaths[i]);
+			}
 		}
 		return fullPaths;
 	}
 
 	String[] getSubPaths() {
+		initRawSubPath();
+
 		if (subPaths == null) {
-			String sp = getSubPath();
+			String sp = rawSubPath;
 			if (sp == null) {
 				subPaths = new String[0];
 			} else {
 				subPaths = sp.split("/");
+				for (int i = 0; i < subPaths.length; i++) {
+					subPaths[i] = decodePath(subPaths[i]);
+				}
 			}
 		}
 		return subPaths;
