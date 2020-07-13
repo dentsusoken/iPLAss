@@ -364,6 +364,7 @@ colModel.push({name:"<%=propName%>", index:"<%=propName%>", classes:"<%=style%>"
 %>
 	grid = $("#searchResult").jqGrid({
 		datatype: "local",
+		autoencode: false,
 <%
 	if (section.getDispHeight() > 0) {
 %>

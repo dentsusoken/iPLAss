@@ -20,10 +20,10 @@
 
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8" trimDirectiveWhitespaces="true" %>
 
-<script src="${staticContentPath}/webjars/free-jqgrid/4.14.1/js/jquery.jqgrid.min.js?cv=${apiVersion}"></script>
-<script src="${staticContentPath}/webjars/free-jqgrid/4.14.1/js/i18n/min/grid.locale-${language}.js?cv=${apiVersion}"></script>
+<script src="${staticContentPath}/webjars/free-jqgrid/4.15.5/dist/jquery.jqgrid.min.js?cv=${apiVersion}"></script>
+<script src="${staticContentPath}/webjars/free-jqgrid/4.15.5/dist/i18n/min/grid.locale-${language}.js?cv=${apiVersion}"></script>
 <script src="${staticContentPath}/webjars/jqtree/1.4.9/tree.jquery.js?cv=${apiVersion}"></script>
 
-<link rel="stylesheet" href="${staticContentPath}/webjars/free-jqgrid/4.14.1/css/ui.jqgrid.min.css?cv=${apiVersion}" />
-<link rel="stylesheet" href="${staticContentPath}/webjars/free-jqgrid/4.14.1/plugins/css/ui.multiselect.min.css?cv=${apiVersion}" />
+<link rel="stylesheet" href="${staticContentPath}/webjars/free-jqgrid/4.15.5/dist/css/ui.jqgrid.min.css?cv=${apiVersion}" />
+<link rel="stylesheet" href="${staticContentPath}/webjars/free-jqgrid/4.15.5/dist/plugins/css/ui.multiselect.min.css?cv=${apiVersion}" />
 <link rel="stylesheet" href="${staticContentPath}/webjars/jqtree/1.4.9/jqtree.css?cv=${apiVersion}" />

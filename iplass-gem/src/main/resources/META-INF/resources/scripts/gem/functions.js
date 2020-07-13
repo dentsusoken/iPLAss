@@ -1293,6 +1293,7 @@ $.fn.allInputCheck = function(){
 							var $self = $(this);
 							var grid = $self.jqGrid({
 								datatype: "local",
+								autoencode: false,
 								height: "auto",
 								colNames: colNames,
 								colModel: colModel,

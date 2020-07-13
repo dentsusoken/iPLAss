@@ -261,6 +261,7 @@ function createTemplate(listId, defName, displayName, crawlDate, colModels) {
 	var grid = $("#" + listId).jqGrid({
 		datatype: "local",
 		height: "auto",
+		autoencode: false,
 		colModel: colModels,
 		headertitles: true,		//HeaderにTooltip表示
 		caption: "Fulltext Search Result",

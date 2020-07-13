@@ -20,7 +20,7 @@ dependencies {
 	wjRuntime 'org.webjars:jQuery-Timepicker-Addon:1.6.3'
 	wjRuntime 'org.webjars:momentjs:2.24.0'
 
-	wjRuntime 'org.webjars.npm:free-jqgrid:4.14.1'
+	wjRuntime 'org.webjars.npm:free-jqgrid:4.15.5'
 	wjRuntime 'org.webjars.npm:jqtree:1.4.9'
 
 	wjRuntime 'org.webjars.bower:jquery-ui:1.12.1'

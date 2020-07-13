@@ -294,6 +294,7 @@ colModel.push({name:"<%=propName%>", index:"<%=propName%>", classes:"<%=style%>"
 	var gridHeight = <%=gridHeight%>;
 	var grid = $table.jqGrid({
 		datatype: "local",
+		autoencode: false,
 		colModel: colModel,
 		headertitles: true,
 		height: gridHeight,
