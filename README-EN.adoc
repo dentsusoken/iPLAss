@@ -92,6 +92,14 @@ Supports Redis for cachestorage.
 * https://github.com/ISID/iplass-sample-app-vuejs
 * https://github.com/ISID/iplass-eclipse
 
+## Branches
+
+### master
+The master branch contains the source code of the development version, which is regarded as version 3.1.x. (not released yet)
+
+### 3.0.x
+3.0.x branch contains the source code of the latest stable version.
+
 ## Build
 To build with gradle, use
 
