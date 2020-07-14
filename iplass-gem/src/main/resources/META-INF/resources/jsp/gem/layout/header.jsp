@@ -353,28 +353,29 @@ function showPreviewDateTimeDialog() {
 		}
 
 		TenantI18nInfo i18nInfo = tenant.getTenantConfig(TenantI18nInfo.class);
-		if (i18nInfo.isUseMultilingual() && i18nInfo.getUseLanguageList() != null && i18nInfo.getUseLanguageList().size() > 1) {
+		List<String> useLangList = i18nInfo.getUseLanguageList();
+
+		if (!useLangList.contains(user.getLanguage())) {
+			if (i18nInfo.isUseMultilingual() && i18nInfo.getUseLanguageList() != null && i18nInfo.getUseLanguageList().size() > 1) {
 %>
 <li class="change-area lang">
 <span class="txt">${m:rs("mtp-gem-messages", "layout.header.selectLang")}</span>
 <span class="node-cursor"></span>
 <ul>
 <%
-			List<String> useLangList = i18nInfo.getUseLanguageList();
+				for (String key : enabelLangeages.keySet()) {
+					String name = enabelLangeages.get(key);
 
-			for (String key : enabelLangeages.keySet()) {
-				String name = enabelLangeages.get(key);
-
-				if (useLangList.contains(key)) {
-					boolean selectLang = key.equals(lang);
+					if (useLangList.contains(key)) {
+						boolean selectLang = key.equals(lang);
 %>
 <li>
 <%
-					if (selectLang) {
+						if (selectLang) {
 %>
 <span class="icon"></span>
 <%
-					}
+						}
 %>
 <span class="txt"><c:out value="<%=name%>"/></span>
 <input type="hidden" value="<%=key%>"/>
@@ -410,6 +411,7 @@ $(function() {
 </li>
 
 <%
+			}
 		}
 
 		if (role != null && role.size() > 1) {
