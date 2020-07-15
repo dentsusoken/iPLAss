@@ -173,7 +173,7 @@ public class ViewControlSettingListGrid extends ListGrid {
 			}
 			record.setPermitRoles(permitRoles);
 
-			viewMap.put(setting.getName(), record);
+			viewMap.put(record.getSettingName(), record);
 		}
 
 		for (String viewName : detailViewNames) {
@@ -200,23 +200,22 @@ public class ViewControlSettingListGrid extends ListGrid {
 	/**
 	 * viewNameに対するRecordを取得します。
 	 *
-	 * @param map viewNameをキーにしたRecordのMap
+	 * @param viewMap viewNameをキーにしたRecordのMap
 	 * @param viewName View名
 	 * @return Record
 	 */
-	private ViewControlSettingListGridRecord getViewRecord(Map<String, ViewControlSettingListGridRecord> map, String viewName) {
+	private ViewControlSettingListGridRecord getViewRecord(Map<String, ViewControlSettingListGridRecord> viewMap, String viewName) {
 
 		ViewControlSettingListGridRecord record = null;
-		if (map.containsKey(viewName)) {
-			record = map.get(viewName);
+		if (viewName == null) {
+			viewName = "";
+		}
+		if (viewMap.containsKey(viewName)) {
+			record = viewMap.get(viewName);
 		} else {
 			record = new ViewControlSettingListGridRecord();
-			if (SmartGWTUtil.isEmpty(viewName)) {
-				record.setSettingName("");
-			} else {
-				record.setSettingName(viewName);
-			}
-			map.put(viewName, record);
+			record.setSettingName(viewName);
+			viewMap.put(viewName, record);
 		}
 		return record;
 	}
