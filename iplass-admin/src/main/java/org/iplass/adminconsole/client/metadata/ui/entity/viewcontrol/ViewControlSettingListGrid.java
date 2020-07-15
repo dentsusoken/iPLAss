@@ -131,7 +131,7 @@ public class ViewControlSettingListGrid extends ListGrid {
 			@Override
 			public FormItem getEditor(ListGridEditorContext context) {
 				ListGridField field = context.getEditField();
-				if (ViewControlSettingListGridRecord.PERMIT_ROLES.equals( field.getName())) {
+				if (ViewControlSettingListGridRecord.PERMIT_ROLES.equals(field.getName())) {
 					SelectItem fieldItem = new SelectItem();
 					fieldItem.setShowTitle(false);
 					fieldItem.setMultiple(true);
@@ -173,55 +173,21 @@ public class ViewControlSettingListGrid extends ListGrid {
 			}
 			record.setPermitRoles(permitRoles);
 
-			viewMap.put(setting.getName(), record);
+			viewMap.put(record.getSettingName(), record);
 		}
 
-		for (String view : detailViewNames) {
-			ViewControlSettingListGridRecord record = null;
-			if (viewMap.containsKey(view)) {
-				record = viewMap.get(view);
-			} else {
-				record = new ViewControlSettingListGridRecord();
-				if (view == null || view.isEmpty()) {
-					record.setSettingName("");
-				} else {
-					record.setSettingName(view);
-				}
-				viewMap.put(view, record);
-			}
-
+		for (String viewName : detailViewNames) {
+			ViewControlSettingListGridRecord record = getViewRecord(viewMap, viewName);
 			record.setExistDetailView(true);
 		}
 
-		for (String view : searchViewNames) {
-			ViewControlSettingListGridRecord record = null;
-			if (viewMap.containsKey(view)) {
-				record = viewMap.get(view);
-			} else {
-				record = new ViewControlSettingListGridRecord();
-				if (view == null || view.isEmpty()) {
-					record.setSettingName("");
-				} else {
-					record.setSettingName(view);
-				}
-				viewMap.put(view, record);
-			}
+		for (String viewName : searchViewNames) {
+			ViewControlSettingListGridRecord record = getViewRecord(viewMap, viewName);
 			record.setExistSearchView(true);
 		}
 
-		for (String view : bulkViewNames) {
-			ViewControlSettingListGridRecord record = null;
-			if (viewMap.containsKey(view)) {
-				record = viewMap.get(view);
-			} else {
-				record = new ViewControlSettingListGridRecord();
-				if (view == null || view.isEmpty()) {
-					record.setSettingName("");
-				} else {
-					record.setSettingName(view);
-				}
-				viewMap.put(view, record);
-			}
+		for (String viewName : bulkViewNames) {
+			ViewControlSettingListGridRecord record = getViewRecord(viewMap, viewName);
 			record.setExistBulkView(true);
 		}
 
@@ -229,6 +195,23 @@ public class ViewControlSettingListGrid extends ListGrid {
 		records.sort(Comparator.comparing(ViewControlSettingListGridRecord::getSettingName, Comparator.nullsFirst(Comparator.naturalOrder())));
 
 		setData(records.toArray(new ViewControlSettingListGridRecord[]{}));
+	}
+
+	private ViewControlSettingListGridRecord getViewRecord(Map<String, ViewControlSettingListGridRecord> viewMap, String viewName) {
+
+		ViewControlSettingListGridRecord record = null;
+		if (viewName == null) {
+			viewName = "";
+		}
+		if (viewMap.containsKey(viewName)) {
+			record = viewMap.get(viewName);
+		} else {
+			record = new ViewControlSettingListGridRecord();
+			record.setSettingName(viewName);
+			viewMap.put(viewName, record);
+		}
+
+		return record;
 	}
 
 	public List<ViewControlSetting> getEditDefinition() {
