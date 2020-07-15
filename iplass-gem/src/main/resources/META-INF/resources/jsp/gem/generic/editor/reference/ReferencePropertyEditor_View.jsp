@@ -381,9 +381,12 @@
 		for (int i = 0; i < entityList.size(); i++) {
 			Entity refEntity = entityList.get(i);
 			String liId = "li_" + propName + i;
-			if (refEntity == null || getDisplayPropLabel(editor, refEntity) == null) continue;
+			if (refEntity == null) continue;
 
 			String displayPropLabel = getDisplayPropLabel(editor, refEntity);
+			if (displayPropLabel == null) {
+				displayPropLabel = "";
+			}
 %>
 <li id="<c:out value="<%=liId %>"/>">
 <%
@@ -601,9 +604,12 @@ $(function() {
 		for (int i = 0; i < entityList.size(); i++) {
 			Entity refEntity = entityList.get(i);
 			String liId = "li_" + propName + i;
-			if (refEntity == null || getDisplayPropLabel(editor, refEntity) == null) continue;
+			if (refEntity == null) continue;
+			
 			String displayPropLabel = getDisplayPropLabel(editor, refEntity);
-
+			if (displayPropLabel == null) {
+				displayPropLabel = "";
+			}
 %>
 <li id="<c:out value="<%=liId %>"/>">
 <%
