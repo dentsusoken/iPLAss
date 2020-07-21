@@ -39,6 +39,7 @@ import org.iplass.mtp.impl.web.template.TemplateRuntimeException;
 import org.iplass.mtp.spi.ServiceRegistry;
 import org.iplass.mtp.web.template.definition.TemplateDefinition;
 import org.iplass.mtp.web.template.report.definition.JasperReportType;
+import org.iplass.mtp.web.template.report.definition.JxlsReportType;
 import org.iplass.mtp.web.template.report.definition.LocalizedReportDefinition;
 import org.iplass.mtp.web.template.report.definition.PoiReportType;
 import org.iplass.mtp.web.template.report.definition.ReportTemplateDefinition;
@@ -103,6 +104,10 @@ public class MetaReportTemplate extends MetaTemplate {
 				MetaPoiReportType prt = new MetaPoiReportType();
 				prt.applyConfig(reportType);
 				this.reportType = prt;
+			} else if(reportType instanceof JxlsReportType) {
+				MetaJxlsReportType jxrt = new MetaJxlsReportType();
+				jxrt.applyConfig(reportType);
+				this.reportType = jxrt;
 			}
 		} else {
 			this.reportType = null;
@@ -130,6 +135,10 @@ public class MetaReportTemplate extends MetaTemplate {
 						MetaPoiReportType prt = new MetaPoiReportType();
 						prt.applyConfig(reportType);
 						mlr.setReportType(prt);
+					} else if (reportType instanceof JxlsReportType) {
+						MetaJxlsReportType jxrt = new MetaJxlsReportType();
+						jxrt.applyConfig(reportType);
+						mlr.setReportType(jxrt);
 					}
 				}
 

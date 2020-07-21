@@ -46,6 +46,8 @@ import org.iplass.mtp.web.template.definition.TemplateDefinition;
 import org.iplass.mtp.web.template.report.definition.GroovyReportOutputLogicDefinition;
 import org.iplass.mtp.web.template.report.definition.JasperReportType;
 import org.iplass.mtp.web.template.report.definition.JavaClassReportOutputLogicDefinition;
+import org.iplass.mtp.web.template.report.definition.JxlsContextParamMapDefinition;
+import org.iplass.mtp.web.template.report.definition.JxlsReportType;
 import org.iplass.mtp.web.template.report.definition.LocalizedReportDefinition;
 import org.iplass.mtp.web.template.report.definition.OutputFileType;
 import org.iplass.mtp.web.template.report.definition.PoiReportType;
@@ -85,7 +87,7 @@ public class ReportTemplateEditPane extends TemplateTypeEditPane implements HasE
 	private SelectItem outputTypeField;
 
 	/** Jasper ParamMap部分 */
-	private ReportParamMapGridPane jasperParamMapPane;
+	private JasperReportParamMapGridPane jasperParamMapPane;
 	/** Jasper Attribute部分 */
 	private DynamicForm jasperAttributeForm;
 	/** Jasper DataSourceAttributeName */
@@ -96,9 +98,16 @@ public class ReportTemplateEditPane extends TemplateTypeEditPane implements HasE
 	/** Poi PasswordAttributeName */
 	private DynamicForm poiPasswordAttributeNameForm;
 	private TextItem poiPasswordAttributeNameField;
-
 	/** Poiレポート出力ロジック部分 */
-	private ReportOutLogicPane reportOutPane;
+	private PoiReportOutLogicPane reportOutPane;
+	
+	/** JXLS PasswordAttributeName */
+	private DynamicForm jxlsPasswordAttributeNameForm;
+	private TextItem jxlsPasswordAttributeNameField;
+	/** JXLS ContextParamMap */
+	private JxlsReportParamMapGridPane jxlsContextParamMapPane;
+	/** JXLS ReportOutput Logic */
+	private JxlsReportOutLogicPane jxlsReportOutputLogicPane;
 
 	/** テンプレートファイル */
 	private UploadFileItem itmFileUpload;
@@ -132,18 +141,30 @@ public class ReportTemplateEditPane extends TemplateTypeEditPane implements HasE
 
 				if (PoiReportType.class.getName().equals(reportType)) {
 					//Poi利用の場合
-					removeMember(jasperAttributeForm);
 					jasperParamMapPane.deleteAll();
-					removeMember(jasperParamMapPane);
+					jxlsReportOutputLogicPane.deleteAll();
+					jxlsContextParamMapPane.deleteAll();
+					removeMembers(jasperAttributeForm, jasperParamMapPane, jxlsContextParamMapPane, 
+							jxlsReportOutputLogicPane, jxlsPasswordAttributeNameForm);
 					addMember(poiPasswordAttributeNameForm);
 					addMember(reportOutPane);
 				} else if (JasperReportType.class.getName().equals(reportType)) {
 					//Jasper利用の場合
-					removeMember(poiPasswordAttributeNameForm);
 					reportOutPane.deleteAll();
-					removeMember(reportOutPane);
+					jxlsReportOutputLogicPane.deleteAll();
+					jxlsContextParamMapPane.deleteAll();
+					removeMembers(poiPasswordAttributeNameForm, reportOutPane, jxlsContextParamMapPane, 
+							jxlsReportOutputLogicPane, jxlsPasswordAttributeNameForm);
 					addMember(jasperAttributeForm);
 					addMember(jasperParamMapPane);
+				} else if (JxlsReportType.class.getName().equals(reportType)) {
+					//JXLS利用の場合
+					jasperParamMapPane.deleteAll();
+					reportOutPane.deleteAll();
+					removeMembers(poiPasswordAttributeNameForm, reportOutPane, jasperAttributeForm, jasperParamMapPane);
+					addMember(jxlsPasswordAttributeNameForm);
+					addMember(jxlsContextParamMapPane);
+					addMember(jxlsReportOutputLogicPane);
 				}
 			}
 		});
@@ -209,7 +230,7 @@ public class ReportTemplateEditPane extends TemplateTypeEditPane implements HasE
 		jasperAttributeForm.setItems(jasperDataSourceAttributeNameField, jasperPasswordAttributeNameField);
 
 		//Jasper ParamMap部分
-		jasperParamMapPane = new ReportParamMapGridPane();
+		jasperParamMapPane = new JasperReportParamMapGridPane();
 
 		//PoiパスワードAttributeName
 		poiPasswordAttributeNameForm = new MtpForm();
@@ -218,7 +239,19 @@ public class ReportTemplateEditPane extends TemplateTypeEditPane implements HasE
 		poiPasswordAttributeNameForm.setItems(poiPasswordAttributeNameField);
 
 		//Poiレポート出力ロジック部分
-		reportOutPane = new ReportOutLogicPane();
+		reportOutPane = new PoiReportOutLogicPane();
+	
+		
+		/** JXLS PasswordAttributeName */
+		jxlsPasswordAttributeNameForm = new MtpForm();
+		jxlsPasswordAttributeNameField = new MtpTextItem("jxlsPasswordAttributeName", "Password AttributeName");
+		jxlsPasswordAttributeNameForm.setItems(jxlsPasswordAttributeNameField);
+		
+		/** JXLS ContextParamMap */
+		jxlsContextParamMapPane = new JxlsReportParamMapGridPane();
+		
+		/** JXLS ReportOutputLogic */
+		jxlsReportOutputLogicPane = new JxlsReportOutLogicPane();
 
 		//配置
 		addMember(form);
@@ -230,6 +263,9 @@ public class ReportTemplateEditPane extends TemplateTypeEditPane implements HasE
 		addMember(jasperParamMapPane);
 		addMember(poiPasswordAttributeNameForm);
 		addMember(reportOutPane);
+		addMember(jxlsPasswordAttributeNameForm);
+		addMember(jxlsContextParamMapPane);
+		addMember(jxlsReportOutputLogicPane);
 
 		//レポートタイプ取得
 		getReportType();
@@ -269,7 +305,7 @@ public class ReportTemplateEditPane extends TemplateTypeEditPane implements HasE
 
 		// byteはFileUpload経由で送るのでセットしない。
 
-		if(PoiReportType.class.getName().equals(reportTypeField.getValueAsString())){
+		if (PoiReportType.class.getName().equals(reportTypeField.getValueAsString())) {
 			//出力形式設定
 			PoiReportType poiTemplate = new PoiReportType();
 			poiTemplate.setOutputFileType(outputTypeField.getValueAsString());
@@ -280,7 +316,7 @@ public class ReportTemplateEditPane extends TemplateTypeEditPane implements HasE
 			poiTemplate = reportOutPane.getEditDefinition(poiTemplate);
 
 			repTemplate.setReportType(poiTemplate);
-		}else if(JasperReportType.class.getName().equals(reportTypeField.getValueAsString())){
+		} else if (JasperReportType.class.getName().equals(reportTypeField.getValueAsString())) {
 			JasperReportType jasperTemplate = new JasperReportType();
 			jasperTemplate.setOutputFileType(outputTypeField.getValueAsString());
 
@@ -293,10 +329,24 @@ public class ReportTemplateEditPane extends TemplateTypeEditPane implements HasE
 			jasperTemplate.setParamMap(jasperParamMapPane.getParamMap());
 
 			repTemplate.setReportType(jasperTemplate);
+		} else if (JxlsReportType.class.getName().equals(reportTypeField.getValueAsString())) {
+			JxlsReportType jxlsTemplate = new JxlsReportType();
+			jxlsTemplate.setOutputFileType(outputTypeField.getValueAsString());
+
+			//PasswordAttributeName
+			jxlsTemplate.setPasswordAttributeName(SmartGWTUtil.getStringValue(jxlsPasswordAttributeNameField, true));
+			
+			//JXLS用出力設定
+			jxlsTemplate = jxlsReportOutputLogicPane.getEditDefinition(jxlsTemplate);
+			
+			//ContextParamMapping
+			jxlsTemplate.setContextParamMap(jxlsContextParamMapPane.getContextParamMap());
+			
+			repTemplate.setReportType(jxlsTemplate);
 		}
 
 		return repTemplate;
-	}
+	} 
 
 	@Override
 	public boolean validate() {
@@ -316,15 +366,15 @@ public class ReportTemplateEditPane extends TemplateTypeEditPane implements HasE
 		paramPanel.clear();
 		paramPanel.add(itmFileUpload.getEditFileUpload());
 
-		addUploadParametar(ReportTemplateUploadProperty.TENANT_ID, Integer.toString(TenantInfoHolder.getId()));
-		addUploadParametar(ReportTemplateUploadProperty.DEF_NAME, definition.getName());
-		addUploadParametar(ReportTemplateUploadProperty.DISPLAY_NAME, definition.getDisplayName());
-		addUploadParametar(ReportTemplateUploadProperty.DESCRIPTION, definition.getDescription());
+		addUploadParameter(ReportTemplateUploadProperty.TENANT_ID, Integer.toString(TenantInfoHolder.getId()));
+		addUploadParameter(ReportTemplateUploadProperty.DEF_NAME, definition.getName());
+		addUploadParameter(ReportTemplateUploadProperty.DISPLAY_NAME, definition.getDisplayName());
+		addUploadParameter(ReportTemplateUploadProperty.DESCRIPTION, definition.getDescription());
 
-		addUploadParametar(ReportTemplateUploadProperty.CONTENT_TYPE, definition.getContentType());
+		addUploadParameter(ReportTemplateUploadProperty.CONTENT_TYPE, definition.getContentType());
 
-		addUploadParametar(ReportTemplateUploadProperty.VERSION, Integer.toString(curVersion));
-		addUploadParametar(ReportTemplateUploadProperty.CHECK_VERSION, String.valueOf(checkVersion));
+		addUploadParameter(ReportTemplateUploadProperty.VERSION, Integer.toString(curVersion));
+		addUploadParameter(ReportTemplateUploadProperty.CHECK_VERSION, String.valueOf(checkVersion));
 
 		ReportTemplateDefinition repTemplate = (ReportTemplateDefinition)definition;
 
@@ -338,7 +388,7 @@ public class ReportTemplateEditPane extends TemplateTypeEditPane implements HasE
 
 				if (!SmartGWTUtil.isEmpty(info.getStoredLang())) {
 					// 更新の場合は、更新前のLocaleを送ることで削除対象にしない
-					addUploadParametar(prefix + ReportTemplateUploadProperty.LOCALE_BEFORE, info.getStoredLang());
+					addUploadParameter(prefix + ReportTemplateUploadProperty.LOCALE_BEFORE, info.getStoredLang());
 				}
 				// ファイルが選択されているもののみ送る
 				// (新規でFileが選択されていないものは除外される
@@ -361,15 +411,16 @@ public class ReportTemplateEditPane extends TemplateTypeEditPane implements HasE
 	private void addReportTypeParameter(ReportType type) {
 		addReportTypeParameter(type, "");
 	}
+	
 	private void addReportTypeParameter(ReportType type, String prefix) {
 
 		if (type != null) {
 
 			String outputFileType = type.getOutputFileType();
-			addUploadParametar(prefix + ReportTemplateUploadProperty.OUTPUT_FILE_TYPE, outputFileType);
+			addUploadParameter(prefix + ReportTemplateUploadProperty.OUTPUT_FILE_TYPE, outputFileType);
 
 			if (type instanceof JasperReportType) {
-				addUploadParametar(prefix + ReportTemplateUploadProperty.REPORT_TYPE, JasperReportType.class.getName());
+				addUploadParameter(prefix + ReportTemplateUploadProperty.REPORT_TYPE, JasperReportType.class.getName());
 
 				JasperReportType jasRepo = (JasperReportType)type;
 				ReportParamMapDefinition[] repoPramDef = jasRepo.getParamMap();
@@ -378,45 +429,76 @@ public class ReportTemplateEditPane extends TemplateTypeEditPane implements HasE
 				if (repoPramDef != null) {
 
 					for (ReportParamMapDefinition rpmd : repoPramDef) {
-						addUploadParametar(prefix + ReportTemplateUploadProperty.JASPER_PARAM_MAP_NAME+"_"+i, rpmd.getName());
-						addUploadParametar(prefix + ReportTemplateUploadProperty.JASPER_PARAM_MAP_FROM+"_"+i, rpmd.getMapFrom());
-						addUploadParametar(prefix + ReportTemplateUploadProperty.JASPER_PARAM_TYPE+"_"+i, rpmd.getParamType());
+						addUploadParameter(prefix + ReportTemplateUploadProperty.JASPER_PARAM_MAP_NAME+"_"+i, rpmd.getName());
+						addUploadParameter(prefix + ReportTemplateUploadProperty.JASPER_PARAM_MAP_FROM+"_"+i, rpmd.getMapFrom());
+						addUploadParameter(prefix + ReportTemplateUploadProperty.JASPER_PARAM_TYPE+"_"+i, rpmd.getParamType());
 						i++;
 					}
 				}
-				addUploadParametar(prefix + ReportTemplateUploadProperty.JASPER_PARAM_MAP_CNT, Integer.toString(i));
+				addUploadParameter(prefix + ReportTemplateUploadProperty.JASPER_PARAM_MAP_CNT, Integer.toString(i));
 
 				if (!SmartGWTUtil.isEmpty(jasRepo.getDataSourceAttributeName())) {
-					addUploadParametar(prefix + ReportTemplateUploadProperty.JASPER_DATASOURCE_ATTRIBUTE_NAME, jasRepo.getDataSourceAttributeName());
+					addUploadParameter(prefix + ReportTemplateUploadProperty.JASPER_DATASOURCE_ATTRIBUTE_NAME, jasRepo.getDataSourceAttributeName());
 				}
 				if (!SmartGWTUtil.isEmpty(jasRepo.getPasswordAttributeName())) {
-					addUploadParametar(prefix + ReportTemplateUploadProperty.JASPER_PASSWORD_ATTRIBUTE_NAME, jasRepo.getPasswordAttributeName());
+					addUploadParameter(prefix + ReportTemplateUploadProperty.JASPER_PASSWORD_ATTRIBUTE_NAME, jasRepo.getPasswordAttributeName());
 				}
 
 			} else if (type instanceof PoiReportType) {
-				addUploadParametar(prefix + ReportTemplateUploadProperty.REPORT_TYPE, PoiReportType.class.getName());
+				addUploadParameter(prefix + ReportTemplateUploadProperty.REPORT_TYPE, PoiReportType.class.getName());
 
 				PoiReportType poiRepo = (PoiReportType)type;
 				ReportOutputLogicDefinition repoOutputLogicDef =  poiRepo.getReportOutputLogicDefinition();
 
 				if (repoOutputLogicDef != null) {
 					if (repoOutputLogicDef instanceof JavaClassReportOutputLogicDefinition) {
-						addUploadParametar(prefix + ReportTemplateUploadProperty.POI_LOGIC_NAME, ReportTemplateUploadProperty.POI_LOGIC_NAME_JAVA);
-						addUploadParametar(prefix + ReportTemplateUploadProperty.POI_LOGIC_VALUE, ((JavaClassReportOutputLogicDefinition) repoOutputLogicDef).getClassName());
+						addUploadParameter(prefix + ReportTemplateUploadProperty.POI_LOGIC_NAME, ReportTemplateUploadProperty.POI_LOGIC_NAME_JAVA);
+						addUploadParameter(prefix + ReportTemplateUploadProperty.POI_LOGIC_VALUE, ((JavaClassReportOutputLogicDefinition) repoOutputLogicDef).getClassName());
 					} else if (repoOutputLogicDef instanceof GroovyReportOutputLogicDefinition) {
-						addUploadParametar(prefix + ReportTemplateUploadProperty.POI_LOGIC_NAME, ReportTemplateUploadProperty.POI_LOGIC_NAME_GROOVY);
-						addUploadParametar(prefix + ReportTemplateUploadProperty.POI_LOGIC_VALUE, ((GroovyReportOutputLogicDefinition) repoOutputLogicDef).getScript());
+						addUploadParameter(prefix + ReportTemplateUploadProperty.POI_LOGIC_NAME, ReportTemplateUploadProperty.POI_LOGIC_NAME_GROOVY);
+						addUploadParameter(prefix + ReportTemplateUploadProperty.POI_LOGIC_VALUE, ((GroovyReportOutputLogicDefinition) repoOutputLogicDef).getScript());
 
 					}
 				}
 				if (!SmartGWTUtil.isEmpty(poiRepo.getPasswordAttributeName())) {
-					addUploadParametar(prefix + ReportTemplateUploadProperty.POI_PASSWORD_ATTRIBUTE_NAME, poiRepo.getPasswordAttributeName());
+					addUploadParameter(prefix + ReportTemplateUploadProperty.POI_PASSWORD_ATTRIBUTE_NAME, poiRepo.getPasswordAttributeName());
+				}
+			} else if (type instanceof JxlsReportType) {
+				addUploadParameter(prefix + ReportTemplateUploadProperty.REPORT_TYPE, JxlsReportType.class.getName());
+
+				JxlsReportType jxlsRepo = (JxlsReportType)type;
+				ReportOutputLogicDefinition repoOutputLogicDef =  jxlsRepo.getReportOutputLogicDefinition();
+
+				if (repoOutputLogicDef != null) {
+					if (repoOutputLogicDef instanceof JavaClassReportOutputLogicDefinition) {
+						addUploadParameter(prefix + ReportTemplateUploadProperty.JXLS_LOGIC_NAME, ReportTemplateUploadProperty.JXLS_LOGIC_NAME_JAVA);
+						addUploadParameter(prefix + ReportTemplateUploadProperty.JXLS_LOGIC_VALUE, ((JavaClassReportOutputLogicDefinition) repoOutputLogicDef).getClassName());
+					} else if (repoOutputLogicDef instanceof GroovyReportOutputLogicDefinition) {
+						addUploadParameter(prefix + ReportTemplateUploadProperty.JXLS_LOGIC_NAME, ReportTemplateUploadProperty.JXLS_LOGIC_NAME_GROOVY);
+						addUploadParameter(prefix + ReportTemplateUploadProperty.JXLS_LOGIC_VALUE, ((GroovyReportOutputLogicDefinition) repoOutputLogicDef).getScript());
+					}
+				}
+				
+				JxlsContextParamMapDefinition[] contextParamMap = jxlsRepo.getContextParamMap();
+				int i =0;
+				if (contextParamMap != null) {
+					for(JxlsContextParamMapDefinition jcpmd : contextParamMap) {
+						addUploadParameter(prefix + ReportTemplateUploadProperty.JXLS_PARAM_MAP_KEY+"_"+i, jcpmd.getKey());
+						addUploadParameter(prefix + ReportTemplateUploadProperty.JXLS_PARAM_MAP_VALUE+"_"+i, jcpmd.getMapFrom());
+						i++;
+					}
+				}
+				
+				addUploadParameter(prefix + ReportTemplateUploadProperty.JXLS_PARAM_MAP_CNT, Integer.toString(i));
+				
+				if (!SmartGWTUtil.isEmpty(jxlsRepo.getPasswordAttributeName())) {
+					addUploadParameter(prefix + ReportTemplateUploadProperty.JXLS_PASSWORD_ATTRIBUTE_NAME, jxlsRepo.getPasswordAttributeName());
 				}
 			}
 		}
 	}
 
-	private void addUploadParametar(String key, String value) {
+	private void addUploadParameter(String key, String value) {
 		paramPanel.add(new Hidden(key, value));
 	}
 
@@ -456,19 +538,35 @@ public class ReportTemplateEditPane extends TemplateTypeEditPane implements HasE
 
 	private void setReportType(ReportType type) {
 
-		if(type instanceof PoiReportType){
+		if (type instanceof PoiReportType) {
 			//Poi利用の場合
 			PoiReportType poiRepo = (PoiReportType)type;
 			reportOutPane.setDefinition(poiRepo);
 			poiPasswordAttributeNameField.setValue(poiRepo.getPasswordAttributeName());
 			removeMember(jasperAttributeForm);
 			removeMember(jasperParamMapPane);
-		} else if(type instanceof JasperReportType){
+			removeMember(jxlsPasswordAttributeNameForm);
+			removeMember(jxlsContextParamMapPane);
+			removeMember(jxlsReportOutputLogicPane);
+		} else if (type instanceof JasperReportType) {
 			//Jasper利用の場合
 			JasperReportType jasRepo = (JasperReportType)type;
 			jasperParamMapPane.setParamMap(jasRepo.getParamMap());
 			jasperDataSourceAttributeNameField.setValue(jasRepo.getDataSourceAttributeName());
 			jasperPasswordAttributeNameField.setValue(jasRepo.getPasswordAttributeName());
+			removeMember(poiPasswordAttributeNameForm);
+			removeMember(reportOutPane);
+			removeMember(jxlsPasswordAttributeNameForm);
+			removeMember(jxlsContextParamMapPane);
+			removeMember(jxlsReportOutputLogicPane);
+		} else if (type instanceof JxlsReportType) {
+			//Jxls利用の場合
+			JxlsReportType jxlsRepo = (JxlsReportType)type;
+			jxlsPasswordAttributeNameField.setValue(jxlsRepo.getPasswordAttributeName());
+			jxlsReportOutputLogicPane.setDefinition(jxlsRepo);
+			jxlsContextParamMapPane.setContextParamMap(jxlsRepo.getContextParamMap());
+			removeMember(jasperAttributeForm);
+			removeMember(jasperParamMapPane);
 			removeMember(poiPasswordAttributeNameForm);
 			removeMember(reportOutPane);
 		} else {
@@ -477,6 +575,9 @@ public class ReportTemplateEditPane extends TemplateTypeEditPane implements HasE
 			removeMember(jasperParamMapPane);
 			removeMember(poiPasswordAttributeNameForm);
 			removeMember(reportOutPane);
+			removeMember(jxlsPasswordAttributeNameForm);
+			removeMember(jxlsContextParamMapPane);
+			removeMember(jxlsReportOutputLogicPane);
 		}
 	}
 
@@ -536,7 +637,7 @@ public class ReportTemplateEditPane extends TemplateTypeEditPane implements HasE
 	@Override
 	public LocalizedReportDefinition getEditLocalizedReportDefinition(LocalizedReportDefinition definition) {
 
-		if(PoiReportType.class.getName().equals(reportTypeField.getValueAsString())){
+		if (PoiReportType.class.getName().equals(reportTypeField.getValueAsString())) {
 			//出力形式設定
 			PoiReportType poiTemplate = new PoiReportType();
 			poiTemplate.setOutputFileType(outputTypeField.getValueAsString());
@@ -547,7 +648,7 @@ public class ReportTemplateEditPane extends TemplateTypeEditPane implements HasE
 			poiTemplate.setPasswordAttributeName(SmartGWTUtil.getStringValue(poiPasswordAttributeNameField, true));
 
 			definition.setReportType(poiTemplate);
-		}else if(JasperReportType.class.getName().equals(reportTypeField.getValueAsString())){
+		} else if (JasperReportType.class.getName().equals(reportTypeField.getValueAsString())) {
 
 			JasperReportType jasperTemplate = new JasperReportType();
 			jasperTemplate.setOutputFileType(outputTypeField.getValueAsString());
@@ -560,6 +661,18 @@ public class ReportTemplateEditPane extends TemplateTypeEditPane implements HasE
 			jasperTemplate.setPasswordAttributeName(SmartGWTUtil.getStringValue(jasperPasswordAttributeNameField, true));
 
 			definition.setReportType(jasperTemplate);
+		} else if (JxlsReportType.class.getName().equals(reportTypeField.getValueAsString())) {
+			JxlsReportType jxlsTemplate = new JxlsReportType();
+			jxlsTemplate.setOutputFileType(outputTypeField.getValueAsString());
+
+			//PasswordAttributeName
+			jxlsTemplate.setPasswordAttributeName(SmartGWTUtil.getStringValue(jxlsPasswordAttributeNameField, true));
+			//JXLS用出力設定
+			jxlsTemplate = jxlsReportOutputLogicPane.getEditDefinition(jxlsTemplate);
+			//ContextParamMapping
+			jxlsTemplate.setContextParamMap(jxlsContextParamMapPane.getContextParamMap());
+
+			definition.setReportType(jxlsTemplate);
 		}
 
 		return definition;

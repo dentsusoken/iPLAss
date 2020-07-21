@@ -34,8 +34,10 @@ import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
 import org.iplass.adminconsole.client.metadata.ui.MetaDataUtil;
 import org.iplass.mtp.web.template.report.definition.GroovyReportOutputLogicDefinition;
 import org.iplass.mtp.web.template.report.definition.JavaClassReportOutputLogicDefinition;
+import org.iplass.mtp.web.template.report.definition.JxlsReportType;
 import org.iplass.mtp.web.template.report.definition.PoiReportType;
 import org.iplass.mtp.web.template.report.definition.ReportOutputLogicDefinition;
+import org.iplass.mtp.web.template.report.definition.ReportType;
 
 import com.smartgwt.client.types.Alignment;
 import com.smartgwt.client.types.Overflow;
@@ -110,8 +112,16 @@ public class ReportOutLogicListGrid extends ListGrid {
 		});
 	}
 
-	public void setDefinition(PoiReportType definition) {
-		ReportOutputLogicDefinition RepOutLogicDef = definition.getReportOutputLogicDefinition();
+	public void setDefinition(ReportType definition) {
+		ReportOutputLogicDefinition RepOutLogicDef = null;
+		
+		if (definition instanceof PoiReportType) {
+			PoiReportType poiRepo = (PoiReportType)definition;
+			RepOutLogicDef = poiRepo.getReportOutputLogicDefinition();
+		} else if (definition instanceof JxlsReportType) {
+			JxlsReportType jxlsRepo = (JxlsReportType)definition;
+			RepOutLogicDef = jxlsRepo.getReportOutputLogicDefinition();
+		}
 
 		if (RepOutLogicDef == null) { return; }
 
@@ -124,7 +134,7 @@ public class ReportOutLogicListGrid extends ListGrid {
 		setData(records);
 	}
 
-	public PoiReportType getEditDefinition(PoiReportType definition) {
+	public ReportType getEditDefinition(ReportType definition) {
 		ReportOutputLogicDefinition result = null;
 
 		ListGridRecord[] records = getRecords();
@@ -133,7 +143,17 @@ public class ReportOutLogicListGrid extends ListGrid {
 			result = createElDef((ReportOutLogicListGridRecord)records[0]);
 
 		}
-		definition.setReportOutputLogicDefinition(result);
+		
+		if (definition instanceof PoiReportType) {
+			PoiReportType poiRepo = (PoiReportType)definition;
+			poiRepo.setReportOutputLogicDefinition(result);
+			return poiRepo;
+		} else if (definition instanceof JxlsReportType) {
+			JxlsReportType jxlsRepo = (JxlsReportType)definition;
+			jxlsRepo.setReportOutputLogicDefinition(result);
+			return jxlsRepo;
+		}
+		
 		return definition;
 	}
 
