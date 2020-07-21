@@ -1,0 +1,7 @@
+dependencies {
+	compileOnly configurations.jeecoreapis
+
+	implementation sharedLib('commons-io:commons-io')
+	implementation sharedLib('org.apache.commons:commons-lang3')
+	implementation sharedLib('net.sf.supercsv:super-csv')
+}

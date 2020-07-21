@@ -14,12 +14,10 @@ plugins {
 	id "com.github.node-gradle.node" version "2.2.4"
 }
 
-apply from: '../javaeecoreapis.gradle'
-apply from: '../javaeewebapis.gradle'
 apply from: 'libs.gradle'
 dependencies {
-	compile project(':iplass-core')
-	compile project(':iplass-web')
+	api project(':iplass-core')
+	api project(':iplass-web')
 }
 
 //gradle-node-plugin options

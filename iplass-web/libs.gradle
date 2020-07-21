@@ -1,27 +1,28 @@
 dependencies {
+	compileOnly configurations.jeecoreapis
+	compileOnly configurations.jeewebapis
+
+	implementation 'org.codehaus.groovy:groovy'
+	implementation sharedLib('org.apache.httpcomponents:httpclient')
 
 	//apache POI
-	compile(group: 'org.apache.poi', name: 'poi-ooxml', version:'4.1.2') {
-		//java8 include stax-api
-		exclude(group: 'stax', module: 'stax-api')
-    }
+	api sharedLib('org.apache.poi:poi')
+	api sharedLib('org.apache.poi:poi-ooxml')
 
 	//jasper reports
-	compile(group: 'net.sf.jasperreports', name: 'jasperreports', version:'6.5.1') {
+	api(sharedLib('net.sf.jasperreports:jasperreports')) {
 		//define minimum dependency
 		exclude(group: 'org.codehaus.castor', module: 'castor-xml')
 		exclude(group: 'org.eclipse.jdt.core.compiler', module: 'ecj')
 		exclude(group: 'org.jfree', module: 'jcommon')
 		exclude(group: 'org.jfree', module: 'jfreechart')
 		exclude(group: 'org.olap4j', module: 'olap4j')
-		//use jcl-over-slf4j
-		exclude(group: 'commons-logging', module: 'commons-logging')
 	}
 
-	compile(group: 'commons-fileupload', name: 'commons-fileupload', version:'1.3.3')
+	implementation sharedLib('commons-fileupload:commons-fileupload')
 
 	//Java JWT
-	compile 'io.jsonwebtoken:jjwt-api:0.10.6'
-	runtime 'io.jsonwebtoken:jjwt-impl:0.10.6'
-	runtime 'io.jsonwebtoken:jjwt-jackson:0.10.6'
+	implementation sharedLib('io.jsonwebtoken:jjwt-api')
+	runtimeOnly sharedLib('io.jsonwebtoken:jjwt-impl')
+	runtimeOnly sharedLib('io.jsonwebtoken:jjwt-jackson')
 }

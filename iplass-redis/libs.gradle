@@ -1,5 +1,4 @@
 dependencies {
-	compile (group: 'io.lettuce', name: 'lettuce-core', version: '5.2.2.RELEASE')
-
-	testCompile 'junit:junit:4.12'
+	implementation sharedLib('org.apache.commons:commons-lang3')
+	implementation sharedLib('io.lettuce:lettuce-core')
 }
