@@ -27,11 +27,11 @@ import javax.xml.bind.annotation.XmlSeeAlso;
 
 /**
  * <p>
- * 帳票出力機能でPOIを利用して出力する際の定義。
+ * 帳票出力機能でPOIまたはJXLSを利用して出力する際の定義。
  * </p>
  * <p>
- * Javaクラス指定、Groovyスクリプト指定の２通り設定可能
- * Javaクラス指定　　　：ReportOutputLogicインタフェースを継承したクラスを設定
+ * Javaクラス指定、Groovyスクリプト指定の２通り設定可能。<br>
+ * Javaクラス指定：ReportOutputLogicインタフェースを継承したクラスを設定<br>
  * Groovyスクリプト指定：Groovyスクリプトを記述
  * </p>
  *

@@ -46,9 +46,11 @@ import org.iplass.mtp.definition.DefinitionModifyResult;
 import org.iplass.mtp.util.StringUtil;
 import org.iplass.mtp.web.template.definition.TemplateDefinition;
 import org.iplass.mtp.web.template.definition.TemplateDefinitionManager;
+import org.iplass.mtp.web.template.report.definition.JxlsContextParamMapDefinition;
 import org.iplass.mtp.web.template.report.definition.GroovyReportOutputLogicDefinition;
 import org.iplass.mtp.web.template.report.definition.JasperReportType;
 import org.iplass.mtp.web.template.report.definition.JavaClassReportOutputLogicDefinition;
+import org.iplass.mtp.web.template.report.definition.JxlsReportType;
 import org.iplass.mtp.web.template.report.definition.LocalizedReportDefinition;
 import org.iplass.mtp.web.template.report.definition.PoiReportType;
 import org.iplass.mtp.web.template.report.definition.ReportParamMapDefinition;
@@ -337,7 +339,7 @@ public class ReportTemplateUploadServiceImpl extends AdminUploadAction {
 
 		String reportType = (String)args.get(ReportTemplateUploadProperty.REPORT_TYPE);
 
-		if(PoiReportType.class.getName().equals(reportType)){
+		if (PoiReportType.class.getName().equals(reportType)) {
 			PoiReportType poiTemplate = new PoiReportType();
 			poiTemplate.setOutputFileType((String)args.get(ReportTemplateUploadProperty.OUTPUT_FILE_TYPE));
 
@@ -358,7 +360,7 @@ public class ReportTemplateUploadServiceImpl extends AdminUploadAction {
 			}
 
 			return poiTemplate;
-		}else{
+		} else if (JasperReportType.class.getName().equals(reportType)) {
 			JasperReportType jasperTemplate = new JasperReportType();
 			jasperTemplate.setOutputFileType((String)args.get(ReportTemplateUploadProperty.OUTPUT_FILE_TYPE));
 
@@ -386,6 +388,42 @@ public class ReportTemplateUploadServiceImpl extends AdminUploadAction {
 			}
 
 			return jasperTemplate;
+		} else {
+			JxlsReportType jxlsTemplate = new JxlsReportType();
+			jxlsTemplate.setOutputFileType((String)args.get(ReportTemplateUploadProperty.OUTPUT_FILE_TYPE));
+
+			//パラメータマッピング設定
+			int mapCnt = Integer.parseInt((String)(args.get(ReportTemplateUploadProperty.JXLS_PARAM_MAP_CNT)));
+			JxlsContextParamMapDefinition[] cpmds = new JxlsContextParamMapDefinition[mapCnt];
+			for( int i=0; i < mapCnt; i++){
+				JxlsContextParamMapDefinition cpmd = new JxlsContextParamMapDefinition();
+				cpmd.setKey((String)(args.get(ReportTemplateUploadProperty.JXLS_PARAM_MAP_KEY + "_" + i)));
+				cpmd.setMapFrom((String)(args.get(ReportTemplateUploadProperty.JXLS_PARAM_MAP_VALUE + "_" + i)));
+				cpmds[i] = cpmd;
+			}
+			if (mapCnt > 0) {
+				jxlsTemplate.setContextParamMap(cpmds);
+			}
+			
+			String passwordAttributeName = (String)args.get(ReportTemplateUploadProperty.JXLS_PASSWORD_ATTRIBUTE_NAME);
+			if (StringUtil.isNotEmpty(passwordAttributeName)) {
+				jxlsTemplate.setPasswordAttributeName(passwordAttributeName);
+			}
+			
+			String logicType = (String)(args.get(ReportTemplateUploadProperty.JXLS_LOGIC_NAME));
+			if(StringUtil.isNotEmpty(logicType)) {
+				if(ReportTemplateUploadProperty.JXLS_LOGIC_NAME_JAVA.equals(logicType)){
+					JavaClassReportOutputLogicDefinition javaLogic = new JavaClassReportOutputLogicDefinition();
+					javaLogic.setClassName((String)(args.get(ReportTemplateUploadProperty.JXLS_LOGIC_VALUE)));
+					jxlsTemplate.setReportOutputLogicDefinition(javaLogic);
+				}else if(ReportTemplateUploadProperty.JXLS_LOGIC_NAME_GROOVY.equals(logicType)){
+					GroovyReportOutputLogicDefinition groovyLogic = new GroovyReportOutputLogicDefinition();
+					groovyLogic.setScript((String)(args.get(ReportTemplateUploadProperty.JXLS_LOGIC_VALUE)));
+					jxlsTemplate.setReportOutputLogicDefinition(groovyLogic);
+				}
+			}
+
+			return jxlsTemplate;
 		}
 	}
 

@@ -76,7 +76,31 @@ public interface ReportTemplateUploadProperty extends UploadProperty {
 
 	/** Poi PasswordAttributeName */
 	public static final String POI_PASSWORD_ATTRIBUTE_NAME = "poiPasswordAttributeName";
+	
+	/** Jxlsレポート出力ロジック形式 */
+	public static final String JXLS_LOGIC_NAME = "jxlsLogicName";
 
+	/** Jxlsレポート出力ロジック形式(JAVA) */
+	public static final String JXLS_LOGIC_NAME_JAVA = "jxlsJavaClass";
+
+	/** Jxlsレポート出力ロジック形式(GROOVY) */
+	public static final String JXLS_LOGIC_NAME_GROOVY = "jxlsGroovy";
+
+	/** jxlsレポート出力ロジック値 */
+	public static final String JXLS_LOGIC_VALUE = "jxlsLogicValue";
+
+	/** Jxls PasswordAttributeName */
+	public static final String JXLS_PASSWORD_ATTRIBUTE_NAME = "jxlsPasswordAttributeName";
+	
+	/** Jxls ParamMapKey */
+	public static final String JXLS_PARAM_MAP_KEY = "jxlsParamMapKey";
+
+	/** Jxls ParamMapValue */
+	public static final String JXLS_PARAM_MAP_VALUE = "jxlsParamMapValue ";
+	
+	/** Jxls ParamMapCount */
+	public static final String JXLS_PARAM_MAP_CNT = "jxlsParamMapCnt";
+	
 	/** 多言語用変更前Locale名 */
 	public static final String LOCALE_BEFORE = "beforeLocale";
 

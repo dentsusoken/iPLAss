@@ -353,6 +353,10 @@
 			<property name="supportFiles" value="XLSX_POI"/>
 			<property name="supportFiles" value="XLSX_SXSSF_POI"/>
 		</property>
+		<property name="repotingEngine" class="org.iplass.mtp.impl.report.JxlsReportingEngine">
+			<property name="supportFiles" value="XLS_JXLS"/>
+			<property name="supportFiles" value="XLSX_JXLS"/>
+		</property>
 	</service>
 
 	<!-- WebApi Service -->

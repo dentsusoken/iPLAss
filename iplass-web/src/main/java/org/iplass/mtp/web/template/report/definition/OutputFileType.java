@@ -26,7 +26,9 @@ public enum OutputFileType {
 	XLSX("XLSX(Jasper)", new String[]{"jasper", "jrxml"}),
 	XLS_POI("XLS(POI)", new String[]{"xls"}),
 	XLSX_POI("XLSX(POI)", new String[]{"xlsx"}),
-	XLSX_SXSSF_POI("XLSX(POI Streaming)", new String[]{"xlsx"})
+	XLSX_SXSSF_POI("XLSX(POI Streaming)", new String[]{"xlsx"}),
+	XLS_JXLS("XLS(JXLS)", new String[]{"jxls", "xls"}),
+	XLSX_JXLS("XLSX(JXLS)", new String[]{"jxls", "xlsx"})
 	;
 
 	private String displayName;

@@ -26,7 +26,7 @@ import org.iplass.mtp.impl.metadata.MetaData;
 import org.iplass.mtp.impl.report.ReportingOutputModel;
 import org.iplass.mtp.web.template.report.definition.ReportType;
 
-@XmlSeeAlso({MetaJasperReportType.class, MetaPoiReportType.class})
+@XmlSeeAlso({MetaJasperReportType.class, MetaPoiReportType.class, MetaJxlsReportType.class})
 public abstract class MetaReportType implements MetaData {
 
 	private static final long serialVersionUID = 401694582362361475L;
