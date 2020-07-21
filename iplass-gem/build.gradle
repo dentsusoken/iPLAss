@@ -87,7 +87,7 @@ dependencies {
 	jspcc configurations.implementation
 	jspcc configurations.compileOnly
 }
-task compileJsp(dependsOn: ["compileJava"]) {
+task compileJsp(dependsOn: ["compileJava",':iplass-core:jar',':iplass-web:jar']) {
 	doLast {
 		def taskName = "compileJsp"
 		ant.echo(message: "jsp compile check")
