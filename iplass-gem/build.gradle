@@ -76,9 +76,17 @@ task archiveStaticResources(type: Zip) {
 	}
 }
 
+
 /*
  * jspのコンパイルチェック
  */
+configurations {
+	jspcc
+}
+dependencies {
+	jspcc configurations.implementation
+	jspcc configurations.compileOnly
+}
 task compileJsp(dependsOn: ["compileJava"]) {
 	doLast {
 		def taskName = "compileJsp"
@@ -86,7 +94,7 @@ task compileJsp(dependsOn: ["compileJava"]) {
 		ant.taskdef(classname: "org.apache.jasper.JspC", name: taskName) {
 			classpath {
 				pathelement(path: configurations.jasper.asPath)
-				pathelement(path: files(configurations.compile.files.findAll{it.name != 'note.txt'}).asPath)
+				pathelement(path: files(configurations.jspcc.files.findAll{it.name != 'note.txt'}).asPath)
 				pathelement(path: sourceSets.main.output.classesDirs.asPath)
 			}
 		}
