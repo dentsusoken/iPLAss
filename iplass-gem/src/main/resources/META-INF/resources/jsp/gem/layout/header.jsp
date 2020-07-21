@@ -353,9 +353,7 @@ function showPreviewDateTimeDialog() {
 		}
 
 		TenantI18nInfo i18nInfo = tenant.getTenantConfig(TenantI18nInfo.class);
-		List<String> useLangList = i18nInfo.getUseLanguageList();
-
-		if (!useLangList.contains(user.getLanguage())) {
+		if (!enabelLangeages.containsKey((user.getLanguage()))) {
 			if (i18nInfo.isUseMultilingual() && i18nInfo.getUseLanguageList() != null && i18nInfo.getUseLanguageList().size() > 1) {
 %>
 <li class="change-area lang">
@@ -363,6 +361,8 @@ function showPreviewDateTimeDialog() {
 <span class="node-cursor"></span>
 <ul>
 <%
+				List<String> useLangList = i18nInfo.getUseLanguageList();
+
 				for (String key : enabelLangeages.keySet()) {
 					String name = enabelLangeages.get(key);
 
@@ -381,8 +381,8 @@ function showPreviewDateTimeDialog() {
 <input type="hidden" value="<%=key%>"/>
 </li>
 <%
+					}
 				}
-			}
 %>
 </ul>
 
