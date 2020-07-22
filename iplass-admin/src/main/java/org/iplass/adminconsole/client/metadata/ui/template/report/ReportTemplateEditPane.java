@@ -106,7 +106,7 @@ public class ReportTemplateEditPane extends TemplateTypeEditPane implements HasE
 	private TextItem jxlsPasswordAttributeNameField;
 	/** JXLS ContextParamMap */
 	private JxlsReportParamMapGridPane jxlsContextParamMapPane;
-	/** JXLS ReportOutput Logic */
+	/** JXLS ReportOutputLogic */
 	private JxlsReportOutLogicPane jxlsReportOutputLogicPane;
 
 	/** テンプレートファイル */
@@ -144,27 +144,24 @@ public class ReportTemplateEditPane extends TemplateTypeEditPane implements HasE
 					jasperParamMapPane.deleteAll();
 					jxlsReportOutputLogicPane.deleteAll();
 					jxlsContextParamMapPane.deleteAll();
-					removeMembers(jasperAttributeForm, jasperParamMapPane, jxlsContextParamMapPane, 
-							jxlsReportOutputLogicPane, jxlsPasswordAttributeNameForm);
-					addMember(poiPasswordAttributeNameForm);
-					addMember(reportOutPane);
+					removeMembers(jasperAttributeForm, jasperParamMapPane);
+					removeMembers(jxlsContextParamMapPane, jxlsReportOutputLogicPane, jxlsPasswordAttributeNameForm);
+					addMembers(poiPasswordAttributeNameForm, reportOutPane);
 				} else if (JasperReportType.class.getName().equals(reportType)) {
 					//Jasper利用の場合
 					reportOutPane.deleteAll();
 					jxlsReportOutputLogicPane.deleteAll();
 					jxlsContextParamMapPane.deleteAll();
-					removeMembers(poiPasswordAttributeNameForm, reportOutPane, jxlsContextParamMapPane, 
-							jxlsReportOutputLogicPane, jxlsPasswordAttributeNameForm);
-					addMember(jasperAttributeForm);
-					addMember(jasperParamMapPane);
+					removeMembers(poiPasswordAttributeNameForm, reportOutPane);
+					removeMembers(jxlsContextParamMapPane, jxlsReportOutputLogicPane, jxlsPasswordAttributeNameForm);
+					addMembers(jasperAttributeForm, jasperParamMapPane);
 				} else if (JxlsReportType.class.getName().equals(reportType)) {
 					//JXLS利用の場合
 					jasperParamMapPane.deleteAll();
 					reportOutPane.deleteAll();
-					removeMembers(poiPasswordAttributeNameForm, reportOutPane, jasperAttributeForm, jasperParamMapPane);
-					addMember(jxlsPasswordAttributeNameForm);
-					addMember(jxlsContextParamMapPane);
-					addMember(jxlsReportOutputLogicPane);
+					removeMembers(poiPasswordAttributeNameForm, reportOutPane);
+					removeMembers(jasperAttributeForm, jasperParamMapPane);
+					addMembers(jxlsPasswordAttributeNameForm, jxlsContextParamMapPane, jxlsReportOutputLogicPane);
 				}
 			}
 		});
@@ -220,27 +217,24 @@ public class ReportTemplateEditPane extends TemplateTypeEditPane implements HasE
 
 		//JasperAttributeForm
 		jasperAttributeForm = new MtpForm();
-
+		
 		jasperDataSourceAttributeNameField = new MtpTextItem();
 		jasperDataSourceAttributeNameField.setTitle("DataSource AttributeName");
-
 		jasperPasswordAttributeNameField = new MtpTextItem();
 		jasperPasswordAttributeNameField.setTitle("Password AttributeName");
-
+		
 		jasperAttributeForm.setItems(jasperDataSourceAttributeNameField, jasperPasswordAttributeNameField);
-
+		
 		//Jasper ParamMap部分
 		jasperParamMapPane = new JasperReportParamMapGridPane();
 
 		//PoiパスワードAttributeName
 		poiPasswordAttributeNameForm = new MtpForm();
-
 		poiPasswordAttributeNameField = new MtpTextItem("poiPasswordAttributeName", "Password AttributeName");
 		poiPasswordAttributeNameForm.setItems(poiPasswordAttributeNameField);
-
+		
 		//Poiレポート出力ロジック部分
 		reportOutPane = new PoiReportOutLogicPane();
-	
 		
 		/** JXLS PasswordAttributeName */
 		jxlsPasswordAttributeNameForm = new MtpForm();
@@ -255,17 +249,10 @@ public class ReportTemplateEditPane extends TemplateTypeEditPane implements HasE
 
 		//配置
 		addMember(form);
-		addMember(reportTypeForm);
-		addMember(outputTypeForm);
-		addMember(itmFileUpload);
-		addMember(downloadForm);
-		addMember(jasperAttributeForm);
-		addMember(jasperParamMapPane);
-		addMember(poiPasswordAttributeNameForm);
-		addMember(reportOutPane);
-		addMember(jxlsPasswordAttributeNameForm);
-		addMember(jxlsContextParamMapPane);
-		addMember(jxlsReportOutputLogicPane);
+		addMembers(reportTypeForm, outputTypeForm, itmFileUpload, downloadForm);
+		addMembers(jasperAttributeForm, jasperParamMapPane);
+		addMembers(poiPasswordAttributeNameForm, reportOutPane);
+		addMembers(jxlsPasswordAttributeNameForm, jxlsContextParamMapPane, jxlsReportOutputLogicPane);
 
 		//レポートタイプ取得
 		getReportType();
@@ -543,41 +530,29 @@ public class ReportTemplateEditPane extends TemplateTypeEditPane implements HasE
 			PoiReportType poiRepo = (PoiReportType)type;
 			reportOutPane.setDefinition(poiRepo);
 			poiPasswordAttributeNameField.setValue(poiRepo.getPasswordAttributeName());
-			removeMember(jasperAttributeForm);
-			removeMember(jasperParamMapPane);
-			removeMember(jxlsPasswordAttributeNameForm);
-			removeMember(jxlsContextParamMapPane);
-			removeMember(jxlsReportOutputLogicPane);
+			removeMembers(jasperAttributeForm, jasperParamMapPane);
+			removeMembers(jxlsPasswordAttributeNameForm, jxlsContextParamMapPane, jxlsReportOutputLogicPane);
 		} else if (type instanceof JasperReportType) {
 			//Jasper利用の場合
 			JasperReportType jasRepo = (JasperReportType)type;
 			jasperParamMapPane.setParamMap(jasRepo.getParamMap());
 			jasperDataSourceAttributeNameField.setValue(jasRepo.getDataSourceAttributeName());
 			jasperPasswordAttributeNameField.setValue(jasRepo.getPasswordAttributeName());
-			removeMember(poiPasswordAttributeNameForm);
-			removeMember(reportOutPane);
-			removeMember(jxlsPasswordAttributeNameForm);
-			removeMember(jxlsContextParamMapPane);
-			removeMember(jxlsReportOutputLogicPane);
+			removeMembers(poiPasswordAttributeNameForm, reportOutPane);
+			removeMembers(jxlsPasswordAttributeNameForm, jxlsContextParamMapPane, jxlsReportOutputLogicPane);
 		} else if (type instanceof JxlsReportType) {
 			//Jxls利用の場合
 			JxlsReportType jxlsRepo = (JxlsReportType)type;
 			jxlsPasswordAttributeNameField.setValue(jxlsRepo.getPasswordAttributeName());
 			jxlsReportOutputLogicPane.setDefinition(jxlsRepo);
 			jxlsContextParamMapPane.setContextParamMap(jxlsRepo.getContextParamMap());
-			removeMember(jasperAttributeForm);
-			removeMember(jasperParamMapPane);
-			removeMember(poiPasswordAttributeNameForm);
-			removeMember(reportOutPane);
+			removeMembers(jasperAttributeForm, jasperParamMapPane);
+			removeMembers(poiPasswordAttributeNameForm, reportOutPane);
 		} else {
 			//初期の未選択の場合
-			removeMember(jasperAttributeForm);
-			removeMember(jasperParamMapPane);
-			removeMember(poiPasswordAttributeNameForm);
-			removeMember(reportOutPane);
-			removeMember(jxlsPasswordAttributeNameForm);
-			removeMember(jxlsContextParamMapPane);
-			removeMember(jxlsReportOutputLogicPane);
+			removeMembers(jasperAttributeForm, jasperParamMapPane);
+			removeMembers(poiPasswordAttributeNameForm, reportOutPane);
+			removeMembers(jxlsPasswordAttributeNameForm, jxlsContextParamMapPane, jxlsReportOutputLogicPane);
 		}
 	}
 

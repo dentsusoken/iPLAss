@@ -38,13 +38,15 @@ public class JxlsReportOutLogicPane  extends VLayout {
 				+ "--></style>"
 				+ "<h3>Notes</h3>"
 				+ "<ul class=\"notes\">"
-				+ AdminClientMessageUtil.getString("ui_metadata_template_report_ReportOutLogicPane_captionHintComment1")
-				+ AdminClientMessageUtil.getString("ui_metadata_template_report_ReportOutLogicPane_captionHintComment2")
-				+ AdminClientMessageUtil.getString("ui_metadata_template_report_ReportOutLogicPane_captionHintComment3")
+				+ AdminClientMessageUtil.getString("ui_metadata_template_report_JxlsReportOutLogicPane_captionHintComment1")
+				+ AdminClientMessageUtil.getString("ui_metadata_template_report_JxlsReportOutLogicPane_captionHintComment2")
+				+ AdminClientMessageUtil.getString("ui_metadata_template_report_JxlsReportOutLogicPane_captionHintComment3")
 				+ "</ul>");
 		captionComposit.addMember(captionHint);
 
 		grid = new ReportOutLogicListGrid();
+		grid.setScriptHint("ui_metadata_template_report_JxlsReportOutLogicListGrid_scriptHint");
+		grid.setJavaClassNameItemComment("ui_metadata_template_report_JxlsReportOutLogicListGrid_javaClassNameItemComment");
 
 		// 追加ボタン
 		IButton addEventListener = new IButton("Add");
