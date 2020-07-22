@@ -69,6 +69,9 @@ public class ReportOutLogicListGrid extends ListGrid {
 
 	private final String SCRIPT = "Groovy";
 	private final String JAVACLASS = "JavaClass";
+	
+	private String scriptHint;
+	private String javaClassNameItemComment;
 
 	/**
 	 * コンストラクタ
@@ -111,6 +114,24 @@ public class ReportOutLogicListGrid extends ListGrid {
 			}
 		});
 	}
+	
+	public String getScriptHint() {
+		return scriptHint;
+	}
+
+	public void setScriptHint(String scriptHint) {
+		this.scriptHint = scriptHint;
+	}
+
+
+	public String getJavaClassNameItemComment() {
+		return javaClassNameItemComment;
+	}
+
+	public void setJavaClassNameItemComment(String javaClassNameItemComment) {
+		this.javaClassNameItemComment = javaClassNameItemComment;
+	}
+
 
 	public void setDefinition(ReportType definition) {
 		ReportOutputLogicDefinition RepOutLogicDef = null;
@@ -224,7 +245,6 @@ public class ReportOutLogicListGrid extends ListGrid {
 		dialog.show();
 	}
 
-
 	/**
 	 * レポート出力ロジック編集用ダイアログ
 	 *
@@ -313,7 +333,7 @@ public class ReportOutLogicListGrid extends ListGrid {
 					MetaDataUtil.showScriptEditDialog(ScriptEditorDialogMode.GROOVY_SCRIPT,
 							SmartGWTUtil.getStringValue(scriptItem),
 							ScriptEditorDialogCondition.TEMPLATE_REPORT_OUTPUT_LOGIC,
-							"ui_metadata_template_report_ReportOutLogicListGrid_scriptHint",
+							scriptHint,
 							null,
 							new ScriptEditorDialogHandler() {
 
@@ -339,7 +359,7 @@ public class ReportOutLogicListGrid extends ListGrid {
 			javaClassNameItem.setTitle("Class Name");
 			SmartGWTUtil.setRequired(javaClassNameItem);
 			SmartGWTUtil.addHoverToFormItem(javaClassNameItem,
-					AdminClientMessageUtil.getString("ui_metadata_template_report_ReportOutLogicListGrid_javaClassNameItemComment"));
+					AdminClientMessageUtil.getString(javaClassNameItemComment));
 
 			javaClassItemForm = new MtpForm();
 			javaClassItemForm.setItems(javaClassNameItem);

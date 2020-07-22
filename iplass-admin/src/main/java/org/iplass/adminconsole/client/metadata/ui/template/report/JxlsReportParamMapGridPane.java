@@ -55,9 +55,9 @@ public class JxlsReportParamMapGridPane extends VLayout {
 				+ "--></style>"
 				+ "<h3>Notes</h3>"
 				+ "<ul class=\"notes\">"
-				+ AdminClientMessageUtil.getString("ui_metadata_template_report_ReportParamMapGridPane_captionHintComment1")
-				+ AdminClientMessageUtil.getString("ui_metadata_template_report_ReportParamMapGridPane_captionHintComment2")
-				+ AdminClientMessageUtil.getString("ui_metadata_template_report_ReportParamMapGridPane_captionHintComment3"));
+				+ AdminClientMessageUtil.getString("ui_metadata_template_report_JxlsReportParamMapGridPane_captionHintComment1")
+				+ AdminClientMessageUtil.getString("ui_metadata_template_report_JxlsReportParamMapGridPane_captionHintComment2")
+				+ AdminClientMessageUtil.getString("ui_metadata_template_report_JxlsReportParamMapGridPane_captionHintComment3"));
 		captionComposit.addMember(captionHint);
 
 		grid = new ParamMapGrid();

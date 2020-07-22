@@ -72,6 +72,8 @@ public class PoiReportOutLogicPane extends VLayout {
 		captionComposit.addMember(captionHint);
 
 		grid = new ReportOutLogicListGrid();
+		grid.setScriptHint("ui_metadata_template_report_ReportOutLogicListGrid_scriptHint");
+		grid.setJavaClassNameItemComment("ui_metadata_template_report_ReportOutLogicListGrid_javaClassNameItemComment");
 
 		// 追加ボタン
 		IButton addEventListener = new IButton("Add");
