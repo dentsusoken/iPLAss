@@ -98,8 +98,12 @@ Redisアドオンモジュールです。 +
 ### master
 現在開発中（未リリース）のバージョン3.1.xのソースはmasterブランチです。
 
+NOTE: (Java8 | Java11) / JakartaEE8(JavaEE8)ベースです
+
 ### 3.0.x
 現在リリースされている安定版のソースは3.0.xブランチです。
+
+NOTE: (Java8 | Java11) / JavaEE7ベースです
 
 ## Build
 gradleでビルドします。
@@ -108,8 +112,6 @@ gradleでビルドします。
 
 NOTE: publicなmavenが存在しないサードパーティライブラリを手動でlibディレクトリ以下に格納する必要があります。
 lib/smartgwt/note.txt参照してください。
-
-NOTE: (Java8 | Java11) / JavaEE7ベースです
 
 ## License
 https://www.gnu.org/licenses/agpl.html[AGPL-3.0]
