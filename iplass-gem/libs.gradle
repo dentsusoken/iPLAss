@@ -29,7 +29,7 @@ dependencies {
 	wjRuntime 'org.webjars.bower:mediaelement:4.2.5'
 
 	//css
-	wjRuntime 'org.webjars:font-awesome:5.0.9'
+	wjRuntime 'org.webjars:font-awesome:5.13.1'
 
 	runtime configurations.wjRuntime
 
