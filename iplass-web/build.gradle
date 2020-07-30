@@ -1,6 +1,4 @@
-apply from: '../javaeecoreapis.gradle'
-apply from: '../javaeewebapis.gradle'
 apply from: 'libs.gradle'
 dependencies {
-	compile project(':iplass-core')
+	api project(':iplass-core')
 }

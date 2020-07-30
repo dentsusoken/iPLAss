@@ -1,4 +1,4 @@
 apply from: 'libs.gradle'
 dependencies {
-	compile project(':iplass-core')
+	implementation project(':iplass-core')
 }

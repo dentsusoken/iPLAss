@@ -93,6 +93,14 @@ Redisアドオンモジュールです。 +
 * https://github.com/ISID/iplass-sample-app-vuejs
 * https://github.com/ISID/iplass-eclipse
 
+## Branches
+
+### master
+現在開発中（未リリース）のバージョン3.1.xのソースはmasterブランチです。
+
+### 3.0.x
+現在リリースされている安定版のソースは3.0.xブランチです。
+
 ## Build
 gradleでビルドします。
 

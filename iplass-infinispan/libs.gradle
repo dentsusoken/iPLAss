@@ -1,12 +1,10 @@
 dependencies {
-	compile (group: 'org.infinispan', name: 'infinispan-core', version: '9.1.6.Final') {
+	implementation (sharedLib('org.infinispan:infinispan-core')) {
 		exclude(group: 'log4j')//use log4j-over-slf4j
 		exclude(group: 'org.jboss.marshalling', module: 'jboss-marshalling-osgi')//use 2.0.6.Final for java11
 	}
-	runtime 'org.slf4j:log4j-over-slf4j:1.7.26'
+	runtimeOnly sharedLib('org.slf4j:log4j-over-slf4j')
 
 	//JBoss Marshalling OSGi Bundle for java11
-	runtime group: 'org.jboss.marshalling', name: 'jboss-marshalling-osgi', version: '2.0.6.Final'
-
-	testCompile 'junit:junit:4.12'
+	runtimeOnly sharedLib('org.jboss.marshalling:jboss-marshalling-osgi')
 }

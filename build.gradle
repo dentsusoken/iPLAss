@@ -9,7 +9,7 @@ import java.nio.file.StandardCopyOption
 import java.nio.charset.StandardCharsets
 
 allprojects {
-	apply plugin: 'java'
+	apply plugin: 'java-library'
 
 	group "org.iplass"
 
@@ -23,7 +23,7 @@ allprojects {
 			url 'http://jaspersoft.jfrog.io/jaspersoft/third-party-ce-artifacts/'
 		}
 	}
-
+	
 	javadoc {
 		options.encoding = 'UTF-8'
 		options.docEncoding = 'UTF-8'
@@ -49,6 +49,14 @@ allprojects {
 }
 
 subprojects { subproject ->
+	apply from: '../sharedlibs.gradle'
+	
+	configurations.all {
+		globalExcludes.each {
+			exclude group: it.group, module: it.module
+		}
+	}
+	
 	jar {
 		into('META-INF') {
 			from "$rootDir/LICENSE"

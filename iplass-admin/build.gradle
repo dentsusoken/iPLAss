@@ -7,28 +7,12 @@ buildscript {
 	}
 }
 
-apply from: '../javaeewebapis.gradle'
 apply from: 'libs.gradle'
 dependencies {
-	compile (project(':iplass-core')) {
-		//exclude validation-api version 1.1.0.Final. Currently, GWT can only compile with 1.0.0.GA.
-		exclude (group: 'javax.validation')
-	}
-	compile (project(':iplass-web')) {
-		exclude(group: 'org.glassfish.jersey.containers')
-		exclude(group: 'org.glassfish.jersey.core')
-		exclude (group: 'javax.validation')
-	}
-	compile(project(':iplass-gem')) {
-		exclude(group: 'org.glassfish.jersey.containers')
-		exclude(group: 'org.glassfish.jersey.core')
-		exclude (group: 'javax.validation')
-	}
-	compile(project(':iplass-tools')) {
-		exclude(group: 'org.glassfish.jersey.containers')
-		exclude(group: 'org.glassfish.jersey.core')
-		exclude (group: 'javax.validation')
-	}
+	implementation project(':iplass-core')
+	implementation project(':iplass-web')
+	implementation project(':iplass-gem')
+	implementation project(':iplass-tools')
 }
 
 apply plugin: 'gwt-compiler'
