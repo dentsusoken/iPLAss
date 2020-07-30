@@ -97,8 +97,12 @@ Supports Redis for cachestorage.
 ### master
 The master branch contains the source code of the development version, which is regarded as version 3.1.x. (not released yet)
 
+NOTE: It is (Java8 | Java11) / JakartaEE8(JavaEE8) based.
+
 ### 3.0.x
 3.0.x branch contains the source code of the latest stable version.
+
+NOTE: It is (Java8 | Java11) / JavaEE7 based.
 
 ## Build
 To build with gradle, use
@@ -109,8 +113,6 @@ NOTE: There are third-party libraries which do not have public maven. They have 
 
 Please refer to the following documents.
 lib/smartgwt/note.txt
-
-NOTE: It is (Java8 | Java11) / JavaEE7 based.
 
 ## License
 https://www.gnu.org/licenses/agpl.html[AGPL-3.0]

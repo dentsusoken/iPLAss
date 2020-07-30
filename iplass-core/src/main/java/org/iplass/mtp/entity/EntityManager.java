@@ -303,6 +303,7 @@ public interface EntityManager extends Manager {
 	 * 更新処理の際は、EntityEventListenerの呼び出しや、Validation、タイムスタンプチェック、CascadeDelete処理などは実行されません。
 	 * 外部のマスタデータの取り込み、初期データImportなどの用途での利用を想定しています。
 	 * bulkUpdatableのclose()は処理後（もしくは例外発生後）、当メソッド内で呼び出されます。<br>
+	 * bulkUpdate()を呼び出す実行ユーザは当該Entityに対して登録、更新、削除権限を範囲条件なしに保有している必要があります。<br>
 	 *
 	 * <b>注意</b><br>
 	 * Binary型、LongText型、AutoNumber型を利用している場合、bulkUpdate利用によっても高速化は望めない場合があります。<br>

@@ -42,13 +42,13 @@ ext {
 		'org.apache.lucene:lucene-highlighter': '7.4.0',
 		
 		//tika(依存関係多いので明示的に指定する)
-		'org.apache.tika:tika-core': '1.17',
-		'org.apache.tika:tika-parsers': '1.17',
-		'org.apache.commons:commons-compress': '1.14',
-		'org.apache.pdfbox:jempbox': '1.8.13',
+		'org.apache.tika:tika-core': '1.24.1',
+		'org.apache.tika:tika-parsers': '1.24.1',
+		'org.apache.commons:commons-compress': '1.20',
+		'org.apache.pdfbox:jempbox': '1.8.16',
 		'com.tdunning:json': '1.8',
-		'org.apache.pdfbox:pdfbox': '2.0.8',
-		'org.apache.pdfbox:pdfbox-tools': '2.0.8',
+		'org.apache.pdfbox:pdfbox': '2.0.20',
+		'org.apache.pdfbox:pdfbox-tools': '2.0.20',
 		'org.ccil.cowan.tagsoup:tagsoup': '1.2.1',
 		
 		'org.apache.poi:poi': '4.1.2',
