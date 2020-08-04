@@ -50,7 +50,7 @@ public class ViewControlSettingPane extends VLayout {
 			@Override
 			public void onSelectionChanged(SelectionEvent event) {
 				ViewControlSettingListGridRecord record = (ViewControlSettingListGridRecord) event.getRecord();
-				if (record.isExistDetailView() || record.isExistSearchView()) {
+				if (record.isExistDetailView() || record.isExistSearchView() || record.isExistBulkView()) {
 					delButton.disable();
 				} else {
 					delButton.enable();
@@ -61,6 +61,7 @@ public class ViewControlSettingPane extends VLayout {
 		// 追加ボタン
 		IButton addButton = new IButton("Add");
 		addButton.addClickHandler(new ClickHandler() {
+			@Override
 			public void onClick(ClickEvent event) {
 				grid.showAddViewControlSettingDialog();
 			}
@@ -68,6 +69,7 @@ public class ViewControlSettingPane extends VLayout {
 		// 削除ボタン
 		delButton = new IButton("Remove");
 		delButton.addClickHandler(new ClickHandler() {
+			@Override
 			public void onClick(ClickEvent event) {
 				grid.removeSelectedData();
 				delButton.disable();

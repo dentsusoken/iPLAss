@@ -22,6 +22,10 @@ package org.iplass.mtp.view.generic;
 
 import java.util.List;
 
+import org.iplass.gem.AutoGenerateSetting;
+import org.iplass.gem.AutoGenerateSetting.DisplayPosition;
+import org.iplass.gem.GemConfigService;
+import org.iplass.gem.command.Constants;
 import org.iplass.gem.command.GemResourceBundleUtil;
 import org.iplass.mtp.ManagerLocator;
 import org.iplass.mtp.definition.LocalizedStringDefinition;
@@ -37,6 +41,7 @@ import org.iplass.mtp.entity.definition.properties.SelectProperty;
 import org.iplass.mtp.entity.definition.properties.selectvalue.SelectValueDefinition;
 import org.iplass.mtp.entity.definition.properties.selectvalue.SelectValueDefinitionManager;
 import org.iplass.mtp.impl.core.ExecuteContext;
+import org.iplass.mtp.spi.ServiceRegistry;
 import org.iplass.mtp.tenant.TenantI18nInfo;
 import org.iplass.mtp.util.StringUtil;
 import org.iplass.mtp.view.generic.editor.AutoNumberPropertyEditor;
@@ -57,6 +62,7 @@ import org.iplass.mtp.view.generic.editor.StringPropertyEditor;
 import org.iplass.mtp.view.generic.editor.StringPropertyEditor.StringDisplayType;
 import org.iplass.mtp.view.generic.editor.TimePropertyEditor;
 import org.iplass.mtp.view.generic.editor.TimestampPropertyEditor;
+import org.iplass.mtp.view.generic.editor.UserPropertyEditor;
 import org.iplass.mtp.view.generic.element.property.PropertyColumn;
 import org.iplass.mtp.view.generic.element.property.PropertyItem;
 import org.iplass.mtp.view.generic.element.section.DefaultSection;
@@ -72,62 +78,55 @@ public class FormViewUtil {
 
 	/**
 	 * viewNameで指定した検索画面定義を取得します。
-	 * viewNameが未指定、もしくは自動生成対象のViewの場合、自動生成した検索画面定義を返します。
+	 * 自動生成対象のViewの場合、自動生成した画面定義を返します。
 	 *
 	 * @param ed Entity定義
 	 * @param ev 画面定義
 	 * @param viewName View名
 	 * @return 検索画面定義
 	 */
-	public static SearchFormView getSearchFormView(EntityDefinition ed, EntityView ev, String viewName) {
+	public static SearchFormView getSearchFormView(final EntityDefinition ed, final EntityView ev, final String viewName) {
 		SearchFormView form = null;
-		if (StringUtil.isEmpty(viewName)) {
-			//デフォルトレイアウトを利用
-			if (ev!= null && ev.getSearchFormViewNames().length > 0) {
-				//1件でもView定義があればその中からデフォルトレイアウトを探す
-				form = ev.getDefaultSearchFormView();
-			} else {
-				//何もなければ自動生成
+		if (ev!= null) {
+			if (ev.isAutoGenerateSearchView(viewName)) {
+				//自動設定の対象の場合はViewの有無問わず自動生成
 				form = createDefaultSearchFormView(ed);
+				form.setName(viewName);
+			} else {
+				form = ev.getSearchFormView(viewName);
 			}
-		} else {
-			//指定レイアウトを利用
-			if (ev!= null) {
-				if (ev.isAutoGenerateSearchView(viewName)) {
-					//自動設定の対象の場合はViewの有無問わず自動生成
-					form = createDefaultSearchFormView(ed);
-					form.setName(viewName);
-				} else {
-					form = ev.getSearchFormView(viewName);
-				}
-			}
+		}
+		if (form == null && StringUtil.isEmpty(viewName)) {
+			//defaultの場合、何もなければ自動生成
+			form = createDefaultSearchFormView(ed);
 		}
 
 		return form;
 	}
-	
-	public static BulkFormView getBulkFormView(EntityDefinition ed, EntityView ev, String viewName) {
+
+	/**
+	 * viewNameで指定した一括更新画面定義を取得します。
+	 * 自動生成対象のViewの場合、自動生成した画面定義を返します。
+	 *
+	 * @param ed Entity定義
+	 * @param ev 画面定義
+	 * @param viewName View名
+	 * @return 一括更新画面定義
+	 */
+	public static BulkFormView getBulkFormView(final EntityDefinition ed, final EntityView ev, final String viewName) {
 		BulkFormView form = null;
-		if (StringUtil.isEmpty(viewName)) {
-			//デフォルトレイアウトを利用
-			if (ev!= null && ev.getBulkFormViewNames().length > 0) {
-				//1件でもView定義があればその中からデフォルトレイアウトを探す
-				form = ev.getDefaultBulkFormView();
-			} else {
-				//何もなければ自動生成
+		if (ev!= null) {
+			if (ev.isAutoGenerateBulkView(viewName)) {
+				//自動設定の対象の場合はViewの有無問わず自動生成
 				form = createDefaultBulkFormView(ed);
+				form.setName(viewName);
+			} else {
+				form = ev.getBulkFormView(viewName);
 			}
-		} else {
-			//指定レイアウトを利用
-			if (ev!= null) {
-				if (ev.isAutoGenerateBulkView(viewName)) {
-					//自動設定の対象の場合はViewの有無問わず自動生成
-					form = createDefaultBulkFormView(ed);
-					form.setName(viewName);
-				} else {
-					form = ev.getBulkFormView(viewName);
-				}
-			}
+		}
+		if (form == null && StringUtil.isEmpty(viewName)) {
+			//defaultの場合、何もなければ自動生成
+			form = createDefaultBulkFormView(ed);
 		}
 
 		return form;
@@ -156,6 +155,16 @@ public class FormViewUtil {
 		SearchConditionSection condSection = new SearchConditionSection();
 		condSection.setColNum(1);
 		condSection.setConditionDispCount(5);
+
+		GemConfigService service = ServiceRegistry.getRegistry().getService(GemConfigService.class);
+		AutoGenerateSetting setting = service.getAutoGenerateSetting();
+
+		//システム項目（TOP）
+		if (setting.getSystemPropertyDisplayPosition() == DisplayPosition.TOP) {
+			createSystemSearchConditionItem(condSection, ed, isLoadDisplayLabel, setting);
+		}
+
+		//基本項目
 		condSection.addElement(createNameProperty(ed.getProperty(Entity.NAME), isLoadDisplayLabel));
 		if (ed.getVersionControlType() == VersionControlType.TIMEBASE) {
 			condSection.addElement(createTimestampProperty(
@@ -163,6 +172,8 @@ public class FormViewUtil {
 			condSection.addElement(createTimestampProperty(
 					ed.getProperty(Entity.END_DATE), isLoadDisplayLabel));
 		}
+
+		//オブジェクト情報
 		for (PropertyDefinition pd : ed.getDeclaredPropertyList()) {
 			//バイナリは明示的に指定した場合だけ、デフォルトは出さない
 			if (pd instanceof BinaryProperty) continue;
@@ -174,19 +185,30 @@ public class FormViewUtil {
 
 			PropertyItem p = new PropertyItem();
 			p.setDispFlag(true);
-			if (isLoadDisplayLabel) {
-				p.setDisplayLabel(pd.getDisplayName());
-			}
-			p.setEditor(getDefaultEditor(pd, isLoadDisplayLabel));
 			p.setPropertyName(pd.getName());
 			if (isLoadDisplayLabel) {
+				p.setDisplayLabel(pd.getDisplayName());
 				p.setLocalizedDisplayLabelList(pd.getLocalizedDisplayNameList());
 			}
+			p.setEditor(getDefaultEditor(pd, isLoadDisplayLabel));
 			condSection.addElement(p);
 		}
+
+		//システム項目（BOTTOM）
+		if (setting.getSystemPropertyDisplayPosition() == DisplayPosition.BOTTOM) {
+			createSystemSearchConditionItem(condSection, ed, isLoadDisplayLabel, setting);
+		}
+
 		view.addSection(condSection);
 
 		SearchResultSection resultSection = new SearchResultSection();
+
+		//システム項目（TOP）
+		if (setting.getSystemPropertyDisplayPosition() == DisplayPosition.TOP) {
+			createSystemSearchResultColumn(resultSection, ed, isLoadDisplayLabel, setting);
+		}
+
+		//基本項目
 		resultSection.addElement(createNamePropertyColumn(ed.getProperty(Entity.NAME), isLoadDisplayLabel));
 		if (ed.getVersionControlType() == VersionControlType.TIMEBASE) {
 			resultSection.addElement(createTimestampPropertyColumn(
@@ -194,6 +216,8 @@ public class FormViewUtil {
 			resultSection.addElement(createTimestampPropertyColumn(
 					ed.getProperty(Entity.END_DATE), isLoadDisplayLabel));
 		}
+
+		//オブジェクト情報
 		for (PropertyDefinition pd : ed.getDeclaredPropertyList()) {
 			//バイナリは明示的に指定した場合だけ、デフォルトは出さない
 			if (pd instanceof BinaryProperty) continue;
@@ -204,16 +228,20 @@ public class FormViewUtil {
 			}
 			PropertyColumn p = new PropertyColumn();
 			p.setDispFlag(true);
-			if (isLoadDisplayLabel) {
-				p.setDisplayLabel(pd.getDisplayName());
-			}
-			p.setEditor(getDefaultEditor(pd, isLoadDisplayLabel));
 			p.setPropertyName(pd.getName());
 			if (isLoadDisplayLabel) {
+				p.setDisplayLabel(pd.getDisplayName());
 				p.setLocalizedDisplayLabelList(pd.getLocalizedDisplayNameList());
 			}
+			p.setEditor(getDefaultEditor(pd, isLoadDisplayLabel));
 			resultSection.addElement(p);
 		}
+
+		//システム項目（BOTTOM）
+		if (setting.getSystemPropertyDisplayPosition() == DisplayPosition.BOTTOM) {
+			createSystemSearchResultColumn(resultSection, ed, isLoadDisplayLabel, setting);
+		}
+
 		view.addSection(resultSection);
 
 		return view;
@@ -222,35 +250,27 @@ public class FormViewUtil {
 
 	/**
 	 * viewNameで指定した詳細画面定義を取得します。
-	 * viewNameが未指定、もしくは自動生成対象のViewの場合、自動生成した詳細画面定義を返します。
+	 * 自動生成対象のViewの場合、自動生成した画面定義を返します。
 	 *
 	 * @param ed Entity定義
 	 * @param ev 画面定義
 	 * @param viewName View名
 	 * @return 詳細画面定義
 	 */
-	public static DetailFormView getDetailFormView(EntityDefinition ed, EntityView ev, String viewName) {
+	public static DetailFormView getDetailFormView(final EntityDefinition ed, final EntityView ev, final String viewName) {
 		DetailFormView form = null;
-		if (StringUtil.isEmpty(viewName)) {
-			//デフォルトレイアウトを利用
-			if (ev!= null && ev.getDetailFormViewNames().length > 0) {
-				//1件でもView定義があればその中からデフォルトレイアウトを探す
-				form = ev.getDefaultDetailFormView();
-			} else {
-				//何もなければ自動生成
+		if (ev!= null) {
+			if (ev.isAutoGenerateDetailView(viewName)) {
+				//自動設定の対象の場合はViewの有無問わず自動生成
 				form = createDefaultDetailFormView(ed);
+				form.setName(viewName);
+			} else {
+				form = ev.getDetailFormView(viewName);
 			}
-		} else {
-			//指定レイアウトを利用
-			if (ev!= null) {
-				if (ev.isAutoGenerateDetailView(viewName)) {
-					//自動設定の対象の場合はViewの有無問わず自動生成
-					form = createDefaultDetailFormView(ed);
-					form.setName(viewName);
-				} else {
-					form = ev.getDetailFormView(viewName);
-				}
-			}
+		}
+		if (form == null && StringUtil.isEmpty(viewName)) {
+			//defaultの場合、何もなければ自動生成
+			form = createDefaultDetailFormView(ed);
 		}
 
 		return form;
@@ -278,17 +298,7 @@ public class FormViewUtil {
 		DetailFormView view = new DetailFormView();
 		view.setLoadDefinedReferenceProperty(true);
 
-		DefaultSection baseSection = new DefaultSection();
-		baseSection.setDispFlag(true);
-		baseSection.setColNum(1);
-		baseSection.setExpandable(true);
-
-		//タイトル(デフォルトはja)
-		baseSection.setTitle(resourceString("generic.element.section.DefaultSection.basicInfo"));
-		baseSection.setLocalizedTitleList(resourceList("generic.element.section.DefaultSection.basicInfo"));
-
-		baseSection.addElement(createNameProperty(ed.getProperty(Entity.NAME), isLoadDisplayLabel));
-		baseSection.addElement(createDescriptionProperty(ed.getProperty(Entity.DESCRIPTION), isLoadDisplayLabel));
+		DefaultSection baseSection = createBasicSection(ed, isLoadDisplayLabel);
 		if (ed.getVersionControlType() == VersionControlType.TIMEBASE) {
 			baseSection.addElement(createTimestampProperty(
 					ed.getProperty(Entity.START_DATE), isLoadDisplayLabel));
@@ -296,31 +306,21 @@ public class FormViewUtil {
 					ed.getProperty(Entity.END_DATE), isLoadDisplayLabel));
 		}
 
-		DefaultSection objectSection = new DefaultSection();
-		objectSection.setDispFlag(true);
-		objectSection.setColNum(1);
-		objectSection.setExpandable(true);
+		DefaultSection objectSection = createObjectSection(ed, isLoadDisplayLabel);
 
-		//タイトル(デフォルトはja)
-		objectSection.setTitle(resourceString("generic.element.section.DefaultSection.objectInfo"));
-		objectSection.setLocalizedTitleList(resourceList("generic.element.section.DefaultSection.objectInfo"));
+		GemConfigService service = ServiceRegistry.getRegistry().getService(GemConfigService.class);
+		AutoGenerateSetting setting = service.getAutoGenerateSetting();
 
-		for (PropertyDefinition pd : ed.getDeclaredPropertyList()) {
-			PropertyItem p = new PropertyItem();
-			p.setDispFlag(true);
-			if (isLoadDisplayLabel) {
-				p.setDisplayLabel(pd.getDisplayName());
-			}
-			p.setEditor(getDefaultEditor(pd, isLoadDisplayLabel));
-			p.setPropertyName(pd.getName());
-			if (isLoadDisplayLabel) {
-				p.setLocalizedDisplayLabelList(pd.getLocalizedDisplayNameList());
-			}
-			objectSection.addElement(p);
+		DefaultSection systemSection = createSystemSection(ed, isLoadDisplayLabel, setting);
+
+		if (systemSection != null && setting.getSystemPropertyDisplayPosition() == DisplayPosition.TOP) {
+			view.addSection(systemSection);
 		}
-
 		view.addSection(baseSection);
 		view.addSection(objectSection);
+		if (systemSection != null && setting.getSystemPropertyDisplayPosition() == DisplayPosition.BOTTOM) {
+			view.addSection(systemSection);
+		}
 
 		if (ed.getVersionControlType() != VersionControlType.NONE) {
 			VersionSection vs = new VersionSection();
@@ -353,32 +353,62 @@ public class FormViewUtil {
 		BulkFormView view = new BulkFormView();
 //		view.setLoadDefinedReferenceProperty(true);
 
-		DefaultSection baseSection = new DefaultSection();
-		baseSection.setDispFlag(true);
-		baseSection.setColNum(1);
-		baseSection.setExpandable(true);
+		DefaultSection baseSection = createBasicSection(ed, isLoadDisplayLabel);
 
-		//タイトル(デフォルトはja)
-		baseSection.setTitle(resourceString("generic.element.section.DefaultSection.basicInfo"));
-		baseSection.setLocalizedTitleList(resourceList("generic.element.section.DefaultSection.basicInfo"));
+		DefaultSection objectSection = createObjectSection(ed, isLoadDisplayLabel);
 
-		baseSection.addElement(createNameProperty(ed.getProperty(Entity.NAME), isLoadDisplayLabel));
-		baseSection.addElement(createDescriptionProperty(ed.getProperty(Entity.DESCRIPTION), isLoadDisplayLabel));
-//		if (ed.getVersionControlType() == VersionControlType.TIMEBASE) {
-//			baseSection.addElement(createTimestampProperty(
-//					ed.getProperty(Entity.START_DATE), isLoadDisplayLabel));
-//			baseSection.addElement(createTimestampProperty(
-//					ed.getProperty(Entity.END_DATE), isLoadDisplayLabel));
+		view.addSection(baseSection);
+		view.addSection(objectSection);
+
+//		if (ed.getVersionControlType() != VersionControlType.NONE) {
+//			VersionSection vs = new VersionSection();
+//			vs.setDispFlag(true);
+//			view.addSection(vs);
 //		}
 
-		DefaultSection objectSection = new DefaultSection();
-		objectSection.setDispFlag(true);
-		objectSection.setColNum(1);
-		objectSection.setExpandable(true);
+		return view;
+	}
+
+	/**
+	 * 編集画面の基本項目Sectionを生成します。
+	 * 開始日、終了日は含みません。
+	 *
+	 * @return 基本項目Section
+	 */
+	private static DefaultSection createBasicSection(EntityDefinition ed, boolean isLoadDisplayLabel) {
+
+		DefaultSection section = new DefaultSection();
+		section.setDispFlag(true);
+		section.setColNum(1);
+		section.setExpandable(true);
+		section.setStyle(Constants.AUTO_GENERATE_DETAIL_BASIC_SECTION_CSS_CLASS);
 
 		//タイトル(デフォルトはja)
-		objectSection.setTitle(resourceString("generic.element.section.DefaultSection.objectInfo"));
-		objectSection.setLocalizedTitleList(resourceList("generic.element.section.DefaultSection.objectInfo"));
+		section.setTitle(resourceString("generic.element.section.DefaultSection.basicInfo"));
+		section.setLocalizedTitleList(resourceList("generic.element.section.DefaultSection.basicInfo"));
+
+		section.addElement(createNameProperty(ed.getProperty(Entity.NAME), isLoadDisplayLabel));
+		section.addElement(createDescriptionProperty(ed.getProperty(Entity.DESCRIPTION), isLoadDisplayLabel));
+
+		return section;
+	}
+
+
+	/**
+	 * 編集画面のオブジェクト情報Sectionを生成します。
+	 *
+	 * @return オブジェクト情報Section
+	 */
+	private static DefaultSection createObjectSection(EntityDefinition ed, boolean isLoadDisplayLabel) {
+
+		DefaultSection section = new DefaultSection();
+		section.setDispFlag(true);
+		section.setColNum(1);
+		section.setExpandable(true);
+		section.setStyle(Constants.AUTO_GENERATE_DETAIL_OBJECT_SECTION_CSS_CLASS);
+
+		section.setTitle(resourceString("generic.element.section.DefaultSection.objectInfo"));
+		section.setLocalizedTitleList(resourceList("generic.element.section.DefaultSection.objectInfo"));
 
 		for (PropertyDefinition pd : ed.getDeclaredPropertyList()) {
 			PropertyItem p = new PropertyItem();
@@ -391,19 +421,164 @@ public class FormViewUtil {
 			if (isLoadDisplayLabel) {
 				p.setLocalizedDisplayLabelList(pd.getLocalizedDisplayNameList());
 			}
-			objectSection.addElement(p);
+			section.addElement(p);
 		}
 
-		view.addSection(baseSection);
-		view.addSection(objectSection);
+		return section;
+	}
 
-//		if (ed.getVersionControlType() != VersionControlType.NONE) {
-//			VersionSection vs = new VersionSection();
-//			vs.setDispFlag(true);
-//			view.addSection(vs);
-//		}
+	/**
+	 * 編集画面のシステム項目Sectionを生成します。
+	 *
+	 * @param ed Entity定義
+	 * @param isLoadDisplayLabel 表示名を設定するか
+	 * @param setting 自動生成設定
+	 * @return システム項目Section
+	 */
+	private static DefaultSection createSystemSection(EntityDefinition ed, boolean isLoadDisplayLabel, AutoGenerateSetting setting) {
 
-		return view;
+		if (!setting.isShowSystemProperty()) {
+			return null;
+		}
+
+		DefaultSection section = new DefaultSection();
+		section.setDispFlag(true);
+		section.setColNum(1);
+		section.setExpandable(true);
+		section.setStyle(Constants.AUTO_GENERATE_DETAIL_SYSTEM_SECTION_CSS_CLASS);
+
+		section.setTitle(resourceString("generic.element.section.DefaultSection.systemInfo"));
+		section.setLocalizedTitleList(resourceList("generic.element.section.DefaultSection.systemInfo"));
+
+
+		for (String propName : setting.getSystemProperties()) {
+			//編集画面は編集不可
+			PropertyItem item = createSystemPropertyItems(propName, ed, isLoadDisplayLabel, true, setting);
+			if (item != null) {
+				section.addElement(item);
+			}
+		}
+
+		return section;
+	}
+
+	/**
+	 * 検索画面の検索条件にシステム項目を設定します。
+	 *
+	 * @param section 検索条件Section
+	 * @param ed Entity定義
+	 * @param isLoadDisplayLabel 表示名を設定するか
+	 * @param setting 自動生成設定
+	 */
+	private static void createSystemSearchConditionItem(SearchConditionSection section, EntityDefinition ed, boolean isLoadDisplayLabel, AutoGenerateSetting setting) {
+
+		if (!setting.isShowSystemProperty()) {
+			return;
+		}
+
+		for (String propName : setting.getSystemProperties()) {
+			//検索条件は編集可能
+			PropertyItem item = createSystemPropertyItems(propName, ed, isLoadDisplayLabel, false, setting);
+			if (item != null) {
+				section.addElement(item);
+			}
+		}
+
+	}
+
+	/**
+	 * システム項目のPropertyItem（検索条件、編集画面用）を生成します。
+	 *
+	 * @param propName プロパティ名
+	 * @param ed Entity定義
+	 * @param isLoadDisplayLabel 表示名を設定するか
+	 * @param isReadOnly 読み取り専用か
+	 * @param setting 自動生成設定
+	 * @return PropertyItem
+	 */
+	private static PropertyItem createSystemPropertyItems(String propName, EntityDefinition ed, boolean isLoadDisplayLabel, boolean isReadOnly, AutoGenerateSetting setting) {
+
+		if (Entity.OID.equals(propName)) {
+			//OIDをカスタマイズしている場合に表示するかをチェック
+			if (ed.getOidPropertyName() != null && setting.isExcludeOidWhenCustomOid()) {
+				return null;
+			}
+		}
+		if (Entity.VERSION.equals(propName)) {
+			//VERSIONED以外の場合は表示しない
+			if (ed.getVersionControlType() != VersionControlType.VERSIONED) {
+				return null;
+			}
+		}
+
+		PropertyDefinition pd = ed.getProperty(propName);
+		PropertyItem item = new PropertyItem();
+		item.setDispFlag(true);
+		item.setPropertyName(pd.getName());
+		if (isLoadDisplayLabel) {
+			item.setDisplayLabel(pd.getDisplayName());
+			item.setLocalizedDisplayLabelList(pd.getLocalizedDisplayNameList());
+		}
+		if ((Entity.CREATE_BY.equals(propName) || Entity.UPDATE_BY.equals(propName) || Entity.LOCKED_BY.equals(propName))
+				&& setting.isUseUserPropertyEditor()) {
+			//UserPropertyEditorを利用するかを確認
+			item.setEditor(new UserPropertyEditor());
+		} else {
+			//Editorを取得
+			item.setEditor(getDefaultEditor(pd, isLoadDisplayLabel, isReadOnly));
+		}
+
+		return item;
+	}
+
+	/**
+	 * 検索画面の検索結果にシステム項目を設定します。
+	 *
+	 * @param section 検索結果Section
+	 * @param ed Entity定義
+	 * @param isLoadDisplayLabel 表示名を設定するか
+	 * @param setting 自動生成設定
+	 */
+	private static void createSystemSearchResultColumn(SearchResultSection section, EntityDefinition ed, boolean isLoadDisplayLabel, AutoGenerateSetting setting) {
+
+		if (!setting.isShowSystemProperty()) {
+			return;
+		}
+
+		for (String propName : setting.getSystemProperties()) {
+
+			if (Entity.OID.equals(propName)) {
+				//OIDをカスタマイズしている場合に表示するかをチェック
+				if (ed.getOidPropertyName() != null && setting.isExcludeOidWhenCustomOid()) {
+					continue;
+				}
+			}
+			if (Entity.VERSION.equals(propName)) {
+				//VERSIONED以外の場合は表示しない
+				if (ed.getVersionControlType() != VersionControlType.VERSIONED) {
+					continue;
+				}
+			}
+
+			PropertyDefinition pd = ed.getProperty(propName);
+
+			PropertyColumn column = new PropertyColumn();
+			column.setDispFlag(true);
+			column.setPropertyName(pd.getName());
+			if (isLoadDisplayLabel) {
+				column.setDisplayLabel(pd.getDisplayName());
+				column.setLocalizedDisplayLabelList(pd.getLocalizedDisplayNameList());
+			}
+			if ((Entity.CREATE_BY.equals(propName) || Entity.UPDATE_BY.equals(propName) || Entity.LOCKED_BY.equals(propName))
+					&& setting.isUseUserPropertyEditor()) {
+				//UserPropertyEditorを利用するかを確認
+				column.setEditor(new UserPropertyEditor());
+			} else {
+				//Editorを取得
+				column.setEditor(getDefaultEditor(pd, isLoadDisplayLabel, false));
+			}
+			section.addElement(column);
+		}
 	}
 
 	/**
@@ -542,7 +717,19 @@ public class FormViewUtil {
 	 * @return プロパティエディタ
 	 */
 	public static PropertyEditor getDefaultEditor(PropertyDefinition pd, boolean isLoadDisplayLabel) {
-		PropertyEditor editor = getDefaultEditor(pd.getType(), isLoadDisplayLabel);
+		return getDefaultEditor(pd, isLoadDisplayLabel, false);
+	}
+
+	/**
+	 * プロパティ定義の型に合わせたプロパティエディタを取得します。
+	 *
+	 * @param pd プロパティ定義
+	 * @param isLoadDisplayLabel 表示名をセットするか
+	 * @param isReadOnly 読み取り専用
+	 * @return プロパティエディタ
+	 */
+	public static PropertyEditor getDefaultEditor(PropertyDefinition pd, boolean isLoadDisplayLabel, boolean isReadOnly) {
+		PropertyEditor editor = getDefaultEditor(pd.getType(), isLoadDisplayLabel, isReadOnly);
 
 		if (editor instanceof ExpressionPropertyEditor) {
 			ExpressionPropertyEditor epe = (ExpressionPropertyEditor)editor;
@@ -562,7 +749,7 @@ public class FormViewUtil {
 					//EXPRESSIONは対象外
 					break;
 				case SELECT:
-					resultEditor = getDefaultEditor(resultType, isLoadDisplayLabel);
+					resultEditor = getDefaultEditor(resultType, isLoadDisplayLabel, isReadOnly);
 
 					//SELECTの場合はResultTypeSpecが設定されている場合のみEditorValueを取得
 					if (ep.getResultTypeSpec() != null
@@ -585,7 +772,7 @@ public class FormViewUtil {
 					break;
 				default:
 					//ResultTypeに合わせたEditorを取得
-					resultEditor = getDefaultEditor(resultType, isLoadDisplayLabel);
+					resultEditor = getDefaultEditor(resultType, isLoadDisplayLabel, isReadOnly);
 				}
 
 				//内部Editorにセット
@@ -611,20 +798,30 @@ public class FormViewUtil {
 	 *
 	 * @param type プロパティ型
 	 * @param isLoadDisplayLabel 表示名をセットするか
+	 * @param isReadOnly 読み取り専用
 	 * @return プロパティエディタ
 	 */
-	private static PropertyEditor getDefaultEditor(PropertyDefinitionType type, boolean isLoadDisplayLabel) {
+	private static PropertyEditor getDefaultEditor(PropertyDefinitionType type, boolean isLoadDisplayLabel, boolean isReadOnly) {
 		PropertyEditor editor = null;
 
 		switch(type) {
 		case BINARY:
 			BinaryPropertyEditor bpe = new BinaryPropertyEditor();
-			bpe.setDisplayType(BinaryDisplayType.BINARY);
+			if (isReadOnly) {
+				//TODO LABEL
+				bpe.setDisplayType(BinaryDisplayType.BINARY);
+			} else {
+				bpe.setDisplayType(BinaryDisplayType.BINARY);
+			}
 			editor = bpe;
 			break;
 		case BOOLEAN:
 			BooleanPropertyEditor bope = new BooleanPropertyEditor();
-			bope.setDisplayType(BooleanPropertyEditor.BooleanDisplayType.RADIO);
+			if (isReadOnly) {
+				bope.setDisplayType(BooleanPropertyEditor.BooleanDisplayType.LABEL);
+			} else {
+				bope.setDisplayType(BooleanPropertyEditor.BooleanDisplayType.RADIO);
+			}
 			if (isLoadDisplayLabel) {
 				//デフォルトはja
 				bope.setTrueLabel(resourceString("generic.editor.boolean.BooleanPropertyEditor_Condition.enable"));
@@ -639,18 +836,30 @@ public class FormViewUtil {
 			break;
 		case DATE:
 			DatePropertyEditor dpe = new DatePropertyEditor();
-			dpe.setDisplayType(DatePropertyEditor.DateTimeDisplayType.DATETIME);
+			if (isReadOnly) {
+				dpe.setDisplayType(DatePropertyEditor.DateTimeDisplayType.LABEL);
+			} else {
+				dpe.setDisplayType(DatePropertyEditor.DateTimeDisplayType.DATETIME);
+			}
 			editor = dpe;
 			break;
 		case DATETIME:
 			TimestampPropertyEditor tspe = new TimestampPropertyEditor();
-			tspe.setDisplayType(TimestampPropertyEditor.DateTimeDisplayType.DATETIME);
-			tspe.setUseDatetimePicker(true);
+			if (isReadOnly) {
+				tspe.setDisplayType(TimestampPropertyEditor.DateTimeDisplayType.LABEL);
+			} else {
+				tspe.setDisplayType(TimestampPropertyEditor.DateTimeDisplayType.DATETIME);
+				tspe.setUseDatetimePicker(true);
+			}
 			editor = tspe;
 			break;
 		case DECIMAL:
 			DecimalPropertyEditor dcpe = new DecimalPropertyEditor();
-			dcpe.setDisplayType(DecimalPropertyEditor.NumberDisplayType.TEXT);
+			if (isReadOnly) {
+				dcpe.setDisplayType(DecimalPropertyEditor.NumberDisplayType.LABEL);
+			} else {
+				dcpe.setDisplayType(DecimalPropertyEditor.NumberDisplayType.TEXT);
+			}
 			editor = dcpe;
 			break;
 		case EXPRESSION:
@@ -659,37 +868,67 @@ public class FormViewUtil {
 			break;
 		case FLOAT:
 			FloatPropertyEditor fpe = new FloatPropertyEditor();
-			fpe.setDisplayType(FloatPropertyEditor.NumberDisplayType.TEXT);
+			if (isReadOnly) {
+				fpe.setDisplayType(FloatPropertyEditor.NumberDisplayType.LABEL);
+			} else {
+				fpe.setDisplayType(FloatPropertyEditor.NumberDisplayType.TEXT);
+			}
 			editor = fpe;
 			break;
 		case INTEGER:
 			IntegerPropertyEditor ipe = new IntegerPropertyEditor();
-			ipe.setDisplayType(IntegerPropertyEditor.NumberDisplayType.TEXT);
+			if (isReadOnly) {
+				ipe.setDisplayType(IntegerPropertyEditor.NumberDisplayType.LABEL);
+			} else {
+				ipe.setDisplayType(IntegerPropertyEditor.NumberDisplayType.TEXT);
+			}
 			editor = ipe;
 			break;
 		case LONGTEXT:
 			LongTextPropertyEditor ltpe = new LongTextPropertyEditor();
-			ltpe.setDisplayType(LongTextPropertyEditor.StringDisplayType.TEXTAREA);
+			if (isReadOnly) {
+				ltpe.setDisplayType(LongTextPropertyEditor.StringDisplayType.LABEL);
+			} else {
+				ltpe.setDisplayType(LongTextPropertyEditor.StringDisplayType.TEXTAREA);
+			}
 			editor = ltpe;
 			break;
 		case REFERENCE:
 			ReferencePropertyEditor rpe = new ReferencePropertyEditor();
 			rpe.setDisplayType(ReferencePropertyEditor.ReferenceDisplayType.LINK);
+			if (isReadOnly) {
+				rpe.setHideSelectButton(true);
+				rpe.setHideRegistButton(true);
+				rpe.setHideDeleteButton(true);
+				rpe.setEditableReference(false);
+			}
 			editor = rpe;
 			break;
 		case SELECT:
 			SelectPropertyEditor sepe = new SelectPropertyEditor();
-			sepe.setDisplayType(SelectPropertyEditor.SelectDisplayType.RADIO);
+			if (isReadOnly) {
+				sepe.setDisplayType(SelectPropertyEditor.SelectDisplayType.LABEL);
+			} else {
+				sepe.setDisplayType(SelectPropertyEditor.SelectDisplayType.RADIO);
+			}
 			editor = sepe;
 			break;
 		case STRING:
 			StringPropertyEditor spe = new StringPropertyEditor();
-			spe.setDisplayType(StringPropertyEditor.StringDisplayType.TEXT);
+			if (isReadOnly) {
+				spe.setDisplayType(StringPropertyEditor.StringDisplayType.LABEL);
+			} else {
+				spe.setDisplayType(StringPropertyEditor.StringDisplayType.TEXT);
+			}
 			editor = spe;
 			break;
 		case TIME:
 			TimePropertyEditor tpe = new TimePropertyEditor();
-			tpe.setDisplayType(TimePropertyEditor.DateTimeDisplayType.DATETIME);
+			if (isReadOnly) {
+				tpe.setDisplayType(TimePropertyEditor.DateTimeDisplayType.LABEL);
+			} else {
+				tpe.setDisplayType(TimePropertyEditor.DateTimeDisplayType.DATETIME);
+			}
 			tpe.setUseTimePicker(true);
 			editor = tpe;
 			break;

@@ -3,35 +3,20 @@ buildscript {
 		jcenter()
 	}
 	dependencies {
-		classpath 'de.richsource.gradle.plugins:gwt-gradle-plugin:0.6'
+		classpath 'org.wisepersist:gwt-gradle-plugin:1.0.13'
 	}
 }
 
-apply from: '../javaeewebapis.gradle'
 apply from: 'libs.gradle'
 dependencies {
-	compile (project(':iplass-core')) {
-		//exclude validation-api version 1.1.0.Final. Currently, GWT can only compile with 1.0.0.GA.
-		exclude (group: 'javax.validation')
-	}
-	compile (project(':iplass-web')) {
-		exclude(group: 'org.glassfish.jersey.containers')
-		exclude(group: 'org.glassfish.jersey.core')
-		exclude (group: 'javax.validation')
-	}
-	compile(project(':iplass-gem')) {
-		exclude(group: 'org.glassfish.jersey.containers')
-		exclude(group: 'org.glassfish.jersey.core')
-		exclude (group: 'javax.validation')
-	}
-	compile(project(':iplass-tools')) {
-		exclude(group: 'org.glassfish.jersey.containers')
-		exclude(group: 'org.glassfish.jersey.core')
-		exclude (group: 'javax.validation')
-	}
+	implementation project(':iplass-core')
+	implementation project(':iplass-web')
+	implementation project(':iplass-gem')
+	implementation project(':iplass-tools')
 }
 
 apply plugin: 'gwt-compiler'
+apply plugin: 'eclipse'
 
 sourceSets {
 	main {
@@ -62,7 +47,7 @@ processResources {
 
 gwt {
 	src = files("${buildDir}/src/gwt")
-	gwtVersion=gwtVersion
+	gwtVersion = this.gwtVersion
 	modules 'org.iplass.adminconsole.AdminConsole'
 	minHeapSize = '32M'
 	maxHeapSize = '2048M'
@@ -70,6 +55,10 @@ gwt {
 	sourceLevel = 'auto'
 	compiler {
 		strict = true;
+	}
+	// The following is only needed if you don't use the Google Plugin for Eclipse.
+	eclipse {
+		addGwtContainer = false // Default set to true
 	}
 }
 
@@ -222,10 +211,10 @@ task copyGwtTransSrc(type: Sync) {
 		include 'mtp/mail/template/definition/MailTemplateDefinitionModifyResult.java'
 		include 'mtp/mail/template/definition/PlainTextBodyPart.java'
 
-		include 'mtp/webhook/template/definition/WebHookSubscriber.java'
-		include 'mtp/webhook/template/definition/WebHookTemplateDefinition.java'
-		include 'mtp/webhook/template/definition/WebHookHeaderDefinition.java'
-		include 'mtp/webhook/endpoint/definition/WebHookEndPointDefinition.java'
+		include 'mtp/webhook/template/definition/WebhookSubscriber.java'
+		include 'mtp/webhook/template/definition/WebhookTemplateDefinition.java'
+		include 'mtp/webhook/template/definition/WebhookHeaderDefinition.java'
+		include 'mtp/webhook/endpoint/definition/WebhookEndpointDefinition.java'
 
 		include 'mtp/message/MessageCategory.java'
 		include 'mtp/message/MessageItem.java'

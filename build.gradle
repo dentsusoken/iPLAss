@@ -9,7 +9,7 @@ import java.nio.file.StandardCopyOption
 import java.nio.charset.StandardCharsets
 
 allprojects {
-	apply plugin: 'java'
+	apply plugin: 'java-library'
 
 	group "org.iplass"
 
@@ -23,7 +23,7 @@ allprojects {
 			url 'http://jaspersoft.jfrog.io/jaspersoft/third-party-ce-artifacts/'
 		}
 	}
-
+	
 	javadoc {
 		options.encoding = 'UTF-8'
 		options.docEncoding = 'UTF-8'
@@ -49,6 +49,14 @@ allprojects {
 }
 
 subprojects { subproject ->
+	apply from: '../sharedlibs.gradle'
+	
+	configurations.all {
+		globalExcludes.each {
+			exclude group: it.group, module: it.module
+		}
+	}
+	
 	jar {
 		into('META-INF') {
 			from "$rootDir/LICENSE"
@@ -119,7 +127,6 @@ subprojects { subproject ->
 javadoc {
 	source(project(':iplass-core').sourceSets['main'].allJava)
 	source(project(':iplass-web').sourceSets['main'].allJava)
-	exclude('org/iplass/mtp/webhook/**')
 	exclude('**/impl/**')
 
 	classpath += project(':iplass-core').sourceSets['main'].compileClasspath
@@ -165,7 +172,6 @@ task processJavadocJava(dependsOn: copyJavadocJava) {
 
 task javadocI18n(type: Javadoc, dependsOn: processJavadocJava) {
 	source "${buildDir}/docSrc/${javadocLang}"
-	exclude('org/iplass/mtp/webhook/**')
 	exclude('**/impl/**')
 
 	destinationDir file("${docsDir}/javadoc/${javadocLang}")

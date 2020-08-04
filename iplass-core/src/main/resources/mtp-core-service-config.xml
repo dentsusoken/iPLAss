@@ -26,9 +26,9 @@
 		<property name="org.iplass.mtp.tenant.TenantManager" value="org.iplass.mtp.impl.tenant.TenantManagerImpl" />
 		<property name="org.iplass.mtp.transaction.TransactionManager" class="org.iplass.mtp.impl.transaction.TransactionService$TransactionManagerConstructor" />
 		<property name="org.iplass.mtp.utilityclass.definition.UtilityClassDefinitionManager" value="org.iplass.mtp.impl.script.UtilityClassDefinitionManagerImpl" />
-		<property name="org.iplass.mtp.webhook.WebHookManager" value="org.iplass.mtp.impl.webhook.WebHookManagerImpl" />
-		<property name="org.iplass.mtp.webhook.template.definition.WebHookTemplateDefinitionManager" value="org.iplass.mtp.impl.webhook.template.WebHookTemplateDefinitionManagerImpl" />
-		<property name="org.iplass.mtp.webhook.endpoint.definition.WebHookEndPointDefinitionManager" value="org.iplass.mtp.impl.webhook.endpointaddress.WebHookEndPointDefinitionManagerImpl" />
+		<property name="org.iplass.mtp.webhook.WebhookManager" value="org.iplass.mtp.impl.webhook.WebhookManagerImpl" />
+		<property name="org.iplass.mtp.webhook.template.definition.WebhookTemplateDefinitionManager" value="org.iplass.mtp.impl.webhook.template.WebhookTemplateDefinitionManagerImpl" />
+		<property name="org.iplass.mtp.webhook.endpoint.definition.WebhookEndpointDefinitionManager" value="org.iplass.mtp.impl.webhook.endpoint.WebhookEndpointDefinitionManagerImpl" />
 	</service>
 
 	<service>
@@ -98,8 +98,8 @@
 		<property name="typeMap" value="org.iplass.mtp.impl.prefs.PreferenceService$TypeMap" />
 		<property name="typeMap" value="org.iplass.mtp.impl.auth.authenticate.builtin.policy.AuthenticationPolicyService$TypeMap" />
 		<property name="typeMap" value="org.iplass.mtp.impl.pushnotification.PushNotificationService$TypeMap" />
-		<property name="typeMap" value="org.iplass.mtp.impl.webhook.WebHookServiceImpl$TypeMap" />
-		<property name="typeMap" value="org.iplass.mtp.impl.webhook.endpointaddress.WebHookEndPointServiceImpl$TypeMap" />
+		<property name="typeMap" value="org.iplass.mtp.impl.webhook.WebhookServiceImpl$TypeMap" />
+		<property name="typeMap" value="org.iplass.mtp.impl.webhook.endpoint.WebhookEndpointServiceImpl$TypeMap" />
 	</service>
 
 	<!-- 認証関連 -->
@@ -171,7 +171,7 @@
 				<property name="hashAlgorithm" value="SHA-256" />
 			</property>
 		</property>
-				<property name="handler" class="org.iplass.mtp.impl.webhook.WebHookAuthTokenHandler">
+				<property name="handler" class="org.iplass.mtp.impl.webhook.WebhookAuthTokenHandler">
 			<property name="type" value="WEBHOOKATH" />
 			<property name="store" value="default" />
 		</property>
@@ -285,15 +285,15 @@
 		 -->
 	</service>
 	
-	<!-- WebHook -->
+	<!-- Webhook -->
 	<service>
-		<interface>org.iplass.mtp.impl.webhook.WebHookService</interface>
-		<class>org.iplass.mtp.impl.webhook.WebHookServiceImpl</class>
-		<property name="webHookIsRetry" value="true" />
-		<property name="webHookRetryMaximumAttempts" value="10" />
-		<property name="webHookRetryInterval" value="500" />
-		<property name="webHookHmacHashAlgorithm" value="HmacSHA256" />
-		<property name="webHookHmacTokenDefaultName" value="X-IPLASS-HMAC" />
+		<interface>org.iplass.mtp.impl.webhook.WebhookService</interface>
+		<class>org.iplass.mtp.impl.webhook.WebhookServiceImpl</class>
+		<property name="retry" value="true" />
+		<property name="retryMaximumAttempts" value="10" />
+		<property name="retryInterval" value="500" />
+		<property name="hmacHashAlgorithm" value="HmacSHA256" />
+		<property name="hmacTokenDefaultName" value="X-IPLASS-HMAC" />
 <!-- 		<property name="httpClientConfig" class="org.iplass.mtp.impl.http.HttpClientConfig"> -->
 <!-- 			<property name="proxyHost" value="localhost" /> -->
 <!-- 			<property name="proxyPort" value="8080" /> -->
@@ -302,10 +302,10 @@
 <!-- 			<property name="poolingTimeToLive" value="50000" /> -->
 <!-- 		</property> -->
 	</service>
-	<!-- WebHookのEndPoint(サブスクライバー) -->
+	<!-- WebhookのEndpoint(サブスクライバー) -->
 	<service>
-		<interface>org.iplass.mtp.impl.webhook.endpointaddress.WebHookEndPointService</interface>
-		<class>org.iplass.mtp.impl.webhook.endpointaddress.WebHookEndPointServiceImpl</class>
+		<interface>org.iplass.mtp.impl.webhook.endpoint.WebhookEndpointService</interface>
+		<class>org.iplass.mtp.impl.webhook.endpoint.WebhookEndpointServiceImpl</class>
 	</service>
 		
 	<!-- Tenant関連 -->

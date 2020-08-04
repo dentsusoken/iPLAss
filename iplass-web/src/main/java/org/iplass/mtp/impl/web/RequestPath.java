@@ -55,8 +55,8 @@ public class RequestPath {
 
 	private String tenantUrl;
 
-	private String targetPath;
-	private String targetPathWithoutHeadSlash;
+	private String targetPath;//not decoded
+	private String targetPathWithoutHeadSlash;//not decoded
 	private String tenantContextPath;
 
 	private boolean isValid;

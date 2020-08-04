@@ -1,83 +1,74 @@
 dependencies {
+	compileOnly configurations.jeecoreapis
 
 	//apache commons
-	compile 'commons-io:commons-io:2.6'
-	compile(group: 'commons-beanutils', name: 'commons-beanutils', version:'1.9.3') {
-		//use jcl-over-slf4j
-		exclude(group: 'commons-logging', module: 'commons-logging')
-	}
-	compile 'org.apache.commons:commons-lang3:3.7'
-	compile 'org.apache.commons:commons-text:1.2'
-	compile 'commons-codec:commons-codec:1.11'
+	implementation sharedLib('commons-io:commons-io')
+	implementation sharedLib('commons-beanutils:commons-beanutils')
+	implementation sharedLib('org.apache.commons:commons-lang3')
+	implementation sharedLib('org.apache.commons:commons-text')
+	implementation sharedLib('commons-codec:commons-codec')
 
 	//apache http clients
-	compile(group: 'org.apache.httpcomponents', name: 'httpmime', version:'4.5.2') {
-		//use jcl-over-slf4j
-		exclude(group: 'commons-logging', module: 'commons-logging')
-	}
-
+	implementation sharedLib('org.apache.httpcomponents:httpclient')
+	
 	//lucene
-	compile(group: 'org.apache.lucene', name: 'lucene-queryparser', version:'7.4.0') {
+	implementation(sharedLib('org.apache.lucene:lucene-queryparser')) {
 		//TODO 必要？？
 		exclude(group: 'org.apache.lucene', module: 'lucene-queries')
-		//TODO 必要？？
 		exclude(group: 'org.apache.lucene', module: 'lucene-sandbox')
 	}
-	compile 'org.apache.lucene:lucene-analyzers-kuromoji:7.4.0'
-	runtime 'org.apache.lucene:lucene-analyzers-smartcn:7.4.0'
-	runtime 'org.apache.lucene:lucene-backward-codecs:7.4.0'
-	runtime(group: 'org.apache.lucene', name: 'lucene-highlighter', version:'7.4.0') {
+	implementation sharedLib('org.apache.lucene:lucene-analyzers-kuromoji')
+	runtimeOnly sharedLib('org.apache.lucene:lucene-analyzers-smartcn')
+	runtimeOnly sharedLib('org.apache.lucene:lucene-backward-codecs')
+	runtimeOnly(sharedLib('org.apache.lucene:lucene-highlighter')) {
 		//TODO 必要？？
 		exclude(group: 'org.apache.lucene', module: 'lucene-join')
-		//TODO 必要？？
 		exclude(group: 'org.apache.lucene', module: 'lucene-queries')
-		//TODO 必要？？
 		exclude(group: 'org.apache.lucene', module: 'lucene-memory')
 	}
 
 	//tika(依存関係多いので明示的に指定する)
-	compile group: 'org.apache.tika', name: 'tika-core', version: '1.14', transitive : false
-	compile group: 'org.apache.tika', name: 'tika-parsers', version: '1.14', transitive : false
-	compile group: 'org.apache.commons', name: 'commons-compress', version: '1.12', transitive : false
-	compile group: 'org.apache.pdfbox', name: 'jempbox', version: '1.8.12', transitive : false
-	compile group: 'org.json', name: 'json', version: '20140107', transitive : false
-	compile group: 'org.apache.pdfbox', name: 'pdfbox', version: '2.0.3', transitive : false
-	compile group: 'org.apache.pdfbox', name: 'fontbox', version: '2.0.3', transitive : false
-	compile group: 'org.apache.pdfbox', name: 'pdfbox-tools', version: '2.0.3', transitive : false
-	compile group: 'org.apache.poi', name: 'poi', version: '3.16'
-	compile group: 'org.apache.poi', name: 'poi-scratchpad', version: '3.16'
-	compile(group: 'org.apache.poi', name: 'poi-ooxml', version:'3.16') {
-		//java8 include stax-api
-		exclude(group: 'stax', module: 'stax-api')
+	implementation(sharedLib('org.apache.tika:tika-core'))
+	implementation(sharedLib('org.apache.tika:tika-parsers')) {
+		transitive = false
 	}
-	compile group: 'org.ccil.cowan.tagsoup', name: 'tagsoup', version: '1.2.1'
+	runtimeOnly(sharedLib('org.apache.commons:commons-compress'))
+	runtimeOnly(sharedLib('org.apache.pdfbox:jempbox'))
+	runtimeOnly sharedLib('com.tdunning:json')
+	runtimeOnly(sharedLib('org.apache.pdfbox:pdfbox'))
+	runtimeOnly(sharedLib('org.apache.pdfbox:pdfbox-tools')) {
+		transitive = false
+	}
+	runtimeOnly sharedLib('org.ccil.cowan.tagsoup:tagsoup')
+
+	runtimeOnly sharedLib('org.apache.poi:poi')
+	runtimeOnly sharedLib('org.apache.poi:poi-scratchpad')
+	runtimeOnly sharedLib('org.apache.poi:poi-ooxml')
 
 	//groovy
-	compile 'org.codehaus.groovy:groovy-all:2.4.17:indy'//classifier:'indy'
+	implementation 'org.codehaus.groovy:groovy'
+	implementation 'org.codehaus.groovy:groovy-templates'
 
 	//supercsv
-	compile 'net.sf.supercsv:super-csv:2.4.0'
+	implementation sharedLib('net.sf.supercsv:super-csv')
 
 	// caffeine
-	compile 'com.github.ben-manes.caffeine:caffeine:2.6.2'
-
-	//mapdb
-	compile 'org.mapdb:mapdb:1.0.9'
+	implementation sharedLib('com.github.ben-manes.caffeine:caffeine')
 
 	//slf4j and logback
-	compile 'org.slf4j:slf4j-api:1.7.26'
-	compile 'ch.qos.logback:logback-classic:1.2.3'
-	runtime 'org.slf4j:jcl-over-slf4j:1.7.26'
+	api sharedLib('org.slf4j:slf4j-api')
+	implementation sharedLib('ch.qos.logback:logback-classic')
+	runtimeOnly sharedLib('org.slf4j:jcl-over-slf4j')
 
 	//jackson
-	compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.10.3'
+	implementation 'com.fasterxml.jackson.core:jackson-databind'
 
 	//hibernate validator
-	compile group: 'org.hibernate', name: 'hibernate-validator', version: '5.4.1.Final'
+	implementation sharedLib('org.hibernate.validator:hibernate-validator')
 	
 	//Bouncy Castle S/MIME API
-	compile group: 'org.bouncycastle', name: 'bcmail-jdk15on', version: '1.60'
-
+	implementation sharedLib('org.bouncycastle:bcmail-jdk15on')
+	
 	//JGroups
-	compile group: 'org.jgroups', name: 'jgroups', version: '4.0.19.Final'
+	implementation sharedLib('org.jgroups:jgroups')
 }

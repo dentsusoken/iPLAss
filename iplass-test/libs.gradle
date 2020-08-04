@@ -1,3 +1,8 @@
 dependencies {
-    compile 'junit:junit:4.12'
+	compileOnly configurations.jeewebapis
+
+	api sharedLib('junit:junit')
+
+	//groovy
+	implementation 'org.codehaus.groovy:groovy'
 }

@@ -19,6 +19,8 @@
  */
 package org.iplass.mtp.impl.webapi.command.entity;
 
+import static org.iplass.mtp.impl.web.WebResourceBundleUtil.resourceString;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -51,6 +53,7 @@ import org.iplass.mtp.spi.ServiceRegistry;
 import org.iplass.mtp.webapi.WebApiRequestConstants;
 import org.iplass.mtp.webapi.definition.MethodType;
 import org.iplass.mtp.webapi.definition.RequestType;
+import org.iplass.mtp.webapi.entity.SearchResultLimitExceededException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
@@ -74,6 +77,7 @@ public final class GetEntityCommand extends AbstractEntityCommand {
 	public static final String PARAM_TABLE_MODE = "tabular";
 	public static final String PARAM_COUNT_TOTAL = "countTotal";
 	public static final String PARAM_FILTER = "filter";
+	public static final String PARAM_WITH_MAPPED_BY_REFERENCE = "withMappedByReference";
 
 	public static final String RESULT_ENTITY_LIST = "list";
 	public static final String RESULT_COUNT = "count";
@@ -81,6 +85,14 @@ public final class GetEntityCommand extends AbstractEntityCommand {
 	public static final String RESULT_CSV = "csv";
 	public static final String RESULT_JSON = "json";
 	public static final String RESULT_XML = "xml";
+	
+	
+	private enum ResType {
+		CSV,
+		JSON,
+		XML,
+		OTHER
+	}
 	
 	private final JAXBContext context;
 	private final Map<String, String> nameSpaceMap;
@@ -124,42 +136,44 @@ public final class GetEntityCommand extends AbstractEntityCommand {
 		}
 		Query query = Query.newQuery(eql);
 		
-		queryImpl(query, request, true);
+		queryImpl(query, request, true, resType(request), false);
 	}
 
 	// api/entity/[definitionName]?filter=[where clause]
 	private void list(String entityDef, RequestContext request) {
-		Query query = new Query().selectAll(entityDef, false, true);
+		ResType resType = resType(request);
+		boolean withMappedBy = withMappedByReference(request,
+				resType == ResType.CSV ? entityWebApiService.isCsvListWithMappedByReference(): entityWebApiService.isListWithMappedByReference());
+		Query query = new Query().selectAll(entityDef, false, true, false, withMappedBy);
 		String filter = request.getParam(PARAM_FILTER);
 		if (filter != null) {
 			query.where(filter);
 		}
 		
-		queryImpl(query, request, false);
+		queryImpl(query, request, false, resType, withMappedBy);
 	}
 
-	private void queryImpl(Query query, RequestContext request, boolean byQuery) {
-		String accept = ((HttpServletRequest) request.getAttribute(WebApiRequestConstants.SERVLET_REQUEST)).getHeader("Accept");
+	private void queryImpl(Query query, RequestContext request, boolean byQuery, ResType resType, boolean withMappedBy) {
 
 		checkPermission(query.getFrom().getEntityName(), def -> def.getMetaData().isQuery());
 
 		SearchOption option = new SearchOption();
 		option.setReturnStructuredEntity(true);
 		
-		if (isCSV(accept)) {
+		if (resType == ResType.CSV) {
 			if (byQuery) {
 				queryCsv(query, request);
 			} else {
-				listCsv(query, request);
+				listCsv(query, request, withMappedBy);
 			}
 		} else {
 			boolean tabular = request.getParam(PARAM_TABLE_MODE, Boolean.class, false);
 			boolean countTotal = request.getParam(PARAM_COUNT_TOTAL, Boolean.class, false);
 			
 			if (tabular) {
-				if (isJSON(accept)) {
+				if (resType == ResType.JSON) {
 					queryJson(query, request, countTotal);
-				} else if (isXML(accept)) {
+				} else if (resType == ResType.XML) {
 					queryXml(query, request, countTotal);
 				}
 			} else {
@@ -171,11 +185,13 @@ public final class GetEntityCommand extends AbstractEntityCommand {
 	private void queryOther(Query query, RequestContext request, boolean countTotal) {
 		SearchOption option = new SearchOption();
 		option.setReturnStructuredEntity(true);
-		if (countTotal) {
+		
+		boolean noLimit = (query.getLimit() == null);
+		if (countTotal || (entityWebApiService.isThrowSearchResultLimitExceededException() && noLimit)) {
 			option.setCountTotal(true);
 		}
 		
-		if (query.getLimit() == null) {
+		if (noLimit) {
 			query.limit(entityWebApiService.getMaxLimit());
 		}
 		
@@ -184,6 +200,13 @@ public final class GetEntityCommand extends AbstractEntityCommand {
 		}
 		
 		SearchResult<?> res = em.searchEntity(query, option);
+		
+		if (entityWebApiService.isThrowSearchResultLimitExceededException()
+				&& noLimit
+				&& res.getTotalCount() > entityWebApiService.getMaxLimit()) {
+			throw new SearchResultLimitExceededException(resourceString("impl.webapi.command.entity.GetEntityCommand.limitExceeded"));
+		}
+		
 		request.setAttribute(RESULT_ENTITY_LIST, res.getList());
 		
 		if (countTotal) {
@@ -206,8 +229,9 @@ public final class GetEntityCommand extends AbstractEntityCommand {
 		request.setAttribute(RESULT_CSV, stream);
 	}
 
-	private void listCsv(Query query, RequestContext request) {
+	private void listCsv(Query query, RequestContext request, boolean withMappedBy) {
 
+		//TODO EntitySearchCsvWriter使う場合、queryのselect項目利用できず再度EntitySearchCsvWriterで項目選択させる必要あり、、
 		StreamingOutput stream = out -> {
 			
 			EntityWriteOption option = new EntityWriteOption()
@@ -216,6 +240,7 @@ public final class GetEntityCommand extends AbstractEntityCommand {
 			option.setDateFormat(entityWebApiService.getCsvDateFormat());
 			option.setDatetimeSecFormat(entityWebApiService.getCsvDateTimeFormat());
 			option.setTimeSecFormat(entityWebApiService.getCsvTimeFormat());
+			option.setWithMappedByReference(withMappedBy);
 			try (EntitySearchCsvWriter writer = new EntitySearchCsvWriter(out, query.getFrom().getEntityName(), option)) {
 				writer.write();
 			}
@@ -244,18 +269,33 @@ public final class GetEntityCommand extends AbstractEntityCommand {
 		};
 		request.setAttribute(RESULT_XML, stream);
 	}
+	
+	private ResType resType(RequestContext request) {
+		String accept = ((HttpServletRequest) request.getAttribute(WebApiRequestConstants.SERVLET_REQUEST)).getHeader("Accept");
+		if (accept != null) {
+			if (accept.startsWith("application/json")) {
+				return ResType.JSON;
+			} else if (accept.startsWith("text/csv")) {
+				return ResType.CSV;
+			} else if (accept.startsWith("application/xml")) {
+				return ResType.XML;
+			}
+		}
+		return ResType.OTHER;
+		
+	}
 
-	private boolean isCSV(String accept) {
-		return accept != null && accept.startsWith("text/csv");
-	}
-	
-	private boolean isJSON(String accept) {
-		return accept != null && accept.startsWith("application/json");
-	}
-	
-	private boolean isXML(String accept) {
-		return accept != null && accept.startsWith("application/xml");
-	}
+//	private boolean isCSV(String accept) {
+//		return accept != null && accept.startsWith("text/csv");
+//	}
+//	
+//	private boolean isJSON(String accept) {
+//		return accept != null && accept.startsWith("application/json");
+//	}
+//	
+//	private boolean isXML(String accept) {
+//		return accept != null && accept.startsWith("application/xml");
+//	}
 
 	// api/entity/[definitionName]/[oid]
 	// api/entity/[definitionName]/[oid]/[version]
@@ -267,9 +307,19 @@ public final class GetEntityCommand extends AbstractEntityCommand {
 			version = Long.parseLong(ver);
 		}
 
-		Entity e = em.load(oid, version, entityDef, new LoadOption(true, false));
+		Entity e = em.load(oid, version, entityDef, new LoadOption(true,
+				withMappedByReference(request, entityWebApiService.isLoadWithMappedByReference())));
 		if (e != null) {
 			request.setAttribute(RESULT_ENTITY, e);
+		}
+	}
+
+	private boolean withMappedByReference(RequestContext request, boolean defaultVale) {
+		Boolean wmbr = request.getParamAsBoolean(PARAM_WITH_MAPPED_BY_REFERENCE);
+		if (wmbr == null) {
+			return defaultVale;
+		} else {
+			return wmbr.booleanValue();
 		}
 	}
 

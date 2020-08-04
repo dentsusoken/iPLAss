@@ -210,9 +210,10 @@ public class EntitySearchCsvWriter implements AutoCloseable {
 			public boolean test(Entity entity) {
 
 				//多重度複数のReferenceがある場合はLoadする
+				//TODO パフォーマンス改善 oid単位にロードしないように
 				if (hasMultiReference) {
 					LoadOption loadOption = new LoadOption();
-					loadOption.setWithMappedByReference(false);
+					loadOption.setWithMappedByReference(option.isWithMappedByReference());
 
 					entity = em.load(entity.getOid(), entity.getVersion(), entity.getDefinitionName(), loadOption);
 				}

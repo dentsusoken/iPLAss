@@ -12,29 +12,36 @@ configurations {
 }
 
 dependencies {
+	compileOnly configurations.jeecoreapis
+	compileOnly configurations.jeewebapis
+
+	implementation sharedLib('org.apache.commons:commons-text')
+	implementation 'org.codehaus.groovy:groovy'
+	
 	//js
-	wjRuntime 'org.webjars:jquery:3.5.1'
-	wjRuntime 'org.webjars:pdf-js:1.9.426'
-	wjRuntime 'org.webjars:ckeditor:4.14.0'
-	wjRuntime 'org.webjars:jquery-blockui:2.70-1'
-	wjRuntime 'org.webjars:jQuery-Timepicker-Addon:1.6.3'
-	wjRuntime 'org.webjars:momentjs:2.24.0'
+	wjRuntime sharedLib('org.webjars:jquery')
+	wjRuntime sharedLib('org.webjars:pdf-js')
+	wjRuntime sharedLib('org.webjars:ckeditor')
+	wjRuntime sharedLib('org.webjars:select2')
+	wjRuntime sharedLib('org.webjars:jquery-blockui')
+	wjRuntime sharedLib('org.webjars:jQuery-Timepicker-Addon')
+	wjRuntime sharedLib('org.webjars:momentjs')
 
-	wjRuntime 'org.webjars.npm:free-jqgrid:4.15.5'
-	wjRuntime 'org.webjars.npm:jqtree:1.4.9'
+	wjRuntime sharedLib('org.webjars.npm:free-jqgrid')
+	wjRuntime sharedLib('org.webjars.npm:jqtree')
 
-	wjRuntime 'org.webjars.bower:jquery-ui:1.12.1'
-	wjRuntime 'org.webjars.bower:blueimp-file-upload:10.30.1'
-	wjRuntime 'org.webjars.bower:fullcalendar:3.5.1'
-	wjRuntime 'org.webjars.bower:mediaelement:4.2.5'
+	wjRuntime sharedLib('org.webjars.bower:jquery-ui')
+	wjRuntime sharedLib('org.webjars.bower:blueimp-file-upload')
+	wjRuntime sharedLib('org.webjars.bower:fullcalendar')
+	wjRuntime sharedLib('org.webjars.bower:jQuery-contextMenu')
+	wjRuntime sharedLib('org.webjars.bower:mediaelement')
 
 	//css
-	wjRuntime 'org.webjars:font-awesome:5.13.1'
+	wjRuntime sharedLib('org.webjars:font-awesome')
 
-	runtime configurations.wjRuntime
+	runtimeOnly configurations.wjRuntime
 
 	//jsp
-	jasper 'org.apache.tomcat:tomcat-jasper:8.5.24'
-	jasper 'javax.servlet.jsp.jstl:javax.servlet.jsp.jstl-api:1.2.1'
-	jasper group: 'org.glassfish.web', name: 'javax.servlet.jsp.jstl', version: '1.2.3', transitive : false
+	jasper sharedLib('org.apache.tomcat:tomcat-jasper')
+	jasper sharedLib('org.glassfish.web:jakarta.servlet.jsp.jstl')
 }

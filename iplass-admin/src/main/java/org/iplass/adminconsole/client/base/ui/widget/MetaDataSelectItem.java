@@ -59,14 +59,18 @@ public class MetaDataSelectItem extends MtpSelectItem implements MtpWidgetConsta
 			option = new ItemOption();
 		}
 
-		List<FormItemIcon> icons = new ArrayList<FormItemIcon>();
+		List<FormItemIcon> icons = new ArrayList<>();
 		if (option.isShowJump()) {
 			FormItemIcon iconJump = new FormItemIcon();
 			iconJump.setSrc(ICON_SHOW_META_DATA);
+			iconJump.setNeverDisable(true);
 			iconJump.addFormItemClickHandler(new FormItemClickHandler() {
 
 				@Override
 				public void onFormItemClick(FormItemIconClickEvent event) {
+					if (MetaDataSelectItem.this.isDisabled()) {
+						return;
+					}
 
 					String defName = SmartGWTUtil.getStringValue(MetaDataSelectItem.this);
 					if (SmartGWTUtil.isNotEmpty(defName)) {
@@ -82,10 +86,15 @@ public class MetaDataSelectItem extends MtpSelectItem implements MtpWidgetConsta
 
 		FormItemIcon iconRefresh = new FormItemIcon();
 		iconRefresh.setSrc(ICON_REFRESH);
+		iconRefresh.setNeverDisable(true);
 		iconRefresh.addFormItemClickHandler(new FormItemClickHandler() {
 
 			@Override
 			public void onFormItemClick(FormItemIconClickEvent event) {
+				if (MetaDataSelectItem.this.isDisabled()) {
+					return;
+				}
+
 				fetchData();
 			}
 		});
