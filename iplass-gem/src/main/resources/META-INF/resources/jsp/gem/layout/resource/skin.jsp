@@ -20,16 +20,9 @@
 
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8" trimDirectiveWhitespaces="true" %>
 <%@ page import="java.util.List"%>
-<%@ page import="org.iplass.mtp.util.StringUtil"%>
-<%@ page import="org.iplass.mtp.web.template.TemplateUtil" %>
 <%@ page import="org.iplass.gem.command.ViewUtil"%>
 <%
-	String _language = TemplateUtil.getLanguage();
-	if (StringUtil.isEmpty(_language)) {
-		_language = "ja";
-	}
-	String languageFonts = TemplateUtil.getLanguageFonts(_language);
-
+	String skinLanguage = (String) request.getAttribute("language");
 	String skinName = (String) request.getAttribute("skinName");
 	List<String> cssPathList = ViewUtil.getCssPathList(skinName);
 %>
@@ -41,19 +34,7 @@ scriptContext.skinName = "${skinName}";
 <link rel="stylesheet" href="${staticContentPath}/styles/gem/skin/${skinName}/structure.css?cv=${apiVersion}" />
 <link rel="stylesheet" href="${staticContentPath}/styles/gem/skin/${skinName}/module.css?cv=${apiVersion}" />
 <link rel="stylesheet" href="${staticContentPath}/styles/gem/skin/${skinName}/clear.css?cv=${apiVersion}" />
-<%if (StringUtil.isNotBlank(languageFonts)) {%>
-<script>
-scriptContext.languageFonts = '<%=languageFonts%>';
-</script>
-<style>
-body, input, textarea, .ui-widget,
-.ui-dialog label, .ui-dialog span, .ui-dialog input, .ui-dialog textarea, .ui-dialog button, .ui-dialog select,
-ul.context-menu-list li.context-menu-item span {
-font-family: <%=languageFonts%>;
-}
-</style>
-<%}%>
-<%if ("en".equals(_language)) {%>
+<%if ("en".equals(skinLanguage)) {%>
 <style>
 #header #user-nav .search-text {
 height: 26px;

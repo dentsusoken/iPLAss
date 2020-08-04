@@ -170,7 +170,7 @@
 				if (editor.getDisplayType() == StringDisplayType.RICHTEXT && request.getAttribute(Constants.RICHTEXT_LIB_LOADED) == null) {
 					request.setAttribute(Constants.RICHTEXT_LIB_LOADED, true);
 %>
-<%@include file="../../../layout/resource/ckeditorResource.jsp" %>
+<%@include file="../../../layout/resource/ckeditorResource.inc.jsp" %>
 <%
 				}
 %>
@@ -340,7 +340,7 @@ function <%=toggleAddBtnFunc%>(){
 					if (request.getAttribute(Constants.RICHTEXT_LIB_LOADED) == null) {
 						request.setAttribute(Constants.RICHTEXT_LIB_LOADED, true);
 %>
-<%@include file="../../../layout/resource/ckeditorResource.jsp" %>
+<%@include file="../../../layout/resource/ckeditorResource.inc.jsp" %>
 <%
 					}
 %>

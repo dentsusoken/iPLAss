@@ -178,7 +178,7 @@
 	</div>
 </div>
 
-<%@include file="../layout/resource/dropdownchecklistResource.jsp"%>
+<%@include file="../layout/resource/dropdownCheckListResource.inc.jsp"%>
 
 <script type="text/javascript">
 $(function(){
@@ -261,6 +261,7 @@ function createTemplate(listId, defName, displayName, crawlDate, colModels) {
 	var grid = $("#" + listId).jqGrid({
 		datatype: "local",
 		height: "auto",
+		autoencode: false,
 		colModel: colModels,
 		headertitles: true,		//HeaderにTooltip表示
 		caption: "Fulltext Search Result",

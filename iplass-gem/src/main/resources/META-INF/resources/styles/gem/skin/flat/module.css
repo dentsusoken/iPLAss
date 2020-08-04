@@ -795,7 +795,7 @@ ul.jqtree-tree {
   ul.jqtree-tree .jqtree-title {
     margin-left: inherit; }
   ul.jqtree-tree .jqtree-toggler {
-    font-family: arial !important;
+    font-family: arial;
     left: -1.5em;
     line-height: 12px;
     position: absolute;

@@ -124,6 +124,7 @@
 <%@include file="../../../layout/resource/simpleResource.jsp" %>
 <%@include file="../../../layout/resource/skin.jsp" %>
 <%@include file="../../../layout/resource/theme.jsp" %>
+<%@include file="../../../layout/resource/langfont.jsp" %>
 <%@include file="../../../layout/resource/tenant.jsp" %>
 <script type="text/javascript">
 var key = "<%=modalTarget%>";

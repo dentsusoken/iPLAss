@@ -81,7 +81,7 @@ if (defaultDispType == null) {
 if (request.getAttribute(Constants.CALENDAR_LIB_LOADED) == null) {
 	request.setAttribute(Constants.CALENDAR_LIB_LOADED, true);
 %>
-<%@include file="../layout/resource/calendarResource.jsp"%>
+<%@include file="../layout/resource/calendarResource.inc.jsp"%>
 <%
 }
 %>

@@ -657,9 +657,6 @@ img.ui-datepicker-trigger {
   margin: 0 5px;
   vertical-align: middle; }
 
-ul.context-menu-list li.context-menu-item span {
-  font-family: メイリオ, ヒラギノ角ゴ Pro W3, Hiragino Kaku Gothic Pro, ＭＳ Ｐゴシック, sans-serif; }
-
 .ui-jqgrid .ui-state-hover, .ui-jqgrid .ui-widget-content .ui-state-hover, .ui-jqgrid .ui-widget-content .ui-state-focus, .ui-jqgrid .ui-widget-content .ui-state-highlight, .ui-jqgrid .ui-state-focus, .ui-jqgrid .ui-state-highlight, .ui-jqgrid .ui-widget-header .ui-state-highlight {
   border-color: #cccccc;
   background-color: #e0f2ff !important;

@@ -99,7 +99,7 @@
 %>
 <div class="generic_search s_<c:out value="<%=className%>"/>">
 <script src="${staticContentPath}/webjars/jquery-blockui/2.70/jquery.blockUI.js?cv=${apiVersion}"></script>
-<%@include file="../../layout/resource/mediaelementResource.jsp" %>
+<%@include file="../../layout/resource/mediaelementResource.inc.jsp" %>
 <%
 	if (StringUtil.isNotBlank(view.getJavaScript())) {
 		//View定義で設定されたJavaScript
