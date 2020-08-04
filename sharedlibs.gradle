@@ -89,26 +89,27 @@ ext {
 		
 		'junit:junit': '4.12',
 		
-		//webjars
+		//webjars(admin)
 		'org.webjars.npm:ace-builds': '1.4.5',
-		'org.webjars:jquery': '3.2.1',
-		'org.webjars:pdf-js': '1.9.426',
-		'org.webjars:ckeditor': '4.7.3',
-		'org.webjars:select2': '4.0.3',
-		'org.webjars:jquery-blockui': '2.70',
-		'org.webjars:jQuery-Timepicker-Addon': '1.6.3',
-		'org.webjars:momentjs': '2.18.1',
 		
-		'org.webjars.npm:free-jqgrid': '4.14.1',
-		'org.webjars.npm:jqtree': '1.4.2',
+		//webjars(gem)
+		'org.webjars:jquery': '3.5.1',
+		'org.webjars:pdf-js': '1.9.426',
+		'org.webjars:ckeditor': '4.14.0',
+		'org.webjars:jquery-blockui': '2.70-1',
+		'org.webjars:jQuery-Timepicker-Addon': '1.6.3',
+		'org.webjars:momentjs': '2.24.0',
+		
+		'org.webjars.npm:free-jqgrid': '4.15.5',
+		'org.webjars.npm:jqtree': '1.4.9',
 		
 		'org.webjars.bower:jquery-ui': '1.12.1',
-		'org.webjars.bower:blueimp-file-upload': '9.28.0',
+		'org.webjars.bower:blueimp-file-upload': '10.30.1',
 		'org.webjars.bower:fullcalendar': '3.5.1',
 		'org.webjars.bower:jQuery-contextMenu': '2.6.2',
 		'org.webjars.bower:mediaelement': '4.2.5',
 		
-		'org.webjars:font-awesome': '5.0.9',
+		'org.webjars:font-awesome': '5.13.1',
 		
 		//for jsp compilation
 		'org.apache.tomcat:tomcat-jasper': '9.0.37',

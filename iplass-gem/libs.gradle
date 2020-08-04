@@ -22,7 +22,6 @@ dependencies {
 	wjRuntime sharedLib('org.webjars:jquery')
 	wjRuntime sharedLib('org.webjars:pdf-js')
 	wjRuntime sharedLib('org.webjars:ckeditor')
-	wjRuntime sharedLib('org.webjars:select2')
 	wjRuntime sharedLib('org.webjars:jquery-blockui')
 	wjRuntime sharedLib('org.webjars:jQuery-Timepicker-Addon')
 	wjRuntime sharedLib('org.webjars:momentjs')
@@ -33,7 +32,6 @@ dependencies {
 	wjRuntime sharedLib('org.webjars.bower:jquery-ui')
 	wjRuntime sharedLib('org.webjars.bower:blueimp-file-upload')
 	wjRuntime sharedLib('org.webjars.bower:fullcalendar')
-	wjRuntime sharedLib('org.webjars.bower:jQuery-contextMenu')
 	wjRuntime sharedLib('org.webjars.bower:mediaelement')
 
 	//css
