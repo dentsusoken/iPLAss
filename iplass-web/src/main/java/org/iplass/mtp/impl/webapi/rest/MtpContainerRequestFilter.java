@@ -26,6 +26,7 @@ import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerRequestFilter;
 import javax.ws.rs.container.PreMatching;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response.Status;
 
 import org.iplass.mtp.impl.web.RequestPath;
@@ -58,14 +59,21 @@ public class MtpContainerRequestFilter implements ContainerRequestFilter {
 		
 		//method,content-type,bodySizeはボディパース前にチェックする
 		runtime.checkMethodType(requestContext.getMethod());
-		if (requestContext.hasEntity()) {
-			runtime.checkContentType(requestContext.getMediaType());
-			
-			//bodySize
+		MediaType mt = requestContext.getMediaType();
+		runtime.checkContentType(mt);
+		if (MediaType.MULTIPART_FORM_DATA_TYPE.isCompatible(mt)) {
+			//multipart/form-dataの場合は、直接ServletRequestのInputStreamを扱うので、ここではbodyを消費しないようにする
 			if (runtime.getRequestRestriction().maxBodySize() != -1) {
-				requestContext.setEntityStream(new LimitRequestBodyInputStream(requestContext.getEntityStream(),
-						runtime.getRequestRestriction().maxBodySize(), requestContext.getLength()));
 				requestContext.setProperty(RestRequestContext.MAX_BODY_SIZE, runtime.getRequestRestriction().maxBodySize());
+			}
+		} else {
+			if (requestContext.hasEntity()) {
+				//bodySize
+				if (runtime.getRequestRestriction().maxBodySize() != -1) {
+					requestContext.setEntityStream(new LimitRequestBodyInputStream(requestContext.getEntityStream(),
+							runtime.getRequestRestriction().maxBodySize(), requestContext.getLength()));
+					requestContext.setProperty(RestRequestContext.MAX_BODY_SIZE, runtime.getRequestRestriction().maxBodySize());
+				}
 			}
 		}
 		
