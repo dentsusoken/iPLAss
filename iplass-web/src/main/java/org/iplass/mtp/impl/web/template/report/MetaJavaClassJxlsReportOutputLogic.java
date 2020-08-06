@@ -1,13 +1,12 @@
 package org.iplass.mtp.impl.web.template.report;
 
-import java.io.InputStream;
-import java.io.OutputStream;
-
 import org.iplass.mtp.entity.EntityRuntimeException;
 import org.iplass.mtp.web.template.report.JxlsReportOutputLogic;
+import org.iplass.mtp.web.template.report.MtpJxlsHelper;
 import org.iplass.mtp.web.template.report.definition.JavaClassReportOutputLogicDefinition;
 import org.iplass.mtp.web.template.report.definition.ReportOutputLogicDefinition;
 import org.jxls.common.Context;
+import org.jxls.transform.Transformer;
 
 public class MetaJavaClassJxlsReportOutputLogic extends MetaJxlsReportOutputLogic {
 
@@ -64,13 +63,13 @@ public class MetaJavaClassJxlsReportOutputLogic extends MetaJxlsReportOutputLogi
 			}
 		}
 
-		@Override
-		public void outputReport(InputStream is, OutputStream os, Context context) {
-			writer.reportWrite(is, os, context);
-		}
-
 		public MetaJavaClassJxlsReportOutputLogic getMetaData() {
 			return MetaJavaClassJxlsReportOutputLogic.this;
+		}
+
+		@Override
+		public void outputReport(Transformer transformer, Context context, MtpJxlsHelper jxlsHelper) {
+			writer.reportWrite(transformer, context, jxlsHelper);
 		}
 	}
 

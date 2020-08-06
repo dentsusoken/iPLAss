@@ -1,9 +1,12 @@
 package org.iplass.mtp.impl.web.template.report;
 
 import org.iplass.mtp.impl.metadata.MetaData;
+import org.iplass.mtp.impl.metadata.MetaDataConfig;
+import org.iplass.mtp.impl.report.JxlsCompiledScriptCacheStore;
 import org.iplass.mtp.impl.report.JxlsReportingOutputModel;
 import org.iplass.mtp.impl.report.ReportingOutputModel;
 import org.iplass.mtp.impl.util.ObjectUtil;
+import org.iplass.mtp.impl.web.template.report.MetaJxlsReportOutputLogic.JxlsReportOutputLogicRuntime;
 import org.iplass.mtp.web.template.report.definition.GroovyReportOutputLogicDefinition;
 import org.iplass.mtp.web.template.report.definition.JxlsContextParamMapDefinition;
 import org.iplass.mtp.web.template.report.definition.JxlsReportType;
@@ -102,17 +105,39 @@ public class MetaJxlsReportType extends MetaReportType {
 
 		return definition;
 	}
-
+	
 	@Override
-	public void setParam(ReportingOutputModel createOutputModel) {
-		JxlsReportingOutputModel model = (JxlsReportingOutputModel)createOutputModel;
-		if (reportOutputLogic !=null) {
-			model.setLogicRuntime(reportOutputLogic.createRuntime(MetaJxlsReportType.this));
+	public ReportTypeRuntime createRuntime(MetaDataConfig metaDataConfig) {
+		return new JxlsReportTypeRuntime();
+	}
+	
+	public class JxlsReportTypeRuntime extends ReportTypeRuntime {
+		
+		private JxlsCompiledScriptCacheStore cacheStore;
+		private JxlsReportOutputLogicRuntime outputLogicRuntime;
+		
+		public JxlsReportTypeRuntime() {
+			cacheStore = new JxlsCompiledScriptCacheStore();
+			outputLogicRuntime = reportOutputLogic.createRuntime(getMetaData());
 		}
-		if (contextParamMap != null) {
-			model.setContextParamMap(contextParamMap);
+		
+		@Override
+		public MetaJxlsReportType getMetaData() {
+			return MetaJxlsReportType.this;
 		}
-		model.setPasswordAttributeName(passwordAttributeName);
+
+		@Override
+		public void setParam(ReportingOutputModel createOutputModel) {
+			JxlsReportingOutputModel model = (JxlsReportingOutputModel)createOutputModel;
+			if (reportOutputLogic !=null) {
+				model.setLogicRuntime(outputLogicRuntime);
+			}
+			if (contextParamMap != null) {
+				model.setContextParamMap(contextParamMap);
+			}
+			model.setPasswordAttributeName(passwordAttributeName);
+			model.setCacheStore(cacheStore);
+		}
 	}
 	
 	@Override

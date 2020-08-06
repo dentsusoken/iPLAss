@@ -34,7 +34,7 @@ public class JxlsReportingEngine implements ReportingEngine {
 		
 		String password = null;
 		if (StringUtil.isNotEmpty(jxlsModel.getPasswordAttributeName())) {
-			password = (String)request.getAttribute(jxlsModel.getPasswordAttributeName());
+			password = (String)getAttribute(request, jxlsModel.getPasswordAttributeName());
 		}
 		
 		jxlsModel.write(context, requestStack.getResponse().getOutputStream(), password);

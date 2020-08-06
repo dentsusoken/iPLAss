@@ -21,9 +21,11 @@
 package org.iplass.mtp.impl.web.template.report;
 
 import org.iplass.mtp.impl.metadata.MetaData;
+import org.iplass.mtp.impl.metadata.MetaDataConfig;
 import org.iplass.mtp.impl.report.PoiReportingOutputModel;
 import org.iplass.mtp.impl.report.ReportingOutputModel;
 import org.iplass.mtp.impl.util.ObjectUtil;
+import org.iplass.mtp.impl.web.template.report.MetaPoiReportOutputLogic.PoiReportOutputLogicRuntime;
 import org.iplass.mtp.web.template.report.definition.GroovyReportOutputLogicDefinition;
 import org.iplass.mtp.web.template.report.definition.PoiReportType;
 import org.iplass.mtp.web.template.report.definition.ReportOutputLogicDefinition;
@@ -86,15 +88,32 @@ public class MetaPoiReportType extends MetaReportType {
 
 		return definition;
 	}
-
+	
 	@Override
-	public void setParam(ReportingOutputModel createOutputModel) {
-
-		PoiReportingOutputModel model = (PoiReportingOutputModel)createOutputModel;
-		if(reportOutputLogic != null){
-			model.setLogicRuntime(reportOutputLogic.createRuntime(MetaPoiReportType.this));
+	public ReportTypeRuntime createRuntime(MetaDataConfig metaDataConfig) {
+		return new PoiReportTypeRuntime();
+	}
+	
+	public class PoiReportTypeRuntime extends ReportTypeRuntime {
+		private PoiReportOutputLogicRuntime outputLogicRuntime;
+		
+		public PoiReportTypeRuntime() {
+			outputLogicRuntime = reportOutputLogic.createRuntime(getMetaData());
 		}
-		model.setPasswordAttributeName(passwordAttributeName);
+		
+		@Override
+		public MetaPoiReportType getMetaData() {
+			return MetaPoiReportType.this;
+		}
+
+		@Override
+		public void setParam(ReportingOutputModel createOutputModel) {
+			PoiReportingOutputModel model = (PoiReportingOutputModel)createOutputModel;
+			if(reportOutputLogic != null){
+				model.setLogicRuntime(outputLogicRuntime);
+			}
+			model.setPasswordAttributeName(passwordAttributeName);
+		}
 	}
 
 	@Override

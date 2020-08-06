@@ -21,6 +21,7 @@
 package org.iplass.mtp.impl.web.template.report;
 
 import org.iplass.mtp.impl.metadata.MetaData;
+import org.iplass.mtp.impl.metadata.MetaDataConfig;
 import org.iplass.mtp.impl.report.JasperReportingOutputModel;
 import org.iplass.mtp.impl.report.ReportingOutputModel;
 import org.iplass.mtp.impl.util.ObjectUtil;
@@ -109,18 +110,33 @@ public class MetaJasperReportType extends MetaReportType {
 	}
 
 	@Override
-	public void setParam(ReportingOutputModel createOutputModel) {
-		JasperReportingOutputModel model = (JasperReportingOutputModel)createOutputModel;
-		if(paramMap != null){
-			model.setMaps(paramMap);
-		}
-		model.setDataSourceAttributeName(dataSourceAttributeName);
-		model.setPasswordAttributeName(passwordAttributeName);
-	}
-
-	@Override
 	public MetaData copy() {
 		return ObjectUtil.deepCopy(this);
 	}
 
+	@Override
+	public ReportTypeRuntime createRuntime(MetaDataConfig metaDataConfig) {
+		return new JasperReportTypeRuntime();
+	}
+	
+	public class JasperReportTypeRuntime extends ReportTypeRuntime {
+		public JasperReportTypeRuntime() {
+		}
+		
+		@Override
+		public MetaJasperReportType getMetaData() {
+			return MetaJasperReportType.this;
+		}
+
+		@Override
+		public void setParam(ReportingOutputModel createOutputModel) {
+			JasperReportingOutputModel model = (JasperReportingOutputModel) createOutputModel;
+			
+			model.setDataSourceAttributeName(dataSourceAttributeName);
+			if (paramMap != null) {
+				model.setMaps(paramMap);
+			}
+			model.setPasswordAttributeName(passwordAttributeName);
+		}
+	}
 }
