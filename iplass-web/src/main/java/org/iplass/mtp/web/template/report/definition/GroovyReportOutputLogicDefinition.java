@@ -32,7 +32,7 @@ import org.iplass.mtp.impl.session.Session;
  * Groovyでの記述方法。
  * </p>
  * <p>
- * ReportTemplateでバインド設定された値をがバインドされているので、
+ * ReportTemplateでバインド設定された値がバインドされているので、
  * 使用する場合は、バインド設定しておくこと。
  * </p>
  * <p>

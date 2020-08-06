@@ -6,8 +6,9 @@ dependencies {
 		exclude(group: 'stax', module: 'stax-api')
     }
     
-    //jxls
-    compile group: 'org.jxls', name: 'jxls', version: '2.8.1'
+	//jxls
+	compile group: 'org.jxls', name: 'jxls', version: '2.8.1'
+	compile group: 'org.jxls', name: 'jxls-poi', version: '2.8.1'
     
 	//jasper reports
 	compile(group: 'net.sf.jasperreports', name: 'jasperreports', version:'6.5.1') {

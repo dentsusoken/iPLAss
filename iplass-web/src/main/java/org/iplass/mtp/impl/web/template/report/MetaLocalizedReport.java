@@ -23,6 +23,7 @@ package org.iplass.mtp.impl.web.template.report;
 import org.iplass.mtp.impl.metadata.MetaData;
 import org.iplass.mtp.impl.util.ObjectUtil;
 import org.iplass.mtp.web.template.report.definition.JasperReportType;
+import org.iplass.mtp.web.template.report.definition.JxlsReportType;
 import org.iplass.mtp.web.template.report.definition.LocalizedReportDefinition;
 import org.iplass.mtp.web.template.report.definition.PoiReportType;
 import org.iplass.mtp.web.template.report.definition.ReportType;
@@ -95,10 +96,14 @@ public class MetaLocalizedReport implements MetaData {
 				MetaJasperReportType jrt = new MetaJasperReportType();
 				jrt.applyConfig(reportType);
 				this.reportType = jrt;
-			} else if(reportType instanceof PoiReportType) {
+			} else if (reportType instanceof PoiReportType) {
 				MetaPoiReportType prt = new MetaPoiReportType();
 				prt.applyConfig(reportType);
 				this.reportType = prt;
+			} else if (reportType instanceof JxlsReportType) {
+				MetaJxlsReportType jxrt = new MetaJxlsReportType();
+				jxrt.applyConfig(reportType);
+				this.reportType = jxrt;
 			}
 		} else {
 			this.reportType = null;

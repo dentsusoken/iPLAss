@@ -1,8 +1,5 @@
 package org.iplass.mtp.impl.web.template.report;
 
-import java.io.InputStream;
-import java.io.OutputStream;
-
 import org.iplass.mtp.entity.definition.listeners.EventType;
 import org.iplass.mtp.impl.core.ExecuteContext;
 import org.iplass.mtp.impl.core.TenantContext;
@@ -10,9 +7,11 @@ import org.iplass.mtp.impl.script.Script;
 import org.iplass.mtp.impl.script.ScriptContext;
 import org.iplass.mtp.impl.script.ScriptEngine;
 import org.iplass.mtp.impl.script.template.GroovyTemplateCompiler;
+import org.iplass.mtp.web.template.report.MtpJxlsHelper;
 import org.iplass.mtp.web.template.report.definition.GroovyReportOutputLogicDefinition;
 import org.iplass.mtp.web.template.report.definition.ReportOutputLogicDefinition;
 import org.jxls.common.Context;
+import org.jxls.transform.Transformer;
 
 public class MetaGroovyJxlsReportOutputLogic extends MetaJxlsReportOutputLogic {
 
@@ -78,18 +77,19 @@ public class MetaGroovyJxlsReportOutputLogic extends MetaJxlsReportOutputLogic {
 			}
 		}
 		
-		private Object callScript(InputStream is, OutputStream os, Context context) {
+		private Object callScript(Transformer transformer, Context context, MtpJxlsHelper jxlsHelper) {
 			ScriptContext sc = scriptEngine.newScriptContext();
+			sc.setAttribute("jxlsHelper", jxlsHelper);
+			sc.setAttribute("transformer", transformer);
 			sc.setAttribute("context", context);
-			sc.setAttribute("is", is);
-			sc.setAttribute("os", os);
 			return compiledScript.eval(sc);
 		}
 
 		@Override
-		public void outputReport(InputStream is, OutputStream os, Context context) {
-			callScript(is, os, context);
+		public void outputReport(Transformer transformer, Context context, MtpJxlsHelper jxlsHelper) {
+			callScript(transformer, context, jxlsHelper);
 		}
+
 
 	}
 

@@ -1,9 +1,7 @@
 package org.iplass.mtp.web.template.report;
 
-import java.io.InputStream;
-import java.io.OutputStream;
-
 import org.jxls.common.Context;
+import org.jxls.transform.Transformer;
 
 /**
  * <p>
@@ -17,5 +15,5 @@ import org.jxls.common.Context;
  *
  */
 public interface JxlsReportOutputLogic {
-	public void reportWrite(InputStream is, OutputStream os, Context context);
+	public void reportWrite(Transformer transformer, Context context, MtpJxlsHelper jxlsHelper);
 }
