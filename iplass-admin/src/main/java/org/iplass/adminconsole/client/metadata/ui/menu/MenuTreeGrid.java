@@ -28,6 +28,7 @@ import org.iplass.adminconsole.client.base.data.DataSourceConstants;
 import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
 import org.iplass.adminconsole.client.base.ui.widget.GridActionImgButton;
 import org.iplass.adminconsole.client.base.ui.widget.MtpTreeGrid;
+import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
 import org.iplass.adminconsole.client.metadata.data.menu.MenuItemTreeDS;
 import org.iplass.adminconsole.client.metadata.ui.menu.item.MenuItemTreeGrid;
 import org.iplass.mtp.view.menu.ActionMenuItem;
@@ -436,7 +437,12 @@ public class MenuTreeGrid extends MtpTreeGrid {
 	private MenuTreeNode createEntityMenuTreeNode(EntityMenuItem item) {
 		final MenuTreeNode menuTreeNode = new MenuTreeNode(item, item.getName(),
 				"cube_yellow.png", true, false, MenuItemTreeDS.MenuItemType.ENTITY);
-		menuTreeNode.setAttribute("remarks", item.getEntityDefinitionName());
+		String remarks = item.getEntityDefinitionName();
+		String entityDefinitionName = item.getEntityDefinitionName();
+		if (SmartGWTUtil.isNotEmpty(item.getViewName())) {
+			entityDefinitionName = item.getEntityDefinitionName().concat(" (").concat(item.getViewName().concat(")"));
+		}
+		menuTreeNode.setAttribute("remarks", entityDefinitionName);
 		return menuTreeNode;
 	}
 
