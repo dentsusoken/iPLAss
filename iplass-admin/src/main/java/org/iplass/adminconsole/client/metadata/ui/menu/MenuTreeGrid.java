@@ -437,7 +437,6 @@ public class MenuTreeGrid extends MtpTreeGrid {
 	private MenuTreeNode createEntityMenuTreeNode(EntityMenuItem item) {
 		final MenuTreeNode menuTreeNode = new MenuTreeNode(item, item.getName(),
 				"cube_yellow.png", true, false, MenuItemTreeDS.MenuItemType.ENTITY);
-		String remarks = item.getEntityDefinitionName();
 		String entityDefinitionName = item.getEntityDefinitionName();
 		if (SmartGWTUtil.isNotEmpty(item.getViewName())) {
 			entityDefinitionName = item.getEntityDefinitionName().concat(" (").concat(item.getViewName().concat(")"));
