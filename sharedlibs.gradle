@@ -55,6 +55,9 @@ ext {
 		'org.apache.poi:poi-scratchpad': '4.1.2',
 		'org.apache.poi:poi-ooxml': '4.1.2',
 		
+		'org.jxls:jxls': '2.8.1',
+		'org.jxls:jxls-poi': '2.8.1',
+		
 		'org.codehaus.groovy:groovy-bom': '3.0.4',//by bom
 		
 		'com.fasterxml.jackson:jackson-bom': '2.11.1',//by bom
