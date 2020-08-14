@@ -98,7 +98,9 @@ public class MetaPoiReportType extends MetaReportType {
 		private PoiReportOutputLogicRuntime outputLogicRuntime;
 		
 		public PoiReportTypeRuntime() {
-			outputLogicRuntime = reportOutputLogic.createRuntime(getMetaData());
+			if (reportOutputLogic != null) {
+				outputLogicRuntime = reportOutputLogic.createRuntime(getMetaData());
+			}
 		}
 		
 		@Override

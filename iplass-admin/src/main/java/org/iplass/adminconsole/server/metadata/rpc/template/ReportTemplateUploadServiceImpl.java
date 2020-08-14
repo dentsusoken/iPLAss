@@ -46,10 +46,10 @@ import org.iplass.mtp.definition.DefinitionModifyResult;
 import org.iplass.mtp.util.StringUtil;
 import org.iplass.mtp.web.template.definition.TemplateDefinition;
 import org.iplass.mtp.web.template.definition.TemplateDefinitionManager;
-import org.iplass.mtp.web.template.report.definition.JxlsContextParamMapDefinition;
 import org.iplass.mtp.web.template.report.definition.GroovyReportOutputLogicDefinition;
 import org.iplass.mtp.web.template.report.definition.JasperReportType;
 import org.iplass.mtp.web.template.report.definition.JavaClassReportOutputLogicDefinition;
+import org.iplass.mtp.web.template.report.definition.JxlsContextParamMapDefinition;
 import org.iplass.mtp.web.template.report.definition.JxlsReportType;
 import org.iplass.mtp.web.template.report.definition.LocalizedReportDefinition;
 import org.iplass.mtp.web.template.report.definition.PoiReportType;
@@ -399,6 +399,7 @@ public class ReportTemplateUploadServiceImpl extends AdminUploadAction {
 				JxlsContextParamMapDefinition cpmd = new JxlsContextParamMapDefinition();
 				cpmd.setKey((String)(args.get(ReportTemplateUploadProperty.JXLS_PARAM_MAP_KEY + "_" + i)));
 				cpmd.setMapFrom((String)(args.get(ReportTemplateUploadProperty.JXLS_PARAM_MAP_VALUE + "_" + i)));
+				cpmd.setConvertEntityToMap(Boolean.valueOf((String)(args.get(ReportTemplateUploadProperty.JXLS_PARAM_MAP_TO_MAP + "_" + i))));
 				cpmds[i] = cpmd;
 			}
 			if (mapCnt > 0) {

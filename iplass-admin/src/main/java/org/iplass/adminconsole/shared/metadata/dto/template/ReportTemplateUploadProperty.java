@@ -98,6 +98,9 @@ public interface ReportTemplateUploadProperty extends UploadProperty {
 	/** Jxls ParamMapValue */
 	public static final String JXLS_PARAM_MAP_VALUE = "jxlsParamMapValue ";
 	
+	/** Jxls ParamMapToMap */
+	public static final String JXLS_PARAM_MAP_TO_MAP = "jxlsParamMapToMap ";
+	
 	/** Jxls ParamMapCount */
 	public static final String JXLS_PARAM_MAP_CNT = "jxlsParamMapCnt";
 	

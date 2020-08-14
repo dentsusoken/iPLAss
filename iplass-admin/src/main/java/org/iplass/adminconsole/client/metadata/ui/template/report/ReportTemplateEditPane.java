@@ -118,6 +118,9 @@ public class ReportTemplateEditPane extends TemplateTypeEditPane implements HasE
 	private StaticTextItem txtDownloadFileName;
 
 	private AsyncCallback<AdminDefinitionModifyResult> callback;
+	
+	/** 変更前のReportTypeの値を保持  */
+	private String beforeReportType;
 
 	/**
 	 * コンストラクタ
@@ -144,24 +147,27 @@ public class ReportTemplateEditPane extends TemplateTypeEditPane implements HasE
 					jasperParamMapPane.deleteAll();
 					jxlsReportOutputLogicPane.deleteAll();
 					jxlsContextParamMapPane.deleteAll();
-					removeMembers(jasperAttributeForm, jasperParamMapPane);
-					removeMembers(jxlsContextParamMapPane, jxlsReportOutputLogicPane, jxlsPasswordAttributeNameForm);
+					removeSpecificMember(beforeReportType);
 					addMembers(poiPasswordAttributeNameForm, reportOutPane);
+					beforeReportType = PoiReportType.class.getName();
+					
 				} else if (JasperReportType.class.getName().equals(reportType)) {
 					//Jasper利用の場合
 					reportOutPane.deleteAll();
 					jxlsReportOutputLogicPane.deleteAll();
 					jxlsContextParamMapPane.deleteAll();
-					removeMembers(poiPasswordAttributeNameForm, reportOutPane);
-					removeMembers(jxlsContextParamMapPane, jxlsReportOutputLogicPane, jxlsPasswordAttributeNameForm);
+					removeSpecificMember(beforeReportType);
 					addMembers(jasperAttributeForm, jasperParamMapPane);
+					beforeReportType = JasperReportType.class.getName();
+					
 				} else if (JxlsReportType.class.getName().equals(reportType)) {
 					//JXLS利用の場合
 					jasperParamMapPane.deleteAll();
 					reportOutPane.deleteAll();
-					removeMembers(poiPasswordAttributeNameForm, reportOutPane);
-					removeMembers(jasperAttributeForm, jasperParamMapPane);
+					removeSpecificMember(beforeReportType);
 					addMembers(jxlsPasswordAttributeNameForm, jxlsContextParamMapPane, jxlsReportOutputLogicPane);
+					beforeReportType = JxlsReportType.class.getName();
+					
 				}
 			}
 		});
@@ -256,6 +262,19 @@ public class ReportTemplateEditPane extends TemplateTypeEditPane implements HasE
 
 		//レポートタイプ取得
 		getReportType();
+	}
+	
+	//画面上に表示されているCanvasをremove
+	public void removeSpecificMember(String beforeReportType) {
+		if (beforeReportType != null) {
+			if (beforeReportType.equals(PoiReportType.class.getName())) {
+				removeMembers(poiPasswordAttributeNameForm, reportOutPane);
+			} else if (beforeReportType.equals(JasperReportType.class.getName())) {
+				removeMembers(jasperAttributeForm, jasperParamMapPane);
+			} else if (beforeReportType.equals(JxlsReportType.class.getName())) {
+				removeMembers(jxlsPasswordAttributeNameForm, jxlsContextParamMapPane, jxlsReportOutputLogicPane);
+			}
+		}
 	}
 
 	@Override
@@ -472,6 +491,7 @@ public class ReportTemplateEditPane extends TemplateTypeEditPane implements HasE
 					for(JxlsContextParamMapDefinition jcpmd : contextParamMap) {
 						addUploadParameter(prefix + ReportTemplateUploadProperty.JXLS_PARAM_MAP_KEY+"_"+i, jcpmd.getKey());
 						addUploadParameter(prefix + ReportTemplateUploadProperty.JXLS_PARAM_MAP_VALUE+"_"+i, jcpmd.getMapFrom());
+						addUploadParameter(prefix + ReportTemplateUploadProperty.JXLS_PARAM_MAP_TO_MAP + "_"+i, String.valueOf( jcpmd.isConvertEntityToMap()));
 						i++;
 					}
 				}
@@ -532,6 +552,7 @@ public class ReportTemplateEditPane extends TemplateTypeEditPane implements HasE
 			poiPasswordAttributeNameField.setValue(poiRepo.getPasswordAttributeName());
 			removeMembers(jasperAttributeForm, jasperParamMapPane);
 			removeMembers(jxlsPasswordAttributeNameForm, jxlsContextParamMapPane, jxlsReportOutputLogicPane);
+			beforeReportType = PoiReportType.class.getName();
 		} else if (type instanceof JasperReportType) {
 			//Jasper利用の場合
 			JasperReportType jasRepo = (JasperReportType)type;
@@ -540,6 +561,7 @@ public class ReportTemplateEditPane extends TemplateTypeEditPane implements HasE
 			jasperPasswordAttributeNameField.setValue(jasRepo.getPasswordAttributeName());
 			removeMembers(poiPasswordAttributeNameForm, reportOutPane);
 			removeMembers(jxlsPasswordAttributeNameForm, jxlsContextParamMapPane, jxlsReportOutputLogicPane);
+			beforeReportType = JasperReportType.class.getName();
 		} else if (type instanceof JxlsReportType) {
 			//Jxls利用の場合
 			JxlsReportType jxlsRepo = (JxlsReportType)type;
@@ -548,6 +570,7 @@ public class ReportTemplateEditPane extends TemplateTypeEditPane implements HasE
 			jxlsContextParamMapPane.setContextParamMap(jxlsRepo.getContextParamMap());
 			removeMembers(jasperAttributeForm, jasperParamMapPane);
 			removeMembers(poiPasswordAttributeNameForm, reportOutPane);
+			beforeReportType = JxlsReportType.class.getName();
 		} else {
 			//初期の未選択の場合
 			removeMembers(jasperAttributeForm, jasperParamMapPane);

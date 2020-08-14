@@ -225,7 +225,7 @@ public class MetaReportTemplate extends MetaTemplate {
 					//ReportEngineがnullの場合、サポート外のメタデータを使用する場合
 					throw new TemplateRuntimeException("Report tempalte is outside of support . templateName:" + getName());
 				}
-				
+				// ReportTypeRuntimeの生成
 				reportTypeRuntime = reportType.createRuntime(null);
 			} catch (Exception e) {
 				setIllegalStateException(new RuntimeException(e));

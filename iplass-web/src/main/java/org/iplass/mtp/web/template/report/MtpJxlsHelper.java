@@ -1,3 +1,22 @@
+/*
+ * Copyright (C) 2020 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
+ * 
+ * Unless you have purchased a commercial license,
+ * the following license terms apply:
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ * 
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
 package org.iplass.mtp.web.template.report;
 
 import java.io.IOException;
@@ -13,6 +32,17 @@ import org.jxls.formula.StandardFormulaProcessor;
 import org.jxls.transform.Transformer;
 import org.jxls.util.JxlsHelper;
 
+/**
+ * <p>
+ * JxlsHelperのサブクラス。<BR><BR>
+ * 
+ * アプリ開発者は、JXLSで帳票出力処理をカスタマイズしたい場合、<BR>
+ * 本クラスで定義されたメソッドもしくは、{@link JxlsHelper#processTemplate(Context, Transformer)}を用いて、
+ * テンプレートファイルからExcel帳票の生成を実行することが可能。
+ * <p>
+ * @author Y.Ishida
+ *
+ */
 public class MtpJxlsHelper extends JxlsHelper {
 	
 	public MtpJxlsHelper() {
@@ -23,7 +53,7 @@ public class MtpJxlsHelper extends JxlsHelper {
 		return new MtpJxlsHelper();
 	}
 	
-    public JxlsHelper processTemplateAtCell(Transformer transformer, Context context,
+    public MtpJxlsHelper processTemplateAtCell(Transformer transformer, Context context,
             String targetCell) throws IOException {
         getAreaBuilder().setTransformer(transformer);
         List<Area> xlsAreaList = getAreaBuilder().build();
@@ -50,20 +80,7 @@ public class MtpJxlsHelper extends JxlsHelper {
         return this;
     }
 	
-    private Area setFormulaProcessor(Area xlsArea) {
-        FormulaProcessor fp = getFormulaProcessor();
-        if (fp == null) {
-            if (isUseFastFormulaProcessor()) {
-                fp = new FastFormulaProcessor();
-            } else {
-                fp = new StandardFormulaProcessor();
-            }
-        }
-        xlsArea.setFormulaProcessor(fp);
-        return xlsArea;
-    }
-	
-    public JxlsHelper processGridTemplate(Transformer transformer, Context context, String objectProps) throws IOException {
+    public MtpJxlsHelper processGridTemplate(Transformer transformer, Context context, String objectProps) throws IOException {
         getAreaBuilder().setTransformer(transformer);
         List<Area> xlsAreaList = getAreaBuilder().build();
         for (Area xlsArea : xlsAreaList) {
@@ -103,4 +120,18 @@ public class MtpJxlsHelper extends JxlsHelper {
         }
         transformer.write();
     }
+    
+    private Area setFormulaProcessor(Area xlsArea) {
+        FormulaProcessor fp = getFormulaProcessor();
+        if (fp == null) {
+            if (isUseFastFormulaProcessor()) {
+                fp = new FastFormulaProcessor();
+            } else {
+                fp = new StandardFormulaProcessor();
+            }
+        }
+        xlsArea.setFormulaProcessor(fp);
+        return xlsArea;
+    }
+    
 }
