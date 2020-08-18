@@ -33,13 +33,25 @@ import org.jxls.transform.Transformer;
 import org.jxls.util.JxlsHelper;
 
 /**
+ * <% if (doclang == "ja") {%>
  * <p>
- * JxlsHelperのサブクラス。<BR><BR>
+ * JxlsHelperのサブクラス
+ * </p>
  * 
- * アプリ開発者は、JXLSで帳票出力処理をカスタマイズしたい場合、<BR>
+ * アプリ開発者は、JXLSで帳票出力処理をカスタマイズしたい場合、
  * 本クラスで定義されたメソッドもしくは、{@link JxlsHelper#processTemplate(Context, Transformer)}を用いて、
  * テンプレートファイルからExcel帳票の生成を実行することが可能。
+ * 
+ * <%} else {%>
  * <p>
+ * Subclass of JxlsHelper
+ * </p>
+ * 
+ * If you want to customize the report output process in JXLS, 
+ * you can generate Excel reports from a template file by using 
+ * the methods defined in this class or {@link JxlsHelper#processTemplate(Context, Transformer)}.
+ * <%}%>
+ * 
  * @author Y.Ishida
  *
  */

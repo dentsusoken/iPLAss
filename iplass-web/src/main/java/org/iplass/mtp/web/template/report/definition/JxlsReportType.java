@@ -20,7 +20,11 @@
 package org.iplass.mtp.web.template.report.definition;
 
 /**
- * <p>JXLS帳票出力用テンプレートファイルのTemplate定義。</p>
+ * <% if (doclang == "ja") {%>
+ * <p>JXLS帳票出力用テンプレートファイルのTemplate定義</p>
+ * <%} else {%>
+ * <p>Template definition of the template file for JXLS report output</p>
+ * <%}%>
  *
  * @author Y.Ishida
  *

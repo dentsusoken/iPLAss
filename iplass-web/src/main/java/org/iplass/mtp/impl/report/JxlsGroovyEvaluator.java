@@ -28,6 +28,12 @@ import org.iplass.mtp.impl.script.ScriptContext;
 import org.iplass.mtp.impl.script.ScriptEngine;
 import org.jxls.expression.ExpressionEvaluator;
 
+/**
+ * JXLSの式評価をGroovyベースで実行する為のクラス
+ * 
+ * @author Y.Ishida
+ *
+ */
 public class JxlsGroovyEvaluator implements ExpressionEvaluator {
 	
 	private JxlsCompiledScriptCacheStore cacheStore;

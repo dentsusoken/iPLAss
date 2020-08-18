@@ -31,9 +31,7 @@ import org.iplass.mtp.web.template.definition.TemplateDefinition;
  * <h5>※注意</h5>
  * <p>
  * バイナリデータは、メモリ内にロード＆キャッシュされるため、
- * 大きなサイズのバイナリデータは当Templateとして利用しないこと。
- * </p>
- * <p>
+ * 大きなサイズのバイナリデータは当Templateとして利用しないこと。<br>
  * また、ReportTemplateDefinitionは、layout機能の利用、別テンプレート内からのincludeはできない。
  * </p>
  *

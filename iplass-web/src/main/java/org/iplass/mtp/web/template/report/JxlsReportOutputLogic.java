@@ -23,16 +23,35 @@ import org.jxls.common.Context;
 import org.jxls.transform.Transformer;
 
 /**
+ <% if (doclang == "ja") {%>
  * <p>
- * JXLS専用帳票出力ロジックインターフェース<BR><BR>
- * 
- * JXLSを用いて帳票出力する際に出力処理を記載してもらうインタフェース<BR>
- * アプリ担当者は、このインタフェースを継承して独自に帳票処理を記載する事が可能。
+ * JXLS専用帳票出力ロジックインターフェース
  * </p>
- *  
+ * JXLSを用いて帳票出力する際に出力処理を記述してもらう為のインタフェースです。<br>
+ * アプリ担当者は、このインタフェースを継承して独自に帳票処理を記載する事が可能。
+ * 
+ * <%} else {%>
+ * <p>
+ * The interface for implementing Report Output Logic for JXLS.
+ * </p>
+ * This interface is used to have the output process described when outputting a report using JXLS.<br>
+ * The person in charge of the application can inherit this interface and describe their own report output processing.
+ * 
+ * <%}%>
+ * 
  * @author Y.Ishida
- *
  */
 public interface JxlsReportOutputLogic {
+	/**
+	 * <% if (doclang == "ja") {%>
+	 * JXLS帳票出力処理
+	 * <%} else {%>
+	 * Report Output Logic for JXLS
+	 * <%}%>
+	 * 
+	 * @param transformer
+	 * @param context
+	 * @param  jxlsHelper
+	 */
 	public void reportWrite(Transformer transformer, Context context, MtpJxlsHelper jxlsHelper);
 }

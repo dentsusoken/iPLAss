@@ -71,7 +71,9 @@ public class JxlsReportingEngine implements ReportingEngine {
 			if (val == null) {
 				break;
 			}
+			
 			if (contextParamMap[i].isConvertEntityToMap()) {
+				//GenericEntityのインスタンスとそのリストは、Map形式に変換してContextにPut
 				if (val instanceof GenericEntity) {
 					context.putVar(contextParamMap[i].getKey(),  ((GenericEntity) val).toMap());
 				} else if (val instanceof List<?>) {

@@ -22,8 +22,19 @@ package org.iplass.mtp.web.template.report.definition;
 
 
 /**
- * JavaのクラスによるReportOutputLogic定義。
+ * <% if (doclang == "ja") {%>
+ * <p>
+ * JavaクラスによるReportOutputLogic定義<br>
+ * </p>
  * ReportOutputLogicをimplementsしたクラスを登録する。
+ * 
+ * <%} else {%>
+ * <p>
+ * The Definition of a report output logic in Java class<br>
+ * </p>
+ * Set a class that implements ReportOutputLogic.
+ * 
+ * <%}%>
  *
  * @author lis71n
  *

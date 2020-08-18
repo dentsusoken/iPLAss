@@ -62,7 +62,6 @@ public class JxlsReportingOutputModel implements ReportingOutputModel {
 	
 	private JxlsCompiledScriptCacheStore cacheStore;
 	
-	//Constructor
 	JxlsReportingOutputModel(byte[] binary, String type, String extension) throws Exception{
 		this.binary = binary;
 		this.type = type;
