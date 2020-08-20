@@ -274,7 +274,7 @@ public class MetaReportTemplate extends MetaTemplate {
 			}
 
 			if (requestContext.getPageContext() != null) {
-				throw new TemplateRuntimeException("Report tempalte can not include from jsp... templateName:" + getName());
+				throw new TemplateRuntimeException("Report template can not include from jsp... templateName:" + getName());
 			}
 		}
 	}

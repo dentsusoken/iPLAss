@@ -65,6 +65,19 @@ public class MtpJxlsHelper extends JxlsHelper {
 		return new MtpJxlsHelper();
 	}
 	
+	/**
+	 * <% if (doclang == "ja") {%>
+	 * {@link JxlsHelper#processTemplateAtCell(InputStream, OutputStream, Context, String)}対応のメソッド
+	 * <%} else {%>
+	 * Method corresponding to {@link JxlsHelper#processTemplateAtCell(InputStream, OutputStream, Context, String)}
+	 * <%}%>
+	 * 
+	 * @param transformer
+	 * @param context
+	 * @param targetCell
+	 * @return
+	 * @throws IOException
+	 */
     public MtpJxlsHelper processTemplateAtCell(Transformer transformer, Context context,
             String targetCell) throws IOException {
         getAreaBuilder().setTransformer(transformer);
@@ -92,6 +105,19 @@ public class MtpJxlsHelper extends JxlsHelper {
         return this;
     }
 	
+    /**
+	 * <% if (doclang == "ja") {%>
+	 * {@link JxlsHelper#processGridTemplate(InputStream, OutputStream, Context, String)}対応のメソッド
+	 * <%} else {%>
+	 * Method corresponding to {@link JxlsHelper#processGridTemplate(InputStream, OutputStream, Context, String)}
+	 * <%}%>
+     * 
+     * @param transformer
+     * @param context
+     * @param objectProps
+     * @return
+     * @throws IOException
+     */
     public MtpJxlsHelper processGridTemplate(Transformer transformer, Context context, String objectProps) throws IOException {
         getAreaBuilder().setTransformer(transformer);
         List<Area> xlsAreaList = getAreaBuilder().build();
@@ -108,6 +134,19 @@ public class MtpJxlsHelper extends JxlsHelper {
         return this;
     }
     
+    /**
+	 * <% if (doclang == "ja") {%>
+	 * {@link JxlsHelper#processGridTemplateAtCell(InputStream, OutputStream, Context, String, String)}対応のメソッド
+	 * <%} else {%>
+	 * Method corresponding to{@link JxlsHelper#processGridTemplateAtCell(InputStream, OutputStream, Context, String, String)}
+	 * <%}%>
+     * 
+     * @param transformer
+     * @param context
+     * @param objectProps
+     * @param targetCell
+     * @throws IOException
+     */
     public void processGridTemplateAtCell(Transformer transformer, Context context,
             String objectProps, String targetCell) throws IOException {
         getAreaBuilder().setTransformer(transformer);
