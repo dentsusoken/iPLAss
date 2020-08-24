@@ -68,6 +68,9 @@ public class MetaSearchResultSection extends MetaSection {
 	/** 編集リンク非表示設定 */
 	private boolean hideDetailLink;
 
+	/** Entity権限の可能範囲条件で編集リンク表示を制御 */
+	private boolean checkEntityPermissionLimitConditionOfEditLink;
+
 	/** 削除ボタン非表示設定 */
 	private boolean hideDelete;
 
@@ -99,7 +102,7 @@ public class MetaSearchResultSection extends MetaSection {
 	private String bulkUpdateDisplayLabel;
 
 	/** 多言語設定情報 */
-	private List<MetaLocalizedString> localizedBulkUpdateDisplayLabel = new ArrayList<MetaLocalizedString>();
+	private List<MetaLocalizedString> localizedBulkUpdateDisplayLabel = new ArrayList<>();
 
 	/** 一括更新デフォルト選択項目 */
 	private String bulkUpdateDefaultSelection;
@@ -118,7 +121,7 @@ public class MetaSearchResultSection extends MetaSection {
 
 	/** カスタム削除処理クラス名 */
 	private String deleteInterrupterName;
-	
+
 	/** カスタム一括更新処理クラス名*/
 	private String bulkUpdateInterrupterName;
 
@@ -170,7 +173,7 @@ public class MetaSearchResultSection extends MetaSection {
 
 	/**
 	 * 検索結果をまとめる設定を取得します。
-	 * @return 検索結果をまとめる設定 
+	 * @return 検索結果をまとめる設定
 	 */
 	public boolean isGroupingData() {
 		return groupingData;
@@ -178,7 +181,7 @@ public class MetaSearchResultSection extends MetaSection {
 
 	/**
 	 * 検索結果をまとめる設定を設定します。
-	 * @param groupingData 検索結果をまとめる設定 
+	 * @param groupingData 検索結果をまとめる設定
 	 */
 	public void setGroupingData(boolean groupingData) {
 		this.groupingData = groupingData;
@@ -198,6 +201,22 @@ public class MetaSearchResultSection extends MetaSection {
 	 */
 	public void setHideDetailLink(boolean hideDetailLink) {
 	    this.hideDetailLink = hideDetailLink;
+	}
+
+	/**
+	 * Entity権限の可能範囲条件で編集リンク表示を制御設定を取得します。
+	 * @return Entity権限の可能範囲条件で編集リンク表示を制御設定
+	 */
+	public boolean isCheckEntityPermissionLimitConditionOfEditLink() {
+		return checkEntityPermissionLimitConditionOfEditLink;
+	}
+
+	/**
+	 * Entity権限の可能範囲条件で編集リンク表示を制御設定を設定します。
+	 * @param checkEntityPermissionLimitConditionOfEditLink Entity権限の可能範囲条件で編集リンク表示を制御設定
+	 */
+	public void setCheckEntityPermissionLimitConditionOfEditLink(boolean checkEntityPermissionLimitConditionOfEditLink) {
+		this.checkEntityPermissionLimitConditionOfEditLink = checkEntityPermissionLimitConditionOfEditLink;
 	}
 
 	/**
@@ -527,7 +546,7 @@ public class MetaSearchResultSection extends MetaSection {
 	 * @return 要素
 	 */
 	public List<MetaElement> getElements() {
-		if (elements == null) elements = new ArrayList<MetaElement>();
+		if (elements == null) elements = new ArrayList<>();
 	    return elements;
 	}
 
@@ -561,6 +580,7 @@ public class MetaSearchResultSection extends MetaSection {
 		this.dispHeight = section.getDispHeight();
 		this.groupingData = section.isGroupingData();
 		this.hideDetailLink = section.isHideDetailLink();
+		this.checkEntityPermissionLimitConditionOfEditLink = section.isCheckEntityPermissionLimitConditionOfEditLink();
 		this.hideDelete = section.isHideDelete();
 		this.hidePaging = section.isHidePaging();
 		this.hidePageJump = section.isHidePageJump();
@@ -608,6 +628,7 @@ public class MetaSearchResultSection extends MetaSection {
 		section.setDispHeight(this.dispHeight);
 		section.setGroupingData(this.isGroupingData());
 		section.setHideDetailLink(hideDetailLink);
+		section.setCheckEntityPermissionLimitConditionOfEditLink(checkEntityPermissionLimitConditionOfEditLink);
 		section.setHideDelete(hideDelete);
 		section.setHidePaging(hidePaging);
 		section.setHidePageJump(this.hidePageJump);

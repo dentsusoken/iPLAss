@@ -116,7 +116,7 @@
 		}
 	}
 	if (isEditable) {
-		boolean showEditButton = auth.checkPermission(new EntityPermission(defName, EntityPermission.Action.UPDATE)) || auth.checkPermission(new EntityPermission(defName, EntityPermission.Action.DELETE));
+		boolean showEditButton = data.isCanUpdate() || data.isCanDelete();
 		if (showEditButton) {
 			if (!form.isHideLock()) {
 %>
