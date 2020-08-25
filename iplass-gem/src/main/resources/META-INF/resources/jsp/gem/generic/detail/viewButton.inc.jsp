@@ -90,8 +90,8 @@
 	}
 
 	//権限確認用
-	AuthContext auth = AuthContext.getCurrentContext();
-	boolean showEditButton = auth.checkPermission(new EntityPermission(defName, EntityPermission.Action.UPDATE)) || auth.checkPermission(new EntityPermission(defName, EntityPermission.Action.DELETE));
+	boolean showEditButton = data.isCanUpdate() || data.isCanDelete();
+	boolean showCopyButton = data.isCanCreate();
 
 	//ワークフローの権限確認用
 	EntityManager em = ManagerLocator.getInstance().getManager(EntityManager.class);
@@ -146,7 +146,7 @@
 <%
 			}
 		}
-		if (auth.checkPermission(new EntityPermission(defName, EntityPermission.Action.CREATE)) && !isNoneDispCopyButton) {
+		if (showCopyButton && !isNoneDispCopyButton) {
 %>
 <li class="btn copy-btn"><input type="button" value="<c:out value="<%=copyDisplayLabel %>"/>" class="gr-btn" onclick="onclick_copy()" /></li>
 <%

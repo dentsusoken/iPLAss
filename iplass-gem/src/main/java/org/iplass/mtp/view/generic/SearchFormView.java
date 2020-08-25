@@ -20,6 +20,8 @@
 
 package org.iplass.mtp.view.generic;
 
+import java.util.List;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 
@@ -217,8 +219,17 @@ public class SearchFormView extends FormView {
 	)
 	private boolean useInterrupterForCsvDownload;
 
-
-
+	/** 検索画面Handlerクラス名 */
+	@MetaFieldInfo(
+			displayName="検索画面Handlerクラス名",
+			displayNameKey="generic_SearchFormView_searchFormViewHandlerNameDisplaNameKey",
+			inputType=InputType.MULTI_TEXT,
+			displayOrder=1620,
+			description="検索画面の制御クラス名を指定します。<br>" +
+					"SearchFormViewHandlerインターフェースを実装するクラスを指定してください。",
+			descriptionKey="generic_SearchFormView_searchFormViewHandlerNameDescriptionKey"
+	)
+	private List<String> searchFormViewHandlerName;
 
 	/** ボタン上部のセクション */
 	@MultiLang(isMultiLangValue = false)
@@ -508,6 +519,22 @@ public class SearchFormView extends FormView {
 	 */
 	public void setUseInterrupterForCsvDownload(boolean useInterrupterForCsvDownload) {
 	    this.useInterrupterForCsvDownload = useInterrupterForCsvDownload;
+	}
+
+	/**
+	 * 検索画面Handlerクラス名を取得します。
+	 * @return 検索画面Handlerクラス名
+	 */
+	public List<String> getSearchFormViewHandlerName() {
+		return searchFormViewHandlerName;
+	}
+
+	/**
+	 * 検索画面Handlerクラス名を設定します。
+	 * @param searchFormViewHandlerName 検索画面Handlerクラス名
+	 */
+	public void setSearchFormViewHandlerName(List<String> searchFormViewHandlerName) {
+		this.searchFormViewHandlerName = searchFormViewHandlerName;
 	}
 
 	/**

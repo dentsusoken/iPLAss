@@ -34,9 +34,14 @@ import org.iplass.gem.GemConfigService;
 import org.iplass.gem.command.CommandUtil;
 import org.iplass.gem.command.Constants;
 import org.iplass.gem.command.ViewUtil;
+import org.iplass.gem.command.generic.detail.handler.CheckPermissionLimitConditionOfButtonHandler;
+import org.iplass.gem.command.generic.detail.handler.ShowDetailLayoutViewEvent;
+import org.iplass.gem.command.generic.detail.handler.ShowDetailViewEventHandler;
+import org.iplass.gem.command.generic.detail.handler.ShowEditViewEventHandler;
 import org.iplass.mtp.command.RequestContext;
 import org.iplass.mtp.entity.Entity;
 import org.iplass.mtp.entity.EntityManager;
+import org.iplass.mtp.entity.EntityRuntimeException;
 import org.iplass.mtp.entity.LoadOption;
 import org.iplass.mtp.entity.ValidateError;
 import org.iplass.mtp.entity.definition.EntityDefinition;
@@ -57,6 +62,7 @@ import org.iplass.mtp.spi.ServiceRegistry;
 import org.iplass.mtp.util.StringUtil;
 import org.iplass.mtp.view.generic.DetailFormView;
 import org.iplass.mtp.view.generic.DetailFormView.CopyTarget;
+import org.iplass.mtp.view.generic.DetailFormViewHandler;
 import org.iplass.mtp.view.generic.EntityViewUtil;
 import org.iplass.mtp.view.generic.FormViewUtil;
 import org.iplass.mtp.view.generic.OutputType;
@@ -81,12 +87,15 @@ import org.slf4j.LoggerFactory;
  * 詳細コマンド関連の情報を管理するクラス。
  * @author lis3wg
  */
-public class DetailCommandContext extends RegistrationCommandContext {
+public class DetailCommandContext extends RegistrationCommandContext
+		implements ShowDetailViewEventHandler, ShowEditViewEventHandler {
 
 	private static Logger logger = LoggerFactory.getLogger(DetailCommandContext.class);
 
 	/** 編集画面用のFormレイアウト情報 */
 	private DetailFormView view;
+
+	private List<DetailFormViewHandler> detailFormViewHandlers;
 
 	private GemConfigService gemConfig = null;
 
@@ -117,7 +126,7 @@ public class DetailCommandContext extends RegistrationCommandContext {
 
 		init();
 	}
-	
+
 	private void init() {
 		gemConfig = ServiceRegistry.getRegistry().getService(GemConfigService.class);
 	}
@@ -144,7 +153,7 @@ public class DetailCommandContext extends RegistrationCommandContext {
 		this.view = view;
 	}
 
-	/* 
+	/*
 	 * 対象エンティティを取得します。
 	 */
 	@Override
@@ -197,7 +206,7 @@ public class DetailCommandContext extends RegistrationCommandContext {
 	@Override
 	public List<PropertyItem> getProperty() {
 		String execType = getExecType();
-		List<PropertyItem> propList = new ArrayList<PropertyItem>();
+		List<PropertyItem> propList = new ArrayList<>();
 		for (Section section : getView().getSections()) {
 			if (section instanceof DefaultSection) {
 				if (EntityViewUtil.isDisplayElement(getDefinitionName(), section.getElementRuntimeId(), OutputType.EDIT, getCurrentEntity())
@@ -233,7 +242,7 @@ public class DetailCommandContext extends RegistrationCommandContext {
 	@SuppressWarnings("unchecked")
 	private List<PropertyItem> getProperty(DefaultSection section) {
 		String execType = getExecType();
-		List<PropertyItem> propList = new ArrayList<PropertyItem>();
+		List<PropertyItem> propList = new ArrayList<>();
 		for (Element elem : section.getElements()) {
 			if (elem instanceof PropertyItem) {
 				PropertyItem prop = (PropertyItem) elem;
@@ -304,7 +313,7 @@ public class DetailCommandContext extends RegistrationCommandContext {
 	 */
 	public List<String> getReferencePropertyName() {
 		//表示しているプロパティだけとりだす。表示/編集は分からないのでとりあえず両方。
-		List<String> loadReferences = new ArrayList<String>();
+		List<String> loadReferences = new ArrayList<>();
 		for (Section section : getView().getSections()) {
 			if (section instanceof DefaultSection) {
 				getReferencePropertyName((DefaultSection)section, loadReferences);
@@ -666,7 +675,7 @@ public class DetailCommandContext extends RegistrationCommandContext {
 	 * @return 参照データのリスト
 	 */
 	private List<Entity> getRefTableValues(ReferenceProperty p, String defName, Long count, String prefix) {
-		final List<Entity> list = new ArrayList<Entity>();
+		final List<Entity> list = new ArrayList<>();
 		EntityDefinition ed = getEntityDefinition();
 		EntityDefinition red = definitionManager.get(defName);
 		setEntityDefinition(red);//参照先の定義に詰め替える
@@ -741,7 +750,7 @@ public class DetailCommandContext extends RegistrationCommandContext {
 
 
 	private List<Entity> getRefSectionValues(ReferenceProperty p, String defName, Long count, String prefix) {
-		List<Entity> list = new ArrayList<Entity>();
+		List<Entity> list = new ArrayList<>();
 		EntityDefinition ed = getEntityDefinition();
 		EntityDefinition red = definitionManager.get(defName);
 		setEntityDefinition(red);//参照先の定義に詰め替える
@@ -899,7 +908,7 @@ public class DetailCommandContext extends RegistrationCommandContext {
 	 */
 	private List<VirtualPropertyItem> getVirtualProperty() {
 		String execType = getExecType();
-		List<VirtualPropertyItem> propList = new ArrayList<VirtualPropertyItem>();
+		List<VirtualPropertyItem> propList = new ArrayList<>();
 		for (Section section : getView().getSections()) {
 			if (section instanceof DefaultSection) {
 				if (EntityViewUtil.isDisplayElement(getDefinitionName(), section.getElementRuntimeId(), OutputType.EDIT, getCurrentEntity())
@@ -918,7 +927,7 @@ public class DetailCommandContext extends RegistrationCommandContext {
 	 */
 	private List<VirtualPropertyItem> getVirtualProperty(DefaultSection section) {
 		String execType = getExecType();
-		List<VirtualPropertyItem> propList = new ArrayList<VirtualPropertyItem>();
+		List<VirtualPropertyItem> propList = new ArrayList<>();
 		for (Element elem : section.getElements()) {
 			if (elem instanceof VirtualPropertyItem) {
 				VirtualPropertyItem prop = (VirtualPropertyItem) elem;
@@ -1102,7 +1111,7 @@ public class DetailCommandContext extends RegistrationCommandContext {
 	 * @return プロパティの一覧
 	 */
 	private List<PropertyItem> getDisplayProperty(boolean isDetail) {
-		List<PropertyItem> propList = new ArrayList<PropertyItem>();
+		List<PropertyItem> propList = new ArrayList<>();
 
 		String execType = getExecType();
 		OutputType outputType = isDetail ? OutputType.EDIT : OutputType.VIEW;
@@ -1133,7 +1142,7 @@ public class DetailCommandContext extends RegistrationCommandContext {
 	 * @return プロパティの一覧
 	 */
 	private List<PropertyItem> getDisplayProperty(DefaultSection section, boolean isDetail) {
-		List<PropertyItem> propList = new ArrayList<PropertyItem>();
+		List<PropertyItem> propList = new ArrayList<>();
 
 		String execType = getExecType();
 		OutputType outputType = isDetail ? OutputType.EDIT : OutputType.VIEW;
@@ -1195,5 +1204,60 @@ public class DetailCommandContext extends RegistrationCommandContext {
 
 	public boolean isShallowCopyLobData() {
 		return gemConfig.isShallowCopyLobData();
+	}
+
+	@Override
+	public void fireShowDetailViewEvent(DetailFormViewData detailFormViewData) {
+
+		ShowDetailLayoutViewEvent event = new ShowDetailLayoutViewEvent(getRequest(), getDefinitionName(), getViewName(), detailFormViewData);
+		for (DetailFormViewHandler handler : getDetailFormViewHandlers()) {
+			handler.onShowDetailView(event);
+		}
+
+	}
+
+	@Override
+	public void fireShowEditViewEvent(DetailFormViewData detailFormViewData) {
+
+		ShowDetailLayoutViewEvent event = new ShowDetailLayoutViewEvent(getRequest(), getDefinitionName(), getViewName(), detailFormViewData);
+		for (DetailFormViewHandler handler : getDetailFormViewHandlers()) {
+			handler.onShowEditView(event);
+		}
+
+	}
+
+	private List<DetailFormViewHandler> getDetailFormViewHandlers() {
+		if (detailFormViewHandlers == null) {
+			detailFormViewHandlers = new ArrayList<>();
+			if (getView().getDetailFormViewHandlerName() != null) {
+				for (String handlerClassName : getView().getDetailFormViewHandlerName()) {
+					detailFormViewHandlers.add(createDetailFormViewHandler(handlerClassName));
+				}
+			}
+			//ボタンの範囲権限チェックを行う場合は、先頭にHandlerを追加
+			if (getView().isCheckEntityPermissionLimitConditionOfButton()) {
+				if (logger.isDebugEnabled()) {
+					logger.debug("add CheckPermissionLimitConditionOfButtonHandler to the first of detail form view handler.");
+				}
+				detailFormViewHandlers.add(0, new CheckPermissionLimitConditionOfButtonHandler());
+			}
+		}
+		return detailFormViewHandlers;
+	}
+
+	private DetailFormViewHandler createDetailFormViewHandler(String handlerClassName) {
+		DetailFormViewHandler handler = null;
+		if (StringUtil.isNotEmpty(handlerClassName)) {
+			if (logger.isDebugEnabled()) {
+				logger.debug("create detail form view handler. class=" + handlerClassName);
+			}
+			try {
+				handler = ucdm.createInstanceAs(DetailFormViewHandler.class, handlerClassName);
+			} catch (ClassNotFoundException e) {
+				logger.error(handlerClassName + " can not instantiate.", e);
+				throw new EntityRuntimeException(resourceString("command.generic.detail.DetailCommandContext.internalErr"));
+			}
+		}
+		return handler;
 	}
 }

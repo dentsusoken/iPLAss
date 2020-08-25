@@ -24,6 +24,8 @@ import java.util.List;
 
 import org.iplass.gem.command.Constants;
 import org.iplass.gem.command.GemResourceBundleUtil;
+import org.iplass.gem.command.generic.detail.handler.ShowDetailViewEventHandler;
+import org.iplass.gem.command.generic.detail.handler.ShowEditViewEventHandler;
 import org.iplass.mtp.ApplicationException;
 import org.iplass.mtp.auth.AuthContext;
 import org.iplass.mtp.auth.User;
@@ -41,12 +43,12 @@ import org.iplass.mtp.entity.BinaryReference;
 import org.iplass.mtp.entity.DeepCopyOption;
 import org.iplass.mtp.entity.Entity;
 import org.iplass.mtp.entity.EntityValidationException;
-import org.iplass.mtp.entity.GenericEntity;
 import org.iplass.mtp.entity.ValidateError;
 import org.iplass.mtp.entity.definition.PropertyDefinition;
 import org.iplass.mtp.entity.definition.properties.BinaryProperty;
 import org.iplass.mtp.entity.definition.properties.ReferenceProperty;
 import org.iplass.mtp.entity.definition.properties.ReferenceType;
+import org.iplass.mtp.entity.permission.EntityPermission;
 import org.iplass.mtp.util.StringUtil;
 import org.iplass.mtp.view.generic.DetailFormView;
 import org.iplass.mtp.view.generic.DetailFormView.CopyTarget;
@@ -226,13 +228,13 @@ public final class DetailViewCommand extends DetailCommandBase {
 		DetailFormViewData data = new DetailFormViewData();
 		data.setEntityDefinition(context.getEntityDefinition());
 		data.setView(context.getView());
-		data.setEntity((GenericEntity) entity);
+		data.setEntity(entity);
 		if (entity == null) {
 			data.setExecType(Constants.EXEC_TYPE_INSERT);
 			if (context.isUpdateByParam()) {
 				//パラメータの値を使って表示データの値更新
 				Entity updateParam = context.createEntity();
-				data.setEntity((GenericEntity) updateParam);
+				data.setEntity(updateParam);
 			}
 			if (StringUtil.isNotBlank(context.getView().getInitScript())) {
 				//初期化スクリプトで初期化
@@ -272,7 +274,7 @@ public final class DetailViewCommand extends DetailCommandBase {
 					DeepCopyOption option = new DeepCopyOption();
 					option.setShallowCopyLobData(context.isShallowCopyLobData());
 					entity = em.deepCopy(oid, context.getDefinitionName(), option);
-					data.setEntity((GenericEntity) entity);
+					data.setEntity(entity);
 					data.setExecType(Constants.EXEC_TYPE_UPDATE);
 				} catch (EntityValidationException e) {
 					String refPropName = createHierarchyRefPropDispName(e);
@@ -318,6 +320,22 @@ public final class DetailViewCommand extends DetailCommandBase {
 		//UserPropertyEditor用のマップ作製
 		if (data.getEntity() != null) {
 			setUserInfoMap(context, data.getEntity(), detail);
+		}
+
+		//権限チェック
+		AuthContext auth = AuthContext.getCurrentContext();
+		data.setCanCreate(auth.checkPermission(new EntityPermission(context.getDefinitionName(), EntityPermission.Action.CREATE)));
+		data.setCanUpdate(auth.checkPermission(new EntityPermission(context.getDefinitionName(), EntityPermission.Action.UPDATE)));
+		data.setCanDelete(auth.checkPermission(new EntityPermission(context.getDefinitionName(), EntityPermission.Action.DELETE)));
+
+		if (isDetail()) {
+			if (context instanceof ShowEditViewEventHandler) {
+				((ShowEditViewEventHandler)context).fireShowEditViewEvent(data);
+			}
+		} else {
+			if (context instanceof ShowDetailViewEventHandler) {
+				((ShowDetailViewEventHandler)context).fireShowDetailViewEvent(data);
+			}
 		}
 
 		request.setAttribute(Constants.DATA, data);

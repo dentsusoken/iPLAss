@@ -31,6 +31,10 @@ import org.iplass.gem.command.CommandUtil;
 import org.iplass.gem.command.Constants;
 import org.iplass.gem.command.GemResourceBundleUtil;
 import org.iplass.gem.command.ViewUtil;
+import org.iplass.gem.command.common.SearchResultData;
+import org.iplass.gem.command.generic.search.handler.CheckPermissionLimitConditionOfEditLinkHandler;
+import org.iplass.gem.command.generic.search.handler.CreateSearchResultEvent;
+import org.iplass.gem.command.generic.search.handler.CreateSearchResultEventHandler;
 import org.iplass.mtp.ManagerLocator;
 import org.iplass.mtp.command.RequestContext;
 import org.iplass.mtp.entity.Entity;
@@ -61,6 +65,7 @@ import org.iplass.mtp.view.generic.FormViewUtil;
 import org.iplass.mtp.view.generic.NullOrderType;
 import org.iplass.mtp.view.generic.OutputType;
 import org.iplass.mtp.view.generic.SearchFormView;
+import org.iplass.mtp.view.generic.SearchFormViewHandler;
 import org.iplass.mtp.view.generic.SearchQueryContext;
 import org.iplass.mtp.view.generic.SearchQueryInterrupter;
 import org.iplass.mtp.view.generic.SearchQueryInterrupter.SearchQueryType;
@@ -74,13 +79,13 @@ import org.iplass.mtp.view.generic.element.property.PropertyColumn;
 import org.iplass.mtp.view.generic.element.property.PropertyItem;
 import org.iplass.mtp.view.generic.element.section.SearchConditionSection;
 import org.iplass.mtp.view.generic.element.section.SearchConditionSection.ConditionSortType;
-import org.iplass.mtp.view.generic.element.section.SearchResultSection.ExclusiveControlPoint;
 import org.iplass.mtp.view.generic.element.section.SearchResultSection;
+import org.iplass.mtp.view.generic.element.section.SearchResultSection.ExclusiveControlPoint;
 import org.iplass.mtp.view.generic.element.section.SortSetting;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public abstract class SearchContextBase implements SearchContext {
+public abstract class SearchContextBase implements SearchContext, CreateSearchResultEventHandler {
 
 	private static Logger log = LoggerFactory.getLogger(SearchContextBase.class);
 
@@ -90,6 +95,7 @@ public abstract class SearchContextBase implements SearchContext {
 	private SearchFormView form;
 	private Set<String> useUserPropertyEditorPropertyNameList;
 	private SearchQueryInterrupterHandler interrupterHandler;
+	private List<SearchFormViewHandler> searchFormViewHandlers;
 
 	private UtilityClassDefinitionManager ucdm;
 
@@ -136,7 +142,7 @@ public abstract class SearchContextBase implements SearchContext {
 
 	@Override
 	public Select getSelect() {
-		ArrayList<String> select = new ArrayList<String>();
+		ArrayList<String> select = new ArrayList<>();
 		select.add(Entity.OID);
 		select.add(Entity.NAME);
 		select.add(Entity.VERSION);
@@ -791,6 +797,51 @@ public abstract class SearchContextBase implements SearchContext {
 
 	protected SearchQueryInterrupter getDefaultSearchQueryInterrupter() {
 		return new SearchQueryInterrupter() {};
+	}
+
+	@Override
+	public void fireCreateSearchResultEvent(final SearchResultData result) {
+
+		CreateSearchResultEvent event = new CreateSearchResultEvent(getRequest(), getDefName(), getViewName(), result);
+		for (SearchFormViewHandler handler : getSearchFormViewHandlers()) {
+			handler.onCreateSearchResult(event);
+		}
+	}
+
+	private List<SearchFormViewHandler> getSearchFormViewHandlers() {
+		if (searchFormViewHandlers == null) {
+			searchFormViewHandlers = new ArrayList<>();
+			if (getForm().getSearchFormViewHandlerName() != null) {
+				for (String handlerClassName : getForm().getSearchFormViewHandlerName()) {
+					searchFormViewHandlers.add(createSearchFormViewHandler(handlerClassName));
+				}
+			}
+			//編集リンクの範囲権限チェックを行う場合は、先頭にHandlerを追加
+			if (!getResultSection().isHideDetailLink()
+					&& getResultSection().isCheckEntityPermissionLimitConditionOfEditLink()) {
+				if (log.isDebugEnabled()) {
+					log.debug("add CheckUpdateConditionOfEditLinkHandler to the first of search form view handler.");
+				}
+				searchFormViewHandlers.add(0, new CheckPermissionLimitConditionOfEditLinkHandler());
+			}
+		}
+		return searchFormViewHandlers;
+	}
+
+	private SearchFormViewHandler createSearchFormViewHandler(String handlerClassName) {
+		SearchFormViewHandler handler = null;
+		if (StringUtil.isNotEmpty(handlerClassName)) {
+			if (log.isDebugEnabled()) {
+				log.debug("create search form view handler. class=" + handlerClassName);
+			}
+			try {
+				handler = ucdm.createInstanceAs(SearchFormViewHandler.class, handlerClassName);
+			} catch (ClassNotFoundException e) {
+				log.error(handlerClassName + " can not instantiate.", e);
+				throw new EntityRuntimeException(resourceString("command.generic.detail.DetailCommandContext.internalErr"));
+			}
+		}
+		return handler;
 	}
 
 	private static String resourceString(String key, Object... arguments) {

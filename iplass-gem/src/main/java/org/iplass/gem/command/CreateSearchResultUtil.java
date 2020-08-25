@@ -21,7 +21,6 @@
 package org.iplass.gem.command;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -30,6 +29,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.iplass.gem.command.common.SearchResultData;
+import org.iplass.gem.command.common.SearchResultRow;
 import org.iplass.gem.command.generic.search.ResponseUtil;
 import org.iplass.gem.command.generic.search.ResponseUtil.Func;
 import org.iplass.mtp.entity.Entity;
@@ -47,39 +48,62 @@ import org.iplass.mtp.view.generic.element.property.PropertyColumn;
 import org.iplass.mtp.view.generic.element.section.SearchResultSection;
 
 public class CreateSearchResultUtil {
-	public static List<Map<String, String>> getHtmlData(List<Entity> entityList, final EntityDefinition ed, SearchResultSection section, String viewName) throws IOException, ServletException {
-		if (entityList == null) return null;
 
-		List<Map<String, String>> ret = new ArrayList<Map<String,String>>();
+	/**
+	 * @deprecated use {@link #getResultData(List, EntityDefinition, SearchResultSection, String)}}.
+	 */
+	@Deprecated
+	public static List<Map<String, String>> getHtmlData(List<Entity> entityList, final EntityDefinition ed, SearchResultSection section, String viewName) throws IOException, ServletException {
+		return getResultData(entityList, ed, section, viewName).toResponse();
+	}
+
+	/**
+	 * 検索結果をSearchResultSectionの設定に合わせて成型します。
+	 *
+	 * @param entityList 検索結果
+	 * @param ed 対象Entity定義
+	 * @param section SearchResultSection
+	 * @param viewName View名
+	 * @return レスポンス情報
+	 * @throws IOException
+	 * @throws ServletException
+	 */
+	public static SearchResultData getResultData(List<Entity> entityList, final EntityDefinition ed, SearchResultSection section, String viewName) throws IOException, ServletException {
+		SearchResultData result = new SearchResultData();
+
+		if (entityList == null) return result;
+
 		List<Element> elements = section.getElements();
 		for (final Entity entity : entityList) {
-			final Map<String, String> eval = new LinkedHashMap<String, String>();
-			eval.put("orgOid", entity.getOid());
-			eval.put("orgVersion", entity.getVersion().toString());
+			final Map<String, String> rowData = new LinkedHashMap<>();
+			final SearchResultRow row = new SearchResultRow(entity, rowData);
+
+			rowData.put(SearchResultRow.OID, entity.getOid());
+			rowData.put(SearchResultRow.VERSION, entity.getVersion().toString());
 
 			if (entity.getUpdateDate() != null) {
-				eval.put("orgTimestamp", String.valueOf(entity.getUpdateDate().getTime()));
+				rowData.put(SearchResultRow.TIMESTAMP, String.valueOf(entity.getUpdateDate().getTime()));
 			}
 			if (entity.getValue("score") != null) {
-				eval.put("score", entity.getValue("score").toString());
+				rowData.put(SearchResultRow.SCORE, entity.getValue("score").toString());
 			}
 			for (Element element : elements) {
 				if (element instanceof PropertyColumn) {
 					PropertyColumn property = (PropertyColumn) element;
-					outputPropertyColumn(ed, section, entity, eval, property, viewName);
+					outputPropertyColumn(ed, section, entity, rowData, property, viewName);
 				} else if (element instanceof VirtualPropertyItem) {
 					VirtualPropertyItem property = (VirtualPropertyItem) element;
-					outputVirtualProperty(ed, section, entity, eval, property, viewName);
+					outputVirtualProperty(ed, section, entity, rowData, property, viewName);
 				}
 			}
-			ret.add(eval);
+			result.addRow(row);
 		}
 
-		return ret;
+		return result;
 	}
 
 	private static void outputVirtualProperty(EntityDefinition ed, SearchResultSection section,
-			Entity entity, Map<String, String> eval, VirtualPropertyItem property, String viewName)
+			Entity entity, Map<String, String> rowData, VirtualPropertyItem property, String viewName)
 					throws ServletException, IOException {
 		if (isDispProperty(ed, property)) {
 			PropertyEditor editor = property.getEditor();
@@ -88,15 +112,15 @@ public class CreateSearchResultUtil {
 				String propName = property.getPropertyName();
 				PropertyDefinition pd = EntityViewUtil.getPropertyDefinition(property);
 
-				String html = outputHtml(ed, section, entity, eval, propName, pd, editor, path, viewName);
+				String html = outputHtml(ed, section, entity, rowData, propName, pd, editor, path, viewName);
 
-				eval.put(propName, html);
+				rowData.put(propName, html);
 			}
 		}
 	}
 
 	private static void outputPropertyColumn(EntityDefinition ed, SearchResultSection section,
-			Entity entity, Map<String, String> eval, PropertyColumn property, String viewName)
+			Entity entity, Map<String, String> rowData, PropertyColumn property, String viewName)
 					throws ServletException, IOException {
 		if (isDispProperty(ed, property)) {
 			PropertyEditor editor = property.getEditor();
@@ -105,15 +129,15 @@ public class CreateSearchResultUtil {
 				String propName = property.getPropertyName();
 				PropertyDefinition pd = EntityViewUtil.getPropertyDefinition(propName, ed);
 
-				String html = outputHtml(ed, section, entity, eval, propName, pd, editor, path, viewName);
+				String html = outputHtml(ed, section, entity, rowData, propName, pd, editor, path, viewName);
 
 				WebRequestStack stack = WebRequestStack.getCurrent();
 				HttpServletRequest req = stack.getRequest();
 				Boolean isNest = (Boolean) req.getAttribute(Constants.EDITOR_REF_NEST_PROPERTY_PREFIX + propName);
 				if (isNest != null && isNest) {
-					eval.put(propName + ".name", html);
+					rowData.put(propName + ".name", html);
 				} else {
-					eval.put(propName, html);
+					rowData.put(propName, html);
 				}
 				req.setAttribute(Constants.EDITOR_REF_NEST_PROPERTY_PREFIX + propName, null);
 			}
@@ -121,7 +145,7 @@ public class CreateSearchResultUtil {
 	}
 
 	private static String outputHtml(final EntityDefinition ed, SearchResultSection section, final Entity entity,
-			final Map<String, String> eval, String propName, final PropertyDefinition pd, final PropertyEditor editor,
+			final Map<String, String> rowData, String propName, final PropertyDefinition pd, final PropertyEditor editor,
 			String path, String viewName) throws ServletException, IOException {
 		final Object propValue = entity.getValue(propName);
 		Func beforeFunc = new Func() {
@@ -135,7 +159,7 @@ public class CreateSearchResultUtil {
 				req.setAttribute(Constants.EDITOR_PROP_VALUE, propValue);
 				req.setAttribute(Constants.ENTITY_DEFINITION, ed);
 				req.setAttribute(Constants.EDITOR_PROPERTY_DEFINITION, pd);
-				req.setAttribute(Constants.EDITOR_REF_ENTITY_VALUE_MAP, eval); // Reference型用
+				req.setAttribute(Constants.EDITOR_REF_ENTITY_VALUE_MAP, rowData); // Reference型用
 				req.setAttribute(Constants.VIEW_NAME, viewName); //Reference型参照先リンク表示用
 				req.setAttribute(Constants.ROOT_DEF_NAME, ed.getName()); //Reference型参照先リンク表示用
 				req.setAttribute(Constants.VIEW_TYPE, Constants.VIEW_TYPE_SEARCH_RESULT);
