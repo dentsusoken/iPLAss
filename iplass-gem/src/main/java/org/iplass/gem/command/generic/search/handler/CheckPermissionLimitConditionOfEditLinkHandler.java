@@ -43,31 +43,26 @@ import org.iplass.mtp.impl.entity.EntityService;
 import org.iplass.mtp.impl.entity.auth.EntityAuthContext;
 import org.iplass.mtp.impl.entity.interceptor.EntityQueryInvocationImpl;
 import org.iplass.mtp.spi.ServiceRegistry;
-import org.iplass.mtp.view.generic.FormViewEvent;
-import org.iplass.mtp.view.generic.SearchFormViewHandler;
 
 /**
  * 検索結果の編集リンクをEntityの参照可能範囲設定で制御する
  *
  */
-public class CheckPermissionLimitConditionOfEditLinkHandler implements SearchFormViewHandler {
+public class CheckPermissionLimitConditionOfEditLinkHandler extends SearchFormViewAdapter {
 
 	@Override
-	public void onCreateSearchResult(FormViewEvent event) {
-
-		CreateSearchResultEvent resultEvent = (CreateSearchResultEvent)event;
+	protected void onCreateSearchResult(CreateSearchResultEvent event) {
 
 		AuthContextHolder user = AuthContextHolder.getAuthContext();
-		EntityHandler handler = ServiceRegistry.getRegistry().getService(EntityService.class).getRuntimeByName(resultEvent.getEntityName());
+		EntityHandler handler = ServiceRegistry.getRegistry().getService(EntityService.class).getRuntimeByName(event.getEntityName());
 
 		if (!user.isPrivilegedExecution()) {
 			//更新権限チェック
-			checkUpdatePermission(handler, resultEvent.getResultData(), user);
+			checkUpdatePermission(handler, event.getResultData(), user);
 
 			//削除権限チェック
-			checkDeletePermission(handler, resultEvent.getResultData(), user);
+			checkDeletePermission(handler, event.getResultData(), user);
 		}
-
 
 	}
 

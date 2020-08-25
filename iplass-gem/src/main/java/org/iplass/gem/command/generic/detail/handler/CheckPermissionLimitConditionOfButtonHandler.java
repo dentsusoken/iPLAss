@@ -38,23 +38,19 @@ import org.iplass.mtp.impl.entity.EntityService;
 import org.iplass.mtp.impl.entity.auth.EntityAuthContext;
 import org.iplass.mtp.impl.entity.interceptor.EntityQueryInvocationImpl;
 import org.iplass.mtp.spi.ServiceRegistry;
-import org.iplass.mtp.view.generic.DetailFormViewHandler;
-import org.iplass.mtp.view.generic.FormViewEvent;
 
 /**
  * 詳細・編集画面のボタンをEntityの参照可能範囲設定で制御する
  *
  */
-public class CheckPermissionLimitConditionOfButtonHandler implements DetailFormViewHandler {
+public class CheckPermissionLimitConditionOfButtonHandler extends DetailFormViewAdapter {
 
 	@Override
-	public void onShowDetailView(FormViewEvent event) {
+	protected void onShowDetailView(ShowDetailLayoutViewEvent event) {
 
-		ShowDetailLayoutViewEvent showEvent = (ShowDetailLayoutViewEvent)event;
-
-		DetailFormViewData detailFormViewData = showEvent.getDetailFormViewData();
+		DetailFormViewData detailFormViewData = event.getDetailFormViewData();
 		AuthContextHolder user = AuthContextHolder.getAuthContext();
-		EntityHandler handler = ServiceRegistry.getRegistry().getService(EntityService.class).getRuntimeByName(showEvent.getEntityName());
+		EntityHandler handler = ServiceRegistry.getRegistry().getService(EntityService.class).getRuntimeByName(event.getEntityName());
 
 		if (!user.isPrivilegedExecution()) {
 			//更新権限チェック
@@ -65,20 +61,18 @@ public class CheckPermissionLimitConditionOfButtonHandler implements DetailFormV
 	}
 
 	@Override
-	public void onShowEditView(FormViewEvent event) {
+	protected void onShowEditView(ShowDetailLayoutViewEvent event) {
 
-		ShowDetailLayoutViewEvent showEvent = (ShowDetailLayoutViewEvent)event;
-
-		DetailFormViewData detailFormViewData = showEvent.getDetailFormViewData();
+		DetailFormViewData detailFormViewData = event.getDetailFormViewData();
 		AuthContextHolder user = AuthContextHolder.getAuthContext();
-		EntityHandler handler = ServiceRegistry.getRegistry().getService(EntityService.class).getRuntimeByName(showEvent.getEntityName());
+		EntityHandler handler = ServiceRegistry.getRegistry().getService(EntityService.class).getRuntimeByName(event.getEntityName());
 
 		if (detailFormViewData.getEntity() != null && detailFormViewData.getEntity().getOid() != null && !user.isPrivilegedExecution()) {
 			//更新権限チェック
 			checkUpdatePermission(handler, detailFormViewData, user);
 
 			//削除権限チェック
-			checkDeletePermission(handler, showEvent.getDetailFormViewData(), user);
+			checkDeletePermission(handler, detailFormViewData, user);
 		}
 
 	}
