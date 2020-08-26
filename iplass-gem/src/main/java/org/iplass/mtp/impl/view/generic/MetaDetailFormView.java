@@ -57,19 +57,19 @@ public class MetaDetailFormView extends MetaFormView {
 	private String editDisplayLabel;
 
 	/** 多言語設定情報 */
-	private List<MetaLocalizedString> localizedEditDisplayLabelList = new ArrayList<MetaLocalizedString>();
+	private List<MetaLocalizedString> localizedEditDisplayLabelList = new ArrayList<>();
 
 	/** コピーアップボタン表示ラベル */
 	private String copyDisplayLabel;
 
 	/** 多言語設定情報 */
-	private List<MetaLocalizedString> localizedCopyDisplayLabelList = new ArrayList<MetaLocalizedString>();
+	private List<MetaLocalizedString> localizedCopyDisplayLabelList = new ArrayList<>();
 
 	/** バージョンアップボタン表示ラベル */
 	private String versionupDisplayLabel;
 
 	/** 多言語設定情報 */
-	private List<MetaLocalizedString> localizedVersionupDisplayLabelList = new ArrayList<MetaLocalizedString>();
+	private List<MetaLocalizedString> localizedVersionupDisplayLabelList = new ArrayList<>();
 
 	/** 追加アクション名 */
 	private String insertActionName;
@@ -81,7 +81,7 @@ public class MetaDetailFormView extends MetaFormView {
 	private String insertDisplayLabel;
 
 	/** 多言語設定情報 */
-	private List<MetaLocalizedString> localizedInsertDisplayLabelList = new ArrayList<MetaLocalizedString>();
+	private List<MetaLocalizedString> localizedInsertDisplayLabelList = new ArrayList<>();
 
 	/** 更新アクション名 */
 	private String updateActionName;
@@ -93,7 +93,7 @@ public class MetaDetailFormView extends MetaFormView {
 	private String updateDisplayLabel;
 
 	/** 多言語設定情報 */
-	private List<MetaLocalizedString> localizedUpdateDisplayLabelList = new ArrayList<MetaLocalizedString>();
+	private List<MetaLocalizedString> localizedUpdateDisplayLabelList = new ArrayList<>();
 
 	/** 削除アクション名 */
 	private String deleteActionName;
@@ -102,7 +102,7 @@ public class MetaDetailFormView extends MetaFormView {
 	private String deleteDisplayLabel;
 
 	/** 多言語設定情報 */
-	private List<MetaLocalizedString> localizedDeleteDisplayLabelList = new ArrayList<MetaLocalizedString>();
+	private List<MetaLocalizedString> localizedDeleteDisplayLabelList = new ArrayList<>();
 
 	/** キャンセルアクション名 */
 	private String cancelActionName;
@@ -125,6 +125,9 @@ public class MetaDetailFormView extends MetaFormView {
 	/** 削除ボタン非表示 */
 	private boolean hideDelete;
 
+	/** Entity権限の可能範囲条件でボタン表示を制御 */
+	private boolean checkEntityPermissionLimitConditionOfButton;
+
 	/** 物理削除するかどうか */
 	private boolean isPurge;
 
@@ -145,6 +148,9 @@ public class MetaDetailFormView extends MetaFormView {
 
 	/** カスタムロード処理クラス名 */
 	private String loadEntityInterrupterName;
+
+	/** 詳細編集画面Handlerクラス名 */
+	private List<String> detailFormViewHandlerName;
 
 	/** JavaScript */
 	private String javaScript;
@@ -540,6 +546,22 @@ public class MetaDetailFormView extends MetaFormView {
 	}
 
 	/**
+	 * Entity権限の可能範囲条件でボタン表示を制御設定を取得します。
+	 * @return Entity権限の可能範囲条件でボタン表示を制御設定
+	 */
+	public boolean isCheckEntityPermissionLimitConditionOfButton() {
+		return checkEntityPermissionLimitConditionOfButton;
+	}
+
+	/**
+	 * Entity権限の可能範囲条件でボタン表示を制御設定を設定します。
+	 * @param checkEntityPermissionLimitConditionOfButton Entity権限の可能範囲条件でボタン表示を制御設定
+	 */
+	public void setCheckEntityPermissionLimitConditionOfButton(boolean checkEntityPermissionLimitConditionOfButton) {
+		this.checkEntityPermissionLimitConditionOfButton = checkEntityPermissionLimitConditionOfButton;
+	}
+
+	/**
 	 * 物理削除するかどうかを取得します。
 	 * @return 物理削除するかどうか
 	 */
@@ -716,6 +738,22 @@ public class MetaDetailFormView extends MetaFormView {
 	}
 
 	/**
+	 * 詳細編集画面Handlerクラス名を取得します。
+	 * @return 詳細編集画面Handlerクラス名
+	 */
+	public List<String> getDetailFormViewHandlerName() {
+		return detailFormViewHandlerName;
+	}
+
+	/**
+	 * 詳細編集画面Handlerクラス名を設定します。
+	 * @param detailFormViewHandlerName 詳細編集画面Handlerクラス名
+	 */
+	public void setDetailFormViewHandlerName(List<String> detailFormViewHandlerName) {
+		this.detailFormViewHandlerName = detailFormViewHandlerName;
+	}
+
+	/**
 	 * 初期化スクリプトを取得します。
 	 * @return 初期化スクリプト
 	 */
@@ -741,6 +779,7 @@ public class MetaDetailFormView extends MetaFormView {
 	 * @param form レイアウト情報
 	 * @param definitionId Entity定義のID
 	 */
+	@Override
 	public void applyConfig(FormView form, String definitionId) {
 		super.fillFrom(form, definitionId);
 
@@ -769,6 +808,7 @@ public class MetaDetailFormView extends MetaFormView {
 		hideDetail = dForm.isHideDetail();
 		isNoneDispCopyButton = dForm.isNoneDispCopyButton();
 		hideDelete = dForm.isHideDelete();
+		checkEntityPermissionLimitConditionOfButton = dForm.isCheckEntityPermissionLimitConditionOfButton();
 		isPurge = dForm.isPurge();
 		purgeCompositionedEntity = dForm.isPurgeCompositionedEntity();
 		loadDefinedReferenceProperty = dForm.isLoadDefinedReferenceProperty();
@@ -779,6 +819,7 @@ public class MetaDetailFormView extends MetaFormView {
 		copyTarget = dForm.getCopyTarget();
 		interrupterName = dForm.getInterrupterName();
 		loadEntityInterrupterName = dForm.getLoadEntityInterrupterName();
+		detailFormViewHandlerName = dForm.getDetailFormViewHandlerName();
 		customCopyScript = dForm.getCustomCopyScript();
 		initScript = dForm.getInitScript();
 	}
@@ -788,6 +829,7 @@ public class MetaDetailFormView extends MetaFormView {
 	 * @param definitionId Entity定義のID
 	 * @return レイアウト情報
 	 */
+	@Override
 	public FormView currentConfig(String definitionId) {
 		DetailFormView form = new DetailFormView();
 		super.fillTo(form, definitionId);
@@ -816,6 +858,7 @@ public class MetaDetailFormView extends MetaFormView {
 		form.setHideDetail(hideDetail);
 		form.setIsNoneDispCopyButton(isNoneDispCopyButton);
 		form.setHideDelete(hideDelete);
+		form.setCheckEntityPermissionLimitConditionOfButton(checkEntityPermissionLimitConditionOfButton);
 		form.setPurge(isPurge);
 		form.setPurgeCompositionedEntity(purgeCompositionedEntity);
 		form.setLoadDefinedReferenceProperty(loadDefinedReferenceProperty);
@@ -823,6 +866,7 @@ public class MetaDetailFormView extends MetaFormView {
 		form.setJavaScript(javaScript);
 		form.setInterrupterName(interrupterName);
 		form.setLoadEntityInterrupterName(loadEntityInterrupterName);
+		form.setDetailFormViewHandlerName(detailFormViewHandlerName);
 		form.setCustomCopyScript(customCopyScript);
 		form.setInitScript(initScript);
 		if (validJavascriptDetailPage != null) {

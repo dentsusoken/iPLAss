@@ -21,13 +21,12 @@
 package org.iplass.gem.command.generic.search;
 
 import java.io.IOException;
-import java.util.List;
-import java.util.Map;
 
 import javax.servlet.ServletException;
 
 import org.iplass.gem.command.Constants;
 import org.iplass.gem.command.CreateSearchResultUtil;
+import org.iplass.gem.command.common.SearchResultData;
 import org.iplass.mtp.ManagerLocator;
 import org.iplass.mtp.SystemException;
 import org.iplass.mtp.command.RequestContext;
@@ -92,8 +91,13 @@ public final class SearchListCommand extends SearchListPartsCommandBase {
 		SearchResult<Entity> result = search(context, query);
 
 		try {
-			List<Map<String, String>> retList = CreateSearchResultUtil.getHtmlData(result.getList(), context.getEntityDefinition(), context.getResultSection(), context.getViewName());
-			request.setAttribute(RESULT_PARAM_HTML_DATA, retList);
+			SearchResultData resultData = CreateSearchResultUtil.getResultData(
+					result.getList(), context.getEntityDefinition(),
+					context.getResultSection(), context.getViewName());
+
+			context.fireCreateSearchResultEvent(resultData);
+
+			request.setAttribute(RESULT_PARAM_HTML_DATA, resultData.toResponse());
 		} catch (IOException e) {
 			throw new SystemException(e);
 		} catch (ServletException e) {

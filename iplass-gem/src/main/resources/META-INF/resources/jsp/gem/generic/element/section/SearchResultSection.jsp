@@ -630,7 +630,12 @@ function setData(list, count) {
 	if (type == OutputType.SEARCHRESULT) {
 		if (!section.isHideDetailLink() && (canUpdate || canDelete)) {
 %>
-		this["_mtpDetailLink"] = "<a href='javascript:void(0)' action='<%=StringUtil.escapeJavaScript(viewAction)%>' oid='" + this.orgOid + "' version='" + this.orgVersion + "' class='jqborder detailLink'>${m:rs('mtp-gem-messages', 'generic.element.section.SearchResultSection.detail')}</a><a href='javascript:void(0)' action='<%=StringUtil.escapeJavaScript(detailAction)%>' oid='" + this.orgOid + "' version='" + this.orgVersion + "' class='detailLink editLink'>${m:rs('mtp-gem-messages', 'generic.element.section.SearchResultSection.edit')}</a>";
+		if (this["@canEdit"] === "false" && this["@canDelete"] === "false") {
+			this["_mtpDetailLink"] = "<a href='javascript:void(0)' action='<%=StringUtil.escapeJavaScript(viewAction)%>' oid='" + this.orgOid + "' version='" + this.orgVersion + "' class='jqborder detailLink'>${m:rs('mtp-gem-messages', 'generic.element.section.SearchResultSection.detail')}</a>";
+		} else {
+			this["_mtpDetailLink"] = "<a href='javascript:void(0)' action='<%=StringUtil.escapeJavaScript(viewAction)%>' oid='" + this.orgOid + "' version='" + this.orgVersion + "' class='jqborder detailLink'>${m:rs('mtp-gem-messages', 'generic.element.section.SearchResultSection.detail')}</a>" 
+				+ "<a href='javascript:void(0)' action='<%=StringUtil.escapeJavaScript(detailAction)%>' oid='" + this.orgOid + "' version='" + this.orgVersion + "' class='detailLink editLink'>${m:rs('mtp-gem-messages', 'generic.element.section.SearchResultSection.edit')}</a>";
+		}
 <% 		} else { %>
 		this["_mtpDetailLink"] = "<a href='javascript:void(0)' action='<%=StringUtil.escapeJavaScript(viewAction)%>' oid='" + this.orgOid + "' version='" + this.orgVersion + "' class='detailLink'>${m:rs('mtp-gem-messages', 'generic.element.section.SearchResultSection.detail')}</a>";
 <%

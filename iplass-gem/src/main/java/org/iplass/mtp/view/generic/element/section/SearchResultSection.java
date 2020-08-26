@@ -128,6 +128,17 @@ public class SearchResultSection extends Section {
 	)
 	private boolean hideDetailLink;
 
+	/** Entity権限の可能範囲条件で編集リンク表示を制御 */
+	@MetaFieldInfo(
+			displayName="Entity権限の可能範囲条件で編集リンク表示を制御",
+			displayNameKey="generic_element_section_SearchResultSection_checkEntityPermissionLimitConditionOfEditLinkDisplaNameKey",
+			inputType=InputType.CHECKBOX,
+			displayOrder=225,
+			description="レコード単位でEntity権限の可能範囲条件をチェックし編集リンクの表示を制御します。",
+			descriptionKey="generic_element_section_SearchResultSection_checkEntityPermissionLimitConditionOfEditLinkDescriptionKey"
+	)
+	private boolean checkEntityPermissionLimitConditionOfEditLink;
+
 	/** 削除ボタン非表示設定 */
 	@MetaFieldInfo(
 			displayName="削除ボタン非表示設定",
@@ -474,6 +485,22 @@ public class SearchResultSection extends Section {
 	 */
 	public void setHideDetailLink(boolean hideDetailLink) {
 	    this.hideDetailLink = hideDetailLink;
+	}
+
+	/**
+	 * Entity権限の可能範囲条件で編集リンク表示を制御設定を取得します。
+	 * @return Entity権限の可能範囲条件で編集リンク表示を制御設定
+	 */
+	public boolean isCheckEntityPermissionLimitConditionOfEditLink() {
+		return checkEntityPermissionLimitConditionOfEditLink;
+	}
+
+	/**
+	 * Entity権限の可能範囲条件で編集リンク表示を制御設定を設定します。
+	 * @param checkEntityPermissionLimitConditionOfEditLink Entity権限の可能範囲条件で編集リンク表示を制御設定
+	 */
+	public void setCheckEntityPermissionLimitConditionOfEditLink(boolean checkEntityPermissionLimitConditionOfEditLink) {
+		this.checkEntityPermissionLimitConditionOfEditLink = checkEntityPermissionLimitConditionOfEditLink;
 	}
 
 	/**

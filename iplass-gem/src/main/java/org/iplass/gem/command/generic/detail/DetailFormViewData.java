@@ -1,19 +1,19 @@
 /*
  * Copyright (C) 2015 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
- * 
+ *
  * Unless you have purchased a commercial license,
  * the following license terms apply:
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
@@ -41,6 +41,15 @@ public class DetailFormViewData {
 
 	/** 処理タイプ */
 	private String execType;
+
+	/** 追加可能か */
+	private boolean canCreate;
+
+	/** 更新可能か */
+	private boolean canUpdate;
+
+	/** 削除可能か */
+	private boolean canDelete;
 
 	/**
 	 * コンストラクタ
@@ -120,5 +129,52 @@ public class DetailFormViewData {
 		this.execType = execType;
 	}
 
+	/**
+	 * 追加可能かを取得します。
+	 * @return 追加可能か
+	 */
+	public boolean isCanCreate() {
+		return canCreate;
+	}
+
+	/**
+	 * 追加可能かを設定します。
+	 * @param canCreate 追加可能か
+	 */
+	public void setCanCreate(boolean canCreate) {
+		this.canCreate = canCreate;
+	}
+
+	/**
+	 * 更新可能かを取得します。
+	 * @return 更新可能か
+	 */
+	public boolean isCanUpdate() {
+		return canUpdate;
+	}
+
+	/**
+	 * 更新可能かを設定します。
+	 * @param canUpdate 更新可能か
+	 */
+	public void setCanUpdate(boolean canUpdate) {
+		this.canUpdate = canUpdate;
+	}
+
+	/**
+	 * 削除可能かを取得します。
+	 * @return 削除可能か
+	 */
+	public boolean isCanDelete() {
+		return canDelete;
+	}
+
+	/**
+	 * 削除可能かを設定します。
+	 * @param canDelete 削除可能か
+	 */
+	public void setCanDelete(boolean canDelete) {
+		this.canDelete = canDelete;
+	}
 
 }

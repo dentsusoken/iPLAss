@@ -59,6 +59,8 @@ public class MetaFieldSettingPartsControllerImpl implements MetaFieldSettingPart
 			if (pane.getValue(info.getName()) != null) {
 				item.setValue(pane.getValueAs(String.class, info.getName()));
 			}
+		} else if (info.getInputType() == InputType.MULTI_TEXT) {
+			item = new MetaDataMultiTextGridItem(pane, info);
 		} else if (info.getInputType() == InputType.NUMBER) {
 			item = new MtpIntegerItem();
 			if (info.isRequired()) {

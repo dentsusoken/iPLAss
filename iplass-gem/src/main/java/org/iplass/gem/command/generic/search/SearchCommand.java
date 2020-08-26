@@ -1,19 +1,19 @@
 /*
  * Copyright (C) 2012 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
- * 
+ *
  * Unless you have purchased a commercial license,
  * the following license terms apply:
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
@@ -22,13 +22,14 @@ package org.iplass.gem.command.generic.search;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 import javax.servlet.ServletException;
 
 import org.iplass.gem.command.Constants;
 import org.iplass.gem.command.CreateSearchResultUtil;
+import org.iplass.gem.command.common.SearchResultData;
+import org.iplass.gem.command.generic.search.handler.CreateSearchResultEventHandler;
 import org.iplass.mtp.ApplicationException;
 import org.iplass.mtp.ManagerLocator;
 import org.iplass.mtp.SystemException;
@@ -39,8 +40,8 @@ import org.iplass.mtp.command.annotation.CommandClass;
 import org.iplass.mtp.command.annotation.webapi.WebApi;
 import org.iplass.mtp.entity.Entity;
 import org.iplass.mtp.entity.SearchResult;
-import org.iplass.mtp.webapi.definition.RequestType;
 import org.iplass.mtp.webapi.definition.MethodType;
+import org.iplass.mtp.webapi.definition.RequestType;
 
 @WebApi(
 	name=SearchCommand.WEBAPI_NAME,
@@ -79,8 +80,15 @@ public final class SearchCommand implements Command {
 					if (result != null) {
 						SearchContext sc = command.getContext(request);
 
-						List<Map<String, String>> retList = CreateSearchResultUtil.getHtmlData(result.getList(), sc.getEntityDefinition(), ((SearchContextBase) sc).getResultSection(), ((SearchContextBase) sc).getViewName());
-						request.setAttribute("htmlData", retList);
+						SearchResultData resultData = CreateSearchResultUtil.getResultData(
+								result.getList(), sc.getEntityDefinition(),
+								((SearchContextBase) sc).getResultSection(), ((SearchContextBase) sc).getViewName());
+
+						if (sc instanceof CreateSearchResultEventHandler) {
+							((CreateSearchResultEventHandler)sc).fireCreateSearchResultEvent(resultData);
+						}
+
+						request.setAttribute("htmlData", resultData.toResponse());
 					} else {
 						request.setAttribute("htmlData", new ArrayList<Map<String, String>>());
 					}

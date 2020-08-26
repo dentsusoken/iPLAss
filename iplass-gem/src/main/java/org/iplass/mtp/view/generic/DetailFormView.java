@@ -120,6 +120,17 @@ public class DetailFormView extends FormView {
 	)
 	private boolean hideDelete;
 
+	/** Entity権限の可能範囲条件でボタン表示を制御 */
+	@MetaFieldInfo(
+			displayName="Entity権限の可能範囲条件でボタン表示を制御",
+			displayNameKey="generic_DetailFormView_checkEntityPermissionLimitConditionOfButtonDisplaNameKey",
+			inputType=InputType.CHECKBOX,
+			displayOrder=235,
+			description="Entity権限の可能範囲条件をチェックし各ボタンの表示を制御します。",
+			descriptionKey="generic_DetailFormView_checkEntityPermissionLimitConditionOfButtonDescriptionKey"
+	)
+	private boolean checkEntityPermissionLimitConditionOfButton;
+
 	/** 編集ボタン表示ラベル */
 	@MetaFieldInfo(
 			displayName="編集ボタン表示ラベル",
@@ -503,6 +514,18 @@ public class DetailFormView extends FormView {
 			descriptionKey="generic_DetailFormView_loadEntityInterrupterNameDescriptionKey"
 	)
 	private String loadEntityInterrupterName;
+
+	/** 詳細編集画面Handlerクラス名 */
+	@MetaFieldInfo(
+			displayName="詳細編集画面Handlerクラス名",
+			displayNameKey="generic_DetailFormView_detailFormViewHandlerNameDisplaNameKey",
+			inputType=InputType.MULTI_TEXT,
+			displayOrder=1680,
+			description="詳細編集画面の制御クラス名を指定します。<br>" +
+					"DetailFormViewHandlerインターフェースを実装するクラスを指定してください。",
+			descriptionKey="generic_DetailFormView_detailFormViewHandlerNameDescriptionKey"
+	)
+	private List<String> detailFormViewHandlerName;
 
 	/**
 	 * デフォルトコンストラクタ
@@ -927,6 +950,21 @@ public class DetailFormView extends FormView {
 	}
 
 	/**
+	 * Entity権限の可能範囲条件でボタン表示を制御設定を取得します。
+	 * @return Entity権限の可能範囲条件でボタン表示を制御設定
+	 */
+	public boolean isCheckEntityPermissionLimitConditionOfButton() {
+		return checkEntityPermissionLimitConditionOfButton;
+	}
+
+	/**
+	 * Entity権限の可能範囲条件でボタン表示を制御設定を設定します。
+	 * @param checkEntityPermissionLimitConditionOfButton Entity権限の可能範囲条件でボタン表示を制御設定
+	 */
+	public void setCheckEntityPermissionLimitConditionOfButton(boolean checkEntityPermissionLimitConditionOfButton) {
+		this.checkEntityPermissionLimitConditionOfButton = checkEntityPermissionLimitConditionOfButton;
+	}
+	/**
 	 * 物理削除するかどうかを取得します。
 	 * @return 物理削除するかどうか
 	 */
@@ -1085,4 +1123,21 @@ public class DetailFormView extends FormView {
 	public void setLoadEntityInterrupterName(String loadEntityInterrupterName) {
 	    this.loadEntityInterrupterName = loadEntityInterrupterName;
 	}
+
+	/**
+	 * 詳細編集画面Handlerクラス名を取得します。
+	 * @return 詳細編集画面Handlerクラス名
+	 */
+	public List<String> getDetailFormViewHandlerName() {
+		return detailFormViewHandlerName;
+	}
+
+	/**
+	 * 詳細編集画面Handlerクラス名を設定します。
+	 * @param detailFormViewHandlerName 詳細編集画面Handlerクラス名
+	 */
+	public void setDetailFormViewHandlerName(List<String> detailFormViewHandlerName) {
+		this.detailFormViewHandlerName = detailFormViewHandlerName;
+	}
+
 }

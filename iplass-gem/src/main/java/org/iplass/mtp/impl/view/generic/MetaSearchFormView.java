@@ -1,24 +1,26 @@
 /*
  * Copyright (C) 2011 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
- * 
+ *
  * Unless you have purchased a commercial license,
  * the following license terms apply:
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
 package org.iplass.mtp.impl.view.generic;
+
+import java.util.List;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -87,6 +89,9 @@ public class MetaSearchFormView extends MetaFormView {
 
 	/** EQLカスタム処理クラスをCSVダウンロードで利用するか */
 	private boolean useInterrupterForCsvDownload;
+
+	/** 検索画面Handlerクラス名 */
+	private List<String> searchFormViewHandlerName;
 
 	/** ボタン上部のセクション */
 	private MetaSection topSection1;
@@ -342,6 +347,22 @@ public class MetaSearchFormView extends MetaFormView {
 	}
 
 	/**
+	 * 検索画面Handlerクラス名を取得します。
+	 * @return 検索画面Handlerクラス名
+	 */
+	public List<String> getSearchFormViewHandlerName() {
+		return searchFormViewHandlerName;
+	}
+
+	/**
+	 * 検索画面Handlerクラス名を設定します。
+	 * @param searchFormViewHandlerName 検索画面Handlerクラス名
+	 */
+	public void setSearchFormViewHandlerName(List<String> searchFormViewHandlerName) {
+		this.searchFormViewHandlerName = searchFormViewHandlerName;
+	}
+
+	/**
 	 * ボタン上部のセクションを取得します。
 	 * @return ボタン上部のセクション
 	 */
@@ -415,6 +436,7 @@ public class MetaSearchFormView extends MetaFormView {
 	 * @param form レイアウト情報
 	 * @param definitionId Entity定義のID
 	 */
+	@Override
 	public void applyConfig(FormView form, String definitionId) {
 		super.fillFrom(form, definitionId);
 
@@ -434,6 +456,7 @@ public class MetaSearchFormView extends MetaFormView {
 		isPurge = sForm.isPurge();
 		interrupterName = sForm.getInterrupterName();
 		useInterrupterForCsvDownload = sForm.isUseInterrupterForCsvDownload();
+		searchFormViewHandlerName = sForm.getSearchFormViewHandlerName();
 		if (sForm.getTopSection1() != null) {
 			topSection1 = MetaSection.createInstance(sForm.getTopSection1());
 			topSection1.applyConfig(sForm.getTopSection1(), definitionId);
@@ -457,6 +480,7 @@ public class MetaSearchFormView extends MetaFormView {
 	 * @param definitionId Entity定義のID
 	 * @return レイアウト情報
 	 */
+	@Override
 	public FormView currentConfig(String definitionId) {
 		SearchFormView form = new SearchFormView();
 		super.fillTo(form, definitionId);
@@ -476,6 +500,7 @@ public class MetaSearchFormView extends MetaFormView {
 		form.setPurge(isPurge);
 		form.setInterrupterName(interrupterName);
 		form.setUseInterrupterForCsvDownload(useInterrupterForCsvDownload);
+		form.setSearchFormViewHandlerName(searchFormViewHandlerName);
 		if (topSection1 != null) {
 			form.setTopSection1((Section) topSection1.currentConfig(definitionId));
 		}
