@@ -55,8 +55,10 @@ public class CheckPermissionLimitConditionOfButtonHandler extends DetailFormView
 		if (!user.isPrivilegedExecution()) {
 			//更新権限チェック
 			checkUpdatePermission(handler, detailFormViewData, user);
-		}
 
+			//削除権限チェック(編集ボタンの制御で参照)
+			checkDeletePermission(handler, detailFormViewData, user);
+		}
 
 	}
 

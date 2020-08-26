@@ -25,7 +25,6 @@
 <%@ page import="java.util.HashMap"%>
 <%@ page import="org.iplass.mtp.ManagerLocator"%>
 <%@ page import="org.iplass.mtp.auth.AuthContext"%>
-<%@ page import="org.iplass.mtp.entity.permission.EntityPermission" %>
 <%@ page import="org.iplass.mtp.entity.Entity"%>
 <%@ page import="org.iplass.mtp.entity.EntityManager"%>
 <%@ page import="org.iplass.mtp.entity.definition.VersionControlType"%>

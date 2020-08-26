@@ -22,7 +22,6 @@
 <%@ taglib prefix="m" uri="http://iplass.org/tags/mtp"%>
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8" trimDirectiveWhitespaces="true"%>
 <%@ page import="org.iplass.mtp.auth.AuthContext"%>
-<%@ page import="org.iplass.mtp.entity.permission.EntityPermission"%>
 <%@ page import="org.iplass.mtp.entity.Entity"%>
 <%@ page import="org.iplass.mtp.entity.definition.VersionControlType"%>
 <%@ page import="org.iplass.mtp.util.StringUtil"%>
@@ -80,8 +79,6 @@
 	//編集可否
 	boolean isEditable = "true".equals(refEdit);
 
-	//権限確認用
-	AuthContext auth = AuthContext.getCurrentContext();
 	EntityViewManager evm = ManagerLocator.getInstance().getManager(EntityViewManager.class);
 %>
 
