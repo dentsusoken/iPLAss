@@ -80,6 +80,14 @@ public class EntityToolService implements Service {
 		}
 	}
 
+	public void createViewDDL(Path path, EntityDefinition... definitions) {
+		try (EntityViewDDLWriter writer = new EntityViewDDLWriter(path)) {
+			writer.write(definitions);
+		} catch (IOException e) {
+			throw new EntityToolRuntimeException(getRS("unexpectedError"), e);
+		}
+	}
+
 	public int executeEQL(String eql, boolean isSearchAllVersion, boolean isCount) {
 		Query query = new PreparedQuery(eql).query(null);
 		if (!query.isVersiond() && isSearchAllVersion) {

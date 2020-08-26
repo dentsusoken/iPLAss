@@ -584,4 +584,61 @@ public abstract class RdbAdapter {
 	public String getDefaultOrderByForLimit() {
 		return "";
 	}
+
+	/**
+	 * ビューのサブクエリエイリアスを取得します。
+	 * 
+	 * @return エイリアス
+	 */
+	public String getViewSubQueryAlias() {
+		return "";
+	}
+
+	/**
+	 * ビュー名の最大長を取得します。
+	 * 
+	 * @return ビュー名の最大長。0未満の場合は無制限。
+	 */
+	public int getMaxViewNameLength() {
+		return -1;
+	}
+
+	/**
+	 * ビューカラムのSQLを作成します。
+	 * 
+	 * @param colNo カラム番号
+	 * @param colName カラム名
+	 * @return ビューカラムSQL
+	 */
+	public abstract String createViewColumnSql(int colNo, String colName);
+
+	/**
+	 * Binary型のビューカラムのSQLを作成します。
+	 * 
+	 * @param colNum カラム番号
+	 * @param colName カラム名
+	 * @param lobIdSuffix ロブIDカラム接尾辞
+	 * @return ビューカラムSQL
+	 */
+	public abstract String createBinaryViewColumnSql(int colNo, String colName, String lobIdSuffix);
+
+	/**
+	 * LongText型のビューカラムのSQLを作成します。
+	 * 
+	 * @param colNum カラム番号
+	 * @param colName カラム名
+	 * @param lobIdSuffix LobIDカラム接尾辞
+	 * @return ビューカラムSQL
+	 */
+	public abstract String createLongTextViewColumnSql(int colNo, String colName, String lobIdSuffix);
+
+	/**
+	 * 指定のSELECT文をビュー作成DDLにします。
+	 * 
+	 * @param viewName ビュー名
+	 * @param selectSql SELECT文
+	 * @param withDropView ビュー削除も含める
+	 * @return ビュー作成DDL
+	 */
+	public abstract String toCreateViewDDL(String viewName, String selectSql, boolean withDropView);
 }
