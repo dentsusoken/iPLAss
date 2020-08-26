@@ -21,8 +21,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="m" uri="http://iplass.org/tags/mtp"%>
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8" trimDirectiveWhitespaces="true"%>
-<%@ page import="org.iplass.mtp.auth.AuthContext"%>
-<%@ page import="org.iplass.mtp.entity.permission.EntityPermission"%>
 <%@ page import="org.iplass.mtp.entity.Entity"%>
 <%@ page import="org.iplass.mtp.util.StringUtil"%>
 <%@ page import="org.iplass.mtp.view.generic.element.Button"%>
@@ -95,8 +93,6 @@
 		insertDisplayLabel = localizedInsertDisplayLabel;
 	}
 
-	//権限確認用
-	AuthContext auth = AuthContext.getCurrentContext();
 	EntityViewManager evm = ManagerLocator.getInstance().getManager(EntityViewManager.class);
 %>
 
@@ -133,18 +129,18 @@
 		}
 	}
 	if (Constants.EXEC_TYPE_UPDATE.equals(execType)) {
-		if (auth.checkPermission(new EntityPermission(defName, EntityPermission.Action.UPDATE))) {
+		if (data.isCanUpdate()) {
 %>
 <li class="btn save-btn"><input type="button" class="gr-btn" value="<c:out value="<%=updateDisplayLabel %>"/>" onclick="onclick_save('<%=StringUtil.escapeJavaScript(update) %>', this)" /></li>
 <%
 		}
-		if (auth.checkPermission(new EntityPermission(defName, EntityPermission.Action.DELETE)) && !form.isHideDelete()) {
+		if (data.isCanDelete() && !form.isHideDelete()) {
 %>
 <li class="btn delete-btn"><input type="button" class="gr-btn" value="<c:out value="<%=deleteDisplayLabel %>"/>" onclick="confirm_delete('<%=StringUtil.escapeJavaScript(delete) %>', this)" /></li>
 <%
 		}
 	} else {
-		if (auth.checkPermission(new EntityPermission(defName, EntityPermission.Action.CREATE))) {
+		if (data.isCanCreate()) {
 %>
 <li class="btn insert-btn"><input type="button" class="gr-btn" value="<c:out value="<%=insertDisplayLabel %>"/>" onclick="onclick_insert('<%=StringUtil.escapeJavaScript(insert) %>', this)" /></li>
 <%

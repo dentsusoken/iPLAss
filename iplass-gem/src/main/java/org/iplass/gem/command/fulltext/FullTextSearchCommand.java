@@ -253,7 +253,7 @@ public final class FullTextSearchCommand implements Command {
 					.collect(Collectors.toMap(defName -> defName, defName -> request.getParam("sortKey_" + defName)));
 		} else {
 			return Collections.emptyMap();
-		} 
+		}
 	}
 
 	private Map<String, String> getSelectedSortTypeMap(String[] searchDefNames, RequestContext request) {
@@ -265,7 +265,7 @@ public final class FullTextSearchCommand implements Command {
 					.collect(Collectors.toMap(defName -> defName, defName -> request.getParam("sortType_" + defName)));
 		} else {
 			return Collections.emptyMap();
-		} 
+		}
 	}
 
 	/**
@@ -298,7 +298,7 @@ public final class FullTextSearchCommand implements Command {
 					String sortKey = sortKeyMap.get(ed.getName());
 					String sortType = sortTypeMap.get(ed.getName());
 					return getSearchInfo(ed, null, evm, edm, sortKey, sortType); // Partsがないため、Viewはデフォルト
-				})	
+				})
 				.filter(i -> i != null)
 				.collect(Collectors.toList());
 
@@ -393,7 +393,7 @@ public final class FullTextSearchCommand implements Command {
 		//SearchResultSection
 		SearchResultSection resultSection = searchFormView.getResultSection();
 
-		List<String> select = new ArrayList<String>();
+		List<String> select = new ArrayList<>();
 		select.add(Entity.OID);
 		select.add(Entity.VERSION);
 
@@ -517,7 +517,7 @@ public final class FullTextSearchCommand implements Command {
 	protected SearchConditionSection getConditionSection(SearchFormView form) {
 		return form != null ? form.getCondSection() : null;
 	}
-	
+
 	protected List<SortSetting> getSortSetting(EntitySearchInfo info) {
 		List<SortSetting> setting = new ArrayList<>();
 
@@ -630,8 +630,8 @@ public final class FullTextSearchCommand implements Command {
 
 	private void createColModel(EntityResultInfo result, SearchResultSection resultSection, EntityDefinition ed, EntityDefinitionManager edm) {
 
-		List<ColModel> colModels = new ArrayList<ColModel>();
-		List<String> userPropertyNames = new ArrayList<String>();
+		List<ColModel> colModels = new ArrayList<>();
+		List<String> userPropertyNames = new ArrayList<>();
 
 		Integer fixedCount = 0;
 
@@ -1028,10 +1028,10 @@ public final class FullTextSearchCommand implements Command {
 			result.setColModels(getColModel());
 
 			try {
-				result.setValues(CreateSearchResultUtil.getHtmlData(
+				result.setValues(CreateSearchResultUtil.getResultData(
 						searchInfo.getSearchResult(), searchInfo.getEntityDefinition(),
 						searchInfo.getSearchFormView().getResultSection(),
-						searchInfo.getSearchFormView().getName()));
+						searchInfo.getSearchFormView().getName()).toResponse());
 			} catch (IOException e) {
 				throw new SystemException(e);
 			} catch (ServletException e) {

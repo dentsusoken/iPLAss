@@ -1,19 +1,19 @@
 /*
  * Copyright (C) 2012 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
- * 
+ *
  * Unless you have purchased a commercial license,
  * the following license terms apply:
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
@@ -38,9 +38,6 @@ public class SearchFormViewData {
 
 	/** 検索条件 */
 	private SearchCondition condition;
-
-	/** 検索結果 */
-	private SearchResult result;
 
 	/** 検索画面用のFormレイアウト情報 */
 	private SearchFormView view;
@@ -90,22 +87,6 @@ public class SearchFormViewData {
 	}
 
 	/**
-	 * 検索結果を取得します。
-	 * @return 検索結果
-	 */
-	public SearchResult getResult() {
-		return result;
-	}
-
-	/**
-	 * 検索結果を設定します。
-	 * @param result 検索結果
-	 */
-	public void setResult(SearchResult result) {
-		this.result = result;
-	}
-
-	/**
 	 * 検索画面用のFormレイアウト情報を取得します。
 	 * @return 検索画面用のFormレイアウト情報
 	 */
@@ -142,7 +123,7 @@ public class SearchFormViewData {
 	 * @return フィルタ設定
 	 */
 	public List<EntityFilterItem> getFilters() {
-		if (filters == null) filters = new ArrayList<EntityFilterItem>();
+		if (filters == null) filters = new ArrayList<>();
 		return filters;
 	}
 
