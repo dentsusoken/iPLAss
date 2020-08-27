@@ -1,19 +1,19 @@
 <%--
  Copyright (C) 2015 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
- 
+
  Unless you have purchased a commercial license,
  the following license terms apply:
- 
+
  This program is free software: you can redistribute it and/or modify
  it under the terms of the GNU Affero General Public License as
  published by the Free Software Foundation, either version 3 of the
  License, or (at your option) any later version.
- 
+
  This program is distributed in the hope that it will be useful,
  but WITHOUT ANY WARRANTY; without even the implied warranty of
  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  GNU Affero General Public License for more details.
- 
+
  You should have received a copy of the GNU Affero General Public License
  along with this program. If not, see <https://www.gnu.org/licenses/>.
  --%>
@@ -34,7 +34,7 @@
 	SearchFormView view = data.getView();
 	SearchConditionSection section = view.getCondSection();
 %>
-<div id="csv-download-dialog" title="${m:rs('mtp-gem-messages', 'generic.element.section.SearchConditionSection.dwnCsv')}" style="display:none;">
+<div id="csv-download-dialog" class="mtp-jq-dialog" title="${m:rs('mtp-gem-messages', 'generic.element.section.SearchConditionSection.dwnCsv')}" style="display:none;">
 	<fieldset class="fs-checkbox" id="fsForUpload">
 		<input type="checkbox" name="forUpload" id="forUpload" value="1"  onchange="checkForUpload()"/>
 		<label for="forUpload">${m:rs("mtp-gem-messages", "generic.element.section.SearchConditionSection.forUpload")}</label>
