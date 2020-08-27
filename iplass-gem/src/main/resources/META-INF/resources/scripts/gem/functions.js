@@ -114,7 +114,7 @@ $(function(){
 				}
 				$(overlay).css({zIndex:this.nextZindex()}).addClass("modal-overlay").attr("overlay-id", this.zindex);
 				this.overlays.push(overlay);
-				
+
 				//スクロール無効化
 				if (this.overlays.length == 1) {
 					$("body").css('overflow','hidden');
@@ -142,6 +142,14 @@ $(function(){
 			nextZindex:function() {return this.zindex++;}
 		};
 	}
+
+	/* jQueryUI ダイアログ設定 */
+    $(document).on("dialogopen", ".mtp-jq-dialog", function() {
+        $("body").css('overflow','hidden');
+    });
+    $(document).on("dialogclose", ".mtp-jq-dialog", function() {
+        $("body").css('overflow','auto');
+    });
 });
 
 /**
@@ -732,7 +740,7 @@ $.fn.allInputCheck = function(){
 					var dialogHeight = $window.height() - 40;
 					//frameはheader分減らす
 					var frameHeight = dialogHeight - 49;
-					
+
 					$under.css({
 						height : dialogHeight,
 						width : $window.width() - 30,
@@ -886,7 +894,7 @@ $.fn.allInputCheck = function(){
 				var dialogHeight = $(pwd).height() - 40;
 				//frameはheader分減らす
 				var frameHeight = dialogHeight - 49;
-				
+
 				$under.css({
 					height : dialogHeight,
 					width : $(pwd).width() - 30,
@@ -1597,7 +1605,7 @@ $.fn.allInputCheck = function(){
 				var $max = $("<span />").addClass("last-page").appendTo($quickJump);
 				$("<span />").text(scriptContext.gem.locale.pager.page).appendTo($quickJump);
 			}
- 
+
 			if (options.showSearchBtn || options.showPageJump) {
 				var $btns = $("<li />").addClass("search").appendTo($ul);
 				var $searchBtn = $("<span />").addClass("ui-icon ui-icon-search").appendTo($btns);
@@ -1810,7 +1818,7 @@ $.fn.allInputCheck = function(){
 					$(this).addClass("hover");
 				}).on("mouseleave", function() {
 					$(this).removeClass("hover");
-				}).on("click", function() { 
+				}).on("click", function() {
 					var currentPage = $_current.val();
 					//notCount=trueかつshowSearchBtn=trueの場合、maxPageが設定されてません。
 					if (!$v.maxPage || $v.maxPage && currentPage > 0 && currentPage <= $v.maxPage) {
