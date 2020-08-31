@@ -52,14 +52,13 @@ public class CheckPermissionLimitConditionOfButtonHandler extends DetailFormView
 		AuthContextHolder user = AuthContextHolder.getAuthContext();
 		EntityHandler handler = ServiceRegistry.getRegistry().getService(EntityService.class).getRuntimeByName(event.getEntityName());
 
-		if (!user.isPrivilegedExecution()) {
+		if (detailFormViewData.getEntity() != null && detailFormViewData.getEntity().getOid() != null && !user.isPrivilegedExecution()) {
 			//更新権限チェック
 			checkUpdatePermission(handler, detailFormViewData, user);
 
 			//削除権限チェック(編集ボタンの制御で参照)
 			checkDeletePermission(handler, detailFormViewData, user);
 		}
-
 
 	}
 

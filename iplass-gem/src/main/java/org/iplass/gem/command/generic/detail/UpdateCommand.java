@@ -27,7 +27,10 @@ import java.util.List;
 import org.iplass.gem.command.Constants;
 import org.iplass.gem.command.GemResourceBundleUtil;
 import org.iplass.gem.command.generic.ResultType;
+import org.iplass.gem.command.generic.detail.handler.ShowDetailViewEventHandler;
+import org.iplass.gem.command.generic.detail.handler.ShowEditViewEventHandler;
 import org.iplass.mtp.ManagerLocator;
+import org.iplass.mtp.auth.AuthContext;
 import org.iplass.mtp.command.RequestContext;
 import org.iplass.mtp.command.annotation.CommandClass;
 import org.iplass.mtp.command.annotation.action.ActionMapping;
@@ -38,6 +41,7 @@ import org.iplass.mtp.command.annotation.action.Result.Type;
 import org.iplass.mtp.command.annotation.action.TokenCheck;
 import org.iplass.mtp.entity.Entity;
 import org.iplass.mtp.entity.ValidateError;
+import org.iplass.mtp.entity.permission.EntityPermission;
 import org.iplass.mtp.transaction.Transaction;
 import org.iplass.mtp.transaction.TransactionListener;
 import org.iplass.mtp.transaction.TransactionManager;
@@ -137,10 +141,17 @@ public final class UpdateCommand extends DetailCommandBase {
 							data.setEntity(loadViewEntity(context, oid, null, context.getDefinitionName(), context.getReferencePropertyName()));
 						}
 
-						//UserPropertyEditor用のマップ作製
+						//更新成功時
 						if (data.getEntity() != null) {
-							//更新成功時
+							//UserPropertyEditor用のマップ作製
 							setUserInfoMap(context, data.getEntity(), false);
+
+							//Handler実行
+							if (data.getEntity().getOid() != null) {
+								if (context instanceof ShowDetailViewEventHandler) {
+									((ShowDetailViewEventHandler)context).fireShowDetailViewEvent(data);
+								}
+							}
 						}
 					}
 				});
@@ -154,7 +165,7 @@ public final class UpdateCommand extends DetailCommandBase {
 		String retKey = Constants.CMD_EXEC_SUCCESS;
 		if (ret.getResultType() == ResultType.ERROR) {
 			retKey = Constants.CMD_EXEC_ERROR;
-			List<ValidateError> tmpList = new ArrayList<ValidateError>();
+			List<ValidateError> tmpList = new ArrayList<>();
 			if (ret.getErrors() != null) {
 				tmpList.addAll(Arrays.asList(ret.getErrors()));
 			}
@@ -163,10 +174,27 @@ public final class UpdateCommand extends DetailCommandBase {
 			request.setAttribute(Constants.MESSAGE, ret.getMessage());
 		}
 
-		//UserPropertyEditor用のマップ作製
+		//権限チェック
+		AuthContext auth = AuthContext.getCurrentContext();
+		data.setCanCreate(auth.checkPermission(new EntityPermission(context.getDefinitionName(), EntityPermission.Action.CREATE)));
+		data.setCanUpdate(auth.checkPermission(new EntityPermission(context.getDefinitionName(), EntityPermission.Action.UPDATE)));
+		data.setCanDelete(auth.checkPermission(new EntityPermission(context.getDefinitionName(), EntityPermission.Action.DELETE)));
+
+		//更新失敗時
 		if (data.getEntity() != null) {
-			//更新失敗時
+			//UserPropertyEditor用のマップ作製
 			setUserInfoMap(context, data.getEntity(), true);
+
+			//Handler実行
+			if (retKey == Constants.CMD_EXEC_SUCCESS) {
+				if (context instanceof ShowDetailViewEventHandler) {
+					((ShowDetailViewEventHandler)context).fireShowDetailViewEvent(data);
+				}
+			} else if (retKey == Constants.CMD_EXEC_ERROR){
+				if (context instanceof ShowEditViewEventHandler) {
+					((ShowEditViewEventHandler)context).fireShowEditViewEvent(data);
+				}
+			}
 		}
 
 		request.setAttribute(Constants.DATA, data);
