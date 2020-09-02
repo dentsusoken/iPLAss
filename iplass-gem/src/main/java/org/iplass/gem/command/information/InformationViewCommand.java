@@ -20,13 +20,23 @@
 
 package org.iplass.gem.command.information;
 
+import java.util.List;
+
 import org.iplass.gem.command.Constants;
-import org.iplass.gem.command.generic.detail.DetailCommandBase;
+import org.iplass.mtp.ManagerLocator;
+import org.iplass.mtp.command.Command;
 import org.iplass.mtp.command.RequestContext;
 import org.iplass.mtp.command.annotation.CommandClass;
 import org.iplass.mtp.command.annotation.action.ActionMapping;
 import org.iplass.mtp.command.annotation.action.Result;
 import org.iplass.mtp.command.annotation.action.Result.Type;
+import org.iplass.mtp.entity.Entity;
+import org.iplass.mtp.entity.EntityManager;
+import org.iplass.mtp.entity.LoadOption;
+import org.iplass.mtp.impl.view.top.parts.MetaInformationParts.InformationPartsHandler;
+import org.iplass.mtp.util.StringUtil;
+import org.iplass.mtp.view.top.TopViewDefinitionManager;
+import org.iplass.mtp.view.top.parts.InformationParts;
 
 /**
  * お知らせ詳細表示用のコマンド
@@ -41,9 +51,14 @@ import org.iplass.mtp.command.annotation.action.Result.Type;
 			layoutActionName=Constants.LAYOUT_NORMAL_ACTION)
 )
 @CommandClass(name="gem/information/InformationDetailViewCommand", displayName="お知らせ詳細表示")
-public final class InformationViewCommand extends DetailCommandBase {
+public final class InformationViewCommand implements Command {
 
 	public static final String ACTION_NAME = "gem/information/view";
+
+	/** EntityManager */
+	private EntityManager em = ManagerLocator.manager(EntityManager.class);
+	/** TopViewDefinitionManager */
+	private TopViewDefinitionManager tvdm = ManagerLocator.manager(TopViewDefinitionManager.class);
 
 	/**
 	 * コンストラクタ
@@ -59,8 +74,31 @@ public final class InformationViewCommand extends DetailCommandBase {
 		String oid = request.getParam(Constants.OID);
 		Long version = request.getParamAsLong(Constants.VERSION);
 
-		//画面で利用するデータ設定
-		request.setAttribute(Constants.DATA_ENTITY, loadEntityWithoutReference(oid, version, InformationListCommand.INFORMATION_ENTITY));
+		//検索
+		Entity entity = null;
+		if (oid != null) {
+			entity = em.load(oid, version ,InformationListCommand.INFORMATION_ENTITY, new LoadOption(false, false));
+		}
+
+		//パーツ
+		InformationParts infoParts = null;
+		List<InformationParts> parts = tvdm.getRequestTopViewParts(InformationParts.class);
+		if (!parts.isEmpty()) {
+			infoParts = parts.get(0);
+		}
+
+		//カスタムスタイル
+		String customStyle = null;
+		if (infoParts != null && StringUtil.isNotEmpty(infoParts.getDetailCustomStyle())) {
+			customStyle = tvdm.getRequestTopViewPartsHandler(InformationPartsHandler.class).get(0).getDetailCustomStyle(entity);
+		} else {
+			customStyle = "";
+		}
+
+		request.setAttribute(Constants.DATA_ENTITY, entity);
+		request.setAttribute(Constants.INFO_SETTING, infoParts);
+		request.setAttribute(Constants.INFO_DETAIL_CUSTOM_STYLE, customStyle);
+
 		return Constants.CMD_EXEC_SUCCESS;
 	}
 

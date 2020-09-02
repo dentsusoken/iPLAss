@@ -1071,6 +1071,7 @@ LocaleInfo.ui_metadata_top_item_EntityListItem_failedGetScreenInfo = "Failed to 
 LocaleInfo.ui_metadata_top_item_EntityListItem_failedGetFileterInfo = "Failed to get the filter information. <br/> Cause:";
 LocaleInfo.ui_metadata_top_item_FulltextSearchViewItem_failed = "Failed";
 LocaleInfo.ui_metadata_top_item_FulltextSearchViewItem_failedGetScreenInfo = "Failed to get the screen information.<br/> Cause:";
+LocaleInfo.ui_metadata_top_item_InformationItem_detailCustomStyleHint = "<p>I will specify the style for the output element of the the detail screen.</p><br/><br/><p>Base Variable</p><ul><li>out : Writer</li><li>em : EntityManager</li><li>edm : EntityDefinitionManager</li><li>auth : AuthContext</li></ul><p>Specific Variable</p><ul><li>today : Current date. Instance of java.sql.Timestamp.</li><li>entity : Target information entity data.</li></ul>";
 LocaleInfo.ui_metadata_top_item_InformationItem_titleCustom = "Specify if want to customize the title.";
 LocaleInfo.ui_metadata_top_item_InformationItem_titleEachLang = "Set the title of each language.";
 LocaleInfo.ui_metadata_top_item_InformationItem_iconTagComment = "Can set tags for icons by Fontawesome.";

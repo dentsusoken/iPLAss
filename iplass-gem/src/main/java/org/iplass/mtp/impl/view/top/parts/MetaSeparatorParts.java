@@ -31,6 +31,7 @@ import javax.servlet.jsp.PageContext;
 
 import org.iplass.mtp.impl.metadata.MetaData;
 import org.iplass.mtp.impl.util.ObjectUtil;
+import org.iplass.mtp.impl.view.top.TopViewHandler;
 import org.iplass.mtp.util.StringUtil;
 import org.iplass.mtp.view.generic.ViewConst;
 import org.iplass.mtp.view.top.parts.SeparatorParts;
@@ -96,19 +97,19 @@ public class MetaSeparatorParts extends MetaTopViewContentParts {
 	public void applyConfig(TopViewParts parts) {
 		SeparatorParts separator = (SeparatorParts) parts;
 		fillFrom(separator);
-		
+
 		this.leftParts = MetaTopViewParts.createInstance(separator.getLeftParts());
 		if (leftParts != null) leftParts.applyConfig(separator.getLeftParts());
 		this.rightParts = MetaTopViewParts.createInstance(separator.getRightParts());
 		if (rightParts != null) rightParts.applyConfig(separator.getRightParts());
-		
+
 	}
 
 	@Override
 	public SeparatorParts currentConfig() {
 		SeparatorParts parts = new SeparatorParts();
 		fillTo(parts);
-		
+
 		if (leftParts != null) {
 			TopViewParts lp = leftParts.currentConfig();
 			if (lp != null) parts.setLeftParts(lp);
@@ -127,8 +128,8 @@ public class MetaSeparatorParts extends MetaTopViewContentParts {
 	}
 
 	@Override
-	public TopViewPartsHandler createRuntime() {
-		return new SeparatorPartsHandler(this);
+	public TopViewPartsHandler createRuntime(TopViewHandler topView) {
+		return new SeparatorPartsHandler(topView, this);
 	}
 
 	/**
@@ -147,10 +148,10 @@ public class MetaSeparatorParts extends MetaTopViewContentParts {
 		 * コンストラクタ
 		 * @param metadata
 		 */
-		public SeparatorPartsHandler(MetaSeparatorParts metadata) {
+		public SeparatorPartsHandler(TopViewHandler topView, MetaSeparatorParts metadata) {
 			super(metadata);
-			if (metadata.getLeftParts() != null) leftParts = metadata.getLeftParts().createRuntime();
-			if (metadata.getRightParts() != null) rightParts = metadata.getRightParts().createRuntime();
+			if (metadata.getLeftParts() != null) leftParts = metadata.getLeftParts().createRuntime(topView);
+			if (metadata.getRightParts() != null) rightParts = metadata.getRightParts().createRuntime(topView);
 		}
 
 		@Override
@@ -165,7 +166,7 @@ public class MetaSeparatorParts extends MetaTopViewContentParts {
 			if (ViewConst.DESIGN_TYPE_GEM.equals(designType)) {
 				separatorClass = "col2-wrap";
 				if(StringUtil.isNotBlank(getStyle())) {
-					separatorClass = separatorClass + " " + getStyle(); 
+					separatorClass = separatorClass + " " + getStyle();
 				}
 				separatorLeftClass = "col-left";
 				separatorRightClass = "col-right";

@@ -25,6 +25,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.iplass.mtp.command.RequestContext;
 import org.iplass.mtp.impl.metadata.MetaData;
 import org.iplass.mtp.impl.util.ObjectUtil;
+import org.iplass.mtp.impl.view.top.TopViewHandler;
 import org.iplass.mtp.view.top.parts.LastLoginParts;
 import org.iplass.mtp.view.top.parts.TopViewParts;
 import org.iplass.mtp.web.template.TemplateUtil;
@@ -36,7 +37,7 @@ public class MetaLastLoginParts extends MetaTemplateParts {
 	public static MetaLastLoginParts createInstance(TopViewParts parts) {
 		return new MetaLastLoginParts();
 	}
-	
+
 	@Override
 	public MetaData copy() {
 		return ObjectUtil.deepCopy(this);
@@ -52,12 +53,12 @@ public class MetaLastLoginParts extends MetaTemplateParts {
 	public TopViewParts currentConfig() {
 		LastLoginParts parts = new LastLoginParts();
 		fillTo(parts);
-		
+
 		return parts;
 	}
 
 	@Override
-	public TemplatePartsHandler createRuntime() {
+	public TemplatePartsHandler createRuntime(TopViewHandler topView) {
 		return new TemplatePartsHandler(this) {
 
 			private final String TEMPLATE_PATH = "gem/auth/LastLoginParts";
