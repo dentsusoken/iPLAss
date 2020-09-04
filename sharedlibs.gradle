@@ -57,7 +57,7 @@ ext {
 		
 		'org.codehaus.groovy:groovy-bom': '3.0.4',//by bom
 		
-		'com.fasterxml.jackson:jackson-bom': '2.11.1',//by bom
+		'com.fasterxml.jackson:jackson-bom': '2.11.2',//by bom
 		
 		'net.sf.supercsv:super-csv': '2.4.0',
 		
