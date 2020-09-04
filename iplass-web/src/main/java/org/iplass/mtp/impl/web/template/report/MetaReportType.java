@@ -24,7 +24,6 @@ import javax.xml.bind.annotation.XmlSeeAlso;
 
 import org.iplass.mtp.impl.metadata.BaseMetaDataRuntime;
 import org.iplass.mtp.impl.metadata.MetaData;
-import org.iplass.mtp.impl.metadata.MetaDataConfig;
 import org.iplass.mtp.impl.report.ReportingOutputModel;
 import org.iplass.mtp.web.template.report.definition.ReportType;
 
@@ -59,7 +58,7 @@ public abstract class MetaReportType implements MetaData {
 	//Meta → Definition
 	public abstract ReportType currentConfig();
 
-	public abstract ReportTypeRuntime createRuntime(MetaDataConfig metaDataConfig);
+	public abstract ReportTypeRuntime createRuntime();
 
 	public abstract class ReportTypeRuntime extends BaseMetaDataRuntime {
 

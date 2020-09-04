@@ -35,14 +35,14 @@ import org.apache.poi.poifs.crypt.EncryptionMode;
 import org.apache.poi.poifs.crypt.Encryptor;
 import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 import org.apache.poi.util.TempFile;
-import org.iplass.mtp.impl.web.template.report.MetaJxlsContextParamMap;
 import org.iplass.mtp.impl.web.template.report.MetaJxlsReportOutputLogic.JxlsReportOutputLogicRuntime;
+import org.iplass.mtp.impl.web.template.report.MetaReportParamMap;
 import org.iplass.mtp.util.StringUtil;
-import org.iplass.mtp.web.template.report.MtpJxlsHelper;
 import org.iplass.mtp.web.template.report.definition.OutputFileType;
 import org.jxls.common.Context;
 import org.jxls.expression.ExpressionEvaluator;
 import org.jxls.transform.Transformer;
+import org.jxls.util.JxlsHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -58,7 +58,7 @@ public class JxlsReportingOutputModel implements ReportingOutputModel {
 	
 	private byte[] binary;
 	private String type;
-	private MetaJxlsContextParamMap[] contextParamMap;
+	private MetaReportParamMap[] paramMap;
 	
 	private JxlsCompiledScriptCacheStore cacheStore;
 	
@@ -99,12 +99,12 @@ public class JxlsReportingOutputModel implements ReportingOutputModel {
 		this.type = type;
 	}
 	
-	public MetaJxlsContextParamMap[] getContextParamMap() {
-		return contextParamMap;
+	public MetaReportParamMap[] getParamMap() {
+		return paramMap;
 	}
 
-	public void setContextParamMap(MetaJxlsContextParamMap[] contextParamMap) {
-		this.contextParamMap = contextParamMap;
+	public void setParamMap(MetaReportParamMap[] paramMap) {
+		this.paramMap = paramMap;
 	}
 	
 	public JxlsCompiledScriptCacheStore getCacheStore() {
@@ -118,7 +118,7 @@ public class JxlsReportingOutputModel implements ReportingOutputModel {
 	public void write(Context context, OutputStream os, String password) throws IOException, InvalidFormatException, GeneralSecurityException {
 		try(InputStream is = new ByteArrayInputStream(getBinary())) {
 			
-			MtpJxlsHelper jxlsHelper = MtpJxlsHelper.getInstance();
+			JxlsHelper jxlsHelper = JxlsHelper.getInstance();
 			ExpressionEvaluator evaluator = new JxlsGroovyEvaluator(cacheStore);
 			
 			OutputFileType outputType = OutputFileType.convertOutputFileType(getType());
@@ -155,7 +155,7 @@ public class JxlsReportingOutputModel implements ReportingOutputModel {
 		}
 	}
 	
-	private POIFSFileSystem getPOIFSFileSystem(Context context, InputStream is, MtpJxlsHelper jxlsHelper, String password, ExpressionEvaluator evaluator) throws IOException, InvalidFormatException, GeneralSecurityException {
+	private POIFSFileSystem getPOIFSFileSystem(Context context, InputStream is, JxlsHelper jxlsHelper, String password, ExpressionEvaluator evaluator) throws IOException, InvalidFormatException, GeneralSecurityException {
 		if (fs != null) {
 			return fs;
 		}
@@ -184,16 +184,16 @@ public class JxlsReportingOutputModel implements ReportingOutputModel {
 		return fs;
 	}
 	
-	private void outputReport(Transformer transformer, Context context, MtpJxlsHelper jxlsHelper) throws IOException {
+	private void outputReport(Transformer transformer, Context context, JxlsHelper jxlsHelper) throws IOException {
 		if (getLogicRuntime() != null) {
-			logicRuntime.outputReport(transformer, context, jxlsHelper);
+			logicRuntime.outputReport(transformer, context);
 		} else {
 			//デフォルトの帳票出力処理
 			jxlsHelper.processTemplate(context, transformer);
 		}
 	}
 	
-	private Transformer getTransformer(MtpJxlsHelper jxlsHelper, InputStream is, OutputStream os, ExpressionEvaluator evaluator) {
+	private Transformer getTransformer(JxlsHelper jxlsHelper, InputStream is, OutputStream os, ExpressionEvaluator evaluator) {
 		Transformer transformer = jxlsHelper.createTransformer(is, os);
 		transformer.getTransformationConfig().setExpressionEvaluator(evaluator);
 		

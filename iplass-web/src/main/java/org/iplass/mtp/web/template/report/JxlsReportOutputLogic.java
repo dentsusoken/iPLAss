@@ -19,8 +19,18 @@
  */
 package org.iplass.mtp.web.template.report;
 
+import java.io.IOException;
+import java.util.List;
+
+import org.jxls.area.Area;
+import org.jxls.builder.AreaBuilder;
+import org.jxls.builder.xls.XlsCommentAreaBuilder;
+import org.jxls.command.GridCommand;
+import org.jxls.common.CellRef;
 import org.jxls.common.Context;
+import org.jxls.formula.StandardFormulaProcessor;
 import org.jxls.transform.Transformer;
+import org.jxls.util.JxlsHelper;
 
 /**
  <% if (doclang == "ja") {%>
@@ -51,7 +61,98 @@ public interface JxlsReportOutputLogic {
 	 * 
 	 * @param transformer
 	 * @param context
-	 * @param  jxlsHelper
 	 */
-	public void reportWrite(Transformer transformer, Context context, MtpJxlsHelper jxlsHelper);
+	public void reportWrite(Transformer transformer, Context context);
+
+	/**
+	 * <% if (doclang == "ja") {%>
+	 * {@link JxlsHelper#processTemplateAtCell(InputStream, OutputStream, Context, String)}対応のデフォルトメソッド
+	 * <%} else {%>
+	 * Default method corresponding to {@link JxlsHelper#processTemplateAtCell(InputStream, OutputStream, Context, String)}
+	 * <%}%>
+	 * 
+	 * @param transformer
+	 * @param context
+	 * @param targetCell
+	 * @return
+	 * @throws IOException
+	 */
+	default void processTemplateAtCell(Transformer transformer, Context context, String targetCell) throws IOException {
+		AreaBuilder areaBuilder = new XlsCommentAreaBuilder();
+		areaBuilder.setTransformer(transformer);
+		List<Area> xlsAreaList = areaBuilder.build();
+		if (xlsAreaList.isEmpty()) {
+			throw new IllegalStateException("No XlsArea were detected for this processing");
+		}
+		Area firstArea = xlsAreaList.get(0);
+		CellRef targetCellRef = new CellRef(targetCell);
+		firstArea.applyAt(targetCellRef, context);
+		firstArea.setFormulaProcessor(new StandardFormulaProcessor());
+		firstArea.processFormulas();
+		String sourceSheetName = firstArea.getStartCellRef().getSheetName();
+		if (!sourceSheetName.equalsIgnoreCase(targetCellRef.getSheetName())) {
+				transformer.deleteSheet(sourceSheetName);
+		}
+		transformer.write();
+	}
+	
+    /**
+	 * <% if (doclang == "ja") {%>
+	 * {@link JxlsHelper#processGridTemplate(InputStream, OutputStream, Context, String)}対応のデフォルトメソッド
+	 * <%} else {%>
+	 * Default method corresponding to {@link JxlsHelper#processGridTemplate(InputStream, OutputStream, Context, String)}
+	 * <%}%>
+	 * 
+	 * @param transformer
+	 * @param context
+	 * @param objectProps
+	 * @return
+	 * @throws IOException
+	 */
+	default void processGridTemplate(Transformer transformer, Context context, String objectProps) throws IOException {
+		AreaBuilder areaBuilder = new XlsCommentAreaBuilder();
+		areaBuilder.setTransformer(transformer);
+		List<Area> xlsAreaList = areaBuilder.build();
+		for (Area xlsArea : xlsAreaList) {
+			GridCommand gridCommand = (GridCommand) xlsArea.getCommandDataList().get(0).getCommand();
+			gridCommand.setProps(objectProps);
+			xlsArea.setFormulaProcessor(new StandardFormulaProcessor());
+			xlsArea.applyAt(new CellRef(xlsArea.getStartCellRef().getCellName()), context);
+			xlsArea.processFormulas();
+		}
+		transformer.write();
+	}
+	
+    /**
+	 * <% if (doclang == "ja") {%>
+	 * {@link JxlsHelper#processGridTemplateAtCell(InputStream, OutputStream, Context, String, String)}対応のデフォルトメソッド
+	 * <%} else {%>
+	 * Default method corresponding to{@link JxlsHelper#processGridTemplateAtCell(InputStream, OutputStream, Context, String, String)}
+	 * <%}%>
+     * 
+     * @param transformer
+     * @param context
+     * @param objectProps
+     * @param targetCell
+     * @throws IOException
+     */
+	default void processGridTemplateAtCell(Transformer transformer, Context context,
+			String objectProps, String targetCell) throws IOException {
+		AreaBuilder areaBuilder = new XlsCommentAreaBuilder();
+		areaBuilder.setTransformer(transformer);
+		List<Area> xlsAreaList = areaBuilder.build();
+		Area firstArea = xlsAreaList.get(0);
+		CellRef targetCellRef = new CellRef(targetCell);
+		GridCommand gridCommand = (GridCommand) firstArea.getCommandDataList().get(0).getCommand();
+		gridCommand.setProps(objectProps);
+		firstArea.applyAt(targetCellRef, context);
+		firstArea.setFormulaProcessor(new StandardFormulaProcessor());
+		firstArea.processFormulas();
+		String sourceSheetName = firstArea.getStartCellRef().getSheetName();
+		if (!sourceSheetName.equalsIgnoreCase(targetCellRef.getSheetName())) {
+			transformer.deleteSheet(sourceSheetName);
+		}
+		transformer.write();
+	}
+	
 }

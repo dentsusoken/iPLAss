@@ -665,23 +665,34 @@ public class GenericEntity implements Entity, Serializable {
 	/**
 	 * 保持しているPropertyをMap形式で返す。
 	 * property値が、GenericEntityの場合は、再帰的にMapに変換する、
+	 * GenericEntity[]の場合はMapの配列に変換する、
 	 * BinaryReference、SelectValueの場合は、copy()を呼び出し、
 	 * java.uti.Dateの場合は、clone()を呼び出し、
 	 * それ以外（プリミティブ型、immutable）の場合は、参照をそのまま保持。
 	 *  
 	 * @return
 	 */
+	@SuppressWarnings("unchecked")
 	public Map<String, Object> toMap() {
 		Map<String, Object> map = new HashMap<String, Object>();
 		
 		for (Map.Entry<String, Object> e : properties.entrySet()) {
 			if (e.getValue() instanceof Object[]) {
 				Object[] valArray = (Object[]) e.getValue();
-				Object[] newValArray = (Object[]) Array.newInstance(valArray.getClass().getComponentType(), valArray.length);
-				for (int i = 0; i < valArray.length; i++) {
-					newValArray[i] = copyValForToMap(valArray[i]);
+				if (valArray instanceof Entity[]) {
+					Map<String, Object>[] newValArray = (Map<String, Object>[]) Array.newInstance(HashMap.class, valArray.length);
+					for (int i = 0; i < valArray.length; i++) {
+						GenericEntity entity = (GenericEntity)valArray[i];
+						newValArray[i] = entity.toMap();
+					}
+					map.put(e.getKey(), newValArray);
+				} else {
+					Object[] newValArray = (Object[]) Array.newInstance(valArray.getClass().getComponentType(), valArray.length);
+					for (int i = 0; i < valArray.length; i++) {
+						newValArray[i] = copyValForToMap(valArray[i]);
+					}
+					map.put(e.getKey(), newValArray);
 				}
-				map.put(e.getKey(), newValArray);
 			} else {
 				map.put(e.getKey(), copyValForToMap(e.getValue()));
 			}

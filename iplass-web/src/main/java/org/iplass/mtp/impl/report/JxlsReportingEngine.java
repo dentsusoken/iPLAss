@@ -26,7 +26,7 @@ import java.util.Map;
 import org.iplass.mtp.command.RequestContext;
 import org.iplass.mtp.entity.GenericEntity;
 import org.iplass.mtp.impl.web.WebRequestStack;
-import org.iplass.mtp.impl.web.template.report.MetaJxlsContextParamMap;
+import org.iplass.mtp.impl.web.template.report.MetaReportParamMap;
 import org.iplass.mtp.util.StringUtil;
 import org.iplass.mtp.web.template.report.definition.JxlsReportType;
 import org.jxls.common.Context;
@@ -52,8 +52,8 @@ public class JxlsReportingEngine implements ReportingEngine {
 		RequestContext request = requestStack.getRequestContext();
 		
 		Context context = new Context();
-		if (jxlsModel.getContextParamMap() != null) {
-			putVar(request, context, jxlsModel.getContextParamMap());
+		if (jxlsModel.getParamMap() != null) {
+			putVar(request, context, jxlsModel.getParamMap());
 		}
 		
 		String password = null;
@@ -64,18 +64,18 @@ public class JxlsReportingEngine implements ReportingEngine {
 		jxlsModel.write(context, requestStack.getResponse().getOutputStream(), password);
 	}
 
-	private void putVar(RequestContext request, Context context, MetaJxlsContextParamMap[] contextParamMap) {
-		for(int i=0; i<contextParamMap.length; i++) {
-			Object val = getAttribute(request, contextParamMap[i].getMapFrom());
+	private void putVar(RequestContext request, Context context, MetaReportParamMap[] paramMap) {
+		for(int i=0; i<paramMap.length; i++) {
+			Object val = getAttribute(request, paramMap[i].getMapFrom());
 			
 			if (val == null) {
 				break;
 			}
 			
-			if (contextParamMap[i].isConvertEntityToMap()) {
+			if (paramMap[i].isConvertEntityToMap()) {
 				//GenericEntityのインスタンスとそのリストは、Map形式に変換してContextにPut
 				if (val instanceof GenericEntity) {
-					context.putVar(contextParamMap[i].getKey(),  ((GenericEntity) val).toMap());
+					context.putVar(paramMap[i].getName(),  ((GenericEntity) val).toMap());
 				} else if (val instanceof List<?>) {
 					List<Map<String, Object>> entityMaps = new ArrayList<Map<String,Object>>();
 					
@@ -85,12 +85,12 @@ public class JxlsReportingEngine implements ReportingEngine {
 							entityMaps.add(((GenericEntity) obj).toMap());
 						}
 					}
-					context.putVar(contextParamMap[i].getKey(), entityMaps);
+					context.putVar(paramMap[i].getName(), entityMaps);
 				} else {
-					context.putVar(contextParamMap[i].getKey(), val);
+					context.putVar(paramMap[i].getName(), val);
 				}
 			} else {
-				context.putVar(contextParamMap[i].getKey(), val);
+				context.putVar(paramMap[i].getName(), val);
 			}
 		}
 	}

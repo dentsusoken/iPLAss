@@ -93,7 +93,7 @@ public interface ReportTemplateUploadProperty extends UploadProperty {
 	public static final String JXLS_PASSWORD_ATTRIBUTE_NAME = "jxlsPasswordAttributeName";
 	
 	/** Jxls ParamMapKey */
-	public static final String JXLS_PARAM_MAP_KEY = "jxlsParamMapKey";
+	public static final String JXLS_PARAM_MAP_NAME = "jxlsParamMapName";
 
 	/** Jxls ParamMapValue */
 	public static final String JXLS_PARAM_MAP_VALUE = "jxlsParamMapValue ";

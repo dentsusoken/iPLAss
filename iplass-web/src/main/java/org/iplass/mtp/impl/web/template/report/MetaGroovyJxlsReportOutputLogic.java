@@ -19,17 +19,25 @@
  */
 package org.iplass.mtp.impl.web.template.report;
 
-import org.iplass.mtp.entity.definition.listeners.EventType;
+import java.io.IOException;
+import java.util.List;
+
+import org.codehaus.groovy.runtime.MethodClosure;
 import org.iplass.mtp.impl.core.ExecuteContext;
 import org.iplass.mtp.impl.core.TenantContext;
 import org.iplass.mtp.impl.script.Script;
 import org.iplass.mtp.impl.script.ScriptContext;
 import org.iplass.mtp.impl.script.ScriptEngine;
 import org.iplass.mtp.impl.script.template.GroovyTemplateCompiler;
-import org.iplass.mtp.web.template.report.MtpJxlsHelper;
 import org.iplass.mtp.web.template.report.definition.GroovyReportOutputLogicDefinition;
 import org.iplass.mtp.web.template.report.definition.ReportOutputLogicDefinition;
+import org.jxls.area.Area;
+import org.jxls.builder.AreaBuilder;
+import org.jxls.builder.xls.XlsCommentAreaBuilder;
+import org.jxls.command.GridCommand;
+import org.jxls.common.CellRef;
 import org.jxls.common.Context;
+import org.jxls.formula.StandardFormulaProcessor;
 import org.jxls.transform.Transformer;
 
 public class MetaGroovyJxlsReportOutputLogic extends MetaJxlsReportOutputLogic {
@@ -85,31 +93,87 @@ public class MetaGroovyJxlsReportOutputLogic extends MetaJxlsReportOutputLogic {
 			scriptEngine = tc.getScriptEngine();
 
 			if (script != null) {
-				String scriptWithImport = "import " + EventType.class.getName() + ";\n" + script;
 				String scriptName = null;
 				MetaJxlsReportType jxlsTemp = (MetaJxlsReportType)reportType;
 				if (jxlsTemp.getReportOutputLogic() != null) {
 					scriptName = SCRIPT_PREFIX + "_" + reportType.getOutputFileType() + "_" + GroovyTemplateCompiler.randomName();
 				}
+				
 
-				compiledScript = scriptEngine.createScript(scriptWithImport, scriptName);
+				compiledScript = scriptEngine.createScript(script, scriptName);
 			}
 		}
 		
-		private Object callScript(Transformer transformer, Context context, MtpJxlsHelper jxlsHelper) {
+		private Object callScript(Transformer transformer, Context context) {
 			ScriptContext sc = scriptEngine.newScriptContext();
-			sc.setAttribute("jxlsHelper", jxlsHelper);
 			sc.setAttribute("transformer", transformer);
 			sc.setAttribute("context", context);
+			
+			//JxlsHelper対応メソッドのバインド
+			sc.setAttribute("processTemplateAtCell", new MethodClosure(this, "processTemplateAtCell"));
+			sc.setAttribute("processGridTemplate", new MethodClosure(this, "processGridTemplate"));
+			sc.setAttribute("processGridTemplateAtCell", new MethodClosure(this, "processGridTemplateAtCell"));
+			
 			return compiledScript.eval(sc);
 		}
 
 		@Override
-		public void outputReport(Transformer transformer, Context context, MtpJxlsHelper jxlsHelper) {
-			callScript(transformer, context, jxlsHelper);
+		public void outputReport(Transformer transformer, Context context) {
+			callScript(transformer, context);
 		}
-
-
+		
+		
+		public void processTemplateAtCell(Transformer transformer, Context context, String targetCell) throws IOException {
+			AreaBuilder areaBuilder = new XlsCommentAreaBuilder();
+			areaBuilder.setTransformer(transformer);
+			List<Area> xlsAreaList = areaBuilder.build();
+			if (xlsAreaList.isEmpty()) {
+				throw new IllegalStateException("No XlsArea were detected for this processing");
+			}
+			Area firstArea = xlsAreaList.get(0);
+			CellRef targetCellRef = new CellRef(targetCell);
+			firstArea.applyAt(targetCellRef, context);
+			firstArea.setFormulaProcessor(new StandardFormulaProcessor());
+			firstArea.processFormulas();
+			String sourceSheetName = firstArea.getStartCellRef().getSheetName();
+			if (!sourceSheetName.equalsIgnoreCase(targetCellRef.getSheetName())) {
+					transformer.deleteSheet(sourceSheetName);
+			}
+			transformer.write();
+		}
+		
+		public void processGridTemplate(Transformer transformer, Context context, String objectProps) throws IOException {
+			AreaBuilder areaBuilder = new XlsCommentAreaBuilder();
+			areaBuilder.setTransformer(transformer);
+			List<Area> xlsAreaList = areaBuilder.build();
+			for (Area xlsArea : xlsAreaList) {
+				GridCommand gridCommand = (GridCommand) xlsArea.getCommandDataList().get(0).getCommand();
+				gridCommand.setProps(objectProps);
+				xlsArea.setFormulaProcessor(new StandardFormulaProcessor());
+				xlsArea.applyAt(new CellRef(xlsArea.getStartCellRef().getCellName()), context);
+				xlsArea.processFormulas();
+			}
+			transformer.write();
+		}
+		
+		public void processGridTemplateAtCell(Transformer transformer, Context context,
+				String objectProps, String targetCell) throws IOException {
+			AreaBuilder areaBuilder = new XlsCommentAreaBuilder();
+			areaBuilder.setTransformer(transformer);
+			List<Area> xlsAreaList = areaBuilder.build();
+			Area firstArea = xlsAreaList.get(0);
+			CellRef targetCellRef = new CellRef(targetCell);
+			GridCommand gridCommand = (GridCommand) firstArea.getCommandDataList().get(0).getCommand();
+			gridCommand.setProps(objectProps);
+			firstArea.applyAt(targetCellRef, context);
+			firstArea.setFormulaProcessor(new StandardFormulaProcessor());
+			firstArea.processFormulas();
+			String sourceSheetName = firstArea.getStartCellRef().getSheetName();
+			if (!sourceSheetName.equalsIgnoreCase(targetCellRef.getSheetName())) {
+				transformer.deleteSheet(sourceSheetName);
+			}
+			transformer.write();
+		}
+		
 	}
-
 }

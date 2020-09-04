@@ -31,12 +31,15 @@ public class JxlsCompiledScriptCacheStore {
 	
 	private ScriptEngine se;
 	private ConcurrentHashMap<String, Script> jxlsCompiledScriptCache;
+	private String templateName;
 	private static final String SCRIPT_PREFIX = "JxlsGroovyEvaluator_script";
 	
-	public JxlsCompiledScriptCacheStore() {
+	public JxlsCompiledScriptCacheStore(String templateName) {
 		TenantContext tc = ExecuteContext.getCurrentContext().getTenantContext();
 		se = tc.getScriptEngine();
 		jxlsCompiledScriptCache = new ConcurrentHashMap<String, Script>();
+		
+		this.templateName = templateName;
 	}
 	
 	/**
@@ -48,8 +51,8 @@ public class JxlsCompiledScriptCacheStore {
 	public Script getScript (String expression) {
 		Script script = jxlsCompiledScriptCache.get(expression);
 		
-		if (script == null) {
-			script = se.createScript(expression, SCRIPT_PREFIX + "_" + GroovyTemplateCompiler.randomName());
+		if (script == null && templateName != null) {
+			script = se.createScript(expression, SCRIPT_PREFIX + "_" + templateName + "_" + GroovyTemplateCompiler.randomName());
 			jxlsCompiledScriptCache.put(expression, script);
 		}
 		

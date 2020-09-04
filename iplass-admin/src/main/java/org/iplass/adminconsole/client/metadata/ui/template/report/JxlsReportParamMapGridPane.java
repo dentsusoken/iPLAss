@@ -26,7 +26,7 @@ import org.iplass.adminconsole.client.base.event.DataChangedEvent;
 import org.iplass.adminconsole.client.base.event.DataChangedHandler;
 import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
 import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
-import org.iplass.mtp.web.template.report.definition.JxlsContextParamMapDefinition;
+import org.iplass.mtp.web.template.report.definition.ReportParamMapDefinition;
 
 import com.smartgwt.client.types.AutoFitWidthApproach;
 import com.smartgwt.client.types.Overflow;
@@ -121,40 +121,40 @@ public class JxlsReportParamMapGridPane extends VLayout {
 		return true;
 	}
 	
-	public JxlsContextParamMapDefinition[] getContextParamMap() {
+	public ReportParamMapDefinition[] getParamMap() {
 		ListGridRecord[] records = grid.getRecords();
 		if (records == null || records.length == 0) {
 			return null;
 		}
 		
-		JxlsContextParamMapDefinition[] maps = new JxlsContextParamMapDefinition[records.length];
+		ReportParamMapDefinition[] maps = new ReportParamMapDefinition[records.length];
 		int i = 0;
 		for (ListGridRecord record : records) {
-			JxlsContextParamMapDefinition jcpmd = (JxlsContextParamMapDefinition)record.getAttributeAsObject(FIELD_NAME.VALUE_OBJECT.name());
-			maps[i] = jcpmd;
+			ReportParamMapDefinition rpmd = (ReportParamMapDefinition)record.getAttributeAsObject(FIELD_NAME.VALUE_OBJECT.name());
+			maps[i] = rpmd;
 			i++;
 		}
 		return maps;
 	}
 
-	public void setContextParamMap(JxlsContextParamMapDefinition[] contextParamMap) {
-		if (contextParamMap != null) {
+	public void setParamMap(ReportParamMapDefinition[] paramMap) {
+		if (paramMap != null) {
 			List<ListGridRecord> records = new ArrayList<ListGridRecord>();
-			for (JxlsContextParamMapDefinition jcpmd : contextParamMap) {
-				records.add(createRecord(jcpmd, null));
+			for (ReportParamMapDefinition rpmd : paramMap) {
+				records.add(createRecord(rpmd, null));
 			}
 			grid.setData(records.toArray(new ListGridRecord[]{}));
 		}
 	}
 	
-	private ListGridRecord createRecord(JxlsContextParamMapDefinition jcpmd, ListGridRecord record) {
+	private ListGridRecord createRecord(ReportParamMapDefinition rpmd, ListGridRecord record) {
 		if (record == null) {
 			record = new ListGridRecord();
 		}
-		record.setAttribute(FIELD_NAME.KEY.name(), jcpmd.getKey());
-		record.setAttribute(FIELD_NAME.MAP_FROM.name(), jcpmd.getMapFrom());
-		record.setAttribute(FIELD_NAME.TO_MAP.name(), jcpmd.isConvertEntityToMap());
-		record.setAttribute(FIELD_NAME.VALUE_OBJECT.name(), jcpmd);
+		record.setAttribute(FIELD_NAME.KEY.name(), rpmd.getName());
+		record.setAttribute(FIELD_NAME.MAP_FROM.name(), rpmd.getMapFrom());
+		record.setAttribute(FIELD_NAME.TO_MAP.name(), rpmd.isConvertEntityToMap());
+		record.setAttribute(FIELD_NAME.VALUE_OBJECT.name(), rpmd);
 
 		return record;
 	}
@@ -178,8 +178,8 @@ public class JxlsReportParamMapGridPane extends VLayout {
 
 			@Override
 			public void onDataChanged(DataChangedEvent event) {
-				JxlsContextParamMapDefinition jcpmd = event.getValueObject(JxlsContextParamMapDefinition.class);
-				ListGridRecord newRecord = createRecord(jcpmd, record);
+				ReportParamMapDefinition rpmd = event.getValueObject(ReportParamMapDefinition.class);
+				ListGridRecord newRecord = createRecord(rpmd, record);
 				if (record != null) {
 					grid.updateData(newRecord);
 				} else {
@@ -191,7 +191,7 @@ public class JxlsReportParamMapGridPane extends VLayout {
 		});
 
 		if (record != null) {
-			dialog.setContextParamMap((JxlsContextParamMapDefinition)record.getAttributeAsObject(FIELD_NAME.VALUE_OBJECT.name()));
+			dialog.setParamMap((ReportParamMapDefinition)record.getAttributeAsObject(FIELD_NAME.VALUE_OBJECT.name()));
 		}
 		dialog.show();
 	}

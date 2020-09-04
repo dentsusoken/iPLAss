@@ -49,7 +49,6 @@ import org.iplass.mtp.web.template.definition.TemplateDefinitionManager;
 import org.iplass.mtp.web.template.report.definition.GroovyReportOutputLogicDefinition;
 import org.iplass.mtp.web.template.report.definition.JasperReportType;
 import org.iplass.mtp.web.template.report.definition.JavaClassReportOutputLogicDefinition;
-import org.iplass.mtp.web.template.report.definition.JxlsContextParamMapDefinition;
 import org.iplass.mtp.web.template.report.definition.JxlsReportType;
 import org.iplass.mtp.web.template.report.definition.LocalizedReportDefinition;
 import org.iplass.mtp.web.template.report.definition.PoiReportType;
@@ -66,57 +65,62 @@ public class ReportTemplateUploadServiceImpl extends AdminUploadAction {
 
 	private static final Logger logger = LoggerFactory.getLogger(ReportTemplateUploadServiceImpl.class);
 
-	/* (非 Javadoc)
-	 * @see gwtupload.server.UploadAction#executeAction(javax.servlet.http.HttpServletRequest, java.util.List)
+	/*
+	 * (非 Javadoc)
+	 * 
+	 * @see gwtupload.server.UploadAction#executeAction(javax.servlet.http.
+	 * HttpServletRequest, java.util.List)
 	 */
 	@Override
-	public String executeAction(final HttpServletRequest request,
-			final List<FileItem> sessionFiles) throws UploadActionException {
+	public String executeAction(final HttpServletRequest request, final List<FileItem> sessionFiles)
+			throws UploadActionException {
 
 		final ReportTemplateUploadResponseInfo result = new ReportTemplateUploadResponseInfo();
-		final HashMap<String,Object> args = new HashMap<String,Object>();
+		final HashMap<String, Object> args = new HashMap<String, Object>();
 		try {
-			//リクエスト情報の取得
+			// リクエスト情報の取得
 			readRequest(request, sessionFiles, args);
 
-			//セッションからファイルを削除
-		    super.removeSessionFileItems(request);
+			// セッションからファイルを削除
+			super.removeSessionFileItems(request);
 
-		    //リクエスト情報の検証
+			// リクエスト情報の検証
 			validateRequest(args);
 
-			//テナントIDの取得
-			final int tenantId = Integer.parseInt((String)args.get(ReportTemplateUploadProperty.TENANT_ID));
-			final String defName = (String)args.get(ReportTemplateUploadProperty.DEF_NAME);
+			// テナントIDの取得
+			final int tenantId = Integer.parseInt((String) args.get(ReportTemplateUploadProperty.TENANT_ID));
+			final String defName = (String) args.get(ReportTemplateUploadProperty.DEF_NAME);
 
-			final int currentVersion = Integer.parseInt((String)args.get(ReportTemplateUploadProperty.VERSION));
-			final boolean checkVersion = Boolean.parseBoolean((String)args.get(ReportTemplateUploadProperty.CHECK_VERSION));
+			final int currentVersion = Integer.parseInt((String) args.get(ReportTemplateUploadProperty.VERSION));
+			final boolean checkVersion = Boolean.parseBoolean((String) args.get(ReportTemplateUploadProperty.CHECK_VERSION));
 
-			//ここでトランザクションを開始
-			DefinitionModifyResult ret = AuthUtil.authCheckAndInvoke(getServletContext(), request, null, tenantId, new AuthUtil.Callable<DefinitionModifyResult>() {
+			// ここでトランザクションを開始
+			DefinitionModifyResult ret = AuthUtil.authCheckAndInvoke(getServletContext(), request, null, tenantId,
+					new AuthUtil.Callable<DefinitionModifyResult>() {
 
-				@Override
-				public DefinitionModifyResult call() {
+						@Override
+						public DefinitionModifyResult call() {
 
-					DefinitionModifyResult result = null;
-					try {
-						// バージョンの最新チェック
-						MetaDataVersionCheckUtil.versionCheck(checkVersion, ReportTemplateDefinition.class, defName, currentVersion);
+							DefinitionModifyResult result = null;
+							try {
+								// バージョンの最新チェック
+								MetaDataVersionCheckUtil.versionCheck(checkVersion, ReportTemplateDefinition.class, defName,
+										currentVersion);
 
-						//Definition生成
-						ReportTemplateDefinition definition = convertDefinition(args);
+								// Definition生成
+								ReportTemplateDefinition definition = convertDefinition(args);
 
-						//更新
-						result = update(definition);
-					} catch (Throwable e) {
-						logger.error(e.getMessage(), e);
-						result = new DefinitionModifyResult(false, e.getMessage());
-					}
-					return result;
-				}
-			});
+								// 更新
+								result = update(definition);
+							} catch (Throwable e) {
+								logger.error(e.getMessage(), e);
+								result = new DefinitionModifyResult(false, e.getMessage());
+							}
+							return result;
+						}
+					});
 
-			//ステータスの書き込み
+			// ステータスの書き込み
 			if (ret.isSuccess()) {
 				result.setStatusSuccess();
 			} else {
@@ -127,10 +131,10 @@ public class ReportTemplateUploadServiceImpl extends AdminUploadAction {
 		} catch (Exception e) {
 			throw new UploadActionException(e);
 		} finally {
-			//Tempファイルを削除
+			// Tempファイルを削除
 			for (Object arg : args.values()) {
 				if (arg instanceof File) {
-					File file = (File)arg;
+					File file = (File) arg;
 					if (!file.delete()) {
 						logger.warn("Fail to delete temporary resource:" + file.getPath());
 					}
@@ -138,28 +142,29 @@ public class ReportTemplateUploadServiceImpl extends AdminUploadAction {
 			}
 		}
 
-		//ResultをJSON形式に変換
-	    try {
-	    	String jsonResult = UploadUtil.toJsonResponse(result);
+		// ResultをJSON形式に変換
+		try {
+			String jsonResult = UploadUtil.toJsonResponse(result);
 			return jsonResult;
 		} catch (UploadRuntimeException e) {
 			throw new UploadActionException(e);
 		}
 	}
 
-	private void readRequest(final HttpServletRequest request, List<FileItem> sessionFiles, HashMap<String,Object> args) {
+	private void readRequest(final HttpServletRequest request, List<FileItem> sessionFiles,
+			HashMap<String, Object> args) {
 
-		//リクエスト情報の取得
+		// リクエスト情報の取得
 		try {
 			Map<String, LocaleInfo> localeMap = new LinkedHashMap<String, LocaleInfo>();
 
 			for (FileItem item : sessionFiles) {
 				if (item.isFormField()) {
-			    	//File以外のもの
+					// File以外のもの
 					String[] names = splitLocaleFieldName(item.getFieldName());
 					String fieldName = names[0];
 					if (names[1] != null) {
-						//Locale用データ
+						// Locale用データ
 						String locale = names[1];
 						LocaleInfo localeData = null;
 						if (localeMap.containsKey(locale)) {
@@ -175,19 +180,19 @@ public class ReportTemplateUploadServiceImpl extends AdminUploadAction {
 						}
 					} else {
 						String strValue = UploadUtil.getValueAsString(item);
-				        args.put(item.getFieldName(), strValue);
+						args.put(item.getFieldName(), strValue);
 					}
 
 				} else {
-					//未選択の場合は除外
+					// 未選択の場合は除外
 					if (item.getSize() == 0) {
 						continue;
 					}
-					//Fileの場合、tempに書きだし
+					// Fileの場合、tempに書きだし
 					File tempFile = UploadUtil.writeFileToTemporary(item, getContextTempDir());
 					args.put(ReportTemplateUploadProperty.FILE_CONTENT_TYPE, item.getContentType());
 
-					//UploadServlet#parsePostRequestでFormFieldではないものには最後に連番(-xxxx)が付加されているので除去
+					// UploadServlet#parsePostRequestでFormFieldではないものには最後に連番(-xxxx)が付加されているので除去
 					String fieldName = item.getFieldName();
 					if (fieldName != null && fieldName.contains("-")) {
 						fieldName = fieldName.substring(0, fieldName.lastIndexOf("-"));
@@ -196,7 +201,7 @@ public class ReportTemplateUploadServiceImpl extends AdminUploadAction {
 					String[] names = splitLocaleFieldName(fieldName);
 					fieldName = names[0];
 					if (names[1] != null) {
-						//Locale用データ
+						// Locale用データ
 						String locale = names[1];
 						LocaleInfo localeData = null;
 						if (localeMap.containsKey(locale)) {
@@ -208,7 +213,7 @@ public class ReportTemplateUploadServiceImpl extends AdminUploadAction {
 						localeData.file = tempFile;
 						localeData.values.put(ReportTemplateUploadProperty.UPLOAD_FILE_NAME, FilenameUtils.getName(item.getName()));
 					} else {
-						//通常データ
+						// 通常データ
 						args.put(ReportTemplateUploadProperty.UPLOAD_FILE, tempFile);
 						args.put(ReportTemplateUploadProperty.UPLOAD_FILE_NAME, FilenameUtils.getName(item.getName()));
 					}
@@ -222,16 +227,16 @@ public class ReportTemplateUploadServiceImpl extends AdminUploadAction {
 		}
 	}
 
-	private void validateRequest(HashMap<String,Object> args) {
+	private void validateRequest(HashMap<String, Object> args) {
 		if (args.get(ReportTemplateUploadProperty.TENANT_ID) == null) {
 			throw new UploadRuntimeException(resourceString("canNotGetTenantInfo"));
 		}
 		if (args.get(ReportTemplateUploadProperty.DEF_NAME) == null) {
 			throw new UploadRuntimeException(resourceString("canNotGetUpdateTarget"));
 		}
-//		if (args.get(ReportTemplateUploadProperty.UPLOAD_FILE) == null) {
-//			throw new UploadRuntimeException(getRS("canNotGetImportFile"));
-//		}
+		// if (args.get(ReportTemplateUploadProperty.UPLOAD_FILE) == null) {
+		// throw new UploadRuntimeException(getRS("canNotGetImportFile"));
+		// }
 	}
 
 	private String[] splitLocaleFieldName(String fieldName) {
@@ -239,9 +244,9 @@ public class ReportTemplateUploadServiceImpl extends AdminUploadAction {
 		String[] ret = new String[2];
 		if (fieldName != null && fieldName.startsWith(ReportTemplateUploadProperty.LOCALE_PREFIX)) {
 			fieldName = fieldName.substring(ReportTemplateUploadProperty.LOCALE_PREFIX.length());
-			//次の_までがLocale値
+			// 次の_までがLocale値
 			ret[1] = fieldName.substring(0, fieldName.indexOf("_"));
-			//次の_以降がitemName
+			// 次の_以降がitemName
 			ret[0] = fieldName.substring(fieldName.indexOf("_") + 1);
 		} else {
 			ret[0] = fieldName;
@@ -250,38 +255,38 @@ public class ReportTemplateUploadServiceImpl extends AdminUploadAction {
 		return ret;
 	}
 
-	private ReportTemplateDefinition convertDefinition(HashMap<String,Object> args) {
+	private ReportTemplateDefinition convertDefinition(HashMap<String, Object> args) {
 
 		TemplateDefinitionManager tdm = ManagerLocator.getInstance().getManager(TemplateDefinitionManager.class);
-		TemplateDefinition oldTemplate = tdm.get((String)args.get(ReportTemplateUploadProperty.DEF_NAME));
+		TemplateDefinition oldTemplate = tdm.get((String) args.get(ReportTemplateUploadProperty.DEF_NAME));
 
 		ReportTemplateDefinition definition;
 		List<LocalizedReportDefinition> oldLocaleList = null;
 		if (oldTemplate == null || !(oldTemplate instanceof ReportTemplateDefinition)) {
-			//登録済のTemplateが存在しないか、Reportではない場合は新規で作成しなおし
-			//（更新に必要なIDはTemplateDefinitionManagerで同一名のIDが設定される）
+			// 登録済のTemplateが存在しないか、Reportではない場合は新規で作成しなおし
+			// （更新に必要なIDはTemplateDefinitionManagerで同一名のIDが設定される）
 			definition = new ReportTemplateDefinition();
 		} else {
 			definition = (ReportTemplateDefinition) oldTemplate;
 			oldLocaleList = definition.getLocalizedReportList();
 		}
 
-		definition.setName((String)args.get(ReportTemplateUploadProperty.DEF_NAME));
-		definition.setDisplayName((String)args.get(ReportTemplateUploadProperty.DISPLAY_NAME));
-		definition.setDescription((String)args.get(ReportTemplateUploadProperty.DESCRIPTION));
+		definition.setName((String) args.get(ReportTemplateUploadProperty.DEF_NAME));
+		definition.setDisplayName((String) args.get(ReportTemplateUploadProperty.DISPLAY_NAME));
+		definition.setDescription((String) args.get(ReportTemplateUploadProperty.DESCRIPTION));
 
-		String contentType = (String)args.get(ReportTemplateUploadProperty.CONTENT_TYPE);
-		File binaryFile = (File)args.get(ReportTemplateUploadProperty.UPLOAD_FILE);
+		String contentType = (String) args.get(ReportTemplateUploadProperty.CONTENT_TYPE);
+		File binaryFile = (File) args.get(ReportTemplateUploadProperty.UPLOAD_FILE);
 		if (contentType != null && !contentType.isEmpty()) {
 			definition.setContentType(contentType);
-		} else if (binaryFile != null){
-			//未指定の場合は、アップロードファイルから設定
-			definition.setContentType((String)args.get(ReportTemplateUploadProperty.FILE_CONTENT_TYPE));
+		} else if (binaryFile != null) {
+			// 未指定の場合は、アップロードファイルから設定
+			definition.setContentType((String) args.get(ReportTemplateUploadProperty.FILE_CONTENT_TYPE));
 		}
-		//ファイルがアップロードされている場合は置き換え
+		// ファイルがアップロードされている場合は置き換え
 		if (binaryFile != null) {
 			definition.setBinary(convertFileToByte(binaryFile));
-			definition.setFileName((String)args.get(ReportTemplateUploadProperty.UPLOAD_FILE_NAME));
+			definition.setFileName((String) args.get(ReportTemplateUploadProperty.UPLOAD_FILE_NAME));
 		}
 
 		ReportType reportType = createReportType(args);
@@ -290,16 +295,16 @@ public class ReportTemplateUploadServiceImpl extends AdminUploadAction {
 		// 多言語用の処理
 		List<LocalizedReportDefinition> newLocaleList = null;
 		@SuppressWarnings("unchecked")
-		Map<String, LocaleInfo> localeMap = (Map<String, LocaleInfo>)args.get(ReportTemplateUploadProperty.LOCALE_PREFIX);
+		Map<String, LocaleInfo> localeMap = (Map<String, LocaleInfo>) args.get(ReportTemplateUploadProperty.LOCALE_PREFIX);
 		if (localeMap != null && !localeMap.isEmpty()) {
 			newLocaleList = new ArrayList<LocalizedReportDefinition>();
-			for(LocaleInfo value : localeMap.values()) {
+			for (LocaleInfo value : localeMap.values()) {
 				LocalizedReportDefinition localeDef = null;
 				if (StringUtil.isEmpty(value.storedLocale)) {
-					//新規追加
+					// 新規追加
 					localeDef = new LocalizedReportDefinition();
 				} else {
-					//更新
+					// 更新
 					if (oldLocaleList != null) {
 						for (LocalizedReportDefinition old : oldLocaleList) {
 							if (old.getLocaleName().equals(value.storedLocale)) {
@@ -308,20 +313,20 @@ public class ReportTemplateUploadServiceImpl extends AdminUploadAction {
 							}
 						}
 						if (localeDef == null) {
-							//不整合だが新規で追加する(上書きで不整合かもしれないので)
+							// 不整合だが新規で追加する(上書きで不整合かもしれないので)
 							localeDef = new LocalizedReportDefinition();
 						} else {
-							//変更
+							// 変更
 						}
 					} else {
-						//不整合だが新規で追加する(上書きで不整合かもしれないので)
+						// 不整合だが新規で追加する(上書きで不整合かもしれないので)
 						localeDef = new LocalizedReportDefinition();
 					}
 				}
 				localeDef.setLocaleName(value.newLocale);
 				if (value.file != null) {
 					localeDef.setBinary(convertFileToByte(value.file));
-					localeDef.setFileName((String)value.values.get(ReportTemplateUploadProperty.UPLOAD_FILE_NAME));
+					localeDef.setFileName((String) value.values.get(ReportTemplateUploadProperty.UPLOAD_FILE_NAME));
 				}
 
 				ReportType localReportType = createReportType(value.values);
@@ -335,26 +340,26 @@ public class ReportTemplateUploadServiceImpl extends AdminUploadAction {
 		return definition;
 	}
 
-	private ReportType createReportType(HashMap<String,Object> args) {
+	private ReportType createReportType(HashMap<String, Object> args) {
 
-		String reportType = (String)args.get(ReportTemplateUploadProperty.REPORT_TYPE);
+		String reportType = (String) args.get(ReportTemplateUploadProperty.REPORT_TYPE);
 
 		if (PoiReportType.class.getName().equals(reportType)) {
 			PoiReportType poiTemplate = new PoiReportType();
-			poiTemplate.setOutputFileType((String)args.get(ReportTemplateUploadProperty.OUTPUT_FILE_TYPE));
+			poiTemplate.setOutputFileType((String) args.get(ReportTemplateUploadProperty.OUTPUT_FILE_TYPE));
 
-			String logicType = (String)(args.get(ReportTemplateUploadProperty.POI_LOGIC_NAME));
-			if(ReportTemplateUploadProperty.POI_LOGIC_NAME_JAVA.equals(logicType)){
+			String logicType = (String) (args.get(ReportTemplateUploadProperty.POI_LOGIC_NAME));
+			if (ReportTemplateUploadProperty.POI_LOGIC_NAME_JAVA.equals(logicType)) {
 				JavaClassReportOutputLogicDefinition javaLogic = new JavaClassReportOutputLogicDefinition();
-				javaLogic.setClassName((String)(args.get(ReportTemplateUploadProperty.POI_LOGIC_VALUE)));
+				javaLogic.setClassName((String) (args.get(ReportTemplateUploadProperty.POI_LOGIC_VALUE)));
 				poiTemplate.setReportOutputLogicDefinition(javaLogic);
-			}else if(ReportTemplateUploadProperty.POI_LOGIC_NAME_GROOVY.equals(logicType)){
+			} else if (ReportTemplateUploadProperty.POI_LOGIC_NAME_GROOVY.equals(logicType)) {
 				GroovyReportOutputLogicDefinition groovyLogic = new GroovyReportOutputLogicDefinition();
-				groovyLogic.setScript((String)(args.get(ReportTemplateUploadProperty.POI_LOGIC_VALUE)));
+				groovyLogic.setScript((String) (args.get(ReportTemplateUploadProperty.POI_LOGIC_VALUE)));
 				poiTemplate.setReportOutputLogicDefinition(groovyLogic);
 			}
 
-			String passwordAttributeName = (String)args.get(ReportTemplateUploadProperty.POI_PASSWORD_ATTRIBUTE_NAME);
+			String passwordAttributeName = (String) args.get(ReportTemplateUploadProperty.POI_PASSWORD_ATTRIBUTE_NAME);
 			if (StringUtil.isNotEmpty(passwordAttributeName)) {
 				poiTemplate.setPasswordAttributeName(passwordAttributeName);
 			}
@@ -362,27 +367,27 @@ public class ReportTemplateUploadServiceImpl extends AdminUploadAction {
 			return poiTemplate;
 		} else if (JasperReportType.class.getName().equals(reportType)) {
 			JasperReportType jasperTemplate = new JasperReportType();
-			jasperTemplate.setOutputFileType((String)args.get(ReportTemplateUploadProperty.OUTPUT_FILE_TYPE));
+			jasperTemplate.setOutputFileType((String) args.get(ReportTemplateUploadProperty.OUTPUT_FILE_TYPE));
 
-			//パラメータマッピング設定
-			int mapCnt = Integer.parseInt((String)(args.get(ReportTemplateUploadProperty.JASPER_PARAM_MAP_CNT)));
+			// パラメータマッピング設定
+			int mapCnt = Integer.parseInt((String) (args.get(ReportTemplateUploadProperty.JASPER_PARAM_MAP_CNT)));
 			ReportParamMapDefinition[] rpmds = new ReportParamMapDefinition[mapCnt];
-			for( int i=0; i < mapCnt; i++){
+			for (int i = 0; i < mapCnt; i++) {
 				ReportParamMapDefinition rpmd = new ReportParamMapDefinition();
-				rpmd.setName((String)args.get(ReportTemplateUploadProperty.JASPER_PARAM_MAP_NAME + "_" + i));
-				rpmd.setMapFrom((String)args.get(ReportTemplateUploadProperty.JASPER_PARAM_MAP_FROM + "_" + i));
-				rpmd.setParamType((String)args.get(ReportTemplateUploadProperty.JASPER_PARAM_TYPE + "_" + i));
+				rpmd.setName((String) args.get(ReportTemplateUploadProperty.JASPER_PARAM_MAP_NAME + "_" + i));
+				rpmd.setMapFrom((String) args.get(ReportTemplateUploadProperty.JASPER_PARAM_MAP_FROM + "_" + i));
+				rpmd.setParamType((String) args.get(ReportTemplateUploadProperty.JASPER_PARAM_TYPE + "_" + i));
 				rpmds[i] = rpmd;
 			}
-			if(mapCnt > 0){
+			if (mapCnt > 0) {
 				jasperTemplate.setParamMap(rpmds);
 			}
 
-			String dataSourceAttributeName = (String)args.get(ReportTemplateUploadProperty.JASPER_DATASOURCE_ATTRIBUTE_NAME);
+			String dataSourceAttributeName = (String) args.get(ReportTemplateUploadProperty.JASPER_DATASOURCE_ATTRIBUTE_NAME);
 			if (StringUtil.isNotEmpty(dataSourceAttributeName)) {
 				jasperTemplate.setDataSourceAttributeName(dataSourceAttributeName);
 			}
-			String passwordAttributeName = (String)args.get(ReportTemplateUploadProperty.JASPER_PASSWORD_ATTRIBUTE_NAME);
+			String passwordAttributeName = (String) args.get(ReportTemplateUploadProperty.JASPER_PASSWORD_ATTRIBUTE_NAME);
 			if (StringUtil.isNotEmpty(passwordAttributeName)) {
 				jasperTemplate.setPasswordAttributeName(passwordAttributeName);
 			}
@@ -390,38 +395,44 @@ public class ReportTemplateUploadServiceImpl extends AdminUploadAction {
 			return jasperTemplate;
 		} else {
 			JxlsReportType jxlsTemplate = new JxlsReportType();
-			jxlsTemplate.setOutputFileType((String)args.get(ReportTemplateUploadProperty.OUTPUT_FILE_TYPE));
+			jxlsTemplate.setOutputFileType((String) args.get(ReportTemplateUploadProperty.OUTPUT_FILE_TYPE));
 
-			//パラメータマッピング設定
-			int mapCnt = Integer.parseInt((String)(args.get(ReportTemplateUploadProperty.JXLS_PARAM_MAP_CNT)));
-			JxlsContextParamMapDefinition[] cpmds = new JxlsContextParamMapDefinition[mapCnt];
-			for( int i=0; i < mapCnt; i++){
-				JxlsContextParamMapDefinition cpmd = new JxlsContextParamMapDefinition();
-				cpmd.setKey((String)(args.get(ReportTemplateUploadProperty.JXLS_PARAM_MAP_KEY + "_" + i)));
-				cpmd.setMapFrom((String)(args.get(ReportTemplateUploadProperty.JXLS_PARAM_MAP_VALUE + "_" + i)));
-				cpmd.setConvertEntityToMap(Boolean.valueOf((String)(args.get(ReportTemplateUploadProperty.JXLS_PARAM_MAP_TO_MAP + "_" + i))));
-				cpmds[i] = cpmd;
+			// パラメータマッピング設定
+			int mapCnt = Integer.parseInt((String) (args.get(ReportTemplateUploadProperty.JXLS_PARAM_MAP_CNT)));
+			ReportParamMapDefinition[] rpmds = new ReportParamMapDefinition[mapCnt];
+			for (int i = 0; i < mapCnt; i++) {
+				ReportParamMapDefinition rpmd = new ReportParamMapDefinition();
+				rpmd.setName((String) (args.get(ReportTemplateUploadProperty.JXLS_PARAM_MAP_NAME + "_" + i)));
+				rpmd.setMapFrom((String) (args.get(ReportTemplateUploadProperty.JXLS_PARAM_MAP_VALUE + "_" + i)));
+				rpmd.setConvertEntityToMap(
+						Boolean.valueOf((String) (args.get(ReportTemplateUploadProperty.JXLS_PARAM_MAP_TO_MAP + "_" + i))));
+				rpmds[i] = rpmd;
 			}
 			if (mapCnt > 0) {
-				jxlsTemplate.setContextParamMap(cpmds);
+				jxlsTemplate.setParamMap(rpmds);
 			}
-			
-			String passwordAttributeName = (String)args.get(ReportTemplateUploadProperty.JXLS_PASSWORD_ATTRIBUTE_NAME);
+
+			String passwordAttributeName = (String) args.get(ReportTemplateUploadProperty.JXLS_PASSWORD_ATTRIBUTE_NAME);
 			if (StringUtil.isNotEmpty(passwordAttributeName)) {
 				jxlsTemplate.setPasswordAttributeName(passwordAttributeName);
 			}
-			
-			String logicType = (String)(args.get(ReportTemplateUploadProperty.JXLS_LOGIC_NAME));
-			if(StringUtil.isNotEmpty(logicType)) {
-				if(ReportTemplateUploadProperty.JXLS_LOGIC_NAME_JAVA.equals(logicType)){
+
+			String logicType = (String) (args.get(ReportTemplateUploadProperty.JXLS_LOGIC_NAME));
+			if (StringUtil.isNotEmpty(logicType)) {
+				if (ReportTemplateUploadProperty.JXLS_LOGIC_NAME_JAVA.equals(logicType)) {
 					JavaClassReportOutputLogicDefinition javaLogic = new JavaClassReportOutputLogicDefinition();
-					javaLogic.setClassName((String)(args.get(ReportTemplateUploadProperty.JXLS_LOGIC_VALUE)));
+					javaLogic.setClassName((String) (args.get(ReportTemplateUploadProperty.JXLS_LOGIC_VALUE)));
 					jxlsTemplate.setReportOutputLogicDefinition(javaLogic);
-				}else if(ReportTemplateUploadProperty.JXLS_LOGIC_NAME_GROOVY.equals(logicType)){
+				} else if (ReportTemplateUploadProperty.JXLS_LOGIC_NAME_GROOVY.equals(logicType)) {
 					GroovyReportOutputLogicDefinition groovyLogic = new GroovyReportOutputLogicDefinition();
-					groovyLogic.setScript((String)(args.get(ReportTemplateUploadProperty.JXLS_LOGIC_VALUE)));
+					groovyLogic.setScript((String) (args.get(ReportTemplateUploadProperty.JXLS_LOGIC_VALUE)));
 					jxlsTemplate.setReportOutputLogicDefinition(groovyLogic);
 				}
+			}
+
+			String templateName = (String) args.get(ReportTemplateUploadProperty.DEF_NAME);
+			if (StringUtil.isNotEmpty(templateName)) {
+				jxlsTemplate.setTemplateName(templateName);
 			}
 
 			return jxlsTemplate;
@@ -430,7 +441,8 @@ public class ReportTemplateUploadServiceImpl extends AdminUploadAction {
 
 	private DefinitionModifyResult update(ReportTemplateDefinition definition) {
 		TemplateDefinitionManager tdm = ManagerLocator.getInstance().getManager(TemplateDefinitionManager.class);
-		MetaDataAuditLogger.getLogger().logMetadata(MetaDataAction.UPDATE, ReportTemplateDefinition.class.getName(), "name:" + definition.getName());
+		MetaDataAuditLogger.getLogger().logMetadata(MetaDataAction.UPDATE, ReportTemplateDefinition.class.getName(),
+				"name:" + definition.getName());
 		return tdm.update(definition);
 	}
 
@@ -445,7 +457,7 @@ public class ReportTemplateUploadServiceImpl extends AdminUploadAction {
 	private static class LocaleInfo {
 		private String newLocale;
 		private String storedLocale;
-		private HashMap<String,Object> values = new HashMap<String, Object>();
+		private HashMap<String, Object> values = new HashMap<String, Object>();
 		private File file;
 
 		public LocaleInfo(String locale) {
@@ -455,7 +467,8 @@ public class ReportTemplateUploadServiceImpl extends AdminUploadAction {
 	}
 
 	private static String resourceString(String suffix, Object... arguments) {
-		return AdminResourceBundleUtil.resourceString("metadata.template.ReportTemplateUploadServiceImpl." + suffix, arguments);
+		return AdminResourceBundleUtil.resourceString("metadata.template.ReportTemplateUploadServiceImpl." + suffix,
+				arguments);
 	}
 
 }

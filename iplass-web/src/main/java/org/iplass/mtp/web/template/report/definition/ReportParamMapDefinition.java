@@ -28,7 +28,10 @@ public class ReportParamMapDefinition implements Serializable {
 
 	private String name;
 	private String mapFrom;
+	//Jasper用ParamType指定
 	private String paramType;
+	//Jxls用Map変換フラグ
+	private boolean convertEntityToMap;
 
 	/**
 	 * @return name
@@ -66,5 +69,13 @@ public class ReportParamMapDefinition implements Serializable {
 
 	public void setParamType(String paramType) {
 		this.paramType = paramType;
+	}
+
+	public boolean isConvertEntityToMap() {
+		return convertEntityToMap;
+	}
+
+	public void setConvertEntityToMap(boolean convertEntityToMap) {
+		this.convertEntityToMap = convertEntityToMap;
 	}
 }

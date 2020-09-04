@@ -35,9 +35,11 @@ public class JxlsReportType extends ReportType {
 	
 	private ReportOutputLogicDefinition reportOutputLogicDefinition;
 	
-	private JxlsContextParamMapDefinition[] contextParamMap;
+	private ReportParamMapDefinition[] paramMap;
 	
 	private String passwordAttributeName;
+	
+	private String templateName;
 
 	public ReportOutputLogicDefinition getReportOutputLogicDefinition() {
 		return reportOutputLogicDefinition;
@@ -47,12 +49,12 @@ public class JxlsReportType extends ReportType {
 		this.reportOutputLogicDefinition = reportOutputLogicDefinition;
 	}
 
-	public JxlsContextParamMapDefinition[] getContextParamMap() {
-		return contextParamMap;
+	public ReportParamMapDefinition[] getParamMap() {
+		return paramMap;
 	}
 
-	public void setContextParamMap(JxlsContextParamMapDefinition[] contextParamMap) {
-		this.contextParamMap = contextParamMap;
+	public void setParamMap(ReportParamMapDefinition[] paramMap) {
+		this.paramMap = paramMap;
 	}
 
 	public String getPasswordAttributeName() {
@@ -61,6 +63,14 @@ public class JxlsReportType extends ReportType {
 
 	public void setPasswordAttributeName(String passwordAttributeName) {
 		this.passwordAttributeName = passwordAttributeName;
+	}
+
+	public String getTemplateName() {
+		return templateName;
+	}
+
+	public void setTemplateName(String templateName) {
+		this.templateName = templateName;
 	}
 
 }

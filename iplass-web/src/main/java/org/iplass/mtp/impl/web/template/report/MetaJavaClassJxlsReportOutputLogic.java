@@ -19,9 +19,8 @@
  */
 package org.iplass.mtp.impl.web.template.report;
 
-import org.iplass.mtp.entity.EntityRuntimeException;
+import org.iplass.mtp.impl.web.template.TemplateRuntimeException;
 import org.iplass.mtp.web.template.report.JxlsReportOutputLogic;
-import org.iplass.mtp.web.template.report.MtpJxlsHelper;
 import org.iplass.mtp.web.template.report.definition.JavaClassReportOutputLogicDefinition;
 import org.iplass.mtp.web.template.report.definition.ReportOutputLogicDefinition;
 import org.jxls.common.Context;
@@ -74,11 +73,11 @@ public class MetaJavaClassJxlsReportOutputLogic extends MetaJxlsReportOutputLogi
 			try {
 				outputLogic = (JxlsReportOutputLogic) Class.forName(className).newInstance();
 			} catch (InstantiationException e) {
-				throw new EntityRuntimeException("can not instantiate " + className, e);
+				throw new TemplateRuntimeException("can not instantiate " + className, e);
 			} catch (IllegalAccessException e) {
-				throw new EntityRuntimeException("can not instantiate " + className, e);
+				throw new TemplateRuntimeException("can not instantiate " + className, e);
 			} catch (ClassNotFoundException e) {
-				throw new EntityRuntimeException("class not found:" + className, e);
+				throw new TemplateRuntimeException("class not found:" + className, e);
 			}
 		}
 
@@ -87,8 +86,8 @@ public class MetaJavaClassJxlsReportOutputLogic extends MetaJxlsReportOutputLogi
 		}
 
 		@Override
-		public void outputReport(Transformer transformer, Context context, MtpJxlsHelper jxlsHelper) {
-			outputLogic.reportWrite(transformer, context, jxlsHelper);
+		public void outputReport(Transformer transformer, Context context) {
+			outputLogic.reportWrite(transformer, context);
 		}
 	}
 

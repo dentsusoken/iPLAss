@@ -21,7 +21,6 @@
 package org.iplass.mtp.impl.web.template.report;
 
 import org.iplass.mtp.impl.metadata.MetaData;
-import org.iplass.mtp.impl.metadata.MetaDataConfig;
 import org.iplass.mtp.impl.report.JasperReportingOutputModel;
 import org.iplass.mtp.impl.report.ReportingOutputModel;
 import org.iplass.mtp.impl.util.ObjectUtil;
@@ -115,7 +114,7 @@ public class MetaJasperReportType extends MetaReportType {
 	}
 
 	@Override
-	public ReportTypeRuntime createRuntime(MetaDataConfig metaDataConfig) {
+	public ReportTypeRuntime createRuntime() {
 		return new JasperReportTypeRuntime();
 	}
 	

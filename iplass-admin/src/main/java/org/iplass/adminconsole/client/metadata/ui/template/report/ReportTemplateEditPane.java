@@ -46,7 +46,6 @@ import org.iplass.mtp.web.template.definition.TemplateDefinition;
 import org.iplass.mtp.web.template.report.definition.GroovyReportOutputLogicDefinition;
 import org.iplass.mtp.web.template.report.definition.JasperReportType;
 import org.iplass.mtp.web.template.report.definition.JavaClassReportOutputLogicDefinition;
-import org.iplass.mtp.web.template.report.definition.JxlsContextParamMapDefinition;
 import org.iplass.mtp.web.template.report.definition.JxlsReportType;
 import org.iplass.mtp.web.template.report.definition.LocalizedReportDefinition;
 import org.iplass.mtp.web.template.report.definition.OutputFileType;
@@ -346,7 +345,7 @@ public class ReportTemplateEditPane extends TemplateTypeEditPane implements HasE
 			jxlsTemplate = jxlsReportOutputLogicPane.getEditDefinition(jxlsTemplate);
 			
 			//ContextParamMapping
-			jxlsTemplate.setContextParamMap(jxlsContextParamMapPane.getContextParamMap());
+			jxlsTemplate.setParamMap(jxlsContextParamMapPane.getParamMap());
 			
 			repTemplate.setReportType(jxlsTemplate);
 		}
@@ -485,13 +484,13 @@ public class ReportTemplateEditPane extends TemplateTypeEditPane implements HasE
 					}
 				}
 				
-				JxlsContextParamMapDefinition[] contextParamMap = jxlsRepo.getContextParamMap();
+				ReportParamMapDefinition[] paramMap = jxlsRepo.getParamMap();
 				int i =0;
-				if (contextParamMap != null) {
-					for(JxlsContextParamMapDefinition jcpmd : contextParamMap) {
-						addUploadParameter(prefix + ReportTemplateUploadProperty.JXLS_PARAM_MAP_KEY+"_"+i, jcpmd.getKey());
-						addUploadParameter(prefix + ReportTemplateUploadProperty.JXLS_PARAM_MAP_VALUE+"_"+i, jcpmd.getMapFrom());
-						addUploadParameter(prefix + ReportTemplateUploadProperty.JXLS_PARAM_MAP_TO_MAP + "_"+i, String.valueOf( jcpmd.isConvertEntityToMap()));
+				if (paramMap != null) {
+					for(ReportParamMapDefinition rpmd : paramMap) {
+						addUploadParameter(prefix + ReportTemplateUploadProperty.JXLS_PARAM_MAP_NAME+"_"+i, rpmd.getName());
+						addUploadParameter(prefix + ReportTemplateUploadProperty.JXLS_PARAM_MAP_VALUE+"_"+i, rpmd.getMapFrom());
+						addUploadParameter(prefix + ReportTemplateUploadProperty.JXLS_PARAM_MAP_TO_MAP + "_"+i, String.valueOf( rpmd.isConvertEntityToMap()));
 						i++;
 					}
 				}
@@ -567,7 +566,7 @@ public class ReportTemplateEditPane extends TemplateTypeEditPane implements HasE
 			JxlsReportType jxlsRepo = (JxlsReportType)type;
 			jxlsPasswordAttributeNameField.setValue(jxlsRepo.getPasswordAttributeName());
 			jxlsReportOutputLogicPane.setDefinition(jxlsRepo);
-			jxlsContextParamMapPane.setContextParamMap(jxlsRepo.getContextParamMap());
+			jxlsContextParamMapPane.setParamMap(jxlsRepo.getParamMap());
 			removeMembers(jasperAttributeForm, jasperParamMapPane);
 			removeMembers(poiPasswordAttributeNameForm, reportOutPane);
 			beforeReportType = JxlsReportType.class.getName();
@@ -668,7 +667,7 @@ public class ReportTemplateEditPane extends TemplateTypeEditPane implements HasE
 			//JXLS用出力設定
 			jxlsTemplate = jxlsReportOutputLogicPane.getEditDefinition(jxlsTemplate);
 			//ContextParamMapping
-			jxlsTemplate.setContextParamMap(jxlsContextParamMapPane.getContextParamMap());
+			jxlsTemplate.setParamMap(jxlsContextParamMapPane.getParamMap());
 
 			definition.setReportType(jxlsTemplate);
 		}

@@ -22,7 +22,6 @@ package org.iplass.mtp.impl.web.template.report;
 import javax.xml.bind.annotation.XmlSeeAlso;
 
 import org.iplass.mtp.impl.metadata.MetaData;
-import org.iplass.mtp.web.template.report.MtpJxlsHelper;
 import org.iplass.mtp.web.template.report.definition.ReportOutputLogicDefinition;
 import org.jxls.common.Context;
 import org.jxls.transform.Transformer;
@@ -45,7 +44,7 @@ public abstract class MetaJxlsReportOutputLogic implements MetaData {
 	
 	public abstract class JxlsReportOutputLogicRuntime /*implements MetaDataRuntime*/ {
 		
-		public abstract void outputReport(Transformer transformer, Context context, MtpJxlsHelper jxlsHelper);
+		public abstract void outputReport(Transformer transformer, Context context);
 		
 		public MetaJxlsReportOutputLogic getMetaData() {
 			return MetaJxlsReportOutputLogic.this;

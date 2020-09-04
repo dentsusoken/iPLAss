@@ -29,7 +29,7 @@ import org.iplass.adminconsole.client.base.ui.widget.MtpDialog;
 import org.iplass.adminconsole.client.base.ui.widget.form.MtpForm;
 import org.iplass.adminconsole.client.base.ui.widget.form.MtpTextItem;
 import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
-import org.iplass.mtp.web.template.report.definition.JxlsContextParamMapDefinition;
+import org.iplass.mtp.web.template.report.definition.ReportParamMapDefinition;
 
 import com.smartgwt.client.widgets.IButton;
 import com.smartgwt.client.widgets.events.ClickEvent;
@@ -86,10 +86,10 @@ public class JxlsReportParamMapEditDialog extends MtpDialog {
 		footer.setMembers(save, cancel);
 	}
 
-	public void setContextParamMap(JxlsContextParamMapDefinition jcpmd) {
-		keyField.setValue(jcpmd.getKey());
-		mapFromField.setValue(jcpmd.getMapFrom());
-		toMapField.setValue(jcpmd.isConvertEntityToMap());
+	public void setParamMap(ReportParamMapDefinition rpmd) {
+		keyField.setValue(rpmd.getName());
+		mapFromField.setValue(rpmd.getMapFrom());
+		toMapField.setValue(rpmd.isConvertEntityToMap());
 	}
 
 	/**
@@ -106,13 +106,13 @@ public class JxlsReportParamMapEditDialog extends MtpDialog {
 	}
 
 	private void getEditedParamMap() {
-		JxlsContextParamMapDefinition jcpmd = new JxlsContextParamMapDefinition();
-		jcpmd.setKey(SmartGWTUtil.getStringValue(keyField));
-		jcpmd.setMapFrom(SmartGWTUtil.getStringValue(mapFromField));
-		jcpmd.setConvertEntityToMap(SmartGWTUtil.getBooleanValue(toMapField));
+		ReportParamMapDefinition rpmd = new ReportParamMapDefinition();
+		rpmd.setName(SmartGWTUtil.getStringValue(keyField));
+		rpmd.setMapFrom(SmartGWTUtil.getStringValue(mapFromField));
+		rpmd.setConvertEntityToMap(SmartGWTUtil.getBooleanValue(toMapField));
 
 		//データ変更を通知
-		fireDataChanged(jcpmd);
+		fireDataChanged(rpmd);
 
 		//ダイアログ消去
 		destroy();
@@ -121,9 +121,9 @@ public class JxlsReportParamMapEditDialog extends MtpDialog {
 	/**
 	 * データ変更通知処理
 	 */
-	private void fireDataChanged(JxlsContextParamMapDefinition jcpmd) {
+	private void fireDataChanged(ReportParamMapDefinition rpmd) {
 		DataChangedEvent event = new DataChangedEvent();
-		event.setValueObject(jcpmd);
+		event.setValueObject(rpmd);
 		for (DataChangedHandler handler : handlers) {
 			handler.onDataChanged(event);
 		}

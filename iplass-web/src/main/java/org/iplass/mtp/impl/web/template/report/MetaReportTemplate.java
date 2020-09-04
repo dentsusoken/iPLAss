@@ -213,7 +213,7 @@ public class MetaReportTemplate extends MetaTemplate {
 						ReportSet reportSet = new ReportSet();
 						reportSet.reportEngine = _reportEngine;
 						reportSet.binary = mlr.getBinary();
-						reportSet.reportTypeRuntime = mlr.getReportType().createRuntime(null);
+						reportSet.reportTypeRuntime = mlr.getReportType().createRuntime();
 						reportSet.fileName = mlr.getFileName();
 
 						reportSetMap.put(mlr.getLocaleName(), reportSet);
@@ -226,7 +226,7 @@ public class MetaReportTemplate extends MetaTemplate {
 					throw new TemplateRuntimeException("Report tempalte is outside of support . templateName:" + getName());
 				}
 				// ReportTypeRuntimeの生成
-				reportTypeRuntime = reportType.createRuntime(null);
+				reportTypeRuntime = reportType.createRuntime();
 			} catch (Exception e) {
 				setIllegalStateException(new RuntimeException(e));
 			}
