@@ -55,7 +55,7 @@ ext {
 		'org.apache.poi:poi-scratchpad': '4.1.2',
 		'org.apache.poi:poi-ooxml': '4.1.2',
 		
-		'org.codehaus.groovy:groovy-bom': '3.0.4',//by bom
+		'org.codehaus.groovy:groovy-bom': '3.0.5',//by bom
 		
 		'com.fasterxml.jackson:jackson-bom': '2.11.2',//by bom
 		
