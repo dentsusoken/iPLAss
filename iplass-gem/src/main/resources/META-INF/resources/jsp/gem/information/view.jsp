@@ -126,18 +126,17 @@ $(function() {
 <%		} else { %>
 	var opt = { readOnly: true, allowedContent:<%=enableHtmlTag%> };
 <%		} %>
-	var parent = $("textarea[name='infomation_content']").parent().hide();
+	if (typeof opt.extraPlugins === "undefined") opt.extraPlugins = "autogrow";
+	if (typeof opt.autoGrow_onStartup === "undefined") opt.autoGrow_onStartup = true;	
 	var readyOpt = {
 		on: {
 			instanceReady: function (evt) {
-				var id = evt.editor.id;
-				var contents = $("#cke_infomation_content").hide().find("#" + id + "_contents");
-				var wrapper = $("<div>").attr("style", contents.attr("style")).appendTo(parent)
-				var preview = $("<iframe id='preview_infomation_content' style='width:100%; height:100%;' frameborder='0' />");
-				wrapper.append(preview);
-				var html = contents.children("iframe").contents().find("html").html();
-				preview.contents().find("html").html(html);
-				parent.show();
+				<%-- 全体border、ツールバーを非表示 --%>
+				var containerId = evt.editor.container.$.id;
+				var editorId = evt.editor.id;
+				$("#" + containerId).css("border", "none");
+				$("#" + editorId + "_top").hide();
+				$("#" + editorId + "_bottom").hide();
 			}
 		}
 	}
