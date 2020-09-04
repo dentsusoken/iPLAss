@@ -31,6 +31,7 @@ import javax.servlet.jsp.PageContext;
 
 import org.iplass.mtp.impl.metadata.MetaData;
 import org.iplass.mtp.impl.util.ObjectUtil;
+import org.iplass.mtp.impl.view.top.TopViewHandler;
 import org.iplass.mtp.view.generic.ViewConst;
 import org.iplass.mtp.view.top.parts.SeparatorParts;
 import org.iplass.mtp.view.top.parts.TopViewParts;
@@ -120,8 +121,8 @@ public class MetaSeparatorParts extends MetaTopViewParts {
 	}
 
 	@Override
-	public TopViewPartsHandler createRuntime() {
-		return new SeparatorPartsHandler(this);
+	public TopViewPartsHandler createRuntime(TopViewHandler topView) {
+		return new SeparatorPartsHandler(topView, this);
 	}
 
 	/**
@@ -140,10 +141,10 @@ public class MetaSeparatorParts extends MetaTopViewParts {
 		 * コンストラクタ
 		 * @param metadata
 		 */
-		public SeparatorPartsHandler(MetaSeparatorParts metadata) {
+		public SeparatorPartsHandler(TopViewHandler topView, MetaSeparatorParts metadata) {
 			super(metadata);
-			if (metadata.getLeftParts() != null) leftParts = metadata.getLeftParts().createRuntime();
-			if (metadata.getRightParts() != null) rightParts = metadata.getRightParts().createRuntime();
+			if (metadata.getLeftParts() != null) leftParts = metadata.getLeftParts().createRuntime(topView);
+			if (metadata.getRightParts() != null) rightParts = metadata.getRightParts().createRuntime(topView);
 		}
 
 		@Override

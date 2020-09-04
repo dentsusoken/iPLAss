@@ -1070,6 +1070,7 @@ LocaleInfo.ui_metadata_top_item_EntityListItem_failedGetScreenInfo = "画面情�
 LocaleInfo.ui_metadata_top_item_EntityListItem_failedGetFileterInfo = "フィルタ情報の取得に失敗しました。<br/>原因：";
 LocaleInfo.ui_metadata_top_item_FulltextSearchViewItem_failed = "失敗";
 LocaleInfo.ui_metadata_top_item_FulltextSearchViewItem_failedGetScreenInfo = "画面情報の取得に失敗しました。<br/>原因：";
+LocaleInfo.ui_metadata_top_item_InformationItem_detailCustomStyleHint = "<p>データ表示時のhtml要素スタイルをカスタマイズします。</p><p>GroovyTemplate形式で指定します。</p><br/><br/><p>Base Variable</p><ul><li>out : Writer</li><li>em : EntityManager</li><li>edm : EntityDefinitionManager</li><li>auth : AuthContext</li></ul><p>Specific Variable</p><ul><li>today : Current date. Instance of java.sql.Timestamp.</li><li>entity : Target information entity data.</li></ul>";
 LocaleInfo.ui_metadata_top_item_InformationItem_titleCustom = "タイトルをカスタマイズしたい場合に指定します。";
 LocaleInfo.ui_metadata_top_item_InformationItem_titleEachLang = "言語毎のタイトルを設定します。";
 LocaleInfo.ui_metadata_top_item_InformationItem_iconTagComment = "Fontawsomeによるアイコン用のタグを設定できます。";

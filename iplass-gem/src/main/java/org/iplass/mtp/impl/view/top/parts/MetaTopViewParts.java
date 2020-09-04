@@ -23,6 +23,7 @@ package org.iplass.mtp.impl.view.top.parts;
 import javax.xml.bind.annotation.XmlSeeAlso;
 
 import org.iplass.mtp.impl.metadata.MetaData;
+import org.iplass.mtp.impl.view.top.TopViewHandler;
 import org.iplass.mtp.view.top.parts.ActionParts;
 import org.iplass.mtp.view.top.parts.ApplicationMaintenanceParts;
 import org.iplass.mtp.view.top.parts.CsvDownloadSettingsParts;
@@ -102,5 +103,5 @@ public abstract class MetaTopViewParts implements MetaData {
 	 * ランタイムを生成します。
 	 * @return ランタイム
 	 */
-	public abstract TopViewPartsHandler createRuntime();
+	public abstract TopViewPartsHandler createRuntime(TopViewHandler topView);
 }

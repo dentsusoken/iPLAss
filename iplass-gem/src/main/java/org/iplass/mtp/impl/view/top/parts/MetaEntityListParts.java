@@ -34,6 +34,7 @@ import org.iplass.mtp.impl.i18n.I18nUtil;
 import org.iplass.mtp.impl.i18n.MetaLocalizedString;
 import org.iplass.mtp.impl.metadata.MetaData;
 import org.iplass.mtp.impl.util.ObjectUtil;
+import org.iplass.mtp.impl.view.top.TopViewHandler;
 import org.iplass.mtp.impl.web.WebUtil;
 import org.iplass.mtp.util.StringUtil;
 import org.iplass.mtp.view.generic.EntityView;
@@ -282,7 +283,7 @@ public class MetaEntityListParts extends MetaTemplateParts {
 	}
 
 	@Override
-	public TemplatePartsHandler createRuntime() {
+	public TemplatePartsHandler createRuntime(TopViewHandler topView) {
 		return new TemplatePartsHandler(this) {
 			private static final String TEMPLATE_PATH = "gem/generic/search/list";
 			private static final String TEMPLATE_PATH_WIDGET = "gem/generic/search/listWidget";

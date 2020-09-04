@@ -139,14 +139,14 @@
 %>
 <script type="text/javascript">
 $(function() {
-<%if (StringUtil.isNotBlank(editor.getRichtextEditorOption())) {%>
+<%		if (StringUtil.isNotBlank(editor.getRichtextEditorOption())) { %>
 	var opt = <%=editor.getRichtextEditorOption()%>;
 	if (typeof opt.readOnly === "undefined") opt.readOnly = true;
-<%} else {%>
+<%		} else { %>
 	var opt = { readOnly: true, allowedContent:<%=allowedContent%> };
-<%}%>
+<%		} %>
 
-<% if (editor.isHideRichtextEditorToolBar()) { %>
+<%		if (editor.isHideRichtextEditorToolBar()) { %>
 	var parent = $("textarea[name='<%=StringUtil.escapeJavaScript(propName)%>']").parent().hide();
 	var readyOpt = {
 		on: {
@@ -163,7 +163,7 @@ $(function() {
 		}
 	}
 	$.extend(opt, readyOpt);
-<% } %>
+<%		} %>
 
 	$("textarea[name='<%=StringUtil.escapeJavaScript(propName)%>']").ckeditor(
 		function() {}, opt

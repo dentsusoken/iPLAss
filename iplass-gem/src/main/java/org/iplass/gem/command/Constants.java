@@ -20,7 +20,7 @@
 
 package org.iplass.gem.command;
 
-public class Constants {
+public interface Constants {
 
 	public static final String ID = "id";
 
@@ -237,10 +237,9 @@ public class Constants {
 	// お知らせ用
 	public static final String DATA_ENTITY = "entity";
 	public static final String INFO_SETTING = org.iplass.mtp.impl.view.top.parts.Constants.INFO_SETTING;
-	public static final String INFO_TITLE = "infoTitle";
-	public static final String INFO_TIMERANGE = "infoTimeRange";
 	public static final String INFO_PASSWORD_WARNING = "infoPasswordWarning";
 	public static final String INFO_PASSWORD_REMAINING_DAYS = "infoPasswordRemainingDays";
+	public static final String INFO_DETAIL_CUSTOM_STYLE = "infoDetailCustomStyle";
 
 	// カレンダー用
 	public static final String CALENDAR_NAME = org.iplass.mtp.impl.view.top.parts.Constants.CALENDAR_NAME;

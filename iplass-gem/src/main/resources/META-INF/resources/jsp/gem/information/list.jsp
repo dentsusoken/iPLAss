@@ -55,15 +55,10 @@
 	@SuppressWarnings("unchecked") List<Entity> data = (List<Entity>) request.getAttribute(Constants.DATA);
 
 	//タイトル
-	String dispTitle = null;
-	String infoTitle = null;
-	dispTitle = TemplateUtil.getMultilingualString(parts.getTitle(), parts.getLocalizedTitleList());
-	if (dispTitle != null && !dispTitle.isEmpty()) {
-		infoTitle = dispTitle;
-	} else {
+	String dispTitle = TemplateUtil.getMultilingualString(parts.getTitle(), parts.getLocalizedTitleList());
+	if (StringUtil.isEmpty(dispTitle)) {
 		//デフォルト
 		dispTitle = GemResourceBundleUtil.resourceString("information.list.newsList");
-		infoTitle = "";
 	}
 
 	//日時表示スタイル
@@ -82,15 +77,6 @@
 		format = DateUtil.getSimpleDateFormat(TemplateUtil.getLocaleFormat().getOutputDateFormat(), true);
 		thStyle = "none";
 	}
-
-	String infoTimeRange = null;
-	if (parts.getDispRange() != null) {
-		infoTimeRange = parts.getDispRange().name();
-	} else {
-		infoTimeRange = "";
-	}
-
-	boolean enableHtmlTag = parts.isEnableHtmlTag();
 
 	//パスワード期限警告
 	Boolean isPasswordWarning = (Boolean) request.getAttribute(Constants.INFO_PASSWORD_WARNING);
@@ -182,7 +168,7 @@ $(function() {
 });
 <%}%>
 function detail_onclick(oid, version) {
-	submitForm("${m:tcPath()}/<%=InformationViewCommand.ACTION_NAME%>", {oid: oid, version: version, infoTitle: "<%=StringUtil.escapeJavaScript(infoTitle)%>", infoTimeRange: "<%=infoTimeRange%>", enableHtmlTag: "<%=enableHtmlTag%>"});
+	submitForm("${m:tcPath()}/<%=InformationViewCommand.ACTION_NAME%>", {oid: oid, version: version});
 }
 </script>
 </div><!-- info-list -->

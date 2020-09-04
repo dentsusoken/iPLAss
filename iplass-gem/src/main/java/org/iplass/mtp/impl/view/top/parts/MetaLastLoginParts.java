@@ -22,6 +22,7 @@ package org.iplass.mtp.impl.view.top.parts;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.iplass.mtp.impl.view.top.TopViewHandler;
 import org.iplass.mtp.view.top.parts.LastLoginParts;
 import org.iplass.mtp.view.top.parts.TopViewParts;
 
@@ -44,7 +45,7 @@ public class MetaLastLoginParts extends MetaTemplateParts {
 	}
 
 	@Override
-	public TemplatePartsHandler createRuntime() {
+	public TemplatePartsHandler createRuntime(TopViewHandler topView) {
 		return new TemplatePartsHandler(this) {
 
 			private final String TEMPLATE_PATH = "gem/auth/LastLoginParts";

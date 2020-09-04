@@ -1,35 +1,49 @@
 /*
  * Copyright (C) 2011 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
- * 
+ *
  * Unless you have purchased a commercial license,
  * the following license terms apply:
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
 package org.iplass.mtp.impl.view.top.parts;
 
+import java.io.IOException;
+import java.io.StringWriter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
 import org.iplass.mtp.command.RequestContext;
+import org.iplass.mtp.entity.Entity;
+import org.iplass.mtp.impl.core.ExecuteContext;
 import org.iplass.mtp.impl.i18n.I18nUtil;
 import org.iplass.mtp.impl.i18n.MetaLocalizedString;
 import org.iplass.mtp.impl.metadata.MetaData;
+import org.iplass.mtp.impl.script.GroovyScriptEngine;
+import org.iplass.mtp.impl.script.ScriptEngine;
+import org.iplass.mtp.impl.script.template.GroovyTemplate;
+import org.iplass.mtp.impl.script.template.GroovyTemplateBinding;
+import org.iplass.mtp.impl.script.template.GroovyTemplateCompiler;
 import org.iplass.mtp.impl.util.ObjectUtil;
+import org.iplass.mtp.impl.view.top.TopViewHandler;
+import org.iplass.mtp.util.DateUtil;
+import org.iplass.mtp.util.StringUtil;
 import org.iplass.mtp.view.generic.editor.DateTimePropertyEditor.TimeDispRange;
 import org.iplass.mtp.view.top.parts.InformationParts;
 import org.iplass.mtp.view.top.parts.TopViewParts;
@@ -57,7 +71,7 @@ public class MetaInformationParts extends MetaActionParts {
 	private String title;
 
 	/** タイトル多言語設定情報 */
-	private List<MetaLocalizedString> localizedTitleList = new ArrayList<MetaLocalizedString>();
+	private List<MetaLocalizedString> localizedTitleList = new ArrayList<>();
 
 	/** アイコンタグ */
 	private String iconTag;
@@ -75,7 +89,7 @@ public class MetaInformationParts extends MetaActionParts {
 	private String passwordWarningMessage;
 
 	/** パスワード警告メッセージ多言語設定情報 */
-	private List<MetaLocalizedString> localizedPasswordWarningMessageList = new ArrayList<MetaLocalizedString>();;
+	private List<MetaLocalizedString> localizedPasswordWarningMessageList = new ArrayList<>();;
 
 	/** パスワード警告表示領域スタイルクラス */
 	private String passwordWarnAreaStyleClass;
@@ -85,6 +99,15 @@ public class MetaInformationParts extends MetaActionParts {
 
 	/** HTML出力可否 */
 	private boolean availableHtmlTag = false;
+
+	/** リッチテキストエディタの利用 */
+	private boolean useRichtextEditor;
+
+	/** リッチテキストエディタオプション */
+	private String richtextEditorOption;
+
+	/** 詳細画面表示カスタムスタイル */
+	private String detailCustomStyle;
 
 	/** 一覧の表示件数 */
 	private Integer numberOfDisplay;
@@ -266,6 +289,54 @@ public class MetaInformationParts extends MetaActionParts {
 	}
 
 	/**
+	 * リッチテキストエディタの利用を取得します。
+	 * @return リッチテキストエディタの利用
+	 */
+	public boolean isUseRichtextEditor() {
+		return useRichtextEditor;
+	}
+
+	/**
+	 * リッチテキストエディタの利用を設定します。
+	 * @param useRichtextEditor リッチテキストエディタの利用
+	 */
+	public void setUseRichtextEditor(boolean useRichtextEditor) {
+		this.useRichtextEditor = useRichtextEditor;
+	}
+
+	/**
+	 * リッチテキストエディタオプションを取得します。
+	 * @return リッチテキストエディタオプション
+	 */
+	public String getRichtextEditorOption() {
+		return richtextEditorOption;
+	}
+
+	/**
+	 * リッチテキストエディタオプションを設定します。
+	 * @param richtextEditorOption リッチテキストエディタオプション
+	 */
+	public void setRichtextEditorOption(String richtextEditorOption) {
+		this.richtextEditorOption = richtextEditorOption;
+	}
+
+	/**
+	 * 詳細画面表示カスタムスタイルを取得します。
+	 * @return 詳細画面表示カスタムスタイル
+	 */
+	public String getDetailCustomStyle() {
+		return detailCustomStyle;
+	}
+
+	/**
+	 * 詳細画面表示カスタムスタイルを設定します。
+	 * @param detailCustomStyle 詳細画面表示カスタムスタイル
+	 */
+	public void setDetailCustomStyle(String detailCustomStyle) {
+		this.detailCustomStyle = detailCustomStyle;
+	}
+
+	/**
 	 * 一覧の表示件数を取得します。
 	 * @return 一覧の表示件数
 	 */
@@ -299,6 +370,9 @@ public class MetaInformationParts extends MetaActionParts {
 		passwordWarnAreaStyleClass = definition.getPasswordWarnAreaStyleClass();
 		passwordWarnMarkStyleClass = definition.getPasswordWarnMarkStyleClass();
 		availableHtmlTag = definition.isEnableHtmlTag();
+		useRichtextEditor = definition.isUseRichtextEditor();
+		richtextEditorOption = definition.getRichtextEditorOption();
+		detailCustomStyle = definition.getDetailCustomStyle();
 		numberOfDisplay = definition.getNumberOfDisplay();
 	}
 
@@ -316,6 +390,9 @@ public class MetaInformationParts extends MetaActionParts {
 		parts.setPasswordWarnAreaStyleClass(passwordWarnAreaStyleClass);
 		parts.setPasswordWarnMarkStyleClass(passwordWarnMarkStyleClass);
 		parts.setEnableHtmlTag(availableHtmlTag);
+		parts.setUseRichtextEditor(useRichtextEditor);
+		parts.setRichtextEditorOption(richtextEditorOption);
+		parts.setDetailCustomStyle(detailCustomStyle);
 		parts.setNumberOfDisplay(numberOfDisplay);
 
 		return parts;
@@ -327,41 +404,89 @@ public class MetaInformationParts extends MetaActionParts {
 	}
 
 	@Override
-	public ActionPartsHandler createRuntime() {
-		return new ActionPartsHandler(this) {
-			private static final String ACTION_NAME_GEM = "gem/information/list";
-
-			@Override
-			public boolean isParts() {
-				return true;
-			}
-
-			@Override
-			public boolean isWidget() {
-				return false;
-			}
-
-			@Override
-			public String getActionNameForParts(HttpServletRequest req) {
-				return ACTION_NAME_GEM;
-			}
-
-			@Override
-			public String getActionNameForWidget(HttpServletRequest req) {
-				return null;
-			}
-
-			@Override
-			public void setAttribute(HttpServletRequest req) {
-				RequestContext request = TemplateUtil.getRequestContext();
-				request.setAttribute(Constants.INFO_SETTING, currentConfig());
-			}
-
-			@Override
-			public void clearAttribute(HttpServletRequest req) {
-				RequestContext request = TemplateUtil.getRequestContext();
-				request.setAttribute(Constants.INFO_SETTING, null);
-			}
-		};
+	public ActionPartsHandler createRuntime(TopViewHandler topView) {
+		return new InformationPartsHandler(this, topView);
 	}
+
+	public class InformationPartsHandler extends ActionPartsHandler {
+
+		private static final String ACTION_NAME_GEM = "gem/information/list";
+
+		private static final String SCRIPT_PREFIX_CUSTOM_STYLE = "InformationPartsHandler_customStyle";
+
+		/** 詳細画面表示カスタムスタイル */
+		private final GroovyTemplate detailCustomStyle;
+
+		public InformationPartsHandler(MetaInformationParts meta, TopViewHandler topView) {
+			super(meta);
+			if (meta.detailCustomStyle != null) {
+				ScriptEngine scriptEngine = ExecuteContext.getCurrentContext().getTenantContext().getScriptEngine();
+				String templateName = SCRIPT_PREFIX_CUSTOM_STYLE + "_" + topView.getMetaData().getId()
+						+ GroovyTemplateCompiler.randomName().replace("-", "_");
+				detailCustomStyle = GroovyTemplateCompiler.compile(
+						meta.detailCustomStyle, templateName, (GroovyScriptEngine)scriptEngine);
+			} else {
+				detailCustomStyle = null;
+			}
+		}
+
+		@Override
+		public boolean isParts() {
+			return true;
+		}
+
+		@Override
+		public boolean isWidget() {
+			return false;
+		}
+
+		@Override
+		public String getActionNameForParts(HttpServletRequest req) {
+			return ACTION_NAME_GEM;
+		}
+
+		@Override
+		public String getActionNameForWidget(HttpServletRequest req) {
+			return null;
+		}
+
+		@Override
+		public void setAttribute(HttpServletRequest req) {
+			RequestContext request = TemplateUtil.getRequestContext();
+			request.setAttribute(Constants.INFO_SETTING, currentConfig());
+		}
+
+		@Override
+		public void clearAttribute(HttpServletRequest req) {
+			RequestContext request = TemplateUtil.getRequestContext();
+			request.setAttribute(Constants.INFO_SETTING, null);
+		}
+
+		public String getDetailCustomStyle(Entity entity) {
+			if (detailCustomStyle == null) {
+				//スクリプトが未指定の場合はそのまま
+				return "";
+			}
+
+			Map<String, Object> bindings = new HashMap<>();
+			bindings.put("today", DateUtil.getCurrentTimestamp());
+			bindings.put("entity", entity);
+
+			StringWriter sw = new StringWriter();
+			try {
+				detailCustomStyle.doTemplate(new GroovyTemplateBinding(sw, bindings));
+			} catch (IOException e) {
+				//発生しえないが、、
+				throw new RuntimeException(e);
+			}
+			String style = sw.toString();
+			if (StringUtil.isNotEmpty(style)) {
+				//先頭、末尾の空白、改行、タブを削除
+				style = StringUtil.removeLineFeedCode(StringUtil.stripToEmpty(style)).replaceAll("\t", "");
+			}
+
+			return style;
+		}
+	}
+
 }
