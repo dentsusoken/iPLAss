@@ -157,7 +157,7 @@ window.imgDir = '<%=rsPath%>images/';
 <script src="<%=rsPath%>mtpadmin.nocache.js?cv=<%=TemplateUtil.getAPIVersion()%>"></script>
 
 <%
-	String aceVersion = "1.4.5";
+	String aceVersion = "1.4.11";
 
 	//switch ace source mode, [src-min-noconflict, src-noconflict, src-min, src]
 	//String aceSrcMode = "src-min-noconflict";
