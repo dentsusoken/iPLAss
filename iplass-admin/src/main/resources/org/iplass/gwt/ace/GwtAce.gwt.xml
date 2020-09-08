@@ -3,9 +3,6 @@
 <module>
 	<inherits name="com.google.gwt.user.User"/>
 
-	<!-- Guava(Google Core Libraries for Java)を利用する場合 -->
-	<inherits name="com.google.common.base.Base"/>
-
 	<!-- Load dinamically predefined styles in the library when the application starts -->
 	<stylesheet src="gwtace.css"/>
 

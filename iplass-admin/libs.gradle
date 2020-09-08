@@ -22,8 +22,7 @@ dependencies {
 	compileOnly fileTree(rootProject.ext.localLibDir) {
 		include 'smartgwt/**'
 	}
-	compileOnly sharedLib('com.google.guava:guava-gwt')
 
 	runtimeOnly "com.google.gwt:gwt-servlet:${gwtVersion}"
-	runtimeOnly sharedLib('com.google.code.gson:gson')
+
 }
