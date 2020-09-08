@@ -33,7 +33,7 @@ import com.smartgwt.client.widgets.layout.VStack;
 public abstract class MultiColumnDropLayout extends HLayout {
 
 	//getMemberの代替用
-	private List<ColumnLayout> cols = new ArrayList<ColumnLayout>();
+	private List<ColumnLayout> cols = new ArrayList<>();
 
 	/**
 	 * コンストラクタ
@@ -72,19 +72,21 @@ public abstract class MultiColumnDropLayout extends HLayout {
 	}
 
 	@Override
-	public void setDropTypes(String types) {
-		super.setDropTypes(types);
+	public Canvas setDropTypes(String types) {
+		Canvas canvas = super.setDropTypes(types);
 		for (ColumnLayout col : cols) {
 			col.setDropTypes(types);
 		}
+		return canvas;
 	}
 
 	@Override
-	public void setDropTypes(String... types) {
-		super.setDropTypes(types);
+	public Canvas setDropTypes(String... types) {
+		Canvas canvas = super.setDropTypes(types);
 		for (ColumnLayout col : cols) {
 			col.setDropTypes(types);
 		}
+		return canvas;
 	}
 
 	/**
@@ -136,6 +138,7 @@ public abstract class MultiColumnDropLayout extends HLayout {
 	/**
 	 * レイアウトの初期化。
 	 */
+	@Override
 	public void clear() {
 		for (ColumnLayout col : cols) {
 			for (Canvas canvas : col.getMembers()) {

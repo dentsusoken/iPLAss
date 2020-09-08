@@ -1,5 +1,5 @@
 ext {
-	gwtVersion = "2.8.2"
+	gwtVersion = "2.9.0"
 }
 
 configurations {
@@ -22,8 +22,7 @@ dependencies {
 	compileOnly fileTree(rootProject.ext.localLibDir) {
 		include 'smartgwt/**'
 	}
-	compileOnly sharedLib('com.google.guava:guava-gwt')
 
 	runtimeOnly "com.google.gwt:gwt-servlet:${gwtVersion}"
-	runtimeOnly sharedLib('com.google.code.gson:gson')
+
 }

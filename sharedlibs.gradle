@@ -73,8 +73,6 @@ ext {
 		'org.jgroups:jgroups': '4.0.19.Final',
 		
 		'com.googlecode.gwtupload:gwtupload': '1.0.3',
-		'com.google.guava:guava-gwt': '21.0',
-		'com.google.code.gson:gson': '2.6.2',
 		
 		'org.infinispan:infinispan-core': '9.1.6.Final',
 		'org.jboss.marshalling:jboss-marshalling-osgi': '2.0.6.Final',
@@ -90,7 +88,7 @@ ext {
 		'junit:junit': '4.12',
 		
 		//webjars(admin)
-		'org.webjars.npm:ace-builds': '1.4.5',
+		'org.webjars.npm:ace-builds': '1.4.11',
 		
 		//webjars(gem)
 		'org.webjars:jquery': '3.5.1',
