@@ -24,6 +24,7 @@ package org.iplass.adminconsole.client.base.ui.widget;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.logging.Logger;
 
 import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
 import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
@@ -42,6 +43,8 @@ import com.smartgwt.client.widgets.IButton;
 import com.smartgwt.client.widgets.WidgetCanvas;
 import com.smartgwt.client.widgets.events.ClickEvent;
 import com.smartgwt.client.widgets.events.ClickHandler;
+import com.smartgwt.client.widgets.events.DrawEvent;
+import com.smartgwt.client.widgets.events.DrawHandler;
 import com.smartgwt.client.widgets.events.ResizedEvent;
 import com.smartgwt.client.widgets.events.ResizedHandler;
 import com.smartgwt.client.widgets.form.DynamicForm;
@@ -56,6 +59,8 @@ import com.smartgwt.client.widgets.layout.SectionStackSection;
 import com.smartgwt.client.widgets.layout.VLayout;
 
 public class ScriptEditorDialog extends AbstractWindow {
+
+    private static final Logger logger = Logger.getLogger(ScriptEditorDialog.class.getName());
 
 	private static final String THEME_COOKIE_NAME = "iplass.editor.theme";
 
@@ -91,51 +96,26 @@ public class ScriptEditorDialog extends AbstractWindow {
 		setCanDragReposition(true);
 		centerInPage();
 
+		addDrawHandler(new DrawHandler() {
+
+			@Override
+			public void onDraw(DrawEvent event) {
+				logger.fine("ScriptEditorDialog onDraw.");
+
+				//初期表示時に高さがズレるため調整
+				adjustHeight();
+			}
+		});
 		addResizedHandler(new ResizedHandler() {
 
 			@Override
 			public void onResized(ResizedEvent event) {
+				logger.fine("ScriptEditorDialog onResized.");
+
 				//DragでのResizeのためEditorの再表示
 				editorPane.redisplay();
 
-				if (!test) {
-
-					Timer check = new Timer() {
-
-						@Override
-						public void run() {
-							if (editorPane.getVisibleHeight() != (hintPane.getVisibleHeight() + 0)) {
-								GWT.log("(editor, hint)=(" + editorPane.getVisibleHeight() + "," + (hintPane.getVisibleHeight() + 0) + ")");
-								//editorPane.setHeight(hintPane.getHeight() + 1);
-								Timer timer = new Timer() {
-
-									@Override
-									public void run() {
-										final int height = getHeight();
-										setHeight(height + 5);
-
-										Timer timer = new Timer() {
-
-											@Override
-											public void run() {
-												setHeight(height);
-												test = false;
-											}
-										};
-										timer.schedule(10);
-									}
-								};
-								timer.schedule(10);
-							} else {
-								GWT.log("normal status	 (editor, hint)=(" + editorPane.getInnerContentHeight() + "," + (hintPane.getInnerContentHeight() + 1) + ")"
-										+ ", (editor, hint)=(" + editorPane.getVisibleHeight() + "," + (hintPane.getVisibleHeight() + 1) + ")");
-								test = false;
-							}
-						}
-					};
-					test = true;
-					check.schedule(10);
-				}
+				adjustHeight();
 			}
 		});
 
@@ -151,7 +131,7 @@ public class ScriptEditorDialog extends AbstractWindow {
 		optionForm.setColWidths(70, 130, 70, 130, 50, "*");
 		header.addMember(optionForm);
 
-		LinkedHashMap<String, String> modeMap = new LinkedHashMap<String, String>();
+		LinkedHashMap<String, String> modeMap = new LinkedHashMap<>();
 		for (ScriptEditorDialogMode mode : ScriptEditorDialogMode.values()) {
 			modeMap.put(mode.name(), mode.getText());
 		}
@@ -168,7 +148,7 @@ public class ScriptEditorDialog extends AbstractWindow {
 			}
 		});
 
-		LinkedHashMap<String, String> themeMap = new LinkedHashMap<String, String>();
+		LinkedHashMap<String, String> themeMap = new LinkedHashMap<>();
 		for (EditorTheme theme : EditorTheme.values()) {
 			themeMap.put(theme.name(), theme.getText());
 		}
@@ -277,6 +257,48 @@ public class ScriptEditorDialog extends AbstractWindow {
 	 */
 	public void setText(String text) {
 		editorPane.setText(text);
+	}
+
+	private void adjustHeight() {
+
+		if (!test) {
+
+			Timer check = new Timer() {
+
+				@Override
+				public void run() {
+					if (editorPane.getVisibleHeight() != (hintPane.getVisibleHeight() + 0)) {
+						logger.fine("(editor, hint)=(" + editorPane.getVisibleHeight() + "," + (hintPane.getVisibleHeight() + 0) + ")");
+						//editorPane.setHeight(hintPane.getHeight() + 1);
+						Timer timer = new Timer() {
+
+							@Override
+							public void run() {
+								final int height = getHeight();
+								setHeight(height + 5);
+
+								Timer timer = new Timer() {
+
+									@Override
+									public void run() {
+										setHeight(height);
+										test = false;
+									}
+								};
+								timer.schedule(10);
+							}
+						};
+						timer.schedule(10);
+					} else {
+						logger.fine("normal status	 (editor, hint)=(" + editorPane.getInnerContentHeight() + "," + (hintPane.getInnerContentHeight() + 1) + ")"
+								+ ", (editor, hint)=(" + editorPane.getVisibleHeight() + "," + (hintPane.getVisibleHeight() + 1) + ")");
+						test = false;
+					}
+				}
+			};
+			test = true;
+			check.schedule(10);
+		}
 	}
 
 	private static class HintPane extends SectionStack {

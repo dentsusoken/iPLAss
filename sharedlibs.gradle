@@ -88,7 +88,7 @@ ext {
 		'junit:junit': '4.12',
 		
 		//webjars(admin)
-		'org.webjars.npm:ace-builds': '1.4.5',
+		'org.webjars.npm:ace-builds': '1.4.11',
 		
 		//webjars(gem)
 		'org.webjars:jquery': '3.5.1',
