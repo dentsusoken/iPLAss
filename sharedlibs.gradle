@@ -73,8 +73,6 @@ ext {
 		'org.jgroups:jgroups': '4.0.19.Final',
 		
 		'com.googlecode.gwtupload:gwtupload': '1.0.3',
-		'com.google.guava:guava-gwt': '21.0',
-		'com.google.code.gson:gson': '2.6.2',
 		
 		'org.infinispan:infinispan-core': '9.1.6.Final',
 		'org.jboss.marshalling:jboss-marshalling-osgi': '2.0.6.Final',
