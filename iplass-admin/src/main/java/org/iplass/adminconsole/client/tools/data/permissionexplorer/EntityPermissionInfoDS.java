@@ -113,7 +113,7 @@ public class EntityPermissionInfoDS extends PermissionListGridDS {
 				status.append("&nbsp|&nbsp");
 			}
 			status.append("D");
-			if (permission.getValue("updateCondition") != null) {
+			if (permission.getValue("deleteCondition") != null) {
 				status.append("(*)");
 			}
 		}
