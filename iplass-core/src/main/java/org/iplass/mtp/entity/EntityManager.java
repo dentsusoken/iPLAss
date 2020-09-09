@@ -393,7 +393,8 @@ public interface EntityManager extends Manager {
 
 	/**
 	 * ごみ箱から、削除します。
-	 * recycleBinIdは、ごみ箱内のデータを一意に特定するidです（oidは重複する可能性があるため）。
+	 * recycleBinIdは、ごみ箱内のデータを一意に特定するidです（oidは重複する可能性があるため）。<br>
+	 * purge()を呼び出す実行ユーザは当該Entityに対して削除権限を範囲条件なしに保有している必要があります。<br>
 	 *
 	 * @param recycleBinId ごみ箱内のデータを一意に特定するid
 	 * @param definitionName Entity定義名
@@ -401,7 +402,9 @@ public interface EntityManager extends Manager {
 	public void purge(long recycleBinId, String definitionName);
 
 	/**
-	 * ごみ箱から復活します。
+	 * ごみ箱から復活します。<br>
+	 * restore()を呼び出す実行ユーザは当該Entityに対して削除権限を範囲条件なしに保有しているか、
+	 * もしくは自身がごみ箱に格納したEntityである必要があります。<br>
 	 *
 	 * @param recycleBinId ごみ箱内のデータを一意に特定するid
 	 * @param definitionName Entity定義名

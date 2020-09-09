@@ -76,6 +76,7 @@ import org.iplass.mtp.impl.entity.interceptor.EntityBulkUpdateInvocationImpl;
 import org.iplass.mtp.impl.entity.interceptor.EntityCountInvocationImpl;
 import org.iplass.mtp.impl.entity.interceptor.EntityDeleteAllInvocationImpl;
 import org.iplass.mtp.impl.entity.interceptor.EntityDeleteInvocationImpl;
+import org.iplass.mtp.impl.entity.interceptor.EntityGetRecycleBinInvocationImpl;
 import org.iplass.mtp.impl.entity.interceptor.EntityInsertInvocationImpl;
 import org.iplass.mtp.impl.entity.interceptor.EntityLoadInvocationImpl;
 import org.iplass.mtp.impl.entity.interceptor.EntityLockByUserInvocationImpl;
@@ -1125,8 +1126,7 @@ public class EntityManagerImpl implements EntityManager {
 	public void getRecycleBin(String definitionName,
 			Predicate<Entity> callback) {
 		try {
-			//Interceptorいらないよね
-			getEntityHandler(definitionName).getRecycleBin(callback, null);
+			new EntityGetRecycleBinInvocationImpl(callback, null, ehService.getInterceptors(), getEntityHandler(definitionName)).proceed();
 		} catch (ApplicationException e) {
 			//アプリケーション例外は自動的にsetRollbackOnly()はしない
 			throw e;
@@ -1144,12 +1144,11 @@ public class EntityManagerImpl implements EntityManager {
 		try {
 
 			Entity[] ret = new Entity[1];
-
-			//Interceptorいらないよね
-			getEntityHandler(definitionName).getRecycleBin(e -> {
+			
+			new EntityGetRecycleBinInvocationImpl(e -> {
 				ret[0] = e;
 				return false;
-			}, rbid);
+			}, rbid, ehService.getInterceptors(), getEntityHandler(definitionName)).proceed();
 			return ret[0];
 		} catch (ApplicationException e) {
 			//アプリケーション例外は自動的にsetRollbackOnly()はしない

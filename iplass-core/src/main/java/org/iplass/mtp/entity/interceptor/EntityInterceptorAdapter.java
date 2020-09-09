@@ -60,6 +60,9 @@ public class EntityInterceptorAdapter implements EntityInterceptor {
 			return null;
 		case VALIDATE:
 			return validate((EntityValidateInvocation) invocation);
+		case GET_RECYCLE_BIN:
+			getRecycleBin((EntityGetRecycleBinInvocation) invocation);
+			return null;
 		case PURGE:
 			purge((EntityPurgeInvocation) invocation);
 			return null;
@@ -73,7 +76,6 @@ public class EntityInterceptorAdapter implements EntityInterceptor {
 			throw new IllegalArgumentException("not support method");
 		}
 	}
-	
 
 	/**
 	 * {@link InvocationType#VALIDATE}の際、呼び出される。
@@ -173,10 +175,18 @@ public class EntityInterceptorAdapter implements EntityInterceptor {
 	}
 	
 	/**
+	 * {@link InvocationType#GET_RECYCLE_BIN}の際、呼び出される。
+	 * 
+	 * @param invocation
+	 */
+	public void getRecycleBin(EntityGetRecycleBinInvocation invocation) {
+		invocation.proceed();
+	}
+
+	/**
 	 * {@link InvocationType#PURGE}の際、呼び出される。
 	 * 
 	 * @param invocation
-	 * @return Entity
 	 */
 	public void purge(EntityPurgeInvocation invocation) {
 		invocation.proceed();
@@ -186,7 +196,7 @@ public class EntityInterceptorAdapter implements EntityInterceptor {
 	 * {@link InvocationType#RESTORE}の際、呼び出される。
 	 * 
 	 * @param invocation
-	 * @return
+	 * @return Entity
 	 */
 	public Entity restore(EntityRestoreInvocation invocation) {
 		return invocation.proceed();

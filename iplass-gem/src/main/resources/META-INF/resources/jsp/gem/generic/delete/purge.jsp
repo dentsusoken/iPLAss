@@ -18,6 +18,10 @@
  along with this program. If not, see <https://www.gnu.org/licenses/>.
  --%>
 
+<%@page import="org.iplass.mtp.entity.definition.EntityDefinitionManager"%>
+<%@page import="org.iplass.mtp.ManagerLocator"%>
+<%@page import="org.iplass.mtp.entity.permission.EntityPermission"%>
+<%@page import="org.iplass.mtp.auth.AuthContext"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="m" uri="http://iplass.org/tags/mtp"%>
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8" trimDirectiveWhitespaces="true"%>
@@ -34,6 +38,8 @@
 <%@ page import="org.iplass.gem.command.ViewUtil"%>
 <%
 	String defName = request.getParameter(Constants.DEF_NAME);
+	//check valid defName
+	defName = ManagerLocator.manager(EntityDefinitionManager.class).get(defName).getName();
 	String viewName = request.getParameter(Constants.VIEW_NAME);
 	if (viewName == null) viewName = "";
 	String searchCond = request.getParameter(Constants.SEARCH_COND);
@@ -52,6 +58,10 @@
 	String urlPath = ViewUtil.getParamMappingPath(defName, viewName);
 
 	String back = SearchViewCommand.SEARCH_ACTION_NAME + urlPath;
+	
+	//purgeの表示
+	EntityPermission perm = new EntityPermission(defName, EntityPermission.Action.DELETE);
+	boolean showPurge = AuthContext.getCurrentContext().checkPermission(perm) && !EntityPermission.isLimitedPermission(perm);
 %>
 <div class="trash">
 <script src="${staticContentPath}/webjars/jquery-blockui/2.70/jquery.blockUI.js?cv=${apiVersion}"></script>
@@ -178,7 +188,9 @@ ${m:outputToken('FORM_XHTML', false)}
 </table>
 <p>
 <input type="button" value="${m:rs('mtp-gem-messages', 'generic.delete.purge.undo')}" class="gr-btn-02" onclick="doRestore()" />
+<%if (showPurge) {%>
 <input type="button" value="${m:rs('mtp-gem-messages', 'generic.delete.purge.delFromTrash')}" class="gr-btn-02" onclick="doPurge()" />
+<%}%>
 </p>
 </form>
 </div>
