@@ -22,7 +22,6 @@ package org.iplass.gem.command.generic.detail;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 import org.iplass.gem.command.GemResourceBundleUtil;
@@ -37,7 +36,6 @@ import org.iplass.mtp.entity.EntityRuntimeException;
 import org.iplass.mtp.entity.GenericEntity;
 import org.iplass.mtp.entity.SelectValue;
 import org.iplass.mtp.entity.ValidateError;
-import org.iplass.mtp.entity.definition.EntityDefinition;
 import org.iplass.mtp.entity.definition.EntityDefinitionManager;
 import org.iplass.mtp.entity.definition.PropertyDefinition;
 import org.iplass.mtp.entity.definition.PropertyDefinitionType;
@@ -57,7 +55,6 @@ import org.iplass.mtp.entity.definition.properties.StringProperty;
 import org.iplass.mtp.entity.definition.properties.TimeProperty;
 import org.iplass.mtp.util.StringUtil;
 import org.iplass.mtp.utilityclass.definition.UtilityClassDefinitionManager;
-import org.iplass.mtp.view.generic.FormView;
 import org.iplass.mtp.view.generic.LoadEntityInterrupter;
 import org.iplass.mtp.view.generic.RegistrationInterrupter;
 import org.iplass.mtp.view.generic.editor.BooleanPropertyEditor;
@@ -271,7 +268,7 @@ public abstract class RegistrationCommandContext extends GenericCommandContext {
 			}
 		} else {
 			//同一名で取得できないので個別に取得
-			List<Boolean> list = new ArrayList<Boolean>();
+			List<Boolean> list = new ArrayList<>();
 			for (int i = 0; i < multiplicity; i++) {
 				String param = getParam(name + i);
 				Boolean b = param != null ? Boolean.parseBoolean(param) : null;
@@ -356,33 +353,7 @@ public abstract class RegistrationCommandContext extends GenericCommandContext {
 		if (interrupter == null) {
 			//何もしないデフォルトInterrupter生成
 			getLogger().debug("set defaul registration interrupter.");
-			interrupter = new RegistrationInterrupter() {
-
-				@Override
-				public boolean isSpecifyAllProperties() { return false; }
-
-				@Override
-				public String[] getAdditionalProperties() { return new String[]{}; }
-
-				@Override
-				public void dataMapping(Entity entity, RequestContext request,
-						EntityDefinition definition, FormView view) {
-				}
-
-				@Override
-				public List<ValidateError> beforeRegist(Entity entity,
-						RequestContext request, EntityDefinition definition,
-						FormView view, RegistrationType registrationType) {
-					return Collections.emptyList();
-				}
-
-				@Override
-				public List<ValidateError> afterRegist(Entity entity,
-						RequestContext request, EntityDefinition definition,
-						FormView view, RegistrationType registType) {
-					return Collections.emptyList();
-				}
-			};
+			interrupter = new RegistrationInterrupter(){};
 		}
 		return interrupter;
 	}
@@ -481,7 +452,7 @@ public abstract class RegistrationCommandContext extends GenericCommandContext {
 
 	@Override
 	public List<ValidateError> getErrors() {
-		if (errors == null) errors = new ArrayList<ValidateError>();
+		if (errors == null) errors = new ArrayList<>();
 		return errors;
 	}
 
