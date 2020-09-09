@@ -15,6 +15,9 @@ dependencies {
 
 	implementation sharedLib('com.googlecode.gwtupload:gwtupload')
 
+	//jackson
+	implementation 'com.fasterxml.jackson.core:jackson-databind'
+
 	wjRuntime sharedLib('org.webjars.npm:ace-builds')
 	runtimeOnly configurations.wjRuntime
 

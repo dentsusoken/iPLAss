@@ -10,13 +10,16 @@ dependencies {
 	api sharedLib('org.apache.poi:poi-ooxml')
 
 	//jasper reports
-	api(sharedLib('net.sf.jasperreports:jasperreports')) {
+	implementation(sharedLib('net.sf.jasperreports:jasperreports')) {
 		//define minimum dependency
 		exclude(group: 'org.codehaus.castor', module: 'castor-xml')
 		exclude(group: 'org.eclipse.jdt.core.compiler', module: 'ecj')
 		exclude(group: 'org.jfree', module: 'jcommon')
 		exclude(group: 'org.jfree', module: 'jfreechart')
 		exclude(group: 'org.olap4j', module: 'olap4j')
+	}
+	api(sharedLib('net.sf.jasperreports:jasperreports')) {
+		transitive = false
 	}
 
 	implementation sharedLib('commons-fileupload:commons-fileupload')
