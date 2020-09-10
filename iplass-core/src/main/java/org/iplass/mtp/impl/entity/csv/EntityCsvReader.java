@@ -52,6 +52,7 @@ import org.iplass.mtp.entity.SelectValue;
 import org.iplass.mtp.entity.definition.EntityDefinition;
 import org.iplass.mtp.entity.definition.EntityDefinitionManager;
 import org.iplass.mtp.entity.definition.EntityMapping;
+import org.iplass.mtp.entity.definition.IndexType;
 import org.iplass.mtp.entity.definition.PropertyDefinition;
 import org.iplass.mtp.entity.definition.VersionControlType;
 import org.iplass.mtp.entity.definition.properties.AutoNumberProperty;
@@ -529,6 +530,12 @@ public class EntityCsvReader implements Iterable<Entity>, AutoCloseable {
 					PropertyDefinition unique = red.getProperty(uniqueKey);
 					if (unique == null) {
 						throw new EntityCsvException("CE2003", rs("impl.csv.EntityCsvReader.invalidHeadNotFindProp", (i + 1), headerName));
+					}
+					//UniqueKeyチェック
+					if (!unique.getName().equals(Entity.OID)
+							&& unique.getIndexType() != IndexType.UNIQUE
+							&& unique.getIndexType() != IndexType.UNIQUE_WITHOUT_NULL) {
+						throw new EntityCsvException("CE2009", rs("impl.csv.EntityCsvReader.invalidHeadRefUniqueKey", (i + 1), headerName, uniqueKey));
 					}
 					reference = new ReferenceInfo(propName, red, unique);
 					pd = rp;
