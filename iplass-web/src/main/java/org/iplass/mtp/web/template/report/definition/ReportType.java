@@ -26,7 +26,8 @@ import javax.xml.bind.annotation.XmlSeeAlso;
 
 @XmlSeeAlso (value = {
 		PoiReportType.class,
-		JasperReportType.class
+		JasperReportType.class,
+		JxlsReportType.class
 })
 public class ReportType implements Serializable  {
 	

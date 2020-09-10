@@ -20,32 +20,18 @@
 
 package org.iplass.mtp.web.template.report.definition;
 
-import org.iplass.mtp.command.RequestContext;
-import org.iplass.mtp.impl.session.Session;
-
 /**
+ * <% if (doclang == "ja") {%>
  * <p>
- * GroovyScriptによるReportOutputの定義。
+ * GroovyScriptによる帳票出力処理の定義
  * </p>
- *
+ * 
+ * <%} else {%>
  * <p>
- * Groovyでの記述方法。
+ * The Definition of a report output logic in GroovyScript
  * </p>
- * <p>
- * ReportTemplateでバインド設定された値をがバインドされているので、
- * 使用する場合は、バインド設定しておくこと。
- * </p>
- * <p>
- * デフォルトでバインドされている変数
- * <ul>
- * <li>session : {@link Session}</li>
- * <li>request : {@link RequestContext}</li>
- * </ul>
- * </p>
- * <h5>記述例：</h5>
- * <code><pre>
- * 作成中
- * </pre></code>
+ * 
+ * <%}%>
  *
  * @author lis71n
  *

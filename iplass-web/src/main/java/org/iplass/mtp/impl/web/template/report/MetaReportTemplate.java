@@ -36,9 +36,11 @@ import org.iplass.mtp.impl.report.ReportingOutputModel;
 import org.iplass.mtp.impl.web.WebRequestStack;
 import org.iplass.mtp.impl.web.template.MetaTemplate;
 import org.iplass.mtp.impl.web.template.TemplateRuntimeException;
+import org.iplass.mtp.impl.web.template.report.MetaReportType.ReportTypeRuntime;
 import org.iplass.mtp.spi.ServiceRegistry;
 import org.iplass.mtp.web.template.definition.TemplateDefinition;
 import org.iplass.mtp.web.template.report.definition.JasperReportType;
+import org.iplass.mtp.web.template.report.definition.JxlsReportType;
 import org.iplass.mtp.web.template.report.definition.LocalizedReportDefinition;
 import org.iplass.mtp.web.template.report.definition.PoiReportType;
 import org.iplass.mtp.web.template.report.definition.ReportTemplateDefinition;
@@ -103,6 +105,10 @@ public class MetaReportTemplate extends MetaTemplate {
 				MetaPoiReportType prt = new MetaPoiReportType();
 				prt.applyConfig(reportType);
 				this.reportType = prt;
+			} else if(reportType instanceof JxlsReportType) {
+				MetaJxlsReportType jxrt = new MetaJxlsReportType();
+				jxrt.applyConfig(reportType);
+				this.reportType = jxrt;
 			}
 		} else {
 			this.reportType = null;
@@ -130,6 +136,10 @@ public class MetaReportTemplate extends MetaTemplate {
 						MetaPoiReportType prt = new MetaPoiReportType();
 						prt.applyConfig(reportType);
 						mlr.setReportType(prt);
+					} else if (reportType instanceof JxlsReportType) {
+						MetaJxlsReportType jxrt = new MetaJxlsReportType();
+						jxrt.applyConfig(reportType);
+						mlr.setReportType(jxrt);
 					}
 				}
 
@@ -170,6 +180,7 @@ public class MetaReportTemplate extends MetaTemplate {
 		private static final String DOT = ".";
 		private ReportingEngine reportEngine ;
 		private ReportingEngineService service = ServiceRegistry.getRegistry().getService(ReportingEngineService.class);
+		private ReportTypeRuntime reportTypeRuntime;
 
 		private Map<String, ReportSet> reportSetMap = new HashMap<String, ReportSet>();
 
@@ -177,7 +188,7 @@ public class MetaReportTemplate extends MetaTemplate {
 
 			private ReportingEngine reportEngine;
 			private byte[] binary;
-			private MetaReportType reportType;
+			private ReportTypeRuntime reportTypeRuntime;
 			private String fileName;
 
 		}
@@ -202,7 +213,7 @@ public class MetaReportTemplate extends MetaTemplate {
 						ReportSet reportSet = new ReportSet();
 						reportSet.reportEngine = _reportEngine;
 						reportSet.binary = mlr.getBinary();
-						reportSet.reportType = mlr.getReportType();
+						reportSet.reportTypeRuntime = mlr.getReportType().createRuntime();
 						reportSet.fileName = mlr.getFileName();
 
 						reportSetMap.put(mlr.getLocaleName(), reportSet);
@@ -214,7 +225,8 @@ public class MetaReportTemplate extends MetaTemplate {
 					//ReportEngineがnullの場合、サポート外のメタデータを使用する場合
 					throw new TemplateRuntimeException("Report tempalte is outside of support . templateName:" + getName());
 				}
-
+				// ReportTypeRuntimeの生成
+				reportTypeRuntime = reportType.createRuntime();
 			} catch (Exception e) {
 				setIllegalStateException(new RuntimeException(e));
 			}
@@ -234,24 +246,24 @@ public class MetaReportTemplate extends MetaTemplate {
 
 				ReportingEngine _reportEngine = reportEngine;
 				byte[] _binary = binary;
-				MetaReportType _reportType = reportType;
+				ReportTypeRuntime _reportTypeRuntime = reportTypeRuntime;
 				String _fileName = fileName;
-
+				MetaReportType _reportType = (MetaReportType) reportTypeRuntime.getMetaData();
+						
 				String lang = ExecuteContext.getCurrentContext().getLanguage();
 
 				if (reportSetMap.get(lang) != null) {
 					_reportEngine = reportSetMap.get(lang).reportEngine;
 					_binary = reportSetMap.get(lang).binary;
-					_reportType = reportSetMap.get(lang).reportType;
+					_reportTypeRuntime = reportSetMap.get(lang).reportTypeRuntime;
 					_fileName = reportSetMap.get(lang).fileName;
 				}
-
-
+				
 				//出力モデルの生成
 				try (ReportingOutputModel createOutputModel
 						= _reportEngine.createOutputModel(_binary, _reportType.getOutputFileType(), _fileName.substring(_fileName.indexOf(DOT)+1))) {
 
-					_reportType.setParam(createOutputModel);
+					_reportTypeRuntime.setParam(createOutputModel);
 
 					//帳票出力処理
 					_reportEngine.exportReport(requestContext, createOutputModel);
@@ -262,7 +274,7 @@ public class MetaReportTemplate extends MetaTemplate {
 			}
 
 			if (requestContext.getPageContext() != null) {
-				throw new TemplateRuntimeException("Report tempalte can not include from jsp... templateName:" + getName());
+				throw new TemplateRuntimeException("Report template can not include from jsp... templateName:" + getName());
 			}
 		}
 	}

@@ -30,10 +30,11 @@ public class MetaReportParamMap implements MetaData {
 	private static final long serialVersionUID = -7418907290538937351L;
 
 	private String name;
-
 	private String mapFrom;
-
+	//Jasper用ParamType指定
 	private String paramType;
+	//Jxls用Map変換フラグ
+	private boolean convertEntityToMap;
 
 	public MetaReportParamMap() {
 	}
@@ -42,12 +43,14 @@ public class MetaReportParamMap implements MetaData {
 		this.name = name;
 		this.mapFrom = mapFrom;
 		this.paramType = "string";
+		
 	}
 
-	public MetaReportParamMap(String name, String mapFrom, String paramType) {
+	public MetaReportParamMap(String name, String mapFrom, String paramType, boolean convertEntityToMap) {
 		this.name = name;
 		this.mapFrom = mapFrom;
 		this.paramType = paramType;
+		this.convertEntityToMap = convertEntityToMap;
 	}
 
 
@@ -74,6 +77,14 @@ public class MetaReportParamMap implements MetaData {
 	public void setParamType(String paramType) {
 		this.paramType = paramType;
 	}
+	
+	public boolean isConvertEntityToMap() {
+		return convertEntityToMap;
+	}
+
+	public void setConvertEntityToMap(boolean convertEntityToMap) {
+		this.convertEntityToMap = convertEntityToMap;
+	}
 
 	//Definition → Meta
 	public void applyConfig(ReportParamMapDefinition definition) {
@@ -85,6 +96,8 @@ public class MetaReportParamMap implements MetaData {
 		} else {
 			paramType = definition.getParamType();
 		}
+		
+		convertEntityToMap = definition.isConvertEntityToMap();
 	}
 
 	//Meta → Definition
@@ -97,6 +110,7 @@ public class MetaReportParamMap implements MetaData {
 		} else {
 			definition.setParamType(paramType);
 		}
+		definition.setConvertEntityToMap(convertEntityToMap);
 		return definition;
 	}
 

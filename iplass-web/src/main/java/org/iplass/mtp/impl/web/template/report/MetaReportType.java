@@ -22,11 +22,12 @@ package org.iplass.mtp.impl.web.template.report;
 
 import javax.xml.bind.annotation.XmlSeeAlso;
 
+import org.iplass.mtp.impl.metadata.BaseMetaDataRuntime;
 import org.iplass.mtp.impl.metadata.MetaData;
 import org.iplass.mtp.impl.report.ReportingOutputModel;
 import org.iplass.mtp.web.template.report.definition.ReportType;
 
-@XmlSeeAlso({MetaJasperReportType.class, MetaPoiReportType.class})
+@XmlSeeAlso({MetaJasperReportType.class, MetaPoiReportType.class, MetaJxlsReportType.class})
 public abstract class MetaReportType implements MetaData {
 
 	private static final long serialVersionUID = 401694582362361475L;
@@ -57,6 +58,14 @@ public abstract class MetaReportType implements MetaData {
 	//Meta → Definition
 	public abstract ReportType currentConfig();
 
-	public abstract void setParam(ReportingOutputModel createOutputModel);
+	public abstract ReportTypeRuntime createRuntime();
+
+	public abstract class ReportTypeRuntime extends BaseMetaDataRuntime {
+
+		public ReportTypeRuntime() {
+		}
+		
+		public abstract void setParam(ReportingOutputModel createOutputModel);
+	}
 
 }

@@ -22,7 +22,6 @@ package org.iplass.mtp.impl.web.template.report;
 
 import org.apache.poi.ss.usermodel.Workbook;
 import org.iplass.mtp.command.RequestContext;
-import org.iplass.mtp.entity.definition.listeners.EventType;
 import org.iplass.mtp.impl.core.ExecuteContext;
 import org.iplass.mtp.impl.core.TenantContext;
 import org.iplass.mtp.impl.script.Script;
@@ -85,14 +84,13 @@ public class MetaGroovyPoiReportOutputLogic extends MetaPoiReportOutputLogic {
 			scriptEngine = tc.getScriptEngine();
 
 			if (script != null) {
-				String scriptWithImport = "import " + EventType.class.getName() + ";\n" + script;
 				String scriptName = null;
 				MetaPoiReportType poiTemp = (MetaPoiReportType)reportType;
 				if (poiTemp.getReportOutputLogic() != null) {
 					scriptName = SCRIPT_PREFIX + "_" + reportType.getOutputFileType() + "_" + GroovyTemplateCompiler.randomName();
 				}
 
-				compiledScript = scriptEngine.createScript(scriptWithImport, scriptName);
+				compiledScript = scriptEngine.createScript(script, scriptName);
 			}
 		}
 

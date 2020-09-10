@@ -8,6 +8,13 @@ dependencies {
 	//apache POI
 	api sharedLib('org.apache.poi:poi')
 	api sharedLib('org.apache.poi:poi-ooxml')
+	
+	//JXLS
+	implementation sharedLib('org.jxls:jxls')
+	api(sharedLib('org.jxls:jxls')) {
+		transitive = false
+	}
+	implementation sharedLib('org.jxls:jxls-poi')
 
 	//jasper reports
 	implementation(sharedLib('net.sf.jasperreports:jasperreports')) {

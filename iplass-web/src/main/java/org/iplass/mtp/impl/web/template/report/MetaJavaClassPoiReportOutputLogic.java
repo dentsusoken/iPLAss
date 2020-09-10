@@ -22,7 +22,7 @@ package org.iplass.mtp.impl.web.template.report;
 
 import org.apache.poi.ss.usermodel.Workbook;
 import org.iplass.mtp.command.RequestContext;
-import org.iplass.mtp.entity.EntityRuntimeException;
+import org.iplass.mtp.impl.web.template.TemplateRuntimeException;
 import org.iplass.mtp.web.template.report.PoiReportOutputLogic;
 import org.iplass.mtp.web.template.report.definition.JavaClassReportOutputLogicDefinition;
 import org.iplass.mtp.web.template.report.definition.ReportOutputLogicDefinition;
@@ -76,11 +76,11 @@ public class MetaJavaClassPoiReportOutputLogic extends MetaPoiReportOutputLogic 
 			try {
 				logic = (PoiReportOutputLogic) Class.forName(className).newInstance();
 			} catch (InstantiationException e) {
-				throw new EntityRuntimeException("can not instantiate " + className, e);
+				throw new TemplateRuntimeException("can not instantiate " + className, e);
 			} catch (IllegalAccessException e) {
-				throw new EntityRuntimeException("can not instantiate " + className, e);
+				throw new TemplateRuntimeException("can not instantiate " + className, e);
 			} catch (ClassNotFoundException e) {
-				throw new EntityRuntimeException("class not found:" + className, e);
+				throw new TemplateRuntimeException("class not found:" + className, e);
 			}
 		}
 
