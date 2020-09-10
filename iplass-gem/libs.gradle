@@ -17,7 +17,10 @@ dependencies {
 
 	implementation sharedLib('org.apache.commons:commons-text')
 	implementation 'org.codehaus.groovy:groovy'
-	
+
+	//jackson
+	implementation 'com.fasterxml.jackson.core:jackson-databind'
+
 	//js
 	wjRuntime sharedLib('org.webjars:jquery')
 	wjRuntime sharedLib('org.webjars:pdf-js')

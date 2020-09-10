@@ -312,4 +312,23 @@ public class NoopRdbAdapter extends RdbAdapter {
 		return null;
 	}
 
+	@Override
+	public String createViewColumnSql(int colNo, String colName) {
+		return null;
+	}
+
+	@Override
+	public String createBinaryViewColumnSql(int colNo, String colName, String lobIdSuffix) {
+		return null;
+	}
+
+	@Override
+	public String createLongTextViewColumnSql(int colNo, String colName, String lobIdSuffix) {
+		return null;
+	}
+
+	@Override
+	public String toCreateViewDDL(String viewName, String selectSql, boolean withDropView) {
+		return null;
+	}
 }

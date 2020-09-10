@@ -62,7 +62,15 @@ public class ColResolver {
 	
 	private HashSet<UsedCol> usedCol = new HashSet<>();
 	
+	private boolean storageSpaceMismatch;
+	
 	public ColResolver(MetaEntity currentMetaEntity, MetaSchemalessRdbStoreMapping newStoreMap, StorageSpaceMap storage, RdbAdapter rdb) {
+		if (newStoreMap != null) {
+			if (!storage.getStorageSpaceName().equals(newStoreMap.getStorageSpace())) {
+				storageSpaceMismatch = true;
+			}
+		}
+		
 		if (currentMetaEntity == null) {
 			this.metaStore = new MetaGRdbEntityStore();
 		} else {
@@ -152,7 +160,7 @@ public class ColResolver {
 	}
 
 	private MetaRdbColumnMapping getMapping(MetaProperty prop) {
-		if (newStoreMap != null) {
+		if (newStoreMap != null && !storageSpaceMismatch) {
 			if (newStoreMap.getColumnMappingList() != null) {
 				for (MetaRdbColumnMapping cm: newStoreMap.getColumnMappingList()) {
 					if (prop.getId().equals(cm.getPropertyId())) {

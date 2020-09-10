@@ -54,17 +54,17 @@ public class TopViewHandler extends BaseMetaDataRuntime {
 		try {
 			this.metadata = metadata;
 			handlerMap = new HashMap<>();
-			parts = new ArrayList<TopViewPartsHandler>();
+			parts = new ArrayList<>();
 			for (MetaTopViewParts meta : metadata.getParts()) {
-				TopViewPartsHandler handler = meta.createRuntime();
+				TopViewPartsHandler handler = meta.createRuntime(this);
 				parts.add(handler);
 				if (handler.getHandlerKey() != null) {
 					handlerMap.put(handler.getHandlerKey(), handler);
 				}
 			}
-			widgets = new ArrayList<TopViewPartsHandler>();
+			widgets = new ArrayList<>();
 			for (MetaTopViewParts meta : metadata.getWidgets()) {
-				TopViewPartsHandler handler = meta.createRuntime();
+				TopViewPartsHandler handler = meta.createRuntime(this);
 				widgets.add(handler);
 				if (handler.getHandlerKey() != null) {
 					handlerMap.put(handler.getHandlerKey(), handler);

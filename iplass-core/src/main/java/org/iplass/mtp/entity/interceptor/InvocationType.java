@@ -39,6 +39,7 @@ public enum InvocationType {
 	UPDATE,
 	BULK_UPDATE,
 	VALIDATE,
+	GET_RECYCLE_BIN,
 	PURGE,
 	RESTORE,
 	LOCK_BY_USER,

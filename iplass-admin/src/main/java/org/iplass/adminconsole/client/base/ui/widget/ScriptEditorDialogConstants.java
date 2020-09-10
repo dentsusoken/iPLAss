@@ -1,19 +1,19 @@
 /*
  * Copyright (C) 2018 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
- * 
+ *
  * Unless you have purchased a commercial license,
  * the following license terms apply:
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
@@ -64,10 +64,12 @@ public interface ScriptEditorDialogConstants {
 
 	public static final String TOPVIEW_USER_TASK_VIEW_NAME = "TopView.UserTaskViewName";
 
+	public static final String TOPVIEW_INFORMATION_CUSTOM_STYLE = "TopView.InformationPartsCustomStyle";
+
 	public static final String UTILITY_SCRIPT = "UtilityClass.Script";
 
 	public static final String WEBAPI_INIT_SCRIPT = "WebApi.InitScript";
-	
+
 	public static final String WEBAPI_PARAMMAP_CONDITION = "WebApi.ParamMapCondition";
 
 	public static final String WORKFLOW_QUEUE_CODE_EXPRESSION = "Workflow.QueueCodeExpression";

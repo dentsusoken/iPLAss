@@ -28,6 +28,7 @@ import org.iplass.mtp.auth.AuthContext;
 import org.iplass.mtp.auth.NoPermissionException;
 import org.iplass.mtp.entity.DeleteCondition;
 import org.iplass.mtp.entity.Entity;
+import org.iplass.mtp.entity.EntityConcurrentUpdateException;
 import org.iplass.mtp.entity.SearchOption;
 import org.iplass.mtp.entity.UpdateCondition;
 import org.iplass.mtp.entity.UpdateCondition.UpdateValue;
@@ -36,6 +37,7 @@ import org.iplass.mtp.entity.interceptor.EntityBulkUpdateInvocation;
 import org.iplass.mtp.entity.interceptor.EntityCountInvocation;
 import org.iplass.mtp.entity.interceptor.EntityDeleteAllInvocation;
 import org.iplass.mtp.entity.interceptor.EntityDeleteInvocation;
+import org.iplass.mtp.entity.interceptor.EntityGetRecycleBinInvocation;
 import org.iplass.mtp.entity.interceptor.EntityInsertInvocation;
 import org.iplass.mtp.entity.interceptor.EntityInterceptorAdapter;
 import org.iplass.mtp.entity.interceptor.EntityLoadInvocation;
@@ -55,12 +57,14 @@ import org.iplass.mtp.entity.query.condition.predicate.In;
 import org.iplass.mtp.entity.query.value.ValueExpression;
 import org.iplass.mtp.entity.query.value.primary.Literal;
 import org.iplass.mtp.impl.auth.AuthContextHolder;
+import org.iplass.mtp.impl.core.ExecuteContext;
 import org.iplass.mtp.impl.entity.EntityContext;
 import org.iplass.mtp.impl.entity.EntityHandler;
 import org.iplass.mtp.impl.entity.interceptor.EntityBulkUpdateInvocationImpl;
 import org.iplass.mtp.impl.entity.interceptor.EntityCountInvocationImpl;
 import org.iplass.mtp.impl.entity.interceptor.EntityDeleteAllInvocationImpl;
 import org.iplass.mtp.impl.entity.interceptor.EntityDeleteInvocationImpl;
+import org.iplass.mtp.impl.entity.interceptor.EntityGetRecycleBinInvocationImpl;
 import org.iplass.mtp.impl.entity.interceptor.EntityInsertInvocationImpl;
 import org.iplass.mtp.impl.entity.interceptor.EntityPurgeInvocationImpl;
 import org.iplass.mtp.impl.entity.interceptor.EntityQueryInvocationImpl;
@@ -506,6 +510,41 @@ public class EntityAuthInterceptor extends EntityInterceptorAdapter {
 			return invocation.proceed();
 		}
 	}
+	
+	@Override
+	public void getRecycleBin(EntityGetRecycleBinInvocation invocation) {
+		EntityGetRecycleBinInvocationImpl inv = (EntityGetRecycleBinInvocationImpl) invocation;
+		EntityHandler eh = inv.getEntityHandler();
+		AuthContextHolder user = AuthContextHolder.getAuthContext();
+
+		if (user.isPrivilegedExecution()) {
+			if (logger.isDebugEnabled()) {
+				logger.debug("privileged restore call. shrot cut auth check.");
+			}
+			invocation.proceed();
+		} else {
+			EntityPermission perm = new EntityPermission(eh.getMetaData().getName(), EntityPermission.Action.DELETE);
+			if (!user.checkPermission(perm)) {
+				//削除権限がない場合は、参照できない
+				return;
+			}
+			EntityAuthContext eac = (EntityAuthContext) user.getAuthorizationContext(perm);
+			if (eac.hasLimitCondition(perm, user)) {
+				//自分が削除したEntityに限定
+				String clientId = ExecuteContext.getCurrentContext().getClientId();
+				Predicate<Entity> cb = inv.getCallback();
+				inv.setCallback(e -> {
+					if (clientId.equals(e.getUpdateBy())) {
+						return cb.test(e);
+					} else {
+						return true;
+					}
+				});
+			}
+
+			invocation.proceed();
+		}
+	}
 
 	@Override
 	public void purge(EntityPurgeInvocation invocation) {
@@ -562,9 +601,21 @@ public class EntityAuthInterceptor extends EntityInterceptorAdapter {
 			}
 			EntityAuthContext eac = (EntityAuthContext) user.getAuthorizationContext(perm);
 			if (eac.hasLimitCondition(perm, user)) {
-//				throw new NoPermissionException(eh.getMetaData().getDisplayName() + "の全データ範囲に対する" + EntityPermission.Action.DELETE.getDisplayName() + "（復活）権限がありません");
-				throw new NoPermissionException(
-						resourceString("impl.entity.auth.EntityAuthInterceptor.noUndoAll", eh.getLocalizedDisplayName()));
+				//自身が削除したデータのみ復活可能
+				Entity[] ret = new Entity[1];
+				eh.getRecycleBin(e -> {
+					ret[0] = e;
+					return false;
+				}, inv.getRecycleBinId());
+				if (ret[0] == null) {
+					throw new EntityConcurrentUpdateException(resourceString("impl.core.EntityHandler.alreadyRestored"));
+				}
+				
+				String clientId = ExecuteContext.getCurrentContext().getClientId();
+				if (!clientId.equals(ret[0].getUpdateBy())) {
+					throw new NoPermissionException(
+							resourceString("impl.entity.auth.EntityAuthInterceptor.noUndoAll", eh.getLocalizedDisplayName()));
+				}
 			}
 
 			return invocation.proceed();

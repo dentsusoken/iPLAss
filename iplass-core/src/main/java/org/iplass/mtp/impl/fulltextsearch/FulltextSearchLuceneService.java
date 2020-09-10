@@ -615,7 +615,7 @@ public class FulltextSearchLuceneService extends AbstractFulltextSeachService {
 				logger.debug("lucene query : " + luceneQuery.build().toString());
 			}
 
-			TopDocs docs = searcher.search(luceneQuery.build(), getMaxRows(), getDefaultSort(), true, false);
+			TopDocs docs = searcher.search(luceneQuery.build(), getMaxRows(), getDefaultSort(), true);
 			ScoreDoc[] hits = docs.scoreDocs;
 
 			// 検索結果からoidを取得

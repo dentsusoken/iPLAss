@@ -90,7 +90,13 @@ public class OracleRdbAdapter extends RdbAdapter {
 	
 	//Oracle 12cから利用可能なFETCH FIRST句を使うか否か
 	private boolean useFetchFirstClause;
-	
+
+	private String viewSubQueryAlias = "vsq";
+
+	//ビュー名最大長
+	//Oracle 12.1以前は30バイト
+	private int maxViewNameLength = 128;
+
 	private static final String DATE_MIN = "-47120101000000000";
 	private static final String DATE_MAX = "99991231235959999";
 	long dateMin;
@@ -824,4 +830,64 @@ public class OracleRdbAdapter extends RdbAdapter {
 		return null;
 	}
 
+	@Override
+	public String getViewSubQueryAlias() {
+		return viewSubQueryAlias;
+	}
+
+	public void setViewSubQueryAlias(String alias) {
+		viewSubQueryAlias = alias;
+	}
+
+	@Override
+	public int getMaxViewNameLength() {
+		return maxViewNameLength;
+	}
+
+	public void setMaxViewNameLength(int length) {
+		maxViewNameLength = length;
+	}
+
+	@Override
+	public String createViewColumnSql(int colNo, String colName) {
+		return String.format("c%d AS \"%s\"", colNo, colName.toUpperCase());
+	}
+
+	@Override
+	public String createBinaryViewColumnSql(int colNo, String colName, String lobIdSuffix) {
+		return String.format("SUBSTR(SUBSTR(c%d, 1, INSTR(c%d, ',') - 1), 7) AS \"%s%s\"",
+				colNo, colNo, colName.toUpperCase(), lobIdSuffix.toUpperCase());
+	}
+
+	@Override
+	public String createLongTextViewColumnSql(int colNo, String colName, String lobIdSuffix) {
+		StringBuilder sb = new StringBuilder();
+
+		// LobID
+		sb.append(String.format("TRIM(SUBSTR(c%d, 3, 16)) AS \"%s%s\"",
+				colNo, colName.toUpperCase(), lobIdSuffix.toUpperCase())).append(",");
+		// Text
+		sb.append(String.format("SUBSTR(c%d, 22) AS \"%s\"", colNo, colName.toUpperCase()));
+
+		return sb.toString();
+	}
+
+	@Override
+	public String toCreateViewDDL(String viewName, String selectSql, boolean withDropView) {
+		StringBuilder sb = new StringBuilder();
+
+		String lf = System.lineSeparator();
+
+		// ビュー削除DDL
+		if (withDropView) {
+			sb.append("DROP VIEW \"").append(viewName.toUpperCase()).append("\" CASCADE CONSTRAINTS;");
+			sb.append(lf).append(lf);
+		}
+
+		// ビュー作成DDL
+		sb.append("CREATE VIEW \"").append(viewName.toUpperCase()).append("\" AS").append(lf);
+		sb.append(selectSql).append(";").append(lf).append(lf);
+
+		return sb.toString();
+	}
 }

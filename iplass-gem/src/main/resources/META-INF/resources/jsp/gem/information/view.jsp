@@ -18,22 +18,23 @@
  along with this program. If not, see <https://www.gnu.org/licenses/>.
  --%>
 
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<%@ taglib prefix="m" uri="http://iplass.org/tags/mtp"%>
-<%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8" trimDirectiveWhitespaces="true"%>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@taglib prefix="m" uri="http://iplass.org/tags/mtp"%>
+<%@page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8" trimDirectiveWhitespaces="true"%>
 
-<%@ page import="java.sql.Timestamp"%>
-<%@ page import="java.text.DateFormat" %>
-<%@ page import="java.util.Calendar"%>
-<%@ page import="org.iplass.mtp.entity.Entity"%>
-<%@ page import="org.iplass.mtp.util.DateUtil" %>
-<%@ page import="org.iplass.mtp.util.StringUtil" %>
-<%@ page import="org.iplass.mtp.view.generic.editor.DateTimePropertyEditor.TimeDispRange"%>
-<%@ page import="org.iplass.mtp.web.template.TemplateUtil" %>
-<%@ page import="org.iplass.gem.command.Constants"%>
-<%@ page import="org.iplass.gem.command.GemResourceBundleUtil"%>
-<%@ page import="org.iplass.gem.command.MenuCommand"%>
-<%@ page import="org.iplass.gem.command.ViewUtil"%>
+<%@page import="java.sql.Timestamp"%>
+<%@page import="java.text.DateFormat" %>
+<%@page import="java.util.Calendar"%>
+<%@page import="org.iplass.mtp.entity.Entity"%>
+<%@page import="org.iplass.mtp.util.DateUtil" %>
+<%@page import="org.iplass.mtp.util.StringUtil" %>
+<%@page import="org.iplass.mtp.view.generic.editor.DateTimePropertyEditor.TimeDispRange"%>
+<%@page import="org.iplass.mtp.view.top.parts.InformationParts"%>
+<%@page import="org.iplass.mtp.web.template.TemplateUtil" %>
+<%@page import="org.iplass.gem.command.Constants"%>
+<%@page import="org.iplass.gem.command.GemResourceBundleUtil"%>
+<%@page import="org.iplass.gem.command.MenuCommand"%>
+<%@page import="org.iplass.gem.command.ViewUtil"%>
 
 <%!
 	String displayFormat(Timestamp time, DateFormat format) {
@@ -47,24 +48,24 @@
 <%
 	//データ取得
 	Entity entity = (Entity) request.getAttribute(Constants.DATA_ENTITY);
+	//設定情報取得
+	InformationParts parts = (InformationParts) request.getAttribute(Constants.INFO_SETTING);
+	//カスタムスタイル
+	String customStyle = (String)request.getAttribute(Constants.INFO_DETAIL_CUSTOM_STYLE);
 
 	//タイトル
-	String infoTitle = request.getParameter(Constants.INFO_TITLE);
-	String dispTitle = null;
-	if (infoTitle != null && !infoTitle.isEmpty()) {
-		dispTitle = infoTitle;
-	} else {
+	String dispTitle = TemplateUtil.getMultilingualString(parts.getTitle(), parts.getLocalizedTitleList());
+	if (StringUtil.isEmpty(dispTitle)) {
+		//デフォルト
 		dispTitle = GemResourceBundleUtil.resourceString("information.view.news");
 	}
 
+	
 	//日時表示スタイル
-	String infoTimeRange = request.getParameter(Constants.INFO_TIMERANGE);
 	TimeDispRange dispTimeRange = null;
-	if (infoTimeRange != null && !infoTimeRange.isEmpty()) {
-		dispTimeRange = TimeDispRange.valueOf(infoTimeRange);
+	if (parts.getDispRange() != null) {
+		dispTimeRange = parts.getDispRange();
 	}
-
-	boolean enableHtmlTag = Boolean.valueOf(request.getParameter("enableHtmlTag"));
 
 	DateFormat format = null;
 	if (TimeDispRange.isDispSec(dispTimeRange)) {
@@ -77,10 +78,8 @@
 		format = DateUtil.getSimpleDateFormat(TemplateUtil.getLocaleFormat().getOutputDateFormat(), true);
 	}
 
-	Timestamp time = null;
-	if (entity != null) {
-		time = entity.getStartDate();
-	}
+	boolean enableHtmlTag = parts.isEnableHtmlTag();
+	
 %>
 <div class="content-block">
 <h2 class="hgroup-01">
@@ -90,7 +89,7 @@
 <c:out value="<%=dispTitle%>"/>
 </h2>
 <h3 class="hgroup-02 hgroup-02-01">
-<c:out value="<%=entity.getName() %>"/>&nbsp;&nbsp;<c:out value="<%=displayFormat(time, format) %>"/>
+<c:out value="<%=entity.getName() %>"/>&nbsp;&nbsp;<c:out value="<%=displayFormat(entity.getStartDate(), format) %>"/>
 </h3>
 <table class="tbl-information-detail mb10 flat-block-top">
 <tbody>
@@ -98,15 +97,72 @@
 <td>
 <%
 	String content = entity.getValue("content");
-	if(content != null && !"".equals(content)){
-		if (!enableHtmlTag) {
-			content = StringUtil.escapeHtml(content);
-			content = content.replaceAll("\r\n", "<BR>").replaceAll("\n", "<BR>").replaceAll("\r", "<BR>");
+	if (content == null) {
+		content = "";
+	}
+	if (parts.isUseRichtextEditor()) {
+		String wrapContent = content;
+		if (StringUtil.isNotEmpty(customStyle)) {
+			wrapContent = "<span class='data-label' style='" + StringUtil.escapeHtml(customStyle)+ "'>" 
+					+ content + "</span>";
+		} else {
+			wrapContent = "<span class='data-label'>" + content + "</span>";
+		}
+%>
+<span class="data-label" style="<c:out value="<%=customStyle %>"/>">
+<textarea name="infomation_content" rows="5" cols="30" ><c:out value="<%=wrapContent %>"/></textarea>
+</span>
+<%
+		if (request.getAttribute(Constants.RICHTEXT_LIB_LOADED) == null) {
+			request.setAttribute(Constants.RICHTEXT_LIB_LOADED, true);
+%>
+<%@include file="../layout/resource/ckeditorResource.inc.jsp" %>
+<%
+		}
+%>
+<script type="text/javascript">
+$(function() {
+<%		if (StringUtil.isNotBlank(parts.getRichtextEditorOption())) { %>
+	var opt = <%=parts.getRichtextEditorOption()%>;
+	if (typeof opt.readOnly === "undefined") opt.readOnly = true;
+<%		} else { %>
+	var opt = { readOnly: true, allowedContent:<%=enableHtmlTag%> };
+<%		} %>
+	if (typeof opt.extraPlugins === "undefined") opt.extraPlugins = "autogrow";
+	if (typeof opt.autoGrow_onStartup === "undefined") opt.autoGrow_onStartup = true;
+	var readyOpt = {
+		on: {
+			instanceReady: function (evt) {
+				<%-- 全体border、ツールバーを非表示 --%>
+				var containerId = evt.editor.container.$.id;
+				var editorId = evt.editor.id;
+				$("#" + containerId).css("border", "none");
+				$("#" + editorId + "_top").hide();
+				$("#" + editorId + "_bottom").hide();
+			}
 		}
 	}
+	$.extend(opt, readyOpt);
+	$("textarea[name='infomation_content']").ckeditor(
+		function() {}, opt
+	);
+});
+</script>
+
+<%
+	} else {
+		if(!content.isEmpty()){
+			if (!enableHtmlTag) {
+				content = StringUtil.escapeHtml(content);
+				content = content.replaceAll("\r\n", "<BR>").replaceAll("\n", "<BR>").replaceAll("\r", "<BR>");
+			}
+		}
 %>
+<span class="data-label" style="<c:out value="<%=customStyle %>"/>">
 <%-- XSS対応-エスケープ処理済み＆HTMLタグ出力のため対応なし --%>
 <%=content%>
+</span>
+<%	} %>
 </td>
 </tr>
 </tbody>

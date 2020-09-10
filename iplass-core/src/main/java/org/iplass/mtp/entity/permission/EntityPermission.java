@@ -23,6 +23,8 @@ package org.iplass.mtp.entity.permission;
 import java.util.function.Supplier;
 
 import org.iplass.mtp.auth.Permission;
+import org.iplass.mtp.impl.auth.AuthContextHolder;
+import org.iplass.mtp.impl.entity.auth.EntityAuthContext;
 import org.iplass.mtp.impl.entity.auth.EntityQueryAuthContextHolder;
 
 /**
@@ -106,6 +108,19 @@ public class EntityPermission extends Permission {
 		
 	}
 	
+	/**
+	 * 現在の認証コンテキストで、指定のEntity権限が制限付き（不許可を設定されている、もしくは範囲条件が設定されている）か否かを取得します。<br>
+	 * 
+	 * 
+	 * @param permission
+	 * @return 不許可を設定されている、もしくは範囲条件が設定されている場合、true。
+	 */
+	public static boolean isLimitedPermission(EntityPermission permission) {
+		AuthContextHolder user = AuthContextHolder.getAuthContext();
+		EntityAuthContext eac = (EntityAuthContext) user.getAuthorizationContext(permission);
+		return eac.hasLimitCondition(permission, user);
+	}
+
 	public EntityPermission(String definitionName, Action action) {
 		this.definitionName = definitionName;
 		this.action = action;

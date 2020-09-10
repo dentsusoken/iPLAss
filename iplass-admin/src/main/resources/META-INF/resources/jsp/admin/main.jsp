@@ -86,7 +86,7 @@
 %>
 
 <%
-	String scVersion = "12.0p_2018-03-29.js";				//SmartGWT変更時に設定
+	String scVersion = "12.1p_2020-09-01.js";				//SmartGWT変更時に設定
 
 	String scVersionParam = toHexString(scVersion.getBytes());
 
@@ -157,7 +157,7 @@ window.imgDir = '<%=rsPath%>images/';
 <script src="<%=rsPath%>mtpadmin.nocache.js?cv=<%=TemplateUtil.getAPIVersion()%>"></script>
 
 <%
-	String aceVersion = "1.4.5";
+	String aceVersion = "1.4.11";
 
 	//switch ace source mode, [src-min-noconflict, src-noconflict, src-min, src]
 	//String aceSrcMode = "src-min-noconflict";

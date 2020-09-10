@@ -20,45 +20,14 @@
 
 package org.iplass.gem.command.auth;
 
-import java.util.Collections;
-import java.util.List;
-
-import org.iplass.mtp.command.RequestContext;
 import org.iplass.mtp.entity.Entity;
-import org.iplass.mtp.entity.ValidateError;
-import org.iplass.mtp.entity.definition.EntityDefinition;
-import org.iplass.mtp.view.generic.FormView;
 import org.iplass.mtp.view.generic.RegistrationInterrupter;
 
 public class UserRegistrationInterrupter implements RegistrationInterrupter {
 
 	@Override
-	public void dataMapping(Entity entity, RequestContext request,
-			EntityDefinition definition, FormView view) {
-	}
-
-	@Override
-	public boolean isSpecifyAllProperties() {
-		return false;
-	}
-
-	@Override
 	public String[] getAdditionalProperties() {
-		return new String[]{"name"};
-	}
-
-	@Override
-	public List<ValidateError> beforeRegist(Entity entity,
-			RequestContext request, EntityDefinition definition,
-			FormView view, RegistrationType registrationType) {
-		return Collections.emptyList();
-	}
-
-	@Override
-	public List<ValidateError> afterRegist(Entity entity,
-			RequestContext request, EntityDefinition definition,
-			FormView view, RegistrationType registType) {
-		return Collections.emptyList();
+		return new String[]{Entity.NAME};
 	}
 
 }

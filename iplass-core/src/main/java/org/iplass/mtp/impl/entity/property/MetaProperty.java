@@ -159,13 +159,6 @@ public abstract class MetaProperty implements MetaData {
 	}
 
 	public void setValidations(List<MetaValidation> validations) {
-		if (validations == null) {
-			new Exception("call setValidations to null").printStackTrace();
-		}
-
-		if (validations != null && validations.size() == 0) {
-			new Exception("call setValidations").printStackTrace();
-		}
 		this.validations = validations;
 	}
 

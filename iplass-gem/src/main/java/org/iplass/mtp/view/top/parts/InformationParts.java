@@ -1,19 +1,19 @@
 /*
  * Copyright (C) 2011 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
- * 
+ *
  * Unless you have purchased a commercial license,
  * the following license terms apply:
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
@@ -62,7 +62,16 @@ public class InformationParts extends ActionParts {
 	private String passwordWarnMarkStyleClass;
 
 	/** HTML出力可否 */
-	private boolean enableHtmlTag = false;
+	private boolean enableHtmlTag;
+
+	/** リッチテキストエディタの利用 */
+	private boolean useRichtextEditor;
+
+	/** リッチテキストエディタオプション */
+	private String richtextEditorOption;
+
+	/** 詳細画面表示カスタムスタイル */
+	private String detailCustomStyle;
 
 	/** 一覧の表示件数 */
 	private Integer numberOfDisplay;
@@ -106,7 +115,7 @@ public class InformationParts extends ActionParts {
 	 */
 	public void addLocalizedTitle(LocalizedStringDefinition localizedTitle) {
 		if (localizedTitleList == null) {
-			localizedTitleList = new ArrayList<LocalizedStringDefinition>();
+			localizedTitleList = new ArrayList<>();
 		}
 
 		localizedTitleList.add(localizedTitle);
@@ -220,7 +229,7 @@ public class InformationParts extends ActionParts {
 	 */
 	public void addLocalizedPasswordWarningMessage(LocalizedStringDefinition localizedPasswordWarningMessage) {
 		if (localizedPasswordWarningMessageList == null) {
-			localizedPasswordWarningMessageList = new ArrayList<LocalizedStringDefinition>();
+			localizedPasswordWarningMessageList = new ArrayList<>();
 		}
 
 		localizedPasswordWarningMessageList.add(localizedPasswordWarningMessage);
@@ -272,6 +281,54 @@ public class InformationParts extends ActionParts {
 	 */
 	public void setEnableHtmlTag(boolean enableHtmlTag) {
 		this.enableHtmlTag = enableHtmlTag;
+	}
+
+	/**
+	 * リッチテキストエディタの利用を取得します。
+	 * @return リッチテキストエディタの利用
+	 */
+	public boolean isUseRichtextEditor() {
+		return useRichtextEditor;
+	}
+
+	/**
+	 * リッチテキストエディタの利用を設定します。
+	 * @param useRichtextEditor リッチテキストエディタの利用
+	 */
+	public void setUseRichtextEditor(boolean useRichtextEditor) {
+		this.useRichtextEditor = useRichtextEditor;
+	}
+
+	/**
+	 * リッチテキストエディタオプションを取得します。
+	 * @return リッチテキストエディタオプション
+	 */
+	public String getRichtextEditorOption() {
+		return richtextEditorOption;
+	}
+
+	/**
+	 * リッチテキストエディタオプションを設定します。
+	 * @param richtextEditorOption リッチテキストエディタオプション
+	 */
+	public void setRichtextEditorOption(String richtextEditorOption) {
+		this.richtextEditorOption = richtextEditorOption;
+	}
+
+	/**
+	 * 詳細画面表示カスタムスタイルを取得します。
+	 * @return 詳細画面表示カスタムスタイル
+	 */
+	public String getDetailCustomStyle() {
+		return detailCustomStyle;
+	}
+
+	/**
+	 * 詳細画面表示カスタムスタイルを設定します。
+	 * @param detailCustomStyle 詳細画面表示カスタムスタイル
+	 */
+	public void setDetailCustomStyle(String detailCustomStyle) {
+		this.detailCustomStyle = detailCustomStyle;
 	}
 
 	/**

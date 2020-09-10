@@ -34,6 +34,7 @@ import org.iplass.mtp.impl.i18n.I18nUtil;
 import org.iplass.mtp.impl.i18n.MetaLocalizedString;
 import org.iplass.mtp.impl.metadata.MetaData;
 import org.iplass.mtp.impl.util.ObjectUtil;
+import org.iplass.mtp.impl.view.top.TopViewHandler;
 import org.iplass.mtp.view.top.parts.ApplicationMaintenanceParts;
 import org.iplass.mtp.view.top.parts.TopViewParts;
 
@@ -54,7 +55,7 @@ public class MetaApplicationMaintenanceParts extends MetaTopViewParts {
 	private String title;
 
 	/** 多言語設定情報 */
-	private List<MetaLocalizedString> localizedTitleList = new ArrayList<MetaLocalizedString>();
+	private List<MetaLocalizedString> localizedTitleList = new ArrayList<>();
 
 	/**
 	 * タイトルを取得します。
@@ -113,7 +114,7 @@ public class MetaApplicationMaintenanceParts extends MetaTopViewParts {
 	}
 
 	@Override
-	public TopViewPartsHandler createRuntime() {
+	public TopViewPartsHandler createRuntime(TopViewHandler topView) {
 		//直接トップページに出力しないのでなにもしない
 		return new TopViewPartsHandler(this) {
 

@@ -34,6 +34,7 @@ import org.iplass.mtp.impl.i18n.I18nUtil;
 import org.iplass.mtp.impl.i18n.MetaLocalizedString;
 import org.iplass.mtp.impl.metadata.MetaData;
 import org.iplass.mtp.impl.util.ObjectUtil;
+import org.iplass.mtp.impl.view.top.TopViewHandler;
 import org.iplass.mtp.impl.web.WebUtil;
 import org.iplass.mtp.util.StringUtil;
 import org.iplass.mtp.view.generic.EntityView;
@@ -239,7 +240,7 @@ public class MetaEntityListParts extends MetaTemplateParts {
 		EntityContext context = EntityContext.getCurrentContext();
 		EntityHandler entity = context.getHandlerByName(e.getDefName());
 		fillFrom(e);
-		
+
 		if (entity == null) return;
 		definitionId = entity.getMetaData().getId();
 		viewName = e.getViewName();
@@ -261,7 +262,7 @@ public class MetaEntityListParts extends MetaTemplateParts {
 		EntityContext context = EntityContext.getCurrentContext();
 		EntityHandler entity = null;
 		fillTo(parts);
-		
+
 		if (definitionId != null) {
 			entity = context.getHandlerById(definitionId);
 			if (entity != null) {
@@ -277,7 +278,7 @@ public class MetaEntityListParts extends MetaTemplateParts {
 		parts.setHeight(height);
 		parts.setLocalizedTitleList(I18nUtil.toDef(localizedTitleList));
 		parts.setIconTag(iconTag);
-		
+
 		return parts;
 	}
 
@@ -287,7 +288,7 @@ public class MetaEntityListParts extends MetaTemplateParts {
 	}
 
 	@Override
-	public TemplatePartsHandler createRuntime() {
+	public TemplatePartsHandler createRuntime(TopViewHandler topView) {
 		return new TemplatePartsHandler(this) {
 			private static final String TEMPLATE_PATH = "gem/generic/search/list";
 			private static final String TEMPLATE_PATH_WIDGET = "gem/generic/search/listWidget";

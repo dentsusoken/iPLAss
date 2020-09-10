@@ -1,10 +1,5 @@
-buildscript {
-	repositories {
-		jcenter()
-	}
-	dependencies {
-		classpath 'org.wisepersist:gwt-gradle-plugin:1.0.13'
-	}
+plugins {
+  id "org.wisepersist.gwt" version "1.1.6"
 }
 
 apply from: 'libs.gradle'
@@ -49,7 +44,7 @@ gwt {
 	src = files("${buildDir}/src/gwt")
 	gwtVersion = this.gwtVersion
 	modules 'org.iplass.adminconsole.AdminConsole'
-	minHeapSize = '32M'
+	minHeapSize = '512M'
 	maxHeapSize = '2048M'
 	logLevel = 'INFO'
 	sourceLevel = 'auto'

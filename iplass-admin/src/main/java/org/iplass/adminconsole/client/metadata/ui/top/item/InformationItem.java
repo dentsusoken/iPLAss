@@ -27,21 +27,28 @@ import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
 import org.iplass.adminconsole.client.base.ui.widget.MetaDataLangTextAreaItem;
 import org.iplass.adminconsole.client.base.ui.widget.MetaDataLangTextItem;
 import org.iplass.adminconsole.client.base.ui.widget.MtpDialog;
+import org.iplass.adminconsole.client.base.ui.widget.ScriptEditorDialogConstants;
+import org.iplass.adminconsole.client.base.ui.widget.ScriptEditorDialogHandler;
+import org.iplass.adminconsole.client.base.ui.widget.ScriptEditorDialogMode;
 import org.iplass.adminconsole.client.base.ui.widget.form.MtpComboBoxItem;
 import org.iplass.adminconsole.client.base.ui.widget.form.MtpForm;
 import org.iplass.adminconsole.client.base.ui.widget.form.MtpSelectItem;
+import org.iplass.adminconsole.client.base.ui.widget.form.MtpTextAreaItem;
 import org.iplass.adminconsole.client.base.ui.widget.form.MtpTextItem;
 import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
+import org.iplass.adminconsole.client.metadata.ui.MetaDataUtil;
 import org.iplass.adminconsole.client.metadata.ui.top.PartsOperationHandler;
 import org.iplass.mtp.view.generic.editor.DateTimePropertyEditor.TimeDispRange;
 import org.iplass.mtp.view.top.parts.InformationParts;
 
+import com.smartgwt.client.types.Alignment;
 import com.smartgwt.client.types.HeaderControls;
 import com.smartgwt.client.widgets.HeaderControl;
 import com.smartgwt.client.widgets.IButton;
 import com.smartgwt.client.widgets.events.ClickEvent;
 import com.smartgwt.client.widgets.events.ClickHandler;
 import com.smartgwt.client.widgets.form.DynamicForm;
+import com.smartgwt.client.widgets.form.fields.ButtonItem;
 import com.smartgwt.client.widgets.form.fields.CheckboxItem;
 import com.smartgwt.client.widgets.form.fields.ComboBoxItem;
 import com.smartgwt.client.widgets.form.fields.IntegerItem;
@@ -96,15 +103,19 @@ public class InformationItem extends PartsItem {
 		private MetaDataLangTextItem titleField;
 		private TextItem iconTagField;
 		private TextItem styleField;
+
 		private SelectItem dispRangeField;
+		private IntegerItem numberOfDisplayField;
+		private CheckboxItem chkEnableHtmlTag;
+		private CheckboxItem chkUseRichtextEditor;
+		private MtpTextAreaItem txaRichtextEditorOption;
+		private MtpTextAreaItem txaDetailCustomStyle;
 
 		private CheckboxItem showPasswordWarnField;
 		private SliderItem passwordWarningAgeField;
 		private MetaDataLangTextAreaItem passwordWarningMessageField;
 		private ComboBoxItem passwordWarnAreaStyleField;
 		private ComboBoxItem passwordWarnMarkStyleField;
-		private CheckboxItem enableHtmlTagField;
-		private IntegerItem numberOfDisplayField;
 
 		public InformationItemSettingDialog() {
 
@@ -124,7 +135,7 @@ public class InformationItem extends PartsItem {
 
 			iconTagField = new MtpTextItem("iconTag", "Icon Tag");
 			SmartGWTUtil.addHoverToFormItem(iconTagField, AdminClientMessageUtil.getString("ui_metadata_top_item_InformationItem_iconTagComment"));
-			
+
 			styleField = new MtpTextItem("style", "Class");
 			SmartGWTUtil.addHoverToFormItem(styleField, AdminClientMessageUtil.getString("ui_metadata_top_item_TopViewContentParts_styleDescriptionKey"));
 
@@ -141,14 +152,54 @@ public class InformationItem extends PartsItem {
 			SmartGWTUtil.addHoverToFormItem(dispRangeField, AdminClientMessageUtil.getString("ui_metadata_top_item_InformationItem_partsTimeDispRange"));
 			setDispRangeValues();
 
-			enableHtmlTagField = new CheckboxItem("enableHtmlTagField", "Enable Html Tag");
-
 			numberOfDisplayField = new IntegerItem();
 			numberOfDisplayField.setTitle("Scroll display number");
 			numberOfDisplayField.setWidth("100%");
 			SmartGWTUtil.addHoverToFormItem(numberOfDisplayField, AdminClientMessageUtil.getString("ui_metadata_top_item_InformationItem_numberOfDisplay"));
 
-			infoListForm.setItems(dispRangeField, enableHtmlTagField, numberOfDisplayField);
+			chkEnableHtmlTag = new CheckboxItem();
+			chkEnableHtmlTag.setTitle("Enable Html Tag");
+			chkUseRichtextEditor = new CheckboxItem();
+			chkUseRichtextEditor.setTitle("Use Richtext Editor");
+
+			txaRichtextEditorOption = new MtpTextAreaItem();
+			txaRichtextEditorOption.setColSpan(2);
+			txaRichtextEditorOption.setTitle("Richtext Editor Option");
+			txaRichtextEditorOption.setHeight(100);
+
+			ButtonItem btnEditEetailCustomStyle = new ButtonItem();
+			btnEditEetailCustomStyle.setTitle("Edit");
+			btnEditEetailCustomStyle.setWidth(100);
+			btnEditEetailCustomStyle.setStartRow(false);
+			btnEditEetailCustomStyle.setColSpan(3);
+			btnEditEetailCustomStyle.setAlign(Alignment.RIGHT);
+			btnEditEetailCustomStyle.addClickHandler(event -> {
+				MetaDataUtil.showScriptEditDialog(ScriptEditorDialogMode.GROOVY_SCRIPT,
+						SmartGWTUtil.getStringValue(txaDetailCustomStyle),
+						ScriptEditorDialogConstants.TOPVIEW_INFORMATION_CUSTOM_STYLE,
+						null,
+						AdminClientMessageUtil.getString("ui_metadata_top_item_InformationItem_detailCustomStyleHint"),
+						new ScriptEditorDialogHandler() {
+
+							@Override
+							public void onSave(String text) {
+								txaDetailCustomStyle.setValue(text);
+							}
+							@Override
+							public void onCancel() {
+							}
+						});
+
+			});
+
+			txaDetailCustomStyle = new MtpTextAreaItem();
+			txaDetailCustomStyle.setColSpan(2);
+			txaDetailCustomStyle.setTitle("Detail Custom Style");
+			txaDetailCustomStyle.setHeight(100);
+			SmartGWTUtil.setReadOnlyTextArea(txaDetailCustomStyle);
+
+			infoListForm.setItems(dispRangeField, numberOfDisplayField, chkEnableHtmlTag,
+					chkUseRichtextEditor, txaRichtextEditorOption, btnEditEetailCustomStyle, txaDetailCustomStyle);
 
 			//------------------------------
 			//Password Warning Message
@@ -198,6 +249,7 @@ public class InformationItem extends PartsItem {
 			//------------------------------
 			IButton save = new IButton("OK");
 			save.addClickHandler(new ClickHandler() {
+				@Override
 				public void onClick(ClickEvent event) {
 					if (commonForm.validate() && infoListForm.validate() && pwWarnform.validate()){
 						//入力情報をパーツに
@@ -218,8 +270,11 @@ public class InformationItem extends PartsItem {
 							parts.setPasswordWarnAreaStyleClass(SmartGWTUtil.getStringValue(passwordWarnAreaStyleField));
 							parts.setPasswordWarnMarkStyleClass(SmartGWTUtil.getStringValue(passwordWarnMarkStyleField));
 						}
-						parts.setEnableHtmlTag(SmartGWTUtil.getBooleanValue(enableHtmlTagField));
 						parts.setNumberOfDisplay(SmartGWTUtil.getIntegerValue(numberOfDisplayField));
+						parts.setEnableHtmlTag(SmartGWTUtil.getBooleanValue(chkEnableHtmlTag));
+						parts.setUseRichtextEditor(SmartGWTUtil.getBooleanValue(chkUseRichtextEditor));
+						parts.setRichtextEditorOption(SmartGWTUtil.getStringValue(txaRichtextEditorOption));
+						parts.setDetailCustomStyle(SmartGWTUtil.getStringValue(txaDetailCustomStyle));
 						destroy();
 					}
 				}
@@ -227,6 +282,7 @@ public class InformationItem extends PartsItem {
 
 			IButton cancel = new IButton("Cancel");
 			cancel.addClickHandler(new ClickHandler() {
+				@Override
 				public void onClick(ClickEvent event) {
 					destroy();
 				}
@@ -238,7 +294,7 @@ public class InformationItem extends PartsItem {
 		}
 
 		private void setDispRangeValues() {
-			final LinkedHashMap<String, String> valueMap = new LinkedHashMap<String, String>();
+			final LinkedHashMap<String, String> valueMap = new LinkedHashMap<>();
 			valueMap.put("", "default");
 			for (TimeDispRange value : TimeDispRange.values()) {
 				valueMap.put(value.name(), value.name());
@@ -247,7 +303,7 @@ public class InformationItem extends PartsItem {
 		}
 
 		private void setPasswordWarnAreaStyleValues() {
-			final LinkedHashMap<String, String> valueMap = new LinkedHashMap<String, String>();
+			final LinkedHashMap<String, String> valueMap = new LinkedHashMap<>();
 			//valueMap.put("", "default");
 			valueMap.put("ui-state-highlight ui-corner-all", "ui-state-highlight ui-corner-all");
 			valueMap.put("ui-state-error ui-corner-all", "ui-state-error ui-corner-all");
@@ -258,7 +314,7 @@ public class InformationItem extends PartsItem {
 		}
 
 		private void setPasswordWarnMarkStyleValues() {
-			final LinkedHashMap<String, String> valueMap = new LinkedHashMap<String, String>();
+			final LinkedHashMap<String, String> valueMap = new LinkedHashMap<>();
 			//valueMap.put("", "default");
 			valueMap.put("ui-icon-check", "ui-icon-check");
 			valueMap.put("ui-icon-alert", "ui-icon-alert");
@@ -280,7 +336,10 @@ public class InformationItem extends PartsItem {
 				dispRangeField.setValue("");
 			}
 
-			enableHtmlTagField.setValue(parts.isEnableHtmlTag());
+			chkEnableHtmlTag.setValue(parts.isEnableHtmlTag());
+			chkUseRichtextEditor.setValue(parts.isUseRichtextEditor());
+			txaRichtextEditorOption.setValue(parts.getRichtextEditorOption());
+			txaDetailCustomStyle.setValue(parts.getDetailCustomStyle());
 			numberOfDisplayField.setValue(parts.getNumberOfDisplay());
 			showPasswordWarnField.setValue(parts.isShowWarningPasswordAge());
 			if (parts.isShowWarningPasswordAge()) {

@@ -23,6 +23,7 @@ package org.iplass.gem.command.auth;
 import java.util.Collections;
 import java.util.List;
 
+import org.iplass.mtp.auth.User;
 import org.iplass.mtp.command.RequestContext;
 import org.iplass.mtp.entity.Entity;
 import org.iplass.mtp.entity.ValidateError;
@@ -32,37 +33,15 @@ import org.iplass.mtp.view.generic.FormView;
 import org.iplass.mtp.view.generic.RegistrationInterrupter;
 
 public class UserPasswordRegistrationInterrupter implements RegistrationInterrupter {
-
-	@Override
-	public void dataMapping(Entity entity, RequestContext request,
-			EntityDefinition definition, FormView view) {
-	}
-
-	@Override
-	public boolean isSpecifyAllProperties() {
-		return false;
-	}
-
-	@Override
-	public String[] getAdditionalProperties() {
-		return null;
-	}
-
+	
 	@Override
 	public List<ValidateError> beforeRegist(Entity entity,
 			RequestContext request, EntityDefinition definition,
 			FormView view, RegistrationType registrationType) {
 
-		if (StringUtil.isNotEmpty(request.getParam("password"))) {
-			entity.setValue("password", request.getParam("password"));
+		if (StringUtil.isNotEmpty(request.getParam(AuthCommandConstants.PARAM_PASSWORD))) {
+			entity.setValue(User.PASSWORD, request.getParam(AuthCommandConstants.PARAM_PASSWORD));
 		}
-		return Collections.emptyList();
-	}
-
-	@Override
-	public List<ValidateError> afterRegist(Entity entity,
-			RequestContext request, EntityDefinition definition,
-			FormView view, RegistrationType registType) {
 		return Collections.emptyList();
 	}
 
