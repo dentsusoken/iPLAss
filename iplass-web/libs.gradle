@@ -10,7 +10,10 @@ dependencies {
 	api sharedLib('org.apache.poi:poi-ooxml')
 	
 	//JXLS
-	api sharedLib('org.jxls:jxls')
+	implementation sharedLib('org.jxls:jxls')
+	api(sharedLib('org.jxls:jxls')) {
+		transitive = false
+	}
 	implementation sharedLib('org.jxls:jxls-poi')
 
 	//jasper reports
