@@ -316,7 +316,6 @@ task copyGwtTransSrc(type: Sync) {
 		include 'mtp/web/template/report/definition/ReportTemplateDefinition.java'
 		include 'mtp/web/template/report/definition/ReportType.java'
 		include 'mtp/web/template/report/definition/JxlsReportType.java'
-		include 'mtp/web/template/report/definition/JxlsContextParamMapDefinition.java'
 
 		include 'mtp/webapi/definition/RequestType.java'
 		include 'mtp/webapi/definition/EntityWebApiDefinition.java'
