@@ -30,6 +30,7 @@ import org.iplass.mtp.SystemException;
 import org.iplass.mtp.entity.EntityManager;
 import org.iplass.mtp.entity.query.Limit;
 import org.iplass.mtp.entity.query.Query;
+import org.iplass.mtp.entity.query.value.ValueExpression;
 import org.iplass.mtp.impl.entity.csv.QueryWriteOption;
 import org.iplass.mtp.impl.webapi.command.Constants;
 import org.slf4j.Logger;
@@ -70,11 +71,21 @@ public class QueryJsonWriter implements AutoCloseable, Constants {
 		
 		gen.writeStartObject();
 		gen.writeStringField("status", CMD_EXEC_SUCCESS);
+		
+		Query optQuery = option.getBeforeSearch().apply(query);
+
+		//header
+		gen.writeArrayFieldStart("listHeader");
+		for (ValueExpression ve: optQuery.getSelect().getSelectValues()) {
+			gen.writeString(ve.toString());
+		}
+		gen.writeEndArray();
+		
 		gen.writeFieldName("list");
 		gen.writeStartArray();
 
 		// 検索結果のJSONレコードを出力
-		int countTotal = search();
+		int countTotal = search(optQuery);
 		
 		gen.writeEndArray();
 		
@@ -106,9 +117,7 @@ public class QueryJsonWriter implements AutoCloseable, Constants {
 		} 
 	}
 
-	private int search() throws IOException {
-
-		final Query optQuery = option.getBeforeSearch().apply(query);
+	private int search(Query optQuery) throws IOException {
 
 		if (option.getLimit() > 0) {
 			optQuery.setLimit(new Limit(option.getLimit()));

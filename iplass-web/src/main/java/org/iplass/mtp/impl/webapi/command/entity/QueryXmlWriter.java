@@ -42,6 +42,7 @@ import org.iplass.mtp.SystemException;
 import org.iplass.mtp.entity.EntityManager;
 import org.iplass.mtp.entity.query.Limit;
 import org.iplass.mtp.entity.query.Query;
+import org.iplass.mtp.entity.query.value.ValueExpression;
 import org.iplass.mtp.impl.entity.csv.QueryWriteOption;
 import org.iplass.mtp.impl.webapi.command.Constants;
 import org.iplass.mtp.impl.webapi.jaxb.JaxbListValue;
@@ -111,13 +112,30 @@ public class QueryXmlWriter implements AutoCloseable, Constants {
 			writer.writeStartElement("status");
 			writer.writeCharacters(CMD_EXEC_SUCCESS);
 			writer.writeEndElement();
+			
+			Query optQuery = option.getBeforeSearch().apply(query);
+
+			//header
+			writer.writeStartElement("result");
+			writer.writeAttribute("key", "listHeader");
+			writer.writeStartElement("value");
+			List<Object> headerList = new ArrayList<>(optQuery.getSelect().getSelectValues().size());
+			for (ValueExpression ve: optQuery.getSelect().getSelectValues()) {
+				headerList.add(ve.toString());
+			}
+			JAXBElement<JaxbListValue> root = new JAXBElement<>(new QName("http://mtp.iplass.org/xml/webapi", "list"), JaxbListValue.class, new JaxbListValue(headerList));
+			marshaller.marshal(root, writer);
+
+			writer.writeEndElement();
+			writer.writeEndElement();
+			
 
 			writer.writeStartElement("result");
 			writer.writeAttribute("key", "list");
 			writer.writeStartElement("value");
 
 			// 検索結果のXMLレコードを出力
-			int countTotal = search();
+			int countTotal = search(optQuery);
 
 			writer.writeEndElement();
 			
@@ -137,6 +155,8 @@ public class QueryXmlWriter implements AutoCloseable, Constants {
 			
 			writer.writeEndDocument();
 		} catch (XMLStreamException e) {
+			throw new SystemException(e);
+		} catch (JAXBException e) {
 			throw new SystemException(e);
 		}
 		
@@ -168,9 +188,7 @@ public class QueryXmlWriter implements AutoCloseable, Constants {
 		}
 	}
 
-	private int search() {
-
-		final Query optQuery = option.getBeforeSearch().apply(query);
+	private int search(Query optQuery) {
 
 		if (option.getLimit() > 0) {
 			optQuery.setLimit(new Limit(option.getLimit()));
