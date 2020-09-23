@@ -51,6 +51,12 @@ th {
   color: #bd3031;
   border: 1px solid #bd3031; }
 
+p.loading {
+  background: url(../../../../images/gem/skin/vertical/loading.gif) no-repeat scroll 0 0 transparent;
+  height: 16px;
+  margin: 2px;
+  width: 16px; }
+
 input[type=button], input[type=submit], input[type=reset] {
   vertical-align: middle;
   font-size: 0.92857rem;

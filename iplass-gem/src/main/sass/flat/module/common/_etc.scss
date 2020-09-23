@@ -1,6 +1,9 @@
 //colors
 // $color_well_read_approx: #bd3031;
 
+//urls
+// $url_ce1: url(../../../../images/gem/skin/vertical/loading.gif);
+
 .ico-required {
 	display: inline-block;
 	float: right;
@@ -8,4 +11,11 @@
 	margin-top: -1px;
 	color: $color_well_read_approx;
 	border: 1px solid $color_well_read_approx;
+}
+
+p.loading {
+	background: $url_ce1 no-repeat scroll 0 0 transparent;
+	height: 16px;
+	margin: 2px;
+	width: 16px;
 }
