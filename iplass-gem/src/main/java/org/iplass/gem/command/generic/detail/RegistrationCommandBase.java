@@ -29,6 +29,7 @@ import org.iplass.gem.command.generic.ResultType;
 import org.iplass.mtp.ApplicationException;
 import org.iplass.mtp.ManagerLocator;
 import org.iplass.mtp.auth.AuthContext;
+import org.iplass.mtp.auth.User;
 import org.iplass.mtp.command.Command;
 import org.iplass.mtp.command.RequestContext;
 import org.iplass.mtp.entity.Entity;
@@ -122,7 +123,8 @@ public abstract class RegistrationCommandBase<T extends RegistrationCommandConte
 	}
 
 	/**
-	 * Entityをロードします。
+	 * 画面表示用のEntityをロードします。
+	 *
 	 * @param context コンテキスト
 	 * @param oid OID
 	 * @param version データのバージョン
@@ -135,29 +137,42 @@ public abstract class RegistrationCommandBase<T extends RegistrationCommandConte
 	}
 
 	/**
-	 * 参照プロパティを除いてEntityをロードします。
+	 * 更新処理時の対象Entityをロードします。
+	 * 更新Entity生成時に表示判定のためのバインド用です。
+	 *
+	 * @param context コンテキスト
 	 * @param oid OID
 	 * @param version データのバージョン
 	 * @param defName Entity定義名
+	 * @param loadReferences ロードする参照プロパティ
 	 * @return Entity
 	 */
-	protected Entity loadEntityWithoutReference(String oid, Long version, String defName) {
-		Entity e = null;
-		if (oid != null) {
-			//データ取得
-			e = em.load(oid, version ,defName, new LoadOption(false, false));
-		}
-		return e;
+	protected Entity loadBeforeUpdateEntity(T context, String oid, Long version, String defName, List<String> loadReferences) {
+		return loadEntity(context, oid, version, defName, new LoadOption(loadReferences), LoadType.BEFORE_UPDATE);
 	}
 
 	/**
-	 * Entityをロードします。
+	 * ロックユーザを取得します。
+	 *
+	 * @param target ロック対象Entity
+	 * @return ロックユーザ
+	 */
+	protected Entity getLockedByUser(Entity target) {
+		if (target.getLockedBy() != null) {
+			Entity user = em.load(target.getLockedBy(), null ,User.DEFINITION_NAME, new LoadOption(false, false));
+			return user;
+		}
+		return null;
+	}
+
+	/**
+	 * 更新処理のEntityをロードします。
 	 * @param context コンテキスト
 	 * @param entity Entity
 	 * @param loadOption ロード時のオプション
 	 * @return Entity
 	 */
-	private Entity loadEntityRegistProcess(T context, Entity entity, LoadOption loadOption) {
+	private Entity loadUpdateEntity(T context, Entity entity, LoadOption loadOption) {
 		return loadEntity(context, entity.getOid(), entity.getVersion(), entity.getDefinitionName(), loadOption, LoadType.UPDATE);
 	}
 
@@ -169,11 +184,11 @@ public abstract class RegistrationCommandBase<T extends RegistrationCommandConte
 	 */
 	protected EditResult updateEntity(T context, Entity entity) {
 		EditResult ret = new EditResult();
-		List<ValidateError> errors = new ArrayList<ValidateError>();
+		List<ValidateError> errors = new ArrayList<>();
 		context.setAttribute(Constants.VALID_ERROR_LIST, errors);
 		try {
 			//参照型の登録
-			Entity loadEntity = loadEntityRegistProcess(context, entity, new LoadOption(true, context.hasUpdatableMappedByReference()));
+			Entity loadEntity = loadUpdateEntity(context, entity, new LoadOption(true, context.hasUpdatableMappedByReference()));
 			errors.addAll(beforeRegistRefEntity(context, entity, loadEntity));
 
 			//カスタム登録前処理
@@ -220,10 +235,10 @@ public abstract class RegistrationCommandBase<T extends RegistrationCommandConte
 	 */
 	@SuppressWarnings("unchecked")
 	private List<ValidateError> update(T context, Entity entity) {
-		List<ValidateError> errors = new ArrayList<ValidateError>();
+		List<ValidateError> errors = new ArrayList<>();
 
 		//画面に表示してるものだけ更新
-		List<String> updatePropNames = new ArrayList<String>();
+		List<String> updatePropNames = new ArrayList<>();
 		List<V> propList = context.getProperty();
 		for (V prop : propList) {
 			if (!context.getRegistrationPropertyBaseHandler().isDispProperty(prop)) continue;
@@ -284,7 +299,7 @@ public abstract class RegistrationCommandBase<T extends RegistrationCommandConte
 	 */
 	protected EditResult insertEntity(T context, Entity entity) {
 		EditResult ret = new EditResult();
-		List<ValidateError> errors = new ArrayList<ValidateError>();
+		List<ValidateError> errors = new ArrayList<>();
 		context.setAttribute(Constants.VALID_ERROR_LIST, errors);
 		try {
 			//参照型の登録
@@ -297,7 +312,7 @@ public abstract class RegistrationCommandBase<T extends RegistrationCommandConte
 			errors.addAll(insert(context, entity));
 
 			//被参照の参照型の登録、新規で登録したデータなので被参照はいない→ロード対象から外す
-			errors.addAll(afterRegistRefEntity(context, entity, loadEntityRegistProcess(context, entity, new LoadOption(true, false))));
+			errors.addAll(afterRegistRefEntity(context, entity, loadUpdateEntity(context, entity, new LoadOption(true, false))));
 
 			//カスタム登録後処理
 			errors.addAll(context.getRegistrationInterrupterHandler().afterRegist(entity, RegistrationType.INSERT));
@@ -334,7 +349,7 @@ public abstract class RegistrationCommandBase<T extends RegistrationCommandConte
 	 */
 	@SuppressWarnings("unchecked")
 	private List<ValidateError> insert(T context, Entity entity) {
-		List<ValidateError> errors = new ArrayList<ValidateError>();
+		List<ValidateError> errors = new ArrayList<>();
 
 		List<ValidateError> occurredErrors = (List<ValidateError>) context.getAttribute(Constants.VALID_ERROR_LIST);
 		if (occurredErrors.isEmpty()) {
@@ -428,7 +443,7 @@ public abstract class RegistrationCommandBase<T extends RegistrationCommandConte
 	 */
 	private List<ValidateError> beforeRegistRefEntity(T context, Entity entity, Entity loadedEntity) {
 		// リクエストから参照データを生成した際に登録したhandlerを使ってプロパティ単位で登録を実行
-		final List<ValidateError> errors = new ArrayList<ValidateError>();
+		final List<ValidateError> errors = new ArrayList<>();
 		context.regist(err -> errors.addAll(err), entity, loadedEntity);
 		return errors;
 	}
@@ -442,7 +457,7 @@ public abstract class RegistrationCommandBase<T extends RegistrationCommandConte
 	 */
 	private List<ValidateError> afterRegistRefEntity(T context, Entity entity, Entity loadedEntity) {
 		// リクエストから参照データを生成した際に登録したhandlerを使ってプロパティ単位で登録を実行
-		final List<ValidateError> errors = new ArrayList<ValidateError>();
+		final List<ValidateError> errors = new ArrayList<>();
 		context.registMappedby(err -> errors.addAll(err), entity, loadedEntity);
 		return errors;
 	}

@@ -419,9 +419,6 @@ public abstract class RegistrationCommandContext extends GenericCommandContext {
 
 	public abstract <T extends PropertyBase> List<T> getProperty();
 
-	/** 対象エンティティを返します。 */
-	public abstract Entity getCurrentEntity();
-
 	protected abstract boolean isNewVersion();
 
 	protected abstract boolean isPurgeCompositionedEntity();

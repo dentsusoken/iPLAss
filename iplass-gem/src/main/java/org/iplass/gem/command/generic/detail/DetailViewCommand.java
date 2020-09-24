@@ -28,7 +28,6 @@ import org.iplass.gem.command.generic.detail.handler.ShowDetailViewEventHandler;
 import org.iplass.gem.command.generic.detail.handler.ShowEditViewEventHandler;
 import org.iplass.mtp.ApplicationException;
 import org.iplass.mtp.auth.AuthContext;
-import org.iplass.mtp.auth.User;
 import org.iplass.mtp.command.RequestContext;
 import org.iplass.mtp.command.annotation.CommandClass;
 import org.iplass.mtp.command.annotation.CommandConfig;
@@ -257,8 +256,8 @@ public final class DetailViewCommand extends DetailCommandBase {
 					}
 				}
 			}
-			//FIXME 更新の時のみ対象エンティティを設定します。
-			context.setCurrentEntity(entity);
+			//FIXME View表示時に設定する必要があるか
+			context.setEditedEntity(entity);
 		}
 
 		String ret = Constants.CMD_EXEC_SUCCESS;
@@ -304,7 +303,7 @@ public final class DetailViewCommand extends DetailCommandBase {
 				String userOid = AuthContext.getCurrentContext().getUser().getOid();
 				if (!entity.getLockedBy().equals(userOid)) {
 					//他ユーザによるロックあり
-					Entity user = loadEntityWithoutReference(entity.getLockedBy(), null, User.DEFINITION_NAME);
+					Entity user = getLockedByUser(entity);
 					String message = null;
 					if (user == null) {
 						message = resourceString("command.generic.detail.DetailViewCommand.lockedOtherUser");

@@ -111,29 +111,29 @@ public final class InsertCommand extends DetailCommandBase {
 			return Constants.CMD_EXEC_ERROR_VIEW;
 		}
 
-		final Entity model = context.createEntity();
+		final Entity edited = context.createEntity();
 		final DetailFormViewData data = new DetailFormViewData();
 		data.setEntityDefinition(context.getEntityDefinition());
 		data.setView(context.getView());
 		EditResult ret = null;
 		if (context.hasErrors()) {
-			data.setEntity(model);
+			data.setEntity(edited);
 			ret = new EditResult();
 			ret.setResultType(ResultType.ERROR);
 			ret.setErrors(context.getErrors().toArray(new ValidateError[context.getErrors().size()]));
 			ret.setMessage(resourceString("command.generic.detail.InsertCommand.inputErr"));
 		} else {
-			ret = insertEntity(context, model);
+			ret = insertEntity(context, edited);
 			if (ret.getResultType() == ResultType.SUCCESS) {
 				//entityのoidをセット。transactionコミット前にoidを取得したい場合があるので。
-				request.setAttribute(Constants.OID, model.getOid());
+				request.setAttribute(Constants.OID, edited.getOid());
 
 				Transaction transaction = ManagerLocator.getInstance().getManager(TransactionManager.class).currentTransaction();
 				transaction.addTransactionListener(new TransactionListener() {
 					@Override
 					public void afterCommit(Transaction t) {
 						//被参照をテーブルで追加した場合、コミット前だとロードで取得できない
-						data.setEntity(loadViewEntity(context, model.getOid(), 0l, model.getDefinitionName(), context.getReferencePropertyName()));
+						data.setEntity(loadViewEntity(context, edited.getOid(), 0l, edited.getDefinitionName(), context.getReferencePropertyName()));
 
 						//更新成功時
 						if (data.getEntity() != null) {
@@ -148,7 +148,7 @@ public final class InsertCommand extends DetailCommandBase {
 					}
 				});
 			} else {
-				data.setEntity(model);
+				data.setEntity(edited);
 			}
 		}
 

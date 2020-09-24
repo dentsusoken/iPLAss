@@ -81,7 +81,7 @@ public class MultiBulkCommandContext extends RegistrationCommandContext {
 	private BulkFormView view;
 
 	private GemConfigService gemConfig = null;
-	
+
 	private BulkUpdateInterrupterHandler bulkInterrupterHandler = null;
 
 	private List<BulkCommandParams> bulkCommandParams = new ArrayList<>();
@@ -296,7 +296,7 @@ public class MultiBulkCommandContext extends RegistrationCommandContext {
 	 * @return 参照データのリスト
 	 */
 	private List<Entity> getRefTableValues(ReferenceProperty p, String defName, Long count, String prefix) {
-		final List<Entity> list = new ArrayList<Entity>();
+		final List<Entity> list = new ArrayList<>();
 		EntityDefinition ed = getEntityDefinition();
 		EntityDefinition red = definitionManager.get(defName);
 		setEntityDefinition(red);//参照先の定義に詰め替える
@@ -402,7 +402,7 @@ public class MultiBulkCommandContext extends RegistrationCommandContext {
 		return new RegistrationPropertyBaseHandler<PropertyItem>() {
 			@Override
 			public boolean isDispProperty(PropertyItem property) {
-				return EntityViewUtil.isDisplayElement(entityDefinition.getName(), property.getElementRuntimeId(), OutputType.BULK, getCurrentEntity());
+				return EntityViewUtil.isDisplayElement(entityDefinition.getName(), property.getElementRuntimeId(), OutputType.BULK, null);
 			}
 
 			@Override
@@ -446,11 +446,6 @@ public class MultiBulkCommandContext extends RegistrationCommandContext {
 	 */
 	public void setView(BulkFormView view) {
 		this.view = view;
-	}
-
-	@Override
-	public Entity getCurrentEntity() {
-		return null;
 	}
 
 	/**
@@ -684,10 +679,10 @@ public class MultiBulkCommandContext extends RegistrationCommandContext {
 	@Override
 	public List<PropertyItem> getProperty() {
 		if (propList == null) {
-			propList = new ArrayList<PropertyItem>();
+			propList = new ArrayList<>();
 			for (Section section : getView().getSections()) {
 				if (section instanceof DefaultSection) {
-					if (EntityViewUtil.isDisplayElement(entityDefinition.getName(), section.getElementRuntimeId(), OutputType.BULK, getCurrentEntity())) {
+					if (EntityViewUtil.isDisplayElement(entityDefinition.getName(), section.getElementRuntimeId(), OutputType.BULK, null)) {
 						propList.addAll(getProperty((DefaultSection) section));
 					}
 				}
@@ -703,7 +698,7 @@ public class MultiBulkCommandContext extends RegistrationCommandContext {
 	 */
 	@SuppressWarnings("unchecked")
 	protected List<PropertyItem> getProperty(DefaultSection section) {
-		List<PropertyItem> propList = new ArrayList<PropertyItem>();
+		List<PropertyItem> propList = new ArrayList<>();
 		for (Element elem : section.getElements()) {
 			if (elem instanceof PropertyItem) {
 				PropertyItem prop = (PropertyItem) elem;
@@ -730,7 +725,7 @@ public class MultiBulkCommandContext extends RegistrationCommandContext {
 					propList.add(prop);
 				}
 			} else if (elem instanceof DefaultSection) {
-				if (EntityViewUtil.isDisplayElement(entityDefinition.getName(), elem.getElementRuntimeId(), OutputType.BULK, getCurrentEntity())) {
+				if (EntityViewUtil.isDisplayElement(entityDefinition.getName(), elem.getElementRuntimeId(), OutputType.BULK, null)) {
 					propList.addAll(getProperty((DefaultSection) elem));
 				}
 			}
@@ -743,10 +738,10 @@ public class MultiBulkCommandContext extends RegistrationCommandContext {
 	 * @return プロパティの一覧
 	 */
 	private List<PropertyItem> getDisplayProperty() {
-		List<PropertyItem> propList = new ArrayList<PropertyItem>();
+		List<PropertyItem> propList = new ArrayList<>();
 
 		for (Section section : getView().getSections()) {
-			if (!EntityViewUtil.isDisplayElement(entityDefinition.getName(), section.getElementRuntimeId(), OutputType.BULK, getCurrentEntity())) {
+			if (!EntityViewUtil.isDisplayElement(entityDefinition.getName(), section.getElementRuntimeId(), OutputType.BULK, null)) {
 				continue;
 			}
 
@@ -764,10 +759,10 @@ public class MultiBulkCommandContext extends RegistrationCommandContext {
 	 * @return プロパティの一覧
 	 */
 	private List<PropertyItem> getDisplayProperty(DefaultSection section) {
-		List<PropertyItem> propList = new ArrayList<PropertyItem>();
+		List<PropertyItem> propList = new ArrayList<>();
 
 		for (Element elem : section.getElements()) {
-			if (!EntityViewUtil.isDisplayElement(entityDefinition.getName(), elem.getElementRuntimeId(), OutputType.BULK, getCurrentEntity())) {
+			if (!EntityViewUtil.isDisplayElement(entityDefinition.getName(), elem.getElementRuntimeId(), OutputType.BULK, null)) {
 				continue;
 			}
 
@@ -797,7 +792,7 @@ public class MultiBulkCommandContext extends RegistrationCommandContext {
 	 * 更新するエンティティリスト、interrupterで利用されます。
 	 */
 	public List<Entity> getEntities() {
-		List<Entity> entities = new ArrayList<Entity>();
+		List<Entity> entities = new ArrayList<>();
 		for (String oid : getOids()) {
 			for (Long version : getVersions(oid)) {
 				Entity entity = newEntity();
@@ -809,7 +804,7 @@ public class MultiBulkCommandContext extends RegistrationCommandContext {
 		}
 		return entities;
 	}
-	
+
 	public BulkUpdateInterrupterHandler getBulkUpdateInterrupterHandler() {
 		if (bulkInterrupterHandler == null) {
 			BulkOperationInterrupter bulkInterrupter = createBulkInterrupter(getBulkInterrupterName());
@@ -891,7 +886,7 @@ public class MultiBulkCommandContext extends RegistrationCommandContext {
 				return;
 			}
 			if (params == null) {
-				params = new HashMap<String, Object>();
+				params = new HashMap<>();
 			}
 
 			if (value == null) {

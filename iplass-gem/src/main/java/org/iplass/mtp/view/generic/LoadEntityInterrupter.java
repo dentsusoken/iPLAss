@@ -39,6 +39,8 @@ public interface LoadEntityInterrupter {
 	public enum LoadType {
 		/** 画面表示時 */
 		VIEW,
+		/** 更新処理時初期ロード */
+		BEFORE_UPDATE,
 		/** 更新処理時 */
 		UPDATE
 	}

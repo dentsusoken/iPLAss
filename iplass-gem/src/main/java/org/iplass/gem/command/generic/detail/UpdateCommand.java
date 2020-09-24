@@ -45,6 +45,7 @@ import org.iplass.mtp.entity.permission.EntityPermission;
 import org.iplass.mtp.transaction.Transaction;
 import org.iplass.mtp.transaction.TransactionListener;
 import org.iplass.mtp.transaction.TransactionManager;
+import org.iplass.mtp.util.StringUtil;
 import org.iplass.mtp.view.generic.DetailFormView;
 
 /**
@@ -106,6 +107,7 @@ public final class UpdateCommand extends DetailCommandBase {
 		final DetailCommandContext context = getContext(request);
 
 		final String oid = context.getOid();
+		final Long version = context.getVersion();
 
 		DetailFormView view = context.getView();
 		if (view == null) {
@@ -113,20 +115,30 @@ public final class UpdateCommand extends DetailCommandBase {
 			return Constants.CMD_EXEC_ERROR_VIEW;
 		}
 
-		Entity model = context.createEntity();
+		if (StringUtil.isNotEmpty(oid)) {
+			Entity current = null;
+			if (view.isLoadDefinedReferenceProperty()) {
+				current = loadBeforeUpdateEntity(context, oid, version, context.getDefinitionName(), context.getReferencePropertyName());
+			} else {
+				current = loadBeforeUpdateEntity(context, oid, version, context.getDefinitionName(), (List<String>) null);
+			}
+			context.setCurrentEntity(current);
+		}
+
+		Entity edited = context.createEntity();
 		final DetailFormViewData data = new DetailFormViewData();
 		data.setEntityDefinition(context.getEntityDefinition());
 		data.setView(context.getView());
 		EditResult ret = null;
 		if (context.hasErrors()) {
-			data.setEntity(model);
+			data.setEntity(edited);
 			ret = new EditResult();
 			ret.setResultType(ResultType.ERROR);
 			ret.setErrors(context.getErrors().toArray(new ValidateError[context.getErrors().size()]));
 			ret.setMessage(resourceString("command.generic.detail.UpdateCommand.inputErr"));
 		} else {
 			// 更新
-			ret = updateEntity(context, model);
+			ret = updateEntity(context, edited);
 			if (ret.getResultType() == ResultType.SUCCESS && oid != null) {
 				Transaction transaction = ManagerLocator.getInstance().getManager(TransactionManager.class).currentTransaction();
 				transaction.addTransactionListener(new TransactionListener() {
@@ -156,7 +168,7 @@ public final class UpdateCommand extends DetailCommandBase {
 					}
 				});
 			} else {
-				data.setEntity(model);
+				data.setEntity(edited);
 			}
 		}
 

@@ -165,7 +165,7 @@ public class BulkCommandContext extends RegistrationCommandContext {
 	}
 
 	private void populateBulkUpdatedProperty(String name, boolean create) {
-		String[] param = (String[]) request.getParams(name);
+		String[] param = request.getParams(name);
 		if (param != null) {
 			for (int i = 0; i < param.length; i++) {
 				String[] params = splitRowParam(param[i]);
@@ -335,7 +335,7 @@ public class BulkCommandContext extends RegistrationCommandContext {
 	 * @return 参照データのリスト
 	 */
 	private List<Entity> getRefTableValues(ReferenceProperty p, String defName, Long count, String prefix) {
-		final List<Entity> list = new ArrayList<Entity>();
+		final List<Entity> list = new ArrayList<>();
 		EntityDefinition ed = getEntityDefinition();
 		EntityDefinition red = definitionManager.get(defName);
 		setEntityDefinition(red);//参照先の定義に詰め替える
@@ -442,7 +442,7 @@ public class BulkCommandContext extends RegistrationCommandContext {
 			@Override
 			public boolean isDispProperty(PropertyColumn property) {
 				//一括更新プロパティエディタが未設定の場合、更新対象外
-				return EntityViewUtil.isDisplayElement(entityDefinition.getName(), property.getElementRuntimeId(), OutputType.BULK, getCurrentEntity())
+				return EntityViewUtil.isDisplayElement(entityDefinition.getName(), property.getElementRuntimeId(), OutputType.BULK, null)
 						&& property.getBulkUpdateEditor() != null;
 			}
 
@@ -477,11 +477,6 @@ public class BulkCommandContext extends RegistrationCommandContext {
 	 */
 	public void setView(SearchFormView view) {
 		this.view = view;
-	}
-
-	@Override
-	public Entity getCurrentEntity() {
-		return null;
 	}
 
 	/**
@@ -721,7 +716,7 @@ public class BulkCommandContext extends RegistrationCommandContext {
 	@Override
 	public List<PropertyColumn> getProperty() {
 //		String execType = getExecType();
-		List<PropertyColumn> propList = new ArrayList<PropertyColumn>();
+		List<PropertyColumn> propList = new ArrayList<>();
 		String updatePropName = getBulkUpdatePropName();
 		if (StringUtil.isEmpty(updatePropName)) {
 			getLogger().error("update property name is empty. updatePropName=" + updatePropName);
@@ -773,7 +768,7 @@ public class BulkCommandContext extends RegistrationCommandContext {
 	 * 更新するエンティティリスト、interrupterで利用されます。
 	 */
 	public List<Entity> getEntities() {
-		List<Entity> entities = new ArrayList<Entity>();
+		List<Entity> entities = new ArrayList<>();
 		for (String oid : getOids()) {
 			for (Long version : getVersions(oid)) {
 				Entity entity = newEntity();
@@ -833,7 +828,7 @@ public class BulkCommandContext extends RegistrationCommandContext {
 				return;
 			}
 			if (params == null) {
-				params = new HashMap<String, Object>();
+				params = new HashMap<>();
 			}
 
 			if (value == null) {
@@ -931,7 +926,7 @@ public class BulkCommandContext extends RegistrationCommandContext {
 				return;
 			}
 			if (params == null) {
-				params = new HashMap<String, Object>();
+				params = new HashMap<>();
 			}
 
 			if (value == null) {
