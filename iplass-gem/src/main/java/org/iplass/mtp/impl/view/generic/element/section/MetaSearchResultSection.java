@@ -662,21 +662,21 @@ public class MetaSearchResultSection extends MetaSection {
 		return section;
 	}
 	@Override
-	public SearchResultSectionHandler createRuntime(EntityViewRuntime entityView) {
-		return new SearchResultSectionHandler(this, entityView);
+	public SearchResultSectionRuntime createRuntime(EntityViewRuntime entityView) {
+		return new SearchResultSectionRuntime(this, entityView);
 	}
 
 	/**
 	 * ランタイム
 	 */
-	public class SearchResultSectionHandler extends SectionRuntime {
+	public class SearchResultSectionRuntime extends SectionRuntime {
 
 		/**
 		 * コンストラクタ
 		 * @param metadata メタデータ
 		 * @param entityView 画面定義
 		 */
-		public SearchResultSectionHandler(MetaSearchResultSection metadata, EntityViewRuntime entityView) {
+		public SearchResultSectionRuntime(MetaSearchResultSection metadata, EntityViewRuntime entityView) {
 			super(metadata, entityView);
 
 			Map<String, GroovyTemplate> customStyleMap = new HashMap<>();

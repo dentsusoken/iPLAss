@@ -740,7 +740,7 @@ public class MetaMassReferenceSection extends MetaSection {
 
 	@Override
 	public SectionRuntime createRuntime(EntityViewRuntime entityView) {
-		return new MassReferenceSectionHandler(this, entityView);
+		return new MassReferenceSectionRuntime(this, entityView);
 	}
 
 	/**
@@ -748,9 +748,9 @@ public class MetaMassReferenceSection extends MetaSection {
 	 * @author lis3wg
 	 *
 	 */
-	public class MassReferenceSectionHandler extends SectionRuntime {
+	public class MassReferenceSectionRuntime extends SectionRuntime {
 
-		public MassReferenceSectionHandler(MetaMassReferenceSection metadata, EntityViewRuntime entityView) {
+		public MassReferenceSectionRuntime(MetaMassReferenceSection metadata, EntityViewRuntime entityView) {
 			super(metadata, entityView);
 			if (StringUtil.isNotBlank(metadata.filterConditionScript)) {
 				if (metadata.filterScriptKey == null) {

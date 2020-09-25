@@ -223,22 +223,22 @@ public class MetaScriptingSection extends MetaSection {
 	}
 
 	@Override
-	public ScriptingSectionHandler createRuntime(EntityViewRuntime entityView) {
-		return new ScriptingSectionHandler(this, entityView);
+	public ScriptingSectionRuntime createRuntime(EntityViewRuntime entityView) {
+		return new ScriptingSectionRuntime(this, entityView);
 	}
 
 	/**
 	 * ランタイム
 	 * @author lis3wg
 	 */
-	public class ScriptingSectionHandler extends SectionRuntime {
+	public class ScriptingSectionRuntime extends SectionRuntime {
 
 		/**
 		 * コンストラクタ
 		 * @param metadata メタデータ
 		 * @param entityView 画面定義
 		 */
-		public ScriptingSectionHandler(MetaScriptingSection metadata, EntityViewRuntime entityView) {
+		public ScriptingSectionRuntime(MetaScriptingSection metadata, EntityViewRuntime entityView) {
 			super(metadata, entityView);
 			if (metadata.script != null && metadata.key == null) {
 				metadata.key = "Jsp_" + GroovyTemplateCompiler.randomName().replace("-", "_");

@@ -469,7 +469,7 @@ public class MetaReferenceSection extends MetaSection {
 
 	@Override
 	public SectionRuntime createRuntime(EntityViewRuntime entityView) {
-		return new ReferenceSectionHandler(this, entityView);
+		return new ReferenceSectionRuntime(this, entityView);
 	}
 
 	/**
@@ -477,9 +477,9 @@ public class MetaReferenceSection extends MetaSection {
 	 * @author lis3wg
 	 *
 	 */
-	public class ReferenceSectionHandler extends SectionRuntime {
+	public class ReferenceSectionRuntime extends SectionRuntime {
 
-		public ReferenceSectionHandler(MetaReferenceSection metadata, EntityViewRuntime entityView) {
+		public ReferenceSectionRuntime(MetaReferenceSection metadata, EntityViewRuntime entityView) {
 			super(metadata, entityView);
 			if (properties != null && !properties.isEmpty()) {
 				for (MetaNestProperty meta : properties) {
