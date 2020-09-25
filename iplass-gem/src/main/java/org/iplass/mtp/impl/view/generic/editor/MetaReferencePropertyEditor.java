@@ -950,16 +950,16 @@ public class MetaReferencePropertyEditor extends MetaPropertyEditor implements H
 
 	@Override
 	public MetaDataRuntime createRuntime(EntityViewRuntime entityView) {
-		return new ReferencePropertyEditorHandler(entityView);
+		return new ReferencePropertyEditorRuntime(entityView);
 	}
 
-	public class ReferencePropertyEditorHandler extends PropertyEditorHandler {
+	public class ReferencePropertyEditorRuntime extends PropertyEditorRuntime {
 
 		private static final String SCRIPT_PREFIX = "ReferencePropertyEditorHandler_urlParameter";
 
 		private GroovyTemplate urlParameterScript;
 
-		public ReferencePropertyEditorHandler(EntityViewRuntime entityView) {
+		public ReferencePropertyEditorRuntime(EntityViewRuntime entityView) {
 			if (StringUtil.isNotEmpty(urlParameter)) {
 				urlParameterScriptKey = "ReferencePropertyEditor_UrlParameter_" + GroovyTemplateCompiler.randomName().replace("-", "_");
 				ScriptEngine scriptEngine = ExecuteContext.getCurrentContext().getTenantContext().getScriptEngine();

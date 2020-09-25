@@ -37,7 +37,7 @@ import org.iplass.mtp.impl.view.generic.EntityViewRuntime;
 import org.iplass.mtp.impl.view.generic.HasMetaNestProperty;
 import org.iplass.mtp.impl.view.generic.editor.MetaNestProperty;
 import org.iplass.mtp.impl.view.generic.editor.MetaPropertyEditor;
-import org.iplass.mtp.impl.view.generic.editor.MetaPropertyEditor.PropertyEditorHandler;
+import org.iplass.mtp.impl.view.generic.editor.MetaPropertyEditor.PropertyEditorRuntime;
 import org.iplass.mtp.impl.view.generic.element.ElementRuntime;
 import org.iplass.mtp.impl.view.generic.element.MetaButton;
 import org.iplass.mtp.impl.view.generic.element.MetaButton.ButtonRuntime;
@@ -497,17 +497,17 @@ public class MetaDefaultSection extends MetaSection {
 				if (element instanceof MetaPropertyLayout) {
 					MetaPropertyEditor editor = ((MetaPropertyLayout)element).getEditor();
 					if (editor != null) {
-						PropertyEditorHandler handler = (PropertyEditorHandler)editor.createRuntime(entityView);
-						customStyleMap.put(editor.getOutputCustomStyleScriptKey(), handler.getOutputCustomStyleScript());
-						customStyleMap.put(editor.getInputCustomStyleScriptKey(), handler.getInputCustomStyleScript());
+						PropertyEditorRuntime runtime = (PropertyEditorRuntime)editor.createRuntime(entityView);
+						customStyleMap.put(editor.getOutputCustomStyleScriptKey(), runtime.getOutputCustomStyleScript());
+						customStyleMap.put(editor.getInputCustomStyleScriptKey(), runtime.getInputCustomStyleScript());
 
 						if (editor instanceof HasMetaNestProperty) {
 							for (MetaNestProperty nest : ((HasMetaNestProperty)editor).getNestProperties()) {
 								MetaPropertyEditor nestEditor = nest.getEditor();
 								if (nestEditor != null) {
-									PropertyEditorHandler nestHandler = (PropertyEditorHandler)nestEditor.createRuntime(entityView);
-									customStyleMap.put(nestEditor.getOutputCustomStyleScriptKey(), nestHandler.getOutputCustomStyleScript());
-									customStyleMap.put(nestEditor.getInputCustomStyleScriptKey(), nestHandler.getInputCustomStyleScript());
+									PropertyEditorRuntime nestRuntime = (PropertyEditorRuntime)nestEditor.createRuntime(entityView);
+									customStyleMap.put(nestEditor.getOutputCustomStyleScriptKey(), nestRuntime.getOutputCustomStyleScript());
+									customStyleMap.put(nestEditor.getInputCustomStyleScriptKey(), nestRuntime.getInputCustomStyleScript());
 								}
 							}
 						}

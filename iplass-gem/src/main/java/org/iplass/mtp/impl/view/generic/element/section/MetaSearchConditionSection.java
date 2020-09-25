@@ -34,7 +34,7 @@ import org.iplass.mtp.impl.script.template.GroovyTemplateCompiler;
 import org.iplass.mtp.impl.util.ObjectUtil;
 import org.iplass.mtp.impl.view.generic.EntityViewRuntime;
 import org.iplass.mtp.impl.view.generic.editor.MetaPropertyEditor;
-import org.iplass.mtp.impl.view.generic.editor.MetaPropertyEditor.PropertyEditorHandler;
+import org.iplass.mtp.impl.view.generic.editor.MetaPropertyEditor.PropertyEditorRuntime;
 import org.iplass.mtp.impl.view.generic.element.MetaElement;
 import org.iplass.mtp.impl.view.generic.element.property.MetaPropertyItem;
 import org.iplass.mtp.view.generic.element.Element;
@@ -639,8 +639,8 @@ public class MetaSearchConditionSection extends MetaSection {
 
 				MetaPropertyEditor editor = property.getEditor();
 				if (editor != null) {
-					PropertyEditorHandler handler = (PropertyEditorHandler)editor.createRuntime(entityView);
-					customStyleMap.put(editor.getInputCustomStyleScriptKey(), handler.getInputCustomStyleScript());
+					PropertyEditorRuntime runtime = (PropertyEditorRuntime)editor.createRuntime(entityView);
+					customStyleMap.put(editor.getInputCustomStyleScriptKey(), runtime.getInputCustomStyleScript());
 				}
 			}
 			//Script用のKEYを設定

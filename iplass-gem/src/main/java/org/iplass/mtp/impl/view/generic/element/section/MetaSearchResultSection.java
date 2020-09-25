@@ -33,7 +33,7 @@ import org.iplass.mtp.impl.script.template.GroovyTemplateCompiler;
 import org.iplass.mtp.impl.util.ObjectUtil;
 import org.iplass.mtp.impl.view.generic.EntityViewRuntime;
 import org.iplass.mtp.impl.view.generic.editor.MetaPropertyEditor;
-import org.iplass.mtp.impl.view.generic.editor.MetaPropertyEditor.PropertyEditorHandler;
+import org.iplass.mtp.impl.view.generic.editor.MetaPropertyEditor.PropertyEditorRuntime;
 import org.iplass.mtp.impl.view.generic.element.MetaElement;
 import org.iplass.mtp.impl.view.generic.element.property.MetaPropertyColumn;
 import org.iplass.mtp.view.generic.PagingPosition;
@@ -689,8 +689,8 @@ public class MetaSearchResultSection extends MetaSection {
 				metaPropertyColumn.createRuntime(entityView);
 
 				MetaPropertyEditor editor = metaPropertyColumn.getEditor();
-				PropertyEditorHandler handler = (PropertyEditorHandler)editor.createRuntime(entityView);
-				customStyleMap.put(editor.getOutputCustomStyleScriptKey(), handler.getOutputCustomStyleScript());
+				PropertyEditorRuntime runtime = (PropertyEditorRuntime)editor.createRuntime(entityView);
+				customStyleMap.put(editor.getOutputCustomStyleScriptKey(), runtime.getOutputCustomStyleScript());
 			}
 			//Script用のKEYを設定
 			metadata.scriptKey = "SearchResultSection_Style_" + GroovyTemplateCompiler.randomName().replace("-", "_");
