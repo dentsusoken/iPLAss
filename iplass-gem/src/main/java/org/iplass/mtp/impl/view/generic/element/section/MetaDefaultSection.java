@@ -43,7 +43,7 @@ import org.iplass.mtp.impl.view.generic.element.MetaButton;
 import org.iplass.mtp.impl.view.generic.element.MetaButton.ButtonRuntime;
 import org.iplass.mtp.impl.view.generic.element.MetaElement;
 import org.iplass.mtp.impl.view.generic.element.MetaLink;
-import org.iplass.mtp.impl.view.generic.element.MetaLink.LinkHandler;
+import org.iplass.mtp.impl.view.generic.element.MetaLink.LinkRuntime;
 import org.iplass.mtp.impl.view.generic.element.property.MetaPropertyItem;
 import org.iplass.mtp.impl.view.generic.element.property.MetaPropertyLayout;
 import org.iplass.mtp.util.StringUtil;
@@ -520,8 +520,8 @@ public class MetaDefaultSection extends MetaSection {
 				}
 				if (element instanceof MetaLink) {
 					MetaLink link = (MetaLink)element;
-					LinkHandler handler = link.createRuntime(entityView);
-					customStyleMap.put(link.getInputCustomStyleScriptKey(), handler.getInputCustomStyleScript());
+					LinkRuntime runtime = link.createRuntime(entityView);
+					customStyleMap.put(link.getInputCustomStyleScriptKey(), runtime.getInputCustomStyleScript());
 				}
 			}
 			//StyleScript用のKEYを設定

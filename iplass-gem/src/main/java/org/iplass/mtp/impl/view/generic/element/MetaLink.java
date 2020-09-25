@@ -240,17 +240,17 @@ public class MetaLink extends MetaElement {
 	}
 
 	@Override
-	public LinkHandler createRuntime(EntityViewRuntime entityView) {
-		return new LinkHandler(this, entityView);
+	public LinkRuntime createRuntime(EntityViewRuntime entityView) {
+		return new LinkRuntime(this, entityView);
 	}
 
-	public class LinkHandler extends ElementRuntime {
+	public class LinkRuntime extends ElementRuntime {
 
 		private static final String SCRIPT_PREFIX = "LinkHandler_inputCustomStyle";
 
 		private GroovyTemplate inputCustomStyleScript;
 
-		public LinkHandler(MetaLink metadata, EntityViewRuntime entityView) {
+		public LinkRuntime(MetaLink metadata, EntityViewRuntime entityView) {
 			super(metadata, entityView);
 
 			inputCustomStyleScriptKey = "Link_InputStyle_" + GroovyTemplateCompiler.randomName().replace("-", "_");
