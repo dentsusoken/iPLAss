@@ -40,7 +40,7 @@ import org.iplass.mtp.impl.view.generic.editor.MetaPropertyEditor;
 import org.iplass.mtp.impl.view.generic.editor.MetaPropertyEditor.PropertyEditorHandler;
 import org.iplass.mtp.impl.view.generic.element.ElementRuntime;
 import org.iplass.mtp.impl.view.generic.element.MetaButton;
-import org.iplass.mtp.impl.view.generic.element.MetaButton.ButtonHandler;
+import org.iplass.mtp.impl.view.generic.element.MetaButton.ButtonRuntime;
 import org.iplass.mtp.impl.view.generic.element.MetaElement;
 import org.iplass.mtp.impl.view.generic.element.MetaLink;
 import org.iplass.mtp.impl.view.generic.element.MetaLink.LinkHandler;
@@ -72,7 +72,7 @@ public class MetaDefaultSection extends MetaSection {
 	private String title;
 
 	/** 多言語設定情報 */
-	private List<MetaLocalizedString> localizedTitleList = new ArrayList<MetaLocalizedString>();
+	private List<MetaLocalizedString> localizedTitleList = new ArrayList<>();
 
 	/** セクションの展開可否 */
 	private boolean expandable;
@@ -275,7 +275,7 @@ public class MetaDefaultSection extends MetaSection {
 	 * @return 要素情報
 	 */
 	public List<MetaElement> getElements() {
-		if (this.elements == null) this.elements = new ArrayList<MetaElement>();
+		if (this.elements == null) this.elements = new ArrayList<>();
 		return elements;
 	}
 
@@ -292,7 +292,7 @@ public class MetaDefaultSection extends MetaSection {
 	 * @param val 要素情報
 	 */
 	public void addElement(MetaElement element) {
-		if (this.elements == null) this.elements = new ArrayList<MetaElement>();
+		if (this.elements == null) this.elements = new ArrayList<>();
 		this.elements.add(element);
 	}
 
@@ -489,7 +489,7 @@ public class MetaDefaultSection extends MetaSection {
 		public DefaultSectionRuntime(MetaDefaultSection metadata, EntityViewRuntime entityView) {
 			super(metadata, entityView);
 
-			elements = new ArrayList<ElementRuntime>();
+			elements = new ArrayList<>();
 			Map<String, GroovyTemplate> customStyleMap = new HashMap<>();
 			for (MetaElement element : metadata.getElements()) {
 				elements.add(element.createRuntime(entityView));
@@ -515,8 +515,8 @@ public class MetaDefaultSection extends MetaSection {
 				}
 				if (element instanceof MetaButton) {
 					MetaButton button = (MetaButton)element;
-					ButtonHandler handler = button.createRuntime(entityView);
-					customStyleMap.put(button.getInputCustomStyleScriptKey(), handler.getInputCustomStyleScript());
+					ButtonRuntime runtime = button.createRuntime(entityView);
+					customStyleMap.put(button.getInputCustomStyleScriptKey(), runtime.getInputCustomStyleScript());
 				}
 				if (element instanceof MetaLink) {
 					MetaLink link = (MetaLink)element;

@@ -30,7 +30,7 @@ import org.iplass.mtp.impl.metadata.BaseMetaDataRuntime;
 import org.iplass.mtp.impl.script.template.GroovyTemplate;
 import org.iplass.mtp.impl.view.generic.common.MetaAutocompletionSetting.AutocompletionSettingHandler;
 import org.iplass.mtp.impl.view.generic.element.ElementRuntime;
-import org.iplass.mtp.impl.view.generic.element.MetaButton.ButtonHandler;
+import org.iplass.mtp.impl.view.generic.element.MetaButton.ButtonRuntime;
 
 /**
  * 画面定義のランタイム
@@ -52,7 +52,7 @@ public class EntityViewRuntime extends BaseMetaDataRuntime {
 
 	private Map<String, ElementRuntime> elementMap;
 
-	private Map<String, ButtonHandler> buttonHandlerMap;
+	private Map<String, ButtonRuntime> buttonMap;
 
 	private Map<String, AutocompletionSettingHandler> autocompletionSettingMap;
 
@@ -194,10 +194,10 @@ public class EntityViewRuntime extends BaseMetaDataRuntime {
 	 * ボタンハンドラを追加します。
 	 * @param handler
 	 */
-	public void addButtonHandler(ButtonHandler handler) {
-		if (buttonHandlerMap == null) buttonHandlerMap = new HashMap<>();
-		if (handler.getMetaData().getCustomDisplayTypeScriptKey() != null) {
-			buttonHandlerMap.put(handler.getMetaData().getCustomDisplayTypeScriptKey(), handler);
+	public void addButton(ButtonRuntime button) {
+		if (buttonMap == null) buttonMap = new HashMap<>();
+		if (button.getMetaData().getCustomDisplayTypeScriptKey() != null) {
+			buttonMap.put(button.getMetaData().getCustomDisplayTypeScriptKey(), button);
 		}
 	}
 
@@ -206,9 +206,9 @@ public class EntityViewRuntime extends BaseMetaDataRuntime {
 	 * @param key
 	 * @return
 	 */
-	public ButtonHandler getButtonHandler(String key) {
-		if (buttonHandlerMap == null) return null;
-		return buttonHandlerMap.get(key);
+	public ButtonRuntime getButton(String key) {
+		if (buttonMap == null) return null;
+		return buttonMap.get(key);
 	}
 
 	/**

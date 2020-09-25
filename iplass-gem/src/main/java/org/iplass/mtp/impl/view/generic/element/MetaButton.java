@@ -342,11 +342,11 @@ public class MetaButton extends MetaElement {
 	}
 
 	@Override
-	public ButtonHandler createRuntime(EntityViewRuntime entityView) {
-		return new ButtonHandler(this, entityView);
+	public ButtonRuntime createRuntime(EntityViewRuntime entityView) {
+		return new ButtonRuntime(this, entityView);
 	}
 
-	public class ButtonHandler extends ElementRuntime {
+	public class ButtonRuntime extends ElementRuntime {
 		public static final String REQUEST_BINDING_NAME = "request";
 		public static final String SESSION_BINDING_NAME = "session";
 		public static final String USER_BINDING_NAME = "user";
@@ -360,7 +360,7 @@ public class MetaButton extends MetaElement {
 
 		private Script compiledCustomDisplayTypeScript;
 
-		public ButtonHandler(MetaButton metadata, EntityViewRuntime entityView) {
+		public ButtonRuntime(MetaButton metadata, EntityViewRuntime entityView) {
 			super(metadata, entityView);
 
 			inputCustomStyleScriptKey = "Button_InputStyle" + GroovyTemplateCompiler.randomName().replace("-", "_");
@@ -379,7 +379,7 @@ public class MetaButton extends MetaElement {
 				customDisplayTypeScriptKey = scriptName;
 			}
 
-			entityView.addButtonHandler(this);
+			entityView.addButton(this);
 		}
 
 		public GroovyTemplate getInputCustomStyleScript() {
