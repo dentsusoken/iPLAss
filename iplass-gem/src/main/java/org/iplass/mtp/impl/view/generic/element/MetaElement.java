@@ -190,8 +190,8 @@ public abstract class MetaElement implements MetaData {
 	 * @param entityView 画面定義
 	 * @return ランタイム
 	 */
-	public ElementHandler createRuntime(EntityViewRuntime entityView) {
-		return new ElementHandler(this, entityView);
+	public ElementRuntime createRuntime(EntityViewRuntime entityView) {
+		return new ElementRuntime(this, entityView);
 	}
 
 }

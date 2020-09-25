@@ -29,7 +29,7 @@ import org.iplass.mtp.entity.query.PreparedQuery;
 import org.iplass.mtp.impl.metadata.BaseMetaDataRuntime;
 import org.iplass.mtp.impl.script.template.GroovyTemplate;
 import org.iplass.mtp.impl.view.generic.common.MetaAutocompletionSetting.AutocompletionSettingHandler;
-import org.iplass.mtp.impl.view.generic.element.ElementHandler;
+import org.iplass.mtp.impl.view.generic.element.ElementRuntime;
 import org.iplass.mtp.impl.view.generic.element.MetaButton.ButtonHandler;
 
 /**
@@ -50,7 +50,7 @@ public class EntityViewRuntime extends BaseMetaDataRuntime {
 	/** カスタムスタイル */
 	private Map<String, Map<String, GroovyTemplate>> customStylesMap;
 
-	private Map<String, ElementHandler> elementHandlerMap;
+	private Map<String, ElementRuntime> elementMap;
 
 	private Map<String, ButtonHandler> buttonHandlerMap;
 
@@ -173,10 +173,10 @@ public class EntityViewRuntime extends BaseMetaDataRuntime {
 	 * エレメントハンドラを追加します。
 	 * @param handler エレメントハンドラ
 	 */
-	public void addElementHandler(ElementHandler handler) {
-		if (elementHandlerMap == null) elementHandlerMap = new HashMap<>();
-		if (handler.getMetaData().getElementRuntimeId() != null) {
-			elementHandlerMap.put(handler.getMetaData().getElementRuntimeId(), handler);
+	public void addElement(ElementRuntime element) {
+		if (elementMap == null) elementMap = new HashMap<>();
+		if (element.getMetaData().getElementRuntimeId() != null) {
+			elementMap.put(element.getMetaData().getElementRuntimeId(), element);
 		}
 	}
 
@@ -185,9 +185,9 @@ public class EntityViewRuntime extends BaseMetaDataRuntime {
 	 * @param elementRuntimeId エレメントランタイムID
 	 * @return エレメントハンドラ
 	 */
-	public ElementHandler getElementHandler(String elementRuntimeId) {
-		if (elementHandlerMap == null) return null;
-		return elementHandlerMap.get(elementRuntimeId);
+	public ElementRuntime getElement(String elementRuntimeId) {
+		if (elementMap == null) return null;
+		return elementMap.get(elementRuntimeId);
 	}
 
 	/**

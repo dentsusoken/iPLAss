@@ -244,7 +244,7 @@ public class MetaLink extends MetaElement {
 		return new LinkHandler(this, entityView);
 	}
 
-	public class LinkHandler extends ElementHandler {
+	public class LinkHandler extends ElementRuntime {
 
 		private static final String SCRIPT_PREFIX = "LinkHandler_inputCustomStyle";
 

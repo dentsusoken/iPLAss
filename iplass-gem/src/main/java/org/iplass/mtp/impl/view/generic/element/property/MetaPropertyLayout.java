@@ -39,7 +39,7 @@ import org.iplass.mtp.impl.view.generic.HasEntityProperty;
 import org.iplass.mtp.impl.view.generic.common.MetaAutocompletionSetting;
 import org.iplass.mtp.impl.view.generic.common.MetaAutocompletionSetting.AutocompletionSettingHandler;
 import org.iplass.mtp.impl.view.generic.editor.MetaPropertyEditor;
-import org.iplass.mtp.impl.view.generic.element.ElementHandler;
+import org.iplass.mtp.impl.view.generic.element.ElementRuntime;
 import org.iplass.mtp.impl.view.generic.element.MetaElement;
 import org.iplass.mtp.view.generic.editor.DateRangePropertyEditor;
 import org.iplass.mtp.view.generic.editor.JoinPropertyEditor;
@@ -320,7 +320,7 @@ public abstract class MetaPropertyLayout extends MetaElement implements HasEntit
 	}
 
 	@Override
-	public ElementHandler createRuntime(EntityViewRuntime entityView) {
+	public ElementRuntime createRuntime(EntityViewRuntime entityView) {
 		if (autocompletionSetting != null) {
 			AutocompletionSettingHandler handler = autocompletionSetting.getHandler(entityView);
 			if (handler != null) {

@@ -21,13 +21,13 @@
 package org.iplass.mtp.impl.view.generic.element.section;
 
 import org.iplass.mtp.impl.view.generic.EntityViewRuntime;
-import org.iplass.mtp.impl.view.generic.element.ElementHandler;
+import org.iplass.mtp.impl.view.generic.element.ElementRuntime;
 
 /**
  * セクションのランタイム
  * @author lis3wg
  */
-public class SectionHandler extends ElementHandler {
+public class SectionHandler extends ElementRuntime {
 
 	/**
 	 * コンストラクタ

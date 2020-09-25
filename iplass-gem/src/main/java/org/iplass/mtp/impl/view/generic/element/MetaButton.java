@@ -346,7 +346,7 @@ public class MetaButton extends MetaElement {
 		return new ButtonHandler(this, entityView);
 	}
 
-	public class ButtonHandler extends ElementHandler {
+	public class ButtonHandler extends ElementRuntime {
 		public static final String REQUEST_BINDING_NAME = "request";
 		public static final String SESSION_BINDING_NAME = "session";
 		public static final String USER_BINDING_NAME = "user";

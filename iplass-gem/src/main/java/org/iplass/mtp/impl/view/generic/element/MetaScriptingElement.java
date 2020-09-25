@@ -188,7 +188,7 @@ public class MetaScriptingElement extends MetaElement {
 	 * ランタイム
 	 * @author lis3wg
 	 */
-	public class ScriptingHandler extends ElementHandler {
+	public class ScriptingHandler extends ElementRuntime {
 
 		/**
 		 * コンストラクタ

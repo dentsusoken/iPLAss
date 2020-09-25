@@ -38,7 +38,7 @@ import org.iplass.mtp.impl.view.generic.HasMetaNestProperty;
 import org.iplass.mtp.impl.view.generic.editor.MetaNestProperty;
 import org.iplass.mtp.impl.view.generic.editor.MetaPropertyEditor;
 import org.iplass.mtp.impl.view.generic.editor.MetaPropertyEditor.PropertyEditorHandler;
-import org.iplass.mtp.impl.view.generic.element.ElementHandler;
+import org.iplass.mtp.impl.view.generic.element.ElementRuntime;
 import org.iplass.mtp.impl.view.generic.element.MetaButton;
 import org.iplass.mtp.impl.view.generic.element.MetaButton.ButtonHandler;
 import org.iplass.mtp.impl.view.generic.element.MetaElement;
@@ -479,7 +479,7 @@ public class MetaDefaultSection extends MetaSection {
 	public class DefaultSectionRuntime extends SectionHandler {
 
 		/** 要素情報*/
-		private List<ElementHandler> elements;
+		private List<ElementRuntime> elements;
 
 		/**
 		 * コンストラクタ
@@ -489,7 +489,7 @@ public class MetaDefaultSection extends MetaSection {
 		public DefaultSectionRuntime(MetaDefaultSection metadata, EntityViewRuntime entityView) {
 			super(metadata, entityView);
 
-			elements = new ArrayList<ElementHandler>();
+			elements = new ArrayList<ElementRuntime>();
 			Map<String, GroovyTemplate> customStyleMap = new HashMap<>();
 			for (MetaElement element : metadata.getElements()) {
 				elements.add(element.createRuntime(entityView));
