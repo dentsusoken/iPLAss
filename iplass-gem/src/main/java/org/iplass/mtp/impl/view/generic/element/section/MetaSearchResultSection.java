@@ -31,7 +31,7 @@ import org.iplass.mtp.impl.i18n.MetaLocalizedString;
 import org.iplass.mtp.impl.script.template.GroovyTemplate;
 import org.iplass.mtp.impl.script.template.GroovyTemplateCompiler;
 import org.iplass.mtp.impl.util.ObjectUtil;
-import org.iplass.mtp.impl.view.generic.EntityViewHandler;
+import org.iplass.mtp.impl.view.generic.EntityViewRuntime;
 import org.iplass.mtp.impl.view.generic.editor.MetaPropertyEditor;
 import org.iplass.mtp.impl.view.generic.editor.MetaPropertyEditor.PropertyEditorHandler;
 import org.iplass.mtp.impl.view.generic.element.MetaElement;
@@ -662,7 +662,7 @@ public class MetaSearchResultSection extends MetaSection {
 		return section;
 	}
 	@Override
-	public SearchResultSectionHandler createRuntime(EntityViewHandler entityView) {
+	public SearchResultSectionHandler createRuntime(EntityViewRuntime entityView) {
 		return new SearchResultSectionHandler(this, entityView);
 	}
 
@@ -676,7 +676,7 @@ public class MetaSearchResultSection extends MetaSection {
 		 * @param metadata メタデータ
 		 * @param entityView 画面定義
 		 */
-		public SearchResultSectionHandler(MetaSearchResultSection metadata, EntityViewHandler entityView) {
+		public SearchResultSectionHandler(MetaSearchResultSection metadata, EntityViewRuntime entityView) {
 			super(metadata, entityView);
 
 			Map<String, GroovyTemplate> customStyleMap = new HashMap<>();

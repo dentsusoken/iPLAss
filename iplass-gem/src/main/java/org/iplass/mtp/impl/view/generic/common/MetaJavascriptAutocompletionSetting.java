@@ -23,7 +23,7 @@ package org.iplass.mtp.impl.view.generic.common;
 import org.iplass.mtp.impl.entity.EntityHandler;
 import org.iplass.mtp.impl.metadata.MetaData;
 import org.iplass.mtp.impl.util.ObjectUtil;
-import org.iplass.mtp.impl.view.generic.EntityViewHandler;
+import org.iplass.mtp.impl.view.generic.EntityViewRuntime;
 import org.iplass.mtp.view.generic.common.AutocompletionSetting;
 import org.iplass.mtp.view.generic.common.JavascriptAutocompletionSetting;
 
@@ -76,7 +76,7 @@ public class MetaJavascriptAutocompletionSetting extends MetaAutocompletionSetti
 	}
 
 	@Override
-	public AutocompletionSettingHandler getHandler(EntityViewHandler entityView) {
+	public AutocompletionSettingHandler getHandler(EntityViewRuntime entityView) {
 		// server側で処理しないのでhandlerは作らない
 		return null;
 	}

@@ -59,7 +59,7 @@ public class SearchFormViewHandler extends FormViewHandler {
 
 	private GroovyTemplate compiledCsvFileNameScript;
 
-	public SearchFormViewHandler(MetaFormView metaData, EntityViewHandler entityView) {
+	public SearchFormViewHandler(MetaFormView metaData, EntityViewRuntime entityView) {
 		super(metaData, entityView);
 
 		MetaSearchFormView form = (MetaSearchFormView) metaData;

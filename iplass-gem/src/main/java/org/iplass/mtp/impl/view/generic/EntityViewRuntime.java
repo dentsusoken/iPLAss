@@ -36,7 +36,7 @@ import org.iplass.mtp.impl.view.generic.element.MetaButton.ButtonHandler;
  * 画面定義のランタイム
  * @author lis3wg
  */
-public class EntityViewHandler extends BaseMetaDataRuntime {
+public class EntityViewRuntime extends BaseMetaDataRuntime {
 
 	/** メタデータ */
 	protected MetaEntityView metaData;
@@ -63,7 +63,7 @@ public class EntityViewHandler extends BaseMetaDataRuntime {
 	 * コンストラクタ
 	 * @param metaData レイアウト情報
 	 */
-	public EntityViewHandler(MetaEntityView metaData) {
+	public EntityViewRuntime(MetaEntityView metaData) {
 		try {
 			this.metaData = metaData;
 			if (metaData.getViews().size() > 0) {

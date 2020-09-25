@@ -498,14 +498,14 @@ public class EntityViewManagerImpl extends AbstractTypedDefinitionManager<Entity
 			HttpServletResponse res, ServletContext application, PageContext page) {
 		if (name == null || templateName == null) return;
 
-		EntityViewHandler handler = service.getRuntimeByName(name);
-		if (handler == null) return;
+		EntityViewRuntime entityView = service.getRuntimeByName(name);
+		if (entityView == null) return;
 
 		//DynamicScriptをapiからimplに移すと、戻り値がapiからimplの逆参照となってしまう。
 		//→戻り値ではなくDynamicScriptをメソッド内で実行する。
 		//　→api(jsp)からGroovyTemplateを実行するためのDynamicScriptだったが、
 		//　　impl内で完結するならそのままGroovyTemplateで十分。
-		GroovyTemplate template = handler.getTemplate(templateName);
+		GroovyTemplate template = entityView.getTemplate(templateName);
 		if (template != null) {
 			try {
 				template.doTemplate(new MetaGroovyTemplate.WebGroovyTemplateBinding(WebUtil.getRequestContext(), req, res, application, page));
@@ -517,13 +517,13 @@ public class EntityViewManagerImpl extends AbstractTypedDefinitionManager<Entity
 
 	@Override
 	public Entity copyEntity(String viewName, Entity entity) {
-		EntityViewHandler handler = service.getRuntimeByName(entity.getDefinitionName());
-		if (handler == null) {
+		EntityViewRuntime entityView = service.getRuntimeByName(entity.getDefinitionName());
+		if (entityView == null) {
 			throw new ApplicationException(resourceString("impl.view.generic.EntityViewManagerImpl.viewErr"));
 		}
 
 		DetailFormViewHandler fh = null;
-		for (FormViewHandler view : handler.getFormViews()) {
+		for (FormViewHandler view : entityView.getFormViews()) {
 			if (view instanceof DetailFormViewHandler) {
 				//nameが一致するhandlerを検索
 				if (viewName == null || viewName.isEmpty()) {
@@ -548,13 +548,13 @@ public class EntityViewManagerImpl extends AbstractTypedDefinitionManager<Entity
 
 	@Override
 	public Entity initEntity(String definitionName, String viewName, Entity entity) {
-		EntityViewHandler handler = service.getRuntimeByName(definitionName);
-		if (handler == null) {
+		EntityViewRuntime entityView = service.getRuntimeByName(definitionName);
+		if (entityView == null) {
 			throw new ApplicationException(resourceString("impl.view.generic.EntityViewManagerImpl.viewErr"));
 		}
 
 		DetailFormViewHandler fh = null;
-		for (FormViewHandler view : handler.getFormViews()) {
+		for (FormViewHandler view : entityView.getFormViews()) {
 			if (view instanceof DetailFormViewHandler) {
 				//nameが一致するhandlerを検索
 				if (viewName == null || viewName.isEmpty()) {
@@ -579,14 +579,14 @@ public class EntityViewManagerImpl extends AbstractTypedDefinitionManager<Entity
 
 	@Override
 	public Map<String, Object> applyDefaultPropertyCondition(String definitionName, String viewName, Map<String, Object> defaultCondMap) {
-		EntityViewHandler handler = service.getRuntimeByName(definitionName);
-		if (handler == null) {
+		EntityViewRuntime entityView = service.getRuntimeByName(definitionName);
+		if (entityView == null) {
 			//デフォルトなど
 			return defaultCondMap;
 		}
 
 		SearchFormViewHandler fh = null;
-		for (FormViewHandler view : handler.getFormViews()) {
+		for (FormViewHandler view : entityView.getFormViews()) {
 			if (view instanceof SearchFormViewHandler) {
 				//nameが一致するhandlerを検索
 				if (viewName == null || viewName.isEmpty()) {
@@ -612,10 +612,10 @@ public class EntityViewManagerImpl extends AbstractTypedDefinitionManager<Entity
 	@Override
 	public String getCsvDownloadFileName(String definitionName, String viewName, String defaultName, Map<String, Object> csvVariableMap) {
 		String fileName = defaultName;
-		EntityViewHandler handler = service.getRuntimeByName(definitionName);
-		if (handler != null) {
+		EntityViewRuntime entityView = service.getRuntimeByName(definitionName);
+		if (entityView != null) {
 			SearchFormViewHandler fh = null;
-			for (FormViewHandler view : handler.getFormViews()) {
+			for (FormViewHandler view : entityView.getFormViews()) {
 				if (view instanceof SearchFormViewHandler) {
 					//nameが一致するhandlerを検索
 					if (StringUtil.isEmpty(viewName)) {
@@ -645,10 +645,10 @@ public class EntityViewManagerImpl extends AbstractTypedDefinitionManager<Entity
 	public Condition getMassReferenceSectionCondition(String name, String key) {
 		if (name == null || key == null) return null;
 
-		EntityViewHandler handler = service.getRuntimeByName(name);
-		if (handler == null) return null;
+		EntityViewRuntime entityView = service.getRuntimeByName(name);
+		if (entityView == null) return null;
 
-		PreparedQuery query = handler.getQuery(key);
+		PreparedQuery query = entityView.getQuery(key);
 		if (query == null) return null;
 
 		return query.condition(null);
@@ -678,13 +678,13 @@ public class EntityViewManagerImpl extends AbstractTypedDefinitionManager<Entity
 			//GroovyTemplateをキャッシュしているKEYが未指定の場合は取得しない
 			return "";
 		}
-		EntityViewHandler handler = service.getRuntimeByName(definitionName);
-		if (handler == null) {
+		EntityViewRuntime entityView = service.getRuntimeByName(definitionName);
+		if (entityView == null) {
 			//取れなかったら呼出元でデフォルトレイアウト生成
 			return "";
 		}
 
-		Map<String, GroovyTemplate> sectionScriptMap = handler.getCustomStyleScriptMap(scriptKey);
+		Map<String, GroovyTemplate> sectionScriptMap = entityView.getCustomStyleScriptMap(scriptKey);
 		GroovyTemplate script = sectionScriptMap.get(editorScriptKey);
 		if (script == null) {
 			//スクリプトが未指定の場合はそのまま
@@ -721,12 +721,12 @@ public class EntityViewManagerImpl extends AbstractTypedDefinitionManager<Entity
 			return true;
 		}
 
-		EntityViewHandler viewHandler = service.getRuntimeByName(definitionName);
-		if (viewHandler == null) {
+		EntityViewRuntime entityView = service.getRuntimeByName(definitionName);
+		if (entityView == null) {
 			return false;
 		}
 
-		ElementHandler elementHandler = viewHandler.getElementHandler(elementRuntimeId);
+		ElementHandler elementHandler = entityView.getElementHandler(elementRuntimeId);
 		if (elementHandler == null) {
 			return false;
 		}
@@ -740,12 +740,12 @@ public class EntityViewManagerImpl extends AbstractTypedDefinitionManager<Entity
 			return false;
 		}
 
-		EntityViewHandler viewHandler = service.getRuntimeByName(definitionName);
-		if (viewHandler == null) {
+		EntityViewRuntime entityView = service.getRuntimeByName(definitionName);
+		if (entityView == null) {
 			return false;
 		}
 
-		ButtonHandler buttonHandler = viewHandler.getButtonHandler(buttonKey);
+		ButtonHandler buttonHandler = entityView.getButtonHandler(buttonKey);
 		if (buttonHandler == null) {
 			return false;
 		}
@@ -757,8 +757,8 @@ public class EntityViewManagerImpl extends AbstractTypedDefinitionManager<Entity
 	public String getUrlParameter(String definitionName, ReferencePropertyEditor editor, Entity entity, UrlParameterActionType actionType) {
 		if (definitionName == null || editor == null || editor.getUrlParameterScriptKey() == null || actionType == null) return "";
 
-		EntityViewHandler handler = service.getRuntimeByName(definitionName);
-		if (handler == null) return "";
+		EntityViewRuntime entityView = service.getRuntimeByName(definitionName);
+		if (entityView == null) return "";
 
 		//ActionTypeの検証
 		List<UrlParameterActionType> actions = editor.getUrlParameterAction();
@@ -774,7 +774,7 @@ public class EntityViewManagerImpl extends AbstractTypedDefinitionManager<Entity
 			}
 		}
 
-		GroovyTemplate template = handler.getTemplate(editor.getUrlParameterScriptKey());
+		GroovyTemplate template = entityView.getTemplate(editor.getUrlParameterScriptKey());
 		StringWriter sw = new StringWriter();
 		if (template != null) {
 			try {
@@ -808,10 +808,10 @@ public class EntityViewManagerImpl extends AbstractTypedDefinitionManager<Entity
 
 	@Override
 	public Object getAutocompletionValue(String definitionName, String viewName, String viewType, String propName, String autocompletionKey, Integer referenceSectionIndex, Map<String, String[]> param, List<String> currentValue, Entity entity) {
-		EntityViewHandler view = service.getRuntimeByName(definitionName);
-		if (view == null) return null;
+		EntityViewRuntime entityView = service.getRuntimeByName(definitionName);
+		if (entityView == null) return null;
 
-		AutocompletionSettingHandler handler = view.getAutocompletionSettingHandler(autocompletionKey);
+		AutocompletionSettingHandler handler = entityView.getAutocompletionSettingHandler(autocompletionKey);
 		if (handler == null) return null;
 
 		PropertyEditor editor = null;
@@ -958,13 +958,13 @@ public class EntityViewManagerImpl extends AbstractTypedDefinitionManager<Entity
 	@Override
 	public List<String> getPermitRoles(final String definitionName, final String viewName) {
 
-		EntityViewHandler handler = service.getRuntimeByName(definitionName);
+		EntityViewRuntime entityView = service.getRuntimeByName(definitionName);
 
-		if (handler == null) {
+		if (entityView == null) {
 			return null;
 		}
 
-		List<MetaViewControlSetting> settings = handler.getMetaData().getViewControlSettings();
+		List<MetaViewControlSetting> settings = entityView.getMetaData().getViewControlSettings();
 		if (settings != null && !settings.isEmpty()) {
 			//View管理設定あり
 			MetaViewControlSetting setting = getViewControl(settings, viewName);
@@ -981,7 +981,7 @@ public class EntityViewManagerImpl extends AbstractTypedDefinitionManager<Entity
 			logger.debug("not defined viewControl. defName=" + definitionName + ",viewName=" + viewName);
 		}
 
-		SearchFormViewHandler formView = getSearchFormViewHandler(handler.getFormViews(), viewName);
+		SearchFormViewHandler formView = getSearchFormViewHandler(entityView.getFormViews(), viewName);
 		if (formView != null) {
 			//定義はあるが、管理設定が無い→許可ロール未指定扱い
 			return Collections.EMPTY_LIST;

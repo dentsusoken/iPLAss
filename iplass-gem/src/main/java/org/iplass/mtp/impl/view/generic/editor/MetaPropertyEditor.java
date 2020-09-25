@@ -31,7 +31,7 @@ import org.iplass.mtp.impl.script.GroovyScriptEngine;
 import org.iplass.mtp.impl.script.ScriptEngine;
 import org.iplass.mtp.impl.script.template.GroovyTemplate;
 import org.iplass.mtp.impl.script.template.GroovyTemplateCompiler;
-import org.iplass.mtp.impl.view.generic.EntityViewHandler;
+import org.iplass.mtp.impl.view.generic.EntityViewRuntime;
 import org.iplass.mtp.util.StringUtil;
 import org.iplass.mtp.view.generic.editor.CustomPropertyEditor;
 import org.iplass.mtp.view.generic.editor.PrimitivePropertyEditor;
@@ -154,7 +154,7 @@ public abstract class MetaPropertyEditor implements MetaData {
 		editor.setInputCustomStyleScriptKey(inputCustomStyleScriptKey);
 	}
 
-	public MetaDataRuntime createRuntime(EntityViewHandler entityView) {
+	public MetaDataRuntime createRuntime(EntityViewRuntime entityView) {
 		return new PropertyEditorHandler();
 	}
 

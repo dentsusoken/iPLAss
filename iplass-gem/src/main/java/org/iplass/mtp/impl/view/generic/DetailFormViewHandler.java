@@ -57,7 +57,7 @@ public class DetailFormViewHandler extends FormViewHandler {
 	private ScriptEngine scriptEngine;
 	private EntityManager em;
 
-	public DetailFormViewHandler(MetaDetailFormView metaData, EntityViewHandler entityView) {
+	public DetailFormViewHandler(MetaDetailFormView metaData, EntityViewRuntime entityView) {
 		super(metaData, entityView);
 
 		em = ManagerLocator.getInstance().getManager(EntityManager.class);

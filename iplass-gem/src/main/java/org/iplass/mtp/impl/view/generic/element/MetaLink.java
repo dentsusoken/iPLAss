@@ -33,7 +33,7 @@ import org.iplass.mtp.impl.script.ScriptEngine;
 import org.iplass.mtp.impl.script.template.GroovyTemplate;
 import org.iplass.mtp.impl.script.template.GroovyTemplateCompiler;
 import org.iplass.mtp.impl.util.ObjectUtil;
-import org.iplass.mtp.impl.view.generic.EntityViewHandler;
+import org.iplass.mtp.impl.view.generic.EntityViewRuntime;
 import org.iplass.mtp.util.StringUtil;
 import org.iplass.mtp.view.generic.element.Element;
 import org.iplass.mtp.view.generic.element.Link;
@@ -240,7 +240,7 @@ public class MetaLink extends MetaElement {
 	}
 
 	@Override
-	public LinkHandler createRuntime(EntityViewHandler entityView) {
+	public LinkHandler createRuntime(EntityViewRuntime entityView) {
 		return new LinkHandler(this, entityView);
 	}
 
@@ -250,7 +250,7 @@ public class MetaLink extends MetaElement {
 
 		private GroovyTemplate inputCustomStyleScript;
 
-		public LinkHandler(MetaLink metadata, EntityViewHandler entityView) {
+		public LinkHandler(MetaLink metadata, EntityViewRuntime entityView) {
 			super(metadata, entityView);
 
 			inputCustomStyleScriptKey = "Link_InputStyle_" + GroovyTemplateCompiler.randomName().replace("-", "_");

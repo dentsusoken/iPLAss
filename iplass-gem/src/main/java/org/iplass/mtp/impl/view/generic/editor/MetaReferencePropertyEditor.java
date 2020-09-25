@@ -35,7 +35,7 @@ import org.iplass.mtp.impl.script.ScriptEngine;
 import org.iplass.mtp.impl.script.template.GroovyTemplate;
 import org.iplass.mtp.impl.script.template.GroovyTemplateCompiler;
 import org.iplass.mtp.impl.util.ObjectUtil;
-import org.iplass.mtp.impl.view.generic.EntityViewHandler;
+import org.iplass.mtp.impl.view.generic.EntityViewRuntime;
 import org.iplass.mtp.impl.view.generic.HasMetaNestProperty;
 import org.iplass.mtp.util.StringUtil;
 import org.iplass.mtp.view.generic.editor.NestProperty;
@@ -949,7 +949,7 @@ public class MetaReferencePropertyEditor extends MetaPropertyEditor implements H
 	}
 
 	@Override
-	public MetaDataRuntime createRuntime(EntityViewHandler entityView) {
+	public MetaDataRuntime createRuntime(EntityViewRuntime entityView) {
 		return new ReferencePropertyEditorHandler(entityView);
 	}
 
@@ -959,7 +959,7 @@ public class MetaReferencePropertyEditor extends MetaPropertyEditor implements H
 
 		private GroovyTemplate urlParameterScript;
 
-		public ReferencePropertyEditorHandler(EntityViewHandler entityView) {
+		public ReferencePropertyEditorHandler(EntityViewRuntime entityView) {
 			if (StringUtil.isNotEmpty(urlParameter)) {
 				urlParameterScriptKey = "ReferencePropertyEditor_UrlParameter_" + GroovyTemplateCompiler.randomName().replace("-", "_");
 				ScriptEngine scriptEngine = ExecuteContext.getCurrentContext().getTenantContext().getScriptEngine();

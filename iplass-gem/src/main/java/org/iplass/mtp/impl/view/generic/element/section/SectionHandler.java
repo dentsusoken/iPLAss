@@ -20,7 +20,7 @@
 
 package org.iplass.mtp.impl.view.generic.element.section;
 
-import org.iplass.mtp.impl.view.generic.EntityViewHandler;
+import org.iplass.mtp.impl.view.generic.EntityViewRuntime;
 import org.iplass.mtp.impl.view.generic.element.ElementHandler;
 
 /**
@@ -34,7 +34,7 @@ public class SectionHandler extends ElementHandler {
 	 * @param metadata メタデータ
 	 * @param entityView 画面定義
 	 */
-	public SectionHandler(MetaSection metadata, EntityViewHandler entityView) {
+	public SectionHandler(MetaSection metadata, EntityViewRuntime entityView) {
 		super(metadata, entityView);
 	}
 

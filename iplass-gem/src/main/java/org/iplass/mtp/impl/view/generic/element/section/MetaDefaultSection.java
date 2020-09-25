@@ -33,7 +33,7 @@ import org.iplass.mtp.impl.script.GroovyScriptEngine;
 import org.iplass.mtp.impl.script.template.GroovyTemplate;
 import org.iplass.mtp.impl.script.template.GroovyTemplateCompiler;
 import org.iplass.mtp.impl.util.ObjectUtil;
-import org.iplass.mtp.impl.view.generic.EntityViewHandler;
+import org.iplass.mtp.impl.view.generic.EntityViewRuntime;
 import org.iplass.mtp.impl.view.generic.HasMetaNestProperty;
 import org.iplass.mtp.impl.view.generic.editor.MetaNestProperty;
 import org.iplass.mtp.impl.view.generic.editor.MetaPropertyEditor;
@@ -468,7 +468,7 @@ public class MetaDefaultSection extends MetaSection {
 	}
 
 	@Override
-	public DefaultSectionRuntime createRuntime(EntityViewHandler entityView) {
+	public DefaultSectionRuntime createRuntime(EntityViewRuntime entityView) {
 		return new DefaultSectionRuntime(this, entityView);
 	}
 
@@ -486,7 +486,7 @@ public class MetaDefaultSection extends MetaSection {
 		 * @param metadata メタデータ
 		 * @param entityView 画面定義
 		 */
-		public DefaultSectionRuntime(MetaDefaultSection metadata, EntityViewHandler entityView) {
+		public DefaultSectionRuntime(MetaDefaultSection metadata, EntityViewRuntime entityView) {
 			super(metadata, entityView);
 
 			elements = new ArrayList<ElementHandler>();

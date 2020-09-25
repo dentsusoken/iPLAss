@@ -29,7 +29,7 @@ import javax.xml.bind.annotation.XmlTransient;
 
 import org.iplass.mtp.impl.entity.EntityHandler;
 import org.iplass.mtp.impl.metadata.MetaData;
-import org.iplass.mtp.impl.view.generic.EntityViewHandler;
+import org.iplass.mtp.impl.view.generic.EntityViewRuntime;
 import org.iplass.mtp.view.generic.common.AutocompletionProperty;
 import org.iplass.mtp.view.generic.common.AutocompletionSetting;
 import org.iplass.mtp.view.generic.common.JavascriptAutocompletionSetting;
@@ -111,7 +111,7 @@ public abstract class MetaAutocompletionSetting implements MetaData {
 		setting.setRuntimeKey(runtimeKey);
 	}
 
-	public abstract AutocompletionSettingHandler getHandler(EntityViewHandler entityView);
+	public abstract AutocompletionSettingHandler getHandler(EntityViewRuntime entityView);
 
 	public abstract class AutocompletionSettingHandler {
 
@@ -123,7 +123,7 @@ public abstract class MetaAutocompletionSetting implements MetaData {
 		 * @param metadata メタデータ
 		 * @param entityView 画面定義
 		 */
-		public AutocompletionSettingHandler(MetaAutocompletionSetting metadata, EntityViewHandler entityView) {
+		public AutocompletionSettingHandler(MetaAutocompletionSetting metadata, EntityViewRuntime entityView) {
 			this.metadata = metadata;
 		}
 

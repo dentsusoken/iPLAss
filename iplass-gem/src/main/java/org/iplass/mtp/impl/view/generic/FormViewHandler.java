@@ -49,7 +49,7 @@ public class FormViewHandler /*implements MetaDataRuntime*/ {
 	 * @param metaData レイアウト情報
 	 * @param entityView 画面定義のランタイム
 	 */
-	public FormViewHandler(MetaFormView metaData, EntityViewHandler entityView) {
+	public FormViewHandler(MetaFormView metaData, EntityViewRuntime entityView) {
 		this.metaData = metaData;
 		sections = new ArrayList<SectionHandler>();
 		for (MetaSection section : metaData.getSections()) {

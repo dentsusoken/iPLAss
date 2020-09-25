@@ -36,7 +36,7 @@ import org.iplass.mtp.impl.script.GroovyScriptEngine;
 import org.iplass.mtp.impl.script.template.GroovyTemplate;
 import org.iplass.mtp.impl.script.template.GroovyTemplateCompiler;
 import org.iplass.mtp.impl.util.ObjectUtil;
-import org.iplass.mtp.impl.view.generic.EntityViewHandler;
+import org.iplass.mtp.impl.view.generic.EntityViewRuntime;
 import org.iplass.mtp.impl.view.generic.editor.MetaNestProperty;
 import org.iplass.mtp.util.StringUtil;
 import org.iplass.mtp.view.generic.editor.NestProperty;
@@ -468,7 +468,7 @@ public class MetaReferenceSection extends MetaSection {
 	}
 
 	@Override
-	public SectionHandler createRuntime(EntityViewHandler entityView) {
+	public SectionHandler createRuntime(EntityViewRuntime entityView) {
 		return new ReferenceSectionHandler(this, entityView);
 	}
 
@@ -479,7 +479,7 @@ public class MetaReferenceSection extends MetaSection {
 	 */
 	public class ReferenceSectionHandler extends SectionHandler {
 
-		public ReferenceSectionHandler(MetaReferenceSection metadata, EntityViewHandler entityView) {
+		public ReferenceSectionHandler(MetaReferenceSection metadata, EntityViewRuntime entityView) {
 			super(metadata, entityView);
 			if (properties != null && !properties.isEmpty()) {
 				for (MetaNestProperty meta : properties) {

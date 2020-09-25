@@ -37,7 +37,7 @@ import org.iplass.mtp.impl.script.GroovyScriptEngine;
 import org.iplass.mtp.impl.script.template.GroovyTemplate;
 import org.iplass.mtp.impl.script.template.GroovyTemplateCompiler;
 import org.iplass.mtp.impl.util.ObjectUtil;
-import org.iplass.mtp.impl.view.generic.EntityViewHandler;
+import org.iplass.mtp.impl.view.generic.EntityViewRuntime;
 import org.iplass.mtp.impl.view.generic.editor.MetaNestProperty;
 import org.iplass.mtp.util.StringUtil;
 import org.iplass.mtp.view.generic.PagingPosition;
@@ -739,7 +739,7 @@ public class MetaMassReferenceSection extends MetaSection {
 	}
 
 	@Override
-	public SectionHandler createRuntime(EntityViewHandler entityView) {
+	public SectionHandler createRuntime(EntityViewRuntime entityView) {
 		return new MassReferenceSectionHandler(this, entityView);
 	}
 
@@ -750,7 +750,7 @@ public class MetaMassReferenceSection extends MetaSection {
 	 */
 	public class MassReferenceSectionHandler extends SectionHandler {
 
-		public MassReferenceSectionHandler(MetaMassReferenceSection metadata, EntityViewHandler entityView) {
+		public MassReferenceSectionHandler(MetaMassReferenceSection metadata, EntityViewRuntime entityView) {
 			super(metadata, entityView);
 			if (StringUtil.isNotBlank(metadata.filterConditionScript)) {
 				if (metadata.filterScriptKey == null) {

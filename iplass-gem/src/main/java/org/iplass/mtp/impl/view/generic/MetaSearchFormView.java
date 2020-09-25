@@ -518,7 +518,7 @@ public class MetaSearchFormView extends MetaFormView {
 	}
 
 	@Override
-	public FormViewHandler createRuntime(EntityViewHandler entityView) {
+	public FormViewHandler createRuntime(EntityViewRuntime entityView) {
 		return new SearchFormViewHandler(this, entityView);
 	}
 }

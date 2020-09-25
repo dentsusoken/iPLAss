@@ -33,7 +33,7 @@ import org.iplass.mtp.view.generic.EntityViewManager;
  * Entityの画面定義を扱うサービス。
  * @author lis3wg
  */
-public class EntityViewService extends AbstractTypedMetaDataService<MetaEntityView, EntityViewHandler> implements Service {
+public class EntityViewService extends AbstractTypedMetaDataService<MetaEntityView, EntityViewRuntime> implements Service {
 
 	/** メタデータのパス */
 	public static final String ENTITY_META_PATH = "/view/generic/";
@@ -82,7 +82,7 @@ public class EntityViewService extends AbstractTypedMetaDataService<MetaEntityVi
 	}
 
 	@Override
-	public Class<EntityViewHandler> getRuntimeType() {
-		return EntityViewHandler.class;
+	public Class<EntityViewRuntime> getRuntimeType() {
+		return EntityViewRuntime.class;
 	}
 }

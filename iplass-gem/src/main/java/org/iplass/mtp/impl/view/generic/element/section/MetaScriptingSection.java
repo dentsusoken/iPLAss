@@ -31,7 +31,7 @@ import org.iplass.mtp.impl.script.GroovyScriptEngine;
 import org.iplass.mtp.impl.script.template.GroovyTemplate;
 import org.iplass.mtp.impl.script.template.GroovyTemplateCompiler;
 import org.iplass.mtp.impl.util.ObjectUtil;
-import org.iplass.mtp.impl.view.generic.EntityViewHandler;
+import org.iplass.mtp.impl.view.generic.EntityViewRuntime;
 import org.iplass.mtp.view.generic.element.Element;
 import org.iplass.mtp.view.generic.element.section.ScriptingSection;
 
@@ -223,7 +223,7 @@ public class MetaScriptingSection extends MetaSection {
 	}
 
 	@Override
-	public ScriptingSectionHandler createRuntime(EntityViewHandler entityView) {
+	public ScriptingSectionHandler createRuntime(EntityViewRuntime entityView) {
 		return new ScriptingSectionHandler(this, entityView);
 	}
 
@@ -238,7 +238,7 @@ public class MetaScriptingSection extends MetaSection {
 		 * @param metadata メタデータ
 		 * @param entityView 画面定義
 		 */
-		public ScriptingSectionHandler(MetaScriptingSection metadata, EntityViewHandler entityView) {
+		public ScriptingSectionHandler(MetaScriptingSection metadata, EntityViewRuntime entityView) {
 			super(metadata, entityView);
 			if (metadata.script != null && metadata.key == null) {
 				metadata.key = "Jsp_" + GroovyTemplateCompiler.randomName().replace("-", "_");

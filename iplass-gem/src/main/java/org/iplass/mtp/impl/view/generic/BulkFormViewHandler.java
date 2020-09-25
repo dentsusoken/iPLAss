@@ -22,7 +22,7 @@ package org.iplass.mtp.impl.view.generic;
 
 public class BulkFormViewHandler extends FormViewHandler {
 
-	public BulkFormViewHandler(MetaBulkFormView metaData, EntityViewHandler entityView) {
+	public BulkFormViewHandler(MetaBulkFormView metaData, EntityViewRuntime entityView) {
 		super(metaData, entityView);
 	}
 

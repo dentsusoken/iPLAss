@@ -24,7 +24,7 @@ import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlTransient;
 
 import org.iplass.mtp.impl.metadata.MetaData;
-import org.iplass.mtp.impl.view.generic.EntityViewHandler;
+import org.iplass.mtp.impl.view.generic.EntityViewRuntime;
 import org.iplass.mtp.impl.view.generic.element.property.MetaPropertyLayout;
 import org.iplass.mtp.impl.view.generic.element.section.MetaSection;
 import org.iplass.mtp.view.generic.element.BlankSpace;
@@ -190,7 +190,7 @@ public abstract class MetaElement implements MetaData {
 	 * @param entityView 画面定義
 	 * @return ランタイム
 	 */
-	public ElementHandler createRuntime(EntityViewHandler entityView) {
+	public ElementHandler createRuntime(EntityViewRuntime entityView) {
 		return new ElementHandler(this, entityView);
 	}
 

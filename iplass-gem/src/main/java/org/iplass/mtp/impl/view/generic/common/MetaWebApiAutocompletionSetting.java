@@ -48,7 +48,7 @@ import org.iplass.mtp.impl.script.template.GroovyTemplate;
 import org.iplass.mtp.impl.script.template.GroovyTemplateBinding;
 import org.iplass.mtp.impl.script.template.GroovyTemplateCompiler;
 import org.iplass.mtp.impl.util.ObjectUtil;
-import org.iplass.mtp.impl.view.generic.EntityViewHandler;
+import org.iplass.mtp.impl.view.generic.EntityViewRuntime;
 import org.iplass.mtp.util.StringUtil;
 import org.iplass.mtp.view.generic.common.AutocompletionSetting;
 import org.iplass.mtp.view.generic.common.WebApiAutocompletionSetting;
@@ -141,7 +141,7 @@ public class MetaWebApiAutocompletionSetting extends MetaAutocompletionSetting {
 	}
 
 	@Override
-	public AutocompletionSettingHandler getHandler(EntityViewHandler entityView) {
+	public AutocompletionSettingHandler getHandler(EntityViewRuntime entityView) {
 		return new WebApiAutocompletionSettingHandler(this, entityView);
 	}
 
@@ -158,7 +158,7 @@ public class MetaWebApiAutocompletionSetting extends MetaAutocompletionSetting {
 
 		private Script groovyscriptScript;
 
-		public WebApiAutocompletionSettingHandler(MetaAutocompletionSetting metadata, EntityViewHandler entityView) {
+		public WebApiAutocompletionSettingHandler(MetaAutocompletionSetting metadata, EntityViewRuntime entityView) {
 			super(metadata, entityView);
 
 			ScriptEngine scriptEngine = ExecuteContext.getCurrentContext().getTenantContext().getScriptEngine();
