@@ -28,7 +28,7 @@ import java.util.Map;
 import org.iplass.mtp.entity.query.PreparedQuery;
 import org.iplass.mtp.impl.metadata.BaseMetaDataRuntime;
 import org.iplass.mtp.impl.script.template.GroovyTemplate;
-import org.iplass.mtp.impl.view.generic.common.MetaAutocompletionSetting.AutocompletionSettingHandler;
+import org.iplass.mtp.impl.view.generic.common.MetaAutocompletionSetting.AutocompletionSettingRuntime;
 import org.iplass.mtp.impl.view.generic.element.ElementRuntime;
 import org.iplass.mtp.impl.view.generic.element.MetaButton.ButtonRuntime;
 
@@ -54,7 +54,7 @@ public class EntityViewRuntime extends BaseMetaDataRuntime {
 
 	private Map<String, ButtonRuntime> buttonMap;
 
-	private Map<String, AutocompletionSettingHandler> autocompletionSettingMap;
+	private Map<String, AutocompletionSettingRuntime> autocompletionSettingMap;
 
 	/** Query */
 	private Map<String, PreparedQuery> queries;
@@ -215,10 +215,10 @@ public class EntityViewRuntime extends BaseMetaDataRuntime {
 	 * 自動補完設定を追加します。
 	 * @param handler
 	 */
-	public void addAutocompletionSettingHandler(AutocompletionSettingHandler handler) {
+	public void addAutocompletionSetting(AutocompletionSettingRuntime setting) {
 		if (autocompletionSettingMap == null) autocompletionSettingMap = new HashMap<>();
-		if (handler.getMetaData().getRuntimeKey() != null) {
-			autocompletionSettingMap.put(handler.getMetaData().getRuntimeKey(), handler);
+		if (setting.getMetaData().getRuntimeKey() != null) {
+			autocompletionSettingMap.put(setting.getMetaData().getRuntimeKey(), setting);
 		}
 	}
 
@@ -227,7 +227,7 @@ public class EntityViewRuntime extends BaseMetaDataRuntime {
 	 * @param key
 	 * @return
 	 */
-	public AutocompletionSettingHandler getAutocompletionSettingHandler(String key) {
+	public AutocompletionSettingRuntime getAutocompletionSetting(String key) {
 		if (autocompletionSettingMap == null) {
 			return null;
 		}

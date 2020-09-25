@@ -484,7 +484,7 @@ public class MetaReferenceSection extends MetaSection {
 			if (properties != null && !properties.isEmpty()) {
 				for (MetaNestProperty meta : properties) {
 					if (meta.getAutocompletionSetting()  != null) {
-						entityView.addAutocompletionSettingHandler(meta.getAutocompletionSetting().getHandler(entityView));
+						entityView.addAutocompletionSetting(meta.getAutocompletionSetting().createRuntime(entityView));
 					}
 				}
 			}

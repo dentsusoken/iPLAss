@@ -76,7 +76,7 @@ public class MetaJavascriptAutocompletionSetting extends MetaAutocompletionSetti
 	}
 
 	@Override
-	public AutocompletionSettingHandler getHandler(EntityViewRuntime entityView) {
+	public AutocompletionSettingRuntime createRuntime(EntityViewRuntime entityView) {
 		// server側で処理しないのでhandlerは作らない
 		return null;
 	}

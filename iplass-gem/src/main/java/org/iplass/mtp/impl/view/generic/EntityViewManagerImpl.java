@@ -57,7 +57,7 @@ import org.iplass.mtp.impl.definition.TypedMetaDataService;
 import org.iplass.mtp.impl.metadata.RootMetaData;
 import org.iplass.mtp.impl.script.template.GroovyTemplate;
 import org.iplass.mtp.impl.script.template.GroovyTemplateBinding;
-import org.iplass.mtp.impl.view.generic.common.MetaAutocompletionSetting.AutocompletionSettingHandler;
+import org.iplass.mtp.impl.view.generic.common.MetaAutocompletionSetting.AutocompletionSettingRuntime;
 import org.iplass.mtp.impl.view.generic.element.ElementRuntime;
 import org.iplass.mtp.impl.view.generic.element.MetaButton.ButtonRuntime;
 import org.iplass.mtp.impl.web.WebUtil;
@@ -811,8 +811,8 @@ public class EntityViewManagerImpl extends AbstractTypedDefinitionManager<Entity
 		EntityViewRuntime entityView = service.getRuntimeByName(definitionName);
 		if (entityView == null) return null;
 
-		AutocompletionSettingHandler handler = entityView.getAutocompletionSettingHandler(autocompletionKey);
-		if (handler == null) return null;
+		AutocompletionSettingRuntime autocompletionSetting = entityView.getAutocompletionSetting(autocompletionKey);
+		if (autocompletionSetting == null) return null;
 
 		PropertyEditor editor = null;
 		if (referenceSectionIndex != null) {
@@ -825,7 +825,7 @@ public class EntityViewManagerImpl extends AbstractTypedDefinitionManager<Entity
 		PropertyDefinition pd = EntityViewUtil.getPropertyDefinition(propName, edm.get(definitionName));
 		Object currValue = pd.getMultiplicity() == 1 ? (currentValue.size() > 0 ? currentValue.get(0) : "") : currentValue;
 		boolean isReference = editor instanceof ReferencePropertyEditor;
-		Object value = handler.handle(param, currValue, isReference);
+		Object value = autocompletionSetting.handle(param, currValue, isReference);
 
 		Object returnValue = null;
 		if (isReference) {

@@ -37,7 +37,7 @@ import org.iplass.mtp.impl.util.ObjectUtil;
 import org.iplass.mtp.impl.view.generic.EntityViewRuntime;
 import org.iplass.mtp.impl.view.generic.HasEntityProperty;
 import org.iplass.mtp.impl.view.generic.common.MetaAutocompletionSetting;
-import org.iplass.mtp.impl.view.generic.common.MetaAutocompletionSetting.AutocompletionSettingHandler;
+import org.iplass.mtp.impl.view.generic.common.MetaAutocompletionSetting.AutocompletionSettingRuntime;
 import org.iplass.mtp.impl.view.generic.editor.MetaPropertyEditor;
 import org.iplass.mtp.impl.view.generic.element.ElementRuntime;
 import org.iplass.mtp.impl.view.generic.element.MetaElement;
@@ -77,7 +77,7 @@ public abstract class MetaPropertyLayout extends MetaElement implements HasEntit
 	private String displayLabel;
 
 	/** 多言語設定情報 */
-	private List<MetaLocalizedString> localizedDisplayLabelList = new ArrayList<MetaLocalizedString>();
+	private List<MetaLocalizedString> localizedDisplayLabelList = new ArrayList<>();
 
 	/** クラス名 */
 	private String style;
@@ -322,9 +322,9 @@ public abstract class MetaPropertyLayout extends MetaElement implements HasEntit
 	@Override
 	public ElementRuntime createRuntime(EntityViewRuntime entityView) {
 		if (autocompletionSetting != null) {
-			AutocompletionSettingHandler handler = autocompletionSetting.getHandler(entityView);
-			if (handler != null) {
-				entityView.addAutocompletionSettingHandler(autocompletionSetting.getHandler(entityView));
+			AutocompletionSettingRuntime runtime = autocompletionSetting.createRuntime(entityView);
+			if (runtime != null) {
+				entityView.addAutocompletionSetting(runtime);
 			}
 		}
 		return super.createRuntime(entityView);

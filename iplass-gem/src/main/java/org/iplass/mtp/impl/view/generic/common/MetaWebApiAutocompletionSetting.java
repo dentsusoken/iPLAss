@@ -141,11 +141,11 @@ public class MetaWebApiAutocompletionSetting extends MetaAutocompletionSetting {
 	}
 
 	@Override
-	public AutocompletionSettingHandler getHandler(EntityViewRuntime entityView) {
-		return new WebApiAutocompletionSettingHandler(this, entityView);
+	public AutocompletionSettingRuntime createRuntime(EntityViewRuntime entityView) {
+		return new WebApiAutocompletionSettingRuntime(this, entityView);
 	}
 
-	public class WebApiAutocompletionSettingHandler extends AutocompletionSettingHandler {
+	public class WebApiAutocompletionSettingRuntime extends AutocompletionSettingRuntime {
 
 		public static final String USER_BINDING_NAME = "user";
 		public static final String PARAMS_BINDING_NAME = "params";
@@ -158,7 +158,7 @@ public class MetaWebApiAutocompletionSetting extends MetaAutocompletionSetting {
 
 		private Script groovyscriptScript;
 
-		public WebApiAutocompletionSettingHandler(MetaAutocompletionSetting metadata, EntityViewRuntime entityView) {
+		public WebApiAutocompletionSettingRuntime(MetaAutocompletionSetting metadata, EntityViewRuntime entityView) {
 			super(metadata, entityView);
 
 			ScriptEngine scriptEngine = ExecuteContext.getCurrentContext().getTenantContext().getScriptEngine();

@@ -766,7 +766,7 @@ public class MetaMassReferenceSection extends MetaSection {
 			if (nestProperties != null && !nestProperties.isEmpty()) {
 				for (MetaNestProperty meta : nestProperties) {
 					if (meta.getAutocompletionSetting()  != null) {
-						entityView.addAutocompletionSettingHandler(meta.getAutocompletionSetting().getHandler(entityView));
+						entityView.addAutocompletionSetting(meta.getAutocompletionSetting().createRuntime(entityView));
 					}
 				}
 			}

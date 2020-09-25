@@ -111,9 +111,9 @@ public abstract class MetaAutocompletionSetting implements MetaData {
 		setting.setRuntimeKey(runtimeKey);
 	}
 
-	public abstract AutocompletionSettingHandler getHandler(EntityViewRuntime entityView);
+	public abstract AutocompletionSettingRuntime createRuntime(EntityViewRuntime entityView);
 
-	public abstract class AutocompletionSettingHandler {
+	public abstract class AutocompletionSettingRuntime {
 
 		/** メタデータ */
 		private MetaAutocompletionSetting metadata;
@@ -123,7 +123,7 @@ public abstract class MetaAutocompletionSetting implements MetaData {
 		 * @param metadata メタデータ
 		 * @param entityView 画面定義
 		 */
-		public AutocompletionSettingHandler(MetaAutocompletionSetting metadata, EntityViewRuntime entityView) {
+		public AutocompletionSettingRuntime(MetaAutocompletionSetting metadata, EntityViewRuntime entityView) {
 			this.metadata = metadata;
 		}
 
