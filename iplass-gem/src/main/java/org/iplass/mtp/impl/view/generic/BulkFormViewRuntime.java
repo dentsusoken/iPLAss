@@ -20,9 +20,9 @@
 
 package org.iplass.mtp.impl.view.generic;
 
-public class BulkFormViewHandler extends FormViewRuntime {
+public class BulkFormViewRuntime extends FormViewRuntime {
 
-	public BulkFormViewHandler(MetaBulkFormView metaData, EntityViewRuntime entityView) {
+	public BulkFormViewRuntime(MetaBulkFormView metaData, EntityViewRuntime entityView) {
 		super(metaData, entityView);
 	}
 
