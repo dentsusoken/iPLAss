@@ -180,22 +180,22 @@ public class MetaScriptingElement extends MetaElement {
 	}
 
 	@Override
-	public ScriptingHandler createRuntime(EntityViewRuntime entityView) {
-		return new ScriptingHandler(this, entityView);
+	public ScriptingRuntime createRuntime(EntityViewRuntime entityView) {
+		return new ScriptingRuntime(this, entityView);
 	}
 
 	/**
 	 * ランタイム
 	 * @author lis3wg
 	 */
-	public class ScriptingHandler extends ElementRuntime {
+	public class ScriptingRuntime extends ElementRuntime {
 
 		/**
 		 * コンストラクタ
 		 * @param metadata メタデータ
 		 * @param entityView 画面定義
 		 */
-		public ScriptingHandler(MetaScriptingElement metadata, EntityViewRuntime entityView) {
+		public ScriptingRuntime(MetaScriptingElement metadata, EntityViewRuntime entityView) {
 			super(metadata, entityView);
 			if (metadata.script != null && metadata.key == null) {
 				metadata.key = "Jsp_" + GroovyTemplateCompiler.randomName().replace("-", "_");
