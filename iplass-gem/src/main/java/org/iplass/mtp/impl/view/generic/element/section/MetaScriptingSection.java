@@ -231,7 +231,7 @@ public class MetaScriptingSection extends MetaSection {
 	 * ランタイム
 	 * @author lis3wg
 	 */
-	public class ScriptingSectionHandler extends SectionHandler {
+	public class ScriptingSectionHandler extends SectionRuntime {
 
 		/**
 		 * コンストラクタ

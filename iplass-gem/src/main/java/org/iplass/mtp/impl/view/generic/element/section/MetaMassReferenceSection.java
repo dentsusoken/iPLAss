@@ -739,7 +739,7 @@ public class MetaMassReferenceSection extends MetaSection {
 	}
 
 	@Override
-	public SectionHandler createRuntime(EntityViewRuntime entityView) {
+	public SectionRuntime createRuntime(EntityViewRuntime entityView) {
 		return new MassReferenceSectionHandler(this, entityView);
 	}
 
@@ -748,7 +748,7 @@ public class MetaMassReferenceSection extends MetaSection {
 	 * @author lis3wg
 	 *
 	 */
-	public class MassReferenceSectionHandler extends SectionHandler {
+	public class MassReferenceSectionHandler extends SectionRuntime {
 
 		public MassReferenceSectionHandler(MetaMassReferenceSection metadata, EntityViewRuntime entityView) {
 			super(metadata, entityView);

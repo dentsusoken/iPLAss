@@ -42,7 +42,7 @@ import org.iplass.mtp.impl.script.template.GroovyTemplateCompiler;
 import org.iplass.mtp.impl.view.csv.CsvFileNameGroovyTemplateBinding;
 import org.iplass.mtp.impl.view.generic.element.section.MetaSearchConditionSection;
 import org.iplass.mtp.impl.view.generic.element.section.MetaSection;
-import org.iplass.mtp.impl.view.generic.element.section.SectionHandler;
+import org.iplass.mtp.impl.view.generic.element.section.SectionRuntime;
 import org.iplass.mtp.util.StringUtil;
 
 public class SearchFormViewRuntime extends FormViewRuntime {
@@ -53,7 +53,7 @@ public class SearchFormViewRuntime extends FormViewRuntime {
 
 	private static final String SCRIPT_PREFIX = "SearchFormViewHandler_defaultPropertyConditionScript";
 
-	private List<SectionHandler> sections;
+	private List<SectionRuntime> sections;
 
 	private Script compiledDefaultPropertyConditionScript;
 
@@ -63,7 +63,7 @@ public class SearchFormViewRuntime extends FormViewRuntime {
 		super(metaData, entityView);
 
 		MetaSearchFormView form = (MetaSearchFormView) metaData;
-		sections = new ArrayList<SectionHandler>();
+		sections = new ArrayList<SectionRuntime>();
 		if (form.getTopSection1() != null) {
 			sections.add(form.getTopSection1().createRuntime(entityView));
 		}

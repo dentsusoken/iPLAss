@@ -30,7 +30,7 @@ import org.iplass.mtp.impl.script.template.GroovyTemplateCompiler;
 import org.iplass.mtp.impl.view.generic.element.MetaButton;
 import org.iplass.mtp.impl.view.generic.element.MetaButton.ButtonRuntime;
 import org.iplass.mtp.impl.view.generic.element.section.MetaSection;
-import org.iplass.mtp.impl.view.generic.element.section.SectionHandler;
+import org.iplass.mtp.impl.view.generic.element.section.SectionRuntime;
 
 /**
  * レイアウト情報のランタイム
@@ -42,7 +42,7 @@ public class FormViewRuntime {
 	private MetaFormView metaData;
 
 	/** セクション */
-	private List<SectionHandler> sections;
+	private List<SectionRuntime> sections;
 
 	/**
 	 * コンストラクタ

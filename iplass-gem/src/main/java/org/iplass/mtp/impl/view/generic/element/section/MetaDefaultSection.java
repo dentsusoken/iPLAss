@@ -476,7 +476,7 @@ public class MetaDefaultSection extends MetaSection {
 	 * ランタイム
 	 * @author lis3wg
 	 */
-	public class DefaultSectionRuntime extends SectionHandler {
+	public class DefaultSectionRuntime extends SectionRuntime {
 
 		/** 要素情報*/
 		private List<ElementRuntime> elements;

@@ -78,7 +78,7 @@ public abstract class MetaSection extends MetaElement {
 	}
 
 	@Override
-	public SectionHandler createRuntime(EntityViewRuntime entityView) {
-		return new SectionHandler(this, entityView);
+	public SectionRuntime createRuntime(EntityViewRuntime entityView) {
+		return new SectionRuntime(this, entityView);
 	}
 }

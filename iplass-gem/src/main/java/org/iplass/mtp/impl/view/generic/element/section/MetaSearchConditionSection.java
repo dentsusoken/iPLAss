@@ -619,7 +619,7 @@ public class MetaSearchConditionSection extends MetaSection {
 		return new SearchConditionSectionRuntime(this, entityView);
 	}
 
-	public class SearchConditionSectionRuntime extends SectionHandler {
+	public class SearchConditionSectionRuntime extends SectionRuntime {
 
 		/**
 		 * コンストラクタ

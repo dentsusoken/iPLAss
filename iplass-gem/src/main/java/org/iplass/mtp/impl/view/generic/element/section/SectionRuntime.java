@@ -27,14 +27,14 @@ import org.iplass.mtp.impl.view.generic.element.ElementRuntime;
  * セクションのランタイム
  * @author lis3wg
  */
-public class SectionHandler extends ElementRuntime {
+public class SectionRuntime extends ElementRuntime {
 
 	/**
 	 * コンストラクタ
 	 * @param metadata メタデータ
 	 * @param entityView 画面定義
 	 */
-	public SectionHandler(MetaSection metadata, EntityViewRuntime entityView) {
+	public SectionRuntime(MetaSection metadata, EntityViewRuntime entityView) {
 		super(metadata, entityView);
 	}
 

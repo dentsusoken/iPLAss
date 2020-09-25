@@ -669,7 +669,7 @@ public class MetaSearchResultSection extends MetaSection {
 	/**
 	 * ランタイム
 	 */
-	public class SearchResultSectionHandler extends SectionHandler {
+	public class SearchResultSectionHandler extends SectionRuntime {
 
 		/**
 		 * コンストラクタ
