@@ -888,6 +888,6 @@ public class MetaDetailFormView extends MetaFormView {
 
 	@Override
 	public FormViewRuntime createRuntime(EntityViewRuntime entityView) {
-		return new DetailFormViewHandler(this, entityView);
+		return new DetailFormViewRuntime(this, entityView);
 	}
 }

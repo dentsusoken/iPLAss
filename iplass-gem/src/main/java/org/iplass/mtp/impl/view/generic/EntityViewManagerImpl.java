@@ -522,26 +522,26 @@ public class EntityViewManagerImpl extends AbstractTypedDefinitionManager<Entity
 			throw new ApplicationException(resourceString("impl.view.generic.EntityViewManagerImpl.viewErr"));
 		}
 
-		DetailFormViewHandler fh = null;
+		DetailFormViewRuntime detailView = null;
 		for (FormViewRuntime formView : entityView.getFormViews()) {
-			if (formView instanceof DetailFormViewHandler) {
+			if (formView instanceof DetailFormViewRuntime) {
 				//nameが一致するhandlerを検索
 				if (viewName == null || viewName.isEmpty()) {
 					if (formView.getMetaData().getName() == null || formView.getMetaData().getName().isEmpty()) {
-						fh = (DetailFormViewHandler) formView;
+						detailView = (DetailFormViewRuntime) formView;
 						break;
 					}
 				} else {
 					if (viewName.equals(formView.getMetaData().getName())) {
-						fh = (DetailFormViewHandler) formView;
+						detailView = (DetailFormViewRuntime) formView;
 						break;
 					}
 				}
 			}
 		}
 
-		if (fh != null) {
-			return fh.copyEntity(entity);
+		if (detailView != null) {
+			return detailView.copyEntity(entity);
 		}
 		return null;
 	}
@@ -553,26 +553,26 @@ public class EntityViewManagerImpl extends AbstractTypedDefinitionManager<Entity
 			throw new ApplicationException(resourceString("impl.view.generic.EntityViewManagerImpl.viewErr"));
 		}
 
-		DetailFormViewHandler fh = null;
+		DetailFormViewRuntime detailView = null;
 		for (FormViewRuntime formView : entityView.getFormViews()) {
-			if (formView instanceof DetailFormViewHandler) {
+			if (formView instanceof DetailFormViewRuntime) {
 				//nameが一致するhandlerを検索
 				if (viewName == null || viewName.isEmpty()) {
 					if (formView.getMetaData().getName() == null || formView.getMetaData().getName().isEmpty()) {
-						fh = (DetailFormViewHandler) formView;
+						detailView = (DetailFormViewRuntime) formView;
 						break;
 					}
 				} else {
 					if (viewName.equals(formView.getMetaData().getName())) {
-						fh = (DetailFormViewHandler) formView;
+						detailView = (DetailFormViewRuntime) formView;
 						break;
 					}
 				}
 			}
 		}
 
-		if (fh != null) {
-			return fh.initEntity(entity, definitionName);
+		if (detailView != null) {
+			return detailView.initEntity(entity, definitionName);
 		}
 		return null;
 	}

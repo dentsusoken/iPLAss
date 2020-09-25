@@ -34,7 +34,7 @@ import org.iplass.mtp.impl.script.ScriptContext;
 import org.iplass.mtp.impl.script.ScriptEngine;
 
 
-public class DetailFormViewHandler extends FormViewRuntime {
+public class DetailFormViewRuntime extends FormViewRuntime {
 	public static final String ENTITY_BINDING_NAME = "entity";
 	public static final String ENTITY_DEFINITION_BINDING_NAME = "entityDefinition";
 	public static final String ENTITY_MANAGER_BINDING_NAME = "entityManager";
@@ -57,7 +57,7 @@ public class DetailFormViewHandler extends FormViewRuntime {
 	private ScriptEngine scriptEngine;
 	private EntityManager em;
 
-	public DetailFormViewHandler(MetaDetailFormView metaData, EntityViewRuntime entityView) {
+	public DetailFormViewRuntime(MetaDetailFormView metaData, EntityViewRuntime entityView) {
 		super(metaData, entityView);
 
 		em = ManagerLocator.getInstance().getManager(EntityManager.class);
