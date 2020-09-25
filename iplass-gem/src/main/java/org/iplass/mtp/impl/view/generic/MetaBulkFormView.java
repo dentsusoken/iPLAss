@@ -273,7 +273,7 @@ public class MetaBulkFormView extends MetaFormView {
 	}
 
 	@Override
-	public FormViewHandler createRuntime(EntityViewRuntime entityView) {
+	public FormViewRuntime createRuntime(EntityViewRuntime entityView) {
 		return new BulkFormViewHandler(this, entityView);
 	}
 

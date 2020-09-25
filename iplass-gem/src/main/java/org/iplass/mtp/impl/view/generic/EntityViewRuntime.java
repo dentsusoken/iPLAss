@@ -42,7 +42,7 @@ public class EntityViewRuntime extends BaseMetaDataRuntime {
 	protected MetaEntityView metaData;
 
 	/** レイアウト情報のランタイム */
-	private List<FormViewHandler> formViews;
+	private List<FormViewRuntime> formViews;
 
 	/** テンプレート情報 */
 	private Map<String, GroovyTemplate> templates;
@@ -80,12 +80,12 @@ public class EntityViewRuntime extends BaseMetaDataRuntime {
 	 * レイアウト情報のランタイムを追加
 	 * @param formView レイアウト情報
 	 */
-	private void addFormView(FormViewHandler formView) {
+	private void addFormView(FormViewRuntime formView) {
 		if (this.formViews == null) this.formViews = new ArrayList<>();
 		this.formViews.add(formView);
 	}
 
-	public List<FormViewHandler> getFormViews() {
+	public List<FormViewRuntime> getFormViews() {
 		if (this.formViews == null) this.formViews = new ArrayList<>();
 		return formViews;
 	}

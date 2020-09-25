@@ -523,17 +523,17 @@ public class EntityViewManagerImpl extends AbstractTypedDefinitionManager<Entity
 		}
 
 		DetailFormViewHandler fh = null;
-		for (FormViewHandler view : entityView.getFormViews()) {
-			if (view instanceof DetailFormViewHandler) {
+		for (FormViewRuntime formView : entityView.getFormViews()) {
+			if (formView instanceof DetailFormViewHandler) {
 				//nameが一致するhandlerを検索
 				if (viewName == null || viewName.isEmpty()) {
-					if (view.getMetaData().getName() == null || view.getMetaData().getName().isEmpty()) {
-						fh = (DetailFormViewHandler) view;
+					if (formView.getMetaData().getName() == null || formView.getMetaData().getName().isEmpty()) {
+						fh = (DetailFormViewHandler) formView;
 						break;
 					}
 				} else {
-					if (viewName.equals(view.getMetaData().getName())) {
-						fh = (DetailFormViewHandler) view;
+					if (viewName.equals(formView.getMetaData().getName())) {
+						fh = (DetailFormViewHandler) formView;
 						break;
 					}
 				}
@@ -554,17 +554,17 @@ public class EntityViewManagerImpl extends AbstractTypedDefinitionManager<Entity
 		}
 
 		DetailFormViewHandler fh = null;
-		for (FormViewHandler view : entityView.getFormViews()) {
-			if (view instanceof DetailFormViewHandler) {
+		for (FormViewRuntime formView : entityView.getFormViews()) {
+			if (formView instanceof DetailFormViewHandler) {
 				//nameが一致するhandlerを検索
 				if (viewName == null || viewName.isEmpty()) {
-					if (view.getMetaData().getName() == null || view.getMetaData().getName().isEmpty()) {
-						fh = (DetailFormViewHandler) view;
+					if (formView.getMetaData().getName() == null || formView.getMetaData().getName().isEmpty()) {
+						fh = (DetailFormViewHandler) formView;
 						break;
 					}
 				} else {
-					if (viewName.equals(view.getMetaData().getName())) {
-						fh = (DetailFormViewHandler) view;
+					if (viewName.equals(formView.getMetaData().getName())) {
+						fh = (DetailFormViewHandler) formView;
 						break;
 					}
 				}
@@ -586,17 +586,17 @@ public class EntityViewManagerImpl extends AbstractTypedDefinitionManager<Entity
 		}
 
 		SearchFormViewHandler fh = null;
-		for (FormViewHandler view : entityView.getFormViews()) {
-			if (view instanceof SearchFormViewHandler) {
+		for (FormViewRuntime formView : entityView.getFormViews()) {
+			if (formView instanceof SearchFormViewHandler) {
 				//nameが一致するhandlerを検索
 				if (viewName == null || viewName.isEmpty()) {
-					if (view.getMetaData().getName() == null || view.getMetaData().getName().isEmpty()) {
-						fh = (SearchFormViewHandler) view;
+					if (formView.getMetaData().getName() == null || formView.getMetaData().getName().isEmpty()) {
+						fh = (SearchFormViewHandler) formView;
 						break;
 					}
 				} else {
-					if (viewName.equals(view.getMetaData().getName())) {
-						fh = (SearchFormViewHandler) view;
+					if (viewName.equals(formView.getMetaData().getName())) {
+						fh = (SearchFormViewHandler) formView;
 						break;
 					}
 				}
@@ -615,17 +615,17 @@ public class EntityViewManagerImpl extends AbstractTypedDefinitionManager<Entity
 		EntityViewRuntime entityView = service.getRuntimeByName(definitionName);
 		if (entityView != null) {
 			SearchFormViewHandler fh = null;
-			for (FormViewHandler view : entityView.getFormViews()) {
-				if (view instanceof SearchFormViewHandler) {
+			for (FormViewRuntime formView : entityView.getFormViews()) {
+				if (formView instanceof SearchFormViewHandler) {
 					//nameが一致するhandlerを検索
 					if (StringUtil.isEmpty(viewName)) {
-						if (StringUtil.isEmpty(view.getMetaData().getName())) {
-							fh = (SearchFormViewHandler) view;
+						if (StringUtil.isEmpty(formView.getMetaData().getName())) {
+							fh = (SearchFormViewHandler) formView;
 							break;
 						}
 					} else {
-						if (viewName.equals(view.getMetaData().getName())) {
-							fh = (SearchFormViewHandler) view;
+						if (viewName.equals(formView.getMetaData().getName())) {
+							fh = (SearchFormViewHandler) formView;
 							break;
 						}
 					}
@@ -981,7 +981,7 @@ public class EntityViewManagerImpl extends AbstractTypedDefinitionManager<Entity
 			logger.debug("not defined viewControl. defName=" + definitionName + ",viewName=" + viewName);
 		}
 
-		SearchFormViewHandler formView = getSearchFormViewHandler(entityView.getFormViews(), viewName);
+		SearchFormViewHandler formView = getSearchFormView(entityView.getFormViews(), viewName);
 		if (formView != null) {
 			//定義はあるが、管理設定が無い→許可ロール未指定扱い
 			return Collections.EMPTY_LIST;
@@ -1011,10 +1011,10 @@ public class EntityViewManagerImpl extends AbstractTypedDefinitionManager<Entity
 		return null;
 	}
 
-	private SearchFormViewHandler getSearchFormViewHandler(List<FormViewHandler> handlers, String viewName) {
+	private SearchFormViewHandler getSearchFormView(List<FormViewRuntime> formViews, String viewName) {
 		final boolean checkDefault = StringUtil.isEmpty(viewName);
 		//最初の権限チェックポイントがメニューなのでSearchFormViewの有無で確認
-		Optional<SearchFormViewHandler> formView = handlers.stream()
+		Optional<SearchFormViewHandler> formView = formViews.stream()
 				.filter(view -> view instanceof SearchFormViewHandler)
 				.filter(view -> {
 					String name = view.getMetaData().getName();

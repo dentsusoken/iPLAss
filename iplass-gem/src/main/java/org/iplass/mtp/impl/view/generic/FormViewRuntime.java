@@ -36,7 +36,7 @@ import org.iplass.mtp.impl.view.generic.element.section.SectionHandler;
  * レイアウト情報のランタイム
  * @author lis3wg
  */
-public class FormViewHandler /*implements MetaDataRuntime*/ {
+public class FormViewRuntime {
 
 	/** メタデータ */
 	private MetaFormView metaData;
@@ -49,7 +49,7 @@ public class FormViewHandler /*implements MetaDataRuntime*/ {
 	 * @param metaData レイアウト情報
 	 * @param entityView 画面定義のランタイム
 	 */
-	public FormViewHandler(MetaFormView metaData, EntityViewRuntime entityView) {
+	public FormViewRuntime(MetaFormView metaData, EntityViewRuntime entityView) {
 		this.metaData = metaData;
 		sections = new ArrayList<SectionHandler>();
 		for (MetaSection section : metaData.getSections()) {
