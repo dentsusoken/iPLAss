@@ -585,26 +585,26 @@ public class EntityViewManagerImpl extends AbstractTypedDefinitionManager<Entity
 			return defaultCondMap;
 		}
 
-		SearchFormViewHandler fh = null;
+		SearchFormViewRuntime searchView = null;
 		for (FormViewRuntime formView : entityView.getFormViews()) {
-			if (formView instanceof SearchFormViewHandler) {
+			if (formView instanceof SearchFormViewRuntime) {
 				//nameが一致するhandlerを検索
 				if (viewName == null || viewName.isEmpty()) {
 					if (formView.getMetaData().getName() == null || formView.getMetaData().getName().isEmpty()) {
-						fh = (SearchFormViewHandler) formView;
+						searchView = (SearchFormViewRuntime) formView;
 						break;
 					}
 				} else {
 					if (viewName.equals(formView.getMetaData().getName())) {
-						fh = (SearchFormViewHandler) formView;
+						searchView = (SearchFormViewRuntime) formView;
 						break;
 					}
 				}
 			}
 		}
 
-		if (fh != null) {
-			return fh.applyDefaultPropertyCondition(defaultCondMap);
+		if (searchView != null) {
+			return searchView.applyDefaultPropertyCondition(defaultCondMap);
 		}
 		return defaultCondMap;
 	}
@@ -614,26 +614,26 @@ public class EntityViewManagerImpl extends AbstractTypedDefinitionManager<Entity
 		String fileName = defaultName;
 		EntityViewRuntime entityView = service.getRuntimeByName(definitionName);
 		if (entityView != null) {
-			SearchFormViewHandler fh = null;
+			SearchFormViewRuntime searchView = null;
 			for (FormViewRuntime formView : entityView.getFormViews()) {
-				if (formView instanceof SearchFormViewHandler) {
+				if (formView instanceof SearchFormViewRuntime) {
 					//nameが一致するhandlerを検索
 					if (StringUtil.isEmpty(viewName)) {
 						if (StringUtil.isEmpty(formView.getMetaData().getName())) {
-							fh = (SearchFormViewHandler) formView;
+							searchView = (SearchFormViewRuntime) formView;
 							break;
 						}
 					} else {
 						if (viewName.equals(formView.getMetaData().getName())) {
-							fh = (SearchFormViewHandler) formView;
+							searchView = (SearchFormViewRuntime) formView;
 							break;
 						}
 					}
 				}
 			}
 
-			if (fh != null) {
-				fileName = fh.getCsvDownloadFileName(defaultName, csvVariableMap).replace("/", "_").replace(" ", "_");
+			if (searchView != null) {
+				fileName = searchView.getCsvDownloadFileName(defaultName, csvVariableMap).replace("/", "_").replace(" ", "_");
 			}
 		} else {
 			//View未定義はdefaultName
@@ -981,8 +981,8 @@ public class EntityViewManagerImpl extends AbstractTypedDefinitionManager<Entity
 			logger.debug("not defined viewControl. defName=" + definitionName + ",viewName=" + viewName);
 		}
 
-		SearchFormViewHandler formView = getSearchFormView(entityView.getFormViews(), viewName);
-		if (formView != null) {
+		SearchFormViewRuntime searchView = getSearchFormView(entityView.getFormViews(), viewName);
+		if (searchView != null) {
 			//定義はあるが、管理設定が無い→許可ロール未指定扱い
 			return Collections.EMPTY_LIST;
 		}
@@ -1011,11 +1011,11 @@ public class EntityViewManagerImpl extends AbstractTypedDefinitionManager<Entity
 		return null;
 	}
 
-	private SearchFormViewHandler getSearchFormView(List<FormViewRuntime> formViews, String viewName) {
+	private SearchFormViewRuntime getSearchFormView(List<FormViewRuntime> formViews, String viewName) {
 		final boolean checkDefault = StringUtil.isEmpty(viewName);
 		//最初の権限チェックポイントがメニューなのでSearchFormViewの有無で確認
-		Optional<SearchFormViewHandler> formView = formViews.stream()
-				.filter(view -> view instanceof SearchFormViewHandler)
+		Optional<SearchFormViewRuntime> searchView = formViews.stream()
+				.filter(view -> view instanceof SearchFormViewRuntime)
 				.filter(view -> {
 					String name = view.getMetaData().getName();
 					if (checkDefault) {
@@ -1024,11 +1024,11 @@ public class EntityViewManagerImpl extends AbstractTypedDefinitionManager<Entity
 						return viewName.equals(name);
 					}
 				})
-				.map(view -> (SearchFormViewHandler)view)
+				.map(view -> (SearchFormViewRuntime)view)
 				.findFirst();
 
-		if (formView.isPresent()) {
-			return formView.get();
+		if (searchView.isPresent()) {
+			return searchView.get();
 		}
 		return null;
 	}

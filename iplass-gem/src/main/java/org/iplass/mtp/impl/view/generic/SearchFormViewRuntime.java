@@ -45,7 +45,7 @@ import org.iplass.mtp.impl.view.generic.element.section.MetaSection;
 import org.iplass.mtp.impl.view.generic.element.section.SectionHandler;
 import org.iplass.mtp.util.StringUtil;
 
-public class SearchFormViewHandler extends FormViewRuntime {
+public class SearchFormViewRuntime extends FormViewRuntime {
 	public static final String INIT_CONDTION_MAP_BINDING_NAME = "initCondMap";
 	public static final String REQUEST_BINDING_NAME = "request";
 	public static final String SESSION_BINDING_NAME = "session";
@@ -59,7 +59,7 @@ public class SearchFormViewHandler extends FormViewRuntime {
 
 	private GroovyTemplate compiledCsvFileNameScript;
 
-	public SearchFormViewHandler(MetaFormView metaData, EntityViewRuntime entityView) {
+	public SearchFormViewRuntime(MetaFormView metaData, EntityViewRuntime entityView) {
 		super(metaData, entityView);
 
 		MetaSearchFormView form = (MetaSearchFormView) metaData;
