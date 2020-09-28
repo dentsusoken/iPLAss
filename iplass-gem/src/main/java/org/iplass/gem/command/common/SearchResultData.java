@@ -21,6 +21,7 @@
 package org.iplass.gem.command.common;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -73,7 +74,7 @@ public class SearchResultData {
 	public List<Map<String, String>> toResponse() {
 
 		if (rows == null || rows.isEmpty()) {
-			return null;
+			return Collections.emptyList();
 		}
 
 		return rows.stream().map(row -> row.getResponse()).collect(Collectors.toList());
