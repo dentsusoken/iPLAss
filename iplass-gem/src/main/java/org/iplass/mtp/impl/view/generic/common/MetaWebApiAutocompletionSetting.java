@@ -48,7 +48,7 @@ import org.iplass.mtp.impl.script.template.GroovyTemplate;
 import org.iplass.mtp.impl.script.template.GroovyTemplateBinding;
 import org.iplass.mtp.impl.script.template.GroovyTemplateCompiler;
 import org.iplass.mtp.impl.util.ObjectUtil;
-import org.iplass.mtp.impl.view.generic.EntityViewHandler;
+import org.iplass.mtp.impl.view.generic.EntityViewRuntime;
 import org.iplass.mtp.util.StringUtil;
 import org.iplass.mtp.view.generic.common.AutocompletionSetting;
 import org.iplass.mtp.view.generic.common.WebApiAutocompletionSetting;
@@ -141,11 +141,11 @@ public class MetaWebApiAutocompletionSetting extends MetaAutocompletionSetting {
 	}
 
 	@Override
-	public AutocompletionSettingHandler getHandler(EntityViewHandler entityView) {
-		return new WebApiAutocompletionSettingHandler(this, entityView);
+	public AutocompletionSettingRuntime createRuntime(EntityViewRuntime entityView) {
+		return new WebApiAutocompletionSettingRuntime(this, entityView);
 	}
 
-	public class WebApiAutocompletionSettingHandler extends AutocompletionSettingHandler {
+	public class WebApiAutocompletionSettingRuntime extends AutocompletionSettingRuntime {
 
 		public static final String USER_BINDING_NAME = "user";
 		public static final String PARAMS_BINDING_NAME = "params";
@@ -158,7 +158,7 @@ public class MetaWebApiAutocompletionSetting extends MetaAutocompletionSetting {
 
 		private Script groovyscriptScript;
 
-		public WebApiAutocompletionSettingHandler(MetaAutocompletionSetting metadata, EntityViewHandler entityView) {
+		public WebApiAutocompletionSettingRuntime(MetaAutocompletionSetting metadata, EntityViewRuntime entityView) {
 			super(metadata, entityView);
 
 			ScriptEngine scriptEngine = ExecuteContext.getCurrentContext().getTenantContext().getScriptEngine();

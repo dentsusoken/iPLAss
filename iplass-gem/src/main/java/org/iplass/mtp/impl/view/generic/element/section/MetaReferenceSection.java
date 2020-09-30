@@ -36,7 +36,8 @@ import org.iplass.mtp.impl.script.GroovyScriptEngine;
 import org.iplass.mtp.impl.script.template.GroovyTemplate;
 import org.iplass.mtp.impl.script.template.GroovyTemplateCompiler;
 import org.iplass.mtp.impl.util.ObjectUtil;
-import org.iplass.mtp.impl.view.generic.EntityViewHandler;
+import org.iplass.mtp.impl.view.generic.EntityViewRuntime;
+import org.iplass.mtp.impl.view.generic.FormViewRuntime;
 import org.iplass.mtp.impl.view.generic.editor.MetaNestProperty;
 import org.iplass.mtp.util.StringUtil;
 import org.iplass.mtp.view.generic.editor.NestProperty;
@@ -63,7 +64,7 @@ public class MetaReferenceSection extends MetaSection {
 	private String title;
 
 	/** 多言語設定情報 */
-	private List<MetaLocalizedString> localizedTitleList = new ArrayList<MetaLocalizedString>();
+	private List<MetaLocalizedString> localizedTitleList = new ArrayList<>();
 
 	/** セクションの展開可否 */
 	private boolean expandable;
@@ -303,7 +304,7 @@ public class MetaReferenceSection extends MetaSection {
 	 * @return 表示プロパティ
 	 */
 	public List<MetaNestProperty> getProperties() {
-		if (properties == null) properties = new ArrayList<MetaNestProperty>();
+		if (properties == null) properties = new ArrayList<>();
 	    return properties;
 	}
 
@@ -468,8 +469,8 @@ public class MetaReferenceSection extends MetaSection {
 	}
 
 	@Override
-	public SectionHandler createRuntime(EntityViewHandler entityView) {
-		return new ReferenceSectionHandler(this, entityView);
+	public SectionRuntime createRuntime(EntityViewRuntime entityView, FormViewRuntime formView) {
+		return new ReferenceSectionRuntime(this, entityView);
 	}
 
 	/**
@@ -477,14 +478,14 @@ public class MetaReferenceSection extends MetaSection {
 	 * @author lis3wg
 	 *
 	 */
-	public class ReferenceSectionHandler extends SectionHandler {
+	public class ReferenceSectionRuntime extends SectionRuntime {
 
-		public ReferenceSectionHandler(MetaReferenceSection metadata, EntityViewHandler entityView) {
+		public ReferenceSectionRuntime(MetaReferenceSection metadata, EntityViewRuntime entityView) {
 			super(metadata, entityView);
 			if (properties != null && !properties.isEmpty()) {
 				for (MetaNestProperty meta : properties) {
 					if (meta.getAutocompletionSetting()  != null) {
-						entityView.addAutocompletionSettingHandler(meta.getAutocompletionSetting().getHandler(entityView));
+						entityView.addAutocompletionSetting(meta.getAutocompletionSetting().createRuntime(entityView));
 					}
 				}
 			}

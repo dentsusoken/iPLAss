@@ -113,6 +113,9 @@ public final class SearchViewCommand implements Command {
 		String viewName = request.getParam(Constants.VIEW_NAME);
 		SearchFormView view = FormViewUtil.getSearchFormView(entityDefinition, entityView, viewName);
 
+		//View定義のステータスチェック
+		evm.checkState(defName);
+
 		if (view == null) {
 			request.setAttribute(Constants.MESSAGE, resourceString("command.generic.search.SearchViewCommand.viewErr"));
 			return Constants.CMD_EXEC_ERROR_VIEW;

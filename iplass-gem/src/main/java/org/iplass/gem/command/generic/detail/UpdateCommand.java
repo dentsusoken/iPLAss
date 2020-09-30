@@ -109,6 +109,9 @@ public final class UpdateCommand extends DetailCommandBase {
 		final String oid = context.getOid();
 		final Long version = context.getVersion();
 
+		//View定義のステータスチェック
+		evm.checkState(context.getDefinitionName());
+
 		DetailFormView view = context.getView();
 		if (view == null) {
 			request.setAttribute(Constants.MESSAGE, resourceString("command.generic.detail.UpdateCommand.viewErr"));

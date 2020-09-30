@@ -40,7 +40,8 @@ import org.iplass.mtp.impl.script.ScriptEngine;
 import org.iplass.mtp.impl.script.template.GroovyTemplate;
 import org.iplass.mtp.impl.script.template.GroovyTemplateCompiler;
 import org.iplass.mtp.impl.util.ObjectUtil;
-import org.iplass.mtp.impl.view.generic.EntityViewHandler;
+import org.iplass.mtp.impl.view.generic.EntityViewRuntime;
+import org.iplass.mtp.impl.view.generic.FormViewRuntime;
 import org.iplass.mtp.util.StringUtil;
 import org.iplass.mtp.view.generic.OutputType;
 import org.iplass.mtp.view.generic.element.Button;
@@ -67,13 +68,13 @@ public class MetaButton extends MetaElement {
 	private String title;
 
 	/** 多言語設定情報 */
-	private List<MetaLocalizedString> localizedTitleList = new ArrayList<MetaLocalizedString>();
+	private List<MetaLocalizedString> localizedTitleList = new ArrayList<>();
 
 	/** 表示ラベル */
 	private String displayLabel;
 
 	/** 多言語設定情報 */
-	private List<MetaLocalizedString> localizedDisplayLabelList = new ArrayList<MetaLocalizedString>();
+	private List<MetaLocalizedString> localizedDisplayLabelList = new ArrayList<>();
 
 	/** プライマリー */
 	private boolean primary = true;
@@ -342,11 +343,11 @@ public class MetaButton extends MetaElement {
 	}
 
 	@Override
-	public ButtonHandler createRuntime(EntityViewHandler entityView) {
-		return new ButtonHandler(this, entityView);
+	public ButtonRuntime createRuntime(EntityViewRuntime entityView, FormViewRuntime formView) {
+		return new ButtonRuntime(this, entityView);
 	}
 
-	public class ButtonHandler extends ElementHandler {
+	public class ButtonRuntime extends ElementRuntime {
 		public static final String REQUEST_BINDING_NAME = "request";
 		public static final String SESSION_BINDING_NAME = "session";
 		public static final String USER_BINDING_NAME = "user";
@@ -360,7 +361,7 @@ public class MetaButton extends MetaElement {
 
 		private Script compiledCustomDisplayTypeScript;
 
-		public ButtonHandler(MetaButton metadata, EntityViewHandler entityView) {
+		public ButtonRuntime(MetaButton metadata, EntityViewRuntime entityView) {
 			super(metadata, entityView);
 
 			inputCustomStyleScriptKey = "Button_InputStyle" + GroovyTemplateCompiler.randomName().replace("-", "_");
@@ -379,7 +380,7 @@ public class MetaButton extends MetaElement {
 				customDisplayTypeScriptKey = scriptName;
 			}
 
-			entityView.addButtonHandler(this);
+			entityView.addButton(this);
 		}
 
 		public GroovyTemplate getInputCustomStyleScript() {

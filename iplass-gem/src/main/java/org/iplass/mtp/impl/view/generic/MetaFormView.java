@@ -344,8 +344,8 @@ public abstract class MetaFormView implements MetaData {
 	 * ランタイムを生成します。
 	 * @return ランタイム
 	 */
-	public FormViewHandler createRuntime(EntityViewHandler entityView) {
-		return new FormViewHandler(this, entityView);
+	public FormViewRuntime createRuntime(EntityViewRuntime entityView) {
+		return new FormViewRuntime(this, entityView);
 	}
 
 	public String getTypeName() {

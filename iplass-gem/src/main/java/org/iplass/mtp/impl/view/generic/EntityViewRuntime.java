@@ -28,21 +28,21 @@ import java.util.Map;
 import org.iplass.mtp.entity.query.PreparedQuery;
 import org.iplass.mtp.impl.metadata.BaseMetaDataRuntime;
 import org.iplass.mtp.impl.script.template.GroovyTemplate;
-import org.iplass.mtp.impl.view.generic.common.MetaAutocompletionSetting.AutocompletionSettingHandler;
-import org.iplass.mtp.impl.view.generic.element.ElementHandler;
-import org.iplass.mtp.impl.view.generic.element.MetaButton.ButtonHandler;
+import org.iplass.mtp.impl.view.generic.common.MetaAutocompletionSetting.AutocompletionSettingRuntime;
+import org.iplass.mtp.impl.view.generic.element.ElementRuntime;
+import org.iplass.mtp.impl.view.generic.element.MetaButton.ButtonRuntime;
 
 /**
  * 画面定義のランタイム
  * @author lis3wg
  */
-public class EntityViewHandler extends BaseMetaDataRuntime {
+public class EntityViewRuntime extends BaseMetaDataRuntime {
 
 	/** メタデータ */
 	protected MetaEntityView metaData;
 
 	/** レイアウト情報のランタイム */
-	private List<FormViewHandler> formViews;
+	private List<FormViewRuntime> formViews;
 
 	/** テンプレート情報 */
 	private Map<String, GroovyTemplate> templates;
@@ -50,11 +50,11 @@ public class EntityViewHandler extends BaseMetaDataRuntime {
 	/** カスタムスタイル */
 	private Map<String, Map<String, GroovyTemplate>> customStylesMap;
 
-	private Map<String, ElementHandler> elementHandlerMap;
+	private Map<String, ElementRuntime> elementMap;
 
-	private Map<String, ButtonHandler> buttonHandlerMap;
+	private Map<String, ButtonRuntime> buttonMap;
 
-	private Map<String, AutocompletionSettingHandler> autocompletionSettingMap;
+	private Map<String, AutocompletionSettingRuntime> autocompletionSettingMap;
 
 	/** Query */
 	private Map<String, PreparedQuery> queries;
@@ -63,7 +63,7 @@ public class EntityViewHandler extends BaseMetaDataRuntime {
 	 * コンストラクタ
 	 * @param metaData レイアウト情報
 	 */
-	public EntityViewHandler(MetaEntityView metaData) {
+	public EntityViewRuntime(MetaEntityView metaData) {
 		try {
 			this.metaData = metaData;
 			if (metaData.getViews().size() > 0) {
@@ -80,12 +80,12 @@ public class EntityViewHandler extends BaseMetaDataRuntime {
 	 * レイアウト情報のランタイムを追加
 	 * @param formView レイアウト情報
 	 */
-	private void addFormView(FormViewHandler formView) {
+	private void addFormView(FormViewRuntime formView) {
 		if (this.formViews == null) this.formViews = new ArrayList<>();
 		this.formViews.add(formView);
 	}
 
-	public List<FormViewHandler> getFormViews() {
+	public List<FormViewRuntime> getFormViews() {
 		if (this.formViews == null) this.formViews = new ArrayList<>();
 		return formViews;
 	}
@@ -173,10 +173,10 @@ public class EntityViewHandler extends BaseMetaDataRuntime {
 	 * エレメントハンドラを追加します。
 	 * @param handler エレメントハンドラ
 	 */
-	public void addElementHandler(ElementHandler handler) {
-		if (elementHandlerMap == null) elementHandlerMap = new HashMap<>();
-		if (handler.getMetaData().getElementRuntimeId() != null) {
-			elementHandlerMap.put(handler.getMetaData().getElementRuntimeId(), handler);
+	public void addElement(ElementRuntime element) {
+		if (elementMap == null) elementMap = new HashMap<>();
+		if (element.getMetaData().getElementRuntimeId() != null) {
+			elementMap.put(element.getMetaData().getElementRuntimeId(), element);
 		}
 	}
 
@@ -185,19 +185,19 @@ public class EntityViewHandler extends BaseMetaDataRuntime {
 	 * @param elementRuntimeId エレメントランタイムID
 	 * @return エレメントハンドラ
 	 */
-	public ElementHandler getElementHandler(String elementRuntimeId) {
-		if (elementHandlerMap == null) return null;
-		return elementHandlerMap.get(elementRuntimeId);
+	public ElementRuntime getElement(String elementRuntimeId) {
+		if (elementMap == null) return null;
+		return elementMap.get(elementRuntimeId);
 	}
 
 	/**
 	 * ボタンハンドラを追加します。
 	 * @param handler
 	 */
-	public void addButtonHandler(ButtonHandler handler) {
-		if (buttonHandlerMap == null) buttonHandlerMap = new HashMap<>();
-		if (handler.getMetaData().getCustomDisplayTypeScriptKey() != null) {
-			buttonHandlerMap.put(handler.getMetaData().getCustomDisplayTypeScriptKey(), handler);
+	public void addButton(ButtonRuntime button) {
+		if (buttonMap == null) buttonMap = new HashMap<>();
+		if (button.getMetaData().getCustomDisplayTypeScriptKey() != null) {
+			buttonMap.put(button.getMetaData().getCustomDisplayTypeScriptKey(), button);
 		}
 	}
 
@@ -206,19 +206,19 @@ public class EntityViewHandler extends BaseMetaDataRuntime {
 	 * @param key
 	 * @return
 	 */
-	public ButtonHandler getButtonHandler(String key) {
-		if (buttonHandlerMap == null) return null;
-		return buttonHandlerMap.get(key);
+	public ButtonRuntime getButton(String key) {
+		if (buttonMap == null) return null;
+		return buttonMap.get(key);
 	}
 
 	/**
 	 * 自動補完設定を追加します。
 	 * @param handler
 	 */
-	public void addAutocompletionSettingHandler(AutocompletionSettingHandler handler) {
+	public void addAutocompletionSetting(AutocompletionSettingRuntime setting) {
 		if (autocompletionSettingMap == null) autocompletionSettingMap = new HashMap<>();
-		if (handler.getMetaData().getRuntimeKey() != null) {
-			autocompletionSettingMap.put(handler.getMetaData().getRuntimeKey(), handler);
+		if (setting.getMetaData().getRuntimeKey() != null) {
+			autocompletionSettingMap.put(setting.getMetaData().getRuntimeKey(), setting);
 		}
 	}
 
@@ -227,7 +227,7 @@ public class EntityViewHandler extends BaseMetaDataRuntime {
 	 * @param key
 	 * @return
 	 */
-	public AutocompletionSettingHandler getAutocompletionSettingHandler(String key) {
+	public AutocompletionSettingRuntime getAutocompletionSetting(String key) {
 		if (autocompletionSettingMap == null) {
 			return null;
 		}

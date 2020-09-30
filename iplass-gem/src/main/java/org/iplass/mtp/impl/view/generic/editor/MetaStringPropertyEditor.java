@@ -1,19 +1,19 @@
 /*
  * Copyright (C) 2011 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
- * 
+ *
  * Unless you have purchased a commercial license,
  * the following license terms apply:
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
@@ -25,7 +25,18 @@ import java.util.List;
 
 import javax.xml.bind.annotation.XmlSeeAlso;
 
+import org.iplass.mtp.entity.definition.PropertyDefinition;
+import org.iplass.mtp.entity.definition.PropertyDefinitionType;
+import org.iplass.mtp.entity.definition.properties.ExpressionProperty;
+import org.iplass.mtp.entity.definition.properties.LongTextProperty;
+import org.iplass.mtp.entity.definition.properties.StringProperty;
+import org.iplass.mtp.impl.entity.EntityContext;
+import org.iplass.mtp.impl.entity.EntityHandler;
+import org.iplass.mtp.impl.metadata.MetaDataRuntime;
 import org.iplass.mtp.impl.util.ObjectUtil;
+import org.iplass.mtp.impl.view.generic.EntityViewRuntime;
+import org.iplass.mtp.impl.view.generic.FormViewRuntime;
+import org.iplass.mtp.impl.view.generic.element.property.MetaPropertyLayout;
 import org.iplass.mtp.view.generic.editor.EditorValue;
 import org.iplass.mtp.view.generic.editor.LongTextPropertyEditor;
 import org.iplass.mtp.view.generic.editor.PropertyEditor;
@@ -66,7 +77,7 @@ public class MetaStringPropertyEditor extends MetaPrimitivePropertyEditor {
 
 	/** RickTextで表示モードの場合、ツールバーなどを表示しないか */
 	private boolean hideRichtextEditorToolBar;
-	
+
 	/** リッチテキストエディタオプション */
 	private String richtextEditorOption;
 
@@ -125,7 +136,7 @@ public class MetaStringPropertyEditor extends MetaPrimitivePropertyEditor {
 	 * @return セレクトボックスの値
 	 */
 	public List<EditorValue> getValues() {
-		if (this.values == null) this.values = new ArrayList<EditorValue>();
+		if (this.values == null) this.values = new ArrayList<>();
 		return values;
 	}
 
@@ -230,6 +241,30 @@ public class MetaStringPropertyEditor extends MetaPrimitivePropertyEditor {
 	@Override
 	public MetaStringPropertyEditor copy() {
 		return ObjectUtil.deepCopy(this);
+	}
+
+	@Override
+	public MetaDataRuntime createRuntime(EntityViewRuntime entityView, FormViewRuntime formView,
+			MetaPropertyLayout propertyLayout, EntityContext context, EntityHandler eh) {
+		return new PropertyEditorRuntime(entityView, formView, propertyLayout, context, eh) {
+			@Override
+			protected boolean checkPropertyType(PropertyDefinition pd) {
+				if (pd == null) {
+					return true;
+				}
+				if (pd instanceof StringProperty
+						|| pd instanceof LongTextProperty) {
+					return true;
+				}
+				if (pd instanceof ExpressionProperty) {
+					ExpressionProperty ep = (ExpressionProperty)pd;
+					if (ep.getResultType() == PropertyDefinitionType.STRING) {
+						return true;
+					}
+				}
+				return false;
+			}
+		};
 	}
 
 }

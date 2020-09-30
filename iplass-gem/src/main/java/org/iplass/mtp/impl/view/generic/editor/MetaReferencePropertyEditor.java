@@ -25,6 +25,8 @@ import java.util.List;
 
 import javax.xml.bind.annotation.XmlTransient;
 
+import org.iplass.mtp.entity.definition.PropertyDefinition;
+import org.iplass.mtp.entity.definition.properties.ReferenceProperty;
 import org.iplass.mtp.impl.core.ExecuteContext;
 import org.iplass.mtp.impl.entity.EntityContext;
 import org.iplass.mtp.impl.entity.EntityHandler;
@@ -35,8 +37,10 @@ import org.iplass.mtp.impl.script.ScriptEngine;
 import org.iplass.mtp.impl.script.template.GroovyTemplate;
 import org.iplass.mtp.impl.script.template.GroovyTemplateCompiler;
 import org.iplass.mtp.impl.util.ObjectUtil;
-import org.iplass.mtp.impl.view.generic.EntityViewHandler;
+import org.iplass.mtp.impl.view.generic.EntityViewRuntime;
+import org.iplass.mtp.impl.view.generic.FormViewRuntime;
 import org.iplass.mtp.impl.view.generic.HasMetaNestProperty;
+import org.iplass.mtp.impl.view.generic.element.property.MetaPropertyLayout;
 import org.iplass.mtp.util.StringUtil;
 import org.iplass.mtp.view.generic.editor.NestProperty;
 import org.iplass.mtp.view.generic.editor.PropertyEditor;
@@ -949,17 +953,21 @@ public class MetaReferencePropertyEditor extends MetaPropertyEditor implements H
 	}
 
 	@Override
-	public MetaDataRuntime createRuntime(EntityViewHandler entityView) {
-		return new ReferencePropertyEditorHandler(entityView);
+	public MetaDataRuntime createRuntime(EntityViewRuntime entityView, FormViewRuntime formView,
+			MetaPropertyLayout propertyLayout, EntityContext context, EntityHandler eh) {
+		return new ReferencePropertyEditorRuntime(entityView, formView, propertyLayout, context, eh);
 	}
 
-	public class ReferencePropertyEditorHandler extends PropertyEditorHandler {
+	public class ReferencePropertyEditorRuntime extends PropertyEditorRuntime {
 
 		private static final String SCRIPT_PREFIX = "ReferencePropertyEditorHandler_urlParameter";
 
 		private GroovyTemplate urlParameterScript;
 
-		public ReferencePropertyEditorHandler(EntityViewHandler entityView) {
+		public ReferencePropertyEditorRuntime(EntityViewRuntime entityView, FormViewRuntime formView,
+				MetaPropertyLayout propertyLayout, EntityContext context, EntityHandler eh) {
+			super(entityView, formView, propertyLayout, context, eh);
+
 			if (StringUtil.isNotEmpty(urlParameter)) {
 				urlParameterScriptKey = "ReferencePropertyEditor_UrlParameter_" + GroovyTemplateCompiler.randomName().replace("-", "_");
 				ScriptEngine scriptEngine = ExecuteContext.getCurrentContext().getTenantContext().getScriptEngine();
@@ -973,12 +981,16 @@ public class MetaReferencePropertyEditor extends MetaPropertyEditor implements H
 			if (nestProperties != null && !nestProperties.isEmpty()) {
 				for (MetaNestProperty meta : nestProperties) {
 					if (meta.getAutocompletionSetting()  != null) {
-						entityView.addAutocompletionSettingHandler(meta.getAutocompletionSetting().getHandler(entityView));
+						entityView.addAutocompletionSetting(meta.getAutocompletionSetting().createRuntime(entityView));
 					}
 				}
 			}
 
 		}
 
+		@Override
+		protected boolean checkPropertyType(PropertyDefinition pd) {
+			return pd == null || pd instanceof ReferenceProperty;
+		}
 	}
 }

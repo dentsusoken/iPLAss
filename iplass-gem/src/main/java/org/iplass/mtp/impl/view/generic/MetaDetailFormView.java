@@ -887,7 +887,7 @@ public class MetaDetailFormView extends MetaFormView {
 	}
 
 	@Override
-	public FormViewHandler createRuntime(EntityViewHandler entityView) {
-		return new DetailFormViewHandler(this, entityView);
+	public FormViewRuntime createRuntime(EntityViewRuntime entityView) {
+		return new DetailFormViewRuntime(this, entityView);
 	}
 }

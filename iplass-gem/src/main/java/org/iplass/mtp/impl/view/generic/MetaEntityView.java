@@ -118,8 +118,8 @@ public class MetaEntityView extends BaseRootMetaData implements DefinableMetaDat
 	 * ランタイムを生成します。
 	 * @return ランタイム
 	 */
-	public EntityViewHandler createRuntime(MetaDataConfig metaDataConfig) {
-		return new EntityViewHandler(this);
+	public EntityViewRuntime createRuntime(MetaDataConfig metaDataConfig) {
+		return new EntityViewRuntime(this);
 	}
 
 	/**

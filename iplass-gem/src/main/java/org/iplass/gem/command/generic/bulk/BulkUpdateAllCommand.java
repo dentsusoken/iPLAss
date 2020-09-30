@@ -94,8 +94,11 @@ public class BulkUpdateAllCommand extends BulkCommandBase {
 	@Override
 	public String execute(RequestContext request) {
 		final BulkCommandContext context = getContext(request);
-		String searchType = request.getParam(Constants.SEARCH_TYPE);
 
+		//View定義のステータスチェック
+		evm.checkState(context.getDefinitionName());
+
+		String searchType = request.getParam(Constants.SEARCH_TYPE);
 		SearchCommandBase command = null;
 		if (Constants.SEARCH_TYPE_NORMAL.equals(searchType)) {
 			command = new NormalSearchCommand();
@@ -147,15 +150,15 @@ public class BulkUpdateAllCommand extends BulkCommandBase {
 					List<String> updateDate = IntStream.range(0, entities.size())
 							.mapToObj(i -> i + "_" + entities.get(i).getUpdateDate().getTime())
 							.collect(Collectors.toList());
-	
+
 					int count = oid.size();
-	
+
 					//トランザクションタイプによって一括か、分割かを決める(batchSize件毎)
 					int batchSize = ServiceRegistry.getRegistry().getService(GemConfigService.class).getBulkUpdateAllCommandBatchSize();
 					if (transactionType == BulkUpdateAllCommandTransactionType.ONCE) {
 						batchSize = count;
 					}
-	
+
 					int countPerBatch = count / batchSize;
 					if (count % batchSize > 0) countPerBatch++;
 					for (int i = 0; i < countPerBatch; i++) {
@@ -198,7 +201,7 @@ public class BulkUpdateAllCommand extends BulkCommandBase {
 					// 一件もない場合、画面表示するために空のフォームビューデータを設定します。
 					setDefaultViewData(request, context);
 				}
-	
+
 				// 更新した後の処理を呼び出します。
 				context.getBulkUpdateInterrupterHandler().afterOperation(entities);
 

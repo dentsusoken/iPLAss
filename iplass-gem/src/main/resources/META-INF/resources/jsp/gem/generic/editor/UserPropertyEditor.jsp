@@ -25,6 +25,7 @@
 <%@ page import="org.iplass.mtp.entity.definition.PropertyDefinition"%>
 <%@ page import="org.iplass.mtp.entity.definition.properties.StringProperty"%>
 <%@ page import="org.iplass.mtp.util.StringUtil"%>
+<%@ page import="org.iplass.mtp.view.generic.EntityViewRuntimeException"%>
 <%@ page import="org.iplass.mtp.view.generic.EntityViewUtil"%>
 <%@ page import="org.iplass.mtp.view.generic.OutputType"%>
 <%@ page import="org.iplass.mtp.view.generic.editor.UserPropertyEditor" %>
@@ -48,11 +49,12 @@
 
 	@SuppressWarnings("unchecked") Map<String, Entity> userMap = (Map<String, Entity>) request.getAttribute(Constants.USER_INFO_MAP);
 
+	String propName = editor.getPropertyName();
 	if (pd == null || !(pd instanceof StringProperty)) {
 		//定義がStringPropertyでなければ表示不可
-		return;
+		throw new EntityViewRuntimeException(propName + " 's editor is unsupport " 
+				+ (pd != null ? pd.getClass().getSimpleName() : "(unknown)") + " type." );
 	}
-	String propName = editor.getPropertyName();
 
 	if (OutputType.EDIT == type || OutputType.VIEW == type) {
 		//詳細編集 or 詳細表示

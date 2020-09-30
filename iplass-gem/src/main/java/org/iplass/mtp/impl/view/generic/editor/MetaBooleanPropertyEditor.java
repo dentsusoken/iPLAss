@@ -1,19 +1,19 @@
 /*
  * Copyright (C) 2011 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
- * 
+ *
  * Unless you have purchased a commercial license,
  * the following license terms apply:
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
@@ -23,12 +23,22 @@ package org.iplass.mtp.impl.view.generic.editor;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.iplass.mtp.entity.definition.PropertyDefinition;
+import org.iplass.mtp.entity.definition.PropertyDefinitionType;
+import org.iplass.mtp.entity.definition.properties.BooleanProperty;
+import org.iplass.mtp.entity.definition.properties.ExpressionProperty;
+import org.iplass.mtp.impl.entity.EntityContext;
+import org.iplass.mtp.impl.entity.EntityHandler;
 import org.iplass.mtp.impl.i18n.I18nUtil;
 import org.iplass.mtp.impl.i18n.MetaLocalizedString;
+import org.iplass.mtp.impl.metadata.MetaDataRuntime;
 import org.iplass.mtp.impl.util.ObjectUtil;
+import org.iplass.mtp.impl.view.generic.EntityViewRuntime;
+import org.iplass.mtp.impl.view.generic.FormViewRuntime;
+import org.iplass.mtp.impl.view.generic.element.property.MetaPropertyLayout;
 import org.iplass.mtp.view.generic.editor.BooleanPropertyEditor;
-import org.iplass.mtp.view.generic.editor.PropertyEditor;
 import org.iplass.mtp.view.generic.editor.BooleanPropertyEditor.BooleanDisplayType;
+import org.iplass.mtp.view.generic.editor.PropertyEditor;
 
 /**
  * 真偽型プロパティエディタのメタデータ
@@ -50,13 +60,13 @@ public class MetaBooleanPropertyEditor extends MetaPrimitivePropertyEditor {
 	private String trueLabel;
 
 	/** 真の表示ラベル多言語設定情報 */
-	private List<MetaLocalizedString> localizedTrueLabelList = new ArrayList<MetaLocalizedString>();
+	private List<MetaLocalizedString> localizedTrueLabelList = new ArrayList<>();
 
 	/** 偽の表示ラベル */
 	private String falseLabel;
 
 	/** 偽の表示ラベル多言語設定情報 */
-	private List<MetaLocalizedString> localizedFalseLabelList = new ArrayList<MetaLocalizedString>();
+	private List<MetaLocalizedString> localizedFalseLabelList = new ArrayList<>();
 
 	/**
 	 * 表示タイプを取得します。
@@ -168,4 +178,27 @@ public class MetaBooleanPropertyEditor extends MetaPrimitivePropertyEditor {
 		return editor;
 	}
 
+	@Override
+	public MetaDataRuntime createRuntime(EntityViewRuntime entityView, FormViewRuntime formView,
+			MetaPropertyLayout propertyLayout, EntityContext context, EntityHandler eh) {
+		return new PropertyEditorRuntime(entityView, formView, propertyLayout, context, eh) {
+			@Override
+			protected boolean checkPropertyType(PropertyDefinition pd) {
+				if (pd == null) {
+					return true;
+				}
+				if (pd instanceof BooleanProperty) {
+					return true;
+				}
+				if (pd instanceof ExpressionProperty) {
+					ExpressionProperty ep = (ExpressionProperty)pd;
+					if (ep.getResultType() == PropertyDefinitionType.BOOLEAN) {
+						return true;
+					}
+				}
+				return false;
+			}
+
+		};
+	}
 }

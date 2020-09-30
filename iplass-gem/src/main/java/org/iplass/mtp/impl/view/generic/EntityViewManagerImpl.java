@@ -57,9 +57,9 @@ import org.iplass.mtp.impl.definition.TypedMetaDataService;
 import org.iplass.mtp.impl.metadata.RootMetaData;
 import org.iplass.mtp.impl.script.template.GroovyTemplate;
 import org.iplass.mtp.impl.script.template.GroovyTemplateBinding;
-import org.iplass.mtp.impl.view.generic.common.MetaAutocompletionSetting.AutocompletionSettingHandler;
-import org.iplass.mtp.impl.view.generic.element.ElementHandler;
-import org.iplass.mtp.impl.view.generic.element.MetaButton.ButtonHandler;
+import org.iplass.mtp.impl.view.generic.common.MetaAutocompletionSetting.AutocompletionSettingRuntime;
+import org.iplass.mtp.impl.view.generic.element.ElementRuntime;
+import org.iplass.mtp.impl.view.generic.element.MetaButton.ButtonRuntime;
 import org.iplass.mtp.impl.web.WebUtil;
 import org.iplass.mtp.impl.web.template.MetaGroovyTemplate;
 import org.iplass.mtp.spi.ServiceRegistry;
@@ -498,14 +498,14 @@ public class EntityViewManagerImpl extends AbstractTypedDefinitionManager<Entity
 			HttpServletResponse res, ServletContext application, PageContext page) {
 		if (name == null || templateName == null) return;
 
-		EntityViewHandler handler = service.getRuntimeByName(name);
-		if (handler == null) return;
+		EntityViewRuntime entityView = service.getRuntimeByName(name);
+		if (entityView == null) return;
 
 		//DynamicScriptをapiからimplに移すと、戻り値がapiからimplの逆参照となってしまう。
 		//→戻り値ではなくDynamicScriptをメソッド内で実行する。
 		//　→api(jsp)からGroovyTemplateを実行するためのDynamicScriptだったが、
 		//　　impl内で完結するならそのままGroovyTemplateで十分。
-		GroovyTemplate template = handler.getTemplate(templateName);
+		GroovyTemplate template = entityView.getTemplate(templateName);
 		if (template != null) {
 			try {
 				template.doTemplate(new MetaGroovyTemplate.WebGroovyTemplateBinding(WebUtil.getRequestContext(), req, res, application, page));
@@ -517,94 +517,94 @@ public class EntityViewManagerImpl extends AbstractTypedDefinitionManager<Entity
 
 	@Override
 	public Entity copyEntity(String viewName, Entity entity) {
-		EntityViewHandler handler = service.getRuntimeByName(entity.getDefinitionName());
-		if (handler == null) {
+		EntityViewRuntime entityView = service.getRuntimeByName(entity.getDefinitionName());
+		if (entityView == null) {
 			throw new ApplicationException(resourceString("impl.view.generic.EntityViewManagerImpl.viewErr"));
 		}
 
-		DetailFormViewHandler fh = null;
-		for (FormViewHandler view : handler.getFormViews()) {
-			if (view instanceof DetailFormViewHandler) {
+		DetailFormViewRuntime detailView = null;
+		for (FormViewRuntime formView : entityView.getFormViews()) {
+			if (formView instanceof DetailFormViewRuntime) {
 				//nameが一致するhandlerを検索
 				if (viewName == null || viewName.isEmpty()) {
-					if (view.getMetaData().getName() == null || view.getMetaData().getName().isEmpty()) {
-						fh = (DetailFormViewHandler) view;
+					if (formView.getMetaData().getName() == null || formView.getMetaData().getName().isEmpty()) {
+						detailView = (DetailFormViewRuntime) formView;
 						break;
 					}
 				} else {
-					if (viewName.equals(view.getMetaData().getName())) {
-						fh = (DetailFormViewHandler) view;
+					if (viewName.equals(formView.getMetaData().getName())) {
+						detailView = (DetailFormViewRuntime) formView;
 						break;
 					}
 				}
 			}
 		}
 
-		if (fh != null) {
-			return fh.copyEntity(entity);
+		if (detailView != null) {
+			return detailView.copyEntity(entity);
 		}
 		return null;
 	}
 
 	@Override
 	public Entity initEntity(String definitionName, String viewName, Entity entity) {
-		EntityViewHandler handler = service.getRuntimeByName(definitionName);
-		if (handler == null) {
+		EntityViewRuntime entityView = service.getRuntimeByName(definitionName);
+		if (entityView == null) {
 			throw new ApplicationException(resourceString("impl.view.generic.EntityViewManagerImpl.viewErr"));
 		}
 
-		DetailFormViewHandler fh = null;
-		for (FormViewHandler view : handler.getFormViews()) {
-			if (view instanceof DetailFormViewHandler) {
+		DetailFormViewRuntime detailView = null;
+		for (FormViewRuntime formView : entityView.getFormViews()) {
+			if (formView instanceof DetailFormViewRuntime) {
 				//nameが一致するhandlerを検索
 				if (viewName == null || viewName.isEmpty()) {
-					if (view.getMetaData().getName() == null || view.getMetaData().getName().isEmpty()) {
-						fh = (DetailFormViewHandler) view;
+					if (formView.getMetaData().getName() == null || formView.getMetaData().getName().isEmpty()) {
+						detailView = (DetailFormViewRuntime) formView;
 						break;
 					}
 				} else {
-					if (viewName.equals(view.getMetaData().getName())) {
-						fh = (DetailFormViewHandler) view;
+					if (viewName.equals(formView.getMetaData().getName())) {
+						detailView = (DetailFormViewRuntime) formView;
 						break;
 					}
 				}
 			}
 		}
 
-		if (fh != null) {
-			return fh.initEntity(entity, definitionName);
+		if (detailView != null) {
+			return detailView.initEntity(entity, definitionName);
 		}
 		return null;
 	}
 
 	@Override
 	public Map<String, Object> applyDefaultPropertyCondition(String definitionName, String viewName, Map<String, Object> defaultCondMap) {
-		EntityViewHandler handler = service.getRuntimeByName(definitionName);
-		if (handler == null) {
+		EntityViewRuntime entityView = service.getRuntimeByName(definitionName);
+		if (entityView == null) {
 			//デフォルトなど
 			return defaultCondMap;
 		}
 
-		SearchFormViewHandler fh = null;
-		for (FormViewHandler view : handler.getFormViews()) {
-			if (view instanceof SearchFormViewHandler) {
+		SearchFormViewRuntime searchView = null;
+		for (FormViewRuntime formView : entityView.getFormViews()) {
+			if (formView instanceof SearchFormViewRuntime) {
 				//nameが一致するhandlerを検索
 				if (viewName == null || viewName.isEmpty()) {
-					if (view.getMetaData().getName() == null || view.getMetaData().getName().isEmpty()) {
-						fh = (SearchFormViewHandler) view;
+					if (formView.getMetaData().getName() == null || formView.getMetaData().getName().isEmpty()) {
+						searchView = (SearchFormViewRuntime) formView;
 						break;
 					}
 				} else {
-					if (viewName.equals(view.getMetaData().getName())) {
-						fh = (SearchFormViewHandler) view;
+					if (viewName.equals(formView.getMetaData().getName())) {
+						searchView = (SearchFormViewRuntime) formView;
 						break;
 					}
 				}
 			}
 		}
 
-		if (fh != null) {
-			return fh.applyDefaultPropertyCondition(defaultCondMap);
+		if (searchView != null) {
+			return searchView.applyDefaultPropertyCondition(defaultCondMap);
 		}
 		return defaultCondMap;
 	}
@@ -612,28 +612,28 @@ public class EntityViewManagerImpl extends AbstractTypedDefinitionManager<Entity
 	@Override
 	public String getCsvDownloadFileName(String definitionName, String viewName, String defaultName, Map<String, Object> csvVariableMap) {
 		String fileName = defaultName;
-		EntityViewHandler handler = service.getRuntimeByName(definitionName);
-		if (handler != null) {
-			SearchFormViewHandler fh = null;
-			for (FormViewHandler view : handler.getFormViews()) {
-				if (view instanceof SearchFormViewHandler) {
+		EntityViewRuntime entityView = service.getRuntimeByName(definitionName);
+		if (entityView != null) {
+			SearchFormViewRuntime searchView = null;
+			for (FormViewRuntime formView : entityView.getFormViews()) {
+				if (formView instanceof SearchFormViewRuntime) {
 					//nameが一致するhandlerを検索
 					if (StringUtil.isEmpty(viewName)) {
-						if (StringUtil.isEmpty(view.getMetaData().getName())) {
-							fh = (SearchFormViewHandler) view;
+						if (StringUtil.isEmpty(formView.getMetaData().getName())) {
+							searchView = (SearchFormViewRuntime) formView;
 							break;
 						}
 					} else {
-						if (viewName.equals(view.getMetaData().getName())) {
-							fh = (SearchFormViewHandler) view;
+						if (viewName.equals(formView.getMetaData().getName())) {
+							searchView = (SearchFormViewRuntime) formView;
 							break;
 						}
 					}
 				}
 			}
 
-			if (fh != null) {
-				fileName = fh.getCsvDownloadFileName(defaultName, csvVariableMap).replace("/", "_").replace(" ", "_");
+			if (searchView != null) {
+				fileName = searchView.getCsvDownloadFileName(defaultName, csvVariableMap).replace("/", "_").replace(" ", "_");
 			}
 		} else {
 			//View未定義はdefaultName
@@ -645,10 +645,10 @@ public class EntityViewManagerImpl extends AbstractTypedDefinitionManager<Entity
 	public Condition getMassReferenceSectionCondition(String name, String key) {
 		if (name == null || key == null) return null;
 
-		EntityViewHandler handler = service.getRuntimeByName(name);
-		if (handler == null) return null;
+		EntityViewRuntime entityView = service.getRuntimeByName(name);
+		if (entityView == null) return null;
 
-		PreparedQuery query = handler.getQuery(key);
+		PreparedQuery query = entityView.getQuery(key);
 		if (query == null) return null;
 
 		return query.condition(null);
@@ -678,13 +678,13 @@ public class EntityViewManagerImpl extends AbstractTypedDefinitionManager<Entity
 			//GroovyTemplateをキャッシュしているKEYが未指定の場合は取得しない
 			return "";
 		}
-		EntityViewHandler handler = service.getRuntimeByName(definitionName);
-		if (handler == null) {
+		EntityViewRuntime entityView = service.getRuntimeByName(definitionName);
+		if (entityView == null) {
 			//取れなかったら呼出元でデフォルトレイアウト生成
 			return "";
 		}
 
-		Map<String, GroovyTemplate> sectionScriptMap = handler.getCustomStyleScriptMap(scriptKey);
+		Map<String, GroovyTemplate> sectionScriptMap = entityView.getCustomStyleScriptMap(scriptKey);
 		GroovyTemplate script = sectionScriptMap.get(editorScriptKey);
 		if (script == null) {
 			//スクリプトが未指定の場合はそのまま
@@ -721,17 +721,17 @@ public class EntityViewManagerImpl extends AbstractTypedDefinitionManager<Entity
 			return true;
 		}
 
-		EntityViewHandler viewHandler = service.getRuntimeByName(definitionName);
-		if (viewHandler == null) {
+		EntityViewRuntime entityView = service.getRuntimeByName(definitionName);
+		if (entityView == null) {
 			return false;
 		}
 
-		ElementHandler elementHandler = viewHandler.getElementHandler(elementRuntimeId);
-		if (elementHandler == null) {
+		ElementRuntime element = entityView.getElement(elementRuntimeId);
+		if (element == null) {
 			return false;
 		}
 
-		return elementHandler.isDisplay(outputType, entity);
+		return element.isDisplay(outputType, entity);
 	}
 
 	@Override
@@ -740,25 +740,25 @@ public class EntityViewManagerImpl extends AbstractTypedDefinitionManager<Entity
 			return false;
 		}
 
-		EntityViewHandler viewHandler = service.getRuntimeByName(definitionName);
-		if (viewHandler == null) {
+		EntityViewRuntime entityView = service.getRuntimeByName(definitionName);
+		if (entityView == null) {
 			return false;
 		}
 
-		ButtonHandler buttonHandler = viewHandler.getButtonHandler(buttonKey);
-		if (buttonHandler == null) {
+		ButtonRuntime button = entityView.getButton(buttonKey);
+		if (button == null) {
 			return false;
 		}
 
-		return buttonHandler.isDisplayButton(outputType, entity);
+		return button.isDisplayButton(outputType, entity);
 	}
 
 	@Override
 	public String getUrlParameter(String definitionName, ReferencePropertyEditor editor, Entity entity, UrlParameterActionType actionType) {
 		if (definitionName == null || editor == null || editor.getUrlParameterScriptKey() == null || actionType == null) return "";
 
-		EntityViewHandler handler = service.getRuntimeByName(definitionName);
-		if (handler == null) return "";
+		EntityViewRuntime entityView = service.getRuntimeByName(definitionName);
+		if (entityView == null) return "";
 
 		//ActionTypeの検証
 		List<UrlParameterActionType> actions = editor.getUrlParameterAction();
@@ -774,7 +774,7 @@ public class EntityViewManagerImpl extends AbstractTypedDefinitionManager<Entity
 			}
 		}
 
-		GroovyTemplate template = handler.getTemplate(editor.getUrlParameterScriptKey());
+		GroovyTemplate template = entityView.getTemplate(editor.getUrlParameterScriptKey());
 		StringWriter sw = new StringWriter();
 		if (template != null) {
 			try {
@@ -808,11 +808,11 @@ public class EntityViewManagerImpl extends AbstractTypedDefinitionManager<Entity
 
 	@Override
 	public Object getAutocompletionValue(String definitionName, String viewName, String viewType, String propName, String autocompletionKey, Integer referenceSectionIndex, Map<String, String[]> param, List<String> currentValue, Entity entity) {
-		EntityViewHandler view = service.getRuntimeByName(definitionName);
-		if (view == null) return null;
+		EntityViewRuntime entityView = service.getRuntimeByName(definitionName);
+		if (entityView == null) return null;
 
-		AutocompletionSettingHandler handler = view.getAutocompletionSettingHandler(autocompletionKey);
-		if (handler == null) return null;
+		AutocompletionSettingRuntime autocompletionSetting = entityView.getAutocompletionSetting(autocompletionKey);
+		if (autocompletionSetting == null) return null;
 
 		PropertyEditor editor = null;
 		if (referenceSectionIndex != null) {
@@ -825,7 +825,7 @@ public class EntityViewManagerImpl extends AbstractTypedDefinitionManager<Entity
 		PropertyDefinition pd = EntityViewUtil.getPropertyDefinition(propName, edm.get(definitionName));
 		Object currValue = pd.getMultiplicity() == 1 ? (currentValue.size() > 0 ? currentValue.get(0) : "") : currentValue;
 		boolean isReference = editor instanceof ReferencePropertyEditor;
-		Object value = handler.handle(param, currValue, isReference);
+		Object value = autocompletionSetting.handle(param, currValue, isReference);
 
 		Object returnValue = null;
 		if (isReference) {
@@ -958,13 +958,13 @@ public class EntityViewManagerImpl extends AbstractTypedDefinitionManager<Entity
 	@Override
 	public List<String> getPermitRoles(final String definitionName, final String viewName) {
 
-		EntityViewHandler handler = service.getRuntimeByName(definitionName);
+		EntityViewRuntime entityView = service.getRuntimeByName(definitionName);
 
-		if (handler == null) {
+		if (entityView == null) {
 			return null;
 		}
 
-		List<MetaViewControlSetting> settings = handler.getMetaData().getViewControlSettings();
+		List<MetaViewControlSetting> settings = entityView.getMetaData().getViewControlSettings();
 		if (settings != null && !settings.isEmpty()) {
 			//View管理設定あり
 			MetaViewControlSetting setting = getViewControl(settings, viewName);
@@ -981,8 +981,8 @@ public class EntityViewManagerImpl extends AbstractTypedDefinitionManager<Entity
 			logger.debug("not defined viewControl. defName=" + definitionName + ",viewName=" + viewName);
 		}
 
-		SearchFormViewHandler formView = getSearchFormViewHandler(handler.getFormViews(), viewName);
-		if (formView != null) {
+		SearchFormViewRuntime searchView = getSearchFormView(entityView.getFormViews(), viewName);
+		if (searchView != null) {
 			//定義はあるが、管理設定が無い→許可ロール未指定扱い
 			return Collections.EMPTY_LIST;
 		}
@@ -1011,11 +1011,11 @@ public class EntityViewManagerImpl extends AbstractTypedDefinitionManager<Entity
 		return null;
 	}
 
-	private SearchFormViewHandler getSearchFormViewHandler(List<FormViewHandler> handlers, String viewName) {
+	private SearchFormViewRuntime getSearchFormView(List<FormViewRuntime> formViews, String viewName) {
 		final boolean checkDefault = StringUtil.isEmpty(viewName);
 		//最初の権限チェックポイントがメニューなのでSearchFormViewの有無で確認
-		Optional<SearchFormViewHandler> formView = handlers.stream()
-				.filter(view -> view instanceof SearchFormViewHandler)
+		Optional<SearchFormViewRuntime> searchView = formViews.stream()
+				.filter(view -> view instanceof SearchFormViewRuntime)
 				.filter(view -> {
 					String name = view.getMetaData().getName();
 					if (checkDefault) {
@@ -1024,13 +1024,25 @@ public class EntityViewManagerImpl extends AbstractTypedDefinitionManager<Entity
 						return viewName.equals(name);
 					}
 				})
-				.map(view -> (SearchFormViewHandler)view)
+				.map(view -> (SearchFormViewRuntime)view)
 				.findFirst();
 
-		if (formView.isPresent()) {
-			return formView.get();
+		if (searchView.isPresent()) {
+			return searchView.get();
 		}
 		return null;
+	}
+
+	@Override
+	public void checkState(String definitionName) {
+
+		EntityViewRuntime entityView = service.getRuntimeByName(definitionName);
+
+		if (entityView == null) {
+			return;
+		}
+
+		entityView.checkState();
 	}
 
 	private static String resourceString(String key, Object... arguments) {

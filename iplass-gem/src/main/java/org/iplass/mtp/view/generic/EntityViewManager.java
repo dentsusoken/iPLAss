@@ -237,4 +237,11 @@ public interface EntityViewManager extends TypedDefinitionManager<EntityView> {
 	 */
 	public List<String> getPermitRoles(String definitionName, String viewName);
 
+	/**
+	 * EntityViewのステータスをチェックします。
+	 *
+	 * @param definitionName  Entity定義名
+	 */
+	public void checkState(String definitionName);
+
 }

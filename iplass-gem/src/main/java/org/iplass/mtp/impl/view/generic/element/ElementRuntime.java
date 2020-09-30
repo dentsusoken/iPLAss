@@ -30,7 +30,7 @@ import org.iplass.mtp.impl.script.Script;
 import org.iplass.mtp.impl.script.ScriptContext;
 import org.iplass.mtp.impl.script.ScriptEngine;
 import org.iplass.mtp.impl.script.template.GroovyTemplateCompiler;
-import org.iplass.mtp.impl.view.generic.EntityViewHandler;
+import org.iplass.mtp.impl.view.generic.EntityViewRuntime;
 import org.iplass.mtp.util.StringUtil;
 import org.iplass.mtp.view.generic.OutputType;
 
@@ -38,7 +38,7 @@ import org.iplass.mtp.view.generic.OutputType;
  * 要素のランタイム
  * @author lis3wg
  */
-public class ElementHandler {
+public class ElementRuntime {
 
 	private static final String REQUEST_BINDING_NAME = "request";
 	private static final String SESSION_BINDING_NAME = "session";
@@ -58,7 +58,7 @@ public class ElementHandler {
 	 * @param metadata メタデータ
 	 * @param entityView 画面定義
 	 */
-	public ElementHandler(MetaElement metadata, EntityViewHandler entityView) {
+	public ElementRuntime(MetaElement metadata, EntityViewRuntime entityView) {
 		this.metadata = metadata;
 
 		//ElementのRuntimeKEY
@@ -72,7 +72,7 @@ public class ElementHandler {
 			dispGroovyScript = scriptEngine.createScript(metadata.getDisplayScript(), elementRuntimeId);
 		}
 
-		entityView.addElementHandler(this);
+		entityView.addElement(this);
 	}
 
 	/**

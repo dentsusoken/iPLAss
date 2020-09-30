@@ -1,19 +1,19 @@
 /*
  * Copyright (C) 2011 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
- * 
+ *
  * Unless you have purchased a commercial license,
  * the following license terms apply:
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
@@ -23,7 +23,10 @@ package org.iplass.mtp.impl.view.generic.editor;
 import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlTransient;
 
+import org.iplass.mtp.entity.definition.PropertyDefinition;
 import org.iplass.mtp.impl.core.ExecuteContext;
+import org.iplass.mtp.impl.entity.EntityContext;
+import org.iplass.mtp.impl.entity.EntityHandler;
 import org.iplass.mtp.impl.metadata.BaseMetaDataRuntime;
 import org.iplass.mtp.impl.metadata.MetaData;
 import org.iplass.mtp.impl.metadata.MetaDataRuntime;
@@ -31,8 +34,11 @@ import org.iplass.mtp.impl.script.GroovyScriptEngine;
 import org.iplass.mtp.impl.script.ScriptEngine;
 import org.iplass.mtp.impl.script.template.GroovyTemplate;
 import org.iplass.mtp.impl.script.template.GroovyTemplateCompiler;
-import org.iplass.mtp.impl.view.generic.EntityViewHandler;
+import org.iplass.mtp.impl.view.generic.EntityViewRuntime;
+import org.iplass.mtp.impl.view.generic.FormViewRuntime;
+import org.iplass.mtp.impl.view.generic.element.property.MetaPropertyLayout;
 import org.iplass.mtp.util.StringUtil;
+import org.iplass.mtp.view.generic.EntityViewRuntimeException;
 import org.iplass.mtp.view.generic.editor.CustomPropertyEditor;
 import org.iplass.mtp.view.generic.editor.PrimitivePropertyEditor;
 import org.iplass.mtp.view.generic.editor.PropertyEditor;
@@ -154,11 +160,10 @@ public abstract class MetaPropertyEditor implements MetaData {
 		editor.setInputCustomStyleScriptKey(inputCustomStyleScriptKey);
 	}
 
-	public MetaDataRuntime createRuntime(EntityViewHandler entityView) {
-		return new PropertyEditorHandler();
-	}
+	public abstract MetaDataRuntime createRuntime(EntityViewRuntime entityView, FormViewRuntime formView,
+			MetaPropertyLayout propertyLayout, EntityContext context, EntityHandler eh);
 
-	public class PropertyEditorHandler extends BaseMetaDataRuntime {
+	public abstract class PropertyEditorRuntime extends BaseMetaDataRuntime {
 
 		private static final String SCRIPT_PREFIX_OUTPUT_CUSTOM_STYLE = "PropertyEditorHandler_customStyle";
 		private static final String SCRIPT_PREFIX_INPUT_CUSTOM_STYLE = "PropertyEditorHandler_inputCustomStyle";
@@ -166,7 +171,28 @@ public abstract class MetaPropertyEditor implements MetaData {
 		private GroovyTemplate outputCustomStyleScript;
 		private GroovyTemplate inputCustomStyleScript;
 
-		public PropertyEditorHandler() {
+		protected abstract boolean checkPropertyType(PropertyDefinition pd);
+
+		public PropertyEditorRuntime(EntityViewRuntime entityView, FormViewRuntime formView,
+				MetaPropertyLayout propertyLayout, EntityContext context, EntityHandler eh) {
+
+			if (propertyLayout != null) {
+				PropertyDefinition pd = propertyLayout.getProperty(propertyLayout.getPropertyId(), context, eh);
+				//プロパティが取得できない場合はチェック除外(プロパティ削除などで無視されるため)
+				if (pd != null && !checkPropertyType(pd)) {
+					String entityName = entityView.getMetaData().getName();
+					String layoutType = formView != null ? formView.getMetaData().getClass().getSimpleName() : "unknown";
+					String viewName = null;
+					if (formView != null && StringUtil.isNotEmpty(formView.getMetaData().getName())) {
+						viewName = formView.getMetaData().getName();
+					} else {
+						viewName = "(default)";
+					}
+					throw new EntityViewRuntimeException("on " + entityName + " [" + viewName + "] view of " + layoutType + ", "
+							+ "[" + pd.getName() + "] 's " + getMetaData().getClass().getSimpleName()
+							+ " is unsupport " + pd.getClass().getSimpleName() + " type.");
+				}
+			}
 
 			outputCustomStyleScriptKey = "PropertyEditor_OutputStyle_" + GroovyTemplateCompiler.randomName().replace("-", "_");
 			if (StringUtil.isNotEmpty(customStyle)) {

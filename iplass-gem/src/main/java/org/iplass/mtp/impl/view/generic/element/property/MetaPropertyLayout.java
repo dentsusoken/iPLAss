@@ -34,12 +34,13 @@ import org.iplass.mtp.impl.entity.property.ReferencePropertyHandler;
 import org.iplass.mtp.impl.i18n.I18nUtil;
 import org.iplass.mtp.impl.i18n.MetaLocalizedString;
 import org.iplass.mtp.impl.util.ObjectUtil;
-import org.iplass.mtp.impl.view.generic.EntityViewHandler;
+import org.iplass.mtp.impl.view.generic.EntityViewRuntime;
+import org.iplass.mtp.impl.view.generic.FormViewRuntime;
 import org.iplass.mtp.impl.view.generic.HasEntityProperty;
 import org.iplass.mtp.impl.view.generic.common.MetaAutocompletionSetting;
-import org.iplass.mtp.impl.view.generic.common.MetaAutocompletionSetting.AutocompletionSettingHandler;
+import org.iplass.mtp.impl.view.generic.common.MetaAutocompletionSetting.AutocompletionSettingRuntime;
 import org.iplass.mtp.impl.view.generic.editor.MetaPropertyEditor;
-import org.iplass.mtp.impl.view.generic.element.ElementHandler;
+import org.iplass.mtp.impl.view.generic.element.ElementRuntime;
 import org.iplass.mtp.impl.view.generic.element.MetaElement;
 import org.iplass.mtp.view.generic.editor.DateRangePropertyEditor;
 import org.iplass.mtp.view.generic.editor.JoinPropertyEditor;
@@ -77,7 +78,7 @@ public abstract class MetaPropertyLayout extends MetaElement implements HasEntit
 	private String displayLabel;
 
 	/** 多言語設定情報 */
-	private List<MetaLocalizedString> localizedDisplayLabelList = new ArrayList<MetaLocalizedString>();
+	private List<MetaLocalizedString> localizedDisplayLabelList = new ArrayList<>();
 
 	/** クラス名 */
 	private String style;
@@ -320,13 +321,13 @@ public abstract class MetaPropertyLayout extends MetaElement implements HasEntit
 	}
 
 	@Override
-	public ElementHandler createRuntime(EntityViewHandler entityView) {
+	public ElementRuntime createRuntime(EntityViewRuntime entityView, FormViewRuntime formView) {
 		if (autocompletionSetting != null) {
-			AutocompletionSettingHandler handler = autocompletionSetting.getHandler(entityView);
-			if (handler != null) {
-				entityView.addAutocompletionSettingHandler(autocompletionSetting.getHandler(entityView));
+			AutocompletionSettingRuntime runtime = autocompletionSetting.createRuntime(entityView);
+			if (runtime != null) {
+				entityView.addAutocompletionSetting(runtime);
 			}
 		}
-		return super.createRuntime(entityView);
+		return super.createRuntime(entityView, formView);
 	}
 }

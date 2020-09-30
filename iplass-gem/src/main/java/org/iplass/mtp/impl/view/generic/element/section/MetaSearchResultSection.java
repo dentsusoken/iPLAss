@@ -26,14 +26,17 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.iplass.mtp.impl.entity.EntityContext;
+import org.iplass.mtp.impl.entity.EntityHandler;
 import org.iplass.mtp.impl.i18n.I18nUtil;
 import org.iplass.mtp.impl.i18n.MetaLocalizedString;
 import org.iplass.mtp.impl.script.template.GroovyTemplate;
 import org.iplass.mtp.impl.script.template.GroovyTemplateCompiler;
 import org.iplass.mtp.impl.util.ObjectUtil;
-import org.iplass.mtp.impl.view.generic.EntityViewHandler;
+import org.iplass.mtp.impl.view.generic.EntityViewRuntime;
+import org.iplass.mtp.impl.view.generic.FormViewRuntime;
 import org.iplass.mtp.impl.view.generic.editor.MetaPropertyEditor;
-import org.iplass.mtp.impl.view.generic.editor.MetaPropertyEditor.PropertyEditorHandler;
+import org.iplass.mtp.impl.view.generic.editor.MetaPropertyEditor.PropertyEditorRuntime;
 import org.iplass.mtp.impl.view.generic.element.MetaElement;
 import org.iplass.mtp.impl.view.generic.element.property.MetaPropertyColumn;
 import org.iplass.mtp.view.generic.PagingPosition;
@@ -662,22 +665,25 @@ public class MetaSearchResultSection extends MetaSection {
 		return section;
 	}
 	@Override
-	public SearchResultSectionHandler createRuntime(EntityViewHandler entityView) {
-		return new SearchResultSectionHandler(this, entityView);
+	public SearchResultSectionRuntime createRuntime(EntityViewRuntime entityView, FormViewRuntime formView) {
+		return new SearchResultSectionRuntime(this, entityView, formView);
 	}
 
 	/**
 	 * ランタイム
 	 */
-	public class SearchResultSectionHandler extends SectionHandler {
+	public class SearchResultSectionRuntime extends SectionRuntime {
 
 		/**
 		 * コンストラクタ
 		 * @param metadata メタデータ
 		 * @param entityView 画面定義
 		 */
-		public SearchResultSectionHandler(MetaSearchResultSection metadata, EntityViewHandler entityView) {
+		public SearchResultSectionRuntime(MetaSearchResultSection metadata, EntityViewRuntime entityView, FormViewRuntime formView) {
 			super(metadata, entityView);
+
+			EntityContext context = EntityContext.getCurrentContext();
+			EntityHandler eh = context.getHandlerById(entityView.getMetaData().getDefinitionId());
 
 			Map<String, GroovyTemplate> customStyleMap = new HashMap<>();
 			List<MetaPropertyColumn> properties = metadata.getElements().stream()
@@ -685,12 +691,14 @@ public class MetaSearchResultSection extends MetaSection {
 					.map(e -> (MetaPropertyColumn) e)
 					.collect(Collectors.toList());
 
-			for (MetaPropertyColumn metaPropertyColumn : properties) {
-				metaPropertyColumn.createRuntime(entityView);
+			for (MetaPropertyColumn column : properties) {
+				column.createRuntime(entityView, formView);
 
-				MetaPropertyEditor editor = metaPropertyColumn.getEditor();
-				PropertyEditorHandler handler = (PropertyEditorHandler)editor.createRuntime(entityView);
-				customStyleMap.put(editor.getOutputCustomStyleScriptKey(), handler.getOutputCustomStyleScript());
+				MetaPropertyEditor editor = column.getEditor();
+				if (editor != null) {
+					PropertyEditorRuntime runtime = (PropertyEditorRuntime)editor.createRuntime(entityView, formView, column, context, eh);
+					customStyleMap.put(editor.getOutputCustomStyleScriptKey(), runtime.getOutputCustomStyleScript());
+				}
 			}
 			//Script用のKEYを設定
 			metadata.scriptKey = "SearchResultSection_Style_" + GroovyTemplateCompiler.randomName().replace("-", "_");

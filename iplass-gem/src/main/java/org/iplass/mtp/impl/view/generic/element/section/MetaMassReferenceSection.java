@@ -37,7 +37,8 @@ import org.iplass.mtp.impl.script.GroovyScriptEngine;
 import org.iplass.mtp.impl.script.template.GroovyTemplate;
 import org.iplass.mtp.impl.script.template.GroovyTemplateCompiler;
 import org.iplass.mtp.impl.util.ObjectUtil;
-import org.iplass.mtp.impl.view.generic.EntityViewHandler;
+import org.iplass.mtp.impl.view.generic.EntityViewRuntime;
+import org.iplass.mtp.impl.view.generic.FormViewRuntime;
 import org.iplass.mtp.impl.view.generic.editor.MetaNestProperty;
 import org.iplass.mtp.util.StringUtil;
 import org.iplass.mtp.view.generic.PagingPosition;
@@ -62,7 +63,7 @@ public class MetaMassReferenceSection extends MetaSection {
 	private String title;
 
 	/** 多言語設定情報 */
-	private List<MetaLocalizedString> localizedTitleList = new ArrayList<MetaLocalizedString>();
+	private List<MetaLocalizedString> localizedTitleList = new ArrayList<>();
 
 	/** セクションの展開可否 */
 	private boolean expandable;
@@ -534,7 +535,7 @@ public class MetaMassReferenceSection extends MetaSection {
 	 * @return 参照型の表示プロパティ
 	 */
 	public List<MetaNestProperty> getNestProperties() {
-		if (nestProperties == null) nestProperties = new ArrayList<MetaNestProperty>();
+		if (nestProperties == null) nestProperties = new ArrayList<>();
 		return nestProperties;
 	}
 
@@ -739,8 +740,8 @@ public class MetaMassReferenceSection extends MetaSection {
 	}
 
 	@Override
-	public SectionHandler createRuntime(EntityViewHandler entityView) {
-		return new MassReferenceSectionHandler(this, entityView);
+	public SectionRuntime createRuntime(EntityViewRuntime entityView, FormViewRuntime formView) {
+		return new MassReferenceSectionRuntime(this, entityView);
 	}
 
 	/**
@@ -748,9 +749,9 @@ public class MetaMassReferenceSection extends MetaSection {
 	 * @author lis3wg
 	 *
 	 */
-	public class MassReferenceSectionHandler extends SectionHandler {
+	public class MassReferenceSectionRuntime extends SectionRuntime {
 
-		public MassReferenceSectionHandler(MetaMassReferenceSection metadata, EntityViewHandler entityView) {
+		public MassReferenceSectionRuntime(MetaMassReferenceSection metadata, EntityViewRuntime entityView) {
 			super(metadata, entityView);
 			if (StringUtil.isNotBlank(metadata.filterConditionScript)) {
 				if (metadata.filterScriptKey == null) {
@@ -766,7 +767,7 @@ public class MetaMassReferenceSection extends MetaSection {
 			if (nestProperties != null && !nestProperties.isEmpty()) {
 				for (MetaNestProperty meta : nestProperties) {
 					if (meta.getAutocompletionSetting()  != null) {
-						entityView.addAutocompletionSettingHandler(meta.getAutocompletionSetting().getHandler(entityView));
+						entityView.addAutocompletionSetting(meta.getAutocompletionSetting().createRuntime(entityView));
 					}
 				}
 			}

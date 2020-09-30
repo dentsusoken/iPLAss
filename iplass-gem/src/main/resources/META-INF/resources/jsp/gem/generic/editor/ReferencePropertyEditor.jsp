@@ -58,9 +58,11 @@
 	OutputType type = (OutputType) request.getAttribute(Constants.OUTPUT_TYPE);
 	PropertyDefinition pd = (PropertyDefinition) request.getAttribute(Constants.EDITOR_PROPERTY_DEFINITION);
 
+	String propName = editor.getPropertyName();
 	if (pd == null || !(pd instanceof ReferenceProperty)) {
 		//定義がReferencePropertyでなければ表示不可
-		return;
+		throw new EntityViewRuntimeException(propName + " 's editor is unsupport " 
+				+ (pd != null ? pd.getClass().getSimpleName() : "(unknown)") + " type." );
 	}
 
 	String contextPath = TemplateUtil.getTenantContextPath();
@@ -77,8 +79,6 @@
 	if (editor.isEditableReference()) {
 		refEdit = true;
 	}
-
-	String propName = editor.getPropertyName();
 
 	//タイプ毎に表示内容かえる
 	if (OutputType.EDIT == type || OutputType.BULK == type) {

@@ -22,8 +22,6 @@ package org.iplass.gem.command.generic.bulk;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -82,6 +80,9 @@ public class BulkUpdateViewCommand extends BulkCommandBase {
 	@Override
 	public String execute(RequestContext request) {
 		BulkCommandContext context = getContext(request);
+
+		//View定義のステータスチェック
+		evm.checkState(context.getDefinitionName());
 
 		// 必要なパラメータ取得
 		Set<String> oids = context.getOids();

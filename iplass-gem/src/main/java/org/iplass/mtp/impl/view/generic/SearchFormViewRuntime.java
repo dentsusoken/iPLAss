@@ -1,19 +1,19 @@
 /*
  * Copyright (C) 2012 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
- * 
+ *
  * Unless you have purchased a commercial license,
  * the following license terms apply:
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
@@ -42,10 +42,10 @@ import org.iplass.mtp.impl.script.template.GroovyTemplateCompiler;
 import org.iplass.mtp.impl.view.csv.CsvFileNameGroovyTemplateBinding;
 import org.iplass.mtp.impl.view.generic.element.section.MetaSearchConditionSection;
 import org.iplass.mtp.impl.view.generic.element.section.MetaSection;
-import org.iplass.mtp.impl.view.generic.element.section.SectionHandler;
+import org.iplass.mtp.impl.view.generic.element.section.SectionRuntime;
 import org.iplass.mtp.util.StringUtil;
 
-public class SearchFormViewHandler extends FormViewHandler {
+public class SearchFormViewRuntime extends FormViewRuntime {
 	public static final String INIT_CONDTION_MAP_BINDING_NAME = "initCondMap";
 	public static final String REQUEST_BINDING_NAME = "request";
 	public static final String SESSION_BINDING_NAME = "session";
@@ -53,28 +53,28 @@ public class SearchFormViewHandler extends FormViewHandler {
 
 	private static final String SCRIPT_PREFIX = "SearchFormViewHandler_defaultPropertyConditionScript";
 
-	private List<SectionHandler> sections;
+	private List<SectionRuntime> sections;
 
 	private Script compiledDefaultPropertyConditionScript;
 
 	private GroovyTemplate compiledCsvFileNameScript;
 
-	public SearchFormViewHandler(MetaFormView metaData, EntityViewHandler entityView) {
+	public SearchFormViewRuntime(MetaFormView metaData, EntityViewRuntime entityView) {
 		super(metaData, entityView);
 
 		MetaSearchFormView form = (MetaSearchFormView) metaData;
-		sections = new ArrayList<SectionHandler>();
+		sections = new ArrayList<>();
 		if (form.getTopSection1() != null) {
-			sections.add(form.getTopSection1().createRuntime(entityView));
+			sections.add(form.getTopSection1().createRuntime(entityView, this));
 		}
 		if (form.getTopSection2() != null) {
-			sections.add(form.getTopSection2().createRuntime(entityView));
+			sections.add(form.getTopSection2().createRuntime(entityView, this));
 		}
 		if (form.getCenterSection() != null) {
-			sections.add(form.getCenterSection().createRuntime(entityView));
+			sections.add(form.getCenterSection().createRuntime(entityView, this));
 		}
 		if (form.getBottomSection() != null) {
-			sections.add(form.getBottomSection().createRuntime(entityView));
+			sections.add(form.getBottomSection().createRuntime(entityView, this));
 		}
 
 		if (form.getSections() != null) {
