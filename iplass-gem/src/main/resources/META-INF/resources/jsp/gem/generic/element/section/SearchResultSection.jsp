@@ -1100,7 +1100,7 @@ function closeBulkUpdateModalWindow() {
 	if (OutputType.MULTISELECT == type && permitConditionSelectAll) {
 		// 全ページor現在ページ選択
 %>
-<div id="selectSelectAllTypeDialog" title="${m:rs('mtp-gem-messages', 'generic.element.section.SearchResultSection.selectSelectAllType')}" style="display:none;">
+<div id="selectSelectAllTypeDialog" class="mtp-jq-dialog" title="${m:rs('mtp-gem-messages', 'generic.element.section.SearchResultSection.selectSelectAllType')}" style="display:none;">
 <ul style="text-align:left; margin-left:15px;">
 <li>
 <label><input type="radio" name="selectAllType" value="all" checked>${m:rs("mtp-gem-messages", "generic.element.section.SearchResultSection.selectAllPage")}</label>
@@ -1115,7 +1115,7 @@ function closeBulkUpdateModalWindow() {
 <% } %>
 </ul>
 </div>
-<div id="selectDeselectAllTypeDialog" title="${m:rs('mtp-gem-messages', 'generic.element.section.SearchResultSection.selectDeselectAllType')}" style="display:none;">
+<div id="selectDeselectAllTypeDialog" class="mtp-jq-dialog" title="${m:rs('mtp-gem-messages', 'generic.element.section.SearchResultSection.selectDeselectAllType')}" style="display:none;">
 <ul style="text-align:left; margin-left:15px;">
 <li>
 <label><input type="radio" name="deselectAllType" value="all" checked>${m:rs("mtp-gem-messages", "generic.element.section.SearchResultSection.selectAllPage")}</label>

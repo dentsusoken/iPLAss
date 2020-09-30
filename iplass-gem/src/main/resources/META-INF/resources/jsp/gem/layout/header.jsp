@@ -294,7 +294,7 @@ function showAdminConsole() {
 %>
 <li class="preview-date">
 <a href="javascript:void(0)" onclick="showPreviewDateTimeDialog();">${m:rs("mtp-gem-messages", "layout.header.chngPrvwDate")}</a>
-<div id="showPreviewDateTimeDialog" title="${m:rs('mtp-gem-messages', 'layout.header.chngPrvwDate')}" style="display:none;">
+<div id="showPreviewDateTimeDialog" class="mtp-jq-dialog" title="${m:rs('mtp-gem-messages', 'layout.header.chngPrvwDate')}" style="display:none;">
 <p style="margin-top: 18px;">
 <input type="text" class="datetimepicker inpbr" data-timeformat="HH:mm:ss" data-stepmin="1" />
 </p>
