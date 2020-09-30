@@ -53,12 +53,12 @@ public class FormViewRuntime {
 		this.metaData = metaData;
 		sections = new ArrayList<>();
 		for (MetaSection section : metaData.getSections()) {
-			sections.add(section.createRuntime(entityView));
+			sections.add(section.createRuntime(entityView, this));
 		}
 
 		Map<String, GroovyTemplate> customStyleMap = new HashMap<>();
 		for (MetaButton button : metaData.getButtons()) {
-			ButtonRuntime runtime = button.createRuntime(entityView);
+			ButtonRuntime runtime = button.createRuntime(entityView, this);
 			customStyleMap.put(button.getInputCustomStyleScriptKey(), runtime.getInputCustomStyleScript());
 		}
 

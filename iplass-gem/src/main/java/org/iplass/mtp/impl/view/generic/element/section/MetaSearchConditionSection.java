@@ -33,6 +33,7 @@ import org.iplass.mtp.impl.script.template.GroovyTemplate;
 import org.iplass.mtp.impl.script.template.GroovyTemplateCompiler;
 import org.iplass.mtp.impl.util.ObjectUtil;
 import org.iplass.mtp.impl.view.generic.EntityViewRuntime;
+import org.iplass.mtp.impl.view.generic.FormViewRuntime;
 import org.iplass.mtp.impl.view.generic.editor.MetaPropertyEditor;
 import org.iplass.mtp.impl.view.generic.editor.MetaPropertyEditor.PropertyEditorRuntime;
 import org.iplass.mtp.impl.view.generic.element.MetaElement;
@@ -615,8 +616,8 @@ public class MetaSearchConditionSection extends MetaSection {
 	}
 
 	@Override
-	public SearchConditionSectionRuntime createRuntime(EntityViewRuntime entityView) {
-		return new SearchConditionSectionRuntime(this, entityView);
+	public SearchConditionSectionRuntime createRuntime(EntityViewRuntime entityView, FormViewRuntime formView) {
+		return new SearchConditionSectionRuntime(this, entityView, formView);
 	}
 
 	public class SearchConditionSectionRuntime extends SectionRuntime {
@@ -626,8 +627,11 @@ public class MetaSearchConditionSection extends MetaSection {
 		 * @param metadata メタデータ
 		 * @param entityView 画面定義
 		 */
-		public SearchConditionSectionRuntime(MetaSearchConditionSection metadata, EntityViewRuntime entityView) {
+		public SearchConditionSectionRuntime(MetaSearchConditionSection metadata, EntityViewRuntime entityView, FormViewRuntime formView) {
 			super(metadata, entityView);
+
+			EntityContext context = EntityContext.getCurrentContext();
+			EntityHandler eh = context.getHandlerById(entityView.getMetaData().getDefinitionId());
 
 			Map<String, GroovyTemplate> customStyleMap = new HashMap<>();
 			List<MetaPropertyItem> properties = metadata.getElements().stream()
@@ -635,11 +639,11 @@ public class MetaSearchConditionSection extends MetaSection {
 					.map(e -> (MetaPropertyItem) e)
 					.collect(Collectors.toList());
 			for (MetaPropertyItem property : properties) {
-				property.createRuntime(entityView);
+				property.createRuntime(entityView, formView);
 
 				MetaPropertyEditor editor = property.getEditor();
 				if (editor != null) {
-					PropertyEditorRuntime runtime = (PropertyEditorRuntime)editor.createRuntime(entityView);
+					PropertyEditorRuntime runtime = (PropertyEditorRuntime)editor.createRuntime(entityView, formView, property, context, eh);
 					customStyleMap.put(editor.getInputCustomStyleScriptKey(), runtime.getInputCustomStyleScript());
 				}
 			}

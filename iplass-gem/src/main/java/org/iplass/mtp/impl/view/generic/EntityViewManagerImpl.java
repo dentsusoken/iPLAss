@@ -1033,6 +1033,18 @@ public class EntityViewManagerImpl extends AbstractTypedDefinitionManager<Entity
 		return null;
 	}
 
+	@Override
+	public void checkState(String definitionName) {
+
+		EntityViewRuntime entityView = service.getRuntimeByName(definitionName);
+
+		if (entityView == null) {
+			return;
+		}
+
+		entityView.checkState();
+	}
+
 	private static String resourceString(String key, Object... arguments) {
 		return GemResourceBundleUtil.resourceString(key, arguments);
 	}

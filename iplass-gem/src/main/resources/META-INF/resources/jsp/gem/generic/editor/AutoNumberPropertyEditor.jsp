@@ -24,6 +24,7 @@
 <%@ page import="org.iplass.mtp.entity.definition.PropertyDefinition"%>
 <%@ page import="org.iplass.mtp.entity.definition.properties.AutoNumberProperty"%>
 <%@ page import="org.iplass.mtp.util.StringUtil"%>
+<%@ page import="org.iplass.mtp.view.generic.EntityViewRuntimeException"%>
 <%@ page import="org.iplass.mtp.view.generic.EntityViewUtil"%>
 <%@ page import="org.iplass.mtp.view.generic.OutputType"%>
 <%@ page import="org.iplass.mtp.view.generic.editor.AutoNumberPropertyEditor" %>
@@ -44,11 +45,12 @@
 	Boolean required = (Boolean) request.getAttribute(Constants.EDITOR_REQUIRED);
 	if (required == null) required = false;
 
+	String propName = editor.getPropertyName();
 	if (pd == null || !(pd instanceof AutoNumberProperty)) {
 		//定義がAutoNumberPropertyでなければ表示不可
-		return;
+		throw new EntityViewRuntimeException(propName + " 's editor is unsupport " 
+			+ (pd != null ? pd.getClass().getSimpleName() : "(unknown)") + " type." );
 	}
-	String propName = editor.getPropertyName();
 
 	if (OutputType.EDIT == type || OutputType.VIEW == type || OutputType.BULK == type) {
 		//詳細編集 or 詳細表示 or 一括更新編集

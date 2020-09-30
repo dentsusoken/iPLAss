@@ -23,6 +23,7 @@ package org.iplass.mtp.impl.view.generic.element.section;
 import javax.xml.bind.annotation.XmlSeeAlso;
 
 import org.iplass.mtp.impl.view.generic.EntityViewRuntime;
+import org.iplass.mtp.impl.view.generic.FormViewRuntime;
 import org.iplass.mtp.impl.view.generic.element.MetaElement;
 import org.iplass.mtp.view.generic.element.Element;
 import org.iplass.mtp.view.generic.element.section.DefaultSection;
@@ -78,7 +79,7 @@ public abstract class MetaSection extends MetaElement {
 	}
 
 	@Override
-	public SectionRuntime createRuntime(EntityViewRuntime entityView) {
+	public SectionRuntime createRuntime(EntityViewRuntime entityView, FormViewRuntime formView) {
 		return new SectionRuntime(this, entityView);
 	}
 }

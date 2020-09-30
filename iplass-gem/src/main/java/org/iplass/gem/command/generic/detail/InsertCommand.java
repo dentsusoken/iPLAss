@@ -105,6 +105,9 @@ public final class InsertCommand extends DetailCommandBase {
 	public String execute(RequestContext request) {
 		final DetailCommandContext context = getContext(request);
 
+		//View定義のステータスチェック
+		evm.checkState(context.getDefinitionName());
+
 		DetailFormView view = context.getView();
 		if (view == null) {
 			request.setAttribute(Constants.MESSAGE, resourceString("command.generic.detail.InsertCommand.viewErr"));

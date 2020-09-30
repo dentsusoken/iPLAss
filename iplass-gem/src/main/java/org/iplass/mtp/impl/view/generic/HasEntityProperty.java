@@ -20,6 +20,7 @@
 
 package org.iplass.mtp.impl.view.generic;
 
+import org.iplass.mtp.entity.definition.PropertyDefinition;
 import org.iplass.mtp.impl.entity.EntityContext;
 import org.iplass.mtp.impl.entity.EntityHandler;
 import org.iplass.mtp.impl.entity.property.PropertyHandler;
@@ -35,10 +36,10 @@ public interface HasEntityProperty {
 	 *
 	 * @param propId プロパティID
 	 * @param context Entityコンテキスト
-	 * @param entity 対象のEntity定義
+	 * @param eh 対象のEntity定義
 	 * @return プロパティ名
 	 */
-	default String convertName(String propId, EntityContext context, EntityHandler entity) {
+	default String convertName(String propId, EntityContext context, EntityHandler eh) {
 
 		//idから復元できない場合→プロパティが消された等が考えられるので、
 		//Exceptionを投げずにnullで返しておく
@@ -47,7 +48,7 @@ public interface HasEntityProperty {
 			String objPropId = propId.substring(0, indexOfDot);
 			String subPropPath = propId.substring(indexOfDot + 1, propId.length());
 
-			PropertyHandler property = entity.getPropertyById(objPropId, context);
+			PropertyHandler property = eh.getPropertyById(objPropId, context);
 			if (!(property instanceof ReferencePropertyHandler)) {
 				return null;
 			}
@@ -62,11 +63,44 @@ public interface HasEntityProperty {
 			}
 			return property.getName() + "." + refProperty;
 		} else {
-			PropertyHandler property = entity.getPropertyById(propId, context);
+			PropertyHandler property = eh.getPropertyById(propId, context);
 			if (property == null) {
 				return null;
 			}
 			return property.getName();
+		}
+	}
+
+	default PropertyDefinition getProperty(String propId, EntityContext context, EntityHandler eh) {
+
+		//idから復元できない場合→プロパティが消された等が考えられるので、
+		//Exceptionを投げずにnullで返しておく
+		if (propId != null && propId.contains(".")) {
+			int indexOfDot = propId.indexOf(".");
+			String objPropId = propId.substring(0, indexOfDot);
+			String subPropPath = propId.substring(indexOfDot + 1, propId.length());
+
+			PropertyHandler property = eh.getPropertyById(objPropId, context);
+			if (!(property instanceof ReferencePropertyHandler)) {
+				return null;
+			}
+			ReferencePropertyHandler refProp = (ReferencePropertyHandler) property;
+			EntityHandler refEntity = refProp.getReferenceEntityHandler(context);
+			if (refEntity == null) {
+				return null;
+			}
+			//最終階層のみ返す
+			PropertyDefinition refProperty = getProperty(subPropPath, context, refEntity);
+			if (refProperty == null) {
+				return null;
+			}
+			return refProperty;
+		} else {
+			PropertyHandler property = eh.getPropertyById(propId, context);
+			if (property == null) {
+				return null;
+			}
+			return property.getMetaData().currentConfig(context);
 		}
 	}
 

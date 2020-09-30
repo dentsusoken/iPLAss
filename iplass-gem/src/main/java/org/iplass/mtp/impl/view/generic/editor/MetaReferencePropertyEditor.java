@@ -25,6 +25,8 @@ import java.util.List;
 
 import javax.xml.bind.annotation.XmlTransient;
 
+import org.iplass.mtp.entity.definition.PropertyDefinition;
+import org.iplass.mtp.entity.definition.properties.ReferenceProperty;
 import org.iplass.mtp.impl.core.ExecuteContext;
 import org.iplass.mtp.impl.entity.EntityContext;
 import org.iplass.mtp.impl.entity.EntityHandler;
@@ -36,7 +38,9 @@ import org.iplass.mtp.impl.script.template.GroovyTemplate;
 import org.iplass.mtp.impl.script.template.GroovyTemplateCompiler;
 import org.iplass.mtp.impl.util.ObjectUtil;
 import org.iplass.mtp.impl.view.generic.EntityViewRuntime;
+import org.iplass.mtp.impl.view.generic.FormViewRuntime;
 import org.iplass.mtp.impl.view.generic.HasMetaNestProperty;
+import org.iplass.mtp.impl.view.generic.element.property.MetaPropertyLayout;
 import org.iplass.mtp.util.StringUtil;
 import org.iplass.mtp.view.generic.editor.NestProperty;
 import org.iplass.mtp.view.generic.editor.PropertyEditor;
@@ -949,8 +953,9 @@ public class MetaReferencePropertyEditor extends MetaPropertyEditor implements H
 	}
 
 	@Override
-	public MetaDataRuntime createRuntime(EntityViewRuntime entityView) {
-		return new ReferencePropertyEditorRuntime(entityView);
+	public MetaDataRuntime createRuntime(EntityViewRuntime entityView, FormViewRuntime formView,
+			MetaPropertyLayout propertyLayout, EntityContext context, EntityHandler eh) {
+		return new ReferencePropertyEditorRuntime(entityView, formView, propertyLayout, context, eh);
 	}
 
 	public class ReferencePropertyEditorRuntime extends PropertyEditorRuntime {
@@ -959,7 +964,10 @@ public class MetaReferencePropertyEditor extends MetaPropertyEditor implements H
 
 		private GroovyTemplate urlParameterScript;
 
-		public ReferencePropertyEditorRuntime(EntityViewRuntime entityView) {
+		public ReferencePropertyEditorRuntime(EntityViewRuntime entityView, FormViewRuntime formView,
+				MetaPropertyLayout propertyLayout, EntityContext context, EntityHandler eh) {
+			super(entityView, formView, propertyLayout, context, eh);
+
 			if (StringUtil.isNotEmpty(urlParameter)) {
 				urlParameterScriptKey = "ReferencePropertyEditor_UrlParameter_" + GroovyTemplateCompiler.randomName().replace("-", "_");
 				ScriptEngine scriptEngine = ExecuteContext.getCurrentContext().getTenantContext().getScriptEngine();
@@ -980,5 +988,9 @@ public class MetaReferencePropertyEditor extends MetaPropertyEditor implements H
 
 		}
 
+		@Override
+		protected boolean checkPropertyType(PropertyDefinition pd) {
+			return pd == null || pd instanceof ReferenceProperty;
+		}
 	}
 }

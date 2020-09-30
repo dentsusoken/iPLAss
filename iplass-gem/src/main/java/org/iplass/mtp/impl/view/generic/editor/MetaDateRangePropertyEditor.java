@@ -1,19 +1,19 @@
 /*
  * Copyright (C) 2017 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
- * 
+ *
  * Unless you have purchased a commercial license,
  * the following license terms apply:
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
@@ -23,13 +23,18 @@ package org.iplass.mtp.impl.view.generic.editor;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.iplass.mtp.entity.definition.PropertyDefinition;
 import org.iplass.mtp.impl.entity.EntityContext;
 import org.iplass.mtp.impl.entity.EntityHandler;
 import org.iplass.mtp.impl.entity.property.PropertyHandler;
 import org.iplass.mtp.impl.i18n.I18nUtil;
 import org.iplass.mtp.impl.i18n.MetaLocalizedString;
 import org.iplass.mtp.impl.metadata.MetaDataIllegalStateException;
+import org.iplass.mtp.impl.metadata.MetaDataRuntime;
 import org.iplass.mtp.impl.util.ObjectUtil;
+import org.iplass.mtp.impl.view.generic.EntityViewRuntime;
+import org.iplass.mtp.impl.view.generic.FormViewRuntime;
+import org.iplass.mtp.impl.view.generic.element.property.MetaPropertyLayout;
 import org.iplass.mtp.view.generic.editor.DateRangePropertyEditor;
 import org.iplass.mtp.view.generic.editor.PropertyEditor;
 
@@ -58,7 +63,7 @@ public class MetaDateRangePropertyEditor extends MetaCustomPropertyEditor {
 	private String errorMessage;
 
 	/** エラーメッセージ多言語設定情報 */
-	private List<MetaLocalizedString> localizedErrorMessageList = new ArrayList<MetaLocalizedString>();
+	private List<MetaLocalizedString> localizedErrorMessageList = new ArrayList<>();
 
 	/**
 	 * オブジェクトIDを取得します。
@@ -217,6 +222,17 @@ public class MetaDateRangePropertyEditor extends MetaCustomPropertyEditor {
 	@Override
 	public MetaDateRangePropertyEditor copy() {
 		return ObjectUtil.deepCopy(this);
+	}
+
+	@Override
+	public MetaDataRuntime createRuntime(EntityViewRuntime entityView, FormViewRuntime formView,
+			MetaPropertyLayout propertyLayout, EntityContext context, EntityHandler eh) {
+		return new PropertyEditorRuntime(entityView, formView, propertyLayout, context, eh) {
+			@Override
+			protected boolean checkPropertyType(PropertyDefinition pd) {
+				return true;
+			}
+		};
 	}
 
 }

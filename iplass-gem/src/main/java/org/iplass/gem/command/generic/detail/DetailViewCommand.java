@@ -194,6 +194,9 @@ public final class DetailViewCommand extends DetailCommandBase {
 	public String execute(RequestContext request) {
 		DetailCommandContext context = getContext(request);
 
+		//View定義のステータスチェック
+		evm.checkState(context.getDefinitionName());
+
 		//必要なパラメータ取得
 		String oid = context.getOid();
 		Long version = context.getVersion();

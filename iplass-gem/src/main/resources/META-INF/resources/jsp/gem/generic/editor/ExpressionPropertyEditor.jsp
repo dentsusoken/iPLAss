@@ -26,6 +26,7 @@
 <%@ page import="org.iplass.mtp.entity.definition.PropertyDefinition"%>
 <%@ page import="org.iplass.mtp.entity.definition.properties.ExpressionProperty"%>
 <%@ page import="org.iplass.mtp.util.StringUtil"%>
+<%@ page import="org.iplass.mtp.view.generic.EntityViewRuntimeException"%>
 <%@ page import="org.iplass.mtp.view.generic.EntityViewUtil"%>
 <%@ page import="org.iplass.mtp.view.generic.OutputType"%>
 <%@ page import="org.iplass.mtp.view.generic.ViewConst"%>
@@ -75,9 +76,11 @@ String format(String format, Object value) {
 	Boolean required = (Boolean) request.getAttribute(Constants.EDITOR_REQUIRED);
 	if (required == null) required = false;
 
+	String propName = editor.getPropertyName();
 	if (pd == null || !(pd instanceof ExpressionProperty)) {
 		//定義がExpressionPropertyでなければ表示不可
-		return;
+		throw new EntityViewRuntimeException(propName + " 's editor is unsupport " 
+				+ (pd != null ? pd.getClass().getSimpleName() : "(unknown)") + " type." );
 	}
 
 	if (editor.getEditor() != null) {
@@ -111,8 +114,6 @@ String format(String format, Object value) {
 			return;
 		}
 	}
-
-	String propName = editor.getPropertyName();
 
 	boolean isMultiple = pd.getMultiplicity() != 1;
 

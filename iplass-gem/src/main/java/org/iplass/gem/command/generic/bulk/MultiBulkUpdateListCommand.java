@@ -93,6 +93,10 @@ public class MultiBulkUpdateListCommand extends MultiBulkCommandBase {
 	public String execute(final RequestContext request) {
 		final MultiBulkCommandContext context = getContext(request);
 		final boolean isSearchCondUpdate = isSearchCondUpdate(request);
+
+		//View定義のステータスチェック
+		evm.checkState(context.getDefinitionName());
+
 		// 必要なパラメータ取得
 		BulkFormView view = context.getView();
 
@@ -113,7 +117,7 @@ public class MultiBulkUpdateListCommand extends MultiBulkCommandBase {
 
 		try {
 			List<Entity> entities = context.getEntities();
-			List<ValidateError> errors = new ArrayList<ValidateError>();
+			List<ValidateError> errors = new ArrayList<>();
 			if (!isSearchCondUpdate) {
 				setSelectedData(data, entities, context);
 				//一括更新する前の処理を呼び出します。
@@ -124,7 +128,7 @@ public class MultiBulkUpdateListCommand extends MultiBulkCommandBase {
 				request.setAttribute(Constants.BULK_UPDATED_COUNT, Integer.valueOf(0));
 				request.setAttribute(Constants.BULK_UPDATE_COUNT, Integer.valueOf(entities.size()));
 			}
-	
+
 			if (!errors.isEmpty()) {
 				ret.setResultType(ResultType.ERROR);
 				ret.setErrors(errors.toArray(new ValidateError[errors.size()]));
@@ -171,7 +175,7 @@ public class MultiBulkUpdateListCommand extends MultiBulkCommandBase {
 					}
 				}
 			}
-	
+
 			//更新した後の処理を呼び出します。
 			if (!isSearchCondUpdate) {
 				context.getBulkUpdateInterrupterHandler().afterOperation(entities);
@@ -188,7 +192,7 @@ public class MultiBulkUpdateListCommand extends MultiBulkCommandBase {
 		String retKey = Constants.CMD_EXEC_SUCCESS;
 		if (ret.getResultType() == ResultType.ERROR) {
 			retKey = Constants.CMD_EXEC_ERROR;
-			List<ValidateError> tmpList = new ArrayList<ValidateError>();
+			List<ValidateError> tmpList = new ArrayList<>();
 			if (ret.getErrors() != null) {
 				tmpList.addAll(Arrays.asList(ret.getErrors()));
 			}

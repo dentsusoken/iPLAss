@@ -26,6 +26,7 @@
 <%@ page import="org.iplass.mtp.entity.definition.properties.DateProperty"%>
 <%@ page import="org.iplass.mtp.entity.definition.properties.ExpressionProperty"%>
 <%@ page import="org.iplass.mtp.view.generic.editor.DatePropertyEditor" %>
+<%@ page import="org.iplass.mtp.view.generic.EntityViewRuntimeException"%>
 <%@ page import="org.iplass.mtp.view.generic.OutputType"%>
 <%@ page import="org.iplass.gem.command.Constants"%>
 <%
@@ -33,19 +34,21 @@
 	OutputType type = (OutputType) request.getAttribute(Constants.OUTPUT_TYPE);
 	PropertyDefinition pd = (PropertyDefinition) request.getAttribute(Constants.EDITOR_PROPERTY_DEFINITION);
 
+	String propName = editor.getPropertyName();
 	if (pd == null || !(pd instanceof DateProperty)) {
 		//定義がDatePropertyか、Expression(resultType=Date)でなければ表示不可
 		if (pd instanceof ExpressionProperty) {
 			ExpressionProperty ep = (ExpressionProperty) pd;
 			if (ep.getResultType() != PropertyDefinitionType.DATE) {
-				return;
+				throw new EntityViewRuntimeException(propName + " 's editor is unsupport " 
+						+ (pd != null ? pd.getClass().getSimpleName() : "(unknown)") + " type." );
 			}
 		} else {
-			return;
+			throw new EntityViewRuntimeException(propName + " 's editor is unsupport " 
+					+ (pd != null ? pd.getClass().getSimpleName() : "(unknown)") + " type." );
 		}
 	}
 
-	String propName = editor.getPropertyName();
 
 	//タイプ毎に出力内容かえる
 	if (OutputType.EDIT == type || OutputType.BULK == type) {

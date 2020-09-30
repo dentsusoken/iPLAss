@@ -35,6 +35,7 @@ import org.iplass.mtp.impl.i18n.I18nUtil;
 import org.iplass.mtp.impl.i18n.MetaLocalizedString;
 import org.iplass.mtp.impl.util.ObjectUtil;
 import org.iplass.mtp.impl.view.generic.EntityViewRuntime;
+import org.iplass.mtp.impl.view.generic.FormViewRuntime;
 import org.iplass.mtp.impl.view.generic.HasEntityProperty;
 import org.iplass.mtp.impl.view.generic.common.MetaAutocompletionSetting;
 import org.iplass.mtp.impl.view.generic.common.MetaAutocompletionSetting.AutocompletionSettingRuntime;
@@ -320,13 +321,13 @@ public abstract class MetaPropertyLayout extends MetaElement implements HasEntit
 	}
 
 	@Override
-	public ElementRuntime createRuntime(EntityViewRuntime entityView) {
+	public ElementRuntime createRuntime(EntityViewRuntime entityView, FormViewRuntime formView) {
 		if (autocompletionSetting != null) {
 			AutocompletionSettingRuntime runtime = autocompletionSetting.createRuntime(entityView);
 			if (runtime != null) {
 				entityView.addAutocompletionSetting(runtime);
 			}
 		}
-		return super.createRuntime(entityView);
+		return super.createRuntime(entityView, formView);
 	}
 }

@@ -1,19 +1,19 @@
 /*
  * Copyright (C) 2011 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
- * 
+ *
  * Unless you have purchased a commercial license,
  * the following license terms apply:
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
@@ -32,6 +32,7 @@ import org.iplass.mtp.impl.script.template.GroovyTemplate;
 import org.iplass.mtp.impl.script.template.GroovyTemplateCompiler;
 import org.iplass.mtp.impl.util.ObjectUtil;
 import org.iplass.mtp.impl.view.generic.EntityViewRuntime;
+import org.iplass.mtp.impl.view.generic.FormViewRuntime;
 import org.iplass.mtp.view.generic.element.Element;
 import org.iplass.mtp.view.generic.element.ScriptingElement;
 
@@ -52,7 +53,7 @@ public class MetaScriptingElement extends MetaElement {
 	private String title;
 
 	/** 多言語設定情報 */
-	private List<MetaLocalizedString> localizedTitleList = new ArrayList<MetaLocalizedString>();
+	private List<MetaLocalizedString> localizedTitleList = new ArrayList<>();
 
 	/** 詳細編集非表示設定 */
 	private boolean hideDetail;
@@ -180,7 +181,7 @@ public class MetaScriptingElement extends MetaElement {
 	}
 
 	@Override
-	public ScriptingRuntime createRuntime(EntityViewRuntime entityView) {
+	public ScriptingRuntime createRuntime(EntityViewRuntime entityView, FormViewRuntime formView) {
 		return new ScriptingRuntime(this, entityView);
 	}
 

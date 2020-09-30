@@ -27,6 +27,8 @@ import java.util.Map;
 
 import org.iplass.mtp.impl.core.ExecuteContext;
 import org.iplass.mtp.impl.core.TenantContext;
+import org.iplass.mtp.impl.entity.EntityContext;
+import org.iplass.mtp.impl.entity.EntityHandler;
 import org.iplass.mtp.impl.i18n.I18nUtil;
 import org.iplass.mtp.impl.i18n.MetaLocalizedString;
 import org.iplass.mtp.impl.script.GroovyScriptEngine;
@@ -34,6 +36,7 @@ import org.iplass.mtp.impl.script.template.GroovyTemplate;
 import org.iplass.mtp.impl.script.template.GroovyTemplateCompiler;
 import org.iplass.mtp.impl.util.ObjectUtil;
 import org.iplass.mtp.impl.view.generic.EntityViewRuntime;
+import org.iplass.mtp.impl.view.generic.FormViewRuntime;
 import org.iplass.mtp.impl.view.generic.HasMetaNestProperty;
 import org.iplass.mtp.impl.view.generic.editor.MetaNestProperty;
 import org.iplass.mtp.impl.view.generic.editor.MetaPropertyEditor;
@@ -468,8 +471,8 @@ public class MetaDefaultSection extends MetaSection {
 	}
 
 	@Override
-	public DefaultSectionRuntime createRuntime(EntityViewRuntime entityView) {
-		return new DefaultSectionRuntime(this, entityView);
+	public DefaultSectionRuntime createRuntime(EntityViewRuntime entityView, FormViewRuntime formView) {
+		return new DefaultSectionRuntime(this, entityView, formView);
 	}
 
 	/**
@@ -486,18 +489,22 @@ public class MetaDefaultSection extends MetaSection {
 		 * @param metadata メタデータ
 		 * @param entityView 画面定義
 		 */
-		public DefaultSectionRuntime(MetaDefaultSection metadata, EntityViewRuntime entityView) {
+		public DefaultSectionRuntime(MetaDefaultSection metadata, EntityViewRuntime entityView, FormViewRuntime formView) {
 			super(metadata, entityView);
+
+			EntityContext context = EntityContext.getCurrentContext();
+			EntityHandler eh = context.getHandlerById(entityView.getMetaData().getDefinitionId());
 
 			elements = new ArrayList<>();
 			Map<String, GroovyTemplate> customStyleMap = new HashMap<>();
 			for (MetaElement element : metadata.getElements()) {
-				elements.add(element.createRuntime(entityView));
+				elements.add(element.createRuntime(entityView, formView));
 
 				if (element instanceof MetaPropertyLayout) {
-					MetaPropertyEditor editor = ((MetaPropertyLayout)element).getEditor();
+					MetaPropertyLayout propertyLayout = (MetaPropertyLayout)element;
+					MetaPropertyEditor editor = propertyLayout.getEditor();
 					if (editor != null) {
-						PropertyEditorRuntime runtime = (PropertyEditorRuntime)editor.createRuntime(entityView);
+						PropertyEditorRuntime runtime = (PropertyEditorRuntime)editor.createRuntime(entityView, formView, propertyLayout, context, eh);
 						customStyleMap.put(editor.getOutputCustomStyleScriptKey(), runtime.getOutputCustomStyleScript());
 						customStyleMap.put(editor.getInputCustomStyleScriptKey(), runtime.getInputCustomStyleScript());
 
@@ -505,7 +512,8 @@ public class MetaDefaultSection extends MetaSection {
 							for (MetaNestProperty nest : ((HasMetaNestProperty)editor).getNestProperties()) {
 								MetaPropertyEditor nestEditor = nest.getEditor();
 								if (nestEditor != null) {
-									PropertyEditorRuntime nestRuntime = (PropertyEditorRuntime)nestEditor.createRuntime(entityView);
+									//TODO nest type check
+									PropertyEditorRuntime nestRuntime = (PropertyEditorRuntime)nestEditor.createRuntime(entityView, formView, null, context, eh);
 									customStyleMap.put(nestEditor.getOutputCustomStyleScriptKey(), nestRuntime.getOutputCustomStyleScript());
 									customStyleMap.put(nestEditor.getInputCustomStyleScriptKey(), nestRuntime.getInputCustomStyleScript());
 								}
@@ -515,12 +523,12 @@ public class MetaDefaultSection extends MetaSection {
 				}
 				if (element instanceof MetaButton) {
 					MetaButton button = (MetaButton)element;
-					ButtonRuntime runtime = button.createRuntime(entityView);
+					ButtonRuntime runtime = button.createRuntime(entityView, formView);
 					customStyleMap.put(button.getInputCustomStyleScriptKey(), runtime.getInputCustomStyleScript());
 				}
 				if (element instanceof MetaLink) {
 					MetaLink link = (MetaLink)element;
-					LinkRuntime runtime = link.createRuntime(entityView);
+					LinkRuntime runtime = link.createRuntime(entityView, formView);
 					customStyleMap.put(link.getInputCustomStyleScriptKey(), runtime.getInputCustomStyleScript());
 				}
 			}

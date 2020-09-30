@@ -41,6 +41,7 @@ import org.iplass.mtp.impl.script.template.GroovyTemplate;
 import org.iplass.mtp.impl.script.template.GroovyTemplateCompiler;
 import org.iplass.mtp.impl.util.ObjectUtil;
 import org.iplass.mtp.impl.view.generic.EntityViewRuntime;
+import org.iplass.mtp.impl.view.generic.FormViewRuntime;
 import org.iplass.mtp.util.StringUtil;
 import org.iplass.mtp.view.generic.OutputType;
 import org.iplass.mtp.view.generic.element.Button;
@@ -67,13 +68,13 @@ public class MetaButton extends MetaElement {
 	private String title;
 
 	/** 多言語設定情報 */
-	private List<MetaLocalizedString> localizedTitleList = new ArrayList<MetaLocalizedString>();
+	private List<MetaLocalizedString> localizedTitleList = new ArrayList<>();
 
 	/** 表示ラベル */
 	private String displayLabel;
 
 	/** 多言語設定情報 */
-	private List<MetaLocalizedString> localizedDisplayLabelList = new ArrayList<MetaLocalizedString>();
+	private List<MetaLocalizedString> localizedDisplayLabelList = new ArrayList<>();
 
 	/** プライマリー */
 	private boolean primary = true;
@@ -342,7 +343,7 @@ public class MetaButton extends MetaElement {
 	}
 
 	@Override
-	public ButtonRuntime createRuntime(EntityViewRuntime entityView) {
+	public ButtonRuntime createRuntime(EntityViewRuntime entityView, FormViewRuntime formView) {
 		return new ButtonRuntime(this, entityView);
 	}
 
