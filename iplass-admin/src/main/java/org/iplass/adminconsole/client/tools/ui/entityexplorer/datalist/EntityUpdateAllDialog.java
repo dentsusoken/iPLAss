@@ -40,7 +40,6 @@ import org.iplass.adminconsole.shared.tools.dto.entityexplorer.UpdateAllValue;
 import org.iplass.adminconsole.shared.tools.dto.entityexplorer.UpdateAllValue.UpdateAllValueType;
 import org.iplass.adminconsole.shared.tools.rpc.entityexplorer.EntityExplorerServiceAsync;
 import org.iplass.adminconsole.shared.tools.rpc.entityexplorer.EntityExplorerServiceFactory;
-import org.iplass.mtp.entity.Entity;
 import org.iplass.mtp.entity.SelectValue;
 import org.iplass.mtp.entity.definition.EntityDefinition;
 import org.iplass.mtp.entity.definition.PropertyDefinition;
@@ -150,6 +149,7 @@ public class EntityUpdateAllDialog extends AbstractWindow {
 
 		update = new IButton("Update");
 		update.addClickHandler(new ClickHandler() {
+			@Override
 			public void onClick(ClickEvent event) {
 				if (!gridPane.existsTarget()) {
 					SC.warn(AdminClientMessageUtil.getString("ui_tools_entityexplorer_EntityUpdateAllDialog_nonSelectUpdateProp"));
@@ -173,6 +173,7 @@ public class EntityUpdateAllDialog extends AbstractWindow {
 
 		cancel = new IButton("Cancel");
 		cancel.addClickHandler(new ClickHandler() {
+			@Override
 			public void onClick(ClickEvent event) {
 				destroy();
 			}
@@ -212,33 +213,6 @@ public class EntityUpdateAllDialog extends AbstractWindow {
 
 		//該当件数のチェック
 		checkDataCount(cond);
-
-//		EntityExplorerServiceAsync service = GWT.create(EntityExplorerService.class);
-//		service.updateAll(TenantInfoHolder.getId(), cond, new AsyncCallback<EntityUpdateAllResultInfo>() {
-//
-//			@Override
-//			public void onFailure(Throwable caught) {
-//				GWT.log("error!!!", caught);
-//				List<String> messages = new ArrayList<String>();
-//				messages.add("データの更新でエラーが発生しました。");
-//				messages.add(caught.getMessage());
-//
-//				messageTabSet.setErrorMessage(messages);
-//
-//				finishExecute();
-//			}
-//
-//			@Override
-//			public void onSuccess(EntityUpdateAllResultInfo result) {
-//				if (result.isError()) {
-//					messageTabSet.setErrorMessage(result.getLogMessages());
-//				} else {
-//					messageTabSet.setMessage(result.getLogMessages());
-//				}
-//
-//				finishExecute();
-//			}
-//		});
 	}
 
 	private EntityUpdateAllCondition createUpdateCondition() {
@@ -479,7 +453,7 @@ public class EntityUpdateAllDialog extends AbstractWindow {
 
 			List<PropertyDefinition> lstProp = definition.getPropertyList();
 
-			List<UpdateValueGridRecord> records = new ArrayList<UpdateValueGridRecord>();
+			List<UpdateValueGridRecord> records = new ArrayList<>();
 
 			for (PropertyDefinition property : lstProp) {
 				//表示対象かをチェック
@@ -488,45 +462,9 @@ public class EntityUpdateAllDialog extends AbstractWindow {
 				}
 
 				UpdateValueGridRecord record = new UpdateValueGridRecord(property, definition);
-//				record.setName(prop.getName());
-//				record.setDispName(getMetaLocalizedValue(prop.getDisplayName(), prop.getLocalizedDisplayNameList()));
-//				record.setMultiple(prop.getMultiplicity());
-//				record.setIndexType(prop.getIndexType());
-//				record.setEncryptMode(prop.getEncryptMode());
-//				record.setUpdatable(prop.isUpdatable());
-//				record.setInherited(prop.isInherited());
-
-//				PropertyTypeController type = PropertyTypeController.valueOfDefinition(property);
-//				record.setType(type);
-//				PropertyAttribute typeAttribute = type.typeAttribute();
-//				typeAttribute.applyFrom(property);
-//				typeAttribute.applyTo(record);
-//				record.setTypeAttribute(typeAttribute);
 
 				record.setValueType(UpdateAllValueType.LITERAL.name());	//初期値はLITERAL
 				record.setPropertyDefinition(property);
-
-//				setTypeData(record, prop);
-//				setNotNull(record, prop.getValidations());
-//
-//				if (definition.getOidPropertyName() != null
-//						&& definition.getOidPropertyName().contains(prop.getName())) {
-//					record.setCustomOid(true);
-//				}
-//				if (Entity.OID.equals(prop.getName()) && definition.getOidPropertyName() == null) {
-//					record.setCustomOid(true);
-//				}
-//				if (definition.getNamePropertyName() != null
-//						&& definition.getNamePropertyName().equals(prop.getName())) {
-//					record.setCustomName(true);
-//				}
-//				if (Entity.NAME.equals(prop.getName()) && definition.getNamePropertyName() == null) {
-//					record.setCustomName(true);
-//				}
-//				if (definition.getCrawlPropertyName() != null
-//						&& definition.getCrawlPropertyName().contains(prop.getName())) {
-//					record.setCrawlProp(true);
-//				}
 
 				//レコードの入力可否を設定
 				record.setEnabled(isEnable(property));
@@ -535,78 +473,15 @@ public class EntityUpdateAllDialog extends AbstractWindow {
 			}
 
 			grid.setData(records.toArray(new UpdateValueGridRecord[]{}));
-
 		}
 
-//		/**
-//		 * メタデータの言語値を返します。
-//		 *
-//		 * @param defaultValue デフォルト値
-//		 * @param localizedValueList 言語値のリスト
-//		 * @return 言語値
-//		 */
-//		private String getMetaLocalizedValue(String defaultValue, List<LocalizedStringDefinition> localizedValueList) {
-//
-//			String ret = defaultValue;
-//			if (TenantInfoHolder.isUseMultilingual()) {
-//				String language = TenantInfoHolder.getLanguage();
-//				if (language != null && localizedValueList != null) {
-//					for (LocalizedStringDefinition lsd: localizedValueList) {
-//						if (language.equals(lsd.getLocaleName())) {
-//							ret = lsd.getStringValue();
-//							break;
-//						}
-//					}
-//				}
-//			}
-//			return ret;
-//		}
-
-//		/*
-//		 * "型"データの初期選択
-//		 */
-//		private void setTypeData(final UpdateValueGridRecord record, PropertyDefinition property) {
-//			//タイプ別処理
-//			PropertyTypeController type = PropertyTypeController.valueOfDefinition(property);
-//			record.setType(type);
-//			PropertyAttribute typeAttribute = type.typeAttribute();
-//			typeAttribute.applyFrom(property);
-//			typeAttribute.applyTo(record);
-//			record.setTypeAttribute(typeAttribute);
-//		}
-
-//		/*
-//		 * validationデータの設定
-//		 */
-//		private void setNotNull(UpdateValueGridRecord record, List<ValidationDefinition> vdList) {
-//			for (ValidationDefinition vd : vdList) {
-//				if (vd instanceof NotNullValidation) {
-//					record.setNotNull(true);
-//				}
-//			}
-//		}
-
 		private boolean isShowRecord(PropertyDefinition prop) {
-			if (prop.isInherited()) {
-				//名前と説明のみ可能にする
-				if (!prop.getName().equals(Entity.NAME)
-					&& !prop.getName().equals(Entity.DESCRIPTION)) {
-					return false;
-				}
-			}
-
 			return true;
 		}
 
 		private boolean isEnable(PropertyDefinition prop) {
 
-			if (prop.isInherited()) {
-				//名前と説明のみ可能にする
-				if (!prop.getName().equals(Entity.NAME)
-					&& !prop.getName().equals(Entity.DESCRIPTION)) {
-					return false;
-				}
-			} else if (prop.isReadOnly()) {
+			if (prop.isReadOnly()) {
 				return false;
 			} else if (prop instanceof BinaryProperty
 					|| prop instanceof LongTextProperty
@@ -657,7 +532,6 @@ public class EntityUpdateAllDialog extends AbstractWindow {
 
 			dialog.setEditValue(record);
 			dialog.show();
-
 		}
 
 		public boolean existsTarget() {
@@ -733,7 +607,7 @@ public class EntityUpdateAllDialog extends AbstractWindow {
 		private SelectItem selectUpdateValueField;
 
 		/** データ変更ハンドラ */
-		private List<DataChangedHandler> handlers = new ArrayList<DataChangedHandler>();
+		private List<DataChangedHandler> handlers = new ArrayList<>();
 
 		private PropertyDefinitionType propertyType;
 
@@ -756,7 +630,7 @@ public class EntityUpdateAllDialog extends AbstractWindow {
 			valueTypeField = new SelectItem();
 			valueTypeField.setTitle("Value Type");
 			valueTypeField.setWidth(150);
-			LinkedHashMap<String, String> valueMap = new LinkedHashMap<String, String>();
+			LinkedHashMap<String, String> valueMap = new LinkedHashMap<>();
 			for (UpdateAllValueType valueType : UpdateAllValueType.values()) {
 				valueMap.put(valueType.name(), valueType.name());
 			}
@@ -794,6 +668,7 @@ public class EntityUpdateAllDialog extends AbstractWindow {
 
 			IButton save = new IButton("OK");
 			save.addClickHandler(new ClickHandler() {
+				@Override
 				public void onClick(ClickEvent event) {
 					if (form.validate()) {
 						fireDataChanged();
@@ -806,6 +681,7 @@ public class EntityUpdateAllDialog extends AbstractWindow {
 
 			IButton cancel = new IButton("Cancel");
 			cancel.addClickHandler(new ClickHandler() {
+				@Override
 				public void onClick(ClickEvent event) {
 					destroy();
 				}
@@ -836,14 +712,14 @@ public class EntityUpdateAllDialog extends AbstractWindow {
 			propertyType = record.getRecordType();
 
 			if (PropertyDefinitionType.BOOLEAN == propertyType) {
-				LinkedHashMap<String, String> valueMap = new LinkedHashMap<String, String>();
+				LinkedHashMap<String, String> valueMap = new LinkedHashMap<>();
 				valueMap.put(NULL_VALUE, "NULL");
 				valueMap.put("true", "TRUE");
 				valueMap.put("false", "FALSE");
 				selectUpdateValueField.setValueMap(valueMap);
 			} else if (PropertyDefinitionType.SELECT == propertyType) {
 				SelectProperty pd = (SelectProperty) record.getPropertyDefinition();
-				LinkedHashMap<String, String> valueMap = new LinkedHashMap<String, String>();
+				LinkedHashMap<String, String> valueMap = new LinkedHashMap<>();
 				valueMap.put(NULL_VALUE, "NULL");
 				for (SelectValue value : pd.getSelectValueList()) {
 					valueMap.put(value.getValue(), value.getValue() + " (" + value.getDisplayName() + ")");
