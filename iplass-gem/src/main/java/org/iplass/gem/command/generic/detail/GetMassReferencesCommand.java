@@ -128,7 +128,6 @@ public final class GetMassReferencesCommand extends DetailCommandBase implements
 		String offsetStr = request.getParam(Constants.SEARCH_OFFSET);
 		String isCount = request.getParam("isCount");
 		String outputTypeStr = request.getParam(Constants.OUTPUT_TYPE);
-		String condKey = request.getParam("condKey");
 		int offset = 0;
 		try {
 			offset = Integer.parseInt(offsetStr);
@@ -193,13 +192,15 @@ public final class GetMassReferencesCommand extends DetailCommandBase implements
 				Query query = new Query();
 				query.select(props.toArray());
 				query.from(rp.getObjectDefinitionName());
+
 				And cond = new And(new Equals(rp.getMappedBy() + ".oid", context.getOid()));
-				if (StringUtil.isNotBlank(condKey)) {
-					Condition filterCond = evm.getMassReferenceSectionCondition(defName, condKey);
+				if (StringUtil.isNotBlank(section.getFilterConditionScript())) {
+					Condition filterCond = evm.getMassReferenceSectionCondition(defName, section);
 					if (filterCond != null) {
 						cond.addExpression(filterCond);
 					}
 				}
+
 				query.where(cond);
 
 				if (!section.isHidePaging()) {

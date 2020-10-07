@@ -35,6 +35,8 @@ import org.iplass.mtp.entity.query.condition.Condition;
 import org.iplass.mtp.view.generic.editor.PropertyEditor;
 import org.iplass.mtp.view.generic.editor.ReferencePropertyEditor;
 import org.iplass.mtp.view.generic.editor.ReferencePropertyEditor.UrlParameterActionType;
+import org.iplass.mtp.view.generic.element.section.MassReferenceSection;
+import org.iplass.mtp.view.generic.element.section.SearchConditionSection;
 
 /**
  * 画面定義を管理するクラスのインターフェース。
@@ -136,12 +138,20 @@ public interface EntityViewManager extends TypedDefinitionManager<EntityView> {
 	public String getCsvDownloadFileName(String definitionName, String viewName, String defaultName, Map<String, Object> csvVariableMap);
 
 	/**
-	 * 大規模参照セクション用の絞り込み条件を取得します。
+	 * 検索条件セクション用のデフォルト検索条件を取得します。
 	 * @param name Entity定義名
-	 * @param key 条件名
+	 * @param section 検索条件セクション
 	 * @return 条件
 	 */
-	public Condition getMassReferenceSectionCondition(String name, String key);
+	public Condition getSearchConditionSectionDefaultCondition(String name, SearchConditionSection section);
+
+	/**
+	 * 大規模参照セクション用のデフォルト検索条件を取得します。
+	 * @param name Entity定義名
+	 * @param section 大規模参照セクション
+	 * @return 条件
+	 */
+	public Condition getMassReferenceSectionCondition(String name, MassReferenceSection section);
 
 	/**
 	 * Entity定義に対応する標準のSearchFormViewを返します。

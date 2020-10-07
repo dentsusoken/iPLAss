@@ -52,6 +52,8 @@ import org.iplass.mtp.entity.definition.EntityDefinitionManager;
 import org.iplass.mtp.entity.definition.PropertyDefinition;
 import org.iplass.mtp.entity.query.PreparedQuery;
 import org.iplass.mtp.entity.query.condition.Condition;
+import org.iplass.mtp.impl.command.RequestContextBinding;
+import org.iplass.mtp.impl.command.SessionBinding;
 import org.iplass.mtp.impl.definition.AbstractTypedDefinitionManager;
 import org.iplass.mtp.impl.definition.TypedMetaDataService;
 import org.iplass.mtp.impl.metadata.RootMetaData;
@@ -60,6 +62,8 @@ import org.iplass.mtp.impl.script.template.GroovyTemplateBinding;
 import org.iplass.mtp.impl.view.generic.common.MetaAutocompletionSetting.AutocompletionSettingRuntime;
 import org.iplass.mtp.impl.view.generic.element.ElementRuntime;
 import org.iplass.mtp.impl.view.generic.element.MetaButton.ButtonRuntime;
+import org.iplass.mtp.impl.view.generic.element.section.MetaMassReferenceSection.MassReferenceSectionRuntime;
+import org.iplass.mtp.impl.view.generic.element.section.MetaSearchConditionSection.SearchConditionSectionRuntime;
 import org.iplass.mtp.impl.web.WebUtil;
 import org.iplass.mtp.impl.web.template.MetaGroovyTemplate;
 import org.iplass.mtp.spi.ServiceRegistry;
@@ -97,7 +101,11 @@ import org.slf4j.LoggerFactory;
  * @author lis3wg
  */
 public class EntityViewManagerImpl extends AbstractTypedDefinitionManager<EntityView> implements EntityViewManager {
+
 	private static Logger logger = LoggerFactory.getLogger(EntityViewManagerImpl.class);
+
+	private static final String REQUEST_BINDING_NAME = "request";
+	private static final String SESSION_BINDING_NAME = "session";
 
 	/** 画面定義を扱うサービス */
 	private EntityViewService service;
@@ -642,16 +650,37 @@ public class EntityViewManagerImpl extends AbstractTypedDefinitionManager<Entity
 	}
 
 	@Override
-	public Condition getMassReferenceSectionCondition(String name, String key) {
-		if (name == null || key == null) return null;
+	public Condition getSearchConditionSectionDefaultCondition(String name, SearchConditionSection section) {
+		return getEntityViewCondition(name, section, SearchConditionSectionRuntime.DEFAULT_CONDITION_PREFIX);
+	}
+
+	@Override
+	public Condition getMassReferenceSectionCondition(String name, MassReferenceSection section) {
+		return getEntityViewCondition(name, section, MassReferenceSectionRuntime.FILTER_CONDITION_PREFIX);
+	}
+	
+	/**
+	 * EntityViewに格納されたQueryを取得します。
+	 * 
+	 * @param name Entity定義名
+	 * @param element 検索対象のエレメント
+	 * @param prefixKey 格納KEYの接頭辞
+	 * @return 条件
+	 * 
+	 */
+	private Condition getEntityViewCondition(String name, Element element, String prefixKey) {
+		if (name == null || element == null) return null;
 
 		EntityViewRuntime entityView = service.getRuntimeByName(name);
 		if (entityView == null) return null;
 
-		PreparedQuery query = entityView.getQuery(key);
+		PreparedQuery query = entityView.getQuery(prefixKey + element.getElementRuntimeId());
 		if (query == null) return null;
 
-		return query.condition(null);
+		Map<String, Object> bindings = new HashMap<>();
+		bindings.put(REQUEST_BINDING_NAME, RequestContextBinding.newRequestContextBinding());
+		bindings.put(SESSION_BINDING_NAME, SessionBinding.newSessionBinding());
+		return query.condition(bindings);
 	}
 
 	@Override

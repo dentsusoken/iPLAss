@@ -397,9 +397,6 @@ public class MassReferenceSection extends Section implements HasNestProperty {
 	)
 	private String lowerContents;
 
-	/** 絞り込み条件設定スクリプトのキー(内部用) */
-	private String filterScriptKey;
-
 	/** 上下コンテンツスクリプトのキー(内部用) */
 	private String contentScriptKey;
 
@@ -892,22 +889,6 @@ public class MassReferenceSection extends Section implements HasNestProperty {
 	 */
 	public void setFilterConditionScript(String filterConditionScript) {
 	    this.filterConditionScript = filterConditionScript;
-	}
-
-	/**
-	 * 絞り込み条件設定スクリプトのキーを取得します。
-	 * @return 絞り込み条件設定スクリプトのキー
-	 */
-	public String getFilterScriptKey() {
-		return filterScriptKey;
-	}
-
-	/**
-	 * 絞り込み条件設定スクリプトのキーを設定します。
-	 * @param filterScriptKey 絞り込み条件設定スクリプトのキー
-	 */
-	public void setFilterScriptKey(String filterScriptKey) {
-		this.filterScriptKey = filterScriptKey;
 	}
 
 	/**

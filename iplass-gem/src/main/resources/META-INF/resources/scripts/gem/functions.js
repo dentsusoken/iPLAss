@@ -1243,7 +1243,6 @@ $.fn.allInputCheck = function(){
 				showPageLink: $v.attr("data-showPageLink") == "true",
 				showCount: $v.attr("data-showCount") == "true",
 				showSearchBtn: $v.attr("data-showSearchBtn") == "true",
-				condKey: $v.attr("data-condKey"),
 				tokenValue: $v.attr("data-tokenValue"),
 				purge: $v.attr("data-purge"),
 				entityOid: $v.attr("data-entityOid"),
@@ -1319,7 +1318,7 @@ $.fn.allInputCheck = function(){
 					if ($table.length > 0) {
 
 						//参照プロパティ取得
-						getMassReferenceData($v.webapiName, $v.oid, $v.defName, $v.propName, $v.viewName, $v.offset, $v.sortKey, $v.sortType, $v.showCount, $v.condKey, $v.orgOutputType, $v.entityOid, $v.entityVersion, function(dispInfo, count, list) {
+						getMassReferenceData($v.webapiName, $v.oid, $v.defName, $v.propName, $v.viewName, $v.offset, $v.sortKey, $v.sortType, $v.showCount, $v.orgOutputType, $v.entityOid, $v.entityVersion, function(dispInfo, count, list) {
 							//テーブル作成
 							if (!$v.grid) {
 								$v.grid = $table.build(dispInfo, count, list);

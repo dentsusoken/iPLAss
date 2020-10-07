@@ -439,7 +439,7 @@ function deleteAll(webapi, searchType, formName, _t, func) {
 	});
 }
 
-function getMassReferenceData(webapi, oid, defName, propName, viewName, offset, sortKey, sortType, isCount, condKey, outputType, entityOid, entityVersion, func) {
+function getMassReferenceData(webapi, oid, defName, propName, viewName, offset, sortKey, sortType, isCount, outputType, entityOid, entityVersion, func) {
 	var params = "{";
 	params += "\"oid\":\"" + oid + "\"";
 	params += ",\"defName\":\"" + defName + "\"";
@@ -450,9 +450,6 @@ function getMassReferenceData(webapi, oid, defName, propName, viewName, offset, 
 	params += ",\"sortType\":\"" + sortType + "\"";
 	params += ",\"isCount\":\"" + isCount + "\"";
 	params += ",\"outputType\":\"" + outputType + "\"";
-	if (typeof condKey !== "undefined" && condKey != null) {
-		params += ",\"condKey\":\"" + condKey + "\"";
-	}
 	if (typeof entityOid !== "undefined" && entityOid != null) {
 		params += ",\"entityOid\":\"" + entityOid + "\"";
 	}

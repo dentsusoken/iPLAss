@@ -27,6 +27,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.iplass.mtp.entity.csv.MultipleFormat;
+import org.iplass.mtp.entity.query.PreparedQuery;
 import org.iplass.mtp.impl.entity.EntityContext;
 import org.iplass.mtp.impl.entity.EntityHandler;
 import org.iplass.mtp.impl.script.template.GroovyTemplate;
@@ -38,6 +39,7 @@ import org.iplass.mtp.impl.view.generic.editor.MetaPropertyEditor;
 import org.iplass.mtp.impl.view.generic.editor.MetaPropertyEditor.PropertyEditorRuntime;
 import org.iplass.mtp.impl.view.generic.element.MetaElement;
 import org.iplass.mtp.impl.view.generic.element.property.MetaPropertyItem;
+import org.iplass.mtp.util.StringUtil;
 import org.iplass.mtp.view.generic.element.Element;
 import org.iplass.mtp.view.generic.element.section.FilterSetting;
 import org.iplass.mtp.view.generic.element.section.SearchConditionSection;
@@ -622,6 +624,8 @@ public class MetaSearchConditionSection extends MetaSection {
 
 	public class SearchConditionSectionRuntime extends SectionRuntime {
 
+		public static final String DEFAULT_CONDITION_PREFIX = "SearchConditionSection_defaultCondition_";
+
 		/**
 		 * コンストラクタ
 		 * @param metadata メタデータ
@@ -652,6 +656,11 @@ public class MetaSearchConditionSection extends MetaSection {
 
 			//EntityViewに登録
 			entityView.addCustomStyle(scriptKey , customStyleMap);
+
+			if (StringUtil.isNotEmpty(defaultCondition)) {
+				PreparedQuery query = new PreparedQuery(defaultCondition);
+				entityView.addQuery(DEFAULT_CONDITION_PREFIX + metadata.getElementRuntimeId(), query);
+			}
 		}
 	}
 }

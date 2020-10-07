@@ -140,9 +140,6 @@ public class MetaMassReferenceSection extends MetaSection {
 	/** 絞り込み条件設定スクリプト */
 	private String filterConditionScript;
 
-	/** 絞り込み条件設定スクリプトを特定するkey(内部用) */
-	private String filterScriptKey;
-
 	/** 上下コンテンツスクリプトのキー(内部用) */
 	private String contentScriptKey;
 
@@ -718,7 +715,6 @@ public class MetaMassReferenceSection extends MetaSection {
 		section.setHideView(hideView);
 		section.setEditType(editType);
 		section.setFilterConditionScript(filterConditionScript);
-		section.setFilterScriptKey(filterScriptKey);
 		section.setContentScriptKey(contentScriptKey);
 
 		for (MetaNestProperty mnp : getNestProperties()) {
@@ -751,19 +747,16 @@ public class MetaMassReferenceSection extends MetaSection {
 	 */
 	public class MassReferenceSectionRuntime extends SectionRuntime {
 
+		public static final String FILTER_CONDITION_PREFIX = "MassReferenceSection_filterCondition_";
+
 		public MassReferenceSectionRuntime(MetaMassReferenceSection metadata, EntityViewRuntime entityView) {
 			super(metadata, entityView);
-			if (StringUtil.isNotBlank(metadata.filterConditionScript)) {
-				if (metadata.filterScriptKey == null) {
-					//テンプレートコンパイル
-					metadata.filterScriptKey = "mrs_filterCondition_" + GroovyTemplateCompiler.randomName().replace("-", "_");
 
-					PreparedQuery query = new PreparedQuery(metadata.filterConditionScript);
-					entityView.addQuery(filterScriptKey, query);
-				}
-			} else {
-				metadata.filterScriptKey = null;
+			if (StringUtil.isNotBlank(metadata.filterConditionScript)) {
+				PreparedQuery query = new PreparedQuery(metadata.filterConditionScript);
+				entityView.addQuery(FILTER_CONDITION_PREFIX + metadata.getElementRuntimeId(), query);
 			}
+
 			if (nestProperties != null && !nestProperties.isEmpty()) {
 				for (MetaNestProperty meta : nestProperties) {
 					if (meta.getAutocompletionSetting()  != null) {

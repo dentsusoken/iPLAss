@@ -48,7 +48,6 @@ import org.iplass.mtp.entity.query.AsOf;
 import org.iplass.mtp.entity.query.From;
 import org.iplass.mtp.entity.query.Limit;
 import org.iplass.mtp.entity.query.OrderBy;
-import org.iplass.mtp.entity.query.PreparedQuery;
 import org.iplass.mtp.entity.query.Query;
 import org.iplass.mtp.entity.query.Select;
 import org.iplass.mtp.entity.query.SortSpec;
@@ -60,6 +59,7 @@ import org.iplass.mtp.impl.util.ObjectUtil;
 import org.iplass.mtp.util.StringUtil;
 import org.iplass.mtp.utilityclass.definition.UtilityClassDefinitionManager;
 import org.iplass.mtp.view.generic.EntityView;
+import org.iplass.mtp.view.generic.EntityViewManager;
 import org.iplass.mtp.view.generic.EntityViewUtil;
 import org.iplass.mtp.view.generic.FormViewUtil;
 import org.iplass.mtp.view.generic.NullOrderType;
@@ -97,12 +97,14 @@ public abstract class SearchContextBase implements SearchContext, CreateSearchRe
 	private SearchQueryInterrupterHandler interrupterHandler;
 	private List<SearchFormViewHandler> searchFormViewHandlers;
 
+	private EntityViewManager evm;
 	private UtilityClassDefinitionManager ucdm;
 
 	public SearchContextBase() {
 		super();
 
-		ucdm = ManagerLocator.getInstance().getManager(UtilityClassDefinitionManager.class);
+		evm = ManagerLocator.manager(EntityViewManager.class);
+		ucdm = ManagerLocator.manager(UtilityClassDefinitionManager.class);
 	}
 
 	@Override
@@ -398,11 +400,11 @@ public abstract class SearchContextBase implements SearchContext, CreateSearchRe
 
 	protected Condition getDefaultCondition() {
 		SearchConditionSection section = getConditionSection();
-		if (section == null ||
-				section.getDefaultCondition() == null ||
-				section.getDefaultCondition().isEmpty()) return null;
+		if (section == null || StringUtil.isEmpty(section.getDefaultCondition())) {
+			return null;
+		}
 
-		return new PreparedQuery(section.getDefaultCondition()).condition(null);
+		return evm.getSearchConditionSectionDefaultCondition(getDefName(), section);
 	}
 
 	protected String getViewName() {
