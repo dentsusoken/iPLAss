@@ -298,6 +298,13 @@
 		<property name="autoGenerateUseUserPropertyEditor" value="false" />
 		-->
 
+		<!-- GemAuth Gem許可ロール -->
+		<property name="permitRolesToGem" value="GemUser" />
+		<property name="permitRolesToGem" value="AppAdmin" />
+
+		<!-- GemAuth EntityViewが未定義の場合の許可ロール -->
+		<property name="permitRolesToNoView" value="AppAdmin" />
+
 	</service>
 
 	<service>

@@ -20,15 +20,16 @@
 
 package org.iplass.gem.auth;
 
-import java.util.Arrays;
 import java.util.List;
 
+import org.iplass.gem.GemConfigService;
 import org.iplass.gem.command.Constants;
 import org.iplass.gem.command.GemWebApiParameter;
 import org.iplass.mtp.ManagerLocator;
 import org.iplass.mtp.auth.AuthContext;
 import org.iplass.mtp.impl.auth.authorize.builtin.action.ActionParameterBinding;
 import org.iplass.mtp.impl.auth.authorize.builtin.webapi.WebApiParameterBinding;
+import org.iplass.mtp.spi.ServiceRegistry;
 import org.iplass.mtp.view.generic.EntityViewManager;
 
 /**
@@ -39,16 +40,16 @@ import org.iplass.mtp.view.generic.EntityViewManager;
  *
  * <p>
  * <ul>
- * <li>gem/* : 実行できるのは、GemUser, AppAdminロールのみ</li>
+ * <li>gem/* : 実行できるのは、GemConfigService#permitRolesToGem指定ロールのみ</li>
  * <li>gem/generic/* (gemの汎用画面)
  * <ul>
- * <li>view定義がない場合、自動生成される画面を表示可能なのはAppAdminロールのみ</li>
- * <li>view定義がある場合、対象viewのDetailLayoutの許可ロールに指定されているロールは実行可能
- * <li>DetailLayoutの許可ロールが指定されていない場合は、全てのロールで実行可能</li>
+ * <li>view定義がない場合、自動生成される画面は、GemConfigService#permitRolesToNoView指定ロールのみ許可</li>
+ * <li>view定義がある場合、管理設定がない場合、全て許可</li>
+ * <li>view定義がある場合、対象Viewの管理設定に許可ロールが設定されていない場合、全て許可</li>
+ * <li>view定義がある場合、対象Viewの管理設定に許可ロールが設定されている場合、指定ロールのみ許可</li>
  * </ul>
  * </li>
  * </ul>
- * ※検索画面を表示する際も、DetailLayoutの許可ロールを見て判断します(許可ロールの指定はDetailLayoutのみ)。
  * </p>
  *
  * <h3>権限の設定方法</h3>
@@ -80,8 +81,6 @@ import org.iplass.mtp.view.generic.EntityViewManager;
  *
  */
 public class GemAuth {
-
-	private static List<String> GEM_ROLES = Arrays.asList("GemUser", "AppAdmin");
 
 	/**
 	 * Actionに対して許可されているかを返します。
@@ -158,11 +157,12 @@ public class GemAuth {
 		List<String> permitRoles = evm.getPermitRoles(definitionName, viewName);
 
 		if (permitRoles == null) {
-			//View定義がない場合は、AppAdminのみ許可
-			permitRoles = Arrays.asList("AppAdmin");
+			//View定義がない場合は、指定されているロールのみ許可
+			GemConfigService service = ServiceRegistry.getRegistry().getService(GemConfigService.class);
+			permitRoles = service.getPermitRolesToNoView();
 		}
 
-		if (permitRoles.isEmpty()) {
+		if (permitRoles == null || permitRoles.isEmpty()) {
 			//許可ロールが未指定の場合は、全て許可
 			return true;
 		} else {
@@ -178,7 +178,13 @@ public class GemAuth {
 	 */
 	public static boolean isPermitGem() {
 		final AuthContext authContext = AuthContext.getCurrentContext();
-		return GEM_ROLES.stream().anyMatch(role -> authContext.userInRole(role));
+
+		//指定されているロールのみ許可
+		GemConfigService service = ServiceRegistry.getRegistry().getService(GemConfigService.class);
+		if (service.getPermitRolesToGem() == null) {
+			return true;
+		}
+		return service.getPermitRolesToGem().stream().anyMatch(role -> authContext.userInRole(role));
 	}
 
 }

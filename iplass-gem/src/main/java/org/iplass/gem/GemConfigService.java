@@ -23,10 +23,8 @@ package org.iplass.gem;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -114,13 +112,16 @@ public class GemConfigService implements Service {
 	/** エンティティをコピーする際にLobデータをシャッローコピーするか */
 	private boolean shallowCopyLobData;
 
+	/** Binaryダウンロード時のログ出力設定 */
 	private List<BinaryDownloadLoggingTargetProperty> binaryDownloadLoggingTargetProperty;
 
+	/** カラー */
 	private List<ImageColorSetting> imageColors;
-	private Map<String, ImageColorSetting> imageColorsMap;
 
+	/** スキン */
 	private List<Skin> skins;
 
+	/** テーマ */
 	private List<Theme> themes;
 
 	/** EntityViewHelper */
@@ -129,17 +130,16 @@ public class GemConfigService implements Service {
 	/** 自動生成設定 */
 	private AutoGenerateSetting autoGenerateSetting;
 
+	/** GemAuth Gem許可ロール */
+	private List<String> permitRolesToGem;
+
+	/** GemAuth EntityViewが未定義の場合の許可ロール */
+	private List<String> permitRolesToNoView;
+
 	@Override
 	public void init(Config config) {
 		binaryDownloadLoggingTargetProperty = config.getValues("binaryDownloadLoggingTargetProperty", BinaryDownloadLoggingTargetProperty.class);
 		imageColors = config.getValues("imageColors", ImageColorSetting.class);
-		imageColorsMap = new HashMap<>();
-		if (imageColors != null && !imageColors.isEmpty()) {
-			for (ImageColorSetting setting : imageColors) {
-				imageColorsMap.put(setting.getColorName(), setting);
-			}
-		}
-
 		loadWithReference = Boolean.valueOf(config.getValue("loadWithReference"));
 		formatNumberWithComma = Boolean.valueOf(config.getValue("formatNumberWithComma"));
 		String csvdownloadMaxCount = config.getValue("csvDownloadMaxCount");
@@ -295,6 +295,8 @@ public class GemConfigService implements Service {
 			autoGenerateSetting.setUseUserPropertyEditor(config.getValue("autoGenerateUseUserPropertyEditor", Boolean.class, true));
 		}
 
+		permitRolesToGem = config.getValues("permitRolesToGem");
+		permitRolesToNoView = config.getValues("permitRolesToNoView");
 	}
 
 	@Override
@@ -548,6 +550,22 @@ public class GemConfigService implements Service {
 	 */
 	public AutoGenerateSetting getAutoGenerateSetting() {
 		return autoGenerateSetting;
+	}
+
+	/**
+	 * GemAuth Gem許可ロールを取得します。
+	 * @return Gem許可ロール
+	 */
+	public List<String> getPermitRolesToGem() {
+	    return permitRolesToGem;
+	}
+
+	/**
+	 * GemAuth EntityViewが未定義の場合の許可ロールを取得します。
+	 * @return EntityViewが未定義の場合の許可ロール
+	 */
+	public List<String> getPermitRolesToNoView() {
+	    return permitRolesToNoView;
 	}
 
 }
