@@ -145,9 +145,11 @@ $(function(){
 
 	/* jQueryUI ダイアログ設定 */
     $(document).on("dialogopen", ".mtp-jq-dialog", function() {
+        $("html").css('overflow-y','hidden');
         $("body").css('overflow','hidden');
     });
     $(document).on("dialogclose", ".mtp-jq-dialog", function() {
+        $("html").css('overflow-y','');
         $("body").css('overflow','auto');
     });
 });
