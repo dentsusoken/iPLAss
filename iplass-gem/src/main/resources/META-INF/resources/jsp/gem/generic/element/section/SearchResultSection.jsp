@@ -415,11 +415,11 @@ colModel.push({name:"<%=propName%>", index:"<%=propName%>", classes:"<%=style%>"
 			// 結合されたチェックボタンにチェックを入れます。
 %>
 			for (var i = rowIndex; i >= 0; i--) {
-				if ($("#gview_searchResult tr.jqgrow:eq(" + i + ")").find(":radio[name='selOid'][value='" + value + "']").is(":visible")) { 
+				if ($("#gview_searchResult tr.jqgrow:eq(" + i + ")").find(":radio[name='selOid'][value='" + value + "']").is(":visible")) {
 					rowIndex = i; break;
 				}
 			}
-<% 
+<%
 		}
 %>
 			var $selRow = $("#gview_searchResult tr.jqgrow:eq(" + rowIndex + ")");
@@ -496,7 +496,7 @@ colModel.push({name:"<%=propName%>", index:"<%=propName%>", classes:"<%=style%>"
 			}
 <%
 		} else {
-			// 多重度が複数のデータの場合、行番号が違う同じOIDとVersionのレコードがあるので、チェックを付け直します。 
+			// 多重度が複数のデータの場合、行番号が違う同じOIDとVersionのレコードがあるので、チェックを付け直します。
 %>
 			$("#searchResult tr[id]").each(function() {
 				var _rowid = $(this).attr("id");
@@ -858,7 +858,7 @@ ${m:outputToken('FORM_XHTML', false)}
 <%
 	if (OutputType.SEARCHRESULT == type && !section.isHideDelete() && canDelete) {
 %>
-<div id="selectDeleteTypeDialog" title="${m:rs('mtp-gem-messages', 'generic.element.section.SearchResultSection.selectDeleteType')}" style="display:none;">
+<div id="selectDeleteTypeDialog" class="mtp-jq-dialog" title="${m:rs('mtp-gem-messages', 'generic.element.section.SearchResultSection.selectDeleteType')}" style="display:none;">
 <ul style="text-align:left; margin-left:15px;">
 <li>
 <label><input type="radio" name="deleteType" value="select" checked>${m:rs("mtp-gem-messages", "generic.element.section.SearchResultSection.deleteRow")}</label>
@@ -1049,7 +1049,7 @@ function doBulkUpdate(target) {
 		version.push(id + "_" + row.orgVersion);
 <%
 	if (section.getExclusiveControlPoint() == ExclusiveControlPoint.WHEN_SEARCH) {
-%>		
+%>
 		timestamp.push(id + "_" + row.orgTimestamp);
 <%
 	}
@@ -1068,7 +1068,7 @@ function doBulkUpdate(target) {
 	});
 <%
 	if (section.getExclusiveControlPoint() == ExclusiveControlPoint.WHEN_SEARCH) {
-%>	
+%>
 	$(timestamp).each(function() {
 		$("<input />").attr({type:"hidden", name:"timestamp", value:this}).appendTo($form);
 	});
@@ -1100,7 +1100,7 @@ function closeBulkUpdateModalWindow() {
 	if (OutputType.MULTISELECT == type && permitConditionSelectAll) {
 		// 全ページor現在ページ選択
 %>
-<div id="selectSelectAllTypeDialog" title="${m:rs('mtp-gem-messages', 'generic.element.section.SearchResultSection.selectSelectAllType')}" style="display:none;">
+<div id="selectSelectAllTypeDialog" class="mtp-jq-dialog" title="${m:rs('mtp-gem-messages', 'generic.element.section.SearchResultSection.selectSelectAllType')}" style="display:none;">
 <ul style="text-align:left; margin-left:15px;">
 <li>
 <label><input type="radio" name="selectAllType" value="all" checked>${m:rs("mtp-gem-messages", "generic.element.section.SearchResultSection.selectAllPage")}</label>
@@ -1115,7 +1115,7 @@ function closeBulkUpdateModalWindow() {
 <% } %>
 </ul>
 </div>
-<div id="selectDeselectAllTypeDialog" title="${m:rs('mtp-gem-messages', 'generic.element.section.SearchResultSection.selectDeselectAllType')}" style="display:none;">
+<div id="selectDeselectAllTypeDialog" class="mtp-jq-dialog" title="${m:rs('mtp-gem-messages', 'generic.element.section.SearchResultSection.selectDeselectAllType')}" style="display:none;">
 <ul style="text-align:left; margin-left:15px;">
 <li>
 <label><input type="radio" name="deselectAllType" value="all" checked>${m:rs("mtp-gem-messages", "generic.element.section.SearchResultSection.selectAllPage")}</label>
