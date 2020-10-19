@@ -19,11 +19,14 @@
  */
 package org.iplass.mtp.impl.webhook;
 
+import java.sql.Timestamp;
+
 import org.iplass.mtp.auth.token.AuthTokenInfo;
 
 public class WebhookAuthTokenInfo implements AuthTokenInfo {
 	private String type;
 	private String key;
+	private Timestamp startDate;
 	public WebhookAuthTokenInfo(){
 		
 	}
@@ -47,6 +50,15 @@ public class WebhookAuthTokenInfo implements AuthTokenInfo {
 
 	public void setKey(String key) {
 		this.key = key;
+	}
+	
+	@Override
+	public Timestamp getStartDate() {
+		return startDate;
+	}
+	
+	public void setStartDate(Timestamp startDate) {
+		this.startDate = startDate;
 	}
 	
 	@Override

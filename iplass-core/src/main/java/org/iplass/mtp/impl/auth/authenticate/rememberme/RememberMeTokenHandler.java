@@ -55,6 +55,7 @@ public class RememberMeTokenHandler extends AuthTokenHandler {
 		RememberMeTokenInfo info = new RememberMeTokenInfo();
 		info.setType(authToken.getType());
 		info.setKey(authToken.getSeries());
+		info.setStartDate(authToken.getStartDate());
 		
 		Timestamp t = authToken.getStartDate();
 		AuthenticationPolicyRuntime pol = policyService.getOrDefault(authToken.getPolicyName());

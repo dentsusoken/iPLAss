@@ -19,6 +19,8 @@
  */
 package org.iplass.mtp.auth.token;
 
+import java.sql.Timestamp;
+
 /**
  * 認証トークンを表すインタフェースです。
  * 
@@ -46,5 +48,12 @@ public interface AuthTokenInfo {
 	 * @return
 	 */
 	public String getDescription();
+	
+	/**
+	 * トークンの発行日です。
+	 * 
+	 * @return
+	 */
+	public Timestamp getStartDate();
 
 }

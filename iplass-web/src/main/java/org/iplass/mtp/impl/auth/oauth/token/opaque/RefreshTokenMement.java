@@ -20,6 +20,7 @@
 package org.iplass.mtp.impl.auth.oauth.token.opaque;
 
 import java.io.Serializable;
+import java.sql.Timestamp;
 
 import org.iplass.mtp.auth.token.AuthTokenInfo;
 import org.iplass.mtp.impl.auth.oauth.MetaOAuthClient.OAuthClientRuntime;
@@ -33,6 +34,7 @@ class RefreshTokenMement implements Serializable {
 		private String type;
 		private String key;
 		private String clientName;
+		private Timestamp startDate;
 		
 		public RefreshTokenInfo() {
 		}
@@ -56,6 +58,10 @@ class RefreshTokenMement implements Serializable {
 		public void setKey(String key) {
 			this.key = key;
 		}
+		
+		public void setStartDate(Timestamp startDate) {
+			this.startDate = startDate;
+		}
 
 		@Override
 		public String getType() {
@@ -65,6 +71,11 @@ class RefreshTokenMement implements Serializable {
 		@Override
 		public String getKey() {
 			return key;
+		}
+		
+		@Override
+		public Timestamp getStartDate() {
+			return startDate;
 		}
 
 		@Override

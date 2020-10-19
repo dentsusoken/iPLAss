@@ -29,6 +29,7 @@ public class RememberMeTokenInfo implements AuthTokenInfo {
 
 	private String type;
 	private String key;
+	private Timestamp startDate;
 	private boolean expired;
 	private Timestamp expiryDate;
 	
@@ -40,6 +41,11 @@ public class RememberMeTokenInfo implements AuthTokenInfo {
 	@Override
 	public String getKey() {
 		return key;
+	}
+	
+	@Override
+	public Timestamp getStartDate() {
+		return startDate;
 	}
 
 	@Override
@@ -82,5 +88,9 @@ public class RememberMeTokenInfo implements AuthTokenInfo {
 
 	public void setKey(String key) {
 		this.key = key;
+	}
+	
+	public void setStartDate(Timestamp startDate) {
+		this.startDate = startDate;
 	}
 }

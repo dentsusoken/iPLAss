@@ -19,6 +19,8 @@
  */
 package org.iplass.mtp.auth.login.token;
 
+import java.sql.Timestamp;
+
 import org.iplass.mtp.auth.token.AuthTokenInfo;
 
 public class SimpleAuthTokenInfo implements AuthTokenInfo {
@@ -26,6 +28,7 @@ public class SimpleAuthTokenInfo implements AuthTokenInfo {
 	private String type;
 	private String key;
 	private String application;
+	private Timestamp startDate;
 	
 	public SimpleAuthTokenInfo() {
 	}
@@ -59,6 +62,15 @@ public class SimpleAuthTokenInfo implements AuthTokenInfo {
 
 	public void setApplication(String application) {
 		this.application = application;
+	}
+	
+	@Override
+	public Timestamp getStartDate() {
+		return startDate;
+	}
+
+	public void setStartDate(Timestamp startDate) {
+		this.startDate = startDate;
 	}
 	
 	@Override
