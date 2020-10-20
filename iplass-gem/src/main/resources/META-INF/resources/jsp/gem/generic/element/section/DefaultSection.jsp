@@ -113,7 +113,6 @@
 		//割り切れなければ1行追加
 		rowNum++;
 	}
-	int index = 0;
 
 	String id = "";
 	if (StringUtil.isNotBlank(section.getId())) {
@@ -134,9 +133,21 @@
 
 	//詳細編集/詳細表示で表示する項目の抽出(非表示の場合ブランク扱い)
 	List<Element> elementList = new ArrayList<Element>();
-	for (Element el : section.getElements()) {
-		if (checkDispElement(type, el)) {
-			elementList.add(el);
+	List<PropertyItem> hiddenList = new ArrayList<PropertyItem>();
+	for (Element subElement : section.getElements()) {
+		if (checkDispElement(type, subElement)) {
+			if (subElement instanceof PropertyItem) {
+				PropertyItem property = (PropertyItem) subElement;
+				//hiddenはレイアウトを保持するためBlankSpaceに置き換えたうえで退避
+				if (property.getEditor() != null && property.getEditor().isHide()) {
+					elementList.add(new BlankSpace());
+					hiddenList.add(property);
+				} else {
+					elementList.add(property);
+				}
+			} else {
+				elementList.add(subElement);
+			}
 		} else {
 			BlankSpace blank = new BlankSpace();
 			blank.setDispFlag(false);
@@ -162,6 +173,7 @@
 %>
 <table class="tbl-section">
 <%
+	int index = 0;
 	for (int i = 0; i < rowNum; i++) {
 		//行内のElementがすべて非表示になってないかチェック
 		boolean isDispRow = false;
@@ -223,6 +235,26 @@
 	}
 %>
 </table>
+<div class="hidden-input-area">
+<%
+	//hidden出力
+	for (PropertyItem property : hiddenList) {
+		if (EntityViewUtil.isDisplayElement(defName, property.getElementRuntimeId(), type, rootEntity)
+				&& (type != OutputType.EDIT || ViewUtil.dispElement(property))) {
+			request.setAttribute(Constants.ELEMENT, property);
+			request.setAttribute(Constants.COL_NUM, section.getColNum());
+
+			String path = EntityViewUtil.getJspPath(property, ViewConst.DESIGN_TYPE_GEM);
+			if (path != null) {
+%>
+<jsp:include page="<%=path %>" />
+<%
+			}
+		}
+	}
+%>
+</div>
+
 <%
 	if (StringUtil.isNotBlank(section.getLowerContents())) {
 		evm.executeTemplate(defName, section.getContentScriptKey() + "_LowerContent", request, response, application, pageContext);

@@ -704,6 +704,12 @@ public class ReferencePropertyEditor extends PropertyEditor implements HasNestPr
 		this.displayType = displayType;
 	}
 
+	@Override
+	public boolean isHide() {
+//		return displayType == ReferenceDisplayType.HIDDEN;
+		return false;
+	}
+
 	/**
 	 * 検索条件を取得します。
 	 * @return 検索条件

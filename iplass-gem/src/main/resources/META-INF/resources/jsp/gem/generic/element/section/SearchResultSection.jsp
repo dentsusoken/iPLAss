@@ -279,9 +279,13 @@ $(function() {
 					if (!ViewUtil.getEntityViewHelper().isSortable(pd)) {
 						sortable = "sortable:false";
 					}
+					String hidden = ", hidden:false";
+					if (property.getEditor() != null && property.getEditor().isHide()) {
+						hidden = ", hidden:true";
+					}
 %>
 <%-- XSS対応-メタの設定のため対応なし(displayLabel,style) --%>
-	colModel.push({name:"<%=sortPropName%>", index:"<%=sortPropName%>", classes:"<%=style%>", label:"<p class='title'><%=displayLabel%></p>", <%=sortable%><%=width%><%=align%>, cellattr: cellAttrFunc});
+	colModel.push({name:"<%=sortPropName%>", index:"<%=sortPropName%>", classes:"<%=style%>", label:"<p class='title'><%=displayLabel%></p>", <%=sortable%><%=hidden%><%=width%><%=align%>, cellattr: cellAttrFunc});
 
 <%
 				//参照プロパティでJoinPropertyEditorを利用する場合
@@ -322,9 +326,13 @@ $(function() {
 						if (!ViewUtil.getEntityViewHelper().isSortable(pd)) {
 							sortable = "sortable:false";
 						}
+						String hidden = ", hidden:false";
+						if (property.getEditor() != null && property.getEditor().isHide()) {
+							hidden = ", hidden:true";
+						}
 %>
 <%-- XSS対応-メタの設定のため対応なし(displayLabel,style) --%>
-	colModel.push({name:"<%=sortPropName%>", index:"<%=sortPropName%>", classes:"<%=style%>", label:"<p class='title'><%=displayLabel%></p>", <%=sortable%><%=width%><%=align%>});
+	colModel.push({name:"<%=sortPropName%>", index:"<%=sortPropName%>", classes:"<%=style%>", label:"<p class='title'><%=displayLabel%></p>", <%=sortable%><%=hidden%><%=width%><%=align%>});
 <%
 					} else if (nest.size() > 0) {
 						String style = property.getStyle() != null ? property.getStyle() : "";
@@ -627,8 +635,7 @@ function setData(list, count) {
 <%	if (type == OutputType.SINGLESELECT) { %>
 		this["selOid"] = "<span class='singleRowSelect'><input type='radio' value='" + this.searchResultDataId + "' name='selOid'></span>";
 <%
-	}
-	if (type == OutputType.SEARCHRESULT) {
+	} else if (type == OutputType.SEARCHRESULT) {
 		if (!section.isHideDetailLink() && (canUpdate || canDelete)) {
 %>
 		if (this["@canEdit"] === "false" && this["@canDelete"] === "false") {
@@ -832,6 +839,7 @@ ${m:outputToken('FORM_XHTML', false)}
 	}
 %>
 <table id="searchResult"></table>
+
 <%
 	if (!PagingPosition.TOP.name().equals(pagingPosition)) {
 %>
@@ -844,7 +852,8 @@ ${m:outputToken('FORM_XHTML', false)}
 	if (OutputType.SEARCHRESULT == type && !section.isHideDelete() && canDelete) {
 %>
 <input type="button" value="${m:rs('mtp-gem-messages', 'generic.element.section.SearchResultSection.delete')}" class="gr-btn" onclick="doDelete()" />
-<%	}
+<%	
+	}
 	if (OutputType.SEARCHRESULT == type && section.isShowBulkUpdate() && canUpdate) {
 		String bulkUpdateDisplayLabel = GemResourceBundleUtil.resourceString("generic.element.section.SearchResultSection.bulkUpdate");
 		String localizedBulkUpdateDisplayLabel = TemplateUtil.getMultilingualString(section.getBulkUpdateDisplayLabel(), section.getLocalizedBulkUpdateDisplayLabel());
@@ -956,7 +965,8 @@ function deleteRow(isConfirmed) {
 </script>
 <%
 	}
-	if (OutputType.SEARCHRESULT == type && section.isShowBulkUpdate() && canUpdate) { %>
+	if (OutputType.SEARCHRESULT == type && section.isShowBulkUpdate() && canUpdate) { 
+%>
 <script>
 $(function() {
 	document.scriptContext["countBulkUpdate"] = function($frame, func) {
@@ -1008,11 +1018,11 @@ function doBulkUpdate(target) {
 
 	var dialogOption = {resizable: true};
 <%
-	if (!section.isUseBulkView()) {
+		if (!section.isUseBulkView()) {
 %>
 		dialogOption.dialogHeight = 450;
 <%
-	}
+		}
 %>
 	var $bulkUpdateDialogTrigger = getDialogTrigger($(target).parent(), dialogOption);
 	$bulkUpdateDialogTrigger.click();
@@ -1020,17 +1030,17 @@ function doBulkUpdate(target) {
 	var oid = [];
 	var version = [];
 <%
-	if (section.getExclusiveControlPoint() == ExclusiveControlPoint.WHEN_SEARCH) {
+		if (section.getExclusiveControlPoint() == ExclusiveControlPoint.WHEN_SEARCH) {
 %>
 	var timestamp = [];
 <%
-	}
+		}
 %>
 	for(var i=0; i< ids.length; ++i) {
 		var id = ids[i];
 		var row = grid.getRowData(id);
 <%
-	if (section.isGroupingData()) {
+		if (section.isGroupingData()) {
 %>
 		if (i > 0) {
 			var beforeRow = grid.getRowData(ids[i - 1]);
@@ -1043,16 +1053,16 @@ function doBulkUpdate(target) {
 		<%-- 更新ダイアログが開く時に、排他エラーメッセージのパラメータなどとして利用します。 --%>
 		id = oid.length + 1;
 <%
-	}
+		}
 %>
 		oid.push(id + "_" + row.orgOid);
 		version.push(id + "_" + row.orgVersion);
 <%
-	if (section.getExclusiveControlPoint() == ExclusiveControlPoint.WHEN_SEARCH) {
+		if (section.getExclusiveControlPoint() == ExclusiveControlPoint.WHEN_SEARCH) {
 %>		
 		timestamp.push(id + "_" + row.orgTimestamp);
 <%
-	}
+		}
 %>
 	}
 
@@ -1067,13 +1077,13 @@ function doBulkUpdate(target) {
 		$("<input />").attr({type:"hidden", name:"version", value:this}).appendTo($form);
 	});
 <%
-	if (section.getExclusiveControlPoint() == ExclusiveControlPoint.WHEN_SEARCH) {
+		if (section.getExclusiveControlPoint() == ExclusiveControlPoint.WHEN_SEARCH) {
 %>	
 	$(timestamp).each(function() {
 		$("<input />").attr({type:"hidden", name:"timestamp", value:this}).appendTo($form);
 	});
 <%
-	}
+		}
 %>
 	var searchCond = $(":hidden[name='searchCond']").val();
 	$("<input />").attr({type:"hidden", name:"searchCond", value:searchCond}).appendTo($form);
@@ -1097,6 +1107,7 @@ function closeBulkUpdateModalWindow() {
 </script>
 <%
 	}
+	
 	if (OutputType.MULTISELECT == type && permitConditionSelectAll) {
 		// 全ページor現在ページ選択
 %>
@@ -1108,11 +1119,11 @@ function closeBulkUpdateModalWindow() {
 <li>
 <label><input type="radio" name="selectAllType" value="current">${m:rs("mtp-gem-messages", "generic.element.section.SearchResultSection.selectCurrentPage")}</label>
 </li>
-<% if (!"-1".equals(multiplicity)) { %>
+<% 		if (!"-1".equals(multiplicity)) { %>
 <li class="selectalltype-message">
 <%= TemplateUtil.getResourceString("mtp-gem-messages", "generic.element.section.SearchResultSection.selectAllTypeMessage", multiplicity) %>
 </li>
-<% } %>
+<% 		} %>
 </ul>
 </div>
 <div id="selectDeselectAllTypeDialog" title="${m:rs('mtp-gem-messages', 'generic.element.section.SearchResultSection.selectDeselectAllType')}" style="display:none;">

@@ -1,19 +1,19 @@
 /*
  * Copyright (C) 2012 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
- * 
+ *
  * Unless you have purchased a commercial license,
  * the following license terms apply:
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
@@ -71,7 +71,7 @@ public class ExpressionPropertySearchCondition extends PropertySearchCondition {
 
 		if (type == ExpressionSearchConditionType.EXPRESSION) {
 			//ただのテキストからの入力
-			List<Condition> ret = new ArrayList<Condition>();
+			List<Condition> ret = new ArrayList<>();
 			String val = null;
 			if (getValue() instanceof String[]) {
 				val = ((String[]) getValue())[0];
@@ -90,7 +90,7 @@ public class ExpressionPropertySearchCondition extends PropertySearchCondition {
 				return searchCondition.convertNormalCondition();
 			} else {
 				//値がない場合は条件をつくらない
-				return new ArrayList<Condition>();
+				return new ArrayList<>();
 			}
 		}
 	}
@@ -204,8 +204,9 @@ public class ExpressionPropertySearchCondition extends PropertySearchCondition {
 			String[] value = (String[]) getValue();
 			if (value == null || value.length == 0) return null;
 			SelectPropertyEditor se = (SelectPropertyEditor) editor;
-			if (se.getDisplayType() == SelectDisplayType.CHECKBOX) {
-				List<SelectValue> list = new ArrayList<SelectValue>();
+			if (se.getDisplayType() == SelectDisplayType.CHECKBOX
+					|| se.getDisplayType() == SelectDisplayType.HIDDEN) {
+				List<SelectValue> list = new ArrayList<>();
 				for (String val : value) {
 					if (val != null && !val.isEmpty()) {
 						list.add(new SelectValue(val));

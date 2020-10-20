@@ -55,18 +55,19 @@ public class SelectPropertySearchCondition extends PropertySearchCondition {
 
 	@Override
 	public List<Condition> convertNormalCondition() {
-		List<Condition> conditions = new ArrayList<Condition>();
+		List<Condition> conditions = new ArrayList<>();
 		Object value = getValue();
 		SelectPropertyEditor editor = (SelectPropertyEditor) getEditor();
 		if (value != null) {
 			if (editor != null) {
-				if (editor.getDisplayType() == SelectDisplayType.CHECKBOX) {
+				if (editor.getDisplayType() == SelectDisplayType.CHECKBOX
+						|| editor.getDisplayType() == SelectDisplayType.HIDDEN) {
 					SelectValue[] array = (SelectValue[]) value;
 					if (array != null) {
 						if (array.length == 1) {
 							conditions.add(new Equals(getPropertyName(), array[0].getValue()));
 						} else if (array.length > 1) {
-							List<String> valueList = new ArrayList<String>();
+							List<String> valueList = new ArrayList<>();
 							for (SelectValue tmp : array) {
 								valueList.add(tmp.getValue());
 							}

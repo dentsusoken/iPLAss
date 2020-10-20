@@ -77,6 +77,12 @@ public class AutoNumberPropertyEditor extends PrimitivePropertyEditor {
 	}
 
 	@Override
+	public boolean isHide() {
+//		return displayType == AutoNumberDisplayType.HIDDEN;
+		return false;
+	}
+
+	@Override
 	public String getDefaultValue() {
 		// デフォルト値なし、空実装
 		return null;

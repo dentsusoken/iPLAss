@@ -18,6 +18,7 @@
  along with this program. If not, see <https://www.gnu.org/licenses/>.
  --%>
 
+<%@page import="org.iplass.mtp.view.generic.EntityViewRuntimeException"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8" trimDirectiveWhitespaces="true"%>
 <%@ page import="java.util.ArrayList" %>
@@ -116,7 +117,7 @@
 	}
 
 	//タイプ毎に出力内容かえる
-	if (editor.getDisplayType() != SelectDisplayType.LABEL && updatable) {
+	if (editor.getDisplayType() != SelectDisplayType.LABEL && editor.getDisplayType() != SelectDisplayType.HIDDEN && updatable) {
 		//詳細編集
 		List<String> values = new ArrayList<String>();
 		if (isMultiple){
@@ -199,11 +200,15 @@
 <%
 		}
 	} else {
-		//ラベル
-		request.setAttribute(Constants.OUTPUT_HIDDEN, true);
+		//LABELかHIDDENか更新不可
+		if (editor.getDisplayType() == SelectDisplayType.LABEL || updatable) {
+			request.setAttribute(Constants.OUTPUT_HIDDEN, true);
+		}
 %>
 <jsp:include page="SelectPropertyEditor_View.jsp"></jsp:include>
 <%
-		request.removeAttribute(Constants.OUTPUT_HIDDEN);
+		if (editor.getDisplayType() == SelectDisplayType.LABEL || updatable) {
+			request.removeAttribute(Constants.OUTPUT_HIDDEN);
+		}
 	}
 %>

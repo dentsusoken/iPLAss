@@ -64,6 +64,7 @@ import org.iplass.mtp.view.generic.editor.ReferenceComboSetting;
 import org.iplass.mtp.view.generic.editor.ReferencePropertyEditor;
 import org.iplass.mtp.view.generic.editor.ReferencePropertyEditor.RefComboSearchType;
 import org.iplass.mtp.view.generic.editor.ReferencePropertyEditor.ReferenceDisplayType;
+import org.iplass.mtp.view.generic.editor.SelectPropertyEditor.SelectDisplayType;
 import org.iplass.mtp.view.generic.element.property.PropertyItem;
 import org.iplass.mtp.web.template.TemplateUtil;
 import org.slf4j.Logger;
@@ -80,7 +81,7 @@ public class NormalSearchContext extends SearchContextBase {
 	@Override
 	public Where getWhere() {
 		Where w = new Where();
-		ArrayList<Condition> conditions = new ArrayList<Condition>();
+		ArrayList<Condition> conditions = new ArrayList<>();
 		getPropertyConditions();
 		if (propertyConditions != null && !propertyConditions.isEmpty()) {
 			for (PropertySearchCondition condition : propertyConditions.values()) {
@@ -261,7 +262,7 @@ public class NormalSearchContext extends SearchContextBase {
 	private Map<String, PropertySearchCondition> getPropertyConditions() {
 		if (propertyConditions == null) {
 			condition = new NormalConditionValue();
-			propertyConditions = new LinkedHashMap<String, PropertySearchCondition>();
+			propertyConditions = new LinkedHashMap<>();
 			for (PropertyDefinition p : getPropertyList()) {
 				Object value = getConditionValue(p, p.getName());
 				if (value != null && !(value.getClass().isArray() && ((Object[])value).length == 0)) {
@@ -275,7 +276,7 @@ public class NormalSearchContext extends SearchContextBase {
 			}
 
 			//ツリーから直接D&Dした参照のプロパティ項目、PropertyDefinitionからでは拾えない条件
-			nestPropertyConditions = new LinkedHashMap<String, PropertySearchCondition>();
+			nestPropertyConditions = new LinkedHashMap<>();
 			List<PropertyItem> properties = getLayoutProperties();
 			for (PropertyItem property : properties) {
 				//直接拾えるものは上で処理済みなのでスルー
@@ -492,7 +493,7 @@ public class NormalSearchContext extends SearchContextBase {
 			}
 		} else if (editor.getDisplayType() == ReferenceDisplayType.CHECKBOX) {
 			//チェックボックスならoid
-			List<Entity> list = new ArrayList<Entity>();
+			List<Entity> list = new ArrayList<>();
 			String[] oid = getRequest().getParams(Constants.SEARCH_COND_PREFIX + propName, String.class);
 			if (oid != null && oid.length > 0) {
 				for (String tmp : oid) {
@@ -516,7 +517,7 @@ public class NormalSearchContext extends SearchContextBase {
 			}
 		} else if (editor.getDisplayType() == ReferenceDisplayType.LINK && editor.isUseSearchDialog()) {
 			//リンクならoid
-			List<Entity> list = new ArrayList<Entity>();
+			List<Entity> list = new ArrayList<>();
 			String[] oid_ver = getRequest().getParams(Constants.SEARCH_COND_PREFIX + propName, String.class);
 			if (oid_ver != null && oid_ver.length > 0) {
 				for (String tmp : oid_ver) {
@@ -529,7 +530,7 @@ public class NormalSearchContext extends SearchContextBase {
 			}
 		} else if (editor.getDisplayType() == ReferenceDisplayType.TREE) {
 			//ツリーならoid
-			List<Entity> list = new ArrayList<Entity>();
+			List<Entity> list = new ArrayList<>();
 			String[] oid_ver = getRequest().getParams(Constants.SEARCH_COND_PREFIX + propName, String.class);
 			if (oid_ver != null && oid_ver.length > 0) {
 				for (String tmp : oid_ver) {
@@ -542,7 +543,7 @@ public class NormalSearchContext extends SearchContextBase {
 			}
 		} else if (editor.getDisplayType() == ReferenceDisplayType.UNIQUE && editor.isUseSearchDialog()) {
 			//ユニークならoid
-			List<Entity> list = new ArrayList<Entity>();
+			List<Entity> list = new ArrayList<>();
 			String[] oid_ver = getRequest().getParams(Constants.SEARCH_COND_PREFIX + propName, String.class);
 			if (oid_ver != null && oid_ver.length > 0) {
 				for (String tmp : oid_ver) {
@@ -645,10 +646,12 @@ public class NormalSearchContext extends SearchContextBase {
 
 	private Object getSelectValue(String propName) {
 		Object ret = null;
-		String dispType = getRequest().getParam(propName + "_dispType");
-		if (StringUtil.isNotBlank(dispType) && "checkbox".equals(dispType)) {
+		String strDispType = getRequest().getParam(propName + "_dispType");
+		SelectDisplayType dispType = StringUtil.isNotBlank(strDispType) ? SelectDisplayType.valueOf(strDispType) : null;
+		if (dispType == SelectDisplayType.CHECKBOX || dispType == SelectDisplayType.HIDDEN) {
+			//CHECKBOXまたはHIDDENの場合は、複数可
 			String[] values = getRequest().getParams(propName);
-			List<SelectValue> list = new ArrayList<SelectValue>();
+			List<SelectValue> list = new ArrayList<>();
 			if (values != null && values.length > 0) {
 				for (String value : values) {
 					if (value != null && !value.isEmpty()) {
@@ -672,7 +675,7 @@ public class NormalSearchContext extends SearchContextBase {
 		private Map<String, Object> properties;
 
 		public NormalConditionValue() {
-			properties = new HashMap<String, Object>();
+			properties = new HashMap<>();
 		}
 
 		public Object getValue(String propName) {

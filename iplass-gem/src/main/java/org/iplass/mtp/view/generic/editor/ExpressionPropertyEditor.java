@@ -58,6 +58,12 @@ public class ExpressionPropertyEditor extends PrimitivePropertyEditor {
 		return ExpressionDisplayType.LABEL;
 	}
 
+	@Override
+	public boolean isHide() {
+//		return displayType == ExpressionDisplayType.HIDDEN;
+		return false;
+	}
+
 	/** プロパティエディタ */
 	@MetaFieldInfo(
 			displayName="プロパティエディタ",

@@ -107,6 +107,12 @@ public abstract class PropertyEditor implements Refrectable {
 	public abstract Enum<?> getDisplayType();
 
 	/**
+	 * 非表示かを取得します。
+	 * @return true：非表示
+	 */
+	public abstract boolean isHide();
+
+	/**
 	 * 表示カスタムスタイルを取得します。
 	 * @return 表示カスタムスタイル
 	 */

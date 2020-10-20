@@ -159,6 +159,12 @@ public class BooleanPropertyEditor extends PrimitivePropertyEditor {
 		this.displayType = displayType;
 	}
 
+	@Override
+	public boolean isHide() {
+//		return displayType == BooleanDisplayType.HIDDEN;
+		return false;
+	}
+
 	/**
 	 * 真の表示ラベル
 	 * @return 真の表示ラベル
@@ -213,7 +219,7 @@ public class BooleanPropertyEditor extends PrimitivePropertyEditor {
 	 */
 	public void addLocalizedTrueLabel(LocalizedStringDefinition localizedTrueLabel) {
 		if (localizedTrueLabelList == null) {
-			localizedTrueLabelList = new ArrayList<LocalizedStringDefinition>();
+			localizedTrueLabelList = new ArrayList<>();
 		}
 
 		localizedTrueLabelList.add(localizedTrueLabel);
@@ -241,7 +247,7 @@ public class BooleanPropertyEditor extends PrimitivePropertyEditor {
 	 */
 	public void addLocalizedFalseLabel(LocalizedStringDefinition localizedFalseLabel) {
 		if (localizedFalseLabelList == null) {
-			localizedFalseLabelList = new ArrayList<LocalizedStringDefinition>();
+			localizedFalseLabelList = new ArrayList<>();
 		}
 
 		localizedFalseLabelList.add(localizedFalseLabel);

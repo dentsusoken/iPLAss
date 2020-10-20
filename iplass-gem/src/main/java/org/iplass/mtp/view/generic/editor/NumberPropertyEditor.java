@@ -145,6 +145,12 @@ public abstract class NumberPropertyEditor extends PrimitivePropertyEditor {
 		this.displayType = displayType;
 	}
 
+	@Override
+	public boolean isHide() {
+//		return displayType == NumberDisplayType.HIDDEN;
+		return false;
+	}
+
 	/**
 	 * 数値のフォーマットを取得します。
 	 * @return 数値のフォーマット

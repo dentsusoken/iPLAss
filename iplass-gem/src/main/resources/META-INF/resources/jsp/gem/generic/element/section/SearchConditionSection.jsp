@@ -628,6 +628,7 @@ $(function() {
 <%
 	//通常検索で表示する項目の抽出(非表示の場合ブランク扱い)
 	List<Element> elementList = new ArrayList<Element>();
+	List<PropertyItem> hiddenList = new ArrayList<PropertyItem>();
 	for (Element element : section.getElements()) {
 		if (element instanceof PropertyItem) {
 			PropertyItem property = (PropertyItem) element;
@@ -637,7 +638,13 @@ $(function() {
 				PropertyDefinition pd = defMap.get(property.getPropertyName());
 				if (EntityViewUtil.isDisplayElement(defName, property.getElementRuntimeId(), OutputType.SEARCHCONDITION, null)
 						&& !property.isHideNormalCondition() && isDispProperty(pd)) {
-					elementList.add(property);
+					//hiddenはレイアウトを保持するためBlankSpaceに置き換えたうえで退避
+					if (property.getEditor() != null && property.getEditor().isHide()) {
+						elementList.add(new BlankSpace());
+						hiddenList.add(property);
+					} else {
+						elementList.add(property);
+					}
 				} else {
 					elementList.add(new BlankSpace());
 				}
@@ -837,6 +844,42 @@ $(function() {
 </tr>
 </tbody>
 </table>
+<div class="hidden-cond-area">
+<%
+	//hidden出力
+	for (PropertyItem property : hiddenList) {
+		PropertyDefinition pd = defMap.get(property.getPropertyName());
+		property.getEditor().setPropertyName(property.getPropertyName());
+		String path = EntityViewUtil.getJspPath(property.getEditor(), ViewConst.DESIGN_TYPE_GEM);
+		if (path != null) {
+//			request.setAttribute(Constants.EDITOR_STYLE, style);//nest項目があった場合のクラスのプレフィックスに
+//			request.setAttribute(Constants.EDITOR_DISPLAY_LABEL, displayLabel);
+//			request.setAttribute(Constants.EDITOR_REQUIRED, property.isRequiredNormal());
+			request.setAttribute(Constants.EDITOR_EDITOR, property.getEditor());
+			request.setAttribute(Constants.EDITOR_PROPERTY_DEFINITION, pd);
+			Object defaultValue = defaultSearchCond.get(property.getPropertyName());
+			if (StringUtil.isEmpty(searchCond)) {
+				//指定検索条件がない場合はデフォルトから指定
+				request.setAttribute(Constants.EDITOR_PROP_VALUE, defaultValue);
+			} else {
+				//指定検索条件がある場合は、Editor側ではセットせずSearchResultSection側で設定
+			}
+			request.setAttribute(Constants.EDITOR_DEFAULT_VALUE, defaultValue);
+			request.setAttribute(Constants.AUTOCOMPLETION_SETTING, property.getAutocompletionSetting());
+%>
+<jsp:include page="<%=path%>" />
+<%
+//			request.removeAttribute(Constants.EDITOR_STYLE);
+//			request.removeAttribute(Constants.EDITOR_DISPLAY_LABEL);
+//			request.removeAttribute(Constants.EDITOR_REQUIRED);
+			request.removeAttribute(Constants.EDITOR_EDITOR);
+			request.removeAttribute(Constants.EDITOR_PROPERTY_DEFINITION);
+			request.removeAttribute(Constants.EDITOR_PROP_VALUE);
+			request.removeAttribute(Constants.EDITOR_DEFAULT_VALUE);
+		}
+	}
+%>
+</div>
 </form>
 </div><!--data-search-->
 <%

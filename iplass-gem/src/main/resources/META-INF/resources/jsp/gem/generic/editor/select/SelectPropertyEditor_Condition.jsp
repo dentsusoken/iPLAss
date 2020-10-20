@@ -33,12 +33,13 @@
 <%@ page import="org.iplass.mtp.view.generic.editor.EditorValue" %>
 <%@ page import="org.iplass.mtp.view.generic.editor.SelectPropertyEditor" %>
 <%@ page import="org.iplass.mtp.view.generic.editor.SelectPropertyEditor.SelectDisplayType"%>
+<%@ page import="org.iplass.mtp.view.generic.EntityViewRuntimeException"%>
 <%@ page import="org.iplass.mtp.view.generic.EntityViewUtil"%>
 <%@ page import="org.iplass.gem.command.Constants" %>
 <%@ page import="org.iplass.gem.command.GemResourceBundleUtil" %>
 <%@ page import="org.iplass.gem.command.ViewUtil" %>
 <%!
-	String[] getSelectValue(String searchCond, String key) {
+	String[] getSearchCondSelectValue(String searchCond, String key) {
 		ArrayList<String> list = new ArrayList<String>();
 		if (searchCond != null && searchCond.indexOf(key) > -1) {
 			String[] split = searchCond.split("&");
@@ -67,7 +68,7 @@
 	String[] defaultValue = (String[]) request.getAttribute(Constants.EDITOR_DEFAULT_VALUE);
 
 	String searchCond = request.getParameter(Constants.SEARCH_COND);
-	String[] _propValue = getSelectValue(searchCond, Constants.SEARCH_COND_PREFIX + editor.getPropertyName());
+	String[] _propValue = getSearchCondSelectValue(searchCond, Constants.SEARCH_COND_PREFIX + editor.getPropertyName());
 	String displayLabel = (String) request.getAttribute(Constants.EDITOR_DISPLAY_LABEL);
 	Boolean required = (Boolean) request.getAttribute(Constants.EDITOR_REQUIRED);
 	if (required == null) required = false;
@@ -101,6 +102,7 @@
 			valueList.addAll(Arrays.asList(_propValue));
 		}
 %>
+<input type="hidden" name="<c:out value="<%=propName %>"/>_dispType" value="<%=SelectDisplayType.CHECKBOX.name()%>" />
 <ul class="list-check-01">
 <%
 		for (EditorValue param : editor.getValues()) {
@@ -114,7 +116,6 @@
 		}
 %>
 </ul>
-<input type="hidden" name="<c:out value="<%=propName %>"/>_dispType" value="checkbox" />
 
 <script type="text/javascript">
 $(function() {
@@ -165,6 +166,7 @@ $(function() {
 			defaultCheckValue = defaultValue[0];
 		}
 %>
+<input type="hidden" name="<c:out value="<%=propName %>"/>_dispType" value="<%=SelectDisplayType.RADIO.name()%>" />
 <ul class="list-radio-01" data-itemName="<c:out value="<%=propName %>"/>">
 <%
 		String defaultChecked = " checked";
@@ -213,7 +215,7 @@ $(function() {
 });
 </script>
 <%
-	} else {
+	} else if (editor.getDisplayType() == SelectDisplayType.SELECT || editor.getDisplayType() == SelectDisplayType.LABEL) {
 		String value = "";
 		if (propValue != null && propValue.length > 0) {
 			value = propValue[0];
@@ -223,6 +225,7 @@ $(function() {
 			strDefault = defaultValue[0];
 		}
 %>
+<input type="hidden" name="<c:out value="<%=propName %>"/>_dispType" value="<%=SelectDisplayType.SELECT.name()%>" />
 <select name="<c:out value="<%=propName %>"/>" class="form-size-02 inpbr" style="<c:out value="<%=customStyle%>"/>">
 <option value=""><%= pleaseSelectLabel %></option>
 <%
@@ -262,5 +265,25 @@ $(function() {
 });
 </script>
 <%
+	} else if (editor.getDisplayType() == SelectDisplayType.HIDDEN) {
+		List<String> valueList = new ArrayList<String>();
+		if (_propValue == null || _propValue.length == 0) {
+			if (propValue != null && propValue.length > 0) {
+				valueList.addAll(Arrays.asList(propValue));
+			}
+		} else {
+			valueList.addAll(Arrays.asList(_propValue));
+		}
+%>
+<input type="hidden" name="<c:out value="<%=propName %>"/>_dispType" value="<%=SelectDisplayType.HIDDEN.name()%>" />
+<%
+		for (String value : valueList) {
+%>
+<input type="hidden" name="<c:out value="<%=propName%>"/>" value="<c:out value="<%=value%>"/>" data-norewrite="true"/>
+<%
+		}
+	} else {
+		throw new EntityViewRuntimeException(propName + " 's editor display type is invalid. editor=[" 
+				+ editor.getClass().getSimpleName() + "]. display type=[" + editor.getDisplayType() + "]");
 	}
 %>

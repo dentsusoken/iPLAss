@@ -223,6 +223,12 @@ public abstract class DateTimePropertyEditor extends PrimitivePropertyEditor {
 		return displayType;
 	}
 
+	@Override
+	public boolean isHide() {
+//		return displayType == DateTimeDisplayType.HIDDEN;
+		return false;
+	}
+
 	/**
 	 * 検索条件の単一日指定を取得します。
 	 * @return 検索条件の単一日指定
