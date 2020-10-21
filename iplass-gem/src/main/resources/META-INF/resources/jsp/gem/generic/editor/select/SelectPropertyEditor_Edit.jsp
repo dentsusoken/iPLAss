@@ -200,13 +200,14 @@
 		}
 	} else {
 		//LABELかHIDDENか更新不可
-		if (editor.getDisplayType() == SelectDisplayType.LABEL || updatable) {
+		
+		if (editor.getDisplayType() != SelectDisplayType.HIDDEN) {
 			request.setAttribute(Constants.OUTPUT_HIDDEN, true);
 		}
 %>
 <jsp:include page="SelectPropertyEditor_View.jsp"></jsp:include>
 <%
-		if (editor.getDisplayType() == SelectDisplayType.LABEL || updatable) {
+		if (editor.getDisplayType() != SelectDisplayType.HIDDEN) {
 			request.removeAttribute(Constants.OUTPUT_HIDDEN);
 		}
 	}
