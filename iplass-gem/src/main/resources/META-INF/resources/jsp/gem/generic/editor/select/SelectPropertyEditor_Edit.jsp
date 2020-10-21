@@ -18,7 +18,6 @@
  along with this program. If not, see <https://www.gnu.org/licenses/>.
  --%>
 
-<%@page import="org.iplass.mtp.view.generic.EntityViewRuntimeException"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8" trimDirectiveWhitespaces="true"%>
 <%@ page import="java.util.ArrayList" %>

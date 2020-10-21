@@ -128,6 +128,7 @@
 		}
 	}
 	
+	//全Type共通部分
 	request.setAttribute(Constants.EDITOR_EDITOR, property.getEditor());
 	request.setAttribute(Constants.EDITOR_PROP_VALUE, propValue);
 	request.setAttribute(Constants.EDITOR_PROPERTY_DEFINITION, pd);
