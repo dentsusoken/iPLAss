@@ -26,6 +26,7 @@
 <%@page import="org.iplass.mtp.view.generic.EntityViewUtil"%>
 <%@page import="org.iplass.mtp.view.generic.OutputType"%>
 <%@page import="org.iplass.mtp.view.generic.editor.BooleanPropertyEditor" %>
+<%@page import="org.iplass.mtp.view.generic.editor.BooleanPropertyEditor.BooleanDisplayType"%>
 <%@page import="org.iplass.mtp.web.template.TemplateUtil" %>
 <%@page import="org.iplass.gem.command.Constants"%>
 <%@page import="org.iplass.gem.command.GemResourceBundleUtil"%>
@@ -45,53 +46,78 @@
 
 	String propName = editor.getPropertyName();
 
-	String trueLabel = TemplateUtil.getMultilingualString(editor.getTrueLabel(), editor.getLocalizedTrueLabelList());
-	if (StringUtil.isEmpty(trueLabel)) {
-		trueLabel = TemplateUtil.getMultilingualString(
-				GemResourceBundleUtil.resourceString("generic.editor.boolean.BooleanPropertyEditor_View.enable"),
-				GemResourceBundleUtil.resourceList("generic.editor.boolean.BooleanPropertyEditor_View.enable"));
-	}
-	String falseLabel = TemplateUtil.getMultilingualString(editor.getFalseLabel(), editor.getLocalizedFalseLabelList());
-	if (StringUtil.isEmpty(falseLabel)) {
-		falseLabel = TemplateUtil.getMultilingualString(
-				GemResourceBundleUtil.resourceString("generic.editor.boolean.BooleanPropertyEditor_View.invalid"),
-				GemResourceBundleUtil.resourceList("generic.editor.boolean.BooleanPropertyEditor_View.invalid"));
-	}
-
-	//カスタムスタイル
-	String customStyle = "";
-	if (type == OutputType.VIEW) {
-		if (StringUtil.isNotEmpty(editor.getCustomStyle())) {
-			customStyle = EntityViewUtil.getCustomStyle(rootDefName, scriptKey, editor.getOutputCustomStyleScriptKey(), entity, propValue);
-		}
-	} else if (type == OutputType.EDIT) {
-		//入力不可の場合
-		if (StringUtil.isNotEmpty(editor.getInputCustomStyle())) {
-			customStyle = EntityViewUtil.getCustomStyle(rootDefName, scriptKey, editor.getInputCustomStyleScriptKey(), entity, propValue);
-		}
-	}
-
 	boolean isMultiple = pd.getMultiplicity() != 1;
-	if (isMultiple) {
-		//複数
-		Boolean[] array = propValue instanceof Boolean[] ? (Boolean[]) propValue : null;
+	
+	if (editor.getDisplayType() != BooleanDisplayType.HIDDEN) {
+		//HIDDEN以外
+		
+		String trueLabel = TemplateUtil.getMultilingualString(editor.getTrueLabel(), editor.getLocalizedTrueLabelList());
+		if (StringUtil.isEmpty(trueLabel)) {
+			trueLabel = TemplateUtil.getMultilingualString(
+					GemResourceBundleUtil.resourceString("generic.editor.boolean.BooleanPropertyEditor_View.enable"),
+					GemResourceBundleUtil.resourceList("generic.editor.boolean.BooleanPropertyEditor_View.enable"));
+		}
+		String falseLabel = TemplateUtil.getMultilingualString(editor.getFalseLabel(), editor.getLocalizedFalseLabelList());
+		if (StringUtil.isEmpty(falseLabel)) {
+			falseLabel = TemplateUtil.getMultilingualString(
+					GemResourceBundleUtil.resourceString("generic.editor.boolean.BooleanPropertyEditor_View.invalid"),
+					GemResourceBundleUtil.resourceList("generic.editor.boolean.BooleanPropertyEditor_View.invalid"));
+		}
+	
+		//カスタムスタイル
+		String customStyle = "";
+		if (type == OutputType.VIEW) {
+			if (StringUtil.isNotEmpty(editor.getCustomStyle())) {
+				customStyle = EntityViewUtil.getCustomStyle(rootDefName, scriptKey, editor.getOutputCustomStyleScriptKey(), entity, propValue);
+			}
+		} else if (type == OutputType.EDIT) {
+			//入力不可の場合
+			if (StringUtil.isNotEmpty(editor.getInputCustomStyle())) {
+				customStyle = EntityViewUtil.getCustomStyle(rootDefName, scriptKey, editor.getInputCustomStyleScriptKey(), entity, propValue);
+			}
+		}
+
+		if (isMultiple) {
+			//複数
+			Boolean[] array = propValue instanceof Boolean[] ? (Boolean[]) propValue : null;
 %>
 <ul class="data-label" style="<c:out value="<%=customStyle %>"/>">
 <%
-		for (int i = 0; i < pd.getMultiplicity(); i++) {
+			for (int i = 0; i < pd.getMultiplicity(); i++) {
 %>
 <li>
 <%
-			String str = "";
-			String label = "";
-			if (array != null && array.length > i && array[i] != null) {
-				str = array[i].toString();
-				label = array[i] ? trueLabel : falseLabel;
-			}
-			if (label == null || label.length() == 0) {
-				label = str;
+				String str = "";
+				String label = "";
+				if (array != null && array.length > i && array[i] != null) {
+					str = array[i].toString();
+					label = array[i] ? trueLabel : falseLabel;
+				}
+				if (label == null || label.length() == 0) {
+					label = str;
+				}
+%>
+<c:out value="<%=label %>"/>
+<%
+				if (outputHidden) {
+%>
+<input type="hidden" name="<c:out value="<%=propName %>"/>" value="<c:out value="<%=str %>"/>" />
+<%
+				}
+%>
+</li>
+<%
 			}
 %>
+</ul>
+<%
+		} else {
+			//単一
+			Boolean b = propValue instanceof Boolean ? (Boolean) propValue : null;
+			String str = b != null ? b.toString() : "";
+			String label = b != null ? b ? trueLabel : falseLabel : str;
+%>
+<span class="data-label" style="<c:out value="<%=customStyle %>"/>" data-true-label="<c:out value="<%=trueLabel %>"/>" data-false-label="<c:out value="<%=falseLabel %>"/>">
 <c:out value="<%=label %>"/>
 <%
 			if (outputHidden) {
@@ -100,28 +126,31 @@
 <%
 			}
 %>
-</li>
+</span>
 <%
 		}
-%>
-</ul>
-<%
 	} else {
-		//単一
-		Boolean b = propValue instanceof Boolean ? (Boolean) propValue : null;
-		String str = b != null ? b.toString() : "";
-		String label = b != null ? b ? trueLabel : falseLabel : str;
-%>
-<span class="data-label" style="<c:out value="<%=customStyle %>"/>" data-true-label="<c:out value="<%=trueLabel %>"/>" data-false-label="<c:out value="<%=falseLabel %>"/>">
-<c:out value="<%=label %>"/>
-<%
-		if (outputHidden) {
+		//HIDDEN
+
+		if (isMultiple) {
+			//複数
+			Boolean[] array = propValue instanceof Boolean[] ? (Boolean[]) propValue : null;
+			for (int i = 0; i < pd.getMultiplicity(); i++) {
+				String str = "";
+				if (array != null && array.length > i && array[i] != null) {
+					str = array[i].toString();
+				}
 %>
 <input type="hidden" name="<c:out value="<%=propName %>"/>" value="<c:out value="<%=str %>"/>" />
 <%
-		}
+			}
+		} else {
+			//単一
+			Boolean b = propValue instanceof Boolean ? (Boolean) propValue : null;
+			String str = b != null ? b.toString() : "";
 %>
-</span>
+			<input type="hidden" name="<c:out value="<%=propName %>"/>" value="<c:out value="<%=str %>"/>" />
 <%
+		}
 	}
 %>

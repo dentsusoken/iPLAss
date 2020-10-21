@@ -55,7 +55,8 @@ public class BooleanPropertyEditor extends PrimitivePropertyEditor {
 		@XmlEnumValue("Radio")RADIO,
 		@XmlEnumValue("Checkbox")CHECKBOX,
 		@XmlEnumValue("Select")SELECT,
-		@XmlEnumValue("Label")LABEL
+		@XmlEnumValue("Label")LABEL,
+		@XmlEnumValue("Hidden")HIDDEN
 	}
 
 	/** 表示タイプ */
@@ -161,8 +162,7 @@ public class BooleanPropertyEditor extends PrimitivePropertyEditor {
 
 	@Override
 	public boolean isHide() {
-//		return displayType == BooleanDisplayType.HIDDEN;
-		return false;
+		return displayType == BooleanDisplayType.HIDDEN;
 	}
 
 	/**

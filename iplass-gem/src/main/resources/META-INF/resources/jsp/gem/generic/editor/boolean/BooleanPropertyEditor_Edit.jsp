@@ -126,7 +126,9 @@
 	}
 
 
-	if (editor.getDisplayType() != BooleanDisplayType.LABEL && updatable) {
+	if (editor.getDisplayType() != BooleanDisplayType.LABEL 
+			&& editor.getDisplayType() != BooleanDisplayType.HIDDEN && updatable) {
+		
 		if (isMultiple) {
 			//複数
 			Boolean[] array = propValue instanceof Boolean[] ? (Boolean[]) propValue : null;
@@ -239,12 +241,17 @@
 			}
 		}
 	} else {
-		//ラベル
-		request.setAttribute(Constants.OUTPUT_HIDDEN, true);
+		//LABELかHIDDENか更新不可
+		
+		if (editor.getDisplayType() != BooleanDisplayType.HIDDEN) {
+			request.setAttribute(Constants.OUTPUT_HIDDEN, true);
+		}
 %>
 <jsp:include page="BooleanPropertyEditor_View.jsp"></jsp:include>
 <%
-		request.removeAttribute(Constants.OUTPUT_HIDDEN);
+		if (editor.getDisplayType() != BooleanDisplayType.HIDDEN) {
+			request.removeAttribute(Constants.OUTPUT_HIDDEN);
+		}
 	}
 
 	String type = editor.getDisplayType().name();

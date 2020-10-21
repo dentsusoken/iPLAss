@@ -238,7 +238,8 @@ public abstract class RegistrationCommandContext extends GenericCommandContext {
 		String _type = getParam(name + "Type");
 		BooleanDisplayType type = StringUtil.isNotEmpty(_type) ? BooleanDisplayType.valueOf(_type) : null;
 		Boolean ret = null;
-		if (type == BooleanDisplayType.SELECT || type == BooleanDisplayType.LABEL) {
+		if (type == BooleanDisplayType.SELECT
+				|| type == BooleanDisplayType.LABEL || type == BooleanDisplayType.HIDDEN) {
 			//未選択時は空文字→nullで登録
 			ret = StringUtil.isNotBlank(param) ? Boolean.parseBoolean(param) : null;
 		} else {
@@ -253,7 +254,8 @@ public abstract class RegistrationCommandContext extends GenericCommandContext {
 		String _type = getParam(name + "Type");
 		BooleanDisplayType type = StringUtil.isNotEmpty(_type) ? BooleanDisplayType.valueOf(_type) : null;
 		Boolean[] ret = null;
-		if (type == BooleanDisplayType.SELECT || type == BooleanDisplayType.LABEL) {
+		if (type == BooleanDisplayType.SELECT
+				|| type == BooleanDisplayType.LABEL || type == BooleanDisplayType.HIDDEN) {
 			String[] params = getParams(name);
 			if (params != null) {
 				ret = Arrays.stream(params)
