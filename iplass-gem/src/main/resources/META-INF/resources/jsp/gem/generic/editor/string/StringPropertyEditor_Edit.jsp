@@ -123,11 +123,6 @@
 
 	boolean isMultiple = pd.getMultiplicity() != 1;
 
-	String pleaseSelectLabel = "";
-	if (ViewUtil.isShowPulldownPleaseSelectLabel()) {
-		pleaseSelectLabel = GemResourceBundleUtil.resourceString("generic.editor.string.StringPropertyEditor_Edit.pleaseSelect");
-	}
-
 	//カスタムスタイル
 	String customStyle = "";
 	if (StringUtil.isNotEmpty(editor.getInputCustomStyle())) {
@@ -140,8 +135,99 @@
 	}
 
 	//詳細編集
-	int length = 0;
-	if (editor.getDisplayType() != StringDisplayType.SELECT) {
+	if (editor.getDisplayType() == StringDisplayType.SELECT) {
+		//選択型
+
+		String cls = "form-size-02 inpbr";
+		if (nest != null && nest) {
+			//cls = "form-size-08 inpbr";
+		}
+
+		if (isMultiple) {
+			//複数
+			String[] array = propValue instanceof String[] ? (String[]) propValue : null;
+			if (updatable) {
+				List<String> values = new ArrayList<String>();
+				if (array != null && array.length > 0) values.addAll(Arrays.asList(array));
+%>
+<select name="<c:out value="<%=propName %>"/>" size="6" class="<c:out value="<%=cls %>"/>" style="<c:out value="<%=customStyle%>"/>" multiple>
+<%
+				for (EditorValue tmp : editor.getValues()) {
+					String label = EntityViewUtil.getStringPropertySelectTypeLabel(tmp);
+					String selected = values.contains(tmp.getValue()) ? " selected" : "";
+					String optStyle = tmp.getStyle() != null ? tmp.getStyle() : "";
+%>
+<option class="<c:out value="<%=optStyle %>"/>" title="<c:out value="<%=label %>" />" value="<c:out value="<%=tmp.getValue() %>"/>" <c:out value="<%=selected %>"/>><c:out value="<%=label %>" /></option>
+<%
+				}
+%>
+</select>
+<%
+			} else {
+				//更新不可
+				List<EditorValue> values = getValues(editor, propValue, pd);
+%>
+<ul style="<c:out value="<%=customStyle%>"/>">
+<%
+				for (EditorValue tmp : values) {
+					String optStyle = tmp.getStyle() != null ? tmp.getStyle() : "";
+%>
+<li class="<c:out value="<%=optStyle %>"/>">
+<c:out value="<%=tmp.getLabel() %>" />
+<input type="hidden" name="<c:out value="<%=propName%>"/>" value="<c:out value="<%=tmp.getValue()%>"/>" />
+</li>
+<%
+				}
+%>
+</ul>
+<%
+			}
+		} else {
+			//単一
+			String str = propValue instanceof String ? (String) propValue : "";
+			if (updatable) {
+				String pleaseSelectLabel = "";
+				if (ViewUtil.isShowPulldownPleaseSelectLabel()) {
+					pleaseSelectLabel = GemResourceBundleUtil.resourceString("generic.editor.string.StringPropertyEditor_Edit.pleaseSelect");
+				}
+%>
+<select name="<c:out value="<%=propName %>"/>" size="1" class="<c:out value="<%=cls %>"/>" style="<c:out value="<%=customStyle%>"/>">
+<option value="" title="<%= pleaseSelectLabel %>"><%= pleaseSelectLabel %></option>
+<%
+				for (EditorValue tmp : editor.getValues()) {
+					String label = EntityViewUtil.getStringPropertySelectTypeLabel(tmp);
+					String selected = str.equals(tmp.getValue()) ? " selected" : "";
+					String optStyle = tmp.getStyle() != null ? tmp.getStyle() : "";
+%>
+<option class="<c:out value="<%=optStyle %>"/>" title="<c:out value="<%=label %>" />" value="<c:out value="<%=tmp.getValue() %>"/>" <c:out value="<%=selected %>"/>><c:out value="<%=label %>" /></option>
+<%
+				}
+%>
+</select>
+<%
+			} else {
+				//更新不可
+				EditorValue ev = getValue(editor, str);
+				String label = ev != null ? ev.getLabel() != null ? ev.getLabel() : "" : "";
+				String val = ev != null ? ev.getValue() != null ? ev.getValue() : "" : "";
+
+				if (StringUtil.isNotEmpty(customStyle)) {
+%>
+<span style="<c:out value="<%=customStyle %>"/>">
+<%
+				}
+%>
+<c:out value="<%=label %>"/>
+<input type="hidden" name="<c:out value="<%=propName %>"/>" value="<c:out value="<%=propValue %>"/>" />
+<%
+				if (StringUtil.isNotEmpty(customStyle)) {
+%>
+</span>
+<%
+				}
+			}
+		}
+	} else {
 		//選択型以外
 
 		String cls = "form-size-01 inpbr";
@@ -153,14 +239,9 @@
 			maxlength = " maxlength=" + editor.getMaxlength();
 		}
 
-		if (editor.getDisplayType() == StringDisplayType.LABEL || !updatable) {
-			//ラベルor変更不可
-			request.setAttribute(Constants.OUTPUT_HIDDEN, true);
-%>
-<jsp:include page="StringPropertyEditor_View.jsp"></jsp:include>
-<%
-			request.removeAttribute(Constants.OUTPUT_HIDDEN);
-		} else {
+		if (editor.getDisplayType() != StringDisplayType.LABEL
+				&& editor.getDisplayType() != StringDisplayType.HIDDEN && updatable) {
+
 			if (isMultiple) {
 				//複数
 				String ulId = "ul_" + propName;
@@ -207,6 +288,7 @@
 </li>
 <%
 				String[] array = propValue instanceof String[] ? (String[]) propValue : null;
+				int length = 0;
 				if (array != null) {
 					length = array.length;
 					for (int i = 0; i < array.length; i++) {
@@ -346,11 +428,11 @@ function <%=toggleAddBtnFunc%>(){
 %>
 <script type="text/javascript">
 $(function() {
-<%if (StringUtil.isNotBlank(editor.getRichtextEditorOption())) {%>
+<%					if (StringUtil.isNotBlank(editor.getRichtextEditorOption())) {%>
 	var opt = <%=editor.getRichtextEditorOption()%>;
-<%} else {%>
+<%					} else {%>
 	var opt = { allowedContent:<%=allowedContent%> };
-<%}%>
+<%					}%>
 	$("textarea[name='<%=escapedPropName%>']").ckeditor(
 		function() {}, opt
 	);
@@ -363,93 +445,16 @@ $(function() {
 <%
 				}
 			}
-		}
-	} else {
-		//選択型
-
-		String cls = "form-size-02 inpbr";
-		if (nest != null && nest) {
-			//cls = "form-size-08 inpbr";
-		}
-
-		if (isMultiple) {
-			//複数
-			String[] array = propValue instanceof String[] ? (String[]) propValue : null;
-			if (updatable) {
-				List<String> values = new ArrayList<String>();
-				if (array != null && array.length > 0) values.addAll(Arrays.asList(array));
-%>
-<select name="<c:out value="<%=propName %>"/>" size="6" class="<c:out value="<%=cls %>"/>" style="<c:out value="<%=customStyle%>"/>" multiple>
-<%
-				for (EditorValue tmp : editor.getValues()) {
-					String label = EntityViewUtil.getStringPropertySelectTypeLabel(tmp);
-					String selected = values.contains(tmp.getValue()) ? " selected" : "";
-					String optStyle = tmp.getStyle() != null ? tmp.getStyle() : "";
-%>
-<option class="<c:out value="<%=optStyle %>"/>" title="<c:out value="<%=label %>" />" value="<c:out value="<%=tmp.getValue() %>"/>" <c:out value="<%=selected %>"/>><c:out value="<%=label %>" /></option>
-<%
-				}
-%>
-</select>
-<%
-			} else {
-				//更新不可
-				List<EditorValue> values = getValues(editor, propValue, pd);
-%>
-<ul style="<c:out value="<%=customStyle%>"/>">
-<%
-				for (EditorValue tmp : values) {
-					String optStyle = tmp.getStyle() != null ? tmp.getStyle() : "";
-%>
-<li class="<c:out value="<%=optStyle %>"/>">
-<c:out value="<%=tmp.getLabel() %>" />
-<input type="hidden" name="<c:out value="<%=propName%>"/>" value="<c:out value="<%=tmp.getValue()%>"/>" />
-</li>
-<%
-				}
-%>
-</ul>
-<%
-			}
 		} else {
-			//単一
-			String str = propValue instanceof String ? (String) propValue : "";
-			if (updatable) {
+			//LABELかHIDDENか更新不可
+			if (editor.getDisplayType() != StringDisplayType.HIDDEN) {
+				request.setAttribute(Constants.OUTPUT_HIDDEN, true);
+			}
 %>
-<select name="<c:out value="<%=propName %>"/>" size="1" class="<c:out value="<%=cls %>"/>" style="<c:out value="<%=customStyle%>"/>">
-<option value="" title="<%= pleaseSelectLabel %>"><%= pleaseSelectLabel %></option>
+<jsp:include page="StringPropertyEditor_View.jsp"></jsp:include>
 <%
-				for (EditorValue tmp : editor.getValues()) {
-					String label = EntityViewUtil.getStringPropertySelectTypeLabel(tmp);
-					String selected = str.equals(tmp.getValue()) ? " selected" : "";
-					String optStyle = tmp.getStyle() != null ? tmp.getStyle() : "";
-%>
-<option class="<c:out value="<%=optStyle %>"/>" title="<c:out value="<%=label %>" />" value="<c:out value="<%=tmp.getValue() %>"/>" <c:out value="<%=selected %>"/>><c:out value="<%=label %>" /></option>
-<%
-				}
-%>
-</select>
-<%
-			} else {
-				//更新不可
-				EditorValue ev = getValue(editor, str);
-				String label = ev != null ? ev.getLabel() != null ? ev.getLabel() : "" : "";
-				String val = ev != null ? ev.getValue() != null ? ev.getValue() : "" : "";
-
-				if (StringUtil.isNotEmpty(customStyle)) {
-%>
-<span style="<c:out value="<%=customStyle %>"/>">
-<%
-				}
-%>
-<c:out value="<%=label %>"/>
-<input type="hidden" name="<c:out value="<%=propName %>"/>" value="<c:out value="<%=propValue %>"/>" />
-<%
-				if (StringUtil.isNotEmpty(customStyle)) {
-%>
-</span>
-<%
-				}
+			if (editor.getDisplayType() != StringDisplayType.HIDDEN) {
+				request.removeAttribute(Constants.OUTPUT_HIDDEN);
 			}
 		}
 	}

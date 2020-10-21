@@ -61,7 +61,8 @@ public class StringPropertyEditor extends PrimitivePropertyEditor {
 		@XmlEnumValue("RichText")RICHTEXT,
 		@XmlEnumValue("Password")PASSWORD,
 		@XmlEnumValue("Select")SELECT,
-		@XmlEnumValue("Label")LABEL
+		@XmlEnumValue("Label")LABEL,
+		@XmlEnumValue("Hidden")HIDDEN
 	}
 
 	/** 表示タイプ */
@@ -201,8 +202,7 @@ public class StringPropertyEditor extends PrimitivePropertyEditor {
 
 	@Override
 	public boolean isHide() {
-//		return displayType == StringDisplayType.HIDDEN;
-		return false;
+		return displayType == StringDisplayType.HIDDEN;
 	}
 
 	/**

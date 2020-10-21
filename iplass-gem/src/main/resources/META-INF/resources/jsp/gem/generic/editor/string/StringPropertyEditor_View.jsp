@@ -102,6 +102,7 @@
 	}
 
 	boolean isMultiple = pd.getMultiplicity() != 1;
+	
 	if (editor.getDisplayType() == StringDisplayType.RICHTEXT) {
 		//詳細編集か詳細表示の場合だけ表示する
 		if (OutputType.EDIT == type || OutputType.VIEW == type) {
@@ -169,7 +170,59 @@ $(function() {
 });
 </script>
 <%
-	} else if (editor.getDisplayType() != StringDisplayType.SELECT) {
+	} else if (editor.getDisplayType() == StringDisplayType.SELECT) {
+		
+		if (isMultiple) {
+			List<EditorValue> values = getValues(editor, propValue, pd);
+%>
+<ul class="data-label" style="<c:out value="<%=customStyle %>"/>">
+<%
+			for (EditorValue tmp : values) {
+				String label = EntityViewUtil.getStringPropertySelectTypeLabel(tmp);
+				String style = tmp.getStyle() != null ? tmp.getStyle() : "";
+%>
+<li class="<c:out value="<%=style %>"/>">
+<c:out value="<%=label %>" />
+</li>
+<%
+			}
+%>
+</ul>
+<%
+		} else {
+			EditorValue ev = getValue(editor, (String) propValue);
+			String label = "";
+			if (ev != null) {
+				label = EntityViewUtil.getStringPropertySelectTypeLabel(ev);
+			}
+%>
+<span class="data-label" style="<c:out value="<%=customStyle %>"/>">
+<c:out value="<%=label %>"/>
+</span>
+<%
+		}
+	} else if (editor.getDisplayType() == StringDisplayType.HIDDEN) {
+		if (isMultiple) {
+			String[] array = propValue instanceof String[] ? (String[]) propValue : null;
+			if (array != null) {
+				for (int i = 0; i < array.length; i++) {
+					String str = array[i] != null ? array[i] : "";
+%>
+<input type="hidden" name="<c:out value="<%=propName %>"/>" value="<c:out value="<%=str %>"/>" />
+<%
+				}
+			}
+		} else {
+			//単一
+			String str = propValue instanceof String ? (String) propValue : "";
+%>
+<input type="hidden" name="<c:out value="<%=propName %>"/>" value="<c:out value="<%=str %>"/>" />
+<%
+		}
+		
+	} else {
+		//RICHTEXT,SELECT,HIDDEN以外
+		
 		if (isMultiple) {
 %>
 <ul class="data-label" style="<c:out value="<%=customStyle %>"/>">
@@ -228,36 +281,6 @@ $(function() {
 <%
 			}
 %>
-</span>
-<%
-		}
-	} else {
-		if (isMultiple) {
-			List<EditorValue> values = getValues(editor, propValue, pd);
-%>
-<ul class="data-label" style="<c:out value="<%=customStyle %>"/>">
-<%
-			for (EditorValue tmp : values) {
-				String label = EntityViewUtil.getStringPropertySelectTypeLabel(tmp);
-				String style = tmp.getStyle() != null ? tmp.getStyle() : "";
-%>
-<li class="<c:out value="<%=style %>"/>">
-<c:out value="<%=label %>" />
-</li>
-<%
-			}
-%>
-</ul>
-<%
-		} else {
-			EditorValue ev = getValue(editor, (String) propValue);
-			String label = "";
-			if (ev != null) {
-				label = EntityViewUtil.getStringPropertySelectTypeLabel(ev);
-			}
-%>
-<span class="data-label" style="<c:out value="<%=customStyle %>"/>">
-<c:out value="<%=label %>"/>
 </span>
 <%
 		}
