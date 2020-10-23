@@ -133,7 +133,9 @@
 		maxlength = " maxlength=" + editor.getMaxlength();
 	}
 
-	if (editor.getDisplayType() == NumberDisplayType.TEXT && updatable) {
+	if (editor.getDisplayType() != NumberDisplayType.LABEL 
+			&& editor.getDisplayType() != NumberDisplayType.HIDDEN && updatable) {
+		
 		//テキスト
 		if (isMultiple) {
 			//複数
@@ -189,11 +191,16 @@
 <%
 		}
 	} else {
-		//ラベル
-		request.setAttribute(Constants.OUTPUT_HIDDEN, true);
+		//LABELかHIDDENか更新不可
+		
+		if (editor.getDisplayType() != NumberDisplayType.HIDDEN) {
+			request.setAttribute(Constants.OUTPUT_HIDDEN, true);
+		}
 %>
 <jsp:include page="NumberPropertyEditor_View.jsp"></jsp:include>
 <%
-		request.removeAttribute(Constants.OUTPUT_HIDDEN);
+		if (editor.getDisplayType() != NumberDisplayType.HIDDEN) {
+			request.removeAttribute(Constants.OUTPUT_HIDDEN);
+		}
 	}
 %>
