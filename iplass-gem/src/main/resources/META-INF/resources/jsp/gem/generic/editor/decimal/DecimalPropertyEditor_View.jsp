@@ -29,6 +29,7 @@
 <%@ page import="org.iplass.mtp.view.generic.EntityViewUtil"%>
 <%@ page import="org.iplass.mtp.view.generic.OutputType"%>
 <%@ page import="org.iplass.mtp.view.generic.editor.DecimalPropertyEditor" %>
+<%@ page import="org.iplass.mtp.view.generic.editor.NumberPropertyEditor.NumberDisplayType"%>
 <%@ page import="org.iplass.mtp.web.template.TemplateUtil" %>
 <%@ page import="org.iplass.gem.GemConfigService"%>
 <%@ page import="org.iplass.mtp.spi.ServiceRegistry"%>
@@ -80,69 +81,93 @@
 
 	String propName = editor.getPropertyName();
 
-	//カスタム表示スタイル
-	String customStyle = "";
-	if (type == OutputType.VIEW) {
-		if (StringUtil.isNotEmpty(editor.getCustomStyle())) {
-			customStyle = EntityViewUtil.getCustomStyle(rootDefName, scriptKey, editor.getOutputCustomStyleScriptKey(), entity, propValue);
-		}
-	} else if (type == OutputType.EDIT) {
-		//入力不可の場合
-		if (StringUtil.isNotEmpty(editor.getInputCustomStyle())) {
-			customStyle = EntityViewUtil.getCustomStyle(rootDefName, scriptKey, editor.getInputCustomStyleScriptKey(), entity, propValue);
-		}
-	}
-
 	boolean isMultiple = pd.getMultiplicity() != 1;
 
-	String clsComma = "";
-	if (editor.isShowComma()) {
-		clsComma = " commaLabel";
-	}
+	if (editor.getDisplayType() != NumberDisplayType.HIDDEN) {
 
-	if (isMultiple) {
-		//複数
+		//カスタム表示スタイル
+		String customStyle = "";
+		if (type == OutputType.VIEW) {
+			if (StringUtil.isNotEmpty(editor.getCustomStyle())) {
+				customStyle = EntityViewUtil.getCustomStyle(rootDefName, scriptKey, editor.getOutputCustomStyleScriptKey(), entity, propValue);
+			}
+		} else if (type == OutputType.EDIT) {
+			//入力不可の場合
+			if (StringUtil.isNotEmpty(editor.getInputCustomStyle())) {
+				customStyle = EntityViewUtil.getCustomStyle(rootDefName, scriptKey, editor.getInputCustomStyleScriptKey(), entity, propValue);
+			}
+		}
+
+		String clsComma = "";
+		if (editor.isShowComma()) {
+			clsComma = " commaLabel";
+		}
+
+		if (isMultiple) {
+			//複数
 %>
 <ul class="data-label<c:out value="<%=clsComma %>"/>" style="<c:out value="<%=customStyle %>"/>">
 <%
-		BigDecimal[] array = propValue instanceof BigDecimal[] ? (BigDecimal[]) propValue : null;
-		if (array != null) {
-			for (int i = 0; i < array.length; i++) {
-				String str = format(editor.getNumberFormat(), array[i]);
+			BigDecimal[] array = propValue instanceof BigDecimal[] ? (BigDecimal[]) propValue : null;
+			if (array != null) {
+				for (int i = 0; i < array.length; i++) {
+					String str = format(editor.getNumberFormat(), array[i]);
 %>
 <li>
 <c:out value="<%=str %>"/>
 <%
-				if (outputHidden) {
+					if (outputHidden) {
+						String hiddenValue = array[i] instanceof BigDecimal ? ((BigDecimal)array[i]).toPlainString() : "";
+%>
+<input type="hidden" name="<c:out value="<%=propName %>"/>" value="<c:out value="<%=hiddenValue %>"/>" />
+<%
+					}
+%>
+</li>
+<%
+				}
+			}
+%>
+</ul>
+<%
+		} else {
+			//単一
+			BigDecimal target = propValue instanceof BigDecimal ? (BigDecimal) propValue : null;
+			String str = format(editor.getNumberFormat(), target);
+%>
+<span class="data-label<c:out value="<%=clsComma %>"/>" style="<c:out value="<%=customStyle %>"/>">
+<c:out value="<%=str %>"/>
+<%
+			if (outputHidden) {
+				String hiddenValue = propValue instanceof BigDecimal ? ((BigDecimal)propValue).toPlainString() : "";
+%>
+<input type="hidden" name="<c:out value="<%=propName %>"/>" value="<c:out value="<%=hiddenValue %>"/>" />
+<%
+			}
+%>
+</span>
+<%
+		}
+	} else {
+		//HIDDEN
+		
+		if (isMultiple) {
+			//複数
+			BigDecimal[] array = propValue instanceof BigDecimal[] ? (BigDecimal[]) propValue : null;
+			if (array != null) {
+				for (int i = 0; i < array.length; i++) {
 					String hiddenValue = array[i] instanceof BigDecimal ? ((BigDecimal)array[i]).toPlainString() : "";
 %>
 <input type="hidden" name="<c:out value="<%=propName %>"/>" value="<c:out value="<%=hiddenValue %>"/>" />
 <%
 				}
-%>
-</li>
-<%
 			}
-		}
-%>
-</ul>
-<%
-	} else {
-		//単一
-		BigDecimal target = propValue instanceof BigDecimal ? (BigDecimal) propValue : null;
-		String str = format(editor.getNumberFormat(), target);
-%>
-<span class="data-label<c:out value="<%=clsComma %>"/>" style="<c:out value="<%=customStyle %>"/>">
-<c:out value="<%=str %>"/>
-<%
-		if (outputHidden) {
+		} else {
+			//単一
 			String hiddenValue = propValue instanceof BigDecimal ? ((BigDecimal)propValue).toPlainString() : "";
 %>
 <input type="hidden" name="<c:out value="<%=propName %>"/>" value="<c:out value="<%=hiddenValue %>"/>" />
 <%
 		}
-%>
-</span>
-<%
 	}
 %>

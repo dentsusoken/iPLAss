@@ -113,30 +113,30 @@
 
 	boolean isMultiple = pd.getMultiplicity() != 1;
 
-	//カスタムスタイル
-	String customStyle = "";
-	if (StringUtil.isNotEmpty(editor.getInputCustomStyle())) {
-		customStyle = EntityViewUtil.getCustomStyle(rootDefName, scriptKey, editor.getInputCustomStyleScriptKey(), entity, propValue);
-	}
-
 	if (ViewUtil.isAutocompletionTarget()) {
 		request.setAttribute(Constants.AUTOCOMPLETION_EDITOR, editor);
 		request.setAttribute(Constants.AUTOCOMPLETION_SCRIPT_PATH, "/jsp/gem/generic/editor/number/NumberPropertyAutocompletion.jsp");
 	}
 
-	String cls = "form-size-01 inpbr";
-	if (nest != null && nest) {
-		//cls = "form-size-08 inpbr";
-	}
-	String maxlength = "";
-	if (editor.getMaxlength() > 0) {
-		maxlength = " maxlength=" + editor.getMaxlength();
-	}
-
 	if (editor.getDisplayType() != NumberDisplayType.LABEL 
 			&& editor.getDisplayType() != NumberDisplayType.HIDDEN && updatable) {
-		
 		//テキスト
+
+		//カスタムスタイル
+		String customStyle = "";
+		if (StringUtil.isNotEmpty(editor.getInputCustomStyle())) {
+			customStyle = EntityViewUtil.getCustomStyle(rootDefName, scriptKey, editor.getInputCustomStyleScriptKey(), entity, propValue);
+		}
+
+		String cls = "form-size-01 inpbr";
+		if (nest != null && nest) {
+			//cls = "form-size-08 inpbr";
+		}
+		String maxlength = "";
+		if (editor.getMaxlength() > 0) {
+			maxlength = " maxlength=" + editor.getMaxlength();
+		}
+
 		if (isMultiple) {
 			//複数
 			String ulId = "ul_" + propName;
