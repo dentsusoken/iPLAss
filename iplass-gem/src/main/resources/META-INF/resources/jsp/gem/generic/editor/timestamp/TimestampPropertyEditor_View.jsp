@@ -29,8 +29,9 @@
 <%@ page import="org.iplass.mtp.util.StringUtil"%>
 <%@ page import="org.iplass.mtp.view.generic.EntityViewUtil"%>
 <%@ page import="org.iplass.mtp.view.generic.OutputType"%>
-<%@ page import="org.iplass.mtp.view.generic.editor.TimestampPropertyEditor" %>
+<%@ page import="org.iplass.mtp.view.generic.editor.DateTimePropertyEditor.DateTimeDisplayType"%>
 <%@ page import="org.iplass.mtp.view.generic.editor.DateTimePropertyEditor.TimeDispRange"%>
+<%@ page import="org.iplass.mtp.view.generic.editor.TimestampPropertyEditor" %>
 <%@ page import="org.iplass.mtp.web.template.TemplateUtil" %>
 <%@ page import="org.iplass.gem.command.Constants"%>
 
@@ -82,54 +83,90 @@
 
 	String propName = editor.getPropertyName();
 
-	//カスタムスタイル
-	String customStyle = "";
-	if (type == OutputType.VIEW) {
-		if (StringUtil.isNotEmpty(editor.getCustomStyle())) {
-			customStyle = EntityViewUtil.getCustomStyle(rootDefName, scriptKey, editor.getOutputCustomStyleScriptKey(), entity, propValue);
-		}
-	} else if (type == OutputType.EDIT) {
-		//入力不可の場合
-		if (StringUtil.isNotEmpty(editor.getInputCustomStyle())) {
-			customStyle = EntityViewUtil.getCustomStyle(rootDefName, scriptKey, editor.getInputCustomStyleScriptKey(), entity, propValue);
-		}
-	}
-
 	boolean isMultiple = pd.getMultiplicity() != 1;
-	if (isMultiple) {
-		//複数
+	
+	if (editor.getDisplayType() != DateTimeDisplayType.HIDDEN) {
+	
+		//カスタムスタイル
+		String customStyle = "";
+		if (type == OutputType.VIEW) {
+			if (StringUtil.isNotEmpty(editor.getCustomStyle())) {
+				customStyle = EntityViewUtil.getCustomStyle(rootDefName, scriptKey, editor.getOutputCustomStyleScriptKey(), entity, propValue);
+			}
+		} else if (type == OutputType.EDIT) {
+			//入力不可の場合
+			if (StringUtil.isNotEmpty(editor.getInputCustomStyle())) {
+				customStyle = EntityViewUtil.getCustomStyle(rootDefName, scriptKey, editor.getInputCustomStyleScriptKey(), entity, propValue);
+			}
+		}
+
+		if (isMultiple) {
+			//複数
 %>
 <ul class="data-label" style="<c:out value="<%=customStyle %>"/>">
 <%
-		Timestamp[] array = propValue instanceof Timestamp[] ? (Timestamp[]) propValue : null;
-		if (array != null) {
-			for (int i = 0; i < array.length; i++) {
-				Timestamp t = array[i];
+			Timestamp[] array = propValue instanceof Timestamp[] ? (Timestamp[]) propValue : null;
+			if (array != null) {
+				for (int i = 0; i < array.length; i++) {
+					Timestamp t = array[i];
 %>
 <li>
 <c:out value="<%=displayFormat(t, editor.getDispRange(), editor.isShowWeekday()) %>"/>
 <%
-				String str = format(t);
+					if (outputHidden) {
+						String strHidden = format(t);
 %>
-<input type="hidden" name="<c:out value="<%=propName %>"/>" value="<c:out value="<%=str %>"/>" />
+<input type="hidden" name="<c:out value="<%=propName %>"/>" value="<c:out value="<%=strHidden %>"/>" />
+<%
+					}
+%>
 </li>
 <%
+				}
 			}
-		}
 %>
 </ul>
 <%
-	} else {
-		//単一
-		Timestamp t = propValue instanceof Timestamp ? (Timestamp) propValue : null;
+		} else {
+			//単一
+			Timestamp t = propValue instanceof Timestamp ? (Timestamp) propValue : null;
 %>
 <span class="data-label" style="<c:out value="<%=customStyle %>"/>" data-time-range="<c:out value="<%=editor.getDispRange() %>"/>" data-show-weekday="<c:out value="<%=editor.isShowWeekday() %>"/>">
 <c:out value="<%=displayFormat(t, editor.getDispRange(), editor.isShowWeekday()) %>"/>
 <%
-		String str = format(t);
+			if (outputHidden) {
+				String strHidden = format(t);
 %>
-<input type="hidden" name="<c:out value="<%=propName %>"/>" value="<c:out value="<%=str %>"/>" />
+<input type="hidden" name="<c:out value="<%=propName %>"/>" value="<c:out value="<%=strHidden %>"/>" />
+<%
+			}
+%>
 </span>
 <%
+		}
+
+	} else {
+		//HIDDEN
+
+		if (isMultiple) {
+			//複数
+			Timestamp[] array = propValue instanceof Timestamp[] ? (Timestamp[]) propValue : null;
+			if (array != null) {
+				for (int i = 0; i < array.length; i++) {
+					Timestamp t = array[i];
+					String strHidden = format(t);
+%>
+<input type="hidden" name="<c:out value="<%=propName %>"/>" value="<c:out value="<%=strHidden %>"/>" />
+<%
+				}
+			}
+		} else {
+			//単一
+			Timestamp t = propValue instanceof Timestamp ? (Timestamp) propValue : null;
+			String strHidden = format(t);
+%>
+<input type="hidden" name="<c:out value="<%=propName %>"/>" value="<c:out value="<%=strHidden %>"/>" />
+<%
+		}
 	}
 %>

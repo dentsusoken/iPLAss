@@ -27,6 +27,7 @@
 <%@ page import="org.iplass.mtp.view.generic.EntityViewUtil"%>
 <%@ page import="org.iplass.mtp.view.generic.OutputType"%>
 <%@ page import="org.iplass.mtp.view.generic.editor.DatePropertyEditor" %>
+<%@ page import="org.iplass.mtp.view.generic.editor.DateTimePropertyEditor.DateTimeDisplayType"%>
 <%@ page import="org.iplass.mtp.web.template.TemplateUtil" %>
 <%@ page import="org.iplass.mtp.util.DateUtil" %>
 <%@ page import="org.iplass.mtp.util.StringUtil"%>
@@ -66,63 +67,87 @@
 
 	String propName = editor.getPropertyName();
 
-	//カスタムスタイル
-	String customStyle = "";
-	if (type == OutputType.VIEW) {
-		if (StringUtil.isNotEmpty(editor.getCustomStyle())) {
-			customStyle = EntityViewUtil.getCustomStyle(rootDefName, scriptKey, editor.getOutputCustomStyleScriptKey(), entity, propValue);
-		}
-	} else if (type == OutputType.EDIT) {
-		//入力不可の場合
-		if (StringUtil.isNotEmpty(editor.getInputCustomStyle())) {
-			customStyle = EntityViewUtil.getCustomStyle(rootDefName, scriptKey, editor.getInputCustomStyleScriptKey(), entity, propValue);
-		}
-	}
-
 	boolean isMultiple = pd.getMultiplicity() != 1;
-	if (isMultiple) {
-		//複数
+	
+	if (editor.getDisplayType() != DateTimeDisplayType.HIDDEN) {
+
+		//カスタムスタイル
+		String customStyle = "";
+		if (type == OutputType.VIEW) {
+			if (StringUtil.isNotEmpty(editor.getCustomStyle())) {
+				customStyle = EntityViewUtil.getCustomStyle(rootDefName, scriptKey, editor.getOutputCustomStyleScriptKey(), entity, propValue);
+			}
+		} else if (type == OutputType.EDIT) {
+			//入力不可の場合
+			if (StringUtil.isNotEmpty(editor.getInputCustomStyle())) {
+				customStyle = EntityViewUtil.getCustomStyle(rootDefName, scriptKey, editor.getInputCustomStyleScriptKey(), entity, propValue);
+			}
+		}
+
+		if (isMultiple) {
+			//複数
 %>
 <ul class="data-label" style="<c:out value="<%=customStyle %>"/>">
 <%
-		Date[] array = propValue instanceof Date[] ? (Date[]) propValue : null;
-		if (array != null) {
-			for (int i = 0; i < array.length; i++) {
-				String str = displayFormat(array[i], editor.isShowWeekday());
+			Date[] array = propValue instanceof Date[] ? (Date[]) propValue : null;
+			if (array != null) {
+				for (int i = 0; i < array.length; i++) {
 %>
 <li>
-<c:out value="<%=str %>" />
+<c:out value="<%=displayFormat(array[i], editor.isShowWeekday()) %>" />
 <%
-				if (outputHidden) {
-					str = format(array[i]);
+					if (outputHidden) {
+						String strHidden = format(array[i]);
 %>
-<input type="hidden" name="<c:out value="<%=propName %>"/>" value="<c:out value="<%=str %>"/>" />
+<input type="hidden" name="<c:out value="<%=propName %>"/>" value="<c:out value="<%=strHidden %>"/>" />
 <%
-				}
+					}
 %>
 </li>
 <%
+				}
 			}
-		}
 %>
 </ul>
 <%
-	} else {
-		//単一
-		Date date = propValue instanceof Date ? (Date) propValue : null;
-		String str = displayFormat(date, editor.isShowWeekday());
+		} else {
+			//単一
+			Date date = propValue instanceof Date ? (Date) propValue : null;
 %>
 <span class="data-label" style="<c:out value="<%=customStyle %>"/>" data-show-weekday="<c:out value="<%=editor.isShowWeekday() %>"/>">
-<c:out value="<%=str %>" />
+<c:out value="<%=displayFormat(date, editor.isShowWeekday()) %>" />
 <%
-		if (outputHidden) {
-			str = format(date);
+			if (outputHidden) {
+				String strHidden = format(date);
 %>
-<input type="hidden" name="<c:out value="<%=propName %>"/>" value="<c:out value="<%=str %>"/>" />
+<input type="hidden" name="<c:out value="<%=propName %>"/>" value="<c:out value="<%=strHidden %>"/>" />
 <%
-		}
+			}
 %>
 </span>
 <%
+		}
+
+	} else {
+		//HIDDEN
+		if (isMultiple) {
+			//複数
+			Date[] array = propValue instanceof Date[] ? (Date[]) propValue : null;
+			if (array != null) {
+				for (int i = 0; i < array.length; i++) {
+					String strHidden = format(array[i]);
+%>
+<input type="hidden" name="<c:out value="<%=propName %>"/>" value="<c:out value="<%=strHidden %>"/>" />
+<%
+				}
+			}
+		} else {
+			//単一
+			Date date = propValue instanceof Date ? (Date) propValue : null;
+			String strHidden = format(date);
+%>
+<input type="hidden" name="<c:out value="<%=propName %>"/>" value="<c:out value="<%=strHidden %>"/>" />
+<%
+		}
 	}
 %>

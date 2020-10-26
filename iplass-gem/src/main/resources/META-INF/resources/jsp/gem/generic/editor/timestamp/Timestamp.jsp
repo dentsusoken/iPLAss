@@ -31,6 +31,7 @@
 <%@ page import="org.iplass.mtp.util.StringUtil"%>
 <%@ page import="org.iplass.mtp.view.generic.EntityViewUtil"%>
 <%@ page import="org.iplass.mtp.view.generic.editor.TimestampPropertyEditor" %>
+<%@ page import="org.iplass.mtp.view.generic.editor.DateTimePropertyEditor.DateTimeDisplayType"%>
 <%@ page import="org.iplass.mtp.view.generic.editor.DateTimePropertyEditor.MinIntereval" %>
 <%@ page import="org.iplass.mtp.view.generic.editor.DateTimePropertyEditor.TimeDispRange" %>
 <%@ page import="org.iplass.mtp.web.template.TemplateUtil"%>
@@ -98,134 +99,137 @@
 
 	String propName = editor.getPropertyName();
 
-	//カスタムスタイル
-	String customStyle = "";
-	if (StringUtil.isNotEmpty(editor.getInputCustomStyle())) {
-		customStyle = EntityViewUtil.getCustomStyle(rootDefName, scriptKey, editor.getInputCustomStyleScriptKey(), entity, _propValue);
-	}
-
-	//コピー用のダミー行ならカレンダーを出さない
-	String cls = "";
-	if (nestDummyRow != null && nestDummyRow) {
-		cls = "inpbr";
-	} else {
-		cls = "datepicker inpbr";
-	}
-
 	String[] tmp = split(_propValue);
 	String date = tmp[0];
 	String hour = tmp[1];
 	String min = tmp[2];
 	String sec = tmp[3];
-	String str = tmp[5];
+	String strHidden = tmp[5];
 
-	String[] defTmp = split(_defaultValue);
-	String defDate = defTmp[0];
-	String defHour = defTmp[1];
-	String defMin = defTmp[2];
-	String defSec = defTmp[3];
-	String defStr = defTmp[5];
+	if (editor.getDisplayType() != DateTimeDisplayType.HIDDEN) {
+		//HIDDEN以外
+		
+		String[] defTmp = split(_defaultValue);
+		String defDate = defTmp[0];
+		String defHour = defTmp[1];
+		String defMin = defTmp[2];
+		String defSec = defTmp[3];
+		String defStr = defTmp[5];
+	
+		//カスタムスタイル
+		String customStyle = "";
+		if (StringUtil.isNotEmpty(editor.getInputCustomStyle())) {
+			customStyle = EntityViewUtil.getCustomStyle(rootDefName, scriptKey, editor.getInputCustomStyleScriptKey(), entity, _propValue);
+		}
 
-	String onchange = "timestampSelectChange('" + StringUtil.escapeJavaScript(_propName) + "')";
+		//コピー用のダミー行ならカレンダーを出さない
+		String cls = "";
+		if (nestDummyRow != null && nestDummyRow) {
+			cls = "inpbr";
+		} else {
+			cls = "datepicker inpbr";
+		}
+
+		String onchange = "timestampSelectChange('" + StringUtil.escapeJavaScript(_propName) + "')";
 %>
 <input type="text" class="<c:out value="<%=cls %>"/>" style="<c:out value="<%=customStyle%>"/>" value="" id="d_<c:out value="<%=_propName %>"/>" onchange="<%=onchange%>" data-showButtonPanel="<%=!editor.isHideButtonPanel()%>" data-notFillTime="<%=editor.isNotFillTime()%>" data-showWeekday=<%=editor.isShowWeekday()%> />
 <%
-	String defaultHour = "00";
-	String _defaultHour = (String) request.getAttribute(Constants.EDITOR_PICKER_DEFAULT_HOUR);
-	if (_defaultHour != null) {
-		defaultHour = _defaultHour;
-	}
-	if (TimeDispRange.isDispHour(editor.getDispRange())) {
-		//時間を表示
+		String defaultHour = "00";
+		String _defaultHour = (String) request.getAttribute(Constants.EDITOR_PICKER_DEFAULT_HOUR);
+		if (_defaultHour != null) {
+			defaultHour = _defaultHour;
+		}
+		if (TimeDispRange.isDispHour(editor.getDispRange())) {
+			//時間を表示
 %>
 <label>
 <select id="h_<c:out value="<%=_propName %>"/>" class="inpbr form-size-11" style="<c:out value="<%=customStyle%>"/>" onchange="<%=onchange%>" data-defaultValue="<c:out value="<%=defaultHour%>"/>">
 <option value="  ">--</option>
 <%
-		for (int i = 0; i < 24; i++) {
-			String h = String.format("%02d", i);
-			String selected = hour.equals(h) ? " selected" : "";
+			for (int i = 0; i < 24; i++) {
+				String h = String.format("%02d", i);
+				String selected = hour.equals(h) ? " selected" : "";
 %>
 <option value="<c:out value="<%=h%>"/>" <c:out value="<%=selected %>"/>><c:out value="<%=h%>"/></option>
 <%
-		}
+			}
 %>
 </select>${m:rs("mtp-gem-messages", "generic.editor.timestamp.Timestamp.hour")}
 </label>
 <%
-	} else {
-		//時間を表示しない
+		} else {
+			//時間を表示しない
 %>
 <input type="hidden" id="h_<c:out value="<%=_propName %>"/>" value="<c:out value="<%=defaultHour %>"/>" />
 <%
-	}
-	String defaultMin = "00";
-	String _defaultMin = (String) request.getAttribute(Constants.EDITOR_PICKER_DEFAULT_MIN);
-	if (_defaultMin != null) {
-		defaultMin = _defaultMin;
-	}
-	if (TimeDispRange.isDispMin(editor.getDispRange())) {
-		//分を表示
+		}
+		String defaultMin = "00";
+		String _defaultMin = (String) request.getAttribute(Constants.EDITOR_PICKER_DEFAULT_MIN);
+		if (_defaultMin != null) {
+			defaultMin = _defaultMin;
+		}
+		if (TimeDispRange.isDispMin(editor.getDispRange())) {
+			//分を表示
 %>
 <label>
 <select id="m_<c:out value="<%=_propName %>"/>" class="inpbr form-size-11" style="<c:out value="<%=customStyle%>"/>" onchange="<%=onchange%>" data-defaultValue="<c:out value="<%=defaultMin%>"/>">
 <option value="  ">--</option>
 <%
-		int minInterval = MinIntereval.toInt(editor.getInterval());
-		for (int i = 0; i < 60; i += minInterval) {
-			String m = String.format("%02d", i);
-			String selected = min.equals(m) ? " selected" : "";
+			int minInterval = MinIntereval.toInt(editor.getInterval());
+			for (int i = 0; i < 60; i += minInterval) {
+				String m = String.format("%02d", i);
+				String selected = min.equals(m) ? " selected" : "";
 %>
 <option value="<c:out value="<%=m %>"/>" <c:out value="<%=selected %>"/>><c:out value="<%=m %>"/></option>
 <%
-		}
+			}
 %>
 </select>${m:rs("mtp-gem-messages", "generic.editor.timestamp.Timestamp.minute")}
 </label>
 <%
-	} else {
-		//分を表示しない
+		} else {
+			//分を表示しない
 %>
 <input type="hidden" id="m_<c:out value="<%=_propName %>"/>" value="<c:out value="<%=defaultMin%>"/>" />
 <%
-	}
-	String defaultSec = "00";
-	String _defaultSec = (String) request.getAttribute(Constants.EDITOR_PICKER_DEFAULT_SEC);
-	if (_defaultSec != null) {
-		defaultSec = _defaultSec;
-	}
-	if (TimeDispRange.isDispSec(editor.getDispRange())) {
-		//秒を表示
+		}
+		String defaultSec = "00";
+		String _defaultSec = (String) request.getAttribute(Constants.EDITOR_PICKER_DEFAULT_SEC);
+		if (_defaultSec != null) {
+			defaultSec = _defaultSec;
+		}
+		if (TimeDispRange.isDispSec(editor.getDispRange())) {
+			//秒を表示
 %>
 <label>
 <select id="s_<c:out value="<%=_propName %>"/>" class="inpbr form-size-11" style="<c:out value="<%=customStyle%>"/>" onchange="<%=onchange%>" data-defaultValue="<c:out value="<%=defaultSec%>"/>">
 <option value="  ">--</option>
 <%
-		for (int i = 0; i < 60; i++) {
-			String s = String.format("%02d", i);
-			String selected = sec.equals(s) ? " selected" : "";
+			for (int i = 0; i < 60; i++) {
+				String s = String.format("%02d", i);
+				String selected = sec.equals(s) ? " selected" : "";
 %>
 <option value="<c:out value="<%=s %>"/>" <c:out value="<%=selected %>"/>><c:out value="<%=s %>"/></option>
 <%
-		}
+			}
 %>
 </select>${m:rs("mtp-gem-messages", "generic.editor.timestamp.Timestamp.second")}
 </label>
 <%
-	} else {
-		//秒を表示しない
+		} else {
+			//秒を表示しない
 %>
 <input type="hidden" id="s_<c:out value="<%=_propName %>"/>" value="<c:out value="<%=defaultSec%>"/>" />
 <%
-	}
-	String defaultMsec = "000";
-	String _defaultMsec = (String) request.getAttribute(Constants.EDITOR_PICKER_DEFAULT_MSEC);
-	if (_defaultMsec != null) {
-		defaultMsec = _defaultMsec;
-	}
+		}
+		String defaultMsec = "000";
+		String _defaultMsec = (String) request.getAttribute(Constants.EDITOR_PICKER_DEFAULT_MSEC);
+		if (_defaultMsec != null) {
+			defaultMsec = _defaultMsec;
+		}
 %>
 <input type="hidden" id="ms_<c:out value="<%=_propName %>"/>" value="<c:out value="<%=defaultMsec%>"/>" />
-<input type="hidden" name="<c:out value="<%=propName %>"/>" id="i_<c:out value="<%=_propName %>"/>" value="<c:out value="<%=str %>"/>" />
+<input type="hidden" name="<c:out value="<%=propName %>"/>" id="i_<c:out value="<%=_propName %>"/>" value="<c:out value="<%=strHidden%>"/>" />
 <script type="text/javascript">
 $(function() {
 	<%-- common.js --%>
@@ -233,21 +237,21 @@ $(function() {
 		var defaultDate = convertToLocaleDateString("<%= StringUtil.escapeJavaScript(defDate) %>");
 		$("#d_" + es("<%=StringUtil.escapeJavaScript(_propName)%>")).val(defaultDate);
 <%
-	if (TimeDispRange.isDispHour(editor.getDispRange())) {
+		if (TimeDispRange.isDispHour(editor.getDispRange())) {
 %>
 		$("#h_" + es("<%=StringUtil.escapeJavaScript(_propName)%>")).val("<%=defHour %>");
 <%
-	}
-	if (TimeDispRange.isDispMin(editor.getDispRange())) {
+		}
+		if (TimeDispRange.isDispMin(editor.getDispRange())) {
 %>
 		$("#m_" + es("<%=StringUtil.escapeJavaScript(_propName)%>")).val("<%=defMin %>");
 <%
-	}
-	if (TimeDispRange.isDispSec(editor.getDispRange())) {
+		}
+		if (TimeDispRange.isDispSec(editor.getDispRange())) {
 %>
 		$("#s_" + es("<%=StringUtil.escapeJavaScript(_propName)%>")).val("<%=defSec %>");
 <%
-	}
+		}
 %>
 		$("#i_" + es("<%=StringUtil.escapeJavaScript(_propName)%>")).val("<%=defStr %>");
 	});
@@ -266,3 +270,11 @@ $(function() {
 	$("#d_" + es("<%=StringUtil.escapeJavaScript(_propName)%>")).val(date).trigger("blur");
 });
 </script>
+<%
+	} else {
+		//HIDDEN
+%>
+<input type="hidden" name="<c:out value="<%=propName %>"/>" id="i_<c:out value="<%=_propName %>"/>" value="<c:out value="<%=strHidden%>"/>" />
+<%
+	}
+%>

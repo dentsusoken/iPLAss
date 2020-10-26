@@ -46,7 +46,8 @@ public abstract class DateTimePropertyEditor extends PrimitivePropertyEditor {
 	@XmlType(namespace="http://mtp.iplass.org/xml/definition/view/generic")
 	public enum DateTimeDisplayType {
 		@XmlEnumValue("DateTime")DATETIME,
-		@XmlEnumValue("Label")LABEL
+		@XmlEnumValue("Label")LABEL,
+		@XmlEnumValue("Hidden")HIDDEN
 	}
 
 	/**
@@ -225,8 +226,7 @@ public abstract class DateTimePropertyEditor extends PrimitivePropertyEditor {
 
 	@Override
 	public boolean isHide() {
-//		return displayType == DateTimeDisplayType.HIDDEN;
-		return false;
+		return displayType == DateTimeDisplayType.HIDDEN;
 	}
 
 	/**

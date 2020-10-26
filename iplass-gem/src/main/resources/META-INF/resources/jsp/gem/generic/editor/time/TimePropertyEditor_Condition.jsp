@@ -26,6 +26,7 @@
 <%@ page import="java.text.SimpleDateFormat"%>
 <%@ page import="org.iplass.mtp.util.DateUtil"%>
 <%@ page import="org.iplass.mtp.util.StringUtil"%>
+<%@ page import="org.iplass.mtp.view.generic.editor.DateTimePropertyEditor.DateTimeDisplayType"%>
 <%@ page import="org.iplass.mtp.view.generic.editor.TimePropertyEditor" %>
 <%@ page import="org.iplass.mtp.web.template.TemplateUtil"%>
 <%@ page import="org.iplass.gem.command.Constants" %>
@@ -67,24 +68,9 @@
 	Boolean required = (Boolean) request.getAttribute(Constants.EDITOR_REQUIRED);
 	if (required == null) required = false;
 
-	boolean hideFrom = editor.isSingleDayCondition() ? false : editor.isHideSearchConditionFrom();
-	boolean hideTo = editor.isSingleDayCondition() ? true : editor.isHideSearchConditionTo();
-
 	String searchCond = request.getParameter(Constants.SEARCH_COND);
 
 	String propName = editor.getPropertyName();
-	editor.setPropertyName(Constants.SEARCH_COND_PREFIX + propName + "From");
-	request.setAttribute(Constants.EDITOR_PICKER_PROP_NAME, propName + "0");
-
-	String style = "";
-	if (hideFrom) {
-		style = "display: none;";
-	}
-
-	String defaultValueFrom = "";
-	if (defaultValue != null && defaultValue.length > 0 && formatCheck(defaultValue[0])) {
-		defaultValueFrom = defaultValue[0];
-	}
 
 	//直接searchCondから取得(hidden対応)
 	String propValueFrom = getTimeValue(searchCond, Constants.SEARCH_COND_PREFIX + propName + "From");
@@ -95,46 +81,6 @@
 		} else {
 			propValueFrom = "";
 		}
-	}
-	request.setAttribute(Constants.EDITOR_PICKER_DEFAULT_VALUE, defaultValueFrom);
-	request.setAttribute(Constants.EDITOR_PICKER_PROP_VALUE, propValueFrom);
-
-	if (ViewUtil.isAutocompletionTarget()) {
-		request.setAttribute(Constants.AUTOCOMPLETION_EDITOR, editor);
-		request.setAttribute(Constants.AUTOCOMPLETION_SCRIPT_PATH, "/jsp/gem/generic/editor/time/TimePropertyAutocompletion.jsp");
-	}
-
-	boolean isUseTimePicker = editor.isUseTimePicker();
-	if (isUseTimePicker) {
-%>
-<span class="timepicker-field" style="<c:out value="<%=style %>"/>">
-<jsp:include page="TimeTimePicker.jsp"></jsp:include>
-</span>
-<%
-	} else {
-%>
-<span class="timeselect-field" style="<c:out value="<%=style %>"/>">
-<jsp:include page="Time.jsp"></jsp:include>
-</span>
-<%
-	}
-	request.removeAttribute(Constants.EDITOR_PICKER_PROP_NAME);
-	if (!hideFrom && !hideTo) {
-%>
-&nbsp;～&nbsp;
-<%
-	}
-	editor.setPropertyName(Constants.SEARCH_COND_PREFIX + propName + "To");
-	request.setAttribute(Constants.EDITOR_PICKER_PROP_NAME, propName + "1");
-
-	style = "";
-	if (hideTo) {
-		style = "display: none;";
-	}
-
-	String defaultValueTo = "";
-	if (defaultValue != null && defaultValue.length > 1 && formatCheck(defaultValue[1])) {
-		defaultValueTo = defaultValue[1];
 	}
 
 	//直接searchCondから取得(hidden対応)
@@ -147,30 +93,92 @@
 			propValueTo = "";
 		}
 	}
-	request.setAttribute(Constants.EDITOR_PICKER_DEFAULT_VALUE, defaultValueTo);
-	request.setAttribute(Constants.EDITOR_PICKER_PROP_VALUE, propValueTo);
-	request.setAttribute(Constants.EDITOR_PICKER_DEFAULT_MIN, "59");
-	request.setAttribute(Constants.EDITOR_PICKER_DEFAULT_SEC, "59");
+	
+	if (ViewUtil.isAutocompletionTarget()) {
+		request.setAttribute(Constants.AUTOCOMPLETION_EDITOR, editor);
+		request.setAttribute(Constants.AUTOCOMPLETION_SCRIPT_PATH, "/jsp/gem/generic/editor/time/TimePropertyAutocompletion.jsp");
+	}
 
-	if (isUseTimePicker) {
+	boolean isUseTimePicker = editor.isUseTimePicker();
+	
+	if (editor.getDisplayType() != DateTimeDisplayType.HIDDEN) {
+		//HIDDEN以外
+	
+		boolean hideFrom = editor.isSingleDayCondition() ? false : editor.isHideSearchConditionFrom();
+		boolean hideTo = editor.isSingleDayCondition() ? true : editor.isHideSearchConditionTo();
+	
+		editor.setPropertyName(Constants.SEARCH_COND_PREFIX + propName + "From");
+		request.setAttribute(Constants.EDITOR_PICKER_PROP_NAME, propName + "0");
+		request.setAttribute(Constants.EDITOR_PICKER_PROP_VALUE, propValueFrom);
+
+		String style = "";
+		if (hideFrom) {
+			style = "display: none;";
+		}
+		
+		String defaultValueFrom = "";
+		if (defaultValue != null && defaultValue.length > 0 && formatCheck(defaultValue[0])) {
+			defaultValueFrom = defaultValue[0];
+		}
+		request.setAttribute(Constants.EDITOR_PICKER_DEFAULT_VALUE, defaultValueFrom);
+
+		if (isUseTimePicker) {
 %>
 <span class="timepicker-field" style="<c:out value="<%=style %>"/>">
 <jsp:include page="TimeTimePicker.jsp"></jsp:include>
 </span>
 <%
-	} else {
+		} else {
 %>
 <span class="timeselect-field" style="<c:out value="<%=style %>"/>">
 <jsp:include page="Time.jsp"></jsp:include>
 </span>
 <%
-	}
-	request.removeAttribute(Constants.EDITOR_PICKER_PROP_NAME);
-	request.removeAttribute(Constants.EDITOR_PICKER_DEFAULT_MIN);
-	request.removeAttribute(Constants.EDITOR_PICKER_DEFAULT_SEC);
-	editor.setPropertyName(propName);
+		}
+		
+		if (!hideFrom && !hideTo) {
+%>
+&nbsp;～&nbsp;
+<%
+		}
 
-	if (required) {
+		editor.setPropertyName(Constants.SEARCH_COND_PREFIX + propName + "To");
+		request.setAttribute(Constants.EDITOR_PICKER_PROP_NAME, propName + "1");
+		request.setAttribute(Constants.EDITOR_PICKER_PROP_VALUE, propValueTo);
+	
+		style = "";
+		if (hideTo) {
+			style = "display: none;";
+		}
+	
+		String defaultValueTo = "";
+		if (defaultValue != null && defaultValue.length > 1 && formatCheck(defaultValue[1])) {
+			defaultValueTo = defaultValue[1];
+		}
+		request.setAttribute(Constants.EDITOR_PICKER_DEFAULT_VALUE, defaultValueTo);
+	
+		request.setAttribute(Constants.EDITOR_PICKER_DEFAULT_MIN, "59");
+		request.setAttribute(Constants.EDITOR_PICKER_DEFAULT_SEC, "59");
+	
+		if (isUseTimePicker) {
+%>
+<span class="timepicker-field" style="<c:out value="<%=style %>"/>">
+<jsp:include page="TimeTimePicker.jsp"></jsp:include>
+</span>
+<%
+		} else {
+%>
+<span class="timeselect-field" style="<c:out value="<%=style %>"/>">
+<jsp:include page="Time.jsp"></jsp:include>
+</span>
+<%
+		}
+		request.removeAttribute(Constants.EDITOR_PICKER_PROP_NAME);
+		request.removeAttribute(Constants.EDITOR_PICKER_DEFAULT_MIN);
+		request.removeAttribute(Constants.EDITOR_PICKER_DEFAULT_SEC);
+		editor.setPropertyName(propName);
+	
+		if (required) {
 %>
 <script type="text/javascript">
 $(function() {
@@ -188,5 +196,38 @@ $(function() {
 });
 </script>
 <%
+		}
+	} else {
+		//HIDDEN
+		
+		editor.setPropertyName(Constants.SEARCH_COND_PREFIX + propName + "From");
+		request.setAttribute(Constants.EDITOR_PICKER_PROP_NAME, propName + "0");
+		request.setAttribute(Constants.EDITOR_PICKER_PROP_VALUE, propValueFrom);
+		if (isUseTimePicker) {
+%>
+<jsp:include page="TimeTimePicker.jsp"></jsp:include>
+<%			
+		} else {
+%>
+<jsp:include page="Time.jsp"></jsp:include>
+<%			
+		}
+		
+		editor.setPropertyName(Constants.SEARCH_COND_PREFIX + propName + "To");
+		request.setAttribute(Constants.EDITOR_PICKER_PROP_NAME, propName + "1");
+		request.setAttribute(Constants.EDITOR_PICKER_PROP_VALUE, propValueTo);
+		if (isUseTimePicker) {
+%>
+<jsp:include page="TimeTimePicker.jsp"></jsp:include>
+<%			
+		} else {
+%>
+<jsp:include page="Time.jsp"></jsp:include>
+<%			
+		}
+
+		request.removeAttribute(Constants.EDITOR_PICKER_PROP_NAME);
+		request.removeAttribute(Constants.EDITOR_PICKER_PROP_VALUE);
+		editor.setPropertyName(propName);
 	}
 %>

@@ -27,6 +27,7 @@
 <%@ page import="org.iplass.mtp.util.StringUtil"%>
 <%@ page import="org.iplass.mtp.view.generic.EntityViewUtil"%>
 <%@ page import="org.iplass.mtp.view.generic.editor.DatePropertyEditor" %>
+<%@ page import="org.iplass.mtp.view.generic.editor.DateTimePropertyEditor.DateTimeDisplayType"%>
 <%@ page import="org.iplass.mtp.web.template.TemplateUtil"%>
 <%@ page import="org.iplass.gem.command.Constants" %>
 <%@ page import="org.iplass.gem.command.ViewUtil"%>
@@ -73,17 +74,9 @@
 	Boolean required = (Boolean) request.getAttribute(Constants.EDITOR_REQUIRED);
 	if (required == null) required = false;
 
-	boolean hideFrom = editor.isSingleDayCondition() ? false : editor.isHideSearchConditionFrom();
-	boolean hideTo = editor.isSingleDayCondition() ? true : editor.isHideSearchConditionTo();
-
 	String searchCond = request.getParameter(Constants.SEARCH_COND);
+	
 	String propNameFrom = Constants.SEARCH_COND_PREFIX + editor.getPropertyName() + "From";
-
-	String defaultValueFrom = "";
-	if (defaultValue != null && defaultValue.length > 0 && formatCheck(defaultValue[0])) {
-		defaultValueFrom = defaultValue[0];
-	}
-
 	//直接searchCondから取得(hidden対応)
 	String propValueFrom = getDateValue(searchCond, propNameFrom);
 	if (propValueFrom == null) {
@@ -95,43 +88,7 @@
 		}
 	}
 
-	String onchange = "dateChange('" + StringUtil.escapeJavaScript(propNameFrom) + "')";
-
-	//カスタムスタイル
-	String customStyle = "";
-	if (StringUtil.isNotEmpty(editor.getInputCustomStyle())) {
-		customStyle = EntityViewUtil.getCustomStyle(rootDefName, scriptKey, editor.getInputCustomStyleScriptKey(), null, null);
-	}
-
-	if (ViewUtil.isAutocompletionTarget()) {
-		request.setAttribute(Constants.AUTOCOMPLETION_EDITOR, editor);
-		request.setAttribute(Constants.AUTOCOMPLETION_SCRIPT_PATH, "/jsp/gem/generic/editor/date/DatePropertyAutocompletion.jsp");
-	}
-
-	String fromDisp = "";
-	if (hideFrom) {
-		fromDisp = "display: none;";
-	}
-%>
-<span style="<c:out value="<%=fromDisp %>"/>">
-<%-- XSS対応-メタの設定のため対応なし(onchange) --%>
-<input type="text" id="d_<c:out value="<%=propNameFrom %>"/>" class="datepicker inpbr" style="<c:out value="<%=customStyle%>"/>" value="" onchange="<%=onchange %>" data-showButtonPanel="<%=!editor.isHideButtonPanel()%>" data-showWeekday=<%=editor.isShowWeekday()%> />
-<input type="hidden" id="i_<c:out value="<%=propNameFrom%>"/>" name="<c:out value="<%=propNameFrom%>"/>" value="<c:out value="<%=propValueFrom%>"/>" />
-</span>
-<%
-	if (!hideFrom && !hideTo) {
-%>
-&nbsp;～&nbsp;
-<%
-	}
 	String propNameTo = Constants.SEARCH_COND_PREFIX + editor.getPropertyName() + "To";
-
-	String defaultValueTo = "";
-	if (defaultValue != null && defaultValue.length > 1 && formatCheck(defaultValue[1])) {
-		defaultValueTo = defaultValue[1];
-	}
-
-	//直接searchCondから取得(hidden対応)
 	String propValueTo = getDateValue(searchCond, propNameTo);
 	if (propValueTo == null) {
 		//初期値から復元(検索時に未指定の場合、ここにくる)
@@ -141,12 +98,59 @@
 			propValueTo = "";
 		}
 	}
-	onchange = "dateChange('" + propNameTo + "')";
 
-	String toDisp = "";
-	if (hideTo) {
-		toDisp = "display: none;";
+	if (ViewUtil.isAutocompletionTarget()) {
+		request.setAttribute(Constants.AUTOCOMPLETION_EDITOR, editor);
+		request.setAttribute(Constants.AUTOCOMPLETION_SCRIPT_PATH, "/jsp/gem/generic/editor/date/DatePropertyAutocompletion.jsp");
 	}
+
+	if (editor.getDisplayType() != DateTimeDisplayType.HIDDEN) {
+		//HIDDEN以外
+
+		boolean hideFrom = editor.isSingleDayCondition() ? false : editor.isHideSearchConditionFrom();
+		boolean hideTo = editor.isSingleDayCondition() ? true : editor.isHideSearchConditionTo();
+	
+		//カスタムスタイル
+		String customStyle = "";
+		if (StringUtil.isNotEmpty(editor.getInputCustomStyle())) {
+			customStyle = EntityViewUtil.getCustomStyle(rootDefName, scriptKey, editor.getInputCustomStyleScriptKey(), null, null);
+		}
+	
+		String defaultValueFrom = "";
+		if (defaultValue != null && defaultValue.length > 0 && formatCheck(defaultValue[0])) {
+			defaultValueFrom = defaultValue[0];
+		}
+	
+		String onchange = "dateChange('" + StringUtil.escapeJavaScript(propNameFrom) + "')";
+		
+		String fromDisp = "";
+		if (hideFrom) {
+			fromDisp = "display: none;";
+		}
+%>
+<span style="<c:out value="<%=fromDisp %>"/>">
+<%-- XSS対応-メタの設定のため対応なし(onchange) --%>
+<input type="text" id="d_<c:out value="<%=propNameFrom %>"/>" class="datepicker inpbr" style="<c:out value="<%=customStyle%>"/>" value="" onchange="<%=onchange %>" data-showButtonPanel="<%=!editor.isHideButtonPanel()%>" data-showWeekday=<%=editor.isShowWeekday()%> />
+<input type="hidden" id="i_<c:out value="<%=propNameFrom%>"/>" name="<c:out value="<%=propNameFrom%>"/>" value="<c:out value="<%=propValueFrom%>"/>" />
+</span>
+<%
+		if (!hideFrom && !hideTo) {
+%>
+&nbsp;～&nbsp;
+<%
+		}
+	
+		String defaultValueTo = "";
+		if (defaultValue != null && defaultValue.length > 1 && formatCheck(defaultValue[1])) {
+			defaultValueTo = defaultValue[1];
+		}
+	
+		onchange = "dateChange('" + propNameTo + "')";
+	
+		String toDisp = "";
+		if (hideTo) {
+			toDisp = "display: none;";
+		}
 %>
 <span style="<c:out value="<%=toDisp%>"/>">
 <%-- XSS対応-メタの設定のため対応なし(onchange) --%>
@@ -174,7 +178,7 @@ $(function() {
 	});
 
 <%
-	if (required) {
+		if (required) {
 %>
 	<%-- common.js --%>
 	addNormalValidator(function() {
@@ -188,8 +192,16 @@ $(function() {
 		return true;
 	});
 <%
-	}
+		}
 %>
 });
 </script>
-
+<%
+	} else {
+		//HIDDEN
+%>
+<input type="hidden" id="i_<c:out value="<%=propNameFrom%>"/>" name="<c:out value="<%=propNameFrom%>"/>" value="<c:out value="<%=propValueFrom%>"/>" />
+<input type="hidden" id="i_<c:out value="<%=propNameTo %>"/>" name="<c:out value="<%=propNameTo %>"/>" value="<c:out value="<%=propValueTo %>"/>" />
+<%		
+	}
+%>

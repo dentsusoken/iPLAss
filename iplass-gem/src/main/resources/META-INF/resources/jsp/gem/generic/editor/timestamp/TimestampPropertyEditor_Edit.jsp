@@ -137,22 +137,23 @@
 		}
 	}
 
-	boolean isMultiple = pd.getMultiplicity() != 1;
-
-	//カスタムスタイル
-	String customStyle = "";
-	if (StringUtil.isNotEmpty(editor.getInputCustomStyle())) {
-		customStyle = EntityViewUtil.getCustomStyle(rootDefName, scriptKey, editor.getInputCustomStyleScriptKey(), entity, propValue);
-	}
-
 	if (ViewUtil.isAutocompletionTarget()) {
 		request.setAttribute(Constants.AUTOCOMPLETION_EDITOR, editor);
 		request.setAttribute(Constants.AUTOCOMPLETION_SCRIPT_PATH, "/jsp/gem/generic/editor/timestamp/TimestampPropertyAutocompletion.jsp");
 	}
 
 	//タイプ毎に出力内容かえる
-	if (editor.getDisplayType() == DateTimeDisplayType.DATETIME && updatable) {
-		//日時
+	if (editor.getDisplayType() != DateTimeDisplayType.LABEL 
+			&& editor.getDisplayType() != DateTimeDisplayType.HIDDEN && updatable) {
+
+		boolean isMultiple = pd.getMultiplicity() != 1;
+
+		//カスタムスタイル
+		String customStyle = "";
+		if (StringUtil.isNotEmpty(editor.getInputCustomStyle())) {
+			customStyle = EntityViewUtil.getCustomStyle(rootDefName, scriptKey, editor.getInputCustomStyleScriptKey(), entity, propValue);
+		}
+
 		if (isMultiple) {
 			//複数
 			String ulId = "ul_" + propName;
@@ -372,11 +373,16 @@ function <%=toggleAddBtnFunc%>(){
 			request.removeAttribute(Constants.EDITOR_PICKER_PROP_VALUE);
 		}
 	} else {
-		//ラベル
-		request.setAttribute(Constants.OUTPUT_HIDDEN, true);
+		//LABELかHIDDENか更新不可
+		
+		if (editor.getDisplayType() != DateTimeDisplayType.HIDDEN) {
+			request.setAttribute(Constants.OUTPUT_HIDDEN, true);
+		}
 %>
 <jsp:include page="TimestampPropertyEditor_View.jsp"></jsp:include>
 <%
-		request.removeAttribute(Constants.OUTPUT_HIDDEN);
+		if (editor.getDisplayType() != DateTimeDisplayType.HIDDEN) {
+			request.removeAttribute(Constants.OUTPUT_HIDDEN);
+		}
 	}
 %>
