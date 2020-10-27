@@ -45,6 +45,7 @@ import org.iplass.mtp.spi.ServiceRegistry;
 import org.iplass.mtp.tenant.TenantI18nInfo;
 import org.iplass.mtp.util.StringUtil;
 import org.iplass.mtp.view.generic.editor.AutoNumberPropertyEditor;
+import org.iplass.mtp.view.generic.editor.AutoNumberPropertyEditor.AutoNumberDisplayType;
 import org.iplass.mtp.view.generic.editor.BinaryPropertyEditor;
 import org.iplass.mtp.view.generic.editor.BinaryPropertyEditor.BinaryDisplayType;
 import org.iplass.mtp.view.generic.editor.BooleanPropertyEditor;
@@ -934,6 +935,7 @@ public class FormViewUtil {
 			break;
 		case AUTONUMBER:
 			AutoNumberPropertyEditor anpe = new AutoNumberPropertyEditor();
+			anpe.setDisplayType(AutoNumberDisplayType.LABEL);
 			editor = anpe;
 			break;
 		}

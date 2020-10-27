@@ -48,8 +48,21 @@ public class AutoNumberPropertyEditor extends PrimitivePropertyEditor {
 
 	/** 表示タイプ */
 	public enum AutoNumberDisplayType {
-		@XmlEnumValue("Label")LABEL
+		@XmlEnumValue("Label")LABEL,
+		@XmlEnumValue("Hidden")HIDDEN
 	}
+
+	@MetaFieldInfo(
+			displayName="表示タイプ",
+			displayNameKey="generic_editor_AutoNumberPropertyEditor_displayTypeDisplaNameKey",
+			inputType=InputType.ENUM,
+			enumClass=AutoNumberDisplayType.class,
+			required=true,
+			displayOrder=100,
+			description="画面に表示する方法を選択します。",
+			descriptionKey="generic_editor_AutoNumberPropertyEditor_displayTypeDescriptionKey"
+	)
+	private AutoNumberDisplayType displayType;
 
 	/** 検索条件完全一致設定 */
 	@MetaFieldInfo(
@@ -57,7 +70,7 @@ public class AutoNumberPropertyEditor extends PrimitivePropertyEditor {
 			displayNameKey="generic_editor_AutoNumberPropertyEditor_searchExactMatchConditionDisplaNameKey",
 			description="チェック時は完全一致検索します。<br>未チェック時はLike検索します。",
 			inputType=InputType.CHECKBOX,
-			displayOrder=100,
+			displayOrder=110,
 			descriptionKey="generic_editor_AutoNumberPropertyEditor_searchExactMatchConditionDescriptionKey"
 	)
 	@EntityViewField(
@@ -73,13 +86,23 @@ public class AutoNumberPropertyEditor extends PrimitivePropertyEditor {
 
 	@Override
 	public AutoNumberDisplayType getDisplayType() {
-		return AutoNumberDisplayType.LABEL;
+		if (displayType == null) {
+			displayType = AutoNumberDisplayType.LABEL;
+		}
+		return displayType;
+	}
+
+	/**
+	 * 表示タイプを設定します。
+	 * @param displayType
+	 */
+	public void setDisplayType(AutoNumberDisplayType displayType) {
+		this.displayType = displayType;
 	}
 
 	@Override
 	public boolean isHide() {
-//		return displayType == AutoNumberDisplayType.HIDDEN;
-		return false;
+		return displayType == AutoNumberDisplayType.HIDDEN;
 	}
 
 	@Override

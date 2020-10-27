@@ -1951,6 +1951,8 @@ LocaleInfo.generic_editor_StringPropertyEditor_hideRichtextEditorToolBarDisplaNa
 LocaleInfo.generic_editor_StringPropertyEditor_hideRichtextEditorToolBarDescriptionKey = "Set whether to hide the toolbar etc. in the display mode when using RickText.";
 LocaleInfo.generic_editor_StringPropertyEditor_richtextEditorOptionDisplaNameKey = "RichTextEditor option";
 LocaleInfo.generic_editor_StringPropertyEditor_richtextEditorOptionDescriptionKey = "Specify options for generating a rich text editor with Javascript's object literal.<br>Please refer to CKEDITOR config for specifiable options.";
+LocaleInfo.generic_editor_AutoNumberPropertyEditor_displayTypeDisplaNameKey = "Display Type";
+LocaleInfo.generic_editor_AutoNumberPropertyEditor_displayTypeDescriptionKey = "Select how to display on the screen.";
 LocaleInfo.generic_editor_AutoNumberPropertyEditor_searchExactMatchConditionDisplaNameKey = "Search by exact match";
 LocaleInfo.generic_editor_AutoNumberPropertyEditor_searchExactMatchConditionDescriptionKey = "Search by exact match.<br>The like search if not check.<br>The exact search regardless of the setting if the display type is Select.";
 LocaleInfo.generic_editor_TemplatePropertyEditor_templateNameDisplaNameKey = "Template name";

@@ -28,6 +28,7 @@
 <%@ page import="org.iplass.mtp.view.generic.EntityViewUtil"%>
 <%@ page import="org.iplass.mtp.view.generic.OutputType"%>
 <%@ page import="org.iplass.mtp.view.generic.editor.AutoNumberPropertyEditor" %>
+<%@ page import="org.iplass.mtp.view.generic.editor.AutoNumberPropertyEditor.AutoNumberDisplayType"%>
 <%@ page import="org.iplass.gem.command.Constants" %>
 
 <%
@@ -56,23 +57,31 @@
 		//詳細編集 or 詳細表示 or 一括更新編集
 		String str = propValue != null ? propValue.toString() : "";
 
-		//カスタムスタイル
-		String customStyle = "";
-		if (OutputType.EDIT == type) {
-			if (StringUtil.isNotEmpty(editor.getInputCustomStyle())) {
-				customStyle = EntityViewUtil.getCustomStyle(rootDefName, scriptKey, editor.getInputCustomStyleScriptKey(), entity, propValue);
+		if (editor.getDisplayType() != AutoNumberDisplayType.HIDDEN) {
+			
+			//カスタムスタイル
+			String customStyle = "";
+			if (OutputType.EDIT == type) {
+				if (StringUtil.isNotEmpty(editor.getInputCustomStyle())) {
+					customStyle = EntityViewUtil.getCustomStyle(rootDefName, scriptKey, editor.getInputCustomStyleScriptKey(), entity, propValue);
+				}
+			} else {
+				if (StringUtil.isNotEmpty(editor.getCustomStyle())) {
+					customStyle = EntityViewUtil.getCustomStyle(rootDefName, scriptKey, editor.getOutputCustomStyleScriptKey(), entity, propValue);
+				}
 			}
-		} else {
-			if (StringUtil.isNotEmpty(editor.getCustomStyle())) {
-				customStyle = EntityViewUtil.getCustomStyle(rootDefName, scriptKey, editor.getOutputCustomStyleScriptKey(), entity, propValue);
-			}
-		}
 %>
 <span class="data-label" style="<c:out value="<%=customStyle %>"/>">
 <c:out value="<%=str %>"/>
 </span>
 <input type="hidden" value="<c:out value="<%=str %>"/>" name="<c:out value="<%=propName %>"/>" />
 <%
+		} else {
+			//HIDDEN
+%>
+<input type="hidden" name="<c:out value="<%=propName %>"/>" value="<c:out value="<%=str %>"/>" />
+<%
+		}
 	} else if (OutputType.SEARCHCONDITION == type) {
 		//検索条件
 		propName = Constants.SEARCH_COND_PREFIX + propName;
@@ -80,15 +89,17 @@
 		String str = "";
 		if (strValues != null && strValues.length > 0) str = strValues[0];
 
-		String[] strDefaultValues = defaultValue instanceof String[] ? (String[]) defaultValue : null;
-		String strDefault = "";
-		if (strDefaultValues != null && strDefaultValues.length > 0) strDefault = strDefaultValues[0];
-
-		//カスタムスタイル
-		String customStyle = "";
-		if (StringUtil.isNotEmpty(editor.getInputCustomStyle())) {
-			customStyle = EntityViewUtil.getCustomStyle(rootDefName, scriptKey, editor.getInputCustomStyleScriptKey(), null, null);
-		}
+		if (editor.getDisplayType() != AutoNumberDisplayType.HIDDEN) {
+		
+			String[] strDefaultValues = defaultValue instanceof String[] ? (String[]) defaultValue : null;
+			String strDefault = "";
+			if (strDefaultValues != null && strDefaultValues.length > 0) strDefault = strDefaultValues[0];
+	
+			//カスタムスタイル
+			String customStyle = "";
+			if (StringUtil.isNotEmpty(editor.getInputCustomStyle())) {
+				customStyle = EntityViewUtil.getCustomStyle(rootDefName, scriptKey, editor.getInputCustomStyleScriptKey(), null, null);
+			}
 %>
 <input type="text" class="form-size-04 inpbr" style="<c:out value="<%=customStyle%>"/>" value="<c:out value="<%=str %>"/>" name="<c:out value="<%=propName %>"/>" />
 <script type="text/javascript">
@@ -98,7 +109,7 @@ $(function() {
 		$(":text[name='" + es("<%=StringUtil.escapeJavaScript(propName)%>") + "']").val("<%=StringUtil.escapeJavaScript(strDefault) %>");
 	});
 <%
-		if (required) {
+			if (required) {
 %>
 	<%-- common.js --%>
 	addNormalValidator(function() {
@@ -110,17 +121,33 @@ $(function() {
 		return true;
 	});
 <%
-		}
+			}
 %>
 });
 </script>
 <%
+		} else {
+			//HIDDEN
+%>
+<input type="hidden" name="<c:out value="<%=propName %>"/>" value="<c:out value="<%=str %>"/>" />
+<%
+		}
 	} else if (OutputType.SEARCHRESULT == type) {
 		//検索結果
 		String str = propValue != null ? propValue.toString() : "";
+
+		if (editor.getDisplayType() != AutoNumberDisplayType.HIDDEN) {
 %>
+<span class="data-label">
 <c:out value="<%=str %>"/>
+</span>
 <%
+		} else {
+			//HIDDEN
+%>
+<input type="hidden" name="<c:out value="<%=propName %>"/>" value="<c:out value="<%=str %>"/>" />
+<%
+		}
 	}
 	request.removeAttribute(Constants.EDITOR_EDITOR);
 	request.removeAttribute(Constants.EDITOR_PROP_VALUE);

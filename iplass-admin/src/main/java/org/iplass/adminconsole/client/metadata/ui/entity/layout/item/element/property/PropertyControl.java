@@ -51,6 +51,7 @@ import org.iplass.mtp.entity.definition.properties.SelectProperty;
 import org.iplass.mtp.entity.definition.properties.StringProperty;
 import org.iplass.mtp.entity.definition.properties.TimeProperty;
 import org.iplass.mtp.view.generic.editor.AutoNumberPropertyEditor;
+import org.iplass.mtp.view.generic.editor.AutoNumberPropertyEditor.AutoNumberDisplayType;
 import org.iplass.mtp.view.generic.editor.BinaryPropertyEditor;
 import org.iplass.mtp.view.generic.editor.BinaryPropertyEditor.BinaryDisplayType;
 import org.iplass.mtp.view.generic.editor.BooleanPropertyEditor;
@@ -305,7 +306,9 @@ public class PropertyControl extends ItemControl {
 			te.setUseTimePicker(true);
 			editor = te;
 		} else if (pd instanceof AutoNumberProperty) {
-			editor = new AutoNumberPropertyEditor();
+			AutoNumberPropertyEditor ane = new AutoNumberPropertyEditor();
+			ane.setDisplayType(AutoNumberDisplayType.LABEL);
+			editor = ane;
 		}
 
 		return editor;
