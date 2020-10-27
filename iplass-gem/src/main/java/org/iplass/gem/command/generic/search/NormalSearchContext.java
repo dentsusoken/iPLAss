@@ -554,6 +554,22 @@ public class NormalSearchContext extends SearchContextBase {
 				}
 				ret = new ReferenceNormalConditionValue(list.toArray(new Entity[list.size()]));
 			}
+		} else if (editor.getDisplayType() == ReferenceDisplayType.HIDDEN) {
+			//HIDDENならoid
+			List<Entity> list = new ArrayList<>();
+			String[] oid_ver = getRequest().getParams(Constants.SEARCH_COND_PREFIX + propName, String.class);
+			if (oid_ver != null && oid_ver.length > 0) {
+				for (String tmp : oid_ver) {
+					if (tmp == null) continue;
+					int lastIndex = tmp.lastIndexOf("_");
+					String oid = tmp.substring(0, lastIndex);
+					String version = tmp.substring(lastIndex + 1);
+					Entity cond = new GenericEntity(rp.getObjectDefinitionName(), oid, null);
+					cond.setVersion(Long.valueOf(version));
+					list.add(cond);
+				}
+				ret = new ReferenceNormalConditionValue(list.toArray(new Entity[list.size()]));
+			}
 		} else {
 			boolean searchName = false;
 			if (editor.getNestProperties().isEmpty()) {

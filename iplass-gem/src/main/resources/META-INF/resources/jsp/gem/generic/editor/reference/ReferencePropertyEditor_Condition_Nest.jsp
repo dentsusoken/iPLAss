@@ -32,6 +32,7 @@
 <%@ page import="org.iplass.mtp.view.generic.editor.NestProperty"%>
 <%@ page import="org.iplass.mtp.view.generic.editor.PropertyEditor"%>
 <%@ page import="org.iplass.mtp.view.generic.editor.ReferencePropertyEditor"%>
+<%@ page import="org.iplass.mtp.view.generic.editor.ReferencePropertyEditor.ReferenceDisplayType"%>
 <%@ page import="org.iplass.mtp.view.generic.EntityViewUtil"%>
 <%@ page import="org.iplass.mtp.view.generic.ViewConst"%>
 <%@ page import="org.iplass.mtp.web.template.TemplateUtil"%>
@@ -58,6 +59,9 @@
 
 	Boolean showProperty = (Boolean) request.getAttribute(Constants.EDITOR_REF_SHOW_PROPERTY);
 	if (showProperty == null) showProperty = true;
+	
+	//HIDDENの場合は、UseNestConditionWithPropertyが指定されていても不可
+	boolean useNestCondition = editor.getDisplayType() != ReferenceDisplayType.HIDDEN && editor.isUseNestConditionWithProperty();
 
 	Boolean required = (Boolean) request.getAttribute(Constants.EDITOR_REF_NEST_REQUIRED);
 	if (required == null) required = false;
@@ -118,7 +122,7 @@ $(function() {
 <%
 		} else {
 			showNest = true;
-			if (editor.isUseNestConditionWithProperty()) {
+			if (useNestCondition) {
 				//ネストはあるが親がない→親の名前とネストを表示
 				String value = "";
 				if (defaultSearchCond != null) {
@@ -152,6 +156,8 @@ $(function() {
 %>
 });
 </script>
+</td>
+</tr>
 <%
 			} else {
 				//ネストだけ表示
@@ -165,7 +171,7 @@ $(function() {
 		}
 	}
 
-	if (showNest || editor.isUseNestConditionWithProperty()) {
+	if (showNest || useNestCondition) {
 		int i = 0;
 		for (NestProperty np : editor.getNestProperties()) {
 			PropertyDefinition _pd = ed.getProperty(np.getPropertyName());
