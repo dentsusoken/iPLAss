@@ -47,8 +47,21 @@ public class TemplatePropertyEditor extends CustomPropertyEditor {
 
 	/** 表示タイプ */
 	public enum TemplateDisplayType {
-		@XmlEnumValue("Template")TEMPLATE
+		@XmlEnumValue("Template")TEMPLATE,
+		@XmlEnumValue("Hidden")HIDDEN
 	}
+
+	@MetaFieldInfo(
+			displayName="表示タイプ",
+			displayNameKey="generic_editor_TemplatePropertyEditor_displayTypeDisplaNameKey",
+			inputType=InputType.ENUM,
+			enumClass=TemplateDisplayType.class,
+			required=true,
+			displayOrder=100,
+			description="画面に表示する方法を選択します。",
+			descriptionKey="generic_editor_TemplatePropertyEditor_displayTypeDescriptionKey"
+	)
+	private TemplateDisplayType displayType;
 
 	/** テンプレート名 */
 	@MetaFieldInfo(
@@ -56,7 +69,7 @@ public class TemplatePropertyEditor extends CustomPropertyEditor {
 			displayNameKey="generic_editor_TemplatePropertyEditor_templateNameDisplaNameKey",
 			inputType=InputType.TEMPLATE,
 			required=true,
-			displayOrder=100,
+			displayOrder=110,
 			description="表示時に読み込むテンプレートの名前を設定します。",
 			descriptionKey="generic_editor_TemplatePropertyEditor_templateNameDescriptionKey"
 	)
@@ -64,6 +77,27 @@ public class TemplatePropertyEditor extends CustomPropertyEditor {
 			referenceTypes={FieldReferenceType.ALL}
 	)
 	private String templateName;
+
+	@Override
+	public TemplateDisplayType getDisplayType() {
+		if (displayType == null) {
+			displayType = TemplateDisplayType.TEMPLATE;
+		}
+		return displayType;
+	}
+
+	/**
+	 * 表示タイプを設定します。
+	 * @param displayType
+	 */
+	public void setDisplayType(TemplateDisplayType displayType) {
+		this.displayType = displayType;
+	}
+
+	@Override
+	public boolean isHide() {
+		return displayType == TemplateDisplayType.HIDDEN;
+	}
 
 	/**
 	 * テンプレート名を取得します。
@@ -81,8 +115,4 @@ public class TemplatePropertyEditor extends CustomPropertyEditor {
 		this.templateName = templateName;
 	}
 
-	@Override
-	public Enum<?> getDisplayType() {
-		return TemplateDisplayType.TEMPLATE;
-	}
 }
