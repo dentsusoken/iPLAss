@@ -23,6 +23,7 @@
 <%@ page import="org.iplass.mtp.util.StringUtil"%>
 <%@ page import="org.iplass.mtp.view.generic.EntityViewUtil"%>
 <%@ page import="org.iplass.mtp.view.generic.editor.BinaryPropertyEditor" %>
+<%@ page import="org.iplass.mtp.view.generic.editor.BinaryPropertyEditor.BinaryDisplayType"%>
 <%@ page import="org.iplass.mtp.view.generic.editor.PropertyEditor" %>
 <%@ page import="org.iplass.gem.command.Constants" %>
 <%@ page import="org.iplass.gem.command.ViewUtil"%>
@@ -44,21 +45,24 @@
 		value = propValue[0];
 	}
 
-	String strDefault = "";
-	if (defaultValue != null && defaultValue.length > 0) {
-		strDefault = defaultValue[0];
-	}
-
-	//カスタムスタイル
-	String customStyle = "";
-	if (StringUtil.isNotEmpty(editor.getInputCustomStyle())) {
-		customStyle = EntityViewUtil.getCustomStyle(rootDefName, scriptKey, editor.getInputCustomStyleScriptKey(), null, null);
-	}
-
 	if (ViewUtil.isAutocompletionTarget()) {
 		request.setAttribute(Constants.AUTOCOMPLETION_EDITOR, editor);
 		request.setAttribute(Constants.AUTOCOMPLETION_SCRIPT_PATH, "/jsp/gem/generic/editor/binary/BinaryPropertyAutocompletion.jsp");
 	}
+	
+	if (editor.getDisplayType() != BinaryDisplayType.HIDDEN) {
+		//HIDDEN以外
+	
+		String strDefault = "";
+		if (defaultValue != null && defaultValue.length > 0) {
+			strDefault = defaultValue[0];
+		}
+	
+		//カスタムスタイル
+		String customStyle = "";
+		if (StringUtil.isNotEmpty(editor.getInputCustomStyle())) {
+			customStyle = EntityViewUtil.getCustomStyle(rootDefName, scriptKey, editor.getInputCustomStyleScriptKey(), null, null);
+		}
 %>
 <input type="text" class="form-size-04 inpbr" style="<c:out value="<%=customStyle%>"/>" value="<%=value %>" name="<c:out value="<%=propName %>"/>" />
 <script type="text/javascript">
@@ -68,7 +72,7 @@ $(function() {
 		$(":text[name='" + es("<%=StringUtil.escapeJavaScript(propName)%>") + "']").val("<%=StringUtil.escapeJavaScript(strDefault) %>");
 	});
 <%
-	if (required) {
+		if (required) {
 %>
 	<%-- common.js --%>
 	addNormalValidator(function() {
@@ -80,7 +84,15 @@ $(function() {
 		return true;
 	});
 <%
-	}
+		}
 %>
 });
 </script>
+<%
+	} else {
+		//HIDDEN
+%>
+<input type="hidden" name="<c:out value="<%=propName %>"/>" value="<c:out value="<%=value %>"/>"/>
+<%
+	}
+%>

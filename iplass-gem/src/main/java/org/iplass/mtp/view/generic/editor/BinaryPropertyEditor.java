@@ -51,7 +51,8 @@ public class BinaryPropertyEditor extends PrimitivePropertyEditor {
 	public enum BinaryDisplayType {
 		@XmlEnumValue("Binary")BINARY,
 		@XmlEnumValue("Link")LINK,
-		@XmlEnumValue("Preview")PREVIEW
+		@XmlEnumValue("Preview")PREVIEW,
+		@XmlEnumValue("Hidden")HIDDEN
 	}
 
 	@MetaFieldInfo(
@@ -283,8 +284,7 @@ public class BinaryPropertyEditor extends PrimitivePropertyEditor {
 
 	@Override
 	public boolean isHide() {
-//		return displayType == BinaryDisplayType.HIDDEN;
-		return false;
+		return displayType == BinaryDisplayType.HIDDEN;
 	}
 
 	/**

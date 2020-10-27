@@ -52,30 +52,6 @@
 	Boolean outputHidden = (Boolean) request.getAttribute(Constants.OUTPUT_HIDDEN);
 	if (outputHidden == null) outputHidden = false;
 
-	String contextPath = TemplateUtil.getTenantContextPath();
-	String download = "";
-	String ref = contextPath + "/" + DownloadCommand.REFERENCE_ACTION_NAME;
-	if (StringUtil.isNotBlank(editor.getDownloadActionName())) {
-		download = contextPath + "/" + editor.getDownloadActionName();
-	} else {
-		download = contextPath + "/" + DownloadCommand.DOWNLOAD_ACTION_NAME;
-	}
-	String pdfviewer = contextPath + "/" + DownloadCommand.PDFVIEWER_ACTION_NAME;
-
-	String width = "";
-	if (editor.getWidth() > 0) {
-		width = " width=\"" + editor.getWidth() + "\"";
-	}
-	String height = "";
-	if (editor.getHeight() > 0) {
-		height = " height=\"" + editor.getHeight() + "\"";
-	}
-
-	String target = "";
-	if (editor.isOpenNewTab()) {
-		target = " target=\"_blank\"";
-	}
-
 	String propName = editor.getPropertyName();
 
 	List<BinaryReference> brList = new ArrayList<BinaryReference>();
@@ -85,38 +61,67 @@
 		brList.add((BinaryReference)value);
 	}
 	int length = brList.size();
+	
+	if (editor.getDisplayType() != BinaryDisplayType.HIDDEN) {
+		//HIDDEN以外
+		
+		String contextPath = TemplateUtil.getTenantContextPath();
+		String download = "";
+		String ref = contextPath + "/" + DownloadCommand.REFERENCE_ACTION_NAME;
+		if (StringUtil.isNotBlank(editor.getDownloadActionName())) {
+			download = contextPath + "/" + editor.getDownloadActionName();
+		} else {
+			download = contextPath + "/" + DownloadCommand.DOWNLOAD_ACTION_NAME;
+		}
+		String pdfviewer = contextPath + "/" + DownloadCommand.PDFVIEWER_ACTION_NAME;
+	
+		String width = "";
+		if (editor.getWidth() > 0) {
+			width = " width=\"" + editor.getWidth() + "\"";
+		}
+		String height = "";
+		if (editor.getHeight() > 0) {
+			height = " height=\"" + editor.getHeight() + "\"";
+		}
+	
+		String target = "";
+		if (editor.isOpenNewTab()) {
+			target = " target=\"_blank\"";
+		}
+
+		String listStyle = "";
+		if (editor.getDisplayType() == BinaryDisplayType.PREVIEW) {
+			listStyle = "noimage";
+		}
 %>
 <ul class="data-label">
 <%
-	String listStyle = "";
-	if (editor.getDisplayType() == BinaryDisplayType.PREVIEW) {
-		listStyle = "noimage";
-	}
-	for (int i = 0; i < brList.size(); i++) {
-		BinaryReference br = brList.get(i);
+		for (int i = 0; i < brList.size(); i++) {
+			BinaryReference br = brList.get(i);
 %>
 <li class="list-bin <c:out value="<%=listStyle %>"/>">
 <%
-		if (editor.getDisplayType() == BinaryDisplayType.BINARY || editor.getDisplayType() == BinaryDisplayType.LINK) {
-			if (br.getType().indexOf("application/pdf") != -1 && editor.isUsePdfjs()) {
-				String pdfPath = pdfviewer+ "?file=" + URLEncoder.encode(url(br, download), "utf-8");
+			if (editor.getDisplayType() == BinaryDisplayType.BINARY || editor.getDisplayType() == BinaryDisplayType.LINK) {
+				if (br.getType().indexOf("application/pdf") != -1 && editor.isUsePdfjs()) {
+					String pdfPath = pdfviewer+ "?file=" + URLEncoder.encode(url(br, download), "utf-8");
 %>
 <a href="<%=pdfPath%>" <%=target %>><c:out value="<%=br.getName() %>" /></a>
 <%
-			} else {
+				} else {
 %>
 <a href="<c:out value="<%=url(br, download) %>" />" <%=target %>><c:out value="<%=br.getName() %>" /></a>
 <%
+				}
 			}
-		}
-		if (editor.getDisplayType() == BinaryDisplayType.BINARY || editor.getDisplayType() == BinaryDisplayType.PREVIEW) {
-			if (br.getType().indexOf("image") != -1) {
+	
+			if (editor.getDisplayType() == BinaryDisplayType.BINARY || editor.getDisplayType() == BinaryDisplayType.PREVIEW) {
+				if (br.getType().indexOf("image") != -1) {
 %>
 <p>
 <img src="<c:out value="<%=url(br, ref) %>" />" alt="<c:out value="<%=br.getLobId() %>" />" onload="imageLoad()" <%=width + height %> />
 </p>
 <%
-			} else if (br.getType().indexOf("application/x-shockwave-flash") != -1) {
+				} else if (br.getType().indexOf("application/x-shockwave-flash") != -1) {
 %>
 <p>
 <object data="<c:out value="<%=url(br, ref) %>" />" type="application/x-shockwave-flash" <%=width + height %> >
@@ -126,7 +131,7 @@ ${m:rs("mtp-gem-messages", "generic.editor.binary.BinaryPropertyEditor_View.canN
 </object>
 </p>
 <%
-			} else if (br.getType().indexOf("video/mpeg") != -1) {
+				} else if (br.getType().indexOf("video/mpeg") != -1) {
 %>
 <p>
 <object classid="clsid:02BF25D5-8C17-4B23-BC80-D3488ABDDC6B" <%=width + height %>>
@@ -143,7 +148,7 @@ ${m:rs("mtp-gem-messages", "generic.editor.binary.BinaryPropertyEditor_View.canN
 </object>
 </p>
 <%
-			} else if (br.getType().indexOf("video/quicktime") != -1) {
+				} else if (br.getType().indexOf("video/quicktime") != -1) {
 %>
 <p>
 <object classid="clsid:02BF25D5-8C17-4B23-BC80-D3488ABDDC6B"
@@ -161,65 +166,77 @@ ${m:rs("mtp-gem-messages", "generic.editor.binary.BinaryPropertyEditor_View.canN
 </object>
 </p>
 <%
-			} else if (br.getType().indexOf("audio/mpeg") > -1) {
+				} else if (br.getType().indexOf("audio/mpeg") > -1) {
 %>
 <audio id="<c:out value="<%=propName%>" /><%=i%>" src="<c:out value="<%=url(br, ref) %>" />" controls="controls"></audio>
 <%
-			} else if (br.getType().indexOf("audio/webm") > -1) {
+				} else if (br.getType().indexOf("audio/webm") > -1) {
 %>
 <audio id="<c:out value="<%=propName%>" /><%=i%>" src="<c:out value="<%=url(br, ref) %>" />" controls="controls"></audio>
 <%
-			} else if (br.getType().indexOf("audio/ogg") > -1) {
+				} else if (br.getType().indexOf("audio/ogg") > -1) {
 %>
 <audio id="<c:out value="<%=propName%>" /><%=i%>" src="<c:out value="<%=url(br, ref) %>" />" controls="controls"></audio>
 <%
-			} else if (br.getType().indexOf("video/mp4") > -1) {
+				} else if (br.getType().indexOf("video/mp4") > -1) {
 %>
 <video id="<c:out value="<%=propName%>" /><%=i%>" src="<c:out value="<%=url(br, ref) %>" />" controls="controls" <%=width + height %>></video>
 <%
-			} else if (br.getType().indexOf("video/webm") > -1) {
+				} else if (br.getType().indexOf("video/webm") > -1) {
 %>
 <video id="<c:out value="<%=propName%>" /><%=i%>" src="<c:out value="<%=url(br, ref) %>" />" controls="controls" <%=width + height %>></video>
 <%
-			} else if (br.getType().indexOf("video/ogg") > -1) {
-				//音声ファイルでもvideo/oggになることがあるので拡張子で判断
-				if (br.getName().indexOf(".") > 1 && br.getName().substring(br.getName().indexOf(".")).toLowerCase().indexOf("ogg") > -1) {
+				} else if (br.getType().indexOf("video/ogg") > -1) {
+					//音声ファイルでもvideo/oggになることがあるので拡張子で判断
+					if (br.getName().indexOf(".") > 1 && br.getName().substring(br.getName().indexOf(".")).toLowerCase().indexOf("ogg") > -1) {
 %>
 <audio id="<c:out value="<%=propName%>" /><%=i%>" src="<c:out value="<%=url(br, ref) %>" />" controls="controls"></audio>
 <%
-				} else {
-%>
-<video id="<c:out value="<%=propName%>" /><%=i%>" src="<c:out value="<%=url(br, ref) %>" />" controls="controls" <%=width + height %>></video>
-<%
-				}
-			} else if (br.getType().indexOf("video/x-ms-wmv") != -1) {
-%>
-<video id="<c:out value="<%=propName%>" /><%=i%>" src="<c:out value="<%=url(br, ref) %>" />" controls="controls" <%=width + height %>></video>
-<%
-			} else if (br.getType().indexOf("video/flv") > -1) {
-%>
-<video id="<c:out value="<%=propName%>" /><%=i%>" src="<c:out value="<%=url(br, ref) %>" />" controls="controls" <%=width + height %>></video>
-<%
-			} else if (br.getType().indexOf("application/octet-stream") > -1) {
-				//mimeタイプで動画か判別不可な場合、拡張子で判断
-				if (br.getName().indexOf(".") > -1) {
-					if (br.getName().substring(br.getName().indexOf(".")).toLowerCase().indexOf("flv") > -1) {
-						//拡張子flvなら動画扱い
+					} else {
 %>
 <video id="<c:out value="<%=propName%>" /><%=i%>" src="<c:out value="<%=url(br, ref) %>" />" controls="controls" <%=width + height %>></video>
 <%
 					}
+				} else if (br.getType().indexOf("video/x-ms-wmv") != -1) {
+%>
+<video id="<c:out value="<%=propName%>" /><%=i%>" src="<c:out value="<%=url(br, ref) %>" />" controls="controls" <%=width + height %>></video>
+<%
+				} else if (br.getType().indexOf("video/flv") > -1) {
+%>
+<video id="<c:out value="<%=propName%>" /><%=i%>" src="<c:out value="<%=url(br, ref) %>" />" controls="controls" <%=width + height %>></video>
+<%
+				} else if (br.getType().indexOf("application/octet-stream") > -1) {
+					//mimeタイプで動画か判別不可な場合、拡張子で判断
+					if (br.getName().indexOf(".") > -1) {
+						if (br.getName().substring(br.getName().indexOf(".")).toLowerCase().indexOf("flv") > -1) {
+							//拡張子flvなら動画扱い
+%>
+<video id="<c:out value="<%=propName%>" /><%=i%>" src="<c:out value="<%=url(br, ref) %>" />" controls="controls" <%=width + height %>></video>
+<%
+						}
+					}
 				}
 			}
+			
+			if (outputHidden) {
+%>
+<input type="hidden" name="<c:out value="<%=propName %>"/>" value="<c:out value="<%=br.getLobId() %>"/>" />
+<%
+			}
+%>
+</li>
+<%
 		}
-		if (outputHidden) {
+%>
+</ul>
+<%
+	} else {
+		//HIDDEN
+		for (int i = 0; i < brList.size(); i++) {
+			BinaryReference br = brList.get(i);
 %>
 <input type="hidden" name="<c:out value="<%=propName %>"/>" value="<c:out value="<%=br.getLobId() %>"/>" />
 <%
 		}
-%>
-</li>
-<%
 	}
 %>
-</ul>
