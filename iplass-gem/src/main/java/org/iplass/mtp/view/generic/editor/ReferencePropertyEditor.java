@@ -62,7 +62,8 @@ public class ReferencePropertyEditor extends PropertyEditor implements HasNestPr
 		@XmlEnumValue("Tree")TREE,
 		@XmlEnumValue("NestTable")NESTTABLE,
 		@XmlEnumValue("Label")LABEL,
-		@XmlEnumValue("Unique")UNIQUE
+		@XmlEnumValue("Unique")UNIQUE,
+		@XmlEnumValue("Hidden")HIDDEN
 	}
 
 	/** 編集ページ */
@@ -706,8 +707,7 @@ public class ReferencePropertyEditor extends PropertyEditor implements HasNestPr
 
 	@Override
 	public boolean isHide() {
-//		return displayType == ReferenceDisplayType.HIDDEN;
-		return false;
+		return displayType == ReferenceDisplayType.HIDDEN;
 	}
 
 	/**
