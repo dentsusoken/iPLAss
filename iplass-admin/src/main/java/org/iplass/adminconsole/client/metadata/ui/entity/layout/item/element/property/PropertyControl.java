@@ -60,6 +60,7 @@ import org.iplass.mtp.view.generic.editor.DatePropertyEditor;
 import org.iplass.mtp.view.generic.editor.DateTimePropertyEditor.DateTimeDisplayType;
 import org.iplass.mtp.view.generic.editor.DecimalPropertyEditor;
 import org.iplass.mtp.view.generic.editor.ExpressionPropertyEditor;
+import org.iplass.mtp.view.generic.editor.ExpressionPropertyEditor.ExpressionDisplayType;
 import org.iplass.mtp.view.generic.editor.FloatPropertyEditor;
 import org.iplass.mtp.view.generic.editor.IntegerPropertyEditor;
 import org.iplass.mtp.view.generic.editor.LongTextPropertyEditor;
@@ -273,7 +274,9 @@ public class PropertyControl extends ItemControl {
 			de.setDisplayType(NumberDisplayType.TEXT);
 			editor = de;
 		} else if (pd instanceof ExpressionProperty) {
-			editor = new ExpressionPropertyEditor();
+			ExpressionPropertyEditor ee = new ExpressionPropertyEditor();
+			ee.setDisplayType(ExpressionDisplayType.LABEL);
+			editor = ee;
 		} else if (pd instanceof FloatProperty) {
 			FloatPropertyEditor fe = new FloatPropertyEditor();
 			fe.setDisplayType(NumberDisplayType.TEXT);

@@ -53,6 +53,7 @@ import org.iplass.mtp.view.generic.editor.DatePropertyEditor;
 import org.iplass.mtp.view.generic.editor.DateTimePropertyEditor.DateTimeDisplayType;
 import org.iplass.mtp.view.generic.editor.DecimalPropertyEditor;
 import org.iplass.mtp.view.generic.editor.ExpressionPropertyEditor;
+import org.iplass.mtp.view.generic.editor.ExpressionPropertyEditor.ExpressionDisplayType;
 import org.iplass.mtp.view.generic.editor.FloatPropertyEditor;
 import org.iplass.mtp.view.generic.editor.IntegerPropertyEditor;
 import org.iplass.mtp.view.generic.editor.LongTextPropertyEditor;
@@ -865,6 +866,7 @@ public class FormViewUtil {
 			break;
 		case EXPRESSION:
 			ExpressionPropertyEditor epe = new ExpressionPropertyEditor();
+			epe.setDisplayType(ExpressionDisplayType.LABEL);
 			editor = epe;
 			break;
 		case FLOAT:

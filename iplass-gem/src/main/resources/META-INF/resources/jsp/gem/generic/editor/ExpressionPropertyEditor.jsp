@@ -31,6 +31,7 @@
 <%@ page import="org.iplass.mtp.view.generic.OutputType"%>
 <%@ page import="org.iplass.mtp.view.generic.ViewConst"%>
 <%@ page import="org.iplass.mtp.view.generic.editor.ExpressionPropertyEditor" %>
+<%@ page import="org.iplass.mtp.view.generic.editor.ExpressionPropertyEditor.ExpressionDisplayType"%>
 <%@ page import="org.iplass.gem.command.Constants" %>
 
 <%!
@@ -120,46 +121,67 @@ String format(String format, Object value) {
 	if (OutputType.EDIT == type || OutputType.VIEW == type || OutputType.BULK == type) {
 		//詳細編集 or 詳細表示 or 一括更新編集
 
-		//カスタムスタイル
-		String customStyle = "";
-		if (type == OutputType.VIEW) {
-			if (StringUtil.isNotEmpty(editor.getCustomStyle())) {
-				customStyle = EntityViewUtil.getCustomStyle(rootDefName, scriptKey, editor.getOutputCustomStyleScriptKey(), entity, propValue);
-			}
-		} else if (type == OutputType.EDIT) {
-			if (StringUtil.isNotEmpty(editor.getInputCustomStyle())) {
-				customStyle = EntityViewUtil.getCustomStyle(rootDefName, scriptKey, editor.getInputCustomStyleScriptKey(), entity, propValue);
-			}
-		}
+		if (editor.getDisplayType() != ExpressionDisplayType.HIDDEN) {
 
-		if (isMultiple) {
+			//カスタムスタイル
+			String customStyle = "";
+			if (type == OutputType.VIEW) {
+				if (StringUtil.isNotEmpty(editor.getCustomStyle())) {
+					customStyle = EntityViewUtil.getCustomStyle(rootDefName, scriptKey, editor.getOutputCustomStyleScriptKey(), entity, propValue);
+				}
+			} else if (type == OutputType.EDIT) {
+				if (StringUtil.isNotEmpty(editor.getInputCustomStyle())) {
+					customStyle = EntityViewUtil.getCustomStyle(rootDefName, scriptKey, editor.getInputCustomStyleScriptKey(), entity, propValue);
+				}
+			}
+	
+			if (isMultiple) {
 %>
 <ul class="data-label" style="<c:out value="<%=customStyle %>"/>">
 <%
-			Object[] array = (Object[]) propValue;
-			if (array != null) {
-				for (Object obj : array) {
-					String hValue = obj != null ? obj.toString() : "";
+				Object[] array = (Object[]) propValue;
+				if (array != null) {
+					for (Object obj : array) {
+						String hValue = obj != null ? obj.toString() : "";
 %>
 <li>
 <c:out value="<%=format(editor.getNumberFormat(), obj) %>"/>
 <input type="hidden" name="<c:out value="<%=propName %>"/>" value="<c:out value="<%=hValue %>"/>">
 </li>
 <%
+					}
 				}
-			}
 %>
 </ul>
 <%
-		} else {
-			String hValue = propValue != null ? propValue.toString() : "";
-
+			} else {
+				String hValue = propValue != null ? propValue.toString() : "";
 %>
 <span class="data-label" style="<c:out value="<%=customStyle %>"/>">
 <c:out value="<%=format(editor.getNumberFormat(), propValue) %>"/>
 <input type="hidden" name="<c:out value="<%=propName %>"/>" value="<c:out value="<%=hValue %>"/>">
 </span>
 <%
+			}
+		} else {
+			//HIDDEN
+
+			if (isMultiple) {
+				Object[] array = (Object[]) propValue;
+				if (array != null) {
+					for (Object obj : array) {
+						String hValue = obj != null ? obj.toString() : "";
+%>
+<input type="hidden" name="<c:out value="<%=propName %>"/>" value="<c:out value="<%=hValue %>"/>" />
+<%
+					}
+				}
+			} else {
+				String hValue = propValue != null ? propValue.toString() : "";
+%>
+<input type="hidden" name="<c:out value="<%=propName %>"/>" value="<c:out value="<%=hValue %>"/>" />
+<%
+			}
 		}
 	} else if (OutputType.SEARCHCONDITION == type) {
 		//検索条件
@@ -171,17 +193,19 @@ String format(String format, Object value) {
 			str = _propValue[0];
 		}
 
-		String[] _defaultValue = (String[]) defaultValue;
-		String strDefault = "";
-		if (_defaultValue != null && _defaultValue.length > 0) {
-			strDefault = _defaultValue[0];
-		}
-
-		//カスタムスタイル
-		String customStyle = "";
-		if (StringUtil.isNotEmpty(editor.getInputCustomStyle())) {
-			customStyle = EntityViewUtil.getCustomStyle(rootDefName, scriptKey, editor.getInputCustomStyleScriptKey(), null, null);
-		}
+		if (editor.getDisplayType() != ExpressionDisplayType.HIDDEN) {
+		
+			String[] _defaultValue = (String[]) defaultValue;
+			String strDefault = "";
+			if (_defaultValue != null && _defaultValue.length > 0) {
+				strDefault = _defaultValue[0];
+			}
+	
+			//カスタムスタイル
+			String customStyle = "";
+			if (StringUtil.isNotEmpty(editor.getInputCustomStyle())) {
+				customStyle = EntityViewUtil.getCustomStyle(rootDefName, scriptKey, editor.getInputCustomStyleScriptKey(), null, null);
+			}
 %>
 <input type="text" class="form-size-04 inpbr" style="<c:out value="<%=customStyle%>"/>" value="<c:out value="<%=str%>"/>" name="<c:out value="<%=propName %>"/>" />
 
@@ -192,7 +216,7 @@ $(function() {
 		$(":text[name='" + es("<%=StringUtil.escapeJavaScript(propName)%>") + "']").val("<%=StringUtil.escapeJavaScript(strDefault) %>");
 	});
 <%
-		if (required) {
+			if (required) {
 %>
 	<%-- common.js --%>
 	addNormalValidator(function() {
@@ -204,32 +228,61 @@ $(function() {
 		return true;
 	});
 <%
-		}
+			}
 %>
 });
 </script>
 <%
+		} else {
+			//HIDDEN
+%>
+<input type="hidden" name="<c:out value="<%=propName %>"/>" value="<c:out value="<%=str %>"/>" />
+<%
+		}
 	} else {
 		//検索結果
-		if (isMultiple) {
+
+		if (editor.getDisplayType() != ExpressionDisplayType.HIDDEN) {
+
+			if (isMultiple) {
 %>
 <ul>
 <%
-			Object[] array = (Object[]) propValue;
-			if (array != null) {
-				for (Object obj : array) {
+				Object[] array = (Object[]) propValue;
+				if (array != null) {
+					for (Object obj : array) {
 %>
 <li><c:out value="<%=format(editor.getNumberFormat(), obj) %>"/></li>
 <%
+					}
 				}
-			}
 %>
 </ul>
 <%
-		} else {
+			} else {
 %>
 <c:out value="<%=format(editor.getNumberFormat(), propValue) %>"/>
 <%
+			}
+		} else {
+			//HIDDEN
+
+			if (isMultiple) {
+				Object[] array = (Object[]) propValue;
+				if (array != null) {
+					for (Object obj : array) {
+						String hValue = obj != null ? obj.toString() : "";
+%>
+<input type="hidden" name="<c:out value="<%=propName %>"/>" value="<c:out value="<%=hValue %>"/>" />
+<%
+					}
+				}
+			} else {
+				String hValue = propValue != null ? propValue.toString() : "";
+%>
+<input type="hidden" name="<c:out value="<%=propName %>"/>" value="<c:out value="<%=hValue %>"/>" />
+<%
+			}
 		}
 	}
 	request.removeAttribute(Constants.EDITOR_EDITOR);
