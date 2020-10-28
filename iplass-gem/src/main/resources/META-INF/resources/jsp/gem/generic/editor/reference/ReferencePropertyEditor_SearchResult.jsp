@@ -96,18 +96,29 @@
 	Entity entity = value instanceof Entity ? (Entity) value : null;
 	
 	if (editor.getNestProperties().size() == 0) {
-		if (entity != null && getDisplayPropLabel(editor, entity) != null) {
-			String linkId = propName + "_" + entity.getOid();
-			String displayPropLabel = getDisplayPropLabel(editor, entity);
-			if (editor.getDisplayType() == ReferenceDisplayType.LABEL) {
-				//ラベルの場合はリンクにしない
+		if (entity != null) {
+			if (editor.getDisplayType() == ReferenceDisplayType.HIDDEN) {
+				//HIDDEN
+				String key = entity.getOid() + "_" + entity.getVersion();
+%>
+<input type="hidden" name="<c:out value="<%=propName %>"/>" value="<c:out value="<%=key %>"/>"/>
+<%
+			} else {
+				//HIDDEN以外
+				if (getDisplayPropLabel(editor, entity) != null) {
+					String linkId = propName + "_" + entity.getOid();
+					String displayPropLabel = getDisplayPropLabel(editor, entity);
+					if (editor.getDisplayType() == ReferenceDisplayType.LABEL) {
+						//ラベルの場合はリンクにしない
 %>
 <c:out value="<%=displayPropLabel %>" />
 <%
-			} else {
+					} else {
 %>
 <a href="javascript:void(0)" class="modal-lnk" id="<c:out value="<%=linkId %>" />" data-linkId="<c:out value="<%=linkId %>" />" onclick="showReference('<%=StringUtil.escapeJavaScript(view)%>', '<%=StringUtil.escapeJavaScript(editor.getObjectName())%>', '<%=StringUtil.escapeJavaScript(entity.getOid())%>', '<%=entity.getVersion() %>', '<%=StringUtil.escapeJavaScript(linkId)%>', <%=refEdit %>, null, '<%=rootDefName%>', '<%=viewName%>', '<%=propName%>', '<%=viewType%>', null, '<%=StringUtil.escapeJavaScript(rootOid) %>', '<%=StringUtil.escapeJavaScript(rootVersion) %>')"><c:out value="<%=displayPropLabel %>" /></a>
 <%
+					}
+				}
 			}
 		}
 	} else if (editor.getNestProperties().size() > 0) {
@@ -119,7 +130,11 @@
 			String key = editor.getPropertyName() + "." + np.getPropertyName();
 			PropertyDefinition _pd = ed.getProperty(np.getPropertyName());
 			if (isDispProperty(_pd, np)) {
-				if (Entity.NAME.equals(np.getPropertyName())) {
+				PropertyEditor npEditor = np.getEditor();
+				if (!npEditor.isHide() 
+						&& Entity.NAME.equals(np.getPropertyName())) {
+					//NestPropertyのEditorがHIDDENではなく、NAMEの場合
+					
 					if (entity != null && entity.getName() != null) {
 						String linkId = propName + "_" + entity.getOid();
 						//こっちはリンクのままに
@@ -138,7 +153,6 @@
 					}
 				} else {
 					Object rValue = entity != null ? entity.getValue(_pd.getName()) : null;
-					PropertyEditor npEditor = np.getEditor();
 					npEditor.setPropertyName(key);
 					request.setAttribute(Constants.EDITOR_EDITOR, npEditor);
 					request.setAttribute(Constants.EDITOR_PROP_VALUE, rValue);

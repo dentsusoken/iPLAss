@@ -135,7 +135,7 @@ public class CreateSearchResultUtil {
 				HttpServletRequest req = stack.getRequest();
 				Boolean isNest = (Boolean) req.getAttribute(Constants.EDITOR_REF_NEST_PROPERTY_PREFIX + propName);
 				if (isNest != null && isNest) {
-					rowData.put(propName + ".name", html);
+					rowData.put(propName + "." + Entity.NAME, html);
 				} else {
 					rowData.put(propName, html);
 				}
