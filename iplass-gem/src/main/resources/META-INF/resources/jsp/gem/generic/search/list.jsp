@@ -229,8 +229,12 @@ $(function() {
 					if (!ViewUtil.getEntityViewHelper().isSortable(pd)) {
 						sortable = "sortable:false";
 					}
+					String hidden = ", hidden:false";
+					if (property.getEditor() != null && property.getEditor().isHide()) {
+						hidden = ", hidden:true";
+					}
 %>
-	colModel.push({name:"<%=sortPropName%>", index:"<%=sortPropName%>", label:"<p class='title'><%=displayLabel%></p>", <%=sortable%><%=width%>, cellattr: cellAttrFunc});
+	colModel.push({name:"<%=sortPropName%>", index:"<%=sortPropName%>", label:"<p class='title'><%=displayLabel%></p>", <%=sortable%><%=hidden%><%=width%>, cellattr: cellAttrFunc});
 <%
 				} else if (property.getEditor() instanceof ReferencePropertyEditor) {
 					//参照型のName以外を表示する場合
@@ -250,8 +254,12 @@ $(function() {
 						if (!ViewUtil.getEntityViewHelper().isSortable(pd)) {
 							sortable = "sortable:false";
 						}
+						String hidden = ", hidden:false";
+						if (property.getEditor() != null && property.getEditor().isHide()) {
+							hidden = ", hidden:true";
+						}
 %>
-	colModel.push({name:"<%=sortPropName%>", index:"<%=sortPropName%>", label:"<p class='title'><%=displayLabel%></p>", <%=sortable%><%=width%>});
+	colModel.push({name:"<%=sortPropName%>", index:"<%=sortPropName%>", label:"<p class='title'><%=displayLabel%></p>", <%=sortable%><%=hidden%><%=width%>});
 <%
 					} else if (nest.size() > 0) {
 						String style = property.getStyle() != null ? property.getStyle() : "";
