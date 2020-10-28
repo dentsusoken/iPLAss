@@ -1213,31 +1213,31 @@ $(function() {
 <span class="unique-key">
 <input type="text" style="<c:out value="<%=customStyle%>"/>" class="unique-form-size-01 inpbr" />
 <%
-			if (!hideSelectButton) {
+		if (!hideSelectButton) {
 %>
 <input type="button" value="${m:rs('mtp-gem-messages', 'generic.editor.reference.ReferencePropertyEditor_Edit.select')}" class="gr-btn-02 modal-btn sel-btn" data-propName="<c:out value="<%=propName %>"/>" />
 <%
-			}
+		}
 
-			if (auth.checkPermission(new EntityPermission(refDefName, EntityPermission.Action.CREATE)) && !hideRegistButton) {
+		if (auth.checkPermission(new EntityPermission(refDefName, EntityPermission.Action.CREATE)) && !hideRegistButton) {
 %>
 <input type="button" value="${m:rs('mtp-gem-messages', 'generic.editor.reference.ReferencePropertyEditor_Edit.new')}" class="gr-btn-02 modal-btn ins-btn"
  data-parentOid="<%=StringUtil.escapeJavaScript(parentOid)%>"
  data-parentVersion="<%=StringUtil.escapeJavaScript(parentVersion)%>"
 />
 <%
-			}
+		}
 %>
 </span>
 <span class="unique-ref">
 <a href="javascript:void(0)" class="modal-lnk"></a>
 <%
 
-			if (!hideDeleteButton && updatable) {
+		if (!hideDeleteButton && updatable) {
 %>
 <input type="button" value="${m:rs('mtp-gem-messages', 'generic.editor.reference.ReferencePropertyEditor_Edit.delete')}" class="gr-btn-02 del-btn" />
 <%
-			}
+		}
 %>
 </span>
 <input type="hidden" />
