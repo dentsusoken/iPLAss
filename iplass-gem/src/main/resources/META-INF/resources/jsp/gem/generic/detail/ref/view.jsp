@@ -290,7 +290,7 @@ function dataUnlock() {
 </form>
 </div>
 
-<div id="selectCopyTargetDialog" title="${m:rs('mtp-gem-messages', 'generic.detail.ref.view.selectCopy')}" style="display:none;">
+<div id="selectCopyTargetDialog" class="mtp-jq-dialog" title="${m:rs('mtp-gem-messages', 'generic.detail.ref.view.selectCopy')}" style="display:none;">
 <ul class="list-input-01 col">
 <li><label><input type="radio" name="selCopyTarget" value="Shallow" />${m:rs("mtp-gem-messages", "generic.detail.ref.view.entityCopy")}</label></li>
 <li><label><input type="radio" name="selCopyTarget" value="Deep" />${m:rs("mtp-gem-messages", "generic.detail.ref.view.bulkCopy")}</label></li>

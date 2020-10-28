@@ -3945,9 +3945,10 @@ function adjustDialogLayer($layer) {
 		$layer.height(containerHeight);
 	}
 
-	var winWidth = $(window).width();
+	var winWidth = $(window).outerWidth();
 	var docWidth = $(document).width();
 	var containerWidth = $("#container").width();
+	
 	var width = winWidth > docWidth ? winWidth : docWidth;
 	if (containerWidth > width) width = containerWidth;
 	$layer.width(width);
