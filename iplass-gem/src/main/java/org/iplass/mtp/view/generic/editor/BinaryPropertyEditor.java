@@ -51,7 +51,8 @@ public class BinaryPropertyEditor extends PrimitivePropertyEditor {
 	public enum BinaryDisplayType {
 		@XmlEnumValue("Binary")BINARY,
 		@XmlEnumValue("Link")LINK,
-		@XmlEnumValue("Preview")PREVIEW
+		@XmlEnumValue("Preview")PREVIEW,
+		@XmlEnumValue("Hidden")HIDDEN
 	}
 
 	@MetaFieldInfo(
@@ -150,7 +151,7 @@ public class BinaryPropertyEditor extends PrimitivePropertyEditor {
 			referenceTypes={FieldReferenceType.SEARCHRESULT, FieldReferenceType.DETAIL}
 	)
 	private boolean usePdfjs;
-	
+
 	/** ファイル選択ボタンを非表示する */
 	@MetaFieldInfo(
 			displayName="ファイル選択ボタンを非表示",
@@ -178,7 +179,7 @@ public class BinaryPropertyEditor extends PrimitivePropertyEditor {
 			referenceTypes={FieldReferenceType.DETAIL}
 	)
 	private boolean hideDeleteButton;
-	
+
 	/**
 	 * コンストラクタ
 	 */
@@ -281,6 +282,11 @@ public class BinaryPropertyEditor extends PrimitivePropertyEditor {
 		this.displayType = displayType;
 	}
 
+	@Override
+	public boolean isHide() {
+		return displayType == BinaryDisplayType.HIDDEN;
+	}
+
 	/**
 	 * PDF表示時にPDF.jsを利用を取得します。
 	 * @return PDF表示時にPDF.jsを利用
@@ -296,7 +302,7 @@ public class BinaryPropertyEditor extends PrimitivePropertyEditor {
 	public void setUsePdfjs(boolean usePdfjs) {
 	    this.usePdfjs = usePdfjs;
 	}
-	
+
 	/**
 	 * ファイル選択ボタン非表示設定を取得します
 	 * @return ファイル選択ボタン非表示設定
@@ -304,7 +310,7 @@ public class BinaryPropertyEditor extends PrimitivePropertyEditor {
 	public boolean isHideSelectButton() {
 		return hideSelectButton;
 	}
-	
+
 	/**
 	 * ファイル選択ボタン非表示設定を設定します
 	 * @param ファイル選択ボタン非表示設定
@@ -312,7 +318,7 @@ public class BinaryPropertyEditor extends PrimitivePropertyEditor {
 	public void setHideSelectButton(boolean hideSelectButton) {
 		this.hideSelectButton = hideSelectButton;
 	}
-	
+
 	/**
 	 * 削除ボタン非表示設定を取得します
 	 * @return ファイル選択ボタン非表示設定

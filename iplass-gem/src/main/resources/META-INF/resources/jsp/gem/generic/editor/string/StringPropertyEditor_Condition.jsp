@@ -45,27 +45,10 @@
 	String scriptKey = (String)request.getAttribute(Constants.SECTION_SCRIPT_KEY);
 
 	String displayLabel = (String) request.getAttribute(Constants.EDITOR_DISPLAY_LABEL);
-	Boolean required = (Boolean) request.getAttribute(Constants.EDITOR_REQUIRED);
-	if (required == null) required = false;
 
 	String value = "";
 	if (propValue != null && propValue.length > 0) {
 		value = propValue[0];
-	}
-	String strDefault = "";
-	if (defaultValue != null && defaultValue.length > 0) {
-		strDefault = defaultValue[0];
-	}
-
-	String pleaseSelectLabel = "";
-	if (ViewUtil.isShowPulldownPleaseSelectLabel()) {
-		pleaseSelectLabel = GemResourceBundleUtil.resourceString("generic.editor.string.StringPropertyEditor_Condition.pleaseSelect");
-	}
-
-	//カスタムスタイル
-	String customStyle = "";
-	if (StringUtil.isNotEmpty(editor.getInputCustomStyle())) {
-		customStyle = EntityViewUtil.getCustomStyle(rootDefName, scriptKey, editor.getInputCustomStyleScriptKey(), null, null);
 	}
 
 	if (ViewUtil.isAutocompletionTarget()) {
@@ -74,23 +57,46 @@
 	}
 
 	PropertyDefinition pd = (PropertyDefinition) request.getAttribute(Constants.EDITOR_PROPERTY_DEFINITION);
-	if (pd instanceof StringProperty || (pd instanceof ExpressionProperty &&
-			((ExpressionProperty)pd).getResultType() == PropertyDefinitionType.STRING)) {
-		//String型のみ、LongTextは検索条件に含めない
-		if (editor.getDisplayType() == StringDisplayType.SELECT) {
+	
+	if (editor.getDisplayType() != StringDisplayType.HIDDEN) {
+		//HIDDEN以外
+
+		Boolean required = (Boolean) request.getAttribute(Constants.EDITOR_REQUIRED);
+		if (required == null) required = false;
+		
+		String strDefault = "";
+		if (defaultValue != null && defaultValue.length > 0) {
+			strDefault = defaultValue[0];
+		}
+
+		//カスタムスタイル
+		String customStyle = "";
+		if (StringUtil.isNotEmpty(editor.getInputCustomStyle())) {
+			customStyle = EntityViewUtil.getCustomStyle(rootDefName, scriptKey, editor.getInputCustomStyleScriptKey(), null, null);
+		}
+		
+		if (pd instanceof StringProperty 
+				|| (pd instanceof ExpressionProperty 
+						&& ((ExpressionProperty)pd).getResultType() == PropertyDefinitionType.STRING)) {
+			//String型のみ、LongTextは検索条件に含めない
+			if (editor.getDisplayType() == StringDisplayType.SELECT) {
+				String pleaseSelectLabel = "";
+				if (ViewUtil.isShowPulldownPleaseSelectLabel()) {
+					pleaseSelectLabel = GemResourceBundleUtil.resourceString("generic.editor.string.StringPropertyEditor_Condition.pleaseSelect");
+				}
 %>
 <select name="<c:out value="<%=propName %>"/>" class="form-size-02 inpbr" style="<c:out value="<%=customStyle%>"/>">
 <option value=""><%= pleaseSelectLabel %></option>
 <%
-			for (EditorValue tmp : editor.getValues()) {
-				String label = EntityViewUtil.getStringPropertySelectTypeLabel(tmp);
-				String optStyle = tmp.getStyle() != null ? tmp.getStyle() : "";
-				String selected = "";
-				if (value.equals(tmp.getValue())) selected = " selected";
+				for (EditorValue tmp : editor.getValues()) {
+					String label = EntityViewUtil.getStringPropertySelectTypeLabel(tmp);
+					String optStyle = tmp.getStyle() != null ? tmp.getStyle() : "";
+					String selected = "";
+					if (value.equals(tmp.getValue())) selected = " selected";
 %>
 <option class="<c:out value="<%=optStyle %>"/>" value="<c:out value="<%=tmp.getValue() %>"/>" <c:out value="<%=selected %>"/>><c:out value="<%=label %>" /></option>
 <%
-			}
+				}
 %>
 </select>
 
@@ -101,7 +107,7 @@ $(function() {
 		$("select[name='" + es("<%=StringUtil.escapeJavaScript(propName)%>") + "']").val("<%=StringUtil.escapeJavaScript(strDefault) %>");
 	});
 <%
-			if (required) {
+				if (required) {
 %>
 	<%-- common.js --%>
 	addNormalValidator(function() {
@@ -113,12 +119,43 @@ $(function() {
 		return true;
 	});
 <%
-			}
+				}
 %>
 });
 </script>
 <%
+			} else {
+				//SELECT以外
+%>
+<input type="text" class="form-size-04 inpbr" style="<c:out value="<%=customStyle%>"/>" value="<c:out value="<%=value %>"/>" name="<c:out value="<%=propName %>"/>" />
+
+<script type="text/javascript">
+$(function() {
+	<%-- common.js --%>
+	addNormalConditionItemResetHandler(function(){
+		$(":text[name='" + es("<%=StringUtil.escapeJavaScript(propName)%>") + "']").val("<%=StringUtil.escapeJavaScript(strDefault) %>");
+	});
+<%
+				if (required) {
+%>
+	<%-- common.js --%>
+	addNormalValidator(function() {
+		var val = $(":text[name='" + es("<%=StringUtil.escapeJavaScript(propName)%>") + "']").val();
+		if (typeof val === "undefined" || val == null || val == "") {
+			alert(scriptContext.gem.locale.common.requiredMsg.replace("{0}", "<%=StringUtil.escapeJavaScript(displayLabel)%>"));
+			return false;
+		}
+		return true;
+	});
+<%
+				}
+%>
+});
+</script>
+<%
+			}
 		} else {
+			//LongTextはテキストボックスのみ
 %>
 <input type="text" class="form-size-04 inpbr" style="<c:out value="<%=customStyle%>"/>" value="<c:out value="<%=value %>"/>" name="<c:out value="<%=propName %>"/>" />
 
@@ -148,33 +185,10 @@ $(function() {
 <%
 		}
 	} else {
-		//LongTextはテキストボックスのみ
+		//HIDDEN
 %>
-<input type="text" class="form-size-04 inpbr" style="<c:out value="<%=customStyle%>"/>" value="<c:out value="<%=value %>"/>" name="<c:out value="<%=propName %>"/>" />
-
-<script type="text/javascript">
-$(function() {
-	<%-- common.js --%>
-	addNormalConditionItemResetHandler(function(){
-		$(":text[name='" + es("<%=StringUtil.escapeJavaScript(propName)%>") + "']").val("<%=StringUtil.escapeJavaScript(strDefault) %>");
-	});
-<%
-		if (required) {
-%>
-	<%-- common.js --%>
-	addNormalValidator(function() {
-		var val = $(":text[name='" + es("<%=StringUtil.escapeJavaScript(propName)%>") + "']").val();
-		if (typeof val === "undefined" || val == null || val == "") {
-			alert(scriptContext.gem.locale.common.requiredMsg.replace("{0}", "<%=StringUtil.escapeJavaScript(displayLabel)%>"));
-			return false;
-		}
-		return true;
-	});
-<%
-		}
-%>
-});
-</script>
+<input type="hidden" name="<c:out value="<%=propName %>"/>" value="<c:out value="<%=value %>"/>"/>
 <%
 	}
 %>
+

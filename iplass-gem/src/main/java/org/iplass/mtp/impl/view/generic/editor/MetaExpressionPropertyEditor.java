@@ -30,6 +30,7 @@ import org.iplass.mtp.impl.view.generic.EntityViewRuntime;
 import org.iplass.mtp.impl.view.generic.FormViewRuntime;
 import org.iplass.mtp.impl.view.generic.element.property.MetaPropertyLayout;
 import org.iplass.mtp.view.generic.editor.ExpressionPropertyEditor;
+import org.iplass.mtp.view.generic.editor.ExpressionPropertyEditor.ExpressionDisplayType;
 import org.iplass.mtp.view.generic.editor.PropertyEditor;
 
 /**
@@ -45,7 +46,11 @@ public class MetaExpressionPropertyEditor extends MetaPrimitivePropertyEditor {
 		return new MetaExpressionPropertyEditor();
 	}
 
+	/** 表示タイプ */
+	private ExpressionDisplayType displayType;
+
 	/** 数値のフォーマット */
+	//TODO なぜprivateじゃない？
 	protected String numberFormat;
 
 	private MetaPropertyEditor editor;
@@ -60,6 +65,7 @@ public class MetaExpressionPropertyEditor extends MetaPrimitivePropertyEditor {
 		super.fillFrom(editor);
 
 		ExpressionPropertyEditor pe = (ExpressionPropertyEditor) editor;
+		displayType = pe.getDisplayType();
 		numberFormat = pe.getNumberFormat();
 
 		MetaPropertyEditor me = MetaPropertyEditor.createInstance(pe.getEditor());
@@ -75,6 +81,12 @@ public class MetaExpressionPropertyEditor extends MetaPrimitivePropertyEditor {
 		ExpressionPropertyEditor editor = new ExpressionPropertyEditor();
 		super.fillTo(editor);
 
+		if (displayType == null) {
+			editor.setDisplayType(ExpressionDisplayType.LABEL);
+		} else {
+			editor.setDisplayType(displayType);
+		}
+
 		editor.setNumberFormat(numberFormat);
 
 		if (this.editor != null) {
@@ -82,6 +94,22 @@ public class MetaExpressionPropertyEditor extends MetaPrimitivePropertyEditor {
 			editor.setEditor(this.editor.currentConfig(null));
 		}
 		return editor;
+	}
+
+	/**
+	 * 表示タイプを取得します。
+	 * @return 表示タイプ
+	 */
+	public ExpressionDisplayType getDisplayType() {
+	    return displayType;
+	}
+
+	/**
+	 * 表示タイプを設定します。
+	 * @param displayType 表示タイプ
+	 */
+	public void setDisplayType(ExpressionDisplayType displayType) {
+	    this.displayType = displayType;
 	}
 
 	/**

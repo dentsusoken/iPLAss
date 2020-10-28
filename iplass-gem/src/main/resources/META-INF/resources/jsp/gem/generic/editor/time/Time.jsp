@@ -26,6 +26,7 @@
 <%@ page import="org.iplass.mtp.entity.Entity"%>
 <%@ page import="org.iplass.mtp.view.generic.EntityViewUtil"%>
 <%@ page import="org.iplass.mtp.view.generic.editor.TimePropertyEditor" %>
+<%@ page import="org.iplass.mtp.view.generic.editor.DateTimePropertyEditor.DateTimeDisplayType"%>
 <%@ page import="org.iplass.mtp.view.generic.editor.DateTimePropertyEditor.MinIntereval" %>
 <%@ page import="org.iplass.mtp.view.generic.editor.DateTimePropertyEditor.TimeDispRange" %>
 <%@ page import="org.iplass.mtp.util.DateUtil" %>
@@ -80,115 +81,118 @@
 	String hour = tmp[0];
 	String min = tmp[1];
 	String sec = tmp[2];
-	String str = tmp[4];
+	String strHidden = tmp[4];
 
-	String[] defTmp = split(_defaultValue);
-	String defHour = defTmp[0];
-	String defMin = defTmp[1];
-	String defSec = defTmp[2];
-	String defStr = defTmp[4];
+	if (editor.getDisplayType() != DateTimeDisplayType.HIDDEN) {
+		//HIDDEN以外
 
-	String onchange = "timeSelectChange('" + StringUtil.escapeJavaScript(_propName) + "')";
+		String[] defTmp = split(_defaultValue);
+		String defHour = defTmp[0];
+		String defMin = defTmp[1];
+		String defSec = defTmp[2];
+		String defStr = defTmp[4];
+	
+		//カスタムスタイル
+		String customStyle = "";
+		if (StringUtil.isNotEmpty(editor.getInputCustomStyle())) {
+			customStyle = EntityViewUtil.getCustomStyle(rootDefName, scriptKey, editor.getInputCustomStyleScriptKey(), entity, _propValue);
+		}
 
-	//カスタムスタイル
-	String customStyle = "";
-	if (StringUtil.isNotEmpty(editor.getInputCustomStyle())) {
-		customStyle = EntityViewUtil.getCustomStyle(rootDefName, scriptKey, editor.getInputCustomStyleScriptKey(), entity, _propValue);
-	}
+		String onchange = "timeSelectChange('" + StringUtil.escapeJavaScript(_propName) + "')";
 %>
 <label>
 <select id="h_<c:out value="<%=_propName %>"/>" class="inpbr form-size-11" style="<c:out value="<%=customStyle%>"/>" onchange="<%=onchange%>">
 <option value="  ">--</option>
 <%
-	for (int i = 0; i < 24; i++) {
-		String h = String.format("%02d", i);
-		String selected = hour.equals(h) ? " selected" : "";
+		for (int i = 0; i < 24; i++) {
+			String h = String.format("%02d", i);
+			String selected = hour.equals(h) ? " selected" : "";
 %>
 <option value="<c:out value="<%=h%>"/>" <c:out value="<%=selected %>"/>><c:out value="<%=h%>"/></option>
 <%
-	}
+		}
 %>
 </select>${m:rs("mtp-gem-messages", "generic.editor.time.Time.hour")}
 </label>
 
 <%
-	if (TimeDispRange.isDispMin(editor.getDispRange())) {
-		//分を表示
+		if (TimeDispRange.isDispMin(editor.getDispRange())) {
+			//分を表示
 %>
 <label>
 <select id="m_<c:out value="<%=_propName %>"/>" class="inpbr form-size-11" style="<c:out value="<%=customStyle%>"/>" onchange="<%=onchange%>">
 <option value="  ">--</option>
 <%
-		int minInterval = MinIntereval.toInt(editor.getInterval());
-		for (int i = 0; i < 60; i += minInterval) {
-			String m = String.format("%02d", i);
-			String selected = min.equals(m) ? " selected" : "";
+			int minInterval = MinIntereval.toInt(editor.getInterval());
+			for (int i = 0; i < 60; i += minInterval) {
+				String m = String.format("%02d", i);
+				String selected = min.equals(m) ? " selected" : "";
 %>
 <option value="<c:out value="<%=m %>"/>" <c:out value="<%=selected %>"/>><c:out value="<%=m %>"/></option>
 <%
-		}
+			}
 %>
 </select>${m:rs("mtp-gem-messages", "generic.editor.time.Time.minute")}
 </label>
 <%
-	} else {
-		//分を表示しない
-		String defaultMin = "00";
-		String _defaultMin = (String) request.getAttribute(Constants.EDITOR_PICKER_DEFAULT_MIN);
-		if (_defaultMin != null) {
-			defaultMin = _defaultMin;
-		}
+		} else {
+			//分を表示しない
+			String defaultMin = "00";
+			String _defaultMin = (String) request.getAttribute(Constants.EDITOR_PICKER_DEFAULT_MIN);
+			if (_defaultMin != null) {
+				defaultMin = _defaultMin;
+			}
 %>
 <input type="hidden" id="m_<c:out value="<%=_propName %>"/>" value="<c:out value="<%=defaultMin%>"/>" />
 <%
-	}
-	if (TimeDispRange.isDispSec(editor.getDispRange())) {
-		//秒を表示
+		}
+		if (TimeDispRange.isDispSec(editor.getDispRange())) {
+			//秒を表示
 %>
 <label>
 <select id="s_<c:out value="<%=_propName %>"/>" class="inpbr form-size-11" style="<c:out value="<%=customStyle%>"/>" onchange="<%=onchange%>">
 <option value="  ">--</option>
 <%
-		for (int i = 0; i < 60; i++) {
-			String s = String.format("%02d", i);
-			String selected = sec.equals(s) ? " selected" : "";
+			for (int i = 0; i < 60; i++) {
+				String s = String.format("%02d", i);
+				String selected = sec.equals(s) ? " selected" : "";
 %>
 <option value="<c:out value="<%=s %>"/>" <c:out value="<%=selected %>"/>><c:out value="<%=s %>"/></option>
 <%
-		}
+			}
 %>
 </select>${m:rs("mtp-gem-messages", "generic.editor.time.Time.second")}
 </label>
 <%
-	} else {
-		//秒を表示しない
-		String defaultSec = "00";
-		String _defaultSec = (String) request.getAttribute(Constants.EDITOR_PICKER_DEFAULT_SEC);
-		if (_defaultSec != null) {
-			defaultSec = _defaultSec;
-		}
+		} else {
+			//秒を表示しない
+			String defaultSec = "00";
+			String _defaultSec = (String) request.getAttribute(Constants.EDITOR_PICKER_DEFAULT_SEC);
+			if (_defaultSec != null) {
+				defaultSec = _defaultSec;
+			}
 %>
 <input type="hidden" id="s_<c:out value="<%=_propName %>"/>" value="<c:out value="<%=defaultSec%>"/>" />
 <%
-	}
+		}
 %>
-<input type="hidden" name="<c:out value="<%=propName %>"/>" id="i_<c:out value="<%=_propName %>"/>" value="<c:out value="<%=str %>"/>" />
+<input type="hidden" name="<c:out value="<%=propName %>"/>" id="i_<c:out value="<%=_propName %>"/>" value="<c:out value="<%=strHidden%>"/>" />
 <script type="text/javascript">
 $(function() {
 	<%-- common.js --%>
 	addNormalConditionItemResetHandler(function(){
 		$("#h_" + es("<%=StringUtil.escapeJavaScript(_propName)%>")).val("<%=defHour %>");
 <%
-	if (TimeDispRange.isDispMin(editor.getDispRange())) {
+		if (TimeDispRange.isDispMin(editor.getDispRange())) {
 %>
 		$("#m_" + es("<%=StringUtil.escapeJavaScript(_propName)%>")).val("<%=defMin %>");
 <%
-	}
-	if (TimeDispRange.isDispSec(editor.getDispRange())) {
+		}
+		if (TimeDispRange.isDispSec(editor.getDispRange())) {
 %>
 		$("#s_" + es("<%=StringUtil.escapeJavaScript(_propName)%>")).val("<%=defSec %>");
 <%
-	}
+		}
 %>
 		$("#i_" + es("<%=StringUtil.escapeJavaScript(_propName)%>")).val("<%=defStr %>");
 	});
@@ -204,3 +208,11 @@ $(function() {
 	});
 });
 </script>
+<%
+	} else {
+		//HIDDEN
+%>
+<input type="hidden" name="<c:out value="<%=propName %>"/>" id="i_<c:out value="<%=_propName %>"/>" value="<c:out value="<%=strHidden%>"/>" />
+<%
+	}
+%>

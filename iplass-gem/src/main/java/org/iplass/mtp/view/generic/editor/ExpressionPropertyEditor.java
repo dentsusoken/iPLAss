@@ -50,13 +50,21 @@ public class ExpressionPropertyEditor extends PrimitivePropertyEditor {
 	/** 表示タイプ */
 	@XmlType(namespace="http://mtp.iplass.org/xml/definition/view/generic")
 	public enum ExpressionDisplayType {
-		@XmlEnumValue("Label")LABEL
+		@XmlEnumValue("Label")LABEL,
+		@XmlEnumValue("Hidden")HIDDEN
 	}
 
-	@Override
-	public ExpressionDisplayType getDisplayType() {
-		return ExpressionDisplayType.LABEL;
-	}
+	@MetaFieldInfo(
+			displayName="表示タイプ",
+			displayNameKey="generic_editor_ExpressionPropertyEditor_displayTypeDisplaNameKey",
+			inputType=InputType.ENUM,
+			enumClass=ExpressionDisplayType.class,
+			//required=true,
+			displayOrder=100,
+			description="画面に表示する方法を選択します。",
+			descriptionKey="generic_editor_ExpressionPropertyEditor_displayTypeDescriptionKey"
+	)
+	private ExpressionDisplayType displayType;
 
 	/** プロパティエディタ */
 	@MetaFieldInfo(
@@ -74,7 +82,7 @@ public class ExpressionPropertyEditor extends PrimitivePropertyEditor {
 				TimePropertyEditor.class,
 				TimestampPropertyEditor.class
 			},
-			displayOrder=100,
+			displayOrder=110,
 			description="ExpressionプロパティのResultTypeに設定されている内容に合わせて設定してください。<br>" +
 					"設定した場合、その型にあわせて画面表示を行います。<br>" +
 					"未設定の場合は、値を文字列として表示します。",
@@ -89,7 +97,7 @@ public class ExpressionPropertyEditor extends PrimitivePropertyEditor {
 	@MetaFieldInfo(
 			displayName="数値のフォーマット",
 			description="表示する際に整形するフォーマットを指定します。",
-			displayOrder=110,
+			displayOrder=120,
 			displayNameKey="generic_editor_ExpressionPropertyEditor_numberFormatDisplaNameKey",
 			descriptionKey="generic_editor_ExpressionPropertyEditor_numberFormatDescriptionKey")
 	@EntityViewField(
@@ -101,6 +109,31 @@ public class ExpressionPropertyEditor extends PrimitivePropertyEditor {
 	 * デフォルトコンストラクタ
 	 */
 	public ExpressionPropertyEditor() {
+	}
+
+	@Override
+	public ExpressionDisplayType getDisplayType() {
+		if (displayType == null) {
+			displayType = ExpressionDisplayType.LABEL;
+		}
+		return displayType;
+	}
+
+	/**
+	 * 表示タイプを設定します。
+	 * @param displayType
+	 */
+	public void setDisplayType(ExpressionDisplayType displayType) {
+		this.displayType = displayType;
+	}
+
+	@Override
+	public boolean isHide() {
+		if (editor != null) {
+			return editor.isHide();
+		} else {
+			return displayType == ExpressionDisplayType.HIDDEN;
+		}
 	}
 
 	@Override

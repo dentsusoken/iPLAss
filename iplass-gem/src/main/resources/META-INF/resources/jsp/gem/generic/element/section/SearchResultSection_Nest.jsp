@@ -84,9 +84,13 @@
 				if (!ViewUtil.getEntityViewHelper().isSortable(pd)) {
 					sortable = "sortable:false";
 				}
+				String hidden = ", hidden:false";
+				if (np.getEditor() != null && np.getEditor().isHide()) {
+					hidden = ", hidden:true";
+				}
 %>
 <%-- XSS対応-メタの設定のため対応なし(displayLabel,nestStyle) --%>
-	colModel.push({name:"<%=sortPropName%>", index:"<%=sortPropName%>", classes:"<%=nestStyle%>", label:"<p class='title'><%=displayLabel%></p>", <%=sortable%><%=width%><%=align%>});
+	colModel.push({name:"<%=sortPropName%>", index:"<%=sortPropName%>", classes:"<%=nestStyle%>", label:"<p class='title'><%=displayLabel%></p>", <%=sortable%><%=hidden%><%=width%><%=align%>});
 <%
 			}
 		}

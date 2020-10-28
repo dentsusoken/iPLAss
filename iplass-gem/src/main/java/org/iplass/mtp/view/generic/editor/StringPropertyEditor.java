@@ -61,7 +61,8 @@ public class StringPropertyEditor extends PrimitivePropertyEditor {
 		@XmlEnumValue("RichText")RICHTEXT,
 		@XmlEnumValue("Password")PASSWORD,
 		@XmlEnumValue("Select")SELECT,
-		@XmlEnumValue("Label")LABEL
+		@XmlEnumValue("Label")LABEL,
+		@XmlEnumValue("Hidden")HIDDEN
 	}
 
 	/** 表示タイプ */
@@ -199,6 +200,11 @@ public class StringPropertyEditor extends PrimitivePropertyEditor {
 		this.displayType = displayType;
 	}
 
+	@Override
+	public boolean isHide() {
+		return displayType == StringDisplayType.HIDDEN;
+	}
+
 	/**
 	 * 最大文字数を取得します。
 	 * @return 最大文字数
@@ -220,7 +226,7 @@ public class StringPropertyEditor extends PrimitivePropertyEditor {
 	 * @return 選択値
 	 */
 	public List<EditorValue> getValues() {
-		if (this.values == null) this.values = new ArrayList<EditorValue>();
+		if (this.values == null) this.values = new ArrayList<>();
 		return values;
 	}
 

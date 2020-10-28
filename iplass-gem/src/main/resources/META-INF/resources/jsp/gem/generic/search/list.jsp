@@ -229,8 +229,12 @@ $(function() {
 					if (!ViewUtil.getEntityViewHelper().isSortable(pd)) {
 						sortable = "sortable:false";
 					}
+					String hidden = ", hidden:false";
+					if (property.getEditor() != null && property.getEditor().isHide()) {
+						hidden = ", hidden:true";
+					}
 %>
-	colModel.push({name:"<%=sortPropName%>", index:"<%=sortPropName%>", label:"<p class='title'><%=displayLabel%></p>", <%=sortable%><%=width%>, cellattr: cellAttrFunc});
+	colModel.push({name:"<%=sortPropName%>", index:"<%=sortPropName%>", label:"<p class='title'><%=displayLabel%></p>", <%=sortable%><%=hidden%><%=width%>, cellattr: cellAttrFunc});
 <%
 				} else if (property.getEditor() instanceof ReferencePropertyEditor) {
 					//参照型のName以外を表示する場合
@@ -250,8 +254,12 @@ $(function() {
 						if (!ViewUtil.getEntityViewHelper().isSortable(pd)) {
 							sortable = "sortable:false";
 						}
+						String hidden = ", hidden:false";
+						if (property.getEditor() != null && property.getEditor().isHide()) {
+							hidden = ", hidden:true";
+						}
 %>
-	colModel.push({name:"<%=sortPropName%>", index:"<%=sortPropName%>", label:"<p class='title'><%=displayLabel%></p>", <%=sortable%><%=width%>});
+	colModel.push({name:"<%=sortPropName%>", index:"<%=sortPropName%>", label:"<p class='title'><%=displayLabel%></p>", <%=sortable%><%=hidden%><%=width%>});
 <%
 					} else if (nest.size() > 0) {
 						String style = property.getStyle() != null ? property.getStyle() : "";
@@ -282,10 +290,14 @@ $(function() {
 			if (property.getTextAlign() != null) {
 				align = ", align:'" + property.getTextAlign().name().toLowerCase() + "'";
 			}
+			String hidden = ", hidden:false";
+			if (property.getEditor() != null && property.getEditor().isHide()) {
+				hidden = ", hidden:true";
+			}
 			String style = property.getStyle() != null ? property.getStyle() : "";
 %>
 <%-- XSS対応-メタの設定のため対応なし(displayLabel,style) --%>
-colModel.push({name:"<%=propName%>", index:"<%=propName%>", classes:"<%=style%>", label:"<p class='title'><%=displayLabel%></p>", sortable:false <%=width%><%=align%>});
+colModel.push({name:"<%=propName%>", index:"<%=propName%>", classes:"<%=style%>", label:"<p class='title'><%=displayLabel%></p>", sortable:false <%=hidden%><%=width%><%=align%>});
 <%
 		}
 	}

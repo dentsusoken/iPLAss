@@ -110,23 +110,24 @@
 	boolean updatable = ((pd == null || pd.isUpdatable()) || isInsert) && isEditable;
 	if (isInsert && isEditable && propValue == null) propValue = getDefaultValue(editor, pd);
 
-	boolean isMultiple = pd.getMultiplicity() != 1;
-
-	//カスタム入力スタイル
-	String customStyle = "";
-	if (StringUtil.isNotEmpty(editor.getInputCustomStyle())) {
-		customStyle = EntityViewUtil.getCustomStyle(rootDefName, scriptKey, editor.getInputCustomStyleScriptKey(), entity, propValue);
-	}
-
 	if (ViewUtil.isAutocompletionTarget()) {
 		request.setAttribute(Constants.AUTOCOMPLETION_EDITOR, editor);
 		request.setAttribute(Constants.AUTOCOMPLETION_SCRIPT_PATH, "/jsp/gem/generic/editor/date/DatePropertyAutocompletion.jsp");
 	}
 
-	String ulId = "ul_" + propName;
-	int length = 0;
-	if (editor.getDisplayType() == DateTimeDisplayType.DATETIME && updatable) {
-		//日時
+	if (editor.getDisplayType() != DateTimeDisplayType.LABEL 
+			&& editor.getDisplayType() != DateTimeDisplayType.HIDDEN && updatable) {
+
+		boolean isMultiple = pd.getMultiplicity() != 1;
+
+		//カスタム入力スタイル
+		String customStyle = "";
+		if (StringUtil.isNotEmpty(editor.getInputCustomStyle())) {
+			customStyle = EntityViewUtil.getCustomStyle(rootDefName, scriptKey, editor.getInputCustomStyleScriptKey(), entity, propValue);
+		}
+
+		String ulId = "ul_" + propName;
+
 		if (isMultiple) {
 			//複数
 			String dummyRowId = "id_li_" + propName + "Dummmy";
@@ -146,6 +147,7 @@ function <%=toggleAddBtnFunc%>() {
 </li>
 <%
 			Date[] array = propValue instanceof Date[] ? (Date[]) propValue : null;
+			int length = 0;
 			if (array != null) {
 				length = array.length;
 				for (int i = 0; i < array.length; i++) {
@@ -198,12 +200,18 @@ $(function() {
 </script>
 <%
 		}
+
 	} else {
-		//ラベル
-		request.setAttribute(Constants.OUTPUT_HIDDEN, true);
+		//LABELかHIDDENか更新不可
+		
+		if (editor.getDisplayType() != DateTimeDisplayType.HIDDEN) {
+			request.setAttribute(Constants.OUTPUT_HIDDEN, true);
+		}
 %>
 <jsp:include page="DatePropertyEditor_View.jsp"></jsp:include>
 <%
-		request.removeAttribute(Constants.OUTPUT_HIDDEN);
+		if (editor.getDisplayType() != DateTimeDisplayType.HIDDEN) {
+			request.removeAttribute(Constants.OUTPUT_HIDDEN);
+		}
 	}
 %>

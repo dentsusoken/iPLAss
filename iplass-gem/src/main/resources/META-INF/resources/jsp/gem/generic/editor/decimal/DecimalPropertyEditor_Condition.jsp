@@ -24,6 +24,7 @@
 <%@ page import="org.iplass.mtp.util.StringUtil"%>
 <%@ page import="org.iplass.mtp.view.generic.EntityViewUtil"%>
 <%@ page import="org.iplass.mtp.view.generic.editor.DecimalPropertyEditor" %>
+<%@ page import="org.iplass.mtp.view.generic.editor.NumberPropertyEditor.NumberDisplayType"%>
 <%@ page import="org.iplass.gem.command.Constants" %>
 <%@ page import="org.iplass.gem.command.ViewUtil"%>
 <%!
@@ -54,39 +55,46 @@
 	if (propValue != null && propValue.length > 0 && checkDecimal(propValue[0])) {
 		value = propValue[0];
 	}
-	String strDefault = "";
-	if (defaultValue != null && defaultValue.length > 0 && checkDecimal(defaultValue[0])) {
-		strDefault = defaultValue[0];
-	}
 
-	//カスタムスタイル
-	String customStyle = "";
-	if (StringUtil.isNotEmpty(editor.getInputCustomStyle())) {
-		customStyle = EntityViewUtil.getCustomStyle(rootDefName, scriptKey, editor.getInputCustomStyleScriptKey(), null, null);
+	String valueTo = "";
+	if (editor.isSearchInRange()) {
+		if (propValue != null && propValue.length > 1 && checkDecimal(propValue[1])) {
+			valueTo = propValue[1];
+		}
 	}
 
 	if (ViewUtil.isAutocompletionTarget()) {
 		request.setAttribute(Constants.AUTOCOMPLETION_EDITOR, editor);
 		request.setAttribute(Constants.AUTOCOMPLETION_SCRIPT_PATH, "/jsp/gem/generic/editor/decimal/DecimalPropertyAutocompletion.jsp");
 	}
+	
+	if (editor.getDisplayType() != NumberDisplayType.HIDDEN) {
+		//HIDDEN以外
+	
+		String strDefault = "";
+		if (defaultValue != null && defaultValue.length > 0 && checkDecimal(defaultValue[0])) {
+			strDefault = defaultValue[0];
+		}
+	
+		//カスタムスタイル
+		String customStyle = "";
+		if (StringUtil.isNotEmpty(editor.getInputCustomStyle())) {
+			customStyle = EntityViewUtil.getCustomStyle(rootDefName, scriptKey, editor.getInputCustomStyleScriptKey(), null, null);
+		}
 %>
 <input type="text" class="form-size-04 inpbr" style="<c:out value="<%=customStyle%>"/>" value="<c:out value="<%=value %>"/>" name="<c:out value="<%=propName %>"/>" onblur="numcheck(this)" />
 <%
-	String strDefaultTo = "";
-	if (editor.isSearchInRange()) {
-
-		String valueTo = "";
-		if (propValue != null && propValue.length > 1 && checkDecimal(propValue[1])) {
-			valueTo = propValue[1];
-		}
-		if (defaultValue != null && defaultValue.length > 1 && checkDecimal(defaultValue[1])) {
-			strDefaultTo = defaultValue[1];
-		}
+		String strDefaultTo = "";
+		if (editor.isSearchInRange()) {
+			
+			if (defaultValue != null && defaultValue.length > 1 && checkDecimal(defaultValue[1])) {
+				strDefaultTo = defaultValue[1];
+			}
 %>
 &nbsp;～&nbsp;
 <input type="text" class="form-size-04 inpbr" style="<c:out value="<%=customStyle%>"/>" value="<%=valueTo %>" name="<c:out value="<%=propName %>"/>To" onblur="numcheck(this)" />
 <%
-	}
+		}
 %>
 
 <script type="text/javascript">
@@ -97,9 +105,9 @@ $(function() {
 		$(":text[name='" + es("<%=StringUtil.escapeJavaScript(propName)%>To") + "']").val("<%=strDefaultTo %>");
 	});
 <%
-	if (required) {
-		if (!editor.isSearchInRange()) {
-		//Fromのみ
+		if (required) {
+			if (!editor.isSearchInRange()) {
+				//Fromのみ
 %>
 	<%-- common.js --%>
 	addNormalValidator(function() {
@@ -111,8 +119,8 @@ $(function() {
 		return true;
 	});
 <%
-		} else {
-		//範囲
+			} else {
+				//範囲
 %>
 	<%-- common.js --%>
 	addNormalValidator(function() {
@@ -126,8 +134,22 @@ $(function() {
 		return true;
 	});
 <%
+			}
 		}
-	}
 %>
 });
 </script>
+<%
+	} else {
+		//HIDDEN
+%>
+<input type="hidden" name="<c:out value="<%=propName %>"/>" value="<c:out value="<%=value %>"/>"/>
+<%
+		if (editor.isSearchInRange()) {
+%>
+<input type="hidden" name="<c:out value="<%=propName %>"/>To" value="<c:out value="<%=valueTo %>"/>"/>
+<%
+		}
+		
+	}
+%>

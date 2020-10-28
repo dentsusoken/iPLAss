@@ -30,6 +30,7 @@ import org.iplass.mtp.impl.view.generic.EntityViewRuntime;
 import org.iplass.mtp.impl.view.generic.FormViewRuntime;
 import org.iplass.mtp.impl.view.generic.element.property.MetaPropertyLayout;
 import org.iplass.mtp.view.generic.editor.AutoNumberPropertyEditor;
+import org.iplass.mtp.view.generic.editor.AutoNumberPropertyEditor.AutoNumberDisplayType;
 import org.iplass.mtp.view.generic.editor.PropertyEditor;
 
 /**
@@ -41,8 +42,27 @@ public class MetaAutoNumberPropertyEditor extends MetaPrimitivePropertyEditor {
 	/** シリアルバージョンUID */
 	private static final long serialVersionUID = 3288271112712679281L;
 
+	/** 表示タイプ */
+	private AutoNumberDisplayType displayType;
+
 	/** 検索条件完全一致設定有無 */
 	private boolean searchExactMatchCondition = true;
+
+	/**
+	 * 表示タイプを取得します。
+	 * @return 表示タイプ
+	 */
+	public AutoNumberDisplayType getDisplayType() {
+	    return displayType;
+	}
+
+	/**
+	 * 表示タイプを設定します。
+	 * @param displayType 表示タイプ
+	 */
+	public void setDisplayType(AutoNumberDisplayType displayType) {
+	    this.displayType = displayType;
+	}
 
 	public boolean isSearchExactMatchCondition() {
 		return searchExactMatchCondition;
@@ -67,6 +87,7 @@ public class MetaAutoNumberPropertyEditor extends MetaPrimitivePropertyEditor {
 
 		AutoNumberPropertyEditor e = (AutoNumberPropertyEditor) editor;
 
+		displayType = e.getDisplayType();
 		searchExactMatchCondition = e.isSearchExactMatchCondition();
 	}
 
@@ -75,6 +96,11 @@ public class MetaAutoNumberPropertyEditor extends MetaPrimitivePropertyEditor {
 		AutoNumberPropertyEditor editor = new AutoNumberPropertyEditor();
 		super.fillTo(editor);
 
+		if (displayType == null) {
+			editor.setDisplayType(AutoNumberDisplayType.LABEL);
+		} else {
+			editor.setDisplayType(displayType);
+		}
 		editor.setSearchExactMatchCondition(searchExactMatchCondition);
 		return editor;
 	}

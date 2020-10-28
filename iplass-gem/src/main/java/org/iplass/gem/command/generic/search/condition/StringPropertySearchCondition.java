@@ -53,12 +53,13 @@ public class StringPropertySearchCondition extends PropertySearchCondition {
 
 	@Override
 	public List<Condition> convertNormalCondition() {
-		List<Condition> conditions = new ArrayList<Condition>();
+		List<Condition> conditions = new ArrayList<>();
 		PropertyEditor editor = getEditor();
 		//like検索
 		if (editor instanceof StringPropertyEditor) {
 			StringPropertyEditor sp = (StringPropertyEditor) editor;
-			if ((sp.getDisplayType() != null && sp.getDisplayType() == StringDisplayType.SELECT) || sp.isSearchExactMatchCondition()) {
+			if ((sp.getDisplayType() != null && sp.getDisplayType() == StringDisplayType.SELECT)
+					|| sp.isSearchExactMatchCondition()) {
 				//選択時または完全一致有無にチェック時はEquals
 				conditions.add(new Equals(getPropertyName(), getValue()));
 			} else {

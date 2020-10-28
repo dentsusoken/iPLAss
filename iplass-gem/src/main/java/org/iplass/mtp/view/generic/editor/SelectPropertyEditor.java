@@ -57,7 +57,8 @@ public class SelectPropertyEditor extends PrimitivePropertyEditor {
 		@XmlEnumValue("Radio")RADIO,
 		@XmlEnumValue("Checkbox")CHECKBOX,
 		@XmlEnumValue("Select")SELECT,
-		@XmlEnumValue("Label")LABEL
+		@XmlEnumValue("Label")LABEL,
+		@XmlEnumValue("Hidden")HIDDEN
 	}
 
 	/** 表示タイプ */
@@ -134,12 +135,17 @@ public class SelectPropertyEditor extends PrimitivePropertyEditor {
 		this.displayType = displayType;
 	}
 
+	@Override
+	public boolean isHide() {
+		return displayType == SelectDisplayType.HIDDEN;
+	}
+
 	/**
 	 * セレクトボックスの値を取得します。
 	 * @return セレクトボックスの値
 	 */
 	public List<EditorValue> getValues() {
-		if (this.values == null) this.values = new ArrayList<EditorValue>();
+		if (this.values == null) this.values = new ArrayList<>();
 		return values;
 	}
 
@@ -197,4 +203,5 @@ public class SelectPropertyEditor extends PrimitivePropertyEditor {
 	public void setSortCsvOutputValue(boolean sortCsvOutputValue) {
 		this.sortCsvOutputValue = sortCsvOutputValue;
 	}
+
 }

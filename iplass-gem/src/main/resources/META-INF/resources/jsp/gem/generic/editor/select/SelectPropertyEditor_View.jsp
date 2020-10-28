@@ -32,6 +32,7 @@
 <%@ page import="org.iplass.mtp.view.generic.OutputType"%>
 <%@ page import="org.iplass.mtp.view.generic.editor.EditorValue" %>
 <%@ page import="org.iplass.mtp.view.generic.editor.SelectPropertyEditor" %>
+<%@ page import="org.iplass.mtp.view.generic.editor.SelectPropertyEditor.SelectDisplayType"%>
 <%@ page import="org.iplass.mtp.web.template.TemplateUtil" %>
 <%@ page import="org.iplass.gem.command.Constants"%>
 
@@ -97,35 +98,46 @@
 	//タイプ毎に出力内容かえる
 	List<EditorValue> values = getValues(editor, propValue, pd, selectValueList, localeValueList);
 
-	//カスタムスタイル
-	String customStyle = "";
-	if (type == OutputType.VIEW) {
-		if (StringUtil.isNotEmpty(editor.getCustomStyle())) {
-			customStyle = EntityViewUtil.getCustomStyle(rootDefName, scriptKey, editor.getOutputCustomStyleScriptKey(), entity, propValue);
+	if (editor.getDisplayType() != SelectDisplayType.HIDDEN) {
+		//カスタムスタイル
+		String customStyle = "";
+		if (type == OutputType.VIEW) {
+			if (StringUtil.isNotEmpty(editor.getCustomStyle())) {
+				customStyle = EntityViewUtil.getCustomStyle(rootDefName, scriptKey, editor.getOutputCustomStyleScriptKey(), entity, propValue);
+			}
+		} else if (type == OutputType.EDIT) {
+			//入力不可の場合
+			if (StringUtil.isNotEmpty(editor.getInputCustomStyle())) {
+				customStyle = EntityViewUtil.getCustomStyle(rootDefName, scriptKey, editor.getInputCustomStyleScriptKey(), entity, propValue);
+			}
 		}
-	} else if (type == OutputType.EDIT) {
-		//入力不可の場合
-		if (StringUtil.isNotEmpty(editor.getInputCustomStyle())) {
-			customStyle = EntityViewUtil.getCustomStyle(rootDefName, scriptKey, editor.getInputCustomStyleScriptKey(), entity, propValue);
-		}
-	}
 %>
 <ul class="data-label" style="<c:out value="<%=customStyle %>"/>">
 <%
-	for (EditorValue tmp : values) {
-		String style = tmp.getStyle() != null ? tmp.getStyle() : "";
+		for (EditorValue tmp : values) {
+			String style = tmp.getStyle() != null ? tmp.getStyle() : "";
 %>
 <li class="<c:out value="<%=style %>"/>">
 <c:out value="<%=tmp.getLabel() %>" />
 <%
-		if (outputHidden) {
+			if (outputHidden) {
+%>
+<input type="hidden" name="<c:out value="<%=propName%>"/>" value="<c:out value="<%=tmp.getValue()%>"/>" />
+<%
+			}
+%>
+</li>
+<%
+		}
+%>
+</ul>
+<%
+	} else {
+		//HIDDEN
+		for (EditorValue tmp : values) {
 %>
 <input type="hidden" name="<c:out value="<%=propName%>"/>" value="<c:out value="<%=tmp.getValue()%>"/>" />
 <%
 		}
-%>
-</li>
-<%
 	}
 %>
-</ul>

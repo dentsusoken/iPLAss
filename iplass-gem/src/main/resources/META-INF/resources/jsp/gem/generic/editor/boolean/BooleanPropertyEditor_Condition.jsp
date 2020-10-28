@@ -64,35 +64,7 @@
 	if (required == null) required = false;
 
 	String propName = Constants.SEARCH_COND_PREFIX + editor.getPropertyName();
-	String trueLabel = TemplateUtil.getMultilingualString(editor.getTrueLabel(), editor.getLocalizedTrueLabelList());
-	if (StringUtil.isEmpty(trueLabel)) {
-		trueLabel = TemplateUtil.getMultilingualString(
-				GemResourceBundleUtil.resourceString("generic.editor.boolean.BooleanPropertyEditor_Condition.enable"),
-				GemResourceBundleUtil.resourceList("generic.editor.boolean.BooleanPropertyEditor_Condition.enable"));
-	}
-	String falseLabel = TemplateUtil.getMultilingualString(editor.getFalseLabel(), editor.getLocalizedFalseLabelList());
-	if (StringUtil.isEmpty(falseLabel)) {
-		falseLabel = TemplateUtil.getMultilingualString(
-				GemResourceBundleUtil.resourceString("generic.editor.boolean.BooleanPropertyEditor_Condition.invalid"),
-				GemResourceBundleUtil.resourceList("generic.editor.boolean.BooleanPropertyEditor_Condition.invalid"));
-	}
 
-	String pleaseSelectLabel = "";
-	if (ViewUtil.isShowPulldownPleaseSelectLabel()) {
-		pleaseSelectLabel = GemResourceBundleUtil.resourceString("generic.editor.boolean.BooleanPropertyEditor_Condition.pleaseSelect");
-	}
-
-	//カスタムスタイル
-	String customStyle = "";
-	if (StringUtil.isNotEmpty(editor.getInputCustomStyle())) {
-		customStyle = EntityViewUtil.getCustomStyle(rootDefName, scriptKey, editor.getInputCustomStyleScriptKey(), null, null);
-	}
-
-	String matchStr = editor.getDisplayType() == BooleanDisplayType.SELECT ? " selected" : " checked";
-	String checked1 = "";
-	String checked2 = "";
-	String checked3 = matchStr;
-	
 	String value = "";
 	if (_propValue == null || _propValue.length == 0) {
 		if (propValue != null && propValue.length > 0) {
@@ -102,29 +74,60 @@
 		value = _propValue[0];
 	}
 	
-	if ("true".equals(value)) {
-		checked1 = matchStr;
-		checked3 = "";
-	}
-	if ("false".equals(value)) {
-		checked2 = matchStr;
-		checked3 = "";
-	}
-	String defaultCheckValue = "";
-	if (defaultValue != null && defaultValue.length > 0) {
-		if ("true".equals(defaultValue[0])) {
-			defaultCheckValue = "true";
-		} else if ("false".equals(defaultValue[0])) {
-			defaultCheckValue = "false";
-		}
-	}
-
 	if (ViewUtil.isAutocompletionTarget()) {
 		request.setAttribute(Constants.AUTOCOMPLETION_EDITOR, editor);
 		request.setAttribute(Constants.AUTOCOMPLETION_SCRIPT_PATH, "/jsp/gem/generic/editor/boolean/BooleanPropertyAutocompletion.jsp");
 	}
 
-	if (editor.getDisplayType() == BooleanDisplayType.SELECT) {
+	if (editor.getDisplayType() != BooleanDisplayType.HIDDEN) {
+		//HIDDEN以外
+	
+		String trueLabel = TemplateUtil.getMultilingualString(editor.getTrueLabel(), editor.getLocalizedTrueLabelList());
+		if (StringUtil.isEmpty(trueLabel)) {
+			trueLabel = TemplateUtil.getMultilingualString(
+					GemResourceBundleUtil.resourceString("generic.editor.boolean.BooleanPropertyEditor_Condition.enable"),
+					GemResourceBundleUtil.resourceList("generic.editor.boolean.BooleanPropertyEditor_Condition.enable"));
+		}
+		String falseLabel = TemplateUtil.getMultilingualString(editor.getFalseLabel(), editor.getLocalizedFalseLabelList());
+		if (StringUtil.isEmpty(falseLabel)) {
+			falseLabel = TemplateUtil.getMultilingualString(
+					GemResourceBundleUtil.resourceString("generic.editor.boolean.BooleanPropertyEditor_Condition.invalid"),
+					GemResourceBundleUtil.resourceList("generic.editor.boolean.BooleanPropertyEditor_Condition.invalid"));
+		}
+	
+		//カスタムスタイル
+		String customStyle = "";
+		if (StringUtil.isNotEmpty(editor.getInputCustomStyle())) {
+			customStyle = EntityViewUtil.getCustomStyle(rootDefName, scriptKey, editor.getInputCustomStyleScriptKey(), null, null);
+		}
+
+		String matchStr = editor.getDisplayType() == BooleanDisplayType.SELECT ? " selected" : " checked";
+		String checked1 = "";
+		String checked2 = "";
+		String checked3 = matchStr;
+		
+		if ("true".equals(value)) {
+			checked1 = matchStr;
+			checked3 = "";
+		}
+		if ("false".equals(value)) {
+			checked2 = matchStr;
+			checked3 = "";
+		}
+		String defaultCheckValue = "";
+		if (defaultValue != null && defaultValue.length > 0) {
+			if ("true".equals(defaultValue[0])) {
+				defaultCheckValue = "true";
+			} else if ("false".equals(defaultValue[0])) {
+				defaultCheckValue = "false";
+			}
+		}
+
+		if (editor.getDisplayType() == BooleanDisplayType.SELECT) {
+			String pleaseSelectLabel = "";
+			if (ViewUtil.isShowPulldownPleaseSelectLabel()) {
+				pleaseSelectLabel = GemResourceBundleUtil.resourceString("generic.editor.boolean.BooleanPropertyEditor_Condition.pleaseSelect");
+			}
 %>
 <select name="<c:out value="<%=propName %>"/>" class="form-size-02 inpbr" style="<c:out value="<%=customStyle%>"/>" size="1">
 <option value="" <%=checked3 %>><%=pleaseSelectLabel %></option>
@@ -138,7 +141,7 @@ $(function() {
 		$("select[name='" + es("<%=StringUtil.escapeJavaScript(propName)%>") + "']").val("<%=StringUtil.escapeJavaScript(defaultCheckValue) %>");
 	});
 <%
-		if (required) {
+			if (required) {
 %>
 	<%-- common.js --%>
 	addNormalValidator(function() {
@@ -150,12 +153,13 @@ $(function() {
 		return true;
 	});
 <%
-		}
+			}
 %>
 });
 </script>
 <%
-	} else {
+		} else {
+			//SELECT以外
 %>
 <ul class="list-radio-01">
 <li>
@@ -183,7 +187,7 @@ $(function() {
 		$(":radio[name='" + es("<%=StringUtil.escapeJavaScript(propName)%>") + "'][value='<%=StringUtil.escapeJavaScript(defaultCheckValue) %>']").trigger("click");
 	});
 <%
-	if (required) {
+			if (required) {
 %>
 	<%-- common.js --%>
 	addNormalValidator(function() {
@@ -195,10 +199,16 @@ $(function() {
 		return true;
 	});
 <%
-	}
+			}
 %>
 });
 </script>
+<%
+		}
+	} else {
+		//HIDDEN
+%>
+<input type="hidden" name="<c:out value="<%=propName %>"/>" value="<c:out value="<%=value %>"/>"/>
 <%
 	}
 %>

@@ -30,6 +30,7 @@
 <%@ page import="org.iplass.mtp.view.generic.EntityViewUtil"%>
 <%@ page import="org.iplass.mtp.view.generic.OutputType"%>
 <%@ page import="org.iplass.mtp.view.generic.editor.NumberPropertyEditor" %>
+<%@ page import="org.iplass.mtp.view.generic.editor.NumberPropertyEditor.NumberDisplayType"%>
 <%@ page import="org.iplass.mtp.web.template.TemplateUtil" %>
 <%@ page import="org.iplass.gem.GemConfigService"%>
 <%@ page import="org.iplass.gem.command.Constants"%>
@@ -81,65 +82,94 @@
 
 	String propName = editor.getPropertyName();
 
-	//カスタムスタイル
-	String customStyle = "";
-	if (type == OutputType.VIEW) {
-		if (StringUtil.isNotEmpty(editor.getCustomStyle())) {
-			customStyle = EntityViewUtil.getCustomStyle(rootDefName, scriptKey, editor.getOutputCustomStyleScriptKey(), entity, propValue);
-		}
-	} else if (type == OutputType.EDIT) {
-		//入力不可の場合
-		if (StringUtil.isNotEmpty(editor.getInputCustomStyle())) {
-			customStyle = EntityViewUtil.getCustomStyle(rootDefName, scriptKey, editor.getInputCustomStyleScriptKey(), entity, propValue);
-		}
-	}
-
 	boolean isMultiple = pd.getMultiplicity() != 1;
 
-	String clsComma = "";
-	if (editor.isShowComma()) {
-		clsComma = " commaLabel";
-	}
+	if (editor.getDisplayType() != NumberDisplayType.HIDDEN) {
 
-	if (isMultiple) {
-		//複数
+		//カスタムスタイル
+		String customStyle = "";
+		if (type == OutputType.VIEW) {
+			if (StringUtil.isNotEmpty(editor.getCustomStyle())) {
+				customStyle = EntityViewUtil.getCustomStyle(rootDefName, scriptKey, editor.getOutputCustomStyleScriptKey(), entity, propValue);
+			}
+		} else if (type == OutputType.EDIT) {
+			//入力不可の場合
+			if (StringUtil.isNotEmpty(editor.getInputCustomStyle())) {
+				customStyle = EntityViewUtil.getCustomStyle(rootDefName, scriptKey, editor.getInputCustomStyleScriptKey(), entity, propValue);
+			}
+		}
+
+		String clsComma = "";
+		if (editor.isShowComma()) {
+			clsComma = " commaLabel";
+		}
+		
+		if (isMultiple) {
+			//複数
 %>
 <ul class="data-label<c:out value="<%=clsComma %>"/>" style="<c:out value="<%=customStyle %>"/>">
 <%
-		Number[] array = propValue instanceof Number[] ? (Number[]) propValue : null;
-		if (array != null) {
-			for (int i = 0; i < array.length; i++) {
-				Number tmp = array[i];
-				String str = format(editor.getNumberFormat(), tmp);
+			Number[] array = propValue instanceof Number[] ? (Number[]) propValue : null;
+			if (array != null) {
+				for (int i = 0; i < array.length; i++) {
+					Number tmp = array[i];
+					String str = format(editor.getNumberFormat(), tmp);
 %>
 <li>
 <c:out value="<%=str %>"/>
 <%
-				String hiddenValue = "";
-				if (tmp instanceof Double) hiddenValue = "" + ((Double)tmp).doubleValue();
-				else if (tmp instanceof Long) hiddenValue = "" + ((Long)tmp).longValue();
+					String hiddenValue = "";
+					if (tmp instanceof Double) hiddenValue = "" + ((Double)tmp).doubleValue();
+					else if (tmp instanceof Long) hiddenValue = "" + ((Long)tmp).longValue();
 %>
 <input type="hidden" name="<c:out value="<%=propName %>"/>" value="<c:out value="<%=hiddenValue %>"/>" />
 </li>
 <%
+				}
 			}
-		}
 %>
 </ul>
 <%
-	} else {
-		//単数
-		String str = propValue instanceof Number ? format(editor.getNumberFormat(), (Number) propValue) : "";
+		} else {
+			//単数
+			String str = propValue instanceof Number ? format(editor.getNumberFormat(), (Number) propValue) : "";
 %>
 <span class="data-label<c:out value="<%=clsComma %>"/>" style="<c:out value="<%=customStyle %>"/>">
 <c:out value="<%=str %>"/>
 <%
-		String hiddenValue = "";
-		if (propValue instanceof Double) hiddenValue = "" + ((Double)propValue).doubleValue();
-		else if (propValue instanceof Long) hiddenValue = "" + ((Long)propValue).longValue();
+			String hiddenValue = "";
+			if (propValue instanceof Double) hiddenValue = "" + ((Double)propValue).doubleValue();
+			else if (propValue instanceof Long) hiddenValue = "" + ((Long)propValue).longValue();
 %>
 <input type="hidden" name="<c:out value="<%=propName %>"/>" value="<c:out value="<%=hiddenValue %>"/>" />
 </span>
 <%
+		}
+	} else {
+		//HIDDEN
+		
+		if (isMultiple) {
+			//複数
+			Number[] array = propValue instanceof Number[] ? (Number[]) propValue : null;
+			if (array != null) {
+				for (int i = 0; i < array.length; i++) {
+					Number tmp = array[i];
+					String hiddenValue = "";
+					if (tmp instanceof Double) hiddenValue = "" + ((Double)tmp).doubleValue();
+					else if (tmp instanceof Long) hiddenValue = "" + ((Long)tmp).longValue();
+%>
+<input type="hidden" name="<c:out value="<%=propName %>"/>" value="<c:out value="<%=hiddenValue %>"/>" />
+<%
+				}
+			}
+		} else {
+			//単数
+			String hiddenValue = "";
+			if (propValue instanceof Double) hiddenValue = "" + ((Double)propValue).doubleValue();
+			else if (propValue instanceof Long) hiddenValue = "" + ((Long)propValue).longValue();
+%>
+<input type="hidden" name="<c:out value="<%=propName %>"/>" value="<c:out value="<%=hiddenValue %>"/>" />
+<%
+		}
 	}
 %>

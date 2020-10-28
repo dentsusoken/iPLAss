@@ -502,6 +502,7 @@ $(function() {
 		//パラメータに初期値があれば初期値でロード(searchCondがnullでない場合は入ってこない)
 		String[] propValue = (String[]) request.getAttribute(Constants.EDITOR_PROP_VALUE);
 		if (propValue != null && propValue.length > 0) {
+			//TODO serchEntityで検索
 			entity = em.load(propValue[0], rp.getObjectDefinitionName(), new LoadOption(false, false));
 		}
 		//searchCondに初期値があればsearchCondの値でロード
@@ -509,6 +510,7 @@ $(function() {
 			//js側で復元できないのでこっちで復元
 			String[] ary = getReferenceValue(searchCond, propName);
 			if (ary != null && ary.length > 0) {
+				//TODO serchEntityで検索
 				entity = em.load(ary[0], rp.getObjectDefinitionName(), new LoadOption(false, false));
 			}
 		}
@@ -533,6 +535,7 @@ $(function() {
 		Entity defEntity = null;
 		String[] defaultValue = (String[]) request.getAttribute(Constants.EDITOR_DEFAULT_VALUE);
 		if (defaultValue != null && defaultValue.length > 0) {
+			//TODO serchEntityで検索
 			defEntity = em.load(defaultValue[0], rp.getObjectDefinitionName(), new LoadOption(false, false));
 		}
 		String defOid = defEntity != null ? defEntity.getOid() != null ? defEntity.getOid() : "" : "";
@@ -618,11 +621,12 @@ $(function() {
 %>
 <ul id="<c:out value="<%=ulId %>"/>" data-deletable="true" class="mb05">
 <%
-		//デフォルト検索条件からリンク作成(searchCondがnull出ない場合は設定されてこない)
+		//デフォルト検索条件からリンク作成(searchCondがnullでない場合は設定されてこない)
 		String[] propValue = (String[]) request.getAttribute(Constants.EDITOR_PROP_VALUE);
 		if (propValue != null && propValue.length > 0) {
 			for (int i = 0; i < propValue.length; i++) {
 				String oid = propValue[i];
+				//TODO serchEntityのINで一度に検索
 				Entity entity = em.load(oid, _defName);
 				if (entity == null || getDisplayPropLabel(editor, entity) == null) continue;
 				String displayPropLabel = getDisplayPropLabel(editor, entity);
@@ -648,6 +652,7 @@ $(function() {
 				if (kv.length > 1 && kv[0].equals(propName)) {
 					int index = kv[1].lastIndexOf("_");
 					String oid = kv[1].substring(0, index);
+					//TODO serchEntityのINで一度に検索
 					Entity entity = em.load(oid,_defName);
 					if (entity == null || getDisplayPropLabel(editor, entity) == null) continue;
 					String displayPropLabel = getDisplayPropLabel(editor, entity);
@@ -716,6 +721,7 @@ $(function() {
 			var _propName = params.propName.replace(/\[/g, "\\[").replace(/\]/g, "\\]").replace(/\./g, "\\.");
 <%			for (int i = 0; i < defaultValue.length; i++) {
 				String oid = defaultValue[i];
+				//TODO serchEntityのINで一度に検索
 				Entity entity = em.load(oid, _defName);
 				if (entity == null || getDisplayPropLabel(editor, entity) == null) continue;
 				String displayPropLabel = getDisplayPropLabel(editor, entity);
@@ -766,11 +772,12 @@ $(function() {
 %>
 <ul id="<c:out value="<%=ulId %>"/>" data-deletable="true" class="mb05">
 <%
-		//デフォルト検索条件からリンク作成(searchCondがnull出ない場合は設定されてこない)
+		//デフォルト検索条件からリンク作成(searchCondがnullでない場合は設定されてこない)
 		String[] propValue = (String[]) request.getAttribute(Constants.EDITOR_PROP_VALUE);
 		if (propValue != null && propValue.length > 0) {
 			for (int i = 0; i < propValue.length; i++) {
 				String oid = propValue[i];
+				//TODO serchEntityのINで一度に検索
 				Entity entity = em.load(oid, rp.getObjectDefinitionName());
 				if (entity == null || getDisplayPropLabel(editor, entity) == null) continue;
 				String liId = "li_" + propName + i;
@@ -796,6 +803,7 @@ $(function() {
 				if (kv.length > 1 && kv[0].equals(propName)) {
 					int index = kv[1].lastIndexOf("_");
 					String oid = kv[1].substring(0, index);
+					//TODO serchEntityのINで一度に検索
 					Entity entity = em.load(oid, rp.getObjectDefinitionName());
 					if (entity == null || getDisplayPropLabel(editor, entity) == null) continue;
 					String liId = "li_" + propName + i;
@@ -871,6 +879,7 @@ $(function() {
 			var _propName = params.propName.replace(/\[/g, "\\[").replace(/\]/g, "\\]").replace(/\./g, "\\.");
 <%			for (int i = 0; i < defaultValue.length; i++) {
 				String oid = defaultValue[i];
+				//TODO serchEntityのINで一度に検索
 				Entity entity = em.load(oid, rp.getObjectDefinitionName());
 				if (entity == null || getDisplayPropLabel(editor, entity) == null) continue;
 
@@ -943,11 +952,12 @@ $(function() {
 <ul id="<c:out value="<%=ulId %>"/>" data-deletable="true" class="mb05">
 <%
 		int length = 0;
-		//デフォルト検索条件からリンク作成(searchCondがnull出ない場合は設定されてこない)
+		//デフォルト検索条件からリンク作成(searchCondがnullでない場合は設定されてこない)
 		String[] propValue = (String[]) request.getAttribute(Constants.EDITOR_PROP_VALUE);
 		if (propValue != null && propValue.length > 0) {
 			for (int i = 0; i < propValue.length; i++) {
 				String oid = propValue[i];
+				//TODO serchEntityのINで一度に検索
 				Entity entity = em.load(oid, _defName);
 				if (entity == null || getDisplayPropLabel(editor, entity) == null) continue;
 				String displayPropLabel = getDisplayPropLabel(editor, entity);
@@ -997,6 +1007,7 @@ $(function() {
 				if (kv.length > 1 && kv[0].equals(propName)) {
 					int index = kv[1].lastIndexOf("_");
 					String oid = kv[1].substring(0, index);
+					//TODO serchEntityのINで一度に検索
 					Entity entity = em.load(oid,_defName);
 					if (entity == null || getDisplayPropLabel(editor, entity) == null) continue;
 					String displayPropLabel = getDisplayPropLabel(editor, entity);
@@ -1143,6 +1154,7 @@ $(function() {
 
 			for (int i = 0; i < defaultValue.length; i++) {
 				String oid = defaultValue[i];
+				//TODO serchEntityのINで一度に検索
 				Entity entity = em.load(oid, _defName);
 				if (entity == null || getDisplayPropLabel(editor, entity) == null) continue;
 				String displayPropLabel = getDisplayPropLabel(editor, entity);
@@ -1190,6 +1202,43 @@ $(function() {
 });
 </script>
 <%
+	} else if (editor.getDisplayType() == ReferenceDisplayType.HIDDEN) {
+		String _defName = editor.getObjectName();
+
+		//デフォルト検索条件から作成(searchCondがnullでない場合は設定されてこない)
+		String[] propValue = (String[]) request.getAttribute(Constants.EDITOR_PROP_VALUE);
+		if (propValue != null && propValue.length > 0) {
+			for (int i = 0; i < propValue.length; i++) {
+				String oid = propValue[i];
+				//TODO serchEntityのINで一度に検索
+				Entity entity = em.load(oid, _defName);
+				if (entity == null) continue;
+				String key = entity.getOid() + "_" + entity.getVersion();
+%>
+<input type="hidden" name="<c:out value="<%=propName %>"/>" value="<c:out value="<%=key %>"/>" data-norewrite="true"/>
+<%
+			}
+		}
+		//searchCondを解析してリンク作成
+		if (searchCond != null && searchCond.contains(propName)) {
+			String[] params  = searchCond.split("&");
+			for (int i = 0; i < params.length; i++) {
+				String[] kv = params[i].split("=");
+				if (kv.length > 1 && kv[0].equals(propName)) {
+					int index = kv[1].lastIndexOf("_");
+					String oid = kv[1].substring(0, index);
+					//TODO serchEntityのINで一度に検索
+					Entity entity = em.load(oid,_defName);
+					if (entity == null) continue;
+					String key = entity.getOid() + "_" + entity.getVersion();
+					//hiddenにjavascriptで値上書きしないようにnorewrite属性をつけておく
+%>
+<input type="hidden" name="<c:out value="<%=propName %>"/>" value="<c:out value="<%=key %>"/>" data-norewrite="true"/>
+<%
+				}
+			}
+		}
+		
 	} else {
 		//→今までのネストと同じ動き
 		showProperty = false;

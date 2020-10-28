@@ -46,7 +46,8 @@ public abstract class NumberPropertyEditor extends PrimitivePropertyEditor {
 	@XmlType(namespace="http://mtp.iplass.org/xml/definition/view/generic")
 	public enum NumberDisplayType {
 		@XmlEnumValue("Text")TEXT,
-		@XmlEnumValue("Label")LABEL
+		@XmlEnumValue("Label")LABEL,
+		@XmlEnumValue("Hidden")HIDDEN
 	}
 
 	/** 表示タイプ */
@@ -143,6 +144,11 @@ public abstract class NumberPropertyEditor extends PrimitivePropertyEditor {
 	 */
 	public void setDisplayType(NumberDisplayType displayType) {
 		this.displayType = displayType;
+	}
+
+	@Override
+	public boolean isHide() {
+		return displayType == NumberDisplayType.HIDDEN;
 	}
 
 	/**

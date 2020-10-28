@@ -98,26 +98,30 @@
 
 	boolean isMultiple = pd.getMultiplicity() != 1;
 
-	//カスタムスタイル
-	String customStyle = "";
-	if (StringUtil.isNotEmpty(editor.getInputCustomStyle())) {
-		customStyle = EntityViewUtil.getCustomStyle(rootDefName, scriptKey, editor.getInputCustomStyleScriptKey(), entity, propValue);
-	}
-
 	if (ViewUtil.isAutocompletionTarget()) {
 		request.setAttribute(Constants.AUTOCOMPLETION_EDITOR, editor);
 		request.setAttribute(Constants.AUTOCOMPLETION_SCRIPT_PATH, "/jsp/gem/generic/editor/decimal/DecimalPropertyAutocompletion.jsp");
 	}
 
-	String cls = "form-size-01 inpbr";
-	if (nest != null && nest) {
-		cls = "form-size-08 inpbr";
-	}
-	String maxlength = "";
-	if (editor.getMaxlength() > 0) {
-		maxlength = " maxlength=" + editor.getMaxlength();
-	}
-	if (editor.getDisplayType() == NumberDisplayType.TEXT && updatable) {
+	if (editor.getDisplayType() != NumberDisplayType.LABEL 
+			&& editor.getDisplayType() != NumberDisplayType.HIDDEN && updatable) {
+		//テキスト
+
+		//カスタムスタイル
+		String customStyle = "";
+		if (StringUtil.isNotEmpty(editor.getInputCustomStyle())) {
+			customStyle = EntityViewUtil.getCustomStyle(rootDefName, scriptKey, editor.getInputCustomStyleScriptKey(), entity, propValue);
+		}
+
+		String cls = "form-size-01 inpbr";
+		if (nest != null && nest) {
+			cls = "form-size-08 inpbr";
+		}
+		String maxlength = "";
+		if (editor.getMaxlength() > 0) {
+			maxlength = " maxlength=" + editor.getMaxlength();
+		}
+
 		if (isMultiple) {
 			//複数
 			String ulId = "ul_" + propName;
@@ -173,11 +177,16 @@
 <%
 		}
 	} else {
-		//ラベル
-		request.setAttribute(Constants.OUTPUT_HIDDEN, true);
+		//LABELかHIDDENか更新不可
+		
+		if (editor.getDisplayType() != NumberDisplayType.HIDDEN) {
+			request.setAttribute(Constants.OUTPUT_HIDDEN, true);
+		}
 %>
 <jsp:include page="DecimalPropertyEditor_View.jsp"></jsp:include>
 <%
-		request.removeAttribute(Constants.OUTPUT_HIDDEN);
+		if (editor.getDisplayType() != NumberDisplayType.HIDDEN) {
+			request.removeAttribute(Constants.OUTPUT_HIDDEN);
+		}
 	}
 %>

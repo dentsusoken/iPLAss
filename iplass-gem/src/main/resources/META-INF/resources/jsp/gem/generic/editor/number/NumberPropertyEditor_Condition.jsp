@@ -25,6 +25,7 @@
 <%@ page import="org.iplass.mtp.view.generic.editor.FloatPropertyEditor" %>
 <%@ page import="org.iplass.mtp.view.generic.editor.IntegerPropertyEditor" %>
 <%@ page import="org.iplass.mtp.view.generic.editor.NumberPropertyEditor" %>
+<%@ page import="org.iplass.mtp.view.generic.editor.NumberPropertyEditor.NumberDisplayType"%>
 <%@ page import="org.iplass.mtp.view.generic.editor.PropertyEditor" %>
 <%@ page import="org.iplass.gem.command.Constants" %>
 <%@ page import="org.iplass.gem.command.ViewUtil"%>
@@ -65,39 +66,46 @@
 	if (propValue != null && propValue.length > 0) {
 		value = convertNumber(propValue[0], editor);
 	}
-	String strDefault = "";
-	if (defaultValue != null && defaultValue.length > 0) {
-		strDefault = convertNumber(defaultValue[0], editor);
+	
+	String valueTo = "";
+	if (editor.isSearchInRange()) {
+		if (propValue != null && propValue.length > 1) {
+			valueTo = convertNumber(propValue[1], editor);
+		}
 	}
-
-	//カスタムスタイル
-	String customStyle = "";
-	if (StringUtil.isNotEmpty(editor.getInputCustomStyle())) {
-		customStyle = EntityViewUtil.getCustomStyle(rootDefName, scriptKey, editor.getInputCustomStyleScriptKey(), null, null);
-	}
-
+	
 	if (ViewUtil.isAutocompletionTarget()) {
 		request.setAttribute(Constants.AUTOCOMPLETION_EDITOR, editor);
 		request.setAttribute(Constants.AUTOCOMPLETION_SCRIPT_PATH, "/jsp/gem/generic/editor/number/NumberPropertyAutocompletion.jsp");
 	}
+	
+	if (editor.getDisplayType() != NumberDisplayType.HIDDEN) {
+		//HIDDEN以外
+	
+		String strDefault = "";
+		if (defaultValue != null && defaultValue.length > 0) {
+			strDefault = convertNumber(defaultValue[0], editor);
+		}
+	
+		//カスタムスタイル
+		String customStyle = "";
+		if (StringUtil.isNotEmpty(editor.getInputCustomStyle())) {
+			customStyle = EntityViewUtil.getCustomStyle(rootDefName, scriptKey, editor.getInputCustomStyleScriptKey(), null, null);
+		}
 %>
 <input type="text" class="form-size-04 inpbr" style="<c:out value="<%=customStyle%>"/>" value="<%=value %>" name="<c:out value="<%=propName %>"/>" onblur="numcheck(this)" />
 <%
-	String strDefaultTo = "";
-	if (editor.isSearchInRange()) {
-
-		String valueTo = "";
-		if (propValue != null && propValue.length > 1) {
-			valueTo = convertNumber(propValue[1], editor);
-		}
-		if (defaultValue != null && defaultValue.length > 1) {
-			strDefaultTo = convertNumber(defaultValue[1], editor);
-		}
+		String strDefaultTo = "";
+		if (editor.isSearchInRange()) {
+	
+			if (defaultValue != null && defaultValue.length > 1) {
+				strDefaultTo = convertNumber(defaultValue[1], editor);
+			}
 %>
 &nbsp;～&nbsp;
 <input type="text" class="form-size-04 inpbr" style="<c:out value="<%=customStyle%>"/>" value="<%=valueTo %>" name="<c:out value="<%=propName %>"/>To" onblur="numcheck(this)" />
 <%
-	}
+		}
 %>
 <script type="text/javascript">
 $(function() {
@@ -107,9 +115,9 @@ $(function() {
 		$(":text[name='" + es("<%=StringUtil.escapeJavaScript(propName)%>To") + "']").val("<%=strDefaultTo %>");
 	});
 <%
-	if (required) {
-		if (!editor.isSearchInRange()) {
-		//Fromのみ
+		if (required) {
+			if (!editor.isSearchInRange()) {
+				//Fromのみ
 %>
 	<%-- common.js --%>
 	addNormalValidator(function() {
@@ -122,8 +130,8 @@ $(function() {
 		return true;
 	});
 <%
-		} else {
-		//範囲
+			} else {
+				//範囲
 %>
 	<%-- common.js --%>
 	addNormalValidator(function() {
@@ -137,8 +145,22 @@ $(function() {
 		return true;
 	});
 <%
+			}
 		}
-	}
 %>
 });
 </script>
+<%
+	} else {
+		//HIDDEN
+%>
+<input type="hidden" name="<c:out value="<%=propName %>"/>" value="<c:out value="<%=value %>"/>"/>
+<%
+		if (editor.isSearchInRange()) {
+%>
+<input type="hidden" name="<c:out value="<%=propName %>"/>To" value="<c:out value="<%=valueTo %>"/>"/>
+<%
+		}
+		
+	}
+%>

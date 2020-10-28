@@ -30,6 +30,7 @@
 <%@ page import="org.iplass.mtp.util.DateUtil" %>
 <%@ page import="org.iplass.mtp.util.StringUtil"%>
 <%@ page import="org.iplass.mtp.view.generic.EntityViewUtil"%>
+<%@ page import="org.iplass.mtp.view.generic.editor.DateTimePropertyEditor.DateTimeDisplayType"%>
 <%@ page import="org.iplass.mtp.view.generic.editor.DateTimePropertyEditor.MinIntereval" %>
 <%@ page import="org.iplass.mtp.view.generic.editor.DateTimePropertyEditor.TimeDispRange" %>
 <%@ page import="org.iplass.mtp.view.generic.editor.TimestampPropertyEditor" %>
@@ -107,106 +108,109 @@
 		nestDummyRow = false;
 	}
 
-	//時分秒省略時に補完する値
-	String defaultHour = (String) request.getAttribute(Constants.EDITOR_PICKER_DEFAULT_HOUR);
-	if (defaultHour == null) {
-		defaultHour = "00";
-	}
-	String defaultMin = (String) request.getAttribute(Constants.EDITOR_PICKER_DEFAULT_MIN);
-	if (defaultMin == null) {
-		defaultMin = "00";
-	}
-	String defaultSec = (String) request.getAttribute(Constants.EDITOR_PICKER_DEFAULT_SEC);
-	if (defaultSec == null) {
-		defaultSec = "00";
-	}
-	String defaultMsec = (String) request.getAttribute(Constants.EDITOR_PICKER_DEFAULT_MSEC);
-	if (defaultMsec == null) {
-		defaultMsec = "000";
-	}
-
-	String timeFormat = null;
-	if (TimeDispRange.isDispSec(editor.getDispRange())) {
-		timeFormat = "HH:mm:ss";
-		defaultHour = "";
-		defaultMin = "";
-		defaultSec = "";
-	} else if (TimeDispRange.isDispMin(editor.getDispRange())) {
-		timeFormat = "HH:mm";
-		defaultHour = "";
-		defaultMin = "";
-	} else if (TimeDispRange.isDispHour(editor.getDispRange())) {
-		timeFormat = "HH";
-		defaultHour = "";
-	}
-
 	//表示用の文字列
 	String[] tmp = split(_propValue);
-	String[] defTmp = split(_defaultValue);
-
-    StringBuffer sbValue = new StringBuffer();
-    StringBuffer sbDefValue = new StringBuffer();
-	sbValue.append(tmp[0]);
-	sbDefValue.append(defTmp[0]);
-	if (TimeDispRange.isDispHour(editor.getDispRange())) {
-		if (!tmp[1].isEmpty()) {
-			sbValue.append(" ");
-		}
-		sbValue.append(tmp[1]);
-
-		if (!defTmp[1].isEmpty()) {
-			sbDefValue.append(" ");
-		}
-		sbDefValue.append(defTmp[1]);
-	}
-	if (TimeDispRange.isDispMin(editor.getDispRange())) {
-		if (!tmp[1].isEmpty()) {
-			sbValue.append(":");
-		}
-		sbValue.append(tmp[2]);
-
-		if (!defTmp[1].isEmpty()) {
-			sbDefValue.append(":");
-		}
-		sbDefValue.append(defTmp[2]);
-	}
-	if (TimeDispRange.isDispSec(editor.getDispRange())) {
-		if (!tmp[2].isEmpty()) {
-			sbValue.append(":");
-		}
-		sbValue.append(tmp[3]);
-
-		if (!defTmp[2].isEmpty()) {
-			sbDefValue.append(":");
-		}
-		sbDefValue.append(defTmp[3]);
-	}
 	String strHidden = tmp[6];
-	String defStrHidden = defTmp[6];
-
-	//カスタムスタイル
-	String customStyle = "";
-	if (StringUtil.isNotEmpty(editor.getInputCustomStyle())) {
-		customStyle = EntityViewUtil.getCustomStyle(rootDefName, scriptKey, editor.getInputCustomStyleScriptKey(), entity, _propValue);
-	}
-
-	//コピー用のダミー行ならカレンダーを出さない
-	String cls = "inpbr";
-	if (!nestDummyRow) {
-		cls += " datetimepicker";
-	}
 
 	String propName = editor.getPropertyName();
 
-	int minInterval = MinIntereval.toInt(editor.getInterval());
+	if (editor.getDisplayType() != DateTimeDisplayType.HIDDEN) {
+		//HIDDEN以外
 
-	String onchange = "timestampPickerChange('" + StringUtil.escapeJavaScript(_propName) + "')";
+		String[] defTmp = split(_defaultValue);
+		String defStrHidden = defTmp[6];
+		
+	    StringBuffer sbValue = new StringBuffer();
+	    StringBuffer sbDefValue = new StringBuffer();
+		sbValue.append(tmp[0]);
+		sbDefValue.append(defTmp[0]);
+		if (TimeDispRange.isDispHour(editor.getDispRange())) {
+			if (!tmp[1].isEmpty()) {
+				sbValue.append(" ");
+			}
+			sbValue.append(tmp[1]);
+	
+			if (!defTmp[1].isEmpty()) {
+				sbDefValue.append(" ");
+			}
+			sbDefValue.append(defTmp[1]);
+		}
+		if (TimeDispRange.isDispMin(editor.getDispRange())) {
+			if (!tmp[1].isEmpty()) {
+				sbValue.append(":");
+			}
+			sbValue.append(tmp[2]);
+	
+			if (!defTmp[1].isEmpty()) {
+				sbDefValue.append(":");
+			}
+			sbDefValue.append(defTmp[2]);
+		}
+		if (TimeDispRange.isDispSec(editor.getDispRange())) {
+			if (!tmp[2].isEmpty()) {
+				sbValue.append(":");
+			}
+			sbValue.append(tmp[3]);
+	
+			if (!defTmp[2].isEmpty()) {
+				sbDefValue.append(":");
+			}
+			sbDefValue.append(defTmp[3]);
+		}
 
-	String range = "SEC";
-	if (editor.getDispRange() != null) {
-		range = editor.getDispRange().toString();
-	}
+		//時分秒省略時に補完する値
+		String defaultHour = (String) request.getAttribute(Constants.EDITOR_PICKER_DEFAULT_HOUR);
+		if (defaultHour == null) {
+			defaultHour = "00";
+		}
+		String defaultMin = (String) request.getAttribute(Constants.EDITOR_PICKER_DEFAULT_MIN);
+		if (defaultMin == null) {
+			defaultMin = "00";
+		}
+		String defaultSec = (String) request.getAttribute(Constants.EDITOR_PICKER_DEFAULT_SEC);
+		if (defaultSec == null) {
+			defaultSec = "00";
+		}
+		String defaultMsec = (String) request.getAttribute(Constants.EDITOR_PICKER_DEFAULT_MSEC);
+		if (defaultMsec == null) {
+			defaultMsec = "000";
+		}
+	
+		String timeFormat = null;
+		if (TimeDispRange.isDispSec(editor.getDispRange())) {
+			timeFormat = "HH:mm:ss";
+			defaultHour = "";
+			defaultMin = "";
+			defaultSec = "";
+		} else if (TimeDispRange.isDispMin(editor.getDispRange())) {
+			timeFormat = "HH:mm";
+			defaultHour = "";
+			defaultMin = "";
+		} else if (TimeDispRange.isDispHour(editor.getDispRange())) {
+			timeFormat = "HH";
+			defaultHour = "";
+		}
+	
+		//カスタムスタイル
+		String customStyle = "";
+		if (StringUtil.isNotEmpty(editor.getInputCustomStyle())) {
+			customStyle = EntityViewUtil.getCustomStyle(rootDefName, scriptKey, editor.getInputCustomStyleScriptKey(), entity, _propValue);
+		}
 
+		//コピー用のダミー行ならカレンダーを出さない
+		String cls = "inpbr";
+		if (!nestDummyRow) {
+			cls += " datetimepicker";
+		}
+
+		int minInterval = MinIntereval.toInt(editor.getInterval());
+	
+		String onchange = "timestampPickerChange('" + StringUtil.escapeJavaScript(_propName) + "')";
+	
+		String range = "SEC";
+		if (editor.getDispRange() != null) {
+			range = editor.getDispRange().toString();
+		}
 %>
 <input type="text" class="<c:out value="<%= cls%>"/>" style="<c:out value="<%=customStyle%>"/>" value="" id="datetime_<c:out value="<%=_propName %>"/>"
 	    onchange="<%=onchange%>" data-stepmin="<c:out value="<%=minInterval %>"/>" data-timeformat="<c:out value="<%=timeFormat %>"/>"
@@ -234,3 +238,11 @@ $(function() {
 	$("#datetime_" + es("<%=StringUtil.escapeJavaScript(_propName)%>")).val(datetime).trigger("blur");
 });
 </script>
+<%
+	} else {
+		//HIDDEN
+%>
+<input type="hidden" name="<c:out value="<%=propName %>"/>" id="i_<c:out value="<%=_propName %>"/>" value="<c:out value="<%=strHidden %>"/>" />
+<%
+	}
+%>

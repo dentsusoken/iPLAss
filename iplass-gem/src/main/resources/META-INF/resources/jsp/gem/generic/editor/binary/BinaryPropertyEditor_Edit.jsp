@@ -74,56 +74,57 @@
 		}
 	}
 	boolean updatable = ((pd == null || pd.isUpdatable()) || isInsert) && isEditable;
-	boolean hideDeleteButton = editor.isHideDeleteButton();
-	boolean hideSelectButton = editor.isHideSelectButton();
-	
-	
-	String contextPath = TemplateUtil.getTenantContextPath();
-	String upload = "";
-	if (StringUtil.isNotBlank(editor.getUploadActionName())) {
-		upload = contextPath + "/" + editor.getUploadActionName();
-	} else {
-		upload = contextPath + "/" + UploadCommand.ACTION_NAME;
-	}
-
-	String download = "";
-	String ref = contextPath + "/" + DownloadCommand.REFERENCE_ACTION_NAME;
-	if (StringUtil.isNotBlank(editor.getDownloadActionName())) {
-		download = contextPath + "/" + editor.getDownloadActionName();
-	} else {
-		download = contextPath + "/" + DownloadCommand.DOWNLOAD_ACTION_NAME;
-	}
-	String pdfviewer = contextPath + "/" + DownloadCommand.PDFVIEWER_ACTION_NAME;
-
-	String width = "";
-	if (editor.getWidth() > 0) {
-		width = " width=\"" + editor.getWidth() + "\"";
-	}
-	String height = "";
-	if (editor.getHeight() > 0) {
-		height = " height=\"" + editor.getHeight() + "\"";
-	}
-
-	String target = "";
-	if (editor.isOpenNewTab()) {
-		target = " target=\"_blank\"";
-	}
-
-	String displayType = editor.getDisplayType().name();
-
-	String ulId = "ul_" + propName;
-	String fileId = "file_" + propName;
-
-	List<BinaryReference> brList = new ArrayList<BinaryReference>();
-	if (value instanceof BinaryReference[]) {
-		brList.addAll(Arrays.asList((BinaryReference[]) value));
-	} else if (value instanceof BinaryReference) {
-		brList.add((BinaryReference)value);
-	}
-	int length = brList.size();
 
 	//詳細編集
-	if (updatable) {
+	if (editor.getDisplayType() != BinaryDisplayType.HIDDEN && updatable) {
+		
+		boolean hideDeleteButton = editor.isHideDeleteButton();
+		boolean hideSelectButton = editor.isHideSelectButton();
+		
+		String contextPath = TemplateUtil.getTenantContextPath();
+		String upload = "";
+		if (StringUtil.isNotBlank(editor.getUploadActionName())) {
+			upload = contextPath + "/" + editor.getUploadActionName();
+		} else {
+			upload = contextPath + "/" + UploadCommand.ACTION_NAME;
+		}
+
+		String download = "";
+		String ref = contextPath + "/" + DownloadCommand.REFERENCE_ACTION_NAME;
+		if (StringUtil.isNotBlank(editor.getDownloadActionName())) {
+			download = contextPath + "/" + editor.getDownloadActionName();
+		} else {
+			download = contextPath + "/" + DownloadCommand.DOWNLOAD_ACTION_NAME;
+		}
+		String pdfviewer = contextPath + "/" + DownloadCommand.PDFVIEWER_ACTION_NAME;
+
+		String width = "";
+		if (editor.getWidth() > 0) {
+			width = " width=\"" + editor.getWidth() + "\"";
+		}
+		String height = "";
+		if (editor.getHeight() > 0) {
+			height = " height=\"" + editor.getHeight() + "\"";
+		}
+
+		String target = "";
+		if (editor.isOpenNewTab()) {
+			target = " target=\"_blank\"";
+		}
+
+		String displayType = editor.getDisplayType().name();
+
+		String ulId = "ul_" + propName;
+		String fileId = "file_" + propName;
+
+		List<BinaryReference> brList = new ArrayList<BinaryReference>();
+		if (value instanceof BinaryReference[]) {
+			brList.addAll(Arrays.asList((BinaryReference[]) value));
+		} else if (value instanceof BinaryReference) {
+			brList.add((BinaryReference)value);
+		}
+		int length = brList.size();
+
 		String style = length >= pd.getMultiplicity() ? "display : none;" : "";
 		String cls = "";
 		if (nestDummyRow != null && nestDummyRow) {
@@ -297,10 +298,16 @@ ${m:rs("mtp-gem-messages", "generic.editor.binary.BinaryPropertyEditor_Edit.canN
 </ul>
 <%
 	} else {
-		request.setAttribute(Constants.OUTPUT_HIDDEN, true);
+		//HIDDENか更新不可
+		
+		if (editor.getDisplayType() != BinaryDisplayType.HIDDEN) {
+			request.setAttribute(Constants.OUTPUT_HIDDEN, true);
+		}
 %>
 <jsp:include page="BinaryPropertyEditor_View.jsp"></jsp:include>
 <%
-		request.removeAttribute(Constants.OUTPUT_HIDDEN);
+		if (editor.getDisplayType() != BinaryDisplayType.HIDDEN) {
+			request.removeAttribute(Constants.OUTPUT_HIDDEN);
+		}
 	}
 %>

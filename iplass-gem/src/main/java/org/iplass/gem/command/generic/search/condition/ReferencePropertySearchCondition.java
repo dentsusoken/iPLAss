@@ -74,7 +74,7 @@ public class ReferencePropertySearchCondition extends PropertySearchCondition {
 
 	@Override
 	public List<Condition> convertNormalCondition() {
-		List<Condition> conditions = new ArrayList<Condition>();
+		List<Condition> conditions = new ArrayList<>();
 		ReferencePropertyEditor editor = getReferencePropertyEditor();
 		Object value = null;
 		Entity nest = null;
@@ -88,70 +88,83 @@ public class ReferencePropertySearchCondition extends PropertySearchCondition {
 				//選択型はOIDで一致検索
 				Entity entity = (Entity) value;
 				if (entity.getOid() != null && !entity.getOid().isEmpty()) {
-					conditions.add(new Equals(getPropertyName() + ".oid", entity.getOid()));
+					conditions.add(new Equals(getPropertyName() + "." + Entity.OID, entity.getOid()));
 				}
 			} else if (editor.getDisplayType() == ReferenceDisplayType.CHECKBOX) {
 				Entity[] list = (Entity[]) value;
 				if (list != null) {
 					if (list.length == 1) {
-						conditions.add(new Equals(getPropertyName() + ".oid", list[0].getOid()));
+						conditions.add(new Equals(getPropertyName() + "." + Entity.OID, list[0].getOid()));
 					} else if (list.length > 1) {
-						List<String> oidList = new ArrayList<String>();
+						List<String> oidList = new ArrayList<>();
 						for (Entity tmp : list) {
 							oidList.add(tmp.getOid());
 						}
-						conditions.add(new In(getPropertyName() + ".oid", oidList.toArray()));
+						conditions.add(new In(getPropertyName() + "." + Entity.OID, oidList.toArray()));
 					}
 				}
 			} else if (editor.getDisplayType() == ReferenceDisplayType.REFCOMBO) {
 				if (value instanceof Entity) {
 					Entity entity = (Entity) value;
 					if (entity.getOid() != null && !entity.getOid().isEmpty()) {
-						conditions.add(new Equals(getPropertyName() + ".oid", entity.getOid()));
+						conditions.add(new Equals(getPropertyName() + "." + Entity.OID, entity.getOid()));
 					}
 				} else if (value instanceof RefComboCondition) {
 					RefComboCondition cond = (RefComboCondition) value;
 					if (StringUtil.isNotBlank(cond.getName()) && StringUtil.isNotBlank(cond.getOid())) {
-						conditions.add(new Equals(cond.getName() + ".oid", cond.getOid()));
+						conditions.add(new Equals(cond.getName() + "." + Entity.OID, cond.getOid()));
 					}
 				}
 			} else if (editor.getDisplayType() == ReferenceDisplayType.LINK && editor.isUseSearchDialog()) {
 				Entity[] list = (Entity[]) value;
 				if (list != null) {
 					if (list.length == 1) {
-						conditions.add(new Equals(getPropertyName() + ".oid", list[0].getOid()));
+						conditions.add(new Equals(getPropertyName() + "." + Entity.OID, list[0].getOid()));
 					} else if (list.length > 1) {
-						List<String> oidList = new ArrayList<String>();
+						List<String> oidList = new ArrayList<>();
 						for (Entity tmp : list) {
 							oidList.add(tmp.getOid());
 						}
-						conditions.add(new In(getPropertyName() + ".oid", oidList.toArray()));
+						conditions.add(new In(getPropertyName() + "." + Entity.OID, oidList.toArray()));
 					}
 				}
 			} else if (editor.getDisplayType() == ReferenceDisplayType.TREE) {
 				Entity[] list = (Entity[]) value;
 				if (list != null) {
 					if (list.length == 1) {
-						conditions.add(new Equals(getPropertyName() + ".oid", list[0].getOid()));
+						conditions.add(new Equals(getPropertyName() + "." + Entity.OID, list[0].getOid()));
 					} else if (list.length > 1) {
-						List<String> oidList = new ArrayList<String>();
+						List<String> oidList = new ArrayList<>();
 						for (Entity tmp : list) {
 							oidList.add(tmp.getOid());
 						}
-						conditions.add(new In(getPropertyName() + ".oid", oidList.toArray()));
+						conditions.add(new In(getPropertyName() + "." + Entity.OID, oidList.toArray()));
 					}
 				}
 			} else if (editor.getDisplayType() == ReferenceDisplayType.UNIQUE && editor.isUseSearchDialog()) {
 				Entity[] list = (Entity[]) value;
 				if (list != null) {
 					if (list.length == 1) {
-						conditions.add(new Equals(getPropertyName() + ".oid", list[0].getOid()));
+						conditions.add(new Equals(getPropertyName() + "." + Entity.OID, list[0].getOid()));
 					} else if (list.length > 1) {
-						List<String> oidList = new ArrayList<String>();
+						List<String> oidList = new ArrayList<>();
 						for (Entity tmp : list) {
 							oidList.add(tmp.getOid());
 						}
-						conditions.add(new In(getPropertyName() + ".oid", oidList.toArray()));
+						conditions.add(new In(getPropertyName() + "." + Entity.OID, oidList.toArray()));
+					}
+				}
+			} else if (editor.getDisplayType() == ReferenceDisplayType.HIDDEN) {
+				Entity[] list = (Entity[]) value;
+				if (list != null) {
+					if (list.length == 1) {
+						conditions.add(new Equals(getPropertyName() + "." + Entity.OID, list[0].getOid()));
+					} else if (list.length > 1) {
+						List<String> oidList = new ArrayList<>();
+						for (Entity tmp : list) {
+							oidList.add(tmp.getOid());
+						}
+						conditions.add(new In(getPropertyName() + "." + Entity.OID, oidList.toArray()));
 					}
 				}
 			} else {
@@ -159,7 +172,7 @@ public class ReferencePropertySearchCondition extends PropertySearchCondition {
 				Entity entity = (Entity) value;
 				if (entity.getName() != null && !entity.getName().isEmpty()) {
 					//conditions.add(new Like(getPropertyName() + ".name", "%" + StringUtil.escapeEqlForLike(entity.getName()) + "%"));
-					conditions.add(new Like(getPropertyName() + ".name", entity.getName(), Like.MatchPattern.PARTIAL));
+					conditions.add(new Like(getPropertyName() + "." + Entity.NAME, entity.getName(), Like.MatchPattern.PARTIAL));
 				}
 			}
 		}
@@ -184,7 +197,7 @@ public class ReferencePropertySearchCondition extends PropertySearchCondition {
 
 	@Override
 	public List<Condition> convertDetailCondition() {
-		List<Condition> conditions = new ArrayList<Condition>();
+		List<Condition> conditions = new ArrayList<>();
 		if (getValue() instanceof SearchConditionDetail) {
 			SearchConditionDetail detail = (SearchConditionDetail) getValue();
 			String propName = detail.getPropertyName();
@@ -350,6 +363,11 @@ public class ReferencePropertySearchCondition extends PropertySearchCondition {
 					createException(null);
 				}
 			} else if (editor.getDisplayType() == ReferenceDisplayType.UNIQUE && editor.isUseSearchDialog()) {
+				Entity[] list = (Entity[]) value;
+				if (validateEntity && (value == null || list.length == 0)) {
+					createException(null);
+				}
+			} else if (editor.getDisplayType() == ReferenceDisplayType.HIDDEN) {
 				Entity[] list = (Entity[]) value;
 				if (validateEntity && (value == null || list.length == 0)) {
 					createException(null);

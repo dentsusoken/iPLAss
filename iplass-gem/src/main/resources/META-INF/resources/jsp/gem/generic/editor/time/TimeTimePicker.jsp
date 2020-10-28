@@ -26,6 +26,7 @@
 <%@ page import="org.iplass.mtp.entity.Entity"%>
 <%@ page import="org.iplass.mtp.view.generic.EntityViewUtil"%>
 <%@ page import="org.iplass.mtp.view.generic.editor.TimePropertyEditor" %>
+<%@ page import="org.iplass.mtp.view.generic.editor.DateTimePropertyEditor.DateTimeDisplayType"%>
 <%@ page import="org.iplass.mtp.view.generic.editor.DateTimePropertyEditor.MinIntereval" %>
 <%@ page import="org.iplass.mtp.view.generic.editor.DateTimePropertyEditor.TimeDispRange" %>
 <%@ page import="org.iplass.mtp.util.DateUtil" %>
@@ -78,7 +79,7 @@
 	if (nestDummyRow == null) {
 		nestDummyRow = false;
 	}
-
+	
 	String propName = editor.getPropertyName();
 
 	String[] tmp = split(_propValue);
@@ -87,83 +88,82 @@
 	String sec = tmp[2];
 	String strHidden = tmp[4];
 
-	String[] defTmp = split(_defaultValue);
-	String defHour = defTmp[0];
-	String defMin = defTmp[1];
-	String defSec = defTmp[2];
-	String defStrHidden = defTmp[4];
+	if (editor.getDisplayType() != DateTimeDisplayType.HIDDEN) {
+		//HIDDEN以外
 
-	String onchange = "timePickerChange('" + StringUtil.escapeJavaScript(_propName) + "')";
-
-
-	// 非表示項目設定がある場合の時間フォーマットと最大入力文字数を判断
-    StringBuffer sbFormat = new StringBuffer();
-    int maxLength = 2;
-    sbFormat.append("HH");
-
-    StringBuffer sbValue = new StringBuffer();
-    StringBuffer sbDefValue = new StringBuffer();
-    sbValue.append(hour);
-    sbDefValue.append(defHour);
-
-
-    String defaultMin = "00";
-    String _defaultMin = (String) request.getAttribute(Constants.EDITOR_PICKER_DEFAULT_MIN);
-	if (_defaultMin != null) {
-		defaultMin = _defaultMin;
-	}
-	if (TimeDispRange.isDispMin(editor.getDispRange())) {
-		defaultMin = "";
-		sbFormat.append(":mm");
-
-		if (!hour.isEmpty()) {
-			sbValue.append(":");
+		String[] defTmp = split(_defaultValue);
+		String defHour = defTmp[0];
+		String defMin = defTmp[1];
+		String defSec = defTmp[2];
+		String defStrHidden = defTmp[4];
+	
+		// 非表示項目設定がある場合の時間フォーマットと最大入力文字数を判断
+	    StringBuffer sbFormat = new StringBuffer();
+	    int maxLength = 2;
+	    sbFormat.append("HH");
+	
+	    StringBuffer sbValue = new StringBuffer();
+	    StringBuffer sbDefValue = new StringBuffer();
+	    sbValue.append(hour);
+	    sbDefValue.append(defHour);
+	
+	    String defaultMin = "00";
+	    String _defaultMin = (String) request.getAttribute(Constants.EDITOR_PICKER_DEFAULT_MIN);
+		if (_defaultMin != null) {
+			defaultMin = _defaultMin;
 		}
-		sbValue.append(min);
-		maxLength = 5;
-
-		if (!defHour.isEmpty()) {
-			sbDefValue.append(":");
+		if (TimeDispRange.isDispMin(editor.getDispRange())) {
+			defaultMin = "";
+			sbFormat.append(":mm");
+	
+			if (!hour.isEmpty()) {
+				sbValue.append(":");
+			}
+			sbValue.append(min);
+			maxLength = 5;
+	
+			if (!defHour.isEmpty()) {
+				sbDefValue.append(":");
+			}
+			sbDefValue.append(defMin);
 		}
-		sbDefValue.append(defMin);
-	}
-    String defaultSec = "00";
-    String _defaultSec = (String) request.getAttribute(Constants.EDITOR_PICKER_DEFAULT_SEC);
-    if (_defaultSec != null) {
-    	defaultSec = _defaultSec;
-    }
-    if (TimeDispRange.isDispSec(editor.getDispRange())) {
-    	defaultSec = "";
-    	sbFormat.append(":ss");
+	    String defaultSec = "00";
+	    String _defaultSec = (String) request.getAttribute(Constants.EDITOR_PICKER_DEFAULT_SEC);
+	    if (_defaultSec != null) {
+	    	defaultSec = _defaultSec;
+	    }
+	    if (TimeDispRange.isDispSec(editor.getDispRange())) {
+	    	defaultSec = "";
+	    	sbFormat.append(":ss");
+	
+			if (!min.isEmpty()) {
+				sbValue.append(":");
+	    	}
+			sbValue.append(sec);
+	    	maxLength = 8;
+	
+			if (!defMin.isEmpty()) {
+				sbDefValue.append(":");
+	    	}
+			sbDefValue.append(defSec);
+	    }
 
-		if (!min.isEmpty()) {
-			sbValue.append(":");
-    	}
-		sbValue.append(sec);
-    	maxLength = 8;
+		//カスタムスタイル
+		String customStyle = "";
+		if (StringUtil.isNotEmpty(editor.getInputCustomStyle())) {
+			customStyle = EntityViewUtil.getCustomStyle(rootDefName, scriptKey, editor.getInputCustomStyleScriptKey(), entity, _propValue);
+		}
 
-		if (!defMin.isEmpty()) {
-			sbDefValue.append(":");
-    	}
-		sbDefValue.append(defSec);
-    }
+	    //コピー用のダミー行ならtimepickerを出さない
+		String cls = "inpbr timepicker-form-size-01";
+		if (!nestDummyRow) {
+			cls += " timepicker";
+		}
 
-	//カスタムスタイル
-	String customStyle = "";
-	if (StringUtil.isNotEmpty(editor.getInputCustomStyle())) {
-		customStyle = EntityViewUtil.getCustomStyle(rootDefName, scriptKey, editor.getInputCustomStyleScriptKey(), entity, _propValue);
-	}
+		int minInterval = MinIntereval.toInt(editor.getInterval());
 
-	//コピー用のダミー行ならtimepickerを出さない
-	String cls = "inpbr timepicker-form-size-01";
-	if (!nestDummyRow) {
-		cls += " timepicker";
-	}
-
-	int minInterval = MinIntereval.toInt(editor.getInterval());
-
+		String onchange = "timePickerChange('" + StringUtil.escapeJavaScript(_propName) + "')";
 %>
-
 <input type="text" class="<c:out value="<%=cls%>"/>" style="<c:out value="<%=customStyle%>"/>" value="<c:out value="<%=sbValue.toString() %>"/>" id="time_<c:out value="<%=_propName %>"/>" onchange="<%=onchange%>"
 	    maxlength="<c:out value="<%=maxLength %>"/>"  data-stepmin="<c:out value="<%=minInterval %>"/>" data-timeformat="<c:out value="<%=sbFormat.toString() %>"/>"
 	    data-fixedMin="<c:out value="<%=defaultMin%>"/>" data-fixedSec="<c:out value="<%=defaultSec%>"/>"/>
@@ -187,3 +187,11 @@ $(function() {
 	});
 });
 </script>
+<%
+	} else {
+		//HIDDEN
+%>
+<input type="hidden" name="<c:out value="<%=propName %>"/>" id="i_<c:out value="<%=_propName %>"/>" value="<c:out value="<%=strHidden%>"/>" />
+<%
+	}
+%>

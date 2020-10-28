@@ -31,6 +31,7 @@ import org.iplass.mtp.impl.view.generic.FormViewRuntime;
 import org.iplass.mtp.impl.view.generic.element.property.MetaPropertyLayout;
 import org.iplass.mtp.view.generic.editor.PropertyEditor;
 import org.iplass.mtp.view.generic.editor.TemplatePropertyEditor;
+import org.iplass.mtp.view.generic.editor.TemplatePropertyEditor.TemplateDisplayType;
 
 /**
  * テンプレートを表示するプロパティエディタのメタデータ
@@ -45,8 +46,27 @@ public class MetaTemplatePropertyEditor extends MetaCustomPropertyEditor {
 		return new MetaTemplatePropertyEditor();
 	}
 
+	/** 表示タイプ */
+	private TemplateDisplayType displayType;
+
 	/** テンプレート名 */
 	private String templateName;
+
+	/**
+	 * 表示タイプを取得します。
+	 * @return 表示タイプ
+	 */
+	public TemplateDisplayType getDisplayType() {
+	    return displayType;
+	}
+
+	/**
+	 * 表示タイプを設定します。
+	 * @param displayType 表示タイプ
+	 */
+	public void setDisplayType(TemplateDisplayType displayType) {
+	    this.displayType = displayType;
+	}
 
 	/**
 	 * テンプレート名を取得します。
@@ -69,6 +89,7 @@ public class MetaTemplatePropertyEditor extends MetaCustomPropertyEditor {
 		super.fillFrom(editor);
 
 		TemplatePropertyEditor e = (TemplatePropertyEditor) editor;
+		displayType = e.getDisplayType();
 		templateName = e.getTemplateName();
 	}
 
@@ -77,6 +98,11 @@ public class MetaTemplatePropertyEditor extends MetaCustomPropertyEditor {
 		TemplatePropertyEditor editor = new TemplatePropertyEditor();
 		super.fillTo(editor);
 
+		if (displayType == null) {
+			editor.setDisplayType(TemplateDisplayType.TEMPLATE);
+		} else {
+			editor.setDisplayType(displayType);
+		}
 		editor.setTemplateName(templateName);
 		return editor;
 	}

@@ -647,6 +647,17 @@ $(function() {
 %>
 </ul>
 <%
+	} else if (editor.getDisplayType() == ReferenceDisplayType.HIDDEN) {
+		//HIDDEN
+		for (int i = 0; i < entityList.size(); i++) {
+			Entity refEntity = entityList.get(i);
+			if (refEntity == null) continue;
+			
+			String _value = refEntity.getOid() + "_" + refEntity.getVersion();
+%>
+<input type="hidden" name="<c:out value="<%=propName %>"/>" value="<c:out value="<%=_value %>"/>" />
+<%
+		}
 	} else if (editor.getDisplayType() == ReferenceDisplayType.NESTTABLE) {
 		//テーブル
 		//include先で利用するためパラメータを詰めなおし
