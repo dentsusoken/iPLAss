@@ -39,6 +39,7 @@
 <%@ page import="org.iplass.mtp.util.StringUtil"%>
 <%@ page import="org.iplass.mtp.view.filter.EntityFilterItem"%>
 <%@ page import="org.iplass.mtp.view.generic.editor.*"%>
+<%@ page import="org.iplass.mtp.view.generic.common.AutocompletionSetting"%>
 <%@ page import="org.iplass.mtp.view.generic.element.BlankSpace"%>
 <%@ page import="org.iplass.mtp.view.generic.element.Element"%>
 <%@ page import="org.iplass.mtp.view.generic.element.VirtualPropertyItem"%>
@@ -627,8 +628,8 @@ $(function() {
 <tbody>
 <%
 	//通常検索で表示する項目の抽出(非表示の場合ブランク扱い)
-	List<Element> elementList = new ArrayList<Element>();
-	List<PropertyItem> hiddenList = new ArrayList<PropertyItem>();
+	List<Element> elementList = new ArrayList<>();
+	List<Element> hiddenList = new ArrayList<>();
 	for (Element element : section.getElements()) {
 		if (element instanceof PropertyItem) {
 			PropertyItem property = (PropertyItem) element;
@@ -648,6 +649,19 @@ $(function() {
 				} else {
 					elementList.add(new BlankSpace());
 				}
+			}
+		} else if (element instanceof VirtualPropertyItem) {
+			VirtualPropertyItem property = (VirtualPropertyItem) element;
+			if (EntityViewUtil.isDisplayElement(defName, property.getElementRuntimeId(), OutputType.SEARCHCONDITION, null)) {
+				//hiddenはレイアウトを保持するためBlankSpaceに置き換えたうえで退避
+				if (property.getEditor() != null && property.getEditor().isHide()) {
+					elementList.add(new BlankSpace());
+					hiddenList.add(property);
+				} else {
+					elementList.add(property);
+				}
+			} else {
+				elementList.add(new BlankSpace());
 			}
 		} else {
 			// BlankSpaceか仮想プロパティ
@@ -847,17 +861,35 @@ $(function() {
 <div class="hidden-cond-area">
 <%
 	//hidden出力
-	for (PropertyItem property : hiddenList) {
-		PropertyDefinition pd = defMap.get(property.getPropertyName());
-		property.getEditor().setPropertyName(property.getPropertyName());
-		String path = EntityViewUtil.getJspPath(property.getEditor(), ViewConst.DESIGN_TYPE_GEM);
+	for (Element hiddenElement : hiddenList) {
+		String propertyName = null;
+		PropertyDefinition pd = null;
+		PropertyEditor editor = null;
+		AutocompletionSetting autocompletionSetting = null;
+		
+		//PropertyItemかVirtualPropertyItemしか存在しない(共通のIFがないためElementで保持)
+		if (hiddenElement instanceof PropertyItem) {
+			PropertyItem property = (PropertyItem)hiddenElement;
+			propertyName = property.getPropertyName();
+			pd = defMap.get(propertyName);
+			editor = property.getEditor();
+			editor.setPropertyName(propertyName);
+			autocompletionSetting = property.getAutocompletionSetting();
+		} else if (hiddenElement instanceof VirtualPropertyItem) {
+			VirtualPropertyItem property = (VirtualPropertyItem)hiddenElement;
+			propertyName = property.getPropertyName();
+			pd = EntityViewUtil.getPropertyDefinition(property);
+			editor = property.getEditor();
+			editor.setPropertyName(propertyName);
+		}
+		String path = EntityViewUtil.getJspPath(editor, ViewConst.DESIGN_TYPE_GEM);
 		if (path != null) {
 //			request.setAttribute(Constants.EDITOR_STYLE, style);//nest項目があった場合のクラスのプレフィックスに
 //			request.setAttribute(Constants.EDITOR_DISPLAY_LABEL, displayLabel);
 //			request.setAttribute(Constants.EDITOR_REQUIRED, property.isRequiredNormal());
-			request.setAttribute(Constants.EDITOR_EDITOR, property.getEditor());
+			request.setAttribute(Constants.EDITOR_EDITOR, editor);
 			request.setAttribute(Constants.EDITOR_PROPERTY_DEFINITION, pd);
-			Object defaultValue = defaultSearchCond.get(property.getPropertyName());
+			Object defaultValue = defaultSearchCond.get(propertyName);
 			if (StringUtil.isEmpty(searchCond)) {
 				//指定検索条件がない場合はデフォルトから指定
 				request.setAttribute(Constants.EDITOR_PROP_VALUE, defaultValue);
@@ -865,7 +897,7 @@ $(function() {
 				//指定検索条件がある場合は、Editor側ではセットせずSearchResultSection側で設定
 			}
 			request.setAttribute(Constants.EDITOR_DEFAULT_VALUE, defaultValue);
-			request.setAttribute(Constants.AUTOCOMPLETION_SETTING, property.getAutocompletionSetting());
+			request.setAttribute(Constants.AUTOCOMPLETION_SETTING, autocompletionSetting);
 %>
 <jsp:include page="<%=path%>" />
 <%

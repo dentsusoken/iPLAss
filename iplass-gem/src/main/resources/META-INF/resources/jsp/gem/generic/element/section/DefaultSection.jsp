@@ -132,12 +132,21 @@
 	}
 
 	//詳細編集/詳細表示で表示する項目の抽出(非表示の場合ブランク扱い)
-	List<Element> elementList = new ArrayList<Element>();
-	List<PropertyItem> hiddenList = new ArrayList<PropertyItem>();
+	List<Element> elementList = new ArrayList<>();
+	List<Element> hiddenList = new ArrayList<>();
 	for (Element subElement : section.getElements()) {
 		if (checkDispElement(type, subElement)) {
 			if (subElement instanceof PropertyItem) {
 				PropertyItem property = (PropertyItem) subElement;
+				//hiddenはレイアウトを保持するためBlankSpaceに置き換えたうえで退避
+				if (property.getEditor() != null && property.getEditor().isHide()) {
+					elementList.add(new BlankSpace());
+					hiddenList.add(property);
+				} else {
+					elementList.add(property);
+				}
+			} else if (subElement instanceof VirtualPropertyItem) {
+				VirtualPropertyItem property = (VirtualPropertyItem) subElement;
 				//hiddenはレイアウトを保持するためBlankSpaceに置き換えたうえで退避
 				if (property.getEditor() != null && property.getEditor().isHide()) {
 					elementList.add(new BlankSpace());
@@ -238,13 +247,13 @@
 <div class="hidden-input-area">
 <%
 	//hidden出力
-	for (PropertyItem property : hiddenList) {
-		if (EntityViewUtil.isDisplayElement(defName, property.getElementRuntimeId(), type, rootEntity)
-				&& (type != OutputType.EDIT || ViewUtil.dispElement(property))) {
-			request.setAttribute(Constants.ELEMENT, property);
+	for (Element hiddenElement : hiddenList) {
+		if (EntityViewUtil.isDisplayElement(defName, hiddenElement.getElementRuntimeId(), type, rootEntity)
+				&& (type != OutputType.EDIT || ViewUtil.dispElement(hiddenElement))) {
+			request.setAttribute(Constants.ELEMENT, hiddenElement);
 			request.setAttribute(Constants.COL_NUM, section.getColNum());
 
-			String path = EntityViewUtil.getJspPath(property, ViewConst.DESIGN_TYPE_GEM);
+			String path = EntityViewUtil.getJspPath(hiddenElement, ViewConst.DESIGN_TYPE_GEM);
 			if (path != null) {
 %>
 <jsp:include page="<%=path %>" />

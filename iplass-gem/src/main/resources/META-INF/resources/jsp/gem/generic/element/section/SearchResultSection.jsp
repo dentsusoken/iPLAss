@@ -362,10 +362,14 @@ $(function() {
 			if (property.getTextAlign() != null) {
 				align = ", align:'" + property.getTextAlign().name().toLowerCase() + "'";
 			}
+			String hidden = ", hidden:false";
+			if (property.getEditor() != null && property.getEditor().isHide()) {
+				hidden = ", hidden:true";
+			}
 			String style = property.getStyle() != null ? property.getStyle() : "";
 %>
 <%-- XSS対応-メタの設定のため対応なし(displayLabel,style) --%>
-colModel.push({name:"<%=propName%>", index:"<%=propName%>", classes:"<%=style%>", label:"<p class='title'><%=displayLabel%></p>", sortable:false <%=width%><%=align%>});
+colModel.push({name:"<%=propName%>", index:"<%=propName%>", classes:"<%=style%>", label:"<p class='title'><%=displayLabel%></p>", sortable:false <%=hidden%><%=width%><%=align%>});
 <%
 		}
 	}
