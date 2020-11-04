@@ -1294,6 +1294,7 @@ $.fn.allInputCheck = function(){
 								colNames.push("<p class='title'>" + dispInfo[i].displayName + "</p>");
 								var cm = {name:dispInfo[i].name, index:dispInfo[i].name};
 								if (dispInfo[i].width > 0) cm.width = dispInfo[i].width;
+								if (dispInfo[i].hide === true) cm.hidden = true;
 								colModel.push(cm);
 							}
 
