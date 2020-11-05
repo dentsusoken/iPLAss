@@ -142,6 +142,7 @@ public final class GetMassReferencesCommand extends DetailCommandBase implements
 			ReferenceProperty rp = (ReferenceProperty) pd;
 
 			Entity entity = getBindingEntity(request);
+
 			//Section取得
 			List<MassReferenceSection> sections = getMassReferenceSection(
 					context.getEntityDefinition(), outputType, context.getView(), context.getViewName(), entity);
@@ -184,6 +185,11 @@ public final class GetMassReferencesCommand extends DetailCommandBase implements
 							di.setDisplayName(TemplateUtil.getMultilingualString(rpd.getDisplayName(), rpd.getLocalizedDisplayNameList()));
 						}
 						di.setWidth(np.getWidth());
+						if (np.getEditor() != null && np.getEditor().isHide()) {
+							di.setHide(true);
+						} else {
+							di.setHide(false);
+						}
 						dispInfo.add(di);
 					}
 				}
@@ -605,6 +611,7 @@ public final class GetMassReferencesCommand extends DetailCommandBase implements
 					}
 
 					DisplayInfo di = new DisplayInfo();
+
 					di.setName(name + "." + _np.getPropertyName());
 					if (StringUtil.isNotBlank(_np.getDisplayLabel())) {
 						di.setDisplayName(TemplateUtil.getMultilingualString(_np.getDisplayLabel(), _np.getLocalizedDisplayLabelList()));
@@ -612,6 +619,13 @@ public final class GetMassReferencesCommand extends DetailCommandBase implements
 						di.setDisplayName(TemplateUtil.getMultilingualString(rpd.getDisplayName(), rpd.getLocalizedDisplayNameList()));
 					}
 					di.setWidth(_np.getWidth());
+
+					if (_np.getEditor() != null && _np.getEditor().isHide()) {
+						di.setHide(true);
+					} else {
+						di.setHide(false);
+					}
+
 					dispInfo.add(di);
 				}
 			}
@@ -625,6 +639,11 @@ public final class GetMassReferencesCommand extends DetailCommandBase implements
 				di.setDisplayName(TemplateUtil.getMultilingualString(rp.getDisplayName(), rp.getLocalizedDisplayNameList()));
 			}
 			di.setWidth(np.getWidth());
+			if (np.getEditor() != null && np.getEditor().isHide()) {
+				di.setHide(true);
+			} else {
+				di.setHide(false);
+			}
 			dispInfo.add(di);
 		}
 	}
@@ -701,6 +720,7 @@ public final class GetMassReferencesCommand extends DetailCommandBase implements
 		private String name;
 		private String displayName;
 		private int width;
+		private boolean hide;
 
 		public String getName() {
 			return name;
@@ -724,6 +744,14 @@ public final class GetMassReferencesCommand extends DetailCommandBase implements
 
 		public void setWidth(int width) {
 			this.width = width;
+		}
+
+		public boolean isHide() {
+			return hide;
+		}
+
+		public void setHide(boolean hide) {
+			this.hide = hide;
 		}
 	}
 }

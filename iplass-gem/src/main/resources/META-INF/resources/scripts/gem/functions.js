@@ -1294,6 +1294,7 @@ $.fn.allInputCheck = function(){
 								colNames.push("<p class='title'>" + dispInfo[i].displayName + "</p>");
 								var cm = {name:dispInfo[i].name, index:dispInfo[i].name};
 								if (dispInfo[i].width > 0) cm.width = dispInfo[i].width;
+								if (dispInfo[i].hide === true) cm.hidden = true;
 								colModel.push(cm);
 							}
 
@@ -2866,7 +2867,7 @@ $.fn.allInputCheck = function(){
 
 			var $current = null;
 			var reUse = false;
-			var index = 0;
+			var colIndex = 0;
 			$rows.each(function() {
 				var $row = $(this);
 				if (options.deleteTarget && $row.is(options.deleteTarget)) {
@@ -2876,11 +2877,13 @@ $.fn.allInputCheck = function(){
 					return true;
 				}
 
-				if (index == 0) {
+				if (colIndex == 0) {
 					//複数列用の行入れる
 					if ($current == null) {
+						//最初の１行目
 						$current = $("<tr />").addClass("col" + options.colNum).prependTo($this);
 					} else {
+						//２行目以降
 						if (reUse == false) {
 							var $tmp = $("<tr />").addClass("col" + options.colNum).insertAfter($current);
 							$current = $tmp;
@@ -2896,8 +2899,8 @@ $.fn.allInputCheck = function(){
 				//1列行削除
 				$row.remove();
 
-				if (++index == options.colNum) {
-					index = 0;
+				if (++colIndex == options.colNum) {
+					colIndex = 0;
 					if ($("td", $current).children().length == 0) {
 						//行内のtdに何も入ってない場合はセル消して再利用
 						$("th,td", $current).remove();

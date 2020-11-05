@@ -387,7 +387,10 @@ $(function() {
 				String cls = "col" + colNum;
 				String style = "";
 				if (nProp.getWidth() > 0) {
-					style = "width:" + nProp.getWidth() + "px;";
+					style = "width:" + nProp.getWidth() + "px; ";
+				}
+				if (nProp.getEditor().isHide()) {
+					style += "display:none; ";
 				}
 %>
 <th nowrap="nowrap" class="<c:out value="<%=cls%>"/>" style="<c:out value="<%=style%>"/>">
@@ -561,7 +564,10 @@ ${m:rs("mtp-gem-messages", "generic.editor.reference.ReferencePropertyEditor_Tab
 				String cls = "col" + colNum;
 				String style = "";
 				if (nProp.getWidth() > 0) {
-					style = "width:" + nProp.getWidth() + "px;";
+					style = "width:" + nProp.getWidth() + "px; ";
+				}
+				if (nProp.getEditor().isHide()) {
+					style += "display:none; ";
 				}
 %>
 <td class="<c:out value="<%=cls%>"/>" data-propName="<c:out value="<%=refPd.getName()%>"/>" style="<c:out value="<%=style%>"/>">
@@ -686,7 +692,10 @@ ${m:rs("mtp-gem-messages", "generic.editor.reference.ReferencePropertyEditor_Tab
 					String cls = "col" + colNum;
 					String style = "";
 					if (nProp.getWidth() > 0) {
-						style = "width:" + nProp.getWidth() + "px;";
+						style = "width:" + nProp.getWidth() + "px; ";
+					}
+					if (nProp.getEditor().isHide()) {
+						style += "display:none; ";
 					}
 %>
 <td class="<c:out value="<%=cls%>"/>" data-propName="<c:out value="<%=refPd.getName()%>"/>" style="<c:out value="<%=style%>"/>">
@@ -860,7 +869,10 @@ $(function() {
 				String cls = "col" + colNum;
 				String style = "";
 				if (nProp.getWidth() > 0) {
-					style = "width:" + nProp.getWidth() + "px;";
+					style = "width:" + nProp.getWidth() + "px; ";
+				}
+				if (nProp.getEditor().isHide()) {
+					style += "display:none; ";
 				}
 %>
 <th nowrap="nowrap" class="<c:out value="<%=cls%>"/>" style="<c:out value="<%=style%>"/>">
@@ -950,7 +962,10 @@ ${m:rs("mtp-gem-messages", "generic.editor.reference.ReferencePropertyEditor_Tab
 					String cls = "col" + colNum;
 					String style = "";
 					if (nProp.getWidth() > 0) {
-						style = "width:" + nProp.getWidth() + "px;";
+						style = "width:" + nProp.getWidth() + "px; ";
+					}
+					if (nProp.getEditor().isHide()) {
+						style += "display:none; ";
 					}
 %>
 <td class="<c:out value="<%=cls %>"/>" style="<c:out value="<%=style %>"/>">
