@@ -94,6 +94,7 @@
 
 	//キャンセルアクション
 	String cancel = "";
+	boolean moveToView = false;
 	boolean moveToSearchList = false;
 	if (StringUtil.isNotBlank(form.getCancelActionName())) {
 		//指定Actionに遷移
@@ -109,7 +110,8 @@
 			if (searchView != null && StringUtil.isNotBlank(searchView.getViewActionName())) {
 				viewAction = searchView.getViewActionName();
 			}
-			cancel = viewAction + urlPath + "/" + oid;
+			cancel = viewAction + urlPath;
+			moveToView = true;
 		}
 	} else {
 		if (StringUtil.isEmpty(backPath)) {
@@ -209,13 +211,20 @@ function cancel() {
 		return;
 	}
 
-	submitForm(contextPath + "/<%=StringUtil.escapeJavaScript(cancel)%>", {
-<% if (!moveToSearchList) { %>
+<%	if (moveToView) { %>
+	var cancelPath = contextPath + "/<%=StringUtil.escapeJavaScript(cancel)%>" + "/" + encodeURIComponent($(":hidden[name='oid']").val());
+<%	} else { %>
+	var cancelPath = contextPath + "/<%=StringUtil.escapeJavaScript(cancel)%>";
+<%	} %>
+	submitForm(cancelPath, {
+<%	if (!moveToSearchList) {
 		//一覧に戻らない場合
+%>
 		<%=Constants.VERSION%>:$(":hidden[name='version']").val(),
 		<%=Constants.BACK_PATH%>:$(":hidden[name='backPath']").val(),
-<% } %>
-		//一覧画面表示用
+<%	} 
+	//一覧画面表示用
+%>
 		<%=Constants.SEARCH_COND%>:$(":hidden[name='searchCond']").val(),
 		<%=Constants.TOPVIEW_LIST_OFFSET%>:"<%=StringUtil.escapeJavaScript(topViewListOffset)%>"
 	});

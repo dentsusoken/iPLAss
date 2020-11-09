@@ -130,6 +130,21 @@ function clearMenuState() {
 ////////////////////////////////////////////////////////
 
 /**
+ * OIDのCELL Formatter
+ * HTML Encodeした結果を返します。
+ * @param cellvalue 値(jqGrid)
+ * @param options オプション(jqGrid)
+ * @param rowObject 行データ(jqGrid)
+ * @returns フォーマット値
+ */
+function oidCellFormatter(cellvalue, options, rowObject) {
+	if (cellvalue) {
+		return $.jgrid.htmlEncode(cellvalue + "");
+	}
+	return "";
+}
+
+/**
 * CSVダウンロード実行
 * @param searchType
 * @param formName
@@ -244,7 +259,7 @@ function showDetail(action, oid, version, isEdit, target, options) {
 	if (isEdit) {
 		defaults.oid = oid;
 	} else {
-		url += "/" + oid;
+		url += "/" + encodeURIComponent(oid);
 	}
 	var params = $.extend(defaults, options);
 	submitForm(url, params, target);
