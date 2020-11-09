@@ -93,19 +93,19 @@
 			parts.getViewNameForDetail() != null ? parts.getViewNameForDetail() : parts.getViewName());
 
 	//詳細表示アクション
-	String view = "";
+	String viewAction = "";
 	if (StringUtil.isNotBlank(form.getViewActionName())) {
-		view = form.getViewActionName() +  urlPath;
+		viewAction = form.getViewActionName() +  urlPath;
 	} else {
-		view = DetailViewCommand.VIEW_ACTION_NAME + urlPath;
+		viewAction = DetailViewCommand.VIEW_ACTION_NAME + urlPath;
 	}
 
 	//詳細編集アクション
-	String detail = "";
+	String detailAction = "";
 	if (StringUtil.isNotBlank(form.getEditActionName())) {
-		detail = form.getEditActionName() +  urlPath;
+		detailAction = form.getEditActionName() +  urlPath;
 	} else {
-		detail = DetailViewCommand.DETAIL_ACTION_NAME + urlPath;
+		detailAction = DetailViewCommand.DETAIL_ACTION_NAME + urlPath;
 	}
 
 	//検索結果表示アクション
@@ -201,7 +201,7 @@ $(function() {
 
 	var colModel = new Array();
 	var isloaded = false;
-	colModel.push({name:"orgOid", idnex:"orgOid", sortable:false, hidden:true, frozen:true, label:"oid"});
+	colModel.push({name:"orgOid", idnex:"orgOid", sortable:false, hidden:true, frozen:true, label:"oid", formatter:oidCellFormatter});
 	colModel.push({name:"orgVersion", idnex:"orgVersion", sortable:false, hidden:true, frozen:true, label:"version"});
 	colModel.push({name:'_mtpDetailLink', index:'_mtpDetailLink', width:${m:rs("mtp-gem-messages", "generic.search.list.detailLinkWidth")}, sortable:false, align:'center', frozen:true, label:"", classes:"detail-links", cellattr: cellAttrFunc});
 <%
@@ -395,19 +395,43 @@ colModel.push({name:"<%=propName%>", index:"<%=propName%>", classes:"<%=style%>"
 
 			grid.clearGridData(true);
 			grid.setGridParam({"_data": list}).trigger("reloadGrid");
+			
+			var $viewLink = $("<a/>").attr({"href":"javascript:void(0)", "action":"<%=StringUtil.escapeJavaScript(viewAction)%>"})
+					.addClass("detailLink").text("${m:rs('mtp-gem-messages', 'generic.element.section.SearchResultSection.detail')}");
+<%	if (!section.isHideDetailLink() && (canUpdate || canDelete)) {
+		//編集表示
+%>
+			$viewLink.addClass("jqborder"); //真ん中の棒線
+			var $editLink = $("<a/>").attr({"href":"javascript:void(0)", "action":"<%=StringUtil.escapeJavaScript(detailAction)%>"})
+					.addClass("detailLink editLink").text("${m:rs('mtp-gem-messages', 'generic.element.section.SearchResultSection.edit')}");
+<%
+	} else {
+		//編集非表示
+%>
+			var $detailLink = $("<p/>");
+			$viewLink.appendTo($detailLink);
+<%
+	}
+%>
 			$(list).each(function(index) {
-
 				this["searchResultDataId"] = this.orgOid + "_" + this.orgVersion;
-<% if (!section.isHideDetailLink() && (canUpdate || canDelete)) { %>
+				
+				$viewLink.attr({"oid":this.orgOid, "version":this.orgVersion});
+<%	if (!section.isHideDetailLink() && (canUpdate || canDelete)) { %>
+
+				$editLink.attr({"oid":this.orgOid, "version":this.orgVersion});
+				
+				var $detailLink = $("<p/>");
 				if (this["@canEdit"] === "false" && this["@canDelete"] === "false") {
-					this["_mtpDetailLink"] = "<a href='javascript:void(0)' action='<%=StringUtil.escapeJavaScript(view)%>' oid='" + this.orgOid + "' version='" + this.orgVersion + "' class='jqborder detailLink'>${m:rs('mtp-gem-messages', 'generic.element.section.SearchResultSection.detail')}</a>";
+					$viewLink.removeClass("jqborder");
+					$viewLink.appendTo($detailLink);
 				} else {
-					this["_mtpDetailLink"] = "<a href='javascript:void(0)' action='<%=StringUtil.escapeJavaScript(view)%>' oid='" + this.orgOid + "' version='" + this.orgVersion + "' class='jqborder detailLink'>${m:rs('mtp-gem-messages', 'generic.element.section.SearchResultSection.detail')}</a>"
-						+ "<a href='javascript:void(0)' action='<%=StringUtil.escapeJavaScript(detail)%>' oid='" + this.orgOid + "' version='" + this.orgVersion + "' class='detailLink editLink'>${m:rs('mtp-gem-messages', 'generic.element.section.SearchResultSection.edit')}</a>";
+					$viewLink.addClass("jqborder"); //真ん中の棒線
+					$viewLink.appendTo($detailLink);
+					$editLink.appendTo($detailLink);
 				}
-<% } else { %>
-				this["_mtpDetailLink"] = "<a href='javascript:void(0)' action='<%=StringUtil.escapeJavaScript(view)%>' oid='" + this.orgOid + "' version='" + this.orgVersion + "' class='detailLink'>${m:rs('mtp-gem-messages', 'generic.element.section.SearchResultSection.detail')}</a>";
-<% } %>
+<%	} %>
+				this["_mtpDetailLink"] = $detailLink.html();
 				grid.addRowData(index + 1, this);
 			});
 
