@@ -27,6 +27,8 @@ import org.iplass.mtp.entity.Entity;
 import org.iplass.mtp.entity.EntityManager;
 import org.iplass.mtp.impl.auth.AuthContextHolder;
 import org.iplass.mtp.impl.auth.UserBinding;
+import org.iplass.mtp.impl.command.RequestContextBinding;
+import org.iplass.mtp.impl.command.SessionBinding;
 import org.iplass.mtp.impl.core.ExecuteContext;
 import org.iplass.mtp.impl.core.TenantContext;
 import org.iplass.mtp.impl.entity.EntityContext;
@@ -106,6 +108,8 @@ public class DetailFormViewRuntime extends FormViewRuntime {
 		sc.setAttribute(ENTITY_BINDING_NAME, entity);
 		sc.setAttribute(ENTITY_DEFINITION_BINDING_NAME, eh.getMetaData().currentConfig(ec));
 		sc.setAttribute(ENTITY_MANAGER_BINDING_NAME, em);
+		sc.setAttribute(REQUEST_BINDING_NAME, RequestContextBinding.newRequestContextBinding());
+		sc.setAttribute(SESSION_BINDING_NAME, SessionBinding.newSessionBinding());
 		sc.setAttribute(USER_BINDING_NAME, user);
 		Object val = compiledCustomCopyScript.eval(sc);
 		if (val != null && val instanceof Entity) {
@@ -124,8 +128,10 @@ public class DetailFormViewRuntime extends FormViewRuntime {
 		UserBinding user = AuthContextHolder.getAuthContext().newUserBinding();
 		ScriptContext sc = scriptEngine.newScriptContext();
 		sc.setAttribute(ENTITY_BINDING_NAME, ret);
-		compiledInitScript.eval(sc);
+		sc.setAttribute(REQUEST_BINDING_NAME, RequestContextBinding.newRequestContextBinding());
+		sc.setAttribute(SESSION_BINDING_NAME, SessionBinding.newSessionBinding());
 		sc.setAttribute(USER_BINDING_NAME, user);
+		compiledInitScript.eval(sc);
 		return ret;
 	}
 
