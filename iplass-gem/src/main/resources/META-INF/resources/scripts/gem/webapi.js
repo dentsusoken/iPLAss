@@ -441,7 +441,7 @@ function deleteAll(webapi, searchType, formName, _t, func) {
 
 function getMassReferenceData(webapi, oid, defName, propName, viewName, offset, sortKey, sortType, isCount, outputType, entityOid, entityVersion, func) {
 	var params = "{";
-	params += "\"oid\":\"" + oid + "\"";
+	params += "\"oid\":\"" + escapeJsonParamValue(oid) + "\"";
 	params += ",\"defName\":\"" + defName + "\"";
 	params += ",\"propName\":\"" + propName + "\"";
 	params += ",\"viewName\":\"" + viewName + "\"";
@@ -451,7 +451,7 @@ function getMassReferenceData(webapi, oid, defName, propName, viewName, offset, 
 	params += ",\"isCount\":\"" + isCount + "\"";
 	params += ",\"outputType\":\"" + outputType + "\"";
 	if (typeof entityOid !== "undefined" && entityOid != null) {
-		params += ",\"entityOid\":\"" + entityOid + "\"";
+		params += ",\"entityOid\":\"" + escapeJsonParamValue(entityOid) + "\"";
 	}
 	if (typeof entityVersion !== "undefined" && entityVersion != null) {
 		params += ",\"entityVersion\":\"" + entityVersion + "\"";
@@ -467,7 +467,7 @@ function getMassReferenceData(webapi, oid, defName, propName, viewName, offset, 
 
 function removeMappedByReference(webapi, oid, defName, viewName, propName, key, _t, purge, func) {
 	var params = "{";
-	params += "\"oid\":\"" + oid + "\"";
+	params += "\"oid\":\"" + escapeJsonParamValue(oid) + "\"";
 	params += ",\"defName\":\"" + defName + "\"";
 	params += ",\"viewName\":\"" + viewName + "\"";
 	params += ",\"updatePropertyName\":\"" + propName + "\"";
@@ -475,7 +475,8 @@ function removeMappedByReference(webapi, oid, defName, viewName, propName, key, 
 	params += ",\"_t\":\"" + _t + "\"";
 	params += ",\"purge\":\"" + purge + "\"";
 	for (var i = 0; i < key.length; i++) {
-		params += ",\"refEntityKey_" + i + "\":\"" + key[i] + "\"";
+		//oid_version
+		params += ",\"refEntityKey_" + i + "\":\"" + escapeJsonParamValue(key[i]) + "\"";
 	}
 	params += "}";
 	postAsync(webapi, params, function(results) {

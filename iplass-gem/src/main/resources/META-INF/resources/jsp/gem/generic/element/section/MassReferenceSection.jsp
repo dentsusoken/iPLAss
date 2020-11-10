@@ -157,7 +157,7 @@
 		evm.executeTemplate(defName, section.getContentScriptKey() + "_UpperContent", request, response, application, pageContext);
 	}
 %>
-<div class="massReference" data-oid="<c:out value="<%=entity.getOid() %>"/>" data-defName="${m:esc(defName)}"
+<div class="massReference" data-oid="<c:out value="<%=entity.getOid() %>"/>" data-version="<%=entity.getVersion() %>" data-defName="${m:esc(defName)}"
  data-propName="<c:out value="<%=propName%>"/>" data-viewName="${m:esc(param.viewName)}" data-offset="0" data-limit="<%=limit%>" data-orgOutputType="<c:out value="<%=type%>"/>"
  data-outputType="<c:out value="<%=_type%>"/>" data-webapiName="<%=GetMassReferencesCommand.WEBAPI_NAME%>" data-removeWebapiName="<%=UpdateMappedbyReferenceCommand.WEBAPI_NAME%>"
  data-viewAction="<c:out value="<%=viewAction%>"/>" data-detailAction="<c:out value="<%=detailAction%>"/>"
@@ -165,7 +165,7 @@
  data-sortKey="" data-sortType="" data-creatable="<%=creatable %>" data-updatable="<%=updatable %>" data-deletable=<%=deletable%> data-purge=<%=purge %>
  data-showPaging=<%=!section.isHidePaging()%> data-showPageJump=<%=!section.isHidePageJump()%> data-showPageLink=<%=!section.isHidePageLink()%> data-showCount=<%=!section.isHideCount()%>
  data-showSearchBtn=<%=section.isShowSearchBtn()%> data-tokenValue=<%= TemplateUtil.outputToken(TokenOutputType.VALUE)%>
- data-entityOid="<c:out value="<%=StringUtil.escapeJavaScript(rootOid) %>"/>" data-entityVersion="<c:out value="<%=StringUtil.escapeJavaScript(rootVersion) %>"/>" >
+ data-entityOid="<c:out value="<%=rootOid %>"/>" data-entityVersion="<c:out value="<%=rootVersion %>"/>" >
 <%
 	if (!PagingPosition.BOTTOM.name().equals(pagingPosition)) {
 %>
