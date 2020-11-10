@@ -468,7 +468,8 @@ public class DetailFormView extends FormView {
 					"バインド変数名  ：内容<BR />" +
 					"entity          ：コピー元のEntity<BR />" +
 					"entityDefinition：Entity定義<BR />" +
-					"entityManager   ：EntityManager",
+					"entityManager   ：EntityManager"+
+					"user            ：ユーザ情報",
 
 			descriptionKey="generic_DetailFormView_customCopyScriptDescriptionKey"
 	)
@@ -485,7 +486,8 @@ public class DetailFormView extends FormView {
 					"新規作成画面表示前に呼び出され、空のEntityに対して初期値設定等を行います。<BR />" +
 					"以下のオブジェクトがバインドされています。<BR />" +
 					"バインド変数名  ：内容<BR />" +
-					"entity          ：空のEntity",
+					"entity          ：空のEntity" +
+					"user            ：ユーザ情報",
 
 			descriptionKey="generic_DetailFormView_initScriptDescriptionKey"
 	)
