@@ -161,11 +161,9 @@ $(function() {
 		} else {
 			//SELECT以外
 
-			String unspecifiedOptionCssClassName = "";
 			String unspecifiedOptionStyleContent = "";
 			if (required) {
 				//通常検索で必須Radio条件の「未選定」を非表示する
-				unspecifiedOptionCssClassName = "hidden-unspecified-option";
 				unspecifiedOptionStyleContent = "display:none;";
 			}
 %>
@@ -180,7 +178,7 @@ $(function() {
 <input id="select-radio-<c:out value="<%=propName %>"/>02" name="<c:out value="<%=propName %>"/>" class="radio" type="radio" value="false"<%=checked2 %>><c:out value="<%=falseLabel %>"/>
 </label>
 </li>
-<li class="<c:out value="<%=unspecifiedOptionCssClassName %>" />" style="<c:out value="<%=unspecifiedOptionStyleContent %>" />">
+<li class="unspecified-option" style="<c:out value="<%=unspecifiedOptionStyleContent %>" />">
 <label for="select-radio-<c:out value="<%=propName %>"/>03" style="<c:out value="<%=customStyle%>"/>" title="${m:rs('mtp-gem-messages', 'generic.editor.boolean.BooleanPropertyEditor_Condition.unspecified')}" >
 <input id="select-radio-<c:out value="<%=propName %>"/>03" name="<c:out value="<%=propName %>"/>" class="radio" type="radio" value="" <%=checked3 %>>${m:rs("mtp-gem-messages", "generic.editor.boolean.BooleanPropertyEditor_Condition.unspecified")}
 </label>

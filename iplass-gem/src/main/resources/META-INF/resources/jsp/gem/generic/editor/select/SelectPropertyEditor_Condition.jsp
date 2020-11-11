@@ -166,11 +166,9 @@ $(function() {
 			defaultCheckValue = defaultValue[0];
 		}
 
-		String unspecifiedOptionCssClassName = "";
 		String unspecifiedOptionStyleContent = "";
 		if (required) {
 			//通常検索で必須Radio条件の「未選定」を非表示する
-			unspecifiedOptionCssClassName = "hidden-unspecified-option";
 			unspecifiedOptionStyleContent = "display:none;";
 		}
 %>
@@ -193,7 +191,7 @@ $(function() {
 <%
 		}
 %>
-<li class="<c:out value="<%=unspecifiedOptionCssClassName %>" />" style="<c:out value="<%=unspecifiedOptionStyleContent %>" />">
+<li class="unspecified-option" style="<c:out value="<%=unspecifiedOptionStyleContent %>" />">
 <label style="<c:out value="<%=customStyle%>"/>" title="${m:rs('mtp-gem-messages', 'generic.editor.select.SelectPropertyEditor_Condition.unspecified')}">
 <input type="radio" name="<c:out value="<%=propName %>"/>" value="" <c:out value="<%=defaultChecked %>"/> />${m:rs("mtp-gem-messages", "generic.editor.select.SelectPropertyEditor_Condition.unspecified")}
 </label></li>
