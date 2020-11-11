@@ -256,6 +256,17 @@ function createTemplate(listId, defName, displayName, crawlDate, colModels) {
 			+ "<h3 class='hgroup-02'>" + displayName + "</h3>"
 			+ "<span class='crawl-date'>" + crawlDate + "</span>"
 			+ "</div><table id='" + listId + "'></table></div>");
+
+	//orgOid列にoidCellFormatterを設定
+	if (colModels) {
+		$(colModels).each(function(index) {
+			if (this.name === "orgOid") {
+				this.formatter = oidCellFormatter;
+				return false;
+			}
+		});
+	}
+
 	var $sortKey = $("#fulltextSearchForm").find(":hidden#" + $.escapeSelector("sortKey_" + defName));
 	var $sortType = $("#fulltextSearchForm").find(":hidden#" + $.escapeSelector("sortType_" + defName));
 	var grid = $("#" + listId).jqGrid({
@@ -300,19 +311,28 @@ function createTemplate(listId, defName, displayName, crawlDate, colModels) {
 	return grid;
 }
 
-function setData(grid, listId, data, viewUrl, detailUrl, detailLink) {
+function setData(grid, listId, data, viewUrl, editUrl, showEditLink) {
 
 	grid.clearGridData();
+
+	//リンク生成
+	var $detailLink = $("<p/>");
+	var $viewLink = $("<a/>").attr({"href":"javascript:void(0)", "action":viewUrl})
+			.addClass("detailLink").text("${m:rs('mtp-gem-messages', 'fulltext.search.detail')}").appendTo($detailLink);
+	var $editLink = null;
+	if (showEditLink) {
+		$viewLink.addClass("jqborder"); //真ん中の棒線
+		$editLink = $("<a/>").attr({"href":"javascript:void(0)", "action":editUrl})
+			.addClass("detailLink editLink").text("${m:rs('mtp-gem-messages', 'fulltext.search.edit')}").appendTo($detailLink);
+	}
+
 	$(data).each(function(index) {
-		this["id"] = this.orgOid + "_" + this.orgVersion;
-		if (detailLink) {
-			this["_mtpDetailLink"] =
-				"<a href='javascript:void(0)' action='" + viewUrl + "' oid='" + this.orgOid + "' version='" + this.orgVersion + "' class='jqborder detailLink'>${m:rs('mtp-gem-messages', 'fulltext.search.detail')}</a>" +
-				"<a href='javascript:void(0)'  action='" + detailUrl + "' oid='" + this.orgOid + "' version='" + this.orgVersion + "' class='detailLink editLink'>${m:rs('mtp-gem-messages', 'fulltext.search.edit')}</a>";
-		} else {
-			this["_mtpDetailLink"] =
-				"<a href='javascript:void(0)' action='" + viewUrl + "' oid='" + this.orgOid + "' version='" + this.orgVersion + "' class='detailLink'>${m:rs('mtp-gem-messages', 'fulltext.search.detail')}</a>";
+		$viewLink.attr({"oid":this.orgOid, "version":this.orgVersion});
+		if (showEditLink) {
+			$editLink.attr({"oid":this.orgOid, "version":this.orgVersion});
 		}
+		this["id"] = this.orgOid + "_" + this.orgVersion;
+		this["_mtpDetailLink"] = $detailLink.html();
 		grid.addRowData(index + 1, this);
 	});
 
