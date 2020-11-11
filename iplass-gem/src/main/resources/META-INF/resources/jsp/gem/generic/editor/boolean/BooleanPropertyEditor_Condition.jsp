@@ -56,7 +56,7 @@
 
 	String searchCond = request.getParameter(Constants.SEARCH_COND);
 	String[] _propValue = getBooleanValue(searchCond, Constants.SEARCH_COND_PREFIX + editor.getPropertyName());
-	
+
 	String rootDefName = (String)request.getAttribute(Constants.ROOT_DEF_NAME);
 	String scriptKey = (String)request.getAttribute(Constants.SECTION_SCRIPT_KEY);
 	String displayLabel = (String) request.getAttribute(Constants.EDITOR_DISPLAY_LABEL);
@@ -73,7 +73,7 @@
 	} else {
 		value = _propValue[0];
 	}
-	
+
 	if (ViewUtil.isAutocompletionTarget()) {
 		request.setAttribute(Constants.AUTOCOMPLETION_EDITOR, editor);
 		request.setAttribute(Constants.AUTOCOMPLETION_SCRIPT_PATH, "/jsp/gem/generic/editor/boolean/BooleanPropertyAutocompletion.jsp");
@@ -81,7 +81,7 @@
 
 	if (editor.getDisplayType() != BooleanDisplayType.HIDDEN) {
 		//HIDDEN以外
-	
+
 		String trueLabel = TemplateUtil.getMultilingualString(editor.getTrueLabel(), editor.getLocalizedTrueLabelList());
 		if (StringUtil.isEmpty(trueLabel)) {
 			trueLabel = TemplateUtil.getMultilingualString(
@@ -94,7 +94,7 @@
 					GemResourceBundleUtil.resourceString("generic.editor.boolean.BooleanPropertyEditor_Condition.invalid"),
 					GemResourceBundleUtil.resourceList("generic.editor.boolean.BooleanPropertyEditor_Condition.invalid"));
 		}
-	
+
 		//カスタムスタイル
 		String customStyle = "";
 		if (StringUtil.isNotEmpty(editor.getInputCustomStyle())) {
@@ -105,7 +105,7 @@
 		String checked1 = "";
 		String checked2 = "";
 		String checked3 = matchStr;
-		
+
 		if ("true".equals(value)) {
 			checked1 = matchStr;
 			checked3 = "";
@@ -160,6 +160,14 @@ $(function() {
 <%
 		} else {
 			//SELECT以外
+
+			String unspecifiedOptionCssClassName = "";
+			String unspecifiedOptionStyleContent = "";
+			if (required) {
+				//通常検索で必須Radio条件の「未選定」を非表示する
+				unspecifiedOptionCssClassName = "hidden-unspecified-option";
+				unspecifiedOptionStyleContent = "display:none;";
+			}
 %>
 <ul class="list-radio-01">
 <li>
@@ -172,7 +180,7 @@ $(function() {
 <input id="select-radio-<c:out value="<%=propName %>"/>02" name="<c:out value="<%=propName %>"/>" class="radio" type="radio" value="false"<%=checked2 %>><c:out value="<%=falseLabel %>"/>
 </label>
 </li>
-<li>
+<li class="<c:out value="<%=unspecifiedOptionCssClassName %>" />" style="<c:out value="<%=unspecifiedOptionStyleContent %>" />">
 <label for="select-radio-<c:out value="<%=propName %>"/>03" style="<c:out value="<%=customStyle%>"/>" title="${m:rs('mtp-gem-messages', 'generic.editor.boolean.BooleanPropertyEditor_Condition.unspecified')}" >
 <input id="select-radio-<c:out value="<%=propName %>"/>03" name="<c:out value="<%=propName %>"/>" class="radio" type="radio" value="" <%=checked3 %>>${m:rs("mtp-gem-messages", "generic.editor.boolean.BooleanPropertyEditor_Condition.unspecified")}
 </label>

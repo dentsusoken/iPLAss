@@ -165,6 +165,14 @@ $(function() {
 		if (defaultValue != null && defaultValue.length > 0) {
 			defaultCheckValue = defaultValue[0];
 		}
+
+		String unspecifiedOptionCssClassName = "";
+		String unspecifiedOptionStyleContent = "";
+		if (required) {
+			//通常検索で必須Radio条件の「未選定」を非表示する
+			unspecifiedOptionCssClassName = "hidden-unspecified-option";
+			unspecifiedOptionStyleContent = "display:none;";
+		}
 %>
 <input type="hidden" name="<c:out value="<%=propName %>"/>_dispType" value="<%=SelectDisplayType.RADIO.name()%>" />
 <ul class="list-radio-01" data-itemName="<c:out value="<%=propName %>"/>">
@@ -185,7 +193,8 @@ $(function() {
 <%
 		}
 %>
-<li><label style="<c:out value="<%=customStyle%>"/>" title="${m:rs('mtp-gem-messages', 'generic.editor.select.SelectPropertyEditor_Condition.unspecified')}">
+<li class="<c:out value="<%=unspecifiedOptionCssClassName %>" />" style="<c:out value="<%=unspecifiedOptionStyleContent %>" />">
+<label style="<c:out value="<%=customStyle%>"/>" title="${m:rs('mtp-gem-messages', 'generic.editor.select.SelectPropertyEditor_Condition.unspecified')}">
 <input type="radio" name="<c:out value="<%=propName %>"/>" value="" <c:out value="<%=defaultChecked %>"/> />${m:rs("mtp-gem-messages", "generic.editor.select.SelectPropertyEditor_Condition.unspecified")}
 </label></li>
 </ul>
@@ -283,7 +292,7 @@ $(function() {
 <%
 		}
 	} else {
-		throw new EntityViewRuntimeException(propName + " 's editor display type is invalid. editor=[" 
+		throw new EntityViewRuntimeException(propName + " 's editor display type is invalid. editor=["
 				+ editor.getClass().getSimpleName() + "]. display type=[" + editor.getDisplayType() + "]");
 	}
 %>
