@@ -290,7 +290,7 @@ ${m:rs("mtp-gem-messages", "auth.application.activeSimpleAuthToken")}
 
 <c:forEach var="info" items="${simpleAuthTokens}">
 <tr>
-<td class="section-data col1"><c:out value="${info.application}" /><br>
+<td class="section-data col1">${m:esc(info.application)}<br>
 ${m:rs('mtp-gem-messages', 'auth.application.simpleAuthTokenGenerateDate')}&nbsp;${m:esc(m:fmt(info.startDate , 'yyyy/MM/dd HH:mm:ss'))}
 </td>
 <td class="section-data col1">

@@ -21,6 +21,8 @@
 package org.iplass.gem.command.auth;
 
 import org.iplass.gem.command.Constants;
+import org.iplass.mtp.ApplicationException;
+import org.iplass.mtp.ManagerLocator;
 import org.iplass.mtp.auth.AuthContext;
 import org.iplass.mtp.auth.login.token.SimpleAuthTokenCredential;
 import org.iplass.mtp.auth.login.token.SimpleAuthTokenInfo;
@@ -32,6 +34,10 @@ import org.iplass.mtp.command.annotation.CommandClass;
 import org.iplass.mtp.command.annotation.webapi.WebApi;
 import org.iplass.mtp.command.annotation.webapi.WebApiTokenCheck;
 import org.iplass.mtp.impl.auth.authenticate.simpletoken.SimpleAuthTokenHandler;
+import org.iplass.mtp.view.top.TopViewDefinition;
+import org.iplass.mtp.view.top.TopViewDefinitionManager;
+import org.iplass.mtp.view.top.parts.ApplicationMaintenanceParts;
+import org.iplass.mtp.view.top.parts.TopViewParts;
 import org.iplass.mtp.webapi.definition.MethodType;
 import org.iplass.mtp.webapi.definition.RequestType;
 
@@ -54,12 +60,37 @@ public class GenerateAuthTokenCommand  implements Command {
 	@Override
 	public String execute(RequestContext request) {
 		
+		TopViewDefinitionManager tvdm = ManagerLocator.manager(TopViewDefinitionManager.class);
+		String roleName = (String) request.getSession().getAttribute(Constants.ROLE_NAME);
+		if (roleName == null) roleName = "DEFAULT";
+		TopViewDefinition topView = tvdm.get(roleName);
+		if (topView == null) {
+			return Constants.CMD_EXEC_ERROR;
+		}
+		
+		//TopView定義でPersonalAccessTokenの利用を有効にしているかをチェック
+		boolean usePersonalAccessToken = false;
+		for (TopViewParts parts : topView.getParts()) {
+			if (parts instanceof ApplicationMaintenanceParts) {
+				ApplicationMaintenanceParts amp = (ApplicationMaintenanceParts)parts;
+				usePersonalAccessToken = amp.isUsePersonalAccessToken();
+				break;
+			}
+		}
+		//有効にしていない場合、エラーを返す
+		if (!usePersonalAccessToken) {
+			throw new ApplicationException("generate personal access token is not allowed.");
+		}
+		
 		AuthTokenInfoList infoList = AuthContext.getCurrentContext().getAuthTokenInfos();
 		if (infoList == null) {
 			return Constants.CMD_EXEC_ERROR;
 		}
 		
 		String application = request.getParam("application");
+		if (application == null) {
+			return Constants.CMD_EXEC_ERROR;
+		}
 		
 		AuthTokenInfo tokenInfo = new SimpleAuthTokenInfo(tokenType, application);
 		SimpleAuthTokenCredential credential = (SimpleAuthTokenCredential) infoList.generateNewToken(tokenInfo);
