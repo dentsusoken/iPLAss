@@ -80,5 +80,23 @@ public class RequestContextBinding {
 		}
 		return req.getAttribute(name);
 	}
+	
+	public String getParam(String name) {
+		RequestContext req = getContext();
+		if (req == null) {
+			return null;
+		} else {
+			return req.getParam(name);
+		}
+	}
+
+	public String[] getParams(String name) {
+		RequestContext req = getContext();
+		if (req == null) {
+			return new String[0];
+		} else {
+			return req.getParams(name);
+		}
+	}
 
 }
