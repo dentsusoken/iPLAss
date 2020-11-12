@@ -96,3 +96,6 @@ scriptContext.gem.locale.calendar.fixedFilter = "คัดกรองประ�
 scriptContext.gem.locale.calendar.search = "ค้นหา";
 scriptContext.gem.locale.calendar.searchItem = "ค้นหาไอเท็ม";
 scriptContext.gem.locale.calendar.withoutEntity = "เอา{0}ออกจากการค้นหา";
+
+scriptContext.gem.locale.apendCategory("application");
+scriptContext.gem.locale.application.specifyDescription = "โปรดป้อนคำอธิบายของโทเค็นที่จะสร้าง";

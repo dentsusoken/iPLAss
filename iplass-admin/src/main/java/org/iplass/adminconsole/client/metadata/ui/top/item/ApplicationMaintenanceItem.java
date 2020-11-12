@@ -21,6 +21,7 @@
 package org.iplass.adminconsole.client.metadata.ui.top.item;
 
 import org.iplass.adminconsole.client.base.event.MTPEvent;
+import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
 import org.iplass.adminconsole.client.base.ui.widget.MetaDataLangTextItem;
 import org.iplass.adminconsole.client.base.ui.widget.MtpDialog;
 import org.iplass.adminconsole.client.base.ui.widget.form.MtpForm;
@@ -34,6 +35,7 @@ import com.smartgwt.client.widgets.IButton;
 import com.smartgwt.client.widgets.events.ClickEvent;
 import com.smartgwt.client.widgets.events.ClickHandler;
 import com.smartgwt.client.widgets.form.DynamicForm;
+import com.smartgwt.client.widgets.form.fields.CheckboxItem;
 
 public class ApplicationMaintenanceItem extends PartsItem {
 
@@ -76,6 +78,7 @@ public class ApplicationMaintenanceItem extends PartsItem {
 	private class ApplicationMaintenanceItemSettingDialog extends MtpDialog {
 
 		private MetaDataLangTextItem txtTitle;
+		private CheckboxItem usePersonalAccessTokenField;
 
 		/**
 		 * コンストラクタ
@@ -83,7 +86,7 @@ public class ApplicationMaintenanceItem extends PartsItem {
 		public ApplicationMaintenanceItemSettingDialog() {
 
 			setTitle("Application Maintenance");
-			setHeight(130);
+			setHeight(200);
 			centerInPage();
 
 			final DynamicForm form = new MtpForm();
@@ -93,8 +96,13 @@ public class ApplicationMaintenanceItem extends PartsItem {
 			txtTitle.setTitle("Title");
 			txtTitle.setValue(parts.getTitle());
 			txtTitle.setLocalizedList(parts.getLocalizedTitleList());
-
-			form.setItems(txtTitle);
+			
+			usePersonalAccessTokenField = new CheckboxItem("usePersonalAccessToken", "Use Personal access token");
+			usePersonalAccessTokenField.setValue(parts.isUsePersonalAccessToken());
+			SmartGWTUtil.addHoverToFormItem(usePersonalAccessTokenField, 
+					AdminClientMessageUtil.getString("ui_metadata_top_ApplicationMaintenanceItem_usePersonalAccessToken"));
+			
+			form.setItems(txtTitle, usePersonalAccessTokenField);
 
 			container.addMember(form);
 
@@ -105,6 +113,7 @@ public class ApplicationMaintenanceItem extends PartsItem {
 						//入力情報をパーツに
 						parts.setTitle(SmartGWTUtil.getStringValue(txtTitle));
 						parts.setLocalizedTitleList(txtTitle.getLocalizedList());
+						parts.setUsePersonalAccessToken(SmartGWTUtil.getBooleanValue(usePersonalAccessTokenField));
 						destroy();
 					}
 				}

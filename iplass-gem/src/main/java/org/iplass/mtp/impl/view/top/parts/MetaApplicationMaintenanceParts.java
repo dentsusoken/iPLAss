@@ -56,6 +56,9 @@ public class MetaApplicationMaintenanceParts extends MetaTopViewParts {
 
 	/** 多言語設定情報 */
 	private List<MetaLocalizedString> localizedTitleList = new ArrayList<>();
+	
+	/** 個人アクセストークン機能を利用するか否か */
+	private boolean usePersonalAccessToken;
 
 	/**
 	 * タイトルを取得します。
@@ -88,7 +91,22 @@ public class MetaApplicationMaintenanceParts extends MetaTopViewParts {
 	public void setLocalizedTitleList(List<MetaLocalizedString> localizedTitleList) {
 		this.localizedTitleList = localizedTitleList;
 	}
+	
+	/**
+	 * 個人アクセストークン機能を利用の有無を示すフラグを取得します。
+	 * @return usePersonalAccessToken 個人アクセストークン機能を利用の有無を示すフラグ
+	 */
+	public boolean isUsePersonalAccessToken() {
+		return usePersonalAccessToken;
+	}
 
+	/**
+	 * 個人アクセストークン機能を利用するか否かを設定します。
+	 * @param usePersonalAccessToken 個人アクセストークン機能を利用の有無を示すフラグ
+	 */
+	public void setUsePersonalAccessToken(boolean usePersonalAccessToken) {
+		this.usePersonalAccessToken = usePersonalAccessToken;
+	}
 
 	@Override
 	public MetaData copy() {
@@ -100,6 +118,7 @@ public class MetaApplicationMaintenanceParts extends MetaTopViewParts {
 		ApplicationMaintenanceParts amp = (ApplicationMaintenanceParts) parts;
 
 		title = amp.getTitle();
+		usePersonalAccessToken = amp.isUsePersonalAccessToken();
 		localizedTitleList = I18nUtil.toMeta(amp.getLocalizedTitleList());
 	}
 
@@ -108,6 +127,7 @@ public class MetaApplicationMaintenanceParts extends MetaTopViewParts {
 		ApplicationMaintenanceParts parts = new ApplicationMaintenanceParts();
 
 		parts.setTitle(title);
+		parts.setUsePersonalAccessToken(usePersonalAccessToken);
 		parts.setLocalizedTitleList(I18nUtil.toDef(localizedTitleList));
 
 		return parts;

@@ -50,7 +50,6 @@ public class RememberMeTokenInfo implements AuthTokenInfo {
 
 	@Override
 	public String getDescription() {
-		//TODO 多言語化
 		StringBuilder sb = new StringBuilder();
 		sb.append("Remember Me Token, ");
 		if (expired) {

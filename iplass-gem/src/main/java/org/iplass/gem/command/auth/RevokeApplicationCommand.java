@@ -23,6 +23,7 @@ package org.iplass.gem.command.auth;
 import org.iplass.gem.command.Constants;
 import org.iplass.mtp.auth.AuthContext;
 import org.iplass.mtp.auth.login.rememberme.RememberMeTokenInfo;
+import org.iplass.mtp.auth.login.token.SimpleAuthTokenInfo;
 import org.iplass.mtp.auth.oauth.AccessTokenInfo;
 import org.iplass.mtp.auth.token.AuthTokenInfo;
 import org.iplass.mtp.auth.token.AuthTokenInfoList;
@@ -83,6 +84,10 @@ public class RevokeApplicationCommand implements Command {
 						}
 					} else if (info instanceof RememberMeTokenInfo) {
 						if (target.equals("all-rememberme")) {
+							infoList.remove(info.getType(), info.getKey());
+						}
+					} else if (info instanceof SimpleAuthTokenInfo) {
+						if (target.equals("all-sat")) {
 							infoList.remove(info.getType(), info.getKey());
 						}
 					}

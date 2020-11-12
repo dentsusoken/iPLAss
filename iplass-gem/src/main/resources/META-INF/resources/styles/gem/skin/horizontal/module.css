@@ -1134,6 +1134,45 @@ table.tbl-login-02 {
 table.tbl-maintenance > tbody > tr > td {
   overflow: hidden; }
 
+#generateAuthTokenDialog {
+  padding-top: 1em;
+  text-align: left; }
+  #generateAuthTokenDialog table {
+    width: 100%;
+    table-layout: auto; }
+  #generateAuthTokenDialog th {
+    padding: 7px;
+    vertical-align: middle;
+    text-align: center; }
+  #generateAuthTokenDialog td {
+    padding: 7px;
+    vertical-align: middle; }
+  #generateAuthTokenDialog button {
+    padding: 2px; }
+  #generateAuthTokenDialog .inpbr {
+    width: 270px;
+    padding: 2px 5px; }
+  #generateAuthTokenDialog .show-token {
+    width: 350px;
+    padding: 2px 5px;
+    margin-left: 6px; }
+  #generateAuthTokenDialog .result-title {
+    font-size: larger;
+    padding: 5px 5px; }
+  #generateAuthTokenDialog .copy-btn {
+    float: right;
+    min-width: 100px;
+    height: 25px;
+    margin-right: 10px;
+    padding: initial; }
+  #generateAuthTokenDialog .copied {
+    display: block;
+    padding: 5px 2px;
+    margin-left: 6px; }
+
+.close-dialog {
+  width: 130px; }
+
 /*--------
  汎用画面
 --------*/

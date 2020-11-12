@@ -36,6 +36,9 @@ public class ApplicationMaintenanceParts extends TopViewParts {
 
 	/** 多言語設定情報 */
 	private List<LocalizedStringDefinition> localizedTitleList;
+	
+	/** 個人アクセストークン機能を利用するか否か */
+	private boolean usePersonalAccessToken;
 
 	/**
 	 * タイトルを取得します。
@@ -79,6 +82,22 @@ public class ApplicationMaintenanceParts extends TopViewParts {
 	 */
 	public void setLocalizedTitleList(List<LocalizedStringDefinition> localizedTitleList) {
 		this.localizedTitleList = localizedTitleList;
+	}
+	
+	/**
+	 * 個人アクセストークン機能を利用の有無を示すフラグを取得します。
+	 * @return usePersonalAccessToken 個人アクセストークン機能を利用の有無を示すフラグ
+	 */
+	public boolean isUsePersonalAccessToken() {
+		return usePersonalAccessToken;
+	}
+
+	/**
+	 * 個人アクセストークン機能を利用するか否かを設定します。
+	 * @param usePersonalAccessToken 個人アクセストークン機能を利用の有無を示すフラグ
+	 */
+	public void setUsePersonalAccessToken(boolean usePersonalAccessToken) {
+		this.usePersonalAccessToken = usePersonalAccessToken;
 	}
 
 }

@@ -96,3 +96,6 @@ scriptContext.gem.locale.calendar.keyword = "キーワード";
 scriptContext.gem.locale.calendar.search = "検索";
 scriptContext.gem.locale.calendar.searchItem = "検索項目";
 scriptContext.gem.locale.calendar.withoutEntity = "{0}を検索対象から外す";
+
+scriptContext.gem.locale.apendCategory("application");
+scriptContext.gem.locale.application.specifyDescription = "生成するトークンの説明を入力してください。";

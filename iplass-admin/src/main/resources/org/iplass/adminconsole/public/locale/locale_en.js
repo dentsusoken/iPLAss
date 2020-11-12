@@ -1094,6 +1094,7 @@ LocaleInfo.ui_metadata_top_item_InformationItem_warnMessageDispAreaStyle = "Spec
 LocaleInfo.ui_metadata_top_item_InformationItem_warnMessageDispAreaIcon = "Specify if want to customize the icon of the warning message display area.<br/>use the icon of jquery-ui. Please specify direct(or values ??that are not in the list) or choose from a list.";
 LocaleInfo.ui_metadata_top_item_ScriptItem_scriptHint = "<p>Execute the script written in GroovyTemplate on the Top screen. You can write HTML and Javascript.</p><p>The following variables and methods are bound.</p><ul><li>request: request</li><li>session: session</li><li>include(String path): Include jsp in the specified path.</li><li>includeTemplate(String templateName): Include the specified template.</li><li>renderContent(): Render the content.</li></ul>";
 LocaleInfo.ui_metadata_top_item_TreeViewItem_iconTagComment = "Can set tags for icons by Fontawesome.";
+LocaleInfo.ui_metadata_top_ApplicationMaintenanceItem_usePersonalAccessToken = "Specify whether or not to use the personal access token management.";
 LocaleInfo.ui_metadata_top_item_UserMaintenanceItem_failed = "Failed";
 LocaleInfo.ui_metadata_top_item_UserMaintenanceItem_failedGetScreenInfo = "Failed to get the screen information.<br/> Cause:";
 LocaleInfo.ui_metadata_treeview_TreeViewDragPane_refreshItemList = "Refresh item list.";

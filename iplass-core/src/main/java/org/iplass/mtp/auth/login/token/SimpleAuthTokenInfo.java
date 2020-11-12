@@ -20,8 +20,10 @@
 package org.iplass.mtp.auth.login.token;
 
 import java.sql.Timestamp;
+import java.text.DateFormat;
 
 import org.iplass.mtp.auth.token.AuthTokenInfo;
+import org.iplass.mtp.util.DateUtil;
 
 public class SimpleAuthTokenInfo implements AuthTokenInfo {
 	
@@ -75,10 +77,11 @@ public class SimpleAuthTokenInfo implements AuthTokenInfo {
 	
 	@Override
 	public String getDescription() {
-		//TODO 多言語化
 		StringBuilder sb = new StringBuilder();
-		sb.append("Simple Persistant Auth Token for ");
+		sb.append("Personal Access Token for : ");
 		sb.append(application);
+		sb.append(", Generated on : ");
+		sb.append(DateUtil.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT, true).format(startDate));
 		return sb.toString();
 	}
 
