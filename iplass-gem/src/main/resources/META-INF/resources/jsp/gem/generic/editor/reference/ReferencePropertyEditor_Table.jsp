@@ -310,14 +310,15 @@
 			String _propName = StringUtil.escapeJavaScript(propName);
 			String _viewName = StringUtil.escapeJavaScript(viewName);
 			String addBtnStyle = "";
-			if (entities.size() == pd.getMultiplicity()) addBtnStyle = "display: none;"; 
+			if (entities.size() == pd.getMultiplicity()) addBtnStyle = "display: none;";
 %>
 <p class="mb10">
 <input type="button" value="${m:rs('mtp-gem-messages', 'generic.editor.reference.ReferencePropertyEditor_Table.add')}" id="id_<c:out value="<%=propName%>"/>_addButton_top" class="gr-btn-02 add-btn table-top-button" style="<c:out value="<%=addBtnStyle%>" />" />
 <script type="text/javascript">
 var toggleAddBtn_<%=_propName%> = function() {
 	var $tbody = $("#<%=StringUtil.escapeJavaScript(dummyRowId)%>").parent();
-	var display = $tbody.children("tr:not(:hidden)").length < <%=pd.getMultiplicity()%>;
+	<%-- 参照プロパティで多重度が*指定（値的には-1）可能 --%>
+	var display = <%=pd.getMultiplicity() == -1%> || $tbody.children("tr:not(:hidden)").length < <%=pd.getMultiplicity()%>;
 	$("#id_<c:out value="<%=propName%>"/>_addButton_top").toggle(display);
 }
 $(function() {
@@ -600,9 +601,9 @@ ${m:rs("mtp-gem-messages", "generic.editor.reference.ReferencePropertyEditor_Tab
 			//追加できるということは新規で編集できるので、更新権限がなくても編集側のActionを呼び出す
 %>
 <td nowrap="nowrap" class="colLink center">
-<a href="javascript:void(0);" data-name="<c:out value="<%=idxPropName%>" />" 
- data-defName="<c:out value="<%=refDefName%>" />" 
- data-action="<c:out value="<%=detailAction%>" />" 
+<a href="javascript:void(0);" data-name="<c:out value="<%=idxPropName%>" />"
+ data-defName="<c:out value="<%=refDefName%>" />"
+ data-action="<c:out value="<%=detailAction%>" />"
  data-view="<c:out value="<%=viewAction%>" />">
  ${m:rs("mtp-gem-messages", "generic.editor.reference.ReferencePropertyEditor_Table.edit")}</a>
 </td>
@@ -748,7 +749,7 @@ ${m:rs("mtp-gem-messages", "generic.editor.reference.ReferencePropertyEditor_Tab
 					//編集リンク
 %>
 <td nowrap="nowrap" class="colLink center">
-<a href="javascript:void(0);" class="modal-lnk" 
+<a href="javascript:void(0);" class="modal-lnk"
  onclick="editReference('<%=_detailAction%>', '<%=_refDefName%>', '<%=_entityOid%>', '<%=_trId%>', '<%=_idxPropName%>', <%=i%>, '<%=_viewAction%>', '<%=_rootDefName%>', '<%=_viewName%>', '<%=_propName%>')">
  ${m:rs("mtp-gem-messages", "generic.editor.reference.ReferencePropertyEditor_Table.edit")}</a>
 </td>
@@ -759,7 +760,7 @@ ${m:rs("mtp-gem-messages", "generic.editor.reference.ReferencePropertyEditor_Tab
 							evm.getUrlParameter(rootDefName, editor, parentEntity, UrlParameterActionType.VIEW));
 %>
 <td nowrap="nowrap" class="colLink center">
-<a href="javascript:void(0);" class="modal-lnk" 
+<a href="javascript:void(0);" class="modal-lnk"
  onclick="viewEditableReference('<%=_viewAction%>', '<%=_refDefName%>', '<%=_entityOid%>', '<%=_reloadUrl%>', true, '<%=_viewUrlParam%>')">
  ${m:rs("mtp-gem-messages", "generic.editor.reference.ReferencePropertyEditor_Table.detail")}</a>
 </td>
@@ -805,7 +806,7 @@ ${m:rs("mtp-gem-messages", "generic.editor.reference.ReferencePropertyEditor_Tab
 			String _propName = StringUtil.escapeJavaScript(propName);
 			String _viewName = StringUtil.escapeJavaScript(viewName);
 			String addBtnStyle = "";
-			if (entities.size() == pd.getMultiplicity()) addBtnStyle = "display: none;"; 
+			if (entities.size() == pd.getMultiplicity()) addBtnStyle = "display: none;";
 %>
 <p class="mt10">
 <input type="button" value="${m:rs('mtp-gem-messages', 'generic.editor.reference.ReferencePropertyEditor_Table.add')}" id="id_<c:out value="<%=propName%>"/>_addButton_bottom" class="gr-btn-02 add-btn table-bottom-button" style="<c:out value="<%=addBtnStyle%>" />" />
@@ -1008,7 +1009,7 @@ ${m:rs("mtp-gem-messages", "generic.editor.reference.ReferencePropertyEditor_Tab
 						evm.getUrlParameter(rootDefName, editor, parentEntity, UrlParameterActionType.VIEW));
 %>
 <td nowrap="nowrap" class="colLink center">
-<a href="javascript:void(0);" class="modal-lnk" 
+<a href="javascript:void(0);" class="modal-lnk"
  onclick="viewEditableReference('<%=_viewAction%>', '<%=_refDefName%>', '<%=_entityOid%>', '<%=_reloadUrl%>', <%=refEditParam%>, '<%=_viewUrlParam%>')">
  <%= GemResourceBundleUtil.resourceString(strKey) %></a>
 </td>
@@ -1026,10 +1027,10 @@ ${m:rs("mtp-gem-messages", "generic.editor.reference.ReferencePropertyEditor_Tab
 				String _viewName = StringUtil.escapeJavaScript(viewName);
 %>
 <td class="orderCol">
-<span class="order-icon up-icon"><i class="fas fa-caret-up" 
+<span class="order-icon up-icon"><i class="fas fa-caret-up"
  onclick="shiftOrder('<%=UpdateTableOrderCommand.WEBAPI_NAME%>', '<%=_trId%>', '<%=_orderPropName%>', '<%=_propName%>', '<%=_refDefName%>', true, '<%=_reloadUrl%>', '<%=_rootDefName%>', '<%=_viewName%>')">
 </i></span>
-<span class="order-icon down-icon"><i class="fas fa-caret-down" 
+<span class="order-icon down-icon"><i class="fas fa-caret-down"
  onclick="shiftOrder('<%=UpdateTableOrderCommand.WEBAPI_NAME%>', '<%=_trId%>', '<%=_orderPropName%>', '<%=_propName%>', '<%=_refDefName%>', false, '<%=_reloadUrl%>', '<%=_rootDefName%>', '<%=_viewName%>')">
 </i></span>
 </td>
@@ -1090,7 +1091,7 @@ $(function() {
 						}
 					}
 				}
-				
+
 				String selBtnUrlParam = evm.getUrlParameter(rootDefName, editor, parentEntity, UrlParameterActionType.SELECT);
 %>
 <input type="button" value="${m:rs('mtp-gem-messages', 'generic.editor.reference.ReferencePropertyEditor_Table.select')}" class="gr-btn-02 modal-btn mt05" id="<c:out value="<%=selBtnId %>"/>" data-specVersionKey="<c:out value="<%=specVersionKey%>" />" />
