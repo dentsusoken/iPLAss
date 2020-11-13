@@ -130,6 +130,21 @@ function clearMenuState() {
 ////////////////////////////////////////////////////////
 
 /**
+ * OIDのCELL Formatter
+ * HTML Encodeした結果を返します。
+ * @param cellvalue 値(jqGrid)
+ * @param options オプション(jqGrid)
+ * @param rowObject 行データ(jqGrid)
+ * @returns フォーマット値
+ */
+function oidCellFormatter(cellvalue, options, rowObject) {
+	if (cellvalue) {
+		return $.jgrid.htmlEncode(cellvalue + "");
+	}
+	return "";
+}
+
+/**
 * CSVダウンロード実行
 * @param searchType
 * @param formName
@@ -244,7 +259,7 @@ function showDetail(action, oid, version, isEdit, target, options) {
 	if (isEdit) {
 		defaults.oid = oid;
 	} else {
-		url += "/" + oid;
+		url += "/" + encodeURIComponent(oid);
 	}
 	var params = $.extend(defaults, options);
 	submitForm(url, params, target);
@@ -1893,7 +1908,7 @@ function showReference(viewAction, defName, oid, version, linkId, refEdit, editC
 		$("[data-linkId = '" + linkId + "']").text(entity.name);
 
 		//起動したtargetに対して再度詳細画面を表示しなおす(versionは戻ってきたentityから)
-		var $form = $("<form />").attr({method:"POST", action:viewAction + "/" + oid, target:target}).appendTo("body");
+		var $form = $("<form />").attr({method:"POST", action:viewAction + "/" + encodeURIComponent(oid), target:target}).appendTo("body");
 //		$("<input />").attr({type:"hidden", name:"defName", value:defName}).appendTo($form);
 //		$("<input />").attr({type:"hidden", name:"oid", value:oid}).appendTo($form);
 //		$("<input />").attr({type:"hidden", name:"version", value:entity.version}).appendTo($form);
@@ -1905,7 +1920,7 @@ function showReference(viewAction, defName, oid, version, linkId, refEdit, editC
 
 	}
 
-	var $form = $("<form />").attr({method:"POST", action:viewAction + "/" + oid, target:target}).appendTo("body");
+	var $form = $("<form />").attr({method:"POST", action:viewAction + "/" + encodeURIComponent(oid), target:target}).appendTo("body");
 //	$("<input />").attr({type:"hidden", name:"defName", value:defName}).appendTo($form);
 //	$("<input />").attr({type:"hidden", name:"oid", value:oid}).appendTo($form);
 //	$("<input />").attr({type:"hidden", name:"version", value:version}).appendTo($form);
@@ -2695,7 +2710,7 @@ function viewEditableReference(viewAction, defName, oid, reloadUrl, refEdit, url
 			closeModalDialog();
 
 		} else {
-			var $form = $("<form />").attr({method:"POST", action:viewAction + "/" + oid, target:target}).appendTo("body");
+			var $form = $("<form />").attr({method:"POST", action:viewAction + "/" + encodeURIComponent(oid), target:target}).appendTo("body");
 			$("<input />").attr({type:"hidden", name:"version", value:entity.version}).appendTo($form);
 			$("<input />").attr({type:"hidden", name:"refEdit", value:refEdit}).appendTo($form);
 			if (isSubModal) $("<input />").attr({type:"hidden", name:"modalTarget", value:target}).appendTo($form);
@@ -2714,7 +2729,7 @@ function viewEditableReference(viewAction, defName, oid, reloadUrl, refEdit, url
 		}
 	});
 
-	var $form = $("<form />").attr({method:"POST", action:viewAction + "/" + oid, target:target}).appendTo("body");
+	var $form = $("<form />").attr({method:"POST", action:viewAction + "/" + encodeURIComponent(oid), target:target}).appendTo("body");
 	$("<input />").attr({type:"hidden", name:"refEdit", value:refEdit}).appendTo($form);
 	if (isSubModal) $("<input />").attr({type:"hidden", name:"modalTarget", value:target}).appendTo($form);
 

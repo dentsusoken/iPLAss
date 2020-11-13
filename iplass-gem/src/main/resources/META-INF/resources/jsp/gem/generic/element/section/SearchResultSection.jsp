@@ -236,7 +236,7 @@ $(function() {
 
 	var multiSelect = <%=multiSelect%>;
 	var colModel = new Array();
-	colModel.push({name:"orgOid", index:"orgOid", sortable:false, hidden:true, frozen:true, label:"oid"});
+	colModel.push({name:"orgOid", index:"orgOid", sortable:false, hidden:true, frozen:true, label:"oid", formatter:oidCellFormatter});
 	colModel.push({name:"orgVersion", index:"orgVersion", sortable:false, hidden:true, frozen:true, label:"version"});
 <%
 	if (section.getExclusiveControlPoint() == ExclusiveControlPoint.WHEN_SEARCH) {
@@ -427,15 +427,16 @@ colModel.push({name:"<%=propName%>", index:"<%=propName%>", classes:"<%=style%>"
 			// 結合されたチェックボタンにチェックを入れます。
 %>
 			for (var i = rowIndex; i >= 0; i--) {
-				if ($("#gview_searchResult tr.jqgrow:eq(" + i + ")").find(":radio[name='selOid'][value='" + value + "']").is(":visible")) {
-					rowIndex = i; break;
+				if ($("#gview_searchResult tr.jqgrow:eq(" + i + ")").find(":radio[name='selOid'][value='" + es(value) + "']").is(":visible")) {
+					rowIndex = i;
+					break;
 				}
 			}
 <%
 		}
 %>
 			var $selRow = $("#gview_searchResult tr.jqgrow:eq(" + rowIndex + ")");
-			$selRow.find(":radio[name='selOid'][value='" + value + "']").prop("checked", true);
+			$selRow.find(":radio[name='selOid'][value='" + es(value) + "']").prop("checked", true);
 <%
 		if (section.isGroupingData()) {
 %>
@@ -634,24 +635,60 @@ function setData(list, count) {
 	$("div.result-data").show();
 	grid.clearGridData(true);
 	grid.setGridParam({"_data": list}).trigger("reloadGrid");
+
+<%	if (type == OutputType.SINGLESELECT) { %>
+	var $selOid = $("<p/>");
+	var $selSingle = $("<span/>").addClass("singleRowSelect").appendTo($selOid);
+	var $selRadio = $("<input/>").attr({"type":"radio", "name":"selOid"}).appendTo($selSingle);
+<%
+	} else if (type == OutputType.SEARCHRESULT) {
+%>
+	var $viewLink = $("<a/>").attr({"href":"javascript:void(0)", "action":"<%=StringUtil.escapeJavaScript(viewAction)%>"})
+			.addClass("detailLink").text("${m:rs('mtp-gem-messages', 'generic.element.section.SearchResultSection.detail')}");
+<%
+		if (!section.isHideDetailLink() && (canUpdate || canDelete)) {
+			//編集表示
+%>
+	$viewLink.addClass("jqborder"); //真ん中の棒線
+	var $editLink = $("<a/>").attr({"href":"javascript:void(0)", "action":"<%=StringUtil.escapeJavaScript(detailAction)%>"})
+			.addClass("detailLink editLink").text("${m:rs('mtp-gem-messages', 'generic.element.section.SearchResultSection.edit')}");
+<%
+		} else {
+			//編集非表示
+%>
+	var $detailLink = $("<p/>");
+	$viewLink.appendTo($detailLink);
+<%
+		}
+	}
+%>
+
 	$(list).each(function(index) {
 		this["searchResultDataId"] = this.orgOid + "_" + this.orgVersion;
 <%	if (type == OutputType.SINGLESELECT) { %>
-		this["selOid"] = "<span class='singleRowSelect'><input type='radio' value='" + this.searchResultDataId + "' name='selOid'></span>";
+		$selRadio.attr("value", this.searchResultDataId);
+		this["selOid"] = $selOid.html();
 <%
 	} else if (type == OutputType.SEARCHRESULT) {
+%>
+		$viewLink.attr({"oid":this.orgOid, "version":this.orgVersion});
+<%
 		if (!section.isHideDetailLink() && (canUpdate || canDelete)) {
 %>
+		$editLink.attr({"oid":this.orgOid, "version":this.orgVersion});
+
+		var $detailLink = $("<p/>");
 		if (this["@canEdit"] === "false" && this["@canDelete"] === "false") {
-			this["_mtpDetailLink"] = "<a href='javascript:void(0)' action='<%=StringUtil.escapeJavaScript(viewAction)%>' oid='" + this.orgOid + "' version='" + this.orgVersion + "' class='detailLink'>${m:rs('mtp-gem-messages', 'generic.element.section.SearchResultSection.detail')}</a>";
+			$viewLink.removeClass("jqborder");
+			$viewLink.appendTo($detailLink);
 		} else {
-			this["_mtpDetailLink"] = "<a href='javascript:void(0)' action='<%=StringUtil.escapeJavaScript(viewAction)%>' oid='" + this.orgOid + "' version='" + this.orgVersion + "' class='jqborder detailLink'>${m:rs('mtp-gem-messages', 'generic.element.section.SearchResultSection.detail')}</a>"
-				+ "<a href='javascript:void(0)' action='<%=StringUtil.escapeJavaScript(detailAction)%>' oid='" + this.orgOid + "' version='" + this.orgVersion + "' class='detailLink editLink'>${m:rs('mtp-gem-messages', 'generic.element.section.SearchResultSection.edit')}</a>";
+			$viewLink.addClass("jqborder"); //真ん中の棒線
+			$viewLink.appendTo($detailLink);
+			$editLink.appendTo($detailLink);
 		}
-<% 		} else { %>
-		this["_mtpDetailLink"] = "<a href='javascript:void(0)' action='<%=StringUtil.escapeJavaScript(viewAction)%>' oid='" + this.orgOid + "' version='" + this.orgVersion + "' class='detailLink'>${m:rs('mtp-gem-messages', 'generic.element.section.SearchResultSection.detail')}</a>";
+<%		} %>
+		this["_mtpDetailLink"] = $detailLink.html();
 <%
-		}
 	}
 %>
 		grid.addRowData(index + 1, this);
@@ -671,7 +708,7 @@ function setData(list, count) {
 	if (OutputType.SINGLESELECT == type) {
 %>
 	if (selectArray.length > 0) {
-		var $radio = $(":radio[name='selOid'][value='" + selectArray[0] + "']:visible").prop("checked", true).trigger("change");
+		var $radio = $(":radio[name='selOid'][value='" + es(selectArray[0]) + "']:visible").prop("checked", true).trigger("change");
 		if ($radio.length > 0) {
 			var rowIndex = $("#gview_searchResult tr.jqgrow").index($radio.parents("tr.jqgrow"));
 			setRowHighlight(rowIndex);

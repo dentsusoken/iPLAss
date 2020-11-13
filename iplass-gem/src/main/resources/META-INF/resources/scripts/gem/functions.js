@@ -1229,6 +1229,7 @@ $.fn.allInputCheck = function(){
 			var isSubModal = $("body.modal-body").length != 0;
 			$.extend($v, {
 				oid: $v.attr("data-oid"),
+				version: $v.attr("data-version"),
 				defName: $v.attr("data-defName"),
 				propName: $v.attr("data-propName"),
 				viewName: $v.attr("data-viewName"),
@@ -1285,7 +1286,7 @@ $.fn.allInputCheck = function(){
 							var colNames = new Array();
 							var colModel = new Array();
 							colNames.push("oid");
-							colModel.push({name:"orgOid", index:"orgOid", sortable:false, hidden:true});
+							colModel.push({name:"orgOid", index:"orgOid", sortable:false, hidden:true, formatter:oidCellFormatter});
 							colNames.push("version");
 							colModel.push({name:"orgVersion", index:"orgVersion", sortable:false, hidden:true});
 							colNames.push("");
@@ -1335,14 +1336,21 @@ $.fn.allInputCheck = function(){
 								$v.grid = $table.build(dispInfo, count, list);
 							}
 
+							//リンク生成
+							var $detailLink = $("<p/>");
+							var $viewLink = $("<a/>").attr("href","javascript:void(0)").appendTo($detailLink);
+							if ($v.editable && $v.updatable && !$v.changeEditLinkToViewLink) {
+								$viewLink.addClass("lnk-mr-01").text(scriptContext.gem.locale.reference.edit);
+							} else {
+								$viewLink.addClass("lnk-mr-02").text(scriptContext.gem.locale.reference.detail);
+							}
+
 							//データセット
 							$(list).each(function(index) {
+								$viewLink.attr({"data-oid":this.orgOid, "data-version":this.orgVersion});
+
 								this["id"] = this.orgOid + "_" + this.orgVersion;
-								if ($v.editable && $v.updatable && !$v.changeEditLinkToViewLink) {
-									this["_mtpDetailLink"] = "<a href='javascript:void(0)' class='lnk-mr-01' data-oid='"+ this.orgOid + "' data-version='" + this.orgVersion + "'>" + scriptContext.gem.locale.reference.edit + "</a>";
-								} else {
-									this["_mtpDetailLink"] = "<a href='javascript:void(0)' class='lnk-mr-02' data-oid='"+ this.orgOid + "' data-version='" + this.orgVersion + "'>" + scriptContext.gem.locale.reference.detail + "</a>";
-								}
+								this["_mtpDetailLink"] = $detailLink.html();
 								$v.grid.addRowData(index + 1, this);
 							});
 
@@ -1418,7 +1426,7 @@ $.fn.allInputCheck = function(){
 						document.scriptContext["editReferenceCallback"] = function(entity) {
 							$v.getMassReference();
 
-							var viewAction = $v.viewAction + "/" + entity.oid;
+							var viewAction = $v.viewAction + "/" + encodeURIComponent(entity.oid);
 							var $form = $("<form />").attr({method:"POST", action:contextPath + "/" + viewAction, target:target}).appendTo("body");
 							$("<input />").attr({type:"hidden", name:"oid", value:entity.oid}).appendTo($form);
 							$("<input />").attr({type:"hidden", name:"version", value:entity.version}).appendTo($form);
@@ -1428,9 +1436,10 @@ $.fn.allInputCheck = function(){
 							$form.remove();
 						}
 
+						var mappedByKey = $v.oid + "_" + $v.version;
 						var $form = $("<form />").attr({method:"POST", action:contextPath + "/" + $v.detailAction, target:target}).appendTo("body");
 						$("<input />").attr({type:"hidden", name:"updateByParam", value:true}).appendTo($form);
-						$("<input />").attr({type:"hidden", name:$v.mappedBy, value:$v.oid}).appendTo($form);
+						$("<input />").attr({type:"hidden", name:$v.mappedBy, value:mappedByKey}).appendTo($form);
 						if (isSubModal) $("<input />").attr({type:"hidden", name:"modalTarget", value:target}).appendTo($form);
 						$form.submit();
 						$form.remove();
@@ -1478,7 +1487,7 @@ $.fn.allInputCheck = function(){
 				document.scriptContext["editReferenceCallback"] = function(entity) {
 					$v.getMassReference();
 
-					var viewAction = $v.viewAction + "/" + entity.oid;
+					var viewAction = $v.viewAction + "/" + encodeURIComponent(entity.oid);
 					var $form = $("<form />").attr({method:"POST", action:contextPath + "/" + viewAction, target:target}).appendTo("body");
 //					$("<input />").attr({type:"hidden", name:"defName", value:$v.targetDefName}).appendTo($form);
 //					$("<input />").attr({type:"hidden", name:"oid", value:entity.oid}).appendTo($form);
@@ -1489,7 +1498,7 @@ $.fn.allInputCheck = function(){
 					$form.remove();
 				}
 
-				var viewAction = $v.viewAction + "/" + $(src).attr("data-oid");
+				var viewAction = $v.viewAction + "/" + encodeURIComponent($(src).attr("data-oid"));
 				var $form = $("<form />").attr({method:"POST", action:contextPath + "/" + viewAction, target:target}).appendTo("body");
 //				$("<input />").attr({type:"hidden", name:"defName", value:$v.targetDefName}).appendTo($form);
 //				$("<input />").attr({type:"hidden", name:"oid", value:$(src).attr("oid")}).appendTo($form);
@@ -1506,7 +1515,7 @@ $.fn.allInputCheck = function(){
 				document.scriptContext["editReferenceCallback"] = function(entity) {
 					$v.getMassReference();
 
-					var viewAction = $v.viewAction + "/" + entity.oid;
+					var viewAction = $v.viewAction + "/" + encodeURIComponent(entity.oid);
 					var $form = $("<form />").attr({method:"POST", action:contextPath + "/" + viewAction, target:target}).appendTo("body");
 //					$("<input />").attr({type:"hidden", name:"defName", value:$v.targetDefName}).appendTo($form);
 					$("<input />").attr({type:"hidden", name:"oid", value:entity.oid}).appendTo($form);
@@ -3526,20 +3535,20 @@ function datetimepicker(selector) {
 						data += "&type=" + node.type;
 						if (node.type == "entitydefinition") {
 							if (typeof node.parent.oid !== "undefined" && node.parent.oid != null) {
-								data += "&oid=" + node.parent.oid;
+								data += "&oid=" + escapeJsonParamValue(node.parent.oid);
 							} else {
 								data += "&oid=root";
 							}
 						} else if (node.type == "index") {
 							if (typeof node.oid !== "undefined" && node.oid != null) {
-								data += "&oid=" + node.oid;
+								data += "&oid=" + escapeJsonParamValue(node.oid);
 							}
 							if (typeof node.offset !== "undefined" && node.offset != null) {
 								data += "&offset=" + node.offset;
 							}
 						} else if (node.type == "entity") {
 							if (typeof node.oid !== "undefined" && node.oid != null) {
-								data += "&oid=" + node.oid;
+								data += "&oid=" + escapeJsonParamValue(node.oid);
 							}
 						}
 					}
@@ -3663,19 +3672,20 @@ function datetimepicker(selector) {
 					var dispValue = $.jgrid.htmlEncode(cellValue);
 					if (rowObject.type == "E") {
 						var defName = rowObject.defName;
-						var oid = rowObject.oid;
+						var oid = $.jgrid.htmlEncode(rowObject.oid);
 						var action = rowObject.action;
 						var viewName = rowObject.viewName;
-							var linkHtml = "<a href='javascript:void(0)' data-defName='" + defName + "' data-oid='" + oid + "' data-action='" + action + "' data-viewName='" + viewName + "' class='treeGridEntityLink'>" + dispValue + "</a>";
-							return linkHtml;
-						}
+						
+						var linkHtml = "<a href='javascript:void(0)' data-defName='" + defName + "' data-oid='" + oid + "' data-action='" + action + "' data-viewName='" + viewName + "' class='treeGridEntityLink'>" + dispValue + "</a>";
+						return linkHtml;
+					}
 					return dispValue;
 				}});
 
 				//entityのリンク用
 				colModels.push({name:"type", index:"type", hidden: true, label:"type", sortable:false});
 				colModels.push({name:"defName", index:"defName", hidden: true, label:"defName", sortable:false});
-				colModels.push({name:"oid", index:"oid", hidden: true, label:"oid", sortable:false});
+				colModels.push({name:"oid", index:"oid", hidden: true, label:"oid", sortable:false, formatter:oidCellFormatter});
 				colModels.push({name:"action", index:"action", hidden: true, label:"action", sortable:false});
 				colModels.push({name:"viewName", index:"viewName", hidden: true, label:"viewName", sortable:false});
 
