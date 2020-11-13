@@ -78,7 +78,7 @@
 	}
 
 	List<AccessTokenInfo> applications = new ArrayList<>();
-	RememberMeTokenInfo validRememberMeToken = null;
+	List<RememberMeTokenInfo> validRememberMeTokens  = new ArrayList<>();
 	List<SimpleAuthTokenInfo> simpleAuthTokens = new ArrayList<>();
 	AuthTokenInfoList infoList = AuthContext.getCurrentContext().getAuthTokenInfos();
 	if (infoList != null) {
@@ -88,14 +88,14 @@
 			} else if (info instanceof RememberMeTokenInfo) {
 				RememberMeTokenInfo remmeInfo = (RememberMeTokenInfo)info;
 				if (!remmeInfo.isExpired()) {
-					validRememberMeToken = remmeInfo;
-					pageContext.setAttribute("validRememberMeToken", validRememberMeToken);
+					validRememberMeTokens.add(remmeInfo);
 				}
 			} else if (info instanceof SimpleAuthTokenInfo) {
 				simpleAuthTokens.add((SimpleAuthTokenInfo) info);
 			}
 		}
 	}
+	pageContext.setAttribute("validRememberMeTokens", validRememberMeTokens);
 	pageContext.setAttribute("simpleAuthTokens", simpleAuthTokens);
 
 %>
@@ -232,7 +232,7 @@
 <h3 class="hgroup-02 hgroup-02-01">${m:rs("mtp-gem-messages", "auth.application.rememberMe")}</h3>
 <div class="detailForm">
 <%
-	if (validRememberMeToken == null) {
+	if (validRememberMeTokens.isEmpty()) {
 %>
 <div class="mb20"><span class="success">${m:rs("mtp-gem-messages", "auth.application.noRememberMeToken")}</span></div>
 <%
@@ -246,11 +246,16 @@
 <table class="tbl-section">
 <tbody>
 <tr>
-<th class="section-data col1">
+<th class="section-data col1"  rowspan=<%=validRememberMeTokens.size()+1 %>>
 ${m:rs("mtp-gem-messages", "auth.application.activeRememberMeToke")}</th>
-<td class="section-data col1">${m:rs('mtp-gem-messages', 'auth.application.rememberMeTokenExpiryDate')}&nbsp;
-${m:esc(m:fmt(validRememberMeToken.expiryDate , 'yyyy/MM/dd HH:mm:ss'))}</td>
 </tr>
+<c:forEach var="info" items="${validRememberMeTokens}">
+<tr>
+<td class="section-data col1">${m:rs('mtp-gem-messages', 'auth.application.rememberMeTokenExpiryDate')}&nbsp;
+${m:esc(m:fmt(info.expiryDate , 'yyyy/MM/dd HH:mm:ss'))}
+</td>
+</tr>
+</c:forEach>
 <tr>
 <th class="section-data col1"></th>
 <td class="section-data col1">
@@ -368,8 +373,18 @@ $(function() {
 	});
 
 	function revoke(params) {
+		params["_t"] = $('input[name="_t"]').val();
+		var revokeParams = JSON.stringify(params);
+		
 		if (confirm("${m:rs('mtp-gem-messages', 'auth.application.deleteMsg')}")) {
-			submitForm(contextPath + "/<%=StringUtil.escapeJavaScript(RevokeApplicationCommand.ACTION_NAME)%>", params);
+			webapiJson("<%=StringUtil.escapeJavaScript(RevokeApplicationCommand.WEBAPI_NAME)%>" ,{
+				type: "POST",
+				cache: false,
+				data: revokeParams,
+				success: function(response) {
+					location.reload(true);
+				}
+			});
 		}
 	}
 
@@ -395,7 +410,7 @@ $(function() {
 					return;
 				}
 
-				webapi("gem/auth/generateAuthToken",{
+				webapi("<%=StringUtil.escapeJavaScript(GenerateAuthTokenCommand.WEBAPI_NAME)%>" ,{
 					type: "POST",
 					contentType:"application/x-www-form-urlencoded",
 					cache: false,
@@ -436,7 +451,7 @@ $(function() {
 		
 		copyTextToClipboard(copyText, {
 			success: function(response) {
-				$("#generateAuthTokenDialog .copied").show();
+				$("#generateAuthTokenDialog .copied").show().fadeOut(3000);
 			}
 		});
 	});
