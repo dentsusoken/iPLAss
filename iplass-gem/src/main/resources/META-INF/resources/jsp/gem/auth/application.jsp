@@ -239,7 +239,9 @@
 	} else {
 %>
 
-<span class="success">${m:rs("mtp-gem-messages", "auth.application.existRememberMeToken")}</span>
+<span class="success">${m:rs("mtp-gem-messages", "auth.application.existRememberMeToken")}<br>
+${m:rs("mtp-gem-messages", "auth.application.explainRememberMeToken")}
+</span>
 <ul class="nav-section"></ul>
 
 <div class="token-detail">
