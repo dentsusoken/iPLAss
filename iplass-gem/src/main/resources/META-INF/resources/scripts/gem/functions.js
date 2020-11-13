@@ -3535,20 +3535,20 @@ function datetimepicker(selector) {
 						data += "&type=" + node.type;
 						if (node.type == "entitydefinition") {
 							if (typeof node.parent.oid !== "undefined" && node.parent.oid != null) {
-								data += "&oid=" + node.parent.oid;
+								data += "&oid=" + escapeJsonParamValue(node.parent.oid);
 							} else {
 								data += "&oid=root";
 							}
 						} else if (node.type == "index") {
 							if (typeof node.oid !== "undefined" && node.oid != null) {
-								data += "&oid=" + node.oid;
+								data += "&oid=" + escapeJsonParamValue(node.oid);
 							}
 							if (typeof node.offset !== "undefined" && node.offset != null) {
 								data += "&offset=" + node.offset;
 							}
 						} else if (node.type == "entity") {
 							if (typeof node.oid !== "undefined" && node.oid != null) {
-								data += "&oid=" + node.oid;
+								data += "&oid=" + escapeJsonParamValue(node.oid);
 							}
 						}
 					}
@@ -3672,19 +3672,20 @@ function datetimepicker(selector) {
 					var dispValue = $.jgrid.htmlEncode(cellValue);
 					if (rowObject.type == "E") {
 						var defName = rowObject.defName;
-						var oid = rowObject.oid;
+						var oid = $.jgrid.htmlEncode(rowObject.oid);
 						var action = rowObject.action;
 						var viewName = rowObject.viewName;
-							var linkHtml = "<a href='javascript:void(0)' data-defName='" + defName + "' data-oid='" + oid + "' data-action='" + action + "' data-viewName='" + viewName + "' class='treeGridEntityLink'>" + dispValue + "</a>";
-							return linkHtml;
-						}
+						
+						var linkHtml = "<a href='javascript:void(0)' data-defName='" + defName + "' data-oid='" + oid + "' data-action='" + action + "' data-viewName='" + viewName + "' class='treeGridEntityLink'>" + dispValue + "</a>";
+						return linkHtml;
+					}
 					return dispValue;
 				}});
 
 				//entityのリンク用
 				colModels.push({name:"type", index:"type", hidden: true, label:"type", sortable:false});
 				colModels.push({name:"defName", index:"defName", hidden: true, label:"defName", sortable:false});
-				colModels.push({name:"oid", index:"oid", hidden: true, label:"oid", sortable:false});
+				colModels.push({name:"oid", index:"oid", hidden: true, label:"oid", sortable:false, formatter:oidCellFormatter});
 				colModels.push({name:"action", index:"action", hidden: true, label:"action", sortable:false});
 				colModels.push({name:"viewName", index:"viewName", hidden: true, label:"viewName", sortable:false});
 
