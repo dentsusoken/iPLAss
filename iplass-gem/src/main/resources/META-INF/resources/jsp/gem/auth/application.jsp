@@ -398,7 +398,7 @@ $(function() {
 	$("#generateAuthTokenDialog").dialog({
 		resizable: false,
 		autoOpen: false,
-		height: 200,
+		height: 225,
 		width: 520,
 		modal: true,
 		buttons: [{

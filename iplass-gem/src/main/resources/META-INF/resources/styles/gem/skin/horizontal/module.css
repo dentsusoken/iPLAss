@@ -1153,11 +1153,10 @@ table.tbl-maintenance > tbody > tr > td {
     width: 270px;
     padding: 2px 5px; }
   #generateAuthTokenDialog .show-token {
-    width: 350px;
+    width: 320px;
     padding: 2px 5px;
     margin-left: 6px; }
   #generateAuthTokenDialog .result-title {
-    font-size: larger;
     padding: 5px 5px; }
   #generateAuthTokenDialog .copy-btn {
     float: right;
