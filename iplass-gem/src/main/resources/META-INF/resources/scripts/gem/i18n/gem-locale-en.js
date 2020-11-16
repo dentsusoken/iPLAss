@@ -96,3 +96,6 @@ scriptContext.gem.locale.calendar.keyword = "Keyword";
 scriptContext.gem.locale.calendar.search = "Search";
 scriptContext.gem.locale.calendar.searchItem = "Search Item";
 scriptContext.gem.locale.calendar.withoutEntity = "I removed from the search for {0}";
+
+scriptContext.gem.locale.apendCategory("application");
+scriptContext.gem.locale.application.specifyDescription = "Specify a note of the token to be generated.";

@@ -20,6 +20,7 @@
 
 package org.iplass.gem.command;
 
+import org.iplass.gem.command.auth.GenerateAuthTokenCommand;
 import org.iplass.gem.command.auth.LoginCommand;
 import org.iplass.gem.command.auth.LogoutCommand;
 import org.iplass.gem.command.auth.ReAuthCommand;
@@ -194,6 +195,7 @@ import org.iplass.mtp.command.annotation.MetaDataSeeAlso;
 	UpdateUserCommand.class,
 	ReAuthCommand.class,
 	RevokeApplicationCommand.class,
+	GenerateAuthTokenCommand.class,
 	//プレビュー日付
 	GetPreviewDateTimeCommand.class,
 	SetPreviewDateTimeCommand.class,

@@ -221,6 +221,10 @@ public class OAuthClientCredentialHandler extends AuthTokenHandler {
 		public String getDescription() {
 			return null;
 		}
+		@Override
+		public Timestamp getStartDate() {
+			return null;
+		}
 	}
 	
 }

@@ -46,6 +46,7 @@ class RefreshTokenHandler extends AuthTokenHandler {
 		RefreshTokenInfo info = new RefreshTokenInfo();
 		info.setType(getType());
 		info.setKey(authToken.getSeries());
+		info.setStartDate(authToken.getStartDate());
 		((RefreshTokenMement) authToken.getDetails()).fill(info);
 		
 		return info;

@@ -867,6 +867,51 @@ function trimZeroDecimalPart(v) {
 	return array.join(".");
 }
 
+/**
+ * 指定したテキストをクリップボードにコピーする
+ *
+ * @param text コピー対象のテキスト
+ * @param callback 成功時、エラー時に実行するコールバック関数
+ */
+function copyTextToClipboard(text, callback) {
+	var okFunc = null;
+	if  (callback.success) {
+		if ($.isFunction(callback.success)) {
+			okFunc = callback.success;
+		}
+	} else {
+		//デフォルトでは何もしない
+		okFunc = function() {}
+	}
+	
+	var ngFunc = null;
+	if  (callback.error) {
+		if ($.isFunction(callback.error)) {
+			ngFunc = callback.error;
+		}
+	} else {
+		//デフォルトでは、標準のエラーメッセージを表示
+		ngFunc =  function() {
+			alert(scriptContext.gem.locale.error.errOccurred);
+		}
+	}
+	
+	if (navigator.clipboard != undefined) {
+		navigator.clipboard.writeText(text).then( function() {
+			okFunc.call();
+		})
+		.catch( function(error) {
+			ngFunc.call(error);
+		});
+	} else {
+		// for IE11
+		if(window.clipboardData) {
+			window.clipboardData.setData("Text" , text);
+			okFunc.call();
+		}
+	}
+}
+
 ////////////////////////////////////////////////////////
 //日付・時間用のJavascript
 ////////////////////////////////////////////////////////

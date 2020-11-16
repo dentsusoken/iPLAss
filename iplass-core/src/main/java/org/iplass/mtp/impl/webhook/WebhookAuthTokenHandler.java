@@ -46,6 +46,7 @@ public class WebhookAuthTokenHandler extends AuthTokenHandler{
 		WebhookAuthTokenInfo info = new WebhookAuthTokenInfo();
 		info.setType(authToken.getType());
 		info.setKey(authToken.getSeries());
+		info.setStartDate(authToken.getStartDate());
 		
 		return info;
 	}

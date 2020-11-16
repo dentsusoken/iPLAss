@@ -29,6 +29,7 @@ public class RememberMeTokenInfo implements AuthTokenInfo {
 
 	private String type;
 	private String key;
+	private Timestamp startDate;
 	private boolean expired;
 	private Timestamp expiryDate;
 	
@@ -41,10 +42,14 @@ public class RememberMeTokenInfo implements AuthTokenInfo {
 	public String getKey() {
 		return key;
 	}
+	
+	@Override
+	public Timestamp getStartDate() {
+		return startDate;
+	}
 
 	@Override
 	public String getDescription() {
-		//TODO 多言語化
 		StringBuilder sb = new StringBuilder();
 		sb.append("Remember Me Token, ");
 		if (expired) {
@@ -82,5 +87,9 @@ public class RememberMeTokenInfo implements AuthTokenInfo {
 
 	public void setKey(String key) {
 		this.key = key;
+	}
+	
+	public void setStartDate(Timestamp startDate) {
+		this.startDate = startDate;
 	}
 }

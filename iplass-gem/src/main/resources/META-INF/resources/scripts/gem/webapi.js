@@ -156,7 +156,7 @@ function alertErrMessage(XMLHttpRequest) {
 	} catch (e) {
 	}
 
-	if (typeof res !== "undeined" && res != null
+	if (typeof res !== "undefined" && res != null
 			&& res.exceptionType == "org.iplass.mtp.auth.NoPermissionException") {
 		alert(scriptContext.gem.locale.error.permissionErrOccurred);
 	} else {

@@ -198,6 +198,7 @@ public class AccessTokenHandler extends AuthTokenHandler {
 		AccessTokenInfo info = new AccessTokenInfo();
 		info.setType(getType());
 		info.setKey(authToken.getSeries());
+		info.setStartDate(authToken.getStartDate());
 		((AccessTokenMement) authToken.getDetails()).fill(info);
 		
 		return info;

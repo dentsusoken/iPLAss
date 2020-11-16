@@ -96,3 +96,6 @@ scriptContext.gem.locale.calendar.fixedFilter = "常規筛选";
 scriptContext.gem.locale.calendar.searchItem = "检索项目";
 scriptContext.gem.locale.calendar.search = "检索";
 scriptContext.gem.locale.calendar.withoutEntity = "我从搜索中删除{0}";
+
+scriptContext.gem.locale.apendCategory("application");
+scriptContext.gem.locale.application.specifyDescription = "请输入要生成的令牌的描述。";

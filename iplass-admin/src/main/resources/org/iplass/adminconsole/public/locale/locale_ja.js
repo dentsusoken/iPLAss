@@ -1094,6 +1094,7 @@ LocaleInfo.ui_metadata_top_item_InformationItem_warnMessageDispAreaIcon = "警�
 LocaleInfo.ui_metadata_top_item_ScriptItem_scriptHint = "<p>Top画面でGroovyTemplateで記述されたスクリプトを実行します。 HTMLやJavascriptの記述ができます。</p><p>以下の変数、メソッドがバインドされます。</p><ul><li>request: リクエスト</li><li>session: セッション</li><li>include(String path): 指定のパスのjspをincludeします。</li><li>includeTemplate(String templateName): 指定のテンプレートをincludeします。</li><li>renderContent(): コンテンツをレンダリングします。</li></ul>";
 LocaleInfo.ui_metadata_top_item_TopViewContentParts_styleDescriptionKey = "スタイルシートのクラス名を指定します。複数指定する場合は半角スペースで区切ってください。";
 LocaleInfo.ui_metadata_top_item_TreeViewItem_iconTagComment = "Fontawsomeによるアイコン用のタグを設定できます。";
+LocaleInfo.ui_metadata_top_ApplicationMaintenanceItem_usePersonalAccessToken = "個人アクセストークンの管理機能を利用するか否かを指定します。";
 LocaleInfo.ui_metadata_top_item_UserMaintenanceItem_failed = "失敗";
 LocaleInfo.ui_metadata_top_item_UserMaintenanceItem_failedGetScreenInfo = "画面情報の取得に失敗しました。<br/>原因：";
 LocaleInfo.ui_metadata_treeview_TreeViewDragPane_refreshItemList = "アイテムの一覧を最新にします。";

@@ -19,6 +19,7 @@
  */
 package org.iplass.mtp.auth.oauth;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 import org.iplass.mtp.auth.token.AuthTokenInfo;
@@ -32,6 +33,7 @@ public class AccessTokenInfo implements AuthTokenInfo {
 	private String type;
 	private String key;
 	private String clientName;
+	private Timestamp startDate;
 	private List<String> grantedScopes;
 	
 	public String getClientName() {
@@ -57,7 +59,11 @@ public class AccessTokenInfo implements AuthTokenInfo {
 	public void setKey(String key) {
 		this.key = key;
 	}
-
+	
+	public void setStartDate(Timestamp startDate) {
+		this.startDate = startDate;
+	}
+	
 	@Override
 	public String getType() {
 		return type;
@@ -66,6 +72,11 @@ public class AccessTokenInfo implements AuthTokenInfo {
 	@Override
 	public String getKey() {
 		return key;
+	}
+	
+	@Override
+	public Timestamp getStartDate() {
+		return startDate;
 	}
 
 	@Override

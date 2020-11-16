@@ -49,6 +49,7 @@ public class SimpleAuthTokenHandler extends AuthTokenHandler {
 		SimpleAuthTokenInfo info = new SimpleAuthTokenInfo();
 		info.setType(authToken.getType());
 		info.setKey(authToken.getSeries());
+		info.setStartDate(authToken.getStartDate());
 		
 		@SuppressWarnings("unchecked")
 		Map<String, Object> details = (Map<String, Object>) authToken.getDetails();

@@ -46,6 +46,9 @@
 <%@page import="org.iplass.mtp.view.top.TopViewDefinitionManager"%>
 <%@page import="org.iplass.mtp.view.top.parts.ApplicationMaintenanceParts"%>
 <%@page import="org.iplass.mtp.view.top.parts.TopViewParts"%>
+<%@page import="org.iplass.gem.command.auth.GenerateAuthTokenCommand"%>
+<%@page import="org.iplass.mtp.auth.login.token.SimpleAuthTokenCredential"%>
+<%@page import="org.iplass.mtp.auth.login.token.SimpleAuthTokenInfo"%>
 
 <%!
 	TopViewDefinitionManager tvdm = ManagerLocator.manager(TopViewDefinitionManager.class);
@@ -61,6 +64,7 @@
 	}
 
 	String title = null;
+	boolean usePersonalAccessToken = false;
 	for (TopViewParts parts : topView.getParts()) {
 		if (parts instanceof ApplicationMaintenanceParts) {
 			ApplicationMaintenanceParts amp = (ApplicationMaintenanceParts)parts;
@@ -68,22 +72,32 @@
 			if (title == null) {
 				title = GemResourceBundleUtil.resourceString("layout.header.appMaintenance");
 			}
+			usePersonalAccessToken = amp.isUsePersonalAccessToken();
 			break;
 		}
 	}
 
 	List<AccessTokenInfo> applications = new ArrayList<>();
-	List<RememberMeTokenInfo> rememberMeTokens = new ArrayList<>();
+	List<RememberMeTokenInfo> validRememberMeTokens  = new ArrayList<>();
+	List<SimpleAuthTokenInfo> simpleAuthTokens = new ArrayList<>();
 	AuthTokenInfoList infoList = AuthContext.getCurrentContext().getAuthTokenInfos();
 	if (infoList != null) {
 		for (AuthTokenInfo info : infoList.getList()) {
 			if (info instanceof AccessTokenInfo) {
 				applications.add((AccessTokenInfo)info);
 			} else if (info instanceof RememberMeTokenInfo) {
-				rememberMeTokens.add((RememberMeTokenInfo)info);
+				RememberMeTokenInfo remmeInfo = (RememberMeTokenInfo)info;
+				if (!remmeInfo.isExpired()) {
+					validRememberMeTokens.add(remmeInfo);
+				}
+			} else if (info instanceof SimpleAuthTokenInfo) {
+				simpleAuthTokens.add((SimpleAuthTokenInfo) info);
 			}
 		}
 	}
+	pageContext.setAttribute("validRememberMeTokens", validRememberMeTokens);
+	pageContext.setAttribute("simpleAuthTokens", simpleAuthTokens);
+
 %>
 <h2 class="hgroup-01">
 <span>
@@ -218,34 +232,32 @@
 <h3 class="hgroup-02 hgroup-02-01">${m:rs("mtp-gem-messages", "auth.application.rememberMe")}</h3>
 <div class="detailForm">
 <%
-	if (rememberMeTokens.isEmpty()) {
+	if (validRememberMeTokens.isEmpty()) {
 %>
 <div class="mb20"><span class="success">${m:rs("mtp-gem-messages", "auth.application.noRememberMeToken")}</span></div>
 <%
 	} else {
 %>
 
-<span class="success">${m:rs("mtp-gem-messages", "auth.application.existRememberMeToken")}</span>
+<span class="success">${m:rs("mtp-gem-messages", "auth.application.existRememberMeToken")}<br>
+${m:rs("mtp-gem-messages", "auth.application.explainRememberMeToken")}
+</span>
 <ul class="nav-section"></ul>
 
 <div class="token-detail">
 <table class="tbl-section">
 <tbody>
 <tr>
-<th class="section-data col1" rowspan=<%=rememberMeTokens.size()%>>
+<th class="section-data col1"  rowspan=<%=validRememberMeTokens.size()+1 %>>
 ${m:rs("mtp-gem-messages", "auth.application.activeRememberMeToke")}</th>
-<td class="section-data col1"><%=rememberMeTokens.get(0).getDescription() %></td>
 </tr>
-<%
-		for (int i = 1; i < rememberMeTokens.size(); i++) {
-			RememberMeTokenInfo info = rememberMeTokens.get(i);
-%>
+<c:forEach var="info" items="${validRememberMeTokens}">
 <tr>
-<td class="section-data col1"><%=info.getDescription() %></td>
+<td class="section-data col1">${m:rs('mtp-gem-messages', 'auth.application.rememberMeTokenExpiryDate')}&nbsp;
+${m:esc(m:fmt(info.expiryDate , 'yyyy/MM/dd HH:mm:ss'))}
+</td>
 </tr>
-<%
-		}
-%>
+</c:forEach>
 <tr>
 <th class="section-data col1"></th>
 <td class="section-data col1">
@@ -260,8 +272,79 @@ ${m:rs("mtp-gem-messages", "auth.application.activeRememberMeToke")}</th>
 %>
 </div>
 
-<script>
+<%
+	if (usePersonalAccessToken) {
+%>
+<h3 class="hgroup-02 hgroup-02-01">${m:rs("mtp-gem-messages", "auth.application.simpleAuthToken")}</h3>
+<div class="detailForm">
+<%
+	if (simpleAuthTokens.isEmpty()) {
+%>
+<div class="mb20"><span class="success">${m:rs("mtp-gem-messages", "auth.application.noSimpleAuthToken")}</span></div>
+<%
+	} else {
+%>
+<ul class="nav-section"></ul>
 
+<div class="token-detail">
+<table class="tbl-section">
+<tbody>
+<tr>
+<th class="section-data col1" rowspan=<%=simpleAuthTokens.size()+1 %>>
+${m:rs("mtp-gem-messages", "auth.application.activeSimpleAuthToken")}
+</th>
+</tr>
+
+<c:forEach var="info" items="${simpleAuthTokens}">
+<tr>
+<td class="section-data col1">${m:esc(info.application)}<br>
+${m:rs('mtp-gem-messages', 'auth.application.simpleAuthTokenGenerateDate')}&nbsp;${m:esc(m:fmt(info.startDate , 'yyyy/MM/dd HH:mm:ss'))}
+</td>
+<td class="section-data col1">
+<input type="button" value="${m:rs('mtp-gem-messages', 'auth.application.delete')}" class="gr-btn revoke" name="revoke"
+	data-token-type="<c:out value="${info.type}"/>" data-token-key="<c:out value="${info.key}"/>" >
+</td>
+</tr>
+</c:forEach>
+</tbody>
+</table>
+</div>
+<%
+	}
+%>
+<input type="button" value="${m:rs('mtp-gem-messages', 'auth.application.generateSimpleAuthToken')}" class="gr-btn create-sat" name="create"/>
+<%
+	if (!simpleAuthTokens.isEmpty()) {
+%>
+<input type="button" value="${m:rs('mtp-gem-messages', 'auth.application.deleteAll')}" class="gr-btn revoke-all-sat" name="revoke-all"/>
+<%
+	}
+%>
+</div>
+
+<%-- SimpleAuthToken生成/表示ダイアログ --%>
+<div id="generateAuthTokenDialog" class="mtp-jq-dialog" title="${m:rs('mtp-gem-messages', 'auth.application.generateSimpleAuthToken')}" style="display:none;">
+<form>
+<table>
+<tbody>
+<tr>
+<th>${m:rs("mtp-gem-messages", "auth.application.simpleAuthToken")}</th>
+<td><span class="tokenApplication"></span></td>
+</tr>
+<tr>
+<th>${m:rs("mtp-gem-messages", "auth.application.simpleAuthTokenDescription")}</th>
+<td><input type="text" name="application" class="form-size-01 inpbr" /></td>
+</tr>
+</tbody>
+</table>
+<input type="hidden" name="_t" value="${m:fixToken()}">
+</form>
+</div>
+<%
+	}
+%>
+
+<script>
 $(function() {
 	$(".auth-application input.revoke-all-app").on("click", function() {
 		var params = {
@@ -272,6 +355,12 @@ $(function() {
 	$(".auth-application input.revoke-all-rememberme").on("click", function() {
 		var params = {
 			target:"all-rememberme"
+		};
+		revoke(params);
+	});
+	$(".auth-application input.revoke-all-sat").on("click", function() {
+		var params = {
+			target:"all-sat"
 		};
 		revoke(params);
 	});
@@ -286,10 +375,93 @@ $(function() {
 	});
 
 	function revoke(params) {
+		params["_t"] = $('input[name="_t"]').val();
+		var revokeParams = JSON.stringify(params);
+		
 		if (confirm("${m:rs('mtp-gem-messages', 'auth.application.deleteMsg')}")) {
-			submitForm(contextPath + "/<%=StringUtil.escapeJavaScript(RevokeApplicationCommand.ACTION_NAME)%>", params);
+			webapiJson("<%=StringUtil.escapeJavaScript(RevokeApplicationCommand.WEBAPI_NAME)%>" ,{
+				type: "POST",
+				cache: false,
+				data: revokeParams,
+				success: function(response) {
+					location.reload(true);
+				}
+			});
 		}
 	}
+
+	$(".auth-application input.create-sat").on("click", function() {
+		$("#generateAuthTokenDialog").dialog("open");
+	});
+
+	var tokenCreatedFlg = false;
+	$("#generateAuthTokenDialog").dialog({
+		resizable: false,
+		autoOpen: false,
+		height: 225,
+		width: 520,
+		modal: true,
+		buttons: [{
+			text: "OK",
+			click: function() {
+				var $dialog = $(this);
+				var application = $(":text[name='application']", $(this)).val();
+				
+				if (typeof application == "undefined" || application == null || application == "") {
+					alert(scriptContext.gem.locale.application.specifyDescription);
+					return;
+				}
+
+				webapi("<%=StringUtil.escapeJavaScript(GenerateAuthTokenCommand.WEBAPI_NAME)%>" ,{
+					type: "POST",
+					contentType:"application/x-www-form-urlencoded",
+					cache: false,
+					data: $dialog.children('form').serialize(),
+					success: function(response) {
+						$dialog.children('form').remove();
+						$dialog.append("<div class='result-title'>${m:rs('mtp-gem-messages', 'auth.application.tokenGeneratedMsg')}</div>"
+								+ "<input type='text' value='" + response.token + "' class='form-size-01 show-token' name='copy' readonly />"
+								+ "<input type='button' value='${m:rs('mtp-gem-messages', 'auth.application.copy')}' class='gr-btn copy-btn'/>"
+								+ "<span class='copied' style='display:none;'>${m:rs('mtp-gem-messages', 'auth.application.copied')}</span>");
+						
+						$('.ui-dialog-buttonset').children('button').remove();
+						$('.ui-dialog-buttonset').append('<button type="button" class="ui-button ui-corner-all ui-widget close-dialog">OK</button>');
+						tokenCreatedFlg = true;
+					}
+				});
+			}
+		},{
+			text: scriptContext.gem.locale.common.cancel,
+			click: function() {
+				$(":text[name='application']", $(this)).val("");
+				$(this).dialog("close");
+			}
+		}],
+		close: function() {
+			$(":text[name='application']", $(this)).val("");
+			if(tokenCreatedFlg) {
+				location.reload(true);
+		    }
+		}
+	});
+	$("#generateAuthTokenDialog").on("dialogopen", function(e) {
+		adjustDialogLayer($(".ui-widget-overlay"));
+	});
+	
+	$(document).on("click", "#generateAuthTokenDialog input.copy-btn", function() {
+		var copyText =$(':text[name="copy"]').val();
+		
+		copyTextToClipboard(copyText, {
+			success: function(response) {
+				$("#generateAuthTokenDialog .copied").show().fadeOut(3000);
+			}
+		});
+	});
+	
+	$(document).on("click", "button.close-dialog", function() {
+		$("#generateAuthTokenDialog").dialog("close");
+	});
+	
 });
 </script>
 </div>
