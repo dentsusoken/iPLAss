@@ -1,19 +1,19 @@
 /*
  * Copyright (C) 2011 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
- * 
+ *
  * Unless you have purchased a commercial license,
  * the following license terms apply:
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
@@ -26,6 +26,7 @@ import java.util.List;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import org.iplass.mtp.impl.definition.DefinableMetaData;
+import org.iplass.mtp.impl.i18n.I18nUtil;
 import org.iplass.mtp.impl.metadata.BaseMetaDataRuntime;
 import org.iplass.mtp.impl.metadata.BaseRootMetaData;
 import org.iplass.mtp.impl.metadata.MetaDataConfig;
@@ -41,6 +42,9 @@ public class MetaTreeMenu extends BaseRootMetaData implements DefinableMetaData<
 
 	/** 表示順序 */
 	private Integer displayOrder;
+
+	/** 定義の表示名を表示かどうか */
+	private Boolean showMenuDisplayName;
 
 	/** 子階層メニュ */
 	private List<MetaMenuItem> childs;
@@ -61,6 +65,7 @@ public class MetaTreeMenu extends BaseRootMetaData implements DefinableMetaData<
 		displayName = definition.getDisplayName();
 		description = definition.getDescription();
 		displayOrder = definition.getDisplayOrder();
+		showMenuDisplayName = definition.getShowMenuDisplayName();
 
 		if (definition.getMenuItems() != null) {
 			childs = new ArrayList<MetaMenuItem>(definition.getMenuItems().size());
@@ -73,6 +78,9 @@ public class MetaTreeMenu extends BaseRootMetaData implements DefinableMetaData<
 		} else {
 			childs = null;
 		}
+
+		// 言語毎の文字情報設定
+		localizedDisplayNameList = I18nUtil.toMeta(definition.getLocalizedDisplayNameList());
 	}
 
 	//Meta → Definition
@@ -82,6 +90,7 @@ public class MetaTreeMenu extends BaseRootMetaData implements DefinableMetaData<
 		definition.setDisplayName(displayName);
 		definition.setDescription(description);
 		definition.setDisplayOrder(displayOrder);
+		definition.setShowMenuDisplayName(showMenuDisplayName);
 
 		if (childs != null) {
 			ArrayList<MenuItem> items = new ArrayList<MenuItem>(childs.size());
@@ -96,6 +105,8 @@ public class MetaTreeMenu extends BaseRootMetaData implements DefinableMetaData<
 			}
 			definition.setMenuItems(items);
 		}
+		// 言語毎の文字情報設定
+		definition.setLocalizedDisplayNameList(I18nUtil.toDef(localizedDisplayNameList));
 		return definition;
 	}
 
@@ -120,6 +131,22 @@ public class MetaTreeMenu extends BaseRootMetaData implements DefinableMetaData<
 	 */
 	public void setDisplayOrder(Integer displayOrder) {
 	    this.displayOrder = displayOrder;
+	}
+
+	/**
+	 * 定義の表示名を表示かどうかを取得します。
+	 * @return 定義の表示名を表示かどうか
+	 */
+	public Boolean getShowMenuDisplayName() {
+	    return showMenuDisplayName;
+	}
+
+	/**
+	 * 定義の表示名を表示かどうかを設定します。
+	 * @param showMenuDisplayName 定義の表示名を表示かどうか
+	 */
+	public void setShowMenuDisplayName(Boolean showMenuDisplayName) {
+	    this.showMenuDisplayName = showMenuDisplayName;
 	}
 
 	/**

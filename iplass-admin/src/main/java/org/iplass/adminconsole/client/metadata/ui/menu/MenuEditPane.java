@@ -20,8 +20,12 @@
 
 package org.iplass.adminconsole.client.metadata.ui.menu;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
 import org.iplass.adminconsole.client.base.tenant.TenantInfoHolder;
+import org.iplass.adminconsole.client.base.ui.widget.form.MtpForm2Column;
 import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
 import org.iplass.adminconsole.client.metadata.data.menu.MenuItemTreeDS;
 import org.iplass.adminconsole.client.metadata.ui.DefaultMetaDataPlugin;
@@ -52,6 +56,8 @@ import com.smartgwt.client.widgets.ImgButton;
 import com.smartgwt.client.widgets.events.ClickEvent;
 import com.smartgwt.client.widgets.events.ClickHandler;
 import com.smartgwt.client.widgets.form.DynamicForm;
+import com.smartgwt.client.widgets.form.fields.BooleanItem;
+import com.smartgwt.client.widgets.form.fields.FormItem;
 import com.smartgwt.client.widgets.form.fields.IntegerItem;
 import com.smartgwt.client.widgets.layout.HLayout;
 import com.smartgwt.client.widgets.layout.SectionStack;
@@ -115,7 +121,7 @@ public class MenuEditPane extends MetaDataMainEditPane {
 		});
 
 		//共通属性
-		commonSection = new MetaCommonAttributeSection<>(targetNode, MenuTree.class);
+		commonSection = new MetaCommonAttributeSection<>(targetNode, MenuTree.class, true);
 
 		//個別属性
 		menuAttrPane = new MenuAttributePane();
@@ -173,6 +179,8 @@ public class MenuEditPane extends MetaDataMainEditPane {
 		this.curDefinitionId = menuTree.getDefinitionInfo().getObjDefId();
 
 		commonSection.setDefinition(curDefinition);
+		//多言語表示
+		commonSection.setLocalizedDisplayNameList(curDefinition.getLocalizedDisplayNameList());
 		menuAttrPane.setDefinition(curDefinition);
 
 	}
@@ -245,6 +253,8 @@ public class MenuEditPane extends MetaDataMainEditPane {
 					if (value) {
 						MenuTree definition = new MenuTree();
 						definition = commonSection.getEditDefinition(definition);
+						//多言語保存
+						definition.setLocalizedDisplayNameList(commonSection.getLocalizedDisplayNameList());
 						definition = menuAttrPane.getEditDefinition(definition);
 
 						updateMenuTree(definition, true);
@@ -284,6 +294,8 @@ public class MenuEditPane extends MetaDataMainEditPane {
 		DynamicForm form;
 		/** 表示順序 */
 		private IntegerItem displayOrderField;
+		/** メニュー表示名を表示かどうか **/
+		private BooleanItem showMenuDisplayName;
 
 		/** ツリー部分 */
 		private MenuTreeGrid treeGrid;
@@ -295,13 +307,20 @@ public class MenuEditPane extends MetaDataMainEditPane {
 			setOverflow(Overflow.AUTO);	//Stack上の表示領域が小さい場合にスクロールができるようにAUTO設定
 
 			setWidth100();
+			List<FormItem> items = new ArrayList<FormItem>();
 
 			displayOrderField = new IntegerItem();
 			displayOrderField.setTitle("Display Order");
 			SmartGWTUtil.addHoverToFormItem(displayOrderField, AdminClientMessageUtil.getString("ui_metadata_menu_MenuTreeGrid_displayOrder"));
+			items.add(displayOrderField);
 
-			form = new DynamicForm();
-			form.setItems(displayOrderField);
+			showMenuDisplayName = new BooleanItem();
+			showMenuDisplayName.setTitle("Show Menu Display Name");
+			SmartGWTUtil.addHoverToFormItem(showMenuDisplayName, AdminClientMessageUtil.getString("ui_metadata_menu_MenuTreeGrid_showMenuDisplayName"));
+			items.add(showMenuDisplayName);
+
+			form = new MtpForm2Column();
+			form.setItems(items.toArray(new FormItem[items.size()]));
 
 			//Tree構成編集部分
 			VLayout treeGridPane = new VLayout();
@@ -371,11 +390,13 @@ public class MenuEditPane extends MetaDataMainEditPane {
 
 		public void setDefinition(MenuTree definition) {
 			displayOrderField.setValue(definition.getDisplayOrder());
+			showMenuDisplayName.setValue(definition.getShowMenuDisplayName());
 			treeGrid.setMenuTree(definition);
 		}
 
 		public MenuTree getEditDefinition(MenuTree definition) {
 			definition.setDisplayOrder(SmartGWTUtil.getIntegerValue(displayOrderField));
+			definition.setShowMenuDisplayName(SmartGWTUtil.getBooleanValue(showMenuDisplayName));
 			definition.setMenuItems(treeGrid.getEditMenuItems());
 			return definition;
 		}
@@ -403,6 +424,7 @@ public class MenuEditPane extends MetaDataMainEditPane {
 				MenuItem menuItem = event.getValueObject(MenuItem.class);
 				deleteMenuItemNode(menuItem);
 			}
+			SC.say("★★★★★★★★★★★★" + event.getType().toString());
 		}
 
 		/**

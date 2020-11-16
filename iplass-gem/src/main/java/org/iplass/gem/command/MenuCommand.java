@@ -55,6 +55,7 @@ import org.iplass.mtp.view.menu.MenuItem;
 import org.iplass.mtp.view.menu.MenuTree;
 import org.iplass.mtp.view.menu.MenuTreeManager;
 import org.iplass.mtp.view.top.TopViewDefinitionManager;
+import org.iplass.mtp.web.template.TemplateUtil;
 
 @ActionMappings({
 	@ActionMapping(
@@ -262,6 +263,11 @@ public final class MenuCommand implements Command {
 				//Menu定義の表示順を取得
 				MenuTree mt = mtm.get(entity.getValue("code"));
 				if (mt != null) {
+					//フラグがOFFまたは表示名未設定の場合は、現状通りロール名を表示する。
+					if (mt.getShowMenuDisplayName()) {
+						String displayName = TemplateUtil.getMultilingualString(entity.getName(), mt.getLocalizedDisplayNameList());
+						entity.setName(displayName);
+					}
 					return new RoleInfo(entity, mt.getDisplayOrder());
 				} else {
 					return new RoleInfo(entity, Integer.MAX_VALUE);

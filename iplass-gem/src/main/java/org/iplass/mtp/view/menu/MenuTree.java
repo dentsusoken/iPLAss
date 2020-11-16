@@ -1,19 +1,19 @@
 /*
  * Copyright (C) 2011 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
- * 
+ *
  * Unless you have purchased a commercial license,
  * the following license terms apply:
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
@@ -25,7 +25,9 @@ import java.util.List;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
+import org.iplass.adminconsole.annotation.MultiLang;
 import org.iplass.mtp.definition.Definition;
+import org.iplass.mtp.definition.LocalizedStringDefinition;
 
 /**
  * メニューのツリー構造定義
@@ -40,15 +42,22 @@ public class MenuTree implements Definition {
 	/** 名前 */
 	private String name;
 	/** 表示名 */
+	@MultiLang(itemNameGetter = "getName", itemKey = "displayName", itemGetter = "getDisplayName", itemSetter = "setDisplayName", multiLangGetter = "getLocalizedDisplayNameList", multiLangSetter = "setLocalizedDisplayNameList")
 	private String displayName;
 	/** 説明 */
 	private String description;
 
 	/** 表示順序 */
 	private Integer displayOrder;
-	
+
+	/** 定義の表示名を表示かどうか */
+	private Boolean showMenuDisplayName;
+
 	/** 子階層のメニューアイテム */
 	private List<MenuItem> menuItems;
+
+	/** 多言語設定情報 */
+	private List<LocalizedStringDefinition> localizedDisplayNameList;
 
 	/**
 	 * 名前を返します。
@@ -120,6 +129,22 @@ public class MenuTree implements Definition {
 	}
 
 	/**
+	 * 定義の表示名を表示かどうかを取得します。
+	 * @return 定義の表示名を表示かどうか
+	 */
+	public Boolean getShowMenuDisplayName() {
+	    return showMenuDisplayName;
+	}
+
+	/**
+	 * 定義の表示名を表示かどうかを設定します。
+	 * @param showMenuDisplayName 定義の表示名を表示かどうか
+	 */
+	public void setShowMenuDisplayName(Boolean showMenuDisplayName) {
+	    this.showMenuDisplayName = (showMenuDisplayName == null? false : showMenuDisplayName);
+	}
+
+	/**
 	 * 子階層のメニューアイテムを返します。
 	 *
 	 * @return 子階層のメニューアイテム
@@ -147,6 +172,34 @@ public class MenuTree implements Definition {
 			menuItems = new ArrayList<MenuItem>();
 		}
 		menuItems.add(menuItem);
+	}
+
+	/**
+	 * 多言語設定情報を取得します。
+	 * @return リスト
+	 */
+	public List<LocalizedStringDefinition> getLocalizedDisplayNameList() {
+		return localizedDisplayNameList;
+	}
+
+	/**
+	 * 多言語設定情報を設定します。
+	 * @param リスト
+	 */
+	public void setLocalizedDisplayNameList(List<LocalizedStringDefinition> localizedDisplayNameList) {
+		this.localizedDisplayNameList = localizedDisplayNameList;
+	}
+
+	/**
+	 * 多言語設定情報を追加します。
+	 * @param 多言語設定情報
+	 */
+	public void addLocalizedDisplayName(LocalizedStringDefinition localizedDisplayName) {
+		if (localizedDisplayNameList == null) {
+			localizedDisplayNameList = new ArrayList<LocalizedStringDefinition>();
+		}
+
+		localizedDisplayNameList.add(localizedDisplayName);
 	}
 
 	/**
