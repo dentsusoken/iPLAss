@@ -767,7 +767,7 @@ LocaleInfo.ui_metadata_menu_MenuTreeGrid_deleteMenuItem = "メニューアイテ
 LocaleInfo.ui_metadata_menu_MenuTreeGrid_dragInvalid = "ツリー内移動におけるDrag元情報が不正です。nodes:";
 LocaleInfo.ui_metadata_menu_MenuTreeGrid_canNotGetDrag = "ツリー内移動におけるDrag元NodeのIndexが取得できません。node:";
 LocaleInfo.ui_metadata_menu_MenuTreeGrid_displayOrder = "メニュー切り替え時の表示順序を設定します。";
-LocaleInfo.ui_metadata_menu_MenuTreeGrid_showMenuDisplayName = "メニューに定義の表示名をメニュー切り替えで表示します。";
+LocaleInfo.ui_metadata_menu_MenuTreeGrid_showMenuDisplayName = "メニュー定義の表示名はメニュー切り替えで表示します。";
 LocaleInfo.ui_metadata_menu_MenuTreeGrid_expandTree = "ツリーを展開します。";
 LocaleInfo.ui_metadata_menu_MenuTreeGrid_contractTree = "ツリーを縮小します。";
 LocaleInfo.ui_metadata_menu_item_MenuItemDialog_eachLangDspName = "<div style=\"white-space: nowrap;\">言語毎の表示名を設定します。</div>";
