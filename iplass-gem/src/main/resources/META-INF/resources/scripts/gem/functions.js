@@ -330,14 +330,16 @@ $(function(){
 							//左側に表示ができない場合右側に表示させるが、
 							//一部右側が少しはみ出る現象が発生するため、rightを0に設定して対応
 							$(this).css("right", 0);
+							//文言が長い場合にはみ出る現象が発生する為、leftをautoに設定して対応
+							$(this).css("left", "auto");
 						} else {
 							//左側に表示可能なためright属性を削除
 							if (!$(this).attr("data-short-width")) {
-								//サブメニュの幅が小さくてrightを0にした場合以外の場合、rightをクリア
+								//サブメニュの幅が小さくてrightを0にした場合以外の場合、rightをクリア、leftを0に設定。
 								$(this).css("right", "");
+								$(this).css("left", 0);
 							}
 						}
-						$(this).css("left", position.left);
 						$(this).css("top", position.top);
 					}
 				});
