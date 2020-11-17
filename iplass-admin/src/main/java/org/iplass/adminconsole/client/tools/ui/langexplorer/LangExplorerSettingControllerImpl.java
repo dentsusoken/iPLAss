@@ -48,6 +48,7 @@ import org.iplass.mtp.view.calendar.EntityCalendar;
 import org.iplass.mtp.view.filter.EntityFilter;
 import org.iplass.mtp.view.generic.EntityView;
 import org.iplass.mtp.view.menu.MenuItem;
+import org.iplass.mtp.view.menu.MenuTree;
 import org.iplass.mtp.view.top.TopViewDefinition;
 import org.iplass.mtp.view.treeview.TreeView;
 import org.iplass.mtp.web.actionmapping.definition.ActionMappingDefinition;
@@ -165,6 +166,8 @@ public class LangExplorerSettingControllerImpl implements LangExplorerSettingCon
 			manager = new DefaultDefinitionMultiLangSettingManager(MessageCategory.class);
 		} else if (AuthenticationPolicyDefinition.class.getName().equals(definitionClassName)) {
 			manager = new DefaultDefinitionMultiLangSettingManager(AuthenticationPolicyDefinition.class);
+		} else if (MenuTree.class.getName().equals(definitionClassName)) {
+			manager = new DefaultDefinitionMultiLangSettingManager(MenuTree.class);
 		}
 
 		return manager;
