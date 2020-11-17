@@ -306,7 +306,7 @@ public abstract class RegistrationCommandContext extends GenericCommandContext {
 		}
 		return ret;
 	}
-	
+
 	protected SelectValue[] getSelectValues(String name, SelectProperty selectProperty) {
 		String[] params = getParams(name);
 		if (params != null) {
