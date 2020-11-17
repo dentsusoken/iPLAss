@@ -30,7 +30,6 @@ import org.iplass.mtp.entity.definition.properties.selectvalue.SelectValueDefini
 import org.iplass.mtp.entity.definition.properties.selectvalue.SelectValueDefinitionManager;
 import org.iplass.mtp.impl.definition.AbstractTypedDefinitionManager;
 import org.iplass.mtp.impl.definition.TypedMetaDataService;
-import org.iplass.mtp.impl.entity.EntityDefinitionManagerImpl;
 import org.iplass.mtp.impl.metadata.RootMetaData;
 import org.iplass.mtp.spi.ServiceRegistry;
 

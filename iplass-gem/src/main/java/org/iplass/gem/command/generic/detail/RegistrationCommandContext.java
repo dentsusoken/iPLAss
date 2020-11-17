@@ -53,7 +53,6 @@ import org.iplass.mtp.entity.definition.properties.ReferenceProperty;
 import org.iplass.mtp.entity.definition.properties.SelectProperty;
 import org.iplass.mtp.entity.definition.properties.StringProperty;
 import org.iplass.mtp.entity.definition.properties.TimeProperty;
-import org.iplass.mtp.impl.properties.extend.select.SelectValueDefinitionManagerImpl;
 import org.iplass.mtp.util.StringUtil;
 import org.iplass.mtp.utilityclass.definition.UtilityClassDefinitionManager;
 import org.iplass.mtp.view.generic.LoadEntityInterrupter;
