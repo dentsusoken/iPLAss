@@ -320,7 +320,7 @@ public class EntityCsvReader implements Iterable<Entity>, AutoCloseable {
 					if (!enableAuditPropertySpecification &&
 							(headerName.equals(Entity.UPDATE_BY)
 							|| headerName.equals(Entity.UPDATE_DATE)
-							|| headerName.equals(Entity.LOCKED_BY)
+//							|| headerName.equals(Entity.LOCKED_BY)
 							|| headerName.equals(Entity.CREATE_BY)
 							|| headerName.equals(Entity.CREATE_DATE))) {
 						continue;
@@ -426,7 +426,7 @@ public class EntityCsvReader implements Iterable<Entity>, AutoCloseable {
 			if (!enableAuditPropertySpecification &&
 					(headerName.equals(Entity.UPDATE_BY)
 					|| headerName.equals(Entity.UPDATE_DATE)
-					|| headerName.equals(Entity.LOCKED_BY)
+//					|| headerName.equals(Entity.LOCKED_BY)
 					|| headerName.equals(Entity.CREATE_BY)
 					|| headerName.equals(Entity.CREATE_DATE))) {
 				return;
