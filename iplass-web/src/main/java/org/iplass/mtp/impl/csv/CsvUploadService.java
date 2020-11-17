@@ -185,7 +185,7 @@ public class CsvUploadService implements Service {
 				List<String> properties = reader.properties();
 				boolean useCtrl = reader.isUseCtrl();
 				Set<String> updatablePropperties = null;
-				Map<Object, String> keyValueMap = new HashMap<Object, String>();
+				Map<Object, String> keyValueMap = new HashMap<>();
 
 				Iterator<Entity> iterator = reader.iterator();
 
@@ -338,7 +338,7 @@ public class CsvUploadService implements Service {
 	 * @return アップロード処理状況
 	 */
 	public List<CsvUploadStatus> getStatus() {
-		List<CsvUploadStatus> taskStatusList = new ArrayList<CsvUploadStatus>();
+		List<CsvUploadStatus> taskStatusList = new ArrayList<>();
 
 		AsyncTaskInfoSearchCondtion cond = new AsyncTaskInfoSearchCondtion();
 		cond.setQueue(CSV_UPLOAD_QUEUE);
@@ -509,6 +509,7 @@ public class CsvUploadService implements Service {
 
 					switch (execType) {
 					case INSERT:
+						entity.setLockedBy(null);	//lockedByは指定されていても無視
 						String insertOid = em.insert(entity);
 						keyValueMap.put(uniqueKeyValue, insertOid);
 						insertCount ++;

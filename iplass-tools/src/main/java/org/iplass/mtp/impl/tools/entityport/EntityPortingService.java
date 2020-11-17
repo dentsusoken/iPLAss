@@ -24,8 +24,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -104,6 +108,15 @@ public class EntityPortingService implements Service {
 	private static final String DATE_FORMAT = "yyyy-MM-dd";
 	private static final String DATE_TIME_FORMAT = "yyyy-MM-dd HH:mm:ss.SSSXXX";
 	private static final String TIME_FORMAT = "HH:mm:ss";
+
+	/** 更新除外プロパティ */
+	private static Set<String> UN_UPDATABLE_PROPERTY
+		= Collections.unmodifiableSet(new HashSet<>(Arrays.asList(new String[]{
+				//キー項目は除外
+				Entity.OID, Entity.VERSION,
+				//作成日、作成者、更新日、更新者は除外
+				Entity.CREATE_BY, Entity.CREATE_DATE, Entity.UPDATE_BY, Entity.UPDATE_DATE
+				})));
 
 	private SyntaxService syntaxService;
 
@@ -715,8 +728,8 @@ public class EntityPortingService implements Service {
 				if (cond.isUpdateDisupdatableProperty()) {
 					//更新不可項目も含む場合
 
-					//キー項目は除外
-					if (propName.equals(Entity.OID) || propName.equals(Entity.VERSION)) {
+					//除外対象
+					if (UN_UPDATABLE_PROPERTY.contains(propName)) {
 						continue;
 					}
 					//被参照項目は除外
