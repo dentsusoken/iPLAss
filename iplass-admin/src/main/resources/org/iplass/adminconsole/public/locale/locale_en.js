@@ -767,7 +767,7 @@ LocaleInfo.ui_metadata_menu_MenuTreeGrid_deleteMenuItem = "Do want to delete ite
 LocaleInfo.ui_metadata_menu_MenuTreeGrid_dragInvalid = "Drag source information in the tree move is incorrect. nodes:";
 LocaleInfo.ui_metadata_menu_MenuTreeGrid_canNotGetDrag = "Can not get the Index of original Drag Node in the tree move. nodes:";
 LocaleInfo.ui_metadata_menu_MenuTreeGrid_displayOrder = "Sets the display order of the time of menu switching.";
-LocaleInfo.ui_metadata_menu_MenuTreeGrid_showMenuDisplayName = "The display name of the menu definition is displayed in the Menu switching.";
+LocaleInfo.ui_metadata_menu_MenuTreeGrid_showMenuDisplayName = "Set the name displayed by switching menus to the menu display name. <br> If unchecked, the role name will be displayed.";
 LocaleInfo.ui_metadata_menu_MenuTreeGrid_expandTree = "expand the tree.";
 LocaleInfo.ui_metadata_menu_MenuTreeGrid_contractTree = "contract the tree.";
 LocaleInfo.ui_metadata_menu_item_MenuItemDialog_eachLangDspName = "<div style=\"white-space: nowrap;\">Set the display name for each language.</div>";

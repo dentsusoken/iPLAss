@@ -42,7 +42,7 @@ public class MenuTree implements Definition {
 	/** 名前 */
 	private String name;
 	/** 表示名 */
-	@MultiLang(itemNameGetter = "getName", itemKey = "displayName", itemGetter = "getDisplayName", itemSetter = "setDisplayName", multiLangGetter = "getLocalizedDisplayNameList", multiLangSetter = "setLocalizedDisplayNameList")
+	@MultiLang(itemNameGetter = "getName")
 	private String displayName;
 	/** 説明 */
 	private String description;

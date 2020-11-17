@@ -424,7 +424,6 @@ public class MenuEditPane extends MetaDataMainEditPane {
 				MenuItem menuItem = event.getValueObject(MenuItem.class);
 				deleteMenuItemNode(menuItem);
 			}
-			SC.say("★★★★★★★★★★★★" + event.getType().toString());
 		}
 
 		/**
