@@ -40,14 +40,4 @@ public interface SelectValueDefinitionManager extends TypedDefinitionManager<Sel
 	 * @return SelectValue
 	 */
 	public SelectValue getSelectValue(String entityName, String propertyName, String value);
-	
-	/**
-	 * 値からSelectValueを取得します。
-	 *
-	 * @param entityName エンティティ名
-	 * @param definitionName 定義名
-	 * @param values 値
-	 * @return SelectValue
-	 */
-	public SelectValue[] getSelectValues(String entityName, String propertyName, String[] values);
 }

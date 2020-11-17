@@ -79,27 +79,4 @@ public class SelectValueDefinitionManagerImpl extends AbstractTypedDefinitionMan
 				? new SelectValue(value) 
 				: selectProperty.getSelectValue(value);
 	}
-	
-	@Override
-	public SelectValue[] getSelectValues(String entityName, String propertyName, String[] values) {
-		
-		EntityDefinitionManager entityDefinitionManager = ManagerLocator.manager(EntityDefinitionManager.class);
-		EntityDefinition entityDefinition = entityDefinitionManager.get(entityName);
-
-		if(entityDefinition == null || values == null) {
-			return null;
-		}
-
-		SelectProperty selectProperty = entityDefinition.getPropertyList().stream()
-				.filter(p -> p instanceof SelectProperty)
-				.filter(p -> p.getName().equals(propertyName))
-				.map(p -> (SelectProperty)p)
-				.findFirst().orElse(new SelectProperty());
-		
-		return Arrays.stream(values)
-				.map(value -> selectProperty.getSelectValue(value) == null 
-						? new SelectValue(value) 
-						: selectProperty.getSelectValue(value))
-				.toArray(SelectValue[]::new);
-	}
 }
