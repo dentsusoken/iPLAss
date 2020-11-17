@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.bouncycastle.jce.provider.BrokenJCEBlockCipher.BrokePBEWithMD5AndDES;
 import org.iplass.gem.command.GemResourceBundleUtil;
 import org.iplass.gem.command.generic.GenericCommandContext;
 import org.iplass.mtp.ApplicationException;
@@ -53,6 +54,7 @@ import org.iplass.mtp.entity.definition.properties.ReferenceProperty;
 import org.iplass.mtp.entity.definition.properties.SelectProperty;
 import org.iplass.mtp.entity.definition.properties.StringProperty;
 import org.iplass.mtp.entity.definition.properties.TimeProperty;
+import org.iplass.mtp.impl.properties.extend.select.SelectValueDefinitionManagerImpl;
 import org.iplass.mtp.util.StringUtil;
 import org.iplass.mtp.utilityclass.definition.UtilityClassDefinitionManager;
 import org.iplass.mtp.view.generic.LoadEntityInterrupter;
@@ -154,7 +156,8 @@ public abstract class RegistrationCommandContext extends GenericCommandContext {
 		} else if (p instanceof ReferenceProperty) {
 			value = createReference(p, paramPrefix);
 		} else if (p instanceof SelectProperty) {
-			value = isMultiple ? getSelectValues(name) : getSelectValue(name);
+			SelectProperty selectProperty = (SelectProperty) p;
+			value = isMultiple ? getSelectValues(name, selectProperty) : getSelectValue(name, selectProperty);
 		} else if (p instanceof StringProperty) {
 			value = isMultiple ? getStringValues(name) : getStringValue(name);
 		} else if (p instanceof TimeProperty) {
@@ -287,19 +290,31 @@ public abstract class RegistrationCommandContext extends GenericCommandContext {
 	}
 
 	protected SelectValue getSelectValue(String name) {
-		String param = getParam(name);
-		SelectValue ret = null;
-		if (StringUtil.isNotBlank(param)) {
-			ret = new SelectValue(param);
-		}
-		return ret;
+		return getSelectValue(name, new SelectProperty());
 	}
 
 	protected SelectValue[] getSelectValues(String name) {
+		return getSelectValues(name, new SelectProperty());
+	}
+	
+	protected SelectValue getSelectValue(String name, SelectProperty selectProperty) {
+		String param = getParam(name);
+		SelectValue ret = null;
+		if (StringUtil.isNotBlank(param)) {
+			ret = selectProperty.getSelectValue(param) == null 
+					? new SelectValue(param) 
+					: selectProperty.getSelectValue(param);
+		}
+		return ret;
+	}
+	
+	protected SelectValue[] getSelectValues(String name, SelectProperty selectProperty) {
 		String[] params = getParams(name);
 		if (params != null) {
 			SelectValue[] ret = Arrays.stream(params)
-					.map(value -> new SelectValue(value))
+					.map(param -> selectProperty.getSelectValue(param) == null 
+							? new SelectValue(param) 
+							: selectProperty.getSelectValue(param))
 					.toArray(SelectValue[]::new);
 			return ret.length > 0 ? ret : null;
 		} else {

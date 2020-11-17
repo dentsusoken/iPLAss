@@ -20,10 +20,17 @@
 
 package org.iplass.mtp.impl.properties.extend.select;
 
+import java.util.Arrays;
+import org.iplass.mtp.ManagerLocator;
+import org.iplass.mtp.entity.SelectValue;
+import org.iplass.mtp.entity.definition.EntityDefinition;
+import org.iplass.mtp.entity.definition.EntityDefinitionManager;
+import org.iplass.mtp.entity.definition.properties.SelectProperty;
 import org.iplass.mtp.entity.definition.properties.selectvalue.SelectValueDefinition;
 import org.iplass.mtp.entity.definition.properties.selectvalue.SelectValueDefinitionManager;
 import org.iplass.mtp.impl.definition.AbstractTypedDefinitionManager;
 import org.iplass.mtp.impl.definition.TypedMetaDataService;
+import org.iplass.mtp.impl.entity.EntityDefinitionManagerImpl;
 import org.iplass.mtp.impl.metadata.RootMetaData;
 import org.iplass.mtp.spi.ServiceRegistry;
 
@@ -51,5 +58,48 @@ public class SelectValueDefinitionManagerImpl extends AbstractTypedDefinitionMan
 	protected TypedMetaDataService getService() {
 		return service;
 	}
+	
+	@Override
+	public SelectValue getSelectValue(String entityName, String propertyName, String value) {
+		
+		EntityDefinitionManager entityDefinitionManager = ManagerLocator.manager(EntityDefinitionManager.class);
+		EntityDefinition entityDefinition = entityDefinitionManager.get(entityName);
 
+		if(entityDefinition == null || value == null) {
+			return null;
+		}
+		
+		SelectProperty selectProperty = entityDefinition.getPropertyList().stream()
+				.filter(p -> p instanceof SelectProperty)
+				.filter(p -> p.getName().equals(propertyName))
+				.map(p -> (SelectProperty)p)
+				.findFirst().orElse(new SelectProperty());
+		
+		return selectProperty.getSelectValue(value) == null 
+				? new SelectValue(value) 
+				: selectProperty.getSelectValue(value);
+	}
+	
+	@Override
+	public SelectValue[] getSelectValues(String entityName, String propertyName, String[] values) {
+		
+		EntityDefinitionManager entityDefinitionManager = ManagerLocator.manager(EntityDefinitionManager.class);
+		EntityDefinition entityDefinition = entityDefinitionManager.get(entityName);
+
+		if(entityDefinition == null || values == null) {
+			return null;
+		}
+
+		SelectProperty selectProperty = entityDefinition.getPropertyList().stream()
+				.filter(p -> p instanceof SelectProperty)
+				.filter(p -> p.getName().equals(propertyName))
+				.map(p -> (SelectProperty)p)
+				.findFirst().orElse(new SelectProperty());
+		
+		return Arrays.stream(values)
+				.map(value -> selectProperty.getSelectValue(value) == null 
+						? new SelectValue(value) 
+						: selectProperty.getSelectValue(value))
+				.toArray(SelectValue[]::new);
+	}
 }

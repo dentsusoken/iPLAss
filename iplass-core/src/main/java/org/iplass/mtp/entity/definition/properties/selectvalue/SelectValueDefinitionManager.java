@@ -21,6 +21,7 @@
 package org.iplass.mtp.entity.definition.properties.selectvalue;
 
 import org.iplass.mtp.definition.TypedDefinitionManager;
+import org.iplass.mtp.entity.SelectValue;
 
 /**
  * SelectValueDefinitionのManager。
@@ -29,4 +30,24 @@ import org.iplass.mtp.definition.TypedDefinitionManager;
  *
  */
 public interface SelectValueDefinitionManager extends TypedDefinitionManager<SelectValueDefinition> {
+	
+	/**
+	 * 値からSelectValueを取得します。
+	 *
+	 * @param entityName エンティティ名
+	 * @param definitionName 定義名
+	 * @param value 値
+	 * @return SelectValue
+	 */
+	public SelectValue getSelectValue(String entityName, String propertyName, String value);
+	
+	/**
+	 * 値からSelectValueを取得します。
+	 *
+	 * @param entityName エンティティ名
+	 * @param definitionName 定義名
+	 * @param values 値
+	 * @return SelectValue
+	 */
+	public SelectValue[] getSelectValues(String entityName, String propertyName, String[] values);
 }
