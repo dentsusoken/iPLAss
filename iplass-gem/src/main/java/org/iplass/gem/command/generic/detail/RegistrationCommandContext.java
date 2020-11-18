@@ -53,6 +53,7 @@ import org.iplass.mtp.entity.definition.properties.ReferenceProperty;
 import org.iplass.mtp.entity.definition.properties.SelectProperty;
 import org.iplass.mtp.entity.definition.properties.StringProperty;
 import org.iplass.mtp.entity.definition.properties.TimeProperty;
+import org.iplass.mtp.entity.definition.properties.selectvalue.SelectValueDefinitionManager;
 import org.iplass.mtp.util.StringUtil;
 import org.iplass.mtp.utilityclass.definition.UtilityClassDefinitionManager;
 import org.iplass.mtp.view.generic.LoadEntityInterrupter;
@@ -75,6 +76,7 @@ public abstract class RegistrationCommandContext extends GenericCommandContext {
 	protected EntityManager entityManager;
 	protected EntityDefinitionManager definitionManager;
 	protected UtilityClassDefinitionManager ucdm;
+	protected SelectValueDefinitionManager selectValueDefinitionManager;
 
 	/** 変換時に発生したエラー情報 */
 	private List<ValidateError> errors;
@@ -107,6 +109,8 @@ public abstract class RegistrationCommandContext extends GenericCommandContext {
 		this.entityManager = entityLoader;
 		this.definitionManager = definitionLoader;
 		this.ucdm = ManagerLocator.getInstance().getManager(UtilityClassDefinitionManager.class);
+		this.selectValueDefinitionManager = ManagerLocator.manager(SelectValueDefinitionManager.class);
+		
 	}
 
 	protected Entity newEntity() {
@@ -288,18 +292,22 @@ public abstract class RegistrationCommandContext extends GenericCommandContext {
 	}
 
 	protected SelectValue getSelectValue(String name) {
-		return getSelectValue(name, new SelectProperty());
+		return getSelectValue(name, null);
 	}
 
 	protected SelectValue[] getSelectValues(String name) {
-		return getSelectValues(name, new SelectProperty());
+		return getSelectValues(name, null);
 	}
 	
 	protected SelectValue getSelectValue(String name, SelectProperty selectProperty) {
 		String param = getParam(name);
 		SelectValue ret = null;
 		if (StringUtil.isNotBlank(param)) {
-			SelectValue selectValue = selectProperty.getLocalizedSelectValue(param); 
+			if(selectProperty == null) {
+				return new SelectValue(param);
+			}
+			
+			SelectValue selectValue = selectValueDefinitionManager.getLocalizedSelectValue(selectProperty, param); 
 			ret = selectValue == null 
 				? new SelectValue(param) 
 				: selectValue;
@@ -312,11 +320,15 @@ public abstract class RegistrationCommandContext extends GenericCommandContext {
 		if (params != null) {
 			SelectValue[] ret = Arrays.stream(params)
 					.map(param -> {
-						SelectValue selectValue = selectProperty.getLocalizedSelectValue(param);
-						return selectValue == null
-							? new SelectValue(param)
+						if(selectProperty == null) {
+							return new SelectValue(param);
+						}
+						
+						SelectValue selectValue = selectValueDefinitionManager.getLocalizedSelectValue(selectProperty, param); 
+						return selectValue == null 
+							? new SelectValue(param) 
 							: selectValue;
-						})
+					})
 					.toArray(SelectValue[]::new);
 			return ret.length > 0 ? ret : null;
 		} else {

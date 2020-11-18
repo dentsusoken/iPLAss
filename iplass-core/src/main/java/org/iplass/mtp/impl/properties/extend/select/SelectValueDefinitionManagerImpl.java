@@ -20,18 +20,20 @@
 
 package org.iplass.mtp.impl.properties.extend.select;
 
-import java.util.Arrays;
 import org.iplass.mtp.ManagerLocator;
 import org.iplass.mtp.entity.SelectValue;
 import org.iplass.mtp.entity.definition.EntityDefinition;
 import org.iplass.mtp.entity.definition.EntityDefinitionManager;
+import org.iplass.mtp.entity.definition.PropertyDefinition;
 import org.iplass.mtp.entity.definition.properties.SelectProperty;
 import org.iplass.mtp.entity.definition.properties.selectvalue.SelectValueDefinition;
 import org.iplass.mtp.entity.definition.properties.selectvalue.SelectValueDefinitionManager;
+import org.iplass.mtp.impl.core.ExecuteContext;
 import org.iplass.mtp.impl.definition.AbstractTypedDefinitionManager;
 import org.iplass.mtp.impl.definition.TypedMetaDataService;
 import org.iplass.mtp.impl.metadata.RootMetaData;
 import org.iplass.mtp.spi.ServiceRegistry;
+import org.iplass.mtp.tenant.TenantI18nInfo;
 
 public class SelectValueDefinitionManagerImpl extends AbstractTypedDefinitionManager<SelectValueDefinition> implements
 		SelectValueDefinitionManager {
@@ -59,25 +61,37 @@ public class SelectValueDefinitionManagerImpl extends AbstractTypedDefinitionMan
 	}
 	
 	@Override
+	public SelectValue getLocalizedSelectValue(SelectProperty selectProperty, String value) {
+		if(selectProperty == null || value == null){
+			return null;
+		}
+		
+		ExecuteContext ec = ExecuteContext.getCurrentContext();
+		if (ec.getCurrentTenant().getTenantConfig(TenantI18nInfo.class).isUseMultilingual()) {
+			String lang = ec.getLanguage();
+			return selectProperty.getLocalizedSelectValue(value, lang);
+		}
+
+		return selectProperty.getSelectValue(value);
+	}
+	
+	@Override
 	public SelectValue getSelectValue(String entityName, String propertyName, String value) {
 		
 		EntityDefinitionManager entityDefinitionManager = ManagerLocator.manager(EntityDefinitionManager.class);
 		EntityDefinition entityDefinition = entityDefinitionManager.get(entityName);
 
-		if(entityDefinition == null || value == null) {
+		if(entityDefinition == null || propertyName == null|| value == null) {
 			return null;
 		}
 		
-		SelectProperty selectProperty = entityDefinition.getPropertyList().stream()
-				.filter(p -> p instanceof SelectProperty)
-				.filter(p -> p.getName().equals(propertyName))
-				.map(p -> (SelectProperty)p)
-				.findFirst().orElse(new SelectProperty());
+		PropertyDefinition propertyDefinition = entityDefinition.getProperty(propertyName);
 		
-		SelectValue selectValue = selectProperty.getLocalizedSelectValue(value);
+		if(propertyDefinition instanceof SelectProperty) {
+			SelectProperty selectProperty = (SelectProperty)propertyDefinition;
+			return getLocalizedSelectValue(selectProperty, value);
+		}
 		
-		return selectValue == null
-			? new SelectValue(value) 
-			: selectValue;
+		return null;
 	}
 }
