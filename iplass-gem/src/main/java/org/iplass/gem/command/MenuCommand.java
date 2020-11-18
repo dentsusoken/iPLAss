@@ -263,10 +263,10 @@ public final class MenuCommand implements Command {
 				//Menu定義の表示順を取得
 				MenuTree mt = mtm.get(entity.getValue("code"));
 				if (mt != null) {
-					//フラグがOFFまたは表示名未設定の場合は、現状通りロール名を表示する。
-					if (mt.getShowMenuDisplayName()) {
-						String displayName = TemplateUtil.getMultilingualString(entity.getName(), mt.getLocalizedDisplayNameList());
-						entity.setName(displayName);
+					//フラグがONの場合は、デフォルトをロール名じゃなくて、Menu定義名に表示する。
+					if (mt.getIsShowMenuDisplayName()) {
+						String displayName = TemplateUtil.getMultilingualString(mt.getDisplayName(), mt.getLocalizedDisplayNameList());
+						if (StringUtil.isNotEmpty(displayName)) entity.setName(displayName);
 					}
 					return new RoleInfo(entity, mt.getDisplayOrder());
 				} else {

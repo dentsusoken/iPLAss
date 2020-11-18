@@ -295,7 +295,7 @@ public class MenuEditPane extends MetaDataMainEditPane {
 		/** 表示順序 */
 		private IntegerItem displayOrderField;
 		/** メニュー表示名を表示かどうか **/
-		private BooleanItem showMenuDisplayName;
+		private BooleanItem isShowMenuDisplayName;
 
 		/** ツリー部分 */
 		private MenuTreeGrid treeGrid;
@@ -314,10 +314,10 @@ public class MenuEditPane extends MetaDataMainEditPane {
 			SmartGWTUtil.addHoverToFormItem(displayOrderField, AdminClientMessageUtil.getString("ui_metadata_menu_MenuTreeGrid_displayOrder"));
 			items.add(displayOrderField);
 
-			showMenuDisplayName = new BooleanItem();
-			showMenuDisplayName.setTitle("Show Menu Display Name");
-			SmartGWTUtil.addHoverToFormItem(showMenuDisplayName, AdminClientMessageUtil.getString("ui_metadata_menu_MenuTreeGrid_showMenuDisplayName"));
-			items.add(showMenuDisplayName);
+			isShowMenuDisplayName = new BooleanItem();
+			isShowMenuDisplayName.setTitle("Show Menu Display Name");
+			SmartGWTUtil.addHoverToFormItem(isShowMenuDisplayName, AdminClientMessageUtil.getString("ui_metadata_menu_MenuTreeGrid_showMenuDisplayName"));
+			items.add(isShowMenuDisplayName);
 
 			form = new MtpForm2Column();
 			form.setItems(items.toArray(new FormItem[items.size()]));
@@ -390,13 +390,13 @@ public class MenuEditPane extends MetaDataMainEditPane {
 
 		public void setDefinition(MenuTree definition) {
 			displayOrderField.setValue(definition.getDisplayOrder());
-			showMenuDisplayName.setValue(definition.getShowMenuDisplayName());
+			isShowMenuDisplayName.setValue(definition.getIsShowMenuDisplayName());
 			treeGrid.setMenuTree(definition);
 		}
 
 		public MenuTree getEditDefinition(MenuTree definition) {
 			definition.setDisplayOrder(SmartGWTUtil.getIntegerValue(displayOrderField));
-			definition.setShowMenuDisplayName(SmartGWTUtil.getBooleanValue(showMenuDisplayName));
+			definition.setIsShowMenuDisplayName(SmartGWTUtil.getBooleanValue(isShowMenuDisplayName));
 			definition.setMenuItems(treeGrid.getEditMenuItems());
 			return definition;
 		}

@@ -44,7 +44,7 @@ public class MetaTreeMenu extends BaseRootMetaData implements DefinableMetaData<
 	private Integer displayOrder;
 
 	/** 定義の表示名を表示かどうか */
-	private Boolean showMenuDisplayName;
+	private boolean isShowMenuDisplayName;
 
 	/** 子階層メニュ */
 	private List<MetaMenuItem> childs;
@@ -65,7 +65,7 @@ public class MetaTreeMenu extends BaseRootMetaData implements DefinableMetaData<
 		displayName = definition.getDisplayName();
 		description = definition.getDescription();
 		displayOrder = definition.getDisplayOrder();
-		showMenuDisplayName = definition.getShowMenuDisplayName();
+		isShowMenuDisplayName = definition.getIsShowMenuDisplayName();
 
 		if (definition.getMenuItems() != null) {
 			childs = new ArrayList<MetaMenuItem>(definition.getMenuItems().size());
@@ -90,7 +90,7 @@ public class MetaTreeMenu extends BaseRootMetaData implements DefinableMetaData<
 		definition.setDisplayName(displayName);
 		definition.setDescription(description);
 		definition.setDisplayOrder(displayOrder);
-		definition.setShowMenuDisplayName(showMenuDisplayName);
+		definition.setIsShowMenuDisplayName(isShowMenuDisplayName);
 
 		if (childs != null) {
 			ArrayList<MenuItem> items = new ArrayList<MenuItem>(childs.size());
@@ -137,16 +137,16 @@ public class MetaTreeMenu extends BaseRootMetaData implements DefinableMetaData<
 	 * 定義の表示名を表示かどうかを取得します。
 	 * @return 定義の表示名を表示かどうか
 	 */
-	public Boolean getShowMenuDisplayName() {
-	    return showMenuDisplayName;
+	public boolean getIsShowMenuDisplayName() {
+	    return isShowMenuDisplayName;
 	}
 
 	/**
 	 * 定義の表示名を表示かどうかを設定します。
-	 * @param showMenuDisplayName 定義の表示名を表示かどうか
+	 * @param isShowMenuDisplayName 定義の表示名を表示かどうか
 	 */
-	public void setShowMenuDisplayName(Boolean showMenuDisplayName) {
-	    this.showMenuDisplayName = showMenuDisplayName;
+	public void setIsShowMenuDisplayName(boolean isShowMenuDisplayName) {
+	    this.isShowMenuDisplayName = isShowMenuDisplayName;
 	}
 
 	/**
