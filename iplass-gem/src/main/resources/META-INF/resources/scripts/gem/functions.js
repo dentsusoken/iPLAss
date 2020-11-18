@@ -144,7 +144,7 @@ $(function(){
 	}
 
 	/* jQueryUI ダイアログ設定 */
-    $(document).on("dialogopen", ".mtp-jq-dialog", function() {
+	$(document).on("dialogopen", ".mtp-jq-dialog", function() {
 		var $html = $("html");
 		var $document = $(document);
 		var $window = $(window);
@@ -160,7 +160,6 @@ $(function(){
 			$document.scrollLeft(0);
 			var height = Math.max($window.height() , $document.height());
 			var width = Math.min($window.width() , $document.width());
-			var left
 			$overlay.css({
 				height : height,
 				width : width,
@@ -182,10 +181,10 @@ $(function(){
 				marginLeft: 30
 			});
 		}
-    });
-    $(document).on("dialogclose", ".mtp-jq-dialog", function() {
-        $("html").css('overflow','');
-    });
+	});
+	$(document).on("dialogclose", ".mtp-jq-dialog", function() {
+		$("html").css('overflow','');
+	});
 });
 
 /**
