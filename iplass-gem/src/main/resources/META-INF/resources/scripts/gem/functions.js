@@ -145,12 +145,46 @@ $(function(){
 
 	/* jQueryUI ダイアログ設定 */
     $(document).on("dialogopen", ".mtp-jq-dialog", function() {
-        $("html").css('overflow-y','hidden');
-        $("body").css('overflow','hidden');
+		var $html = $("html");
+		var $document = $(document);
+		var $window = $(window);
+		var $overlay =$(".ui-widget-overlay.ui-front");
+		var $under = $(".ui-dialog.ui-corner-all.ui-widget.ui-widget-content.ui-front.ui-dialog-buttons.ui-draggable");
+		//ダイアログ表示前、スクロールバーを非表示にする。
+		$html.css('overflow','hidden');
+		resizeHandler();
+		$window.on("resize", resizeHandler);
+
+		function resizeHandler(e){
+			$overlay.width(0);
+			$document.scrollLeft(0);
+			var height = Math.max($window.height() , $document.height());
+			var width = Math.min($window.width() , $document.width());
+			var left
+			$overlay.css({
+				height : height,
+				width : width,
+				top: $document.scrollTop(),
+				left: 0,
+				position:"absolute"
+			});
+			setModalWindowToCenter();
+		}
+
+		function setModalWindowToCenter(){
+			var width = Math.min($window.width() , $document.width());
+			var height = Math.min($window.height() , $document.height());
+			var top = height / 2 > 120 ? height / 2 - 120 : 10;
+			var left = width / 2 > 240 ? width / 2 - 240 : 10;
+			$under.css({
+				top: top + $document.scrollTop(),
+				left: left,
+				marginLeft: 30
+			});
+		}
     });
     $(document).on("dialogclose", ".mtp-jq-dialog", function() {
-        $("html").css('overflow-y','');
-        $("body").css('overflow','auto');
+        $("html").css('overflow','');
     });
 });
 
