@@ -344,6 +344,7 @@ public final class MapBaseCacheStore extends SimpleCacheStoreBase {
 				indexCache[i] = null;
 			}
 		}
+		cache = null;
 	}
 
 }

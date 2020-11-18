@@ -23,6 +23,7 @@ package org.iplass.mtp.impl.cache;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Consumer;
 
 import org.iplass.mtp.impl.cache.store.CacheEntry;
 import org.iplass.mtp.impl.cache.store.CacheStore;
@@ -414,6 +415,16 @@ public class CacheController<K, V> {
 	public void refreshTransactionLocalStore(K key) {
 		if (store instanceof TransactionLocalCacheStore) {
 			((TransactionLocalCacheStore) store).reloadFromBackendStore(key);
+		}
+	}
+	
+	public void maintenance(Consumer<CacheController<K, V>> maintenanceFunction) {
+		if (isStrictUpdate) {
+			synchronized (this) {
+				maintenanceFunction.accept(this);
+			}
+		} else {
+			maintenanceFunction.accept(this);
 		}
 	}
 

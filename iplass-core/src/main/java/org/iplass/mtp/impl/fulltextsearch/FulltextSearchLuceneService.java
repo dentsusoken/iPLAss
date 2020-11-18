@@ -96,9 +96,7 @@ import org.iplass.mtp.entity.query.condition.predicate.In;
 import org.iplass.mtp.entity.query.value.ValueExpression;
 import org.iplass.mtp.entity.query.value.primary.EntityField;
 import org.iplass.mtp.entity.query.value.primary.Literal;
-import org.iplass.mtp.impl.core.Executable;
 import org.iplass.mtp.impl.core.ExecuteContext;
-import org.iplass.mtp.impl.core.TenantContextService;
 import org.iplass.mtp.impl.definition.DefinitionService;
 import org.iplass.mtp.impl.entity.MetaEntity;
 import org.iplass.mtp.impl.fulltextsearch.parser.BinaryNameTypeParser;
@@ -110,12 +108,12 @@ import org.iplass.mtp.impl.metadata.MetaDataContext;
 import org.iplass.mtp.impl.metadata.MetaDataEntry;
 import org.iplass.mtp.impl.util.InternalDateUtil;
 import org.iplass.mtp.spi.Config;
-import org.iplass.mtp.spi.ServiceRegistry;
 import org.iplass.mtp.util.DateUtil;
 import org.iplass.mtp.util.StringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@Deprecated
 public class FulltextSearchLuceneService extends AbstractFulltextSeachService {
 
 	private static Logger logger = LoggerFactory.getLogger(FulltextSearchLuceneService.class);
@@ -158,8 +156,6 @@ public class FulltextSearchLuceneService extends AbstractFulltextSeachService {
 			"E_13", "E_14", "E_15", "E_16", "E_17", "E_18", "E_19", "E_20", "E_21", "E_22", "E_23",
 			"E_24", "E_25", "E_26", "E_27", "E_28", "E_29", "E_30", "E_31", "E_32"};
 
-	private TenantContextService tenantContextService;
-
 	private Directory directory;
 	private Analyzer analyzer;
 	private Operator defaultOperator;
@@ -195,8 +191,6 @@ public class FulltextSearchLuceneService extends AbstractFulltextSeachService {
 	@Override
 	public void init(Config config) {
 		super.init(config);
-
-		tenantContextService = ServiceRegistry.getRegistry().getService(TenantContextService.class);
 
 		if (isUseFulltextSearch()) {
 			try {
@@ -262,33 +256,22 @@ public class FulltextSearchLuceneService extends AbstractFulltextSeachService {
 
 	@Override
 	public void execCrawlEntity(String... defNames) {
-		execCrawlEntity(ExecuteContext.getCurrentContext().getClientTenantId(), defNames);
-	}
+		int tenantId = ExecuteContext.getCurrentContext().getClientTenantId();
+		if (defNames == null || defNames.length == 0) {
+			// init処理で実行するとinterceptorとの絡みで無限ループするのでここでgetする
+			EntityDefinitionManager edm = ManagerLocator.getInstance().getManager(EntityDefinitionManager.class);
+			// 対象エンティティの取得
+			List<DefinitionSummary> defList = edm.definitionNameList();
 
-	@Override
-	public void execCrawlEntity(final int tenantId, final String... defNames) {
-		ExecuteContext.executeAs(tenantContextService.getTenantContext(tenantId), new Executable<Void>() {
-			@Override
-			public Void execute() {
-				if (defNames == null || defNames.length == 0) {
-					// init処理で実行するとinterceptorとの絡みで無限ループするのでここでgetする
-					EntityDefinitionManager edm = ManagerLocator.getInstance().getManager(EntityDefinitionManager.class);
-					// 対象エンティティの取得
-					List<DefinitionSummary> defList = edm.definitionNameList();
-
-					// エンティティ毎にデータをクロールする
-					for (final DefinitionSummary def : defList) {
-						createIndexData(tenantId, def.getName());
-					}
-				} else {
-					for (String defName : defNames) {
-						createIndexData(tenantId, defName);
-					}
-				}
-				return null;
+			// エンティティ毎にデータをクロールする
+			for (final DefinitionSummary def : defList) {
+				createIndexData(tenantId, def.getName());
 			}
-		});
-
+		} else {
+			for (String defName : defNames) {
+				createIndexData(tenantId, defName);
+			}
+		}
 	}
 
 	@Override
@@ -864,13 +847,8 @@ public class FulltextSearchLuceneService extends AbstractFulltextSeachService {
 
 	@Override
 	public void deleteAllIndex() {
-		deleteAllIndex(ExecuteContext.getCurrentContext().getClientTenantId());
-
-	}
-
-	@Override
-	public void deleteAllIndex(int tenantId) {
-
+		int tenantId = ExecuteContext.getCurrentContext().getClientTenantId();
+		
 		IndexWriter writer = null;
 		try {
 			writer = new IndexWriter(directory, new IndexWriterConfig(analyzer));

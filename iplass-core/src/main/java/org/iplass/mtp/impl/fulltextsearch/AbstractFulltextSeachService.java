@@ -30,6 +30,7 @@ import java.util.Map;
 
 import org.iplass.mtp.entity.fulltextsearch.FulltextSearchRuntimeException;
 import org.iplass.mtp.impl.core.ExecuteContext;
+import org.iplass.mtp.impl.core.TenantContext;
 import org.iplass.mtp.impl.datastore.grdb.MetaGRdbMultiplePropertyStore;
 import org.iplass.mtp.impl.datastore.grdb.MetaGRdbPropertyStore;
 import org.iplass.mtp.impl.entity.EntityHandler;
@@ -86,6 +87,20 @@ public abstract class AbstractFulltextSeachService implements FulltextSearchServ
 			deleteLogDeleteSql = rdb.getUpdateSqlCreator(DeleteLogDeleteSql.class);
 			deleteLogSearchSql = rdb.getQuerySqlCreator(DeleteLogSearchSql.class);
 		}
+	}
+	
+	@Override
+	public void initTenantContext(TenantContext tenantContext) {
+	}
+	@Override
+	public void destroyTenantContext(TenantContext tenantContext) {
+	}
+	
+
+	@Override
+	public void destroy() {
+		// TODO Auto-generated method stub
+		
 	}
 
 	public boolean isUseFulltextSearch() {

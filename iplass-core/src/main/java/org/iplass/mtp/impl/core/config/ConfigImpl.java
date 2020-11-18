@@ -706,6 +706,9 @@ public class ConfigImpl implements Config {
 	public <T> T getValue(String name, Class<T> type, T defaultValue) {
 		T ret = getValue(name, type);
 		if (ret == null) {
+			if (logger.isDebugEnabled()) {
+				logger.debug(name + "(type:" + type.getName() + ") undefined. so use defaultValue:" + defaultValue);
+			}
 			return defaultValue;
 		} else {
 			return ret;
@@ -716,6 +719,10 @@ public class ConfigImpl implements Config {
 	public <T> List<T> getValues(String name, Class<T> type, List<T> defaultValues) {
 		List<T> ret = getValues(name, type);
 		if (ret == null) {
+			if (logger.isDebugEnabled()) {
+				logger.debug(name + "(type:" + type.getName() + ") undefined. so use defaultValue:" + defaultValues);
+			}
+
 			return defaultValues;
 		} else {
 			return ret;

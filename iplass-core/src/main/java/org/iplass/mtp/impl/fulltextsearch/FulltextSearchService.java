@@ -27,6 +27,7 @@ import java.util.Map;
 import org.iplass.mtp.entity.Entity;
 import org.iplass.mtp.entity.SearchResult;
 import org.iplass.mtp.entity.fulltextsearch.FulltextSearchOption;
+import org.iplass.mtp.impl.core.TenantContext;
 import org.iplass.mtp.spi.Service;
 
 public interface FulltextSearchService extends Service {
@@ -59,15 +60,6 @@ public interface FulltextSearchService extends Service {
 	 * クロール処理を実行する。
 	 * Entity定義名が未指定の場合、全Entityを対象にする。
 	 *
-	 * @param tenantId テナントID
-	 * @param defNames Entity定義名
-	 */
-	void execCrawlEntity(int tenantId, String... defNames);
-
-	/**
-	 * クロール処理を実行する。
-	 * Entity定義名が未指定の場合、全Entityを対象にする。
-	 *
 	 * @param defNames Entity定義名
 	 */
 	void execCrawlEntity(String... defNames);
@@ -76,13 +68,6 @@ public interface FulltextSearchService extends Service {
 	 * リフレッシュ処理を実行する。
 	 */
 	void execRefresh();
-
-	/**
-	 * テナントの全Indexデータを削除する。
-	 *
-	 * @param tenantId テナントID
-	 */
-	void deleteAllIndex(int tenantId);
 
 	/**
 	 * テナントの全Indexデータを削除する。
@@ -149,5 +134,8 @@ public interface FulltextSearchService extends Service {
 	 * @return 検索結果情報
 	 */
 	List<FulltextSearchResult> execFulltextSearch(String defName, String keyword);
+
+	void initTenantContext(TenantContext tenantContext);
+	void destroyTenantContext(TenantContext tenantContext);
 
 }
