@@ -110,7 +110,6 @@ public abstract class RegistrationCommandContext extends GenericCommandContext {
 		this.definitionManager = definitionLoader;
 		this.ucdm = ManagerLocator.getInstance().getManager(UtilityClassDefinitionManager.class);
 		this.selectValueDefinitionManager = ManagerLocator.manager(SelectValueDefinitionManager.class);
-		
 	}
 
 	protected Entity newEntity() {
