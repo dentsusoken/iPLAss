@@ -74,8 +74,10 @@ public class SelectValueDefinitionManagerImpl extends AbstractTypedDefinitionMan
 				.map(p -> (SelectProperty)p)
 				.findFirst().orElse(new SelectProperty());
 		
-		return selectProperty.getSelectValue(value) == null 
-				? new SelectValue(value) 
-				: selectProperty.getSelectValue(value);
+		SelectValue selectValue = selectProperty.getLocalizedSelectValue(value);
+		
+		return selectValue == null
+			? new SelectValue(value) 
+			: selectValue;
 	}
 }

@@ -301,7 +301,7 @@ public abstract class RegistrationCommandContext extends GenericCommandContext {
 		if (StringUtil.isNotBlank(param)) {
 			ret = selectProperty.getSelectValue(param) == null 
 					? new SelectValue(param) 
-					: selectProperty.getSelectValue(param);
+					: selectProperty.getLocalizedSelectValue(param);
 		}
 		return ret;
 	}
@@ -312,7 +312,7 @@ public abstract class RegistrationCommandContext extends GenericCommandContext {
 			SelectValue[] ret = Arrays.stream(params)
 					.map(param -> selectProperty.getSelectValue(param) == null 
 							? new SelectValue(param) 
-							: selectProperty.getSelectValue(param))
+							: selectProperty.getLocalizedSelectValue(param))
 					.toArray(SelectValue[]::new);
 			return ret.length > 0 ? ret : null;
 		} else {

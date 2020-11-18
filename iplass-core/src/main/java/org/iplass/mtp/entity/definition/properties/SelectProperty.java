@@ -29,6 +29,8 @@ import org.iplass.mtp.entity.definition.LocalizedSelectValueDefinition;
 import org.iplass.mtp.entity.definition.PropertyDefinition;
 import org.iplass.mtp.entity.definition.PropertyDefinitionType;
 import org.iplass.mtp.entity.definition.properties.selectvalue.SelectValueDefinition;
+import org.iplass.mtp.impl.core.ExecuteContext;
+import org.iplass.mtp.tenant.TenantI18nInfo;
 
 
 /**
@@ -88,6 +90,22 @@ public class SelectProperty extends PropertyDefinition {
 			}
 		}
 		return null;
+	}
+	
+	/**
+	 * 指定のvalueで、指定のlocaleのSelectValue定義を返却。
+	 *
+	 * @param value
+	 * @return SelectValue
+	 */
+	public SelectValue getLocalizedSelectValue(String value) {
+		 ExecuteContext ec = ExecuteContext.getCurrentContext();
+	     if (ec.getCurrentTenant().getTenantConfig(TenantI18nInfo.class).isUseMultilingual()) {
+	    	 String lang = ec.getLanguage();
+	    	 return getLocalizedSelectValue(value, lang);
+	     }
+
+		return getSelectValue(value);
 	}
 
 	/**
