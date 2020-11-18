@@ -51,7 +51,7 @@ public class MenuTree implements Definition {
 	private Integer displayOrder;
 
 	/** 定義の表示名を表示かどうか */
-	private boolean isShowMenuDisplayName;
+	private boolean showMenuDisplayName;
 
 	/** 子階層のメニューアイテム */
 	private List<MenuItem> menuItems;
@@ -132,16 +132,16 @@ public class MenuTree implements Definition {
 	 * 定義の表示名を表示かどうかを取得します。
 	 * @return 定義の表示名を表示かどうか
 	 */
-	public boolean getIsShowMenuDisplayName() {
-	    return isShowMenuDisplayName;
+	public boolean isShowMenuDisplayName() {
+	    return showMenuDisplayName;
 	}
 
 	/**
 	 * 定義の表示名を表示かどうかを設定します。
 	 * @param showMenuDisplayName 定義の表示名を表示かどうか
 	 */
-	public void setIsShowMenuDisplayName(boolean isShowMenuDisplayName) {
-	    this.isShowMenuDisplayName = isShowMenuDisplayName;
+	public void setShowMenuDisplayName(boolean showMenuDisplayName) {
+	    this.showMenuDisplayName = showMenuDisplayName;
 	}
 
 	/**

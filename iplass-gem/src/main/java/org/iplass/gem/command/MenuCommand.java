@@ -264,7 +264,7 @@ public final class MenuCommand implements Command {
 				MenuTree mt = mtm.get(entity.getValue("code"));
 				if (mt != null) {
 					//フラグがONの場合は、デフォルトをロール名じゃなくて、Menu定義名に表示する。
-					if (mt.getIsShowMenuDisplayName()) {
+					if (mt.isShowMenuDisplayName()) {
 						String displayName = TemplateUtil.getMultilingualString(mt.getDisplayName(), mt.getLocalizedDisplayNameList());
 						if (StringUtil.isNotEmpty(displayName)) entity.setName(displayName);
 					}

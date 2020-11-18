@@ -62,7 +62,7 @@ public class CreateMenuTreeDialog extends MetaDataCreateDialog {
 			definition.setName(saveInfo.getName());
 			definition.setDisplayName(saveInfo.getDisplayName());
 			definition.setDescription(saveInfo.getDescription());
-			definition.setIsShowMenuDisplayName(true);
+			definition.setShowMenuDisplayName(true);
 
 			service.createDefinition(TenantInfoHolder.getId(), definition, new SaveResultCallback());
 		}
