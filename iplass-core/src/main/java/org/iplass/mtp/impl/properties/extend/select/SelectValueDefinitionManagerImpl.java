@@ -31,6 +31,7 @@ import org.iplass.mtp.entity.definition.properties.selectvalue.SelectValueDefini
 import org.iplass.mtp.impl.core.ExecuteContext;
 import org.iplass.mtp.impl.definition.AbstractTypedDefinitionManager;
 import org.iplass.mtp.impl.definition.TypedMetaDataService;
+import org.iplass.mtp.impl.i18n.I18nUtil;
 import org.iplass.mtp.impl.metadata.RootMetaData;
 import org.iplass.mtp.spi.ServiceRegistry;
 import org.iplass.mtp.tenant.TenantI18nInfo;
@@ -61,21 +62,6 @@ public class SelectValueDefinitionManagerImpl extends AbstractTypedDefinitionMan
 	}
 	
 	@Override
-	public SelectValue getLocalizedSelectValue(SelectProperty selectProperty, String value) {
-		if(selectProperty == null || value == null){
-			return null;
-		}
-		
-		ExecuteContext ec = ExecuteContext.getCurrentContext();
-		if (ec.getCurrentTenant().getTenantConfig(TenantI18nInfo.class).isUseMultilingual()) {
-			String lang = ec.getLanguage();
-			return selectProperty.getLocalizedSelectValue(value, lang);
-		}
-
-		return selectProperty.getSelectValue(value);
-	}
-	
-	@Override
 	public SelectValue getSelectValue(String entityName, String propertyName, String value) {
 		
 		EntityDefinitionManager entityDefinitionManager = ManagerLocator.manager(EntityDefinitionManager.class);
@@ -89,7 +75,8 @@ public class SelectValueDefinitionManagerImpl extends AbstractTypedDefinitionMan
 		
 		if(propertyDefinition instanceof SelectProperty) {
 			SelectProperty selectProperty = (SelectProperty)propertyDefinition;
-			return getLocalizedSelectValue(selectProperty, value);
+			String lang = I18nUtil.getLanguageIfUseMultilingual();
+			return selectProperty.getLocalizedSelectValue(value, lang);
 		}
 		
 		return null;

@@ -134,5 +134,12 @@ public final class I18nUtil {
 		}
 		return def;
 	}
-
+	
+	public static String getLanguageIfUseMultilingual() {
+		ExecuteContext ec = ExecuteContext.getCurrentContext();
+		if (ec.getCurrentTenant().getTenantConfig(TenantI18nInfo.class).isUseMultilingual()) {
+			return ec.getLanguage();
+		}
+		return null;
+	}
 }

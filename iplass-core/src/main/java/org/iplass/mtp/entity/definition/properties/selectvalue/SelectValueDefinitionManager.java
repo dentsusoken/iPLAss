@@ -22,7 +22,6 @@ package org.iplass.mtp.entity.definition.properties.selectvalue;
 
 import org.iplass.mtp.definition.TypedDefinitionManager;
 import org.iplass.mtp.entity.SelectValue;
-import org.iplass.mtp.entity.definition.properties.SelectProperty;
 
 /**
  * SelectValueDefinitionのManager。
@@ -31,15 +30,6 @@ import org.iplass.mtp.entity.definition.properties.SelectProperty;
  *
  */
 public interface SelectValueDefinitionManager extends TypedDefinitionManager<SelectValueDefinition> {
-	
-	/**
-	 * 指定のvalueで、指定のlocaleのSelectValue定義を返却。
-	 *
-	 * @param selectProperty
-	 * @param value
-	 * @return SelectValue
-	 */
-	public SelectValue getLocalizedSelectValue(SelectProperty selectProperty, String value);
 	
 	/**
 	 * 値からSelectValueを取得します。
