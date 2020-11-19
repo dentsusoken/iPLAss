@@ -299,18 +299,17 @@ public abstract class RegistrationCommandContext extends GenericCommandContext {
 	protected SelectValue getSelectValue(String name, SelectProperty selectProperty) {
 		String param = getParam(name);
 		String lang = I18nUtil.getLanguageIfUseMultilingual();
-		SelectValue ret = null;
 		if (StringUtil.isNotBlank(param)) {
 			if(selectProperty == null) {
 				return new SelectValue(param);
 			}
-			
 			SelectValue selectValue = selectProperty.getLocalizedSelectValue(param, lang); 
-			ret = selectValue == null 
+			return selectValue == null 
 				? new SelectValue(param) 
 				: selectValue;
 		}
-		return ret;
+		
+		return null;
 	}
 
 	protected SelectValue[] getSelectValues(String name, SelectProperty selectProperty) {
