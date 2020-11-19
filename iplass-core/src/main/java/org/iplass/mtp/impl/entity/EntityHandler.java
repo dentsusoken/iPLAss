@@ -996,9 +996,11 @@ public class EntityHandler extends BaseMetaDataRuntime {
 					throw new EntityApplicationException(resourceString("impl.core.EntityHandler.notChange", getProperty(propName, entityContext).getMetaData().getDisplayName()));
 				}
 			} else {
-				//withValidation=falseの場合は、キー項目のみ更新不可
+				//withValidation=falseの場合は、キー項目、audit項目のみ更新不可
 				if (ph instanceof PrimitivePropertyHandler) {
-					if (propName.equals(Entity.OID) || propName.equals(Entity.VERSION)) {
+					if (propName.equals(Entity.OID) || propName.equals(Entity.VERSION)
+							|| propName.equals(Entity.UPDATE_BY) || propName.equals(Entity.UPDATE_DATE)
+							|| propName.equals(Entity.CREATE_BY) || propName.equals(Entity.CREATE_DATE)) {
 						throw new EntityApplicationException(resourceString("impl.core.EntityHandler.notChange", getProperty(propName, entityContext).getMetaData().getDisplayName()));
 					}
 				}
@@ -1772,8 +1774,11 @@ public class EntityHandler extends BaseMetaDataRuntime {
 						throw new EntityRuntimeException("can not updateAll because not support of Expression Type");
 					}
 
-					//checkUpdatable=falseの場合は、キー項目のみ更新不可
-					if (ph.getName().equals(Entity.OID) || ph.getName().equals(Entity.VERSION)) {
+					//checkUpdatable=falseの場合は、キー項目、audit項目のみ更新不可
+					if (ph.getName().equals(Entity.OID) || ph.getName().equals(Entity.VERSION)
+						|| ph.getName().equals(Entity.UPDATE_BY) || ph.getName().equals(Entity.UPDATE_DATE)
+						|| ph.getName().equals(Entity.CREATE_BY) || ph.getName().equals(Entity.CREATE_DATE)) {
+						
 						throw new EntityApplicationException(resourceString("impl.core.EntityHandler.notChange", ph.getMetaData().getDisplayName()));
 					}
 				}
