@@ -53,6 +53,7 @@ import org.iplass.mtp.entity.definition.properties.ReferenceProperty;
 import org.iplass.mtp.entity.definition.properties.SelectProperty;
 import org.iplass.mtp.entity.definition.properties.StringProperty;
 import org.iplass.mtp.entity.definition.properties.TimeProperty;
+import org.iplass.mtp.impl.i18n.I18nUtil;
 import org.iplass.mtp.util.StringUtil;
 import org.iplass.mtp.utilityclass.definition.UtilityClassDefinitionManager;
 import org.iplass.mtp.view.generic.LoadEntityInterrupter;
@@ -154,7 +155,8 @@ public abstract class RegistrationCommandContext extends GenericCommandContext {
 		} else if (p instanceof ReferenceProperty) {
 			value = createReference(p, paramPrefix);
 		} else if (p instanceof SelectProperty) {
-			value = isMultiple ? getSelectValues(name) : getSelectValue(name);
+			SelectProperty selectProperty = (SelectProperty) p;
+			value = isMultiple ? getSelectValues(name, selectProperty) : getSelectValue(name, selectProperty);
 		} else if (p instanceof StringProperty) {
 			value = isMultiple ? getStringValues(name) : getStringValue(name);
 		} else if (p instanceof TimeProperty) {
@@ -287,19 +289,44 @@ public abstract class RegistrationCommandContext extends GenericCommandContext {
 	}
 
 	protected SelectValue getSelectValue(String name) {
-		String param = getParam(name);
-		SelectValue ret = null;
-		if (StringUtil.isNotBlank(param)) {
-			ret = new SelectValue(param);
-		}
-		return ret;
+		return getSelectValue(name, null);
 	}
 
 	protected SelectValue[] getSelectValues(String name) {
+		return getSelectValues(name, null);
+	}
+	
+	protected SelectValue getSelectValue(String name, SelectProperty selectProperty) {
+		String param = getParam(name);
+		String lang = I18nUtil.getLanguageIfUseMultilingual();
+		if (StringUtil.isNotBlank(param)) {
+			if(selectProperty == null) {
+				return new SelectValue(param);
+			}
+			SelectValue selectValue = selectProperty.getLocalizedSelectValue(param, lang); 
+			return selectValue == null 
+				? new SelectValue(param) 
+				: selectValue;
+		}
+		
+		return null;
+	}
+
+	protected SelectValue[] getSelectValues(String name, SelectProperty selectProperty) {
 		String[] params = getParams(name);
+		String lang = I18nUtil.getLanguageIfUseMultilingual();
 		if (params != null) {
 			SelectValue[] ret = Arrays.stream(params)
-					.map(value -> new SelectValue(value))
+					.map(param -> {
+						if(selectProperty == null) {
+							return new SelectValue(param);
+						}
+						
+						SelectValue selectValue = selectProperty.getLocalizedSelectValue(param, lang); 
+						return selectValue == null 
+							? new SelectValue(param) 
+							: selectValue;
+					})
 					.toArray(SelectValue[]::new);
 			return ret.length > 0 ? ret : null;
 		} else {

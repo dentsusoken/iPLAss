@@ -99,7 +99,7 @@ public class SelectProperty extends PropertyDefinition {
 	 * @return
 	 */
 	public SelectValue getLocalizedSelectValue(String value, String locale) {
-		if (localizedSelectValueList != null) {
+		if (localizedSelectValueList != null && locale != null) {
 			for (LocalizedSelectValueDefinition ls: localizedSelectValueList) {
 				if (locale.equals(ls.getLocaleName())) {
 					SelectValue s = ls.getSelectValue(value);

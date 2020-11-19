@@ -20,12 +20,21 @@
 
 package org.iplass.mtp.impl.properties.extend.select;
 
+import org.iplass.mtp.ManagerLocator;
+import org.iplass.mtp.entity.SelectValue;
+import org.iplass.mtp.entity.definition.EntityDefinition;
+import org.iplass.mtp.entity.definition.EntityDefinitionManager;
+import org.iplass.mtp.entity.definition.PropertyDefinition;
+import org.iplass.mtp.entity.definition.properties.SelectProperty;
 import org.iplass.mtp.entity.definition.properties.selectvalue.SelectValueDefinition;
 import org.iplass.mtp.entity.definition.properties.selectvalue.SelectValueDefinitionManager;
+import org.iplass.mtp.impl.core.ExecuteContext;
 import org.iplass.mtp.impl.definition.AbstractTypedDefinitionManager;
 import org.iplass.mtp.impl.definition.TypedMetaDataService;
+import org.iplass.mtp.impl.i18n.I18nUtil;
 import org.iplass.mtp.impl.metadata.RootMetaData;
 import org.iplass.mtp.spi.ServiceRegistry;
+import org.iplass.mtp.tenant.TenantI18nInfo;
 
 public class SelectValueDefinitionManagerImpl extends AbstractTypedDefinitionManager<SelectValueDefinition> implements
 		SelectValueDefinitionManager {
@@ -51,5 +60,25 @@ public class SelectValueDefinitionManagerImpl extends AbstractTypedDefinitionMan
 	protected TypedMetaDataService getService() {
 		return service;
 	}
+	
+	@Override
+	public SelectValue getSelectValue(String entityName, String propertyName, String value) {
+		
+		EntityDefinitionManager entityDefinitionManager = ManagerLocator.manager(EntityDefinitionManager.class);
+		EntityDefinition entityDefinition = entityDefinitionManager.get(entityName);
 
+		if(entityDefinition == null || propertyName == null|| value == null) {
+			return null;
+		}
+		
+		PropertyDefinition propertyDefinition = entityDefinition.getProperty(propertyName);
+		
+		if(propertyDefinition instanceof SelectProperty) {
+			SelectProperty selectProperty = (SelectProperty)propertyDefinition;
+			String lang = I18nUtil.getLanguageIfUseMultilingual();
+			return selectProperty.getLocalizedSelectValue(value, lang);
+		}
+		
+		return null;
+	}
 }
