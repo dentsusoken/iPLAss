@@ -26,6 +26,7 @@
 <%@ page import="java.util.Arrays" %>
 <%@ page import="java.util.List" %>
 <%@ page import="java.util.function.Supplier"%>
+<%@ page import="org.iplass.mtp.impl.util.ConvertUtil" %>
 <%@ page import="org.iplass.mtp.auth.AuthContext"%>
 <%@ page import="org.iplass.mtp.entity.permission.EntityPermission"%>
 <%@ page import="org.iplass.mtp.entity.permission.EntityPropertyPermission"%>
@@ -1110,6 +1111,17 @@ $(function() {
 				String insBtnId = "ins_btn_" + propName;
 
 				String insBtnUrlParam = evm.getUrlParameter(rootDefName, editor, parentEntity, UrlParameterActionType.ADD);
+				Long orderPropValue = null;
+				String orderPropName = StringUtil.escapeJavaScript(editor.getTableOrderPropertyName());
+				if (editor.getInsertType() == InsertType.TOP) {
+					Entity firstEntity = entities.get(0);
+					Long firstOrderPropValue = ConvertUtil.convert(Long.class, firstEntity.getValue(orderPropName));
+					if (firstOrderPropValue != null) orderPropValue = firstOrderPropValue - 1;
+				} else {
+					Entity lastEntity = entities.get(entities.size() -1);
+					Long lastOrderPropValue = ConvertUtil.convert(Long.class, lastEntity.getValue(orderPropName));
+					if (lastOrderPropValue != null) orderPropValue = lastOrderPropValue + 1;
+				}
 %>
 <input type="button" value="${m:rs('mtp-gem-messages', 'generic.editor.reference.ReferencePropertyEditor_Table.new')}" class="gr-btn-02 modal-btn mt05" id="<c:out value="<%=insBtnId %>"/>" />
 <script type="text/javascript">
@@ -1119,7 +1131,7 @@ $(function() {
 				"<%=StringUtil.escapeJavaScript(insBtnUrlParam)%>", "<%=StringUtil.escapeJavaScript(parentOid)%>", "<%=StringUtil.escapeJavaScript(parentVersion)%>", "<%=StringUtil.escapeJavaScript(defName)%>",
 				"<%=StringUtil.escapeJavaScript(mappedBy) %>", $(":hidden[name='oid']").val(), "<%=StringUtil.escapeJavaScript(updateRefAction)%>",
 				"<%=StringUtil.escapeJavaScript(propName) %>", "<%=StringUtil.escapeJavaScript(reloadUrl)%>", "<%=StringUtil.escapeJavaScript(rootOid)%>",
-				"<%=StringUtil.escapeJavaScript(rootVersion)%>");
+				"<%=StringUtil.escapeJavaScript(rootVersion)%>", "<%=UpdateTableOrderCommand.WEBAPI_NAME%>", "<%=orderPropName%>", <%=orderPropValue%>, <%=editor.getInsertType() == InsertType.TOP%>);
 	});
 });
 </script>
