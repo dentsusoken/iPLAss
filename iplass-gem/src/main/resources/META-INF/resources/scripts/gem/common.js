@@ -3333,7 +3333,7 @@ function addNestRow(rowId, countId, multiplicy, insertTop, rootDefName, viewName
 		//位置とインデックス設定
 		var $lastRow = $tbody.children("tr:not(:hidden):last");
 		var $lastRowOrderIndex = $("[name^='tableOrderIndex']", $lastRow);
-	    $("[name^='tableOrderIndex']", $copyRow).val(parseInt($lastRowOrderIndex.val()) + 1);
+		$("[name^='tableOrderIndex']", $copyRow).val(parseInt($lastRowOrderIndex.val()) + 1);
 		$tbody.append($copyRow);
 	}
 
