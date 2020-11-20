@@ -1,19 +1,19 @@
 /*
  * Copyright (C) 2011 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
- * 
+ *
  * Unless you have purchased a commercial license,
  * the following license terms apply:
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
@@ -48,7 +48,7 @@ public class UpdateCondition {
 	private Where where;
 	private boolean lockStrictly = false;
 	private boolean checkUpdatable = true;
-	
+
 	public UpdateCondition() {
 	}
 
@@ -73,9 +73,9 @@ public class UpdateCondition {
 		this.values = values;
 		this.where = where;
 	}
-	
+
 	/**
-	 * 当該更新対象propertyがupdatable=tureかどうかをチェックするか否か
+	 * 当該更新対象propertyがupdatable=trueかどうかをチェックするか否か
 	 * @return
 	 */
 	public boolean isCheckUpdatable() {
@@ -83,15 +83,15 @@ public class UpdateCondition {
 	}
 
 	/**
-	 * 当該更新対象propertyがupdatable=tureかどうかをチェックするか否かをセット。
+	 * 当該更新対象propertyがupdatable=trueかどうかをチェックするか否かをセット。
 	 * デフォルトtrue
-	 * 
+	 *
 	 * @param checkUpdatable
 	 */
 	public void setCheckUpdatable(boolean checkUpdatable) {
 		this.checkUpdatable = checkUpdatable;
 	}
-	
+
 	/**
 	 * 指定のEntity属性を指定の値で更新するようにセット。
 	 *
@@ -101,7 +101,7 @@ public class UpdateCondition {
 	 */
 	public UpdateCondition value(String entityField, Object value) {
 		if (values == null) {
-			values = new ArrayList<UpdateValue>();
+			values = new ArrayList<>();
 		}
 		values.add(new UpdateValue(entityField, value));
 		return this;
@@ -116,7 +116,7 @@ public class UpdateCondition {
 	 */
 	public UpdateCondition value(String entityField, ValueExpression value) {
 		if (values == null) {
-			values = new ArrayList<UpdateValue>();
+			values = new ArrayList<>();
 		}
 		values.add(new UpdateValue(entityField, value));
 		return this;
@@ -145,7 +145,7 @@ public class UpdateCondition {
 
 		return this;
 	}
-	
+
 	/**
 	 * 更新時に厳密にロック（oid順にソートしてロック取得）を取得する場合。
 	 * @see #setLockStrictly(boolean)
@@ -155,10 +155,10 @@ public class UpdateCondition {
 		lockStrictly = true;
 		return this;
 	}
-	
+
 	/**
 	 * 当該更新対象propertyか更新可能かどうかをチェックしないように設定。
-	 * 
+	 *
 	 * @return
 	 */
 	public UpdateCondition nocheckUpdatable() {
@@ -202,7 +202,7 @@ public class UpdateCondition {
 	 * 更新時に厳密にロック（oid順にソートしてロック取得）を取得する場合trueを設定。
 	 * デフォルトfalse。
 	 * ※デッドロックエラーを防ぎたい場合に利用。但し、他の更新処理においても更新順を必ずoid順にすることを守る必要あり。
-	 * 
+	 *
 	 * @param lockStrictly
 	 */
 	public void setLockStrictly(boolean lockStrictly) {
@@ -271,11 +271,11 @@ public class UpdateCondition {
 			if (value != null) {
 				copy.value = (ValueExpression) value.copy();
 			}
-			
+
 			return copy;
 		}
 	}
-	
+
 	public UpdateCondition copy() {
 		UpdateCondition copy = new UpdateCondition();
 		if (values != null) {
@@ -290,7 +290,7 @@ public class UpdateCondition {
 		}
 		copy.lockStrictly = lockStrictly;
 		copy.checkUpdatable = checkUpdatable;
-		
+
 		return copy;
 	}
 

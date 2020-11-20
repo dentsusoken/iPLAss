@@ -137,7 +137,7 @@ public class EntityExplorerServiceImpl extends XsrfProtectedServiceServlet imple
 
 				EntityContext ec = EntityContext.getCurrentContext();
 
-				List<SimpleEntityInfo> infoList = new ArrayList<SimpleEntityInfo>();
+				List<SimpleEntityInfo> infoList = new ArrayList<>();
 				for (MetaDataEntryInfo entryInfo : entityList) {
 
 					//１つのEntity定義の不具合により取得できないことを避けるため、Catchする
@@ -236,7 +236,7 @@ public class EntityExplorerServiceImpl extends XsrfProtectedServiceServlet imple
 //		entityNode.setContextPath(metaNode.getContextPath());
 
 		if (metaNode.getChildren() != null) {
-			List<SimpleEntityTreeNode> children = new ArrayList<SimpleEntityTreeNode>();
+			List<SimpleEntityTreeNode> children = new ArrayList<>();
 			for (MetaTreeNode metaChild : metaNode.getChildren()) {
 				SimpleEntityTreeNode child = new SimpleEntityTreeNode();
 				convertNode(child, metaChild, isGetDataCount);
@@ -245,7 +245,7 @@ public class EntityExplorerServiceImpl extends XsrfProtectedServiceServlet imple
 			entityNode.setChildren(children);
 		}
 		if (metaNode.getItems() != null) {
-			List<SimpleEntityTreeNode> items = new ArrayList<SimpleEntityTreeNode>();
+			List<SimpleEntityTreeNode> items = new ArrayList<>();
 			for (MetaTreeNode metaItem : metaNode.getItems()) {
 				if (metaItem.getName().equals(EntityDefinition.SYSTEM_DEFAULT_DEFINITION_NAME)) {
 					continue;
@@ -533,7 +533,7 @@ public class EntityExplorerServiceImpl extends XsrfProtectedServiceServlet imple
 
 					EntityDefinition definition = getEntityDefinition(cond.getDefinitionName());
 
-					List<String> validateErrors = new ArrayList<String>();
+					List<String> validateErrors = new ArrayList<>();
 					for (UpdateAllValue entry : cond.getValues()) {
 						PropertyDefinition pd = definition.getProperty(entry.getPropertyName());
 						if (pd == null) {
@@ -583,7 +583,7 @@ public class EntityExplorerServiceImpl extends XsrfProtectedServiceServlet imple
 						updateCond.where(cond.getWhere());
 					}
 
-					//更新不可の項目化をチェックするかを設定
+					//更新不可の項目かをチェックするかを設定
 					updateCond.setCheckUpdatable(cond.isCheckUpdatable());
 
 					result.addLogMessage("Update Condition : " + updateCond.toString());
@@ -636,7 +636,7 @@ public class EntityExplorerServiceImpl extends XsrfProtectedServiceServlet imple
 	private Object[] getListSelectColumns(EntityDefinition definition, EntityDataListResultInfo result) {
 		//EntityManager#searchEntityで検索した場合に、oidに対して複数のレコードが返る項目を除外する。
 
-		List<String> columns = new ArrayList<String>();
+		List<String> columns = new ArrayList<>();
 		for (PropertyDefinition property: definition.getPropertyList()) {
 			if (property instanceof ReferenceProperty) {
 				ReferenceProperty reference = (ReferenceProperty)property;
@@ -686,7 +686,7 @@ public class EntityExplorerServiceImpl extends XsrfProtectedServiceServlet imple
 				return Collections.emptyList();
 			}
 
-			List<Entity> resultList = new ArrayList<Entity>(resultObjectList.size());
+			List<Entity> resultList = new ArrayList<>(resultObjectList.size());
 
 			List<ValueExpression> colValues = query.getSelect().getSelectValues();
 			for (Object[] record : resultObjectList) {
@@ -868,7 +868,7 @@ public class EntityExplorerServiceImpl extends XsrfProtectedServiceServlet imple
 							result.addMessages("Delete Condition : " + "none");
 						}
 
-						final List<Entity> entities = new ArrayList<Entity>();
+						final List<Entity> entities = new ArrayList<>();
 						em.searchEntity(query, new Predicate<Entity>() {
 
 							@Override
@@ -923,7 +923,7 @@ public class EntityExplorerServiceImpl extends XsrfProtectedServiceServlet imple
 
 				try {
 					LoadOption loadOption = new LoadOption(false, false);
-					final List<Entity> entities = new ArrayList<Entity>();
+					final List<Entity> entities = new ArrayList<>();
 					boolean isUserEntity = false;
 					String execUserOid = null;
 					if (USER_ENTITY.equals(defName)) {
@@ -1072,7 +1072,7 @@ public class EntityExplorerServiceImpl extends XsrfProtectedServiceServlet imple
 
 				EntityContext ec = EntityContext.getCurrentContext();
 
-				List<DefragEntityInfo> infoList = new ArrayList<DefragEntityInfo>();
+				List<DefragEntityInfo> infoList = new ArrayList<>();
 				for (MetaDataEntryInfo entryInfo : entityList) {
 
 					//１つのEntity定義の不具合により取得できないことを避けるため、Catchする
@@ -1228,7 +1228,7 @@ public class EntityExplorerServiceImpl extends XsrfProtectedServiceServlet imple
 
 				EntityContext ctx = EntityContext.getCurrentContext();
 
-				List<CrawlEntityInfo> infoList = new ArrayList<CrawlEntityInfo>();
+				List<CrawlEntityInfo> infoList = new ArrayList<>();
 				for (MetaDataEntryInfo entryInfo : entityList) {
 
 					//１つのEntity定義の不具合により取得できないことを避けるため、Catchする
@@ -1295,7 +1295,7 @@ public class EntityExplorerServiceImpl extends XsrfProtectedServiceServlet imple
 			public Map<String, Timestamp> logic() throws SQLException {
 				// SQL実行
 				ResultSet rs = getStatement().executeQuery(sql);
-				Map<String, Timestamp> map = new LinkedHashMap<String, Timestamp>();
+				Map<String, Timestamp> map = new LinkedHashMap<>();
 				try {
 					while(rs.next()) {
 						map.put(rs.getString(1), rs.getTimestamp(2, rdb.rdbCalendar()));
@@ -1319,7 +1319,7 @@ public class EntityExplorerServiceImpl extends XsrfProtectedServiceServlet imple
 			}
 		});
 	}
-	
+
 	@Override
 	public List<RecycleBinEntityInfo> getRecycleBinInfoList(int tenantId, Timestamp ts, boolean isGetCount) {
 
@@ -1333,7 +1333,7 @@ public class EntityExplorerServiceImpl extends XsrfProtectedServiceServlet imple
 
 				EntityContext ctx = EntityContext.getCurrentContext();
 
-				List<RecycleBinEntityInfo> infoList = new ArrayList<RecycleBinEntityInfo>();
+				List<RecycleBinEntityInfo> infoList = new ArrayList<>();
 				for(MetaDataEntryInfo entryInfo: entityList) {
 
 					//１つのEntity定義の不具合により取得できないことを避けるため、Catchする
@@ -1386,7 +1386,7 @@ public class EntityExplorerServiceImpl extends XsrfProtectedServiceServlet imple
 		return AuthUtil.authCheckAndInvoke(getServletContext(), getThreadLocalRequest(), getThreadLocalResponse(), tenantId, new AuthUtil.Callable<List<String>>() {
 			@Override
 			public List<String> call() {
-				List<String> messages = new ArrayList<String>();
+				List<String> messages = new ArrayList<>();
 				AsyncTaskService asyncService = ServiceRegistry.getRegistry().getService(AsyncTaskService.class);
 
 				try {
