@@ -40,6 +40,7 @@ import org.iplass.adminconsole.shared.tools.dto.entityexplorer.UpdateAllValue;
 import org.iplass.adminconsole.shared.tools.dto.entityexplorer.UpdateAllValue.UpdateAllValueType;
 import org.iplass.adminconsole.shared.tools.rpc.entityexplorer.EntityExplorerServiceAsync;
 import org.iplass.adminconsole.shared.tools.rpc.entityexplorer.EntityExplorerServiceFactory;
+import org.iplass.mtp.entity.Entity;
 import org.iplass.mtp.entity.SelectValue;
 import org.iplass.mtp.entity.definition.EntityDefinition;
 import org.iplass.mtp.entity.definition.PropertyDefinition;
@@ -476,6 +477,14 @@ public class EntityUpdateAllDialog extends AbstractWindow {
 		}
 
 		private boolean isShowRecord(PropertyDefinition prop) {
+			//キー項目、audit項目は更新不可のため表示しない
+			if (prop.isInherited()) {
+				if (prop.getName().equals(Entity.OID) || prop.getName().equals(Entity.VERSION)
+						|| prop.getName().equals(Entity.CREATE_BY) || prop.getName().equals(Entity.CREATE_DATE)
+						|| prop.getName().equals(Entity.UPDATE_BY) || prop.getName().equals(Entity.UPDATE_DATE)) {
+					return false;
+				}
+			}
 			return true;
 		}
 
