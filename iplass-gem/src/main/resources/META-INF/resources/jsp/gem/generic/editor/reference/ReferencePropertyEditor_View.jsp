@@ -603,15 +603,15 @@ $(function() {
 				String orderPropName = StringUtil.escapeJavaScript(editor.getTableOrderPropertyName());
 				if (orderPropName != null) {
 					if (entityList.size() > 0) {
-					if (editor.getInsertType() == InsertType.TOP) {
-						Entity firstEntity = entityList.get(0);
-						Integer firstOrderPropValue = toInteger(firstEntity.getValue(orderPropName));
-						if (firstOrderPropValue != null) orderPropValue = firstOrderPropValue - 1;
-					} else {
-						Entity lastEntity = entityList.get(entityList.size() -1);
-						Integer lastOrderPropValue = toInteger(lastEntity.getValue(orderPropName));
-						if (lastOrderPropValue != null) orderPropValue = lastOrderPropValue + 1;
-					}
+						if (editor.getInsertType() == InsertType.TOP) {
+							Entity firstEntity = entityList.get(0);
+							Integer firstOrderPropValue = toInteger(firstEntity.getValue(orderPropName));
+							if (firstOrderPropValue != null) orderPropValue = firstOrderPropValue - 1;
+						} else {
+							Entity lastEntity = entityList.get(entityList.size() -1);
+							Integer lastOrderPropValue = toInteger(lastEntity.getValue(orderPropName));
+							if (lastOrderPropValue != null) orderPropValue = lastOrderPropValue + 1;
+						}
 					} else {
 						orderPropValue = 0;
 					}
