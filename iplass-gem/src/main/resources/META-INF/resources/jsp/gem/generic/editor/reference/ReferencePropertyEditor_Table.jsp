@@ -24,6 +24,7 @@
 
 <%@ page import="java.util.ArrayList" %>
 <%@ page import="java.util.Arrays" %>
+<%@ page import="java.util.Collections" %>
 <%@ page import="java.util.List" %>
 <%@ page import="java.util.function.Supplier"%>
 <%@ page import="org.iplass.mtp.impl.util.ConvertUtil" %>
@@ -292,6 +293,13 @@
 	boolean showUpDownBtn = StringUtil.isNotBlank(editor.getTableOrderPropertyName());
 	if (showUpDownBtn) {
 		entities = EntityViewUtil.sortByOrderProperty(entities, editor.getTableOrderPropertyName(), true);
+	} else {
+		//表示順が指定されていない場合Oidで並び替え（デフォルト昇順）
+		entities = EntityViewUtil.sortByOrderProperty(entities, "oid", true);
+		//追加ボタンはTopの場合、降順で表示します。
+		if (editor.getInsertType() == InsertType.TOP) {
+			Collections.reverse(entities);
+		}
 	}
 
 	//定義名を参照型のものに置き換える、後でdefNameに戻す
@@ -1113,14 +1121,16 @@ $(function() {
 				String insBtnUrlParam = evm.getUrlParameter(rootDefName, editor, parentEntity, UrlParameterActionType.ADD);
 				Long orderPropValue = null;
 				String orderPropName = StringUtil.escapeJavaScript(editor.getTableOrderPropertyName());
-				if (editor.getInsertType() == InsertType.TOP) {
-					Entity firstEntity = entities.get(0);
-					Long firstOrderPropValue = ConvertUtil.convert(Long.class, firstEntity.getValue(orderPropName));
-					if (firstOrderPropValue != null) orderPropValue = firstOrderPropValue - 1;
-				} else {
-					Entity lastEntity = entities.get(entities.size() -1);
-					Long lastOrderPropValue = ConvertUtil.convert(Long.class, lastEntity.getValue(orderPropName));
-					if (lastOrderPropValue != null) orderPropValue = lastOrderPropValue + 1;
+				if (orderPropName != null) {
+					if (editor.getInsertType() == InsertType.TOP) {
+						Entity firstEntity = entities.get(0);
+						Long firstOrderPropValue = ConvertUtil.convert(Long.class, firstEntity.getValue(orderPropName));
+						if (firstOrderPropValue != null) orderPropValue = firstOrderPropValue - 1;
+					} else {
+						Entity lastEntity = entities.get(entities.size() -1);
+						Long lastOrderPropValue = ConvertUtil.convert(Long.class, lastEntity.getValue(orderPropName));
+						if (lastOrderPropValue != null) orderPropValue = lastOrderPropValue + 1;
+					}
 				}
 %>
 <input type="button" value="${m:rs('mtp-gem-messages', 'generic.editor.reference.ReferencePropertyEditor_Table.new')}" class="gr-btn-02 modal-btn mt05" id="<c:out value="<%=insBtnId %>"/>" />

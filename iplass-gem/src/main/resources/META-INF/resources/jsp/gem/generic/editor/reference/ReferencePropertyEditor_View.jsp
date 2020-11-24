@@ -583,14 +583,16 @@ $(function() {
 				String insBtnUrlParam = evm.getUrlParameter(rootDefName, editor, parentEntity, UrlParameterActionType.ADD);
 				Long orderPropValue = null;
 				String orderPropName = StringUtil.escapeJavaScript(editor.getTableOrderPropertyName());
-				if (editor.getInsertType() == InsertType.TOP) {
-					Entity firstEntity = entityList.get(0);
-					Long firstOrderPropValue = ConvertUtil.convert(Long.class, firstEntity.getValue(orderPropName));
-					if (firstOrderPropValue != null) orderPropValue = firstOrderPropValue - 1;
-				} else {
-					Entity lastEntity = entityList.get(entityList.size() -1);
-					Long lastOrderPropValue = ConvertUtil.convert(Long.class, lastEntity.getValue(orderPropName));
-					if (lastOrderPropValue != null) orderPropValue = lastOrderPropValue + 1;
+				if (orderPropName != null) {
+					if (editor.getInsertType() == InsertType.TOP) {
+						Entity firstEntity = entityList.get(0);
+						Long firstOrderPropValue = ConvertUtil.convert(Long.class, firstEntity.getValue(orderPropName));
+						if (firstOrderPropValue != null) orderPropValue = firstOrderPropValue - 1;
+					} else {
+						Entity lastEntity = entityList.get(entityList.size() -1);
+						Long lastOrderPropValue = ConvertUtil.convert(Long.class, lastEntity.getValue(orderPropName));
+						if (lastOrderPropValue != null) orderPropValue = lastOrderPropValue + 1;
+					}
 				}
 %>
 <input type="button" value="${m:rs('mtp-gem-messages', 'generic.editor.reference.ReferencePropertyEditor_Edit.new')}" class="gr-btn-02 modal-btn mt05" id="<c:out value="<%=insBtnId %>"/>" style="<c:out value="<%=insBtnStyle %>"/>" />
