@@ -21,7 +21,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="m" uri="http://iplass.org/tags/mtp"%>
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8" trimDirectiveWhitespaces="true"%>
-
+<%@ page import="java.math.BigDecimal" %>
 <%@ page import="java.util.ArrayList" %>
 <%@ page import="java.util.Arrays" %>
 <%@ page import="java.util.Collections" %>
@@ -114,6 +114,23 @@
 			}
 		}
 		return new LoadOption(propList);
+	}
+%>
+<%!
+	Integer toInteger(Object val) {
+		if (val == null) return null;
+		if (val instanceof Integer) {
+			return (Integer) val;
+		} else if (val instanceof Long) {
+			return ((Long) val).intValue();
+		} else if (val instanceof Float) {
+			return ((Float) val).intValue();
+		} else if (val instanceof Double) {
+			return ((Double) val).intValue();
+		} else if (val instanceof BigDecimal) {
+			return ((BigDecimal) val).intValue();
+		}
+		return -1; // 数値以外
 	}
 %>
 <%
@@ -1119,17 +1136,21 @@ $(function() {
 				String insBtnId = "ins_btn_" + propName;
 
 				String insBtnUrlParam = evm.getUrlParameter(rootDefName, editor, parentEntity, UrlParameterActionType.ADD);
-				Long orderPropValue = null;
+				Integer orderPropValue = null;
 				String orderPropName = StringUtil.escapeJavaScript(editor.getTableOrderPropertyName());
 				if (orderPropName != null) {
-					if (editor.getInsertType() == InsertType.TOP) {
-						Entity firstEntity = entities.get(0);
-						Long firstOrderPropValue = ConvertUtil.convert(Long.class, firstEntity.getValue(orderPropName));
-						if (firstOrderPropValue != null) orderPropValue = firstOrderPropValue - 1;
+					if (entities.size() > 0) {
+						if (editor.getInsertType() == InsertType.TOP) {
+							Entity firstEntity = entities.get(0);
+							Integer firstOrderPropValue = toInteger(firstEntity.getValue(orderPropName));
+							if (firstOrderPropValue != null) orderPropValue = firstOrderPropValue - 1;
+						} else {
+							Entity lastEntity = entities.get(entities.size() -1);
+							Integer lastOrderPropValue = toInteger(lastEntity.getValue(orderPropName));
+							if (lastOrderPropValue != null) orderPropValue = lastOrderPropValue + 1;
+						}
 					} else {
-						Entity lastEntity = entities.get(entities.size() -1);
-						Long lastOrderPropValue = ConvertUtil.convert(Long.class, lastEntity.getValue(orderPropName));
-						if (lastOrderPropValue != null) orderPropValue = lastOrderPropValue + 1;
+						orderPropValue = 0;
 					}
 				}
 %>

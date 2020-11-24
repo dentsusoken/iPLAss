@@ -3327,13 +3327,13 @@ function addNestRow(rowId, countId, multiplicy, insertTop, rootDefName, viewName
 		var $firstRow = $tbody.children("tr:not(:hidden):first");
 		//位置とインデックス設定
 		var $firstRowOrderIndex = $("[name^='tableOrderIndex']", $firstRow);
-		$("[name^='tableOrderIndex']", $copyRow).val(parseInt($firstRowOrderIndex.val()) - 1);
+		$("[name^='tableOrderIndex']", $copyRow).val((parseInt($firstRowOrderIndex.val()) || 1) - 1);
 		$copyRow.insertBefore($firstRow);
 	} else {
 		//位置とインデックス設定
 		var $lastRow = $tbody.children("tr:not(:hidden):last");
 		var $lastRowOrderIndex = $("[name^='tableOrderIndex']", $lastRow);
-		$("[name^='tableOrderIndex']", $copyRow).val(parseInt($lastRowOrderIndex.val()) + 1);
+		$("[name^='tableOrderIndex']", $copyRow).val((parseInt($lastRowOrderIndex.val()) || -1) + 1);
 		$tbody.append($copyRow);
 	}
 

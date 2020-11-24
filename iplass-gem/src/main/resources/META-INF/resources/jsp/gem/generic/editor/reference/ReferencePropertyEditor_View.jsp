@@ -21,6 +21,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="m" uri="http://iplass.org/tags/mtp"%>
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8" trimDirectiveWhitespaces="true"%>
+<%@ page import="java.math.BigDecimal" %>
 <%@ page import="java.util.ArrayList" %>
 <%@ page import="java.util.Arrays" %>
 <%@ page import="java.util.LinkedList"%>
@@ -217,6 +218,23 @@
 		// FIXME ユニークキー項目のプロパティエディター定義が存在しないので、文字列に変換して問題ないかな。。
 		String str = ConvertUtil.convertToString(refEntity.getValue(uniquePropName));
 		return StringUtil.escapeHtml(str);
+	}
+%>
+<%!
+	Integer toInteger(Object val) {
+		if (val == null) return null;
+		if (val instanceof Integer) {
+			return (Integer) val;
+		} else if (val instanceof Long) {
+			return ((Long) val).intValue();
+		} else if (val instanceof Float) {
+			return ((Float) val).intValue();
+		} else if (val instanceof Double) {
+			return ((Double) val).intValue();
+		} else if (val instanceof BigDecimal) {
+			return ((BigDecimal) val).intValue();
+		}
+		return -1; // 数値以外
 	}
 %>
 <%
@@ -581,17 +599,21 @@ $(function() {
 				if (pd.getMultiplicity() != -1 && entityList.size() >= pd.getMultiplicity()) insBtnStyle = "display: none;";
 
 				String insBtnUrlParam = evm.getUrlParameter(rootDefName, editor, parentEntity, UrlParameterActionType.ADD);
-				Long orderPropValue = null;
+				Integer orderPropValue = null;
 				String orderPropName = StringUtil.escapeJavaScript(editor.getTableOrderPropertyName());
 				if (orderPropName != null) {
+					if (entityList.size() > 0) {
 					if (editor.getInsertType() == InsertType.TOP) {
 						Entity firstEntity = entityList.get(0);
-						Long firstOrderPropValue = ConvertUtil.convert(Long.class, firstEntity.getValue(orderPropName));
+						Integer firstOrderPropValue = toInteger(firstEntity.getValue(orderPropName));
 						if (firstOrderPropValue != null) orderPropValue = firstOrderPropValue - 1;
 					} else {
 						Entity lastEntity = entityList.get(entityList.size() -1);
-						Long lastOrderPropValue = ConvertUtil.convert(Long.class, lastEntity.getValue(orderPropName));
+						Integer lastOrderPropValue = toInteger(lastEntity.getValue(orderPropName));
 						if (lastOrderPropValue != null) orderPropValue = lastOrderPropValue + 1;
+					}
+					} else {
+						orderPropValue = 0;
 					}
 				}
 %>
