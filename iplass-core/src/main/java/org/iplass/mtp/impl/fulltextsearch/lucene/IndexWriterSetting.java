@@ -27,10 +27,18 @@ import org.apache.lucene.util.InfoStream;
 
 public class IndexWriterSetting {
 	
-	private Double ramBufferSizeMB;
+	private int commitLimit;
+	private Double ramBufferSizeMB = 64.0;
 	private MergePolicy mergePolicy;
 	private InfoStream infoStream;
 	
+	public int getCommitLimit() {
+		return commitLimit;
+	}
+	public void setCommitLimit(int commitLimit) {
+		this.commitLimit = commitLimit;
+	}
+
 	public InfoStream getInfoStream() {
 		return infoStream;
 	}

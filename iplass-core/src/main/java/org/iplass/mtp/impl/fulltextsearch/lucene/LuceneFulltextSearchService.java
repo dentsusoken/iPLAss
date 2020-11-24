@@ -112,7 +112,6 @@ public class LuceneFulltextSearchService extends AbstractFulltextSeachService {
 	private AnalyzerSetting analyzerSetting;
 	private Operator defaultOperator;
 	private long redundantTimeMinutes;
-	private int indexWriterCommitLimit;
 
 	private List<BinaryReferenceParser> binaryParsers;
 	private int binaryParseLimitLength = 100000;
@@ -122,7 +121,7 @@ public class LuceneFulltextSearchService extends AbstractFulltextSeachService {
 	
 	private IndexWriterSetting indexWriterSetting;
 	
-	private String rootDirectory;
+	private String directory;
 	private Class<?> luceneFSDirectoryClass;
 	private int maxChunkSizeMB;
 	
@@ -140,7 +139,7 @@ public class LuceneFulltextSearchService extends AbstractFulltextSeachService {
 			return null;
 		}
 		
-		Path dirPath = Paths.get(rootDirectory, String.valueOf(tenantId), defId);
+		Path dirPath = Paths.get(directory, String.valueOf(tenantId), defId);
 		if (!Files.exists(dirPath)) {
 			logger.debug(dirPath.toString() + " not exists.so create new directory");
 		}
@@ -170,7 +169,7 @@ public class LuceneFulltextSearchService extends AbstractFulltextSeachService {
 	}
 	
 	private boolean existsDir(int tenantId, String defId) {
-		Path dirPath = Paths.get(rootDirectory, String.valueOf(tenantId), defId);
+		Path dirPath = Paths.get(directory, String.valueOf(tenantId), defId);
 		return Files.exists(dirPath);
 	}
 	
@@ -206,9 +205,9 @@ public class LuceneFulltextSearchService extends AbstractFulltextSeachService {
 		if (isUseFulltextSearch()) {
 			contexts = new ConcurrentHashMap<>();
 			
-			rootDirectory = config.getValue("rootDirectory");
-			if (rootDirectory == null) {
-				throw new NullPointerException("rootDirectory is null");
+			directory = config.getValue("directory");
+			if (directory == null) {
+				throw new NullPointerException("directory is null");
 			}
 			String className = config.getValue("luceneFSDirectory");
 			if (className != null) {
@@ -241,8 +240,7 @@ public class LuceneFulltextSearchService extends AbstractFulltextSeachService {
 			}
 			
 			indexWriterSetting = config.getValue("indexWriterSetting", IndexWriterSetting.class, new IndexWriterSetting());
-			redundantTimeMinutes = config.getValue("redundantTimeMinutes", Long.TYPE);
-			indexWriterCommitLimit = config.getValue("indexWriterCommitLimit", Integer.TYPE);
+			redundantTimeMinutes = config.getValue("redundantTimeMinutes", Long.TYPE, 10L);
 			
 			analyzerSetting = config.getValue("analyzerSetting", AnalyzerSetting.class);
 			if (analyzerSetting == null) {
@@ -1010,7 +1008,7 @@ public class LuceneFulltextSearchService extends AbstractFulltextSeachService {
 		}
 
 		private void checkLimit() throws IOException {
-			if (indexWriterCommitLimit > 0 && counter >= indexWriterCommitLimit) {
+			if (indexWriterSetting.getCommitLimit() > 0 && counter >= indexWriterSetting.getCommitLimit()) {
 				recreateWriter();
 			}
 		}
@@ -1019,7 +1017,7 @@ public class LuceneFulltextSearchService extends AbstractFulltextSeachService {
 			commit();
 			close();
 			counter = 0;
-			logger.info("commit lucene index writer. because the operation count has exceeded the upper limit value(" + indexWriterCommitLimit + ").");
+			logger.info("commit lucene index writer. because the operation count has exceeded the upper limit value(" + indexWriterSetting.getCommitLimit() + ").");
 			createWriter();
 		}
 
