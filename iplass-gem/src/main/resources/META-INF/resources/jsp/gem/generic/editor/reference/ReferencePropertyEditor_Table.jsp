@@ -1,19 +1,15 @@
 <%--
  Copyright (C) 2013 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
-
  Unless you have purchased a commercial license,
  the following license terms apply:
-
  This program is free software: you can redistribute it and/or modify
  it under the terms of the GNU Affero General Public License as
  published by the Free Software Foundation, either version 3 of the
  License, or (at your option) any later version.
-
  This program is distributed in the hope that it will be useful,
  but WITHOUT ANY WARRANTY; without even the implied warranty of
  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  GNU Affero General Public License for more details.
-
  You should have received a copy of the GNU Affero General Public License
  along with this program. If not, see <https://www.gnu.org/licenses/>.
  --%>
@@ -21,11 +17,13 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="m" uri="http://iplass.org/tags/mtp"%>
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8" trimDirectiveWhitespaces="true"%>
-
+<%@ page import="java.math.BigDecimal" %>
 <%@ page import="java.util.ArrayList" %>
 <%@ page import="java.util.Arrays" %>
+<%@ page import="java.util.Collections" %>
 <%@ page import="java.util.List" %>
 <%@ page import="java.util.function.Supplier"%>
+<%@ page import="org.iplass.mtp.impl.util.ConvertUtil" %>
 <%@ page import="org.iplass.mtp.auth.AuthContext"%>
 <%@ page import="org.iplass.mtp.entity.permission.EntityPermission"%>
 <%@ page import="org.iplass.mtp.entity.permission.EntityPropertyPermission"%>
@@ -70,7 +68,6 @@
 	String getViewAction(String defName, String viewName, String oid, boolean isDialog) {
 		//ビュー名があればアクションの後につける
 		String urlPath = ViewUtil.getParamMappingPath(defName, viewName) + "/" + oid;
-
 		EntityView ev = ManagerLocator.getInstance().getManager(EntityViewManager.class).get(defName);
 		SearchFormView view = null;
 		if (viewName == null || viewName.equals("")) {
@@ -81,7 +78,6 @@
 			if (ev != null) view = ev.getSearchFormView(viewName);
 		}
 		if (view == null) view = new SearchFormView();
-
 		//詳細表示アクション
 		String contextPath = TemplateUtil.getTenantContextPath();
 		String viewAction = "";
@@ -94,7 +90,6 @@
 				viewAction = contextPath + "/" + DetailViewCommand.VIEW_ACTION_NAME + urlPath;
 			}
 		}
-
 		return viewAction;
 	}
 	LoadEntityInterrupterHandler getLoadEntityInterrupterHandler(EntityManager em, EntityDefinitionManager edm, EntityViewManager evm) {
@@ -114,15 +109,30 @@
 		return new LoadOption(propList);
 	}
 %>
+<%!
+	Integer toInteger(Object val) {
+		if (val == null) return null;
+		if (val instanceof Integer) {
+			return (Integer) val;
+		} else if (val instanceof Long) {
+			return ((Long) val).intValue();
+		} else if (val instanceof Float) {
+			return ((Float) val).intValue();
+		} else if (val instanceof Double) {
+			return ((Double) val).intValue();
+		} else if (val instanceof BigDecimal) {
+			return ((BigDecimal) val).intValue();
+		}
+		return -1; // 数値以外
+	}
+%>
 <%
 	//既にネストされたプロパティからの再ネストは禁止
 	Boolean nest = (Boolean) request.getAttribute(Constants.EDITOR_REF_NEST);
 	request.removeAttribute(Constants.EDITOR_REF_NEST);
 	if (nest != null && nest) return;
-
 	String contextPath = TemplateUtil.getTenantContextPath();
 	AuthContext auth = AuthContext.getCurrentContext();
-
 	//Request情報取得
 	ReferencePropertyEditor editor = (ReferencePropertyEditor) request.getAttribute(Constants.EDITOR_EDITOR);
 	Object value = request.getAttribute(Constants.EDITOR_PROP_VALUE);
@@ -136,21 +146,17 @@
 	if (mappedBy == null) mappedBy = "";
 	request.removeAttribute(Constants.EDITOR_REF_MAPPEDBY);
 	String reloadUrl = (String) request.getAttribute(Constants.EDITOR_REF_RELOAD_URL);
-
 	//本体のEntity
 	Entity parentEntity = (Entity) request.getAttribute(Constants.EDITOR_PARENT_ENTITY);
 	String parentOid = parentEntity != null ? parentEntity.getOid() : "";
 	String parentVersion = parentEntity != null && parentEntity.getVersion() != null ? parentEntity.getVersion().toString() : "";
-
 	//表示判断スクリプトEntity
 	Entity rootEntity = (Entity) request.getAttribute(Constants.ROOT_ENTITY);
 	String rootOid = parentEntity != null ? parentEntity.getOid() : "";
 	String rootVersion = parentEntity != null && parentEntity.getVersion() != null ? parentEntity.getVersion().toString() : "";
-
 	//Property情報取得
 	boolean isMappedby = pd.getMappedBy() != null;
 	boolean isMultiple = pd.getMultiplicity() != 1;
-
 	//権限チェック
 	boolean editable = true;
 	if(editable) {
@@ -159,7 +165,6 @@
 		editable = auth.checkPermission(new EntityPropertyPermission(defName, pd.getName(), EntityPropertyPermission.Action.UPDATE));
 	}
 	boolean updatable = (pd.isUpdatable() || isInsert) && editable;
-
 	//Editorの設定値取得
 	String refDefName = editor.getObjectName();
 	String propName = editor.getPropertyName();
@@ -168,20 +173,17 @@
 	boolean hideSelectButton = editor.isHideSelectButton();
 	boolean refEdit = editor.isEditableReference();
 	boolean editPageView = editor.getEditPage() != null && editor.getEditPage() == EditPage.VIEW;
-
 	OutputType execOutputType = outputType;
 	if (editPageView) {
 		//Viewモードの場合は、EDITでもVIEWとして出力させる
 		execOutputType = OutputType.VIEW;
 		request.setAttribute(Constants.OUTPUT_TYPE, execOutputType);
 	}
-
 	// 参照先のEntity情報取得
 	final EntityManager em = ManagerLocator.getInstance().getManager(EntityManager.class);
 	EntityDefinitionManager edm = ManagerLocator.getInstance().getManager(EntityDefinitionManager.class);
 	EntityViewManager evm = ManagerLocator.getInstance().getManager(EntityViewManager.class);
 	EntityDefinition refEd = edm.get(refDefName);
-
 	//追加ボタン制御(参照先の登録権限)
 	boolean refCreatable = false;
 	if (!hideRegistButton && updatable) {
@@ -189,7 +191,6 @@
 		refCreatable = auth.checkPermission(new EntityPermission(refDefName, EntityPermission.Action.CREATE));
 	}
 	boolean showInsertBtn = refCreatable;
-
 	//削除ボタン制御
 	boolean refDeletable = false;
 	if (!hideDeleteButton) {
@@ -213,7 +214,6 @@
 			showDeleteBtn = false;
 		}
 	}
-
 	//編集リンク制御(参照先の更新権限)
 	boolean refUpdatable = false;
 	if (refEdit) {
@@ -221,10 +221,8 @@
 		refUpdatable = auth.checkPermission(new EntityPermission(refDefName, EntityPermission.Action.UPDATE));
 	}
 	boolean showRefEditLink = refUpdatable;
-
 	//Action定義取得
 	String urlPath = ViewUtil.getParamMappingPath(refDefName, editor.getViewName());
-
 	//編集用のAction
 	String detailAction = "";
 	if (StringUtil.isNotBlank(editor.getDetailrefActionName())) {
@@ -232,7 +230,6 @@
 	} else {
 		detailAction = contextPath + "/" + DetailViewCommand.REF_DETAIL_ACTION_NAME + urlPath;
 	}
-
 	//表示用のAction
 	String viewAction = "";
 	if (StringUtil.isNotBlank(editor.getViewrefActionName())) {
@@ -240,7 +237,6 @@
 	} else {
 		viewAction = contextPath + "/" + DetailViewCommand.REF_VIEW_ACTION_NAME + urlPath;
 	}
-
 	//追加用のAction
 	String addAction = "";
 	if (StringUtil.isNotBlank(editor.getAddActionName())) {
@@ -248,7 +244,6 @@
 	} else {
 		addAction = contextPath + "/" + DetailViewCommand.REF_DETAIL_ACTION_NAME + urlPath;
 	}
-
 	//選択用のAction
 	String selectAction = "";
 	if (StringUtil.isNotBlank(editor.getSelectActionName())) {
@@ -256,7 +251,6 @@
 	} else {
 		selectAction = contextPath + "/" + SearchViewCommand.SELECT_ACTION_NAME + urlPath;
 	}
-
 	//参照プロパティ更新用のAction
 	boolean isDialog = ViewUtil.isDialog(TemplateUtil.getRequestContext());
 	String updateRefAction = null;
@@ -270,15 +264,12 @@
 	if (StringUtil.isNotBlank(viewName)) {
 		updateRefAction = updateRefAction + "/" + viewName;
 	}
-
 	//リロード用URL
 	if (reloadUrl == null || reloadUrl.isEmpty()) {
 		reloadUrl = getViewAction(defName, viewName, parentOid, isDialog);
 	}
-
 	//ロード処理のinterrupter
 	LoadEntityInterrupterHandler handler = getLoadEntityInterrupterHandler(em, edm, evm);
-
 	//出力データ
 	List<Entity> entities = new ArrayList<Entity>();
 	if (value instanceof Entity) {
@@ -286,22 +277,24 @@
 	} else if (value instanceof Entity[]) {
 		entities.addAll(Arrays.asList((Entity[]) value));
 	}
-
 	//表示順が指定されてたら並び替え
 	boolean showUpDownBtn = StringUtil.isNotBlank(editor.getTableOrderPropertyName());
 	if (showUpDownBtn) {
 		entities = EntityViewUtil.sortByOrderProperty(entities, editor.getTableOrderPropertyName(), true);
+	} else {
+		//表示順が指定されていない場合Oidで並び替え（デフォルト昇順）
+		entities = EntityViewUtil.sortByOrderProperty(entities, "oid", true);
+		//追加ボタンはTopの場合、降順で表示します。
+		if (editor.getInsertType() == InsertType.TOP) {
+			Collections.reverse(entities);
+		}
 	}
-
 	//定義名を参照型のものに置き換える、後でdefNameに戻す
 	request.setAttribute(Constants.DEF_NAME, refDefName);
-
 	if (OutputType.EDIT == execOutputType || OutputType.BULK == execOutputType) {
-
 		//-------------------------
 		//Editモード
 		//-------------------------
-
 		String countId = "id_" + propName + "_count";
 		String dummyRowId = "id_tr_" + propName + "Dummy";
 		//追加ボタン
@@ -339,7 +332,6 @@ $(function() {
 </p>
 <%
 		}
-
 		String tableStyle = "";
 		if (entities.size() == 0) tableStyle = "display: none;";
 %>
@@ -349,7 +341,6 @@ $(function() {
 <tr>
 <%
 		//ヘッダ部作成
-
 		int colNum = 0;
 		for (NestProperty nProp : editor.getNestProperties()) {
 			PropertyDefinition refPd = refEd.getProperty(nProp.getPropertyName());
@@ -361,9 +352,7 @@ $(function() {
 			if (StringUtil.isNotBlank(nProp.getTooltip())) {
 				tooltip = TemplateUtil.getMultilingualString(nProp.getTooltip(), nProp.getLocalizedTooltipList());
 			}
-
 			if (isDispProperty(refPd, mappedBy, nProp, outputType)) {
-
 				boolean required = false;
 				RequiredDisplayType rdType = nProp.getRequiredDisplayType();
 				if (rdType == null) rdType = RequiredDisplayType.DEFAULT;
@@ -379,16 +368,14 @@ $(function() {
 				} else if (rdType == RequiredDisplayType.DISPLAY) {
 					required = true;
 				}
-
 				//表示名
 				String title = TemplateUtil.getMultilingualString(
 						nProp.getDisplayLabel(), nProp.getLocalizedDisplayLabelList(),
 						refPd.getDisplayName(), refPd.getLocalizedDisplayNameList());
-
 				String cls = "col" + colNum;
 				String style = "";
 				if (nProp.getWidth() > 0) {
-					style = "width:" + nProp.getWidth() + "px;";
+					style = "width:" + nProp.getWidth() + "px; ";
 				}
 %>
 <th nowrap="nowrap" class="<c:out value="<%=cls%>"/>" style="<c:out value="<%=style%>"/>">
@@ -453,7 +440,6 @@ $(function() {
 <%
 				}
 				if (nProp.getAutocompletionSetting() != null) {
-
 					request.setAttribute(Constants.AUTOCOMPLETION_SETTING, nProp.getAutocompletionSetting());
 					request.setAttribute(Constants.AUTOCOMPLETION_DEF_NAME, rootDefName);
 					request.setAttribute(Constants.AUTOCOMPLETION_VIEW_NAME, viewName);
@@ -461,7 +447,6 @@ $(function() {
 					request.setAttribute(Constants.AUTOCOMPLETION_MULTIPLICTTY, 1);
 					request.setAttribute(Constants.AUTOCOMPLETION_REF_NEST_PROP_NAME, propName);
 					request.setAttribute(Constants.AUTOCOMPLETION_ROOT_ENTITY_DATA, rootEntity);
-
 					String typePath = null;
 					if (nProp.getEditor() instanceof IntegerPropertyEditor
 							|| nProp.getEditor() instanceof FloatPropertyEditor) {
@@ -472,7 +457,6 @@ $(function() {
 					}
 					request.setAttribute(Constants.AUTOCOMPLETION_SCRIPT_PATH, typePath);
 					request.setAttribute(Constants.AUTOCOMPLETION_EDITOR, nProp.getEditor());
-
 					String autocompletionPath = "/jsp/gem/generic/common/NestTableAutocompletion.jsp";
 %>
 <jsp:include page="<%=autocompletionPath %>"/>
@@ -527,7 +511,6 @@ ${m:rs("mtp-gem-messages", "generic.editor.reference.ReferencePropertyEditor_Tab
 <tbody>
 <%
 		//body部作成
-
 		//Javascriptでコピーするためのテンプレート行作成
 		request.setAttribute(Constants.EDITOR_REF_NEST_DUMMY_ROW, true);
 %>
@@ -562,7 +545,7 @@ ${m:rs("mtp-gem-messages", "generic.editor.reference.ReferencePropertyEditor_Tab
 				String cls = "col" + colNum;
 				String style = "";
 				if (nProp.getWidth() > 0) {
-					style = "width:" + nProp.getWidth() + "px;";
+					style = "width:" + nProp.getWidth() + "px; ";
 				}
 %>
 <td class="<c:out value="<%=cls%>"/>" data-propName="<c:out value="<%=refPd.getName()%>"/>" style="<c:out value="<%=style%>"/>">
@@ -573,7 +556,6 @@ ${m:rs("mtp-gem-messages", "generic.editor.reference.ReferencePropertyEditor_Tab
 <%
 				}
 				request.removeAttribute(Constants.EDITOR_REF_NEST);
-
 				if (StringUtil.isNotBlank(description)) {
 %>
 <br />
@@ -588,7 +570,6 @@ ${m:rs("mtp-gem-messages", "generic.editor.reference.ReferencePropertyEditor_Tab
 			}
 		}
 		request.setAttribute(Constants.EXEC_TYPE, execType);
-
 		//編集リンク
 		if (refEdit) {
 			String idxPropName = propName + "[Dummy]";
@@ -603,7 +584,6 @@ ${m:rs("mtp-gem-messages", "generic.editor.reference.ReferencePropertyEditor_Tab
 </td>
 <%
 		}
-
 		//表示順
 		if (showUpDownBtn) {
 %>
@@ -614,7 +594,6 @@ ${m:rs("mtp-gem-messages", "generic.editor.reference.ReferencePropertyEditor_Tab
 </td>
 <%
 		}
-
 		//削除ボタン
 		if (showDeleteBtn) {
 %>
@@ -623,14 +602,12 @@ ${m:rs("mtp-gem-messages", "generic.editor.reference.ReferencePropertyEditor_Tab
 </td>
 <%
 		}
-
 		request.removeAttribute(Constants.EDITOR_REF_NEST_DUMMY_ROW);
 		//テンプレート行作成ここまで
 %>
 </tr>
 <%
 		//データ出力
-
 		for (int i = 0; i < entities.size(); i++) {
 			final Entity tmp = entities.get(i);
 			String trId = "id_tr_" + propName + i;
@@ -643,7 +620,6 @@ ${m:rs("mtp-gem-messages", "generic.editor.reference.ReferencePropertyEditor_Tab
 					final LoadEntityContext leContext = handler.beforeLoadReference(tmp.getDefinitionName(), loadOption, pd, LoadType.VIEW);
 					if (leContext.isDoPrivileged()) {
 						entity = AuthContext.doPrivileged(new Supplier<Entity>() {
-
 							@Override
 							public Entity get() {
 								return em.load(tmp.getOid(), tmp.getVersion(), tmp.getDefinitionName(), leContext.getLoadOption());
@@ -683,11 +659,10 @@ ${m:rs("mtp-gem-messages", "generic.editor.reference.ReferencePropertyEditor_Tab
 					request.setAttribute(Constants.EDITOR_PROPERTY_DEFINITION, refPd);
 					request.setAttribute(Constants.EDITOR_REF_NEST, true);//2重ネスト防止用フラグ
 					String path = EntityViewUtil.getJspPath(nProp.getEditor(), ViewConst.DESIGN_TYPE_GEM);
-
 					String cls = "col" + colNum;
 					String style = "";
 					if (nProp.getWidth() > 0) {
-						style = "width:" + nProp.getWidth() + "px;";
+						style = "width:" + nProp.getWidth() + "px; ";
 					}
 %>
 <td class="<c:out value="<%=cls%>"/>" data-propName="<c:out value="<%=refPd.getName()%>"/>" style="<c:out value="<%=style%>"/>">
@@ -723,8 +698,6 @@ ${m:rs("mtp-gem-messages", "generic.editor.reference.ReferencePropertyEditor_Tab
 				}
 			}
 			request.removeAttribute(Constants.EDITOR_REF_NEST_VALUE);
-
-
 			if (refEdit) {
 				String _detailAction = StringUtil.escapeJavaScript(detailAction);
 				String _viewAction = StringUtil.escapeJavaScript(viewAction);
@@ -758,7 +731,6 @@ ${m:rs("mtp-gem-messages", "generic.editor.reference.ReferencePropertyEditor_Tab
 <%
 				}
 			}
-
 			//表示順
 			if (showUpDownBtn) {
 %>
@@ -769,7 +741,6 @@ ${m:rs("mtp-gem-messages", "generic.editor.reference.ReferencePropertyEditor_Tab
 </td>
 <%
 			}
-
 			//削除ボタン
 			if (showDeleteBtn) {
 %>
@@ -783,7 +754,6 @@ ${m:rs("mtp-gem-messages", "generic.editor.reference.ReferencePropertyEditor_Tab
 </tr>
 <%
 		}
-
 		String hiddenName = propName + "_count";
 %>
 </tbody>
@@ -827,11 +797,9 @@ $(function() {
 <%
 		}
 	} else if (OutputType.VIEW == execOutputType) {
-
 		//-------------------------
 		//Viewモード(またはEditモードでView編集指定時)
 		//-------------------------
-
 		//ヘッダ作成
 		String tableStyle = "";
 		if (entities.size() == 0) tableStyle = "display: none;";
@@ -852,16 +820,14 @@ $(function() {
 <th nowrap="nowrap" style="display:none;"></th>
 <%
 			if (isDispProperty(refPd, mappedBy, nProp, outputType)) {
-
 				//表示名
 				String title = TemplateUtil.getMultilingualString(
 						nProp.getDisplayLabel(), nProp.getLocalizedDisplayLabelList(),
 						refPd.getDisplayName(), refPd.getLocalizedDisplayNameList());
-
 				String cls = "col" + colNum;
 				String style = "";
 				if (nProp.getWidth() > 0) {
-					style = "width:" + nProp.getWidth() + "px;";
+					style = "width:" + nProp.getWidth() + "px; ";
 				}
 %>
 <th nowrap="nowrap" class="<c:out value="<%=cls%>"/>" style="<c:out value="<%=style%>"/>">
@@ -880,14 +846,12 @@ ${m:rs("mtp-gem-messages", "generic.editor.reference.ReferencePropertyEditor_Tab
 </th>
 <%
 		}
-
 		//表示順
 		if (showUpDownBtn && editPageView && outputType == OutputType.VIEW) {
 %>
 <th class="orderCol"></th>
 <%
 		}
-
 		//削除ボタン列
 		if (showDeleteBtn) {
 %>
@@ -911,7 +875,6 @@ ${m:rs("mtp-gem-messages", "generic.editor.reference.ReferencePropertyEditor_Tab
 			LoadEntityContext leContext = handler.beforeLoadReference(tmp.getDefinitionName(), loadOption, pd, LoadType.VIEW);
 			if (leContext.isDoPrivileged()) {
 				entity = AuthContext.doPrivileged(new Supplier<Entity>() {
-
 					@Override
 					public Entity get() {
 						return em.load(tmp.getOid(), tmp.getVersion(), tmp.getDefinitionName(), loadOption);
@@ -947,11 +910,10 @@ ${m:rs("mtp-gem-messages", "generic.editor.reference.ReferencePropertyEditor_Tab
 					request.setAttribute(Constants.EDITOR_PROPERTY_DEFINITION, refPd);
 					request.setAttribute(Constants.EDITOR_REF_NEST, true);//2重ネスト防止用フラグ
 					String path = EntityViewUtil.getJspPath(nProp.getEditor(), ViewConst.DESIGN_TYPE_GEM);
-
 					String cls = "col" + colNum;
 					String style = "";
 					if (nProp.getWidth() > 0) {
-						style = "width:" + nProp.getWidth() + "px;";
+						style = "width:" + nProp.getWidth() + "px; ";
 					}
 %>
 <td class="<c:out value="<%=cls %>"/>" style="<c:out value="<%=style %>"/>">
@@ -969,7 +931,6 @@ ${m:rs("mtp-gem-messages", "generic.editor.reference.ReferencePropertyEditor_Tab
 				}
 			}
 			request.removeAttribute(Constants.EDITOR_REF_NEST_VALUE);
-
 			//詳細リンク
 			if (refEdit) {
 				boolean refEditParam = false;
@@ -1000,7 +961,6 @@ ${m:rs("mtp-gem-messages", "generic.editor.reference.ReferencePropertyEditor_Tab
 </td>
 <%
 			}
-
 			//表示順
 			if (showUpDownBtn && editPageView && outputType == OutputType.VIEW) {
 				String _trId = StringUtil.escapeJavaScript(trId);
@@ -1021,7 +981,6 @@ ${m:rs("mtp-gem-messages", "generic.editor.reference.ReferencePropertyEditor_Tab
 </td>
 <%
 			}
-
 			//削除ボタン
 			if (showDeleteBtn) {
 				String deleteId = "del_" + propName + i;
@@ -1076,7 +1035,6 @@ $(function() {
 						}
 					}
 				}
-
 				String selBtnUrlParam = evm.getUrlParameter(rootDefName, editor, parentEntity, UrlParameterActionType.SELECT);
 %>
 <input type="button" value="${m:rs('mtp-gem-messages', 'generic.editor.reference.ReferencePropertyEditor_Table.select')}" class="gr-btn-02 modal-btn mt05" id="<c:out value="<%=selBtnId %>"/>" data-specVersionKey="<c:out value="<%=specVersionKey%>" />" />
@@ -1093,8 +1051,24 @@ $(function() {
 			//新規ボタン
 			if (showInsertBtn) {
 				String insBtnId = "ins_btn_" + propName;
-
 				String insBtnUrlParam = evm.getUrlParameter(rootDefName, editor, parentEntity, UrlParameterActionType.ADD);
+				Integer orderPropValue = null;
+				String orderPropName = StringUtil.escapeJavaScript(editor.getTableOrderPropertyName());
+				if (orderPropName != null) {
+					if (entities.size() > 0) {
+						if (editor.getInsertType() == InsertType.TOP) {
+							Entity firstEntity = entities.get(0);
+							Integer firstOrderPropValue = toInteger(firstEntity.getValue(orderPropName));
+							if (firstOrderPropValue != null) orderPropValue = firstOrderPropValue - 1;
+						} else {
+							Entity lastEntity = entities.get(entities.size() -1);
+							Integer lastOrderPropValue = toInteger(lastEntity.getValue(orderPropName));
+							if (lastOrderPropValue != null) orderPropValue = lastOrderPropValue + 1;
+						}
+					} else {
+						orderPropValue = 0;
+					}
+				}
 %>
 <input type="button" value="${m:rs('mtp-gem-messages', 'generic.editor.reference.ReferencePropertyEditor_Table.new')}" class="gr-btn-02 modal-btn mt05" id="<c:out value="<%=insBtnId %>"/>" />
 <script type="text/javascript">
@@ -1104,7 +1078,7 @@ $(function() {
 				"<%=StringUtil.escapeJavaScript(insBtnUrlParam)%>", "<%=StringUtil.escapeJavaScript(parentOid)%>", "<%=StringUtil.escapeJavaScript(parentVersion)%>", "<%=StringUtil.escapeJavaScript(defName)%>",
 				"<%=StringUtil.escapeJavaScript(mappedBy) %>", $(":hidden[name='oid']").val(), "<%=StringUtil.escapeJavaScript(updateRefAction)%>",
 				"<%=StringUtil.escapeJavaScript(propName) %>", "<%=StringUtil.escapeJavaScript(reloadUrl)%>", "<%=StringUtil.escapeJavaScript(rootOid)%>",
-				"<%=StringUtil.escapeJavaScript(rootVersion)%>");
+				"<%=StringUtil.escapeJavaScript(rootVersion)%>", "<%=UpdateTableOrderCommand.WEBAPI_NAME%>", "<%=orderPropName%>", <%=orderPropValue%>, <%=editor.getInsertType() == InsertType.TOP%>);
 	});
 });
 </script>
@@ -1112,12 +1086,10 @@ $(function() {
 			}
 		}
 	}
-
 	if (editPageView) {
 		//書き換えたOutputTypeを戻す
 		request.setAttribute(Constants.OUTPUT_TYPE, outputType);
 	}
-
 	//書き換えた定義名を戻す
 	request.setAttribute(Constants.DEF_NAME, defName);
 	//書き換えた参照元を戻す

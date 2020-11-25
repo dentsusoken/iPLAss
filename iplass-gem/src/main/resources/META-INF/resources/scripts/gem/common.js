@@ -1880,7 +1880,7 @@ function showReference(viewAction, defName, oid, version, linkId, refEdit, editC
 		}
 		if (isSubModal) $("<input />").attr({type:"hidden", name:"modalTarget", value:target}).appendTo($form);
 	}
-	
+
 	document.scriptContext["editReferenceCallback"] = function(entity) {
 		//callbackが指定されていたら呼び出し
 		if (editCallback && $.isFunction(editCallback)) {
@@ -2385,9 +2385,10 @@ function insertReference(addAction, viewAction, defName, propName, multiplicity,
  * @param entityOid
  * @param entityVersion
  */
-function insertReferenceFromView(addAction, defName, id, multiplicity, urlParam, 
-		parentOid, parentVersion, parentDefName, mappedBy, 
-		oid, updateAction, propName, reloadUrl, entityOid, entityVersion) {
+function insertReferenceFromView(addAction, defName, id, multiplicity, urlParam,
+		parentOid, parentVersion, parentDefName, mappedBy,
+		oid, updateAction, propName, reloadUrl, entityOid, entityVersion,
+		webapi, orderPropName, orderPropValue, shiftUp) {
 	var _propName = propName.replace(/\[/g, "\\[").replace(/\]/g, "\\]").replace(/\./g, "\\.");
 
 	var isMappedBy = mappedBy != null && mappedBy != "";
@@ -2400,18 +2401,32 @@ function insertReferenceFromView(addAction, defName, id, multiplicity, urlParam,
 
 			closeModalDialog();
 
-			var $form = $("#detailForm");
-			if (isMappedBy) {
-				//非参照の場合は再ロード
-				$form.attr("action", reloadUrl).submit()
-			} else {
-				//通常参照の場合は参照Propertyを更新（更新Action側で再ロード）
-				var key = entity.oid + "_" + entity.version;
-				$("<input type='hidden' name='" + propName + "' />").val(key).appendTo($form);
-				$("<input type='hidden' name='updatePropertyName' />").val(propName).appendTo($form);
-				$("<input type='hidden' name='reloadUrl' />").val(reloadUrl).appendTo($form);
-				$form.attr("action", updateAction).submit();
-			}
+			var targetKey = entity.oid + "_" + entity.version;
+			var param = {
+				"defName": parentDefName,
+				"viewName": "",
+				"refDefName": defName,
+				"targetKey": targetKey,
+				"shiftKey": " _ ",
+				"orderPropName": orderPropName,
+				"orderPropValue": orderPropValue,
+				"shiftUp": shiftUp,
+				"_t": $(":hidden[name='_t']").val()
+			};
+			postAsync(webapi, JSON.stringify(param), function() {
+				var $form = $("#detailForm");
+				if (isMappedBy) {
+					//非参照の場合は再ロード
+					$form.attr("action", reloadUrl).submit()
+				} else {
+					//通常参照の場合は参照Propertyを更新（更新Action側で再ロード）
+					var key = entity.oid + "_" + entity.version;
+					$("<input type='hidden' name='" + propName + "' />").val(key).appendTo($form);
+					$("<input type='hidden' name='updatePropertyName' />").val(propName).appendTo($form);
+					$("<input type='hidden' name='reloadUrl' />").val(reloadUrl).appendTo($form);
+					$form.attr("action", updateAction).submit();
+				}
+			});
 		};
 
 		var isSubModal = $("body.modal-body").length != 0;
@@ -2718,7 +2733,7 @@ function viewEditableReference(viewAction, defName, oid, reloadUrl, refEdit, url
 	$("<input />").attr({type:"hidden", name:"refEdit", value:refEdit}).appendTo($form);
 	if (isSubModal) $("<input />").attr({type:"hidden", name:"modalTarget", value:target}).appendTo($form);
 
-	if (typeof urlParam === "undefined" || urlParam === null || urlParam === "") urlParam = "";	
+	if (typeof urlParam === "undefined" || urlParam === null || urlParam === "") urlParam = "";
 	var kv = urlParam.split("&");
 	if (urlParam.length > 0 && kv.length > 0) {
 		for (var i = 0; i < kv.length; i++) {
@@ -2728,7 +2743,7 @@ function viewEditableReference(viewAction, defName, oid, reloadUrl, refEdit, url
 			}
 		}
 	}
-	
+
 	$form.submit();
 	$form.remove();
 }
@@ -3248,10 +3263,34 @@ function addNestRow(rowId, countId, multiplicy, insertTop, rootDefName, viewName
 
 	var $copyRow = $srcRow.clone().removeAttr("style");
 	var $headerRow = $tbody.prev("thead").children("tr:first");
+	var newRowIndex = 0;
 	if (insertTop && rowCount > 1) {
 		var $firstRow = $tbody.children("tr:not(:hidden):first");
+		//位置とインデックス設定
+		var $firstRowOrderIndex = $("[name^='tableOrderIndex']", $firstRow);
+		if ($firstRowOrderIndex.val() != undefined && $firstRowOrderIndex.val() != "") {
+			newRowIndex = parseInt($firstRowOrderIndex.val());
+			if (!isNaN(newRowIndex)) {
+				newRowIndex = newRowIndex - 1;
+			} else {
+				newRowIndex = 0;
+			}
+		}
+		$("[name^='tableOrderIndex']", $copyRow).val(newRowIndex);
 		$copyRow.insertBefore($firstRow);
 	} else {
+		//位置とインデックス設定
+		var $lastRow = $tbody.children("tr:not(:hidden):last");
+		var $lastRowOrderIndex = $("[name^='tableOrderIndex']", $lastRow);
+		if ($lastRowOrderIndex.val() != undefined && $lastRowOrderIndex.val() != "") {
+			newRowIndex = parseInt($lastRowOrderIndex.val());
+			if (!isNaN(newRowIndex)) {
+				newRowIndex = newRowIndex + 1;
+			} else {
+				newRowIndex = 0;
+			}
+		}
+		$("[name^='tableOrderIndex']", $copyRow).val(newRowIndex);
 		$tbody.append($copyRow);
 	}
 
@@ -3330,7 +3369,7 @@ function addNestRow(rowId, countId, multiplicy, insertTop, rootDefName, viewName
 				$($td).children(":button").on("click", function() {deleteRefTableRow(rowId, delCallback);});
 			}
 		});
-		
+
 		//追加された行のラジオボタン開閉制御
 		$("input.radio-togglable", $copyRow).togglableRadio();
 
@@ -3948,6 +3987,7 @@ function adjustDialogLayer($layer) {
 	var winWidth = $(window).width();
 	var docWidth = $(document).width();
 	var containerWidth = $("#container").width();
+
 	var width = winWidth > docWidth ? winWidth : docWidth;
 	if (containerWidth > width) width = containerWidth;
 	$layer.width(width);

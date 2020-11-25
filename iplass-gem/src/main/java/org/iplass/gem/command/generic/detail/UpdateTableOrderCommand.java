@@ -1,19 +1,19 @@
 /*
  * Copyright (C) 2017 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
- * 
+ *
  * Unless you have purchased a commercial license,
  * the following license terms apply:
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
@@ -36,8 +36,8 @@ import org.iplass.mtp.entity.definition.EntityDefinitionManager;
 import org.iplass.mtp.entity.definition.PropertyDefinition;
 import org.iplass.mtp.impl.util.ConvertUtil;
 import org.iplass.mtp.impl.web.token.TokenStore;
-import org.iplass.mtp.webapi.definition.RequestType;
 import org.iplass.mtp.webapi.definition.MethodType;
+import org.iplass.mtp.webapi.definition.RequestType;
 
 @WebApi(
 		name=UpdateTableOrderCommand.WEBAPI_NAME,
@@ -69,6 +69,7 @@ public final class UpdateTableOrderCommand implements Command {
 		String shiftKey = request.getParam("shiftKey");
 		String orderPropName = request.getParam("orderPropName");
 		boolean shiftUp = request.getParamAsBoolean("shiftUp");
+		Long orderPropValue = request.getParamAsLong("orderPropValue");
 
 		//移動対象取得
 		String[] targetParam = targetKey.split("_");
@@ -93,6 +94,11 @@ public final class UpdateTableOrderCommand implements Command {
 			option.add(orderPropName);
 			em.update(target, option);
 			em.update(shift, option);
+		} else if (target != null && orderPropValue != null) {
+			target.setValue(orderPropName, orderPropValue);
+			UpdateOption option = new UpdateOption();
+			option.add(orderPropName);
+			em.update(target, option);
 		}
 
 		return null;
