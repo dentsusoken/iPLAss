@@ -21,11 +21,13 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="m" uri="http://iplass.org/tags/mtp"%>
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8" trimDirectiveWhitespaces="true"%>
-
+<%@ page import="java.math.BigDecimal" %>
 <%@ page import="java.util.ArrayList" %>
 <%@ page import="java.util.Arrays" %>
+<%@ page import="java.util.Collections" %>
 <%@ page import="java.util.List" %>
 <%@ page import="java.util.function.Supplier"%>
+<%@ page import="org.iplass.mtp.impl.util.ConvertUtil" %>
 <%@ page import="org.iplass.mtp.auth.AuthContext"%>
 <%@ page import="org.iplass.mtp.entity.permission.EntityPermission"%>
 <%@ page import="org.iplass.mtp.entity.permission.EntityPropertyPermission"%>
@@ -112,6 +114,23 @@
 			}
 		}
 		return new LoadOption(propList);
+	}
+%>
+<%!
+	Integer toInteger(Object val) {
+		if (val == null) return null;
+		if (val instanceof Integer) {
+			return (Integer) val;
+		} else if (val instanceof Long) {
+			return ((Long) val).intValue();
+		} else if (val instanceof Float) {
+			return ((Float) val).intValue();
+		} else if (val instanceof Double) {
+			return ((Double) val).intValue();
+		} else if (val instanceof BigDecimal) {
+			return ((BigDecimal) val).intValue();
+		}
+		return -1; // 数値以外
 	}
 %>
 <%
@@ -291,6 +310,13 @@
 	boolean showUpDownBtn = StringUtil.isNotBlank(editor.getTableOrderPropertyName());
 	if (showUpDownBtn) {
 		entities = EntityViewUtil.sortByOrderProperty(entities, editor.getTableOrderPropertyName(), true);
+	} else {
+		//表示順が指定されていない場合Oidで並び替え（デフォルト昇順）
+		entities = EntityViewUtil.sortByOrderProperty(entities, "oid", true);
+		//追加ボタンはTopの場合、降順で表示します。
+		if (editor.getInsertType() == InsertType.TOP) {
+			Collections.reverse(entities);
+		}
 	}
 
 	//定義名を参照型のものに置き換える、後でdefNameに戻す
@@ -1110,6 +1136,23 @@ $(function() {
 				String insBtnId = "ins_btn_" + propName;
 
 				String insBtnUrlParam = evm.getUrlParameter(rootDefName, editor, parentEntity, UrlParameterActionType.ADD);
+				Integer orderPropValue = null;
+				String orderPropName = StringUtil.escapeJavaScript(editor.getTableOrderPropertyName());
+				if (orderPropName != null) {
+					if (entities.size() > 0) {
+						if (editor.getInsertType() == InsertType.TOP) {
+							Entity firstEntity = entities.get(0);
+							Integer firstOrderPropValue = toInteger(firstEntity.getValue(orderPropName));
+							if (firstOrderPropValue != null) orderPropValue = firstOrderPropValue - 1;
+						} else {
+							Entity lastEntity = entities.get(entities.size() -1);
+							Integer lastOrderPropValue = toInteger(lastEntity.getValue(orderPropName));
+							if (lastOrderPropValue != null) orderPropValue = lastOrderPropValue + 1;
+						}
+					} else {
+						orderPropValue = 0;
+					}
+				}
 %>
 <input type="button" value="${m:rs('mtp-gem-messages', 'generic.editor.reference.ReferencePropertyEditor_Table.new')}" class="gr-btn-02 modal-btn mt05" id="<c:out value="<%=insBtnId %>"/>" />
 <script type="text/javascript">
@@ -1119,7 +1162,7 @@ $(function() {
 				"<%=StringUtil.escapeJavaScript(insBtnUrlParam)%>", "<%=StringUtil.escapeJavaScript(parentOid)%>", "<%=StringUtil.escapeJavaScript(parentVersion)%>", "<%=StringUtil.escapeJavaScript(defName)%>",
 				"<%=StringUtil.escapeJavaScript(mappedBy) %>", $(":hidden[name='oid']").val(), "<%=StringUtil.escapeJavaScript(updateRefAction)%>",
 				"<%=StringUtil.escapeJavaScript(propName) %>", "<%=StringUtil.escapeJavaScript(reloadUrl)%>", "<%=StringUtil.escapeJavaScript(rootOid)%>",
-				"<%=StringUtil.escapeJavaScript(rootVersion)%>");
+				"<%=StringUtil.escapeJavaScript(rootVersion)%>", "<%=UpdateTableOrderCommand.WEBAPI_NAME%>", "<%=orderPropName%>", <%=orderPropValue%>, <%=editor.getInsertType() == InsertType.TOP%>);
 	});
 });
 </script>
