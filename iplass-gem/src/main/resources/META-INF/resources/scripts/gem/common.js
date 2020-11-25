@@ -3323,17 +3323,34 @@ function addNestRow(rowId, countId, multiplicy, insertTop, rootDefName, viewName
 
 	var $copyRow = $srcRow.clone().removeAttr("style");
 	var $headerRow = $tbody.prev("thead").children("tr:first");
+	var newRowIndex = 0;
 	if (insertTop && rowCount > 1) {
 		var $firstRow = $tbody.children("tr:not(:hidden):first");
 		//位置とインデックス設定
 		var $firstRowOrderIndex = $("[name^='tableOrderIndex']", $firstRow);
-		$("[name^='tableOrderIndex']", $copyRow).val((parseInt($firstRowOrderIndex.val()) || 1) - 1);
+		if ($firstRowOrderIndex.val() != undefined && $firstRowOrderIndex.val() != "") {
+			newRowIndex = parseInt($firstRowOrderIndex.val());
+			if (!isNaN(newRowIndex)) {
+				newRowIndex = newRowIndex - 1;
+			} else {
+				newRowIndex = 0;
+			}
+		}
+		$("[name^='tableOrderIndex']", $copyRow).val(newRowIndex);
 		$copyRow.insertBefore($firstRow);
 	} else {
 		//位置とインデックス設定
 		var $lastRow = $tbody.children("tr:not(:hidden):last");
 		var $lastRowOrderIndex = $("[name^='tableOrderIndex']", $lastRow);
-		$("[name^='tableOrderIndex']", $copyRow).val((parseInt($lastRowOrderIndex.val()) || -1) + 1);
+		if ($lastRowOrderIndex.val() != undefined && $lastRowOrderIndex.val() != "") {
+			newRowIndex = parseInt($lastRowOrderIndex.val());
+			if (!isNaN(newRowIndex)) {
+				newRowIndex = newRowIndex + 1;
+			} else {
+				newRowIndex = 0;
+			}
+		}
+		$("[name^='tableOrderIndex']", $copyRow).val(newRowIndex);
 		$tbody.append($copyRow);
 	}
 
