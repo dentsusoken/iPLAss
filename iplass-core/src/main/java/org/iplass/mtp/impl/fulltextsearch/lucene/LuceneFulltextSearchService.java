@@ -518,11 +518,11 @@ public class LuceneFulltextSearchService extends AbstractFulltextSeachService {
 			timeFormat.setLenient(false);
 			return new TextField(fieldName, timeFormat.format((Time) val), Field.Store.NO);
 		} else if (val instanceof BigDecimal) {
-			return new StringField(fieldName, ((BigDecimal) val).toPlainString(), Field.Store.NO);
+			return new TextField(fieldName, ((BigDecimal) val).toPlainString(), Field.Store.NO);
 		} else if (val instanceof Long) {
-			return new StringField(fieldName, val.toString(), Field.Store.NO);
+			return new TextField(fieldName, val.toString(), Field.Store.NO);
 		} else if (val instanceof Double) {
-			return new StringField(fieldName, val.toString(), Field.Store.NO);
+			return new TextField(fieldName, val.toString(), Field.Store.NO);
 		} else if (val instanceof BinaryReference) {
 			return new TextField(fieldName, parseBinaryReference((BinaryReference) val), Field.Store.NO);
 		} else {
