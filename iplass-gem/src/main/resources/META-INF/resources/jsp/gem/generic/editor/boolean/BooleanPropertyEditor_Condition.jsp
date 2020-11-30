@@ -158,6 +158,21 @@ $(function() {
 });
 </script>
 <%
+		} else if (editor.getDisplayType() == BooleanDisplayType.LABEL) {
+			String str = defaultValue != null && defaultValue.length > 0 ? defaultValue[0] : null;
+			Boolean b = null;
+			if (str == "true") {
+				b = true;
+			} else if (str == "false") {
+				b = false;
+			} else {
+				b = null;
+			}
+			String label = b != null ? b ? trueLabel : falseLabel : str;
+%>
+<c:out value="<%=label %>"/>
+<input type="hidden" name="<c:out value="<%=propName %>"/>" value="<c:out value="<%=str %>"/>" />
+<%
 		} else {
 			//SELECT以外
 

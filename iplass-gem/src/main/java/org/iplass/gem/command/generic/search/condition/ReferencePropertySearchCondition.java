@@ -115,7 +115,8 @@ public class ReferencePropertySearchCondition extends PropertySearchCondition {
 						conditions.add(new Equals(cond.getName() + "." + Entity.OID, cond.getOid()));
 					}
 				}
-			} else if (editor.getDisplayType() == ReferenceDisplayType.LINK && editor.isUseSearchDialog()) {
+			} else if ((editor.getDisplayType() == ReferenceDisplayType.LINK && editor.isUseSearchDialog())
+					 || (editor.getDisplayType() == ReferenceDisplayType.LABEL)){
 				Entity[] list = (Entity[]) value;
 				if (list != null) {
 					if (list.length == 1) {
@@ -352,7 +353,8 @@ public class ReferencePropertySearchCondition extends PropertySearchCondition {
 						throw createException(null);
 					}
 				}
-			} else if (editor.getDisplayType() == ReferenceDisplayType.LINK && editor.isUseSearchDialog()) {
+			} else if ((editor.getDisplayType() == ReferenceDisplayType.LINK && editor.isUseSearchDialog())
+					 || (editor.getDisplayType() == ReferenceDisplayType.LABEL)){
 				Entity[] list = (Entity[]) value;
 				if (validateEntity && (value == null || list.length == 0)) {
 					createException(null);

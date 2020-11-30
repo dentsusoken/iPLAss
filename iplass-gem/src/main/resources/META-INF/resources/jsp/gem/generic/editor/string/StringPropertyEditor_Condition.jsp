@@ -57,13 +57,13 @@
 	}
 
 	PropertyDefinition pd = (PropertyDefinition) request.getAttribute(Constants.EDITOR_PROPERTY_DEFINITION);
-	
+
 	if (editor.getDisplayType() != StringDisplayType.HIDDEN) {
 		//HIDDEN以外
 
 		Boolean required = (Boolean) request.getAttribute(Constants.EDITOR_REQUIRED);
 		if (required == null) required = false;
-		
+
 		String strDefault = "";
 		if (defaultValue != null && defaultValue.length > 0) {
 			strDefault = defaultValue[0];
@@ -74,9 +74,9 @@
 		if (StringUtil.isNotEmpty(editor.getInputCustomStyle())) {
 			customStyle = EntityViewUtil.getCustomStyle(rootDefName, scriptKey, editor.getInputCustomStyleScriptKey(), null, null);
 		}
-		
-		if (pd instanceof StringProperty 
-				|| (pd instanceof ExpressionProperty 
+
+		if (pd instanceof StringProperty
+				|| (pd instanceof ExpressionProperty
 						&& ((ExpressionProperty)pd).getResultType() == PropertyDefinitionType.STRING)) {
 			//String型のみ、LongTextは検索条件に含めない
 			if (editor.getDisplayType() == StringDisplayType.SELECT) {
@@ -124,6 +124,14 @@ $(function() {
 });
 </script>
 <%
+			} else if (editor.getDisplayType() == StringDisplayType.LABEL) {
+				String str = (defaultValue != null && defaultValue.length > 0 ? defaultValue[0] : null);
+				str = StringUtil.escapeXml10(str, true);
+				str = str.replaceAll("\r\n", "<BR>").replaceAll("\n", "<BR>").replaceAll("\r", "<BR>").replaceAll(" ", "&nbsp;");
+%>
+<c:out value="<%=str %>"/>
+<input type="hidden" name="<c:out value="<%=propName %>"/>" value="<c:out value="<%=str %>"/>" />
+<%
 			} else {
 				//SELECT以外
 %>
@@ -155,10 +163,23 @@ $(function() {
 <%
 			}
 		} else {
+			if (editor.getDisplayType() == StringDisplayType.LABEL) {
+				String str = (defaultValue != null && defaultValue.length > 0 ? defaultValue[0] : null);
+				str = StringUtil.escapeXml10(str, true);
+				str = str.replaceAll("\r\n", "<BR>").replaceAll("\n", "<BR>").replaceAll("\r", "<BR>").replaceAll(" ", "&nbsp;");
+%>
+<span class="data-label">
+<c:out value="<%=str %>"/>
+<input type="hidden" name="<c:out value="<%=propName %>"/>" value="<c:out value="<%=str %>"/>" />
+</span>
+<%
+			} else {
 			//LongTextはテキストボックスのみ
 %>
 <input type="text" class="form-size-04 inpbr" style="<c:out value="<%=customStyle%>"/>" value="<c:out value="<%=value %>"/>" name="<c:out value="<%=propName %>"/>" />
-
+<%
+			}
+%>
 <script type="text/javascript">
 $(function() {
 	<%-- common.js --%>

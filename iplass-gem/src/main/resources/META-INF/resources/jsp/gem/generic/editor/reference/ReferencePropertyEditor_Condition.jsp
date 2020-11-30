@@ -547,20 +547,20 @@ $(function() {
 		//連動コンボの生成はfunction.js
 %>
 <%-- XSS対応-メタの設定のため対応なし(searchType) --%>
-<select name="<c:out value="<%=propName %>"/>" class="form-size-02 inpbr refCombo" style="<c:out value="<%=customStyle%>"/>" 
+<select name="<c:out value="<%=propName %>"/>" class="form-size-02 inpbr refCombo" style="<c:out value="<%=customStyle%>"/>"
  data-oid="<c:out value="<%=oid%>"/>"
- data-propName="<c:out value="<%=pd.getName() %>"/>" 
+ data-propName="<c:out value="<%=pd.getName() %>"/>"
  data-defName="<c:out value="<%=_defName %>"/>"
- data-viewName="<c:out value="<%=viewName %>"/>" 
+ data-viewName="<c:out value="<%=viewName %>"/>"
  data-webapiName="<%=ReferenceComboCommand.WEBAPI_NAME%>"
- data-getEditorWebapiName="<%=GetEditorCommand.WEBAPI_NAME %>" 
+ data-getEditorWebapiName="<%=GetEditorCommand.WEBAPI_NAME %>"
  data-searchParentWebapiName="<%=SearchParentCommand.WEBAPI_NAME %>"
- data-viewType="<%=Constants.VIEW_TYPE_SEARCH %>" 
- data-prefix="sc_" 
+ data-viewType="<%=Constants.VIEW_TYPE_SEARCH %>"
+ data-prefix="sc_"
  data-searchType="<%=searchType%>"
- data-upperName="<c:out value="<%=upperName%>" />" 
- data-upperOid="<c:out value="<%=upperOid%>" />" 
- data-norewrite="true" 
+ data-upperName="<c:out value="<%=upperName%>" />"
+ data-upperOid="<c:out value="<%=upperOid%>" />"
+ data-norewrite="true"
  data-customStyle="<c:out value="<%=customStyle%>"/>">
 </select>
 <script type="text/javascript">
@@ -591,7 +591,7 @@ $(function() {
 });
 </script>
 <%
-	} else if (editor.getDisplayType() == ReferenceDisplayType.LINK && editor.isUseSearchDialog()) {
+	} else if ((editor.getDisplayType() == ReferenceDisplayType.LINK && editor.isUseSearchDialog()) || (editor.getDisplayType() == ReferenceDisplayType.LABEL)) {
 		String _defName = editor.getObjectName();
 		String _viewName = editor.getViewName() != null ? editor.getViewName() : "";
 
@@ -635,10 +635,16 @@ $(function() {
 				String key = entity.getOid() + "_" + entity.getVersion();
 %>
 <li id="<c:out value="<%=liId %>"/>" class="list-add">
-<a href="javascript:void(0)" class="modal-lnk" id="<c:out value="<%=linkId %>" />" data-linkId="<c:out value="<%=linkId %>"/>" style="<c:out value="<%=customStyle%>"/>" 
+<a href="javascript:void(0)" class="modal-lnk" id="<c:out value="<%=linkId %>" />" data-linkId="<c:out value="<%=linkId %>"/>" style="<c:out value="<%=customStyle%>"/>"
  onclick="showReference('<%=StringUtil.escapeJavaScript(viewAction)%>', '<%=StringUtil.escapeJavaScript(_defName)%>', '<%=StringUtil.escapeJavaScript(entity.getOid())%>', '<%=entity.getVersion() %>', '<%=StringUtil.escapeJavaScript(linkId)%>', false)">
  <c:out value="<%=displayPropLabel %>" /></a>
+<%
+				if (editor.getDisplayType() != ReferenceDisplayType.LABEL) {
+%>
 <input type="button" value="${m:rs('mtp-gem-messages', 'generic.editor.reference.ReferencePropertyEditor_Edit.delete')}" class="gr-btn-02 del-btn" onclick="deleteItem('<%=StringUtil.escapeJavaScript(liId)%>')" />
+<%
+				}
+%>
 <input type="hidden" name="<c:out value="<%=propName %>"/>" value="<c:out value="<%=key %>"/>"/>
 </li>
 <%
@@ -662,10 +668,16 @@ $(function() {
 					//hiddenにjavascriptで値上書きしないようにnorewrite属性をつけておく
 %>
 <li id="<c:out value="<%=liId %>"/>" class="list-add">
-<a href="javascript:void(0)" class="modal-lnk" id="<c:out value="<%=linkId %>" />" data-linkId="<c:out value="<%=linkId %>"/>" style="<c:out value="<%=customStyle%>"/>" 
+<a href="javascript:void(0)" class="modal-lnk" id="<c:out value="<%=linkId %>" />" data-linkId="<c:out value="<%=linkId %>"/>" style="<c:out value="<%=customStyle%>"/>"
  onclick="showReference('<%=StringUtil.escapeJavaScript(viewAction)%>', '<%=StringUtil.escapeJavaScript(_defName)%>', '<%=StringUtil.escapeJavaScript(entity.getOid())%>', '<%=entity.getVersion() %>', '<%=StringUtil.escapeJavaScript(linkId)%>', false)">
  <c:out value="<%=displayPropLabel %>" /></a>
+<%
+				if (editor.getDisplayType() != ReferenceDisplayType.LABEL) {
+%>
 <input type="button" value="${m:rs('mtp-gem-messages', 'generic.editor.reference.ReferencePropertyEditor_Edit.delete')}" class="gr-btn-02 del-btn" onclick="deleteItem('<%=StringUtil.escapeJavaScript(liId)%>')" />
+<%
+				}
+%>
 <input type="hidden" name="<c:out value="<%=propName %>"/>" value="<c:out value="<%=key %>"/>" data-norewrite="true"/>
 </li>
 <%
@@ -679,8 +691,12 @@ $(function() {
 
 		EntityViewManager evm = ManagerLocator.getInstance().getManager(EntityViewManager.class);
 		String selBtnUrlParam = evm.getUrlParameter(rootDefName, editor, null, UrlParameterActionType.SELECT);
+		if (editor.getDisplayType() != ReferenceDisplayType.LABEL) {
 %>
 <input type="button" value="${m:rs('mtp-gem-messages', 'generic.editor.reference.ReferencePropertyEditor_Edit.select')}" class="gr-btn-02 modal-btn" id="<c:out value="<%=selBtnId %>"/>" />
+<%
+		}
+%>
 <script type="text/javascript">
 $(function() {
 	var params = {
@@ -786,7 +802,7 @@ $(function() {
 				String displayPropLabel = getDisplayPropLabel(editor, entity);
 %>
 <li id="<c:out value="<%=liId %>"/>" class="list-add">
-<a href="javascript:void(0)" class="modal-lnk" id="<c:out value="<%=linkId %>" />" data-linkId="<c:out value="<%=linkId %>"/>" style="<c:out value="<%=customStyle%>"/>" 
+<a href="javascript:void(0)" class="modal-lnk" id="<c:out value="<%=linkId %>" />" data-linkId="<c:out value="<%=linkId %>"/>" style="<c:out value="<%=customStyle%>"/>"
  onclick="showReference('<%=StringUtil.escapeJavaScript(viewAction)%>', '<%=StringUtil.escapeJavaScript(rp.getObjectDefinitionName())%>', '<%=StringUtil.escapeJavaScript(entity.getOid())%>', '<%=entity.getVersion() %>', '<%=StringUtil.escapeJavaScript(linkId)%>', false)">
  <c:out value="<%=displayPropLabel %>" /></a>
 <input type="button" value="${m:rs('mtp-gem-messages', 'generic.editor.reference.ReferencePropertyEditor_Edit.delete')}" class="gr-btn-02 del-btn" onclick="deleteItem('<%=StringUtil.escapeJavaScript(liId)%>')" />
@@ -813,7 +829,7 @@ $(function() {
 					//hiddenにjavascriptで値上書きしないようにnorewrite属性をつけておく
 %>
 <li id="<c:out value="<%=liId %>"/>" class="list-add">
-<a href="javascript:void(0)" class="modal-lnk" id="<c:out value="<%=linkId %>" />" data-linkId="<c:out value="<%=linkId %>"/>" style="<c:out value="<%=customStyle%>"/>" 
+<a href="javascript:void(0)" class="modal-lnk" id="<c:out value="<%=linkId %>" />" data-linkId="<c:out value="<%=linkId %>"/>" style="<c:out value="<%=customStyle%>"/>"
  onclick="showReference('<%=StringUtil.escapeJavaScript(viewAction)%>', '<%=StringUtil.escapeJavaScript(rp.getObjectDefinitionName())%>', '<%=StringUtil.escapeJavaScript(entity.getOid())%>', '<%=entity.getVersion() %>', '<%=StringUtil.escapeJavaScript(linkId)%>', false)">
  <c:out value="<%=displayPropLabel %>" /></a>
 <input type="button" value="${m:rs('mtp-gem-messages', 'generic.editor.reference.ReferencePropertyEditor_Edit.delete')}" class="gr-btn-02 del-btn" onclick="deleteItem('<%=StringUtil.escapeJavaScript(liId)%>')" />
@@ -987,7 +1003,7 @@ $(function() {
 <input type="button" value="${m:rs('mtp-gem-messages', 'generic.editor.reference.ReferencePropertyEditor_Edit.select')}" class="gr-btn-02 modal-btn sel-btn" data-propName="<c:out value="<%=propName %>"/>" />
 </span>
 <span class="unique-ref">
-<a href="javascript:void(0)" class="modal-lnk" id="<c:out value="<%=linkId %>" />" data-linkId="<c:out value="<%=linkId %>"/>" 
+<a href="javascript:void(0)" class="modal-lnk" id="<c:out value="<%=linkId %>" />" data-linkId="<c:out value="<%=linkId %>"/>"
  onclick="showReference('<%=StringUtil.escapeJavaScript(viewAction)%>', '<%=StringUtil.escapeJavaScript(_defName)%>', '<%=StringUtil.escapeJavaScript(entity.getOid())%>', '<%=entity.getVersion() %>', '<%=StringUtil.escapeJavaScript(linkId)%>', false)">
  <c:out value="<%=displayPropLabel %>" /></a>
 <input type="button" value="${m:rs('mtp-gem-messages', 'generic.editor.reference.ReferencePropertyEditor_Edit.delete')}" class="gr-btn-02 del-btn" onclick="deleteItem('<%=StringUtil.escapeJavaScript(liId)%>')"/>
@@ -1038,7 +1054,7 @@ $(function() {
 <input type="button" value="${m:rs('mtp-gem-messages', 'generic.editor.reference.ReferencePropertyEditor_Edit.select')}" class="gr-btn-02 modal-btn sel-btn" data-propName="<c:out value="<%=propName %>"/>" />
 </span>
 <span class="unique-ref">
-<a href="javascript:void(0)" class="modal-lnk" id="<c:out value="<%=linkId %>" />" data-linkId="<c:out value="<%=linkId %>"/>" 
+<a href="javascript:void(0)" class="modal-lnk" id="<c:out value="<%=linkId %>" />" data-linkId="<c:out value="<%=linkId %>"/>"
  onclick="showReference('<%=StringUtil.escapeJavaScript(viewAction)%>', '<%=StringUtil.escapeJavaScript(_defName)%>', '<%=StringUtil.escapeJavaScript(entity.getOid())%>', '<%=entity.getVersion() %>', '<%=StringUtil.escapeJavaScript(linkId)%>', false)">
  <c:out value="<%=displayPropLabel %>" /></a>
 <input type="button" value="${m:rs('mtp-gem-messages', 'generic.editor.reference.ReferencePropertyEditor_Edit.delete')}" class="gr-btn-02 del-btn" onclick="deleteItem('<%=StringUtil.escapeJavaScript(liId)%>')"/>
@@ -1128,7 +1144,7 @@ $(function() {
 // 			String selBtnId = "sel_btn_" + propName;
 %>
 <%-- <input type="button" value="${m:rs('mtp-gem-messages', 'generic.editor.reference.ReferencePropertyEditor_Edit.select')}" class="gr-btn-02 modal-btn" id="<c:out value="<%=selBtnId %>"/>" /> --%>
-<input type="button" id="id_addBtn_<c:out value="<%=propName%>"/>" value="${m:rs('mtp-gem-messages', 'generic.editor.reference.ReferencePropertyEditor_Edit.add')}" class="gr-btn-02 add-btn" 
+<input type="button" id="id_addBtn_<c:out value="<%=propName%>"/>" value="${m:rs('mtp-gem-messages', 'generic.editor.reference.ReferencePropertyEditor_Edit.add')}" class="gr-btn-02 add-btn"
  onclick="addUniqueRefItem('<%=StringUtil.escapeJavaScript(ulId)%>', -1, '<%=StringUtil.escapeJavaScript(dummyRowId)%>', '<%=StringUtil.escapeJavaScript(propName)%>', 'id_count_<%=StringUtil.escapeJavaScript(propName)%>')" />
 <%
 		}
@@ -1238,7 +1254,7 @@ $(function() {
 				}
 			}
 		}
-		
+
 	} else {
 		//→今までのネストと同じ動き
 		showProperty = false;

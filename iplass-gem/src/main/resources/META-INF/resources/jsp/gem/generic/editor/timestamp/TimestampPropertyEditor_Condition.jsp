@@ -22,8 +22,7 @@
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8" trimDirectiveWhitespaces="true"%>
 
 <%@ page import="java.sql.Timestamp"%>
-<%@ page import="java.text.ParseException"%>
-<%@ page import="java.text.SimpleDateFormat"%>
+<%@ page import="java.text.*" %>
 <%@ page import="org.iplass.mtp.util.DateUtil"%>
 <%@ page import="org.iplass.mtp.util.StringUtil"%>
 <%@ page import="org.iplass.mtp.view.generic.editor.DateTimePropertyEditor.DateTimeDisplayType"%>
@@ -57,6 +56,39 @@
 			}
 		}
 		return null;
+	}
+%>
+<%!
+	String displayFormat(String time, TimeDispRange dispRange, boolean showWeekday) {
+		if (time == null) {
+			return "";
+		}
+
+		String timeFormat = "";
+		if (TimeDispRange.isDispSec(dispRange)) {
+			timeFormat = " " + TemplateUtil.getLocaleFormat().getOutputTimeSecFormat();
+		} else if (TimeDispRange.isDispMin(dispRange)) {
+			timeFormat = " " + TemplateUtil.getLocaleFormat().getOutputTimeMinFormat();
+		} else if (TimeDispRange.isDispHour(dispRange)) {
+			timeFormat = " " + TemplateUtil.getLocaleFormat().getOutputTimeHourFormat();
+		}
+
+		DateFormat format = null;
+		if (showWeekday) {
+			String dateFormat = TemplateUtil.getLocaleFormat().getOutputDateWeekdayFormat();
+			//テナントのロケールと言語が違う場合、編集画面と曜日の表記が変わるため、LangLocaleを利用
+			format = DateUtil.getSimpleDateFormat(dateFormat + timeFormat, true, true);
+		} else {
+			String dateFormat = TemplateUtil.getLocaleFormat().getOutputDateFormat();
+			format = DateUtil.getSimpleDateFormat(dateFormat + timeFormat, true);
+		}
+
+		try {
+			SimpleDateFormat serverFormat = DateUtil.getSimpleDateFormat(TemplateUtil.getLocaleFormat().getServerDateTimeFormat(), false);
+			return format.format(new Timestamp(serverFormat.parse(time).getTime()));
+		} catch (ParseException e) {
+			return "";
+		}
 	}
 %>
 <%
@@ -104,7 +136,7 @@
 
 	if (editor.getDisplayType() != DateTimeDisplayType.HIDDEN) {
 		//HIDDEN以外
-	
+
 		boolean hideFrom = editor.isSingleDayCondition() ? false : editor.isHideSearchConditionFrom();
 		boolean hideTo = editor.isSingleDayCondition() ? true : editor.isHideSearchConditionTo();
 
@@ -126,17 +158,43 @@
 		if (isUserDateTimePicker) {
 %>
 <span class="timestamppicker-field" style="<c:out value="<%=style %>"/>">
+<%
+			if (editor.getDisplayType() == DateTimeDisplayType.LABEL) {
+				String timeFromDisplayValue = displayFormat(defaultValueFrom, editor.getDispRange(), editor.isShowWeekday());
+				String timeFromHiddenName = Constants.SEARCH_COND_PREFIX + propName + "From";
+%>
+<c:out value="<%=timeFromDisplayValue %>"/>
+<input type="hidden" name="<c:out value="<%=timeFromHiddenName %>"/>" value="<c:out value="<%=defaultValueFrom %>"/>" />
+<%
+			} else {
+%>
 <jsp:include page="TimestampTimepicker.jsp"></jsp:include>
+<%
+			}
+%>
 </span>
 <%
 		} else {
 %>
 <span class="timestampselect-field" style="<c:out value="<%=style %>"/>">
+<%
+			if (editor.getDisplayType() == DateTimeDisplayType.LABEL) {
+				String timeFromDisplayValue = displayFormat(defaultValueFrom, editor.getDispRange(), editor.isShowWeekday());
+				String timeFromHiddenName = Constants.SEARCH_COND_PREFIX + propName + "From";
+%>
+<c:out value="<%=timeFromDisplayValue %>"/>
+<input type="hidden" name="<c:out value="<%=timeFromHiddenName %>"/>" value="<c:out value="<%=defaultValueFrom %>"/>" />
+<%
+			} else {
+%>
 <jsp:include page="Timestamp.jsp"></jsp:include>
+<%
+			}
+%>
 </span>
 <%
 		}
-		
+
 		if (!hideFrom && !hideTo) {
 %>
 &nbsp;～&nbsp;
@@ -146,12 +204,12 @@
 		editor.setPropertyName(Constants.SEARCH_COND_PREFIX + propName + "To");
 		request.setAttribute(Constants.EDITOR_PICKER_PROP_NAME, propName + "1");
 		request.setAttribute(Constants.EDITOR_PICKER_PROP_VALUE, propValueTo);
-	
+
 		style = "";
 		if (hideTo) {
 			style = "display: none;";
 		}
-	
+
 		String defaultValueTo = "";
 		if (defaultValue != null && defaultValue.length > 1 && formatCheck(defaultValue[1])) {
 			defaultValueTo = defaultValue[1];
@@ -162,28 +220,54 @@
 		request.setAttribute(Constants.EDITOR_PICKER_DEFAULT_MIN, "59");
 		request.setAttribute(Constants.EDITOR_PICKER_DEFAULT_SEC, "59");
 		request.setAttribute(Constants.EDITOR_PICKER_DEFAULT_MSEC, "999");
-	
+
 		if (isUserDateTimePicker) {
 %>
 <span class="timestamppicker-field" style="<c:out value="<%=style %>"/>">
+<%
+			if (editor.getDisplayType() == DateTimeDisplayType.LABEL) {
+				String timeToDisplayValue = displayFormat(defaultValueTo, editor.getDispRange(), editor.isShowWeekday());
+				String timeToHiddenName = Constants.SEARCH_COND_PREFIX + propName + "To";
+%>
+<c:out value="<%=timeToDisplayValue %>"/>
+<input type="hidden" name="<c:out value="<%=timeToHiddenName %>"/>" value="<c:out value="<%=defaultValueTo %>"/>" />
+<%
+			} else {
+%>
 <jsp:include page="TimestampTimepicker.jsp"></jsp:include>
+<%
+			}
+%>
 </span>
 <%
 		} else {
 %>
 <span class="timestampselect-field" style="<c:out value="<%=style %>"/>">
+<%
+			if (editor.getDisplayType() == DateTimeDisplayType.LABEL) {
+				String timeToDisplayValue = displayFormat(defaultValueTo, editor.getDispRange(), editor.isShowWeekday());
+				String timeToHiddenName = Constants.SEARCH_COND_PREFIX + propName + "To";
+%>
+<c:out value="<%=timeToDisplayValue %>"/>
+<input type="hidden" name="<c:out value="<%=timeToHiddenName %>"/>" value="<c:out value="<%=defaultValueTo %>"/>" />
+<%
+			} else {
+%>
 <jsp:include page="Timestamp.jsp"></jsp:include>
+<%
+			}
+%>
 </span>
 <%
 		}
-	
+
 		request.removeAttribute(Constants.EDITOR_PICKER_PROP_NAME);
 		request.removeAttribute(Constants.EDITOR_PICKER_DEFAULT_HOUR);
 		request.removeAttribute(Constants.EDITOR_PICKER_DEFAULT_MIN);
 		request.removeAttribute(Constants.EDITOR_PICKER_DEFAULT_SEC);
 		request.removeAttribute(Constants.EDITOR_PICKER_DEFAULT_MSEC);
 		editor.setPropertyName(propName);
-	
+
 		if (required) {
 %>
 <script type="text/javascript">
@@ -203,21 +287,21 @@ $(function() {
 </script>
 <%
 		}
-		
+
 	} else {
 		//HIDDEN
-		
+
 		editor.setPropertyName(Constants.SEARCH_COND_PREFIX + propName + "From");
 		request.setAttribute(Constants.EDITOR_PICKER_PROP_NAME, propName + "0");
 		request.setAttribute(Constants.EDITOR_PICKER_PROP_VALUE, propValueFrom);
 		if (isUserDateTimePicker) {
 %>
 <jsp:include page="TimestampTimepicker.jsp"></jsp:include>
-<%			
+<%
 		} else {
 %>
 <jsp:include page="Timestamp.jsp"></jsp:include>
-<%			
+<%
 		}
 
 		editor.setPropertyName(Constants.SEARCH_COND_PREFIX + propName + "To");
@@ -226,11 +310,11 @@ $(function() {
 		if (isUserDateTimePicker) {
 %>
 <jsp:include page="TimestampTimepicker.jsp"></jsp:include>
-<%			
+<%
 		} else {
 %>
 <jsp:include page="Timestamp.jsp"></jsp:include>
-<%			
+<%
 		}
 
 		request.removeAttribute(Constants.EDITOR_PICKER_PROP_NAME);

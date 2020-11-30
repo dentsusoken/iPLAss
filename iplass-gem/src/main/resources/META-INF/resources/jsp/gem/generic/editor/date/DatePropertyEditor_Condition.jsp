@@ -20,7 +20,7 @@
 
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8" trimDirectiveWhitespaces="true"%>
-<%@ page import="java.sql.Date"%>
+<%@ page import="java.sql.Date" %>
 <%@ page import="java.text.ParseException"%>
 <%@ page import="java.text.SimpleDateFormat"%>
 <%@ page import="org.iplass.mtp.util.DateUtil" %>
@@ -61,6 +61,25 @@
 		return null;
 	}
 %>
+<%!
+	String displayFormat(String date, boolean showWeekday) {
+		if (date == null) return "";
+
+		try {
+			SimpleDateFormat serverFormat = DateUtil.getSimpleDateFormat(TemplateUtil.getLocaleFormat().getServerDateFormat(), false);
+			if (showWeekday) {
+				//テナントのロケールと言語が違う場合、編集画面と曜日の表記が変わるため、LangLocaleを利用
+				SimpleDateFormat clientFormat = DateUtil.getSimpleDateFormat(TemplateUtil.getLocaleFormat().getOutputDateWeekdayFormat(), false, true);
+				return clientFormat.format(new Date(serverFormat.parse(date).getTime()));
+			} else {
+				SimpleDateFormat clientFormat = DateUtil.getSimpleDateFormat(TemplateUtil.getLocaleFormat().getOutputDateFormat(), false);
+				return clientFormat.format(new Date(serverFormat.parse(date).getTime()));
+			}
+		} catch (ParseException e) {
+			return "";
+		}
+	}
+%>
 <%
 
 	DatePropertyEditor editor = (DatePropertyEditor) request.getAttribute(Constants.EDITOR_EDITOR);
@@ -75,7 +94,7 @@
 	if (required == null) required = false;
 
 	String searchCond = request.getParameter(Constants.SEARCH_COND);
-	
+
 	String propNameFrom = Constants.SEARCH_COND_PREFIX + editor.getPropertyName() + "From";
 	//直接searchCondから取得(hidden対応)
 	String propValueFrom = getDateValue(searchCond, propNameFrom);
@@ -103,34 +122,44 @@
 		request.setAttribute(Constants.AUTOCOMPLETION_EDITOR, editor);
 		request.setAttribute(Constants.AUTOCOMPLETION_SCRIPT_PATH, "/jsp/gem/generic/editor/date/DatePropertyAutocompletion.jsp");
 	}
-
 	if (editor.getDisplayType() != DateTimeDisplayType.HIDDEN) {
 		//HIDDEN以外
 
 		boolean hideFrom = editor.isSingleDayCondition() ? false : editor.isHideSearchConditionFrom();
 		boolean hideTo = editor.isSingleDayCondition() ? true : editor.isHideSearchConditionTo();
-	
+
 		//カスタムスタイル
 		String customStyle = "";
 		if (StringUtil.isNotEmpty(editor.getInputCustomStyle())) {
 			customStyle = EntityViewUtil.getCustomStyle(rootDefName, scriptKey, editor.getInputCustomStyleScriptKey(), null, null);
 		}
-	
+
 		String defaultValueFrom = "";
 		if (defaultValue != null && defaultValue.length > 0 && formatCheck(defaultValue[0])) {
 			defaultValueFrom = defaultValue[0];
 		}
-	
+
 		String onchange = "dateChange('" + StringUtil.escapeJavaScript(propNameFrom) + "')";
-		
+
 		String fromDisp = "";
 		if (hideFrom) {
 			fromDisp = "display: none;";
 		}
 %>
 <span style="<c:out value="<%=fromDisp %>"/>">
+<%
+		if (editor.getDisplayType() == DateTimeDisplayType.LABEL) {
+			String dateFromDisplayLabel = displayFormat(propValueFrom, editor.isShowWeekday());
+%>
+<c:out value="<%=dateFromDisplayLabel %>" />
+<%
+		} else {
+%>
 <%-- XSS対応-メタの設定のため対応なし(onchange) --%>
 <input type="text" id="d_<c:out value="<%=propNameFrom %>"/>" class="datepicker inpbr" style="<c:out value="<%=customStyle%>"/>" value="" onchange="<%=onchange %>" data-showButtonPanel="<%=!editor.isHideButtonPanel()%>" data-showWeekday=<%=editor.isShowWeekday()%> />
+<%
+		}
+%>
 <input type="hidden" id="i_<c:out value="<%=propNameFrom%>"/>" name="<c:out value="<%=propNameFrom%>"/>" value="<c:out value="<%=propValueFrom%>"/>" />
 </span>
 <%
@@ -139,22 +168,33 @@
 &nbsp;～&nbsp;
 <%
 		}
-	
+
 		String defaultValueTo = "";
 		if (defaultValue != null && defaultValue.length > 1 && formatCheck(defaultValue[1])) {
 			defaultValueTo = defaultValue[1];
 		}
-	
+
 		onchange = "dateChange('" + propNameTo + "')";
-	
+
 		String toDisp = "";
 		if (hideTo) {
 			toDisp = "display: none;";
 		}
 %>
 <span style="<c:out value="<%=toDisp%>"/>">
+<%
+		if (editor.getDisplayType() == DateTimeDisplayType.LABEL) {
+			String dateToDisplayLabel = displayFormat(propValueTo, editor.isShowWeekday());
+%>
+<c:out value="<%=dateToDisplayLabel %>" />
+<%
+		} else {
+%>
 <%-- XSS対応-メタの設定のため対応なし(onchange) --%>
 <input type="text" id="d_<c:out value="<%=propNameTo%>"/>" class="datepicker inpbr" style="<c:out value="<%=customStyle%>"/>" value=""  onchange="<%=onchange%>" data-showButtonPanel="<%=!editor.isHideButtonPanel()%>" data-showWeekday=<%=editor.isShowWeekday()%> />
+<%
+		}
+%>
 <input type="hidden" id="i_<c:out value="<%=propNameTo %>"/>" name="<c:out value="<%=propNameTo %>"/>" value="<c:out value="<%=propValueTo %>"/>" />
 </span>
 
@@ -202,6 +242,6 @@ $(function() {
 %>
 <input type="hidden" id="i_<c:out value="<%=propNameFrom%>"/>" name="<c:out value="<%=propNameFrom%>"/>" value="<c:out value="<%=propValueFrom%>"/>" />
 <input type="hidden" id="i_<c:out value="<%=propNameTo %>"/>" name="<c:out value="<%=propNameTo %>"/>" value="<c:out value="<%=propValueTo %>"/>" />
-<%		
+<%
 	}
 %>

@@ -515,8 +515,9 @@ public class NormalSearchContext extends SearchContextBase {
 					}
 				}
 			}
-		} else if (editor.getDisplayType() == ReferenceDisplayType.LINK && editor.isUseSearchDialog()) {
-			//リンクならoid
+		} else if ((editor.getDisplayType() == ReferenceDisplayType.LINK && editor.isUseSearchDialog())
+				 || (editor.getDisplayType() == ReferenceDisplayType.LABEL)){
+			//リンクOrラベルならoid
 			List<Entity> list = new ArrayList<>();
 			String[] oid_ver = getRequest().getParams(Constants.SEARCH_COND_PREFIX + propName, String.class);
 			if (oid_ver != null && oid_ver.length > 0) {

@@ -51,6 +51,7 @@ public class BinaryPropertyEditor extends PrimitivePropertyEditor {
 	public enum BinaryDisplayType {
 		@XmlEnumValue("Binary")BINARY,
 		@XmlEnumValue("Link")LINK,
+		@XmlEnumValue("Label")LABEL,
 		@XmlEnumValue("Preview")PREVIEW,
 		@XmlEnumValue("Hidden")HIDDEN
 	}

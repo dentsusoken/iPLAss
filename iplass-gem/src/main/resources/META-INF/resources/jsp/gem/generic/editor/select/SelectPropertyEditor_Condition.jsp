@@ -222,7 +222,7 @@ $(function() {
 });
 </script>
 <%
-	} else if (editor.getDisplayType() == SelectDisplayType.SELECT || editor.getDisplayType() == SelectDisplayType.LABEL) {
+	} else if (editor.getDisplayType() == SelectDisplayType.SELECT) {
 		String value = "";
 		if (propValue != null && propValue.length > 0) {
 			value = propValue[0];
@@ -271,6 +271,19 @@ $(function() {
 %>
 });
 </script>
+<%
+	} else if (editor.getDisplayType() == SelectDisplayType.LABEL) {
+		String strDefault = defaultValue != null && defaultValue.length > 0 ? defaultValue[0] : "";
+		String label = null;
+		for (EditorValue param : editor.getValues()) {
+			if (strDefault.equals(param.getValue())) {
+				label = EntityViewUtil.getSelectPropertyLabel(localeValueList, param, selectValueList);
+			}
+		}
+		if (label == null) label = strDefault;
+%>
+<c:out value="<%=label %>"/>
+<input type="hidden" name="<c:out value="<%=propName %>"/>" value="<c:out value="<%=strDefault %>"/>" />
 <%
 	} else if (editor.getDisplayType() == SelectDisplayType.HIDDEN) {
 		List<String> valueList = new ArrayList<String>();

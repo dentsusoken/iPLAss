@@ -20,6 +20,9 @@
 
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8" trimDirectiveWhitespaces="true"%>
+<%@ page import="java.text.DecimalFormat" %>
+<%@ page import="java.text.NumberFormat"%>
+<%@ page import="org.iplass.mtp.spi.ServiceRegistry"%>
 <%@ page import="org.iplass.mtp.util.StringUtil"%>
 <%@ page import="org.iplass.mtp.view.generic.EntityViewUtil"%>
 <%@ page import="org.iplass.mtp.view.generic.editor.FloatPropertyEditor" %>
@@ -27,8 +30,10 @@
 <%@ page import="org.iplass.mtp.view.generic.editor.NumberPropertyEditor" %>
 <%@ page import="org.iplass.mtp.view.generic.editor.NumberPropertyEditor.NumberDisplayType"%>
 <%@ page import="org.iplass.mtp.view.generic.editor.PropertyEditor" %>
+<%@ page import="org.iplass.mtp.web.template.TemplateUtil" %>
 <%@ page import="org.iplass.gem.command.Constants" %>
 <%@ page import="org.iplass.gem.command.ViewUtil"%>
+<%@ page import="org.iplass.gem.GemConfigService"%>
 
 <%!
 	String convertNumber(String value, PropertyEditor editor) {
@@ -49,6 +54,55 @@
 		return "";
 	}
 %>
+<%!
+	Number convertStringToNumber(String value, PropertyEditor editor) {
+		if (value == null) return null;
+		if (editor instanceof IntegerPropertyEditor) {
+			try {
+				return (Number)Integer.parseInt(value);
+			} catch (NumberFormatException e) {
+				return null;
+			}
+		} else if (editor instanceof FloatPropertyEditor) {
+			try {
+				return (Number)Double.parseDouble(value);
+			} catch (NumberFormatException e) {
+				return null;
+			}
+		}
+		return null;
+	}
+	String format(String valueStr, NumberPropertyEditor editor) {
+		if (valueStr == null) return "";
+		Number value = convertStringToNumber(valueStr, editor);
+		if (value == null) return "";
+
+		GemConfigService gemConfig = ServiceRegistry.getRegistry().getService(GemConfigService.class);
+		String format = editor.getNumberFormat();
+		String str = null;
+		try {
+			DecimalFormat df = new DecimalFormat();
+			if (gemConfig.isFormatNumberWithComma()) {
+				//カンマでフォーマットする場合は指定のフォーマットがある場合だけフォーマット適用
+				if (format != null) {
+					df.applyPattern(format);
+					str = df.format(value);
+				} else{
+					NumberFormat nf = NumberFormat.getInstance(TemplateUtil.getLocale());
+					str = nf.format(value);
+				}
+			} else {
+				//カンマでフォーマットしない場合はフォーマットがない場合に数値のみのフォーマットを適用
+				if (format == null) format = "#.###";
+				df.applyPattern(format);
+				str = df.format(value);
+			}
+		} catch (NumberFormatException e) {
+			str = "";
+		}
+		return str;
+	}
+%>
 <%
 	NumberPropertyEditor editor = (NumberPropertyEditor) request.getAttribute(Constants.EDITOR_EDITOR);
 
@@ -66,45 +120,62 @@
 	if (propValue != null && propValue.length > 0) {
 		value = convertNumber(propValue[0], editor);
 	}
-	
+
 	String valueTo = "";
 	if (editor.isSearchInRange()) {
 		if (propValue != null && propValue.length > 1) {
 			valueTo = convertNumber(propValue[1], editor);
 		}
 	}
-	
+
 	if (ViewUtil.isAutocompletionTarget()) {
 		request.setAttribute(Constants.AUTOCOMPLETION_EDITOR, editor);
 		request.setAttribute(Constants.AUTOCOMPLETION_SCRIPT_PATH, "/jsp/gem/generic/editor/number/NumberPropertyAutocompletion.jsp");
 	}
-	
 	if (editor.getDisplayType() != NumberDisplayType.HIDDEN) {
 		//HIDDEN以外
-	
+
 		String strDefault = "";
 		if (defaultValue != null && defaultValue.length > 0) {
 			strDefault = convertNumber(defaultValue[0], editor);
 		}
-	
+
 		//カスタムスタイル
 		String customStyle = "";
 		if (StringUtil.isNotEmpty(editor.getInputCustomStyle())) {
 			customStyle = EntityViewUtil.getCustomStyle(rootDefName, scriptKey, editor.getInputCustomStyleScriptKey(), null, null);
 		}
+		if (editor.getDisplayType() == NumberDisplayType.LABEL) {
+			String str = format(strDefault, editor);
+%>
+<c:out value="<%=str %>"/>
+<input type="hidden" name="<c:out value="<%=propName %>"/>" value="<c:out value="<%=strDefault %>"/>" />
+<%
+		} else {
 %>
 <input type="text" class="form-size-04 inpbr" style="<c:out value="<%=customStyle%>"/>" value="<%=value %>" name="<c:out value="<%=propName %>"/>" onblur="numcheck(this)" />
 <%
+		}
 		String strDefaultTo = "";
 		if (editor.isSearchInRange()) {
-	
+
 			if (defaultValue != null && defaultValue.length > 1) {
 				strDefaultTo = convertNumber(defaultValue[1], editor);
 			}
 %>
 &nbsp;～&nbsp;
+<%
+			if (editor.getDisplayType() == NumberDisplayType.LABEL) {
+				String strTo = format(strDefaultTo, editor);
+%>
+<c:out value="<%=strTo %>"/>
+<input type="hidden" name="<c:out value="<%=propName %>"/>To" value="<c:out value="<%=strDefaultTo %>"/>" />
+<%
+			} else {
+%>
 <input type="text" class="form-size-04 inpbr" style="<c:out value="<%=customStyle%>"/>" value="<%=valueTo %>" name="<c:out value="<%=propName %>"/>To" onblur="numcheck(this)" />
 <%
+			}
 		}
 %>
 <script type="text/javascript">
@@ -161,6 +232,6 @@ $(function() {
 <input type="hidden" name="<c:out value="<%=propName %>"/>To" value="<c:out value="<%=valueTo %>"/>"/>
 <%
 		}
-		
+
 	}
 %>

@@ -22,11 +22,11 @@
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8" trimDirectiveWhitespaces="true"%>
 
 <%@ page import="java.sql.Time"%>
-<%@ page import="java.text.ParseException"%>
-<%@ page import="java.text.SimpleDateFormat"%>
+<%@ page import="java.text.*" %>
 <%@ page import="org.iplass.mtp.util.DateUtil"%>
 <%@ page import="org.iplass.mtp.util.StringUtil"%>
 <%@ page import="org.iplass.mtp.view.generic.editor.DateTimePropertyEditor.DateTimeDisplayType"%>
+<%@ page import="org.iplass.mtp.view.generic.editor.DateTimePropertyEditor.TimeDispRange" %>
 <%@ page import="org.iplass.mtp.view.generic.editor.TimePropertyEditor" %>
 <%@ page import="org.iplass.mtp.web.template.TemplateUtil"%>
 <%@ page import="org.iplass.gem.command.Constants" %>
@@ -56,6 +56,31 @@
 			}
 		}
 		return null;
+	}
+%>
+<%!
+	String displayFormat(String time, TimeDispRange dispRange) {
+		if (time == null) {
+			return "";
+		}
+
+		DateFormat format = null;
+		if (TimeDispRange.isDispSec(dispRange)) {
+			format = DateUtil.getSimpleDateFormat(TemplateUtil.getLocaleFormat().getOutputTimeSecFormat(), false);
+		} else if (TimeDispRange.isDispMin(dispRange)) {
+			format = DateUtil.getSimpleDateFormat(TemplateUtil.getLocaleFormat().getOutputTimeMinFormat(), false);
+		} else if (TimeDispRange.isDispHour(dispRange)) {
+			format = DateUtil.getSimpleDateFormat(TemplateUtil.getLocaleFormat().getOutputTimeHourFormat(), false);
+		} else {
+			return "";
+		}
+
+		try {
+			SimpleDateFormat serverFormat = DateUtil.getSimpleDateFormat(TemplateUtil.getLocaleFormat().getServerTimeFormat(), false);
+			return format.format(new Time(serverFormat.parse(time).getTime()));
+		} catch (ParseException e) {
+			return "";
+		}
 	}
 %>
 <%
@@ -93,20 +118,20 @@
 			propValueTo = "";
 		}
 	}
-	
+
 	if (ViewUtil.isAutocompletionTarget()) {
 		request.setAttribute(Constants.AUTOCOMPLETION_EDITOR, editor);
 		request.setAttribute(Constants.AUTOCOMPLETION_SCRIPT_PATH, "/jsp/gem/generic/editor/time/TimePropertyAutocompletion.jsp");
 	}
 
 	boolean isUseTimePicker = editor.isUseTimePicker();
-	
+
 	if (editor.getDisplayType() != DateTimeDisplayType.HIDDEN) {
 		//HIDDEN以外
-	
+
 		boolean hideFrom = editor.isSingleDayCondition() ? false : editor.isHideSearchConditionFrom();
 		boolean hideTo = editor.isSingleDayCondition() ? true : editor.isHideSearchConditionTo();
-	
+
 		editor.setPropertyName(Constants.SEARCH_COND_PREFIX + propName + "From");
 		request.setAttribute(Constants.EDITOR_PICKER_PROP_NAME, propName + "0");
 		request.setAttribute(Constants.EDITOR_PICKER_PROP_VALUE, propValueFrom);
@@ -115,7 +140,7 @@
 		if (hideFrom) {
 			style = "display: none;";
 		}
-		
+
 		String defaultValueFrom = "";
 		if (defaultValue != null && defaultValue.length > 0 && formatCheck(defaultValue[0])) {
 			defaultValueFrom = defaultValue[0];
@@ -125,17 +150,43 @@
 		if (isUseTimePicker) {
 %>
 <span class="timepicker-field" style="<c:out value="<%=style %>"/>">
+<%
+			if (editor.getDisplayType() == DateTimeDisplayType.LABEL) {
+				String timeFromDisplayValue = displayFormat(defaultValueFrom, editor.getDispRange());
+				String timeFromHiddenName = Constants.SEARCH_COND_PREFIX + propName + "From";
+%>
+<c:out value="<%=timeFromDisplayValue %>"/>
+<input type="hidden" name="<c:out value="<%=timeFromHiddenName %>"/>" value="<c:out value="<%=defaultValueFrom %>"/>" />
+<%
+			} else {
+%>
 <jsp:include page="TimeTimePicker.jsp"></jsp:include>
+<%
+			}
+%>
 </span>
 <%
 		} else {
 %>
 <span class="timeselect-field" style="<c:out value="<%=style %>"/>">
+<%
+			if (editor.getDisplayType() == DateTimeDisplayType.LABEL) {
+				String timeFromDisplayValue = displayFormat(defaultValueFrom, editor.getDispRange());
+				String timeFromHiddenName = Constants.SEARCH_COND_PREFIX + propName + "From";
+%>
+<c:out value="<%=timeFromDisplayValue %>"/>
+<input type="hidden" name="<c:out value="<%=timeFromHiddenName %>"/>" value="<c:out value="<%=defaultValueFrom %>"/>" />
+<%
+			} else {
+%>
 <jsp:include page="Time.jsp"></jsp:include>
+<%
+			}
+%>
 </span>
 <%
 		}
-		
+
 		if (!hideFrom && !hideTo) {
 %>
 &nbsp;～&nbsp;
@@ -145,31 +196,57 @@
 		editor.setPropertyName(Constants.SEARCH_COND_PREFIX + propName + "To");
 		request.setAttribute(Constants.EDITOR_PICKER_PROP_NAME, propName + "1");
 		request.setAttribute(Constants.EDITOR_PICKER_PROP_VALUE, propValueTo);
-	
+
 		style = "";
 		if (hideTo) {
 			style = "display: none;";
 		}
-	
+
 		String defaultValueTo = "";
 		if (defaultValue != null && defaultValue.length > 1 && formatCheck(defaultValue[1])) {
 			defaultValueTo = defaultValue[1];
 		}
 		request.setAttribute(Constants.EDITOR_PICKER_DEFAULT_VALUE, defaultValueTo);
-	
+
 		request.setAttribute(Constants.EDITOR_PICKER_DEFAULT_MIN, "59");
 		request.setAttribute(Constants.EDITOR_PICKER_DEFAULT_SEC, "59");
-	
+
 		if (isUseTimePicker) {
 %>
 <span class="timepicker-field" style="<c:out value="<%=style %>"/>">
+<%
+			if (editor.getDisplayType() == DateTimeDisplayType.LABEL) {
+				String timeToDisplayValue = displayFormat(defaultValueTo, editor.getDispRange());
+				String timeToHiddenName = Constants.SEARCH_COND_PREFIX + propName + "To";
+%>
+<c:out value="<%=timeToDisplayValue %>"/>
+<input type="hidden" name="<c:out value="<%=timeToHiddenName %>"/>" value="<c:out value="<%=defaultValueTo %>"/>" />
+<%
+			} else {
+%>
 <jsp:include page="TimeTimePicker.jsp"></jsp:include>
+<%
+			}
+%>
 </span>
 <%
 		} else {
 %>
 <span class="timeselect-field" style="<c:out value="<%=style %>"/>">
+<%
+			if (editor.getDisplayType() == DateTimeDisplayType.LABEL) {
+				String timeToDisplayValue = displayFormat(defaultValueTo, editor.getDispRange());
+				String timeToHiddenName = Constants.SEARCH_COND_PREFIX + propName + "To";
+%>
+<c:out value="<%=timeToDisplayValue %>"/>
+<input type="hidden" name="<c:out value="<%=timeToHiddenName %>"/>" value="<c:out value="<%=defaultValueTo %>"/>" />
+<%
+			} else {
+%>
 <jsp:include page="Time.jsp"></jsp:include>
+<%
+			}
+%>
 </span>
 <%
 		}
@@ -177,7 +254,7 @@
 		request.removeAttribute(Constants.EDITOR_PICKER_DEFAULT_MIN);
 		request.removeAttribute(Constants.EDITOR_PICKER_DEFAULT_SEC);
 		editor.setPropertyName(propName);
-	
+
 		if (required) {
 %>
 <script type="text/javascript">
@@ -199,31 +276,31 @@ $(function() {
 		}
 	} else {
 		//HIDDEN
-		
+
 		editor.setPropertyName(Constants.SEARCH_COND_PREFIX + propName + "From");
 		request.setAttribute(Constants.EDITOR_PICKER_PROP_NAME, propName + "0");
 		request.setAttribute(Constants.EDITOR_PICKER_PROP_VALUE, propValueFrom);
 		if (isUseTimePicker) {
 %>
 <jsp:include page="TimeTimePicker.jsp"></jsp:include>
-<%			
+<%
 		} else {
 %>
 <jsp:include page="Time.jsp"></jsp:include>
-<%			
+<%
 		}
-		
+
 		editor.setPropertyName(Constants.SEARCH_COND_PREFIX + propName + "To");
 		request.setAttribute(Constants.EDITOR_PICKER_PROP_NAME, propName + "1");
 		request.setAttribute(Constants.EDITOR_PICKER_PROP_VALUE, propValueTo);
 		if (isUseTimePicker) {
 %>
 <jsp:include page="TimeTimePicker.jsp"></jsp:include>
-<%			
+<%
 		} else {
 %>
 <jsp:include page="Time.jsp"></jsp:include>
-<%			
+<%
 		}
 
 		request.removeAttribute(Constants.EDITOR_PICKER_PROP_NAME);
