@@ -201,7 +201,7 @@ public class ObjStoreDDLGenerateBatch extends MtpCuiBase {
 
 								bindings.put("columns", cols);
 								bindings.put("partition", parameter.isUsePartition() && !e.isCustomPartition());
-								bindings.put("compression", parameter.isUseCompression() && !e.isCustomPartition());
+								bindings.put("compression", parameter.isUseCompression());
 								GroovyTemplateBinding gtb = new GroovyTemplateBinding(w, bindings);
 
 								tmpl.doTemplate(gtb);
