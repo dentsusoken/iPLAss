@@ -46,7 +46,10 @@ CREATE TABLE `mtdb`.`obj_store_rb${tableNamePostfix}` (
   ,PRIMARY KEY (`r_id`, `tenant_id`, `obj_def_id`)
   ,INDEX `obj_store_rb_${tableNamePostfix}index1` (`tenant_id`, `obj_def_id`(128), `rb_id`)
 )
-ENGINE = INNODB ROW_FORMAT=COMPRESSED
+<%if (compression) {
+%>
+ENGINE=InnoDB COMPRESSION="zlib"
+<%}%>
 
 <%if (partition) {
 %>PARTITION BY RANGE( `tenant_id` )

@@ -11,7 +11,10 @@ CREATE TABLE `mtdb`.`obj_unique_date${tableNamePostfix}` (
   UNIQUE INDEX `obj_unique_date${tableNamePostfix}_index1` (`tenant_id`, `obj_def_id`(128), `col_name`(36), `val`),
   INDEX `obj_unique_date${tableNamePostfix}_index2` (`tenant_id`, `obj_def_id`(128), `obj_id`(64))
 )
-ENGINE = INNODB ROW_FORMAT=COMPRESSED
+<%if (compression) {
+%>
+ENGINE=InnoDB COMPRESSION="zlib"
+<%}%>
 
 <%if (partition) {
 %>PARTITION BY RANGE( `tenant_id` )

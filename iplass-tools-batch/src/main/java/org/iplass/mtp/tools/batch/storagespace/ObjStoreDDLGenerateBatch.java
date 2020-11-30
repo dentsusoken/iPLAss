@@ -90,6 +90,7 @@ public class ObjStoreDDLGenerateBatch extends MtpCuiBase {
 	 * args[2]・・・outputRootPath
 	 * args[3]・・・storageSpaceName
 	 * args[4]・・・partition
+	 * args[5]・・・compression
 	 **/
 	public ObjStoreDDLGenerateBatch(String... args) throws Exception {
 
@@ -124,6 +125,12 @@ public class ObjStoreDDLGenerateBatch extends MtpCuiBase {
 			} else if (getConfigSetting().isPostgreSQL()) {
 				// PostgreSQLの場合、パーティションの利用はデフォルトではしない
 				parameter.setUsePartition(false);
+			}
+			if (args.length > 5) {
+				parameter.setUseCompression("TRUE".equalsIgnoreCase(args[5]));
+			} else if (!getConfigSetting().isMySQL()) {
+				// MySQL以外の場合、ページ圧縮は利用しない
+				parameter.setUseCompression(false);
 			}
 		}
 
@@ -194,6 +201,7 @@ public class ObjStoreDDLGenerateBatch extends MtpCuiBase {
 
 								bindings.put("columns", cols);
 								bindings.put("partition", parameter.isUsePartition() && !e.isCustomPartition());
+								bindings.put("compression", parameter.isUseCompression() && !e.isCustomPartition());
 								GroovyTemplateBinding gtb = new GroovyTemplateBinding(w, bindings);
 
 								tmpl.doTemplate(gtb);
@@ -411,6 +419,15 @@ public class ObjStoreDDLGenerateBatch extends MtpCuiBase {
 		} else {
 			//標準のものがないのでPartitionは利用しない
 			param.setUsePartition(false);
+		}
+		
+		//compression
+		if (getConfigSetting().isMySQL()) {
+			boolean useCompression = readConsoleBoolean(rs("ObjStoreDDLGenerator.Wizard.confirmCompressionMsg"), param.isUseCompression());
+			param.setUseCompression(useCompression);
+		} else {
+			//MySQL以外の場合、ページ圧縮は利用しない
+			param.setUseCompression(false);
 		}
 
 		this.parameter = param;
