@@ -97,8 +97,14 @@
 
 		//カスタムスタイル
 		String customStyle = "";
-		if (StringUtil.isNotEmpty(editor.getInputCustomStyle())) {
-			customStyle = EntityViewUtil.getCustomStyle(rootDefName, scriptKey, editor.getInputCustomStyleScriptKey(), null, null);
+		if (editor.getDisplayType() != BooleanDisplayType.LABEL) {
+			if (StringUtil.isNotEmpty(editor.getInputCustomStyle())) {
+				customStyle = EntityViewUtil.getCustomStyle(rootDefName, scriptKey, editor.getInputCustomStyleScriptKey(), null, null);
+			}
+		} else {
+			if (StringUtil.isNotEmpty(editor.getCustomStyle())) {
+				customStyle = EntityViewUtil.getCustomStyle(rootDefName, scriptKey, editor.getOutputCustomStyleScriptKey(), null, null);
+			}
 		}
 
 		String matchStr = editor.getDisplayType() == BooleanDisplayType.SELECT ? " selected" : " checked";
@@ -170,8 +176,10 @@ $(function() {
 			}
 			String label = b != null ? b ? trueLabel : falseLabel : str;
 %>
+<span  style="<c:out value="<%=customStyle%>"/>">
 <c:out value="<%=label %>"/>
 <input type="hidden" name="<c:out value="<%=propName %>"/>" value="<c:out value="<%=str %>"/>" />
+</span>
 <%
 		} else {
 			//SELECT以外

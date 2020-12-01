@@ -83,8 +83,14 @@
 
 	//カスタムスタイル
 	String customStyle = "";
-	if (StringUtil.isNotEmpty(editor.getInputCustomStyle())) {
-		customStyle = EntityViewUtil.getCustomStyle(rootDefName, scriptKey, editor.getInputCustomStyleScriptKey(), null, null);
+	if (editor.getDisplayType() != SelectDisplayType.LABEL) {
+		if (StringUtil.isNotEmpty(editor.getInputCustomStyle())) {
+			customStyle = EntityViewUtil.getCustomStyle(rootDefName, scriptKey, editor.getInputCustomStyleScriptKey(), null, null);
+		}
+	} else {
+		if (StringUtil.isNotEmpty(editor.getCustomStyle())) {
+			customStyle = EntityViewUtil.getCustomStyle(rootDefName, scriptKey, editor.getOutputCustomStyleScriptKey(), null, null);
+		}
 	}
 
 	if (ViewUtil.isAutocompletionTarget()) {
@@ -282,8 +288,10 @@ $(function() {
 		}
 		if (label == null) label = strDefault;
 %>
+<span  style="<c:out value="<%=customStyle%>"/>">
 <c:out value="<%=label %>"/>
 <input type="hidden" name="<c:out value="<%=propName %>"/>" value="<c:out value="<%=strDefault %>"/>" />
+</span>
 <%
 	} else if (editor.getDisplayType() == SelectDisplayType.HIDDEN) {
 		List<String> valueList = new ArrayList<String>();

@@ -142,14 +142,22 @@
 
 		//カスタムスタイル
 		String customStyle = "";
-		if (StringUtil.isNotEmpty(editor.getInputCustomStyle())) {
-			customStyle = EntityViewUtil.getCustomStyle(rootDefName, scriptKey, editor.getInputCustomStyleScriptKey(), null, null);
+		if (editor.getDisplayType() != NumberDisplayType.LABEL) {
+			if (StringUtil.isNotEmpty(editor.getInputCustomStyle())) {
+				customStyle = EntityViewUtil.getCustomStyle(rootDefName, scriptKey, editor.getInputCustomStyleScriptKey(), null, null);
+			}
+		} else {
+			if (StringUtil.isNotEmpty(editor.getCustomStyle())) {
+				customStyle = EntityViewUtil.getCustomStyle(rootDefName, scriptKey, editor.getOutputCustomStyleScriptKey(), null, null);
+			}
 		}
 		if (editor.getDisplayType() == NumberDisplayType.LABEL) {
 			String str = format(strDefault, editor);
 %>
+<span  style="<c:out value="<%=customStyle%>"/>">
 <c:out value="<%=str %>"/>
 <input type="hidden" name="<c:out value="<%=propName %>"/>" value="<c:out value="<%=strDefault %>"/>" />
+</span>
 <%
 		} else {
 %>
@@ -168,8 +176,10 @@
 			if (editor.getDisplayType() == NumberDisplayType.LABEL) {
 				String strTo = format(strDefaultTo, editor);
 %>
+<span  style="<c:out value="<%=customStyle%>"/>">
 <c:out value="<%=strTo %>"/>
 <input type="hidden" name="<c:out value="<%=propName %>"/>To" value="<c:out value="<%=strDefaultTo %>"/>" />
+</span>
 <%
 			} else {
 %>

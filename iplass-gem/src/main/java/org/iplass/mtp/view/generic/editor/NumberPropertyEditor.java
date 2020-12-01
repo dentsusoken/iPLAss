@@ -88,7 +88,7 @@ public abstract class NumberPropertyEditor extends PrimitivePropertyEditor {
 			displayNameKey="generic_editor_NumberPropertyEditor_numberFormatDisplaNameKey",
 			descriptionKey="generic_editor_NumberPropertyEditor_numberFormatDescriptionKey")
 	@EntityViewField(
-			referenceTypes={FieldReferenceType.SEARCHRESULT, FieldReferenceType.DETAIL}
+			referenceTypes={FieldReferenceType.SEARCHCONDITION, FieldReferenceType.SEARCHRESULT, FieldReferenceType.DETAIL}
 	)
 	protected String numberFormat;
 

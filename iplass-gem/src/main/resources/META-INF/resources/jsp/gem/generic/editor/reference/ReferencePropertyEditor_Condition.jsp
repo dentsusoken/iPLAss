@@ -306,8 +306,14 @@
 
 	//カスタムスタイル
 	String customStyle = "";
-	if (StringUtil.isNotEmpty(editor.getInputCustomStyle())) {
-		customStyle = EntityViewUtil.getCustomStyle(rootDefName, scriptKey, editor.getInputCustomStyleScriptKey(), null, null);
+	if (editor.getDisplayType() != ReferenceDisplayType.LABEL) {
+		if (StringUtil.isNotEmpty(editor.getInputCustomStyle())) {
+			customStyle = EntityViewUtil.getCustomStyle(rootDefName, scriptKey, editor.getInputCustomStyleScriptKey(), null, null);
+		}
+	} else {
+		if (StringUtil.isNotEmpty(editor.getCustomStyle())) {
+			customStyle = EntityViewUtil.getCustomStyle(rootDefName, scriptKey, editor.getOutputCustomStyleScriptKey(), null, null);
+		}
 	}
 
 	if (ViewUtil.isAutocompletionTarget()) {

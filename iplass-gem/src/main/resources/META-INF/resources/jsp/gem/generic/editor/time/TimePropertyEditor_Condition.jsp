@@ -28,6 +28,7 @@
 <%@ page import="org.iplass.mtp.view.generic.editor.DateTimePropertyEditor.DateTimeDisplayType"%>
 <%@ page import="org.iplass.mtp.view.generic.editor.DateTimePropertyEditor.TimeDispRange" %>
 <%@ page import="org.iplass.mtp.view.generic.editor.TimePropertyEditor" %>
+<%@ page import="org.iplass.mtp.view.generic.EntityViewUtil"%>
 <%@ page import="org.iplass.mtp.web.template.TemplateUtil"%>
 <%@ page import="org.iplass.gem.command.Constants" %>
 <%@ page import="org.iplass.gem.command.ViewUtil"%>
@@ -147,6 +148,17 @@
 		}
 		request.setAttribute(Constants.EDITOR_PICKER_DEFAULT_VALUE, defaultValueFrom);
 
+		String customStyle = "";
+		if (editor.getDisplayType() == DateTimeDisplayType.LABEL) {
+			//カスタムスタイル
+			String rootDefName = (String)request.getAttribute(Constants.ROOT_DEF_NAME);
+			String scriptKey = (String)request.getAttribute(Constants.SECTION_SCRIPT_KEY);
+			if (StringUtil.isNotEmpty(editor.getCustomStyle())) {
+				customStyle = EntityViewUtil.getCustomStyle(rootDefName, scriptKey, editor.getOutputCustomStyleScriptKey(), null, null);
+			}
+			style = style + customStyle;
+		}
+
 		if (isUseTimePicker) {
 %>
 <span class="timepicker-field" style="<c:out value="<%=style %>"/>">
@@ -154,6 +166,7 @@
 			if (editor.getDisplayType() == DateTimeDisplayType.LABEL) {
 				String timeFromDisplayValue = displayFormat(defaultValueFrom, editor.getDispRange());
 				String timeFromHiddenName = Constants.SEARCH_COND_PREFIX + propName + "From";
+				style = style + customStyle;
 %>
 <c:out value="<%=timeFromDisplayValue %>"/>
 <input type="hidden" name="<c:out value="<%=timeFromHiddenName %>"/>" value="<c:out value="<%=defaultValueFrom %>"/>" />
@@ -174,8 +187,10 @@
 				String timeFromDisplayValue = displayFormat(defaultValueFrom, editor.getDispRange());
 				String timeFromHiddenName = Constants.SEARCH_COND_PREFIX + propName + "From";
 %>
+<span  style="<c:out value="<%=customStyle%>"/>">
 <c:out value="<%=timeFromDisplayValue %>"/>
 <input type="hidden" name="<c:out value="<%=timeFromHiddenName %>"/>" value="<c:out value="<%=defaultValueFrom %>"/>" />
+</span>
 <%
 			} else {
 %>
@@ -200,6 +215,9 @@
 		style = "";
 		if (hideTo) {
 			style = "display: none;";
+		}
+		if (editor.getDisplayType() == DateTimeDisplayType.LABEL) {
+			style = style + customStyle;
 		}
 
 		String defaultValueTo = "";

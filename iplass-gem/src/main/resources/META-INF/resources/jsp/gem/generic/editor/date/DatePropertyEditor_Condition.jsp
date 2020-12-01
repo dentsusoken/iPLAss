@@ -130,8 +130,14 @@
 
 		//カスタムスタイル
 		String customStyle = "";
-		if (StringUtil.isNotEmpty(editor.getInputCustomStyle())) {
-			customStyle = EntityViewUtil.getCustomStyle(rootDefName, scriptKey, editor.getInputCustomStyleScriptKey(), null, null);
+		if (editor.getDisplayType() != DateTimeDisplayType.LABEL) {
+			if (StringUtil.isNotEmpty(editor.getInputCustomStyle())) {
+				customStyle = EntityViewUtil.getCustomStyle(rootDefName, scriptKey, editor.getInputCustomStyleScriptKey(), null, null);
+			}
+		} else {
+			if (StringUtil.isNotEmpty(editor.getCustomStyle())) {
+				customStyle = EntityViewUtil.getCustomStyle(rootDefName, scriptKey, editor.getOutputCustomStyleScriptKey(), null, null);
+			}
 		}
 
 		String defaultValueFrom = "";
@@ -145,16 +151,16 @@
 		if (hideFrom) {
 			fromDisp = "display: none;";
 		}
-%>
-<span style="<c:out value="<%=fromDisp %>"/>">
-<%
 		if (editor.getDisplayType() == DateTimeDisplayType.LABEL) {
 			String dateFromDisplayLabel = displayFormat(propValueFrom, editor.isShowWeekday());
+			fromDisp = fromDisp + customStyle;
 %>
+<span style="<c:out value="<%=fromDisp %>"/>">
 <c:out value="<%=dateFromDisplayLabel %>" />
 <%
 		} else {
 %>
+<span style="<c:out value="<%=fromDisp %>"/>">
 <%-- XSS対応-メタの設定のため対応なし(onchange) --%>
 <input type="text" id="d_<c:out value="<%=propNameFrom %>"/>" class="datepicker inpbr" style="<c:out value="<%=customStyle%>"/>" value="" onchange="<%=onchange %>" data-showButtonPanel="<%=!editor.isHideButtonPanel()%>" data-showWeekday=<%=editor.isShowWeekday()%> />
 <%
@@ -180,16 +186,16 @@
 		if (hideTo) {
 			toDisp = "display: none;";
 		}
-%>
-<span style="<c:out value="<%=toDisp%>"/>">
-<%
 		if (editor.getDisplayType() == DateTimeDisplayType.LABEL) {
 			String dateToDisplayLabel = displayFormat(propValueTo, editor.isShowWeekday());
+			toDisp = toDisp + customStyle;
 %>
+<span style="<c:out value="<%=toDisp%>"/>">
 <c:out value="<%=dateToDisplayLabel %>" />
 <%
 		} else {
 %>
+<span style="<c:out value="<%=toDisp%>"/>">
 <%-- XSS対応-メタの設定のため対応なし(onchange) --%>
 <input type="text" id="d_<c:out value="<%=propNameTo%>"/>" class="datepicker inpbr" style="<c:out value="<%=customStyle%>"/>" value=""  onchange="<%=onchange%>" data-showButtonPanel="<%=!editor.isHideButtonPanel()%>" data-showWeekday=<%=editor.isShowWeekday()%> />
 <%
