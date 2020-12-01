@@ -60,14 +60,22 @@
 
 		//カスタムスタイル
 		String customStyle = "";
-		if (StringUtil.isNotEmpty(editor.getInputCustomStyle())) {
-			customStyle = EntityViewUtil.getCustomStyle(rootDefName, scriptKey, editor.getInputCustomStyleScriptKey(), null, null);
+		if (editor.getDisplayType() != BinaryDisplayType.LABEL) {
+			if (StringUtil.isNotEmpty(editor.getInputCustomStyle())) {
+				customStyle = EntityViewUtil.getCustomStyle(rootDefName, scriptKey, editor.getInputCustomStyleScriptKey(), null, null);
+			}
+		} else {
+			if (StringUtil.isNotEmpty(editor.getCustomStyle())) {
+				customStyle = EntityViewUtil.getCustomStyle(rootDefName, scriptKey, editor.getOutputCustomStyleScriptKey(), null, null);
+			}
 		}
 
 		if (editor.getDisplayType() == BinaryDisplayType.LABEL) {
 %>
+<span  style="<c:out value="<%=customStyle%>"/>">
 <c:out value="<%=strDefault %>"/>
 <input type="hidden" name="<c:out value="<%=propName %>"/>" value="<c:out value="<%=strDefault %>"/>" />
+</span>
 <%
 		} else {
 %>
