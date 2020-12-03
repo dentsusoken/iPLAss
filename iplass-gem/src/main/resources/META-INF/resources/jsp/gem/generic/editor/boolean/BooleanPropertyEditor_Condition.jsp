@@ -165,7 +165,7 @@ $(function() {
 </script>
 <%
 		} else if (editor.getDisplayType() == BooleanDisplayType.LABEL) {
-			String str = defaultValue != null && defaultValue.length > 0 ? defaultValue[0] : null;
+			String str = defaultValue != null && defaultValue.length > 0 ? defaultValue[0] : "";
 			String label = "";
 			if (str.equals("true")) {
 				label = trueLabel;
