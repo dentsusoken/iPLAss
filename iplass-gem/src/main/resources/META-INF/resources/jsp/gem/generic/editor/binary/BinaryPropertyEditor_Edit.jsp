@@ -76,7 +76,7 @@
 	boolean updatable = ((pd == null || pd.isUpdatable()) || isInsert) && isEditable;
 
 	//詳細編集
-	if (editor.getDisplayType() != BinaryDisplayType.HIDDEN && updatable) {
+	if (editor.getDisplayType() != BinaryDisplayType.HIDDEN && editor.getDisplayType() != BinaryDisplayType.LABEL && updatable) {
 
 		boolean hideDeleteButton = editor.isHideDeleteButton();
 		boolean hideSelectButton = editor.isHideSelectButton();
@@ -169,7 +169,7 @@
 %>
 <li id="<c:out value="<%=liId %>"/>" class="list-bin <c:out value="<%=listStyle %>"/>">
 <%
-			if (editor.getDisplayType() == BinaryDisplayType.BINARY || editor.getDisplayType() == BinaryDisplayType.LINK || editor.getDisplayType() == BinaryDisplayType.LABEL) {
+			if (editor.getDisplayType() == BinaryDisplayType.BINARY || editor.getDisplayType() == BinaryDisplayType.LINK) {
 				if (br.getType().indexOf("application/pdf") != -1 && editor.isUsePdfjs()) {
 					String pdfPath = pdfviewer+ "?file=" + URLEncoder.encode(url(br, download), "utf-8");
 %>
@@ -186,7 +186,7 @@
  <a href="javascript:void(0)" class="binaryDelete del-btn" data-fileId="<c:out value="<%=fileId %>"/>">${m:rs("mtp-gem-messages", "generic.editor.binary.BinaryPropertyEditor_Edit.delete")}</a>
 <%
 			}
-			if (editor.getDisplayType() == BinaryDisplayType.BINARY || editor.getDisplayType() == BinaryDisplayType.PREVIEW || editor.getDisplayType() == BinaryDisplayType.LABEL) {
+			if (editor.getDisplayType() == BinaryDisplayType.BINARY || editor.getDisplayType() == BinaryDisplayType.PREVIEW) {
 				if (br.getType().indexOf("image") != -1) {
 %>
 <p>

@@ -131,13 +131,12 @@ $(function() {
 </script>
 <%
 			} else if (editor.getDisplayType() == StringDisplayType.LABEL) {
-				String str = (defaultValue != null && defaultValue.length > 0 ? defaultValue[0] : null);
-				String labelstr = StringUtil.escapeXml10(str, true);
+				String labelstr = StringUtil.escapeXml10(strDefault, true);
 				labelstr = labelstr.replaceAll("\r\n", "<BR>").replaceAll("\n", "<BR>").replaceAll("\r", "<BR>").replaceAll(" ", "&nbsp;");
 %>
 <span style="<c:out value="<%=customStyle%>"/>">
 <c:out value="<%=labelstr %>"/>
-<input data-norewrite="true" type="hidden" name="<c:out value="<%=propName %>"/>" value="<c:out value="<%=str %>"/>" />
+<input data-norewrite="true" type="hidden" name="<c:out value="<%=propName %>"/>" value="<c:out value="<%=strDefault %>"/>" />
 </span>
 <%
 			} else {
@@ -172,13 +171,12 @@ $(function() {
 			}
 		} else {
 			if (editor.getDisplayType() == StringDisplayType.LABEL) {
-				String str = (defaultValue != null && defaultValue.length > 0 ? defaultValue[0] : null);
-				String labelstr = StringUtil.escapeXml10(str, true);
+				String labelstr = StringUtil.escapeXml10(strDefault, true);
 				labelstr = labelstr.replaceAll("\r\n", "<BR>").replaceAll("\n", "<BR>").replaceAll("\r", "<BR>").replaceAll(" ", "&nbsp;");
 %>
 <span style="<c:out value="<%=customStyle%>"/>">
 <c:out value="<%=labelstr %>"/>
-<input data-norewrite="true" type="hidden" name="<c:out value="<%=propName %>"/>" value="<c:out value="<%=str %>"/>" />
+<input data-norewrite="true" type="hidden" name="<c:out value="<%=propName %>"/>" value="<c:out value="<%=strDefault %>"/>" />
 </span>
 <%
 			} else {
