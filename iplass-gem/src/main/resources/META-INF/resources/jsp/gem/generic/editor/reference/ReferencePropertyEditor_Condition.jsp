@@ -700,9 +700,6 @@ $(function() {
 		if (editor.getDisplayType() != ReferenceDisplayType.LABEL) {
 %>
 <input type="button" value="${m:rs('mtp-gem-messages', 'generic.editor.reference.ReferencePropertyEditor_Edit.select')}" class="gr-btn-02 modal-btn" id="<c:out value="<%=selBtnId %>"/>" />
-<%
-		}
-%>
 <script type="text/javascript">
 $(function() {
 	var params = {
@@ -778,6 +775,7 @@ $(function() {
 });
 </script>
 <%
+		}
 	} else if (editor.getDisplayType() == ReferenceDisplayType.TREE) {
 		//詳細編集でのリンククリック
 		String ulId = "ul_" + propName;

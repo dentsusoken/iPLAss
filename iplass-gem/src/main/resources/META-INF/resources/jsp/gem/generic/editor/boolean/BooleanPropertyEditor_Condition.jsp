@@ -166,19 +166,16 @@ $(function() {
 <%
 		} else if (editor.getDisplayType() == BooleanDisplayType.LABEL) {
 			String str = defaultValue != null && defaultValue.length > 0 ? defaultValue[0] : null;
-			Boolean b = null;
-			if (str == "true") {
-				b = true;
-			} else if (str == "false") {
-				b = false;
-			} else {
-				b = null;
+			String label = "";
+			if (str.equals("true")) {
+				label = trueLabel;
+			} else if (str.equals("false")) {
+				label = falseLabel;
 			}
-			String label = b != null ? b ? trueLabel : falseLabel : str;
 %>
 <span  style="<c:out value="<%=customStyle%>"/>">
 <c:out value="<%=label %>"/>
-<input type="hidden" name="<c:out value="<%=propName %>"/>" value="<c:out value="<%=str %>"/>" />
+<input data-norewrite="true" type="hidden" name="<c:out value="<%=propName %>"/>" value="<c:out value="<%=str %>"/>" />
 </span>
 <%
 		} else {

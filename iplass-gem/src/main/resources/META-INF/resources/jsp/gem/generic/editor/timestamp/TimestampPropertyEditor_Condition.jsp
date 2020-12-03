@@ -167,42 +167,25 @@
 			style = style + customStyle;
 		}
 
-		if (isUserDateTimePicker) {
+		if ((editor.getDisplayType() != DateTimeDisplayType.LABEL) && (isUserDateTimePicker)) {
 %>
 <span class="timestamppicker-field" style="<c:out value="<%=style %>"/>">
-<%
-			if (editor.getDisplayType() == DateTimeDisplayType.LABEL) {
-				String timeFromDisplayValue = displayFormat(defaultValueFrom, editor.getDispRange(), editor.isShowWeekday());
-				String timeFromHiddenName = Constants.SEARCH_COND_PREFIX + propName + "From";
-%>
-<c:out value="<%=timeFromDisplayValue %>"/>
-<input type="hidden" name="<c:out value="<%=timeFromHiddenName %>"/>" value="<c:out value="<%=defaultValueFrom %>"/>" />
-<%
-			} else {
-%>
 <jsp:include page="TimestampTimepicker.jsp"></jsp:include>
+</span>
 <%
-			}
+		} else if (editor.getDisplayType() == DateTimeDisplayType.LABEL) {
+			String timeFromDisplayValue = displayFormat(defaultValueFrom, editor.getDispRange(), editor.isShowWeekday());
+			String timeFromHiddenName = Constants.SEARCH_COND_PREFIX + propName + "From";
 %>
+<span class="timestampselect-field" style="<c:out value="<%=style %>"/>">
+<c:out value="<%=timeFromDisplayValue %>"/>
+<input data-norewrite="true" type="hidden" name="<c:out value="<%=timeFromHiddenName %>"/>" value="<c:out value="<%=defaultValueFrom %>"/>" />
 </span>
 <%
 		} else {
 %>
 <span class="timestampselect-field" style="<c:out value="<%=style %>"/>">
-<%
-			if (editor.getDisplayType() == DateTimeDisplayType.LABEL) {
-				String timeFromDisplayValue = displayFormat(defaultValueFrom, editor.getDispRange(), editor.isShowWeekday());
-				String timeFromHiddenName = Constants.SEARCH_COND_PREFIX + propName + "From";
-%>
-<c:out value="<%=timeFromDisplayValue %>"/>
-<input type="hidden" name="<c:out value="<%=timeFromHiddenName %>"/>" value="<c:out value="<%=defaultValueFrom %>"/>" />
-<%
-			} else {
-%>
 <jsp:include page="Timestamp.jsp"></jsp:include>
-<%
-			}
-%>
 </span>
 <%
 		}
@@ -236,42 +219,25 @@
 		request.setAttribute(Constants.EDITOR_PICKER_DEFAULT_SEC, "59");
 		request.setAttribute(Constants.EDITOR_PICKER_DEFAULT_MSEC, "999");
 
-		if (isUserDateTimePicker) {
+		if ((editor.getDisplayType() != DateTimeDisplayType.LABEL) && (isUserDateTimePicker)) {
 %>
 <span class="timestamppicker-field" style="<c:out value="<%=style %>"/>">
-<%
-			if (editor.getDisplayType() == DateTimeDisplayType.LABEL) {
-				String timeToDisplayValue = displayFormat(defaultValueTo, editor.getDispRange(), editor.isShowWeekday());
-				String timeToHiddenName = Constants.SEARCH_COND_PREFIX + propName + "To";
-%>
-<c:out value="<%=timeToDisplayValue %>"/>
-<input type="hidden" name="<c:out value="<%=timeToHiddenName %>"/>" value="<c:out value="<%=defaultValueTo %>"/>" />
-<%
-			} else {
-%>
 <jsp:include page="TimestampTimepicker.jsp"></jsp:include>
+</span>
 <%
-			}
+		} else if (editor.getDisplayType() == DateTimeDisplayType.LABEL) {
+			String timeToDisplayValue = displayFormat(defaultValueTo, editor.getDispRange(), editor.isShowWeekday());
+			String timeToHiddenName = Constants.SEARCH_COND_PREFIX + propName + "To";
 %>
+<span class="timestampselect-field" style="<c:out value="<%=style %>"/>">
+<c:out value="<%=timeToDisplayValue %>"/>
+<input data-norewrite="true" type="hidden" name="<c:out value="<%=timeToHiddenName %>"/>" value="<c:out value="<%=defaultValueTo %>"/>" />
 </span>
 <%
 		} else {
 %>
 <span class="timestampselect-field" style="<c:out value="<%=style %>"/>">
-<%
-			if (editor.getDisplayType() == DateTimeDisplayType.LABEL) {
-				String timeToDisplayValue = displayFormat(defaultValueTo, editor.getDispRange(), editor.isShowWeekday());
-				String timeToHiddenName = Constants.SEARCH_COND_PREFIX + propName + "To";
-%>
-<c:out value="<%=timeToDisplayValue %>"/>
-<input type="hidden" name="<c:out value="<%=timeToHiddenName %>"/>" value="<c:out value="<%=defaultValueTo %>"/>" />
-<%
-			} else {
-%>
 <jsp:include page="Timestamp.jsp"></jsp:include>
-<%
-			}
-%>
 </span>
 <%
 		}

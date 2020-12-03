@@ -290,7 +290,7 @@ $(function() {
 %>
 <span  style="<c:out value="<%=customStyle%>"/>">
 <c:out value="<%=label %>"/>
-<input type="hidden" name="<c:out value="<%=propName %>"/>" value="<c:out value="<%=strDefault %>"/>" />
+<input data-norewrite="true" type="hidden" name="<c:out value="<%=propName %>"/>" value="<c:out value="<%=strDefault %>"/>" />
 </span>
 <%
 	} else if (editor.getDisplayType() == SelectDisplayType.HIDDEN) {

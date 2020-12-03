@@ -159,45 +159,25 @@
 			style = style + customStyle;
 		}
 
-		if (isUseTimePicker) {
+		if ((editor.getDisplayType() != DateTimeDisplayType.LABEL) && (isUseTimePicker)) {
 %>
 <span class="timepicker-field" style="<c:out value="<%=style %>"/>">
-<%
-			if (editor.getDisplayType() == DateTimeDisplayType.LABEL) {
-				String timeFromDisplayValue = displayFormat(defaultValueFrom, editor.getDispRange());
-				String timeFromHiddenName = Constants.SEARCH_COND_PREFIX + propName + "From";
-				style = style + customStyle;
-%>
-<c:out value="<%=timeFromDisplayValue %>"/>
-<input type="hidden" name="<c:out value="<%=timeFromHiddenName %>"/>" value="<c:out value="<%=defaultValueFrom %>"/>" />
-<%
-			} else {
-%>
 <jsp:include page="TimeTimePicker.jsp"></jsp:include>
+</span>
 <%
-			}
+		} else if (editor.getDisplayType() == DateTimeDisplayType.LABEL) {
+			String timeFromDisplayValue = displayFormat(defaultValueFrom, editor.getDispRange());
+			String timeFromHiddenName = Constants.SEARCH_COND_PREFIX + propName + "From";
 %>
+<span class="timeselect-field" style="<c:out value="<%=style %>"/>">
+<c:out value="<%=timeFromDisplayValue %>"/>
+<input data-norewrite="true" type="hidden" name="<c:out value="<%=timeFromHiddenName %>"/>" value="<c:out value="<%=defaultValueFrom %>"/>" />
 </span>
 <%
 		} else {
 %>
 <span class="timeselect-field" style="<c:out value="<%=style %>"/>">
-<%
-			if (editor.getDisplayType() == DateTimeDisplayType.LABEL) {
-				String timeFromDisplayValue = displayFormat(defaultValueFrom, editor.getDispRange());
-				String timeFromHiddenName = Constants.SEARCH_COND_PREFIX + propName + "From";
-%>
-<span  style="<c:out value="<%=customStyle%>"/>">
-<c:out value="<%=timeFromDisplayValue %>"/>
-<input type="hidden" name="<c:out value="<%=timeFromHiddenName %>"/>" value="<c:out value="<%=defaultValueFrom %>"/>" />
-</span>
-<%
-			} else {
-%>
 <jsp:include page="Time.jsp"></jsp:include>
-<%
-			}
-%>
 </span>
 <%
 		}
@@ -229,42 +209,25 @@
 		request.setAttribute(Constants.EDITOR_PICKER_DEFAULT_MIN, "59");
 		request.setAttribute(Constants.EDITOR_PICKER_DEFAULT_SEC, "59");
 
-		if (isUseTimePicker) {
+		if ((editor.getDisplayType() != DateTimeDisplayType.LABEL) && (isUseTimePicker)) {
 %>
 <span class="timepicker-field" style="<c:out value="<%=style %>"/>">
-<%
-			if (editor.getDisplayType() == DateTimeDisplayType.LABEL) {
-				String timeToDisplayValue = displayFormat(defaultValueTo, editor.getDispRange());
-				String timeToHiddenName = Constants.SEARCH_COND_PREFIX + propName + "To";
-%>
-<c:out value="<%=timeToDisplayValue %>"/>
-<input type="hidden" name="<c:out value="<%=timeToHiddenName %>"/>" value="<c:out value="<%=defaultValueTo %>"/>" />
-<%
-			} else {
-%>
 <jsp:include page="TimeTimePicker.jsp"></jsp:include>
+</span>
 <%
-			}
+		} else if (editor.getDisplayType() == DateTimeDisplayType.LABEL) {
+			String timeToDisplayValue = displayFormat(defaultValueTo, editor.getDispRange());
+			String timeToHiddenName = Constants.SEARCH_COND_PREFIX + propName + "To";
 %>
+<span class="timeselect-field" style="<c:out value="<%=style %>"/>">
+<c:out value="<%=timeToDisplayValue %>"/>
+<input data-norewrite="true" type="hidden" name="<c:out value="<%=timeToHiddenName %>"/>" value="<c:out value="<%=defaultValueTo %>"/>" />
 </span>
 <%
 		} else {
 %>
 <span class="timeselect-field" style="<c:out value="<%=style %>"/>">
-<%
-			if (editor.getDisplayType() == DateTimeDisplayType.LABEL) {
-				String timeToDisplayValue = displayFormat(defaultValueTo, editor.getDispRange());
-				String timeToHiddenName = Constants.SEARCH_COND_PREFIX + propName + "To";
-%>
-<c:out value="<%=timeToDisplayValue %>"/>
-<input type="hidden" name="<c:out value="<%=timeToHiddenName %>"/>" value="<c:out value="<%=defaultValueTo %>"/>" />
-<%
-			} else {
-%>
 <jsp:include page="Time.jsp"></jsp:include>
-<%
-			}
-%>
 </span>
 <%
 		}

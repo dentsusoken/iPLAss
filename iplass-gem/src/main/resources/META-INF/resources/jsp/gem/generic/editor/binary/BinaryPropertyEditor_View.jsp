@@ -61,10 +61,10 @@
 		brList.add((BinaryReference)value);
 	}
 	int length = brList.size();
-	
+
 	if (editor.getDisplayType() != BinaryDisplayType.HIDDEN) {
 		//HIDDEN以外
-		
+
 		String contextPath = TemplateUtil.getTenantContextPath();
 		String download = "";
 		String ref = contextPath + "/" + DownloadCommand.REFERENCE_ACTION_NAME;
@@ -74,7 +74,7 @@
 			download = contextPath + "/" + DownloadCommand.DOWNLOAD_ACTION_NAME;
 		}
 		String pdfviewer = contextPath + "/" + DownloadCommand.PDFVIEWER_ACTION_NAME;
-	
+
 		String width = "";
 		if (editor.getWidth() > 0) {
 			width = " width=\"" + editor.getWidth() + "\"";
@@ -83,7 +83,7 @@
 		if (editor.getHeight() > 0) {
 			height = " height=\"" + editor.getHeight() + "\"";
 		}
-	
+
 		String target = "";
 		if (editor.isOpenNewTab()) {
 			target = " target=\"_blank\"";
@@ -101,7 +101,7 @@
 %>
 <li class="list-bin <c:out value="<%=listStyle %>"/>">
 <%
-			if (editor.getDisplayType() == BinaryDisplayType.BINARY || editor.getDisplayType() == BinaryDisplayType.LINK) {
+			if (editor.getDisplayType() == BinaryDisplayType.BINARY || editor.getDisplayType() == BinaryDisplayType.LINK || editor.getDisplayType() == BinaryDisplayType.LABEL) {
 				if (br.getType().indexOf("application/pdf") != -1 && editor.isUsePdfjs()) {
 					String pdfPath = pdfviewer+ "?file=" + URLEncoder.encode(url(br, download), "utf-8");
 %>
@@ -113,8 +113,8 @@
 <%
 				}
 			}
-	
-			if (editor.getDisplayType() == BinaryDisplayType.BINARY || editor.getDisplayType() == BinaryDisplayType.PREVIEW) {
+
+			if (editor.getDisplayType() == BinaryDisplayType.BINARY || editor.getDisplayType() == BinaryDisplayType.PREVIEW || editor.getDisplayType() == BinaryDisplayType.LABEL) {
 				if (br.getType().indexOf("image") != -1) {
 %>
 <p>
@@ -217,7 +217,7 @@ ${m:rs("mtp-gem-messages", "generic.editor.binary.BinaryPropertyEditor_View.canN
 					}
 				}
 			}
-			
+
 			if (outputHidden) {
 %>
 <input type="hidden" name="<c:out value="<%=propName %>"/>" value="<c:out value="<%=br.getLobId() %>"/>" />

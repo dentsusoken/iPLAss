@@ -152,23 +152,23 @@
 			fromDisp = "display: none;";
 		}
 		if (editor.getDisplayType() == DateTimeDisplayType.LABEL) {
-			String dateFromDisplayLabel = displayFormat(propValueFrom, editor.isShowWeekday());
+			String dateFromDisplayLabel = displayFormat(defaultValueFrom, editor.isShowWeekday());
 			fromDisp = fromDisp + customStyle;
 %>
 <span style="<c:out value="<%=fromDisp %>"/>">
 <c:out value="<%=dateFromDisplayLabel %>" />
+<input data-norewrite="true" type="hidden" name="<c:out value="<%=propNameFrom %>"/>" value="<c:out value="<%=defaultValueFrom %>"/>" />
+</span>
 <%
 		} else {
 %>
 <span style="<c:out value="<%=fromDisp %>"/>">
 <%-- XSS対応-メタの設定のため対応なし(onchange) --%>
 <input type="text" id="d_<c:out value="<%=propNameFrom %>"/>" class="datepicker inpbr" style="<c:out value="<%=customStyle%>"/>" value="" onchange="<%=onchange %>" data-showButtonPanel="<%=!editor.isHideButtonPanel()%>" data-showWeekday=<%=editor.isShowWeekday()%> />
-<%
-		}
-%>
 <input type="hidden" id="i_<c:out value="<%=propNameFrom%>"/>" name="<c:out value="<%=propNameFrom%>"/>" value="<c:out value="<%=propValueFrom%>"/>" />
 </span>
 <%
+		}
 		if (!hideFrom && !hideTo) {
 %>
 &nbsp;～&nbsp;
@@ -187,22 +187,24 @@
 			toDisp = "display: none;";
 		}
 		if (editor.getDisplayType() == DateTimeDisplayType.LABEL) {
-			String dateToDisplayLabel = displayFormat(propValueTo, editor.isShowWeekday());
+			String dateToDisplayLabel = displayFormat(defaultValueTo, editor.isShowWeekday());
 			toDisp = toDisp + customStyle;
 %>
 <span style="<c:out value="<%=toDisp%>"/>">
 <c:out value="<%=dateToDisplayLabel %>" />
+<input data-norewrite="true" type="hidden" name="<c:out value="<%=propNameTo %>"/>" value="<c:out value="<%=defaultValueTo %>"/>" />
+</span>
 <%
 		} else {
 %>
 <span style="<c:out value="<%=toDisp%>"/>">
 <%-- XSS対応-メタの設定のため対応なし(onchange) --%>
 <input type="text" id="d_<c:out value="<%=propNameTo%>"/>" class="datepicker inpbr" style="<c:out value="<%=customStyle%>"/>" value=""  onchange="<%=onchange%>" data-showButtonPanel="<%=!editor.isHideButtonPanel()%>" data-showWeekday=<%=editor.isShowWeekday()%> />
+<input type="hidden" id="i_<c:out value="<%=propNameTo %>"/>" name="<c:out value="<%=propNameTo %>"/>" value="<c:out value="<%=propValueTo %>"/>" />
+</span>
 <%
 		}
 %>
-<input type="hidden" id="i_<c:out value="<%=propNameTo %>"/>" name="<c:out value="<%=propNameTo %>"/>" value="<c:out value="<%=propValueTo %>"/>" />
-</span>
 
 <script type="text/javascript">
 $(function() {

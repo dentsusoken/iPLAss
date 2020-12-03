@@ -156,7 +156,7 @@
 %>
 <span  style="<c:out value="<%=customStyle%>"/>">
 <c:out value="<%=str %>"/>
-<input type="hidden" name="<c:out value="<%=propName %>"/>" value="<c:out value="<%=strDefault %>"/>" />
+<input data-norewrite="true" type="hidden" name="<c:out value="<%=propName %>"/>" value="<c:out value="<%=strDefault %>"/>" />
 </span>
 <%
 		} else {
@@ -178,7 +178,7 @@
 %>
 <span  style="<c:out value="<%=customStyle%>"/>">
 <c:out value="<%=strTo %>"/>
-<input type="hidden" name="<c:out value="<%=propName %>"/>To" value="<c:out value="<%=strDefaultTo %>"/>" />
+<input data-norewrite="true" type="hidden" name="<c:out value="<%=propName %>"/>To" value="<c:out value="<%=strDefaultTo %>"/>" />
 </span>
 <%
 			} else {
