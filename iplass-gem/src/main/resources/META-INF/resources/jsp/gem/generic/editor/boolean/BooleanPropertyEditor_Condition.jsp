@@ -23,6 +23,7 @@
 <%@page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8" trimDirectiveWhitespaces="true"%>
 
 <%@page import="java.util.ArrayList"%>
+<%@page import="java.util.Map" %>
 <%@page import="org.iplass.mtp.util.StringUtil"%>
 <%@page import="org.iplass.mtp.view.generic.EntityViewUtil"%>
 <%@page import="org.iplass.mtp.view.generic.editor.BooleanPropertyEditor" %>
@@ -32,18 +33,10 @@
 <%@page import="org.iplass.gem.command.GemResourceBundleUtil" %>
 <%@page import="org.iplass.gem.command.ViewUtil" %>
 <%!
-	String[] getBooleanValue(String searchCond, String key) {
+	String[] getBooleanValue(Map<String, Object> searchCondMap, String key) {
 		ArrayList<String> list = new ArrayList<String>();
-		if (searchCond != null && searchCond.indexOf(key) > -1) {
-			String[] split = searchCond.split("&");
-			if (split != null && split.length > 0) {
-				for (String tmp : split) {
-					String[] kv = tmp.split("=");
-					if (kv != null && kv.length > 1 && key.equals(kv[0])) {
-						list.add(kv[1]);
-					}
-				}
-			}
+		if (searchCondMap != null && searchCondMap.containsKey(key)) {
+			list = (ArrayList<String>) searchCondMap.get(key);
 		}
 		return list.size() > 0 ? list.toArray(new String[list.size()]) : null;
 	}
@@ -54,8 +47,8 @@
 	String[] propValue = (String[]) request.getAttribute(Constants.EDITOR_PROP_VALUE);
 	String[] defaultValue = (String[]) request.getAttribute(Constants.EDITOR_DEFAULT_VALUE);
 
-	String searchCond = request.getParameter(Constants.SEARCH_COND);
-	String[] _propValue = getBooleanValue(searchCond, Constants.SEARCH_COND_PREFIX + editor.getPropertyName());
+	Map<String, Object> searchCondMap = (Map<String, Object>)request.getAttribute(Constants.SEARCH_COND_MAP);
+	String[] _propValue = getBooleanValue(searchCondMap, Constants.SEARCH_COND_PREFIX + editor.getPropertyName());
 
 	String rootDefName = (String)request.getAttribute(Constants.ROOT_DEF_NAME);
 	String scriptKey = (String)request.getAttribute(Constants.SECTION_SCRIPT_KEY);
@@ -165,17 +158,16 @@ $(function() {
 </script>
 <%
 		} else if (editor.getDisplayType() == BooleanDisplayType.LABEL) {
-			String str = defaultValue != null && defaultValue.length > 0 ? defaultValue[0] : "";
 			String label = "";
-			if (str.equals("true")) {
+			if (value.equals("true")) {
 				label = trueLabel;
-			} else if (str.equals("false")) {
+			} else if (value.equals("false")) {
 				label = falseLabel;
 			}
 %>
 <span  style="<c:out value="<%=customStyle%>"/>">
 <c:out value="<%=label %>"/>
-<input data-norewrite="true" type="hidden" name="<c:out value="<%=propName %>"/>" value="<c:out value="<%=str %>"/>" />
+<input data-norewrite="true" type="hidden" name="<c:out value="<%=propName %>"/>" value="<c:out value="<%=value %>"/>" />
 </span>
 <%
 		} else {

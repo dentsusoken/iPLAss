@@ -23,6 +23,8 @@
 
 <%@ page import="java.sql.Time"%>
 <%@ page import="java.text.*" %>
+<%@ page import="java.util.ArrayList" %>
+<%@ page import="java.util.Map" %>
 <%@ page import="org.iplass.mtp.util.DateUtil"%>
 <%@ page import="org.iplass.mtp.util.StringUtil"%>
 <%@ page import="org.iplass.mtp.view.generic.editor.DateTimePropertyEditor.DateTimeDisplayType"%>
@@ -44,19 +46,12 @@
 		}
 		return true;
 	}
-	String getTimeValue(String searchCond, String key) {
-		if (searchCond != null && searchCond.indexOf(key) > -1) {
-			String[] split = searchCond.split("&");
-			if (split != null && split.length > 0) {
-				for (String tmp : split) {
-					String[] kv = tmp.split("=");
-					if (kv != null && kv.length > 1 && key.equals(kv[0])) {
-						return kv[1];
-					}
-				}
-			}
+	String getTimeValue(Map<String, Object> searchCondMap, String key) {
+		ArrayList<String> list = new ArrayList<String>();
+		if (searchCondMap != null && searchCondMap.containsKey(key)) {
+			list = (ArrayList<String>) searchCondMap.get(key);
 		}
-		return null;
+		return list.size() > 0 ? list.get(0) : null;
 	}
 %>
 <%!
@@ -94,12 +89,12 @@
 	Boolean required = (Boolean) request.getAttribute(Constants.EDITOR_REQUIRED);
 	if (required == null) required = false;
 
-	String searchCond = request.getParameter(Constants.SEARCH_COND);
+	Map<String, Object> searchCondMap = (Map<String, Object>)request.getAttribute(Constants.SEARCH_COND_MAP);
 
 	String propName = editor.getPropertyName();
 
-	//直接searchCondから取得(hidden対応)
-	String propValueFrom = getTimeValue(searchCond, Constants.SEARCH_COND_PREFIX + propName + "From");
+	//直接searchCondMapから取得(hidden対応)
+	String propValueFrom = getTimeValue(searchCondMap, Constants.SEARCH_COND_PREFIX + propName + "From");
 	if (propValueFrom == null) {
 		//初期値から復元(検索時に未指定の場合、ここにくる)
 		if (propValue != null && propValue.length > 0 && formatCheck(propValue[0])) {
@@ -109,8 +104,8 @@
 		}
 	}
 
-	//直接searchCondから取得(hidden対応)
-	String propValueTo = getTimeValue(searchCond, Constants.SEARCH_COND_PREFIX + propName + "To");
+	//直接searchCondMapから取得(hidden対応)
+	String propValueTo = getTimeValue(searchCondMap, Constants.SEARCH_COND_PREFIX + propName + "To");
 	if (propValueTo == null) {
 		//初期値から復元(検索時に未指定の場合、ここにくる)
 		if (propValue != null && propValue.length > 1 && formatCheck(propValue[1])) {
@@ -166,12 +161,12 @@
 </span>
 <%
 		} else if (editor.getDisplayType() == DateTimeDisplayType.LABEL) {
-			String timeFromDisplayValue = displayFormat(defaultValueFrom, editor.getDispRange());
+			String timeFromDisplayValue = displayFormat(propValueFrom, editor.getDispRange());
 			String timeFromHiddenName = Constants.SEARCH_COND_PREFIX + propName + "From";
 %>
 <span class="timeselect-field" style="<c:out value="<%=style %>"/>">
 <c:out value="<%=timeFromDisplayValue %>"/>
-<input data-norewrite="true" type="hidden" name="<c:out value="<%=timeFromHiddenName %>"/>" value="<c:out value="<%=defaultValueFrom %>"/>" />
+<input data-norewrite="true" type="hidden" name="<c:out value="<%=timeFromHiddenName %>"/>" value="<c:out value="<%=propValueFrom %>"/>" />
 </span>
 <%
 		} else {
@@ -216,12 +211,12 @@
 </span>
 <%
 		} else if (editor.getDisplayType() == DateTimeDisplayType.LABEL) {
-			String timeToDisplayValue = displayFormat(defaultValueTo, editor.getDispRange());
+			String timeToDisplayValue = displayFormat(propValueTo, editor.getDispRange());
 			String timeToHiddenName = Constants.SEARCH_COND_PREFIX + propName + "To";
 %>
 <span class="timeselect-field" style="<c:out value="<%=style %>"/>">
 <c:out value="<%=timeToDisplayValue %>"/>
-<input data-norewrite="true" type="hidden" name="<c:out value="<%=timeToHiddenName %>"/>" value="<c:out value="<%=defaultValueTo %>"/>" />
+<input data-norewrite="true" type="hidden" name="<c:out value="<%=timeToHiddenName %>"/>" value="<c:out value="<%=propValueTo %>"/>" />
 </span>
 <%
 		} else {

@@ -25,6 +25,7 @@
 <%@ page import="java.util.Arrays"%>
 <%@ page import="java.util.ArrayList"%>
 <%@ page import="java.util.List"%>
+<%@ page import="java.util.Map" %>
 <%@ page import="org.iplass.mtp.entity.definition.properties.SelectProperty" %>
 <%@ page import="org.iplass.mtp.entity.definition.LocalizedSelectValueDefinition" %>
 <%@ page import="org.iplass.mtp.entity.definition.PropertyDefinition"%>
@@ -39,18 +40,10 @@
 <%@ page import="org.iplass.gem.command.GemResourceBundleUtil" %>
 <%@ page import="org.iplass.gem.command.ViewUtil" %>
 <%!
-	String[] getSearchCondSelectValue(String searchCond, String key) {
+	String[] getSearchCondSelectValue(Map<String, Object> searchCondMap, String key) {
 		ArrayList<String> list = new ArrayList<String>();
-		if (searchCond != null && searchCond.indexOf(key) > -1) {
-			String[] split = searchCond.split("&");
-			if (split != null && split.length > 0) {
-				for (String tmp : split) {
-					String[] kv = tmp.split("=");
-					if (kv != null && kv.length > 1 && key.equals(kv[0])) {
-						list.add(kv[1]);
-					}
-				}
-			}
+		if (searchCondMap != null && searchCondMap.containsKey(key)) {
+			list = (ArrayList<String>) searchCondMap.get(key);
 		}
 		return list.size() > 0 ? list.toArray(new String[list.size()]) : null;
 	}
@@ -67,8 +60,8 @@
 	String[] propValue = (String[]) request.getAttribute(Constants.EDITOR_PROP_VALUE);
 	String[] defaultValue = (String[]) request.getAttribute(Constants.EDITOR_DEFAULT_VALUE);
 
-	String searchCond = request.getParameter(Constants.SEARCH_COND);
-	String[] _propValue = getSearchCondSelectValue(searchCond, Constants.SEARCH_COND_PREFIX + editor.getPropertyName());
+	Map<String, Object> searchCondMap = (Map<String, Object>)request.getAttribute(Constants.SEARCH_COND_MAP);
+	String[] _propValue = getSearchCondSelectValue(searchCondMap, Constants.SEARCH_COND_PREFIX + editor.getPropertyName());
 	String displayLabel = (String) request.getAttribute(Constants.EDITOR_DISPLAY_LABEL);
 	Boolean required = (Boolean) request.getAttribute(Constants.EDITOR_REQUIRED);
 	if (required == null) required = false;
@@ -280,6 +273,7 @@ $(function() {
 <%
 	} else if (editor.getDisplayType() == SelectDisplayType.LABEL) {
 		String strDefault = defaultValue != null && defaultValue.length > 0 ? defaultValue[0] : "";
+		strDefault = _propValue != null && _propValue.length > 0 ? _propValue[0] : strDefault;
 		String label = null;
 		for (EditorValue param : editor.getValues()) {
 			if (strDefault.equals(param.getValue())) {

@@ -23,6 +23,8 @@
 
 <%@ page import="java.sql.Timestamp"%>
 <%@ page import="java.text.*" %>
+<%@ page import="java.util.ArrayList" %>
+<%@ page import="java.util.Map" %>
 <%@ page import="org.iplass.mtp.util.DateUtil"%>
 <%@ page import="org.iplass.mtp.util.StringUtil"%>
 <%@ page import="org.iplass.mtp.view.generic.editor.DateTimePropertyEditor.DateTimeDisplayType"%>
@@ -44,19 +46,12 @@
 		}
 		return true;
 	}
-	String getTimestampValue(String searchCond, String key) {
-		if (searchCond != null && searchCond.indexOf(key) > -1) {
-			String[] split = searchCond.split("&");
-			if (split != null && split.length > 0) {
-				for (String tmp : split) {
-					String[] kv = tmp.split("=");
-					if (kv != null && kv.length > 1 && key.equals(kv[0])) {
-						return kv[1];
-					}
-				}
-			}
+	String getTimestampValue(Map<String, Object> searchCondMap, String key) {
+		ArrayList<String> list = new ArrayList<String>();
+		if (searchCondMap != null && searchCondMap.containsKey(key)) {
+			list = (ArrayList<String>) searchCondMap.get(key);
 		}
-		return null;
+		return list.size() > 0 ? list.get(0) : null;
 	}
 %>
 <%!
@@ -98,14 +93,14 @@
 	String[] propValue = (String[]) request.getAttribute(Constants.EDITOR_PROP_VALUE);
 	String[] defaultValue = (String[]) request.getAttribute(Constants.EDITOR_DEFAULT_VALUE);
 
-	String searchCond = request.getParameter(Constants.SEARCH_COND);
+	Map<String, Object> searchCondMap = (Map<String, Object>)request.getAttribute(Constants.SEARCH_COND_MAP);
 	String displayLabel = (String) request.getAttribute(Constants.EDITOR_DISPLAY_LABEL);
 	Boolean required = (Boolean) request.getAttribute(Constants.EDITOR_REQUIRED);
 	if (required == null) required = false;
 
 	String propName = editor.getPropertyName();
 
-	String propValueFrom = getTimestampValue(searchCond, Constants.SEARCH_COND_PREFIX + propName + "From");
+	String propValueFrom = getTimestampValue(searchCondMap, Constants.SEARCH_COND_PREFIX + propName + "From");
 	if (propValueFrom == null) {
 		//初期値から復元(検索時に未指定の場合、ここにくる)
 		if (propValue != null && propValue.length > 0 && formatCheck(propValue[0])) {
@@ -115,7 +110,7 @@
 		}
 	}
 
-	String propValueTo = getTimestampValue(searchCond, Constants.SEARCH_COND_PREFIX + propName + "To");
+	String propValueTo = getTimestampValue(searchCondMap, Constants.SEARCH_COND_PREFIX + propName + "To");
 	if (propValueTo == null) {
 		//初期値から復元(検索時に未指定の場合、ここにくる)
 		if (propValue != null && propValue.length > 1 && formatCheck(propValue[1])) {
@@ -174,12 +169,12 @@
 </span>
 <%
 		} else if (editor.getDisplayType() == DateTimeDisplayType.LABEL) {
-			String timeFromDisplayValue = displayFormat(defaultValueFrom, editor.getDispRange(), editor.isShowWeekday());
+			String timeFromDisplayValue = displayFormat(propValueFrom, editor.getDispRange(), editor.isShowWeekday());
 			String timeFromHiddenName = Constants.SEARCH_COND_PREFIX + propName + "From";
 %>
 <span class="timestampselect-field" style="<c:out value="<%=style %>"/>">
 <c:out value="<%=timeFromDisplayValue %>"/>
-<input data-norewrite="true" type="hidden" name="<c:out value="<%=timeFromHiddenName %>"/>" value="<c:out value="<%=defaultValueFrom %>"/>" />
+<input data-norewrite="true" type="hidden" name="<c:out value="<%=timeFromHiddenName %>"/>" value="<c:out value="<%=propValueFrom %>"/>" />
 </span>
 <%
 		} else {
@@ -226,12 +221,12 @@
 </span>
 <%
 		} else if (editor.getDisplayType() == DateTimeDisplayType.LABEL) {
-			String timeToDisplayValue = displayFormat(defaultValueTo, editor.getDispRange(), editor.isShowWeekday());
+			String timeToDisplayValue = displayFormat(propValueTo, editor.getDispRange(), editor.isShowWeekday());
 			String timeToHiddenName = Constants.SEARCH_COND_PREFIX + propName + "To";
 %>
 <span class="timestampselect-field" style="<c:out value="<%=style %>"/>">
 <c:out value="<%=timeToDisplayValue %>"/>
-<input data-norewrite="true" type="hidden" name="<c:out value="<%=timeToHiddenName %>"/>" value="<c:out value="<%=defaultValueTo %>"/>" />
+<input data-norewrite="true" type="hidden" name="<c:out value="<%=timeToHiddenName %>"/>" value="<c:out value="<%=propValueTo %>"/>" />
 </span>
 <%
 		} else {

@@ -21,6 +21,8 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8" trimDirectiveWhitespaces="true"%>
 
+<%@ page import="java.util.ArrayList" %>
+<%@ page import="java.util.Map" %>
 <%@ page import="org.iplass.mtp.entity.definition.properties.ExpressionProperty"%>
 <%@ page import="org.iplass.mtp.entity.definition.properties.StringProperty"%>
 <%@ page import="org.iplass.mtp.entity.definition.PropertyDefinition"%>
@@ -33,7 +35,15 @@
 <%@ page import="org.iplass.gem.command.Constants" %>
 <%@ page import="org.iplass.gem.command.GemResourceBundleUtil" %>
 <%@ page import="org.iplass.gem.command.ViewUtil" %>
-
+<%!
+	String getStringValue(Map<String, Object> searchCondMap, String key) {
+		ArrayList<String> list = new ArrayList<String>();
+		if (searchCondMap != null && searchCondMap.containsKey(key)) {
+			list = (ArrayList<String>) searchCondMap.get(key);
+		}
+		return list.size() > 0 ? list.get(0) : null;
+	}
+%>
 <%
 	StringPropertyEditor editor = (StringPropertyEditor) request.getAttribute(Constants.EDITOR_EDITOR);
 
@@ -131,6 +141,9 @@ $(function() {
 </script>
 <%
 			} else if (editor.getDisplayType() == StringDisplayType.LABEL) {
+				Map<String, Object> searchCondMap = (Map<String, Object>)request.getAttribute(Constants.SEARCH_COND_MAP);
+				String _strDefault = getStringValue(searchCondMap,  Constants.SEARCH_COND_PREFIX + editor.getPropertyName());
+				strDefault = _strDefault != null ? _strDefault : strDefault;
 				String labelstr = StringUtil.escapeXml10(strDefault, true);
 				labelstr = labelstr.replaceAll("\r\n", "<BR>").replaceAll("\n", "<BR>").replaceAll("\r", "<BR>").replaceAll(" ", "&nbsp;");
 %>

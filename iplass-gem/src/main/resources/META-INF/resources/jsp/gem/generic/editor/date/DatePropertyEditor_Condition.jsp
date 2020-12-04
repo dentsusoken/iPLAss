@@ -23,6 +23,8 @@
 <%@ page import="java.sql.Date" %>
 <%@ page import="java.text.ParseException"%>
 <%@ page import="java.text.SimpleDateFormat"%>
+<%@ page import="java.util.ArrayList"%>
+<%@ page import="java.util.Map" %>
 <%@ page import="org.iplass.mtp.util.DateUtil" %>
 <%@ page import="org.iplass.mtp.util.StringUtil"%>
 <%@ page import="org.iplass.mtp.view.generic.EntityViewUtil"%>
@@ -46,19 +48,12 @@
 		return true;
 	}
 
-	String getDateValue(String searchCond, String key) {
-		if (searchCond != null && searchCond.indexOf(key) > -1) {
-			String[] split = searchCond.split("&");
-			if (split != null && split.length > 0) {
-				for (String tmp : split) {
-					String[] kv = tmp.split("=");
-					if (kv != null && kv.length > 1 && key.equals(kv[0])) {
-						return kv[1];
-					}
-				}
-			}
+	String getDateValue(Map<String, Object> searchCondMap, String key) {
+		ArrayList<String> list = new ArrayList<String>();
+		if (searchCondMap != null && searchCondMap.containsKey(key)) {
+			list = (ArrayList<String>) searchCondMap.get(key);
 		}
-		return null;
+		return list.size() > 0 ? list.get(0) : null;
 	}
 %>
 <%!
@@ -93,11 +88,11 @@
 	Boolean required = (Boolean) request.getAttribute(Constants.EDITOR_REQUIRED);
 	if (required == null) required = false;
 
-	String searchCond = request.getParameter(Constants.SEARCH_COND);
+	Map<String, Object> searchCondMap = (Map<String, Object>)request.getAttribute(Constants.SEARCH_COND_MAP);
 
 	String propNameFrom = Constants.SEARCH_COND_PREFIX + editor.getPropertyName() + "From";
 	//直接searchCondから取得(hidden対応)
-	String propValueFrom = getDateValue(searchCond, propNameFrom);
+	String propValueFrom = getDateValue(searchCondMap, propNameFrom);
 	if (propValueFrom == null) {
 		//初期値から復元(検索時に未指定の場合、ここにくる)
 		if (propValue != null && propValue.length > 0 && formatCheck(propValue[0])) {
@@ -108,7 +103,7 @@
 	}
 
 	String propNameTo = Constants.SEARCH_COND_PREFIX + editor.getPropertyName() + "To";
-	String propValueTo = getDateValue(searchCond, propNameTo);
+	String propValueTo = getDateValue(searchCondMap, propNameTo);
 	if (propValueTo == null) {
 		//初期値から復元(検索時に未指定の場合、ここにくる)
 		if (propValue != null && propValue.length > 1 && formatCheck(propValue[1])) {
@@ -152,12 +147,12 @@
 			fromDisp = "display: none;";
 		}
 		if (editor.getDisplayType() == DateTimeDisplayType.LABEL) {
-			String dateFromDisplayLabel = displayFormat(defaultValueFrom, editor.isShowWeekday());
+			String dateFromDisplayLabel = displayFormat(propValueFrom, editor.isShowWeekday());
 			fromDisp = fromDisp + customStyle;
 %>
 <span style="<c:out value="<%=fromDisp %>"/>">
 <c:out value="<%=dateFromDisplayLabel %>" />
-<input data-norewrite="true" type="hidden" name="<c:out value="<%=propNameFrom %>"/>" value="<c:out value="<%=defaultValueFrom %>"/>" />
+<input data-norewrite="true" type="hidden" name="<c:out value="<%=propNameFrom %>"/>" value="<c:out value="<%=propValueFrom %>"/>" />
 </span>
 <%
 		} else {
@@ -187,12 +182,12 @@
 			toDisp = "display: none;";
 		}
 		if (editor.getDisplayType() == DateTimeDisplayType.LABEL) {
-			String dateToDisplayLabel = displayFormat(defaultValueTo, editor.isShowWeekday());
+			String dateToDisplayLabel = displayFormat(propValueTo, editor.isShowWeekday());
 			toDisp = toDisp + customStyle;
 %>
 <span style="<c:out value="<%=toDisp%>"/>">
 <c:out value="<%=dateToDisplayLabel %>" />
-<input data-norewrite="true" type="hidden" name="<c:out value="<%=propNameTo %>"/>" value="<c:out value="<%=defaultValueTo %>"/>" />
+<input data-norewrite="true" type="hidden" name="<c:out value="<%=propNameTo %>"/>" value="<c:out value="<%=propValueTo %>"/>" />
 </span>
 <%
 		} else {

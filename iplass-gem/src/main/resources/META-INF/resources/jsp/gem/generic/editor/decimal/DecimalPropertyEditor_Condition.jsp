@@ -23,6 +23,8 @@
 <%@ page import="java.math.BigDecimal"%>
 <%@ page import="java.text.DecimalFormat" %>
 <%@ page import="java.text.NumberFormat"%>
+<%@ page import="java.util.ArrayList"%>
+<%@ page import="java.util.Map" %>
 <%@ page import="org.iplass.mtp.spi.ServiceRegistry"%>
 <%@ page import="org.iplass.mtp.util.StringUtil"%>
 <%@ page import="org.iplass.mtp.view.generic.EntityViewUtil"%>
@@ -42,8 +44,6 @@
 		}
 		return true;
 	}
-%>
-<%!
 	String format(String format, String value) {
 		if (value == null) return "";
 
@@ -71,6 +71,14 @@
 			str = "";
 		}
 		return str;
+	}
+
+	String getDecimalValue(Map<String, Object> searchCondMap, String key) {
+		ArrayList<String> list = new ArrayList<String>();
+		if (searchCondMap != null && searchCondMap.containsKey(key)) {
+			list = (ArrayList<String>) searchCondMap.get(key);
+		}
+		return list.size() > 0 ? list.get(0) : null;
 	}
 %>
 
@@ -122,8 +130,11 @@
 				customStyle = EntityViewUtil.getCustomStyle(rootDefName, scriptKey, editor.getOutputCustomStyleScriptKey(), null, null);
 			}
 		}
+		Map<String, Object> searchCondMap = (Map<String, Object>)request.getAttribute(Constants.SEARCH_COND_MAP);
 
 		if (editor.getDisplayType() == NumberDisplayType.LABEL) {
+			String _strDefault = getDecimalValue(searchCondMap,  Constants.SEARCH_COND_PREFIX + editor.getPropertyName());
+			strDefault = _strDefault != null ? _strDefault : strDefault;
 			String str = format(editor.getNumberFormat(), strDefault);
 %>
 <span  style="<c:out value="<%=customStyle%>"/>">
@@ -146,11 +157,13 @@
 &nbsp;～&nbsp;
 <%
 			if (editor.getDisplayType() == NumberDisplayType.LABEL) {
+				String _strDefaultTo = getDecimalValue(searchCondMap,  Constants.SEARCH_COND_PREFIX + editor.getPropertyName() + "To");
+				strDefaultTo = _strDefaultTo != null ? _strDefaultTo : strDefaultTo;
 				String str = format(editor.getNumberFormat(), strDefaultTo);
 %>
 <span  style="<c:out value="<%=customStyle%>"/>">
 <c:out value="<%=str %>"/>
-<input data-norewrite="true" type="hidden" name="<c:out value="<%=propName %>"/>" value="<c:out value="<%=strDefault %>"/>" />
+<input data-norewrite="true" type="hidden" name="<c:out value="<%=propName %>"/>To" value="<c:out value="<%=strDefaultTo %>"/>" />
 </span>
 <%
 			} else {

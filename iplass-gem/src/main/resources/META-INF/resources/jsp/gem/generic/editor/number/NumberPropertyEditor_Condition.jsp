@@ -22,6 +22,8 @@
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8" trimDirectiveWhitespaces="true"%>
 <%@ page import="java.text.DecimalFormat" %>
 <%@ page import="java.text.NumberFormat"%>
+<%@ page import="java.util.ArrayList"%>
+<%@ page import="java.util.Map" %>
 <%@ page import="org.iplass.mtp.spi.ServiceRegistry"%>
 <%@ page import="org.iplass.mtp.util.StringUtil"%>
 <%@ page import="org.iplass.mtp.view.generic.EntityViewUtil"%>
@@ -53,8 +55,6 @@
 		}
 		return "";
 	}
-%>
-<%!
 	Number convertStringToNumber(String value, PropertyEditor editor) {
 		if (value == null) return null;
 		if (editor instanceof IntegerPropertyEditor) {
@@ -101,6 +101,14 @@
 			str = "";
 		}
 		return str;
+	}
+
+	String getNumberValue(Map<String, Object> searchCondMap, String key) {
+		ArrayList<String> list = new ArrayList<String>();
+		if (searchCondMap != null && searchCondMap.containsKey(key)) {
+			list = (ArrayList<String>) searchCondMap.get(key);
+		}
+		return list.size() > 0 ? list.get(0) : null;
 	}
 %>
 <%
@@ -151,7 +159,10 @@
 				customStyle = EntityViewUtil.getCustomStyle(rootDefName, scriptKey, editor.getOutputCustomStyleScriptKey(), null, null);
 			}
 		}
+		Map<String, Object> searchCondMap = (Map<String, Object>)request.getAttribute(Constants.SEARCH_COND_MAP);
 		if (editor.getDisplayType() == NumberDisplayType.LABEL) {
+			String _strDefault = getNumberValue(searchCondMap,  Constants.SEARCH_COND_PREFIX + editor.getPropertyName());
+			strDefault = _strDefault != null ? _strDefault : strDefault;
 			String str = format(strDefault, editor);
 %>
 <span  style="<c:out value="<%=customStyle%>"/>">
@@ -174,6 +185,8 @@
 &nbsp;～&nbsp;
 <%
 			if (editor.getDisplayType() == NumberDisplayType.LABEL) {
+				String _strDefaultTo = getNumberValue(searchCondMap,  Constants.SEARCH_COND_PREFIX + editor.getPropertyName() + "To");
+				strDefaultTo = _strDefaultTo != null ? _strDefaultTo : strDefaultTo;
 				String strTo = format(strDefaultTo, editor);
 %>
 <span  style="<c:out value="<%=customStyle%>"/>">

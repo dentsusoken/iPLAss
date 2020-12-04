@@ -216,6 +216,29 @@
 		}
 		return value.toString();
 	}
+	Map<String, ArrayList<String>> getSearchCondMap(String searchCond) {
+		Map<String, ArrayList<String>> map = new HashMap<String, ArrayList<String>>();
+		if (searchCond != null) {
+			String[] split = searchCond.split("&");
+			if (split != null && split.length > 0) {
+				for (String tmp : split) {
+					String[] kv = tmp.split("=");
+					if (kv != null && kv.length > 1) {
+						if (map.containsKey(kv[0])) {
+							ArrayList<String> valueList = (ArrayList<String>) map.get(kv[0]);
+							valueList.add(kv[1]);
+							map.put(kv[0], valueList);
+						} else {
+							ArrayList<String> valueList = new ArrayList<String>();
+							valueList.add(kv[1]);
+							map.put(kv[0], valueList);
+						}
+					}
+				}
+			}
+		}
+		return map;
+	}
 %>
 <%
 	//searchCondによる通常検索条件の復元はSearchResultSection側で行っている。
@@ -528,7 +551,7 @@ $(function() {
 	String _searchType = Constants.SEARCH_TYPE_NORMAL;
 	if (searchCond.isEmpty()) {
 		// xssは起こらないが、セレクタにタグが混ざるとjqueryでエラーになるため、特定文字のみ渡すようにする
-		if (Constants.SEARCH_TYPE_DETAIL.equals(searchType) 
+		if (Constants.SEARCH_TYPE_DETAIL.equals(searchType)
 				|| Constants.SEARCH_TYPE_FIXED.equals(searchType)) {
 			_searchType = searchType;
 		}
@@ -668,6 +691,8 @@ $(function() {
 			elementList.add(element);
 		}
 	}
+	Map<String, ArrayList<String>> searchCondMap = getSearchCondMap(searchCond);
+	request.setAttribute(Constants.SEARCH_COND_MAP, searchCondMap);
 
 	for (Element element : elementList) {
 %>
@@ -866,7 +891,7 @@ $(function() {
 		PropertyDefinition pd = null;
 		PropertyEditor editor = null;
 		AutocompletionSetting autocompletionSetting = null;
-		
+
 		//PropertyItemかVirtualPropertyItemしか存在しない(共通のIFがないためElementで保持)
 		if (hiddenElement instanceof PropertyItem) {
 			PropertyItem property = (PropertyItem)hiddenElement;
