@@ -48,10 +48,10 @@
 		return true;
 	}
 
-	String getDateValue(Map<String, Object> searchCondMap, String key) {
+	String getDateValue(Map<String, ArrayList<String>> searchCondMap, String key) {
 		ArrayList<String> list = new ArrayList<String>();
 		if (searchCondMap != null && searchCondMap.containsKey(key)) {
-			list = (ArrayList<String>) searchCondMap.get(key);
+			list = searchCondMap.get(key);
 		}
 		return list.size() > 0 ? list.get(0) : null;
 	}
@@ -88,7 +88,7 @@
 	Boolean required = (Boolean) request.getAttribute(Constants.EDITOR_REQUIRED);
 	if (required == null) required = false;
 
-	Map<String, Object> searchCondMap = (Map<String, Object>)request.getAttribute(Constants.SEARCH_COND_MAP);
+	Map<String, ArrayList<String>> searchCondMap = (Map<String, ArrayList<String>>)request.getAttribute(Constants.SEARCH_COND_MAP);
 
 	String propNameFrom = Constants.SEARCH_COND_PREFIX + editor.getPropertyName() + "From";
 	//直接searchCondから取得(hidden対応)

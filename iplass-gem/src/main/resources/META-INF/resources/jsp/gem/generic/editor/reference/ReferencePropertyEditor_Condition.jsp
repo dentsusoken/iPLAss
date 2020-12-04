@@ -71,14 +71,14 @@
 		if (property.getEditor() == null) return false;
 		return true;
 	}
-	String[] getReferenceValue(Map<String, Object> searchCondMap, String key) {
+	String[] getReferenceValue(Map<String, ArrayList<String>> searchCondMap, String key) {
 		ArrayList<String> list = new ArrayList<String>();
 		if (searchCondMap != null && searchCondMap.containsKey(key)) {
-			list = (ArrayList<String>) searchCondMap.get(key);
+			list = searchCondMap.get(key);
 		}
 		return list.size() > 0 ? list.toArray(new String[list.size()]) : null;
 	}
-	String[] getRefComboUpperCondition(Map<String, Object> searchCondMap, String propName, ReferenceComboSetting setting) {
+	String[] getRefComboUpperCondition(Map<String, ArrayList<String>> searchCondMap, String propName, ReferenceComboSetting setting) {
 		String name = propName + "." + setting.getPropertyName();
 		String[] value = getReferenceValue(searchCondMap, name);
 		if ((value == null) && (setting.getParent() != null)) {
@@ -120,7 +120,7 @@
 		return null;
 	}
 
-	List<Entity> getSelectItems(ReferencePropertyEditor editor, Condition defaultCondition, Map<String, Object> searchCondMap, HashMap<String, Object> defaultSearchCond,
+	List<Entity> getSelectItems(ReferencePropertyEditor editor, Condition defaultCondition, Map<String, ArrayList<String>> searchCondMap, HashMap<String, Object> defaultSearchCond,
 			PropertyEditor upperEditor) {
 		Condition condition = defaultCondition;
 
@@ -246,7 +246,7 @@
 
 	String viewName = (String)request.getAttribute(Constants.VIEW_NAME);
 	if (viewName == null) viewName = "";
-	Map<String, Object> searchCondMap = (Map<String, Object>)request.getAttribute(Constants.SEARCH_COND_MAP);
+	Map<String, ArrayList<String>> searchCondMap = (Map<String, ArrayList<String>>)request.getAttribute(Constants.SEARCH_COND_MAP);
 	String defName = request.getParameter(Constants.DEF_NAME);
 
 

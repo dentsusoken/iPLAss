@@ -33,10 +33,10 @@
 <%@page import="org.iplass.gem.command.GemResourceBundleUtil" %>
 <%@page import="org.iplass.gem.command.ViewUtil" %>
 <%!
-	String[] getBooleanValue(Map<String, Object> searchCondMap, String key) {
+	String[] getBooleanValue(Map<String, ArrayList<String>> searchCondMap, String key) {
 		ArrayList<String> list = new ArrayList<String>();
 		if (searchCondMap != null && searchCondMap.containsKey(key)) {
-			list = (ArrayList<String>) searchCondMap.get(key);
+			list = searchCondMap.get(key);
 		}
 		return list.size() > 0 ? list.toArray(new String[list.size()]) : null;
 	}
@@ -47,7 +47,7 @@
 	String[] propValue = (String[]) request.getAttribute(Constants.EDITOR_PROP_VALUE);
 	String[] defaultValue = (String[]) request.getAttribute(Constants.EDITOR_DEFAULT_VALUE);
 
-	Map<String, Object> searchCondMap = (Map<String, Object>)request.getAttribute(Constants.SEARCH_COND_MAP);
+	Map<String, ArrayList<String>> searchCondMap = (Map<String, ArrayList<String>>)request.getAttribute(Constants.SEARCH_COND_MAP);
 	String[] _propValue = getBooleanValue(searchCondMap, Constants.SEARCH_COND_PREFIX + editor.getPropertyName());
 
 	String rootDefName = (String)request.getAttribute(Constants.ROOT_DEF_NAME);

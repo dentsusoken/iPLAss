@@ -103,10 +103,10 @@
 		return str;
 	}
 
-	String getNumberValue(Map<String, Object> searchCondMap, String key) {
+	String getNumberValue(Map<String, ArrayList<String>> searchCondMap, String key) {
 		ArrayList<String> list = new ArrayList<String>();
 		if (searchCondMap != null && searchCondMap.containsKey(key)) {
-			list = (ArrayList<String>) searchCondMap.get(key);
+			list = searchCondMap.get(key);
 		}
 		return list.size() > 0 ? list.get(0) : null;
 	}
@@ -159,7 +159,7 @@
 				customStyle = EntityViewUtil.getCustomStyle(rootDefName, scriptKey, editor.getOutputCustomStyleScriptKey(), null, null);
 			}
 		}
-		Map<String, Object> searchCondMap = (Map<String, Object>)request.getAttribute(Constants.SEARCH_COND_MAP);
+		Map<String, ArrayList<String>> searchCondMap = (Map<String, ArrayList<String>>)request.getAttribute(Constants.SEARCH_COND_MAP);
 		if (editor.getDisplayType() == NumberDisplayType.LABEL) {
 			String _strDefault = getNumberValue(searchCondMap,  Constants.SEARCH_COND_PREFIX + editor.getPropertyName());
 			strDefault = _strDefault != null ? _strDefault : strDefault;
