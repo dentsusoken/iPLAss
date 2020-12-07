@@ -7,5 +7,5 @@ CREATE TABLE `crawl_log` (
   `up_date` DATETIME NULL,
   PRIMARY KEY (`tenant_id`, `obj_def_id`, `obj_def_ver`)
 )
-ENGINE=InnoDB COMPRESSION="zlib"
+ENGINE=InnoDB COMPRESSION="none"
 ;

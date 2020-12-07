@@ -17,5 +17,5 @@ CREATE TABLE `t_account` (
   PRIMARY KEY (`tenant_id`, `account_id`),
   UNIQUE INDEX `t_account_uq` (`tenant_id`, `oid`)
 )
-ENGINE=InnoDB COMPRESSION="zlib"
+ENGINE=InnoDB COMPRESSION="none"
 ;

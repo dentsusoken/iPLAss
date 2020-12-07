@@ -54,6 +54,10 @@ CREATE TABLE `mtdb`.`obj_store${tableNamePostfix}` (
 <%	}
 }%>  ,INDEX `obj_store${tableNamePostfix}_cre_user_index` (`cre_user`(64), `obj_def_id`(128), `tenant_id`)
 )
+<%if (compression) {
+%>
+ENGINE=InnoDB COMPRESSION="${compressedFormat}"
+<%}%>
 
 <%if (partition) {
 %>PARTITION BY RANGE( `tenant_id` )

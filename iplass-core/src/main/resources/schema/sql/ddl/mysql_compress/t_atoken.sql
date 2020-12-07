@@ -12,5 +12,5 @@ CREATE TABLE `t_atoken` (
   INDEX `t_atoken_index1` (`tenant_id`, `t_type`, `u_key`),
   INDEX `t_atoken_index2` (`tenant_id`, `u_key`)
 )
-ENGINE=InnoDB COMPRESSION="zlib"
+ENGINE=InnoDB COMPRESSION="none"
 ;

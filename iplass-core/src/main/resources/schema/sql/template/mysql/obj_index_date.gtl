@@ -14,7 +14,7 @@ CREATE TABLE `mtdb`.`obj_index_date${tableNamePostfix}` (
 )
 <%if (compression) {
 %>
-ENGINE=InnoDB COMPRESSION="zlib"
+ENGINE=InnoDB COMPRESSION="lz4"
 <%}%>
 
 <%if (partition) {

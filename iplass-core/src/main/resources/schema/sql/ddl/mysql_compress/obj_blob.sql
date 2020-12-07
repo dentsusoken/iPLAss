@@ -19,7 +19,7 @@ CREATE TABLE `obj_blob` (
   PRIMARY KEY (`r_id`, `tenant_id`),
   INDEX `obj_blob_index1` (`tenant_id`, `lob_id`)
 )
-ENGINE=InnoDB COMPRESSION="zlib"
+ENGINE=InnoDB COMPRESSION="none"
 
 PARTITION BY RANGE (`tenant_id`)
 (

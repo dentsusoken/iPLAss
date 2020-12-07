@@ -13,7 +13,7 @@ CREATE TABLE `mtdb`.`obj_unique_num${tableNamePostfix}` (
 )
 <%if (compression) {
 %>
-ENGINE=InnoDB COMPRESSION="zlib"
+ENGINE=InnoDB COMPRESSION="lz4"
 <%}%>
 
 <%if (partition) {

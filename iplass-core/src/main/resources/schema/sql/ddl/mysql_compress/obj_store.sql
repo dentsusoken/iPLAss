@@ -240,6 +240,7 @@ CREATE TABLE `obj_store` (
   ,INDEX `obj_store_IDBL_index_4` (`IDBL_4`, `IDBL_4_TD`(139))
   ,INDEX `obj_store_cre_user_index` (`cre_user`(64), `obj_def_id`(128), `tenant_id`)
 )
+ENGINE=InnoDB COMPRESSION="none"
 
 PARTITION BY RANGE( `tenant_id` )
     SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
@@ -498,6 +499,7 @@ CREATE TABLE `obj_store__MTP` (
   ,INDEX `obj_store__MTP_IDBL_index_4` (`IDBL_4`, `IDBL_4_TD`(139))
   ,INDEX `obj_store__MTP_cre_user_index` (`cre_user`(64), `obj_def_id`(128), `tenant_id`)
 )
+ENGINE=InnoDB COMPRESSION="none"
 
 PARTITION BY RANGE( `tenant_id` )
     SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
@@ -756,6 +758,7 @@ CREATE TABLE `obj_store__USER` (
   ,INDEX `obj_store__USER_IDBL_index_4` (`IDBL_4`, `IDBL_4_TD`(139))
   ,INDEX `obj_store__USER_cre_user_index` (`cre_user`(64), `obj_def_id`(128), `tenant_id`)
 )
+ENGINE=InnoDB COMPRESSION="none"
 
 PARTITION BY RANGE( `tenant_id` )
     SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (

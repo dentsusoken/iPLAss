@@ -14,6 +14,10 @@ CREATE TABLE `mtdb`.`obj_ref${tableNamePostfix}` (
   INDEX `obj_ref${tableNamePostfix}_index1` (`tenant_id`, `obj_def_id`(128), `obj_id`(64), `ref_def_id`(128)),
   INDEX `obj_ref${tableNamePostfix}_index2` (`tenant_id`, `target_obj_def_id`(128), `target_obj_id`(64), `ref_def_id`(128))
 )
+<%if (compression) {
+%>
+ENGINE=InnoDB COMPRESSION="${compressedFormat}"
+<%}%>
 
 <%if (partition) {
 %>PARTITION BY RANGE( `tenant_id` )

@@ -10,7 +10,7 @@ CREATE TABLE `obj_unique_ts` (
   UNIQUE INDEX `obj_unique_ts_index1` (`tenant_id`, `obj_def_id`(128), `col_name`(36), `val`),
   INDEX `obj_unique_ts_index2` (`tenant_id`, `obj_def_id`(128), `obj_id`(64))
 )
-ENGINE=InnoDB COMPRESSION="zlib"
+ENGINE=InnoDB COMPRESSION="lz4"
 
 PARTITION BY RANGE( `tenant_id` )
     SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
