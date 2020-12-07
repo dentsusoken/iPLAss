@@ -22,7 +22,7 @@
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8" trimDirectiveWhitespaces="true"%>
 <%@ page import="java.text.DecimalFormat" %>
 <%@ page import="java.text.NumberFormat"%>
-<%@ page import="java.util.ArrayList"%>
+<%@ page import="java.util.List"%>
 <%@ page import="java.util.Map" %>
 <%@ page import="org.iplass.mtp.spi.ServiceRegistry"%>
 <%@ page import="org.iplass.mtp.util.StringUtil"%>
@@ -102,14 +102,6 @@
 		}
 		return str;
 	}
-
-	String getNumberValue(Map<String, ArrayList<String>> searchCondMap, String key) {
-		ArrayList<String> list = new ArrayList<String>();
-		if (searchCondMap != null && searchCondMap.containsKey(key)) {
-			list = searchCondMap.get(key);
-		}
-		return list.size() > 0 ? list.get(0) : null;
-	}
 %>
 <%
 	NumberPropertyEditor editor = (NumberPropertyEditor) request.getAttribute(Constants.EDITOR_EDITOR);
@@ -159,10 +151,10 @@
 				customStyle = EntityViewUtil.getCustomStyle(rootDefName, scriptKey, editor.getOutputCustomStyleScriptKey(), null, null);
 			}
 		}
-		Map<String, ArrayList<String>> searchCondMap = (Map<String, ArrayList<String>>)request.getAttribute(Constants.SEARCH_COND_MAP);
+		Map<String, List<String>> searchCondMap = (Map<String, List<String>>)request.getAttribute(Constants.SEARCH_COND_MAP);
 		if (editor.getDisplayType() == NumberDisplayType.LABEL) {
-			String _strDefault = getNumberValue(searchCondMap,  Constants.SEARCH_COND_PREFIX + editor.getPropertyName());
-			strDefault = _strDefault != null ? _strDefault : strDefault;
+			String[] _strDefault = ViewUtil.getSearchCondValue(searchCondMap,  Constants.SEARCH_COND_PREFIX + editor.getPropertyName());
+			strDefault = _strDefault != null && _strDefault.length > 0 ? _strDefault[0] : strDefault;
 			String str = format(strDefault, editor);
 %>
 <span  style="<c:out value="<%=customStyle%>"/>">
@@ -185,8 +177,8 @@
 &nbsp;～&nbsp;
 <%
 			if (editor.getDisplayType() == NumberDisplayType.LABEL) {
-				String _strDefaultTo = getNumberValue(searchCondMap,  Constants.SEARCH_COND_PREFIX + editor.getPropertyName() + "To");
-				strDefaultTo = _strDefaultTo != null ? _strDefaultTo : strDefaultTo;
+				String[] _strDefaultTo = ViewUtil.getSearchCondValue(searchCondMap,  Constants.SEARCH_COND_PREFIX + editor.getPropertyName() + "To");
+				strDefaultTo = _strDefaultTo != null && _strDefaultTo.length > 0 ? _strDefaultTo[0] : strDefaultTo;
 				String strTo = format(strDefaultTo, editor);
 %>
 <span  style="<c:out value="<%=customStyle%>"/>">

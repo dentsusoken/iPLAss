@@ -39,15 +39,6 @@
 <%@ page import="org.iplass.gem.command.Constants" %>
 <%@ page import="org.iplass.gem.command.GemResourceBundleUtil" %>
 <%@ page import="org.iplass.gem.command.ViewUtil" %>
-<%!
-	String[] getSearchCondSelectValue(Map<String, ArrayList<String>> searchCondMap, String key) {
-		ArrayList<String> list = new ArrayList<String>();
-		if (searchCondMap != null && searchCondMap.containsKey(key)) {
-			list = searchCondMap.get(key);
-		}
-		return list.size() > 0 ? list.toArray(new String[list.size()]) : null;
-	}
-%>
 <%
 	SelectPropertyEditor editor = (SelectPropertyEditor) request.getAttribute(Constants.EDITOR_EDITOR);
 
@@ -60,8 +51,8 @@
 	String[] propValue = (String[]) request.getAttribute(Constants.EDITOR_PROP_VALUE);
 	String[] defaultValue = (String[]) request.getAttribute(Constants.EDITOR_DEFAULT_VALUE);
 
-	Map<String, ArrayList<String>> searchCondMap = (Map<String, ArrayList<String>>)request.getAttribute(Constants.SEARCH_COND_MAP);
-	String[] _propValue = getSearchCondSelectValue(searchCondMap, Constants.SEARCH_COND_PREFIX + editor.getPropertyName());
+	Map<String, List<String>> searchCondMap = (Map<String, List<String>>)request.getAttribute(Constants.SEARCH_COND_MAP);
+	String[] _propValue = ViewUtil.getSearchCondValue(searchCondMap, Constants.SEARCH_COND_PREFIX + editor.getPropertyName());
 	String displayLabel = (String) request.getAttribute(Constants.EDITOR_DISPLAY_LABEL);
 	Boolean required = (Boolean) request.getAttribute(Constants.EDITOR_REQUIRED);
 	if (required == null) required = false;

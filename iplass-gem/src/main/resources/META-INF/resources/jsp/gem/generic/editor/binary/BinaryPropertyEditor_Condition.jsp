@@ -20,7 +20,7 @@
 
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8" trimDirectiveWhitespaces="true"%>
-<%@ page import="java.util.ArrayList"%>
+<%@ page import="java.util.List"%>
 <%@ page import="java.util.Map" %>
 <%@ page import="org.iplass.mtp.util.StringUtil"%>
 <%@ page import="org.iplass.mtp.view.generic.EntityViewUtil"%>
@@ -29,15 +29,6 @@
 <%@ page import="org.iplass.mtp.view.generic.editor.PropertyEditor" %>
 <%@ page import="org.iplass.gem.command.Constants" %>
 <%@ page import="org.iplass.gem.command.ViewUtil"%>
-<%!
-	String[] getBinaryValue(Map<String, ArrayList<String>> searchCondMap, String key) {
-		ArrayList<String> list = new ArrayList<String>();
-		if (searchCondMap != null && searchCondMap.containsKey(key)) {
-			list = searchCondMap.get(key);
-		}
-		return list.size() > 0 ? list.toArray(new String[list.size()]) : null;
-	}
-%>
 <%
 	BinaryPropertyEditor editor = (BinaryPropertyEditor) request.getAttribute(Constants.EDITOR_EDITOR);
 
@@ -82,8 +73,8 @@
 		}
 
 		if (editor.getDisplayType() == BinaryDisplayType.LABEL) {
-			Map<String, ArrayList<String>> searchCondMap = (Map<String, ArrayList<String>>)request.getAttribute(Constants.SEARCH_COND_MAP);
-			String[] _strDefault = getBinaryValue(searchCondMap,  Constants.SEARCH_COND_PREFIX + editor.getPropertyName());
+			Map<String, List<String>> searchCondMap = (Map<String, List<String>>)request.getAttribute(Constants.SEARCH_COND_MAP);
+			String[] _strDefault = ViewUtil.getSearchCondValue(searchCondMap,  Constants.SEARCH_COND_PREFIX + editor.getPropertyName());
 			strDefault = _strDefault != null && _strDefault.length > 0 ? _strDefault[0] : strDefault;
 %>
 <span  style="<c:out value="<%=customStyle%>"/>">

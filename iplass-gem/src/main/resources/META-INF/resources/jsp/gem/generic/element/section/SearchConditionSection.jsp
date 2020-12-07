@@ -216,8 +216,8 @@
 		}
 		return value.toString();
 	}
-	Map<String, ArrayList<String>> getSearchCondMap(String searchCond) {
-		Map<String, ArrayList<String>> map = new HashMap<String, ArrayList<String>>();
+	Map<String, List<String>> getSearchCondMap(String searchCond) {
+		Map<String, List<String>> map = new HashMap<String, List<String>>();
 		if (searchCond != null) {
 			String[] split = searchCond.split("&");
 			if (split != null && split.length > 0) {
@@ -225,11 +225,11 @@
 					String[] kv = tmp.split("=");
 					if (kv != null && kv.length > 1) {
 						if (map.containsKey(kv[0])) {
-							ArrayList<String> valueList = (ArrayList<String>) map.get(kv[0]);
+							List<String> valueList = map.get(kv[0]);
 							valueList.add(kv[1]);
 							map.put(kv[0], valueList);
 						} else {
-							ArrayList<String> valueList = new ArrayList<String>();
+							List<String> valueList = new ArrayList<String>();
 							valueList.add(kv[1]);
 							map.put(kv[0], valueList);
 						}
@@ -691,7 +691,7 @@ $(function() {
 			elementList.add(element);
 		}
 	}
-	Map<String, ArrayList<String>> searchCondMap = getSearchCondMap(searchCond);
+	Map<String, List<String>> searchCondMap = getSearchCondMap(searchCond);
 	request.setAttribute(Constants.SEARCH_COND_MAP, searchCondMap);
 
 	for (Element element : elementList) {

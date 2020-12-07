@@ -71,16 +71,9 @@
 		if (property.getEditor() == null) return false;
 		return true;
 	}
-	String[] getReferenceValue(Map<String, ArrayList<String>> searchCondMap, String key) {
-		ArrayList<String> list = new ArrayList<String>();
-		if (searchCondMap != null && searchCondMap.containsKey(key)) {
-			list = searchCondMap.get(key);
-		}
-		return list.size() > 0 ? list.toArray(new String[list.size()]) : null;
-	}
-	String[] getRefComboUpperCondition(Map<String, ArrayList<String>> searchCondMap, String propName, ReferenceComboSetting setting) {
+	String[] getRefComboUpperCondition(Map<String, List<String>> searchCondMap, String propName, ReferenceComboSetting setting) {
 		String name = propName + "." + setting.getPropertyName();
-		String[] value = getReferenceValue(searchCondMap, name);
+		String[] value = ViewUtil.getSearchCondValue(searchCondMap, name);
 		if ((value == null) && (setting.getParent() != null)) {
 			return getRefComboUpperCondition(searchCondMap, name, setting.getParent());
 		}
@@ -120,7 +113,7 @@
 		return null;
 	}
 
-	List<Entity> getSelectItems(ReferencePropertyEditor editor, Condition defaultCondition, Map<String, ArrayList<String>> searchCondMap, HashMap<String, Object> defaultSearchCond,
+	List<Entity> getSelectItems(ReferencePropertyEditor editor, Condition defaultCondition, Map<String, List<String>> searchCondMap, HashMap<String, Object> defaultSearchCond,
 			PropertyEditor upperEditor) {
 		Condition condition = defaultCondition;
 
@@ -129,7 +122,7 @@
 		if (linkProperty != null) {
 			//連動の場合は上位値を取得して値が設定されている場合のみ検索
 			doSearch = false;
-			String[] upperValyeArray = getReferenceValue(searchCondMap, Constants.SEARCH_COND_PREFIX + linkProperty.getLinkFromPropertyName());
+			String[] upperValyeArray = ViewUtil.getSearchCondValue(searchCondMap, Constants.SEARCH_COND_PREFIX + linkProperty.getLinkFromPropertyName());
 			String upperValue = upperValyeArray != null && upperValyeArray.length > 0 ? upperValyeArray[0] : null;
 			if (upperValue == null) {
 				//パラメータで設定されていない場合は、初期値用Mapからチェック
@@ -246,7 +239,7 @@
 
 	String viewName = (String)request.getAttribute(Constants.VIEW_NAME);
 	if (viewName == null) viewName = "";
-	Map<String, ArrayList<String>> searchCondMap = (Map<String, ArrayList<String>>)request.getAttribute(Constants.SEARCH_COND_MAP);
+	Map<String, List<String>> searchCondMap = (Map<String, List<String>>)request.getAttribute(Constants.SEARCH_COND_MAP);
 	String defName = request.getParameter(Constants.DEF_NAME);
 
 
@@ -383,7 +376,7 @@ $(function() {
 <%
 	} else if (editor.getDisplayType() == ReferenceDisplayType.CHECKBOX) {
 		List<String> oids = new ArrayList<String>();
-		String[] _propValue = getReferenceValue(searchCondMap, propName);
+		String[] _propValue = ViewUtil.getSearchCondValue(searchCondMap, propName);
 		if (_propValue == null || _propValue.length == 0) {
 			String[] propValue = (String[]) request.getAttribute(Constants.EDITOR_PROP_VALUE);
 			if (propValue != null && propValue.length > 0) {
@@ -480,7 +473,7 @@ $(function() {
 		//searchCondMapに初期値があればsearchCondMapの値でロード
 		if (entity == null) {
 			//js側で復元できないのでこっちで復元
-			String[] ary = getReferenceValue(searchCondMap, propName);
+			String[] ary = ViewUtil.getSearchCondValue(searchCondMap, propName);
 			if (ary != null && ary.length > 0) {
 				//TODO serchEntityで検索
 				entity = em.load(ary[0], rp.getObjectDefinitionName(), new LoadOption(false, false));
@@ -623,7 +616,7 @@ $(function() {
 			}
 		}
 		//searchCondMapを解析してリンク作成
-		String[] linkKv = getReferenceValue(searchCondMap, propName);
+		String[] linkKv = ViewUtil.getSearchCondValue(searchCondMap, propName);
 		if (linkKv != null && linkKv.length > 0) {
 			for (int i = 0; i < linkKv.length; i++) {
 				int index = linkKv[i].lastIndexOf("_");
@@ -779,7 +772,7 @@ $(function() {
 			}
 		}
 		//searchCondMapを解析してリンク作成
-		String[] linkKv = getReferenceValue(searchCondMap, propName);
+		String[] linkKv = ViewUtil.getSearchCondValue(searchCondMap, propName);
 		if (linkKv != null && linkKv.length > 0) {
 			for (int i = 0; i < linkKv.length; i++) {
 				int index = linkKv[i].lastIndexOf("_");
@@ -979,7 +972,7 @@ $(function() {
 			}
 		}
 		//searchCondMapを解析してリンク作成
-		String[] linkKv = getReferenceValue(searchCondMap, propName);
+		String[] linkKv = ViewUtil.getSearchCondValue(searchCondMap, propName);
 		if (linkKv != null && linkKv.length > 0) {
 			for (int i = 0; i < linkKv.length; i++) {
 				int index = linkKv[i].lastIndexOf("_");
@@ -1196,7 +1189,7 @@ $(function() {
 			}
 		}
 		//searchCondMapを解析してリンク作成
-		String[] linkKv = getReferenceValue(searchCondMap, propName);
+		String[] linkKv = ViewUtil.getSearchCondValue(searchCondMap, propName);
 		if (linkKv != null && linkKv.length > 0) {
 			for (int i = 0; i < linkKv.length; i++) {
 				int index = linkKv[i].lastIndexOf("_");

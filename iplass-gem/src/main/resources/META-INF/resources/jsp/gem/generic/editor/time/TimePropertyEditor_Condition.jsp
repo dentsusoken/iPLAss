@@ -23,7 +23,7 @@
 
 <%@ page import="java.sql.Time"%>
 <%@ page import="java.text.*" %>
-<%@ page import="java.util.ArrayList" %>
+<%@ page import="java.util.List" %>
 <%@ page import="java.util.Map" %>
 <%@ page import="org.iplass.mtp.util.DateUtil"%>
 <%@ page import="org.iplass.mtp.util.StringUtil"%>
@@ -45,13 +45,6 @@
 			return false;
 		}
 		return true;
-	}
-	String getTimeValue(Map<String, ArrayList<String>> searchCondMap, String key) {
-		ArrayList<String> list = new ArrayList<String>();
-		if (searchCondMap != null && searchCondMap.containsKey(key)) {
-			list = searchCondMap.get(key);
-		}
-		return list.size() > 0 ? list.get(0) : null;
 	}
 %>
 <%!
@@ -89,13 +82,16 @@
 	Boolean required = (Boolean) request.getAttribute(Constants.EDITOR_REQUIRED);
 	if (required == null) required = false;
 
-	Map<String, ArrayList<String>> searchCondMap = (Map<String, ArrayList<String>>)request.getAttribute(Constants.SEARCH_COND_MAP);
+	Map<String, List<String>> searchCondMap = (Map<String, List<String>>)request.getAttribute(Constants.SEARCH_COND_MAP);
 
 	String propName = editor.getPropertyName();
 
 	//直接searchCondMapから取得(hidden対応)
-	String propValueFrom = getTimeValue(searchCondMap, Constants.SEARCH_COND_PREFIX + propName + "From");
-	if (propValueFrom == null) {
+	String propValueFrom = "";
+	String[] propValueFromArray = ViewUtil.getSearchCondValue(searchCondMap, Constants.SEARCH_COND_PREFIX + propName + "From");
+	if (propValueFromArray != null && propValueFromArray.length > 0) {
+		propValueFrom = propValueFromArray[0];
+	} else {
 		//初期値から復元(検索時に未指定の場合、ここにくる)
 		if (propValue != null && propValue.length > 0 && formatCheck(propValue[0])) {
 			propValueFrom = propValue[0];
@@ -105,8 +101,11 @@
 	}
 
 	//直接searchCondMapから取得(hidden対応)
-	String propValueTo = getTimeValue(searchCondMap, Constants.SEARCH_COND_PREFIX + propName + "To");
-	if (propValueTo == null) {
+	String propValueTo = "";
+	String[] propValueToArray = ViewUtil.getSearchCondValue(searchCondMap, Constants.SEARCH_COND_PREFIX + propName + "To");
+	if (propValueToArray != null && propValueToArray.length > 0) {
+		propValueTo = propValueToArray[0];
+	} else {
 		//初期値から復元(検索時に未指定の場合、ここにくる)
 		if (propValue != null && propValue.length > 1 && formatCheck(propValue[1])) {
 			propValueTo = propValue[1];
