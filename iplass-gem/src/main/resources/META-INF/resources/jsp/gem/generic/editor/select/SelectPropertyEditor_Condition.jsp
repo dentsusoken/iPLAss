@@ -25,6 +25,7 @@
 <%@ page import="java.util.Arrays"%>
 <%@ page import="java.util.ArrayList"%>
 <%@ page import="java.util.List"%>
+<%@ page import="java.util.Map" %>
 <%@ page import="org.iplass.mtp.entity.definition.properties.SelectProperty" %>
 <%@ page import="org.iplass.mtp.entity.definition.LocalizedSelectValueDefinition" %>
 <%@ page import="org.iplass.mtp.entity.definition.PropertyDefinition"%>
@@ -38,23 +39,6 @@
 <%@ page import="org.iplass.gem.command.Constants" %>
 <%@ page import="org.iplass.gem.command.GemResourceBundleUtil" %>
 <%@ page import="org.iplass.gem.command.ViewUtil" %>
-<%!
-	String[] getSearchCondSelectValue(String searchCond, String key) {
-		ArrayList<String> list = new ArrayList<String>();
-		if (searchCond != null && searchCond.indexOf(key) > -1) {
-			String[] split = searchCond.split("&");
-			if (split != null && split.length > 0) {
-				for (String tmp : split) {
-					String[] kv = tmp.split("=");
-					if (kv != null && kv.length > 1 && key.equals(kv[0])) {
-						list.add(kv[1]);
-					}
-				}
-			}
-		}
-		return list.size() > 0 ? list.toArray(new String[list.size()]) : null;
-	}
-%>
 <%
 	SelectPropertyEditor editor = (SelectPropertyEditor) request.getAttribute(Constants.EDITOR_EDITOR);
 
@@ -67,8 +51,8 @@
 	String[] propValue = (String[]) request.getAttribute(Constants.EDITOR_PROP_VALUE);
 	String[] defaultValue = (String[]) request.getAttribute(Constants.EDITOR_DEFAULT_VALUE);
 
-	String searchCond = request.getParameter(Constants.SEARCH_COND);
-	String[] _propValue = getSearchCondSelectValue(searchCond, Constants.SEARCH_COND_PREFIX + editor.getPropertyName());
+	Map<String, List<String>> searchCondMap = (Map<String, List<String>>)request.getAttribute(Constants.SEARCH_COND_MAP);
+	String[] _propValue = ViewUtil.getSearchCondValue(searchCondMap, Constants.SEARCH_COND_PREFIX + editor.getPropertyName());
 	String displayLabel = (String) request.getAttribute(Constants.EDITOR_DISPLAY_LABEL);
 	Boolean required = (Boolean) request.getAttribute(Constants.EDITOR_REQUIRED);
 	if (required == null) required = false;
@@ -83,8 +67,14 @@
 
 	//カスタムスタイル
 	String customStyle = "";
-	if (StringUtil.isNotEmpty(editor.getInputCustomStyle())) {
-		customStyle = EntityViewUtil.getCustomStyle(rootDefName, scriptKey, editor.getInputCustomStyleScriptKey(), null, null);
+	if (editor.getDisplayType() != SelectDisplayType.LABEL) {
+		if (StringUtil.isNotEmpty(editor.getInputCustomStyle())) {
+			customStyle = EntityViewUtil.getCustomStyle(rootDefName, scriptKey, editor.getInputCustomStyleScriptKey(), null, null);
+		}
+	} else {
+		if (StringUtil.isNotEmpty(editor.getCustomStyle())) {
+			customStyle = EntityViewUtil.getCustomStyle(rootDefName, scriptKey, editor.getOutputCustomStyleScriptKey(), null, null);
+		}
 	}
 
 	if (ViewUtil.isAutocompletionTarget()) {
@@ -222,7 +212,7 @@ $(function() {
 });
 </script>
 <%
-	} else if (editor.getDisplayType() == SelectDisplayType.SELECT || editor.getDisplayType() == SelectDisplayType.LABEL) {
+	} else if (editor.getDisplayType() == SelectDisplayType.SELECT) {
 		String value = "";
 		if (propValue != null && propValue.length > 0) {
 			value = propValue[0];
@@ -271,6 +261,22 @@ $(function() {
 %>
 });
 </script>
+<%
+	} else if (editor.getDisplayType() == SelectDisplayType.LABEL) {
+		String strDefault = defaultValue != null && defaultValue.length > 0 ? defaultValue[0] : "";
+		strDefault = _propValue != null && _propValue.length > 0 ? _propValue[0] : strDefault;
+		String label = null;
+		for (EditorValue param : editor.getValues()) {
+			if (strDefault.equals(param.getValue())) {
+				label = EntityViewUtil.getSelectPropertyLabel(localeValueList, param, selectValueList);
+			}
+		}
+		if (label == null) label = strDefault;
+%>
+<span  style="<c:out value="<%=customStyle%>"/>">
+<c:out value="<%=label %>"/>
+<input data-norewrite="true" type="hidden" name="<c:out value="<%=propName %>"/>" value="<c:out value="<%=strDefault %>"/>" />
+</span>
 <%
 	} else if (editor.getDisplayType() == SelectDisplayType.HIDDEN) {
 		List<String> valueList = new ArrayList<String>();

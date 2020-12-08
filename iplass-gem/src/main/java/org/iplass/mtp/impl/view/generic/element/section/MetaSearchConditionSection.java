@@ -649,6 +649,7 @@ public class MetaSearchConditionSection extends MetaSection {
 				if (editor != null) {
 					PropertyEditorRuntime runtime = (PropertyEditorRuntime)editor.createRuntime(entityView, formView, property, context, eh);
 					customStyleMap.put(editor.getInputCustomStyleScriptKey(), runtime.getInputCustomStyleScript());
+					customStyleMap.put(editor.getOutputCustomStyleScriptKey(), runtime.getOutputCustomStyleScript());
 				}
 			}
 			//Script用のKEYを設定

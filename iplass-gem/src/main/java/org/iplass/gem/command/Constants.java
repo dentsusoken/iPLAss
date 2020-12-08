@@ -56,6 +56,7 @@ public class Constants {
 	public static final String SEARCH_SORTKEY = "sortKey";
 	public static final String SEARCH_SORTTYPE = "sortType";
 	public static final String SEARCH_COND = "searchCond";
+	public static final String SEARCH_COND_MAP = "searchCondMap";
 	public static final String SEARCH_COND_PREFIX = "sc_";
 	public static final String DEFAULT_SEARCH_COND = "defaultSearchCond";
 	public static final String SEARCH_SPEC_VERSION = "specVersion";

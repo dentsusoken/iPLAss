@@ -76,11 +76,11 @@
 	boolean updatable = ((pd == null || pd.isUpdatable()) || isInsert) && isEditable;
 
 	//詳細編集
-	if (editor.getDisplayType() != BinaryDisplayType.HIDDEN && updatable) {
-		
+	if (editor.getDisplayType() != BinaryDisplayType.HIDDEN && editor.getDisplayType() != BinaryDisplayType.LABEL && updatable) {
+
 		boolean hideDeleteButton = editor.isHideDeleteButton();
 		boolean hideSelectButton = editor.isHideSelectButton();
-		
+
 		String contextPath = TemplateUtil.getTenantContextPath();
 		String upload = "";
 		if (StringUtil.isNotBlank(editor.getUploadActionName())) {
@@ -149,10 +149,10 @@
  data-binCount="<c:out value="<%=length %>" />" data-uploadUrl="<c:out value="<%=upload %>" />" data-downloadUrl="<c:out value="<%=download %>" />" data-refUrl="<c:out value="<%=ref %>" />"
  data-pdfviewerUrl="<c:out value="<%=pdfviewer %>" />" data-usePdfjs="<%=editor.isUsePdfjs()%>" data-multiplicity="<c:out value="<%=pd.getMultiplicity() %>" />" data-binWidth="<c:out value="<%=editor.getWidth() %>" />"
  data-binHeight="<c:out value="<%=editor.getHeight() %>" />" data-token="${m:fixToken()}" <c:out value="<%=multiple%>" /> />
- <% 
+ <%
 		}
  %>
- 
+
 <div>
 <span id="em_<c:out value="<%=propName %>"/>" class="ul_error" style="display:none;" ></span>
 <p id="img_<c:out value="<%=propName %>"/>" class="loading" style="display:none;" />
@@ -299,7 +299,7 @@ ${m:rs("mtp-gem-messages", "generic.editor.binary.BinaryPropertyEditor_Edit.canN
 <%
 	} else {
 		//HIDDENか更新不可
-		
+
 		if (editor.getDisplayType() != BinaryDisplayType.HIDDEN) {
 			request.setAttribute(Constants.OUTPUT_HIDDEN, true);
 		}

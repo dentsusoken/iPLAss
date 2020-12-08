@@ -27,6 +27,7 @@
 <%@ page import="java.util.Collections"%>
 <%@ page import="java.util.List" %>
 <%@ page import="java.util.HashMap"%>
+<%@ page import="java.util.Map" %>
 <%@ page import="org.iplass.mtp.entity.definition.*" %>
 <%@ page import="org.iplass.mtp.entity.definition.properties.*"%>
 <%@ page import="org.iplass.mtp.entity.query.condition.expr.And"%>
@@ -70,36 +71,11 @@
 		if (property.getEditor() == null) return false;
 		return true;
 	}
-	String[] getReferenceValue(String searchCond, String key) {
-		ArrayList<String> list = new ArrayList<String>();
-		if (searchCond != null && searchCond.indexOf(key) > -1) {
-			String[] split = searchCond.split("&");
-			if (split != null && split.length > 0) {
-				for (String tmp : split) {
-					String[] kv = tmp.split("=");
-					if (kv != null && kv.length > 1 && key.equals(kv[0])) {
-						list.add(kv[1]);
-					}
-				}
-			}
-		}
-		return list.size() > 0 ? list.toArray(new String[list.size()]) : null;
-	}
-	String[] getRefComboUpperCondition(String searchCond, String propName, ReferenceComboSetting setting) {
+	String[] getRefComboUpperCondition(Map<String, List<String>> searchCondMap, String propName, ReferenceComboSetting setting) {
 		String name = propName + "." + setting.getPropertyName();
-		if (searchCond != null && searchCond.indexOf(name) > -1) {
-			String[] split = searchCond.split("&");
-			if (split != null && split.length > 0) {
-				for (String tmp : split) {
-					String[] kv = tmp.split("=");
-					if (kv != null && kv.length > 1 && name.equals(kv[0]) && StringUtil.isNotBlank(kv[1])) {
-						return kv;
-					}
-				}
-				if (setting.getParent() != null) {
-					return getRefComboUpperCondition(searchCond, name, setting.getParent());
-				}
-			}
+		String[] value = ViewUtil.getSearchCondValue(searchCondMap, name);
+		if ((value == null) && (setting.getParent() != null)) {
+			return getRefComboUpperCondition(searchCondMap, name, setting.getParent());
 		}
 		return null;
 	}
@@ -137,7 +113,7 @@
 		return null;
 	}
 
-	List<Entity> getSelectItems(ReferencePropertyEditor editor, Condition defaultCondition, String searchCond, HashMap<String, Object> defaultSearchCond,
+	List<Entity> getSelectItems(ReferencePropertyEditor editor, Condition defaultCondition, Map<String, List<String>> searchCondMap, HashMap<String, Object> defaultSearchCond,
 			PropertyEditor upperEditor) {
 		Condition condition = defaultCondition;
 
@@ -146,25 +122,8 @@
 		if (linkProperty != null) {
 			//連動の場合は上位値を取得して値が設定されている場合のみ検索
 			doSearch = false;
-			String upperValue = null;
-			if (StringUtil.isNotEmpty(searchCond)) {
-				//こっちはPrefixが必要
-				if (searchCond.contains(Constants.SEARCH_COND_PREFIX + linkProperty.getLinkFromPropertyName())) {
-					String[] split = searchCond.split("&");
-					if (split != null && split.length > 0) {
-						for (String tmp : split) {
-							String[] kv = tmp.split("=");
-							if (kv != null && kv.length > 1
-									&& kv[0].equals(Constants.SEARCH_COND_PREFIX + linkProperty.getLinkFromPropertyName())
-									&& StringUtil.isNotEmpty(kv[1])) {
-								upperValue = kv[1];
-								break;
-							}
-						}
-					}
-
-				}
-			}
+			String[] upperValyeArray = ViewUtil.getSearchCondValue(searchCondMap, Constants.SEARCH_COND_PREFIX + linkProperty.getLinkFromPropertyName());
+			String upperValue = upperValyeArray != null && upperValyeArray.length > 0 ? upperValyeArray[0] : null;
 			if (upperValue == null) {
 				//パラメータで設定されていない場合は、初期値用Mapからチェック
 				if (defaultSearchCond != null) {
@@ -280,7 +239,7 @@
 
 	String viewName = (String)request.getAttribute(Constants.VIEW_NAME);
 	if (viewName == null) viewName = "";
-	String searchCond = request.getParameter(Constants.SEARCH_COND);
+	Map<String, List<String>> searchCondMap = (Map<String, List<String>>)request.getAttribute(Constants.SEARCH_COND_MAP);
 	String defName = request.getParameter(Constants.DEF_NAME);
 
 
@@ -306,8 +265,14 @@
 
 	//カスタムスタイル
 	String customStyle = "";
-	if (StringUtil.isNotEmpty(editor.getInputCustomStyle())) {
-		customStyle = EntityViewUtil.getCustomStyle(rootDefName, scriptKey, editor.getInputCustomStyleScriptKey(), null, null);
+	if (editor.getDisplayType() != ReferenceDisplayType.LABEL) {
+		if (StringUtil.isNotEmpty(editor.getInputCustomStyle())) {
+			customStyle = EntityViewUtil.getCustomStyle(rootDefName, scriptKey, editor.getInputCustomStyleScriptKey(), null, null);
+		}
+	} else {
+		if (StringUtil.isNotEmpty(editor.getCustomStyle())) {
+			customStyle = EntityViewUtil.getCustomStyle(rootDefName, scriptKey, editor.getOutputCustomStyleScriptKey(), null, null);
+		}
 	}
 
 	if (ViewUtil.isAutocompletionTarget()) {
@@ -325,7 +290,7 @@
 			upperType = getLinkUpperType(upperEditor);
 		}
 
-		List<Entity> entityList = getSelectItems(editor, condition, searchCond, defaultSearchCond, upperEditor);
+		List<Entity> entityList = getSelectItems(editor, condition,  searchCondMap, defaultSearchCond, upperEditor);
 
 		String value = "";
 		String[] propValue = (String[]) request.getAttribute(Constants.EDITOR_PROP_VALUE);
@@ -411,7 +376,7 @@ $(function() {
 <%
 	} else if (editor.getDisplayType() == ReferenceDisplayType.CHECKBOX) {
 		List<String> oids = new ArrayList<String>();
-		String[] _propValue = getReferenceValue(searchCond, propName);
+		String[] _propValue = ViewUtil.getSearchCondValue(searchCondMap, propName);
 		if (_propValue == null || _propValue.length == 0) {
 			String[] propValue = (String[]) request.getAttribute(Constants.EDITOR_PROP_VALUE);
 			if (propValue != null && propValue.length > 0) {
@@ -499,16 +464,16 @@ $(function() {
 <%
 	} else if (editor.getDisplayType() == ReferenceDisplayType.REFCOMBO) {
 		Entity entity = null;
-		//パラメータに初期値があれば初期値でロード(searchCondがnullでない場合は入ってこない)
+		//パラメータに初期値があれば初期値でロード(searchCondMapがnullでない場合は入ってこない)
 		String[] propValue = (String[]) request.getAttribute(Constants.EDITOR_PROP_VALUE);
 		if (propValue != null && propValue.length > 0) {
 			//TODO serchEntityで検索
 			entity = em.load(propValue[0], rp.getObjectDefinitionName(), new LoadOption(false, false));
 		}
-		//searchCondに初期値があればsearchCondの値でロード
-		if (entity == null && searchCond != null && searchCond.contains(propName)) {
+		//searchCondMapに初期値があればsearchCondMapの値でロード
+		if (entity == null) {
 			//js側で復元できないのでこっちで復元
-			String[] ary = getReferenceValue(searchCond, propName);
+			String[] ary = ViewUtil.getSearchCondValue(searchCondMap, propName);
 			if (ary != null && ary.length > 0) {
 				//TODO serchEntityで検索
 				entity = em.load(ary[0], rp.getObjectDefinitionName(), new LoadOption(false, false));
@@ -522,7 +487,7 @@ $(function() {
 		String upperName = "";
 		String upperOid = "";
 		if (entity == null && editor.getReferenceComboSetting() != null && searchType == RefComboSearchType.UPPER) {
-			String[] upperCondition = getRefComboUpperCondition(searchCond, pd.getName(), editor.getReferenceComboSetting());
+			String[] upperCondition = getRefComboUpperCondition(searchCondMap, pd.getName(), editor.getReferenceComboSetting());
 			if (upperCondition != null && upperCondition.length > 1
 					&& StringUtil.isNotBlank(upperCondition[0]) && StringUtil.isNotBlank(upperCondition[1])) {
 				upperName = upperCondition[0];
@@ -547,20 +512,20 @@ $(function() {
 		//連動コンボの生成はfunction.js
 %>
 <%-- XSS対応-メタの設定のため対応なし(searchType) --%>
-<select name="<c:out value="<%=propName %>"/>" class="form-size-02 inpbr refCombo" style="<c:out value="<%=customStyle%>"/>" 
+<select name="<c:out value="<%=propName %>"/>" class="form-size-02 inpbr refCombo" style="<c:out value="<%=customStyle%>"/>"
  data-oid="<c:out value="<%=oid%>"/>"
- data-propName="<c:out value="<%=pd.getName() %>"/>" 
+ data-propName="<c:out value="<%=pd.getName() %>"/>"
  data-defName="<c:out value="<%=_defName %>"/>"
- data-viewName="<c:out value="<%=viewName %>"/>" 
+ data-viewName="<c:out value="<%=viewName %>"/>"
  data-webapiName="<%=ReferenceComboCommand.WEBAPI_NAME%>"
- data-getEditorWebapiName="<%=GetEditorCommand.WEBAPI_NAME %>" 
+ data-getEditorWebapiName="<%=GetEditorCommand.WEBAPI_NAME %>"
  data-searchParentWebapiName="<%=SearchParentCommand.WEBAPI_NAME %>"
- data-viewType="<%=Constants.VIEW_TYPE_SEARCH %>" 
- data-prefix="sc_" 
+ data-viewType="<%=Constants.VIEW_TYPE_SEARCH %>"
+ data-prefix="sc_"
  data-searchType="<%=searchType%>"
- data-upperName="<c:out value="<%=upperName%>" />" 
- data-upperOid="<c:out value="<%=upperOid%>" />" 
- data-norewrite="true" 
+ data-upperName="<c:out value="<%=upperName%>" />"
+ data-upperOid="<c:out value="<%=upperOid%>" />"
+ data-norewrite="true"
  data-customStyle="<c:out value="<%=customStyle%>"/>">
 </select>
 <script type="text/javascript">
@@ -591,7 +556,7 @@ $(function() {
 });
 </script>
 <%
-	} else if (editor.getDisplayType() == ReferenceDisplayType.LINK && editor.isUseSearchDialog()) {
+	} else if ((editor.getDisplayType() == ReferenceDisplayType.LINK && editor.isUseSearchDialog()) || (editor.getDisplayType() == ReferenceDisplayType.LABEL)) {
 		String _defName = editor.getObjectName();
 		String _viewName = editor.getViewName() != null ? editor.getViewName() : "";
 
@@ -621,7 +586,7 @@ $(function() {
 %>
 <ul id="<c:out value="<%=ulId %>"/>" data-deletable="true" class="mb05">
 <%
-		//デフォルト検索条件からリンク作成(searchCondがnullでない場合は設定されてこない)
+		//デフォルト検索条件からリンク作成(searchCondMapがnullでない場合は設定されてこない)
 		String[] propValue = (String[]) request.getAttribute(Constants.EDITOR_PROP_VALUE);
 		if (propValue != null && propValue.length > 0) {
 			for (int i = 0; i < propValue.length; i++) {
@@ -635,41 +600,50 @@ $(function() {
 				String key = entity.getOid() + "_" + entity.getVersion();
 %>
 <li id="<c:out value="<%=liId %>"/>" class="list-add">
-<a href="javascript:void(0)" class="modal-lnk" id="<c:out value="<%=linkId %>" />" data-linkId="<c:out value="<%=linkId %>"/>" style="<c:out value="<%=customStyle%>"/>" 
+<a href="javascript:void(0)" class="modal-lnk" id="<c:out value="<%=linkId %>" />" data-linkId="<c:out value="<%=linkId %>"/>" style="<c:out value="<%=customStyle%>"/>"
  onclick="showReference('<%=StringUtil.escapeJavaScript(viewAction)%>', '<%=StringUtil.escapeJavaScript(_defName)%>', '<%=StringUtil.escapeJavaScript(entity.getOid())%>', '<%=entity.getVersion() %>', '<%=StringUtil.escapeJavaScript(linkId)%>', false)">
  <c:out value="<%=displayPropLabel %>" /></a>
+<%
+				if (editor.getDisplayType() != ReferenceDisplayType.LABEL) {
+%>
 <input type="button" value="${m:rs('mtp-gem-messages', 'generic.editor.reference.ReferencePropertyEditor_Edit.delete')}" class="gr-btn-02 del-btn" onclick="deleteItem('<%=StringUtil.escapeJavaScript(liId)%>')" />
+<%
+				}
+%>
 <input type="hidden" name="<c:out value="<%=propName %>"/>" value="<c:out value="<%=key %>"/>"/>
 </li>
 <%
 			}
 		}
-		//searchCondを解析してリンク作成
-		if (searchCond != null && searchCond.contains(propName)) {
-			String[] params  = searchCond.split("&");
-			for (int i = 0; i < params.length; i++) {
-				String[] kv = params[i].split("=");
-				if (kv.length > 1 && kv[0].equals(propName)) {
-					int index = kv[1].lastIndexOf("_");
-					String oid = kv[1].substring(0, index);
-					//TODO serchEntityのINで一度に検索
-					Entity entity = em.load(oid,_defName);
-					if (entity == null || getDisplayPropLabel(editor, entity) == null) continue;
-					String displayPropLabel = getDisplayPropLabel(editor, entity);
-					String liId = "li_" + propName + i;
-					String linkId = propName + "_" + entity.getOid();
-					String key = entity.getOid() + "_" + entity.getVersion();
-					//hiddenにjavascriptで値上書きしないようにnorewrite属性をつけておく
+		//searchCondMapを解析してリンク作成
+		String[] linkKv = ViewUtil.getSearchCondValue(searchCondMap, propName);
+		if (linkKv != null && linkKv.length > 0) {
+			for (int i = 0; i < linkKv.length; i++) {
+				int index = linkKv[i].lastIndexOf("_");
+				String oid = linkKv[i].substring(0, index);
+				//TODO serchEntityのINで一度に検索
+				Entity entity = em.load(oid,_defName);
+				if (entity == null || getDisplayPropLabel(editor, entity) == null) continue;
+				String displayPropLabel = getDisplayPropLabel(editor, entity);
+				String liId = "li_" + propName + i;
+				String linkId = propName + "_" + entity.getOid();
+				String key = entity.getOid() + "_" + entity.getVersion();
+				//hiddenにjavascriptで値上書きしないようにnorewrite属性をつけておく
 %>
 <li id="<c:out value="<%=liId %>"/>" class="list-add">
-<a href="javascript:void(0)" class="modal-lnk" id="<c:out value="<%=linkId %>" />" data-linkId="<c:out value="<%=linkId %>"/>" style="<c:out value="<%=customStyle%>"/>" 
+<a href="javascript:void(0)" class="modal-lnk" id="<c:out value="<%=linkId %>" />" data-linkId="<c:out value="<%=linkId %>"/>" style="<c:out value="<%=customStyle%>"/>"
  onclick="showReference('<%=StringUtil.escapeJavaScript(viewAction)%>', '<%=StringUtil.escapeJavaScript(_defName)%>', '<%=StringUtil.escapeJavaScript(entity.getOid())%>', '<%=entity.getVersion() %>', '<%=StringUtil.escapeJavaScript(linkId)%>', false)">
  <c:out value="<%=displayPropLabel %>" /></a>
+<%
+			if (editor.getDisplayType() != ReferenceDisplayType.LABEL) {
+%>
 <input type="button" value="${m:rs('mtp-gem-messages', 'generic.editor.reference.ReferencePropertyEditor_Edit.delete')}" class="gr-btn-02 del-btn" onclick="deleteItem('<%=StringUtil.escapeJavaScript(liId)%>')" />
+<%
+			}
+%>
 <input type="hidden" name="<c:out value="<%=propName %>"/>" value="<c:out value="<%=key %>"/>" data-norewrite="true"/>
 </li>
 <%
-				}
 			}
 		}
 %>
@@ -679,6 +653,7 @@ $(function() {
 
 		EntityViewManager evm = ManagerLocator.getInstance().getManager(EntityViewManager.class);
 		String selBtnUrlParam = evm.getUrlParameter(rootDefName, editor, null, UrlParameterActionType.SELECT);
+		if (editor.getDisplayType() != ReferenceDisplayType.LABEL) {
 %>
 <input type="button" value="${m:rs('mtp-gem-messages', 'generic.editor.reference.ReferencePropertyEditor_Edit.select')}" class="gr-btn-02 modal-btn" id="<c:out value="<%=selBtnId %>"/>" />
 <script type="text/javascript">
@@ -756,6 +731,7 @@ $(function() {
 });
 </script>
 <%
+		}
 	} else if (editor.getDisplayType() == ReferenceDisplayType.TREE) {
 		//詳細編集でのリンククリック
 		String ulId = "ul_" + propName;
@@ -772,7 +748,7 @@ $(function() {
 %>
 <ul id="<c:out value="<%=ulId %>"/>" data-deletable="true" class="mb05">
 <%
-		//デフォルト検索条件からリンク作成(searchCondがnullでない場合は設定されてこない)
+		//デフォルト検索条件からリンク作成(searchCondMapがnullでない場合は設定されてこない)
 		String[] propValue = (String[]) request.getAttribute(Constants.EDITOR_PROP_VALUE);
 		if (propValue != null && propValue.length > 0) {
 			for (int i = 0; i < propValue.length; i++) {
@@ -786,7 +762,7 @@ $(function() {
 				String displayPropLabel = getDisplayPropLabel(editor, entity);
 %>
 <li id="<c:out value="<%=liId %>"/>" class="list-add">
-<a href="javascript:void(0)" class="modal-lnk" id="<c:out value="<%=linkId %>" />" data-linkId="<c:out value="<%=linkId %>"/>" style="<c:out value="<%=customStyle%>"/>" 
+<a href="javascript:void(0)" class="modal-lnk" id="<c:out value="<%=linkId %>" />" data-linkId="<c:out value="<%=linkId %>"/>" style="<c:out value="<%=customStyle%>"/>"
  onclick="showReference('<%=StringUtil.escapeJavaScript(viewAction)%>', '<%=StringUtil.escapeJavaScript(rp.getObjectDefinitionName())%>', '<%=StringUtil.escapeJavaScript(entity.getOid())%>', '<%=entity.getVersion() %>', '<%=StringUtil.escapeJavaScript(linkId)%>', false)">
  <c:out value="<%=displayPropLabel %>" /></a>
 <input type="button" value="${m:rs('mtp-gem-messages', 'generic.editor.reference.ReferencePropertyEditor_Edit.delete')}" class="gr-btn-02 del-btn" onclick="deleteItem('<%=StringUtil.escapeJavaScript(liId)%>')" />
@@ -795,32 +771,29 @@ $(function() {
 <%
 			}
 		}
-		//searchCondを解析してリンク作成
-		if (searchCond != null && searchCond.contains(propName)) {
-			String[] params  = searchCond.split("&");
-			for (int i = 0; i < params.length; i++) {
-				String[] kv = params[i].split("=");
-				if (kv.length > 1 && kv[0].equals(propName)) {
-					int index = kv[1].lastIndexOf("_");
-					String oid = kv[1].substring(0, index);
-					//TODO serchEntityのINで一度に検索
-					Entity entity = em.load(oid, rp.getObjectDefinitionName());
-					if (entity == null || getDisplayPropLabel(editor, entity) == null) continue;
-					String liId = "li_" + propName + i;
-					String linkId = propName + "_" + entity.getOid();
-					String key = entity.getOid() + "_" + entity.getVersion();
-					String displayPropLabel = getDisplayPropLabel(editor, entity);
-					//hiddenにjavascriptで値上書きしないようにnorewrite属性をつけておく
+		//searchCondMapを解析してリンク作成
+		String[] linkKv = ViewUtil.getSearchCondValue(searchCondMap, propName);
+		if (linkKv != null && linkKv.length > 0) {
+			for (int i = 0; i < linkKv.length; i++) {
+				int index = linkKv[i].lastIndexOf("_");
+				String oid = linkKv[i].substring(0, index);
+				//TODO serchEntityのINで一度に検索
+				Entity entity = em.load(oid, rp.getObjectDefinitionName());
+				if (entity == null || getDisplayPropLabel(editor, entity) == null) continue;
+				String liId = "li_" + propName + i;
+				String linkId = propName + "_" + entity.getOid();
+				String key = entity.getOid() + "_" + entity.getVersion();
+				String displayPropLabel = getDisplayPropLabel(editor, entity);
+				//hiddenにjavascriptで値上書きしないようにnorewrite属性をつけておく
 %>
 <li id="<c:out value="<%=liId %>"/>" class="list-add">
-<a href="javascript:void(0)" class="modal-lnk" id="<c:out value="<%=linkId %>" />" data-linkId="<c:out value="<%=linkId %>"/>" style="<c:out value="<%=customStyle%>"/>" 
+<a href="javascript:void(0)" class="modal-lnk" id="<c:out value="<%=linkId %>" />" data-linkId="<c:out value="<%=linkId %>"/>" style="<c:out value="<%=customStyle%>"/>"
  onclick="showReference('<%=StringUtil.escapeJavaScript(viewAction)%>', '<%=StringUtil.escapeJavaScript(rp.getObjectDefinitionName())%>', '<%=StringUtil.escapeJavaScript(entity.getOid())%>', '<%=entity.getVersion() %>', '<%=StringUtil.escapeJavaScript(linkId)%>', false)">
  <c:out value="<%=displayPropLabel %>" /></a>
 <input type="button" value="${m:rs('mtp-gem-messages', 'generic.editor.reference.ReferencePropertyEditor_Edit.delete')}" class="gr-btn-02 del-btn" onclick="deleteItem('<%=StringUtil.escapeJavaScript(liId)%>')" />
 <input type="hidden" name="<c:out value="<%=propName %>"/>" value="<c:out value="<%=key %>"/>" data-norewrite="true"/>
 </li>
 <%
-				}
 			}
 		}
 %>
@@ -952,7 +925,7 @@ $(function() {
 <ul id="<c:out value="<%=ulId %>"/>" data-deletable="true" class="mb05">
 <%
 		int length = 0;
-		//デフォルト検索条件からリンク作成(searchCondがnullでない場合は設定されてこない)
+		//デフォルト検索条件からリンク作成(searchCondMapがnullでない場合は設定されてこない)
 		String[] propValue = (String[]) request.getAttribute(Constants.EDITOR_PROP_VALUE);
 		if (propValue != null && propValue.length > 0) {
 			for (int i = 0; i < propValue.length; i++) {
@@ -987,7 +960,7 @@ $(function() {
 <input type="button" value="${m:rs('mtp-gem-messages', 'generic.editor.reference.ReferencePropertyEditor_Edit.select')}" class="gr-btn-02 modal-btn sel-btn" data-propName="<c:out value="<%=propName %>"/>" />
 </span>
 <span class="unique-ref">
-<a href="javascript:void(0)" class="modal-lnk" id="<c:out value="<%=linkId %>" />" data-linkId="<c:out value="<%=linkId %>"/>" 
+<a href="javascript:void(0)" class="modal-lnk" id="<c:out value="<%=linkId %>" />" data-linkId="<c:out value="<%=linkId %>"/>"
  onclick="showReference('<%=StringUtil.escapeJavaScript(viewAction)%>', '<%=StringUtil.escapeJavaScript(_defName)%>', '<%=StringUtil.escapeJavaScript(entity.getOid())%>', '<%=entity.getVersion() %>', '<%=StringUtil.escapeJavaScript(linkId)%>', false)">
  <c:out value="<%=displayPropLabel %>" /></a>
 <input type="button" value="${m:rs('mtp-gem-messages', 'generic.editor.reference.ReferencePropertyEditor_Edit.delete')}" class="gr-btn-02 del-btn" onclick="deleteItem('<%=StringUtil.escapeJavaScript(liId)%>')"/>
@@ -998,24 +971,21 @@ $(function() {
 				length++;
 			}
 		}
-		//searchCondを解析してリンク作成
-		if (searchCond != null && searchCond.contains(propName)) {
-			length = 0;
-			String[] params  = searchCond.split("&");
-			for (int i = 0; i < params.length; i++) {
-				String[] kv = params[i].split("=");
-				if (kv.length > 1 && kv[0].equals(propName)) {
-					int index = kv[1].lastIndexOf("_");
-					String oid = kv[1].substring(0, index);
-					//TODO serchEntityのINで一度に検索
-					Entity entity = em.load(oid,_defName);
-					if (entity == null || getDisplayPropLabel(editor, entity) == null) continue;
-					String displayPropLabel = getDisplayPropLabel(editor, entity);
-					String uniquePropValue = getUniquePropValue(editor, entity);
-					String liId = "li_" + propName + i;
-					String linkId = propName + "_" + entity.getOid();
-					String key = entity.getOid() + "_" + entity.getVersion();
-					//hiddenにjavascriptで値上書きしないようにnorewrite属性をつけておく
+		//searchCondMapを解析してリンク作成
+		String[] linkKv = ViewUtil.getSearchCondValue(searchCondMap, propName);
+		if (linkKv != null && linkKv.length > 0) {
+			for (int i = 0; i < linkKv.length; i++) {
+				int index = linkKv[i].lastIndexOf("_");
+				String oid = linkKv[i].substring(0, index);
+				//TODO serchEntityのINで一度に検索
+				Entity entity = em.load(oid,_defName);
+				if (entity == null || getDisplayPropLabel(editor, entity) == null) continue;
+				String displayPropLabel = getDisplayPropLabel(editor, entity);
+				String uniquePropValue = getUniquePropValue(editor, entity);
+				String liId = "li_" + propName + i;
+				String linkId = propName + "_" + entity.getOid();
+				String key = entity.getOid() + "_" + entity.getVersion();
+				//hiddenにjavascriptで値上書きしないようにnorewrite属性をつけておく
 %>
 <li id="<c:out value="<%=liId %>"/>" class="list-add unique-list refUnique"
  data-defName="<c:out value="<%=rootDefName%>"/>"
@@ -1038,7 +1008,7 @@ $(function() {
 <input type="button" value="${m:rs('mtp-gem-messages', 'generic.editor.reference.ReferencePropertyEditor_Edit.select')}" class="gr-btn-02 modal-btn sel-btn" data-propName="<c:out value="<%=propName %>"/>" />
 </span>
 <span class="unique-ref">
-<a href="javascript:void(0)" class="modal-lnk" id="<c:out value="<%=linkId %>" />" data-linkId="<c:out value="<%=linkId %>"/>" 
+<a href="javascript:void(0)" class="modal-lnk" id="<c:out value="<%=linkId %>" />" data-linkId="<c:out value="<%=linkId %>"/>"
  onclick="showReference('<%=StringUtil.escapeJavaScript(viewAction)%>', '<%=StringUtil.escapeJavaScript(_defName)%>', '<%=StringUtil.escapeJavaScript(entity.getOid())%>', '<%=entity.getVersion() %>', '<%=StringUtil.escapeJavaScript(linkId)%>', false)">
  <c:out value="<%=displayPropLabel %>" /></a>
 <input type="button" value="${m:rs('mtp-gem-messages', 'generic.editor.reference.ReferencePropertyEditor_Edit.delete')}" class="gr-btn-02 del-btn" onclick="deleteItem('<%=StringUtil.escapeJavaScript(liId)%>')"/>
@@ -1046,8 +1016,7 @@ $(function() {
 <input type="hidden" id="i_<c:out value="<%=liId%>"/>" name="<c:out value="<%=propName %>"/>" value="<c:out value="<%=key %>"/>" data-norewrite="true" />
 </li>
 <%
-					length++;
-				}
+				length++;
 			}
 		}
 
@@ -1128,7 +1097,7 @@ $(function() {
 // 			String selBtnId = "sel_btn_" + propName;
 %>
 <%-- <input type="button" value="${m:rs('mtp-gem-messages', 'generic.editor.reference.ReferencePropertyEditor_Edit.select')}" class="gr-btn-02 modal-btn" id="<c:out value="<%=selBtnId %>"/>" /> --%>
-<input type="button" id="id_addBtn_<c:out value="<%=propName%>"/>" value="${m:rs('mtp-gem-messages', 'generic.editor.reference.ReferencePropertyEditor_Edit.add')}" class="gr-btn-02 add-btn" 
+<input type="button" id="id_addBtn_<c:out value="<%=propName%>"/>" value="${m:rs('mtp-gem-messages', 'generic.editor.reference.ReferencePropertyEditor_Edit.add')}" class="gr-btn-02 add-btn"
  onclick="addUniqueRefItem('<%=StringUtil.escapeJavaScript(ulId)%>', -1, '<%=StringUtil.escapeJavaScript(dummyRowId)%>', '<%=StringUtil.escapeJavaScript(propName)%>', 'id_count_<%=StringUtil.escapeJavaScript(propName)%>')" />
 <%
 		}
@@ -1205,7 +1174,7 @@ $(function() {
 	} else if (editor.getDisplayType() == ReferenceDisplayType.HIDDEN) {
 		String _defName = editor.getObjectName();
 
-		//デフォルト検索条件から作成(searchCondがnullでない場合は設定されてこない)
+		//デフォルト検索条件から作成(searchCondMapがnullでない場合は設定されてこない)
 		String[] propValue = (String[]) request.getAttribute(Constants.EDITOR_PROP_VALUE);
 		if (propValue != null && propValue.length > 0) {
 			for (int i = 0; i < propValue.length; i++) {
@@ -1219,26 +1188,23 @@ $(function() {
 <%
 			}
 		}
-		//searchCondを解析してリンク作成
-		if (searchCond != null && searchCond.contains(propName)) {
-			String[] params  = searchCond.split("&");
-			for (int i = 0; i < params.length; i++) {
-				String[] kv = params[i].split("=");
-				if (kv.length > 1 && kv[0].equals(propName)) {
-					int index = kv[1].lastIndexOf("_");
-					String oid = kv[1].substring(0, index);
-					//TODO serchEntityのINで一度に検索
-					Entity entity = em.load(oid,_defName);
-					if (entity == null) continue;
-					String key = entity.getOid() + "_" + entity.getVersion();
-					//hiddenにjavascriptで値上書きしないようにnorewrite属性をつけておく
+		//searchCondMapを解析してリンク作成
+		String[] linkKv = ViewUtil.getSearchCondValue(searchCondMap, propName);
+		if (linkKv != null && linkKv.length > 0) {
+			for (int i = 0; i < linkKv.length; i++) {
+				int index = linkKv[i].lastIndexOf("_");
+				String oid = linkKv[i].substring(0, index);
+				//TODO serchEntityのINで一度に検索
+				Entity entity = em.load(oid,_defName);
+				if (entity == null) continue;
+				String key = entity.getOid() + "_" + entity.getVersion();
+				//hiddenにjavascriptで値上書きしないようにnorewrite属性をつけておく
 %>
 <input type="hidden" name="<c:out value="<%=propName %>"/>" value="<c:out value="<%=key %>"/>" data-norewrite="true"/>
 <%
-				}
 			}
 		}
-		
+
 	} else {
 		//→今までのネストと同じ動き
 		showProperty = false;

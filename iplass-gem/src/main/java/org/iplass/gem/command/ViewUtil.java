@@ -21,8 +21,10 @@
 package org.iplass.gem.command;
 
 import java.text.DecimalFormatSymbols;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -497,5 +499,13 @@ public class ViewUtil {
 	public static TenantGemInfo getTenantGemInfo(Tenant tenant) {
 		return (tenant.getTenantConfig(TenantGemInfo.class) != null ?
 				tenant.getTenantConfig(TenantGemInfo.class) : new TenantGemInfo());
+	}
+
+	public static String[] getSearchCondValue(Map<String, List<String>> searchCondMap, String key) {
+		List<String> list = new ArrayList<String>();
+		if (searchCondMap != null && searchCondMap.containsKey(key)) {
+			list = searchCondMap.get(key);
+		}
+		return list.size() > 0 ? list.toArray(new String[list.size()]) : null;
 	}
 }

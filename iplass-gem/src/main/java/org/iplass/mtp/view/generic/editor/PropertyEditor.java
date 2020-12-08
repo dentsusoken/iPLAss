@@ -59,7 +59,7 @@ public abstract class PropertyEditor implements Refrectable {
 			inputType=InputType.SCRIPT
 	)
 	@EntityViewField(
-			referenceTypes={FieldReferenceType.SEARCHRESULT, FieldReferenceType.DETAIL}
+			referenceTypes={FieldReferenceType.SEARCHCONDITION, FieldReferenceType.SEARCHRESULT, FieldReferenceType.DETAIL}
 	)
 	private String customStyle;
 

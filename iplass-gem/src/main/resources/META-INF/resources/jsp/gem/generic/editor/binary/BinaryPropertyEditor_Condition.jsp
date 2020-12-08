@@ -20,6 +20,8 @@
 
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8" trimDirectiveWhitespaces="true"%>
+<%@ page import="java.util.List"%>
+<%@ page import="java.util.Map" %>
 <%@ page import="org.iplass.mtp.util.StringUtil"%>
 <%@ page import="org.iplass.mtp.view.generic.EntityViewUtil"%>
 <%@ page import="org.iplass.mtp.view.generic.editor.BinaryPropertyEditor" %>
@@ -49,20 +51,38 @@
 		request.setAttribute(Constants.AUTOCOMPLETION_EDITOR, editor);
 		request.setAttribute(Constants.AUTOCOMPLETION_SCRIPT_PATH, "/jsp/gem/generic/editor/binary/BinaryPropertyAutocompletion.jsp");
 	}
-	
+
 	if (editor.getDisplayType() != BinaryDisplayType.HIDDEN) {
 		//HIDDEN以外
-	
+
 		String strDefault = "";
 		if (defaultValue != null && defaultValue.length > 0) {
 			strDefault = defaultValue[0];
 		}
-	
+
 		//カスタムスタイル
 		String customStyle = "";
-		if (StringUtil.isNotEmpty(editor.getInputCustomStyle())) {
-			customStyle = EntityViewUtil.getCustomStyle(rootDefName, scriptKey, editor.getInputCustomStyleScriptKey(), null, null);
+		if (editor.getDisplayType() != BinaryDisplayType.LABEL) {
+			if (StringUtil.isNotEmpty(editor.getInputCustomStyle())) {
+				customStyle = EntityViewUtil.getCustomStyle(rootDefName, scriptKey, editor.getInputCustomStyleScriptKey(), null, null);
+			}
+		} else {
+			if (StringUtil.isNotEmpty(editor.getCustomStyle())) {
+				customStyle = EntityViewUtil.getCustomStyle(rootDefName, scriptKey, editor.getOutputCustomStyleScriptKey(), null, null);
+			}
 		}
+
+		if (editor.getDisplayType() == BinaryDisplayType.LABEL) {
+			Map<String, List<String>> searchCondMap = (Map<String, List<String>>)request.getAttribute(Constants.SEARCH_COND_MAP);
+			String[] _strDefault = ViewUtil.getSearchCondValue(searchCondMap,  Constants.SEARCH_COND_PREFIX + editor.getPropertyName());
+			strDefault = _strDefault != null && _strDefault.length > 0 ? _strDefault[0] : strDefault;
+%>
+<span  style="<c:out value="<%=customStyle%>"/>">
+<c:out value="<%=strDefault %>"/>
+<input data-norewrite="true" type="hidden" name="<c:out value="<%=propName %>"/>" value="<c:out value="<%=strDefault %>"/>" />
+</span>
+<%
+		} else {
 %>
 <input type="text" class="form-size-04 inpbr" style="<c:out value="<%=customStyle%>"/>" value="<%=value %>" name="<c:out value="<%=propName %>"/>" />
 <script type="text/javascript">
@@ -89,6 +109,7 @@ $(function() {
 });
 </script>
 <%
+		}
 	} else {
 		//HIDDEN
 %>
