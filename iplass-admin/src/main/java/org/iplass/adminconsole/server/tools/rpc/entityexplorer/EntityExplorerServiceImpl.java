@@ -185,6 +185,8 @@ public class EntityExplorerServiceImpl extends XsrfProtectedServiceServlet imple
 					if (view != null) {
 						info.setDetailFormViewCount(view.getDetailFormViewNames() != null ? view.getDetailFormViewNames().length : 0);
 						info.setSearchFormViewCount(view.getSearchFormViewNames() != null ? view.getSearchFormViewNames().length : 0);
+						info.setBulkFormViewCount(view.getBulkFormViewNames() != null ? view.getBulkFormViewNames().length : 0);
+						info.setViewControl(view.getViewControlSettings() != null && view.getViewControlSettings().size() > 0 ? "*" : "");
 					}
 					info.setRepository(entryInfo.getRepository());
 					info.setError(isError);

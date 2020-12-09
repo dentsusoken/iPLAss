@@ -118,6 +118,8 @@ public class SimpleEntityInfoDS extends AbstractAdminDataSource {
 				record.setAttribute("listenerCount", entity.getListenerCount());
 				record.setAttribute("detailViewCount", entity.getDetailFormViewCount());
 				record.setAttribute("searchViewCount", entity.getSearchFormViewCount());
+				record.setAttribute("bulkViewCount", entity.getBulkFormViewCount());
+				record.setAttribute("viewControl", entity.getViewControl());
 				record.setAttribute("repository", entity.getRepository());
 				record.setAttribute("isError", entity.isError());
 				record.setAttribute("errorMessage", entity.getErrorMessage());
