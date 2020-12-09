@@ -129,6 +129,7 @@ public class EntityPlugin extends DefaultMetaDataPlugin {
 
 				MenuItem newMenuItem = new MenuItem(AdminClientMessageUtil.getString("ui_metadata_entity_EntityPluginManager_createEntity"), MetaDataConstants.CONTEXT_MENU_ICON_ADD);
 				newMenuItem.addClickHandler(new ClickHandler() {
+					@Override
 					public void onClick(MenuItemClickEvent event) {
 						itemCreateAction("");
 					}
@@ -138,6 +139,7 @@ public class EntityPlugin extends DefaultMetaDataPlugin {
 
 				MenuItem webAPIMenuItem = new MenuItem(AdminClientMessageUtil.getString("ui_metadata_entity_EntityPluginManager_openEntityWebApi"), CONTEXT_MENU_ICON_WEBAPI);
 				webAPIMenuItem.addClickHandler(new ClickHandler() {
+					@Override
 					public void onClick(MenuItemClickEvent event) {
 						webAPIOpenAction();
 					}
@@ -147,6 +149,7 @@ public class EntityPlugin extends DefaultMetaDataPlugin {
 
 				MenuItem refreshMenuItem = new MenuItem(AdminClientMessageUtil.getString("ui_metadata_entity_EntityPluginManager_refresh"), MetaDataConstants.CONTEXT_MENU_ICON_REFRESH);
 				refreshMenuItem.addClickHandler(new ClickHandler() {
+					@Override
 					public void onClick(MenuItemClickEvent event) {
 						refresh();
 					}
@@ -163,6 +166,7 @@ public class EntityPlugin extends DefaultMetaDataPlugin {
 
 			MenuItem newMenuItem = new MenuItem(AdminClientMessageUtil.getString("ui_metadata_entity_EntityPluginManager_createEntity"), MetaDataConstants.CONTEXT_MENU_ICON_ADD);
 			newMenuItem.addClickHandler(new ClickHandler() {
+				@Override
 				public void onClick(MenuItemClickEvent event) {
 					//Entityは「.」区切り
 					itemCreateAction(getFolderPath(node).replace("/", "."));
@@ -170,6 +174,7 @@ public class EntityPlugin extends DefaultMetaDataPlugin {
 			});
 			MenuItem refreshMenuItem = new MenuItem(AdminClientMessageUtil.getString("ui_metadata_entity_EntityPluginManager_refresh"), MetaDataConstants.CONTEXT_MENU_ICON_REFRESH);
 			refreshMenuItem.addClickHandler(new ClickHandler() {
+				@Override
 				public void onClick(MenuItemClickEvent event) {
 					refresh();
 				}
@@ -188,6 +193,7 @@ public class EntityPlugin extends DefaultMetaDataPlugin {
 			// 右クリックメニュー項目1
 			MenuItem editItem = new MenuItem(AdminClientMessageUtil.getString("ui_metadata_entity_EntityPluginManager_openEntity"), nodeIcon());
 			editItem.addClickHandler(new com.smartgwt.client.widgets.menu.events.ClickHandler() {
+				@Override
 				public void onClick(MenuItemClickEvent event) {
 //					itemOpenAction(node);
 					itemOpenAction((MetaDataItemMenuTreeNode)node);
@@ -199,6 +205,7 @@ public class EntityPlugin extends DefaultMetaDataPlugin {
 			// 右クリックメニュー項目2
 			MenuItem detailItem = new MenuItem(AdminClientMessageUtil.getString("ui_metadata_entity_EntityPluginManager_openDetaiLayout"), CONTEXT_MENU_ICON_DETAIL_LAYOUT);
 			detailItem.addClickHandler(new com.smartgwt.client.widgets.menu.events.ClickHandler() {
+				@Override
 				public void onClick(MenuItemClickEvent event) {
 					getDetailEntityViewTreeNode((MetaDataItemMenuTreeNode)node);
 //					detailOpenAction((MetaDataItemMenuTreeNode)node);
@@ -208,6 +215,7 @@ public class EntityPlugin extends DefaultMetaDataPlugin {
 			// 右クリックメニュー項目3
 			MenuItem searchItem = new MenuItem(AdminClientMessageUtil.getString("ui_metadata_entity_EntityPluginManager_openSearchLayout"), CONTEXT_MENU_ICON_SEARCH_LAYOUT);
 			searchItem.addClickHandler(new com.smartgwt.client.widgets.menu.events.ClickHandler() {
+				@Override
 				public void onClick(MenuItemClickEvent event) {
 					getSearchEntityViewTreeNode((MetaDataItemMenuTreeNode)node);
 //					searchOpenAction((MetaDataItemMenuTreeNode)node);
@@ -217,6 +225,7 @@ public class EntityPlugin extends DefaultMetaDataPlugin {
 			// 右クリックメニュー項目4
 			MenuItem bulkItem = new MenuItem(AdminClientMessageUtil.getString("ui_metadata_entity_EntityPluginManager_openBulkLayout"), CONTEXT_MENU_ICON_BULK_LAYOUT);
 			bulkItem.addClickHandler(new com.smartgwt.client.widgets.menu.events.ClickHandler() {
+				@Override
 				public void onClick(MenuItemClickEvent event) {
 					getBulkEntityViewTreeNode((MetaDataItemMenuTreeNode)node);
 				}
@@ -225,6 +234,7 @@ public class EntityPlugin extends DefaultMetaDataPlugin {
 			// 右クリックメニュー項目5
 			MenuItem viewControlItem = new MenuItem(AdminClientMessageUtil.getString("ui_metadata_entity_EntityPluginManager_openViewControl"), CONTEXT_MENU_ICON_VIEW_CONTROL);
 			viewControlItem.addClickHandler(new com.smartgwt.client.widgets.menu.events.ClickHandler() {
+				@Override
 				public void onClick(MenuItemClickEvent event) {
 					getViewControlEntityViewTreeNode((MetaDataItemMenuTreeNode)node);
 				}
@@ -233,6 +243,7 @@ public class EntityPlugin extends DefaultMetaDataPlugin {
 			// 右クリックメニュー項目6
 			MenuItem filterItem = new MenuItem(AdminClientMessageUtil.getString("ui_metadata_entity_EntityPluginManager_openFilter"), CONTEXT_MENU_ICON_FILTER);
 			filterItem.addClickHandler(new com.smartgwt.client.widgets.menu.events.ClickHandler() {
+				@Override
 				public void onClick(MenuItemClickEvent event) {
 					getFilterEntityViewTreeNode((MetaDataItemMenuTreeNode)node);
 //					filterOpenAction((MetaDataItemMenuTreeNode)node);
@@ -242,6 +253,7 @@ public class EntityPlugin extends DefaultMetaDataPlugin {
 			// 右クリックメニュー項目7
 			MenuItem renameItem = new MenuItem(AdminClientMessageUtil.getString("ui_metadata_entity_EntityPluginManager_renameEntity"), MetaDataConstants.CONTEXT_MENU_ICON_RENAME);
 			renameItem.addClickHandler(new com.smartgwt.client.widgets.menu.events.ClickHandler() {
+				@Override
 				public void onClick(MenuItemClickEvent event) {
 					itemRenameAction((MetaDataItemMenuTreeNode)node);
 				}
@@ -251,6 +263,7 @@ public class EntityPlugin extends DefaultMetaDataPlugin {
 			// 右クリックメニュー項目8
 			MenuItem deleteItem = new MenuItem(AdminClientMessageUtil.getString("ui_metadata_entity_EntityPluginManager_deleteEntity"), MetaDataConstants.CONTEXT_MENU_ICON_DEL);
 			deleteItem.addClickHandler(new com.smartgwt.client.widgets.menu.events.ClickHandler() {
+				@Override
 				public void onClick(MenuItemClickEvent event) {
 					itemDeleteAction((MetaDataItemMenuTreeNode)node);
 				}
@@ -260,6 +273,7 @@ public class EntityPlugin extends DefaultMetaDataPlugin {
 			// 右クリックメニュー項目9
 			MenuItem copyItem = new MenuItem(AdminClientMessageUtil.getString("ui_metadata_entity_EntityPluginManager_copyEntity"), MetaDataConstants.CONTEXT_MENU_ICON_COPY);
 			copyItem.addClickHandler(new com.smartgwt.client.widgets.menu.events.ClickHandler() {
+				@Override
 				public void onClick(MenuItemClickEvent event) {
 					itemCopyAction((MetaDataItemMenuTreeNode)node);
 				}
@@ -268,6 +282,7 @@ public class EntityPlugin extends DefaultMetaDataPlugin {
 			// 右クリックメニュー項目10
 			MenuItem showExplorerItem = new MenuItem(AdminClientMessageUtil.getString("ui_metadata_entity_EntityPluginManager_showEntityExplorer"), CONTEXT_MENU_ICON_DATA_VIEW);
 			showExplorerItem.addClickHandler(new com.smartgwt.client.widgets.menu.events.ClickHandler() {
+				@Override
 				public void onClick(MenuItemClickEvent event) {
 					showExplorerAction((MetaDataItemMenuTreeNode)node);
 				}
@@ -335,10 +350,12 @@ public class EntityPlugin extends DefaultMetaDataPlugin {
 	@Override
 	protected void itemDelete(final MetaDataItemMenuTreeNode itemNode) {
 		service.deleteEntityDefinition(TenantInfoHolder.getId(), itemNode.getDefName(), new AsyncCallback<AdminDefinitionModifyResult>() {
+			@Override
 			public void onFailure(Throwable caught) {
 				// 失敗時
 				SC.warn(AdminClientMessageUtil.getString("ui_metadata_entity_EntityPluginManager_failedDeleteEntity") + caught.getMessage());
 			}
+			@Override
 			public void onSuccess(AdminDefinitionModifyResult result) {
 				if (result.isSuccess()) {
 					SC.say(AdminClientMessageUtil.getString("ui_metadata_entity_EntityPluginManager_completion"),
@@ -364,6 +381,7 @@ public class EntityPlugin extends DefaultMetaDataPlugin {
 		return super.existTab(itemNode)
 				|| workspace.existTab(itemNode.getDefName(), TAB_SUB_NAME_DETAIL_LAYOUT)
 				|| workspace.existTab(itemNode.getDefName(), TAB_SUB_NAME_SEARCH_LAYOUT)
+				|| workspace.existTab(itemNode.getDefName(), TAB_SUB_NAME_BULK_LAYOUT)
 				|| workspace.existTab(itemNode.getDefName(), TAB_SUB_NAME_VIEW_CONTROL)
 				|| workspace.existTab(itemNode.getDefName(), TAB_SUB_NAME_FILTER);
 	}
@@ -378,6 +396,7 @@ public class EntityPlugin extends DefaultMetaDataPlugin {
 		super.removeTab(itemNode);
 		workspace.removeTab(itemNode.getDefName(), TAB_SUB_NAME_DETAIL_LAYOUT);
 		workspace.removeTab(itemNode.getDefName(), TAB_SUB_NAME_SEARCH_LAYOUT);
+		workspace.removeTab(itemNode.getDefName(), TAB_SUB_NAME_BULK_LAYOUT);
 		workspace.removeTab(itemNode.getDefName(), TAB_SUB_NAME_VIEW_CONTROL);
 		workspace.removeTab(itemNode.getDefName(), TAB_SUB_NAME_FILTER);
 	}
@@ -390,7 +409,8 @@ public class EntityPlugin extends DefaultMetaDataPlugin {
 	@Override
 	protected Class<?>[] workspaceContentsPaneClass() {
 		return new Class[]{EntityEditPane.class,
-				DetailLayoutPanel.class, SearchLayoutPanel.class, FilterEditPanel.class,
+				DetailLayoutPanel.class, SearchLayoutPanel.class, BulkLayoutPanel.class,
+				FilterEditPanel.class, ViewControlPanel.class,
 				EntityWebApiEditPanel.class};
 	}
 
@@ -561,6 +581,13 @@ public class EntityPlugin extends DefaultMetaDataPlugin {
 	public void onContentSelected(ContentSelectedEvent event){
 		if (event.getSource() instanceof EntityWebApiEditPanel) {
 			selectAndScrollNode(rootNode);
+		} else if (event.getSource() instanceof DetailLayoutPanel
+				|| event.getSource() instanceof SearchLayoutPanel
+				|| event.getSource() instanceof BulkLayoutPanel
+				|| event.getSource() instanceof FilterEditPanel
+				|| event.getSource() instanceof ViewControlPanel) {
+			//defNameの区切りを/から.に変換
+			selectDefNameNode(event.getDefinitionName().replace("/", "."), null);
 		} else {
 			super.onContentSelected(event);
 		}

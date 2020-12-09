@@ -109,10 +109,12 @@ public class OAuthClientPlugin extends DefaultMetaDataPlugin {
 	protected void itemDelete(final MetaDataItemMenuTreeNode itemNode) {
 		MetaDataServiceAsync service = MetaDataServiceFactory.get();
 		service.deleteDefinition(TenantInfoHolder.getId(), definitionClassName(), itemNode.getDefName(), new AsyncCallback<AdminDefinitionModifyResult>() {
+			@Override
 			public void onFailure(Throwable caught) {
 				// 失敗時
 				SC.warn(AdminClientMessageUtil.getString("ui_metadata_oauth_client_OAuthClientPlugin_failedToDelete") + caught.getMessage());
 			}
+			@Override
 			public void onSuccess(AdminDefinitionModifyResult result) {
 				if (result.isSuccess()) {
 					SC.say(AdminClientMessageUtil.getString("ui_metadata_oauth_client_OAuthClientPlugin_completion"),
@@ -134,6 +136,6 @@ public class OAuthClientPlugin extends DefaultMetaDataPlugin {
 
 	@Override
 	protected Class<?>[] workspaceContentsPaneClass() {
-		return new Class[]{OAuthClientDefinition.class};
+		return new Class[]{OAuthClientEditPane.class};
 	}
 }

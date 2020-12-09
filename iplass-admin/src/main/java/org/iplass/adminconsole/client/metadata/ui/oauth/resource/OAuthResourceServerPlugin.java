@@ -109,10 +109,12 @@ public class OAuthResourceServerPlugin extends DefaultMetaDataPlugin {
 	protected void itemDelete(final MetaDataItemMenuTreeNode itemNode) {
 		MetaDataServiceAsync service = MetaDataServiceFactory.get();
 		service.deleteDefinition(TenantInfoHolder.getId(), OAuthResourceServerDefinition.class.getName(), itemNode.getDefName(), new AsyncCallback<AdminDefinitionModifyResult>() {
+			@Override
 			public void onFailure(Throwable caught) {
 				// 失敗時
 				SC.warn(AdminClientMessageUtil.getString("ui_metadata_oauth_resource_OAuthResourceServerPlugin_failedToDelete") + caught.getMessage());
 			}
+			@Override
 			public void onSuccess(AdminDefinitionModifyResult result) {
 				if (result.isSuccess()) {
 					SC.say(AdminClientMessageUtil.getString("ui_metadata_oauth_resource_OAuthResourceServerPlugin_completion"),
@@ -134,6 +136,6 @@ public class OAuthResourceServerPlugin extends DefaultMetaDataPlugin {
 
 	@Override
 	protected Class<?>[] workspaceContentsPaneClass() {
-		return new Class[]{OAuthResourceServerDefinition.class};
+		return new Class[]{OAuthResourceServerEditPane.class};
 	}
 }
