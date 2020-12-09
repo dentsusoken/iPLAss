@@ -134,7 +134,7 @@ public class EntityViewCsvWriter extends AdminCsvWriter {
 	}
 
 	public void writeView(EntityView view, int index, String defName) throws IOException {
-		csvWriter.writeHeader(index + " " + defName + rs("tools.entityexplorer.EntityViewCsvWriter.fromViewInfo"));
+		csvWriter.writeHeader(index + " " + defName + rs("tools.entityexplorer.EntityViewCsvWriter.formViewInfo"));
 
 		if (view == null) {
 			csvWriter.writeHeader("", rs("tools.entityexplorer.EntityViewCsvWriter.viewDefNotDef"));
@@ -144,15 +144,15 @@ public class EntityViewCsvWriter extends AdminCsvWriter {
 			return;
 		}
 
-		csvWriter.writeHeader(index + rs("tools.entityexplorer.EntityViewCsvWriter.detailFromViewInfo"));
+		csvWriter.writeHeader(index + rs("tools.entityexplorer.EntityViewCsvWriter.detailFormViewInfo"));
 		outputDetailFormView(view, index + ".1");
 		csvWriter.writeHeader("");
 
-		csvWriter.writeHeader(index + rs("tools.entityexplorer.EntityViewCsvWriter.searchFromViewInfo"));
+		csvWriter.writeHeader(index + rs("tools.entityexplorer.EntityViewCsvWriter.searchFormViewInfo"));
 		outputSearchFormView(view, index + ".2");
 		csvWriter.writeHeader("");
 
-		csvWriter.writeHeader(index + rs("tools.entityexplorer.EntityViewCsvWriter.bulkFromViewInfo"));
+		csvWriter.writeHeader(index + rs("tools.entityexplorer.EntityViewCsvWriter.bulkFormViewInfo"));
 		outputBulkFormView(view, index + ".3");
 		csvWriter.writeHeader("");
 
@@ -266,7 +266,7 @@ public class EntityViewCsvWriter extends AdminCsvWriter {
 		List<Map<String, Object>> buttonList = new ArrayList<Map<String,Object>>();
 
 		int viewIndex = 0;
-		String[] viewNames = view.getSearchFormViewNames();
+		String[] viewNames = view.getBulkFormViewNames();
 		for (String name : viewNames) {
 			BulkFormView bulkForm = view.getBulkFormView(name);
 			if (bulkForm == null) {
