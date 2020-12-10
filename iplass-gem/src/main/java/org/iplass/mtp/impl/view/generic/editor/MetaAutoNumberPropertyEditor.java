@@ -97,7 +97,7 @@ public class MetaAutoNumberPropertyEditor extends MetaPrimitivePropertyEditor {
 		super.fillTo(editor);
 
 		if (displayType == null) {
-			editor.setDisplayType(AutoNumberDisplayType.LABEL);
+			editor.setDisplayType(AutoNumberDisplayType.TEXT);
 		} else {
 			editor.setDisplayType(displayType);
 		}

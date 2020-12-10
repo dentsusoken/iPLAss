@@ -82,7 +82,7 @@ public class MetaExpressionPropertyEditor extends MetaPrimitivePropertyEditor {
 		super.fillTo(editor);
 
 		if (displayType == null) {
-			editor.setDisplayType(ExpressionDisplayType.LABEL);
+			editor.setDisplayType(ExpressionDisplayType.TEXT);
 		} else {
 			editor.setDisplayType(displayType);
 		}

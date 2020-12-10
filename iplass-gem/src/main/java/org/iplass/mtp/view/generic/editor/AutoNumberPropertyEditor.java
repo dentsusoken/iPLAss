@@ -48,6 +48,7 @@ public class AutoNumberPropertyEditor extends PrimitivePropertyEditor {
 
 	/** 表示タイプ */
 	public enum AutoNumberDisplayType {
+		@XmlEnumValue("Text")TEXT,
 		@XmlEnumValue("Label")LABEL,
 		@XmlEnumValue("Hidden")HIDDEN
 	}
@@ -87,7 +88,7 @@ public class AutoNumberPropertyEditor extends PrimitivePropertyEditor {
 	@Override
 	public AutoNumberDisplayType getDisplayType() {
 		if (displayType == null) {
-			displayType = AutoNumberDisplayType.LABEL;
+			displayType = AutoNumberDisplayType.TEXT;
 		}
 		return displayType;
 	}
