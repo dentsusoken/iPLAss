@@ -91,10 +91,10 @@ public final class UploadCommand implements Command {
 				t.setRollbackOnly();
 			}
 
+			if (logger.isDebugEnabled()) {
+				logger.debug(e.getMessage(), e);
+			}
 			if (e instanceof ApplicationException) {
-				if (logger.isDebugEnabled()) {
-					logger.debug(e.getMessage(), e);
-				}
 				request.setAttribute(Constants.CMD_RSLT_STREAM, new ResultXmlWriter(e.getMessage()));
 				return Constants.CMD_EXEC_FAILURE;
 			} else {
