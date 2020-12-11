@@ -275,7 +275,7 @@ public class PropertyControl extends ItemControl {
 			editor = de;
 		} else if (pd instanceof ExpressionProperty) {
 			ExpressionPropertyEditor ee = new ExpressionPropertyEditor();
-			ee.setDisplayType(ExpressionDisplayType.LABEL);
+			ee.setDisplayType(ExpressionDisplayType.TEXT);
 			editor = ee;
 		} else if (pd instanceof FloatProperty) {
 			FloatPropertyEditor fe = new FloatPropertyEditor();
@@ -310,7 +310,7 @@ public class PropertyControl extends ItemControl {
 			editor = te;
 		} else if (pd instanceof AutoNumberProperty) {
 			AutoNumberPropertyEditor ane = new AutoNumberPropertyEditor();
-			ane.setDisplayType(AutoNumberDisplayType.LABEL);
+			ane.setDisplayType(AutoNumberDisplayType.TEXT);
 			editor = ane;
 		}
 

@@ -866,7 +866,11 @@ public class FormViewUtil {
 			break;
 		case EXPRESSION:
 			ExpressionPropertyEditor epe = new ExpressionPropertyEditor();
-			epe.setDisplayType(ExpressionDisplayType.LABEL);
+			if (isReadOnly) {
+				epe.setDisplayType(ExpressionDisplayType.LABEL);
+			} else {
+				epe.setDisplayType(ExpressionDisplayType.TEXT);
+			}
 			editor = epe;
 			break;
 		case FLOAT:
@@ -937,7 +941,11 @@ public class FormViewUtil {
 			break;
 		case AUTONUMBER:
 			AutoNumberPropertyEditor anpe = new AutoNumberPropertyEditor();
-			anpe.setDisplayType(AutoNumberDisplayType.LABEL);
+			if (isReadOnly) {
+				anpe.setDisplayType(AutoNumberDisplayType.LABEL);
+			} else {
+				anpe.setDisplayType(AutoNumberDisplayType.TEXT);
+			}
 			editor = anpe;
 			break;
 		}

@@ -50,6 +50,7 @@ public class ExpressionPropertyEditor extends PrimitivePropertyEditor {
 	/** 表示タイプ */
 	@XmlType(namespace="http://mtp.iplass.org/xml/definition/view/generic")
 	public enum ExpressionDisplayType {
+		@XmlEnumValue("Text")TEXT,
 		@XmlEnumValue("Label")LABEL,
 		@XmlEnumValue("Hidden")HIDDEN
 	}
@@ -114,7 +115,7 @@ public class ExpressionPropertyEditor extends PrimitivePropertyEditor {
 	@Override
 	public ExpressionDisplayType getDisplayType() {
 		if (displayType == null) {
-			displayType = ExpressionDisplayType.LABEL;
+			displayType = ExpressionDisplayType.TEXT;
 		}
 		return displayType;
 	}
