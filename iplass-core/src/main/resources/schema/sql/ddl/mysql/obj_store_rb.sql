@@ -218,7 +218,6 @@ CREATE TABLE `obj_store_rb` (
   ,PRIMARY KEY (`r_id`, `tenant_id`, `obj_def_id`)
   ,INDEX `obj_store_rb_index1` (`tenant_id`, `obj_def_id`(128), `rb_id`)
 )
-ENGINE = INNODB ROW_FORMAT=COMPRESSED
 
 PARTITION BY RANGE( `tenant_id` )
     SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
@@ -455,7 +454,6 @@ CREATE TABLE `obj_store_rb__MTP` (
   ,PRIMARY KEY (`r_id`, `tenant_id`, `obj_def_id`)
   ,INDEX `obj_store_rb___MTPindex1` (`tenant_id`, `obj_def_id`(128), `rb_id`)
 )
-ENGINE = INNODB ROW_FORMAT=COMPRESSED
 
 PARTITION BY RANGE( `tenant_id` )
     SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
@@ -692,7 +690,6 @@ CREATE TABLE `obj_store_rb__USER` (
   ,PRIMARY KEY (`r_id`, `tenant_id`, `obj_def_id`)
   ,INDEX `obj_store_rb___USERindex1` (`tenant_id`, `obj_def_id`(128), `rb_id`)
 )
-ENGINE = INNODB ROW_FORMAT=COMPRESSED
 
 PARTITION BY RANGE( `tenant_id` )
     SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (

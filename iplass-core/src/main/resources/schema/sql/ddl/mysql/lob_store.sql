@@ -8,7 +8,6 @@ CREATE TABLE `lob_store` (
   `lob_size` BIGINT(16) NULL,
   PRIMARY KEY `lob_store_pk` (`tenant_id`, `lob_data_id`)
 )
-ENGINE = INNODB ROW_FORMAT=COMPRESSED
 
 PARTITION BY RANGE (`tenant_id`)
 (

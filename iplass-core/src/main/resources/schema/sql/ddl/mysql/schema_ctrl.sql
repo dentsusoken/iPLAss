@@ -7,7 +7,6 @@ CREATE TABLE `schema_ctrl` (
   `cr_data_ver` DECIMAL(22, 0) NULL,
   PRIMARY KEY (`tenant_id`, `obj_def_id`)
 )
-ENGINE = INNODB ROW_FORMAT=COMPRESSED
 
 PARTITION BY RANGE( `tenant_id` )
     SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (

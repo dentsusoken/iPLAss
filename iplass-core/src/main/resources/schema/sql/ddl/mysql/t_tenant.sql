@@ -16,5 +16,4 @@ CREATE TABLE `t_tenant` (
   INDEX `t_tenant_index1` (`id`, `host_name`(256), `url`(256), `yuko_date_from`, `yuko_date_to`),
   INDEX `t_tenant_index2` (`id`, `up_date`)
 )
-ENGINE = INNODB ROW_FORMAT=COMPRESSED
 ;

@@ -10,7 +10,6 @@ CREATE TABLE `obj_unique_dbl` (
   UNIQUE INDEX `obj_unique_dbl_index1` (`tenant_id`, `obj_def_id`(128), `col_name`(36), `val`),
   INDEX `obj_unique_dbl_index2` (`tenant_id`, `obj_def_id`(128), `obj_id`(64))
 )
-ENGINE = INNODB ROW_FORMAT=COMPRESSED
 
 PARTITION BY RANGE( `tenant_id` )
     SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (

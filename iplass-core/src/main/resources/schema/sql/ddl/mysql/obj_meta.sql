@@ -17,5 +17,4 @@ CREATE TABLE `obj_meta` (
   PRIMARY KEY (`tenant_id`, `obj_def_id`, `obj_def_ver`),
   INDEX `obj_meta_index1` (`tenant_id`, `obj_def_path`, `status`)
 )
-ENGINE = INNODB ROW_FORMAT=COMPRESSED
 ;

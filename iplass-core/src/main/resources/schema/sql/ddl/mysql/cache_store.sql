@@ -15,5 +15,4 @@ CREATE TABLE `cache_store`
     INDEX `cache_store_index1` (`ns`, `ci_1`),
     INDEX `cache_store_index2` (`ns`, `ci_2`)
 )
-ENGINE = INNODB ROW_FORMAT=COMPRESSED
 ;

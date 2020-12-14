@@ -10,7 +10,6 @@ CREATE TABLE `delete_log` (
   `up_date` DATETIME NULL,
   PRIMARY KEY (`r_id`, `tenant_id`, `obj_def_id`)
 )
-ENGINE = INNODB ROW_FORMAT=COMPRESSED
 
 PARTITION BY RANGE( `tenant_id` )
     SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (

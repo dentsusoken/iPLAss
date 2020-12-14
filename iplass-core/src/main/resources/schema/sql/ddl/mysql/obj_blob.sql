@@ -19,7 +19,6 @@ CREATE TABLE `obj_blob` (
   PRIMARY KEY (`r_id`, `tenant_id`),
   INDEX `obj_blob_index1` (`tenant_id`, `lob_id`)
 )
-ENGINE = INNODB ROW_FORMAT=COMPRESSED
 
 PARTITION BY RANGE (`tenant_id`)
 (

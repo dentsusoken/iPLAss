@@ -12,7 +12,10 @@ CREATE TABLE `mtdb`.`obj_index_ts${tableNamePostfix}` (
   INDEX `obj_index_ts_index1${tableNamePostfix}` (`tenant_id`, `obj_def_id`(128), `col_name`(36), `val`),
   INDEX `obj_index_ts_index2${tableNamePostfix}` (`tenant_id`, `obj_def_id`(128), `obj_id`(64))
 )
-ENGINE = INNODB ROW_FORMAT=COMPRESSED
+<%if (compression) {
+%>
+ENGINE=InnoDB COMPRESSION="lz4"
+<%}%>
 
 <%if (partition) {
 %>PARTITION BY RANGE( `tenant_id` )

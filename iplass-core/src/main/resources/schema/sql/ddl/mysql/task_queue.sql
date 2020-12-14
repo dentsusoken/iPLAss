@@ -18,5 +18,4 @@ CREATE TABLE `task_queue`
     `res` LONGBLOB,
     PRIMARY KEY (`q_id`, `tenant_id`, `task_id`)
 )
-ENGINE = INNODB ROW_FORMAT=COMPRESSED
 ;

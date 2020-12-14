@@ -10,6 +10,7 @@ import java.io.FileWriter;
 import java.io.PrintWriter;
 import java.io.Writer;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -54,6 +55,13 @@ public class ObjStoreDDLGenerateBatch extends MtpCuiBase {
 		"obj_unique_ts.gtl"
 	};
 
+	/** 圧縮形式 */
+	private static String[] compressedFormats = {
+		"zlib",
+		"lz4",
+		"none"
+	};
+
 	/** <p>実行モード</p> */
 	private ExecMode execMode = ExecMode.WIZARD;
 
@@ -71,6 +79,7 @@ public class ObjStoreDDLGenerateBatch extends MtpCuiBase {
 	 * args[2]・・・outputRootPath
 	 * args[3]・・・storageSpaceName
 	 * args[4]・・・partition
+	 * args[5]・・・compressedFormat
 	 **/
 	public static void main(String[] args) throws Exception {
 
@@ -90,6 +99,7 @@ public class ObjStoreDDLGenerateBatch extends MtpCuiBase {
 	 * args[2]・・・outputRootPath
 	 * args[3]・・・storageSpaceName
 	 * args[4]・・・partition
+	 * args[5]・・・compressedFormat
 	 **/
 	public ObjStoreDDLGenerateBatch(String... args) throws Exception {
 
@@ -124,6 +134,20 @@ public class ObjStoreDDLGenerateBatch extends MtpCuiBase {
 			} else if (getConfigSetting().isPostgreSQL()) {
 				// PostgreSQLの場合、パーティションの利用はデフォルトではしない
 				parameter.setUsePartition(false);
+			}
+			if (args.length > 5) {
+				if (getConfigSetting().isMySQL()) {
+					//指定された圧縮形式であればtrue、それ以外はfalse
+					if (Arrays.asList(compressedFormats).contains(args[5])) {
+						parameter.setUseCompression(true);
+						parameter.setCompressedFormat(args[5]);
+					} else {
+						parameter.setUseCompression(false);
+					}
+				} else {
+					// MySQL以外の場合、ページ圧縮は利用しない
+					parameter.setUseCompression(false);
+				}
 			}
 		}
 
@@ -194,6 +218,8 @@ public class ObjStoreDDLGenerateBatch extends MtpCuiBase {
 
 								bindings.put("columns", cols);
 								bindings.put("partition", parameter.isUsePartition() && !e.isCustomPartition());
+								bindings.put("compression", parameter.isUseCompression());
+								bindings.put("compressedFormat", parameter.getCompressedFormat());
 								GroovyTemplateBinding gtb = new GroovyTemplateBinding(w, bindings);
 
 								tmpl.doTemplate(gtb);
@@ -411,6 +437,27 @@ public class ObjStoreDDLGenerateBatch extends MtpCuiBase {
 		} else {
 			//標準のものがないのでPartitionは利用しない
 			param.setUsePartition(false);
+		}
+
+		//compression
+		if (getConfigSetting().isMySQL()) {
+
+			String compressedFormat = readConsole(rs("ObjStoreDDLGenerator.Wizard.confirmCompressionMsg"));
+
+			if (StringUtil.isNotBlank(compressedFormat)) {
+				param.setCompressedFormat(compressedFormat);
+			}
+
+			//指定された圧縮形式であればtrue、それ以外はfalse
+			if (Arrays.asList(compressedFormats).contains(compressedFormat)) {
+				param.setUseCompression(true);
+			} else {
+				param.setUseCompression(false);
+			}
+
+		} else {
+			//MySQL以外の場合、ページ圧縮は利用しない
+			param.setUseCompression(false);
 		}
 
 		this.parameter = param;

@@ -18,7 +18,6 @@ CREATE TABLE `task_queue_hi`
     `res` LONGBLOB,
     PRIMARY KEY (`q_id`, `tenant_id`, `task_id`)
 )
-ENGINE = INNODB ROW_FORMAT=COMPRESSED
 
 PARTITION BY RANGE (`tenant_id`)
 (

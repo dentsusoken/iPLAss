@@ -9,5 +9,4 @@ CREATE TABLE `t_pass_hi` (
   PRIMARY KEY (`r_id`),
   INDEX `t_pass_hi_index` (`tenant_id`, `account_id`)
 )
-ENGINE = INNODB ROW_FORMAT=COMPRESSED
 ;

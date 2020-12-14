@@ -17,5 +17,4 @@ CREATE TABLE `t_account` (
   PRIMARY KEY (`tenant_id`, `account_id`),
   UNIQUE INDEX `t_account_uq` (`tenant_id`, `oid`)
 )
-ENGINE = INNODB ROW_FORMAT=COMPRESSED
 ;

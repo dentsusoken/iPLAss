@@ -6,7 +6,6 @@ CREATE TABLE `counter` (
   `cnt_val` BIGINT(18) NULL,
   PRIMARY KEY (`tenant_id`, `cnt_name`(128), `inc_unit_key`(128))
 )
-ENGINE = INNODB ROW_FORMAT=COMPRESSED
 
 PARTITION BY RANGE (`tenant_id`)
 (
