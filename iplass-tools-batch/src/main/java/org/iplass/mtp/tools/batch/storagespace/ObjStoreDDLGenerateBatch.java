@@ -79,8 +79,7 @@ public class ObjStoreDDLGenerateBatch extends MtpCuiBase {
 	 * args[2]・・・outputRootPath
 	 * args[3]・・・storageSpaceName
 	 * args[4]・・・partition
-	 * args[5]・・・compression
-	 * args[6]・・・compressedFormat
+	 * args[5]・・・compressedFormat
 	 **/
 	public static void main(String[] args) throws Exception {
 
@@ -100,8 +99,7 @@ public class ObjStoreDDLGenerateBatch extends MtpCuiBase {
 	 * args[2]・・・outputRootPath
 	 * args[3]・・・storageSpaceName
 	 * args[4]・・・partition
-	 * args[5]・・・compression
-	 * args[6]・・・compressedFormat
+	 * args[5]・・・compressedFormat
 	 **/
 	public ObjStoreDDLGenerateBatch(String... args) throws Exception {
 
@@ -138,13 +136,18 @@ public class ObjStoreDDLGenerateBatch extends MtpCuiBase {
 				parameter.setUsePartition(false);
 			}
 			if (args.length > 5) {
-				parameter.setUseCompression("TRUE".equalsIgnoreCase(args[5]));
-			} else if (!getConfigSetting().isMySQL()) {
-				// MySQL以外の場合、ページ圧縮は利用しない
-				parameter.setUseCompression(false);
-			}
-			if (args.length > 6) {
-				parameter.setCompressedFormat(args[6]);
+				if (getConfigSetting().isMySQL()) {
+					//指定された圧縮形式であればtrue、それ以外はfalse
+					if (Arrays.asList(compressedFormats).contains(args[5])) {
+						parameter.setUseCompression(true);
+						parameter.setCompressedFormat(args[5]);
+					} else {
+						parameter.setUseCompression(false);
+					}
+				} else {
+					// MySQL以外の場合、ページ圧縮は利用しない
+					parameter.setUseCompression(false);
+				}
 			}
 		}
 
