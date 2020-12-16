@@ -25,6 +25,7 @@ import java.util.List;
 
 import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
 import org.iplass.adminconsole.client.base.ui.widget.form.MtpIntegerItem;
+import org.iplass.adminconsole.client.base.ui.widget.form.MtpTextAreaItem;
 import org.iplass.adminconsole.client.base.ui.widget.form.MtpTextItem;
 import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
 import org.iplass.adminconsole.client.metadata.ui.common.LocalizedStringSettingDialog;
@@ -36,6 +37,7 @@ import com.smartgwt.client.widgets.form.fields.ButtonItem;
 import com.smartgwt.client.widgets.form.fields.CheckboxItem;
 import com.smartgwt.client.widgets.form.fields.IntegerItem;
 import com.smartgwt.client.widgets.form.fields.SpacerItem;
+import com.smartgwt.client.widgets.form.fields.TextAreaItem;
 import com.smartgwt.client.widgets.form.fields.TextItem;
 import com.smartgwt.client.widgets.form.fields.events.ChangedEvent;
 import com.smartgwt.client.widgets.form.fields.events.ChangedHandler;
@@ -48,6 +50,8 @@ public class PasswordPolicySettingPane extends AbstractSettingPane {
 	private IntegerItem txtMaximumPasswordAge;
 	private IntegerItem txtMinimumPasswordAge;
 	private TextItem txtPasswordPattern;
+	private CheckboxItem chkDenyTheSamePasswordAsAccountId;
+	private TextAreaItem txtDenyList;
 	private TextItem txtPasswordPatternErrorMessage;
 	private List<LocalizedStringDefinition> localizedPasswordPatternErrorMessageList;
 	private ButtonItem langBtn;
@@ -86,6 +90,16 @@ public class PasswordPolicySettingPane extends AbstractSettingPane {
 		txtPasswordPattern.setTitle("Password Pattern");
 		txtPasswordPattern.setStartRow(true);
 		txtPasswordPattern.setColSpan(3);
+
+		chkDenyTheSamePasswordAsAccountId = new CheckboxItem();
+		chkDenyTheSamePasswordAsAccountId.setShowTitle(false);
+		chkDenyTheSamePasswordAsAccountId.setTitle("Deny Same Password As Account ID.");
+
+		txtDenyList = new MtpTextAreaItem();
+		txtDenyList.setTitle("Deny List");
+		txtDenyList.setStartRow(true);
+		txtDenyList.setColSpan(3);
+		txtDenyList.setTooltip(SmartGWTUtil.getHoverString(AdminClientMessageUtil.getString("ui_metadata_auth_AuthenticationPolicyEditPane_denyList")));
 
 		txtPasswordPatternErrorMessage = new MtpTextItem();
 		txtPasswordPatternErrorMessage.setTitle("Password Pattern Error Message");
@@ -137,7 +151,9 @@ public class PasswordPolicySettingPane extends AbstractSettingPane {
 		chkResetPasswordWithSpecificPassword.setTitle("Reset Password With Specific Password.");
 
 		form.setItems(chkUsePolicy,
-				txtMaximumPasswordAge, txtMinimumPasswordAge, txtPasswordPattern,
+				txtMaximumPasswordAge, txtMinimumPasswordAge, txtPasswordPattern, space,
+				chkDenyTheSamePasswordAsAccountId,
+				txtDenyList,
 				txtPasswordPatternErrorMessage, space, langBtn, txtRandomPasswordIncludeSigns,
 				txtRandomPasswordExcludeChars, txtRandomPasswordLength,
 				txtPasswordHistoryCount, space, chkCreateAccountWithSpecificPassword, new SpacerItem(), chkResetPasswordWithSpecificPassword);
@@ -160,6 +176,8 @@ public class PasswordPolicySettingPane extends AbstractSettingPane {
 		txtMaximumPasswordAge.setValue(passwordPolicyDefinition.getMaximumPasswordAge());
 		txtMinimumPasswordAge.setValue(passwordPolicyDefinition.getMinimumPasswordAge());
 		txtPasswordPattern.setValue(passwordPolicyDefinition.getPasswordPattern());
+		chkDenyTheSamePasswordAsAccountId.setValue(passwordPolicyDefinition.isDenyTheSamePasswordAsAccountId());
+		txtDenyList.setValue(passwordPolicyDefinition.getDenyList());
 		txtPasswordPatternErrorMessage.setValue(passwordPolicyDefinition.getPasswordPatternErrorMessage());
 		localizedPasswordPatternErrorMessageList = passwordPolicyDefinition.getLocalizedPasswordPatternErrorMessageList();
 		txtPasswordHistoryCount.setValue(passwordPolicyDefinition.getPasswordHistoryCount());
@@ -189,6 +207,8 @@ public class PasswordPolicySettingPane extends AbstractSettingPane {
 				passwordPolicyDefinition.setMinimumPasswordAge(SmartGWTUtil.getIntegerValue(txtMinimumPasswordAge));
 			}
 			passwordPolicyDefinition.setPasswordPattern(SmartGWTUtil.getStringValue(txtPasswordPattern, true));
+			passwordPolicyDefinition.setDenyTheSamePasswordAsAccountId(SmartGWTUtil.getBooleanValue(chkDenyTheSamePasswordAsAccountId));
+			passwordPolicyDefinition.setDenyList(SmartGWTUtil.getStringValue(txtDenyList));
 			passwordPolicyDefinition.setPasswordPatternErrorMessage(SmartGWTUtil.getStringValue(txtPasswordPatternErrorMessage, true));
 			passwordPolicyDefinition.setLocalizedPasswordPatternErrorMessageList(localizedPasswordPatternErrorMessageList);
 
@@ -230,6 +250,8 @@ public class PasswordPolicySettingPane extends AbstractSettingPane {
 		txtMaximumPasswordAge.setDisabled(disabled);
 		txtMinimumPasswordAge.setDisabled(disabled);
 		txtPasswordPattern.setDisabled(disabled);
+		chkDenyTheSamePasswordAsAccountId.setDisabled(disabled);
+		txtDenyList.setDisabled(disabled);
 		txtPasswordPatternErrorMessage.setDisabled(disabled);
 		langBtn.setDisabled(disabled);
 		txtPasswordHistoryCount.setDisabled(disabled);

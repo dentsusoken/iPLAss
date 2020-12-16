@@ -175,7 +175,7 @@ public class BuiltinAuthenticationProvider extends AuthenticationProviderBase {
 			return null;
 //			throw new SystemException("BuiltinAuthenticationProvider supports IdPasswordCredential");
 		}
-		
+
 		if (accountId == null || accountId.isEmpty()) {
 			return null;
 		}
@@ -275,7 +275,6 @@ public class BuiltinAuthenticationProvider extends AuthenticationProviderBase {
 				throw new ServiceConfigrationException("invalid PasswordHashAlgorithm", e);
 			}
 		}
-		
 	}
 
 	@Override
@@ -353,6 +352,8 @@ public class BuiltinAuthenticationProvider extends AuthenticationProviderBase {
 					if (user.getPassword() != null) {
 						//パスワードが設定されている場合パスワードパターンチェック
 						policy.checkPasswordPattern(user.getPassword());
+						policy.checkSamePasswordAsAccountId(user.getPassword(), user.getAccountId());
+						policy.checkDenyList(user.getPassword());
 					}
 				}
 
@@ -716,6 +717,8 @@ public class BuiltinAuthenticationProvider extends AuthenticationProviderBase {
 
 					//パスワードポリシーの確認
 					policy.checkPasswordPattern(newPassword);
+					policy.checkSamePasswordAsAccountId(newPassword, account.getAccountId());
+					policy.checkDenyList(newPassword);
 					//パスワード履歴の確認
 					List<Password> passList = null;
 					int passwordHistoryCount = policy.getMetaData().getPasswordPolicy().getPasswordHistoryCount();

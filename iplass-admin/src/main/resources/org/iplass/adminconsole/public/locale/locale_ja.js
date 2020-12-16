@@ -254,6 +254,7 @@ LocaleInfo.ui_metadata_auth_AuthenticationPolicyEditPane_cancelConfirm = "キャ
 LocaleInfo.ui_metadata_auth_AuthenticationPolicyEditPane_cancelConfirmComment = "編集中の場合、編集内容が破棄されますがよろしいですか？";
 LocaleInfo.ui_metadata_auth_AuthenticationPolicyEditPane_completion = "完了";
 LocaleInfo.ui_metadata_auth_AuthenticationPolicyEditPane_saveAuthenticationPolicy = "AuthenticationPolicyの保存が完了しました。";
+LocaleInfo.ui_metadata_auth_AuthenticationPolicyEditPane_denyList = "パスワードの拒否リスト。<br/>複数指定する場合は改行で区切ってください。";
 LocaleInfo.ui_metadata_auth_AuthenticationPolicyPluginManager_failedToDeleteAuthenticationPolicy = "AuthenticationPolicyの削除に失敗しました。<br/>原因：";
 LocaleInfo.ui_metadata_auth_AuthenticationPolicyPluginManager_completion = "完了";
 LocaleInfo.ui_metadata_auth_AuthenticationPolicyPluginManager_deleteAuthenticationPolicyComp = "AuthenticationPolicyが削除されました。";

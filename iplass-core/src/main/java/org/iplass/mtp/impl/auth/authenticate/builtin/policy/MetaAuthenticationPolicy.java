@@ -1,19 +1,19 @@
 /*
  * Copyright (C) 2014 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
- * 
+ *
  * Unless you have purchased a commercial license,
  * the following license terms apply:
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
@@ -254,7 +254,7 @@ public class MetaAuthenticationPolicy extends BaseRootMetaData implements Defina
 					}
 					amm = new LoggingAccountManagementModule(ammr.stripOrThis());
 				}
-				
+
 			} catch (RuntimeException e) {
 				setIllegalStateException(e);
 			}
@@ -263,7 +263,7 @@ public class MetaAuthenticationPolicy extends BaseRootMetaData implements Defina
 		public AccountManagementModule getAccountManagementModule() {
 			return amm;
 		}
-		
+
 		@Override
 		public MetaAuthenticationPolicy getMetaData() {
 			return MetaAuthenticationPolicy.this;
@@ -333,7 +333,7 @@ public class MetaAuthenticationPolicy extends BaseRootMetaData implements Defina
 		}
 
 		public boolean isCheckLockout() {
-			return accountLockoutPolicy.getLockoutFailureCount() > 0;
+			return accountLockoutPolicy == null ? false : accountLockoutPolicy.getLockoutFailureCount() > 0;
 		}
 
 		/**
@@ -421,6 +421,8 @@ public class MetaAuthenticationPolicy extends BaseRootMetaData implements Defina
 		public void checkPasswordUpdatePolicy(IdPasswordCredential newIdPass, BuiltinAccount account) {
 			//固有のポリシー
 			checkPasswordPattern(newIdPass.getPassword());
+			checkSamePasswordAsAccountId(newIdPass.getPassword(), account.getAccountId());
+			checkDenyList(newIdPass.getPassword());
 
 			if (isUnderMinimumPasswordAge(account, System.currentTimeMillis())) {
 				throw new CredentialUpdateException(resourceString("impl.auth.authenticate.updateCredential.minTermErr"));
@@ -479,6 +481,26 @@ public class MetaAuthenticationPolicy extends BaseRootMetaData implements Defina
 			if (passwordPattern != null && !passwordPattern.matcher(password).matches()) {
 				String passwordPatternErrorMessage = I18nUtil.stringMeta(passwordPolicy.getPasswordPatternErrorMessage(), passwordPolicy.getLocalizedPasswordPatternErrorMessageList());
 				throw new CredentialUpdateException(passwordPatternErrorMessage);
+			}
+		}
+
+		public void checkSamePasswordAsAccountId(String password, String accountId) {
+			if (passwordPolicy.isDenyTheSamePasswordAsAccountId() && accountId.equals(password)) {
+				String passwordPatternErrorMessage = I18nUtil.stringMeta(passwordPolicy.getPasswordPatternErrorMessage(), passwordPolicy.getLocalizedPasswordPatternErrorMessageList());
+				throw new CredentialUpdateException(passwordPatternErrorMessage);
+			}
+		}
+
+		public void checkDenyList(String password) {
+			String denyListString = passwordPolicy.getDenyList();
+			if (denyListString != null) {
+				String[] denyList = denyListString.split("\n");
+				for (String denyPassword: denyList) {
+					if(denyPassword.equals(password)) {
+						String passwordPatternErrorMessage = I18nUtil.stringMeta(passwordPolicy.getPasswordPatternErrorMessage(), passwordPolicy.getLocalizedPasswordPatternErrorMessageList());
+						throw new CredentialUpdateException(passwordPatternErrorMessage);
+					}
+				}
 			}
 		}
 

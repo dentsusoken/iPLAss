@@ -254,6 +254,7 @@ LocaleInfo.ui_metadata_auth_AuthenticationPolicyEditPane_cancelConfirm = "Cancel
 LocaleInfo.ui_metadata_auth_AuthenticationPolicyEditPane_cancelConfirmComment = "The edits will be discarded if you are editing, are you sure?";
 LocaleInfo.ui_metadata_auth_AuthenticationPolicyEditPane_completion = "Completion";
 LocaleInfo.ui_metadata_auth_AuthenticationPolicyEditPane_saveAuthenticationPolicy = "Save AuthenticationPolicy is complete.";
+LocaleInfo.ui_metadata_auth_AuthenticationPolicyEditPane_denyList = "Specify the deny list of password.<br/>If you specify multiple, please separate them with line feed.";
 LocaleInfo.ui_metadata_auth_AuthenticationPolicyPluginManager_failedToDeleteAuthenticationPolicy = "Failed to delete AuthenticationPolicy.<br/>:Cause";
 LocaleInfo.ui_metadata_auth_AuthenticationPolicyPluginManager_completion = "Completion";
 LocaleInfo.ui_metadata_auth_AuthenticationPolicyPluginManager_deleteAuthenticationPolicyComp = "AuthenticationPolicy has been deleted.";

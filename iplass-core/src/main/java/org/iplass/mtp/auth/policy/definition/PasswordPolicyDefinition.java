@@ -1,19 +1,19 @@
 /*
  * Copyright (C) 2014 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
- * 
+ *
  * Unless you have purchased a commercial license,
  * the following license terms apply:
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
@@ -41,6 +41,10 @@ public class PasswordPolicyDefinition implements Serializable {
 	private int minimumPasswordAge;
 	/** パスワードの複雑度チェックに利用する正規表現 */
 	private String passwordPattern;
+	/**アカウントIDと同一のパスワードを不許可とするか */
+	private boolean denyTheSamePasswordAsAccountId;
+	/** パスワード拒否リスト */
+	private String denyList;
 	/** パスワードの複雑度エラーのメッセージ */
 	@MultiLang(itemKey="passwordPatternErrorMessage", itemGetter="getPasswordPatternErrorMessage", itemSetter="setPasswordPatternErrorMessage", multiLangGetter="getLocalizedPasswordPatternErrorMessageList", multiLangSetter="setLocalizedPasswordPatternErrorMessageList")
 	private String passwordPatternErrorMessage;
@@ -109,6 +113,40 @@ public class PasswordPolicyDefinition implements Serializable {
 	 */
 	public void setPasswordPattern(String passwordPattern) {
 		this.passwordPattern = passwordPattern;
+	}
+
+	/**
+	 * アカウントIDと同一のパスワードを不許可とするか
+	 *
+	 * @return
+	 */
+	public boolean isDenyTheSamePasswordAsAccountId() {
+		return denyTheSamePasswordAsAccountId;
+	}
+
+	/**
+	 * @see #isDenyTheSamePasswordAsAccountId()
+	 * @param denyTheSamePasswordAsAccountId
+	 */
+	public void setDenyTheSamePasswordAsAccountId(boolean denyTheSamePasswordAsAccountId) {
+		this.denyTheSamePasswordAsAccountId = denyTheSamePasswordAsAccountId;
+	}
+
+	/**
+	 * パスワード拒否リスト
+	 *
+	 * @return
+	 */
+	public String getDenyList() {
+		return denyList;
+	}
+
+	/**
+	 * @see #getDenyList()
+	 * @param denyList
+	 */
+	public void setDenyList(String denyList) {
+		this.denyList = denyList;
 	}
 
 	/**
