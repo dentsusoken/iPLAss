@@ -22,7 +22,10 @@ package org.iplass.mtp.impl.auth.authenticate.builtin.policy;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 
@@ -216,6 +219,7 @@ public class MetaAuthenticationPolicy extends BaseRootMetaData implements Defina
 
 		private List<AccountNotificationListener> listeners;
 		private Pattern passwordPattern;
+		private Set<String> denyList;
 		private char[] randomPasswordIncludeSigns;
 		private char[] randomPasswordExcludeChars;
 		private AccountManagementModule amm;
@@ -235,6 +239,9 @@ public class MetaAuthenticationPolicy extends BaseRootMetaData implements Defina
 					if (passwordPolicy.getPasswordPattern() != null
 							&& passwordPolicy.getPasswordPattern().length() > 0) {
 						passwordPattern = Pattern.compile(passwordPolicy.getPasswordPattern());
+					}
+					if (passwordPolicy.getDenyList() != null) {
+						denyList = new HashSet<>(Arrays.asList(passwordPolicy.getDenyList().split("\n")));
 					}
 					if (passwordPolicy.getRandomPasswordIncludeSigns() != null && passwordPolicy.getRandomPasswordIncludeSigns().length() > 0) {
 						randomPasswordIncludeSigns = passwordPolicy.getRandomPasswordIncludeSigns().toCharArray();
@@ -333,7 +340,7 @@ public class MetaAuthenticationPolicy extends BaseRootMetaData implements Defina
 		}
 
 		public boolean isCheckLockout() {
-			return accountLockoutPolicy == null ? false : accountLockoutPolicy.getLockoutFailureCount() > 0;
+			return accountLockoutPolicy.getLockoutFailureCount() > 0;
 		}
 
 		/**
@@ -420,9 +427,7 @@ public class MetaAuthenticationPolicy extends BaseRootMetaData implements Defina
 
 		public void checkPasswordUpdatePolicy(IdPasswordCredential newIdPass, BuiltinAccount account) {
 			//固有のポリシー
-			checkPasswordPattern(newIdPass.getPassword());
-			checkSamePasswordAsAccountId(newIdPass.getPassword(), account.getAccountId());
-			checkDenyList(newIdPass.getPassword());
+			checkPasswordPattern(newIdPass.getPassword(), account.getAccountId());
 
 			if (isUnderMinimumPasswordAge(account, System.currentTimeMillis())) {
 				throw new CredentialUpdateException(resourceString("impl.auth.authenticate.updateCredential.minTermErr"));
@@ -477,29 +482,20 @@ public class MetaAuthenticationPolicy extends BaseRootMetaData implements Defina
 			return false;
 		}
 
-		public void checkPasswordPattern(String password) {
+		public void checkPasswordPattern(String password, String accountId) {
+			String passwordPatternErrorMessage = I18nUtil.stringMeta(passwordPolicy.getPasswordPatternErrorMessage(), passwordPolicy.getLocalizedPasswordPatternErrorMessageList());
+
 			if (passwordPattern != null && !passwordPattern.matcher(password).matches()) {
-				String passwordPatternErrorMessage = I18nUtil.stringMeta(passwordPolicy.getPasswordPatternErrorMessage(), passwordPolicy.getLocalizedPasswordPatternErrorMessageList());
 				throw new CredentialUpdateException(passwordPatternErrorMessage);
 			}
-		}
 
-		public void checkSamePasswordAsAccountId(String password, String accountId) {
 			if (passwordPolicy.isDenySamePasswordAsAccountId() && accountId.equals(password)) {
-				String passwordPatternErrorMessage = I18nUtil.stringMeta(passwordPolicy.getPasswordPatternErrorMessage(), passwordPolicy.getLocalizedPasswordPatternErrorMessageList());
 				throw new CredentialUpdateException(passwordPatternErrorMessage);
 			}
-		}
 
-		public void checkDenyList(String password) {
-			String denyListString = passwordPolicy.getDenyList();
-			if (denyListString != null) {
-				String[] denyList = denyListString.split("\n");
-				for (String denyPassword: denyList) {
-					if(denyPassword.equals(password)) {
-						String passwordPatternErrorMessage = I18nUtil.stringMeta(passwordPolicy.getPasswordPatternErrorMessage(), passwordPolicy.getLocalizedPasswordPatternErrorMessageList());
-						throw new CredentialUpdateException(passwordPatternErrorMessage);
-					}
+			if (denyList != null) {
+				if(denyList.contains(password)) {
+					throw new CredentialUpdateException(passwordPatternErrorMessage);
 				}
 			}
 		}
