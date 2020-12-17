@@ -38,7 +38,7 @@ public class MetaPasswordPolicy implements MetaData {
 	/** パスワードの複雑度チェックに利用する正規表現 */
 	private String passwordPattern;
 	/**アカウントIDと同一のパスワードを不許可とするか */
-	private boolean denyTheSamePasswordAsAccountId;
+	private boolean denySamePasswordAsAccountId;
 	/** パスワード拒否リスト */
 	private String denyList;
 	/** パスワードの複雑度エラーのメッセージ */
@@ -84,12 +84,12 @@ public class MetaPasswordPolicy implements MetaData {
 		this.passwordPattern = passwordPattern;
 	}
 
-	public boolean isDenyTheSamePasswordAsAccountId() {
-		return denyTheSamePasswordAsAccountId;
+	public boolean isDenySamePasswordAsAccountId() {
+		return denySamePasswordAsAccountId;
 	}
 
-	public void setDenyTheSamePasswordAsAccountId(boolean denyTheSamePasswordAsAccountId) {
-		this.denyTheSamePasswordAsAccountId = denyTheSamePasswordAsAccountId;
+	public void setDenySamePasswordAsAccountId(boolean denySamePasswordAsAccountId) {
+		this.denySamePasswordAsAccountId = denySamePasswordAsAccountId;
 	}
 
 	public String getDenyList() {
@@ -176,7 +176,7 @@ public class MetaPasswordPolicy implements MetaData {
 		maximumPasswordAge = def.getMaximumPasswordAge();
 		minimumPasswordAge = def.getMinimumPasswordAge();
 		passwordPattern = def.getPasswordPattern();
-		denyTheSamePasswordAsAccountId = def.isDenyTheSamePasswordAsAccountId();
+		denySamePasswordAsAccountId = def.isDenySamePasswordAsAccountId();
 		denyList = def.getDenyList();
 		passwordPatternErrorMessage = def.getPasswordPatternErrorMessage();
 		localizedPasswordPatternErrorMessageList = I18nUtil.toMeta(def.getLocalizedPasswordPatternErrorMessageList());
@@ -193,7 +193,7 @@ public class MetaPasswordPolicy implements MetaData {
 		def.setMaximumPasswordAge(maximumPasswordAge);
 		def.setMinimumPasswordAge(minimumPasswordAge);
 		def.setPasswordPattern(passwordPattern);
-		def.setDenyTheSamePasswordAsAccountId(denyTheSamePasswordAsAccountId);
+		def.setDenySamePasswordAsAccountId(denySamePasswordAsAccountId);
 		def.setDenyList(denyList);
 		def.setPasswordPatternErrorMessage(passwordPatternErrorMessage);
 		def.setLocalizedPasswordPatternErrorMessageList(I18nUtil.toDef(localizedPasswordPatternErrorMessageList));

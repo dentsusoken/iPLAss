@@ -42,7 +42,7 @@ public class PasswordPolicyDefinition implements Serializable {
 	/** パスワードの複雑度チェックに利用する正規表現 */
 	private String passwordPattern;
 	/**アカウントIDと同一のパスワードを不許可とするか */
-	private boolean denyTheSamePasswordAsAccountId;
+	private boolean denySamePasswordAsAccountId;
 	/** パスワード拒否リスト */
 	private String denyList;
 	/** パスワードの複雑度エラーのメッセージ */
@@ -120,16 +120,16 @@ public class PasswordPolicyDefinition implements Serializable {
 	 *
 	 * @return
 	 */
-	public boolean isDenyTheSamePasswordAsAccountId() {
-		return denyTheSamePasswordAsAccountId;
+	public boolean isDenySamePasswordAsAccountId() {
+		return denySamePasswordAsAccountId;
 	}
 
 	/**
-	 * @see #isDenyTheSamePasswordAsAccountId()
-	 * @param denyTheSamePasswordAsAccountId
+	 * @see #isDenySamePasswordAsAccountId()
+	 * @param denySamePasswordAsAccountId
 	 */
-	public void setDenyTheSamePasswordAsAccountId(boolean denyTheSamePasswordAsAccountId) {
-		this.denyTheSamePasswordAsAccountId = denyTheSamePasswordAsAccountId;
+	public void setDenySamePasswordAsAccountId(boolean denySamePasswordAsAccountId) {
+		this.denySamePasswordAsAccountId = denySamePasswordAsAccountId;
 	}
 
 	/**

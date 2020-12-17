@@ -485,7 +485,7 @@ public class MetaAuthenticationPolicy extends BaseRootMetaData implements Defina
 		}
 
 		public void checkSamePasswordAsAccountId(String password, String accountId) {
-			if (passwordPolicy.isDenyTheSamePasswordAsAccountId() && accountId.equals(password)) {
+			if (passwordPolicy.isDenySamePasswordAsAccountId() && accountId.equals(password)) {
 				String passwordPatternErrorMessage = I18nUtil.stringMeta(passwordPolicy.getPasswordPatternErrorMessage(), passwordPolicy.getLocalizedPasswordPatternErrorMessageList());
 				throw new CredentialUpdateException(passwordPatternErrorMessage);
 			}
