@@ -43,7 +43,7 @@ public class PasswordPolicyDefinition implements Serializable {
 	private String passwordPattern;
 	/**アカウントIDと同一のパスワードを不許可とするか */
 	private boolean denySamePasswordAsAccountId;
-	/** パスワード拒否リスト */
+	/** パスワードの拒否リスト。複数指定する場合は改行で区切ってください。 */
 	private String denyList;
 	/** パスワードの複雑度エラーのメッセージ */
 	@MultiLang(itemKey="passwordPatternErrorMessage", itemGetter="getPasswordPatternErrorMessage", itemSetter="setPasswordPatternErrorMessage", multiLangGetter="getLocalizedPasswordPatternErrorMessageList", multiLangSetter="setLocalizedPasswordPatternErrorMessageList")
@@ -133,7 +133,7 @@ public class PasswordPolicyDefinition implements Serializable {
 	}
 
 	/**
-	 * パスワード拒否リスト
+	 * パスワードの拒否リスト。複数指定する場合は改行で区切ってください。
 	 *
 	 * @return
 	 */

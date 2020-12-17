@@ -39,7 +39,7 @@ public class MetaPasswordPolicy implements MetaData {
 	private String passwordPattern;
 	/**アカウントIDと同一のパスワードを不許可とするか */
 	private boolean denySamePasswordAsAccountId;
-	/** パスワード拒否リスト */
+	/** パスワードの拒否リスト。複数指定する場合は改行で区切ってください。 */
 	private String denyList;
 	/** パスワードの複雑度エラーのメッセージ */
 	private String passwordPatternErrorMessage;
