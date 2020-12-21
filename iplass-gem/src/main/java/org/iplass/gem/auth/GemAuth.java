@@ -157,7 +157,7 @@ public class GemAuth {
 		List<String> permitRoles = evm.getPermitRoles(definitionName, viewName);
 
 		if (permitRoles == null) {
-			//View定義がない場合は、指定されているロールのみ許可
+			//許可ロールがない場合（自動生成）は、指定されているロールのみ許可
 			GemConfigService service = ServiceRegistry.getRegistry().getService(GemConfigService.class);
 			permitRoles = service.getPermitRolesToNoView();
 		}

@@ -658,15 +658,15 @@ public class EntityViewManagerImpl extends AbstractTypedDefinitionManager<Entity
 	public Condition getMassReferenceSectionCondition(String name, MassReferenceSection section) {
 		return getEntityViewCondition(name, section, MassReferenceSectionRuntime.FILTER_CONDITION_PREFIX);
 	}
-	
+
 	/**
 	 * EntityViewに格納されたQueryを取得します。
-	 * 
+	 *
 	 * @param name Entity定義名
 	 * @param element 検索対象のエレメント
 	 * @param prefixKey 格納KEYの接頭辞
 	 * @return 条件
-	 * 
+	 *
 	 */
 	private Condition getEntityViewCondition(String name, Element element, String prefixKey) {
 		if (name == null || element == null) return null;
@@ -990,6 +990,7 @@ public class EntityViewManagerImpl extends AbstractTypedDefinitionManager<Entity
 		EntityViewRuntime entityView = service.getRuntimeByName(definitionName);
 
 		if (entityView == null) {
+			//EntityViewがない場合は自動生成、許可ロールは未指定
 			return null;
 		}
 
@@ -998,22 +999,31 @@ public class EntityViewManagerImpl extends AbstractTypedDefinitionManager<Entity
 			//View管理設定あり
 			MetaViewControlSetting setting = getViewControl(settings, viewName);
 			if (setting != null) {
-				if (StringUtil.isNotBlank(setting.getPermitRoles())) {
+				if (StringUtil.isNotEmpty(setting.getPermitRoles())) {
 					String[] permitRoles = setting.getPermitRoles().split(",");
 					return Arrays.asList(permitRoles);
 				} else {
+					//許可ロール未指定の場合は全許可
 					return Collections.EMPTY_LIST;
 				}
 			}
 
 			//viewControlが未指定
-			logger.debug("not defined viewControl. defName=" + definitionName + ",viewName=" + viewName);
+			logger.debug("not defined view's viewControl. defName=" + definitionName + ",viewName=" + viewName);
+		} else {
+			//viewControlが未定義
+			logger.debug("not defined any viewControl. defName=" + definitionName);
 		}
 
 		SearchFormViewRuntime searchView = getSearchFormView(entityView.getFormViews(), viewName);
 		if (searchView != null) {
-			//定義はあるが、管理設定が無い→許可ロール未指定扱い
+			//View定義はあるが、管理設定が無い場合は全許可
 			return Collections.EMPTY_LIST;
+		} else {
+			if (StringUtil.isEmpty(viewName)) {
+				//デフォルトの場合はView定義がない場合も自動生成、許可ロールは未指定
+				return null;
+			}
 		}
 
 		//view名が不正、存在しない
