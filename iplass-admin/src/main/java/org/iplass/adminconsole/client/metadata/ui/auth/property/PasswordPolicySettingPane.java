@@ -39,13 +39,9 @@ import com.smartgwt.client.widgets.form.fields.IntegerItem;
 import com.smartgwt.client.widgets.form.fields.SpacerItem;
 import com.smartgwt.client.widgets.form.fields.TextAreaItem;
 import com.smartgwt.client.widgets.form.fields.TextItem;
-import com.smartgwt.client.widgets.form.fields.events.ChangedEvent;
-import com.smartgwt.client.widgets.form.fields.events.ChangedHandler;
 import com.smartgwt.client.widgets.form.validator.IsIntegerValidator;
 
 public class PasswordPolicySettingPane extends AbstractSettingPane {
-
-	private CheckboxItem chkUsePolicy;
 
 	private IntegerItem txtMaximumPasswordAge;
 	private IntegerItem txtMinimumPasswordAge;
@@ -66,25 +62,15 @@ public class PasswordPolicySettingPane extends AbstractSettingPane {
 
 		form.setGroupTitle("Password Policy Setting");
 
-		chkUsePolicy = new CheckboxItem();
-		chkUsePolicy.setTitle("Use Password Policy");
-		chkUsePolicy.setShowTitle(false);
-		chkUsePolicy.setColSpan(2);
-		chkUsePolicy.addChangedHandler(new ChangedHandler() {
-
-			@Override
-			public void onChanged(ChangedEvent event) {
-				changeUsePolicy(SmartGWTUtil.getBooleanValue(chkUsePolicy));
-			}
-		});
-
 		txtMaximumPasswordAge = new MtpIntegerItem();
 		txtMaximumPasswordAge.setTitle("Max Password Age(day)");
+		SmartGWTUtil.setRequired(txtMaximumPasswordAge);
 		txtMaximumPasswordAge.setValidators(new IsIntegerValidator());
 		txtMaximumPasswordAge.setStartRow(true);
 
 		txtMinimumPasswordAge = new MtpIntegerItem();
 		txtMinimumPasswordAge.setTitle("Min Password Age(day)");
+		SmartGWTUtil.setRequired(txtMinimumPasswordAge);
 
 		txtPasswordPattern = new MtpTextItem();
 		txtPasswordPattern.setTitle("Password Pattern");
@@ -137,10 +123,12 @@ public class PasswordPolicySettingPane extends AbstractSettingPane {
 
 		txtRandomPasswordLength = new MtpIntegerItem();
 		txtRandomPasswordLength.setTitle("Random Password Length");
+		SmartGWTUtil.setRequired(txtRandomPasswordLength);
 		txtRandomPasswordLength.setStartRow(true);
 
 		txtPasswordHistoryCount = new MtpIntegerItem();
 		txtPasswordHistoryCount.setTitle("Password History Count");
+		SmartGWTUtil.setRequired(txtPasswordHistoryCount);
 
 		chkCreateAccountWithSpecificPassword = new CheckboxItem();
 		chkCreateAccountWithSpecificPassword.setShowTitle(false);
@@ -150,7 +138,7 @@ public class PasswordPolicySettingPane extends AbstractSettingPane {
 		chkResetPasswordWithSpecificPassword.setShowTitle(false);
 		chkResetPasswordWithSpecificPassword.setTitle("Reset Password With Specific Password.");
 
-		form.setItems(chkUsePolicy,
+		form.setItems(
 				txtMaximumPasswordAge, txtMinimumPasswordAge, txtPasswordPattern, space,
 				chkDenySamePasswordAsAccountId,
 				txtDenyList,
@@ -165,14 +153,6 @@ public class PasswordPolicySettingPane extends AbstractSettingPane {
 	public void setDefinition(AuthenticationPolicyDefinition definition) {
 		PasswordPolicyDefinition passwordPolicyDefinition = definition.getPasswordPolicy();
 
-		boolean usePolicy = passwordPolicyDefinition != null;
-		chkUsePolicy.setValue(usePolicy);
-
-		if (!usePolicy) {
-			//未設定の場合は、初期値を設定するためnew
-			passwordPolicyDefinition = new PasswordPolicyDefinition();
-		}
-
 		txtMaximumPasswordAge.setValue(passwordPolicyDefinition.getMaximumPasswordAge());
 		txtMinimumPasswordAge.setValue(passwordPolicyDefinition.getMinimumPasswordAge());
 		txtPasswordPattern.setValue(passwordPolicyDefinition.getPasswordPattern());
@@ -186,44 +166,27 @@ public class PasswordPolicySettingPane extends AbstractSettingPane {
 		txtRandomPasswordIncludeSigns.setValue(passwordPolicyDefinition.getRandomPasswordIncludeSigns());
 		txtRandomPasswordExcludeChars.setValue(passwordPolicyDefinition.getRandomPasswordExcludeChars());
 		txtRandomPasswordLength.setValue(passwordPolicyDefinition.getRandomPasswordLength());
-
-		changeUsePolicy(usePolicy);
 	}
 
 	@Override
 	public AuthenticationPolicyDefinition getEditDefinition(AuthenticationPolicyDefinition definition) {
 
-		boolean usePolicy = SmartGWTUtil.getBooleanValue(chkUsePolicy);
+		PasswordPolicyDefinition passwordPolicyDefinition = new PasswordPolicyDefinition();
 
-		PasswordPolicyDefinition passwordPolicyDefinition = null;
-		if (usePolicy) {
-			passwordPolicyDefinition = new PasswordPolicyDefinition();
+		passwordPolicyDefinition.setMaximumPasswordAge(SmartGWTUtil.getIntegerValue(txtMaximumPasswordAge));
 
-			if (SmartGWTUtil.getIntegerValue(txtMaximumPasswordAge) != null) {
-				passwordPolicyDefinition.setMaximumPasswordAge(SmartGWTUtil.getIntegerValue(txtMaximumPasswordAge));
-			}
-
-			if (SmartGWTUtil.getIntegerValue(txtMinimumPasswordAge) != null) {
-				passwordPolicyDefinition.setMinimumPasswordAge(SmartGWTUtil.getIntegerValue(txtMinimumPasswordAge));
-			}
-			passwordPolicyDefinition.setPasswordPattern(SmartGWTUtil.getStringValue(txtPasswordPattern, true));
-			passwordPolicyDefinition.setDenySamePasswordAsAccountId(SmartGWTUtil.getBooleanValue(chkDenySamePasswordAsAccountId));
-			passwordPolicyDefinition.setDenyList(SmartGWTUtil.getStringValue(txtDenyList));
-			passwordPolicyDefinition.setPasswordPatternErrorMessage(SmartGWTUtil.getStringValue(txtPasswordPatternErrorMessage, true));
-			passwordPolicyDefinition.setLocalizedPasswordPatternErrorMessageList(localizedPasswordPatternErrorMessageList);
-
-			if (SmartGWTUtil.getIntegerValue(txtPasswordHistoryCount) != null) {
-				passwordPolicyDefinition.setPasswordHistoryCount(SmartGWTUtil.getIntegerValue(txtPasswordHistoryCount));
-			}
-			passwordPolicyDefinition.setCreateAccountWithSpecificPassword(SmartGWTUtil.getBooleanValue(chkCreateAccountWithSpecificPassword));
-			passwordPolicyDefinition.setResetPasswordWithSpecificPassword(SmartGWTUtil.getBooleanValue(chkResetPasswordWithSpecificPassword));
-			passwordPolicyDefinition.setRandomPasswordIncludeSigns(SmartGWTUtil.getStringValue(txtRandomPasswordIncludeSigns, true));
-			passwordPolicyDefinition.setRandomPasswordExcludeChars(SmartGWTUtil.getStringValue(txtRandomPasswordExcludeChars, true));
-
-			if (SmartGWTUtil.getIntegerValue(txtRandomPasswordLength) != null) {
-				passwordPolicyDefinition.setRandomPasswordLength(SmartGWTUtil.getIntegerValue(txtRandomPasswordLength));
-			}
-		}
+		passwordPolicyDefinition.setMinimumPasswordAge(SmartGWTUtil.getIntegerValue(txtMinimumPasswordAge));
+		passwordPolicyDefinition.setPasswordPattern(SmartGWTUtil.getStringValue(txtPasswordPattern, true));
+		passwordPolicyDefinition.setDenySamePasswordAsAccountId(SmartGWTUtil.getBooleanValue(chkDenySamePasswordAsAccountId));
+		passwordPolicyDefinition.setDenyList(SmartGWTUtil.getStringValue(txtDenyList));
+		passwordPolicyDefinition.setPasswordPatternErrorMessage(SmartGWTUtil.getStringValue(txtPasswordPatternErrorMessage, true));
+		passwordPolicyDefinition.setLocalizedPasswordPatternErrorMessageList(localizedPasswordPatternErrorMessageList);
+		passwordPolicyDefinition.setPasswordHistoryCount(SmartGWTUtil.getIntegerValue(txtPasswordHistoryCount));
+		passwordPolicyDefinition.setCreateAccountWithSpecificPassword(SmartGWTUtil.getBooleanValue(chkCreateAccountWithSpecificPassword));
+		passwordPolicyDefinition.setResetPasswordWithSpecificPassword(SmartGWTUtil.getBooleanValue(chkResetPasswordWithSpecificPassword));
+		passwordPolicyDefinition.setRandomPasswordIncludeSigns(SmartGWTUtil.getStringValue(txtRandomPasswordIncludeSigns, true));
+		passwordPolicyDefinition.setRandomPasswordExcludeChars(SmartGWTUtil.getStringValue(txtRandomPasswordExcludeChars, true));
+		passwordPolicyDefinition.setRandomPasswordLength(SmartGWTUtil.getIntegerValue(txtRandomPasswordLength));
 
 		definition.setPasswordPolicy(passwordPolicyDefinition);
 
@@ -232,34 +195,12 @@ public class PasswordPolicySettingPane extends AbstractSettingPane {
 
 	@Override
 	public boolean validate() {
-		boolean usePolicy = SmartGWTUtil.getBooleanValue(chkUsePolicy);
-		if (usePolicy) {
-			return form.validate();
-		} else {
-			return true;
-		}
+		return form.validate();
 	}
 
 	@Override
 	public void clearErrors() {
 		form.clearErrors(true);
-	}
-
-	private void changeUsePolicy(boolean usePolicy) {
-		boolean disabled = !usePolicy;
-		txtMaximumPasswordAge.setDisabled(disabled);
-		txtMinimumPasswordAge.setDisabled(disabled);
-		txtPasswordPattern.setDisabled(disabled);
-		chkDenySamePasswordAsAccountId.setDisabled(disabled);
-		txtDenyList.setDisabled(disabled);
-		txtPasswordPatternErrorMessage.setDisabled(disabled);
-		langBtn.setDisabled(disabled);
-		txtPasswordHistoryCount.setDisabled(disabled);
-		chkCreateAccountWithSpecificPassword.setDisabled(disabled);
-		chkResetPasswordWithSpecificPassword.setDisabled(disabled);
-		txtRandomPasswordIncludeSigns.setDisabled(disabled);
-		txtRandomPasswordExcludeChars.setDisabled(disabled);
-		txtRandomPasswordLength.setDisabled(disabled);
 	}
 
 }
