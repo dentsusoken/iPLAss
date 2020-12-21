@@ -241,7 +241,7 @@ public class MetaAuthenticationPolicy extends BaseRootMetaData implements Defina
 						passwordPattern = Pattern.compile(passwordPolicy.getPasswordPattern());
 					}
 					if (passwordPolicy.getDenyList() != null) {
-						denyList = new HashSet<>(Arrays.asList(passwordPolicy.getDenyList().split("\n")));
+						denyList = new HashSet<>(Arrays.asList(passwordPolicy.getDenyList().split("\r\n|\n|\r")));
 					}
 					if (passwordPolicy.getRandomPasswordIncludeSigns() != null && passwordPolicy.getRandomPasswordIncludeSigns().length() > 0) {
 						randomPasswordIncludeSigns = passwordPolicy.getRandomPasswordIncludeSigns().toCharArray();
@@ -483,18 +483,20 @@ public class MetaAuthenticationPolicy extends BaseRootMetaData implements Defina
 		}
 
 		public void checkPasswordPattern(String password, String accountId) {
-			String passwordPatternErrorMessage = I18nUtil.stringMeta(passwordPolicy.getPasswordPatternErrorMessage(), passwordPolicy.getLocalizedPasswordPatternErrorMessageList());
 
 			if (passwordPattern != null && !passwordPattern.matcher(password).matches()) {
+				String passwordPatternErrorMessage = I18nUtil.stringMeta(passwordPolicy.getPasswordPatternErrorMessage(), passwordPolicy.getLocalizedPasswordPatternErrorMessageList());
 				throw new CredentialUpdateException(passwordPatternErrorMessage);
 			}
 
 			if (passwordPolicy.isDenySamePasswordAsAccountId() && accountId.equals(password)) {
+				String passwordPatternErrorMessage = I18nUtil.stringMeta(passwordPolicy.getPasswordPatternErrorMessage(), passwordPolicy.getLocalizedPasswordPatternErrorMessageList());
 				throw new CredentialUpdateException(passwordPatternErrorMessage);
 			}
 
 			if (denyList != null) {
 				if(denyList.contains(password)) {
+					String passwordPatternErrorMessage = I18nUtil.stringMeta(passwordPolicy.getPasswordPatternErrorMessage(), passwordPolicy.getLocalizedPasswordPatternErrorMessageList());
 					throw new CredentialUpdateException(passwordPatternErrorMessage);
 				}
 			}
