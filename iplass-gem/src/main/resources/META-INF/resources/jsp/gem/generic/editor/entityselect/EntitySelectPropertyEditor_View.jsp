@@ -22,9 +22,9 @@
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8" trimDirectiveWhitespaces="true"%>
 <%@ page import="java.util.ArrayList" %>
 <%@ page import="java.util.List" %>
-<%@ page import="org.iplass.mtp.definition.DefinitionSummary"%>
 <%@ page import="org.iplass.mtp.ManagerLocator"%>
 <%@ page import="org.iplass.mtp.entity.Entity"%>
+<%@ page import="org.iplass.mtp.entity.definition.EntityDefinition"%>
 <%@ page import="org.iplass.mtp.entity.definition.EntityDefinitionManager"%>
 <%@ page import="org.iplass.mtp.entity.definition.PropertyDefinition" %>
 <%@ page import="org.iplass.mtp.view.generic.EntityViewUtil"%>
@@ -35,33 +35,33 @@
 <%@ page import="org.iplass.gem.command.Constants"%>
 
 <%!
-	List<DefinitionSummary> getValues(List<DefinitionSummary> list, Object value, PropertyDefinition pd) {
-		List<DefinitionSummary> values = new ArrayList<DefinitionSummary>();
+	List<String> getLabels(Object value, PropertyDefinition pd, EntityDefinitionManager manager) {
+		List<String> labels = new ArrayList<>();
 		if (pd.getMultiplicity() != 1){
 			String[] array = value instanceof String[] ? (String[]) value : null;
 			if (array != null) {
-				for (String tmp : array) {
-					DefinitionSummary ev = getValue(list, tmp);
-					if (ev != null) {
-						values.add(ev);
-					}
+				for (String defName : array) {
+					labels.add(getLabel(defName, manager));
 				}
 			}
 		} else {
-			String tmp = value instanceof String ? (String) value : null;
-			DefinitionSummary ev = getValue(list, tmp);
-			if (ev != null) values.add(ev);
-		}
-		return values;
-	}
-	DefinitionSummary getValue(List<DefinitionSummary> list, String value) {
-		if (value == null) return null;
-		for (DefinitionSummary tmp : list) {
-			if (value.equals(tmp.getName())) {
-				return tmp;
+			String defName = value instanceof String ? (String) value : null;
+			if (defName != null) {
+				labels.add(getLabel(defName, manager));
 			}
 		}
-		return null;
+		return labels;
+	}
+	String getLabel(String defName, EntityDefinitionManager manager) {
+		if (defName == null) return "";
+		
+		EntityDefinition ed = manager.get(defName);
+		if (ed != null) {
+			String label = ed.getDisplayName() != null ? ed.getDisplayName() : ed.getName();
+			return TemplateUtil.getMultilingualString(label, ed.getLocalizedDisplayNameList());
+		} else {
+			return "(" + defName + ")";
+		}
 	}
 %>
 
@@ -79,7 +79,6 @@
 	String propName = editor.getPropertyName();
 
 	EntityDefinitionManager manager = ManagerLocator.getInstance().getManager(EntityDefinitionManager.class);
-	List<DefinitionSummary> definitionNames = manager.definitionSummaryList();
 
 	//カスタムスタイル
 	String customStyle = "";
@@ -96,16 +95,14 @@
 
 	boolean isMultiple = pd.getMultiplicity() != 1;
 	if (isMultiple) {
-		List<DefinitionSummary> values = getValues(definitionNames, propValue, pd);
+		List<String> labels = getLabels(propValue, pd, manager);
 %>
 <ul class="data-label" style="<c:out value="<%=customStyle %>"/>">
 <%
-		for (DefinitionSummary tmp : values) {
-			String label = tmp.getDisplayName() != null ? tmp.getDisplayName() : tmp.getName();
-			String displayName = TemplateUtil.getMultilingualString(label, manager.get(tmp.getName()).getLocalizedDisplayNameList());
+		for (String label : labels) {
 %>
 <li>
-<c:out value="<%=displayName %>" />
+<c:out value="<%=label %>" />
 </li>
 <%
 		}
@@ -113,12 +110,10 @@
 </ul>
 <%
 	} else {
-		DefinitionSummary dn = getValue(definitionNames, (String) propValue);
-		String label = dn != null ? dn.getDisplayName() != null ? dn.getDisplayName() : dn.getName() : "";
-		String displayName = TemplateUtil.getMultilingualString(label, manager.get(dn.getName()).getLocalizedDisplayNameList());
+		String label = getLabel((String)propValue, manager);
 %>
 <span class="data-label" style="<c:out value="<%=customStyle %>"/>">
-<c:out value="<%=displayName %>"/>
+<c:out value="<%=label %>"/>
 </span>
 <%
 	}
