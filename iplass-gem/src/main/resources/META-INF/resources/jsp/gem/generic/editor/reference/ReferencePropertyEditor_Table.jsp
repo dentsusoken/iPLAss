@@ -283,7 +283,7 @@
 		entities = EntityViewUtil.sortByOrderProperty(entities, editor.getTableOrderPropertyName(), true);
 	} else {
 		//表示順が指定されていない場合Oidで並び替え（デフォルト昇順）
-		entities = EntityViewUtil.sortByOrderProperty(entities, "oid", true);
+		entities = EntityViewUtil.sortByOrderProperty(entities, "oid", false);
 		//追加ボタンはTopの場合、降順で表示します。
 		if (editor.getInsertType() == InsertType.TOP) {
 			Collections.reverse(entities);
