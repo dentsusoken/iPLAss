@@ -594,10 +594,12 @@ public class EntityViewUtil {
 			if (oidList.isEmpty()) {
 				target = entities;
 			} else {
+				List<Entity> newEntities = entities.stream().filter(e -> e.getOid() == null).collect(Collectors.toList());
 				Query query = new Query().select(Entity.OID, Entity.VERSION, propertyName)
 						.from(entities.get(0).getDefinitionName())
 						.where(new In(Entity.OID, oidList.toArray()));
 				target = ManagerLocator.getInstance().getManager(EntityManager.class).searchEntity(query).getList();
+				target.addAll(newEntities);
 			}
 		} else {
 			target = entities;
