@@ -33,6 +33,8 @@ import org.iplass.mtp.entity.query.QueryVisitorSupport;
 import org.iplass.mtp.entity.query.Select;
 import org.iplass.mtp.entity.query.SubQuery;
 import org.iplass.mtp.entity.query.hint.BindHint;
+import org.iplass.mtp.entity.query.hint.Hint;
+import org.iplass.mtp.entity.query.hint.NoBindHint;
 import org.iplass.mtp.entity.query.value.ValueExpression;
 import org.iplass.mtp.entity.query.value.primary.Literal;
 import org.iplass.mtp.entity.query.value.window.PartitionBy;
@@ -73,7 +75,19 @@ public class ObjStoreSearchSql extends QuerySqlHandler {
 				//Oracleでは、GroupBy,PartitionBY,WindowGroupByにバインド変数利用できない為、、
 				GroupByNoBinder noBinder = new GroupByNoBinder();
 				query.accept(noBinder);
-				query.select().hintComment().add(new BindHint());
+				boolean hasNoBindHint = false;
+				if (query.select().getHintComment() != null
+						&& query.select().getHintComment().getHintList() != null) {
+					for (Hint h: query.select().getHintComment().getHintList()) {
+						if (h instanceof NoBindHint) {
+							hasNoBindHint = true;
+							break;
+						}
+					}
+				}
+				if (!hasNoBindHint) {
+					query.select().hintComment().add(new BindHint());
+				}
 			}
 			query.accept(converter);
 			if (withLock) {
