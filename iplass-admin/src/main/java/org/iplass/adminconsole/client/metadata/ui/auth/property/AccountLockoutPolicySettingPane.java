@@ -25,15 +25,10 @@ import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
 import org.iplass.mtp.auth.policy.definition.AccountLockoutPolicyDefinition;
 import org.iplass.mtp.auth.policy.definition.AuthenticationPolicyDefinition;
 
-import com.smartgwt.client.widgets.form.fields.CheckboxItem;
 import com.smartgwt.client.widgets.form.fields.IntegerItem;
-import com.smartgwt.client.widgets.form.fields.events.ChangedEvent;
-import com.smartgwt.client.widgets.form.fields.events.ChangedHandler;
 import com.smartgwt.client.widgets.form.validator.IntegerRangeValidator;
 
 public class AccountLockoutPolicySettingPane extends AbstractSettingPane {
-
-	private CheckboxItem chkUsePolicy;
 
 	private IntegerItem txtlockoutFailureCount;
 	private IntegerItem txtlockoutDuration;
@@ -43,20 +38,9 @@ public class AccountLockoutPolicySettingPane extends AbstractSettingPane {
 
 		form.setGroupTitle("Account Lockout Policy Setting");
 
-		chkUsePolicy = new CheckboxItem();
-		chkUsePolicy.setTitle("Use Account Lockout Policy");
-		chkUsePolicy.setShowTitle(false);
-		chkUsePolicy.setColSpan(2);
-		chkUsePolicy.addChangedHandler(new ChangedHandler() {
-
-			@Override
-			public void onChanged(ChangedEvent event) {
-				changeUsePolicy(SmartGWTUtil.getBooleanValue(chkUsePolicy));
-			}
-		});
-
 		txtlockoutFailureCount = new MtpIntegerItem();
 		txtlockoutFailureCount.setTitle("Lockout Failure Count");
+		SmartGWTUtil.setRequired(txtlockoutFailureCount);
 		IntegerRangeValidator validator = new IntegerRangeValidator();
 		validator.setMin(0);
 		validator.setMax(99);
@@ -66,11 +50,13 @@ public class AccountLockoutPolicySettingPane extends AbstractSettingPane {
 
 		txtlockoutDuration = new MtpIntegerItem();
 		txtlockoutDuration.setTitle("Lockout Duration(min)");
+		SmartGWTUtil.setRequired(txtlockoutDuration);
 
 		txtlockoutFailureExpirationInterval = new MtpIntegerItem();
 		txtlockoutFailureExpirationInterval.setTitle("Lockout Failure Expiration Interval(min)");
+		SmartGWTUtil.setRequired(txtlockoutFailureExpirationInterval);
 
-		form.setItems(chkUsePolicy,
+		form.setItems(
 				txtlockoutFailureCount, txtlockoutDuration, txtlockoutFailureExpirationInterval);
 
 		addMember(form);
@@ -80,42 +66,20 @@ public class AccountLockoutPolicySettingPane extends AbstractSettingPane {
 	public void setDefinition(AuthenticationPolicyDefinition definition) {
 		AccountLockoutPolicyDefinition accountLockoutPolicyDefinition = definition.getAccountLockoutPolicy();
 
-		boolean usePolicy = accountLockoutPolicyDefinition != null;
-		chkUsePolicy.setValue(usePolicy);
-
-		if (!usePolicy) {
-			//未設定の場合は、初期値を設定するためnew
-			accountLockoutPolicyDefinition = new AccountLockoutPolicyDefinition();
-		}
-
 		txtlockoutFailureCount.setValue(accountLockoutPolicyDefinition.getLockoutFailureCount());
 		txtlockoutDuration.setValue(accountLockoutPolicyDefinition.getLockoutDuration());
 		txtlockoutFailureExpirationInterval.setValue(accountLockoutPolicyDefinition.getLockoutFailureExpirationInterval());
 
-		changeUsePolicy(usePolicy);
 	}
 
 	@Override
 	public AuthenticationPolicyDefinition getEditDefinition(AuthenticationPolicyDefinition definition) {
 
-		boolean usePolicy = SmartGWTUtil.getBooleanValue(chkUsePolicy);
+		AccountLockoutPolicyDefinition accountLockoutPolicyDefinition = new AccountLockoutPolicyDefinition();
 
-		AccountLockoutPolicyDefinition accountLockoutPolicyDefinition = null;
-		if (usePolicy) {
-			accountLockoutPolicyDefinition = new AccountLockoutPolicyDefinition();
-
-			if (SmartGWTUtil.getIntegerValue(txtlockoutDuration) != null) {
-				accountLockoutPolicyDefinition.setLockoutDuration(SmartGWTUtil.getIntegerValue(txtlockoutDuration));
-			}
-
-			if (SmartGWTUtil.getIntegerValue(txtlockoutFailureCount) != null) {
-				accountLockoutPolicyDefinition.setLockoutFailureCount(SmartGWTUtil.getIntegerValue(txtlockoutFailureCount));
-			}
-
-			if (SmartGWTUtil.getIntegerValue(txtlockoutFailureExpirationInterval) != null) {
-				accountLockoutPolicyDefinition.setLockoutFailureExpirationInterval(SmartGWTUtil.getIntegerValue(txtlockoutFailureExpirationInterval));
-			}
-		}
+		accountLockoutPolicyDefinition.setLockoutDuration(SmartGWTUtil.getIntegerValue(txtlockoutDuration));
+		accountLockoutPolicyDefinition.setLockoutFailureCount(SmartGWTUtil.getIntegerValue(txtlockoutFailureCount));
+		accountLockoutPolicyDefinition.setLockoutFailureExpirationInterval(SmartGWTUtil.getIntegerValue(txtlockoutFailureExpirationInterval));
 
 		definition.setAccountLockoutPolicy(accountLockoutPolicyDefinition);
 
@@ -124,25 +88,14 @@ public class AccountLockoutPolicySettingPane extends AbstractSettingPane {
 
 	@Override
 	public boolean validate() {
-		boolean usePolicy = SmartGWTUtil.getBooleanValue(chkUsePolicy);
-		if (usePolicy) {
-			return form.validate();
-		} else {
-			return true;
-		}
+		return form.validate();
+
 	}
 
 	@Override
 	public void clearErrors() {
 		form.clearErrors(true);
 
-	}
-
-	private void changeUsePolicy(boolean usePolicy) {
-		boolean disabled = !usePolicy;
-		txtlockoutFailureCount.setDisabled(disabled);
-		txtlockoutDuration.setDisabled(disabled);
-		txtlockoutFailureExpirationInterval.setDisabled(disabled);
 	}
 
 }

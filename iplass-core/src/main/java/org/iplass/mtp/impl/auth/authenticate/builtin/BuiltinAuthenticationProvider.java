@@ -175,7 +175,7 @@ public class BuiltinAuthenticationProvider extends AuthenticationProviderBase {
 			return null;
 //			throw new SystemException("BuiltinAuthenticationProvider supports IdPasswordCredential");
 		}
-		
+
 		if (accountId == null || accountId.isEmpty()) {
 			return null;
 		}
@@ -275,7 +275,6 @@ public class BuiltinAuthenticationProvider extends AuthenticationProviderBase {
 				throw new ServiceConfigrationException("invalid PasswordHashAlgorithm", e);
 			}
 		}
-		
 	}
 
 	@Override
@@ -352,7 +351,7 @@ public class BuiltinAuthenticationProvider extends AuthenticationProviderBase {
 				if(policy.getMetaData().getPasswordPolicy().isCreateAccountWithSpecificPassword()) {
 					if (user.getPassword() != null) {
 						//パスワードが設定されている場合パスワードパターンチェック
-						policy.checkPasswordPattern(user.getPassword());
+						policy.checkPasswordPattern(user.getPassword(), user.getAccountId());
 					}
 				}
 
@@ -610,15 +609,7 @@ public class BuiltinAuthenticationProvider extends AuthenticationProviderBase {
 				int passwordHistoryCount = policy.getMetaData().getPasswordPolicy().getPasswordHistoryCount();
 				if (passwordHistoryCount > 0) {
 					passList = accountDao.getPasswordHistory(account.getTenantId(), account.getAccountId());
-					if (passList != null) {
-						for (int i = 0; i < passList.size() && i < passwordHistoryCount; i++) {
-							Password pwd = passList.get(i);
-							String[] verAndSalt = divVerAndSalt(pwd.getSalt());
-							if (pwd.getConvertedPassword().equals(convertPassword(newIdPass.getPassword(), verAndSalt[1], selectSetting(verAndSalt[0])))) {
-								throw new CredentialUpdateException(resourceString("impl.auth.authenticate.updateCredential.passHistoryExists"));
-							}
-						}
-					}
+					checkPasswordHistory(newIdPass.getPassword(), account, passList, passwordHistoryCount);
 				}
 
 				//Salt再作成
@@ -715,21 +706,13 @@ public class BuiltinAuthenticationProvider extends AuthenticationProviderBase {
 					isGenPassword = false;
 
 					//パスワードポリシーの確認
-					policy.checkPasswordPattern(newPassword);
+					policy.checkPasswordPattern(newPassword, account.getAccountId());
 					//パスワード履歴の確認
 					List<Password> passList = null;
 					int passwordHistoryCount = policy.getMetaData().getPasswordPolicy().getPasswordHistoryCount();
 					if (passwordHistoryCount > 0) {
 						passList = accountDao.getPasswordHistory(account.getTenantId(), account.getAccountId());
-						if (passList != null) {
-							for (int i = 0; i < passList.size() && i < passwordHistoryCount; i++) {
-								Password pwd = passList.get(i);
-								String[] verAndSalt = divVerAndSalt(pwd.getSalt());
-								if (pwd.getConvertedPassword().equals(convertPassword(newPassword, verAndSalt[1], selectSetting(verAndSalt[0])))) {
-									throw new CredentialUpdateException(resourceString("impl.auth.authenticate.updateCredential.passHistoryExists"));
-								}
-							}
-						}
+						checkPasswordHistory(newPassword, account, passList, passwordHistoryCount);
 					}
 				} else {
 					if (((IdPasswordCredential) credential).getPassword() != null) {
@@ -818,6 +801,18 @@ public class BuiltinAuthenticationProvider extends AuthenticationProviderBase {
 					}
 					return null;
 			});
+		}
+
+		private void checkPasswordHistory(String newPassword, BuiltinAccount account, List<Password> passList, int passwordHistoryCount) {
+			if (passList != null) {
+				for (int i = 0; i < passList.size() && i < passwordHistoryCount; i++) {
+					Password pwd = passList.get(i);
+					String[] verAndSalt = divVerAndSalt(pwd.getSalt());
+					if (pwd.getConvertedPassword().equals(convertPassword(newPassword, verAndSalt[1], selectSetting(verAndSalt[0])))) {
+						throw new CredentialUpdateException(resourceString("impl.auth.authenticate.updateCredential.passHistoryExists"));
+					}
+				}
+			}
 		}
 
 		@Override

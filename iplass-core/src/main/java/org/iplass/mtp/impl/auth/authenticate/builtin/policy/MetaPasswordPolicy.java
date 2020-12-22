@@ -1,19 +1,19 @@
 /*
  * Copyright (C) 2014 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
- * 
+ *
  * Unless you have purchased a commercial license,
  * the following license terms apply:
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
@@ -30,13 +30,17 @@ import org.iplass.mtp.impl.util.ObjectUtil;
 
 public class MetaPasswordPolicy implements MetaData {
 	private static final long serialVersionUID = -2469096937639131962L;
-	
+
 	/** パスワードが有効な最大期間 （日）。0は無限。*/
 	private int maximumPasswordAge;
 	/** パスワード変更に最低限必要な期間（日） */
 	private int minimumPasswordAge;
 	/** パスワードの複雑度チェックに利用する正規表現 */
 	private String passwordPattern;
+	/**アカウントIDと同一のパスワードを不許可とするか */
+	private boolean denySamePasswordAsAccountId;
+	/** パスワードの拒否リスト。複数指定する場合は改行で区切ってください。 */
+	private String denyList;
 	/** パスワードの複雑度エラーのメッセージ */
 	private String passwordPatternErrorMessage;
 	/** パスワードの複雑度エラーのメッセージ(Localized) */
@@ -55,7 +59,7 @@ public class MetaPasswordPolicy implements MetaData {
 	private String randomPasswordExcludeChars;
 	/** 自動生成パスワードの長さ */
 	private int randomPasswordLength;
-	
+
 	public int getMaximumPasswordAge() {
 		return maximumPasswordAge;
 	}
@@ -78,6 +82,22 @@ public class MetaPasswordPolicy implements MetaData {
 
 	public void setPasswordPattern(String passwordPattern) {
 		this.passwordPattern = passwordPattern;
+	}
+
+	public boolean isDenySamePasswordAsAccountId() {
+		return denySamePasswordAsAccountId;
+	}
+
+	public void setDenySamePasswordAsAccountId(boolean denySamePasswordAsAccountId) {
+		this.denySamePasswordAsAccountId = denySamePasswordAsAccountId;
+	}
+
+	public String getDenyList() {
+		return denyList;
+	}
+
+	public void setDenyList(String denyList) {
+		this.denyList = denyList;
 	}
 
 	public String getPasswordPatternErrorMessage() {
@@ -156,6 +176,8 @@ public class MetaPasswordPolicy implements MetaData {
 		maximumPasswordAge = def.getMaximumPasswordAge();
 		minimumPasswordAge = def.getMinimumPasswordAge();
 		passwordPattern = def.getPasswordPattern();
+		denySamePasswordAsAccountId = def.isDenySamePasswordAsAccountId();
+		denyList = def.getDenyList();
 		passwordPatternErrorMessage = def.getPasswordPatternErrorMessage();
 		localizedPasswordPatternErrorMessageList = I18nUtil.toMeta(def.getLocalizedPasswordPatternErrorMessageList());
 		passwordHistoryCount = def.getPasswordHistoryCount();
@@ -171,6 +193,8 @@ public class MetaPasswordPolicy implements MetaData {
 		def.setMaximumPasswordAge(maximumPasswordAge);
 		def.setMinimumPasswordAge(minimumPasswordAge);
 		def.setPasswordPattern(passwordPattern);
+		def.setDenySamePasswordAsAccountId(denySamePasswordAsAccountId);
+		def.setDenyList(denyList);
 		def.setPasswordPatternErrorMessage(passwordPatternErrorMessage);
 		def.setLocalizedPasswordPatternErrorMessageList(I18nUtil.toDef(localizedPasswordPatternErrorMessageList));
 		def.setPasswordHistoryCount(passwordHistoryCount);
