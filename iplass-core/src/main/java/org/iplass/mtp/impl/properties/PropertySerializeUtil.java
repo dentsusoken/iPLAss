@@ -1,19 +1,19 @@
 /*
  * Copyright (C) 2012 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
- * 
+ *
  * Unless you have purchased a commercial license,
  * the following license terms apply:
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
@@ -36,12 +36,14 @@ import org.iplass.mtp.entity.SelectValue;
 import org.iplass.mtp.entity.definition.PropertyDefinitionType;
 
 public class PropertySerializeUtil {
-	
+
 	//カスタムのシリアライズ処理などで、型の識別子に利用
-	
+
 	public static final byte NULL = 0;
 	public static final byte AUTONUMBER = 1;
-	public static final byte BINARY = 2;
+	@Deprecated
+	public static final byte BINARY_OLD = 2;//LobIdのみ保持
+	public static final byte BINARY = 15;
 	public static final byte BOOLEAN = 3;
 	public static final byte DATE = 4;
 	public static final byte DATETIME = 5;
@@ -54,11 +56,13 @@ public class PropertySerializeUtil {
 	public static final byte SELECT = 12;
 	public static final byte STRING = 13;
 	public static final byte TIME = 14;
-	
+
 	public static final byte ARRAY_MASK = 0b1000000;
-	
+
 	public static final byte NULL_ARRAY = NULL | ARRAY_MASK;
 	public static final byte AUTONUMBER_ARRAY = AUTONUMBER | ARRAY_MASK;
+	@Deprecated
+	public static final byte BINARY_ARRAY_OLD = BINARY_OLD | ARRAY_MASK;//LobIdのみ保持
 	public static final byte BINARY_ARRAY = BINARY | ARRAY_MASK;
 	public static final byte BOOLEAN_ARRAY = BOOLEAN | ARRAY_MASK;
 	public static final byte DATE_ARRAY = DATE | ARRAY_MASK;
@@ -72,7 +76,7 @@ public class PropertySerializeUtil {
 	public static final byte SELECT_ARRAY = SELECT | ARRAY_MASK;
 	public static final byte STRING_ARRAY = STRING | ARRAY_MASK;
 	public static final byte TIME_ARRAY = TIME | ARRAY_MASK;
-	
+
 	private static final Map<Class<?>, Byte> typeMap;
 	static {
 		Map<Class<?>, Byte> map = new HashMap<>();
@@ -88,7 +92,7 @@ public class PropertySerializeUtil {
 		map.put(SelectValue.class, SELECT);
 		map.put(String.class, STRING);
 		map.put(Time.class, TIME);
-		
+
 		map.put(BinaryReference[].class, BINARY_ARRAY);
 		map.put(Boolean[].class, BOOLEAN_ARRAY);
 		map.put(boolean[].class, BOOLEAN_ARRAY);
@@ -103,11 +107,11 @@ public class PropertySerializeUtil {
 		map.put(SelectValue[].class, SELECT_ARRAY);
 		map.put(String[].class, STRING_ARRAY);
 		map.put(Time[].class, TIME_ARRAY);
-		
+
 		typeMap = map;
 	}
-	
-	
+
+
 	public static byte typeOf(PropertyDefinitionType pdType) {
 		switch (pdType) {
 		case AUTONUMBER:
@@ -141,14 +145,22 @@ public class PropertySerializeUtil {
 		}
 		throw new IllegalArgumentException("not support type:" + pdType);
 	}
-	
+
 	public static Object read(DataInput is) throws IOException {
 		byte dt = is.readByte();
 		switch (dt) {
 		case NULL:
 			return null;
-		case BINARY:
+		case BINARY_OLD:
 			return new BinaryReference(is.readLong(), null, null, 0);
+		case BINARY:
+			long lobId = is.readLong();
+			dt = is.readByte();
+			if (dt == NULL) {
+				return new BinaryReference(lobId, null, null, 0);
+			} else {
+				return new BinaryReference(lobId, is.readUTF(), null, 0);
+			}
 		case BOOLEAN:
 			return Boolean.valueOf(is.readBoolean());
 		case DATE:
@@ -249,6 +261,16 @@ public class PropertySerializeUtil {
 				}
 			}
 			return boolArray;
+		case BINARY_ARRAY_OLD:
+			length = is.readInt();
+			BinaryReference[] binOldArray = new BinaryReference[length];
+			for (int i = 0; i< binOldArray.length; i++) {
+				dt = is.readByte();
+				if (dt == BINARY_OLD) {
+					binOldArray[i] = new BinaryReference(is.readLong(), null, null, 0);
+				}
+			}
+			return binOldArray;
 		case BINARY_ARRAY:
 			length = is.readInt();
 			BinaryReference[] binArray = new BinaryReference[length];
@@ -256,6 +278,9 @@ public class PropertySerializeUtil {
 				dt = is.readByte();
 				if (dt == BINARY) {
 					binArray[i] = new BinaryReference(is.readLong(), null, null, 0);
+					if (is.readByte() != NULL) {
+						binArray[i].setName(is.readUTF());
+					}
 				}
 			}
 			return binArray;
@@ -280,13 +305,13 @@ public class PropertySerializeUtil {
 			}
 			return timeArray;
 		}
-		
+
 		throw new IllegalArgumentException("unknown data format type:" + dt);
-		
+
 	}
-	
+
 	public static void write(DataOutput os, Object value) throws IOException {
-		
+
 		byte bt = typeOf(value, false);
 		os.writeByte(bt);
 		switch (bt) {
@@ -323,7 +348,14 @@ public class PropertySerializeUtil {
 			os.writeBoolean(((Boolean) value).booleanValue());
 			break;
 		case BINARY:
-			os.writeLong(((BinaryReference) value).getLobId());
+			BinaryReference br = (BinaryReference) value;
+			os.writeLong(br.getLobId());
+			if (br.getName() == null) {
+				os.writeByte(NULL);
+			} else {
+				os.writeByte(STRING);
+				os.writeUTF(br.getName());
+			}
 			break;
 		case DECIMAL:
 			os.writeUTF(((BigDecimal) value).toString());
@@ -431,6 +463,12 @@ public class PropertySerializeUtil {
 				} else {
 					os.writeByte(BINARY);
 					os.writeLong(binArray[i].getLobId());
+					if (binArray[i].getName() == null) {
+						os.writeByte(NULL);
+					} else {
+						os.writeByte(STRING);
+						os.writeUTF(binArray[i].getName());
+					}
 				}
 			}
 			break;
@@ -462,17 +500,17 @@ public class PropertySerializeUtil {
 			break;
 		}
 	}
-	
+
 	public static byte typeOf(Object value, boolean strictCheck) {
 		if (value == null) {
 			return NULL;
 		}
-		
+
 		Byte bt = typeMap.get(value.getClass());
 		if (bt != null) {
 			return bt.byteValue();
 		}
-		
+
 		if (strictCheck) {
 			throw new IllegalArgumentException("not support type:" + value);
 		} else {
