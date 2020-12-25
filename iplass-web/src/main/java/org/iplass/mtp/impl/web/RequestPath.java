@@ -163,17 +163,17 @@ public class RequestPath {
 						}
 						tenantAuthType = TenantAuthType.PATH;
 					}
+				}
 
-					//ReqType
-					if (!wfService.isAcceptPathes(targetPath)) {
-						pathType = PathType.REJECT;
-					} else if (wfService.isThroughPath(targetPath)) {
-						pathType = PathType.THROUGH;
-					} else if (wfService.isRestPath(targetPath)) {
-						pathType = PathType.REST;
-					} else {
-						pathType = PathType.ACTION;
-					}
+				//ReqType
+				if (!wfService.isAcceptPathes(targetPath)) {
+					pathType = PathType.REJECT;
+				} else if (wfService.isThroughPath(targetPath)) {
+					pathType = PathType.THROUGH;
+				} else if (wfService.isRestPath(targetPath)) {
+					pathType = PathType.REST;
+				} else {
+					pathType = PathType.ACTION;
 				}
 			}
 		}
