@@ -146,6 +146,9 @@ $(function() {
 	}
 });
 function onclick_save(action, target) {
+	if ($("#confirmEditSave").val() == "true" && !confirm("${m:rs('mtp-gem-messages', 'generic.detail.ref.detail.saveMsg')}")) {
+		return;
+	}
 	button_onclick(action);
 	if (target) $(target).prop("disabled", true);
 }
@@ -221,6 +224,7 @@ ${m:outputToken('FORM_XHTML', true)}
 <%
 	}
 %>
+<input type="hidden" id="confirmEditSave" value="<%=ViewUtil.isConfirmEditSave()%>" />
 <input type="hidden" id="confirmEditCancel" value="<%=ViewUtil.isConfirmEditCancel()%>" />
 <%-- ページトップ部分のボタン --%>
 <div class="operation-bar operation-bar_top">

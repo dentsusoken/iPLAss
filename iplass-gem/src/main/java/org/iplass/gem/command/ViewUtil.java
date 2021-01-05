@@ -252,6 +252,15 @@ public class ViewUtil {
 	}
 
 	/**
+	 * 編集画面での保存時に確認のメッセージを表示するか
+	 * @return
+	 */
+	public static boolean isConfirmEditSave() {
+		GemConfigService gemConfigService = ServiceRegistry.getRegistry().getService(GemConfigService.class);
+		return gemConfigService.isConfirmEditSave();
+	}
+
+	/**
 	 * 編集画面でのキャンセル時に確認のメッセージを表示するか
 	 * @return
 	 */

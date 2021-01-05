@@ -69,6 +69,9 @@ public class GemConfigService implements Service {
 	/** CSVダウンロード時User名取得のための検索内部キャッシュサイズ */
 	private int searchResultCacheLimit;
 
+	/** 編集画面で保存時に確認ダイアログを表示するか */
+	private boolean confirmEditSave;
+
 	/** 編集画面でキャンセル時に確認ダイアログを表示するか */
 	private boolean confirmEditCancel;
 
@@ -189,6 +192,8 @@ public class GemConfigService implements Service {
 		} else {
 			this.searchResultCacheLimit = 300;
 		}
+
+		confirmEditSave = Boolean.valueOf(config.getValue("confirmEditSave"));
 
 		confirmEditCancel = Boolean.valueOf(config.getValue("confirmEditCancel"));
 
@@ -381,6 +386,14 @@ public class GemConfigService implements Service {
 	 */
 	public int getSearchResultCacheLimit() {
 		return searchResultCacheLimit;
+	}
+
+	/**
+	 * 編集画面で保存時に確認ダイアログを表示するかを取得します。
+	 * @return 編集画面で保存時に確認ダイアログを表示するか
+	 */
+	public boolean isConfirmEditSave() {
+		return confirmEditSave;
 	}
 
 	/**
