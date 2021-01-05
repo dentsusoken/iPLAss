@@ -23,14 +23,13 @@ package org.iplass.mtp.impl.web.template;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.iplass.mtp.command.Command;
 import org.iplass.mtp.command.annotation.template.Templates;
 import org.iplass.mtp.impl.metadata.annotation.AnnotatableMetaDataFactory;
 import org.iplass.mtp.impl.metadata.annotation.AnnotateMetaDataEntry;
 
 
 public class MetaTemplatesFactory implements
-		AnnotatableMetaDataFactory<Templates, Command> {
+		AnnotatableMetaDataFactory<Templates, Object> {
 
 
 	private MetaTemplateFactory metaTemplateFactory;
@@ -40,8 +39,8 @@ public class MetaTemplatesFactory implements
 	}
 
 	@Override
-	public Class<Command> getAnnotatedClass() {
-		return Command.class;
+	public Class<Object> getAnnotatedClass() {
+		return Object.class;
 	}
 
 	@Override
@@ -50,7 +49,7 @@ public class MetaTemplatesFactory implements
 	}
 
 	@Override
-	public Map<String, AnnotateMetaDataEntry> toMetaData(Class<Command> annotatedClass) {
+	public Map<String, AnnotateMetaDataEntry> toMetaData(Class<Object> annotatedClass) {
 		Map<String, AnnotateMetaDataEntry> map = new HashMap<String, AnnotateMetaDataEntry>();
 		Templates templates = annotatedClass.getAnnotation(Templates.class);
 		for (int i = 0; i < templates.value().length; i++) {

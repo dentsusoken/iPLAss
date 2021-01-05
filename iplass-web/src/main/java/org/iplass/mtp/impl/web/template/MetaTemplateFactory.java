@@ -25,7 +25,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.iplass.mtp.command.Command;
 import org.iplass.mtp.command.annotation.template.Template;
 import org.iplass.mtp.definition.annotation.LocalizedString;
 import org.iplass.mtp.impl.i18n.MetaLocalizedString;
@@ -35,14 +34,14 @@ import org.iplass.mtp.util.StringUtil;
 
 
 public class MetaTemplateFactory implements
-		AnnotatableMetaDataFactory<Template, Command> {
+		AnnotatableMetaDataFactory<Template, Object> {
 
 	public MetaTemplateFactory() {
 	}
 
 	@Override
-	public Class<Command> getAnnotatedClass() {
-		return Command.class;
+	public Class<Object> getAnnotatedClass() {
+		return Object.class;
 	}
 
 	@Override
@@ -51,12 +50,12 @@ public class MetaTemplateFactory implements
 	}
 
 	@Override
-	public Map<String, AnnotateMetaDataEntry> toMetaData(Class<Command> annotatedClass) {
+	public Map<String, AnnotateMetaDataEntry> toMetaData(Class<Object> annotatedClass) {
 		Template template = annotatedClass.getAnnotation(Template.class);
 		return toMetaData(template, annotatedClass);
 	}
 
-	Map<String, AnnotateMetaDataEntry> toMetaData(Template template, Class<Command> annotatedClass) {
+	Map<String, AnnotateMetaDataEntry> toMetaData(Template template, Class<Object> annotatedClass) {
 		Map<String, AnnotateMetaDataEntry> map = new HashMap<String, AnnotateMetaDataEntry>();
 		//アノテーションはJSPテンプレートのみ定義可能
 		MetaJspTemplate metaJspTemplate = new MetaJspTemplate();

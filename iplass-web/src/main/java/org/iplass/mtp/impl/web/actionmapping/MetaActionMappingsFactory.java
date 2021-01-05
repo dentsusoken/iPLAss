@@ -23,14 +23,13 @@ package org.iplass.mtp.impl.web.actionmapping;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.iplass.mtp.command.Command;
 import org.iplass.mtp.command.annotation.action.ActionMappings;
 import org.iplass.mtp.impl.metadata.annotation.AnnotatableMetaDataFactory;
 import org.iplass.mtp.impl.metadata.annotation.AnnotateMetaDataEntry;
 
 
 public class MetaActionMappingsFactory implements
-		AnnotatableMetaDataFactory<ActionMappings, Command> {
+		AnnotatableMetaDataFactory<ActionMappings, Object> {
 	
 	
 	private MetaActionMappingFactory metaActionMappingfactory;
@@ -40,8 +39,8 @@ public class MetaActionMappingsFactory implements
 	}
 	
 	@Override
-	public Class<Command> getAnnotatedClass() {
-		return Command.class;
+	public Class<Object> getAnnotatedClass() {
+		return Object.class;
 	}
 
 	@Override
@@ -50,7 +49,7 @@ public class MetaActionMappingsFactory implements
 	}
 	
 	@Override
-	public Map<String, AnnotateMetaDataEntry> toMetaData(Class<Command> annotatedClass) {
+	public Map<String, AnnotateMetaDataEntry> toMetaData(Class<Object> annotatedClass) {
 		Map<String, AnnotateMetaDataEntry> map = new HashMap<String, AnnotateMetaDataEntry>();
 		ActionMappings actionMappings = annotatedClass.getAnnotation(ActionMappings.class);
 		for (int i = 0; i < actionMappings.value().length; i++) {

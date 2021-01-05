@@ -22,13 +22,12 @@ package org.iplass.mtp.impl.webapi;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.iplass.mtp.command.Command;
 import org.iplass.mtp.command.annotation.webapi.WebApis;
 import org.iplass.mtp.impl.metadata.annotation.AnnotatableMetaDataFactory;
 import org.iplass.mtp.impl.metadata.annotation.AnnotateMetaDataEntry;
 
 
-public class MetaWebApisFactory implements AnnotatableMetaDataFactory<WebApis, Command> {
+public class MetaWebApisFactory implements AnnotatableMetaDataFactory<WebApis, Object> {
 	
 	
 	private MetaWebApiFactory metaWebApiFactory;
@@ -38,8 +37,8 @@ public class MetaWebApisFactory implements AnnotatableMetaDataFactory<WebApis, C
 	}
 	
 	@Override
-	public Class<Command> getAnnotatedClass() {
-		return Command.class;
+	public Class<Object> getAnnotatedClass() {
+		return Object.class;
 	}
 
 	@Override
@@ -48,7 +47,7 @@ public class MetaWebApisFactory implements AnnotatableMetaDataFactory<WebApis, C
 	}
 	
 	@Override
-	public Map<String, AnnotateMetaDataEntry> toMetaData(Class<Command> annotatedClass) {
+	public Map<String, AnnotateMetaDataEntry> toMetaData(Class<Object> annotatedClass) {
 		Map<String, AnnotateMetaDataEntry> map = new HashMap<String, AnnotateMetaDataEntry>();
 		WebApis actionMappings = annotatedClass.getAnnotation(WebApis.class);
 		for (int i = 0; i < actionMappings.value().length; i++) {

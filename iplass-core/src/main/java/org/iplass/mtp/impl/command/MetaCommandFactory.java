@@ -27,6 +27,7 @@ import org.iplass.mtp.command.Command;
 import org.iplass.mtp.command.annotation.CommandClass;
 import org.iplass.mtp.command.annotation.CommandConfig;
 import org.iplass.mtp.command.annotation.CompositeCommandConfig;
+import org.iplass.mtp.impl.metadata.MetaDataRuntimeException;
 import org.iplass.mtp.impl.metadata.annotation.AnnotatableMetaDataFactory;
 
 public class MetaCommandFactory {
@@ -51,7 +52,7 @@ public class MetaCommandFactory {
 		}
 	}
 	
-	public MetaCommandResult toMetaCommand(CommandConfig[] commandDefs, Class<? extends Command> annotatedClass) {
+	public MetaCommandResult toMetaCommand(CommandConfig[] commandDefs, Class<?> annotatedClass) {
 		List<MetaCommandInfo> metaCommandInfos = new ArrayList<MetaCommandInfo>();
 		MetaCommand meta = null;
 		if (commandDefs.length > 1) {
@@ -72,7 +73,7 @@ public class MetaCommandFactory {
 		return new MetaCommandResult(metaCommandInfos, meta);
 	}
 	
-	public MetaCommandResult toMetaCommand(CompositeCommandConfig compositeCommandDef, Class<? extends Command> annotatedClass) {
+	public MetaCommandResult toMetaCommand(CompositeCommandConfig compositeCommandDef, Class<?> annotatedClass) {
 		if (compositeCommandDef.command().length == 0) {
 			return null;
 		}
@@ -96,13 +97,18 @@ public class MetaCommandFactory {
 		return new MetaCommandResult(metaCommandInfos, metaComposite);
 	}
 	
-	public MetaCommandInfo toMetaCommand(CommandConfig commandDef, Class<? extends Command> anotatedClass) {
+	@SuppressWarnings("unchecked")
+	public MetaCommandInfo toMetaCommand(CommandConfig commandDef, Class<?> anotatedClass) {
 		MetaSingleCommand metaCommand = new MetaSingleCommand();
 
 		Class<? extends Command> cmdClass = null;
 		if (commandDef.commandClass() == Command.class) {
 			//デフォルトの場合は、Annotationを指定したCommandクラス
-			cmdClass = anotatedClass;
+			if (anotatedClass != null && Command.class.isAssignableFrom(anotatedClass)) {
+				cmdClass = (Class<? extends Command>) anotatedClass;
+			} else {
+				throw new MetaDataRuntimeException("Anotated class is not Command class, so commandClass must specify:" + anotatedClass);
+			}
 		} else {
 			cmdClass = commandDef.commandClass();
 		}

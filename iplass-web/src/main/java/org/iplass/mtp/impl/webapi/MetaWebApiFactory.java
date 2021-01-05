@@ -23,7 +23,6 @@ package org.iplass.mtp.impl.webapi;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.iplass.mtp.command.Command;
 import org.iplass.mtp.command.annotation.CommandClass;
 import org.iplass.mtp.command.annotation.webapi.WebApi;
 import org.iplass.mtp.command.annotation.webapi.WebApiParamMapping;
@@ -34,15 +33,15 @@ import org.iplass.mtp.impl.metadata.annotation.AnnotateMetaDataEntry;
 import org.iplass.mtp.webapi.definition.CacheControlType;
 
 
-public class MetaWebApiFactory implements AnnotatableMetaDataFactory<WebApi, Command> {
+public class MetaWebApiFactory implements AnnotatableMetaDataFactory<WebApi, Object> {
 
 	public static final String PATH_PREFIX = WebApiService.WEB_API_META_PATH;
 
 	private MetaCommandFactory commandFactory = new MetaCommandFactory();
 
 	@Override
-	public Class<Command> getAnnotatedClass() {
-		return Command.class;
+	public Class<Object> getAnnotatedClass() {
+		return Object.class;
 	}
 
 	@Override
@@ -51,12 +50,12 @@ public class MetaWebApiFactory implements AnnotatableMetaDataFactory<WebApi, Com
 	}
 
 	@Override
-	public Map<String, AnnotateMetaDataEntry> toMetaData(Class<Command> annotatedClass) {
+	public Map<String, AnnotateMetaDataEntry> toMetaData(Class<Object> annotatedClass) {
 		WebApi webapi = annotatedClass.getAnnotation(WebApi.class);
 		return toMetaData(webapi, annotatedClass);
 	}
 
-	Map<String, AnnotateMetaDataEntry> toMetaData(WebApi webapi, Class<Command> annotatedClass) {
+	Map<String, AnnotateMetaDataEntry> toMetaData(WebApi webapi, Class<Object> annotatedClass) {
 		Map<String, AnnotateMetaDataEntry> map = new HashMap<String, AnnotateMetaDataEntry>();
 		MetaWebApi meta = new MetaWebApi();
 		meta.setName(webapi.name());
@@ -95,7 +94,7 @@ public class MetaWebApiFactory implements AnnotatableMetaDataFactory<WebApi, Com
 		} else {
 			//指定されていない場合は、Commandの定義をセット
 			CommandClass classDef = annotatedClass.getAnnotation(CommandClass.class);
-			if (!DEFAULT.equals(classDef.displayName())) {
+			if (classDef != null && !DEFAULT.equals(classDef.displayName())) {
 				meta.setDisplayName(classDef.displayName());
 			}
 		}
@@ -104,7 +103,7 @@ public class MetaWebApiFactory implements AnnotatableMetaDataFactory<WebApi, Com
 		} else {
 			//指定されていない場合は、Commandの定義をセット
 			CommandClass classDef = annotatedClass.getAnnotation(CommandClass.class);
-			if (!DEFAULT.equals(classDef.description())) {
+			if (classDef != null && !DEFAULT.equals(classDef.description())) {
 				meta.setDescription(classDef.description());
 			}
 		}

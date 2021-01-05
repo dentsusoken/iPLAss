@@ -23,7 +23,6 @@ package org.iplass.mtp.impl.command.async;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.iplass.mtp.command.Command;
 import org.iplass.mtp.command.annotation.CommandClass;
 import org.iplass.mtp.command.annotation.async.AsyncCommand;
 import org.iplass.mtp.impl.command.MetaCommandFactory;
@@ -33,7 +32,7 @@ import org.iplass.mtp.impl.metadata.annotation.AnnotateMetaDataEntry;
 
 
 public class MetaAsyncCommandFactory implements
-		AnnotatableMetaDataFactory<AsyncCommand, Command> {
+		AnnotatableMetaDataFactory<AsyncCommand, Object> {
 
 	private MetaCommandFactory commandFactory = new MetaCommandFactory();
 
@@ -41,8 +40,8 @@ public class MetaAsyncCommandFactory implements
 	}
 
 	@Override
-	public Class<Command> getAnnotatedClass() {
-		return Command.class;
+	public Class<Object> getAnnotatedClass() {
+		return Object.class;
 	}
 
 	@Override
@@ -50,7 +49,7 @@ public class MetaAsyncCommandFactory implements
 		return AsyncCommand.class;
 	}
 
-	Map<String, AnnotateMetaDataEntry> toMetaData(AsyncCommand asyncCommand, Class<Command> annotatedClass) {
+	Map<String, AnnotateMetaDataEntry> toMetaData(AsyncCommand asyncCommand, Class<Object> annotatedClass) {
 		Map<String, AnnotateMetaDataEntry> map = new HashMap<String, AnnotateMetaDataEntry>();
 		MetaAsyncCommand metaAsyncCommand = new MetaAsyncCommand();
 
@@ -67,7 +66,7 @@ public class MetaAsyncCommandFactory implements
 		} else {
 			//指定されていない場合は、Commandの定義をセット
 			CommandClass classDef = annotatedClass.getAnnotation(CommandClass.class);
-			if (!DEFAULT.equals(classDef.displayName())) {
+			if (classDef != null && !DEFAULT.equals(classDef.displayName())) {
 				metaAsyncCommand.setDisplayName(classDef.displayName());
 			}
 		}
@@ -76,7 +75,7 @@ public class MetaAsyncCommandFactory implements
 		} else {
 			//指定されていない場合は、Commandの定義をセット
 			CommandClass classDef = annotatedClass.getAnnotation(CommandClass.class);
-			if (!DEFAULT.equals(classDef.description())) {
+			if (classDef != null && !DEFAULT.equals(classDef.description())) {
 				metaAsyncCommand.setDescription(classDef.description());
 			}
 		}
@@ -100,7 +99,7 @@ public class MetaAsyncCommandFactory implements
 	}
 
 	@Override
-	public Map<String, AnnotateMetaDataEntry> toMetaData(Class<Command> annotatedClass) {
+	public Map<String, AnnotateMetaDataEntry> toMetaData(Class<Object> annotatedClass) {
 		AsyncCommand asyncCommand = annotatedClass.getAnnotation(AsyncCommand.class);
 		return toMetaData(asyncCommand, annotatedClass);
 	}

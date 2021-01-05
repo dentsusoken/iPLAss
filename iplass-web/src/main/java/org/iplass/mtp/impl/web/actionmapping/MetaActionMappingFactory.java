@@ -26,7 +26,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.iplass.mtp.command.Command;
 import org.iplass.mtp.command.annotation.CommandClass;
 import org.iplass.mtp.command.annotation.action.ActionMapping;
 import org.iplass.mtp.command.annotation.action.ParamMapping;
@@ -55,7 +54,7 @@ import org.iplass.mtp.web.actionmapping.definition.HttpMethodType;
 
 
 public class MetaActionMappingFactory implements
-		AnnotatableMetaDataFactory<ActionMapping, Command> {
+		AnnotatableMetaDataFactory<ActionMapping, Object> {
 
 	private MetaCommandFactory commandFactory = new MetaCommandFactory();
 
@@ -63,8 +62,8 @@ public class MetaActionMappingFactory implements
 	}
 
 	@Override
-	public Class<Command> getAnnotatedClass() {
-		return Command.class;
+	public Class<Object> getAnnotatedClass() {
+		return Object.class;
 	}
 
 	@Override
@@ -214,7 +213,7 @@ public class MetaActionMappingFactory implements
 		return criteria;
 	}
 
-	Map<String, AnnotateMetaDataEntry> toMetaData(ActionMapping actionMapping, Class<Command> annotatedClass) {
+	Map<String, AnnotateMetaDataEntry> toMetaData(ActionMapping actionMapping, Class<Object> annotatedClass) {
 		Map<String, AnnotateMetaDataEntry> map = new HashMap<String, AnnotateMetaDataEntry>();
 		MetaActionMapping metaActionMapping = new MetaActionMapping();
 
@@ -231,7 +230,7 @@ public class MetaActionMappingFactory implements
 		} else {
 			//指定されていない場合は、Commandの定義をセット
 			CommandClass classDef = annotatedClass.getAnnotation(CommandClass.class);
-			if (!DEFAULT.equals(classDef.displayName())) {
+			if (classDef != null && !DEFAULT.equals(classDef.displayName())) {
 				metaActionMapping.setDisplayName(classDef.displayName());
 			}
 		}
@@ -247,7 +246,7 @@ public class MetaActionMappingFactory implements
 		} else {
 			//指定されていない場合は、Commandの定義をセット
 			CommandClass classDef = annotatedClass.getAnnotation(CommandClass.class);
-			if (classDef.localizedDisplayName().length > 0) {
+			if (classDef != null && classDef.localizedDisplayName().length > 0) {
 				List<MetaLocalizedString> localizedDisplayNameList = new ArrayList<>();
 				for (LocalizedString localeValue : classDef.localizedDisplayName()) {
 					MetaLocalizedString metaLocaleValue = new MetaLocalizedString();
@@ -263,7 +262,7 @@ public class MetaActionMappingFactory implements
 		} else {
 			//指定されていない場合は、Commandの定義をセット
 			CommandClass classDef = annotatedClass.getAnnotation(CommandClass.class);
-			if (!DEFAULT.equals(classDef.description())) {
+			if (classDef != null && !DEFAULT.equals(classDef.description())) {
 				metaActionMapping.setDescription(classDef.description());
 			}
 		}
@@ -353,7 +352,7 @@ public class MetaActionMappingFactory implements
 	}
 
 	@Override
-	public Map<String, AnnotateMetaDataEntry> toMetaData(Class<Command> annotatedClass) {
+	public Map<String, AnnotateMetaDataEntry> toMetaData(Class<Object> annotatedClass) {
 		ActionMapping actionMapping = annotatedClass.getAnnotation(ActionMapping.class);
 		return toMetaData(actionMapping, annotatedClass);
 	}
