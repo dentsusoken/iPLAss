@@ -196,6 +196,10 @@ function onclick_save(action, target) {
 	if (target) $(target).prop("disabled", true);
 }
 function onclick_insert(action, target) {
+	if ($("#confirmEditSave").val() == "true" && !confirm("${m:rs('mtp-gem-messages', 'generic.detail.detail.saveMsg')}")) {
+		return;
+	}
+
 	button_onclick(action);
 	if (target) $(target).prop("disabled", true);
 }
