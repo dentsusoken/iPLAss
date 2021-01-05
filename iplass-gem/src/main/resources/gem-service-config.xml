@@ -101,6 +101,9 @@
 		<!-- CSVダウンロード時User名取得のための検索内部キャッシュサイズ -->
 		<property name="searchResultCacheLimit" value="300" />
 
+		<!-- 編集画面で保存時に確認ダイアログを表示するか -->
+		<property name="confirmEditSave" value="false"/>
+
 		<!-- 編集画面でキャンセル時に確認ダイアログを表示するか -->
 		<property name="confirmEditCancel" value="true"/>
 
@@ -134,7 +137,7 @@
 
 		<!-- プルダウンの「選択してください」を表示するか -->
 		<property name="showPulldownPleaseSelectLabel" value="true" />
-		
+
 		<!-- DatePickerのデフォルトオプション -->
 		<property name="datePickerDefaultOption" value="changeMonth:true,changeYear:true,yearRange:&quot;c-10:c+10&quot;" />
 
@@ -278,23 +281,23 @@
 
 		<!-- 自動生成設定 -->
 		<!-- システム項目を表示するか (default:false) -->
-		<!-- 
+		<!--
 		<property name="autoGenerateShowSystemProperty" value="true" />
 		-->
 		<!-- 表示対象システム項目。カンマ区切り。以下のプロパティのみ対象 -->
-		<!-- 
+		<!--
 		<property name="autoGenerateSystemProperties" value="oid,version,createBy,createDate,updateBy,updateDate,lockedBy" />
  		-->
  		<!-- システム項目表示位置。TOP or BOTTOM (default:TOP) -->
-		<!-- 
+		<!--
 		<property name="autoGenerateSystemPropertyDisplayPosition" value="BOTTOM" />
  		-->
 		<!-- OIDをカスタマイズしている場合にOIDを表示しないか (default:true) -->
-		<!-- 
+		<!--
 		<property name="autoGenerateExcludeOidWhenCustomOid" value="false" />
 		-->
 		<!-- createBy、updateBy、lockedByにUserPropertyEditorを利用するか (default:true) -->
-		<!-- 
+		<!--
 		<property name="autoGenerateUseUserPropertyEditor" value="false" />
 		-->
 

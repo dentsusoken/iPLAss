@@ -42,6 +42,7 @@
 <%@ page import="org.iplass.gem.command.generic.bulk.MultiBulkUpdateAllCommand" %>
 <%@ page import="org.iplass.gem.command.Constants" %>
 <%@ page import="org.iplass.gem.command.GemResourceBundleUtil" %>
+<%@ page import="org.iplass.gem.command.ViewUtil" %>
 
 <%!
 	boolean isSelectAllPage(Boolean selectAllPage) {
@@ -336,11 +337,15 @@ $(function() {
 </div>
 </div>
 </form>
+<input type="hidden" id="confirmEditSave" value="<%=ViewUtil.isConfirmEditSave()%>" />
 <script type="text/javascript">
 function onclick_cancel() {
 	$("#modal-dialog-root .modal-close", parent.document).trigger("click");
 }
 function onclick_bulkupdate(target){
+	if ($("#confirmEditSave").val() == "true" && !confirm("${m:rs('mtp-gem-messages', 'generic.bulk.updateMsg')}")) {
+		return;
+	}
 	$(target).prop("disabled", true);
 	$("#detailForm").submit();
 }

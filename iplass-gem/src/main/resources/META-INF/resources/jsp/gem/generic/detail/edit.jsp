@@ -188,10 +188,18 @@ function confirm_delete(action, target) {
 	}
 }
 function onclick_save(action, target) {
+	if ($("#confirmEditSave").val() == "true" && !confirm("${m:rs('mtp-gem-messages', 'generic.detail.detail.saveMsg')}")) {
+		return;
+	}
+
 	button_onclick(action);
 	if (target) $(target).prop("disabled", true);
 }
 function onclick_insert(action, target) {
+	if ($("#confirmEditSave").val() == "true" && !confirm("${m:rs('mtp-gem-messages', 'generic.detail.detail.saveMsg')}")) {
+		return;
+	}
+
 	button_onclick(action);
 	if (target) $(target).prop("disabled", true);
 }
@@ -222,7 +230,7 @@ function cancel() {
 %>
 		<%=Constants.VERSION%>:$(":hidden[name='version']").val(),
 		<%=Constants.BACK_PATH%>:$(":hidden[name='backPath']").val(),
-<%	} 
+<%	}
 	//一覧画面表示用
 %>
 		<%=Constants.SEARCH_COND%>:$(":hidden[name='searchCond']").val(),
@@ -279,6 +287,7 @@ ${m:outputToken('FORM_XHTML', true)}
 <%
 	}
 %>
+<input type="hidden" id="confirmEditSave" value="<%=ViewUtil.isConfirmEditSave()%>" />
 <input type="hidden" id="confirmEditCancel" value="<%=ViewUtil.isConfirmEditCancel()%>" />
 <%-- ページトップ部分のボタン --%>
 <div class="operation-bar operation-bar_top">
