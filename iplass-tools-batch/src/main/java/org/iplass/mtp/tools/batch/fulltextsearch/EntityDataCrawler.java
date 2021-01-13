@@ -15,6 +15,7 @@ import org.iplass.mtp.impl.core.TenantContextService;
 import org.iplass.mtp.impl.tools.tenant.TenantInfo;
 import org.iplass.mtp.spi.ServiceRegistry;
 import org.iplass.mtp.tools.batch.MtpCuiBase;
+import org.iplass.mtp.transaction.Transaction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -109,17 +110,19 @@ public class EntityDataCrawler extends MtpCuiBase {
 				public Void execute() {
 
 					logArguments();
-
-					switch (mode) {
-					case CRAWL:
-						crawl();
-						break;
-					case RECRAWL:
-						recrawl();
-						break;
-					default:
-						break;
-					}
+					
+					Transaction.required(t -> {
+						switch (mode) {
+						case CRAWL:
+							crawl();
+							break;
+						case RECRAWL:
+							recrawl();
+							break;
+						default:
+							break;
+						}
+					});
 
 					return null;
 				}
