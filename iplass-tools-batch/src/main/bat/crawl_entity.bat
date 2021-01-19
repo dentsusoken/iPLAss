@@ -19,7 +19,8 @@ set CRAWL_MODE=CRAWL
 REM Tenant Id (if value is -1, all tenant data is target)
 set TENANT_ID=-1
 
-
+REM Entity Name (Optional. If CRAWL mode is used, the target Entity can be specified.)
+set ENTITY_NAME=
 
 REM ----------------------------------------------------
 REM app settings
@@ -29,7 +30,7 @@ REM APP class
 set EXEC_APP=org.iplass.mtp.tools.batch.fulltextsearch.EntityDataCrawler
 
 REM App Arguments
-set APP_ARGS=%CRAWL_MODE% %TENANT_ID%
+set APP_ARGS=%CRAWL_MODE% %TENANT_ID% %ENTITY_NAME%
 
 REM ----------------------------------------------------
 REM confirm

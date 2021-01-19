@@ -31,6 +31,8 @@ export CRAWL_MODE=CRAWL
 # Tenant Id(if value is -1, all tenant data is target)
 export TENANT_ID=-1
 
+# Entity Name (Optional. If CRAWL mode is used, the target Entity can be specified.)
+# export ENTITY_NAME=
 
 
 # ----------------------------------------------------
@@ -41,7 +43,7 @@ export TENANT_ID=-1
 export EXEC_APP=org.iplass.mtp.tools.batch.fulltextsearch.EntityDataCrawler
 
 # App Arguments
-export APP_ARGS="${CRAWL_MODE} ${TENANT_ID}"
+export APP_ARGS="${CRAWL_MODE} ${TENANT_ID} ${ENTITY_NAME}"
 
 # ----------------------------------------------------
 # confirm
