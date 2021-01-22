@@ -53,6 +53,11 @@ public class CheckPermissionLimitConditionOfEditLinkHandler extends SearchFormVi
 	@Override
 	protected void onCreateSearchResult(CreateSearchResultEvent event) {
 
+		//検索結果が0件の場合は対象外
+		if (event.getResultData().getRows().isEmpty()) {
+			return;
+		}
+
 		AuthContextHolder user = AuthContextHolder.getAuthContext();
 		EntityHandler handler = ServiceRegistry.getRegistry().getService(EntityService.class).getRuntimeByName(event.getEntityName());
 
