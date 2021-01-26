@@ -21,19 +21,17 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8" trimDirectiveWhitespaces="true"%>
 
-<%@ page import="org.iplass.mtp.entity.definition.properties.ReferenceProperty"%>
+<%@ page import="org.iplass.gem.command.Constants"%>
+<%@ page import="org.iplass.gem.command.ViewUtil" %>
+<%@ page import="org.iplass.mtp.ManagerLocator"%>
 <%@ page import="org.iplass.mtp.entity.definition.EntityDefinition"%>
 <%@ page import="org.iplass.mtp.entity.definition.EntityDefinitionManager"%>
 <%@ page import="org.iplass.mtp.entity.definition.PropertyDefinition"%>
+<%@ page import="org.iplass.mtp.entity.definition.properties.ReferenceProperty"%>
 <%@ page import="org.iplass.mtp.util.StringUtil"%>
 <%@ page import="org.iplass.mtp.view.generic.editor.NestProperty"%>
 <%@ page import="org.iplass.mtp.view.generic.editor.ReferencePropertyEditor"%>
-<%@ page import="org.iplass.mtp.view.generic.element.section.SearchResultSection"%>
 <%@ page import="org.iplass.mtp.web.template.TemplateUtil"%>
-<%@ page import="org.iplass.mtp.ManagerLocator"%>
-<%@ page import="org.iplass.gem.command.generic.search.SearchFormViewData"%>
-<%@ page import="org.iplass.gem.command.Constants"%>
-<%@ page import="org.iplass.gem.command.ViewUtil" %>
 <%!
 	boolean isDispProperty(NestProperty property) {
 		if (property.getEditor() == null) return false;
@@ -45,7 +43,6 @@
 	ReferenceProperty rp = (ReferenceProperty) request.getAttribute(Constants.EDITOR_REF_NEST_PROPERTY);
 	String style = (String) request.getAttribute(Constants.EDITOR_REF_NEST_STYLE);
 	ReferencePropertyEditor editor = (ReferencePropertyEditor) request.getAttribute(Constants.EDITOR_REF_NEST_EDITOR);
-	SearchFormViewData data = (SearchFormViewData) request.getAttribute(Constants.DATA);
 
 	EntityDefinitionManager edm = ManagerLocator.getInstance().getManager(EntityDefinitionManager.class);
 	EntityDefinition red = edm.get(rp.getObjectDefinitionName());
