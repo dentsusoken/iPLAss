@@ -218,7 +218,7 @@
 						boolean isSection = subElement instanceof Section;
 						if (isSection){
 %>
-<td class="inner-section" colspan="2">
+<td class="inner-section <c:out value="<%=cellStyle %>"/>" colspan="2">
 <%
 						}
 %>

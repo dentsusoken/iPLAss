@@ -54,6 +54,8 @@
 		}
 		&.inner-section {
 			border-left: 1px solid $color_quill_gray_approx;
+			padding: 9px 7px;
+			vertical-align: top; //複数列のsection配置の片方をCloseした場合に上に寄せる
 		}
 	}
 	input {

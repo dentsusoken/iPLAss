@@ -1738,7 +1738,6 @@ span.success, span.error {
     display: block;
     float: left;
     width: 100%;
-    border-top: 1px solid #ddd;
     padding-top: 20px;
     position: relative;
     cursor: pointer; }
@@ -1757,10 +1756,14 @@ span.success, span.error {
     border-right: 1px solid #115d85;
     border-bottom: 1px solid #115d85;
     transition: transform 300ms; }
-  .formArchive > div:first-child .sechead {
+  .formArchive > div > .sechead {
+    border-top: 1px solid #ddd; }
+  .formArchive > div:first-child > .sechead {
     border-top: none;
     margin-top: 0;
     padding-top: 0; }
+  .formArchive .inner-section > div > .sechead {
+    padding-top: 8px; }
   .formArchive .upload-button {
     width: 100%;
     margin: 2px 0; }
@@ -1798,14 +1801,13 @@ span.success, span.error {
     border: 1px solid #ddd;
     width: 180px;
     background: #ededed;
-    border-right: 0;
     vertical-align: top; }
     .tbl-section th.section-data.w-auto {
       width: auto; }
   .tbl-section td.section-data {
     padding: 12px 10px;
     border: 1px solid #ddd;
-    border-left: 0; }
+    vertical-align: top; }
     .tbl-section td.section-data .list-add input[type=text] {
       margin: 0; }
     .tbl-section td.section-data .list-add input[type=password] {
