@@ -95,7 +95,6 @@
 			display: block;
 			float: left;
 			width: 100%;
-			border-top: 1px solid $color_alto_approx;
 			padding-top: 20px;
 			position: relative;
 			cursor: pointer;
@@ -120,11 +119,20 @@
 			//Instead of the line below you could use @include transition($transition-1, $transition-2, $transition-3, $transition-4, $transition-5, $transition-6, $transition-7, $transition-8, $transition-9, $transition-10)
 			transition: transform 300ms;
 		}
-		&:first-child .sechead {
+		> .sechead {
+			//TopレベルのSectionのタイトルにBorderを設定
+			border-top: 1px solid $color_alto_approx;
+		}
+		&:first-child > .sechead {
+			//Topレベルの先頭にはBorderとSpaceを除去(formArchiveで設定)
 			border-top: none;
 			margin-top: 0;
 			padding-top: 0;
 		}
+	}
+	.inner-section > div > .sechead {
+		//inner-section に対して12pxのpaddingが設定されているので、タイトル上のSpaceを調整
+		padding-top: 8px;
 	}
 	.upload-button {
 		width: 100%;
@@ -179,7 +187,6 @@
 		border: 1px solid $color_alto_approx;
 		width: 180px;
 		background: $color_gallery_approx;
-		border-right: 0;
 		vertical-align: top;
 		&.w-auto {
 			width: auto;
@@ -188,7 +195,7 @@
 	td.section-data {
 		padding: 12px 10px;
 		border: 1px solid $color_alto_approx;
-		border-left: 0;
+		vertical-align: top;
 		.list-add {
 			input[type=text] {
 				margin: 0;
