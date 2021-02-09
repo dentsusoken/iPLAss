@@ -257,13 +257,17 @@
 	String defName = ed.getName();
 	List<EntityFilterItem> filters = data.getFilters();
 
-	//選択タイプ(selectの場合のみ設定される。see common.js#searchReference)
+	//選択タイプ(選択画面の場合のみ設定される。see common.js#searchReference)
 	String selectType = request.getParameter(Constants.SELECT_TYPE);
 
 	//指定条件復元用
 	String searchCond = request.getParameter(Constants.SEARCH_COND);
 	if (searchCond == null) searchCond = "";
 
+	//選択画面でバージョン検索を許可するか(編集画面の選択時のみ渡される)
+	String permitVersionedSelectStr = request.getParameter(Constants.SELECT_VERSIONED_ENABLED);
+	boolean permitVersionedSelect = permitVersionedSelectStr != null ? Boolean.valueOf(permitVersionedSelectStr) : false;
+	
 	//特定バージョン指定
 	String specVersion = request.getParameter(Constants.SEARCH_SPEC_VERSION);
 	if (specVersion == null) specVersion = "";
@@ -837,7 +841,7 @@ $(function() {
 </tr>
 <%
 	}
-	if (selectType == null && ed.getVersionControlType() != VersionControlType.NONE) {
+	if ((selectType == null || permitVersionedSelect) && ed.getVersionControlType() != VersionControlType.NONE) {
 		String allVersion = getSearchCondParam(searchCond, "allVersion");
 		String checked = "";
 		if ("1".equals(allVersion)) checked = "checked";
@@ -1179,7 +1183,7 @@ $(function() {
 </li>
 </ul>
 <%
-		if (selectType == null && ed.getVersionControlType() != VersionControlType.NONE) {
+		if ((selectType == null || permitVersionedSelect) && ed.getVersionControlType() != VersionControlType.NONE) {
 			String allVersion = getSearchCondParam(searchCond, "allVersionDtl");
 			String checked = "";
 			if ("1".equals(allVersion)) checked = "checked";

@@ -174,6 +174,9 @@ public class MetaReferencePropertyEditor extends MetaPropertyEditor implements H
 	/** 検索条件での全選択を許可 */
 	private boolean permitConditionSelectAll = true;
 
+	/** 選択画面でバージョン検索を許可 */
+	private boolean permitVersionedSelect;
+
 	private String displayLabelItem;
 
 	/** ユニークプロパティ */
@@ -746,6 +749,22 @@ public class MetaReferencePropertyEditor extends MetaPropertyEditor implements H
 	    this.permitConditionSelectAll = permitConditionSelectAll;
 	}
 
+	/**
+	 * 選択画面でのバージョン検索の許可を取得します。
+	 * @return 選択画面でバージョン検索を許可
+	 */
+	public boolean isPermitVersionedSelect() {
+		return permitVersionedSelect;
+	}
+
+	/**
+	 * 選択画面でのバージョン検索の許可を設定します。
+	 * @param permitVersionedSelect 選択画面でバージョン検索を許可
+	 */
+	public void setPermitVersionedSelect(boolean permitVersionedSelect) {
+		this.permitVersionedSelect = permitVersionedSelect;
+	}
+
 	public String getDisplayLabelItem() {
 		return displayLabelItem;
 	}
@@ -826,6 +845,7 @@ public class MetaReferencePropertyEditor extends MetaPropertyEditor implements H
 		showRefComboParent = rpe.isShowRefComboParent();
 		specificVersionPropertyName = rpe.getSpecificVersionPropertyName();
 		permitConditionSelectAll = rpe.isPermitConditionSelectAll();
+		permitVersionedSelect = rpe.isPermitVersionedSelect();
 		displayLabelItem = displayLabelProperty != null ? displayLabelProperty.getId() : null;
 		uniqueItem = uniqueProperty != null ? uniqueProperty.getId() : null;
 		if (rpe.getTableOrderPropertyName() != null) {
@@ -923,6 +943,7 @@ public class MetaReferencePropertyEditor extends MetaPropertyEditor implements H
 		editor.setShowRefComboParent(showRefComboParent);
 		editor.setSpecificVersionPropertyName(specificVersionPropertyName);
 		editor.setPermitConditionSelectAll(permitConditionSelectAll);
+		editor.setPermitVersionedSelect(permitVersionedSelect);
 		editor.setDisplayLabelItem(displayLabelProperty != null ? displayLabelProperty.getName() : null);
 		editor.setUniqueItem(uniqueProperty != null ? uniqueProperty.getName() : null);
 		if (tableOrderPropertyId != null) {

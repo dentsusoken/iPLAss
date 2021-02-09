@@ -60,6 +60,7 @@ public class Constants {
 	public static final String SEARCH_COND_PREFIX = "sc_";
 	public static final String DEFAULT_SEARCH_COND = "defaultSearchCond";
 	public static final String SEARCH_SPEC_VERSION = "specVersion";
+	public static final String SELECT_VERSIONED_ENABLED = "permitVersionedSelect";
 	public static final String TOPVIEW_LIST_OFFSET = "topViewListOffset";
 
 	public static final String EXEC_TYPE = "execType";

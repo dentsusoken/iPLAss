@@ -2772,6 +2772,7 @@ $.fn.allInputCheck = function(){
 				refSectionIndex:			$v.attr("data-refSectionIndex"),//参照セクションインデックス
 				specVersionKey:				$v.attr("data-specVersionKey"),
 				permitConditionSelectAll:	$v.attr("data-permitConditionSelectAll"),
+				permitVersionedSelect:		$v.attr("data-permitVersionedSelect"),
 				multiplicity:				$v.attr("data-multiplicity"),
 				selUniqueRefCallback:		$v.attr("data-selUniqueRefCallback"),
 				insUniqueRefCallback:		$v.attr("data-insUniqueRefCallback"),
@@ -2798,7 +2799,7 @@ $.fn.allInputCheck = function(){
 			$selBtn.on("click", function() {
 				//選択コールバック
 				var selRefCallback = scriptContext[$v.selUniqueRefCallback];
-				searchUniqueReference($v.attr("id"), $v.selectAction, $v.viewAction, $v.refDefName, $v.propName, $v.selectUrlParam, $v.refEdit, selRefCallback, this, $v.refViewName, $v.permitConditionSelectAll, $v.defName, $v.viewName, $v.viewType, $v.refSectionIndex, $v.entityOid, $v.entityVersion);
+				searchUniqueReference($v.attr("id"), $v.selectAction, $v.viewAction, $v.refDefName, $v.propName, $v.selectUrlParam, $v.refEdit, selRefCallback, this, $v.refViewName, $v.permitConditionSelectAll, $v.permitVersionedSelect, $v.defName, $v.viewName, $v.viewType, $v.refSectionIndex, $v.entityOid, $v.entityVersion);
 			});
 
 			if ($("body.modal-body").length != 0) {

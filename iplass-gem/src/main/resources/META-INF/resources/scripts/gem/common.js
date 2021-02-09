@@ -1999,7 +1999,7 @@ function showReference(viewAction, defName, oid, version, linkId, refEdit, editC
  * @param button
  * @return
  */
-function searchReference(selectAction, viewAction, defName, propName, multiplicity, multi, urlParam, refEdit, callback, button, viewName, permitConditionSelectAll, parentDefName, parentViewName, viewType, refSectionIndex, delCallback, entityOid, entityVersion) {
+function searchReference(selectAction, viewAction, defName, propName, multiplicity, multi, urlParam, refEdit, callback, button, viewName, permitConditionSelectAll, permitVersionedSelect, parentDefName, parentViewName, viewType, refSectionIndex, delCallback, entityOid, entityVersion) {
 	var _propName = propName.replace(/\[/g, "\\[").replace(/\]/g, "\\]").replace(/\./g, "\\.");
 	document.scriptContext["searchReferenceCallback"] = function(selectArray) {
 		var $ul = $("#ul_" + _propName);
@@ -2079,6 +2079,7 @@ function searchReference(selectAction, viewAction, defName, propName, multiplici
 	$("<input />").attr({type:"hidden", name:"propName", value:propName}).appendTo($form);//プロパティ名
 	$("<input />").attr({type:"hidden", name:"rootName", value:"ul_" + propName}).appendTo($form);
 	$("<input />").attr({type:"hidden", name:"permitConditionSelectAll", value:permitConditionSelectAll}).appendTo($form);
+	$("<input />").attr({type:"hidden", name:"permitVersionedSelect", value:permitVersionedSelect}).appendTo($form);
 	if (isSubModal) $("<input />").attr({type:"hidden", name:"modalTarget", value:target}).appendTo($form);
 	var kv = urlParam.split("&");
 	if (urlParam.length > 0 && kv.length > 0) {
@@ -2212,8 +2213,11 @@ function searchReferenceForBi(webapi, selectAction, viewAction, defName, entityD
  * @param multi        複数選択の場合、true
  * @param urlParam     選択ダイアログ表示時の追加パラメータ
  * @param reloadUrl    リロード用URL
+ * @param button       実行ボタンのSelector
+ * @param permitConditionSelectAll  検索条件での全選択を許可
+ * @param permitVersionedSelect 選択画面でバージョン検索を許可
  */
-function searchReferenceFromView(selectAction, updateAction, defName, id, propName, multiplicity, multi, urlParam, reloadUrl, button, permitConditionSelectAll) {
+function searchReferenceFromView(selectAction, updateAction, defName, id, propName, multiplicity, multi, urlParam, reloadUrl, button, permitConditionSelectAll, permitVersionedSelect) {
 	document.scriptContext["searchReferenceCallback"] = function(selectArray) {
 		//選択されたOID情報をもとに参照元Entityを更新(更新後画面が再表示される)
 		var _propName = propName.replace(/\[/g, "\\[").replace(/\]/g, "\\]").replace(/\./g, "\\.");
@@ -2264,6 +2268,7 @@ function searchReferenceFromView(selectAction, updateAction, defName, id, propNa
 	$("<input />").attr({type:"hidden", name:"propName", value:propName}).appendTo($form);//プロパティ名
 	$("<input />").attr({type:"hidden", name:"rootName", value:id}).appendTo($form);
 	$("<input />").attr({type:"hidden", name:"permitConditionSelectAll", value:permitConditionSelectAll}).appendTo($form);
+	$("<input />").attr({type:"hidden", name:"permitVersionedSelect", value:permitVersionedSelect}).appendTo($form);
 	if (isSubModal) $("<input />").attr({type:"hidden", name:"modalTarget", value:target}).appendTo($form);
 	var kv = urlParam.split("&");
 	if (urlParam.length > 0 && kv.length > 0) {
@@ -2282,7 +2287,7 @@ function searchReferenceFromView(selectAction, updateAction, defName, id, propNa
 	$form.remove();
 }
 
-function searchUniqueReference(id, selectAction, viewAction, defName, propName, urlParam, refEdit, callback, button, viewName, permitConditionSelectAll, parentDefName, parentViewName, viewType, refSectionIndex, entityOid, entityVersion) {
+function searchUniqueReference(id, selectAction, viewAction, defName, propName, urlParam, refEdit, callback, button, viewName, permitConditionSelectAll, permitVersionedSelect, parentDefName, parentViewName, viewType, refSectionIndex, entityOid, entityVersion) {
 	var _id = id.replace(/\[/g, "\\[").replace(/\]/g, "\\]").replace(/\./g, "\\.");
 	var _propName = propName.replace(/\[/g, "\\[").replace(/\]/g, "\\]").replace(/\./g, "\\.");
 	document.scriptContext["searchReferenceCallback"] = function(selectArray) {
@@ -2346,6 +2351,7 @@ function searchUniqueReference(id, selectAction, viewAction, defName, propName, 
 	$("<input />").attr({type:"hidden", name:"propName", value:propName}).appendTo($form);//プロパティ名
 	$("<input />").attr({type:"hidden", name:"rootName", value:id}).appendTo($form);
 	$("<input />").attr({type:"hidden", name:"permitConditionSelectAll", value:permitConditionSelectAll}).appendTo($form);
+	$("<input />").attr({type:"hidden", name:"permitVersionedSelect", value:permitVersionedSelect}).appendTo($form);
 	if (isSubModal) $("<input />").attr({type:"hidden", name:"modalTarget", value:target}).appendTo($form);
 	var kv = urlParam.split("&");
 	if (urlParam.length > 0 && kv.length > 0) {
@@ -3593,6 +3599,7 @@ function addNestRow_Reference(type, cell, idx) {
 			var callbackKey = $selButton.attr("data-callbackKey");
 			var viewName = $selButton.attr("data-viewName");
 			var permitConditionSelectAll = $selButton.attr("data-permitConditionSelectAll");
+			var permitVersionedSelect = $selButton.attr("data-permitVersionedSelect");
 			var callback = scriptContext[callbackKey];
 			var parentDefName = $selButton.attr("data-parentDefName");
 			var parentViewName = $selButton.attr("data-parentViewName");
@@ -3600,7 +3607,7 @@ function addNestRow_Reference(type, cell, idx) {
 			var refSectionIndex = $selButton.attr("data-refSectionIndex");
 			var entityOid = $selButton.attr("data-entityOid");
 			var entityVersion = $selButton.attr("data-entityVersion");
-			searchReference(selectAction, viewAction, defName, propName, multiplicity, false, urlParam, refEdit, callback, $selButton, viewName, permitConditionSelectAll, parentDefName, parentViewName, viewType, refSectionIndex, entityOid, entityVersion);
+			searchReference(selectAction, viewAction, defName, propName, multiplicity, false, urlParam, refEdit, callback, $selButton, viewName, permitConditionSelectAll, permitVersionedSelect, parentDefName, parentViewName, viewType, refSectionIndex, entityOid, entityVersion);
 		});
 
 		$insButton.on("click", function() {

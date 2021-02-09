@@ -567,6 +567,7 @@ $(function() {
 		, specVersionKey: "<%=StringUtil.escapeJavaScript(specVersionKey) %>"
 		, viewName: "<%=StringUtil.escapeJavaScript(_viewName) %>"
 		, permitConditionSelectAll: <%=editor.isPermitConditionSelectAll()%>
+		, permitVersionedSelect: <%=editor.isPermitVersionedSelect()%>
 		, parentDefName: "<%=StringUtil.escapeJavaScript(rootDefName)%>"
 		, parentViewName: "<%=StringUtil.escapeJavaScript(viewName)%>"
 		, entityOid: "<%=StringUtil.escapeJavaScript(rootOid)%>"
@@ -580,7 +581,7 @@ $(function() {
 	}
 	$selBtn.on("click", function() {
 		searchReference(params.selectAction, params.viewAction, params.defName, $(this).attr("data-propName"), params.multiplicity, <%=isMultiple %>,
-				 params.urlParam, params.refEdit, callback, this, params.viewName, params.permitConditionSelectAll, 
+				 params.urlParam, params.refEdit, callback, this, params.viewName, params.permitConditionSelectAll, params.permitVersionedSelect, 
 				 params.parentDefName, params.parentViewName, params.viewType, params.refSectionIndex, delCallback, params.entityOid, params.entityVersion);
 	});
 
@@ -1128,7 +1129,8 @@ $(function() {
  data-refViewName="<c:out value="<%=_viewName%>"/>"
  data-refEdit="<c:out value="<%=refEdit%>"/>"
  data-specVersionKey="<c:out value="<%=specVersionKey%>"/>"
- data-permitConditionSelectAll="<c:out value="<%=editor.isPermitConditionSelectAll()%>"/>"
+ data-permitConditionSelectAll="<%=editor.isPermitConditionSelectAll()%>"
+ data-permitVersionedSelect="<%=editor.isPermitVersionedSelect()%>"
  <%-- 隠されたDummyRowが存在するので、多重度 +1を渡します。 --%>
  data-multiplicity="<%=multiplicity%>"
  data-selUniqueRefCallback="<c:out value="<%=selUniqueRefCallback%>"/>"
@@ -1201,7 +1203,8 @@ $(function() {
  data-refViewName="<c:out value="<%=_viewName%>"/>"
  data-refEdit="<c:out value="<%=refEdit%>"/>"
  data-specVersionKey="<c:out value="<%=specVersionKey%>"/>"
- data-permitConditionSelectAll="<c:out value="<%=editor.isPermitConditionSelectAll()%>"/>"
+ data-permitConditionSelectAll="<%=editor.isPermitConditionSelectAll()%>"
+ data-permitVersionedSelect="<%=editor.isPermitVersionedSelect()%>"
  <%-- 隠されたDummyRowが存在するので、多重度 +1を渡します。 --%>
  data-multiplicity="<%=multiplicity%>"
  data-selUniqueRefCallback="<c:out value="<%=selUniqueRefCallback%>"/>"

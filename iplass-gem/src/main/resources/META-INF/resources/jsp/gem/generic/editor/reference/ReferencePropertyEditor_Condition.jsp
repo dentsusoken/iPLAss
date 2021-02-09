@@ -668,6 +668,7 @@ $(function() {
 		, refEdit: false
 		, viewName: "<%=StringUtil.escapeJavaScript(_viewName) %>"
 		, permitConditionSelectAll: <%=editor.isPermitConditionSelectAll()%>
+		, permitVersionedSelect: false
 		, parentDefName: "<%=StringUtil.escapeJavaScript(defName)%>"
 		, parentViewName: "<%=StringUtil.escapeJavaScript(viewName)%>"
 		, viewType: "<%=Constants.VIEW_TYPE_SEARCH %>"
@@ -678,7 +679,7 @@ $(function() {
 	}
 	$selBtn.on("click", function() {
 		searchReference(params.selectAction, params.viewAction, params.defName, params.propName, params.multiplicity, <%=isMultiple%>,
-				 params.urlParam, params.refEdit, function(){}, null, params.viewName, params.permitConditionSelectAll, params.parentDefName, params.parentViewName, params.viewType);
+				 params.urlParam, params.refEdit, function(){}, null, params.viewName, params.permitConditionSelectAll, params.permitVersionedSelect, params.parentDefName, params.parentViewName, params.viewType);
 	});
 
 	<%-- common.js --%>
@@ -953,6 +954,7 @@ $(function() {
  data-refViewName="<c:out value="<%=_viewName%>"/>"
  data-refEdit="false"
  data-permitConditionSelectAll="<c:out value="<%=editor.isPermitConditionSelectAll()%>"/>"
+ data-permitVersionedSelect="false"
  data-multiplicity="-1"
 >
 <span class="unique-key">
@@ -1001,6 +1003,7 @@ $(function() {
  data-refViewName="<c:out value="<%=_viewName%>"/>"
  data-refEdit="false"
  data-permitConditionSelectAll="<c:out value="<%=editor.isPermitConditionSelectAll()%>"/>"
+ data-permitVersionedSelect="false"
  data-multiplicity="-1"
 >
 <span class="unique-key">
@@ -1037,6 +1040,7 @@ $(function() {
  data-refViewName="<c:out value="<%=_viewName%>"/>"
  data-refEdit="false"
  data-permitConditionSelectAll="<c:out value="<%=editor.isPermitConditionSelectAll()%>"/>"
+ data-permitVersionedSelect="false"
  data-multiplicity="-1"
 >
 <span class="unique-key">
@@ -1079,6 +1083,7 @@ $(function() {
  data-refViewName="<c:out value="<%=_viewName%>"/>"
  data-refEdit="false"
  data-permitConditionSelectAll="<c:out value="<%=editor.isPermitConditionSelectAll()%>"/>"
+ data-permitVersionedSelect="false"
  data-multiplicity="-1"
 >
 <span class="unique-key">

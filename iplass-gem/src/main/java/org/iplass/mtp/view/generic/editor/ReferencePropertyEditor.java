@@ -222,6 +222,20 @@ public class ReferencePropertyEditor extends PropertyEditor implements HasNestPr
 	)
 	private boolean permitConditionSelectAll = true; //デフォルトtrue
 
+	/** 選択画面でバージョン検索を許可 */
+	@MetaFieldInfo(displayName="選択画面でバージョン検索を許可",
+			displayNameKey="generic_editor_ReferencePropertyEditor_permitVersionedSelectDisplaNameKey",
+			inputType=InputType.CHECKBOX,
+			displayOrder=325,
+			description="<b>表示タイプ:Link</b><br>" +
+					"バージョン管理している参照先の選択画面で、バージョン検索を可能にします。",
+			descriptionKey="generic_editor_ReferencePropertyEditor_permitVersionedSelectDescriptionKey"
+	)
+	@EntityViewField(
+			referenceTypes={FieldReferenceType.DETAIL}
+	)
+	private boolean permitVersionedSelect;
+
 	/** 参照リンク編集可否 */
 	@MetaFieldInfo(
 			displayName="参照リンク編集可否",
@@ -1229,6 +1243,22 @@ public class ReferencePropertyEditor extends PropertyEditor implements HasNestPr
 	 */
 	public void setPermitConditionSelectAll(boolean permitConditionSelectAll) {
 	    this.permitConditionSelectAll = permitConditionSelectAll;
+	}
+
+	/**
+	 * 選択画面でのバージョン検索の許可を取得します。
+	 * @return 選択画面でバージョン検索を許可
+	 */
+	public boolean isPermitVersionedSelect() {
+		return permitVersionedSelect;
+	}
+
+	/**
+	 * 選択画面でのバージョン検索の許可を設定します。
+	 * @param permitVersionedSelect 選択画面でバージョン検索を許可
+	 */
+	public void setPermitVersionedSelect(boolean permitVersionedSelect) {
+		this.permitVersionedSelect = permitVersionedSelect;
 	}
 
 	public String getDisplayLabelItem() {
