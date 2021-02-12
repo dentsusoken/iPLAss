@@ -1698,10 +1698,14 @@ $.fn.allInputCheck = function(){
 						end = max;
 					}
 
-					for (var i = start; i < current; i++) {
-						addPagenationLink(i);
+					if (max > 0) {
+						for (var i = start; i < current; i++) {
+							addPagenationLink(i);
+						}
+						$("<li />").addClass("current").text(current + 1).appendTo($linkList);
+					} else {
+						$("<li />").addClass("current").text("").appendTo($linkList);
 					}
-					$("<li />").addClass("current").text(current + 1).appendTo($linkList);
 
 					var next = current + 1 >= max ? max : current + 1;
 					for (var i = next; i < end; i++) {
@@ -1753,7 +1757,7 @@ $.fn.allInputCheck = function(){
 				setPage: function(offset, length, count) {
 					//件数
 					var tail = offset + limit;
-					var hasPreview = offset > 0;
+					var hasPreview = offset > 0 && count > 0;
 					var hasNext;
 					var notCount = typeof count === "undefined" || count == null;
 					if (notCount) {
@@ -1796,7 +1800,11 @@ $.fn.allInputCheck = function(){
 
 						if (count > 0) {
 							if (options.showItemCount) {
-								$range.css("display","").text((offset + 1) + " - " + tail + scriptContext.gem.locale.pager.count + " / ");
+								if (offset + 1 > tail) {
+									$range.css("display","").text("0" + scriptContext.gem.locale.pager.count + " / ");
+								} else {
+									$range.css("display","").text((offset + 1) + " - " + tail + scriptContext.gem.locale.pager.count + " / ");
+								}
 							}
 							if (options.showPageJump) {
 								$quickJump.show();
@@ -3711,7 +3719,7 @@ function datetimepicker(selector) {
 						var oid = $.jgrid.htmlEncode(rowObject.oid);
 						var action = rowObject.action;
 						var viewName = rowObject.viewName;
-						
+
 						var linkHtml = "<a href='javascript:void(0)' data-defName='" + defName + "' data-oid='" + oid + "' data-action='" + action + "' data-viewName='" + viewName + "' class='treeGridEntityLink'>" + dispValue + "</a>";
 						return linkHtml;
 					}
