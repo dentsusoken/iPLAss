@@ -1757,12 +1757,14 @@ $.fn.allInputCheck = function(){
 				setPage: function(offset, length, count) {
 					//件数
 					var tail = offset + limit;
-					var hasPreview = (offset > 0 && options.showItemCount && count > 0) || (offset > 0 && !options.showItemCount);
+					var hasPreview;
 					var hasNext;
 					var notCount = typeof count === "undefined" || count == null;
 					if (notCount) {
+						hasPreview = offset > 0;
 						hasNext = limit == length;
 					} else {
+						hasPreview = offset > 0 && count > 0;
 						hasNext= limit < (count - offset);
 						if (tail > count) { tail = count; }
 					}
