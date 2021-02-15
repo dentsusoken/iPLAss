@@ -1799,9 +1799,6 @@ $.fn.allInputCheck = function(){
 						}
 
 						if (count > 0) {
-							$btns.css("display", "block");
-							$pageLinks.css("display", "block");
-
 							if (options.showItemCount) {
 								if (offset + 1 > tail) {
 									$range.css("display","").text("0" + scriptContext.gem.locale.pager.count + " / ");
@@ -1816,6 +1813,12 @@ $.fn.allInputCheck = function(){
 								$v.maxPage = maxPage;
 								$current.attr("beforeValue", currentPage).val(currentPage);
 							}
+							if (options.showSearchBtn || options.showPageJump) {
+								$btns.show();
+							}
+							if (options.showPageLink) {
+								$pageLinks.show();
+							}
 						} else {
 							if (options.showItemCount) {
 								$range.css("display","none").text("");
@@ -1825,10 +1828,11 @@ $.fn.allInputCheck = function(){
 							}
 							if (options.showSearchBtn || options.showPageJump) {
 								$searchBtn.hide();
+								$btns.hide();
 							}
-
-							$btns.css("display", "none");
-							$pageLinks.css("display", "none");
+							if (options.showPageLink) {
+								$pageLinks.hide();
+							}
 						}
 						if (options.showItemCount) {
 							$count.text(count);
