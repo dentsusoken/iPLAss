@@ -1823,6 +1823,8 @@ $.fn.allInputCheck = function(){
 							if (options.showSearchBtn || options.showPageJump) {
 								$searchBtn.hide();
 							}
+							$btns.css("display", "none");
+							$pageLinks.css("display", "none");
 						}
 						if (options.showItemCount) {
 							$count.text(count);
