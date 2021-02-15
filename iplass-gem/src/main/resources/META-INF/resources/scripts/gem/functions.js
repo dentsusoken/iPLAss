@@ -1799,6 +1799,9 @@ $.fn.allInputCheck = function(){
 						}
 
 						if (count > 0) {
+							$btns.css("display", "block");
+							$pageLinks.css("display", "block");
+
 							if (options.showItemCount) {
 								if (offset + 1 > tail) {
 									$range.css("display","").text("0" + scriptContext.gem.locale.pager.count + " / ");
@@ -1823,6 +1826,7 @@ $.fn.allInputCheck = function(){
 							if (options.showSearchBtn || options.showPageJump) {
 								$searchBtn.hide();
 							}
+
 							$btns.css("display", "none");
 							$pageLinks.css("display", "none");
 						}
