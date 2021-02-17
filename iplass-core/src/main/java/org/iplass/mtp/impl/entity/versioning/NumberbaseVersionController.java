@@ -22,6 +22,8 @@ package org.iplass.mtp.impl.entity.versioning;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.function.Predicate;
 
 import org.iplass.mtp.entity.DeleteOption;
@@ -63,6 +65,8 @@ import org.iplass.mtp.impl.util.CoreResourceBundleUtil;
 
 
 public class NumberbaseVersionController implements VersionController {
+
+	static final Long VER_ZERO = Long.valueOf(0);
 
 	static class PropertyUnnester extends ASTTransformerSupport {
 
@@ -189,40 +193,51 @@ public class NumberbaseVersionController implements VersionController {
 
 		if (rph.getMetaData().getVersionControlType() == VersionControlReferenceType.AS_OF_EXPRESSION_BASE) {
 			//指定されているもので保存（バージョンしていないものは0で初期化）
-			Long zero = Long.valueOf(0);
 			for (Entity e: refEntity) {
 				if (e != null && e.getVersion() == null) {
-					e.setVersion(zero);
+					e.setVersion(VER_ZERO);
 				}
 			}
 			return refEntity;
 		}
-
-		//現在の最新を取得
+		
+		//version指定のないrefEntityに関し現在の最新を取得
+		ArrayList<ValueExpression> oids = new ArrayList<ValueExpression>();
+		for (Entity e: refEntity) {
+			if (e != null && e.getVersion() == null) {
+				oids.add(new Literal(e.getOid()));
+			}
+		}
+		if (oids.size() == 0) {
+			return refEntity;
+		}
+		
 		EntityHandler targetEh = rph.getReferenceEntityHandler(context);
 		Query q = new Query();
 		q.select(Entity.OID, Entity.VERSION);
 		q.from(targetEh.getMetaData().getName());
-		ArrayList<ValueExpression> oids = new ArrayList<ValueExpression>();
-		for (int i = 0; i < refEntity.length; i++) {
-			if (refEntity[i] != null) {
-				oids.add(new Literal(refEntity[i].getOid()));
-			}
-		}
-		if (oids.size() == 0) {
-			return null;
-		}
-
 		q.where(new In(new EntityField(Entity.OID), oids));
-		final ArrayList<Entity> res = new ArrayList<Entity>();
+		final Map<String, Long> res = new HashMap<String, Long>();
 		targetEh.searchEntity(q, false, null, new Predicate<Entity>() {
 			@Override
 			public boolean test(Entity dataModel) {
-				res.add(dataModel);
+				res.put(dataModel.getOid(), dataModel.getVersion());
 				return true;
 			}
 		});
-		return res.toArray(new Entity[res.size()]);
+		
+		for (Entity e: refEntity) {
+			if (e != null && e.getVersion() == null) {
+				Long ver = res.get(e.getOid());
+				if (ver != null) {
+					e.setVersion(ver);
+				} else {
+					e.setVersion(VER_ZERO);
+				}
+			}
+		}
+		
+		return refEntity;
 	}
 
 	private Long getCurrentMaxVersionNo(String oid, EntityHandler eh, EntityContext entityContext) {
@@ -512,7 +527,10 @@ public class NumberbaseVersionController implements VersionController {
 		ArrayList<String> searched = new ArrayList<String>();
 		try {
 			while (it.next()) {
-				searched.add((String) it.getValue(0));
+				String rov = (String) it.getValue(0);
+				if (rov != null) {
+					searched.add(rov);
+				}
 			}
 		} finally {
 			it.close();
