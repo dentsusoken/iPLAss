@@ -222,6 +222,23 @@ public class BuiltinAuthenticationProvider extends AuthenticationProviderBase {
 		account.setLastLoginOn(lastLoginOn);
 		return user;
 	}
+	
+	@Override
+	public void afterLoginSuccess(AccountHandle account) {
+		Timestamp llo = (Timestamp) account.getAttributeMap().get(AccountHandle.LAST_LOGIN_ON);
+		if (llo == null) {
+			String policyName = (String) account.getAttributeMap().get(User.ACCOUNT_POLICY);
+			AuthenticationPolicyRuntime pol = authPolicyService.getOrDefault(policyName);
+			if (pol != null && pol.getMetaData().isRecordLastLoginDate()) {
+				//前回ログイン日時を取得
+				BuiltinAccount ba = accountDao.getAccountFromOid(getTenantId(), account.getUnmodifiableUniqueKey());
+				if (ba != null) {
+					account.getAttributeMap().put(AccountHandle.LAST_LOGIN_ON, ba.getLastLoginOn());
+				}
+			}
+		}
+	}
+	
 
 	private void loginFail(final BuiltinAccount account, final AuthenticationPolicyRuntime policy) {
 		if (policy.isCheckLockout()) {

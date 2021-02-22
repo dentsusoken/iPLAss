@@ -280,6 +280,9 @@ public class RememberMeTokenAuthenticationProvider implements AuthenticationProv
 				clientStore.clearToken();
 			}
 		}
+		
+		authenticationProvider.afterLoginSuccess(account);
+		
 	}
 
 	private int maxAgeSeconds(AuthToken token, long lifetimeMinutes) {
