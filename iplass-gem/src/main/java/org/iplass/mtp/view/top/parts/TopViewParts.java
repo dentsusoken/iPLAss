@@ -30,15 +30,15 @@ import javax.xml.bind.annotation.XmlSeeAlso;
  * TOP画面パーツ
  * @author lis3wg
  */
-@XmlSeeAlso({TopViewContentParts.class, ScriptParts.class, UserMaintenanceParts.class, FulltextSearchViewParts.class, 
-	CsvDownloadSettingsParts.class, ApplicationMaintenanceParts.class})
+@XmlSeeAlso({TopViewContentParts.class, ScriptParts.class, UserMaintenanceParts.class, FulltextSearchViewParts.class,
+	CsvDownloadSettingsParts.class, ApplicationMaintenanceParts.class, PreviewDateParts.class})
 public abstract class TopViewParts implements Serializable {
 
 	/** SerialVersionUID */
 	private static final long serialVersionUID = -8956929971943022861L;
 
 	/** パラメータ */
-	protected Map<String, String> params = new HashMap<String, String>();
+	protected Map<String, String> params = new HashMap<>();
 
 	/**
 	 * パラメータを設定します

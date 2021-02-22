@@ -31,6 +31,7 @@ import org.iplass.adminconsole.client.metadata.ui.top.item.FulltextSearchViewIte
 import org.iplass.adminconsole.client.metadata.ui.top.item.InformationItem;
 import org.iplass.adminconsole.client.metadata.ui.top.item.LastLoginItem;
 import org.iplass.adminconsole.client.metadata.ui.top.item.PartsItem;
+import org.iplass.adminconsole.client.metadata.ui.top.item.PreviewDateItem;
 import org.iplass.adminconsole.client.metadata.ui.top.item.ScriptItem;
 import org.iplass.adminconsole.client.metadata.ui.top.item.SearchResultListItem;
 import org.iplass.adminconsole.client.metadata.ui.top.item.SeparatorItem;
@@ -52,6 +53,7 @@ import org.iplass.mtp.view.top.parts.EntityListParts;
 import org.iplass.mtp.view.top.parts.FulltextSearchViewParts;
 import org.iplass.mtp.view.top.parts.InformationParts;
 import org.iplass.mtp.view.top.parts.LastLoginParts;
+import org.iplass.mtp.view.top.parts.PreviewDateParts;
 import org.iplass.mtp.view.top.parts.ScriptParts;
 import org.iplass.mtp.view.top.parts.SeparatorParts;
 import org.iplass.mtp.view.top.parts.TemplateParts;
@@ -101,6 +103,9 @@ public class PartsControllerImpl implements PartsController {
 		} else if (parts instanceof ApplicationMaintenanceParts) {
 			item = new ApplicationMaintenanceItem((ApplicationMaintenanceParts)parts, controler);
 			isUnique = true;
+		} else if (parts instanceof PreviewDateParts) {
+			item = new PreviewDateItem((PreviewDateParts)parts, controler);
+			isUnique = true;
 		}
 
 		if (item != null) item.setDropAreaType(dropAreaType);
@@ -114,6 +119,7 @@ public class PartsControllerImpl implements PartsController {
 		return item;
 	}
 
+	@Override
 	public PartsItem createWindow(TopViewNode node, PartsOperationHandler controler, String dropAreaType) {
 
 		PartsItem item = null;
@@ -148,6 +154,10 @@ public class PartsControllerImpl implements PartsController {
 			item = new CsvDownloadSettingsItem(new CsvDownloadSettingsParts(), controler);
 		} else if (ApplicationMaintenanceParts.class.getName().equals(node.getType())) {
 			item = new ApplicationMaintenanceItem(new ApplicationMaintenanceParts(), controler);
+		} else if (PreviewDateParts.class.getName().equals(node.getType())) {
+			PreviewDateParts parts = new PreviewDateParts();
+			parts.setUsePreviewDate(true);
+			item = new PreviewDateItem(parts, controler);
 		}
 
 		if (item != null) item.setDropAreaType(dropAreaType);
@@ -158,7 +168,7 @@ public class PartsControllerImpl implements PartsController {
 	@Override
 	public List<ItemNodeManager> partsNodeList() {
 
-		List<ItemNodeManager> list = new ArrayList<ItemNodeManager>();
+		List<ItemNodeManager> list = new ArrayList<>();
 
 		list.add(new SingleNodeManager());
 		list.add(new CustomNodeManager());//ffffff

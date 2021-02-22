@@ -28,6 +28,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.PageContext;
 
 import org.iplass.mtp.definition.TypedDefinitionManager;
+import org.iplass.mtp.impl.view.top.TopViewHandler;
 import org.iplass.mtp.impl.view.top.parts.TopViewPartsHandler;
 import org.iplass.mtp.view.top.parts.TopViewParts;
 
@@ -68,7 +69,6 @@ public interface TopViewDefinitionManager extends TypedDefinitionManager<TopView
 	public void loadWidgets(HttpServletRequest req, HttpServletResponse res,
 			ServletContext application, PageContext page);
 
-
 	/**
 	 * ロール対象となるTopView定義を返します。
 	 */
@@ -77,6 +77,9 @@ public interface TopViewDefinitionManager extends TypedDefinitionManager<TopView
 	/**
 	 * ロール対象となるTopViewParts定義を返します。
 	 * 対象が存在しない場合は、空のリストを返します。
+	 *
+	 * @param type 対象TopViewPartsクラス
+	 * @return 対象TopViewParts
 	 */
 	public <T extends TopViewParts> List<T> getRequestTopViewParts(Class<T> type);
 
@@ -84,7 +87,48 @@ public interface TopViewDefinitionManager extends TypedDefinitionManager<TopView
 	/**
 	 * ロール対象となるTopViewPartsのHandlerを返します。
 	 * 対象が存在しない場合は、空のリストを返します。
+	 *
+	 * @param type 対象TopViewPartsHandlerクラス
+	 * @return 対象TopViewPartsHandler
 	 */
 	public <T extends TopViewPartsHandler> List<T> getRequestTopViewPartsHandler(Class<T> type);
+
+	/**
+	 * 指定された型のTopViewParts定義を返します。
+	 *
+	 * @param definition TopView定義
+	 * @param type 対象TopViewPartsクラス
+	 * @return 対象TopViewParts
+	 */
+	public <T extends TopViewParts> T getTopViewParts(TopViewDefinition definition, Class<T> type);
+
+	/**
+	 * 指定された型のTopViewParts定義を返します。
+	 * 対象が存在しない場合は、空のリストを返します。
+	 *
+	 * @param definition TopView定義
+	 * @param type 対象TopViewPartsクラス
+	 * @return 対象TopViewParts
+	 */
+	public <T extends TopViewParts> List<T> getTopViewPartsList(TopViewDefinition definition, Class<T> type);
+
+	/**
+	 * 指定された型のTopViewPartsHandler定義を返します。
+	 *
+	 * @param handler TopViewHandler
+	 * @param type 対象TopViewPartsHandlerクラス
+	 * @return 対象TopViewPartsHandler
+	 */
+	public <T extends TopViewPartsHandler> T getTopViewPartsHandler(TopViewHandler handler, Class<T> type);
+
+	/**
+	 * 指定された型のTopViewPartsHandler定義を返します。
+	 * 対象が存在しない場合は、空のリストを返します。
+	 *
+	 * @param handler TopViewHandler
+	 * @param type 対象TopViewPartsHandlerクラス
+	 * @return 対象TopViewPartsHandler
+	 */
+	public <T extends TopViewPartsHandler> List<T> getTopViewPartsHandlerList(TopViewHandler handler, Class<T> type);
 
 }

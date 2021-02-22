@@ -22,6 +22,7 @@ package org.iplass.mtp.impl.view.top;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.servlet.ServletContext;
@@ -81,27 +82,63 @@ public class TopViewDefinitionManagerImpl extends AbstractTypedDefinitionManager
 	}
 
 	@Override
-	@SuppressWarnings("unchecked")
 	public <T extends TopViewParts> List<T> getRequestTopViewParts(Class<T> type) {
+		return getTopViewPartsList(getRequestTopView(), type);
+	}
 
-		TopViewDefinition definition = getRequestTopView();
+	@Override
+	public <T extends TopViewPartsHandler> List<T> getRequestTopViewPartsHandler(Class<T> type) {
+		return getTopViewPartsHandlerList(getRequestTopViewHandler(), type);
+	}
+
+	@Override
+	@SuppressWarnings("unchecked")
+	public <T extends TopViewParts> T getTopViewParts(TopViewDefinition definition, Class<T> type) {
 		if (definition != null) {
-			List<TopViewParts> typeParts = definition.getParts().stream()
-					.filter(part -> type.isInstance(part)).collect(Collectors.toList());
-			return (List<T>)typeParts;
+			Optional<T> typeParts = definition.getParts().stream()
+					.filter(type::isInstance)
+					.map(part -> (T)part)
+					.findFirst();
+			return typeParts.isPresent() ? typeParts.get() : null;
+		}
+		return null;
+	}
+
+	@Override
+	@SuppressWarnings("unchecked")
+	public <T extends TopViewParts> List<T> getTopViewPartsList(TopViewDefinition definition, Class<T> type) {
+		if (definition != null) {
+			List<T> typeParts = definition.getParts().stream()
+					.filter(type::isInstance)
+					.map(part -> (T)part)
+					.collect(Collectors.toList());
+			return typeParts;
 		}
 		return Collections.emptyList();
 	}
 
 	@Override
 	@SuppressWarnings("unchecked")
-	public <T extends TopViewPartsHandler> List<T> getRequestTopViewPartsHandler(Class<T> type) {
-
-		TopViewHandler handler = getRequestTopViewHandler();
+	public <T extends TopViewPartsHandler> T getTopViewPartsHandler(TopViewHandler handler, Class<T> type) {
 		if (handler != null) {
-			List<TopViewPartsHandler> typeParts = handler.getParts().stream()
-					.filter(part -> type.isInstance(part)).collect(Collectors.toList());
-			return (List<T>)typeParts;
+			Optional<T> typeParts = handler.getParts().stream()
+					.filter(type::isInstance)
+					.map(part -> (T)part)
+					.findFirst();
+			return typeParts.isPresent() ? typeParts.get() : null;
+		}
+		return null;
+	}
+
+	@Override
+	@SuppressWarnings("unchecked")
+	public <T extends TopViewPartsHandler> List<T> getTopViewPartsHandlerList(TopViewHandler handler, Class<T> type) {
+		if (handler != null) {
+			List<T> typeParts = handler.getParts().stream()
+					.filter(type::isInstance)
+					.map(part -> (T)part)
+					.collect(Collectors.toList());
+			return typeParts;
 		}
 		return Collections.emptyList();
 	}

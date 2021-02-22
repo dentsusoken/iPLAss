@@ -23,6 +23,7 @@ package org.iplass.adminconsole.client.metadata.ui.top.node;
 import org.iplass.mtp.view.top.parts.ApplicationMaintenanceParts;
 import org.iplass.mtp.view.top.parts.CsvDownloadSettingsParts;
 import org.iplass.mtp.view.top.parts.FulltextSearchViewParts;
+import org.iplass.mtp.view.top.parts.PreviewDateParts;
 import org.iplass.mtp.view.top.parts.UserMaintenanceParts;
 
 import com.google.gwt.core.shared.GWT;
@@ -56,11 +57,12 @@ public class ToolbarNodeManager extends ItemNodeManager {
 	public static class ToolbarNodeManagerControllerImpl implements ToolbarNodeManagerController {
 		@Override
 		public TopViewNode[] getNodes() {
+			TopViewNode previewDate = new TopViewNode("Preview Date", PreviewDateParts.class.getName(), "", true, false, true);
 			TopViewNode userMaintenance = new TopViewNode("User Maintenance", UserMaintenanceParts.class.getName(), "", true, false, true);
 			TopViewNode appMaintenance = new TopViewNode("Application Maintenance", ApplicationMaintenanceParts.class.getName(), "", true, false, true);
 			TopViewNode fulltextSearchView = new TopViewNode("Fulltext Search", FulltextSearchViewParts.class.getName(), "", true, false, true);
 			TopViewNode csvDownloadSettingsView = new TopViewNode("CsvDownload Settings", CsvDownloadSettingsParts.class.getName(), "", true, false, true);
-			return new TopViewNode[]{userMaintenance, appMaintenance, fulltextSearchView, csvDownloadSettingsView};
+			return new TopViewNode[]{previewDate, userMaintenance, appMaintenance, fulltextSearchView, csvDownloadSettingsView};
 		}
 	}
 }

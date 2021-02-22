@@ -91,7 +91,7 @@ import org.iplass.gem.command.generic.upload.CsvUploadStatusCommand;
 import org.iplass.gem.command.information.InformationListCommand;
 import org.iplass.gem.command.information.InformationViewCommand;
 import org.iplass.gem.command.language.SelectLanguageCommand;
-import org.iplass.gem.command.preview.GetPreviewDateTimeCommand;
+import org.iplass.gem.command.preview.PreviewDateViewCommand;
 import org.iplass.gem.command.preview.SetPreviewDateTimeCommand;
 import org.iplass.gem.command.treeview.GetTreeViewDefinitionCommand;
 import org.iplass.gem.command.treeview.GetTreeViewGridDataCommand;
@@ -197,8 +197,9 @@ import org.iplass.mtp.command.annotation.MetaDataSeeAlso;
 	RevokeApplicationCommand.class,
 	GenerateAuthTokenCommand.class,
 	//プレビュー日付
-	GetPreviewDateTimeCommand.class,
+	PreviewDateViewCommand.class,
 	SetPreviewDateTimeCommand.class,
+	//全文検索
 	FullTextSearchViewCommand.class,
 	FullTextSearchCommand.class
 })

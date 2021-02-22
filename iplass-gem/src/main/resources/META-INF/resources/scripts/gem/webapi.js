@@ -751,19 +751,6 @@ function getLinkItems(webapi, defName, viewType, viewName, propName, linkValue, 
 ////////////////////////////////////////////////////////
 //日付操作用のJavascript
 ////////////////////////////////////////////////////////
-function getSystemDate(async, func) {
-	postAsync("gem/preview/getPreviewDateTime", "{}", function(results) {
-		var val = results.dateTime;
-
-		var dateTime = null;
-		if (val != null) {
-			dateTime = new Date();
-			dateTime.setTime(val);
-		}
-
-		if (func && $.isFunction(func)) func.call(this, dateTime);
-	}, async);
-}
 function setSystemDate(dateTime, func) {
 	if (dateTime != null) dateTime = "\"" + dateTime + "\"";
 	var params = "{";

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2019 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
+ * Copyright (C) 2021 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
  *
  * Unless you have purchased a commercial license,
  * the following license terms apply:
@@ -27,7 +27,7 @@ import org.iplass.adminconsole.client.base.ui.widget.MtpDialog;
 import org.iplass.adminconsole.client.base.ui.widget.form.MtpForm;
 import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
 import org.iplass.adminconsole.client.metadata.ui.top.PartsOperationHandler;
-import org.iplass.mtp.view.top.parts.ApplicationMaintenanceParts;
+import org.iplass.mtp.view.top.parts.PreviewDateParts;
 
 import com.smartgwt.client.types.HeaderControls;
 import com.smartgwt.client.widgets.HeaderControl;
@@ -37,55 +37,55 @@ import com.smartgwt.client.widgets.events.ClickHandler;
 import com.smartgwt.client.widgets.form.DynamicForm;
 import com.smartgwt.client.widgets.form.fields.CheckboxItem;
 
-public class ApplicationMaintenanceItem extends PartsItem {
+public class PreviewDateItem extends PartsItem {
 
 	private PartsOperationHandler controler;
 
-	private ApplicationMaintenanceParts parts;
+	private PreviewDateParts parts;
 
 	/**
 	 * コンストラクタ
 	 */
-	public ApplicationMaintenanceItem(ApplicationMaintenanceParts parts, PartsOperationHandler controler) {
+	public PreviewDateItem(PreviewDateParts parts, PartsOperationHandler controler) {
 		this.parts = parts;
 		this.controler = controler;
-		setTitle("Application Maintenance");
+		setTitle("Preview Date");
 		setBackgroundColor("#909090");
 
 		setHeaderControls(HeaderControls.HEADER_LABEL, new HeaderControl(HeaderControl.SETTINGS, new ClickHandler() {
 
 			@Override
 			public void onClick(ClickEvent event) {
-				ApplicationMaintenanceItemSettingDialog dialog = new ApplicationMaintenanceItemSettingDialog();
+				PreviewDatePartsItemSettingDialog dialog = new PreviewDatePartsItemSettingDialog();
 				dialog.show();
 			}
 		}), HeaderControls.CLOSE_BUTTON);
 	}
 
 	@Override
-	public ApplicationMaintenanceParts getParts() {
+	public PreviewDateParts getParts() {
 		return parts;
 	}
 
 	@Override
 	protected boolean onPreDestroy() {
 		MTPEvent e = new MTPEvent();
-		e.setValue("key", dropAreaType + "_" + ApplicationMaintenanceParts.class.getName() + "_");
+		e.setValue("key", dropAreaType + "_" + PreviewDateParts.class.getName() + "_");
 		controler.remove(e);
 		return true;
 	}
 
-	private class ApplicationMaintenanceItemSettingDialog extends MtpDialog {
+	private class PreviewDatePartsItemSettingDialog extends MtpDialog {
 
 		private MetaDataLangTextItem txtTitle;
-		private CheckboxItem usePersonalAccessTokenField;
+		private CheckboxItem chkUsePreviewDate;
 
 		/**
 		 * コンストラクタ
 		 */
-		public ApplicationMaintenanceItemSettingDialog() {
+		public PreviewDatePartsItemSettingDialog() {
 
-			setTitle("Application Maintenance");
+			setTitle("Preview Date");
 			setHeight(200);
 			centerInPage();
 
@@ -97,12 +97,13 @@ public class ApplicationMaintenanceItem extends PartsItem {
 			txtTitle.setValue(parts.getTitle());
 			txtTitle.setLocalizedList(parts.getLocalizedTitleList());
 
-			usePersonalAccessTokenField = new CheckboxItem("usePersonalAccessToken", "Use Personal access token");
-			usePersonalAccessTokenField.setValue(parts.isUsePersonalAccessToken());
-			SmartGWTUtil.addHoverToFormItem(usePersonalAccessTokenField,
-					AdminClientMessageUtil.getString("ui_metadata_top_item_ApplicationMaintenanceItem_usePersonalAccessToken"));
+			chkUsePreviewDate = new CheckboxItem();
+			chkUsePreviewDate.setTitle("Use Preview Date");
+			chkUsePreviewDate.setValue(parts.isUsePreviewDate());
+			SmartGWTUtil.addHoverToFormItem(chkUsePreviewDate,
+					AdminClientMessageUtil.getString("ui_metadata_top_item_PreviewDatePartsItem_usePreviewDate"));
 
-			form.setItems(txtTitle, usePersonalAccessTokenField);
+			form.setItems(txtTitle, chkUsePreviewDate);
 
 			container.addMember(form);
 
@@ -114,7 +115,7 @@ public class ApplicationMaintenanceItem extends PartsItem {
 						//入力情報をパーツに
 						parts.setTitle(SmartGWTUtil.getStringValue(txtTitle));
 						parts.setLocalizedTitleList(txtTitle.getLocalizedList());
-						parts.setUsePersonalAccessToken(SmartGWTUtil.getBooleanValue(usePersonalAccessTokenField));
+						parts.setUsePreviewDate(SmartGWTUtil.getBooleanValue(chkUsePreviewDate));
 						destroy();
 					}
 				}

@@ -43,6 +43,7 @@
 <%@ page import="org.iplass.mtp.view.generic.*"%>
 <%@ page import="org.iplass.mtp.view.top.parts.ApplicationMaintenanceParts"%>
 <%@ page import="org.iplass.mtp.view.top.parts.FulltextSearchViewParts"%>
+<%@ page import="org.iplass.mtp.view.top.parts.PreviewDateParts"%>
 <%@ page import="org.iplass.mtp.view.top.parts.TopViewParts"%>
 <%@ page import="org.iplass.mtp.view.top.TopViewDefinition"%>
 <%@ page import="org.iplass.mtp.view.top.TopViewDefinitionManager"%>
@@ -58,6 +59,7 @@
 <%@ page import="org.iplass.gem.command.auth.RevokeApplicationCommand"%>
 <%@ page import="org.iplass.gem.command.auth.UpdatePasswordCommand"%>
 <%@ page import="org.iplass.gem.command.fulltext.FullTextSearchViewCommand"%>
+<%@ page import="org.iplass.gem.command.preview.PreviewDateViewCommand"%>
 
 <%!EntityDefinitionManager edm = ManagerLocator.getInstance().getManager(EntityDefinitionManager.class);
 	EntityViewManager evm = ManagerLocator.getInstance().getManager(EntityViewManager.class);
@@ -97,15 +99,7 @@
 		}
 
 		//TopViewのParts取得
-		FulltextSearchViewParts fulltextSearchViewParts = null;
-		if (topView != null) {
-			for (TopViewParts parts : topView.getParts()) {
-				if (parts instanceof FulltextSearchViewParts) {
-					fulltextSearchViewParts = (FulltextSearchViewParts) parts;
-					break;
-				}
-			}
-		}
+		FulltextSearchViewParts fulltextSearchViewParts = tvdm.getTopViewParts(topView, FulltextSearchViewParts.class);
 
 		Map<String, String> entityMap = new HashMap<String, String>();
 		if (fulltextSearchViewParts == null) {
@@ -203,8 +197,32 @@
 	if (roleName == null) roleName = "DEFAULT";
 
 	//TopView定義の取得
-	TopViewDefinition topView = tvdm.get(roleName);
+	TopViewDefinition topView = tvdm.getRequestTopView();
 
+	//Preview日付設定
+	boolean showPreviewDate = false;
+	String titlePreviewDate = null;
+	if (showNavi) {
+		TenantWebInfo webInfo = WebUtil.getTenantWebInfo(tenant);
+		if (webInfo.isUsePreview()) {
+			//テナントで許可している場合は一旦許可
+			showPreviewDate = true;
+			PreviewDateParts previewDateParts = tvdm.getTopViewParts(topView, PreviewDateParts.class);
+			if (previewDateParts != null) {
+				//パーツがある場合はパーツ設定
+				showPreviewDate = previewDateParts.isUsePreviewDate();
+
+				if (showPreviewDate) { 
+					titlePreviewDate = I18nUtil.stringDef(previewDateParts.getTitle(), previewDateParts.getLocalizedTitleList());
+				}
+			}
+			//タイトルが未指定の場合はデフォルト
+			if (showPreviewDate && titlePreviewDate == null) {
+				titlePreviewDate = GemResourceBundleUtil.resourceString("layout.header.previewDate");
+			}
+		}
+	}
+	
 	//全文検索対象の取得
 	Map<String, String> fulltextEntities = null;
 	if (showNavi) {
@@ -214,16 +232,13 @@
 	//アプリ管理
 	boolean showAppMentenance = false;
 	String titleAppMentenance = null;
-	if (showNavi && auth.isAuthenticated() && topView != null) {
-		for (TopViewParts parts : topView.getParts()) {
-			if (parts instanceof ApplicationMaintenanceParts) {
-				ApplicationMaintenanceParts amp = (ApplicationMaintenanceParts)parts;
-				showAppMentenance = true;
-				titleAppMentenance = I18nUtil.stringDef(amp.getTitle(), amp.getLocalizedTitleList());
-				if (titleAppMentenance == null) {
-					titleAppMentenance = GemResourceBundleUtil.resourceString("layout.header.appMaintenance");
-				}
-				break;
+	if (showNavi && auth.isAuthenticated()) {
+		ApplicationMaintenanceParts applicationMaintenanceParts = tvdm.getTopViewParts(topView, ApplicationMaintenanceParts.class);
+		if (applicationMaintenanceParts != null) {
+			showAppMentenance = true;
+			titleAppMentenance = I18nUtil.stringDef(applicationMaintenanceParts.getTitle(), applicationMaintenanceParts.getLocalizedTitleList());
+			if (titleAppMentenance == null) {
+				titleAppMentenance = GemResourceBundleUtil.resourceString("layout.header.appMaintenance");
 			}
 		}
 	}
@@ -289,64 +304,29 @@ function showAdminConsole() {
 <%
 		}
 
-		TenantWebInfo webInfo = WebUtil.getTenantWebInfo(tenant);
-		if (webInfo.isUsePreview()) {
+		//日付Preview
+		if (showPreviewDate) {
 %>
+<c:set var="titlePreviewDate" value="<%=titlePreviewDate%>" />
 <li class="preview-date">
-<a href="javascript:void(0)" onclick="showPreviewDateTimeDialog();">${m:rs("mtp-gem-messages", "layout.header.chngPrvwDate")}</a>
-<div id="showPreviewDateTimeDialog" class="mtp-jq-dialog" title="${m:rs('mtp-gem-messages', 'layout.header.chngPrvwDate')}" style="display:none;">
-<p style="margin-top: 18px;">
-<input type="text" class="datetimepicker inpbr" data-timeformat="HH:mm:ss" data-stepmin="1" />
-</p>
-</div>
+<span class="txt preview-date">${m:esc(titlePreviewDate)}</span>
 <script>
 $(function() {
-	var $dialog = $("#showPreviewDateTimeDialog");
-	var $previewDatetime = $(".datetimepicker", $dialog);
-	$dialog.dialog({
-		autoOpen: false,
-		modal: true,
-		resizable: false,
-		buttons: {
-			"${m:rs('mtp-gem-messages', 'layout.header.change')}": function() {
-				var date = $previewDatetime.val();
-				if (date != null && date != "") {
-					var datetimeString = convertFromLocaleDatetimeString(date);
-					setSystemDate(datetimeString, function() {
-						$dialog.dialog("close");
-						alert("${m:rs('mtp-gem-messages', 'layout.header.chngPrvwDateMsg')}");
-					});
-				} else {
-					alert("${m:rs('mtp-gem-messages', 'layout.header.incorrect')}");
-				}
-			},
-			"${m:rs('mtp-gem-messages', 'layout.header.reset')}": function() {
-				var $this = $(this);
-				setSystemDate(null, function() {
-					$dialog.dialog("close");
-					alert("${m:rs('mtp-gem-messages', 'layout.header.chngPrvwDateMsg')}");
-				});
-			},
-			"${m:rs('mtp-gem-messages', 'layout.header.cancel')}": function() { $dialog.dialog("close");}
-		},
-		open: function() {
-			$previewDatetime.show();
-			$previewDatetime.val("");
-			getSystemDate(true, function(dateTime) {
-				if (dateTime) {
-					var localizedString = convertToLocaleDatetimeString(dateUtil.format(dateTime, dateUtil.getServerDatetimeFormat()), dateUtil.getServerDatetimeFormat());
-					$previewDatetime.val(localizedString);
-				}
-			});
-		}
-	});
-	$dialog.on("dialogopen", function(e) {
-		adjustDialogLayer($(".ui-widget-overlay"));
+	$("li.preview-date > span").on("click", function() {
+		var $this = $(this);
+		var $dialogTrigger = getDialogTrigger($this.parent(), {resizable:false});
+
+		$dialogTrigger.trigger("click");
+
+		var isSubModal = $("body.modal-body").length != 0;
+		var target = getModalTarget(isSubModal);
+		var action = contextPath + "/<%=PreviewDateViewCommand.ACTION_NAME%>";
+		var $form = $("<form />").attr({method:"POST", action:action, target:target}).appendTo("body");
+		if (isSubModal) $("<input />").attr({type:"hidden", name:"modalTarget", value:target}).appendTo($form);
+		$form.submit();
+		$form.remove();
 	});
 });
-function showPreviewDateTimeDialog() {
-	$("#showPreviewDateTimeDialog").dialog("open");
-}
 </script>
 </li>
 <%

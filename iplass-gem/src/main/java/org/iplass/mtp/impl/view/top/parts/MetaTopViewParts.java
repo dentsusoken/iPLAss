@@ -27,6 +27,7 @@ import org.iplass.mtp.impl.view.top.TopViewHandler;
 import org.iplass.mtp.view.top.parts.ApplicationMaintenanceParts;
 import org.iplass.mtp.view.top.parts.CsvDownloadSettingsParts;
 import org.iplass.mtp.view.top.parts.FulltextSearchViewParts;
+import org.iplass.mtp.view.top.parts.PreviewDateParts;
 import org.iplass.mtp.view.top.parts.ScriptParts;
 import org.iplass.mtp.view.top.parts.TopViewContentParts;
 import org.iplass.mtp.view.top.parts.TopViewParts;
@@ -37,7 +38,8 @@ import org.iplass.mtp.view.top.parts.UserMaintenanceParts;
  * @author lis3wg
  */
 @XmlSeeAlso({MetaTopViewContentParts.class, MetaScriptParts.class, MetaUserMaintenanceParts.class,
-	MetaFulltextSearchViewParts.class, MetaCsvDownloadSettingsParts.class, MetaApplicationMaintenanceParts.class})
+	MetaFulltextSearchViewParts.class, MetaCsvDownloadSettingsParts.class,
+	MetaApplicationMaintenanceParts.class, MetaPreviewDateParts.class})
 public abstract class MetaTopViewParts implements MetaData {
 
 	/** SerialVersionUID */
@@ -62,6 +64,8 @@ public abstract class MetaTopViewParts implements MetaData {
 			return MetaCsvDownloadSettingsParts.createInstance(parts);
 		} else if (parts instanceof ApplicationMaintenanceParts) {
 			return MetaApplicationMaintenanceParts.createInstance(parts);
+		} else if (parts instanceof PreviewDateParts) {
+			return MetaPreviewDateParts.createInstance(parts);
 		}
 		return null;
 	}
