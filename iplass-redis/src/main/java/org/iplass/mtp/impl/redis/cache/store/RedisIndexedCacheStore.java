@@ -249,6 +249,11 @@ public class RedisIndexedCacheStore extends RedisCacheStoreBase {
 	public List<CacheEventListener> getListeners() {
 		return wrapped.getListeners();
 	}
+	
+	@Override
+	public Integer getSize() {
+		return wrapped.getSize();
+	}
 
 	@Override
 	public String trace() {
@@ -368,5 +373,5 @@ public class RedisIndexedCacheStore extends RedisCacheStoreBase {
 			return "IndexKey [index=" + index + ", value=" + value + "]";
 		}
 	}
-
+	
 }

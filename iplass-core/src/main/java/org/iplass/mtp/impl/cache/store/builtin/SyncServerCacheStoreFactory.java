@@ -340,6 +340,11 @@ public class SyncServerCacheStoreFactory extends AbstractBuiltinCacheStoreFactor
 			ServiceRegistry.getRegistry().getService(ClusterService.class).sendMessage(msg);
 			return ret;
 		}
+		
+		@Override
+		public Integer getSize() {
+			return wrapped.getSize();
+		}
 
 		@Override
 		public String trace() {

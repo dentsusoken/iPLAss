@@ -343,6 +343,11 @@ public class SimpleCacheStoreFactory extends AbstractBuiltinCacheStoreFactory {
 		protected void removeNullEntry(NullKey key) {
 			cache.asMap().remove(key);
 		}
+		
+		@Override
+		public Integer getSize() {
+			return (int) cache.estimatedSize();
+		}
 
 		@Override
 		public String trace() {
@@ -686,6 +691,11 @@ public class SimpleCacheStoreFactory extends AbstractBuiltinCacheStoreFactory {
 		@Override
 		protected void removeNullEntry(NullKey key) {
 			cache.asMap().remove(key);
+		}
+		
+		@Override
+		public Integer getSize() {
+			return (int) cache.estimatedSize();
 		}
 
 		public String trace() {

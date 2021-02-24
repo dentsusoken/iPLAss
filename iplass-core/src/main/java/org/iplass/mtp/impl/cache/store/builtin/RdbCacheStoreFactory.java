@@ -271,7 +271,9 @@ public class RdbCacheStoreFactory extends AbstractBuiltinCacheStoreFactory {
 		private String insertSql;
 		private String delAllSql = "DELETE FROM " + tableName + " WHERE " + NAMESPACE + "=?";
 		private String keySetSql = "SELECT " + KEY + "," + CRE_TIME + " FROM " + tableName + " WHERE " + NAMESPACE + "=? AND " + INVALID_TIME + ">?";
-
+		private String countSql = "SELECT COUNT(*)" + " FROM " + tableName + " WHERE " + NAMESPACE + "=?";
+		private String countSqlWithCheckInvalidDate = "SELECT COUNT(*)" + " FROM " + tableName + " WHERE " + NAMESPACE + "=? AND " + INVALID_TIME + ">?";
+		
 		//FIXME 更新時にINVALID_TIMEを更新
 		
 		RdbCacheStore(String namespace) {
@@ -944,6 +946,35 @@ public class RdbCacheStoreFactory extends AbstractBuiltinCacheStoreFactory {
 				return ret;
 			} catch (SQLException e) {
 				throw new SystemException("cant removeByIndex from RDB:indexKey=" + indexKey + ",indexValue=" + indexValue, e);
+			}
+		}
+		
+		@Override
+		public Integer getSize() {
+			try (Connection con = rdb.getConnection(connectionFactoryName)) {
+				return getSizeInternal(con, true);
+			} catch (SQLException e) {
+				throw new SystemException("cant getSize from RDB", e);
+			}
+		}
+		
+		public Integer getSizeInternal(Connection con, boolean checkInvalidDate) throws SQLException {
+			String sql;
+			if (checkInvalidDate) {
+				sql = countSqlWithCheckInvalidDate;
+			} else {
+				sql = countSql;
+			}
+			try (PreparedStatement ps = con.prepareStatement(sql)) {
+				ps.setString(1, getNamespace());
+				if (checkInvalidDate) {
+					ps.setLong(2, System.currentTimeMillis());
+				}
+
+				try (ResultSet rs = ps.executeQuery()) {
+					rs.next();
+					return rs.getInt(1);
+				}
 			}
 		}
 

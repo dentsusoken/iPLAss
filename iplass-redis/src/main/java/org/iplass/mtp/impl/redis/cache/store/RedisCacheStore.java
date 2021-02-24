@@ -293,6 +293,11 @@ public class RedisCacheStore extends RedisCacheStoreBase {
 	public List<CacheEntry> removeByIndex(int indexKey, Object indexValue) {
 		return null;
 	}
+	
+	@Override
+	public Integer getSize() {
+		return redisCmds.dbsize().intValue();
+	}
 
 	@Override
 	public String trace() {
