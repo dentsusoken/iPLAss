@@ -31,7 +31,7 @@ https://hub.docker.com/r/iplass/iplass-standalone/
 
 https://iplass.org/downloads/
 
-また、jarは groupId : org.iplass でMaven CentralおよびJCenterに公開しています。
+また、jarは groupId : org.iplass でMaven Centralに公開しています。
 
 gradleでの定義例：
 
