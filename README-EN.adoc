@@ -30,7 +30,7 @@ From the link below, the iPLAss SDK, Installer, and Eclipse Plugin can be downlo
 
 https://iplass.org/en/downloads/
 
-Also, jar is published at Maven Central and JCenter with groupId : org.iplass.
+Also, jar is published at Maven Central with groupId : org.iplass.
 
 example when using gradle：
 
