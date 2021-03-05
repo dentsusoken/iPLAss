@@ -53,18 +53,17 @@ import org.iplass.mtp.impl.auth.authorize.AuthorizationContext;
 import org.iplass.mtp.impl.auth.authorize.AuthorizationProvider;
 import org.iplass.mtp.impl.core.ExecuteContext;
 import org.iplass.mtp.impl.core.TenantContextService;
-import org.iplass.mtp.impl.logging.LoggingContext;
 import org.iplass.mtp.impl.util.InternalDateUtil;
 import org.iplass.mtp.spi.Config;
 import org.iplass.mtp.spi.Service;
 import org.iplass.mtp.spi.ServiceRegistry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.slf4j.MDC;
 
 public class AuthService implements Service {
 	private static Logger logger = LoggerFactory.getLogger(AuthService.class);
 
+	public static final String AUTH_FACTOR_AUTHENTICATION_PROCESS_TYPE = "mtp.auth.AuthenticationProcessType";
 	public static final String MDC_USER = "user";
 	public static final String USER_HANDLE_NAME = "mtp.auth.UserHandle";
 	static final String HOLDER_NAME = "mtp.auth.authCotnextHolder";
@@ -264,6 +263,7 @@ public class AuthService implements Service {
 	public void login(Credential credential) throws LoginFailedException, CredentialExpiredException {//TODO LoginExceptionでよいか？？
 
 		try {
+			credential.setAuthenticationFactor(AUTH_FACTOR_AUTHENTICATION_PROCESS_TYPE, AuthenticationProcessType.LOGIN);
 			UserContext user = authenticate(credential);
 			//セッション情報初期化
 			initializeSession(user, true);
@@ -327,6 +327,7 @@ public class AuthService implements Service {
 		if (pre == null || pre instanceof AnonymousUserContext) {
 			throw new LoginFailedException(resourceString("impl.auth.AuthService.checkIdPass"));
 		}
+		credential.setAuthenticationFactor(AUTH_FACTOR_AUTHENTICATION_PROCESS_TYPE, AuthenticationProcessType.RE_AUTH);
 		UserContext user = authenticate(credential);
 		if (!pre.getAccount().getUnmodifiableUniqueKey().equals(user.getAccount().getUnmodifiableUniqueKey())) {
 			authenticationProviders[pre.getAccount().getAuthenticationProviderIndex()].getAuthLogger().loginFail(credential, null);
