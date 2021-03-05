@@ -177,9 +177,9 @@ public class IndexedCacheStoreWrapper implements CacheStore {
 	}
 	
 	@Override
-	public Integer getSize() {
+	public int getSize() {
 		// TODO Auto-generated method stub
-		return null;
+		return 0;
 	}
 
 	@Override

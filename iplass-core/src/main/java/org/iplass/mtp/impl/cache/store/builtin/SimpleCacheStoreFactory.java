@@ -345,7 +345,7 @@ public class SimpleCacheStoreFactory extends AbstractBuiltinCacheStoreFactory {
 		}
 		
 		@Override
-		public Integer getSize() {
+		public int getSize() {
 			return (int) cache.estimatedSize();
 		}
 
@@ -694,7 +694,7 @@ public class SimpleCacheStoreFactory extends AbstractBuiltinCacheStoreFactory {
 		}
 		
 		@Override
-		public Integer getSize() {
+		public int getSize() {
 			return (int) cache.estimatedSize();
 		}
 

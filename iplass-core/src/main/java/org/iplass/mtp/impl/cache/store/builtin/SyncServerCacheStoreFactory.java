@@ -342,7 +342,7 @@ public class SyncServerCacheStoreFactory extends AbstractBuiltinCacheStoreFactor
 		}
 		
 		@Override
-		public Integer getSize() {
+		public int getSize() {
 			return wrapped.getSize();
 		}
 

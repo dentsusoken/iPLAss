@@ -271,7 +271,6 @@ public class RdbCacheStoreFactory extends AbstractBuiltinCacheStoreFactory {
 		private String insertSql;
 		private String delAllSql = "DELETE FROM " + tableName + " WHERE " + NAMESPACE + "=?";
 		private String keySetSql = "SELECT " + KEY + "," + CRE_TIME + " FROM " + tableName + " WHERE " + NAMESPACE + "=? AND " + INVALID_TIME + ">?";
-		private String countSql = "SELECT COUNT(*)" + " FROM " + tableName + " WHERE " + NAMESPACE + "=?";
 		private String countSqlWithCheckInvalidDate = "SELECT COUNT(*)" + " FROM " + tableName + " WHERE " + NAMESPACE + "=? AND " + INVALID_TIME + ">?";
 		
 		//FIXME 更新時にINVALID_TIMEを更新
@@ -950,27 +949,20 @@ public class RdbCacheStoreFactory extends AbstractBuiltinCacheStoreFactory {
 		}
 		
 		@Override
-		public Integer getSize() {
+		public int getSize() {
 			try (Connection con = rdb.getConnection(connectionFactoryName)) {
-				return getSizeInternal(con, true);
+				return getSizeInternal(con);
 			} catch (SQLException e) {
 				throw new SystemException("cant getSize from RDB", e);
 			}
 		}
 		
-		public Integer getSizeInternal(Connection con, boolean checkInvalidDate) throws SQLException {
-			String sql;
-			if (checkInvalidDate) {
-				sql = countSqlWithCheckInvalidDate;
-			} else {
-				sql = countSql;
-			}
-			try (PreparedStatement ps = con.prepareStatement(sql)) {
-				ps.setString(1, getNamespace());
-				if (checkInvalidDate) {
-					ps.setLong(2, System.currentTimeMillis());
-				}
+		public int getSizeInternal(Connection con) throws SQLException {
 
+			try (PreparedStatement ps = con.prepareStatement(countSqlWithCheckInvalidDate)) {
+				ps.setString(1, getNamespace());
+				ps.setLong(2, System.currentTimeMillis());
+				
 				try (ResultSet rs = ps.executeQuery()) {
 					rs.next();
 					return rs.getInt(1);

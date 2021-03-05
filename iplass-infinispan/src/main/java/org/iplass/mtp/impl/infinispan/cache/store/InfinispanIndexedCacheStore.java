@@ -335,7 +335,7 @@ public class InfinispanIndexedCacheStore implements CacheStore {
 	}
 	
 	@Override
-	public Integer getSize() {
+	public int getSize() {
 		return wrapped.getSize();
 	}
 

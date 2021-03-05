@@ -313,7 +313,7 @@ public class InfinispanCacheStoreFactory extends CacheStoreFactory implements Se
 		}
 
 		@Override
-		public Integer getSize() {
+		public int getSize() {
 			return cache.size();
 		}
 

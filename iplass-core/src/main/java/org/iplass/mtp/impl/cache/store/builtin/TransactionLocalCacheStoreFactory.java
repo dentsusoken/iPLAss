@@ -861,7 +861,7 @@ public class TransactionLocalCacheStoreFactory extends AbstractBuiltinCacheStore
 		
 
 		@Override
-		public Integer getSize() {
+		public int getSize() {
 			return backendCacheStore.getSize();
 		}
 

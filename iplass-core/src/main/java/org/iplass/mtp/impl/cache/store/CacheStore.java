@@ -36,7 +36,7 @@ public interface CacheStore {
 
 	public CacheStoreFactory getFactory();
 	
-	public Integer getSize();
+	public int getSize();
 
 	/**
 	 * 

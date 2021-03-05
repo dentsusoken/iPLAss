@@ -295,7 +295,7 @@ public class RedisCacheStore extends RedisCacheStoreBase {
 	}
 	
 	@Override
-	public Integer getSize() {
+	public int getSize() {
 		return redisCmds.dbsize().intValue();
 	}
 

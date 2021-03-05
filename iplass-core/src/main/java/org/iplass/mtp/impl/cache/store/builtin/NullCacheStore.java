@@ -121,8 +121,8 @@ public class NullCacheStore implements CacheStore {
 	}
 	
 	@Override
-	public Integer getSize() {
-		return null;
+	public int getSize() {
+		return 0;
 	}
 
 	@Override

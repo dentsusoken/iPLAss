@@ -305,7 +305,7 @@ public final class MapBaseCacheStore extends SimpleCacheStoreBase {
 	}
 	
 	@Override
-	public Integer getSize() {
+	public int getSize() {
 		return cache.size();
 	}
 

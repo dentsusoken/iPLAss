@@ -251,7 +251,7 @@ public class RedisIndexedCacheStore extends RedisCacheStoreBase {
 	}
 	
 	@Override
-	public Integer getSize() {
+	public int getSize() {
 		return wrapped.getSize();
 	}
 
