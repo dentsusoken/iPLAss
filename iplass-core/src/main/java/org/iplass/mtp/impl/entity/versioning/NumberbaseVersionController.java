@@ -27,6 +27,7 @@ import java.util.Map;
 import java.util.function.Predicate;
 
 import org.iplass.mtp.entity.DeleteOption;
+import org.iplass.mtp.entity.DeleteTargetVersion;
 import org.iplass.mtp.entity.Entity;
 import org.iplass.mtp.entity.EntityApplicationException;
 import org.iplass.mtp.entity.EntityConcurrentUpdateException;
@@ -334,6 +335,13 @@ public class NumberbaseVersionController implements VersionController {
 
 	@Override
 	public DeleteTarget[] getDeleteTarget(Entity entity, DeleteOption option, EntityHandler eh, EntityContext entityContext) {
+		
+		//DeleteTargetVersion.SPECIFICの場合、指定されたバージョンのみ削除
+		if (option.getTargetVersion() == DeleteTargetVersion.SPECIFIC) {
+			return new DeleteTarget[] {
+					new DeleteTarget(entity.getOid(), entity.getVersion(), entity.getUpdateDate())};
+		}
+		
 		//TODO 厳密なタイムスタンプチェックは難しい。。
 
 		if (option.isCheckTimestamp()) {

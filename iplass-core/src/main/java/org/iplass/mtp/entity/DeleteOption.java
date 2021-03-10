@@ -39,6 +39,8 @@ public class DeleteOption {
 	
 	private boolean notifyListeners = true;
 	
+	private DeleteTargetVersion targetVersion = DeleteTargetVersion.ALL;
+	
 	public DeleteOption() {
 	}
 	
@@ -49,6 +51,35 @@ public class DeleteOption {
 	 */
 	public DeleteOption(boolean checkTimestamp) {
 		this.checkTimestamp = checkTimestamp;
+	}
+
+	/**
+	 * コンストラクタ。
+	 * 
+	 * @param checkTimestamp タイムスタンプチェック行う場合trueを指定
+	 * @param targetVersion バージョン管理している場合に対象バージョンを指定
+	 */
+	public DeleteOption(boolean checkTimestamp, DeleteTargetVersion targetVersion) {
+		this.checkTimestamp = checkTimestamp;
+		this.targetVersion = targetVersion;
+	}
+
+	/**
+	 * Entityがバージョン管理されている場合に、削除対象とする対象バージョン。
+	 * @return
+	 */
+	public DeleteTargetVersion getTargetVersion() {
+		return targetVersion;
+	}
+
+	/**
+	 * Entityがバージョン管理されている場合に、削除対象とする対象バージョンを指定。
+	 * デフォルトはALL。
+	 * 
+	 * @param targetVersion
+	 */
+	public void setTargetVersion(DeleteTargetVersion targetVersion) {
+		this.targetVersion = targetVersion;
 	}
 
 	/**
@@ -160,10 +191,10 @@ public class DeleteOption {
 		this.notifyListeners = false;
 		return this;
 	}
-
+	
 	@Override
 	public String toString() {
-		return "DeleteOption [checkTimestamp=" + checkTimestamp + ", purge="
+		return "DeleteOption [checkTimestamp=" + checkTimestamp + ", targetVersion=" + targetVersion + ", purge="
 				+ purge + ", checkLockedByUser=" + checkLockedByUser
 				+ ", notifyListeners=" + notifyListeners + "]";
 	}

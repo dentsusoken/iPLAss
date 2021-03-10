@@ -24,6 +24,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.iplass.mtp.entity.DeleteCondition;
+import org.iplass.mtp.entity.DeleteOption;
+import org.iplass.mtp.entity.DeleteTargetVersion;
 import org.iplass.mtp.entity.Entity;
 import org.iplass.mtp.entity.GenericEntity;
 import org.iplass.mtp.entity.UpdateCondition;
@@ -202,12 +204,16 @@ public class LoggerAuditLoggingService implements AuditLoggingService {
 	}
 
 	@Override
-	public void logDelete(Entity entity) {
+	public void logDelete(Entity entity, DeleteOption option) {
 		String oid = entity.getOid();
 		String defName = entity.getDefinitionName();
 		StringBuilder sb = new StringBuilder();
 		sb.append("{\"definitionName\":\"").append(defName).append("\"");
-		sb.append(",\"oid\":\"").append(oid).append("\"}");
+		sb.append(",\"oid\":\"").append(oid).append("\"");
+		if (option.getTargetVersion() == DeleteTargetVersion.SPECIFIC) {
+			sb.append(",\"version\":").append(entity.getVersion());
+		}
+		sb.append("}");
 		log(ACTION_DELETE, sb);
 	}
 

@@ -87,7 +87,7 @@ public class AuditLogInterceptor extends EntityInterceptorAdapter implements Ser
 		if (entity == null) {
 			entity = invocation.getEntity();
 		}
-		historyLoggingService.logDelete(entity);
+		historyLoggingService.logDelete(entity, invocation.getDeleteOption());
 	}
 
 	@Override

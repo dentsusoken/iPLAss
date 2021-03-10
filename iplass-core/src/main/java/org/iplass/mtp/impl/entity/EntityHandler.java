@@ -35,6 +35,7 @@ import java.util.function.Predicate;
 
 import org.iplass.mtp.entity.DeleteCondition;
 import org.iplass.mtp.entity.DeleteOption;
+import org.iplass.mtp.entity.DeleteTargetVersion;
 import org.iplass.mtp.entity.Entity;
 import org.iplass.mtp.entity.EntityApplicationException;
 import org.iplass.mtp.entity.EntityConcurrentUpdateException;
@@ -1279,6 +1280,11 @@ public class EntityHandler extends BaseMetaDataRuntime {
 		}
 
 		List<ReferencePropertyHandler> refPropList = getReferencePropertyList(ReferenceType.COMPOSITION, entityContext);
+		
+		if (refPropList.size() > 0 && option.getTargetVersion() == DeleteTargetVersion.SPECIFIC) {
+			throw new EntityRuntimeException("Cascade deletion with version-specified option is not supported.");
+		}
+		
 		Map<String, Set<String>> cascadeDelMap = new HashMap<>();
 		if (refPropList.size() > 0) {
 			for (ReferencePropertyHandler rph: refPropList) {

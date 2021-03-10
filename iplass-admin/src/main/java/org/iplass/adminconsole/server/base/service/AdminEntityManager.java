@@ -198,7 +198,7 @@ public class AdminEntityManager implements EntityManager {
 	@Override
 	public void delete(Entity entity, DeleteOption option) {
 		em.delete(entity, option);
-		aals.logDelete(entity);
+		aals.logDelete(entity, option);
 	}
 
 	@Override

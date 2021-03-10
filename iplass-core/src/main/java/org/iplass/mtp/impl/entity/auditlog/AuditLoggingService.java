@@ -21,6 +21,7 @@
 package org.iplass.mtp.impl.entity.auditlog;
 
 import org.iplass.mtp.entity.DeleteCondition;
+import org.iplass.mtp.entity.DeleteOption;
 import org.iplass.mtp.entity.Entity;
 import org.iplass.mtp.entity.UpdateCondition;
 import org.iplass.mtp.entity.UpdateOption;
@@ -46,7 +47,7 @@ public interface AuditLoggingService extends Service {
 	public boolean isLogBeforeEntity(String definitionName);
 	public void logUpdate(Entity beforeEntity, Entity entity, UpdateOption option);
 	public void logUpdateAll(UpdateCondition cond);
-	public void logDelete(Entity entity);
+	public void logDelete(Entity entity, DeleteOption option);
 	public void logDeleteAll(DeleteCondition cond);
 	public void logPurge(Long rbid);
 	public void logRestore(String oid, String defName, Long rbid);
