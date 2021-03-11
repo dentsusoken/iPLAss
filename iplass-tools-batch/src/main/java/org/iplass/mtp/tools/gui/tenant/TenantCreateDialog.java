@@ -66,6 +66,7 @@ import org.iplass.mtp.impl.tools.tenant.TenantCreateParameter;
 import org.iplass.mtp.impl.tools.tenant.TenantToolService;
 import org.iplass.mtp.impl.tools.tenant.rdb.TenantRdbConstants;
 import org.iplass.mtp.spi.ServiceRegistry;
+import org.iplass.mtp.tools.batch.MtpCuiBase.LogListener;
 import org.iplass.mtp.tools.batch.tenant.TenantBatch;
 import org.iplass.mtp.tools.batch.tenant.TenantBatch.TenantBatchExecMode;
 import org.iplass.mtp.tools.gui.MtpJDialogBase;
@@ -112,7 +113,7 @@ public class TenantCreateDialog extends MtpJDialogBase {
 
 	protected JTextArea txtMessageArea;
 
-	protected List<ChangeListener> dataChangeListners = new ArrayList<ChangeListener>();
+	protected List<ChangeListener> dataChangeListners = new ArrayList<>();
 
 	public TenantCreateDialog(Frame owner) {
 		super(owner);
@@ -574,9 +575,10 @@ public class TenantCreateDialog extends MtpJDialogBase {
 		@Override
 		protected TenantBatch doInBackground() throws Exception {
 			TenantBatch manager = null;
+			LogListener listener = null;
 			try {
 				manager = new TenantBatch(TenantBatchExecMode.CREATE.name());
-				manager.addLogListner(new TenantBatch.LogListner() {
+				listener = new TenantBatch.LogListener() {
 
 					@Override
 					public void info(String message) {
@@ -613,12 +615,20 @@ public class TenantCreateDialog extends MtpJDialogBase {
 						publish(message);
 						logger.error(message, e);
 					}
-				});
+				};
+				manager.addLogListner(listener);
 
 				manager.executeCreate(createParameter());
 
+				listener.info("");
+				listener.info("■Execute Result : SUCCESS");
+				listener.info("");
+
 			} catch (Exception e) {
-				e.printStackTrace();
+				listener.error(rs("Common.errorMsg", e.getMessage()), e);
+				listener.info("");
+				listener.error("■Execute Result : FAILED");
+				listener.info("");
 				throw e;
 			}
 			return manager;
@@ -651,10 +661,7 @@ public class TenantCreateDialog extends MtpJDialogBase {
 							"ERROR", JOptionPane.ERROR_MESSAGE);
 				}
 			} catch (Exception e) {
-				addLog(rs("Common.errorMsg", ""));
-				addLog(e.getMessage());
-
-				JOptionPane.showMessageDialog(TenantCreateDialog.this, rs("Common.errorMsg", ""),
+				JOptionPane.showMessageDialog(TenantCreateDialog.this, rs("Common.errorMsg", e.getMessage()),
 						"ERROR", JOptionPane.ERROR_MESSAGE);
 			}
 			btnCreate.setText("Create");

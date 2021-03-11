@@ -14,8 +14,10 @@ import org.iplass.mtp.impl.entity.EntityService;
 import org.iplass.mtp.impl.tools.clean.RecycleBinCleanService;
 import org.iplass.mtp.impl.tools.tenant.TenantInfo;
 import org.iplass.mtp.spi.ServiceRegistry;
-import org.iplass.mtp.tools.batch.MtpCuiBase;
+import org.iplass.mtp.tools.batch.MtpSilentBatch;
 import org.iplass.mtp.util.StringUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * ごみ箱データ削除ツール
@@ -26,7 +28,9 @@ import org.iplass.mtp.util.StringUtil;
  * @author lis71n
  *
  */
-public class RbCleaner extends MtpCuiBase {
+public class RbCleaner extends MtpSilentBatch {
+
+	private static Logger logger = LoggerFactory.getLogger(RbCleaner.class);
 
 	private static TenantContextService tenantContextService = ServiceRegistry.getRegistry().getService(TenantContextService.class);
 	private static EntityService entityHandlerService = ServiceRegistry.getRegistry().getService(EntityService.class);
@@ -71,9 +75,6 @@ public class RbCleaner extends MtpCuiBase {
 	 */
 	public RbCleaner(int tenantId) {
 		setTenantId(tenantId);
-
-		LogListner loggingListner = getLoggingLogListner();
-		addLogListner(loggingListner);
 	}
 
 	/**
@@ -87,26 +88,20 @@ public class RbCleaner extends MtpCuiBase {
 
 		clearLog();
 
-		try {
-			ExecuteContext.initContext(new ExecuteContext(tenantContextService.getTenantContext(tenantId)));
+		return executeTask(null, (param) -> {
 
-			logArguments();
+			return ExecuteContext.executeAs(tenantContextService.getTenantContext(tenantId), () -> {
 
-			recycleBinCleanService.clean(purgeTargetDate, null);
+				logArguments();
 
-			setSuccess(true);
-		} catch (Throwable e) {
-			logError("An error has occurred. : " + e.getMessage());
-			e.printStackTrace();
-		} finally {
-			logInfo("");
-			logInfo("■Execute Result :" + (isSuccess() ? "SUCCESS" : "FAILED"));
+				recycleBinCleanService.clean(purgeTargetDate, null);
 
-			ExecuteContext.initContext(null);
-		}
+				setSuccess(true);
 
+				return isSuccess();
+			});
+		});
 
-		return isSuccess();
 	}
 
 	/**
@@ -135,5 +130,9 @@ public class RbCleaner extends MtpCuiBase {
 	    this.tenantId = tenantId;
 	}
 
+	@Override
+	protected Logger loggingLogger() {
+		return logger;
+	}
 
 }

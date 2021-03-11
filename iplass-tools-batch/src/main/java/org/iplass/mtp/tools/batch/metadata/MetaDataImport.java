@@ -4,7 +4,9 @@
 
 package org.iplass.mtp.tools.batch.metadata;
 
-import static org.iplass.mtp.tools.batch.pack.PackageImportParameter.*;
+import static org.iplass.mtp.tools.batch.pack.PackageImportParameter.PROP_IMPORT_FILE;
+import static org.iplass.mtp.tools.batch.pack.PackageImportParameter.PROP_TENANT_ID;
+import static org.iplass.mtp.tools.batch.pack.PackageImportParameter.PROP_TENANT_URL;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -37,9 +39,13 @@ import org.iplass.mtp.tools.batch.pack.PackageExport;
 import org.iplass.mtp.transaction.Transaction;
 import org.iplass.mtp.util.CollectionUtil;
 import org.iplass.mtp.util.StringUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 public class MetaDataImport extends MtpCuiBase {
+
+	private static Logger logger = LoggerFactory.getLogger(MetaDataImport.class);
 
 	/** Silentモード 設定ファイル名 */
 	public static final String KEY_CONFIG_FILE = "meta.config";
@@ -110,41 +116,31 @@ public class MetaDataImport extends MtpCuiBase {
 
 		clearLog();
 
-		try {
-			switch (execMode) {
-			case WIZARD :
-				LogListner consoleLogListner = getConsoleLogListner();
-				addLogListner(consoleLogListner);
+		//Console出力
+		switchLog(true, false);
 
-				//環境情報出力
-				logEnvironment();
+		//環境情報出力
+		logEnvironment();
 
-				logInfo("■Start Import Wizard");
-				logInfo("");
-
-				//Wizardの実行
-				return wizard();
-			case SILENT :
-				LogListner loggingLogListner = getLoggingLogListner();
-				addLogListner(loggingLogListner);
-
-				//環境情報出力
-				logEnvironment();
-
-				logInfo("■Start Import Silent");
-				logInfo("");
-
-				//Silentの実行
-				return silent();
-			default :
-				logError("unsupport execute mode : " + execMode);
-				return false;
-			}
-
-		} finally {
+		switch (execMode) {
+		case WIZARD :
+			logInfo("■Start Import Wizard");
 			logInfo("");
-			logInfo("■Execute Result :" + (isSuccess() ? "SUCCESS" : "FAILED"));
+
+			//Wizardの実行
+			return wizard();
+		case SILENT :
+			logInfo("■Start Import Silent");
 			logInfo("");
+
+			//Silentの場合はConsole出力を外す
+			switchLog(false, true);
+
+			//Silentの実行
+			return silent();
+		default :
+			logError("unsupport execute mode : " + execMode);
+			return false;
 		}
 	}
 
@@ -173,59 +169,54 @@ public class MetaDataImport extends MtpCuiBase {
 
 		setSuccess(false);
 
-		try {
-			boolean isSuccess = Transaction.required(new Function<Transaction, Boolean>() {
+		boolean isSuccess = Transaction.required(new Function<Transaction, Boolean>() {
 
-				@Override
-				public Boolean apply(Transaction t) {
+			@Override
+			public Boolean apply(Transaction t) {
 
-					TenantContext tc  = tcs.getTenantContext(param.getTenantId());
-					return ExecuteContext.executeAs(tc, ()->{
-						ExecuteContext.getCurrentContext().setLanguage(getLanguage());
+				TenantContext tc  = tcs.getTenantContext(param.getTenantId());
+				return ExecuteContext.executeAs(tc, ()->{
+					ExecuteContext.getCurrentContext().setLanguage(getLanguage());
 
-						logInfo(rs("MetaDataImport.startImportMetaLog"));
+					logInfo(rs("MetaDataImport.startImportMetaLog"));
 
-						try (InputStream is = new FileInputStream(param.getImportFile())) {
-							//ファイルに含まれるMetaData情報を取得
-							XMLEntryInfo entryInfo = mdps.getXMLMetaDataEntryInfo(is);
+					try (InputStream is = new FileInputStream(param.getImportFile())) {
+						//ファイルに含まれるMetaData情報を取得
+						XMLEntryInfo entryInfo = mdps.getXMLMetaDataEntryInfo(is);
 
-							//インポート処理の実行
-							MetaDataImportResult result = mdps.importMetaData(param.getImportFile().getName(), entryInfo, param.getImportTenant());
+						//インポート処理の実行
+						MetaDataImportResult result = mdps.importMetaData(param.getImportFile().getName(), entryInfo, param.getImportTenant());
 
-							if (result.isError()) {
-								if (result.getMessages() != null) {
-									for (String message : result.getMessages()) {
-										logError(message);
-									}
-									logInfo("");
-								}
-
-								logError(rs("Common.errorMsg", ""));
-								return false;
-							}
-
+						if (result.isError()) {
 							if (result.getMessages() != null) {
 								for (String message : result.getMessages()) {
-									logInfo(message);
+									logError(message);
 								}
+								logInfo("");
 							}
 
-							logInfo(rs("MetaDataImport.completedImportMetaLog"));
-						} catch (IOException e) {
-							throw new SystemException("failed to read metadata configure. file=" + param.getImportFile().getName(), e);
+							logError(rs("Common.errorMsg", ""));
+							return false;
 						}
 
-						return true;
+						if (result.getMessages() != null) {
+							for (String message : result.getMessages()) {
+								logInfo(message);
+							}
+						}
 
-					});
-				}
-			});
+						logInfo(rs("MetaDataImport.completedImportMetaLog"));
+					} catch (IOException e) {
+						throw new SystemException("failed to read metadata configure. file=" + param.getImportFile().getName(), e);
+					}
 
-			setSuccess(isSuccess);
+					return true;
 
-		} catch (Throwable e) {
-			logError(rs("Common.errorMsg", e.getMessage()));
-		}
+				});
+			}
+		});
+
+		setSuccess(isSuccess);
 
 		return isSuccess();
 	}
@@ -378,22 +369,13 @@ public class MetaDataImport extends MtpCuiBase {
 			return null;
 		});
 
-		//ConsoleのLogListnerを一度削除してLog出力に切り替え
-		LogListner consoleLogListner = getConsoleLogListner();
-		removeLogListner(consoleLogListner);
-		LogListner loggingListner = getLoggingLogListner();
-		addLogListner(loggingListner);
+		//Consoleを削除してLogに切り替え
+		switchLog(false, true);
 
 		//Import処理実行
-		try {
-			importMeta(param);
-
-			return isSuccess();
-
-		} finally {
-			removeLogListner(loggingListner);
-			addLogListner(consoleLogListner);
-		}
+		return executeTask(param, (paramA) -> {
+			return importMeta(paramA);
+		});
 	}
 
 	/**
@@ -515,7 +497,9 @@ public class MetaDataImport extends MtpCuiBase {
 			logArguments(param);
 
 			//Import処理実行
-			return importMeta(param);
+			return executeTask(param, (paramA) -> {
+				return importMeta(paramA);
+			});
 		});
 
 	}
@@ -587,4 +571,8 @@ public class MetaDataImport extends MtpCuiBase {
 		logInfo("-----------------------------------------------------------");
 	}
 
+	@Override
+	protected Logger loggingLogger() {
+		return logger;
+	}
 }

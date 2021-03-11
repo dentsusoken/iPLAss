@@ -11,16 +11,20 @@ import org.iplass.mtp.impl.core.ExecuteContext;
 import org.iplass.mtp.impl.core.TenantContextService;
 import org.iplass.mtp.impl.tools.tenant.TenantInfo;
 import org.iplass.mtp.spi.ServiceRegistry;
-import org.iplass.mtp.tools.batch.MtpCuiBase;
+import org.iplass.mtp.tools.batch.MtpSilentBatch;
 import org.iplass.mtp.transaction.Transaction;
 import org.iplass.mtp.util.StringUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * 非同期機能のメンテナンス用バッチ
  * Status.RETURNED(タスク実行完了し、結果が取得されるのを待っている。)のままのタスクの履歴への移動
  * 古い履歴の削除
  */
-public class AsyncTaskCleaner extends MtpCuiBase {
+public class AsyncTaskCleaner extends MtpSilentBatch {
+
+	private static Logger logger = LoggerFactory.getLogger(AsyncTaskCleaner.class);
 
 	private static TenantContextService tenantContextService = ServiceRegistry.getRegistry().getService(TenantContextService.class);
 	private static RdbQueueService rdbQueueService = ServiceRegistry.getRegistry().getService(RdbQueueService.class);
@@ -62,9 +66,6 @@ public class AsyncTaskCleaner extends MtpCuiBase {
 	 */
 	public AsyncTaskCleaner(int tenantId) {
 		setTenantId(tenantId);
-
-		LogListner loggingListner = getLoggingLogListner();
-		addLogListner(loggingListner);
 	}
 
 	/**
@@ -79,12 +80,12 @@ public class AsyncTaskCleaner extends MtpCuiBase {
 
 		clearLog();
 
-		try {
-			ExecuteContext.initContext(new ExecuteContext(tenantContextService.getTenantContext(tenantId)));
+		return executeTask(null, (param) -> {
+			return ExecuteContext.executeAs(tenantContextService.getTenantContext(tenantId), () -> {
 
-			logArguments();
+				logArguments();
 
-			Transaction.required(t -> {
+				Transaction.required(t -> {
 
 					/*
 					 * QueueConfigのresultRemainingTime設定及びStatus.RETURNED(タスク実行完了し、
@@ -98,19 +99,13 @@ public class AsyncTaskCleaner extends MtpCuiBase {
 					rdbQueueService.deleteHistoryByDate(null, true);
 
 					return null;
+				});
+
+				setSuccess(true);
+
+				return isSuccess();
 			});
-
-			setSuccess(true);
-		} catch (Throwable e) {
-			logError("An error has occurred. : " + e.getMessage());
-			e.printStackTrace();
-		} finally {
-			logInfo("");
-			logInfo("■Execute Result :" + (isSuccess() ? "SUCCESS" : "FAILED"));
-
-			ExecuteContext.initContext(null);
-		}
-		return isSuccess();
+		});
 
 	}
 
@@ -139,5 +134,10 @@ public class AsyncTaskCleaner extends MtpCuiBase {
 	 */
 	public void setTenantId(int tenantId) {
 	    this.tenantId = tenantId;
+	}
+
+	@Override
+	protected Logger loggingLogger() {
+		return logger;
 	}
 }

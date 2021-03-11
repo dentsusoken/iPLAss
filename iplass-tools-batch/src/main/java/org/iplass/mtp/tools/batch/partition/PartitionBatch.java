@@ -24,16 +24,16 @@ import java.util.List;
 
 import org.iplass.mtp.impl.tools.tenant.PartitionCreateParameter;
 import org.iplass.mtp.impl.tools.tenant.PartitionInfo;
-import org.iplass.mtp.tools.batch.MtpCuiBase.LogListner;
+import org.iplass.mtp.tools.batch.MtpCuiBase.LogListener;
 
 public interface PartitionBatch {
 
 	/**
 	 * <p>ログリスナーを追加します。</p>
 	 * 
-	 * @param listner ログリスナー
+	 * @param listener ログリスナー
 	 */
-	void addLogListner(LogListner listener);
+	void addLogListner(LogListener listener);
 
 	/**
 	 * <p>パーティション情報を返します。</p>

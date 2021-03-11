@@ -38,8 +38,12 @@ import org.iplass.mtp.spi.ServiceRegistry;
 import org.iplass.mtp.tools.batch.ExecMode;
 import org.iplass.mtp.tools.batch.MtpCuiBase;
 import org.iplass.mtp.util.StringUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class EntityViewDDLCreator extends MtpCuiBase {
+
+	private static Logger logger = LoggerFactory.getLogger(EntityViewDDLCreator.class);
 
 	private static final String ROOT_ENTITY = EntityHandler.ROOT_ENTITY_ID;
 
@@ -113,7 +117,7 @@ public class EntityViewDDLCreator extends MtpCuiBase {
 
 	/**
 	 * 実行モードを設定します。
-	 * 
+	 *
 	 * @param execMode 実行モード
 	 */
 	public void setExecMode(String execMode) {
@@ -131,7 +135,7 @@ public class EntityViewDDLCreator extends MtpCuiBase {
 
 	/**
 	 * テナントIDを設定します。
-	 * 
+	 *
 	 * @param tenantId テナントID
 	 */
 	public void setTenantId(String tenantId) {
@@ -153,7 +157,7 @@ public class EntityViewDDLCreator extends MtpCuiBase {
 
 	/**
 	 * 出力ファイルを設定します。
-	 * 
+	 *
 	 * @param outFile 出力ファイル
 	 */
 	public void setOutFile(String outFile) {
@@ -205,7 +209,7 @@ public class EntityViewDDLCreator extends MtpCuiBase {
 	 * args[3]・・・recursive["recursive" or other]
 	 * args[4]・・・outFile[Default is "./view.ddl"]
 	 * args[5]・・・entityPath[Empty or "/" is root]
-	 * 
+	 *
 	 * @param args 引数
 	 */
 	public static void main(String... args) {
@@ -218,15 +222,15 @@ public class EntityViewDDLCreator extends MtpCuiBase {
 
 	/**
 	 * 処理実行
-	 * 
+	 *
 	 * @return 処理結果
 	 * @throws Exception 例外
 	 */
 	public boolean execute() throws Exception {
 		clearLog();
 
-		// Console出力用のログリスナーを追加
-		addLogListner(getConsoleLogListner());
+		//Console出力
+		switchLog(true, false);
 
 		// 環境情報出力
 		logEnvironment();
@@ -242,8 +246,13 @@ public class EntityViewDDLCreator extends MtpCuiBase {
 			logInfo("■Start Silent");
 			logInfo("");
 
+			//Silentの場合はConsole出力を外す
+			switchLog(false, true);
+
 			// Silent実行
-			return startSilent();
+			return executeTask(null, (param) -> {
+				return proceed();
+			});
 		default :
 			logError("unsupport execute mode : " + execMode);
 			return false;
@@ -287,52 +296,36 @@ public class EntityViewDDLCreator extends MtpCuiBase {
 		// Recursive
 		setRecursive(readConsoleBoolean(rs("EntityViewDDLCreator.Wizard.recursiveMsg"), isRecursive));
 
-		// Console出力用のログリスナーを削除
-		removeLogListner(getConsoleLogListner());
-		// ログ出力用のログリスナーを追加
-		addLogListner(getLoggingLogListner());
+		//Consoleを削除してLogに切り替え
+		switchLog(false, true);
 
 		// EntityViewDDLファイル作成処理実行
-		boolean ret = proceed();
-
-		return ret;
-	}
-
-	private boolean startSilent() {
-		// Console出力用のログリスナーを削除
-		removeLogListner(getConsoleLogListner());
-		// ログ出力用のログリスナーを追加
-		addLogListner(getLoggingLogListner());
-
-		// EntityViewDDLファイル作成処理実行
-		boolean ret = proceed();
-
-		return ret;
+		return executeTask(null, (param) -> {
+			return proceed();
+		});
 	}
 
 	private boolean proceed() {
 		setSuccess(false);
 
-		try {
-			// テナント存在チェック
-			TenantContext tCtx = tenantContextService.getTenantContext(tenantId);
-			if (tCtx == null) {
-				logError(rs("EntityViewDDLCreator.notFoundTenant", tenantId));
+		// テナント存在チェック
+		TenantContext tc = tenantContextService.getTenantContext(tenantId);
+		if (tc == null) {
+			logError(rs("EntityViewDDLCreator.notFoundTenant", tenantId));
+			return isSuccess();
+		}
+
+		Path outFilePath = Paths.get(outFile);
+
+		// 出力ファイル存在チェック
+		if (!isOverwrite) {
+			if (Files.exists(outFilePath)) {
+				logError(rs("EntityViewDDLCreator.alreadyExistOutFilePath", outFile));
 				return isSuccess();
 			}
+		}
 
-			Path outFilePath = Paths.get(outFile);
-
-			// 出力ファイル存在チェック
-			if (!isOverwrite) {
-				if (Files.exists(outFilePath)) {
-					logError(rs("EntityViewDDLCreator.alreadyExistOutFilePath", outFile));
-					return isSuccess();
-				}
-			}
-
-			ExecuteContext.initContext(new ExecuteContext(tCtx));
-
+		return ExecuteContext.executeAs(tc, () -> {
 			EntityDefinition ed = edm.get(entityPath);
 			if (ed != null) {
 				// 直接指定
@@ -352,15 +345,13 @@ public class EntityViewDDLCreator extends MtpCuiBase {
 			}
 
 			setSuccess(true);
-		} finally {
-			logInfo("");
-			logInfo("■Execute Result :" + (isSuccess() ? "SUCCESS" : "FAILED"));
-			logInfo("");
 
-			ExecuteContext.initContext(null);
-		}
-
-		return isSuccess();
+			return isSuccess();
+		});
 	}
 
+	@Override
+	protected Logger loggingLogger() {
+		return logger;
+	}
 }

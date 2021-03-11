@@ -14,15 +14,19 @@ import org.iplass.mtp.impl.metadata.MetaDataEntryInfo;
 import org.iplass.mtp.impl.metadata.MetaDataRepository;
 import org.iplass.mtp.impl.tools.tenant.TenantInfo;
 import org.iplass.mtp.spi.ServiceRegistry;
-import org.iplass.mtp.tools.batch.MtpCuiBase;
+import org.iplass.mtp.tools.batch.MtpSilentBatch;
 import org.iplass.mtp.transaction.Transaction;
 import org.iplass.mtp.util.StringUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * 無効なメタデータを物理削除します。
  * Entityについては、関連データも全て物理削除します。
  */
-public class InvalidMetaDataCleaner extends MtpCuiBase {
+public class InvalidMetaDataCleaner extends MtpSilentBatch {
+
+	private static Logger logger = LoggerFactory.getLogger(InvalidMetaDataCleaner.class);
 
 	private static TenantContextService tenantContextService = ServiceRegistry.getRegistry().getService(TenantContextService.class);
 	private static MetaDataRepository repository = ServiceRegistry.getRegistry().getService(MetaDataRepository.class);
@@ -65,9 +69,6 @@ public class InvalidMetaDataCleaner extends MtpCuiBase {
 	 */
 	public InvalidMetaDataCleaner(int tenantId) {
 		setTenantId(tenantId);
-
-		LogListner loggingListner = getLoggingLogListner();
-		addLogListner(loggingListner);
 	}
 
 	/**
@@ -82,43 +83,38 @@ public class InvalidMetaDataCleaner extends MtpCuiBase {
 
 		clearLog();
 
-		try {
-			ExecuteContext.initContext(new ExecuteContext(tenantContextService.getTenantContext(tenantId)));
+		return executeTask(null, (param) -> {
 
-			logArguments();
+			return ExecuteContext.executeAs(tenantContextService.getTenantContext(tenantId), () -> {
 
-			Transaction.required(t -> {
-				List<MetaDataEntryInfo> invalidEntries = MetaDataContext.getContext().invalidDefinitionList("/");
-				if (invalidEntries.size() > 0) {
-					logInfo("purge " + invalidEntries.size() + " invalid metadata.");
-				} else {
-					logInfo("There is no invalid metadata.");
-				}
-				
-				invalidEntries.forEach(entry -> {
+				logArguments();
 
-					if (entry.getPath() != null && entry.getPath().startsWith(EntityService.ENTITY_META_PATH)) {
-						//Entityの判断はPathの先頭一致で行う
-						//(当初OBJ_DATAの件数チェックで行おうとしたが件数が多い場合のレスポンスを考慮)
-						ehService.purgeById(entry.getId());
+				Transaction.required(t -> {
+					List<MetaDataEntryInfo> invalidEntries = MetaDataContext.getContext().invalidDefinitionList("/");
+					if (invalidEntries.size() > 0) {
+						logInfo("purge " + invalidEntries.size() + " invalid metadata.");
+					} else {
+						logInfo("There is no invalid metadata.");
 					}
 
-					//メタデータ側を物理削除(Entityデータが正常に削除された後に実施。エラー時にリトライできるように)
-					repository.purgeById(tenantId, entry.getId());
+					invalidEntries.forEach(entry -> {
+
+						if (entry.getPath() != null && entry.getPath().startsWith(EntityService.ENTITY_META_PATH)) {
+							//Entityの判断はPathの先頭一致で行う
+							//(当初OBJ_DATAの件数チェックで行おうとしたが件数が多い場合のレスポンスを考慮)
+							ehService.purgeById(entry.getId());
+						}
+
+						//メタデータ側を物理削除(Entityデータが正常に削除された後に実施。エラー時にリトライできるように)
+						repository.purgeById(tenantId, entry.getId());
+					});
 				});
+
+				setSuccess(true);
+
+				return isSuccess();
 			});
-
-			setSuccess(true);
-		} catch (Throwable e) {
-			logError("An error has occurred. : " + e.getMessage());
-			e.printStackTrace();
-		} finally {
-			logInfo("");
-			logInfo("■Execute Result :" + (isSuccess() ? "SUCCESS" : "FAILED"));
-
-			ExecuteContext.initContext(null);
-		}
-		return isSuccess();
+		});
 
 	}
 
@@ -147,5 +143,10 @@ public class InvalidMetaDataCleaner extends MtpCuiBase {
 	 */
 	public void setTenantId(int tenantId) {
 	    this.tenantId = tenantId;
+	}
+
+	@Override
+	protected Logger loggingLogger() {
+		return logger;
 	}
 }

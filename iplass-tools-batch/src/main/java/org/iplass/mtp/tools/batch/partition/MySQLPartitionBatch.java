@@ -31,8 +31,12 @@ import org.iplass.mtp.spi.ServiceRegistry;
 import org.iplass.mtp.tools.batch.MtpCuiBase;
 import org.iplass.mtp.tools.gui.partition.MySQLPartitionManagerApp;
 import org.iplass.mtp.util.StringUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class MySQLPartitionBatch extends MtpCuiBase implements PartitionBatch {
+
+	private static Logger logger = LoggerFactory.getLogger(MySQLPartitionBatch.class);
 
 	/** 実行モード */
 	public enum MySQLPartitionBatchExecMode {GUI, CREATE};
@@ -78,9 +82,8 @@ public class MySQLPartitionBatch extends MtpCuiBase implements PartitionBatch {
 
 		clearLog();
 
-		//Console出力用のログリスナーを生成
-		LogListner consoleLogListner = getConsoleLogListner();
-		addLogListner(consoleLogListner);
+		//Console出力
+		switchLog(true, false);
 
 		//環境情報出力
 		logEnvironment();
@@ -91,7 +94,7 @@ public class MySQLPartitionBatch extends MtpCuiBase implements PartitionBatch {
 			logInfo("");
 
 			//Guiの場合はConsole出力を外す
-			removeLogListner(consoleLogListner);
+			switchLog(false, true);
 
 			MySQLPartitionManagerApp.main(new String[]{getLanguage()});
 			return true;
@@ -121,6 +124,7 @@ public class MySQLPartitionBatch extends MtpCuiBase implements PartitionBatch {
 	 *
 	 * @return パーティション情報
 	 */
+	@Override
 	public List<PartitionInfo> getPartitionInfo() {
 
 		return toolService.getPartitionInfo();
@@ -132,55 +136,47 @@ public class MySQLPartitionBatch extends MtpCuiBase implements PartitionBatch {
 	 * @param param 作成条件
 	 * @return 実行結果
 	 */
+	@Override
 	public boolean createPartition(final PartitionCreateParameter param) {
 
 		param.setLoggerLanguage(getLanguage());
 
 		setSuccess(false);
 
-		try {
-			boolean isSuccess = toolService.createPartition(param, new LogHandler() {
+		boolean isSuccess = toolService.createPartition(param, new LogHandler() {
 
-				@Override
-				public void info(String message) {
-					MySQLPartitionBatch.this.logInfo(message);
-				}
+			@Override
+			public void info(String message) {
+				MySQLPartitionBatch.this.logInfo(message);
+			}
 
-				@Override
-				public void info(String message, Throwable e) {
-					MySQLPartitionBatch.this.logInfo(message, e);
-				}
+			@Override
+			public void info(String message, Throwable e) {
+				MySQLPartitionBatch.this.logInfo(message, e);
+			}
 
-				@Override
-				public void warn(String message) {
-					MySQLPartitionBatch.this.logWarn(message);
-				}
+			@Override
+			public void warn(String message) {
+				MySQLPartitionBatch.this.logWarn(message);
+			}
 
-				@Override
-				public void warn(String message, Throwable e) {
-					MySQLPartitionBatch.this.logWarn(message, e);
-				}
+			@Override
+			public void warn(String message, Throwable e) {
+				MySQLPartitionBatch.this.logWarn(message, e);
+			}
 
-				@Override
-				public void error(String message) {
-					MySQLPartitionBatch.this.logError(message);
-				}
+			@Override
+			public void error(String message) {
+				MySQLPartitionBatch.this.logError(message);
+			}
 
-				@Override
-				public void error(String message, Throwable e) {
-					MySQLPartitionBatch.this.logError(message, e);
-				}
-			});
+			@Override
+			public void error(String message, Throwable e) {
+				MySQLPartitionBatch.this.logError(message, e);
+			}
+		});
 
-			setSuccess(isSuccess);
-
-		} catch (Throwable e) {
-			logError(rs("Common.errorMsg", e.getMessage()), e);
-		} finally {
-			logInfo("");
-			logInfo("■Execute Result :" + (isSuccess() ? "SUCCESS" : "FAILED"));
-			logInfo("");
-		}
+		setSuccess(isSuccess);
 
 		return isSuccess();
 	}
@@ -224,19 +220,13 @@ public class MySQLPartitionBatch extends MtpCuiBase implements PartitionBatch {
 			return startCreateWizard();
 		}
 
-		//ConsoleのLogListnerを一度削除してLog出力に切り替え
-		LogListner consoleLogListner = getConsoleLogListner();
-		removeLogListner(consoleLogListner);
-		LogListner loggingListner = getLoggingLogListner();
-		addLogListner(loggingListner);
+		//Consoleを削除してLogに切り替え
+		switchLog(false, true);
 
 		//作成処理実行
-		boolean ret = createPartition(param);
-
-		//LogListnerを一度削除
-		removeLogListner(loggingListner);
-
-		return ret;
+		return executeTask(param, (paramA) -> {
+			return createPartition(paramA);
+		});
 	}
 
 	/**
@@ -265,4 +255,8 @@ public class MySQLPartitionBatch extends MtpCuiBase implements PartitionBatch {
 		logInfo("");
 	}
 
+	@Override
+	protected Logger loggingLogger() {
+		return logger;
+	}
 }

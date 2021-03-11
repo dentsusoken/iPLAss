@@ -84,6 +84,7 @@ public class TenantManagerApp extends MtpJFrameBase {
 		}
 
 		EventQueue.invokeLater(new Runnable() {
+			@Override
 			public void run() {
 				try {
 					TenantManagerApp frame = new TenantManagerApp();
@@ -256,7 +257,7 @@ public class TenantManagerApp extends MtpJFrameBase {
 		return scrlTenantList;
 	}
 
-	private List<TenantTableColumnInfo> COLUMNS = new ArrayList<TenantTableColumnInfo>();
+	private List<TenantTableColumnInfo> COLUMNS = new ArrayList<>();
 	private String[] COLUMN_NAMES;
 	private static final int CHECKED_COL_NUM = 0;
 
@@ -317,7 +318,7 @@ public class TenantManagerApp extends MtpJFrameBase {
 			if (data == null) {
 				isSelects = null;
 			} else {
-				isSelects = new ArrayList<Boolean>(data.size());
+				isSelects = new ArrayList<>(data.size());
 				for (int i = 0; i < data.size(); i++) {
 					isSelects.add(Boolean.FALSE);
 				}
@@ -332,7 +333,7 @@ public class TenantManagerApp extends MtpJFrameBase {
 		}
 
 		public List<TenantInfo> getSelectedTenantInfo() {
-			List<TenantInfo> selected = new ArrayList<TenantInfo>();
+			List<TenantInfo> selected = new ArrayList<>();
 			if (isSelects != null) {
 				for (int i = 0; i < isSelects.size(); i++) {
 					if (isSelects.get(i)) {
@@ -452,12 +453,10 @@ public class TenantManagerApp extends MtpJFrameBase {
 				//件数をセット
 				txtCount.setText(String.valueOf(result.size()));
 			} catch (ExecutionException e) {
-				e.printStackTrace();
-				JOptionPane.showMessageDialog(TenantManagerApp.this, rs("Common.errorMsg"),
+				JOptionPane.showMessageDialog(TenantManagerApp.this, rs("Common.errorMsg", e.getMessage()),
 						"ERROR", JOptionPane.ERROR_MESSAGE);
             } catch (InterruptedException e) {
-				e.printStackTrace();
-				JOptionPane.showMessageDialog(TenantManagerApp.this, rs("Common.errorMsg"),
+				JOptionPane.showMessageDialog(TenantManagerApp.this, rs("Common.errorMsg", e.getMessage()),
 						"ERROR", JOptionPane.ERROR_MESSAGE);
 			}
     		btnRefresh.setText("Refresh List");

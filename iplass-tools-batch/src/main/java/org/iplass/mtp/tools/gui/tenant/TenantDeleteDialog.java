@@ -57,6 +57,7 @@ import org.iplass.mtp.impl.rdb.mysql.MysqlRdbAdaptor;
 import org.iplass.mtp.impl.tools.tenant.TenantDeleteParameter;
 import org.iplass.mtp.impl.tools.tenant.TenantInfo;
 import org.iplass.mtp.spi.ServiceRegistry;
+import org.iplass.mtp.tools.batch.MtpCuiBase.LogListener;
 import org.iplass.mtp.tools.batch.tenant.TenantBatch;
 import org.iplass.mtp.tools.batch.tenant.TenantBatch.TenantBatchExecMode;
 import org.iplass.mtp.tools.gui.MtpJDialogBase;
@@ -76,7 +77,7 @@ public class TenantDeleteDialog extends MtpJDialogBase {
 
 	private JTextArea txtMessageArea;
 
-	private List<ChangeListener> dataChangeListners = new ArrayList<ChangeListener>();
+	private List<ChangeListener> dataChangeListners = new ArrayList<>();
 
 	public TenantDeleteDialog(Frame owner) {
 		super(owner);
@@ -339,9 +340,10 @@ public class TenantDeleteDialog extends MtpJDialogBase {
 		protected Boolean doInBackground() throws Exception {
 
 			TenantBatch manager = null;
+			LogListener listener = null;
 			try {
 				manager = new TenantBatch(TenantBatchExecMode.DELETE.name());
-				manager.addLogListner(new TenantBatch.LogListner() {
+				listener = new TenantBatch.LogListener() {
 
 					@Override
 					public void info(String message) {
@@ -378,7 +380,8 @@ public class TenantDeleteDialog extends MtpJDialogBase {
 						publish(message);
 						logger.error(message, e);
 					}
-				});
+				};
+				manager.addLogListner(listener);
 
 				//削除対象
 				List<TenantInfo> tenants = model.getTenantInfos();
@@ -392,8 +395,15 @@ public class TenantDeleteDialog extends MtpJDialogBase {
 					}
 				}
 
+				listener.info("");
+				listener.info("■Execute Result : SUCCESS");
+				listener.info("");
+
 			} catch (Exception e) {
-				e.printStackTrace();
+				listener.error(rs("Common.errorMsg", e.getMessage()), e);
+				listener.info("");
+				listener.error("■Execute Result : FAILED");
+				listener.info("");
 				throw e;
 			}
 			return true;
@@ -426,10 +436,7 @@ public class TenantDeleteDialog extends MtpJDialogBase {
 							"ERROR", JOptionPane.ERROR_MESSAGE);
 				}
 			} catch (Exception e) {
-				addLog(rs("Common.errorMsg"));
-				addLog(e.getMessage());
-
-				JOptionPane.showMessageDialog(TenantDeleteDialog.this, rs("Common.errorMsg"),
+				JOptionPane.showMessageDialog(TenantDeleteDialog.this, rs("Common.errorMsg", e.getMessage()),
 						"ERROR", JOptionPane.ERROR_MESSAGE);
 			}
 			btnDelete.setText("Remove");

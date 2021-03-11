@@ -8,37 +8,24 @@ import org.iplass.mtp.impl.cache.store.builtin.RdbCacheStoreFactory;
 import org.iplass.mtp.impl.core.ExecuteContext;
 import org.iplass.mtp.impl.core.TenantContextService;
 import org.iplass.mtp.spi.ServiceRegistry;
-import org.iplass.mtp.tools.batch.MtpCuiBase;
+import org.iplass.mtp.tools.batch.MtpSilentBatch;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * RdbCacheStoreの無効データのメンテナンス用バッチ
  */
-public class RdbCacheCleaner extends MtpCuiBase {
+public class RdbCacheCleaner extends MtpSilentBatch {
+
+	private static Logger logger = LoggerFactory.getLogger(RdbCacheCleaner.class);
 
 	private static TenantContextService tenantContextService = ServiceRegistry.getRegistry().getService(TenantContextService.class);
 
-	/**
-	 * <p>引数について</p>
-	 * <ol>
-	 * <li>テナントID：対象テナントID（-1の場合、全テナントが対象になります）</li>
-	 * </ol>
-	 *
-	 * @param args
-	 * @throws Exception
-	 */
 	public static void main(String[] args) throws Exception {
 		new RdbCacheCleaner().clean();
 	}
 
-	/**
-	 * 対象のテナントIDを指定します。
-	 *
-	 * @param tenantId 対象のテナントID
-	 */
 	public RdbCacheCleaner() {
-
-		LogListner loggingListner = getLoggingLogListner();
-		addLogListner(loggingListner);
 	}
 
 	/**
@@ -52,21 +39,19 @@ public class RdbCacheCleaner extends MtpCuiBase {
 
 		clearLog();
 
-		try {
-			ExecuteContext.initContext(new ExecuteContext(tenantContextService.getSharedTenantContext()));
-			RdbCacheStoreFactory.deleteInvalidRecord();
-			setSuccess(true);
-		} catch (Throwable e) {
-			logError("An error has occurred. : " + e.getMessage());
-			e.printStackTrace();
-		} finally {
-			logInfo("");
-			logInfo("■Execute Result :" + (isSuccess() ? "SUCCESS" : "FAILED"));
+		return executeTask(null, (param) -> {
 
-			ExecuteContext.initContext(null);
-		}
-		return isSuccess();
+			return ExecuteContext.executeAs(tenantContextService.getSharedTenantContext(), () -> {
 
+				RdbCacheStoreFactory.deleteInvalidRecord();
+				setSuccess(true);
+				return isSuccess();
+			});
+		});
 	}
 
+	@Override
+	protected Logger loggingLogger() {
+		return logger;
+	}
 }

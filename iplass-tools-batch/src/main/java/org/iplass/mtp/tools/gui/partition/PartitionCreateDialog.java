@@ -58,6 +58,7 @@ import org.iplass.mtp.impl.rdb.postgresql.PostgreSQLRdbAdapter;
 import org.iplass.mtp.impl.tools.tenant.PartitionCreateParameter;
 import org.iplass.mtp.impl.tools.tenant.rdb.TenantRdbConstants;
 import org.iplass.mtp.spi.ServiceRegistry;
+import org.iplass.mtp.tools.batch.MtpCuiBase.LogListener;
 import org.iplass.mtp.tools.batch.partition.MySQLPartitionBatch;
 import org.iplass.mtp.tools.batch.partition.PartitionBatch;
 import org.iplass.mtp.tools.batch.partition.PostgreSQLPartitionBatch;
@@ -81,7 +82,7 @@ public class PartitionCreateDialog extends MtpJDialogBase {
 
 	private JTextArea txtMessageArea;
 
-	private List<ChangeListener> dataChangeListners = new ArrayList<ChangeListener>();
+	private List<ChangeListener> dataChangeListners = new ArrayList<>();
 
 	private final RdbAdapter adapter = ServiceRegistry.getRegistry().getService(RdbAdapterService.class).getRdbAdapter();
 
@@ -350,6 +351,7 @@ public class PartitionCreateDialog extends MtpJDialogBase {
 		@Override
 		protected Boolean doInBackground() throws Exception {
 
+			LogListener listener = null;
 			try {
 				PartitionBatch manager = null;
 				if (adapter instanceof MysqlRdbAdaptor) {
@@ -359,7 +361,7 @@ public class PartitionCreateDialog extends MtpJDialogBase {
 					manager = new PostgreSQLPartitionBatch(TenantBatchExecMode.CREATE.name());
 				}
 
-				manager.addLogListner(new MySQLPartitionBatch.LogListner() {
+				listener = new MySQLPartitionBatch.LogListener() {
 
 					@Override
 					public void info(String message) {
@@ -396,15 +398,22 @@ public class PartitionCreateDialog extends MtpJDialogBase {
 						publish(message);
 						logger.error(message, e);
 					}
-				});
-
+				};
+				manager.addLogListner(listener);
 
 				publish(rs("MySQLPartitionManagerApp.PartitionCreateDialog.startCreatePartitionLog"));
 
 				manager.createPartition(createParameter());
 
+				listener.info("");
+				listener.info("■Execute Result : SUCCESS");
+				listener.info("");
+
 			} catch (Exception e) {
-				e.printStackTrace();
+				listener.error(rs("Common.errorMsg", e.getMessage()), e);
+				listener.info("");
+				listener.error("■Execute Result : FAILED");
+				listener.info("");
 				throw e;
 			}
 			return true;
@@ -437,10 +446,7 @@ public class PartitionCreateDialog extends MtpJDialogBase {
 							"ERROR", JOptionPane.ERROR_MESSAGE);
 				}
 			} catch (Exception e) {
-				addLog(rs("Common.errorMsg"));
-				addLog(e.getMessage());
-
-				JOptionPane.showMessageDialog(PartitionCreateDialog.this, rs("Common.errorMsg"),
+				JOptionPane.showMessageDialog(PartitionCreateDialog.this, rs("Common.errorMsg", e.getMessage()),
 						"ERROR", JOptionPane.ERROR_MESSAGE);
 			}
 			btnCreate.setText("Create");

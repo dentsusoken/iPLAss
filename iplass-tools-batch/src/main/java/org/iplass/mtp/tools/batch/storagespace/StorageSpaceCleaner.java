@@ -15,11 +15,15 @@ import org.iplass.mtp.spi.ServiceRegistry;
 import org.iplass.mtp.tools.batch.ExecMode;
 import org.iplass.mtp.tools.batch.MtpCuiBase;
 import org.iplass.mtp.util.StringUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * StorageSpaceクリーンアップバッチ
  */
 public class StorageSpaceCleaner extends MtpCuiBase {
+
+	private static Logger logger = LoggerFactory.getLogger(StorageSpaceCleaner.class);
 
 	private static TenantContextService tenantContextService = ServiceRegistry.getRegistry().getService(TenantContextService.class);
 	private static StorageSpaceService storageSpaceService = ServiceRegistry.getRegistry().getService(StorageSpaceService.class);
@@ -118,8 +122,8 @@ public class StorageSpaceCleaner extends MtpCuiBase {
 	public boolean execute() throws Exception {
 		clearLog();
 
-		// Console出力用のログリスナーを追加
-		addLogListner(getConsoleLogListner());
+		//Console出力
+		switchLog(true, false);
 
 		// 環境情報出力
 		logEnvironment();
@@ -135,7 +139,12 @@ public class StorageSpaceCleaner extends MtpCuiBase {
 			logInfo("■Start Silent");
 			logInfo("");
 
-			return proceed();
+			//Silentの場合はConsole出力を外す
+			switchLog(false, true);
+
+			return executeTask(null, (param) -> {
+				return proceed();
+			});
 		default :
 			logError("unsupport execute mode : " + execMode);
 			return false;
@@ -177,31 +186,26 @@ public class StorageSpaceCleaner extends MtpCuiBase {
 			}
 		} while(validStorageSpaceName == false);
 
-		// Console出力用のログリスナーを一度削除してログ出力に切り替え
-		removeLogListner(getConsoleLogListner());
-		addLogListner(getLoggingLogListner());
+		//Consoleを削除してLogに切り替え
+		switchLog(false, true);
 
 		// StorageSpacecクリーンアップ処理実行
-		boolean ret = proceed();
-
-		// ログ出力用のログリスナーを削除
-		removeLogListner(getLoggingLogListner());
-
-		return ret;
+		return executeTask(null, (param) -> {
+			return proceed();
+		});
 	}
 
 	private boolean proceed() {
 		setSuccess(false);
 
-		try {
-			// テナント存在チェック
-			TenantContext tCtx = tenantContextService.getTenantContext(tenantId);
-			if (tCtx == null) {
-				logError(rs("StorageSpaceCleaner.notFoundTenant", tenantId));
-				return isSuccess();
-			}
+		// テナント存在チェック
+		TenantContext tc = tenantContextService.getTenantContext(tenantId);
+		if (tc == null) {
+			logError(rs("StorageSpaceCleaner.notFoundTenant", tenantId));
+			return isSuccess();
+		}
 
-			ExecuteContext.initContext(new ExecuteContext(tCtx));
+		return ExecuteContext.executeAs(tc, () -> {
 
 			EntityHandler entityHandler = MetaDataContext.getContext().getMetaDataHandler(EntityHandler.class, EntityService.ENTITY_META_PATH + entityName.replace(".", "/"));
 			if (entityHandler == null) {
@@ -217,15 +221,13 @@ public class StorageSpaceCleaner extends MtpCuiBase {
 			}
 
 			setSuccess(true);
-		} finally {
-			logInfo("");
-			logInfo("■Execute Result :" + (isSuccess() ? "SUCCESS" : "FAILED"));
-			logInfo("");
 
-			ExecuteContext.initContext(null);
-		}
-
-		return isSuccess();
+			return isSuccess();
+		});
 	}
 
+	@Override
+	protected Logger loggingLogger() {
+		return logger;
+	}
 }

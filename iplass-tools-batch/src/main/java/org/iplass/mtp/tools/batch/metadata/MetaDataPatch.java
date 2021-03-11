@@ -14,8 +14,13 @@ import org.iplass.mtp.spi.ServiceRegistry;
 import org.iplass.mtp.tools.batch.ExecMode;
 import org.iplass.mtp.tools.batch.MtpCuiBase;
 import org.iplass.mtp.util.StringUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class MetaDataPatch extends MtpCuiBase {
+
+	private static Logger logger = LoggerFactory.getLogger(MetaDataPatch.class);
+
 	private static final String EMPTY = "_empty_";
 
 	private ExecMode execMode = ExecMode.WIZARD;
@@ -31,14 +36,14 @@ public class MetaDataPatch extends MtpCuiBase {
 
 	/**
 	 * コンストラクタ
-	 * 
+	 *
 	 * args[0]・・・execMode["Wizard" or "Silent"]
 	 * args[1]・・・tenantId
 	 * args[2]・・・oldMetaDataFilePath
 	 * args[3]・・・newMetaDataFilePath
 	 * args[4]・・・userId
 	 * args[5]・・・password
-	 * 
+	 *
 	 * @param args
 	 */
 	public MetaDataPatch(String... args) {
@@ -76,14 +81,14 @@ public class MetaDataPatch extends MtpCuiBase {
 
 	/**
 	 * メイン処理
-	 * 
+	 *
 	 * args[0]・・・execMode["Wizard" or "Silent"]
 	 * args[1]・・・tenantId
 	 * args[2]・・・oldMetaDataFilePath
 	 * args[3]・・・newMetaDataFilePath
 	 * args[4]・・・userId
 	 * args[5]・・・password
-	 * 
+	 *
 	 * @param args 引数
 	 */
 	public static void main(String... args) {
@@ -101,8 +106,8 @@ public class MetaDataPatch extends MtpCuiBase {
 	private boolean execute() {
 		clearLog();
 
-		// Console出力用のログリスナーを追加
-		addLogListner(getConsoleLogListner());
+		//Console出力
+		switchLog(true, false);
 
 		// 環境情報出力
 		logEnvironment();
@@ -111,6 +116,10 @@ public class MetaDataPatch extends MtpCuiBase {
 		case WIZARD:
 			return proceed(wizard());
 		case SILENT:
+
+			//Silentの場合はConsole出力を外す
+			switchLog(false, true);
+
 			return proceed(silent());
 		default :
 			logError("unsupport execute mode : " + execMode);
@@ -243,54 +252,38 @@ public class MetaDataPatch extends MtpCuiBase {
 			} while (!validExecute);
 		}
 
-		// Console出力用のログリスナーをLog出力用のログリスナーに切り替え
-		removeLogListner(getConsoleLogListner());
-		addLogListner(getLoggingLogListner());
+		//Consoleを削除してLogに切り替え
+		switchLog(false, true);
 
 		logArguments(param);
 
 		setSuccess(false);
 
-		try {
-			// テナント存在チェック
-			TenantContext tCtx = tenantContextService.getTenantContext(param.getTenantId());
-			if (tCtx == null) {
-				logError(rs("Proceed.notFoundTenantMsg", param.getTenantId()));
-				return isSuccess();
-			}
-
-			ExecuteContext.initContext(new ExecuteContext(tCtx));
-
-			setSuccess(proceedPatch(param));
-		} finally {
-			logInfo("");
-			logInfo("■Execute Result :" + (isSuccess() ? "SUCCESS" : "FAILED"));
-			logInfo("");
-
-			ExecuteContext.finContext();
+		// テナント存在チェック
+		TenantContext tc = tenantContextService.getTenantContext(param.getTenantId());
+		if (tc == null) {
+			logError(rs("Proceed.notFoundTenantMsg", param.getTenantId()));
+			return isSuccess();
 		}
 
-		// Log出力用のログリスナーを一度削除
-		removeLogListner(getLoggingLogListner());
-
-		return isSuccess();
+		return ExecuteContext.executeAs(tc, () -> {
+			return executeTask(param, (paramA) -> {
+				setSuccess(proceedPatch(paramA));
+				return isSuccess();
+			});
+		});
 	}
 
 	private boolean proceedPatch(PatchEntityDataParameter param) {
-		try {
-			if (StringUtil.isNotBlank(userId)) {
-				// ユーザ認証
-				service.patchEntityDataWithUserAuth(param, userId, password);
-			} else {
-				// 特権モード
-				service.patchEntityDataWithPrivilegedAuth(param);
-			}
-			return true;
-		} catch (Throwable e) {
-			e.printStackTrace();
-			logError(super.rs("Common.errorMsg", e.getMessage()));
-			return false;
+
+		if (StringUtil.isNotBlank(userId)) {
+			// ユーザ認証
+			service.patchEntityDataWithUserAuth(param, userId, password);
+		} else {
+			// 特権モード
+			service.patchEntityDataWithPrivilegedAuth(param);
 		}
+		return true;
 	}
 
 	@Override
@@ -298,4 +291,8 @@ public class MetaDataPatch extends MtpCuiBase {
 		return super.rs("MetaDataPatch." + key, args);
 	}
 
+	@Override
+	protected Logger loggingLogger() {
+		return logger;
+	}
 }

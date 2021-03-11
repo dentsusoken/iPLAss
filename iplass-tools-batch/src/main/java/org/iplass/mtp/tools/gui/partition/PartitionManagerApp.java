@@ -211,12 +211,10 @@ public class PartitionManagerApp extends MtpJFrameBase {
 				//パーティションテーブルが存在する場合は作成ボタンを有効化
 				btnCreate.setEnabled(result.size() > 0);
 			} catch (ExecutionException e) {
-				e.printStackTrace();
-				JOptionPane.showMessageDialog(PartitionManagerApp.this, rs("Common.errorMsg"),
+				JOptionPane.showMessageDialog(PartitionManagerApp.this, rs("Common.errorMsg", e.getMessage()),
 						"ERROR", JOptionPane.ERROR_MESSAGE);
             } catch (InterruptedException e) {
-				e.printStackTrace();
-				JOptionPane.showMessageDialog(PartitionManagerApp.this, rs("Common.errorMsg"),
+				JOptionPane.showMessageDialog(PartitionManagerApp.this, rs("Common.errorMsg", e.getMessage()),
 						"ERROR", JOptionPane.ERROR_MESSAGE);
 			}
     		btnRefresh.setText("Refresh List");

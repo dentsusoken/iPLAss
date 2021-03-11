@@ -42,12 +42,16 @@ import org.iplass.mtp.spi.ServiceRegistry;
 import org.iplass.mtp.tools.batch.MtpCuiBase;
 import org.iplass.mtp.tools.gui.tenant.TenantManagerApp;
 import org.iplass.mtp.util.StringUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
  * テナント情報を管理するクラス。
  */
 public class TenantBatch extends MtpCuiBase {
+
+	private static Logger logger = LoggerFactory.getLogger(TenantBatch.class);
 
 	/** Silentモード 設定ファイル名キー */
 	public static final String KEY_CONFIG_FILE = "tenant.config";
@@ -96,9 +100,8 @@ public class TenantBatch extends MtpCuiBase {
 
 		clearLog();
 
-		//Console出力用のログリスナーを生成
-		LogListner consoleLogListner = getConsoleLogListner();
-		addLogListner(consoleLogListner);
+		//Console出力
+		switchLog(true, false);
 
 		//環境情報出力
 		logEnvironment();
@@ -109,7 +112,7 @@ public class TenantBatch extends MtpCuiBase {
 			logInfo("");
 
 			//Guiの場合はConsole出力を外す
-			removeLogListner(consoleLogListner);
+			switchLog(false, true);
 
 			TenantManagerApp.main(new String[]{getLanguage()});
 			return true;
@@ -133,6 +136,9 @@ public class TenantBatch extends MtpCuiBase {
 			logInfo("■Start Silent");
 			logInfo("");
 
+			//Silentの場合はConsole出力を外す
+			switchLog(false, true);
+
 			return startSilent();
 		default :
 			logError("unsupport execute mode : " + getExecMode());
@@ -150,7 +156,7 @@ public class TenantBatch extends MtpCuiBase {
 	}
 
 	/**
-	 * テナントを作成します。（TenantManagerApp2からの実行もこちらを呼び出す）
+	 * テナントを作成します。（TenantManagerAppからの実行もこちらを呼び出す）
 	 *
 	 * @param info 作成情報
 	 * @return
@@ -163,16 +169,8 @@ public class TenantBatch extends MtpCuiBase {
 
 		try {
 			boolean isSuccess = toolService.create(param, new TenantBatchLogListener());
-
 			setSuccess(isSuccess);
-
-		} catch (Throwable e) {
-			logError(rs("Common.errorMsg", e.getMessage()), e);
 		} finally {
-			logInfo("");
-			logInfo("■Execute Result :" + (isSuccess() ? "SUCCESS" : "FAILED"));
-			logInfo("");
-
 			ExecuteContext.initContext(null);
 		}
 
@@ -278,9 +276,9 @@ public class TenantBatch extends MtpCuiBase {
 
 		} while(invalidateAdminPW);
 
-		TenantCreateParameter param = new TenantCreateParameter(tenantName, adminUserId, adminPW);
-		param.setTenantUrl(tenantUrl);
-		param.setUseLanguages(toolService.getDefaultEnableLanguages());
+		TenantCreateParameter createParam = new TenantCreateParameter(tenantName, adminUserId, adminPW);
+		createParam.setTenantUrl(tenantUrl);
+		createParam.setUseLanguages(toolService.getDefaultEnableLanguages());
 
 		//デフォルトスキップチェック
 		boolean isDefault = readConsoleBoolean(rs("TenantBatch.Create.Wizard.confirmDefaultMsg"), false);
@@ -288,17 +286,17 @@ public class TenantBatch extends MtpCuiBase {
 		if (!isDefault) {
 			String tenantDisplayName = readConsole(rs("TenantBatch.Create.Wizard.inputTenantDispNameMsg"));
 			if (StringUtil.isNotBlank(tenantDisplayName)) {
-				param.setTenantDisplayName(tenantDisplayName);
+				createParam.setTenantDisplayName(tenantDisplayName);
 			}
 			String topURL = readConsole(rs("TenantBatch.Create.Wizard.inputTopUrlMsg"));
 			if (StringUtil.isNotBlank(topURL)) {
-				param.setTopUrl(topURL);
+				createParam.setTopUrl(topURL);
 			}
 			String lang = readConsole(rs("TenantBatch.Create.Wizard.useMultiLangMsg"));
-			param.setUseLanguages(lang);
+			createParam.setUseLanguages(lang);
 
 			boolean isBlank = readConsoleBoolean(rs("TenantBatch.Create.Wizard.createBlankTenantMsg"), false);
-			param.setCreateBlankTenant(isBlank);
+			createParam.setCreateBlankTenant(isBlank);
 
 			if (getConfigSetting().isPostgreSQL()) {
 				boolean invalidateSubPartitionSize = true;
@@ -307,7 +305,7 @@ public class TenantBatch extends MtpCuiBase {
 					if (subPartitionSize < TenantRdbConstants.MIN_SUBPARTITION) {
 						logWarn(rs("TenantBatch.Create.Wizard.invalidValueSubPartitionSizeMsg", TenantRdbConstants.MIN_SUBPARTITION));
 					} else {
-						param.setSubPartitionSize(subPartitionSize);
+						createParam.setSubPartitionSize(subPartitionSize);
 						invalidateSubPartitionSize = false;
 					}
 				} while(invalidateSubPartitionSize);
@@ -315,7 +313,7 @@ public class TenantBatch extends MtpCuiBase {
 		}
 
 		//実行情報出力
-		logArguments(param);
+		logArguments(createParam);
 
 		boolean isExecute = readConsoleBoolean(rs("TenantBatch.Create.Wizard.confirmCreateTenantMsg"), false);
 		if (!isExecute) {
@@ -323,23 +321,17 @@ public class TenantBatch extends MtpCuiBase {
 			return startCreateWizard();
 		}
 
-		//ConsoleのLogListnerを一度削除してLog出力に切り替え
-		LogListner consoleLogListner = getConsoleLogListner();
-		removeLogListner(consoleLogListner);
-		LogListner loggingListner = getLoggingLogListner();
-		addLogListner(loggingListner);
+		//Consoleを削除してLogに切り替え
+		switchLog(false, true);
 
 		//作成処理実行
-		boolean ret = executeCreate(param);
-
-		//LogListnerを一度削除
-		removeLogListner(loggingListner);
-
-		return ret;
+		return executeTask(createParam, (param) -> {
+			return executeCreate(param);
+		});
 	}
 
 	/**
-	 * テナントを削除します。（TenantManagerApp2からの実行もこちらを呼び出す）
+	 * テナントを削除します。（TenantManagerAppからの実行もこちらを呼び出す）
 	 *
 	 * @param param 削除情報
 	 * @return
@@ -352,16 +344,8 @@ public class TenantBatch extends MtpCuiBase {
 
 		try {
 			boolean isSuccess = toolService.remove(param, new TenantBatchLogListener());
-
 			setSuccess(isSuccess);
-
-		} catch (Throwable e) {
-			logError(rs("Common.errorMsg", e.getMessage()));
 		} finally {
-			logInfo("");
-			logInfo("■Execute Result :" + (isSuccess() ? "SUCCESS" : "FAILED"));
-			logInfo("");
-
 			ExecuteContext.initContext(null);
 		}
 
@@ -408,12 +392,12 @@ public class TenantBatch extends MtpCuiBase {
 			return startDeleteWizard();
 		}
 
-		TenantDeleteParameter param = new TenantDeleteParameter();
-		param.setTenantId(tenant.getId());
-		param.setTenantName(tenant.getName());
+		TenantDeleteParameter deleteParam = new TenantDeleteParameter();
+		deleteParam.setTenantId(tenant.getId());
+		deleteParam.setTenantName(tenant.getName());
 
 		//実行情報出力
-		logArguments(param);
+		logArguments(deleteParam);
 
 		boolean isExecute = readConsoleBoolean(rs("TenantBatch.Delete.Wizard.confirmRemoveTenantMsg"), false);
 		if (!isExecute) {
@@ -421,19 +405,13 @@ public class TenantBatch extends MtpCuiBase {
 			return startDeleteWizard();
 		}
 
-		//ConsoleのLogListnerを一度削除してLog出力に切り替え
-		LogListner consoleLogListner = getConsoleLogListner();
-		removeLogListner(consoleLogListner);
-		LogListner loggingListner = getLoggingLogListner();
-		addLogListner(loggingListner);
+		//Consoleを削除してLogに切り替え
+		switchLog(false, true);
 
 		//削除処理実行
-		boolean ret = executeDelete(param);
-
-		//LogListnerを一度削除
-		removeLogListner(loggingListner);
-
-		return ret;
+		return executeTask(deleteParam, (param) -> {
+			return executeDelete(param);
+		});
 	}
 
 	private boolean startCreateSilent(Properties prop) {
@@ -523,17 +501,15 @@ public class TenantBatch extends MtpCuiBase {
 		// 実行情報出力
 		logArguments(createParam);
 
-		// テナント作成実行
-		return executeCreate(createParam);
+		//作成処理実行
+		boolean ret = executeTask(createParam, (param) -> {
+			return executeCreate(param);
+		});
+
+		return ret;
 	}
 
 	private boolean startSilent() {
-		// ConsoleのLogListenerを一度削除してLog出力に切り替え
-		LogListner consoleLogListener = getConsoleLogListner();
-		removeLogListner(consoleLogListener);
-		LogListner loggingListener = getLoggingLogListner();
-		addLogListner(loggingListener);
-
 		// 設定ファイル名取得
 		String configFileName = System.getProperty(KEY_CONFIG_FILE);
 		if (StringUtil.isBlank(configFileName)) {
@@ -566,9 +542,7 @@ public class TenantBatch extends MtpCuiBase {
 			throw new SystemException(e);
 		}
 
-		boolean ret = startCreateSilent(prop);
-
-		return ret;
+		return startCreateSilent(prop);
 	}
 
 	private class TenantBatchLogListener implements LogHandler {
@@ -602,5 +576,10 @@ public class TenantBatch extends MtpCuiBase {
 		public void error(String message, Throwable e) {
 			TenantBatch.this.logError(message, e);
 		}
+	}
+
+	@Override
+	protected Logger loggingLogger() {
+		return logger;
 	}
 }

@@ -28,6 +28,7 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.function.Predicate;
 
 import javax.sql.DataSource;
 
@@ -45,17 +46,17 @@ import org.iplass.mtp.spi.ServiceRegistry;
 import org.iplass.mtp.tools.ToolsBatchResourceBundleUtil;
 import org.iplass.mtp.util.StringUtil;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
+/**
+ * バッチ機能の基底クラス
+ */
 public abstract class MtpCuiBase {
 
 	/** サイレントモードで実行する場合の引数値 */
 	public static final String SILENT_MODE = "silent";
 
-	private static Logger logger = LoggerFactory.getLogger(MtpCuiBase.class);
-
-	private final List<LogListner> logListners = new ArrayList<LogListner>();
-	private final List<String> logMessage = new ArrayList<String>();
+	private final List<LogListener> logListeners = new ArrayList<>();
+	private final List<String> logMessage = new ArrayList<>();
 
 	private boolean isSuccess = false;
 
@@ -63,10 +64,10 @@ public abstract class MtpCuiBase {
 	private ConfigSetting configSetting;
 
 	/** コンソール出力用 */
-	private LogListner consoleLogListner;
+	private LogListener consoleLogListener;
 
 	/** Logging出力用 */
-	private LogListner loggingLogListner;
+	private LogListener loggingLogListener;
 
 	/** 言語(locale名) */
 	private String language;
@@ -86,13 +87,13 @@ public abstract class MtpCuiBase {
 		return isSuccess;
 	}
 
-	public void addLogListner(LogListner listner) {
-		logListners.add(listner);
+	public void addLogListner(LogListener listner) {
+		logListeners.add(listner);
 	}
 
-	public void removeLogListner(LogListner listner) {
-		if (logListners.contains(listner)) {
-			logListners.remove(listner);
+	public void removeLogListner(LogListener listner) {
+		if (logListeners.contains(listner)) {
+			logListeners.remove(listner);
 		}
 	}
 
@@ -248,67 +249,99 @@ public abstract class MtpCuiBase {
 	}
 
 	/**
+	 * ログ出力モードを切り替えます。
+	 * 
+	 * @param console コンソール出力
+	 * @param logging ロギング出力
+	 */
+	protected void switchLog(boolean console, boolean logging) {
+
+		LogListener consoleLogListener = getConsoleLogListener();
+		removeLogListner(consoleLogListener);
+		LogListener loggingListener = getLoggingLogListener();
+		removeLogListner(loggingListener);
+
+		if (console) {
+			addLogListner(consoleLogListener);
+		}
+		if (logging) {
+			addLogListner(loggingListener);
+		}
+
+	}
+
+	/**
 	 * Console出力用LogListner作成Util
 	 * @return
 	 */
-	protected LogListner getConsoleLogListner() {
-		if (consoleLogListner != null) {
-			return consoleLogListner;
+	private LogListener getConsoleLogListener() {
+		if (consoleLogListener != null) {
+			return consoleLogListener;
 		}
-		consoleLogListner = new ConsoleLogListner();
+		consoleLogListener = new ConsoleLogListener();
 
-		return consoleLogListner;
+		return consoleLogListener;
 	}
 
 	/**
 	 * Logging出力用LogListner作成Util
 	 * @return
 	 */
-	protected LogListner getLoggingLogListner() {
-		if (loggingLogListner != null) {
-			return loggingLogListner;
+	private LogListener getLoggingLogListener() {
+		if (loggingLogListener != null) {
+			return loggingLogListener;
 		}
+		loggingLogListener = new LoggingLogListener();
 
-		loggingLogListner = new LogListner() {
+		return loggingLogListener;
+	}
 
-			@Override
-			public void debug(String message) {
-				logger.debug(message);
+	/**
+	 * タスクを実行して、結果を出力します。
+	 * 結果はコンソールとログに出力します。
+	 *
+	 * @param <T> パラメータ型
+	 * @param param タスクパラメータ
+	 * @param task タスク
+	 * @return 実行結果
+	 */
+	protected <T> boolean executeTask(T param, Predicate<T> task) {
+		return executeTask(param, task, true, true);
+	}
+
+	/**
+	 * タスクを実行して、結果を出力します。
+	 *
+	 * @param <T> パラメータ型
+	 * @param param タスクパラメータ
+	 * @param task タスク
+	 * @param console 実行結果をコンソールに出力
+	 * @param logging 実行結果をログに出力。
+	 * @return 実行結果
+	 */
+	protected <T> boolean executeTask(T param, Predicate<T> task, boolean console, boolean logging) {
+
+		//処理実行
+		boolean ret = false;
+		Exception error = null;
+		try {
+			ret = task.test(param);
+		} catch (Exception e) {
+			error = e;
+		} finally {
+			switchLog(console, logging);
+
+			if (error != null) {
+				logInfo("");
+				logError(rs("Common.errorMsg", error.getMessage()), error);
+				logInfo("");
+				logError("■Execute Result : FAILED");
+			} else {
+				logInfo("");
+				logInfo("■Execute Result :" + (ret ? "SUCCESS" : "FAILED"));
 			}
-
-			@Override
-			public void warn(String message) {
-				logger.warn(message);
-			}
-
-			@Override
-			public void warn(String message, Throwable e) {
-				logger.warn(message, e);
-			}
-
-			@Override
-			public void info(String message) {
-				logger.info(message);
-			}
-
-			@Override
-			public void info(String message, Throwable e) {
-				logger.info(message, e);
-			}
-
-			@Override
-			public void error(String message) {
-				logger.error(message);
-			}
-
-			@Override
-			public void error(String message, Throwable e) {
-				logger.error(message, e);
-			}
-
-		};
-
-		return loggingLogListner;
+		}
+		return ret;
 	}
 
 	/**
@@ -394,39 +427,39 @@ public abstract class MtpCuiBase {
 	}
 
 	private void fireDebubLogMessage(String message) {
-		for (LogListner listner : logListners) {
+		for (LogListener listner : logListeners) {
 			listner.debug(message);
 		}
 	}
 	private void fireInfoLogMessage(String message) {
-		for (LogListner listner : logListners) {
+		for (LogListener listner : logListeners) {
 			listner.info(message);
 		}
 	}
 	private void fireInfoLogMessage(String message, Throwable e) {
-		for (LogListner listner : logListners) {
+		for (LogListener listner : logListeners) {
 			listner.info(message, e);
 		}
 	}
 
 	private void fireWarnLogMessage(String message) {
-		for (LogListner listner : logListners) {
+		for (LogListener listner : logListeners) {
 			listner.warn(message);
 		}
 	}
 	private void fireWarnLogMessage(String message, Throwable e) {
-		for (LogListner listner : logListners) {
+		for (LogListener listner : logListeners) {
 			listner.warn(message, e);
 		}
 	}
 
 	private void fireErrorLogMessage(String message) {
-		for (LogListner listner : logListners) {
+		for (LogListener listner : logListeners) {
 			listner.error(message);
 		}
 	}
 	private void fireErrorLogMessage(String message, Throwable e) {
-		for (LogListner listner : logListners) {
+		for (LogListener listner : logListeners) {
 			listner.error(message, e);
 		}
 	}
@@ -451,7 +484,7 @@ public abstract class MtpCuiBase {
 		return ToolsBatchResourceBundleUtil.resourceString(resourceBundle, key, args);
 	}
 
-	public interface LogListner {
+	public interface LogListener {
 		default void debug(String message) {};
 		void info(String message);
 		void info(String message, Throwable e);
@@ -461,11 +494,49 @@ public abstract class MtpCuiBase {
 		void error(String message, Throwable e);
 	}
 
-	private class ConsoleLogListner implements LogListner {
+	private class LoggingLogListener implements LogListener {
+
+		@Override
+		public void debug(String message) {
+			loggingLogger().debug(message);
+		}
+
+		@Override
+		public void warn(String message) {
+			loggingLogger().warn(message);
+		}
+
+		@Override
+		public void warn(String message, Throwable e) {
+			loggingLogger().warn(message, e);
+		}
+
+		@Override
+		public void info(String message) {
+			loggingLogger().info(message);
+		}
+
+		@Override
+		public void info(String message, Throwable e) {
+			loggingLogger().info(message, e);
+		}
+
+		@Override
+		public void error(String message) {
+			loggingLogger().error(message);
+		}
+
+		@Override
+		public void error(String message, Throwable e) {
+			loggingLogger().error(message, e);
+		}
+	}
+
+	private class ConsoleLogListener implements LogListener {
 
 		private Console console;
 
-		public ConsoleLogListner() {
+		public ConsoleLogListener() {
 			console = System.console();
 		}
 
@@ -515,5 +586,7 @@ public abstract class MtpCuiBase {
 		}
 
 	}
+
+	protected abstract Logger loggingLogger();
 
 }

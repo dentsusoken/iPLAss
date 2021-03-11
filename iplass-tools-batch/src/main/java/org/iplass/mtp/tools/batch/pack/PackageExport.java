@@ -61,12 +61,16 @@ import org.iplass.mtp.tools.batch.ExecMode;
 import org.iplass.mtp.tools.batch.MtpCuiBase;
 import org.iplass.mtp.transaction.Transaction;
 import org.iplass.mtp.util.StringUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
  * Package Export Batch
  */
 public class PackageExport extends MtpCuiBase {
+
+	private static Logger logger = LoggerFactory.getLogger(PackageExport.class);
 
 	/** Silentモード 設定ファイル名 */
 	public static final String KEY_CONFIG_FILE = "pack.config";
@@ -128,40 +132,31 @@ public class PackageExport extends MtpCuiBase {
 
 		clearLog();
 
-		try {
-			switch (execMode) {
-			case WIZARD :
-				LogListner consoleLogListner = getConsoleLogListner();
-				addLogListner(consoleLogListner);
+		//Console出力
+		switchLog(true, false);
 
-				//環境情報出力
-				logEnvironment();
+		//環境情報出力
+		logEnvironment();
 
-				logInfo("■Start Export Wizard");
-				logInfo("");
-
-				//Wizardの実行
-				return wizard();
-			case SILENT :
-				LogListner loggingLogListner = getLoggingLogListner();
-				addLogListner(loggingLogListner);
-
-				//環境情報出力
-				logEnvironment();
-
-				logInfo("■Start Export Silent");
-				logInfo("");
-
-				//Silentの実行
-				return silent();
-			default :
-				logError("unsupport execute mode : " + execMode);
-				return false;
-			}
-		} finally {
+		switch (execMode) {
+		case WIZARD :
+			logInfo("■Start Export Wizard");
 			logInfo("");
-			logInfo("■Execute Result :" + (isSuccess() ? "SUCCESS" : "FAILED"));
+
+			//Wizardの実行
+			return wizard();
+		case SILENT :
+			logInfo("■Start Export Silent");
 			logInfo("");
+
+			//Silentの場合はConsole出力を外す
+			switchLog(false, true);
+
+			//Silentの実行
+			return silent();
+		default :
+			logError("unsupport execute mode : " + execMode);
+			return false;
 		}
 
 	}
@@ -186,90 +181,85 @@ public class PackageExport extends MtpCuiBase {
 
 		setSuccess(false);
 
-		try {
-			boolean isSuccess = Transaction.required(t -> {
+		boolean isSuccess = Transaction.required(t -> {
 
-				TenantContext tc = tcs.getTenantContext(param.getTenantId());
-				return ExecuteContext.executeAs(tc, () -> {
-					ExecuteContext.getCurrentContext().setLanguage(getLanguage());
+			TenantContext tc = tcs.getTenantContext(param.getTenantId());
+			return ExecuteContext.executeAs(tc, () -> {
+				ExecuteContext.getCurrentContext().setLanguage(getLanguage());
 
-					//外部から直接呼び出された場合を考慮し、Pathを取得
-					if (param.isExportMetaData() && param.getExportMetaDataPathList() == null) {
-						param.setExportMetaDataPathList(getMetaDataPathList(param));
-					}
+				//外部から直接呼び出された場合を考慮し、Pathを取得
+				if (param.isExportMetaData() && param.getExportMetaDataPathList() == null) {
+					param.setExportMetaDataPathList(getMetaDataPathList(param));
+				}
 
-					//外部から直接呼び出された場合を考慮し、Pathを取得
-					if (param.isExportEntityData() && param.getExportEntityDataPathList() == null) {
-						param.setExportEntityDataPathList(getEntityDataPathList(param));
-					}
+				//外部から直接呼び出された場合を考慮し、Pathを取得
+				if (param.isExportEntityData() && param.getExportEntityDataPathList() == null) {
+					param.setExportEntityDataPathList(getEntityDataPathList(param));
+				}
 
-					//PackageCreateConditionの生成
-					final PackageCreateCondition cond = new PackageCreateCondition();
-					cond.setName(param.getPackageName());
-					cond.setMetaDataPaths(param.getExportMetaDataPathList());
-					cond.setEntityPaths(param.getExportEntityDataPathList());
+				//PackageCreateConditionの生成
+				final PackageCreateCondition cond = new PackageCreateCondition();
+				cond.setName(param.getPackageName());
+				cond.setMetaDataPaths(param.getExportMetaDataPathList());
+				cond.setEntityPaths(param.getExportEntityDataPathList());
 
-					List<String> messageSummary = new ArrayList<>();
+				List<String> messageSummary = new ArrayList<>();
 
-					//Package情報を登録(別トランザクションにしないとarchivePackage処理でエラーになる。別トランザクションなので)
-					final String oid = Transaction.requiresNew(tt -> {
-						return ps.storePackage(cond, PackageEntity.TYPE_OFFLINE);
-					});
+				//Package情報を登録(別トランザクションにしないとarchivePackage処理でエラーになる。別トランザクションなので)
+				final String oid = Transaction.requiresNew(tt -> {
+					return ps.storePackage(cond, PackageEntity.TYPE_OFFLINE);
+				});
 
-					String infoMsg = rs("PackageExport.createdPackageInfoLog", oid );
-					logInfo(infoMsg);
-					messageSummary.add(infoMsg);
+				String infoMsg = rs("PackageExport.createdPackageInfoLog", oid );
+				logInfo(infoMsg);
+				messageSummary.add(infoMsg);
 
-					//Package作成処理
-					logInfo(rs("PackageExport.startExportPackageLog"));
-					final PackageCreateResult result = Transaction.requiresNew(tt -> {
-						return ps.archivePackage(oid);
-					});
-					if (result.isError()) {
-						if (result.getMessages() != null) {
-							for (String message : result.getMessages()) {
-								logError(message);
-							}
-							logInfo("");
-						}
-
-						logError(rs("Common.errorMsg", ""));
-						return false;
-					}
-
+				//Package作成処理
+				logInfo(rs("PackageExport.startExportPackageLog"));
+				final PackageCreateResult result = Transaction.requiresNew(tt -> {
+					return ps.archivePackage(oid);
+				});
+				if (result.isError()) {
 					if (result.getMessages() != null) {
 						for (String message : result.getMessages()) {
-							logInfo(message);
-							messageSummary.add(message);
+							logError(message);
 						}
 						logInfo("");
 					}
 
-					//zip作成処理(別トランザクションにしないとArchiveが取得できない。Package作成が別トランザクションなので)
-					String fileName = Transaction.requiresNew(tt -> {
-						return createExportFile(param, oid);
-					});
+					logError(rs("Common.errorMsg", ""));
+					return false;
+				}
 
-					logInfo("-----------------------------------------------------------");
-					logInfo("■Execute Result Summary");
-					for(String message : messageSummary) {
+				if (result.getMessages() != null) {
+					for (String message : result.getMessages()) {
 						logInfo(message);
+						messageSummary.add(message);
 					}
-					logInfo("-----------------------------------------------------------");
 					logInfo("");
+				}
 
-					logInfo(rs("PackageExport.completedExportPackageLog", fileName));
-
-					return true;
+				//zip作成処理(別トランザクションにしないとArchiveが取得できない。Package作成が別トランザクションなので)
+				String fileName = Transaction.requiresNew(tt -> {
+					return createExportFile(param, oid);
 				});
 
+				logInfo("-----------------------------------------------------------");
+				logInfo("■Execute Result Summary");
+				for(String message : messageSummary) {
+					logInfo(message);
+				}
+				logInfo("-----------------------------------------------------------");
+				logInfo("");
+
+				logInfo(rs("PackageExport.completedExportPackageLog", fileName));
+
+				return true;
 			});
 
-			setSuccess(isSuccess);
+		});
 
-		} catch (Throwable e) {
-			logError(rs("Common.errorMsg", e.getMessage()));
-		}
+		setSuccess(isSuccess);
 
 		return isSuccess();
 	}
@@ -760,22 +750,13 @@ public class PackageExport extends MtpCuiBase {
 				}
 			} while(validExecute == false);
 
-			//ConsoleのLogListnerを一度削除してLog出力に切り替え
-			LogListner consoleLogListner = getConsoleLogListner();
-			removeLogListner(consoleLogListner);
-			LogListner loggingListner = getLoggingLogListner();
-			addLogListner(loggingListner);
+			//Consoleを削除してLogに切り替え
+			switchLog(false, true);
 
 			//Export処理実行
-			try {
-				exportPack(param);
-
-				return isSuccess();
-
-			} finally {
-				removeLogListner(loggingListner);
-				addLogListner(consoleLogListner);
-			}
+			return executeTask(param, (paramA) -> {
+				return exportPack(paramA);
+			});
 		});
 	}
 
@@ -933,7 +914,9 @@ public class PackageExport extends MtpCuiBase {
 			logArguments(param);
 
 			//Export処理実行
-			return exportPack(param);
+			return executeTask(param, (paramA) -> {
+				return exportPack(paramA);
+			});
 		});
 
 	}
@@ -951,4 +934,8 @@ public class PackageExport extends MtpCuiBase {
 		return true;
 	}
 
+	@Override
+	protected Logger loggingLogger() {
+		return logger;
+	}
 }

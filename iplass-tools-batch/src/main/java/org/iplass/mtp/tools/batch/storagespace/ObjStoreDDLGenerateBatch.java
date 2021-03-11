@@ -31,11 +31,15 @@ import org.iplass.mtp.spi.ServiceRegistry;
 import org.iplass.mtp.tools.batch.ExecMode;
 import org.iplass.mtp.tools.batch.MtpCuiBase;
 import org.iplass.mtp.util.StringUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Custom StorageSpace用のDDL生成バッチ
  */
 public class ObjStoreDDLGenerateBatch extends MtpCuiBase {
+
+	private static Logger logger = LoggerFactory.getLogger(ObjStoreDDLGenerateBatch.class);
 
 	/** Templateファイル */
 	private static String[] templates = {
@@ -166,9 +170,8 @@ public class ObjStoreDDLGenerateBatch extends MtpCuiBase {
 
 		clearLog();
 
-		//Console出力用のログリスナーを生成
-		LogListner consoleLogListner = getConsoleLogListner();
-		addLogListner(consoleLogListner);
+		//Console出力
+		switchLog(true, false);
 
 		//環境情報出力
 		logEnvironment();
@@ -184,15 +187,20 @@ public class ObjStoreDDLGenerateBatch extends MtpCuiBase {
 			logInfo("■Start Silent");
 			logInfo("");
 
+			//Silentの場合はConsole出力を外す
+			switchLog(false, true);
+
 			//mainで引数としてObjStoreDDLParameterが生成されている前提
-			return generate();
+			return executeTask(null, (param) -> {
+				return generate();
+			});
 		default :
 			logError("unsupport execute mode : " + execMode);
 			return false;
 		}
 	}
 
-	private boolean generate() throws Exception {
+	private boolean generate() {
 
 		GroovyScriptEngine gse = (GroovyScriptEngine) ServiceRegistry.getRegistry().getService(ScriptService.class).createScriptEngine();
 
@@ -234,13 +242,8 @@ public class ObjStoreDDLGenerateBatch extends MtpCuiBase {
 			setSuccess(true);
 
 		} catch (Throwable e) {
-			logError(rs("Common.errorMsg", e.getMessage()));
-			e.printStackTrace();
+			throw new RuntimeException(e);
 		} finally {
-			logInfo("");
-			logInfo("■Execute Result :" + (isSuccess() ? "SUCCESS" : "FAILED"));
-			logInfo("");
-
 			ExecuteContext.initContext(null);
 		}
 
@@ -376,7 +379,7 @@ public class ObjStoreDDLGenerateBatch extends MtpCuiBase {
 
 		//StorageSpace名
 		boolean validStorageSpaceName = false;
-		List<StorageSpaceMap> ssList = new ArrayList<StorageSpaceMap>();
+		List<StorageSpaceMap> ssList = new ArrayList<>();
 		do {
 			String storageSpaceName = readConsole(rs("ObjStoreDDLGenerator.Wizard.storageSpaceNameMsg") + "(" + "" + ")");
 			if (StringUtil.isNotBlank(storageSpaceName)) {
@@ -462,19 +465,13 @@ public class ObjStoreDDLGenerateBatch extends MtpCuiBase {
 
 		this.parameter = param;
 
-		//ConsoleのLogListnerを一度削除してLog出力に切り替え
-		LogListner consoleLogListner = getConsoleLogListner();
-		removeLogListner(consoleLogListner);
-		LogListner loggingListner = getLoggingLogListner();
-		addLogListner(loggingListner);
+		//Consoleを削除してLogに切り替え
+		switchLog(false, true);
 
 		//Export処理実行
-		generate();
-
-		//LogListnerを一度削除
-		removeLogListner(loggingListner);
-
-		return true;
+		return executeTask(null, (paramA) -> {
+			return generate();
+		});
 	}
 
 	public static class Col {
@@ -491,4 +488,8 @@ public class ObjStoreDDLGenerateBatch extends MtpCuiBase {
 		}
 	}
 
+	@Override
+	protected Logger loggingLogger() {
+		return logger;
+	}
 }

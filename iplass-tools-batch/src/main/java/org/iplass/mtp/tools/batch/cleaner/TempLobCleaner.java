@@ -11,11 +11,15 @@ import org.iplass.mtp.impl.core.TenantContextService;
 import org.iplass.mtp.impl.lob.LobHandler;
 import org.iplass.mtp.impl.tools.tenant.TenantInfo;
 import org.iplass.mtp.spi.ServiceRegistry;
-import org.iplass.mtp.tools.batch.MtpCuiBase;
+import org.iplass.mtp.tools.batch.MtpSilentBatch;
 import org.iplass.mtp.transaction.Transaction;
 import org.iplass.mtp.util.StringUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-public class TempLobCleaner extends MtpCuiBase {
+public class TempLobCleaner extends MtpSilentBatch {
+
+	private static Logger logger = LoggerFactory.getLogger(TempLobCleaner.class);
 
 	private static TenantContextService tenantContextService = ServiceRegistry.getRegistry().getService(TenantContextService.class);
 
@@ -54,9 +58,6 @@ public class TempLobCleaner extends MtpCuiBase {
 	 */
 	public TempLobCleaner(int tenantId) {
 		setTenantId(tenantId);
-
-		LogListner loggingListner = getLoggingLogListner();
-		addLogListner(loggingListner);
 	}
 
 	/**
@@ -71,35 +72,26 @@ public class TempLobCleaner extends MtpCuiBase {
 
 		clearLog();
 
-		try {
+		return executeTask(null, (param) -> {
 
-			ExecuteContext.initContext(new ExecuteContext(tenantContextService.getTenantContext(tenantId)));
+			return ExecuteContext.executeAs(tenantContextService.getTenantContext(tenantId), () -> {
 
-			logArguments();
+				logArguments();
 
-			//テンポラリのBinaryReference削除
-			Transaction.required(t -> {
-					LobHandler.cleanTemporaryBinaryData();
+				//テンポラリのBinaryReference削除
+				Transaction.required(t -> {
+						LobHandler.cleanTemporaryBinaryData();
+				});
+
+				//参照カウント0のバイナリデータ削除
+				Transaction.required(t -> {
+						LobHandler.cleanLobData();
+				});
+
+				setSuccess(true);
+				return isSuccess();
 			});
-
-			//参照カウント0のバイナリデータ削除
-			Transaction.required(t -> {
-					LobHandler.cleanLobData();
-			});
-
-			setSuccess(true);
-
-		} catch (Throwable e) {
-			logError("An error has occurred. : " + e.getMessage());
-			e.printStackTrace();
-		} finally {
-			logInfo("");
-			logInfo("■Execute Result :" + (isSuccess() ? "SUCCESS" : "FAILED"));
-
-			ExecuteContext.initContext(null);
-		}
-		return isSuccess();
-
+		});
 	}
 
 	/**
@@ -126,5 +118,10 @@ public class TempLobCleaner extends MtpCuiBase {
 	 */
 	public void setTenantId(int tenantId) {
 	    this.tenantId = tenantId;
+	}
+
+	@Override
+	protected Logger loggingLogger() {
+		return logger;
 	}
 }

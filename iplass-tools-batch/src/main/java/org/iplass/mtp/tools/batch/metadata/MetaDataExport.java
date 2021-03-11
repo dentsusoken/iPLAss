@@ -49,8 +49,12 @@ import org.iplass.mtp.tools.batch.pack.PackageExport;
 import org.iplass.mtp.transaction.Transaction;
 import org.iplass.mtp.util.CollectionUtil;
 import org.iplass.mtp.util.StringUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class MetaDataExport extends MtpCuiBase {
+
+	private static Logger logger = LoggerFactory.getLogger(MetaDataExport.class);
 
 	/** Silentモード 設定ファイル名 */
 	public static final String KEY_CONFIG_FILE = "meta.config";
@@ -110,42 +114,32 @@ public class MetaDataExport extends MtpCuiBase {
 
 		clearLog();
 
-		try {
-			switch (execMode) {
-			case WIZARD :
-				LogListner consoleLogListner = getConsoleLogListner();
-				addLogListner(consoleLogListner);
+		//Console出力
+		switchLog(true, false);
 
-				//環境情報出力
-				logEnvironment();
+		//環境情報出力
+		logEnvironment();
 
-				logInfo("■Start Export Wizard");
-				logInfo("");
-
-				//Wizardの実行
-				return wizard();
-			case SILENT :
-				LogListner loggingLogListner = getLoggingLogListner();
-				addLogListner(loggingLogListner);
-
-				//環境情報出力
-				logEnvironment();
-
-				logInfo("■Start Export Silent");
-				logInfo("");
-
-				//Silentの実行
-				return silent();
-			default :
-				logError("unsupport execute mode : " + execMode);
-				return false;
-			}
-		} finally {
+		switch (execMode) {
+		case WIZARD :
+			logInfo("■Start Export Wizard");
 			logInfo("");
-			logInfo("■Execute Result :" + (isSuccess() ? "SUCCESS" : "FAILED"));
+
+			//Wizardの実行
+			return wizard();
+		case SILENT :
+			logInfo("■Start Export Silent");
 			logInfo("");
+
+			//Silentの場合はConsole出力を外す
+			switchLog(false, true);
+
+			//Silentの実行
+			return silent();
+		default :
+			logError("unsupport execute mode : " + execMode);
+			return false;
 		}
-
 	}
 
 	public MetaDataExport execMode(ExecMode execMode) {
@@ -168,78 +162,73 @@ public class MetaDataExport extends MtpCuiBase {
 
 		setSuccess(false);
 
-		try {
-			boolean isSuccess = Transaction.required(t -> {
+		boolean isSuccess = Transaction.required(t -> {
 
-				TenantContext tc = tcs.getTenantContext(param.getTenantId());
-				return ExecuteContext.executeAs(tc, () -> {
-					ExecuteContext.getCurrentContext().setLanguage(getLanguage());
+			TenantContext tc = tcs.getTenantContext(param.getTenantId());
+			return ExecuteContext.executeAs(tc, () -> {
+				ExecuteContext.getCurrentContext().setLanguage(getLanguage());
 
-					//外部から直接呼び出された場合を考慮し、Pathを取得
-					if (param.getExportMetaDataPathList() == null) {
-						param.setExportMetaDataPathList(getMetaDataPathList(param));
+				//外部から直接呼び出された場合を考慮し、Pathを取得
+				if (param.getExportMetaDataPathList() == null) {
+					param.setExportMetaDataPathList(getMetaDataPathList(param));
+				}
+
+				if (CollectionUtil.isNotEmpty(param.getExportMetaDataPathList())) {
+					logDebug("metadata path count : " + param.getExportMetaDataPathList().size());
+
+					logInfo(rs("MetaDataExport.startExportMetaData"));
+
+					//MetaDataをtempに出力
+					File metadataFile = new File(param.getExportDir(), param.getFileName() + ".xml");
+					try (PrintWriter writer = new PrintWriter(metadataFile, "UTF-8")){
+
+						mdps.write(writer, param.getExportMetaDataPathList(), new MetaDataWriteCallback() {
+
+							@Override
+							public void onWrited(String path, String version) {
+								logInfo(rs("MetaDataExport.outputMetaData", path));
+							}
+
+							@Override
+							public boolean onWarning(String path, String message, String version) {
+								logWarn(rs("MetaDataExport.warningOutputMetaData", path));
+								logWarn(message);
+								return true;
+							}
+
+							@Override
+							public void onStarted() {
+							}
+
+							@Override
+							public void onFinished() {
+							}
+
+							@Override
+							public boolean onErrored(String path, String message, String version) {
+								logError(rs("MetaDataExport.errorOutputMetaData", path));
+								logError(message);
+								return false;
+							}
+						});
+					} catch (FileNotFoundException e) {
+						throw new SystemException(e);
+					} catch (UnsupportedEncodingException e) {
+						throw new SystemException(e);
 					}
 
-					if (CollectionUtil.isNotEmpty(param.getExportMetaDataPathList())) {
-						logDebug("metadata path count : " + param.getExportMetaDataPathList().size());
+					logInfo(rs("MetaDataExport.completedExportMetaData"));
 
-						logInfo(rs("MetaDataExport.startExportMetaData"));
+				} else {
+					logWarn(rs("MetaDataExport.nonTargetMetaData"));
+				}
 
-						//MetaDataをtempに出力
-						File metadataFile = new File(param.getExportDir(), param.getFileName() + ".xml");
-						try (PrintWriter writer = new PrintWriter(metadataFile, "UTF-8")){
-
-							mdps.write(writer, param.getExportMetaDataPathList(), new MetaDataWriteCallback() {
-
-								@Override
-								public void onWrited(String path, String version) {
-									logInfo(rs("MetaDataExport.outputMetaData", path));
-								}
-
-								@Override
-								public boolean onWarning(String path, String message, String version) {
-									logWarn(rs("MetaDataExport.warningOutputMetaData", path));
-									logWarn(message);
-									return true;
-								}
-
-								@Override
-								public void onStarted() {
-								}
-
-								@Override
-								public void onFinished() {
-								}
-
-								@Override
-								public boolean onErrored(String path, String message, String version) {
-									logError(rs("MetaDataExport.errorOutputMetaData", path));
-									logError(message);
-									return false;
-								}
-							});
-						} catch (FileNotFoundException e) {
-							throw new SystemException(e);
-						} catch (UnsupportedEncodingException e) {
-							throw new SystemException(e);
-						}
-
-						logInfo(rs("MetaDataExport.completedExportMetaData"));
-
-					} else {
-						logWarn(rs("MetaDataExport.nonTargetMetaData"));
-					}
-
-					return true;
-				});
-
+				return true;
 			});
 
-			setSuccess(isSuccess);
+		});
 
-		} catch (Throwable e) {
-			logError(rs("Common.errorMsg", e.getMessage()));
-		}
+		setSuccess(isSuccess);
 
 		return isSuccess();
 	}
@@ -487,22 +476,13 @@ public class MetaDataExport extends MtpCuiBase {
 				}
 			} while(validExecute == false);
 
-			//ConsoleのLogListnerを一度削除してLog出力に切り替え
-			LogListner consoleLogListner = getConsoleLogListner();
-			removeLogListner(consoleLogListner);
-			LogListner loggingListner = getLoggingLogListner();
-			addLogListner(loggingListner);
+			//Consoleを削除してLogに切り替え
+			switchLog(false, true);
 
 			//Export処理実行
-			try {
-				exportMeta(param);
-
-				return isSuccess();
-
-			} finally {
-				removeLogListner(loggingListner);
-				addLogListner(consoleLogListner);
-			}
+			return executeTask(param, (paramA) -> {
+				return exportMeta(paramA);
+			});
 		});
 	}
 
@@ -633,7 +613,9 @@ public class MetaDataExport extends MtpCuiBase {
 			logArguments(param);
 
 			//Export処理実行
-			return exportMeta(param);
+			return executeTask(param, (paramA) -> {
+				return exportMeta(paramA);
+			});
 		});
 
 	}
@@ -651,4 +633,8 @@ public class MetaDataExport extends MtpCuiBase {
 		return true;
 	}
 
+	@Override
+	protected Logger loggingLogger() {
+		return logger;
+	}
 }

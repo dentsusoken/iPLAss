@@ -32,8 +32,12 @@ import org.iplass.mtp.spi.ServiceRegistry;
 import org.iplass.mtp.tools.batch.MtpCuiBase;
 import org.iplass.mtp.tools.gui.partition.MySQLPartitionManagerApp;
 import org.iplass.mtp.util.StringUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class PostgreSQLPartitionBatch extends MtpCuiBase implements PartitionBatch {
+
+	private static Logger logger = LoggerFactory.getLogger(PostgreSQLPartitionBatch.class);
 
 	/** 実行モード */
 	public enum PostgreSQLPartitionBatchExecMode {GUI, CREATE};
@@ -75,9 +79,8 @@ public class PostgreSQLPartitionBatch extends MtpCuiBase implements PartitionBat
 	public boolean execute() {
 		clearLog();
 
-		// Console出力用のログリスナーを生成
-		LogListner consoleLogListner = getConsoleLogListner();
-		addLogListner(consoleLogListner);
+		//Console出力
+		switchLog(true, false);
 
 		// 環境情報出力
 		logEnvironment();
@@ -88,7 +91,7 @@ public class PostgreSQLPartitionBatch extends MtpCuiBase implements PartitionBat
 			logInfo("");
 
 			// Guiの場合はConsole出力を外す
-			removeLogListner(consoleLogListner);
+			switchLog(false, true);
 
 			MySQLPartitionManagerApp.main(new String[]{getLanguage()});
 			return true;
@@ -118,6 +121,7 @@ public class PostgreSQLPartitionBatch extends MtpCuiBase implements PartitionBat
 	 *
 	 * @return パーティション情報
 	 */
+	@Override
 	public List<PartitionInfo> getPartitionInfo() {
 		return toolService.getPartitionInfo();
 	}
@@ -128,53 +132,45 @@ public class PostgreSQLPartitionBatch extends MtpCuiBase implements PartitionBat
 	 * @param param 作成条件
 	 * @return 実行結果
 	 */
+	@Override
 	public boolean createPartition(final PartitionCreateParameter param) {
 		param.setLoggerLanguage(getLanguage());
 
 		setSuccess(false);
 
-		try {
-			boolean isSuccess = toolService.createPartition(param, new LogHandler() {
-				@Override
-				public void info(String message) {
-					PostgreSQLPartitionBatch.this.logInfo(message);
-				}
+		boolean isSuccess = toolService.createPartition(param, new LogHandler() {
+			@Override
+			public void info(String message) {
+				PostgreSQLPartitionBatch.this.logInfo(message);
+			}
 
-				@Override
-				public void info(String message, Throwable e) {
-					PostgreSQLPartitionBatch.this.logInfo(message, e);
-				}
+			@Override
+			public void info(String message, Throwable e) {
+				PostgreSQLPartitionBatch.this.logInfo(message, e);
+			}
 
-				@Override
-				public void warn(String message) {
-					PostgreSQLPartitionBatch.this.logWarn(message);
-				}
+			@Override
+			public void warn(String message) {
+				PostgreSQLPartitionBatch.this.logWarn(message);
+			}
 
-				@Override
-				public void warn(String message, Throwable e) {
-					PostgreSQLPartitionBatch.this.logWarn(message, e);
-				}
+			@Override
+			public void warn(String message, Throwable e) {
+				PostgreSQLPartitionBatch.this.logWarn(message, e);
+			}
 
-				@Override
-				public void error(String message) {
-					PostgreSQLPartitionBatch.this.logError(message);
-				}
+			@Override
+			public void error(String message) {
+				PostgreSQLPartitionBatch.this.logError(message);
+			}
 
-				@Override
-				public void error(String message, Throwable e) {
-					PostgreSQLPartitionBatch.this.logError(message, e);
-				}
-			});
+			@Override
+			public void error(String message, Throwable e) {
+				PostgreSQLPartitionBatch.this.logError(message, e);
+			}
+		});
 
-			setSuccess(isSuccess);
-
-		} catch (Throwable e) {
-			logError(rs("Common.errorMsg", e.getMessage()), e);
-		} finally {
-			logInfo("");
-			logInfo("■Execute Result :" + (isSuccess() ? "SUCCESS" : "FAILED"));
-			logInfo("");
-		}
+		setSuccess(isSuccess);
 
 		return isSuccess();
 	}
@@ -233,19 +229,13 @@ public class PostgreSQLPartitionBatch extends MtpCuiBase implements PartitionBat
 			return startCreateWizard();
 		}
 
-		// ConsoleのLogListnerを一度削除してLog出力に切り替え
-		LogListner consoleLogListner = getConsoleLogListner();
-		removeLogListner(consoleLogListner);
-		LogListner loggingListner = getLoggingLogListner();
-		addLogListner(loggingListner);
+		//Consoleを削除してLogに切り替え
+		switchLog(false, true);
 
 		// パーティション作成処理実行
-		boolean ret = createPartition(param);
-
-		// LogListnerを一度削除
-		removeLogListner(loggingListner);
-
-		return ret;
+		return executeTask(param, (paramA) -> {
+			return createPartition(paramA);
+		});
 	}
 
 	/**
@@ -279,4 +269,8 @@ public class PostgreSQLPartitionBatch extends MtpCuiBase implements PartitionBat
 		return super.rs("PostgreSQLPartitionBatch." + key, args);
 	}
 
+	@Override
+	protected Logger loggingLogger() {
+		return logger;
+	}
 }

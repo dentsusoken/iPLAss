@@ -59,12 +59,16 @@ import org.iplass.mtp.tools.batch.MtpCuiBase;
 import org.iplass.mtp.transaction.Transaction;
 import org.iplass.mtp.util.CollectionUtil;
 import org.iplass.mtp.util.StringUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
  * Package Import Batch
  */
 public class PackageImport extends MtpCuiBase {
+
+	private static Logger logger = LoggerFactory.getLogger(PackageImport.class);
 
 	/** Silentモード 設定ファイル名 */
 	public static final String KEY_CONFIG_FILE = "pack.config";
@@ -142,41 +146,31 @@ public class PackageImport extends MtpCuiBase {
 
 		clearLog();
 
-		try {
-			switch (execMode) {
-			case WIZARD :
-				LogListner consoleLogListner = getConsoleLogListner();
-				addLogListner(consoleLogListner);
+		//Console出力
+		switchLog(true, false);
 
-				//環境情報出力
-				logEnvironment();
+		//環境情報出力
+		logEnvironment();
 
-				logInfo("■Start Import Wizard");
-				logInfo("");
-
-				//Wizardの実行
-				return wizard();
-			case SILENT :
-				LogListner loggingLogListner = getLoggingLogListner();
-				addLogListner(loggingLogListner);
-
-				//環境情報出力
-				logEnvironment();
-
-				logInfo("■Start Import Silent");
-				logInfo("");
-
-				//Silentの実行
-				return silent();
-			default :
-				logError("unsupport execute mode : " + execMode);
-				return false;
-			}
-
-		} finally {
+		switch (execMode) {
+		case WIZARD :
+			logInfo("■Start Import Wizard");
 			logInfo("");
-			logInfo("■Execute Result :" + (isSuccess() ? "SUCCESS" : "FAILED"));
+
+			//Wizardの実行
+			return wizard();
+		case SILENT :
+			logInfo("■Start Import Silent");
 			logInfo("");
+
+			//Silentの場合はConsole出力を外す
+			switchLog(false, true);
+
+			//Silentの実行
+			return silent();
+		default :
+			logError("unsupport execute mode : " + execMode);
+			return false;
 		}
 	}
 
@@ -205,54 +199,49 @@ public class PackageImport extends MtpCuiBase {
 
 		setSuccess(false);
 
-		try {
-			boolean isSuccess = Transaction.required(new Function<Transaction, Boolean>() {
+		boolean isSuccess = Transaction.required(new Function<Transaction, Boolean>() {
 
-				String oid = null;
+			String oid = null;
 
-				@Override
-				public Boolean apply(Transaction t) {
+			@Override
+			public Boolean apply(Transaction t) {
 
-					final List<String> messageSummary = new ArrayList<>();
+				final List<String> messageSummary = new ArrayList<>();
 
-					boolean ret = Transaction.requiresNew(tt->{
-						//Fileのアップロード
-						oid = executeTask(param, new UploadTask(param, messageSummary));
+				boolean ret = Transaction.requiresNew(tt->{
+					//Fileのアップロード
+					oid = executeTask(param, new UploadTask(param, messageSummary));
 
-						//メタデータの登録
-						return executeTask(param, new MetaDataImportTask(param, messageSummary, oid));
-					});
+					//メタデータの登録
+					return executeTask(param, new MetaDataImportTask(param, messageSummary, oid));
+				});
 
-					if (!ret) {
-						return false;
-					}
-
-					//Entityデータのインポートはトランザクションを別にして、TenantContextを再取得して実行
-					//インポートのメタデータにUtilityClassが含まれるとTenantContextがreloadされてメタデータが取得できなくなるため
-					ret = Transaction.requiresNew(tt->{
-						//Entityデータの登録
-						return executeTask(param, new EntityDataImportTask(param, messageSummary, oid));
-					});
-
-					logInfo("-----------------------------------------------------------");
-					logInfo("■Execute Result Summary");
-					for(String message : messageSummary) {
-						logInfo(message);
-					}
-					logInfo("-----------------------------------------------------------");
-					logInfo("");
-
-					logInfo(rs("PackageImport.completedImportPackageLog", param.getImportFilePath()));
-
-					return true;
+				if (!ret) {
+					return false;
 				}
-			});
 
-			setSuccess(isSuccess);
+				//Entityデータのインポートはトランザクションを別にして、TenantContextを再取得して実行
+				//インポートのメタデータにUtilityClassが含まれるとTenantContextがreloadされてメタデータが取得できなくなるため
+				ret = Transaction.requiresNew(tt->{
+					//Entityデータの登録
+					return executeTask(param, new EntityDataImportTask(param, messageSummary, oid));
+				});
 
-		} catch (Throwable e) {
-			logError(rs("Common.errorMsg", e.getMessage()));
-		}
+				logInfo("-----------------------------------------------------------");
+				logInfo("■Execute Result Summary");
+				for(String message : messageSummary) {
+					logInfo(message);
+				}
+				logInfo("-----------------------------------------------------------");
+				logInfo("");
+
+				logInfo(rs("PackageImport.completedImportPackageLog", param.getImportFilePath()));
+
+				return true;
+			}
+		});
+
+		setSuccess(isSuccess);
 
 		return isSuccess();
 	}
@@ -796,22 +785,13 @@ public class PackageImport extends MtpCuiBase {
 			return null;
 		});
 
-		//ConsoleのLogListnerを一度削除してLog出力に切り替え
-		LogListner consoleLogListner = getConsoleLogListner();
-		removeLogListner(consoleLogListner);
-		LogListner loggingListner = getLoggingLogListner();
-		addLogListner(loggingListner);
+		//Consoleを削除してLogに切り替え
+		switchLog(false, true);
 
 		//Import処理実行
-		try {
-			importPack(param);
-
-			return isSuccess();
-
-		} finally {
-			removeLogListner(loggingListner);
-			addLogListner(consoleLogListner);
-		}
+		return executeTask(param, (paramA) -> {
+			return importPack(paramA);
+		});
 	}
 
 	/**
@@ -1048,9 +1028,15 @@ public class PackageImport extends MtpCuiBase {
 			logArguments(param);
 
 			//Import処理実行
-			return importPack(param);
+			return executeTask(param, (paramA) -> {
+				return importPack(paramA);
+			});
 		});
 
 	}
 
+	@Override
+	protected Logger loggingLogger() {
+		return logger;
+	}
 }

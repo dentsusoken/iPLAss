@@ -17,9 +17,11 @@ import org.iplass.mtp.impl.core.ExecuteContext;
 import org.iplass.mtp.impl.core.TenantContextService;
 import org.iplass.mtp.impl.tools.tenant.TenantInfo;
 import org.iplass.mtp.spi.ServiceRegistry;
-import org.iplass.mtp.tools.batch.MtpCuiBase;
+import org.iplass.mtp.tools.batch.MtpSilentBatch;
 import org.iplass.mtp.transaction.Transaction;
 import org.iplass.mtp.util.StringUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * テンポラリーユーザ削除ツール
@@ -29,7 +31,9 @@ import org.iplass.mtp.util.StringUtil;
  * @author lis71n
  *
  */
-public class TempUserCleaner extends MtpCuiBase {
+public class TempUserCleaner extends MtpSilentBatch {
+
+	private static Logger logger = LoggerFactory.getLogger(TempUserCleaner.class);
 
 	private TenantContextService tenantContextService = ServiceRegistry.getRegistry().getService(TenantContextService.class);
 	private EntityManager em = ManagerLocator.getInstance().getManager(EntityManager.class);
@@ -68,9 +72,6 @@ public class TempUserCleaner extends MtpCuiBase {
 	 */
 	public TempUserCleaner(int tenantId) {
 		setTenantId(tenantId);
-
-		LogListner loggingListner = getLoggingLogListner();
-		addLogListner(loggingListner);
 	}
 
 	/**
@@ -85,12 +86,13 @@ public class TempUserCleaner extends MtpCuiBase {
 
 		clearLog();
 
-		try {
-			ExecuteContext.initContext(new ExecuteContext(tenantContextService.getTenantContext(tenantId)));
+		return executeTask(null, (param) -> {
 
-			logArguments();
+			return ExecuteContext.executeAs(tenantContextService.getTenantContext(tenantId), () -> {
 
-			Transaction.required(t -> {
+				logArguments();
+
+				Transaction.required(t -> {
 					//有効期限切れのテンポラリーユーザ情報検索(有効終了日が現在日付より小さい場合且つ、テンポラリーフラグがtrueの場合)
 					Query query = new Query()
 										.selectAll(User.DEFINITION_NAME, true, false)
@@ -103,20 +105,12 @@ public class TempUserCleaner extends MtpCuiBase {
 					for(Entity entity : user.getList() ){
 						em.delete(entity, new DeleteOption(false));
 					}
+				});
 
+				setSuccess(true);
+				return isSuccess();
 			});
-
-			setSuccess(true);
-		} catch (Throwable e) {
-			logError("An error has occurred. : " + e.getMessage());
-			e.printStackTrace();
-		} finally {
-			logInfo("");
-			logInfo("■Execute Result :" + (isSuccess() ? "SUCCESS" : "FAILED"));
-
-			ExecuteContext.initContext(null);
-		}
-		return isSuccess();
+		});
 	}
 
 	/**
@@ -145,5 +139,9 @@ public class TempUserCleaner extends MtpCuiBase {
 	    this.tenantId = tenantId;
 	}
 
+	@Override
+	protected Logger loggingLogger() {
+		return logger;
+	}
 
 }

@@ -14,7 +14,7 @@ import org.iplass.mtp.impl.core.ExecuteContext;
 import org.iplass.mtp.impl.core.TenantContextService;
 import org.iplass.mtp.impl.tools.tenant.TenantInfo;
 import org.iplass.mtp.spi.ServiceRegistry;
-import org.iplass.mtp.tools.batch.MtpCuiBase;
+import org.iplass.mtp.tools.batch.MtpSilentBatch;
 import org.iplass.mtp.transaction.Transaction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,7 +23,7 @@ import org.slf4j.LoggerFactory;
  * EntityDataをクロールするバッチ。
  *
  */
-public class EntityDataCrawler extends MtpCuiBase {
+public class EntityDataCrawler extends MtpSilentBatch {
 
 	/** 実行モード */
 	enum Mode {
@@ -102,9 +102,6 @@ public class EntityDataCrawler extends MtpCuiBase {
 		this.mode = mode;
 		this.tenantId = tenantId;
 		this.entityName = entityName;
-
-		LogListner loggingListner = getLoggingLogListner();
-		addLogListner(loggingListner);
 	}
 
 	public boolean execute() throws Exception {
@@ -113,14 +110,14 @@ public class EntityDataCrawler extends MtpCuiBase {
 
 		clearLog();
 
-		try {
+		return executeTask(null, (param) -> {
+
 			ExecuteContext.executeAs(tenantContextService.getTenantContext(tenantId), new Executable<Void>() {
 
 				@Override
 				public Void execute() {
-
 					logArguments();
-					
+
 					Transaction.required(t -> {
 						switch (mode) {
 						case CRAWL:
@@ -136,20 +133,12 @@ public class EntityDataCrawler extends MtpCuiBase {
 
 					return null;
 				}
-
 			});
 
 			setSuccess(true);
 
-		} catch (Throwable e) {
-			logError("An error has occurred. : " + e.getMessage());
-			e.printStackTrace();
-		} finally {
-			logInfo("");
-			logInfo("■Execute Result :" + (isSuccess() ? "SUCCESS" : "FAILED"));
-		}
-
-		return isSuccess();
+			return isSuccess();
+		});
 	}
 
 	/**
@@ -178,8 +167,13 @@ public class EntityDataCrawler extends MtpCuiBase {
 		if (entityName != null) {
 			throw new IllegalArgumentException("EntityName can only be specified in CRAWL mode.");
 		}
-		
+
 		logger.debug("### RECRAWL Target TenantId :" + tenantId + " ###");
 		fsm.recrawlAllEntity();
+	}
+
+	@Override
+	protected Logger loggingLogger() {
+		return logger;
 	}
 }

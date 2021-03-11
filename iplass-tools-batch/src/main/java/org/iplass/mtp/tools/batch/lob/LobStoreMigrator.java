@@ -32,10 +32,14 @@ import org.iplass.mtp.impl.rdb.adapter.RdbAdapter;
 import org.iplass.mtp.impl.rdb.adapter.RdbAdapterService;
 import org.iplass.mtp.impl.tools.tenant.TenantInfo;
 import org.iplass.mtp.spi.ServiceRegistry;
-import org.iplass.mtp.tools.batch.MtpCuiBase;
+import org.iplass.mtp.tools.batch.MtpSilentBatch;
 import org.iplass.mtp.transaction.Transaction;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-public class LobStoreMigrator extends MtpCuiBase {
+public class LobStoreMigrator extends MtpSilentBatch {
+
+	private static Logger logger = LoggerFactory.getLogger(LobStoreMigrator.class);
 
 	private static TenantContextService tenantContextService = ServiceRegistry.getRegistry().getService(TenantContextService.class);
 
@@ -87,9 +91,6 @@ public class LobStoreMigrator extends MtpCuiBase {
 		this.rootDir = rootDir;
 		this.migrateMode = mode;
 		this.migrateTarget = target;
-
-		LogListner loggingListner = getLoggingLogListner();
-		addLogListner(loggingListner);
 	}
 
 	/**
@@ -103,77 +104,70 @@ public class LobStoreMigrator extends MtpCuiBase {
 
 		clearLog();
 
-		try {
+		return executeTask(null, (param) -> {
 
-			ExecuteContext.initContext(new ExecuteContext(tenantContextService.getTenantContext(tenantId)));
+			return ExecuteContext.executeAs(tenantContextService.getTenantContext(tenantId), () -> {
 
-			logArguments();
+				logArguments();
 
-			Transaction.required(t -> {
-					ServiceRegistry sr = ServiceRegistry.getRegistry();
-					LobStoreService lobStoreService = sr.getService(LobStoreService.class);
+				Transaction.required(t -> {
+						ServiceRegistry sr = ServiceRegistry.getRegistry();
+						LobStoreService lobStoreService = sr.getService(LobStoreService.class);
 
-					ConfigImpl config = new ConfigImpl("lobStoreMigrator", null, null);
-					config.addDependentService(RdbAdapterService.class.getName(), sr.getService(RdbAdapterService.class));
+						ConfigImpl config = new ConfigImpl("lobStoreMigrator", null, null);
+						config.addDependentService(RdbAdapterService.class.getName(), sr.getService(RdbAdapterService.class));
 
-					RdbLobStore rdbLobStore = new RdbLobStore();
-					FileLobStore fileLobStore = new FileLobStore();
-					fileLobStore.setRootDir(rootDir);
+						RdbLobStore rdbLobStore = new RdbLobStore();
+						FileLobStore fileLobStore = new FileLobStore();
+						fileLobStore.setRootDir(rootDir);
 
-					rdbLobStore.inited(lobStoreService, config);
-					fileLobStore.inited(lobStoreService, config);
+						rdbLobStore.inited(lobStoreService, config);
+						fileLobStore.inited(lobStoreService, config);
 
-					LobStore lobStore = MigrateMode.F2R.equals(migrateMode) ? fileLobStore : rdbLobStore;
+						LobStore lobStore = MigrateMode.F2R.equals(migrateMode) ? fileLobStore : rdbLobStore;
 
-					RdbAdapter rdb = sr.getService(RdbAdapterService.class).getRdbAdapter();
-					LobDao dao = lobStoreService.getLobDao();
+						RdbAdapter rdb = sr.getService(RdbAdapterService.class).getRdbAdapter();
+						LobDao dao = lobStoreService.getLobDao();
 
-					SqlExecuter<Void> exec = new SqlExecuter<Void>() {
-						@Override
-						public Void logic() throws SQLException {
-							BlobSearchSql sqlCreator = rdb.getQuerySqlCreator(BlobSearchSql.class);
-							String sql = sqlCreator.toSqlForMigrate(rdb, tenantId);
+						SqlExecuter<Void> exec = new SqlExecuter<Void>() {
+							@Override
+							public Void logic() throws SQLException {
+								BlobSearchSql sqlCreator = rdb.getQuerySqlCreator(BlobSearchSql.class);
+								String sql = sqlCreator.toSqlForMigrate(rdb, tenantId);
 
-							try (ResultSet rs = getStatement().executeQuery(sql)) {
-								while (rs.next()) {
-									Lob lob = sqlCreator.toBinaryData(rs, lobStore, dao, lobStoreService.isManageLobSizeOnRdb());
+								try (ResultSet rs = getStatement().executeQuery(sql)) {
+									while (rs.next()) {
+										Lob lob = sqlCreator.toBinaryData(rs, lobStore, dao, lobStoreService.isManageLobSizeOnRdb());
 
-									if ((MigrateTarget.BINARY.equals(migrateTarget) && LongTextType.LOB_NAME.equals(lob.getName())) ||
-											(MigrateTarget.LONGTEXT.equals(migrateTarget) && !LongTextType.LOB_NAME.equals(lob.getName()))) {
-										continue;
+										if ((MigrateTarget.BINARY.equals(migrateTarget) && LongTextType.LOB_NAME.equals(lob.getName())) ||
+												(MigrateTarget.LONGTEXT.equals(migrateTarget) && !LongTextType.LOB_NAME.equals(lob.getName()))) {
+											continue;
+										}
+
+										// 移行処理
+										switch (migrateMode) {
+										case R2F:	// RDB to File
+											migrateRdbToFile(lob, fileLobStore);
+											break;
+										case F2R:	// File to RDB
+											migrateFileToRdb(lob, rdbLobStore);
+											break;
+										}
 									}
-
-									// 移行処理
-									switch (migrateMode) {
-									case R2F:	// RDB to File
-										migrateRdbToFile(lob, fileLobStore);
-										break;
-									case F2R:	// File to RDB
-										migrateFileToRdb(lob, rdbLobStore);
-										break;
-									}
+									return null;
 								}
-								return null;
 							}
-						}
-					};
-					exec.execute(rdb, true);
+						};
+						exec.execute(rdb, true);
 
-					return null;
+						return null;
+				});
+
+				setSuccess(true);
+
+				return isSuccess();
 			});
-
-			setSuccess(true);
-
-		} catch (Throwable e) {
-			logError("An error has occurred. : " + e.getMessage());
-			e.printStackTrace();
-		} finally {
-			logInfo("");
-			logInfo("■Execute Result :" + (isSuccess() ? "SUCCESS" : "FAILED"));
-
-			ExecuteContext.initContext(null);
-		}
-		return isSuccess();
+		});
 	}
 
 	/**
@@ -246,4 +240,8 @@ public class LobStoreMigrator extends MtpCuiBase {
 		LONGTEXT,
 	}
 
+	@Override
+	protected Logger loggingLogger() {
+		return logger;
+	}
 }

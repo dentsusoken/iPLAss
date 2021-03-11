@@ -27,12 +27,16 @@ import org.iplass.mtp.tools.batch.ExecMode;
 import org.iplass.mtp.tools.batch.MtpCuiBase;
 import org.iplass.mtp.transaction.Transaction;
 import org.iplass.mtp.util.StringUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
  * Export MetaDataXML Name List Batch
  */
 public class MetaDataNameListExport extends MtpCuiBase {
+
+	private static Logger logger = LoggerFactory.getLogger(MetaDataNameListExport.class);
 
 	//実行モード
 	private ExecMode execMode = ExecMode.WIZARD;
@@ -76,9 +80,8 @@ public class MetaDataNameListExport extends MtpCuiBase {
 
 		clearLog();
 
-		//Console出力用のログリスナーを生成
-		LogListner consoleLogListner = getConsoleLogListner();
-		addLogListner(consoleLogListner);
+		//Console出力
+		switchLog(true, false);
 
 		//環境情報出力
 		logEnvironment();
@@ -121,90 +124,78 @@ public class MetaDataNameListExport extends MtpCuiBase {
 
 		setSuccess(false);
 
-		try {
-			boolean isSuccess = Transaction.requiresNew(t -> {
+		boolean isSuccess = Transaction.requiresNew(t -> {
 
-					//対象ファイル
-					File importFile = new File(param.getMetaDataFilePath());
+			//対象ファイル
+			File importFile = new File(param.getMetaDataFilePath());
 
-					//出力ファイル
-					File outFile = new File(param.getExportDir(), param.getExportFileName() + ".csv");
+			//出力ファイル
+			File outFile = new File(param.getExportDir(), param.getExportFileName() + ".csv");
 
-					//テナントはダミー(テナントに依存しないので)
-					TenantContext tContext = new TenantContext(0, "dummy", "/", true);
-					ExecuteContext eContext = new ExecuteContext(tContext);
-					eContext.setLanguage(getLanguage());	//ログがTenantのLocaleになるのでバッチで指定された言語に設定
-					ExecuteContext.initContext(eContext);
+			//テナントはダミー(テナントに依存しないので)
+			TenantContext tc = new TenantContext(0, "dummy", "/", true);
+			return ExecuteContext.executeAs(tc, () -> {
+				ExecuteContext.getCurrentContext().setLanguage(getLanguage());
 
-					InputStream metaXML = null;
-					MetaDataNameListCsvWriter wrappedWriter = null;
+				InputStream metaXML = null;
+				MetaDataNameListCsvWriter wrappedWriter = null;
+				try {
+					//メタデータ定義のXMLファイルを取得
+					if ("zip".equals(getFileExtension(importFile))) {
+						//Package ZIP
+						metaXML = packageService.getMetaDataInputStream(importFile);
+					} else {
+						//MetaData XMLを直接指定した場合
+						metaXML = new FileInputStream(importFile);
+					}
+
+					//XMLを解析してMetaDataEntryを取得
+					XMLEntryInfo entryInfo = metaService.getXMLMetaDataEntryInfo(metaXML);
+
+					//ソート
+					List<MetaDataEntry> entries = new ArrayList<>(entryInfo.getPathEntryMap().values());
+					Collections.sort(entries, new Comparator<MetaDataEntry>() {
+						@Override
+						public int compare(MetaDataEntry o1, MetaDataEntry o2) {
+							return o1.getPath().toLowerCase().compareTo(o2.getPath().toLowerCase());
+						}
+					});
+
+					//出力
+					wrappedWriter = new MetaDataNameListCsvWriter(new FileOutputStream(outFile));
+
+					//ヘッダ出力
+					wrappedWriter.writeHeader();
+
+					for (MetaDataEntry entry : entries) {
+						wrappedWriter.writeEntry(entry);
+					}
+
+				} catch (IOException e) {
+					throw new RuntimeException(e);
+				} finally {
 					try {
-						//メタデータ定義のXMLファイルを取得
-						if ("zip".equals(getFileExtension(importFile))) {
-							//Package ZIP
-							metaXML = packageService.getMetaDataInputStream(importFile);
-						} else {
-							//MetaData XMLを直接指定した場合
-							metaXML = new FileInputStream(importFile);
+						if (metaXML != null) {
+							metaXML.close();
 						}
-
-						//XMLを解析してMetaDataEntryを取得
-						XMLEntryInfo entryInfo = metaService.getXMLMetaDataEntryInfo(metaXML);
-
-						//ソート
-						List<MetaDataEntry> entries = new ArrayList<MetaDataEntry>(entryInfo.getPathEntryMap().values());
-						Collections.sort(entries, new Comparator<MetaDataEntry>() {
-							@Override
-							public int compare(MetaDataEntry o1, MetaDataEntry o2) {
-								return o1.getPath().toLowerCase().compareTo(o2.getPath().toLowerCase());
-							}
-						});
-
-						//出力
-						wrappedWriter = new MetaDataNameListCsvWriter(new FileOutputStream(outFile));
-
-						//ヘッダ出力
-						wrappedWriter.writeHeader();
-
-						for (MetaDataEntry entry : entries) {
-							wrappedWriter.writeEntry(entry);
-						}
-
 					} catch (IOException e) {
-						throw new RuntimeException(e);
+			            throw new RuntimeException(e);
 					} finally {
 						try {
-							if (metaXML != null) {
-								metaXML.close();
+							if (wrappedWriter != null) {
+								wrappedWriter.close();
 							}
 						} catch (IOException e) {
 				            throw new RuntimeException(e);
-						} finally {
-							try {
-								if (wrappedWriter != null) {
-									wrappedWriter.close();
-								}
-							} catch (IOException e) {
-					            throw new RuntimeException(e);
-							}
 						}
 					}
+				}
 
-					return true;
+				return true;
 			});
+		});
 
-			setSuccess(isSuccess);
-
-		} catch (Throwable e) {
-			logError(rs("Common.errorMsg", e.getMessage()));
-			e.printStackTrace();
-		} finally {
-			logInfo("");
-			logInfo("■Execute Result :" + (isSuccess() ? "SUCCESS" : "FAILED"));
-			logInfo("");
-
-			ExecuteContext.initContext(null);
-		}
+		setSuccess(isSuccess);
 
 		return isSuccess();
 	}
@@ -272,19 +263,13 @@ public class MetaDataNameListExport extends MtpCuiBase {
 			param.setExportFileName(exportFileName);
 		}
 
-		//ConsoleのLogListnerを一度削除してLog出力に切り替え
-		LogListner consoleLogListner = getConsoleLogListner();
-		removeLogListner(consoleLogListner);
-		LogListner loggingListner = getLoggingLogListner();
-		addLogListner(loggingListner);
+		//Consoleを削除してLogに切り替え
+		switchLog(false, true);
 
 		//Import処理実行
-		boolean ret = executeExport(param);
-
-		//LogListnerを一度削除
-		removeLogListner(loggingListner);
-
-		return ret;
+		return executeTask(param, (paramA) -> {
+			return executeExport(paramA);
+		});
 	}
 
 	private String getFileExtension(File file) {
@@ -296,4 +281,8 @@ public class MetaDataNameListExport extends MtpCuiBase {
 		}
 	}
 
+	@Override
+	protected Logger loggingLogger() {
+		return logger;
+	}
 }
