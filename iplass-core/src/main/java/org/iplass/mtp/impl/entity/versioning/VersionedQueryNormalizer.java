@@ -170,7 +170,12 @@ public class VersionedQueryNormalizer extends ASTTransformerSupport {
 					VersionController refVc = eh.getService().getVersionController(e.getValue().rph.getReferenceEntityHandler(context));
 					Condition refEntityCond = refVc.refEntityQueryCondition(e.getKey(), e.getValue().rph, e.getValue().asOf, context);
 					if (refEntityCond != null) {
-						and.addExpression(refEntityCond);
+						Refer r = q.refer(e.getKey());
+						if (r.getCondition() == null) {
+							r.setCondition(refEntityCond);
+						} else {
+							r.setCondition(new And(r.getCondition(), refEntityCond));
+						}
 					}
 				}
 			}
