@@ -53,7 +53,7 @@ dependencies {
 	compile group: 'org.ccil.cowan.tagsoup', name: 'tagsoup', version: '1.2.1'
 
 	//groovy
-	compile 'org.codehaus.groovy:groovy-all:2.4.17:indy'//classifier:'indy'
+	compile 'org.codehaus.groovy:groovy-all:2.4.21:indy'//classifier:'indy'
 
 	//supercsv
 	compile 'net.sf.supercsv:super-csv:2.4.0'
