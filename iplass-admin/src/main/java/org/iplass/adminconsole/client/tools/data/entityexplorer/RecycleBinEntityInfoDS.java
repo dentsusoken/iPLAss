@@ -23,6 +23,16 @@ import com.smartgwt.client.widgets.grid.ListGridRecord;
 
 public class RecycleBinEntityInfoDS extends AbstractAdminDataSource {
 
+	public enum FIELD_NAME {
+		NAME,
+		DISPLAY_NAME,
+
+		DATA_COUNT,
+
+		IS_ERROR,
+		ERROR_MESSAGE,
+	}
+
 	public static RecycleBinEntityInfoDS getInstance(Timestamp purgeTargetDate, boolean isGetDataCount) {
 		return new RecycleBinEntityInfoDS(purgeTargetDate, isGetDataCount);
 	}
@@ -35,17 +45,17 @@ public class RecycleBinEntityInfoDS extends AbstractAdminDataSource {
 		this.purgeTargetDate = purgeTargetDate;
 		this.isGetDataCount = isGetDataCount;
 
-		DataSourceField nameField = new DataSourceTextField("name", AdminClientMessageUtil.getString("datasource_tools_entityexplorer_SimpleEntityInfoDS_name"));
+		DataSourceField nameField = new DataSourceTextField(FIELD_NAME.NAME.name());
 		nameField.setPrimaryKey(true);
-		DataSourceField displayNameField = new DataSourceTextField("displayName", AdminClientMessageUtil.getString("datasource_tools_entityexplorer_SimpleEntityInfoDS_dispName"));
-		DataSourceField countField = new DataSourceTextField("count", AdminClientMessageUtil.getString("datasource_tools_entityexplorer_SimpleEntityInfoDS_number"));
+		DataSourceField displayNameField = new DataSourceTextField(FIELD_NAME.DISPLAY_NAME.name());
+		DataSourceField countField = new DataSourceTextField(FIELD_NAME.DATA_COUNT.name());
 
 		setFields(nameField, displayNameField, countField);
 	}
 
 	@Override
 	protected void executeFetch(final String requestId, final DSRequest request, final DSResponse response) {
-		
+
 		EntityExplorerServiceAsync service = EntityExplorerServiceFactory.get();
 		service.getRecycleBinInfoList(TenantInfoHolder.getId(), purgeTargetDate, isGetDataCount, new AsyncCallback<List<RecycleBinEntityInfo>>() {
 
@@ -90,20 +100,20 @@ public class RecycleBinEntityInfoDS extends AbstractAdminDataSource {
 	}
 
 	private List<ListGridRecord> createRecord(List<RecycleBinEntityInfo> entities) {
-		List<ListGridRecord> list = new ArrayList<ListGridRecord>();
+		List<ListGridRecord> list = new ArrayList<>();
 
 		if (entities != null) {
 			for (RecycleBinEntityInfo entity : entities) {
 				ListGridRecord record = new ListGridRecord();
-				record.setAttribute("name", entity.getName());
-				record.setAttribute("dispName", entity.getDisplayName());
+				record.setAttribute(FIELD_NAME.NAME.name(), entity.getName());
+				record.setAttribute(FIELD_NAME.DISPLAY_NAME.name(), entity.getDisplayName());
 				if (isGetDataCount) {
-					record.setAttribute("count", entity.getCount());
+					record.setAttribute(FIELD_NAME.DATA_COUNT.name(), entity.getCount());
 				} else {
-					record.setAttribute("count", "-");
+					record.setAttribute(FIELD_NAME.DATA_COUNT.name(), "-");
 				}
-				record.setAttribute("isError", entity.isError());
-				record.setAttribute("errorMessage", entity.getErrorMessage());
+				record.setAttribute(FIELD_NAME.IS_ERROR.name(), entity.isError());
+				record.setAttribute(FIELD_NAME.ERROR_MESSAGE.name(), entity.getErrorMessage());
 				list.add(record);
 			}
 		}

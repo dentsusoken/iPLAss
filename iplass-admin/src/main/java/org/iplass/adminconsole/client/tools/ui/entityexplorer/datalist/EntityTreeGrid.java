@@ -83,11 +83,11 @@ public class EntityTreeGrid extends MtpTreeGrid {
 	protected Canvas createRecordComponent(final ListGridRecord record, Integer colNum) {
 		final String fieldName = this.getFieldName(colNum);
 		if ("error".equals(fieldName)) {
-			if (record.getAttributeAsBoolean("isError")){
+			if (record.getAttributeAsBoolean(FIELD_NAME.IS_ERROR.name())){
 				record.setEnabled(false);
 				GridActionImgButton recordCanvas = new GridActionImgButton();
 				recordCanvas.setActionButtonSrc(ERROR_ICON);
-				recordCanvas.setActionButtonPrompt(record.getAttributeAsString("errorMessage"));
+				recordCanvas.setActionButtonPrompt(record.getAttributeAsString(FIELD_NAME.ERROR_MESSAGE.name()));
 				return recordCanvas;
 			}
 		} else if (FIELD_NAME.PATH.name().equals(fieldName)) {
@@ -118,14 +118,20 @@ public class EntityTreeGrid extends MtpTreeGrid {
 			}
 		});
 
-		TreeGridField countField = new TreeGridField(FIELD_NAME.DATA_COUNT.name(), "Data Count");
+		TreeGridField countField = new TreeGridField(FIELD_NAME.DATA_COUNT.name(), "Count");
 		countField.setWidth(70);
 		TreeGridField listenerCountField = new TreeGridField(FIELD_NAME.LISTNER_COUNT.name(), "Listeners");
 		listenerCountField.setWidth(75);
+		TreeGridField versioningField = new TreeGridField(FIELD_NAME.VERSIONING.name(), "Version Control");
+		versioningField.setWidth(75);
 		TreeGridField detailViewCountField = new TreeGridField(FIELD_NAME.DETAIL_VIEW_COUNT.name(), "DetailViews");
 		detailViewCountField.setWidth(95);
 		TreeGridField searchViewCountField = new TreeGridField(FIELD_NAME.SEARCH_VIEW_COUNT.name(), "SearchViews");
 		searchViewCountField.setWidth(95);
+		TreeGridField bulkViewCountField = new TreeGridField(FIELD_NAME.BULK_VIEW_COUNT.name(), "BulkViews");
+		bulkViewCountField.setWidth(95);
+		TreeGridField viewControlField = new TreeGridField(FIELD_NAME.VIEW_CONTROL.name(), "ViewControls");
+		viewControlField.setWidth(40);
 
 		TreeGridField repositoryField = new TreeGridField(FIELD_NAME.REPOSITORY.name(), "Repository", 70);
 		repositoryField.setAlign(Alignment.CENTER);
@@ -137,7 +143,7 @@ public class EntityTreeGrid extends MtpTreeGrid {
 				return SmartGWTUtil.getHoverString(record.getAttribute(FIELD_NAME.REPOSITORY.name()));
 			}
 		});
-		setFields(displayNameField, errorField, pathField, countField, listenerCountField, detailViewCountField, searchViewCountField, repositoryField);
+		setFields(displayNameField, errorField, pathField, countField, listenerCountField, versioningField, detailViewCountField, searchViewCountField, bulkViewCountField, viewControlField, repositoryField);
 
 		fetchData();
 	}

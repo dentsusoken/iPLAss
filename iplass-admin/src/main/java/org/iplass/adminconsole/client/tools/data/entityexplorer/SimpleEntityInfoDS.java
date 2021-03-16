@@ -42,6 +42,26 @@ import com.smartgwt.client.widgets.grid.ListGridRecord;
 
 public class SimpleEntityInfoDS extends AbstractAdminDataSource {
 
+	public enum FIELD_NAME {
+		NAME,
+		DISPLAY_NAME,
+
+		DATA_COUNT,
+
+		LISTENER_COUNT,
+		VERSIONING,
+
+		DETAIL_VIEW_COUNT,
+		SEARCH_VIEW_COUNT,
+		BULK_VIEW_COUNT,
+		VIEW_CONTROL,
+
+		REPOSITORY,
+
+		IS_ERROR,
+		ERROR_MESSAGE,
+	}
+
 	/**
 	 * DSインスタンスを返します。
 	 *
@@ -58,18 +78,25 @@ public class SimpleEntityInfoDS extends AbstractAdminDataSource {
 	private SimpleEntityInfoDS(boolean isGetDataCount) {
 		this.isGetDataCount = isGetDataCount;
 
-		DataSourceField nameField = new DataSourceTextField("name", AdminClientMessageUtil.getString("datasource_tools_entityexplorer_SimpleEntityInfoDS_name"));
-		nameField.setPrimaryKey(true);
-		DataSourceField displayNameField = new DataSourceTextField("displayName", AdminClientMessageUtil.getString("datasource_tools_entityexplorer_SimpleEntityInfoDS_dispName"));
-		DataSourceField countField = new DataSourceTextField("count", AdminClientMessageUtil.getString("datasource_tools_entityexplorer_SimpleEntityInfoDS_number"));
-		DataSourceField listenerCountField = new DataSourceTextField("listenerCount", AdminClientMessageUtil.getString("datasource_tools_entityexplorer_SimpleEntityInfoDS_listenerNum"));
-		DataSourceField detailViewCountField = new DataSourceTextField("detailViewCount", AdminClientMessageUtil.getString("datasource_tools_entityexplorer_SimpleEntityInfoDS_detailViewNum"));
-		DataSourceField searchViewCountField = new DataSourceTextField("searchViewCount", AdminClientMessageUtil.getString("datasource_tools_entityexplorer_SimpleEntityInfoDS_searchViewNum"));
-		DataSourceField repositoryField = new DataSourceTextField("repository", AdminClientMessageUtil.getString("datasource_tools_entityexplorer_SimpleEntityInfoDS_defFormat"));
+		DataSourceField name = new DataSourceTextField(FIELD_NAME.NAME.name());
+		name.setPrimaryKey(true);
+		DataSourceField displayName = new DataSourceTextField(FIELD_NAME.DISPLAY_NAME.name());
 
-		setFields(nameField, displayNameField, countField,
-				listenerCountField, detailViewCountField, searchViewCountField,
-				repositoryField);
+		DataSourceField count = new DataSourceTextField(FIELD_NAME.DATA_COUNT.name());
+
+		DataSourceField listenerCount = new DataSourceTextField(FIELD_NAME.LISTENER_COUNT.name());
+		DataSourceField versioning = new DataSourceTextField(FIELD_NAME.VERSIONING.name());
+
+		DataSourceField detailViewCount = new DataSourceTextField(FIELD_NAME.DETAIL_VIEW_COUNT.name());
+		DataSourceField searchViewCount = new DataSourceTextField(FIELD_NAME.SEARCH_VIEW_COUNT.name());
+		DataSourceField bulkViewCount = new DataSourceTextField(FIELD_NAME.BULK_VIEW_COUNT.name());
+		DataSourceField viewControl = new DataSourceTextField(FIELD_NAME.VIEW_CONTROL.name());
+
+		DataSourceField repository = new DataSourceTextField(FIELD_NAME.REPOSITORY.name());
+
+		setFields(name, displayName, count, listenerCount, versioning,
+				detailViewCount, searchViewCount, bulkViewCount, viewControl,
+				repository);
 	}
 
 	@Override
@@ -103,26 +130,28 @@ public class SimpleEntityInfoDS extends AbstractAdminDataSource {
 
 	private List<ListGridRecord> createRecord(List<SimpleEntityInfo> entities) {
 
-		List<ListGridRecord> list = new ArrayList<ListGridRecord>();
+		List<ListGridRecord> list = new ArrayList<>();
 
 		if (entities != null) {
 			for (SimpleEntityInfo entity : entities) {
 				ListGridRecord record = new ListGridRecord();
-				record.setAttribute("name", entity.getName());
-				record.setAttribute("displayName", entity.getDisplayName());
+				record.setAttribute(FIELD_NAME.NAME.name(), entity.getName());
+				record.setAttribute(FIELD_NAME.DISPLAY_NAME.name(), entity.getDisplayName());
 				if (isGetDataCount) {
-					record.setAttribute("count", entity.getCount());
+					record.setAttribute(FIELD_NAME.DATA_COUNT.name(), entity.getCount());
 				} else {
-					record.setAttribute("count", "-");
+					record.setAttribute(FIELD_NAME.DATA_COUNT.name(), "-");
 				}
-				record.setAttribute("listenerCount", entity.getListenerCount());
-				record.setAttribute("detailViewCount", entity.getDetailFormViewCount());
-				record.setAttribute("searchViewCount", entity.getSearchFormViewCount());
-				record.setAttribute("bulkViewCount", entity.getBulkFormViewCount());
-				record.setAttribute("viewControl", entity.getViewControl());
-				record.setAttribute("repository", entity.getRepository());
-				record.setAttribute("isError", entity.isError());
-				record.setAttribute("errorMessage", entity.getErrorMessage());
+				record.setAttribute(FIELD_NAME.LISTENER_COUNT.name(), entity.getListenerCount());
+				record.setAttribute(FIELD_NAME.VERSIONING.name(), entity.getVersionControlType());
+				record.setAttribute(FIELD_NAME.DETAIL_VIEW_COUNT.name(), entity.getDetailFormViewCount());
+				record.setAttribute(FIELD_NAME.SEARCH_VIEW_COUNT.name(), entity.getSearchFormViewCount());
+				record.setAttribute(FIELD_NAME.BULK_VIEW_COUNT.name(), entity.getBulkFormViewCount());
+				record.setAttribute(FIELD_NAME.VIEW_CONTROL.name(), entity.getViewControl());
+				record.setAttribute(FIELD_NAME.REPOSITORY.name(), entity.getRepository());
+
+				record.setAttribute(FIELD_NAME.IS_ERROR.name(), entity.isError());
+				record.setAttribute(FIELD_NAME.ERROR_MESSAGE.name(), entity.getErrorMessage());
 				list.add(record);
 			}
 		}

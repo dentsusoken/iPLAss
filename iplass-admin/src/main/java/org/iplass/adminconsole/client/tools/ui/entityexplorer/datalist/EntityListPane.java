@@ -134,23 +134,23 @@ public class EntityListPane extends VLayout {
 			protected Canvas createRecordComponent(final ListGridRecord record, Integer colNum) {
 				final String fieldName = this.getFieldName(colNum);
 				if ("explorerButton".equals(fieldName)) {
-					if (!record.getAttributeAsBoolean("isError")){
+					if (!record.getAttributeAsBoolean(SimpleEntityInfoDS.FIELD_NAME.IS_ERROR.name())){
 						MetaDataViewGridButton button = new MetaDataViewGridButton(EntityDefinition.class.getName());
 						button.setActionButtonPrompt(SmartGWTUtil.getHoverString(AdminClientMessageUtil.getString("ui_tools_entityexplorer_EntityListPane_showMetaDataEditScreen")));
 						button.setMetaDataShowClickHandler(new MetaDataViewGridButton.MetaDataShowClickHandler() {
 							@Override
 							public String targetDefinitionName() {
-								return record.getAttributeAsString("name");
+								return record.getAttributeAsString(SimpleEntityInfoDS.FIELD_NAME.NAME.name());
 							}
 						});
 						return button;
 					}
 				} else if ("error".equals(fieldName)) {
-					if (record.getAttributeAsBoolean("isError")){
+					if (record.getAttributeAsBoolean(SimpleEntityInfoDS.FIELD_NAME.IS_ERROR.name())){
 						record.setEnabled(false);
 						GridActionImgButton recordCanvas = new GridActionImgButton();
 						recordCanvas.setActionButtonSrc(ERROR_ICON);
-						recordCanvas.setActionButtonPrompt(record.getAttributeAsString("errorMessage"));
+						recordCanvas.setActionButtonPrompt(record.getAttributeAsString(SimpleEntityInfoDS.FIELD_NAME.ERROR_MESSAGE.name()));
 						return recordCanvas;
 					}
 				}
@@ -190,7 +190,7 @@ public class EntityListPane extends VLayout {
 
 			@Override
 			public void onRecordDoubleClick(RecordDoubleClickEvent event) {
-				String name = event.getRecord().getAttributeAsString("name");
+				String name = event.getRecord().getAttributeAsString(SimpleEntityInfoDS.FIELD_NAME.NAME.name());
 				showExplorer(name);
 			}
 
@@ -220,7 +220,7 @@ public class EntityListPane extends VLayout {
 		String[] defNames = new String[records.length];
 		int i = 0;
 		for (ListGridRecord record : records) {
-			defNames[i] = record.getAttributeAsString("name");
+			defNames[i] = record.getAttributeAsString(SimpleEntityInfoDS.FIELD_NAME.NAME.name());
 			i++;
 		}
 		EntityConfigDownloadDialog dialog = new EntityConfigDownloadDialog(defNames);
@@ -241,24 +241,26 @@ public class EntityListPane extends VLayout {
 		explorerField.setWidth(25);
 		ListGridField errorField = new ListGridField("error", " ");
 		errorField.setWidth(25);
-		ListGridField nameField = new ListGridField("name", "Name");
-		ListGridField displayNameField = new ListGridField("displayName", "DisplayName");
-		ListGridField countField = new ListGridField("count", "Data Count");
+		ListGridField nameField = new ListGridField(SimpleEntityInfoDS.FIELD_NAME.NAME.name(), "Name");
+		ListGridField displayNameField = new ListGridField(SimpleEntityInfoDS.FIELD_NAME.DISPLAY_NAME.name(), "DisplayName");
+		ListGridField countField = new ListGridField(SimpleEntityInfoDS.FIELD_NAME.DATA_COUNT.name(), "Count");
 		countField.setWidth(70);
-		ListGridField listenerCountField = new ListGridField("listenerCount", "Listeners");
+		ListGridField listenerCountField = new ListGridField(SimpleEntityInfoDS.FIELD_NAME.LISTENER_COUNT.name(), "Listeners");
 		listenerCountField.setWidth(75);
-		ListGridField detailViewCountField = new ListGridField("detailViewCount", "DetailViews");
+		ListGridField versioningField = new ListGridField(SimpleEntityInfoDS.FIELD_NAME.VERSIONING.name(), "Version Control");
+		versioningField.setWidth(75);
+		ListGridField detailViewCountField = new ListGridField(SimpleEntityInfoDS.FIELD_NAME.DETAIL_VIEW_COUNT.name(), "DetailViews");
 		detailViewCountField.setWidth(95);
-		ListGridField searchViewCountField = new ListGridField("searchViewCount", "SearchViews");
+		ListGridField searchViewCountField = new ListGridField(SimpleEntityInfoDS.FIELD_NAME.SEARCH_VIEW_COUNT.name(), "SearchViews");
 		searchViewCountField.setWidth(95);
-		ListGridField bulkViewCountField = new ListGridField("bulkViewCount", "BulkViews");
+		ListGridField bulkViewCountField = new ListGridField(SimpleEntityInfoDS.FIELD_NAME.BULK_VIEW_COUNT.name(), "BulkViews");
 		bulkViewCountField.setWidth(95);
-		ListGridField viewControlField = new ListGridField("viewControl", "ViewControls");
+		ListGridField viewControlField = new ListGridField(SimpleEntityInfoDS.FIELD_NAME.VIEW_CONTROL.name(), "ViewControls");
 		viewControlField.setWidth(40);
-		ListGridField repositoryField = new ListGridField("repository", "Repository");
+		ListGridField repositoryField = new ListGridField(SimpleEntityInfoDS.FIELD_NAME.REPOSITORY.name(), "Repository");
 		repositoryField.setWidth(60);
 
-		grid.setFields(explorerField, errorField, nameField, displayNameField, countField, listenerCountField, detailViewCountField, searchViewCountField, bulkViewCountField, viewControlField, repositoryField);
+		grid.setFields(explorerField, errorField, nameField, displayNameField, countField, listenerCountField, versioningField, detailViewCountField, searchViewCountField, bulkViewCountField, viewControlField, repositoryField);
 
 		grid.fetchData();
 	}

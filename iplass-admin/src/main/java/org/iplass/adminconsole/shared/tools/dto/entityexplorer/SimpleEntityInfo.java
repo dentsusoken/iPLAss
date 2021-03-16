@@ -30,6 +30,7 @@ public class SimpleEntityInfo implements Serializable {
 	private String displayName;
 	private int count;
 	private int listenerCount;
+	private String VersionControlType;
 	private int detailFormViewCount;
 	private int searchFormViewCount;
 	private int bulkFormViewCount;
@@ -68,6 +69,14 @@ public class SimpleEntityInfo implements Serializable {
 	}
 	public void setListenerCount(int count) {
 		this.listenerCount = count;
+	}
+
+	public String getVersionControlType() {
+		return VersionControlType;
+	}
+
+	public void setVersionControlType(String versionControlType) {
+		VersionControlType = versionControlType;
 	}
 
 	public int getDetailFormViewCount() {
@@ -120,4 +129,5 @@ public class SimpleEntityInfo implements Serializable {
 	public void setErrorMessage(String message) {
 		this.errorMessage = message;
 	}
+
 }

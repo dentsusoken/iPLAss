@@ -118,23 +118,23 @@ public class RecycleBinListPane extends VLayout {
 			protected Canvas createRecordComponent(final ListGridRecord record, Integer colNum) {
 				final String fieldName = this.getFieldName(colNum);
 				if ("explorerButton".equals(fieldName)) {
-					if (!record.getAttributeAsBoolean("isError")) {
+					if (!record.getAttributeAsBoolean(RecycleBinEntityInfoDS.FIELD_NAME.IS_ERROR.name())) {
 						MetaDataViewGridButton button = new MetaDataViewGridButton(EntityDefinition.class.getName());
 						button.setActionButtonPrompt(SmartGWTUtil.getHoverString(AdminClientMessageUtil.getString(RESOURCE_PREFIX + "showMetaDataEditScreen")));
 						button.setMetaDataShowClickHandler(new MetaDataViewGridButton.MetaDataShowClickHandler() {
 							@Override
 							public String targetDefinitionName() {
-								return record.getAttributeAsString("name");
+								return record.getAttributeAsString(RecycleBinEntityInfoDS.FIELD_NAME.NAME.name());
 							}
 						});
 						return button;
 					}
 				} else if ("error".equals(fieldName)) {
-					if (record.getAttributeAsBoolean("isError")) {
+					if (record.getAttributeAsBoolean(RecycleBinEntityInfoDS.FIELD_NAME.IS_ERROR.name())) {
 						record.setEnabled(false);
 						GridActionImgButton recordCanvas = new GridActionImgButton();
 						recordCanvas.setActionButtonSrc(ERROR_ICON);
-						recordCanvas.setActionButtonPrompt(record.getAttributeAsString("errorMessage"));
+						recordCanvas.setActionButtonPrompt(record.getAttributeAsString(RecycleBinEntityInfoDS.FIELD_NAME.ERROR_MESSAGE.name()));
 						return recordCanvas;
 					}
 				}
@@ -219,9 +219,9 @@ public class RecycleBinListPane extends VLayout {
 			return;
 		}
 
-		final List<String> defNames = new ArrayList<String>();
+		final List<String> defNames = new ArrayList<>();
 		for (ListGridRecord record : records) {
-			defNames.add(record.getAttributeAsString("name"));
+			defNames.add(record.getAttributeAsString(RecycleBinEntityInfoDS.FIELD_NAME.NAME.name()));
 		}
 
 		Date purgeTimeDate = SmartGWTUtil.getDateTimeValue(purgeTargetDateItem.getValueAsDate(), null, false, "00:00", "00", "000");
@@ -266,9 +266,9 @@ public class RecycleBinListPane extends VLayout {
 		explorerField.setWidth(25);
 		ListGridField errorField = new ListGridField("error", " ");
 		errorField.setWidth(25);
-		ListGridField nameField = new ListGridField("name", "Name");
-		ListGridField displayNameField = new ListGridField("dispName", "Display Name");
-		ListGridField countField = new ListGridField("count", "Data Count");
+		ListGridField nameField = new ListGridField(RecycleBinEntityInfoDS.FIELD_NAME.NAME.name(), "Name");
+		ListGridField displayNameField = new ListGridField(RecycleBinEntityInfoDS.FIELD_NAME.DISPLAY_NAME.name(), "Display Name");
+		ListGridField countField = new ListGridField(RecycleBinEntityInfoDS.FIELD_NAME.DATA_COUNT.name(), "Count");
 		countField.setWidth(70);
 
 		grid.setFields(explorerField, errorField, nameField, displayNameField, countField);

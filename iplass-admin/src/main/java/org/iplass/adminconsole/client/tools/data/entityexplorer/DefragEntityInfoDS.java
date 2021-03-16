@@ -45,6 +45,19 @@ public class DefragEntityInfoDS extends AbstractAdminDataSource {
 
 	private static final EntityExplorerServiceAsync service = EntityExplorerServiceFactory.get();
 
+	public enum FIELD_NAME {
+		NAME,
+		DISPLAY_NAME,
+
+		DATA_COUNT,
+
+		UPDATE_DATE,
+		CURRENT_VERSION,
+
+		IS_ERROR,
+		ERROR_MESSAGE,
+	}
+
 	/**
 	 * DSインスタンスを返します。
 	 *
@@ -61,12 +74,12 @@ public class DefragEntityInfoDS extends AbstractAdminDataSource {
 	private DefragEntityInfoDS(boolean isGetDataCount) {
 		this.isGetDataCount = isGetDataCount;
 
-		DataSourceField nameField = new DataSourceTextField("name", AdminClientMessageUtil.getString("datasource_tools_entityexplorer_SimpleEntityInfoDS_name"));
+		DataSourceField nameField = new DataSourceTextField(FIELD_NAME.NAME.name());
 		nameField.setPrimaryKey(true);
-		DataSourceField displayNameField = new DataSourceTextField("displayName", AdminClientMessageUtil.getString("datasource_tools_entityexplorer_SimpleEntityInfoDS_dispName"));
-		DataSourceField updateDateField = new DataSourceTextField("updateDate", "Update Date");
-		DataSourceField curVersionField = new DataSourceTextField("currentVersion", "Version");
-		DataSourceField countField = new DataSourceTextField("count", AdminClientMessageUtil.getString("datasource_tools_entityexplorer_SimpleEntityInfoDS_number"));
+		DataSourceField displayNameField = new DataSourceTextField(FIELD_NAME.DISPLAY_NAME.name());
+		DataSourceField updateDateField = new DataSourceTextField(FIELD_NAME.UPDATE_DATE.name());
+		DataSourceField curVersionField = new DataSourceTextField(FIELD_NAME.CURRENT_VERSION.name());
+		DataSourceField countField = new DataSourceTextField(FIELD_NAME.DATA_COUNT.name());
 
 		setFields(nameField, displayNameField, updateDateField, curVersionField, countField);
 	}
@@ -101,29 +114,29 @@ public class DefragEntityInfoDS extends AbstractAdminDataSource {
 
 	private List<ListGridRecord> createRecord(List<DefragEntityInfo> entities) {
 
-		List<ListGridRecord> list = new ArrayList<ListGridRecord>();
+		List<ListGridRecord> list = new ArrayList<>();
 
 		if (entities != null) {
 			for (DefragEntityInfo entity : entities) {
 				ListGridRecord record = new ListGridRecord();
-				record.setAttribute("name", entity.getName());
-				record.setAttribute("displayName", entity.getDisplayName());
+				record.setAttribute(FIELD_NAME.NAME.name(), entity.getName());
+				record.setAttribute(FIELD_NAME.DISPLAY_NAME.name(), entity.getDisplayName());
 				if (isGetDataCount) {
-					record.setAttribute("count", entity.getCount());
+					record.setAttribute(FIELD_NAME.DATA_COUNT.name(), entity.getCount());
 				} else {
-					record.setAttribute("count", "-");
+					record.setAttribute(FIELD_NAME.DATA_COUNT.name(), "-");
 				}
 				if (entity.getUpdateDate() != null) {
-					record.setAttribute("updateDate", SmartGWTUtil.formatTimestamp(entity.getUpdateDate()));
+					record.setAttribute(FIELD_NAME.UPDATE_DATE.name(), SmartGWTUtil.formatTimestamp(entity.getUpdateDate()));
 				}
 				if (entity.getCurrentVersion() != null) {
-					record.setAttribute("currentVersion", entity.getCurrentVersion());
+					record.setAttribute(FIELD_NAME.CURRENT_VERSION.name(), entity.getCurrentVersion());
 				} else {
-					record.setAttribute("currentVersion", "-");
+					record.setAttribute(FIELD_NAME.CURRENT_VERSION.name(), "-");
 				}
 
-				record.setAttribute("isError", entity.isError());
-				record.setAttribute("errorMessage", entity.getErrorMessage());
+				record.setAttribute(FIELD_NAME.IS_ERROR.name(), entity.isError());
+				record.setAttribute(FIELD_NAME.ERROR_MESSAGE.name(), entity.getErrorMessage());
 				list.add(record);
 			}
 		}

@@ -1,19 +1,19 @@
 /*
  * Copyright (C) 2013 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
- * 
+ *
  * Unless you have purchased a commercial license,
  * the following license terms apply:
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
@@ -142,24 +142,24 @@ public class EntityDefragListPane extends VLayout {
 			protected Canvas createRecordComponent(final ListGridRecord record, Integer colNum) {
 				final String fieldName = this.getFieldName(colNum);
 				if ("explorerButton".equals(fieldName)) {
-					if (!record.getAttributeAsBoolean("isError")){
+					if (!record.getAttributeAsBoolean(DefragEntityInfoDS.FIELD_NAME.IS_ERROR.name())){
 						MetaDataViewGridButton button = new MetaDataViewGridButton(EntityDefinition.class.getName());
 						button.setActionButtonPrompt(SmartGWTUtil.getHoverString(
 								AdminClientMessageUtil.getString(RESOURCE_PREFIX + "showMetaDataEditScreen")));
 						button.setMetaDataShowClickHandler(new MetaDataViewGridButton.MetaDataShowClickHandler() {
 							@Override
 							public String targetDefinitionName() {
-								return record.getAttributeAsString("name");
+								return record.getAttributeAsString(DefragEntityInfoDS.FIELD_NAME.NAME.name());
 							}
 						});
 						return button;
 					}
 				} else if ("error".equals(fieldName)) {
-					if (record.getAttributeAsBoolean("isError")){
+					if (record.getAttributeAsBoolean(DefragEntityInfoDS.FIELD_NAME.IS_ERROR.name())){
 						record.setEnabled(false);
 						GridActionImgButton recordCanvas = new GridActionImgButton();
 						recordCanvas.setActionButtonSrc(ERROR_ICON);
-						recordCanvas.setActionButtonPrompt(record.getAttributeAsString("errorMessage"));
+						recordCanvas.setActionButtonPrompt(record.getAttributeAsString(DefragEntityInfoDS.FIELD_NAME.ERROR_MESSAGE.name()));
 						return recordCanvas;
 					}
 				}
@@ -240,9 +240,9 @@ public class EntityDefragListPane extends VLayout {
 			return;
 		}
 
-		final List<String> defNames = new ArrayList<String>();
+		final List<String> defNames = new ArrayList<>();
 		for (ListGridRecord record : records) {
-			defNames.add(record.getAttributeAsString("name"));
+			defNames.add(record.getAttributeAsString(DefragEntityInfoDS.FIELD_NAME.NAME.name()));
 		}
 
 		SC.ask(AdminClientMessageUtil.getString(RESOURCE_PREFIX + "confirmTitle"),
@@ -277,13 +277,13 @@ public class EntityDefragListPane extends VLayout {
 		explorerField.setWidth(25);
 		ListGridField errorField = new ListGridField("error", " ");
 		errorField.setWidth(25);
-		ListGridField nameField = new ListGridField("name", "Name");
-		ListGridField displayNameField = new ListGridField("displayName", "Display Name");
-		ListGridField countField = new ListGridField("count", "Data Count");
+		ListGridField nameField = new ListGridField(DefragEntityInfoDS.FIELD_NAME.NAME.name(), "Name");
+		ListGridField displayNameField = new ListGridField(DefragEntityInfoDS.FIELD_NAME.DISPLAY_NAME.name(), "Display Name");
+		ListGridField countField = new ListGridField(DefragEntityInfoDS.FIELD_NAME.DATA_COUNT.name(), "Count");
 		countField.setWidth(70);
-		ListGridField updateDateField = new ListGridField("updateDate", "Update Date");
+		ListGridField updateDateField = new ListGridField(DefragEntityInfoDS.FIELD_NAME.UPDATE_DATE.name(), "Update Date");
 		updateDateField.setWidth(130);
-		ListGridField curVersionField = new ListGridField("currentVersion", "Cur Version");
+		ListGridField curVersionField = new ListGridField(DefragEntityInfoDS.FIELD_NAME.CURRENT_VERSION.name(), "Cur Version");
 		curVersionField.setWidth(70);
 
 		grid.setFields(explorerField, errorField, nameField, displayNameField, countField, updateDateField, curVersionField);

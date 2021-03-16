@@ -39,16 +39,19 @@ import com.smartgwt.client.widgets.tree.TreeNode;
 
 public class SimpleEntityInfoTreeDS extends AbstractAdminDataSource {
 
-	public static final String CRITERIA_TYPE = "CRITERIA_TYPE";
-
 	public enum FIELD_NAME {
 		NAME,
 		DISPLAY_NAME,
 
 		DATA_COUNT,
+
 		LISTNER_COUNT,
+		VERSIONING,
+
 		DETAIL_VIEW_COUNT,
 		SEARCH_VIEW_COUNT,
+		BULK_VIEW_COUNT,
+		VIEW_CONTROL,
 
 		REPOSITORY,
 
@@ -99,7 +102,7 @@ public class SimpleEntityInfoTreeDS extends AbstractAdminDataSource {
 		rootNode.setAttribute(FIELD_NAME.IS_ERROR.name(), root.isError());
 		rootNode.setAttribute(FIELD_NAME.ERROR_MESSAGE.name(), root.getErrorMessage());
 
-		List<TreeNode> children = new ArrayList<TreeNode>();
+		List<TreeNode> children = new ArrayList<>();
 		children.addAll(createChildrenTreeNodeList(root.getChildren()));
 		children.addAll(createEntityTreeNodeList(root.getItems()));
 		if (!children.isEmpty()) {
@@ -110,7 +113,7 @@ public class SimpleEntityInfoTreeDS extends AbstractAdminDataSource {
 	}
 
 	private List<TreeNode> createChildrenTreeNodeList(List<SimpleEntityTreeNode> children) {
-		List<TreeNode> pathNodes = new ArrayList<TreeNode>();
+		List<TreeNode> pathNodes = new ArrayList<>();
 		if (children != null) {
 			for (SimpleEntityTreeNode metaNode : children) {
 				TreeNode node = createChildTreeNode(metaNode);
@@ -131,7 +134,7 @@ public class SimpleEntityInfoTreeDS extends AbstractAdminDataSource {
 		node.setAttribute(FIELD_NAME.ERROR_MESSAGE.name(), metaNode.getErrorMessage());
 		node.setIsFolder(true);
 
-		List<TreeNode> children = new ArrayList<TreeNode>();
+		List<TreeNode> children = new ArrayList<>();
 		children.addAll(createChildrenTreeNodeList(metaNode.getChildren()));
 		children.addAll(createEntityTreeNodeList(metaNode.getItems()));
 		if (!children.isEmpty()) {
@@ -143,7 +146,7 @@ public class SimpleEntityInfoTreeDS extends AbstractAdminDataSource {
 	}
 
 	private List<TreeNode> createEntityTreeNodeList(List<SimpleEntityTreeNode> items) {
-		List<TreeNode> itemNodes = new ArrayList<TreeNode>();
+		List<TreeNode> itemNodes = new ArrayList<>();
 		if (items != null) {
 			for (SimpleEntityTreeNode item : items) {
 				TreeNode node = createEntityTreeNode(item);
@@ -175,8 +178,11 @@ public class SimpleEntityInfoTreeDS extends AbstractAdminDataSource {
 			node.setAttribute(FIELD_NAME.DATA_COUNT.name(), "-");
 		}
 		node.setAttribute(FIELD_NAME.LISTNER_COUNT.name(), item.getListenerCount());
+		node.setAttribute(FIELD_NAME.VERSIONING.name(), item.getVersionControlType());
 		node.setAttribute(FIELD_NAME.DETAIL_VIEW_COUNT.name(), item.getDetailFormViewCount());
 		node.setAttribute(FIELD_NAME.SEARCH_VIEW_COUNT.name(), item.getSearchFormViewCount());
+		node.setAttribute(FIELD_NAME.BULK_VIEW_COUNT.name(), item.getBulkFormViewCount());
+		node.setAttribute(FIELD_NAME.VIEW_CONTROL.name(), item.getViewControl());
 		node.setIsFolder(false);
 		return node;
 	}

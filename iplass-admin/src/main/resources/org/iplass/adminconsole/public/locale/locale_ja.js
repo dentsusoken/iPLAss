@@ -123,13 +123,6 @@ LocaleInfo.datasource_tenant_TenantDS_userAdminRoles = "ユーザ管理者ロー
 LocaleInfo.datasource_tools_auth_builtin_BuiltinUserDS_errUserSearch = "ユーザ検索時にエラーが発生しました。";
 LocaleInfo.datasource_tools_entityexplorer_EntitySearchResultDS_errGetData = "{0}データの取得でエラーが発生しました。";
 LocaleInfo.datasource_tools_entityexplorer_MultiReferencePropertyDS_failedToGetData = "{0}データの取得に失敗しました。(oid= {1})<br/>原因：";
-LocaleInfo.datasource_tools_entityexplorer_SimpleEntityInfoDS_name = "名前";
-LocaleInfo.datasource_tools_entityexplorer_SimpleEntityInfoDS_dispName = "表示名";
-LocaleInfo.datasource_tools_entityexplorer_SimpleEntityInfoDS_number = "件数";
-LocaleInfo.datasource_tools_entityexplorer_SimpleEntityInfoDS_listenerNum = "Listener件数";
-LocaleInfo.datasource_tools_entityexplorer_SimpleEntityInfoDS_detailViewNum = "DetailView件数";
-LocaleInfo.datasource_tools_entityexplorer_SimpleEntityInfoDS_searchViewNum = "SearchView件数";
-LocaleInfo.datasource_tools_entityexplorer_SimpleEntityInfoDS_defFormat = "定義形式";
 LocaleInfo.datasource_tools_entityexplorer_SimpleEntityInfoDS_failedToGetEntityList = "Entity一覧データの取得に失敗しました。<br/>原因：";
 LocaleInfo.datasource_tools_entityexplorer_CrawlEntityInfoDS_name = "名前";
 LocaleInfo.datasource_tools_entityexplorer_CrawlEntityInfoDS_dispName = "表示名";

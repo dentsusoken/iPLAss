@@ -64,6 +64,7 @@ import org.iplass.mtp.entity.UpdateCondition;
 import org.iplass.mtp.entity.definition.EntityDefinition;
 import org.iplass.mtp.entity.definition.EntityDefinitionManager;
 import org.iplass.mtp.entity.definition.PropertyDefinition;
+import org.iplass.mtp.entity.definition.VersionControlType;
 import org.iplass.mtp.entity.definition.properties.ReferenceProperty;
 import org.iplass.mtp.entity.definition.properties.SelectProperty;
 import org.iplass.mtp.entity.fulltextsearch.FulltextSearchManager;
@@ -175,6 +176,9 @@ public class EntityExplorerServiceImpl extends XsrfProtectedServiceServlet imple
 							//Listner件数取得
 							listenerCount = definition.getEventListenerList().size();
 						}
+						if (definition.getVersionControlType() != VersionControlType.NONE) {
+							info.setVersionControlType(definition.getVersionControlType().name());
+						}
 					} else {
 						//Definitionが取得できなかったらとりあえずPathをセット
 						info.setName(entryInfo.getPath());
@@ -283,6 +287,9 @@ public class EntityExplorerServiceImpl extends XsrfProtectedServiceServlet imple
 								//Listner件数取得
 								listenerCount = definition.getEventListenerList().size();
 							}
+							if (definition.getVersionControlType() != VersionControlType.NONE) {
+								item.setVersionControlType(definition.getVersionControlType().name());
+							}
 						}
 						//View取得
 						view = evm.get(metaItem.getName());
@@ -302,6 +309,8 @@ public class EntityExplorerServiceImpl extends XsrfProtectedServiceServlet imple
 					if (view != null) {
 						item.setDetailFormViewCount(view.getDetailFormViewNames() != null ? view.getDetailFormViewNames().length : 0);
 						item.setSearchFormViewCount(view.getSearchFormViewNames() != null ? view.getSearchFormViewNames().length : 0);
+						item.setBulkFormViewCount(view.getBulkFormViewNames() != null ? view.getBulkFormViewNames().length : 0);
+						item.setViewControl(view.getViewControlSettings() != null && view.getViewControlSettings().size() > 0 ? "*" : "");
 					}
 					item.setError(isError);
 					if (isError) {
