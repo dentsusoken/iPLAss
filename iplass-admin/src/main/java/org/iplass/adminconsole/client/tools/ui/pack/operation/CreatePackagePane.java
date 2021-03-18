@@ -88,7 +88,6 @@ public class CreatePackagePane extends VLayout implements CreateOperationPane {
 		infoForm.setPadding(5);
 		infoForm.setNumCols(2);
 		infoForm.setColWidths(90, "*");
-		infoForm.setAutoFocus(true);
 		infoForm.setIsGroup(true);
 		infoForm.setGroupTitle("Package Information:");
 
@@ -113,7 +112,6 @@ public class CreatePackagePane extends VLayout implements CreateOperationPane {
 		execForm.setPadding(5);
 		execForm.setNumCols(2);
 		execForm.setColWidths(90, "*");
-		execForm.setAutoFocus(true);
 		execForm.setIsGroup(true);
 		execForm.setGroupTitle("Package Execute Setting:");
 
@@ -132,6 +130,7 @@ public class CreatePackagePane extends VLayout implements CreateOperationPane {
 
 		executeButton = new IButton("Create Package");
 		executeButton.addClickHandler(new ClickHandler() {
+			@Override
 			public void onClick(ClickEvent event) {
 				if (infoForm.validate() && validate()){
 					executePack();
@@ -141,6 +140,7 @@ public class CreatePackagePane extends VLayout implements CreateOperationPane {
 
 		downloadButton = new IButton("Download Package");
 		downloadButton.addClickHandler(new ClickHandler() {
+			@Override
 			public void onClick(ClickEvent event) {
 				downloadPack();
 			}

@@ -147,7 +147,7 @@ public class EntitySearchResultDS extends AbstractAdminDataSource {
 		//Fieldが未指定の場合に「neither this ListGrid nor its dataSource have fields」が
 		//発生するためダミー列を設定
 		setFields(new DataSourceTextField(Entity.OID, Entity.OID));
-		gridFieldList = new ArrayList<ListGridField>(1);
+		gridFieldList = new ArrayList<>(1);
 		ListGridField gridField = new ListGridField(Entity.OID, Entity.OID);
 		gridFieldList.add(gridField);
 	}
@@ -160,8 +160,8 @@ public class EntitySearchResultDS extends AbstractAdminDataSource {
 		this.definition = definition;
 
 		List<PropertyDefinition> properties = definition.getPropertyList();
-		List<DataSourceField> dsFields = new ArrayList<DataSourceField>(properties.size());
-		gridFieldList = new ArrayList<ListGridField>(properties.size());
+		List<DataSourceField> dsFields = new ArrayList<>(properties.size());
+		gridFieldList = new ArrayList<>(properties.size());
 		for (PropertyDefinition property : properties) {
 //			String colTitle = property.getDisplayName();
 			String colTitle = property.getName();
@@ -186,18 +186,18 @@ public class EntitySearchResultDS extends AbstractAdminDataSource {
 				List<SelectValue> values = selectProperty.getSelectValueList();
 				Map<String, String> valueMap = null;
 				if (values != null) {
-					valueMap = new LinkedHashMap<String, String>(values.size() + 1);
+					valueMap = new LinkedHashMap<>(values.size() + 1);
 					for (SelectValue value : values) {
 						valueMap.put(value.getValue(), value.getDisplayName());
 					}
 				} else {
-					valueMap = new LinkedHashMap<String, String>(1);
+					valueMap = new LinkedHashMap<>(1);
 				}
 				valueMap.put("nullvalue", "NULL");	//値がnullだとうまくいかないので別の値を設定
 				dsField.setValueMap(valueMap);
 				gridField.setValueMap(valueMap);
 			} else if (property instanceof BooleanProperty) {
-				Map<String, String> valueMap = new LinkedHashMap<String, String>(3);
+				Map<String, String> valueMap = new LinkedHashMap<>(3);
 				valueMap.put("true", "TRUE");
 				valueMap.put("false", "FALSE");
 				valueMap.put("nullvalue", "NULL");	//値がnullだとうまくいかないので別の値を設定
@@ -336,11 +336,11 @@ public class EntitySearchResultDS extends AbstractAdminDataSource {
 	 */
 	private List<ListGridRecord> createRecord(EntityDataListResultInfo result) {
 		if (result == null || result.getDefinition() == null || result.isError()) {
-			return new ArrayList<ListGridRecord>(0);
+			return new ArrayList<>(0);
 		}
 
 
-		List<ListGridRecord> list = new ArrayList<ListGridRecord>(result.getRecords().size());
+		List<ListGridRecord> list = new ArrayList<>(result.getRecords().size());
 
 		List<PropertyDefinition> properties = definition.getPropertyList();
 
@@ -373,7 +373,7 @@ public class EntitySearchResultDS extends AbstractAdminDataSource {
 			retValue = tmp.getName() + "(" + tmp.getLobId() + ")";
 		} else if (value instanceof Entity) {
 			Entity tmp = (Entity)value;
-			retValue = tmp.getName() + "(" + tmp.getOid() + ")";
+			retValue = tmp.getName() + "(" + tmp.getOid() + "." + tmp.getVersion() + ")";
 		} else if (value instanceof Timestamp) {
 			//Timestamp型
 			Timestamp tmp = (Timestamp)value;

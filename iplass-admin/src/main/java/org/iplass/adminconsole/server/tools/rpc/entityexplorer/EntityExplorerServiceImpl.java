@@ -662,6 +662,7 @@ public class EntityExplorerServiceImpl extends XsrfProtectedServiceServlet imple
 				} else {
 					columns.add(property.getName() + "." + Entity.OID);
 					columns.add(property.getName() + "." + Entity.NAME);
+					columns.add(property.getName() + "." + Entity.VERSION);
 				}
 			} else {
 				columns.add(property.getName());
@@ -735,10 +736,10 @@ public class EntityExplorerServiceImpl extends XsrfProtectedServiceServlet imple
 	}
 
 	private boolean isReferenceProperty(EntityDefinition definition, ValueExpression colValue) {
-		//後ろに「.oid」「.name」が付いていたらReferencePropertyの検索
+		//後ろに「.oid」「.name」「.version」が付いていたらReferencePropertyの検索
 		return colValue.toString().endsWith("." + Entity.OID)
-				|| colValue.toString().endsWith("." + Entity.NAME);
-
+				|| colValue.toString().endsWith("." + Entity.NAME)
+				|| colValue.toString().endsWith("." + Entity.VERSION);
 	}
 
 	private GenericEntity createReferenceEntity(EntityDefinition definition, String refName) {

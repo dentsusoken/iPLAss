@@ -796,7 +796,8 @@ public class PackageImportDialog extends AbstractWindow {
 			hintItem.setCanvas(hintLayout);
 
 			hintLayout.addMember(getLabel("ui_tools_pack_PackageImportDialog_truncateComment"));
-			hintLayout.addMember(getLabel("ui_tools_pack_PackageImportDialog_bulkUpdateComment"));
+			hintLayout.addMember(getLabel("ui_tools_pack_PackageImportDialog_bulkUpdateComment1"));
+			hintLayout.addMember(getLabel("ui_tools_pack_PackageImportDialog_bulkUpdateComment2"));
 			hintLayout.addMember(getLabel("ui_tools_pack_PackageImportDialog_listenerComment"));
 			hintLayout.addMember(getLabel("ui_tools_pack_PackageImportDialog_updateDisupdatablePropertyComment1"));
 			hintLayout.addMember(getLabel("ui_tools_pack_PackageImportDialog_insertEnableAuditPropertySpecificationComment1"));

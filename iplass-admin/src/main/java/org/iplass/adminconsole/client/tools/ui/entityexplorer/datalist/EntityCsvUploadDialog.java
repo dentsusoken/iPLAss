@@ -307,7 +307,8 @@ public class EntityCsvUploadDialog extends AbstractWindow {
 			hintItem.setCanvas(hintLayout);
 
 			hintLayout.addMember(getLabel("ui_tools_entityexplorer_EntityCsvUploadDialog_truncateComment"));
-			hintLayout.addMember(getLabel("ui_tools_entityexplorer_EntityCsvUploadDialog_bulkUpdateComment"));
+			hintLayout.addMember(getLabel("ui_tools_entityexplorer_EntityCsvUploadDialog_bulkUpdateComment1"));
+			hintLayout.addMember(getLabel("ui_tools_entityexplorer_EntityCsvUploadDialog_bulkUpdateComment2"));
 			hintLayout.addMember(getLabel("ui_tools_entityexplorer_EntityCsvUploadDialog_listenerComment"));
 			hintLayout.addMember(getLabel("ui_tools_entityexplorer_EntityCsvUploadDialog_updateDisupdatablePropertyComment1"));
 			hintLayout.addMember(getLabel("ui_tools_entityexplorer_EntityCsvUploadDialog_insertEnableAuditPropertySpecificationComment1"));

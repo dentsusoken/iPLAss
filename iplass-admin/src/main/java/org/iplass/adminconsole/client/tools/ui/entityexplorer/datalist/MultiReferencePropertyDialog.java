@@ -20,7 +20,7 @@
 
 package org.iplass.adminconsole.client.tools.ui.entityexplorer.datalist;
 
-import org.iplass.adminconsole.client.base.ui.widget.AbstractWindow;
+import org.iplass.adminconsole.client.base.ui.widget.MtpDialog;
 import org.iplass.adminconsole.client.tools.data.entityexplorer.MultiReferencePropertyDS;
 import org.iplass.mtp.entity.Entity;
 import org.iplass.mtp.entity.definition.EntityDefinition;
@@ -35,20 +35,13 @@ import com.smartgwt.client.widgets.events.ClickHandler;
 import com.smartgwt.client.widgets.grid.ListGrid;
 import com.smartgwt.client.widgets.grid.events.DataArrivedEvent;
 import com.smartgwt.client.widgets.grid.events.DataArrivedHandler;
-import com.smartgwt.client.widgets.layout.HLayout;
 
-public class MultiReferencePropertyDialog extends AbstractWindow {
+public class MultiReferencePropertyDialog extends MtpDialog {
 
 	public MultiReferencePropertyDialog(final EntityDefinition definition, final Entity entity, String propertyName) {
 
 		setTitle(SafeHtmlUtils.htmlEscape(definition.getName() + " - " + entity.getOid() + "(" + entity.getVersion() + ") - " + propertyName));
-		setWidth(700);
-		setHeight(350);
-		setShowMinimizeButton(false);
-		setIsModal(true);
-		setShowModalMask(true);
-		setLeaveScrollbarGap(false);
-		centerInPage();
+		setHeight(600);
 
 		final Label oidLabel = new Label();
 		oidLabel.setHeight(18);
@@ -109,30 +102,26 @@ public class MultiReferencePropertyDialog extends AbstractWindow {
 		grid.setDataSource(MultiReferencePropertyDS.getInstance(definition.getName(), entity.getOid(), entity.getVersion(), propertyName));
 		grid.setAutoFetchData(true);
 
-		HLayout footerLayout = new HLayout(5);
-		footerLayout.setWidth100();
-		footerLayout.setHeight(30);
-		footerLayout.setAlign(Alignment.CENTER);
-		footerLayout.setMargin(5);
+		container.addMember(oidLabel);
+		container.addMember(propertyNameLabel);
+		container.addMember(multiplicityLabel);
+		container.addMember(referenceNameLabel);
+		container.addMember(referenceTypeLabel);
+		container.addMember(countLabel);
+		container.addMember(grid);
 
 		IButton cancelBtn = new IButton();
 		cancelBtn.setWidth(100);
 		cancelBtn.setTitle("Close");
 		cancelBtn.addClickHandler(new ClickHandler() {
+			@Override
 			public void onClick(ClickEvent event) {
 				destroy();
 			}
 		});
-		footerLayout.addMember(cancelBtn);
+		footer.setMembers(cancelBtn);
 
-		addItem(oidLabel);
-		addItem(propertyNameLabel);
-		addItem(multiplicityLabel);
-		addItem(referenceNameLabel);
-		addItem(referenceTypeLabel);
-		addItem(countLabel);
-		addItem(grid);
-		addItem(footerLayout);
+		centerInPage();
 	}
 
 }
