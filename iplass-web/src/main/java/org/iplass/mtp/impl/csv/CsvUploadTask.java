@@ -71,6 +71,9 @@ public class CsvUploadTask implements Callable<CsvUploadStatus>, ExceptionHandle
 
 	private boolean withReferenceVersion;
 
+	/** 特定バージョンを削除するか */
+	private boolean deleteSpecificVersion;
+
 	/**
 	 * コンストラクタ
 	 * @param filePath Uploadされたファイルの物理Path
@@ -81,7 +84,8 @@ public class CsvUploadTask implements Callable<CsvUploadStatus>, ExceptionHandle
 	 * @param uniqueKey UniqueKeyプロパティ名
 	 * @param transactionType トランザクション方法
 	 * @param commitLimit トランザクション分割時のCommit単位
-	 * @param withReferenceVersion
+	 * @param withReferenceVersion 参照値にバージョンが含まれているか
+	 * @param deleteSpecificVersion 特定バージョンを削除するか
 	 */
 	public CsvUploadTask(
 			String filePath,
@@ -92,7 +96,8 @@ public class CsvUploadTask implements Callable<CsvUploadStatus>, ExceptionHandle
 			String uniqueKey,
 			TransactionType transactionType,
 			int commitLimit,
-			boolean withReferenceVersion) {
+			boolean withReferenceVersion,
+			boolean deleteSpecificVersion) {
 		super();
 
 		this.filePath = filePath;
@@ -104,6 +109,7 @@ public class CsvUploadTask implements Callable<CsvUploadStatus>, ExceptionHandle
 		this.transactionType = transactionType;
 		this.commitLimit = commitLimit;
 		this.withReferenceVersion = withReferenceVersion;
+		this.deleteSpecificVersion = deleteSpecificVersion;
 	}
 
 	public String getFilePath() {
@@ -174,7 +180,7 @@ public class CsvUploadTask implements Callable<CsvUploadStatus>, ExceptionHandle
 		}
 
 		try (InputStream is = new FileInputStream(filePath)){
-			CsvUploadStatus result = service.upload(is, defName, uniqueKey, transactionType, commitLimit, withReferenceVersion);
+			CsvUploadStatus result = service.upload(is, defName, uniqueKey, transactionType, commitLimit, withReferenceVersion, deleteSpecificVersion);
 			return result;
 		} catch (FileNotFoundException e) {
 			throw new SystemException(e);
