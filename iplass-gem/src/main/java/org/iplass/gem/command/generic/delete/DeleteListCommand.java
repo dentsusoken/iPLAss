@@ -1,19 +1,19 @@
 /*
  * Copyright (C) 2012 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
- * 
+ *
  * Unless you have purchased a commercial license,
  * the following license terms apply:
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
@@ -41,7 +41,6 @@ import org.iplass.mtp.entity.GenericEntity;
 import org.iplass.mtp.entity.ValidateError;
 import org.iplass.mtp.transaction.TransactionManager;
 import org.iplass.mtp.view.generic.BulkOperationContext;
-import org.iplass.mtp.view.generic.EntityView;
 import org.iplass.mtp.view.generic.SearchFormView;
 import org.iplass.mtp.webapi.definition.MethodType;
 import org.iplass.mtp.webapi.definition.RequestType;
@@ -49,12 +48,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Entity一括削除コマンド
+ * Entity選択削除コマンド
  * @author lis3wg
  */
 @WebApi(
 	name=DeleteListCommand.WEBAPI_NAME,
-	displayName="一括削除",
+	displayName="選択削除",
 	accepts=RequestType.REST_JSON,
 	methods=MethodType.POST,
 	restJson=@RestJson(parameterName="param"),
@@ -62,7 +61,7 @@ import org.slf4j.LoggerFactory;
 	tokenCheck=@WebApiTokenCheck(consume=false, useFixedToken=true),
 	checkXRequestedWithHeader=true
 )
-@CommandClass(name="gem/generic/delete/DeleteListCommand", displayName="一括削除")
+@CommandClass(name="gem/generic/delete/DeleteListCommand", displayName="選択削除")
 public final class DeleteListCommand extends DeleteCommandBase {
 
 	private static Logger logger = LoggerFactory.getLogger(DeleteListCommand.class);
@@ -73,44 +72,57 @@ public final class DeleteListCommand extends DeleteCommandBase {
 	public String execute(RequestContext request) {
 
 		String name = request.getParam(Constants.DEF_NAME);
-		String viewName = request.getParam(Constants.VIEW_NAME);
-		String[] oid = null;
+
+		//削除対象の取得
+		String[] oidArray = null;
 		Object val = request.getParamMap().get(Constants.OID);
 		if (val instanceof String) {
-			oid = new String[]{(String)val};
+			oidArray = new String[]{(String)val};
 		} else if (val instanceof ArrayList<?>) {
 			ArrayList<?> list = (ArrayList<?>) val;
-			oid = new String[list.size()];
+			oidArray = new String[list.size()];
 			for (int i = 0; i < list.size(); i++) {
-				oid[i] = list.get(i).toString();
+				oidArray[i] = list.get(i).toString();
 			}
 		}
-		boolean isPurge = isPurge(name, viewName);
 
 		DeleteCommandContext context = getContext(request);
-		//行番号、oidを保持するマップ
-		Map<String, Integer> oidMap = splitOid(oid);
-		List<Entity> list = getEntities(context.getDefinitionName(), oidMap.keySet());
+
+		SearchFormView view = context.getView();
+
+		boolean isPurge = view.isPurge();
+
+		//行番号とOID_Versionを分離
+		Map<String, Integer> rowIdMap = splitRowId(oidArray);
+
+		//Entityを生成
+		List<Entity> entities = getEntities(context.getDefinitionName(), rowIdMap.keySet());
 
 		String retKey = Constants.CMD_EXEC_SUCCESS;
 		try {
 			//削除前の処理を呼び出します。
-			BulkOperationContext bulkContext = context.getDeleteInterrupterHandler().beforeOperation(list);
+			BulkOperationContext bulkContext = context.getDeleteInterrupterHandler().beforeOperation(entities);
 			List<ValidateError> errors = bulkContext.getErrors();
-			List<Entity> entities = bulkContext.getEntities();
-	
+			entities = bulkContext.getEntities();
+
 			if (!errors.isEmpty()) {
 				request.setAttribute(Constants.MESSAGE, resourceString("command.generic.delete.DeleteListCommand.inputErr"));
 				retKey = Constants.CMD_EXEC_ERROR;
 			} else if (entities.size() > 0) {
-				for (Entity entity : entities) {
-					String targetOid = entity.getOid();
-					Integer targetRow = oidMap.getOrDefault(targetOid, -1);
-					entity = loadEntity(name, targetOid);
+				for (Entity paramEntity : entities) {
+					Entity entity = loadEntity(name, paramEntity.getOid(), paramEntity.getVersion());
 					if (entity != null) {
-						DeleteResult ret = deleteEntity(entity, isPurge);
+						DeleteResult ret = deleteEntity(entity, isPurge, context.getSearchDeleteTargetVersion());
 						if (ret.getResultType() == ResultType.ERROR) {
 							//削除でエラーが出てたら終了
+
+							//行番号の取得
+							String key = paramEntity.getOid();
+							if (paramEntity.getVersion() != null) {
+								key += ("_" + paramEntity.getVersion());
+							}
+							Integer targetRow = rowIdMap.getOrDefault(key, -1);
+
 							if (targetRow > 0) {
 								request.setAttribute(Constants.MESSAGE,
 										resourceString("command.generic.delete.DeleteListCommand.deleteListErr", ret.getMessage(), targetRow));
@@ -123,8 +135,8 @@ public final class DeleteListCommand extends DeleteCommandBase {
 					}
 				}
 			}
-	
-			//削除前の処理を呼び出します。
+
+			//削除後の処理を呼び出します。
 			context.getDeleteInterrupterHandler().afterOperation(entities);
 		} catch (ApplicationException e) {
 			if (logger.isDebugEnabled()) {
@@ -139,47 +151,37 @@ public final class DeleteListCommand extends DeleteCommandBase {
 		return retKey;
 	}
 
-	private boolean isPurge(String defName, String viewName) {
-		boolean isPurge = false;
-		EntityView entityView = evm.get(defName);
-		SearchFormView view = null;
-		if (viewName == null || viewName.equals("")) {
-			//デフォルトレイアウトを利用
-			if (entityView != null && entityView.getSearchFormViewNames().length > 0) {
-				view = entityView.getDefaultSearchFormView();
-			}
-		} else {
-			//指定レイアウトを利用
-			if (entityView != null) view = entityView.getSearchFormView(viewName);
-		}
-		if (view != null) isPurge = view.isPurge();
-		return isPurge;
-	}
-
-	private Map<String, Integer> splitOid(String[] oid) {
-		Map<String, Integer> oidMap = new HashMap<String, Integer>();
-		if (oid != null) {
-			for (int i = 0; i < oid.length; i++) {
+	private Map<String, Integer> splitRowId(String[] oidArray) {
+		Map<String, Integer> rowIdMap = new HashMap<>();
+		if (oidArray != null) {
+			for (int i = 0; i < oidArray.length; i++) {
 				//oidには先頭に「行番号_」が付加されているので分離する
 				int targetRow = -1;
-				String targetOid = oid[i];
-				if (targetOid.indexOf("_") != -1) {
-					targetRow = Integer.parseInt(oid[i].substring(0, targetOid.indexOf("_")));
-					targetOid = oid[i].substring(targetOid.indexOf("_") + 1);
+				String targetOidVersion = oidArray[i];
+				if (targetOidVersion.indexOf("_") != -1) {
+					targetRow = Integer.parseInt(targetOidVersion.substring(0, targetOidVersion.indexOf("_")));
+					targetOidVersion = targetOidVersion.substring(targetOidVersion.indexOf("_") + 1);
 				}
-				// 行番号を保存します。 
-				// TODO もし多重度が１より大きい場合、oidが同じで、行番号が異なるデータが存在するので、1件目の行番号のみ保持します。
-				oidMap.putIfAbsent(targetOid, targetRow);
+				// 行番号を保存します。
+				rowIdMap.putIfAbsent(targetOidVersion, targetRow);
 			}
 		}
-		return oidMap;
+		return rowIdMap;
 	}
 
-	private List<Entity> getEntities(String defName, Set<String> oidSet) {
-		List<Entity> entities = new ArrayList<Entity>();
-		for (String oid : oidSet) {
-			// OIDのみ設定されるので、エンティティのMappingクラスを見なくてもいいはずです。
-			entities.add(new GenericEntity(defName, oid, null));
+	private List<Entity> getEntities(String defName, Set<String> oidVersionSet) {
+		List<Entity> entities = new ArrayList<>();
+		for (String oidVersion : oidVersionSet) {
+			String targetOid = oidVersion;
+			Long targetVersion = null;
+			if (oidVersion.indexOf("_") != -1) {
+				//_が含まれている場合、最後はversion
+				targetOid = oidVersion.substring(0, oidVersion.lastIndexOf("_"));
+				targetVersion = Long.parseLong(oidVersion.substring(oidVersion.lastIndexOf("_") + 1));
+			}
+			Entity entity = new GenericEntity(defName, targetOid, null);
+			entity.setVersion(targetVersion);
+			entities.add(entity);
 		}
 		return entities;
 	}

@@ -29,7 +29,9 @@ import org.iplass.gem.command.generic.GenericCommandContext;
 import org.iplass.mtp.ApplicationException;
 import org.iplass.mtp.ManagerLocator;
 import org.iplass.mtp.command.RequestContext;
+import org.iplass.mtp.entity.DeleteTargetVersion;
 import org.iplass.mtp.entity.ValidateError;
+import org.iplass.mtp.entity.definition.VersionControlType;
 import org.iplass.mtp.util.StringUtil;
 import org.iplass.mtp.utilityclass.definition.UtilityClassDefinitionManager;
 import org.iplass.mtp.view.generic.BulkOperationInterrupter;
@@ -47,6 +49,7 @@ public class DeleteCommandContext extends GenericCommandContext {
 	/** 検索画面用のFormレイアウト情報 */
 	private SearchFormView view;
 	private DeleteInterrupterHandler deleteInterrupterHandler = null;
+	private DeleteTargetVersion deleteTargetVersion;
 
 	protected Logger getLogger() {
 		return logger;
@@ -112,7 +115,21 @@ public class DeleteCommandContext extends GenericCommandContext {
 		}
 		return interrupter;
 	}
-	
+
+	protected DeleteTargetVersion getSearchDeleteTargetVersion() {
+
+		if (deleteTargetVersion == null) {
+			deleteTargetVersion = DeleteTargetVersion.ALL;
+			if (getEntityDefinition().getVersionControlType() != VersionControlType.NONE) {
+				boolean isDeleteSpecificVersion = view.isDeleteSpecificVersion();
+				if (isDeleteSpecificVersion) {
+					deleteTargetVersion = DeleteTargetVersion.SPECIFIC;
+				}
+			}
+		}
+		return deleteTargetVersion;
+	}
+
 	protected String resourceString(String key, Object... arguments) {
 		return GemResourceBundleUtil.resourceString(key, arguments);
 	}

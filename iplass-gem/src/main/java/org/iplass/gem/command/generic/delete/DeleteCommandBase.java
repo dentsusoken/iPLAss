@@ -1,19 +1,19 @@
 /*
  * Copyright (C) 2012 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
- * 
+ *
  * Unless you have purchased a commercial license,
  * the following license terms apply:
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
@@ -26,6 +26,7 @@ import org.iplass.mtp.ManagerLocator;
 import org.iplass.mtp.command.Command;
 import org.iplass.mtp.command.RequestContext;
 import org.iplass.mtp.entity.DeleteOption;
+import org.iplass.mtp.entity.DeleteTargetVersion;
 import org.iplass.mtp.entity.Entity;
 import org.iplass.mtp.entity.EntityManager;
 import org.iplass.mtp.entity.LoadOption;
@@ -76,9 +77,20 @@ public abstract class DeleteCommandBase implements Command {
 	 * @return Entity
 	 */
 	protected Entity loadEntity(String defName, String oid) {
+		return loadEntity(defName, oid, null);
+	}
+
+	/**
+	 * Entityをロードします。
+	 * @param defName Entity定義名
+	 * @param oid OID
+	 * @param version version
+	 * @return Entity
+	 */
+	protected Entity loadEntity(String defName, String oid, Long version) {
 		if (oid != null) {
 			//データ取得
-			Entity e = em.load(oid, defName, new LoadOption(false, false));
+			Entity e = em.load(oid, version, defName, new LoadOption(false, false));
 			if (e != null) {
 				return e;
 			}
@@ -91,10 +103,10 @@ public abstract class DeleteCommandBase implements Command {
 	 * @param entity 削除するEntity
 	 * @param isPurge 物理削除するか
 	 */
-	protected DeleteResult deleteEntity(Entity entity, boolean isPurge) {
+	protected DeleteResult deleteEntity(Entity entity, boolean isPurge, DeleteTargetVersion targetVersion) {
 		DeleteResult ret = new DeleteResult();
 		try {
-			DeleteOption option = new DeleteOption(false);
+			DeleteOption option = new DeleteOption(false, targetVersion);
 			option.setPurge(isPurge);
 			em.delete(entity, option);
 			ret.setResultType(ResultType.SUCCESS);

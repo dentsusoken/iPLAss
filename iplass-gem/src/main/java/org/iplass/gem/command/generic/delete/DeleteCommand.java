@@ -32,6 +32,7 @@ import org.iplass.mtp.command.annotation.action.ParamMapping;
 import org.iplass.mtp.command.annotation.action.Result;
 import org.iplass.mtp.command.annotation.action.Result.Type;
 import org.iplass.mtp.command.annotation.action.TokenCheck;
+import org.iplass.mtp.entity.DeleteTargetVersion;
 import org.iplass.mtp.entity.Entity;
 import org.iplass.mtp.transaction.TransactionManager;
 import org.iplass.mtp.util.StringUtil;
@@ -96,7 +97,7 @@ public final class DeleteCommand extends DeleteCommandBase {
 		if (oid != null && oid.length() > 0) {
 			entity = loadEntity(defName, oid);
 			if (entity != null) {
-				ret = deleteEntity(entity, isPurge);
+				ret = deleteEntity(entity, isPurge, DeleteTargetVersion.ALL);
 				if (ret.getResultType() == ResultType.ERROR) {
 					//削除でエラーが出てたら終了
 					request.setAttribute(Constants.MESSAGE, ret.getMessage());
