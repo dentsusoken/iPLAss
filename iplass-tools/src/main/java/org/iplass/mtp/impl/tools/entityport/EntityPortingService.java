@@ -43,6 +43,7 @@ import org.iplass.mtp.auth.User;
 import org.iplass.mtp.entity.BinaryReference;
 import org.iplass.mtp.entity.DeleteCondition;
 import org.iplass.mtp.entity.DeleteOption;
+import org.iplass.mtp.entity.DeleteTargetVersion;
 import org.iplass.mtp.entity.Entity;
 import org.iplass.mtp.entity.EntityApplicationException;
 import org.iplass.mtp.entity.EntityManager;
@@ -523,6 +524,7 @@ public class EntityPortingService implements Service {
 
 		//更新の判断(指定されたUniqueKeyでチェック)
 		TargetVersion updateTargetVersion = null;
+		DeleteTargetVersion deleteTargetVersion = null;
 		InsertOption insertOption = null;
 		if (StringUtil.isNotEmpty(uniqueValue)) {
 
@@ -535,6 +537,9 @@ public class EntityPortingService implements Service {
 					if (StringUtil.isNotEmpty(storedOid)) {
 						//指定されたUniqueKey、Versionが存在するので、そのデータをUpdate
 						updateTargetVersion = TargetVersion.SPECIFIC;
+
+						//削除の場合はversion指定で削除
+						deleteTargetVersion = DeleteTargetVersion.SPECIFIC;
 
 						//UniqueKeyで検索している可能性があるので登録済のOIDをセット
 						entity.setOid(storedOid);
@@ -560,6 +565,9 @@ public class EntityPortingService implements Service {
 						//登録済のOidが存在しない場合は、更新できないので通常Insert
 						updateTargetVersion = TargetVersion.NEW;
 
+						//削除の場合は全version削除
+						deleteTargetVersion = DeleteTargetVersion.ALL;
+
 						//UniqueKeyで検索している可能性があるので登録済のOIDをセット
 						entity.setOid(storedOid);
 					}
@@ -572,6 +580,9 @@ public class EntityPortingService implements Service {
 				if (StringUtil.isNotEmpty(storedOid)) {
 					//指定されたUniqueKeyが存在するのでUpdate
 					updateTargetVersion = TargetVersion.CURRENT_VALID;
+
+					//削除の場合は全version削除
+					deleteTargetVersion = DeleteTargetVersion.ALL;
 
 					//UniqueKeyで検索している可能性があるので登録済のOIDをセット
 					entity.setOid(storedOid);
@@ -603,13 +614,13 @@ public class EntityPortingService implements Service {
 						throw new EntityDataPortingRuntimeException(rs("entityport.notExistsForUpdate", definition.getName(), index, entity.getOid(), uniqueKey + "(" + uniqueValue + ")", ctrlCode));
 					}
 				} else if (EntityCsvReader.CTRL_DELETE.equals(ctrlCode)) {
-					if (updateTargetVersion == null) {
+					if (deleteTargetVersion == null) {
 						//削除対象がない
 						throw new EntityDataPortingRuntimeException(rs("entityport.notExistsForDelete", definition.getName(), index, entity.getOid(), uniqueKey + "(" + uniqueValue + ")", ctrlCode));
 					}
 
 					//削除処理
-					DeleteOption option = new DeleteOption(false);
+					DeleteOption option = new DeleteOption(false, deleteTargetVersion);
 					option.setNotifyListeners(cond.isNotifyListeners());
 
 					em.delete(entity, option);
