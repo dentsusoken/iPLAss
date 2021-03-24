@@ -35,6 +35,7 @@ import org.iplass.mtp.entity.definition.VersionControlType;
 import org.iplass.mtp.util.StringUtil;
 import org.iplass.mtp.utilityclass.definition.UtilityClassDefinitionManager;
 import org.iplass.mtp.view.generic.BulkOperationInterrupter;
+import org.iplass.mtp.view.generic.DetailFormView;
 import org.iplass.mtp.view.generic.FormViewUtil;
 import org.iplass.mtp.view.generic.SearchFormView;
 import org.slf4j.Logger;
@@ -46,8 +47,8 @@ public class DeleteCommandContext extends GenericCommandContext {
 
 	protected UtilityClassDefinitionManager ucdm = null;
 
-	/** 検索画面用のFormレイアウト情報 */
-	private SearchFormView view;
+	private SearchFormView searchView;
+	private DetailFormView detailView;
 	private DeleteInterrupterHandler deleteInterrupterHandler = null;
 	private DeleteTargetVersion deleteTargetVersion;
 
@@ -78,11 +79,19 @@ public class DeleteCommandContext extends GenericCommandContext {
 	@SuppressWarnings("unchecked")
 	@Override
 	public SearchFormView getView() {
-		String viewName = getViewName();
-		if (view == null) {
-			view = FormViewUtil.getSearchFormView(entityDefinition, entityView, viewName);
+		if (searchView == null) {
+			String viewName = getViewName();
+			searchView = FormViewUtil.getSearchFormView(entityDefinition, entityView, viewName);
 		}
-		return view;
+		return searchView;
+	}
+
+	public DetailFormView getDetailView() {
+		if (detailView == null) {
+			String viewName = getViewName();
+			detailView = FormViewUtil.getDetailFormView(entityDefinition, entityView, viewName);
+		}
+		return detailView;
 	}
 
 	public DeleteInterrupterHandler getDeleteInterrupterHandler() {
@@ -121,7 +130,7 @@ public class DeleteCommandContext extends GenericCommandContext {
 		if (deleteTargetVersion == null) {
 			deleteTargetVersion = DeleteTargetVersion.ALL;
 			if (getEntityDefinition().getVersionControlType() != VersionControlType.NONE) {
-				boolean isDeleteSpecificVersion = view.isDeleteSpecificVersion();
+				boolean isDeleteSpecificVersion = getView().isDeleteSpecificVersion();
 				if (isDeleteSpecificVersion) {
 					deleteTargetVersion = DeleteTargetVersion.SPECIFIC;
 				}

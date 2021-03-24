@@ -34,10 +34,10 @@ import org.iplass.mtp.command.annotation.action.Result.Type;
 import org.iplass.mtp.command.annotation.action.TokenCheck;
 import org.iplass.mtp.entity.DeleteTargetVersion;
 import org.iplass.mtp.entity.Entity;
+import org.iplass.mtp.entity.definition.VersionControlType;
 import org.iplass.mtp.transaction.TransactionManager;
 import org.iplass.mtp.util.StringUtil;
 import org.iplass.mtp.view.generic.DetailFormView;
-import org.iplass.mtp.view.generic.EntityView;
 
 /**
  * Entity削除コマンド
@@ -65,6 +65,9 @@ public final class DeleteCommand extends DeleteCommandBase {
 
 	public static final String ACTION_NAME = "gem/generic/delete/delete";
 
+	/** バージョン指定削除KEY */
+	public static final String DELETE_SPECIFIC_VERSION = "deleteSpecificVersion";
+
 	/** 詳細画面表示用コマンド */
 	private DetailViewCommand detail;
 
@@ -83,21 +86,31 @@ public final class DeleteCommand extends DeleteCommandBase {
 	@Override
 	public String execute(RequestContext request) {
 
+		DeleteCommandContext context = getContext(request);
+
+		DetailFormView form = context.getDetailView();
+
 		String defName = request.getParam(Constants.DEF_NAME);
 		String oid = request.getParam(Constants.OID);
-		String viewName = request.getParam(Constants.VIEW_NAME);
+		String version = request.getParam(Constants.VERSION);
 		String backPath = request.getParam(Constants.BACK_PATH);
 		String searchCond = request.getParam(Constants.SEARCH_COND);
 		String topViewListOffset = request.getParam(Constants.TOPVIEW_LIST_OFFSET);
+		String deleteSpecificVersion = request.getParam(DELETE_SPECIFIC_VERSION);
 
-		Entity entity = null;
-		boolean isPurge = isPurge(defName, viewName);
+		if (StringUtil.isNotEmpty(oid)) {
+			Long targetVersion = null;
+			DeleteTargetVersion deleteTargetVersion = DeleteTargetVersion.ALL;
+			if (context.getEntityDefinition().getVersionControlType() != VersionControlType.NONE
+					&& Boolean.valueOf(deleteSpecificVersion)) {
+				//バージョン指定削除
+				targetVersion = Long.parseLong(version);
+				deleteTargetVersion = DeleteTargetVersion.SPECIFIC;
+			}
+			Entity entity = loadEntity(defName, oid, targetVersion);
 
-		DeleteResult ret = null;
-		if (oid != null && oid.length() > 0) {
-			entity = loadEntity(defName, oid);
 			if (entity != null) {
-				ret = deleteEntity(entity, isPurge, DeleteTargetVersion.ALL);
+				DeleteResult ret = deleteEntity(entity, form.isPurge(), deleteTargetVersion);
 				if (ret.getResultType() == ResultType.ERROR) {
 					//削除でエラーが出てたら終了
 					request.setAttribute(Constants.MESSAGE, ret.getMessage());
@@ -123,20 +136,4 @@ public final class DeleteCommand extends DeleteCommandBase {
 		}
 	}
 
-	private boolean isPurge(String defName, String viewName) {
-		boolean isPurge = false;
-		EntityView entityView = evm.get(defName);
-		DetailFormView view = null;
-		if (viewName == null || viewName.equals("")) {
-			//デフォルトレイアウトを利用
-			if (entityView != null && entityView.getDetailFormViewNames().length > 0) {
-				view = entityView.getDefaultDetailFormView();
-			}
-		} else {
-			//指定レイアウトを利用
-			if (entityView != null) view = entityView.getDetailFormView(viewName);
-		}
-		if (view != null) isPurge = view.isPurge();
-		return isPurge;
-	}
 }

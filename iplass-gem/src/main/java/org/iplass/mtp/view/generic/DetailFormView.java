@@ -120,6 +120,17 @@ public class DetailFormView extends FormView {
 	)
 	private boolean hideDelete;
 
+	/** バージョン削除ボタン表示 */
+	@MetaFieldInfo(
+			displayName="バージョン削除ボタン表示",
+			displayNameKey="generic_DetailFormView_showDeleteSpecificVersionDisplaNameKey",
+			inputType=InputType.CHECKBOX,
+			displayOrder=233,
+			description="バージョン管理されているEntityの場合、「このバージョンを削除」ボタンを表示します。この場合、当該バージョンのみを削除します。親子関係の参照を持つ場合はエラーになります。",
+			descriptionKey="generic_DetailFormView_showDeleteSpecificVersionDescriptionKey"
+	)
+	private boolean showDeleteSpecificVersion;
+
 	/** Entity権限の可能範囲条件でボタン表示を制御 */
 	@MetaFieldInfo(
 			displayName="Entity権限の可能範囲条件でボタン表示を制御",
@@ -263,6 +274,27 @@ public class DetailFormView extends FormView {
 	)
 	private List<LocalizedStringDefinition> localizedDeleteDisplayLabelList;
 
+	/** バージョン削除ボタン表示ラベル */
+	@MetaFieldInfo(
+			displayName="バージョン削除ボタン表示ラベル",
+			displayNameKey="generic_DetailFormView_deleteSpecificVersionDisplayLabelDisplaNameKey",
+			description="バージョン削除ボタンに表示されるラベルを設定します。",
+			descriptionKey="generic_DetailFormView_deleteSpecificVersionDisplayLabelDescriptionKey",
+			inputType=InputType.MULTI_LANG,
+			multiLangField = "localizedDeleteSpecificVersionDisplayLabelList",
+			displayOrder=360
+	)
+	@MultiLang()
+	private String deleteSpecificVersionDisplayLabel;
+
+	/** バージョン削除ボタン表示ラベル多言語設定情報 */
+	@MetaFieldInfo(
+			displayName="バージョン削除ボタン表示ラベル多言語設定",
+			displayNameKey="generic_DetailFormView_localizedDeleteSpecificVersionDisplayLabelListDisplaNameKey",
+			inputType=InputType.MULTI_LANG_LIST,
+			displayOrder=370
+	)
+	private List<LocalizedStringDefinition> localizedDeleteSpecificVersionDisplayLabelList;
 
 
 	/** 編集アクション名 */
@@ -840,6 +872,38 @@ public class DetailFormView extends FormView {
 	}
 
 	/**
+	 * バージョン削除ボタン表示ラベルを取得します。
+	 * @return 削除ボタン表示ラベル
+	 */
+	public String getDeleteSpecificVersionDisplayLabel() {
+	    return deleteSpecificVersionDisplayLabel;
+	}
+
+	/**
+	 * バージョン削除ボタン表示ラベルを設定します。
+	 * @param deleteSpecificVersionDisplayLabel 削除ボタン表示ラベル
+	 */
+	public void setDeleteSpecificVersionDisplayLabel(String deleteSpecificVersionDisplayLabel) {
+	    this.deleteSpecificVersionDisplayLabel = deleteSpecificVersionDisplayLabel;
+	}
+
+	/**
+	 * バージョン削除ボタン表示ラベル多言語設定情報を取得します。
+	 * @return バージョン削除ボタン表示ラベル多言語設定情報
+	 */
+	public List<LocalizedStringDefinition> getLocalizedDeleteSpecificVersionDisplayLabelList() {
+	    return localizedDeleteSpecificVersionDisplayLabelList;
+	}
+
+	/**
+	 * バージョン削除ボタン表示ラベル多言語設定情報を設定します。
+	 * @param localizedDeleteSpecificVersionDisplayLabelList バージョン削除ボタン表示ラベル多言語設定情報
+	 */
+	public void setLocalizedDeleteSpecificVersionDisplayLabelList(List<LocalizedStringDefinition> localizedDeleteSpecificVersionDisplayLabelList) {
+	    this.localizedDeleteSpecificVersionDisplayLabelList = localizedDeleteSpecificVersionDisplayLabelList;
+	}
+
+	/**
 	 * キャンセルアクション名を取得します。
 	 * @return キャンセルアクション名
 	 */
@@ -949,6 +1013,22 @@ public class DetailFormView extends FormView {
 	 */
 	public void setHideDelete(boolean hideDelete) {
 	    this.hideDelete = hideDelete;
+	}
+
+	/**
+	 * バージョン削除ボタン表示を取得します。
+	 * @return バージョン削除ボタン表示
+	 */
+	public boolean isShowDeleteSpecificVersion() {
+		return showDeleteSpecificVersion;
+	}
+
+	/**
+	 * バージョン削除ボタン表示を設定します。
+	 * @param showDeleteSpecificVersion バージョン削除ボタン表示
+	 */
+	public void setShowDeleteSpecificVersion(boolean showDeleteSpecificVersion) {
+		this.showDeleteSpecificVersion = showDeleteSpecificVersion;
 	}
 
 	/**

@@ -104,6 +104,12 @@ public class MetaDetailFormView extends MetaFormView {
 	/** 多言語設定情報 */
 	private List<MetaLocalizedString> localizedDeleteDisplayLabelList = new ArrayList<>();
 
+	/** バージョン削除ボタン表示ラベル */
+	private String deleteSpecificVersionDisplayLabel;
+
+	/** バージョン削除ボタン表示ラベル多言語設定情報 */
+	private List<MetaLocalizedString> localizedDeleteSpecificVersionDisplayLabelList = new ArrayList<>();
+
 	/** キャンセルアクション名 */
 	private String cancelActionName;
 
@@ -124,6 +130,9 @@ public class MetaDetailFormView extends MetaFormView {
 
 	/** 削除ボタン非表示 */
 	private boolean hideDelete;
+
+	/** バージョン削除ボタン表示 */
+	private boolean showDeleteSpecificVersion;
 
 	/** Entity権限の可能範囲条件でボタン表示を制御 */
 	private boolean checkEntityPermissionLimitConditionOfButton;
@@ -466,6 +475,38 @@ public class MetaDetailFormView extends MetaFormView {
 	}
 
 	/**
+	 * バージョン削除ボタン表示ラベルを取得します。
+	 * @return 削除ボタン表示ラベル
+	 */
+	public String getDeleteSpecificVersionDisplayLabel() {
+	    return deleteSpecificVersionDisplayLabel;
+	}
+
+	/**
+	 * バージョン削除ボタン表示ラベルを設定します。
+	 * @param deleteSpecificVersionDisplayLabel 削除ボタン表示ラベル
+	 */
+	public void setDeleteSpecificVersionDisplayLabel(String deleteSpecificVersionDisplayLabel) {
+	    this.deleteSpecificVersionDisplayLabel = deleteSpecificVersionDisplayLabel;
+	}
+
+	/**
+	 * バージョン削除ボタン表示ラベル多言語設定情報を取得します。
+	 * @return バージョン削除ボタン表示ラベル多言語設定情報
+	 */
+	public List<MetaLocalizedString> getLocalizedDeleteSpecificVersionDisplayLabelList() {
+	    return localizedDeleteSpecificVersionDisplayLabelList;
+	}
+
+	/**
+	 * バージョン削除ボタン表示ラベル多言語設定情報を設定します。
+	 * @param localizedDeleteSpecificVersionDisplayLabelList バージョン削除ボタン表示ラベル多言語設定情報
+	 */
+	public void setLocalizedDeleteSpecificVersionDisplayLabelList(List<MetaLocalizedString> localizedDeleteSpecificVersionDisplayLabelList) {
+	    this.localizedDeleteSpecificVersionDisplayLabelList = localizedDeleteSpecificVersionDisplayLabelList;
+	}
+
+	/**
 	 * キャンセルアクション名を取得します。
 	 * @return キャンセルアクション名
 	 */
@@ -543,6 +584,22 @@ public class MetaDetailFormView extends MetaFormView {
 	 */
 	public void setHideDelete(boolean hideDelete) {
 	    this.hideDelete = hideDelete;
+	}
+
+	/**
+	 * バージョン削除ボタン表示を取得します。
+	 * @return バージョン削除ボタン表示
+	 */
+	public boolean isShowDeleteSpecificVersion() {
+		return showDeleteSpecificVersion;
+	}
+
+	/**
+	 * バージョン削除ボタン表示を設定します。
+	 * @param showDeleteSpecificVersion バージョン削除ボタン表示
+	 */
+	public void setShowDeleteSpecificVersion(boolean showDeleteSpecificVersion) {
+		this.showDeleteSpecificVersion = showDeleteSpecificVersion;
 	}
 
 	/**
@@ -804,10 +861,13 @@ public class MetaDetailFormView extends MetaFormView {
 		deleteActionName = dForm.getDeleteActionName();
 		deleteDisplayLabel = dForm.getDeleteDisplayLabel();
 		localizedDeleteDisplayLabelList = I18nUtil.toMeta(dForm.getLocalizedDeleteDisplayLabelList());
+		deleteSpecificVersionDisplayLabel = dForm.getDeleteSpecificVersionDisplayLabel();
+		localizedDeleteSpecificVersionDisplayLabelList = I18nUtil.toMeta(dForm.getLocalizedDeleteSpecificVersionDisplayLabelList());
 		cancelActionName = dForm.getCancelActionName();
 		hideDetail = dForm.isHideDetail();
 		isNoneDispCopyButton = dForm.isNoneDispCopyButton();
 		hideDelete = dForm.isHideDelete();
+		showDeleteSpecificVersion = dForm.isShowDeleteSpecificVersion();
 		checkEntityPermissionLimitConditionOfButton = dForm.isCheckEntityPermissionLimitConditionOfButton();
 		isPurge = dForm.isPurge();
 		purgeCompositionedEntity = dForm.isPurgeCompositionedEntity();
@@ -854,10 +914,13 @@ public class MetaDetailFormView extends MetaFormView {
 		form.setDeleteActionName(deleteActionName);
 		form.setDeleteDisplayLabel(deleteDisplayLabel);
 		form.setLocalizedDeleteDisplayLabelList(I18nUtil.toDef(localizedDeleteDisplayLabelList));
+		form.setDeleteSpecificVersionDisplayLabel(deleteSpecificVersionDisplayLabel);
+		form.setLocalizedDeleteSpecificVersionDisplayLabelList(I18nUtil.toDef(localizedDeleteSpecificVersionDisplayLabelList));
 		form.setCancelActionName(cancelActionName);
 		form.setHideDetail(hideDetail);
 		form.setIsNoneDispCopyButton(isNoneDispCopyButton);
 		form.setHideDelete(hideDelete);
+		form.setShowDeleteSpecificVersion(showDeleteSpecificVersion);
 		form.setCheckEntityPermissionLimitConditionOfButton(checkEntityPermissionLimitConditionOfButton);
 		form.setPurge(isPurge);
 		form.setPurgeCompositionedEntity(purgeCompositionedEntity);
