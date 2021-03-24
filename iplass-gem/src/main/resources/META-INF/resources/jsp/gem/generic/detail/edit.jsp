@@ -181,26 +181,26 @@
 <script type="text/javascript">
 separator = "<%= separator %>";
 
-function confirm_delete(action, target) {
+function confirm_delete(action, target, hidden) {
 	if (confirm("${m:rs('mtp-gem-messages', 'generic.detail.detail.deleteMsg')}")) {
-		button_onclick(action);
+		button_onclick(action, hidden);
 		if (target) $(target).prop("disabled", true);
 	}
 }
-function onclick_save(action, target) {
+function onclick_save(action, target, hidden) {
 	if ($("#confirmEditSave").val() == "true" && !confirm("${m:rs('mtp-gem-messages', 'generic.detail.detail.saveMsg')}")) {
 		return;
 	}
 
-	button_onclick(action);
+	button_onclick(action, hidden);
 	if (target) $(target).prop("disabled", true);
 }
-function onclick_insert(action, target) {
+function onclick_insert(action, target, hidden) {
 	if ($("#confirmEditSave").val() == "true" && !confirm("${m:rs('mtp-gem-messages', 'generic.detail.detail.saveMsg')}")) {
 		return;
 	}
 
-	button_onclick(action);
+	button_onclick(action, hidden);
 	if (target) $(target).prop("disabled", true);
 }
 function button_onclick(action, hidden) {

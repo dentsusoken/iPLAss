@@ -1280,11 +1280,11 @@ public class EntityHandler extends BaseMetaDataRuntime {
 		}
 
 		List<ReferencePropertyHandler> refPropList = getReferencePropertyList(ReferenceType.COMPOSITION, entityContext);
-		
-		if (refPropList.size() > 0 && option.getTargetVersion() == DeleteTargetVersion.SPECIFIC) {
+
+		if (refPropList.size() > 0 && isVersioned() && option.getTargetVersion() == DeleteTargetVersion.SPECIFIC) {
 			throw new EntityRuntimeException("Cascade deletion with version-specified option is not supported.");
 		}
-		
+
 		Map<String, Set<String>> cascadeDelMap = new HashMap<>();
 		if (refPropList.size() > 0) {
 			for (ReferencePropertyHandler rph: refPropList) {
@@ -1784,7 +1784,7 @@ public class EntityHandler extends BaseMetaDataRuntime {
 					if (ph.getName().equals(Entity.OID) || ph.getName().equals(Entity.VERSION)
 						|| ph.getName().equals(Entity.UPDATE_BY) || ph.getName().equals(Entity.UPDATE_DATE)
 						|| ph.getName().equals(Entity.CREATE_BY) || ph.getName().equals(Entity.CREATE_DATE)) {
-						
+
 						throw new EntityApplicationException(resourceString("impl.core.EntityHandler.notChange", ph.getMetaData().getDisplayName()));
 					}
 				}

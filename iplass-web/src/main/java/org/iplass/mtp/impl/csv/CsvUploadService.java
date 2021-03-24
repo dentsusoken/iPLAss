@@ -51,6 +51,7 @@ import org.iplass.mtp.async.TaskStatus;
 import org.iplass.mtp.async.TaskTimeoutException;
 import org.iplass.mtp.auth.AuthContext;
 import org.iplass.mtp.entity.DeleteOption;
+import org.iplass.mtp.entity.DeleteTargetVersion;
 import org.iplass.mtp.entity.Entity;
 import org.iplass.mtp.entity.EntityDuplicateValueException;
 import org.iplass.mtp.entity.EntityManager;
@@ -81,6 +82,7 @@ import org.iplass.mtp.spi.ServiceRegistry;
 import org.iplass.mtp.transaction.Propagation;
 import org.iplass.mtp.transaction.Transaction;
 import org.iplass.mtp.util.DateUtil;
+import org.iplass.mtp.util.StringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -167,7 +169,7 @@ public class CsvUploadService implements Service {
 	 */
 	public CsvUploadStatus upload(final InputStream is, final String defName, final String uniqueKey,
 			final TransactionType transactionType, final int commitLimit,
-			final boolean withReferenceVersion) {
+			final boolean withReferenceVersion, final boolean deleteSpecificVersion) {
 
 		final CsvUploadStatus result = new CsvUploadStatus();
 		final EntityDefinition ed  = edm.get(defName);
@@ -200,7 +202,8 @@ public class CsvUploadService implements Service {
 							.uniqueKey(uniqueKey)
 							.properties(properties)
 							.updatablePropperties(updatablePropperties)
-							.keyValueMap(keyValueMap);
+							.keyValueMap(keyValueMap)
+							.deleteSpecificVersion(deleteSpecificVersion);
 
 					ApplicationException ex = null;
 					try {
@@ -272,7 +275,7 @@ public class CsvUploadService implements Service {
 	 */
 	public void asyncUpload(final InputStream is, final String fileName, final String defName, final String parameter, final String uniqueKey,
 			final TransactionType transactionType, final int commitLimit,
-			final boolean withReferenceVersion) {
+			final boolean withReferenceVersion, final boolean deleteSpecificVersion) {
 
 		// 非同期で実行するので、リクエスト処理完了時にアップロードファイルは削除されるため
 		// 一時ファイルとしてコピーしておく
@@ -288,7 +291,8 @@ public class CsvUploadService implements Service {
 				uniqueKey,
 				transactionType,
 				commitLimit,
-				withReferenceVersion);
+				withReferenceVersion,
+				deleteSpecificVersion);
 
 		AsyncTaskOption option = new AsyncTaskOption();
 		option.setExceptionHandlingMode(ExceptionHandlingMode.ABORT);
@@ -407,6 +411,7 @@ public class CsvUploadService implements Service {
 		private List<String> properties;
 		private Set<String> updatablePropperties;
 		private Map<Object, String> keyValueMap;
+		private boolean deleteSpecificVersion;
 
 		public ImportFunction(EntityManager em) {
 			this.em = em;
@@ -450,6 +455,10 @@ public class CsvUploadService implements Service {
 			this.keyValueMap = keyValueMap;
 			return this;
 		}
+		public ImportFunction deleteSpecificVersion(boolean deleteSpecificVersion) {
+			this.deleteSpecificVersion = deleteSpecificVersion;
+			return this;
+		}
 
 		public int readCount() {
 			return readCount;
@@ -482,9 +491,19 @@ public class CsvUploadService implements Service {
 
 					Object uniqueKeyValue = entity.getValue(uniqueKey);
 					String ctrlCode = entity.getValue(EntityCsvReader.CTRL_CODE_KEY);
+					if (StringUtil.isEmpty(ctrlCode)) {
+						ctrlCode = EntityCsvReader.CTRL_MERGE;
+					}
 
 					if (useCtrl == true && ctrlCode.equals(EntityCsvReader.CTRL_DELETE)) {
-						em.delete(entity, new DeleteOption(false));
+						DeleteTargetVersion deleteTargetVersion = DeleteTargetVersion.ALL;
+						if (ed.getVersionControlType() != VersionControlType.NONE) {
+							if (deleteSpecificVersion && entity.getVersion() != null) {
+								//特定versionのみ削除
+								deleteTargetVersion = DeleteTargetVersion.SPECIFIC;
+							}
+						}
+						em.delete(entity, new DeleteOption(false, deleteTargetVersion));
 						deleteCount ++;
 						continue;
 					}

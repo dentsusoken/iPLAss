@@ -22,6 +22,7 @@
 <%@ taglib prefix="m" uri="http://iplass.org/tags/mtp"%>
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8" trimDirectiveWhitespaces="true"%>
 <%@ page import="org.iplass.mtp.entity.Entity"%>
+<%@ page import="org.iplass.mtp.entity.definition.VersionControlType"%>
 <%@ page import="org.iplass.mtp.util.StringUtil"%>
 <%@ page import="org.iplass.mtp.view.generic.element.Button"%>
 <%@ page import="org.iplass.mtp.view.generic.element.DisplayType"%>
@@ -74,25 +75,6 @@
 		delete = DeleteCommand.ACTION_NAME + urlPath;
 	}
 
-	//ボタンの表示ラベル
-	String updateDisplayLabel = GemResourceBundleUtil.resourceString("generic.detail.detailButton.save");
-	String localizedUpdateDisplayLabel = TemplateUtil.getMultilingualString(form.getUpdateDisplayLabel(), form.getLocalizedUpdateDisplayLabelList());
-	if (StringUtil.isNotBlank(localizedUpdateDisplayLabel)) {
-		updateDisplayLabel = localizedUpdateDisplayLabel;
-	}
-
-	String deleteDisplayLabel = GemResourceBundleUtil.resourceString("generic.detail.detailButton.delete");
-	String localizedDeleteDisplayLabel = TemplateUtil.getMultilingualString(form.getDeleteDisplayLabel(), form.getLocalizedDeleteDisplayLabelList());
-	if (StringUtil.isNotBlank(localizedDeleteDisplayLabel)) {
-		deleteDisplayLabel = localizedDeleteDisplayLabel;
-	}
-
-	String insertDisplayLabel = GemResourceBundleUtil.resourceString("generic.detail.detailButton.reg");
-	String localizedInsertDisplayLabel = TemplateUtil.getMultilingualString(form.getInsertDisplayLabel(), form.getLocalizedInsertDisplayLabelList());
-	if (StringUtil.isNotBlank(localizedInsertDisplayLabel)) {
-		insertDisplayLabel = localizedInsertDisplayLabel;
-	}
-
 	EntityViewManager evm = ManagerLocator.getInstance().getManager(EntityViewManager.class);
 %>
 
@@ -130,17 +112,43 @@
 	}
 	if (Constants.EXEC_TYPE_UPDATE.equals(execType)) {
 		if (data.isCanUpdate()) {
+			String updateDisplayLabel = GemResourceBundleUtil.resourceString("generic.detail.detailButton.save");
+			String localizedUpdateDisplayLabel = TemplateUtil.getMultilingualString(form.getUpdateDisplayLabel(), form.getLocalizedUpdateDisplayLabelList());
+			if (StringUtil.isNotBlank(localizedUpdateDisplayLabel)) {
+				updateDisplayLabel = localizedUpdateDisplayLabel;
+			}
 %>
 <li class="btn save-btn"><input type="button" class="gr-btn" value="<c:out value="<%=updateDisplayLabel %>"/>" onclick="onclick_save('<%=StringUtil.escapeJavaScript(update) %>', this)" /></li>
 <%
 		}
 		if (data.isCanDelete() && !form.isHideDelete()) {
+			String deleteDisplayLabel = GemResourceBundleUtil.resourceString("generic.detail.detailButton.delete");
+			String localizedDeleteDisplayLabel = TemplateUtil.getMultilingualString(form.getDeleteDisplayLabel(), form.getLocalizedDeleteDisplayLabelList());
+			if (StringUtil.isNotBlank(localizedDeleteDisplayLabel)) {
+				deleteDisplayLabel = localizedDeleteDisplayLabel;
+			}
 %>
 <li class="btn delete-btn"><input type="button" class="gr-btn" value="<c:out value="<%=deleteDisplayLabel %>"/>" onclick="confirm_delete('<%=StringUtil.escapeJavaScript(delete) %>', this)" /></li>
 <%
 		}
+		if (data.getEntityDefinition().getVersionControlType() != VersionControlType.NONE
+				&& data.isCanDelete() && form.isShowDeleteSpecificVersion()) {
+			String displayLabel = GemResourceBundleUtil.resourceString("generic.detail.detailButton.deleteSpecificVersion");
+			String localizedDisplayLabel = TemplateUtil.getMultilingualString(form.getDeleteSpecificVersionDisplayLabel(), form.getLocalizedDeleteSpecificVersionDisplayLabelList());
+			if (StringUtil.isNotBlank(localizedDisplayLabel)) {
+				displayLabel = localizedDisplayLabel;
+			}
+%>
+<li class="btn delete-version-btn"><input type="button" class="gr-btn" value="<c:out value="<%=displayLabel %>"/>" onclick="confirm_delete('<%=StringUtil.escapeJavaScript(delete) %>', this, {'<%=DeleteCommand.DELETE_SPECIFIC_VERSION%>':true})" /></li>
+<%
+		}
 	} else {
 		if (data.isCanCreate()) {
+			String insertDisplayLabel = GemResourceBundleUtil.resourceString("generic.detail.detailButton.reg");
+			String localizedInsertDisplayLabel = TemplateUtil.getMultilingualString(form.getInsertDisplayLabel(), form.getLocalizedInsertDisplayLabelList());
+			if (StringUtil.isNotBlank(localizedInsertDisplayLabel)) {
+				insertDisplayLabel = localizedInsertDisplayLabel;
+			}
 %>
 <li class="btn insert-btn"><input type="button" class="gr-btn" value="<c:out value="<%=insertDisplayLabel %>"/>" onclick="onclick_insert('<%=StringUtil.escapeJavaScript(insert) %>', this)" /></li>
 <%

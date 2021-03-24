@@ -84,6 +84,9 @@ public class MetaSearchFormView extends MetaFormView {
 	/** 物理削除するかどうか */
 	private boolean isPurge;
 
+	/** 特定バージョンを削除するか */
+	private boolean deleteSpecificVersion;
+
 	/** EQLカスタム処理クラス名 */
 	private String interrupterName;
 
@@ -315,6 +318,22 @@ public class MetaSearchFormView extends MetaFormView {
 	}
 
 	/**
+	 * 特定バージョンを削除するかを取得します。
+	 * @return 特定バージョンを削除するか
+	 */
+	public boolean isDeleteSpecificVersion() {
+		return deleteSpecificVersion;
+	}
+
+	/**
+	 * 特定バージョンを削除するかを設定します。
+	 * @param deleteSpecificVersion 特定バージョンを削除するか
+	 */
+	public void setDeleteSpecificVersion(boolean deleteSpecificVersion) {
+		this.deleteSpecificVersion = deleteSpecificVersion;
+	}
+
+	/**
 	 * EQLカスタム処理クラス名を取得します。
 	 * @return EQLカスタム処理クラス名
 	 */
@@ -454,6 +473,7 @@ public class MetaSearchFormView extends MetaFormView {
 		viewUploadActionName = sForm.getViewUploadActionName();
 		javaScript = sForm.getJavaScript();
 		isPurge = sForm.isPurge();
+		deleteSpecificVersion = sForm.isDeleteSpecificVersion();
 		interrupterName = sForm.getInterrupterName();
 		useInterrupterForCsvDownload = sForm.isUseInterrupterForCsvDownload();
 		searchFormViewHandlerName = sForm.getSearchFormViewHandlerName();
@@ -498,6 +518,7 @@ public class MetaSearchFormView extends MetaFormView {
 		form.setViewUploadActionName(viewUploadActionName);
 		form.setJavaScript(javaScript);
 		form.setPurge(isPurge);
+		form.setDeleteSpecificVersion(deleteSpecificVersion);
 		form.setInterrupterName(interrupterName);
 		form.setUseInterrupterForCsvDownload(useInterrupterForCsvDownload);
 		form.setSearchFormViewHandlerName(searchFormViewHandlerName);

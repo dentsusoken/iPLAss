@@ -992,7 +992,8 @@ function deleteRow(isConfirmed) {
 	for(var i=0; i<ids.length; ++i) {
 		var id = ids[i];
 		var row = grid.getRowData(id);
-		oid.push(id + "_" + row.orgOid);
+		//rowid_oid_version
+		oid.push(id + "_" + row.orgOid + "_" + row.orgVersion);
 	}
 	var t = $(":hidden[name='_t']").val();
 	deleteList("<%=StringUtil.escapeJavaScript(deleteListWebapi)%>", oid, "<%=StringUtil.escapeJavaScript(viewName)%>", t, function(message) {

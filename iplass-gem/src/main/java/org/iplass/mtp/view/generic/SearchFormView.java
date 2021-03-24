@@ -184,7 +184,7 @@ public class SearchFormView extends FormView {
 
 
 
-	/** 物理削除するかどうか */
+	/** 物理削除するか */
 	@MetaFieldInfo(
 			displayName="物理削除するか",
 			inputType=InputType.CHECKBOX,
@@ -193,6 +193,16 @@ public class SearchFormView extends FormView {
 			displayNameKey="generic_SearchFormView_isPurgeDisplaNameKey",
 			descriptionKey="generic_SearchFormView_isPurgeDescriptionKey")
 	private boolean isPurge;
+
+	/** 特定バージョンを削除するか */
+	@MetaFieldInfo(
+			displayName="特定バージョンを削除するか",
+			inputType=InputType.CHECKBOX,
+			displayOrder=1520,
+			description="バージョン管理されているEntityの削除、CSVアップロード時に指定されたバージョンのみを削除します。親子関係の参照を持つ場合はエラーになります。",
+			displayNameKey="generic_SearchFormView_deleteSpecificVersionDisplaNameKey",
+			descriptionKey="generic_SearchFormView_deleteSpecificVersionDescriptionKey")
+	private boolean deleteSpecificVersion;
 
 
 
@@ -474,19 +484,35 @@ public class SearchFormView extends FormView {
 	}
 
 	/**
-	 * 物理削除するかどうかを取得します。
-	 * @return 物理削除するかどうか
+	 * 物理削除するかを取得します。
+	 * @return 物理削除するか
 	 */
 	public boolean isPurge() {
 	    return isPurge;
 	}
 
 	/**
-	 * 物理削除するかどうかを設定します。
-	 * @param isPurge 物理削除するかどうか
+	 * 物理削除するかを設定します。
+	 * @param isPurge 物理削除するか
 	 */
 	public void setPurge(boolean isPurge) {
 	    this.isPurge = isPurge;
+	}
+
+	/**
+	 * 特定バージョンを削除するかを取得します。
+	 * @return 特定バージョンを削除するか
+	 */
+	public boolean isDeleteSpecificVersion() {
+		return deleteSpecificVersion;
+	}
+
+	/**
+	 * 特定バージョンを削除するかを設定します。
+	 * @param deleteSpecificVersion 特定バージョンを削除するか
+	 */
+	public void setDeleteSpecificVersion(boolean deleteSpecificVersion) {
+		this.deleteSpecificVersion = deleteSpecificVersion;
 	}
 
 	/**
