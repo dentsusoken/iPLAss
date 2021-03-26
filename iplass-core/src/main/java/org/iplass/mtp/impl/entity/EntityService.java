@@ -51,6 +51,8 @@ import org.iplass.mtp.impl.definition.DefinitionMetaDataTypeMap;
 import org.iplass.mtp.impl.entity.property.MetaProperty;
 import org.iplass.mtp.impl.entity.versioning.NonVersionController;
 import org.iplass.mtp.impl.entity.versioning.NumberbaseVersionController;
+import org.iplass.mtp.impl.entity.versioning.SimpleTimebaseVersionController;
+import org.iplass.mtp.impl.entity.versioning.StatebaseVersionController;
 import org.iplass.mtp.impl.entity.versioning.TimebaseVersionController;
 import org.iplass.mtp.impl.entity.versioning.VersionController;
 import org.iplass.mtp.impl.metadata.MetaDataConfig;
@@ -114,6 +116,8 @@ public class EntityService extends AbstractTypedMetaDataService<MetaEntity, Enti
 		versionControllers.put(VersionControlType.NONE, new NonVersionController());
 		versionControllers.put(VersionControlType.VERSIONED, new NumberbaseVersionController());
 		versionControllers.put(VersionControlType.TIMEBASE, new TimebaseVersionController());
+		versionControllers.put(VersionControlType.SIMPLE_TIMEBASE, new SimpleTimebaseVersionController());
+		versionControllers.put(VersionControlType.STATEBASE, new StatebaseVersionController());
 	}
 
 	public static String getFixedPath() {

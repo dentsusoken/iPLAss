@@ -199,10 +199,12 @@ public abstract class SearchContextBase implements SearchContext, CreateSearchRe
 		Object specValue = null;
 		String paramSpec = getRequest().getParam(Constants.SEARCH_SPEC_VERSION);
 		if (definition.getVersionControlType() != null && StringUtil.isNotBlank(paramSpec)) {
-			if (VersionControlType.TIMEBASE.equals(definition.getVersionControlType())) {
+			if (VersionControlType.TIMEBASE.equals(definition.getVersionControlType())
+					|| VersionControlType.SIMPLE_TIMEBASE.equals(definition.getVersionControlType())) {
 				//日時
 				specValue = CommandUtil.getTimestamp(paramSpec);
-			} else if (VersionControlType.VERSIONED.equals(definition.getVersionControlType())) {
+			} else if (VersionControlType.VERSIONED.equals(definition.getVersionControlType())
+					|| VersionControlType.STATEBASE.equals(definition.getVersionControlType())) {
 				//数値
 				specValue = CommandUtil.getLong(paramSpec);
 			}

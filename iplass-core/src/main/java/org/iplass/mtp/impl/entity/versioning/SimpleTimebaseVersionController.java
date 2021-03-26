@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2011 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
+ * Copyright (C) 2021 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
  * 
  * Unless you have purchased a commercial license,
  * the following license terms apply:
@@ -20,35 +20,38 @@
 
 package org.iplass.mtp.impl.entity.versioning;
 
+import static org.iplass.mtp.impl.util.CoreResourceBundleUtil.resourceString;
+
 import java.sql.Timestamp;
 
-import org.iplass.mtp.entity.DeleteOption;
 import org.iplass.mtp.entity.Entity;
+import org.iplass.mtp.entity.EntityApplicationException;
 import org.iplass.mtp.entity.InsertOption;
+import org.iplass.mtp.entity.TargetVersion;
 import org.iplass.mtp.entity.UpdateOption;
 import org.iplass.mtp.entity.query.AsOf;
-import org.iplass.mtp.entity.query.Query;
-import org.iplass.mtp.entity.query.SubQuery;
 import org.iplass.mtp.entity.query.AsOf.AsOfSpec;
+import org.iplass.mtp.entity.query.Query;
 import org.iplass.mtp.entity.query.condition.Condition;
 import org.iplass.mtp.entity.query.condition.expr.And;
 import org.iplass.mtp.entity.query.condition.predicate.Equals;
 import org.iplass.mtp.entity.query.condition.predicate.Greater;
-import org.iplass.mtp.entity.query.condition.predicate.In;
+import org.iplass.mtp.entity.query.condition.predicate.Lesser;
 import org.iplass.mtp.entity.query.condition.predicate.LesserEqual;
 import org.iplass.mtp.entity.query.value.ValueExpression;
-import org.iplass.mtp.entity.query.value.aggregate.Max;
+import org.iplass.mtp.entity.query.value.aggregate.Count;
 import org.iplass.mtp.entity.query.value.primary.EntityField;
 import org.iplass.mtp.entity.query.value.subquery.ScalarSubQuery;
 import org.iplass.mtp.impl.core.ExecuteContext;
+import org.iplass.mtp.impl.datastore.strategy.SearchResultIterator;
 import org.iplass.mtp.impl.entity.EntityContext;
 import org.iplass.mtp.impl.entity.EntityHandler;
 import org.iplass.mtp.impl.entity.property.ReferencePropertyHandler;
 
 
-public class TimebaseVersionController extends NumberbaseVersionController {
+public class SimpleTimebaseVersionController extends NumberbaseVersionController {
 
-	public TimebaseVersionController() {
+	public SimpleTimebaseVersionController() {
 	}
 
 	@Override
@@ -71,11 +74,43 @@ public class TimebaseVersionController extends NumberbaseVersionController {
 			entity.setEndDate((Timestamp) ExecuteContext.getCurrentContext().getDefaultEndDate());
 		}
 		super.update(entity, option, eh, entityContext);
-	}
-
-	@Override
-	public DeleteTarget[] getDeleteTarget(Entity entity, DeleteOption option, EntityHandler eh, EntityContext entityContext) {
-		return super.getDeleteTarget(entity, option, eh, entityContext);
+		
+		//重複期間がないかどうかチェック
+		if (option.getTargetVersion() == TargetVersion.NEW ||
+				(option.getUpdateProperties() != null &&
+				(option.getUpdateProperties().contains(Entity.START_DATE)
+						|| option.getUpdateProperties().contains(Entity.END_DATE)))) {
+			Query q = new Query().select(new Count())
+					.from(eh.getMetaData().getName())
+					.where(new And(
+							new Equals(Entity.OID, entity.getOid()),
+							new Lesser(Entity.START_DATE, new ScalarSubQuery(
+									new Query().select(new EntityField(Entity.END_DATE))
+									.from(eh.getMetaData().getName())
+									.where(new And(new Equals(Entity.OID, entity.getOid()),
+											new Equals(Entity.VERSION, entity.getVersion())))
+									.versioned())),
+							new Greater(Entity.END_DATE, new ScalarSubQuery(
+									new Query().select(new EntityField(Entity.START_DATE))
+									.from(eh.getMetaData().getName())
+									.where(new And(new Equals(Entity.OID, entity.getOid()),
+											new Equals(Entity.VERSION, entity.getVersion())))
+									.versioned()))))
+					.versioned();
+			SearchResultIterator it = eh.getStrategy().search(entityContext, q, eh);
+			Long[] res = new Long[1];
+			try {
+				if (it.next()) {
+					res[0] = (Long) it.getValue(0);
+				}
+			} finally {
+				it.close();
+			}
+			if (res[0].longValue() > 1) {
+				throw new EntityApplicationException(resourceString("impl.core.versioning.SimpleTimebaseVersionController.overlappingPeriods", eh.getLocalizedDisplayName()));
+			}
+			
+		}
 	}
 
 	@Override
@@ -83,47 +118,24 @@ public class TimebaseVersionController extends NumberbaseVersionController {
 		
 		asOf = judgeAsOf(refPropPath, rph, asOf);
 		
-		//下記のイメージ
-		// ([REF_NAME].oid, [REF_NAME].version) in (select oid, max(version) from [REF_ENTITY] where state='V' and s_date <= [TIMESTAMP] and e_date > [TIMESTAMP] group by oid on .this=this or [REF_NAME].oid is null)
-		
 		Timestamp ts = ExecuteContext.getCurrentContext().getCurrentTimestamp();
 		
 		switch (asOf.getSpec()) {
 		case UPDATE_TIME:
 			return null;
 		case NOW:
-			In in = new In(new String[]{refPropPath + "." + Entity.OID, refPropPath + "." + Entity.VERSION},
-					new SubQuery(
-							new Query().select(
-									new EntityField(Entity.OID),
-									new Max(Entity.VERSION))
-									.from(rph.getReferenceEntityHandler(context).getMetaData().getName())
-									.where(new And(
-											new Equals(Entity.STATE, Entity.STATE_VALID_VALUE),
-											new LesserEqual(Entity.START_DATE, ts),
-											new Greater(Entity.END_DATE, ts)
-											))
-									.groupBy(Entity.OID))
-									.on(refPropPath, SubQuery.THIS));
-			return in;
+			return new And(
+					new Equals(refPropPath + "." + Entity.STATE, Entity.STATE_VALID_VALUE),
+					new LesserEqual(refPropPath + "." + Entity.START_DATE, ts),
+					new Greater(refPropPath + "." + Entity.END_DATE, ts)
+					);
 		case SPEC_VALUE:
 			ValueExpression asOfVal = asOf.getValue();
-			if (asOfVal != null) {
-				asOfVal = (ValueExpression) asOfVal.accept(new PropertyUnnester());
-			}
-			In in2 = new In(new String[]{refPropPath + "." + Entity.OID, refPropPath + "." + Entity.VERSION},
-					new SubQuery(
-							new Query().select(
-									new EntityField(Entity.OID),
-									new Max(Entity.VERSION))
-									.from(rph.getReferenceEntityHandler(context).getMetaData().getName())
-									.where(new Equals(Entity.STATE, Entity.STATE_VALID_VALUE))
-									.groupBy(Entity.OID))
-									.on(new And(
-											new Equals(new EntityField("." + refPropPath), new EntityField(SubQuery.THIS)),
-											new LesserEqual(Entity.START_DATE, asOfVal),
-											new Greater(Entity.END_DATE, asOfVal))));
-			return in2;
+			return new And(
+					new Equals(refPropPath + "." + Entity.STATE, Entity.STATE_VALID_VALUE),
+					new LesserEqual(refPropPath + "." + Entity.START_DATE, asOfVal),
+					new Greater(refPropPath + "." + Entity.END_DATE, asOfVal)
+					);
 		default:
 			return null;
 		}
@@ -131,34 +143,20 @@ public class TimebaseVersionController extends NumberbaseVersionController {
 
 	@Override
 	public Condition mainQueryCondition(EntityHandler eh, AsOf asOf, EntityContext context) {
-		//下記のイメージ
-		// ([cond]) and version=(select max(version) from [ENTITY] where state='V' and s_date <= [TIMESTAMP] and e_date > [TIMESTAMP] on .this=this)
 		if (asOf == null || asOf.getSpec() != AsOfSpec.SPEC_VALUE) {
 			Timestamp ts = ExecuteContext.getCurrentContext().getCurrentTimestamp();
-			return new Equals(Entity.VERSION,
-					new ScalarSubQuery(new Query()
-							.select(new Max(Entity.VERSION))
-							.from(eh.getMetaData().getName())
-							.where(new And(
-									new Equals(Entity.STATE, Entity.STATE_VALID_VALUE),
-									new LesserEqual(Entity.START_DATE, ts),
-									new Greater(Entity.END_DATE, ts)
-									)))
-							.on(SubQuery.THIS, SubQuery.THIS));
+			return new And(
+					new Equals(Entity.STATE, Entity.STATE_VALID_VALUE),
+					new LesserEqual(Entity.START_DATE, ts),
+					new Greater(Entity.END_DATE, ts)
+					);
 		} else {
 			ValueExpression asOfVal = asOf.getValue();
-			if (asOfVal != null) {
-				asOfVal = (ValueExpression) asOfVal.accept(new PropertyUnnester());
-			}
-			return new Equals(Entity.VERSION,
-					new ScalarSubQuery(new Query()
-							.select(new Max(Entity.VERSION))
-							.from(eh.getMetaData().getName())
-							.where(new Equals(Entity.STATE, Entity.STATE_VALID_VALUE)))
-							.on(new And(
-									new Equals(new EntityField("." + SubQuery.THIS), new EntityField(SubQuery.THIS)),
-									new LesserEqual(Entity.START_DATE, asOfVal),
-									new Greater(Entity.END_DATE, asOfVal))));
+			return new And(
+					new Equals(Entity.STATE, Entity.STATE_VALID_VALUE),
+					new LesserEqual(Entity.START_DATE, asOfVal),
+					new Greater(Entity.END_DATE, asOfVal)
+					);
 		}
 	}
 

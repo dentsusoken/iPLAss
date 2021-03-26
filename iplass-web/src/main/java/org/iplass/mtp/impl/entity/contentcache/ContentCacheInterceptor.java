@@ -89,7 +89,8 @@ public class ContentCacheInterceptor extends EntityInterceptorAdapter {
 	@Override
 	public Entity load(EntityLoadInvocation invocation) {
 		Entity ret = super.load(invocation);
-		if (invocation.getEntityDefinition().getVersionControlType() == VersionControlType.TIMEBASE) {
+		if (invocation.getEntityDefinition().getVersionControlType() == VersionControlType.TIMEBASE
+				|| invocation.getEntityDefinition().getVersionControlType() == VersionControlType.SIMPLE_TIMEBASE) {
 			Long expires = null;
 			if (ret != null && ret.getEndDate() != null) {
 				expires = ret.getEndDate().getTime() + 1;//ミリ秒以下を切り上げ
@@ -107,7 +108,8 @@ public class ContentCacheInterceptor extends EntityInterceptorAdapter {
 		final ContentCacheContext ccc = ContentCacheContext.getContentCacheContext();
 		boolean isRecordEntity = ccc.isRecordEntity(invocation.getEntityDefinition().getName());
 		if (isRecordEntity) {
-			final boolean isTimebase = invocation.getEntityDefinition().getVersionControlType() == VersionControlType.TIMEBASE;
+			final boolean isTimebase = invocation.getEntityDefinition().getVersionControlType() == VersionControlType.TIMEBASE
+					|| invocation.getEntityDefinition().getVersionControlType() == VersionControlType.SIMPLE_TIMEBASE;
 			final boolean isSearchEntity = invocation.getType() == InvocationType.SEARCH_ENTITY;
 			final Predicate<Object> real = (Predicate<Object>) invocation.getPredicate();
 			final int[] indexes = new int[]{-1, -1};//Object[]の場合のoid、endDateのindex

@@ -66,6 +66,8 @@ public class EntityAttributePaneControllerImpl implements EntityAttributePaneCon
 			versionTypeMap.put(VersionControlType.NONE.name(), "NONE");
 			versionTypeMap.put(VersionControlType.VERSIONED.name(), "NUMBER BASE");
 			versionTypeMap.put(VersionControlType.TIMEBASE.name(), "TIME BASE");
+			versionTypeMap.put(VersionControlType.SIMPLE_TIMEBASE.name(), "SIMPLE TIME BASE");
+			versionTypeMap.put(VersionControlType.STATEBASE.name(), "STATE BASE");
 		}
 		select.setValueMap(versionTypeMap);
 	}

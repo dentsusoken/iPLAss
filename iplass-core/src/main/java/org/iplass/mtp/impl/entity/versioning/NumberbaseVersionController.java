@@ -263,13 +263,13 @@ public class NumberbaseVersionController implements VersionController {
 	private Entity merge(Entity entity, UpdateOption option, EntityHandler eh, EntityContext entityContext) {
 		Entity before = new EntityLoadInvocationImpl(entity.getOid(), entity.getVersion(), new LoadOption(true, false), false, eh.getService().getInterceptors(), eh).proceed();
 		if (before == null) {
-			throw new EntityConcurrentUpdateException(resourceString("impl.core.versioning.NumberbaseVersionController.alreadyOperated", eh.getMetaData().getDisplayName()));
+			throw new EntityConcurrentUpdateException(resourceString("impl.core.versioning.NumberbaseVersionController.alreadyOperated", eh.getLocalizedDisplayName()));
 		}
 
 		//タイムスタンプ比較
 		if (option.isCheckTimestamp()) {
 			if (!before.getUpdateDate().equals(entity.getUpdateDate())) {
-				throw new EntityConcurrentUpdateException(resourceString("impl.core.versioning.NumberbaseVersionController.alreadyOperated", eh.getMetaData().getDisplayName()));
+				throw new EntityConcurrentUpdateException(resourceString("impl.core.versioning.NumberbaseVersionController.alreadyOperated", eh.getLocalizedDisplayName()));
 			}
 		}
 
@@ -293,7 +293,7 @@ public class NumberbaseVersionController implements VersionController {
 		for (String propName: option.getUpdateProperties()) {
 			IndexType it = eh.getProperty(propName, entityContext).getMetaData().getIndexType();
 			if (it == IndexType.UNIQUE || it == IndexType.UNIQUE_WITHOUT_NULL) {
-				throw new EntityApplicationException(resourceString("impl.core.versioning.NumberbaseVersionController.notChange", eh.getProperty(propName, entityContext).getMetaData().getDisplayName()));
+				throw new EntityApplicationException(resourceString("impl.core.versioning.NumberbaseVersionController.notChange", eh.getProperty(propName, entityContext).getLocalizedDisplayName()));
 			}
 		}
 
@@ -308,7 +308,7 @@ public class NumberbaseVersionController implements VersionController {
 			Entity merged = merge(entity, option, eh, entityContext);
 			Long version = getCurrentMaxVersionNo(entity.getOid(), eh, entityContext);
 			if (version == null) {
-				throw new EntityConcurrentUpdateException(resourceString("impl.core.versioning.NumberbaseVersionController.alreadyOperated", eh.getMetaData().getDisplayName()));
+				throw new EntityConcurrentUpdateException(resourceString("impl.core.versioning.NumberbaseVersionController.alreadyOperated", eh.getLocalizedDisplayName()));
 			}
 			Long newVersion = Long.valueOf(version.longValue() + 1L);
 			merged.setVersion(newVersion);
@@ -323,7 +323,7 @@ public class NumberbaseVersionController implements VersionController {
 			Entity before = new EntityLoadInvocationImpl(entity.getOid(), null, new LoadOption(true, false), false, eh.getService().getInterceptors(), eh).proceed();
 			if (before == null ||
 					(option.isCheckTimestamp() && !before.getUpdateDate().equals(entity.getUpdateDate()))) {
-				throw new EntityConcurrentUpdateException(resourceString("impl.core.versioning.NumberbaseVersionController.alreadyOperated", eh.getMetaData().getDisplayName()));
+				throw new EntityConcurrentUpdateException(resourceString("impl.core.versioning.NumberbaseVersionController.alreadyOperated", eh.getLocalizedDisplayName()));
 			}
 			entity.setVersion(before.getVersion());
 			eh.updateDirect(entity, option, entityContext);
@@ -348,7 +348,7 @@ public class NumberbaseVersionController implements VersionController {
 			Entity before = new EntityLoadInvocationImpl(entity.getOid(), null, new LoadOption(true, false), false, eh.getService().getInterceptors(), eh).proceed();
 			if (before == null ||
 					!before.getUpdateDate().equals(entity.getUpdateDate())) {
-				throw new EntityConcurrentUpdateException(resourceString("impl.core.versioning.NumberbaseVersionController.alreadyOperated", eh.getMetaData().getDisplayName()));
+				throw new EntityConcurrentUpdateException(resourceString("impl.core.versioning.NumberbaseVersionController.alreadyOperated", eh.getLocalizedDisplayName()));
 			}
 		}
 
@@ -368,7 +368,7 @@ public class NumberbaseVersionController implements VersionController {
 			it.close();
 		}
 		if (res.size() == 0) {
-			throw new EntityConcurrentUpdateException(resourceString("impl.core.versioning.NumberbaseVersionController.alreadyOperated", eh.getMetaData().getDisplayName()));
+			throw new EntityConcurrentUpdateException(resourceString("impl.core.versioning.NumberbaseVersionController.alreadyOperated", eh.getLocalizedDisplayName()));
 		}
 		return res.toArray(new DeleteTarget[res.size()]);
 	}
@@ -442,8 +442,7 @@ public class NumberbaseVersionController implements VersionController {
 									.where(new Equals(Entity.STATE, Entity.STATE_VALID_VALUE))
 									.groupBy(Entity.OID)).on(refPropPath, SubQuery.THIS));
 
-			//OuterJoinなので、nullは含む
-			return new Or(new IsNull(refPropPath + "." + Entity.OID), in);
+			return in;
 		case SPEC_VALUE:
 			ValueExpression asOfVal = asOf.getValue();
 			if (asOfVal != null) {
@@ -460,8 +459,7 @@ public class NumberbaseVersionController implements VersionController {
 									new Equals(new EntityField("." + refPropPath), new EntityField(SubQuery.THIS)),
 									new Equals(Entity.VERSION, asOfVal))));
 
-			//OuterJoinなので、nullは含む
-			return new Or(new IsNull(refPropPath + "." + Entity.OID), in2);
+			return in2;
 		default:
 			return null;
 		}
