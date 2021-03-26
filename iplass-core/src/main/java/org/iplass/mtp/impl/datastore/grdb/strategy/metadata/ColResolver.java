@@ -400,7 +400,8 @@ public class ColResolver {
 	
 	private boolean isVersionedUnique(IndexType iType, VersionControlType vcType) {
 		return (iType == IndexType.UNIQUE || iType == IndexType.UNIQUE_WITHOUT_NULL)
-				&& (vcType == VersionControlType.VERSIONED || vcType == VersionControlType.TIMEBASE);
+				&& (vcType == VersionControlType.VERSIONED || vcType == VersionControlType.TIMEBASE
+				|| vcType == VersionControlType.SIMPLE_TIMEBASE || vcType == VersionControlType.STATEBASE);
 	}
 	
 //	public void allocateIndex(MetaPrimitiveProperty prop, VersionControlType vcType) {

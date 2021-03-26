@@ -168,7 +168,8 @@ public class FormViewUtil {
 
 		//基本項目
 		condSection.addElement(createNameProperty(ed.getProperty(Entity.NAME), isLoadDisplayLabel));
-		if (ed.getVersionControlType() == VersionControlType.TIMEBASE) {
+		if (ed.getVersionControlType() == VersionControlType.TIMEBASE
+				|| ed.getVersionControlType() == VersionControlType.SIMPLE_TIMEBASE) {
 			condSection.addElement(createTimestampProperty(
 					ed.getProperty(Entity.START_DATE), isLoadDisplayLabel));
 			condSection.addElement(createTimestampProperty(
@@ -301,7 +302,8 @@ public class FormViewUtil {
 		view.setLoadDefinedReferenceProperty(true);
 
 		DefaultSection baseSection = createBasicSection(ed, isLoadDisplayLabel);
-		if (ed.getVersionControlType() == VersionControlType.TIMEBASE) {
+		if (ed.getVersionControlType() == VersionControlType.TIMEBASE
+				|| ed.getVersionControlType() == VersionControlType.SIMPLE_TIMEBASE) {
 			baseSection.addElement(createTimestampProperty(
 					ed.getProperty(Entity.START_DATE), isLoadDisplayLabel));
 			baseSection.addElement(createTimestampProperty(
