@@ -229,16 +229,19 @@ public class WebInvocationImpl extends InvocationImpl implements RequestInvocati
 	}
 
 	@Override
-	public void redirectAction(String actionName) {
+	public void redirectAction(String actionName, RequestContext requestContext) {
 		ActionMappingService amService = ServiceRegistry.getRegistry().getService(ActionMappingService.class);
 		ActionMappingRuntime am = amService.getByPathHierarchy(actionName);
 		if (am != null) {
+			WebRequestStack wrs = new WebRequestStack(new RequestPath(actionName, requestStack.getRequestPath()), requestContext, requestStack.getServletContext(), requestStack.getRequest(), requestStack.getResponse(), requestStack.getPageContext());
 			try {
-				am.executeCommand(requestStack);
-			} catch (IOException e) {
+				am.executeCommand(wrs);
+			} catch (IOException | ServletException e) {
 				throw new WebProcessRuntimeException(e);
-			} catch (ServletException e) {
-				throw new WebProcessRuntimeException(e);
+			} finally {
+				if (wrs != null) {
+					wrs.finallyProcess();
+				}
 			}
 		} else {
 			throw new WebProcessRuntimeException("Can not find Action:" + actionName);

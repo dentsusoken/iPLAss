@@ -29,7 +29,7 @@ public interface RequestInvocation {
 	public void proceedRequest();
 	public void proceedResult();
 	
-	public void redirectAction(String actionName);
+	public void redirectAction(String actionName, RequestContext requestContext);
 	
 	public RequestContext getRequest();
 	public Command getCommand();

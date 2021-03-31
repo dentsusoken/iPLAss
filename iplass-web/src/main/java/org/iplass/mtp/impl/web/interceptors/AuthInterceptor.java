@@ -35,6 +35,7 @@ import org.iplass.mtp.SystemException;
 import org.iplass.mtp.auth.NeedTrustedAuthenticationException;
 import org.iplass.mtp.auth.NoPermissionException;
 import org.iplass.mtp.command.RequestContext;
+import org.iplass.mtp.command.RequestContextWrapper;
 import org.iplass.mtp.impl.auth.AuthContextHolder;
 import org.iplass.mtp.impl.auth.AuthService;
 import org.iplass.mtp.impl.auth.UserContext;
@@ -71,6 +72,7 @@ import org.iplass.mtp.web.interceptor.RequestInterceptor;
 import org.iplass.mtp.web.interceptor.RequestInvocation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 
 public class AuthInterceptor implements RequestInterceptor,ServiceInitListener<ActionMappingService> {
 
@@ -329,10 +331,10 @@ public class AuthInterceptor implements RequestInterceptor,ServiceInitListener<A
 		//Tenantで指定されているログインActionを取得
 		Tenant tenant = exec.getCurrentTenant();
 		MetaTenantHandler handler = metaTenantService.getRuntimeByName(tenant.getName());
-//		String loginActionName = handler.loginUrlSelector(webInvocation.getRequest(), webInvocation.getRequestStack().getRequestPath().getTargetPath(true));
 		MetaTenantWebInfoRuntime twebr = handler.getConfigRuntime(MetaTenantWebInfoRuntime.class);
+		RequestContext request = new RequestContextWrapper(webInvocation.getRequest(), RequestContextWrapper.Mode.SHARED);
 		String loginActionName = (twebr != null ?
-				twebr.loginUrlSelector(webInvocation.getRequest(), webInvocation.getRequestStack().getRequestPath().getTargetPath(true)) : null);
+				twebr.loginUrlSelector(request, webInvocation.getRequestStack().getRequestPath().getTargetPath(true)) : null);
 		if (StringUtil.isNotEmpty(loginActionName)) {
 			if (amService.getByPathHierarchy(loginActionName) == null) {
 				//指定Actionが見つからない場合は、エラーログを出力して、service-configで指定されているデフォルトを表示
@@ -347,15 +349,15 @@ public class AuthInterceptor implements RequestInterceptor,ServiceInitListener<A
 				logger.error("LoginUrlSelector must specified on WebFrontendService");
 				throw new SystemException("LoginUrlSelector must specified on WebFrontendService");
 			}
-			loginActionName = defaultSelector.getLoginActionName(webInvocation.getRequest(), webInvocation.getRequestStack().getRequestPath().getTargetPath(true));
+			loginActionName = defaultSelector.getLoginActionName(request, webInvocation.getRequestStack().getRequestPath().getTargetPath(true));
 			if (StringUtil.isEmpty(loginActionName)) {
 				throw new NullPointerException("LoginUrlSelector's loginActionName is null or blank");
 			}
 		}
 
 		try {
-			webInvocation.getRequest().setAttribute(REDIRECT_BY_AUTH_INTERCEPTOR, Boolean.TRUE);
-			webInvocation.redirectAction(loginActionName);
+			request.setAttribute(REDIRECT_BY_AUTH_INTERCEPTOR, Boolean.TRUE);
+			webInvocation.redirectAction(loginActionName, request);
 		} catch (Exception e) {
 			logger.error("can not proceed login action:" + loginActionName + ", cause:" + e, e);
 			throw e;
@@ -376,10 +378,10 @@ public class AuthInterceptor implements RequestInterceptor,ServiceInitListener<A
 		//Tenantで指定されているreAuthActionを取得
 		Tenant tenant = exec.getCurrentTenant();
 		MetaTenantHandler handler = metaTenantService.getRuntimeByName(tenant.getName());
-//		String tenantReAuthActionName = handler.reAuthUrlSelector(webInvocation.getRequest(), webInvocation.getRequestStack().getRequestPath().getTargetPath(true));
 		MetaTenantWebInfoRuntime twebr = handler.getConfigRuntime(MetaTenantWebInfoRuntime.class);
+		RequestContext request = new RequestContextWrapper(webInvocation.getRequest(), RequestContextWrapper.Mode.SHARED);
 		String tenantReAuthActionName = (twebr != null ?
-				twebr.reAuthUrlSelector(webInvocation.getRequest(), webInvocation.getRequestStack().getRequestPath().getTargetPath(true)) : null);
+				twebr.reAuthUrlSelector(request, webInvocation.getRequestStack().getRequestPath().getTargetPath(true)) : null);
 
 		if (StringUtil.isEmpty(tenantReAuthActionName)) {
 			LoginUrlSelector defaultSelector = wfService.getLoginUrlSelector();
@@ -387,11 +389,11 @@ public class AuthInterceptor implements RequestInterceptor,ServiceInitListener<A
 				logger.error("LoginUrlSelector must specified on WebFrontendService");
 				throw new SystemException("LoginUrlSelector must specified on WebFrontendService");
 			}
-			tenantReAuthActionName = defaultSelector.getReAuthActionName(webInvocation.getRequest(), webInvocation.getRequestStack().getRequestPath().getTargetPath(true));
+			tenantReAuthActionName = defaultSelector.getReAuthActionName(request, webInvocation.getRequestStack().getRequestPath().getTargetPath(true));
 		}
 
-		webInvocation.getRequest().setAttribute(REDIRECT_BY_AUTH_INTERCEPTOR, Boolean.TRUE);
-		webInvocation.redirectAction(tenantReAuthActionName);
+		request.setAttribute(REDIRECT_BY_AUTH_INTERCEPTOR, Boolean.TRUE);
+		webInvocation.redirectAction(tenantReAuthActionName, request);
 	}
 
 	private void showPermissionError(WebInvocationImpl webInvocation, WebFrontendService wfService) throws ServletException, IOException {
