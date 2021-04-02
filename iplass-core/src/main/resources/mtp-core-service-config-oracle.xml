@@ -21,6 +21,14 @@
 		<property name="dataSourceName" value="java:comp/env/jdbc/defaultDS" />
 		-->
 		<property name="warnLogThreshold" value="0" />
+
+		<!-- clientInfo mapping example -->
+		<!-- 
+		<property name="clientInfoMap">
+			<property name="OCSID.CLIENTID" value="thread" />
+			<property name="OCSID.ACTION" value="command" />
+		</property>
+		 -->
 	</service>
 	<service>
 		<interface>org.iplass.mtp.impl.rdb.adapter.RdbAdapterService</interface>

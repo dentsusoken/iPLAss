@@ -21,7 +21,10 @@
 package org.iplass.mtp.impl.rdb.connection;
 
 import java.sql.Connection;
+import java.sql.SQLClientInfoException;
 import java.sql.SQLException;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 
@@ -36,15 +39,21 @@ import org.iplass.mtp.transaction.TransactionManager;
 import org.iplass.mtp.transaction.TransactionStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
 
 
 public abstract class AbstractConnectionFactory extends ConnectionFactory {
+	
+	public static final String CLIENT_INFO_THREAD_NAME = "thread";
 
 	private static final Logger logger = LoggerFactory.getLogger(AbstractConnectionFactory.class);
 	private int warnLogThreshold;
 	private boolean warnLogBefore;
 	private boolean countSqlExecution;
 	private TransactionIsolationLevel transactionIsolationLevel;
+	
+	private Map<String, Object> clientInfoMap;
+	private int clientInfoMaxLength;
 
 	private boolean isDefault;
 
@@ -113,7 +122,57 @@ public abstract class AbstractConnectionFactory extends ConnectionFactory {
 		if (logger.isDebugEnabled()) {
 			logger.debug("getConnection from ResourceHolder:" + con);
 		}
+		setClientInfo(con);
 		return con;
+	}
+	
+	private void setClientInfo(Connection con) {
+		if (clientInfoMap != null && !clientInfoMap.isEmpty()) {
+			try {
+				for (Map.Entry<String, Object> e: clientInfoMap.entrySet()) {
+					CharSequence val = clientInfoValue(e.getValue());
+					con.setClientInfo(e.getKey(), substrClientInfoValue(val));
+				}
+			} catch (SQLClientInfoException e) {
+				throw new ConnectionException("Can not setClientInfo.", e);
+			}
+		}
+	}
+	
+	private CharSequence clientInfoValue(Object name) {
+		if (name instanceof List) {
+			StringBuilder sb = new StringBuilder();
+			List<String> names = (List<String>) name;
+			for (int i = 0; i < names.size(); i++) {
+				if (i != 0) {
+					sb.append("-");
+				}
+				sb.append(clientInfoValue(names.get(i)));
+			}
+			return sb;
+		} else {
+			String n = (String) name;
+			if (CLIENT_INFO_THREAD_NAME.equals(n)) {
+				return Thread.currentThread().getName();
+			} else if ( n != null && !n.isEmpty()) {
+				String val = MDC.get(n);
+				if (val == null) {
+					val = "";
+				}
+				return val;
+			} else {
+				return "";
+			}
+		}
+	}
+	
+	private String substrClientInfoValue(CharSequence val) {
+		if (clientInfoMaxLength >= 0) {
+			if (val.length() > clientInfoMaxLength) {
+				val = val.subSequence(val.length() - clientInfoMaxLength, val.length());
+			}
+		}
+		return val.toString();
 	}
 
 	Connection getPhysicalConnection(Function<Connection, Connection> afterGetPhysicalConnectionHandler) {
@@ -121,6 +180,7 @@ public abstract class AbstractConnectionFactory extends ConnectionFactory {
 		if (logger.isDebugEnabled()) {
 			logger.debug("create physical connection:" + con);
 		}
+		setClientInfo(con);
 		if (transactionIsolationLevel != null) {
 			try {
 				con.setTransactionIsolation(transactionIsolationLevel.sqlIntValue());
@@ -148,6 +208,10 @@ public abstract class AbstractConnectionFactory extends ConnectionFactory {
 		countSqlExecution = config.getValue("countSqlExecution", Boolean.TYPE, true);
 		
 		transactionIsolationLevel = config.getValue("transactionIsolationLevel", TransactionIsolationLevel.class);
+		
+		clientInfoMap = config.getValue("clientInfoMap", Map.class);
+		clientInfoMaxLength = config.getValue("clientInfoMaxLength", Integer.TYPE, -1);
+		
 	}
 
 	public boolean isWarnLogBefore() {
