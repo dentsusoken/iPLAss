@@ -36,6 +36,7 @@ import java.nio.charset.StandardCharsets;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -475,7 +476,7 @@ public class PackageService implements Service {
 			throw new PackageRuntimeException("failed to read package setting. id=" + packOid);
 		}
 
-		return doCreatePackage(packOid, entity, condition);
+		return doArchive(entity, condition);
 	}
 
 	/**
@@ -511,9 +512,7 @@ public class PackageService implements Service {
 
 			//非同期なのでTransactionを開始
 			return Transaction.required(transaction -> {
-
-				return doCreatePackage(packOid, entity, condition);
-
+				return doArchive(entity, condition);
 			});
 		});
 	}
@@ -527,6 +526,214 @@ public class PackageService implements Service {
 		return nonSupportEntityPathList;
 	}
 
+	/**
+	 * <p>Packageを書きだします。</p>
+	 *
+	 * @param os 出力先
+	 * @param condition 条件
+	 */
+	public void write(OutputStream os, final PackageCreateCondition condition) {
+		write(os, condition, new PackageCreateResult(), null);
+	}
+
+	/**
+	 * <p>Packageを書きだします。</p>
+	 *
+	 * @param os 出力先
+	 * @param condition 条件
+	 * @param result 実行結果格納用
+	 * @param packEntity Package管理用Entity(不要の場合はnull)
+	 */
+	public void write(OutputStream os, final PackageCreateCondition condition, final PackageCreateResult result, final Entity packEntity) {
+
+		try (
+			ZipOutputStream zos = new ZipOutputStream(os, StandardCharsets.UTF_8);
+		) {
+
+			//Package更新(開始)
+			if (packEntity != null) {
+				Transaction.requiresNew(transaction -> {
+
+					packEntity.setValue(PackageEntity.STATUS, new SelectValue(PackageEntity.STATUS_ACTIVE));
+					packEntity.setValue(PackageEntity.EXEC_START_DATE, ExecuteContext.getCurrentContext().getCurrentTimestamp());
+					UpdateOption option = new UpdateOption(false);
+					option.setUpdateProperties(PackageEntity.STATUS, PackageEntity.EXEC_START_DATE);
+					em.update(packEntity, option);
+					return null;
+
+				});
+			}
+
+			if (condition.getMetaDataPaths() != null && !condition.getMetaDataPaths().isEmpty()) {
+				logger.debug("pack metadata path count : " + condition.getMetaDataPaths().size());
+
+				result.addMessages(rs("pack.startExportMetaData"));
+
+				//MetaDataをtempに出力
+				File metadataFile = File.createTempFile("tmp", ".tmp");
+				try {
+					try (PrintWriter writer = new PrintWriter(metadataFile, "UTF-8")){
+
+						metaService.write(writer, condition.getMetaDataPaths(), new MetaDataWriteCallback() {
+
+							@Override
+							public void onWrited(String path, String version) {
+								result.addMessages(rs("pack.outputMetaData", path));
+								auditLogger.info("create package metadata," + META_DATA_FILE_NAME + ",path:" + path + " packageOid:" + (packEntity != null ? packEntity.getOid() : "direct"));
+							}
+
+							@Override
+							public boolean onWarning(String path, String message, String version) {
+								result.addMessages(rs("pack.warningOutputMetaData", path));
+								result.addMessages(message);
+								return true;
+							}
+
+							@Override
+							public void onStarted() {
+							}
+
+							@Override
+							public void onFinished() {
+							}
+
+							@Override
+							public boolean onErrored(String path, String message, String version) {
+								result.addMessages(rs("pack.errorOutputMetaData", path));
+								result.addMessages(message);
+								return false;
+							}
+						});
+					}
+
+					//zipに追加
+					addZipEntry(zos, metadataFile, META_DATA_FILE_NAME);
+
+					//tempファイルを削除
+					if (!metadataFile.delete()) {
+						logger.warn("Fail to delete temporary resource:" + metadataFile.getPath());
+					}
+					metadataFile = null;
+
+					//Package更新(完了タスク数)
+					if (packEntity != null) {
+						Transaction.requiresNew(transaction -> {
+
+							//IntegerだとClassCastExceptionが発生するためLongで取得
+							//int curCompleteCount = entity.getValueAs(Integer.class, PackageEntry.COMPLETE_TASK_COUNT);
+							long curCompleteCount = packEntity.getValueAs(Long.class, PackageEntity.COMPLETE_TASK_COUNT);
+							packEntity.setValue(PackageEntity.COMPLETE_TASK_COUNT, curCompleteCount + 1);
+							UpdateOption option = new UpdateOption(false);
+							option.setUpdateProperties(PackageEntity.COMPLETE_TASK_COUNT);
+							em.update(packEntity, option);
+							return null;
+
+						});
+					}
+
+					result.addMessages(rs("pack.completedExportMetaData"));
+
+				} finally {
+					//エラーが発生して削除できていない可能性があるのでチェック
+					if (metadataFile != null) {
+						//tempファイルを削除
+						if (!metadataFile.delete()) {
+							logger.warn("Fail to delete temporary resource:" + metadataFile.getPath());
+						}
+						metadataFile = null;
+					}
+				}
+
+			} else {
+				result.addMessages(rs("pack.nonTargetMetaData"));
+				logger.debug("pack metadata path count : 0");
+			}
+
+			if (condition.getEntityPaths() != null && !condition.getEntityPaths().isEmpty()) {
+				logger.debug("pack entity path count : " + condition.getEntityPaths().size());
+
+				Map<String, EntityDataExportCondition> entityConditions = condition.getEntityConditions() != null ? condition.getEntityConditions() : Collections.emptyMap();
+
+				result.addMessages(rs("pack.startExportEntity"));
+
+				//Entityデータをtempに出力
+				for (String path : condition.getEntityPaths()) {
+					if (nonSupportEntityPathList.contains(path)) {
+						result.addMessages(rs("pack.skipNonSupportEntity", path));
+						logger.warn("warning entity data write proccess. path = " + path + ". message = not support entity.");
+						continue;
+					}
+
+					//MetaDataEntryの取得
+					MetaDataEntry entry = MetaDataContext.getContext().getMetaDataEntry(path);
+					if (entry == null) {
+						result.addMessages(rs("pack.skipExportEntity", path));
+						logger.warn("warning entity data write proccess. path = " + path + ". message = not found metadata configure.");
+						continue;
+					}
+
+					String fileName = entry.getMetaData().getName() + ".csv";
+					auditLogger.info("create package entity," + fileName + ",entityName:" + entry.getMetaData().getName() + " packageOid:" + (packEntity != null ? packEntity.getOid() : "direct"));
+
+					EntityDataExportCondition entityCond = entityConditions.getOrDefault(entry.getMetaData().getName(), new EntityDataExportCondition());
+
+					long count = 0;
+					File entityCsvFile = File.createTempFile("tmp", ".tmp");
+					try {
+						try (OutputStream csvOS = new FileOutputStream(entityCsvFile)){
+							count = entityService.writeWithBinary(csvOS, entry, entityCond, zos);
+						}
+
+						//zipに追加
+						addZipEntry(zos, entityCsvFile, fileName);
+
+						//tempファイルを削除
+						if (!entityCsvFile.delete()) {
+							logger.warn("Fail to delete temporary resource:" + entityCsvFile.getPath());
+						}
+						entityCsvFile = null;
+
+						//Package更新(完了タスク数)
+						if (packEntity != null) {
+							Transaction.requiresNew(transaction -> {
+
+								//IntegerだとClassCastExceptionが発生するためLongで取得
+								//int curCompleteCount = entity.getValueAs(Integer.class, PackageEntry.COMPLETE_TASK_COUNT);
+								long curCompleteCount = packEntity.getValueAs(Long.class, PackageEntity.COMPLETE_TASK_COUNT);
+								packEntity.setValue(PackageEntity.COMPLETE_TASK_COUNT, curCompleteCount + 1);
+								UpdateOption option = new UpdateOption(false);
+								option.setUpdateProperties(PackageEntity.COMPLETE_TASK_COUNT);
+								em.update(packEntity, option);
+								return null;
+
+							});
+						}
+
+						result.addMessages(rs("pack.outputEntity", entry.getMetaData().getName(), count));
+
+					} finally {
+						//エラーが発生して削除できていない可能性があるのでチェック
+						if (entityCsvFile != null) {
+							//tempファイルを削除
+							if (!entityCsvFile.delete()) {
+								logger.warn("Fail to delete temporary resource:" + entityCsvFile.getPath());
+							}
+							entityCsvFile = null;
+						}
+					}
+				}
+
+				result.addMessages(rs("pack.completedExportEntity"));
+
+			} else {
+				result.addMessages(rs("pack.nonTargetEntity"));
+				logger.debug("pack entity path count : 0");
+			}
+
+		} catch (Exception e) {
+			throw new PackageRuntimeException(e.getMessage() == null ? e.getClass().getName() : e.getMessage(), e);
+		}
+	}
 
 	/**
 	 * <p>Package作成条件をEntityのBinaryReferenceに変換します。</p>
@@ -576,13 +783,11 @@ public class PackageService implements Service {
 	/**
 	 * <p>Packageを作成して、Packageエンティティに登録します。</p>
 	 *
-	 * @param packOid PackageエンティティOID
-	 * @param entity Packageエンティティ
+	 * @param packEntity Packageエンティティ
 	 * @param condition Package作成条件
 	 * @return Package作成結果
 	 */
-	private PackageCreateResult doCreatePackage(final String packOid, final Entity entity,
-			final PackageCreateCondition condition) {
+	private PackageCreateResult doArchive(final Entity packEntity, final PackageCreateCondition condition) {
 
 		final PackageCreateResult result = new PackageCreateResult();
 
@@ -595,210 +800,214 @@ public class PackageService implements Service {
 
 			try (
 				OutputStream binos = getZipBinaryOutputStream(zipBin);
-				ZipOutputStream zos = new ZipOutputStream(binos, StandardCharsets.UTF_8);
+//				ZipOutputStream zos = new ZipOutputStream(binos, StandardCharsets.UTF_8);
 			) {
 
-				//Package更新(開始)
-				Transaction.requiresNew(transaction -> {
+				write(binos, condition, result, packEntity);
 
-					entity.setValue(PackageEntity.STATUS, new SelectValue(PackageEntity.STATUS_ACTIVE));
-					entity.setValue(PackageEntity.EXEC_START_DATE, ExecuteContext.getCurrentContext().getCurrentTimestamp());
-					UpdateOption option = new UpdateOption(false);
-					option.setUpdateProperties(PackageEntity.STATUS, PackageEntity.EXEC_START_DATE);
-					em.update(entity, option);
-					return null;
-
-				});
-
-				if (condition.getMetaDataPaths() != null && !condition.getMetaDataPaths().isEmpty()) {
-					logger.debug("pack metadata path count : " + condition.getMetaDataPaths().size());
-
-					result.addMessages(rs("pack.startExportMetaData"));
-
-					//MetaDataをtempに出力
-					File metadataFile = File.createTempFile("tmp", ".tmp");
-					try {
-						try (PrintWriter writer = new PrintWriter(metadataFile, "UTF-8")){
-
-							metaService.write(writer, condition.getMetaDataPaths(), new MetaDataWriteCallback() {
-
-								@Override
-								public void onWrited(String path, String version) {
-									result.addMessages(rs("pack.outputMetaData", path));
-									auditLogger.info("create package metadata," + META_DATA_FILE_NAME + ",path:" + path + " packageOid:" + packOid);
-								}
-
-								@Override
-								public boolean onWarning(String path, String message, String version) {
-									result.addMessages(rs("pack.warningOutputMetaData", path));
-									result.addMessages(message);
-									return true;
-								}
-
-								@Override
-								public void onStarted() {
-								}
-
-								@Override
-								public void onFinished() {
-								}
-
-								@Override
-								public boolean onErrored(String path, String message, String version) {
-									result.addMessages(rs("pack.errorOutputMetaData", path));
-									result.addMessages(message);
-									return false;
-								}
-							});
-						}
-
-						//zipに追加
-						addZipEntry(zos, metadataFile, META_DATA_FILE_NAME);
-
-						//tempファイルを削除
-						if (!metadataFile.delete()) {
-							logger.warn("Fail to delete temporary resource:" + metadataFile.getPath());
-						}
-						metadataFile = null;
-
-						//Package更新(完了タスク数)
-						Transaction.requiresNew(transaction -> {
-
-							//IntegerだとClassCastExceptionが発生するためLongで取得
-							//int curCompleteCount = entity.getValueAs(Integer.class, PackageEntry.COMPLETE_TASK_COUNT);
-							long curCompleteCount = entity.getValueAs(Long.class, PackageEntity.COMPLETE_TASK_COUNT);
-							entity.setValue(PackageEntity.COMPLETE_TASK_COUNT, curCompleteCount + 1);
-							UpdateOption option = new UpdateOption(false);
-							option.setUpdateProperties(PackageEntity.COMPLETE_TASK_COUNT);
-							em.update(entity, option);
-							return null;
-
-						});
-
-						result.addMessages(rs("pack.completedExportMetaData"));
-
-					} finally {
-						//エラーが発生して削除できていない可能性があるのでチェック
-						if (metadataFile != null) {
-							//tempファイルを削除
-							if (!metadataFile.delete()) {
-								logger.warn("Fail to delete temporary resource:" + metadataFile.getPath());
-							}
-							metadataFile = null;
-						}
-					}
-
-				} else {
-					result.addMessages(rs("pack.nonTargetMetaData"));
-					logger.debug("pack metadata path count : 0");
-				}
-
-				if (condition.getEntityPaths() != null && !condition.getEntityPaths().isEmpty()) {
-					logger.debug("pack entity path count : " + condition.getEntityPaths().size());
-
-					EntityDataExportCondition entityCond = new EntityDataExportCondition();
-
-					result.addMessages(rs("pack.startExportEntity"));
-
-					//Entityデータをtempに出力
-					for (String path : condition.getEntityPaths()) {
-						if (nonSupportEntityPathList.contains(path)) {
-							result.addMessages(rs("pack.skipNonSupportEntity", path));
-							logger.warn("warning entity data write proccess. path = " + path + ". message = not support entity.");
-							continue;
-						}
-
-						//MetaDataEntryの取得
-						MetaDataEntry entry = MetaDataContext.getContext().getMetaDataEntry(path);
-						if (entry == null) {
-							result.addMessages(rs("pack.skipExportEntity", path));
-							logger.warn("warning entity data write proccess. path = " + path + ". message = not found metadata configure.");
-							continue;
-						}
-
-						String fileName = entry.getMetaData().getName() + ".csv";
-						auditLogger.info("create package entity," + fileName + ",entityName:" + entry.getMetaData().getName() + " packageOid:" + packOid);
-
-						long count = 0;
-						File entityCsvFile = File.createTempFile("tmp", ".tmp");
-						try {
-							try (OutputStream os = new FileOutputStream(entityCsvFile)){
-								count = entityService.writeWithBinary(os, entry, entityCond, zos);
-							}
-
-							//zipに追加
-							addZipEntry(zos, entityCsvFile, fileName);
-
-							//tempファイルを削除
-							if (!entityCsvFile.delete()) {
-								logger.warn("Fail to delete temporary resource:" + entityCsvFile.getPath());
-							}
-							entityCsvFile = null;
-
-							//Package更新(完了タスク数)
-							Transaction.requiresNew(transaction -> {
-
-								//IntegerだとClassCastExceptionが発生するためLongで取得
-								//int curCompleteCount = entity.getValueAs(Integer.class, PackageEntry.COMPLETE_TASK_COUNT);
-								long curCompleteCount = entity.getValueAs(Long.class, PackageEntity.COMPLETE_TASK_COUNT);
-								entity.setValue(PackageEntity.COMPLETE_TASK_COUNT, curCompleteCount + 1);
-								UpdateOption option = new UpdateOption(false);
-								option.setUpdateProperties(PackageEntity.COMPLETE_TASK_COUNT);
-								em.update(entity, option);
-								return null;
-
-							});
-
-							result.addMessages(rs("pack.outputEntity", entry.getMetaData().getName(), count));
-
-						} finally {
-							//エラーが発生して削除できていない可能性があるのでチェック
-							if (entityCsvFile != null) {
-								//tempファイルを削除
-								if (!entityCsvFile.delete()) {
-									logger.warn("Fail to delete temporary resource:" + entityCsvFile.getPath());
-								}
-								entityCsvFile = null;
-							}
-						}
-					}
-
-					result.addMessages(rs("pack.completedExportEntity"));
-
-				} else {
-					result.addMessages(rs("pack.nonTargetEntity"));
-					logger.debug("pack entity path count : 0");
-				}
+//				//Package更新(開始)
+//				Transaction.requiresNew(transaction -> {
+//
+//					packEntity.setValue(PackageEntity.STATUS, new SelectValue(PackageEntity.STATUS_ACTIVE));
+//					packEntity.setValue(PackageEntity.EXEC_START_DATE, ExecuteContext.getCurrentContext().getCurrentTimestamp());
+//					UpdateOption option = new UpdateOption(false);
+//					option.setUpdateProperties(PackageEntity.STATUS, PackageEntity.EXEC_START_DATE);
+//					em.update(packEntity, option);
+//					return null;
+//
+//				});
+//
+//				if (condition.getMetaDataPaths() != null && !condition.getMetaDataPaths().isEmpty()) {
+//					logger.debug("pack metadata path count : " + condition.getMetaDataPaths().size());
+//
+//					result.addMessages(rs("pack.startExportMetaData"));
+//
+//					//MetaDataをtempに出力
+//					File metadataFile = File.createTempFile("tmp", ".tmp");
+//					try {
+//						try (PrintWriter writer = new PrintWriter(metadataFile, "UTF-8")){
+//
+//							metaService.write(writer, condition.getMetaDataPaths(), new MetaDataWriteCallback() {
+//
+//								@Override
+//								public void onWrited(String path, String version) {
+//									result.addMessages(rs("pack.outputMetaData", path));
+//									auditLogger.info("create package metadata," + META_DATA_FILE_NAME + ",path:" + path + " packageOid:" + packEntity.getOid());
+//								}
+//
+//								@Override
+//								public boolean onWarning(String path, String message, String version) {
+//									result.addMessages(rs("pack.warningOutputMetaData", path));
+//									result.addMessages(message);
+//									return true;
+//								}
+//
+//								@Override
+//								public void onStarted() {
+//								}
+//
+//								@Override
+//								public void onFinished() {
+//								}
+//
+//								@Override
+//								public boolean onErrored(String path, String message, String version) {
+//									result.addMessages(rs("pack.errorOutputMetaData", path));
+//									result.addMessages(message);
+//									return false;
+//								}
+//							});
+//						}
+//
+//						//zipに追加
+//						addZipEntry(zos, metadataFile, META_DATA_FILE_NAME);
+//
+//						//tempファイルを削除
+//						if (!metadataFile.delete()) {
+//							logger.warn("Fail to delete temporary resource:" + metadataFile.getPath());
+//						}
+//						metadataFile = null;
+//
+//						//Package更新(完了タスク数)
+//						Transaction.requiresNew(transaction -> {
+//
+//							//IntegerだとClassCastExceptionが発生するためLongで取得
+//							//int curCompleteCount = entity.getValueAs(Integer.class, PackageEntry.COMPLETE_TASK_COUNT);
+//							long curCompleteCount = packEntity.getValueAs(Long.class, PackageEntity.COMPLETE_TASK_COUNT);
+//							packEntity.setValue(PackageEntity.COMPLETE_TASK_COUNT, curCompleteCount + 1);
+//							UpdateOption option = new UpdateOption(false);
+//							option.setUpdateProperties(PackageEntity.COMPLETE_TASK_COUNT);
+//							em.update(packEntity, option);
+//							return null;
+//
+//						});
+//
+//						result.addMessages(rs("pack.completedExportMetaData"));
+//
+//					} finally {
+//						//エラーが発生して削除できていない可能性があるのでチェック
+//						if (metadataFile != null) {
+//							//tempファイルを削除
+//							if (!metadataFile.delete()) {
+//								logger.warn("Fail to delete temporary resource:" + metadataFile.getPath());
+//							}
+//							metadataFile = null;
+//						}
+//					}
+//
+//				} else {
+//					result.addMessages(rs("pack.nonTargetMetaData"));
+//					logger.debug("pack metadata path count : 0");
+//				}
+//
+//				if (condition.getEntityPaths() != null && !condition.getEntityPaths().isEmpty()) {
+//					logger.debug("pack entity path count : " + condition.getEntityPaths().size());
+//
+//					Map<String, EntityDataExportCondition> entityConditions = condition.getEntityConditions() != null ? condition.getEntityConditions() : Collections.emptyMap();
+//
+//					result.addMessages(rs("pack.startExportEntity"));
+//
+//					//Entityデータをtempに出力
+//					for (String path : condition.getEntityPaths()) {
+//						if (nonSupportEntityPathList.contains(path)) {
+//							result.addMessages(rs("pack.skipNonSupportEntity", path));
+//							logger.warn("warning entity data write proccess. path = " + path + ". message = not support entity.");
+//							continue;
+//						}
+//
+//						//MetaDataEntryの取得
+//						MetaDataEntry entry = MetaDataContext.getContext().getMetaDataEntry(path);
+//						if (entry == null) {
+//							result.addMessages(rs("pack.skipExportEntity", path));
+//							logger.warn("warning entity data write proccess. path = " + path + ". message = not found metadata configure.");
+//							continue;
+//						}
+//
+//						String fileName = entry.getMetaData().getName() + ".csv";
+//						auditLogger.info("create package entity," + fileName + ",entityName:" + entry.getMetaData().getName() + " packageOid:" + packEntity.getOid());
+//
+//						EntityDataExportCondition entityCond = entityConditions.getOrDefault(entry.getMetaData().getName(), new EntityDataExportCondition());
+//
+//						long count = 0;
+//						File entityCsvFile = File.createTempFile("tmp", ".tmp");
+//						try {
+//							try (OutputStream os = new FileOutputStream(entityCsvFile)){
+//								count = entityService.writeWithBinary(os, entry, entityCond, zos);
+//							}
+//
+//							//zipに追加
+//							addZipEntry(zos, entityCsvFile, fileName);
+//
+//							//tempファイルを削除
+//							if (!entityCsvFile.delete()) {
+//								logger.warn("Fail to delete temporary resource:" + entityCsvFile.getPath());
+//							}
+//							entityCsvFile = null;
+//
+//							//Package更新(完了タスク数)
+//							Transaction.requiresNew(transaction -> {
+//
+//								//IntegerだとClassCastExceptionが発生するためLongで取得
+//								//int curCompleteCount = entity.getValueAs(Integer.class, PackageEntry.COMPLETE_TASK_COUNT);
+//								long curCompleteCount = packEntity.getValueAs(Long.class, PackageEntity.COMPLETE_TASK_COUNT);
+//								packEntity.setValue(PackageEntity.COMPLETE_TASK_COUNT, curCompleteCount + 1);
+//								UpdateOption option = new UpdateOption(false);
+//								option.setUpdateProperties(PackageEntity.COMPLETE_TASK_COUNT);
+//								em.update(packEntity, option);
+//								return null;
+//
+//							});
+//
+//							result.addMessages(rs("pack.outputEntity", entry.getMetaData().getName(), count));
+//
+//						} finally {
+//							//エラーが発生して削除できていない可能性があるのでチェック
+//							if (entityCsvFile != null) {
+//								//tempファイルを削除
+//								if (!entityCsvFile.delete()) {
+//									logger.warn("Fail to delete temporary resource:" + entityCsvFile.getPath());
+//								}
+//								entityCsvFile = null;
+//							}
+//						}
+//					}
+//
+//					result.addMessages(rs("pack.completedExportEntity"));
+//
+//				} else {
+//					result.addMessages(rs("pack.nonTargetEntity"));
+//					logger.debug("pack entity path count : 0");
+//				}
 			}
 
 			//zip用BinaryReferenceをPackageに登録
-			entity.setValue(PackageEntity.ARCHIVE, zipBin);
+			packEntity.setValue(PackageEntity.ARCHIVE, zipBin);
 			//IntegerだとClassCastExceptionが発生するためLongで取得
 			//int curCompleteCount = entity.getValueAs(Integer.class, PackageEntry.COMPLETE_TASK_COUNT);
-			long curCompleteCount = entity.getValueAs(Long.class, PackageEntity.COMPLETE_TASK_COUNT);
-			entity.setValue(PackageEntity.COMPLETE_TASK_COUNT, curCompleteCount + 1);
-			entity.setValue(PackageEntity.STATUS, new SelectValue(PackageEntity.STATUS_COMPLETED));
-			entity.setValue(PackageEntity.EXEC_END_DATE, ExecuteContext.getCurrentContext().getCurrentTimestamp());
+			long curCompleteCount = packEntity.getValueAs(Long.class, PackageEntity.COMPLETE_TASK_COUNT);
+			packEntity.setValue(PackageEntity.COMPLETE_TASK_COUNT, curCompleteCount + 1);
+			packEntity.setValue(PackageEntity.STATUS, new SelectValue(PackageEntity.STATUS_COMPLETED));
+			packEntity.setValue(PackageEntity.EXEC_END_DATE, ExecuteContext.getCurrentContext().getCurrentTimestamp());
 			UpdateOption option = new UpdateOption(false);
 			option.setUpdateProperties(PackageEntity.ARCHIVE, PackageEntity.COMPLETE_TASK_COUNT, PackageEntity.STATUS, PackageEntity.EXEC_END_DATE);
-			em.update(entity, option);
+			em.update(packEntity, option);
 
 			result.addMessages(rs("pack.completedCreatePackage", zipName));
 
 			logger.info("complete packaging " + condition.getName());
 
-		} catch (Throwable e) {
+		} catch (Exception e) {
 			//エラー処理
 			logger.error("error packaging " + condition.getName(), e);
 
 			//Package更新(エラー)
 			Transaction.requiresNew(transaction -> {
 
-				entity.setValue(PackageEntity.STATUS, new SelectValue(PackageEntity.STATUS_ERROR));
-				entity.setValue(PackageEntity.EXEC_END_DATE, ExecuteContext.getCurrentContext().getCurrentTimestamp());
+				packEntity.setValue(PackageEntity.STATUS, new SelectValue(PackageEntity.STATUS_ERROR));
+				packEntity.setValue(PackageEntity.EXEC_END_DATE, ExecuteContext.getCurrentContext().getCurrentTimestamp());
 				UpdateOption option = new UpdateOption(false);
 				option.setUpdateProperties(PackageEntity.STATUS, PackageEntity.EXEC_END_DATE);
-				em.update(entity, option);
+				em.update(packEntity, option);
 
 				return null;
 
