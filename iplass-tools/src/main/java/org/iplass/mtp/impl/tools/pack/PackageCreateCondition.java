@@ -21,7 +21,11 @@
 package org.iplass.mtp.impl.tools.pack;
 
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import org.iplass.mtp.impl.tools.entityport.EntityDataExportCondition;
 
 /**
  * パッケージの作成条件
@@ -30,12 +34,19 @@ public class PackageCreateCondition implements Serializable {
 
 	private static final long serialVersionUID = -2068952449510445639L;
 
+	/** 対象メタデータ */
 	private List<String> metaDataPaths;
 
+	/** 対象Entityデータ */
 	private List<String> entityPaths;
 
+	/** 対象Entityデータ条件(KEY：name) */
+	private Map<String, EntityDataExportCondition> entityConditions;
+
+	/** Package名 */
 	private String name;
 
+	/** Package説明 */
 	private String description;
 
 	/**
@@ -64,6 +75,31 @@ public class PackageCreateCondition implements Serializable {
 	 */
 	public void setEntityPaths(List<String> entityPaths) {
 		this.entityPaths = entityPaths;
+	}
+
+	/**
+	 * @return entityConditions
+	 */
+	public Map<String, EntityDataExportCondition> getEntityConditions() {
+		return entityConditions;
+	}
+
+	/**
+	 * @param entityConditions セットする entityConditions
+	 */
+	public void setEntityConditions(Map<String, EntityDataExportCondition> entityConditions) {
+		this.entityConditions = entityConditions;
+	}
+
+	/**
+	 * @param name Entity定義名
+	 * @param entityCondition セットする entityCondition
+	 */
+	public void addEntityCondition(String name, EntityDataExportCondition entityCondition) {
+		if (entityConditions == null) {
+			entityConditions = new HashMap<>();
+		}
+		entityConditions.put(name, entityCondition);
 	}
 
 	/**
