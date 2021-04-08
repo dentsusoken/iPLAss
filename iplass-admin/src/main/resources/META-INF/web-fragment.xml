@@ -85,6 +85,15 @@
 	</servlet-mapping>
 
 	<servlet>
+		<servlet-name>adminEntityPackageDownloadService</servlet-name>
+		<servlet-class>org.iplass.adminconsole.server.tools.rpc.entityexplorer.EntityPackageDownloadServiceImpl</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>adminEntityPackageDownloadService</servlet-name>
+		<url-pattern>/admin/mtpadmin/service/entitypackagedownload</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
 		<servlet-name>adminEntityCsvUploadService</servlet-name>
 		<servlet-class>org.iplass.adminconsole.server.tools.rpc.entityexplorer.EntityCsvUploadServiceImpl</servlet-class>
 	</servlet>

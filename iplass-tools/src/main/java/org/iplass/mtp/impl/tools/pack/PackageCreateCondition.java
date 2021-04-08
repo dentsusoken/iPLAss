@@ -21,6 +21,7 @@
 package org.iplass.mtp.impl.tools.pack;
 
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -88,6 +89,17 @@ public class PackageCreateCondition implements Serializable {
 	 */
 	public void setEntityConditions(Map<String, EntityDataExportCondition> entityConditions) {
 		this.entityConditions = entityConditions;
+	}
+
+	/**
+	 * @param name Entity定義名
+	 * @param entityCondition セットする entityCondition
+	 */
+	public void addEntityCondition(String name, EntityDataExportCondition entityCondition) {
+		if (entityConditions == null) {
+			entityConditions = new HashMap<>();
+		}
+		entityConditions.put(name, entityCondition);
 	}
 
 	/**

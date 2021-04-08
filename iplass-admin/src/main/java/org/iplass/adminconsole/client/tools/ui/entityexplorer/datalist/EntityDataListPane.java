@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
+import org.iplass.adminconsole.client.base.io.download.PostDownloadFrame;
 import org.iplass.adminconsole.client.base.tenant.TenantInfoHolder;
 import org.iplass.adminconsole.client.base.ui.widget.MessageTabSet;
 import org.iplass.adminconsole.client.base.ui.widget.MetaDataSelectItem;
@@ -815,6 +816,18 @@ public class EntityDataListPane extends VLayout {
 				}
 			});
 
+			IButton exportPackButton = new IButton("Export Package");
+			exportPackButton.setIcon(EXPORT_ICON);
+			exportPackButton.setAutoFit(true);
+			exportPackButton.setTooltip(SmartGWTUtil.getHoverString(AdminClientMessageUtil.getString("ui_tools_entityexplorer_EntityDataListPane_exportEntityPackCond")));
+			exportPackButton.addClickHandler(new ClickHandler() {
+
+				@Override
+				public void onClick(ClickEvent event) {
+					exportPack();
+				}
+			});
+
 			IButton updateAllButton = new IButton("Update ALL");
 			updateAllButton.setIcon(EDIT_ICON);
 			updateAllButton.setTooltip(SmartGWTUtil.getHoverString(AdminClientMessageUtil.getString("ui_tools_entityexplorer_EntityDataListPane_updateEntityCorreCond")));
@@ -844,6 +857,7 @@ public class EntityDataListPane extends VLayout {
 			footer.addMember(searchButton);
 			footer.addMember(countButton);
 			footer.addMember(exportCSVButton);
+			footer.addMember(exportPackButton);
 
 			LayoutSpacer space2 = new LayoutSpacer();
 			space2.setWidth(50);
@@ -982,6 +996,94 @@ public class EntityDataListPane extends VLayout {
 					showCsvDownloadDialog();
 				}
 			}
+		}
+
+		//Package Exportボタン処理
+		private void exportPack() {
+			if (curDefinition == null) {
+				return;
+			}
+
+			//一覧の検索条件取得
+			Criteria gridCriteria = workspace.getCurrentCriteria();
+
+			if (gridCriteria == null) {
+				//検索しないでPackage Exportを直接実行
+
+				//現在の検索条件の検証
+				validateCriteria(true, true, new BooleanCallback() {
+
+					@Override
+					public void execute(Boolean value) {
+						if (value) {
+							executePack();
+						}
+					}
+				});
+			} else {
+				//検索時の条件と一致しているかをチェック
+				String gridWhere = gridCriteria.getAttribute(EntitySearchResultDS.WHERE_CRITERIA);
+				String gridOrderBy = gridCriteria.getAttribute(EntitySearchResultDS.ORDERBY_CRITERIA);
+				boolean gridAllVer = gridCriteria.getAttributeAsBoolean(EntitySearchResultDS.VERSIONED_CRITERIA);
+				if (!gridWhere.equals(getWhere())
+						|| !gridOrderBy.equals(getOrderBy())
+						|| gridAllVer != isSearchAllVersion()) {
+					SC.ask(AdminClientMessageUtil.getString("ui_tools_entityexplorer_EntityDataListPane_confirm"),
+							AdminClientMessageUtil.getString("ui_tools_entityexplorer_EntityDataListPane_searchCondDiff")
+							, new BooleanCallback() {
+
+						@Override
+						public void execute(Boolean value) {
+							if (!value) {
+								return;
+							}
+							//現在の検索条件の検証
+							validateCriteria(true, true, new BooleanCallback() {
+
+								@Override
+								public void execute(Boolean value) {
+									if (value) {
+										executePack();
+									}
+								}
+							});
+						}
+					});
+				} else {
+					//検索実行時にエラーが発生していないかを確認
+					if (workspace.isSearchError()) {
+						SC.warn(AdminClientMessageUtil.getString("ui_tools_entityexplorer_EntityDataListPane_runSearchErr"));
+						return;
+					}
+
+					executePack();
+				}
+			}
+		}
+
+		private void executePack() {
+
+			SC.ask(AdminClientMessageUtil.getString("ui_tools_entityexplorer_EntityDataListPane_confirm"),
+					AdminClientMessageUtil.getString("ui_tools_entityexplorer_EntityDataListPane_exportEntityPackConfirm")
+					, new BooleanCallback() {
+
+				@Override
+				public void execute(Boolean value) {
+					if (!value) {
+						return;
+					}
+
+					PostDownloadFrame frame = new PostDownloadFrame();
+					frame.setAction(GWT.getModuleBaseURL() + "service/entitypackagedownload")
+						.addParameter("tenantId", String.valueOf(TenantInfoHolder.getId()))
+						.addParameter("definitionName", curDefinition.getName())
+						.addParameter("whereClause", getWhere())
+						.addParameter("orderByClause", getOrderBy())
+						.addParameter("isSearchAllVersion", isSearchAllVersion() + "")
+						.execute();
+				}
+			});
+
 		}
 
 		//Update Allボタン処理
