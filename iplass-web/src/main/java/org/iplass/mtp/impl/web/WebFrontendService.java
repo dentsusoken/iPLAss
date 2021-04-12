@@ -22,11 +22,18 @@ package org.iplass.mtp.impl.web;
 
 import java.io.File;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Pattern;
 
 import org.iplass.mtp.impl.web.RequestPath.PathType;
 import org.iplass.mtp.impl.web.fileupload.FileScanner;
+import org.iplass.mtp.impl.web.mdc.HttpHeaderMdcValueResolver;
+import org.iplass.mtp.impl.web.mdc.MdcValueResolver;
+import org.iplass.mtp.impl.web.mdc.RemoteAddrMdcValueResolver;
+import org.iplass.mtp.impl.web.mdc.RemoteHostMdcValueResolver;
+import org.iplass.mtp.impl.web.mdc.UuidMdcValueResolver;
 import org.iplass.mtp.spi.Config;
 import org.iplass.mtp.spi.Service;
 import org.iplass.mtp.spi.ServiceConfigrationException;
@@ -36,6 +43,13 @@ import org.slf4j.LoggerFactory;
 
 
 public class WebFrontendService implements Service {
+
+	static final String MDC_VALUE_RESOLVER_UUID = "generateUuid";
+	static final String MDC_VALUE_RESOLVER_INSECURE_UUID = "generateInsecureUuid";
+	static final String MDC_VALUE_RESOLVER_REMOTE_HOST = "remoteHost";
+	static final String MDC_VALUE_RESOLVER_REMOTE_ADDR = "remoteAddr";
+	static final String MDC_VALUE_RESOLVER_HEADER_PREFIX = "header.";
+
 
 	private static Logger logger = LoggerFactory.getLogger(WebFrontendService.class);
 
@@ -119,6 +133,12 @@ public class WebFrontendService implements Service {
 
 	private boolean tenantAsDomain;
 	private String fixedTenant;
+	
+	private Map<String, MdcValueResolver> mdc;
+	
+	public Map<String, MdcValueResolver> getMdc() {
+		return mdc;
+	}
 	
 	public boolean isAcceptPathes(String path) {
 		boolean ret = (getAcceptPathes() == null || getAcceptPathes().matcher(path).matches());
@@ -323,6 +343,39 @@ public class WebFrontendService implements Service {
 		}
 
 		fixedTenant = config.getValue("fixedTenant");
+		
+		
+		Map<String, Object> mdcFromConfig = config.getValue("mdc", Map.class);
+		if (mdcFromConfig != null) {
+			mdc = new HashMap<>();
+			for (Map.Entry<String, Object> e: mdcFromConfig.entrySet()) {
+				if (e.getValue() != null) {
+					if (e.getValue() instanceof String) {
+						String valStr = (String) e.getValue();
+						if (MDC_VALUE_RESOLVER_UUID.equals(valStr)) {
+							mdc.put(e.getKey(), new UuidMdcValueResolver());
+						} else if (MDC_VALUE_RESOLVER_INSECURE_UUID.equals(valStr)) {
+							mdc.put(e.getKey(), new UuidMdcValueResolver(false));
+						} else if (MDC_VALUE_RESOLVER_REMOTE_HOST.equals(valStr)) {
+							mdc.put(e.getKey(), new RemoteHostMdcValueResolver());
+						} else if (MDC_VALUE_RESOLVER_REMOTE_ADDR.equals(valStr)) {
+							mdc.put(e.getKey(), new RemoteAddrMdcValueResolver());
+						} else if (valStr.startsWith(MDC_VALUE_RESOLVER_HEADER_PREFIX)) {
+							String headerName = valStr.substring(MDC_VALUE_RESOLVER_HEADER_PREFIX.length());
+							if (headerName.length() > 0) {
+								mdc.put(e.getKey(), new HttpHeaderMdcValueResolver(headerName));
+							}
+						} else {
+							throw new ServiceConfigrationException("unrecognized mdc value:" + valStr);
+						}
+					} else if (e.getValue() instanceof MdcValueResolver) {
+						mdc.put(e.getKey(), (MdcValueResolver) e.getValue());
+					} else {
+						throw new ServiceConfigrationException("unrecognized mdc value. String or MdcValueResolver can be set. :" + e.getValue());
+					}
+				}
+			}
+		}
 	}
 	
 	private RequestRestriction createDefaultRequestRestriction(Config config) {

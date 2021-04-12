@@ -22,13 +22,12 @@
 		-->
 		<property name="warnLogThreshold" value="0" />
 
-		<!-- clientInfo mapping example -->
-		<!-- 
+		<!-- clientInfo mapping -->
 		<property name="clientInfoMap">
+			<property name="OCSID.ECID" value="traceId" />
 			<property name="OCSID.CLIENTID" value="thread" />
 			<property name="OCSID.ACTION" value="command" />
 		</property>
-		 -->
 	</service>
 	<service>
 		<interface>org.iplass.mtp.impl.rdb.adapter.RdbAdapterService</interface>

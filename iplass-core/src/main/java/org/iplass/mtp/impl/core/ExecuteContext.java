@@ -53,6 +53,7 @@ public class ExecuteContext {
 
 	public static final String MDC_TENANT = "tenant";
 	public static final String MDC_TENANT_NAME = "tenantName";
+	public static final String MDC_TRACE_ID = "traceId";
 
 	private static final Logger logger = LoggerFactory.getLogger(ExecuteContext.class);
 
@@ -249,6 +250,10 @@ public class ExecuteContext {
 				lc.resetMatched(this);
 			}
 		}
+	}
+	
+	public void mdcPutWithoutLoggingContextReload(String key, String val) {
+		MDC.put(key, val);
 	}
 
 	public Timestamp getDefaultEndDate() {

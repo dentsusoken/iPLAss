@@ -21,6 +21,7 @@
 package org.iplass.mtp.impl.web;
 
 import java.io.IOException;
+import java.util.Map;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -39,6 +40,7 @@ import org.iplass.mtp.impl.rdb.connection.ResourceHolder;
 import org.iplass.mtp.impl.web.RequestPath.PathType;
 import org.iplass.mtp.impl.web.actionmapping.ActionMappingService;
 import org.iplass.mtp.impl.web.actionmapping.MetaActionMapping.ActionMappingRuntime;
+import org.iplass.mtp.impl.web.mdc.MdcValueResolver;
 import org.iplass.mtp.spi.ServiceRegistry;
 import org.iplass.mtp.tenant.Tenant;
 import org.iplass.mtp.util.StringUtil;
@@ -65,6 +67,17 @@ public class DispatcherFilter implements Filter {
 		servletContext = config.getServletContext();
 		amService = ServiceRegistry.getRegistry().getService(ActionMappingService.class);
 		webFrontendService = ServiceRegistry.getRegistry().getService(WebFrontendService.class);
+	}
+
+	private void setMdc(HttpServletRequest req, ExecuteContext ec) {
+		if (webFrontendService.getMdc() != null && !webFrontendService.getMdc().isEmpty()) {
+			for (Map.Entry<String, MdcValueResolver> e: webFrontendService.getMdc().entrySet()) {
+				String val = e.getValue().resolve(req);
+				if (val != null) {
+					ec.mdcPutWithoutLoggingContextReload(e.getKey(), val);
+				}
+			}
+		}
 	}
 
 	/**
@@ -109,9 +122,11 @@ public class DispatcherFilter implements Filter {
 			}
 
 			try {
-				ExecuteContext.initContext(new ExecuteContext(tc));
+				ExecuteContext ec = new ExecuteContext(tc);
+				ExecuteContext.initContext(ec);
+				setMdc(req, ec);
 
-				if(logger.isDebugEnabled()) {
+				if (logger.isDebugEnabled()) {
 					logger.debug("do " + req.getRequestURL().toString() + " " + req.getMethod());
 				}
 
