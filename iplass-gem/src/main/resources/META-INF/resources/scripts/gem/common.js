@@ -2892,7 +2892,7 @@ function editReference(detailAction, defName, oid, trId, propName, index, viewAc
 				$("<input type='hidden' />").attr({name:propName + ".version", value:entity.version}).appendTo($td);
 			}
 
-			var $form = $("<form />").attr({method:"POST", action:viewAction, target:target}).appendTo("body");
+			var $form = $("<form />").attr({method:"POST", action:viewAction + "/" + encodeURIComponent(entity.oid), target:target}).appendTo("body");
 			$("<input />").attr({type:"hidden", name:"defName", value:defName}).appendTo($form);
 			$("<input />").attr({type:"hidden", name:"oid", value:entity.oid}).appendTo($form);
 			$("<input />").attr({type:"hidden", name:"version", value:entity.version}).appendTo($form);
