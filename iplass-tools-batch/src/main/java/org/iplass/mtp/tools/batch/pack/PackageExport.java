@@ -13,6 +13,7 @@ import static org.iplass.mtp.tools.batch.pack.PackageExportParameter.PROP_META_E
 import static org.iplass.mtp.tools.batch.pack.PackageExportParameter.PROP_META_LOCAL_ONLY;
 import static org.iplass.mtp.tools.batch.pack.PackageExportParameter.PROP_META_SOURCE;
 import static org.iplass.mtp.tools.batch.pack.PackageExportParameter.PROP_PACKAGE_NAME;
+import static org.iplass.mtp.tools.batch.pack.PackageExportParameter.PROP_SAVE_PACKAGE;
 import static org.iplass.mtp.tools.batch.pack.PackageExportParameter.PROP_TENANT_ID;
 import static org.iplass.mtp.tools.batch.pack.PackageExportParameter.PROP_TENANT_URL;
 
@@ -205,20 +206,50 @@ public class PackageExport extends MtpCuiBase {
 
 				List<String> messageSummary = new ArrayList<>();
 
-				//Package情報を登録(別トランザクションにしないとarchivePackage処理でエラーになる。別トランザクションなので)
-				final String oid = Transaction.requiresNew(tt -> {
-					return ps.storePackage(cond, PackageEntity.TYPE_OFFLINE);
-				});
+				PackageCreateResult result = null;
+				String fileName = null;
+				if (param.isSavePackage()) {
+					//Package情報を登録(別トランザクションにしないとarchivePackage処理でエラーになる。別トランザクションなので)
+					final String oid = Transaction.requiresNew(tt -> {
+						return ps.storePackage(cond, PackageEntity.TYPE_OFFLINE);
+					});
 
-				String infoMsg = rs("PackageExport.createdPackageInfoLog", oid );
-				logInfo(infoMsg);
-				messageSummary.add(infoMsg);
+					String infoMsg = rs("PackageExport.createdPackageInfoLog", oid );
+					logInfo(infoMsg);
+					messageSummary.add(infoMsg);
 
-				//Package作成処理
-				logInfo(rs("PackageExport.startExportPackageLog"));
-				final PackageCreateResult result = Transaction.requiresNew(tt -> {
-					return ps.archivePackage(oid);
-				});
+					//Package作成処理
+					logInfo(rs("PackageExport.startExportPackageLog"));
+					result = Transaction.requiresNew(tt -> {
+						return ps.archivePackage(oid);
+					});
+
+					if (!result.isError()) {
+						//zip作成処理(別トランザクションにしないとArchiveが取得できない。Package作成が別トランザクションなので)
+						if (param.isSavePackage()) {
+							fileName = Transaction.requiresNew(tt -> {
+								return createExportFile(param, oid);
+							});
+						}
+					}
+
+				} else {
+					//Package直接作成
+					logInfo(rs("PackageExport.startExportPackageLog"));
+
+					File file = new File(param.getExportDir(), param.getPackageName() + ".zip");
+					try (OutputStream os = new FileOutputStream(file)) {
+						result = new PackageCreateResult();
+						final PackageCreateResult resultWork = result;
+						Transaction.requiresNew(tt -> {
+							ps.write(os, cond, resultWork, null);
+						});
+						fileName = file.getAbsolutePath();
+					} catch (IOException e) {
+			            throw new SystemException(e);
+					}
+				}
+
 				if (result.isError()) {
 					if (result.getMessages() != null) {
 						for (String message : result.getMessages()) {
@@ -238,11 +269,6 @@ public class PackageExport extends MtpCuiBase {
 					}
 					logInfo("");
 				}
-
-				//zip作成処理(別トランザクションにしないとArchiveが取得できない。Package作成が別トランザクションなので)
-				String fileName = Transaction.requiresNew(tt -> {
-					return createExportFile(param, oid);
-				});
 
 				logInfo("-----------------------------------------------------------");
 				logInfo("■Execute Result Summary");
@@ -273,6 +299,7 @@ public class PackageExport extends MtpCuiBase {
 		logInfo("\ttenant name :" + param.getTenantName());
 		logInfo("\texport dir :" + param.getExportDirName());
 		logInfo("\tpackage name :" + param.getPackageName());
+		logInfo("\tsave package :" + param.isSavePackage());
 		logInfo("\texport metadata :" + param.isExportMetaData());
 		if (param.isExportMetaData()) {
 			String metaTarget = null;
@@ -731,6 +758,10 @@ public class PackageExport extends MtpCuiBase {
 
 			} while(validTarget == false);
 
+			//Packageの保存
+			boolean isSavePackage = readConsoleBoolean(rs("PackageExport.Wizard.confirmSavePackageMsg"), param.isSavePackage());
+			param.setSavePackage(isSavePackage);
+
 			boolean validExecute = false;
 			do {
 				//実行情報出力
@@ -908,6 +939,12 @@ public class PackageExport extends MtpCuiBase {
 					param.setExportEntityDataPathStr(source);
 				}
 				param.setExportEntityDataPathList(getEntityDataPathList(param));
+			}
+
+			//Packageの保存
+			String savePackage = prop.getProperty(PROP_SAVE_PACKAGE);
+			if (StringUtil.isNotEmpty(savePackage)) {
+				param.setSavePackage(Boolean.valueOf(savePackage));
 			}
 
 			//実行情報出力
