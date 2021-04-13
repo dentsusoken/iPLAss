@@ -28,6 +28,7 @@
 			<property name="OCSID.CLIENTID" value="thread" />
 			<property name="OCSID.ACTION" value="command" />
 		</property>
+		<property name="clientInfoMaxLength" value="64" />
 	</service>
 	<service>
 		<interface>org.iplass.mtp.impl.rdb.adapter.RdbAdapterService</interface>
