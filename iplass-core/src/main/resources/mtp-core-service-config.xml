@@ -79,7 +79,7 @@
 		<property name="deleteTempFileOnDestroy" value="true" />
 		<!-- if temp dir not specified, use "java.io.tmpdir"'s dir -->
 		<!--
-		<property name="tempFileDirPath" value="/tmp" />
+		<property name="tempFileDir" value="/tmp" />
 		-->
 	</service>
 
