@@ -114,4 +114,17 @@ public class SecureRandomGenerator {
 		return randInt;
 	}
 
+	public String randomString(int length, char[] values) {
+		SecureRandom rand = randoms.poll();
+		if (rand == null) {
+			rand = createSecureRandom();
+        }
+		String out = "";
+		for (int i = 0; i < length; i++) {
+			int idx = rand.nextInt(values.length);
+			out += values[idx];
+        }
+		return out;
+	}
+
 }

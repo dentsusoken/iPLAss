@@ -28,7 +28,6 @@ import org.iplass.mtp.auth.token.AuthTokenInfoList;
 import org.iplass.mtp.impl.auth.authenticate.token.AuthToken;
 import org.iplass.mtp.impl.auth.authenticate.token.AuthTokenHandler;
 import org.iplass.mtp.impl.auth.authenticate.token.AuthTokenService;
-import org.iplass.mtp.impl.auth.authenticate.token.AuthTokenStore;
 import org.iplass.mtp.impl.core.ExecuteContext;
 import org.iplass.mtp.spi.ServiceRegistry;
 
@@ -64,6 +63,31 @@ public class AuthTokenInfoListImpl implements AuthTokenInfoList {
 	}
 
 	@Override
+	public List<AuthTokenInfo> getList(String type) {
+
+		int tenantId = ExecuteContext.getCurrentContext().getClientTenantId();
+		String userUniqueKey = userContext.getAccount().getUnmodifiableUniqueKey();
+
+		AuthTokenHandler handler = tokenService.getHandler(type);
+		if (handler == null) {
+			return null;
+		}
+		if (!handler.isVisible()) {
+			return null;
+		}
+
+		List<AuthTokenInfo> atiList = new ArrayList<>();
+		List<AuthToken> sList = handler.authTokenStore().getByOwner(tenantId, handler.getType(), userUniqueKey);
+		if (sList != null) {
+			for (AuthToken at: sList) {
+				atiList.add(handler.toAuthTokenInfo(at));
+			}
+		}
+
+		return atiList;
+	}
+
+	@Override
 	public AuthTokenInfo get(String type, String key) {
 		AuthTokenHandler handler = tokenService.getHandler(type);
 		if (handler == null) {
@@ -76,6 +100,14 @@ public class AuthTokenInfoListImpl implements AuthTokenInfoList {
 		AuthToken t = handler.authTokenStore().getBySeries(
 				ExecuteContext.getCurrentContext().getClientTenantId(), type, key);
 		return handler.toAuthTokenInfo(t);
+	}
+	
+	@Override
+	public void remove(String type) {
+		AuthTokenHandler handler = tokenService.getHandler(type);
+		if (handler != null && handler.isVisible()) {
+			handler.authTokenStore().delete(ExecuteContext.getCurrentContext().getClientTenantId(), type, ExecuteContext.getCurrentContext().getClientId());
+		}
 	}
 
 	@Override
@@ -98,6 +130,23 @@ public class AuthTokenInfoListImpl implements AuthTokenInfoList {
 		
 		AuthToken newToken = handler.newAuthToken(userContext.getAccount().getUnmodifiableUniqueKey(), userContext.getUser().getAccountPolicy(), newTokenInfo);
 		handler.authTokenStore().create(newToken);
+		return handler.toCredential(newToken);
+	}
+	
+	public Credential updateToken(AuthTokenInfo newTokenInfo) {
+		AuthTokenHandler handler = tokenService.getHandler(newTokenInfo.getType());
+		if (handler == null) {
+			throw new IllegalArgumentException("type:" + newTokenInfo.getType() + " undefined.");
+		}
+		if (!handler.isVisible()) {
+			throw new IllegalArgumentException("type:" + newTokenInfo.getType() + " is invisible.");
+		}
+
+		AuthToken currentToken = handler.authTokenStore().getBySeries(
+				ExecuteContext.getCurrentContext().getClientTenantId(), newTokenInfo.getType(), newTokenInfo.getKey());
+		
+		AuthToken newToken = handler.newAuthToken(userContext.getAccount().getUnmodifiableUniqueKey(), userContext.getUser().getAccountPolicy(), newTokenInfo);
+		handler.authTokenStore().update(currentToken, newToken);
 		return handler.toCredential(newToken);
 	}
 
