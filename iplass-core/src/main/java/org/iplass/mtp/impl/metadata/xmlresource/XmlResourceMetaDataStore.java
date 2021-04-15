@@ -157,7 +157,7 @@ public class XmlResourceMetaDataStore extends AbstractXmlMetaDataStore {
 			for (String path: resourcePathList) {
 				InputStream is = getClass().getResourceAsStream(path);
 				if (is != null) {
-					parse(is, um);
+					parse(is, um, path);
 				} else {
 					throw new MetaDataRuntimeException("can not find resource file:" + path);
 				}
@@ -174,17 +174,17 @@ public class XmlResourceMetaDataStore extends AbstractXmlMetaDataStore {
 				} catch (FileNotFoundException e) {
 					throw new MetaDataRuntimeException("can not find file:" + path, e);
 				}
-				parse(is, um);
+				parse(is, um, path);
 			}
 		}
 	}
 
-	private void parse(InputStream is, Unmarshaller um) {
+	private void parse(InputStream is, Unmarshaller um, String resoucePath) {
 		try {
 			MetaDataEntryList metaList = (MetaDataEntryList) um.unmarshal(is);
 			if (metaList.getContextPath() != null) {
 				for (ContextPath context: metaList.getContextPath()) {
-					parseContextPath(context, "", context.getName());
+					parseContextPath(context, "", context.getName(), resoucePath);
 				}
 			}
 		} catch (JAXBException e) {
@@ -200,30 +200,34 @@ public class XmlResourceMetaDataStore extends AbstractXmlMetaDataStore {
 		}
 	}
 
-	private void parseContextPath(ContextPath context, String prefixPath, String rootPath) {
+	private void parseContextPath(ContextPath context, String prefixPath, String rootPath, String resoucePath) {
 		if (context.getContextPath() != null) {
 			for (ContextPath child: context.getContextPath()) {
-				parseContextPath(child, prefixPath + context.getName() + "/", rootPath);
+				parseContextPath(child, prefixPath + context.getName() + "/", rootPath, resoucePath);
 			}
 		}
 
 		if (context.getEntry() != null) {
 			for (XmlResourceMetaDataEntryThinWrapper ent: context.getEntry()) {
-				//pathがMetaDataEntryのnameとして指定されている場合はそれを利用
-				String path = ent.getName();
-				if (path == null) {
-					//指定されていない場合はMetaDataのnameから生成
-					path = prefixPath + context.getName() + "/" + ent.getMetaData().getName();
-				} else if (path.length() > 0 && path.charAt(0) != '/') {
-					//相対指定の場合、contextPath + "/" + path
-					path = prefixPath + context.getName() + "/" + path;
-				}
+				if (ent.getMetaData() == null) {
+					logger.warn("Cannot unmarshal metadata from XmlResource. resourcePath:" + resoucePath + ", contextpath:" + rootPath);
+				} else {
+					//pathがMetaDataEntryのnameとして指定されている場合はそれを利用
+					String path = ent.getName();
+					if (path == null) {
+						//指定されていない場合はMetaDataのnameから生成
+						path = prefixPath + context.getName() + "/" + ent.getMetaData().getName();
+					} else if (path.length() > 0 && path.charAt(0) != '/') {
+						//相対指定の場合、contextPath + "/" + path
+						path = prefixPath + context.getName() + "/" + path;
+					}
 
-				pathMetaMap.put(path, ent);
-				if (ent.getMetaData().getId() == null) {
-					ent.getMetaData().setId(path);
+					pathMetaMap.put(path, ent);
+					if (ent.getMetaData().getId() == null) {
+						ent.getMetaData().setId(path);
+					}
+					idPathMap.put(ent.getMetaData().getId(), path);
 				}
-				idPathMap.put(ent.getMetaData().getId(), path);
 			}
 		}
 	}

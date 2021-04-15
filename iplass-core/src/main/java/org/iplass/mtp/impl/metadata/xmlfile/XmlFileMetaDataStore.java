@@ -205,6 +205,9 @@ public class XmlFileMetaDataStore extends AbstractXmlMetaDataStore {
 		try {		
 			instance = new MetaDataEntry();
 			XmlFileMetaDataEntryThinWrapper meta = unmarshal(file);
+			if (meta != null && meta.getMetaData() == null) {
+				logger.warn("Cannot unmarshal metadata from XmlFile. filePath:" + file);
+			}
 			instance.setMetaData(meta.getMetaData());
 			if(!(meta.getVersion() == null)){
 				instance.setVersion(meta.getVersion());	
@@ -282,6 +285,9 @@ public class XmlFileMetaDataStore extends AbstractXmlMetaDataStore {
 
 					MetaDataEntry instance = new MetaDataEntry();
 					XmlFileMetaDataEntryThinWrapper meta = unmarshal(file);
+					if (meta != null && meta.getMetaData() == null) {
+						logger.warn("Cannot unmarshal metadata from XmlFile. filePath:" + file);
+					}
 					instance.setMetaData(meta.getMetaData());
 					if(!(meta.getVersion() == null)) {
 						instance.setVersion(meta.getVersion());	

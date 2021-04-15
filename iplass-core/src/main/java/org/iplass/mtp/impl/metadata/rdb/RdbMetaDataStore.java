@@ -92,6 +92,9 @@ public class RdbMetaDataStore extends AbstractXmlMetaDataStore {
 				MetaDataEntry ret;
 				try {
 					ret = select.createLoadResultData(rdb, rs, context);
+					if (ret != null && ret.getMetaData() == null) {
+						logger.warn("Cannot unmarshal metadata from Rdb. id:" + id + ", version:" + version);
+					}
 				} catch (JAXBException e) {
 					throw new MetaDataRuntimeException("cant parse xml to metaData instance. id:" + id + ",version:" + version, e);
 				} finally {
@@ -158,6 +161,9 @@ public class RdbMetaDataStore extends AbstractXmlMetaDataStore {
 				MetaDataEntry ret;
 				try {
 					ret = select.createLoadResultData(rdb, rs, context);
+					if (ret != null && ret.getMetaData() == null) {
+						logger.warn("Cannot unmarshal metadata from Rdb. path:" + path + ", version:" + version);
+					}
 				} catch (JAXBException e) {
 					throw new MetaDataRuntimeException("cant parse xml to metaData instance. path:" + path + ",version=" + version, e);
 				} finally {
