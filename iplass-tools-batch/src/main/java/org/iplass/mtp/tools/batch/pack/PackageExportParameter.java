@@ -33,6 +33,8 @@ public class PackageExportParameter {
 	public static final String PROP_ENTITY_SOURCE = "entity.source";
 	/** Silentモード Entityデータ 対象を指定しない場合にUserデータを除外するか */
 	public static final String PROP_ENTITY_EXCLUDE_USER = "meta.excludeUser";
+	/** Silentモード Packageを保存するか */
+	public static final String PROP_SAVE_PACKAGE = "savePackage";
 
 	// テナントID
 	private int tenantId;
@@ -72,6 +74,9 @@ public class PackageExportParameter {
 
 	//個別指定のExportEntityパス(mtp.*,samples.Sample01,sample2.sub.*)
 	private String exportEntityDataPathStr;
+
+	//Packageを保存するか
+	private boolean savePackage = true;
 
 	//作成者
 	private String registId = "program";
@@ -201,6 +206,14 @@ public class PackageExportParameter {
 
 	public void setExportEntityDataPathStr(String exportEntityDataPathStr) {
 		this.exportEntityDataPathStr = exportEntityDataPathStr;
+	}
+
+	public boolean isSavePackage() {
+		return savePackage;
+	}
+
+	public void setSavePackage(boolean savePackage) {
+		this.savePackage = savePackage;
 	}
 
 	public String getRegistId() {

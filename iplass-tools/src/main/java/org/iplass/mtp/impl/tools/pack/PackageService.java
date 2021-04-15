@@ -943,44 +943,56 @@ public class PackageService implements Service {
 			//対象ファイルの取得
 			packEntity = loadWithCheckExist(packOid);
 		} catch (PackageRuntimeException e) {
-			toolLogger.info("start package metadata import. {target:{}}", packOid);	//Entityが取得できないので、OID
+			//Entityが取得できないので、OID
+			toolLogger.info("start package metadata import. {target:{}}", packOid);
 			toolLogger.info("finish package metadata import. {target:{}, result:{}}", packOid, "failed");
 			throw e;
 		}
 
-		toolLogger.info("start package metadata import. {target:{}}", packEntity.getName());
-		auditLogger.info("import package metadata," + packEntity.getName() + ",packageOid:" + packOid);
-
 		File archive = null;
-		MetaDataImportResult result = null;
 		try {
 			archive = getPackageArchiveFile(packEntity);
-
-			//メタデータ定義ファイルの取得
-			try (ZipFile zf = new ZipFile(archive)) {
-				ZipEntry ze = zf.getEntry(META_DATA_FILE_NAME);
-
-				try (InputStream is = zf.getInputStream(ze)) {
-					//ファイルに含まれるMetaData情報を取得
-					XMLEntryInfo entryInfo = metaService.getXMLMetaDataEntryInfo(is);
-
-					//インポート処理の実行
-					result = metaService.importMetaData(packEntity.getName(), entryInfo, importTenant);
-
-					return result;
-				}
-			}
-
-		} catch (IOException e) {
-			throw new PackageRuntimeException("failed to read metadata configure. id=" + packOid, e);
+			return importPackageMetaData(archive, packEntity.getName(), importTenant);
 		} finally {
-			toolLogger.info("finish package metadata import. {target:{}, result:{}}", packEntity.getName(),
-					(result == null ? "failed" : result.isError() ? "failed" : "success"));
 			if (archive != null) {
 				if (!archive.delete()) {
 					logger.warn("Fail to delete temporary resource:" + archive.getPath());
 				}
 			}
+		}
+	}
+
+	/**
+	 * <p>Packageのメタデータをインポートします。</p>
+	 *
+	 * @param archive Packageファイル
+	 * @param packName Package名
+	 * @param importTenant インポート対象Tenant
+	 */
+	public MetaDataImportResult importPackageMetaData(final File archive, final String packName, final Tenant importTenant) {
+
+		toolLogger.info("start package metadata import. {target:{}}", packName);
+		auditLogger.info("import package metadata," + packName);
+
+		//メタデータ定義ファイルの取得
+		MetaDataImportResult result = null;
+		try (ZipFile zf = new ZipFile(archive)) {
+			ZipEntry ze = zf.getEntry(META_DATA_FILE_NAME);
+
+			try (InputStream is = zf.getInputStream(ze)) {
+				//ファイルに含まれるMetaData情報を取得
+				XMLEntryInfo entryInfo = metaService.getXMLMetaDataEntryInfo(is);
+
+				//インポート処理の実行
+				result = metaService.importMetaData(packName, entryInfo, importTenant);
+
+				return result;
+			}
+		} catch (IOException e) {
+			throw new PackageRuntimeException("failed to read metadata configure. packName=" + packName, e);
+		} finally {
+			toolLogger.info("finish package metadata import. {target:{}, result:{}}", packName,
+					(result == null ? "failed" : result.isError() ? "failed" : "success"));
 		}
 	}
 
@@ -1002,13 +1014,41 @@ public class PackageService implements Service {
 			//対象ファイルの取得
 			packEntity = loadWithCheckExist(packOid);
 		} catch (PackageRuntimeException e) {
-			toolLogger.info("start package entity import. {target:{}, entity:{}}", packOid, path);	//Entityが取得できないので、OID
+			//Entityが取得できないので、OID
+			toolLogger.info("start package entity import. {target:{}, entity:{}}", packOid, path);
 			toolLogger.info("finish package entity import. {target:{}, entity:{}, result:{}}", packOid, path, "failed");
 			throw e;
 		}
 
-		toolLogger.info("start package entity import. {target:{}, entity:{}}", packEntity.getName(), path);
-		auditLogger.info("import package entity," + packEntity.getName() + ",packageOid:" + packOid + " path:" + path);
+		File archive = null;
+		try {
+			archive = getPackageArchiveFile(packEntity);
+			return importPackageEntityData(archive, packEntity.getName(), path, condition);
+		} finally {
+			if (archive != null) {
+				if (!archive.delete()) {
+					logger.warn("Fail to delete temporary resource:" + archive.getPath());
+				}
+			}
+		}
+	}
+
+	/**
+	 * <p>PackageのEntityデータをインポートします。</p>
+	 *
+	 * <p>Entityデータは1Entityずつインポートします。</p>
+	 *
+	 * @param archive Packageファイル
+	 * @param packName Package名
+	 * @param path Entityパス
+	 * @param condition インポート条件
+	 * @return インポート結果
+	 */
+	public EntityDataImportResult importPackageEntityData(final File archive, final String packName, final String path,
+			final EntityDataImportCondition condition) {
+
+		toolLogger.info("start package entity import. {target:{}, entity:{}}", packName, path);
+		auditLogger.info("import package entity," + packName + ",path:" + path);
 
 		EntityDataImportResult result = null;
 		try {
@@ -1042,32 +1082,20 @@ public class PackageService implements Service {
 				return result;
 			}
 
-			File archive = null;
-			try {
-				archive = getPackageArchiveFile(packEntity);
+			//CSVファイルの取得
+			try (ZipFile zf = new ZipFile(archive)) {
+				ZipEntry ze = zf.getEntry(entry.getMetaData().getName() + ".csv");
+				try (InputStream is = zf.getInputStream(ze)) {
+					//インポート処理の実行
+					result = entityService.importEntityData(packName, is, entry, condition, zf);
 
-				//CSVファイルの取得
-				try (ZipFile zf = new ZipFile(archive)) {
-					ZipEntry ze = zf.getEntry(entry.getMetaData().getName() + ".csv");
-					try (InputStream is = zf.getInputStream(ze)) {
-						//インポート処理の実行
-						result = entityService.importEntityData(packEntity.getName(), is, entry, condition, zf);
-
-						return result;
-					}
+					return result;
 				}
-
 			} catch (IOException e) {
-				throw new PackageRuntimeException("failed to read entity data csv file. id=" + packOid, e);
-			} finally {
-				if (archive != null) {
-					if (!archive.delete()) {
-						logger.warn("Fail to delete temporary resource:" + archive.getPath());
-					}
-				}
+				throw new PackageRuntimeException("failed to read entity data csv file. packName=" + packName, e);
 			}
 		} finally {
-			toolLogger.info("finish package entity import. {target:{}, entity:{}, result:{}}", packEntity.getName(), path,
+			toolLogger.info("finish package entity import. {target:{}, entity:{}, result:{}}", packName, path,
 					(result == null ? "failed" : result.isError() ? "failed" : "success"));
 		}
 	}

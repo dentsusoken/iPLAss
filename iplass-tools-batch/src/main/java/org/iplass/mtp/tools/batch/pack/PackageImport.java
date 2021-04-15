@@ -18,6 +18,7 @@ import static org.iplass.mtp.tools.batch.pack.PackageImportParameter.PROP_ENTITY
 import static org.iplass.mtp.tools.batch.pack.PackageImportParameter.PROP_ENTITY_UPDATE_DISUPDATABLE;
 import static org.iplass.mtp.tools.batch.pack.PackageImportParameter.PROP_ENTITY_WITH_VALIDATION;
 import static org.iplass.mtp.tools.batch.pack.PackageImportParameter.PROP_IMPORT_FILE;
+import static org.iplass.mtp.tools.batch.pack.PackageImportParameter.PROP_SAVE_PACKAGE;
 import static org.iplass.mtp.tools.batch.pack.PackageImportParameter.PROP_TENANT_ID;
 import static org.iplass.mtp.tools.batch.pack.PackageImportParameter.PROP_TENANT_URL;
 
@@ -210,7 +211,9 @@ public class PackageImport extends MtpCuiBase {
 
 				boolean ret = Transaction.requiresNew(tt->{
 					//Fileのアップロード
-					oid = executeTask(param, new UploadTask(param, messageSummary));
+					if (param.isSavePackage()) {
+						oid = executeTask(param, new UploadTask(param, messageSummary));
+					}
 
 					//メタデータの登録
 					return executeTask(param, new MetaDataImportTask(param, messageSummary, oid));
@@ -257,6 +260,8 @@ public class PackageImport extends MtpCuiBase {
 		logInfo("\timport file :" + param.getImportFilePath());
 		logInfo("\timport file locale :" + param.getLocale());
 		logInfo("\timport file timezone :" + param.getTimezone());
+		logInfo("\tpackage name :" + param.getPackageName());
+		logInfo("\tsave package :" + param.isSavePackage());
 
 		PackageInfo packInfo = param.getPackInfo();
 
@@ -368,8 +373,12 @@ public class PackageImport extends MtpCuiBase {
 			if (CollectionUtil.isNotEmpty(param.getPackInfo().getMetaDataPaths())) {
 				logInfo(rs("PackageImport.startImportMetaLog"));
 
-				MetaDataImportResult metaResult
-					= ps.importPackageMetaData(oid, param.getImportTenant());
+				MetaDataImportResult metaResult = null;
+				if (param.isSavePackage() && oid != null) {
+					metaResult = ps.importPackageMetaData(oid, param.getImportTenant());
+				} else {
+					metaResult = ps.importPackageMetaData(param.getImportFile(), param.getPackageName(), param.getImportTenant());
+				}
 
 				if (metaResult.isError()) {
 					if (metaResult.getMessages() != null) {
@@ -428,7 +437,8 @@ public class PackageImport extends MtpCuiBase {
 		@Override
 		public Boolean get() {
 
-			String logMessage = null;	//work用
+			//work用
+			String logMessage = null;
 
 			//Entityデータの登録
 			if (CollectionUtil.isNotEmpty(param.getPackInfo().getEntityPaths())) {
@@ -439,9 +449,12 @@ public class PackageImport extends MtpCuiBase {
 					String entityPath =  EntityService.ENTITY_META_PATH + path.substring(0, path.length() - 4).replace(".", "/");
 					logInfo(rs("PackageImport.startImportEntityDataLog", entityPath));
 
-
-					EntityDataImportResult entityResult
-							= ps.importPackageEntityData(oid, entityPath, param.getEntityImportCondition());
+					EntityDataImportResult entityResult = null;
+					if (param.isSavePackage() && oid != null) {
+						entityResult = ps.importPackageEntityData(oid, entityPath, param.getEntityImportCondition());
+					} else {
+						entityResult = ps.importPackageEntityData(param.getImportFile(), param.getPackageName(), entityPath, param.getEntityImportCondition());
+					}
 
 					if (entityResult.isError()) {
 						if (entityResult.getMessages() != null) {
@@ -595,6 +608,10 @@ public class PackageImport extends MtpCuiBase {
 					try {
 						//データチェック
 						packInfo = ps.getPackageInfo(file);
+
+						//Packageの保存
+						boolean isSavePackage = readConsoleBoolean(rs("PackageImport.Wizard.confirmSavePackageMsg"), param.isSavePackage());
+						param.setSavePackage(isSavePackage);
 
 						//対象メタデータチェック
 						int metaCount = (CollectionUtil.isNotEmpty(packInfo.getMetaDataPaths()) ? packInfo.getMetaDataPaths().size() : 0);
@@ -1022,6 +1039,12 @@ public class PackageImport extends MtpCuiBase {
 				}
 
 				param.setEntityImportCondition(condition);
+			}
+
+			//Packageの保存
+			String savePackage = prop.getProperty(PROP_SAVE_PACKAGE);
+			if (StringUtil.isNotEmpty(savePackage)) {
+				param.setSavePackage(Boolean.valueOf(savePackage));
 			}
 
 			//実行情報出力
