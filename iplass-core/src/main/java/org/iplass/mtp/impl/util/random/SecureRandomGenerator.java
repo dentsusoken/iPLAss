@@ -120,10 +120,11 @@ public class SecureRandomGenerator {
 			rand = createSecureRandom();
         }
 		String out = "";
-		for (int i = 0; i < length; i++) {
+		for (int index = 0; index < length; index++) {
 			int idx = rand.nextInt(values.length);
 			out += values[idx];
         }
+		randoms.add(rand);
 		return out;
 	}
 
