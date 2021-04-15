@@ -994,9 +994,7 @@ public class PackageService implements Service {
 			toolLogger.info("finish package metadata import. {target:{}, result:{}}", packName,
 					(result == null ? "failed" : result.isError() ? "failed" : "success"));
 		}
-
 	}
-
 
 	/**
 	 * <p>PackageのEntityデータをインポートします。</p>
@@ -1046,7 +1044,7 @@ public class PackageService implements Service {
 	 * @param condition インポート条件
 	 * @return インポート結果
 	 */
-	public EntityDataImportResult importPackageEntityData(File archive, final String packName, final String path,
+	public EntityDataImportResult importPackageEntityData(final File archive, final String packName, final String path,
 			final EntityDataImportCondition condition) {
 
 		toolLogger.info("start package entity import. {target:{}, entity:{}}", packName, path);

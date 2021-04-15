@@ -643,6 +643,10 @@ public class PackageExport extends MtpCuiBase {
 				param.setPackageName(packageName);
 			}
 
+			//Packageの保存
+			boolean isSavePackage = readConsoleBoolean(rs("PackageExport.Wizard.confirmSavePackageMsg"), param.isSavePackage());
+			param.setSavePackage(isSavePackage);
+
 			boolean validTarget = false;
 			do {
 				//メタデータExport
@@ -757,10 +761,6 @@ public class PackageExport extends MtpCuiBase {
 				}
 
 			} while(validTarget == false);
-
-			//Packageの保存
-			boolean isSavePackage = readConsoleBoolean(rs("PackageExport.Wizard.confirmSavePackageMsg"), param.isSavePackage());
-			param.setSavePackage(isSavePackage);
 
 			boolean validExecute = false;
 			do {
