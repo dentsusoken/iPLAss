@@ -303,6 +303,11 @@ public final class MapBaseCacheStore extends SimpleCacheStoreBase {
 	protected void removeNullEntry(NullKey key) {
 		cache.remove(key);
 	}
+	
+	@Override
+	public int getSize() {
+		return cache.size();
+	}
 
 	@Override
 	public String trace() {
