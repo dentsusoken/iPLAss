@@ -69,17 +69,17 @@ public class InfinispanCacheStoreFactory extends CacheStoreFactory implements Se
 	private String cacheConfigrationName;
 
 	private int indexRemoveRetryCount = 10;
-	private long indexRemoveRetryInterval = 100;//ms
+	private long indexRemoveRetryInterval = 100;// ms
 	private String indexCacheConfigrationName;
 
 	private ExecutorService forCacheHandlerExecutorService;
 
-	//TODO カスタムコンフィグの方法。namespacepatternの場合は必要となるかも
+	// TODO カスタムコンフィグの方法。namespacepatternの場合は必要となるかも
 
 	@Override
 	public void inited(CacheService service, Config config) {
 		InfinispanService is = config.getDependentService(InfinispanService.class);
-		cm= is.getCacheManager();
+		cm = is.getCacheManager();
 
 		if (createOnStartup) {
 			if (getNamespace() == null) {
@@ -313,6 +313,11 @@ public class InfinispanCacheStoreFactory extends CacheStoreFactory implements Se
 		}
 
 		@Override
+		public int getSize() {
+			return cache.size();
+		}
+
+		@Override
 		public String trace() {
 			return cache.toString();
 		}
@@ -346,7 +351,7 @@ public class InfinispanCacheStoreFactory extends CacheStoreFactory implements Se
 
 	private static void endHolder() {
 		InfinispanCacheContextHolder current = holder.get();
-		if (current != null) {//nullの場合がある。infinispanのバグ？PassivateされてるやつがActivateされるとき、modifyでpreがいきなりfalseで来る
+		if (current != null) {// nullの場合がある。infinispanのバグ？PassivateされてるやつがActivateされるとき、modifyでpreがいきなりfalseで来る
 			if (current.prevStack != null) {
 				holder.set(current.prevStack);
 			} else {
@@ -382,7 +387,7 @@ public class InfinispanCacheStoreFactory extends CacheStoreFactory implements Se
 						switch (h.type) {
 						case CREATE:
 							CacheCreateEvent cce = new CacheCreateEvent(event.getValue());
-							for (CacheEventListener l: listeners) {
+							for (CacheEventListener l : listeners) {
 								l.created(cce);
 							}
 							break;
@@ -418,13 +423,13 @@ public class InfinispanCacheStoreFactory extends CacheStoreFactory implements Se
 						switch (h.type) {
 						case CREATE:
 							CacheCreateEvent cce = new CacheCreateEvent(event.getValue());
-							for (CacheEventListener l: listeners) {
+							for (CacheEventListener l : listeners) {
 								l.created(cce);
 							}
 							break;
 						case UPDATE:
 							CacheUpdateEvent cue = new CacheUpdateEvent(h.preValue, event.getValue());
-							for (CacheEventListener l: listeners) {
+							for (CacheEventListener l : listeners) {
 								l.updated(cue);
 							}
 							break;
@@ -455,14 +460,14 @@ public class InfinispanCacheStoreFactory extends CacheStoreFactory implements Se
 						switch (h.type) {
 						case REMOVE:
 							CacheRemoveEvent cre = new CacheRemoveEvent(h.preValue);
-							for (CacheEventListener l: listeners) {
+							for (CacheEventListener l : listeners) {
 								l.removed(cre);
 							}
 							break;
 						case INVALIDATE:
-							//なぜかInvalidateのafterがremovedに、、、infinispanバグ？
+							// なぜかInvalidateのafterがremovedに、、、infinispanバグ？
 							CacheInvalidateEvent cie = new CacheInvalidateEvent(h.preValue);
-							for (CacheEventListener l: listeners) {
+							for (CacheEventListener l : listeners) {
 								l.invalidated(cie);
 							}
 							break;
@@ -487,14 +492,14 @@ public class InfinispanCacheStoreFactory extends CacheStoreFactory implements Se
 				h.type = CacheEventType.INVALIDATE;
 				h.preValue = event.getValue();
 			} else {
-				//呼ばれない？？？
+				// 呼ばれない？？？
 				try {
 					if (listeners.size() > 0) {
 						InfinispanCacheContextHolder h = currentHolder();
 						switch (h.type) {
 						case INVALIDATE:
 							CacheInvalidateEvent cie = new CacheInvalidateEvent(h.preValue);
-							for (CacheEventListener l: listeners) {
+							for (CacheEventListener l : listeners) {
 								l.invalidated(cie);
 							}
 							break;

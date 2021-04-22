@@ -243,8 +243,12 @@ public class ExecuteContext {
 	
 	public void mdcPut(String key, String val) {
 		String preVal = MDC.get(key);
-		MDC.put(key, val);
 		if (!Objects.equals(preVal, val)) {
+			if (val == null) {
+				MDC.remove(key);
+			} else {
+				MDC.put(key, val);
+			}
 			LoggingContext lc = getTenantContext().getResource(LoggingContext.class);
 			if (lc != null) {
 				lc.resetMatched(this);

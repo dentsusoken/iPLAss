@@ -243,8 +243,12 @@ public abstract class LocalWorker implements Worker {
 													if (queue.taskAbort(task, true, t, false, false)) {
 														if (task.getCallable().getActual() instanceof ExceptionHandleable) {
 															AsyncTaskContextImpl asyncTaskContext = new AsyncTaskContextImpl(task.getTaskId(), queue.getName());
+															ExecuteContext ec = ExecuteContext.getCurrentContext();
 															try {
-																ExecuteContext.getCurrentContext().setAttribute(AsyncTaskContextImpl.EXE_CONTEXT_ATTR_NAME, asyncTaskContext, false);
+																ec.setAttribute(AsyncTaskContextImpl.EXE_CONTEXT_ATTR_NAME, asyncTaskContext, false);
+																if (task.getCallable().getTraceId() != null) {
+																	ec.mdcPut(ExecuteContext.MDC_TRACE_ID, task.getCallable().getTraceId());
+																}
 
 																if (e instanceof TimeoutException) {
 																	((ExceptionHandleable) task.getCallable().getActual()).timeouted();
@@ -263,7 +267,8 @@ public abstract class LocalWorker implements Worker {
 																	});
 																}
 															} finally {
-																ExecuteContext.getCurrentContext().removeAttribute(AsyncTaskContextImpl.EXE_CONTEXT_ATTR_NAME);
+																ec.mdcPut(ExecuteContext.MDC_TRACE_ID, null);
+																ec.removeAttribute(AsyncTaskContextImpl.EXE_CONTEXT_ATTR_NAME);
 															}
 														}
 													} else {

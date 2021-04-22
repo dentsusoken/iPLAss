@@ -271,7 +271,8 @@ public class RdbCacheStoreFactory extends AbstractBuiltinCacheStoreFactory {
 		private String insertSql;
 		private String delAllSql = "DELETE FROM " + tableName + " WHERE " + NAMESPACE + "=?";
 		private String keySetSql = "SELECT " + KEY + "," + CRE_TIME + " FROM " + tableName + " WHERE " + NAMESPACE + "=? AND " + INVALID_TIME + ">?";
-
+		private String countSqlWithCheckInvalidDate = "SELECT COUNT(*)" + " FROM " + tableName + " WHERE " + NAMESPACE + "=? AND " + INVALID_TIME + ">?";
+		
 		//FIXME 更新時にINVALID_TIMEを更新
 		
 		RdbCacheStore(String namespace) {
@@ -944,6 +945,28 @@ public class RdbCacheStoreFactory extends AbstractBuiltinCacheStoreFactory {
 				return ret;
 			} catch (SQLException e) {
 				throw new SystemException("cant removeByIndex from RDB:indexKey=" + indexKey + ",indexValue=" + indexValue, e);
+			}
+		}
+		
+		@Override
+		public int getSize() {
+			try (Connection con = rdb.getConnection(connectionFactoryName)) {
+				return getSizeInternal(con);
+			} catch (SQLException e) {
+				throw new SystemException("cant getSize from RDB", e);
+			}
+		}
+		
+		public int getSizeInternal(Connection con) throws SQLException {
+
+			try (PreparedStatement ps = con.prepareStatement(countSqlWithCheckInvalidDate)) {
+				ps.setString(1, getNamespace());
+				ps.setLong(2, System.currentTimeMillis());
+				
+				try (ResultSet rs = ps.executeQuery()) {
+					rs.next();
+					return rs.getInt(1);
+				}
 			}
 		}
 

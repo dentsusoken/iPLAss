@@ -47,6 +47,8 @@ public class PackageImportParameter {
 	public static final String PROP_ENTITY_PREFIX_OID = "entity.prefixOid";
 	/** Silentモード Entityデータ Commit単位(件数) */
 	public static final String PROP_ENTITY_COMMIT_LIMIT = "entity.commitLimit";
+	/** Silentモード Packageを保存するか */
+	public static final String PROP_SAVE_PACKAGE = "savePackage";
 
 	// テナントID
 	private int tenantId;
@@ -65,6 +67,9 @@ public class PackageImportParameter {
 
 	//Fileタイムゾーン名
 	private String timezone;
+
+	//Packageを保存するか
+	private boolean savePackage = true;
 
 	//作成者
 	private String registId = "program";
@@ -136,6 +141,13 @@ public class PackageImportParameter {
 		this.timezone = timezone;
 	}
 
+	public boolean isSavePackage() {
+		return savePackage;
+	}
+
+	public void setSavePackage(boolean savePackage) {
+		this.savePackage = savePackage;
+	}
 
 	public String getRegistId() {
 		return registId;

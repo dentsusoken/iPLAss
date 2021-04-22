@@ -116,5 +116,9 @@ public class DataSourceConnectionFactory extends AbstractConnectionFactory {
 			}			
 		}
 	}
+	
+	public DataSource getDataSource() {
+		return dataSource;
+	}
 
 }
