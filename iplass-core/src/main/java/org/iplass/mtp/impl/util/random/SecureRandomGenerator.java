@@ -28,6 +28,7 @@ import java.util.Base64.Encoder;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
+import org.apache.commons.codec.binary.Base32;
 import org.iplass.mtp.spi.ServiceConfigrationException;
 
 public class SecureRandomGenerator {
@@ -41,6 +42,8 @@ public class SecureRandomGenerator {
 	private final boolean useStrongSecureRandom;
 	private final String algorithm;
 	private final String provider;
+	/** base32,base64 */
+	private final String encode;
 	
 	public SecureRandomGenerator(int numBitsOfSecureRandomToken, int radixOfSecureRandomToken, boolean useStrongSecureRandom) {
 		this.numBitsOfSecureRandomToken = numBitsOfSecureRandomToken;
@@ -48,6 +51,16 @@ public class SecureRandomGenerator {
 		this.useStrongSecureRandom = useStrongSecureRandom;
 		this.algorithm = null;
 		this.provider = null;
+		this.encode = null;
+	}
+	
+	public SecureRandomGenerator(int numBitsOfSecureRandomToken, int radixOfSecureRandomToken, boolean useStrongSecureRandom, String encode) {
+		this.numBitsOfSecureRandomToken = numBitsOfSecureRandomToken;
+		this.radixOfSecureRandomToken = radixOfSecureRandomToken;
+		this.useStrongSecureRandom = useStrongSecureRandom;
+		this.algorithm = null;
+		this.provider = null;
+		this.encode = encode;
 	}
 	
 	public SecureRandomGenerator(int numBitsOfSecureRandomToken, int radixOfSecureRandomToken, String algorithm) {
@@ -56,6 +69,7 @@ public class SecureRandomGenerator {
 		this.useStrongSecureRandom = false;
 		this.algorithm = algorithm;
 		this.provider = null;
+		this.encode = null;
 	}
 	
 	public SecureRandomGenerator(int numBitsOfSecureRandomToken, int radixOfSecureRandomToken, String algorithm, String provider) {
@@ -64,6 +78,16 @@ public class SecureRandomGenerator {
 		this.useStrongSecureRandom = false;
 		this.algorithm = algorithm;
 		this.provider = provider;
+		this.encode = null;
+	}
+
+	public SecureRandomGenerator(int numBitsOfSecureRandomToken, int radixOfSecureRandomToken, String algorithm, String provider, String encode) {
+		this.numBitsOfSecureRandomToken = numBitsOfSecureRandomToken;
+		this.radixOfSecureRandomToken = radixOfSecureRandomToken;
+		this.useStrongSecureRandom = false;
+		this.algorithm = algorithm;
+		this.provider = provider;
+		this.encode = encode;
 	}
 	
 	private SecureRandom createSecureRandom() {
@@ -96,6 +120,16 @@ public class SecureRandomGenerator {
         }
 		BigInteger randInt = new BigInteger(numBitsOfSecureRandomToken, rand);
 		randoms.add(rand);
+		
+		if("base64".equals(encode)) {
+			byte[] b = randInt.toByteArray();
+			return base64urlsafewop.encodeToString(b);
+		} else if ("base32".equals(encode)) {
+			byte[] b = randInt.toByteArray();
+			Base32 base32 = new Base32();
+			return base32.encodeToString(b);
+		}
+		
 		if (radixOfSecureRandomToken == 64) {
 			byte[] b = randInt.toByteArray();
 			return base64urlsafewop.encodeToString(b);
@@ -114,18 +148,25 @@ public class SecureRandomGenerator {
 		return randInt;
 	}
 
-	public String randomString(int length, char[] values) {
+	public String randomString(int length) {
 		SecureRandom rand = randoms.poll();
 		if (rand == null) {
 			rand = createSecureRandom();
         }
-		String out = "";
-		for (int index = 0; index < length; index++) {
-			int idx = rand.nextInt(values.length);
-			out += values[idx];
-        }
+		
+		byte bytes[] = new byte[length];
+		rand.nextBytes(bytes);
+		
 		randoms.add(rand);
-		return out;
+
+		if("base64".equals(encode)) {
+			return base64urlsafewop.encodeToString(bytes);
+		} else if ("base32".equals(encode)) {
+			Base32 base32 = new Base32();
+			return base32.encodeToString(bytes).substring(0, length);
+		}
+		
+		return new String(bytes);
 	}
 
 }
