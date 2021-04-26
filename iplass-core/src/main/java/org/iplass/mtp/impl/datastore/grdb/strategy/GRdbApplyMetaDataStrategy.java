@@ -177,7 +177,9 @@ public class GRdbApplyMetaDataStrategy implements ApplyMetaDataStrategy {
 	@Override
 	public boolean modify(final MetaEntity newOne, final MetaEntity previous, final EntityContext context, final int[] targetTenantIds) {
 
-		final UpdEntity updateDiff = new UpdEntity(previous, newOne, context, dataStore.getStorageSpaceMapOrDefault((MetaSchemalessRdbStoreMapping) newOne.getStoreMapping()), rdb);
+		final UpdEntity updateDiff = new UpdEntity(previous, newOne, context,
+				dataStore.getStorageSpaceMapOrDefault((MetaSchemalessRdbStoreMapping) previous.getStoreMapping()),
+				dataStore.getStorageSpaceMapOrDefault((MetaSchemalessRdbStoreMapping) newOne.getStoreMapping()), rdb);
 		updateDiff.modifyMetaData();
 
 		SqlExecuter<Boolean> exec = new SqlExecuter<Boolean>() {
@@ -204,7 +206,9 @@ public class GRdbApplyMetaDataStrategy implements ApplyMetaDataStrategy {
 	@Override
 	public void patchData(MetaEntity newOne, MetaEntity previous,
 			EntityContext context, final int targetTenantId) {
-		final UpdEntity updateDiff = new UpdEntity(previous, newOne, context, dataStore.getStorageSpaceMapOrDefault((MetaSchemalessRdbStoreMapping) newOne.getStoreMapping()), rdb);
+		final UpdEntity updateDiff = new UpdEntity(previous, newOne, context,
+				dataStore.getStorageSpaceMapOrDefault((MetaSchemalessRdbStoreMapping) previous.getStoreMapping()),
+				dataStore.getStorageSpaceMapOrDefault((MetaSchemalessRdbStoreMapping) newOne.getStoreMapping()), rdb);
 		if (updateDiff.needDataModify()) {
 			updateDiff.modifyMetaData();
 			SqlExecuter<Void> exec = new SqlExecuter<Void>() {

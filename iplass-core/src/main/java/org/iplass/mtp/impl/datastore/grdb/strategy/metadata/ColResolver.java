@@ -160,6 +160,7 @@ public class ColResolver {
 	}
 
 	private MetaRdbColumnMapping getMapping(MetaProperty prop) {
+		//存在しないstorageStapce指定した場合は、カラムマップしない
 		if (newStoreMap != null && !storageSpaceMismatch) {
 			if (newStoreMap.getColumnMappingList() != null) {
 				for (MetaRdbColumnMapping cm: newStoreMap.getColumnMappingList()) {

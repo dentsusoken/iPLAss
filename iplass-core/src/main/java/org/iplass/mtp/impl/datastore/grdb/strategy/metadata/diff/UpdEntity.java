@@ -56,6 +56,7 @@ public class UpdEntity extends Diff {
 //	private int tableCount;
 //	private Map<String, StorageSpaceMap> storageSpaceMap;
 	private StorageSpaceMap storage;
+	private StorageSpaceMap previousStorage;
 	
 	private List<Diff> propertyList;
 	
@@ -67,11 +68,12 @@ public class UpdEntity extends Diff {
 		}
 	}
 	
-	public UpdEntity(MetaEntity previousEntity, MetaEntity nextEntity, EntityContext context, StorageSpaceMap storage, RdbAdapter rdb) {
+	public UpdEntity(MetaEntity previousEntity, MetaEntity nextEntity, EntityContext context, StorageSpaceMap previousStorage, StorageSpaceMap nextStorage, RdbAdapter rdb) {
 		this.previousEntity = previousEntity;
 		this.nextEntity = nextEntity;
 		this.context = context;
-		this.storage = storage;
+		this.storage = nextStorage;
+		this.previousStorage = previousStorage;
 		this.colResolver = new ColResolver(previousEntity, (MetaSchemalessRdbStoreMapping) nextEntity.getStoreMapping(), storage, rdb);
 		
 		propertyList = new ArrayList<Diff>();
@@ -239,7 +241,12 @@ public class UpdEntity extends Diff {
 		MetaGRdbEntityStore preStoreDef = (MetaGRdbEntityStore) previousEntity.getEntityStoreDefinition();
 		MetaGRdbEntityStore nextStoreDef = colResolver.getMetaStore();
 		nextStoreDef.setVersion(preStoreDef.getVersion() + 1);
-		nextStoreDef.setTableNamePostfix(storage.generateTableNamePostfix(context.getLocalTenantId(), nextEntity.getId()));
+		
+		if (previousStorage.getStorageSpaceName().equals(storage.getStorageSpaceName())) {
+			nextStoreDef.setTableNamePostfix(preStoreDef.getTableNamePostfix());
+		} else {
+			nextStoreDef.setTableNamePostfix(storage.generateTableNamePostfix(context.getLocalTenantId(), nextEntity.getId()));
+		}
 		nextEntity.setEntityStoreDefinition(nextStoreDef);
 		
 		if (propertyList != null) {
