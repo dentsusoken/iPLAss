@@ -40,12 +40,12 @@
 <%@ page import="org.iplass.gem.command.Constants" %>
 
 <%!
-	String url(BinaryReference br, String download) {
-		String url = download + "?id=" + br.getLobId();
+	String url(BinaryReference br, String action) {
+		String url = action + "?" + Constants.ID + "=" + br.getLobId();
 		if (br.getDefinitionName() != null) {
-			url = url + "&defName=" + br.getDefinitionName() + "&propName=" + br.getPropertyName();
+			url = url + "&" + Constants.DEF_NAME + "=" + br.getDefinitionName() 
+				+ "&" + Constants.PROP_NAME + "=" + br.getPropertyName();
 		}
-
 		return url;
 	}
 %>
@@ -97,6 +97,7 @@
 			download = contextPath + "/" + DownloadCommand.DOWNLOAD_ACTION_NAME;
 		}
 		String pdfviewer = contextPath + "/" + DownloadCommand.PDFVIEWER_ACTION_NAME;
+		String imgviewer = contextPath + "/" + DownloadCommand.IMGVIEWER_ACTION_NAME;
 
 		String width = "";
 		if (editor.getWidth() > 0) {
@@ -147,7 +148,10 @@
 <input type="file" id="<c:out value="<%=fileId %>"/>" name="filePath" value="${m:rs('mtp-gem-messages', 'generic.editor.binary.BinaryPropertyEditor_Edit.upload')}"
  style="<c:out value="<%=style %>"/>" class="<c:out value="<%=cls %>"/>" data-pname="<c:out value="<%=propName %>"/>" data-displayType="<c:out value="<%=displayType%>"/>"
  data-binCount="<c:out value="<%=length %>" />" data-uploadUrl="<c:out value="<%=upload %>" />" data-downloadUrl="<c:out value="<%=download %>" />" data-refUrl="<c:out value="<%=ref %>" />"
- data-pdfviewerUrl="<c:out value="<%=pdfviewer %>" />" data-usePdfjs="<%=editor.isUsePdfjs()%>" data-multiplicity="<c:out value="<%=pd.getMultiplicity() %>" />" data-binWidth="<c:out value="<%=editor.getWidth() %>" />"
+ data-pdfviewerUrl="<c:out value="<%=pdfviewer %>" />" data-usePdfjs="<%=editor.isUsePdfjs()%>"
+ data-imgviewerUrl="<c:out value="<%=imgviewer %>" />" data-useImageViewer="<%=editor.isUseImageViewer()%>" 
+ data-showImageRotateButton="<%=editor.isShowImageRotateButton() %>"  data-openNewTab="<%=editor.isOpenNewTab() %>"
+ data-multiplicity="<c:out value="<%=pd.getMultiplicity() %>" />" data-binWidth="<c:out value="<%=editor.getWidth() %>" />"
  data-binHeight="<c:out value="<%=editor.getHeight() %>" />" data-token="${m:fixToken()}" <c:out value="<%=multiple%>" /> />
  <%
 		}
@@ -169,30 +173,73 @@
 %>
 <li id="<c:out value="<%=liId %>"/>" class="list-bin <c:out value="<%=listStyle %>"/>">
 <%
+			//ファイルリンク
 			if (editor.getDisplayType() == BinaryDisplayType.BINARY || editor.getDisplayType() == BinaryDisplayType.LINK) {
 				if (br.getType().indexOf("application/pdf") != -1 && editor.isUsePdfjs()) {
+					//PDFViewer
 					String pdfPath = pdfviewer+ "?file=" + URLEncoder.encode(url(br, download), "utf-8");
 %>
-<a href="<%=pdfPath%>" <%=target %>><c:out value="<%=br.getName() %>" /></a>
+<a href="<%=pdfPath%>" <%=target %> class="link-bin"><c:out value="<%=br.getName() %>" /></a>
+<%
+				} else if (br.getType().indexOf("image") != -1 && editor.isUseImageViewer() && editor.isOpenNewTab()) {
+					//ImageViewer＋別タブ
+%>
+<a href="javascript:void(0)" data-viewerUrl="<c:out value="<%=url(br, imgviewer) %>" />" data-lobid="<%=br.getLobId() %>" class="link-bin img-viewer" onclick="showImageViewer(this);"><c:out value="<%=br.getName() %>" /></a>
 <%
 				} else {
+					//Download
 %>
-<a href="<c:out value="<%=url(br, download) %>" />" <%=target %>><c:out value="<%=br.getName() %>" /></a>
+<a href="<c:out value="<%=url(br, download) %>" />" <%=target %> class="link-bin"><c:out value="<%=br.getName() %>" /></a>
 <%
 				}
 			}
+
+			//画像ローテ―トボタン
+			if (editor.isShowImageRotateButton() && br.getType().indexOf("image") != -1) {
+				if (editor.getDisplayType() == BinaryDisplayType.BINARY || editor.getDisplayType() == BinaryDisplayType.PREVIEW) {
+%>
+<span class="viewer-toolbar" style="display:inline-block">
+<ul>
+<li class="viewer-rotate-right" onclick="rotateImage('<%=br.getLobId() %>', 90)"></li>
+<li class="viewer-rotate-left" onclick="rotateImage('<%=br.getLobId() %>', -90)"></li>
+</ul>
+</span>
+<%
+				}
+			}
+
+			//削除ボタン
 			if (!hideDeleteButton){
 %>
- <a href="javascript:void(0)" class="binaryDelete del-btn" data-fileId="<c:out value="<%=fileId %>"/>">${m:rs("mtp-gem-messages", "generic.editor.binary.BinaryPropertyEditor_Edit.delete")}</a>
+ <a href="javascript:void(0)" class="binaryDelete del-btn link-bin" data-fileId="<c:out value="<%=fileId %>"/>">${m:rs("mtp-gem-messages", "generic.editor.binary.BinaryPropertyEditor_Edit.delete")}</a>
 <%
 			}
+			
 			if (editor.getDisplayType() == BinaryDisplayType.BINARY || editor.getDisplayType() == BinaryDisplayType.PREVIEW) {
 				if (br.getType().indexOf("image") != -1) {
+					if (editor.isUseImageViewer() && editor.isOpenNewTab()) {
+						//別タブ
 %>
 <p>
-<img src="<c:out value="<%=url(br, ref) %>" />" alt="<c:out value="<%=br.getLobId() %>" />" onload="imageLoad()" <%=width + height %> />
+<img src="<c:out value="<%=url(br, ref) %>" />" alt="<c:out value="<%=br.getName() %>" />" onload="imageLoad()" <%=width + height %> data-lobid="<%=br.getLobId() %>" class="img-viewer" onclick="showImageViewer(this);" data-viewerUrl="<c:out value="<%=url(br, imgviewer) %>" />" />
 </p>
 <%
+					} else {
+						if (editor.isUseImageViewer()) {
+							//Inline
+%>
+<p>
+<img src="<c:out value="<%=url(br, ref) %>" />" alt="<c:out value="<%=br.getName() %>" />" onload="imageLoad()" <%=width + height %> data-lobid="<%=br.getLobId() %>" class="img-viewer" onclick="inlineImageViewer(this);" />
+</p>
+<%
+						} else {
+%>
+<p>
+<img src="<c:out value="<%=url(br, ref) %>" />" alt="<c:out value="<%=br.getName() %>" />" onload="imageLoad()" <%=width + height %> data-lobid="<%=br.getLobId() %>" />
+</p>
+<%
+						}
+					}
 				} else if (br.getType().indexOf("application/x-shockwave-flash") != -1) {
 %>
 <p>

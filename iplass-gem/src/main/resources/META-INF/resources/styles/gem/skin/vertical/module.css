@@ -482,6 +482,25 @@ p.loading {
   margin: 2px;
   width: 16px; }
 
+/* binary表示 */
+.list-bin > a.link-bin {
+  vertical-align: top; }
+
+.list-bin > .viewer-toolbar {
+  display: inline-block; }
+  .list-bin > .viewer-toolbar > ul {
+    margin: 0;
+    padding: 0 3px; }
+
+.viewer-container.viewer-backdrop {
+  background-color: rgba(0, 0, 0, 0.8); }
+
+img.img-viewer {
+  cursor: -webkit-zoom-in;
+  cursor: zoom-in;
+  transition: all .3s;
+  -webkit-transition: all .3s; }
+
 div.box-scroll {
   overflow-x: auto;
   overflow-y: hidden;
