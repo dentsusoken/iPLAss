@@ -88,6 +88,7 @@ public class Constants {
 	public static final String ENTITY_DEFINITION = "entityDefinition";
 	public static final String NAV_SECTION = "navSection";
 	public static final String ELEMENT = "element";
+	public static final String ELEMENT_ID = "elementId";
 	public static final String COL_NUM = "colNum";
 	public static final String IS_VIRTUAL = "isVirtual";
 	public static final String OUTPUT_HIDDEN = "outputHidden";
