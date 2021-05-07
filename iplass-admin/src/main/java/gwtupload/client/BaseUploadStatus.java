@@ -66,8 +66,7 @@ public class BaseUploadStatus implements IUploadStatus {
     /* (non-Javadoc)
      * @see gwtupload.client.HasProgress#setProgress(int, int)
      */
-    @Override
-	public void setProgress(long done, long total) {
+    public void setProgress(long done, long total) {
       if (statusBar == null) {
         return;
       }
@@ -142,12 +141,10 @@ public class BaseUploadStatus implements IUploadStatus {
   /* (non-Javadoc)
    * @see gwtupload.client.IUploadStatus#addCancelHandler(gwtupload.client.UploadCancelHandler)
    */
-  @Override
-public HandlerRegistration addCancelHandler(final UploadCancelHandler handler) {
+  public HandlerRegistration addCancelHandler(final UploadCancelHandler handler) {
     hasCancelActions = true;
     return cancelLabel.addClickHandler(new ClickHandler() {
-      @Override
-	public void onClick(ClickEvent event) {
+      public void onClick(ClickEvent event) {
         handler.onCancel();
       }
     });
@@ -156,38 +153,33 @@ public HandlerRegistration addCancelHandler(final UploadCancelHandler handler) {
   /* (non-Javadoc)
    * @see gwtupload.client.IUploadStatus#getStatus()
    */
-  @Override
-public Status getStatus() {
+  public Status getStatus() {
     return status;
   }
 
   /* (non-Javadoc)
    * @see gwtupload.client.IUploadStatus#getWidget()
    */
-  @Override
-@Deprecated
+  @Deprecated
   final public Widget getWidget() {
     return asWidget();
   }
 
-  @Override
-public Widget asWidget() {
+  public Widget asWidget() {
     return panel;
   }
-
+  
   /* (non-Javadoc)
    * @see gwtupload.client.IUploadStatus#newInstance()
    */
-  @Override
-public IUploadStatus newInstance() {
+  public IUploadStatus newInstance() {
     return new BaseUploadStatus();
   }
 
   /* (non-Javadoc)
    * @see gwtupload.client.IUploadStatus#setCancelConfiguration(int)
    */
-  @Override
-public void setCancelConfiguration(Set<CancelBehavior> config) {
+  public void setCancelConfiguration(Set<CancelBehavior> config) {
     cancelCfg = config;
     cancelLabel.setVisible(hasCancelActions && !cancelCfg.contains(CancelBehavior.DISABLED));
   }
@@ -195,8 +187,7 @@ public void setCancelConfiguration(Set<CancelBehavior> config) {
   /* (non-Javadoc)
    * @see gwtupload.client.IUploadStatus#setError(java.lang.String)
    */
-  @Override
-public void setError(String msg) {
+  public void setError(String msg) {
     setStatus(Status.ERROR);
     Window.alert(msg.replaceAll("\\\\n", "\\n"));
   }
@@ -206,8 +197,7 @@ public void setError(String msg) {
    *
    * @see gwtupload.client.IUploadStatus#setFileNames(List<java.lang.String>)
    */
-  @Override
-public void setFileNames(List<String> names) {
+  public void setFileNames(List<String> names) {
     fileNames = names;
     fileNameLabel.setHTML(Utils.convertCollectionToString(names, "<br/>"));
     if (prg instanceof HasText) {
@@ -218,8 +208,7 @@ public void setFileNames(List<String> names) {
   /* (non-Javadoc)
    * @see gwtupload.client.IUploadStatus#setI18Constants(gwtupload.client.IUploadStatus.UploadConstants)
    */
-  @Override
-public void setI18Constants(UploadStatusConstants strs) {
+  public void setI18Constants(UploadStatusConstants strs) {
     assert strs != null;
     i18nStrs = strs;
   }
@@ -236,8 +225,7 @@ public void setI18Constants(UploadStatusConstants strs) {
   /* (non-Javadoc)
    * @see gwtupload.client.IUploadStatus#setProgress(int, int)
    */
-  @Override
-public void setProgress(long done, long total) {
+  public void setProgress(long done, long total) {
     int percent = Utils.getPercent(done, total);
     setPercent(percent);
     if (prg != null && prg instanceof HasProgress) {
@@ -248,8 +236,7 @@ public void setProgress(long done, long total) {
   /* (non-Javadoc)
    * @see gwtupload.client.IUploadStatus#setStatus(int)
    */
-  @Override
-public void setStatus(Status stat) {
+  public void setStatus(Status stat) {
     String statusName = stat.toString().toLowerCase();
     statusLabel.removeStyleDependentName(statusName);
     statusLabel.addStyleDependentName(statusName);
@@ -304,16 +291,14 @@ public void setStatus(Status stat) {
   /* (non-Javadoc)
    * @see gwtupload.client.IUploadStatus#addStatusChangedHandler(gwtupload.client.IUploadStatus.UploadStatusChangedHandler)
    */
-  @Override
-public void setStatusChangedHandler(final UploadStatusChangedHandler handler) {
+  public void setStatusChangedHandler(final UploadStatusChangedHandler handler) {
     onUploadStatusChangedHandler = handler;
   }
 
   /* (non-Javadoc)
    * @see gwtupload.client.IUploadStatus#setVisible(boolean)
    */
-  @Override
-public void setVisible(boolean b) {
+  public void setVisible(boolean b) {
     asWidget().setVisible(b);
   }
 
