@@ -200,9 +200,9 @@ public class BaseUploadStatus implements IUploadStatus {
    */
   public void setFileNames(List<String> names) {
     fileNames = names;
-  	//modified by the iPLAss team
+    //modified by the iPLAss team
     //For XSS protection, use GWT's SafeHtml to sanitize upload filenames.
-  	//fileNameLabel.setHTML(Utils.convertCollectionToString(names, "<br/>"));
+    //fileNameLabel.setHTML(Utils.convertCollectionToString(names, "<br/>"));
     fileNameLabel.setHTML(SafeHtmlUtils.fromString(Utils.convertCollectionToString(names, "<br/>")).asString());
     if (prg instanceof HasText) {
       ((HasText) prg).setText(Utils.convertCollectionToString(names, ","));
