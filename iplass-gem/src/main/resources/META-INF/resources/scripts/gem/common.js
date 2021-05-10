@@ -1808,13 +1808,13 @@ function addBinaryGroup(propName, count, fileId, brName, brType, brLobId, displa
 		if (displayType && (displayType == "BINARY" || displayType == "PREVIEW")) {
 			var $rotateRoot = $("<span/>").addClass("viewer-toolbar").appendTo($li);
 			var $rotateButtons = $("<ul/>").appendTo($rotateRoot);
-			var $rotateRight = $("<li/>").addClass("viewer-rotate-right").appendTo($rotateButtons);
 			var $rotateLeft = $("<li/>").addClass("viewer-rotate-left").appendTo($rotateButtons);
-			$rotateRight.on("click", function() {
-				rotateImage(brLobId, 90);
-			});
+			var $rotateRight = $("<li/>").addClass("viewer-rotate-right").appendTo($rotateButtons);
 			$rotateLeft.on("click", function() {
 				rotateImage(brLobId, -90);
+			});
+			$rotateRight.on("click", function() {
+				rotateImage(brLobId, 90);
 			});
 		}
 	}

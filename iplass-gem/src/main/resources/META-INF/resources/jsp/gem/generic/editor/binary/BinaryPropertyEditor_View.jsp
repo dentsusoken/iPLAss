@@ -129,8 +129,8 @@
 %>
 <span class="viewer-toolbar" style="display:inline-block">
 <ul>
-<li class="viewer-rotate-right" onclick="rotateImage('<%=br.getLobId() %>', 90)"></li>
 <li class="viewer-rotate-left" onclick="rotateImage('<%=br.getLobId() %>', -90)"></li>
+<li class="viewer-rotate-right" onclick="rotateImage('<%=br.getLobId() %>', 90)"></li>
 </ul>
 </span>
 <%
