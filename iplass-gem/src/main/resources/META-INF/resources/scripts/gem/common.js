@@ -1863,6 +1863,10 @@ function addBinaryGroup(propName, count, fileId, brName, brType, brLobId, displa
 			if (width > 0) $img.attr("width", width);
 			var height = $input.attr("data-binHeight") - 0;
 			if (height > 0) $img.attr("height", height);
+
+			//デフォルトサイズ取得用のダミー追加
+			$("<span/>").addClass("dummy").appendTo($p);
+			
 		} else if (brType && brType.indexOf("application/x-shockwave-flash") > -1) {
 			// swfファイルの場合はアニメーションを表示
 			var width = $input.attr("data-binWidth") - 0;
@@ -1977,12 +1981,10 @@ function rotateImage(lobId, deg) {
 		var imgHeight = $image.height();
 		
 		var height = null;
-		var width = null;
 		var translate = null;
 		if (imageData.rotate == 90 || imageData.rotate == 270
 				|| imageData.rotate == -90 || imageData.rotate == -270) {
 			height = imgWidth;
-			width = imgHeight;
 			if (imgWidth == imgHeight) {
 				translate = 0;
 			} else if (imgWidth > imgHeight) {
@@ -2002,13 +2004,19 @@ function rotateImage(lobId, deg) {
 			}
 		} else {
 			height = imgHeight;
-			width = imgWidth;
 			translate = 0;
 		}
 
-		//縦横逆転するのでサイズ変更
-		$image.parent().css("height", height);
-		$image.parent().css("width", width);
+		//縦横逆転するので高さの調整
+		//dummyのspanからデフォルトの高さを取得
+		var defaultHeight = $image.next().height();
+		if (height > defaultHeight) {
+			//画像の高さが高い場合は設定
+			$image.parent().css("height", height);
+		} else {
+			//デフォルトが高ければ明示指定をクリア
+			$image.parent().css("height", "");
+		}
 		
 		//画像の回転
 		var transform = "rotate(" + imageData.rotate + "deg) translateX(" + translate + "px) translateY(" + translate + "px)";

@@ -140,29 +140,30 @@
 
 			if (editor.getDisplayType() == BinaryDisplayType.BINARY || editor.getDisplayType() == BinaryDisplayType.PREVIEW || editor.getDisplayType() == BinaryDisplayType.LABEL) {
 				if (br.getType().indexOf("image") != -1) {
+%>
+<p>
+<%
 					if (editor.isUseImageViewer() && editor.isOpenNewTab()) {
 						//別タブ
 %>
-<p>
 <img src="<c:out value="<%=url(br, ref) %>" />" alt="<c:out value="<%=br.getName() %>" />" onload="imageLoad()" <%=width + height %> data-lobid="<%=br.getLobId() %>" class="img-viewer" onclick="showImageViewer(this);" data-viewerUrl="<c:out value="<%=url(br, imgviewer) %>" />" />
-</p>
 <%
 					} else {
 						if (editor.isUseImageViewer()) {
 							//Inline
 %>
-<p>
 <img src="<c:out value="<%=url(br, ref) %>" />" alt="<c:out value="<%=br.getName() %>" />" onload="imageLoad()" <%=width + height %> data-lobid="<%=br.getLobId() %>" class="img-viewer" onclick="inlineImageViewer(this);" />
-</p>
 <%
 						} else {
 %>
-<p>
 <img src="<c:out value="<%=url(br, ref) %>" />" alt="<c:out value="<%=br.getName() %>" />" onload="imageLoad()" <%=width + height %> data-lobid="<%=br.getLobId() %>" />
-</p>
 <%
 						}
 					}
+%>
+<span class="dummy"></span>
+</p>
+<%
 				} else if (br.getType().indexOf("application/x-shockwave-flash") != -1) {
 %>
 <p>
