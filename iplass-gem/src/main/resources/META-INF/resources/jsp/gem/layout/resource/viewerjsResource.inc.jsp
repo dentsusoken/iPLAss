@@ -18,9 +18,7 @@
  along with this program. If not, see <https://www.gnu.org/licenses/>.
  --%>
 
-<%@ taglib prefix="m" uri="http://iplass.org/tags/mtp"%>
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8" trimDirectiveWhitespaces="true" %>
-<%@ page import="org.iplass.mtp.web.template.TemplateUtil"%>
 
-<link rel="stylesheet" href="${m:esc(staticContentPath)}/scripts/gem/plugin/viewerjs/1.9.0/dist/viewer.min.css?cv=<%=TemplateUtil.getAPIVersion()%>" />
-<script type="text/javascript" src="${m:esc(staticContentPath)}/scripts/gem/plugin/viewerjs/1.9.0/dist/viewer.min.js?cv=<%=TemplateUtil.getAPIVersion()%>"></script>
+<link rel="stylesheet" href="${staticContentPath}/webjars/viewerjs/1.9.0/dist/viewer.min.css?cv=${apiVersion}" />
+<script src="${staticContentPath}/webjars/viewerjs/1.9.0/dist/viewer.min.js?cv=${apiVersion}"></script>

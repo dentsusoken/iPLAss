@@ -103,6 +103,7 @@ ext {
 		
 		'org.webjars.npm:free-jqgrid': '4.15.5',
 		'org.webjars.npm:jqtree': '1.4.9',
+		'org.webjars.npm:viewerjs': '1.9.0',
 		
 		'org.webjars.bower:jquery-ui': '1.12.1',
 		'org.webjars.bower:blueimp-file-upload': '10.30.1',
