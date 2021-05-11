@@ -120,10 +120,7 @@ public class SecureRandomGenerator {
 			rand = createSecureRandom();
         }
 		
-		BigInteger randInt;
-		do {
-			randInt = new BigInteger(numBitsOfSecureRandomToken, rand);
-		} while(numBitsOfSecureRandomToken != randInt.bitLength());
+		BigInteger randInt = new BigInteger(numBitsOfSecureRandomToken, rand);
 		
 		randoms.add(rand);
 		
