@@ -109,6 +109,7 @@ public abstract class AuthenticationProviderBase implements AuthenticationProvid
 	private String authLoggerName;
 	
 	private UserEntityResolver userEntityResolver;
+	private UnmodifiableUniqueKeyResolver unmodifiableUniqueKeyResolver;
 	private TrustedAuthValidator trustedAuthValidator;
 	private AutoLoginHandler autoLoginHandler;
 	
@@ -139,6 +140,15 @@ public abstract class AuthenticationProviderBase implements AuthenticationProvid
 
 	public void setUserEntityResolver(UserEntityResolver userEntityResolver) {
 		this.userEntityResolver = userEntityResolver;
+	}
+	
+	@Override
+	public UnmodifiableUniqueKeyResolver getUnmodifiableUniqueKeyResolver() {
+		return unmodifiableUniqueKeyResolver;
+	}
+
+	public void setUnmodifiableUniqueKeyResolver(UnmodifiableUniqueKeyResolver unmodifiableUniqueKeyResolver) {
+		this.unmodifiableUniqueKeyResolver = unmodifiableUniqueKeyResolver;
 	}
 
 	public String getAuthLoggerName() {
@@ -187,6 +197,13 @@ public abstract class AuthenticationProviderBase implements AuthenticationProvid
 			userEntityResolver = er;
 		}
 		userEntityResolver.inited(service, this);
+		
+		if (unmodifiableUniqueKeyResolver == null) {
+			DefaultUnmodifiableUniqueKeyResolver ur = new DefaultUnmodifiableUniqueKeyResolver();
+			ur.setUnmodifiableUniqueKeyProperty(User.OID);
+			unmodifiableUniqueKeyResolver = ur;
+		}
+		unmodifiableUniqueKeyResolver.inited(service, this);
 		
 		if (trustedAuthValidator == null) {
 			trustedAuthValidator = new DefaultTrustedAuthValidator(getAccountHandleClassForTrust().getName(), getCredentialTypeForTrust().getName());

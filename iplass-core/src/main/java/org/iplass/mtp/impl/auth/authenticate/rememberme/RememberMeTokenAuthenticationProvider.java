@@ -43,6 +43,7 @@ import org.iplass.mtp.impl.auth.authenticate.AuthenticationProvider;
 import org.iplass.mtp.impl.auth.authenticate.AuthenticationProviderBase;
 import org.iplass.mtp.impl.auth.authenticate.AutoLoginHandler;
 import org.iplass.mtp.impl.auth.authenticate.AutoLoginInstruction;
+import org.iplass.mtp.impl.auth.authenticate.UnmodifiableUniqueKeyResolver;
 import org.iplass.mtp.impl.auth.authenticate.UserEntityResolver;
 import org.iplass.mtp.impl.auth.authenticate.builtin.policy.AuthenticationPolicyService;
 import org.iplass.mtp.impl.auth.authenticate.builtin.policy.MetaAuthenticationPolicy.AuthenticationPolicyRuntime;
@@ -356,6 +357,11 @@ public class RememberMeTokenAuthenticationProvider implements AuthenticationProv
 	@Override
 	public UserEntityResolver getUserEntityResolver() {
 		return authenticationProvider.getUserEntityResolver();
+	}
+	
+	@Override
+	public UnmodifiableUniqueKeyResolver getUnmodifiableUniqueKeyResolver() {
+		return authenticationProvider.getUnmodifiableUniqueKeyResolver();
 	}
 
 	public void setTrustedAuthValidator(TrustedAuthValidator trustedAuthValidator) {

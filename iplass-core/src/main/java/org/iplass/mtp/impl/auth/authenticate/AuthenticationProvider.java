@@ -97,6 +97,8 @@ public interface AuthenticationProvider extends ServiceInitListener<AuthService>
 	
 	public UserEntityResolver getUserEntityResolver();
 	
+	public UnmodifiableUniqueKeyResolver getUnmodifiableUniqueKeyResolver();
+
 	public Class<? extends Credential> getCredentialType();
 	
 	public default AutoLoginHandler getAutoLoginHandler() {
