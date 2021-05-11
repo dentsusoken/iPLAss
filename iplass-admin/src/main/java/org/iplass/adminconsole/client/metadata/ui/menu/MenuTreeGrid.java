@@ -26,11 +26,11 @@ import java.util.List;
 
 import org.iplass.adminconsole.client.base.data.DataSourceConstants;
 import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
-import org.iplass.adminconsole.client.base.ui.widget.GridActionImgButton;
 import org.iplass.adminconsole.client.base.ui.widget.MtpTreeGrid;
 import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
 import org.iplass.adminconsole.client.metadata.data.menu.MenuItemTreeDS;
 import org.iplass.adminconsole.client.metadata.ui.menu.item.MenuItemTreeGrid;
+import org.iplass.adminconsole.shared.metadata.dto.MetaDataConstants;
 import org.iplass.mtp.view.menu.ActionMenuItem;
 import org.iplass.mtp.view.menu.EntityMenuItem;
 import org.iplass.mtp.view.menu.MenuItem;
@@ -46,17 +46,17 @@ import com.smartgwt.client.types.SelectionStyle;
 import com.smartgwt.client.types.TreeModelType;
 import com.smartgwt.client.util.BooleanCallback;
 import com.smartgwt.client.util.SC;
-import com.smartgwt.client.widgets.Canvas;
-import com.smartgwt.client.widgets.events.ClickEvent;
-import com.smartgwt.client.widgets.events.ClickHandler;
-import com.smartgwt.client.widgets.grid.ListGridRecord;
 import com.smartgwt.client.widgets.grid.events.RecordDoubleClickEvent;
 import com.smartgwt.client.widgets.grid.events.RecordDoubleClickHandler;
+import com.smartgwt.client.widgets.menu.Menu;
+import com.smartgwt.client.widgets.menu.events.MenuItemClickEvent;
 import com.smartgwt.client.widgets.tree.Tree;
 import com.smartgwt.client.widgets.tree.TreeGridField;
 import com.smartgwt.client.widgets.tree.TreeNode;
 import com.smartgwt.client.widgets.tree.events.FolderDropEvent;
 import com.smartgwt.client.widgets.tree.events.FolderDropHandler;
+import com.smartgwt.client.widgets.tree.events.NodeContextClickEvent;
+import com.smartgwt.client.widgets.tree.events.NodeContextClickHandler;
 
 /**
  * メニューツリー編集TreeGrid
@@ -71,6 +71,9 @@ public class MenuTreeGrid extends MtpTreeGrid {
 
 	/** 内部保持Tree */
 	private Tree tree;
+
+	/** コンテキストメニュー */
+	protected MenuTreeContextMenu contextMenu;
 
 	/**
 	 * コンストラクタ
@@ -117,11 +120,7 @@ public class MenuTreeGrid extends MtpTreeGrid {
 
 		TreeGridField nameField = new TreeGridField(DataSourceConstants.FIELD_NAME, "MenuItem");
 		TreeGridField remarksField = new TreeGridField("remarks", " ");
-		TreeGridField editActionField = new TreeGridField("editAction", " ");
-		editActionField.setWidth(25);
-		TreeGridField delActionField = new TreeGridField("delAction", " ");
-		delActionField.setWidth(25);
-		setFields(nameField, remarksField, editActionField, delActionField);
+		setFields(nameField, remarksField);
 
 		//Drag＆Drop用EventHandlerの設定
 		addFolderDropHandler(new MenuItemFolderDropHandler());
@@ -139,6 +138,20 @@ public class MenuTreeGrid extends MtpTreeGrid {
 		//データのセット
 		setData(tree);
 
+		//コンテキストメニュー
+		addNodeContextClickHandler(new NodeContextClickHandler() {
+
+			@Override
+			public void onNodeContextClick(NodeContextClickEvent event) {
+				MenuTreeNode node = (MenuTreeNode)event.getNode();
+				if (contextMenu == null) {
+					contextMenu = new MenuTreeContextMenu();
+				}
+				contextMenu.setNode(node);
+				setContextMenu(contextMenu);
+			}
+		});
+
 		//一覧ダブルクリック処理
 		addRecordDoubleClickHandler(new RecordDoubleClickHandler() {
 
@@ -155,52 +168,6 @@ public class MenuTreeGrid extends MtpTreeGrid {
 		MenuItem menuItem = (MenuItem)record.getAttributeAsObject(MenuItemTreeDS.FieldName.VALUEOBJECT.name());
 		MenuItemTreeDS.MenuItemType type = (MenuItemTreeDS.MenuItemType)record.getAttributeAsObject(MenuItemTreeDS.FieldName.TYPE.name());
 		owner.showMenuItemDialog(type, menuItem);
-	}
-
-	@Override
-	protected Canvas createRecordComponent(final ListGridRecord record, Integer colNum) {
-		String fieldName = this.getFieldName(colNum);
-		if (fieldName.equals("editAction")) {
-			GridActionImgButton recordCanvas = new GridActionImgButton();
-			recordCanvas.setActionButtonSrc("icon_edit.png");
-			recordCanvas.setActionButtonPrompt(AdminClientMessageUtil.getString("ui_metadata_menu_MenuTreeGrid_editMenuItem"));
-			recordCanvas.addActionClickHandler(new ClickHandler() {
-
-				@Override
-				public void onClick(ClickEvent event) {
-					showMenuItemDialog(record);
-				}
-			});
-
-			return recordCanvas;
-		} else if (fieldName.equals("delAction")) {
-			GridActionImgButton recordCanvas = new GridActionImgButton();
-			recordCanvas.setActionButtonSrc("remove.png");
-			recordCanvas.setActionButtonPrompt(AdminClientMessageUtil.getString("ui_metadata_menu_MenuTreeGrid_deleteMenuItemFromTree"));
-			recordCanvas.addActionClickHandler(new ClickHandler() {
-
-				@Override
-				public void onClick(ClickEvent event) {
-
-					SC.confirm(AdminClientMessageUtil.getString("ui_metadata_menu_MenuTreeGrid_deleteConfirm"),
-							AdminClientMessageUtil.getString("ui_metadata_menu_MenuTreeGrid_deleteMenuItem", record.getAttribute(DataSourceConstants.FIELD_NAME))
-							, new BooleanCallback() {
-
-						@Override
-						public void execute(Boolean value) {
-							if (value) {
-								TreeNode target = Tree.nodeForRecord(record);
-								tree.remove(target);
-							}
-
-						}
-					});
-				}
-			});
-			return recordCanvas;
-		}
-		return null;
-
 	}
 
 	/**
@@ -614,6 +581,56 @@ public class MenuTreeGrid extends MtpTreeGrid {
 			}
 			//ありえない
 			throw new IllegalStateException(AdminClientMessageUtil.getString("ui_metadata_menu_MenuTreeGrid_canNotGetDrag") + node);
+		}
+	}
+
+	private class MenuTreeContextMenu extends Menu {
+
+		private MenuTreeNode node;
+
+		public MenuTreeContextMenu() {
+
+			// 右クリックメニュー項目1
+			com.smartgwt.client.widgets.menu.MenuItem editItem = new com.smartgwt.client.widgets.menu.MenuItem(
+					AdminClientMessageUtil.getString("ui_metadata_DefaultMetaDataPluginManager_open",
+							AdminClientMessageUtil.getString("ui_metadata_menu_MenuPluginManager_menu")),
+					MetaDataConstants.CONTEXT_MENU_ICON_RENAME);
+			editItem.addClickHandler(new com.smartgwt.client.widgets.menu.events.ClickHandler() {
+				@Override
+				public void onClick(MenuItemClickEvent event) {
+					showMenuItemDialog(node);
+				}
+			});
+
+			// 右クリックメニュー項目3
+			com.smartgwt.client.widgets.menu.MenuItem deleteItem = new com.smartgwt.client.widgets.menu.MenuItem(
+					AdminClientMessageUtil.getString("ui_metadata_DefaultMetaDataPluginManager_delete",
+							AdminClientMessageUtil.getString("ui_metadata_menu_MenuPluginManager_menu")),
+					MetaDataConstants.CONTEXT_MENU_ICON_DEL);
+			deleteItem.addClickHandler(new com.smartgwt.client.widgets.menu.events.ClickHandler() {
+				@Override
+				public void onClick(MenuItemClickEvent event) {
+
+					SC.confirm(AdminClientMessageUtil.getString("ui_metadata_menu_MenuTreeGrid_deleteConfirm"),
+							AdminClientMessageUtil.getString("ui_metadata_menu_MenuTreeGrid_deleteMenuItem", node.getAttribute(DataSourceConstants.FIELD_NAME))
+							, new BooleanCallback() {
+
+						@Override
+						public void execute(Boolean value) {
+							if (value) {
+								tree.remove(node);
+							}
+
+						}
+					});
+				}
+			});
+
+			setItems(editItem, deleteItem);
+		}
+
+		public void setNode(MenuTreeNode node) {
+			this.node = node;
 		}
 	}
 }
