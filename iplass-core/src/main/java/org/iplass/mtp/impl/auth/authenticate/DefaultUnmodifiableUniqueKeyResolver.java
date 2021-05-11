@@ -32,9 +32,9 @@ import org.iplass.mtp.impl.auth.AuthContextHolder;
 import org.iplass.mtp.impl.auth.AuthService;
 
 /**
- * Userエンティティを検索するUserEntityResolver。
+ * Userエンティティの一意キーを検索するDefaultUnmodifiableUniqueKeyResolver。
  *
- * @author K.Higuchi
+ * @author Y.Suzuki
  *
  */
 public class DefaultUnmodifiableUniqueKeyResolver implements UnmodifiableUniqueKeyResolver {
