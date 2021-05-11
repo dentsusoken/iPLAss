@@ -32,6 +32,7 @@ import com.smartgwt.client.types.DragDataAction;
 import com.smartgwt.client.types.SelectionStyle;
 import com.smartgwt.client.util.BooleanCallback;
 import com.smartgwt.client.util.SC;
+import com.smartgwt.client.widgets.Canvas;
 import com.smartgwt.client.widgets.events.DragStartEvent;
 import com.smartgwt.client.widgets.events.DragStartHandler;
 import com.smartgwt.client.widgets.events.DrawEvent;
@@ -40,6 +41,7 @@ import com.smartgwt.client.widgets.grid.ListGridField;
 import com.smartgwt.client.widgets.grid.events.RecordDoubleClickEvent;
 import com.smartgwt.client.widgets.grid.events.RecordDoubleClickHandler;
 import com.smartgwt.client.widgets.menu.Menu;
+import com.smartgwt.client.widgets.menu.MenuItemStringFunction;
 import com.smartgwt.client.widgets.menu.events.MenuItemClickEvent;
 import com.smartgwt.client.widgets.tree.TreeNode;
 import com.smartgwt.client.widgets.tree.events.NodeContextClickEvent;
@@ -186,9 +188,9 @@ public class MenuItemTreeGrid extends MtpTreeGrid {
 
 			if (isFolder) {
 				//追加ボタン
-				com.smartgwt.client.widgets.menu.MenuItem addItem = new com.smartgwt.client.widgets.menu.MenuItem(
+				final com.smartgwt.client.widgets.menu.MenuItem addItem = new com.smartgwt.client.widgets.menu.MenuItem(
 						AdminClientMessageUtil.getString("ui_metadata_DefaultMetaDataPluginManager_create",
-								AdminClientMessageUtil.getString("ui_metadata_menu_MenuPluginManager_menu")),
+								AdminClientMessageUtil.getString("ui_metadata_menu_MenuPluginManager_menuItem")),
 						MetaDataConstants.CONTEXT_MENU_ICON_ADD);
 				addItem.addClickHandler(new com.smartgwt.client.widgets.menu.events.ClickHandler() {
 					@Override
@@ -208,10 +210,9 @@ public class MenuItemTreeGrid extends MtpTreeGrid {
 			} else {
 
 				// 編集
-				com.smartgwt.client.widgets.menu.MenuItem editItem = new com.smartgwt.client.widgets.menu.MenuItem(
+				final com.smartgwt.client.widgets.menu.MenuItem editItem = new com.smartgwt.client.widgets.menu.MenuItem(
 						AdminClientMessageUtil.getString("ui_metadata_DefaultMetaDataPluginManager_open",
-								AdminClientMessageUtil.getString("ui_metadata_menu_MenuPluginManager_menu")),
-						MetaDataConstants.CONTEXT_MENU_ICON_RENAME);
+								AdminClientMessageUtil.getString("ui_metadata_menu_MenuPluginManager_menuItem")));
 				editItem.addClickHandler(new com.smartgwt.client.widgets.menu.events.ClickHandler() {
 					@Override
 					public void onClick(MenuItemClickEvent event) {
@@ -220,11 +221,17 @@ public class MenuItemTreeGrid extends MtpTreeGrid {
 						owner.showMenuItemDialog(type, menuItem);
 					}
 				});
+				editItem.setDynamicIconFunction(new MenuItemStringFunction() {
+					@Override
+					public String execute(Canvas target, Menu menu, com.smartgwt.client.widgets.menu.MenuItem item) {
+						return node.getIcon();
+					}
+				});
 
 				// 削除
-				com.smartgwt.client.widgets.menu.MenuItem deleteItem = new com.smartgwt.client.widgets.menu.MenuItem(
+				final com.smartgwt.client.widgets.menu.MenuItem deleteItem = new com.smartgwt.client.widgets.menu.MenuItem(
 						AdminClientMessageUtil.getString("ui_metadata_DefaultMetaDataPluginManager_delete",
-								AdminClientMessageUtil.getString("ui_metadata_menu_MenuPluginManager_menu")),
+								AdminClientMessageUtil.getString("ui_metadata_menu_MenuPluginManager_menuItem")),
 						MetaDataConstants.CONTEXT_MENU_ICON_DEL);
 				deleteItem.addClickHandler(new com.smartgwt.client.widgets.menu.events.ClickHandler() {
 					@Override
@@ -248,10 +255,10 @@ public class MenuItemTreeGrid extends MtpTreeGrid {
 				});
 
 				// コピー
-				com.smartgwt.client.widgets.menu.MenuItem copyItem = new com.smartgwt.client.widgets.menu.MenuItem(
+				final com.smartgwt.client.widgets.menu.MenuItem copyItem = new com.smartgwt.client.widgets.menu.MenuItem(
 						AdminClientMessageUtil.getString("ui_metadata_DefaultMetaDataPluginManager_copy",
-								AdminClientMessageUtil.getString("ui_metadata_menu_MenuPluginManager_menu")),
-						MetaDataConstants.CONTEXT_MENU_ICON_RENAME);
+								AdminClientMessageUtil.getString("ui_metadata_menu_MenuPluginManager_menuItem")),
+						MetaDataConstants.CONTEXT_MENU_ICON_COPY);
 				copyItem.addClickHandler(new com.smartgwt.client.widgets.menu.events.ClickHandler() {
 					@Override
 					public void onClick(MenuItemClickEvent event) {
