@@ -96,8 +96,6 @@ public interface AuthenticationProvider extends ServiceInitListener<AuthService>
 	public AuthLogger getAuthLogger();
 	
 	public UserEntityResolver getUserEntityResolver();
-	
-	public UnmodifiableUniqueKeyResolver getUnmodifiableUniqueKeyResolver();
 
 	public Class<? extends Credential> getCredentialType();
 	

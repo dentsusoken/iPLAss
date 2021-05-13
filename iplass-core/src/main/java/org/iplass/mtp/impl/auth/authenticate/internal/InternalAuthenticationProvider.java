@@ -27,9 +27,7 @@ import org.iplass.mtp.impl.auth.authenticate.AccountHandle;
 import org.iplass.mtp.impl.auth.authenticate.AccountManagementModule;
 import org.iplass.mtp.impl.auth.authenticate.AuthenticationProvider;
 import org.iplass.mtp.impl.auth.authenticate.AuthenticationProviderBase;
-import org.iplass.mtp.impl.auth.authenticate.DefaultUnmodifiableUniqueKeyResolver;
 import org.iplass.mtp.impl.auth.authenticate.DefaultUserEntityResolver;
-import org.iplass.mtp.impl.auth.authenticate.UnmodifiableUniqueKeyResolver;
 import org.iplass.mtp.impl.auth.authenticate.UserEntityResolver;
 import org.iplass.mtp.impl.auth.authenticate.trust.DefaultTrustedAuthValidator;
 import org.iplass.mtp.impl.auth.authenticate.trust.TrustedAuthValidator;
@@ -51,17 +49,11 @@ public class InternalAuthenticationProvider implements AuthenticationProvider {
 	private String authLoggerName;
 	
 	private UserEntityResolver userEntityResolver;
-	private UnmodifiableUniqueKeyResolver unmodifiableUniqueKeyResolver;
 	private TrustedAuthValidator trustedAuthValidator;
 
 	@Override
 	public UserEntityResolver getUserEntityResolver() {
 		return userEntityResolver;
-	}
-	
-	@Override
-	public UnmodifiableUniqueKeyResolver getUnmodifiableUniqueKeyResolver() {
-		return unmodifiableUniqueKeyResolver;
 	}
 
 	public String getAuthLoggerName() {
@@ -92,10 +84,6 @@ public class InternalAuthenticationProvider implements AuthenticationProvider {
 		er.inited(service, this);
 		userEntityResolver = er;
 		userEntityResolver.inited(service, this);
-		DefaultUnmodifiableUniqueKeyResolver ur = new DefaultUnmodifiableUniqueKeyResolver();
-		ur.setUnmodifiableUniqueKeyProperty(User.OID);
-		unmodifiableUniqueKeyResolver = ur;
-		unmodifiableUniqueKeyResolver.inited(service, this);
 		trustedAuthValidator = new DefaultTrustedAuthValidator(InternalCreatedAccountHandle.class.getName(), InternalCredential.class.getName());
 		trustedAuthValidator.inited(service, this);
 	}

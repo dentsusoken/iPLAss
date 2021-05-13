@@ -33,7 +33,7 @@ import org.iplass.mtp.spi.ServiceConfigrationException;
 
 public class SecureRandomGenerator {
 	private static Encoder base64urlsafewop = Base64.getUrlEncoder().withoutPadding();
-	private static Base32 base32urlsafewop = new Base32();
+	private static Base32 base32 = new Base32();
 	
 	private final Queue<SecureRandom> randoms = new ConcurrentLinkedQueue<SecureRandom>();
 	
@@ -118,24 +118,22 @@ public class SecureRandomGenerator {
 		SecureRandom rand = randoms.poll();
 		if (rand == null) {
 			rand = createSecureRandom();
-        }
-		
-		BigInteger randInt = new BigInteger(numBitsOfSecureRandomToken, rand);
-		
+        }		
 		randoms.add(rand);
+
+		byte[] bytes = new byte[numBitsOfSecureRandomToken/8];
+		rand.nextBytes(bytes);
 		
 		if("base64".equals(encode)) {
-			byte[] b = randInt.toByteArray();
-			return base64urlsafewop.encodeToString(b);
+			return base64urlsafewop.encodeToString(bytes);
 		} else if ("base32".equals(encode)) {
-			byte[] b = randInt.toByteArray();
-			return base32urlsafewop.encodeToString(b);
+			return base32.encodeToString(bytes);
 		}
 		
 		if (radixOfSecureRandomToken == 64) {
-			byte[] b = randInt.toByteArray();
-			return base64urlsafewop.encodeToString(b);
+			return base64urlsafewop.encodeToString(bytes);
 		} else {
+			BigInteger randInt = new BigInteger(numBitsOfSecureRandomToken, rand);
 			return randInt.toString(radixOfSecureRandomToken);
 		}
 	}
@@ -148,28 +146,5 @@ public class SecureRandomGenerator {
 		int randInt = rand.nextInt(bound);
 		randoms.add(rand);
 		return randInt;
-	}
-	
-	public String randomBytes(int byteSize) {
-		SecureRandom rand = randoms.poll();
-		if (rand == null) {
-			rand = createSecureRandom();
-        }
-		randoms.add(rand);
-
-		byte[] bytes = new byte[byteSize];
-		rand.nextBytes(bytes);
-		
-		if("base64".equals(encode)) {
-			return base64urlsafewop.encodeToString(bytes);
-		} else if ("base32".equals(encode)) {
-			return base32urlsafewop.encodeToString(bytes);
-		}
-		
-		if (radixOfSecureRandomToken == 64) {
-			return base64urlsafewop.encodeToString(bytes);
-		} else {
-			return new String(bytes);
-		}
 	}
 }
