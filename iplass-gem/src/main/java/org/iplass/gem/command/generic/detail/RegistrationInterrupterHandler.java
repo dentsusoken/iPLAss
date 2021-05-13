@@ -27,6 +27,7 @@ import java.util.List;
 import org.iplass.mtp.command.RequestContext;
 import org.iplass.mtp.entity.Entity;
 import org.iplass.mtp.entity.ValidateError;
+import org.iplass.mtp.entity.definition.EntityDefinition;
 import org.iplass.mtp.entity.definition.PropertyDefinition;
 import org.iplass.mtp.view.generic.RegistrationInterrupter;
 import org.iplass.mtp.view.generic.RegistrationInterrupter.RegistrationType;
@@ -34,6 +35,7 @@ import org.iplass.mtp.view.generic.RegistrationInterrupter.RegistrationType;
 /**
  * カスタム登録処理ハンドラ
  * @author lis3wg
+ * @author Y.Ishida
  */
 public class RegistrationInterrupterHandler {
 	/** リクエスト */
@@ -109,5 +111,50 @@ public class RegistrationInterrupterHandler {
 				entity, request, context.getEntityDefinition(), context.getView(), registType);
 		if (ret == null) ret = Collections.emptyList();
 		return ret;
+	}
+	
+	/**
+	 * 更新対象の範囲を判断します
+	 * 
+	 * @return trueの場合、{@link RegistrationInterrupter#getAdditionalProperties()}
+	 *         の戻り値のプロパティのみを更新対象<BR>
+	 *         falseの場合、汎用登録処理が自動で設定した更新対象に、{@link RegistrationInterrupter#getAdditionalProperties()}
+	 *         の戻り値のプロパティを追加
+	 */
+	public boolean isSpecifyAllProperties() {
+		return interrupter.isSpecifyAllProperties();
+	}
+	
+	/**
+	 *  NestTableの更新オプションを取得します。
+	 *  
+	 * @param ed Entity定義
+	 * @param refPropertyName 参照プロパティ名
+	 * @return  NestTableの更新オプション
+	 */
+	public NestTableRegistOption getNestTableRegistOption(EntityDefinition ed, String refPropertyName) {
+		NestTableRegistOption option = new NestTableRegistOption();
+		
+		// 更新対象のプロパティが指定された場合
+		if (interrupter.getAdditionalProperties() != null && interrupter.getAdditionalProperties().length > 0) {
+			for (String addtionalProperty : interrupter.getAdditionalProperties()) {
+				if (addtionalProperty.equals(refPropertyName)) {
+					option.setSpecifiedAsReference(true);
+				} else if (addtionalProperty.contains(refPropertyName)) {
+					int index = addtionalProperty.indexOf(".");
+					// Nestは1階層のみ有効
+					if (index != addtionalProperty.lastIndexOf(".")) {
+						continue;
+					}
+					String refEntityProp = addtionalProperty.substring(index + 1);
+					PropertyDefinition pd = ed.getProperty(refEntityProp);
+					if (pd != null && pd.isUpdatable()) {
+						option.getUpdateNestProperty().add(refEntityProp);
+						break;
+					}
+				}
+			}
+		}
+		return option;
 	}
 }

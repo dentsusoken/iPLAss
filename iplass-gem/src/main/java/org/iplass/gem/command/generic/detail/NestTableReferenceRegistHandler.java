@@ -26,6 +26,7 @@ import java.util.List;
 
 import org.iplass.mtp.entity.DeleteOption;
 import org.iplass.mtp.entity.Entity;
+import org.iplass.mtp.entity.GenericEntity;
 import org.iplass.mtp.entity.ValidateError;
 import org.iplass.mtp.entity.definition.EntityDefinition;
 import org.iplass.mtp.entity.definition.PropertyDefinition;
@@ -42,6 +43,7 @@ import org.iplass.mtp.view.generic.element.property.PropertyBase;
  * ネストテーブル用の登録処理
  *
  * @author lis3wg
+ * @author Y.Ishida
  */
 public abstract class NestTableReferenceRegistHandler extends ReferenceRegistHandlerBase {
 
@@ -64,13 +66,63 @@ public abstract class NestTableReferenceRegistHandler extends ReferenceRegistHan
 		return true;
 	}
 
-	@SuppressWarnings({ "unchecked", "rawtypes" })
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public static ReferenceRegistHandler get(final RegistrationCommandContext context, final List<Entity> refs,
-			EntityDefinition ed, final ReferenceProperty rp, final PropertyBase property, List<NestProperty> nestProperties,
-			RegistrationPropertyBaseHandler propBaseHandler) {
-		//登録可否は呼び元でチェック済み
-		final List<String> updateProperties = getUpdateProperties(nestProperties, ed, (ReferencePropertyEditor) propBaseHandler.getEditor(property));
+			EntityDefinition ed, final ReferenceProperty rp, final PropertyBase property,
+			List<NestProperty> nestProperties, RegistrationPropertyBaseHandler propBaseHandler) {
+		// 登録可否は呼び元でチェック済み
+		final List<String> updateProperties = getUpdateProperties(nestProperties, ed,
+				(ReferencePropertyEditor) propBaseHandler.getEditor(property));
+		return getInternal(context, refs, rp, property, updateProperties);
+	}
 
+	@SuppressWarnings({ "rawtypes" })
+	public static ReferenceRegistHandler get(final RegistrationCommandContext context, final List<Entity> refs,
+			EntityDefinition ed, final ReferenceProperty rp, final PropertyBase property,
+			List<NestProperty> nestProperties, RegistrationPropertyBaseHandler propBaseHandler,
+			NestTableRegistOption option) {
+		// 登録可否は呼び元でチェック済み
+		if (option == null) {
+			return get(context, refs, ed, rp, property, nestProperties, propBaseHandler);
+		}
+
+		final List<String> updateProperties = option.getUpdateNestProperty();
+
+		// Reference項目として更新可能
+		if (option.isSpecifiedAsReference()) {
+			// NestされたEntityの個々のプロパティ指定がない場合
+			if (updateProperties.isEmpty()) {
+				// データの追加、削除は可能。既存の参照先Entityは全てのプロパティ更新可。
+				return get(context, refs, ed, rp, property, nestProperties, propBaseHandler);
+			}
+
+			// NestされたEntityの個々のプロパティに対して、更新対象の指定がある場合
+			// データの追加、削除は可能。既存の参照先Entityは指定されているプロパティのみ更新可。新規Entityの更新不可項目はnullに設定
+			for (Entity entity : refs) {
+				if (entity.getOid() == null) {
+					Entity newEntity = new GenericEntity();
+					newEntity.setDefinitionName(ed.getName());
+					for (String prop : updateProperties) {
+						newEntity.setValue(prop, entity.getValue(prop));
+					}
+					refs.set(refs.indexOf(entity), newEntity);
+				}
+			}
+		} else {
+			// Reference項目として更新不可且つ、NestされたEntityの個々のプロパティに対して、更新対象の指定がある場合
+			// データの追加、削除は不可能。既存の参照先Entityは指定されているプロパティのみ更新可
+			for (Entity entity : refs.toArray(new Entity[refs.size()])) {
+				if (entity.getOid() == null) {
+					refs.remove(refs.indexOf(entity));
+				}
+			}
+		}
+
+		return getInternal(context, refs, rp, property, updateProperties);
+	}
+
+	private static ReferenceRegistHandler getInternal(final RegistrationCommandContext context, final List<Entity> refs,
+			final ReferenceProperty rp, final PropertyBase property, List<String> updateProperties) {
 		if (rp.getMappedBy() == null || rp.getMappedBy().isEmpty()) {
 			// 通常参照は登録前のみ
 			return new NestTableReferenceRegistHandler() {
@@ -88,11 +140,13 @@ public abstract class NestTableReferenceRegistHandler extends ReferenceRegistHan
 			// 被参照は登録後のみ
 			return new NestTableReferenceRegistHandler() {
 				@Override
-				public void registMappedby(ReferenceRegistHandlerFunction function, Entity inputEntity, Entity loadedEntity) {
+				public void registMappedby(ReferenceRegistHandlerFunction function, Entity inputEntity,
+						Entity loadedEntity) {
 					this.references = refs;
 					List<ValidateError> errors = new ArrayList<>();
 					if (checkMultiple(rp, errors)) {
-						registMappedbyReference(context, inputEntity, loadedEntity, property, rp, updateProperties, errors);
+						registMappedbyReference(context, inputEntity, loadedEntity, property, rp, updateProperties,
+								errors);
 					}
 					function.execute(errors);
 				}

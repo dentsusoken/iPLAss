@@ -726,9 +726,19 @@ public class DetailCommandContext extends RegistrationCommandContext
 	private void addNestTableRegistHandler(ReferenceProperty p, List<Entity> list, EntityDefinition red, PropertyItem property) {
 		// ネストテーブルはプロパティ単位で登録可否決定
 		if (!NestTableReferenceRegistHandler.canRegist(property, getRegistrationPropertyBaseHandler())) return;
-
+		
+		// カスタム登録処理によるNestTableの更新制御
+		NestTableRegistOption option = null;
+		if (currentEntity != null && getRegistrationInterrupterHandler().isSpecifyAllProperties()) {
+			option = getRegistrationInterrupterHandler().getNestTableRegistOption(red, p.getName());
+			// Reference項目が除外、且つNestされたEntityの個々プロパティも全て指定なしの場合、参照先EntityのEntityのデータ追加、更新不可
+			if (!option.isSpecifiedAsReference() && option.getUpdateNestProperty().isEmpty()) {
+				return;
+			}
+		}
+		
 		ReferencePropertyEditor editor = (ReferencePropertyEditor) property.getEditor();
-
+		
 		List<Entity> target = null;
 		if (StringUtil.isNotBlank(editor.getTableOrderPropertyName())) {
 			//表示順再指定
@@ -741,7 +751,7 @@ public class DetailCommandContext extends RegistrationCommandContext
 			target = list;
 		}
 
-		ReferenceRegistHandler handler = NestTableReferenceRegistHandler.get(this, list, red, p, property, editor.getNestProperties(), getRegistrationPropertyBaseHandler());
+		ReferenceRegistHandler handler = NestTableReferenceRegistHandler.get(this, list, red, p, property, editor.getNestProperties(), getRegistrationPropertyBaseHandler(), option);
 		if (handler != null) {
 			handler.setForceUpdate(editor.isForceUpadte());
 			getReferenceRegistHandlers().add(handler);
