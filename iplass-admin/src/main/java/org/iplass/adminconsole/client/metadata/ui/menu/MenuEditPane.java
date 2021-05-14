@@ -36,7 +36,6 @@ import org.iplass.adminconsole.client.metadata.ui.common.MetaCommonHeaderPane;
 import org.iplass.adminconsole.client.metadata.ui.common.MetaDataHistoryDialog;
 import org.iplass.adminconsole.client.metadata.ui.common.MetaDataUpdateCallback;
 import org.iplass.adminconsole.client.metadata.ui.common.StatusCheckUtil;
-import org.iplass.adminconsole.client.metadata.ui.menu.item.MenuItemDialog;
 import org.iplass.adminconsole.client.metadata.ui.menu.item.MenuItemDragPane;
 import org.iplass.adminconsole.client.metadata.ui.menu.item.event.MenuItemDataChangeHandler;
 import org.iplass.adminconsole.client.metadata.ui.menu.item.event.MenuItemDataChangedEvent;
@@ -458,19 +457,7 @@ public class MenuEditPane extends MetaDataMainEditPane {
 		 * @param menuItem 更新メニューアイテム
 		 */
 		public void showMenuItemDialog(MenuItemTreeDS.MenuItemType type, MenuItem menuItem) {
-			MenuItemDialog dialog = new MenuItemDialog(type);
-			dialog.addMenuItemDataChangeHandler(new MenuItemDataChangeHandler() {
-
-				@Override
-				public void onDataChanged(MenuItemDataChangedEvent event) {
-					menuItemDataChanged(event);
-
-					//アイテム一覧も更新する必要がある
-					dragPane.refresh();
-				}
-			});
-			dialog.setMenuItem(menuItem, false);
-			dialog.show();
+			dragPane.showMenuItemDialog(type, menuItem);
 		}
 	}
 

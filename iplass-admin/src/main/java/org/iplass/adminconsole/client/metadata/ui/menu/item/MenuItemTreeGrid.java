@@ -20,13 +20,21 @@
 
 package org.iplass.adminconsole.client.metadata.ui.menu.item;
 
+import java.util.Arrays;
+import java.util.List;
+
 import org.iplass.adminconsole.client.base.data.DataSourceConstants;
 import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
 import org.iplass.adminconsole.client.base.ui.widget.MtpTreeGrid;
+import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
 import org.iplass.adminconsole.client.metadata.data.menu.MenuItemTreeDS;
+import org.iplass.adminconsole.client.metadata.data.menu.MenuItemTreeDS.MenuItemType;
 import org.iplass.adminconsole.shared.metadata.dto.MetaDataConstants;
 import org.iplass.mtp.view.menu.MenuItem;
 
+import com.smartgwt.client.data.DSCallback;
+import com.smartgwt.client.data.DSRequest;
+import com.smartgwt.client.data.DSResponse;
 import com.smartgwt.client.data.Record;
 import com.smartgwt.client.types.DragDataAction;
 import com.smartgwt.client.types.SelectionStyle;
@@ -37,12 +45,15 @@ import com.smartgwt.client.widgets.events.DragStartEvent;
 import com.smartgwt.client.widgets.events.DragStartHandler;
 import com.smartgwt.client.widgets.events.DrawEvent;
 import com.smartgwt.client.widgets.events.DrawHandler;
-import com.smartgwt.client.widgets.grid.ListGridField;
+import com.smartgwt.client.widgets.grid.HoverCustomizer;
+import com.smartgwt.client.widgets.grid.ListGridRecord;
 import com.smartgwt.client.widgets.grid.events.RecordDoubleClickEvent;
 import com.smartgwt.client.widgets.grid.events.RecordDoubleClickHandler;
 import com.smartgwt.client.widgets.menu.Menu;
 import com.smartgwt.client.widgets.menu.MenuItemStringFunction;
 import com.smartgwt.client.widgets.menu.events.MenuItemClickEvent;
+import com.smartgwt.client.widgets.tree.Tree;
+import com.smartgwt.client.widgets.tree.TreeGridField;
 import com.smartgwt.client.widgets.tree.TreeNode;
 import com.smartgwt.client.widgets.tree.events.NodeContextClickEvent;
 import com.smartgwt.client.widgets.tree.events.NodeContextClickHandler;
@@ -50,6 +61,8 @@ import com.smartgwt.client.widgets.tree.events.NodeContextClickHandler;
 public class MenuItemTreeGrid extends MtpTreeGrid {
 
 	private MenuItemDragPane owner;
+
+	private MenuItemTreeDS ds;
 
 	/** フォルダ用コンテキストメニュー */
 	private MenuItemContextMenu folderContextMenu;
@@ -73,10 +86,6 @@ public class MenuItemTreeGrid extends MtpTreeGrid {
 		setCanSort(false);
 		setCanFreezeFields(false);
 		setCanPickFields(false);
-
-		//この２つを指定することでcreateRecordComponentが有効
-		setShowRecordComponents(true);
-		setShowRecordComponentsByCell(true);
 
 		//コンテキストメニュー
 		addNodeContextClickHandler(new NodeContextClickHandler() {
@@ -132,6 +141,21 @@ public class MenuItemTreeGrid extends MtpTreeGrid {
 			}
 		});
 
+		//HOVER時にRemarkを表示
+		setCanHover(Boolean.TRUE);
+		setHoverCustomizer(new HoverCustomizer() {
+
+			@Override
+			public String hoverHTML(Object value, ListGridRecord record, int rowNum, final int colNum) {
+				final TreeNode node = Tree.nodeForRecord(record);
+				String remarks = node.getAttribute(MenuItemTreeDS.FieldName.REMARKS.name());
+				if (SmartGWTUtil.isNotEmpty(remarks)) {
+					return SmartGWTUtil.getHoverString(remarks);
+				}
+				return "";
+			}
+		});
+
 		//MenuTreeの取得とかぶるので少し遅らせるため、表示後にデータ取得
 		addDrawHandler(new DrawHandler() {
 
@@ -142,12 +166,12 @@ public class MenuItemTreeGrid extends MtpTreeGrid {
 			}
 		});
 
-//		initializeData();
+		setGridFields();
 	}
 
 	private void setGridFields() {
 
-		ListGridField displayNameField = new ListGridField(DataSourceConstants.FIELD_DISPLAY_VALUE);
+		TreeGridField displayNameField = new TreeGridField(DataSourceConstants.FIELD_DISPLAY_VALUE);
 		setFields(displayNameField);
 	}
 
@@ -155,13 +179,200 @@ public class MenuItemTreeGrid extends MtpTreeGrid {
 	 * 初期表示処理
 	 */
 	private void initializeData() {
-		setDataSource(MenuItemTreeDS.getInstance());
+		ds = MenuItemTreeDS.getInstance();
+		setDataSource(ds);
 		setGridFields();
-		fetchData();
+		fetchData(null, new DSCallback() {
+
+			@Override
+			public void execute(DSResponse dsResponse, Object data, DSRequest dsRequest) {
+				//検索時（初期、リフレッシュ）はルートのみ表示
+				expandRoot();
+			}
+		});
 	}
 
+	/**
+	 * ツリーを更新します。
+	 */
 	public void refresh() {
 		initializeData();
+	}
+
+	/**
+	 * メニューアイテムを追加します。
+	 *
+	 * @param createItem メニューアイテム
+	 */
+	public void addMenuItemNode(MenuItem createItem) {
+
+		//タイプ別のRoot取得
+		TreeNode rootNode = ds.getTypeRootNode(createItem);
+		TreeNode parent = rootNode;
+
+		//追加するItemの生成
+		TreeNode itemNode = ds.createMenuItemNode(createItem);
+		MenuItemType type = (MenuItemType)itemNode.getAttributeAsObject(MenuItemTreeDS.FieldName.TYPE.name());
+
+		//フォルダの追加
+		String[] nodePaths = createItem.getName().split("/");
+		if (nodePaths.length > 1) {
+			//階層
+			String path = "";
+			for (int i = 0; i < nodePaths.length - 1; i++) {
+				path += nodePaths[i] + "/";
+				if (getTree().hasChildren(parent)) {
+					//フォルダが存在する場合、既存チェック
+					TreeNode addNode = null;
+					TreeNode[] children = getTree().getChildren(parent);
+					for (int j = 0; j < children.length; j++) {
+						TreeNode child = children[j];
+						if (getTree().isLeaf(child)) {
+							//アイテムは除外
+							//フォルダ、アイテムの順になっているのでアイテムが見つかった段階でフォルダなしと判断
+							addNode = ds.createFolderNode(path, nodePaths[i], type);
+							getTree().add(addNode, parent, j);
+							parent = addNode;
+							break;
+						}
+						int compare = child.getName().compareTo(nodePaths[i] + "/");
+						if (compare == 0) {
+							//既に存在
+							addNode = child;
+							parent = child;
+							break;
+						}
+						if (compare > 0) {
+							//途中に追加
+							addNode = ds.createFolderNode(path, nodePaths[i], type);
+							getTree().add(addNode, parent, j);
+							parent = addNode;
+							break;
+						}
+					}
+					if (addNode == null) {
+						//最後に追加
+						addNode = ds.createFolderNode(path, nodePaths[i], type);
+						getTree().add(addNode, parent);
+						parent = addNode;
+					}
+				} else {
+					//フォルダが存在しない場合
+					TreeNode addNode = ds.createFolderNode(path, nodePaths[i], type);
+					getTree().add(addNode, parent);
+					parent = addNode;
+				}
+			}
+		}
+
+		//アイテムを追加
+		if (getTree().hasChildren(parent)) {
+			TreeNode[] children = getTree().getChildren(parent);
+			for (int i = 0; i < children.length; i++) {
+				TreeNode child = children[i];
+				//フォルダは除外
+				if (getTree().isFolder(child)) {
+					continue;
+				}
+				if (child.getName().compareTo(itemNode.getName()) > 0) {
+					//途中に追加
+					getTree().add(itemNode, parent, i);
+					itemNode = null;
+					break;
+				}
+			}
+			if (itemNode != null) {
+				//最後に追加
+				getTree().add(itemNode, parent);
+				itemNode = null;
+			}
+
+		} else {
+			getTree().add(itemNode, parent);
+		}
+
+		//選択
+		selectAndScrollNode(itemNode);
+	}
+
+	/**
+	 * メニューアイテムを更新します。
+	 *
+	 * @param updateItem メニューアイテム
+	 */
+	public void updateMenuItemNode(MenuItem updateItem) {
+
+		List<TreeNode> children = Arrays.asList(getTree().getAllNodes());
+		TreeNode itemNode = null;
+		for (TreeNode node : children) {
+			MenuItem menuItem = (MenuItem)node.getAttributeAsObject(MenuItemTreeDS.FieldName.VALUEOBJECT.name());
+			if (menuItem != null && menuItem.getName().equals(updateItem.getName())) {
+				itemNode = node;
+				int curIndex = getCurrentIndex(itemNode);
+				TreeNode parent = getTree().getParent(itemNode);
+
+				//変更内容をNodeに反映
+				ds.updateMenuItemNode(itemNode, updateItem);
+
+				//更新するため、削除して追加
+				getTree().remove(itemNode);
+				getTree().add(itemNode, parent, curIndex);
+			}
+		}
+
+		//選択
+		if (itemNode != null) {
+			selectAndScrollNode(itemNode);
+		}
+	}
+
+	/**
+	 * メニューアイテムを削除します。
+	 *
+	 * @param deleteItem メニューアイテム
+	 */
+	public void deleteMenuItemNode(MenuItem deleteItem) {
+
+		List<TreeNode> children = Arrays.asList(getTree().getAllNodes());
+		for (TreeNode node : children) {
+			MenuItem menuItem = (MenuItem)node.getAttributeAsObject(MenuItemTreeDS.FieldName.VALUEOBJECT.name());
+			if (menuItem != null && menuItem.getName().equals(deleteItem.getName())) {
+				TreeNode parent = getTree().getParent(node);
+
+				getTree().remove(node);
+
+				//親の子供がなくなっていたら削除
+				while(parent != null) {
+					//ItemのTopなら終了
+					if (parent.getAttributeAsBoolean(MenuItemTreeDS.FieldName.ISITEMTOP.name())) {
+						break;
+					}
+					//子供がいれば終了
+					if (getTree().hasChildren(parent)) {
+						break;
+					}
+					TreeNode parParent = getTree().getParent(parent);
+					getTree().remove(parent);
+					parent = parParent;
+				}
+			}
+		}
+	}
+
+	/**
+	 * メニューアイテムを選択します。
+	 *
+	 * @param menuItem メニューアイテム
+	 */
+	public void selectMenuItemNode(MenuItem menuItem) {
+		List<TreeNode> children = Arrays.asList(getTree().getAllNodes());
+		for (TreeNode node : children) {
+			MenuItem nodeItem = (MenuItem)node.getAttributeAsObject(MenuItemTreeDS.FieldName.VALUEOBJECT.name());
+			if (nodeItem != null && nodeItem.getName().equals(menuItem.getName())) {
+				selectAndScrollNode(node);
+				return;
+			}
+		}
 	}
 
 	/**
@@ -178,6 +389,23 @@ public class MenuItemTreeGrid extends MtpTreeGrid {
 	 */
 	public void expandAll() {
 		getTree().openAll();
+	}
+
+	private int getCurrentIndex(TreeNode node) {
+
+		if (getTree().getParent(node) != null) {
+			TreeNode[] children = getTree().getChildren(getTree().getParent(node));
+
+			int i = 0;
+			for (TreeNode child : children) {
+				if (child.getName().equals(node.getName())) {
+					return i;
+				}
+				i++;
+			}
+		}
+		//ありえない
+		throw new IllegalStateException(AdminClientMessageUtil.getString("ui_metadata_menu_MenuTreeGrid_canNotGetDrag") + node);
 	}
 
 	private class MenuItemContextMenu extends Menu {
