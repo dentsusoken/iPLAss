@@ -41,39 +41,38 @@ import org.iplass.mtp.view.generic.element.property.PropertyBase;
 
 /**
  * ネストテーブル用の登録処理
- *
+ * 
  * @author lis3wg
  * @author Y.Ishida
  */
 public abstract class NestTableReferenceRegistHandler extends ReferenceRegistHandlerBase {
 
 	protected List<Entity> references;
+	protected boolean isSpecifiedAsReference;
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public static boolean canRegist(PropertyBase property, RegistrationPropertyBaseHandler propBaseHandler) {
-		//非表示なら更新対象外
+		// 非表示なら更新対象外
 		if (!propBaseHandler.isDispProperty(property)) return false;
 
-		//テーブルの場合のみ新規or更新
+		// テーブルの場合のみ新規or更新
 		if (!(propBaseHandler.getEditor(property) instanceof ReferencePropertyEditor)) return false;
 
 		ReferencePropertyEditor editor = (ReferencePropertyEditor) propBaseHandler.getEditor(property);
 		if (editor.getDisplayType() != ReferenceDisplayType.NESTTABLE) return false;
 
-		//Viewモードの場合は編集画面では更新対象ではないので対象外
+		// Viewモードの場合は編集画面では更新対象ではないので対象外
 		if (editor.getEditPage() == EditPage.VIEW) return false;
 
 		return true;
 	}
 
-	@SuppressWarnings({ "rawtypes", "unchecked" })
+	@SuppressWarnings({ "rawtypes" })
 	public static ReferenceRegistHandler get(final RegistrationCommandContext context, final List<Entity> refs,
 			EntityDefinition ed, final ReferenceProperty rp, final PropertyBase property,
 			List<NestProperty> nestProperties, RegistrationPropertyBaseHandler propBaseHandler) {
 		// 登録可否は呼び元でチェック済み
-		final List<String> updateProperties = getUpdateProperties(nestProperties, ed,
-				(ReferencePropertyEditor) propBaseHandler.getEditor(property));
-		return getInternal(context, refs, rp, property, updateProperties);
+		return getInternal(context, refs, ed, rp, property, nestProperties, propBaseHandler, null);
 	}
 
 	@SuppressWarnings({ "rawtypes" })
@@ -82,53 +81,25 @@ public abstract class NestTableReferenceRegistHandler extends ReferenceRegistHan
 			List<NestProperty> nestProperties, RegistrationPropertyBaseHandler propBaseHandler,
 			NestTableRegistOption option) {
 		// 登録可否は呼び元でチェック済み
-		if (option == null) {
-			return get(context, refs, ed, rp, property, nestProperties, propBaseHandler);
-		}
-
-		final List<String> updateProperties = option.getUpdateNestProperty();
-
-		// Reference項目として更新可能
-		if (option.isSpecifiedAsReference()) {
-			// NestされたEntityの個々のプロパティ指定がない場合
-			if (updateProperties.isEmpty()) {
-				// データの追加、削除は可能。既存の参照先Entityは全てのプロパティ更新可。
-				return get(context, refs, ed, rp, property, nestProperties, propBaseHandler);
-			}
-
-			// NestされたEntityの個々のプロパティに対して、更新対象の指定がある場合
-			// データの追加、削除は可能。既存の参照先Entityは指定されているプロパティのみ更新可。新規Entityの更新不可項目はnullに設定
-			for (Entity entity : refs) {
-				if (entity.getOid() == null) {
-					Entity newEntity = new GenericEntity();
-					newEntity.setDefinitionName(ed.getName());
-					for (String prop : updateProperties) {
-						newEntity.setValue(prop, entity.getValue(prop));
-					}
-					refs.set(refs.indexOf(entity), newEntity);
-				}
-			}
-		} else {
-			// Reference項目として更新不可且つ、NestされたEntityの個々のプロパティに対して、更新対象の指定がある場合
-			// データの追加、削除は不可能。既存の参照先Entityは指定されているプロパティのみ更新可
-			for (Entity entity : refs.toArray(new Entity[refs.size()])) {
-				if (entity.getOid() == null) {
-					refs.remove(refs.indexOf(entity));
-				}
-			}
-		}
-
-		return getInternal(context, refs, rp, property, updateProperties);
+		return getInternal(context, refs, ed, rp, property, nestProperties, propBaseHandler, option);
 	}
 
-	private static ReferenceRegistHandler getInternal(final RegistrationCommandContext context, final List<Entity> refs,
-			final ReferenceProperty rp, final PropertyBase property, List<String> updateProperties) {
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	protected static ReferenceRegistHandler getInternal(final RegistrationCommandContext context,
+			final List<Entity> refs, final EntityDefinition ed, final ReferenceProperty rp, PropertyBase property,
+			List<NestProperty> nestProperties, RegistrationPropertyBaseHandler propBaseHandler,
+			NestTableRegistOption option) {
+
+		List<String> updateProperties = applyRegistOption(option, nestProperties, ed,
+				(ReferencePropertyEditor) propBaseHandler.getEditor(property), refs);
+
 		if (rp.getMappedBy() == null || rp.getMappedBy().isEmpty()) {
 			// 通常参照は登録前のみ
 			return new NestTableReferenceRegistHandler() {
 				@Override
 				public void regist(ReferenceRegistHandlerFunction function, Entity inputEntity, Entity loadedEntity) {
 					this.references = refs;
+					this.isSpecifiedAsReference = (option == null) ? true : option.isSpecifiedAsReference();
 					List<ValidateError> errors = new ArrayList<>();
 					if (checkMultiple(rp, errors)) {
 						registReference(context, inputEntity, loadedEntity, property, rp, updateProperties, errors);
@@ -143,6 +114,7 @@ public abstract class NestTableReferenceRegistHandler extends ReferenceRegistHan
 				public void registMappedby(ReferenceRegistHandlerFunction function, Entity inputEntity,
 						Entity loadedEntity) {
 					this.references = refs;
+					this.isSpecifiedAsReference = (option == null) ? true : option.isSpecifiedAsReference();
 					List<ValidateError> errors = new ArrayList<>();
 					if (checkMultiple(rp, errors)) {
 						registMappedbyReference(context, inputEntity, loadedEntity, property, rp, updateProperties,
@@ -154,27 +126,99 @@ public abstract class NestTableReferenceRegistHandler extends ReferenceRegistHan
 		}
 	}
 
-	protected static List<String> getUpdateProperties(List<NestProperty> nestProperties, EntityDefinition ed, ReferencePropertyEditor editor) {
+	/** カスタム登録処理によるNestTableの更新制御適用 */
+	protected static List<String> applyRegistOption(NestTableRegistOption option, List<NestProperty> nestProperties,
+			EntityDefinition ed, ReferencePropertyEditor editor, List<Entity> refs) {
+		List<String> updateProperties;
+
+		// 新規作成の場合
+		if (option == null) {
+			updateProperties = getUpdateProperties(nestProperties, ed, editor);
+			return updateProperties;
+		}
+
+		// isSpecifyAllPropertiesがfalseの場合
+		if (!option.isSpecifyAllProperties()) {
+			updateProperties = new ArrayList<String>();
+			// 標準の更新項目を追加
+			updateProperties.addAll(getUpdateProperties(nestProperties, ed, editor));
+			// 指定されているプロパティを更新項目に追加。
+			for (String prop : option.getSpecifiedUpdateNestProperties()) {
+				if (!updateProperties.contains(prop)) {
+					updateProperties.add(prop);
+				}
+			}
+			return updateProperties;
+		}
+
+		// Reference項目として更新可能且つ、NestされたEntityの個々のプロパティ指定がない場合
+		// データの追加、削除は可能。既存の参照先Entityは全てのプロパティ更新可。
+		if (option.isSpecifiedAsReference() && option.getSpecifiedUpdateNestProperties().isEmpty()) {
+			updateProperties = getUpdateProperties(nestProperties, ed, editor);
+			return updateProperties;
+		}
+		
+		
+		// 以下のパターンでは、既存のEntityは指定されたプロパティのみ更新可能。
+		// ネストテーブルの表示順プロパティの指定があった場合、更新可能項目として必ず追加
+		updateProperties = option.getSpecifiedUpdateNestProperties();
+		addTableOrderProperty(updateProperties, editor);
+		
+		// Reference項目として更新可能且つ、NestされたEntityの個々のプロパティに対して、更新対象の指定がある場合
+		// データの追加、削除は可能。新規Entityの更新不可項目はnullに設定。
+		if (option.isSpecifiedAsReference()) {
+			for (Entity entity : refs) {
+				if (entity.getOid() == null) {
+					Entity newEntity = new GenericEntity();
+					newEntity.setDefinitionName(entity.getDefinitionName());
+					for (String prop : option.getSpecifiedUpdateNestProperties()) {
+						newEntity.setValue(prop, entity.getValue(prop));
+					}
+					refs.set(refs.indexOf(entity), newEntity);
+				}
+			}
+		} else {
+			// Reference項目として更新不可且つ、NestされたEntityの個々のプロパティに対して、更新対象の指定がある場合
+			// データの追加、削除は不可能。
+			for (Entity entity : refs.toArray(new Entity[refs.size()])) {
+				if (entity.getOid() == null) {
+					refs.remove(refs.indexOf(entity));
+				}
+			}
+		}
+		
+		return updateProperties;
+	}
+
+	/** 標準の更新項目を返却 */
+	protected static List<String> getUpdateProperties(List<NestProperty> nestProperties, EntityDefinition ed,
+			ReferencePropertyEditor editor) {
 		List<String> updateProperties = getUpdateProperties(nestProperties, ed);
-		if (StringUtil.isNotBlank(editor.getTableOrderPropertyName()) && !updateProperties.contains(editor.getTableOrderPropertyName())) {
+		addTableOrderProperty(updateProperties, editor);
+		return updateProperties;
+	}
+
+	/** ネストテーブルの表示順プロパティを追加 */
+	protected static void addTableOrderProperty(List<String> updateProperties, ReferencePropertyEditor editor) {
+		if (StringUtil.isNotBlank(editor.getTableOrderPropertyName())
+				&& !updateProperties.contains(editor.getTableOrderPropertyName())) {
 			updateProperties.add(editor.getTableOrderPropertyName());
 		}
-		return updateProperties;
 	}
 
 	/**
 	 * 参照データ登録処理を行います。
-	 * @param context コンテキスト
-	 * @param inputEntity 画面で入力したデータ
-	 * @param loadedEntity ロードしたデータ
-	 * @param property プロパティの画面定義
-	 * @param rp 参照プロパティ定義
-	 * @param updateProperties 更新対象プロパティ
-	 * @param errors 入力エラーリスト
+	 * 
+	 * @param context          コンテキスト
+	 * @param inputEntity      画面で入力したデータ
+	 * @param loadedEntity     ロードしたデータ
+	 * @param property         プロパティの画面定義
+	 * @param rp               参照プロパティ定義
+	 * @param updateProperties 更新対象のプロパティ
+	 * @param errors           入力エラーリスト
 	 */
 	protected void registReference(RegistrationCommandContext context, Entity inputEntity, Entity loadedEntity,
 			PropertyBase property, ReferenceProperty rp, List<String> updateProperties, List<ValidateError> errors) {
-
 		for (Entity entity : references) {
 			errors.addAll(registReference(context, entity, updateProperties, rp.getName()));
 		}
@@ -182,42 +226,44 @@ public abstract class NestTableReferenceRegistHandler extends ReferenceRegistHan
 
 	/**
 	 * 参照データ(被参照)登録処理を行います。
-	 * @param context コンテキスト
-	 * @param inputEntity 画面で入力したデータ
-	 * @param loadedEntity ロードしたデータ
-	 * @param property プロパティの画面定義
-	 * @param rp 参照プロパティ定義
-	 * @param updateProperties 更新対象プロパティ
-	 * @param errors 入力エラーリスト
+	 * 
+	 * @param context          コンテキスト
+	 * @param inputEntity      画面で入力したデータ
+	 * @param loadedEntity     ロードしたデータ
+	 * @param property         プロパティの画面定義
+	 * @param rp               参照プロパティ定義
+	 * @param updateProperties 更新対象のプロパティ
+	 * @param errors           入力エラーリスト
 	 */
 	protected void registMappedbyReference(RegistrationCommandContext context, Entity inputEntity, Entity loadedEntity,
 			PropertyBase property, ReferenceProperty rp, List<String> updateProperties, List<ValidateError> errors) {
 
-		//被参照の場合はプロパティの値の方で元データを保持する
+		// 被参照の場合はプロパティの値の方で元データを保持する
 		String mappedBy = rp.getMappedBy();
 		if (!updateProperties.contains(mappedBy)) {
 			updateProperties.add(mappedBy);
 		}
 
-		//参照元のプロパティ定義
+		// 参照元のプロパティ定義
 		String defName = rp.getObjectDefinitionName();
 		ReferenceProperty mpd = (ReferenceProperty) edm.get(defName).getProperty(mappedBy);
 
-		//参照元の登録
+		// 参照元の登録
 		List<Entity> registList = new ArrayList<>();
 		List<Entity> deleteList = new ArrayList<>();
 		diffMappedbyReference(loadedEntity, rp, registList, deleteList);
 
-		//新規・更新されたものは参照プロパティにEntityを追加
+		// 新規・更新されたものは参照プロパティにEntityを追加
 		for (Entity entity : registList) {
 			setMappedByValue(context, loadedEntity, mappedBy, defName, mpd, entity);
 			errors.addAll(registReference(context, entity, updateProperties, rp.getName()));
 		}
 
-		//削除されたものは参照プロパティからEntityを削除
-		if (!deleteList.isEmpty()) {
+		// 削除されたものは参照プロパティからEntityを削除
+		// カスタム登録処理でReference項目として除外された場合は、スキップ。
+		if (!deleteList.isEmpty() && isSpecifiedAsReference) {
 			if (ReferenceType.COMPOSITION.equals(rp.getReferenceType())) {
-				//親子関係があるものは直接削除
+				// 親子関係があるものは直接削除
 				for (Entity de : deleteList) {
 					em.delete(de, new DeleteOption(false));
 				}
@@ -234,19 +280,21 @@ public abstract class NestTableReferenceRegistHandler extends ReferenceRegistHan
 
 	/**
 	 * 画面の入力データとロードしたデータから参照元の差分を取得します。
-	 * @param entity 画面で入力したデータ
-	 * @param loadedEntity ロードしたデータ
-	 * @param pd 比較対象プロパティ
+	 * 
+	 * @param entity        画面で入力したデータ
+	 * @param loadedEntity  ロードしたデータ
+	 * @param pd            比較対象プロパティ
 	 * @param registRefList 登録用Entityを保持するためのList
 	 * @param deleteRefList 削除用Entityを保持するためのList
 	 */
-	protected void diffMappedbyReference(Entity loadedEntity, PropertyDefinition pd, List<Entity> registRefList, List<Entity> deleteRefList) {
+	protected void diffMappedbyReference(Entity loadedEntity, PropertyDefinition pd, List<Entity> registRefList,
+			List<Entity> deleteRefList) {
 
 		List<Entity> storedRefList = new ArrayList<>();
 
 		if (pd.getMultiplicity() != 1) {
-			//複数
-			Entity[] in = references.toArray(new Entity[]{});
+			// 複数
+			Entity[] in = references.toArray(new Entity[] {});
 			if (in != null) {
 				registRefList.addAll(Arrays.asList(in));
 			}
@@ -258,7 +306,7 @@ public abstract class NestTableReferenceRegistHandler extends ReferenceRegistHan
 				}
 			}
 		} else {
-			//単一
+			// 単一
 			Entity in = !references.isEmpty() ? references.get(0) : null;
 			if (in != null) {
 				registRefList.add(in);
@@ -277,7 +325,7 @@ public abstract class NestTableReferenceRegistHandler extends ReferenceRegistHan
 				return regist.getOid() != null && stored.getOid().equals(regist.getOid());
 			});
 			if (!match) {
-				//ロードしたデータにしかなければ削除
+				// ロードしたデータにしかなければ削除
 				deleteRefList.add(stored);
 			}
 		}
@@ -285,18 +333,19 @@ public abstract class NestTableReferenceRegistHandler extends ReferenceRegistHan
 
 	/**
 	 * 多重度以上の指定がないかチェック、多重度を越えてたらfalseを返す
+	 * 
 	 * @param p
 	 * @param errors
 	 * @return
 	 */
 	protected boolean checkMultiple(ReferenceProperty p, List<ValidateError> errors) {
-		//画面上の操作では起きないはず、多重度を減らした場合等
+		// 画面上の操作では起きないはず、多重度を減らした場合等
 		if (p.getMultiplicity() != -1) {
 			if (references.size() > p.getMultiplicity()) {
 				ValidateError error = new ValidateError();
 				error.setPropertyName(p.getName());
 //				error.addErrorMessage(TemplateUtil.getResourceString("登録可能なデータは{0}件までです。", p.getMultiplicity()));
-				error.addErrorMessage("登録可能なデータは"+ p.getMultiplicity() +"件までです。");
+				error.addErrorMessage("登録可能なデータは" + p.getMultiplicity() + "件までです。");
 				errors.add(error);
 				return false;
 			}

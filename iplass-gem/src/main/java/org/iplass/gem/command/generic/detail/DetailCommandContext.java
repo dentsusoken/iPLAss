@@ -729,10 +729,12 @@ public class DetailCommandContext extends RegistrationCommandContext
 		
 		// カスタム登録処理によるNestTableの更新制御
 		NestTableRegistOption option = null;
-		if (currentEntity != null && getRegistrationInterrupterHandler().isSpecifyAllProperties()) {
+		if (currentEntity != null) {
 			option = getRegistrationInterrupterHandler().getNestTableRegistOption(red, p.getName());
-			// Reference項目が除外、且つNestされたEntityの個々プロパティも全て指定なしの場合、参照先EntityのEntityのデータ追加、更新不可
-			if (!option.isSpecifiedAsReference() && option.getUpdateNestProperty().isEmpty()) {
+			
+			// Reference項目が除外、且つNestされたEntityの個々プロパティも全て指定なしの場合
+			// 参照先EntityのEntityのデータ追加、更新不可
+			if (!option.isSpecifiedAsReference() && option.getSpecifiedUpdateNestProperties().isEmpty()) {
 				return;
 			}
 		}

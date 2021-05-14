@@ -4,16 +4,27 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * カスタム登録処理におけるNestTableの更新制御オプション
+ * カスタム登録処理によるNestTableの更新制御オプション
  * @author Y.Ishida
  *
  */
 public class NestTableRegistOption {
+	/** 更新対象の範囲 */
+	private boolean isSpecifyAllProperties;
+
 	/** Reference項目として更新対象に指定されたか */
 	private boolean specifiedAsReference;
 
-	/** 更新対象のNestProperty */
-	private List<String> updateNestProperty = new ArrayList<String>();
+	/** 更新対象として個別指定のあったネストプロパティ */
+	private List<String> specifiedUpdateNestProperties = new ArrayList<String>();
+
+	public boolean isSpecifyAllProperties() {
+		return isSpecifyAllProperties;
+	}
+
+	public void setSpecifyAllProperties(boolean isSpecifyAllProperties) {
+		this.isSpecifyAllProperties = isSpecifyAllProperties;
+	}
 
 	public boolean isSpecifiedAsReference() {
 		return specifiedAsReference;
@@ -23,12 +34,12 @@ public class NestTableRegistOption {
 		this.specifiedAsReference = specifiedAsReference;
 	}
 
-	public List<String> getUpdateNestProperty() {
-		return updateNestProperty;
+	public List<String> getSpecifiedUpdateNestProperties() {
+		return specifiedUpdateNestProperties;
 	}
 
-	public void setUpdateNestProperty(List<String> updateNestProperty) {
-		this.updateNestProperty = updateNestProperty;
+	public void setSpecifiedUpdateNestProperties(List<String> specifiedUpdateNestProperties) {
+		this.specifiedUpdateNestProperties = specifiedUpdateNestProperties;
 	}
 
 }

@@ -114,18 +114,6 @@ public class RegistrationInterrupterHandler {
 	}
 	
 	/**
-	 * 更新対象の範囲を判断します
-	 * 
-	 * @return trueの場合、{@link RegistrationInterrupter#getAdditionalProperties()}
-	 *         の戻り値のプロパティのみを更新対象<BR>
-	 *         falseの場合、汎用登録処理が自動で設定した更新対象に、{@link RegistrationInterrupter#getAdditionalProperties()}
-	 *         の戻り値のプロパティを追加
-	 */
-	public boolean isSpecifyAllProperties() {
-		return interrupter.isSpecifyAllProperties();
-	}
-	
-	/**
 	 *  NestTableの更新オプションを取得します。
 	 *  
 	 * @param ed Entity定義
@@ -134,6 +122,8 @@ public class RegistrationInterrupterHandler {
 	 */
 	public NestTableRegistOption getNestTableRegistOption(EntityDefinition ed, String refPropertyName) {
 		NestTableRegistOption option = new NestTableRegistOption();
+		
+		option.setSpecifyAllProperties(interrupter.isSpecifyAllProperties());
 		
 		// 更新対象のプロパティが指定された場合
 		if (interrupter.getAdditionalProperties() != null && interrupter.getAdditionalProperties().length > 0) {
@@ -149,11 +139,16 @@ public class RegistrationInterrupterHandler {
 					String refEntityProp = addtionalProperty.substring(index + 1);
 					PropertyDefinition pd = ed.getProperty(refEntityProp);
 					if (pd != null && pd.isUpdatable()) {
-						option.getUpdateNestProperty().add(refEntityProp);
+						option.getSpecifiedUpdateNestProperties().add(refEntityProp);
 						break;
 					}
 				}
 			}
+		}
+		
+		// isSpecifyAllPropertiesがfalseの場合、Reference項目として必ず更新可能
+		if (!interrupter.isSpecifyAllProperties()) {
+			option.setSpecifiedAsReference(true);
 		}
 		return option;
 	}
