@@ -120,17 +120,25 @@ public class SecureRandomGenerator {
 			rand = createSecureRandom();
         }		
 		randoms.add(rand);
-
-		byte[] bytes = new byte[numBitsOfSecureRandomToken/8];
-		rand.nextBytes(bytes);
+		
+		if(numBitsOfSecureRandomToken % 8 != 0) {
+			BigInteger randInt = new BigInteger(numBitsOfSecureRandomToken, rand);
+			return randInt.toString(radixOfSecureRandomToken);
+		}
 		
 		if("base64".equals(encode)) {
+			byte[] bytes = new byte[numBitsOfSecureRandomToken/8];
+			rand.nextBytes(bytes);
 			return base64urlsafewop.encodeToString(bytes);
 		} else if ("base32".equals(encode)) {
+			byte[] bytes = new byte[numBitsOfSecureRandomToken/8];
+			rand.nextBytes(bytes);
 			return base32.encodeToString(bytes);
 		}
 		
 		if (radixOfSecureRandomToken == 64) {
+			byte[] bytes = new byte[numBitsOfSecureRandomToken/8];
+			rand.nextBytes(bytes);
 			return base64urlsafewop.encodeToString(bytes);
 		} else {
 			BigInteger randInt = new BigInteger(numBitsOfSecureRandomToken, rand);
