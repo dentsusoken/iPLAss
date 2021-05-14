@@ -213,12 +213,14 @@ public abstract class DefaultMetaDataPlugin extends DefaultAdminPlugin implement
 
 				MenuItem newMenuItem = new MenuItem(rs("ui_metadata_DefaultMetaDataPluginManager_create", nodeDisplayName()), MetaDataConstants.CONTEXT_MENU_ICON_ADD);
 				newMenuItem.addClickHandler(new ClickHandler() {
+					@Override
 					public void onClick(MenuItemClickEvent event) {
 						itemCreateAction("");
 					}
 				});
 				MenuItem refreshMenuItem = new MenuItem(rs("ui_metadata_DefaultMetaDataPluginManager_refreshMetadataList"), MetaDataConstants.CONTEXT_MENU_ICON_REFRESH);
 				refreshMenuItem.addClickHandler(new ClickHandler() {
+					@Override
 					public void onClick(MenuItemClickEvent event) {
 						refresh();
 					}
@@ -238,12 +240,14 @@ public abstract class DefaultMetaDataPlugin extends DefaultAdminPlugin implement
 
 			MenuItem newMenuItem = new MenuItem(rs("ui_metadata_DefaultMetaDataPluginManager_create", nodeDisplayName()), MetaDataConstants.CONTEXT_MENU_ICON_ADD);
 			newMenuItem.addClickHandler(new ClickHandler() {
+				@Override
 				public void onClick(MenuItemClickEvent event) {
 					itemCreateAction(getFolderPath(node));
 				}
 			});
 			MenuItem refreshMenuItem = new MenuItem(rs("ui_metadata_DefaultMetaDataPluginManager_refreshMetadataList"), MetaDataConstants.CONTEXT_MENU_ICON_REFRESH);
 			refreshMenuItem.addClickHandler(new ClickHandler() {
+				@Override
 				public void onClick(MenuItemClickEvent event) {
 					refresh();
 				}
@@ -264,6 +268,7 @@ public abstract class DefaultMetaDataPlugin extends DefaultAdminPlugin implement
 			// 右クリックメニュー項目1
 			MenuItem editItem = new MenuItem(rs("ui_metadata_DefaultMetaDataPluginManager_open", nodeDisplayName()), nodeIcon());
 			editItem.addClickHandler(new com.smartgwt.client.widgets.menu.events.ClickHandler() {
+				@Override
 				public void onClick(MenuItemClickEvent event) {
 					itemOpenAction((MetaDataItemMenuTreeNode)node);
 				}
@@ -272,6 +277,7 @@ public abstract class DefaultMetaDataPlugin extends DefaultAdminPlugin implement
 			// 右クリックメニュー項目2
 			MenuItem renameItem = new MenuItem(rs("ui_metadata_DefaultMetaDataPluginManager_rename", nodeDisplayName()), MetaDataConstants.CONTEXT_MENU_ICON_RENAME);
 			renameItem.addClickHandler(new com.smartgwt.client.widgets.menu.events.ClickHandler() {
+				@Override
 				public void onClick(MenuItemClickEvent event) {
 					itemRenameAction((MetaDataItemMenuTreeNode)node);
 				}
@@ -281,6 +287,7 @@ public abstract class DefaultMetaDataPlugin extends DefaultAdminPlugin implement
 			// 右クリックメニュー項目3
 			MenuItem deleteItem = new MenuItem(rs("ui_metadata_DefaultMetaDataPluginManager_delete", nodeDisplayName()), MetaDataConstants.CONTEXT_MENU_ICON_DEL);
 			deleteItem.addClickHandler(new com.smartgwt.client.widgets.menu.events.ClickHandler() {
+				@Override
 				public void onClick(MenuItemClickEvent event) {
 					itemDeleteAction((MetaDataItemMenuTreeNode)node);
 				}
@@ -290,6 +297,7 @@ public abstract class DefaultMetaDataPlugin extends DefaultAdminPlugin implement
 			// 右クリックメニュー項目4
 			MenuItem copyItem = new MenuItem(rs("ui_metadata_DefaultMetaDataPluginManager_copy", nodeDisplayName()), MetaDataConstants.CONTEXT_MENU_ICON_COPY);
 			copyItem.addClickHandler(new com.smartgwt.client.widgets.menu.events.ClickHandler() {
+				@Override
 				public void onClick(MenuItemClickEvent event) {
 					itemCopyAction((MetaDataItemMenuTreeNode)node);
 				}
@@ -888,41 +896,7 @@ public abstract class DefaultMetaDataPlugin extends DefaultAdminPlugin implement
 			return;
 		}
 
-		//フォルダがOpenされていないと選択できないのでOpen
-		openFolder(node);
-
-		//選択
-		treeGrid.selectSingleRecord(node);
-
-		//選択Nodeを表示するためスクロール
-		treeGrid.scrollToRow(treeGrid.getRecordIndex(node));
-	}
-
-	/**
-	 * <p>フォルダをOpenします。</p>
-	 *
-	 * <p>親のフォルダがOpenされていない場合は、再帰的にOpenします。</p>
-	 *
-	 * @param node フォルダTreeNode
-	 */
-	protected void openFolder(TreeNode node) {
-		if (tree == null) {
-			return;
-		}
-
-		if (tree.isRoot(node)) {
-			return;
-		}
-
-		//parentのOpen
-		TreeNode parent = tree.getParent(node);
-		if (!tree.isOpen(parent)) {
-			openFolder(parent);
-		}
-		//自身のOpen
-		if (tree.isFolder(node) &&  !tree.isOpen(node)) {
-			tree.openFolder(node);
-		}
+		treeGrid.selectAndScrollNode(node);
 	}
 
 	private String rs(String key, Object... arguments) {

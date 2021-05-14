@@ -26,11 +26,11 @@ import java.util.List;
 
 import org.iplass.adminconsole.client.base.data.DataSourceConstants;
 import org.iplass.adminconsole.client.base.i18n.AdminClientMessageUtil;
-import org.iplass.adminconsole.client.base.ui.widget.GridActionImgButton;
 import org.iplass.adminconsole.client.base.ui.widget.MtpTreeGrid;
 import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
 import org.iplass.adminconsole.client.metadata.data.menu.MenuItemTreeDS;
 import org.iplass.adminconsole.client.metadata.ui.menu.item.MenuItemTreeGrid;
+import org.iplass.adminconsole.shared.metadata.dto.MetaDataConstants;
 import org.iplass.mtp.view.menu.ActionMenuItem;
 import org.iplass.mtp.view.menu.EntityMenuItem;
 import org.iplass.mtp.view.menu.MenuItem;
@@ -47,16 +47,18 @@ import com.smartgwt.client.types.TreeModelType;
 import com.smartgwt.client.util.BooleanCallback;
 import com.smartgwt.client.util.SC;
 import com.smartgwt.client.widgets.Canvas;
-import com.smartgwt.client.widgets.events.ClickEvent;
-import com.smartgwt.client.widgets.events.ClickHandler;
-import com.smartgwt.client.widgets.grid.ListGridRecord;
 import com.smartgwt.client.widgets.grid.events.RecordDoubleClickEvent;
 import com.smartgwt.client.widgets.grid.events.RecordDoubleClickHandler;
+import com.smartgwt.client.widgets.menu.Menu;
+import com.smartgwt.client.widgets.menu.MenuItemStringFunction;
+import com.smartgwt.client.widgets.menu.events.MenuItemClickEvent;
 import com.smartgwt.client.widgets.tree.Tree;
 import com.smartgwt.client.widgets.tree.TreeGridField;
 import com.smartgwt.client.widgets.tree.TreeNode;
 import com.smartgwt.client.widgets.tree.events.FolderDropEvent;
 import com.smartgwt.client.widgets.tree.events.FolderDropHandler;
+import com.smartgwt.client.widgets.tree.events.NodeContextClickEvent;
+import com.smartgwt.client.widgets.tree.events.NodeContextClickHandler;
 
 /**
  * メニューツリー編集TreeGrid
@@ -71,6 +73,9 @@ public class MenuTreeGrid extends MtpTreeGrid {
 
 	/** 内部保持Tree */
 	private Tree tree;
+
+	/** コンテキストメニュー */
+	protected MenuTreeContextMenu contextMenu;
 
 	/**
 	 * コンストラクタ
@@ -117,11 +122,7 @@ public class MenuTreeGrid extends MtpTreeGrid {
 
 		TreeGridField nameField = new TreeGridField(DataSourceConstants.FIELD_NAME, "MenuItem");
 		TreeGridField remarksField = new TreeGridField("remarks", " ");
-		TreeGridField editActionField = new TreeGridField("editAction", " ");
-		editActionField.setWidth(25);
-		TreeGridField delActionField = new TreeGridField("delAction", " ");
-		delActionField.setWidth(25);
-		setFields(nameField, remarksField, editActionField, delActionField);
+		setFields(nameField, remarksField);
 
 		//Drag＆Drop用EventHandlerの設定
 		addFolderDropHandler(new MenuItemFolderDropHandler());
@@ -139,6 +140,20 @@ public class MenuTreeGrid extends MtpTreeGrid {
 		//データのセット
 		setData(tree);
 
+		//コンテキストメニュー
+		addNodeContextClickHandler(new NodeContextClickHandler() {
+
+			@Override
+			public void onNodeContextClick(NodeContextClickEvent event) {
+				MenuTreeNode node = (MenuTreeNode)event.getNode();
+				if (contextMenu == null) {
+					contextMenu = new MenuTreeContextMenu();
+				}
+				contextMenu.setNode(node);
+				setContextMenu(contextMenu);
+			}
+		});
+
 		//一覧ダブルクリック処理
 		addRecordDoubleClickHandler(new RecordDoubleClickHandler() {
 
@@ -155,52 +170,6 @@ public class MenuTreeGrid extends MtpTreeGrid {
 		MenuItem menuItem = (MenuItem)record.getAttributeAsObject(MenuItemTreeDS.FieldName.VALUEOBJECT.name());
 		MenuItemTreeDS.MenuItemType type = (MenuItemTreeDS.MenuItemType)record.getAttributeAsObject(MenuItemTreeDS.FieldName.TYPE.name());
 		owner.showMenuItemDialog(type, menuItem);
-	}
-
-	@Override
-	protected Canvas createRecordComponent(final ListGridRecord record, Integer colNum) {
-		String fieldName = this.getFieldName(colNum);
-		if (fieldName.equals("editAction")) {
-			GridActionImgButton recordCanvas = new GridActionImgButton();
-			recordCanvas.setActionButtonSrc("icon_edit.png");
-			recordCanvas.setActionButtonPrompt(AdminClientMessageUtil.getString("ui_metadata_menu_MenuTreeGrid_editMenuItem"));
-			recordCanvas.addActionClickHandler(new ClickHandler() {
-
-				@Override
-				public void onClick(ClickEvent event) {
-					showMenuItemDialog(record);
-				}
-			});
-
-			return recordCanvas;
-		} else if (fieldName.equals("delAction")) {
-			GridActionImgButton recordCanvas = new GridActionImgButton();
-			recordCanvas.setActionButtonSrc("remove.png");
-			recordCanvas.setActionButtonPrompt(AdminClientMessageUtil.getString("ui_metadata_menu_MenuTreeGrid_deleteMenuItemFromTree"));
-			recordCanvas.addActionClickHandler(new ClickHandler() {
-
-				@Override
-				public void onClick(ClickEvent event) {
-
-					SC.confirm(AdminClientMessageUtil.getString("ui_metadata_menu_MenuTreeGrid_deleteConfirm"),
-							AdminClientMessageUtil.getString("ui_metadata_menu_MenuTreeGrid_deleteMenuItem", record.getAttribute(DataSourceConstants.FIELD_NAME))
-							, new BooleanCallback() {
-
-						@Override
-						public void execute(Boolean value) {
-							if (value) {
-								TreeNode target = Tree.nodeForRecord(record);
-								tree.remove(target);
-							}
-
-						}
-					});
-				}
-			});
-			return recordCanvas;
-		}
-		return null;
-
 	}
 
 	/**
@@ -252,50 +221,22 @@ public class MenuTreeGrid extends MtpTreeGrid {
 	 */
 	public void updateMenuItemNode(MenuTree menuTree, MenuItem updateItem) {
 
-		MenuTreeNode root = createRootMenuTreeNode(menuTree);
-		if (updateMenuItemNode(updateItem, tree.getRoot(), root)){
-			//画面に反映
-			tree = new Tree();	//Treeをnewしなおさないと階層がうまく表示されない
-			tree.setRoot(root);
-			tree.setModelType(TreeModelType.CHILDREN);
+		List<TreeNode> children = Arrays.asList(tree.getAllNodes());
+		for (TreeNode node : children) {
+			MenuTreeNode menuNode = (MenuTreeNode)node;
+			MenuItem menuItem = (MenuItem)node.getAttributeAsObject(MenuItemTreeDS.FieldName.VALUEOBJECT.name());
+			if (menuItem != null && menuItem.getName().equals(updateItem.getName())) {
+				int curIndex = getCurrentIndex(menuNode);
+				TreeNode parent = tree.getParent(menuNode);
 
-			setData(tree);
-			getData().openAll();
-		}
-	}
+				//変更内容をNodeに反映
+				menuNode.updateItem(updateItem);
 
-	/**
-	 * メニューアイテムの変更処理
-	 *
-	 * @param updateItem 更新MenuItem
-	 * @param target 変更チェック対象TreeNode
-	 * @param newNode 変更後TreeNode
-	 * @return 変更結果（変更ありtrue）
-	 */
-	private boolean updateMenuItemNode(MenuItem updateItem, TreeNode target, TreeNode newNode) {
-		if (!tree.hasChildren(target)) {
-			return false;
-		}
-		boolean updated = false;
-		List<TreeNode> children = new ArrayList<>(tree.getChildren(target).length);
-		children.addAll(Arrays.asList(tree.getChildren(target)));
-
-		for (int i = 0; i < children.size(); i++) {
-			MenuTreeNode child = (MenuTreeNode)children.get(i);
-			MenuTreeNode newChild = child;
-			if (child.getName().equals(updateItem.getName())) {
-				newChild = createMenuItemTreeNode(updateItem);
-				children.set(i, newChild);
-				updated = true;
-			}
-			if (updateMenuItemNode(updateItem, child, newChild)) {
-				children.set(i, newChild);
-				updated = true;
+				//更新するため、削除して追加
+				tree.remove(menuNode);
+				tree.add(menuNode, parent, curIndex);
 			}
 		}
-		newNode.setChildren(children.toArray(new MenuTreeNode[0]));
-
-		return updated;
 	}
 
 	/**
@@ -305,52 +246,14 @@ public class MenuTreeGrid extends MtpTreeGrid {
 	 */
 	public void deleteMenuItemNode(MenuItem deleteItem) {
 
-		TreeNode root = tree.getRoot();
-		if (deleteMenuItemNode(deleteItem, root)) {
-			//画面に反映
-			//tree.reloadChildren(tree.getRoot());
-			tree = new Tree();	//Treeをnewしなおさないと階層がうまく表示されない
-			tree.setRoot(root);
-			tree.setModelType(TreeModelType.CHILDREN);
-
-			setData(tree);
-			getData().openAll();
-		}
-	}
-
-	/**
-	 * メニューアイテムの削除処理
-	 *
-	 * @param deleteItem 削除MenuItem
-	 * @param target 変更チェック対象TreeNode
-	 * @return 変更結果（変更ありtrue）
-	 */
-	private boolean deleteMenuItemNode(MenuItem deleteItem, TreeNode target) {
-
-		if (!tree.hasChildren(target)) {
-			return false;
-		}
-		boolean deleted = false;
-		List<TreeNode> children = new ArrayList<>(tree.getChildren(target).length);
-		//children = Arrays.asList(tree.getChildren(target));	//注意。これだとUnsupportedOperationException発生
-		children.addAll(Arrays.asList(tree.getChildren(target)));
-
-		for (int i = children.size() - 1; i >= 0 ; i--) {
-			MenuTreeNode child = (MenuTreeNode)children.get(i);
-			if (child.getName().equals(deleteItem.getName())) {
-				children.remove(i);
-				deleted = true;
-			} else {
-				//自分が削除されていない場合のみ子ノードチェック
-				if (deleteMenuItemNode(deleteItem, child)){
-					deleted = true;
-				}
+		List<TreeNode> children = Arrays.asList(tree.getAllNodes());
+		for (TreeNode node : children) {
+			MenuTreeNode menuNode = (MenuTreeNode)node;
+			MenuItem menuItem = (MenuItem)node.getAttributeAsObject(MenuItemTreeDS.FieldName.VALUEOBJECT.name());
+			if (menuItem != null && menuItem.getName().equals(deleteItem.getName())) {
+				tree.remove(menuNode);
 			}
 		}
-		if (deleted) {
-			target.setChildren(children.toArray(new MenuTreeNode[0]));
-		}
-		return deleted;
 	}
 
 	/**
@@ -430,26 +333,45 @@ public class MenuTreeGrid extends MtpTreeGrid {
 	private MenuTreeNode createActionMenuTreeNode(ActionMenuItem item) {
 		final MenuTreeNode menuTreeNode = new MenuTreeNode(item, item.getName(),
 				"cube_green.png", true, false, MenuItemTreeDS.MenuItemType.ACTION);
-		menuTreeNode.setAttribute("remarks", item.getActionName());
 		return menuTreeNode;
 	}
 
 	private MenuTreeNode createEntityMenuTreeNode(EntityMenuItem item) {
 		final MenuTreeNode menuTreeNode = new MenuTreeNode(item, item.getName(),
 				"cube_yellow.png", true, false, MenuItemTreeDS.MenuItemType.ENTITY);
-		String entityDefinitionName = item.getEntityDefinitionName();
-		if (SmartGWTUtil.isNotEmpty(item.getViewName())) {
-			entityDefinitionName = item.getEntityDefinitionName().concat(" (").concat(item.getViewName().concat(")"));
-		}
-		menuTreeNode.setAttribute("remarks", entityDefinitionName);
 		return menuTreeNode;
 	}
 
 	private MenuTreeNode createUrlMenuTreeNode(UrlMenuItem item) {
 		final MenuTreeNode menuTreeNode = new MenuTreeNode(item, item.getName(),
 				"cube_blue.png", true, false, MenuItemTreeDS.MenuItemType.URL);
-		menuTreeNode.setAttribute("remarks", SafeHtmlUtils.htmlEscape(item.getUrl()));
 		return menuTreeNode;
+	}
+
+	/**
+	 * 親Nodeに対するIndexを返します。
+	 *
+	 * @param node 対象Node
+	 * @return Index
+	 */
+	private int getCurrentIndex(TreeNode node) {
+
+		GWT.log("search node index: node=" + node + ",name=" + node.getName());
+		if (tree.getParent(node) != null) {
+			TreeNode[] children = tree.getChildren(tree.getParent(node));
+
+			int i = 0;
+			for (TreeNode child : children) {
+				GWT.log("search node index: child[" + i + "]=" + child + ",name=" + child.getName());
+				//Dragでの移動処理を行うとなぜかObject自体が変わってしまうためnameでチェック
+				if (child.getName().equals(node.getName())) {
+					return i;
+				}
+				i++;
+			}
+		}
+		//ありえない
+		throw new IllegalStateException(AdminClientMessageUtil.getString("ui_metadata_menu_MenuTreeGrid_canNotGetDrag") + node);
 	}
 
 	/**
@@ -473,8 +395,9 @@ public class MenuTreeGrid extends MtpTreeGrid {
 			setCanAcceptDrop(canAcceptDrop);
 
 			setAttribute(DataSourceConstants.FIELD_NAME, name);
-			setAttribute("remarks", "");
 			setAttribute(MenuItemTreeDS.FieldName.TYPE.name(), type);
+
+			setRemarks(item);
 
 			if (canHasChild) {
 				//子供を持てる場合は、空で作ってあげないとDropできないのでここで作成
@@ -484,6 +407,29 @@ public class MenuTreeGrid extends MtpTreeGrid {
 
 //			//ツリー内でのDragとListからのDropを区別するためOwnを設定
 //			setDragType(MenuItemDragType.Own.name());
+		}
+
+		public void updateItem(MenuItem updateItem) {
+			setAttribute(MenuItemTreeDS.FieldName.VALUEOBJECT.name(), updateItem);
+			setName(updateItem.getName());
+			setRemarks(updateItem);
+		}
+
+		private void setRemarks(MenuItem menuItem) {
+			if (menuItem instanceof ActionMenuItem) {
+				setAttribute("remarks", ((ActionMenuItem)menuItem).getActionName());
+			} else if (menuItem instanceof EntityMenuItem) {
+				EntityMenuItem entityItem = (EntityMenuItem)menuItem;
+				String entityDefinitionName = entityItem.getEntityDefinitionName();
+				if (SmartGWTUtil.isNotEmpty(entityItem.getViewName())) {
+					entityDefinitionName += " (" + entityItem.getViewName() + ")";
+				}
+				setAttribute("remarks", entityDefinitionName);
+			} else if (menuItem instanceof UrlMenuItem) {
+				setAttribute("remarks", SafeHtmlUtils.htmlEscape(((UrlMenuItem)menuItem).getUrl()));
+			} else {
+				setAttribute("remarks", "");
+			}
 		}
 
 	}
@@ -589,31 +535,58 @@ public class MenuTreeGrid extends MtpTreeGrid {
 			//デフォルトイベントのキャンセル
 			event.cancel();
 		}
+	}
 
-		/**
-		 * 親Nodeに対するIndexを返します。
-		 *
-		 * @param node 対象Node
-		 * @return Index
-		 */
-		private int getCurrentIndex(TreeNode node) {
+	private class MenuTreeContextMenu extends Menu {
 
-			GWT.log("search node index: node=" + node + ",name=" + node.getName());
-			if (tree.getParent(node) != null) {
-				TreeNode[] children = tree.getChildren(tree.getParent(node));
+		private MenuTreeNode node;
 
-				int i = 0;
-				for (TreeNode child : children) {
-					GWT.log("search node index: child[" + i + "]=" + child + ",name=" + child.getName());
-					//Dragでの移動処理を行うとなぜかObject自体が変わってしまうためnameでチェック
-					if (child.getName().equals(node.getName())) {
-						return i;
-					}
-					i++;
+		public MenuTreeContextMenu() {
+
+			final com.smartgwt.client.widgets.menu.MenuItem editItem = new com.smartgwt.client.widgets.menu.MenuItem(
+					AdminClientMessageUtil.getString("ui_metadata_DefaultMetaDataPluginManager_open",
+							AdminClientMessageUtil.getString("ui_metadata_menu_MenuPluginManager_menuItem")));
+			editItem.addClickHandler(new com.smartgwt.client.widgets.menu.events.ClickHandler() {
+				@Override
+				public void onClick(MenuItemClickEvent event) {
+					showMenuItemDialog(node);
 				}
-			}
-			//ありえない
-			throw new IllegalStateException(AdminClientMessageUtil.getString("ui_metadata_menu_MenuTreeGrid_canNotGetDrag") + node);
+			});
+			editItem.setDynamicIconFunction(new MenuItemStringFunction() {
+				@Override
+				public String execute(Canvas target, Menu menu, com.smartgwt.client.widgets.menu.MenuItem item) {
+					return node.getIcon();
+				}
+			});
+
+			final com.smartgwt.client.widgets.menu.MenuItem deleteItem = new com.smartgwt.client.widgets.menu.MenuItem(
+					AdminClientMessageUtil.getString("ui_metadata_DefaultMetaDataPluginManager_delete",
+							AdminClientMessageUtil.getString("ui_metadata_menu_MenuPluginManager_menuItem")),
+					MetaDataConstants.CONTEXT_MENU_ICON_DEL);
+			deleteItem.addClickHandler(new com.smartgwt.client.widgets.menu.events.ClickHandler() {
+				@Override
+				public void onClick(MenuItemClickEvent event) {
+
+					SC.confirm(AdminClientMessageUtil.getString("ui_metadata_menu_MenuTreeGrid_deleteConfirm"),
+							AdminClientMessageUtil.getString("ui_metadata_menu_MenuTreeGrid_deleteMenuItem", node.getAttribute(DataSourceConstants.FIELD_NAME))
+							, new BooleanCallback() {
+
+						@Override
+						public void execute(Boolean value) {
+							if (value) {
+								tree.remove(node);
+							}
+
+						}
+					});
+				}
+			});
+
+			setItems(editItem, deleteItem);
+		}
+
+		public void setNode(MenuTreeNode node) {
+			this.node = node;
 		}
 	}
 }
