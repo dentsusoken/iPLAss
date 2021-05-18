@@ -30,6 +30,7 @@ import java.util.Map;
 import org.iplass.adminconsole.client.base.data.AbstractAdminDataSource;
 import org.iplass.adminconsole.client.base.data.DataSourceConstants;
 import org.iplass.adminconsole.client.base.tenant.TenantInfoHolder;
+import org.iplass.adminconsole.client.base.util.SmartGWTUtil;
 import org.iplass.adminconsole.shared.metadata.dto.menu.MenuItemHolder;
 import org.iplass.adminconsole.shared.metadata.rpc.MetaDataServiceAsync;
 import org.iplass.adminconsole.shared.metadata.rpc.MetaDataServiceFactory;
@@ -40,13 +41,15 @@ import org.iplass.mtp.view.menu.NodeMenuItem;
 import org.iplass.mtp.view.menu.UrlMenuItem;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.smartgwt.client.data.DSRequest;
 import com.smartgwt.client.data.DSResponse;
+import com.smartgwt.client.data.DataSourceField;
 import com.smartgwt.client.data.Record;
 import com.smartgwt.client.rpc.RPCResponse;
+import com.smartgwt.client.types.FieldType;
 import com.smartgwt.client.widgets.tree.TreeNode;
-
 
 /**
  * メニューアイテム データソース
@@ -54,37 +57,54 @@ import com.smartgwt.client.widgets.tree.TreeNode;
 public class MenuItemTreeDS extends AbstractAdminDataSource {
 
 	public enum MenuItemType {
-		NODE,
-		ACTION,
-		ENTITY,
-		URL
+		NODE, ACTION, ENTITY, URL
 	}
 
 	public enum FieldName {
-		ISITEMTOP,
-		TYPE,
-		VALUEOBJECT
+		ISITEMTOP, TYPE, VALUEOBJECT, REMARKS
 	}
 
 	private static MenuItemTreeDS instance;
 
+	private static final DataSourceField[] fields;
+
+	static {
+		DataSourceField name = new DataSourceField(
+				DataSourceConstants.FIELD_NAME,
+				FieldType.TEXT,
+				DataSourceConstants.FIELD_NAME_TITLE);
+		DataSourceField dispName = new DataSourceField(
+				DataSourceConstants.FIELD_DISPLAY_NAME,
+				FieldType.TEXT,
+				DataSourceConstants.FIELD_DISPLAY_NAME_TITLE);
+		DataSourceField remarks = new DataSourceField(
+				FieldName.REMARKS.name(),
+				FieldType.TEXT,
+				"");
+
+		fields = new DataSourceField[] {name, dispName, remarks};
+	}
+
 	private MetaDataServiceAsync service = MetaDataServiceFactory.get();
+
+	private TreeNode nodeItemNode;
+	private TreeNode actionItemNode;
+	private TreeNode entityItemNode;
+	private TreeNode urlItemNode;
 
 	public static MenuItemTreeDS getInstance() {
 		if (instance == null) {
-			instance = new MenuItemTreeDS("MenuItemDS");
+			instance = new MenuItemTreeDS();
 		}
 		return instance;
 	}
 
-	public MenuItemTreeDS(String id) {
-		setID(id);
+	public MenuItemTreeDS() {
+		setFields(fields);
 	}
 
-
 	@Override
-	protected void executeFetch(final String requestId, final DSRequest request,
-			final DSResponse response) {
+	protected void executeFetch(final String requestId, final DSRequest request, final DSResponse response) {
 
 		service.getMenuItemList(TenantInfoHolder.getId(), new AsyncCallback<MenuItemHolder>() {
 
@@ -100,64 +120,92 @@ public class MenuItemTreeDS extends AbstractAdminDataSource {
 			public void onSuccess(MenuItemHolder holder) {
 
 				List<TreeNode> roots = createMenuItemTreeNode(holder);
-				response.setData(roots.toArray(new Record[]{}));
+				response.setData(roots.toArray(new Record[] {}));
 				processResponse(requestId, response);
 			}
 		});
 
 	}
 
-	private List<TreeNode> createMenuItemTreeNode(MenuItemHolder holder) {
-		List<TreeNode> nodes = new ArrayList<TreeNode>();
+	public TreeNode getTypeRootNode(MenuItem menuItem) {
 
-		//NodeItem
-		TreeNode nodeItemNode = new TreeNode("NodeMenuItem");
-		nodeItemNode.setAttribute(DataSourceConstants.FIELD_NAME, "NodeMenuItem");
-		nodeItemNode.setAttribute(DataSourceConstants.FIELD_DISPLAY_VALUE, "NodeMenuItem");
-		nodeItemNode.setAttribute(FieldName.ISITEMTOP.name(), true);
-		nodeItemNode.setAttribute(FieldName.TYPE.name(), MenuItemType.NODE);
-		nodeItemNode.setIsFolder(true);
+		MenuItemType type = getItemType(menuItem);
+		switch (type) {
+			case NODE:
+				return nodeItemNode;
+			case ACTION:
+				return actionItemNode;
+			case ENTITY:
+				return entityItemNode;
+			case URL:
+				return urlItemNode;
+			default:
+				return null;
+		}
+	}
+
+	public TreeNode createFolderNode(String path, String name, MenuItemType type) {
+
+		TreeNode folder = new TreeNode(path);
+		folder.setAttribute(DataSourceConstants.FIELD_NAME, path);
+		folder.setAttribute(DataSourceConstants.FIELD_DISPLAY_VALUE, name);
+		folder.setAttribute(FieldName.ISITEMTOP.name(), false);
+		folder.setAttribute(FieldName.TYPE.name(), type);
+		return folder;
+	}
+
+	public TreeNode createMenuItemNode(MenuItem menuItem) {
+
+		TreeNode itemNode = new TreeNode(menuItem.getName());
+		itemNode.setAttribute(DataSourceConstants.FIELD_NAME, menuItem.getName());
+		itemNode.setAttribute(DataSourceConstants.FIELD_DISPLAY_VALUE, getSimpleName(menuItem.getName()));
+		itemNode.setAttribute(FieldName.VALUEOBJECT.name(), menuItem);
+		itemNode.setAttribute(FieldName.ISITEMTOP.name(), false);
+		itemNode.setAttribute(FieldName.TYPE.name(), getItemType(menuItem));
+		itemNode.setAttribute(FieldName.REMARKS.name(), getRemarks(menuItem));
+		itemNode.setIcon(getIcon(menuItem));
+		itemNode.setIsFolder(false);
+		return itemNode;
+	}
+
+	public void updateMenuItemNode(TreeNode itemNode, MenuItem updateItem) {
+		itemNode.setAttribute(DataSourceConstants.FIELD_NAME, updateItem.getName());
+		itemNode.setAttribute(DataSourceConstants.FIELD_DISPLAY_VALUE, getSimpleName(updateItem.getName()));
+		itemNode.setAttribute(FieldName.VALUEOBJECT.name(), updateItem);
+		itemNode.setAttribute(FieldName.REMARKS.name(), getRemarks(updateItem));
+	}
+
+	private List<TreeNode> createMenuItemTreeNode(MenuItemHolder holder) {
+		List<TreeNode> nodes = new ArrayList<>();
+
+		// NodeItem
+		nodeItemNode = createTypeRootNode("NodeMenuItem", MenuItemType.NODE);
 		if (holder.getNodeMenuItemList() != null && !holder.getNodeMenuItemList().isEmpty()) {
-			nodes.add(createTypeTreeNodeList(nodeItemNode, holder.getNodeMenuItemList(), MenuItemType.NODE));
+			nodes.add(createTypeTreeNodeList(nodeItemNode, holder.getNodeMenuItemList()));
 		} else {
 			nodeItemNode.setChildren(new TreeNode[] {});
 			nodes.add(nodeItemNode);
 		}
 
-		TreeNode actionItemNode = new TreeNode("ActionMenuItem");
-		actionItemNode.setAttribute(DataSourceConstants.FIELD_NAME, "ActionMenuItem");
-		actionItemNode.setAttribute(DataSourceConstants.FIELD_DISPLAY_VALUE, "ActionMenuItem");
-		actionItemNode.setAttribute(FieldName.ISITEMTOP.name(), true);
-		actionItemNode.setAttribute(FieldName.TYPE.name(), MenuItemType.ACTION);
-		actionItemNode.setIsFolder(true);
+		actionItemNode = createTypeRootNode("ActionMenuItem", MenuItemType.ACTION);
 		if (holder.getActionMenuItemList() != null && !holder.getActionMenuItemList().isEmpty()) {
-			nodes.add(createTypeTreeNodeList(actionItemNode, holder.getActionMenuItemList(), MenuItemType.ACTION));
+			nodes.add(createTypeTreeNodeList(actionItemNode, holder.getActionMenuItemList()));
 		} else {
 			actionItemNode.setChildren(new TreeNode[] {});
 			nodes.add(actionItemNode);
 		}
 
-		TreeNode entityItemNode = new TreeNode("EntityMenuItem");
-		entityItemNode.setAttribute(DataSourceConstants.FIELD_NAME, "EntityMenuItem");
-		entityItemNode.setAttribute(DataSourceConstants.FIELD_DISPLAY_VALUE, "EntityMenuItem");
-		entityItemNode.setAttribute(FieldName.ISITEMTOP.name(), true);
-		entityItemNode.setAttribute(FieldName.TYPE.name(), MenuItemType.ENTITY);
-		entityItemNode.setIsFolder(true);
+		entityItemNode = createTypeRootNode("EntityMenuItem", MenuItemType.ENTITY);
 		if (holder.getEntityMenuItemList() != null && !holder.getEntityMenuItemList().isEmpty()) {
-			nodes.add(createTypeTreeNodeList(entityItemNode, holder.getEntityMenuItemList(), MenuItemType.ENTITY));
+			nodes.add(createTypeTreeNodeList(entityItemNode, holder.getEntityMenuItemList()));
 		} else {
 			entityItemNode.setChildren(new TreeNode[] {});
 			nodes.add(entityItemNode);
 		}
 
-		TreeNode urlItemNode = new TreeNode("UrlMenuItem");
-		urlItemNode.setAttribute(DataSourceConstants.FIELD_NAME, "UrlMenuItem");
-		urlItemNode.setAttribute(DataSourceConstants.FIELD_DISPLAY_VALUE, "UrlMenuItem");
-		urlItemNode.setAttribute(FieldName.ISITEMTOP.name(), true);
-		urlItemNode.setAttribute(FieldName.TYPE.name(), MenuItemType.URL);
-		urlItemNode.setIsFolder(true);
+		urlItemNode = createTypeRootNode("UrlMenuItem", MenuItemType.URL);
 		if (holder.getUrlMenuItemList() != null && !holder.getUrlMenuItemList().isEmpty()) {
-			nodes.add(createTypeTreeNodeList(urlItemNode, holder.getUrlMenuItemList(), MenuItemType.URL));
+			nodes.add(createTypeTreeNodeList(urlItemNode, holder.getUrlMenuItemList()));
 		} else {
 			urlItemNode.setChildren(new TreeNode[] {});
 			nodes.add(urlItemNode);
@@ -166,81 +214,86 @@ public class MenuItemTreeDS extends AbstractAdminDataSource {
 		return nodes;
 	}
 
-	private TreeNode createTypeTreeNodeList(TreeNode rootItemNode, List<? extends MenuItem> items, MenuItemType type) {
+	private TreeNode createTypeRootNode(String name, MenuItemType type) {
+		TreeNode rootNode = new TreeNode(name);
+		rootNode.setAttribute(DataSourceConstants.FIELD_NAME, name);
+		rootNode.setAttribute(DataSourceConstants.FIELD_DISPLAY_VALUE, name);
+		rootNode.setAttribute(FieldName.ISITEMTOP.name(), true);
+		rootNode.setAttribute(FieldName.TYPE.name(), type);
+		rootNode.setIsFolder(true);
+		return rootNode;
+	}
+
+	private TreeNode createTypeTreeNodeList(TreeNode rootItemNode, List<? extends MenuItem> items) {
 		if (items != null) {
-			//nameでソート
-            Collections.sort(items, new Comparator<MenuItem>() {
+			// nameでソート
+			Collections.sort(items, new Comparator<MenuItem>() {
 				@Override
 				public int compare(MenuItem o1, MenuItem o2) {
 					return o1.getName().compareTo(o2.getName());
 				}
 			});
 
-    		Map<String, WorkMenuItemNode> treeNodeMap = new HashMap<String, WorkMenuItemNode>();
-    		WorkMenuItemNode rootWorkNode = new WorkMenuItemNode(rootItemNode);
-    		treeNodeMap.put("", rootWorkNode);
+			Map<String, WorkMenuItemNode> treeNodeMap = new HashMap<>();
+			WorkMenuItemNode rootWorkNode = new WorkMenuItemNode(rootItemNode);
+			treeNodeMap.put("", rootWorkNode);
 
-            for (MenuItem item : items) {
-    			String[] nodePaths = item.getName().split("/");
+			for (MenuItem item : items) {
+				MenuItemType type = getItemType(item);
 
-    			String prePath = "";
-    			WorkMenuItemNode current = rootWorkNode;
-    			if (nodePaths.length > 1) {
-    				//フォルダを含む
-    				for (int i = 0; i < nodePaths.length - 1; i++) {
-    					String folderPath = prePath + nodePaths[i] + "/";
+				String[] nodePaths = item.getName().split("/");
 
-    					if (treeNodeMap.containsKey(folderPath)) {
-    						//すでに作成済み
-    						current = treeNodeMap.get(folderPath);
-    					} else {
+				String prePath = "";
+				WorkMenuItemNode current = rootWorkNode;
+				if (nodePaths.length > 1) {
+					// フォルダを含む
+					for (int i = 0; i < nodePaths.length - 1; i++) {
+						String folderPath = prePath + nodePaths[i] + "/";
 
-    		    			TreeNode folder = new TreeNode(folderPath);
-    		        		folder.setAttribute(DataSourceConstants.FIELD_NAME, folderPath);
-    		        		folder.setAttribute(DataSourceConstants.FIELD_DISPLAY_VALUE, nodePaths[i]);
-    		        		folder.setAttribute(FieldName.ISITEMTOP.name(), false);
-    		        		folder.setAttribute(FieldName.TYPE.name(), type);
+						if (treeNodeMap.containsKey(folderPath)) {
+							// すでに作成済み
+							current = treeNodeMap.get(folderPath);
+						} else {
 
-    						//１つ前のNodeに追加
-    						current.addFolder(folder);
+							TreeNode folder = new TreeNode(folderPath);
+							folder.setAttribute(DataSourceConstants.FIELD_NAME, folderPath);
+							folder.setAttribute(DataSourceConstants.FIELD_DISPLAY_VALUE, nodePaths[i]);
+							folder.setAttribute(FieldName.ISITEMTOP.name(), false);
+							folder.setAttribute(FieldName.TYPE.name(), type);
 
-    						current = new WorkMenuItemNode(folder);
-    						treeNodeMap.put(folderPath, current);
-    					}
-    					prePath = folderPath;
-    				}
-    			}
+							// １つ前のNodeに追加
+							current.addFolder(folder);
 
-    			//itemの作成
-    			TreeNode leaf = new TreeNode(item.getName());
-        		leaf.setAttribute(DataSourceConstants.FIELD_NAME, item.getName());
-        		leaf.setAttribute(DataSourceConstants.FIELD_DISPLAY_VALUE, getSimpleName(item.getName()));
-        		leaf.setAttribute(FieldName.VALUEOBJECT.name(), item);
-        		leaf.setAttribute(FieldName.ISITEMTOP.name(), false);
-        		leaf.setAttribute(FieldName.TYPE.name(), type);
-        		leaf.setIcon(getIcon(item));
-        		leaf.setIsFolder(false);
-    			current.addChild(leaf);
-            }
+							current = new WorkMenuItemNode(folder);
+							treeNodeMap.put(folderPath, current);
+						}
+						prePath = folderPath;
+					}
+				}
 
-            //Workに格納されたNodeのChild成形
-            for (WorkMenuItemNode entry : treeNodeMap.values()) {
-            	entry.createChildNode();
-            }
+				// itemの作成
+				TreeNode itemNode = createMenuItemNode(item);
+				current.addChild(itemNode);
+			}
 
-            //RootのNodeを返す
-            return rootWorkNode.getTreeNode();
+			// Workに格納されたNodeのChild成形
+			for (WorkMenuItemNode entry : treeNodeMap.values()) {
+				entry.createChildNode();
+			}
+
+			// RootのNodeを返す
+			return rootWorkNode.getTreeNode();
 		}
 
 		return rootItemNode;
 	}
 
-	//ツリー編集用クラス（デフォルトのTreeNodeだとaddChildできないので）
+	// ツリー編集用クラス（デフォルトのTreeNodeだとaddChildできないので）
 	private class WorkMenuItemNode {
 
 		private TreeNode node;
-		private List<TreeNode> folder = new ArrayList<TreeNode>();
-		private List<TreeNode> children = new ArrayList<TreeNode>();
+		private List<TreeNode> folder = new ArrayList<>();
+		private List<TreeNode> children = new ArrayList<>();
 
 		public WorkMenuItemNode(TreeNode node) {
 			this.node = node;
@@ -255,10 +308,10 @@ public class MenuItemTreeDS extends AbstractAdminDataSource {
 		}
 
 		public void createChildNode() {
-			//Folderを先に表示させるため、Folderに対して子供を追加
+			// Folderを先に表示させるため、Folderに対して子供を追加
 			folder.addAll(children);
 			if (folder.size() > 0) {
-				node.setChildren(folder.toArray(new TreeNode[]{}));
+				node.setChildren(folder.toArray(new TreeNode[] {}));
 			}
 		}
 
@@ -278,6 +331,7 @@ public class MenuItemTreeDS extends AbstractAdminDataSource {
 			return path;
 		}
 	}
+
 	private String getIcon(MenuItem item) {
 		if (item instanceof NodeMenuItem) {
 			return "menuitem_node.png";
@@ -291,4 +345,33 @@ public class MenuItemTreeDS extends AbstractAdminDataSource {
 		return "";
 	}
 
+	private MenuItemType getItemType(MenuItem item) {
+		if (item instanceof NodeMenuItem) {
+			return MenuItemType.NODE;
+		} else if (item instanceof ActionMenuItem) {
+			return MenuItemType.ACTION;
+		} else if (item instanceof EntityMenuItem) {
+			return MenuItemType.ENTITY;
+		} else if (item instanceof UrlMenuItem) {
+			return MenuItemType.URL;
+		}
+		return null;
+	}
+
+	private String getRemarks(MenuItem menuItem) {
+		if (menuItem instanceof ActionMenuItem) {
+			return ((ActionMenuItem)menuItem).getActionName();
+		} else if (menuItem instanceof EntityMenuItem) {
+			EntityMenuItem entityItem = (EntityMenuItem)menuItem;
+			String entityDefinitionName = entityItem.getEntityDefinitionName();
+			if (SmartGWTUtil.isNotEmpty(entityItem.getViewName())) {
+				entityDefinitionName += " (" + entityItem.getViewName() + ")";
+			}
+			return entityDefinitionName;
+		} else if (menuItem instanceof UrlMenuItem) {
+			return SafeHtmlUtils.htmlEscape(((UrlMenuItem)menuItem).getUrl());
+		} else {
+			return "";
+		}
+	}
 }

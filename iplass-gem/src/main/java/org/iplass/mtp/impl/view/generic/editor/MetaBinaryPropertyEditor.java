@@ -64,6 +64,12 @@ public class MetaBinaryPropertyEditor extends MetaPrimitivePropertyEditor {
 	/** 新しいタブで開くか */
 	private boolean openNewTab;
 
+	/** 画像表示時に回転ボタンを表示 */
+	private boolean showImageRotateButton;
+
+	/** 画像表示時にイメージViewerを利用 */
+	private boolean useImageViewer;
+
 	/** PDF表示時にPDF.jsを利用 */
 	private boolean usePdfjs;
 
@@ -170,6 +176,38 @@ public class MetaBinaryPropertyEditor extends MetaPrimitivePropertyEditor {
 	}
 
 	/**
+	 * 画像表示時に回転ボタンを表示を取得します。
+	 * @return 画像表示時に回転ボタンを表示
+	 */
+	public boolean isShowImageRotateButton() {
+		return showImageRotateButton;
+	}
+
+	/**
+	 * 画像表示時に回転ボタンを表示を設定します。
+	 * @param showImageRotateButton 画像表示時に回転ボタンを表示
+	 */
+	public void setShowImageRotateButton(boolean showImageRotateButton) {
+		this.showImageRotateButton = showImageRotateButton;
+	}
+
+	/**
+	 * 画像表示時にイメージViewerを利用を取得します。
+	 * @return 画像表示時にイメージViewerを利用
+	 */
+	public boolean isUseImageViewer() {
+		return useImageViewer;
+	}
+
+	/**
+	 * 画像表示時にイメージViewerを利用を設定します。
+	 * @param useImageViewer 画像表示時にイメージViewerを利用
+	 */
+	public void setUseImageViewer(boolean useImageViewer) {
+		this.useImageViewer = useImageViewer;
+	}
+
+	/**
 	 * PDF表示時にPDF.jsを利用を取得します。
 	 * @return PDF表示時にPDF.jsを利用
 	 */
@@ -233,6 +271,8 @@ public class MetaBinaryPropertyEditor extends MetaPrimitivePropertyEditor {
 		uploadActionName = e.getUploadActionName();
 		downloadActionName = e.getDownloadActionName();
 		openNewTab = e.isOpenNewTab();
+		showImageRotateButton = e.isShowImageRotateButton();
+		useImageViewer = e.isUseImageViewer();
 		usePdfjs = e.isUsePdfjs();
 		hideSelectButton = e.isHideSelectButton();
 		hideDeleteButton = e.isHideDeleteButton();
@@ -249,6 +289,8 @@ public class MetaBinaryPropertyEditor extends MetaPrimitivePropertyEditor {
 		editor.setUploadActionName(uploadActionName);
 		editor.setDownloadActionName(downloadActionName);
 		editor.setOpenNewTab(openNewTab);
+		editor.setShowImageRotateButton(showImageRotateButton);
+		editor.setUseImageViewer(useImageViewer);
 		editor.setUsePdfjs(usePdfjs);
 		editor.setHideSelectButton(hideSelectButton);
 		editor.setHideDeleteButton(hideDeleteButton);

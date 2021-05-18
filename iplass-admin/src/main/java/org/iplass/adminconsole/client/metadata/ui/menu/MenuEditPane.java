@@ -36,7 +36,6 @@ import org.iplass.adminconsole.client.metadata.ui.common.MetaCommonHeaderPane;
 import org.iplass.adminconsole.client.metadata.ui.common.MetaDataHistoryDialog;
 import org.iplass.adminconsole.client.metadata.ui.common.MetaDataUpdateCallback;
 import org.iplass.adminconsole.client.metadata.ui.common.StatusCheckUtil;
-import org.iplass.adminconsole.client.metadata.ui.menu.item.MenuItemDialog;
 import org.iplass.adminconsole.client.metadata.ui.menu.item.MenuItemDragPane;
 import org.iplass.adminconsole.client.metadata.ui.menu.item.event.MenuItemDataChangeHandler;
 import org.iplass.adminconsole.client.metadata.ui.menu.item.event.MenuItemDataChangedEvent;
@@ -49,9 +48,11 @@ import org.iplass.mtp.view.menu.MenuTree;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.smartgwt.client.types.Alignment;
 import com.smartgwt.client.types.Overflow;
 import com.smartgwt.client.util.BooleanCallback;
 import com.smartgwt.client.util.SC;
+import com.smartgwt.client.widgets.Canvas;
 import com.smartgwt.client.widgets.ImgButton;
 import com.smartgwt.client.widgets.events.ClickEvent;
 import com.smartgwt.client.widgets.events.ClickHandler;
@@ -307,7 +308,7 @@ public class MenuEditPane extends MetaDataMainEditPane {
 			setOverflow(Overflow.AUTO);	//Stack上の表示領域が小さい場合にスクロールができるようにAUTO設定
 
 			setWidth100();
-			List<FormItem> items = new ArrayList<FormItem>();
+			List<FormItem> items = new ArrayList<>();
 
 			displayOrderField = new IntegerItem();
 			displayOrderField.setTitle("Display Order");
@@ -384,8 +385,12 @@ public class MenuEditPane extends MetaDataMainEditPane {
 			layout.addMember(treeGridPane);
 			layout.addMember(dragPane);
 
+			//注意書き
+			MenuOperationNotePane notePane = new MenuOperationNotePane();
+
 			addMember(form);
 			addMember(layout);
+			addMember(notePane);
 		}
 
 		public void setDefinition(MenuTree definition) {
@@ -452,19 +457,31 @@ public class MenuEditPane extends MetaDataMainEditPane {
 		 * @param menuItem 更新メニューアイテム
 		 */
 		public void showMenuItemDialog(MenuItemTreeDS.MenuItemType type, MenuItem menuItem) {
-			MenuItemDialog dialog = new MenuItemDialog(type);
-			dialog.addMenuItemDataChangeHandler(new MenuItemDataChangeHandler() {
+			dragPane.showMenuItemDialog(type, menuItem);
+		}
+	}
 
-				@Override
-				public void onDataChanged(MenuItemDataChangedEvent event) {
-					menuItemDataChanged(event);
+	/**
+	 * 3.1用メッセージ
+	 * アイテムの編集をアイコンからコンテキストメニューに変更したので
+	 * 画面上に注意書きとして表示する。
+	 */
+	@Deprecated
+	private static class MenuOperationNotePane extends HLayout {
 
-					//アイテム一覧も更新する必要がある
-					dragPane.refresh();
-				}
-			});
-			dialog.setMenuItem(menuItem, false);
-			dialog.show();
+		public MenuOperationNotePane() {
+
+			setMargin(10);
+			setAutoHeight();
+			setWidth100();
+
+			String itemMessage = AdminClientMessageUtil.getString("ui_metadata_menu_MenuTreeEditPane_operationNote");
+			Canvas msgContents = new Canvas();
+			msgContents.setWidth100();
+			msgContents.setOverflow(Overflow.VISIBLE);
+			msgContents.setAlign(Alignment.LEFT);
+			msgContents.setContents("<font color=\"red\">" + itemMessage + "</font>");
+			addMember(msgContents);
 		}
 	}
 

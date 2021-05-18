@@ -36,12 +36,12 @@
 <%@ page import="org.iplass.gem.command.Constants" %>
 
 <%!
-	String url(BinaryReference br, String download) {
-		String url = download + "?id=" + br.getLobId();
+	String url(BinaryReference br, String action) {
+		String url = action + "?" + Constants.ID + "=" + br.getLobId();
 		if (br.getDefinitionName() != null) {
-			url = url + "&defName=" + br.getDefinitionName() + "&propName=" + br.getPropertyName();
+			url = url + "&" + Constants.DEF_NAME + "=" + br.getDefinitionName() 
+				+ "&" + Constants.PROP_NAME + "=" + br.getPropertyName();
 		}
-
 		return url;
 	}
 %>
@@ -51,6 +51,7 @@
 	Object value = request.getAttribute(Constants.EDITOR_PROP_VALUE);
 	Boolean outputHidden = (Boolean) request.getAttribute(Constants.OUTPUT_HIDDEN);
 	if (outputHidden == null) outputHidden = false;
+	OutputType type = (OutputType) request.getAttribute(Constants.OUTPUT_TYPE);
 
 	String propName = editor.getPropertyName();
 
@@ -74,6 +75,7 @@
 			download = contextPath + "/" + DownloadCommand.DOWNLOAD_ACTION_NAME;
 		}
 		String pdfviewer = contextPath + "/" + DownloadCommand.PDFVIEWER_ACTION_NAME;
+		String imgviewer = contextPath + "/" + DownloadCommand.IMGVIEWER_ACTION_NAME;
 
 		String width = "";
 		if (editor.getWidth() > 0) {
@@ -103,14 +105,36 @@
 <%
 			if (editor.getDisplayType() == BinaryDisplayType.BINARY || editor.getDisplayType() == BinaryDisplayType.LINK || editor.getDisplayType() == BinaryDisplayType.LABEL) {
 				if (br.getType().indexOf("application/pdf") != -1 && editor.isUsePdfjs()) {
+					//PDFViewer
 					String pdfPath = pdfviewer+ "?file=" + URLEncoder.encode(url(br, download), "utf-8");
 %>
-<a href="<%=pdfPath%>" <%=target %>><c:out value="<%=br.getName() %>" /></a>
+<a href="<%=pdfPath%>" <%=target %> class="link-bin"><c:out value="<%=br.getName() %>" /></a>
+<%
+				} else if (br.getType().indexOf("image") != -1 && editor.isUseImageViewer() && editor.isOpenNewTab()) {
+					//ImageViewer＋別タブ
+%>
+<a href="javascript:void(0)" data-viewerUrl="<c:out value="<%=url(br, imgviewer) %>" />" data-lobid="<%=br.getLobId() %>" class="link-bin img-viewer" onclick="showImageViewer(this);"><c:out value="<%=br.getName() %>" /></a>
 <%
 				} else {
+					//Download
 %>
-<a href="<c:out value="<%=url(br, download) %>" />" <%=target %>><c:out value="<%=br.getName() %>" /></a>
+<a href="<c:out value="<%=url(br, download) %>" />" <%=target %> class="link-bin"><c:out value="<%=br.getName() %>" /></a>
 <%
+				}
+			}
+
+			//詳細画面の画像ローテ―トボタン
+			if (type == OutputType.VIEW && editor.isShowImageRotateButton() && br.getType().indexOf("image") != -1) {
+				if (editor.getDisplayType() == BinaryDisplayType.BINARY || editor.getDisplayType() == BinaryDisplayType.PREVIEW || editor.getDisplayType() == BinaryDisplayType.LABEL) {
+%>
+<span class="viewer-toolbar" style="display:inline-block">
+<ul>
+<li class="viewer-rotate-left" onclick="rotateImage('<%=br.getLobId() %>', -90)"></li>
+<li class="viewer-rotate-right" onclick="rotateImage('<%=br.getLobId() %>', 90)"></li>
+</ul>
+</span>
+<%
+					
 				}
 			}
 
@@ -118,7 +142,26 @@
 				if (br.getType().indexOf("image") != -1) {
 %>
 <p>
-<img src="<c:out value="<%=url(br, ref) %>" />" alt="<c:out value="<%=br.getLobId() %>" />" onload="imageLoad()" <%=width + height %> />
+<%
+					if (editor.isUseImageViewer() && editor.isOpenNewTab()) {
+						//別タブ
+%>
+<img src="<c:out value="<%=url(br, ref) %>" />" alt="<c:out value="<%=br.getName() %>" />" onload="imageLoad()" <%=width + height %> data-lobid="<%=br.getLobId() %>" class="img-viewer" onclick="showImageViewer(this);" data-viewerUrl="<c:out value="<%=url(br, imgviewer) %>" />" />
+<%
+					} else {
+						if (editor.isUseImageViewer()) {
+							//Inline
+%>
+<img src="<c:out value="<%=url(br, ref) %>" />" alt="<c:out value="<%=br.getName() %>" />" onload="imageLoad()" <%=width + height %> data-lobid="<%=br.getLobId() %>" class="img-viewer" onclick="inlineImageViewer(this);" />
+<%
+						} else {
+%>
+<img src="<c:out value="<%=url(br, ref) %>" />" alt="<c:out value="<%=br.getName() %>" />" onload="imageLoad()" <%=width + height %> data-lobid="<%=br.getLobId() %>" />
+<%
+						}
+					}
+%>
+<span class="dummy"></span>
 </p>
 <%
 				} else if (br.getType().indexOf("application/x-shockwave-flash") != -1) {

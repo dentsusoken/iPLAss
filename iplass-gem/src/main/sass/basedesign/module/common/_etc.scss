@@ -28,6 +28,34 @@ p.loading {
 	margin: 2px;
 	width: 16px;
 }
+/* binary表示 */
+.list-bin {
+	//リンク
+	>a.link-bin {
+		vertical-align: top
+	}
+	//ローテ―トボタン
+	>.viewer-toolbar {
+		display: inline-block;
+		
+		>ul {
+			margin: 0;
+		    padding: 0 3px;
+		}
+	}
+}
+//ImageViewer
+.viewer-container.viewer-backdrop {
+	background-color:rgba(0,0,0,0.8);
+}
+//表示画像
+img.img-viewer {
+	cursor: -webkit-zoom-in;
+	cursor: zoom-in;
+	transition:all .3s;
+	-webkit-transition: all .3s;
+}
+
 //横スクロール
 div.box-scroll {
 	overflow-x: auto;
