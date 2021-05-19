@@ -33,7 +33,7 @@ public interface AuthTokenInfoList {
 	
 	public List<AuthTokenInfo> getList();
 	public AuthTokenInfo get(String type, String key);
+	public void remove(String type);
 	public void remove(String type, String key);
 	public Credential generateNewToken(AuthTokenInfo newTokenInfo);
-
 }

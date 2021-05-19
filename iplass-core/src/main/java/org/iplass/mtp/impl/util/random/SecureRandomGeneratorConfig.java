@@ -25,6 +25,7 @@ public class SecureRandomGeneratorConfig {
 	private boolean useStrongSecureRandom = false;
 	private String algorithm;
 	private String provider;
+	private String encode;
 	
 	public int getNumBitsOfSecureRandomToken() {
 		return numBitsOfSecureRandomToken;
@@ -56,12 +57,18 @@ public class SecureRandomGeneratorConfig {
 	public void setProvider(String provider) {
 		this.provider = provider;
 	}
+	public String getEncode() {
+		return encode;
+	}
+	public void setEncode(String encode) {
+		this.encode = encode;
+	}
 	
 	public SecureRandomGenerator createGenerator() {
 		if (algorithm != null) {
-			return new SecureRandomGenerator(numBitsOfSecureRandomToken, radixOfSecureRandomToken, algorithm, provider);
+			return new SecureRandomGenerator(numBitsOfSecureRandomToken, radixOfSecureRandomToken, algorithm, provider, encode);
 		} else {
-			return new SecureRandomGenerator(numBitsOfSecureRandomToken, radixOfSecureRandomToken, useStrongSecureRandom);
+			return new SecureRandomGenerator(numBitsOfSecureRandomToken, radixOfSecureRandomToken, useStrongSecureRandom, encode);
 		}
 	}
 

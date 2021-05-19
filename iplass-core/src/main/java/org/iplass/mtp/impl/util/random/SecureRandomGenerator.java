@@ -28,10 +28,12 @@ import java.util.Base64.Encoder;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
+import org.apache.commons.codec.binary.Base32;
 import org.iplass.mtp.spi.ServiceConfigrationException;
 
 public class SecureRandomGenerator {
 	private static Encoder base64urlsafewop = Base64.getUrlEncoder().withoutPadding();
+	private static Base32 base32 = new Base32();
 	
 	private final Queue<SecureRandom> randoms = new ConcurrentLinkedQueue<SecureRandom>();
 	
@@ -41,6 +43,8 @@ public class SecureRandomGenerator {
 	private final boolean useStrongSecureRandom;
 	private final String algorithm;
 	private final String provider;
+	/** base32,base64 */
+	private final String encode;
 	
 	public SecureRandomGenerator(int numBitsOfSecureRandomToken, int radixOfSecureRandomToken, boolean useStrongSecureRandom) {
 		this.numBitsOfSecureRandomToken = numBitsOfSecureRandomToken;
@@ -48,6 +52,16 @@ public class SecureRandomGenerator {
 		this.useStrongSecureRandom = useStrongSecureRandom;
 		this.algorithm = null;
 		this.provider = null;
+		this.encode = null;
+	}
+	
+	public SecureRandomGenerator(int numBitsOfSecureRandomToken, int radixOfSecureRandomToken, boolean useStrongSecureRandom, String encode) {
+		this.numBitsOfSecureRandomToken = numBitsOfSecureRandomToken;
+		this.radixOfSecureRandomToken = radixOfSecureRandomToken;
+		this.useStrongSecureRandom = useStrongSecureRandom;
+		this.algorithm = null;
+		this.provider = null;
+		this.encode = encode;
 	}
 	
 	public SecureRandomGenerator(int numBitsOfSecureRandomToken, int radixOfSecureRandomToken, String algorithm) {
@@ -56,6 +70,7 @@ public class SecureRandomGenerator {
 		this.useStrongSecureRandom = false;
 		this.algorithm = algorithm;
 		this.provider = null;
+		this.encode = null;
 	}
 	
 	public SecureRandomGenerator(int numBitsOfSecureRandomToken, int radixOfSecureRandomToken, String algorithm, String provider) {
@@ -64,6 +79,16 @@ public class SecureRandomGenerator {
 		this.useStrongSecureRandom = false;
 		this.algorithm = algorithm;
 		this.provider = provider;
+		this.encode = null;
+	}
+
+	public SecureRandomGenerator(int numBitsOfSecureRandomToken, int radixOfSecureRandomToken, String algorithm, String provider, String encode) {
+		this.numBitsOfSecureRandomToken = numBitsOfSecureRandomToken;
+		this.radixOfSecureRandomToken = radixOfSecureRandomToken;
+		this.useStrongSecureRandom = false;
+		this.algorithm = algorithm;
+		this.provider = provider;
+		this.encode = encode;
 	}
 	
 	private SecureRandom createSecureRandom() {
@@ -94,12 +119,33 @@ public class SecureRandomGenerator {
 		if (rand == null) {
 			rand = createSecureRandom();
         }
-		BigInteger randInt = new BigInteger(numBitsOfSecureRandomToken, rand);
-		randoms.add(rand);
+		
+		if("base64".equals(encode)) {
+			//numBitsOfSecureRandomTokenが8で割り切れない場合、数値を切り上げる。
+			int roundUpNumBytesOfSecureRandomToken = (int) (Math.ceil((double) numBitsOfSecureRandomToken/8));
+			byte[] bytes = new byte[roundUpNumBytesOfSecureRandomToken];
+			rand.nextBytes(bytes);
+			randoms.add(rand);
+			return base64urlsafewop.encodeToString(bytes);
+		} else if ("base32".equals(encode)) {
+			//numBitsOfSecureRandomTokenが8で割り切れない場合、数値を切り上げる。
+			int roundUpNumBytesOfSecureRandomToken = (int) (Math.ceil((double) numBitsOfSecureRandomToken/8));
+			byte[] bytes = new byte[roundUpNumBytesOfSecureRandomToken];
+			rand.nextBytes(bytes);
+			randoms.add(rand);
+			return base32.encodeToString(bytes);
+		}
+		
 		if (radixOfSecureRandomToken == 64) {
-			byte[] b = randInt.toByteArray();
-			return base64urlsafewop.encodeToString(b);
+			//numBitsOfSecureRandomTokenが8で割り切れない場合、数値を切り上げる。
+			int roundUpNumBytesOfSecureRandomToken = (int) (Math.ceil((double) numBitsOfSecureRandomToken/8));
+			byte[] bytes = new byte[roundUpNumBytesOfSecureRandomToken];
+			rand.nextBytes(bytes);
+			randoms.add(rand);
+			return base64urlsafewop.encodeToString(bytes);
 		} else {
+			BigInteger randInt = new BigInteger(numBitsOfSecureRandomToken, rand);
+			randoms.add(rand);
 			return randInt.toString(radixOfSecureRandomToken);
 		}
 	}
@@ -113,5 +159,4 @@ public class SecureRandomGenerator {
 		randoms.add(rand);
 		return randInt;
 	}
-
 }
