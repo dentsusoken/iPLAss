@@ -121,25 +121,25 @@ public class SecureRandomGenerator {
         }
 		
 		if("base64".equals(encode)) {
-			//numBitsOfSecureRandomTokenが8で割り切れない場合、8の倍数になるように繰り上げる。
-			int roundUpNumBitsOfSecureRandomToken = (int) (8*Math.ceil((double) numBitsOfSecureRandomToken/8));
-			byte[] bytes = new byte[roundUpNumBitsOfSecureRandomToken/8];
+			//numBitsOfSecureRandomTokenが8で割り切れない場合、数値を切り上げる。
+			int roundUpNumBytesOfSecureRandomToken = (int) (Math.ceil((double) numBitsOfSecureRandomToken/8));
+			byte[] bytes = new byte[roundUpNumBytesOfSecureRandomToken];
 			rand.nextBytes(bytes);
 			randoms.add(rand);
 			return base64urlsafewop.encodeToString(bytes);
 		} else if ("base32".equals(encode)) {
-			//numBitsOfSecureRandomTokenが8で割り切れない場合、8の倍数になるように繰り上げる。
-			int roundUpNumBitsOfSecureRandomToken = (int) (8*Math.ceil((double) numBitsOfSecureRandomToken/8));
-			byte[] bytes = new byte[roundUpNumBitsOfSecureRandomToken/8];
+			//numBitsOfSecureRandomTokenが8で割り切れない場合、数値を切り上げる。
+			int roundUpNumBytesOfSecureRandomToken = (int) (Math.ceil((double) numBitsOfSecureRandomToken/8));
+			byte[] bytes = new byte[roundUpNumBytesOfSecureRandomToken];
 			rand.nextBytes(bytes);
 			randoms.add(rand);
 			return base32.encodeToString(bytes);
 		}
 		
 		if (radixOfSecureRandomToken == 64) {
-			//numBitsOfSecureRandomTokenが8で割り切れない場合、8の倍数になるように繰り上げる。
-			int roundUpNumBitsOfSecureRandomToken = (int) (8*Math.ceil((double) numBitsOfSecureRandomToken/8));
-			byte[] bytes = new byte[roundUpNumBitsOfSecureRandomToken/8];
+			//numBitsOfSecureRandomTokenが8で割り切れない場合、数値を切り上げる。
+			int roundUpNumBytesOfSecureRandomToken = (int) (Math.ceil((double) numBitsOfSecureRandomToken/8));
+			byte[] bytes = new byte[roundUpNumBytesOfSecureRandomToken];
 			rand.nextBytes(bytes);
 			randoms.add(rand);
 			return base64urlsafewop.encodeToString(bytes);
