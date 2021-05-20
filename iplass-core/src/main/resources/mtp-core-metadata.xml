@@ -2777,6 +2777,7 @@ COPYRIGHT 2011 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. ALL RIGHTS RESE
             <maximumPasswordAge>90</maximumPasswordAge>
             <minimumPasswordAge>0</minimumPasswordAge>
             <passwordHistoryCount>0</passwordHistoryCount>
+            <passwordHistoryPeriod>0</passwordHistoryPeriod>
             <passwordPattern>[a-zA-Z0-9~!#\\$^&amp;*+;:?/|{}\\.=_,-]{6,128}</passwordPattern>
             <passwordPatternErrorMessage>パスワードは6文字以上の英数字で入力してください。</passwordPatternErrorMessage>
             <randomPasswordExcludeChars>O01lI</randomPasswordExcludeChars>

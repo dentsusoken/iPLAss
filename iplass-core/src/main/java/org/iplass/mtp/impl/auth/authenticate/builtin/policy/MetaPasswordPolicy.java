@@ -47,6 +47,8 @@ public class MetaPasswordPolicy implements MetaData {
 	private List<MetaLocalizedString> localizedPasswordPatternErrorMessageList;
 	/** 過去入力したパスワードを覚えておく個数。履歴に残っているパスワードは設定できない。厳密に言うと、パスワードのハッシュを記録するので、異なるパスワードでも衝突の可能性はある。 */
 	private int passwordHistoryCount;
+	/** 過去入力したパスワードを覚えておく期間（日）。0は無限。 */
+	private int passwordHistoryPeriod;
 
 	//アカウント作成の際、初期パスワードを指定可能とするか
 	private boolean createAccountWithSpecificPassword;
@@ -124,6 +126,14 @@ public class MetaPasswordPolicy implements MetaData {
 	public void setPasswordHistoryCount(int passwordHistoryCount) {
 		this.passwordHistoryCount = passwordHistoryCount;
 	}
+	
+	public int getPasswordHistoryPeriod() {
+		return passwordHistoryPeriod;
+	}
+
+	public void setPasswordHistoryPeriod(int passwordHistoryPeriod) {
+		this.passwordHistoryPeriod = passwordHistoryPeriod;
+	}
 
 	public boolean isCreateAccountWithSpecificPassword() {
 		return createAccountWithSpecificPassword;
@@ -181,6 +191,7 @@ public class MetaPasswordPolicy implements MetaData {
 		passwordPatternErrorMessage = def.getPasswordPatternErrorMessage();
 		localizedPasswordPatternErrorMessageList = I18nUtil.toMeta(def.getLocalizedPasswordPatternErrorMessageList());
 		passwordHistoryCount = def.getPasswordHistoryCount();
+		passwordHistoryPeriod = def.getPasswordHistoryPeriod();
 		createAccountWithSpecificPassword = def.isCreateAccountWithSpecificPassword();
 		randomPasswordIncludeSigns = def.getRandomPasswordIncludeSigns();
 		randomPasswordExcludeChars = def.getRandomPasswordExcludeChars();
@@ -198,6 +209,7 @@ public class MetaPasswordPolicy implements MetaData {
 		def.setPasswordPatternErrorMessage(passwordPatternErrorMessage);
 		def.setLocalizedPasswordPatternErrorMessageList(I18nUtil.toDef(localizedPasswordPatternErrorMessageList));
 		def.setPasswordHistoryCount(passwordHistoryCount);
+		def.setPasswordHistoryPeriod(passwordHistoryPeriod);
 		def.setCreateAccountWithSpecificPassword(createAccountWithSpecificPassword);
 		def.setRandomPasswordIncludeSigns(randomPasswordIncludeSigns);
 		def.setRandomPasswordExcludeChars(randomPasswordExcludeChars);

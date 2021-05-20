@@ -52,6 +52,7 @@ public class PasswordPolicySettingPane extends AbstractSettingPane {
 	private List<LocalizedStringDefinition> localizedPasswordPatternErrorMessageList;
 	private ButtonItem langBtn;
 	private IntegerItem txtPasswordHistoryCount;
+	private IntegerItem txtPasswordHistoryPeriod;
 	private CheckboxItem chkCreateAccountWithSpecificPassword;
 	private CheckboxItem chkResetPasswordWithSpecificPassword;
 	private TextItem txtRandomPasswordIncludeSigns;
@@ -129,6 +130,10 @@ public class PasswordPolicySettingPane extends AbstractSettingPane {
 		txtPasswordHistoryCount = new MtpIntegerItem();
 		txtPasswordHistoryCount.setTitle("Password History Count");
 		SmartGWTUtil.setRequired(txtPasswordHistoryCount);
+		
+		txtPasswordHistoryPeriod = new MtpIntegerItem();
+		txtPasswordHistoryPeriod.setTitle("Password History Period");
+		SmartGWTUtil.setRequired(txtPasswordHistoryPeriod);
 
 		chkCreateAccountWithSpecificPassword = new CheckboxItem();
 		chkCreateAccountWithSpecificPassword.setShowTitle(false);
@@ -144,7 +149,8 @@ public class PasswordPolicySettingPane extends AbstractSettingPane {
 				txtDenyList,
 				txtPasswordPatternErrorMessage, space, langBtn, txtRandomPasswordIncludeSigns,
 				txtRandomPasswordExcludeChars, txtRandomPasswordLength,
-				txtPasswordHistoryCount, space, chkCreateAccountWithSpecificPassword, new SpacerItem(), chkResetPasswordWithSpecificPassword);
+				txtPasswordHistoryCount, txtPasswordHistoryPeriod, 
+				space, chkCreateAccountWithSpecificPassword, new SpacerItem(), chkResetPasswordWithSpecificPassword);
 
 		addMember(form);
 	}
@@ -161,6 +167,7 @@ public class PasswordPolicySettingPane extends AbstractSettingPane {
 		txtPasswordPatternErrorMessage.setValue(passwordPolicyDefinition.getPasswordPatternErrorMessage());
 		localizedPasswordPatternErrorMessageList = passwordPolicyDefinition.getLocalizedPasswordPatternErrorMessageList();
 		txtPasswordHistoryCount.setValue(passwordPolicyDefinition.getPasswordHistoryCount());
+		txtPasswordHistoryPeriod.setValue(passwordPolicyDefinition.getPasswordHistoryPeriod());
 		chkCreateAccountWithSpecificPassword.setValue(passwordPolicyDefinition.isCreateAccountWithSpecificPassword());
 		chkResetPasswordWithSpecificPassword.setValue(passwordPolicyDefinition.isResetPasswordWithSpecificPassword());
 		txtRandomPasswordIncludeSigns.setValue(passwordPolicyDefinition.getRandomPasswordIncludeSigns());
@@ -182,6 +189,7 @@ public class PasswordPolicySettingPane extends AbstractSettingPane {
 		passwordPolicyDefinition.setPasswordPatternErrorMessage(SmartGWTUtil.getStringValue(txtPasswordPatternErrorMessage, true));
 		passwordPolicyDefinition.setLocalizedPasswordPatternErrorMessageList(localizedPasswordPatternErrorMessageList);
 		passwordPolicyDefinition.setPasswordHistoryCount(SmartGWTUtil.getIntegerValue(txtPasswordHistoryCount));
+		passwordPolicyDefinition.setPasswordHistoryPeriod(SmartGWTUtil.getIntegerValue(txtPasswordHistoryPeriod));
 		passwordPolicyDefinition.setCreateAccountWithSpecificPassword(SmartGWTUtil.getBooleanValue(chkCreateAccountWithSpecificPassword));
 		passwordPolicyDefinition.setResetPasswordWithSpecificPassword(SmartGWTUtil.getBooleanValue(chkResetPasswordWithSpecificPassword));
 		passwordPolicyDefinition.setRandomPasswordIncludeSigns(SmartGWTUtil.getStringValue(txtRandomPasswordIncludeSigns, true));

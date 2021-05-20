@@ -26,7 +26,9 @@ import java.sql.Date;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 import org.iplass.mtp.ApplicationException;
 import org.iplass.mtp.ManagerLocator;
@@ -624,9 +626,10 @@ public class BuiltinAuthenticationProvider extends AuthenticationProviderBase {
 				//パスワード履歴の確認
 				List<Password> passList = null;
 				int passwordHistoryCount = policy.getMetaData().getPasswordPolicy().getPasswordHistoryCount();
-				if (passwordHistoryCount > 0) {
+				int passwordHistoryPeriod = policy.getMetaData().getPasswordPolicy().getPasswordHistoryPeriod();
+				if (passwordHistoryCount > 0 || passwordHistoryPeriod > 0) {
 					passList = accountDao.getPasswordHistory(account.getTenantId(), account.getAccountId());
-					checkPasswordHistory(newIdPass.getPassword(), account, passList, passwordHistoryCount);
+					checkPasswordHistory(newIdPass.getPassword(), account, passList, passwordHistoryCount, passwordHistoryPeriod);
 				}
 
 				//Salt再作成
@@ -641,15 +644,23 @@ public class BuiltinAuthenticationProvider extends AuthenticationProviderBase {
 					pass = new Password(tenantId, oldCredential.getId(), convertPassword(newIdPass.getPassword(), newSalt, newest), "$" + newest.getVersion() + "$" + newSalt, currentTime);
 				}
 				accountDao.updatePassword(pass, ExecuteContext.getCurrentContext().getClientId());
-				if (policy.getMetaData().getPasswordPolicy().getPasswordHistoryCount() > 0) {
+				if (passwordHistoryCount > 0 || passwordHistoryPeriod > 0) {
 					//前回パスワードを保存
 					accountDao.addPasswordHistory(new Password(tenantId, account.getAccountId(), account.getPassword(), account.getSalt(), currentTime));
 				}
 				if (passList != null) {
-					if (passList.size() >=  passwordHistoryCount) {
+					if (passwordHistoryCount <= 0 || passList.size() >=  passwordHistoryCount) {
 						//過去のパスワード履歴の削除（厳密な削除は求めないものとする。タイムスタンプが同一の場合を考慮しない）
-						Password pwd = passList.get(passwordHistoryCount - 1);
-						accountDao.deletePasswordHistory(pwd.getTenantId(), pwd.getUid(), pwd.getUpdateDate());
+						//パスワード保持個数が設定されている場合はパスワード保持個数から溢れたインデックスを開始インデックスとする。
+						int startIndex = passwordHistoryCount > 0 ? passwordHistoryCount -1 : 0;
+						for (int i = startIndex; i < passList.size(); i++) {
+							Password pwd = passList.get(i);
+							//パスワード保持期間が設定されている場合は更新日時がパスワード保持期間外であるパスワードを削除
+							if (passwordHistoryPeriod <= 0 || pwd.getUpdateDate().getTime() + TimeUnit.DAYS.toMillis(passwordHistoryPeriod) < System.currentTimeMillis()) {
+								accountDao.deletePasswordHistory(pwd.getTenantId(), pwd.getUid(), pwd.getUpdateDate());
+								break;
+							}
+						}
 					}
 				}
 
@@ -727,9 +738,10 @@ public class BuiltinAuthenticationProvider extends AuthenticationProviderBase {
 					//パスワード履歴の確認
 					List<Password> passList = null;
 					int passwordHistoryCount = policy.getMetaData().getPasswordPolicy().getPasswordHistoryCount();
-					if (passwordHistoryCount > 0) {
+					int passwordHistoryPeriod = policy.getMetaData().getPasswordPolicy().getPasswordHistoryPeriod();
+					if (passwordHistoryCount > 0 || passwordHistoryPeriod > 0) {
 						passList = accountDao.getPasswordHistory(account.getTenantId(), account.getAccountId());
-						checkPasswordHistory(newPassword, account, passList, passwordHistoryCount);
+						checkPasswordHistory(newPassword, account, passList, passwordHistoryCount, passwordHistoryPeriod);
 					}
 				} else {
 					if (((IdPasswordCredential) credential).getPassword() != null) {
@@ -820,10 +832,22 @@ public class BuiltinAuthenticationProvider extends AuthenticationProviderBase {
 			});
 		}
 
-		private void checkPasswordHistory(String newPassword, BuiltinAccount account, List<Password> passList, int passwordHistoryCount) {
+		private void checkPasswordHistory(String newPassword, BuiltinAccount account, List<Password> passList, int passwordHistoryCount, int passwordHistoryPeriod) {
 			if (passList != null) {
 				for (int i = 0; i < passList.size() && i < passwordHistoryCount; i++) {
 					Password pwd = passList.get(i);
+					String[] verAndSalt = divVerAndSalt(pwd.getSalt());
+					if (pwd.getConvertedPassword().equals(convertPassword(newPassword, verAndSalt[1], selectSetting(verAndSalt[0])))) {
+						throw new CredentialUpdateException(resourceString("impl.auth.authenticate.updateCredential.passHistoryExists"));
+					}
+				}
+				
+				List<Password> passListWithinThePeriod = passList.stream()
+						.filter(p -> p.getUpdateDate().getTime() + TimeUnit.DAYS.toMillis(passwordHistoryPeriod) >=  System.currentTimeMillis())
+						.collect(Collectors.toList());
+				
+				for (int i = 0; i < passListWithinThePeriod.size(); i++) {
+					Password pwd = passListWithinThePeriod.get(i);
 					String[] verAndSalt = divVerAndSalt(pwd.getSalt());
 					if (pwd.getConvertedPassword().equals(convertPassword(newPassword, verAndSalt[1], selectSetting(verAndSalt[0])))) {
 						throw new CredentialUpdateException(resourceString("impl.auth.authenticate.updateCredential.passHistoryExists"));
