@@ -37,6 +37,7 @@ import org.iplass.mtp.view.generic.TextAlign;
 import org.iplass.mtp.view.generic.editor.DateRangePropertyEditor;
 import org.iplass.mtp.view.generic.editor.JoinPropertyEditor;
 import org.iplass.mtp.view.generic.editor.NestProperty;
+import org.iplass.mtp.view.generic.editor.NumericRangePropertyEditor;
 import org.iplass.mtp.view.generic.editor.ReferencePropertyEditor;
 
 /**
@@ -378,6 +379,8 @@ public class MetaNestProperty implements MetaData {
 			((JoinPropertyEditor) property.getEditor()).setObjectName(entity.getMetaData().getName());
 		} else if (property.getEditor() instanceof DateRangePropertyEditor) {
 			((DateRangePropertyEditor) property.getEditor()).setObjectName(entity.getMetaData().getName());
+		} else if (property.getEditor() instanceof NumericRangePropertyEditor) {
+			((NumericRangePropertyEditor) property.getEditor()).setObjectName(entity.getMetaData().getName());
 		} else if (property.getEditor() instanceof ReferencePropertyEditor) {
 			if (ph instanceof ReferencePropertyHandler) {
 				String objName = ((ReferencePropertyHandler) ph).getReferenceEntityHandler(ctx).getMetaData().getName();

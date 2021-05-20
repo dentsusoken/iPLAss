@@ -24,11 +24,12 @@ import javax.xml.bind.annotation.XmlSeeAlso;
 
 import org.iplass.mtp.view.generic.editor.DateRangePropertyEditor;
 import org.iplass.mtp.view.generic.editor.JoinPropertyEditor;
+import org.iplass.mtp.view.generic.editor.NumericRangePropertyEditor;
 import org.iplass.mtp.view.generic.editor.PropertyEditor;
 import org.iplass.mtp.view.generic.editor.TemplatePropertyEditor;
 import org.iplass.mtp.view.generic.editor.UserPropertyEditor;
 
-@XmlSeeAlso( {MetaDateRangePropertyEditor.class, MetaJoinPropertyEditor.class, MetaTemplatePropertyEditor.class, MetaUserPropertyEditor.class})
+@XmlSeeAlso( {MetaDateRangePropertyEditor.class, MetaNumericRangePropertyEditor.class, MetaJoinPropertyEditor.class, MetaTemplatePropertyEditor.class, MetaUserPropertyEditor.class})
 public abstract class MetaCustomPropertyEditor extends MetaPropertyEditor {
 
 	/** SerialVersionUID */
@@ -43,6 +44,8 @@ public abstract class MetaCustomPropertyEditor extends MetaPropertyEditor {
 			return MetaTemplatePropertyEditor.createInstance(editor);
 		} else if (editor instanceof UserPropertyEditor) {
 			return MetaUserPropertyEditor.createInstance(editor);
+		} else if (editor instanceof NumericRangePropertyEditor) {
+			return MetaNumericRangePropertyEditor.createInstance(editor);
 		}
 		return null;
 	}

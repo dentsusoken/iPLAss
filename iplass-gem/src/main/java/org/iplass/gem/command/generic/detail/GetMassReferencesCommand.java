@@ -74,6 +74,7 @@ import org.iplass.mtp.view.generic.SearchQueryContext;
 import org.iplass.mtp.view.generic.ViewConst;
 import org.iplass.mtp.view.generic.editor.NestProperty;
 import org.iplass.mtp.view.generic.editor.PropertyEditor;
+import org.iplass.mtp.view.generic.editor.RangePropertyEditor;
 import org.iplass.mtp.view.generic.editor.ReferencePropertyEditor;
 import org.iplass.mtp.view.generic.editor.UserPropertyEditor;
 import org.iplass.mtp.view.generic.element.Element;
@@ -175,8 +176,11 @@ public final class GetMassReferencesCommand extends DetailCommandBase implements
 					} else {
 						if (!props.contains(np.getPropertyName())) {
 							props.add(np.getPropertyName());
+							if(np.getEditor() instanceof RangePropertyEditor) {
+								RangePropertyEditor rpe = (RangePropertyEditor) np.getEditor();
+								props.add(rpe.getToPropertyName());
+							}
 						}
-
 						DisplayInfo di = new DisplayInfo();
 						di.setName(np.getPropertyName());
 						if (StringUtil.isNotBlank(np.getDisplayLabel())) {
@@ -466,7 +470,11 @@ public final class GetMassReferencesCommand extends DetailCommandBase implements
 						};
 
 						//HTML取得
-						property.getEditor().setPropertyName(editorPrefix + property.getPropertyName());
+						if(property.getEditor() instanceof RangePropertyEditor) {
+							property.getEditor().setPropertyName(property.getPropertyName());
+						}else {
+							property.getEditor().setPropertyName(editorPrefix + property.getPropertyName());
+						}
 						String html = ResponseUtil.getIncludeJspContents(path, beforeFunc, afterFunc) .replace("\r\n", "").replace("\n", "").replace("\r", "");
 
 						WebRequestStack stack = WebRequestStack.getCurrent();
@@ -608,6 +616,10 @@ public final class GetMassReferencesCommand extends DetailCommandBase implements
 				} else {
 					if (!select.contains(name + "." + _np.getPropertyName())) {
 						select.add(name + "." + _np.getPropertyName());
+						if(_np.getEditor() instanceof RangePropertyEditor){
+							RangePropertyEditor rpe = (RangePropertyEditor) _np.getEditor();
+							select.add(name + "." + rpe.getToPropertyName());
+						}
 					}
 
 					DisplayInfo di = new DisplayInfo();

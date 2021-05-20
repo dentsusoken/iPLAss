@@ -119,7 +119,7 @@ public abstract class NumberPropertyEditor extends PrimitivePropertyEditor {
 			referenceTypes={FieldReferenceType.SEARCHCONDITION}
 	)
 	protected boolean searchInRange;
-
+	
 	/** 初期値 */
 	@MetaFieldInfo(
 			displayName="初期値",
@@ -132,6 +132,12 @@ public abstract class NumberPropertyEditor extends PrimitivePropertyEditor {
 			referenceTypes={FieldReferenceType.DETAIL}
 	)
 	protected String defaultValue;
+	
+	/** 検索条件From非表示設定(NumeicRangePropertyEditor) */
+	private boolean hideSearchConditionNumeicRangeFrom;
+
+	/** 検索条件To非表示設定(NumeicRangePropertyEditor) */
+	private boolean hideSearchConditionNumeicRangeTo;
 
 	@Override
 	public NumberDisplayType getDisplayType() {
@@ -199,6 +205,39 @@ public abstract class NumberPropertyEditor extends PrimitivePropertyEditor {
 	    this.searchInRange = searchInRange;
 	}
 
+	/**
+	 * 検索条件From非表示設定を取得します。
+	 * @return 検索条件From非表示設定
+	 */
+	public boolean isHideSearchConditionNumeicRangeFrom() {
+	    return hideSearchConditionNumeicRangeFrom;
+	}
+
+	/**
+	 * 検索条件From非表示設定を設定します。
+	 * @param hideSearchConditionFrom 検索条件From非表示設定
+	 */
+	public void setHideSearchConditionNumeicRangeFrom(boolean hideSearchConditionNumeicRangeFrom) {
+	    this.hideSearchConditionNumeicRangeFrom = hideSearchConditionNumeicRangeFrom;
+	}
+
+	/**
+	 * 検索条件To非表示設定を取得します。
+	 * @return 検索条件To非表示設定
+	 */
+	public boolean isHideSearchConditionNumeicRangeTo() {
+	    return hideSearchConditionNumeicRangeTo;
+	}
+
+	/**
+	 * 検索条件To非表示設定を設定します。
+	 * @param hideSearchConditionTo 検索条件To非表示設定
+	 */
+	public void setHideSearchConditionNumeicRangeTo(boolean hideSearchConditionTo) {
+	    this.hideSearchConditionNumeicRangeTo = hideSearchConditionTo;
+	}
+
+	
 	/**
 	 * 最大文字数を取得します。
 	 * @return 最大文字数

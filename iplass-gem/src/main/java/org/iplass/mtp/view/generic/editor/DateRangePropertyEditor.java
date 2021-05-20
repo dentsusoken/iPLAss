@@ -42,7 +42,7 @@ import org.iplass.mtp.view.generic.ViewConst;
 	@Jsp(path="/jsp/gem/generic/editor/DateRangePropertyEditor.jsp", key=ViewConst.DESIGN_TYPE_GEM)
 })
 @IgnoreField({"customStyle", "inputCustomStyle"})
-public class DateRangePropertyEditor extends CustomPropertyEditor {
+public class DateRangePropertyEditor extends CustomPropertyEditor implements RangePropertyEditor{
 
 	private static final long serialVersionUID = -1012526640443976474L;
 
@@ -217,5 +217,4 @@ public class DateRangePropertyEditor extends CustomPropertyEditor {
 	public void setLocalizedErrorMessageList(List<LocalizedStringDefinition> localizedErrorMessageList) {
 		this.localizedErrorMessageList = localizedErrorMessageList;
 	}
-
 }

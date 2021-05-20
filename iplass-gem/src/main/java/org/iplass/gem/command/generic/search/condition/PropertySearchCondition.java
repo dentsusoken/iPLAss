@@ -54,6 +54,7 @@ import org.iplass.mtp.entity.query.condition.predicate.Lesser;
 import org.iplass.mtp.entity.query.condition.predicate.LesserEqual;
 import org.iplass.mtp.entity.query.condition.predicate.Like;
 import org.iplass.mtp.entity.query.condition.predicate.NotEquals;
+import org.iplass.mtp.view.generic.editor.NumericRangePropertyEditor;
 import org.iplass.mtp.view.generic.editor.PropertyEditor;
 import org.iplass.mtp.view.generic.element.property.PropertyItem;
 
@@ -261,12 +262,21 @@ public abstract class PropertySearchCondition {
 		} else if (definition instanceof DateTimeProperty) {
 			return new TimestampPropertySearchCondition(definition, editor, value, parent);
 		} else if (definition instanceof DecimalProperty) {
+			if(editor instanceof NumericRangePropertyEditor) {
+				return new DecimalPropertySearchCondition(definition, ((NumericRangePropertyEditor) editor).getEditor(), value, parent);
+			}
 			return new DecimalPropertySearchCondition(definition, editor, value, parent);
 		} else if (definition instanceof ExpressionProperty) {
 			return new ExpressionPropertySearchCondition(definition, editor, value, parent);
 		} else if (definition instanceof FloatProperty) {
+			if(editor instanceof NumericRangePropertyEditor) {
+				return new FloatPropertySearchCondition(definition, ((NumericRangePropertyEditor) editor).getEditor(), value, parent);
+			}
 			return new FloatPropertySearchCondition(definition, editor, value, parent);
 		} else if (definition instanceof IntegerProperty) {
+			if(editor instanceof NumericRangePropertyEditor) {
+				return new IntegerPropertySearchCondition(definition, ((NumericRangePropertyEditor) editor).getEditor(), value, parent);
+			}
 			return new IntegerPropertySearchCondition(definition, editor, value, parent);
 		} else if (definition instanceof LongTextProperty) {
 			return new LongTextPropertySearchCondition(definition, editor, value, parent);

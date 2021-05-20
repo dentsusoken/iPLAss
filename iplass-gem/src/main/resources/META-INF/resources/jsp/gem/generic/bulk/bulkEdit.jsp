@@ -136,6 +136,16 @@
 		}
 		return null;
 	}
+	
+	PropertyEditor getNumericRangePropertyEditor(NumericRangePropertyEditor editor, String propName) {
+		if (editor.getPropertyName().equals(propName)) {
+			return editor.getEditor();
+		}
+		if (editor.getToPropertyName().equals(propName)) {
+			return editor.getToEditor();
+		}
+		return null;
+	}
 %>
 <%
 	//権限確認用
@@ -436,7 +446,7 @@ $(function() {
 			if (updatedPropValue instanceof String) {
 				updatedPropDispValue = StringUtil.escapeHtml((String)updatedPropValue);
 			} else {
-				if (editor instanceof DateRangePropertyEditor || editor instanceof JoinPropertyEditor) {
+				if (editor instanceof DateRangePropertyEditor || editor instanceof JoinPropertyEditor ||  editor instanceof NumericRangePropertyEditor) {
 					Map<String, Object> updatedPropsMap = (Map<String, Object>) updatedPropValue;
 					List<String> tmp = new ArrayList<>(updatedPropsMap.size());
 					for(Map.Entry<String, Object> entry : updatedPropsMap.entrySet()) {
@@ -447,6 +457,8 @@ $(function() {
 							nestEditor = getDateRangePropertyEditor((DateRangePropertyEditor) editor, propName);
 						} else if (editor instanceof JoinPropertyEditor) {
 							nestEditor = getJoinPropertyEditor((JoinPropertyEditor) editor, propName);
+						} else if (editor instanceof NumericRangePropertyEditor) {
+							nestEditor = getNumericRangePropertyEditor((NumericRangePropertyEditor) editor, propName);
 						}
 						tmp.add(convertPropValueToString(EntityViewUtil.getPropertyDefinition(propName, ed), propValue, nestEditor));
 					}

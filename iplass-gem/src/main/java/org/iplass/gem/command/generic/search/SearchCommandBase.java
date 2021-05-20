@@ -148,7 +148,7 @@ public abstract class SearchCommandBase implements Command {
 		query.setSelect(context.getSelect());
 		query.setFrom(context.getFrom());
 		query.setWhere(context.getWhere());
-		query.setVersiond(context.isVersioned());
+		query.setVersiond(context.isVersioned());	
 
 		return query;
 	}

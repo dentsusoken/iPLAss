@@ -78,7 +78,9 @@ import org.iplass.mtp.view.generic.SearchFormView;
 import org.iplass.mtp.view.generic.editor.DateRangePropertyEditor;
 import org.iplass.mtp.view.generic.editor.JoinPropertyEditor;
 import org.iplass.mtp.view.generic.editor.NestProperty;
+import org.iplass.mtp.view.generic.editor.NumericRangePropertyEditor;
 import org.iplass.mtp.view.generic.editor.PropertyEditor;
+import org.iplass.mtp.view.generic.editor.RangePropertyEditor;
 import org.iplass.mtp.view.generic.editor.ReferencePropertyEditor;
 import org.iplass.mtp.view.generic.editor.UserPropertyEditor;
 import org.iplass.mtp.view.generic.element.property.PropertyColumn;
@@ -419,7 +421,13 @@ public final class FullTextSearchCommand implements Command {
 					if (StringUtil.isNotBlank(de.getToPropertyName())) {
 						addSearchProperty(select, ed, de.getToPropertyName(), de.getToEditor());
 					}
-				} else {
+				} else if (p.getEditor() instanceof NumericRangePropertyEditor) {
+					addSearchProperty(select, ed, propName, p.getEditor());
+					NumericRangePropertyEditor de = (NumericRangePropertyEditor) p.getEditor();
+					if (StringUtil.isNotBlank(de.getToPropertyName())) {
+						addSearchProperty(select, ed, de.getToPropertyName(), de.getToEditor());
+					}
+				}  else {
 					addSearchProperty(select, ed, propName, p.getEditor());
 				}
 			}
@@ -482,6 +490,12 @@ public final class FullTextSearchCommand implements Command {
 								List<NestProperty> _nest = je.getProperties();
 								addSearchProperty(select, ed, propName, editor, _nest.toArray(new NestProperty[_nest.size()]));
 							}
+						} else if (np.getEditor() instanceof RangePropertyEditor) {
+							RangePropertyEditor rpe = (RangePropertyEditor) np.getEditor();
+							addSearchProperty(select, ed, nestPropName, rpe.getEditor());
+							String nestToPropName = propName + "." + rpe.getToPropertyName();
+							addSearchProperty(select, ed, nestToPropName, rpe.getToEditor());
+
 						}
 					}
 				}
