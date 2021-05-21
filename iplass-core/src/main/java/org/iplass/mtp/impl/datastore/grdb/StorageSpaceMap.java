@@ -24,6 +24,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.iplass.mtp.impl.datastore.grdb.tableallocators.HashingTableAllocator;
+
 public class StorageSpaceMap {
 	public static final String TABLE_NAME_SEPARATOR = "__";
 
@@ -45,6 +47,8 @@ public class StorageSpaceMap {
 	private int uniqueIndexedDoubleColumns;
 
 	private boolean customPartition;
+	
+	private TableAllocator tableAllocator = new HashingTableAllocator();
 
 	public String generateTableNamePostfix(int tenantId, String metaId) {
 		if (tableCount == 0) {
@@ -55,7 +59,7 @@ public class StorageSpaceMap {
 			}
 		} else {
 			//物理的に格納テーブルを分ける場合（擬似パーティショニングする場合）
-			int myCount = Math.abs((metaId + tenantId).hashCode() % tableCount);
+			int myCount = tableAllocator.allocate(tenantId, metaId, this);
 
 			if (tableNamePostfix == null) {
 				if (myCount == 0) {
@@ -72,7 +76,7 @@ public class StorageSpaceMap {
 			}
 		}
 	}
-
+	
 	public int maxColumns() {
 		int ret = Math.max(varcharColumns, decimalColumns);
 		ret = Math.max(ret, timestampColumns);
@@ -86,6 +90,45 @@ public class StorageSpaceMap {
 		ret = Math.max(ret, uniqueIndexedTimestampColumns);
 		ret = Math.max(ret, uniqueIndexedDoubleColumns);
 		return ret;
+	}
+
+	public int tableNo(String checkTableNamePostfix) {
+		if (checkTableNamePostfix == null) {
+			if (tableNamePostfix == null) {
+				return 0;
+			} else {
+				//can not decide..
+				return -1;
+			}
+		}
+		
+		if (checkTableNamePostfix.equals(tableNamePostfix)) {
+			return 0;
+		}
+		
+		int i = checkTableNamePostfix.lastIndexOf(TABLE_NAME_SEPARATOR);
+		if (i == -1) {
+			try {
+				return Integer.parseInt(checkTableNamePostfix);
+			} catch (NumberFormatException e) {
+				//can not decide..
+				return -1;
+			}
+		} else {
+			String ssPart = checkTableNamePostfix.substring(0, i);
+			String noPart = checkTableNamePostfix.substring(i + TABLE_NAME_SEPARATOR.length(), checkTableNamePostfix.length());
+			if (ssPart.equals(tableNamePostfix)) {
+				try {
+					return Integer.parseInt(noPart);
+				} catch (NumberFormatException e) {
+					//can not decide..
+					return -1;
+				}
+			} else {
+				//can not decide..
+				return -1;
+			}
+		}
 	}
 
 	public List<String> allTableNamePostfix() {
@@ -234,6 +277,14 @@ public class StorageSpaceMap {
 
 	public void setCustomPartition(boolean customPartition) {
 		this.customPartition = customPartition;
+	}
+
+	public TableAllocator getTableAllocator() {
+		return tableAllocator;
+	}
+
+	public void setTableAllocator(TableAllocator tableAllocator) {
+		this.tableAllocator = tableAllocator;
 	}
 
 }
