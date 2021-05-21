@@ -135,9 +135,6 @@
 	if (editor.getDisplayType() != NumberDisplayType.HIDDEN) {
 		//HIDDEN以外
 
-		boolean hideNumericFrom = editor.isSearchInRange() ? false : editor.isHideSearchConditionNumeicRangeFrom();
-		boolean hideNumericTo = editor.isSearchInRange() ? true : editor.isHideSearchConditionNumeicRangeTo();
-
 		String strDefault = "";
 		if (defaultValue != null && defaultValue.length > 0) {
 			strDefault = convertNumber(defaultValue[0], editor);
@@ -155,7 +152,7 @@
 			}
 		}
 		Map<String, List<String>> searchCondMap = (Map<String, List<String>>)request.getAttribute(Constants.SEARCH_COND_MAP);
-		if(!editor.isHideSearchConditionNumeicRangeFrom()){
+		if (!editor.isHideSearchConditionNumeicRangeFrom()) {
 			if (editor.getDisplayType() == NumberDisplayType.LABEL) {
 				String[] _strDefault = ViewUtil.getSearchCondValue(searchCondMap,  Constants.SEARCH_COND_PREFIX + editor.getPropertyName());
 				strDefault = _strDefault != null && _strDefault.length > 0 ? _strDefault[0] : strDefault;
@@ -172,14 +169,14 @@
 <%
 			}
 		}
-		
+
 		String strDefaultTo = "";
 		if (editor.isSearchInRange()) {
-			if(!editor.isHideSearchConditionNumeicRangeTo()){
+			if (!editor.isHideSearchConditionNumeicRangeTo()) {
 				if (defaultValue != null && defaultValue.length > 1) {
 					strDefaultTo = convertNumber(defaultValue[1], editor);
 				}
-				if(!editor.isHideSearchConditionNumeicRangeFrom() && !editor.isHideSearchConditionNumeicRangeTo()){
+				if (!editor.isHideSearchConditionNumeicRangeFrom() && !editor.isHideSearchConditionNumeicRangeTo()) {
 %>
 &nbsp;～&nbsp;
 <%

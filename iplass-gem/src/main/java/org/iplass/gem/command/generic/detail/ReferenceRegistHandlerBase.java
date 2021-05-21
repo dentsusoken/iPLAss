@@ -252,7 +252,7 @@ public abstract class ReferenceRegistHandlerBase implements ReferenceRegistHandl
 			PropertyDefinition npd = ed.getProperty(nProp.getPropertyName());
 			if (npd != null && npd.isUpdatable()) {
 				updateProperties.add(nProp.getPropertyName());
-				if(nProp.getEditor() instanceof RangePropertyEditor){
+				if (nProp.getEditor() instanceof RangePropertyEditor) {
 					RangePropertyEditor rangeTo = (RangePropertyEditor) nProp.getEditor();
 					updateProperties.add(rangeTo.getToPropertyName());
 				}

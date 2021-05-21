@@ -1,5 +1,5 @@
 <%--
- Copyright (C) 2017 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
+ Copyright (C) 2021 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
 
  Unless you have purchased a commercial license,
  the following license terms apply:
@@ -117,13 +117,13 @@ $(function() {
 		if (typeof fromVal !== "undefined" && fromVal != null && fromVal != "") {
 			from = fromVal;
 		}
-		
+
 		var toVal = $(":text[name='" + es("<%=StringUtil.escapeJavaScript(Constants.SEARCH_COND_PREFIX + prefix + editor.getToPropertyName() + "To")%>") + "']").val();
 		var to = null;
 		if (typeof toVal !== "undefined" && toVal != null && toVal != "") {
 			to = toVal;
 		}
-		
+
 		if (from != null && to != null && from > to ) {
 			alert("<%=StringUtil.escapeJavaScript(errorMessage)%>");
 			return false;

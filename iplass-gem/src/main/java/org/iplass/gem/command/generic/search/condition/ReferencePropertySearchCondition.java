@@ -191,7 +191,7 @@ public class ReferencePropertySearchCondition extends PropertySearchCondition {
 							PropertySearchCondition.newInstance(definition, np.getEditor(), _value, getPropertyName());
 						conditions.addAll(nestPropertyCondition.convertNormalCondition());
 					}
-					if(np.getEditor() instanceof RangePropertyEditor) {
+					if (np.getEditor() instanceof RangePropertyEditor) {
 						RangePropertyEditor rangep = (RangePropertyEditor) np.getEditor();
 						_value = nest.getValue(rangep.getToPropertyName());
 						if (_value != null) {
@@ -506,7 +506,7 @@ public class ReferencePropertySearchCondition extends PropertySearchCondition {
 		for (NestProperty np : editor.getNestProperties()) {
 			if (np.getPropertyName().equals(name)) {
 				return np;
-			} else if(np.getEditor() instanceof RangePropertyEditor) {
+			} else if (np.getEditor() instanceof RangePropertyEditor) {
 				return np;
 			}
 		}

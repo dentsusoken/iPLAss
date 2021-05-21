@@ -176,7 +176,7 @@ public final class GetMassReferencesCommand extends DetailCommandBase implements
 					} else {
 						if (!props.contains(np.getPropertyName())) {
 							props.add(np.getPropertyName());
-							if(np.getEditor() instanceof RangePropertyEditor) {
+							if (np.getEditor() instanceof RangePropertyEditor) {
 								RangePropertyEditor rpe = (RangePropertyEditor) np.getEditor();
 								props.add(rpe.getToPropertyName());
 							}
@@ -470,7 +470,7 @@ public final class GetMassReferencesCommand extends DetailCommandBase implements
 						};
 
 						//HTML取得
-						if(property.getEditor() instanceof RangePropertyEditor) {
+						if (property.getEditor() instanceof RangePropertyEditor) {
 							property.getEditor().setPropertyName(property.getPropertyName());
 						}else {
 							property.getEditor().setPropertyName(editorPrefix + property.getPropertyName());
@@ -616,7 +616,7 @@ public final class GetMassReferencesCommand extends DetailCommandBase implements
 				} else {
 					if (!select.contains(name + "." + _np.getPropertyName())) {
 						select.add(name + "." + _np.getPropertyName());
-						if(_np.getEditor() instanceof RangePropertyEditor){
+						if (_np.getEditor() instanceof RangePropertyEditor) {
 							RangePropertyEditor rpe = (RangePropertyEditor) _np.getEditor();
 							select.add(name + "." + rpe.getToPropertyName());
 						}

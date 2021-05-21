@@ -328,7 +328,7 @@ public class NormalSearchContext extends SearchContextBase {
 			ret = getSelectValue(conditionPrefix + propName);
 		} else if (p instanceof ReferenceProperty) {
 			if (p.getName().equals(propName)) {
-				ret = getReferenceValue((ReferenceProperty) p);	
+				ret = getReferenceValue((ReferenceProperty) p);
 			} else {
 				PropertyItem property = getLayoutProperty(propName);
 				if (property != null) {
@@ -604,7 +604,7 @@ public class NormalSearchContext extends SearchContextBase {
 					if (nest == null) nest = new GenericEntity(rp.getObjectDefinitionName());
 					nest.setValue(pd.getName(), value);
 				}
-				if(np.getEditor() instanceof RangePropertyEditor) {
+				if (np.getEditor() instanceof RangePropertyEditor) {
 					RangePropertyEditor rangep = (RangePropertyEditor) np.getEditor();
 					pd = ed.getProperty(rangep.getToPropertyName());
 					value = getConditionValue(pd, propName + "." + pd.getName());

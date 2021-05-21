@@ -732,25 +732,25 @@ public class BulkCommandContext extends RegistrationCommandContext {
 			BigDecimal from_tmp = null;
 			BigDecimal to_tmp = null;
 			boolean result = false;
-			if(from instanceof Double) {
+			if (from instanceof Double) {
 				from_tmp = new BigDecimal(from.doubleValue());
-			} else if(from instanceof Long) {
+			} else if (from instanceof Long) {
 				from_tmp = new BigDecimal(from.longValue());
-			} else if(from instanceof BigDecimal) {
+			} else if (from instanceof BigDecimal) {
 				from_tmp = (BigDecimal) from;
 			}
-			
-			if(to instanceof Double) {
+
+			if (to instanceof Double) {
 				to_tmp = new BigDecimal(to.doubleValue());
-			} else if(to instanceof Long) {
+			} else if (to instanceof Long) {
 				to_tmp = new BigDecimal(to.longValue());
-			} else if(from instanceof BigDecimal) {
+			} else if (from instanceof BigDecimal) {
 				to_tmp = (BigDecimal) to;
 			}
-			
+
 			result = (from_tmp.compareTo(to_tmp) >= 0) ? true : false;
-			
-			if(result) {
+
+			if (result) {
 				String errorMessage = TemplateUtil.getMultilingualString(editor.getErrorMessage(), editor.getLocalizedErrorMessageList());
 				if (StringUtil.isBlank(errorMessage )) {
 					errorMessage = resourceString("command.generic.bulk.BulkCommandContext.invalitNumericRange");
@@ -792,7 +792,7 @@ public class BulkCommandContext extends RegistrationCommandContext {
 				.collect(Collectors.toList());
 
 		for (PropertyColumn pc : propertyColumns) {
-			if(pc.getPropertyName().equals(updatePropName)) {
+			if (pc.getPropertyName().equals(updatePropName)) {
 				propList.add(pc);
 				//組み合わせで使うプロパティを通常のプロパティ扱いに
 				if (pc.getBulkUpdateEditor() instanceof DateRangePropertyEditor) {

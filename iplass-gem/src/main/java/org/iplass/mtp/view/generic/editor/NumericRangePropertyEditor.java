@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
+ * Copyright (C) 2021 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
  *
  * Unless you have purchased a commercial license,
  * the following license terms apply:
@@ -36,6 +36,11 @@ import org.iplass.mtp.definition.LocalizedStringDefinition;
 import org.iplass.mtp.view.generic.Jsp;
 import org.iplass.mtp.view.generic.Jsps;
 import org.iplass.mtp.view.generic.ViewConst;
+
+/**
+ * 数値範囲型プロパティエディタ
+ * @author ICOM Shojima
+ */
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @Jsps({
@@ -106,7 +111,7 @@ public class NumericRangePropertyEditor extends CustomPropertyEditor implements 
 
 	/** エラーメッセージ */
 	@MetaFieldInfo(displayName="エラーメッセージ",
-			displayNameKey="generic_editor_NumericRangePropertyEditor_errorMessageNameDisplaNameKey",	
+			displayNameKey="generic_editor_NumericRangePropertyEditor_errorMessageNameDisplaNameKey",
 			description="FromとToの大小関係が不正な場合のエラーメッセージを設定します。",
 			descriptionKey="generic_editor_NumericRangePropertyEditor_errorMessageNameDescriptionKey",
 			inputType=InputType.MULTI_LANG,
@@ -131,8 +136,8 @@ public class NumericRangePropertyEditor extends CustomPropertyEditor implements 
 	public NumericRangeDisplayType getDisplayType() {
 		return NumericRangeDisplayType.NUMERICRANGE;
 	}
-	
-	
+
+
 	/**
 	 * オブジェクト名を取得します。
 	 * @return オブジェクト名

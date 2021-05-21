@@ -613,7 +613,7 @@ public class MultiBulkCommandContext extends RegistrationCommandContext {
 				//数値の逆転チェック
 				NumericRangePropertyEditor editor = (NumericRangePropertyEditor) property.getEditor();
 				checkNumericRange(editor, entity, property.getPropertyName(), editor.getToPropertyName(), "");
-			}else if (property.getEditor() instanceof ReferencePropertyEditor) {
+			} else if (property.getEditor() instanceof ReferencePropertyEditor) {
 				ReferencePropertyEditor editor = (ReferencePropertyEditor) property.getEditor();
 				Object val = entity.getValue(property.getPropertyName());
 
@@ -687,25 +687,25 @@ public class MultiBulkCommandContext extends RegistrationCommandContext {
 			BigDecimal from_tmp = null;
 			BigDecimal to_tmp = null;
 			boolean result = false;
-			if(from instanceof Double) {
+			if (from instanceof Double) {
 				from_tmp = new BigDecimal(from.doubleValue());
-			} else if(from instanceof Long) {
+			} else if (from instanceof Long) {
 				from_tmp = new BigDecimal(from.longValue());
-			} else if(from instanceof BigDecimal) {
+			} else if (from instanceof BigDecimal) {
 				from_tmp = (BigDecimal) from;
 			}
-			
-			if(to instanceof Double) {
+
+			if (to instanceof Double) {
 				to_tmp = new BigDecimal(to.doubleValue());
-			} else if(to instanceof Long) {
+			} else if (to instanceof Long) {
 				to_tmp = new BigDecimal(to.longValue());
-			} else if(from instanceof BigDecimal) {
+			} else if (from instanceof BigDecimal) {
 				to_tmp = (BigDecimal) to;
 			}
-			
+
 			result = (from_tmp.compareTo(to_tmp) >= 0) ? true : false;
-			
-			if(result) {
+
+			if (result) {
 				String errorMessage = TemplateUtil.getMultilingualString(editor.getErrorMessage(), editor.getLocalizedErrorMessageList());
 				if (StringUtil.isBlank(errorMessage )) {
 					errorMessage = resourceString("command.generic.bulk.BulkCommandContext.invalitNumericRange");
@@ -718,7 +718,7 @@ public class MultiBulkCommandContext extends RegistrationCommandContext {
 		}
 	}
 
-	
+
 	/**
 	 * ブランクの項目は未入力と見なし、更新しないので、一括更新可能なプロパティリストから外す。
 	 * @param entity

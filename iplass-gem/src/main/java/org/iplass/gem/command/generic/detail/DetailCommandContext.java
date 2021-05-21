@@ -72,6 +72,7 @@ import org.iplass.mtp.view.generic.editor.JoinPropertyEditor;
 import org.iplass.mtp.view.generic.editor.NestProperty;
 import org.iplass.mtp.view.generic.editor.NumericRangePropertyEditor;
 import org.iplass.mtp.view.generic.editor.PropertyEditor;
+import org.iplass.mtp.view.generic.editor.RangePropertyEditor;
 import org.iplass.mtp.view.generic.editor.ReferencePropertyEditor;
 import org.iplass.mtp.view.generic.editor.ReferencePropertyEditor.ReferenceDisplayType;
 import org.iplass.mtp.view.generic.editor.UserPropertyEditor;
@@ -272,17 +273,9 @@ public class DetailCommandContext extends RegistrationCommandContext
 							dummy.setEditor(nest.getEditor());
 							propList.add(dummy);
 						}
-					} else if (prop.getEditor() instanceof DateRangePropertyEditor) {
+					} else if (prop.getEditor() instanceof RangePropertyEditor) {
 						//組み合わせで使うプロパティを通常のプロパティ扱いに
-						DateRangePropertyEditor de = (DateRangePropertyEditor) prop.getEditor();
-						PropertyItem dummy = new PropertyItem();
-						dummy.setDispFlag(true);
-						dummy.setPropertyName(de.getToPropertyName());
-						dummy.setEditor(de.getEditor());
-						propList.add(dummy);
-					} else if (prop.getEditor() instanceof NumericRangePropertyEditor) {
-						//組み合わせで使うプロパティを通常のプロパティ扱いに
-						NumericRangePropertyEditor de = (NumericRangePropertyEditor) prop.getEditor();
+						RangePropertyEditor de = (RangePropertyEditor) prop.getEditor();
 						PropertyItem dummy = new PropertyItem();
 						dummy.setDispFlag(true);
 						dummy.setPropertyName(de.getToPropertyName());
@@ -1122,7 +1115,7 @@ public class DetailCommandContext extends RegistrationCommandContext
 			getErrors().add(e);
 		}
 	}
-	
+
 	/**
 	 * 数値範囲のチェック
 	 * @param editor
@@ -1138,28 +1131,28 @@ public class DetailCommandContext extends RegistrationCommandContext
 			BigDecimal from_tmp = null;
 			BigDecimal to_tmp = null;
 			boolean result = false;
-			if(from instanceof Double) {
+			if (from instanceof Double) {
 				from_tmp = new BigDecimal(from.doubleValue());
-			} else if(from instanceof Long) {
+			} else if (from instanceof Long) {
 				from_tmp = new BigDecimal(from.longValue());
-			} else if(from instanceof BigDecimal) {
+			} else if (from instanceof BigDecimal) {
 				from_tmp = (BigDecimal) from;
 			}
-			
-			if(to instanceof Double) {
+
+			if (to instanceof Double) {
 				to_tmp = new BigDecimal(to.doubleValue());
-			} else if(to instanceof Long) {
+			} else if (to instanceof Long) {
 				to_tmp = new BigDecimal(to.longValue());
-			} else if(from instanceof BigDecimal) {
+			} else if (from instanceof BigDecimal) {
 				to_tmp = (BigDecimal) to;
 			}
-			
+
 			result = (from_tmp.compareTo(to_tmp) >= 0) ? true : false;
-			
-			if(result) {
+
+			if (result) {
 				String errorMessage = TemplateUtil.getMultilingualString(editor.getErrorMessage(), editor.getLocalizedErrorMessageList());
 				if (StringUtil.isBlank(errorMessage )) {
-					errorMessage = resourceString("command.generic.detail.DetailCommandContext.invalitDateRange");
+					errorMessage = resourceString("command.generic.detail.DetailCommandContext.invalitNumericRange");
 				}
 				ValidateError e = new ValidateError();
 				e.setPropertyName(errorPrefix + fromName + "_" + editor.getToPropertyName());//fromだけだとメッセージが変なとこに出るので細工

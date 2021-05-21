@@ -69,11 +69,10 @@ import org.iplass.mtp.view.generic.SearchFormViewHandler;
 import org.iplass.mtp.view.generic.SearchQueryContext;
 import org.iplass.mtp.view.generic.SearchQueryInterrupter;
 import org.iplass.mtp.view.generic.SearchQueryInterrupter.SearchQueryType;
-import org.iplass.mtp.view.generic.editor.DateRangePropertyEditor;
 import org.iplass.mtp.view.generic.editor.JoinPropertyEditor;
 import org.iplass.mtp.view.generic.editor.NestProperty;
-import org.iplass.mtp.view.generic.editor.NumericRangePropertyEditor;
 import org.iplass.mtp.view.generic.editor.PropertyEditor;
+import org.iplass.mtp.view.generic.editor.RangePropertyEditor;
 import org.iplass.mtp.view.generic.editor.ReferencePropertyEditor;
 import org.iplass.mtp.view.generic.editor.UserPropertyEditor;
 import org.iplass.mtp.view.generic.element.property.PropertyColumn;
@@ -167,15 +166,9 @@ public abstract class SearchContextBase implements SearchContext, CreateSearchRe
 					for (NestProperty nest : je.getProperties()) {
 						addSearchProperty(select, nest.getPropertyName(), nest.getEditor());
 					}
-				} else if (p.getEditor() instanceof DateRangePropertyEditor) {
+				} else if (p.getEditor() instanceof RangePropertyEditor) {
 					addSearchProperty(select, propName);
-					DateRangePropertyEditor de = (DateRangePropertyEditor) p.getEditor();
-					if (StringUtil.isNotBlank(de.getToPropertyName())) {
-						addSearchProperty(select, de.getToPropertyName());
-					}
-				} else if (p.getEditor() instanceof NumericRangePropertyEditor) {
-					addSearchProperty(select, propName);
-					NumericRangePropertyEditor de = (NumericRangePropertyEditor) p.getEditor();
+					RangePropertyEditor de = (RangePropertyEditor) p.getEditor();
 					if (StringUtil.isNotBlank(de.getToPropertyName())) {
 						addSearchProperty(select, de.getToPropertyName());
 					}
@@ -322,27 +315,9 @@ public abstract class SearchContextBase implements SearchContext, CreateSearchRe
 
 		List<PropertyItem> properties = new ArrayList<>();
 		for (PropertyItem property : filteredList) {
-			if (property.getEditor() instanceof DateRangePropertyEditor) {
-				//日付範囲の場合FromとToを分離しておく
-				DateRangePropertyEditor editor = (DateRangePropertyEditor) property.getEditor();
-				PropertyItem from = ObjectUtil.deepCopy(property);
-				from.setEditor(editor.getEditor());
-				properties.add(from);
-
-				//参照の項目を直接D&Dしてる場合にToにつけるプレフィックスを取得
-				String prefix = "";
-				int dotIndex = from.getPropertyName().indexOf(".");
-				if (dotIndex != -1) {
-					prefix = from.getPropertyName().substring(0, dotIndex + 1);
-				}
-
-				PropertyItem to = ObjectUtil.deepCopy(property);
-				to.setPropertyName(prefix + editor.getToPropertyName());
-				to.setEditor(editor.getToEditor() != null ? editor.getToEditor() : editor.getEditor());
-				properties.add(to);
-			}else if (property.getEditor() instanceof NumericRangePropertyEditor) {
-				//数値範囲の場合FromとToを分離しておく
-				NumericRangePropertyEditor editor = (NumericRangePropertyEditor) property.getEditor();
+			if (property.getEditor() instanceof RangePropertyEditor) {
+				//範囲系の場合FromとToを分離しておく
+				RangePropertyEditor editor = (RangePropertyEditor) property.getEditor();
 				PropertyItem from = ObjectUtil.deepCopy(property);
 				from.setEditor(editor.getEditor());
 				properties.add(from);
@@ -626,13 +601,8 @@ public abstract class SearchContextBase implements SearchContext, CreateSearchRe
 								List<NestProperty> _nest = jpe.getProperties();
 								addSearchProperty(select, propName, editor, _nest.toArray(new NestProperty[_nest.size()]));
 							}
-						} else if (np.getEditor() instanceof DateRangePropertyEditor) {
-							DateRangePropertyEditor jpe = (DateRangePropertyEditor) np.getEditor();
-							if (jpe.getToPropertyName() != null) {
-								select.add(propName + "." + jpe.getToPropertyName());
-							}
-						} else if (np.getEditor() instanceof NumericRangePropertyEditor) {
-							NumericRangePropertyEditor jpe = (NumericRangePropertyEditor) np.getEditor();
+						} else if (np.getEditor() instanceof RangePropertyEditor) {
+							RangePropertyEditor jpe = (RangePropertyEditor) np.getEditor();
 							if (jpe.getToPropertyName() != null) {
 								select.add(propName + "." + jpe.getToPropertyName());
 							}

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
+ * Copyright (C) 2021 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
  *
  * Unless you have purchased a commercial license,
  * the following license terms apply:
@@ -38,11 +38,15 @@ import org.iplass.mtp.impl.view.generic.element.property.MetaPropertyLayout;
 import org.iplass.mtp.view.generic.editor.NumericRangePropertyEditor;
 import org.iplass.mtp.view.generic.editor.PropertyEditor;
 
+/**
+ * 数値範囲型プロパティエディタのメタデータ
+ * @author ICOM Shojima
+ */
 public class MetaNumericRangePropertyEditor extends MetaCustomPropertyEditor {
 
 	/** SerialVersionUID */
 	private static final long serialVersionUID = 7792744945686490609L;
-	
+
 	public static MetaNumericRangePropertyEditor createInstance(PropertyEditor editor) {
 		return new MetaNumericRangePropertyEditor();
 	}
@@ -64,7 +68,7 @@ public class MetaNumericRangePropertyEditor extends MetaCustomPropertyEditor {
 
 	/** エラーメッセージ多言語設定情報 */
 	private List<MetaLocalizedString> localizedErrorMessageList = new ArrayList<>();
-	
+
 	/**
 	 * オブジェクトIDを取得します。
 	 * @return オブジェクトID
