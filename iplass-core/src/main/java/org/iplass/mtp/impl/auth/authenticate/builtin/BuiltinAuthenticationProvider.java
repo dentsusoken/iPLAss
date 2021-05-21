@@ -28,7 +28,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
 
 import org.iplass.mtp.ApplicationException;
 import org.iplass.mtp.ManagerLocator;
@@ -834,23 +833,14 @@ public class BuiltinAuthenticationProvider extends AuthenticationProviderBase {
 
 		private void checkPasswordHistory(String newPassword, BuiltinAccount account, List<Password> passList, int passwordHistoryCount, int passwordHistoryPeriod) {
 			if (passList != null) {
-				for (int i = 0; i < passList.size() && i < passwordHistoryCount; i++) {
+				for (int i = 0; i < passList.size(); i++) {
 					Password pwd = passList.get(i);
-					String[] verAndSalt = divVerAndSalt(pwd.getSalt());
-					if (pwd.getConvertedPassword().equals(convertPassword(newPassword, verAndSalt[1], selectSetting(verAndSalt[0])))) {
-						throw new CredentialUpdateException(resourceString("impl.auth.authenticate.updateCredential.passHistoryExists"));
-					}
-				}
-				
-				List<Password> passListWithinThePeriod = passList.stream()
-						.filter(p -> p.getUpdateDate().getTime() + TimeUnit.DAYS.toMillis(passwordHistoryPeriod) >=  System.currentTimeMillis())
-						.collect(Collectors.toList());
-				
-				for (int i = 0; i < passListWithinThePeriod.size(); i++) {
-					Password pwd = passListWithinThePeriod.get(i);
-					String[] verAndSalt = divVerAndSalt(pwd.getSalt());
-					if (pwd.getConvertedPassword().equals(convertPassword(newPassword, verAndSalt[1], selectSetting(verAndSalt[0])))) {
-						throw new CredentialUpdateException(resourceString("impl.auth.authenticate.updateCredential.passHistoryExists"));
+					//パスワード保持個数内またはパスワード保持期間内の場合、そのパスワード履歴をチェック
+					if(passwordHistoryCount > i || (passwordHistoryPeriod > 0 && pwd.getUpdateDate().getTime() + TimeUnit.DAYS.toMillis(passwordHistoryPeriod) >=  System.currentTimeMillis())) {
+						String[] verAndSalt = divVerAndSalt(pwd.getSalt());
+						if (pwd.getConvertedPassword().equals(convertPassword(newPassword, verAndSalt[1], selectSetting(verAndSalt[0])))) {
+							throw new CredentialUpdateException(resourceString("impl.auth.authenticate.updateCredential.passHistoryExists"));
+						}
 					}
 				}
 			}
