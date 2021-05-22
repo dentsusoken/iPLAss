@@ -151,8 +151,7 @@ public class MenuEditPane extends MetaDataMainEditPane {
 		service.getDefinitionEntry(TenantInfoHolder.getId(), MenuTree.class.getName(), defName, new AsyncCallback<DefinitionEntry>() {
 			@Override
 			public void onFailure(Throwable caught) {
-				SC.say(AdminClientMessageUtil.getString("ui_metadata_menu_MenuTreeEditPane_failed"),
-						AdminClientMessageUtil.getString("ui_metadata_menu_MenuTreeEditPane_failedGetScreenInfo") + caught.getMessage());
+				SC.warn(AdminClientMessageUtil.getString("ui_metadata_menu_MenuTreeEditPane_failedGetScreenInfo") + caught.getMessage());
 
 				GWT.log(caught.toString(), caught);
 			}
@@ -212,8 +211,7 @@ public class MenuEditPane extends MetaDataMainEditPane {
 	 */
 	private void updateComplete(MenuTree definition) {
 
-		SC.say(AdminClientMessageUtil.getString("ui_metadata_menu_MenuTreeEditPane_completion"),
-				AdminClientMessageUtil.getString("ui_metadata_menu_MenuTreeEditPane_menuInfoSave"));
+		SC.say(AdminClientMessageUtil.getString("ui_metadata_menu_MenuTreeEditPane_menuInfoSave"));
 
 		//再表示
 		initializeData();
@@ -246,8 +244,7 @@ public class MenuEditPane extends MetaDataMainEditPane {
 				return;
 			}
 
-			SC.ask(AdminClientMessageUtil.getString("ui_metadata_menu_MenuTreeEditPane_saveConfirm"),
-					AdminClientMessageUtil.getString("ui_metadata_menu_MenuTreeEditPane_saveMenuComment"), new BooleanCallback() {
+			SC.ask(AdminClientMessageUtil.getString("ui_metadata_menu_MenuTreeEditPane_saveMenuComment"), new BooleanCallback() {
 
 				@Override
 				public void execute(Boolean value) {
@@ -273,8 +270,7 @@ public class MenuEditPane extends MetaDataMainEditPane {
 		@Override
 		public void onClick(ClickEvent event) {
 
-			SC.ask(AdminClientMessageUtil.getString("ui_metadata_menu_MenuTreeEditPane_cancelConfirm"),
-					AdminClientMessageUtil.getString("ui_metadata_menu_MenuTreeEditPane_cancelConfirmComment")
+			SC.ask(AdminClientMessageUtil.getString("ui_metadata_menu_MenuTreeEditPane_cancelConfirmComment")
 					, new BooleanCallback() {
 				@Override
 				public void execute(Boolean value) {

@@ -247,8 +247,7 @@ public class MenuItemDragPane extends VLayout {
 			@Override
 			public void onSuccess(AdminDefinitionModifyResult result) {
 				if (result.isSuccess()) {
-					SC.say(AdminClientMessageUtil.getString("ui_metadata_menu_item_MenuItemDragPane_completion"),
-							AdminClientMessageUtil.getString("ui_metadata_menu_item_MenuItemDragPane_deleteMenuItemComp"));
+					SC.say(AdminClientMessageUtil.getString("ui_metadata_menu_item_MenuItemDragPane_deleteMenuItemComp"));
 					MenuItemDataChangedEvent event = new MenuItemDataChangedEvent(MenuItemDataChangedEvent.Type.DELETE);
 					event.setValueObject(menuItem);
 					refreshDataChanged(event);

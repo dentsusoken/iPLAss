@@ -169,18 +169,18 @@ public class MenuItemDialog extends MtpDialog {
 
 		imageUrlField = new MtpTextItem("imageUrl", "Icon URL");
 		String prompt = "<div style=\"white-space: nowrap;\">"
-			+ getRS("rulesComment1")
+			+ rs("ui_metadata_menu_item_MenuItemDialog_rulesComment1")
 			+ "<ul style=\"margin:5px 0px;padding-left:5px;list-style-type:none;\">"
-			+ getRS("rulesComment2")
-			+ getRS("rulesComment3")
-			+ getRS("rulesComment4")
+			+ rs("ui_metadata_menu_item_MenuItemDialog_rulesComment2")
+			+ rs("ui_metadata_menu_item_MenuItemDialog_rulesComment3")
+			+ rs("ui_metadata_menu_item_MenuItemDialog_rulesComment4")
 			+ "</ul>"
 			+ "</div>";
 		imageUrlField.setPrompt(prompt);
 
 		iconTagField = new MtpTextItem("iconTag", "Icon Tag");
 		prompt = "<div style=\"white-space: nowrap;\">"
-			+ getRS("iconTagComment")
+			+ rs("ui_metadata_menu_item_MenuItemDialog_iconTagComment")
 			+ "</div>";
 		iconTagField.setPrompt(prompt);
 
@@ -204,7 +204,7 @@ public class MenuItemDialog extends MtpDialog {
 			actionCustomizeScriptField.setTitle("Dynamic Customize Setting");
 			actionCustomizeScriptField.setStartRow(false);
 			actionCustomizeScriptField.setWidth("100%");
-			actionCustomizeScriptField.setPrompt(getRS("customizeScriptComment"));
+			actionCustomizeScriptField.setPrompt(rs("ui_metadata_menu_item_MenuItemDialog_customizeScriptComment"));
 			actionCustomizeScriptField.addClickHandler(new com.smartgwt.client.widgets.form.fields.events.ClickHandler() {
 
 				@Override
@@ -213,7 +213,7 @@ public class MenuItemDialog extends MtpDialog {
 						actionCustomizeScript,
 						ScriptEditorDialogConstants.MENU_ITEM_CUSTOMIZE_SCRIPT_NAME,
 						null,
-						getRS("actionCustomizeScriptHint"),
+						rs("ui_metadata_menu_item_MenuItemDialog_actionCustomizeScriptHint"),
 						new ScriptEditorDialogHandler() {
 
 							@Override
@@ -263,7 +263,7 @@ public class MenuItemDialog extends MtpDialog {
 			entityCustomizeScriptField.setTitle("Dynamic Customize Setting");
 			entityCustomizeScriptField.setWidth("100%");
 			entityCustomizeScriptField.setStartRow(false);
-			entityCustomizeScriptField.setPrompt(getRS("customizeScriptComment"));
+			entityCustomizeScriptField.setPrompt(rs("ui_metadata_menu_item_MenuItemDialog_customizeScriptComment"));
 			entityCustomizeScriptField.addClickHandler(new com.smartgwt.client.widgets.form.fields.events.ClickHandler() {
 
 				@Override
@@ -272,7 +272,7 @@ public class MenuItemDialog extends MtpDialog {
 						entityCustomizeScript,
 						ScriptEditorDialogConstants.MENU_ITEM_CUSTOMIZE_SCRIPT_NAME,
 						null,
-						getRS("entityCustomizeScriptHint"),
+						rs("ui_metadata_menu_item_MenuItemDialog_entityCustomizeScriptHint"),
 						new ScriptEditorDialogHandler() {
 
 							@Override
@@ -316,7 +316,7 @@ public class MenuItemDialog extends MtpDialog {
 			urlCustomizeScriptField.setTitle("Dynamic Customize Setting");
 			urlCustomizeScriptField.setWidth("100%");
 			urlCustomizeScriptField.setStartRow(false);
-			urlCustomizeScriptField.setPrompt(getRS("customizeScriptComment"));
+			urlCustomizeScriptField.setPrompt(rs("ui_metadata_menu_item_MenuItemDialog_customizeScriptComment"));
 			urlCustomizeScriptField.addClickHandler(new com.smartgwt.client.widgets.form.fields.events.ClickHandler() {
 
 				@Override
@@ -325,7 +325,7 @@ public class MenuItemDialog extends MtpDialog {
 						urlCustomizeScript,
 						ScriptEditorDialogConstants.MENU_ITEM_CUSTOMIZE_SCRIPT_NAME,
 						null,
-						getRS("urlCustomizeScriptHint"),
+						rs("ui_metadata_menu_item_MenuItemDialog_urlCustomizeScriptHint"),
 						new ScriptEditorDialogHandler() {
 
 							@Override
@@ -369,7 +369,7 @@ public class MenuItemDialog extends MtpDialog {
 		sharedSaveButton = new ButtonItem("sharedSave", "Save");
 		sharedSaveButton.setShowTitle(false);
 		sharedSaveButton.setStartRow(false);
-		sharedSaveButton.setTooltip(SmartGWTUtil.getHoverString(getRS("saveShareSettBr")));
+		sharedSaveButton.setTooltip(SmartGWTUtil.getHoverString(rs("ui_metadata_menu_item_MenuItemDialog_saveShareSettBr")));
 		sharedSaveButton.addClickHandler(new com.smartgwt.client.widgets.form.fields.events.ClickHandler() {
 			@Override
 			public void onClick(
@@ -422,7 +422,7 @@ public class MenuItemDialog extends MtpDialog {
 
 			@Override
 			public void onFailure(Throwable caught) {
-				SC.warn(getRS("failedGetScreenInfo") + caught.getMessage());
+				SC.warn(rs("ui_metadata_menu_item_MenuItemDialog_failedGetScreenInfo") + caught.getMessage());
 				GWT.log(caught.toString(), caught);
 			}
 		});
@@ -441,7 +441,7 @@ public class MenuItemDialog extends MtpDialog {
 			@Override
 			public void onFailure(Throwable caught) {
 				//SmartGWTUtil.hideProgress();
-				SC.warn(getRS("failedGetScreenInfo") + caught.getMessage());
+				SC.warn(rs("ui_metadata_menu_item_MenuItemDialog_failedGetScreenInfo") + caught.getMessage());
 				GWT.log(caught.toString(), caught);
 			}
 
@@ -587,26 +587,19 @@ public class MenuItemDialog extends MtpDialog {
 
 		if (isNew()) {
 			//新規登録、またはコピー
-			//同じ名前の場合、上書きされてしまうため存在チェックする
+			//同じ名前の存在チェックする
 			service.getDefinition(TenantInfoHolder.getId(), MenuItem.class.getName(), SmartGWTUtil.getStringValue(nameField), new AsyncCallback<MenuItem>() {
 
 				@Override
 				public void onFailure(Throwable caught) {
-					SC.warn(getRS("failedToSaveMenuItem") + caught.getMessage());
+					SC.warn(rs("ui_metadata_menu_item_MenuItemDialog_failedToSaveMenuItem") + caught.getMessage());
 				}
 
 				@Override
 				public void onSuccess(MenuItem menuItem) {
 					if (menuItem != null) {
-						SC.ask(getRS("alreadyExistsMenuItemRecreate"),
-								new BooleanCallback() {
-							@Override
-							public void execute(Boolean value) {
-								if (value) {
-									createMenuItem();
-								}
-							}
-						});
+						SC.warn(rs("ui_metadata_common_MetaDataCreateDialog_alreadyExistsErr",
+								rs("ui_metadata_menu_MenuPluginManager_menuItem")));
 					} else {
 						createMenuItem();
 					}
@@ -638,7 +631,7 @@ public class MenuItemDialog extends MtpDialog {
 
 			@Override
 			protected void afterUpdate(AdminDefinitionModifyResult result) {
-				SC.say(getRS("completion"), getRS("createMenuItemComp"), new BooleanCallback() {
+				SC.say(rs("ui_metadata_menu_item_MenuItemDialog_createMenuItemComp"), new BooleanCallback() {
 
 					@Override
 					public void execute(Boolean value) {
@@ -669,7 +662,7 @@ public class MenuItemDialog extends MtpDialog {
 
 			@Override
 			protected void afterUpdate(AdminDefinitionModifyResult result) {
-				SC.say(getRS("completion"), getRS("saveMenuItem"), new BooleanCallback() {
+				SC.say(rs("ui_metadata_menu_item_MenuItemDialog_saveMenuItem"), new BooleanCallback() {
 
 					@Override
 					public void execute(Boolean value) {
@@ -819,20 +812,20 @@ public class MenuItemDialog extends MtpDialog {
 
 						sharedPane.setVisible(true);
 					} else {
-						SC.warn(getRS("failedToGetShareSettNotFoundData"));
+						SC.warn(rs("ui_metadata_menu_item_MenuItemDialog_failedToGetShareSettNotFoundData"));
 					}
 				}
 
 				@Override
 				public void onFailure(Throwable caught) {
-					SC.warn(getRS("failedToGetShareSett") + caught.getMessage());
+					SC.warn(rs("ui_metadata_menu_item_MenuItemDialog_failedToGetShareSett") + caught.getMessage());
 				}
 			});
 		}
 	}
 
 	private void updateSharedConfig() {
-		SC.ask(getRS("saveConfirm"), getRS("savesharedSettComment"), new BooleanCallback() {
+		SC.ask(rs("ui_metadata_menu_item_MenuItemDialog_savesharedSettComment"), new BooleanCallback() {
 
 			@Override
 			public void execute(Boolean value) {
@@ -849,13 +842,13 @@ public class MenuItemDialog extends MtpDialog {
 
 								@Override
 								public void onSuccess(Void result) {
-									SC.say(getRS("completion"), getRS("saveShareSett"));
+									SC.say(rs("ui_metadata_menu_item_MenuItemDialog_saveShareSett"));
 								}
 
 								@Override
 								public void onFailure(Throwable caught) {
 									// 失敗時
-									SC.warn(getRS("failedToSaveShareSett") + caught.getMessage());
+									SC.warn(rs("ui_metadata_menu_item_MenuItemDialog_failedToSaveShareSett") + caught.getMessage());
 								}
 							});
 				}
@@ -906,15 +899,15 @@ public class MenuItemDialog extends MtpDialog {
 
 				@Override
 				public void onFailure(Throwable caught) {
-					SC.say(getRS("failed"), getRS("failedGetScreenInfo") + caught.getMessage());
+					SC.warn(rs("ui_metadata_menu_item_MenuItemDialog_failedGetScreenInfo") + caught.getMessage());
 					GWT.log(caught.toString(), caught);
 				}
 			});
 		}
 	}
 
-	private String getRS(String key) {
-		return AdminClientMessageUtil.getString("ui_metadata_menu_item_MenuItemDialog_" + key);
+	private String rs(String key, Object... arguments) {
+		return AdminClientMessageUtil.getString(key, arguments);
 	}
 
 }

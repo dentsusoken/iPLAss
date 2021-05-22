@@ -114,14 +114,15 @@ public class MenuPlugin extends DefaultMetaDataPlugin {
 	@Override
 	protected void itemDelete(final MetaDataItemMenuTreeNode itemNode) {
 		service.deleteDefinition(TenantInfoHolder.getId(), MenuTree.class.getName(), itemNode.getDefName(), new AsyncCallback<AdminDefinitionModifyResult>() {
+			@Override
 			public void onFailure(Throwable caught) {
 				// 失敗時
 				SC.warn(AdminClientMessageUtil.getString("ui_metadata_menu_MenuPluginManager_failedToDeleteMenu") + caught.getMessage());
 			}
+			@Override
 			public void onSuccess(AdminDefinitionModifyResult result) {
 				if (result.isSuccess()) {
-					SC.say(AdminClientMessageUtil.getString("ui_metadata_menu_MenuPluginManager_completion"),
-							AdminClientMessageUtil.getString("ui_metadata_menu_MenuPluginManager_deleteMenuComp"));
+					SC.say(AdminClientMessageUtil.getString("ui_metadata_menu_MenuPluginManager_deleteMenuComp"));
 
 					refresh();
 					removeTab(itemNode);
@@ -166,10 +167,12 @@ public class MenuPlugin extends DefaultMetaDataPlugin {
 		} else if (MenuItem.class.getName().equals(event.getDefinitionClassName())) {
 			//MenuItemはダイアログで表示なので、ここで検索
 			service.getDefinition(TenantInfoHolder.getId(), MenuItem.class.getName(), event.getDefinitionName(), new AsyncCallback<MenuItem>() {
+				@Override
 				public void onFailure(Throwable caught) {
 					// 失敗時
 					SC.warn(AdminClientMessageUtil.getString("ui_metadata_menu_MenuPluginManager_failedToGetMenuItemCause") + caught.getMessage());
 				}
+				@Override
 				public void onSuccess(MenuItem result) {
 					if (result == null) {
 						SC.warn(AdminClientMessageUtil.getString("ui_metadata_menu_MenuPluginManager_failedToGetMenuItem"));

@@ -255,11 +255,7 @@ public class MenuItemTreeDS extends AbstractAdminDataSource {
 							current = treeNodeMap.get(folderPath);
 						} else {
 
-							TreeNode folder = new TreeNode(folderPath);
-							folder.setAttribute(DataSourceConstants.FIELD_NAME, folderPath);
-							folder.setAttribute(DataSourceConstants.FIELD_DISPLAY_VALUE, nodePaths[i]);
-							folder.setAttribute(FieldName.ISITEMTOP.name(), false);
-							folder.setAttribute(FieldName.TYPE.name(), type);
+							TreeNode folder = createFolderNode(folderPath, nodePaths[i], type);
 
 							// １つ前のNodeに追加
 							current.addFolder(folder);

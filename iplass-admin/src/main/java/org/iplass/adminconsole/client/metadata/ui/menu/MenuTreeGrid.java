@@ -567,9 +567,8 @@ public class MenuTreeGrid extends MtpTreeGrid {
 				@Override
 				public void onClick(MenuItemClickEvent event) {
 
-					SC.confirm(AdminClientMessageUtil.getString("ui_metadata_menu_MenuTreeGrid_deleteConfirm"),
-							AdminClientMessageUtil.getString("ui_metadata_menu_MenuTreeGrid_deleteMenuItem", node.getAttribute(DataSourceConstants.FIELD_NAME))
-							, new BooleanCallback() {
+					SC.confirm(AdminClientMessageUtil.getString("ui_metadata_menu_MenuTreeGrid_deleteMenuItem",
+							node.getAttribute(DataSourceConstants.FIELD_NAME)), new BooleanCallback() {
 
 						@Override
 						public void execute(Boolean value) {
