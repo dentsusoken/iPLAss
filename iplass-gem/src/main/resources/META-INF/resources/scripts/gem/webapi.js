@@ -457,6 +457,10 @@ function getMassReferenceData(webapi, oid, defName, propName, viewName, offset, 
 	if (typeof entityVersion !== "undefined" && entityVersion != null) {
 		params += ",\"entityVersion\":\"" + entityVersion + "\"";
 	}
+	if ($(":hidden[name='searchCond']").length) {
+		var searchCond = $(":hidden[name='searchCond']").val();
+		params += ",\"searchCond\":\"" + escapeJsonParamValue(searchCond) + "\"";
+	}
 	params += "}";
 	postAsync(webapi, params, function(results){
 		var dispInfo = results.dispInfo;
