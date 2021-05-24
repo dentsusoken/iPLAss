@@ -71,6 +71,11 @@
 	request.setAttribute(Constants.EDITOR_EDITOR, fromEditor);
 	((NumberPropertyEditor) editor.getEditor()).setHideSearchConditionNumeicRangeTo(true);
 	String fromKey = fromEditor.getPropertyName().replaceAll("\\.", "_");
+
+	//範囲での検索時の表示をtrueにする
+	if (OutputType.SEARCHCONDITION == type) {
+		((NumberPropertyEditor) editor.getToEditor()).setSearchInRange(true);
+	}
 %>
 <span id="numericrange_<c:out value="<%=fromKey%>" />">
 <jsp:include page="<%=path%>" />
@@ -124,9 +129,13 @@ $(function() {
 			to = toVal;
 		}
 
-		if (from != null && to != null && from > to ) {
-			alert("<%=StringUtil.escapeJavaScript(errorMessage)%>");
-			return false;
+		if (from != null && to != null) {
+			var fromNum = Number(from);
+			var toNum = Number(to);
+			if(fromNum > toNum){
+				alert("<%=StringUtil.escapeJavaScript(errorMessage)%>");
+				return false;
+			}
 		}
 		return true;
 	});

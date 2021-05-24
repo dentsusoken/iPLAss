@@ -748,7 +748,7 @@ public class BulkCommandContext extends RegistrationCommandContext {
 				to_tmp = (BigDecimal) to;
 			}
 
-			result = (from_tmp.compareTo(to_tmp) >= 0) ? true : false;
+			result = (from_tmp.compareTo(to_tmp) > 0) ? true : false;
 
 			if (result) {
 				String errorMessage = TemplateUtil.getMultilingualString(editor.getErrorMessage(), editor.getLocalizedErrorMessageList());
