@@ -45,4 +45,6 @@ public interface RangePropertyEditor {
 	 */
 	public String getToPropertyName();
 
+	public void setToEditor(PropertyEditor editor);
+
 }
