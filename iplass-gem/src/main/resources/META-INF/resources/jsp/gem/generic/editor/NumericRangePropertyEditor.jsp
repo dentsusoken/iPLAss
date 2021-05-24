@@ -64,18 +64,19 @@
 
 	String key = "numericrange_" + fromName;
 	PropertyEditor fromEditor = editor.getEditor();
+	NumberPropertyEditor numFromEditor = (NumberPropertyEditor) fromEditor;
 	String path = EntityViewUtil.getJspPath(fromEditor, ViewConst.DESIGN_TYPE_GEM);
 
 	// from
 	fromEditor.setPropertyName(prefix + fromName);
 	request.setAttribute(Constants.EDITOR_EDITOR, fromEditor);
-	((NumberPropertyEditor) editor.getEditor()).setHideSearchConditionNumeicRangeFrom(false);
-	((NumberPropertyEditor) editor.getEditor()).setHideSearchConditionNumeicRangeTo(true);
+	numFromEditor.setHideSearchConditionNumeicRangeFrom(false);
+	numFromEditor.setHideSearchConditionNumeicRangeTo(true);
 	String fromKey = fromEditor.getPropertyName().replaceAll("\\.", "_");
 
 	//範囲での検索時の表示をtrueにする
 	if (OutputType.SEARCHCONDITION == type) {
-		((NumberPropertyEditor) editor.getEditor()).setSearchInRange(true);
+		numFromEditor.setSearchInRange(true);
 		if (editor.getToEditor() != null) {
 			((NumberPropertyEditor) editor.getToEditor()).setSearchInRange(true);
 		}
@@ -92,15 +93,13 @@
 		Object toPropValue = ( entity != null ) ? entity.getValue(editor.getToPropertyName()) : null;
 		// toのEditorが未指定の場合はfromと同じ設定に
 		PropertyEditor toEditor = editor.getToEditor() != null ? editor.getToEditor() : editor.getEditor();
-		if (editor.getToEditor() == null) {
-			editor.setToEditor(toEditor);
-		}
+		NumberPropertyEditor numToEditor = (NumberPropertyEditor) toEditor;
 		toEditor.setPropertyName(prefix + editor.getToPropertyName());
 		PropertyDefinition toPd = _ed.getProperty(editor.getToPropertyName());
 
+		numToEditor.setHideSearchConditionNumeicRangeFrom(true);
+		numToEditor.setHideSearchConditionNumeicRangeTo(false);
 		request.setAttribute(Constants.EDITOR_EDITOR, toEditor);
-		((NumberPropertyEditor) editor.getToEditor()).setHideSearchConditionNumeicRangeFrom(true);
-		((NumberPropertyEditor) editor.getToEditor()).setHideSearchConditionNumeicRangeTo(false);
 		request.setAttribute(Constants.EDITOR_PROP_VALUE, toPropValue);
 		request.setAttribute(Constants.EDITOR_PROPERTY_DEFINITION, toPd);
 		String toKey = toEditor.getPropertyName().replaceAll("\\.", "_");

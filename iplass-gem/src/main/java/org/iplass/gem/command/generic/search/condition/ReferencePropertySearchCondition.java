@@ -203,8 +203,8 @@ public class ReferencePropertySearchCondition extends PropertySearchCondition {
 						if (np.getEditor() instanceof NumericRangePropertyEditor) {
 							if (rangep.getToEditor() == null) {
 								((NumericRangePropertyEditor) rangep).setToEditor(rangep.getEditor());
-								((NumberPropertyEditor) rangep.getToEditor()).setSearchInRange(true);
 							}
+							((NumberPropertyEditor) rangep.getToEditor()).setSearchInRange(true);
 						}
 						if (_value != null) {
 							PropertyDefinition definition = ed.getProperty(rangep.getToPropertyName());

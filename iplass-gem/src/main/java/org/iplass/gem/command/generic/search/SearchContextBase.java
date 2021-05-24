@@ -324,8 +324,8 @@ public abstract class SearchContextBase implements SearchContext, CreateSearchRe
 					((NumberPropertyEditor) editor.getEditor()).setSearchInRange(true);
 					if (((NumberPropertyEditor) editor.getToEditor() == null)) {
 						((NumericRangePropertyEditor) editor).setToEditor(editor.getEditor());
-						((NumberPropertyEditor) editor.getToEditor()).setSearchInRange(true);
 					}
+					((NumberPropertyEditor) editor.getToEditor()).setSearchInRange(true);
 				}
 				PropertyItem from = ObjectUtil.deepCopy(property);
 				from.setEditor(editor.getEditor());

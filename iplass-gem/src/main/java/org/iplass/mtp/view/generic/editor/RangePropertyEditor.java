@@ -44,7 +44,4 @@ public interface RangePropertyEditor {
 	 * @return toPropertyName
 	 */
 	public String getToPropertyName();
-
-	public void setToEditor(PropertyEditor editor);
-
 }
