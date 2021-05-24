@@ -114,42 +114,31 @@ public class RegistrationInterrupterHandler {
 	}
 	
 	/**
-	 *  NestTableの更新オプションを取得します。
-	 *  
-	 * @param ed Entity定義
+	 * NestTableの更新オプションを取得します。
+	 * @param ed              Entity定義
 	 * @param refPropertyName 参照プロパティ名
-	 * @return  NestTableの更新オプション
+	 * @return NestTableの更新オプション
 	 */
-	public NestTableRegistOption getNestTableRegistOption(EntityDefinition ed, String refPropertyName) {
-		NestTableRegistOption option = new NestTableRegistOption();
-		
+	public ReferenceRegistOption getNestTableRegistOption(EntityDefinition ed, String refPropertyName) {
+		ReferenceRegistOption option = new ReferenceRegistOption();
+
 		option.setSpecifyAllProperties(interrupter.isSpecifyAllProperties());
-		
-		// 更新対象のプロパティが指定された場合
+
+		// 更新対象のプロパティが指定された場合	
 		if (interrupter.getAdditionalProperties() != null && interrupter.getAdditionalProperties().length > 0) {
 			for (String addtionalProperty : interrupter.getAdditionalProperties()) {
 				if (addtionalProperty.equals(refPropertyName)) {
 					option.setSpecifiedAsReference(true);
-				} else if (addtionalProperty.contains(refPropertyName)) {
-					int index = addtionalProperty.indexOf(".");
-					// Nestは1階層のみ有効
-					if (index != addtionalProperty.lastIndexOf(".")) {
-						continue;
-					}
-					String refEntityProp = addtionalProperty.substring(index + 1);
+				} else if (addtionalProperty.startsWith(refPropertyName + ".")) {
+					String refEntityProp = addtionalProperty.substring(addtionalProperty.indexOf(".") + 1);
 					PropertyDefinition pd = ed.getProperty(refEntityProp);
 					if (pd != null && pd.isUpdatable()) {
 						option.getSpecifiedUpdateNestProperties().add(refEntityProp);
-						break;
 					}
 				}
 			}
 		}
 		
-		// isSpecifyAllPropertiesがfalseの場合、Reference項目として必ず更新可能
-		if (!interrupter.isSpecifyAllProperties()) {
-			option.setSpecifiedAsReference(true);
-		}
 		return option;
 	}
 }

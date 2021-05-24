@@ -79,7 +79,7 @@ public abstract class NestTableReferenceRegistHandler extends ReferenceRegistHan
 	public static ReferenceRegistHandler get(final RegistrationCommandContext context, final List<Entity> refs,
 			EntityDefinition ed, final ReferenceProperty rp, final PropertyBase property,
 			List<NestProperty> nestProperties, RegistrationPropertyBaseHandler propBaseHandler,
-			NestTableRegistOption option) {
+			ReferenceRegistOption option) {
 		// 登録可否は呼び元でチェック済み
 		return getInternal(context, refs, ed, rp, property, nestProperties, propBaseHandler, option);
 	}
@@ -88,8 +88,8 @@ public abstract class NestTableReferenceRegistHandler extends ReferenceRegistHan
 	protected static ReferenceRegistHandler getInternal(final RegistrationCommandContext context,
 			final List<Entity> refs, final EntityDefinition ed, final ReferenceProperty rp, PropertyBase property,
 			List<NestProperty> nestProperties, RegistrationPropertyBaseHandler propBaseHandler,
-			NestTableRegistOption option) {
-
+			ReferenceRegistOption option) {
+		
 		List<String> updateProperties = applyRegistOption(option, nestProperties, ed,
 				(ReferencePropertyEditor) propBaseHandler.getEditor(property), refs);
 
@@ -126,12 +126,12 @@ public abstract class NestTableReferenceRegistHandler extends ReferenceRegistHan
 		}
 	}
 
-	/** カスタム登録処理によるNestTableの更新制御適用 */
-	protected static List<String> applyRegistOption(NestTableRegistOption option, List<NestProperty> nestProperties,
+	/** カスタム登録処理によるNestEntityの更新制御適用 */
+	protected static List<String> applyRegistOption(ReferenceRegistOption option, List<NestProperty> nestProperties,
 			EntityDefinition ed, ReferencePropertyEditor editor, List<Entity> refs) {
 		List<String> updateProperties;
-
-		// 新規作成の場合
+		
+		// 新規作成、単一プロパティに対する一括更新（BulkUpdate）の場合は制御対象外
 		if (option == null) {
 			updateProperties = getUpdateProperties(nestProperties, ed, editor);
 			return updateProperties;
@@ -157,7 +157,6 @@ public abstract class NestTableReferenceRegistHandler extends ReferenceRegistHan
 			updateProperties = getUpdateProperties(nestProperties, ed, editor);
 			return updateProperties;
 		}
-		
 		
 		// 以下のパターンでは、既存のEntityは指定されたプロパティのみ更新可能。
 		// ネストテーブルの表示順プロパティの指定があった場合、更新可能項目として必ず追加

@@ -36,6 +36,7 @@ import org.iplass.gem.GemConfigService;
 import org.iplass.gem.command.CommandUtil;
 import org.iplass.gem.command.Constants;
 import org.iplass.gem.command.generic.detail.NestTableReferenceRegistHandler;
+import org.iplass.gem.command.generic.detail.ReferenceRegistOption;
 import org.iplass.gem.command.generic.detail.ReferenceRegistHandler;
 import org.iplass.gem.command.generic.detail.RegistrationCommandContext;
 import org.iplass.gem.command.generic.detail.RegistrationPropertyBaseHandler;
@@ -347,6 +348,15 @@ public class MultiBulkCommandContext extends RegistrationCommandContext {
 	private void addNestTableRegistHandler(ReferenceProperty p, List<Entity> list, EntityDefinition red, PropertyItem property) {
 		// ネストテーブルはプロパティ単位で登録可否決定
 		if (!NestTableReferenceRegistHandler.canRegist(property, getRegistrationPropertyBaseHandler())) return;
+		
+		// カスタム登録処理によるNestTableの更新制御
+		ReferenceRegistOption option = getRegistrationInterrupterHandler().getNestTableRegistOption(red, p.getName());
+		// isSpecifyAllPropertiesがtrue、且つReference項目が除外、且つNestされたEntityの個々プロパティも全て指定なしの場合
+		// 参照先EntityにおけるEntityのデータ追加不可
+		if (option.isSpecifyAllProperties() && !option.isSpecifiedAsReference()
+				&& option.getSpecifiedUpdateNestProperties().isEmpty()) {
+			return;
+		}
 
 		ReferencePropertyEditor editor = (ReferencePropertyEditor) property.getEditor();
 
@@ -362,7 +372,7 @@ public class MultiBulkCommandContext extends RegistrationCommandContext {
 			target = list;
 		}
 
-		ReferenceRegistHandler handler = NestTableReferenceRegistHandler.get(this, list, red, p, property, editor.getNestProperties(), getRegistrationPropertyBaseHandler());
+		ReferenceRegistHandler handler = NestTableReferenceRegistHandler.get(this, list, red, p, property, editor.getNestProperties(), getRegistrationPropertyBaseHandler(), option);
 		if (handler != null) {
 			handler.setForceUpdate(editor.isForceUpadte());
 			getReferenceRegistHandlers().add(handler);

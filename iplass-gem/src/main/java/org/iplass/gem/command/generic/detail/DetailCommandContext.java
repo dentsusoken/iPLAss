@@ -728,13 +728,14 @@ public class DetailCommandContext extends RegistrationCommandContext
 		if (!NestTableReferenceRegistHandler.canRegist(property, getRegistrationPropertyBaseHandler())) return;
 		
 		// カスタム登録処理によるNestTableの更新制御
-		NestTableRegistOption option = null;
+		ReferenceRegistOption option = null;
 		if (currentEntity != null) {
 			option = getRegistrationInterrupterHandler().getNestTableRegistOption(red, p.getName());
 			
-			// Reference項目が除外、且つNestされたEntityの個々プロパティも全て指定なしの場合
-			// 参照先EntityのEntityのデータ追加、更新不可
-			if (!option.isSpecifiedAsReference() && option.getSpecifiedUpdateNestProperties().isEmpty()) {
+			// isSpecifyAllPropertiesがtrue、且つReference項目が除外、且つNestされたEntityの個々プロパティも全て指定なしの場合
+			// 参照先EntityにおけるEntityのデータ追加、更新不可
+			if (option.isSpecifyAllProperties() && !option.isSpecifiedAsReference()
+					&& option.getSpecifiedUpdateNestProperties().isEmpty()) {
 				return;
 			}
 		}
@@ -831,7 +832,7 @@ public class DetailCommandContext extends RegistrationCommandContext
 		}
 		setEntityDefinition(ed);//元の定義に詰め替える
 
-		// ネストテーブル用の登録処理を追加
+		// 参照セクション用の登録処理を追加
 		if (rsProperty != null) {
 			addReferenceSectionRegistHandler(p, valList, red, rsProperty);
 		}
@@ -840,10 +841,23 @@ public class DetailCommandContext extends RegistrationCommandContext
 	}
 
 	private void addReferenceSectionRegistHandler(final ReferenceProperty p, final List<ReferenceSectionValue> list, EntityDefinition red, ReferenceSectionPropertyItem property) {
-		// ネストテーブルはプロパティ単位で登録可否決定
+		// 参照セクションはプロパティ単位で登録可否決定
 		if (!ReferenceSectionReferenceRegistHandler.canRegist(property)) return;
-
-		ReferenceRegistHandler handler = ReferenceSectionReferenceRegistHandler.get(this, list, red, p, property);
+		
+		// カスタム登録処理による参照セクションの更新制御
+		ReferenceRegistOption option = null;
+		if (currentEntity != null) {
+			option = getRegistrationInterrupterHandler().getNestTableRegistOption(red, p.getName());
+			
+			// isSpecifyAllPropertiesがtrue、且つReference項目が除外、且つNestされたEntityの個々プロパティも全て指定なしの場合
+			// 参照先EntityにおけるEntityのデータ更新不可
+			if (option.isSpecifyAllProperties() && !option.isSpecifiedAsReference()
+					&& option.getSpecifiedUpdateNestProperties().isEmpty()) {
+				return;
+			}
+		}
+		
+		ReferenceRegistHandler handler = ReferenceSectionReferenceRegistHandler.get(this, list, red, p, property, option);
 		if (handler != null) {
 			//handler.setForceUpdate(forceUpadte); //参照セクションはSection毎に個別設定になるので、Handler内で設定
 			getReferenceRegistHandlers().add(handler);
@@ -859,6 +873,9 @@ public class DetailCommandContext extends RegistrationCommandContext
 		}
 		public Entity getEntity() {
 			return entity;
+		}
+		public void setEntity(Entity entity) {
+			this.entity = entity;
 		}
 		public ReferenceSection getSection() {
 			return section;

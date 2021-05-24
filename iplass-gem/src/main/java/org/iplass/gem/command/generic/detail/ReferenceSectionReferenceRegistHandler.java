@@ -42,10 +42,12 @@ import org.iplass.mtp.view.generic.element.property.PropertyItem;
  * 参照セクション用の登録処理
  *
  * @author lis3wg
+ * @author Y.Ishida
  */
 public abstract class ReferenceSectionReferenceRegistHandler extends ReferenceRegistHandlerBase {
 
 	protected List<ReferenceSectionValue> references;
+	protected ReferenceRegistOption registOption;
 
 	public static boolean canRegist(ReferenceSectionPropertyItem property) {
 		//全てのセクションが非表示なら対象外
@@ -57,13 +59,23 @@ public abstract class ReferenceSectionReferenceRegistHandler extends ReferenceRe
 
 	public static ReferenceRegistHandler get(final DetailCommandContext context, final List<ReferenceSectionValue> refs,
 			final EntityDefinition ed, final ReferenceProperty rp, final PropertyItem property) {
-
+		return getInternal(context, refs, ed, rp, property, null);
+	}
+	
+	public static ReferenceRegistHandler get(final DetailCommandContext context, final List<ReferenceSectionValue> refs,
+			final EntityDefinition ed, final ReferenceProperty rp, final PropertyItem property, ReferenceRegistOption option) {
+		return getInternal(context, refs, ed, rp, property, option);
+	}
+	
+	private static ReferenceRegistHandler getInternal(final DetailCommandContext context, final List<ReferenceSectionValue> refs,
+			final EntityDefinition ed, final ReferenceProperty rp, final PropertyItem property, ReferenceRegistOption option) {
 		if (rp.getMappedBy() == null || rp.getMappedBy().isEmpty()) {
 			// 通常参照は登録前のみ
 			return new ReferenceSectionReferenceRegistHandler() {
 				@Override
 				public void regist(ReferenceRegistHandlerFunction function, Entity inputEntity, Entity loadedEntity) {
 					this.references = refs;
+					this.registOption = option;
 					List<ValidateError> errors = new ArrayList<>();
 					registReference(context, inputEntity, loadedEntity, ed, property, rp, errors);
 					function.execute(errors);
@@ -73,8 +85,10 @@ public abstract class ReferenceSectionReferenceRegistHandler extends ReferenceRe
 			// 被参照は登録後のみ
 			return new ReferenceSectionReferenceRegistHandler() {
 				@Override
-				public void registMappedby(ReferenceRegistHandlerFunction function, Entity inputEntity, Entity loadedEntity) {
+				public void registMappedby(ReferenceRegistHandlerFunction function, Entity inputEntity,
+						Entity loadedEntity) {
 					this.references = refs;
+					this.registOption = option;
 					List<ValidateError> errors = new ArrayList<>();
 					registMappedbyReference(context, inputEntity, loadedEntity, ed, property, rp, errors);
 					function.execute(errors);
@@ -82,7 +96,7 @@ public abstract class ReferenceSectionReferenceRegistHandler extends ReferenceRe
 			};
 		}
 	}
-
+	
 	/**
 	 * 参照データ登録処理を行います。
 	 * @param context コンテキスト
@@ -118,10 +132,12 @@ public abstract class ReferenceSectionReferenceRegistHandler extends ReferenceRe
 					|| val.getSection().isHideDetail()) {
 				continue;
 			}
-
+			
+			
+			// セクション毎にnestpropertyが違う可能性があるので、それぞれ更新オプションを適用（新規作成の場合は対象外)
+			List<String> updateProperties = (registOption == null) ? new ArrayList<String>() : applyRegistOption(val, ed);
 			setIndex(ed, val);
-
-			List<String> updateProperties = getUpdateProperties(val.getSection().getProperties(), ed);
+			
 			setForceUpdate(val.getSection().isForceUpadte());
 			errors.addAll(registReference(context, val.getEntity(), updateProperties, rp.getName()));
 		}
@@ -132,7 +148,7 @@ public abstract class ReferenceSectionReferenceRegistHandler extends ReferenceRe
 			//インデックスがあったらプロパティに設定
 			//参照セクションではインデックスは変わらないはずなので更新対象には含めない
 			PropertyDefinition pd = ed.getProperty(val.getSection().getOrderPropName());
-			if (pd != null) {
+			if (pd != null && val.getEntity() != null) {
 				val.getEntity().setValue(val.getSection().getOrderPropName(),
 						ConvertUtil.convert(pd.getJavaType(), val.getIndex()));
 			}
@@ -166,12 +182,10 @@ public abstract class ReferenceSectionReferenceRegistHandler extends ReferenceRe
 					|| val.getSection().isHideDetail()) {
 				continue;
 			}
-
+			// セクション毎にnestpropertyが違う可能性があるので、それぞれ更新オプションを適用（新規作成の場合は対象外)
+			List<String> updateProperties = (registOption == null) ? new ArrayList<String>() : applyRegistOption(val, ed);
 			setIndex(ed, val);
-
-			//セクション毎にnestpropertyが違う可能性があるので、それぞれ更新対象を生成する
-			List<String> updateProperties = getUpdateProperties(val.getSection().getProperties(), ed);
-
+			
 			//被参照の場合はプロパティの値の方で元データを保持するため更新対象に追加
 			if (!updateProperties.contains(mappedBy)) {
 				updateProperties.add(mappedBy);
@@ -211,6 +225,64 @@ public abstract class ReferenceSectionReferenceRegistHandler extends ReferenceRe
 //			}
 //		}
 	}
+	
+	/** カスタム登録処理によるNestEntityの更新制御適用 */
+	protected List<String> applyRegistOption(ReferenceSectionValue val, EntityDefinition ed) {
+		List<String> updateProperties;
+		
+		// isSpecifyAllPropertiesがfalseの場合
+		if (!registOption.isSpecifyAllProperties()) {
+			updateProperties = new ArrayList<String>();
+			// 標準の更新項目を追加
+			updateProperties.addAll(getUpdateProperties(val.getSection().getProperties(), ed));
+			// 指定されているプロパティを更新項目に追加。
+			for (String prop : registOption.getSpecifiedUpdateNestProperties()) {
+				if (!updateProperties.contains(prop)) {
+					updateProperties.add(prop);
+				}
+			}
+			return updateProperties;
+		}
+
+		// Reference項目として更新可能且つ、NestされたEntityの個々のプロパティ指定がない場合
+		// データの追加、削除は可能。既存の参照先Entityは全てのプロパティ更新可。
+		if (registOption.isSpecifiedAsReference() && registOption.getSpecifiedUpdateNestProperties().isEmpty()) {
+			updateProperties = getUpdateProperties(val.getSection().getProperties(), ed);
+			return updateProperties;
+		}
+		
+		// 以下のパターンでは、既存のEntityは指定されたプロパティのみ更新可能。
+		updateProperties = registOption.getSpecifiedUpdateNestProperties();
+		
+		// Reference項目として更新可能且つ、NestされたEntityの個々のプロパティに対して、更新対象の指定がある場合
+		// データの追加は可能。新規Entityの更新不可項目はnullに設定。
+		if (registOption.isSpecifiedAsReference()) {
+			Entity entity = val.getEntity();
+			if (entity.getOid() == null) {
+				for (PropertyDefinition pd : ed.getPropertyList()) {
+					boolean specified = false;
+					for (String specifiedProperty : registOption.getSpecifiedUpdateNestProperties()) {
+						if (pd.getName().equals(specifiedProperty)) {
+							specified = true;
+							break;
+						}
+					}
+					if (!specified) {
+						entity.setValue(pd.getName(), null);
+					}
+				}
+				// index
+			}
+		} else {
+			// Reference項目として更新不可且つ、NestされたEntityの個々のプロパティに対して、更新対象の指定がある場合
+			// データの追加は不可能。
+			if (val.getEntity().getOid() == null) {
+				val.setEntity(null);
+			}
+		}
+
+		return updateProperties;
+	}
 
 	/**
 	 * 画面の入力データとロードしたデータから参照元の差分を取得します。
@@ -242,9 +314,12 @@ public abstract class ReferenceSectionReferenceRegistHandler extends ReferenceRe
 		}
 
 		for (UpdateSet in : list1) {
-			if (in.entity.getOid() == null) {
-				//OIDがないのは画面で入力されたデータ
-				registList.add(in);
+			// カスタム登録処理なし or カスタム登録処理で参照先エンティティへのデータ追加を許容する場合
+			if (in.entity !=null) {
+				if (in.entity.getOid() == null) {
+					//OIDがないのは画面で入力されたデータ
+					registList.add(in);
+				}
 			}
 		}
 		for (Entity load : list2) {
@@ -275,4 +350,5 @@ public abstract class ReferenceSectionReferenceRegistHandler extends ReferenceRe
 			this.updateProperty = updateProperty;
 		}
 	}
+	
 }
