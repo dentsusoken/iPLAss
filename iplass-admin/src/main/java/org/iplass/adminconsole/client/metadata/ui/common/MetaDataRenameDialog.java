@@ -47,6 +47,7 @@ import com.smartgwt.client.widgets.events.ClickHandler;
 import com.smartgwt.client.widgets.form.DynamicForm;
 import com.smartgwt.client.widgets.form.fields.TextItem;
 import com.smartgwt.client.widgets.form.validator.RegExpValidator;
+import com.smartgwt.client.widgets.form.validator.Validator;
 
 /**
  * MetaDataの名前変更用標準ダイアログクラスです。
@@ -175,7 +176,18 @@ public class MetaDataRenameDialog extends MtpDialog {
 
 		toField.setValidators(nameRegExpValidator);
 	}
-
+	
+	/**
+	 * 名前に対する規則を直接カスタマイズします。
+	 *
+	 * 例えばEntityの名前など、標準の規則以外を指定する場合に利用します。
+	 *
+	 * @param validators カスタマイズしたValidator
+	 */
+	public void setCustomNameValidator(Validator... validators) {
+		toField.setValidators(validators);
+	}
+	
 	/**
 	 * <p>保存処理です。</p>
 	 *
