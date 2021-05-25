@@ -35,6 +35,8 @@ public interface CacheStore {
 	public String getNamespace();
 
 	public CacheStoreFactory getFactory();
+	
+	public int getSize();
 
 	/**
 	 * 

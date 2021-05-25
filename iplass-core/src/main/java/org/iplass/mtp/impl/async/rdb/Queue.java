@@ -290,8 +290,17 @@ public class Queue {
 									@Override
 									public Void execute() {
 										AsyncTaskContextImpl asyncTaskContext = new AsyncTaskContextImpl(loaded.getTaskId(), getName());
-										ExecuteContext.getCurrentContext().setAttribute(AsyncTaskContextImpl.EXE_CONTEXT_ATTR_NAME, asyncTaskContext, false);
-										((ExceptionHandleable) loaded.getCallable().getActual()).timeouted();
+										ExecuteContext ec = ExecuteContext.getCurrentContext();
+										ec.setAttribute(AsyncTaskContextImpl.EXE_CONTEXT_ATTR_NAME, asyncTaskContext, false);
+										try {
+											if (loaded.getCallable().getTraceId() != null) {
+												ec.mdcPut(ExecuteContext.MDC_TRACE_ID, loaded.getCallable().getTraceId());
+											}
+											((ExceptionHandleable) loaded.getCallable().getActual()).timeouted();
+											
+										} finally {
+											ec.mdcPut(ExecuteContext.MDC_TRACE_ID, null);
+										}
 										return null;
 									}
 								});

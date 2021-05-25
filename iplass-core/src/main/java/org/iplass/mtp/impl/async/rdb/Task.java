@@ -26,6 +26,8 @@ import java.util.concurrent.Callable;
 
 import org.iplass.mtp.async.ExceptionHandlingMode;
 import org.iplass.mtp.async.TaskStatus;
+import org.iplass.mtp.impl.core.ExecuteContext;
+import org.slf4j.MDC;
 
 public class Task implements Serializable {
 	private static final long serialVersionUID = 7838808634253106613L;
@@ -50,7 +52,7 @@ public class Task implements Serializable {
 	}
 	
 	public Task(Callable<?> callable, String groupingKey, ExceptionHandlingMode exceptionHandlingMode, boolean returnResult, long visibleTime) {
-		this.callable = new CallableInput<>(callable, null, false);
+		this.callable = new CallableInput<>(callable, null, false ,MDC.get(ExecuteContext.MDC_TRACE_ID));
 		this.groupingKey = groupingKey;
 		this.exceptionHandlingMode = exceptionHandlingMode;
 		this.returnResult = returnResult;

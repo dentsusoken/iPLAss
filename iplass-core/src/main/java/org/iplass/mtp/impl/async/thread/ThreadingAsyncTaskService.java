@@ -38,12 +38,16 @@ import org.iplass.mtp.impl.async.AsyncTaskContextImpl;
 import org.iplass.mtp.impl.async.AsyncTaskRuntimeException;
 import org.iplass.mtp.impl.async.AsyncTaskService;
 import org.iplass.mtp.impl.async.ExceptionHandleable;
+import org.iplass.mtp.impl.auth.AuthContextHolder;
 import org.iplass.mtp.impl.auth.AuthService;
+import org.iplass.mtp.impl.auth.UserContext;
 import org.iplass.mtp.impl.core.Executable;
 import org.iplass.mtp.impl.core.ExecuteContext;
+import org.iplass.mtp.impl.core.TenantContext;
 import org.iplass.mtp.impl.rdb.connection.ResourceHolder;
 import org.iplass.mtp.spi.Config;
 import org.iplass.mtp.spi.ServiceConfigrationException;
+import org.iplass.mtp.spi.ServiceRegistry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
@@ -102,101 +106,94 @@ public class ThreadingAsyncTaskService extends AsyncTaskService {
 	public ThreadingAsyncTaskService() {
 	}
 
-
 	@Override
 	public <V> Future<V> execute(final Callable<V> task) {
 		return executeImpl(task, true);
 	}
-	
-	public <V> Future<V> executeImpl(final Callable<V> task, final boolean inheritAuthContext) {
-		// Threadを起動する場合には、現在のExecuteContextを引き継ぐ
-		//FIXME Servlet関連リソースは引き継がないようにする。（別スレッドによるアクセスは推奨されてない）
-		final ExecuteContext context = ExecuteContext.getCurrentContext();
-		if (inheritAuthContext) {
-			Callable<V> wrapper = new Callable<V>() {
-				@Override
-				public V call() throws Exception {
-					try {
-						if (useResourceHolder) {
-							ResourceHolder.init();
-						}
-						try {
-							ExecuteContext.setContext(context);
-							//TODO logbackでMDCがスレッド間で引き継がれなくなったので、、、でも記述箇所はここではない気もするので、、要検討
-							MDC.put(AuthService.MDC_USER, context.getClientId());
 
-							try {
-								context.setAttribute(AsyncTaskContextImpl.EXE_CONTEXT_ATTR_NAME, new AsyncTaskContextImpl(-1, null), false);
-								return task.call();
-							} finally {
-								context.removeAttribute(AsyncTaskContextImpl.EXE_CONTEXT_ATTR_NAME);
-							}
-						} catch (Exception | Error e) {
-							logger.error("exception occured in async task:" + e.getMessage(), e);
-							if (e instanceof Error) {
-								fatal.error("error occured in async task:" + e.getMessage(), e);
-							}
-							if (task instanceof ExceptionHandleable) {
-								AsyncTaskContextImpl asyncTaskContext = new AsyncTaskContextImpl(-1, null);
-								try {
-									ExecuteContext.getCurrentContext().setAttribute(AsyncTaskContextImpl.EXE_CONTEXT_ATTR_NAME, asyncTaskContext, false);
-									((ExceptionHandleable) task).aborted(e);
-								} finally {
-									ExecuteContext.getCurrentContext().removeAttribute(AsyncTaskContextImpl.EXE_CONTEXT_ATTR_NAME);
-								}
-							}
-							throw e;
-						} finally {
-							//TODO logbackでMDCがスレッド間で引き継がれなくなったので、、、でも記述箇所はここではない気もするので、、要検討
-							MDC.remove(AuthService.MDC_USER);
-							ExecuteContext.setContext(null);
-						}
-					} finally {
-						if (useResourceHolder) {
-							ResourceHolder.fin();
-						}
-					}
-				}
-			};
-			return executor.submit(wrapper);
-		} else {
-			Callable<V> wrapper = new Callable<V>() {
-				@Override
-				public V call() throws Exception {
-					try {
-						if (useResourceHolder) {
-							ResourceHolder.init();
-						}
-						return ExecuteContext.executeAs(context.getTenantContext(), new Executable<V>() {
-
-							@Override
-							public V execute() {
-								try {
-									context.setAttribute(AsyncTaskContextImpl.EXE_CONTEXT_ATTR_NAME, new AsyncTaskContextImpl(-1, null), false);
-									return task.call();
-								} catch (Exception e) {
-									logger.error("exception occured in async task:" + e.getMessage(), e);
-									throw new WrapException(e);
-								} catch (Error e) {
-									fatal.error("error occured in async task:" + e.getMessage(), e);
-									throw e;
-								} finally {
-									context.removeAttribute(AsyncTaskContextImpl.EXE_CONTEXT_ATTR_NAME);
-								}
-							}
-						});
-							
-					} catch(WrapException e) {
-						 throw (Exception) e.getCause();
-					} finally {
-						if (useResourceHolder) {
-							ResourceHolder.fin();
-						}
-					}
-				}
-			};
-			return executor.submit(wrapper);
+	private <V> V callImpl(final Callable<V> task) {
+		try {
+			return task.call();
+		} catch (Exception e) {
+			throw new WrapException(e);
 		}
+	}
+
+	public <V> Future<V> executeImpl(final Callable<V> task, final boolean inheritAuthContext) {
+		ExecuteContext ec = ExecuteContext.getCurrentContext();
+		final TenantContext tc = ec.getTenantContext();
+		final UserContext uc;
+		AuthContextHolder ach = AuthContextHolder.getAuthContext();
+		if (ach.isSecuredAction() && inheritAuthContext) {
+			uc = ach.getUserContext();
+		} else {
+			uc = null;
+		}
+		final String mdcUser = ec.getClientId();
+		final String mdcTraceId = MDC.get(ExecuteContext.MDC_TRACE_ID);
+		
+		Callable<V> wrapper = new Callable<V>() {
+			@Override
+			public V call() throws Exception {
+				try {
+					if (useResourceHolder) {
+						ResourceHolder.init();
+					}
+					return ExecuteContext.executeAs(tc, new Executable<V>() {
+						@Override
+						public V execute() {
+							AsyncTaskContextImpl asyncTaskContext = new AsyncTaskContextImpl(-1, null);
+							ExecuteContext ec = ExecuteContext.getCurrentContext();
+							try {
+								ec.setAttribute(AsyncTaskContextImpl.EXE_CONTEXT_ATTR_NAME, asyncTaskContext, false);
+								if (mdcTraceId != null) {
+									ec.mdcPut(ExecuteContext.MDC_TRACE_ID, mdcTraceId);
+								}
+								ec.mdcPut(AuthService.MDC_USER, mdcUser);
+								if (uc != null) {
+									//Auth設定
+									AuthService as = ServiceRegistry.getRegistry().getService(AuthService.class);
+									return as.doSecuredAction(uc, () -> {
+										return callImpl(task);
+									});
+								} else {
+									return callImpl(task);
+								}
+							} catch (WrapException e) {
+								logger.error("exception occured in async task:" + e.getCause().getMessage(), e.getCause());
+								if (task instanceof ExceptionHandleable) {
+									((ExceptionHandleable) task).aborted(e.getCause());
+								}
+								throw e;
+							} catch (RuntimeException e) {
+								logger.error("exception occured in async task:" + e.getMessage(), e);
+								if (task instanceof ExceptionHandleable) {
+									((ExceptionHandleable) task).aborted(e);
+								}
+								throw e;
+							} catch (Error e) {
+								fatal.error("error occured in async task:" + e.getMessage(), e);
+								if (task instanceof ExceptionHandleable) {
+									((ExceptionHandleable) task).aborted(e);
+								}
+								throw e;
+							} finally {
+								ec.mdcPut(AuthService.MDC_USER, null);
+								ec.mdcPut(ExecuteContext.MDC_TRACE_ID, null);
+								ec.removeAttribute(AsyncTaskContextImpl.EXE_CONTEXT_ATTR_NAME);
+							}
+						}
+					});
+				} catch(WrapException e) {
+					 throw (Exception) e.getCause();
+				} finally {
+					if (useResourceHolder) {
+						ResourceHolder.fin();
+					}
+				}
+			}
+		};
+		return executor.submit(wrapper);
 	}
 
 	public void destroy() {
@@ -338,6 +335,5 @@ public class ThreadingAsyncTaskService extends AsyncTaskService {
 			super(cause);
 		}
 	}
-	
 
 }

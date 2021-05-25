@@ -57,6 +57,32 @@ p.loading {
   margin: 2px;
   width: 16px; }
 
+/* binary表示 */
+.list-bin > a.link-bin {
+  vertical-align: top; }
+
+.list-bin > .viewer-toolbar {
+  display: inline-block; }
+  .list-bin > .viewer-toolbar > ul {
+    margin: 0;
+    padding: 0 3px; }
+
+.viewer-container.viewer-backdrop {
+  background-color: rgba(0, 0, 0, 0.8); }
+
+img.img-viewer {
+  cursor: -webkit-zoom-in;
+  cursor: zoom-in; }
+
+.viewer-container.viewer-backdrop {
+  background-color: rgba(0, 0, 0, 0.8); }
+
+img.img-viewer {
+  cursor: -webkit-zoom-in;
+  cursor: zoom-in;
+  transition: all .3s;
+  -webkit-transition: all .3s; }
+
 input[type=button], input[type=submit], input[type=reset] {
   vertical-align: middle;
   font-size: 0.92857rem;
@@ -1980,7 +2006,7 @@ input[type=button].del-btn {
   .list-bin:last-child {
     margin-bottom: 0; }
   .list-bin p {
-    overflow-x: auto;
+    overflow-x: hidden;
     overflow-y: hidden; }
 
 .mr-btn {

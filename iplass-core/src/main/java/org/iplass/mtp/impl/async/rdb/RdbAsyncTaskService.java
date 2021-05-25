@@ -47,6 +47,7 @@ import org.iplass.mtp.transaction.TransactionListener;
 import org.iplass.mtp.transaction.TransactionStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
 
 public class RdbAsyncTaskService extends AsyncTaskService {
 
@@ -107,9 +108,9 @@ public class RdbAsyncTaskService extends AsyncTaskService {
 		Task newTask = null;
 		AuthContextHolder ach = AuthContextHolder.getAuthContext();
 		if (ach.isSecuredAction() && inheritAuthContext) {
-			newTask = new Task(new CallableInput<>(task, ach.getUserContext(), ach.isPrivileged()), option.getGroupingKey(), option.getExceptionHandlingMode(), option.isReturnResult(), option.getExecutionTime());
+			newTask = new Task(new CallableInput<>(task, ach.getUserContext(), ach.isPrivileged(), MDC.get(ExecuteContext.MDC_TRACE_ID)), option.getGroupingKey(), option.getExceptionHandlingMode(), option.isReturnResult(), option.getExecutionTime());
 		} else {
-			newTask = new Task(new CallableInput<>(task, null, false), option.getGroupingKey(), option.getExceptionHandlingMode(), option.isReturnResult(), option.getExecutionTime());
+			newTask = new Task(new CallableInput<>(task, null, false, MDC.get(ExecuteContext.MDC_TRACE_ID)), option.getGroupingKey(), option.getExceptionHandlingMode(), option.isReturnResult(), option.getExecutionTime());
 		}
 		WorkerWakeUpCaller callback = null;
 		if (q.getConfig().getWorker().isWakeupOnSubmit()) {
@@ -208,8 +209,15 @@ public class RdbAsyncTaskService extends AsyncTaskService {
 				if (q.taskAbort(reload, mayInterruptIfRunning, null, true, true)) {
 					if (reload != null && reload.getCallable().getActual() instanceof ExceptionHandleable) {
 						AsyncTaskContextImpl asyncTaskContext = new AsyncTaskContextImpl(task.getTaskId(), q.getName());
+						String prevTraceId = MDC.get(ExecuteContext.MDC_TRACE_ID);
+						ExecuteContext ec = ExecuteContext.getCurrentContext();
 						try {
-							ExecuteContext.getCurrentContext().setAttribute(AsyncTaskContextImpl.EXE_CONTEXT_ATTR_NAME, asyncTaskContext, false);
+							ec.setAttribute(AsyncTaskContextImpl.EXE_CONTEXT_ATTR_NAME, asyncTaskContext, false);
+							
+							if (reload.getCallable().getTraceId() != null) {
+								ec.mdcPut(ExecuteContext.MDC_TRACE_ID, reload.getCallable().getTraceId());
+							}
+							
 							((ExceptionHandleable) reload.getCallable().getActual()).canceled();
 						} catch (Throwable e) {
 							fatalLogger.warn("ExceptionHandleable's canceled() call failed.(queue:" + q.getConfig().getName() + ", task:" + reload.getTaskId() + ",tenantId:" + reload.getTenantId() + ")", e);
@@ -224,7 +232,8 @@ public class RdbAsyncTaskService extends AsyncTaskService {
 								});
 							}
 						} finally {
-							ExecuteContext.getCurrentContext().removeAttribute(AsyncTaskContextImpl.EXE_CONTEXT_ATTR_NAME);
+							ec.mdcPut(ExecuteContext.MDC_TRACE_ID, prevTraceId);
+							ec.removeAttribute(AsyncTaskContextImpl.EXE_CONTEXT_ATTR_NAME);
 						}
 					}
 					return true;

@@ -28,7 +28,6 @@ import org.iplass.mtp.auth.token.AuthTokenInfoList;
 import org.iplass.mtp.impl.auth.authenticate.token.AuthToken;
 import org.iplass.mtp.impl.auth.authenticate.token.AuthTokenHandler;
 import org.iplass.mtp.impl.auth.authenticate.token.AuthTokenService;
-import org.iplass.mtp.impl.auth.authenticate.token.AuthTokenStore;
 import org.iplass.mtp.impl.core.ExecuteContext;
 import org.iplass.mtp.spi.ServiceRegistry;
 
@@ -76,6 +75,14 @@ public class AuthTokenInfoListImpl implements AuthTokenInfoList {
 		AuthToken t = handler.authTokenStore().getBySeries(
 				ExecuteContext.getCurrentContext().getClientTenantId(), type, key);
 		return handler.toAuthTokenInfo(t);
+	}
+	
+	@Override
+	public void remove(String type) {
+		AuthTokenHandler handler = tokenService.getHandler(type);
+		if (handler != null && handler.isVisible()) {
+			handler.authTokenStore().delete(ExecuteContext.getCurrentContext().getClientTenantId(), type, ExecuteContext.getCurrentContext().getClientId());
+		}
 	}
 
 	@Override

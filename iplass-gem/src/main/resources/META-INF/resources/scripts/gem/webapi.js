@@ -439,7 +439,7 @@ function deleteAll(webapi, searchType, formName, _t, func) {
 	});
 }
 
-function getMassReferenceData(webapi, oid, defName, propName, viewName, offset, sortKey, sortType, isCount, outputType, entityOid, entityVersion, func) {
+function getMassReferenceData(webapi, oid, defName, propName, viewName, offset, sortKey, sortType, isCount, outputType, elementId, entityOid, entityVersion, func) {
 	var params = "{";
 	params += "\"oid\":\"" + escapeJsonParamValue(oid) + "\"";
 	params += ",\"defName\":\"" + defName + "\"";
@@ -450,6 +450,7 @@ function getMassReferenceData(webapi, oid, defName, propName, viewName, offset, 
 	params += ",\"sortType\":\"" + sortType + "\"";
 	params += ",\"isCount\":\"" + isCount + "\"";
 	params += ",\"outputType\":\"" + outputType + "\"";
+	params += ",\"elementId\":\"" + elementId + "\"";
 	if (typeof entityOid !== "undefined" && entityOid != null) {
 		params += ",\"entityOid\":\"" + escapeJsonParamValue(entityOid) + "\"";
 	}

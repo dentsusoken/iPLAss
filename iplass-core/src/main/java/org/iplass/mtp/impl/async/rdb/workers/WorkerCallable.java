@@ -40,6 +40,8 @@ import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 
 public class WorkerCallable implements Callable<Void> {
+	public static final String MDC_TASK_ID = "taskId";
+	
 	private static Logger logger = LoggerFactory.getLogger(WorkerCallable.class);
 	private static Logger mtpLogger = LoggerFactory.getLogger("mtp.async.rdb");
 	private static Logger fatalLogger = LoggerFactory.getLogger("mtp.fatal.async.rdb");
@@ -59,7 +61,10 @@ public class WorkerCallable implements Callable<Void> {
 	@Override
 	public Void call() throws Exception {
 		try {
-			MDC.put("taskId", String.valueOf(task.getTaskId()));
+			MDC.put(MDC_TASK_ID, String.valueOf(task.getTaskId()));
+			if (task.getCallable() != null && task.getCallable().getTraceId() != null) {
+				MDC.put(ExecuteContext.MDC_TRACE_ID, task.getCallable().getTraceId());
+			}
 			if (initRH) {
 				ResourceHolder.init();
 			}
@@ -71,9 +76,10 @@ public class WorkerCallable implements Callable<Void> {
 			return ExecuteContext.executeAs(tc, new Executable<Void>() {
 				@Override
 				public Void execute() {
+					ExecuteContext ec = ExecuteContext.getCurrentContext();
 					try {
-						ExecuteContext.getCurrentContext().setAttribute(AsyncTaskContextImpl.EXE_CONTEXT_ATTR_NAME, asyncTaskContext, false);
-						
+						ec.setAttribute(AsyncTaskContextImpl.EXE_CONTEXT_ATTR_NAME, asyncTaskContext, false);
+
 						if (task.getCallable().getUserContext() != null) {
 							//Auth設定
 							AuthService as = ServiceRegistry.getRegistry().getService(AuthService.class);
@@ -121,7 +127,7 @@ public class WorkerCallable implements Callable<Void> {
 							break;
 						}
 					} finally {
-						ExecuteContext.getCurrentContext().removeAttribute(AsyncTaskContextImpl.EXE_CONTEXT_ATTR_NAME);
+						ec.removeAttribute(AsyncTaskContextImpl.EXE_CONTEXT_ATTR_NAME);
 					}
 					
 					return null;
@@ -131,7 +137,8 @@ public class WorkerCallable implements Callable<Void> {
 			if (initRH) {
 				ResourceHolder.fin();
 			}
-			MDC.remove("taskId");
+			MDC.remove(ExecuteContext.MDC_TRACE_ID);
+			MDC.remove(MDC_TASK_ID);
 		}
 	}
 	

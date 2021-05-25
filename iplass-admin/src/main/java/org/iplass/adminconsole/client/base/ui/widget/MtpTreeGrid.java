@@ -21,6 +21,7 @@
 package org.iplass.adminconsole.client.base.ui.widget;
 
 import com.smartgwt.client.widgets.tree.TreeGrid;
+import com.smartgwt.client.widgets.tree.TreeNode;
 
 /**
  * ツリーグリッドのベースクラス。
@@ -45,5 +46,42 @@ public class MtpTreeGrid extends TreeGrid {
 		//Chromeで画面zoom設定によってアイコンが表示されないので大きくする
 		//実際のアイコンサイズはCSSで調整
 		setIconSize(18); //16->18
+	}
+
+	/**
+	 * <p>フォルダを選択し、表示します。</p>
+	 *
+	 * @param node 対象TreeNode
+	 */
+	public void selectAndScrollNode(TreeNode node) {
+
+		//フォルダがOpenされていないと選択できないのでOpen
+		openParentFolder(node);
+
+		//選択
+		selectSingleRecord(node);
+
+		//選択Nodeを表示するためスクロール
+		scrollToRow(getRecordIndex(node));
+	}
+
+	/**
+	 * <p>フォルダをOpenします。</p>
+	 *
+	 * <p>親のフォルダがOpenされていない場合は、再帰的にOpenします。</p>
+	 *
+	 * @param node 対象TreeNode
+	 */
+	private void openParentFolder(TreeNode node) {
+
+		//parentのOpen
+		TreeNode parent = getTree().getParent(node);
+		if (!getTree().isOpen(parent)) {
+			openParentFolder(parent);
+		}
+		//自身のOpen
+		if (getTree().isFolder(node) &&  !getTree().isOpen(node)) {
+			getTree().openFolder(node);
+		}
 	}
 }

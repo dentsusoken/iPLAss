@@ -858,6 +858,12 @@ public class TransactionLocalCacheStoreFactory extends AbstractBuiltinCacheStore
 			});
 			return list;
 		}
+		
+
+		@Override
+		public int getSize() {
+			return backendCacheStore.getSize();
+		}
 
 		@Override
 		public String trace() {

@@ -62,14 +62,21 @@ import org.slf4j.LoggerFactory;
 	command={},
 	result=@Result(type=Type.JSP, value=Constants.CMD_RSLT_HTML_PDFVIEWER_PATH, templateName="gem/binary/pdfviewer",
 	useContentDisposition=true, contentDispositionType=ContentDispositionType.INLINE, acceptRanges=true)
-)}
+),
+@ActionMapping(
+	name=DownloadCommand.IMGVIEWER_ACTION_NAME,
+	displayName="画像ビューア",
+	result=@Result(type=Type.JSP, value=Constants.CMD_RSLT_HTML_IMGVIEWER_PATH, templateName="gem/binary/imgviewer",
+	useContentDisposition=true, contentDispositionType=ContentDispositionType.INLINE, acceptRanges=true)
 )
+})
 @CommandClass(name="gem/binary/DownloadCommand", displayName="ダウンロード")
 public final class DownloadCommand implements Command {
 
 	public static final String DOWNLOAD_ACTION_NAME = "gem/binary/download";
 	public static final String REFERENCE_ACTION_NAME = "gem/binary/ref";
 	public static final String PDFVIEWER_ACTION_NAME = "gem/binary/pdfviewer";
+	public static final String IMGVIEWER_ACTION_NAME = "gem/binary/imgviewer";
 
 	private GemConfigService service = ServiceRegistry.getRegistry().getService(GemConfigService.class);
 	private static final Logger auditLogger = LoggerFactory.getLogger("mtp.audit.download");

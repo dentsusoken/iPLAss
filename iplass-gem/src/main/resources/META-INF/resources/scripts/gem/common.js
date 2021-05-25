@@ -1770,14 +1770,32 @@ function addBinaryGroup(propName, count, fileId, brName, brType, brLobId, displa
 	//リンク作成
 	var usePdfjs = $input.attr("data-usePdfjs") === "true";
 	var pdfviewer = $input.attr("data-pdfviewerUrl");
+	var useImageViewer = $input.attr("data-useImageViewer") === "true";
+	var showImageRotateButton = $input.attr("data-showImageRotateButton") === "true";
+	var imgviewer = $input.attr("data-imgviewerUrl");
+	var openNewTab = $input.attr("data-openNewTab") === "true";
+	
 	if (displayType && (displayType == "BINARY" || displayType == "LINK")) {
-		// 編集画面でリンククリックされるとバイナリが表示され、戻れない(ブラウザバックもリンク切れ)
+		// PDFの表示は編集画面でリンククリックされるとバイナリが表示され、戻れない(ブラウザバックもリンク切れ)
 		// 入力内容も消えてしまうので、少なくともアップロード時は別タブ表示にしておく
 		if (brType.indexOf("application/pdf") > -1 && usePdfjs) {
 			var pdfPath = pdfviewer + "?file=" + encodeURIComponent(download);
-			$li.append("<a href='" + pdfPath + "' target='_blank'>" + brName + "</a> ");
+			$li.append("<a href='" + pdfPath + "' target='_blank' class='link-bin'>" + brName + "</a> ");
+		} else if (brType.indexOf("image") > -1 && useImageViewer && openNewTab) {
+			//ImageViewer＋別タブの場合のみViewer起動
+			var imageViewerPath = imgviewer + "?id=" + brLobId;
+			var $link = $("<a/>")
+				.attr("href", "javascript:void(0)")
+				.attr("data-viewerUrl", imageViewerPath)
+				.attr("data-lobid", brLobId)
+				.addClass("link-bin img-viewer")
+				.text(brName);
+			$link.on("click", function(){
+				showImageViewer(this);
+			});
+			$li.append($link);
 		} else {
-			$li.append("<a href='" + download + "' target='_blank'>" + brName + "</a> ");
+			$li.append("<a href='" + download + "' target='_blank' class='link-bin'>" + brName + "</a> ");
 		}
 	}
 
@@ -1785,7 +1803,25 @@ function addBinaryGroup(propName, count, fileId, brName, brType, brLobId, displa
 		$li.addClass("noimage");
 	}
 
-	$("<a href='javascript:void(0)' class='binaryDelete del-btn'> " + scriptContext.gem.locale.binary.deleteLink + "</a>").appendTo($li).click(function() {
+	//画像ローテ―トボタン
+	if (showImageRotateButton && (brType && brType.indexOf("image") > -1)) {
+		if (displayType && (displayType == "BINARY" || displayType == "PREVIEW")) {
+			var $rotateRoot = $("<span/>").addClass("viewer-toolbar").appendTo($li);
+			var $rotateButtons = $("<ul/>").appendTo($rotateRoot);
+			var $rotateLeft = $("<li/>").addClass("viewer-rotate-left").appendTo($rotateButtons);
+			var $rotateRight = $("<li/>").addClass("viewer-rotate-right").appendTo($rotateButtons);
+			$rotateLeft.on("click", function() {
+				rotateImage(brLobId, -90);
+			});
+			$rotateRight.on("click", function() {
+				rotateImage(brLobId, 90);
+			});
+		}
+	}
+	
+	//削除ボタン
+	$("<a href='javascript:void(0)' class='binaryDelete del-btn link-bin'> " + scriptContext.gem.locale.binary.deleteLink + "</a>")
+			.appendTo($li).click(function() {
 		//liを削除
 		$li.remove();
 
@@ -1799,11 +1835,38 @@ function addBinaryGroup(propName, count, fileId, brName, brType, brLobId, displa
 		if (brType && brType.indexOf("image") > -1) {
 			//imageファイルの場合は画像を表示
 			var $p = $("<p id='p_" + propName + count + "' class='mb0' />").appendTo($li);
-			var $img = $("<img src='" + download + "' alt='" + brLobId + "' onload='imageLoad()'>").appendTo($p);
+			
+			var $img = $("<img/>")
+				.attr("src", ref)
+				.attr("alt", brName)
+				.attr("data-lobid", brLobId);
+			if (useImageViewer) {
+				$img.addClass("img-viewer");
+				if (openNewTab) {
+					var imageViewerPath = imgviewer + "?id=" + brLobId;
+					$img.attr("data-viewerUrl", imageViewerPath);
+					$img.on("click", function(){
+						showImageViewer(this);
+					});
+				} else {
+					$img.on("click", function(){
+						inlineImageViewer(this);
+					});
+				}
+			}
+			$img.appendTo($p);
+			$img.on("load", function(){
+				imageLoad();
+			});
+			
 			var width = $input.attr("data-binWidth") - 0;
 			if (width > 0) $img.attr("width", width);
 			var height = $input.attr("data-binHeight") - 0;
 			if (height > 0) $img.attr("height", height);
+
+			//デフォルトサイズ取得用のダミー追加
+			$("<span/>").addClass("dummy").appendTo($p);
+			
 		} else if (brType && brType.indexOf("application/x-shockwave-flash") > -1) {
 			// swfファイルの場合はアニメーションを表示
 			var width = $input.attr("data-binWidth") - 0;
@@ -1877,10 +1940,262 @@ function addBinaryGroup(propName, count, fileId, brName, brType, brLobId, displa
 	$(".fixHeight").fixHeight();
 }
 
+/**
+ * BinaryPropertyEditorでの画像ロード処理
+ * @returns
+ */
 function imageLoad() {
 	setTimeout(function() {
 		$(".fixHeight").fixHeight();
 	}, 300);
+}
+
+/** ImageViewerの画像単位設定 */
+var imageViewerStates = new Map();
+
+/**
+ * 画像を回転させます。
+ * 
+ * @param lobId 対象LobId 
+ * @param deg 回転角度
+ */
+function rotateImage(lobId, deg) {
+
+	var $image = $("img[data-lobid='" + lobId + "']");
+	if ($image.length > 0) {
+		var imageData = null;
+		if (imageViewerStates.get(lobId)) {
+			imageData = imageViewerStates.get(lobId);
+		} else {
+			imageData = {}
+		}
+		if (!imageData.rotate) {
+			imageData.rotate = 0;
+		}
+		imageData.rotate += deg;
+		if (imageData.rotate == 360 || imageData.rotate == -360) {
+			imageData.rotate = 0;
+		}
+
+		var imgWidth = $image.width();
+		var imgHeight = $image.height();
+		
+		var height = null;
+		var translate = null;
+		if (imageData.rotate == 90 || imageData.rotate == 270
+				|| imageData.rotate == -90 || imageData.rotate == -270) {
+			height = imgWidth;
+			if (imgWidth == imgHeight) {
+				translate = 0;
+			} else if (imgWidth > imgHeight) {
+				//横長の場合
+				translate = (imgWidth - imgHeight) / 2;
+				//270または-90の場合はマイナス
+				if (imageData.rotate == 270 || imageData.rotate == -90) {
+					translate *= -1;
+				}
+			} else {
+				//縦長の場合
+				translate = (imgHeight - imgWidth) / 2;
+				//90または-270の場合はマイナス
+				if (imageData.rotate == 90 || imageData.rotate == -270) {
+					translate *= -1;
+				}
+			}
+		} else {
+			height = imgHeight;
+			translate = 0;
+		}
+
+		//縦横逆転するので高さの調整
+		//dummyのspanからデフォルトの高さを取得
+		var defaultHeight = $image.next().height();
+		if (height > defaultHeight) {
+			//画像の高さが高い場合は設定
+			$image.parent().css("height", height);
+		} else {
+			//デフォルトが高ければ明示指定をクリア
+			$image.parent().css("height", "");
+		}
+		
+		//画像の回転
+		var transform = "rotate(" + imageData.rotate + "deg) translateX(" + translate + "px) translateY(" + translate + "px)";
+		$image.css("transform", transform);
+		
+		//設定保存
+		saveImageViewerState(lobId, imageData);
+		
+		//Window調整
+		imageLoad();
+	}
+}
+
+/**
+ * ImageViewerを別Windowで表示します。
+ * 
+ * @param image イメージ
+ */
+function showImageViewer(image) {
+	var lobId = image.getAttribute("data-lobid");
+	var viewerUrl = image.getAttribute("data-viewerUrl");
+	if (!document.scriptContext["imgViewerCallback"]) {
+		document.scriptContext["imgViewerCallback"] = function(subImage) {
+			//ダイアログの表示時にViewerを設定する
+			var subLobId = subImage.getAttribute("data-lobid");
+			
+			var viewer = new Viewer(subImage, {
+				//モーダルを閉じない
+				backdrop: false,
+				//閉じるボタンを表示しない
+				button: false,
+				//1つなのでナビは非表示
+				navbar: false,
+				toolbar: {
+					zoomIn: true,
+					zoomOut: true,
+					oneToOne: true,
+					reset: true,
+					//画像１つずつに設定するため前後なし
+					prev: false,
+					next: false,
+					//全画面表示なし
+					play: false, 
+					rotateLeft: true,
+					rotateRight: true,
+					flipHorizontal: true,
+					flipVertical: true,
+				},
+				viewed: function(event) {
+					//保存済の設定があれば反映
+					if (imageViewerStates.get(subLobId)) {
+						var imageData = imageViewerStates.get(subLobId);
+						//回転
+						if (imageData.rotate != 0) {
+							viewer.rotate(imageData.rotate);
+						}
+
+						//拡大
+						//ratioが0になる場合があるので除外
+						if (imageData.ratio != 0 && imageData.ratio != 1) {
+							viewer.zoomTo(imageData.ratio);
+						}
+
+						//反転
+						if (imageData.scaleX != 1 || imageData.scaleY != 1) {
+							viewer.scale(imageData.scaleX, imageData.scaleY);
+						}
+					}
+				},
+				rotated: function (event) {
+					//設定を保存
+					var imageData = viewer.imageData;
+					saveImageViewerState(subLobId, imageData);
+				},
+				scaled: function (event) {
+					//設定を保存
+					var imageData = viewer.imageData;
+					saveImageViewerState(subLobId, imageData);
+				},
+				zoomed: function (event) {
+					//設定を保存
+					var imageData = viewer.imageData;
+					saveImageViewerState(subLobId, imageData);
+				},
+				hide: function(event) {
+					//別画面の場合は非表示にならない
+				}
+			});			
+			return viewer;
+		};
+	}
+	
+	submitForm(viewerUrl, null, "_blank_" + lobId);
+}
+
+/**
+ * Linkに対してImageViewerをInlineで表示します。
+ * 
+ * @param lobId 対象のLobId
+ */
+function linkInlineImageViewer(lobId) {
+	var image = document.getElementById("viewer_dummy_img_" + lobId);
+	inlineImageViewer(image);
+}
+
+/**
+ * ImageViewerをInlineで表示します。
+ * 
+ * @param image イメージ
+ */
+function inlineImageViewer(image) {
+	if (image) {
+		if (image.hasAttribute("viewer-init") === false) {
+			var lobId = image.getAttribute("data-lobid");
+			var viewer = new Viewer(image, {
+				//1つなのでナビは非表示
+				navbar: false,
+				toolbar: {
+					zoomIn: true,
+					zoomOut: true,
+					oneToOne: true,
+					reset: true,
+					//画像１つずつに設定するため前後なし
+					prev: false,
+					next: false,
+					//全画面表示なし
+					play: false, 
+					rotateLeft: true,
+					rotateRight: true,
+					flipHorizontal: true,
+					flipVertical: true,
+				},
+				viewed: function(event) {
+					//保存済の設定があれば反映
+					if (imageViewerStates.get(lobId)) {
+						var imageData = imageViewerStates.get(lobId);
+						//回転
+						if (imageData.rotate != 0) {
+							viewer.rotate(imageData.rotate);
+						}
+
+						//拡大
+						//ratioが0になる場合があるので除外
+						if (imageData.ratio != 0 && imageData.ratio != 1) {
+							viewer.zoomTo(imageData.ratio);
+						}
+
+						//反転
+						if (imageData.scaleX != 1 || imageData.scaleY != 1) {
+							viewer.scale(imageData.scaleX, imageData.scaleY);
+						}
+					}
+				},
+				hide: function(event) {
+					//設定を保存
+					var imageData = viewer.imageData;
+					saveImageViewerState(lobId, imageData);
+				}
+			}).view();
+			//初期化完了
+			image.setAttribute("viewer-init", true);
+		} else {
+			image.click();
+		}
+	}
+}
+
+/**
+ * ImageViewerの設定値を保存します。
+ * 
+ * @param lobId 対象のLobId
+ * @param imageData 設定値
+ */
+function saveImageViewerState(lobId, imageData) {
+	if (lobId) {
+		//モーダルが閉じる際にzoomイベントが発生してimagaData(参照)が変更されるのでコピーを保持
+		var clone = Object.assign({}, imageData)
+		imageViewerStates.set(lobId, clone);
+	}
 }
 
 /**

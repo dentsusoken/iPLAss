@@ -138,6 +138,34 @@ public class BinaryPropertyEditor extends PrimitivePropertyEditor {
 	)
 	private boolean openNewTab;
 
+	/** 画像表示時に回転ボタンを表示 */
+	@MetaFieldInfo(
+			displayName="画像表示時に回転ボタンを表示",
+			displayNameKey="generic_editor_BinaryPropertyEditor_showImageRotateButtonNameKey",
+			inputType=InputType.CHECKBOX,
+			displayOrder=153,
+			description="画像リンクの横に回転ボタンを表示します。",
+			descriptionKey="generic_editor_BinaryPropertyEditor_showImageRotateButtonDescriptionKey"
+	)
+	@EntityViewField(
+			referenceTypes={FieldReferenceType.DETAIL}
+	)
+	private boolean showImageRotateButton;
+
+	/** 画像表示時にイメージViewerを利用 */
+	@MetaFieldInfo(
+			displayName="画像表示時にイメージViewerを利用",
+			displayNameKey="generic_editor_BinaryPropertyEditor_useImageViewerNameKey",
+			inputType=InputType.CHECKBOX,
+			displayOrder=156,
+			description="画像をViewerを利用して表示します。",
+			descriptionKey="generic_editor_BinaryPropertyEditor_useImageViewerDescriptionKey"
+	)
+	@EntityViewField(
+			referenceTypes={FieldReferenceType.SEARCHRESULT, FieldReferenceType.DETAIL}
+	)
+	private boolean useImageViewer = true;
+
 	/** PDF表示時にPDF.jsを利用 */
 	@MetaFieldInfo(
 			displayName="PDF表示時にPDF.jsを利用",
@@ -286,6 +314,38 @@ public class BinaryPropertyEditor extends PrimitivePropertyEditor {
 	@Override
 	public boolean isHide() {
 		return displayType == BinaryDisplayType.HIDDEN;
+	}
+
+	/**
+	 * 画像表示時に回転ボタンを表示を取得します。
+	 * @return 画像表示時に回転ボタンを表示
+	 */
+	public boolean isShowImageRotateButton() {
+		return showImageRotateButton;
+	}
+
+	/**
+	 * 画像表示時に回転ボタンを表示を設定します。
+	 * @param showImageRotateButton 画像表示時に回転ボタンを表示
+	 */
+	public void setShowImageRotateButton(boolean showImageRotateButton) {
+		this.showImageRotateButton = showImageRotateButton;
+	}
+
+	/**
+	 * 画像表示時にイメージViewerを利用を取得します。
+	 * @return 画像表示時にイメージViewerを利用
+	 */
+	public boolean isUseImageViewer() {
+		return useImageViewer;
+	}
+
+	/**
+	 * 画像表示時にイメージViewerを利用を設定します。
+	 * @param useImageViewer 画像表示時にイメージViewerを利用
+	 */
+	public void setUseImageViewer(boolean useImageViewer) {
+		this.useImageViewer = useImageViewer;
 	}
 
 	/**

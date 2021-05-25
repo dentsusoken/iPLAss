@@ -60,7 +60,7 @@ public class MenuItemDragPane extends VLayout {
 
 
 	/** データ変更ハンドラ */
-	private List<MenuItemDataChangeHandler> handlers = new ArrayList<MenuItemDataChangeHandler>();
+	private List<MenuItemDataChangeHandler> handlers = new ArrayList<>();
 
 	/**
 	 * コンストラクタ
@@ -166,9 +166,8 @@ public class MenuItemDragPane extends VLayout {
 	 * メニューアイテムダイアログを表示します。
 	 *
 	 * @param type メニューアイテムタイプ
-	 * @param initialName 初期設定名
 	 */
-	void showMenuItemDialog(MenuItemTreeDS.MenuItemType type) {
+	public void showMenuItemDialog(MenuItemTreeDS.MenuItemType type) {
 		showMenuItemDialog(type, null, false, null);
 	}
 
@@ -178,7 +177,7 @@ public class MenuItemDragPane extends VLayout {
 	 * @param type メニューアイテムタイプ
 	 * @param initialName 初期設定名
 	 */
-	void showMenuItemDialog(MenuItemTreeDS.MenuItemType type, String initialName) {
+	public void showMenuItemDialog(MenuItemTreeDS.MenuItemType type, String initialName) {
 		showMenuItemDialog(type, null, false, initialName);
 	}
 
@@ -188,7 +187,7 @@ public class MenuItemDragPane extends VLayout {
 	 * @param type メニューアイテムタイプ
 	 * @param menuItem 更新メニューアイテム（更新時）
 	 */
-	void showMenuItemDialog(MenuItemTreeDS.MenuItemType type, MenuItem menuItem) {
+	public void showMenuItemDialog(MenuItemTreeDS.MenuItemType type, MenuItem menuItem) {
 		showMenuItemDialog(type, menuItem, false, null);
 	}
 
@@ -199,7 +198,7 @@ public class MenuItemDragPane extends VLayout {
 	 * @param menuItem 更新メニューアイテム（更新、コピー時）
 	 * @param isCopy コピーモード
 	 */
-	void showMenuItemDialog(MenuItemTreeDS.MenuItemType type, MenuItem menuItem, boolean isCopy) {
+	public void showMenuItemDialog(MenuItemTreeDS.MenuItemType type, MenuItem menuItem, boolean isCopy) {
 		showMenuItemDialog(type, menuItem, isCopy, null);
 	}
 
@@ -211,7 +210,7 @@ public class MenuItemDragPane extends VLayout {
 	 * @param isCopy コピーモード
 	 * @param initialName 初期設定名
 	 */
-	void showMenuItemDialog(MenuItemTreeDS.MenuItemType type, MenuItem menuItem, boolean isCopy, String initialName) {
+	public void showMenuItemDialog(MenuItemTreeDS.MenuItemType type, MenuItem menuItem, boolean isCopy, String initialName) {
 		MenuItemDialog dialog = new MenuItemDialog(type);
 		dialog.addMenuItemDataChangeHandler(new MenuItemDataChangeHandler() {
 
@@ -222,6 +221,9 @@ public class MenuItemDragPane extends VLayout {
 		});
 		if (menuItem != null) {
 			dialog.setMenuItem(menuItem, isCopy);
+
+			//メニューアイテムを選択
+			grid.selectMenuItemNode(menuItem);
 		}
 		if (initialName != null && !initialName.isEmpty()) {
 			dialog.setInitialName(initialName);
@@ -237,10 +239,12 @@ public class MenuItemDragPane extends VLayout {
 	void delMenuItem(final MenuItem menuItem) {
 		MetaDataServiceAsync service = MetaDataServiceFactory.get();
 		service.deleteDefinition(TenantInfoHolder.getId(), MenuItem.class.getName(), menuItem.getName(), new AsyncCallback<AdminDefinitionModifyResult>() {
+			@Override
 			public void onFailure(Throwable caught) {
 				// 失敗時
 				SC.warn(AdminClientMessageUtil.getString("ui_metadata_menu_item_MenuItemDragPane_faledToDeleteMenuItem") + caught.getMessage());
 			}
+			@Override
 			public void onSuccess(AdminDefinitionModifyResult result) {
 				if (result.isSuccess()) {
 					SC.say(AdminClientMessageUtil.getString("ui_metadata_menu_item_MenuItemDragPane_completion"),
@@ -263,7 +267,14 @@ public class MenuItemDragPane extends VLayout {
 	 */
 	private void refreshDataChanged(MenuItemDataChangedEvent event) {
 
-		refresh();
+		MenuItem menuItem = event.getValueObject(MenuItem.class);
+		if (MenuItemDataChangedEvent.Type.ADD.equals(event.getType())) {
+			grid.addMenuItemNode(menuItem);
+		} else if (MenuItemDataChangedEvent.Type.UPDATE.equals(event.getType())) {
+			grid.updateMenuItemNode(menuItem);
+		} else if (MenuItemDataChangedEvent.Type.DELETE.equals(event.getType())) {
+			grid.deleteMenuItemNode(menuItem);
+		}
 
 		fireMenuItemDataChanged(event);
 	}

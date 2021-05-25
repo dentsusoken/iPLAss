@@ -129,6 +129,8 @@ public final class GetMassReferencesCommand extends DetailCommandBase implements
 		String offsetStr = request.getParam(Constants.SEARCH_OFFSET);
 		String isCount = request.getParam("isCount");
 		String outputTypeStr = request.getParam(Constants.OUTPUT_TYPE);
+		String elementId = request.getParam(Constants.ELEMENT_ID);
+
 		int offset = 0;
 		try {
 			offset = Integer.parseInt(offsetStr);
@@ -148,10 +150,23 @@ public final class GetMassReferencesCommand extends DetailCommandBase implements
 			List<MassReferenceSection> sections = getMassReferenceSection(
 					context.getEntityDefinition(), outputType, context.getView(), context.getViewName(), entity);
 			MassReferenceSection section = null;
-			for (MassReferenceSection _section : sections) {
-				if (_section.getPropertyName().equals(rp.getName())) {
-					section = _section;
-					break;
+			if (StringUtil.isNotEmpty(elementId)) {
+				//ElementIDで検索
+				for (MassReferenceSection _section : sections) {
+					if (elementId.equals(_section.getElementRuntimeId())) {
+						if (_section.getPropertyName().equals(rp.getName())) {
+							section = _section;
+						}
+						break;
+					}
+				}
+			} else {
+				//プロパティ名で検索
+				for (MassReferenceSection _section : sections) {
+					if (_section.getPropertyName().equals(rp.getName())) {
+						section = _section;
+						break;
+					}
 				}
 			}
 
@@ -525,9 +540,9 @@ public final class GetMassReferencesCommand extends DetailCommandBase implements
 	}
 
 	/**
-	 * フォーム内のプロパティを取得します。
+	 * フォーム内のMassReferenceSectionを取得します。
 	 * @param view 画面定義
-	 * @return プロパティの一覧
+	 * @return MassReferenceSectionのList
 	 */
 	private List<MassReferenceSection> getMassReferenceSection(
 			EntityDefinition ed, OutputType outputType, DetailFormView view, String viewName, Entity entity) {
@@ -544,9 +559,9 @@ public final class GetMassReferencesCommand extends DetailCommandBase implements
 	}
 
 	/**
-	 * セクション内のプロパティ取得を取得します。
+	 * セクション内のMassReferenceSectionを取得します。
 	 * @param section セクション
-	 * @return プロパティの一覧
+	 * @return MassReferenceSectionのList
 	 */
 	private List<MassReferenceSection> getMassReferenceSection(
 			EntityDefinition ed, OutputType outputType, DefaultSection section, Entity entity) {

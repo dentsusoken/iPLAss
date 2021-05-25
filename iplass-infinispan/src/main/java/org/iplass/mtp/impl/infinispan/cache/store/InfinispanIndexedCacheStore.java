@@ -333,6 +333,11 @@ public class InfinispanIndexedCacheStore implements CacheStore {
 	public List<CacheEventListener> getListeners() {
 		return wrapped.getListeners();
 	}
+	
+	@Override
+	public int getSize() {
+		return wrapped.getSize();
+	}
 
 	@Override
 	public String trace() {

@@ -23,10 +23,7 @@ package org.iplass.mtp.impl.async.rdb;
 import java.io.Serializable;
 import java.util.concurrent.Callable;
 
-import org.iplass.mtp.auth.AuthContext;
-import org.iplass.mtp.impl.auth.AuthService;
 import org.iplass.mtp.impl.auth.UserContext;
-import org.iplass.mtp.spi.ServiceRegistry;
 
 public class CallableInput<V> implements Serializable {
 
@@ -35,12 +32,14 @@ public class CallableInput<V> implements Serializable {
 	private final Callable<V> actual;
 	private final UserContext userContext;
 	private final boolean privilaged;
+	private final String traceId;
 
-	public CallableInput(Callable<V> actual, UserContext userContext, boolean privilaged) {
+	public CallableInput(Callable<V> actual, UserContext userContext, boolean privilaged, String traceId) {
 		super();
 		this.actual = actual;
 		this.userContext = userContext;
 		this.privilaged = privilaged;
+		this.traceId = traceId;
 	}
 	
 	public Callable<V> getActual() {
@@ -55,45 +54,13 @@ public class CallableInput<V> implements Serializable {
 		return privilaged;
 	}
 
-	public V callImpl() throws Exception {
-		if (userContext != null) {
-			AuthService as = ServiceRegistry.getRegistry().getService(AuthService.class);
-			try {
-				return as.doSecuredAction(userContext, () -> {
-					if (privilaged) {
-						return AuthContext.doPrivileged(() -> {
-							try { 
-								return actual.call();
-							} catch (Exception e) {
-								throw new WrapException(e);
-							}
-						});
-					} else {
-						try { 
-							return actual.call();
-						} catch (Exception e) {
-							throw new WrapException(e);
-						}
-					}
-				});
-			} catch (WrapException e) {
-				throw (Exception) e.getCause();
-			}
-		} else {
-			return actual.call();
-		}
+	public String getTraceId() {
+		return traceId;
 	}
-	
+
 	@Override
 	public String toString() {
 		return actual.toString();
-	}
-
-	private static class WrapException extends RuntimeException {
-		private static final long serialVersionUID = -7618439229960105705L;
-		public WrapException(Throwable cause) {
-			super(cause);
-		}
 	}
 
 }

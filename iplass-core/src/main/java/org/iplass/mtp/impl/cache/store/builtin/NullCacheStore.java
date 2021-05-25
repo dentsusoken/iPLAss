@@ -119,6 +119,11 @@ public class NullCacheStore implements CacheStore {
 	public List<CacheEntry> removeByIndex(int indexKey, Object indexValue) {
 		return Collections.emptyList();
 	}
+	
+	@Override
+	public int getSize() {
+		return 0;
+	}
 
 	@Override
 	public String trace() {
