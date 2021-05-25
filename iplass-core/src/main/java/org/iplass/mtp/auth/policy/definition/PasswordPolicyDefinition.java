@@ -52,6 +52,8 @@ public class PasswordPolicyDefinition implements Serializable {
 	private List<LocalizedStringDefinition> localizedPasswordPatternErrorMessageList;
 	/** 過去入力したパスワードを覚えておく個数。履歴に残っているパスワードは設定できない。厳密に言うと、パスワードのハッシュを記録するので、異なるパスワードでも衝突の可能性はある。 */
 	private int passwordHistoryCount;
+	/** 過去入力したパスワードを覚えておく期間（日）。履歴に残っているパスワードは設定できない。厳密に言うと、パスワードのハッシュを記録するので、異なるパスワードでも衝突の可能性はある。 */
+	private int passwordHistoryPeriod;
 
 	//アカウント作成の際、初期パスワードを指定可能とするか
 	private boolean createAccountWithSpecificPassword;
@@ -198,6 +200,24 @@ public class PasswordPolicyDefinition implements Serializable {
 	 */
 	public void setPasswordHistoryCount(int passwordHistoryCount) {
 		this.passwordHistoryCount = passwordHistoryCount;
+	}
+	
+	/**
+	 * 過去入力したパスワードを覚えておく期間（日）。
+	 * 履歴に残っているパスワードは設定できない。
+	 * （厳密に言うと、パスワードのハッシュを記録するので、異なるパスワードでも衝突の可能性はある。）
+	 * @return
+	 */
+	public int getPasswordHistoryPeriod() {
+		return passwordHistoryPeriod;
+	}
+
+	/**
+	 * @see #getPasswordHistoryPeriod()
+	 * @param passwordHistoryPeriod
+	 */
+	public void setPasswordHistoryPeriod(int passwordHistoryPeriod) {
+		this.passwordHistoryPeriod = passwordHistoryPeriod;
 	}
 
 	/**
