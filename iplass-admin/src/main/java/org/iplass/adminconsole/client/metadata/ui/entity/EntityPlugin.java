@@ -32,6 +32,7 @@ import org.iplass.adminconsole.client.base.ui.layout.AdminMenuTreeNode;
 import org.iplass.adminconsole.client.metadata.ui.DefaultMetaDataPlugin;
 import org.iplass.adminconsole.client.metadata.ui.MetaDataItemMenuTreeNode;
 import org.iplass.adminconsole.client.metadata.ui.MetaDataMainEditPane;
+import org.iplass.adminconsole.client.metadata.ui.common.MetaDataRenameDialog;
 import org.iplass.adminconsole.client.metadata.ui.entity.filter.FilterEditPanel;
 import org.iplass.adminconsole.client.metadata.ui.entity.layout.BulkLayoutPanel;
 import org.iplass.adminconsole.client.metadata.ui.entity.layout.DetailLayoutPanel;
@@ -53,6 +54,7 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.smartgwt.client.util.SC;
 import com.smartgwt.client.widgets.Canvas;
+import com.smartgwt.client.widgets.form.validator.RegExpValidator;
 import com.smartgwt.client.widgets.menu.Menu;
 import com.smartgwt.client.widgets.menu.MenuItem;
 import com.smartgwt.client.widgets.menu.events.ClickHandler;
@@ -295,8 +297,32 @@ public class EntityPlugin extends DefaultMetaDataPlugin {
 			owner.setContextMenu(itemContextMenu);
 		}
 	}
+	
+	/**
+	 * 名前変更ダイアログを表示します。
+	 *
+	 * @param itemNode 選択Node
+	 */
+	@Override
+	protected void openRenameDialog(MetaDataItemMenuTreeNode itemNode) {
+		final MetaDataRenameDialog dialog = new MetaDataRenameDialog(definitionClassName(), nodeDisplayName(), itemNode.getDefName(), isPathSlash(), isNameAcceptPeriod());
+		
+		//名前のPolicyをカスタマイズ
+		RegExpValidator nameRegExpValidator = new RegExpValidator();
+		nameRegExpValidator.setExpression(MetaDataConstants.ENTITY_NAME_REG_EXP_PATH_PERIOD);
+		nameRegExpValidator.setErrorMessage(AdminClientMessageUtil.getString("ui_metadata_entity_CreateEntityDialog_nameErr"));
+		dialog.setCustomNameValidator(nameRegExpValidator);
+		
+		dialog.addDataChangeHandler(new DataChangedHandler() {
 
-
+			@Override
+			public void onDataChanged(DataChangedEvent event) {
+				refreshWithSelect(event.getValueName(), null);
+			}
+		});
+		dialog.show();
+	}
+	
 	/**
 	 * <p>（カスタマイズ）EntityDefinition.SYSTEM_DEFAULT_DEFINITION_NAMEを除去します。</p>
 	 *
