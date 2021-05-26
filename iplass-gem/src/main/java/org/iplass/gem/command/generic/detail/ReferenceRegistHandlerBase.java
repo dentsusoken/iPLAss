@@ -53,7 +53,8 @@ public abstract class ReferenceRegistHandlerBase implements ReferenceRegistHandl
 
 	protected EntityDefinitionManager edm = ManagerLocator.getInstance().getManager(EntityDefinitionManager.class);
 	protected EntityManager em = ManagerLocator.getInstance().getManager(EntityManager.class);
-
+	protected ReferenceRegistOption registOption;
+	
 	private boolean forceUpdate;
 
 	/**
@@ -232,6 +233,40 @@ public abstract class ReferenceRegistHandlerBase implements ReferenceRegistHandl
 			//参照が多重でなければnull設定
 			refEntity.setValue(mappedBy, null);
 		}
+	}
+	
+
+	/**
+	 * 更新オプションを適用して、更新対象プロパティを設定
+	 * @param updateProperties
+	 * @param nestProperties
+	 * @param ed
+	 */
+	protected void getUpdatePropertiesWithOption(List<String> updateProperties, List<NestProperty> nestProperties,
+			EntityDefinition ed) {
+		
+		// isSpecifyAllPropertiesがfalseの場合
+		if (!registOption.isSpecifyAllProperties()) {
+			// 標準の更新項目を追加
+			updateProperties.addAll(getUpdateProperties(nestProperties, ed));
+			// 指定されているプロパティを更新項目に追加。
+			for (String prop : registOption.getSpecifiedUpdateNestProperties()) {
+				if (!updateProperties.contains(prop)) {
+					updateProperties.add(prop);
+				}
+			}
+			return;
+		}
+
+		// Reference項目として更新可能且つ、NestされたEntityの個々のプロパティ指定がない場合
+		// 既存の参照先Entityは標準の更新項目を更新可能
+		if (registOption.isSpecifiedAsReference() && registOption.getSpecifiedUpdateNestProperties().isEmpty()) {
+			updateProperties.addAll(getUpdateProperties(nestProperties, ed));
+			return;
+		}
+
+		// その他のパターンでは、既存のEntityは指定されたプロパティのみ更新可能。
+		updateProperties.addAll(registOption.getSpecifiedUpdateNestProperties());
 	}
 
 	/**

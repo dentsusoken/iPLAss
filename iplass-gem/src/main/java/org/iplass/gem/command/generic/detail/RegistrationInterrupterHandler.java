@@ -27,6 +27,7 @@ import java.util.List;
 import org.iplass.mtp.command.RequestContext;
 import org.iplass.mtp.entity.Entity;
 import org.iplass.mtp.entity.ValidateError;
+import org.iplass.mtp.entity.definition.EntityDefinition;
 import org.iplass.mtp.entity.definition.PropertyDefinition;
 import org.iplass.mtp.view.generic.RegistrationInterrupter;
 import org.iplass.mtp.view.generic.RegistrationInterrupter.RegistrationType;
@@ -34,6 +35,7 @@ import org.iplass.mtp.view.generic.RegistrationInterrupter.RegistrationType;
 /**
  * カスタム登録処理ハンドラ
  * @author lis3wg
+ * @author Y.Ishida
  */
 public class RegistrationInterrupterHandler {
 	/** リクエスト */
@@ -109,5 +111,34 @@ public class RegistrationInterrupterHandler {
 				entity, request, context.getEntityDefinition(), context.getView(), registType);
 		if (ret == null) ret = Collections.emptyList();
 		return ret;
+	}
+	
+	/**
+	 * NestTableの更新オプションを取得します。
+	 * @param ed              Entity定義
+	 * @param refPropertyName 参照プロパティ名
+	 * @return NestTableの更新オプション
+	 */
+	public ReferenceRegistOption getNestTableRegistOption(EntityDefinition ed, String refPropertyName) {
+		ReferenceRegistOption option = new ReferenceRegistOption();
+
+		option.setSpecifyAllProperties(interrupter.isSpecifyAllProperties());
+
+		// 更新対象のプロパティが指定された場合	
+		if (interrupter.getAdditionalProperties() != null && interrupter.getAdditionalProperties().length > 0) {
+			for (String addtionalProperty : interrupter.getAdditionalProperties()) {
+				if (addtionalProperty.equals(refPropertyName)) {
+					option.setSpecifiedAsReference(true);
+				} else if (addtionalProperty.startsWith(refPropertyName + ".")) {
+					String refEntityProp = addtionalProperty.substring(addtionalProperty.indexOf(".") + 1);
+					PropertyDefinition pd = ed.getProperty(refEntityProp);
+					if (pd != null && pd.isUpdatable()) {
+						option.getSpecifiedUpdateNestProperties().add(refEntityProp);
+					}
+				}
+			}
+		}
+		
+		return option;
 	}
 }
