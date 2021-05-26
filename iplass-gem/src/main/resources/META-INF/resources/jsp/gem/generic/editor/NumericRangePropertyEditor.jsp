@@ -26,11 +26,8 @@
 <%@ page import="org.iplass.mtp.util.StringUtil"%>
 <%@ page import="org.iplass.mtp.view.generic.EntityViewUtil" %>
 <%@ page import="org.iplass.mtp.view.generic.ViewConst"%>
-<%@ page import="org.iplass.mtp.view.generic.editor.FloatPropertyEditor"%>
-<%@ page import="org.iplass.mtp.view.generic.editor.IntegerPropertyEditor"%>
-<%@ page import="org.iplass.mtp.view.generic.editor.DecimalPropertyEditor"%>
-<%@ page import="org.iplass.mtp.view.generic.editor.NumericRangePropertyEditor" %>
 <%@ page import="org.iplass.mtp.view.generic.editor.NumberPropertyEditor" %>
+<%@ page import="org.iplass.mtp.view.generic.editor.NumericRangePropertyEditor" %>
 <%@ page import="org.iplass.mtp.view.generic.editor.PropertyEditor" %>
 <%@ page import="org.iplass.mtp.view.generic.OutputType"%>
 <%@ page import="org.iplass.mtp.web.template.TemplateUtil"%>
@@ -64,22 +61,15 @@
 
 	String key = "numericrange_" + fromName;
 	PropertyEditor fromEditor = editor.getEditor();
-	NumberPropertyEditor numFromEditor = (NumberPropertyEditor) fromEditor;
 	String path = EntityViewUtil.getJspPath(fromEditor, ViewConst.DESIGN_TYPE_GEM);
 
 	// from
 	fromEditor.setPropertyName(prefix + fromName);
 	request.setAttribute(Constants.EDITOR_EDITOR, fromEditor);
-	numFromEditor.setHideSearchConditionNumeicRangeFrom(false);
-	numFromEditor.setHideSearchConditionNumeicRangeTo(true);
 	String fromKey = fromEditor.getPropertyName().replaceAll("\\.", "_");
 
-	//範囲での検索時の表示をtrueにする
 	if (OutputType.SEARCHCONDITION == type) {
-		numFromEditor.setSearchInRange(true);
-		if (editor.getToEditor() != null) {
-			((NumberPropertyEditor) editor.getToEditor()).setSearchInRange(true);
-		}
+		((NumberPropertyEditor) editor.getEditor()).setSearchInRange(false);
 	}
 
 %>
@@ -88,17 +78,14 @@
 </span>
 <%
 	// to
-	if (StringUtil.isNotBlank(editor.getToPropertyName())) {
+	if (StringUtil.isNotBlank(editor.getToPropertyName()) && OutputType.SEARCHCONDITION != type) {
 		// toがnullになるのは存在しないプロパティ名を指定or削除された場合等
 		Object toPropValue = ( entity != null ) ? entity.getValue(editor.getToPropertyName()) : null;
 		// toのEditorが未指定の場合はfromと同じ設定に
 		PropertyEditor toEditor = editor.getToEditor() != null ? editor.getToEditor() : editor.getEditor();
-		NumberPropertyEditor numToEditor = (NumberPropertyEditor) toEditor;
 		toEditor.setPropertyName(prefix + editor.getToPropertyName());
 		PropertyDefinition toPd = _ed.getProperty(editor.getToPropertyName());
 
-		numToEditor.setHideSearchConditionNumeicRangeFrom(true);
-		numToEditor.setHideSearchConditionNumeicRangeTo(false);
 		request.setAttribute(Constants.EDITOR_EDITOR, toEditor);
 		request.setAttribute(Constants.EDITOR_PROP_VALUE, toPropValue);
 		request.setAttribute(Constants.EDITOR_PROPERTY_DEFINITION, toPd);

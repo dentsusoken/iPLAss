@@ -284,7 +284,7 @@
 		<property name="registrationIdHandler" class="org.iplass.mtp.impl.pushnotification.fcm.LoggingRegistrationIdHandler" />
 		 -->
 	</service>
-	
+
 	<!-- Webhook -->
 	<service>
 		<interface>org.iplass.mtp.impl.webhook.WebhookService</interface>
@@ -307,7 +307,7 @@
 		<interface>org.iplass.mtp.impl.webhook.endpoint.WebhookEndpointService</interface>
 		<class>org.iplass.mtp.impl.webhook.endpoint.WebhookEndpointServiceImpl</class>
 	</service>
-		
+
 	<!-- Tenant関連 -->
 	<service>
 		<interface>org.iplass.mtp.impl.core.TenantContextService</interface>
@@ -583,7 +583,7 @@
 			<property name="proxyPort" value="8080" />
 			-->
 		</property>
-		
+
 		<!-- for use JGroups -->
 		<!--
 		<property name="messageChannel" class="org.iplass.mtp.impl.cluster.channel.jgroups.JGroupsMessageChannel">
@@ -604,7 +604,7 @@
 		<interface>org.iplass.mtp.impl.fulltextsearch.FulltextSearchService</interface>
 		<depend>org.iplass.mtp.impl.rdb.adapter.RdbAdapterService</depend>
 
-		<property name="useFulltextSearch" value="false" />
+		<property name="useFulltextSearch" value="true" />
 		<property name="maxRows" value="1000" />
 		<property name="highlightPreTag" value="&lt;b style=&quot;background:aquamarine&quot;&gt;" />
 		<property name="highlightPostTag" value="&lt;/b&gt;" />
@@ -617,7 +617,7 @@
 		 -->
 
 		<!-- lucene利用 -->
-		<class>org.iplass.mtp.impl.fulltextsearch.FulltextSearchLuceneService</class>
+		<class>org.iplass.mtp.impl.fulltextsearch.lucene.LuceneFulltextSearchService</class>
 		<property name="directory" value="D:\tmp\lucene" />
 		<property name="defaultOperator" value="AND" />
 		<property name="analyzer" value="org.apache.lucene.analysis.ja.JapaneseAnalyzer" />
@@ -821,7 +821,7 @@
 				<property name="size" value="10000" />
 			</property>
 		</property>
-		
+
 		<!-- CacheOnlyAuthTokenStore キャッシュ -->
 		<!-- TODO 本番利用時はRedisCacheStoreFactoryなど利用するように設定変更が必要 -->
 		<property name="cacheOnlyAuthTokenStore" class="org.iplass.mtp.impl.cache.store.builtin.SimpleCacheStoreFactory">

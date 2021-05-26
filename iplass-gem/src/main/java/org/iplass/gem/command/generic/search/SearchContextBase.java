@@ -69,6 +69,7 @@ import org.iplass.mtp.view.generic.SearchFormViewHandler;
 import org.iplass.mtp.view.generic.SearchQueryContext;
 import org.iplass.mtp.view.generic.SearchQueryInterrupter;
 import org.iplass.mtp.view.generic.SearchQueryInterrupter.SearchQueryType;
+import org.iplass.mtp.view.generic.editor.DateRangePropertyEditor;
 import org.iplass.mtp.view.generic.editor.JoinPropertyEditor;
 import org.iplass.mtp.view.generic.editor.NestProperty;
 import org.iplass.mtp.view.generic.editor.NumberPropertyEditor;
@@ -321,14 +322,14 @@ public abstract class SearchContextBase implements SearchContext, CreateSearchRe
 				//範囲系の場合FromとToを分離しておく
 				RangePropertyEditor editor = (RangePropertyEditor) property.getEditor();
 				if (editor instanceof NumericRangePropertyEditor) {
-					((NumberPropertyEditor) editor.getEditor()).setSearchInRange(true);
 					if (((NumberPropertyEditor) editor.getToEditor() == null)) {
 						((NumericRangePropertyEditor) editor).setToEditor(editor.getEditor());
 					}
-					((NumberPropertyEditor) editor.getToEditor()).setSearchInRange(true);
 				}
 				PropertyItem from = ObjectUtil.deepCopy(property);
-				from.setEditor(editor.getEditor());
+				if (editor instanceof DateRangePropertyEditor) {
+					from.setEditor(editor.getEditor());
+				}
 				properties.add(from);
 
 				//参照の項目を直接D&Dしてる場合にToにつけるプレフィックスを取得
@@ -340,7 +341,9 @@ public abstract class SearchContextBase implements SearchContext, CreateSearchRe
 
 				PropertyItem to = ObjectUtil.deepCopy(property);
 				to.setPropertyName(prefix + editor.getToPropertyName());
-				to.setEditor(editor.getToEditor() != null ? editor.getToEditor() : editor.getEditor());
+				if (editor instanceof DateRangePropertyEditor) {
+					to.setEditor(editor.getToEditor() != null ? editor.getToEditor() : editor.getEditor());
+				}
 				properties.add(to);
 			} else {
 				properties.add(property);

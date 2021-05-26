@@ -72,12 +72,6 @@ public abstract class MetaNumberPropertyEditor extends MetaPrimitivePropertyEdit
 
 	/** 範囲で検索するか */
 	protected boolean searchInRange;
-	
-	/** 検索条件From非表示設定(NumeicRangePropertyEditor) */
-	private boolean hideSearchConditionNumeicRangeFrom;
-
-	/** 検索条件To非表示設定(NumeicRangePropertyEditor) */
-	private boolean hideSearchConditionNumeicRangeTo;
 
 	/** 最大文字数 */
 	protected int maxlength;
@@ -147,38 +141,6 @@ public abstract class MetaNumberPropertyEditor extends MetaPrimitivePropertyEdit
 	}
 
 	/**
-	 * 検索条件From非表示設定を取得します。
-	 * @return 検索条件From非表示設定
-	 */
-	public boolean isHideSearchConditionNumeicRangeFrom() {
-	    return hideSearchConditionNumeicRangeFrom;
-	}
-
-	/**
-	 * 検索条件From非表示設定を設定します。
-	 * @param hideSearchConditionFrom 検索条件From非表示設定
-	 */
-	public void setHideSearchConditionNumeicRangeFrom(boolean hideSearchConditionNumeicRangeFrom) {
-	    this.hideSearchConditionNumeicRangeFrom = hideSearchConditionNumeicRangeFrom;
-	}
-
-	/**
-	 * 検索条件To非表示設定を取得します。
-	 * @return 検索条件To非表示設定
-	 */
-	public boolean isHideSearchConditionNumeicRangeTo() {
-	    return hideSearchConditionNumeicRangeTo;
-	}
-
-	/**
-	 * 検索条件To非表示設定を設定します。
-	 * @param hideSearchConditionTo 検索条件To非表示設定
-	 */
-	public void setHideSearchConditionNumeicRangeTo(boolean hideSearchConditionTo) {
-	    this.hideSearchConditionNumeicRangeTo = hideSearchConditionTo;
-	}
-
-	/**
 	 * 最大文字数を取得します。
 	 * @return 最大文字数
 	 */
@@ -203,8 +165,6 @@ public abstract class MetaNumberPropertyEditor extends MetaPrimitivePropertyEdit
 		numberFormat = pe.getNumberFormat();
 		showComma = pe.isShowComma();
 		searchInRange = pe.isSearchInRange();
-		hideSearchConditionNumeicRangeFrom = pe.isHideSearchConditionNumeicRangeFrom();
-		hideSearchConditionNumeicRangeTo = pe.isHideSearchConditionNumeicRangeTo();
 		maxlength = pe.getMaxlength();
 	}
 
@@ -217,8 +177,6 @@ public abstract class MetaNumberPropertyEditor extends MetaPrimitivePropertyEdit
 		pe.setNumberFormat(numberFormat);
 		pe.setShowComma(showComma);
 		pe.setSearchInRange(searchInRange);
-		pe.setHideSearchConditionNumeicRangeFrom(hideSearchConditionNumeicRangeFrom);
-		pe.setHideSearchConditionNumeicRangeTo(hideSearchConditionNumeicRangeTo);
 		pe.setMaxlength(maxlength);
 	}
 

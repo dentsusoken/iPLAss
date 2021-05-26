@@ -152,50 +152,44 @@
 			}
 		}
 		Map<String, List<String>> searchCondMap = (Map<String, List<String>>)request.getAttribute(Constants.SEARCH_COND_MAP);
-		if (!editor.isHideSearchConditionNumeicRangeFrom()) {
-			if (editor.getDisplayType() == NumberDisplayType.LABEL) {
-				String[] _strDefault = ViewUtil.getSearchCondValue(searchCondMap,  Constants.SEARCH_COND_PREFIX + editor.getPropertyName());
-				strDefault = _strDefault != null && _strDefault.length > 0 ? _strDefault[0] : strDefault;
-				String str = format(strDefault, editor);
+		if (editor.getDisplayType() == NumberDisplayType.LABEL) {
+			String[] _strDefault = ViewUtil.getSearchCondValue(searchCondMap,  Constants.SEARCH_COND_PREFIX + editor.getPropertyName());
+			strDefault = _strDefault != null && _strDefault.length > 0 ? _strDefault[0] : strDefault;
+			String str = format(strDefault, editor);
 %>
 <span  style="<c:out value="<%=customStyle%>"/>">
 <c:out value="<%=str %>"/>
 <input data-norewrite="true" type="hidden" name="<c:out value="<%=propName %>"/>" value="<c:out value="<%=strDefault %>"/>" />
 </span>
 <%
-			} else {
+		} else {
 %>
 <input type="text" class="form-size-04 inpbr" style="<c:out value="<%=customStyle%>"/>" value="<%=value %>" name="<c:out value="<%=propName %>"/>" onblur="numcheck(this)" />
 <%
-			}
 		}
-
 		String strDefaultTo = "";
 		if (editor.isSearchInRange()) {
-			if (!editor.isHideSearchConditionNumeicRangeTo()) {
-				if (defaultValue != null && defaultValue.length > 1) {
-					strDefaultTo = convertNumber(defaultValue[1], editor);
-				}
-				if (!editor.isHideSearchConditionNumeicRangeFrom() && !editor.isHideSearchConditionNumeicRangeTo()) {
+
+			if (defaultValue != null && defaultValue.length > 1) {
+				strDefaultTo = convertNumber(defaultValue[1], editor);
+			}
 %>
 &nbsp;～&nbsp;
 <%
-				}
-				if (editor.getDisplayType() == NumberDisplayType.LABEL) {
-					String[] _strDefaultTo = ViewUtil.getSearchCondValue(searchCondMap,  Constants.SEARCH_COND_PREFIX + editor.getPropertyName() + "To");
-					strDefaultTo = _strDefaultTo != null && _strDefaultTo.length > 0 ? _strDefaultTo[0] : strDefaultTo;
-					String strTo = format(strDefaultTo, editor);
+			if (editor.getDisplayType() == NumberDisplayType.LABEL) {
+				String[] _strDefaultTo = ViewUtil.getSearchCondValue(searchCondMap,  Constants.SEARCH_COND_PREFIX + editor.getPropertyName() + "To");
+				strDefaultTo = _strDefaultTo != null && _strDefaultTo.length > 0 ? _strDefaultTo[0] : strDefaultTo;
+				String strTo = format(strDefaultTo, editor);
 %>
 <span  style="<c:out value="<%=customStyle%>"/>">
 <c:out value="<%=strTo %>"/>
 <input data-norewrite="true" type="hidden" name="<c:out value="<%=propName %>"/>To" value="<c:out value="<%=strDefaultTo %>"/>" />
 </span>
 <%
-				} else {
+			} else {
 %>
 <input type="text" class="form-size-04 inpbr" style="<c:out value="<%=customStyle%>"/>" value="<%=valueTo %>" name="<c:out value="<%=propName %>"/>To" onblur="numcheck(this)" />
 <%
-				}
 			}
 		}
 %>
