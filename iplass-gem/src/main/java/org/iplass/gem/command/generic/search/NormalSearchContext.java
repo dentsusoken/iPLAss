@@ -60,7 +60,6 @@ import org.iplass.mtp.util.StringUtil;
 import org.iplass.mtp.view.generic.EntityViewUtil;
 import org.iplass.mtp.view.generic.OutputType;
 import org.iplass.mtp.view.generic.editor.NestProperty;
-import org.iplass.mtp.view.generic.editor.RangePropertyEditor;
 import org.iplass.mtp.view.generic.editor.ReferenceComboSetting;
 import org.iplass.mtp.view.generic.editor.ReferencePropertyEditor;
 import org.iplass.mtp.view.generic.editor.ReferencePropertyEditor.RefComboSearchType;
@@ -603,15 +602,6 @@ public class NormalSearchContext extends SearchContextBase {
 				if (value != null) {
 					if (nest == null) nest = new GenericEntity(rp.getObjectDefinitionName());
 					nest.setValue(pd.getName(), value);
-				}
-				if (np.getEditor() instanceof RangePropertyEditor) {
-					RangePropertyEditor rangep = (RangePropertyEditor) np.getEditor();
-					pd = ed.getProperty(rangep.getToPropertyName());
-					value = getConditionValue(pd, propName + "." + pd.getName());
-					if (value != null) {
-						if (nest == null) nest = new GenericEntity(rp.getObjectDefinitionName());
-						nest.setValue(pd.getName(), value);
-					}
 				}
 			}
 			if (nest != null) {

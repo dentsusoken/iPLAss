@@ -31,18 +31,40 @@ import org.iplass.mtp.entity.query.condition.predicate.LesserEqual;
 import org.iplass.mtp.view.generic.editor.NumericRangePropertyEditor;
 import org.iplass.mtp.view.generic.editor.PropertyEditor;
 
+/**
+ * 数値範囲型の検索条件
+ * @author ICOM Shojima
+ */
+
 public class NumericRangePropertySearchCondition extends PropertySearchCondition {
 
+	/**
+	 * コンストラクタ
+	 * @param definition プロパティ定義
+	 * @param editor プロパティエディタ
+	 * @param value 検索用の値
+	 */
 	public NumericRangePropertySearchCondition(PropertyDefinition definition,
 			PropertyEditor editor, Object value) {
 		super(definition, editor, value);
 	}
 
+	/**
+	 * コンストラクタ
+	 * @param definition プロパティ定義
+	 * @param editor プロパティエディタ
+	 * @param value 検索用の値
+	 * @param parent 親ノード
+	 */
 	public NumericRangePropertySearchCondition(PropertyDefinition definition,
 			PropertyEditor editor, Object value, String parent) {
 		super(definition, editor, value, parent);
 	}
 
+	/**
+	 * 数値範囲型の検索条件設定
+	 * @return conditions 検索条件
+	 */
 	@Override
 	public List<Condition> convertNormalCondition() {
 		List<Condition> conditions = new ArrayList<Condition>();

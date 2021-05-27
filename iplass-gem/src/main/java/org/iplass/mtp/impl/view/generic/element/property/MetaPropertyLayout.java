@@ -241,7 +241,7 @@ public abstract class MetaPropertyLayout extends MetaElement implements HasEntit
 				((DateRangePropertyEditor) pe).setObjectName(entity.getMetaData().getName());
 		} else if (pe instanceof NumericRangePropertyEditor) {
 			((NumericRangePropertyEditor) pe).setObjectName(entity.getMetaData().getName());
-	} else if (pe instanceof ReferencePropertyEditor) {
+		} else if (pe instanceof ReferencePropertyEditor) {
 			ReferencePropertyEditor rpe = (ReferencePropertyEditor)pe;
 			//参照Entity情報を取得してEditorにEntity名をセット
 			PropertyHandler handler = getHandler(propName, context, entity);
@@ -251,8 +251,6 @@ public abstract class MetaPropertyLayout extends MetaElement implements HasEntit
 			}
 			//Editorに参照元Entity名をセット
 			rpe.setReferenceFromObjectName(entity.getMetaData().getName());
-		} else if (pe instanceof NumericRangePropertyEditor) {
-			((NumericRangePropertyEditor) pe).setObjectName(entity.getMetaData().getName());
 		}
 	}
 

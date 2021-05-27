@@ -48,8 +48,6 @@ import org.iplass.mtp.entity.query.condition.predicate.Like;
 import org.iplass.mtp.entity.query.condition.predicate.NotEquals;
 import org.iplass.mtp.util.StringUtil;
 import org.iplass.mtp.view.generic.editor.NestProperty;
-import org.iplass.mtp.view.generic.editor.NumberPropertyEditor;
-import org.iplass.mtp.view.generic.editor.NumericRangePropertyEditor;
 import org.iplass.mtp.view.generic.editor.PropertyEditor;
 import org.iplass.mtp.view.generic.editor.RangePropertyEditor;
 import org.iplass.mtp.view.generic.editor.ReferencePropertyEditor;
@@ -189,29 +187,9 @@ public class ReferencePropertySearchCondition extends PropertySearchCondition {
 					Object _value = nest.getValue(np.getPropertyName());
 					if (_value != null) {
 						PropertyDefinition definition = ed.getProperty(np.getPropertyName());
-						if (np.getEditor() instanceof NumericRangePropertyEditor) {
-							NumericRangePropertyEditor nrp = (NumericRangePropertyEditor) np.getEditor();
-							((NumberPropertyEditor) nrp.getEditor()).setSearchInRange(true);
-						}
 						PropertySearchCondition nestPropertyCondition =
 							PropertySearchCondition.newInstance(definition, np.getEditor(), _value, getPropertyName());
 						conditions.addAll(nestPropertyCondition.convertNormalCondition());
-					}
-					if (np.getEditor() instanceof RangePropertyEditor) {
-						RangePropertyEditor rangep = (RangePropertyEditor) np.getEditor();
-						_value = nest.getValue(rangep.getToPropertyName());
-						if (np.getEditor() instanceof NumericRangePropertyEditor) {
-							if (rangep.getToEditor() == null) {
-								((NumericRangePropertyEditor) rangep).setToEditor(rangep.getEditor());
-							}
-							((NumberPropertyEditor) rangep.getToEditor()).setSearchInRange(true);
-						}
-						if (_value != null) {
-							PropertyDefinition definition = ed.getProperty(rangep.getToPropertyName());
-							PropertySearchCondition nestPropertyCondition =
-								PropertySearchCondition.newInstance(definition, rangep.getToEditor(), _value, getPropertyName());
-							conditions.addAll(nestPropertyCondition.convertNormalCondition());
-						}
 					}
 				}
 			}

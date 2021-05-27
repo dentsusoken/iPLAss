@@ -72,8 +72,6 @@ import org.iplass.mtp.view.generic.SearchQueryInterrupter.SearchQueryType;
 import org.iplass.mtp.view.generic.editor.DateRangePropertyEditor;
 import org.iplass.mtp.view.generic.editor.JoinPropertyEditor;
 import org.iplass.mtp.view.generic.editor.NestProperty;
-import org.iplass.mtp.view.generic.editor.NumberPropertyEditor;
-import org.iplass.mtp.view.generic.editor.NumericRangePropertyEditor;
 import org.iplass.mtp.view.generic.editor.PropertyEditor;
 import org.iplass.mtp.view.generic.editor.RangePropertyEditor;
 import org.iplass.mtp.view.generic.editor.ReferencePropertyEditor;
@@ -321,11 +319,6 @@ public abstract class SearchContextBase implements SearchContext, CreateSearchRe
 			if (property.getEditor() instanceof RangePropertyEditor) {
 				//範囲系の場合FromとToを分離しておく
 				RangePropertyEditor editor = (RangePropertyEditor) property.getEditor();
-				if (editor instanceof NumericRangePropertyEditor) {
-					if (((NumberPropertyEditor) editor.getToEditor() == null)) {
-						((NumericRangePropertyEditor) editor).setToEditor(editor.getEditor());
-					}
-				}
 				PropertyItem from = ObjectUtil.deepCopy(property);
 				if (editor instanceof DateRangePropertyEditor) {
 					from.setEditor(editor.getEditor());

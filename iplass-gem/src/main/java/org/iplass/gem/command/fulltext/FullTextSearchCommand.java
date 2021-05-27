@@ -419,7 +419,7 @@ public final class FullTextSearchCommand implements Command {
 					if (StringUtil.isNotBlank(de.getToPropertyName())) {
 						addSearchProperty(select, ed, de.getToPropertyName(), de.getToEditor());
 					}
-				}  else {
+				} else {
 					addSearchProperty(select, ed, propName, p.getEditor());
 				}
 			}

@@ -104,41 +104,6 @@
 	<jsp:param value="<%=nameKey%>" name="propName" />
 </jsp:include>
 <%
-	if (OutputType.SEARCHCONDITION == type) {
-		String errorMessage = TemplateUtil.getMultilingualString(editor.getErrorMessage(), editor.getLocalizedErrorMessageList());
-		if (errorMessage == null) errorMessage = GemResourceBundleUtil.resourceString("generic.editor.NumericRangePropertyEditor.invalitNumericRange");
-%>
-<script>
-$(function() {
-	<%-- common.js --%>
-	addNormalValidator(function() {
-
-		var fromVal = $(":text[name='" + es("<%=StringUtil.escapeJavaScript(Constants.SEARCH_COND_PREFIX + prefix + fromName)%>") + "']").val();
-		var from = null;
-		if (typeof fromVal !== "undefined" && fromVal != null && fromVal != "") {
-			from = fromVal;
-		}
-
-		var toVal = $(":text[name='" + es("<%=StringUtil.escapeJavaScript(Constants.SEARCH_COND_PREFIX + prefix + editor.getToPropertyName() + "To")%>") + "']").val();
-		var to = null;
-		if (typeof toVal !== "undefined" && toVal != null && toVal != "") {
-			to = toVal;
-		}
-
-		if (from != null && to != null) {
-			var fromNum = Number(from);
-			var toNum = Number(to);
-			if(fromNum > toNum){
-				alert("<%=StringUtil.escapeJavaScript(errorMessage)%>");
-				return false;
-			}
-		}
-		return true;
-	});
-});
-</script>
-<%
-	}
 	request.setAttribute(Constants.ENTITY_DEFINITION, ed);
 
 	request.removeAttribute(Constants.EDITOR_EDITOR);
