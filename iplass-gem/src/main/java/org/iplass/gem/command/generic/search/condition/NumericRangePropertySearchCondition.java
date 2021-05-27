@@ -20,7 +20,6 @@
 
 package org.iplass.gem.command.generic.search.condition;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -72,13 +71,7 @@ public class NumericRangePropertySearchCondition extends PropertySearchCondition
 			//From-To検索
 			Object val = null;
 			if (obl.length > 0 && obl[0] != null) {
-				if (obl[0] instanceof Double) {
-					val = (Double) obl[0];
-				} else if (obl[0] instanceof Long) {
-					val = (Long) obl[0];
-				} else if (obl[0] instanceof BigDecimal) {
-					val = (BigDecimal) obl[0];
-				}
+				val = (Object) obl[0];
 			}
 			if (val != null) {
 				conditions.add(new LesserEqual(getPropertyName(), val));
