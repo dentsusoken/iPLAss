@@ -24,6 +24,8 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlEnumValue;
 
+import org.iplass.adminconsole.view.annotation.InputType;
+import org.iplass.adminconsole.view.annotation.MetaFieldInfo;
 import org.iplass.mtp.view.generic.Jsp;
 import org.iplass.mtp.view.generic.Jsps;
 import org.iplass.mtp.view.generic.ViewConst;
@@ -43,11 +45,41 @@ public class UserPropertyEditor extends CustomPropertyEditor {
 
 	/** 表示タイプ */
 	public enum UserDisplayType {
-		@XmlEnumValue("Label")LABEL
+		@XmlEnumValue("Label")LABEL,
+		@XmlEnumValue("Hidden")HIDDEN
 	}
+
+	@MetaFieldInfo(
+			displayName="表示タイプ",
+			displayNameKey="generic_editor_UserPropertyEditor_displayTypeDisplaNameKey",
+			inputType=InputType.ENUM,
+			enumClass=UserDisplayType.class,
+			required=true,
+			displayOrder=100,
+			description="画面に表示する方法を選択します。",
+			descriptionKey="generic_editor_UserPropertyEditor_displayTypeDescriptionKey"
+	)
+	private UserDisplayType displayType;
 
 	@Override
 	public UserDisplayType getDisplayType() {
-		return UserDisplayType.LABEL;
+		if (displayType == null) {
+			displayType = UserDisplayType.LABEL;
+		}
+		return displayType;
 	}
+
+	/**
+	 * 表示タイプを設定します。
+	 * @param displayType
+	 */
+	public void setDisplayType(UserDisplayType displayType) {
+		this.displayType = displayType;
+	}
+
+	@Override
+	public boolean isHide() {
+		return displayType == UserDisplayType.HIDDEN;
+	}
+
 }

@@ -1986,6 +1986,8 @@ LocaleInfo.generic_editor_TimestampPropertyEditor_useDatetimePickerDisplaNameKey
 LocaleInfo.generic_editor_TimestampPropertyEditor_useDatetimePickerDescriptionKey = "Use DatetimePicker when entering.";
 LocaleInfo.generic_editor_TimestampPropertyEditor_showWeekdayDisplaNameKey="Show weekday";
 LocaleInfo.generic_editor_TimestampPropertyEditor_showWeekdayDescriptionKey="Show weekday.";
+LocaleInfo.generic_editor_UserPropertyEditor_displayTypeDisplaNameKey = "Display Type";
+LocaleInfo.generic_editor_UserPropertyEditor_displayTypeDescriptionKey = "Select how to display on the screen.";
 LocaleInfo.generic_element_Button_displayTypeDisplaNameKey = "Display Type";
 LocaleInfo.generic_element_Button_displayTypeDescriptionKey = "Set whether to display either advanced editing or viewing details.";
 LocaleInfo.generic_element_Button_titleDisplaNameKey = "Title";

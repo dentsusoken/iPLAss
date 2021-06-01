@@ -31,27 +31,55 @@ import org.iplass.mtp.impl.view.generic.FormViewRuntime;
 import org.iplass.mtp.impl.view.generic.element.property.MetaPropertyLayout;
 import org.iplass.mtp.view.generic.editor.PropertyEditor;
 import org.iplass.mtp.view.generic.editor.UserPropertyEditor;
+import org.iplass.mtp.view.generic.editor.UserPropertyEditor.UserDisplayType;
 
 public class MetaUserPropertyEditor extends MetaCustomPropertyEditor {
 
 	/** SerialVersionUID */
 	private static final long serialVersionUID = -3636767642233881066L;
 
+	/** 表示タイプ */
+	private UserDisplayType displayType;
+
 	public static MetaUserPropertyEditor createInstance(PropertyEditor editor) {
 		return new MetaUserPropertyEditor();
 	}
 
+	/**
+	 * 表示タイプを取得します。
+	 * @return 表示タイプ
+	 */
+	public UserDisplayType getDisplayType() {
+	    return displayType;
+	}
+
+	/**
+	 * 表示タイプを設定します。
+	 * @param displayType 表示タイプ
+	 */
+	public void setDisplayType(UserDisplayType displayType) {
+	    this.displayType = displayType;
+	}
+
 	@Override
-	public void applyConfig(PropertyEditor _editor) {
-		super.fillFrom(_editor);
+	public void applyConfig(PropertyEditor editor) {
+		super.fillFrom(editor);
+
+		UserPropertyEditor upe = (UserPropertyEditor) editor;
+		displayType = upe.getDisplayType();
 	}
 
 	@Override
 	public PropertyEditor currentConfig(String propertyName) {
-		UserPropertyEditor _editor = new UserPropertyEditor();
-		super.fillTo(_editor);
+		UserPropertyEditor editor = new UserPropertyEditor();
+		super.fillTo(editor);
 
-		return _editor;
+		if (displayType == null) {
+			editor.setDisplayType(UserDisplayType.LABEL);
+		} else {
+			editor.setDisplayType(displayType);
+		}
+		return editor;
 	}
 
 	@Override
