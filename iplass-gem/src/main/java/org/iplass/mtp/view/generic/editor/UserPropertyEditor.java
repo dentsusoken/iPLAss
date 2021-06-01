@@ -43,11 +43,11 @@ public class UserPropertyEditor extends CustomPropertyEditor {
 
 	/** 表示タイプ */
 	public enum UserDisplayType {
-		@XmlEnumValue("User")USER
+		@XmlEnumValue("Label")LABEL
 	}
 
 	@Override
 	public UserDisplayType getDisplayType() {
-		return UserDisplayType.USER;
+		return UserDisplayType.LABEL;
 	}
 }
