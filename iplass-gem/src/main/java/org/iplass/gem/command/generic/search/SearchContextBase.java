@@ -169,9 +169,9 @@ public abstract class SearchContextBase implements SearchContext, CreateSearchRe
 					}
 				} else if (p.getEditor() instanceof RangePropertyEditor) {
 					addSearchProperty(select, propName);
-					RangePropertyEditor de = (RangePropertyEditor) p.getEditor();
-					if (StringUtil.isNotBlank(de.getToPropertyName())) {
-						addSearchProperty(select, de.getToPropertyName());
+					RangePropertyEditor re = (RangePropertyEditor) p.getEditor();
+					if (StringUtil.isNotBlank(re.getToPropertyName())) {
+						addSearchProperty(select, re.getToPropertyName());
 					}
 				} else {
 					addSearchProperty(select, propName);

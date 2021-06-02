@@ -75,13 +75,7 @@ public class NumericRangePropertySearchCondition extends PropertySearchCondition
 			}
 			if (val != null) {
 				conditions.add(new LesserEqual(getPropertyName(), val));
-				if (getPropertyName().indexOf(".") != -1) {
-					String[] parentName = getPropertyName().split("\\.",0);
-					conditions.add(new Greater(parentName[0] + "." + getEditor().getToPropertyName(), val));
-				} else {
-					conditions.add(new Greater(getEditor().getToPropertyName(), val));
-				}
-
+				conditions.add(new Greater(getParentName(getPropertyName()) + getEditor().getToPropertyName(), val));
 			}
 
 		return conditions;
@@ -90,6 +84,15 @@ public class NumericRangePropertySearchCondition extends PropertySearchCondition
 	@Override
 	public NumericRangePropertyEditor getEditor() {
 		return (NumericRangePropertyEditor) super.getEditor();
+	}
+
+	private String getParentName(String fromPropName) {
+		String parentName = "";
+
+		int lastIndex = fromPropName.lastIndexOf(".");
+		parentName =  fromPropName.substring(0, lastIndex + 1);
+
+		return parentName;
 	}
 
 }

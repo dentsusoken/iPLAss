@@ -23,6 +23,7 @@
 <%@ page import="org.iplass.mtp.ManagerLocator"%>
 <%@ page import="org.iplass.mtp.entity.Entity"%>
 <%@ page import="org.iplass.mtp.entity.definition.*" %>
+<%@ page import="org.iplass.mtp.entity.definition.properties.ReferenceProperty"%>
 <%@ page import="org.iplass.mtp.util.StringUtil"%>
 <%@ page import="org.iplass.mtp.view.generic.EntityViewUtil" %>
 <%@ page import="org.iplass.mtp.view.generic.ViewConst"%>
@@ -40,6 +41,7 @@
 	EntityDefinition ed = (EntityDefinition) request.getAttribute(Constants.ENTITY_DEFINITION);
 	String rootDefName = (String)request.getAttribute(Constants.ROOT_DEF_NAME);
 	Boolean nest = (Boolean) request.getAttribute(Constants.EDITOR_REF_NEST);
+	nest = (nest != null) ? nest : false;
 	Entity entity = request.getAttribute(Constants.ENTITY_DATA) instanceof Entity ? (Entity) request.getAttribute(Constants.ENTITY_DATA) : null;
 
 	String prefix = "";
@@ -47,16 +49,19 @@
 	EntityDefinition _ed = ed;
 	//if (nest != null && nest) {
 	if (fromName.indexOf(".") != -1) {
-		_ed = ManagerLocator.getInstance().getManager(EntityDefinitionManager.class).get(editor.getObjectName());
-		request.setAttribute(Constants.ENTITY_DEFINITION, _ed);
-		entity = (Entity) request.getAttribute(Constants.EDITOR_REF_NEST_VALUE);
-
 		//ダミーのプロパティ名と本来のプロパティ名を分離して、出力時に結合するプロパティを含め再設定する
 		int lastIndex = fromName.lastIndexOf(".");
 		String _prefix = fromName.substring(0, lastIndex);
 		prefix = _prefix + ".";
 		fromName = fromName.substring(lastIndex + 1);
 		request.setAttribute(Constants.EDITOR_JOIN_NEST_PREFIX, _prefix);
+		String subObjectName = ObjectName(_prefix, ed);
+
+		_ed = ManagerLocator.getInstance().getManager(EntityDefinitionManager.class).get(subObjectName);
+		request.setAttribute(Constants.ENTITY_DEFINITION, _ed);
+		if (nest) {
+			entity = (Entity) request.getAttribute(Constants.EDITOR_REF_NEST_VALUE);
+		}
 	}
 
 	String key = "numericrange_" + fromName;
@@ -84,7 +89,12 @@
 		// toのEditorが未指定の場合はfromと同じ設定に
 		PropertyEditor toEditor = editor.getToEditor() != null ? editor.getToEditor() : editor.getEditor();
 		toEditor.setPropertyName(prefix + editor.getToPropertyName());
-		PropertyDefinition toPd = _ed.getProperty(editor.getToPropertyName());
+		String toName = "";
+		if (prefix.length() != 0) {
+			toName = editor.getToPropertyName().substring(editor.getToPropertyName().lastIndexOf(".") + 1);
+		}
+
+		PropertyDefinition toPd = (toName.length() != 0) ? _ed.getProperty(toName) : _ed.getProperty(editor.getToPropertyName());
 
 		request.setAttribute(Constants.EDITOR_EDITOR, toEditor);
 		request.setAttribute(Constants.EDITOR_PROP_VALUE, toPropValue);
@@ -99,6 +109,31 @@
 	}
 
 	String nameKey = prefix + fromName + "_" + editor.getToPropertyName();
+
+%>
+<%!
+String ObjectName(String prefix, EntityDefinition ed){
+	String objName = "";
+	if (prefix.contains("[")) {
+		prefix = prefix.substring(0, prefix.lastIndexOf("["));
+	}
+
+	int lastIndex = prefix.lastIndexOf(".");
+	String propName = (lastIndex == -1) ? prefix  : prefix.substring(0, lastIndex);
+	String _propName = (lastIndex == -1) ? "" : prefix.substring(lastIndex + 1);
+
+	PropertyDefinition pd = ed.getProperty(propName);
+	ReferenceProperty rp = (ReferenceProperty) pd;
+	objName = rp.getObjectDefinitionName();
+
+	if (_propName.length() > 0) {
+		ed = ManagerLocator.getInstance().getManager(EntityDefinitionManager.class).get(objName);
+		objName = this.ObjectName(_propName, ed);
+	}
+
+	return objName;
+}
+
 %>
 <jsp:include page="ErrorMessage.jsp">
 	<jsp:param value="<%=nameKey%>" name="propName" />

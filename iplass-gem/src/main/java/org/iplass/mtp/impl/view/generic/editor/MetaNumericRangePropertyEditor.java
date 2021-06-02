@@ -26,7 +26,6 @@ import java.util.List;
 import org.iplass.mtp.entity.definition.PropertyDefinition;
 import org.iplass.mtp.impl.entity.EntityContext;
 import org.iplass.mtp.impl.entity.EntityHandler;
-import org.iplass.mtp.impl.entity.property.PropertyHandler;
 import org.iplass.mtp.impl.i18n.I18nUtil;
 import org.iplass.mtp.impl.i18n.MetaLocalizedString;
 import org.iplass.mtp.impl.metadata.MetaDataIllegalStateException;
@@ -34,6 +33,7 @@ import org.iplass.mtp.impl.metadata.MetaDataRuntime;
 import org.iplass.mtp.impl.util.ObjectUtil;
 import org.iplass.mtp.impl.view.generic.EntityViewRuntime;
 import org.iplass.mtp.impl.view.generic.FormViewRuntime;
+import org.iplass.mtp.impl.view.generic.HasEntityProperty;
 import org.iplass.mtp.impl.view.generic.element.property.MetaPropertyLayout;
 import org.iplass.mtp.view.generic.editor.NumericRangePropertyEditor;
 import org.iplass.mtp.view.generic.editor.PropertyEditor;
@@ -42,7 +42,7 @@ import org.iplass.mtp.view.generic.editor.PropertyEditor;
  * 数値範囲型プロパティエディタのメタデータ
  * @author ICOM Shojima
  */
-public class MetaNumericRangePropertyEditor extends MetaCustomPropertyEditor {
+public class MetaNumericRangePropertyEditor extends MetaCustomPropertyEditor implements HasEntityProperty {
 
 	/** SerialVersionUID */
 	private static final long serialVersionUID = 7792744945686490609L;
@@ -178,10 +178,9 @@ public class MetaNumericRangePropertyEditor extends MetaCustomPropertyEditor {
 			toEditor.applyConfig(e.getToEditor());
 		}
 
-		PropertyHandler property = entity.getProperty(e.getToPropertyName(), metaContext);
-		if (property != null) {
-			toPropertyId = property.getId();
-		} else {
+			toPropertyId = convertId(e.getToPropertyName(), metaContext, entity);
+
+		if (toPropertyId == null) {
 			throw new MetaDataIllegalStateException("to property name is not defined.");
 		}
 
@@ -210,9 +209,8 @@ public class MetaNumericRangePropertyEditor extends MetaCustomPropertyEditor {
 			_editor.setToEditor(toEditor.currentConfig(propertyName));
 		}
 
-		PropertyHandler property = entity.getPropertyById(toPropertyId, metaContext);
-		if (property != null) {
-			_editor.setToPropertyName(property.getName());
+		if (toPropertyId != null) {
+			_editor.setToPropertyName(convertName(toPropertyId, metaContext, entity));
 		}
 
 		_editor.setErrorMessage(errorMessage);
