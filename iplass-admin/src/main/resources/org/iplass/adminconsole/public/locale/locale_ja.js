@@ -1986,6 +1986,8 @@ LocaleInfo.generic_editor_TimestampPropertyEditor_useDatetimePickerDisplaNameKey
 LocaleInfo.generic_editor_TimestampPropertyEditor_useDatetimePickerDescriptionKey = "入力時にDatetimePickerを利用します。";
 LocaleInfo.generic_editor_TimestampPropertyEditor_showWeekdayDisplaNameKey = "曜日を表示";
 LocaleInfo.generic_editor_TimestampPropertyEditor_showWeekdayDescriptionKey = "曜日を表示します。";
+LocaleInfo.generic_editor_UserPropertyEditor_displayTypeDisplaNameKey = "表示タイプ";
+LocaleInfo.generic_editor_UserPropertyEditor_displayTypeDescriptionKey = "画面に表示する方法を選択します。";
 LocaleInfo.generic_element_Button_displayTypeDisplaNameKey = "表示タイプ";
 LocaleInfo.generic_element_Button_displayTypeDescriptionKey = "詳細編集、詳細表示のどちらに表示するかを設定します。";
 LocaleInfo.generic_element_Button_titleDisplaNameKey = "タイトル";
