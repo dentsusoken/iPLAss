@@ -29,6 +29,7 @@
 <%@ page import="org.iplass.mtp.view.generic.EntityViewUtil"%>
 <%@ page import="org.iplass.mtp.view.generic.OutputType"%>
 <%@ page import="org.iplass.mtp.view.generic.editor.UserPropertyEditor" %>
+<%@ page import="org.iplass.mtp.view.generic.editor.UserPropertyEditor.UserDisplayType"%>
 <%@ page import="org.iplass.mtp.web.template.TemplateUtil"%>
 <%@ page import="org.iplass.gem.command.Constants" %>
 
@@ -75,23 +76,26 @@
 <%
 		}
 
-		//カスタムスタイル
-		String customStyle = "";
-		if (type == OutputType.VIEW) {
-			if (StringUtil.isNotEmpty(editor.getCustomStyle())) {
-				customStyle = EntityViewUtil.getCustomStyle(rootDefName, scriptKey, editor.getOutputCustomStyleScriptKey(), entity, propValue);
+		if (editor.getDisplayType() != UserDisplayType.HIDDEN) {
+		
+			//カスタムスタイル
+			String customStyle = "";
+			if (type == OutputType.VIEW) {
+				if (StringUtil.isNotEmpty(editor.getCustomStyle())) {
+					customStyle = EntityViewUtil.getCustomStyle(rootDefName, scriptKey, editor.getOutputCustomStyleScriptKey(), entity, propValue);
+				}
+			} else if (type == OutputType.EDIT) {
+				//入力不可の場合
+				if (StringUtil.isNotEmpty(editor.getInputCustomStyle())) {
+					customStyle = EntityViewUtil.getCustomStyle(rootDefName, scriptKey, editor.getInputCustomStyleScriptKey(), entity, propValue);
+				}
 			}
-		} else if (type == OutputType.EDIT) {
-			//入力不可の場合
-			if (StringUtil.isNotEmpty(editor.getInputCustomStyle())) {
-				customStyle = EntityViewUtil.getCustomStyle(rootDefName, scriptKey, editor.getInputCustomStyleScriptKey(), entity, propValue);
-			}
-		}
 %>
 <span class="data-label" style="<c:out value="<%=customStyle %>"/>">
 <c:out value="<%=str %>"/>
 </span>
 <%
+		}
 	} else if (OutputType.SEARCHCONDITION == type) {
 		//検索条件
 		propName = Constants.SEARCH_COND_PREFIX + propName;
@@ -108,11 +112,13 @@
 			strDefault = _defaultValue[0];
 		}
 
-		//カスタムスタイル
-		String customStyle = "";
-		if (StringUtil.isNotEmpty(editor.getInputCustomStyle())) {
-			customStyle = EntityViewUtil.getCustomStyle(rootDefName, scriptKey, editor.getInputCustomStyleScriptKey(), null, null);
-		}
+		if (editor.getDisplayType() != UserDisplayType.HIDDEN) {
+
+			//カスタムスタイル
+			String customStyle = "";
+			if (StringUtil.isNotEmpty(editor.getInputCustomStyle())) {
+				customStyle = EntityViewUtil.getCustomStyle(rootDefName, scriptKey, editor.getInputCustomStyleScriptKey(), null, null);
+			}
 %>
 <input type="text" class="form-size-04 inpbr" style="<c:out value="<%=customStyle%>"/>" value="<c:out value="<%=str %>"/>" name="<c:out value="<%=propName %>"/>" />
 
@@ -123,7 +129,7 @@ $(function() {
 		$(":text[name='" + es("<%=StringUtil.escapeJavaScript(propName)%>") + "']").val("<%=StringUtil.escapeJavaScript(strDefault) %>");
 	});
 <%
-		if (required) {
+			if (required) {
 %>
 	<%-- common.js --%>
 	addNormalValidator(function() {
@@ -135,11 +141,17 @@ $(function() {
 		return true;
 	});
 <%
-		}
+			}
 %>
 });
 </script>
 <%
+		} else {
+			//HIDDEN
+%>
+<input type="hidden" name="<c:out value="<%=propName %>"/>" value="<c:out value="<%=str %>"/>" />
+<%			
+		}
 	} else if (OutputType.SEARCHRESULT == type) {
 		//検索結果
 		String str = "";
@@ -155,9 +167,19 @@ $(function() {
 				str = propValue.toString();
 			}
 		}
+
+		if (editor.getDisplayType() != UserDisplayType.HIDDEN) {
 %>
+<span class="data-label">
 <c:out value="<%=str %>"/>
+</span>
 <%
+		} else {
+			//HIDDEN
+%>
+<input type="hidden" name="<c:out value="<%=propName %>"/>" value="<c:out value="<%=str %>"/>" />
+<%
+		}
 	}
 	request.removeAttribute(Constants.EDITOR_EDITOR);
 	request.removeAttribute(Constants.EDITOR_PROP_VALUE);
