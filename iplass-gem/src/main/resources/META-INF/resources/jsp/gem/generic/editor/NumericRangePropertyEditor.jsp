@@ -34,7 +34,30 @@
 <%@ page import="org.iplass.mtp.web.template.TemplateUtil"%>
 <%@ page import="org.iplass.gem.command.Constants"%>
 <%@ page import="org.iplass.gem.command.GemResourceBundleUtil"%>
+<%!
+String getObjectName(String prefix, EntityDefinition ed){
+	String objName = "";
+	if (prefix.contains("[")) {
+		prefix = prefix.substring(0, prefix.lastIndexOf("["));
+	}
 
+	int lastIndex = prefix.lastIndexOf(".");
+	String propName = (lastIndex == -1) ? prefix  : prefix.substring(0, lastIndex);
+	String _propName = (lastIndex == -1) ? "" : prefix.substring(lastIndex + 1);
+
+	PropertyDefinition pd = ed.getProperty(propName);
+	ReferenceProperty rp = (ReferenceProperty) pd;
+	objName = rp.getObjectDefinitionName();
+
+	if (_propName.length() > 0) {
+		ed = ManagerLocator.getInstance().getManager(EntityDefinitionManager.class).get(objName);
+		objName = this.getObjectName(_propName, ed);
+	}
+
+	return objName;
+}
+
+%>
 <%
 	NumericRangePropertyEditor editor = (NumericRangePropertyEditor) request.getAttribute(Constants.EDITOR_EDITOR);
 	OutputType type = (OutputType) request.getAttribute(Constants.OUTPUT_TYPE);
@@ -55,7 +78,7 @@
 		prefix = _prefix + ".";
 		fromName = fromName.substring(lastIndex + 1);
 		request.setAttribute(Constants.EDITOR_JOIN_NEST_PREFIX, _prefix);
-		String subObjectName = ObjectName(_prefix, ed);
+		String subObjectName = getObjectName(_prefix, ed);
 
 		_ed = ManagerLocator.getInstance().getManager(EntityDefinitionManager.class).get(subObjectName);
 		request.setAttribute(Constants.ENTITY_DEFINITION, _ed);
@@ -90,11 +113,13 @@
 		PropertyEditor toEditor = editor.getToEditor() != null ? editor.getToEditor() : editor.getEditor();
 		toEditor.setPropertyName(prefix + editor.getToPropertyName());
 		String toName = "";
+		PropertyDefinition toPd = null;
 		if (prefix.length() != 0) {
 			toName = editor.getToPropertyName().substring(editor.getToPropertyName().lastIndexOf(".") + 1);
+			toPd = _ed.getProperty(toName);
+		} else {
+			toPd = _ed.getProperty(editor.getToPropertyName());
 		}
-
-		PropertyDefinition toPd = (toName.length() != 0) ? _ed.getProperty(toName) : _ed.getProperty(editor.getToPropertyName());
 
 		request.setAttribute(Constants.EDITOR_EDITOR, toEditor);
 		request.setAttribute(Constants.EDITOR_PROP_VALUE, toPropValue);
@@ -109,30 +134,6 @@
 	}
 
 	String nameKey = prefix + fromName + "_" + editor.getToPropertyName();
-
-%>
-<%!
-String ObjectName(String prefix, EntityDefinition ed){
-	String objName = "";
-	if (prefix.contains("[")) {
-		prefix = prefix.substring(0, prefix.lastIndexOf("["));
-	}
-
-	int lastIndex = prefix.lastIndexOf(".");
-	String propName = (lastIndex == -1) ? prefix  : prefix.substring(0, lastIndex);
-	String _propName = (lastIndex == -1) ? "" : prefix.substring(lastIndex + 1);
-
-	PropertyDefinition pd = ed.getProperty(propName);
-	ReferenceProperty rp = (ReferenceProperty) pd;
-	objName = rp.getObjectDefinitionName();
-
-	if (_propName.length() > 0) {
-		ed = ManagerLocator.getInstance().getManager(EntityDefinitionManager.class).get(objName);
-		objName = this.ObjectName(_propName, ed);
-	}
-
-	return objName;
-}
 
 %>
 <jsp:include page="ErrorMessage.jsp">

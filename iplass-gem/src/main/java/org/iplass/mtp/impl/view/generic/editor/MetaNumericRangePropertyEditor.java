@@ -178,7 +178,7 @@ public class MetaNumericRangePropertyEditor extends MetaCustomPropertyEditor imp
 			toEditor.applyConfig(e.getToEditor());
 		}
 
-			toPropertyId = convertId(e.getToPropertyName(), metaContext, entity);
+		toPropertyId = convertId(e.getToPropertyName(), metaContext, entity);
 
 		if (toPropertyId == null) {
 			throw new MetaDataIllegalStateException("to property name is not defined.");

@@ -188,6 +188,14 @@ public abstract class PropertySearchCondition {
 		}
 	}
 
+	protected String getTotPropertyName(String toPropertyName) {
+		if (parent != null && toPropertyName.lastIndexOf(".") == -1) {
+			return parent + "." + toPropertyName;
+		} else {
+			return toPropertyName;
+		}
+	}
+
 	public boolean checkNormalParameter(PropertyItem property) {
 		return true;
 	}
