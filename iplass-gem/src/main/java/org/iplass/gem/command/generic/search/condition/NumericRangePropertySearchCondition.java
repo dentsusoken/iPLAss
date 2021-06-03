@@ -68,20 +68,20 @@ public class NumericRangePropertySearchCondition extends PropertySearchCondition
 	public List<Condition> convertNormalCondition() {
 		List<Condition> conditions = new ArrayList<Condition>();
 		Object[] obl = (Object[]) getValue();
-			//From-To検索
-			Object val = null;
-			if (obl.length > 0 && obl[0] != null) {
-				val = (Object) obl[0];
+		//From-To検索
+		Object val = null;
+		if (obl.length > 0 && obl[0] != null) {
+			val = obl[0];
+		}
+		if (val != null) {
+			conditions.add(new LesserEqual(getPropertyName(), val));
+
+			String parentName = "";
+			if (getParent() != null && getEditor().getToPropertyName().indexOf(".") == -1) {
+				parentName =  getParent()  + ".";
 			}
-			if (val != null) {
-				conditions.add(new LesserEqual(getPropertyName(), val));
 
-				String parentName = "";
-				if (getParent() != null && getEditor().getToPropertyName().indexOf(".") == -1) {
-					parentName =  getParent()  + ".";
-				}
-
-				conditions.add(new Greater(parentName + getEditor().getToPropertyName(), val));
+			conditions.add(new Greater(parentName + getEditor().getToPropertyName(), val));
 			}
 
 		return conditions;

@@ -250,7 +250,7 @@ public abstract class PropertySearchCondition {
 	 * @return 親プロパティ名
 	 */
 	protected String getParent() {
-			return parent;
+		return parent;
 	}
 
 	public static PropertySearchCondition newInstance(PropertyDefinition definition,
