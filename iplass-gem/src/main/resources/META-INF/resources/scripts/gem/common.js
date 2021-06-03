@@ -146,9 +146,16 @@ function oidCellFormatter(cellvalue, options, rowObject) {
 
 /**
 * CSVダウンロード実行
-* @param searchType
-* @param formName
-* @param action
+* @param searchType 検索タイプ(normal、detail、fixed)
+* @param formName search condition form name
+* @param action 実行Action
+* @param target 実行ボタン(input) 
+* @param interval 連打防止のインターバル
+* @param isForUpload ダイアログ表示時、Upload形式か
+* @param characterCode ダイアログ表示時、文字コード
+* @param isNoDispName ダイアログ表示時、Upload形式の場合に「表示名を出力」するか
+* @param isOutputResult ダイアログ表示時、CSV項目を指定している場合、「検索結果一覧に表示された項目で出力」するか、指定していない場合はnull
+* @param isOutputCodeValue ダイアログ表示時、Upload形式以外の場合に「コード値でダウンロードする」か
 */
 function csvDownload(searchType, formName, action, target, interval, isForUpload, characterCode, isNoDispName, isOutputResult, isOutputCodeValue) {
 	var $form = $("<form method='POST' />").attr({action:contextPath + action}).appendTo("body");
