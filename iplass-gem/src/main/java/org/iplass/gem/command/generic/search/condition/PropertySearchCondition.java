@@ -188,14 +188,6 @@ public abstract class PropertySearchCondition {
 		}
 	}
 
-	protected String getTotPropertyName(String toPropertyName) {
-		if (parent != null && toPropertyName.lastIndexOf(".") == -1) {
-			return parent + "." + toPropertyName;
-		} else {
-			return toPropertyName;
-		}
-	}
-
 	public boolean checkNormalParameter(PropertyItem property) {
 		return true;
 	}
@@ -251,6 +243,14 @@ public abstract class PropertySearchCondition {
 	 */
 	public void setValue(Object value) {
 	    this.value = value;
+	}
+
+	/**
+	 * 親プロパティ名を取得します。
+	 * @return 親プロパティ名
+	 */
+	protected String getParent() {
+			return parent;
 	}
 
 	public static PropertySearchCondition newInstance(PropertyDefinition definition,
