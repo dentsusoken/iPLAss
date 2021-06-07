@@ -55,6 +55,9 @@ public class MetaPropertyColumn extends MetaPropertyLayout {
 	/** テキストの配置 */
 	private TextAlign textAlign;
 
+	/** CSVの出力 */
+	private boolean outputCsv = true;
+
 	/** 一括更新プロパティエディタ  */
 	private MetaPropertyEditor bulkUpdateEditor;
 
@@ -110,6 +113,22 @@ public class MetaPropertyColumn extends MetaPropertyLayout {
 	}
 
 	/**
+	 * CSVに出力するかを取得します。
+	 * @return CSVに出力するか
+	 */
+	public boolean isOutputCsv() {
+		return outputCsv;
+	}
+
+	/**
+	 * CSVに出力するかを設定します。
+	 * @param outputCsv CSVに出力するか
+	 */
+	public void setOutputCsv(boolean outputCsv) {
+		this.outputCsv = outputCsv;
+	}
+
+	/**
 	 * 一括更新プロパティエディタを取得します。
 	 * @return 一括更新プロパティエディタ
 	 */
@@ -148,6 +167,7 @@ public class MetaPropertyColumn extends MetaPropertyLayout {
 		width = p.getWidth();
 		nullOrderType =  p.getNullOrderType();
 		textAlign = p.getTextAlign();
+		outputCsv = p.isOutputCsv();
 
 		if(p.getBulkUpdateEditor() != null) {
 			MetaPropertyEditor editor = MetaPropertyEditor.createInstance(p.getBulkUpdateEditor());
@@ -185,6 +205,7 @@ public class MetaPropertyColumn extends MetaPropertyLayout {
 		p.setWidth(width);
 		p.setNullOrderType(nullOrderType);
 		p.setTextAlign(textAlign);
+		p.setOutputCsv(outputCsv);
 		if (bulkUpdateEditor != null) {
 			p.setBulkUpdateEditor(bulkUpdateEditor.currentConfig(p.getPropertyName()));
 		}
