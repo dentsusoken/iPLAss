@@ -33,12 +33,13 @@ import org.iplass.mtp.definition.LocalizedStringDefinition;
 import org.iplass.mtp.view.generic.RequiredDisplayType;
 import org.iplass.mtp.view.generic.TextAlign;
 import org.iplass.mtp.view.generic.common.AutocompletionSetting;
+import org.iplass.mtp.view.generic.element.CsvItem;
 
 /**
  * 参照型でテーブル表示等の場合に表示する参照先のプロパティ定義
  * @author lis3wg
  */
-public class NestProperty implements Refrectable {
+public class NestProperty implements Refrectable, CsvItem {
 
 	/** シリアルバージョンUID */
 	private static final long serialVersionUID = -7849466975195960549L;
@@ -236,6 +237,20 @@ public class NestProperty implements Refrectable {
 			referenceTypes={FieldReferenceType.SEARCHCONDITION}
 	)
 	private boolean requiredDetail;
+
+	/** CSVの出力 */
+	@MetaFieldInfo(
+			displayName="CSVに出力する",
+			displayNameKey="generic_editor_NestProperty_outputCsvDisplaNameKey",
+			inputType=InputType.CHECKBOX,
+			displayOrder=2150,
+			description="CSVに出力するかを設定します。",
+			descriptionKey="generic_editor_NestProperty_outputCsvDescriptionKey"
+	)
+	@EntityViewField(
+			referenceTypes={FieldReferenceType.SEARCHRESULT}
+	)
+	private boolean outputCsv = true;
 
 	/** プロパティエディタ */
 	@MetaFieldInfo(
@@ -448,6 +463,22 @@ public class NestProperty implements Refrectable {
 	    this.requiredDetail = requiredDetail;
 	}
 
+	/**
+	 * CSVに出力するかを取得します。
+	 * @return CSVに出力するか
+	 */
+	@Override
+	public boolean isOutputCsv() {
+		return outputCsv;
+	}
+
+	/**
+	 * CSVに出力するかを設定します。
+	 * @param outputCsv CSVに出力するか
+	 */
+	public void setOutputCsv(boolean outputCsv) {
+		this.outputCsv = outputCsv;
+	}
 
 	/**
 	 * プロパティエディタを取得します。
