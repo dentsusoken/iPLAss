@@ -70,7 +70,6 @@ import org.iplass.mtp.util.StringUtil;
 import org.iplass.mtp.view.generic.SearchQueryContext;
 import org.iplass.mtp.view.generic.SearchQueryInterrupter.SearchQueryType;
 import org.iplass.mtp.view.generic.editor.SelectPropertyEditor;
-import org.iplass.mtp.view.generic.editor.UserPropertyEditor;
 import org.iplass.mtp.view.generic.element.property.PropertyColumn;
 import org.iplass.mtp.view.generic.element.section.SearchConditionSection;
 import org.iplass.mtp.web.ResultStreamWriter;
@@ -228,20 +227,13 @@ public class CSVDownloadSearchViewWriter implements ResultStreamWriter {
 
 	private void searchEntity(Query query, List<String> columns) {
 
-		PropertyColumn createBy = context.getPropertyColumn(Entity.CREATE_BY);
-		PropertyColumn updateBy = context.getPropertyColumn(Entity.UPDATE_BY);
-		PropertyColumn lockedBy = context.getPropertyColumn(Entity.LOCKED_BY);
-
-		Map<String, Boolean> userMap = new HashMap<>();
-		userMap.put(Entity.CREATE_BY, createBy != null && createBy.getEditor() instanceof UserPropertyEditor);
-		userMap.put(Entity.UPDATE_BY, updateBy != null && updateBy.getEditor() instanceof UserPropertyEditor);
-		userMap.put(Entity.LOCKED_BY, lockedBy != null && lockedBy.getEditor() instanceof UserPropertyEditor);
+		List<String> userProperties = context.getUserPropertyColumns();
 
 		int cacheLimit = gcs.getSearchResultCacheLimit();
 
 		SearchQueryInterrupterHandler handler = context.getSearchQueryInterrupterHandler(false);
 
-		new CSVDownloadTransPredicate(handler, userMap, cacheLimit).searchEntity(
+		new CSVDownloadTransPredicate(handler, userProperties, cacheLimit).searchEntity(
 				query, new CSVDownloadPredicate(this, columns, context));
 	}
 
@@ -317,17 +309,18 @@ public class CSVDownloadSearchViewWriter implements ResultStreamWriter {
 	private class CSVDownloadTransPredicate {
 
 		private SearchQueryInterrupterHandler handler;
-		private Map<String, Boolean> userMap;
+		private List<String> userProperties;
 		private int cacheLimit;
 
 		/**
 		 * コンストラクタ
-		 * @param context	CSV出力情報
-		 * @param userMap UserPropertyEditorが設定されているプロパティ情報
+		 * @param handler	InterrupterHandler
+		 * @param userProperties UserPropertyEditorが設定されているプロパティ情報
+		 * @param cacheLimit １度の出力件数
 		 */
-		public CSVDownloadTransPredicate(SearchQueryInterrupterHandler handler, Map<String, Boolean> userMap, int cacheLimit) {
+		public CSVDownloadTransPredicate(final SearchQueryInterrupterHandler handler, final List<String> userProperties, final int cacheLimit) {
 			this.handler = handler;
-			this.userMap = userMap;
+			this.userProperties = userProperties;
 			this.cacheLimit = cacheLimit;
 		}
 
@@ -365,20 +358,17 @@ public class CSVDownloadSearchViewWriter implements ResultStreamWriter {
 
 					tmpResult.add(entity);
 
-					if (userMap.get(Entity.CREATE_BY)) {
-						userOides.add(entity.getCreateBy());
-					}
-					if (userMap.get(Entity.UPDATE_BY)) {
-						userOides.add(entity.getUpdateBy());
-					}
-					if (userMap.get(Entity.LOCKED_BY)) {
-						userOides.add(entity.getLockedBy());
+					//User名を出力するUserのOIDを取得
+					for (String userProp : userProperties) {
+						if (StringUtil.isNotEmpty(entity.getValue(userProp))) {
+							userOides.add(entity.getValue(userProp));
+						}
 					}
 
 					if (tmpResult.size() == cacheLimit) {
 
 						//ユーザ情報を反映
-						setUserProperty(tmpResult, userMap, userOides);
+						setUserProperty(tmpResult, userOides);
 
 						//指定されたcallbackの呼び出し
 						for (Entity afterModel : tmpResult) {
@@ -397,7 +387,10 @@ public class CSVDownloadSearchViewWriter implements ResultStreamWriter {
 
 			});
 
-			setUserProperty(tmpResult, userMap, userOides);
+			//ユーザ情報を反映
+			setUserProperty(tmpResult, userOides);
+
+			//指定されたcallbackの呼び出し
 			for (Entity afterModel : tmpResult) {
 				if (!callback.test(afterModel)) {
 					return;
@@ -408,14 +401,13 @@ public class CSVDownloadSearchViewWriter implements ResultStreamWriter {
 		/**
 		 * Userプロパティ情報をデータにセットします。
 		 *
-		 * @param tmpResult
-		 * @param userUseMap
-		 * @param userOides
+		 * @param tmpResult 検索結果のEntityのリスト
+		 * @param userOides ユーザのOID情報
 		 */
-		private void setUserProperty(List<Entity> tmpResult, Map<String, Boolean> userUseMap, Set<String> userOides) {
+		private void setUserProperty(List<Entity> tmpResult, Set<String> userOides) {
 
 			// 対象項目、対象データがない場合は終了
-			if (userUseMap.isEmpty() || userOides.isEmpty()) {
+			if (userProperties.isEmpty() || userOides.isEmpty()) {
 				return;
 			}
 
@@ -436,22 +428,12 @@ public class CSVDownloadSearchViewWriter implements ResultStreamWriter {
 
 			for (Entity entity : tmpResult) {
 
-				if (userUseMap.get(Entity.CREATE_BY)) {
-					String oid = entity.getCreateBy();
-					if (userMap.containsKey(oid)) {
-						entity.setCreateBy(userMap.get(oid));
-					}
-				}
-				if (userUseMap.get(Entity.UPDATE_BY)) {
-					String oid = entity.getUpdateBy();
-					if (userMap.containsKey(oid)) {
-						entity.setUpdateBy(userMap.get(oid));
-					}
-				}
-				if (userUseMap.get(Entity.LOCKED_BY)) {
-					String oid = entity.getLockedBy();
-					if (userMap.containsKey(oid)) {
-						entity.setLockedBy(userMap.get(oid));
+				for (String userProp : userProperties) {
+					String userOid = entity.getValue(userProp);
+					if (StringUtil.isNotEmpty(userOid)) {
+						if (userMap.containsKey(userOid)) {
+							entity.setValue(userProp, userMap.get(userOid));
+						}
 					}
 				}
 

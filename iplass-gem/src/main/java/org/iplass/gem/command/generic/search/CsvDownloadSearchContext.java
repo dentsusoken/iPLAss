@@ -50,6 +50,7 @@ import org.iplass.mtp.view.generic.SearchQueryInterrupter.SearchQueryType;
 import org.iplass.mtp.view.generic.editor.JoinPropertyEditor;
 import org.iplass.mtp.view.generic.editor.NestProperty;
 import org.iplass.mtp.view.generic.editor.ReferencePropertyEditor;
+import org.iplass.mtp.view.generic.editor.UserPropertyEditor;
 import org.iplass.mtp.view.generic.element.property.PropertyColumn;
 import org.iplass.mtp.view.generic.element.section.SearchConditionSection;
 import org.iplass.mtp.web.template.TemplateUtil;
@@ -334,6 +335,19 @@ public class CsvDownloadSearchContext extends SearchContextBase {
 		return null;
 	}
 
+	private NestProperty getNestProperty(List<NestProperty> properties, String propName) {
+		for (NestProperty property : properties) {
+			if (propName.equals(property.getPropertyName())) return property;
+		}
+		return null;
+	}
+
+	/**
+	 * 対象のPropertyColumnを返します。
+	 *
+	 * @param propName プロパティ名
+	 * @return 対象のPropertyColumn
+	 */
 	public PropertyColumn getPropertyColumn(String propName) {
 		Optional<PropertyColumn> property = context.getResultSection().getElements().stream()
 				.filter(e -> e instanceof PropertyColumn).map(e -> (PropertyColumn) e)
@@ -344,11 +358,73 @@ public class CsvDownloadSearchContext extends SearchContextBase {
 		return null;
 	}
 
-	private NestProperty getNestProperty(List<NestProperty> properties, String propName) {
-		for (NestProperty property : properties) {
-			if (propName.equals(property.getPropertyName())) return property;
+	/**
+	 * UserPropertyEditorが設定されている列を返します。
+	 *
+	 * @return UserPropertyEditorが設定されているプロパティ名
+	 */
+	public List<String> getUserPropertyColumns() {
+		ArrayList<String> cols = new ArrayList<>();
+		List<PropertyColumn> properties = context.getResultSection().getElements().stream()
+				.filter(e -> e instanceof PropertyColumn).map(e -> (PropertyColumn) e)
+				.collect(Collectors.toList());
+		for (PropertyColumn col : properties) {
+			if (EntityViewUtil.isDisplayElement(getDefName(), col.getElementRuntimeId(), OutputType.SEARCHRESULT, null)) {
+				String propName = col.getPropertyName();
+				if (col.getEditor() instanceof UserPropertyEditor) {
+					cols.add(propName);
+				} else if (col.getEditor() instanceof ReferencePropertyEditor) {
+					//ReferencePropertyEditorのNestをチェック
+					getNestUserPropertyColumns(cols, propName + ".", ((ReferencePropertyEditor)col.getEditor()).getNestProperties());
+				} else if (col.getEditor() instanceof JoinPropertyEditor) {
+					JoinPropertyEditor je = (JoinPropertyEditor) col.getEditor();
+					if (je.getEditor() instanceof UserPropertyEditor) {
+						cols.add(propName);
+					} else if (je.getEditor() instanceof ReferencePropertyEditor) {
+						//JoinPropertyEditorのEditorがReferencePropertyEditorの場合、そのNestをチェック
+						getNestUserPropertyColumns(cols, propName + ".", ((ReferencePropertyEditor)je.getEditor()).getNestProperties());
+					}
+					//JoinPropertyEditorのNestをチェック
+					getNestUserPropertyColumns(cols, "", je.getProperties());
+				}
+			}
 		}
-		return null;
+
+		return cols;
+	}
+
+	/**
+	 * NestPropertyにUserPropertyEditorが設定されている列を追加します。
+	 *
+	 * @param cols UserPropertyEditorが設定されている列情報
+	 * @param prefixPropName プロパティ名の接頭語（Reference用）
+	 * @param nestProperties NestProperty
+	 */
+	private void getNestUserPropertyColumns(final List<String> cols, final String prefixPropName, final List<NestProperty> nestProperties) {
+
+		if (nestProperties == null) {
+			return;
+		}
+
+		for (NestProperty nest : nestProperties) {
+			String nestPropName = prefixPropName + nest.getPropertyName();
+			if (nest.getEditor() instanceof UserPropertyEditor) {
+				cols.add(nestPropName);
+			} else if (nest.getEditor() instanceof ReferencePropertyEditor) {
+				//ReferencePropertyEditorのNestをチェック
+				getNestUserPropertyColumns(cols, nestPropName + ".", ((ReferencePropertyEditor)nest.getEditor()).getNestProperties());
+			} else if (nest.getEditor() instanceof JoinPropertyEditor) {
+				JoinPropertyEditor je = (JoinPropertyEditor) nest.getEditor();
+				if (je.getEditor() instanceof UserPropertyEditor) {
+					cols.add(nestPropName);
+				} else if (je.getEditor() instanceof ReferencePropertyEditor) {
+					//JoinPropertyEditorのEditorがReferencePropertyEditorの場合、そのNestをチェック
+					getNestUserPropertyColumns(cols, nestPropName + ".", ((ReferencePropertyEditor)je.getEditor()).getNestProperties());
+				}
+				//JoinPropertyEditorのNestをチェック
+				getNestUserPropertyColumns(cols, prefixPropName, je.getProperties());
+			}
+		}
 	}
 
 	@Override
