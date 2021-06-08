@@ -25,7 +25,11 @@ import java.util.List;
 
 import org.iplass.mtp.entity.definition.PropertyDefinition;
 import org.iplass.mtp.entity.query.condition.Condition;
+import org.iplass.mtp.entity.query.condition.expr.And;
+import org.iplass.mtp.entity.query.condition.expr.Or;
+import org.iplass.mtp.entity.query.condition.predicate.Equals;
 import org.iplass.mtp.entity.query.condition.predicate.Greater;
+import org.iplass.mtp.entity.query.condition.predicate.IsNull;
 import org.iplass.mtp.entity.query.condition.predicate.LesserEqual;
 import org.iplass.mtp.view.generic.editor.NumericRangePropertyEditor;
 import org.iplass.mtp.view.generic.editor.PropertyEditor;
@@ -67,16 +71,23 @@ public class NumericRangePropertySearchCondition extends PropertySearchCondition
 	@Override
 	public List<Condition> convertNormalCondition() {
 		List<Condition> conditions = new ArrayList<Condition>();
+		List<Condition> _conditions = new ArrayList<Condition>();
+		List<Condition> conditionsResult = new ArrayList<Condition>();
+		String parentName = "";
 		Object[] obl = (Object[]) getValue();
 		//From-To検索
 		Object val = null;
+		boolean inputNullFrom = getEditor().getInputNullFrom();
+		boolean inputNullTo = getEditor().getInputNullTo();
+		boolean equivalentInput = getEditor().getEquivalentInput();
+
 		if (obl.length > 0 && obl[0] != null) {
 			val = obl[0];
 		}
 		if (val != null) {
 			conditions.add(new LesserEqual(getPropertyName(), val));
 
-			String parentName = "";
+
 			if (getParent() != null && getEditor().getToPropertyName().indexOf(".") == -1) {
 				parentName =  getParent()  + ".";
 			}
@@ -84,7 +95,36 @@ public class NumericRangePropertySearchCondition extends PropertySearchCondition
 			conditions.add(new Greater(parentName + getEditor().getToPropertyName(), val));
 			}
 
-		return conditions;
+		_conditions.add(new And(conditions));
+
+		if (inputNullFrom) {
+			List<Condition> conditionsFrom = new ArrayList<Condition>();
+			conditionsFrom.add(new IsNull(getPropertyName()));
+			conditionsFrom.add(new Greater(parentName + getEditor().getToPropertyName(), val));
+
+			_conditions.add(new And(conditionsFrom));
+		}
+
+		if (inputNullTo) {
+			List<Condition> conditionsTo = new ArrayList<Condition>();
+			conditionsTo.add(new LesserEqual(getPropertyName(), val));
+			conditionsTo.add(new IsNull(parentName + getEditor().getToPropertyName()));
+
+			_conditions.add(new And(conditionsTo));
+		}
+
+		if (equivalentInput) {
+			List<Condition> conditionsEqual = new ArrayList<Condition>();
+			conditionsEqual.add(new Equals(getPropertyName(), val));
+			conditionsEqual.add(new Equals(parentName + getEditor().getToPropertyName(), val));
+
+			_conditions.add(new And(conditionsEqual));
+		}
+
+		conditionsResult.add(new Or(_conditions));
+
+		//return conditions;
+		return conditionsResult;
 	}
 
 	@Override

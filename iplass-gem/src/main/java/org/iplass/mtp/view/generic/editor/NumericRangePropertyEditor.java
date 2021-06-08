@@ -78,6 +78,18 @@ public class NumericRangePropertyEditor extends CustomPropertyEditor implements 
 	@EntityViewField()
 	private PropertyEditor editor;
 
+	/** FromプロパティでNull入力を許容するか*/
+	@MetaFieldInfo(
+			displayName="Nullの入力を許可",
+			displayNameKey="generic_editor_NumericRangePropertyEditor_inputNullFromDisplayNameKey",
+			inputType=InputType.CHECKBOX,
+			displayOrder=105,
+			description="入力値にNullを許可するか設定します。",
+			descriptionKey="generic_editor_NumericRangePropertyEditor_inputNullFromDescriptionKey"
+	)
+	@EntityViewField()
+	private boolean inputNullFrom;
+
 	/** Toプロパティ名 */
 	@MetaFieldInfo(displayName="Toプロパティ名",
 			displayNameKey="generic_editor_NumericRangePropertyEditor_toPropertyNameDisplaNameKey",
@@ -109,6 +121,30 @@ public class NumericRangePropertyEditor extends CustomPropertyEditor implements 
 	@EntityViewField()
 	private PropertyEditor toEditor;
 
+	/** ToプロパティでNull入力を許容するか*/
+	@MetaFieldInfo(
+			displayName="Nullの入力を許可",
+			displayNameKey="generic_editor_NumericRangePropertyEditor_inputNullToDisplayNameKey",
+			inputType=InputType.CHECKBOX,
+			displayOrder=125,
+			description="入力値にNullを許可するか設定します。",
+			descriptionKey="generic_editor_NumericRangePropertyEditor_inputNullToDescriptionKey"
+	)
+	@EntityViewField()
+	private boolean inputNullTo;
+
+	/** 同値の入力を許容するか*/
+	@MetaFieldInfo(
+			displayName="同値の入力を許可",
+			displayNameKey="generic_editor_NumericRangePropertyEditor_equivalentInputDisplayNameKey",
+			inputType=InputType.CHECKBOX,
+			displayOrder=130,
+			description="入力値に同値を許可するか設定します。",
+			descriptionKey="generic_editor_NumericRangePropertyEditor_equivalentInputDescriptionKey"
+	)
+	@EntityViewField()
+	private boolean equivalentInput;
+
 	/** エラーメッセージ */
 	@MetaFieldInfo(displayName="エラーメッセージ",
 			displayNameKey="generic_editor_NumericRangePropertyEditor_errorMessageNameDisplaNameKey",
@@ -116,7 +152,7 @@ public class NumericRangePropertyEditor extends CustomPropertyEditor implements 
 			descriptionKey="generic_editor_NumericRangePropertyEditor_errorMessageNameDescriptionKey",
 			inputType=InputType.MULTI_LANG,
 			multiLangField = "localizedErrorMessageList",
-			displayOrder=130
+			displayOrder=135
 	)
 	@EntityViewField()
 	@MultiLang()
@@ -169,6 +205,20 @@ public class NumericRangePropertyEditor extends CustomPropertyEditor implements 
 	}
 
 	/**
+	 * @return inputNullFrom
+	 */
+	public boolean getInputNullFrom() {
+		return inputNullFrom;
+	}
+
+	/**
+	 * @param FromのNull許容フラグをセットする
+	 */
+	public void setInputNullFrom(boolean inputNullFrom) {
+		this.inputNullFrom = inputNullFrom;
+	}
+
+	/**
 	 * @return toEditor
 	 */
 	public PropertyEditor getToEditor() {
@@ -194,6 +244,34 @@ public class NumericRangePropertyEditor extends CustomPropertyEditor implements 
 	 */
 	public void setToPropertyName(String toPropertyName) {
 		this.toPropertyName = toPropertyName;
+	}
+
+	/**
+	 * @return inputNullFrom
+	 */
+	public boolean getInputNullTo() {
+		return inputNullTo;
+	}
+
+	/**
+	 * @param ToのNull許容フラグをセットする
+	 */
+	public void setInputNullTo(boolean inputNullTo) {
+		this.inputNullTo = inputNullTo;
+	}
+
+	/**
+	 * @return equivalentInput
+	 */
+	public boolean getEquivalentInput() {
+		return equivalentInput;
+	}
+
+	/**
+	 * @param 同値の登録の許容フラグをセットする
+	 */
+	public void setEquivalentInput(boolean equivalentInput) {
+		this.equivalentInput = equivalentInput;
 	}
 
 	/**

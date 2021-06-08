@@ -57,11 +57,20 @@ public class MetaNumericRangePropertyEditor extends MetaCustomPropertyEditor imp
 	/** プロパティエディタ */
 	private MetaPropertyEditor editor;
 
+	/** FromのNull許容フラグ */
+	private boolean inputNullFrom;
+
 	/** Toプロパティエディタ */
 	private MetaPropertyEditor toEditor;
 
 	/** ToプロパティID */
 	private String toPropertyId;
+
+	/** ToのNull許容フラグ */
+	private boolean inputNullTo;
+
+	/** 同値許容フラグ */
+	private boolean equivalentInput;
 
 	/** エラーメッセージ */
 	private String errorMessage;
@@ -102,6 +111,21 @@ public class MetaNumericRangePropertyEditor extends MetaCustomPropertyEditor imp
 	}
 
 	/**
+	 *  FromのNull許容フラグを取得します。
+	 * @return inputNullFrom
+	 */
+	public boolean getInputNullFrom() {
+		return inputNullFrom;
+	}
+
+	/**
+	 * @param FromのNull許容フラグをセットする
+	 */
+	public void setInputNullFrom(boolean inputNullFrom) {
+		this.inputNullFrom = inputNullFrom;
+	}
+
+	/**
 	 * Toプロパティエディタを取得します。
 	 * @return Toプロパティエディタ
 	 */
@@ -129,6 +153,34 @@ public class MetaNumericRangePropertyEditor extends MetaCustomPropertyEditor imp
 	 */
 	public void setToPropertyId(String toPropertyId) {
 		this.toPropertyId = toPropertyId;
+	}
+
+	/**
+	 * @return inputNullFrom
+	 */
+	public boolean getInputNullTo() {
+		return inputNullTo;
+	}
+
+	/**
+	 * @param ToのNull許容フラグをセットする
+	 */
+	public void setInputNullTo(boolean inputNullTo) {
+		this.inputNullTo = inputNullTo;
+	}
+
+	/**
+	 * @return equivalentInput
+	 */
+	public boolean getEquivalentInput() {
+		return equivalentInput;
+	}
+
+	/**
+	 * @param 同値の登録の許容フラグをセットする
+	 */
+	public void setEquivalentInput(boolean equivalentInput) {
+		this.equivalentInput = equivalentInput;
 	}
 
 	/**
@@ -178,6 +230,10 @@ public class MetaNumericRangePropertyEditor extends MetaCustomPropertyEditor imp
 			toEditor.applyConfig(e.getToEditor());
 		}
 
+		setInputNullFrom(e.getInputNullFrom());
+		setInputNullTo(e.getInputNullTo());
+		setEquivalentInput(e.getEquivalentInput());
+
 		toPropertyId = convertId(e.getToPropertyName(), metaContext, entity);
 
 		if (toPropertyId == null) {
@@ -212,6 +268,10 @@ public class MetaNumericRangePropertyEditor extends MetaCustomPropertyEditor imp
 		if (toPropertyId != null) {
 			_editor.setToPropertyName(convertName(toPropertyId, metaContext, entity));
 		}
+
+		_editor.setInputNullFrom(inputNullFrom);
+		_editor.setInputNullTo(inputNullTo);
+		_editor.setEquivalentInput(equivalentInput);
 
 		_editor.setErrorMessage(errorMessage);
 		if (localizedErrorMessageList != null && !localizedErrorMessageList.isEmpty()) {

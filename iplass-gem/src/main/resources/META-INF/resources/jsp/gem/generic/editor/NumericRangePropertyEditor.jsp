@@ -101,11 +101,12 @@ String getObjectName(String prefix, EntityDefinition ed){
 	}
 
 %>
+<span class="numericRange">
 <span id="numericrange_<c:out value="<%=fromKey%>" />">
 <jsp:include page="<%=path%>" />
 </span>
 <%
-	// to
+	 // to
 	if (StringUtil.isNotBlank(editor.getToPropertyName()) && OutputType.SEARCHCONDITION != type) {
 		// toがnullになるのは存在しないプロパティ名を指定or削除された場合等
 		Object toPropValue = ( entity != null ) ? entity.getValue(editor.getToPropertyName()) : null;
@@ -125,9 +126,11 @@ String getObjectName(String prefix, EntityDefinition ed){
 		request.setAttribute(Constants.EDITOR_PROP_VALUE, toPropValue);
 		request.setAttribute(Constants.EDITOR_PROPERTY_DEFINITION, toPd);
 		String toKey = toEditor.getPropertyName().replaceAll("\\.", "_");
+
+		String dash = GemResourceBundleUtil.resourceString("api.util.Range");
 %>
 <span id="numericrange_<c:out value="<%=toKey%>" />">
-～
+<c:out value="<%=dash %>"></c:out>
 <jsp:include page="<%=path%>" />
 </span>
 <%
@@ -136,6 +139,7 @@ String getObjectName(String prefix, EntityDefinition ed){
 	String nameKey = prefix + fromName + "_" + editor.getToPropertyName();
 
 %>
+</span>
 <jsp:include page="ErrorMessage.jsp">
 	<jsp:param value="<%=nameKey%>" name="propName" />
 </jsp:include>

@@ -1799,6 +1799,9 @@ span.success, span.error {
     color: #f00; }
     .formArchive p.error span.error {
       padding-bottom: 0; }
+  .formArchive .numericRange input {
+    width: 48% !important;
+    margin-left: 4px; }
 
 .tbl-section {
   margin-bottom: 20px; }
@@ -1815,6 +1818,9 @@ span.success, span.error {
     margin: 2px 0;
     padding: 2px 0;
     width: 100%; }
+    .tbl-section .box-scroll .numericRange input {
+      width: 45% !important;
+      margin-left: 4px; }
   .tbl-section select {
     width: 100%;
     height: 24px;
@@ -2078,6 +2084,10 @@ a + .binaryDelete {
   display: inline-block;
   padding: 2px 0;
   margin: 2px 0; }
+
+.bulk-edit .numericRange input {
+  width: 45% !important;
+  margin-left: 4px; }
 
 /* カレンダー */
 .fc {

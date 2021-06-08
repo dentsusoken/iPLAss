@@ -683,27 +683,54 @@ public class MultiBulkCommandContext extends RegistrationCommandContext {
 	private void checkNumericRange(NumericRangePropertyEditor editor, Entity entity, String fromName, String toName, String errorPrefix) {
 		Number from = entity.getValue(fromName);
 		Number to = entity.getValue(editor.getToPropertyName());
-		if (from != null && to != null){
-			BigDecimal from_tmp = null;
-			BigDecimal to_tmp = null;
-			boolean result = false;
-			if (from instanceof Double) {
-				from_tmp = new BigDecimal(from.doubleValue());
-			} else if (from instanceof Long) {
-				from_tmp = new BigDecimal(from.longValue());
-			} else if (from instanceof BigDecimal) {
-				from_tmp = (BigDecimal) from;
-			}
+		BigDecimal from_tmp = null;
+		BigDecimal to_tmp = null;
+		boolean result = false;
 
-			if (to instanceof Double) {
-				to_tmp = new BigDecimal(to.doubleValue());
-			} else if (to instanceof Long) {
-				to_tmp = new BigDecimal(to.longValue());
-			} else if (from instanceof BigDecimal) {
-				to_tmp = (BigDecimal) to;
-			}
+		if (from instanceof Double) {
+			from_tmp = new BigDecimal(from.doubleValue());
+		} else if (from instanceof Long) {
+			from_tmp = new BigDecimal(from.longValue());
+		} else if (from instanceof BigDecimal) {
+			from_tmp = (BigDecimal) from;
+		}
 
-			result = (from_tmp.compareTo(to_tmp) > 0) ? true : false;
+		if (to instanceof Double) {
+			to_tmp = new BigDecimal(to.doubleValue());
+		} else if (to instanceof Long) {
+			to_tmp = new BigDecimal(to.longValue());
+		} else if (from instanceof BigDecimal) {
+			to_tmp = (BigDecimal) to;
+		}
+
+		if (from_tmp == null && to_tmp != null) {
+			if (!editor.getInputNullFrom()) {
+				String errorMessage = TemplateUtil.getMultilingualString(editor.getErrorMessage(), editor.getLocalizedErrorMessageList());
+				if (StringUtil.isBlank(errorMessage )) {
+					errorMessage = resourceString("command.generic.bulk.BulkCommandContext.inputNumericRangeErr");
+				}
+				ValidateError e = new ValidateError();
+				e.setPropertyName(errorPrefix + fromName + "_" + editor.getToPropertyName());//fromだけだとメッセージが変なとこに出るので細工
+				e.addErrorMessage(errorMessage);
+				getErrors().add(e);
+			}
+		} else if (from_tmp != null && to_tmp == null) {
+			if (!editor.getInputNullTo()) {
+				String errorMessage = TemplateUtil.getMultilingualString(editor.getErrorMessage(), editor.getLocalizedErrorMessageList());
+				if (StringUtil.isBlank(errorMessage )) {
+					errorMessage = resourceString("command.generic.bulk.BulkCommandContext.inputNumericRangeErr");
+				}
+				ValidateError e = new ValidateError();
+				e.setPropertyName(errorPrefix + fromName + "_" + editor.getToPropertyName());//fromだけだとメッセージが変なとこに出るので細工
+				e.addErrorMessage(errorMessage);
+				getErrors().add(e);
+			}
+		} else if (from_tmp != null && to_tmp != null) {
+			if (editor.getEquivalentInput()) {
+				result = (from_tmp.compareTo(to_tmp) > 0) ? true : false;
+			} else {
+				result = (from_tmp.compareTo(to_tmp) >= 0) ? true : false;
+			}
 
 			if (result) {
 				String errorMessage = TemplateUtil.getMultilingualString(editor.getErrorMessage(), editor.getLocalizedErrorMessageList());
