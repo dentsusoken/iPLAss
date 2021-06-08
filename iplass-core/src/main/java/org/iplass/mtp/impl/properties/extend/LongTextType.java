@@ -34,6 +34,7 @@ import org.iplass.mtp.entity.query.value.ValueExpression;
 import org.iplass.mtp.entity.query.value.primary.EntityField;
 import org.iplass.mtp.entity.query.value.primary.Function;
 import org.iplass.mtp.entity.query.value.primary.Literal;
+import org.iplass.mtp.impl.datastore.StoreService;
 import org.iplass.mtp.impl.entity.EntityContext;
 import org.iplass.mtp.impl.entity.EntityHandler;
 import org.iplass.mtp.impl.entity.MetaEntity;
@@ -50,6 +51,7 @@ import org.iplass.mtp.spi.ServiceRegistry;
 public class LongTextType extends ComplexWrapperType {
 	private static final long serialVersionUID = -4263828374127798455L;
 	private static final int hash = 26;
+	private static final int META_PART_LENGTH = 21;
 
 	public static final String LOB_STORE_NAME = "longTextStore";
 	public static final String LOB_NAME = "_LongText";
@@ -130,12 +132,14 @@ public class LongTextType extends ComplexWrapperType {
 			//値の保存
 			if (extendTypeValue != null && ((String) extendTypeValue).length() != 0) {
 				LongText newVal = new LongText(-1, (String) extendTypeValue);
-				if (!newVal.isInlineStore()) {
+				int inlineStoreMaxLength = inlineStoreMaxLength(eh);
+				
+				if (!newVal.isInlineStore(inlineStoreMaxLength)) {
 					LobHandler lm = LobHandler.getInstance(LOB_STORE_NAME);
 					Lob bin = lm.createBinaryData(LOB_NAME, "text/plain", eh.getMetaData().getId(), ph.getId(), oid, version);
 					bin.setByte(((String) extendTypeValue).getBytes("utf-8"));
 					newVal.lobId = bin.getLobId();
-					newVal.trimOrClearText();
+					newVal.trimOrClearText(inlineStoreMaxLength);
 				}
 				return newVal.toStringExpression();
 			} else {
@@ -185,12 +189,22 @@ public class LongTextType extends ComplexWrapperType {
 		return new LongTextTypeLoadAdapter();
 	}
 
+	private int inlineStoreMaxLength(EntityHandler eh) {
+		int dataStoreStringMaxLength = LongText.storeService.getDataStore().stringPropertyStoreMaxLength(eh.getMetaData().getStoreMapping());
+		if (dataStoreStringMaxLength < 0) {
+			return LongText.service.getLongTextInlineStoreMaxLength();
+		} else {
+			return Math.min(LongText.service.getLongTextInlineStoreMaxLength(), dataStoreStringMaxLength - META_PART_LENGTH);
+		}
+	}
+	
 
 	public static class LongText {
 
 		private static final char[] SPACE = {' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' '};
 
 		private static PropertyService service = ServiceRegistry.getRegistry().getService(PropertyService.class);
+		private static StoreService storeService = ServiceRegistry.getRegistry().getService(StoreService.class);
 
 		//LongTextの格納パターン
 		//L=             xxx,T=hogehogeパターン。xxxは固定16桁スペース埋め。検索可能にするため。
@@ -214,8 +228,8 @@ public class LongTextType extends ComplexWrapperType {
 		private LongText(String stringExpression) {
 			if (stringExpression.startsWith("L=")) {
 				lobId = Long.parseLong(stringExpression.substring(2, 18).trim());
-				if (stringExpression.length() > 21) {
-					text = stringExpression.substring(21);
+				if (stringExpression.length() > META_PART_LENGTH) {
+					text = stringExpression.substring(META_PART_LENGTH);
 				}
 			} else {
 				lobId = -1;
@@ -233,20 +247,20 @@ public class LongTextType extends ComplexWrapperType {
 			return sb.toString();
 		}
 
-		private boolean isInlineStore() {
+		private boolean isInlineStore(int inlineStoreMaxLength) {
 			if (text == null) {
 				return true;
 			}
-			if (text.length() <= service.getLongTextInlineStoreMaxLength()) {
+			if (text.length() <= inlineStoreMaxLength) {
 				return true;
 			}
 			return false;
 		}
 
-		private void trimOrClearText() {
+		private void trimOrClearText(int inlineStoreMaxLength) {
 			if (service.isRemainInlineText()) {
-				if (text != null && text.length() > service.getLongTextInlineStoreMaxLength()) {
-					text = text.substring(0, service.getLongTextInlineStoreMaxLength() + 1);
+				if (text != null && text.length() > inlineStoreMaxLength) {
+					text = text.substring(0, inlineStoreMaxLength);
 				}
 			} else {
 				text = null;
@@ -342,7 +356,7 @@ public class LongTextType extends ComplexWrapperType {
 	@Override
 	public ValueExpression translate(EntityField field) {
 		if (LongText.service.isRemainInlineText()) {
-			return new Function("SUBSTR", field, new Literal(Long.valueOf(22)));
+			return new Function("SUBSTR", field, new Literal(Long.valueOf(META_PART_LENGTH + 1)));
 		} else {
 			//呼び元でキャッチしているので、変更の際注意
 			throw new EntityRuntimeException("LongText Property can only placed main query's select clause. To use at other clause(eg:where condition...), turn on PropertyService's remainInlineText property of config file.");

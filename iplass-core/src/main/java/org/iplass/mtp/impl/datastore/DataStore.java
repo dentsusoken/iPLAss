@@ -22,15 +22,16 @@ package org.iplass.mtp.impl.datastore;
 
 import org.iplass.mtp.impl.datastore.strategy.ApplyMetaDataStrategy;
 import org.iplass.mtp.impl.datastore.strategy.EntityStoreStrategy;
+import org.iplass.mtp.impl.entity.MetaStoreMapping;
 import org.iplass.mtp.spi.ServiceInitListener;
 
 public abstract class DataStore implements ServiceInitListener<StoreService> {
 	
 	public abstract ApplyMetaDataStrategy getApplyMetaDataStrategy();
 	public abstract EntityStoreStrategy getEntityStoreStrategy();
-//	public abstract LobStoreStrategy getLobStoreStrategy();
 	
 	public abstract MetaEntityStore newEntityStoreInstance();
 	public abstract Class<? extends MetaEntityStore> getEntityStoreType();
 	
+	public abstract int stringPropertyStoreMaxLength(MetaStoreMapping metaStoreMapping);
 }

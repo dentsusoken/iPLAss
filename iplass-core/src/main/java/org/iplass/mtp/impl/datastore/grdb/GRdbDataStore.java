@@ -36,6 +36,7 @@ import org.iplass.mtp.impl.datastore.grdb.strategy.GRdbEntityStoreStrategy;
 import org.iplass.mtp.impl.datastore.strategy.ApplyMetaDataStrategy;
 import org.iplass.mtp.impl.datastore.strategy.EntityStoreStrategy;
 import org.iplass.mtp.impl.entity.MetaSchemalessRdbStoreMapping;
+import org.iplass.mtp.impl.entity.MetaStoreMapping;
 import org.iplass.mtp.impl.rdb.adapter.RdbAdapter;
 import org.iplass.mtp.impl.rdb.adapter.RdbAdapterService;
 import org.iplass.mtp.spi.Config;
@@ -152,5 +153,11 @@ public class GRdbDataStore extends RdbDataStore {
 			name = metaMapping.getStorageSpace();
 		}
 		return getStorageSpaceMapOrDefault(name);
+	}
+
+	@Override
+	public int stringPropertyStoreMaxLength(MetaStoreMapping metaStoreMapping) {
+		StorageSpaceMap ssm = getStorageSpaceMapOrDefault((MetaSchemalessRdbStoreMapping) metaStoreMapping);
+		return ssm.getVarcharColumnLength();
 	}
 }

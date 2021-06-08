@@ -49,6 +49,8 @@ public class StorageSpaceMap {
 	private boolean customPartition;
 	
 	private TableAllocator tableAllocator = new HashingTableAllocator();
+	
+	private int varcharColumnLength = -1;
 
 	public String generateTableNamePostfix(int tenantId, String metaId) {
 		if (tableCount == 0) {
@@ -285,6 +287,14 @@ public class StorageSpaceMap {
 
 	public void setTableAllocator(TableAllocator tableAllocator) {
 		this.tableAllocator = tableAllocator;
+	}
+
+	public int getVarcharColumnLength() {
+		return varcharColumnLength;
+	}
+
+	public void setVarcharColumnLength(int varcharColumnLength) {
+		this.varcharColumnLength = varcharColumnLength;
 	}
 
 }
