@@ -11,7 +11,7 @@ dependencies {
 	compile 'commons-codec:commons-codec:1.11'
 
 	//apache http clients
-	compile(group: 'org.apache.httpcomponents', name: 'httpmime', version:'4.5.2') {
+	compile(group: 'org.apache.httpcomponents', name: 'httpmime', version:'4.5.13') {
 		//use jcl-over-slf4j
 		exclude(group: 'commons-logging', module: 'commons-logging')
 	}
