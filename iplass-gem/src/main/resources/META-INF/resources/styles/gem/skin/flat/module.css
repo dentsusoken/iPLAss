@@ -1818,9 +1818,6 @@ span.success, span.error {
     margin: 2px 0;
     padding: 2px 0;
     width: 100%; }
-    .tbl-section .box-scroll .numericRange input {
-      width: 45% !important;
-      margin-left: 4px; }
   .tbl-section select {
     width: 100%;
     height: 24px;
@@ -1846,6 +1843,9 @@ span.success, span.error {
       margin: 0; }
     .tbl-section td.section-data .list-add textarea {
       margin: 0; }
+    .tbl-section td.section-data .numericRange input {
+      width: 45% !important;
+      margin-left: 4px; }
   .tbl-section .cke {
     margin: 2px 0; }
 

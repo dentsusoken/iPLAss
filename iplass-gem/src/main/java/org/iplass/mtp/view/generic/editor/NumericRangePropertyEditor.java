@@ -32,6 +32,7 @@ import org.iplass.adminconsole.view.annotation.IgnoreField;
 import org.iplass.adminconsole.view.annotation.InputType;
 import org.iplass.adminconsole.view.annotation.MetaFieldInfo;
 import org.iplass.adminconsole.view.annotation.generic.EntityViewField;
+import org.iplass.adminconsole.view.annotation.generic.FieldReferenceType;
 import org.iplass.mtp.definition.LocalizedStringDefinition;
 import org.iplass.mtp.view.generic.Jsp;
 import org.iplass.mtp.view.generic.Jsps;
@@ -87,7 +88,9 @@ public class NumericRangePropertyEditor extends CustomPropertyEditor implements 
 			description="入力値にNullを許可するか設定します。",
 			descriptionKey="generic_editor_NumericRangePropertyEditor_inputNullFromDescriptionKey"
 	)
-	@EntityViewField()
+	@EntityViewField(
+			referenceTypes={FieldReferenceType.SEARCHCONDITION, FieldReferenceType.DETAIL}
+	)
 	private boolean inputNullFrom;
 
 	/** Toプロパティ名 */
@@ -130,7 +133,9 @@ public class NumericRangePropertyEditor extends CustomPropertyEditor implements 
 			description="入力値にNullを許可するか設定します。",
 			descriptionKey="generic_editor_NumericRangePropertyEditor_inputNullToDescriptionKey"
 	)
-	@EntityViewField()
+	@EntityViewField(
+			referenceTypes={FieldReferenceType.SEARCHCONDITION, FieldReferenceType.DETAIL}
+	)
 	private boolean inputNullTo;
 
 	/** 同値の入力を許容するか*/
@@ -142,7 +147,9 @@ public class NumericRangePropertyEditor extends CustomPropertyEditor implements 
 			description="入力値に同値を許可するか設定します。",
 			descriptionKey="generic_editor_NumericRangePropertyEditor_equivalentInputDescriptionKey"
 	)
-	@EntityViewField()
+	@EntityViewField(
+			referenceTypes={FieldReferenceType.SEARCHCONDITION, FieldReferenceType.DETAIL}
+	)
 	private boolean equivalentInput;
 
 	/** エラーメッセージ */

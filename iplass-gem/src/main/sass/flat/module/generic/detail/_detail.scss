@@ -167,11 +167,6 @@
 		margin: 2px 0;
 		padding: 2px 0;
 		width: 100%;
-
-		.numericRange input{
-			width: 45% !important;
-			margin-left: 4px;
-		}
 	}
 	input[type=text] {
 		@extend %extend_gdd_2;
@@ -215,6 +210,10 @@
 			textarea {
 				margin: 0;
 			}
+		}
+		.numericRange input{
+			width: 45% !important;
+			margin-left: 4px;
 		}
 	}
 	.cke {

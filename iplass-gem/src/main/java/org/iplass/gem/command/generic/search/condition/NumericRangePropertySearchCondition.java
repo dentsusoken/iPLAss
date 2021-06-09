@@ -27,10 +27,6 @@ import org.iplass.mtp.entity.definition.PropertyDefinition;
 import org.iplass.mtp.entity.query.condition.Condition;
 import org.iplass.mtp.entity.query.condition.expr.And;
 import org.iplass.mtp.entity.query.condition.expr.Or;
-import org.iplass.mtp.entity.query.condition.predicate.Equals;
-import org.iplass.mtp.entity.query.condition.predicate.Greater;
-import org.iplass.mtp.entity.query.condition.predicate.IsNull;
-import org.iplass.mtp.entity.query.condition.predicate.LesserEqual;
 import org.iplass.mtp.view.generic.editor.NumericRangePropertyEditor;
 import org.iplass.mtp.view.generic.editor.PropertyEditor;
 
@@ -71,8 +67,6 @@ public class NumericRangePropertySearchCondition extends PropertySearchCondition
 	@Override
 	public List<Condition> convertNormalCondition() {
 		List<Condition> conditions = new ArrayList<Condition>();
-		List<Condition> _conditions = new ArrayList<Condition>();
-		List<Condition> conditionsResult = new ArrayList<Condition>();
 		String parentName = "";
 		Object[] obl = (Object[]) getValue();
 		//From-To検索
@@ -80,51 +74,33 @@ public class NumericRangePropertySearchCondition extends PropertySearchCondition
 		boolean inputNullFrom = getEditor().getInputNullFrom();
 		boolean inputNullTo = getEditor().getInputNullTo();
 		boolean equivalentInput = getEditor().getEquivalentInput();
+		Or or = new Or();
 
 		if (obl.length > 0 && obl[0] != null) {
 			val = obl[0];
 		}
 		if (val != null) {
-			conditions.add(new LesserEqual(getPropertyName(), val));
-
-
 			if (getParent() != null && getEditor().getToPropertyName().indexOf(".") == -1) {
 				parentName =  getParent()  + ".";
 			}
-
-			conditions.add(new Greater(parentName + getEditor().getToPropertyName(), val));
-			}
-
-		_conditions.add(new And(conditions));
+			or.addExpression(new And().lte(getPropertyName(), val).gt(parentName + getEditor().getToPropertyName(), val));
+		}
 
 		if (inputNullFrom) {
-			List<Condition> conditionsFrom = new ArrayList<Condition>();
-			conditionsFrom.add(new IsNull(getPropertyName()));
-			conditionsFrom.add(new Greater(parentName + getEditor().getToPropertyName(), val));
-
-			_conditions.add(new And(conditionsFrom));
+			or.addExpression(new And().isNull(getPropertyName()).gt(parentName + getEditor().getToPropertyName(), val));
 		}
 
 		if (inputNullTo) {
-			List<Condition> conditionsTo = new ArrayList<Condition>();
-			conditionsTo.add(new LesserEqual(getPropertyName(), val));
-			conditionsTo.add(new IsNull(parentName + getEditor().getToPropertyName()));
-
-			_conditions.add(new And(conditionsTo));
+			or.addExpression(new And().lte(getPropertyName(), val).isNull(parentName + getEditor().getToPropertyName()));
 		}
 
 		if (equivalentInput) {
-			List<Condition> conditionsEqual = new ArrayList<Condition>();
-			conditionsEqual.add(new Equals(getPropertyName(), val));
-			conditionsEqual.add(new Equals(parentName + getEditor().getToPropertyName(), val));
-
-			_conditions.add(new And(conditionsEqual));
+			or.addExpression(new And().eq(getPropertyName(), val).eq(parentName + getEditor().getToPropertyName(), val));
 		}
 
-		conditionsResult.add(new Or(_conditions));
+		conditions.add(or);
 
-		//return conditions;
-		return conditionsResult;
+		return conditions;
 	}
 
 	@Override
