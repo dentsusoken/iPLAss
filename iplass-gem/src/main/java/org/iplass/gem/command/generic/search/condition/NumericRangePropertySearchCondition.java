@@ -71,8 +71,8 @@ public class NumericRangePropertySearchCondition extends PropertySearchCondition
 		Object[] obl = (Object[]) getValue();
 		//From-To検索
 		Object val = null;
-		boolean inputNullFrom = getEditor().getInputNullFrom();
-		boolean inputNullTo = getEditor().getInputNullTo();
+		boolean inputNullFrom = getEditor().isInputNullFrom();
+		boolean inputNullTo = getEditor().isInputNullTo();
 		boolean equivalentInput = getEditor().getEquivalentInput();
 		Or or = new Or();
 
@@ -84,20 +84,19 @@ public class NumericRangePropertySearchCondition extends PropertySearchCondition
 				parentName =  getParent()  + ".";
 			}
 			or.addExpression(new And().lte(getPropertyName(), val).gt(parentName + getEditor().getToPropertyName(), val));
-		}
 
-		if (inputNullFrom) {
-			or.addExpression(new And().isNull(getPropertyName()).gt(parentName + getEditor().getToPropertyName(), val));
-		}
+			if (inputNullFrom) {
+				or.addExpression(new And().isNull(getPropertyName()).gt(parentName + getEditor().getToPropertyName(), val));
+			}
 
-		if (inputNullTo) {
-			or.addExpression(new And().lte(getPropertyName(), val).isNull(parentName + getEditor().getToPropertyName()));
-		}
+			if (inputNullTo) {
+				or.addExpression(new And().lte(getPropertyName(), val).isNull(parentName + getEditor().getToPropertyName()));
+			}
 
-		if (equivalentInput) {
-			or.addExpression(new And().eq(getPropertyName(), val).eq(parentName + getEditor().getToPropertyName(), val));
+			if (equivalentInput) {
+				or.addExpression(new And().eq(getPropertyName(), val).eq(parentName + getEditor().getToPropertyName(), val));
+			}
 		}
-
 		conditions.add(or);
 
 		return conditions;

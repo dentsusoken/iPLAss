@@ -464,7 +464,9 @@ public class ReferencePropertySearchCondition extends PropertySearchCondition {
 					}
 				}
 			}
-		} else {
+		} else if (nest.getEditor() instanceof RangePropertyEditor) {
+			return (((RangePropertyEditor) nest.getEditor()).getToPropertyName()).equals(propName);
+		}else {
 			return nest.getPropertyName().equals(propName);
 		}
 		return false;

@@ -230,8 +230,8 @@ public class MetaNumericRangePropertyEditor extends MetaCustomPropertyEditor imp
 			toEditor.applyConfig(e.getToEditor());
 		}
 
-		setInputNullFrom(e.getInputNullFrom());
-		setInputNullTo(e.getInputNullTo());
+		setInputNullFrom(e.isInputNullFrom());
+		setInputNullTo(e.isInputNullTo());
 		setEquivalentInput(e.getEquivalentInput());
 
 		toPropertyId = convertId(e.getToPropertyName(), metaContext, entity);

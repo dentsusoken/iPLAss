@@ -267,7 +267,7 @@
 	//選択画面でバージョン検索を許可するか(編集画面の選択時のみ渡される)
 	String permitVersionedSelectStr = request.getParameter(Constants.SELECT_VERSIONED_ENABLED);
 	boolean permitVersionedSelect = permitVersionedSelectStr != null ? Boolean.valueOf(permitVersionedSelectStr) : false;
-	
+
 	//特定バージョン指定
 	String specVersion = request.getParameter(Constants.SEARCH_SPEC_VERSION);
 	if (specVersion == null) specVersion = "";
@@ -1121,6 +1121,15 @@ $(function() {
 %>
 <option value="<c:out value="<%=propName%>"/>" class="<c:out value="<%=optClass%>" />" <c:out value="<%=selected%>" />><c:out value="<%=displayLabel%>" /></option>
 <%
+					if (pi.getEditor() instanceof NumericRangePropertyEditor) {
+						NumericRangePropertyEditor toPi = (NumericRangePropertyEditor) pi.getEditor();
+						String toPropName = toPi.getToPropertyName();
+						String todisplayLabel = displayLabel + "_To";
+						String toSelected = checkDefaultValue(defaultSearchCond, searchCond, condPropName, toPropName, "selected");
+%>
+<option value="<c:out value="<%=toPropName%>"/>" class="<c:out value="<%=optClass%>" />" <c:out value="<%=toSelected%>" />><c:out value="<%=todisplayLabel%>" /></option>
+<%
+					}
 				}
 			}
 %>

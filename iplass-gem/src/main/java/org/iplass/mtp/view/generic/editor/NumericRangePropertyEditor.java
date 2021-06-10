@@ -89,7 +89,7 @@ public class NumericRangePropertyEditor extends CustomPropertyEditor implements 
 			descriptionKey="generic_editor_NumericRangePropertyEditor_inputNullFromDescriptionKey"
 	)
 	@EntityViewField(
-			referenceTypes={FieldReferenceType.SEARCHCONDITION, FieldReferenceType.DETAIL}
+			referenceTypes={FieldReferenceType.SEARCHCONDITION, FieldReferenceType.DETAIL, FieldReferenceType.BULK}
 	)
 	private boolean inputNullFrom;
 
@@ -134,7 +134,7 @@ public class NumericRangePropertyEditor extends CustomPropertyEditor implements 
 			descriptionKey="generic_editor_NumericRangePropertyEditor_inputNullToDescriptionKey"
 	)
 	@EntityViewField(
-			referenceTypes={FieldReferenceType.SEARCHCONDITION, FieldReferenceType.DETAIL}
+			referenceTypes={FieldReferenceType.SEARCHCONDITION, FieldReferenceType.DETAIL, FieldReferenceType.BULK}
 	)
 	private boolean inputNullTo;
 
@@ -148,7 +148,7 @@ public class NumericRangePropertyEditor extends CustomPropertyEditor implements 
 			descriptionKey="generic_editor_NumericRangePropertyEditor_equivalentInputDescriptionKey"
 	)
 	@EntityViewField(
-			referenceTypes={FieldReferenceType.SEARCHCONDITION, FieldReferenceType.DETAIL}
+			referenceTypes={FieldReferenceType.SEARCHCONDITION, FieldReferenceType.DETAIL, FieldReferenceType.BULK}
 	)
 	private boolean equivalentInput;
 
@@ -214,7 +214,7 @@ public class NumericRangePropertyEditor extends CustomPropertyEditor implements 
 	/**
 	 * @return inputNullFrom
 	 */
-	public boolean getInputNullFrom() {
+	public boolean isInputNullFrom() {
 		return inputNullFrom;
 	}
 
@@ -254,9 +254,9 @@ public class NumericRangePropertyEditor extends CustomPropertyEditor implements 
 	}
 
 	/**
-	 * @return inputNullFrom
+	 * @return inputNullTo
 	 */
-	public boolean getInputNullTo() {
+	public boolean isInputNullTo() {
 		return inputNullTo;
 	}
 

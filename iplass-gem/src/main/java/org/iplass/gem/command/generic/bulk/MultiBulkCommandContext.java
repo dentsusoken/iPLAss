@@ -687,9 +687,13 @@ public class MultiBulkCommandContext extends RegistrationCommandContext {
 		BigDecimal to_tmp = castNumericRangeNumber(to);
 
 		if (from_tmp == null && to_tmp != null) {
-			setValidateErrorMessage(editor, fromName, errorPrefix, editor.getInputNullFrom(), false);
+			if (!editor.isInputNullFrom()) {
+				setValidateErrorMessage(editor, fromName, errorPrefix, "command.generic.bulk.BulkCommandContext.inputNumericRangeErr");
+			}
 		} else if (from_tmp != null && to_tmp == null) {
-			setValidateErrorMessage(editor, fromName, errorPrefix, editor.getInputNullTo(), false);
+			if (!editor.isInputNullTo()) {
+				setValidateErrorMessage(editor, fromName, errorPrefix, "command.generic.bulk.BulkCommandContext.inputNumericRangeErr");
+			}
 		} else if (from_tmp != null && to_tmp != null) {
 			boolean result = false;
 
@@ -698,7 +702,9 @@ public class MultiBulkCommandContext extends RegistrationCommandContext {
 			} else {
 				result = (from_tmp.compareTo(to_tmp) >= 0) ? true : false;
 			}
-			setValidateErrorMessage(editor, fromName, errorPrefix, true, result);
+			if (result) {
+				setValidateErrorMessage(editor, fromName, errorPrefix, "command.generic.bulk.BulkCommandContext.invalidNumericRange");
+			}
 		}
 	}
 
@@ -728,26 +734,15 @@ public class MultiBulkCommandContext extends RegistrationCommandContext {
 	 * @param inputNullFlag
 	 * @param comparisonFlag
 	 */
-	private void setValidateErrorMessage(NumericRangePropertyEditor editor, String fromName, String errorPrefix, boolean inputNullFlag, boolean comparisonFlag) {
-		if (!inputNullFlag) {
-			String errorMessage = TemplateUtil.getMultilingualString(editor.getErrorMessage(), editor.getLocalizedErrorMessageList());
-			if (StringUtil.isBlank(errorMessage )) {
-				errorMessage = resourceString("command.generic.bulk.BulkCommandContext.inputNumericRangeErr");
-			}
-			ValidateError e = new ValidateError();
-			e.setPropertyName(errorPrefix + fromName + "_" + editor.getToPropertyName());//fromだけだとメッセージが変なとこに出るので細工
-			e.addErrorMessage(errorMessage);
-			getErrors().add(e);
-		} else if(comparisonFlag) {
-			String errorMessage = TemplateUtil.getMultilingualString(editor.getErrorMessage(), editor.getLocalizedErrorMessageList());
-			if (StringUtil.isBlank(errorMessage )) {
-				errorMessage = resourceString("command.generic.bulk.BulkCommandContext.invalidNumericRange");
-			}
-			ValidateError e = new ValidateError();
-			e.setPropertyName(errorPrefix + fromName + "_" + editor.getToPropertyName());//fromだけだとメッセージが変なとこに出るので細工
-			e.addErrorMessage(errorMessage);
-			getErrors().add(e);
+	private void setValidateErrorMessage(NumericRangePropertyEditor editor, String fromName, String errorPrefix, String resourceStringKey) {
+		String errorMessage = TemplateUtil.getMultilingualString(editor.getErrorMessage(), editor.getLocalizedErrorMessageList());
+		if (StringUtil.isBlank(errorMessage )) {
+			errorMessage = resourceString(resourceStringKey);
 		}
+		ValidateError e = new ValidateError();
+		e.setPropertyName(errorPrefix + fromName + "_" + editor.getToPropertyName());//fromだけだとメッセージが変なとこに出るので細工
+		e.addErrorMessage(errorMessage);
+		getErrors().add(e);
 	}
 
 

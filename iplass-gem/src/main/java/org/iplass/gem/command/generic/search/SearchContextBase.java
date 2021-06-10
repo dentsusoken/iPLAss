@@ -316,23 +316,20 @@ public abstract class SearchContextBase implements SearchContext, CreateSearchRe
 
 		List<PropertyItem> properties = new ArrayList<>();
 		for (PropertyItem property : filteredList) {
-			if (property.getEditor() instanceof DateRangePropertyEditor) {
-				//日付範囲の場合FromとToを分離しておく
-				DateRangePropertyEditor editor = (DateRangePropertyEditor) property.getEditor();
+			if (property.getEditor() instanceof RangePropertyEditor) {
+				//範囲系の場合FromとToを分離しておく
+				RangePropertyEditor editor = (RangePropertyEditor) property.getEditor();
 				PropertyItem from = ObjectUtil.deepCopy(property);
-				from.setEditor(editor.getEditor());
+				if (editor instanceof DateRangePropertyEditor) {
+					from.setEditor(editor.getEditor());
+				}
 				properties.add(from);
 
-				//参照の項目を直接D&Dしてる場合にToにつけるプレフィックスを取得
-				String prefix = "";
-				int dotIndex = from.getPropertyName().indexOf(".");
-				if (dotIndex != -1) {
-					prefix = from.getPropertyName().substring(0, dotIndex + 1);
-				}
-
 				PropertyItem to = ObjectUtil.deepCopy(property);
-				to.setPropertyName(prefix + editor.getToPropertyName());
-				to.setEditor(editor.getToEditor() != null ? editor.getToEditor() : editor.getEditor());
+				to.setPropertyName(editor.getToPropertyName());
+				if (editor instanceof DateRangePropertyEditor) {
+					to.setEditor(editor.getToEditor() != null ? editor.getToEditor() : editor.getEditor());
+				}
 				properties.add(to);
 			} else {
 				properties.add(property);
