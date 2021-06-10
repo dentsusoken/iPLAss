@@ -71,7 +71,7 @@ ext {
 		'org.slf4j:log4j-over-slf4j': '1.7.26',
 		'ch.qos.logback:logback-classic': '1.2.3',
 		
-		'org.bouncycastle:bcmail-jdk15on': '1.66',
+		'org.bouncycastle:bcmail-jdk15on': '1.69',
 		
 		'org.jgroups:jgroups': '4.0.19.Final',
 		
