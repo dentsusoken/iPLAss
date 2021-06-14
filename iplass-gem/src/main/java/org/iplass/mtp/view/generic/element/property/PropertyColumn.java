@@ -34,6 +34,7 @@ import org.iplass.mtp.view.generic.RequiredDisplayType;
 import org.iplass.mtp.view.generic.TextAlign;
 import org.iplass.mtp.view.generic.ViewConst;
 import org.iplass.mtp.view.generic.editor.PropertyEditor;
+import org.iplass.mtp.view.generic.element.CsvItem;
 
 /**
  * 検索結果一覧用のプロパティ情報
@@ -43,7 +44,7 @@ import org.iplass.mtp.view.generic.editor.PropertyEditor;
 @Jsps({
 	@Jsp(path="/jsp/gem/generic/element/property/PropertyColumn.jsp", key=ViewConst.DESIGN_TYPE_GEM)
 })
-public class PropertyColumn extends PropertyBase {
+public class PropertyColumn extends PropertyBase implements CsvItem {
 
 	/** シリアルバージョンUID */
 	private static final long serialVersionUID = -98567336076608090L;
@@ -93,6 +94,16 @@ public class PropertyColumn extends PropertyBase {
 	private NullOrderType nullOrderType;
 
 
+	/** CSVの出力 */
+	@MetaFieldInfo(
+			displayName="CSVに出力する",
+			displayNameKey="generic_element_property_PropertyColumn_outputCsvDisplaNameKey",
+			inputType=InputType.CHECKBOX,
+			displayOrder=2150,
+			description="CSVに出力するかを設定します。",
+			descriptionKey="generic_element_property_PropertyColumn_outputCsvDescriptionKey"
+	)
+	private boolean outputCsv = true;
 
 
 	/** 一括更新プロパティエディタ */
@@ -163,6 +174,23 @@ public class PropertyColumn extends PropertyBase {
 	 */
 	public void setNullOrderType(NullOrderType nullOrderType) {
 		this.nullOrderType = nullOrderType;
+	}
+
+	/**
+	 * CSVに出力するかを取得します。
+	 * @return CSVに出力するか
+	 */
+	@Override
+	public boolean isOutputCsv() {
+		return outputCsv;
+	}
+
+	/**
+	 * CSVに出力するかを設定します。
+	 * @param outputCsv CSVに出力するか
+	 */
+	public void setOutputCsv(boolean outputCsv) {
+		this.outputCsv = outputCsv;
 	}
 
 	/**

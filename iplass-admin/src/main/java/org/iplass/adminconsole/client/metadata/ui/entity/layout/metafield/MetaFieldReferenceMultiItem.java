@@ -106,7 +106,7 @@ public class MetaFieldReferenceMultiItem extends MetaFieldCanvasItem {
 		// フィールドの値がnullなら空のリストを詰めておく
 		boolean isValueNull = pane.getValue(info.getName()) == null;
 		@SuppressWarnings("unchecked")
-		final List<Refrectable> valueList = isValueNull ? new ArrayList<Refrectable>() : (List<Refrectable>) pane.getValue(info.getName());
+		final List<Refrectable> valueList = isValueNull ? new ArrayList<>() : (List<Refrectable>) pane.getValue(info.getName());
 		if (isValueNull) {
 			pane.setValue(info.getName(), (Serializable) valueList);
 		}
@@ -194,11 +194,14 @@ public class MetaFieldReferenceMultiItem extends MetaFieldCanvasItem {
 		@Override
 		public void onSuccess(AnalysisListDataResult result) {
 
-			List<ListGridField> fieldList = new ArrayList<ListGridField>();
+			List<ListGridField> fieldList = new ArrayList<>();
 			for (FieldInfo info : result.getFields()) {
+				// 複数型と参照型は表示しない
 				if (!info.isMultiple() && info.getInputType() != InputType.REFERENCE
 						&& info.getInputType() != InputType.SCRIPT && info.getInputType() != InputType.MULTI_LANG_LIST) {
-					// 複数型と参照型は表示しない
+					if (!pane.isVisileField(info)) {
+						continue;
+					}
 					String displayName = pane.getDisplayName(info);
 					fieldList.add(new ListGridField(simpleName + "." + info.getName(), displayName));
 				}
@@ -241,7 +244,7 @@ public class MetaFieldReferenceMultiItem extends MetaFieldCanvasItem {
 
 			Refrectable fieldValue = (Refrectable) record.getAttributeAsObject(RECORD_ATTRIBUTE_VALUE);
 			String className = fieldValue.getClass().getName();
-			final MetaFieldSettingDialog dialog = pane.createSubDialog(className, (Refrectable) fieldValue, info);
+			final MetaFieldSettingDialog dialog = pane.createSubDialog(className, fieldValue, info);
 			dialog.setOkHandler(new MetaFieldUpdateHandler() {
 
 				@Override
@@ -323,7 +326,7 @@ public class MetaFieldReferenceMultiItem extends MetaFieldCanvasItem {
 
 			SelectItem item = new MtpSelectItem();
 			item.setTitle(AdminClientMessageUtil.getString("ui_metadata_common_MetaFieldSettingPane_type"));
-			LinkedHashMap<String, String> valueMap = new LinkedHashMap<String, String>();
+			LinkedHashMap<String, String> valueMap = new LinkedHashMap<>();
 			for (Name clsName : names) {
 				valueMap.put(clsName.getName(), clsName.getDisplayName());
 			}

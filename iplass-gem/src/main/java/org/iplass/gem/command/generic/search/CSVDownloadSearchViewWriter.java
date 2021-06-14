@@ -306,6 +306,11 @@ public class CSVDownloadSearchViewWriter implements ResultStreamWriter {
 		return context.getDisplayLabel(propName);
 	}
 
+	/**
+	 * SearchQueryInterrupterHandlerを実行し、Entityを検索する。
+	 * UserPropertyEditorの設定されているプロパティに対して名称を取得する。
+	 * 検索結果をCSVDownloadPredicateに渡し、CSVを出力する。
+	 */
 	private class CSVDownloadTransPredicate {
 
 		private SearchQueryInterrupterHandler handler;
@@ -516,7 +521,7 @@ public class CSVDownloadSearchViewWriter implements ResultStreamWriter {
 							}
 						}
 					}
-					if (itc.hasNext()) {	//	次がある場合、カンマを挿入
+					if (itc.hasNext()) {
 						writer.writeComma();
 					}
 				}
@@ -546,7 +551,7 @@ public class CSVDownloadSearchViewWriter implements ResultStreamWriter {
 
 						outputMultipleValue(pd, propName, multi, array);
 
-						if (itc.hasNext()) {	//	次がある場合、カンマを挿入
+						if (itc.hasNext()) {
 							writer.writeComma();
 						}
 
@@ -563,7 +568,7 @@ public class CSVDownloadSearchViewWriter implements ResultStreamWriter {
 									writer.writeComma();
 								}
 								writer.writeText(reference.getName());
-								if (itc.hasNext()) {	//	次がある場合、カンマを挿入
+								if (itc.hasNext()) {
 									writer.writeComma();
 								}
 							}
@@ -571,13 +576,13 @@ public class CSVDownloadSearchViewWriter implements ResultStreamWriter {
 							BinaryReference bin = (BinaryReference) value;
 							if (!section.isNonOutputBinaryRef()) {
 								writer.writeText(bin.getName());
-								if (itc.hasNext()) {	//	次がある場合、カンマを挿入
+								if (itc.hasNext()) {
 									writer.writeComma();
 								}
 							}
 						} else if (pd instanceof SelectProperty && context.isOutputCodeValue()) {
 							writeValue(value, pd);
-							if (itc.hasNext()) {	//	次がある場合、カンマを挿入
+							if (itc.hasNext()) {
 								writer.writeComma();
 							}
 						} else if (pd instanceof ExpressionProperty && context.isOutputCodeValue()) {
@@ -588,12 +593,12 @@ public class CSVDownloadSearchViewWriter implements ResultStreamWriter {
 							} else {
 								writer.writeText(getToString(value));
 							}
-							if (itc.hasNext()) {	//	次がある場合、カンマを挿入
+							if (itc.hasNext()) {
 								writer.writeComma();
 							}
 						} else {
 							writer.writeText(getToString(value));
-							if (itc.hasNext()) {	//	次がある場合、カンマを挿入
+							if (itc.hasNext()) {
 								writer.writeComma();
 							}
 						}
@@ -614,7 +619,7 @@ public class CSVDownloadSearchViewWriter implements ResultStreamWriter {
 								}
 							}
 						}
-						if (itc.hasNext()) {	//	次がある場合、カンマを挿入
+						if (itc.hasNext()) {
 							writer.writeComma();
 						}
 					} else {
@@ -624,12 +629,12 @@ public class CSVDownloadSearchViewWriter implements ResultStreamWriter {
 								if (!section.isNonOutputOid()) {
 									writer.writeComma();
 								}
-								if (itc.hasNext()) {	//	次がある場合、カンマを挿入
+								if (itc.hasNext()) {
 									writer.writeComma();
 								}
 							}
 						} else {
-							if (itc.hasNext()) {	//	次がある場合、カンマを挿入
+							if (itc.hasNext()) {
 								writer.writeComma();
 							}
 						}
@@ -645,7 +650,7 @@ public class CSVDownloadSearchViewWriter implements ResultStreamWriter {
 
 			if (pd instanceof SelectProperty) {
 				outputSelectValue(propName, (SelectProperty) pd, multi, array, context.isOutputCodeValue());
-			}else {
+			} else {
 				//SelectProperty以外は通常出力
 				if (context.getMultipleFormat() == MultipleFormat.EACH_COLUMN) {
 					outputMultipleValueSplit(pd, multi, array);

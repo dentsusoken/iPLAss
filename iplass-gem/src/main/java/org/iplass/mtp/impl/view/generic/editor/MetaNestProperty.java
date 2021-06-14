@@ -1,19 +1,19 @@
 /*
  * Copyright (C) 2011 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
- * 
+ *
  * Unless you have purchased a commercial license,
  * the following license terms apply:
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
@@ -55,19 +55,19 @@ public class MetaNestProperty implements MetaData {
 	private String displayLabel;
 
 	/** 多言語設定情報 */
-	private List<MetaLocalizedString> localizedDisplayLabelList = new ArrayList<MetaLocalizedString>();
+	private List<MetaLocalizedString> localizedDisplayLabelList = new ArrayList<>();
 
 	/** 説明 */
 	private String description;
 
 	/** 説明の多言語設定情報 */
-	private List<MetaLocalizedString> localizedDescriptionList = new ArrayList<MetaLocalizedString>();
+	private List<MetaLocalizedString> localizedDescriptionList = new ArrayList<>();
 
 	/** ツールチップ */
 	private String tooltip;
 
 	/** ツールチップの多言語設定情報 */
-	private List<MetaLocalizedString> localizedTooltipList = new ArrayList<MetaLocalizedString>();
+	private List<MetaLocalizedString> localizedTooltipList = new ArrayList<>();
 
 	/** 列幅 */
 	private int width;
@@ -89,6 +89,9 @@ public class MetaNestProperty implements MetaData {
 
 	/** 詳細検索で必須条件にする */
 	private boolean requiredDetail;
+
+	/** CSVの出力 */
+	private boolean outputCsv = true;
 
 	/** プロパティエディタ */
 	private MetaPropertyEditor editor;
@@ -273,6 +276,22 @@ public class MetaNestProperty implements MetaData {
 	}
 
 	/**
+	 * CSVに出力するかを取得します。
+	 * @return CSVに出力するか
+	 */
+	public boolean isOutputCsv() {
+		return outputCsv;
+	}
+
+	/**
+	 * CSVに出力するかを設定します。
+	 * @param outputCsv CSVに出力するか
+	 */
+	public void setOutputCsv(boolean outputCsv) {
+		this.outputCsv = outputCsv;
+	}
+
+	/**
 	 * プロパティエディタを取得します。
 	 * @return プロパティエディタ
 	 */
@@ -371,6 +390,7 @@ public class MetaNestProperty implements MetaData {
 		requiredDisplayType = property.getRequiredDisplayType();
 		requiredNormal = property.isRequiredNormal();
 		requiredDetail = property.isRequiredDetail();
+		outputCsv = property.isOutputCsv();
 
 		MetaPropertyEditor editor = MetaPropertyEditor.createInstance(property.getEditor());
 
@@ -428,6 +448,7 @@ public class MetaNestProperty implements MetaData {
 		property.setRequiredDisplayType(requiredDisplayType);
 		property.setRequiredNormal(requiredNormal);
 		property.setRequiredDetail(requiredDetail);
+		property.setOutputCsv(outputCsv);
 		if (editor != null) {
 			property.setEditor(editor.currentConfig(ph.getName()));
 		}

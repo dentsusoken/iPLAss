@@ -221,23 +221,27 @@ public class CsvDownloadSearchContext extends SearchContextBase {
 			}
 		} else {
 			List<PropertyColumn> properties = context.getResultSection().getElements().stream()
-					.filter(e -> e instanceof PropertyColumn).map(e -> (PropertyColumn) e)
+					.filter(e -> e instanceof PropertyColumn)
+					.map(e -> (PropertyColumn) e)
+					.filter(column -> column.isOutputCsv())
 					.collect(Collectors.toList());
 			for (PropertyColumn col : properties) {
 				if (EntityViewUtil.isDisplayElement(getDefName(), col.getElementRuntimeId(), OutputType.SEARCHRESULT, null)) {
 					String propName = col.getPropertyName();
 					if (col.getEditor() instanceof ReferencePropertyEditor) {
 						List<NestProperty> nest = ((ReferencePropertyEditor)col.getEditor()).getNestProperties();
-						//参照の時だけオーバーライドしたメソッド呼出し→参照自身のOID,NAMEを出さない
-						addSearchProperty(cols, propName, nest.toArray(new NestProperty[nest.size()]));
+						addColumn(cols, propName, nest.toArray(new NestProperty[nest.size()]));
 					} else if (col.getEditor() instanceof JoinPropertyEditor) {
-						addSearchProperty(cols, propName);
+						addColumn(cols, propName);
 						JoinPropertyEditor je = (JoinPropertyEditor) col.getEditor();
 						for (NestProperty nest : je.getProperties()) {
-							addSearchProperty(cols, nest.getPropertyName());
+							if (!nest.isOutputCsv()) {
+								continue;
+							}
+							addColumn(cols, nest.getPropertyName());
 						}
 					} else {
-						addSearchProperty(cols, propName);
+						addColumn(cols, propName);
 					}
 				}
 			}
@@ -427,42 +431,34 @@ public class CsvDownloadSearchContext extends SearchContextBase {
 		}
 	}
 
-	@Override
-	protected void addSearchProperty(ArrayList<String> select, String propName, NestProperty... nest) {
+	private void addColumn(ArrayList<String> cols, String propName, NestProperty... nest) {
 
-		// 参照プロパティの直接指定（例：ref001.oid）の場合
-		if (propName.contains(".")) {
-			select.add(propName);
-			return;
-		}
-
-		//参照の取得項目をCSV出力用にカスタマイズする為オーバーライド
 		PropertyDefinition pd = getPropertyDefinition(propName);
 		if (pd instanceof ReferenceProperty) {
 			if (nest != null && nest.length > 0) {
 				EntityDefinition red = getReferenceEntityDefinition((ReferenceProperty) pd);
 				for (NestProperty np : nest) {
+					if (!np.isOutputCsv()) {
+						continue;
+					}
 					PropertyDefinition rpd = red.getProperty(np.getPropertyName());
 					if (rpd != null) {
 						if (Entity.OID.equals(np.getPropertyName())) {
 							if (!getConditionSection().isNonOutputOid()) {
-//								if (!select.contains(propName + "." + Entity.OID)) {
-//									select.add(propName + "." + Entity.OID);
-//								}
-								select.add(propName + "." + Entity.OID);
+								cols.add(propName + "." + Entity.OID);
 							}
 						} else {
 							String nestPropName = propName + "." + np.getPropertyName();
 							if (!(rpd instanceof ReferenceProperty)) {
 								//参照以外は項目に追加、参照の場合はネストの項目で判断
-								if (!select.contains(nestPropName)) {
-									select.add(nestPropName);
+								if (!cols.contains(nestPropName)) {
+									cols.add(nestPropName);
 								}
 							}
 							if (np.getEditor() instanceof ReferencePropertyEditor) {
 								ReferencePropertyEditor rpe = (ReferencePropertyEditor) np.getEditor();
 								List<NestProperty> _nest = rpe.getNestProperties();
-								addSearchProperty(select, nestPropName, _nest.toArray(new NestProperty[_nest.size()]));
+								addColumn(cols, nestPropName, _nest.toArray(new NestProperty[_nest.size()]));
 							}
 						}
 					}
@@ -471,31 +467,21 @@ public class CsvDownloadSearchContext extends SearchContextBase {
 				//ネストがなければ参照自身を出力
 				if (!getConditionSection().isNonOutputReference()) {
 					if (!getConditionSection().isNonOutputOid()) {
-//						if (!select.contains(propName + "." + Entity.OID)) {
-//							select.add(propName + "." + Entity.OID);
-//							//nestのプロパティ名だけだと表示名で表示するときに不都合なので変換用の情報を保持しとく
-//							referenceDisplayLabelMap.put(propName + "." + Entity.OID, new ReferenceDisplayLabelInfo(propName, true));
-//						}
-						select.add(propName + "." + Entity.OID);
+						cols.add(propName + "." + Entity.OID);
 						//nestのプロパティ名だけだと表示名で表示するときに不都合なので変換用の情報を保持しとく
 						referenceDisplayLabelMap.put(propName + "." + Entity.OID, new ReferenceDisplayLabelInfo(propName, true));
 					}
-//					if (!select.contains(propName + "." + Entity.NAME)) {
-//						select.add(propName + "." + Entity.NAME);
-//						//nestのプロパティ名だけだと表示名で表示するときに不都合なので変換用の情報を保持しとく
-//						referenceDisplayLabelMap.put(propName + "." + Entity.NAME, new ReferenceDisplayLabelInfo(propName, false));
-//					}
-					select.add(propName + "." + Entity.NAME);
+					cols.add(propName + "." + Entity.NAME);
 					//nestのプロパティ名だけだと表示名で表示するときに不都合なので変換用の情報を保持しとく
 					referenceDisplayLabelMap.put(propName + "." + Entity.NAME, new ReferenceDisplayLabelInfo(propName, false));
 				}
 			}
 		} else if (pd instanceof BinaryProperty) {
 			if (!getConditionSection().isNonOutputBinaryRef()) {
-				if (!select.contains(pd.getName())) select.add(pd.getName());
+				if (!cols.contains(pd.getName())) cols.add(pd.getName());
 			}
 		} else {
-			if (!select.contains(pd.getName())) select.add(pd.getName());
+			if (!cols.contains(pd.getName())) cols.add(pd.getName());
 		}
 	}
 

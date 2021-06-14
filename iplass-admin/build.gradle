@@ -394,6 +394,7 @@ task copyGwtTransSrc(type: Sync) {
 
 		include 'mtp/view/generic/element/BlankSpace.java'
 		include 'mtp/view/generic/element/Button.java'
+		include 'mtp/view/generic/element/CsvItem.java'
 		include 'mtp/view/generic/element/DisplayType.java'
 		include 'mtp/view/generic/element/Element.java'
 		include 'mtp/view/generic/element/Link.java'
