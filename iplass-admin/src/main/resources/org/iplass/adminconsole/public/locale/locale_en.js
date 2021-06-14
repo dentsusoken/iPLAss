@@ -554,7 +554,7 @@ LocaleInfo.ui_metadata_entity_layout_DetailDropLayout_checkPropNotRefErr = "This
 LocaleInfo.ui_metadata_entity_layout_DetailDropLayout_failed = "Failed";
 LocaleInfo.ui_metadata_entity_layout_DetailDropLayout_failedToReadEntityDef = "Failed to read the Entity definition.";
 LocaleInfo.ui_metadata_entity_layout_DetailDropLayout_checkPropNotInRefErr = "This is not a property in the referenced.";
-LocaleInfo.ui_metadata_entity_layout_DetailDropLayout_displayLabel = "DisplayLabel";
+LocaleInfo.ui_metadata_entity_layout_DetailDropLayout_displayLabel = "Display Label";
 LocaleInfo.ui_metadata_entity_layout_DetailDropLayout_checkPropDefExistsErr = "Can not specify the properties that are defined in the Entity.";
 LocaleInfo.ui_metadata_entity_layout_DetailLayoutPane_viewSaveCautionComment = "Please save it for each view";
 LocaleInfo.ui_metadata_entity_layout_DetailLayoutPane_deleteLayoutCautionComment = "Delete all Layout definition(Search, Detail, Bulk) that is registered.";
@@ -1808,7 +1808,7 @@ LocaleInfo.generic_editor_JoinPropertyEditor_showNestPropertyErrorsDisplaNameKey
 LocaleInfo.generic_editor_JoinPropertyEditor_showNestPropertyErrorsDescriptionKey = "It displays validation error messages of nest properties together.";
 LocaleInfo.generic_editor_NestProperty_propertyNameDisplaNameKey = "Property name";
 LocaleInfo.generic_editor_NestProperty_propertyNameDescriptionKey = "Please specify the property name of a reference type.";
-LocaleInfo.generic_editor_NestProperty_DisplaNameKey = "Display name";
+LocaleInfo.generic_editor_NestProperty_DisplaNameKey = "Display Label";
 LocaleInfo.generic_editor_NestProperty_DescriptionKey = "If not set, the display name defined in the property is displayed.";
 LocaleInfo.generic_editor_NestProperty_localizedDisplayLabelListDisplaNameKey = "Multi-language setting";
 LocaleInfo.generic_editor_NestProperty_descriptionDisplaNameKey = "Description";
