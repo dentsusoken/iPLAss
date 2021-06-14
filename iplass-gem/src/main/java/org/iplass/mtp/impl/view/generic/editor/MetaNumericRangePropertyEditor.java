@@ -114,7 +114,7 @@ public class MetaNumericRangePropertyEditor extends MetaCustomPropertyEditor imp
 	 *  FromのNull許容フラグを取得します。
 	 * @return inputNullFrom
 	 */
-	public boolean getInputNullFrom() {
+	public boolean isInputNullFrom() {
 		return inputNullFrom;
 	}
 
@@ -158,7 +158,7 @@ public class MetaNumericRangePropertyEditor extends MetaCustomPropertyEditor imp
 	/**
 	 * @return inputNullFrom
 	 */
-	public boolean getInputNullTo() {
+	public boolean isInputNullTo() {
 		return inputNullTo;
 	}
 
@@ -172,7 +172,7 @@ public class MetaNumericRangePropertyEditor extends MetaCustomPropertyEditor imp
 	/**
 	 * @return equivalentInput
 	 */
-	public boolean getEquivalentInput() {
+	public boolean isEquivalentInput() {
 		return equivalentInput;
 	}
 

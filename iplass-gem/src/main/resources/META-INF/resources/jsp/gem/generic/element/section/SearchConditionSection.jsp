@@ -1121,8 +1121,8 @@ $(function() {
 %>
 <option value="<c:out value="<%=propName%>"/>" class="<c:out value="<%=optClass%>" />" <c:out value="<%=selected%>" />><c:out value="<%=displayLabel%>" /></option>
 <%
-					if (pi.getEditor() instanceof NumericRangePropertyEditor) {
-						NumericRangePropertyEditor toPi = (NumericRangePropertyEditor) pi.getEditor();
+					if (pi.getEditor() instanceof RangePropertyEditor) {
+						RangePropertyEditor toPi = (RangePropertyEditor) pi.getEditor();
 						String toPropName = toPi.getToPropertyName();
 						String todisplayLabel = displayLabel + "_To";
 						String toSelected = checkDefaultValue(defaultSearchCond, searchCond, condPropName, toPropName, "selected");

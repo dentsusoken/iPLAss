@@ -30,7 +30,7 @@
 <%@ page import="org.iplass.mtp.view.generic.editor.NestProperty"%>
 <%@ page import="org.iplass.mtp.view.generic.editor.ReferencePropertyEditor"%>
 <%@ page import="org.iplass.mtp.view.generic.editor.ReferencePropertyEditor.ReferenceDisplayType"%>
-<%@ page import="org.iplass.mtp.view.generic.editor.NumericRangePropertyEditor"%>
+<%@ page import="org.iplass.mtp.view.generic.editor.RangePropertyEditor"%>
 <%@ page import="org.iplass.mtp.view.generic.element.property.PropertyItem"%>
 <%@ page import="org.iplass.mtp.web.template.TemplateUtil"%>
 <%@ page import="org.iplass.mtp.ManagerLocator"%>
@@ -127,8 +127,8 @@ String checkDefaultValue(HashMap<String, Object> defaultSearchCond, String searc
 %>
 <option value="<c:out value="<%=npName%>"/>" class="<c:out value="<%=optClass%>" />" <c:out value="<%=selected%>" />><c:out value="<%=displayLabel%>" /></option>
 <%
-				if (np.getEditor() instanceof NumericRangePropertyEditor) {
-					NumericRangePropertyEditor toNp = (NumericRangePropertyEditor) np.getEditor();
+				if (np.getEditor() instanceof RangePropertyEditor) {
+					RangePropertyEditor toNp = (RangePropertyEditor) np.getEditor();
 					String toNpName = propName + "." + toNp.getToPropertyName();
 					String toDisplayLabel = displayLabel + "_To";
 					String toSelected = checkDefaultValue(defaultSearchCond, searchCond, condPropName, toNpName, "selected");
