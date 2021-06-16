@@ -60,7 +60,7 @@ import org.iplass.mtp.view.generic.editor.TimestampPropertyEditor;
 	@Jsp(path="/jsp/gem/generic/element/VirtualProperty.jsp", key=ViewConst.DESIGN_TYPE_GEM)
 })
 @FieldOrder(manual=true)
-public class VirtualPropertyItem extends Element {
+public class VirtualPropertyItem extends Element implements CsvItem {
 
 	private static final long serialVersionUID = 8040377351280643403L;
 
@@ -234,6 +234,17 @@ public class VirtualPropertyItem extends Element {
 	private TextAlign textAlign;
 
 
+	/** CSVの出力 */
+	@MetaFieldInfo(
+			displayName="CSVに出力する",
+			displayNameKey="generic_element_property_PropertyColumn_outputCsvDisplaNameKey",
+			inputType=InputType.CHECKBOX,
+			displayOrder=500,
+			description="CSVに出力するかを設定します。",
+			descriptionKey="generic_element_property_PropertyColumn_outputCsvDescriptionKey"
+	)
+	@EntityViewField(referenceTypes=FieldReferenceType.SEARCHRESULT)
+	private boolean outputCsv = false;
 
 
 	//参照とかバイナリとか、文字列から直接変換可能な値以外は扱わない
@@ -244,7 +255,8 @@ public class VirtualPropertyItem extends Element {
 			required=true,
 			inputType=InputType.REFERENCE,
 			referenceClass=PropertyEditor.class,
-			fixedReferenceClass={BooleanPropertyEditor.class, DatePropertyEditor.class, TimePropertyEditor.class,
+			fixedReferenceClass={
+				BooleanPropertyEditor.class, DatePropertyEditor.class, TimePropertyEditor.class,
 				TimestampPropertyEditor.class, DecimalPropertyEditor.class, IntegerPropertyEditor.class,
 				FloatPropertyEditor.class, SelectPropertyEditor.class, StringPropertyEditor.class, TemplatePropertyEditor.class},
 			displayOrder=1000,
@@ -483,7 +495,7 @@ public class VirtualPropertyItem extends Element {
 	 * @param localizedDisplayLabelList 多言語設定情報
 	 */
 	public void addLocalizedDisplayLabel(LocalizedStringDefinition localizedDisplayLabel) {
-		if (this.localizedDisplayLabelList == null) this.localizedDisplayLabelList = new ArrayList<LocalizedStringDefinition>();
+		if (this.localizedDisplayLabelList == null) this.localizedDisplayLabelList = new ArrayList<>();
 	    this.localizedDisplayLabelList.add(localizedDisplayLabel);
 	}
 
@@ -492,7 +504,7 @@ public class VirtualPropertyItem extends Element {
 	 * @param localizedDescriptionList 説明の多言語設定情報
 	 */
 	public void addLocalizedDescription(LocalizedStringDefinition localizedDescription) {
-		if (this.localizedDescriptionList == null) this.localizedDescriptionList = new ArrayList<LocalizedStringDefinition>();
+		if (this.localizedDescriptionList == null) this.localizedDescriptionList = new ArrayList<>();
 	    this.localizedDescriptionList.add(localizedDescription);
 	}
 
@@ -501,8 +513,25 @@ public class VirtualPropertyItem extends Element {
 	 * @param localizedTooltipList ツールチップの多言語設定情報
 	 */
 	public void addLocalizedTooltip(LocalizedStringDefinition localizedTooltip) {
-		if (this.localizedTooltipList == null) this.localizedTooltipList = new ArrayList<LocalizedStringDefinition>();
+		if (this.localizedTooltipList == null) this.localizedTooltipList = new ArrayList<>();
 	    this.localizedTooltipList.add(localizedTooltip);
+	}
+
+	/**
+	 * CSVに出力するかを取得します。
+	 * @return CSVに出力するか
+	 */
+	@Override
+	public boolean isOutputCsv() {
+		return outputCsv;
+	}
+
+	/**
+	 * CSVに出力するかを設定します。
+	 * @param outputCsv CSVに出力するか
+	 */
+	public void setOutputCsv(boolean outputCsv) {
+		this.outputCsv = outputCsv;
 	}
 
 }
