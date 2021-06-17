@@ -1799,9 +1799,6 @@ span.success, span.error {
     color: #f00; }
     .formArchive p.error span.error {
       padding-bottom: 0; }
-  .formArchive .numericRange input {
-    width: 48% !important;
-    margin-left: 4px; }
 
 .tbl-section {
   margin-bottom: 20px; }
@@ -1833,6 +1830,9 @@ span.success, span.error {
     vertical-align: top; }
     .tbl-section th.section-data.w-auto {
       width: auto; }
+  .tbl-section span.numericRange input {
+    width: 48%;
+    margin-left: 4px; }
   .tbl-section td.section-data {
     padding: 12px 10px;
     border: 1px solid #ddd;
@@ -1843,9 +1843,6 @@ span.success, span.error {
       margin: 0; }
     .tbl-section td.section-data .list-add textarea {
       margin: 0; }
-    .tbl-section td.section-data .numericRange input {
-      width: 45% !important;
-      margin-left: 4px; }
   .tbl-section .cke {
     margin: 2px 0; }
 
@@ -1860,6 +1857,9 @@ span.success, span.error {
   border: 1px solid #ddd;
   padding: 10px;
   vertical-align: top; }
+  .tbl-reference td .numericRange input {
+    width: 45%;
+    margin-left: 4px; }
 
 .tbl-reference .sel-btn {
   padding: 5px 10px;
@@ -2079,15 +2079,14 @@ a + .binaryDelete {
 
 .bulk-edit .tbl-section td.section-data {
   padding: 8px 10px; }
+  .bulk-edit .tbl-section td.section-data .numericRange input {
+    width: 44%;
+    margin-left: 4px; }
 
 .bulk-edit .tbl-section .data-label {
   display: inline-block;
   padding: 2px 0;
   margin: 2px 0; }
-
-.bulk-edit .numericRange input {
-  width: 45% !important;
-  margin-left: 4px; }
 
 /* カレンダー */
 .fc {

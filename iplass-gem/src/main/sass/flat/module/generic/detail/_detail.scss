@@ -146,10 +146,6 @@
 			padding-bottom: 0;
 		}
 	}
-	.numericRange input{
-		width: 48% !important;
-		margin-left: 4px;
-	}
 }
 .tbl-section {
 	margin-bottom: 20px;
@@ -196,6 +192,10 @@
 			width: auto;
 		}
 	}
+	span.numericRange input {
+		width: 48%;
+		margin-left: 4px;
+	}
 	td.section-data {
 		padding: 12px 10px;
 		border: 1px solid $color_alto_approx;
@@ -211,10 +211,7 @@
 				margin: 0;
 			}
 		}
-		.numericRange input{
-			width: 45% !important;
-			margin-left: 4px;
-		}
+
 	}
 	.cke {
 		margin: 2px 0;
@@ -232,6 +229,10 @@
 		border: 1px solid $color_alto_approx;
 		padding: 10px;
 		vertical-align: top;
+		.numericRange input {
+			width: 45%;
+			margin-left: 4px;
+		}
 	}
   .sel-btn {
     padding: 5px 10px;

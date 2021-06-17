@@ -161,7 +161,9 @@ public class NumericRangePropertyEditor extends CustomPropertyEditor implements 
 			multiLangField = "localizedErrorMessageList",
 			displayOrder=135
 	)
-	@EntityViewField()
+	@EntityViewField(
+			referenceTypes={FieldReferenceType.DETAIL, FieldReferenceType.BULK}
+	)
 	@MultiLang()
 	private String errorMessage;
 
