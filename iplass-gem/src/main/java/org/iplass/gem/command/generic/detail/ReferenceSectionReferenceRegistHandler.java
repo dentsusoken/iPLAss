@@ -100,7 +100,7 @@ public abstract class ReferenceSectionReferenceRegistHandler extends ReferenceRe
 
 	/**
 	 * 参照データ登録処理を行います。
-	 * 
+	 *
 	 * @param context      コンテキスト
 	 * @param inputEntity  画面で入力したデータ
 	 * @param loadedEntity ロードしたデータ
@@ -118,7 +118,7 @@ public abstract class ReferenceSectionReferenceRegistHandler extends ReferenceRe
 			// 多重度1の場合は1件だけなので、画面のデータがそのまま登録されるから問題なし
 			List<Entity> usList = references.stream().filter(r -> r.getEntity().getOid() == null).map(r -> r.getEntity()).collect(Collectors.toList());
 			List<Entity> loadedList = new ArrayList<>();
-			if (loadedEntity.getValue(rp.getName()) != null) {
+			if (loadedEntity != null && loadedEntity.getValue(rp.getName()) != null) {
 				Entity[] ary = loadedEntity.getValue(rp.getName());
 				loadedList.addAll(Arrays.asList(ary));
 			}
@@ -140,15 +140,15 @@ public abstract class ReferenceSectionReferenceRegistHandler extends ReferenceRe
 				applyRegistOption(val, updateProperties, ed);
 			}
 			setIndex(ed, val);
-			
+
 			setForceUpdate(val.getSection().isForceUpadte());
 			errors.addAll(registReference(context, val.getEntity(), updateProperties, rp.getName()));
 		}
 	}
-	
+
 	/**
 	 * 参照データ(被参照)登録処理を行います。
-	 * 
+	 *
 	 * @param context      コンテキスト
 	 * @param inputEntity  画面で入力したデータ
 	 * @param loadedEntity ロードしたデータ
@@ -172,7 +172,7 @@ public abstract class ReferenceSectionReferenceRegistHandler extends ReferenceRe
 					OutputType.EDIT, inputEntity) || val.getSection().isHideDetail()) {
 				continue;
 			}
-			
+
 			// セクション毎にnestpropertyが違う可能性があるので、それぞれ更新オプションを適用
 			// 参照セクションの場合、registOptionがnullになるのは新規作成のみ。新規作成時は、更新制御の対象外。
 			List<String> updateProperties = new ArrayList<>();
@@ -180,7 +180,7 @@ public abstract class ReferenceSectionReferenceRegistHandler extends ReferenceRe
 				applyRegistOption(val, updateProperties, ed);
 			}
 			setIndex(ed, val);
-			
+
 			// 被参照の場合はプロパティの値の方で元データを保持するため更新対象に追加
 			if (!updateProperties.contains(mappedBy)) {
 				updateProperties.add(mappedBy);
@@ -220,7 +220,7 @@ public abstract class ReferenceSectionReferenceRegistHandler extends ReferenceRe
 //			}
 //		}
 	}
-	
+
 	public void setIndex(EntityDefinition ed, ReferenceSectionValue val) {
 		if (val.getIndex() != null && StringUtil.isNotBlank(val.getSection().getOrderPropName())) {
 			// インデックスがあったらプロパティに設定
@@ -232,13 +232,13 @@ public abstract class ReferenceSectionReferenceRegistHandler extends ReferenceRe
 			}
 		}
 	}
-	
+
 	/** カスタム登録処理によるNestEntityの更新制御適用 */
 	protected void applyRegistOption(ReferenceSectionValue val, List<String> updateProperties, EntityDefinition ed) {
-		
+
 		// 更新対象のプロパティ設定
 		getUpdatePropertiesWithOption(updateProperties, val.getSection().getProperties(), ed);
-		
+
 		if (registOption.isSpecifiedAsReference() && !registOption.getSpecifiedUpdateNestProperties().isEmpty()) {
 			// Reference項目として更新可能且つ、NestされたEntityの個々のプロパティに対して、更新対象の指定がある場合
 			// データの追加は可能。新規Entityの更新不可項目はnullに設定。
@@ -269,7 +269,7 @@ public abstract class ReferenceSectionReferenceRegistHandler extends ReferenceRe
 
 	/**
 	 * 画面の入力データとロードしたデータから参照元の差分を取得します。
-	 * 
+	 *
 	 * @param entity       画面で入力したデータ
 	 * @param loadedEntity ロードしたデータ
 	 * @param pd           比較対象プロパティ
