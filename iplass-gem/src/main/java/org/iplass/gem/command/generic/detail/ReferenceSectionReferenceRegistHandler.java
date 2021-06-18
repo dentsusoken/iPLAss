@@ -104,7 +104,7 @@ public abstract class ReferenceSectionReferenceRegistHandler extends ReferenceRe
 			//多重度1の場合は1件だけなので、画面のデータがそのまま登録されるから問題なし
 			List<Entity> usList = references.stream().filter(r -> r.getEntity().getOid() == null).map(r -> r.getEntity()).collect(Collectors.toList());
 			List<Entity> loadedList = new ArrayList<>();
-			if (loadedEntity.getValue(rp.getName()) != null) {
+			if (loadedEntity != null && loadedEntity.getValue(rp.getName()) != null) {
 				Entity[] ary = loadedEntity.getValue(rp.getName());
 				loadedList.addAll(Arrays.asList(ary));
 			}
