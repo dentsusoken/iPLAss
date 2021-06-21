@@ -1,19 +1,19 @@
 /*
  * Copyright (C) 2014 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
- * 
+ *
  * Unless you have purchased a commercial license,
  * the following license terms apply:
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
@@ -47,7 +47,7 @@ public class MetaVirtualProperty extends MetaElement {
 	private String displayLabel;
 
 	/** 多言語設定情報 */
-	private List<MetaLocalizedString> localizedDisplayLabelList = new ArrayList<MetaLocalizedString>();
+	private List<MetaLocalizedString> localizedDisplayLabelList = new ArrayList<>();
 
 	/** クラス名 */
 	private String style;
@@ -56,13 +56,13 @@ public class MetaVirtualProperty extends MetaElement {
 	private String description;
 
 	/** 説明の多言語設定情報 */
-	private List<MetaLocalizedString> localizedDescriptionList = new ArrayList<MetaLocalizedString>();
+	private List<MetaLocalizedString> localizedDescriptionList = new ArrayList<>();
 
 	/** ツールチップ */
 	private String tooltip;
 
 	/** ツールチップの多言語設定情報 */
-	private List<MetaLocalizedString> localizedTooltipList = new ArrayList<MetaLocalizedString>();
+	private List<MetaLocalizedString> localizedTooltipList = new ArrayList<>();
 
 	/** 詳細編集非表示設定 */
 	private boolean hideDetail;
@@ -81,6 +81,9 @@ public class MetaVirtualProperty extends MetaElement {
 
 	/** テキストの配置 */
 	private TextAlign textAlign;
+
+	/** CSVの出力 */
+	private boolean outputCsv = false;
 
 	/**
 	 * プロパティ名を取得します。
@@ -306,6 +309,22 @@ public class MetaVirtualProperty extends MetaElement {
 	    this.textAlign = textAlign;
 	}
 
+	/**
+	 * CSVに出力するかを取得します。
+	 * @return CSVに出力するか
+	 */
+	public boolean isOutputCsv() {
+		return outputCsv;
+	}
+
+	/**
+	 * CSVに出力するかを設定します。
+	 * @param outputCsv CSVに出力するか
+	 */
+	public void setOutputCsv(boolean outputCsv) {
+		this.outputCsv = outputCsv;
+	}
+
 	@Override
 	public MetaVirtualProperty copy() {
 		return ObjectUtil.deepCopy(this);
@@ -326,6 +345,7 @@ public class MetaVirtualProperty extends MetaElement {
 		this.requiredDisplayType = property.getRequiredDisplayType();
 		this.width = property.getWidth();
 		this.textAlign = property.getTextAlign();
+		this.outputCsv = property.isOutputCsv();
 
 		MetaPropertyEditor editor = MetaPropertyEditor.createInstance(property.getEditor());
 		if (editor != null) {
@@ -359,6 +379,7 @@ public class MetaVirtualProperty extends MetaElement {
 		property.setRequiredDisplayType(requiredDisplayType);
 		property.setWidth(width);
 		property.setTextAlign(textAlign);
+		property.setOutputCsv(outputCsv);
 		if (editor != null) {
 			property.setEditor(editor.currentConfig(propertyName));
 		}
