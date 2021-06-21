@@ -203,6 +203,7 @@ public class VirtualPropertyItem extends Element implements CsvItem {
 					"NONE    : 必須属性を表示しない",
 			descriptionKey="generic_element_VirtualPropertyItem_requiredDisplayTypeDescriptionKey"
 	)
+	@EntityViewField(referenceTypes={FieldReferenceType.DETAIL})
 	private RequiredDisplayType requiredDisplayType;
 
 	/** 列幅 */
