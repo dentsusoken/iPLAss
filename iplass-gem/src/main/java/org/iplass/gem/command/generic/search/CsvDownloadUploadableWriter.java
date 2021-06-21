@@ -26,6 +26,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.iplass.gem.GemConfigService;
+import org.iplass.gem.command.generic.search.CsvDownloadSearchContext.CsvColumn;
 import org.iplass.mtp.entity.definition.EntityDefinition;
 import org.iplass.mtp.entity.definition.properties.SelectProperty;
 import org.iplass.mtp.impl.entity.csv.EntitySearchCsvWriter;
@@ -35,7 +36,6 @@ import org.iplass.mtp.spi.ServiceRegistry;
 import org.iplass.mtp.view.generic.SearchQueryContext;
 import org.iplass.mtp.view.generic.SearchQueryInterrupter.SearchQueryType;
 import org.iplass.mtp.view.generic.editor.SelectPropertyEditor;
-import org.iplass.mtp.view.generic.element.property.PropertyColumn;
 import org.iplass.mtp.view.generic.element.section.SearchConditionSection;
 import org.iplass.mtp.web.ResultStreamWriter;
 
@@ -71,7 +71,7 @@ public class CsvDownloadUploadableWriter implements ResultStreamWriter {
 		final Map<SelectProperty, Boolean> sortMap = new HashMap<>();
 
 		//Interrupter
-		final SearchQueryInterrupterHandler handler = context.getSearchQueryInterrupterHandler(true);
+		final SearchQueryInterrupterHandler handler = context.getSearchQueryInterrupterHandler();
 
 		//Writer生成
 		EntityWriteOption option = new EntityWriteOption()
@@ -85,16 +85,16 @@ public class CsvDownloadUploadableWriter implements ResultStreamWriter {
 					if (context.isNoDispName()) {
 						return "";
 					} else {
-						return "(" + context.getDisplayLabel(property.getName()) + ")";
+						return "(" + context.getColumnLabel(property.getName()) + ")";
 					}
 				})
 				.sortSelectValue(property -> {
 					//Selectプロパティをソートするか
 					return sortMap.computeIfAbsent(property, select -> {
 						boolean sortValue = false;
-						PropertyColumn pc = context.getPropertyColumn(select.getName());
-						if (pc != null && pc.getEditor() instanceof SelectPropertyEditor) {
-							SelectPropertyEditor spe = (SelectPropertyEditor)pc.getEditor();
+						CsvColumn column = context.getCsvColumn(select.getName());
+						if (column != null && column.getEditor() instanceof SelectPropertyEditor) {
+							SelectPropertyEditor spe = (SelectPropertyEditor)column.getEditor();
 							if (spe.isSortCsvOutputValue()) {
 								sortValue = true;
 							}

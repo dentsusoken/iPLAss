@@ -20,6 +20,11 @@
 
 package org.iplass.mtp.view.generic.element;
 
+import java.util.List;
+
+import org.iplass.mtp.definition.LocalizedStringDefinition;
+import org.iplass.mtp.view.generic.editor.PropertyEditor;
+
 /**
  * CSV出力アイテム
  */
@@ -31,5 +36,29 @@ public interface CsvItem {
 	 * @return true CSV出力する
 	 */
 	public boolean isOutputCsv();
+
+	/**
+	 * プロパティ名を取得します。
+	 * @return プロパティ名
+	 */
+	public String getPropertyName();
+
+	/**
+	 * プロパティエディタを取得します。
+	 * @return プロパティエディタ
+	 */
+	public PropertyEditor getEditor();
+
+	/**
+	 * 表示ラベルを取得します。
+	 * @return 表示時のラベル
+	 */
+	public String getDisplayLabel();
+
+	/**
+	 * 表示ラベルの多言語設定情報を取得します。
+	 * @return 表示ラベルの多言語設定情報
+	 */
+	public List<LocalizedStringDefinition> getLocalizedDisplayLabelList();
 
 }

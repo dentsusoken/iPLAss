@@ -270,6 +270,7 @@ public class VirtualPropertyItem extends Element implements CsvItem {
 	 * プロパティ名を取得します。
 	 * @return プロパティ名
 	 */
+	@Override
 	public String getPropertyName() {
 	    return propertyName;
 	}
@@ -286,6 +287,7 @@ public class VirtualPropertyItem extends Element implements CsvItem {
 	 * 画面表示時のラベルを取得します。
 	 * @return 画面表示時のラベル
 	 */
+	@Override
 	public String getDisplayLabel() {
 	    return displayLabel;
 	}
@@ -302,6 +304,7 @@ public class VirtualPropertyItem extends Element implements CsvItem {
 	 * 多言語設定情報を取得します。
 	 * @return 多言語設定情報
 	 */
+	@Override
 	public List<LocalizedStringDefinition> getLocalizedDisplayLabelList() {
 	    return localizedDisplayLabelList;
 	}
@@ -446,6 +449,7 @@ public class VirtualPropertyItem extends Element implements CsvItem {
 	 * プロパティエディタを取得します。
 	 * @return プロパティエディタ
 	 */
+	@Override
 	public PropertyEditor getEditor() {
 	    return editor;
 	}
