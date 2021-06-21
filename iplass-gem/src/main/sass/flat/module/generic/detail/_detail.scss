@@ -192,10 +192,6 @@
 			width: auto;
 		}
 	}
-	span.numericRange input {
-		width: 48%;
-		margin-left: 4px;
-	}
 	td.section-data {
 		padding: 12px 10px;
 		border: 1px solid $color_alto_approx;
@@ -216,6 +212,12 @@
 	.cke {
 		margin: 2px 0;
 	}
+	.tbl-reference{
+		.numericRange input {
+			width: 48%;
+			margin-left: 4px;
+		}
+	}
 }
 .tbl-reference {
 	th {
@@ -229,10 +231,6 @@
 		border: 1px solid $color_alto_approx;
 		padding: 10px;
 		vertical-align: top;
-		.numericRange input {
-			width: 45%;
-			margin-left: 4px;
-		}
 	}
   .sel-btn {
     padding: 5px 10px;
@@ -276,6 +274,9 @@
 	.timestamppicker-field {
 		white-space: nowrap;
 	}
+	.numericRange input {
+		width: 45%;
+		}
 }
 .detail_edit {
 	.tbl-section {

@@ -2,16 +2,20 @@
 	.tbl-section {
 		td.section-data {
 			padding: 8px 10px;
-
-			.numericRange input {
-				width: 44%;
-				margin-left: 4px;
-			}
 		}
 		.data-label {
 			display: inline-block;
 			padding: 2px 0;
 			margin: 2px 0;
+		}
+	}
+}
+.modal-body{
+	.tbl-section {
+		td.section-data {
+			.numericRange input {
+				width: 44%;
+			}
 		}
 	}
 }

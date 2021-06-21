@@ -47,7 +47,11 @@ String getObjectName(String prefix, EntityDefinition ed){
 
 	PropertyDefinition pd = ed.getProperty(propName);
 	ReferenceProperty rp = (ReferenceProperty) pd;
-	objName = rp.getObjectDefinitionName();
+	if (rp != null) {
+		objName = rp.getObjectDefinitionName();
+	} else {
+		return this.getObjectName(_propName, ed);
+	}
 
 	if (_propName.length() > 0) {
 		ed = ManagerLocator.getInstance().getManager(EntityDefinitionManager.class).get(objName);
