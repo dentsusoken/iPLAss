@@ -49,6 +49,7 @@ import org.iplass.mtp.view.generic.editor.StringPropertyEditor;
 import org.iplass.mtp.view.generic.editor.TemplatePropertyEditor;
 import org.iplass.mtp.view.generic.editor.TimePropertyEditor;
 import org.iplass.mtp.view.generic.editor.TimestampPropertyEditor;
+import org.iplass.mtp.view.generic.editor.UserPropertyEditor;
 
 /**
  * 詳細表示で表示可能な仮想プロパティ
@@ -259,7 +260,8 @@ public class VirtualPropertyItem extends Element implements CsvItem {
 			fixedReferenceClass={
 				BooleanPropertyEditor.class, DatePropertyEditor.class, TimePropertyEditor.class,
 				TimestampPropertyEditor.class, DecimalPropertyEditor.class, IntegerPropertyEditor.class,
-				FloatPropertyEditor.class, SelectPropertyEditor.class, StringPropertyEditor.class, TemplatePropertyEditor.class},
+				FloatPropertyEditor.class, SelectPropertyEditor.class, StringPropertyEditor.class,
+				TemplatePropertyEditor.class, UserPropertyEditor.class},
 			displayOrder=1000,
 			description="表示したい形式に合わせたプロパティエディタを指定してください。",
 			descriptionKey="generic_element_VirtualPropertyItem_editorDescriptionKey"
