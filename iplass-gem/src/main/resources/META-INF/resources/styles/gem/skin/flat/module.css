@@ -1842,9 +1842,11 @@ span.success, span.error {
       margin: 0; }
   .tbl-section .cke {
     margin: 2px 0; }
-  .tbl-section .tbl-reference .numericRange input {
+  .tbl-section .numericRange input {
     width: 48%;
     margin-left: 4px; }
+  .tbl-section .tbl-reference .numericRange input {
+    width: 45%; }
 
 .tbl-reference th {
   width: 180px;
@@ -1895,9 +1897,6 @@ span.success, span.error {
 
 .tbl-reference .timestamppicker-field {
   white-space: nowrap; }
-
-.tbl-reference .numericRange input {
-  width: 45%; }
 
 .detail_edit .tbl-section td.section-data {
   padding: 8px 10px; }
@@ -2077,6 +2076,9 @@ a + .binaryDelete {
     padding: 10px;
     vertical-align: top; }
 
+.modal-body .tbl-section td.section-data .numericRange input {
+  width: 44%; }
+
 .bulk-edit .tbl-section td.section-data {
   padding: 8px 10px; }
 
@@ -2084,9 +2086,6 @@ a + .binaryDelete {
   display: inline-block;
   padding: 2px 0;
   margin: 2px 0; }
-
-.modal-body .tbl-section td.section-data .numericRange input {
-  width: 44%; }
 
 /* カレンダー */
 .fc {

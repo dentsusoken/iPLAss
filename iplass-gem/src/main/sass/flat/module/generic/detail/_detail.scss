@@ -212,10 +212,13 @@
 	.cke {
 		margin: 2px 0;
 	}
-	.tbl-reference{
+	.numericRange input {
+		width: 48%;
+		margin-left: 4px;
+	}
+	.tbl-reference {
 		.numericRange input {
-			width: 48%;
-			margin-left: 4px;
+			width: 45%;
 		}
 	}
 }
@@ -274,9 +277,6 @@
 	.timestamppicker-field {
 		white-space: nowrap;
 	}
-	.numericRange input {
-		width: 45%;
-		}
 }
 .detail_edit {
 	.tbl-section {
@@ -524,5 +524,14 @@ a + .binaryDelete {
 		border: 1px solid $color_alto_approx;
 		padding: 10px;
 		vertical-align: top;
+	}
+}
+.modal-body{
+	.tbl-section {
+		td.section-data {
+			.numericRange input {
+				width: 44%;
+			}
+		}
 	}
 }
