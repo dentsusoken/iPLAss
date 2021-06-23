@@ -75,6 +75,8 @@ public class MysqlRdbAdaptor extends RdbAdapter {
 	private boolean useFractionalSecondsOnTimestamp = true;
 	private boolean supportOptimizerHint = false;
 	private boolean supportWindowFunction = false;
+	private boolean needMultiTableTrick;
+	private String multiTableTrickClauseForUpdate = ", (SELECT 1) dummy";
 
 	private boolean localTemporaryTableManageOutsideTransaction = false;
 	private boolean localTemporaryTableCreatedByDataSource = false;
@@ -871,4 +873,23 @@ public class MysqlRdbAdaptor extends RdbAdapter {
 
 		return sb.toString();
 	}
+
+	@Override
+	public boolean isNeedMultiTableTrick() {
+		return needMultiTableTrick;
+	}
+
+	public void setNeedMultiTableTrick(boolean needMultiTableTrick) {
+		this.needMultiTableTrick = needMultiTableTrick;
+	}
+
+	@Override
+	public String getMultiTableTrickClauseForUpdate() {
+		return multiTableTrickClauseForUpdate;
+	}
+
+	public void setMultiTableTrickClauseForUpdate(String multiTableTrickClauseForUpdate) {
+		this.multiTableTrickClauseForUpdate = multiTableTrickClauseForUpdate;
+	}
+
 }

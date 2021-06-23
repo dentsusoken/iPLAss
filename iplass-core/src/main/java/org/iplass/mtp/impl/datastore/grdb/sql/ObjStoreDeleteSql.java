@@ -91,8 +91,15 @@ public class ObjStoreDeleteSql extends UpdateSqlHandler {
 			DeleteCondition cond, RdbAdapter rdb,
 			EntityContext entityContext) {
 		StringBuilder sb = new StringBuilder();
-		sb.append("DELETE FROM ");
-		sb.append(((GRdbEntityStoreRuntime) eh.getEntityStoreRuntime()).OBJ_STORE());
+		String objStoreTableName = ((GRdbEntityStoreRuntime) eh.getEntityStoreRuntime()).OBJ_STORE();
+		if (rdb.isNeedMultiTableTrick()) {
+			sb.append("DELETE ");
+			sb.append(objStoreTableName);
+			sb.append(" FROM ");
+		} else {
+			sb.append("DELETE FROM ");
+		}
+		sb.append(objStoreTableName);
 		sb.append(" WHERE " + ObjStoreTable.TENANT_ID + "=");
 		sb.append(tenantId);
 		sb.append(" AND " + ObjStoreTable.OBJ_DEF_ID + "='");
@@ -156,8 +163,15 @@ public class ObjStoreDeleteSql extends UpdateSqlHandler {
 			RdbAdapter rdb,
 			EntityContext entityContext) {
 		StringBuilder sb = new StringBuilder();
-		sb.append("DELETE FROM ");
-		sb.append(((GRdbEntityStoreRuntime) eh.getEntityStoreRuntime()).OBJ_STORE());
+		String objStoreTableName = ((GRdbEntityStoreRuntime) eh.getEntityStoreRuntime()).OBJ_STORE();
+		if (rdb.isNeedMultiTableTrick()) {
+			sb.append("DELETE ");
+			sb.append(objStoreTableName);
+			sb.append(" FROM ");
+		} else {
+			sb.append("DELETE FROM ");
+		}
+		sb.append(objStoreTableName);
 		sb.append(" WHERE " + ObjStoreTable.TENANT_ID + "=");
 		sb.append(tenantId);
 		sb.append(" AND " + ObjStoreTable.OBJ_DEF_ID + "='");

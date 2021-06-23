@@ -459,6 +459,10 @@ public class ObjStoreUpdateSql extends UpdateSqlHandler {
 			multitableJoinClause(sb, tenantId, pageNo, eh, context, values, ((GRdbEntityStoreRuntime) eh.getEntityStoreRuntime()).OBJ_STORE(), rdbAdaptor);
 		}
 		
+		if (rdbAdaptor.isNeedMultiTableTrick()) {
+			sb.append(rdbAdaptor.getMultiTableTrickClauseForUpdate());
+		}
+		
 		sb.append(" SET ");
 
 		boolean isAdd = handlePropAndValforUpdateAll(tenantId, sb, eh, values, pageNo, rdbAdaptor, context);
@@ -501,6 +505,10 @@ public class ObjStoreUpdateSql extends UpdateSqlHandler {
 		
 		if (rdbAdaptor.getMultiTableUpdateMethod() == MultiTableUpdateMethod.DIRECT_JOIN) {
 			multitableJoinClause(sb, tenantId, pageNo, eh, context, values, ((GRdbEntityStoreRuntime) eh.getEntityStoreRuntime()).OBJ_STORE(), rdbAdaptor);
+		}
+		
+		if (rdbAdaptor.isNeedMultiTableTrick()) {
+			sb.append(rdbAdaptor.getMultiTableTrickClauseForUpdate());
 		}
 		
 		sb.append(" SET ");
@@ -555,6 +563,9 @@ public class ObjStoreUpdateSql extends UpdateSqlHandler {
 			sb.append("UPDATE ").append(mainTable);
 		} else {
 			sb.append("UPDATE ").append(((GRdbEntityStoreRuntime) eh.getEntityStoreRuntime()).OBJ_STORE()).append(" ").append(mainTable);
+		}
+		if (rdbAdaptor.isNeedMultiTableTrick()) {
+			sb.append(rdbAdaptor.getMultiTableTrickClauseForUpdate());
 		}
 		sb.append(" SET ");
 

@@ -641,4 +641,24 @@ public abstract class RdbAdapter {
 	 * @return ビュー作成DDL
 	 */
 	public abstract String toCreateViewDDL(String viewName, String selectSql, boolean withDropView);
+
+	/**
+	 * Multi-Table Trickを利用するか否かを指定。
+	 * MySQL用の設定項目。
+	 * 
+	 * @return
+	 */
+	public boolean isNeedMultiTableTrick() {
+		return false;
+	}
+
+	/**
+	 * Multi-Table Trickで利用する句。
+	 * MySQL用の設定項目。
+	 * 
+	 * @return
+	 */
+	public String getMultiTableTrickClauseForUpdate() {
+		return null;
+	}
 }

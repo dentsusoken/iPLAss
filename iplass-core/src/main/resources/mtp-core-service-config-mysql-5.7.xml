@@ -46,6 +46,8 @@
 					但し、localTemporaryTableCreatedByDataSourceにtrueを設定する場合は不要
 				localTemporaryTableCreatedByDataSource :
 					ローカル一時テーブルがデータソースで作成される場合はtrueを設定
+				needMultiTableTrick :
+					性能改善のため、update/delete時にMulti-Table Trickを利用するか否か。mysql8.0.20以前は有効化すること推奨
 		-->
 		<property name="adapter" class="org.iplass.mtp.impl.rdb.mysql.MysqlRdbAdaptor" inherit="false">
 			<property name="timestampMethod" value="NOW(3)" />
@@ -53,6 +55,7 @@
 			<property name="supportOptimizerHint" value="true" />
 			<property name="localTemporaryTableManageOutsideTransaction" value="false" />
 			<property name="localTemporaryTableCreatedByDataSource" value="false" />
+			<property name="needMultiTableTrick" value="true" />
 		</property>
 	</service>
 
