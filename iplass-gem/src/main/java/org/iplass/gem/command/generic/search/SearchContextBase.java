@@ -330,6 +330,7 @@ public abstract class SearchContextBase implements SearchContext, CreateSearchRe
 				if (editor instanceof DateRangePropertyEditor) {
 					to.setEditor(editor.getToEditor() != null ? editor.getToEditor() : editor.getEditor());
 				}
+				to.setHideNormalCondition(true);
 				properties.add(to);
 			} else {
 				properties.add(property);

@@ -131,7 +131,7 @@ String getObjectName(String prefix, EntityDefinition ed){
 		request.setAttribute(Constants.EDITOR_PROPERTY_DEFINITION, toPd);
 		String toKey = toEditor.getPropertyName().replaceAll("\\.", "_");
 
-		String dash = GemResourceBundleUtil.resourceString("api.util.Range");
+		String dash = GemResourceBundleUtil.resourceString("generic.editor.NumericRangePropertyEditor.range");
 %>
 <span id="numericrange_<c:out value="<%=toKey%>" />">
 <c:out value="<%=dash %>"></c:out>
