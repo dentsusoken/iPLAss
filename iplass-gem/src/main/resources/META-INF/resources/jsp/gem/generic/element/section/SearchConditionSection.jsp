@@ -316,6 +316,14 @@
 
 		defMap.put(propName, pd);
 
+		if (pi.getEditor() instanceof RangePropertyEditor) {
+			RangePropertyEditor toPi = (RangePropertyEditor) pi.getEditor();
+			String toPropName = toPi.getToPropertyName();
+			PropertyDefinition toPd = EntityViewUtil.getPropertyDefinition(toPropName, ed);
+
+			defMap.put(toPropName, toPd);
+		}
+
 		if (pi.getEditor() instanceof ReferencePropertyEditor) {
 			createReferencePropTypesMap((ReferencePropertyEditor) pi.getEditor(), propName, (ReferenceProperty) pd, propTypeMap);
 		} else {
@@ -1124,10 +1132,13 @@ $(function() {
 					if (pi.getEditor() instanceof RangePropertyEditor) {
 						RangePropertyEditor toPi = (RangePropertyEditor) pi.getEditor();
 						String toPropName = toPi.getToPropertyName();
-						String todisplayLabel = displayLabel + "_To";
+						PropertyDefinition toPd = defMap.get(toPropName);
+						String toDisplayLabel = toPd.getDisplayName();
+
+						toDisplayLabel = !(toPi.getToPropertyDisplayName() == null) ? toPi.getToPropertyDisplayName() : toDisplayLabel;
 						String toSelected = checkDefaultValue(defaultSearchCond, searchCond, condPropName, toPropName, "selected");
 %>
-<option value="<c:out value="<%=toPropName%>"/>" class="<c:out value="<%=optClass%>" />" <c:out value="<%=toSelected%>" />><c:out value="<%=todisplayLabel%>" /></option>
+<option value="<c:out value="<%=toPropName%>"/>" class="<c:out value="<%=optClass%>" />" <c:out value="<%=toSelected%>" />><c:out value="<%=toDisplayLabel%>" /></option>
 <%
 					}
 				}

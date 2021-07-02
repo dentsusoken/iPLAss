@@ -32,6 +32,7 @@ import org.iplass.adminconsole.view.annotation.IgnoreField;
 import org.iplass.adminconsole.view.annotation.InputType;
 import org.iplass.adminconsole.view.annotation.MetaFieldInfo;
 import org.iplass.adminconsole.view.annotation.generic.EntityViewField;
+import org.iplass.adminconsole.view.annotation.generic.FieldReferenceType;
 import org.iplass.mtp.definition.LocalizedStringDefinition;
 import org.iplass.mtp.view.generic.Jsp;
 import org.iplass.mtp.view.generic.Jsps;
@@ -85,6 +86,20 @@ public class DateRangePropertyEditor extends CustomPropertyEditor implements Ran
 	)
 	@EntityViewField()
 	private String toPropertyName;
+
+	/** Toプロパティ表示名 */
+	@MetaFieldInfo(displayName="Toプロパティ表示名",
+			displayNameKey="generic_editor_NumericRangePropertyEditor_toPropertyDisplayNameDisplaNameKey",
+			required=false,
+			inputType=InputType.MULTI_LANG,
+			displayOrder=115,
+			description="Toプロパティのラベルを設定します。",
+			descriptionKey="generic_editor_NumericRangePropertyEditor_toPropertyDisplayNameDescriptionKey"
+	)
+	@EntityViewField(
+			referenceTypes={FieldReferenceType.SEARCHCONDITION}
+	)
+	private String toPropertyDisplayName;
 
 	/** Toプロパティエディタ */
 	@MetaFieldInfo(
@@ -188,6 +203,20 @@ public class DateRangePropertyEditor extends CustomPropertyEditor implements Ran
 	 */
 	public void setToPropertyName(String toPropertyName) {
 		this.toPropertyName = toPropertyName;
+	}
+
+	/**
+	 * @return toPropertyDisplayName
+	 */
+	public String getToPropertyDisplayName() {
+		return toPropertyDisplayName;
+	}
+
+	/**
+	 * @param toPropertyDisplayName セットする toPropertyName
+	 */
+	public void setToPropertyDisplayName(String toPropertyDisplayName) {
+		this.toPropertyDisplayName = toPropertyDisplayName;
 	}
 
 	/**

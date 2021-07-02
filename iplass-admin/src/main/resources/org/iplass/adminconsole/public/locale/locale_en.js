@@ -1853,6 +1853,8 @@ LocaleInfo.generic_editor_NumericRangePropertyEditor_equivalentInputDisplayNameK
 LocaleInfo.generic_editor_NumericRangePropertyEditor_equivalentInputDescriptionKey = "Edit screen: Allows the same value to be set for From and To. <br> Search condition: Adds data with the same value of From and To to the search target.";
 LocaleInfo.generic_editor_NumericRangePropertyEditor_toPropertyNameDisplaNameKey = "To property name";
 LocaleInfo.generic_editor_NumericRangePropertyEditor_toPropertyNameDescriptionKey = "Specify other properties to display in combination with this property. <br>Please match the property type you specify with this property.";
+LocaleInfo.generic_editor_NumericRangePropertyEditor_toPropertyDisplayNameDisplaNameKey = "To property display name";
+LocaleInfo.generic_editor_NumericRangePropertyEditor_toPropertyDisplayNameDescriptionKey = "Set the label for the To property.";
 LocaleInfo.generic_editor_NumericRangePropertyEditor_toEditorDisplaNameKey = "To property editor";
 LocaleInfo.generic_editor_NumericRangePropertyEditor_toEditorDescriptionKey = "Set the property editor tailored to the type of the property.<br>If unspecified, the property editor setting will be effective.";
 LocaleInfo.generic_editor_NumericRangePropertyEditor_inputNullToDisplayNameKey = "Allow no input of To";

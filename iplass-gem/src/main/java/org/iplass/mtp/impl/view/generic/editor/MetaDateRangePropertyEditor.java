@@ -59,6 +59,9 @@ public class MetaDateRangePropertyEditor extends MetaCustomPropertyEditor {
 	/** ToプロパティID */
 	private String toPropertyId;
 
+	/** Toプロパティ表示名 */
+	private String toPropertyDisplayName;
+
 	/** エラーメッセージ */
 	private String errorMessage;
 
@@ -125,6 +128,20 @@ public class MetaDateRangePropertyEditor extends MetaCustomPropertyEditor {
 	 */
 	public void setToPropertyId(String toPropertyId) {
 		this.toPropertyId = toPropertyId;
+	}
+
+	/**
+	 * @return toPropertyDisplayName
+	 */
+	public String getToPropertyDisplayName() {
+		return toPropertyDisplayName;
+	}
+
+	/**
+	 * @param toPropertyDisplayName セットする toPropertyDisplayName
+	 */
+	public void setToPropertyDisplayName(String toPropertyDisplayName) {
+		this.toPropertyDisplayName = toPropertyDisplayName;
 	}
 
 	/**

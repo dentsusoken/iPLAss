@@ -66,6 +66,9 @@ public class MetaNumericRangePropertyEditor extends MetaCustomPropertyEditor imp
 	/** ToプロパティID */
 	private String toPropertyId;
 
+	/** Toプロパティ表示名 */
+	private String toPropertyDisplayName;
+
 	/** ToのNull許容フラグ */
 	private boolean inputNullTo;
 
@@ -156,6 +159,20 @@ public class MetaNumericRangePropertyEditor extends MetaCustomPropertyEditor imp
 	}
 
 	/**
+	 * @return toPropertyDisplayName
+	 */
+	public String getToPropertyDisplayName() {
+		return toPropertyDisplayName;
+	}
+
+	/**
+	 * @param toPropertyDisplayName セットする toPropertyDisplayName
+	 */
+	public void setToPropertyDisplayName(String toPropertyDisplayName) {
+		this.toPropertyDisplayName = toPropertyDisplayName;
+	}
+
+	/**
 	 * @return inputNullFrom
 	 */
 	public boolean isInputNullTo() {
@@ -235,6 +252,7 @@ public class MetaNumericRangePropertyEditor extends MetaCustomPropertyEditor imp
 		setEquivalentInput(e.getEquivalentInput());
 
 		toPropertyId = convertId(e.getToPropertyName(), metaContext, entity);
+		setToPropertyDisplayName(e.getToPropertyDisplayName());
 
 		if (toPropertyId == null) {
 			throw new MetaDataIllegalStateException("to property name is not defined.");
@@ -267,6 +285,7 @@ public class MetaNumericRangePropertyEditor extends MetaCustomPropertyEditor imp
 
 		if (toPropertyId != null) {
 			_editor.setToPropertyName(convertName(toPropertyId, metaContext, entity));
+			_editor.setToPropertyDisplayName(toPropertyDisplayName);
 		}
 
 		_editor.setInputNullFrom(inputNullFrom);

@@ -106,6 +106,20 @@ public class NumericRangePropertyEditor extends CustomPropertyEditor implements 
 	@EntityViewField()
 	private String toPropertyName;
 
+	/** Toプロパティ表示名 */
+	@MetaFieldInfo(displayName="Toプロパティ表示名",
+			displayNameKey="generic_editor_NumericRangePropertyEditor_toPropertyDisplayNameDisplaNameKey",
+			required=false,
+			inputType=InputType.MULTI_LANG,
+			displayOrder=115,
+			description="Toプロパティのラベルを設定します。",
+			descriptionKey="generic_editor_NumericRangePropertyEditor_toPropertyDisplayNameDescriptionKey"
+	)
+	@EntityViewField(
+			referenceTypes={FieldReferenceType.SEARCHCONDITION}
+	)
+	private String toPropertyDisplayName;
+
 	/** Toプロパティエディタ */
 	@MetaFieldInfo(
 			displayName="Toプロパティエディタ",
@@ -121,7 +135,9 @@ public class NumericRangePropertyEditor extends CustomPropertyEditor implements 
 					+ "未指定の場合、プロパティエディタの設定が有効になります。",
 			descriptionKey="generic_editor_NumericRangePropertyEditor_toEditorDescriptionKey"
 	)
-	@EntityViewField()
+	@EntityViewField(
+			referenceTypes={FieldReferenceType.SEARCHRESULT, FieldReferenceType.DETAIL, FieldReferenceType.BULK}
+	)
 	private PropertyEditor toEditor;
 
 	/** ToプロパティでNull入力を許容するか*/
@@ -254,6 +270,21 @@ public class NumericRangePropertyEditor extends CustomPropertyEditor implements 
 	public void setToPropertyName(String toPropertyName) {
 		this.toPropertyName = toPropertyName;
 	}
+
+	/**
+	 * @return toPropertyDisplayName
+	 */
+	public String getToPropertyDisplayName() {
+		return toPropertyDisplayName;
+	}
+
+	/**
+	 * @param toPropertyDisplayName セットする toPropertyName
+	 */
+	public void setToPropertyDisplayName(String toPropertyDisplayName) {
+		this.toPropertyDisplayName = toPropertyDisplayName;
+	}
+
 
 	/**
 	 * @return inputNullTo
