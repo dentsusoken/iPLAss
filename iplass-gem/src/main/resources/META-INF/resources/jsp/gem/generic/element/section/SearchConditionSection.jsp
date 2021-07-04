@@ -1133,9 +1133,8 @@ $(function() {
 						RangePropertyEditor toPi = (RangePropertyEditor) pi.getEditor();
 						String toPropName = toPi.getToPropertyName();
 						PropertyDefinition toPd = defMap.get(toPropName);
-						String toDisplayLabel = toPd.getDisplayName();
+						String toDisplayLabel = TemplateUtil.getMultilingualString(toPi.getToPropertyDisplayName(), toPi.getLocalizedToPropertyDisplayNameList(), toPd.getDisplayName(), toPd.getLocalizedDisplayNameList());
 
-						toDisplayLabel = !(toPi.getToPropertyDisplayName() == null) ? toPi.getToPropertyDisplayName() : toDisplayLabel;
 						String toSelected = checkDefaultValue(defaultSearchCond, searchCond, condPropName, toPropName, "selected");
 %>
 <option value="<c:out value="<%=toPropName%>"/>" class="<c:out value="<%=optClass%>" />" <c:out value="<%=toSelected%>" />><c:out value="<%=toDisplayLabel%>" /></option>

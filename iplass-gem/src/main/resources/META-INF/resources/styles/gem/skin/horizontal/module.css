@@ -1608,8 +1608,6 @@ div.recursiveTree {
       width: 10%; }
     .tbl-section th.section-data.col5 {
       width: 8%; }
-  .tbl-section .numericRange input {
-    width: 45%; }
   .tbl-section .numericRange span:nth-child(2) input {
     margin-left: 4px; }
 

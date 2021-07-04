@@ -88,18 +88,32 @@ public class DateRangePropertyEditor extends CustomPropertyEditor implements Ran
 	private String toPropertyName;
 
 	/** Toプロパティ表示名 */
-	@MetaFieldInfo(displayName="Toプロパティ表示名",
-			displayNameKey="generic_editor_NumericRangePropertyEditor_toPropertyDisplayNameDisplaNameKey",
+	@MetaFieldInfo(displayName="詳細検索でのToプロパティ表示名",
+			displayNameKey="generic_editor_DateRangePropertyEditor_toPropertyDisplayNameDisplaNameKey",
 			required=false,
 			inputType=InputType.MULTI_LANG,
 			displayOrder=115,
-			description="Toプロパティのラベルを設定します。",
-			descriptionKey="generic_editor_NumericRangePropertyEditor_toPropertyDisplayNameDescriptionKey"
+			description="詳細検索で表示するToプロパティのラベルを設定します。",
+			descriptionKey="generic_editor_DateRangePropertyEditor_toPropertyDisplayNameDescriptionKey",
+			multiLangField="localizedToPropertyDisplayNameList"
 	)
 	@EntityViewField(
 			referenceTypes={FieldReferenceType.SEARCHCONDITION}
 	)
+	@MultiLang()
 	private String toPropertyDisplayName;
+
+	/** Toプロパティ表示名の多言語設定情報 */
+	@MetaFieldInfo(
+			displayName="詳細検索でのToプロパティ表示名の多言語設定",
+			displayNameKey="generic_editor_DateRangePropertyEditor_localizedToPropertyDisplayNameListDisplaNameKey",
+			inputType=InputType.MULTI_LANG_LIST,
+			displayOrder=120
+	)
+	@EntityViewField(
+			referenceTypes={FieldReferenceType.DETAIL}
+	)
+	private List<LocalizedStringDefinition> localizedToPropertyDisplayNameList;
 
 	/** Toプロパティエディタ */
 	@MetaFieldInfo(
@@ -116,7 +130,9 @@ public class DateRangePropertyEditor extends CustomPropertyEditor implements Ran
 					+ "未指定の場合、プロパティエディタの設定が有効になります。",
 			descriptionKey="generic_editor_DateRangePropertyEditor_toEditorDescriptionKey"
 	)
-	@EntityViewField()
+	@EntityViewField(
+			referenceTypes={FieldReferenceType.SEARCHRESULT, FieldReferenceType.DETAIL, FieldReferenceType.BULK}
+		)
 	private PropertyEditor toEditor;
 
 	/** エラーメッセージ */
@@ -217,6 +233,22 @@ public class DateRangePropertyEditor extends CustomPropertyEditor implements Ran
 	 */
 	public void setToPropertyDisplayName(String toPropertyDisplayName) {
 		this.toPropertyDisplayName = toPropertyDisplayName;
+	}
+
+	/**
+	 * Toプロパティ表示名の多言語設定情報を取得します。
+	 * @return リスト
+	 */
+	public List<LocalizedStringDefinition> getLocalizedToPropertyDisplayNameList() {
+		return localizedToPropertyDisplayNameList;
+	}
+
+	/**
+	 * Toプロパティ表示名の多言語設定情報を設定します。
+	 * @param localizedDescriptionList リスト
+	 */
+	public void setLocalizedToPropertyDisplayNameList(List<LocalizedStringDefinition> localizedToPropertyDisplayNameList) {
+		this.localizedToPropertyDisplayNameList = localizedToPropertyDisplayNameList;
 	}
 
 	/**

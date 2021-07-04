@@ -69,6 +69,9 @@ public class MetaNumericRangePropertyEditor extends MetaCustomPropertyEditor imp
 	/** Toプロパティ表示名 */
 	private String toPropertyDisplayName;
 
+	/** Toプロパティ表示名の多言語設定情報 */
+	private List<MetaLocalizedString> localizedToPropertyDisplayNameList = new ArrayList<MetaLocalizedString>();
+
 	/** ToのNull許容フラグ */
 	private boolean inputNullTo;
 
@@ -173,6 +176,22 @@ public class MetaNumericRangePropertyEditor extends MetaCustomPropertyEditor imp
 	}
 
 	/**
+	 * Toプロパティ表示名の多言語設定情報を取得します。
+	 * @return リスト
+	 */
+	public List<MetaLocalizedString> getLocalizedToPropertyDisplayNameList() {
+		return localizedToPropertyDisplayNameList;
+	}
+
+	/**
+	 * Toプロパティ表示名の多言語設定情報を設定します。
+	 * @param localizedDescriptionList リスト
+	 */
+	public void setLocalizedToPropertyDisplayNameList(List<MetaLocalizedString> localizedToPropertyDisplayNameList) {
+		this.localizedToPropertyDisplayNameList = localizedToPropertyDisplayNameList;
+	}
+
+	/**
 	 * @return inputNullFrom
 	 */
 	public boolean isInputNullTo() {
@@ -254,6 +273,8 @@ public class MetaNumericRangePropertyEditor extends MetaCustomPropertyEditor imp
 		toPropertyId = convertId(e.getToPropertyName(), metaContext, entity);
 		setToPropertyDisplayName(e.getToPropertyDisplayName());
 
+		localizedToPropertyDisplayNameList = I18nUtil.toMeta(e.getLocalizedToPropertyDisplayNameList());
+
 		if (toPropertyId == null) {
 			throw new MetaDataIllegalStateException("to property name is not defined.");
 		}
@@ -288,6 +309,7 @@ public class MetaNumericRangePropertyEditor extends MetaCustomPropertyEditor imp
 			_editor.setToPropertyDisplayName(toPropertyDisplayName);
 		}
 
+		_editor.setLocalizedToPropertyDisplayNameList(I18nUtil.toDef(localizedToPropertyDisplayNameList));
 		_editor.setInputNullFrom(inputNullFrom);
 		_editor.setInputNullTo(inputNullTo);
 		_editor.setEquivalentInput(equivalentInput);

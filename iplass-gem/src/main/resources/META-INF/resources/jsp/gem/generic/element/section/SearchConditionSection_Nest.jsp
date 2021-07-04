@@ -131,9 +131,8 @@ String checkDefaultValue(HashMap<String, Object> defaultSearchCond, String searc
 					RangePropertyEditor toNp = (RangePropertyEditor) np.getEditor();
 					String toNpName = propName + "." + toNp.getToPropertyName();
 					PropertyDefinition toPd = ed.getProperty(toNp.getToPropertyName());
-					String toDisplayLabel = toPd.getDisplayName();
+					String toDisplayLabel = TemplateUtil.getMultilingualString(toNp.getToPropertyDisplayName(), toNp.getLocalizedToPropertyDisplayNameList(), toPd.getDisplayName(), toPd.getLocalizedDisplayNameList());
 
-					toDisplayLabel = !(toNp.getToPropertyDisplayName() == null) ? toNp.getToPropertyDisplayName() : toDisplayLabel;
 					String toSelected = checkDefaultValue(defaultSearchCond, searchCond, condPropName, toNpName, "selected");
 %>
 <option value="<c:out value="<%=toNpName%>"/>" class="<c:out value="<%=optClass%>" />" <c:out value="<%=toSelected%>" />><c:out value="<%=toDisplayLabel%>" /></option>

@@ -107,18 +107,32 @@ public class NumericRangePropertyEditor extends CustomPropertyEditor implements 
 	private String toPropertyName;
 
 	/** Toプロパティ表示名 */
-	@MetaFieldInfo(displayName="Toプロパティ表示名",
+	@MetaFieldInfo(displayName="詳細検索でのToプロパティ表示名",
 			displayNameKey="generic_editor_NumericRangePropertyEditor_toPropertyDisplayNameDisplaNameKey",
 			required=false,
 			inputType=InputType.MULTI_LANG,
 			displayOrder=115,
-			description="Toプロパティのラベルを設定します。",
-			descriptionKey="generic_editor_NumericRangePropertyEditor_toPropertyDisplayNameDescriptionKey"
+			description="詳細検索で表示するToプロパティのラベルを設定します。",
+			descriptionKey="generic_editor_NumericRangePropertyEditor_toPropertyDisplayNameDescriptionKey",
+			multiLangField="localizedToPropertyDisplayNameList"
 	)
 	@EntityViewField(
 			referenceTypes={FieldReferenceType.SEARCHCONDITION}
 	)
+	@MultiLang()
 	private String toPropertyDisplayName;
+
+	/** Toプロパティ表示名の多言語設定情報 */
+	@MetaFieldInfo(
+			displayName="詳細検索でのToプロパティ表示名の多言語設定",
+			displayNameKey="generic_editor_NumeriRangePropertyEditor_localizedToPropertyDisplayNameListDisplaNameKey",
+			inputType=InputType.MULTI_LANG_LIST,
+			displayOrder=120
+	)
+	@EntityViewField(
+			referenceTypes={FieldReferenceType.SEARCHCONDITION}
+	)
+	private List<LocalizedStringDefinition> localizedToPropertyDisplayNameList;
 
 	/** Toプロパティエディタ */
 	@MetaFieldInfo(
@@ -130,7 +144,7 @@ public class NumericRangePropertyEditor extends CustomPropertyEditor implements 
 					IntegerPropertyEditor.class,
 					DecimalPropertyEditor.class
 					},
-			displayOrder=120,
+			displayOrder=125,
 			description="プロパティの型にあわせたプロパティエディタを選択してください。<br>"
 					+ "未指定の場合、プロパティエディタの設定が有効になります。",
 			descriptionKey="generic_editor_NumericRangePropertyEditor_toEditorDescriptionKey"
@@ -145,7 +159,7 @@ public class NumericRangePropertyEditor extends CustomPropertyEditor implements 
 			displayName="Nullの入力を許可",
 			displayNameKey="generic_editor_NumericRangePropertyEditor_inputNullToDisplayNameKey",
 			inputType=InputType.CHECKBOX,
-			displayOrder=125,
+			displayOrder=130,
 			description="入力値にNullを許可するか設定します。",
 			descriptionKey="generic_editor_NumericRangePropertyEditor_inputNullToDescriptionKey"
 	)
@@ -159,7 +173,7 @@ public class NumericRangePropertyEditor extends CustomPropertyEditor implements 
 			displayName="同値の入力を許可",
 			displayNameKey="generic_editor_NumericRangePropertyEditor_equivalentInputDisplayNameKey",
 			inputType=InputType.CHECKBOX,
-			displayOrder=130,
+			displayOrder=135,
 			description="入力値に同値を許可するか設定します。",
 			descriptionKey="generic_editor_NumericRangePropertyEditor_equivalentInputDescriptionKey"
 	)
@@ -175,7 +189,7 @@ public class NumericRangePropertyEditor extends CustomPropertyEditor implements 
 			descriptionKey="generic_editor_NumericRangePropertyEditor_errorMessageNameDescriptionKey",
 			inputType=InputType.MULTI_LANG,
 			multiLangField = "localizedErrorMessageList",
-			displayOrder=135
+			displayOrder=140
 	)
 	@EntityViewField(
 			referenceTypes={FieldReferenceType.DETAIL, FieldReferenceType.BULK}
@@ -285,6 +299,21 @@ public class NumericRangePropertyEditor extends CustomPropertyEditor implements 
 		this.toPropertyDisplayName = toPropertyDisplayName;
 	}
 
+	/**
+	 * Toプロパティ表示名の多言語設定情報を取得します。
+	 * @return リスト
+	 */
+	public List<LocalizedStringDefinition> getLocalizedToPropertyDisplayNameList() {
+		return localizedToPropertyDisplayNameList;
+	}
+
+	/**
+	 * Toプロパティ表示名の多言語設定情報を設定します。
+	 * @param localizedDescriptionList リスト
+	 */
+	public void setLocalizedToPropertyDisplayNameList(List<LocalizedStringDefinition> localizedToPropertyDisplayNameList) {
+		this.localizedToPropertyDisplayNameList = localizedToPropertyDisplayNameList;
+	}
 
 	/**
 	 * @return inputNullTo

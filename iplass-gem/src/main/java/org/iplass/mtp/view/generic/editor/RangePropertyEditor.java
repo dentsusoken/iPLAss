@@ -19,6 +19,11 @@
  */
 
 package org.iplass.mtp.view.generic.editor;
+
+import java.util.List;
+
+import org.iplass.mtp.definition.LocalizedStringDefinition;
+
 /**
  * 範囲型プロパティエディタ
  * @author ICOM Shojima
@@ -49,4 +54,9 @@ public interface RangePropertyEditor {
 	 * @return toPropertyDisplayName
 	 */
 	public String getToPropertyDisplayName();
+
+	/**
+	 * @return localizedToPropertyDisplayNameList
+	 */
+	public List<LocalizedStringDefinition> getLocalizedToPropertyDisplayNameList();
 }
