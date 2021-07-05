@@ -75,10 +75,10 @@ import org.iplass.mtp.view.generic.FormViewUtil;
 import org.iplass.mtp.view.generic.NullOrderType;
 import org.iplass.mtp.view.generic.OutputType;
 import org.iplass.mtp.view.generic.SearchFormView;
-import org.iplass.mtp.view.generic.editor.DateRangePropertyEditor;
 import org.iplass.mtp.view.generic.editor.JoinPropertyEditor;
 import org.iplass.mtp.view.generic.editor.NestProperty;
 import org.iplass.mtp.view.generic.editor.PropertyEditor;
+import org.iplass.mtp.view.generic.editor.RangePropertyEditor;
 import org.iplass.mtp.view.generic.editor.ReferencePropertyEditor;
 import org.iplass.mtp.view.generic.editor.UserPropertyEditor;
 import org.iplass.mtp.view.generic.element.property.PropertyColumn;
@@ -413,9 +413,9 @@ public final class FullTextSearchCommand implements Command {
 					for (NestProperty nest : je.getProperties()) {
 						addSearchProperty(select, ed, nest.getPropertyName(), nest.getEditor());
 					}
-				} else if (p.getEditor() instanceof DateRangePropertyEditor) {
+				} else if (p.getEditor() instanceof RangePropertyEditor) {
 					addSearchProperty(select, ed, propName, p.getEditor());
-					DateRangePropertyEditor de = (DateRangePropertyEditor) p.getEditor();
+					RangePropertyEditor de = (RangePropertyEditor) p.getEditor();
 					if (StringUtil.isNotBlank(de.getToPropertyName())) {
 						addSearchProperty(select, ed, de.getToPropertyName(), de.getToEditor());
 					}
@@ -482,6 +482,12 @@ public final class FullTextSearchCommand implements Command {
 								List<NestProperty> _nest = je.getProperties();
 								addSearchProperty(select, ed, propName, editor, _nest.toArray(new NestProperty[_nest.size()]));
 							}
+						} else if (np.getEditor() instanceof RangePropertyEditor) {
+							RangePropertyEditor rpe = (RangePropertyEditor) np.getEditor();
+							addSearchProperty(select, ed, nestPropName, rpe.getEditor());
+							String nestToPropName = propName + "." + rpe.getToPropertyName();
+							addSearchProperty(select, ed, nestToPropName, rpe.getToEditor());
+
 						}
 					}
 				}

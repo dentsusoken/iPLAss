@@ -60,6 +60,7 @@ import org.iplass.mtp.util.StringUtil;
 import org.iplass.mtp.view.generic.EntityViewUtil;
 import org.iplass.mtp.view.generic.OutputType;
 import org.iplass.mtp.view.generic.editor.NestProperty;
+import org.iplass.mtp.view.generic.editor.RangePropertyEditor;
 import org.iplass.mtp.view.generic.editor.ReferenceComboSetting;
 import org.iplass.mtp.view.generic.editor.ReferencePropertyEditor;
 import org.iplass.mtp.view.generic.editor.ReferencePropertyEditor.RefComboSearchType;
@@ -267,7 +268,7 @@ public class NormalSearchContext extends SearchContextBase {
 				Object value = getConditionValue(p, p.getName());
 				if (value != null && !(value.getClass().isArray() && ((Object[])value).length == 0)) {
 					PropertyItem property = getLayoutProperty(p.getName());
-					if (property == null) throw new ApplicationException();
+					if (property == null || property.isHideNormalCondition()) throw new ApplicationException();
 
 					condition.setValue(property.getPropertyName(), value);
 					propertyConditions.put(property.getPropertyName(),
@@ -287,6 +288,7 @@ public class NormalSearchContext extends SearchContextBase {
 				if (value != null && !(value.getClass().isArray() && ((Object[])value).length == 0)) {
 					int lastIndex = property.getPropertyName().lastIndexOf(".");
 					String parentName = property.getPropertyName().substring(0, lastIndex);
+					if (property == null || property.isHideNormalCondition()) throw new ApplicationException();
 
 					condition.setValue(property.getPropertyName(), value);
 					nestPropertyConditions.put(property.getPropertyName(),
@@ -602,6 +604,15 @@ public class NormalSearchContext extends SearchContextBase {
 				if (value != null) {
 					if (nest == null) nest = new GenericEntity(rp.getObjectDefinitionName());
 					nest.setValue(pd.getName(), value);
+				}
+				if (np.getEditor() instanceof RangePropertyEditor) {
+					RangePropertyEditor rangep = (RangePropertyEditor) np.getEditor();
+					pd = ed.getProperty(rangep.getToPropertyName());
+					value = getConditionValue(pd, propName + "." + pd.getName());
+					if (value != null) {
+						if (nest == null) nest = new GenericEntity(rp.getObjectDefinitionName());
+						nest.setValue(pd.getName(), value);
+					}
 				}
 			}
 			if (nest != null) {

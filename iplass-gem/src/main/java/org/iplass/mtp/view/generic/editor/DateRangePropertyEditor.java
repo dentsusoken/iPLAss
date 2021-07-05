@@ -32,6 +32,7 @@ import org.iplass.adminconsole.view.annotation.IgnoreField;
 import org.iplass.adminconsole.view.annotation.InputType;
 import org.iplass.adminconsole.view.annotation.MetaFieldInfo;
 import org.iplass.adminconsole.view.annotation.generic.EntityViewField;
+import org.iplass.adminconsole.view.annotation.generic.FieldReferenceType;
 import org.iplass.mtp.definition.LocalizedStringDefinition;
 import org.iplass.mtp.view.generic.Jsp;
 import org.iplass.mtp.view.generic.Jsps;
@@ -42,7 +43,7 @@ import org.iplass.mtp.view.generic.ViewConst;
 	@Jsp(path="/jsp/gem/generic/editor/DateRangePropertyEditor.jsp", key=ViewConst.DESIGN_TYPE_GEM)
 })
 @IgnoreField({"customStyle", "inputCustomStyle"})
-public class DateRangePropertyEditor extends CustomPropertyEditor {
+public class DateRangePropertyEditor extends CustomPropertyEditor implements RangePropertyEditor {
 
 	private static final long serialVersionUID = -1012526640443976474L;
 
@@ -86,6 +87,34 @@ public class DateRangePropertyEditor extends CustomPropertyEditor {
 	@EntityViewField()
 	private String toPropertyName;
 
+	/** Toプロパティ表示名 */
+	@MetaFieldInfo(displayName="詳細検索でのToプロパティ表示名",
+			displayNameKey="generic_editor_DateRangePropertyEditor_toPropertyDisplayNameDisplaNameKey",
+			required=false,
+			inputType=InputType.MULTI_LANG,
+			displayOrder=115,
+			description="詳細検索で表示するToプロパティのラベルを設定します。",
+			descriptionKey="generic_editor_DateRangePropertyEditor_toPropertyDisplayNameDescriptionKey",
+			multiLangField="localizedToPropertyDisplayNameList"
+	)
+	@EntityViewField(
+			referenceTypes={FieldReferenceType.SEARCHCONDITION}
+	)
+	@MultiLang()
+	private String toPropertyDisplayName;
+
+	/** Toプロパティ表示名の多言語設定情報 */
+	@MetaFieldInfo(
+			displayName="詳細検索でのToプロパティ表示名の多言語設定",
+			displayNameKey="generic_editor_DateRangePropertyEditor_localizedToPropertyDisplayNameListDisplaNameKey",
+			inputType=InputType.MULTI_LANG_LIST,
+			displayOrder=120
+	)
+	@EntityViewField(
+			referenceTypes={FieldReferenceType.DETAIL}
+	)
+	private List<LocalizedStringDefinition> localizedToPropertyDisplayNameList;
+
 	/** Toプロパティエディタ */
 	@MetaFieldInfo(
 			displayName="Toプロパティエディタ",
@@ -101,7 +130,9 @@ public class DateRangePropertyEditor extends CustomPropertyEditor {
 					+ "未指定の場合、プロパティエディタの設定が有効になります。",
 			descriptionKey="generic_editor_DateRangePropertyEditor_toEditorDescriptionKey"
 	)
-	@EntityViewField()
+	@EntityViewField(
+			referenceTypes={FieldReferenceType.SEARCHRESULT, FieldReferenceType.DETAIL, FieldReferenceType.BULK}
+		)
 	private PropertyEditor toEditor;
 
 	/** エラーメッセージ */
@@ -191,6 +222,36 @@ public class DateRangePropertyEditor extends CustomPropertyEditor {
 	}
 
 	/**
+	 * @return toPropertyDisplayName
+	 */
+	public String getToPropertyDisplayName() {
+		return toPropertyDisplayName;
+	}
+
+	/**
+	 * @param toPropertyDisplayName セットする toPropertyName
+	 */
+	public void setToPropertyDisplayName(String toPropertyDisplayName) {
+		this.toPropertyDisplayName = toPropertyDisplayName;
+	}
+
+	/**
+	 * Toプロパティ表示名の多言語設定情報を取得します。
+	 * @return リスト
+	 */
+	public List<LocalizedStringDefinition> getLocalizedToPropertyDisplayNameList() {
+		return localizedToPropertyDisplayNameList;
+	}
+
+	/**
+	 * Toプロパティ表示名の多言語設定情報を設定します。
+	 * @param localizedDescriptionList リスト
+	 */
+	public void setLocalizedToPropertyDisplayNameList(List<LocalizedStringDefinition> localizedToPropertyDisplayNameList) {
+		this.localizedToPropertyDisplayNameList = localizedToPropertyDisplayNameList;
+	}
+
+	/**
 	 * @return errorMessage
 	 */
 	public String getErrorMessage() {
@@ -217,5 +278,4 @@ public class DateRangePropertyEditor extends CustomPropertyEditor {
 	public void setLocalizedErrorMessageList(List<LocalizedStringDefinition> localizedErrorMessageList) {
 		this.localizedErrorMessageList = localizedErrorMessageList;
 	}
-
 }

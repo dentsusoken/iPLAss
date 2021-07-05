@@ -267,7 +267,7 @@
 	//選択画面でバージョン検索を許可するか(編集画面の選択時のみ渡される)
 	String permitVersionedSelectStr = request.getParameter(Constants.SELECT_VERSIONED_ENABLED);
 	boolean permitVersionedSelect = permitVersionedSelectStr != null ? Boolean.valueOf(permitVersionedSelectStr) : false;
-	
+
 	//特定バージョン指定
 	String specVersion = request.getParameter(Constants.SEARCH_SPEC_VERSION);
 	if (specVersion == null) specVersion = "";
@@ -315,6 +315,14 @@
 		PropertyDefinition pd = EntityViewUtil.getPropertyDefinition(propName, ed);
 
 		defMap.put(propName, pd);
+
+		if (pi.getEditor() instanceof RangePropertyEditor) {
+			RangePropertyEditor toPi = (RangePropertyEditor) pi.getEditor();
+			String toPropName = toPi.getToPropertyName();
+			PropertyDefinition toPd = EntityViewUtil.getPropertyDefinition(toPropName, ed);
+
+			defMap.put(toPropName, toPd);
+		}
 
 		if (pi.getEditor() instanceof ReferencePropertyEditor) {
 			createReferencePropTypesMap((ReferencePropertyEditor) pi.getEditor(), propName, (ReferenceProperty) pd, propTypeMap);
@@ -1121,6 +1129,17 @@ $(function() {
 %>
 <option value="<c:out value="<%=propName%>"/>" class="<c:out value="<%=optClass%>" />" <c:out value="<%=selected%>" />><c:out value="<%=displayLabel%>" /></option>
 <%
+					if (pi.getEditor() instanceof RangePropertyEditor) {
+						RangePropertyEditor toPi = (RangePropertyEditor) pi.getEditor();
+						String toPropName = toPi.getToPropertyName();
+						PropertyDefinition toPd = defMap.get(toPropName);
+						String toDisplayLabel = TemplateUtil.getMultilingualString(toPi.getToPropertyDisplayName(), toPi.getLocalizedToPropertyDisplayNameList(), toPd.getDisplayName(), toPd.getLocalizedDisplayNameList());
+
+						String toSelected = checkDefaultValue(defaultSearchCond, searchCond, condPropName, toPropName, "selected");
+%>
+<option value="<c:out value="<%=toPropName%>"/>" class="<c:out value="<%=optClass%>" />" <c:out value="<%=toSelected%>" />><c:out value="<%=toDisplayLabel%>" /></option>
+<%
+					}
 				}
 			}
 %>

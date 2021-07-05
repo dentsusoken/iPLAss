@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2011 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
+ * Copyright (C) 2021 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
  *
  * Unless you have purchased a commercial license,
  * the following license terms apply:
@@ -20,20 +20,43 @@
 
 package org.iplass.mtp.view.generic.editor;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlSeeAlso;
+import java.util.List;
 
-@XmlAccessorType(XmlAccessType.FIELD)
-@XmlSeeAlso({DateRangePropertyEditor.class, NumericRangePropertyEditor.class, JoinPropertyEditor.class, TemplatePropertyEditor.class, UserPropertyEditor.class})
-public abstract class CustomPropertyEditor extends PropertyEditor {
+import org.iplass.mtp.definition.LocalizedStringDefinition;
 
-	/** SerialVersionUID */
-	private static final long serialVersionUID = -5092022932727594952L;
+/**
+ * 範囲型プロパティエディタ
+ * @author ICOM Shojima
+ */
+public interface RangePropertyEditor {
 
-	@Override
-	public boolean isHide() {
-		return false;
-	}
+	/**
+	 * @return editor
+	 */
+	public PropertyEditor getEditor();
 
+	/**
+	 * @return propertyName
+	 */
+	public String getPropertyName();
+
+	/**
+	 * @return toEditor
+	 */
+	public PropertyEditor getToEditor();
+
+	/**
+	 * @return toPropertyName
+	 */
+	public String getToPropertyName();
+
+	/**
+	 * @return toPropertyDisplayName
+	 */
+	public String getToPropertyDisplayName();
+
+	/**
+	 * @return localizedToPropertyDisplayNameList
+	 */
+	public List<LocalizedStringDefinition> getLocalizedToPropertyDisplayNameList();
 }

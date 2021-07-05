@@ -44,6 +44,7 @@ import org.iplass.mtp.impl.view.generic.element.ElementRuntime;
 import org.iplass.mtp.impl.view.generic.element.MetaElement;
 import org.iplass.mtp.view.generic.editor.DateRangePropertyEditor;
 import org.iplass.mtp.view.generic.editor.JoinPropertyEditor;
+import org.iplass.mtp.view.generic.editor.NumericRangePropertyEditor;
 import org.iplass.mtp.view.generic.editor.PropertyEditor;
 import org.iplass.mtp.view.generic.editor.ReferencePropertyEditor;
 import org.iplass.mtp.view.generic.element.Element;
@@ -238,6 +239,8 @@ public abstract class MetaPropertyLayout extends MetaElement implements HasEntit
 			((JoinPropertyEditor) pe).setObjectName(entity.getMetaData().getName());
 		} else if (pe instanceof DateRangePropertyEditor) {
 				((DateRangePropertyEditor) pe).setObjectName(entity.getMetaData().getName());
+		} else if (pe instanceof NumericRangePropertyEditor) {
+			((NumericRangePropertyEditor) pe).setObjectName(entity.getMetaData().getName());
 		} else if (pe instanceof ReferencePropertyEditor) {
 			ReferencePropertyEditor rpe = (ReferencePropertyEditor)pe;
 			//参照Entity情報を取得してEditorにEntity名をセット

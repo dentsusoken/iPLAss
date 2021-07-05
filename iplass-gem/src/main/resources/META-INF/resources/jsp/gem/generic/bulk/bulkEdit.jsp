@@ -127,7 +127,7 @@
 		return null;
 	}
 
-	PropertyEditor getDateRangePropertyEditor(DateRangePropertyEditor editor, String propName) {
+	PropertyEditor getRangePropertyEditor(RangePropertyEditor editor, String propName) {
 		if (editor.getPropertyName().equals(propName)) {
 			return editor.getEditor();
 		}
@@ -436,15 +436,15 @@ $(function() {
 			if (updatedPropValue instanceof String) {
 				updatedPropDispValue = StringUtil.escapeHtml((String)updatedPropValue);
 			} else {
-				if (editor instanceof DateRangePropertyEditor || editor instanceof JoinPropertyEditor) {
+				if (editor instanceof JoinPropertyEditor ||  editor instanceof RangePropertyEditor) {
 					Map<String, Object> updatedPropsMap = (Map<String, Object>) updatedPropValue;
 					List<String> tmp = new ArrayList<>(updatedPropsMap.size());
 					for(Map.Entry<String, Object> entry : updatedPropsMap.entrySet()) {
 						String propName = entry.getKey();
 						Object propValue = entry.getValue();
 						PropertyEditor nestEditor = null;
-						if (editor instanceof DateRangePropertyEditor) {
-							nestEditor = getDateRangePropertyEditor((DateRangePropertyEditor) editor, propName);
+						if (editor instanceof RangePropertyEditor) {
+							nestEditor = getRangePropertyEditor((RangePropertyEditor) editor, propName);
 						} else if (editor instanceof JoinPropertyEditor) {
 							nestEditor = getJoinPropertyEditor((JoinPropertyEditor) editor, propName);
 						}

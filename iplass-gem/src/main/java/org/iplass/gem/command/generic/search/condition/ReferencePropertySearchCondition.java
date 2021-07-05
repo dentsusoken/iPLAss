@@ -49,6 +49,7 @@ import org.iplass.mtp.entity.query.condition.predicate.NotEquals;
 import org.iplass.mtp.util.StringUtil;
 import org.iplass.mtp.view.generic.editor.NestProperty;
 import org.iplass.mtp.view.generic.editor.PropertyEditor;
+import org.iplass.mtp.view.generic.editor.RangePropertyEditor;
 import org.iplass.mtp.view.generic.editor.ReferencePropertyEditor;
 import org.iplass.mtp.view.generic.editor.ReferencePropertyEditor.ReferenceDisplayType;
 import org.iplass.mtp.view.generic.element.property.PropertyItem;
@@ -463,6 +464,8 @@ public class ReferencePropertySearchCondition extends PropertySearchCondition {
 					}
 				}
 			}
+		} else if (nest.getEditor() instanceof RangePropertyEditor) {
+			return (((RangePropertyEditor) nest.getEditor()).getToPropertyName()).equals(propName);
 		} else {
 			return nest.getPropertyName().equals(propName);
 		}
@@ -493,7 +496,11 @@ public class ReferencePropertySearchCondition extends PropertySearchCondition {
 		ReferencePropertyEditor editor = getReferencePropertyEditor();
 		if (editor == null || editor.getNestProperties().isEmpty()) return null;
 		for (NestProperty np : editor.getNestProperties()) {
-			if (np.getPropertyName().equals(name)) return np;
+			if (np.getPropertyName().equals(name)) {
+				return np;
+			} else if (np.getEditor() instanceof RangePropertyEditor) {
+				return np;
+			}
 		}
 		return null;
 	}

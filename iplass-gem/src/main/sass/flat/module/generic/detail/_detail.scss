@@ -207,9 +207,16 @@
 				margin: 0;
 			}
 		}
+
 	}
 	.cke {
 		margin: 2px 0;
+	}
+	.numericRange input {
+		width: 45%;
+	}
+	.numericRange span:nth-child(2) input {
+		margin-left: 4px;
 	}
 }
 .tbl-reference {
@@ -514,5 +521,14 @@ a + .binaryDelete {
 		border: 1px solid $color_alto_approx;
 		padding: 10px;
 		vertical-align: top;
+	}
+}
+.modal-body{
+	.tbl-section {
+		td.section-data {
+			.numericRange input {
+				width: 44%;
+			}
+		}
 	}
 }

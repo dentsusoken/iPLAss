@@ -1842,6 +1842,10 @@ span.success, span.error {
       margin: 0; }
   .tbl-section .cke {
     margin: 2px 0; }
+  .tbl-section .numericRange input {
+    width: 45%; }
+  .tbl-section .numericRange span:nth-child(2) input {
+    margin-left: 4px; }
 
 .tbl-reference th {
   width: 180px;
@@ -2070,6 +2074,9 @@ a + .binaryDelete {
     border: 1px solid #ddd;
     padding: 10px;
     vertical-align: top; }
+
+.modal-body .tbl-section td.section-data .numericRange input {
+  width: 44%; }
 
 .bulk-edit .tbl-section td.section-data {
   padding: 8px 10px; }

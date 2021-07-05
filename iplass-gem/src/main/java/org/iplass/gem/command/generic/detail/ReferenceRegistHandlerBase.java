@@ -44,6 +44,7 @@ import org.iplass.mtp.view.generic.LoadEntityContext;
 import org.iplass.mtp.view.generic.LoadEntityInterrupter.LoadType;
 import org.iplass.mtp.view.generic.editor.JoinPropertyEditor;
 import org.iplass.mtp.view.generic.editor.NestProperty;
+import org.iplass.mtp.view.generic.editor.RangePropertyEditor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -286,6 +287,13 @@ public abstract class ReferenceRegistHandlerBase implements ReferenceRegistHandl
 			PropertyDefinition npd = ed.getProperty(nProp.getPropertyName());
 			if (npd != null && npd.isUpdatable()) {
 				updateProperties.add(nProp.getPropertyName());
+			}
+			if (nProp.getEditor() instanceof RangePropertyEditor) {
+				RangePropertyEditor rangeTo = (RangePropertyEditor) nProp.getEditor();
+				PropertyDefinition toNpd = ed.getProperty(rangeTo.getToPropertyName());
+				if (toNpd != null && toNpd.isUpdatable()) {
+					updateProperties.add(rangeTo.getToPropertyName());
+				}
 			}
 		}
 		return updateProperties;

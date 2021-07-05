@@ -284,7 +284,7 @@
 		<property name="registrationIdHandler" class="org.iplass.mtp.impl.pushnotification.fcm.LoggingRegistrationIdHandler" />
 		 -->
 	</service>
-	
+
 	<!-- Webhook -->
 	<service>
 		<interface>org.iplass.mtp.impl.webhook.WebhookService</interface>
@@ -307,7 +307,7 @@
 		<interface>org.iplass.mtp.impl.webhook.endpoint.WebhookEndpointService</interface>
 		<class>org.iplass.mtp.impl.webhook.endpoint.WebhookEndpointServiceImpl</class>
 	</service>
-		
+
 	<!-- Tenant関連 -->
 	<service>
 		<interface>org.iplass.mtp.impl.core.TenantContextService</interface>
@@ -583,7 +583,7 @@
 			<property name="proxyPort" value="8080" />
 			-->
 		</property>
-		
+
 		<!-- for use JGroups -->
 		<!--
 		<property name="messageChannel" class="org.iplass.mtp.impl.cluster.channel.jgroups.JGroupsMessageChannel">
@@ -821,7 +821,7 @@
 				<property name="size" value="10000" />
 			</property>
 		</property>
-		
+
 		<!-- CacheOnlyAuthTokenStore キャッシュ -->
 		<!-- TODO 本番利用時はRedisCacheStoreFactoryなど利用するように設定変更が必要 -->
 		<property name="cacheOnlyAuthTokenStore" class="org.iplass.mtp.impl.cache.store.builtin.SimpleCacheStoreFactory">

@@ -21,6 +21,7 @@
 package org.iplass.gem.command.generic.bulk;
 
 import java.lang.reflect.Array;
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -62,6 +63,7 @@ import org.iplass.mtp.view.generic.SearchFormView;
 import org.iplass.mtp.view.generic.editor.DateRangePropertyEditor;
 import org.iplass.mtp.view.generic.editor.JoinPropertyEditor;
 import org.iplass.mtp.view.generic.editor.NestProperty;
+import org.iplass.mtp.view.generic.editor.NumericRangePropertyEditor;
 import org.iplass.mtp.view.generic.editor.PropertyEditor;
 import org.iplass.mtp.view.generic.editor.ReferencePropertyEditor;
 import org.iplass.mtp.view.generic.editor.ReferencePropertyEditor.ReferenceDisplayType;
@@ -617,6 +619,10 @@ public class MultiBulkCommandContext extends RegistrationCommandContext {
 				//日付の逆転チェック
 				DateRangePropertyEditor editor = (DateRangePropertyEditor) property.getEditor();
 				checkDateRange(editor, entity, property.getPropertyName(), editor.getToPropertyName(), "");
+			} else if (property.getEditor() instanceof NumericRangePropertyEditor) {
+				//数値の逆転チェック
+				NumericRangePropertyEditor editor = (NumericRangePropertyEditor) property.getEditor();
+				checkNumericRange(editor, entity, property.getPropertyName(), editor.getToPropertyName(), "");
 			} else if (property.getEditor() instanceof ReferencePropertyEditor) {
 				ReferencePropertyEditor editor = (ReferencePropertyEditor) property.getEditor();
 				Object val = entity.getValue(property.getPropertyName());
@@ -641,6 +647,10 @@ public class MultiBulkCommandContext extends RegistrationCommandContext {
 								//日付の逆転チェック
 								DateRangePropertyEditor de = (DateRangePropertyEditor) np.getEditor();
 								checkDateRange(de, ary[i], np.getPropertyName(), de.getToPropertyName(), errorPrefix);
+							} else if (np.getEditor() instanceof NumericRangePropertyEditor) {
+								//数値の逆転チェック
+								NumericRangePropertyEditor de = (NumericRangePropertyEditor) np.getEditor();
+								checkNumericRange(de, ary[i], np.getPropertyName(), de.getToPropertyName(), errorPrefix);
 							}
 						}
 					}
@@ -671,6 +681,80 @@ public class MultiBulkCommandContext extends RegistrationCommandContext {
 			getErrors().add(e);
 		}
 	}
+
+	/**
+	 * 数値範囲のチェック
+	 * @param editor
+	 * @param entity
+	 * @param fromName
+	 * @param toName
+	 * @param errorPrefix
+	 */
+	private void checkNumericRange(NumericRangePropertyEditor editor, Entity entity, String fromName, String toName, String errorPrefix) {
+		Number from = entity.getValue(fromName);
+		Number to = entity.getValue(editor.getToPropertyName());
+		BigDecimal from_tmp = castNumericRangeNumber(from);
+		BigDecimal to_tmp = castNumericRangeNumber(to);
+
+		if (from_tmp == null && to_tmp != null) {
+			if (!editor.isInputNullFrom()) {
+				setValidateErrorMessage(editor, fromName, errorPrefix, "command.generic.bulk.BulkCommandContext.inputNumericRangeErr");
+			}
+		} else if (from_tmp != null && to_tmp == null) {
+			if (!editor.isInputNullTo()) {
+				setValidateErrorMessage(editor, fromName, errorPrefix, "command.generic.bulk.BulkCommandContext.inputNumericRangeErr");
+			}
+		} else if (from_tmp != null && to_tmp != null) {
+			boolean result = false;
+
+			if (editor.getEquivalentInput()) {
+				result = (from_tmp.compareTo(to_tmp) > 0) ? true : false;
+			} else {
+				result = (from_tmp.compareTo(to_tmp) >= 0) ? true : false;
+			}
+			if (result) {
+				setValidateErrorMessage(editor, fromName, errorPrefix, "command.generic.bulk.BulkCommandContext.invalidNumericRange");
+			}
+		}
+	}
+
+	/**
+	 * 数値範囲のキャスト
+	 * @param number
+	 * @return castNumber
+	 */
+	private BigDecimal castNumericRangeNumber(Number number) {
+		if (number instanceof Double) {
+			return new BigDecimal(number.doubleValue());
+		} else if (number instanceof Long) {
+			return new BigDecimal(number.longValue());
+		} else if (number instanceof BigDecimal) {
+			return (BigDecimal) number;
+		} else {
+			return null;
+		}
+	}
+
+	/**
+	 * 数値範囲のチェック_エラーメッセージの設定
+	 * @param editor
+	 * @param entity
+	 * @param fromName
+	 * @param errorPrefix
+	 * @param inputNullFlag
+	 * @param comparisonFlag
+	 */
+	private void setValidateErrorMessage(NumericRangePropertyEditor editor, String fromName, String errorPrefix, String resourceStringKey) {
+		String errorMessage = TemplateUtil.getMultilingualString(editor.getErrorMessage(), editor.getLocalizedErrorMessageList());
+		if (StringUtil.isBlank(errorMessage )) {
+			errorMessage = resourceString(resourceStringKey);
+		}
+		ValidateError e = new ValidateError();
+		e.setPropertyName(errorPrefix + fromName + "_" + editor.getToPropertyName());//fromだけだとメッセージが変なとこに出るので細工
+		e.addErrorMessage(errorMessage);
+		getErrors().add(e);
+	}
+
 
 	/**
 	 * ブランクの項目は未入力と見なし、更新しないので、一括更新可能なプロパティリストから外す。
@@ -726,6 +810,14 @@ public class MultiBulkCommandContext extends RegistrationCommandContext {
 					} else if (prop.getEditor() instanceof DateRangePropertyEditor) {
 						//組み合わせで使うプロパティを通常のプロパティ扱いに
 						DateRangePropertyEditor de = (DateRangePropertyEditor) prop.getEditor();
+						PropertyItem dummy = new PropertyItem();
+						dummy.setDispFlag(true);
+						dummy.setPropertyName(de.getToPropertyName());
+						dummy.setEditor(de.getEditor());
+						propList.add(dummy);
+					} else if (prop.getEditor() instanceof NumericRangePropertyEditor) {
+						//組み合わせで使うプロパティを通常のプロパティ扱いに
+						NumericRangePropertyEditor de = (NumericRangePropertyEditor) prop.getEditor();
 						PropertyItem dummy = new PropertyItem();
 						dummy.setDispFlag(true);
 						dummy.setPropertyName(de.getToPropertyName());

@@ -54,6 +54,7 @@ import org.iplass.mtp.entity.query.condition.predicate.Lesser;
 import org.iplass.mtp.entity.query.condition.predicate.LesserEqual;
 import org.iplass.mtp.entity.query.condition.predicate.Like;
 import org.iplass.mtp.entity.query.condition.predicate.NotEquals;
+import org.iplass.mtp.view.generic.editor.NumericRangePropertyEditor;
 import org.iplass.mtp.view.generic.editor.PropertyEditor;
 import org.iplass.mtp.view.generic.element.property.PropertyItem;
 
@@ -244,6 +245,14 @@ public abstract class PropertySearchCondition {
 	    this.value = value;
 	}
 
+	/**
+	 * 親プロパティ名を取得します。
+	 * @return 親プロパティ名
+	 */
+	protected String getParent() {
+		return parent;
+	}
+
 	public static PropertySearchCondition newInstance(PropertyDefinition definition,
 			PropertyEditor editor, Object value) {
 		return newInstance(definition, editor, value, null);
@@ -261,12 +270,21 @@ public abstract class PropertySearchCondition {
 		} else if (definition instanceof DateTimeProperty) {
 			return new TimestampPropertySearchCondition(definition, editor, value, parent);
 		} else if (definition instanceof DecimalProperty) {
+			if(editor instanceof NumericRangePropertyEditor) {
+				return new NumericRangePropertySearchCondition(definition, editor, value, parent);
+			}
 			return new DecimalPropertySearchCondition(definition, editor, value, parent);
 		} else if (definition instanceof ExpressionProperty) {
 			return new ExpressionPropertySearchCondition(definition, editor, value, parent);
 		} else if (definition instanceof FloatProperty) {
+			if(editor instanceof NumericRangePropertyEditor) {
+				return new NumericRangePropertySearchCondition(definition, editor, value, parent);
+			}
 			return new FloatPropertySearchCondition(definition, editor, value, parent);
 		} else if (definition instanceof IntegerProperty) {
+			if(editor instanceof NumericRangePropertyEditor) {
+				return new NumericRangePropertySearchCondition(definition, editor, value, parent);
+			}
 			return new IntegerPropertySearchCondition(definition, editor, value, parent);
 		} else if (definition instanceof LongTextProperty) {
 			return new LongTextPropertySearchCondition(definition, editor, value, parent);
