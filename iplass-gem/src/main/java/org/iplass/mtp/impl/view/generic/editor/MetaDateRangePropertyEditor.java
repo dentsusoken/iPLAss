@@ -23,7 +23,6 @@ package org.iplass.mtp.impl.view.generic.editor;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.iplass.mtp.definition.LocalizedStringDefinition;
 import org.iplass.mtp.entity.definition.PropertyDefinition;
 import org.iplass.mtp.impl.entity.EntityContext;
 import org.iplass.mtp.impl.entity.EntityHandler;
@@ -64,7 +63,7 @@ public class MetaDateRangePropertyEditor extends MetaCustomPropertyEditor {
 	private String toPropertyDisplayName;
 
 	/** Toプロパティ表示名の多言語設定情報 */
-	private List<LocalizedStringDefinition> localizedToPropertyDisplayNameList;
+	private List<MetaLocalizedString> localizedToPropertyDisplayNameList = new ArrayList<MetaLocalizedString>();
 
 	/** エラーメッセージ */
 	private String errorMessage;
@@ -152,7 +151,7 @@ public class MetaDateRangePropertyEditor extends MetaCustomPropertyEditor {
 	 * Toプロパティ表示名の多言語設定情報を取得します。
 	 * @return リスト
 	 */
-	public List<LocalizedStringDefinition> getLocalizedToPropertyDisplayNameList() {
+	public List<MetaLocalizedString> getLocalizedToPropertyDisplayNameList() {
 		return localizedToPropertyDisplayNameList;
 	}
 
@@ -160,7 +159,7 @@ public class MetaDateRangePropertyEditor extends MetaCustomPropertyEditor {
 	 * Toプロパティ表示名の多言語設定情報を設定します。
 	 * @param localizedDescriptionList リスト
 	 */
-	public void setLocalizedToPropertyDisplayNameList(List<LocalizedStringDefinition> localizedToPropertyDisplayNameList) {
+	public void setLocalizedToPropertyDisplayNameList(List<MetaLocalizedString> localizedToPropertyDisplayNameList) {
 		this.localizedToPropertyDisplayNameList = localizedToPropertyDisplayNameList;
 	}
 
@@ -212,7 +211,7 @@ public class MetaDateRangePropertyEditor extends MetaCustomPropertyEditor {
 		}
 
 		setToPropertyDisplayName(e.getToPropertyDisplayName());
-		setLocalizedToPropertyDisplayNameList(e.getLocalizedToPropertyDisplayNameList());
+		localizedToPropertyDisplayNameList = I18nUtil.toMeta(e.getLocalizedToPropertyDisplayNameList());
 
 		PropertyHandler property = entity.getProperty(e.getToPropertyName(), metaContext);
 		if (property != null) {
@@ -250,7 +249,7 @@ public class MetaDateRangePropertyEditor extends MetaCustomPropertyEditor {
 		if (property != null) {
 			_editor.setToPropertyName(property.getName());
 			_editor.setToPropertyDisplayName(toPropertyDisplayName);
-			_editor.setLocalizedToPropertyDisplayNameList(localizedToPropertyDisplayNameList);
+			_editor.setLocalizedToPropertyDisplayNameList(I18nUtil.toDef(localizedToPropertyDisplayNameList));
 		}
 
 		_editor.setErrorMessage(errorMessage);
