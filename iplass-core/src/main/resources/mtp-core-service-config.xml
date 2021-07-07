@@ -866,6 +866,9 @@
 		<property name="initialGetResultIntervalMillis" value="100" />
 	</service>
 
+	<service final="true">
+		<interface>org.iplass.mtp.impl.entity.normalizer.NormalizerService</interface>
+	</service>
 	<service>
 		<interface>org.iplass.mtp.impl.validation.ValidationService</interface>
 		<class>org.iplass.mtp.impl.validation.ValidationService</class>

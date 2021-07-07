@@ -71,4 +71,8 @@ dependencies {
 	
 	//JGroups
 	implementation sharedLib('org.jgroups:jgroups')
+	
+	//icu4j
+	implementation sharedLib('com.ibm.icu:icu4j')
+	
 }

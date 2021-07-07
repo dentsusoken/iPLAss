@@ -34,6 +34,8 @@ import org.iplass.mtp.impl.datastore.PropertyStoreHandler;
 import org.iplass.mtp.impl.entity.EntityContext;
 import org.iplass.mtp.impl.entity.EntityHandler;
 import org.iplass.mtp.impl.entity.MetaEntity;
+import org.iplass.mtp.impl.entity.normalizer.MetaNormalizer;
+import org.iplass.mtp.impl.entity.normalizer.MetaNormalizer.NormalizerRuntime;
 import org.iplass.mtp.impl.i18n.I18nUtil;
 import org.iplass.mtp.impl.i18n.MetaLocalizedString;
 import org.iplass.mtp.impl.validation.MetaValidation;
@@ -44,6 +46,7 @@ public abstract class PropertyHandler /* implements MetaDataRuntime*/ {
 
 	protected MetaProperty metaData;
 	private List<ValidationHandler> validators;
+	private List<NormalizerRuntime> normalizers;
 	private EntityHandler parent;
 	private PropertyStoreHandler entityStorePropertyHandler;
 
@@ -54,10 +57,16 @@ public abstract class PropertyHandler /* implements MetaDataRuntime*/ {
 		localizedStringMap = new HashMap<String, String>();
 		this.metaData = metaproperty;
 		List<MetaValidation> vDefs = metaproperty.getValidations();
-		if (vDefs != null) {
+		if (vDefs != null && !vDefs.isEmpty()) {
 			validators = new ArrayList<ValidationHandler>();
 			for (MetaValidation vDef: vDefs) {
 				validators.add(vDef.createRuntime(metaEntity, metaproperty));
+			}
+		}
+		if (metaproperty.getNormalizers() != null && !metaproperty.getNormalizers().isEmpty()) {
+			normalizers = new ArrayList<>(metaproperty.getNormalizers().size());
+			for (MetaNormalizer nDef: metaproperty.getNormalizers()) {
+				normalizers.add(nDef.createRuntime(metaEntity, metaproperty));
 			}
 		}
 		if (metaproperty.getEntityStoreProperty() != null) {
@@ -124,16 +133,36 @@ public abstract class PropertyHandler /* implements MetaDataRuntime*/ {
 	public void setLocalizedStringMap(Map<String, String> localizedStringMap) {
 		this.localizedStringMap = localizedStringMap;
 	}
+	
+	public void normalize(ValidationContext context) {
+		if (normalizers != null) {
+			Object value = context.getEntity().getValue(metaData.getName());
+			for (NormalizerRuntime n: normalizers) {
+				Object valueAfter;
+				if (getMetaData().getMultiplicity() != 1
+						&& value != null
+						&& value.getClass().isArray()) {
+					valueAfter = n.normalizeArray((Object[]) value, context);
+				} else {
+					valueAfter = n.normalize(value, context);
+				}
+				if (value != valueAfter) {
+					context.getEntity().setValue(metaData.getName(), valueAfter);
+					value = valueAfter;
+				}
+			}
+		}
+		
+	}
 
-	public ValidateError validate(Entity model) {
-		ValidationContext context = new ValidationContext(model, metaData.getName());
-
+	public ValidateError validate(ValidationContext context) {
+		
 		if (validators != null) {
 			String entityDispName = parent.getLocalizedDisplayName();
 			String propDispName = getLocalizedDisplayName();
 
 			for (ValidationHandler v: validators) {
-				Object value = model.getValue(metaData.getName());
+				Object value = context.getEntity().getValue(metaData.getName());
 				if (getMetaData().getMultiplicity() != 1
 						&& value != null
 						&& value.getClass().isArray()) {
