@@ -26,6 +26,7 @@ import java.util.Map;
 import org.iplass.mtp.entity.definition.NormalizerDefinition;
 import org.iplass.mtp.entity.definition.normalizers.ICUTransliterator;
 import org.iplass.mtp.entity.definition.normalizers.JavaClassNormalizer;
+import org.iplass.mtp.entity.definition.normalizers.NewlineNormalizer;
 import org.iplass.mtp.entity.definition.normalizers.RegexReplace;
 import org.iplass.mtp.entity.definition.normalizers.ScriptingNormalizer;
 import org.iplass.mtp.entity.definition.normalizers.UnicodeNormalizer;
@@ -42,6 +43,7 @@ public class NormalizerService implements Service {
 		map = new HashMap<>();
 		map.put(ICUTransliterator.class, MetaICUTransliterator.class);
 		map.put(JavaClassNormalizer.class, MetaJavaClassNormalizer.class);
+		map.put(NewlineNormalizer.class, MetaNewlineNormalizer.class);
 		map.put(RegexReplace.class, MetaRegexReplace.class);
 		map.put(ScriptingNormalizer.class, MetaScriptingNormalizer.class);
 		map.put(UnicodeNormalizer.class, MetaUnicodeNormalizer.class);

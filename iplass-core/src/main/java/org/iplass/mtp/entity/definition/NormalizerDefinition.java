@@ -26,6 +26,7 @@ import javax.xml.bind.annotation.XmlSeeAlso;
 
 import org.iplass.mtp.entity.definition.normalizers.ICUTransliterator;
 import org.iplass.mtp.entity.definition.normalizers.JavaClassNormalizer;
+import org.iplass.mtp.entity.definition.normalizers.NewlineNormalizer;
 import org.iplass.mtp.entity.definition.normalizers.RegexReplace;
 import org.iplass.mtp.entity.definition.normalizers.ScriptingNormalizer;
 import org.iplass.mtp.entity.definition.normalizers.UnicodeNormalizer;
@@ -46,6 +47,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 @XmlSeeAlso({
 		ICUTransliterator.class,
 		JavaClassNormalizer.class,
+		NewlineNormalizer.class,
 		RegexReplace.class,
 		ScriptingNormalizer.class,
 		UnicodeNormalizer.class,

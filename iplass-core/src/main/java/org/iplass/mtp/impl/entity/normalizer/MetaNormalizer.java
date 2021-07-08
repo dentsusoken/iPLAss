@@ -32,6 +32,7 @@ import org.iplass.mtp.impl.metadata.MetaData;
 @XmlSeeAlso({
 	MetaICUTransliterator.class,
 	MetaJavaClassNormalizer.class,
+	MetaNewlineNormalizer.class,
 	MetaRegexReplace.class,
 	MetaScriptingNormalizer.class,
 	MetaUnicodeNormalizer.class,

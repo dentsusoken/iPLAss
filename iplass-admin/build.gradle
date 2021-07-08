@@ -171,6 +171,8 @@ task copyGwtTransSrc(type: Sync) {
 
 		include 'mtp/entity/definition/normalizers/ICUTransliterator.java'
 		include 'mtp/entity/definition/normalizers/JavaClassNormalizer.java'
+		include 'mtp/entity/definition/normalizers/NewlineNormalizer.java'
+		include 'mtp/entity/definition/normalizers/NewlineType.java'
 		include 'mtp/entity/definition/normalizers/RegexReplace.java'
 		include 'mtp/entity/definition/normalizers/ScriptingNormalizer.java'
 		include 'mtp/entity/definition/normalizers/UnicodeNormalizer.java'
