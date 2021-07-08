@@ -57,9 +57,9 @@ $(function(){
 		clickFunc:function($menu) {
 			//メニュー/ウィジェットの状態保持
 			if ($menu.hasClass("menu-shortcut")) {
-				setCookie("currentMenuTab", "menu-shortcut", 0);
+				setSessionStorage("currentMenuTab", "menu-shortcut");
 			} else {
-				setCookie("currentMenuTab", "menu-shortcut", -1);
+				deleteSessionStorage("currentMenuTab");
 			}
 		}
 	});	//サイドナビタブ切り替え
@@ -67,18 +67,20 @@ $(function(){
 	//cookieから展開状態復元
 	$("#nav .nav-wrap > li:has('.nav-detail')").each(function() {
 		var id = $(this).attr("id");
-		if (getCookie(id)) {
+		if (getSessionStorage(id)) {
 			$("p>a", this).trigger("click");
 		}
 	});
-	if (getCookie("currentMenuId")) {
-		$("#" + es(getCookie("currentMenuId"))).addClass("selected");
-		$("#" + es(getCookie("currentMenuId"))).parents(".menu-node").addClass("selected");
+	var currentMenuId = getSessionStorage("currentMenuId");
+	if (currentMenuId) {
+		$("#" + es(currentMenuId)).addClass("selected");
+		$("#" + es(currentMenuId)).parents(".menu-node").addClass("selected");
 	}
-	if (getCookie("currentMenuTab")) {
-		$("." + getCookie("currentMenuTab")).trigger("click");
+	var currentMenuTab = getSessionStorage("currentMenuTab");
+	if (currentMenuTab) {
+		$("." + currentMenuTab).trigger("click");
 	}
-	if (getCookie("navSplit")) {
+	if (getSessionStorage("navSplit")) {
 		$("#split-btn").trigger("click");
 	}
 
@@ -186,14 +188,14 @@ $(function(){
 				$(".fixHeight").fixHeight();
 
 				var id = $this.parent().attr("id");
-				setCookie(id, true, 0);
+				setSessionStorage(id, "true");
 			},
 			function () {
 				$this.parent().removeClass("hover");
 				$(".fixHeight").fixHeight();
 
 				var id = $this.parent().attr("id");
-				setCookie(id, false, -1);
+				deleteSessionStorage(id);
 			});
 		});
 	};
@@ -239,7 +241,7 @@ $(function(){
 				$content.addClass("cotent-col-01");
 				$(".fixHeight").fixHeight();
 
-				setCookie("navSplit", true, 0);
+				setSessionStorage("navSplit", "true");
 
 				$this.trigger("navSplitToggle", {toggle:"on"});
 			},
@@ -247,7 +249,7 @@ $(function(){
 				$content.removeClass("cotent-col-01");
 				$(".fixHeight").fixHeight();
 
-				setCookie("navSplit", false, -1);
+				deleteSessionStorage("navSplit");
 
 				$this.trigger("navSplitToggle", {toggle:"off"});
 			});

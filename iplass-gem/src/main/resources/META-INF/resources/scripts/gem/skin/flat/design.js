@@ -55,24 +55,26 @@ $(function() {
 		clickFunc: function($menu) {
 			//メニュー/ウィジェットの状態保持
 			if ($menu.hasClass("menu-shortcut")) {
-				setCookie("currentMenuTab", "menu-shortcut", 0);
+				setSessionStorage("currentMenuTab", "menu-shortcut");
 			} else {
-				setCookie("currentMenuTab", "menu-shortcut", -1);
+				deleteSessionStorage("currentMenuTab");
 			}
 		}
 	}); //サイドナビタブ切り替え
 
 	//cookieから展開状態復元
-	if (getCookie("currentMenuId")) {
+	var currentMenuId = getSessionStorage("currentMenuId");
+	if (currentMenuId) {
 		//起動時は選択Rootメニュー配下を全て展開して表示
-		var currentRootMenuNode = $("#" + es(getCookie("currentMenuId"))).parents(".menu-node.root-menu-node").addClass("sub-open").children("ul").show();
+		var currentRootMenuNode = $("#" + es(currentMenuId)).parents(".menu-node.root-menu-node").addClass("sub-open").children("ul").show();
 		currentRootMenuNode.find(".menu-node").addClass("sub-open");
 
-		$("#" + es(getCookie("currentMenuId"))).addClass("selected");
-		$("#" + es(getCookie("currentMenuId"))).parents(".root-menu-node").addClass("selected");
+		$("#" + es(currentMenuId)).addClass("selected");
+		$("#" + es(currentMenuId)).parents(".root-menu-node").addClass("selected");
 	}
-	if (getCookie("currentMenuTab")) {
-		$("." + getCookie("currentMenuTab")).trigger("click");
+	var currentMenuTab = getSessionStorage("currentMenuTab");
+	if (currentMenuTab) {
+		$("." + currentMenuTab).trigger("click");
 	}
 
 	/** パーツ、ウィジェット **/
@@ -213,7 +215,7 @@ $(function() {
 		$("#footer").appendTo("#content");
 
 		// menu
-		var navClosed = getCookie("nav-closed");
+		var navClosed = getSessionStorage("nav-closed");
 		if (navClosed && navClosed === "true") {
 			// 初期状態
 			$("html").addClass("nav-closed");
@@ -226,20 +228,20 @@ $(function() {
 			if ($("html").is(".nav-closed")) {
 				$("html").removeClass("nav-closed");
 				$("#nav").find(".selected").addClass("hover");
-				setCookie("nav-closed", null, 0);
+				deleteSessionStorage("nav-closed");
 			} else {
 				$("html").addClass("nav-closed");
 				$("#nav").find(".hover").removeClass("hover");
 				if ($("#nav-menu .menu-shortcut").is(".current")) {
 					$("#nav-menu .menu-list").trigger("click");
 				}
-				setCookie("nav-closed", "true", 0);
+				setSessionStorage("nav-closed", "true");
 			}
 		});
 		$("#nav-menu").on("click", function() {
 			if ($("html").is(".nav-closed")) {
 				$("html").removeClass("nav-closed");
-				setCookie("nav-closed", null, 0);
+				deleteSessionStorage("nav-closed");
 			}
 		});
 
@@ -424,7 +426,7 @@ function createPseudoObject() {
 	if ($this.hasClass("cbox")) {
 		return;
 	}
-	
+
 	//値の選択解除が可能か
 	if ($this.hasClass("radio-togglable")) {
 		valueTogglable = "radio-togglable";
@@ -437,7 +439,7 @@ function createPseudoObject() {
 
 	//疑似化済にする
 	$this.addClass("applied-pseudo");
-	
+
 	$this.parent("label").on("click", function(e) {
 		if ($pseudo.is(":visible")) {
 			// ラベル部分クリックでイベントが2重発生しないよう抑制
@@ -445,7 +447,7 @@ function createPseudoObject() {
 			e.preventDefault();
 		}
 	});
-	
+
 	$pseudo.on("keydown", function(e) {
 		//Spaceで選択
 		if(e.keyCode === 32) {
@@ -460,7 +462,7 @@ function createPseudoObject() {
 	} else if ($this.attr("type") == "checkbox") {
 		$pseudo.on("click", onClickPseudoCheckbox);
 	}
-	
+
 	$pseudo.parent().addClass("pseudo-parent");
 	if ($this.prop("disabled")) {
 		$pseudo.parent().addClass("disabled");
@@ -481,7 +483,7 @@ function createPseudoObject() {
 		$(this).prev().trigger("click");
 	});
 }
- 
+
 /**
  * 偽チェックボックスクリックイベント
  * @returns
