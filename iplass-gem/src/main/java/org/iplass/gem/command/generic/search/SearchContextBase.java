@@ -223,33 +223,45 @@ public abstract class SearchContextBase implements SearchContext, CreateSearchRe
 	@Override
 	public OrderBy getOrderBy() {
 		OrderBy orderBy = null;
+		// ソート設定が存在する場合
 		if (hasSortSetting()) {
-			List<SortSetting> setting = getSortSetting();
-			for (SortSetting ss : setting) {
+			orderBy = new OrderBy();
+			for (SortSetting ss : getSortSetting()) {
 				if (ss.getSortKey() != null) {
-					String key = null;
+					String sortKey = ss.getSortKey();
 					PropertyDefinition pd = getPropertyDefinition(ss.getSortKey());
+					// ソートキーに参照プロパティ自体が指定された場合
 					if (pd instanceof ReferenceProperty) {
-						key = ss.getSortKey() + "." + Entity.OID;
-					} else {
-						key = ss.getSortKey();
+						PropertyColumn property = getLayoutPropertyColumn(ss.getSortKey());
+						// 当該項目が画面上表示される場合は、画面上の表示項目でソート
+						if (property != null) {
+							sortKey = sortKey + "." + getDisplayNestProperty(property);
+						} else {
+							// 表示されない場合は、Nameでソート
+							sortKey = sortKey + "." + Entity.NAME;
+						}
 					}
 					SortType type = SortType.valueOf(ss.getSortType().name());
 					NullOrderingSpec nullOrderingSpec = getNullOrderingSpec(ss.getNullOrderType());
-					if (orderBy == null) orderBy = new OrderBy();
-					orderBy.add(key, type, nullOrderingSpec);
+					orderBy.add(sortKey, type, nullOrderingSpec);
 				}
 			}
 		} else {
+			// ソート設定がない場合
 			String sortKey = getSortKey();
 			if (sortKey != null) {
 				if (Entity.OID.equals(sortKey)) {
 					orderBy = new OrderBy();
 					orderBy.add(sortKey, getSortType());
 				} else {
-					//OID以外はSearchResultに定義されているもののみ許可します。
+					//OID以外はSearchResultに定義されているPropertyのみ許可
 					PropertyColumn property = getLayoutPropertyColumn(sortKey);
 					if (property != null) {
+						PropertyDefinition pd = getPropertyDefinition(sortKey);
+						// 参照プロパティの場合、画面上の表示項目でソート
+						if (pd instanceof ReferenceProperty) {
+							sortKey = sortKey + "." + getDisplayNestProperty(property);
+						}
 						NullOrderingSpec nullOrderingSpec = getNullOrderingSpec(property.getNullOrderType());
 						orderBy = new OrderBy();
 						orderBy.add(sortKey, getSortType(), nullOrderingSpec);
@@ -413,30 +425,26 @@ public abstract class SearchContextBase implements SearchContext, CreateSearchRe
 	}
 	/**
 	 * リクエストからソートキーを取得します。
-	 * ソートキーが指定されていない場合は検索画面のデフォルトソートキーを取得します。
+	 * ソートキーが指定されていない場合は、検索画面のデフォルトソートキーを取得します。
 	 * @return ソートキー
 	 */
 	protected String getSortKey() {
 		String sortKey = request.getParam(Constants.SEARCH_SORTKEY);
+		
+		// 検索時のソートキー
 		if (StringUtil.isBlank(sortKey)) {
 			if (getConditionSection().isUnsorted()) {
-				//画面からのソート未指定時はソートしない
 				return null;
 			}
-			sortKey =  Entity.OID;
+			return Entity.OID;
 		}
-
+		
 		PropertyDefinition pd = getPropertyDefinition(sortKey);
 		if (pd == null) {
 			//ソート項目が存在しない場合はOIDを設定
-			sortKey = Entity.OID;
-			pd = getEntityDefinition().getProperty(sortKey);
+			return Entity.OID;
 		}
-
-		if (pd instanceof ReferenceProperty) {
-			sortKey = sortKey + "." + Entity.OID;
-		}
-
+		
 		return sortKey;
 	}
 
@@ -488,22 +496,22 @@ public abstract class SearchContextBase implements SearchContext, CreateSearchRe
 		//画面でソート条件が指定されれば第1キーに
 		String sortKey = getRequest().getParam(Constants.SEARCH_SORTKEY);
 		if (StringUtil.isNotBlank(sortKey)) {
-			PropertyDefinition pd = getPropertyDefinition(sortKey);
-			if (pd != null) {
-				// 有効なプロパティのみ対象にする
+			// SearchResultに定義されているもののみ許可
+			PropertyColumn property = getLayoutPropertyColumn(sortKey);
+			if (property != null) {
 				SortSetting ss = new SortSetting();
 				ss.setSortKey(sortKey);
+				
 				String sortType = getRequest().getParam(Constants.SEARCH_SORTTYPE);
 				if (StringUtil.isBlank(sortType)) {
 					ss.setSortType(ConditionSortType.DESC);
 				} else {
 					ss.setSortType(ConditionSortType.valueOf(sortType));
 				}
-				PropertyColumn property = getLayoutPropertyColumn(sortKey);
-				if (property != null) {
-					ss.setNullOrderType(property.getNullOrderType());
-					setting.add(ss);
-				}
+				
+				ss.setNullOrderType(property.getNullOrderType());
+				
+				setting.add(ss);
 			}
 		}
 
@@ -513,7 +521,23 @@ public abstract class SearchContextBase implements SearchContext, CreateSearchRe
 		}
 		return setting;
 	}
-
+	
+	/**
+	 * 参照プロパティで、検索結果に表示されている項目を取得します。
+	 * @return 表示項目
+	 */
+	protected String getDisplayNestProperty(PropertyColumn refProp) {
+		PropertyEditor editor = refProp.getEditor();
+		
+		if (editor instanceof ReferencePropertyEditor
+				&& StringUtil.isNotEmpty(((ReferencePropertyEditor) editor).getDisplayLabelItem())) {
+			return ((ReferencePropertyEditor)editor).getDisplayLabelItem();
+		} else {
+			return Entity.NAME;
+		}
+		
+	}
+	
 	/**
 	 * リクエストから検索上限を取得します。
 	 * 検索上限が指定されていない場合は検索画面のデフォルトソート上限を取得します。
