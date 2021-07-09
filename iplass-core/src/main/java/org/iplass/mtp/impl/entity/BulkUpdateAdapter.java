@@ -182,9 +182,11 @@ class BulkUpdateAdapter implements BulkUpdatable {
 			
 			switch (forInternalUse.actualBulkUpdateEntity.getMethod()) {
 			case INSERT:
+				eh.nomalizeInternal(forInternalUse.getEntity(), null, ec);
 				eh.preprocessInsertDirect(forInternalUse.getEntity(), ec, complexWrapperTypePropList);
 				break;
 			case UPDATE:
+				eh.nomalizeInternal(forInternalUse.getEntity(), op == null ? null: op.getUpdateProperties(), ec);
 				eh.preprocessUpdateDirect(forInternalUse.getEntity(), op, ec, complexWrapperTypePropList, true);
 				break;
 			case DELETE:

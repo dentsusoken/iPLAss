@@ -88,6 +88,9 @@ ext {
 		'io.jsonwebtoken:jjwt-impl': '0.10.6',
 		'io.jsonwebtoken:jjwt-jackson': '0.10.6',
 		
+		'com.ibm.icu:icu4j': '69.1',
+		
+		
 		'junit:junit': '4.13.1',
 		
 		//webjars(admin)

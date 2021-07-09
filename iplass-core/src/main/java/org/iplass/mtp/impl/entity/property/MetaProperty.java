@@ -26,11 +26,14 @@ import java.util.List;
 import javax.xml.bind.annotation.XmlSeeAlso;
 
 import org.iplass.mtp.entity.definition.IndexType;
+import org.iplass.mtp.entity.definition.NormalizerDefinition;
 import org.iplass.mtp.entity.definition.PropertyDefinition;
 import org.iplass.mtp.entity.definition.ValidationDefinition;
 import org.iplass.mtp.impl.datastore.MetaPropertyStore;
 import org.iplass.mtp.impl.entity.EntityContext;
 import org.iplass.mtp.impl.entity.MetaEntity;
+import org.iplass.mtp.impl.entity.normalizer.MetaNormalizer;
+import org.iplass.mtp.impl.entity.normalizer.NormalizerService;
 import org.iplass.mtp.impl.i18n.I18nUtil;
 import org.iplass.mtp.impl.i18n.MetaLocalizedString;
 import org.iplass.mtp.impl.metadata.MetaData;
@@ -38,8 +41,7 @@ import org.iplass.mtp.impl.validation.MetaValidation;
 import org.iplass.mtp.impl.validation.ValidationService;
 import org.iplass.mtp.spi.ServiceRegistry;
 
-
-@XmlSeeAlso({MetaPrimitiveProperty.class, MetaReferenceProperty.class})
+@XmlSeeAlso({ MetaPrimitiveProperty.class, MetaReferenceProperty.class })
 public abstract class MetaProperty implements MetaData {
 	private static final long serialVersionUID = 2022181816499023008L;
 
@@ -55,15 +57,17 @@ public abstract class MetaProperty implements MetaData {
 
 	/** デフォルト値 */
 	private String defaultValue;
-	//TODO デフォルト値の機能の実装。Scriptか？
+	// TODO デフォルト値の機能の実装。Scriptか？
 
 	/** 変更可能項目か否か */
 	private boolean updatable = true;
 
 	/** 多重度 */
-	private int multiplicity = 1;//Default:1
+	private int multiplicity = 1;// Default:1
 
 	private List<MetaValidation> validations = new ArrayList<MetaValidation>();
+
+	private List<MetaNormalizer> normalizers = new ArrayList<MetaNormalizer>();
 
 	/** 多言語設定情報 */
 	private List<MetaLocalizedString> localizedDisplayNameList = new ArrayList<MetaLocalizedString>();
@@ -73,12 +77,19 @@ public abstract class MetaProperty implements MetaData {
 	/** ストア依存のプロパティに紐付く設定 */
 	private MetaPropertyStore entityStoreProperty;
 
+	public List<MetaNormalizer> getNormalizers() {
+		return normalizers;
+	}
+
+	public void setNormalizers(List<MetaNormalizer> normalizers) {
+		this.normalizers = normalizers;
+	}
+
 	public MetaPropertyStore getEntityStoreProperty() {
 		return entityStoreProperty;
 	}
 
-	public void setEntityStoreProperty(
-			MetaPropertyStore entityStoreProperty) {
+	public void setEntityStoreProperty(MetaPropertyStore entityStoreProperty) {
 		this.entityStoreProperty = entityStoreProperty;
 	}
 
@@ -192,8 +203,16 @@ public abstract class MetaProperty implements MetaData {
 		ValidationService vService = ServiceRegistry.getRegistry().getService(ValidationService.class);
 		validations = new ArrayList<MetaValidation>();
 		if (pDef.getValidations() != null) {
-			for (ValidationDefinition v: pDef.getValidations()) {
+			for (ValidationDefinition v : pDef.getValidations()) {
 				validations.add(vService.createValidationMetaData(v));
+			}
+		}
+
+		NormalizerService nService = ServiceRegistry.getRegistry().getService(NormalizerService.class);
+		normalizers = new ArrayList<>();
+		if (pDef.getNormalizers() != null) {
+			for (NormalizerDefinition n : pDef.getNormalizers()) {
+				normalizers.add(nService.createNormalizerMetaData(n));
 			}
 		}
 
@@ -202,8 +221,6 @@ public abstract class MetaProperty implements MetaData {
 
 //		entityStoreProperty = null;//TODO 残しておくべきか。。
 	}
-
-
 
 	public abstract PropertyDefinition currentConfig(EntityContext context);
 
@@ -222,11 +239,19 @@ public abstract class MetaProperty implements MetaData {
 
 		ArrayList<ValidationDefinition> valis = new ArrayList<ValidationDefinition>();
 		if (validations != null) {
-			for (MetaValidation v: validations) {
+			for (MetaValidation v : validations) {
 				valis.add(v.currentConfig(context));
 			}
 		}
 		pd.setValidations(valis);
+
+		ArrayList<NormalizerDefinition> norms = new ArrayList<NormalizerDefinition>();
+		if (normalizers != null) {
+			for (MetaNormalizer n : normalizers) {
+				norms.add(n.currentConfig(context));
+			}
+		}
+		pd.setNormalizers(norms);
 
 		pd.setLocalizedDisplayNameList(I18nUtil.toDef(localizedDisplayNameList));
 	}
@@ -257,28 +282,18 @@ public abstract class MetaProperty implements MetaData {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result
-				+ ((defaultValue == null) ? 0 : defaultValue.hashCode());
-		result = prime * result
-				+ ((description == null) ? 0 : description.hashCode());
-		result = prime * result
-				+ ((displayName == null) ? 0 : displayName.hashCode());
-		result = prime
-				* result
-				+ ((entityStoreProperty == null) ? 0 : entityStoreProperty
-						.hashCode());
+		result = prime * result + ((defaultValue == null) ? 0 : defaultValue.hashCode());
+		result = prime * result + ((description == null) ? 0 : description.hashCode());
+		result = prime * result + ((displayName == null) ? 0 : displayName.hashCode());
+		result = prime * result + ((entityStoreProperty == null) ? 0 : entityStoreProperty.hashCode());
 		result = prime * result + ((id == null) ? 0 : id.hashCode());
-		result = prime * result
-				+ ((indexType == null) ? 0 : indexType.hashCode());
-		result = prime
-				* result
-				+ ((localizedDisplayNameList == null) ? 0 : localizedDisplayNameList
-						.hashCode());
+		result = prime * result + ((indexType == null) ? 0 : indexType.hashCode());
+		result = prime * result + ((localizedDisplayNameList == null) ? 0 : localizedDisplayNameList.hashCode());
 		result = prime * result + multiplicity;
 		result = prime * result + ((name == null) ? 0 : name.hashCode());
+		result = prime * result + ((normalizers == null) ? 0 : normalizers.hashCode());
 		result = prime * result + (updatable ? 1231 : 1237);
-		result = prime * result
-				+ ((validations == null) ? 0 : validations.hashCode());
+		result = prime * result + ((validations == null) ? 0 : validations.hashCode());
 		return result;
 	}
 
@@ -329,6 +344,11 @@ public abstract class MetaProperty implements MetaData {
 			if (other.name != null)
 				return false;
 		} else if (!name.equals(other.name))
+			return false;
+		if (normalizers == null) {
+			if (other.normalizers != null)
+				return false;
+		} else if (!normalizers.equals(other.normalizers))
 			return false;
 		if (updatable != other.updatable)
 			return false;

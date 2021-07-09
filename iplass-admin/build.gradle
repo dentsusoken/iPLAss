@@ -153,6 +153,7 @@ task copyGwtTransSrc(type: Sync) {
 		include 'mtp/entity/definition/EventListenerDefinition.java'
 		include 'mtp/entity/definition/IndexType.java'
 		include 'mtp/entity/definition/LocalizedSelectValueDefinition.java'
+		include 'mtp/entity/definition/NormalizerDefinition.java'
 		include 'mtp/entity/definition/PropertyDefinition.java'
 		include 'mtp/entity/definition/PropertyDefinitionType.java'
 		include 'mtp/entity/definition/StoreDefinition.java'
@@ -167,6 +168,15 @@ task copyGwtTransSrc(type: Sync) {
 		include 'mtp/entity/definition/listeners/ScriptingEventListenerDefinition.java'
 		include 'mtp/entity/definition/listeners/SendNotificationEventListenerDefinition.java'
 		include 'mtp/entity/definition/listeners/SendNotificationType.java'
+
+		include 'mtp/entity/definition/normalizers/ICUTransliterator.java'
+		include 'mtp/entity/definition/normalizers/JavaClassNormalizer.java'
+		include 'mtp/entity/definition/normalizers/NewlineNormalizer.java'
+		include 'mtp/entity/definition/normalizers/NewlineType.java'
+		include 'mtp/entity/definition/normalizers/RegexReplace.java'
+		include 'mtp/entity/definition/normalizers/ScriptingNormalizer.java'
+		include 'mtp/entity/definition/normalizers/UnicodeNormalizer.java'
+		include 'mtp/entity/definition/normalizers/WhiteSpaceTrimmer.java'
 
 		include 'mtp/entity/definition/properties/AutoNumberProperty.java'
 		include 'mtp/entity/definition/properties/BinaryProperty.java'

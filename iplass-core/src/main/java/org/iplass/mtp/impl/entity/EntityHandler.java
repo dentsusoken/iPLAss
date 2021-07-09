@@ -50,6 +50,7 @@ import org.iplass.mtp.entity.UpdateCondition;
 import org.iplass.mtp.entity.UpdateCondition.UpdateValue;
 import org.iplass.mtp.entity.UpdateOption;
 import org.iplass.mtp.entity.ValidateError;
+import org.iplass.mtp.entity.ValidationContext;
 import org.iplass.mtp.entity.bulkupdate.BulkUpdatable;
 import org.iplass.mtp.entity.definition.IndexType;
 import org.iplass.mtp.entity.definition.VersionControlType;
@@ -565,16 +566,19 @@ public class EntityHandler extends BaseMetaDataRuntime {
 			for (PropertyHandler propertyHandler: propertyHandlers) {
 				if (updateValue == null
 						|| updateValue.contains(propertyHandler.getName())) {
+					ValidationContext vc = new ValidationContext(model, propertyHandler.getName());
 					if (propertyHandler.getName().equals(Entity.NAME)) {
 						//nameの場合、自動で設定する場合は、必須チェックしない
 						if (!isNamePropSpecify) {
-							ValidateError valRes = propertyHandler.validate(model);
+							propertyHandler.normalize(vc);
+							ValidateError valRes = propertyHandler.validate(vc);
 							if (valRes != null) {
 								validateResults.add(valRes);
 							}
 						}
 					} else {
-						ValidateError valRes = propertyHandler.validate(model);
+						propertyHandler.normalize(vc);
+						ValidateError valRes = propertyHandler.validate(vc);
 						if (valRes != null) {
 							validateResults.add(valRes);
 						}
@@ -628,6 +632,11 @@ public class EntityHandler extends BaseMetaDataRuntime {
 
 		ExecuteContext mtfContext = ExecuteContext.getCurrentContext();
 		EntityContext entityContext = EntityContext.getCurrentContext();
+		
+		//validationされない場合、このタイミングでnormalize
+		if (!option.isWithValidation()) {
+			nomalizeInternal(entity, null, entityContext);
+		}
 
 		Entity copyEntity = ((GenericEntity) entity).copy();
 
@@ -761,7 +770,24 @@ public class EntityHandler extends BaseMetaDataRuntime {
 		}
 	}
 
-	void preprocessInsertDirect(Entity entity, EntityContext entityContext, List<PropertyHandler> complexWrapperTypePropList) {
+	void nomalizeInternal(Entity entity, List<String> targetProperties, EntityContext entityContext) {
+		EntityHandler superHandler = getSuperDataModelHandler(entityContext);
+		if (superHandler != null) {
+			superHandler.nomalizeInternal(entity, targetProperties, entityContext);
+		}
+
+		if (propertyHandlers != null) {
+			for (PropertyHandler propertyHandler: propertyHandlers) {
+				if (targetProperties == null
+						|| targetProperties.contains(propertyHandler.getName())) {
+					ValidationContext vc = new ValidationContext(entity, propertyHandler.getName());
+					propertyHandler.normalize(vc);
+				}
+			}
+		}
+	}
+	
+	void preprocessInsertDirect(Entity entity,  EntityContext entityContext, List<PropertyHandler> complexWrapperTypePropList) {
 		//AutoNumberTypeが、name,oidに利用されている場合、このタイミングで採番
 		String oid = entity.getOid();
 		if (oid == null) {
@@ -977,6 +1003,11 @@ public class EntityHandler extends BaseMetaDataRuntime {
 
 		//5.メタデータの定義に従い、データを保存。
 		//6.オブジェクトIDをリターン
+		
+		//validationされない場合、このタイミングでnormalize
+		if (!option.isWithValidation()) {
+			nomalizeInternal(entity, option.getUpdateProperties(), entityContext);
+		}
 
 		//更新可能項目かどうかチェック
 		for (String propName: option.getUpdateProperties()) {

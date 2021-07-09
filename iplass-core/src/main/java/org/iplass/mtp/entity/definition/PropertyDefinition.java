@@ -94,6 +94,8 @@ public abstract class PropertyDefinition implements Serializable {
 	@MultiLang(itemNameGetter = "getName", isMultiLangValue = false, itemKey = "validation", itemGetter = "getValidations", itemSetter = "setValidations")
 	private List<ValidationDefinition> validations;
 
+	private List<NormalizerDefinition> normalizers;
+
 	/** 多言語化用文字情報リスト */
 	private List<LocalizedStringDefinition> localizedDisplayNameList;
 
@@ -103,6 +105,14 @@ public abstract class PropertyDefinition implements Serializable {
 
 	/** このプロパティが継承されたものかどうか */
 	private boolean inherited;
+
+	public List<NormalizerDefinition> getNormalizers() {
+		return normalizers;
+	}
+
+	public void setNormalizers(List<NormalizerDefinition> normalizers) {
+		this.normalizers = normalizers;
+	}
 
 	public String getDefaultValue() {
 		return defaultValue;
