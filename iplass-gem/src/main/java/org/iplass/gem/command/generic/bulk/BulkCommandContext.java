@@ -742,7 +742,7 @@ public class BulkCommandContext extends RegistrationCommandContext {
 		} else if (from_tmp != null && to_tmp != null) {
 			boolean result = false;
 
-			if (editor.getEquivalentInput()) {
+			if (editor.isEquivalentInput()) {
 				result = (from_tmp.compareTo(to_tmp) > 0) ? true : false;
 			} else {
 				result = (from_tmp.compareTo(to_tmp) >= 0) ? true : false;

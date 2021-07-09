@@ -1,23 +1,3 @@
-/*
- * Copyright (C) 2021 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
- *
- * Unless you have purchased a commercial license,
- * the following license terms apply:
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Affero General Public License as
- * published by the Free Software Foundation, either version 3 of the
- * License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Affero General Public License for more details.
- *
- * You should have received a copy of the GNU Affero General Public License
- * along with this program. If not, see <https://www.gnu.org/licenses/>.
- */
-
 package org.iplass.gem.command.generic.search.condition;
 
 import java.util.ArrayList;
@@ -27,15 +7,10 @@ import org.iplass.mtp.entity.definition.PropertyDefinition;
 import org.iplass.mtp.entity.query.condition.Condition;
 import org.iplass.mtp.entity.query.condition.expr.And;
 import org.iplass.mtp.entity.query.condition.expr.Or;
-import org.iplass.mtp.view.generic.editor.NumericRangePropertyEditor;
+import org.iplass.mtp.view.generic.editor.DateRangePropertyEditor;
 import org.iplass.mtp.view.generic.editor.PropertyEditor;
 
-/**
- * 数値範囲型の検索条件
- * @author ICOM Shojima
- */
-
-public class NumericRangePropertySearchCondition extends PropertySearchCondition {
+public class DateRangePropertySearchCondition extends PropertySearchCondition {
 
 	/**
 	 * コンストラクタ
@@ -43,7 +18,7 @@ public class NumericRangePropertySearchCondition extends PropertySearchCondition
 	 * @param editor プロパティエディタ
 	 * @param value 検索用の値
 	 */
-	public NumericRangePropertySearchCondition(PropertyDefinition definition,
+	public DateRangePropertySearchCondition(PropertyDefinition definition,
 			PropertyEditor editor, Object value) {
 		super(definition, editor, value);
 	}
@@ -55,7 +30,7 @@ public class NumericRangePropertySearchCondition extends PropertySearchCondition
 	 * @param value 検索用の値
 	 * @param parent 親ノード
 	 */
-	public NumericRangePropertySearchCondition(PropertyDefinition definition,
+	public DateRangePropertySearchCondition(PropertyDefinition definition,
 			PropertyEditor editor, Object value, String parent) {
 		super(definition, editor, value, parent);
 	}
@@ -103,8 +78,7 @@ public class NumericRangePropertySearchCondition extends PropertySearchCondition
 	}
 
 	@Override
-	public NumericRangePropertyEditor getEditor() {
-		return (NumericRangePropertyEditor) super.getEditor();
+	public DateRangePropertyEditor getEditor() {
+		return (DateRangePropertyEditor) super.getEditor();
 	}
-
 }
