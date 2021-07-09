@@ -123,7 +123,7 @@ function menuClick(action, urlParam, target) {
 
 function clearMenuState() {
 	// メニュー選択状態削除
-	setCookie("currentMenuId", "", -1);
+	deleteSessionStorage("currentMenuId");
 }
 ////////////////////////////////////////////////////////
 //検索画面用のJavascript
@@ -149,7 +149,7 @@ function oidCellFormatter(cellvalue, options, rowObject) {
 * @param searchType 検索タイプ(normal、detail、fixed)
 * @param formName search condition form name
 * @param action 実行Action
-* @param target 実行ボタン(input) 
+* @param target 実行ボタン(input)
 * @param interval 連打防止のインターバル
 * @param isForUpload ダイアログ表示時、Upload形式か
 * @param characterCode ダイアログ表示時、文字コード
@@ -484,6 +484,32 @@ function getCookie(name) {
 	}
 	return unescape(str);
 }
+
+/**
+ * SessionStorageに保存
+ * @param name 保存するアイテムの名前
+ * @param value 保存するアイテム（文字列）
+ */
+function setSessionStorage(name, value) {
+	sessionStorage.setItem(name, escape(value));
+}
+
+/**
+ * SessionStorageから取得
+ * @param name 取得するアイテムの名前
+ */
+function getSessionStorage(name) {
+	return sessionStorage.getItem(name);
+}
+
+/**
+ * SessionStorageから削除
+ * @param name 削除するアイテムの名前
+ */
+function deleteSessionStorage(name) {
+	sessionStorage.removeItem(name);
+}
+
 
 /**
  * 検索に共通のValidatorの追加
@@ -1781,7 +1807,7 @@ function addBinaryGroup(propName, count, fileId, brName, brType, brLobId, displa
 	var showImageRotateButton = $input.attr("data-showImageRotateButton") === "true";
 	var imgviewer = $input.attr("data-imgviewerUrl");
 	var openNewTab = $input.attr("data-openNewTab") === "true";
-	
+
 	if (displayType && (displayType == "BINARY" || displayType == "LINK")) {
 		// PDFの表示は編集画面でリンククリックされるとバイナリが表示され、戻れない(ブラウザバックもリンク切れ)
 		// 入力内容も消えてしまうので、少なくともアップロード時は別タブ表示にしておく
@@ -1825,7 +1851,7 @@ function addBinaryGroup(propName, count, fileId, brName, brType, brLobId, displa
 			});
 		}
 	}
-	
+
 	//削除ボタン
 	$("<a href='javascript:void(0)' class='binaryDelete del-btn link-bin'> " + scriptContext.gem.locale.binary.deleteLink + "</a>")
 			.appendTo($li).click(function() {
@@ -1842,7 +1868,7 @@ function addBinaryGroup(propName, count, fileId, brName, brType, brLobId, displa
 		if (brType && brType.indexOf("image") > -1) {
 			//imageファイルの場合は画像を表示
 			var $p = $("<p id='p_" + propName + count + "' class='mb0' />").appendTo($li);
-			
+
 			var $img = $("<img/>")
 				.attr("src", ref)
 				.attr("alt", brName)
@@ -1865,7 +1891,7 @@ function addBinaryGroup(propName, count, fileId, brName, brType, brLobId, displa
 			$img.on("load", function(){
 				imageLoad();
 			});
-			
+
 			var width = $input.attr("data-binWidth") - 0;
 			if (width > 0) $img.attr("width", width);
 			var height = $input.attr("data-binHeight") - 0;
@@ -1873,7 +1899,7 @@ function addBinaryGroup(propName, count, fileId, brName, brType, brLobId, displa
 
 			//デフォルトサイズ取得用のダミー追加
 			$("<span/>").addClass("dummy").appendTo($p);
-			
+
 		} else if (brType && brType.indexOf("application/x-shockwave-flash") > -1) {
 			// swfファイルの場合はアニメーションを表示
 			var width = $input.attr("data-binWidth") - 0;
@@ -1962,8 +1988,8 @@ var imageViewerStates = new Map();
 
 /**
  * 画像を回転させます。
- * 
- * @param lobId 対象LobId 
+ *
+ * @param lobId 対象LobId
  * @param deg 回転角度
  */
 function rotateImage(lobId, deg) {
@@ -1986,7 +2012,7 @@ function rotateImage(lobId, deg) {
 
 		var imgWidth = $image.width();
 		var imgHeight = $image.height();
-		
+
 		var height = null;
 		var translate = null;
 		if (imageData.rotate == 90 || imageData.rotate == 270
@@ -2024,14 +2050,14 @@ function rotateImage(lobId, deg) {
 			//デフォルトが高ければ明示指定をクリア
 			$image.parent().css("height", "");
 		}
-		
+
 		//画像の回転
 		var transform = "rotate(" + imageData.rotate + "deg) translateX(" + translate + "px) translateY(" + translate + "px)";
 		$image.css("transform", transform);
-		
+
 		//設定保存
 		saveImageViewerState(lobId, imageData);
-		
+
 		//Window調整
 		imageLoad();
 	}
@@ -2039,7 +2065,7 @@ function rotateImage(lobId, deg) {
 
 /**
  * ImageViewerを別Windowで表示します。
- * 
+ *
  * @param image イメージ
  */
 function showImageViewer(image) {
@@ -2049,7 +2075,7 @@ function showImageViewer(image) {
 		document.scriptContext["imgViewerCallback"] = function(subImage) {
 			//ダイアログの表示時にViewerを設定する
 			var subLobId = subImage.getAttribute("data-lobid");
-			
+
 			var viewer = new Viewer(subImage, {
 				//モーダルを閉じない
 				backdrop: false,
@@ -2066,7 +2092,7 @@ function showImageViewer(image) {
 					prev: false,
 					next: false,
 					//全画面表示なし
-					play: false, 
+					play: false,
 					rotateLeft: true,
 					rotateRight: true,
 					flipHorizontal: true,
@@ -2111,17 +2137,17 @@ function showImageViewer(image) {
 				hide: function(event) {
 					//別画面の場合は非表示にならない
 				}
-			});			
+			});
 			return viewer;
 		};
 	}
-	
+
 	submitForm(viewerUrl, null, "_blank_" + lobId);
 }
 
 /**
  * Linkに対してImageViewerをInlineで表示します。
- * 
+ *
  * @param lobId 対象のLobId
  */
 function linkInlineImageViewer(lobId) {
@@ -2131,7 +2157,7 @@ function linkInlineImageViewer(lobId) {
 
 /**
  * ImageViewerをInlineで表示します。
- * 
+ *
  * @param image イメージ
  */
 function inlineImageViewer(image) {
@@ -2150,7 +2176,7 @@ function inlineImageViewer(image) {
 					prev: false,
 					next: false,
 					//全画面表示なし
-					play: false, 
+					play: false,
 					rotateLeft: true,
 					rotateRight: true,
 					flipHorizontal: true,
@@ -2193,7 +2219,7 @@ function inlineImageViewer(image) {
 
 /**
  * ImageViewerの設定値を保存します。
- * 
+ *
  * @param lobId 対象のLobId
  * @param imageData 設定値
  */

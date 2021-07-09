@@ -56,11 +56,12 @@ $(function(){
 	$("#nav.sub-droplist ul.nav-wrap > li").navDroplist();	//グローバルメニュー（ドロップリスト形式）
 
 	//cookieから展開状態復元
-	if (getCookie("currentMenuId")) {
-		$("#" + es(getCookie("currentMenuId"))).addClass("selected");
-		$("#" + es(getCookie("currentMenuId"))).parents(".menu-node").addClass("selected");
+	var currentMenuId = getSessionStorage("currentMenuId");
+	if (currentMenuId) {
+		$("#" + es(currentMenuId)).addClass("selected");
+		$("#" + es(currentMenuId)).parents(".menu-node").addClass("selected");
 	}
-	if (getCookie("navSplit")) {
+	if (getSessionStorage("navSplit")) {
 		$("#split-btn").trigger("click");
 	}
 
@@ -434,7 +435,7 @@ $(function(){
 				$content.addClass("cotent-col-01");
 				$(".fixHeight").fixHeight();
 
-				setCookie("navSplit", true, 0);
+				setSessionStorage("navSplit", "true");
 
 				$this.trigger("navSplitToggle", {toggle:"on"});
 			},
@@ -442,7 +443,7 @@ $(function(){
 				$content.removeClass("cotent-col-01");
 				$(".fixHeight").fixHeight();
 
-				setCookie("navSplit", false, -1);
+				deleteSessionStorage("navSplit");
 
 				$this.trigger("navSplitToggle", {toggle:"off"});
 			});
