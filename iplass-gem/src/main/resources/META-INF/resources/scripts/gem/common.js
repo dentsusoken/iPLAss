@@ -491,12 +491,7 @@ function getCookie(name) {
  * @param value 保存するアイテム（文字列）
  */
 function setSessionStorage(name, value) {
-	if (window.sessionStorage) {
-		sessionStorage.setItem(name, escape(value));
-	} else {
-		//SessionStorage利用不可、cookieで代用
-		setCookie(name, value, 0);
-	}
+	sessionStorage.setItem(name, escape(value));
 }
 
 /**
@@ -504,12 +499,7 @@ function setSessionStorage(name, value) {
  * @param name 取得するアイテムの名前
  */
 function getSessionStorage(name) {
-	if (window.sessionStorage) {
-		return sessionStorage.getItem(name);
-	} else {
-		//SessionStorage利用不可、cookieで代用
-		return getCookie(name);
-	}
+	return sessionStorage.getItem(name);
 }
 
 /**
@@ -517,12 +507,7 @@ function getSessionStorage(name) {
  * @param name 削除するアイテムの名前
  */
 function deleteSessionStorage(name) {
-	if (window.sessionStorage) {
-		sessionStorage.removeItem(name);
-	} else {
-		//SessionStorage利用不可、cookieで代用
-		setCookie(name, "", -1);
-	}
+	sessionStorage.removeItem(name);
 }
 
 
