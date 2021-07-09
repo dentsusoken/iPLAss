@@ -227,51 +227,46 @@ public abstract class SearchContextBase implements SearchContext, CreateSearchRe
 		if (hasSortSetting()) {
 			orderBy = new OrderBy();
 			for (SortSetting ss : getSortSetting()) {
-				if (ss.getSortKey() != null) {
-					String sortKey = ss.getSortKey();
-					PropertyDefinition pd = getPropertyDefinition(ss.getSortKey());
-					// ソートキーに参照プロパティ自体が指定された場合
-					if (pd instanceof ReferenceProperty) {
-						PropertyColumn property = getLayoutPropertyColumn(ss.getSortKey());
-						// 当該項目が画面上表示される場合は、画面上の表示項目でソート
-						if (property != null) {
-							sortKey = sortKey + "." + getDisplayNestProperty(property);
-						} else {
-							// 表示されない場合は、Nameでソート
-							sortKey = sortKey + "." + Entity.NAME;
-						}
+				String sortKey = ss.getSortKey();
+				PropertyDefinition pd = getPropertyDefinition(sortKey);
+				// ソートキーに参照プロパティ自体が指定された場合（参照先Entityのプロパティまで明示指定された場合は除く）
+				if (pd instanceof ReferenceProperty) {
+					PropertyColumn property = getLayoutPropertyColumn(sortKey);
+					// 当該項目が画面上表示される場合は、画面上の表示項目でソート
+					if (property != null) {
+						sortKey = sortKey + "." + getDisplayNestProperty(property);
+					} else {
+						// 画面上に表示されない場合は、Nameでソート
+						sortKey = sortKey + "." + Entity.NAME;
 					}
-					SortType type = SortType.valueOf(ss.getSortType().name());
-					NullOrderingSpec nullOrderingSpec = getNullOrderingSpec(ss.getNullOrderType());
-					orderBy.add(sortKey, type, nullOrderingSpec);
 				}
+				SortType type = SortType.valueOf(ss.getSortType().name());
+				NullOrderingSpec nullOrderingSpec = getNullOrderingSpec(ss.getNullOrderType());
+				orderBy.add(sortKey, type, nullOrderingSpec);
 			}
 		} else {
 			// ソート設定がない場合
 			String sortKey = getSortKey();
-			if (sortKey != null) {
-				if (Entity.OID.equals(sortKey)) {
-					orderBy = new OrderBy();
-					orderBy.add(sortKey, getSortType());
-				} else {
-					//OID以外はSearchResultに定義されているPropertyのみ許可
-					PropertyColumn property = getLayoutPropertyColumn(sortKey);
-					if (property != null) {
-						PropertyDefinition pd = getPropertyDefinition(sortKey);
-						// 参照プロパティの場合、画面上の表示項目でソート
-						if (pd instanceof ReferenceProperty) {
-							sortKey = sortKey + "." + getDisplayNestProperty(property);
-						}
-						NullOrderingSpec nullOrderingSpec = getNullOrderingSpec(property.getNullOrderType());
-						orderBy = new OrderBy();
-						orderBy.add(sortKey, getSortType(), nullOrderingSpec);
+			if (Entity.OID.equals(sortKey)) {
+				orderBy = new OrderBy();
+				orderBy.add(sortKey, getSortType());
+			} else {
+				PropertyColumn property = getLayoutPropertyColumn(sortKey);
+				// OID以外はSearchResultに定義されているPropertyのみ許可
+				if (property != null) {
+					PropertyDefinition pd = getPropertyDefinition(sortKey);
+					// 参照プロパティの場合、画面上の表示項目でソート
+					if (pd instanceof ReferenceProperty) {
+						sortKey = sortKey + "." + getDisplayNestProperty(property);
 					}
+					NullOrderingSpec nullOrderingSpec = getNullOrderingSpec(property.getNullOrderType());
+					orderBy = new OrderBy();
+					orderBy.add(sortKey, getSortType(), nullOrderingSpec);
 				}
 			}
 		}
 		return orderBy;
 	}
-
 	@Override
 	public Limit getLimit() {
 		Limit limit = new Limit(getSearchLimit(), getOffset());
@@ -436,6 +431,7 @@ public abstract class SearchContextBase implements SearchContext, CreateSearchRe
 			if (getConditionSection().isUnsorted()) {
 				return null;
 			}
+			// デフォルトはOID
 			return Entity.OID;
 		}
 		
@@ -496,8 +492,8 @@ public abstract class SearchContextBase implements SearchContext, CreateSearchRe
 		//画面でソート条件が指定されれば第1キーに
 		String sortKey = getRequest().getParam(Constants.SEARCH_SORTKEY);
 		if (StringUtil.isNotBlank(sortKey)) {
-			// SearchResultに定義されているもののみ許可
 			PropertyColumn property = getLayoutPropertyColumn(sortKey);
+			// SearchResultに定義されているPropertyのみ許可
 			if (property != null) {
 				SortSetting ss = new SortSetting();
 				ss.setSortKey(sortKey);
@@ -514,7 +510,7 @@ public abstract class SearchContextBase implements SearchContext, CreateSearchRe
 				setting.add(ss);
 			}
 		}
-
+		
 		SearchConditionSection section = getConditionSection();
 		if (section != null && !section.getSortSetting().isEmpty()) {
 			setting.addAll(section.getSortSetting());
