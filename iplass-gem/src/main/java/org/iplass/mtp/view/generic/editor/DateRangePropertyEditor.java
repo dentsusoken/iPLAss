@@ -77,11 +77,11 @@ public class DateRangePropertyEditor extends CustomPropertyEditor implements Ran
 	/** FromプロパティでNull入力を許容するか*/
 	@MetaFieldInfo(
 			displayName="Nullの入力を許可",
-			displayNameKey="generic_editor_NumericRangePropertyEditor_inputNullFromDisplayNameKey",
+			displayNameKey="generic_editor_DateRangePropertyEditor_inputNullFromDisplayNameKey",
 			inputType=InputType.CHECKBOX,
 			displayOrder=105,
 			description="入力値にNullを許可するか設定します。",
-			descriptionKey="generic_editor_NumericRangePropertyEditor_inputNullFromDescriptionKey"
+			descriptionKey="generic_editor_DateRangePropertyEditor_inputNullFromDescriptionKey"
 	)
 	@EntityViewField(
 			referenceTypes={FieldReferenceType.SEARCHCONDITION, FieldReferenceType.DETAIL, FieldReferenceType.BULK}
@@ -152,11 +152,11 @@ public class DateRangePropertyEditor extends CustomPropertyEditor implements Ran
 	/** ToプロパティでNull入力を許容するか*/
 	@MetaFieldInfo(
 			displayName="Nullの入力を許可",
-			displayNameKey="generic_editor_NumericRangePropertyEditor_inputNullToDisplayNameKey",
+			displayNameKey="generic_editor_DateRangePropertyEditor_inputNullToDisplayNameKey",
 			inputType=InputType.CHECKBOX,
 			displayOrder=130,
 			description="入力値にNullを許可するか設定します。",
-			descriptionKey="generic_editor_NumericRangePropertyEditor_inputNullToDescriptionKey"
+			descriptionKey="generic_editor_DateRangePropertyEditor_inputNullToDescriptionKey"
 	)
 	@EntityViewField(
 			referenceTypes={FieldReferenceType.SEARCHCONDITION, FieldReferenceType.DETAIL, FieldReferenceType.BULK}
@@ -166,11 +166,11 @@ public class DateRangePropertyEditor extends CustomPropertyEditor implements Ran
 	/** 同値の入力を許容するか*/
 	@MetaFieldInfo(
 			displayName="同値の入力を許可",
-			displayNameKey="generic_editor_NumericRangePropertyEditor_equivalentInputDisplayNameKey",
+			displayNameKey="generic_editor_DateRangePropertyEditor_equivalentInputDisplayNameKey",
 			inputType=InputType.CHECKBOX,
 			displayOrder=135,
 			description="入力値に同値を許可するか設定します。",
-			descriptionKey="generic_editor_NumericRangePropertyEditor_equivalentInputDescriptionKey"
+			descriptionKey="generic_editor_DateRangePropertyEditor_equivalentInputDescriptionKey"
 	)
 	@EntityViewField(
 			referenceTypes={FieldReferenceType.SEARCHCONDITION, FieldReferenceType.DETAIL, FieldReferenceType.BULK}

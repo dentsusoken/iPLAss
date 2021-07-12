@@ -107,9 +107,7 @@ String getObjectName(String prefix, EntityDefinition ed){
 		((DateTimePropertyEditor) editor.getEditor()).setHideSearchConditionTo(true);
 	}
 %>
-<!--
 <span class="dateRange">
- -->
 <span id="daterange_<c:out value="<%=fromKey%>" />">
 <jsp:include page="<%=path%>" />
 </span>
@@ -136,11 +134,8 @@ String getObjectName(String prefix, EntityDefinition ed){
 
 		String dash = GemResourceBundleUtil.resourceString("generic.editor.DateRangePropertyEditor.range");
 
-		if (OutputType.SEARCHCONDITION == type) {
-			((DateTimePropertyEditor) editor.getEditor()).setHideSearchConditionFrom(true);
-		}
 %>
-<span id="daterange_<c:out value="<%=toKey%>" />" class="dateRange">
+<span id="daterange_<c:out value="<%=toKey%>" />">
 <c:out value="<%=dash %>"></c:out>
 <jsp:include page="<%=path%>" />
 </span>
@@ -148,9 +143,7 @@ String getObjectName(String prefix, EntityDefinition ed){
 	}
 	String nameKey = prefix + fromName + "_" + editor.getToPropertyName();
 %>
-<!--
 </span>
--->
 <jsp:include page="ErrorMessage.jsp">
 	<jsp:param value="<%=nameKey%>" name="propName" />
 </jsp:include>
