@@ -34,7 +34,6 @@ dependencies {
 	}
 	runtimeOnly(sharedLib('org.apache.commons:commons-compress'))
 	runtimeOnly(sharedLib('org.apache.pdfbox:jempbox'))
-	runtimeOnly sharedLib('com.tdunning:json')
 	runtimeOnly(sharedLib('org.apache.pdfbox:pdfbox'))
 	runtimeOnly(sharedLib('org.apache.pdfbox:pdfbox-tools')) {
 		transitive = false
