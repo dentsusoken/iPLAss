@@ -1589,9 +1589,10 @@ $.fn.allInputCheck = function(){
 			}
 
 			//入力エリアと検索ボタン
+			var $current = null;
 			if (options.showPageJump) {
 				var $quickJump = $("<li />").addClass("quick-jump").appendTo($ul);
-				var $current = $("<input />").attr({type:"text", maxlength:7, size:2}).appendTo($quickJump);
+				$current = $("<input />").addClass("current-page").attr({type:"text", maxlength:7, size:2}).appendTo($quickJump);
 				$("<span />").text(" / ").appendTo($quickJump);
 				var $max = $("<span />").addClass("last-page").appendTo($quickJump);
 				$("<span />").text(scriptContext.gem.locale.pager.page).appendTo($quickJump);
@@ -1600,7 +1601,10 @@ $.fn.allInputCheck = function(){
 			if (options.showSearchBtn || options.showPageJump) {
 				var $btns = $("<li />").addClass("search").appendTo($ul);
 				var $searchBtn = $("<span />").addClass("ui-icon ui-icon-search").appendTo($btns);
-				var $_current = $("<input type='hidden' />").appendTo($btns);
+				if ($current == null) {
+					//showPageJumpがfalseの場合
+					$current = $("<input type='hidden' />").addClass("current-page").appendTo($btns);
+				}
 			}
 
 			var $currentLabel = null;
@@ -1748,7 +1752,7 @@ $.fn.allInputCheck = function(){
 								$searchBtn.show();
 								$max.text(maxPage);
 								$v.maxPage = maxPage;
-								$current.attr("beforeValue", currentPage).val(currentPage);
+								$current.attr("beforeValue", currentPage);
 							}
 						} else {
 							if (options.showItemCount) {
@@ -1766,7 +1770,7 @@ $.fn.allInputCheck = function(){
 						}
 					}
 					if (options.showSearchBtn || options.showPageJump) {
-						$_current.val(currentPage);
+						$current.val(currentPage);
 					}
 					if (options.showCurrentPage) {
 						$currentLabel.text(currentPage);
@@ -1796,7 +1800,6 @@ $.fn.allInputCheck = function(){
 							$(this).val("");
 						}
 					}
-					$_current.val(this.value);
 				}).on("keypress", function(event) {
 					if( event.which === 13 ){
 						$searchBtn.click();
@@ -1810,7 +1813,7 @@ $.fn.allInputCheck = function(){
 				}).on("mouseleave", function() {
 					$(this).removeClass("hover");
 				}).on("click", function() { 
-					var currentPage = $_current.val();
+					var currentPage = $current.val();
 					//notCount=trueかつshowSearchBtn=trueの場合、maxPageが設定されてません。
 					if (!$v.maxPage || $v.maxPage && currentPage > 0 && currentPage <= $v.maxPage) {
 						if ($v.searchFunc && $.isFunction($v.searchFunc)) {
