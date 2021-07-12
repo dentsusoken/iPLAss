@@ -47,8 +47,8 @@ ext {
 		'org.apache.commons:commons-compress': '1.20',
 		'org.apache.pdfbox:jempbox': '1.8.16',
 		'com.tdunning:json': '1.8',
-		'org.apache.pdfbox:pdfbox': '2.0.20',
-		'org.apache.pdfbox:pdfbox-tools': '2.0.20',
+		'org.apache.pdfbox:pdfbox': '2.0.24',
+		'org.apache.pdfbox:pdfbox-tools': '2.0.24',
 		'org.ccil.cowan.tagsoup:tagsoup': '1.2.1',
 		
 		'org.apache.poi:poi': '4.1.2',
