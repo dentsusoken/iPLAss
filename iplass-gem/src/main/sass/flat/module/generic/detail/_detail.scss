@@ -218,7 +218,7 @@
 	.numericRange span:nth-child(2) input {
 		margin-left: 4px;
 	}
-	.dateRange span:nth-child(2) input {
+	.dateRange span:nth-child(2) > input {
 		margin-left: 4px;
 	}
 }
