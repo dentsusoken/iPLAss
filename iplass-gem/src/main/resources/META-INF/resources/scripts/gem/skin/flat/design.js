@@ -299,7 +299,34 @@ $(function() {
 		});
 		$(".result-block").on("iplassAfterSearch", function(event, src) {
 			if (src === "button") {
+				// スクロール位置
+				var scrTop = $(window).scrollTop();
+				var scrBtm = scrTop + $(window).height();
+
+				var $tabList = $(".tab-wrap .tabList");
+				var tlTop = $tabList.offset().top;
+				var tlBtm = tlTop + $tabList.outerHeight();
+
+				if (scrBtm > tlTop && scrTop < tlBtm) {console.log("in");
+					// 検索条件が画面内にあるならスクロールはしない
+					$(".tab-menu .current").trigger("click");
+					return;
+				}
+
+				$(".tab-wrap .box-search-01").hide();
 				$(".tab-menu .current").trigger("click");
+
+				// 検索条件のトップの位置 + タブの高さ + 検索条件下のマージンの位置にスクロール
+				var offsetTop = tlBtm + 20;
+				// 画面の高さ取得
+				var elem = document.documentElement;
+				var scrollHeight = elem.scrollHeight;
+				var clientHeight = elem.clientHeight;
+				// スクロール位置が画面上部に届かない場合は位置調整
+				if (scrollHeight - offsetTop < clientHeight) {
+					offsetTop = scrollHeight - clientHeight;
+				}
+				$('body,html').animate({scrollTop : offsetTop}, 300, 'quart');
 			}
 		});
 
