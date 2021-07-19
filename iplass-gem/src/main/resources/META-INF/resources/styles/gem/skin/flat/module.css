@@ -2070,6 +2070,12 @@ a + .binaryDelete {
   width: 20px;
   background: url(../../../../images/gem/skin/flat/icon-pencil.png) center center no-repeat; }
 
+.ui-jqgrid a.modal-lnk {
+  color: #115d85; }
+
+.ui-jqgrid a.modal-lnk:hover {
+  text-decoration: underline; }
+
 .tbl-version {
   margin-bottom: 20px; }
   .tbl-version td {
@@ -2298,6 +2304,10 @@ a + .binaryDelete {
   background: #fff;
   padding: 20px;
   box-sizing: border-box; }
+  .treeViewGrid .ui-jqgrid-bdiv .cell-wrapper a, .treeViewGrid .cell-wrapperleaf a {
+    color: #115d85; }
+  .treeViewGrid .ui-jqgrid-bdiv .cell-wrapper a:hover, .treeViewGrid .cell-wrapperleaf a:hover {
+    text-decoration: underline; }
 
 /* 全文検索 */
 .fulltext-search-inner {
