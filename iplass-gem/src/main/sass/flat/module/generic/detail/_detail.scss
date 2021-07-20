@@ -518,11 +518,13 @@ a + .binaryDelete {
 		background: $url_gdd_3 center center no-repeat;
 	}
 }
-.ui-jqgrid a.modal-lnk {
-	color: #115d85;
-}
-.ui-jqgrid a.modal-lnk:hover {
-    text-decoration: underline;
+.ui-jqgrid {
+	a.modal-lnk {
+		color: #115d85;
+		&:hover {
+			text-decoration: underline;
+		}
+	}
 }
 .tbl-version {
 	margin-bottom: 20px;
