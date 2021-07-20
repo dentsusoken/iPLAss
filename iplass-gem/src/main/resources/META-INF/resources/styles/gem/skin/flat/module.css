@@ -2307,9 +2307,9 @@ a + .binaryDelete {
     color: #115d85; }
     .treeViewGrid .ui-jqgrid-bdiv .cell-wrapper a:hover {
       text-decoration: underline; }
-  .treeViewGrid .cell-wrapperleaf a {
+  .treeViewGrid .ui-jqgrid-bdiv .cell-wrapperleaf a {
     color: #115d85; }
-    .treeViewGrid .cell-wrapperleaf a:hover {
+    .treeViewGrid .ui-jqgrid-bdiv .cell-wrapperleaf a:hover {
       text-decoration: underline; }
 
 /* 全文検索 */
