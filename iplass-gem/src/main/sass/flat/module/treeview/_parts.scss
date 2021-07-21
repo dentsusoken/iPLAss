@@ -9,4 +9,22 @@
 	padding: 20px;
 	//Instead of the line below you could use @include box-sizing($bs)
 	box-sizing: border-box;
+	.ui-jqgrid-bdiv {
+		.cell-wrapper {
+			a {
+				color: #115d85;
+				&:hover {
+					text-decoration: underline;
+				}
+			}
+		}
+		.cell-wrapperleaf {
+			a {
+				color: #115d85;
+				&:hover {
+					text-decoration: underline;
+				}
+			}
+		}
+	}
 }
