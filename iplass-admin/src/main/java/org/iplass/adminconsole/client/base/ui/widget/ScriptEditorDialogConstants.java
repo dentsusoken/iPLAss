@@ -36,6 +36,8 @@ public interface ScriptEditorDialogConstants {
 
 	public static final String ENTITY_VALIDATION = "Entity.Validation";
 
+	public static final String ENTITY_NORMALIZER = "Entity.Normalizer";
+
 	public static final String ENTITY_LISTING_VIEW_NAME = "EntityListing.ViewName";
 
 	public static final String ENTITY_LISTING_CSV_NAME = "EntityListing.CsvFileName";

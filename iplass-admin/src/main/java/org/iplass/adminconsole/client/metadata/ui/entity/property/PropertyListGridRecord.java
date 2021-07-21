@@ -30,6 +30,7 @@ import org.iplass.adminconsole.client.metadata.ui.entity.property.common.Propert
 import org.iplass.adminconsole.client.metadata.ui.entity.property.type.PropertyTypeAttributeController;
 import org.iplass.mtp.entity.Entity;
 import org.iplass.mtp.entity.definition.EntityDefinition;
+import org.iplass.mtp.entity.definition.NormalizerDefinition;
 import org.iplass.mtp.entity.definition.PropertyDefinition;
 import org.iplass.mtp.entity.definition.PropertyDefinitionType;
 import org.iplass.mtp.entity.definition.ValidationDefinition;
@@ -98,6 +99,9 @@ public class PropertyListGridRecord extends ListGridRecord {
 
 	/** Validation */
 	private List<ValidationDefinition> validationList;
+
+	/** Normalizer */
+	private List<NormalizerDefinition> normalizerList;
 
 	private PropertyTypeAttributeController typeController = GWT.create(PropertyTypeAttributeController.class);
 	private PropertyCommonAttributeController commonController = GWT.create(PropertyCommonAttributeController.class);
@@ -260,12 +264,21 @@ public class PropertyListGridRecord extends ListGridRecord {
 	}
 
 	public List<ValidationDefinition> getValidationList() {
-		if (validationList == null) validationList = new ArrayList<ValidationDefinition>();
+		if (validationList == null) validationList = new ArrayList<>();
 		return validationList;
 	}
 
 	public void setValidationList(List<ValidationDefinition> validationList) {
 		this.validationList = validationList;
+	}
+
+	public List<NormalizerDefinition> getNormalizerList() {
+		if (normalizerList == null) normalizerList = new ArrayList<>();
+		return normalizerList;
+	}
+
+	public void setNormalizerList(List<NormalizerDefinition> normalizerList) {
+		this.normalizerList = normalizerList;
 	}
 
 	public boolean isInherited() {
@@ -317,7 +330,7 @@ public class PropertyListGridRecord extends ListGridRecord {
 		typeAttribute.applyFrom(property, entity);
 
 		//Validation
-		List<ValidationDefinition> list = new ArrayList<ValidationDefinition>();
+		List<ValidationDefinition> list = new ArrayList<>();
 		if (property.getValidations() != null) {
 			for (ValidationDefinition vd : property.getValidations()) {
 				if (vd instanceof NotNullValidation) {
@@ -331,6 +344,8 @@ public class PropertyListGridRecord extends ListGridRecord {
 		typeAttribute.applyTo(this);
 
 		setValidationList(list);
+
+		setNormalizerList(property.getNormalizers());
 	}
 
 	public void applyTo(PropertyDefinition property, EntityDefinition entity) {
@@ -341,11 +356,17 @@ public class PropertyListGridRecord extends ListGridRecord {
 		//個別属性を反映
 		typeAttribute.applyTo(property, entity);
 
+		//Validation
 		List<ValidationDefinition> validationList = getValidationList();
 		if (SmartGWTUtil.isNotEmpty(validationList)) {
 			property.setValidations(validationList);
 		}
 
+		//Normalizer
+		List<NormalizerDefinition> normalizerList = getNormalizerList();
+		if (SmartGWTUtil.isNotEmpty(normalizerList)) {
+			property.setNormalizers(normalizerList);
+		}
 	}
 
 }

@@ -53,8 +53,10 @@ public class PropertyEditDialog extends MtpDialog {
 	private PropertyListGridRecord record;
 
 	private PropertyCommonAttributePane pnlCommonAttribute;
+
 	private ValidationListPane pnlValidation;
 
+	private NormalizerListPane pnlNormalizer;
 
 	private VLayout pnlAttributeContainer;
 	private Canvas typeSeparater = SmartGWTUtil.separator();
@@ -92,6 +94,7 @@ public class PropertyEditDialog extends MtpDialog {
 			setTitle("Property");
 		}
 		setHeight(INIT_HEIGHT);
+		setShowMaximizeButton(true);
 
 		pnlCommonAttribute = new PropertyCommonAttributePane(new PropertyCommonAttributePaneHandler() {
 
@@ -108,6 +111,7 @@ public class PropertyEditDialog extends MtpDialog {
 				pnlValidation.onChangeNotNullFromAttribute(isNotNull);
 			}
 		});
+
 		pnlValidation = new ValidationListPane(new ValidationListPaneHandler() {
 
 			@Override
@@ -121,6 +125,8 @@ public class PropertyEditDialog extends MtpDialog {
 			}
 		});
 
+		pnlNormalizer = new NormalizerListPane();
+
 		pnlAttributeContainer = new VLayout();
 		pnlAttributeContainer.setWidth100();
 		pnlAttributeContainer.setAutoHeight();
@@ -129,6 +135,8 @@ public class PropertyEditDialog extends MtpDialog {
 		container.addMember(pnlAttributeContainer);
 		container.addMember(SmartGWTUtil.separator());
 		container.addMember(pnlValidation);
+		container.addMember(SmartGWTUtil.separator());
+		container.addMember(pnlNormalizer);
 
 		IButton btnOk = new IButton();
 		btnOk.addClickHandler(new ClickHandler() {
@@ -175,6 +183,8 @@ public class PropertyEditDialog extends MtpDialog {
 
 		pnlValidation.applyFrom(defName, record, record.getTypeAttribute());
 
+		pnlNormalizer.applyFrom(defName, record, record.getTypeAttribute());
+
 	}
 
 	private boolean validate() {
@@ -188,6 +198,9 @@ public class PropertyEditDialog extends MtpDialog {
 			isValidate = false;
 		}
 		if (!pnlValidation.validate()) {
+			isValidate = false;
+		}
+		if (!pnlNormalizer.validate()) {
 			isValidate = false;
 		}
 
@@ -214,6 +227,9 @@ public class PropertyEditDialog extends MtpDialog {
 		//制約属性を反映
 		pnlValidation.applyTo(record);
 
+		//Normalizerを反映
+		pnlNormalizer.applyTo(record);
+
 		//新規追加出ない場合はStatusをUpdateに変更
 		//TODO 変更チェック
 		if (!record.isInsert()) {
@@ -237,6 +253,7 @@ public class PropertyEditDialog extends MtpDialog {
 		int height =
 				pnlCommonAttribute.panelHeight()
 				+ pnlValidation.panelHeight()
+				+ pnlNormalizer.panelHeight()
 				+ LAYOUT_HEIGHT;
 
 		if (type != null) {
