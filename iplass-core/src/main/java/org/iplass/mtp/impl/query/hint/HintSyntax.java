@@ -32,6 +32,7 @@ import org.iplass.mtp.entity.query.hint.IndexHint;
 import org.iplass.mtp.entity.query.hint.NativeHint;
 import org.iplass.mtp.entity.query.hint.NoBindHint;
 import org.iplass.mtp.entity.query.hint.NoIndexHint;
+import org.iplass.mtp.entity.query.hint.ReadOnlyHint;
 import org.iplass.mtp.entity.query.hint.SuppressWarningsHint;
 import org.iplass.mtp.entity.query.hint.TimeoutHint;
 import org.iplass.mtp.impl.parser.EvalError;
@@ -202,13 +203,17 @@ public class HintSyntax implements Syntax<Hint>, QueryConstants {
 			str.consumeChars(1);
 			str.consumeChars(ParseContext.WHITE_SPACES);
 			return th;
-		case SUPPRESS_WARNINGS:
+		case HINT_SUPPRESS_WARNINGS:
 			SuppressWarningsHint swh = new SuppressWarningsHint();
 			str.consumeChars(ParseContext.WHITE_SPACES);
 			return swh;
+		case HINT_READ_ONLY:
+			ReadOnlyHint roh = new ReadOnlyHint();
+			str.consumeChars(ParseContext.WHITE_SPACES);
+			return roh;
 		default:
 			str.setCurrentIndex(currentIndex);
-			throw new ParseException(new EvalError("hint clause(INDEX/NO_INDEX/NATIVE/BIND/CACHE/FETCH_SIZE/TIMEOUT/SUPPRESS_WARNINGS) expected.", this, str));
+			throw new ParseException(new EvalError("hint clause(INDEX/NO_INDEX/NATIVE/BIND/CACHE/FETCH_SIZE/TIMEOUT/SUPPRESS_WARNINGS/READ_ONLY) expected.", this, str));
 		}
 	}
 }

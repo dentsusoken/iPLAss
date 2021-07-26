@@ -32,5 +32,6 @@ public interface HintVisitor {
 	public boolean visit(TimeoutHint timeoutHint);
 	public boolean visit(NoBindHint noBindHint);
 	public boolean visit(SuppressWarningsHint suppressWarningsHint);
+	public boolean visit(ReadOnlyHint readOnlyHint);
 
 }

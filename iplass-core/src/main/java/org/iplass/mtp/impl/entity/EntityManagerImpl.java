@@ -32,6 +32,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -71,6 +72,8 @@ import org.iplass.mtp.entity.fulltextsearch.FulltextSearchOption;
 import org.iplass.mtp.entity.interceptor.InvocationType;
 import org.iplass.mtp.entity.query.Limit;
 import org.iplass.mtp.entity.query.Query;
+import org.iplass.mtp.entity.query.hint.Hint;
+import org.iplass.mtp.entity.query.hint.ReadOnlyHint;
 import org.iplass.mtp.impl.core.ExecuteContext;
 import org.iplass.mtp.impl.entity.interceptor.EntityBulkUpdateInvocationImpl;
 import org.iplass.mtp.impl.entity.interceptor.EntityCountInvocationImpl;
@@ -99,7 +102,9 @@ import org.iplass.mtp.impl.session.SessionService;
 import org.iplass.mtp.impl.transaction.TransactionService;
 import org.iplass.mtp.impl.util.CoreResourceBundleUtil;
 import org.iplass.mtp.spi.ServiceRegistry;
+import org.iplass.mtp.transaction.Propagation;
 import org.iplass.mtp.transaction.Transaction;
+import org.iplass.mtp.transaction.TransactionOption;
 import org.iplass.mtp.transaction.TransactionStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -133,6 +138,31 @@ public class EntityManagerImpl implements EntityManager {
 			t.setRollbackOnly();
 		}
 	}
+	
+	private <R> R withReadOnlyCheck(Query q, ResultMode resultMode, Function<Transaction, R> func) {
+		Transaction t = Transaction.getCurrent();
+		if (!t.isReadOnly() && resultMode == ResultMode.AT_ONCE && hasReadOnlyHint(q)) {
+			return Transaction.with(new TransactionOption(Propagation.REQUIRES_NEW).readOnly().throwExceptionIfSetRollbackOnly(), func);
+		} else {
+			return func.apply(t);
+		}
+	}
+	
+	private boolean hasReadOnlyHint(Query q) {
+		if (q.getSelect().getHintComment() == null) {
+			return false;
+		}
+		List<Hint> hintList = q.getSelect().getHintComment().getHintList();
+		if (hintList == null) {
+			return false;
+		}
+		for (Hint h: hintList) {
+			if (h instanceof ReadOnlyHint) {
+				return true;
+			}
+		}
+		return false;
+	}
 
 	@Override
 	public int count(Query query) {
@@ -140,11 +170,13 @@ public class EntityManagerImpl implements EntityManager {
 			if (logger.isDebugEnabled()) {
 				logger.debug("count():" + query);
 			}
-			//FIXME 2.Queryの整合性をチェック⇒ Syntax#evalの呼び出し。
 
-			//3.検索処理実行
-			EntityHandler handler = getEntityHandler(query.getFrom().getEntityName());
-			return new EntityCountInvocationImpl(query, ehService.getInterceptors(), handler).proceed();
+			return withReadOnlyCheck(query, ResultMode.AT_ONCE, t -> {
+				//検索処理実行
+				EntityHandler handler = getEntityHandler(query.getFrom().getEntityName());
+				return new EntityCountInvocationImpl(query, ehService.getInterceptors(), handler).proceed();
+			});
+			
 		} catch (ApplicationException e) {
 			//アプリケーション例外は自動的にsetRollbackOnly()はしない
 			throw e;
@@ -265,36 +297,42 @@ public class EntityManagerImpl implements EntityManager {
 
 	@Override
 	public SearchResult<Object[]> search(Query query, SearchOption option) {
+		final SearchOption finalOption;
 		if (option == null) {
-			option = new SearchOption();
+			finalOption = new SearchOption();
+		} else {
+			finalOption = option;
 		}
+		
 		try {
-			//FIXME 2.Queryの整合性をチェック⇒ Syntax#evalの呼び出し。
+			return withReadOnlyCheck(query, finalOption.getResultMode(), t -> {
+				
+				int counts = -1;
+				if (finalOption.isCountTotal()) {
+					Query countQuery = query.copy();
+					countQuery.setLimit(null);
+					counts = count(countQuery);
+				}
+	
+				//検索処理実行
+				EntityHandler eh = getEntityHandler(query.getFrom().getEntityName());
+				if (finalOption.getResultMode() == ResultMode.AT_ONCE) {
+					final List<Object[]> list = new ArrayList<Object[]>();
+					search(eh, query, finalOption, new Predicate<Object[]>() {
+							public boolean test(Object[] val) {
+								list.add(val);
+								return true;
+							}
+						}, null);
+					return new SearchResult<Object[]>(counts, list);
+				} else {
+					EntityStreamSearchHandler<Object[]> ssh = new EntityStreamSearchHandler<>(eh, Object[].class);
+					ssh.setTotalCount(counts);
+					search(eh, query, finalOption, null, ssh);
+					return ssh.getStreamSearchResult();
+				}
+			});
 
-			int counts = -1;
-			if (option.isCountTotal()) {
-				Query countQuery = query.copy();
-				countQuery.setLimit(null);
-				counts = count(countQuery);
-			}
-
-			//3.検索処理実行
-			EntityHandler eh = getEntityHandler(query.getFrom().getEntityName());
-			if (option.getResultMode() == ResultMode.AT_ONCE) {
-				final List<Object[]> list = new ArrayList<Object[]>();
-				search(eh, query, option, new Predicate<Object[]>() {
-						public boolean test(Object[] val) {
-							list.add(val);
-							return true;
-						}
-					}, null);
-				return new SearchResult<Object[]>(counts, list);
-			} else {
-				EntityStreamSearchHandler<Object[]> ssh = new EntityStreamSearchHandler<>(eh, Object[].class);
-				ssh.setTotalCount(counts);
-				search(eh, query, option, null, ssh);
-				return ssh.getStreamSearchResult();
-			}
 		} catch (ApplicationException e) {
 			//アプリケーション例外は自動的にsetRollbackOnly()はしない
 			throw e;
@@ -310,38 +348,44 @@ public class EntityManagerImpl implements EntityManager {
 	@SuppressWarnings("unchecked")
 	@Override
 	public <T extends Entity> SearchResult<T> searchEntity(Query query, SearchOption option) {
+		final SearchOption finalOption;
 		if (option == null) {
-			option = new SearchOption();
+			finalOption = new SearchOption();
+		} else {
+			finalOption = option;
 		}
+		
 		try {
+			return withReadOnlyCheck(query, finalOption.getResultMode(), t -> {
+				
+				//TODO select * from の対応する？（*をどこまでと考える？別Entityの参照属性は？）
+	
+				int counts = -1;
+				if (finalOption.isCountTotal()) {
+					Query countQuery = query.copy();
+					countQuery.setLimit(null);
+					counts = count(countQuery);
+				}
+	
+				//検索処理実行
+				EntityHandler eh = getEntityHandler(query.getFrom().getEntityName());
+				if (finalOption.getResultMode() == ResultMode.AT_ONCE) {
+					final List<T> list = new ArrayList<T>();
+					searchEntity(eh, query, finalOption, new Predicate<T>() {
+						public boolean test(T val) {
+							list.add(val);
+							return true;
+						}
+					}, null);
+					return new SearchResult<T>(counts, list);
+				} else {
+					EntityStreamSearchHandler<Entity> ssh = new EntityStreamSearchHandler<>(eh, Entity.class);
+					ssh.setTotalCount(counts);
+					searchEntity(eh, query, finalOption, null, ssh);
+					return (SearchResult<T>) ssh.getStreamSearchResult();
+				}
+			});
 
-			//TODO select * from の対応する？（*をどこまでと考える？別Entityの参照属性は？）
-			//FIXME 2.Queryの整合性をチェック⇒ Syntax#evalの呼び出し。
-
-			int counts = -1;
-			if (option.isCountTotal()) {
-				Query countQuery = query.copy();
-				countQuery.setLimit(null);
-				counts = count(countQuery);
-			}
-
-			//3.検索処理実行
-			EntityHandler eh = getEntityHandler(query.getFrom().getEntityName());
-			if (option.getResultMode() == ResultMode.AT_ONCE) {
-				final List<T> list = new ArrayList<T>();
-				searchEntity(eh, query, option, new Predicate<T>() {
-					public boolean test(T val) {
-						list.add(val);
-						return true;
-					}
-				}, null);
-				return new SearchResult<T>(counts, list);
-			} else {
-				EntityStreamSearchHandler<Entity> ssh = new EntityStreamSearchHandler<>(eh, Entity.class);
-				ssh.setTotalCount(counts);
-				searchEntity(eh, query, option, null, ssh);
-				return (SearchResult<T>) ssh.getStreamSearchResult();
-			}
 		} catch (ApplicationException e) {
 			//アプリケーション例外は自動的にsetRollbackOnly()はしない
 			throw e;
@@ -361,9 +405,10 @@ public class EntityManagerImpl implements EntityManager {
 
 	@Override
 	public <T extends Entity> void searchEntity(Query query, SearchOption option, Predicate<T> callback) {
+		if (option == null) {
+			option = new SearchOption();
+		}
 		searchEntity(getEntityHandler(query.getFrom().getEntityName()), query, option, callback, null);
-		// TODO Auto-generated method stub
-
 	}
 
 	private <T extends Entity> void searchEntity(EntityHandler handler, Query query, SearchOption option,
@@ -375,24 +420,26 @@ public class EntityManagerImpl implements EntityManager {
 				time = System.currentTimeMillis();
 			}
 
-			//FIXME 2.Queryの整合性をチェック⇒ Syntax#evalの呼び出し。
+			withReadOnlyCheck(query, option.getResultMode(), t -> {
+				//検索処理実行
+				if (streamSearchHandler == null) {
+					new EntityQueryInvocationImpl(query,
+							option,
+							callback,
+							InvocationType.SEARCH_ENTITY,
+							ehService.getInterceptors(),
+							handler).proceed();
+				} else {
+					new EntityQueryInvocationImpl(query,
+							option,
+							streamSearchHandler,
+							InvocationType.SEARCH_ENTITY,
+							ehService.getInterceptors(),
+							handler).proceed();
+				}
+				return null;
+			});
 
-			//3.検索処理実行
-			if (streamSearchHandler == null) {
-				new EntityQueryInvocationImpl(query,
-						option,
-						callback,
-						InvocationType.SEARCH_ENTITY,
-						ehService.getInterceptors(),
-						handler).proceed();
-			} else {
-				new EntityQueryInvocationImpl(query,
-						option,
-						streamSearchHandler,
-						InvocationType.SEARCH_ENTITY,
-						ehService.getInterceptors(),
-						handler).proceed();
-			}
 		} catch (ApplicationException e) {
 			//アプリケーション例外は自動的にsetRollbackOnly()はしない
 			throw e;
@@ -420,6 +467,9 @@ public class EntityManagerImpl implements EntityManager {
 
 	@Override
 	public void search(Query query, SearchOption option, Predicate<Object[]> callback) {
+		if (option == null) {
+			option = new SearchOption();
+		}
 		search(getEntityHandler(query.getFrom().getEntityName()), query, option, callback, null);
 
 	}
@@ -433,24 +483,25 @@ public class EntityManagerImpl implements EntityManager {
 				time = System.currentTimeMillis();
 			}
 
-			//FIXME 2.Queryの整合性をチェック⇒ Syntax#evalの呼び出し。
-
-			//3.検索処理実行
-			if (streamSearchHandler == null) {
-				new EntityQueryInvocationImpl(query,
-						option,
-						callback,
-						InvocationType.SEARCH,
-						ehService.getInterceptors(),
-						handler).proceed();
-			} else {
-				new EntityQueryInvocationImpl(query,
-						option,
-						streamSearchHandler,
-						InvocationType.SEARCH,
-						ehService.getInterceptors(),
-						handler).proceed();
-			}
+			withReadOnlyCheck(query, option.getResultMode(), t -> {
+				//検索処理実行
+				if (streamSearchHandler == null) {
+					new EntityQueryInvocationImpl(query,
+							option,
+							callback,
+							InvocationType.SEARCH,
+							ehService.getInterceptors(),
+							handler).proceed();
+				} else {
+					new EntityQueryInvocationImpl(query,
+							option,
+							streamSearchHandler,
+							InvocationType.SEARCH,
+							ehService.getInterceptors(),
+							handler).proceed();
+				}
+				return null;
+			});
 		} catch (ApplicationException e) {
 			//アプリケーション例外は自動的にsetRollbackOnly()はしない
 			throw e;

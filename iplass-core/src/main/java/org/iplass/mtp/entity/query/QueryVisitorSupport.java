@@ -44,6 +44,7 @@ import org.iplass.mtp.entity.query.hint.IndexHint;
 import org.iplass.mtp.entity.query.hint.NativeHint;
 import org.iplass.mtp.entity.query.hint.NoBindHint;
 import org.iplass.mtp.entity.query.hint.NoIndexHint;
+import org.iplass.mtp.entity.query.hint.ReadOnlyHint;
 import org.iplass.mtp.entity.query.hint.SuppressWarningsHint;
 import org.iplass.mtp.entity.query.hint.TimeoutHint;
 import org.iplass.mtp.entity.query.value.RowValueList;
@@ -390,6 +391,11 @@ public abstract class QueryVisitorSupport implements QueryVisitor {
 
 	@Override
 	public boolean visit(SuppressWarningsHint suppressWarningsHint) {
+		return true;
+	}
+
+	@Override
+	public boolean visit(ReadOnlyHint readOnlyHint) {
 		return true;
 	}
 
