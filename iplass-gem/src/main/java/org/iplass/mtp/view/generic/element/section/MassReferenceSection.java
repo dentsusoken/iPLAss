@@ -351,11 +351,33 @@ public class MassReferenceSection extends Section implements HasNestProperty {
 			displayName="ダイアログ編集アクション名",
 			displayNameKey="generic_element_section_MassReferenceSection_detailActionNameDisplaNameKey",
 			inputType=InputType.ACTION,
-			displayOrder=5010,
+			displayOrder=5005,
 			description="詳細編集時に編集リンク・追加ボタンクリックで実行されるアクションを設定します。",
 			descriptionKey="generic_element_section_MassReferenceSection_detailActionNameDescriptionKey"
 	)
 	private String detailActionName;
+
+	/** 別タブ表示アクション名 */
+	@MetaFieldInfo(
+			displayName="別タブ表示アクション名",
+			displayNameKey="generic_element_section_MassReferenceSection_viewTabActionNameDisplaNameKey",
+			inputType=InputType.ACTION,
+			displayOrder=5010,
+			description="詳細の別タブ表示時に表示リンククリックで実行されるアクションを設定します。",
+			descriptionKey="generic_element_section_MassReferenceSection_viewTabActionNameDescriptionKey"
+	)
+	private String viewTabActionName;
+
+	/** 別タブ編集アクション名 */
+	@MetaFieldInfo(
+			displayName="別タブ編集アクション名",
+			displayNameKey="generic_element_section_MassReferenceSection_detailTabActionNameDisplaNameKey",
+			inputType=InputType.ACTION,
+			displayOrder=5015,
+			description="別タブで詳細編集の時に編集リンク・追加ボタンクリックで実行されるアクションを設定します。",
+			descriptionKey="generic_element_section_MassReferenceSection_detailTabActionNameDescriptionKey"
+	)
+	private String detailTabActionName;
 
 	/** ビュー定義名 */
 	@MetaFieldInfo(
@@ -651,6 +673,38 @@ public class MassReferenceSection extends Section implements HasNestProperty {
 	 */
 	public void setDetailActionName(String detailActionName) {
 	    this.detailActionName = detailActionName;
+	}
+
+	/**
+	 * 別タブ表示アクション名を取得します。
+	 * @return ダイアログ編集アクション名
+	 */
+	public String getViewTabActionName() {
+		return viewTabActionName;
+	}
+
+	/**
+	 * 別タブ表示アクション名を設定します。
+	 * @param viewTabActionName ダイアログ表示アクション名
+	 */
+	public void setViewTabActionName(String viewTabActionName) {
+		this.viewTabActionName = viewTabActionName;
+	}
+
+	/**
+	 * 別タブ編集アクション名を取得します。
+	 * @return ダイアログ編集アクション名
+	 */
+	public String getDetailTabActionName() {
+		return detailTabActionName;
+	}
+
+	/**
+	 * 別タブ編集アクション名を設定します。
+	 * @param detailTabActionName ダイアログ編集アクション名
+	 */
+	public void setDetailTabActionName(String detailTabActionName) {
+		this.detailTabActionName = detailTabActionName;
 	}
 
 	/**

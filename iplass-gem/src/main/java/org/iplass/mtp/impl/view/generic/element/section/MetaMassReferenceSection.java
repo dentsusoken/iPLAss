@@ -92,6 +92,12 @@ public class MetaMassReferenceSection extends MetaSection {
 	/** ダイアログ編集アクション名 */
 	private String detailActionName;
 
+	/** 別タブ表示アクション名 */
+	private String viewTabActionName;
+
+	/** 別タブ編集アクション名 */
+	private String detailTabActionName;
+
 	/** ビュー定義名 */
 	private String viewName;
 
@@ -349,6 +355,38 @@ public class MetaMassReferenceSection extends MetaSection {
 	 */
 	public void setDetailActionName(String detailActionName) {
 	    this.detailActionName = detailActionName;
+	}
+
+	/**
+	 * 別タブ表示アクション名を取得します。
+	 * @return 別タブ表示アクション名
+	 */
+	public String getViewTabActionName() {
+		return viewTabActionName;
+	}
+
+	/**
+	 * 別タブ表示アクション名を設定します。
+	 * @param viewTabActionName 別タブ表示アクション名
+	 */
+	public void setViewTabActionName(String viewTabActionName) {
+		this.viewTabActionName = viewTabActionName;
+	}
+
+	/**
+	 * 別タブ編集アクション名を取得します。
+	 * @return 別タブ編集アクション名
+	 */
+	public String getDetailTabActionName() {
+		return detailTabActionName;
+	}
+
+	/**
+	 * 別タブ編集アクション名を設定します。
+	 * @param detailTabActionName 別タブ編集アクション名
+	 */
+	public void setDetailTabActionName(String detailTabActionName) {
+		this.detailTabActionName = detailTabActionName;
 	}
 
 	/**
@@ -631,7 +669,9 @@ public class MetaMassReferenceSection extends MetaSection {
 		lowerContents = section.getLowerContents();
 		limit = section.getLimit();
 		viewActionName = section.getViewActionName();
+		viewTabActionName = section.getViewTabActionName();
 		detailActionName = section.getDetailActionName();
+		detailTabActionName = section.getDetailTabActionName();
 		viewName = section.getViewName();
 		changeEditLinkToViewLink = section.isChangeEditLinkToViewLink();
 		hideDeleteButton = section.isHideDeleteButton();
@@ -700,7 +740,9 @@ public class MetaMassReferenceSection extends MetaSection {
 		section.setLowerContents(lowerContents);
 		section.setLimit(limit);
 		section.setViewActionName(viewActionName);
+		section.setViewTabActionName(viewTabActionName);
 		section.setDetailActionName(detailActionName);
+		section.setDetailTabActionName(detailTabActionName);
 		section.setViewName(viewName);
 		section.setChangeEditLinkToViewLink(changeEditLinkToViewLink);
 		section.setHideDeleteButton(hideDeleteButton);

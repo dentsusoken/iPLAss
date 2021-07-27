@@ -2210,6 +2210,10 @@ LocaleInfo.generic_element_section_MassReferenceSection_viewActionNameDisplaName
 LocaleInfo.generic_element_section_MassReferenceSection_viewActionNameDescriptionKey = "Set the action to be executed when the display link is clicked at the time of detailed display.";
 LocaleInfo.generic_element_section_MassReferenceSection_detailActionNameDisplaNameKey = "Dialog Edit Action";
 LocaleInfo.generic_element_section_MassReferenceSection_detailActionNameDescriptionKey = "Set the action to be executed when the edit link or add button is clicked at the time of detailed editing.";
+LocaleInfo.generic_element_section_MassReferenceSection_viewTabActionNameDisplaNameKey = "Separate tab display action name";
+LocaleInfo.generic_element_section_MassReferenceSection_viewTabActionNameDescriptionKey = "Set the action to be executed by Ctrl + clicking the display link when the details are displayed.";
+LocaleInfo.generic_element_section_MassReferenceSection_detailTabActionNameDisplaNameKey = "Separate tab edit action name";
+LocaleInfo.generic_element_section_MassReferenceSection_detailTabActionNameDescriptionKey = "Set the action to be executed by Ctrl + clicking the edit link when editing in detail.";
 LocaleInfo.generic_element_section_MassReferenceSection_viewNameDisplaNameKey = "View definition name";
 LocaleInfo.generic_element_section_MassReferenceSection_viewNameDescriptionKey = "Set the View-defined name of the screen to display in the edit link is pressed.<br>Use the View definition of default if not specified.";
 LocaleInfo.generic_element_section_MassReferenceSection_changeEditLinkToViewLinkDisplaNameKey = "Change Edit link to Detail link";
