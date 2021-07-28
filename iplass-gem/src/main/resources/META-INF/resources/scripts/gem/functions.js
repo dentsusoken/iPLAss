@@ -1405,6 +1405,7 @@ $.fn.allInputCheck = function(){
 								$(".lnk-mr-01", $v).on("click", function(e) {
 									if(e.ctrlKey) {
 										editReferenceCtrl(this);
+										e.stopImmediatePropagation();
 									} else {
 										editReference(this);
 									}
@@ -1412,6 +1413,7 @@ $.fn.allInputCheck = function(){
 								$(".lnk-mr-02", $v).on("click", function(e) {
 									if(e.ctrlKey) {
 										viewReferenceCtrl(this);
+										e.stopImmediatePropagation();
 									} else {
 										viewReference(this);
 									}
@@ -1419,14 +1421,16 @@ $.fn.allInputCheck = function(){
 							} else {
 								$(".lnk-mr-01", $v).on("click", function(e) {
 									if(e.ctrlKey) {
-										editReferenceCtrl(this, e.ctrlKey);
+										editReferenceCtrl(this);
+										e.stopImmediatePropagation();
 									} else {
 										editReference(this);
 									}
 								}).modalWindow();
 								$(".lnk-mr-02", $v).on("click", function(e) {
 									if(e.ctrlKey) {
-										viewReferenceCtrl(this, e.ctrlKey);
+										viewReferenceCtrl(this);
+										e.stopImmediatePropagation();
 									} else {
 										viewReference(this);
 									}
@@ -1563,21 +1567,6 @@ $.fn.allInputCheck = function(){
 				$form.remove();
 			}
 
-			//詳細を別タブ表示
-			function viewReferenceCtrl(src) {
-				
-				var viewActionCtrl = $v.viewActionCtrl + "/" + encodeURIComponent($(src).attr("data-oid"));
-				var $form = $("<form />").attr({method:"POST", action:contextPath + "/" + viewActionCtrl, target:"_blank"}).appendTo("body");
-//				$("<input />").attr({type:"hidden", name:"defName", value:$v.targetDefName}).appendTo($form);
-//				$("<input />").attr({type:"hidden", name:"oid", value:$(src).attr("oid")}).appendTo($form);
-				$("<input />").attr({type:"hidden", name:"version", value:$(src).attr("data-version")}).appendTo($form);
-				$("<input />").attr({type:"hidden", name:"refEdit", value:$v.updatable}).appendTo($form);
-				if (isSubModal) $("<input />").attr({type:"hidden", name:"modalTarget", value:"_blank"}).appendTo($form);
-				$form.submit();
-				$form.remove();
-				closeModalDialog();
-			}
-
 			//編集ダイアログ表示⇒編集ダイアログでの保存時は、再度詳細ダイアログを表示
 			function editReference(src, action) {
 				//編集ダイアログでの保存時は、ダイアログ閉じる
@@ -1606,18 +1595,24 @@ $.fn.allInputCheck = function(){
 				$form.remove();
 			}
 
+			//詳細を別タブ表示
+			function viewReferenceCtrl(src) {
+				var viewActionCtrl = $v.viewActionCtrl + "/" + encodeURIComponent($(src).attr("data-oid"));
+				var $form = $("<form />").attr({method:"POST", action:contextPath + "/" + viewActionCtrl, target:"_blank"}).appendTo("body");
+				$("<input />").attr({type:"hidden", name:"version", value:$(src).attr("data-version")}).appendTo($form);
+				$("<input />").attr({type:"hidden", name:"refEdit", value:$v.updatable}).appendTo($form);
+				$form.submit();
+				$form.remove();
+			}
+
 			//編集を別タブ表示
-			function editReferenceCtrl(src, action) {
-				
+			function editReferenceCtrl(src) {
 				var $form = $("<form />").attr({method:"POST", action:contextPath + "/" + $v.detailActionCtrl, target:"_blank"}).appendTo("body");
-//				$("<input />").attr({type:"hidden", name:"defName", value:$v.targetDefName}).appendTo($form);
 				$("<input />").attr({type:"hidden", name:"oid", value:$(src).attr("data-oid")}).appendTo($form);
 				$("<input />").attr({type:"hidden", name:"version", value:$(src).attr("data-version")}).appendTo($form);
 				$("<input />").attr({type:"hidden", name:"refEdit", value:$v.updatable}).appendTo($form);
-				if (isSubModal) $("<input />").attr({type:"hidden", name:"modalTarget", value:"_blank"}).appendTo($form);
 				$form.submit();
 				$form.remove();
-				closeModalDialog();
 			}
 
 		};
