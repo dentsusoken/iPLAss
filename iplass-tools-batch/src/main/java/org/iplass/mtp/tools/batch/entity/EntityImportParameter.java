@@ -1,24 +1,38 @@
 /*
- * Copyright 2013 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
+ * Copyright (C) 2021 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
+ *
+ * Unless you have purchased a commercial license,
+ * the following license terms apply:
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.iplass.mtp.tools.batch.pack;
+package org.iplass.mtp.tools.batch.entity;
 
 import java.io.File;
 
 import org.iplass.mtp.impl.tools.entityport.EntityDataImportCondition;
-import org.iplass.mtp.impl.tools.pack.PackageInfo;
-import org.iplass.mtp.impl.util.InternalDateUtil;
-import org.iplass.mtp.tenant.Tenant;
 
-public class PackageImportParameter {
+public class EntityImportParameter {
 
-	/** Silentモード テナントURL */
+	/** テナントURL */
 	public static final String PROP_TENANT_URL = "tenantUrl";
-	/** Silentモード テナントID */
+	/** テナントID */
 	public static final String PROP_TENANT_ID = "tenantId";
-
-	/** Silentモード パッケージファイル */
+	/** Entity名 */
+	public static final String PROP_ENTITY_NAME = "entityName";
+	/** インポートファイル */
 	public static final String PROP_IMPORT_FILE = "importFile";
 
 	/** Silentモード Entityデータ Truncate */
@@ -47,8 +61,6 @@ public class PackageImportParameter {
 	public static final String PROP_ENTITY_PREFIX_OID = "entity.prefixOid";
 	/** Silentモード Entityデータ Commit単位(件数) */
 	public static final String PROP_ENTITY_COMMIT_LIMIT = "entity.commitLimit";
-	/** Silentモード Packageを保存するか */
-	public static final String PROP_SAVE_PACKAGE = "savePackage";
 
 	// テナントID
 	private int tenantId;
@@ -56,11 +68,11 @@ public class PackageImportParameter {
 	// テナント名
 	private String tenantName;
 
+	//Entity名
+	private String entityName;
+
 	//Importファイルパス
 	private String importFilePath;
-
-	//Upload用Package名(固定)
-	private String packageName;
 
 	//Fileロケール名
 	private String locale;
@@ -68,26 +80,15 @@ public class PackageImportParameter {
 	//Fileタイムゾーン名
 	private String timezone;
 
-	//Packageを保存するか
-	private boolean savePackage = true;
-
 	//Importファイル(内部用)
 	private File importFile;
-
-	//ImportファイルPackage情報(内部用)
-	private PackageInfo packInfo;
-
-	//Importテナント情報(内部用)
-	private Tenant importTenant;
 
 	//EntityImport用条件
 	private EntityDataImportCondition entityImportCondition;
 
-	public PackageImportParameter(int tenantId, String tenantName) {
+	public EntityImportParameter(int tenantId, String tenantName) {
 		this.setTenantId(tenantId);
 		this.setTenantName(tenantName);
-
-		packageName = tenantId + "_" + tenantName + "_" + InternalDateUtil.formatYYYY_MM_DD(InternalDateUtil.getNow());
 	}
 
 	public int getTenantId() {
@@ -106,20 +107,20 @@ public class PackageImportParameter {
 		this.tenantName = tenantName;
 	}
 
+	public String getEntityName() {
+		return entityName;
+	}
+
+	public void setEntityName(String entityName) {
+		this.entityName = entityName;
+	}
+
 	public String getImportFilePath() {
 		return importFilePath;
 	}
 
 	public void setImportFilePath(String importFilePath) {
 		this.importFilePath = importFilePath;
-	}
-
-	public String getPackageName() {
-		return packageName;
-	}
-
-	public void setPackageName(String packageName) {
-		this.packageName = packageName;
 	}
 
 	public String getLocale() {
@@ -138,14 +139,6 @@ public class PackageImportParameter {
 		this.timezone = timezone;
 	}
 
-	public boolean isSavePackage() {
-		return savePackage;
-	}
-
-	public void setSavePackage(boolean savePackage) {
-		this.savePackage = savePackage;
-	}
-
 	public File getImportFile() {
 		return importFile;
 	}
@@ -154,28 +147,12 @@ public class PackageImportParameter {
 		this.importFile = importFile;
 	}
 
-	public PackageInfo getPackInfo() {
-		return packInfo;
-	}
-
-	public void setPackInfo(PackageInfo packInfo) {
-		this.packInfo = packInfo;
-	}
-
 	public EntityDataImportCondition getEntityImportCondition() {
 		return entityImportCondition;
 	}
 
 	public void setEntityImportCondition(EntityDataImportCondition entityImportCondition) {
 		this.entityImportCondition = entityImportCondition;
-	}
-
-	public Tenant getImportTenant() {
-		return importTenant;
-	}
-
-	public void setImportTenant(Tenant importTenant) {
-		this.importTenant = importTenant;
 	}
 
 }

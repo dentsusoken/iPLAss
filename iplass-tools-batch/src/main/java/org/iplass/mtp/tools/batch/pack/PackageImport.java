@@ -837,7 +837,7 @@ public class PackageImport extends MtpCuiBase {
 					}
 			} else {
 				logDebug("load config file from classpath:" + configFileName);
-				try (InputStream is = PackageExport.class.getResourceAsStream(configFileName)) {
+				try (InputStream is = PackageImport.class.getResourceAsStream(configFileName)) {
 					if (is == null) {
 						logError(rs("PackageImport.Silent.notExistsConfigFileMsg", configFileName));
 						return false;
