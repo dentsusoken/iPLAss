@@ -105,6 +105,21 @@
 	} else {
 		detailAction = DetailViewCommand.REF_DETAIL_ACTION_NAME + urlPath;
 	}
+	
+	String viewActionCtrl = ""; 
+	if (StringUtil.isNotBlank(section.getViewTabActionName())) {
+		viewActionCtrl = section.getViewTabActionName() +  urlPath;
+	} else {
+		viewActionCtrl = DetailViewCommand.VIEW_ACTION_NAME + urlPath;
+	}
+
+	String detailActionCtrl = "";
+	if (StringUtil.isNotBlank(section.getDetailTabActionName())) {
+		detailActionCtrl = section.getDetailTabActionName() +  urlPath;
+	} else {
+		detailActionCtrl = DetailViewCommand.DETAIL_ACTION_NAME + urlPath;
+	}
+	
 
 	String title = TemplateUtil.getMultilingualString(section.getTitle(), section.getLocalizedTitleList());
 
@@ -161,6 +176,7 @@
  data-propName="<c:out value="<%=propName%>"/>" data-viewName="${m:esc(param.viewName)}" data-offset="0" data-limit="<%=limit%>" data-orgOutputType="<c:out value="<%=type%>"/>"
  data-outputType="<c:out value="<%=_type%>"/>" data-webapiName="<%=GetMassReferencesCommand.WEBAPI_NAME%>" data-removeWebapiName="<%=UpdateMappedbyReferenceCommand.WEBAPI_NAME%>"
  data-viewAction="<c:out value="<%=viewAction%>"/>" data-detailAction="<c:out value="<%=detailAction%>"/>"
+ data-viewActionCtrl="<c:out value="<%=viewActionCtrl%>"/>" data-detailActionCtrl="<c:out value="<%=detailActionCtrl%>"/>"
  data-targetDefName="<c:out value="<%=rp.getObjectDefinitionName()%>"/>" data-mappedBy="<c:out value="<%=rp.getMappedBy()%>"/>" data-changeEditLinkToViewLink="<%=section.isChangeEditLinkToViewLink() %>"
  data-sortKey="" data-sortType="" data-creatable="<%=creatable %>" data-updatable="<%=updatable %>" data-deletable=<%=deletable%> data-purge=<%=purge %>
  data-showPaging=<%=!section.isHidePaging()%> data-showPageJump=<%=!section.isHidePageJump()%> data-showPageLink=<%=!section.isHidePageLink()%> data-showCount=<%=!section.isHideCount()%>
