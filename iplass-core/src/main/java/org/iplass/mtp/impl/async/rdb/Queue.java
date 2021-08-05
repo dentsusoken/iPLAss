@@ -71,22 +71,24 @@ public class Queue {
 		dao = new TaskDao(rdb);
 
 		workerIdMap = new int[config.getWorker().getActualWorkerSize()][];
-		int mod = config.getWorker().getVirtualWorkerSize() % config.getWorker().getActualWorkerSize();
-		int length = config.getWorker().getVirtualWorkerSize() / config.getWorker().getActualWorkerSize();
-		for (int i = 0; i < workerIdMap.length; i++) {
-			if (i < mod) {
-				workerIdMap[i] = new int[length + 1];
-			} else {
-				workerIdMap[i] = new int[length];
-			}
-		}
-		int index = 0;
-		for (int i = 0; i < workerIdMap[0].length; i++) {
-			for (int j = 0; j < config.getWorker().getActualWorkerSize(); j++) {
-				if (workerIdMap[j].length > i) {
-					workerIdMap[j][i] = index;
+		if (config.getWorker().getActualWorkerSize() > 0) {
+			int mod = config.getWorker().getVirtualWorkerSize() % config.getWorker().getActualWorkerSize();
+			int length = config.getWorker().getVirtualWorkerSize() / config.getWorker().getActualWorkerSize();
+			for (int i = 0; i < workerIdMap.length; i++) {
+				if (i < mod) {
+					workerIdMap[i] = new int[length + 1];
+				} else {
+					workerIdMap[i] = new int[length];
 				}
-				index++;
+			}
+			int index = 0;
+			for (int i = 0; i < workerIdMap[0].length; i++) {
+				for (int j = 0; j < config.getWorker().getActualWorkerSize(); j++) {
+					if (workerIdMap[j].length > i) {
+						workerIdMap[j][i] = index;
+					}
+					index++;
+				}
 			}
 		}
 

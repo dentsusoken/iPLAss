@@ -150,37 +150,39 @@ public class RdbAsyncTaskService extends AsyncTaskService {
 		@SuppressWarnings("unchecked")
 		@Override
 		public void afterCommit(Transaction t) {
-			//複数回起動しないように
-			int workerId = queue.resolveActualWorkerId(task.getVirtualWorkerId());
-			List<Integer> widList = (List<Integer>) t.getAttribute(WID_LIST);
-			if (widList == null) {
-				widList = new ArrayList<>();
-				t.setAttribute(WID_LIST, widList);
-			}
-			if (!widList.contains(workerId)) {
-				Worker w = null;
-				if (workerId == -1) {
-					//ランダムで選択、LocalWorker優先
-					widList.add(workerId);
+			if (queue.getConfig().getWorker().getActualWorkerSize() > 0) {
+				//複数回起動しないように
+				int workerId = queue.resolveActualWorkerId(task.getVirtualWorkerId());
+				List<Integer> widList = (List<Integer>) t.getAttribute(WID_LIST);
+				if (widList == null) {
+					widList = new ArrayList<>();
+					t.setAttribute(WID_LIST, widList);
+				}
+				if (!widList.contains(workerId)) {
+					Worker w = null;
+					if (workerId == -1) {
+						//ランダムで選択、LocalWorker優先
+						widList.add(workerId);
 
-					workerId = rand.nextInt(queue.getConfig().getWorker().getActualWorkerSize());
-					for (int i = 0; i < queue.getConfig().getWorker().getActualWorkerSize(); i++) {
-						int cwid = (workerId + i) % queue.getConfig().getWorker().getActualWorkerSize();
-						Worker cw = queue.getWorker(cwid);
-						if (cw instanceof LocalWorker) {
-							w = cw;
-							workerId = cwid;
-							break;
+						workerId = rand.nextInt(queue.getConfig().getWorker().getActualWorkerSize());
+						for (int i = 0; i < queue.getConfig().getWorker().getActualWorkerSize(); i++) {
+							int cwid = (workerId + i) % queue.getConfig().getWorker().getActualWorkerSize();
+							Worker cw = queue.getWorker(cwid);
+							if (cw instanceof LocalWorker) {
+								w = cw;
+								workerId = cwid;
+								break;
+							}
 						}
-					}
-					if (w == null) {
+						if (w == null) {
+							w = queue.getWorker(workerId);
+						}
+					} else {
 						w = queue.getWorker(workerId);
 					}
-				} else {
-					w = queue.getWorker(workerId);
+					w.wakeup();
+					widList.add(workerId);
 				}
-				w.wakeup();
-				widList.add(workerId);
 			}
 		}
 		@Override

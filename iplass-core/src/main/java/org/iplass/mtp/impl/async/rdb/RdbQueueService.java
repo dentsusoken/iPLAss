@@ -68,7 +68,6 @@ public class RdbQueueService implements Service {
 		return useQueue;
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public void init(Config config) {
 
@@ -76,41 +75,41 @@ public class RdbQueueService implements Service {
 			useQueue = Boolean.valueOf(config.getValue("useQueue"));
 		}
 
+		rdb = config.getDependentService(RdbAdapterService.class).getRdbAdapter();
+		taskIdCounter = config.getDependentService("TaskIdCounter");
+		taskIdCounterForGroup = config.getDependentService("TaskIdCounterGrouping");
+		
+		if (config.getValue("cleanupHistoryOnInit") != null) {
+			cleanupHistoryOnInit = Boolean.valueOf(config.getValue("cleanupHistoryOnInit"));
+		}
+
+		if (config.getValue("historyHoldDay") != null) {
+			historyHoldDay = Integer.parseInt(config.getValue("historyHoldDay"));
+		}
+		
+		queue = config.getValues("queue", QueueConfig.class);
+
+		queueMap = new HashMap<>();
+		queueIdMap = new HashMap<>();
+		if (queue != null) {
+			for (QueueConfig qc: queue) {
+				Queue q = new Queue(qc, taskIdCounter, taskIdCounterForGroup, rdb);
+				queueMap.put(q.getName(), q);
+				queueIdMap.put(qc.getId(), q);
+				if (q.getName().equalsIgnoreCase(DEFAULT_QUEUE_NAME)) {
+					defaultQueue = q;
+				}
+			}
+		}
+		
 		if (useQueue) {
 			if (logger.isDebugEnabled()) {
 				logger.debug("RdbQueueService initialize process started.init queues...");
 			}
-
-			if (config.getValue("cleanupHistoryOnInit") != null) {
-				cleanupHistoryOnInit = Boolean.valueOf(config.getValue("cleanupHistoryOnInit"));
-			}
-
-			if (config.getValue("historyHoldDay") != null) {
-				historyHoldDay = Integer.parseInt(config.getValue("historyHoldDay"));
-			}
-
-			taskIdCounter = config.getDependentService("TaskIdCounter");
-			taskIdCounterForGroup = config.getDependentService("TaskIdCounterGrouping");
-
-			queue = (List<QueueConfig>) config.getBeans("queue");
-
-			rdb = config.getDependentService(RdbAdapterService.class).getRdbAdapter();
-			queueMap = new HashMap<>();
-			queueIdMap = new HashMap<>();
-			if (queue != null) {
-				for (QueueConfig qc: queue) {
-					Queue q = new Queue(qc, taskIdCounter, taskIdCounterForGroup, rdb);
-					queueMap.put(q.getName(), q);
-					queueIdMap.put(qc.getId(), q);
-					if (q.getName().equalsIgnoreCase(DEFAULT_QUEUE_NAME)) {
-						defaultQueue = q;
-					}
-				}
-			}
+			
 			if (defaultQueue == null) {
 				throw new ServiceConfigrationException("default queue(named 'default') is not specified");
 			}
-
 
 			if (cleanupHistoryOnInit) {
 				logger.debug("RdbQueueService.cleanupHistoryOnInit is true so start cleanup process start.");
@@ -133,7 +132,7 @@ public class RdbQueueService implements Service {
 
 	@Override
 	public void destroy() {
-		if (queueMap != null) {
+		if (useQueue && queueMap != null) {
 			logger.info("stopping queue worker...");
 			for (Map.Entry<String, Queue> e: queueMap.entrySet()) {
 				e.getValue().stopWorker();
@@ -189,8 +188,10 @@ public class RdbQueueService implements Service {
 
 	public void moveNoGetResultTaskToHistory() {
 
-		for (Queue e: queueMap.values()) {
-			e.moveNoGetResultTaskToHistory();
+		if (queueMap != null) {
+			for (Queue e: queueMap.values()) {
+				e.moveNoGetResultTaskToHistory();
+			}
 		}
 	}
 
