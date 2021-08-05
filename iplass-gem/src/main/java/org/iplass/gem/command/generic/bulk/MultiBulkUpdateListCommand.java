@@ -173,6 +173,7 @@ public class MultiBulkUpdateListCommand extends MultiBulkCommandBase {
 							});
 						}
 					}
+					context.getReferenceRegistHandlers().clear();
 				}
 			}
 
