@@ -65,6 +65,8 @@ ul.jqtree-tree li.jqtree-selected > .jqtree-element {
 
 .ui-jqgrid .ui-jqgrid-bdiv tr.ui-row-ltr > td.jqgrid_select_cell {
   background-color: #b2dfdb !important; }
+  .ui-jqgrid .ui-jqgrid-bdiv tr.ui-row-ltr > td.jqgrid_select_cell::selection {
+    background-color: #b2dfdb !important; }
 
 #header-container #header {
   background: #4caf50; }
