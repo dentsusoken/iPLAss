@@ -3306,12 +3306,15 @@ function updateNestValue_Number(type, $node, parentPropName, name, entity) {
 		}
 	} else if (type == "LABEL") {
 		let dummyField = $("span.data-label.commaLabel", $node);
+		let hiddenArea = null; 
 		if (dummyField.length > 0) {
 			dummyField.text(insertComma(val, separator));
+			hiddenArea = dummyField;
 		} else {
 			$node.text(val);
+			hiddenArea = $node;
 		}
-		$("<input />").attr({type:"hidden", name:parentPropName + "." + name, value:val}).appendTo($node);
+		$("<input />").attr({type:"hidden", name:parentPropName + "." + name, value:val}).appendTo(hiddenArea);
 	}
 }
 
