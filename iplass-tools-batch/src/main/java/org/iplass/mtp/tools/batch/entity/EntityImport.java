@@ -819,7 +819,7 @@ public class EntityImport extends MtpCuiBase {
 		//InsertするEntityにAuditPropertyの値を指定
 		String insertEnableAuditPropertySpecification = prop.getProperty(PROP_ENTITY_INSERT_AUDIT_PROPERTY_SPECIFICATION);
 		if (StringUtil.isNotEmpty(insertEnableAuditPropertySpecification)) {
-			condition.setUpdateDisupdatableProperty(Boolean.valueOf(insertEnableAuditPropertySpecification));
+			condition.setInsertEnableAuditPropertySpecification(Boolean.valueOf(insertEnableAuditPropertySpecification));
 		}
 		if (condition.isInsertEnableAuditPropertySpecification()) {
 			//実行ユーザID、PWを取得
