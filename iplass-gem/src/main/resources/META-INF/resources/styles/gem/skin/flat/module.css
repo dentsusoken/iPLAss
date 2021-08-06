@@ -791,6 +791,8 @@ body.modal-body input.btn-csv-01 {
       vertical-align: middle; }
     .ui-jqgrid .ui-jqgrid-bdiv tr.ui-row-ltr > td.jqgrid_select_cell {
       background-color: #92cc42 !important; }
+      .ui-jqgrid .ui-jqgrid-bdiv tr.ui-row-ltr > td.jqgrid_select_cell::selection {
+        background-color: #92cc42 !important; }
   .ui-jqgrid .ui-jqgrid-pager {
     width: auto !important; }
   .ui-jqgrid .cell-wrapperleaf {

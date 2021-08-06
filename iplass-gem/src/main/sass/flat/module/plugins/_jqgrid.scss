@@ -79,7 +79,7 @@
 			> td {
 				border-bottom-width: 0;
 				border-right-width: 0;
-				
+
 				outline-width: 0.5px;
 				outline-style: solid;
 				outline-color: $color_alto_approx;
@@ -225,6 +225,9 @@
 		}
 		tr.ui-row-ltr > td.jqgrid_select_cell {
 			background-color: $color_atlantis_approx !important;
+			&::selection {
+				background-color: $color_atlantis_approx !important;
+			}
 		}
 	}
 	.ui-jqgrid-pager {
