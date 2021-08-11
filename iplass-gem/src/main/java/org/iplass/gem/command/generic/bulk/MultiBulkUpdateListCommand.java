@@ -173,6 +173,7 @@ public class MultiBulkUpdateListCommand extends MultiBulkCommandBase {
 							});
 						}
 					}
+					// 更新し終えたNestTableのデータをクリア
 					context.getReferenceRegistHandlers().clear();
 				}
 			}
