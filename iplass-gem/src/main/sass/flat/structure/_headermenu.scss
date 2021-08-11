@@ -198,7 +198,7 @@
 	}
 }
 #account-01 {
-	padding-left: 70px;
+	margin-left: 70px;
 	//user name
 	p {
 		margin-top: 15px;
@@ -369,7 +369,10 @@
 	left: 40px;
 	height: 40px;
 	width: 1px;
+	margin-left: -70px;
 	background: $white;
+	cursor: default;
+	pointer-events: none;
 }
 #showPreviewDateTimeDialog {
 	font-size: 1rem;

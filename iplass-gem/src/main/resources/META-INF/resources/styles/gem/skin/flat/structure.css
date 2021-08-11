@@ -250,7 +250,7 @@ a {
       background: rgba(255, 255, 255, 0.1); }
 
 #account-01 {
-  padding-left: 70px; }
+  margin-left: 70px; }
   #account-01 p {
     margin-top: 15px; }
     #account-01 p span {
@@ -370,7 +370,10 @@ a {
   left: 40px;
   height: 40px;
   width: 1px;
-  background: #fff; }
+  margin-left: -70px;
+  background: #fff;
+  cursor: default;
+  pointer-events: none; }
 
 #showPreviewDateTimeDialog {
   font-size: 1rem; }
