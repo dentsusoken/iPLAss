@@ -89,7 +89,7 @@
 	SearchResultSection section = form.getResultSection();
 
 	//ビュー名があればアクションの後につける
-	String urlPath = ViewUtil.getParamMappingPath(parts.getDefName(), 
+	String urlPath = ViewUtil.getParamMappingPath(parts.getDefName(),
 			parts.getViewNameForDetail() != null ? parts.getViewNameForDetail() : parts.getViewName());
 
 	//詳細表示アクション
@@ -128,7 +128,7 @@
 	AuthContext auth = AuthContext.getCurrentContext();
 	boolean canUpdate = auth.checkPermission(new EntityPermission(ed.getName(), EntityPermission.Action.UPDATE));
 	boolean canDelete = auth.checkPermission(new EntityPermission(ed.getName(), EntityPermission.Action.DELETE));
-	
+
 	//スタイルシートのクラス名
 	String cellStyle = "entity-list topview-parts";
 	if (StringUtil.isNotBlank(parts.getStyle())) {
@@ -395,14 +395,14 @@ colModel.push({name:"<%=propName%>", index:"<%=propName%>", classes:"<%=style%>"
 
 			grid.clearGridData(true);
 			grid.setGridParam({"_data": list}).trigger("reloadGrid");
-			
-			var $viewLink = $("<a/>").attr({"href":"javascript:void(0)", "action":"<%=StringUtil.escapeJavaScript(viewAction)%>"})
+
+			var $viewLink = $("<a/>").attr({"href":"javascript:void(0)", "action":"<%=StringUtil.escapeJavaScript(viewAction)%>", "title":"${m:rs('mtp-gem-messages', 'generic.element.section.SearchResultSection.detail')}"})
 					.addClass("detailLink").text("${m:rs('mtp-gem-messages', 'generic.element.section.SearchResultSection.detail')}");
 <%	if (!section.isHideDetailLink() && (canUpdate || canDelete)) {
 		//編集表示
 %>
 			$viewLink.addClass("jqborder"); //真ん中の棒線
-			var $editLink = $("<a/>").attr({"href":"javascript:void(0)", "action":"<%=StringUtil.escapeJavaScript(detailAction)%>"})
+			var $editLink = $("<a/>").attr({"href":"javascript:void(0)", "action":"<%=StringUtil.escapeJavaScript(detailAction)%>", "title":"${m:rs('mtp-gem-messages', 'generic.element.section.SearchResultSection.edit')}"})
 					.addClass("detailLink editLink").text("${m:rs('mtp-gem-messages', 'generic.element.section.SearchResultSection.edit')}");
 <%
 	} else {
@@ -415,12 +415,12 @@ colModel.push({name:"<%=propName%>", index:"<%=propName%>", classes:"<%=style%>"
 %>
 			$(list).each(function(index) {
 				this["searchResultDataId"] = this.orgOid + "_" + this.orgVersion;
-				
+
 				$viewLink.attr({"oid":this.orgOid, "version":this.orgVersion});
 <%	if (!section.isHideDetailLink() && (canUpdate || canDelete)) { %>
 
 				$editLink.attr({"oid":this.orgOid, "version":this.orgVersion});
-				
+
 				var $detailLink = $("<p/>");
 				if (this["@canEdit"] === "false" && this["@canDelete"] === "false") {
 					$viewLink.removeClass("jqborder");

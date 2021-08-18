@@ -643,14 +643,14 @@ function setData(list, count) {
 <%
 	} else if (type == OutputType.SEARCHRESULT) {
 %>
-	var $viewLink = $("<a/>").attr({"href":"javascript:void(0)", "action":"<%=StringUtil.escapeJavaScript(viewAction)%>"})
+	var $viewLink = $("<a/>").attr({"href":"javascript:void(0)", "action":"<%=StringUtil.escapeJavaScript(viewAction)%>", "title":"${m:rs('mtp-gem-messages', 'generic.element.section.SearchResultSection.detail')}"})
 			.addClass("detailLink").text("${m:rs('mtp-gem-messages', 'generic.element.section.SearchResultSection.detail')}");
 <%
 		if (!section.isHideDetailLink() && (canUpdate || canDelete)) {
 			//編集表示
 %>
 	$viewLink.addClass("jqborder"); //真ん中の棒線
-	var $editLink = $("<a/>").attr({"href":"javascript:void(0)", "action":"<%=StringUtil.escapeJavaScript(detailAction)%>"})
+	var $editLink = $("<a/>").attr({"href":"javascript:void(0)", "action":"<%=StringUtil.escapeJavaScript(detailAction)%>", "title":"${m:rs('mtp-gem-messages', 'generic.element.section.SearchResultSection.edit')}"})
 			.addClass("detailLink editLink").text("${m:rs('mtp-gem-messages', 'generic.element.section.SearchResultSection.edit')}");
 <%
 		} else {
@@ -893,7 +893,7 @@ ${m:outputToken('FORM_XHTML', false)}
 	if (OutputType.SEARCHRESULT == type && !section.isHideDelete() && canDelete) {
 %>
 <input type="button" value="${m:rs('mtp-gem-messages', 'generic.element.section.SearchResultSection.delete')}" class="gr-btn" onclick="doDelete()" />
-<%	
+<%
 	}
 	if (OutputType.SEARCHRESULT == type && section.isShowBulkUpdate() && canUpdate) {
 		String bulkUpdateDisplayLabel = GemResourceBundleUtil.resourceString("generic.element.section.SearchResultSection.bulkUpdate");
@@ -1007,7 +1007,7 @@ function deleteRow(isConfirmed) {
 </script>
 <%
 	}
-	if (OutputType.SEARCHRESULT == type && section.isShowBulkUpdate() && canUpdate) { 
+	if (OutputType.SEARCHRESULT == type && section.isShowBulkUpdate() && canUpdate) {
 %>
 <script>
 $(function() {
@@ -1101,7 +1101,7 @@ function doBulkUpdate(target) {
 		version.push(id + "_" + row.orgVersion);
 <%
 		if (section.getExclusiveControlPoint() == ExclusiveControlPoint.WHEN_SEARCH) {
-%>		
+%>
 		timestamp.push(id + "_" + row.orgTimestamp);
 <%
 		}
@@ -1120,7 +1120,7 @@ function doBulkUpdate(target) {
 	});
 <%
 		if (section.getExclusiveControlPoint() == ExclusiveControlPoint.WHEN_SEARCH) {
-%>	
+%>
 	$(timestamp).each(function() {
 		$("<input />").attr({type:"hidden", name:"timestamp", value:this}).appendTo($form);
 	});
@@ -1149,7 +1149,7 @@ function closeBulkUpdateModalWindow() {
 </script>
 <%
 	}
-	
+
 	if (OutputType.MULTISELECT == type && permitConditionSelectAll) {
 		// 全ページor現在ページ選択
 %>
