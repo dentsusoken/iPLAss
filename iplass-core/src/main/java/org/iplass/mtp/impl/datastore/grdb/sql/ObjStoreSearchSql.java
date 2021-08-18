@@ -22,15 +22,19 @@ package org.iplass.mtp.impl.datastore.grdb.sql;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 import org.iplass.mtp.entity.Entity;
 import org.iplass.mtp.entity.query.GroupBy;
+import org.iplass.mtp.entity.query.Having;
+import org.iplass.mtp.entity.query.OrderBy;
 import org.iplass.mtp.entity.query.Query;
 import org.iplass.mtp.entity.query.QueryVisitorSupport;
 import org.iplass.mtp.entity.query.Select;
+import org.iplass.mtp.entity.query.SortSpec;
 import org.iplass.mtp.entity.query.SubQuery;
 import org.iplass.mtp.entity.query.hint.BindHint;
 import org.iplass.mtp.entity.query.hint.Hint;
@@ -74,7 +78,7 @@ public class ObjStoreSearchSql extends QuerySqlHandler {
 			if (rdbAdaptor.isAlwaysBind()) {
 				//Oracleでは、GroupBy,PartitionBY,WindowGroupByにバインド変数利用できない為、、
 				GroupByNoBinder noBinder = new GroupByNoBinder();
-				query.accept(noBinder);
+				noBinder.modify(query);
 				boolean hasNoBindHint = false;
 				if (query.select().getHintComment() != null
 						&& query.select().getHintComment().getHintList() != null) {
@@ -154,6 +158,15 @@ public class ObjStoreSearchSql extends QuerySqlHandler {
 	private static class GroupByNoBinder extends QueryVisitorSupport {
 		GroupByCollector collector;
 		boolean noBind;
+		ArrayList<Literal> target;
+
+		public void modify(Query query) {
+			target = new ArrayList<>();
+			query.accept(this);
+			for (Literal l: target) {
+				l.setBindable(false);
+			}
+		}
 
 		@Override
 		public boolean visit(Query query) {
@@ -175,6 +188,33 @@ public class ObjStoreSearchSql extends QuerySqlHandler {
 
 			collector = prevCollector;
 
+			return false;
+		}
+
+		@Override
+		public boolean visit(OrderBy orderBy) {
+			for (SortSpec ss: orderBy.getSortSpecList()) {
+				boolean prevNoBind = noBind;
+				if (collector.groupBySet != null
+						&& collector.groupBySet.contains(ss.getSortKey())) {
+					noBind = true;
+				}
+				ss.getSortKey().accept(this);
+				noBind = prevNoBind;
+			}
+			return false;
+		}
+
+		@Override
+		public boolean visit(Having having) {
+			boolean prevNoBind = noBind;
+			noBind = true;
+
+			if (having.getCondition() != null) {
+				having.getCondition().accept(this);
+			}
+
+			noBind = prevNoBind;
 			return false;
 		}
 
@@ -243,7 +283,7 @@ public class ObjStoreSearchSql extends QuerySqlHandler {
 		@Override
 		public boolean visit(Literal literal) {
 			if (noBind) {
-				literal.setBindable(false);
+				target.add(literal);
 			}
 			return true;
 		}
