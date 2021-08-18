@@ -317,12 +317,12 @@ function setData(grid, listId, data, viewUrl, editUrl, showEditLink) {
 
 	//リンク生成
 	var $detailLink = $("<p/>");
-	var $viewLink = $("<a/>").attr({"href":"javascript:void(0)", "action":viewUrl})
+	var $viewLink = $("<a/>").attr({"href":"javascript:void(0)", "action":viewUrl, "title":"${m:rs('mtp-gem-messages', 'fulltext.search.detail')}"})
 			.addClass("detailLink").text("${m:rs('mtp-gem-messages', 'fulltext.search.detail')}").appendTo($detailLink);
 	var $editLink = null;
 	if (showEditLink) {
 		$viewLink.addClass("jqborder"); //真ん中の棒線
-		$editLink = $("<a/>").attr({"href":"javascript:void(0)", "action":editUrl})
+		$editLink = $("<a/>").attr({"href":"javascript:void(0)", "action":editUrl, "title":"${m:rs('mtp-gem-messages', 'fulltext.search.edit')}"})
 			.addClass("detailLink editLink").text("${m:rs('mtp-gem-messages', 'fulltext.search.edit')}").appendTo($detailLink);
 	}
 
