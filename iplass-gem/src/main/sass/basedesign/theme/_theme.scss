@@ -92,3 +92,11 @@ input.gr-btn {
 		background: linear-gradient($btn_hover_background_gradient_color_from 0, $btn_hover_background_gradient_color_to 100%);
 	}
 }
+button.dialog-csvdl-btn {
+	background-color: $btn_background_color;
+	background: linear-gradient($btn_background_gradient_color_from 0, $btn_background_gradient_color_to 100%);
+	&:hover {
+		background-color: $btn_hover_background_color;
+		background: linear-gradient($btn_hover_background_gradient_color_from 0, $btn_hover_background_gradient_color_to 100%);
+	}
+}

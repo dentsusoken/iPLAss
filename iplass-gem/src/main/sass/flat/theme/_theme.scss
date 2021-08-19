@@ -71,3 +71,9 @@ body.nomenu-layout #header-container .cms-title {
 h3.hgroup-02-01::before {
 	background: $header_color;
 }
+button.dialog-csvdl-btn {
+	background-color: $base_color !important;
+	&:hover {
+		background-color: $button_hover_color !important;
+	}
+}

@@ -443,6 +443,15 @@ body.modal-body input.btn-csv-01 {
 #dialog_parent {
   position: relative; }
 
+button.dialog-csvdl-btn {
+  color: #ffffff;
+  background: #1a4580;
+  background: linear-gradient(#66aced 0, #1a4580 100%); }
+  button.dialog-csvdl-btn:hover {
+    color: #ffffff;
+    background: #2f5b99;
+    background: linear-gradient(#73b2ff 0, #2f5b99 100%); }
+
 .tooltip-wrap {
   display: none;
   position: absolute;
