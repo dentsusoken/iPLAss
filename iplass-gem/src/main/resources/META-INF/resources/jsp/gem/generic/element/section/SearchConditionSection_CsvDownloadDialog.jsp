@@ -122,28 +122,35 @@ function showCsvDownloadDialog(searchType, buttonId, validate, callback) {
 		height: 200,
 		width: 300,
 		modal: true,
-		buttons: {
-			"${m:rs('mtp-gem-messages', 'generic.element.section.SearchConditionSection.csvDl')}": function() {
-					var execType = $("input[name=execType]", dialog).val();
-					var forUpload = $("#forUpload").is(':checked');
-					var noDispName = $("#noDispName").is(':checked');
-					var downloadCodeValue = $("#downloadCodeValue").prop('checked');
-					var characterCode = $("#characterCode").val();
-					var outputResult = null;
-					<%if (StringUtil.isNotBlank(section.getCsvdownloadProperties())) {%>
-					outputResult = $("#outputResult").is(':checked');
-					<%}%>
+		buttons: [
+			{
+				text: "${m:rs('mtp-gem-messages', 'generic.element.section.SearchConditionSection.csvDl')}",
+				class: "dialog-csvdl-btn",
+				click: function() {
+						var execType = $("input[name=execType]", dialog).val();
+						var forUpload = $("#forUpload").is(':checked');
+						var noDispName = $("#noDispName").is(':checked');
+						var downloadCodeValue = $("#downloadCodeValue").prop('checked');
+						var characterCode = $("#characterCode").val();
+						var outputResult = null;
+						<%if (StringUtil.isNotBlank(section.getCsvdownloadProperties())) {%>
+						outputResult = $("#outputResult").is(':checked');
+						<%}%>
 
-					var id = $("#trigger", dialog).val();
-					var $target = $("#"+id);
-					callback.call($target, execType, forUpload, characterCode, noDispName, outputResult, downloadCodeValue);
+						var id = $("#trigger", dialog).val();
+						var $target = $("#"+id);
+						callback.call($target, execType, forUpload, characterCode, noDispName, outputResult, downloadCodeValue);
 
-					$(this).dialog("close");
+						$(this).dialog("close");
+				}
 			},
-			"${m:rs('mtp-gem-messages', 'generic.element.section.SearchConditionSection.cancel')}": function() {
-					$(this).dialog("close");
+			{
+				text: "${m:rs('mtp-gem-messages', 'generic.element.section.SearchConditionSection.cancel')}",
+				click: function() {
+						$(this).dialog("close");
+				}
 			}
-		},
+		],
 		close: function() {
 		}
 	});

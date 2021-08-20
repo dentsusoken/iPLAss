@@ -516,6 +516,11 @@ body.modal-body input.btn-csv-01 {
 #dialog_parent {
   position: relative; }
 
+button.dialog-csvdl-btn {
+  background-color: #4c7607 !important; }
+  button.dialog-csvdl-btn:hover {
+    background-color: #273c04 !important; }
+
 .unexpected-error #header #title {
   display: none; }
 

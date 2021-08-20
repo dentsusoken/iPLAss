@@ -62,3 +62,8 @@ input.gr-btn {
     border: 1px solid #62967b;
     background: #25a25a;
     background: linear-gradient(#62dc96 0, #25a25a 100%); }
+
+button.dialog-csvdl-btn {
+  background: linear-gradient(#39d27a 0, #229552 100%); }
+  button.dialog-csvdl-btn:hover {
+    background: linear-gradient(#62dc96 0, #25a25a 100%); }
