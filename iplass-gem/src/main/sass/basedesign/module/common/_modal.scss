@@ -86,9 +86,9 @@ body.modal-body {
 	position: relative;
 }
 button.dialog-csvdl-btn {
-		color: $white;
-		background: $color_bay_of_many_approx;
-		background: linear-gradient($color_cornflower_blue_approx 0, $color_bay_of_many_approx 100%);
+	color: $white;
+	background: $color_bay_of_many_approx;
+	background: linear-gradient($color_cornflower_blue_approx 0, $color_bay_of_many_approx 100%);
 	&:hover {
 		color: $white;
 		background: $color_st_tropaz_approx;
