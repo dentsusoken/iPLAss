@@ -491,7 +491,7 @@ function getCookie(name) {
  * @param value 保存するアイテム（文字列）
  */
 function setSessionStorage(name, value) {
-	sessionStorage.setItem(name, escape(value));
+	sessionStorage.setItem(name, value);
 }
 
 /**

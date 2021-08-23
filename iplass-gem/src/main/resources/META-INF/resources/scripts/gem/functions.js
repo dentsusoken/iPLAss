@@ -3673,20 +3673,20 @@ function datetimepicker(selector) {
 					}
 
 					//クッキー内に保存したパスを元に、展開状態を復元
-					var path = getCookie(option.cookiePath);
+					var path = getSessionStorage(option.cookiePath);
 					if (path) {
 						var pathList = path.split("/");
 						if (pathList.length > 0 && pathList[0] == node.id) {
 							if (pathList.length > 1) {
 								pathList.shift();
-								setCookie(option.cookiePath, pathList.join("/"), 1);
+								setSessionStorage(option.cookiePath, pathList.join("/"));
 								//同一階層が読み込み終わったらノード展開
 								$v.one("tree.refresh", function() {
 									$("#" + es(node.id), $v).children('.jqtree-element').find('a.jqtree-toggler').click();
 									$(".fixHeight").fixHeight();
 								});
 							} else {
-								setCookie(option.cookiePath, null, 0);
+								deleteSessionStorage(option.cookiePath);
 							}
 						}
 					}
@@ -3701,7 +3701,7 @@ function datetimepicker(selector) {
 					clearMenuState();
 
 					//現在展開中の階層のパスをクッキーに保存
-					setCookie(option.cookiePath, getNodePath(node), 1);
+					setSessionStorage(option.cookiePath, getNodePath(node));
 
 
 					//Entityの内容を表示
