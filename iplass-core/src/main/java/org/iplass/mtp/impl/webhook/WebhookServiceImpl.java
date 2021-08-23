@@ -339,7 +339,7 @@ public class WebhookServiceImpl extends AbstractTypedMetaDataService<MetaWebhook
 				}
 			}
 		} catch (Exception e) {
-			throw new RuntimeException(e.getMessage());
+			throw new RuntimeException(e.getMessage(), e);
 		}
 	}
 
@@ -359,7 +359,7 @@ public class WebhookServiceImpl extends AbstractTypedMetaDataService<MetaWebhook
 			String hash = Base64.encodeBase64String(Hmac.doFinal(message.getBytes("UTF-8")));
 			return hash;
 		} catch (Exception e) {
-			throw new RuntimeException(e.getMessage());
+			throw new RuntimeException(e.getMessage(), e);
 		}
 	}
 
@@ -420,7 +420,7 @@ public class WebhookServiceImpl extends AbstractTypedMetaDataService<MetaWebhook
 				String entity = EntityUtils.toString(response.getEntity());
 				whr.setResponseBody(entity);
 			} catch (Exception e) {
-				throw new RuntimeException(e.getMessage());
+				throw new RuntimeException(e.getMessage(), e);
 			}
 			whr.setContentType(response.getEntity().getContentType() == null ? null
 					: response.getEntity().getContentType().getValue());
