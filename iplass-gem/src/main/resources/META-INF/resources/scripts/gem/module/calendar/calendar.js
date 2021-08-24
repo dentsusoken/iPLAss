@@ -614,9 +614,9 @@
 		function init() {
 			var $table = $("#calendarWidgetTable_" + es(calendarInfo.calendarName));
 
-			var datestr = getCookie(calendarInfo.calendarName);
+			var datestr = getSessionStorage("calendar_" + calendarInfo.calendarName);
 			var sysDate;
-			if (datestr != "") {
+			if (datestr != null && datestr !== "") {
 				sysDate = moment(datestr);
 			} else {
 				sysDate = moment(new Date());
@@ -638,7 +638,7 @@
 				$this.children(".title").text(calendarInfo.displayName);
 				table.find(".month-title").text(buildMonthTitle(m));
 				table.attr("date", formatDate);
-				setCookie(calendarInfo.calendarName, m.format("YYYYMMDD"), 0);
+				setSessionStorage("calendar_" + calendarInfo.calendarName, m.format("YYYYMMDD"));
 				for (var numberOfWeek = 0; numberOfWeek < lastWeek; numberOfWeek++) {
 					buildWeekOfMonth(year, month, numberOfWeek, table);
 				}
@@ -713,7 +713,7 @@
 			 */
 			function prevNextMonth(addMonth) {
 				var m = moment($table.attr("date"), "YYYYMMDD").add(addMonth, "month");
-				setCookie(calendarInfo.calendarName, m.format("YYYYMMDD"), 0);
+				setSessionStorage("calendar_" + calendarInfo.calendarName, m.format("YYYYMMDD"));
 				$table.children("tbody").remove();
 				$("<tbody />").appendTo($table);
 				buildMonth(m.get("year"), m.get("month"), $table);
@@ -849,7 +849,7 @@
 
 				// 初期値設定
 				initFilterCondition();
-				
+
 				//画面構築が終わったのでイベント実行
 				$(".calendarFilter").trigger(new $.Event('changeFilter', {}));
 				init = true;
@@ -1116,7 +1116,7 @@
 					createConditionList(filterCondition, selectType);
 					filterCondition.val("EQ");
 					createInputField(filterInputField, selectValue, selectType, "EQ");
-					
+
 					//条件が変わったのでイベント実行
 					//初期化後のみ。初期表示時に条件復元の際に選択値を先に反映させるため
 					if (init) {
@@ -1167,7 +1167,7 @@
 							}
 						}
 					}
-					
+
 					//条件が変わったのでイベント実行
 					//初期化後のみ。初期表示時に条件復元の際に選択値を先に反映させるため
 					if (init) {
