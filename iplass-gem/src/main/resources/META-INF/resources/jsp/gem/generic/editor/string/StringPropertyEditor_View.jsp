@@ -29,7 +29,6 @@
 <%@ page import="org.iplass.mtp.view.generic.EntityViewUtil"%>
 <%@ page import="org.iplass.mtp.view.generic.OutputType"%>
 <%@ page import="org.iplass.mtp.view.generic.editor.EditorValue" %>
-<%@ page import="org.iplass.mtp.view.generic.editor.LongTextPropertyEditor"%>
 <%@ page import="org.iplass.mtp.view.generic.editor.StringPropertyEditor" %>
 <%@ page import="org.iplass.mtp.view.generic.editor.StringPropertyEditor.StringDisplayType"%>
 <%@ page import="org.iplass.mtp.web.template.TemplateUtil"%>
@@ -236,8 +235,7 @@ $(function() {
 						str = replacePassword(str);
 					}
 					str = StringUtil.escapeXml10(str, true);
-					if (editor.getDisplayType() == StringDisplayType.TEXTAREA
-							|| (editor.getDisplayType() == StringDisplayType.LABEL && editor instanceof LongTextPropertyEditor)) {
+					if (editor.getDisplayType() == StringDisplayType.TEXTAREA || editor.getDisplayType() == StringDisplayType.LABEL) {
 						str = str.replaceAll("\r\n", "<BR>").replaceAll("\n", "<BR>").replaceAll("\r", "<BR>").replaceAll(" ", "&nbsp;");
 					}
 %>
@@ -266,8 +264,7 @@ $(function() {
 				str = replacePassword(str);
 			}
 			str = StringUtil.escapeXml10(str, true);
-			if (editor.getDisplayType() == StringDisplayType.TEXTAREA
-					|| (editor.getDisplayType() == StringDisplayType.LABEL && editor instanceof LongTextPropertyEditor)) {
+			if (editor.getDisplayType() == StringDisplayType.TEXTAREA || editor.getDisplayType() == StringDisplayType.LABEL) {
 				str = str.replaceAll("\r\n", "<BR>").replaceAll("\n", "<BR>").replaceAll("\r", "<BR>").replaceAll(" ", "&nbsp;");
 			}
 %>
