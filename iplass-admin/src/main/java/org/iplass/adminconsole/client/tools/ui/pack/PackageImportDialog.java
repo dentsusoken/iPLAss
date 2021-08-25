@@ -337,7 +337,7 @@ public class PackageImportDialog extends AbstractWindow {
 		
 		private void doCheckListener(final Tenant importTenant) {
 
-			//EntityにUserまたはPermission系が含まれていてListenerしない場合は確認
+			//EntityにUserまたはPermission系が含まれていてListener実行しない場合は確認
 			if (SmartGWTUtil.isNotEmpty(packageInfo.getEntityPaths())) {
 				PackageImportCondition cond = entityImportPane.getCondition();
 				if (!cond.isNotifyListeners()) {
