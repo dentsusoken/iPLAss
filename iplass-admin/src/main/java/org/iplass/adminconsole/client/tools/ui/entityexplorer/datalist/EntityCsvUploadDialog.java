@@ -21,6 +21,7 @@
 package org.iplass.adminconsole.client.tools.ui.entityexplorer.datalist;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 
@@ -388,13 +389,13 @@ public class EntityCsvUploadDialog extends AbstractWindow {
 							@Override
 							public void execute(Boolean value) {
 								if (value) {
-									doUpload(uploader);
+									doCheckListener(uploader);
 								}
 							}
 						});
 
 					} else {
-						doUpload(uploader);
+						doCheckListener(uploader);
 					}
 				}
 			});
@@ -425,6 +426,42 @@ public class EntityCsvUploadDialog extends AbstractWindow {
 
 			disableComponent(false);
 			messageTabSet.setTabTitleNormal();
+		}
+		
+		private void doCheckListener(final AdminSingleUploader uploader) {
+
+			//EntityにUserまたはPermission系が含まれていてListener実行しない場合は確認
+				if (!SmartGWTUtil.getBooleanValue(chkNotifyListenersField)) {
+					if ("mtp.auth.User".equals(defName)) {
+						SC.ask(rs("ui_tools_entityexplorer_EntityCsvUploadDialog_confirm"), rs("ui_tools_entityexplorer_EntityCsvUploadDialog_userListenerConfirm"), new BooleanCallback() {
+							@Override
+							public void execute(Boolean value) {
+								if (value) {
+									doUpload(uploader);
+								}
+							}
+						});
+						return;
+					} else if (Arrays.asList(
+							"mtp.auth.ActionPermission", 
+							"mtp.auth.CubePermission", 
+							"mtp.auth.EntityPermission", 
+							"mtp.auth.UserTaskPermission", 
+							"mtp.auth.WebApiPermission", 
+							"mtp.auth.WorkflowPermission").contains(defName)) {
+						SC.ask(rs("ui_tools_entityexplorer_EntityCsvUploadDialog_confirm"), rs("ui_tools_entityexplorer_EntityCsvUploadDialog_permissionListenerConfirm"), new BooleanCallback() {
+							@Override
+							public void execute(Boolean value) {
+								if (value) {
+									doUpload(uploader);
+								}
+							}
+						});
+						return;
+					}
+				}
+				
+				doUpload(uploader);
 		}
 
 		private void doUpload(final AdminSingleUploader uploader) {

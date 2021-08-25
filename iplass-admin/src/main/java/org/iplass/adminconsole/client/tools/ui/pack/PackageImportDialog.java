@@ -21,6 +21,7 @@
 package org.iplass.adminconsole.client.tools.ui.pack;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 
@@ -319,6 +320,59 @@ public class PackageImportDialog extends AbstractWindow {
 					PackageImportCondition cond = entityImportPane.getCondition();
 					if (cond.isTruncate()) {
 						SC.ask(rs("ui_tools_pack_PackageImportDialog_confirm"), rs("ui_tools_pack_PackageImportDialog_userTruncateConfirm"), new BooleanCallback() {
+							@Override
+							public void execute(Boolean value) {
+								if (value) {
+									doCheckListener(importTenant);
+								}
+							}
+						});
+						return;
+					}
+				}
+			}
+
+			doCheckListener(importTenant);
+		}
+		
+		private void doCheckListener(final Tenant importTenant) {
+
+			//EntityにUserまたはPermission系が含まれていてListenerしない場合は確認
+			if (SmartGWTUtil.isNotEmpty(packageInfo.getEntityPaths())) {
+				PackageImportCondition cond = entityImportPane.getCondition();
+				if (!cond.isNotifyListeners()) {
+					boolean userEntityExists = packageInfo.getEntityPaths().contains("mtp.auth.User" + ".csv");
+					boolean permissionEntityExists = Arrays.asList(
+							"mtp.auth.ActionPermission" + ".csv", 
+							"mtp.auth.CubePermission" + ".csv", 
+							"mtp.auth.EntityPermission" + ".csv", 
+							"mtp.auth.UserTaskPermission" + ".csv", 
+							"mtp.auth.WebApiPermission" + ".csv", 
+							"mtp.auth.WorkflowPermission" + ".csv").stream()
+							.anyMatch(l -> packageInfo.getEntityPaths().contains(l));
+					
+					if (userEntityExists && permissionEntityExists) {
+						SC.ask(rs("ui_tools_pack_PackageImportDialog_confirm"), rs("ui_tools_pack_PackageImportDialog_userListenerAndPermissionListenerConfirm"), new BooleanCallback() {
+							@Override
+							public void execute(Boolean value) {
+								if (value) {
+									doExecuteImport(importTenant);
+								}
+							}
+						});
+						return;
+					} else if (userEntityExists) {
+						SC.ask(rs("ui_tools_pack_PackageImportDialog_confirm"), rs("ui_tools_pack_PackageImportDialog_userListenerConfirm"), new BooleanCallback() {
+							@Override
+							public void execute(Boolean value) {
+								if (value) {
+									doExecuteImport(importTenant);
+								}
+							}
+						});
+						return;
+					} else if (permissionEntityExists) {
+						SC.ask(rs("ui_tools_pack_PackageImportDialog_confirm"), rs("ui_tools_pack_PackageImportDialog_permissionListenerConfirm"), new BooleanCallback() {
 							@Override
 							public void execute(Boolean value) {
 								if (value) {
