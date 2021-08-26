@@ -26,6 +26,8 @@ import javax.xml.bind.annotation.XmlEnumValue;
 
 import org.iplass.adminconsole.view.annotation.InputType;
 import org.iplass.adminconsole.view.annotation.MetaFieldInfo;
+import org.iplass.adminconsole.view.annotation.generic.EntityViewField;
+import org.iplass.adminconsole.view.annotation.generic.FieldReferenceType;
 import org.iplass.mtp.view.generic.Jsp;
 import org.iplass.mtp.view.generic.Jsps;
 import org.iplass.mtp.view.generic.ViewConst;
@@ -38,7 +40,7 @@ import org.iplass.mtp.view.generic.ViewConst;
 @Jsps({
 	@Jsp(path="/jsp/gem/generic/editor/UserPropertyEditor.jsp", key=ViewConst.DESIGN_TYPE_GEM)
 })
-public class UserPropertyEditor extends CustomPropertyEditor {
+public class UserPropertyEditor extends CustomPropertyEditor implements LabelablePropertyEditor {
 
 	/** SerialVersionUID */
 	private static final long serialVersionUID = 1005967564277184953L;
@@ -61,6 +63,34 @@ public class UserPropertyEditor extends CustomPropertyEditor {
 	)
 	private UserDisplayType displayType;
 
+	/** Label形式の場合の登録制御 */
+	@MetaFieldInfo(
+			displayName="Label形式の場合に表示値を登録する",
+			displayNameKey="generic_editor_LabelablePropertyEditor_insertWithLabelValueDisplaNameKey",
+			description="表示タイプがLabel形式の場合に表示値をそのまま登録するかを指定します。",
+			inputType=InputType.CHECKBOX,
+			displayOrder=200,
+			descriptionKey="generic_editor_LabelablePropertyEditor_insertWithLabelValueDescriptionKey"
+	)
+	@EntityViewField(
+			referenceTypes={FieldReferenceType.DETAIL}
+	)
+	private boolean insertWithLabelValue = true;
+
+	/** Label形式の場合の更新制御 */
+	@MetaFieldInfo(
+			displayName="Label形式の場合に表示値で更新する",
+			displayNameKey="generic_editor_LabelablePropertyEditor_updateWithLabelValueDisplaNameKey",
+			description="表示タイプがLabel形式の場合に表示値で更新するかを指定します。",
+			inputType=InputType.CHECKBOX,
+			displayOrder=210,
+			descriptionKey="generic_editor_LabelablePropertyEditor_updateWithLabelValueDescriptionKey"
+	)
+	@EntityViewField(
+			referenceTypes={FieldReferenceType.DETAIL}
+	)
+	private boolean updateWithLabelValue = false;
+
 	@Override
 	public UserDisplayType getDisplayType() {
 		if (displayType == null) {
@@ -80,6 +110,39 @@ public class UserPropertyEditor extends CustomPropertyEditor {
 	@Override
 	public boolean isHide() {
 		return displayType == UserDisplayType.HIDDEN;
+	}
+
+	@Override
+	public boolean isLabel() {
+		return displayType == UserDisplayType.LABEL;
+	}
+
+	@Override
+	public boolean isInsertWithLabelValue() {
+		return insertWithLabelValue;
+	}
+
+	/**
+	 * Label形式の場合の登録制御を設定します。
+	 *
+	 * @param insertWithLabelValue Label形式の場合の登録制御
+	 */
+	public void setInsertWithLabelValue(boolean insertWithLabelValue) {
+		this.insertWithLabelValue = insertWithLabelValue;
+	}
+
+	@Override
+	public boolean isUpdateWithLabelValue() {
+		return updateWithLabelValue;
+	}
+
+	/**
+	 * Label形式の場合の更新制御を設定します。
+	 *
+	 * @param updateWithLabelValue Label形式の場合の更新制御
+	 */
+	public void setUpdateWithLabelValue(boolean updateWithLabelValue) {
+		this.updateWithLabelValue = updateWithLabelValue;
 	}
 
 }

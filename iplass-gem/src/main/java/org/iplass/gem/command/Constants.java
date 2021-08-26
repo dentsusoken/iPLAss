@@ -279,6 +279,7 @@ public class Constants {
 	public static final String REF_RELOAD = "##refReload";
 	public static final String DELETE_OID_FLAG = "##deleteOidFlag";
 	public static final String REF_TABLE_ORDER_INDEX = "##refTableOrderIndex";
+	public static final String LABELABLE_EDITOR_VALUE = "##labelValue_";
 
 	//リクエストのattributeに設定している項目
 	public static final String VALID_ERROR_LIST = "validErrorList";

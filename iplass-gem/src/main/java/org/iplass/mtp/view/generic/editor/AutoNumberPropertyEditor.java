@@ -41,7 +41,7 @@ import org.iplass.mtp.view.generic.ViewConst;
 	@Jsp(path="/jsp/gem/generic/editor/AutoNumberPropertyEditor.jsp", key=ViewConst.DESIGN_TYPE_GEM),
 	@Jsp(path="/jsp/gem/aggregation/unit/editor/AutoNumberPropertyEditor.jsp", key=ViewConst.DESIGN_TYPE_GEM_AGGREGATION)
 })
-public class AutoNumberPropertyEditor extends PrimitivePropertyEditor {
+public class AutoNumberPropertyEditor extends PrimitivePropertyEditor implements LabelablePropertyEditor {
 
 	/** シリアルバージョンUID */
 	private static final long serialVersionUID = 6809027984079078798L;
@@ -78,6 +78,34 @@ public class AutoNumberPropertyEditor extends PrimitivePropertyEditor {
 			referenceTypes={FieldReferenceType.SEARCHCONDITION}
 	)
 	private boolean searchExactMatchCondition;
+
+	/** Label形式の場合の登録制御 */
+	@MetaFieldInfo(
+			displayName="Label形式の場合に表示値を登録する",
+			displayNameKey="generic_editor_LabelablePropertyEditor_insertWithLabelValueDisplaNameKey",
+			description="表示タイプがLabel形式の場合に表示値をそのまま登録するかを指定します。",
+			inputType=InputType.CHECKBOX,
+			displayOrder=200,
+			descriptionKey="generic_editor_LabelablePropertyEditor_insertWithLabelValueDescriptionKey"
+	)
+	@EntityViewField(
+			referenceTypes={FieldReferenceType.DETAIL}
+	)
+	private boolean insertWithLabelValue = true;
+
+	/** Label形式の場合の更新制御 */
+	@MetaFieldInfo(
+			displayName="Label形式の場合に表示値で更新する",
+			displayNameKey="generic_editor_LabelablePropertyEditor_updateWithLabelValueDisplaNameKey",
+			description="表示タイプがLabel形式の場合に表示値で更新するかを指定します。",
+			inputType=InputType.CHECKBOX,
+			displayOrder=210,
+			descriptionKey="generic_editor_LabelablePropertyEditor_updateWithLabelValueDescriptionKey"
+	)
+	@EntityViewField(
+			referenceTypes={FieldReferenceType.DETAIL}
+	)
+	private boolean updateWithLabelValue = false;
 
 	/**
 	 * デフォルトコンストラクタ
@@ -118,20 +146,54 @@ public class AutoNumberPropertyEditor extends PrimitivePropertyEditor {
 	}
 
 	/**
-	 * 検索条件完全一致を設定します。
+	 * 検索条件完全一致設定を取得します。
 	 *
-	 * @return searchExactMatchCondition 検索条件完全一致設定
+	 * @return 検索条件完全一致設定
 	 */
 	public boolean isSearchExactMatchCondition() {
 		return searchExactMatchCondition;
 	}
 
 	/**
-	 * 検索条件完全一致設定を取得します。
+	 * 検索条件完全一致を設定します。
 	 *
-	 * @param 検索条件完全一致設定
+	 * @param searchExactMatchCondition 検索条件完全一致設定
 	 */
 	public void setSearchExactMatchCondition(boolean searchExactMatchCondition) {
 		this.searchExactMatchCondition = searchExactMatchCondition;
 	}
+
+	@Override
+	public boolean isLabel() {
+		return displayType == AutoNumberDisplayType.LABEL;
+	}
+
+	@Override
+	public boolean isInsertWithLabelValue() {
+		return insertWithLabelValue;
+	}
+
+	/**
+	 * Label形式の場合の登録制御を設定します。
+	 *
+	 * @param insertWithLabelValue Label形式の場合の登録制御
+	 */
+	public void setInsertWithLabelValue(boolean insertWithLabelValue) {
+		this.insertWithLabelValue = insertWithLabelValue;
+	}
+
+	@Override
+	public boolean isUpdateWithLabelValue() {
+		return updateWithLabelValue;
+	}
+
+	/**
+	 * Label形式の場合の更新制御を設定します。
+	 *
+	 * @param updateWithLabelValue Label形式の場合の更新制御
+	 */
+	public void setUpdateWithLabelValue(boolean updateWithLabelValue) {
+		this.updateWithLabelValue = updateWithLabelValue;
+	}
+
 }

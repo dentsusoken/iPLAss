@@ -48,6 +48,12 @@ public class MetaAutoNumberPropertyEditor extends MetaPrimitivePropertyEditor {
 	/** 検索条件完全一致設定有無 */
 	private boolean searchExactMatchCondition = true;
 
+	/** Label形式の場合の登録制御 */
+	private boolean insertWithLabelValue = true;
+
+	/** Label形式の場合の更新制御 */
+	private boolean updateWithLabelValue = false;
+
 	/**
 	 * 表示タイプを取得します。
 	 * @return 表示タイプ
@@ -72,6 +78,42 @@ public class MetaAutoNumberPropertyEditor extends MetaPrimitivePropertyEditor {
 		this.searchExactMatchCondition = searchExactMatchCondition;
 	}
 
+	/**
+	 * 表示タイプがLabel形式の場合に、登録時に登録対象にするかを返します。
+	 *
+	 * @return true：登録対象
+	 */
+	public boolean isInsertWithLabelValue() {
+		return insertWithLabelValue;
+	}
+
+	/**
+	 * Label形式の場合の登録制御を設定します。
+	 *
+	 * @param insertWithLabelValue Label形式の場合の登録制御
+	 */
+	public void setInsertWithLabelValue(boolean insertWithLabelValue) {
+		this.insertWithLabelValue = insertWithLabelValue;
+	}
+
+	/**
+	 * 表示タイプがLabel形式の場合に、更新時に更新対象にするかを返します。
+	 *
+	 * @return true：更新対象
+	 */
+	public boolean isUpdateWithLabelValue() {
+		return updateWithLabelValue;
+	}
+
+	/**
+	 * Label形式の場合の更新制御を設定します。
+	 *
+	 * @param updateWithLabelValue Label形式の場合の更新制御
+	 */
+	public void setUpdateWithLabelValue(boolean updateWithLabelValue) {
+		this.updateWithLabelValue = updateWithLabelValue;
+	}
+
 	public static MetaAutoNumberPropertyEditor createInstance(PropertyEditor editor) {
 		return new MetaAutoNumberPropertyEditor();
 	}
@@ -89,6 +131,8 @@ public class MetaAutoNumberPropertyEditor extends MetaPrimitivePropertyEditor {
 
 		displayType = e.getDisplayType();
 		searchExactMatchCondition = e.isSearchExactMatchCondition();
+		insertWithLabelValue = e.isInsertWithLabelValue();
+		updateWithLabelValue = e.isUpdateWithLabelValue();
 	}
 
 	@Override
@@ -102,6 +146,8 @@ public class MetaAutoNumberPropertyEditor extends MetaPrimitivePropertyEditor {
 			editor.setDisplayType(displayType);
 		}
 		editor.setSearchExactMatchCondition(searchExactMatchCondition);
+		editor.setInsertWithLabelValue(insertWithLabelValue);
+		editor.setUpdateWithLabelValue(updateWithLabelValue);
 		return editor;
 	}
 

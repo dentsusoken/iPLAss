@@ -295,7 +295,7 @@ public abstract class RegistrationCommandContext extends GenericCommandContext {
 	protected SelectValue[] getSelectValues(String name) {
 		return getSelectValues(name, null);
 	}
-	
+
 	protected SelectValue getSelectValue(String name, SelectProperty selectProperty) {
 		String param = getParam(name);
 		String lang = I18nUtil.getLanguageIfUseMultilingual();
@@ -303,12 +303,12 @@ public abstract class RegistrationCommandContext extends GenericCommandContext {
 			if(selectProperty == null) {
 				return new SelectValue(param);
 			}
-			SelectValue selectValue = selectProperty.getLocalizedSelectValue(param, lang); 
-			return selectValue == null 
-				? new SelectValue(param) 
+			SelectValue selectValue = selectProperty.getLocalizedSelectValue(param, lang);
+			return selectValue == null
+				? new SelectValue(param)
 				: selectValue;
 		}
-		
+
 		return null;
 	}
 
@@ -321,10 +321,10 @@ public abstract class RegistrationCommandContext extends GenericCommandContext {
 						if(selectProperty == null) {
 							return new SelectValue(param);
 						}
-						
-						SelectValue selectValue = selectProperty.getLocalizedSelectValue(param, lang); 
-						return selectValue == null 
-							? new SelectValue(param) 
+
+						SelectValue selectValue = selectProperty.getLocalizedSelectValue(param, lang);
+						return selectValue == null
+							? new SelectValue(param)
 							: selectValue;
 					})
 					.toArray(SelectValue[]::new);
@@ -447,6 +447,8 @@ public abstract class RegistrationCommandContext extends GenericCommandContext {
 	protected abstract <T extends PropertyBase> RegistrationPropertyBaseHandler<T> createRegistrationPropertyBaseHandler();
 
 	public abstract <T extends PropertyBase> List<T> getProperty();
+
+	public abstract <T extends PropertyBase> List<T> getUpdateProperty();
 
 	protected abstract boolean isNewVersion();
 

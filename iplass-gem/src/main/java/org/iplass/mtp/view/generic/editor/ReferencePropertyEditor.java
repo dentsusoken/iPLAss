@@ -47,7 +47,7 @@ import org.iplass.mtp.view.generic.ViewConst;
 	@Jsp(path="/jsp/gem/generic/editor/ReferencePropertyEditor.jsp", key=ViewConst.DESIGN_TYPE_GEM),
 	@Jsp(path="/jsp/gem/aggregation/unit/editor/ReferencePropertyEditor.jsp", key=ViewConst.DESIGN_TYPE_GEM_AGGREGATION)
 })
-public class ReferencePropertyEditor extends PropertyEditor implements HasNestProperty {
+public class ReferencePropertyEditor extends PropertyEditor implements HasNestProperty, LabelablePropertyEditor {
 
 	/** シリアルバージョンUID */
 	private static final long serialVersionUID = 4691895224010210421L;
@@ -687,6 +687,41 @@ public class ReferencePropertyEditor extends PropertyEditor implements HasNestPr
 	private String uniqueItem;
 
 
+
+
+
+	/** Label形式の場合の登録制御 */
+	@MetaFieldInfo(
+			displayName="Label形式の場合に表示値を登録する",
+			displayNameKey="generic_editor_LabelablePropertyEditor_insertWithLabelValueDisplaNameKey",
+			description="表示タイプがLabel形式の場合に表示値をそのまま登録するかを指定します。",
+			inputType=InputType.CHECKBOX,
+			displayOrder=1000,
+			descriptionKey="generic_editor_LabelablePropertyEditor_insertWithLabelValueDescriptionKey"
+	)
+	@EntityViewField(
+			referenceTypes={FieldReferenceType.DETAIL}
+	)
+	private boolean insertWithLabelValue = true;
+
+	/** Label形式の場合の更新制御 */
+	@MetaFieldInfo(
+			displayName="Label形式の場合に表示値で更新する",
+			displayNameKey="generic_editor_LabelablePropertyEditor_updateWithLabelValueDisplaNameKey",
+			description="表示タイプがLabel形式の場合に表示値で更新するかを指定します。",
+			inputType=InputType.CHECKBOX,
+			displayOrder=1010,
+			descriptionKey="generic_editor_LabelablePropertyEditor_updateWithLabelValueDescriptionKey"
+	)
+	@EntityViewField(
+			referenceTypes={FieldReferenceType.DETAIL}
+	)
+	private boolean updateWithLabelValue = false;
+
+
+
+
+
 	/** オブジェクト名 */
 	private String objectName;
 
@@ -1283,6 +1318,39 @@ public class ReferencePropertyEditor extends PropertyEditor implements HasNestPr
 	 */
 	public void setUniqueItem(String uniqueItem) {
 		this.uniqueItem = uniqueItem;
+	}
+
+	@Override
+	public boolean isLabel() {
+		return displayType == ReferenceDisplayType.LABEL;
+	}
+
+	@Override
+	public boolean isInsertWithLabelValue() {
+		return insertWithLabelValue;
+	}
+
+	/**
+	 * Label形式の場合の登録制御を設定します。
+	 *
+	 * @param insertWithLabelValue Label形式の場合の登録制御
+	 */
+	public void setInsertWithLabelValue(boolean insertWithLabelValue) {
+		this.insertWithLabelValue = insertWithLabelValue;
+	}
+
+	@Override
+	public boolean isUpdateWithLabelValue() {
+		return updateWithLabelValue;
+	}
+
+	/**
+	 * Label形式の場合の更新制御を設定します。
+	 *
+	 * @param updateWithLabelValue Label形式の場合の更新制御
+	 */
+	public void setUpdateWithLabelValue(boolean updateWithLabelValue) {
+		this.updateWithLabelValue = updateWithLabelValue;
 	}
 
 	/**

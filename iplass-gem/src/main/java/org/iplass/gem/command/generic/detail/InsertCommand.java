@@ -120,6 +120,7 @@ public final class InsertCommand extends DetailCommandBase {
 		data.setView(context.getView());
 		EditResult ret = null;
 		if (context.hasErrors()) {
+			context.rollbackEntity(edited);
 			data.setEntity(edited);
 			ret = new EditResult();
 			ret.setResultType(ResultType.ERROR);
@@ -151,6 +152,7 @@ public final class InsertCommand extends DetailCommandBase {
 					}
 				});
 			} else {
+				context.rollbackEntity(edited);
 				data.setEntity(edited);
 			}
 		}

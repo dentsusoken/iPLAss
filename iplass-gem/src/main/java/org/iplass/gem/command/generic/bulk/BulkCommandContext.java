@@ -868,6 +868,12 @@ public class BulkCommandContext extends RegistrationCommandContext {
 		return propList;
 	}
 
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<PropertyColumn> getUpdateProperty() {
+		return getProperty();
+	}
+
 	/**
 	 * 更新するエンティティリスト、interrupterで利用されます。
 	 */

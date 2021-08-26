@@ -81,6 +81,12 @@ public class MetaStringPropertyEditor extends MetaPrimitivePropertyEditor {
 	/** リッチテキストエディタオプション */
 	private String richtextEditorOption;
 
+	/** Label形式の場合の登録制御 */
+	private boolean insertWithLabelValue = true;
+
+	/** Label形式の場合の更新制御 */
+	private boolean updateWithLabelValue = false;
+
 	/**
 	 * 表示タイプを取得します。
 	 * @return 表示タイプ
@@ -181,6 +187,42 @@ public class MetaStringPropertyEditor extends MetaPrimitivePropertyEditor {
 	    this.richtextEditorOption = richtextEditorOption;
 	}
 
+	/**
+	 * 表示タイプがLabel形式の場合に、登録時に登録対象にするかを返します。
+	 *
+	 * @return true：登録対象
+	 */
+	public boolean isInsertWithLabelValue() {
+		return insertWithLabelValue;
+	}
+
+	/**
+	 * Label形式の場合の登録制御を設定します。
+	 *
+	 * @param insertWithLabelValue Label形式の場合の登録制御
+	 */
+	public void setInsertWithLabelValue(boolean insertWithLabelValue) {
+		this.insertWithLabelValue = insertWithLabelValue;
+	}
+
+	/**
+	 * 表示タイプがLabel形式の場合に、更新時に更新対象にするかを返します。
+	 *
+	 * @return true：更新対象
+	 */
+	public boolean isUpdateWithLabelValue() {
+		return updateWithLabelValue;
+	}
+
+	/**
+	 * Label形式の場合の更新制御を設定します。
+	 *
+	 * @param updateWithLabelValue Label形式の場合の更新制御
+	 */
+	public void setUpdateWithLabelValue(boolean updateWithLabelValue) {
+		this.updateWithLabelValue = updateWithLabelValue;
+	}
+
 	@Override
 	public void applyConfig(PropertyEditor editor) {
 		super.fillFrom(editor);
@@ -193,6 +235,8 @@ public class MetaStringPropertyEditor extends MetaPrimitivePropertyEditor {
 		searchExactMatchCondition = e.isSearchExactMatchCondition();
 		hideRichtextEditorToolBar = e.isHideRichtextEditorToolBar();
 		richtextEditorOption = e.getRichtextEditorOption();
+		insertWithLabelValue = e.isInsertWithLabelValue();
+		updateWithLabelValue = e.isUpdateWithLabelValue();
 	}
 
 	@Override
@@ -207,6 +251,8 @@ public class MetaStringPropertyEditor extends MetaPrimitivePropertyEditor {
 		searchExactMatchCondition = e.isSearchExactMatchCondition();
 		hideRichtextEditorToolBar = e.isHideRichtextEditorToolBar();
 		richtextEditorOption = e.getRichtextEditorOption();
+		insertWithLabelValue = e.isInsertWithLabelValue();
+		updateWithLabelValue = e.isUpdateWithLabelValue();
 	}
 
 	@Override
@@ -221,6 +267,8 @@ public class MetaStringPropertyEditor extends MetaPrimitivePropertyEditor {
 		editor.setSearchExactMatchCondition(searchExactMatchCondition);
 		editor.setHideRichtextEditorToolBar(hideRichtextEditorToolBar);
 		editor.setRichtextEditorOption(richtextEditorOption);
+		editor.setInsertWithLabelValue(insertWithLabelValue);
+		editor.setUpdateWithLabelValue(updateWithLabelValue);
 		return editor;
 	}
 
@@ -236,6 +284,8 @@ public class MetaStringPropertyEditor extends MetaPrimitivePropertyEditor {
 		e.setSearchExactMatchCondition(searchExactMatchCondition);
 		e.setHideRichtextEditorToolBar(hideRichtextEditorToolBar);
 		e.setRichtextEditorOption(richtextEditorOption);
+		e.setInsertWithLabelValue(insertWithLabelValue);
+		e.setUpdateWithLabelValue(updateWithLabelValue);
 	}
 
 	@Override

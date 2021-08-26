@@ -69,6 +69,7 @@ import org.iplass.mtp.view.generic.FormViewUtil;
 import org.iplass.mtp.view.generic.OutputType;
 import org.iplass.mtp.view.generic.editor.DateRangePropertyEditor;
 import org.iplass.mtp.view.generic.editor.JoinPropertyEditor;
+import org.iplass.mtp.view.generic.editor.LabelablePropertyEditor;
 import org.iplass.mtp.view.generic.editor.NestProperty;
 import org.iplass.mtp.view.generic.editor.NumericRangePropertyEditor;
 import org.iplass.mtp.view.generic.editor.PropertyEditor;
@@ -78,6 +79,7 @@ import org.iplass.mtp.view.generic.editor.ReferencePropertyEditor.ReferenceDispl
 import org.iplass.mtp.view.generic.editor.UserPropertyEditor;
 import org.iplass.mtp.view.generic.element.Element;
 import org.iplass.mtp.view.generic.element.VirtualPropertyItem;
+import org.iplass.mtp.view.generic.element.property.PropertyElement;
 import org.iplass.mtp.view.generic.element.property.PropertyItem;
 import org.iplass.mtp.view.generic.element.section.DefaultSection;
 import org.iplass.mtp.view.generic.element.section.ReferenceSection;
@@ -103,6 +105,9 @@ public class DetailCommandContext extends RegistrationCommandContext
 	private GemConfigService gemConfig = null;
 
 	private Set<String> useUserPropertyEditorPropertyNameList;
+
+	/** Label形式の除外プロパティ */
+	private List<PropertyElement> excludeLabelableProperties;
 
 	/** 更新対象ロードエンティティ*/
 	private Entity currentEntity;
@@ -227,7 +232,7 @@ public class DetailCommandContext extends RegistrationCommandContext
 			if (section instanceof DefaultSection) {
 				if (EntityViewUtil.isDisplayElement(getDefinitionName(), section.getElementRuntimeId(), OutputType.EDIT, getDispControlBindEntity())
 						&& !((DefaultSection) section).isHideDetail() && ViewUtil.dispElement(execType, section)) {
-					propList.addAll(getProperty((DefaultSection) section));
+					propList.addAll(getProperty((DefaultSection)section));
 				}
 			} else if (section instanceof ReferenceSection) {
 				// 参照セクションは同一名の定義が複数の場合があるのでまとめる
@@ -248,6 +253,30 @@ public class DetailCommandContext extends RegistrationCommandContext
 			}
 		}
 		return propList;
+	}
+
+	/**
+	 * フォーム内の更新対象プロパティを取得します。
+	 * @param view 画面定義
+	 * @return 更新対象プロパティの一覧
+	 */
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<PropertyItem> getUpdateProperty() {
+		List<PropertyItem> propList = getProperty();
+
+		//EditorのLabel形式のチェック
+		List<PropertyItem> updateList = propList.stream().filter(property->{
+			if (property.getEditor() instanceof LabelablePropertyEditor) {
+				LabelablePropertyEditor editor = (LabelablePropertyEditor)property.getEditor();
+				if (editor.isLabel() && !editor.isUpdateWithLabelValue()) {
+					return false;
+				}
+			}
+			return true;
+		}).collect(Collectors.toList());
+
+		return updateList;
 	}
 
 	/**
@@ -539,9 +568,17 @@ public class DetailCommandContext extends RegistrationCommandContext
 		if (isVersioned()) {
 			entity.setVersion(getVersion());
 		}
+
+		//仮想プロパティ値の反映
 		setVirtualPropertyValue(entity);
+
+		//Label形式のEditorが設定されているプロパティ値の反映
+		setLabelablePropertyValue(entity);
+
 		getRegistrationInterrupterHandler().dataMapping(entity);
+
 		validate(entity);
+
 		//FIXME 更新の時のみ対象エンティティを設定します。
 		setEditedEntity(entity);
 		return entity;
@@ -902,6 +939,11 @@ public class DetailCommandContext extends RegistrationCommandContext
 		return true;
 	}
 
+	/**
+	 * 仮想プロパティが設定されたプロパティの値を制御します。
+	 *
+	 * @param entity Entityデータ
+	 */
 	private void setVirtualPropertyValue(Entity entity) {
 		List<VirtualPropertyItem> virtualProperties = getVirtualProperty();
 		for (VirtualPropertyItem property : virtualProperties) {
@@ -975,6 +1017,112 @@ public class DetailCommandContext extends RegistrationCommandContext
 			}
 		}
 		return propList;
+	}
+
+	/**
+	 * Label形式のPropertyEditorが設定されたプロパティの値を制御します。
+	 *
+	 * @param entity Entityデータ
+	 */
+	private void setLabelablePropertyValue(Entity entity) {
+		List<PropertyElement> excludeProperties = getExcludeLabelableProperty();
+		for (PropertyElement element : excludeProperties) {
+			//登録エラー時の値を保持
+			entity.setValue(Constants.LABELABLE_EDITOR_VALUE + element.getPropertyName(), entity.getValue(element.getPropertyName()));
+			entity.setValue(element.getPropertyName(), null);
+		}
+	}
+
+	/**
+	 * 更新失敗時のEntityデータ制御処理
+	 *
+	 * @param entity Entityデータ
+	 */
+	public void rollbackEntity(Entity entity) {
+		List<PropertyElement> excludeProperties = getExcludeLabelableProperty();
+		for (PropertyElement element : excludeProperties) {
+			//Label値を復元
+			entity.setValue(element.getPropertyName(), entity.getValue(Constants.LABELABLE_EDITOR_VALUE + element.getPropertyName()));
+			entity.setValue(Constants.LABELABLE_EDITOR_VALUE + element.getPropertyName(), null);
+		}
+	}
+
+	/**
+	 * View内のLabel除外プロパティを取得します。
+	 * @return Label除外プロパティのリスト
+	 */
+	private List<PropertyElement> getExcludeLabelableProperty() {
+		if (excludeLabelableProperties != null) {
+			return excludeLabelableProperties;
+		}
+		List<PropertyElement> excludeList = new ArrayList<>();
+		for (Section section : getView().getSections()) {
+			if (section instanceof DefaultSection) {
+				excludeList.addAll(getExcludeLabelableProperty((DefaultSection)section));
+			}
+		}
+		this.excludeLabelableProperties = excludeList;
+		return excludeLabelableProperties;
+	}
+
+	/**
+	 * DefaultSection内のLabel除外プロパティを取得します。
+	 *
+	 * @param section DefaultSection
+	 * @return Label除外プロパティのリスト
+	 */
+	private List<PropertyElement> getExcludeLabelableProperty(DefaultSection section) {
+		String execType = getExecType();
+		List<PropertyElement> excludeList = new ArrayList<>();
+		if (EntityViewUtil.isDisplayElement(getDefinitionName(), section.getElementRuntimeId(), OutputType.EDIT, getDispControlBindEntity())
+				&& !section.isHideDetail() && ViewUtil.dispElement(execType, section)) {
+
+			boolean isInsert = (currentEntity == null);
+			for (Element element : section.getElements()) {
+				if (element instanceof DefaultSection) {
+					excludeList.addAll(getExcludeLabelableProperty((DefaultSection)element));
+				} else if (element instanceof PropertyItem) {
+					PropertyItem prop = (PropertyItem)element;
+					if (prop.getEditor() instanceof LabelablePropertyEditor) {
+						LabelablePropertyEditor editor = (LabelablePropertyEditor)prop.getEditor();
+						if (editor.isLabel()) {
+							if (EntityViewUtil.isDisplayElement(getDefinitionName(), prop.getElementRuntimeId(), OutputType.EDIT, getDispControlBindEntity())
+									&& !prop.isHideDetail() && ViewUtil.dispElement(execType, prop)) {
+								if (isInsert) {
+									if (!editor.isInsertWithLabelValue()) {
+										excludeList.add(prop);
+									}
+								} else {
+									if (!editor.isUpdateWithLabelValue()) {
+										excludeList.add(prop);
+									}
+								}
+							}
+						}
+					}
+				} else if (element instanceof VirtualPropertyItem) {
+					VirtualPropertyItem prop = (VirtualPropertyItem) element;
+					if (prop.getEditor() instanceof LabelablePropertyEditor) {
+						LabelablePropertyEditor editor = (LabelablePropertyEditor)prop.getEditor();
+						if (editor.isLabel()) {
+							if (EntityViewUtil.isDisplayElement(getDefinitionName(), prop.getElementRuntimeId(), OutputType.EDIT, getDispControlBindEntity())
+									&& !prop.isHideDetail() && ViewUtil.dispElement(execType, prop)) {
+								if (isInsert) {
+									if (!editor.isInsertWithLabelValue()) {
+										excludeList.add(prop);
+									}
+								} else {
+									if (!editor.isUpdateWithLabelValue()) {
+										excludeList.add(prop);
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+		return excludeList;
 	}
 
 	/**

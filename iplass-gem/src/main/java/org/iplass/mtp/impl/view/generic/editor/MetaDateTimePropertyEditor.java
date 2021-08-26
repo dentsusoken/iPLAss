@@ -1,19 +1,19 @@
 /*
  * Copyright (C) 2011 INFORMATION SERVICES INTERNATIONAL - DENTSU, LTD. All Rights Reserved.
- * 
+ *
  * Unless you have purchased a commercial license,
  * the following license terms apply:
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
@@ -24,10 +24,10 @@ import javax.xml.bind.annotation.XmlSeeAlso;
 
 import org.iplass.mtp.view.generic.editor.DatePropertyEditor;
 import org.iplass.mtp.view.generic.editor.DateTimePropertyEditor;
+import org.iplass.mtp.view.generic.editor.DateTimePropertyEditor.DateTimeDisplayType;
 import org.iplass.mtp.view.generic.editor.PropertyEditor;
 import org.iplass.mtp.view.generic.editor.TimePropertyEditor;
 import org.iplass.mtp.view.generic.editor.TimestampPropertyEditor;
-import org.iplass.mtp.view.generic.editor.DateTimePropertyEditor.DateTimeDisplayType;
 
 /**
  * 日付・時間型プロパティエディタのメタデータのスーパークラス
@@ -61,6 +61,12 @@ public abstract class MetaDateTimePropertyEditor extends MetaPrimitivePropertyEd
 
 	/** 検索条件To非表示設定 */
 	private boolean hideSearchConditionTo;
+
+	/** Label形式の場合の登録制御 */
+	private boolean insertWithLabelValue = true;
+
+	/** Label形式の場合の更新制御 */
+	private boolean updateWithLabelValue = false;
 
 	/**
 	 * 表示タイプを取得します。
@@ -126,6 +132,42 @@ public abstract class MetaDateTimePropertyEditor extends MetaPrimitivePropertyEd
 	    this.hideSearchConditionTo = hideSearchConditionTo;
 	}
 
+	/**
+	 * 表示タイプがLabel形式の場合に、登録時に登録対象にするかを返します。
+	 *
+	 * @return true：登録対象
+	 */
+	public boolean isInsertWithLabelValue() {
+		return insertWithLabelValue;
+	}
+
+	/**
+	 * Label形式の場合の登録制御を設定します。
+	 *
+	 * @param insertWithLabelValue Label形式の場合の登録制御
+	 */
+	public void setInsertWithLabelValue(boolean insertWithLabelValue) {
+		this.insertWithLabelValue = insertWithLabelValue;
+	}
+
+	/**
+	 * 表示タイプがLabel形式の場合に、更新時に更新対象にするかを返します。
+	 *
+	 * @return true：更新対象
+	 */
+	public boolean isUpdateWithLabelValue() {
+		return updateWithLabelValue;
+	}
+
+	/**
+	 * Label形式の場合の更新制御を設定します。
+	 *
+	 * @param updateWithLabelValue Label形式の場合の更新制御
+	 */
+	public void setUpdateWithLabelValue(boolean updateWithLabelValue) {
+		this.updateWithLabelValue = updateWithLabelValue;
+	}
+
 	@Override
 	protected void fillFrom(PropertyEditor editor) {
 		super.fillFrom(editor);
@@ -135,6 +177,8 @@ public abstract class MetaDateTimePropertyEditor extends MetaPrimitivePropertyEd
 		singleDayCondition = e.isSingleDayCondition();
 		hideSearchConditionFrom = e.isHideSearchConditionFrom();
 		hideSearchConditionTo = e.isHideSearchConditionTo();
+		insertWithLabelValue = e.isInsertWithLabelValue();
+		updateWithLabelValue = e.isUpdateWithLabelValue();
 	}
 
 	@Override
@@ -146,6 +190,8 @@ public abstract class MetaDateTimePropertyEditor extends MetaPrimitivePropertyEd
 		pe.setSingleDayCondition(singleDayCondition);
 		pe.setHideSearchConditionFrom(hideSearchConditionFrom);
 		pe.setHideSearchConditionTo(hideSearchConditionTo);
+		pe.setInsertWithLabelValue(insertWithLabelValue);
+		pe.setUpdateWithLabelValue(updateWithLabelValue);
 	}
 
 }

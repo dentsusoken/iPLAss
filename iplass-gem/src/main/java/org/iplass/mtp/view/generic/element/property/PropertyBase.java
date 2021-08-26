@@ -45,7 +45,7 @@ import org.iplass.mtp.view.generic.element.Element;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlSeeAlso({PropertyItem.class, PropertyColumn.class})
 @FieldOrder(manual=true)
-public abstract class PropertyBase extends Element {
+public abstract class PropertyBase extends Element implements PropertyElement {
 
 	/** シリアルバージョンUID */
 	private static final long serialVersionUID = 76335134724542580L;
@@ -138,6 +138,7 @@ public abstract class PropertyBase extends Element {
 	 * プロパティの名前を取得します。
 	 * @return プロパティの名前
 	 */
+	@Override
 	public String getPropertyName() {
 		return propertyName;
 	}
@@ -170,6 +171,7 @@ public abstract class PropertyBase extends Element {
 	 * プロパティエディタを取得します。
 	 * @return プロパティエディタ
 	 */
+	@Override
 	public PropertyEditor getEditor() {
 		return editor;
 	}
@@ -236,7 +238,7 @@ public abstract class PropertyBase extends Element {
 	 */
 	public void addLocalizedTitle(LocalizedStringDefinition localizedTitle) {
 		if (localizedDisplayLabelList == null) {
-			localizedDisplayLabelList = new ArrayList<LocalizedStringDefinition>();
+			localizedDisplayLabelList = new ArrayList<>();
 		}
 
 		localizedDisplayLabelList.add(localizedTitle);

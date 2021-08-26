@@ -44,7 +44,7 @@ import org.iplass.mtp.view.generic.ViewConst;
 	@Jsp(path="/jsp/gem/generic/editor/BooleanPropertyEditor.jsp", key=ViewConst.DESIGN_TYPE_GEM),
 	@Jsp(path="/jsp/gem/aggregation/unit/editor/BooleanPropertyEditor.jsp", key=ViewConst.DESIGN_TYPE_GEM_AGGREGATION)
 })
-public class BooleanPropertyEditor extends PrimitivePropertyEditor {
+public class BooleanPropertyEditor extends PrimitivePropertyEditor implements LabelablePropertyEditor {
 
 	/** シリアルバージョンUID */
 	private static final long serialVersionUID = -8063746392298470559L;
@@ -140,6 +140,34 @@ public class BooleanPropertyEditor extends PrimitivePropertyEditor {
 			referenceTypes={FieldReferenceType.DETAIL}
 	)
 	private String defaultValue;
+
+	/** Label形式の場合の登録制御 */
+	@MetaFieldInfo(
+			displayName="Label形式の場合に表示値を登録する",
+			displayNameKey="generic_editor_LabelablePropertyEditor_insertWithLabelValueDisplaNameKey",
+			description="表示タイプがLabel形式の場合に表示値をそのまま登録するかを指定します。",
+			inputType=InputType.CHECKBOX,
+			displayOrder=200,
+			descriptionKey="generic_editor_LabelablePropertyEditor_insertWithLabelValueDescriptionKey"
+	)
+	@EntityViewField(
+			referenceTypes={FieldReferenceType.DETAIL}
+	)
+	private boolean insertWithLabelValue = true;
+
+	/** Label形式の場合の更新制御 */
+	@MetaFieldInfo(
+			displayName="Label形式の場合に表示値で更新する",
+			displayNameKey="generic_editor_LabelablePropertyEditor_updateWithLabelValueDisplaNameKey",
+			description="表示タイプがLabel形式の場合に表示値で更新するかを指定します。",
+			inputType=InputType.CHECKBOX,
+			displayOrder=210,
+			descriptionKey="generic_editor_LabelablePropertyEditor_updateWithLabelValueDescriptionKey"
+	)
+	@EntityViewField(
+			referenceTypes={FieldReferenceType.DETAIL}
+	)
+	private boolean updateWithLabelValue = false;
 
 	/**
 	 * コンストラクタ
@@ -251,6 +279,39 @@ public class BooleanPropertyEditor extends PrimitivePropertyEditor {
 		}
 
 		localizedFalseLabelList.add(localizedFalseLabel);
+	}
+
+	@Override
+	public boolean isLabel() {
+		return displayType == BooleanDisplayType.LABEL;
+	}
+
+	@Override
+	public boolean isInsertWithLabelValue() {
+		return insertWithLabelValue;
+	}
+
+	/**
+	 * Label形式の場合の登録制御を設定します。
+	 *
+	 * @param insertWithLabelValue Label形式の場合の登録制御
+	 */
+	public void setInsertWithLabelValue(boolean insertWithLabelValue) {
+		this.insertWithLabelValue = insertWithLabelValue;
+	}
+
+	@Override
+	public boolean isUpdateWithLabelValue() {
+		return updateWithLabelValue;
+	}
+
+	/**
+	 * Label形式の場合の更新制御を設定します。
+	 *
+	 * @param updateWithLabelValue Label形式の場合の更新制御
+	 */
+	public void setUpdateWithLabelValue(boolean updateWithLabelValue) {
+		this.updateWithLabelValue = updateWithLabelValue;
 	}
 
 	@Override

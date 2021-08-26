@@ -239,7 +239,7 @@ public abstract class RegistrationCommandBase<T extends RegistrationCommandConte
 
 		//画面に表示してるものだけ更新
 		List<String> updatePropNames = new ArrayList<>();
-		List<V> propList = context.getProperty();
+		List<V> propList = context.getUpdateProperty();
 		for (V prop : propList) {
 			if (!context.getRegistrationPropertyBaseHandler().isDispProperty(prop)) continue;
 			PropertyDefinition pd = context.getProperty(prop.getPropertyName());

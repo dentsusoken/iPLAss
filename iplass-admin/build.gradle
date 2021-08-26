@@ -386,6 +386,7 @@ task copyGwtTransSrc(type: Sync) {
 		include 'mtp/view/generic/editor/FloatPropertyEditor.java'
 		include 'mtp/view/generic/editor/IntegerPropertyEditor.java'
 		include 'mtp/view/generic/editor/JoinPropertyEditor.java'
+		include 'mtp/view/generic/editor/LabelablePropertyEditor.java'
 		include 'mtp/view/generic/editor/LinkProperty.java'
 		include 'mtp/view/generic/editor/LongTextPropertyEditor.java'
 		include 'mtp/view/generic/editor/NestProperty.java'
@@ -416,6 +417,7 @@ task copyGwtTransSrc(type: Sync) {
 
 		include 'mtp/view/generic/element/property/PropertyBase.java'
 		include 'mtp/view/generic/element/property/PropertyColumn.java'
+		include 'mtp/view/generic/element/property/PropertyElement.java'
 		include 'mtp/view/generic/element/property/PropertyItem.java'
 
 		include 'mtp/view/generic/element/property/validation/PropertyValidationCondition.java'

@@ -37,7 +37,7 @@ import org.iplass.adminconsole.view.annotation.generic.FieldReferenceType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlSeeAlso({DatePropertyEditor.class, TimePropertyEditor.class, TimestampPropertyEditor.class})
-public abstract class DateTimePropertyEditor extends PrimitivePropertyEditor {
+public abstract class DateTimePropertyEditor extends PrimitivePropertyEditor implements LabelablePropertyEditor {
 
 	/** シリアルバージョンUID */
 	private static final long serialVersionUID = 4666753985814020563L;
@@ -207,6 +207,34 @@ public abstract class DateTimePropertyEditor extends PrimitivePropertyEditor {
 	)
 	private boolean hideSearchConditionTo;
 
+	/** Label形式の場合の登録制御 */
+	@MetaFieldInfo(
+			displayName="Label形式の場合に表示値を登録する",
+			displayNameKey="generic_editor_LabelablePropertyEditor_insertWithLabelValueDisplaNameKey",
+			description="表示タイプがLabel形式の場合に表示値をそのまま登録するかを指定します。",
+			inputType=InputType.CHECKBOX,
+			displayOrder=2000,
+			descriptionKey="generic_editor_LabelablePropertyEditor_insertWithLabelValueDescriptionKey"
+	)
+	@EntityViewField(
+			referenceTypes={FieldReferenceType.DETAIL}
+	)
+	private boolean insertWithLabelValue = true;
+
+	/** Label形式の場合の更新制御 */
+	@MetaFieldInfo(
+			displayName="Label形式の場合に表示値で更新する",
+			displayNameKey="generic_editor_LabelablePropertyEditor_updateWithLabelValueDisplaNameKey",
+			description="表示タイプがLabel形式の場合に表示値で更新するかを指定します。",
+			inputType=InputType.CHECKBOX,
+			displayOrder=2010,
+			descriptionKey="generic_editor_LabelablePropertyEditor_updateWithLabelValueDescriptionKey"
+	)
+	@EntityViewField(
+			referenceTypes={FieldReferenceType.DETAIL}
+	)
+	private boolean updateWithLabelValue = false;
+
 	/**
 	 * 表示タイプを設定します。
 	 * @param displayType 表示タイプ
@@ -275,6 +303,39 @@ public abstract class DateTimePropertyEditor extends PrimitivePropertyEditor {
 	 */
 	public void setHideSearchConditionTo(boolean hideSearchConditionTo) {
 	    this.hideSearchConditionTo = hideSearchConditionTo;
+	}
+
+	@Override
+	public boolean isLabel() {
+		return displayType == DateTimeDisplayType.LABEL;
+	}
+
+	@Override
+	public boolean isInsertWithLabelValue() {
+		return insertWithLabelValue;
+	}
+
+	/**
+	 * Label形式の場合の登録制御を設定します。
+	 *
+	 * @param insertWithLabelValue Label形式の場合の登録制御
+	 */
+	public void setInsertWithLabelValue(boolean insertWithLabelValue) {
+		this.insertWithLabelValue = insertWithLabelValue;
+	}
+
+	@Override
+	public boolean isUpdateWithLabelValue() {
+		return updateWithLabelValue;
+	}
+
+	/**
+	 * Label形式の場合の更新制御を設定します。
+	 *
+	 * @param updateWithLabelValue Label形式の場合の更新制御
+	 */
+	public void setUpdateWithLabelValue(boolean updateWithLabelValue) {
+		this.updateWithLabelValue = updateWithLabelValue;
 	}
 
 }

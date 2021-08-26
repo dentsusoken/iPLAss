@@ -50,6 +50,7 @@ import org.iplass.mtp.view.generic.editor.TemplatePropertyEditor;
 import org.iplass.mtp.view.generic.editor.TimePropertyEditor;
 import org.iplass.mtp.view.generic.editor.TimestampPropertyEditor;
 import org.iplass.mtp.view.generic.editor.UserPropertyEditor;
+import org.iplass.mtp.view.generic.element.property.PropertyElement;
 
 /**
  * 詳細表示で表示可能な仮想プロパティ
@@ -61,7 +62,7 @@ import org.iplass.mtp.view.generic.editor.UserPropertyEditor;
 	@Jsp(path="/jsp/gem/generic/element/VirtualProperty.jsp", key=ViewConst.DESIGN_TYPE_GEM)
 })
 @FieldOrder(manual=true)
-public class VirtualPropertyItem extends Element implements CsvItem {
+public class VirtualPropertyItem extends Element implements PropertyElement, CsvItem {
 
 	private static final long serialVersionUID = 8040377351280643403L;
 

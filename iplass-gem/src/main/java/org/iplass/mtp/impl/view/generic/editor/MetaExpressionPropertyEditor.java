@@ -55,46 +55,11 @@ public class MetaExpressionPropertyEditor extends MetaPrimitivePropertyEditor {
 
 	private MetaPropertyEditor editor;
 
-	@Override
-	public MetaExpressionPropertyEditor copy() {
-		return ObjectUtil.deepCopy(this);
-	}
+	/** Label形式の場合の登録制御 */
+	private boolean insertWithLabelValue = true;
 
-	@Override
-	public void applyConfig(PropertyEditor editor) {
-		super.fillFrom(editor);
-
-		ExpressionPropertyEditor pe = (ExpressionPropertyEditor) editor;
-		displayType = pe.getDisplayType();
-		numberFormat = pe.getNumberFormat();
-
-		MetaPropertyEditor me = MetaPropertyEditor.createInstance(pe.getEditor());
-		if (me != null) {
-			pe.getEditor().setPropertyName(pe.getPropertyName());
-			me.applyConfig(pe.getEditor());
-			this.editor = me;
-		}
-	}
-
-	@Override
-	public PropertyEditor currentConfig(String propertyName) {
-		ExpressionPropertyEditor editor = new ExpressionPropertyEditor();
-		super.fillTo(editor);
-
-		if (displayType == null) {
-			editor.setDisplayType(ExpressionDisplayType.TEXT);
-		} else {
-			editor.setDisplayType(displayType);
-		}
-
-		editor.setNumberFormat(numberFormat);
-
-		if (this.editor != null) {
-			//ReferencePropertyEditorになることはないのでnullを渡す
-			editor.setEditor(this.editor.currentConfig(null));
-		}
-		return editor;
-	}
+	/** Label形式の場合の更新制御 */
+	private boolean updateWithLabelValue = false;
 
 	/**
 	 * 表示タイプを取得します。
@@ -142,6 +107,87 @@ public class MetaExpressionPropertyEditor extends MetaPrimitivePropertyEditor {
 	 */
 	public void setEditor(MetaPropertyEditor editor) {
 		this.editor = editor;
+	}
+
+	/**
+	 * 表示タイプがLabel形式の場合に、登録時に登録対象にするかを返します。
+	 *
+	 * @return true：登録対象
+	 */
+	public boolean isInsertWithLabelValue() {
+		return insertWithLabelValue;
+	}
+
+	/**
+	 * Label形式の場合の登録制御を設定します。
+	 *
+	 * @param insertWithLabelValue Label形式の場合の登録制御
+	 */
+	public void setInsertWithLabelValue(boolean insertWithLabelValue) {
+		this.insertWithLabelValue = insertWithLabelValue;
+	}
+
+	/**
+	 * 表示タイプがLabel形式の場合に、更新時に更新対象にするかを返します。
+	 *
+	 * @return true：更新対象
+	 */
+	public boolean isUpdateWithLabelValue() {
+		return updateWithLabelValue;
+	}
+
+	/**
+	 * Label形式の場合の更新制御を設定します。
+	 *
+	 * @param updateWithLabelValue Label形式の場合の更新制御
+	 */
+	public void setUpdateWithLabelValue(boolean updateWithLabelValue) {
+		this.updateWithLabelValue = updateWithLabelValue;
+	}
+
+	@Override
+	public MetaExpressionPropertyEditor copy() {
+		return ObjectUtil.deepCopy(this);
+	}
+
+	@Override
+	public void applyConfig(PropertyEditor editor) {
+		super.fillFrom(editor);
+
+		ExpressionPropertyEditor pe = (ExpressionPropertyEditor) editor;
+		displayType = pe.getDisplayType();
+		numberFormat = pe.getNumberFormat();
+		insertWithLabelValue = pe.isInsertWithLabelValue();
+		updateWithLabelValue = pe.isUpdateWithLabelValue();
+
+		MetaPropertyEditor me = MetaPropertyEditor.createInstance(pe.getEditor());
+		if (me != null) {
+			pe.getEditor().setPropertyName(pe.getPropertyName());
+			me.applyConfig(pe.getEditor());
+			this.editor = me;
+		}
+	}
+
+	@Override
+	public PropertyEditor currentConfig(String propertyName) {
+		ExpressionPropertyEditor editor = new ExpressionPropertyEditor();
+		super.fillTo(editor);
+
+		if (displayType == null) {
+			editor.setDisplayType(ExpressionDisplayType.TEXT);
+		} else {
+			editor.setDisplayType(displayType);
+		}
+
+		editor.setNumberFormat(numberFormat);
+
+		if (this.editor != null) {
+			//ReferencePropertyEditorになることはないのでnullを渡す
+			editor.setEditor(this.editor.currentConfig(null));
+		}
+		editor.setInsertWithLabelValue(insertWithLabelValue);
+		editor.setUpdateWithLabelValue(updateWithLabelValue);
+		return editor;
 	}
 
 	@Override
