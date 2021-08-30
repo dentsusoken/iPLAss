@@ -176,10 +176,7 @@ public abstract class SearchCommandBase implements Command {
 	}
 
 	protected void setLimit(SearchContext context, Query query) {
-		final SearchContextBase _context = (SearchContextBase) context;
-		if (!_context.getResultSection().isHidePaging()) {
-			query.setLimit(context.getLimit());
-		}
+		query.setLimit(context.getLimit());
 	}
 
 	protected void setOrderBy(SearchContext context, Query query) {
