@@ -92,6 +92,9 @@ public class MultiBulkCommandContext extends RegistrationCommandContext {
 
 	/** 一括更新プロパティリスト*/
 	private List<PropertyItem> propList = null;
+
+	/** 一括更新時空白のプロパティリスト*/
+	private List<PropertyItem> propBlankList = null;
 	/**
 	 * クライアントから配列で受け取ったパラメータは自動設定する対象外
 	 */
@@ -774,6 +777,10 @@ public class MultiBulkCommandContext extends RegistrationCommandContext {
 	 * @param entity
 	 */
 	private void removePropIfBlank(Entity entity) {
+		if (propBlankList == null) {
+			setPropBlankList(getProperty().stream().filter(pi -> entity.getValue(pi.getPropertyName()) == null)
+					.collect(Collectors.toList()));
+		}
 		getProperty().removeIf(pi -> entity.getValue(pi.getPropertyName()) == null);
 	}
 
@@ -958,6 +965,22 @@ public class MultiBulkCommandContext extends RegistrationCommandContext {
 			interrupter = new BulkOperationInterrupter() { };
 		}
 		return interrupter;
+	}
+
+	/**
+	 * 一括更新時空白のプロパティリストを取得します。
+	 * @return propBlankList
+	 */
+	public List<PropertyItem> getPropBlankList() {
+		return propBlankList;
+	}
+
+	/**
+	 * 一括更新時空白のプロパティリストを設定します。
+	 * @param propBlankList
+	 */
+	public void setPropBlankList(List<PropertyItem> propBlankList) {
+		this.propBlankList = propBlankList;
 	}
 
 	@SuppressWarnings("unused")

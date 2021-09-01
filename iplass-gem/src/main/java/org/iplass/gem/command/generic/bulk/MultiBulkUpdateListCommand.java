@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.apache.commons.collections4.ListUtils;
 import org.iplass.gem.command.Constants;
 import org.iplass.gem.command.generic.ResultType;
 import org.iplass.mtp.ApplicationException;
@@ -38,12 +39,16 @@ import org.iplass.mtp.command.annotation.action.Result;
 import org.iplass.mtp.command.annotation.action.Result.Type;
 import org.iplass.mtp.command.annotation.action.TokenCheck;
 import org.iplass.mtp.entity.Entity;
+import org.iplass.mtp.entity.UpdateOption;
 import org.iplass.mtp.entity.ValidateError;
+import org.iplass.mtp.entity.definition.PropertyDefinition;
+import org.iplass.mtp.entity.definition.properties.ReferenceProperty;
 import org.iplass.mtp.transaction.Transaction;
 import org.iplass.mtp.transaction.TransactionListener;
 import org.iplass.mtp.transaction.TransactionManager;
 import org.iplass.mtp.view.generic.BulkFormView;
 import org.iplass.mtp.view.generic.BulkOperationContext;
+import org.iplass.mtp.view.generic.element.property.PropertyItem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -239,5 +244,36 @@ public class MultiBulkUpdateListCommand extends MultiBulkCommandBase {
 	private void countUp(RequestContext request) {
 		Integer updated = (Integer) request.getAttribute(Constants.BULK_UPDATED_COUNT);
 		request.setAttribute(Constants.BULK_UPDATED_COUNT, updated + 1);
+	}
+
+	/**
+	 * カスタム登録処理の更新プロパティで未入力のプロパティを除去する。
+	 * @param context コンテキスト
+	 * @param entity 画面で入力したデータ
+	 */
+	@Override
+	protected void checkUpdateOption(MultiBulkCommandContext context, UpdateOption option) {
+			List<String> updatePropNames = option.getUpdateProperties();
+
+			List<String> blankPropNames = new ArrayList<>();
+			for (PropertyItem prop : context.getPropBlankList()) {
+				PropertyDefinition pd = context.getProperty(prop.getPropertyName());
+				if (pd != null && pd.isUpdatable()) {
+					//被参照は更新しない
+					if (pd instanceof ReferenceProperty) {
+						String mappedBy = ((ReferenceProperty) pd).getMappedBy();
+						if (mappedBy == null || mappedBy.isEmpty()) {
+							blankPropNames.add(pd.getName());
+						}
+					} else {
+						blankPropNames.add(pd.getName());
+					}
+				}
+			}
+			List<String> diff = ListUtils.subtract(updatePropNames,blankPropNames);
+
+			option.setUpdateProperties(diff);
+
+		super.checkUpdateOption(context, option);
 	}
 }

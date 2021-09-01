@@ -273,6 +273,7 @@ public abstract class RegistrationCommandBase<T extends RegistrationCommandConte
 			option.setPurgeCompositionedEntity(context.isPurgeCompositionedEntity());
 			option.setLocalized(context.isLocalizationData());
 			option.setForceUpdate(context.isForceUpadte());
+			checkUpdateOption(context, option);
 			try {
 				em.update(entity, option);
 			} catch (EntityValidationException e) {
@@ -289,6 +290,15 @@ public abstract class RegistrationCommandBase<T extends RegistrationCommandConte
 			}
 		}
 		return errors;
+	}
+
+	/**
+	 * カスタム登録処理の更新プロパティで未入力のプロパティを除去する。
+	 * @param context コンテキスト
+	 * @param entity 画面で入力したデータ
+	 */
+	protected void checkUpdateOption(T context, UpdateOption option){
+
 	}
 
 	/**
