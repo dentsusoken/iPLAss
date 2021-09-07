@@ -143,16 +143,22 @@ public final class UpdateCommand extends DetailCommandBase {
 		} else {
 			// 更新
 			ret = updateEntity(context, edited);
+			final Long updatedVersion = edited.getVersion();
 			if (ret.getResultType() == ResultType.SUCCESS && oid != null) {
 				Transaction transaction = ManagerLocator.getInstance().getManager(TransactionManager.class).currentTransaction();
 				transaction.addTransactionListener(new TransactionListener() {
 					@Override
 					public void afterCommit(Transaction t) {
 						//被参照をテーブルで追加した場合、コミット前だとロードで取得できない
-						if (context.isVersioned() && !context.isNewVersion()) {
-							//特定バージョンの場合だけバージョン指定でロード
-							Long version = context.getVersion();
-							data.setEntity(loadViewEntity(context, oid, version, context.getDefinitionName(), context.getReferencePropertyName()));
+						if (context.isVersioned()) {
+							if (context.isNewVersion()) {
+								//新しいバージョンで登録時はそのデータを表示
+								data.setEntity(loadViewEntity(context, oid, updatedVersion, context.getDefinitionName(), context.getReferencePropertyName()));
+							} else {
+								//特定バージョンの場合だけバージョン指定でロード
+								Long version = context.getVersion();
+								data.setEntity(loadViewEntity(context, oid, version, context.getDefinitionName(), context.getReferencePropertyName()));
+							}
 						} else {
 							data.setEntity(loadViewEntity(context, oid, null, context.getDefinitionName(), context.getReferencePropertyName()));
 						}
