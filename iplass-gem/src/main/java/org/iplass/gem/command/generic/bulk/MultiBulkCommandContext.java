@@ -778,8 +778,23 @@ public class MultiBulkCommandContext extends RegistrationCommandContext {
 	 */
 	private void removePropIfBlank(Entity entity) {
 		if (propBlankList == null) {
-			propBlankList = (getProperty().stream().filter(pi -> entity.getValue(pi.getPropertyName()) == null)
-					.collect(Collectors.toList()));
+			List<String> refedProp = new ArrayList<>();
+			for(PropertyDefinition pd : getPropertyList()) {
+				if(pd instanceof ReferenceProperty) {
+					String mappedBy = ((ReferenceProperty) pd).getMappedBy();
+					if (mappedBy != null) {
+						refedProp.add(pd.getName());
+					}
+				}
+			}
+			if (refedProp == null || refedProp.isEmpty()) {
+				propBlankList = (getProperty().stream().filter(pi -> entity.getValue(pi.getPropertyName()) == null)
+						.collect(Collectors.toList()));
+			} else {
+				propBlankList = (getProperty().stream().filter(pi -> entity.getValue(pi.getPropertyName()) == null)
+						.filter(pi -> pi.getPropertyName() == refedProp.toString())
+						.collect(Collectors.toList()));
+			}
 		}
 		getProperty().removeIf(pi -> entity.getValue(pi.getPropertyName()) == null);
 	}
