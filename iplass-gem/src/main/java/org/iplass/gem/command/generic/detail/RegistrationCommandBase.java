@@ -293,11 +293,12 @@ public abstract class RegistrationCommandBase<T extends RegistrationCommandConte
 	}
 
 	/**
-	 * カスタム登録処理の更新プロパティで未入力のプロパティを除去する。
+	 * UpdateOptionのチェックを行う。
 	 * @param context コンテキスト
 	 * @param entity 画面で入力したデータ
 	 */
 	protected void checkUpdateOption(T context, UpdateOption option){
+		// デフォルトではなにもせず、必要に応じてサブクラスを実装
 
 	}
 
