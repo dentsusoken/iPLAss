@@ -12,22 +12,7 @@ CREATE TABLE `obj_unique_dbl` (
   INDEX `obj_unique_dbl_index2` (`tenant_id`, `obj_def_id`(128), `obj_id`(64))
 )
 
-ENGINE=InnoDB COMPRESSION="lz4"
 
-
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_unique_dbl_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_unique_dbl_0_0,
-            SUBPARTITION obj_unique_dbl_0_1,
-            SUBPARTITION obj_unique_dbl_0_2,
-            SUBPARTITION obj_unique_dbl_0_3,
-            SUBPARTITION obj_unique_dbl_0_4,
-            SUBPARTITION obj_unique_dbl_0_5,
-            SUBPARTITION obj_unique_dbl_0_6,
-            SUBPARTITION obj_unique_dbl_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_UNIQUE_DBL */
@@ -44,22 +29,7 @@ CREATE TABLE `obj_unique_dbl__1` (
   INDEX `obj_unique_dbl__1_index2` (`tenant_id`, `obj_def_id`(128), `obj_id`(64))
 )
 
-ENGINE=InnoDB COMPRESSION="lz4"
 
-
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_unique_dbl__1_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_unique__1_dbl_0_0,
-            SUBPARTITION obj_unique__1_dbl_0_1,
-            SUBPARTITION obj_unique__1_dbl_0_2,
-            SUBPARTITION obj_unique__1_dbl_0_3,
-            SUBPARTITION obj_unique__1_dbl_0_4,
-            SUBPARTITION obj_unique__1_dbl_0_5,
-            SUBPARTITION obj_unique__1_dbl_0_6,
-            SUBPARTITION obj_unique__1_dbl_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_UNIQUE_DBL */
@@ -76,22 +46,7 @@ CREATE TABLE `obj_unique_dbl__2` (
   INDEX `obj_unique_dbl__2_index2` (`tenant_id`, `obj_def_id`(128), `obj_id`(64))
 )
 
-ENGINE=InnoDB COMPRESSION="lz4"
 
-
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_unique_dbl__2_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_unique__2_dbl_0_0,
-            SUBPARTITION obj_unique__2_dbl_0_1,
-            SUBPARTITION obj_unique__2_dbl_0_2,
-            SUBPARTITION obj_unique__2_dbl_0_3,
-            SUBPARTITION obj_unique__2_dbl_0_4,
-            SUBPARTITION obj_unique__2_dbl_0_5,
-            SUBPARTITION obj_unique__2_dbl_0_6,
-            SUBPARTITION obj_unique__2_dbl_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_UNIQUE_DBL */
@@ -108,22 +63,7 @@ CREATE TABLE `obj_unique_dbl__3` (
   INDEX `obj_unique_dbl__3_index2` (`tenant_id`, `obj_def_id`(128), `obj_id`(64))
 )
 
-ENGINE=InnoDB COMPRESSION="lz4"
 
-
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_unique_dbl__3_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_unique__3_dbl_0_0,
-            SUBPARTITION obj_unique__3_dbl_0_1,
-            SUBPARTITION obj_unique__3_dbl_0_2,
-            SUBPARTITION obj_unique__3_dbl_0_3,
-            SUBPARTITION obj_unique__3_dbl_0_4,
-            SUBPARTITION obj_unique__3_dbl_0_5,
-            SUBPARTITION obj_unique__3_dbl_0_6,
-            SUBPARTITION obj_unique__3_dbl_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_UNIQUE_DBL */
@@ -140,22 +80,7 @@ CREATE TABLE `obj_unique_dbl__4` (
   INDEX `obj_unique_dbl__4_index2` (`tenant_id`, `obj_def_id`(128), `obj_id`(64))
 )
 
-ENGINE=InnoDB COMPRESSION="lz4"
 
-
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_unique_dbl__4_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_unique__4_dbl_0_0,
-            SUBPARTITION obj_unique__4_dbl_0_1,
-            SUBPARTITION obj_unique__4_dbl_0_2,
-            SUBPARTITION obj_unique__4_dbl_0_3,
-            SUBPARTITION obj_unique__4_dbl_0_4,
-            SUBPARTITION obj_unique__4_dbl_0_5,
-            SUBPARTITION obj_unique__4_dbl_0_6,
-            SUBPARTITION obj_unique__4_dbl_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_UNIQUE_DBL */
@@ -172,22 +97,7 @@ CREATE TABLE `obj_unique_dbl__5` (
   INDEX `obj_unique_dbl__5_index2` (`tenant_id`, `obj_def_id`(128), `obj_id`(64))
 )
 
-ENGINE=InnoDB COMPRESSION="lz4"
 
-
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_unique_dbl__5_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_unique__5_dbl_0_0,
-            SUBPARTITION obj_unique__5_dbl_0_1,
-            SUBPARTITION obj_unique__5_dbl_0_2,
-            SUBPARTITION obj_unique__5_dbl_0_3,
-            SUBPARTITION obj_unique__5_dbl_0_4,
-            SUBPARTITION obj_unique__5_dbl_0_5,
-            SUBPARTITION obj_unique__5_dbl_0_6,
-            SUBPARTITION obj_unique__5_dbl_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_UNIQUE_DBL */
@@ -204,22 +114,7 @@ CREATE TABLE `obj_unique_dbl__6` (
   INDEX `obj_unique_dbl__6_index2` (`tenant_id`, `obj_def_id`(128), `obj_id`(64))
 )
 
-ENGINE=InnoDB COMPRESSION="lz4"
 
-
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_unique_dbl__6_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_unique__6_dbl_0_0,
-            SUBPARTITION obj_unique__6_dbl_0_1,
-            SUBPARTITION obj_unique__6_dbl_0_2,
-            SUBPARTITION obj_unique__6_dbl_0_3,
-            SUBPARTITION obj_unique__6_dbl_0_4,
-            SUBPARTITION obj_unique__6_dbl_0_5,
-            SUBPARTITION obj_unique__6_dbl_0_6,
-            SUBPARTITION obj_unique__6_dbl_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_UNIQUE_DBL */
@@ -236,22 +131,7 @@ CREATE TABLE `obj_unique_dbl__7` (
   INDEX `obj_unique_dbl__7_index2` (`tenant_id`, `obj_def_id`(128), `obj_id`(64))
 )
 
-ENGINE=InnoDB COMPRESSION="lz4"
 
-
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_unique_dbl__7_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_unique__7_dbl_0_0,
-            SUBPARTITION obj_unique__7_dbl_0_1,
-            SUBPARTITION obj_unique__7_dbl_0_2,
-            SUBPARTITION obj_unique__7_dbl_0_3,
-            SUBPARTITION obj_unique__7_dbl_0_4,
-            SUBPARTITION obj_unique__7_dbl_0_5,
-            SUBPARTITION obj_unique__7_dbl_0_6,
-            SUBPARTITION obj_unique__7_dbl_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_UNIQUE_DBL */
@@ -268,22 +148,7 @@ CREATE TABLE `obj_unique_dbl__8` (
   INDEX `obj_unique_dbl__8_index2` (`tenant_id`, `obj_def_id`(128), `obj_id`(64))
 )
 
-ENGINE=InnoDB COMPRESSION="lz4"
 
-
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_unique_dbl__8_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_unique__8_dbl_0_0,
-            SUBPARTITION obj_unique__8_dbl_0_1,
-            SUBPARTITION obj_unique__8_dbl_0_2,
-            SUBPARTITION obj_unique__8_dbl_0_3,
-            SUBPARTITION obj_unique__8_dbl_0_4,
-            SUBPARTITION obj_unique__8_dbl_0_5,
-            SUBPARTITION obj_unique__8_dbl_0_6,
-            SUBPARTITION obj_unique__8_dbl_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_UNIQUE_DBL */
@@ -300,22 +165,7 @@ CREATE TABLE `obj_unique_dbl__9` (
   INDEX `obj_unique_dbl__9_index2` (`tenant_id`, `obj_def_id`(128), `obj_id`(64))
 )
 
-ENGINE=InnoDB COMPRESSION="lz4"
 
-
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_unique_dbl__9_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_unique__9_dbl_0_0,
-            SUBPARTITION obj_unique__9_dbl_0_1,
-            SUBPARTITION obj_unique__9_dbl_0_2,
-            SUBPARTITION obj_unique__9_dbl_0_3,
-            SUBPARTITION obj_unique__9_dbl_0_4,
-            SUBPARTITION obj_unique__9_dbl_0_5,
-            SUBPARTITION obj_unique__9_dbl_0_6,
-            SUBPARTITION obj_unique__9_dbl_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_UNIQUE_DBL */
@@ -332,22 +182,7 @@ CREATE TABLE `obj_unique_dbl__10` (
   INDEX `obj_unique_dbl__10_index2` (`tenant_id`, `obj_def_id`(128), `obj_id`(64))
 )
 
-ENGINE=InnoDB COMPRESSION="lz4"
 
-
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_unique_dbl__10_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_unique__10_dbl_0_0,
-            SUBPARTITION obj_unique__10_dbl_0_1,
-            SUBPARTITION obj_unique__10_dbl_0_2,
-            SUBPARTITION obj_unique__10_dbl_0_3,
-            SUBPARTITION obj_unique__10_dbl_0_4,
-            SUBPARTITION obj_unique__10_dbl_0_5,
-            SUBPARTITION obj_unique__10_dbl_0_6,
-            SUBPARTITION obj_unique__10_dbl_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_UNIQUE_DBL */
@@ -364,22 +199,7 @@ CREATE TABLE `obj_unique_dbl__11` (
   INDEX `obj_unique_dbl__11_index2` (`tenant_id`, `obj_def_id`(128), `obj_id`(64))
 )
 
-ENGINE=InnoDB COMPRESSION="lz4"
 
-
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_unique_dbl__11_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_unique__11_dbl_0_0,
-            SUBPARTITION obj_unique__11_dbl_0_1,
-            SUBPARTITION obj_unique__11_dbl_0_2,
-            SUBPARTITION obj_unique__11_dbl_0_3,
-            SUBPARTITION obj_unique__11_dbl_0_4,
-            SUBPARTITION obj_unique__11_dbl_0_5,
-            SUBPARTITION obj_unique__11_dbl_0_6,
-            SUBPARTITION obj_unique__11_dbl_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_UNIQUE_DBL */
@@ -396,22 +216,7 @@ CREATE TABLE `obj_unique_dbl__12` (
   INDEX `obj_unique_dbl__12_index2` (`tenant_id`, `obj_def_id`(128), `obj_id`(64))
 )
 
-ENGINE=InnoDB COMPRESSION="lz4"
 
-
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_unique_dbl__12_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_unique__12_dbl_0_0,
-            SUBPARTITION obj_unique__12_dbl_0_1,
-            SUBPARTITION obj_unique__12_dbl_0_2,
-            SUBPARTITION obj_unique__12_dbl_0_3,
-            SUBPARTITION obj_unique__12_dbl_0_4,
-            SUBPARTITION obj_unique__12_dbl_0_5,
-            SUBPARTITION obj_unique__12_dbl_0_6,
-            SUBPARTITION obj_unique__12_dbl_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_UNIQUE_DBL */
@@ -428,22 +233,7 @@ CREATE TABLE `obj_unique_dbl__13` (
   INDEX `obj_unique_dbl__13_index2` (`tenant_id`, `obj_def_id`(128), `obj_id`(64))
 )
 
-ENGINE=InnoDB COMPRESSION="lz4"
 
-
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_unique_dbl__13_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_unique__13_dbl_0_0,
-            SUBPARTITION obj_unique__13_dbl_0_1,
-            SUBPARTITION obj_unique__13_dbl_0_2,
-            SUBPARTITION obj_unique__13_dbl_0_3,
-            SUBPARTITION obj_unique__13_dbl_0_4,
-            SUBPARTITION obj_unique__13_dbl_0_5,
-            SUBPARTITION obj_unique__13_dbl_0_6,
-            SUBPARTITION obj_unique__13_dbl_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_UNIQUE_DBL */
@@ -460,22 +250,7 @@ CREATE TABLE `obj_unique_dbl__14` (
   INDEX `obj_unique_dbl__14_index2` (`tenant_id`, `obj_def_id`(128), `obj_id`(64))
 )
 
-ENGINE=InnoDB COMPRESSION="lz4"
 
-
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_unique_dbl__14_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_unique__14_dbl_0_0,
-            SUBPARTITION obj_unique__14_dbl_0_1,
-            SUBPARTITION obj_unique__14_dbl_0_2,
-            SUBPARTITION obj_unique__14_dbl_0_3,
-            SUBPARTITION obj_unique__14_dbl_0_4,
-            SUBPARTITION obj_unique__14_dbl_0_5,
-            SUBPARTITION obj_unique__14_dbl_0_6,
-            SUBPARTITION obj_unique__14_dbl_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_UNIQUE_DBL */
@@ -492,22 +267,7 @@ CREATE TABLE `obj_unique_dbl__15` (
   INDEX `obj_unique_dbl__15_index2` (`tenant_id`, `obj_def_id`(128), `obj_id`(64))
 )
 
-ENGINE=InnoDB COMPRESSION="lz4"
 
-
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_unique_dbl__15_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_unique__15_dbl_0_0,
-            SUBPARTITION obj_unique__15_dbl_0_1,
-            SUBPARTITION obj_unique__15_dbl_0_2,
-            SUBPARTITION obj_unique__15_dbl_0_3,
-            SUBPARTITION obj_unique__15_dbl_0_4,
-            SUBPARTITION obj_unique__15_dbl_0_5,
-            SUBPARTITION obj_unique__15_dbl_0_6,
-            SUBPARTITION obj_unique__15_dbl_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_UNIQUE_DBL */
@@ -524,22 +284,7 @@ CREATE TABLE `obj_unique_dbl__16` (
   INDEX `obj_unique_dbl__16_index2` (`tenant_id`, `obj_def_id`(128), `obj_id`(64))
 )
 
-ENGINE=InnoDB COMPRESSION="lz4"
 
-
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_unique_dbl__16_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_unique__16_dbl_0_0,
-            SUBPARTITION obj_unique__16_dbl_0_1,
-            SUBPARTITION obj_unique__16_dbl_0_2,
-            SUBPARTITION obj_unique__16_dbl_0_3,
-            SUBPARTITION obj_unique__16_dbl_0_4,
-            SUBPARTITION obj_unique__16_dbl_0_5,
-            SUBPARTITION obj_unique__16_dbl_0_6,
-            SUBPARTITION obj_unique__16_dbl_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_UNIQUE_DBL */
@@ -556,22 +301,7 @@ CREATE TABLE `obj_unique_dbl__17` (
   INDEX `obj_unique_dbl__17_index2` (`tenant_id`, `obj_def_id`(128), `obj_id`(64))
 )
 
-ENGINE=InnoDB COMPRESSION="lz4"
 
-
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_unique_dbl__17_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_unique__17_dbl_0_0,
-            SUBPARTITION obj_unique__17_dbl_0_1,
-            SUBPARTITION obj_unique__17_dbl_0_2,
-            SUBPARTITION obj_unique__17_dbl_0_3,
-            SUBPARTITION obj_unique__17_dbl_0_4,
-            SUBPARTITION obj_unique__17_dbl_0_5,
-            SUBPARTITION obj_unique__17_dbl_0_6,
-            SUBPARTITION obj_unique__17_dbl_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_UNIQUE_DBL */
@@ -588,22 +318,7 @@ CREATE TABLE `obj_unique_dbl__18` (
   INDEX `obj_unique_dbl__18_index2` (`tenant_id`, `obj_def_id`(128), `obj_id`(64))
 )
 
-ENGINE=InnoDB COMPRESSION="lz4"
 
-
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_unique_dbl__18_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_unique__18_dbl_0_0,
-            SUBPARTITION obj_unique__18_dbl_0_1,
-            SUBPARTITION obj_unique__18_dbl_0_2,
-            SUBPARTITION obj_unique__18_dbl_0_3,
-            SUBPARTITION obj_unique__18_dbl_0_4,
-            SUBPARTITION obj_unique__18_dbl_0_5,
-            SUBPARTITION obj_unique__18_dbl_0_6,
-            SUBPARTITION obj_unique__18_dbl_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_UNIQUE_DBL */
@@ -620,22 +335,7 @@ CREATE TABLE `obj_unique_dbl__19` (
   INDEX `obj_unique_dbl__19_index2` (`tenant_id`, `obj_def_id`(128), `obj_id`(64))
 )
 
-ENGINE=InnoDB COMPRESSION="lz4"
 
-
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_unique_dbl__19_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_unique__19_dbl_0_0,
-            SUBPARTITION obj_unique__19_dbl_0_1,
-            SUBPARTITION obj_unique__19_dbl_0_2,
-            SUBPARTITION obj_unique__19_dbl_0_3,
-            SUBPARTITION obj_unique__19_dbl_0_4,
-            SUBPARTITION obj_unique__19_dbl_0_5,
-            SUBPARTITION obj_unique__19_dbl_0_6,
-            SUBPARTITION obj_unique__19_dbl_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_UNIQUE_DBL */
@@ -652,22 +352,7 @@ CREATE TABLE `obj_unique_dbl__20` (
   INDEX `obj_unique_dbl__20_index2` (`tenant_id`, `obj_def_id`(128), `obj_id`(64))
 )
 
-ENGINE=InnoDB COMPRESSION="lz4"
 
-
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_unique_dbl__20_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_unique__20_dbl_0_0,
-            SUBPARTITION obj_unique__20_dbl_0_1,
-            SUBPARTITION obj_unique__20_dbl_0_2,
-            SUBPARTITION obj_unique__20_dbl_0_3,
-            SUBPARTITION obj_unique__20_dbl_0_4,
-            SUBPARTITION obj_unique__20_dbl_0_5,
-            SUBPARTITION obj_unique__20_dbl_0_6,
-            SUBPARTITION obj_unique__20_dbl_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_UNIQUE_DBL */
@@ -684,22 +369,7 @@ CREATE TABLE `obj_unique_dbl__21` (
   INDEX `obj_unique_dbl__21_index2` (`tenant_id`, `obj_def_id`(128), `obj_id`(64))
 )
 
-ENGINE=InnoDB COMPRESSION="lz4"
 
-
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_unique_dbl__21_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_unique__21_dbl_0_0,
-            SUBPARTITION obj_unique__21_dbl_0_1,
-            SUBPARTITION obj_unique__21_dbl_0_2,
-            SUBPARTITION obj_unique__21_dbl_0_3,
-            SUBPARTITION obj_unique__21_dbl_0_4,
-            SUBPARTITION obj_unique__21_dbl_0_5,
-            SUBPARTITION obj_unique__21_dbl_0_6,
-            SUBPARTITION obj_unique__21_dbl_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_UNIQUE_DBL */
@@ -716,22 +386,7 @@ CREATE TABLE `obj_unique_dbl__22` (
   INDEX `obj_unique_dbl__22_index2` (`tenant_id`, `obj_def_id`(128), `obj_id`(64))
 )
 
-ENGINE=InnoDB COMPRESSION="lz4"
 
-
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_unique_dbl__22_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_unique__22_dbl_0_0,
-            SUBPARTITION obj_unique__22_dbl_0_1,
-            SUBPARTITION obj_unique__22_dbl_0_2,
-            SUBPARTITION obj_unique__22_dbl_0_3,
-            SUBPARTITION obj_unique__22_dbl_0_4,
-            SUBPARTITION obj_unique__22_dbl_0_5,
-            SUBPARTITION obj_unique__22_dbl_0_6,
-            SUBPARTITION obj_unique__22_dbl_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_UNIQUE_DBL */
@@ -748,22 +403,7 @@ CREATE TABLE `obj_unique_dbl__23` (
   INDEX `obj_unique_dbl__23_index2` (`tenant_id`, `obj_def_id`(128), `obj_id`(64))
 )
 
-ENGINE=InnoDB COMPRESSION="lz4"
 
-
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_unique_dbl__23_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_unique__23_dbl_0_0,
-            SUBPARTITION obj_unique__23_dbl_0_1,
-            SUBPARTITION obj_unique__23_dbl_0_2,
-            SUBPARTITION obj_unique__23_dbl_0_3,
-            SUBPARTITION obj_unique__23_dbl_0_4,
-            SUBPARTITION obj_unique__23_dbl_0_5,
-            SUBPARTITION obj_unique__23_dbl_0_6,
-            SUBPARTITION obj_unique__23_dbl_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_UNIQUE_DBL */
@@ -780,22 +420,7 @@ CREATE TABLE `obj_unique_dbl__24` (
   INDEX `obj_unique_dbl__24_index2` (`tenant_id`, `obj_def_id`(128), `obj_id`(64))
 )
 
-ENGINE=InnoDB COMPRESSION="lz4"
 
-
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_unique_dbl__24_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_unique__24_dbl_0_0,
-            SUBPARTITION obj_unique__24_dbl_0_1,
-            SUBPARTITION obj_unique__24_dbl_0_2,
-            SUBPARTITION obj_unique__24_dbl_0_3,
-            SUBPARTITION obj_unique__24_dbl_0_4,
-            SUBPARTITION obj_unique__24_dbl_0_5,
-            SUBPARTITION obj_unique__24_dbl_0_6,
-            SUBPARTITION obj_unique__24_dbl_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_UNIQUE_DBL */
@@ -812,22 +437,7 @@ CREATE TABLE `obj_unique_dbl__25` (
   INDEX `obj_unique_dbl__25_index2` (`tenant_id`, `obj_def_id`(128), `obj_id`(64))
 )
 
-ENGINE=InnoDB COMPRESSION="lz4"
 
-
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_unique_dbl__25_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_unique__25_dbl_0_0,
-            SUBPARTITION obj_unique__25_dbl_0_1,
-            SUBPARTITION obj_unique__25_dbl_0_2,
-            SUBPARTITION obj_unique__25_dbl_0_3,
-            SUBPARTITION obj_unique__25_dbl_0_4,
-            SUBPARTITION obj_unique__25_dbl_0_5,
-            SUBPARTITION obj_unique__25_dbl_0_6,
-            SUBPARTITION obj_unique__25_dbl_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_UNIQUE_DBL */
@@ -844,22 +454,7 @@ CREATE TABLE `obj_unique_dbl__26` (
   INDEX `obj_unique_dbl__26_index2` (`tenant_id`, `obj_def_id`(128), `obj_id`(64))
 )
 
-ENGINE=InnoDB COMPRESSION="lz4"
 
-
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_unique_dbl__26_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_unique__26_dbl_0_0,
-            SUBPARTITION obj_unique__26_dbl_0_1,
-            SUBPARTITION obj_unique__26_dbl_0_2,
-            SUBPARTITION obj_unique__26_dbl_0_3,
-            SUBPARTITION obj_unique__26_dbl_0_4,
-            SUBPARTITION obj_unique__26_dbl_0_5,
-            SUBPARTITION obj_unique__26_dbl_0_6,
-            SUBPARTITION obj_unique__26_dbl_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_UNIQUE_DBL */
@@ -876,22 +471,7 @@ CREATE TABLE `obj_unique_dbl__27` (
   INDEX `obj_unique_dbl__27_index2` (`tenant_id`, `obj_def_id`(128), `obj_id`(64))
 )
 
-ENGINE=InnoDB COMPRESSION="lz4"
 
-
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_unique_dbl__27_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_unique__27_dbl_0_0,
-            SUBPARTITION obj_unique__27_dbl_0_1,
-            SUBPARTITION obj_unique__27_dbl_0_2,
-            SUBPARTITION obj_unique__27_dbl_0_3,
-            SUBPARTITION obj_unique__27_dbl_0_4,
-            SUBPARTITION obj_unique__27_dbl_0_5,
-            SUBPARTITION obj_unique__27_dbl_0_6,
-            SUBPARTITION obj_unique__27_dbl_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_UNIQUE_DBL */
@@ -908,22 +488,7 @@ CREATE TABLE `obj_unique_dbl__28` (
   INDEX `obj_unique_dbl__28_index2` (`tenant_id`, `obj_def_id`(128), `obj_id`(64))
 )
 
-ENGINE=InnoDB COMPRESSION="lz4"
 
-
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_unique_dbl__28_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_unique__28_dbl_0_0,
-            SUBPARTITION obj_unique__28_dbl_0_1,
-            SUBPARTITION obj_unique__28_dbl_0_2,
-            SUBPARTITION obj_unique__28_dbl_0_3,
-            SUBPARTITION obj_unique__28_dbl_0_4,
-            SUBPARTITION obj_unique__28_dbl_0_5,
-            SUBPARTITION obj_unique__28_dbl_0_6,
-            SUBPARTITION obj_unique__28_dbl_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_UNIQUE_DBL */
@@ -940,22 +505,7 @@ CREATE TABLE `obj_unique_dbl__29` (
   INDEX `obj_unique_dbl__29_index2` (`tenant_id`, `obj_def_id`(128), `obj_id`(64))
 )
 
-ENGINE=InnoDB COMPRESSION="lz4"
 
-
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_unique_dbl__29_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_unique__29_dbl_0_0,
-            SUBPARTITION obj_unique__29_dbl_0_1,
-            SUBPARTITION obj_unique__29_dbl_0_2,
-            SUBPARTITION obj_unique__29_dbl_0_3,
-            SUBPARTITION obj_unique__29_dbl_0_4,
-            SUBPARTITION obj_unique__29_dbl_0_5,
-            SUBPARTITION obj_unique__29_dbl_0_6,
-            SUBPARTITION obj_unique__29_dbl_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_UNIQUE_DBL */
@@ -972,22 +522,7 @@ CREATE TABLE `obj_unique_dbl__30` (
   INDEX `obj_unique_dbl__30_index2` (`tenant_id`, `obj_def_id`(128), `obj_id`(64))
 )
 
-ENGINE=InnoDB COMPRESSION="lz4"
 
-
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_unique_dbl__30_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_unique__30_dbl_0_0,
-            SUBPARTITION obj_unique__30_dbl_0_1,
-            SUBPARTITION obj_unique__30_dbl_0_2,
-            SUBPARTITION obj_unique__30_dbl_0_3,
-            SUBPARTITION obj_unique__30_dbl_0_4,
-            SUBPARTITION obj_unique__30_dbl_0_5,
-            SUBPARTITION obj_unique__30_dbl_0_6,
-            SUBPARTITION obj_unique__30_dbl_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_UNIQUE_DBL */
@@ -1004,22 +539,7 @@ CREATE TABLE `obj_unique_dbl__31` (
   INDEX `obj_unique_dbl__31_index2` (`tenant_id`, `obj_def_id`(128), `obj_id`(64))
 )
 
-ENGINE=InnoDB COMPRESSION="lz4"
 
-
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_unique_dbl__31_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_unique__31_dbl_0_0,
-            SUBPARTITION obj_unique__31_dbl_0_1,
-            SUBPARTITION obj_unique__31_dbl_0_2,
-            SUBPARTITION obj_unique__31_dbl_0_3,
-            SUBPARTITION obj_unique__31_dbl_0_4,
-            SUBPARTITION obj_unique__31_dbl_0_5,
-            SUBPARTITION obj_unique__31_dbl_0_6,
-            SUBPARTITION obj_unique__31_dbl_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_UNIQUE_DBL */
@@ -1036,22 +556,7 @@ CREATE TABLE `obj_unique_dbl__32` (
   INDEX `obj_unique_dbl__32_index2` (`tenant_id`, `obj_def_id`(128), `obj_id`(64))
 )
 
-ENGINE=InnoDB COMPRESSION="lz4"
 
-
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_unique_dbl__32_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_unique__32_dbl_0_0,
-            SUBPARTITION obj_unique__32_dbl_0_1,
-            SUBPARTITION obj_unique__32_dbl_0_2,
-            SUBPARTITION obj_unique__32_dbl_0_3,
-            SUBPARTITION obj_unique__32_dbl_0_4,
-            SUBPARTITION obj_unique__32_dbl_0_5,
-            SUBPARTITION obj_unique__32_dbl_0_6,
-            SUBPARTITION obj_unique__32_dbl_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_UNIQUE_DBL */
@@ -1068,22 +573,7 @@ CREATE TABLE `obj_unique_dbl__33` (
   INDEX `obj_unique_dbl__33_index2` (`tenant_id`, `obj_def_id`(128), `obj_id`(64))
 )
 
-ENGINE=InnoDB COMPRESSION="lz4"
 
-
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_unique_dbl__33_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_unique__33_dbl_0_0,
-            SUBPARTITION obj_unique__33_dbl_0_1,
-            SUBPARTITION obj_unique__33_dbl_0_2,
-            SUBPARTITION obj_unique__33_dbl_0_3,
-            SUBPARTITION obj_unique__33_dbl_0_4,
-            SUBPARTITION obj_unique__33_dbl_0_5,
-            SUBPARTITION obj_unique__33_dbl_0_6,
-            SUBPARTITION obj_unique__33_dbl_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_UNIQUE_DBL */
@@ -1100,22 +590,7 @@ CREATE TABLE `obj_unique_dbl__34` (
   INDEX `obj_unique_dbl__34_index2` (`tenant_id`, `obj_def_id`(128), `obj_id`(64))
 )
 
-ENGINE=InnoDB COMPRESSION="lz4"
 
-
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_unique_dbl__34_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_unique__34_dbl_0_0,
-            SUBPARTITION obj_unique__34_dbl_0_1,
-            SUBPARTITION obj_unique__34_dbl_0_2,
-            SUBPARTITION obj_unique__34_dbl_0_3,
-            SUBPARTITION obj_unique__34_dbl_0_4,
-            SUBPARTITION obj_unique__34_dbl_0_5,
-            SUBPARTITION obj_unique__34_dbl_0_6,
-            SUBPARTITION obj_unique__34_dbl_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_UNIQUE_DBL */
@@ -1132,22 +607,7 @@ CREATE TABLE `obj_unique_dbl__35` (
   INDEX `obj_unique_dbl__35_index2` (`tenant_id`, `obj_def_id`(128), `obj_id`(64))
 )
 
-ENGINE=InnoDB COMPRESSION="lz4"
 
-
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_unique_dbl__35_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_unique__35_dbl_0_0,
-            SUBPARTITION obj_unique__35_dbl_0_1,
-            SUBPARTITION obj_unique__35_dbl_0_2,
-            SUBPARTITION obj_unique__35_dbl_0_3,
-            SUBPARTITION obj_unique__35_dbl_0_4,
-            SUBPARTITION obj_unique__35_dbl_0_5,
-            SUBPARTITION obj_unique__35_dbl_0_6,
-            SUBPARTITION obj_unique__35_dbl_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_UNIQUE_DBL */
@@ -1164,22 +624,7 @@ CREATE TABLE `obj_unique_dbl__36` (
   INDEX `obj_unique_dbl__36_index2` (`tenant_id`, `obj_def_id`(128), `obj_id`(64))
 )
 
-ENGINE=InnoDB COMPRESSION="lz4"
 
-
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_unique_dbl__36_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_unique__36_dbl_0_0,
-            SUBPARTITION obj_unique__36_dbl_0_1,
-            SUBPARTITION obj_unique__36_dbl_0_2,
-            SUBPARTITION obj_unique__36_dbl_0_3,
-            SUBPARTITION obj_unique__36_dbl_0_4,
-            SUBPARTITION obj_unique__36_dbl_0_5,
-            SUBPARTITION obj_unique__36_dbl_0_6,
-            SUBPARTITION obj_unique__36_dbl_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_UNIQUE_DBL */
@@ -1196,22 +641,7 @@ CREATE TABLE `obj_unique_dbl__37` (
   INDEX `obj_unique_dbl__37_index2` (`tenant_id`, `obj_def_id`(128), `obj_id`(64))
 )
 
-ENGINE=InnoDB COMPRESSION="lz4"
 
-
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_unique_dbl__37_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_unique__37_dbl_0_0,
-            SUBPARTITION obj_unique__37_dbl_0_1,
-            SUBPARTITION obj_unique__37_dbl_0_2,
-            SUBPARTITION obj_unique__37_dbl_0_3,
-            SUBPARTITION obj_unique__37_dbl_0_4,
-            SUBPARTITION obj_unique__37_dbl_0_5,
-            SUBPARTITION obj_unique__37_dbl_0_6,
-            SUBPARTITION obj_unique__37_dbl_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_UNIQUE_DBL */
@@ -1228,22 +658,7 @@ CREATE TABLE `obj_unique_dbl__38` (
   INDEX `obj_unique_dbl__38_index2` (`tenant_id`, `obj_def_id`(128), `obj_id`(64))
 )
 
-ENGINE=InnoDB COMPRESSION="lz4"
 
-
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_unique_dbl__38_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_unique__38_dbl_0_0,
-            SUBPARTITION obj_unique__38_dbl_0_1,
-            SUBPARTITION obj_unique__38_dbl_0_2,
-            SUBPARTITION obj_unique__38_dbl_0_3,
-            SUBPARTITION obj_unique__38_dbl_0_4,
-            SUBPARTITION obj_unique__38_dbl_0_5,
-            SUBPARTITION obj_unique__38_dbl_0_6,
-            SUBPARTITION obj_unique__38_dbl_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_UNIQUE_DBL */
@@ -1260,22 +675,7 @@ CREATE TABLE `obj_unique_dbl__39` (
   INDEX `obj_unique_dbl__39_index2` (`tenant_id`, `obj_def_id`(128), `obj_id`(64))
 )
 
-ENGINE=InnoDB COMPRESSION="lz4"
 
-
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_unique_dbl__39_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_unique__39_dbl_0_0,
-            SUBPARTITION obj_unique__39_dbl_0_1,
-            SUBPARTITION obj_unique__39_dbl_0_2,
-            SUBPARTITION obj_unique__39_dbl_0_3,
-            SUBPARTITION obj_unique__39_dbl_0_4,
-            SUBPARTITION obj_unique__39_dbl_0_5,
-            SUBPARTITION obj_unique__39_dbl_0_6,
-            SUBPARTITION obj_unique__39_dbl_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_UNIQUE_DBL */
@@ -1292,22 +692,7 @@ CREATE TABLE `obj_unique_dbl__40` (
   INDEX `obj_unique_dbl__40_index2` (`tenant_id`, `obj_def_id`(128), `obj_id`(64))
 )
 
-ENGINE=InnoDB COMPRESSION="lz4"
 
-
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_unique_dbl__40_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_unique__40_dbl_0_0,
-            SUBPARTITION obj_unique__40_dbl_0_1,
-            SUBPARTITION obj_unique__40_dbl_0_2,
-            SUBPARTITION obj_unique__40_dbl_0_3,
-            SUBPARTITION obj_unique__40_dbl_0_4,
-            SUBPARTITION obj_unique__40_dbl_0_5,
-            SUBPARTITION obj_unique__40_dbl_0_6,
-            SUBPARTITION obj_unique__40_dbl_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_UNIQUE_DBL */
@@ -1324,22 +709,7 @@ CREATE TABLE `obj_unique_dbl__41` (
   INDEX `obj_unique_dbl__41_index2` (`tenant_id`, `obj_def_id`(128), `obj_id`(64))
 )
 
-ENGINE=InnoDB COMPRESSION="lz4"
 
-
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_unique_dbl__41_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_unique__41_dbl_0_0,
-            SUBPARTITION obj_unique__41_dbl_0_1,
-            SUBPARTITION obj_unique__41_dbl_0_2,
-            SUBPARTITION obj_unique__41_dbl_0_3,
-            SUBPARTITION obj_unique__41_dbl_0_4,
-            SUBPARTITION obj_unique__41_dbl_0_5,
-            SUBPARTITION obj_unique__41_dbl_0_6,
-            SUBPARTITION obj_unique__41_dbl_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_UNIQUE_DBL */
@@ -1356,22 +726,7 @@ CREATE TABLE `obj_unique_dbl__42` (
   INDEX `obj_unique_dbl__42_index2` (`tenant_id`, `obj_def_id`(128), `obj_id`(64))
 )
 
-ENGINE=InnoDB COMPRESSION="lz4"
 
-
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_unique_dbl__42_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_unique__42_dbl_0_0,
-            SUBPARTITION obj_unique__42_dbl_0_1,
-            SUBPARTITION obj_unique__42_dbl_0_2,
-            SUBPARTITION obj_unique__42_dbl_0_3,
-            SUBPARTITION obj_unique__42_dbl_0_4,
-            SUBPARTITION obj_unique__42_dbl_0_5,
-            SUBPARTITION obj_unique__42_dbl_0_6,
-            SUBPARTITION obj_unique__42_dbl_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_UNIQUE_DBL */
@@ -1388,22 +743,7 @@ CREATE TABLE `obj_unique_dbl__43` (
   INDEX `obj_unique_dbl__43_index2` (`tenant_id`, `obj_def_id`(128), `obj_id`(64))
 )
 
-ENGINE=InnoDB COMPRESSION="lz4"
 
-
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_unique_dbl__43_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_unique__43_dbl_0_0,
-            SUBPARTITION obj_unique__43_dbl_0_1,
-            SUBPARTITION obj_unique__43_dbl_0_2,
-            SUBPARTITION obj_unique__43_dbl_0_3,
-            SUBPARTITION obj_unique__43_dbl_0_4,
-            SUBPARTITION obj_unique__43_dbl_0_5,
-            SUBPARTITION obj_unique__43_dbl_0_6,
-            SUBPARTITION obj_unique__43_dbl_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_UNIQUE_DBL */
@@ -1420,22 +760,7 @@ CREATE TABLE `obj_unique_dbl__44` (
   INDEX `obj_unique_dbl__44_index2` (`tenant_id`, `obj_def_id`(128), `obj_id`(64))
 )
 
-ENGINE=InnoDB COMPRESSION="lz4"
 
-
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_unique_dbl__44_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_unique__44_dbl_0_0,
-            SUBPARTITION obj_unique__44_dbl_0_1,
-            SUBPARTITION obj_unique__44_dbl_0_2,
-            SUBPARTITION obj_unique__44_dbl_0_3,
-            SUBPARTITION obj_unique__44_dbl_0_4,
-            SUBPARTITION obj_unique__44_dbl_0_5,
-            SUBPARTITION obj_unique__44_dbl_0_6,
-            SUBPARTITION obj_unique__44_dbl_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_UNIQUE_DBL */
@@ -1452,22 +777,7 @@ CREATE TABLE `obj_unique_dbl__45` (
   INDEX `obj_unique_dbl__45_index2` (`tenant_id`, `obj_def_id`(128), `obj_id`(64))
 )
 
-ENGINE=InnoDB COMPRESSION="lz4"
 
-
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_unique_dbl__45_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_unique__45_dbl_0_0,
-            SUBPARTITION obj_unique__45_dbl_0_1,
-            SUBPARTITION obj_unique__45_dbl_0_2,
-            SUBPARTITION obj_unique__45_dbl_0_3,
-            SUBPARTITION obj_unique__45_dbl_0_4,
-            SUBPARTITION obj_unique__45_dbl_0_5,
-            SUBPARTITION obj_unique__45_dbl_0_6,
-            SUBPARTITION obj_unique__45_dbl_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_UNIQUE_DBL */
@@ -1484,22 +794,7 @@ CREATE TABLE `obj_unique_dbl__46` (
   INDEX `obj_unique_dbl__46_index2` (`tenant_id`, `obj_def_id`(128), `obj_id`(64))
 )
 
-ENGINE=InnoDB COMPRESSION="lz4"
 
-
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_unique_dbl__46_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_unique__46_dbl_0_0,
-            SUBPARTITION obj_unique__46_dbl_0_1,
-            SUBPARTITION obj_unique__46_dbl_0_2,
-            SUBPARTITION obj_unique__46_dbl_0_3,
-            SUBPARTITION obj_unique__46_dbl_0_4,
-            SUBPARTITION obj_unique__46_dbl_0_5,
-            SUBPARTITION obj_unique__46_dbl_0_6,
-            SUBPARTITION obj_unique__46_dbl_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_UNIQUE_DBL */
@@ -1516,22 +811,7 @@ CREATE TABLE `obj_unique_dbl__47` (
   INDEX `obj_unique_dbl__47_index2` (`tenant_id`, `obj_def_id`(128), `obj_id`(64))
 )
 
-ENGINE=InnoDB COMPRESSION="lz4"
 
-
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_unique_dbl__47_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_unique__47_dbl_0_0,
-            SUBPARTITION obj_unique__47_dbl_0_1,
-            SUBPARTITION obj_unique__47_dbl_0_2,
-            SUBPARTITION obj_unique__47_dbl_0_3,
-            SUBPARTITION obj_unique__47_dbl_0_4,
-            SUBPARTITION obj_unique__47_dbl_0_5,
-            SUBPARTITION obj_unique__47_dbl_0_6,
-            SUBPARTITION obj_unique__47_dbl_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_UNIQUE_DBL */
@@ -1548,22 +828,7 @@ CREATE TABLE `obj_unique_dbl__48` (
   INDEX `obj_unique_dbl__48_index2` (`tenant_id`, `obj_def_id`(128), `obj_id`(64))
 )
 
-ENGINE=InnoDB COMPRESSION="lz4"
 
-
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_unique_dbl__48_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_unique__48_dbl_0_0,
-            SUBPARTITION obj_unique__48_dbl_0_1,
-            SUBPARTITION obj_unique__48_dbl_0_2,
-            SUBPARTITION obj_unique__48_dbl_0_3,
-            SUBPARTITION obj_unique__48_dbl_0_4,
-            SUBPARTITION obj_unique__48_dbl_0_5,
-            SUBPARTITION obj_unique__48_dbl_0_6,
-            SUBPARTITION obj_unique__48_dbl_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_UNIQUE_DBL */
@@ -1580,22 +845,7 @@ CREATE TABLE `obj_unique_dbl__49` (
   INDEX `obj_unique_dbl__49_index2` (`tenant_id`, `obj_def_id`(128), `obj_id`(64))
 )
 
-ENGINE=InnoDB COMPRESSION="lz4"
 
-
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_unique_dbl__49_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_unique__49_dbl_0_0,
-            SUBPARTITION obj_unique__49_dbl_0_1,
-            SUBPARTITION obj_unique__49_dbl_0_2,
-            SUBPARTITION obj_unique__49_dbl_0_3,
-            SUBPARTITION obj_unique__49_dbl_0_4,
-            SUBPARTITION obj_unique__49_dbl_0_5,
-            SUBPARTITION obj_unique__49_dbl_0_6,
-            SUBPARTITION obj_unique__49_dbl_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_UNIQUE_DBL */
@@ -1612,22 +862,7 @@ CREATE TABLE `obj_unique_dbl__50` (
   INDEX `obj_unique_dbl__50_index2` (`tenant_id`, `obj_def_id`(128), `obj_id`(64))
 )
 
-ENGINE=InnoDB COMPRESSION="lz4"
 
-
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_unique_dbl__50_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_unique__50_dbl_0_0,
-            SUBPARTITION obj_unique__50_dbl_0_1,
-            SUBPARTITION obj_unique__50_dbl_0_2,
-            SUBPARTITION obj_unique__50_dbl_0_3,
-            SUBPARTITION obj_unique__50_dbl_0_4,
-            SUBPARTITION obj_unique__50_dbl_0_5,
-            SUBPARTITION obj_unique__50_dbl_0_6,
-            SUBPARTITION obj_unique__50_dbl_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_UNIQUE_DBL */
@@ -1644,22 +879,7 @@ CREATE TABLE `obj_unique_dbl__51` (
   INDEX `obj_unique_dbl__51_index2` (`tenant_id`, `obj_def_id`(128), `obj_id`(64))
 )
 
-ENGINE=InnoDB COMPRESSION="lz4"
 
-
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_unique_dbl__51_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_unique__51_dbl_0_0,
-            SUBPARTITION obj_unique__51_dbl_0_1,
-            SUBPARTITION obj_unique__51_dbl_0_2,
-            SUBPARTITION obj_unique__51_dbl_0_3,
-            SUBPARTITION obj_unique__51_dbl_0_4,
-            SUBPARTITION obj_unique__51_dbl_0_5,
-            SUBPARTITION obj_unique__51_dbl_0_6,
-            SUBPARTITION obj_unique__51_dbl_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_UNIQUE_DBL */
@@ -1676,22 +896,7 @@ CREATE TABLE `obj_unique_dbl__52` (
   INDEX `obj_unique_dbl__52_index2` (`tenant_id`, `obj_def_id`(128), `obj_id`(64))
 )
 
-ENGINE=InnoDB COMPRESSION="lz4"
 
-
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_unique_dbl__52_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_unique__52_dbl_0_0,
-            SUBPARTITION obj_unique__52_dbl_0_1,
-            SUBPARTITION obj_unique__52_dbl_0_2,
-            SUBPARTITION obj_unique__52_dbl_0_3,
-            SUBPARTITION obj_unique__52_dbl_0_4,
-            SUBPARTITION obj_unique__52_dbl_0_5,
-            SUBPARTITION obj_unique__52_dbl_0_6,
-            SUBPARTITION obj_unique__52_dbl_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_UNIQUE_DBL */
@@ -1708,22 +913,7 @@ CREATE TABLE `obj_unique_dbl__53` (
   INDEX `obj_unique_dbl__53_index2` (`tenant_id`, `obj_def_id`(128), `obj_id`(64))
 )
 
-ENGINE=InnoDB COMPRESSION="lz4"
 
-
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_unique_dbl__53_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_unique__53_dbl_0_0,
-            SUBPARTITION obj_unique__53_dbl_0_1,
-            SUBPARTITION obj_unique__53_dbl_0_2,
-            SUBPARTITION obj_unique__53_dbl_0_3,
-            SUBPARTITION obj_unique__53_dbl_0_4,
-            SUBPARTITION obj_unique__53_dbl_0_5,
-            SUBPARTITION obj_unique__53_dbl_0_6,
-            SUBPARTITION obj_unique__53_dbl_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_UNIQUE_DBL */
@@ -1740,22 +930,7 @@ CREATE TABLE `obj_unique_dbl__54` (
   INDEX `obj_unique_dbl__54_index2` (`tenant_id`, `obj_def_id`(128), `obj_id`(64))
 )
 
-ENGINE=InnoDB COMPRESSION="lz4"
 
-
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_unique_dbl__54_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_unique__54_dbl_0_0,
-            SUBPARTITION obj_unique__54_dbl_0_1,
-            SUBPARTITION obj_unique__54_dbl_0_2,
-            SUBPARTITION obj_unique__54_dbl_0_3,
-            SUBPARTITION obj_unique__54_dbl_0_4,
-            SUBPARTITION obj_unique__54_dbl_0_5,
-            SUBPARTITION obj_unique__54_dbl_0_6,
-            SUBPARTITION obj_unique__54_dbl_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_UNIQUE_DBL */
@@ -1772,22 +947,7 @@ CREATE TABLE `obj_unique_dbl__55` (
   INDEX `obj_unique_dbl__55_index2` (`tenant_id`, `obj_def_id`(128), `obj_id`(64))
 )
 
-ENGINE=InnoDB COMPRESSION="lz4"
 
-
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_unique_dbl__55_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_unique__55_dbl_0_0,
-            SUBPARTITION obj_unique__55_dbl_0_1,
-            SUBPARTITION obj_unique__55_dbl_0_2,
-            SUBPARTITION obj_unique__55_dbl_0_3,
-            SUBPARTITION obj_unique__55_dbl_0_4,
-            SUBPARTITION obj_unique__55_dbl_0_5,
-            SUBPARTITION obj_unique__55_dbl_0_6,
-            SUBPARTITION obj_unique__55_dbl_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_UNIQUE_DBL */
@@ -1804,22 +964,7 @@ CREATE TABLE `obj_unique_dbl__56` (
   INDEX `obj_unique_dbl__56_index2` (`tenant_id`, `obj_def_id`(128), `obj_id`(64))
 )
 
-ENGINE=InnoDB COMPRESSION="lz4"
 
-
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_unique_dbl__56_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_unique__56_dbl_0_0,
-            SUBPARTITION obj_unique__56_dbl_0_1,
-            SUBPARTITION obj_unique__56_dbl_0_2,
-            SUBPARTITION obj_unique__56_dbl_0_3,
-            SUBPARTITION obj_unique__56_dbl_0_4,
-            SUBPARTITION obj_unique__56_dbl_0_5,
-            SUBPARTITION obj_unique__56_dbl_0_6,
-            SUBPARTITION obj_unique__56_dbl_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_UNIQUE_DBL */
@@ -1836,22 +981,7 @@ CREATE TABLE `obj_unique_dbl__57` (
   INDEX `obj_unique_dbl__57_index2` (`tenant_id`, `obj_def_id`(128), `obj_id`(64))
 )
 
-ENGINE=InnoDB COMPRESSION="lz4"
 
-
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_unique_dbl__57_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_unique__57_dbl_0_0,
-            SUBPARTITION obj_unique__57_dbl_0_1,
-            SUBPARTITION obj_unique__57_dbl_0_2,
-            SUBPARTITION obj_unique__57_dbl_0_3,
-            SUBPARTITION obj_unique__57_dbl_0_4,
-            SUBPARTITION obj_unique__57_dbl_0_5,
-            SUBPARTITION obj_unique__57_dbl_0_6,
-            SUBPARTITION obj_unique__57_dbl_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_UNIQUE_DBL */
@@ -1868,22 +998,7 @@ CREATE TABLE `obj_unique_dbl__58` (
   INDEX `obj_unique_dbl__58_index2` (`tenant_id`, `obj_def_id`(128), `obj_id`(64))
 )
 
-ENGINE=InnoDB COMPRESSION="lz4"
 
-
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_unique_dbl__58_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_unique__58_dbl_0_0,
-            SUBPARTITION obj_unique__58_dbl_0_1,
-            SUBPARTITION obj_unique__58_dbl_0_2,
-            SUBPARTITION obj_unique__58_dbl_0_3,
-            SUBPARTITION obj_unique__58_dbl_0_4,
-            SUBPARTITION obj_unique__58_dbl_0_5,
-            SUBPARTITION obj_unique__58_dbl_0_6,
-            SUBPARTITION obj_unique__58_dbl_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_UNIQUE_DBL */
@@ -1900,22 +1015,7 @@ CREATE TABLE `obj_unique_dbl__59` (
   INDEX `obj_unique_dbl__59_index2` (`tenant_id`, `obj_def_id`(128), `obj_id`(64))
 )
 
-ENGINE=InnoDB COMPRESSION="lz4"
 
-
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_unique_dbl__59_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_unique__59_dbl_0_0,
-            SUBPARTITION obj_unique__59_dbl_0_1,
-            SUBPARTITION obj_unique__59_dbl_0_2,
-            SUBPARTITION obj_unique__59_dbl_0_3,
-            SUBPARTITION obj_unique__59_dbl_0_4,
-            SUBPARTITION obj_unique__59_dbl_0_5,
-            SUBPARTITION obj_unique__59_dbl_0_6,
-            SUBPARTITION obj_unique__59_dbl_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_UNIQUE_DBL */
@@ -1932,22 +1032,7 @@ CREATE TABLE `obj_unique_dbl__60` (
   INDEX `obj_unique_dbl__60_index2` (`tenant_id`, `obj_def_id`(128), `obj_id`(64))
 )
 
-ENGINE=InnoDB COMPRESSION="lz4"
 
-
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_unique_dbl__60_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_unique__60_dbl_0_0,
-            SUBPARTITION obj_unique__60_dbl_0_1,
-            SUBPARTITION obj_unique__60_dbl_0_2,
-            SUBPARTITION obj_unique__60_dbl_0_3,
-            SUBPARTITION obj_unique__60_dbl_0_4,
-            SUBPARTITION obj_unique__60_dbl_0_5,
-            SUBPARTITION obj_unique__60_dbl_0_6,
-            SUBPARTITION obj_unique__60_dbl_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_UNIQUE_DBL */
@@ -1964,22 +1049,7 @@ CREATE TABLE `obj_unique_dbl__61` (
   INDEX `obj_unique_dbl__61_index2` (`tenant_id`, `obj_def_id`(128), `obj_id`(64))
 )
 
-ENGINE=InnoDB COMPRESSION="lz4"
 
-
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_unique_dbl__61_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_unique__61_dbl_0_0,
-            SUBPARTITION obj_unique__61_dbl_0_1,
-            SUBPARTITION obj_unique__61_dbl_0_2,
-            SUBPARTITION obj_unique__61_dbl_0_3,
-            SUBPARTITION obj_unique__61_dbl_0_4,
-            SUBPARTITION obj_unique__61_dbl_0_5,
-            SUBPARTITION obj_unique__61_dbl_0_6,
-            SUBPARTITION obj_unique__61_dbl_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_UNIQUE_DBL */
@@ -1996,22 +1066,7 @@ CREATE TABLE `obj_unique_dbl__62` (
   INDEX `obj_unique_dbl__62_index2` (`tenant_id`, `obj_def_id`(128), `obj_id`(64))
 )
 
-ENGINE=InnoDB COMPRESSION="lz4"
 
-
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_unique_dbl__62_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_unique__62_dbl_0_0,
-            SUBPARTITION obj_unique__62_dbl_0_1,
-            SUBPARTITION obj_unique__62_dbl_0_2,
-            SUBPARTITION obj_unique__62_dbl_0_3,
-            SUBPARTITION obj_unique__62_dbl_0_4,
-            SUBPARTITION obj_unique__62_dbl_0_5,
-            SUBPARTITION obj_unique__62_dbl_0_6,
-            SUBPARTITION obj_unique__62_dbl_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_UNIQUE_DBL */
@@ -2028,22 +1083,7 @@ CREATE TABLE `obj_unique_dbl__63` (
   INDEX `obj_unique_dbl__63_index2` (`tenant_id`, `obj_def_id`(128), `obj_id`(64))
 )
 
-ENGINE=InnoDB COMPRESSION="lz4"
 
-
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_unique_dbl__63_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_unique__63_dbl_0_0,
-            SUBPARTITION obj_unique__63_dbl_0_1,
-            SUBPARTITION obj_unique__63_dbl_0_2,
-            SUBPARTITION obj_unique__63_dbl_0_3,
-            SUBPARTITION obj_unique__63_dbl_0_4,
-            SUBPARTITION obj_unique__63_dbl_0_5,
-            SUBPARTITION obj_unique__63_dbl_0_6,
-            SUBPARTITION obj_unique__63_dbl_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_UNIQUE_DBL */
@@ -2060,22 +1100,7 @@ CREATE TABLE `obj_unique_dbl__64` (
   INDEX `obj_unique_dbl__64_index2` (`tenant_id`, `obj_def_id`(128), `obj_id`(64))
 )
 
-ENGINE=InnoDB COMPRESSION="lz4"
 
-
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_unique_dbl__64_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_unique__64_dbl_0_0,
-            SUBPARTITION obj_unique__64_dbl_0_1,
-            SUBPARTITION obj_unique__64_dbl_0_2,
-            SUBPARTITION obj_unique__64_dbl_0_3,
-            SUBPARTITION obj_unique__64_dbl_0_4,
-            SUBPARTITION obj_unique__64_dbl_0_5,
-            SUBPARTITION obj_unique__64_dbl_0_6,
-            SUBPARTITION obj_unique__64_dbl_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_UNIQUE_DBL */
@@ -2092,22 +1117,7 @@ CREATE TABLE `obj_unique_dbl__65` (
   INDEX `obj_unique_dbl__65_index2` (`tenant_id`, `obj_def_id`(128), `obj_id`(64))
 )
 
-ENGINE=InnoDB COMPRESSION="lz4"
 
-
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_unique_dbl__65_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_unique__65_dbl_0_0,
-            SUBPARTITION obj_unique__65_dbl_0_1,
-            SUBPARTITION obj_unique__65_dbl_0_2,
-            SUBPARTITION obj_unique__65_dbl_0_3,
-            SUBPARTITION obj_unique__65_dbl_0_4,
-            SUBPARTITION obj_unique__65_dbl_0_5,
-            SUBPARTITION obj_unique__65_dbl_0_6,
-            SUBPARTITION obj_unique__65_dbl_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_UNIQUE_DBL */
@@ -2124,22 +1134,7 @@ CREATE TABLE `obj_unique_dbl__66` (
   INDEX `obj_unique_dbl__66_index2` (`tenant_id`, `obj_def_id`(128), `obj_id`(64))
 )
 
-ENGINE=InnoDB COMPRESSION="lz4"
 
-
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_unique_dbl__66_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_unique__66_dbl_0_0,
-            SUBPARTITION obj_unique__66_dbl_0_1,
-            SUBPARTITION obj_unique__66_dbl_0_2,
-            SUBPARTITION obj_unique__66_dbl_0_3,
-            SUBPARTITION obj_unique__66_dbl_0_4,
-            SUBPARTITION obj_unique__66_dbl_0_5,
-            SUBPARTITION obj_unique__66_dbl_0_6,
-            SUBPARTITION obj_unique__66_dbl_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_UNIQUE_DBL */
@@ -2156,22 +1151,7 @@ CREATE TABLE `obj_unique_dbl__67` (
   INDEX `obj_unique_dbl__67_index2` (`tenant_id`, `obj_def_id`(128), `obj_id`(64))
 )
 
-ENGINE=InnoDB COMPRESSION="lz4"
 
-
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_unique_dbl__67_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_unique__67_dbl_0_0,
-            SUBPARTITION obj_unique__67_dbl_0_1,
-            SUBPARTITION obj_unique__67_dbl_0_2,
-            SUBPARTITION obj_unique__67_dbl_0_3,
-            SUBPARTITION obj_unique__67_dbl_0_4,
-            SUBPARTITION obj_unique__67_dbl_0_5,
-            SUBPARTITION obj_unique__67_dbl_0_6,
-            SUBPARTITION obj_unique__67_dbl_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_UNIQUE_DBL */
@@ -2188,22 +1168,7 @@ CREATE TABLE `obj_unique_dbl__68` (
   INDEX `obj_unique_dbl__68_index2` (`tenant_id`, `obj_def_id`(128), `obj_id`(64))
 )
 
-ENGINE=InnoDB COMPRESSION="lz4"
 
-
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_unique_dbl__68_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_unique__68_dbl_0_0,
-            SUBPARTITION obj_unique__68_dbl_0_1,
-            SUBPARTITION obj_unique__68_dbl_0_2,
-            SUBPARTITION obj_unique__68_dbl_0_3,
-            SUBPARTITION obj_unique__68_dbl_0_4,
-            SUBPARTITION obj_unique__68_dbl_0_5,
-            SUBPARTITION obj_unique__68_dbl_0_6,
-            SUBPARTITION obj_unique__68_dbl_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_UNIQUE_DBL */
@@ -2220,22 +1185,7 @@ CREATE TABLE `obj_unique_dbl__69` (
   INDEX `obj_unique_dbl__69_index2` (`tenant_id`, `obj_def_id`(128), `obj_id`(64))
 )
 
-ENGINE=InnoDB COMPRESSION="lz4"
 
-
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_unique_dbl__69_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_unique__69_dbl_0_0,
-            SUBPARTITION obj_unique__69_dbl_0_1,
-            SUBPARTITION obj_unique__69_dbl_0_2,
-            SUBPARTITION obj_unique__69_dbl_0_3,
-            SUBPARTITION obj_unique__69_dbl_0_4,
-            SUBPARTITION obj_unique__69_dbl_0_5,
-            SUBPARTITION obj_unique__69_dbl_0_6,
-            SUBPARTITION obj_unique__69_dbl_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_UNIQUE_DBL */
@@ -2252,22 +1202,7 @@ CREATE TABLE `obj_unique_dbl__70` (
   INDEX `obj_unique_dbl__70_index2` (`tenant_id`, `obj_def_id`(128), `obj_id`(64))
 )
 
-ENGINE=InnoDB COMPRESSION="lz4"
 
-
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_unique_dbl__70_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_unique__70_dbl_0_0,
-            SUBPARTITION obj_unique__70_dbl_0_1,
-            SUBPARTITION obj_unique__70_dbl_0_2,
-            SUBPARTITION obj_unique__70_dbl_0_3,
-            SUBPARTITION obj_unique__70_dbl_0_4,
-            SUBPARTITION obj_unique__70_dbl_0_5,
-            SUBPARTITION obj_unique__70_dbl_0_6,
-            SUBPARTITION obj_unique__70_dbl_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_UNIQUE_DBL */
@@ -2284,22 +1219,7 @@ CREATE TABLE `obj_unique_dbl__71` (
   INDEX `obj_unique_dbl__71_index2` (`tenant_id`, `obj_def_id`(128), `obj_id`(64))
 )
 
-ENGINE=InnoDB COMPRESSION="lz4"
 
-
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_unique_dbl__71_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_unique__71_dbl_0_0,
-            SUBPARTITION obj_unique__71_dbl_0_1,
-            SUBPARTITION obj_unique__71_dbl_0_2,
-            SUBPARTITION obj_unique__71_dbl_0_3,
-            SUBPARTITION obj_unique__71_dbl_0_4,
-            SUBPARTITION obj_unique__71_dbl_0_5,
-            SUBPARTITION obj_unique__71_dbl_0_6,
-            SUBPARTITION obj_unique__71_dbl_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_UNIQUE_DBL */
@@ -2316,22 +1236,7 @@ CREATE TABLE `obj_unique_dbl__72` (
   INDEX `obj_unique_dbl__72_index2` (`tenant_id`, `obj_def_id`(128), `obj_id`(64))
 )
 
-ENGINE=InnoDB COMPRESSION="lz4"
 
-
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_unique_dbl__72_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_unique__72_dbl_0_0,
-            SUBPARTITION obj_unique__72_dbl_0_1,
-            SUBPARTITION obj_unique__72_dbl_0_2,
-            SUBPARTITION obj_unique__72_dbl_0_3,
-            SUBPARTITION obj_unique__72_dbl_0_4,
-            SUBPARTITION obj_unique__72_dbl_0_5,
-            SUBPARTITION obj_unique__72_dbl_0_6,
-            SUBPARTITION obj_unique__72_dbl_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_UNIQUE_DBL */
@@ -2348,22 +1253,7 @@ CREATE TABLE `obj_unique_dbl__73` (
   INDEX `obj_unique_dbl__73_index2` (`tenant_id`, `obj_def_id`(128), `obj_id`(64))
 )
 
-ENGINE=InnoDB COMPRESSION="lz4"
 
-
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_unique_dbl__73_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_unique__73_dbl_0_0,
-            SUBPARTITION obj_unique__73_dbl_0_1,
-            SUBPARTITION obj_unique__73_dbl_0_2,
-            SUBPARTITION obj_unique__73_dbl_0_3,
-            SUBPARTITION obj_unique__73_dbl_0_4,
-            SUBPARTITION obj_unique__73_dbl_0_5,
-            SUBPARTITION obj_unique__73_dbl_0_6,
-            SUBPARTITION obj_unique__73_dbl_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_UNIQUE_DBL */
@@ -2380,22 +1270,7 @@ CREATE TABLE `obj_unique_dbl__74` (
   INDEX `obj_unique_dbl__74_index2` (`tenant_id`, `obj_def_id`(128), `obj_id`(64))
 )
 
-ENGINE=InnoDB COMPRESSION="lz4"
 
-
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_unique_dbl__74_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_unique__74_dbl_0_0,
-            SUBPARTITION obj_unique__74_dbl_0_1,
-            SUBPARTITION obj_unique__74_dbl_0_2,
-            SUBPARTITION obj_unique__74_dbl_0_3,
-            SUBPARTITION obj_unique__74_dbl_0_4,
-            SUBPARTITION obj_unique__74_dbl_0_5,
-            SUBPARTITION obj_unique__74_dbl_0_6,
-            SUBPARTITION obj_unique__74_dbl_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_UNIQUE_DBL */
@@ -2412,22 +1287,7 @@ CREATE TABLE `obj_unique_dbl__75` (
   INDEX `obj_unique_dbl__75_index2` (`tenant_id`, `obj_def_id`(128), `obj_id`(64))
 )
 
-ENGINE=InnoDB COMPRESSION="lz4"
 
-
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_unique_dbl__75_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_unique__75_dbl_0_0,
-            SUBPARTITION obj_unique__75_dbl_0_1,
-            SUBPARTITION obj_unique__75_dbl_0_2,
-            SUBPARTITION obj_unique__75_dbl_0_3,
-            SUBPARTITION obj_unique__75_dbl_0_4,
-            SUBPARTITION obj_unique__75_dbl_0_5,
-            SUBPARTITION obj_unique__75_dbl_0_6,
-            SUBPARTITION obj_unique__75_dbl_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_UNIQUE_DBL */
@@ -2444,22 +1304,7 @@ CREATE TABLE `obj_unique_dbl__76` (
   INDEX `obj_unique_dbl__76_index2` (`tenant_id`, `obj_def_id`(128), `obj_id`(64))
 )
 
-ENGINE=InnoDB COMPRESSION="lz4"
 
-
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_unique_dbl__76_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_unique__76_dbl_0_0,
-            SUBPARTITION obj_unique__76_dbl_0_1,
-            SUBPARTITION obj_unique__76_dbl_0_2,
-            SUBPARTITION obj_unique__76_dbl_0_3,
-            SUBPARTITION obj_unique__76_dbl_0_4,
-            SUBPARTITION obj_unique__76_dbl_0_5,
-            SUBPARTITION obj_unique__76_dbl_0_6,
-            SUBPARTITION obj_unique__76_dbl_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_UNIQUE_DBL */
@@ -2476,22 +1321,7 @@ CREATE TABLE `obj_unique_dbl__77` (
   INDEX `obj_unique_dbl__77_index2` (`tenant_id`, `obj_def_id`(128), `obj_id`(64))
 )
 
-ENGINE=InnoDB COMPRESSION="lz4"
 
-
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_unique_dbl__77_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_unique__77_dbl_0_0,
-            SUBPARTITION obj_unique__77_dbl_0_1,
-            SUBPARTITION obj_unique__77_dbl_0_2,
-            SUBPARTITION obj_unique__77_dbl_0_3,
-            SUBPARTITION obj_unique__77_dbl_0_4,
-            SUBPARTITION obj_unique__77_dbl_0_5,
-            SUBPARTITION obj_unique__77_dbl_0_6,
-            SUBPARTITION obj_unique__77_dbl_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_UNIQUE_DBL */
@@ -2508,22 +1338,7 @@ CREATE TABLE `obj_unique_dbl__78` (
   INDEX `obj_unique_dbl__78_index2` (`tenant_id`, `obj_def_id`(128), `obj_id`(64))
 )
 
-ENGINE=InnoDB COMPRESSION="lz4"
 
-
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_unique_dbl__78_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_unique__78_dbl_0_0,
-            SUBPARTITION obj_unique__78_dbl_0_1,
-            SUBPARTITION obj_unique__78_dbl_0_2,
-            SUBPARTITION obj_unique__78_dbl_0_3,
-            SUBPARTITION obj_unique__78_dbl_0_4,
-            SUBPARTITION obj_unique__78_dbl_0_5,
-            SUBPARTITION obj_unique__78_dbl_0_6,
-            SUBPARTITION obj_unique__78_dbl_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_UNIQUE_DBL */
@@ -2540,22 +1355,7 @@ CREATE TABLE `obj_unique_dbl__79` (
   INDEX `obj_unique_dbl__79_index2` (`tenant_id`, `obj_def_id`(128), `obj_id`(64))
 )
 
-ENGINE=InnoDB COMPRESSION="lz4"
 
-
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_unique_dbl__79_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_unique__79_dbl_0_0,
-            SUBPARTITION obj_unique__79_dbl_0_1,
-            SUBPARTITION obj_unique__79_dbl_0_2,
-            SUBPARTITION obj_unique__79_dbl_0_3,
-            SUBPARTITION obj_unique__79_dbl_0_4,
-            SUBPARTITION obj_unique__79_dbl_0_5,
-            SUBPARTITION obj_unique__79_dbl_0_6,
-            SUBPARTITION obj_unique__79_dbl_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_UNIQUE_DBL */
@@ -2572,22 +1372,7 @@ CREATE TABLE `obj_unique_dbl__80` (
   INDEX `obj_unique_dbl__80_index2` (`tenant_id`, `obj_def_id`(128), `obj_id`(64))
 )
 
-ENGINE=InnoDB COMPRESSION="lz4"
 
-
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_unique_dbl__80_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_unique__80_dbl_0_0,
-            SUBPARTITION obj_unique__80_dbl_0_1,
-            SUBPARTITION obj_unique__80_dbl_0_2,
-            SUBPARTITION obj_unique__80_dbl_0_3,
-            SUBPARTITION obj_unique__80_dbl_0_4,
-            SUBPARTITION obj_unique__80_dbl_0_5,
-            SUBPARTITION obj_unique__80_dbl_0_6,
-            SUBPARTITION obj_unique__80_dbl_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_UNIQUE_DBL */
@@ -2604,22 +1389,7 @@ CREATE TABLE `obj_unique_dbl__81` (
   INDEX `obj_unique_dbl__81_index2` (`tenant_id`, `obj_def_id`(128), `obj_id`(64))
 )
 
-ENGINE=InnoDB COMPRESSION="lz4"
 
-
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_unique_dbl__81_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_unique__81_dbl_0_0,
-            SUBPARTITION obj_unique__81_dbl_0_1,
-            SUBPARTITION obj_unique__81_dbl_0_2,
-            SUBPARTITION obj_unique__81_dbl_0_3,
-            SUBPARTITION obj_unique__81_dbl_0_4,
-            SUBPARTITION obj_unique__81_dbl_0_5,
-            SUBPARTITION obj_unique__81_dbl_0_6,
-            SUBPARTITION obj_unique__81_dbl_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_UNIQUE_DBL */
@@ -2636,22 +1406,7 @@ CREATE TABLE `obj_unique_dbl__82` (
   INDEX `obj_unique_dbl__82_index2` (`tenant_id`, `obj_def_id`(128), `obj_id`(64))
 )
 
-ENGINE=InnoDB COMPRESSION="lz4"
 
-
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_unique_dbl__82_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_unique__82_dbl_0_0,
-            SUBPARTITION obj_unique__82_dbl_0_1,
-            SUBPARTITION obj_unique__82_dbl_0_2,
-            SUBPARTITION obj_unique__82_dbl_0_3,
-            SUBPARTITION obj_unique__82_dbl_0_4,
-            SUBPARTITION obj_unique__82_dbl_0_5,
-            SUBPARTITION obj_unique__82_dbl_0_6,
-            SUBPARTITION obj_unique__82_dbl_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_UNIQUE_DBL */
@@ -2668,22 +1423,7 @@ CREATE TABLE `obj_unique_dbl__83` (
   INDEX `obj_unique_dbl__83_index2` (`tenant_id`, `obj_def_id`(128), `obj_id`(64))
 )
 
-ENGINE=InnoDB COMPRESSION="lz4"
 
-
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_unique_dbl__83_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_unique__83_dbl_0_0,
-            SUBPARTITION obj_unique__83_dbl_0_1,
-            SUBPARTITION obj_unique__83_dbl_0_2,
-            SUBPARTITION obj_unique__83_dbl_0_3,
-            SUBPARTITION obj_unique__83_dbl_0_4,
-            SUBPARTITION obj_unique__83_dbl_0_5,
-            SUBPARTITION obj_unique__83_dbl_0_6,
-            SUBPARTITION obj_unique__83_dbl_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_UNIQUE_DBL */
@@ -2700,22 +1440,7 @@ CREATE TABLE `obj_unique_dbl__84` (
   INDEX `obj_unique_dbl__84_index2` (`tenant_id`, `obj_def_id`(128), `obj_id`(64))
 )
 
-ENGINE=InnoDB COMPRESSION="lz4"
 
-
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_unique_dbl__84_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_unique__84_dbl_0_0,
-            SUBPARTITION obj_unique__84_dbl_0_1,
-            SUBPARTITION obj_unique__84_dbl_0_2,
-            SUBPARTITION obj_unique__84_dbl_0_3,
-            SUBPARTITION obj_unique__84_dbl_0_4,
-            SUBPARTITION obj_unique__84_dbl_0_5,
-            SUBPARTITION obj_unique__84_dbl_0_6,
-            SUBPARTITION obj_unique__84_dbl_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_UNIQUE_DBL */
@@ -2732,22 +1457,7 @@ CREATE TABLE `obj_unique_dbl__85` (
   INDEX `obj_unique_dbl__85_index2` (`tenant_id`, `obj_def_id`(128), `obj_id`(64))
 )
 
-ENGINE=InnoDB COMPRESSION="lz4"
 
-
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_unique_dbl__85_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_unique__85_dbl_0_0,
-            SUBPARTITION obj_unique__85_dbl_0_1,
-            SUBPARTITION obj_unique__85_dbl_0_2,
-            SUBPARTITION obj_unique__85_dbl_0_3,
-            SUBPARTITION obj_unique__85_dbl_0_4,
-            SUBPARTITION obj_unique__85_dbl_0_5,
-            SUBPARTITION obj_unique__85_dbl_0_6,
-            SUBPARTITION obj_unique__85_dbl_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_UNIQUE_DBL */
@@ -2764,22 +1474,7 @@ CREATE TABLE `obj_unique_dbl__86` (
   INDEX `obj_unique_dbl__86_index2` (`tenant_id`, `obj_def_id`(128), `obj_id`(64))
 )
 
-ENGINE=InnoDB COMPRESSION="lz4"
 
-
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_unique_dbl__86_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_unique__86_dbl_0_0,
-            SUBPARTITION obj_unique__86_dbl_0_1,
-            SUBPARTITION obj_unique__86_dbl_0_2,
-            SUBPARTITION obj_unique__86_dbl_0_3,
-            SUBPARTITION obj_unique__86_dbl_0_4,
-            SUBPARTITION obj_unique__86_dbl_0_5,
-            SUBPARTITION obj_unique__86_dbl_0_6,
-            SUBPARTITION obj_unique__86_dbl_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_UNIQUE_DBL */
@@ -2796,22 +1491,7 @@ CREATE TABLE `obj_unique_dbl__87` (
   INDEX `obj_unique_dbl__87_index2` (`tenant_id`, `obj_def_id`(128), `obj_id`(64))
 )
 
-ENGINE=InnoDB COMPRESSION="lz4"
 
-
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_unique_dbl__87_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_unique__87_dbl_0_0,
-            SUBPARTITION obj_unique__87_dbl_0_1,
-            SUBPARTITION obj_unique__87_dbl_0_2,
-            SUBPARTITION obj_unique__87_dbl_0_3,
-            SUBPARTITION obj_unique__87_dbl_0_4,
-            SUBPARTITION obj_unique__87_dbl_0_5,
-            SUBPARTITION obj_unique__87_dbl_0_6,
-            SUBPARTITION obj_unique__87_dbl_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_UNIQUE_DBL */
@@ -2828,22 +1508,7 @@ CREATE TABLE `obj_unique_dbl__88` (
   INDEX `obj_unique_dbl__88_index2` (`tenant_id`, `obj_def_id`(128), `obj_id`(64))
 )
 
-ENGINE=InnoDB COMPRESSION="lz4"
 
-
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_unique_dbl__88_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_unique__88_dbl_0_0,
-            SUBPARTITION obj_unique__88_dbl_0_1,
-            SUBPARTITION obj_unique__88_dbl_0_2,
-            SUBPARTITION obj_unique__88_dbl_0_3,
-            SUBPARTITION obj_unique__88_dbl_0_4,
-            SUBPARTITION obj_unique__88_dbl_0_5,
-            SUBPARTITION obj_unique__88_dbl_0_6,
-            SUBPARTITION obj_unique__88_dbl_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_UNIQUE_DBL */
@@ -2860,22 +1525,7 @@ CREATE TABLE `obj_unique_dbl__89` (
   INDEX `obj_unique_dbl__89_index2` (`tenant_id`, `obj_def_id`(128), `obj_id`(64))
 )
 
-ENGINE=InnoDB COMPRESSION="lz4"
 
-
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_unique_dbl__89_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_unique__89_dbl_0_0,
-            SUBPARTITION obj_unique__89_dbl_0_1,
-            SUBPARTITION obj_unique__89_dbl_0_2,
-            SUBPARTITION obj_unique__89_dbl_0_3,
-            SUBPARTITION obj_unique__89_dbl_0_4,
-            SUBPARTITION obj_unique__89_dbl_0_5,
-            SUBPARTITION obj_unique__89_dbl_0_6,
-            SUBPARTITION obj_unique__89_dbl_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_UNIQUE_DBL */
@@ -2892,22 +1542,7 @@ CREATE TABLE `obj_unique_dbl__90` (
   INDEX `obj_unique_dbl__90_index2` (`tenant_id`, `obj_def_id`(128), `obj_id`(64))
 )
 
-ENGINE=InnoDB COMPRESSION="lz4"
 
-
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_unique_dbl__90_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_unique__90_dbl_0_0,
-            SUBPARTITION obj_unique__90_dbl_0_1,
-            SUBPARTITION obj_unique__90_dbl_0_2,
-            SUBPARTITION obj_unique__90_dbl_0_3,
-            SUBPARTITION obj_unique__90_dbl_0_4,
-            SUBPARTITION obj_unique__90_dbl_0_5,
-            SUBPARTITION obj_unique__90_dbl_0_6,
-            SUBPARTITION obj_unique__90_dbl_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_UNIQUE_DBL */
@@ -2924,22 +1559,7 @@ CREATE TABLE `obj_unique_dbl__91` (
   INDEX `obj_unique_dbl__91_index2` (`tenant_id`, `obj_def_id`(128), `obj_id`(64))
 )
 
-ENGINE=InnoDB COMPRESSION="lz4"
 
-
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_unique_dbl__91_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_unique__91_dbl_0_0,
-            SUBPARTITION obj_unique__91_dbl_0_1,
-            SUBPARTITION obj_unique__91_dbl_0_2,
-            SUBPARTITION obj_unique__91_dbl_0_3,
-            SUBPARTITION obj_unique__91_dbl_0_4,
-            SUBPARTITION obj_unique__91_dbl_0_5,
-            SUBPARTITION obj_unique__91_dbl_0_6,
-            SUBPARTITION obj_unique__91_dbl_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_UNIQUE_DBL */
@@ -2956,22 +1576,7 @@ CREATE TABLE `obj_unique_dbl__92` (
   INDEX `obj_unique_dbl__92_index2` (`tenant_id`, `obj_def_id`(128), `obj_id`(64))
 )
 
-ENGINE=InnoDB COMPRESSION="lz4"
 
-
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_unique_dbl__92_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_unique__92_dbl_0_0,
-            SUBPARTITION obj_unique__92_dbl_0_1,
-            SUBPARTITION obj_unique__92_dbl_0_2,
-            SUBPARTITION obj_unique__92_dbl_0_3,
-            SUBPARTITION obj_unique__92_dbl_0_4,
-            SUBPARTITION obj_unique__92_dbl_0_5,
-            SUBPARTITION obj_unique__92_dbl_0_6,
-            SUBPARTITION obj_unique__92_dbl_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_UNIQUE_DBL */
@@ -2988,22 +1593,7 @@ CREATE TABLE `obj_unique_dbl__93` (
   INDEX `obj_unique_dbl__93_index2` (`tenant_id`, `obj_def_id`(128), `obj_id`(64))
 )
 
-ENGINE=InnoDB COMPRESSION="lz4"
 
-
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_unique_dbl__93_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_unique__93_dbl_0_0,
-            SUBPARTITION obj_unique__93_dbl_0_1,
-            SUBPARTITION obj_unique__93_dbl_0_2,
-            SUBPARTITION obj_unique__93_dbl_0_3,
-            SUBPARTITION obj_unique__93_dbl_0_4,
-            SUBPARTITION obj_unique__93_dbl_0_5,
-            SUBPARTITION obj_unique__93_dbl_0_6,
-            SUBPARTITION obj_unique__93_dbl_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_UNIQUE_DBL */
@@ -3020,22 +1610,7 @@ CREATE TABLE `obj_unique_dbl__94` (
   INDEX `obj_unique_dbl__94_index2` (`tenant_id`, `obj_def_id`(128), `obj_id`(64))
 )
 
-ENGINE=InnoDB COMPRESSION="lz4"
 
-
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_unique_dbl__94_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_unique__94_dbl_0_0,
-            SUBPARTITION obj_unique__94_dbl_0_1,
-            SUBPARTITION obj_unique__94_dbl_0_2,
-            SUBPARTITION obj_unique__94_dbl_0_3,
-            SUBPARTITION obj_unique__94_dbl_0_4,
-            SUBPARTITION obj_unique__94_dbl_0_5,
-            SUBPARTITION obj_unique__94_dbl_0_6,
-            SUBPARTITION obj_unique__94_dbl_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_UNIQUE_DBL */
@@ -3052,22 +1627,7 @@ CREATE TABLE `obj_unique_dbl__95` (
   INDEX `obj_unique_dbl__95_index2` (`tenant_id`, `obj_def_id`(128), `obj_id`(64))
 )
 
-ENGINE=InnoDB COMPRESSION="lz4"
 
-
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_unique_dbl__95_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_unique__95_dbl_0_0,
-            SUBPARTITION obj_unique__95_dbl_0_1,
-            SUBPARTITION obj_unique__95_dbl_0_2,
-            SUBPARTITION obj_unique__95_dbl_0_3,
-            SUBPARTITION obj_unique__95_dbl_0_4,
-            SUBPARTITION obj_unique__95_dbl_0_5,
-            SUBPARTITION obj_unique__95_dbl_0_6,
-            SUBPARTITION obj_unique__95_dbl_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_UNIQUE_DBL */
@@ -3084,22 +1644,7 @@ CREATE TABLE `obj_unique_dbl__96` (
   INDEX `obj_unique_dbl__96_index2` (`tenant_id`, `obj_def_id`(128), `obj_id`(64))
 )
 
-ENGINE=InnoDB COMPRESSION="lz4"
 
-
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_unique_dbl__96_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_unique__96_dbl_0_0,
-            SUBPARTITION obj_unique__96_dbl_0_1,
-            SUBPARTITION obj_unique__96_dbl_0_2,
-            SUBPARTITION obj_unique__96_dbl_0_3,
-            SUBPARTITION obj_unique__96_dbl_0_4,
-            SUBPARTITION obj_unique__96_dbl_0_5,
-            SUBPARTITION obj_unique__96_dbl_0_6,
-            SUBPARTITION obj_unique__96_dbl_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_UNIQUE_DBL */
@@ -3116,22 +1661,7 @@ CREATE TABLE `obj_unique_dbl__97` (
   INDEX `obj_unique_dbl__97_index2` (`tenant_id`, `obj_def_id`(128), `obj_id`(64))
 )
 
-ENGINE=InnoDB COMPRESSION="lz4"
 
-
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_unique_dbl__97_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_unique__97_dbl_0_0,
-            SUBPARTITION obj_unique__97_dbl_0_1,
-            SUBPARTITION obj_unique__97_dbl_0_2,
-            SUBPARTITION obj_unique__97_dbl_0_3,
-            SUBPARTITION obj_unique__97_dbl_0_4,
-            SUBPARTITION obj_unique__97_dbl_0_5,
-            SUBPARTITION obj_unique__97_dbl_0_6,
-            SUBPARTITION obj_unique__97_dbl_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_UNIQUE_DBL */
@@ -3148,22 +1678,7 @@ CREATE TABLE `obj_unique_dbl__98` (
   INDEX `obj_unique_dbl__98_index2` (`tenant_id`, `obj_def_id`(128), `obj_id`(64))
 )
 
-ENGINE=InnoDB COMPRESSION="lz4"
 
-
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_unique_dbl__98_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_unique__98_dbl_0_0,
-            SUBPARTITION obj_unique__98_dbl_0_1,
-            SUBPARTITION obj_unique__98_dbl_0_2,
-            SUBPARTITION obj_unique__98_dbl_0_3,
-            SUBPARTITION obj_unique__98_dbl_0_4,
-            SUBPARTITION obj_unique__98_dbl_0_5,
-            SUBPARTITION obj_unique__98_dbl_0_6,
-            SUBPARTITION obj_unique__98_dbl_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_UNIQUE_DBL */
@@ -3180,22 +1695,7 @@ CREATE TABLE `obj_unique_dbl__99` (
   INDEX `obj_unique_dbl__99_index2` (`tenant_id`, `obj_def_id`(128), `obj_id`(64))
 )
 
-ENGINE=InnoDB COMPRESSION="lz4"
 
-
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_unique_dbl__99_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_unique__99_dbl_0_0,
-            SUBPARTITION obj_unique__99_dbl_0_1,
-            SUBPARTITION obj_unique__99_dbl_0_2,
-            SUBPARTITION obj_unique__99_dbl_0_3,
-            SUBPARTITION obj_unique__99_dbl_0_4,
-            SUBPARTITION obj_unique__99_dbl_0_5,
-            SUBPARTITION obj_unique__99_dbl_0_6,
-            SUBPARTITION obj_unique__99_dbl_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_UNIQUE_DBL */
@@ -3212,22 +1712,7 @@ CREATE TABLE `obj_unique_dbl__100` (
   INDEX `obj_unique_dbl__100_index2` (`tenant_id`, `obj_def_id`(128), `obj_id`(64))
 )
 
-ENGINE=InnoDB COMPRESSION="lz4"
 
-
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_unique_dbl__100_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_unique__100_dbl_0_0,
-            SUBPARTITION obj_unique__100_dbl_0_1,
-            SUBPARTITION obj_unique__100_dbl_0_2,
-            SUBPARTITION obj_unique__100_dbl_0_3,
-            SUBPARTITION obj_unique__100_dbl_0_4,
-            SUBPARTITION obj_unique__100_dbl_0_5,
-            SUBPARTITION obj_unique__100_dbl_0_6,
-            SUBPARTITION obj_unique__100_dbl_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_UNIQUE_DBL */
@@ -3244,22 +1729,7 @@ CREATE TABLE `obj_unique_dbl__101` (
   INDEX `obj_unique_dbl__101_index2` (`tenant_id`, `obj_def_id`(128), `obj_id`(64))
 )
 
-ENGINE=InnoDB COMPRESSION="lz4"
 
-
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_unique_dbl__101_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_unique__101_dbl_0_0,
-            SUBPARTITION obj_unique__101_dbl_0_1,
-            SUBPARTITION obj_unique__101_dbl_0_2,
-            SUBPARTITION obj_unique__101_dbl_0_3,
-            SUBPARTITION obj_unique__101_dbl_0_4,
-            SUBPARTITION obj_unique__101_dbl_0_5,
-            SUBPARTITION obj_unique__101_dbl_0_6,
-            SUBPARTITION obj_unique__101_dbl_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_UNIQUE_DBL */
@@ -3276,22 +1746,7 @@ CREATE TABLE `obj_unique_dbl__102` (
   INDEX `obj_unique_dbl__102_index2` (`tenant_id`, `obj_def_id`(128), `obj_id`(64))
 )
 
-ENGINE=InnoDB COMPRESSION="lz4"
 
-
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_unique_dbl__102_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_unique__102_dbl_0_0,
-            SUBPARTITION obj_unique__102_dbl_0_1,
-            SUBPARTITION obj_unique__102_dbl_0_2,
-            SUBPARTITION obj_unique__102_dbl_0_3,
-            SUBPARTITION obj_unique__102_dbl_0_4,
-            SUBPARTITION obj_unique__102_dbl_0_5,
-            SUBPARTITION obj_unique__102_dbl_0_6,
-            SUBPARTITION obj_unique__102_dbl_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_UNIQUE_DBL */
@@ -3308,22 +1763,7 @@ CREATE TABLE `obj_unique_dbl__103` (
   INDEX `obj_unique_dbl__103_index2` (`tenant_id`, `obj_def_id`(128), `obj_id`(64))
 )
 
-ENGINE=InnoDB COMPRESSION="lz4"
 
-
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_unique_dbl__103_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_unique__103_dbl_0_0,
-            SUBPARTITION obj_unique__103_dbl_0_1,
-            SUBPARTITION obj_unique__103_dbl_0_2,
-            SUBPARTITION obj_unique__103_dbl_0_3,
-            SUBPARTITION obj_unique__103_dbl_0_4,
-            SUBPARTITION obj_unique__103_dbl_0_5,
-            SUBPARTITION obj_unique__103_dbl_0_6,
-            SUBPARTITION obj_unique__103_dbl_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_UNIQUE_DBL */
@@ -3340,22 +1780,7 @@ CREATE TABLE `obj_unique_dbl__104` (
   INDEX `obj_unique_dbl__104_index2` (`tenant_id`, `obj_def_id`(128), `obj_id`(64))
 )
 
-ENGINE=InnoDB COMPRESSION="lz4"
 
-
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_unique_dbl__104_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_unique__104_dbl_0_0,
-            SUBPARTITION obj_unique__104_dbl_0_1,
-            SUBPARTITION obj_unique__104_dbl_0_2,
-            SUBPARTITION obj_unique__104_dbl_0_3,
-            SUBPARTITION obj_unique__104_dbl_0_4,
-            SUBPARTITION obj_unique__104_dbl_0_5,
-            SUBPARTITION obj_unique__104_dbl_0_6,
-            SUBPARTITION obj_unique__104_dbl_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_UNIQUE_DBL */
@@ -3372,22 +1797,7 @@ CREATE TABLE `obj_unique_dbl__105` (
   INDEX `obj_unique_dbl__105_index2` (`tenant_id`, `obj_def_id`(128), `obj_id`(64))
 )
 
-ENGINE=InnoDB COMPRESSION="lz4"
 
-
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_unique_dbl__105_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_unique__105_dbl_0_0,
-            SUBPARTITION obj_unique__105_dbl_0_1,
-            SUBPARTITION obj_unique__105_dbl_0_2,
-            SUBPARTITION obj_unique__105_dbl_0_3,
-            SUBPARTITION obj_unique__105_dbl_0_4,
-            SUBPARTITION obj_unique__105_dbl_0_5,
-            SUBPARTITION obj_unique__105_dbl_0_6,
-            SUBPARTITION obj_unique__105_dbl_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_UNIQUE_DBL */
@@ -3404,22 +1814,7 @@ CREATE TABLE `obj_unique_dbl__106` (
   INDEX `obj_unique_dbl__106_index2` (`tenant_id`, `obj_def_id`(128), `obj_id`(64))
 )
 
-ENGINE=InnoDB COMPRESSION="lz4"
 
-
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_unique_dbl__106_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_unique__106_dbl_0_0,
-            SUBPARTITION obj_unique__106_dbl_0_1,
-            SUBPARTITION obj_unique__106_dbl_0_2,
-            SUBPARTITION obj_unique__106_dbl_0_3,
-            SUBPARTITION obj_unique__106_dbl_0_4,
-            SUBPARTITION obj_unique__106_dbl_0_5,
-            SUBPARTITION obj_unique__106_dbl_0_6,
-            SUBPARTITION obj_unique__106_dbl_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_UNIQUE_DBL */
@@ -3436,22 +1831,7 @@ CREATE TABLE `obj_unique_dbl__107` (
   INDEX `obj_unique_dbl__107_index2` (`tenant_id`, `obj_def_id`(128), `obj_id`(64))
 )
 
-ENGINE=InnoDB COMPRESSION="lz4"
 
-
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_unique_dbl__107_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_unique__107_dbl_0_0,
-            SUBPARTITION obj_unique__107_dbl_0_1,
-            SUBPARTITION obj_unique__107_dbl_0_2,
-            SUBPARTITION obj_unique__107_dbl_0_3,
-            SUBPARTITION obj_unique__107_dbl_0_4,
-            SUBPARTITION obj_unique__107_dbl_0_5,
-            SUBPARTITION obj_unique__107_dbl_0_6,
-            SUBPARTITION obj_unique__107_dbl_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_UNIQUE_DBL */
@@ -3468,22 +1848,7 @@ CREATE TABLE `obj_unique_dbl__108` (
   INDEX `obj_unique_dbl__108_index2` (`tenant_id`, `obj_def_id`(128), `obj_id`(64))
 )
 
-ENGINE=InnoDB COMPRESSION="lz4"
 
-
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_unique_dbl__108_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_unique__108_dbl_0_0,
-            SUBPARTITION obj_unique__108_dbl_0_1,
-            SUBPARTITION obj_unique__108_dbl_0_2,
-            SUBPARTITION obj_unique__108_dbl_0_3,
-            SUBPARTITION obj_unique__108_dbl_0_4,
-            SUBPARTITION obj_unique__108_dbl_0_5,
-            SUBPARTITION obj_unique__108_dbl_0_6,
-            SUBPARTITION obj_unique__108_dbl_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_UNIQUE_DBL */
@@ -3500,22 +1865,7 @@ CREATE TABLE `obj_unique_dbl__109` (
   INDEX `obj_unique_dbl__109_index2` (`tenant_id`, `obj_def_id`(128), `obj_id`(64))
 )
 
-ENGINE=InnoDB COMPRESSION="lz4"
 
-
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_unique_dbl__109_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_unique__109_dbl_0_0,
-            SUBPARTITION obj_unique__109_dbl_0_1,
-            SUBPARTITION obj_unique__109_dbl_0_2,
-            SUBPARTITION obj_unique__109_dbl_0_3,
-            SUBPARTITION obj_unique__109_dbl_0_4,
-            SUBPARTITION obj_unique__109_dbl_0_5,
-            SUBPARTITION obj_unique__109_dbl_0_6,
-            SUBPARTITION obj_unique__109_dbl_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_UNIQUE_DBL */
@@ -3532,22 +1882,7 @@ CREATE TABLE `obj_unique_dbl__110` (
   INDEX `obj_unique_dbl__110_index2` (`tenant_id`, `obj_def_id`(128), `obj_id`(64))
 )
 
-ENGINE=InnoDB COMPRESSION="lz4"
 
-
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_unique_dbl__110_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_unique__110_dbl_0_0,
-            SUBPARTITION obj_unique__110_dbl_0_1,
-            SUBPARTITION obj_unique__110_dbl_0_2,
-            SUBPARTITION obj_unique__110_dbl_0_3,
-            SUBPARTITION obj_unique__110_dbl_0_4,
-            SUBPARTITION obj_unique__110_dbl_0_5,
-            SUBPARTITION obj_unique__110_dbl_0_6,
-            SUBPARTITION obj_unique__110_dbl_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_UNIQUE_DBL */
@@ -3564,22 +1899,7 @@ CREATE TABLE `obj_unique_dbl__111` (
   INDEX `obj_unique_dbl__111_index2` (`tenant_id`, `obj_def_id`(128), `obj_id`(64))
 )
 
-ENGINE=InnoDB COMPRESSION="lz4"
 
-
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_unique_dbl__111_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_unique__111_dbl_0_0,
-            SUBPARTITION obj_unique__111_dbl_0_1,
-            SUBPARTITION obj_unique__111_dbl_0_2,
-            SUBPARTITION obj_unique__111_dbl_0_3,
-            SUBPARTITION obj_unique__111_dbl_0_4,
-            SUBPARTITION obj_unique__111_dbl_0_5,
-            SUBPARTITION obj_unique__111_dbl_0_6,
-            SUBPARTITION obj_unique__111_dbl_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_UNIQUE_DBL */
@@ -3596,22 +1916,7 @@ CREATE TABLE `obj_unique_dbl__112` (
   INDEX `obj_unique_dbl__112_index2` (`tenant_id`, `obj_def_id`(128), `obj_id`(64))
 )
 
-ENGINE=InnoDB COMPRESSION="lz4"
 
-
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_unique_dbl__112_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_unique__112_dbl_0_0,
-            SUBPARTITION obj_unique__112_dbl_0_1,
-            SUBPARTITION obj_unique__112_dbl_0_2,
-            SUBPARTITION obj_unique__112_dbl_0_3,
-            SUBPARTITION obj_unique__112_dbl_0_4,
-            SUBPARTITION obj_unique__112_dbl_0_5,
-            SUBPARTITION obj_unique__112_dbl_0_6,
-            SUBPARTITION obj_unique__112_dbl_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_UNIQUE_DBL */
@@ -3628,22 +1933,7 @@ CREATE TABLE `obj_unique_dbl__113` (
   INDEX `obj_unique_dbl__113_index2` (`tenant_id`, `obj_def_id`(128), `obj_id`(64))
 )
 
-ENGINE=InnoDB COMPRESSION="lz4"
 
-
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_unique_dbl__113_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_unique__113_dbl_0_0,
-            SUBPARTITION obj_unique__113_dbl_0_1,
-            SUBPARTITION obj_unique__113_dbl_0_2,
-            SUBPARTITION obj_unique__113_dbl_0_3,
-            SUBPARTITION obj_unique__113_dbl_0_4,
-            SUBPARTITION obj_unique__113_dbl_0_5,
-            SUBPARTITION obj_unique__113_dbl_0_6,
-            SUBPARTITION obj_unique__113_dbl_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_UNIQUE_DBL */
@@ -3660,22 +1950,7 @@ CREATE TABLE `obj_unique_dbl__114` (
   INDEX `obj_unique_dbl__114_index2` (`tenant_id`, `obj_def_id`(128), `obj_id`(64))
 )
 
-ENGINE=InnoDB COMPRESSION="lz4"
 
-
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_unique_dbl__114_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_unique__114_dbl_0_0,
-            SUBPARTITION obj_unique__114_dbl_0_1,
-            SUBPARTITION obj_unique__114_dbl_0_2,
-            SUBPARTITION obj_unique__114_dbl_0_3,
-            SUBPARTITION obj_unique__114_dbl_0_4,
-            SUBPARTITION obj_unique__114_dbl_0_5,
-            SUBPARTITION obj_unique__114_dbl_0_6,
-            SUBPARTITION obj_unique__114_dbl_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_UNIQUE_DBL */
@@ -3692,22 +1967,7 @@ CREATE TABLE `obj_unique_dbl__115` (
   INDEX `obj_unique_dbl__115_index2` (`tenant_id`, `obj_def_id`(128), `obj_id`(64))
 )
 
-ENGINE=InnoDB COMPRESSION="lz4"
 
-
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_unique_dbl__115_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_unique__115_dbl_0_0,
-            SUBPARTITION obj_unique__115_dbl_0_1,
-            SUBPARTITION obj_unique__115_dbl_0_2,
-            SUBPARTITION obj_unique__115_dbl_0_3,
-            SUBPARTITION obj_unique__115_dbl_0_4,
-            SUBPARTITION obj_unique__115_dbl_0_5,
-            SUBPARTITION obj_unique__115_dbl_0_6,
-            SUBPARTITION obj_unique__115_dbl_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_UNIQUE_DBL */
@@ -3724,22 +1984,7 @@ CREATE TABLE `obj_unique_dbl__116` (
   INDEX `obj_unique_dbl__116_index2` (`tenant_id`, `obj_def_id`(128), `obj_id`(64))
 )
 
-ENGINE=InnoDB COMPRESSION="lz4"
 
-
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_unique_dbl__116_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_unique__116_dbl_0_0,
-            SUBPARTITION obj_unique__116_dbl_0_1,
-            SUBPARTITION obj_unique__116_dbl_0_2,
-            SUBPARTITION obj_unique__116_dbl_0_3,
-            SUBPARTITION obj_unique__116_dbl_0_4,
-            SUBPARTITION obj_unique__116_dbl_0_5,
-            SUBPARTITION obj_unique__116_dbl_0_6,
-            SUBPARTITION obj_unique__116_dbl_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_UNIQUE_DBL */
@@ -3756,22 +2001,7 @@ CREATE TABLE `obj_unique_dbl__117` (
   INDEX `obj_unique_dbl__117_index2` (`tenant_id`, `obj_def_id`(128), `obj_id`(64))
 )
 
-ENGINE=InnoDB COMPRESSION="lz4"
 
-
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_unique_dbl__117_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_unique__117_dbl_0_0,
-            SUBPARTITION obj_unique__117_dbl_0_1,
-            SUBPARTITION obj_unique__117_dbl_0_2,
-            SUBPARTITION obj_unique__117_dbl_0_3,
-            SUBPARTITION obj_unique__117_dbl_0_4,
-            SUBPARTITION obj_unique__117_dbl_0_5,
-            SUBPARTITION obj_unique__117_dbl_0_6,
-            SUBPARTITION obj_unique__117_dbl_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_UNIQUE_DBL */
@@ -3788,22 +2018,7 @@ CREATE TABLE `obj_unique_dbl__118` (
   INDEX `obj_unique_dbl__118_index2` (`tenant_id`, `obj_def_id`(128), `obj_id`(64))
 )
 
-ENGINE=InnoDB COMPRESSION="lz4"
 
-
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_unique_dbl__118_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_unique__118_dbl_0_0,
-            SUBPARTITION obj_unique__118_dbl_0_1,
-            SUBPARTITION obj_unique__118_dbl_0_2,
-            SUBPARTITION obj_unique__118_dbl_0_3,
-            SUBPARTITION obj_unique__118_dbl_0_4,
-            SUBPARTITION obj_unique__118_dbl_0_5,
-            SUBPARTITION obj_unique__118_dbl_0_6,
-            SUBPARTITION obj_unique__118_dbl_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_UNIQUE_DBL */
@@ -3820,22 +2035,7 @@ CREATE TABLE `obj_unique_dbl__119` (
   INDEX `obj_unique_dbl__119_index2` (`tenant_id`, `obj_def_id`(128), `obj_id`(64))
 )
 
-ENGINE=InnoDB COMPRESSION="lz4"
 
-
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_unique_dbl__119_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_unique__119_dbl_0_0,
-            SUBPARTITION obj_unique__119_dbl_0_1,
-            SUBPARTITION obj_unique__119_dbl_0_2,
-            SUBPARTITION obj_unique__119_dbl_0_3,
-            SUBPARTITION obj_unique__119_dbl_0_4,
-            SUBPARTITION obj_unique__119_dbl_0_5,
-            SUBPARTITION obj_unique__119_dbl_0_6,
-            SUBPARTITION obj_unique__119_dbl_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_UNIQUE_DBL */
@@ -3852,22 +2052,7 @@ CREATE TABLE `obj_unique_dbl__120` (
   INDEX `obj_unique_dbl__120_index2` (`tenant_id`, `obj_def_id`(128), `obj_id`(64))
 )
 
-ENGINE=InnoDB COMPRESSION="lz4"
 
-
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_unique_dbl__120_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_unique__120_dbl_0_0,
-            SUBPARTITION obj_unique__120_dbl_0_1,
-            SUBPARTITION obj_unique__120_dbl_0_2,
-            SUBPARTITION obj_unique__120_dbl_0_3,
-            SUBPARTITION obj_unique__120_dbl_0_4,
-            SUBPARTITION obj_unique__120_dbl_0_5,
-            SUBPARTITION obj_unique__120_dbl_0_6,
-            SUBPARTITION obj_unique__120_dbl_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_UNIQUE_DBL */
@@ -3884,22 +2069,7 @@ CREATE TABLE `obj_unique_dbl__121` (
   INDEX `obj_unique_dbl__121_index2` (`tenant_id`, `obj_def_id`(128), `obj_id`(64))
 )
 
-ENGINE=InnoDB COMPRESSION="lz4"
 
-
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_unique_dbl__121_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_unique__121_dbl_0_0,
-            SUBPARTITION obj_unique__121_dbl_0_1,
-            SUBPARTITION obj_unique__121_dbl_0_2,
-            SUBPARTITION obj_unique__121_dbl_0_3,
-            SUBPARTITION obj_unique__121_dbl_0_4,
-            SUBPARTITION obj_unique__121_dbl_0_5,
-            SUBPARTITION obj_unique__121_dbl_0_6,
-            SUBPARTITION obj_unique__121_dbl_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_UNIQUE_DBL */
@@ -3916,22 +2086,7 @@ CREATE TABLE `obj_unique_dbl__122` (
   INDEX `obj_unique_dbl__122_index2` (`tenant_id`, `obj_def_id`(128), `obj_id`(64))
 )
 
-ENGINE=InnoDB COMPRESSION="lz4"
 
-
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_unique_dbl__122_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_unique__122_dbl_0_0,
-            SUBPARTITION obj_unique__122_dbl_0_1,
-            SUBPARTITION obj_unique__122_dbl_0_2,
-            SUBPARTITION obj_unique__122_dbl_0_3,
-            SUBPARTITION obj_unique__122_dbl_0_4,
-            SUBPARTITION obj_unique__122_dbl_0_5,
-            SUBPARTITION obj_unique__122_dbl_0_6,
-            SUBPARTITION obj_unique__122_dbl_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_UNIQUE_DBL */
@@ -3948,22 +2103,7 @@ CREATE TABLE `obj_unique_dbl__123` (
   INDEX `obj_unique_dbl__123_index2` (`tenant_id`, `obj_def_id`(128), `obj_id`(64))
 )
 
-ENGINE=InnoDB COMPRESSION="lz4"
 
-
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_unique_dbl__123_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_unique__123_dbl_0_0,
-            SUBPARTITION obj_unique__123_dbl_0_1,
-            SUBPARTITION obj_unique__123_dbl_0_2,
-            SUBPARTITION obj_unique__123_dbl_0_3,
-            SUBPARTITION obj_unique__123_dbl_0_4,
-            SUBPARTITION obj_unique__123_dbl_0_5,
-            SUBPARTITION obj_unique__123_dbl_0_6,
-            SUBPARTITION obj_unique__123_dbl_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_UNIQUE_DBL */
@@ -3980,22 +2120,7 @@ CREATE TABLE `obj_unique_dbl__124` (
   INDEX `obj_unique_dbl__124_index2` (`tenant_id`, `obj_def_id`(128), `obj_id`(64))
 )
 
-ENGINE=InnoDB COMPRESSION="lz4"
 
-
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_unique_dbl__124_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_unique__124_dbl_0_0,
-            SUBPARTITION obj_unique__124_dbl_0_1,
-            SUBPARTITION obj_unique__124_dbl_0_2,
-            SUBPARTITION obj_unique__124_dbl_0_3,
-            SUBPARTITION obj_unique__124_dbl_0_4,
-            SUBPARTITION obj_unique__124_dbl_0_5,
-            SUBPARTITION obj_unique__124_dbl_0_6,
-            SUBPARTITION obj_unique__124_dbl_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_UNIQUE_DBL */
@@ -4012,22 +2137,7 @@ CREATE TABLE `obj_unique_dbl__125` (
   INDEX `obj_unique_dbl__125_index2` (`tenant_id`, `obj_def_id`(128), `obj_id`(64))
 )
 
-ENGINE=InnoDB COMPRESSION="lz4"
 
-
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_unique_dbl__125_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_unique__125_dbl_0_0,
-            SUBPARTITION obj_unique__125_dbl_0_1,
-            SUBPARTITION obj_unique__125_dbl_0_2,
-            SUBPARTITION obj_unique__125_dbl_0_3,
-            SUBPARTITION obj_unique__125_dbl_0_4,
-            SUBPARTITION obj_unique__125_dbl_0_5,
-            SUBPARTITION obj_unique__125_dbl_0_6,
-            SUBPARTITION obj_unique__125_dbl_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_UNIQUE_DBL */
@@ -4044,22 +2154,7 @@ CREATE TABLE `obj_unique_dbl__126` (
   INDEX `obj_unique_dbl__126_index2` (`tenant_id`, `obj_def_id`(128), `obj_id`(64))
 )
 
-ENGINE=InnoDB COMPRESSION="lz4"
 
-
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_unique_dbl__126_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_unique__126_dbl_0_0,
-            SUBPARTITION obj_unique__126_dbl_0_1,
-            SUBPARTITION obj_unique__126_dbl_0_2,
-            SUBPARTITION obj_unique__126_dbl_0_3,
-            SUBPARTITION obj_unique__126_dbl_0_4,
-            SUBPARTITION obj_unique__126_dbl_0_5,
-            SUBPARTITION obj_unique__126_dbl_0_6,
-            SUBPARTITION obj_unique__126_dbl_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_UNIQUE_DBL */
@@ -4076,21 +2171,6 @@ CREATE TABLE `obj_unique_dbl__127` (
   INDEX `obj_unique_dbl__127_index2` (`tenant_id`, `obj_def_id`(128), `obj_id`(64))
 )
 
-ENGINE=InnoDB COMPRESSION="lz4"
 
-
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_unique_dbl__127_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_unique__127_dbl_0_0,
-            SUBPARTITION obj_unique__127_dbl_0_1,
-            SUBPARTITION obj_unique__127_dbl_0_2,
-            SUBPARTITION obj_unique__127_dbl_0_3,
-            SUBPARTITION obj_unique__127_dbl_0_4,
-            SUBPARTITION obj_unique__127_dbl_0_5,
-            SUBPARTITION obj_unique__127_dbl_0_6,
-            SUBPARTITION obj_unique__127_dbl_0_7
-        )
-    )
 
 ;

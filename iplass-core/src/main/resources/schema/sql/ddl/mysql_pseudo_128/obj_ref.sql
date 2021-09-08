@@ -16,19 +16,6 @@ CREATE TABLE `obj_ref` (
 )
 
 
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_ref_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_ref_0_0,
-            SUBPARTITION obj_ref_0_1,
-            SUBPARTITION obj_ref_0_2,
-            SUBPARTITION obj_ref_0_3,
-            SUBPARTITION obj_ref_0_4,
-            SUBPARTITION obj_ref_0_5,
-            SUBPARTITION obj_ref_0_6,
-            SUBPARTITION obj_ref_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_REF */
@@ -49,19 +36,6 @@ CREATE TABLE `obj_ref__1` (
 )
 
 
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_ref__1_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_ref__1_0_0,
-            SUBPARTITION obj_ref__1_0_1,
-            SUBPARTITION obj_ref__1_0_2,
-            SUBPARTITION obj_ref__1_0_3,
-            SUBPARTITION obj_ref__1_0_4,
-            SUBPARTITION obj_ref__1_0_5,
-            SUBPARTITION obj_ref__1_0_6,
-            SUBPARTITION obj_ref__1_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_REF */
@@ -82,19 +56,6 @@ CREATE TABLE `obj_ref__2` (
 )
 
 
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_ref__2_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_ref__2_0_0,
-            SUBPARTITION obj_ref__2_0_1,
-            SUBPARTITION obj_ref__2_0_2,
-            SUBPARTITION obj_ref__2_0_3,
-            SUBPARTITION obj_ref__2_0_4,
-            SUBPARTITION obj_ref__2_0_5,
-            SUBPARTITION obj_ref__2_0_6,
-            SUBPARTITION obj_ref__2_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_REF */
@@ -115,19 +76,6 @@ CREATE TABLE `obj_ref__3` (
 )
 
 
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_ref__3_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_ref__3_0_0,
-            SUBPARTITION obj_ref__3_0_1,
-            SUBPARTITION obj_ref__3_0_2,
-            SUBPARTITION obj_ref__3_0_3,
-            SUBPARTITION obj_ref__3_0_4,
-            SUBPARTITION obj_ref__3_0_5,
-            SUBPARTITION obj_ref__3_0_6,
-            SUBPARTITION obj_ref__3_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_REF */
@@ -148,19 +96,6 @@ CREATE TABLE `obj_ref__4` (
 )
 
 
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_ref__4_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_ref__4_0_0,
-            SUBPARTITION obj_ref__4_0_1,
-            SUBPARTITION obj_ref__4_0_2,
-            SUBPARTITION obj_ref__4_0_3,
-            SUBPARTITION obj_ref__4_0_4,
-            SUBPARTITION obj_ref__4_0_5,
-            SUBPARTITION obj_ref__4_0_6,
-            SUBPARTITION obj_ref__4_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_REF */
@@ -181,19 +116,6 @@ CREATE TABLE `obj_ref__5` (
 )
 
 
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_ref__5_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_ref__5_0_0,
-            SUBPARTITION obj_ref__5_0_1,
-            SUBPARTITION obj_ref__5_0_2,
-            SUBPARTITION obj_ref__5_0_3,
-            SUBPARTITION obj_ref__5_0_4,
-            SUBPARTITION obj_ref__5_0_5,
-            SUBPARTITION obj_ref__5_0_6,
-            SUBPARTITION obj_ref__5_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_REF */
@@ -214,19 +136,6 @@ CREATE TABLE `obj_ref__6` (
 )
 
 
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_ref__6_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_ref__6_0_0,
-            SUBPARTITION obj_ref__6_0_1,
-            SUBPARTITION obj_ref__6_0_2,
-            SUBPARTITION obj_ref__6_0_3,
-            SUBPARTITION obj_ref__6_0_4,
-            SUBPARTITION obj_ref__6_0_5,
-            SUBPARTITION obj_ref__6_0_6,
-            SUBPARTITION obj_ref__6_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_REF */
@@ -247,19 +156,6 @@ CREATE TABLE `obj_ref__7` (
 )
 
 
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_ref__7_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_ref__7_0_0,
-            SUBPARTITION obj_ref__7_0_1,
-            SUBPARTITION obj_ref__7_0_2,
-            SUBPARTITION obj_ref__7_0_3,
-            SUBPARTITION obj_ref__7_0_4,
-            SUBPARTITION obj_ref__7_0_5,
-            SUBPARTITION obj_ref__7_0_6,
-            SUBPARTITION obj_ref__7_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_REF */
@@ -280,19 +176,6 @@ CREATE TABLE `obj_ref__8` (
 )
 
 
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_ref__8_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_ref__8_0_0,
-            SUBPARTITION obj_ref__8_0_1,
-            SUBPARTITION obj_ref__8_0_2,
-            SUBPARTITION obj_ref__8_0_3,
-            SUBPARTITION obj_ref__8_0_4,
-            SUBPARTITION obj_ref__8_0_5,
-            SUBPARTITION obj_ref__8_0_6,
-            SUBPARTITION obj_ref__8_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_REF */
@@ -313,19 +196,6 @@ CREATE TABLE `obj_ref__9` (
 )
 
 
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_ref__9_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_ref__9_0_0,
-            SUBPARTITION obj_ref__9_0_1,
-            SUBPARTITION obj_ref__9_0_2,
-            SUBPARTITION obj_ref__9_0_3,
-            SUBPARTITION obj_ref__9_0_4,
-            SUBPARTITION obj_ref__9_0_5,
-            SUBPARTITION obj_ref__9_0_6,
-            SUBPARTITION obj_ref__9_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_REF */
@@ -346,19 +216,6 @@ CREATE TABLE `obj_ref__10` (
 )
 
 
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_ref__10_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_ref__10_0_0,
-            SUBPARTITION obj_ref__10_0_1,
-            SUBPARTITION obj_ref__10_0_2,
-            SUBPARTITION obj_ref__10_0_3,
-            SUBPARTITION obj_ref__10_0_4,
-            SUBPARTITION obj_ref__10_0_5,
-            SUBPARTITION obj_ref__10_0_6,
-            SUBPARTITION obj_ref__10_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_REF */
@@ -379,19 +236,6 @@ CREATE TABLE `obj_ref__11` (
 )
 
 
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_ref__11_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_ref__11_0_0,
-            SUBPARTITION obj_ref__11_0_1,
-            SUBPARTITION obj_ref__11_0_2,
-            SUBPARTITION obj_ref__11_0_3,
-            SUBPARTITION obj_ref__11_0_4,
-            SUBPARTITION obj_ref__11_0_5,
-            SUBPARTITION obj_ref__11_0_6,
-            SUBPARTITION obj_ref__11_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_REF */
@@ -412,19 +256,6 @@ CREATE TABLE `obj_ref__12` (
 )
 
 
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_ref__12_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_ref__12_0_0,
-            SUBPARTITION obj_ref__12_0_1,
-            SUBPARTITION obj_ref__12_0_2,
-            SUBPARTITION obj_ref__12_0_3,
-            SUBPARTITION obj_ref__12_0_4,
-            SUBPARTITION obj_ref__12_0_5,
-            SUBPARTITION obj_ref__12_0_6,
-            SUBPARTITION obj_ref__12_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_REF */
@@ -445,19 +276,6 @@ CREATE TABLE `obj_ref__13` (
 )
 
 
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_ref__13_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_ref__13_0_0,
-            SUBPARTITION obj_ref__13_0_1,
-            SUBPARTITION obj_ref__13_0_2,
-            SUBPARTITION obj_ref__13_0_3,
-            SUBPARTITION obj_ref__13_0_4,
-            SUBPARTITION obj_ref__13_0_5,
-            SUBPARTITION obj_ref__13_0_6,
-            SUBPARTITION obj_ref__13_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_REF */
@@ -478,19 +296,6 @@ CREATE TABLE `obj_ref__14` (
 )
 
 
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_ref__14_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_ref__14_0_0,
-            SUBPARTITION obj_ref__14_0_1,
-            SUBPARTITION obj_ref__14_0_2,
-            SUBPARTITION obj_ref__14_0_3,
-            SUBPARTITION obj_ref__14_0_4,
-            SUBPARTITION obj_ref__14_0_5,
-            SUBPARTITION obj_ref__14_0_6,
-            SUBPARTITION obj_ref__14_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_REF */
@@ -511,19 +316,6 @@ CREATE TABLE `obj_ref__15` (
 )
 
 
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_ref__15_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_ref__15_0_0,
-            SUBPARTITION obj_ref__15_0_1,
-            SUBPARTITION obj_ref__15_0_2,
-            SUBPARTITION obj_ref__15_0_3,
-            SUBPARTITION obj_ref__15_0_4,
-            SUBPARTITION obj_ref__15_0_5,
-            SUBPARTITION obj_ref__15_0_6,
-            SUBPARTITION obj_ref__15_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_REF */
@@ -544,19 +336,6 @@ CREATE TABLE `obj_ref__16` (
 )
 
 
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_ref__16_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_ref__16_0_0,
-            SUBPARTITION obj_ref__16_0_1,
-            SUBPARTITION obj_ref__16_0_2,
-            SUBPARTITION obj_ref__16_0_3,
-            SUBPARTITION obj_ref__16_0_4,
-            SUBPARTITION obj_ref__16_0_5,
-            SUBPARTITION obj_ref__16_0_6,
-            SUBPARTITION obj_ref__16_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_REF */
@@ -577,19 +356,6 @@ CREATE TABLE `obj_ref__17` (
 )
 
 
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_ref__17_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_ref__17_0_0,
-            SUBPARTITION obj_ref__17_0_1,
-            SUBPARTITION obj_ref__17_0_2,
-            SUBPARTITION obj_ref__17_0_3,
-            SUBPARTITION obj_ref__17_0_4,
-            SUBPARTITION obj_ref__17_0_5,
-            SUBPARTITION obj_ref__17_0_6,
-            SUBPARTITION obj_ref__17_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_REF */
@@ -610,19 +376,6 @@ CREATE TABLE `obj_ref__18` (
 )
 
 
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_ref__18_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_ref__18_0_0,
-            SUBPARTITION obj_ref__18_0_1,
-            SUBPARTITION obj_ref__18_0_2,
-            SUBPARTITION obj_ref__18_0_3,
-            SUBPARTITION obj_ref__18_0_4,
-            SUBPARTITION obj_ref__18_0_5,
-            SUBPARTITION obj_ref__18_0_6,
-            SUBPARTITION obj_ref__18_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_REF */
@@ -643,19 +396,6 @@ CREATE TABLE `obj_ref__19` (
 )
 
 
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_ref__19_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_ref__19_0_0,
-            SUBPARTITION obj_ref__19_0_1,
-            SUBPARTITION obj_ref__19_0_2,
-            SUBPARTITION obj_ref__19_0_3,
-            SUBPARTITION obj_ref__19_0_4,
-            SUBPARTITION obj_ref__19_0_5,
-            SUBPARTITION obj_ref__19_0_6,
-            SUBPARTITION obj_ref__19_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_REF */
@@ -676,19 +416,6 @@ CREATE TABLE `obj_ref__20` (
 )
 
 
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_ref__20_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_ref__20_0_0,
-            SUBPARTITION obj_ref__20_0_1,
-            SUBPARTITION obj_ref__20_0_2,
-            SUBPARTITION obj_ref__20_0_3,
-            SUBPARTITION obj_ref__20_0_4,
-            SUBPARTITION obj_ref__20_0_5,
-            SUBPARTITION obj_ref__20_0_6,
-            SUBPARTITION obj_ref__20_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_REF */
@@ -709,19 +436,6 @@ CREATE TABLE `obj_ref__21` (
 )
 
 
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_ref__21_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_ref__21_0_0,
-            SUBPARTITION obj_ref__21_0_1,
-            SUBPARTITION obj_ref__21_0_2,
-            SUBPARTITION obj_ref__21_0_3,
-            SUBPARTITION obj_ref__21_0_4,
-            SUBPARTITION obj_ref__21_0_5,
-            SUBPARTITION obj_ref__21_0_6,
-            SUBPARTITION obj_ref__21_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_REF */
@@ -742,19 +456,6 @@ CREATE TABLE `obj_ref__22` (
 )
 
 
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_ref__22_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_ref__22_0_0,
-            SUBPARTITION obj_ref__22_0_1,
-            SUBPARTITION obj_ref__22_0_2,
-            SUBPARTITION obj_ref__22_0_3,
-            SUBPARTITION obj_ref__22_0_4,
-            SUBPARTITION obj_ref__22_0_5,
-            SUBPARTITION obj_ref__22_0_6,
-            SUBPARTITION obj_ref__22_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_REF */
@@ -775,19 +476,6 @@ CREATE TABLE `obj_ref__23` (
 )
 
 
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_ref__23_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_ref__23_0_0,
-            SUBPARTITION obj_ref__23_0_1,
-            SUBPARTITION obj_ref__23_0_2,
-            SUBPARTITION obj_ref__23_0_3,
-            SUBPARTITION obj_ref__23_0_4,
-            SUBPARTITION obj_ref__23_0_5,
-            SUBPARTITION obj_ref__23_0_6,
-            SUBPARTITION obj_ref__23_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_REF */
@@ -808,19 +496,6 @@ CREATE TABLE `obj_ref__24` (
 )
 
 
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_ref__24_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_ref__24_0_0,
-            SUBPARTITION obj_ref__24_0_1,
-            SUBPARTITION obj_ref__24_0_2,
-            SUBPARTITION obj_ref__24_0_3,
-            SUBPARTITION obj_ref__24_0_4,
-            SUBPARTITION obj_ref__24_0_5,
-            SUBPARTITION obj_ref__24_0_6,
-            SUBPARTITION obj_ref__24_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_REF */
@@ -841,19 +516,6 @@ CREATE TABLE `obj_ref__25` (
 )
 
 
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_ref__25_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_ref__25_0_0,
-            SUBPARTITION obj_ref__25_0_1,
-            SUBPARTITION obj_ref__25_0_2,
-            SUBPARTITION obj_ref__25_0_3,
-            SUBPARTITION obj_ref__25_0_4,
-            SUBPARTITION obj_ref__25_0_5,
-            SUBPARTITION obj_ref__25_0_6,
-            SUBPARTITION obj_ref__25_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_REF */
@@ -874,19 +536,6 @@ CREATE TABLE `obj_ref__26` (
 )
 
 
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_ref__26_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_ref__26_0_0,
-            SUBPARTITION obj_ref__26_0_1,
-            SUBPARTITION obj_ref__26_0_2,
-            SUBPARTITION obj_ref__26_0_3,
-            SUBPARTITION obj_ref__26_0_4,
-            SUBPARTITION obj_ref__26_0_5,
-            SUBPARTITION obj_ref__26_0_6,
-            SUBPARTITION obj_ref__26_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_REF */
@@ -907,19 +556,6 @@ CREATE TABLE `obj_ref__27` (
 )
 
 
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_ref__27_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_ref__27_0_0,
-            SUBPARTITION obj_ref__27_0_1,
-            SUBPARTITION obj_ref__27_0_2,
-            SUBPARTITION obj_ref__27_0_3,
-            SUBPARTITION obj_ref__27_0_4,
-            SUBPARTITION obj_ref__27_0_5,
-            SUBPARTITION obj_ref__27_0_6,
-            SUBPARTITION obj_ref__27_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_REF */
@@ -940,19 +576,6 @@ CREATE TABLE `obj_ref__28` (
 )
 
 
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_ref__28_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_ref__28_0_0,
-            SUBPARTITION obj_ref__28_0_1,
-            SUBPARTITION obj_ref__28_0_2,
-            SUBPARTITION obj_ref__28_0_3,
-            SUBPARTITION obj_ref__28_0_4,
-            SUBPARTITION obj_ref__28_0_5,
-            SUBPARTITION obj_ref__28_0_6,
-            SUBPARTITION obj_ref__28_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_REF */
@@ -973,19 +596,6 @@ CREATE TABLE `obj_ref__29` (
 )
 
 
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_ref__29_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_ref__29_0_0,
-            SUBPARTITION obj_ref__29_0_1,
-            SUBPARTITION obj_ref__29_0_2,
-            SUBPARTITION obj_ref__29_0_3,
-            SUBPARTITION obj_ref__29_0_4,
-            SUBPARTITION obj_ref__29_0_5,
-            SUBPARTITION obj_ref__29_0_6,
-            SUBPARTITION obj_ref__29_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_REF */
@@ -1006,19 +616,6 @@ CREATE TABLE `obj_ref__30` (
 )
 
 
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_ref__30_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_ref__30_0_0,
-            SUBPARTITION obj_ref__30_0_1,
-            SUBPARTITION obj_ref__30_0_2,
-            SUBPARTITION obj_ref__30_0_3,
-            SUBPARTITION obj_ref__30_0_4,
-            SUBPARTITION obj_ref__30_0_5,
-            SUBPARTITION obj_ref__30_0_6,
-            SUBPARTITION obj_ref__30_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_REF */
@@ -1039,19 +636,6 @@ CREATE TABLE `obj_ref__31` (
 )
 
 
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_ref__31_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_ref__31_0_0,
-            SUBPARTITION obj_ref__31_0_1,
-            SUBPARTITION obj_ref__31_0_2,
-            SUBPARTITION obj_ref__31_0_3,
-            SUBPARTITION obj_ref__31_0_4,
-            SUBPARTITION obj_ref__31_0_5,
-            SUBPARTITION obj_ref__31_0_6,
-            SUBPARTITION obj_ref__31_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_REF */
@@ -1072,19 +656,6 @@ CREATE TABLE `obj_ref__32` (
 )
 
 
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_ref__32_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_ref__32_0_0,
-            SUBPARTITION obj_ref__32_0_1,
-            SUBPARTITION obj_ref__32_0_2,
-            SUBPARTITION obj_ref__32_0_3,
-            SUBPARTITION obj_ref__32_0_4,
-            SUBPARTITION obj_ref__32_0_5,
-            SUBPARTITION obj_ref__32_0_6,
-            SUBPARTITION obj_ref__32_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_REF */
@@ -1105,19 +676,6 @@ CREATE TABLE `obj_ref__33` (
 )
 
 
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_ref__33_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_ref__33_0_0,
-            SUBPARTITION obj_ref__33_0_1,
-            SUBPARTITION obj_ref__33_0_2,
-            SUBPARTITION obj_ref__33_0_3,
-            SUBPARTITION obj_ref__33_0_4,
-            SUBPARTITION obj_ref__33_0_5,
-            SUBPARTITION obj_ref__33_0_6,
-            SUBPARTITION obj_ref__33_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_REF */
@@ -1138,19 +696,6 @@ CREATE TABLE `obj_ref__34` (
 )
 
 
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_ref__34_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_ref__34_0_0,
-            SUBPARTITION obj_ref__34_0_1,
-            SUBPARTITION obj_ref__34_0_2,
-            SUBPARTITION obj_ref__34_0_3,
-            SUBPARTITION obj_ref__34_0_4,
-            SUBPARTITION obj_ref__34_0_5,
-            SUBPARTITION obj_ref__34_0_6,
-            SUBPARTITION obj_ref__34_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_REF */
@@ -1171,19 +716,6 @@ CREATE TABLE `obj_ref__35` (
 )
 
 
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_ref__35_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_ref__35_0_0,
-            SUBPARTITION obj_ref__35_0_1,
-            SUBPARTITION obj_ref__35_0_2,
-            SUBPARTITION obj_ref__35_0_3,
-            SUBPARTITION obj_ref__35_0_4,
-            SUBPARTITION obj_ref__35_0_5,
-            SUBPARTITION obj_ref__35_0_6,
-            SUBPARTITION obj_ref__35_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_REF */
@@ -1204,19 +736,6 @@ CREATE TABLE `obj_ref__36` (
 )
 
 
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_ref__36_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_ref__36_0_0,
-            SUBPARTITION obj_ref__36_0_1,
-            SUBPARTITION obj_ref__36_0_2,
-            SUBPARTITION obj_ref__36_0_3,
-            SUBPARTITION obj_ref__36_0_4,
-            SUBPARTITION obj_ref__36_0_5,
-            SUBPARTITION obj_ref__36_0_6,
-            SUBPARTITION obj_ref__36_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_REF */
@@ -1237,19 +756,6 @@ CREATE TABLE `obj_ref__37` (
 )
 
 
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_ref__37_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_ref__37_0_0,
-            SUBPARTITION obj_ref__37_0_1,
-            SUBPARTITION obj_ref__37_0_2,
-            SUBPARTITION obj_ref__37_0_3,
-            SUBPARTITION obj_ref__37_0_4,
-            SUBPARTITION obj_ref__37_0_5,
-            SUBPARTITION obj_ref__37_0_6,
-            SUBPARTITION obj_ref__37_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_REF */
@@ -1270,19 +776,6 @@ CREATE TABLE `obj_ref__38` (
 )
 
 
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_ref__38_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_ref__38_0_0,
-            SUBPARTITION obj_ref__38_0_1,
-            SUBPARTITION obj_ref__38_0_2,
-            SUBPARTITION obj_ref__38_0_3,
-            SUBPARTITION obj_ref__38_0_4,
-            SUBPARTITION obj_ref__38_0_5,
-            SUBPARTITION obj_ref__38_0_6,
-            SUBPARTITION obj_ref__38_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_REF */
@@ -1303,19 +796,6 @@ CREATE TABLE `obj_ref__39` (
 )
 
 
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_ref__39_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_ref__39_0_0,
-            SUBPARTITION obj_ref__39_0_1,
-            SUBPARTITION obj_ref__39_0_2,
-            SUBPARTITION obj_ref__39_0_3,
-            SUBPARTITION obj_ref__39_0_4,
-            SUBPARTITION obj_ref__39_0_5,
-            SUBPARTITION obj_ref__39_0_6,
-            SUBPARTITION obj_ref__39_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_REF */
@@ -1336,19 +816,6 @@ CREATE TABLE `obj_ref__40` (
 )
 
 
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_ref__40_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_ref__40_0_0,
-            SUBPARTITION obj_ref__40_0_1,
-            SUBPARTITION obj_ref__40_0_2,
-            SUBPARTITION obj_ref__40_0_3,
-            SUBPARTITION obj_ref__40_0_4,
-            SUBPARTITION obj_ref__40_0_5,
-            SUBPARTITION obj_ref__40_0_6,
-            SUBPARTITION obj_ref__40_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_REF */
@@ -1369,19 +836,6 @@ CREATE TABLE `obj_ref__41` (
 )
 
 
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_ref__41_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_ref__41_0_0,
-            SUBPARTITION obj_ref__41_0_1,
-            SUBPARTITION obj_ref__41_0_2,
-            SUBPARTITION obj_ref__41_0_3,
-            SUBPARTITION obj_ref__41_0_4,
-            SUBPARTITION obj_ref__41_0_5,
-            SUBPARTITION obj_ref__41_0_6,
-            SUBPARTITION obj_ref__41_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_REF */
@@ -1402,19 +856,6 @@ CREATE TABLE `obj_ref__42` (
 )
 
 
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_ref__42_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_ref__42_0_0,
-            SUBPARTITION obj_ref__42_0_1,
-            SUBPARTITION obj_ref__42_0_2,
-            SUBPARTITION obj_ref__42_0_3,
-            SUBPARTITION obj_ref__42_0_4,
-            SUBPARTITION obj_ref__42_0_5,
-            SUBPARTITION obj_ref__42_0_6,
-            SUBPARTITION obj_ref__42_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_REF */
@@ -1435,19 +876,6 @@ CREATE TABLE `obj_ref__43` (
 )
 
 
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_ref__43_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_ref__43_0_0,
-            SUBPARTITION obj_ref__43_0_1,
-            SUBPARTITION obj_ref__43_0_2,
-            SUBPARTITION obj_ref__43_0_3,
-            SUBPARTITION obj_ref__43_0_4,
-            SUBPARTITION obj_ref__43_0_5,
-            SUBPARTITION obj_ref__43_0_6,
-            SUBPARTITION obj_ref__43_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_REF */
@@ -1468,19 +896,6 @@ CREATE TABLE `obj_ref__44` (
 )
 
 
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_ref__44_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_ref__44_0_0,
-            SUBPARTITION obj_ref__44_0_1,
-            SUBPARTITION obj_ref__44_0_2,
-            SUBPARTITION obj_ref__44_0_3,
-            SUBPARTITION obj_ref__44_0_4,
-            SUBPARTITION obj_ref__44_0_5,
-            SUBPARTITION obj_ref__44_0_6,
-            SUBPARTITION obj_ref__44_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_REF */
@@ -1501,19 +916,6 @@ CREATE TABLE `obj_ref__45` (
 )
 
 
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_ref__45_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_ref__45_0_0,
-            SUBPARTITION obj_ref__45_0_1,
-            SUBPARTITION obj_ref__45_0_2,
-            SUBPARTITION obj_ref__45_0_3,
-            SUBPARTITION obj_ref__45_0_4,
-            SUBPARTITION obj_ref__45_0_5,
-            SUBPARTITION obj_ref__45_0_6,
-            SUBPARTITION obj_ref__45_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_REF */
@@ -1534,19 +936,6 @@ CREATE TABLE `obj_ref__46` (
 )
 
 
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_ref__46_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_ref__46_0_0,
-            SUBPARTITION obj_ref__46_0_1,
-            SUBPARTITION obj_ref__46_0_2,
-            SUBPARTITION obj_ref__46_0_3,
-            SUBPARTITION obj_ref__46_0_4,
-            SUBPARTITION obj_ref__46_0_5,
-            SUBPARTITION obj_ref__46_0_6,
-            SUBPARTITION obj_ref__46_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_REF */
@@ -1567,19 +956,6 @@ CREATE TABLE `obj_ref__47` (
 )
 
 
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_ref__47_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_ref__47_0_0,
-            SUBPARTITION obj_ref__47_0_1,
-            SUBPARTITION obj_ref__47_0_2,
-            SUBPARTITION obj_ref__47_0_3,
-            SUBPARTITION obj_ref__47_0_4,
-            SUBPARTITION obj_ref__47_0_5,
-            SUBPARTITION obj_ref__47_0_6,
-            SUBPARTITION obj_ref__47_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_REF */
@@ -1600,19 +976,6 @@ CREATE TABLE `obj_ref__48` (
 )
 
 
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_ref__48_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_ref__48_0_0,
-            SUBPARTITION obj_ref__48_0_1,
-            SUBPARTITION obj_ref__48_0_2,
-            SUBPARTITION obj_ref__48_0_3,
-            SUBPARTITION obj_ref__48_0_4,
-            SUBPARTITION obj_ref__48_0_5,
-            SUBPARTITION obj_ref__48_0_6,
-            SUBPARTITION obj_ref__48_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_REF */
@@ -1633,19 +996,6 @@ CREATE TABLE `obj_ref__49` (
 )
 
 
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_ref__49_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_ref__49_0_0,
-            SUBPARTITION obj_ref__49_0_1,
-            SUBPARTITION obj_ref__49_0_2,
-            SUBPARTITION obj_ref__49_0_3,
-            SUBPARTITION obj_ref__49_0_4,
-            SUBPARTITION obj_ref__49_0_5,
-            SUBPARTITION obj_ref__49_0_6,
-            SUBPARTITION obj_ref__49_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_REF */
@@ -1666,19 +1016,6 @@ CREATE TABLE `obj_ref__50` (
 )
 
 
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_ref__50_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_ref__50_0_0,
-            SUBPARTITION obj_ref__50_0_1,
-            SUBPARTITION obj_ref__50_0_2,
-            SUBPARTITION obj_ref__50_0_3,
-            SUBPARTITION obj_ref__50_0_4,
-            SUBPARTITION obj_ref__50_0_5,
-            SUBPARTITION obj_ref__50_0_6,
-            SUBPARTITION obj_ref__50_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_REF */
@@ -1699,19 +1036,6 @@ CREATE TABLE `obj_ref__51` (
 )
 
 
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_ref__51_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_ref__51_0_0,
-            SUBPARTITION obj_ref__51_0_1,
-            SUBPARTITION obj_ref__51_0_2,
-            SUBPARTITION obj_ref__51_0_3,
-            SUBPARTITION obj_ref__51_0_4,
-            SUBPARTITION obj_ref__51_0_5,
-            SUBPARTITION obj_ref__51_0_6,
-            SUBPARTITION obj_ref__51_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_REF */
@@ -1732,19 +1056,6 @@ CREATE TABLE `obj_ref__52` (
 )
 
 
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_ref__52_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_ref__52_0_0,
-            SUBPARTITION obj_ref__52_0_1,
-            SUBPARTITION obj_ref__52_0_2,
-            SUBPARTITION obj_ref__52_0_3,
-            SUBPARTITION obj_ref__52_0_4,
-            SUBPARTITION obj_ref__52_0_5,
-            SUBPARTITION obj_ref__52_0_6,
-            SUBPARTITION obj_ref__52_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_REF */
@@ -1765,19 +1076,6 @@ CREATE TABLE `obj_ref__53` (
 )
 
 
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_ref__53_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_ref__53_0_0,
-            SUBPARTITION obj_ref__53_0_1,
-            SUBPARTITION obj_ref__53_0_2,
-            SUBPARTITION obj_ref__53_0_3,
-            SUBPARTITION obj_ref__53_0_4,
-            SUBPARTITION obj_ref__53_0_5,
-            SUBPARTITION obj_ref__53_0_6,
-            SUBPARTITION obj_ref__53_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_REF */
@@ -1798,19 +1096,6 @@ CREATE TABLE `obj_ref__54` (
 )
 
 
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_ref__54_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_ref__54_0_0,
-            SUBPARTITION obj_ref__54_0_1,
-            SUBPARTITION obj_ref__54_0_2,
-            SUBPARTITION obj_ref__54_0_3,
-            SUBPARTITION obj_ref__54_0_4,
-            SUBPARTITION obj_ref__54_0_5,
-            SUBPARTITION obj_ref__54_0_6,
-            SUBPARTITION obj_ref__54_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_REF */
@@ -1831,19 +1116,6 @@ CREATE TABLE `obj_ref__55` (
 )
 
 
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_ref__55_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_ref__55_0_0,
-            SUBPARTITION obj_ref__55_0_1,
-            SUBPARTITION obj_ref__55_0_2,
-            SUBPARTITION obj_ref__55_0_3,
-            SUBPARTITION obj_ref__55_0_4,
-            SUBPARTITION obj_ref__55_0_5,
-            SUBPARTITION obj_ref__55_0_6,
-            SUBPARTITION obj_ref__55_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_REF */
@@ -1864,19 +1136,6 @@ CREATE TABLE `obj_ref__56` (
 )
 
 
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_ref__56_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_ref__56_0_0,
-            SUBPARTITION obj_ref__56_0_1,
-            SUBPARTITION obj_ref__56_0_2,
-            SUBPARTITION obj_ref__56_0_3,
-            SUBPARTITION obj_ref__56_0_4,
-            SUBPARTITION obj_ref__56_0_5,
-            SUBPARTITION obj_ref__56_0_6,
-            SUBPARTITION obj_ref__56_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_REF */
@@ -1897,19 +1156,6 @@ CREATE TABLE `obj_ref__57` (
 )
 
 
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_ref__57_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_ref__57_0_0,
-            SUBPARTITION obj_ref__57_0_1,
-            SUBPARTITION obj_ref__57_0_2,
-            SUBPARTITION obj_ref__57_0_3,
-            SUBPARTITION obj_ref__57_0_4,
-            SUBPARTITION obj_ref__57_0_5,
-            SUBPARTITION obj_ref__57_0_6,
-            SUBPARTITION obj_ref__57_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_REF */
@@ -1930,19 +1176,6 @@ CREATE TABLE `obj_ref__58` (
 )
 
 
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_ref__58_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_ref__58_0_0,
-            SUBPARTITION obj_ref__58_0_1,
-            SUBPARTITION obj_ref__58_0_2,
-            SUBPARTITION obj_ref__58_0_3,
-            SUBPARTITION obj_ref__58_0_4,
-            SUBPARTITION obj_ref__58_0_5,
-            SUBPARTITION obj_ref__58_0_6,
-            SUBPARTITION obj_ref__58_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_REF */
@@ -1963,19 +1196,6 @@ CREATE TABLE `obj_ref__59` (
 )
 
 
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_ref__59_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_ref__59_0_0,
-            SUBPARTITION obj_ref__59_0_1,
-            SUBPARTITION obj_ref__59_0_2,
-            SUBPARTITION obj_ref__59_0_3,
-            SUBPARTITION obj_ref__59_0_4,
-            SUBPARTITION obj_ref__59_0_5,
-            SUBPARTITION obj_ref__59_0_6,
-            SUBPARTITION obj_ref__59_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_REF */
@@ -1996,19 +1216,6 @@ CREATE TABLE `obj_ref__60` (
 )
 
 
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_ref__60_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_ref__60_0_0,
-            SUBPARTITION obj_ref__60_0_1,
-            SUBPARTITION obj_ref__60_0_2,
-            SUBPARTITION obj_ref__60_0_3,
-            SUBPARTITION obj_ref__60_0_4,
-            SUBPARTITION obj_ref__60_0_5,
-            SUBPARTITION obj_ref__60_0_6,
-            SUBPARTITION obj_ref__60_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_REF */
@@ -2029,19 +1236,6 @@ CREATE TABLE `obj_ref__61` (
 )
 
 
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_ref__61_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_ref__61_0_0,
-            SUBPARTITION obj_ref__61_0_1,
-            SUBPARTITION obj_ref__61_0_2,
-            SUBPARTITION obj_ref__61_0_3,
-            SUBPARTITION obj_ref__61_0_4,
-            SUBPARTITION obj_ref__61_0_5,
-            SUBPARTITION obj_ref__61_0_6,
-            SUBPARTITION obj_ref__61_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_REF */
@@ -2062,19 +1256,6 @@ CREATE TABLE `obj_ref__62` (
 )
 
 
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_ref__62_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_ref__62_0_0,
-            SUBPARTITION obj_ref__62_0_1,
-            SUBPARTITION obj_ref__62_0_2,
-            SUBPARTITION obj_ref__62_0_3,
-            SUBPARTITION obj_ref__62_0_4,
-            SUBPARTITION obj_ref__62_0_5,
-            SUBPARTITION obj_ref__62_0_6,
-            SUBPARTITION obj_ref__62_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_REF */
@@ -2095,19 +1276,6 @@ CREATE TABLE `obj_ref__63` (
 )
 
 
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_ref__63_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_ref__63_0_0,
-            SUBPARTITION obj_ref__63_0_1,
-            SUBPARTITION obj_ref__63_0_2,
-            SUBPARTITION obj_ref__63_0_3,
-            SUBPARTITION obj_ref__63_0_4,
-            SUBPARTITION obj_ref__63_0_5,
-            SUBPARTITION obj_ref__63_0_6,
-            SUBPARTITION obj_ref__63_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_REF */
@@ -2128,19 +1296,6 @@ CREATE TABLE `obj_ref__64` (
 )
 
 
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_ref__64_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_ref__64_0_0,
-            SUBPARTITION obj_ref__64_0_1,
-            SUBPARTITION obj_ref__64_0_2,
-            SUBPARTITION obj_ref__64_0_3,
-            SUBPARTITION obj_ref__64_0_4,
-            SUBPARTITION obj_ref__64_0_5,
-            SUBPARTITION obj_ref__64_0_6,
-            SUBPARTITION obj_ref__64_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_REF */
@@ -2161,19 +1316,6 @@ CREATE TABLE `obj_ref__65` (
 )
 
 
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_ref__65_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_ref__65_0_0,
-            SUBPARTITION obj_ref__65_0_1,
-            SUBPARTITION obj_ref__65_0_2,
-            SUBPARTITION obj_ref__65_0_3,
-            SUBPARTITION obj_ref__65_0_4,
-            SUBPARTITION obj_ref__65_0_5,
-            SUBPARTITION obj_ref__65_0_6,
-            SUBPARTITION obj_ref__65_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_REF */
@@ -2194,19 +1336,6 @@ CREATE TABLE `obj_ref__66` (
 )
 
 
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_ref__66_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_ref__66_0_0,
-            SUBPARTITION obj_ref__66_0_1,
-            SUBPARTITION obj_ref__66_0_2,
-            SUBPARTITION obj_ref__66_0_3,
-            SUBPARTITION obj_ref__66_0_4,
-            SUBPARTITION obj_ref__66_0_5,
-            SUBPARTITION obj_ref__66_0_6,
-            SUBPARTITION obj_ref__66_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_REF */
@@ -2227,19 +1356,6 @@ CREATE TABLE `obj_ref__67` (
 )
 
 
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_ref__67_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_ref__67_0_0,
-            SUBPARTITION obj_ref__67_0_1,
-            SUBPARTITION obj_ref__67_0_2,
-            SUBPARTITION obj_ref__67_0_3,
-            SUBPARTITION obj_ref__67_0_4,
-            SUBPARTITION obj_ref__67_0_5,
-            SUBPARTITION obj_ref__67_0_6,
-            SUBPARTITION obj_ref__67_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_REF */
@@ -2260,19 +1376,6 @@ CREATE TABLE `obj_ref__68` (
 )
 
 
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_ref__68_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_ref__68_0_0,
-            SUBPARTITION obj_ref__68_0_1,
-            SUBPARTITION obj_ref__68_0_2,
-            SUBPARTITION obj_ref__68_0_3,
-            SUBPARTITION obj_ref__68_0_4,
-            SUBPARTITION obj_ref__68_0_5,
-            SUBPARTITION obj_ref__68_0_6,
-            SUBPARTITION obj_ref__68_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_REF */
@@ -2293,19 +1396,6 @@ CREATE TABLE `obj_ref__69` (
 )
 
 
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_ref__69_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_ref__69_0_0,
-            SUBPARTITION obj_ref__69_0_1,
-            SUBPARTITION obj_ref__69_0_2,
-            SUBPARTITION obj_ref__69_0_3,
-            SUBPARTITION obj_ref__69_0_4,
-            SUBPARTITION obj_ref__69_0_5,
-            SUBPARTITION obj_ref__69_0_6,
-            SUBPARTITION obj_ref__69_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_REF */
@@ -2326,19 +1416,6 @@ CREATE TABLE `obj_ref__70` (
 )
 
 
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_ref__70_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_ref__70_0_0,
-            SUBPARTITION obj_ref__70_0_1,
-            SUBPARTITION obj_ref__70_0_2,
-            SUBPARTITION obj_ref__70_0_3,
-            SUBPARTITION obj_ref__70_0_4,
-            SUBPARTITION obj_ref__70_0_5,
-            SUBPARTITION obj_ref__70_0_6,
-            SUBPARTITION obj_ref__70_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_REF */
@@ -2359,19 +1436,6 @@ CREATE TABLE `obj_ref__71` (
 )
 
 
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_ref__71_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_ref__71_0_0,
-            SUBPARTITION obj_ref__71_0_1,
-            SUBPARTITION obj_ref__71_0_2,
-            SUBPARTITION obj_ref__71_0_3,
-            SUBPARTITION obj_ref__71_0_4,
-            SUBPARTITION obj_ref__71_0_5,
-            SUBPARTITION obj_ref__71_0_6,
-            SUBPARTITION obj_ref__71_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_REF */
@@ -2392,19 +1456,6 @@ CREATE TABLE `obj_ref__72` (
 )
 
 
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_ref__72_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_ref__72_0_0,
-            SUBPARTITION obj_ref__72_0_1,
-            SUBPARTITION obj_ref__72_0_2,
-            SUBPARTITION obj_ref__72_0_3,
-            SUBPARTITION obj_ref__72_0_4,
-            SUBPARTITION obj_ref__72_0_5,
-            SUBPARTITION obj_ref__72_0_6,
-            SUBPARTITION obj_ref__72_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_REF */
@@ -2425,19 +1476,6 @@ CREATE TABLE `obj_ref__73` (
 )
 
 
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_ref__73_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_ref__73_0_0,
-            SUBPARTITION obj_ref__73_0_1,
-            SUBPARTITION obj_ref__73_0_2,
-            SUBPARTITION obj_ref__73_0_3,
-            SUBPARTITION obj_ref__73_0_4,
-            SUBPARTITION obj_ref__73_0_5,
-            SUBPARTITION obj_ref__73_0_6,
-            SUBPARTITION obj_ref__73_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_REF */
@@ -2458,19 +1496,6 @@ CREATE TABLE `obj_ref__74` (
 )
 
 
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_ref__74_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_ref__74_0_0,
-            SUBPARTITION obj_ref__74_0_1,
-            SUBPARTITION obj_ref__74_0_2,
-            SUBPARTITION obj_ref__74_0_3,
-            SUBPARTITION obj_ref__74_0_4,
-            SUBPARTITION obj_ref__74_0_5,
-            SUBPARTITION obj_ref__74_0_6,
-            SUBPARTITION obj_ref__74_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_REF */
@@ -2491,19 +1516,6 @@ CREATE TABLE `obj_ref__75` (
 )
 
 
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_ref__75_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_ref__75_0_0,
-            SUBPARTITION obj_ref__75_0_1,
-            SUBPARTITION obj_ref__75_0_2,
-            SUBPARTITION obj_ref__75_0_3,
-            SUBPARTITION obj_ref__75_0_4,
-            SUBPARTITION obj_ref__75_0_5,
-            SUBPARTITION obj_ref__75_0_6,
-            SUBPARTITION obj_ref__75_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_REF */
@@ -2524,19 +1536,6 @@ CREATE TABLE `obj_ref__76` (
 )
 
 
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_ref__76_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_ref__76_0_0,
-            SUBPARTITION obj_ref__76_0_1,
-            SUBPARTITION obj_ref__76_0_2,
-            SUBPARTITION obj_ref__76_0_3,
-            SUBPARTITION obj_ref__76_0_4,
-            SUBPARTITION obj_ref__76_0_5,
-            SUBPARTITION obj_ref__76_0_6,
-            SUBPARTITION obj_ref__76_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_REF */
@@ -2557,19 +1556,6 @@ CREATE TABLE `obj_ref__77` (
 )
 
 
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_ref__77_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_ref__77_0_0,
-            SUBPARTITION obj_ref__77_0_1,
-            SUBPARTITION obj_ref__77_0_2,
-            SUBPARTITION obj_ref__77_0_3,
-            SUBPARTITION obj_ref__77_0_4,
-            SUBPARTITION obj_ref__77_0_5,
-            SUBPARTITION obj_ref__77_0_6,
-            SUBPARTITION obj_ref__77_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_REF */
@@ -2590,19 +1576,6 @@ CREATE TABLE `obj_ref__78` (
 )
 
 
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_ref__78_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_ref__78_0_0,
-            SUBPARTITION obj_ref__78_0_1,
-            SUBPARTITION obj_ref__78_0_2,
-            SUBPARTITION obj_ref__78_0_3,
-            SUBPARTITION obj_ref__78_0_4,
-            SUBPARTITION obj_ref__78_0_5,
-            SUBPARTITION obj_ref__78_0_6,
-            SUBPARTITION obj_ref__78_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_REF */
@@ -2623,19 +1596,6 @@ CREATE TABLE `obj_ref__79` (
 )
 
 
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_ref__79_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_ref__79_0_0,
-            SUBPARTITION obj_ref__79_0_1,
-            SUBPARTITION obj_ref__79_0_2,
-            SUBPARTITION obj_ref__79_0_3,
-            SUBPARTITION obj_ref__79_0_4,
-            SUBPARTITION obj_ref__79_0_5,
-            SUBPARTITION obj_ref__79_0_6,
-            SUBPARTITION obj_ref__79_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_REF */
@@ -2656,19 +1616,6 @@ CREATE TABLE `obj_ref__80` (
 )
 
 
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_ref__80_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_ref__80_0_0,
-            SUBPARTITION obj_ref__80_0_1,
-            SUBPARTITION obj_ref__80_0_2,
-            SUBPARTITION obj_ref__80_0_3,
-            SUBPARTITION obj_ref__80_0_4,
-            SUBPARTITION obj_ref__80_0_5,
-            SUBPARTITION obj_ref__80_0_6,
-            SUBPARTITION obj_ref__80_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_REF */
@@ -2689,19 +1636,6 @@ CREATE TABLE `obj_ref__81` (
 )
 
 
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_ref__81_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_ref__81_0_0,
-            SUBPARTITION obj_ref__81_0_1,
-            SUBPARTITION obj_ref__81_0_2,
-            SUBPARTITION obj_ref__81_0_3,
-            SUBPARTITION obj_ref__81_0_4,
-            SUBPARTITION obj_ref__81_0_5,
-            SUBPARTITION obj_ref__81_0_6,
-            SUBPARTITION obj_ref__81_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_REF */
@@ -2722,19 +1656,6 @@ CREATE TABLE `obj_ref__82` (
 )
 
 
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_ref__82_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_ref__82_0_0,
-            SUBPARTITION obj_ref__82_0_1,
-            SUBPARTITION obj_ref__82_0_2,
-            SUBPARTITION obj_ref__82_0_3,
-            SUBPARTITION obj_ref__82_0_4,
-            SUBPARTITION obj_ref__82_0_5,
-            SUBPARTITION obj_ref__82_0_6,
-            SUBPARTITION obj_ref__82_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_REF */
@@ -2755,19 +1676,6 @@ CREATE TABLE `obj_ref__83` (
 )
 
 
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_ref__83_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_ref__83_0_0,
-            SUBPARTITION obj_ref__83_0_1,
-            SUBPARTITION obj_ref__83_0_2,
-            SUBPARTITION obj_ref__83_0_3,
-            SUBPARTITION obj_ref__83_0_4,
-            SUBPARTITION obj_ref__83_0_5,
-            SUBPARTITION obj_ref__83_0_6,
-            SUBPARTITION obj_ref__83_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_REF */
@@ -2788,19 +1696,6 @@ CREATE TABLE `obj_ref__84` (
 )
 
 
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_ref__84_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_ref__84_0_0,
-            SUBPARTITION obj_ref__84_0_1,
-            SUBPARTITION obj_ref__84_0_2,
-            SUBPARTITION obj_ref__84_0_3,
-            SUBPARTITION obj_ref__84_0_4,
-            SUBPARTITION obj_ref__84_0_5,
-            SUBPARTITION obj_ref__84_0_6,
-            SUBPARTITION obj_ref__84_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_REF */
@@ -2821,19 +1716,6 @@ CREATE TABLE `obj_ref__85` (
 )
 
 
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_ref__85_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_ref__85_0_0,
-            SUBPARTITION obj_ref__85_0_1,
-            SUBPARTITION obj_ref__85_0_2,
-            SUBPARTITION obj_ref__85_0_3,
-            SUBPARTITION obj_ref__85_0_4,
-            SUBPARTITION obj_ref__85_0_5,
-            SUBPARTITION obj_ref__85_0_6,
-            SUBPARTITION obj_ref__85_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_REF */
@@ -2854,19 +1736,6 @@ CREATE TABLE `obj_ref__86` (
 )
 
 
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_ref__86_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_ref__86_0_0,
-            SUBPARTITION obj_ref__86_0_1,
-            SUBPARTITION obj_ref__86_0_2,
-            SUBPARTITION obj_ref__86_0_3,
-            SUBPARTITION obj_ref__86_0_4,
-            SUBPARTITION obj_ref__86_0_5,
-            SUBPARTITION obj_ref__86_0_6,
-            SUBPARTITION obj_ref__86_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_REF */
@@ -2887,19 +1756,6 @@ CREATE TABLE `obj_ref__87` (
 )
 
 
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_ref__87_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_ref__87_0_0,
-            SUBPARTITION obj_ref__87_0_1,
-            SUBPARTITION obj_ref__87_0_2,
-            SUBPARTITION obj_ref__87_0_3,
-            SUBPARTITION obj_ref__87_0_4,
-            SUBPARTITION obj_ref__87_0_5,
-            SUBPARTITION obj_ref__87_0_6,
-            SUBPARTITION obj_ref__87_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_REF */
@@ -2920,19 +1776,6 @@ CREATE TABLE `obj_ref__88` (
 )
 
 
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_ref__88_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_ref__88_0_0,
-            SUBPARTITION obj_ref__88_0_1,
-            SUBPARTITION obj_ref__88_0_2,
-            SUBPARTITION obj_ref__88_0_3,
-            SUBPARTITION obj_ref__88_0_4,
-            SUBPARTITION obj_ref__88_0_5,
-            SUBPARTITION obj_ref__88_0_6,
-            SUBPARTITION obj_ref__88_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_REF */
@@ -2953,19 +1796,6 @@ CREATE TABLE `obj_ref__89` (
 )
 
 
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_ref__89_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_ref__89_0_0,
-            SUBPARTITION obj_ref__89_0_1,
-            SUBPARTITION obj_ref__89_0_2,
-            SUBPARTITION obj_ref__89_0_3,
-            SUBPARTITION obj_ref__89_0_4,
-            SUBPARTITION obj_ref__89_0_5,
-            SUBPARTITION obj_ref__89_0_6,
-            SUBPARTITION obj_ref__89_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_REF */
@@ -2986,19 +1816,6 @@ CREATE TABLE `obj_ref__90` (
 )
 
 
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_ref__90_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_ref__90_0_0,
-            SUBPARTITION obj_ref__90_0_1,
-            SUBPARTITION obj_ref__90_0_2,
-            SUBPARTITION obj_ref__90_0_3,
-            SUBPARTITION obj_ref__90_0_4,
-            SUBPARTITION obj_ref__90_0_5,
-            SUBPARTITION obj_ref__90_0_6,
-            SUBPARTITION obj_ref__90_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_REF */
@@ -3019,19 +1836,6 @@ CREATE TABLE `obj_ref__91` (
 )
 
 
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_ref__91_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_ref__91_0_0,
-            SUBPARTITION obj_ref__91_0_1,
-            SUBPARTITION obj_ref__91_0_2,
-            SUBPARTITION obj_ref__91_0_3,
-            SUBPARTITION obj_ref__91_0_4,
-            SUBPARTITION obj_ref__91_0_5,
-            SUBPARTITION obj_ref__91_0_6,
-            SUBPARTITION obj_ref__91_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_REF */
@@ -3052,19 +1856,6 @@ CREATE TABLE `obj_ref__92` (
 )
 
 
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_ref__92_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_ref__92_0_0,
-            SUBPARTITION obj_ref__92_0_1,
-            SUBPARTITION obj_ref__92_0_2,
-            SUBPARTITION obj_ref__92_0_3,
-            SUBPARTITION obj_ref__92_0_4,
-            SUBPARTITION obj_ref__92_0_5,
-            SUBPARTITION obj_ref__92_0_6,
-            SUBPARTITION obj_ref__92_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_REF */
@@ -3085,19 +1876,6 @@ CREATE TABLE `obj_ref__93` (
 )
 
 
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_ref__93_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_ref__93_0_0,
-            SUBPARTITION obj_ref__93_0_1,
-            SUBPARTITION obj_ref__93_0_2,
-            SUBPARTITION obj_ref__93_0_3,
-            SUBPARTITION obj_ref__93_0_4,
-            SUBPARTITION obj_ref__93_0_5,
-            SUBPARTITION obj_ref__93_0_6,
-            SUBPARTITION obj_ref__93_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_REF */
@@ -3118,19 +1896,6 @@ CREATE TABLE `obj_ref__94` (
 )
 
 
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_ref__94_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_ref__94_0_0,
-            SUBPARTITION obj_ref__94_0_1,
-            SUBPARTITION obj_ref__94_0_2,
-            SUBPARTITION obj_ref__94_0_3,
-            SUBPARTITION obj_ref__94_0_4,
-            SUBPARTITION obj_ref__94_0_5,
-            SUBPARTITION obj_ref__94_0_6,
-            SUBPARTITION obj_ref__94_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_REF */
@@ -3151,19 +1916,6 @@ CREATE TABLE `obj_ref__95` (
 )
 
 
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_ref__95_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_ref__95_0_0,
-            SUBPARTITION obj_ref__95_0_1,
-            SUBPARTITION obj_ref__95_0_2,
-            SUBPARTITION obj_ref__95_0_3,
-            SUBPARTITION obj_ref__95_0_4,
-            SUBPARTITION obj_ref__95_0_5,
-            SUBPARTITION obj_ref__95_0_6,
-            SUBPARTITION obj_ref__95_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_REF */
@@ -3184,19 +1936,6 @@ CREATE TABLE `obj_ref__96` (
 )
 
 
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_ref__96_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_ref__96_0_0,
-            SUBPARTITION obj_ref__96_0_1,
-            SUBPARTITION obj_ref__96_0_2,
-            SUBPARTITION obj_ref__96_0_3,
-            SUBPARTITION obj_ref__96_0_4,
-            SUBPARTITION obj_ref__96_0_5,
-            SUBPARTITION obj_ref__96_0_6,
-            SUBPARTITION obj_ref__96_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_REF */
@@ -3217,19 +1956,6 @@ CREATE TABLE `obj_ref__97` (
 )
 
 
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_ref__97_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_ref__97_0_0,
-            SUBPARTITION obj_ref__97_0_1,
-            SUBPARTITION obj_ref__97_0_2,
-            SUBPARTITION obj_ref__97_0_3,
-            SUBPARTITION obj_ref__97_0_4,
-            SUBPARTITION obj_ref__97_0_5,
-            SUBPARTITION obj_ref__97_0_6,
-            SUBPARTITION obj_ref__97_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_REF */
@@ -3250,19 +1976,6 @@ CREATE TABLE `obj_ref__98` (
 )
 
 
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_ref__98_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_ref__98_0_0,
-            SUBPARTITION obj_ref__98_0_1,
-            SUBPARTITION obj_ref__98_0_2,
-            SUBPARTITION obj_ref__98_0_3,
-            SUBPARTITION obj_ref__98_0_4,
-            SUBPARTITION obj_ref__98_0_5,
-            SUBPARTITION obj_ref__98_0_6,
-            SUBPARTITION obj_ref__98_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_REF */
@@ -3283,19 +1996,6 @@ CREATE TABLE `obj_ref__99` (
 )
 
 
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_ref__99_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_ref__99_0_0,
-            SUBPARTITION obj_ref__99_0_1,
-            SUBPARTITION obj_ref__99_0_2,
-            SUBPARTITION obj_ref__99_0_3,
-            SUBPARTITION obj_ref__99_0_4,
-            SUBPARTITION obj_ref__99_0_5,
-            SUBPARTITION obj_ref__99_0_6,
-            SUBPARTITION obj_ref__99_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_REF */
@@ -3316,19 +2016,6 @@ CREATE TABLE `obj_ref__100` (
 )
 
 
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_ref__100_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_ref__100_0_0,
-            SUBPARTITION obj_ref__100_0_1,
-            SUBPARTITION obj_ref__100_0_2,
-            SUBPARTITION obj_ref__100_0_3,
-            SUBPARTITION obj_ref__100_0_4,
-            SUBPARTITION obj_ref__100_0_5,
-            SUBPARTITION obj_ref__100_0_6,
-            SUBPARTITION obj_ref__100_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_REF */
@@ -3349,19 +2036,6 @@ CREATE TABLE `obj_ref__101` (
 )
 
 
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_ref__101_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_ref__101_0_0,
-            SUBPARTITION obj_ref__101_0_1,
-            SUBPARTITION obj_ref__101_0_2,
-            SUBPARTITION obj_ref__101_0_3,
-            SUBPARTITION obj_ref__101_0_4,
-            SUBPARTITION obj_ref__101_0_5,
-            SUBPARTITION obj_ref__101_0_6,
-            SUBPARTITION obj_ref__101_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_REF */
@@ -3382,19 +2056,6 @@ CREATE TABLE `obj_ref__102` (
 )
 
 
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_ref__102_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_ref__102_0_0,
-            SUBPARTITION obj_ref__102_0_1,
-            SUBPARTITION obj_ref__102_0_2,
-            SUBPARTITION obj_ref__102_0_3,
-            SUBPARTITION obj_ref__102_0_4,
-            SUBPARTITION obj_ref__102_0_5,
-            SUBPARTITION obj_ref__102_0_6,
-            SUBPARTITION obj_ref__102_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_REF */
@@ -3415,19 +2076,6 @@ CREATE TABLE `obj_ref__103` (
 )
 
 
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_ref__103_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_ref__103_0_0,
-            SUBPARTITION obj_ref__103_0_1,
-            SUBPARTITION obj_ref__103_0_2,
-            SUBPARTITION obj_ref__103_0_3,
-            SUBPARTITION obj_ref__103_0_4,
-            SUBPARTITION obj_ref__103_0_5,
-            SUBPARTITION obj_ref__103_0_6,
-            SUBPARTITION obj_ref__103_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_REF */
@@ -3448,19 +2096,6 @@ CREATE TABLE `obj_ref__104` (
 )
 
 
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_ref__104_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_ref__104_0_0,
-            SUBPARTITION obj_ref__104_0_1,
-            SUBPARTITION obj_ref__104_0_2,
-            SUBPARTITION obj_ref__104_0_3,
-            SUBPARTITION obj_ref__104_0_4,
-            SUBPARTITION obj_ref__104_0_5,
-            SUBPARTITION obj_ref__104_0_6,
-            SUBPARTITION obj_ref__104_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_REF */
@@ -3481,19 +2116,6 @@ CREATE TABLE `obj_ref__105` (
 )
 
 
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_ref__105_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_ref__105_0_0,
-            SUBPARTITION obj_ref__105_0_1,
-            SUBPARTITION obj_ref__105_0_2,
-            SUBPARTITION obj_ref__105_0_3,
-            SUBPARTITION obj_ref__105_0_4,
-            SUBPARTITION obj_ref__105_0_5,
-            SUBPARTITION obj_ref__105_0_6,
-            SUBPARTITION obj_ref__105_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_REF */
@@ -3514,19 +2136,6 @@ CREATE TABLE `obj_ref__106` (
 )
 
 
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_ref__106_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_ref__106_0_0,
-            SUBPARTITION obj_ref__106_0_1,
-            SUBPARTITION obj_ref__106_0_2,
-            SUBPARTITION obj_ref__106_0_3,
-            SUBPARTITION obj_ref__106_0_4,
-            SUBPARTITION obj_ref__106_0_5,
-            SUBPARTITION obj_ref__106_0_6,
-            SUBPARTITION obj_ref__106_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_REF */
@@ -3547,19 +2156,6 @@ CREATE TABLE `obj_ref__107` (
 )
 
 
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_ref__107_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_ref__107_0_0,
-            SUBPARTITION obj_ref__107_0_1,
-            SUBPARTITION obj_ref__107_0_2,
-            SUBPARTITION obj_ref__107_0_3,
-            SUBPARTITION obj_ref__107_0_4,
-            SUBPARTITION obj_ref__107_0_5,
-            SUBPARTITION obj_ref__107_0_6,
-            SUBPARTITION obj_ref__107_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_REF */
@@ -3580,19 +2176,6 @@ CREATE TABLE `obj_ref__108` (
 )
 
 
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_ref__108_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_ref__108_0_0,
-            SUBPARTITION obj_ref__108_0_1,
-            SUBPARTITION obj_ref__108_0_2,
-            SUBPARTITION obj_ref__108_0_3,
-            SUBPARTITION obj_ref__108_0_4,
-            SUBPARTITION obj_ref__108_0_5,
-            SUBPARTITION obj_ref__108_0_6,
-            SUBPARTITION obj_ref__108_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_REF */
@@ -3613,19 +2196,6 @@ CREATE TABLE `obj_ref__109` (
 )
 
 
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_ref__109_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_ref__109_0_0,
-            SUBPARTITION obj_ref__109_0_1,
-            SUBPARTITION obj_ref__109_0_2,
-            SUBPARTITION obj_ref__109_0_3,
-            SUBPARTITION obj_ref__109_0_4,
-            SUBPARTITION obj_ref__109_0_5,
-            SUBPARTITION obj_ref__109_0_6,
-            SUBPARTITION obj_ref__109_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_REF */
@@ -3646,19 +2216,6 @@ CREATE TABLE `obj_ref__110` (
 )
 
 
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_ref__110_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_ref__110_0_0,
-            SUBPARTITION obj_ref__110_0_1,
-            SUBPARTITION obj_ref__110_0_2,
-            SUBPARTITION obj_ref__110_0_3,
-            SUBPARTITION obj_ref__110_0_4,
-            SUBPARTITION obj_ref__110_0_5,
-            SUBPARTITION obj_ref__110_0_6,
-            SUBPARTITION obj_ref__110_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_REF */
@@ -3679,19 +2236,6 @@ CREATE TABLE `obj_ref__111` (
 )
 
 
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_ref__111_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_ref__111_0_0,
-            SUBPARTITION obj_ref__111_0_1,
-            SUBPARTITION obj_ref__111_0_2,
-            SUBPARTITION obj_ref__111_0_3,
-            SUBPARTITION obj_ref__111_0_4,
-            SUBPARTITION obj_ref__111_0_5,
-            SUBPARTITION obj_ref__111_0_6,
-            SUBPARTITION obj_ref__111_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_REF */
@@ -3712,19 +2256,6 @@ CREATE TABLE `obj_ref__112` (
 )
 
 
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_ref__112_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_ref__112_0_0,
-            SUBPARTITION obj_ref__112_0_1,
-            SUBPARTITION obj_ref__112_0_2,
-            SUBPARTITION obj_ref__112_0_3,
-            SUBPARTITION obj_ref__112_0_4,
-            SUBPARTITION obj_ref__112_0_5,
-            SUBPARTITION obj_ref__112_0_6,
-            SUBPARTITION obj_ref__112_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_REF */
@@ -3745,19 +2276,6 @@ CREATE TABLE `obj_ref__113` (
 )
 
 
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_ref__113_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_ref__113_0_0,
-            SUBPARTITION obj_ref__113_0_1,
-            SUBPARTITION obj_ref__113_0_2,
-            SUBPARTITION obj_ref__113_0_3,
-            SUBPARTITION obj_ref__113_0_4,
-            SUBPARTITION obj_ref__113_0_5,
-            SUBPARTITION obj_ref__113_0_6,
-            SUBPARTITION obj_ref__113_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_REF */
@@ -3778,19 +2296,6 @@ CREATE TABLE `obj_ref__114` (
 )
 
 
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_ref__114_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_ref__114_0_0,
-            SUBPARTITION obj_ref__114_0_1,
-            SUBPARTITION obj_ref__114_0_2,
-            SUBPARTITION obj_ref__114_0_3,
-            SUBPARTITION obj_ref__114_0_4,
-            SUBPARTITION obj_ref__114_0_5,
-            SUBPARTITION obj_ref__114_0_6,
-            SUBPARTITION obj_ref__114_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_REF */
@@ -3811,19 +2316,6 @@ CREATE TABLE `obj_ref__115` (
 )
 
 
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_ref__115_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_ref__115_0_0,
-            SUBPARTITION obj_ref__115_0_1,
-            SUBPARTITION obj_ref__115_0_2,
-            SUBPARTITION obj_ref__115_0_3,
-            SUBPARTITION obj_ref__115_0_4,
-            SUBPARTITION obj_ref__115_0_5,
-            SUBPARTITION obj_ref__115_0_6,
-            SUBPARTITION obj_ref__115_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_REF */
@@ -3844,19 +2336,6 @@ CREATE TABLE `obj_ref__116` (
 )
 
 
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_ref__116_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_ref__116_0_0,
-            SUBPARTITION obj_ref__116_0_1,
-            SUBPARTITION obj_ref__116_0_2,
-            SUBPARTITION obj_ref__116_0_3,
-            SUBPARTITION obj_ref__116_0_4,
-            SUBPARTITION obj_ref__116_0_5,
-            SUBPARTITION obj_ref__116_0_6,
-            SUBPARTITION obj_ref__116_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_REF */
@@ -3877,19 +2356,6 @@ CREATE TABLE `obj_ref__117` (
 )
 
 
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_ref__117_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_ref__117_0_0,
-            SUBPARTITION obj_ref__117_0_1,
-            SUBPARTITION obj_ref__117_0_2,
-            SUBPARTITION obj_ref__117_0_3,
-            SUBPARTITION obj_ref__117_0_4,
-            SUBPARTITION obj_ref__117_0_5,
-            SUBPARTITION obj_ref__117_0_6,
-            SUBPARTITION obj_ref__117_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_REF */
@@ -3910,19 +2376,6 @@ CREATE TABLE `obj_ref__118` (
 )
 
 
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_ref__118_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_ref__118_0_0,
-            SUBPARTITION obj_ref__118_0_1,
-            SUBPARTITION obj_ref__118_0_2,
-            SUBPARTITION obj_ref__118_0_3,
-            SUBPARTITION obj_ref__118_0_4,
-            SUBPARTITION obj_ref__118_0_5,
-            SUBPARTITION obj_ref__118_0_6,
-            SUBPARTITION obj_ref__118_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_REF */
@@ -3943,19 +2396,6 @@ CREATE TABLE `obj_ref__119` (
 )
 
 
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_ref__119_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_ref__119_0_0,
-            SUBPARTITION obj_ref__119_0_1,
-            SUBPARTITION obj_ref__119_0_2,
-            SUBPARTITION obj_ref__119_0_3,
-            SUBPARTITION obj_ref__119_0_4,
-            SUBPARTITION obj_ref__119_0_5,
-            SUBPARTITION obj_ref__119_0_6,
-            SUBPARTITION obj_ref__119_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_REF */
@@ -3976,19 +2416,6 @@ CREATE TABLE `obj_ref__120` (
 )
 
 
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_ref__120_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_ref__120_0_0,
-            SUBPARTITION obj_ref__120_0_1,
-            SUBPARTITION obj_ref__120_0_2,
-            SUBPARTITION obj_ref__120_0_3,
-            SUBPARTITION obj_ref__120_0_4,
-            SUBPARTITION obj_ref__120_0_5,
-            SUBPARTITION obj_ref__120_0_6,
-            SUBPARTITION obj_ref__120_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_REF */
@@ -4009,19 +2436,6 @@ CREATE TABLE `obj_ref__121` (
 )
 
 
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_ref__121_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_ref__121_0_0,
-            SUBPARTITION obj_ref__121_0_1,
-            SUBPARTITION obj_ref__121_0_2,
-            SUBPARTITION obj_ref__121_0_3,
-            SUBPARTITION obj_ref__121_0_4,
-            SUBPARTITION obj_ref__121_0_5,
-            SUBPARTITION obj_ref__121_0_6,
-            SUBPARTITION obj_ref__121_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_REF */
@@ -4042,19 +2456,6 @@ CREATE TABLE `obj_ref__122` (
 )
 
 
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_ref__122_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_ref__122_0_0,
-            SUBPARTITION obj_ref__122_0_1,
-            SUBPARTITION obj_ref__122_0_2,
-            SUBPARTITION obj_ref__122_0_3,
-            SUBPARTITION obj_ref__122_0_4,
-            SUBPARTITION obj_ref__122_0_5,
-            SUBPARTITION obj_ref__122_0_6,
-            SUBPARTITION obj_ref__122_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_REF */
@@ -4075,19 +2476,6 @@ CREATE TABLE `obj_ref__123` (
 )
 
 
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_ref__123_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_ref__123_0_0,
-            SUBPARTITION obj_ref__123_0_1,
-            SUBPARTITION obj_ref__123_0_2,
-            SUBPARTITION obj_ref__123_0_3,
-            SUBPARTITION obj_ref__123_0_4,
-            SUBPARTITION obj_ref__123_0_5,
-            SUBPARTITION obj_ref__123_0_6,
-            SUBPARTITION obj_ref__123_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_REF */
@@ -4108,19 +2496,6 @@ CREATE TABLE `obj_ref__124` (
 )
 
 
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_ref__124_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_ref__124_0_0,
-            SUBPARTITION obj_ref__124_0_1,
-            SUBPARTITION obj_ref__124_0_2,
-            SUBPARTITION obj_ref__124_0_3,
-            SUBPARTITION obj_ref__124_0_4,
-            SUBPARTITION obj_ref__124_0_5,
-            SUBPARTITION obj_ref__124_0_6,
-            SUBPARTITION obj_ref__124_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_REF */
@@ -4141,19 +2516,6 @@ CREATE TABLE `obj_ref__125` (
 )
 
 
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_ref__125_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_ref__125_0_0,
-            SUBPARTITION obj_ref__125_0_1,
-            SUBPARTITION obj_ref__125_0_2,
-            SUBPARTITION obj_ref__125_0_3,
-            SUBPARTITION obj_ref__125_0_4,
-            SUBPARTITION obj_ref__125_0_5,
-            SUBPARTITION obj_ref__125_0_6,
-            SUBPARTITION obj_ref__125_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_REF */
@@ -4174,19 +2536,6 @@ CREATE TABLE `obj_ref__126` (
 )
 
 
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_ref__126_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_ref__126_0_0,
-            SUBPARTITION obj_ref__126_0_1,
-            SUBPARTITION obj_ref__126_0_2,
-            SUBPARTITION obj_ref__126_0_3,
-            SUBPARTITION obj_ref__126_0_4,
-            SUBPARTITION obj_ref__126_0_5,
-            SUBPARTITION obj_ref__126_0_6,
-            SUBPARTITION obj_ref__126_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_REF */
@@ -4207,19 +2556,6 @@ CREATE TABLE `obj_ref__127` (
 )
 
 
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_ref__127_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_ref__127_0_0,
-            SUBPARTITION obj_ref__127_0_1,
-            SUBPARTITION obj_ref__127_0_2,
-            SUBPARTITION obj_ref__127_0_3,
-            SUBPARTITION obj_ref__127_0_4,
-            SUBPARTITION obj_ref__127_0_5,
-            SUBPARTITION obj_ref__127_0_6,
-            SUBPARTITION obj_ref__127_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_REF */
@@ -4240,19 +2576,6 @@ CREATE TABLE `obj_ref__MTP` (
 )
 
 
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_ref__MTP_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_ref__MTP_0_0,
-            SUBPARTITION obj_ref__MTP_0_1,
-            SUBPARTITION obj_ref__MTP_0_2,
-            SUBPARTITION obj_ref__MTP_0_3,
-            SUBPARTITION obj_ref__MTP_0_4,
-            SUBPARTITION obj_ref__MTP_0_5,
-            SUBPARTITION obj_ref__MTP_0_6,
-            SUBPARTITION obj_ref__MTP_0_7
-        )
-    )
 
 ;
 /* drop/create OBJ_REF */
@@ -4273,18 +2596,5 @@ CREATE TABLE `obj_ref__USER` (
 )
 
 
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_ref__USER_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_ref__USER_0_0,
-            SUBPARTITION obj_ref__USER_0_1,
-            SUBPARTITION obj_ref__USER_0_2,
-            SUBPARTITION obj_ref__USER_0_3,
-            SUBPARTITION obj_ref__USER_0_4,
-            SUBPARTITION obj_ref__USER_0_5,
-            SUBPARTITION obj_ref__USER_0_6,
-            SUBPARTITION obj_ref__USER_0_7
-        )
-    )
 
 ;
