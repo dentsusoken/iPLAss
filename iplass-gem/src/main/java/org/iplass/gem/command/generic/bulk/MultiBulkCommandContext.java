@@ -792,7 +792,7 @@ public class MultiBulkCommandContext extends RegistrationCommandContext {
 						.collect(Collectors.toList()));
 			} else {
 				propBlankList = (getProperty().stream().filter(pi -> entity.getValue(pi.getPropertyName()) == null)
-						.filter(pi -> pi.getPropertyName() == refedProp.toString())
+						.filter(pi -> refedProp.contains(pi.getPropertyName()))
 						.collect(Collectors.toList()));
 			}
 		}
