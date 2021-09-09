@@ -777,24 +777,10 @@ public class MultiBulkCommandContext extends RegistrationCommandContext {
 	 * @param entity
 	 */
 	private void removePropIfBlank(Entity entity) {
+		// カスタム登録処理で指定した項目が未入力の場合、未入力項目を更新対象から除外する際に使用
 		if (propBlankList == null) {
-			List<String> refedProp = new ArrayList<>();
-			for(PropertyDefinition pd : getPropertyList()) {
-				if(pd instanceof ReferenceProperty) {
-					String mappedBy = ((ReferenceProperty) pd).getMappedBy();
-					if (mappedBy != null) {
-						refedProp.add(pd.getName());
-					}
-				}
-			}
-			if (refedProp == null || refedProp.isEmpty()) {
-				propBlankList = (getProperty().stream().filter(pi -> entity.getValue(pi.getPropertyName()) == null)
-						.collect(Collectors.toList()));
-			} else {
-				propBlankList = (getProperty().stream().filter(pi -> entity.getValue(pi.getPropertyName()) == null)
-						.filter(pi -> refedProp.contains(pi.getPropertyName()))
-						.collect(Collectors.toList()));
-			}
+			propBlankList = (getProperty().stream().filter(pi -> entity.getValue(pi.getPropertyName()) == null)
+					.collect(Collectors.toList()));
 		}
 		getProperty().removeIf(pi -> entity.getValue(pi.getPropertyName()) == null);
 	}
