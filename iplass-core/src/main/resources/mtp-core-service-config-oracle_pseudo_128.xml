@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!DOCTYPE serviceDefinition>
+<serviceDefinition>
+	<inherits>/mtp-core-service-config-oracle.xml</inherits>
+
+	<!-- Entity Store Settings -->
+	<service>
+		<interface>org.iplass.mtp.impl.datastore.StoreService</interface>
+		<property name="dataStore" class="org.iplass.mtp.impl.datastore.grdb.GRdbDataStore" inherit="false">
+			<property name="storageSpace">
+				<property name="tableCount" value="128" />
+				<property name="storageSpaceName" value="default" />
+				<property name="varcharColumns" value="128" />
+				<property name="decimalColumns" value="32" />
+				<property name="timestampColumns" value="32" />
+				<property name="doubleColumns" value="32" />
+				<property name="indexedVarcharColumns" value="8" />
+				<property name="indexedDecimalColumns" value="4" />
+				<property name="indexedTimestampColumns" value="4" />
+				<property name="indexedDoubleColumns" value="4" />
+				<property name="uniqueIndexedVarcharColumns" value="2" />
+				<property name="uniqueIndexedDecimalColumns" value="2" />
+				<property name="uniqueIndexedTimestampColumns" value="2" />
+				<property name="uniqueIndexedDoubleColumns" value="2" />
+			</property>
+			<property name="storageSpace">
+				<property name="storageSpaceName" value="mtp" />
+				<property name="tableNamePostfix" value="MTP" />
+				<property name="varcharColumns" value="128" />
+				<property name="decimalColumns" value="32" />
+				<property name="timestampColumns" value="32" />
+				<property name="doubleColumns" value="32" />
+				<property name="indexedVarcharColumns" value="8" />
+				<property name="indexedDecimalColumns" value="4" />
+				<property name="indexedTimestampColumns" value="4" />
+				<property name="indexedDoubleColumns" value="4" />
+				<property name="uniqueIndexedVarcharColumns" value="2" />
+				<property name="uniqueIndexedDecimalColumns" value="2" />
+				<property name="uniqueIndexedTimestampColumns" value="2" />
+				<property name="uniqueIndexedDoubleColumns" value="2" />
+			</property>
+			<property name="storageSpace">
+				<property name="storageSpaceName" value="user" />
+				<property name="tableNamePostfix" value="USER" />
+				<property name="varcharColumns" value="128" />
+				<property name="decimalColumns" value="32" />
+				<property name="timestampColumns" value="32" />
+				<property name="doubleColumns" value="32" />
+				<property name="indexedVarcharColumns" value="8" />
+				<property name="indexedDecimalColumns" value="4" />
+				<property name="indexedTimestampColumns" value="4" />
+				<property name="indexedDoubleColumns" value="4" />
+				<property name="uniqueIndexedVarcharColumns" value="2" />
+				<property name="uniqueIndexedDecimalColumns" value="2" />
+				<property name="uniqueIndexedTimestampColumns" value="2" />
+				<property name="uniqueIndexedDoubleColumns" value="2" />
+			</property>
+		</property>
+ 	</service>
+
+</serviceDefinition>
