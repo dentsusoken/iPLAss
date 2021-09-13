@@ -1085,17 +1085,12 @@ public class DetailCommandContext extends RegistrationCommandContext
 					PropertyItem prop = (PropertyItem)element;
 					if (prop.getEditor() instanceof LabelablePropertyEditor) {
 						LabelablePropertyEditor editor = (LabelablePropertyEditor)prop.getEditor();
-						if (editor.isLabel()) {
+						//更新時は値セットは除外しないため追加時のみチェック
+						if (isInsert && editor.isLabel()) {
 							if (EntityViewUtil.isDisplayElement(getDefinitionName(), prop.getElementRuntimeId(), OutputType.EDIT, getDispControlBindEntity())
 									&& !prop.isHideDetail() && ViewUtil.dispElement(execType, prop)) {
-								if (isInsert) {
-									if (!editor.isInsertWithLabelValue()) {
-										excludeList.add(prop);
-									}
-								} else {
-									if (!editor.isUpdateWithLabelValue()) {
-										excludeList.add(prop);
-									}
+								if (!editor.isInsertWithLabelValue()) {
+									excludeList.add(prop);
 								}
 							}
 						}
@@ -1104,17 +1099,12 @@ public class DetailCommandContext extends RegistrationCommandContext
 					VirtualPropertyItem prop = (VirtualPropertyItem) element;
 					if (prop.getEditor() instanceof LabelablePropertyEditor) {
 						LabelablePropertyEditor editor = (LabelablePropertyEditor)prop.getEditor();
-						if (editor.isLabel()) {
+						//更新時は値セットは除外しないため追加時のみチェック
+						if (isInsert && editor.isLabel()) {
 							if (EntityViewUtil.isDisplayElement(getDefinitionName(), prop.getElementRuntimeId(), OutputType.EDIT, getDispControlBindEntity())
 									&& !prop.isHideDetail() && ViewUtil.dispElement(execType, prop)) {
-								if (isInsert) {
-									if (!editor.isInsertWithLabelValue()) {
-										excludeList.add(prop);
-									}
-								} else {
-									if (!editor.isUpdateWithLabelValue()) {
-										excludeList.add(prop);
-									}
+								if (!editor.isInsertWithLabelValue()) {
+									excludeList.add(prop);
 								}
 							}
 						}
