@@ -31,6 +31,7 @@ import org.iplass.mtp.entity.query.Query;
 import org.iplass.mtp.entity.query.condition.predicate.Equals;
 import org.iplass.mtp.impl.auth.authorize.builtin.TenantAuthorizeContext;
 import org.iplass.mtp.impl.cache.LoadingAdapter;
+import org.iplass.mtp.transaction.Transaction;
 
 public class RoleCacheLogic implements LoadingAdapter<String, RoleContext> {
 
@@ -51,7 +52,17 @@ public class RoleCacheLogic implements LoadingAdapter<String, RoleContext> {
 	}
 
 	@Override
-	public RoleContext load(final String key) {
+	public RoleContext load(String key) {
+		if (authorizeContext.isDeclareTransactionExplicitly()) {
+			return Transaction.required(t -> {
+				return loadImpl(key);
+			});
+		} else {
+			return loadImpl(key);
+		}
+	}
+
+	private RoleContext loadImpl(final String key) {
 
 		return AuthContext.doPrivileged(() -> {
 			Query q = new Query()

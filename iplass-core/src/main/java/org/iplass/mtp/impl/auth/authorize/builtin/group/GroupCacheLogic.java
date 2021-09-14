@@ -33,6 +33,7 @@ import org.iplass.mtp.entity.query.Query;
 import org.iplass.mtp.entity.query.condition.predicate.Equals;
 import org.iplass.mtp.impl.auth.authorize.builtin.TenantAuthorizeContext;
 import org.iplass.mtp.impl.cache.LoadingAdapter;
+import org.iplass.mtp.transaction.Transaction;
 
 public class GroupCacheLogic implements LoadingAdapter<String, GroupContext> {
 
@@ -44,7 +45,17 @@ public class GroupCacheLogic implements LoadingAdapter<String, GroupContext> {
 	}
 
 	@Override
-	public GroupContext load(final String key) {
+	public GroupContext load(String key) {
+		if (authorizeContext.isDeclareTransactionExplicitly()) {
+			return Transaction.required(t -> {
+				return loadImpl(key);
+			});
+		} else {
+			return loadImpl(key);
+		}
+	}
+
+	private GroupContext loadImpl(final String key) {
 
 		return AuthContext.doPrivileged(() -> {
 			Query q = new Query()

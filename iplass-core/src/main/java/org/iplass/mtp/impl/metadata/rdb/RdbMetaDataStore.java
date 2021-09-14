@@ -62,6 +62,8 @@ public class RdbMetaDataStore extends AbstractXmlMetaDataStore {
 
 	/** OBJ_DEF_NAMEカラムを利用するか(1.xとの並行利用用) */
 	private boolean useObjDefNameAndType;
+	
+	private boolean declareTransactionExplicitly = true;
 
 	public RdbMetaDataStore() {
 		select = rdb.getQuerySqlCreator(SelectSQL.class);
@@ -69,6 +71,14 @@ public class RdbMetaDataStore extends AbstractXmlMetaDataStore {
 		updateConfig = rdb.getUpdateSqlCreator(UpdateConfigSQL.class);
 		delete = rdb.getUpdateSqlCreator(DeleteSQL.class);
 		insert = rdb.getUpdateSqlCreator(InsertSQL.class);
+	}
+
+	public boolean isDeclareTransactionExplicitly() {
+		return declareTransactionExplicitly;
+	}
+
+	public void setDeclareTransactionExplicitly(boolean declareTransactionExplicitly) {
+		this.declareTransactionExplicitly = declareTransactionExplicitly;
 	}
 
 	@Override
@@ -103,8 +113,19 @@ public class RdbMetaDataStore extends AbstractXmlMetaDataStore {
 				return ret;
 			}
 		};
-		MetaDataEntry metaData = exec.execute(rdb, true);
+		
+		MetaDataEntry metaData = withTransactionOrNot(exec);
 		return metaData;
+	}
+	
+	private <R> R withTransactionOrNot(SqlExecuter<R> exec) {
+		if (declareTransactionExplicitly) {
+			return Transaction.required(t -> {
+				return exec.execute(rdb, true);
+			});
+		} else {
+			return exec.execute(rdb, true);
+		}
 	}
 
 	@Override
@@ -129,7 +150,7 @@ public class RdbMetaDataStore extends AbstractXmlMetaDataStore {
 				return ret;
 			}
 		};
-		return exec.execute(rdb, true);
+		return withTransactionOrNot(exec);
 	}
 
 	@Override
@@ -173,7 +194,7 @@ public class RdbMetaDataStore extends AbstractXmlMetaDataStore {
 			}
 
 		};
-		MetaDataEntry metaData = exec.execute(rdb, true);
+		MetaDataEntry metaData = withTransactionOrNot(exec);
 		return metaData;
 	}
 
@@ -245,7 +266,7 @@ public class RdbMetaDataStore extends AbstractXmlMetaDataStore {
 				return maxVersion + 1;
 			}
 		};
-		return exec.execute(rdb, true);
+		return withTransactionOrNot(exec);
 	}
 
 	@Override
@@ -379,7 +400,7 @@ public class RdbMetaDataStore extends AbstractXmlMetaDataStore {
 				return null;
 			}
 		};
-		exec.execute(rdb, true);
+		withTransactionOrNot(exec);
 	}
 
 	@Override
@@ -410,7 +431,7 @@ public class RdbMetaDataStore extends AbstractXmlMetaDataStore {
 				return null;
 			}
 		};
-		exec.execute(rdb, true);
+		withTransactionOrNot(exec);
 	}
 
 	@Override
@@ -430,7 +451,7 @@ public class RdbMetaDataStore extends AbstractXmlMetaDataStore {
 				return null;
 			}
 		};
-		exec.execute(rdb, true);
+		withTransactionOrNot(exec);
 	}
 
 	public List<Integer> getTenantIdsOf(String id) {
@@ -448,7 +469,7 @@ public class RdbMetaDataStore extends AbstractXmlMetaDataStore {
 				}
 			}
 		};
-		return exec.execute(rdb, true);
+		return withTransactionOrNot(exec);
 	}
 
 	public void purgeById(final int tenantId, final String id) throws MetaDataRuntimeException {
@@ -471,7 +492,7 @@ public class RdbMetaDataStore extends AbstractXmlMetaDataStore {
 						return null;
 					}
 				};
-				exec.execute(rdb, true);
+				withTransactionOrNot(exec);
 		});
 	}
 
@@ -497,7 +518,7 @@ public class RdbMetaDataStore extends AbstractXmlMetaDataStore {
 				return ret;
 			}
 		};
-		return exec.execute(rdb, true);
+		return withTransactionOrNot(exec);
 	}
 
 }

@@ -98,7 +98,8 @@ public interface TransactionManager extends Manager {
 				}
 				break;
 			case REQUIRED:
-				if (t.getStatus() == TransactionStatus.NONE || t.getStatus() == TransactionStatus.SUSPENDED) {
+				if (t.getStatus() == TransactionStatus.NONE || t.getStatus() == TransactionStatus.SUSPENDED
+						|| (t.getStatus() == TransactionStatus.ACTIVE && t.isReadOnly() && !option.isReadOnly())) {
 					t = newTransaction(option.isReadOnly());
 					isCreate = true;
 				}
@@ -124,7 +125,12 @@ public interface TransactionManager extends Manager {
 					resume(t);
 					break;
 				case ACTIVE:
-					if (isSuccess) {
+					if (t.isReadOnly()) {
+						if (Holder.logger.isDebugEnabled()) {
+							Holder.logger.debug("rollback readOnly transaction:" + t);
+						}
+						t.rollback();
+					} else if (isSuccess) {
 						if (t.isRollbackOnly()) {
 							if (Holder.logger.isDebugEnabled()) {
 								Holder.logger.debug("rollback transaction because set rollbackOnly=true:" + t);

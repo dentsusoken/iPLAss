@@ -47,6 +47,7 @@ public class TenantAuthorizeContext implements TenantResource {
 	private CacheController<String, GroupContext> groupCache;
 
 	private boolean grantAllPermissionsToAdmin;
+	private boolean declareTransactionExplicitly;
 
 	public TenantAuthorizeContext() {
 	}
@@ -76,7 +77,7 @@ public class TenantAuthorizeContext implements TenantResource {
 					contextCacheMap.put(ach.getClass(), ach.initCache(this));
 				}
 			}
-			
+			this.declareTransactionExplicitly = bauthz.isDeclareTransactionExplicitly();
 		} else {
 			this.grantAllPermissionsToAdmin = false;
 		}
@@ -96,7 +97,11 @@ public class TenantAuthorizeContext implements TenantResource {
 	public boolean isGrantAllPermissionsToAdmin() {
 		return grantAllPermissionsToAdmin;
 	}
-	
+
+	public boolean isDeclareTransactionExplicitly() {
+		return declareTransactionExplicitly;
+	}
+
 	public TenantContext getTenantContext() {
 		return tc;
 	}

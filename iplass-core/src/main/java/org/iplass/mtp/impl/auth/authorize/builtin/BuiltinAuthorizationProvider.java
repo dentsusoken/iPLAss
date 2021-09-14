@@ -38,6 +38,7 @@ public class BuiltinAuthorizationProvider implements AuthorizationProvider {
 	private TenantContextService tcService = ServiceRegistry.getRegistry().getService(TenantContextService.class);
 	
 	private boolean grantAllPermissionsToAdmin = true;
+	private boolean declareTransactionExplicitly = true;
 	
 	private List<AuthorizationContextHandler> authorizationContextHandler;
 	
@@ -61,6 +62,14 @@ public class BuiltinAuthorizationProvider implements AuthorizationProvider {
 
 	public void setGrantAllPermissionsToAdmin(boolean grantAllPermissionsToAdmin) {
 		this.grantAllPermissionsToAdmin = grantAllPermissionsToAdmin;
+	}
+
+	public boolean isDeclareTransactionExplicitly() {
+		return declareTransactionExplicitly;
+	}
+
+	public void setDeclareTransactionExplicitly(boolean declareTransactionExplicitly) {
+		this.declareTransactionExplicitly = declareTransactionExplicitly;
 	}
 
 	@Override

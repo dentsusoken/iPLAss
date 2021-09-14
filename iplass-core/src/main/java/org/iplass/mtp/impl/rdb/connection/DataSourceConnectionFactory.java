@@ -35,12 +35,17 @@ import org.slf4j.LoggerFactory;
 
 
 public class DataSourceConnectionFactory extends AbstractConnectionFactory {
+
+	public static final String DEFAULT_DATA_SOURCE_JNDI_NAME = "java:comp/env/jdbc/defaultDS";
 	private static final String JNDI_ENV_PREFIX = "jndienv.";
-	
+
 	private static Logger logger = LoggerFactory.getLogger(DataSourceConnectionFactory.class);
 
 	private DataSource dataSource;
 	private boolean directCreate;
+
+	//jndi env
+	private Hashtable<String, Object> jndiEnv = new Hashtable<>();
 
 	@Override
 	protected Connection getConnectionInternal() {
@@ -70,6 +75,13 @@ public class DataSourceConnectionFactory extends AbstractConnectionFactory {
 	public void init(Config config) {
 		super.init(config);
 		
+		//jndi env
+		for (String n: config.getNames()) {
+			if (n.startsWith(JNDI_ENV_PREFIX)) {
+				jndiEnv.put(n.substring(JNDI_ENV_PREFIX.length()), config.getValue(n));
+			}
+		}
+		
 		dataSource = config.getValue("dataSource", DataSource.class);
 		if (dataSource != null) {
 			if (logger.isDebugEnabled()) {
@@ -78,17 +90,9 @@ public class DataSourceConnectionFactory extends AbstractConnectionFactory {
 			directCreate = true;
 		} else {
 			//look up from JNDI
-			String dsName = "java:comp/env/jdbc/defaultDS";
+			String dsName = DEFAULT_DATA_SOURCE_JNDI_NAME;
 			if (config.getValue("dataSourceName") != null) {
 				dsName = config.getValue("dataSourceName");
-			}
-			
-			//jndi env
-			Hashtable<String, Object> jndiEnv = new Hashtable<>();
-			for (String n: config.getNames()) {
-				if (n.startsWith(JNDI_ENV_PREFIX)) {
-					jndiEnv.put(n.substring(JNDI_ENV_PREFIX.length()), config.getValue(n));
-				}
 			}
 			
 			if (logger.isDebugEnabled()) {
@@ -97,11 +101,7 @@ public class DataSourceConnectionFactory extends AbstractConnectionFactory {
 
 			InitialContext context = null;
 			try {
-				if (jndiEnv.size() > 0) {
-					context = new InitialContext(jndiEnv);
-				} else {
-					context = new InitialContext();
-				}
+				context = getInitialContext();
 				dataSource = (DataSource) context.lookup(dsName);
 			} catch (NamingException e) {
 				throw new ConnectionException("can not create DataSource:" + dsName, e);
@@ -113,7 +113,15 @@ public class DataSourceConnectionFactory extends AbstractConnectionFactory {
 						logger.warn("InitialContext.close() fail.maybe leak... " + e, e);
 					}
 				}
-			}			
+			}
+		}
+	}
+	
+	protected InitialContext getInitialContext() throws NamingException {
+		if (jndiEnv.size() > 0) {
+			return new InitialContext(jndiEnv);
+		} else {
+			return new InitialContext();
 		}
 	}
 	

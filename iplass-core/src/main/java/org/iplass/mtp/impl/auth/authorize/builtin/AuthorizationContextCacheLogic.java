@@ -23,6 +23,7 @@ package org.iplass.mtp.impl.auth.authorize.builtin;
 import java.util.List;
 
 import org.iplass.mtp.impl.cache.LoadingAdapter;
+import org.iplass.mtp.transaction.Transaction;
 
 public abstract class AuthorizationContextCacheLogic implements LoadingAdapter<String, BuiltinAuthorizationContext> {
 	
@@ -49,4 +50,18 @@ public abstract class AuthorizationContextCacheLogic implements LoadingAdapter<S
 	public String getKey(BuiltinAuthorizationContext val) {
 		return val.getContextName();
 	}
+	
+	@Override
+	public final BuiltinAuthorizationContext load(String key) {
+		if (authorizeContext.isDeclareTransactionExplicitly()) {
+			return Transaction.required(t -> {
+				return loadImpl(key);
+			});
+		} else {
+			return loadImpl(key);
+		}
+	}
+
+	protected abstract BuiltinAuthorizationContext loadImpl(String key);
+	
 }

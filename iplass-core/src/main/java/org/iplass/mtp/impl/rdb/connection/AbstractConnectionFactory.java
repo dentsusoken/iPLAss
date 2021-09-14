@@ -75,8 +75,8 @@ public abstract class AbstractConnectionFactory extends ConnectionFactory {
 				if (t.getStatus() == TransactionStatus.ACTIVE) {
 					if (t.getCon() == null) {
 						try {
-							if (rh == null || rh.isInUse()) {
-								//ResourceHolder使ってない場合/既にResourceHolder利用されている場合は物理Connection
+							if (rh == null || rh.isInUse() || t.isReadOnly()) {
+								//ResourceHolder使ってない場合/既にResourceHolder利用されている場合/ReadOnlyの場合は物理Connection
 								t.setCon(new LocalTransactionConnectionWrapper(
 										getPhysicalConnection(afterGetPhysicalConnectionHandler), true, null, warnLogThreshold, warnLogBefore, countSqlExecution));
 							} else {
@@ -180,6 +180,11 @@ public abstract class AbstractConnectionFactory extends ConnectionFactory {
 		if (logger.isDebugEnabled()) {
 			logger.debug("create physical connection:" + con);
 		}
+		initPhysicalConnection(con, afterGetPhysicalConnectionHandler);
+		return con;
+	}
+	
+	protected void initPhysicalConnection(Connection con, Function<Connection, Connection> afterGetPhysicalConnectionHandler) {
 		setClientInfo(con);
 		if (transactionIsolationLevel != null) {
 			try {
@@ -191,7 +196,6 @@ public abstract class AbstractConnectionFactory extends ConnectionFactory {
 		if (afterGetPhysicalConnectionHandler != null) {
 			con = afterGetPhysicalConnectionHandler.apply(con);
 		}
-		return con;
 	}
 
 	protected abstract Connection getConnectionInternal();

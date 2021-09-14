@@ -71,7 +71,7 @@ class EntityAuthContextCacheLogic extends AuthorizationContextCacheLogic {
 	}
 
 	@Override
-	public BuiltinAuthorizationContext load(String key) {
+	protected BuiltinAuthorizationContext loadImpl(final String key) {
 		return AuthContext.doPrivileged(() -> {
 			Query q = new Query()
 					.select(Entity.OID,//0
