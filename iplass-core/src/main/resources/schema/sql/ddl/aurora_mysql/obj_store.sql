@@ -1,10 +1,6 @@
-/* drop/create OBJ_STORE_RB */
-DROP TABLE IF EXISTS `obj_store_rb`;
-CREATE TABLE `obj_store_rb` (
-  `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `rb_id` BIGINT(16) NULL,
-  `rb_date` DATETIME(3) NULL,
-  `rb_user` VARCHAR(64) NULL,
+/* drop/create OBJ_STORE */
+DROP TABLE IF EXISTS `obj_store__APQ`;
+CREATE TABLE `obj_store__APQ` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -21,713 +17,6 @@ CREATE TABLE `obj_store_rb` (
   `lock_user` VARCHAR(64) NULL,
   `cre_user` VARCHAR(64) NULL,
   `up_user` VARCHAR(64) NULL
-  ,`USTR_1` TEXT
-  ,`USTR_1_TD` VARCHAR(139) CHARACTER SET latin1 COLLATE latin1_bin
-  ,`UNUM_1` DECIMAL(22, 0)
-  ,`UNUM_1_TD` VARCHAR(139) CHARACTER SET latin1 COLLATE latin1_bin
-  ,`UTS_1` DATETIME(3)
-  ,`UTS_1_TD` VARCHAR(139) CHARACTER SET latin1 COLLATE latin1_bin
-  ,`UDBL_1` DOUBLE
-  ,`UDBL_1_TD` VARCHAR(139) CHARACTER SET latin1 COLLATE latin1_bin
-  ,`USTR_2` TEXT
-  ,`USTR_2_TD` VARCHAR(139) CHARACTER SET latin1 COLLATE latin1_bin
-  ,`UNUM_2` DECIMAL(22, 0)
-  ,`UNUM_2_TD` VARCHAR(139) CHARACTER SET latin1 COLLATE latin1_bin
-  ,`UTS_2` DATETIME(3)
-  ,`UTS_2_TD` VARCHAR(139) CHARACTER SET latin1 COLLATE latin1_bin
-  ,`UDBL_2` DOUBLE
-  ,`UDBL_2_TD` VARCHAR(139) CHARACTER SET latin1 COLLATE latin1_bin
-  ,`ISTR_1` TEXT
-  ,`ISTR_1_TD` VARCHAR(139) CHARACTER SET latin1 COLLATE latin1_bin
-  ,`INUM_1` DECIMAL(22, 0)
-  ,`INUM_1_TD` VARCHAR(139) CHARACTER SET latin1 COLLATE latin1_bin
-  ,`ITS_1` DATETIME(3)
-  ,`ITS_1_TD` VARCHAR(139) CHARACTER SET latin1 COLLATE latin1_bin
-  ,`IDBL_1` DOUBLE
-  ,`IDBL_1_TD` VARCHAR(139) CHARACTER SET latin1 COLLATE latin1_bin
-  ,`ISTR_2` TEXT
-  ,`ISTR_2_TD` VARCHAR(139) CHARACTER SET latin1 COLLATE latin1_bin
-  ,`INUM_2` DECIMAL(22, 0)
-  ,`INUM_2_TD` VARCHAR(139) CHARACTER SET latin1 COLLATE latin1_bin
-  ,`ITS_2` DATETIME(3)
-  ,`ITS_2_TD` VARCHAR(139) CHARACTER SET latin1 COLLATE latin1_bin
-  ,`IDBL_2` DOUBLE
-  ,`IDBL_2_TD` VARCHAR(139) CHARACTER SET latin1 COLLATE latin1_bin
-  ,`ISTR_3` TEXT
-  ,`ISTR_3_TD` VARCHAR(139) CHARACTER SET latin1 COLLATE latin1_bin
-  ,`ISTR_4` TEXT
-  ,`ISTR_4_TD` VARCHAR(139) CHARACTER SET latin1 COLLATE latin1_bin
-  ,`INUM_3` DECIMAL(22, 0)
-  ,`INUM_3_TD` VARCHAR(139) CHARACTER SET latin1 COLLATE latin1_bin
-  ,`ITS_3` DATETIME(3)
-  ,`ITS_3_TD` VARCHAR(139) CHARACTER SET latin1 COLLATE latin1_bin
-  ,`IDBL_3` DOUBLE
-  ,`IDBL_3_TD` VARCHAR(139) CHARACTER SET latin1 COLLATE latin1_bin
-  ,`ISTR_5` TEXT
-  ,`ISTR_5_TD` VARCHAR(139) CHARACTER SET latin1 COLLATE latin1_bin
-  ,`INUM_4` DECIMAL(22, 0)
-  ,`INUM_4_TD` VARCHAR(139) CHARACTER SET latin1 COLLATE latin1_bin
-  ,`ITS_4` DATETIME(3)
-  ,`ITS_4_TD` VARCHAR(139) CHARACTER SET latin1 COLLATE latin1_bin
-  ,`IDBL_4` DOUBLE
-  ,`IDBL_4_TD` VARCHAR(139) CHARACTER SET latin1 COLLATE latin1_bin
-  ,`STR_1` TEXT
-  ,`STR_2` TEXT
-  ,`NUM_1` DECIMAL(22, 0)
-  ,`TS_1` DATETIME(3)
-  ,`STR_3` TEXT
-  ,`STR_4` TEXT
-  ,`NUM_2` DECIMAL(22, 0)
-  ,`TS_2` DATETIME(3)
-  ,`DBL_1` DOUBLE
-  ,`STR_5` TEXT
-  ,`STR_6` TEXT
-  ,`NUM_3` DECIMAL(22, 0)
-  ,`TS_3` DATETIME(3)
-  ,`STR_7` TEXT
-  ,`STR_8` TEXT
-  ,`NUM_4` DECIMAL(22, 0)
-  ,`TS_4` DATETIME(3)
-  ,`DBL_2` DOUBLE
-  ,`STR_9` TEXT
-  ,`STR_10` TEXT
-  ,`NUM_5` DECIMAL(22, 0)
-  ,`TS_5` DATETIME(3)
-  ,`STR_11` TEXT
-  ,`STR_12` TEXT
-  ,`NUM_6` DECIMAL(22, 0)
-  ,`TS_6` DATETIME(3)
-  ,`DBL_3` DOUBLE
-  ,`STR_13` TEXT
-  ,`STR_14` TEXT
-  ,`NUM_7` DECIMAL(22, 0)
-  ,`TS_7` DATETIME(3)
-  ,`STR_15` TEXT
-  ,`STR_16` TEXT
-  ,`NUM_8` DECIMAL(22, 0)
-  ,`TS_8` DATETIME(3)
-  ,`DBL_4` DOUBLE
-  ,`STR_17` TEXT
-  ,`STR_18` TEXT
-  ,`NUM_9` DECIMAL(22, 0)
-  ,`TS_9` DATETIME(3)
-  ,`STR_19` TEXT
-  ,`STR_20` TEXT
-  ,`NUM_10` DECIMAL(22, 0)
-  ,`TS_10` DATETIME(3)
-  ,`DBL_5` DOUBLE
-  ,`STR_21` TEXT
-  ,`STR_22` TEXT
-  ,`NUM_11` DECIMAL(22, 0)
-  ,`TS_11` DATETIME(3)
-  ,`STR_23` TEXT
-  ,`STR_24` TEXT
-  ,`NUM_12` DECIMAL(22, 0)
-  ,`TS_12` DATETIME(3)
-  ,`DBL_6` DOUBLE
-  ,`STR_25` TEXT
-  ,`STR_26` TEXT
-  ,`NUM_13` DECIMAL(22, 0)
-  ,`TS_13` DATETIME(3)
-  ,`STR_27` TEXT
-  ,`STR_28` TEXT
-  ,`NUM_14` DECIMAL(22, 0)
-  ,`TS_14` DATETIME(3)
-  ,`DBL_7` DOUBLE
-  ,`STR_29` TEXT
-  ,`STR_30` TEXT
-  ,`NUM_15` DECIMAL(22, 0)
-  ,`TS_15` DATETIME(3)
-  ,`STR_31` TEXT
-  ,`STR_32` TEXT
-  ,`NUM_16` DECIMAL(22, 0)
-  ,`TS_16` DATETIME(3)
-  ,`DBL_8` DOUBLE
-  ,`STR_33` TEXT
-  ,`STR_34` TEXT
-  ,`NUM_17` DECIMAL(22, 0)
-  ,`TS_17` DATETIME(3)
-  ,`STR_35` TEXT
-  ,`STR_36` TEXT
-  ,`NUM_18` DECIMAL(22, 0)
-  ,`TS_18` DATETIME(3)
-  ,`DBL_9` DOUBLE
-  ,`STR_37` TEXT
-  ,`STR_38` TEXT
-  ,`NUM_19` DECIMAL(22, 0)
-  ,`TS_19` DATETIME(3)
-  ,`STR_39` TEXT
-  ,`STR_40` TEXT
-  ,`NUM_20` DECIMAL(22, 0)
-  ,`TS_20` DATETIME(3)
-  ,`DBL_10` DOUBLE
-  ,`STR_41` TEXT
-  ,`STR_42` TEXT
-  ,`NUM_21` DECIMAL(22, 0)
-  ,`TS_21` DATETIME(3)
-  ,`STR_43` TEXT
-  ,`STR_44` TEXT
-  ,`NUM_22` DECIMAL(22, 0)
-  ,`TS_22` DATETIME(3)
-  ,`DBL_11` DOUBLE
-  ,`STR_45` TEXT
-  ,`STR_46` TEXT
-  ,`NUM_23` DECIMAL(22, 0)
-  ,`TS_23` DATETIME(3)
-  ,`STR_47` TEXT
-  ,`STR_48` TEXT
-  ,`NUM_24` DECIMAL(22, 0)
-  ,`TS_24` DATETIME(3)
-  ,`DBL_12` DOUBLE
-  ,`STR_49` TEXT
-  ,`STR_50` TEXT
-  ,`NUM_25` DECIMAL(22, 0)
-  ,`TS_25` DATETIME(3)
-  ,`STR_51` TEXT
-  ,`STR_52` TEXT
-  ,`NUM_26` DECIMAL(22, 0)
-  ,`TS_26` DATETIME(3)
-  ,`DBL_13` DOUBLE
-  ,`STR_53` TEXT
-  ,`STR_54` TEXT
-  ,`NUM_27` DECIMAL(22, 0)
-  ,`TS_27` DATETIME(3)
-  ,`STR_55` TEXT
-  ,`STR_56` TEXT
-  ,`NUM_28` DECIMAL(22, 0)
-  ,`TS_28` DATETIME(3)
-  ,`DBL_14` DOUBLE
-  ,`STR_57` TEXT
-  ,`STR_58` TEXT
-  ,`NUM_29` DECIMAL(22, 0)
-  ,`TS_29` DATETIME(3)
-  ,`STR_59` TEXT
-  ,`STR_60` TEXT
-  ,`NUM_30` DECIMAL(22, 0)
-  ,`TS_30` DATETIME(3)
-  ,`DBL_15` DOUBLE
-  ,`STR_61` TEXT
-  ,`STR_62` TEXT
-  ,`NUM_31` DECIMAL(22, 0)
-  ,`TS_31` DATETIME(3)
-  ,`STR_63` TEXT
-  ,`STR_64` TEXT
-  ,`NUM_32` DECIMAL(22, 0)
-  ,`TS_32` DATETIME(3)
-  ,`DBL_16` DOUBLE
-  ,PRIMARY KEY (`r_id`, `tenant_id`, `obj_def_id`)
-  ,INDEX `obj_store_rb_index1` (`tenant_id`, `obj_def_id`(128), `rb_id`)
-)
-
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_store_rb_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_store_rb_0_0,
-            SUBPARTITION obj_store_rb_0_1,
-            SUBPARTITION obj_store_rb_0_2,
-            SUBPARTITION obj_store_rb_0_3,
-            SUBPARTITION obj_store_rb_0_4,
-            SUBPARTITION obj_store_rb_0_5,
-            SUBPARTITION obj_store_rb_0_6,
-            SUBPARTITION obj_store_rb_0_7
-        )
-    );
-
-
-/* drop/create OBJ_STORE_RB */
-DROP TABLE IF EXISTS `obj_store_rb__MTP`;
-CREATE TABLE `obj_store_rb__MTP` (
-  `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `rb_id` BIGINT(16) NULL,
-  `rb_date` DATETIME(3) NULL,
-  `rb_user` VARCHAR(64) NULL,
-  `tenant_id` INT(7) NOT NULL,
-  `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
-  `pg_no` INT(2) NOT NULL,
-  `obj_id` VARCHAR(64) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
-  `obj_ver` BIGINT(10) NOT NULL DEFAULT 0,
-  `obj_def_ver` BIGINT(10) NULL,
-  `status` CHAR(1) NULL,
-  `obj_name` VARCHAR(256) NULL,
-  `obj_desc` TEXT NULL,
-  `cre_date` DATETIME(3) NULL,
-  `up_date` DATETIME(3) NULL,
-  `s_date` DATETIME(3) NULL,
-  `e_date` DATETIME(3) NULL,
-  `lock_user` VARCHAR(64) NULL,
-  `cre_user` VARCHAR(64) NULL,
-  `up_user` VARCHAR(64) NULL
-  ,`USTR_1` TEXT
-  ,`USTR_1_TD` VARCHAR(139) CHARACTER SET latin1 COLLATE latin1_bin
-  ,`UNUM_1` DECIMAL(22, 0)
-  ,`UNUM_1_TD` VARCHAR(139) CHARACTER SET latin1 COLLATE latin1_bin
-  ,`UTS_1` DATETIME(3)
-  ,`UTS_1_TD` VARCHAR(139) CHARACTER SET latin1 COLLATE latin1_bin
-  ,`UDBL_1` DOUBLE
-  ,`UDBL_1_TD` VARCHAR(139) CHARACTER SET latin1 COLLATE latin1_bin
-  ,`USTR_2` TEXT
-  ,`USTR_2_TD` VARCHAR(139) CHARACTER SET latin1 COLLATE latin1_bin
-  ,`UNUM_2` DECIMAL(22, 0)
-  ,`UNUM_2_TD` VARCHAR(139) CHARACTER SET latin1 COLLATE latin1_bin
-  ,`UTS_2` DATETIME(3)
-  ,`UTS_2_TD` VARCHAR(139) CHARACTER SET latin1 COLLATE latin1_bin
-  ,`UDBL_2` DOUBLE
-  ,`UDBL_2_TD` VARCHAR(139) CHARACTER SET latin1 COLLATE latin1_bin
-  ,`ISTR_1` TEXT
-  ,`ISTR_1_TD` VARCHAR(139) CHARACTER SET latin1 COLLATE latin1_bin
-  ,`INUM_1` DECIMAL(22, 0)
-  ,`INUM_1_TD` VARCHAR(139) CHARACTER SET latin1 COLLATE latin1_bin
-  ,`ITS_1` DATETIME(3)
-  ,`ITS_1_TD` VARCHAR(139) CHARACTER SET latin1 COLLATE latin1_bin
-  ,`IDBL_1` DOUBLE
-  ,`IDBL_1_TD` VARCHAR(139) CHARACTER SET latin1 COLLATE latin1_bin
-  ,`ISTR_2` TEXT
-  ,`ISTR_2_TD` VARCHAR(139) CHARACTER SET latin1 COLLATE latin1_bin
-  ,`INUM_2` DECIMAL(22, 0)
-  ,`INUM_2_TD` VARCHAR(139) CHARACTER SET latin1 COLLATE latin1_bin
-  ,`ITS_2` DATETIME(3)
-  ,`ITS_2_TD` VARCHAR(139) CHARACTER SET latin1 COLLATE latin1_bin
-  ,`IDBL_2` DOUBLE
-  ,`IDBL_2_TD` VARCHAR(139) CHARACTER SET latin1 COLLATE latin1_bin
-  ,`ISTR_3` TEXT
-  ,`ISTR_3_TD` VARCHAR(139) CHARACTER SET latin1 COLLATE latin1_bin
-  ,`ISTR_4` TEXT
-  ,`ISTR_4_TD` VARCHAR(139) CHARACTER SET latin1 COLLATE latin1_bin
-  ,`INUM_3` DECIMAL(22, 0)
-  ,`INUM_3_TD` VARCHAR(139) CHARACTER SET latin1 COLLATE latin1_bin
-  ,`ITS_3` DATETIME(3)
-  ,`ITS_3_TD` VARCHAR(139) CHARACTER SET latin1 COLLATE latin1_bin
-  ,`IDBL_3` DOUBLE
-  ,`IDBL_3_TD` VARCHAR(139) CHARACTER SET latin1 COLLATE latin1_bin
-  ,`ISTR_5` TEXT
-  ,`ISTR_5_TD` VARCHAR(139) CHARACTER SET latin1 COLLATE latin1_bin
-  ,`INUM_4` DECIMAL(22, 0)
-  ,`INUM_4_TD` VARCHAR(139) CHARACTER SET latin1 COLLATE latin1_bin
-  ,`ITS_4` DATETIME(3)
-  ,`ITS_4_TD` VARCHAR(139) CHARACTER SET latin1 COLLATE latin1_bin
-  ,`IDBL_4` DOUBLE
-  ,`IDBL_4_TD` VARCHAR(139) CHARACTER SET latin1 COLLATE latin1_bin
-  ,`STR_1` TEXT
-  ,`STR_2` TEXT
-  ,`NUM_1` DECIMAL(22, 0)
-  ,`TS_1` DATETIME(3)
-  ,`STR_3` TEXT
-  ,`STR_4` TEXT
-  ,`NUM_2` DECIMAL(22, 0)
-  ,`TS_2` DATETIME(3)
-  ,`DBL_1` DOUBLE
-  ,`STR_5` TEXT
-  ,`STR_6` TEXT
-  ,`NUM_3` DECIMAL(22, 0)
-  ,`TS_3` DATETIME(3)
-  ,`STR_7` TEXT
-  ,`STR_8` TEXT
-  ,`NUM_4` DECIMAL(22, 0)
-  ,`TS_4` DATETIME(3)
-  ,`DBL_2` DOUBLE
-  ,`STR_9` TEXT
-  ,`STR_10` TEXT
-  ,`NUM_5` DECIMAL(22, 0)
-  ,`TS_5` DATETIME(3)
-  ,`STR_11` TEXT
-  ,`STR_12` TEXT
-  ,`NUM_6` DECIMAL(22, 0)
-  ,`TS_6` DATETIME(3)
-  ,`DBL_3` DOUBLE
-  ,`STR_13` TEXT
-  ,`STR_14` TEXT
-  ,`NUM_7` DECIMAL(22, 0)
-  ,`TS_7` DATETIME(3)
-  ,`STR_15` TEXT
-  ,`STR_16` TEXT
-  ,`NUM_8` DECIMAL(22, 0)
-  ,`TS_8` DATETIME(3)
-  ,`DBL_4` DOUBLE
-  ,`STR_17` TEXT
-  ,`STR_18` TEXT
-  ,`NUM_9` DECIMAL(22, 0)
-  ,`TS_9` DATETIME(3)
-  ,`STR_19` TEXT
-  ,`STR_20` TEXT
-  ,`NUM_10` DECIMAL(22, 0)
-  ,`TS_10` DATETIME(3)
-  ,`DBL_5` DOUBLE
-  ,`STR_21` TEXT
-  ,`STR_22` TEXT
-  ,`NUM_11` DECIMAL(22, 0)
-  ,`TS_11` DATETIME(3)
-  ,`STR_23` TEXT
-  ,`STR_24` TEXT
-  ,`NUM_12` DECIMAL(22, 0)
-  ,`TS_12` DATETIME(3)
-  ,`DBL_6` DOUBLE
-  ,`STR_25` TEXT
-  ,`STR_26` TEXT
-  ,`NUM_13` DECIMAL(22, 0)
-  ,`TS_13` DATETIME(3)
-  ,`STR_27` TEXT
-  ,`STR_28` TEXT
-  ,`NUM_14` DECIMAL(22, 0)
-  ,`TS_14` DATETIME(3)
-  ,`DBL_7` DOUBLE
-  ,`STR_29` TEXT
-  ,`STR_30` TEXT
-  ,`NUM_15` DECIMAL(22, 0)
-  ,`TS_15` DATETIME(3)
-  ,`STR_31` TEXT
-  ,`STR_32` TEXT
-  ,`NUM_16` DECIMAL(22, 0)
-  ,`TS_16` DATETIME(3)
-  ,`DBL_8` DOUBLE
-  ,`STR_33` TEXT
-  ,`STR_34` TEXT
-  ,`NUM_17` DECIMAL(22, 0)
-  ,`TS_17` DATETIME(3)
-  ,`STR_35` TEXT
-  ,`STR_36` TEXT
-  ,`NUM_18` DECIMAL(22, 0)
-  ,`TS_18` DATETIME(3)
-  ,`DBL_9` DOUBLE
-  ,`STR_37` TEXT
-  ,`STR_38` TEXT
-  ,`NUM_19` DECIMAL(22, 0)
-  ,`TS_19` DATETIME(3)
-  ,`STR_39` TEXT
-  ,`STR_40` TEXT
-  ,`NUM_20` DECIMAL(22, 0)
-  ,`TS_20` DATETIME(3)
-  ,`DBL_10` DOUBLE
-  ,`STR_41` TEXT
-  ,`STR_42` TEXT
-  ,`NUM_21` DECIMAL(22, 0)
-  ,`TS_21` DATETIME(3)
-  ,`STR_43` TEXT
-  ,`STR_44` TEXT
-  ,`NUM_22` DECIMAL(22, 0)
-  ,`TS_22` DATETIME(3)
-  ,`DBL_11` DOUBLE
-  ,`STR_45` TEXT
-  ,`STR_46` TEXT
-  ,`NUM_23` DECIMAL(22, 0)
-  ,`TS_23` DATETIME(3)
-  ,`STR_47` TEXT
-  ,`STR_48` TEXT
-  ,`NUM_24` DECIMAL(22, 0)
-  ,`TS_24` DATETIME(3)
-  ,`DBL_12` DOUBLE
-  ,`STR_49` TEXT
-  ,`STR_50` TEXT
-  ,`NUM_25` DECIMAL(22, 0)
-  ,`TS_25` DATETIME(3)
-  ,`STR_51` TEXT
-  ,`STR_52` TEXT
-  ,`NUM_26` DECIMAL(22, 0)
-  ,`TS_26` DATETIME(3)
-  ,`DBL_13` DOUBLE
-  ,`STR_53` TEXT
-  ,`STR_54` TEXT
-  ,`NUM_27` DECIMAL(22, 0)
-  ,`TS_27` DATETIME(3)
-  ,`STR_55` TEXT
-  ,`STR_56` TEXT
-  ,`NUM_28` DECIMAL(22, 0)
-  ,`TS_28` DATETIME(3)
-  ,`DBL_14` DOUBLE
-  ,`STR_57` TEXT
-  ,`STR_58` TEXT
-  ,`NUM_29` DECIMAL(22, 0)
-  ,`TS_29` DATETIME(3)
-  ,`STR_59` TEXT
-  ,`STR_60` TEXT
-  ,`NUM_30` DECIMAL(22, 0)
-  ,`TS_30` DATETIME(3)
-  ,`DBL_15` DOUBLE
-  ,`STR_61` TEXT
-  ,`STR_62` TEXT
-  ,`NUM_31` DECIMAL(22, 0)
-  ,`TS_31` DATETIME(3)
-  ,`STR_63` TEXT
-  ,`STR_64` TEXT
-  ,`NUM_32` DECIMAL(22, 0)
-  ,`TS_32` DATETIME(3)
-  ,`DBL_16` DOUBLE
-  ,PRIMARY KEY (`r_id`, `tenant_id`, `obj_def_id`)
-  ,INDEX `obj_store_rb___MTPindex1` (`tenant_id`, `obj_def_id`(128), `rb_id`)
-)
-
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_store_rb__MTP_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_store_rb__MTP_0_0,
-            SUBPARTITION obj_store_rb__MTP_0_1,
-            SUBPARTITION obj_store_rb__MTP_0_2,
-            SUBPARTITION obj_store_rb__MTP_0_3,
-            SUBPARTITION obj_store_rb__MTP_0_4,
-            SUBPARTITION obj_store_rb__MTP_0_5,
-            SUBPARTITION obj_store_rb__MTP_0_6,
-            SUBPARTITION obj_store_rb__MTP_0_7
-        )
-    );
-
-
-/* drop/create OBJ_STORE_RB */
-DROP TABLE IF EXISTS `obj_store_rb__USER`;
-CREATE TABLE `obj_store_rb__USER` (
-  `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `rb_id` BIGINT(16) NULL,
-  `rb_date` DATETIME(3) NULL,
-  `rb_user` VARCHAR(64) NULL,
-  `tenant_id` INT(7) NOT NULL,
-  `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
-  `pg_no` INT(2) NOT NULL,
-  `obj_id` VARCHAR(64) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
-  `obj_ver` BIGINT(10) NOT NULL DEFAULT 0,
-  `obj_def_ver` BIGINT(10) NULL,
-  `status` CHAR(1) NULL,
-  `obj_name` VARCHAR(256) NULL,
-  `obj_desc` TEXT NULL,
-  `cre_date` DATETIME(3) NULL,
-  `up_date` DATETIME(3) NULL,
-  `s_date` DATETIME(3) NULL,
-  `e_date` DATETIME(3) NULL,
-  `lock_user` VARCHAR(64) NULL,
-  `cre_user` VARCHAR(64) NULL,
-  `up_user` VARCHAR(64) NULL
-  ,`USTR_1` TEXT
-  ,`USTR_1_TD` VARCHAR(139) CHARACTER SET latin1 COLLATE latin1_bin
-  ,`UNUM_1` DECIMAL(22, 0)
-  ,`UNUM_1_TD` VARCHAR(139) CHARACTER SET latin1 COLLATE latin1_bin
-  ,`UTS_1` DATETIME(3)
-  ,`UTS_1_TD` VARCHAR(139) CHARACTER SET latin1 COLLATE latin1_bin
-  ,`UDBL_1` DOUBLE
-  ,`UDBL_1_TD` VARCHAR(139) CHARACTER SET latin1 COLLATE latin1_bin
-  ,`USTR_2` TEXT
-  ,`USTR_2_TD` VARCHAR(139) CHARACTER SET latin1 COLLATE latin1_bin
-  ,`UNUM_2` DECIMAL(22, 0)
-  ,`UNUM_2_TD` VARCHAR(139) CHARACTER SET latin1 COLLATE latin1_bin
-  ,`UTS_2` DATETIME(3)
-  ,`UTS_2_TD` VARCHAR(139) CHARACTER SET latin1 COLLATE latin1_bin
-  ,`UDBL_2` DOUBLE
-  ,`UDBL_2_TD` VARCHAR(139) CHARACTER SET latin1 COLLATE latin1_bin
-  ,`ISTR_1` TEXT
-  ,`ISTR_1_TD` VARCHAR(139) CHARACTER SET latin1 COLLATE latin1_bin
-  ,`INUM_1` DECIMAL(22, 0)
-  ,`INUM_1_TD` VARCHAR(139) CHARACTER SET latin1 COLLATE latin1_bin
-  ,`ITS_1` DATETIME(3)
-  ,`ITS_1_TD` VARCHAR(139) CHARACTER SET latin1 COLLATE latin1_bin
-  ,`IDBL_1` DOUBLE
-  ,`IDBL_1_TD` VARCHAR(139) CHARACTER SET latin1 COLLATE latin1_bin
-  ,`ISTR_2` TEXT
-  ,`ISTR_2_TD` VARCHAR(139) CHARACTER SET latin1 COLLATE latin1_bin
-  ,`INUM_2` DECIMAL(22, 0)
-  ,`INUM_2_TD` VARCHAR(139) CHARACTER SET latin1 COLLATE latin1_bin
-  ,`ITS_2` DATETIME(3)
-  ,`ITS_2_TD` VARCHAR(139) CHARACTER SET latin1 COLLATE latin1_bin
-  ,`IDBL_2` DOUBLE
-  ,`IDBL_2_TD` VARCHAR(139) CHARACTER SET latin1 COLLATE latin1_bin
-  ,`ISTR_3` TEXT
-  ,`ISTR_3_TD` VARCHAR(139) CHARACTER SET latin1 COLLATE latin1_bin
-  ,`ISTR_4` TEXT
-  ,`ISTR_4_TD` VARCHAR(139) CHARACTER SET latin1 COLLATE latin1_bin
-  ,`INUM_3` DECIMAL(22, 0)
-  ,`INUM_3_TD` VARCHAR(139) CHARACTER SET latin1 COLLATE latin1_bin
-  ,`ITS_3` DATETIME(3)
-  ,`ITS_3_TD` VARCHAR(139) CHARACTER SET latin1 COLLATE latin1_bin
-  ,`IDBL_3` DOUBLE
-  ,`IDBL_3_TD` VARCHAR(139) CHARACTER SET latin1 COLLATE latin1_bin
-  ,`ISTR_5` TEXT
-  ,`ISTR_5_TD` VARCHAR(139) CHARACTER SET latin1 COLLATE latin1_bin
-  ,`INUM_4` DECIMAL(22, 0)
-  ,`INUM_4_TD` VARCHAR(139) CHARACTER SET latin1 COLLATE latin1_bin
-  ,`ITS_4` DATETIME(3)
-  ,`ITS_4_TD` VARCHAR(139) CHARACTER SET latin1 COLLATE latin1_bin
-  ,`IDBL_4` DOUBLE
-  ,`IDBL_4_TD` VARCHAR(139) CHARACTER SET latin1 COLLATE latin1_bin
-  ,`STR_1` TEXT
-  ,`STR_2` TEXT
-  ,`NUM_1` DECIMAL(22, 0)
-  ,`TS_1` DATETIME(3)
-  ,`STR_3` TEXT
-  ,`STR_4` TEXT
-  ,`NUM_2` DECIMAL(22, 0)
-  ,`TS_2` DATETIME(3)
-  ,`DBL_1` DOUBLE
-  ,`STR_5` TEXT
-  ,`STR_6` TEXT
-  ,`NUM_3` DECIMAL(22, 0)
-  ,`TS_3` DATETIME(3)
-  ,`STR_7` TEXT
-  ,`STR_8` TEXT
-  ,`NUM_4` DECIMAL(22, 0)
-  ,`TS_4` DATETIME(3)
-  ,`DBL_2` DOUBLE
-  ,`STR_9` TEXT
-  ,`STR_10` TEXT
-  ,`NUM_5` DECIMAL(22, 0)
-  ,`TS_5` DATETIME(3)
-  ,`STR_11` TEXT
-  ,`STR_12` TEXT
-  ,`NUM_6` DECIMAL(22, 0)
-  ,`TS_6` DATETIME(3)
-  ,`DBL_3` DOUBLE
-  ,`STR_13` TEXT
-  ,`STR_14` TEXT
-  ,`NUM_7` DECIMAL(22, 0)
-  ,`TS_7` DATETIME(3)
-  ,`STR_15` TEXT
-  ,`STR_16` TEXT
-  ,`NUM_8` DECIMAL(22, 0)
-  ,`TS_8` DATETIME(3)
-  ,`DBL_4` DOUBLE
-  ,`STR_17` TEXT
-  ,`STR_18` TEXT
-  ,`NUM_9` DECIMAL(22, 0)
-  ,`TS_9` DATETIME(3)
-  ,`STR_19` TEXT
-  ,`STR_20` TEXT
-  ,`NUM_10` DECIMAL(22, 0)
-  ,`TS_10` DATETIME(3)
-  ,`DBL_5` DOUBLE
-  ,`STR_21` TEXT
-  ,`STR_22` TEXT
-  ,`NUM_11` DECIMAL(22, 0)
-  ,`TS_11` DATETIME(3)
-  ,`STR_23` TEXT
-  ,`STR_24` TEXT
-  ,`NUM_12` DECIMAL(22, 0)
-  ,`TS_12` DATETIME(3)
-  ,`DBL_6` DOUBLE
-  ,`STR_25` TEXT
-  ,`STR_26` TEXT
-  ,`NUM_13` DECIMAL(22, 0)
-  ,`TS_13` DATETIME(3)
-  ,`STR_27` TEXT
-  ,`STR_28` TEXT
-  ,`NUM_14` DECIMAL(22, 0)
-  ,`TS_14` DATETIME(3)
-  ,`DBL_7` DOUBLE
-  ,`STR_29` TEXT
-  ,`STR_30` TEXT
-  ,`NUM_15` DECIMAL(22, 0)
-  ,`TS_15` DATETIME(3)
-  ,`STR_31` TEXT
-  ,`STR_32` TEXT
-  ,`NUM_16` DECIMAL(22, 0)
-  ,`TS_16` DATETIME(3)
-  ,`DBL_8` DOUBLE
-  ,`STR_33` TEXT
-  ,`STR_34` TEXT
-  ,`NUM_17` DECIMAL(22, 0)
-  ,`TS_17` DATETIME(3)
-  ,`STR_35` TEXT
-  ,`STR_36` TEXT
-  ,`NUM_18` DECIMAL(22, 0)
-  ,`TS_18` DATETIME(3)
-  ,`DBL_9` DOUBLE
-  ,`STR_37` TEXT
-  ,`STR_38` TEXT
-  ,`NUM_19` DECIMAL(22, 0)
-  ,`TS_19` DATETIME(3)
-  ,`STR_39` TEXT
-  ,`STR_40` TEXT
-  ,`NUM_20` DECIMAL(22, 0)
-  ,`TS_20` DATETIME(3)
-  ,`DBL_10` DOUBLE
-  ,`STR_41` TEXT
-  ,`STR_42` TEXT
-  ,`NUM_21` DECIMAL(22, 0)
-  ,`TS_21` DATETIME(3)
-  ,`STR_43` TEXT
-  ,`STR_44` TEXT
-  ,`NUM_22` DECIMAL(22, 0)
-  ,`TS_22` DATETIME(3)
-  ,`DBL_11` DOUBLE
-  ,`STR_45` TEXT
-  ,`STR_46` TEXT
-  ,`NUM_23` DECIMAL(22, 0)
-  ,`TS_23` DATETIME(3)
-  ,`STR_47` TEXT
-  ,`STR_48` TEXT
-  ,`NUM_24` DECIMAL(22, 0)
-  ,`TS_24` DATETIME(3)
-  ,`DBL_12` DOUBLE
-  ,`STR_49` TEXT
-  ,`STR_50` TEXT
-  ,`NUM_25` DECIMAL(22, 0)
-  ,`TS_25` DATETIME(3)
-  ,`STR_51` TEXT
-  ,`STR_52` TEXT
-  ,`NUM_26` DECIMAL(22, 0)
-  ,`TS_26` DATETIME(3)
-  ,`DBL_13` DOUBLE
-  ,`STR_53` TEXT
-  ,`STR_54` TEXT
-  ,`NUM_27` DECIMAL(22, 0)
-  ,`TS_27` DATETIME(3)
-  ,`STR_55` TEXT
-  ,`STR_56` TEXT
-  ,`NUM_28` DECIMAL(22, 0)
-  ,`TS_28` DATETIME(3)
-  ,`DBL_14` DOUBLE
-  ,`STR_57` TEXT
-  ,`STR_58` TEXT
-  ,`NUM_29` DECIMAL(22, 0)
-  ,`TS_29` DATETIME(3)
-  ,`STR_59` TEXT
-  ,`STR_60` TEXT
-  ,`NUM_30` DECIMAL(22, 0)
-  ,`TS_30` DATETIME(3)
-  ,`DBL_15` DOUBLE
-  ,`STR_61` TEXT
-  ,`STR_62` TEXT
-  ,`NUM_31` DECIMAL(22, 0)
-  ,`TS_31` DATETIME(3)
-  ,`STR_63` TEXT
-  ,`STR_64` TEXT
-  ,`NUM_32` DECIMAL(22, 0)
-  ,`TS_32` DATETIME(3)
-  ,`DBL_16` DOUBLE
-  ,PRIMARY KEY (`r_id`, `tenant_id`, `obj_def_id`)
-  ,INDEX `obj_store_rb___USERindex1` (`tenant_id`, `obj_def_id`(128), `rb_id`)
-)
-
-PARTITION BY RANGE( `tenant_id` )
-    SUBPARTITION BY LINEAR KEY( `obj_def_id` ) (
-        PARTITION obj_store_rb__USER_0 VALUES LESS THAN (1) (
-            SUBPARTITION obj_store_rb__USER_0_0,
-            SUBPARTITION obj_store_rb__USER_0_1,
-            SUBPARTITION obj_store_rb__USER_0_2,
-            SUBPARTITION obj_store_rb__USER_0_3,
-            SUBPARTITION obj_store_rb__USER_0_4,
-            SUBPARTITION obj_store_rb__USER_0_5,
-            SUBPARTITION obj_store_rb__USER_0_6,
-            SUBPARTITION obj_store_rb__USER_0_7
-        )
-    );
-
-/* drop/create OBJ_STORE_RB */
-DROP TABLE IF EXISTS `obj_store_rb__APQ`;
-CREATE TABLE `obj_store_rb__APQ` (
-  `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `rb_id` BIGINT(16) NULL,
-  `rb_date` DATETIME(3) NULL,
-  `rb_user` VARCHAR(64) NULL,
-  `tenant_id` INT(7) NOT NULL,
-  `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
-  `pg_no` INT(2) NOT NULL,
-  `obj_id` VARCHAR(64) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
-  `obj_ver` BIGINT(10) NOT NULL DEFAULT 0,
-  `obj_def_ver` BIGINT(10) NULL,
-  `status` CHAR(1) NULL,
-  `obj_name` VARCHAR(256) NULL,
-  `obj_desc` TEXT NULL,
-  `cre_date` DATETIME(3) NULL,
-  `up_date` DATETIME(3) NULL,
-  `s_date` DATETIME(3) NULL,
-  `e_date` DATETIME(3) NULL,
-  `lock_user` VARCHAR(64) NULL,
-  `cre_user` VARCHAR(64) NULL,
-  `up_user` VARCHAR(64) NULL
   ,`USTR_1` VARCHAR(192)
   ,`USTR_1_TD` VARCHAR(139) CHARACTER SET latin1 COLLATE latin1_bin
   ,`UNUM_1` DECIMAL(22, 0)
@@ -923,17 +212,38 @@ CREATE TABLE `obj_store_rb__APQ` (
   ,`TS_32` DATETIME(3)
   ,`DBL_16` DOUBLE
   
-  ,PRIMARY KEY (`r_id`, `tenant_id`, `obj_def_id`)
-  ,INDEX `obj_store_rb___APQindex1` (`tenant_id`, `obj_def_id`(128), `rb_id`)
+  ,PRIMARY KEY (`tenant_id`, `obj_def_id`, `obj_id`, `obj_ver`, `pg_no`)
+  ,UNIQUE INDEX `obj_store__APQ_USTR_unique_1` (`USTR_1_TD`(139), `USTR_1`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ_UNUM_unique_1` (`UNUM_1_TD`(139), `UNUM_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ_UTS_unique_1` (`UTS_1_TD`(139), `UTS_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ_UDBL_unique_1` (`UDBL_1_TD`(139), `UDBL_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ_USTR_unique_2` (`USTR_2_TD`(139), `USTR_2`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ_UNUM_unique_2` (`UNUM_2_TD`(139), `UNUM_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ_UTS_unique_2` (`UTS_2_TD`(139), `UTS_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ_UDBL_unique_2` (`UDBL_2_TD`(139), `UDBL_2`, `tenant_id`, `obj_def_id`(128))
+  ,INDEX `obj_store__APQ_ISTR_index_1` (`ISTR_1`(192), `ISTR_1_TD`(139))
+  ,INDEX `obj_store__APQ_INUM_index_1` (`INUM_1`, `INUM_1_TD`(139))
+  ,INDEX `obj_store__APQ_ITS_index_1` (`ITS_1`, `ITS_1_TD`(139))
+  ,INDEX `obj_store__APQ_IDBL_index_1` (`IDBL_1`, `IDBL_1_TD`(139))
+  ,INDEX `obj_store__APQ_ISTR_index_2` (`ISTR_2`(192), `ISTR_2_TD`(139))
+  ,INDEX `obj_store__APQ_INUM_index_2` (`INUM_2`, `INUM_2_TD`(139))
+  ,INDEX `obj_store__APQ_ITS_index_2` (`ITS_2`, `ITS_2_TD`(139))
+  ,INDEX `obj_store__APQ_IDBL_index_2` (`IDBL_2`, `IDBL_2_TD`(139))
+  ,INDEX `obj_store__APQ_ISTR_index_3` (`ISTR_3`(192), `ISTR_3_TD`(139))
+  ,INDEX `obj_store__APQ_ISTR_index_4` (`ISTR_4`(192), `ISTR_4_TD`(139))
+  ,INDEX `obj_store__APQ_INUM_index_3` (`INUM_3`, `INUM_3_TD`(139))
+  ,INDEX `obj_store__APQ_ITS_index_3` (`ITS_3`, `ITS_3_TD`(139))
+  ,INDEX `obj_store__APQ_IDBL_index_3` (`IDBL_3`, `IDBL_3_TD`(139))
+  ,INDEX `obj_store__APQ_ISTR_index_5` (`ISTR_5`(192), `ISTR_5_TD`(139))
+  ,INDEX `obj_store__APQ_INUM_index_4` (`INUM_4`, `INUM_4_TD`(139))
+  ,INDEX `obj_store__APQ_ITS_index_4` (`ITS_4`, `ITS_4_TD`(139))
+  ,INDEX `obj_store__APQ_IDBL_index_4` (`IDBL_4`, `IDBL_4_TD`(139))
+  ,INDEX `obj_store__APQ_cre_user_index` (`cre_user`(64), `obj_def_id`(128), `tenant_id`)
 )
 ;
-/* drop/create OBJ_STORE_RB */
-DROP TABLE IF EXISTS `obj_store_rb__APQ__1`;
-CREATE TABLE `obj_store_rb__APQ__1` (
-  `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `rb_id` BIGINT(16) NULL,
-  `rb_date` DATETIME(3) NULL,
-  `rb_user` VARCHAR(64) NULL,
+/* drop/create OBJ_STORE */
+DROP TABLE IF EXISTS `obj_store__APQ__1`;
+CREATE TABLE `obj_store__APQ__1` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -1145,17 +455,38 @@ CREATE TABLE `obj_store_rb__APQ__1` (
   ,`TS_32` DATETIME(3)
   ,`DBL_16` DOUBLE
   
-  ,PRIMARY KEY (`r_id`, `tenant_id`, `obj_def_id`)
-  ,INDEX `obj_store_rb___APQ__1index1` (`tenant_id`, `obj_def_id`(128), `rb_id`)
+  ,PRIMARY KEY (`tenant_id`, `obj_def_id`, `obj_id`, `obj_ver`, `pg_no`)
+  ,UNIQUE INDEX `obj_store__APQ__1_USTR_unique_1` (`USTR_1_TD`(139), `USTR_1`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__1_UNUM_unique_1` (`UNUM_1_TD`(139), `UNUM_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__1_UTS_unique_1` (`UTS_1_TD`(139), `UTS_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__1_UDBL_unique_1` (`UDBL_1_TD`(139), `UDBL_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__1_USTR_unique_2` (`USTR_2_TD`(139), `USTR_2`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__1_UNUM_unique_2` (`UNUM_2_TD`(139), `UNUM_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__1_UTS_unique_2` (`UTS_2_TD`(139), `UTS_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__1_UDBL_unique_2` (`UDBL_2_TD`(139), `UDBL_2`, `tenant_id`, `obj_def_id`(128))
+  ,INDEX `obj_store__APQ__1_ISTR_index_1` (`ISTR_1`(192), `ISTR_1_TD`(139))
+  ,INDEX `obj_store__APQ__1_INUM_index_1` (`INUM_1`, `INUM_1_TD`(139))
+  ,INDEX `obj_store__APQ__1_ITS_index_1` (`ITS_1`, `ITS_1_TD`(139))
+  ,INDEX `obj_store__APQ__1_IDBL_index_1` (`IDBL_1`, `IDBL_1_TD`(139))
+  ,INDEX `obj_store__APQ__1_ISTR_index_2` (`ISTR_2`(192), `ISTR_2_TD`(139))
+  ,INDEX `obj_store__APQ__1_INUM_index_2` (`INUM_2`, `INUM_2_TD`(139))
+  ,INDEX `obj_store__APQ__1_ITS_index_2` (`ITS_2`, `ITS_2_TD`(139))
+  ,INDEX `obj_store__APQ__1_IDBL_index_2` (`IDBL_2`, `IDBL_2_TD`(139))
+  ,INDEX `obj_store__APQ__1_ISTR_index_3` (`ISTR_3`(192), `ISTR_3_TD`(139))
+  ,INDEX `obj_store__APQ__1_ISTR_index_4` (`ISTR_4`(192), `ISTR_4_TD`(139))
+  ,INDEX `obj_store__APQ__1_INUM_index_3` (`INUM_3`, `INUM_3_TD`(139))
+  ,INDEX `obj_store__APQ__1_ITS_index_3` (`ITS_3`, `ITS_3_TD`(139))
+  ,INDEX `obj_store__APQ__1_IDBL_index_3` (`IDBL_3`, `IDBL_3_TD`(139))
+  ,INDEX `obj_store__APQ__1_ISTR_index_5` (`ISTR_5`(192), `ISTR_5_TD`(139))
+  ,INDEX `obj_store__APQ__1_INUM_index_4` (`INUM_4`, `INUM_4_TD`(139))
+  ,INDEX `obj_store__APQ__1_ITS_index_4` (`ITS_4`, `ITS_4_TD`(139))
+  ,INDEX `obj_store__APQ__1_IDBL_index_4` (`IDBL_4`, `IDBL_4_TD`(139))
+  ,INDEX `obj_store__APQ__1_cre_user_index` (`cre_user`(64), `obj_def_id`(128), `tenant_id`)
 )
 ;
-/* drop/create OBJ_STORE_RB */
-DROP TABLE IF EXISTS `obj_store_rb__APQ__2`;
-CREATE TABLE `obj_store_rb__APQ__2` (
-  `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `rb_id` BIGINT(16) NULL,
-  `rb_date` DATETIME(3) NULL,
-  `rb_user` VARCHAR(64) NULL,
+/* drop/create OBJ_STORE */
+DROP TABLE IF EXISTS `obj_store__APQ__2`;
+CREATE TABLE `obj_store__APQ__2` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -1367,17 +698,38 @@ CREATE TABLE `obj_store_rb__APQ__2` (
   ,`TS_32` DATETIME(3)
   ,`DBL_16` DOUBLE
   
-  ,PRIMARY KEY (`r_id`, `tenant_id`, `obj_def_id`)
-  ,INDEX `obj_store_rb___APQ__2index1` (`tenant_id`, `obj_def_id`(128), `rb_id`)
+  ,PRIMARY KEY (`tenant_id`, `obj_def_id`, `obj_id`, `obj_ver`, `pg_no`)
+  ,UNIQUE INDEX `obj_store__APQ__2_USTR_unique_1` (`USTR_1_TD`(139), `USTR_1`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__2_UNUM_unique_1` (`UNUM_1_TD`(139), `UNUM_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__2_UTS_unique_1` (`UTS_1_TD`(139), `UTS_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__2_UDBL_unique_1` (`UDBL_1_TD`(139), `UDBL_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__2_USTR_unique_2` (`USTR_2_TD`(139), `USTR_2`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__2_UNUM_unique_2` (`UNUM_2_TD`(139), `UNUM_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__2_UTS_unique_2` (`UTS_2_TD`(139), `UTS_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__2_UDBL_unique_2` (`UDBL_2_TD`(139), `UDBL_2`, `tenant_id`, `obj_def_id`(128))
+  ,INDEX `obj_store__APQ__2_ISTR_index_1` (`ISTR_1`(192), `ISTR_1_TD`(139))
+  ,INDEX `obj_store__APQ__2_INUM_index_1` (`INUM_1`, `INUM_1_TD`(139))
+  ,INDEX `obj_store__APQ__2_ITS_index_1` (`ITS_1`, `ITS_1_TD`(139))
+  ,INDEX `obj_store__APQ__2_IDBL_index_1` (`IDBL_1`, `IDBL_1_TD`(139))
+  ,INDEX `obj_store__APQ__2_ISTR_index_2` (`ISTR_2`(192), `ISTR_2_TD`(139))
+  ,INDEX `obj_store__APQ__2_INUM_index_2` (`INUM_2`, `INUM_2_TD`(139))
+  ,INDEX `obj_store__APQ__2_ITS_index_2` (`ITS_2`, `ITS_2_TD`(139))
+  ,INDEX `obj_store__APQ__2_IDBL_index_2` (`IDBL_2`, `IDBL_2_TD`(139))
+  ,INDEX `obj_store__APQ__2_ISTR_index_3` (`ISTR_3`(192), `ISTR_3_TD`(139))
+  ,INDEX `obj_store__APQ__2_ISTR_index_4` (`ISTR_4`(192), `ISTR_4_TD`(139))
+  ,INDEX `obj_store__APQ__2_INUM_index_3` (`INUM_3`, `INUM_3_TD`(139))
+  ,INDEX `obj_store__APQ__2_ITS_index_3` (`ITS_3`, `ITS_3_TD`(139))
+  ,INDEX `obj_store__APQ__2_IDBL_index_3` (`IDBL_3`, `IDBL_3_TD`(139))
+  ,INDEX `obj_store__APQ__2_ISTR_index_5` (`ISTR_5`(192), `ISTR_5_TD`(139))
+  ,INDEX `obj_store__APQ__2_INUM_index_4` (`INUM_4`, `INUM_4_TD`(139))
+  ,INDEX `obj_store__APQ__2_ITS_index_4` (`ITS_4`, `ITS_4_TD`(139))
+  ,INDEX `obj_store__APQ__2_IDBL_index_4` (`IDBL_4`, `IDBL_4_TD`(139))
+  ,INDEX `obj_store__APQ__2_cre_user_index` (`cre_user`(64), `obj_def_id`(128), `tenant_id`)
 )
 ;
-/* drop/create OBJ_STORE_RB */
-DROP TABLE IF EXISTS `obj_store_rb__APQ__3`;
-CREATE TABLE `obj_store_rb__APQ__3` (
-  `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `rb_id` BIGINT(16) NULL,
-  `rb_date` DATETIME(3) NULL,
-  `rb_user` VARCHAR(64) NULL,
+/* drop/create OBJ_STORE */
+DROP TABLE IF EXISTS `obj_store__APQ__3`;
+CREATE TABLE `obj_store__APQ__3` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -1589,17 +941,38 @@ CREATE TABLE `obj_store_rb__APQ__3` (
   ,`TS_32` DATETIME(3)
   ,`DBL_16` DOUBLE
   
-  ,PRIMARY KEY (`r_id`, `tenant_id`, `obj_def_id`)
-  ,INDEX `obj_store_rb___APQ__3index1` (`tenant_id`, `obj_def_id`(128), `rb_id`)
+  ,PRIMARY KEY (`tenant_id`, `obj_def_id`, `obj_id`, `obj_ver`, `pg_no`)
+  ,UNIQUE INDEX `obj_store__APQ__3_USTR_unique_1` (`USTR_1_TD`(139), `USTR_1`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__3_UNUM_unique_1` (`UNUM_1_TD`(139), `UNUM_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__3_UTS_unique_1` (`UTS_1_TD`(139), `UTS_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__3_UDBL_unique_1` (`UDBL_1_TD`(139), `UDBL_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__3_USTR_unique_2` (`USTR_2_TD`(139), `USTR_2`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__3_UNUM_unique_2` (`UNUM_2_TD`(139), `UNUM_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__3_UTS_unique_2` (`UTS_2_TD`(139), `UTS_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__3_UDBL_unique_2` (`UDBL_2_TD`(139), `UDBL_2`, `tenant_id`, `obj_def_id`(128))
+  ,INDEX `obj_store__APQ__3_ISTR_index_1` (`ISTR_1`(192), `ISTR_1_TD`(139))
+  ,INDEX `obj_store__APQ__3_INUM_index_1` (`INUM_1`, `INUM_1_TD`(139))
+  ,INDEX `obj_store__APQ__3_ITS_index_1` (`ITS_1`, `ITS_1_TD`(139))
+  ,INDEX `obj_store__APQ__3_IDBL_index_1` (`IDBL_1`, `IDBL_1_TD`(139))
+  ,INDEX `obj_store__APQ__3_ISTR_index_2` (`ISTR_2`(192), `ISTR_2_TD`(139))
+  ,INDEX `obj_store__APQ__3_INUM_index_2` (`INUM_2`, `INUM_2_TD`(139))
+  ,INDEX `obj_store__APQ__3_ITS_index_2` (`ITS_2`, `ITS_2_TD`(139))
+  ,INDEX `obj_store__APQ__3_IDBL_index_2` (`IDBL_2`, `IDBL_2_TD`(139))
+  ,INDEX `obj_store__APQ__3_ISTR_index_3` (`ISTR_3`(192), `ISTR_3_TD`(139))
+  ,INDEX `obj_store__APQ__3_ISTR_index_4` (`ISTR_4`(192), `ISTR_4_TD`(139))
+  ,INDEX `obj_store__APQ__3_INUM_index_3` (`INUM_3`, `INUM_3_TD`(139))
+  ,INDEX `obj_store__APQ__3_ITS_index_3` (`ITS_3`, `ITS_3_TD`(139))
+  ,INDEX `obj_store__APQ__3_IDBL_index_3` (`IDBL_3`, `IDBL_3_TD`(139))
+  ,INDEX `obj_store__APQ__3_ISTR_index_5` (`ISTR_5`(192), `ISTR_5_TD`(139))
+  ,INDEX `obj_store__APQ__3_INUM_index_4` (`INUM_4`, `INUM_4_TD`(139))
+  ,INDEX `obj_store__APQ__3_ITS_index_4` (`ITS_4`, `ITS_4_TD`(139))
+  ,INDEX `obj_store__APQ__3_IDBL_index_4` (`IDBL_4`, `IDBL_4_TD`(139))
+  ,INDEX `obj_store__APQ__3_cre_user_index` (`cre_user`(64), `obj_def_id`(128), `tenant_id`)
 )
 ;
-/* drop/create OBJ_STORE_RB */
-DROP TABLE IF EXISTS `obj_store_rb__APQ__4`;
-CREATE TABLE `obj_store_rb__APQ__4` (
-  `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `rb_id` BIGINT(16) NULL,
-  `rb_date` DATETIME(3) NULL,
-  `rb_user` VARCHAR(64) NULL,
+/* drop/create OBJ_STORE */
+DROP TABLE IF EXISTS `obj_store__APQ__4`;
+CREATE TABLE `obj_store__APQ__4` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -1811,17 +1184,38 @@ CREATE TABLE `obj_store_rb__APQ__4` (
   ,`TS_32` DATETIME(3)
   ,`DBL_16` DOUBLE
   
-  ,PRIMARY KEY (`r_id`, `tenant_id`, `obj_def_id`)
-  ,INDEX `obj_store_rb___APQ__4index1` (`tenant_id`, `obj_def_id`(128), `rb_id`)
+  ,PRIMARY KEY (`tenant_id`, `obj_def_id`, `obj_id`, `obj_ver`, `pg_no`)
+  ,UNIQUE INDEX `obj_store__APQ__4_USTR_unique_1` (`USTR_1_TD`(139), `USTR_1`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__4_UNUM_unique_1` (`UNUM_1_TD`(139), `UNUM_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__4_UTS_unique_1` (`UTS_1_TD`(139), `UTS_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__4_UDBL_unique_1` (`UDBL_1_TD`(139), `UDBL_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__4_USTR_unique_2` (`USTR_2_TD`(139), `USTR_2`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__4_UNUM_unique_2` (`UNUM_2_TD`(139), `UNUM_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__4_UTS_unique_2` (`UTS_2_TD`(139), `UTS_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__4_UDBL_unique_2` (`UDBL_2_TD`(139), `UDBL_2`, `tenant_id`, `obj_def_id`(128))
+  ,INDEX `obj_store__APQ__4_ISTR_index_1` (`ISTR_1`(192), `ISTR_1_TD`(139))
+  ,INDEX `obj_store__APQ__4_INUM_index_1` (`INUM_1`, `INUM_1_TD`(139))
+  ,INDEX `obj_store__APQ__4_ITS_index_1` (`ITS_1`, `ITS_1_TD`(139))
+  ,INDEX `obj_store__APQ__4_IDBL_index_1` (`IDBL_1`, `IDBL_1_TD`(139))
+  ,INDEX `obj_store__APQ__4_ISTR_index_2` (`ISTR_2`(192), `ISTR_2_TD`(139))
+  ,INDEX `obj_store__APQ__4_INUM_index_2` (`INUM_2`, `INUM_2_TD`(139))
+  ,INDEX `obj_store__APQ__4_ITS_index_2` (`ITS_2`, `ITS_2_TD`(139))
+  ,INDEX `obj_store__APQ__4_IDBL_index_2` (`IDBL_2`, `IDBL_2_TD`(139))
+  ,INDEX `obj_store__APQ__4_ISTR_index_3` (`ISTR_3`(192), `ISTR_3_TD`(139))
+  ,INDEX `obj_store__APQ__4_ISTR_index_4` (`ISTR_4`(192), `ISTR_4_TD`(139))
+  ,INDEX `obj_store__APQ__4_INUM_index_3` (`INUM_3`, `INUM_3_TD`(139))
+  ,INDEX `obj_store__APQ__4_ITS_index_3` (`ITS_3`, `ITS_3_TD`(139))
+  ,INDEX `obj_store__APQ__4_IDBL_index_3` (`IDBL_3`, `IDBL_3_TD`(139))
+  ,INDEX `obj_store__APQ__4_ISTR_index_5` (`ISTR_5`(192), `ISTR_5_TD`(139))
+  ,INDEX `obj_store__APQ__4_INUM_index_4` (`INUM_4`, `INUM_4_TD`(139))
+  ,INDEX `obj_store__APQ__4_ITS_index_4` (`ITS_4`, `ITS_4_TD`(139))
+  ,INDEX `obj_store__APQ__4_IDBL_index_4` (`IDBL_4`, `IDBL_4_TD`(139))
+  ,INDEX `obj_store__APQ__4_cre_user_index` (`cre_user`(64), `obj_def_id`(128), `tenant_id`)
 )
 ;
-/* drop/create OBJ_STORE_RB */
-DROP TABLE IF EXISTS `obj_store_rb__APQ__5`;
-CREATE TABLE `obj_store_rb__APQ__5` (
-  `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `rb_id` BIGINT(16) NULL,
-  `rb_date` DATETIME(3) NULL,
-  `rb_user` VARCHAR(64) NULL,
+/* drop/create OBJ_STORE */
+DROP TABLE IF EXISTS `obj_store__APQ__5`;
+CREATE TABLE `obj_store__APQ__5` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -2033,17 +1427,38 @@ CREATE TABLE `obj_store_rb__APQ__5` (
   ,`TS_32` DATETIME(3)
   ,`DBL_16` DOUBLE
   
-  ,PRIMARY KEY (`r_id`, `tenant_id`, `obj_def_id`)
-  ,INDEX `obj_store_rb___APQ__5index1` (`tenant_id`, `obj_def_id`(128), `rb_id`)
+  ,PRIMARY KEY (`tenant_id`, `obj_def_id`, `obj_id`, `obj_ver`, `pg_no`)
+  ,UNIQUE INDEX `obj_store__APQ__5_USTR_unique_1` (`USTR_1_TD`(139), `USTR_1`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__5_UNUM_unique_1` (`UNUM_1_TD`(139), `UNUM_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__5_UTS_unique_1` (`UTS_1_TD`(139), `UTS_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__5_UDBL_unique_1` (`UDBL_1_TD`(139), `UDBL_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__5_USTR_unique_2` (`USTR_2_TD`(139), `USTR_2`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__5_UNUM_unique_2` (`UNUM_2_TD`(139), `UNUM_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__5_UTS_unique_2` (`UTS_2_TD`(139), `UTS_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__5_UDBL_unique_2` (`UDBL_2_TD`(139), `UDBL_2`, `tenant_id`, `obj_def_id`(128))
+  ,INDEX `obj_store__APQ__5_ISTR_index_1` (`ISTR_1`(192), `ISTR_1_TD`(139))
+  ,INDEX `obj_store__APQ__5_INUM_index_1` (`INUM_1`, `INUM_1_TD`(139))
+  ,INDEX `obj_store__APQ__5_ITS_index_1` (`ITS_1`, `ITS_1_TD`(139))
+  ,INDEX `obj_store__APQ__5_IDBL_index_1` (`IDBL_1`, `IDBL_1_TD`(139))
+  ,INDEX `obj_store__APQ__5_ISTR_index_2` (`ISTR_2`(192), `ISTR_2_TD`(139))
+  ,INDEX `obj_store__APQ__5_INUM_index_2` (`INUM_2`, `INUM_2_TD`(139))
+  ,INDEX `obj_store__APQ__5_ITS_index_2` (`ITS_2`, `ITS_2_TD`(139))
+  ,INDEX `obj_store__APQ__5_IDBL_index_2` (`IDBL_2`, `IDBL_2_TD`(139))
+  ,INDEX `obj_store__APQ__5_ISTR_index_3` (`ISTR_3`(192), `ISTR_3_TD`(139))
+  ,INDEX `obj_store__APQ__5_ISTR_index_4` (`ISTR_4`(192), `ISTR_4_TD`(139))
+  ,INDEX `obj_store__APQ__5_INUM_index_3` (`INUM_3`, `INUM_3_TD`(139))
+  ,INDEX `obj_store__APQ__5_ITS_index_3` (`ITS_3`, `ITS_3_TD`(139))
+  ,INDEX `obj_store__APQ__5_IDBL_index_3` (`IDBL_3`, `IDBL_3_TD`(139))
+  ,INDEX `obj_store__APQ__5_ISTR_index_5` (`ISTR_5`(192), `ISTR_5_TD`(139))
+  ,INDEX `obj_store__APQ__5_INUM_index_4` (`INUM_4`, `INUM_4_TD`(139))
+  ,INDEX `obj_store__APQ__5_ITS_index_4` (`ITS_4`, `ITS_4_TD`(139))
+  ,INDEX `obj_store__APQ__5_IDBL_index_4` (`IDBL_4`, `IDBL_4_TD`(139))
+  ,INDEX `obj_store__APQ__5_cre_user_index` (`cre_user`(64), `obj_def_id`(128), `tenant_id`)
 )
 ;
-/* drop/create OBJ_STORE_RB */
-DROP TABLE IF EXISTS `obj_store_rb__APQ__6`;
-CREATE TABLE `obj_store_rb__APQ__6` (
-  `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `rb_id` BIGINT(16) NULL,
-  `rb_date` DATETIME(3) NULL,
-  `rb_user` VARCHAR(64) NULL,
+/* drop/create OBJ_STORE */
+DROP TABLE IF EXISTS `obj_store__APQ__6`;
+CREATE TABLE `obj_store__APQ__6` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -2255,17 +1670,38 @@ CREATE TABLE `obj_store_rb__APQ__6` (
   ,`TS_32` DATETIME(3)
   ,`DBL_16` DOUBLE
   
-  ,PRIMARY KEY (`r_id`, `tenant_id`, `obj_def_id`)
-  ,INDEX `obj_store_rb___APQ__6index1` (`tenant_id`, `obj_def_id`(128), `rb_id`)
+  ,PRIMARY KEY (`tenant_id`, `obj_def_id`, `obj_id`, `obj_ver`, `pg_no`)
+  ,UNIQUE INDEX `obj_store__APQ__6_USTR_unique_1` (`USTR_1_TD`(139), `USTR_1`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__6_UNUM_unique_1` (`UNUM_1_TD`(139), `UNUM_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__6_UTS_unique_1` (`UTS_1_TD`(139), `UTS_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__6_UDBL_unique_1` (`UDBL_1_TD`(139), `UDBL_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__6_USTR_unique_2` (`USTR_2_TD`(139), `USTR_2`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__6_UNUM_unique_2` (`UNUM_2_TD`(139), `UNUM_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__6_UTS_unique_2` (`UTS_2_TD`(139), `UTS_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__6_UDBL_unique_2` (`UDBL_2_TD`(139), `UDBL_2`, `tenant_id`, `obj_def_id`(128))
+  ,INDEX `obj_store__APQ__6_ISTR_index_1` (`ISTR_1`(192), `ISTR_1_TD`(139))
+  ,INDEX `obj_store__APQ__6_INUM_index_1` (`INUM_1`, `INUM_1_TD`(139))
+  ,INDEX `obj_store__APQ__6_ITS_index_1` (`ITS_1`, `ITS_1_TD`(139))
+  ,INDEX `obj_store__APQ__6_IDBL_index_1` (`IDBL_1`, `IDBL_1_TD`(139))
+  ,INDEX `obj_store__APQ__6_ISTR_index_2` (`ISTR_2`(192), `ISTR_2_TD`(139))
+  ,INDEX `obj_store__APQ__6_INUM_index_2` (`INUM_2`, `INUM_2_TD`(139))
+  ,INDEX `obj_store__APQ__6_ITS_index_2` (`ITS_2`, `ITS_2_TD`(139))
+  ,INDEX `obj_store__APQ__6_IDBL_index_2` (`IDBL_2`, `IDBL_2_TD`(139))
+  ,INDEX `obj_store__APQ__6_ISTR_index_3` (`ISTR_3`(192), `ISTR_3_TD`(139))
+  ,INDEX `obj_store__APQ__6_ISTR_index_4` (`ISTR_4`(192), `ISTR_4_TD`(139))
+  ,INDEX `obj_store__APQ__6_INUM_index_3` (`INUM_3`, `INUM_3_TD`(139))
+  ,INDEX `obj_store__APQ__6_ITS_index_3` (`ITS_3`, `ITS_3_TD`(139))
+  ,INDEX `obj_store__APQ__6_IDBL_index_3` (`IDBL_3`, `IDBL_3_TD`(139))
+  ,INDEX `obj_store__APQ__6_ISTR_index_5` (`ISTR_5`(192), `ISTR_5_TD`(139))
+  ,INDEX `obj_store__APQ__6_INUM_index_4` (`INUM_4`, `INUM_4_TD`(139))
+  ,INDEX `obj_store__APQ__6_ITS_index_4` (`ITS_4`, `ITS_4_TD`(139))
+  ,INDEX `obj_store__APQ__6_IDBL_index_4` (`IDBL_4`, `IDBL_4_TD`(139))
+  ,INDEX `obj_store__APQ__6_cre_user_index` (`cre_user`(64), `obj_def_id`(128), `tenant_id`)
 )
 ;
-/* drop/create OBJ_STORE_RB */
-DROP TABLE IF EXISTS `obj_store_rb__APQ__7`;
-CREATE TABLE `obj_store_rb__APQ__7` (
-  `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `rb_id` BIGINT(16) NULL,
-  `rb_date` DATETIME(3) NULL,
-  `rb_user` VARCHAR(64) NULL,
+/* drop/create OBJ_STORE */
+DROP TABLE IF EXISTS `obj_store__APQ__7`;
+CREATE TABLE `obj_store__APQ__7` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -2477,17 +1913,38 @@ CREATE TABLE `obj_store_rb__APQ__7` (
   ,`TS_32` DATETIME(3)
   ,`DBL_16` DOUBLE
   
-  ,PRIMARY KEY (`r_id`, `tenant_id`, `obj_def_id`)
-  ,INDEX `obj_store_rb___APQ__7index1` (`tenant_id`, `obj_def_id`(128), `rb_id`)
+  ,PRIMARY KEY (`tenant_id`, `obj_def_id`, `obj_id`, `obj_ver`, `pg_no`)
+  ,UNIQUE INDEX `obj_store__APQ__7_USTR_unique_1` (`USTR_1_TD`(139), `USTR_1`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__7_UNUM_unique_1` (`UNUM_1_TD`(139), `UNUM_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__7_UTS_unique_1` (`UTS_1_TD`(139), `UTS_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__7_UDBL_unique_1` (`UDBL_1_TD`(139), `UDBL_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__7_USTR_unique_2` (`USTR_2_TD`(139), `USTR_2`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__7_UNUM_unique_2` (`UNUM_2_TD`(139), `UNUM_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__7_UTS_unique_2` (`UTS_2_TD`(139), `UTS_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__7_UDBL_unique_2` (`UDBL_2_TD`(139), `UDBL_2`, `tenant_id`, `obj_def_id`(128))
+  ,INDEX `obj_store__APQ__7_ISTR_index_1` (`ISTR_1`(192), `ISTR_1_TD`(139))
+  ,INDEX `obj_store__APQ__7_INUM_index_1` (`INUM_1`, `INUM_1_TD`(139))
+  ,INDEX `obj_store__APQ__7_ITS_index_1` (`ITS_1`, `ITS_1_TD`(139))
+  ,INDEX `obj_store__APQ__7_IDBL_index_1` (`IDBL_1`, `IDBL_1_TD`(139))
+  ,INDEX `obj_store__APQ__7_ISTR_index_2` (`ISTR_2`(192), `ISTR_2_TD`(139))
+  ,INDEX `obj_store__APQ__7_INUM_index_2` (`INUM_2`, `INUM_2_TD`(139))
+  ,INDEX `obj_store__APQ__7_ITS_index_2` (`ITS_2`, `ITS_2_TD`(139))
+  ,INDEX `obj_store__APQ__7_IDBL_index_2` (`IDBL_2`, `IDBL_2_TD`(139))
+  ,INDEX `obj_store__APQ__7_ISTR_index_3` (`ISTR_3`(192), `ISTR_3_TD`(139))
+  ,INDEX `obj_store__APQ__7_ISTR_index_4` (`ISTR_4`(192), `ISTR_4_TD`(139))
+  ,INDEX `obj_store__APQ__7_INUM_index_3` (`INUM_3`, `INUM_3_TD`(139))
+  ,INDEX `obj_store__APQ__7_ITS_index_3` (`ITS_3`, `ITS_3_TD`(139))
+  ,INDEX `obj_store__APQ__7_IDBL_index_3` (`IDBL_3`, `IDBL_3_TD`(139))
+  ,INDEX `obj_store__APQ__7_ISTR_index_5` (`ISTR_5`(192), `ISTR_5_TD`(139))
+  ,INDEX `obj_store__APQ__7_INUM_index_4` (`INUM_4`, `INUM_4_TD`(139))
+  ,INDEX `obj_store__APQ__7_ITS_index_4` (`ITS_4`, `ITS_4_TD`(139))
+  ,INDEX `obj_store__APQ__7_IDBL_index_4` (`IDBL_4`, `IDBL_4_TD`(139))
+  ,INDEX `obj_store__APQ__7_cre_user_index` (`cre_user`(64), `obj_def_id`(128), `tenant_id`)
 )
 ;
-/* drop/create OBJ_STORE_RB */
-DROP TABLE IF EXISTS `obj_store_rb__APQ__8`;
-CREATE TABLE `obj_store_rb__APQ__8` (
-  `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `rb_id` BIGINT(16) NULL,
-  `rb_date` DATETIME(3) NULL,
-  `rb_user` VARCHAR(64) NULL,
+/* drop/create OBJ_STORE */
+DROP TABLE IF EXISTS `obj_store__APQ__8`;
+CREATE TABLE `obj_store__APQ__8` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -2699,17 +2156,38 @@ CREATE TABLE `obj_store_rb__APQ__8` (
   ,`TS_32` DATETIME(3)
   ,`DBL_16` DOUBLE
   
-  ,PRIMARY KEY (`r_id`, `tenant_id`, `obj_def_id`)
-  ,INDEX `obj_store_rb___APQ__8index1` (`tenant_id`, `obj_def_id`(128), `rb_id`)
+  ,PRIMARY KEY (`tenant_id`, `obj_def_id`, `obj_id`, `obj_ver`, `pg_no`)
+  ,UNIQUE INDEX `obj_store__APQ__8_USTR_unique_1` (`USTR_1_TD`(139), `USTR_1`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__8_UNUM_unique_1` (`UNUM_1_TD`(139), `UNUM_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__8_UTS_unique_1` (`UTS_1_TD`(139), `UTS_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__8_UDBL_unique_1` (`UDBL_1_TD`(139), `UDBL_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__8_USTR_unique_2` (`USTR_2_TD`(139), `USTR_2`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__8_UNUM_unique_2` (`UNUM_2_TD`(139), `UNUM_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__8_UTS_unique_2` (`UTS_2_TD`(139), `UTS_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__8_UDBL_unique_2` (`UDBL_2_TD`(139), `UDBL_2`, `tenant_id`, `obj_def_id`(128))
+  ,INDEX `obj_store__APQ__8_ISTR_index_1` (`ISTR_1`(192), `ISTR_1_TD`(139))
+  ,INDEX `obj_store__APQ__8_INUM_index_1` (`INUM_1`, `INUM_1_TD`(139))
+  ,INDEX `obj_store__APQ__8_ITS_index_1` (`ITS_1`, `ITS_1_TD`(139))
+  ,INDEX `obj_store__APQ__8_IDBL_index_1` (`IDBL_1`, `IDBL_1_TD`(139))
+  ,INDEX `obj_store__APQ__8_ISTR_index_2` (`ISTR_2`(192), `ISTR_2_TD`(139))
+  ,INDEX `obj_store__APQ__8_INUM_index_2` (`INUM_2`, `INUM_2_TD`(139))
+  ,INDEX `obj_store__APQ__8_ITS_index_2` (`ITS_2`, `ITS_2_TD`(139))
+  ,INDEX `obj_store__APQ__8_IDBL_index_2` (`IDBL_2`, `IDBL_2_TD`(139))
+  ,INDEX `obj_store__APQ__8_ISTR_index_3` (`ISTR_3`(192), `ISTR_3_TD`(139))
+  ,INDEX `obj_store__APQ__8_ISTR_index_4` (`ISTR_4`(192), `ISTR_4_TD`(139))
+  ,INDEX `obj_store__APQ__8_INUM_index_3` (`INUM_3`, `INUM_3_TD`(139))
+  ,INDEX `obj_store__APQ__8_ITS_index_3` (`ITS_3`, `ITS_3_TD`(139))
+  ,INDEX `obj_store__APQ__8_IDBL_index_3` (`IDBL_3`, `IDBL_3_TD`(139))
+  ,INDEX `obj_store__APQ__8_ISTR_index_5` (`ISTR_5`(192), `ISTR_5_TD`(139))
+  ,INDEX `obj_store__APQ__8_INUM_index_4` (`INUM_4`, `INUM_4_TD`(139))
+  ,INDEX `obj_store__APQ__8_ITS_index_4` (`ITS_4`, `ITS_4_TD`(139))
+  ,INDEX `obj_store__APQ__8_IDBL_index_4` (`IDBL_4`, `IDBL_4_TD`(139))
+  ,INDEX `obj_store__APQ__8_cre_user_index` (`cre_user`(64), `obj_def_id`(128), `tenant_id`)
 )
 ;
-/* drop/create OBJ_STORE_RB */
-DROP TABLE IF EXISTS `obj_store_rb__APQ__9`;
-CREATE TABLE `obj_store_rb__APQ__9` (
-  `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `rb_id` BIGINT(16) NULL,
-  `rb_date` DATETIME(3) NULL,
-  `rb_user` VARCHAR(64) NULL,
+/* drop/create OBJ_STORE */
+DROP TABLE IF EXISTS `obj_store__APQ__9`;
+CREATE TABLE `obj_store__APQ__9` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -2921,17 +2399,38 @@ CREATE TABLE `obj_store_rb__APQ__9` (
   ,`TS_32` DATETIME(3)
   ,`DBL_16` DOUBLE
   
-  ,PRIMARY KEY (`r_id`, `tenant_id`, `obj_def_id`)
-  ,INDEX `obj_store_rb___APQ__9index1` (`tenant_id`, `obj_def_id`(128), `rb_id`)
+  ,PRIMARY KEY (`tenant_id`, `obj_def_id`, `obj_id`, `obj_ver`, `pg_no`)
+  ,UNIQUE INDEX `obj_store__APQ__9_USTR_unique_1` (`USTR_1_TD`(139), `USTR_1`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__9_UNUM_unique_1` (`UNUM_1_TD`(139), `UNUM_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__9_UTS_unique_1` (`UTS_1_TD`(139), `UTS_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__9_UDBL_unique_1` (`UDBL_1_TD`(139), `UDBL_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__9_USTR_unique_2` (`USTR_2_TD`(139), `USTR_2`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__9_UNUM_unique_2` (`UNUM_2_TD`(139), `UNUM_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__9_UTS_unique_2` (`UTS_2_TD`(139), `UTS_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__9_UDBL_unique_2` (`UDBL_2_TD`(139), `UDBL_2`, `tenant_id`, `obj_def_id`(128))
+  ,INDEX `obj_store__APQ__9_ISTR_index_1` (`ISTR_1`(192), `ISTR_1_TD`(139))
+  ,INDEX `obj_store__APQ__9_INUM_index_1` (`INUM_1`, `INUM_1_TD`(139))
+  ,INDEX `obj_store__APQ__9_ITS_index_1` (`ITS_1`, `ITS_1_TD`(139))
+  ,INDEX `obj_store__APQ__9_IDBL_index_1` (`IDBL_1`, `IDBL_1_TD`(139))
+  ,INDEX `obj_store__APQ__9_ISTR_index_2` (`ISTR_2`(192), `ISTR_2_TD`(139))
+  ,INDEX `obj_store__APQ__9_INUM_index_2` (`INUM_2`, `INUM_2_TD`(139))
+  ,INDEX `obj_store__APQ__9_ITS_index_2` (`ITS_2`, `ITS_2_TD`(139))
+  ,INDEX `obj_store__APQ__9_IDBL_index_2` (`IDBL_2`, `IDBL_2_TD`(139))
+  ,INDEX `obj_store__APQ__9_ISTR_index_3` (`ISTR_3`(192), `ISTR_3_TD`(139))
+  ,INDEX `obj_store__APQ__9_ISTR_index_4` (`ISTR_4`(192), `ISTR_4_TD`(139))
+  ,INDEX `obj_store__APQ__9_INUM_index_3` (`INUM_3`, `INUM_3_TD`(139))
+  ,INDEX `obj_store__APQ__9_ITS_index_3` (`ITS_3`, `ITS_3_TD`(139))
+  ,INDEX `obj_store__APQ__9_IDBL_index_3` (`IDBL_3`, `IDBL_3_TD`(139))
+  ,INDEX `obj_store__APQ__9_ISTR_index_5` (`ISTR_5`(192), `ISTR_5_TD`(139))
+  ,INDEX `obj_store__APQ__9_INUM_index_4` (`INUM_4`, `INUM_4_TD`(139))
+  ,INDEX `obj_store__APQ__9_ITS_index_4` (`ITS_4`, `ITS_4_TD`(139))
+  ,INDEX `obj_store__APQ__9_IDBL_index_4` (`IDBL_4`, `IDBL_4_TD`(139))
+  ,INDEX `obj_store__APQ__9_cre_user_index` (`cre_user`(64), `obj_def_id`(128), `tenant_id`)
 )
 ;
-/* drop/create OBJ_STORE_RB */
-DROP TABLE IF EXISTS `obj_store_rb__APQ__10`;
-CREATE TABLE `obj_store_rb__APQ__10` (
-  `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `rb_id` BIGINT(16) NULL,
-  `rb_date` DATETIME(3) NULL,
-  `rb_user` VARCHAR(64) NULL,
+/* drop/create OBJ_STORE */
+DROP TABLE IF EXISTS `obj_store__APQ__10`;
+CREATE TABLE `obj_store__APQ__10` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -3143,17 +2642,38 @@ CREATE TABLE `obj_store_rb__APQ__10` (
   ,`TS_32` DATETIME(3)
   ,`DBL_16` DOUBLE
   
-  ,PRIMARY KEY (`r_id`, `tenant_id`, `obj_def_id`)
-  ,INDEX `obj_store_rb___APQ__10index1` (`tenant_id`, `obj_def_id`(128), `rb_id`)
+  ,PRIMARY KEY (`tenant_id`, `obj_def_id`, `obj_id`, `obj_ver`, `pg_no`)
+  ,UNIQUE INDEX `obj_store__APQ__10_USTR_unique_1` (`USTR_1_TD`(139), `USTR_1`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__10_UNUM_unique_1` (`UNUM_1_TD`(139), `UNUM_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__10_UTS_unique_1` (`UTS_1_TD`(139), `UTS_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__10_UDBL_unique_1` (`UDBL_1_TD`(139), `UDBL_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__10_USTR_unique_2` (`USTR_2_TD`(139), `USTR_2`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__10_UNUM_unique_2` (`UNUM_2_TD`(139), `UNUM_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__10_UTS_unique_2` (`UTS_2_TD`(139), `UTS_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__10_UDBL_unique_2` (`UDBL_2_TD`(139), `UDBL_2`, `tenant_id`, `obj_def_id`(128))
+  ,INDEX `obj_store__APQ__10_ISTR_index_1` (`ISTR_1`(192), `ISTR_1_TD`(139))
+  ,INDEX `obj_store__APQ__10_INUM_index_1` (`INUM_1`, `INUM_1_TD`(139))
+  ,INDEX `obj_store__APQ__10_ITS_index_1` (`ITS_1`, `ITS_1_TD`(139))
+  ,INDEX `obj_store__APQ__10_IDBL_index_1` (`IDBL_1`, `IDBL_1_TD`(139))
+  ,INDEX `obj_store__APQ__10_ISTR_index_2` (`ISTR_2`(192), `ISTR_2_TD`(139))
+  ,INDEX `obj_store__APQ__10_INUM_index_2` (`INUM_2`, `INUM_2_TD`(139))
+  ,INDEX `obj_store__APQ__10_ITS_index_2` (`ITS_2`, `ITS_2_TD`(139))
+  ,INDEX `obj_store__APQ__10_IDBL_index_2` (`IDBL_2`, `IDBL_2_TD`(139))
+  ,INDEX `obj_store__APQ__10_ISTR_index_3` (`ISTR_3`(192), `ISTR_3_TD`(139))
+  ,INDEX `obj_store__APQ__10_ISTR_index_4` (`ISTR_4`(192), `ISTR_4_TD`(139))
+  ,INDEX `obj_store__APQ__10_INUM_index_3` (`INUM_3`, `INUM_3_TD`(139))
+  ,INDEX `obj_store__APQ__10_ITS_index_3` (`ITS_3`, `ITS_3_TD`(139))
+  ,INDEX `obj_store__APQ__10_IDBL_index_3` (`IDBL_3`, `IDBL_3_TD`(139))
+  ,INDEX `obj_store__APQ__10_ISTR_index_5` (`ISTR_5`(192), `ISTR_5_TD`(139))
+  ,INDEX `obj_store__APQ__10_INUM_index_4` (`INUM_4`, `INUM_4_TD`(139))
+  ,INDEX `obj_store__APQ__10_ITS_index_4` (`ITS_4`, `ITS_4_TD`(139))
+  ,INDEX `obj_store__APQ__10_IDBL_index_4` (`IDBL_4`, `IDBL_4_TD`(139))
+  ,INDEX `obj_store__APQ__10_cre_user_index` (`cre_user`(64), `obj_def_id`(128), `tenant_id`)
 )
 ;
-/* drop/create OBJ_STORE_RB */
-DROP TABLE IF EXISTS `obj_store_rb__APQ__11`;
-CREATE TABLE `obj_store_rb__APQ__11` (
-  `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `rb_id` BIGINT(16) NULL,
-  `rb_date` DATETIME(3) NULL,
-  `rb_user` VARCHAR(64) NULL,
+/* drop/create OBJ_STORE */
+DROP TABLE IF EXISTS `obj_store__APQ__11`;
+CREATE TABLE `obj_store__APQ__11` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -3365,17 +2885,38 @@ CREATE TABLE `obj_store_rb__APQ__11` (
   ,`TS_32` DATETIME(3)
   ,`DBL_16` DOUBLE
   
-  ,PRIMARY KEY (`r_id`, `tenant_id`, `obj_def_id`)
-  ,INDEX `obj_store_rb___APQ__11index1` (`tenant_id`, `obj_def_id`(128), `rb_id`)
+  ,PRIMARY KEY (`tenant_id`, `obj_def_id`, `obj_id`, `obj_ver`, `pg_no`)
+  ,UNIQUE INDEX `obj_store__APQ__11_USTR_unique_1` (`USTR_1_TD`(139), `USTR_1`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__11_UNUM_unique_1` (`UNUM_1_TD`(139), `UNUM_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__11_UTS_unique_1` (`UTS_1_TD`(139), `UTS_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__11_UDBL_unique_1` (`UDBL_1_TD`(139), `UDBL_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__11_USTR_unique_2` (`USTR_2_TD`(139), `USTR_2`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__11_UNUM_unique_2` (`UNUM_2_TD`(139), `UNUM_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__11_UTS_unique_2` (`UTS_2_TD`(139), `UTS_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__11_UDBL_unique_2` (`UDBL_2_TD`(139), `UDBL_2`, `tenant_id`, `obj_def_id`(128))
+  ,INDEX `obj_store__APQ__11_ISTR_index_1` (`ISTR_1`(192), `ISTR_1_TD`(139))
+  ,INDEX `obj_store__APQ__11_INUM_index_1` (`INUM_1`, `INUM_1_TD`(139))
+  ,INDEX `obj_store__APQ__11_ITS_index_1` (`ITS_1`, `ITS_1_TD`(139))
+  ,INDEX `obj_store__APQ__11_IDBL_index_1` (`IDBL_1`, `IDBL_1_TD`(139))
+  ,INDEX `obj_store__APQ__11_ISTR_index_2` (`ISTR_2`(192), `ISTR_2_TD`(139))
+  ,INDEX `obj_store__APQ__11_INUM_index_2` (`INUM_2`, `INUM_2_TD`(139))
+  ,INDEX `obj_store__APQ__11_ITS_index_2` (`ITS_2`, `ITS_2_TD`(139))
+  ,INDEX `obj_store__APQ__11_IDBL_index_2` (`IDBL_2`, `IDBL_2_TD`(139))
+  ,INDEX `obj_store__APQ__11_ISTR_index_3` (`ISTR_3`(192), `ISTR_3_TD`(139))
+  ,INDEX `obj_store__APQ__11_ISTR_index_4` (`ISTR_4`(192), `ISTR_4_TD`(139))
+  ,INDEX `obj_store__APQ__11_INUM_index_3` (`INUM_3`, `INUM_3_TD`(139))
+  ,INDEX `obj_store__APQ__11_ITS_index_3` (`ITS_3`, `ITS_3_TD`(139))
+  ,INDEX `obj_store__APQ__11_IDBL_index_3` (`IDBL_3`, `IDBL_3_TD`(139))
+  ,INDEX `obj_store__APQ__11_ISTR_index_5` (`ISTR_5`(192), `ISTR_5_TD`(139))
+  ,INDEX `obj_store__APQ__11_INUM_index_4` (`INUM_4`, `INUM_4_TD`(139))
+  ,INDEX `obj_store__APQ__11_ITS_index_4` (`ITS_4`, `ITS_4_TD`(139))
+  ,INDEX `obj_store__APQ__11_IDBL_index_4` (`IDBL_4`, `IDBL_4_TD`(139))
+  ,INDEX `obj_store__APQ__11_cre_user_index` (`cre_user`(64), `obj_def_id`(128), `tenant_id`)
 )
 ;
-/* drop/create OBJ_STORE_RB */
-DROP TABLE IF EXISTS `obj_store_rb__APQ__12`;
-CREATE TABLE `obj_store_rb__APQ__12` (
-  `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `rb_id` BIGINT(16) NULL,
-  `rb_date` DATETIME(3) NULL,
-  `rb_user` VARCHAR(64) NULL,
+/* drop/create OBJ_STORE */
+DROP TABLE IF EXISTS `obj_store__APQ__12`;
+CREATE TABLE `obj_store__APQ__12` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -3587,17 +3128,38 @@ CREATE TABLE `obj_store_rb__APQ__12` (
   ,`TS_32` DATETIME(3)
   ,`DBL_16` DOUBLE
   
-  ,PRIMARY KEY (`r_id`, `tenant_id`, `obj_def_id`)
-  ,INDEX `obj_store_rb___APQ__12index1` (`tenant_id`, `obj_def_id`(128), `rb_id`)
+  ,PRIMARY KEY (`tenant_id`, `obj_def_id`, `obj_id`, `obj_ver`, `pg_no`)
+  ,UNIQUE INDEX `obj_store__APQ__12_USTR_unique_1` (`USTR_1_TD`(139), `USTR_1`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__12_UNUM_unique_1` (`UNUM_1_TD`(139), `UNUM_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__12_UTS_unique_1` (`UTS_1_TD`(139), `UTS_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__12_UDBL_unique_1` (`UDBL_1_TD`(139), `UDBL_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__12_USTR_unique_2` (`USTR_2_TD`(139), `USTR_2`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__12_UNUM_unique_2` (`UNUM_2_TD`(139), `UNUM_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__12_UTS_unique_2` (`UTS_2_TD`(139), `UTS_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__12_UDBL_unique_2` (`UDBL_2_TD`(139), `UDBL_2`, `tenant_id`, `obj_def_id`(128))
+  ,INDEX `obj_store__APQ__12_ISTR_index_1` (`ISTR_1`(192), `ISTR_1_TD`(139))
+  ,INDEX `obj_store__APQ__12_INUM_index_1` (`INUM_1`, `INUM_1_TD`(139))
+  ,INDEX `obj_store__APQ__12_ITS_index_1` (`ITS_1`, `ITS_1_TD`(139))
+  ,INDEX `obj_store__APQ__12_IDBL_index_1` (`IDBL_1`, `IDBL_1_TD`(139))
+  ,INDEX `obj_store__APQ__12_ISTR_index_2` (`ISTR_2`(192), `ISTR_2_TD`(139))
+  ,INDEX `obj_store__APQ__12_INUM_index_2` (`INUM_2`, `INUM_2_TD`(139))
+  ,INDEX `obj_store__APQ__12_ITS_index_2` (`ITS_2`, `ITS_2_TD`(139))
+  ,INDEX `obj_store__APQ__12_IDBL_index_2` (`IDBL_2`, `IDBL_2_TD`(139))
+  ,INDEX `obj_store__APQ__12_ISTR_index_3` (`ISTR_3`(192), `ISTR_3_TD`(139))
+  ,INDEX `obj_store__APQ__12_ISTR_index_4` (`ISTR_4`(192), `ISTR_4_TD`(139))
+  ,INDEX `obj_store__APQ__12_INUM_index_3` (`INUM_3`, `INUM_3_TD`(139))
+  ,INDEX `obj_store__APQ__12_ITS_index_3` (`ITS_3`, `ITS_3_TD`(139))
+  ,INDEX `obj_store__APQ__12_IDBL_index_3` (`IDBL_3`, `IDBL_3_TD`(139))
+  ,INDEX `obj_store__APQ__12_ISTR_index_5` (`ISTR_5`(192), `ISTR_5_TD`(139))
+  ,INDEX `obj_store__APQ__12_INUM_index_4` (`INUM_4`, `INUM_4_TD`(139))
+  ,INDEX `obj_store__APQ__12_ITS_index_4` (`ITS_4`, `ITS_4_TD`(139))
+  ,INDEX `obj_store__APQ__12_IDBL_index_4` (`IDBL_4`, `IDBL_4_TD`(139))
+  ,INDEX `obj_store__APQ__12_cre_user_index` (`cre_user`(64), `obj_def_id`(128), `tenant_id`)
 )
 ;
-/* drop/create OBJ_STORE_RB */
-DROP TABLE IF EXISTS `obj_store_rb__APQ__13`;
-CREATE TABLE `obj_store_rb__APQ__13` (
-  `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `rb_id` BIGINT(16) NULL,
-  `rb_date` DATETIME(3) NULL,
-  `rb_user` VARCHAR(64) NULL,
+/* drop/create OBJ_STORE */
+DROP TABLE IF EXISTS `obj_store__APQ__13`;
+CREATE TABLE `obj_store__APQ__13` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -3809,17 +3371,38 @@ CREATE TABLE `obj_store_rb__APQ__13` (
   ,`TS_32` DATETIME(3)
   ,`DBL_16` DOUBLE
   
-  ,PRIMARY KEY (`r_id`, `tenant_id`, `obj_def_id`)
-  ,INDEX `obj_store_rb___APQ__13index1` (`tenant_id`, `obj_def_id`(128), `rb_id`)
+  ,PRIMARY KEY (`tenant_id`, `obj_def_id`, `obj_id`, `obj_ver`, `pg_no`)
+  ,UNIQUE INDEX `obj_store__APQ__13_USTR_unique_1` (`USTR_1_TD`(139), `USTR_1`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__13_UNUM_unique_1` (`UNUM_1_TD`(139), `UNUM_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__13_UTS_unique_1` (`UTS_1_TD`(139), `UTS_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__13_UDBL_unique_1` (`UDBL_1_TD`(139), `UDBL_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__13_USTR_unique_2` (`USTR_2_TD`(139), `USTR_2`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__13_UNUM_unique_2` (`UNUM_2_TD`(139), `UNUM_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__13_UTS_unique_2` (`UTS_2_TD`(139), `UTS_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__13_UDBL_unique_2` (`UDBL_2_TD`(139), `UDBL_2`, `tenant_id`, `obj_def_id`(128))
+  ,INDEX `obj_store__APQ__13_ISTR_index_1` (`ISTR_1`(192), `ISTR_1_TD`(139))
+  ,INDEX `obj_store__APQ__13_INUM_index_1` (`INUM_1`, `INUM_1_TD`(139))
+  ,INDEX `obj_store__APQ__13_ITS_index_1` (`ITS_1`, `ITS_1_TD`(139))
+  ,INDEX `obj_store__APQ__13_IDBL_index_1` (`IDBL_1`, `IDBL_1_TD`(139))
+  ,INDEX `obj_store__APQ__13_ISTR_index_2` (`ISTR_2`(192), `ISTR_2_TD`(139))
+  ,INDEX `obj_store__APQ__13_INUM_index_2` (`INUM_2`, `INUM_2_TD`(139))
+  ,INDEX `obj_store__APQ__13_ITS_index_2` (`ITS_2`, `ITS_2_TD`(139))
+  ,INDEX `obj_store__APQ__13_IDBL_index_2` (`IDBL_2`, `IDBL_2_TD`(139))
+  ,INDEX `obj_store__APQ__13_ISTR_index_3` (`ISTR_3`(192), `ISTR_3_TD`(139))
+  ,INDEX `obj_store__APQ__13_ISTR_index_4` (`ISTR_4`(192), `ISTR_4_TD`(139))
+  ,INDEX `obj_store__APQ__13_INUM_index_3` (`INUM_3`, `INUM_3_TD`(139))
+  ,INDEX `obj_store__APQ__13_ITS_index_3` (`ITS_3`, `ITS_3_TD`(139))
+  ,INDEX `obj_store__APQ__13_IDBL_index_3` (`IDBL_3`, `IDBL_3_TD`(139))
+  ,INDEX `obj_store__APQ__13_ISTR_index_5` (`ISTR_5`(192), `ISTR_5_TD`(139))
+  ,INDEX `obj_store__APQ__13_INUM_index_4` (`INUM_4`, `INUM_4_TD`(139))
+  ,INDEX `obj_store__APQ__13_ITS_index_4` (`ITS_4`, `ITS_4_TD`(139))
+  ,INDEX `obj_store__APQ__13_IDBL_index_4` (`IDBL_4`, `IDBL_4_TD`(139))
+  ,INDEX `obj_store__APQ__13_cre_user_index` (`cre_user`(64), `obj_def_id`(128), `tenant_id`)
 )
 ;
-/* drop/create OBJ_STORE_RB */
-DROP TABLE IF EXISTS `obj_store_rb__APQ__14`;
-CREATE TABLE `obj_store_rb__APQ__14` (
-  `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `rb_id` BIGINT(16) NULL,
-  `rb_date` DATETIME(3) NULL,
-  `rb_user` VARCHAR(64) NULL,
+/* drop/create OBJ_STORE */
+DROP TABLE IF EXISTS `obj_store__APQ__14`;
+CREATE TABLE `obj_store__APQ__14` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -4031,17 +3614,38 @@ CREATE TABLE `obj_store_rb__APQ__14` (
   ,`TS_32` DATETIME(3)
   ,`DBL_16` DOUBLE
   
-  ,PRIMARY KEY (`r_id`, `tenant_id`, `obj_def_id`)
-  ,INDEX `obj_store_rb___APQ__14index1` (`tenant_id`, `obj_def_id`(128), `rb_id`)
+  ,PRIMARY KEY (`tenant_id`, `obj_def_id`, `obj_id`, `obj_ver`, `pg_no`)
+  ,UNIQUE INDEX `obj_store__APQ__14_USTR_unique_1` (`USTR_1_TD`(139), `USTR_1`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__14_UNUM_unique_1` (`UNUM_1_TD`(139), `UNUM_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__14_UTS_unique_1` (`UTS_1_TD`(139), `UTS_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__14_UDBL_unique_1` (`UDBL_1_TD`(139), `UDBL_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__14_USTR_unique_2` (`USTR_2_TD`(139), `USTR_2`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__14_UNUM_unique_2` (`UNUM_2_TD`(139), `UNUM_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__14_UTS_unique_2` (`UTS_2_TD`(139), `UTS_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__14_UDBL_unique_2` (`UDBL_2_TD`(139), `UDBL_2`, `tenant_id`, `obj_def_id`(128))
+  ,INDEX `obj_store__APQ__14_ISTR_index_1` (`ISTR_1`(192), `ISTR_1_TD`(139))
+  ,INDEX `obj_store__APQ__14_INUM_index_1` (`INUM_1`, `INUM_1_TD`(139))
+  ,INDEX `obj_store__APQ__14_ITS_index_1` (`ITS_1`, `ITS_1_TD`(139))
+  ,INDEX `obj_store__APQ__14_IDBL_index_1` (`IDBL_1`, `IDBL_1_TD`(139))
+  ,INDEX `obj_store__APQ__14_ISTR_index_2` (`ISTR_2`(192), `ISTR_2_TD`(139))
+  ,INDEX `obj_store__APQ__14_INUM_index_2` (`INUM_2`, `INUM_2_TD`(139))
+  ,INDEX `obj_store__APQ__14_ITS_index_2` (`ITS_2`, `ITS_2_TD`(139))
+  ,INDEX `obj_store__APQ__14_IDBL_index_2` (`IDBL_2`, `IDBL_2_TD`(139))
+  ,INDEX `obj_store__APQ__14_ISTR_index_3` (`ISTR_3`(192), `ISTR_3_TD`(139))
+  ,INDEX `obj_store__APQ__14_ISTR_index_4` (`ISTR_4`(192), `ISTR_4_TD`(139))
+  ,INDEX `obj_store__APQ__14_INUM_index_3` (`INUM_3`, `INUM_3_TD`(139))
+  ,INDEX `obj_store__APQ__14_ITS_index_3` (`ITS_3`, `ITS_3_TD`(139))
+  ,INDEX `obj_store__APQ__14_IDBL_index_3` (`IDBL_3`, `IDBL_3_TD`(139))
+  ,INDEX `obj_store__APQ__14_ISTR_index_5` (`ISTR_5`(192), `ISTR_5_TD`(139))
+  ,INDEX `obj_store__APQ__14_INUM_index_4` (`INUM_4`, `INUM_4_TD`(139))
+  ,INDEX `obj_store__APQ__14_ITS_index_4` (`ITS_4`, `ITS_4_TD`(139))
+  ,INDEX `obj_store__APQ__14_IDBL_index_4` (`IDBL_4`, `IDBL_4_TD`(139))
+  ,INDEX `obj_store__APQ__14_cre_user_index` (`cre_user`(64), `obj_def_id`(128), `tenant_id`)
 )
 ;
-/* drop/create OBJ_STORE_RB */
-DROP TABLE IF EXISTS `obj_store_rb__APQ__15`;
-CREATE TABLE `obj_store_rb__APQ__15` (
-  `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `rb_id` BIGINT(16) NULL,
-  `rb_date` DATETIME(3) NULL,
-  `rb_user` VARCHAR(64) NULL,
+/* drop/create OBJ_STORE */
+DROP TABLE IF EXISTS `obj_store__APQ__15`;
+CREATE TABLE `obj_store__APQ__15` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -4253,17 +3857,38 @@ CREATE TABLE `obj_store_rb__APQ__15` (
   ,`TS_32` DATETIME(3)
   ,`DBL_16` DOUBLE
   
-  ,PRIMARY KEY (`r_id`, `tenant_id`, `obj_def_id`)
-  ,INDEX `obj_store_rb___APQ__15index1` (`tenant_id`, `obj_def_id`(128), `rb_id`)
+  ,PRIMARY KEY (`tenant_id`, `obj_def_id`, `obj_id`, `obj_ver`, `pg_no`)
+  ,UNIQUE INDEX `obj_store__APQ__15_USTR_unique_1` (`USTR_1_TD`(139), `USTR_1`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__15_UNUM_unique_1` (`UNUM_1_TD`(139), `UNUM_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__15_UTS_unique_1` (`UTS_1_TD`(139), `UTS_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__15_UDBL_unique_1` (`UDBL_1_TD`(139), `UDBL_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__15_USTR_unique_2` (`USTR_2_TD`(139), `USTR_2`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__15_UNUM_unique_2` (`UNUM_2_TD`(139), `UNUM_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__15_UTS_unique_2` (`UTS_2_TD`(139), `UTS_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__15_UDBL_unique_2` (`UDBL_2_TD`(139), `UDBL_2`, `tenant_id`, `obj_def_id`(128))
+  ,INDEX `obj_store__APQ__15_ISTR_index_1` (`ISTR_1`(192), `ISTR_1_TD`(139))
+  ,INDEX `obj_store__APQ__15_INUM_index_1` (`INUM_1`, `INUM_1_TD`(139))
+  ,INDEX `obj_store__APQ__15_ITS_index_1` (`ITS_1`, `ITS_1_TD`(139))
+  ,INDEX `obj_store__APQ__15_IDBL_index_1` (`IDBL_1`, `IDBL_1_TD`(139))
+  ,INDEX `obj_store__APQ__15_ISTR_index_2` (`ISTR_2`(192), `ISTR_2_TD`(139))
+  ,INDEX `obj_store__APQ__15_INUM_index_2` (`INUM_2`, `INUM_2_TD`(139))
+  ,INDEX `obj_store__APQ__15_ITS_index_2` (`ITS_2`, `ITS_2_TD`(139))
+  ,INDEX `obj_store__APQ__15_IDBL_index_2` (`IDBL_2`, `IDBL_2_TD`(139))
+  ,INDEX `obj_store__APQ__15_ISTR_index_3` (`ISTR_3`(192), `ISTR_3_TD`(139))
+  ,INDEX `obj_store__APQ__15_ISTR_index_4` (`ISTR_4`(192), `ISTR_4_TD`(139))
+  ,INDEX `obj_store__APQ__15_INUM_index_3` (`INUM_3`, `INUM_3_TD`(139))
+  ,INDEX `obj_store__APQ__15_ITS_index_3` (`ITS_3`, `ITS_3_TD`(139))
+  ,INDEX `obj_store__APQ__15_IDBL_index_3` (`IDBL_3`, `IDBL_3_TD`(139))
+  ,INDEX `obj_store__APQ__15_ISTR_index_5` (`ISTR_5`(192), `ISTR_5_TD`(139))
+  ,INDEX `obj_store__APQ__15_INUM_index_4` (`INUM_4`, `INUM_4_TD`(139))
+  ,INDEX `obj_store__APQ__15_ITS_index_4` (`ITS_4`, `ITS_4_TD`(139))
+  ,INDEX `obj_store__APQ__15_IDBL_index_4` (`IDBL_4`, `IDBL_4_TD`(139))
+  ,INDEX `obj_store__APQ__15_cre_user_index` (`cre_user`(64), `obj_def_id`(128), `tenant_id`)
 )
 ;
-/* drop/create OBJ_STORE_RB */
-DROP TABLE IF EXISTS `obj_store_rb__APQ__16`;
-CREATE TABLE `obj_store_rb__APQ__16` (
-  `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `rb_id` BIGINT(16) NULL,
-  `rb_date` DATETIME(3) NULL,
-  `rb_user` VARCHAR(64) NULL,
+/* drop/create OBJ_STORE */
+DROP TABLE IF EXISTS `obj_store__APQ__16`;
+CREATE TABLE `obj_store__APQ__16` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -4475,17 +4100,38 @@ CREATE TABLE `obj_store_rb__APQ__16` (
   ,`TS_32` DATETIME(3)
   ,`DBL_16` DOUBLE
   
-  ,PRIMARY KEY (`r_id`, `tenant_id`, `obj_def_id`)
-  ,INDEX `obj_store_rb___APQ__16index1` (`tenant_id`, `obj_def_id`(128), `rb_id`)
+  ,PRIMARY KEY (`tenant_id`, `obj_def_id`, `obj_id`, `obj_ver`, `pg_no`)
+  ,UNIQUE INDEX `obj_store__APQ__16_USTR_unique_1` (`USTR_1_TD`(139), `USTR_1`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__16_UNUM_unique_1` (`UNUM_1_TD`(139), `UNUM_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__16_UTS_unique_1` (`UTS_1_TD`(139), `UTS_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__16_UDBL_unique_1` (`UDBL_1_TD`(139), `UDBL_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__16_USTR_unique_2` (`USTR_2_TD`(139), `USTR_2`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__16_UNUM_unique_2` (`UNUM_2_TD`(139), `UNUM_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__16_UTS_unique_2` (`UTS_2_TD`(139), `UTS_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__16_UDBL_unique_2` (`UDBL_2_TD`(139), `UDBL_2`, `tenant_id`, `obj_def_id`(128))
+  ,INDEX `obj_store__APQ__16_ISTR_index_1` (`ISTR_1`(192), `ISTR_1_TD`(139))
+  ,INDEX `obj_store__APQ__16_INUM_index_1` (`INUM_1`, `INUM_1_TD`(139))
+  ,INDEX `obj_store__APQ__16_ITS_index_1` (`ITS_1`, `ITS_1_TD`(139))
+  ,INDEX `obj_store__APQ__16_IDBL_index_1` (`IDBL_1`, `IDBL_1_TD`(139))
+  ,INDEX `obj_store__APQ__16_ISTR_index_2` (`ISTR_2`(192), `ISTR_2_TD`(139))
+  ,INDEX `obj_store__APQ__16_INUM_index_2` (`INUM_2`, `INUM_2_TD`(139))
+  ,INDEX `obj_store__APQ__16_ITS_index_2` (`ITS_2`, `ITS_2_TD`(139))
+  ,INDEX `obj_store__APQ__16_IDBL_index_2` (`IDBL_2`, `IDBL_2_TD`(139))
+  ,INDEX `obj_store__APQ__16_ISTR_index_3` (`ISTR_3`(192), `ISTR_3_TD`(139))
+  ,INDEX `obj_store__APQ__16_ISTR_index_4` (`ISTR_4`(192), `ISTR_4_TD`(139))
+  ,INDEX `obj_store__APQ__16_INUM_index_3` (`INUM_3`, `INUM_3_TD`(139))
+  ,INDEX `obj_store__APQ__16_ITS_index_3` (`ITS_3`, `ITS_3_TD`(139))
+  ,INDEX `obj_store__APQ__16_IDBL_index_3` (`IDBL_3`, `IDBL_3_TD`(139))
+  ,INDEX `obj_store__APQ__16_ISTR_index_5` (`ISTR_5`(192), `ISTR_5_TD`(139))
+  ,INDEX `obj_store__APQ__16_INUM_index_4` (`INUM_4`, `INUM_4_TD`(139))
+  ,INDEX `obj_store__APQ__16_ITS_index_4` (`ITS_4`, `ITS_4_TD`(139))
+  ,INDEX `obj_store__APQ__16_IDBL_index_4` (`IDBL_4`, `IDBL_4_TD`(139))
+  ,INDEX `obj_store__APQ__16_cre_user_index` (`cre_user`(64), `obj_def_id`(128), `tenant_id`)
 )
 ;
-/* drop/create OBJ_STORE_RB */
-DROP TABLE IF EXISTS `obj_store_rb__APQ__17`;
-CREATE TABLE `obj_store_rb__APQ__17` (
-  `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `rb_id` BIGINT(16) NULL,
-  `rb_date` DATETIME(3) NULL,
-  `rb_user` VARCHAR(64) NULL,
+/* drop/create OBJ_STORE */
+DROP TABLE IF EXISTS `obj_store__APQ__17`;
+CREATE TABLE `obj_store__APQ__17` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -4697,17 +4343,38 @@ CREATE TABLE `obj_store_rb__APQ__17` (
   ,`TS_32` DATETIME(3)
   ,`DBL_16` DOUBLE
   
-  ,PRIMARY KEY (`r_id`, `tenant_id`, `obj_def_id`)
-  ,INDEX `obj_store_rb___APQ__17index1` (`tenant_id`, `obj_def_id`(128), `rb_id`)
+  ,PRIMARY KEY (`tenant_id`, `obj_def_id`, `obj_id`, `obj_ver`, `pg_no`)
+  ,UNIQUE INDEX `obj_store__APQ__17_USTR_unique_1` (`USTR_1_TD`(139), `USTR_1`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__17_UNUM_unique_1` (`UNUM_1_TD`(139), `UNUM_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__17_UTS_unique_1` (`UTS_1_TD`(139), `UTS_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__17_UDBL_unique_1` (`UDBL_1_TD`(139), `UDBL_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__17_USTR_unique_2` (`USTR_2_TD`(139), `USTR_2`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__17_UNUM_unique_2` (`UNUM_2_TD`(139), `UNUM_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__17_UTS_unique_2` (`UTS_2_TD`(139), `UTS_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__17_UDBL_unique_2` (`UDBL_2_TD`(139), `UDBL_2`, `tenant_id`, `obj_def_id`(128))
+  ,INDEX `obj_store__APQ__17_ISTR_index_1` (`ISTR_1`(192), `ISTR_1_TD`(139))
+  ,INDEX `obj_store__APQ__17_INUM_index_1` (`INUM_1`, `INUM_1_TD`(139))
+  ,INDEX `obj_store__APQ__17_ITS_index_1` (`ITS_1`, `ITS_1_TD`(139))
+  ,INDEX `obj_store__APQ__17_IDBL_index_1` (`IDBL_1`, `IDBL_1_TD`(139))
+  ,INDEX `obj_store__APQ__17_ISTR_index_2` (`ISTR_2`(192), `ISTR_2_TD`(139))
+  ,INDEX `obj_store__APQ__17_INUM_index_2` (`INUM_2`, `INUM_2_TD`(139))
+  ,INDEX `obj_store__APQ__17_ITS_index_2` (`ITS_2`, `ITS_2_TD`(139))
+  ,INDEX `obj_store__APQ__17_IDBL_index_2` (`IDBL_2`, `IDBL_2_TD`(139))
+  ,INDEX `obj_store__APQ__17_ISTR_index_3` (`ISTR_3`(192), `ISTR_3_TD`(139))
+  ,INDEX `obj_store__APQ__17_ISTR_index_4` (`ISTR_4`(192), `ISTR_4_TD`(139))
+  ,INDEX `obj_store__APQ__17_INUM_index_3` (`INUM_3`, `INUM_3_TD`(139))
+  ,INDEX `obj_store__APQ__17_ITS_index_3` (`ITS_3`, `ITS_3_TD`(139))
+  ,INDEX `obj_store__APQ__17_IDBL_index_3` (`IDBL_3`, `IDBL_3_TD`(139))
+  ,INDEX `obj_store__APQ__17_ISTR_index_5` (`ISTR_5`(192), `ISTR_5_TD`(139))
+  ,INDEX `obj_store__APQ__17_INUM_index_4` (`INUM_4`, `INUM_4_TD`(139))
+  ,INDEX `obj_store__APQ__17_ITS_index_4` (`ITS_4`, `ITS_4_TD`(139))
+  ,INDEX `obj_store__APQ__17_IDBL_index_4` (`IDBL_4`, `IDBL_4_TD`(139))
+  ,INDEX `obj_store__APQ__17_cre_user_index` (`cre_user`(64), `obj_def_id`(128), `tenant_id`)
 )
 ;
-/* drop/create OBJ_STORE_RB */
-DROP TABLE IF EXISTS `obj_store_rb__APQ__18`;
-CREATE TABLE `obj_store_rb__APQ__18` (
-  `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `rb_id` BIGINT(16) NULL,
-  `rb_date` DATETIME(3) NULL,
-  `rb_user` VARCHAR(64) NULL,
+/* drop/create OBJ_STORE */
+DROP TABLE IF EXISTS `obj_store__APQ__18`;
+CREATE TABLE `obj_store__APQ__18` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -4919,17 +4586,38 @@ CREATE TABLE `obj_store_rb__APQ__18` (
   ,`TS_32` DATETIME(3)
   ,`DBL_16` DOUBLE
   
-  ,PRIMARY KEY (`r_id`, `tenant_id`, `obj_def_id`)
-  ,INDEX `obj_store_rb___APQ__18index1` (`tenant_id`, `obj_def_id`(128), `rb_id`)
+  ,PRIMARY KEY (`tenant_id`, `obj_def_id`, `obj_id`, `obj_ver`, `pg_no`)
+  ,UNIQUE INDEX `obj_store__APQ__18_USTR_unique_1` (`USTR_1_TD`(139), `USTR_1`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__18_UNUM_unique_1` (`UNUM_1_TD`(139), `UNUM_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__18_UTS_unique_1` (`UTS_1_TD`(139), `UTS_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__18_UDBL_unique_1` (`UDBL_1_TD`(139), `UDBL_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__18_USTR_unique_2` (`USTR_2_TD`(139), `USTR_2`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__18_UNUM_unique_2` (`UNUM_2_TD`(139), `UNUM_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__18_UTS_unique_2` (`UTS_2_TD`(139), `UTS_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__18_UDBL_unique_2` (`UDBL_2_TD`(139), `UDBL_2`, `tenant_id`, `obj_def_id`(128))
+  ,INDEX `obj_store__APQ__18_ISTR_index_1` (`ISTR_1`(192), `ISTR_1_TD`(139))
+  ,INDEX `obj_store__APQ__18_INUM_index_1` (`INUM_1`, `INUM_1_TD`(139))
+  ,INDEX `obj_store__APQ__18_ITS_index_1` (`ITS_1`, `ITS_1_TD`(139))
+  ,INDEX `obj_store__APQ__18_IDBL_index_1` (`IDBL_1`, `IDBL_1_TD`(139))
+  ,INDEX `obj_store__APQ__18_ISTR_index_2` (`ISTR_2`(192), `ISTR_2_TD`(139))
+  ,INDEX `obj_store__APQ__18_INUM_index_2` (`INUM_2`, `INUM_2_TD`(139))
+  ,INDEX `obj_store__APQ__18_ITS_index_2` (`ITS_2`, `ITS_2_TD`(139))
+  ,INDEX `obj_store__APQ__18_IDBL_index_2` (`IDBL_2`, `IDBL_2_TD`(139))
+  ,INDEX `obj_store__APQ__18_ISTR_index_3` (`ISTR_3`(192), `ISTR_3_TD`(139))
+  ,INDEX `obj_store__APQ__18_ISTR_index_4` (`ISTR_4`(192), `ISTR_4_TD`(139))
+  ,INDEX `obj_store__APQ__18_INUM_index_3` (`INUM_3`, `INUM_3_TD`(139))
+  ,INDEX `obj_store__APQ__18_ITS_index_3` (`ITS_3`, `ITS_3_TD`(139))
+  ,INDEX `obj_store__APQ__18_IDBL_index_3` (`IDBL_3`, `IDBL_3_TD`(139))
+  ,INDEX `obj_store__APQ__18_ISTR_index_5` (`ISTR_5`(192), `ISTR_5_TD`(139))
+  ,INDEX `obj_store__APQ__18_INUM_index_4` (`INUM_4`, `INUM_4_TD`(139))
+  ,INDEX `obj_store__APQ__18_ITS_index_4` (`ITS_4`, `ITS_4_TD`(139))
+  ,INDEX `obj_store__APQ__18_IDBL_index_4` (`IDBL_4`, `IDBL_4_TD`(139))
+  ,INDEX `obj_store__APQ__18_cre_user_index` (`cre_user`(64), `obj_def_id`(128), `tenant_id`)
 )
 ;
-/* drop/create OBJ_STORE_RB */
-DROP TABLE IF EXISTS `obj_store_rb__APQ__19`;
-CREATE TABLE `obj_store_rb__APQ__19` (
-  `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `rb_id` BIGINT(16) NULL,
-  `rb_date` DATETIME(3) NULL,
-  `rb_user` VARCHAR(64) NULL,
+/* drop/create OBJ_STORE */
+DROP TABLE IF EXISTS `obj_store__APQ__19`;
+CREATE TABLE `obj_store__APQ__19` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -5141,17 +4829,38 @@ CREATE TABLE `obj_store_rb__APQ__19` (
   ,`TS_32` DATETIME(3)
   ,`DBL_16` DOUBLE
   
-  ,PRIMARY KEY (`r_id`, `tenant_id`, `obj_def_id`)
-  ,INDEX `obj_store_rb___APQ__19index1` (`tenant_id`, `obj_def_id`(128), `rb_id`)
+  ,PRIMARY KEY (`tenant_id`, `obj_def_id`, `obj_id`, `obj_ver`, `pg_no`)
+  ,UNIQUE INDEX `obj_store__APQ__19_USTR_unique_1` (`USTR_1_TD`(139), `USTR_1`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__19_UNUM_unique_1` (`UNUM_1_TD`(139), `UNUM_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__19_UTS_unique_1` (`UTS_1_TD`(139), `UTS_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__19_UDBL_unique_1` (`UDBL_1_TD`(139), `UDBL_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__19_USTR_unique_2` (`USTR_2_TD`(139), `USTR_2`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__19_UNUM_unique_2` (`UNUM_2_TD`(139), `UNUM_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__19_UTS_unique_2` (`UTS_2_TD`(139), `UTS_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__19_UDBL_unique_2` (`UDBL_2_TD`(139), `UDBL_2`, `tenant_id`, `obj_def_id`(128))
+  ,INDEX `obj_store__APQ__19_ISTR_index_1` (`ISTR_1`(192), `ISTR_1_TD`(139))
+  ,INDEX `obj_store__APQ__19_INUM_index_1` (`INUM_1`, `INUM_1_TD`(139))
+  ,INDEX `obj_store__APQ__19_ITS_index_1` (`ITS_1`, `ITS_1_TD`(139))
+  ,INDEX `obj_store__APQ__19_IDBL_index_1` (`IDBL_1`, `IDBL_1_TD`(139))
+  ,INDEX `obj_store__APQ__19_ISTR_index_2` (`ISTR_2`(192), `ISTR_2_TD`(139))
+  ,INDEX `obj_store__APQ__19_INUM_index_2` (`INUM_2`, `INUM_2_TD`(139))
+  ,INDEX `obj_store__APQ__19_ITS_index_2` (`ITS_2`, `ITS_2_TD`(139))
+  ,INDEX `obj_store__APQ__19_IDBL_index_2` (`IDBL_2`, `IDBL_2_TD`(139))
+  ,INDEX `obj_store__APQ__19_ISTR_index_3` (`ISTR_3`(192), `ISTR_3_TD`(139))
+  ,INDEX `obj_store__APQ__19_ISTR_index_4` (`ISTR_4`(192), `ISTR_4_TD`(139))
+  ,INDEX `obj_store__APQ__19_INUM_index_3` (`INUM_3`, `INUM_3_TD`(139))
+  ,INDEX `obj_store__APQ__19_ITS_index_3` (`ITS_3`, `ITS_3_TD`(139))
+  ,INDEX `obj_store__APQ__19_IDBL_index_3` (`IDBL_3`, `IDBL_3_TD`(139))
+  ,INDEX `obj_store__APQ__19_ISTR_index_5` (`ISTR_5`(192), `ISTR_5_TD`(139))
+  ,INDEX `obj_store__APQ__19_INUM_index_4` (`INUM_4`, `INUM_4_TD`(139))
+  ,INDEX `obj_store__APQ__19_ITS_index_4` (`ITS_4`, `ITS_4_TD`(139))
+  ,INDEX `obj_store__APQ__19_IDBL_index_4` (`IDBL_4`, `IDBL_4_TD`(139))
+  ,INDEX `obj_store__APQ__19_cre_user_index` (`cre_user`(64), `obj_def_id`(128), `tenant_id`)
 )
 ;
-/* drop/create OBJ_STORE_RB */
-DROP TABLE IF EXISTS `obj_store_rb__APQ__20`;
-CREATE TABLE `obj_store_rb__APQ__20` (
-  `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `rb_id` BIGINT(16) NULL,
-  `rb_date` DATETIME(3) NULL,
-  `rb_user` VARCHAR(64) NULL,
+/* drop/create OBJ_STORE */
+DROP TABLE IF EXISTS `obj_store__APQ__20`;
+CREATE TABLE `obj_store__APQ__20` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -5363,17 +5072,38 @@ CREATE TABLE `obj_store_rb__APQ__20` (
   ,`TS_32` DATETIME(3)
   ,`DBL_16` DOUBLE
   
-  ,PRIMARY KEY (`r_id`, `tenant_id`, `obj_def_id`)
-  ,INDEX `obj_store_rb___APQ__20index1` (`tenant_id`, `obj_def_id`(128), `rb_id`)
+  ,PRIMARY KEY (`tenant_id`, `obj_def_id`, `obj_id`, `obj_ver`, `pg_no`)
+  ,UNIQUE INDEX `obj_store__APQ__20_USTR_unique_1` (`USTR_1_TD`(139), `USTR_1`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__20_UNUM_unique_1` (`UNUM_1_TD`(139), `UNUM_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__20_UTS_unique_1` (`UTS_1_TD`(139), `UTS_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__20_UDBL_unique_1` (`UDBL_1_TD`(139), `UDBL_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__20_USTR_unique_2` (`USTR_2_TD`(139), `USTR_2`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__20_UNUM_unique_2` (`UNUM_2_TD`(139), `UNUM_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__20_UTS_unique_2` (`UTS_2_TD`(139), `UTS_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__20_UDBL_unique_2` (`UDBL_2_TD`(139), `UDBL_2`, `tenant_id`, `obj_def_id`(128))
+  ,INDEX `obj_store__APQ__20_ISTR_index_1` (`ISTR_1`(192), `ISTR_1_TD`(139))
+  ,INDEX `obj_store__APQ__20_INUM_index_1` (`INUM_1`, `INUM_1_TD`(139))
+  ,INDEX `obj_store__APQ__20_ITS_index_1` (`ITS_1`, `ITS_1_TD`(139))
+  ,INDEX `obj_store__APQ__20_IDBL_index_1` (`IDBL_1`, `IDBL_1_TD`(139))
+  ,INDEX `obj_store__APQ__20_ISTR_index_2` (`ISTR_2`(192), `ISTR_2_TD`(139))
+  ,INDEX `obj_store__APQ__20_INUM_index_2` (`INUM_2`, `INUM_2_TD`(139))
+  ,INDEX `obj_store__APQ__20_ITS_index_2` (`ITS_2`, `ITS_2_TD`(139))
+  ,INDEX `obj_store__APQ__20_IDBL_index_2` (`IDBL_2`, `IDBL_2_TD`(139))
+  ,INDEX `obj_store__APQ__20_ISTR_index_3` (`ISTR_3`(192), `ISTR_3_TD`(139))
+  ,INDEX `obj_store__APQ__20_ISTR_index_4` (`ISTR_4`(192), `ISTR_4_TD`(139))
+  ,INDEX `obj_store__APQ__20_INUM_index_3` (`INUM_3`, `INUM_3_TD`(139))
+  ,INDEX `obj_store__APQ__20_ITS_index_3` (`ITS_3`, `ITS_3_TD`(139))
+  ,INDEX `obj_store__APQ__20_IDBL_index_3` (`IDBL_3`, `IDBL_3_TD`(139))
+  ,INDEX `obj_store__APQ__20_ISTR_index_5` (`ISTR_5`(192), `ISTR_5_TD`(139))
+  ,INDEX `obj_store__APQ__20_INUM_index_4` (`INUM_4`, `INUM_4_TD`(139))
+  ,INDEX `obj_store__APQ__20_ITS_index_4` (`ITS_4`, `ITS_4_TD`(139))
+  ,INDEX `obj_store__APQ__20_IDBL_index_4` (`IDBL_4`, `IDBL_4_TD`(139))
+  ,INDEX `obj_store__APQ__20_cre_user_index` (`cre_user`(64), `obj_def_id`(128), `tenant_id`)
 )
 ;
-/* drop/create OBJ_STORE_RB */
-DROP TABLE IF EXISTS `obj_store_rb__APQ__21`;
-CREATE TABLE `obj_store_rb__APQ__21` (
-  `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `rb_id` BIGINT(16) NULL,
-  `rb_date` DATETIME(3) NULL,
-  `rb_user` VARCHAR(64) NULL,
+/* drop/create OBJ_STORE */
+DROP TABLE IF EXISTS `obj_store__APQ__21`;
+CREATE TABLE `obj_store__APQ__21` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -5585,17 +5315,38 @@ CREATE TABLE `obj_store_rb__APQ__21` (
   ,`TS_32` DATETIME(3)
   ,`DBL_16` DOUBLE
   
-  ,PRIMARY KEY (`r_id`, `tenant_id`, `obj_def_id`)
-  ,INDEX `obj_store_rb___APQ__21index1` (`tenant_id`, `obj_def_id`(128), `rb_id`)
+  ,PRIMARY KEY (`tenant_id`, `obj_def_id`, `obj_id`, `obj_ver`, `pg_no`)
+  ,UNIQUE INDEX `obj_store__APQ__21_USTR_unique_1` (`USTR_1_TD`(139), `USTR_1`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__21_UNUM_unique_1` (`UNUM_1_TD`(139), `UNUM_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__21_UTS_unique_1` (`UTS_1_TD`(139), `UTS_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__21_UDBL_unique_1` (`UDBL_1_TD`(139), `UDBL_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__21_USTR_unique_2` (`USTR_2_TD`(139), `USTR_2`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__21_UNUM_unique_2` (`UNUM_2_TD`(139), `UNUM_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__21_UTS_unique_2` (`UTS_2_TD`(139), `UTS_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__21_UDBL_unique_2` (`UDBL_2_TD`(139), `UDBL_2`, `tenant_id`, `obj_def_id`(128))
+  ,INDEX `obj_store__APQ__21_ISTR_index_1` (`ISTR_1`(192), `ISTR_1_TD`(139))
+  ,INDEX `obj_store__APQ__21_INUM_index_1` (`INUM_1`, `INUM_1_TD`(139))
+  ,INDEX `obj_store__APQ__21_ITS_index_1` (`ITS_1`, `ITS_1_TD`(139))
+  ,INDEX `obj_store__APQ__21_IDBL_index_1` (`IDBL_1`, `IDBL_1_TD`(139))
+  ,INDEX `obj_store__APQ__21_ISTR_index_2` (`ISTR_2`(192), `ISTR_2_TD`(139))
+  ,INDEX `obj_store__APQ__21_INUM_index_2` (`INUM_2`, `INUM_2_TD`(139))
+  ,INDEX `obj_store__APQ__21_ITS_index_2` (`ITS_2`, `ITS_2_TD`(139))
+  ,INDEX `obj_store__APQ__21_IDBL_index_2` (`IDBL_2`, `IDBL_2_TD`(139))
+  ,INDEX `obj_store__APQ__21_ISTR_index_3` (`ISTR_3`(192), `ISTR_3_TD`(139))
+  ,INDEX `obj_store__APQ__21_ISTR_index_4` (`ISTR_4`(192), `ISTR_4_TD`(139))
+  ,INDEX `obj_store__APQ__21_INUM_index_3` (`INUM_3`, `INUM_3_TD`(139))
+  ,INDEX `obj_store__APQ__21_ITS_index_3` (`ITS_3`, `ITS_3_TD`(139))
+  ,INDEX `obj_store__APQ__21_IDBL_index_3` (`IDBL_3`, `IDBL_3_TD`(139))
+  ,INDEX `obj_store__APQ__21_ISTR_index_5` (`ISTR_5`(192), `ISTR_5_TD`(139))
+  ,INDEX `obj_store__APQ__21_INUM_index_4` (`INUM_4`, `INUM_4_TD`(139))
+  ,INDEX `obj_store__APQ__21_ITS_index_4` (`ITS_4`, `ITS_4_TD`(139))
+  ,INDEX `obj_store__APQ__21_IDBL_index_4` (`IDBL_4`, `IDBL_4_TD`(139))
+  ,INDEX `obj_store__APQ__21_cre_user_index` (`cre_user`(64), `obj_def_id`(128), `tenant_id`)
 )
 ;
-/* drop/create OBJ_STORE_RB */
-DROP TABLE IF EXISTS `obj_store_rb__APQ__22`;
-CREATE TABLE `obj_store_rb__APQ__22` (
-  `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `rb_id` BIGINT(16) NULL,
-  `rb_date` DATETIME(3) NULL,
-  `rb_user` VARCHAR(64) NULL,
+/* drop/create OBJ_STORE */
+DROP TABLE IF EXISTS `obj_store__APQ__22`;
+CREATE TABLE `obj_store__APQ__22` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -5807,17 +5558,38 @@ CREATE TABLE `obj_store_rb__APQ__22` (
   ,`TS_32` DATETIME(3)
   ,`DBL_16` DOUBLE
   
-  ,PRIMARY KEY (`r_id`, `tenant_id`, `obj_def_id`)
-  ,INDEX `obj_store_rb___APQ__22index1` (`tenant_id`, `obj_def_id`(128), `rb_id`)
+  ,PRIMARY KEY (`tenant_id`, `obj_def_id`, `obj_id`, `obj_ver`, `pg_no`)
+  ,UNIQUE INDEX `obj_store__APQ__22_USTR_unique_1` (`USTR_1_TD`(139), `USTR_1`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__22_UNUM_unique_1` (`UNUM_1_TD`(139), `UNUM_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__22_UTS_unique_1` (`UTS_1_TD`(139), `UTS_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__22_UDBL_unique_1` (`UDBL_1_TD`(139), `UDBL_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__22_USTR_unique_2` (`USTR_2_TD`(139), `USTR_2`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__22_UNUM_unique_2` (`UNUM_2_TD`(139), `UNUM_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__22_UTS_unique_2` (`UTS_2_TD`(139), `UTS_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__22_UDBL_unique_2` (`UDBL_2_TD`(139), `UDBL_2`, `tenant_id`, `obj_def_id`(128))
+  ,INDEX `obj_store__APQ__22_ISTR_index_1` (`ISTR_1`(192), `ISTR_1_TD`(139))
+  ,INDEX `obj_store__APQ__22_INUM_index_1` (`INUM_1`, `INUM_1_TD`(139))
+  ,INDEX `obj_store__APQ__22_ITS_index_1` (`ITS_1`, `ITS_1_TD`(139))
+  ,INDEX `obj_store__APQ__22_IDBL_index_1` (`IDBL_1`, `IDBL_1_TD`(139))
+  ,INDEX `obj_store__APQ__22_ISTR_index_2` (`ISTR_2`(192), `ISTR_2_TD`(139))
+  ,INDEX `obj_store__APQ__22_INUM_index_2` (`INUM_2`, `INUM_2_TD`(139))
+  ,INDEX `obj_store__APQ__22_ITS_index_2` (`ITS_2`, `ITS_2_TD`(139))
+  ,INDEX `obj_store__APQ__22_IDBL_index_2` (`IDBL_2`, `IDBL_2_TD`(139))
+  ,INDEX `obj_store__APQ__22_ISTR_index_3` (`ISTR_3`(192), `ISTR_3_TD`(139))
+  ,INDEX `obj_store__APQ__22_ISTR_index_4` (`ISTR_4`(192), `ISTR_4_TD`(139))
+  ,INDEX `obj_store__APQ__22_INUM_index_3` (`INUM_3`, `INUM_3_TD`(139))
+  ,INDEX `obj_store__APQ__22_ITS_index_3` (`ITS_3`, `ITS_3_TD`(139))
+  ,INDEX `obj_store__APQ__22_IDBL_index_3` (`IDBL_3`, `IDBL_3_TD`(139))
+  ,INDEX `obj_store__APQ__22_ISTR_index_5` (`ISTR_5`(192), `ISTR_5_TD`(139))
+  ,INDEX `obj_store__APQ__22_INUM_index_4` (`INUM_4`, `INUM_4_TD`(139))
+  ,INDEX `obj_store__APQ__22_ITS_index_4` (`ITS_4`, `ITS_4_TD`(139))
+  ,INDEX `obj_store__APQ__22_IDBL_index_4` (`IDBL_4`, `IDBL_4_TD`(139))
+  ,INDEX `obj_store__APQ__22_cre_user_index` (`cre_user`(64), `obj_def_id`(128), `tenant_id`)
 )
 ;
-/* drop/create OBJ_STORE_RB */
-DROP TABLE IF EXISTS `obj_store_rb__APQ__23`;
-CREATE TABLE `obj_store_rb__APQ__23` (
-  `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `rb_id` BIGINT(16) NULL,
-  `rb_date` DATETIME(3) NULL,
-  `rb_user` VARCHAR(64) NULL,
+/* drop/create OBJ_STORE */
+DROP TABLE IF EXISTS `obj_store__APQ__23`;
+CREATE TABLE `obj_store__APQ__23` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -6029,17 +5801,38 @@ CREATE TABLE `obj_store_rb__APQ__23` (
   ,`TS_32` DATETIME(3)
   ,`DBL_16` DOUBLE
   
-  ,PRIMARY KEY (`r_id`, `tenant_id`, `obj_def_id`)
-  ,INDEX `obj_store_rb___APQ__23index1` (`tenant_id`, `obj_def_id`(128), `rb_id`)
+  ,PRIMARY KEY (`tenant_id`, `obj_def_id`, `obj_id`, `obj_ver`, `pg_no`)
+  ,UNIQUE INDEX `obj_store__APQ__23_USTR_unique_1` (`USTR_1_TD`(139), `USTR_1`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__23_UNUM_unique_1` (`UNUM_1_TD`(139), `UNUM_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__23_UTS_unique_1` (`UTS_1_TD`(139), `UTS_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__23_UDBL_unique_1` (`UDBL_1_TD`(139), `UDBL_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__23_USTR_unique_2` (`USTR_2_TD`(139), `USTR_2`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__23_UNUM_unique_2` (`UNUM_2_TD`(139), `UNUM_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__23_UTS_unique_2` (`UTS_2_TD`(139), `UTS_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__23_UDBL_unique_2` (`UDBL_2_TD`(139), `UDBL_2`, `tenant_id`, `obj_def_id`(128))
+  ,INDEX `obj_store__APQ__23_ISTR_index_1` (`ISTR_1`(192), `ISTR_1_TD`(139))
+  ,INDEX `obj_store__APQ__23_INUM_index_1` (`INUM_1`, `INUM_1_TD`(139))
+  ,INDEX `obj_store__APQ__23_ITS_index_1` (`ITS_1`, `ITS_1_TD`(139))
+  ,INDEX `obj_store__APQ__23_IDBL_index_1` (`IDBL_1`, `IDBL_1_TD`(139))
+  ,INDEX `obj_store__APQ__23_ISTR_index_2` (`ISTR_2`(192), `ISTR_2_TD`(139))
+  ,INDEX `obj_store__APQ__23_INUM_index_2` (`INUM_2`, `INUM_2_TD`(139))
+  ,INDEX `obj_store__APQ__23_ITS_index_2` (`ITS_2`, `ITS_2_TD`(139))
+  ,INDEX `obj_store__APQ__23_IDBL_index_2` (`IDBL_2`, `IDBL_2_TD`(139))
+  ,INDEX `obj_store__APQ__23_ISTR_index_3` (`ISTR_3`(192), `ISTR_3_TD`(139))
+  ,INDEX `obj_store__APQ__23_ISTR_index_4` (`ISTR_4`(192), `ISTR_4_TD`(139))
+  ,INDEX `obj_store__APQ__23_INUM_index_3` (`INUM_3`, `INUM_3_TD`(139))
+  ,INDEX `obj_store__APQ__23_ITS_index_3` (`ITS_3`, `ITS_3_TD`(139))
+  ,INDEX `obj_store__APQ__23_IDBL_index_3` (`IDBL_3`, `IDBL_3_TD`(139))
+  ,INDEX `obj_store__APQ__23_ISTR_index_5` (`ISTR_5`(192), `ISTR_5_TD`(139))
+  ,INDEX `obj_store__APQ__23_INUM_index_4` (`INUM_4`, `INUM_4_TD`(139))
+  ,INDEX `obj_store__APQ__23_ITS_index_4` (`ITS_4`, `ITS_4_TD`(139))
+  ,INDEX `obj_store__APQ__23_IDBL_index_4` (`IDBL_4`, `IDBL_4_TD`(139))
+  ,INDEX `obj_store__APQ__23_cre_user_index` (`cre_user`(64), `obj_def_id`(128), `tenant_id`)
 )
 ;
-/* drop/create OBJ_STORE_RB */
-DROP TABLE IF EXISTS `obj_store_rb__APQ__24`;
-CREATE TABLE `obj_store_rb__APQ__24` (
-  `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `rb_id` BIGINT(16) NULL,
-  `rb_date` DATETIME(3) NULL,
-  `rb_user` VARCHAR(64) NULL,
+/* drop/create OBJ_STORE */
+DROP TABLE IF EXISTS `obj_store__APQ__24`;
+CREATE TABLE `obj_store__APQ__24` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -6251,17 +6044,38 @@ CREATE TABLE `obj_store_rb__APQ__24` (
   ,`TS_32` DATETIME(3)
   ,`DBL_16` DOUBLE
   
-  ,PRIMARY KEY (`r_id`, `tenant_id`, `obj_def_id`)
-  ,INDEX `obj_store_rb___APQ__24index1` (`tenant_id`, `obj_def_id`(128), `rb_id`)
+  ,PRIMARY KEY (`tenant_id`, `obj_def_id`, `obj_id`, `obj_ver`, `pg_no`)
+  ,UNIQUE INDEX `obj_store__APQ__24_USTR_unique_1` (`USTR_1_TD`(139), `USTR_1`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__24_UNUM_unique_1` (`UNUM_1_TD`(139), `UNUM_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__24_UTS_unique_1` (`UTS_1_TD`(139), `UTS_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__24_UDBL_unique_1` (`UDBL_1_TD`(139), `UDBL_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__24_USTR_unique_2` (`USTR_2_TD`(139), `USTR_2`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__24_UNUM_unique_2` (`UNUM_2_TD`(139), `UNUM_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__24_UTS_unique_2` (`UTS_2_TD`(139), `UTS_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__24_UDBL_unique_2` (`UDBL_2_TD`(139), `UDBL_2`, `tenant_id`, `obj_def_id`(128))
+  ,INDEX `obj_store__APQ__24_ISTR_index_1` (`ISTR_1`(192), `ISTR_1_TD`(139))
+  ,INDEX `obj_store__APQ__24_INUM_index_1` (`INUM_1`, `INUM_1_TD`(139))
+  ,INDEX `obj_store__APQ__24_ITS_index_1` (`ITS_1`, `ITS_1_TD`(139))
+  ,INDEX `obj_store__APQ__24_IDBL_index_1` (`IDBL_1`, `IDBL_1_TD`(139))
+  ,INDEX `obj_store__APQ__24_ISTR_index_2` (`ISTR_2`(192), `ISTR_2_TD`(139))
+  ,INDEX `obj_store__APQ__24_INUM_index_2` (`INUM_2`, `INUM_2_TD`(139))
+  ,INDEX `obj_store__APQ__24_ITS_index_2` (`ITS_2`, `ITS_2_TD`(139))
+  ,INDEX `obj_store__APQ__24_IDBL_index_2` (`IDBL_2`, `IDBL_2_TD`(139))
+  ,INDEX `obj_store__APQ__24_ISTR_index_3` (`ISTR_3`(192), `ISTR_3_TD`(139))
+  ,INDEX `obj_store__APQ__24_ISTR_index_4` (`ISTR_4`(192), `ISTR_4_TD`(139))
+  ,INDEX `obj_store__APQ__24_INUM_index_3` (`INUM_3`, `INUM_3_TD`(139))
+  ,INDEX `obj_store__APQ__24_ITS_index_3` (`ITS_3`, `ITS_3_TD`(139))
+  ,INDEX `obj_store__APQ__24_IDBL_index_3` (`IDBL_3`, `IDBL_3_TD`(139))
+  ,INDEX `obj_store__APQ__24_ISTR_index_5` (`ISTR_5`(192), `ISTR_5_TD`(139))
+  ,INDEX `obj_store__APQ__24_INUM_index_4` (`INUM_4`, `INUM_4_TD`(139))
+  ,INDEX `obj_store__APQ__24_ITS_index_4` (`ITS_4`, `ITS_4_TD`(139))
+  ,INDEX `obj_store__APQ__24_IDBL_index_4` (`IDBL_4`, `IDBL_4_TD`(139))
+  ,INDEX `obj_store__APQ__24_cre_user_index` (`cre_user`(64), `obj_def_id`(128), `tenant_id`)
 )
 ;
-/* drop/create OBJ_STORE_RB */
-DROP TABLE IF EXISTS `obj_store_rb__APQ__25`;
-CREATE TABLE `obj_store_rb__APQ__25` (
-  `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `rb_id` BIGINT(16) NULL,
-  `rb_date` DATETIME(3) NULL,
-  `rb_user` VARCHAR(64) NULL,
+/* drop/create OBJ_STORE */
+DROP TABLE IF EXISTS `obj_store__APQ__25`;
+CREATE TABLE `obj_store__APQ__25` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -6473,17 +6287,38 @@ CREATE TABLE `obj_store_rb__APQ__25` (
   ,`TS_32` DATETIME(3)
   ,`DBL_16` DOUBLE
   
-  ,PRIMARY KEY (`r_id`, `tenant_id`, `obj_def_id`)
-  ,INDEX `obj_store_rb___APQ__25index1` (`tenant_id`, `obj_def_id`(128), `rb_id`)
+  ,PRIMARY KEY (`tenant_id`, `obj_def_id`, `obj_id`, `obj_ver`, `pg_no`)
+  ,UNIQUE INDEX `obj_store__APQ__25_USTR_unique_1` (`USTR_1_TD`(139), `USTR_1`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__25_UNUM_unique_1` (`UNUM_1_TD`(139), `UNUM_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__25_UTS_unique_1` (`UTS_1_TD`(139), `UTS_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__25_UDBL_unique_1` (`UDBL_1_TD`(139), `UDBL_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__25_USTR_unique_2` (`USTR_2_TD`(139), `USTR_2`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__25_UNUM_unique_2` (`UNUM_2_TD`(139), `UNUM_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__25_UTS_unique_2` (`UTS_2_TD`(139), `UTS_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__25_UDBL_unique_2` (`UDBL_2_TD`(139), `UDBL_2`, `tenant_id`, `obj_def_id`(128))
+  ,INDEX `obj_store__APQ__25_ISTR_index_1` (`ISTR_1`(192), `ISTR_1_TD`(139))
+  ,INDEX `obj_store__APQ__25_INUM_index_1` (`INUM_1`, `INUM_1_TD`(139))
+  ,INDEX `obj_store__APQ__25_ITS_index_1` (`ITS_1`, `ITS_1_TD`(139))
+  ,INDEX `obj_store__APQ__25_IDBL_index_1` (`IDBL_1`, `IDBL_1_TD`(139))
+  ,INDEX `obj_store__APQ__25_ISTR_index_2` (`ISTR_2`(192), `ISTR_2_TD`(139))
+  ,INDEX `obj_store__APQ__25_INUM_index_2` (`INUM_2`, `INUM_2_TD`(139))
+  ,INDEX `obj_store__APQ__25_ITS_index_2` (`ITS_2`, `ITS_2_TD`(139))
+  ,INDEX `obj_store__APQ__25_IDBL_index_2` (`IDBL_2`, `IDBL_2_TD`(139))
+  ,INDEX `obj_store__APQ__25_ISTR_index_3` (`ISTR_3`(192), `ISTR_3_TD`(139))
+  ,INDEX `obj_store__APQ__25_ISTR_index_4` (`ISTR_4`(192), `ISTR_4_TD`(139))
+  ,INDEX `obj_store__APQ__25_INUM_index_3` (`INUM_3`, `INUM_3_TD`(139))
+  ,INDEX `obj_store__APQ__25_ITS_index_3` (`ITS_3`, `ITS_3_TD`(139))
+  ,INDEX `obj_store__APQ__25_IDBL_index_3` (`IDBL_3`, `IDBL_3_TD`(139))
+  ,INDEX `obj_store__APQ__25_ISTR_index_5` (`ISTR_5`(192), `ISTR_5_TD`(139))
+  ,INDEX `obj_store__APQ__25_INUM_index_4` (`INUM_4`, `INUM_4_TD`(139))
+  ,INDEX `obj_store__APQ__25_ITS_index_4` (`ITS_4`, `ITS_4_TD`(139))
+  ,INDEX `obj_store__APQ__25_IDBL_index_4` (`IDBL_4`, `IDBL_4_TD`(139))
+  ,INDEX `obj_store__APQ__25_cre_user_index` (`cre_user`(64), `obj_def_id`(128), `tenant_id`)
 )
 ;
-/* drop/create OBJ_STORE_RB */
-DROP TABLE IF EXISTS `obj_store_rb__APQ__26`;
-CREATE TABLE `obj_store_rb__APQ__26` (
-  `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `rb_id` BIGINT(16) NULL,
-  `rb_date` DATETIME(3) NULL,
-  `rb_user` VARCHAR(64) NULL,
+/* drop/create OBJ_STORE */
+DROP TABLE IF EXISTS `obj_store__APQ__26`;
+CREATE TABLE `obj_store__APQ__26` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -6695,17 +6530,38 @@ CREATE TABLE `obj_store_rb__APQ__26` (
   ,`TS_32` DATETIME(3)
   ,`DBL_16` DOUBLE
   
-  ,PRIMARY KEY (`r_id`, `tenant_id`, `obj_def_id`)
-  ,INDEX `obj_store_rb___APQ__26index1` (`tenant_id`, `obj_def_id`(128), `rb_id`)
+  ,PRIMARY KEY (`tenant_id`, `obj_def_id`, `obj_id`, `obj_ver`, `pg_no`)
+  ,UNIQUE INDEX `obj_store__APQ__26_USTR_unique_1` (`USTR_1_TD`(139), `USTR_1`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__26_UNUM_unique_1` (`UNUM_1_TD`(139), `UNUM_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__26_UTS_unique_1` (`UTS_1_TD`(139), `UTS_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__26_UDBL_unique_1` (`UDBL_1_TD`(139), `UDBL_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__26_USTR_unique_2` (`USTR_2_TD`(139), `USTR_2`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__26_UNUM_unique_2` (`UNUM_2_TD`(139), `UNUM_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__26_UTS_unique_2` (`UTS_2_TD`(139), `UTS_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__26_UDBL_unique_2` (`UDBL_2_TD`(139), `UDBL_2`, `tenant_id`, `obj_def_id`(128))
+  ,INDEX `obj_store__APQ__26_ISTR_index_1` (`ISTR_1`(192), `ISTR_1_TD`(139))
+  ,INDEX `obj_store__APQ__26_INUM_index_1` (`INUM_1`, `INUM_1_TD`(139))
+  ,INDEX `obj_store__APQ__26_ITS_index_1` (`ITS_1`, `ITS_1_TD`(139))
+  ,INDEX `obj_store__APQ__26_IDBL_index_1` (`IDBL_1`, `IDBL_1_TD`(139))
+  ,INDEX `obj_store__APQ__26_ISTR_index_2` (`ISTR_2`(192), `ISTR_2_TD`(139))
+  ,INDEX `obj_store__APQ__26_INUM_index_2` (`INUM_2`, `INUM_2_TD`(139))
+  ,INDEX `obj_store__APQ__26_ITS_index_2` (`ITS_2`, `ITS_2_TD`(139))
+  ,INDEX `obj_store__APQ__26_IDBL_index_2` (`IDBL_2`, `IDBL_2_TD`(139))
+  ,INDEX `obj_store__APQ__26_ISTR_index_3` (`ISTR_3`(192), `ISTR_3_TD`(139))
+  ,INDEX `obj_store__APQ__26_ISTR_index_4` (`ISTR_4`(192), `ISTR_4_TD`(139))
+  ,INDEX `obj_store__APQ__26_INUM_index_3` (`INUM_3`, `INUM_3_TD`(139))
+  ,INDEX `obj_store__APQ__26_ITS_index_3` (`ITS_3`, `ITS_3_TD`(139))
+  ,INDEX `obj_store__APQ__26_IDBL_index_3` (`IDBL_3`, `IDBL_3_TD`(139))
+  ,INDEX `obj_store__APQ__26_ISTR_index_5` (`ISTR_5`(192), `ISTR_5_TD`(139))
+  ,INDEX `obj_store__APQ__26_INUM_index_4` (`INUM_4`, `INUM_4_TD`(139))
+  ,INDEX `obj_store__APQ__26_ITS_index_4` (`ITS_4`, `ITS_4_TD`(139))
+  ,INDEX `obj_store__APQ__26_IDBL_index_4` (`IDBL_4`, `IDBL_4_TD`(139))
+  ,INDEX `obj_store__APQ__26_cre_user_index` (`cre_user`(64), `obj_def_id`(128), `tenant_id`)
 )
 ;
-/* drop/create OBJ_STORE_RB */
-DROP TABLE IF EXISTS `obj_store_rb__APQ__27`;
-CREATE TABLE `obj_store_rb__APQ__27` (
-  `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `rb_id` BIGINT(16) NULL,
-  `rb_date` DATETIME(3) NULL,
-  `rb_user` VARCHAR(64) NULL,
+/* drop/create OBJ_STORE */
+DROP TABLE IF EXISTS `obj_store__APQ__27`;
+CREATE TABLE `obj_store__APQ__27` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -6917,17 +6773,38 @@ CREATE TABLE `obj_store_rb__APQ__27` (
   ,`TS_32` DATETIME(3)
   ,`DBL_16` DOUBLE
   
-  ,PRIMARY KEY (`r_id`, `tenant_id`, `obj_def_id`)
-  ,INDEX `obj_store_rb___APQ__27index1` (`tenant_id`, `obj_def_id`(128), `rb_id`)
+  ,PRIMARY KEY (`tenant_id`, `obj_def_id`, `obj_id`, `obj_ver`, `pg_no`)
+  ,UNIQUE INDEX `obj_store__APQ__27_USTR_unique_1` (`USTR_1_TD`(139), `USTR_1`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__27_UNUM_unique_1` (`UNUM_1_TD`(139), `UNUM_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__27_UTS_unique_1` (`UTS_1_TD`(139), `UTS_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__27_UDBL_unique_1` (`UDBL_1_TD`(139), `UDBL_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__27_USTR_unique_2` (`USTR_2_TD`(139), `USTR_2`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__27_UNUM_unique_2` (`UNUM_2_TD`(139), `UNUM_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__27_UTS_unique_2` (`UTS_2_TD`(139), `UTS_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__27_UDBL_unique_2` (`UDBL_2_TD`(139), `UDBL_2`, `tenant_id`, `obj_def_id`(128))
+  ,INDEX `obj_store__APQ__27_ISTR_index_1` (`ISTR_1`(192), `ISTR_1_TD`(139))
+  ,INDEX `obj_store__APQ__27_INUM_index_1` (`INUM_1`, `INUM_1_TD`(139))
+  ,INDEX `obj_store__APQ__27_ITS_index_1` (`ITS_1`, `ITS_1_TD`(139))
+  ,INDEX `obj_store__APQ__27_IDBL_index_1` (`IDBL_1`, `IDBL_1_TD`(139))
+  ,INDEX `obj_store__APQ__27_ISTR_index_2` (`ISTR_2`(192), `ISTR_2_TD`(139))
+  ,INDEX `obj_store__APQ__27_INUM_index_2` (`INUM_2`, `INUM_2_TD`(139))
+  ,INDEX `obj_store__APQ__27_ITS_index_2` (`ITS_2`, `ITS_2_TD`(139))
+  ,INDEX `obj_store__APQ__27_IDBL_index_2` (`IDBL_2`, `IDBL_2_TD`(139))
+  ,INDEX `obj_store__APQ__27_ISTR_index_3` (`ISTR_3`(192), `ISTR_3_TD`(139))
+  ,INDEX `obj_store__APQ__27_ISTR_index_4` (`ISTR_4`(192), `ISTR_4_TD`(139))
+  ,INDEX `obj_store__APQ__27_INUM_index_3` (`INUM_3`, `INUM_3_TD`(139))
+  ,INDEX `obj_store__APQ__27_ITS_index_3` (`ITS_3`, `ITS_3_TD`(139))
+  ,INDEX `obj_store__APQ__27_IDBL_index_3` (`IDBL_3`, `IDBL_3_TD`(139))
+  ,INDEX `obj_store__APQ__27_ISTR_index_5` (`ISTR_5`(192), `ISTR_5_TD`(139))
+  ,INDEX `obj_store__APQ__27_INUM_index_4` (`INUM_4`, `INUM_4_TD`(139))
+  ,INDEX `obj_store__APQ__27_ITS_index_4` (`ITS_4`, `ITS_4_TD`(139))
+  ,INDEX `obj_store__APQ__27_IDBL_index_4` (`IDBL_4`, `IDBL_4_TD`(139))
+  ,INDEX `obj_store__APQ__27_cre_user_index` (`cre_user`(64), `obj_def_id`(128), `tenant_id`)
 )
 ;
-/* drop/create OBJ_STORE_RB */
-DROP TABLE IF EXISTS `obj_store_rb__APQ__28`;
-CREATE TABLE `obj_store_rb__APQ__28` (
-  `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `rb_id` BIGINT(16) NULL,
-  `rb_date` DATETIME(3) NULL,
-  `rb_user` VARCHAR(64) NULL,
+/* drop/create OBJ_STORE */
+DROP TABLE IF EXISTS `obj_store__APQ__28`;
+CREATE TABLE `obj_store__APQ__28` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -7139,17 +7016,38 @@ CREATE TABLE `obj_store_rb__APQ__28` (
   ,`TS_32` DATETIME(3)
   ,`DBL_16` DOUBLE
   
-  ,PRIMARY KEY (`r_id`, `tenant_id`, `obj_def_id`)
-  ,INDEX `obj_store_rb___APQ__28index1` (`tenant_id`, `obj_def_id`(128), `rb_id`)
+  ,PRIMARY KEY (`tenant_id`, `obj_def_id`, `obj_id`, `obj_ver`, `pg_no`)
+  ,UNIQUE INDEX `obj_store__APQ__28_USTR_unique_1` (`USTR_1_TD`(139), `USTR_1`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__28_UNUM_unique_1` (`UNUM_1_TD`(139), `UNUM_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__28_UTS_unique_1` (`UTS_1_TD`(139), `UTS_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__28_UDBL_unique_1` (`UDBL_1_TD`(139), `UDBL_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__28_USTR_unique_2` (`USTR_2_TD`(139), `USTR_2`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__28_UNUM_unique_2` (`UNUM_2_TD`(139), `UNUM_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__28_UTS_unique_2` (`UTS_2_TD`(139), `UTS_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__28_UDBL_unique_2` (`UDBL_2_TD`(139), `UDBL_2`, `tenant_id`, `obj_def_id`(128))
+  ,INDEX `obj_store__APQ__28_ISTR_index_1` (`ISTR_1`(192), `ISTR_1_TD`(139))
+  ,INDEX `obj_store__APQ__28_INUM_index_1` (`INUM_1`, `INUM_1_TD`(139))
+  ,INDEX `obj_store__APQ__28_ITS_index_1` (`ITS_1`, `ITS_1_TD`(139))
+  ,INDEX `obj_store__APQ__28_IDBL_index_1` (`IDBL_1`, `IDBL_1_TD`(139))
+  ,INDEX `obj_store__APQ__28_ISTR_index_2` (`ISTR_2`(192), `ISTR_2_TD`(139))
+  ,INDEX `obj_store__APQ__28_INUM_index_2` (`INUM_2`, `INUM_2_TD`(139))
+  ,INDEX `obj_store__APQ__28_ITS_index_2` (`ITS_2`, `ITS_2_TD`(139))
+  ,INDEX `obj_store__APQ__28_IDBL_index_2` (`IDBL_2`, `IDBL_2_TD`(139))
+  ,INDEX `obj_store__APQ__28_ISTR_index_3` (`ISTR_3`(192), `ISTR_3_TD`(139))
+  ,INDEX `obj_store__APQ__28_ISTR_index_4` (`ISTR_4`(192), `ISTR_4_TD`(139))
+  ,INDEX `obj_store__APQ__28_INUM_index_3` (`INUM_3`, `INUM_3_TD`(139))
+  ,INDEX `obj_store__APQ__28_ITS_index_3` (`ITS_3`, `ITS_3_TD`(139))
+  ,INDEX `obj_store__APQ__28_IDBL_index_3` (`IDBL_3`, `IDBL_3_TD`(139))
+  ,INDEX `obj_store__APQ__28_ISTR_index_5` (`ISTR_5`(192), `ISTR_5_TD`(139))
+  ,INDEX `obj_store__APQ__28_INUM_index_4` (`INUM_4`, `INUM_4_TD`(139))
+  ,INDEX `obj_store__APQ__28_ITS_index_4` (`ITS_4`, `ITS_4_TD`(139))
+  ,INDEX `obj_store__APQ__28_IDBL_index_4` (`IDBL_4`, `IDBL_4_TD`(139))
+  ,INDEX `obj_store__APQ__28_cre_user_index` (`cre_user`(64), `obj_def_id`(128), `tenant_id`)
 )
 ;
-/* drop/create OBJ_STORE_RB */
-DROP TABLE IF EXISTS `obj_store_rb__APQ__29`;
-CREATE TABLE `obj_store_rb__APQ__29` (
-  `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `rb_id` BIGINT(16) NULL,
-  `rb_date` DATETIME(3) NULL,
-  `rb_user` VARCHAR(64) NULL,
+/* drop/create OBJ_STORE */
+DROP TABLE IF EXISTS `obj_store__APQ__29`;
+CREATE TABLE `obj_store__APQ__29` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -7361,17 +7259,38 @@ CREATE TABLE `obj_store_rb__APQ__29` (
   ,`TS_32` DATETIME(3)
   ,`DBL_16` DOUBLE
   
-  ,PRIMARY KEY (`r_id`, `tenant_id`, `obj_def_id`)
-  ,INDEX `obj_store_rb___APQ__29index1` (`tenant_id`, `obj_def_id`(128), `rb_id`)
+  ,PRIMARY KEY (`tenant_id`, `obj_def_id`, `obj_id`, `obj_ver`, `pg_no`)
+  ,UNIQUE INDEX `obj_store__APQ__29_USTR_unique_1` (`USTR_1_TD`(139), `USTR_1`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__29_UNUM_unique_1` (`UNUM_1_TD`(139), `UNUM_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__29_UTS_unique_1` (`UTS_1_TD`(139), `UTS_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__29_UDBL_unique_1` (`UDBL_1_TD`(139), `UDBL_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__29_USTR_unique_2` (`USTR_2_TD`(139), `USTR_2`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__29_UNUM_unique_2` (`UNUM_2_TD`(139), `UNUM_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__29_UTS_unique_2` (`UTS_2_TD`(139), `UTS_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__29_UDBL_unique_2` (`UDBL_2_TD`(139), `UDBL_2`, `tenant_id`, `obj_def_id`(128))
+  ,INDEX `obj_store__APQ__29_ISTR_index_1` (`ISTR_1`(192), `ISTR_1_TD`(139))
+  ,INDEX `obj_store__APQ__29_INUM_index_1` (`INUM_1`, `INUM_1_TD`(139))
+  ,INDEX `obj_store__APQ__29_ITS_index_1` (`ITS_1`, `ITS_1_TD`(139))
+  ,INDEX `obj_store__APQ__29_IDBL_index_1` (`IDBL_1`, `IDBL_1_TD`(139))
+  ,INDEX `obj_store__APQ__29_ISTR_index_2` (`ISTR_2`(192), `ISTR_2_TD`(139))
+  ,INDEX `obj_store__APQ__29_INUM_index_2` (`INUM_2`, `INUM_2_TD`(139))
+  ,INDEX `obj_store__APQ__29_ITS_index_2` (`ITS_2`, `ITS_2_TD`(139))
+  ,INDEX `obj_store__APQ__29_IDBL_index_2` (`IDBL_2`, `IDBL_2_TD`(139))
+  ,INDEX `obj_store__APQ__29_ISTR_index_3` (`ISTR_3`(192), `ISTR_3_TD`(139))
+  ,INDEX `obj_store__APQ__29_ISTR_index_4` (`ISTR_4`(192), `ISTR_4_TD`(139))
+  ,INDEX `obj_store__APQ__29_INUM_index_3` (`INUM_3`, `INUM_3_TD`(139))
+  ,INDEX `obj_store__APQ__29_ITS_index_3` (`ITS_3`, `ITS_3_TD`(139))
+  ,INDEX `obj_store__APQ__29_IDBL_index_3` (`IDBL_3`, `IDBL_3_TD`(139))
+  ,INDEX `obj_store__APQ__29_ISTR_index_5` (`ISTR_5`(192), `ISTR_5_TD`(139))
+  ,INDEX `obj_store__APQ__29_INUM_index_4` (`INUM_4`, `INUM_4_TD`(139))
+  ,INDEX `obj_store__APQ__29_ITS_index_4` (`ITS_4`, `ITS_4_TD`(139))
+  ,INDEX `obj_store__APQ__29_IDBL_index_4` (`IDBL_4`, `IDBL_4_TD`(139))
+  ,INDEX `obj_store__APQ__29_cre_user_index` (`cre_user`(64), `obj_def_id`(128), `tenant_id`)
 )
 ;
-/* drop/create OBJ_STORE_RB */
-DROP TABLE IF EXISTS `obj_store_rb__APQ__30`;
-CREATE TABLE `obj_store_rb__APQ__30` (
-  `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `rb_id` BIGINT(16) NULL,
-  `rb_date` DATETIME(3) NULL,
-  `rb_user` VARCHAR(64) NULL,
+/* drop/create OBJ_STORE */
+DROP TABLE IF EXISTS `obj_store__APQ__30`;
+CREATE TABLE `obj_store__APQ__30` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -7583,17 +7502,38 @@ CREATE TABLE `obj_store_rb__APQ__30` (
   ,`TS_32` DATETIME(3)
   ,`DBL_16` DOUBLE
   
-  ,PRIMARY KEY (`r_id`, `tenant_id`, `obj_def_id`)
-  ,INDEX `obj_store_rb___APQ__30index1` (`tenant_id`, `obj_def_id`(128), `rb_id`)
+  ,PRIMARY KEY (`tenant_id`, `obj_def_id`, `obj_id`, `obj_ver`, `pg_no`)
+  ,UNIQUE INDEX `obj_store__APQ__30_USTR_unique_1` (`USTR_1_TD`(139), `USTR_1`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__30_UNUM_unique_1` (`UNUM_1_TD`(139), `UNUM_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__30_UTS_unique_1` (`UTS_1_TD`(139), `UTS_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__30_UDBL_unique_1` (`UDBL_1_TD`(139), `UDBL_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__30_USTR_unique_2` (`USTR_2_TD`(139), `USTR_2`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__30_UNUM_unique_2` (`UNUM_2_TD`(139), `UNUM_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__30_UTS_unique_2` (`UTS_2_TD`(139), `UTS_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__30_UDBL_unique_2` (`UDBL_2_TD`(139), `UDBL_2`, `tenant_id`, `obj_def_id`(128))
+  ,INDEX `obj_store__APQ__30_ISTR_index_1` (`ISTR_1`(192), `ISTR_1_TD`(139))
+  ,INDEX `obj_store__APQ__30_INUM_index_1` (`INUM_1`, `INUM_1_TD`(139))
+  ,INDEX `obj_store__APQ__30_ITS_index_1` (`ITS_1`, `ITS_1_TD`(139))
+  ,INDEX `obj_store__APQ__30_IDBL_index_1` (`IDBL_1`, `IDBL_1_TD`(139))
+  ,INDEX `obj_store__APQ__30_ISTR_index_2` (`ISTR_2`(192), `ISTR_2_TD`(139))
+  ,INDEX `obj_store__APQ__30_INUM_index_2` (`INUM_2`, `INUM_2_TD`(139))
+  ,INDEX `obj_store__APQ__30_ITS_index_2` (`ITS_2`, `ITS_2_TD`(139))
+  ,INDEX `obj_store__APQ__30_IDBL_index_2` (`IDBL_2`, `IDBL_2_TD`(139))
+  ,INDEX `obj_store__APQ__30_ISTR_index_3` (`ISTR_3`(192), `ISTR_3_TD`(139))
+  ,INDEX `obj_store__APQ__30_ISTR_index_4` (`ISTR_4`(192), `ISTR_4_TD`(139))
+  ,INDEX `obj_store__APQ__30_INUM_index_3` (`INUM_3`, `INUM_3_TD`(139))
+  ,INDEX `obj_store__APQ__30_ITS_index_3` (`ITS_3`, `ITS_3_TD`(139))
+  ,INDEX `obj_store__APQ__30_IDBL_index_3` (`IDBL_3`, `IDBL_3_TD`(139))
+  ,INDEX `obj_store__APQ__30_ISTR_index_5` (`ISTR_5`(192), `ISTR_5_TD`(139))
+  ,INDEX `obj_store__APQ__30_INUM_index_4` (`INUM_4`, `INUM_4_TD`(139))
+  ,INDEX `obj_store__APQ__30_ITS_index_4` (`ITS_4`, `ITS_4_TD`(139))
+  ,INDEX `obj_store__APQ__30_IDBL_index_4` (`IDBL_4`, `IDBL_4_TD`(139))
+  ,INDEX `obj_store__APQ__30_cre_user_index` (`cre_user`(64), `obj_def_id`(128), `tenant_id`)
 )
 ;
-/* drop/create OBJ_STORE_RB */
-DROP TABLE IF EXISTS `obj_store_rb__APQ__31`;
-CREATE TABLE `obj_store_rb__APQ__31` (
-  `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `rb_id` BIGINT(16) NULL,
-  `rb_date` DATETIME(3) NULL,
-  `rb_user` VARCHAR(64) NULL,
+/* drop/create OBJ_STORE */
+DROP TABLE IF EXISTS `obj_store__APQ__31`;
+CREATE TABLE `obj_store__APQ__31` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -7805,17 +7745,38 @@ CREATE TABLE `obj_store_rb__APQ__31` (
   ,`TS_32` DATETIME(3)
   ,`DBL_16` DOUBLE
   
-  ,PRIMARY KEY (`r_id`, `tenant_id`, `obj_def_id`)
-  ,INDEX `obj_store_rb___APQ__31index1` (`tenant_id`, `obj_def_id`(128), `rb_id`)
+  ,PRIMARY KEY (`tenant_id`, `obj_def_id`, `obj_id`, `obj_ver`, `pg_no`)
+  ,UNIQUE INDEX `obj_store__APQ__31_USTR_unique_1` (`USTR_1_TD`(139), `USTR_1`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__31_UNUM_unique_1` (`UNUM_1_TD`(139), `UNUM_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__31_UTS_unique_1` (`UTS_1_TD`(139), `UTS_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__31_UDBL_unique_1` (`UDBL_1_TD`(139), `UDBL_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__31_USTR_unique_2` (`USTR_2_TD`(139), `USTR_2`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__31_UNUM_unique_2` (`UNUM_2_TD`(139), `UNUM_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__31_UTS_unique_2` (`UTS_2_TD`(139), `UTS_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__31_UDBL_unique_2` (`UDBL_2_TD`(139), `UDBL_2`, `tenant_id`, `obj_def_id`(128))
+  ,INDEX `obj_store__APQ__31_ISTR_index_1` (`ISTR_1`(192), `ISTR_1_TD`(139))
+  ,INDEX `obj_store__APQ__31_INUM_index_1` (`INUM_1`, `INUM_1_TD`(139))
+  ,INDEX `obj_store__APQ__31_ITS_index_1` (`ITS_1`, `ITS_1_TD`(139))
+  ,INDEX `obj_store__APQ__31_IDBL_index_1` (`IDBL_1`, `IDBL_1_TD`(139))
+  ,INDEX `obj_store__APQ__31_ISTR_index_2` (`ISTR_2`(192), `ISTR_2_TD`(139))
+  ,INDEX `obj_store__APQ__31_INUM_index_2` (`INUM_2`, `INUM_2_TD`(139))
+  ,INDEX `obj_store__APQ__31_ITS_index_2` (`ITS_2`, `ITS_2_TD`(139))
+  ,INDEX `obj_store__APQ__31_IDBL_index_2` (`IDBL_2`, `IDBL_2_TD`(139))
+  ,INDEX `obj_store__APQ__31_ISTR_index_3` (`ISTR_3`(192), `ISTR_3_TD`(139))
+  ,INDEX `obj_store__APQ__31_ISTR_index_4` (`ISTR_4`(192), `ISTR_4_TD`(139))
+  ,INDEX `obj_store__APQ__31_INUM_index_3` (`INUM_3`, `INUM_3_TD`(139))
+  ,INDEX `obj_store__APQ__31_ITS_index_3` (`ITS_3`, `ITS_3_TD`(139))
+  ,INDEX `obj_store__APQ__31_IDBL_index_3` (`IDBL_3`, `IDBL_3_TD`(139))
+  ,INDEX `obj_store__APQ__31_ISTR_index_5` (`ISTR_5`(192), `ISTR_5_TD`(139))
+  ,INDEX `obj_store__APQ__31_INUM_index_4` (`INUM_4`, `INUM_4_TD`(139))
+  ,INDEX `obj_store__APQ__31_ITS_index_4` (`ITS_4`, `ITS_4_TD`(139))
+  ,INDEX `obj_store__APQ__31_IDBL_index_4` (`IDBL_4`, `IDBL_4_TD`(139))
+  ,INDEX `obj_store__APQ__31_cre_user_index` (`cre_user`(64), `obj_def_id`(128), `tenant_id`)
 )
 ;
-/* drop/create OBJ_STORE_RB */
-DROP TABLE IF EXISTS `obj_store_rb__APQ__32`;
-CREATE TABLE `obj_store_rb__APQ__32` (
-  `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `rb_id` BIGINT(16) NULL,
-  `rb_date` DATETIME(3) NULL,
-  `rb_user` VARCHAR(64) NULL,
+/* drop/create OBJ_STORE */
+DROP TABLE IF EXISTS `obj_store__APQ__32`;
+CREATE TABLE `obj_store__APQ__32` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -8027,17 +7988,38 @@ CREATE TABLE `obj_store_rb__APQ__32` (
   ,`TS_32` DATETIME(3)
   ,`DBL_16` DOUBLE
   
-  ,PRIMARY KEY (`r_id`, `tenant_id`, `obj_def_id`)
-  ,INDEX `obj_store_rb___APQ__32index1` (`tenant_id`, `obj_def_id`(128), `rb_id`)
+  ,PRIMARY KEY (`tenant_id`, `obj_def_id`, `obj_id`, `obj_ver`, `pg_no`)
+  ,UNIQUE INDEX `obj_store__APQ__32_USTR_unique_1` (`USTR_1_TD`(139), `USTR_1`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__32_UNUM_unique_1` (`UNUM_1_TD`(139), `UNUM_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__32_UTS_unique_1` (`UTS_1_TD`(139), `UTS_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__32_UDBL_unique_1` (`UDBL_1_TD`(139), `UDBL_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__32_USTR_unique_2` (`USTR_2_TD`(139), `USTR_2`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__32_UNUM_unique_2` (`UNUM_2_TD`(139), `UNUM_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__32_UTS_unique_2` (`UTS_2_TD`(139), `UTS_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__32_UDBL_unique_2` (`UDBL_2_TD`(139), `UDBL_2`, `tenant_id`, `obj_def_id`(128))
+  ,INDEX `obj_store__APQ__32_ISTR_index_1` (`ISTR_1`(192), `ISTR_1_TD`(139))
+  ,INDEX `obj_store__APQ__32_INUM_index_1` (`INUM_1`, `INUM_1_TD`(139))
+  ,INDEX `obj_store__APQ__32_ITS_index_1` (`ITS_1`, `ITS_1_TD`(139))
+  ,INDEX `obj_store__APQ__32_IDBL_index_1` (`IDBL_1`, `IDBL_1_TD`(139))
+  ,INDEX `obj_store__APQ__32_ISTR_index_2` (`ISTR_2`(192), `ISTR_2_TD`(139))
+  ,INDEX `obj_store__APQ__32_INUM_index_2` (`INUM_2`, `INUM_2_TD`(139))
+  ,INDEX `obj_store__APQ__32_ITS_index_2` (`ITS_2`, `ITS_2_TD`(139))
+  ,INDEX `obj_store__APQ__32_IDBL_index_2` (`IDBL_2`, `IDBL_2_TD`(139))
+  ,INDEX `obj_store__APQ__32_ISTR_index_3` (`ISTR_3`(192), `ISTR_3_TD`(139))
+  ,INDEX `obj_store__APQ__32_ISTR_index_4` (`ISTR_4`(192), `ISTR_4_TD`(139))
+  ,INDEX `obj_store__APQ__32_INUM_index_3` (`INUM_3`, `INUM_3_TD`(139))
+  ,INDEX `obj_store__APQ__32_ITS_index_3` (`ITS_3`, `ITS_3_TD`(139))
+  ,INDEX `obj_store__APQ__32_IDBL_index_3` (`IDBL_3`, `IDBL_3_TD`(139))
+  ,INDEX `obj_store__APQ__32_ISTR_index_5` (`ISTR_5`(192), `ISTR_5_TD`(139))
+  ,INDEX `obj_store__APQ__32_INUM_index_4` (`INUM_4`, `INUM_4_TD`(139))
+  ,INDEX `obj_store__APQ__32_ITS_index_4` (`ITS_4`, `ITS_4_TD`(139))
+  ,INDEX `obj_store__APQ__32_IDBL_index_4` (`IDBL_4`, `IDBL_4_TD`(139))
+  ,INDEX `obj_store__APQ__32_cre_user_index` (`cre_user`(64), `obj_def_id`(128), `tenant_id`)
 )
 ;
-/* drop/create OBJ_STORE_RB */
-DROP TABLE IF EXISTS `obj_store_rb__APQ__33`;
-CREATE TABLE `obj_store_rb__APQ__33` (
-  `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `rb_id` BIGINT(16) NULL,
-  `rb_date` DATETIME(3) NULL,
-  `rb_user` VARCHAR(64) NULL,
+/* drop/create OBJ_STORE */
+DROP TABLE IF EXISTS `obj_store__APQ__33`;
+CREATE TABLE `obj_store__APQ__33` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -8249,17 +8231,38 @@ CREATE TABLE `obj_store_rb__APQ__33` (
   ,`TS_32` DATETIME(3)
   ,`DBL_16` DOUBLE
   
-  ,PRIMARY KEY (`r_id`, `tenant_id`, `obj_def_id`)
-  ,INDEX `obj_store_rb___APQ__33index1` (`tenant_id`, `obj_def_id`(128), `rb_id`)
+  ,PRIMARY KEY (`tenant_id`, `obj_def_id`, `obj_id`, `obj_ver`, `pg_no`)
+  ,UNIQUE INDEX `obj_store__APQ__33_USTR_unique_1` (`USTR_1_TD`(139), `USTR_1`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__33_UNUM_unique_1` (`UNUM_1_TD`(139), `UNUM_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__33_UTS_unique_1` (`UTS_1_TD`(139), `UTS_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__33_UDBL_unique_1` (`UDBL_1_TD`(139), `UDBL_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__33_USTR_unique_2` (`USTR_2_TD`(139), `USTR_2`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__33_UNUM_unique_2` (`UNUM_2_TD`(139), `UNUM_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__33_UTS_unique_2` (`UTS_2_TD`(139), `UTS_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__33_UDBL_unique_2` (`UDBL_2_TD`(139), `UDBL_2`, `tenant_id`, `obj_def_id`(128))
+  ,INDEX `obj_store__APQ__33_ISTR_index_1` (`ISTR_1`(192), `ISTR_1_TD`(139))
+  ,INDEX `obj_store__APQ__33_INUM_index_1` (`INUM_1`, `INUM_1_TD`(139))
+  ,INDEX `obj_store__APQ__33_ITS_index_1` (`ITS_1`, `ITS_1_TD`(139))
+  ,INDEX `obj_store__APQ__33_IDBL_index_1` (`IDBL_1`, `IDBL_1_TD`(139))
+  ,INDEX `obj_store__APQ__33_ISTR_index_2` (`ISTR_2`(192), `ISTR_2_TD`(139))
+  ,INDEX `obj_store__APQ__33_INUM_index_2` (`INUM_2`, `INUM_2_TD`(139))
+  ,INDEX `obj_store__APQ__33_ITS_index_2` (`ITS_2`, `ITS_2_TD`(139))
+  ,INDEX `obj_store__APQ__33_IDBL_index_2` (`IDBL_2`, `IDBL_2_TD`(139))
+  ,INDEX `obj_store__APQ__33_ISTR_index_3` (`ISTR_3`(192), `ISTR_3_TD`(139))
+  ,INDEX `obj_store__APQ__33_ISTR_index_4` (`ISTR_4`(192), `ISTR_4_TD`(139))
+  ,INDEX `obj_store__APQ__33_INUM_index_3` (`INUM_3`, `INUM_3_TD`(139))
+  ,INDEX `obj_store__APQ__33_ITS_index_3` (`ITS_3`, `ITS_3_TD`(139))
+  ,INDEX `obj_store__APQ__33_IDBL_index_3` (`IDBL_3`, `IDBL_3_TD`(139))
+  ,INDEX `obj_store__APQ__33_ISTR_index_5` (`ISTR_5`(192), `ISTR_5_TD`(139))
+  ,INDEX `obj_store__APQ__33_INUM_index_4` (`INUM_4`, `INUM_4_TD`(139))
+  ,INDEX `obj_store__APQ__33_ITS_index_4` (`ITS_4`, `ITS_4_TD`(139))
+  ,INDEX `obj_store__APQ__33_IDBL_index_4` (`IDBL_4`, `IDBL_4_TD`(139))
+  ,INDEX `obj_store__APQ__33_cre_user_index` (`cre_user`(64), `obj_def_id`(128), `tenant_id`)
 )
 ;
-/* drop/create OBJ_STORE_RB */
-DROP TABLE IF EXISTS `obj_store_rb__APQ__34`;
-CREATE TABLE `obj_store_rb__APQ__34` (
-  `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `rb_id` BIGINT(16) NULL,
-  `rb_date` DATETIME(3) NULL,
-  `rb_user` VARCHAR(64) NULL,
+/* drop/create OBJ_STORE */
+DROP TABLE IF EXISTS `obj_store__APQ__34`;
+CREATE TABLE `obj_store__APQ__34` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -8471,17 +8474,38 @@ CREATE TABLE `obj_store_rb__APQ__34` (
   ,`TS_32` DATETIME(3)
   ,`DBL_16` DOUBLE
   
-  ,PRIMARY KEY (`r_id`, `tenant_id`, `obj_def_id`)
-  ,INDEX `obj_store_rb___APQ__34index1` (`tenant_id`, `obj_def_id`(128), `rb_id`)
+  ,PRIMARY KEY (`tenant_id`, `obj_def_id`, `obj_id`, `obj_ver`, `pg_no`)
+  ,UNIQUE INDEX `obj_store__APQ__34_USTR_unique_1` (`USTR_1_TD`(139), `USTR_1`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__34_UNUM_unique_1` (`UNUM_1_TD`(139), `UNUM_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__34_UTS_unique_1` (`UTS_1_TD`(139), `UTS_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__34_UDBL_unique_1` (`UDBL_1_TD`(139), `UDBL_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__34_USTR_unique_2` (`USTR_2_TD`(139), `USTR_2`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__34_UNUM_unique_2` (`UNUM_2_TD`(139), `UNUM_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__34_UTS_unique_2` (`UTS_2_TD`(139), `UTS_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__34_UDBL_unique_2` (`UDBL_2_TD`(139), `UDBL_2`, `tenant_id`, `obj_def_id`(128))
+  ,INDEX `obj_store__APQ__34_ISTR_index_1` (`ISTR_1`(192), `ISTR_1_TD`(139))
+  ,INDEX `obj_store__APQ__34_INUM_index_1` (`INUM_1`, `INUM_1_TD`(139))
+  ,INDEX `obj_store__APQ__34_ITS_index_1` (`ITS_1`, `ITS_1_TD`(139))
+  ,INDEX `obj_store__APQ__34_IDBL_index_1` (`IDBL_1`, `IDBL_1_TD`(139))
+  ,INDEX `obj_store__APQ__34_ISTR_index_2` (`ISTR_2`(192), `ISTR_2_TD`(139))
+  ,INDEX `obj_store__APQ__34_INUM_index_2` (`INUM_2`, `INUM_2_TD`(139))
+  ,INDEX `obj_store__APQ__34_ITS_index_2` (`ITS_2`, `ITS_2_TD`(139))
+  ,INDEX `obj_store__APQ__34_IDBL_index_2` (`IDBL_2`, `IDBL_2_TD`(139))
+  ,INDEX `obj_store__APQ__34_ISTR_index_3` (`ISTR_3`(192), `ISTR_3_TD`(139))
+  ,INDEX `obj_store__APQ__34_ISTR_index_4` (`ISTR_4`(192), `ISTR_4_TD`(139))
+  ,INDEX `obj_store__APQ__34_INUM_index_3` (`INUM_3`, `INUM_3_TD`(139))
+  ,INDEX `obj_store__APQ__34_ITS_index_3` (`ITS_3`, `ITS_3_TD`(139))
+  ,INDEX `obj_store__APQ__34_IDBL_index_3` (`IDBL_3`, `IDBL_3_TD`(139))
+  ,INDEX `obj_store__APQ__34_ISTR_index_5` (`ISTR_5`(192), `ISTR_5_TD`(139))
+  ,INDEX `obj_store__APQ__34_INUM_index_4` (`INUM_4`, `INUM_4_TD`(139))
+  ,INDEX `obj_store__APQ__34_ITS_index_4` (`ITS_4`, `ITS_4_TD`(139))
+  ,INDEX `obj_store__APQ__34_IDBL_index_4` (`IDBL_4`, `IDBL_4_TD`(139))
+  ,INDEX `obj_store__APQ__34_cre_user_index` (`cre_user`(64), `obj_def_id`(128), `tenant_id`)
 )
 ;
-/* drop/create OBJ_STORE_RB */
-DROP TABLE IF EXISTS `obj_store_rb__APQ__35`;
-CREATE TABLE `obj_store_rb__APQ__35` (
-  `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `rb_id` BIGINT(16) NULL,
-  `rb_date` DATETIME(3) NULL,
-  `rb_user` VARCHAR(64) NULL,
+/* drop/create OBJ_STORE */
+DROP TABLE IF EXISTS `obj_store__APQ__35`;
+CREATE TABLE `obj_store__APQ__35` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -8693,17 +8717,38 @@ CREATE TABLE `obj_store_rb__APQ__35` (
   ,`TS_32` DATETIME(3)
   ,`DBL_16` DOUBLE
   
-  ,PRIMARY KEY (`r_id`, `tenant_id`, `obj_def_id`)
-  ,INDEX `obj_store_rb___APQ__35index1` (`tenant_id`, `obj_def_id`(128), `rb_id`)
+  ,PRIMARY KEY (`tenant_id`, `obj_def_id`, `obj_id`, `obj_ver`, `pg_no`)
+  ,UNIQUE INDEX `obj_store__APQ__35_USTR_unique_1` (`USTR_1_TD`(139), `USTR_1`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__35_UNUM_unique_1` (`UNUM_1_TD`(139), `UNUM_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__35_UTS_unique_1` (`UTS_1_TD`(139), `UTS_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__35_UDBL_unique_1` (`UDBL_1_TD`(139), `UDBL_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__35_USTR_unique_2` (`USTR_2_TD`(139), `USTR_2`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__35_UNUM_unique_2` (`UNUM_2_TD`(139), `UNUM_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__35_UTS_unique_2` (`UTS_2_TD`(139), `UTS_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__35_UDBL_unique_2` (`UDBL_2_TD`(139), `UDBL_2`, `tenant_id`, `obj_def_id`(128))
+  ,INDEX `obj_store__APQ__35_ISTR_index_1` (`ISTR_1`(192), `ISTR_1_TD`(139))
+  ,INDEX `obj_store__APQ__35_INUM_index_1` (`INUM_1`, `INUM_1_TD`(139))
+  ,INDEX `obj_store__APQ__35_ITS_index_1` (`ITS_1`, `ITS_1_TD`(139))
+  ,INDEX `obj_store__APQ__35_IDBL_index_1` (`IDBL_1`, `IDBL_1_TD`(139))
+  ,INDEX `obj_store__APQ__35_ISTR_index_2` (`ISTR_2`(192), `ISTR_2_TD`(139))
+  ,INDEX `obj_store__APQ__35_INUM_index_2` (`INUM_2`, `INUM_2_TD`(139))
+  ,INDEX `obj_store__APQ__35_ITS_index_2` (`ITS_2`, `ITS_2_TD`(139))
+  ,INDEX `obj_store__APQ__35_IDBL_index_2` (`IDBL_2`, `IDBL_2_TD`(139))
+  ,INDEX `obj_store__APQ__35_ISTR_index_3` (`ISTR_3`(192), `ISTR_3_TD`(139))
+  ,INDEX `obj_store__APQ__35_ISTR_index_4` (`ISTR_4`(192), `ISTR_4_TD`(139))
+  ,INDEX `obj_store__APQ__35_INUM_index_3` (`INUM_3`, `INUM_3_TD`(139))
+  ,INDEX `obj_store__APQ__35_ITS_index_3` (`ITS_3`, `ITS_3_TD`(139))
+  ,INDEX `obj_store__APQ__35_IDBL_index_3` (`IDBL_3`, `IDBL_3_TD`(139))
+  ,INDEX `obj_store__APQ__35_ISTR_index_5` (`ISTR_5`(192), `ISTR_5_TD`(139))
+  ,INDEX `obj_store__APQ__35_INUM_index_4` (`INUM_4`, `INUM_4_TD`(139))
+  ,INDEX `obj_store__APQ__35_ITS_index_4` (`ITS_4`, `ITS_4_TD`(139))
+  ,INDEX `obj_store__APQ__35_IDBL_index_4` (`IDBL_4`, `IDBL_4_TD`(139))
+  ,INDEX `obj_store__APQ__35_cre_user_index` (`cre_user`(64), `obj_def_id`(128), `tenant_id`)
 )
 ;
-/* drop/create OBJ_STORE_RB */
-DROP TABLE IF EXISTS `obj_store_rb__APQ__36`;
-CREATE TABLE `obj_store_rb__APQ__36` (
-  `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `rb_id` BIGINT(16) NULL,
-  `rb_date` DATETIME(3) NULL,
-  `rb_user` VARCHAR(64) NULL,
+/* drop/create OBJ_STORE */
+DROP TABLE IF EXISTS `obj_store__APQ__36`;
+CREATE TABLE `obj_store__APQ__36` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -8915,17 +8960,38 @@ CREATE TABLE `obj_store_rb__APQ__36` (
   ,`TS_32` DATETIME(3)
   ,`DBL_16` DOUBLE
   
-  ,PRIMARY KEY (`r_id`, `tenant_id`, `obj_def_id`)
-  ,INDEX `obj_store_rb___APQ__36index1` (`tenant_id`, `obj_def_id`(128), `rb_id`)
+  ,PRIMARY KEY (`tenant_id`, `obj_def_id`, `obj_id`, `obj_ver`, `pg_no`)
+  ,UNIQUE INDEX `obj_store__APQ__36_USTR_unique_1` (`USTR_1_TD`(139), `USTR_1`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__36_UNUM_unique_1` (`UNUM_1_TD`(139), `UNUM_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__36_UTS_unique_1` (`UTS_1_TD`(139), `UTS_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__36_UDBL_unique_1` (`UDBL_1_TD`(139), `UDBL_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__36_USTR_unique_2` (`USTR_2_TD`(139), `USTR_2`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__36_UNUM_unique_2` (`UNUM_2_TD`(139), `UNUM_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__36_UTS_unique_2` (`UTS_2_TD`(139), `UTS_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__36_UDBL_unique_2` (`UDBL_2_TD`(139), `UDBL_2`, `tenant_id`, `obj_def_id`(128))
+  ,INDEX `obj_store__APQ__36_ISTR_index_1` (`ISTR_1`(192), `ISTR_1_TD`(139))
+  ,INDEX `obj_store__APQ__36_INUM_index_1` (`INUM_1`, `INUM_1_TD`(139))
+  ,INDEX `obj_store__APQ__36_ITS_index_1` (`ITS_1`, `ITS_1_TD`(139))
+  ,INDEX `obj_store__APQ__36_IDBL_index_1` (`IDBL_1`, `IDBL_1_TD`(139))
+  ,INDEX `obj_store__APQ__36_ISTR_index_2` (`ISTR_2`(192), `ISTR_2_TD`(139))
+  ,INDEX `obj_store__APQ__36_INUM_index_2` (`INUM_2`, `INUM_2_TD`(139))
+  ,INDEX `obj_store__APQ__36_ITS_index_2` (`ITS_2`, `ITS_2_TD`(139))
+  ,INDEX `obj_store__APQ__36_IDBL_index_2` (`IDBL_2`, `IDBL_2_TD`(139))
+  ,INDEX `obj_store__APQ__36_ISTR_index_3` (`ISTR_3`(192), `ISTR_3_TD`(139))
+  ,INDEX `obj_store__APQ__36_ISTR_index_4` (`ISTR_4`(192), `ISTR_4_TD`(139))
+  ,INDEX `obj_store__APQ__36_INUM_index_3` (`INUM_3`, `INUM_3_TD`(139))
+  ,INDEX `obj_store__APQ__36_ITS_index_3` (`ITS_3`, `ITS_3_TD`(139))
+  ,INDEX `obj_store__APQ__36_IDBL_index_3` (`IDBL_3`, `IDBL_3_TD`(139))
+  ,INDEX `obj_store__APQ__36_ISTR_index_5` (`ISTR_5`(192), `ISTR_5_TD`(139))
+  ,INDEX `obj_store__APQ__36_INUM_index_4` (`INUM_4`, `INUM_4_TD`(139))
+  ,INDEX `obj_store__APQ__36_ITS_index_4` (`ITS_4`, `ITS_4_TD`(139))
+  ,INDEX `obj_store__APQ__36_IDBL_index_4` (`IDBL_4`, `IDBL_4_TD`(139))
+  ,INDEX `obj_store__APQ__36_cre_user_index` (`cre_user`(64), `obj_def_id`(128), `tenant_id`)
 )
 ;
-/* drop/create OBJ_STORE_RB */
-DROP TABLE IF EXISTS `obj_store_rb__APQ__37`;
-CREATE TABLE `obj_store_rb__APQ__37` (
-  `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `rb_id` BIGINT(16) NULL,
-  `rb_date` DATETIME(3) NULL,
-  `rb_user` VARCHAR(64) NULL,
+/* drop/create OBJ_STORE */
+DROP TABLE IF EXISTS `obj_store__APQ__37`;
+CREATE TABLE `obj_store__APQ__37` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -9137,17 +9203,38 @@ CREATE TABLE `obj_store_rb__APQ__37` (
   ,`TS_32` DATETIME(3)
   ,`DBL_16` DOUBLE
   
-  ,PRIMARY KEY (`r_id`, `tenant_id`, `obj_def_id`)
-  ,INDEX `obj_store_rb___APQ__37index1` (`tenant_id`, `obj_def_id`(128), `rb_id`)
+  ,PRIMARY KEY (`tenant_id`, `obj_def_id`, `obj_id`, `obj_ver`, `pg_no`)
+  ,UNIQUE INDEX `obj_store__APQ__37_USTR_unique_1` (`USTR_1_TD`(139), `USTR_1`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__37_UNUM_unique_1` (`UNUM_1_TD`(139), `UNUM_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__37_UTS_unique_1` (`UTS_1_TD`(139), `UTS_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__37_UDBL_unique_1` (`UDBL_1_TD`(139), `UDBL_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__37_USTR_unique_2` (`USTR_2_TD`(139), `USTR_2`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__37_UNUM_unique_2` (`UNUM_2_TD`(139), `UNUM_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__37_UTS_unique_2` (`UTS_2_TD`(139), `UTS_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__37_UDBL_unique_2` (`UDBL_2_TD`(139), `UDBL_2`, `tenant_id`, `obj_def_id`(128))
+  ,INDEX `obj_store__APQ__37_ISTR_index_1` (`ISTR_1`(192), `ISTR_1_TD`(139))
+  ,INDEX `obj_store__APQ__37_INUM_index_1` (`INUM_1`, `INUM_1_TD`(139))
+  ,INDEX `obj_store__APQ__37_ITS_index_1` (`ITS_1`, `ITS_1_TD`(139))
+  ,INDEX `obj_store__APQ__37_IDBL_index_1` (`IDBL_1`, `IDBL_1_TD`(139))
+  ,INDEX `obj_store__APQ__37_ISTR_index_2` (`ISTR_2`(192), `ISTR_2_TD`(139))
+  ,INDEX `obj_store__APQ__37_INUM_index_2` (`INUM_2`, `INUM_2_TD`(139))
+  ,INDEX `obj_store__APQ__37_ITS_index_2` (`ITS_2`, `ITS_2_TD`(139))
+  ,INDEX `obj_store__APQ__37_IDBL_index_2` (`IDBL_2`, `IDBL_2_TD`(139))
+  ,INDEX `obj_store__APQ__37_ISTR_index_3` (`ISTR_3`(192), `ISTR_3_TD`(139))
+  ,INDEX `obj_store__APQ__37_ISTR_index_4` (`ISTR_4`(192), `ISTR_4_TD`(139))
+  ,INDEX `obj_store__APQ__37_INUM_index_3` (`INUM_3`, `INUM_3_TD`(139))
+  ,INDEX `obj_store__APQ__37_ITS_index_3` (`ITS_3`, `ITS_3_TD`(139))
+  ,INDEX `obj_store__APQ__37_IDBL_index_3` (`IDBL_3`, `IDBL_3_TD`(139))
+  ,INDEX `obj_store__APQ__37_ISTR_index_5` (`ISTR_5`(192), `ISTR_5_TD`(139))
+  ,INDEX `obj_store__APQ__37_INUM_index_4` (`INUM_4`, `INUM_4_TD`(139))
+  ,INDEX `obj_store__APQ__37_ITS_index_4` (`ITS_4`, `ITS_4_TD`(139))
+  ,INDEX `obj_store__APQ__37_IDBL_index_4` (`IDBL_4`, `IDBL_4_TD`(139))
+  ,INDEX `obj_store__APQ__37_cre_user_index` (`cre_user`(64), `obj_def_id`(128), `tenant_id`)
 )
 ;
-/* drop/create OBJ_STORE_RB */
-DROP TABLE IF EXISTS `obj_store_rb__APQ__38`;
-CREATE TABLE `obj_store_rb__APQ__38` (
-  `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `rb_id` BIGINT(16) NULL,
-  `rb_date` DATETIME(3) NULL,
-  `rb_user` VARCHAR(64) NULL,
+/* drop/create OBJ_STORE */
+DROP TABLE IF EXISTS `obj_store__APQ__38`;
+CREATE TABLE `obj_store__APQ__38` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -9359,17 +9446,38 @@ CREATE TABLE `obj_store_rb__APQ__38` (
   ,`TS_32` DATETIME(3)
   ,`DBL_16` DOUBLE
   
-  ,PRIMARY KEY (`r_id`, `tenant_id`, `obj_def_id`)
-  ,INDEX `obj_store_rb___APQ__38index1` (`tenant_id`, `obj_def_id`(128), `rb_id`)
+  ,PRIMARY KEY (`tenant_id`, `obj_def_id`, `obj_id`, `obj_ver`, `pg_no`)
+  ,UNIQUE INDEX `obj_store__APQ__38_USTR_unique_1` (`USTR_1_TD`(139), `USTR_1`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__38_UNUM_unique_1` (`UNUM_1_TD`(139), `UNUM_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__38_UTS_unique_1` (`UTS_1_TD`(139), `UTS_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__38_UDBL_unique_1` (`UDBL_1_TD`(139), `UDBL_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__38_USTR_unique_2` (`USTR_2_TD`(139), `USTR_2`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__38_UNUM_unique_2` (`UNUM_2_TD`(139), `UNUM_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__38_UTS_unique_2` (`UTS_2_TD`(139), `UTS_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__38_UDBL_unique_2` (`UDBL_2_TD`(139), `UDBL_2`, `tenant_id`, `obj_def_id`(128))
+  ,INDEX `obj_store__APQ__38_ISTR_index_1` (`ISTR_1`(192), `ISTR_1_TD`(139))
+  ,INDEX `obj_store__APQ__38_INUM_index_1` (`INUM_1`, `INUM_1_TD`(139))
+  ,INDEX `obj_store__APQ__38_ITS_index_1` (`ITS_1`, `ITS_1_TD`(139))
+  ,INDEX `obj_store__APQ__38_IDBL_index_1` (`IDBL_1`, `IDBL_1_TD`(139))
+  ,INDEX `obj_store__APQ__38_ISTR_index_2` (`ISTR_2`(192), `ISTR_2_TD`(139))
+  ,INDEX `obj_store__APQ__38_INUM_index_2` (`INUM_2`, `INUM_2_TD`(139))
+  ,INDEX `obj_store__APQ__38_ITS_index_2` (`ITS_2`, `ITS_2_TD`(139))
+  ,INDEX `obj_store__APQ__38_IDBL_index_2` (`IDBL_2`, `IDBL_2_TD`(139))
+  ,INDEX `obj_store__APQ__38_ISTR_index_3` (`ISTR_3`(192), `ISTR_3_TD`(139))
+  ,INDEX `obj_store__APQ__38_ISTR_index_4` (`ISTR_4`(192), `ISTR_4_TD`(139))
+  ,INDEX `obj_store__APQ__38_INUM_index_3` (`INUM_3`, `INUM_3_TD`(139))
+  ,INDEX `obj_store__APQ__38_ITS_index_3` (`ITS_3`, `ITS_3_TD`(139))
+  ,INDEX `obj_store__APQ__38_IDBL_index_3` (`IDBL_3`, `IDBL_3_TD`(139))
+  ,INDEX `obj_store__APQ__38_ISTR_index_5` (`ISTR_5`(192), `ISTR_5_TD`(139))
+  ,INDEX `obj_store__APQ__38_INUM_index_4` (`INUM_4`, `INUM_4_TD`(139))
+  ,INDEX `obj_store__APQ__38_ITS_index_4` (`ITS_4`, `ITS_4_TD`(139))
+  ,INDEX `obj_store__APQ__38_IDBL_index_4` (`IDBL_4`, `IDBL_4_TD`(139))
+  ,INDEX `obj_store__APQ__38_cre_user_index` (`cre_user`(64), `obj_def_id`(128), `tenant_id`)
 )
 ;
-/* drop/create OBJ_STORE_RB */
-DROP TABLE IF EXISTS `obj_store_rb__APQ__39`;
-CREATE TABLE `obj_store_rb__APQ__39` (
-  `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `rb_id` BIGINT(16) NULL,
-  `rb_date` DATETIME(3) NULL,
-  `rb_user` VARCHAR(64) NULL,
+/* drop/create OBJ_STORE */
+DROP TABLE IF EXISTS `obj_store__APQ__39`;
+CREATE TABLE `obj_store__APQ__39` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -9581,17 +9689,38 @@ CREATE TABLE `obj_store_rb__APQ__39` (
   ,`TS_32` DATETIME(3)
   ,`DBL_16` DOUBLE
   
-  ,PRIMARY KEY (`r_id`, `tenant_id`, `obj_def_id`)
-  ,INDEX `obj_store_rb___APQ__39index1` (`tenant_id`, `obj_def_id`(128), `rb_id`)
+  ,PRIMARY KEY (`tenant_id`, `obj_def_id`, `obj_id`, `obj_ver`, `pg_no`)
+  ,UNIQUE INDEX `obj_store__APQ__39_USTR_unique_1` (`USTR_1_TD`(139), `USTR_1`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__39_UNUM_unique_1` (`UNUM_1_TD`(139), `UNUM_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__39_UTS_unique_1` (`UTS_1_TD`(139), `UTS_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__39_UDBL_unique_1` (`UDBL_1_TD`(139), `UDBL_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__39_USTR_unique_2` (`USTR_2_TD`(139), `USTR_2`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__39_UNUM_unique_2` (`UNUM_2_TD`(139), `UNUM_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__39_UTS_unique_2` (`UTS_2_TD`(139), `UTS_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__39_UDBL_unique_2` (`UDBL_2_TD`(139), `UDBL_2`, `tenant_id`, `obj_def_id`(128))
+  ,INDEX `obj_store__APQ__39_ISTR_index_1` (`ISTR_1`(192), `ISTR_1_TD`(139))
+  ,INDEX `obj_store__APQ__39_INUM_index_1` (`INUM_1`, `INUM_1_TD`(139))
+  ,INDEX `obj_store__APQ__39_ITS_index_1` (`ITS_1`, `ITS_1_TD`(139))
+  ,INDEX `obj_store__APQ__39_IDBL_index_1` (`IDBL_1`, `IDBL_1_TD`(139))
+  ,INDEX `obj_store__APQ__39_ISTR_index_2` (`ISTR_2`(192), `ISTR_2_TD`(139))
+  ,INDEX `obj_store__APQ__39_INUM_index_2` (`INUM_2`, `INUM_2_TD`(139))
+  ,INDEX `obj_store__APQ__39_ITS_index_2` (`ITS_2`, `ITS_2_TD`(139))
+  ,INDEX `obj_store__APQ__39_IDBL_index_2` (`IDBL_2`, `IDBL_2_TD`(139))
+  ,INDEX `obj_store__APQ__39_ISTR_index_3` (`ISTR_3`(192), `ISTR_3_TD`(139))
+  ,INDEX `obj_store__APQ__39_ISTR_index_4` (`ISTR_4`(192), `ISTR_4_TD`(139))
+  ,INDEX `obj_store__APQ__39_INUM_index_3` (`INUM_3`, `INUM_3_TD`(139))
+  ,INDEX `obj_store__APQ__39_ITS_index_3` (`ITS_3`, `ITS_3_TD`(139))
+  ,INDEX `obj_store__APQ__39_IDBL_index_3` (`IDBL_3`, `IDBL_3_TD`(139))
+  ,INDEX `obj_store__APQ__39_ISTR_index_5` (`ISTR_5`(192), `ISTR_5_TD`(139))
+  ,INDEX `obj_store__APQ__39_INUM_index_4` (`INUM_4`, `INUM_4_TD`(139))
+  ,INDEX `obj_store__APQ__39_ITS_index_4` (`ITS_4`, `ITS_4_TD`(139))
+  ,INDEX `obj_store__APQ__39_IDBL_index_4` (`IDBL_4`, `IDBL_4_TD`(139))
+  ,INDEX `obj_store__APQ__39_cre_user_index` (`cre_user`(64), `obj_def_id`(128), `tenant_id`)
 )
 ;
-/* drop/create OBJ_STORE_RB */
-DROP TABLE IF EXISTS `obj_store_rb__APQ__40`;
-CREATE TABLE `obj_store_rb__APQ__40` (
-  `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `rb_id` BIGINT(16) NULL,
-  `rb_date` DATETIME(3) NULL,
-  `rb_user` VARCHAR(64) NULL,
+/* drop/create OBJ_STORE */
+DROP TABLE IF EXISTS `obj_store__APQ__40`;
+CREATE TABLE `obj_store__APQ__40` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -9803,17 +9932,38 @@ CREATE TABLE `obj_store_rb__APQ__40` (
   ,`TS_32` DATETIME(3)
   ,`DBL_16` DOUBLE
   
-  ,PRIMARY KEY (`r_id`, `tenant_id`, `obj_def_id`)
-  ,INDEX `obj_store_rb___APQ__40index1` (`tenant_id`, `obj_def_id`(128), `rb_id`)
+  ,PRIMARY KEY (`tenant_id`, `obj_def_id`, `obj_id`, `obj_ver`, `pg_no`)
+  ,UNIQUE INDEX `obj_store__APQ__40_USTR_unique_1` (`USTR_1_TD`(139), `USTR_1`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__40_UNUM_unique_1` (`UNUM_1_TD`(139), `UNUM_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__40_UTS_unique_1` (`UTS_1_TD`(139), `UTS_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__40_UDBL_unique_1` (`UDBL_1_TD`(139), `UDBL_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__40_USTR_unique_2` (`USTR_2_TD`(139), `USTR_2`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__40_UNUM_unique_2` (`UNUM_2_TD`(139), `UNUM_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__40_UTS_unique_2` (`UTS_2_TD`(139), `UTS_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__40_UDBL_unique_2` (`UDBL_2_TD`(139), `UDBL_2`, `tenant_id`, `obj_def_id`(128))
+  ,INDEX `obj_store__APQ__40_ISTR_index_1` (`ISTR_1`(192), `ISTR_1_TD`(139))
+  ,INDEX `obj_store__APQ__40_INUM_index_1` (`INUM_1`, `INUM_1_TD`(139))
+  ,INDEX `obj_store__APQ__40_ITS_index_1` (`ITS_1`, `ITS_1_TD`(139))
+  ,INDEX `obj_store__APQ__40_IDBL_index_1` (`IDBL_1`, `IDBL_1_TD`(139))
+  ,INDEX `obj_store__APQ__40_ISTR_index_2` (`ISTR_2`(192), `ISTR_2_TD`(139))
+  ,INDEX `obj_store__APQ__40_INUM_index_2` (`INUM_2`, `INUM_2_TD`(139))
+  ,INDEX `obj_store__APQ__40_ITS_index_2` (`ITS_2`, `ITS_2_TD`(139))
+  ,INDEX `obj_store__APQ__40_IDBL_index_2` (`IDBL_2`, `IDBL_2_TD`(139))
+  ,INDEX `obj_store__APQ__40_ISTR_index_3` (`ISTR_3`(192), `ISTR_3_TD`(139))
+  ,INDEX `obj_store__APQ__40_ISTR_index_4` (`ISTR_4`(192), `ISTR_4_TD`(139))
+  ,INDEX `obj_store__APQ__40_INUM_index_3` (`INUM_3`, `INUM_3_TD`(139))
+  ,INDEX `obj_store__APQ__40_ITS_index_3` (`ITS_3`, `ITS_3_TD`(139))
+  ,INDEX `obj_store__APQ__40_IDBL_index_3` (`IDBL_3`, `IDBL_3_TD`(139))
+  ,INDEX `obj_store__APQ__40_ISTR_index_5` (`ISTR_5`(192), `ISTR_5_TD`(139))
+  ,INDEX `obj_store__APQ__40_INUM_index_4` (`INUM_4`, `INUM_4_TD`(139))
+  ,INDEX `obj_store__APQ__40_ITS_index_4` (`ITS_4`, `ITS_4_TD`(139))
+  ,INDEX `obj_store__APQ__40_IDBL_index_4` (`IDBL_4`, `IDBL_4_TD`(139))
+  ,INDEX `obj_store__APQ__40_cre_user_index` (`cre_user`(64), `obj_def_id`(128), `tenant_id`)
 )
 ;
-/* drop/create OBJ_STORE_RB */
-DROP TABLE IF EXISTS `obj_store_rb__APQ__41`;
-CREATE TABLE `obj_store_rb__APQ__41` (
-  `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `rb_id` BIGINT(16) NULL,
-  `rb_date` DATETIME(3) NULL,
-  `rb_user` VARCHAR(64) NULL,
+/* drop/create OBJ_STORE */
+DROP TABLE IF EXISTS `obj_store__APQ__41`;
+CREATE TABLE `obj_store__APQ__41` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -10025,17 +10175,38 @@ CREATE TABLE `obj_store_rb__APQ__41` (
   ,`TS_32` DATETIME(3)
   ,`DBL_16` DOUBLE
   
-  ,PRIMARY KEY (`r_id`, `tenant_id`, `obj_def_id`)
-  ,INDEX `obj_store_rb___APQ__41index1` (`tenant_id`, `obj_def_id`(128), `rb_id`)
+  ,PRIMARY KEY (`tenant_id`, `obj_def_id`, `obj_id`, `obj_ver`, `pg_no`)
+  ,UNIQUE INDEX `obj_store__APQ__41_USTR_unique_1` (`USTR_1_TD`(139), `USTR_1`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__41_UNUM_unique_1` (`UNUM_1_TD`(139), `UNUM_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__41_UTS_unique_1` (`UTS_1_TD`(139), `UTS_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__41_UDBL_unique_1` (`UDBL_1_TD`(139), `UDBL_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__41_USTR_unique_2` (`USTR_2_TD`(139), `USTR_2`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__41_UNUM_unique_2` (`UNUM_2_TD`(139), `UNUM_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__41_UTS_unique_2` (`UTS_2_TD`(139), `UTS_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__41_UDBL_unique_2` (`UDBL_2_TD`(139), `UDBL_2`, `tenant_id`, `obj_def_id`(128))
+  ,INDEX `obj_store__APQ__41_ISTR_index_1` (`ISTR_1`(192), `ISTR_1_TD`(139))
+  ,INDEX `obj_store__APQ__41_INUM_index_1` (`INUM_1`, `INUM_1_TD`(139))
+  ,INDEX `obj_store__APQ__41_ITS_index_1` (`ITS_1`, `ITS_1_TD`(139))
+  ,INDEX `obj_store__APQ__41_IDBL_index_1` (`IDBL_1`, `IDBL_1_TD`(139))
+  ,INDEX `obj_store__APQ__41_ISTR_index_2` (`ISTR_2`(192), `ISTR_2_TD`(139))
+  ,INDEX `obj_store__APQ__41_INUM_index_2` (`INUM_2`, `INUM_2_TD`(139))
+  ,INDEX `obj_store__APQ__41_ITS_index_2` (`ITS_2`, `ITS_2_TD`(139))
+  ,INDEX `obj_store__APQ__41_IDBL_index_2` (`IDBL_2`, `IDBL_2_TD`(139))
+  ,INDEX `obj_store__APQ__41_ISTR_index_3` (`ISTR_3`(192), `ISTR_3_TD`(139))
+  ,INDEX `obj_store__APQ__41_ISTR_index_4` (`ISTR_4`(192), `ISTR_4_TD`(139))
+  ,INDEX `obj_store__APQ__41_INUM_index_3` (`INUM_3`, `INUM_3_TD`(139))
+  ,INDEX `obj_store__APQ__41_ITS_index_3` (`ITS_3`, `ITS_3_TD`(139))
+  ,INDEX `obj_store__APQ__41_IDBL_index_3` (`IDBL_3`, `IDBL_3_TD`(139))
+  ,INDEX `obj_store__APQ__41_ISTR_index_5` (`ISTR_5`(192), `ISTR_5_TD`(139))
+  ,INDEX `obj_store__APQ__41_INUM_index_4` (`INUM_4`, `INUM_4_TD`(139))
+  ,INDEX `obj_store__APQ__41_ITS_index_4` (`ITS_4`, `ITS_4_TD`(139))
+  ,INDEX `obj_store__APQ__41_IDBL_index_4` (`IDBL_4`, `IDBL_4_TD`(139))
+  ,INDEX `obj_store__APQ__41_cre_user_index` (`cre_user`(64), `obj_def_id`(128), `tenant_id`)
 )
 ;
-/* drop/create OBJ_STORE_RB */
-DROP TABLE IF EXISTS `obj_store_rb__APQ__42`;
-CREATE TABLE `obj_store_rb__APQ__42` (
-  `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `rb_id` BIGINT(16) NULL,
-  `rb_date` DATETIME(3) NULL,
-  `rb_user` VARCHAR(64) NULL,
+/* drop/create OBJ_STORE */
+DROP TABLE IF EXISTS `obj_store__APQ__42`;
+CREATE TABLE `obj_store__APQ__42` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -10247,17 +10418,38 @@ CREATE TABLE `obj_store_rb__APQ__42` (
   ,`TS_32` DATETIME(3)
   ,`DBL_16` DOUBLE
   
-  ,PRIMARY KEY (`r_id`, `tenant_id`, `obj_def_id`)
-  ,INDEX `obj_store_rb___APQ__42index1` (`tenant_id`, `obj_def_id`(128), `rb_id`)
+  ,PRIMARY KEY (`tenant_id`, `obj_def_id`, `obj_id`, `obj_ver`, `pg_no`)
+  ,UNIQUE INDEX `obj_store__APQ__42_USTR_unique_1` (`USTR_1_TD`(139), `USTR_1`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__42_UNUM_unique_1` (`UNUM_1_TD`(139), `UNUM_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__42_UTS_unique_1` (`UTS_1_TD`(139), `UTS_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__42_UDBL_unique_1` (`UDBL_1_TD`(139), `UDBL_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__42_USTR_unique_2` (`USTR_2_TD`(139), `USTR_2`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__42_UNUM_unique_2` (`UNUM_2_TD`(139), `UNUM_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__42_UTS_unique_2` (`UTS_2_TD`(139), `UTS_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__42_UDBL_unique_2` (`UDBL_2_TD`(139), `UDBL_2`, `tenant_id`, `obj_def_id`(128))
+  ,INDEX `obj_store__APQ__42_ISTR_index_1` (`ISTR_1`(192), `ISTR_1_TD`(139))
+  ,INDEX `obj_store__APQ__42_INUM_index_1` (`INUM_1`, `INUM_1_TD`(139))
+  ,INDEX `obj_store__APQ__42_ITS_index_1` (`ITS_1`, `ITS_1_TD`(139))
+  ,INDEX `obj_store__APQ__42_IDBL_index_1` (`IDBL_1`, `IDBL_1_TD`(139))
+  ,INDEX `obj_store__APQ__42_ISTR_index_2` (`ISTR_2`(192), `ISTR_2_TD`(139))
+  ,INDEX `obj_store__APQ__42_INUM_index_2` (`INUM_2`, `INUM_2_TD`(139))
+  ,INDEX `obj_store__APQ__42_ITS_index_2` (`ITS_2`, `ITS_2_TD`(139))
+  ,INDEX `obj_store__APQ__42_IDBL_index_2` (`IDBL_2`, `IDBL_2_TD`(139))
+  ,INDEX `obj_store__APQ__42_ISTR_index_3` (`ISTR_3`(192), `ISTR_3_TD`(139))
+  ,INDEX `obj_store__APQ__42_ISTR_index_4` (`ISTR_4`(192), `ISTR_4_TD`(139))
+  ,INDEX `obj_store__APQ__42_INUM_index_3` (`INUM_3`, `INUM_3_TD`(139))
+  ,INDEX `obj_store__APQ__42_ITS_index_3` (`ITS_3`, `ITS_3_TD`(139))
+  ,INDEX `obj_store__APQ__42_IDBL_index_3` (`IDBL_3`, `IDBL_3_TD`(139))
+  ,INDEX `obj_store__APQ__42_ISTR_index_5` (`ISTR_5`(192), `ISTR_5_TD`(139))
+  ,INDEX `obj_store__APQ__42_INUM_index_4` (`INUM_4`, `INUM_4_TD`(139))
+  ,INDEX `obj_store__APQ__42_ITS_index_4` (`ITS_4`, `ITS_4_TD`(139))
+  ,INDEX `obj_store__APQ__42_IDBL_index_4` (`IDBL_4`, `IDBL_4_TD`(139))
+  ,INDEX `obj_store__APQ__42_cre_user_index` (`cre_user`(64), `obj_def_id`(128), `tenant_id`)
 )
 ;
-/* drop/create OBJ_STORE_RB */
-DROP TABLE IF EXISTS `obj_store_rb__APQ__43`;
-CREATE TABLE `obj_store_rb__APQ__43` (
-  `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `rb_id` BIGINT(16) NULL,
-  `rb_date` DATETIME(3) NULL,
-  `rb_user` VARCHAR(64) NULL,
+/* drop/create OBJ_STORE */
+DROP TABLE IF EXISTS `obj_store__APQ__43`;
+CREATE TABLE `obj_store__APQ__43` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -10469,17 +10661,38 @@ CREATE TABLE `obj_store_rb__APQ__43` (
   ,`TS_32` DATETIME(3)
   ,`DBL_16` DOUBLE
   
-  ,PRIMARY KEY (`r_id`, `tenant_id`, `obj_def_id`)
-  ,INDEX `obj_store_rb___APQ__43index1` (`tenant_id`, `obj_def_id`(128), `rb_id`)
+  ,PRIMARY KEY (`tenant_id`, `obj_def_id`, `obj_id`, `obj_ver`, `pg_no`)
+  ,UNIQUE INDEX `obj_store__APQ__43_USTR_unique_1` (`USTR_1_TD`(139), `USTR_1`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__43_UNUM_unique_1` (`UNUM_1_TD`(139), `UNUM_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__43_UTS_unique_1` (`UTS_1_TD`(139), `UTS_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__43_UDBL_unique_1` (`UDBL_1_TD`(139), `UDBL_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__43_USTR_unique_2` (`USTR_2_TD`(139), `USTR_2`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__43_UNUM_unique_2` (`UNUM_2_TD`(139), `UNUM_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__43_UTS_unique_2` (`UTS_2_TD`(139), `UTS_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__43_UDBL_unique_2` (`UDBL_2_TD`(139), `UDBL_2`, `tenant_id`, `obj_def_id`(128))
+  ,INDEX `obj_store__APQ__43_ISTR_index_1` (`ISTR_1`(192), `ISTR_1_TD`(139))
+  ,INDEX `obj_store__APQ__43_INUM_index_1` (`INUM_1`, `INUM_1_TD`(139))
+  ,INDEX `obj_store__APQ__43_ITS_index_1` (`ITS_1`, `ITS_1_TD`(139))
+  ,INDEX `obj_store__APQ__43_IDBL_index_1` (`IDBL_1`, `IDBL_1_TD`(139))
+  ,INDEX `obj_store__APQ__43_ISTR_index_2` (`ISTR_2`(192), `ISTR_2_TD`(139))
+  ,INDEX `obj_store__APQ__43_INUM_index_2` (`INUM_2`, `INUM_2_TD`(139))
+  ,INDEX `obj_store__APQ__43_ITS_index_2` (`ITS_2`, `ITS_2_TD`(139))
+  ,INDEX `obj_store__APQ__43_IDBL_index_2` (`IDBL_2`, `IDBL_2_TD`(139))
+  ,INDEX `obj_store__APQ__43_ISTR_index_3` (`ISTR_3`(192), `ISTR_3_TD`(139))
+  ,INDEX `obj_store__APQ__43_ISTR_index_4` (`ISTR_4`(192), `ISTR_4_TD`(139))
+  ,INDEX `obj_store__APQ__43_INUM_index_3` (`INUM_3`, `INUM_3_TD`(139))
+  ,INDEX `obj_store__APQ__43_ITS_index_3` (`ITS_3`, `ITS_3_TD`(139))
+  ,INDEX `obj_store__APQ__43_IDBL_index_3` (`IDBL_3`, `IDBL_3_TD`(139))
+  ,INDEX `obj_store__APQ__43_ISTR_index_5` (`ISTR_5`(192), `ISTR_5_TD`(139))
+  ,INDEX `obj_store__APQ__43_INUM_index_4` (`INUM_4`, `INUM_4_TD`(139))
+  ,INDEX `obj_store__APQ__43_ITS_index_4` (`ITS_4`, `ITS_4_TD`(139))
+  ,INDEX `obj_store__APQ__43_IDBL_index_4` (`IDBL_4`, `IDBL_4_TD`(139))
+  ,INDEX `obj_store__APQ__43_cre_user_index` (`cre_user`(64), `obj_def_id`(128), `tenant_id`)
 )
 ;
-/* drop/create OBJ_STORE_RB */
-DROP TABLE IF EXISTS `obj_store_rb__APQ__44`;
-CREATE TABLE `obj_store_rb__APQ__44` (
-  `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `rb_id` BIGINT(16) NULL,
-  `rb_date` DATETIME(3) NULL,
-  `rb_user` VARCHAR(64) NULL,
+/* drop/create OBJ_STORE */
+DROP TABLE IF EXISTS `obj_store__APQ__44`;
+CREATE TABLE `obj_store__APQ__44` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -10691,17 +10904,38 @@ CREATE TABLE `obj_store_rb__APQ__44` (
   ,`TS_32` DATETIME(3)
   ,`DBL_16` DOUBLE
   
-  ,PRIMARY KEY (`r_id`, `tenant_id`, `obj_def_id`)
-  ,INDEX `obj_store_rb___APQ__44index1` (`tenant_id`, `obj_def_id`(128), `rb_id`)
+  ,PRIMARY KEY (`tenant_id`, `obj_def_id`, `obj_id`, `obj_ver`, `pg_no`)
+  ,UNIQUE INDEX `obj_store__APQ__44_USTR_unique_1` (`USTR_1_TD`(139), `USTR_1`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__44_UNUM_unique_1` (`UNUM_1_TD`(139), `UNUM_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__44_UTS_unique_1` (`UTS_1_TD`(139), `UTS_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__44_UDBL_unique_1` (`UDBL_1_TD`(139), `UDBL_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__44_USTR_unique_2` (`USTR_2_TD`(139), `USTR_2`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__44_UNUM_unique_2` (`UNUM_2_TD`(139), `UNUM_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__44_UTS_unique_2` (`UTS_2_TD`(139), `UTS_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__44_UDBL_unique_2` (`UDBL_2_TD`(139), `UDBL_2`, `tenant_id`, `obj_def_id`(128))
+  ,INDEX `obj_store__APQ__44_ISTR_index_1` (`ISTR_1`(192), `ISTR_1_TD`(139))
+  ,INDEX `obj_store__APQ__44_INUM_index_1` (`INUM_1`, `INUM_1_TD`(139))
+  ,INDEX `obj_store__APQ__44_ITS_index_1` (`ITS_1`, `ITS_1_TD`(139))
+  ,INDEX `obj_store__APQ__44_IDBL_index_1` (`IDBL_1`, `IDBL_1_TD`(139))
+  ,INDEX `obj_store__APQ__44_ISTR_index_2` (`ISTR_2`(192), `ISTR_2_TD`(139))
+  ,INDEX `obj_store__APQ__44_INUM_index_2` (`INUM_2`, `INUM_2_TD`(139))
+  ,INDEX `obj_store__APQ__44_ITS_index_2` (`ITS_2`, `ITS_2_TD`(139))
+  ,INDEX `obj_store__APQ__44_IDBL_index_2` (`IDBL_2`, `IDBL_2_TD`(139))
+  ,INDEX `obj_store__APQ__44_ISTR_index_3` (`ISTR_3`(192), `ISTR_3_TD`(139))
+  ,INDEX `obj_store__APQ__44_ISTR_index_4` (`ISTR_4`(192), `ISTR_4_TD`(139))
+  ,INDEX `obj_store__APQ__44_INUM_index_3` (`INUM_3`, `INUM_3_TD`(139))
+  ,INDEX `obj_store__APQ__44_ITS_index_3` (`ITS_3`, `ITS_3_TD`(139))
+  ,INDEX `obj_store__APQ__44_IDBL_index_3` (`IDBL_3`, `IDBL_3_TD`(139))
+  ,INDEX `obj_store__APQ__44_ISTR_index_5` (`ISTR_5`(192), `ISTR_5_TD`(139))
+  ,INDEX `obj_store__APQ__44_INUM_index_4` (`INUM_4`, `INUM_4_TD`(139))
+  ,INDEX `obj_store__APQ__44_ITS_index_4` (`ITS_4`, `ITS_4_TD`(139))
+  ,INDEX `obj_store__APQ__44_IDBL_index_4` (`IDBL_4`, `IDBL_4_TD`(139))
+  ,INDEX `obj_store__APQ__44_cre_user_index` (`cre_user`(64), `obj_def_id`(128), `tenant_id`)
 )
 ;
-/* drop/create OBJ_STORE_RB */
-DROP TABLE IF EXISTS `obj_store_rb__APQ__45`;
-CREATE TABLE `obj_store_rb__APQ__45` (
-  `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `rb_id` BIGINT(16) NULL,
-  `rb_date` DATETIME(3) NULL,
-  `rb_user` VARCHAR(64) NULL,
+/* drop/create OBJ_STORE */
+DROP TABLE IF EXISTS `obj_store__APQ__45`;
+CREATE TABLE `obj_store__APQ__45` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -10913,17 +11147,38 @@ CREATE TABLE `obj_store_rb__APQ__45` (
   ,`TS_32` DATETIME(3)
   ,`DBL_16` DOUBLE
   
-  ,PRIMARY KEY (`r_id`, `tenant_id`, `obj_def_id`)
-  ,INDEX `obj_store_rb___APQ__45index1` (`tenant_id`, `obj_def_id`(128), `rb_id`)
+  ,PRIMARY KEY (`tenant_id`, `obj_def_id`, `obj_id`, `obj_ver`, `pg_no`)
+  ,UNIQUE INDEX `obj_store__APQ__45_USTR_unique_1` (`USTR_1_TD`(139), `USTR_1`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__45_UNUM_unique_1` (`UNUM_1_TD`(139), `UNUM_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__45_UTS_unique_1` (`UTS_1_TD`(139), `UTS_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__45_UDBL_unique_1` (`UDBL_1_TD`(139), `UDBL_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__45_USTR_unique_2` (`USTR_2_TD`(139), `USTR_2`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__45_UNUM_unique_2` (`UNUM_2_TD`(139), `UNUM_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__45_UTS_unique_2` (`UTS_2_TD`(139), `UTS_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__45_UDBL_unique_2` (`UDBL_2_TD`(139), `UDBL_2`, `tenant_id`, `obj_def_id`(128))
+  ,INDEX `obj_store__APQ__45_ISTR_index_1` (`ISTR_1`(192), `ISTR_1_TD`(139))
+  ,INDEX `obj_store__APQ__45_INUM_index_1` (`INUM_1`, `INUM_1_TD`(139))
+  ,INDEX `obj_store__APQ__45_ITS_index_1` (`ITS_1`, `ITS_1_TD`(139))
+  ,INDEX `obj_store__APQ__45_IDBL_index_1` (`IDBL_1`, `IDBL_1_TD`(139))
+  ,INDEX `obj_store__APQ__45_ISTR_index_2` (`ISTR_2`(192), `ISTR_2_TD`(139))
+  ,INDEX `obj_store__APQ__45_INUM_index_2` (`INUM_2`, `INUM_2_TD`(139))
+  ,INDEX `obj_store__APQ__45_ITS_index_2` (`ITS_2`, `ITS_2_TD`(139))
+  ,INDEX `obj_store__APQ__45_IDBL_index_2` (`IDBL_2`, `IDBL_2_TD`(139))
+  ,INDEX `obj_store__APQ__45_ISTR_index_3` (`ISTR_3`(192), `ISTR_3_TD`(139))
+  ,INDEX `obj_store__APQ__45_ISTR_index_4` (`ISTR_4`(192), `ISTR_4_TD`(139))
+  ,INDEX `obj_store__APQ__45_INUM_index_3` (`INUM_3`, `INUM_3_TD`(139))
+  ,INDEX `obj_store__APQ__45_ITS_index_3` (`ITS_3`, `ITS_3_TD`(139))
+  ,INDEX `obj_store__APQ__45_IDBL_index_3` (`IDBL_3`, `IDBL_3_TD`(139))
+  ,INDEX `obj_store__APQ__45_ISTR_index_5` (`ISTR_5`(192), `ISTR_5_TD`(139))
+  ,INDEX `obj_store__APQ__45_INUM_index_4` (`INUM_4`, `INUM_4_TD`(139))
+  ,INDEX `obj_store__APQ__45_ITS_index_4` (`ITS_4`, `ITS_4_TD`(139))
+  ,INDEX `obj_store__APQ__45_IDBL_index_4` (`IDBL_4`, `IDBL_4_TD`(139))
+  ,INDEX `obj_store__APQ__45_cre_user_index` (`cre_user`(64), `obj_def_id`(128), `tenant_id`)
 )
 ;
-/* drop/create OBJ_STORE_RB */
-DROP TABLE IF EXISTS `obj_store_rb__APQ__46`;
-CREATE TABLE `obj_store_rb__APQ__46` (
-  `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `rb_id` BIGINT(16) NULL,
-  `rb_date` DATETIME(3) NULL,
-  `rb_user` VARCHAR(64) NULL,
+/* drop/create OBJ_STORE */
+DROP TABLE IF EXISTS `obj_store__APQ__46`;
+CREATE TABLE `obj_store__APQ__46` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -11135,17 +11390,38 @@ CREATE TABLE `obj_store_rb__APQ__46` (
   ,`TS_32` DATETIME(3)
   ,`DBL_16` DOUBLE
   
-  ,PRIMARY KEY (`r_id`, `tenant_id`, `obj_def_id`)
-  ,INDEX `obj_store_rb___APQ__46index1` (`tenant_id`, `obj_def_id`(128), `rb_id`)
+  ,PRIMARY KEY (`tenant_id`, `obj_def_id`, `obj_id`, `obj_ver`, `pg_no`)
+  ,UNIQUE INDEX `obj_store__APQ__46_USTR_unique_1` (`USTR_1_TD`(139), `USTR_1`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__46_UNUM_unique_1` (`UNUM_1_TD`(139), `UNUM_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__46_UTS_unique_1` (`UTS_1_TD`(139), `UTS_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__46_UDBL_unique_1` (`UDBL_1_TD`(139), `UDBL_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__46_USTR_unique_2` (`USTR_2_TD`(139), `USTR_2`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__46_UNUM_unique_2` (`UNUM_2_TD`(139), `UNUM_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__46_UTS_unique_2` (`UTS_2_TD`(139), `UTS_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__46_UDBL_unique_2` (`UDBL_2_TD`(139), `UDBL_2`, `tenant_id`, `obj_def_id`(128))
+  ,INDEX `obj_store__APQ__46_ISTR_index_1` (`ISTR_1`(192), `ISTR_1_TD`(139))
+  ,INDEX `obj_store__APQ__46_INUM_index_1` (`INUM_1`, `INUM_1_TD`(139))
+  ,INDEX `obj_store__APQ__46_ITS_index_1` (`ITS_1`, `ITS_1_TD`(139))
+  ,INDEX `obj_store__APQ__46_IDBL_index_1` (`IDBL_1`, `IDBL_1_TD`(139))
+  ,INDEX `obj_store__APQ__46_ISTR_index_2` (`ISTR_2`(192), `ISTR_2_TD`(139))
+  ,INDEX `obj_store__APQ__46_INUM_index_2` (`INUM_2`, `INUM_2_TD`(139))
+  ,INDEX `obj_store__APQ__46_ITS_index_2` (`ITS_2`, `ITS_2_TD`(139))
+  ,INDEX `obj_store__APQ__46_IDBL_index_2` (`IDBL_2`, `IDBL_2_TD`(139))
+  ,INDEX `obj_store__APQ__46_ISTR_index_3` (`ISTR_3`(192), `ISTR_3_TD`(139))
+  ,INDEX `obj_store__APQ__46_ISTR_index_4` (`ISTR_4`(192), `ISTR_4_TD`(139))
+  ,INDEX `obj_store__APQ__46_INUM_index_3` (`INUM_3`, `INUM_3_TD`(139))
+  ,INDEX `obj_store__APQ__46_ITS_index_3` (`ITS_3`, `ITS_3_TD`(139))
+  ,INDEX `obj_store__APQ__46_IDBL_index_3` (`IDBL_3`, `IDBL_3_TD`(139))
+  ,INDEX `obj_store__APQ__46_ISTR_index_5` (`ISTR_5`(192), `ISTR_5_TD`(139))
+  ,INDEX `obj_store__APQ__46_INUM_index_4` (`INUM_4`, `INUM_4_TD`(139))
+  ,INDEX `obj_store__APQ__46_ITS_index_4` (`ITS_4`, `ITS_4_TD`(139))
+  ,INDEX `obj_store__APQ__46_IDBL_index_4` (`IDBL_4`, `IDBL_4_TD`(139))
+  ,INDEX `obj_store__APQ__46_cre_user_index` (`cre_user`(64), `obj_def_id`(128), `tenant_id`)
 )
 ;
-/* drop/create OBJ_STORE_RB */
-DROP TABLE IF EXISTS `obj_store_rb__APQ__47`;
-CREATE TABLE `obj_store_rb__APQ__47` (
-  `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `rb_id` BIGINT(16) NULL,
-  `rb_date` DATETIME(3) NULL,
-  `rb_user` VARCHAR(64) NULL,
+/* drop/create OBJ_STORE */
+DROP TABLE IF EXISTS `obj_store__APQ__47`;
+CREATE TABLE `obj_store__APQ__47` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -11357,17 +11633,38 @@ CREATE TABLE `obj_store_rb__APQ__47` (
   ,`TS_32` DATETIME(3)
   ,`DBL_16` DOUBLE
   
-  ,PRIMARY KEY (`r_id`, `tenant_id`, `obj_def_id`)
-  ,INDEX `obj_store_rb___APQ__47index1` (`tenant_id`, `obj_def_id`(128), `rb_id`)
+  ,PRIMARY KEY (`tenant_id`, `obj_def_id`, `obj_id`, `obj_ver`, `pg_no`)
+  ,UNIQUE INDEX `obj_store__APQ__47_USTR_unique_1` (`USTR_1_TD`(139), `USTR_1`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__47_UNUM_unique_1` (`UNUM_1_TD`(139), `UNUM_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__47_UTS_unique_1` (`UTS_1_TD`(139), `UTS_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__47_UDBL_unique_1` (`UDBL_1_TD`(139), `UDBL_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__47_USTR_unique_2` (`USTR_2_TD`(139), `USTR_2`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__47_UNUM_unique_2` (`UNUM_2_TD`(139), `UNUM_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__47_UTS_unique_2` (`UTS_2_TD`(139), `UTS_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__47_UDBL_unique_2` (`UDBL_2_TD`(139), `UDBL_2`, `tenant_id`, `obj_def_id`(128))
+  ,INDEX `obj_store__APQ__47_ISTR_index_1` (`ISTR_1`(192), `ISTR_1_TD`(139))
+  ,INDEX `obj_store__APQ__47_INUM_index_1` (`INUM_1`, `INUM_1_TD`(139))
+  ,INDEX `obj_store__APQ__47_ITS_index_1` (`ITS_1`, `ITS_1_TD`(139))
+  ,INDEX `obj_store__APQ__47_IDBL_index_1` (`IDBL_1`, `IDBL_1_TD`(139))
+  ,INDEX `obj_store__APQ__47_ISTR_index_2` (`ISTR_2`(192), `ISTR_2_TD`(139))
+  ,INDEX `obj_store__APQ__47_INUM_index_2` (`INUM_2`, `INUM_2_TD`(139))
+  ,INDEX `obj_store__APQ__47_ITS_index_2` (`ITS_2`, `ITS_2_TD`(139))
+  ,INDEX `obj_store__APQ__47_IDBL_index_2` (`IDBL_2`, `IDBL_2_TD`(139))
+  ,INDEX `obj_store__APQ__47_ISTR_index_3` (`ISTR_3`(192), `ISTR_3_TD`(139))
+  ,INDEX `obj_store__APQ__47_ISTR_index_4` (`ISTR_4`(192), `ISTR_4_TD`(139))
+  ,INDEX `obj_store__APQ__47_INUM_index_3` (`INUM_3`, `INUM_3_TD`(139))
+  ,INDEX `obj_store__APQ__47_ITS_index_3` (`ITS_3`, `ITS_3_TD`(139))
+  ,INDEX `obj_store__APQ__47_IDBL_index_3` (`IDBL_3`, `IDBL_3_TD`(139))
+  ,INDEX `obj_store__APQ__47_ISTR_index_5` (`ISTR_5`(192), `ISTR_5_TD`(139))
+  ,INDEX `obj_store__APQ__47_INUM_index_4` (`INUM_4`, `INUM_4_TD`(139))
+  ,INDEX `obj_store__APQ__47_ITS_index_4` (`ITS_4`, `ITS_4_TD`(139))
+  ,INDEX `obj_store__APQ__47_IDBL_index_4` (`IDBL_4`, `IDBL_4_TD`(139))
+  ,INDEX `obj_store__APQ__47_cre_user_index` (`cre_user`(64), `obj_def_id`(128), `tenant_id`)
 )
 ;
-/* drop/create OBJ_STORE_RB */
-DROP TABLE IF EXISTS `obj_store_rb__APQ__48`;
-CREATE TABLE `obj_store_rb__APQ__48` (
-  `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `rb_id` BIGINT(16) NULL,
-  `rb_date` DATETIME(3) NULL,
-  `rb_user` VARCHAR(64) NULL,
+/* drop/create OBJ_STORE */
+DROP TABLE IF EXISTS `obj_store__APQ__48`;
+CREATE TABLE `obj_store__APQ__48` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -11579,17 +11876,38 @@ CREATE TABLE `obj_store_rb__APQ__48` (
   ,`TS_32` DATETIME(3)
   ,`DBL_16` DOUBLE
   
-  ,PRIMARY KEY (`r_id`, `tenant_id`, `obj_def_id`)
-  ,INDEX `obj_store_rb___APQ__48index1` (`tenant_id`, `obj_def_id`(128), `rb_id`)
+  ,PRIMARY KEY (`tenant_id`, `obj_def_id`, `obj_id`, `obj_ver`, `pg_no`)
+  ,UNIQUE INDEX `obj_store__APQ__48_USTR_unique_1` (`USTR_1_TD`(139), `USTR_1`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__48_UNUM_unique_1` (`UNUM_1_TD`(139), `UNUM_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__48_UTS_unique_1` (`UTS_1_TD`(139), `UTS_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__48_UDBL_unique_1` (`UDBL_1_TD`(139), `UDBL_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__48_USTR_unique_2` (`USTR_2_TD`(139), `USTR_2`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__48_UNUM_unique_2` (`UNUM_2_TD`(139), `UNUM_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__48_UTS_unique_2` (`UTS_2_TD`(139), `UTS_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__48_UDBL_unique_2` (`UDBL_2_TD`(139), `UDBL_2`, `tenant_id`, `obj_def_id`(128))
+  ,INDEX `obj_store__APQ__48_ISTR_index_1` (`ISTR_1`(192), `ISTR_1_TD`(139))
+  ,INDEX `obj_store__APQ__48_INUM_index_1` (`INUM_1`, `INUM_1_TD`(139))
+  ,INDEX `obj_store__APQ__48_ITS_index_1` (`ITS_1`, `ITS_1_TD`(139))
+  ,INDEX `obj_store__APQ__48_IDBL_index_1` (`IDBL_1`, `IDBL_1_TD`(139))
+  ,INDEX `obj_store__APQ__48_ISTR_index_2` (`ISTR_2`(192), `ISTR_2_TD`(139))
+  ,INDEX `obj_store__APQ__48_INUM_index_2` (`INUM_2`, `INUM_2_TD`(139))
+  ,INDEX `obj_store__APQ__48_ITS_index_2` (`ITS_2`, `ITS_2_TD`(139))
+  ,INDEX `obj_store__APQ__48_IDBL_index_2` (`IDBL_2`, `IDBL_2_TD`(139))
+  ,INDEX `obj_store__APQ__48_ISTR_index_3` (`ISTR_3`(192), `ISTR_3_TD`(139))
+  ,INDEX `obj_store__APQ__48_ISTR_index_4` (`ISTR_4`(192), `ISTR_4_TD`(139))
+  ,INDEX `obj_store__APQ__48_INUM_index_3` (`INUM_3`, `INUM_3_TD`(139))
+  ,INDEX `obj_store__APQ__48_ITS_index_3` (`ITS_3`, `ITS_3_TD`(139))
+  ,INDEX `obj_store__APQ__48_IDBL_index_3` (`IDBL_3`, `IDBL_3_TD`(139))
+  ,INDEX `obj_store__APQ__48_ISTR_index_5` (`ISTR_5`(192), `ISTR_5_TD`(139))
+  ,INDEX `obj_store__APQ__48_INUM_index_4` (`INUM_4`, `INUM_4_TD`(139))
+  ,INDEX `obj_store__APQ__48_ITS_index_4` (`ITS_4`, `ITS_4_TD`(139))
+  ,INDEX `obj_store__APQ__48_IDBL_index_4` (`IDBL_4`, `IDBL_4_TD`(139))
+  ,INDEX `obj_store__APQ__48_cre_user_index` (`cre_user`(64), `obj_def_id`(128), `tenant_id`)
 )
 ;
-/* drop/create OBJ_STORE_RB */
-DROP TABLE IF EXISTS `obj_store_rb__APQ__49`;
-CREATE TABLE `obj_store_rb__APQ__49` (
-  `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `rb_id` BIGINT(16) NULL,
-  `rb_date` DATETIME(3) NULL,
-  `rb_user` VARCHAR(64) NULL,
+/* drop/create OBJ_STORE */
+DROP TABLE IF EXISTS `obj_store__APQ__49`;
+CREATE TABLE `obj_store__APQ__49` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -11801,17 +12119,38 @@ CREATE TABLE `obj_store_rb__APQ__49` (
   ,`TS_32` DATETIME(3)
   ,`DBL_16` DOUBLE
   
-  ,PRIMARY KEY (`r_id`, `tenant_id`, `obj_def_id`)
-  ,INDEX `obj_store_rb___APQ__49index1` (`tenant_id`, `obj_def_id`(128), `rb_id`)
+  ,PRIMARY KEY (`tenant_id`, `obj_def_id`, `obj_id`, `obj_ver`, `pg_no`)
+  ,UNIQUE INDEX `obj_store__APQ__49_USTR_unique_1` (`USTR_1_TD`(139), `USTR_1`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__49_UNUM_unique_1` (`UNUM_1_TD`(139), `UNUM_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__49_UTS_unique_1` (`UTS_1_TD`(139), `UTS_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__49_UDBL_unique_1` (`UDBL_1_TD`(139), `UDBL_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__49_USTR_unique_2` (`USTR_2_TD`(139), `USTR_2`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__49_UNUM_unique_2` (`UNUM_2_TD`(139), `UNUM_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__49_UTS_unique_2` (`UTS_2_TD`(139), `UTS_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__49_UDBL_unique_2` (`UDBL_2_TD`(139), `UDBL_2`, `tenant_id`, `obj_def_id`(128))
+  ,INDEX `obj_store__APQ__49_ISTR_index_1` (`ISTR_1`(192), `ISTR_1_TD`(139))
+  ,INDEX `obj_store__APQ__49_INUM_index_1` (`INUM_1`, `INUM_1_TD`(139))
+  ,INDEX `obj_store__APQ__49_ITS_index_1` (`ITS_1`, `ITS_1_TD`(139))
+  ,INDEX `obj_store__APQ__49_IDBL_index_1` (`IDBL_1`, `IDBL_1_TD`(139))
+  ,INDEX `obj_store__APQ__49_ISTR_index_2` (`ISTR_2`(192), `ISTR_2_TD`(139))
+  ,INDEX `obj_store__APQ__49_INUM_index_2` (`INUM_2`, `INUM_2_TD`(139))
+  ,INDEX `obj_store__APQ__49_ITS_index_2` (`ITS_2`, `ITS_2_TD`(139))
+  ,INDEX `obj_store__APQ__49_IDBL_index_2` (`IDBL_2`, `IDBL_2_TD`(139))
+  ,INDEX `obj_store__APQ__49_ISTR_index_3` (`ISTR_3`(192), `ISTR_3_TD`(139))
+  ,INDEX `obj_store__APQ__49_ISTR_index_4` (`ISTR_4`(192), `ISTR_4_TD`(139))
+  ,INDEX `obj_store__APQ__49_INUM_index_3` (`INUM_3`, `INUM_3_TD`(139))
+  ,INDEX `obj_store__APQ__49_ITS_index_3` (`ITS_3`, `ITS_3_TD`(139))
+  ,INDEX `obj_store__APQ__49_IDBL_index_3` (`IDBL_3`, `IDBL_3_TD`(139))
+  ,INDEX `obj_store__APQ__49_ISTR_index_5` (`ISTR_5`(192), `ISTR_5_TD`(139))
+  ,INDEX `obj_store__APQ__49_INUM_index_4` (`INUM_4`, `INUM_4_TD`(139))
+  ,INDEX `obj_store__APQ__49_ITS_index_4` (`ITS_4`, `ITS_4_TD`(139))
+  ,INDEX `obj_store__APQ__49_IDBL_index_4` (`IDBL_4`, `IDBL_4_TD`(139))
+  ,INDEX `obj_store__APQ__49_cre_user_index` (`cre_user`(64), `obj_def_id`(128), `tenant_id`)
 )
 ;
-/* drop/create OBJ_STORE_RB */
-DROP TABLE IF EXISTS `obj_store_rb__APQ__50`;
-CREATE TABLE `obj_store_rb__APQ__50` (
-  `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `rb_id` BIGINT(16) NULL,
-  `rb_date` DATETIME(3) NULL,
-  `rb_user` VARCHAR(64) NULL,
+/* drop/create OBJ_STORE */
+DROP TABLE IF EXISTS `obj_store__APQ__50`;
+CREATE TABLE `obj_store__APQ__50` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -12023,17 +12362,38 @@ CREATE TABLE `obj_store_rb__APQ__50` (
   ,`TS_32` DATETIME(3)
   ,`DBL_16` DOUBLE
   
-  ,PRIMARY KEY (`r_id`, `tenant_id`, `obj_def_id`)
-  ,INDEX `obj_store_rb___APQ__50index1` (`tenant_id`, `obj_def_id`(128), `rb_id`)
+  ,PRIMARY KEY (`tenant_id`, `obj_def_id`, `obj_id`, `obj_ver`, `pg_no`)
+  ,UNIQUE INDEX `obj_store__APQ__50_USTR_unique_1` (`USTR_1_TD`(139), `USTR_1`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__50_UNUM_unique_1` (`UNUM_1_TD`(139), `UNUM_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__50_UTS_unique_1` (`UTS_1_TD`(139), `UTS_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__50_UDBL_unique_1` (`UDBL_1_TD`(139), `UDBL_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__50_USTR_unique_2` (`USTR_2_TD`(139), `USTR_2`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__50_UNUM_unique_2` (`UNUM_2_TD`(139), `UNUM_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__50_UTS_unique_2` (`UTS_2_TD`(139), `UTS_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__50_UDBL_unique_2` (`UDBL_2_TD`(139), `UDBL_2`, `tenant_id`, `obj_def_id`(128))
+  ,INDEX `obj_store__APQ__50_ISTR_index_1` (`ISTR_1`(192), `ISTR_1_TD`(139))
+  ,INDEX `obj_store__APQ__50_INUM_index_1` (`INUM_1`, `INUM_1_TD`(139))
+  ,INDEX `obj_store__APQ__50_ITS_index_1` (`ITS_1`, `ITS_1_TD`(139))
+  ,INDEX `obj_store__APQ__50_IDBL_index_1` (`IDBL_1`, `IDBL_1_TD`(139))
+  ,INDEX `obj_store__APQ__50_ISTR_index_2` (`ISTR_2`(192), `ISTR_2_TD`(139))
+  ,INDEX `obj_store__APQ__50_INUM_index_2` (`INUM_2`, `INUM_2_TD`(139))
+  ,INDEX `obj_store__APQ__50_ITS_index_2` (`ITS_2`, `ITS_2_TD`(139))
+  ,INDEX `obj_store__APQ__50_IDBL_index_2` (`IDBL_2`, `IDBL_2_TD`(139))
+  ,INDEX `obj_store__APQ__50_ISTR_index_3` (`ISTR_3`(192), `ISTR_3_TD`(139))
+  ,INDEX `obj_store__APQ__50_ISTR_index_4` (`ISTR_4`(192), `ISTR_4_TD`(139))
+  ,INDEX `obj_store__APQ__50_INUM_index_3` (`INUM_3`, `INUM_3_TD`(139))
+  ,INDEX `obj_store__APQ__50_ITS_index_3` (`ITS_3`, `ITS_3_TD`(139))
+  ,INDEX `obj_store__APQ__50_IDBL_index_3` (`IDBL_3`, `IDBL_3_TD`(139))
+  ,INDEX `obj_store__APQ__50_ISTR_index_5` (`ISTR_5`(192), `ISTR_5_TD`(139))
+  ,INDEX `obj_store__APQ__50_INUM_index_4` (`INUM_4`, `INUM_4_TD`(139))
+  ,INDEX `obj_store__APQ__50_ITS_index_4` (`ITS_4`, `ITS_4_TD`(139))
+  ,INDEX `obj_store__APQ__50_IDBL_index_4` (`IDBL_4`, `IDBL_4_TD`(139))
+  ,INDEX `obj_store__APQ__50_cre_user_index` (`cre_user`(64), `obj_def_id`(128), `tenant_id`)
 )
 ;
-/* drop/create OBJ_STORE_RB */
-DROP TABLE IF EXISTS `obj_store_rb__APQ__51`;
-CREATE TABLE `obj_store_rb__APQ__51` (
-  `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `rb_id` BIGINT(16) NULL,
-  `rb_date` DATETIME(3) NULL,
-  `rb_user` VARCHAR(64) NULL,
+/* drop/create OBJ_STORE */
+DROP TABLE IF EXISTS `obj_store__APQ__51`;
+CREATE TABLE `obj_store__APQ__51` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -12245,17 +12605,38 @@ CREATE TABLE `obj_store_rb__APQ__51` (
   ,`TS_32` DATETIME(3)
   ,`DBL_16` DOUBLE
   
-  ,PRIMARY KEY (`r_id`, `tenant_id`, `obj_def_id`)
-  ,INDEX `obj_store_rb___APQ__51index1` (`tenant_id`, `obj_def_id`(128), `rb_id`)
+  ,PRIMARY KEY (`tenant_id`, `obj_def_id`, `obj_id`, `obj_ver`, `pg_no`)
+  ,UNIQUE INDEX `obj_store__APQ__51_USTR_unique_1` (`USTR_1_TD`(139), `USTR_1`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__51_UNUM_unique_1` (`UNUM_1_TD`(139), `UNUM_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__51_UTS_unique_1` (`UTS_1_TD`(139), `UTS_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__51_UDBL_unique_1` (`UDBL_1_TD`(139), `UDBL_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__51_USTR_unique_2` (`USTR_2_TD`(139), `USTR_2`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__51_UNUM_unique_2` (`UNUM_2_TD`(139), `UNUM_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__51_UTS_unique_2` (`UTS_2_TD`(139), `UTS_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__51_UDBL_unique_2` (`UDBL_2_TD`(139), `UDBL_2`, `tenant_id`, `obj_def_id`(128))
+  ,INDEX `obj_store__APQ__51_ISTR_index_1` (`ISTR_1`(192), `ISTR_1_TD`(139))
+  ,INDEX `obj_store__APQ__51_INUM_index_1` (`INUM_1`, `INUM_1_TD`(139))
+  ,INDEX `obj_store__APQ__51_ITS_index_1` (`ITS_1`, `ITS_1_TD`(139))
+  ,INDEX `obj_store__APQ__51_IDBL_index_1` (`IDBL_1`, `IDBL_1_TD`(139))
+  ,INDEX `obj_store__APQ__51_ISTR_index_2` (`ISTR_2`(192), `ISTR_2_TD`(139))
+  ,INDEX `obj_store__APQ__51_INUM_index_2` (`INUM_2`, `INUM_2_TD`(139))
+  ,INDEX `obj_store__APQ__51_ITS_index_2` (`ITS_2`, `ITS_2_TD`(139))
+  ,INDEX `obj_store__APQ__51_IDBL_index_2` (`IDBL_2`, `IDBL_2_TD`(139))
+  ,INDEX `obj_store__APQ__51_ISTR_index_3` (`ISTR_3`(192), `ISTR_3_TD`(139))
+  ,INDEX `obj_store__APQ__51_ISTR_index_4` (`ISTR_4`(192), `ISTR_4_TD`(139))
+  ,INDEX `obj_store__APQ__51_INUM_index_3` (`INUM_3`, `INUM_3_TD`(139))
+  ,INDEX `obj_store__APQ__51_ITS_index_3` (`ITS_3`, `ITS_3_TD`(139))
+  ,INDEX `obj_store__APQ__51_IDBL_index_3` (`IDBL_3`, `IDBL_3_TD`(139))
+  ,INDEX `obj_store__APQ__51_ISTR_index_5` (`ISTR_5`(192), `ISTR_5_TD`(139))
+  ,INDEX `obj_store__APQ__51_INUM_index_4` (`INUM_4`, `INUM_4_TD`(139))
+  ,INDEX `obj_store__APQ__51_ITS_index_4` (`ITS_4`, `ITS_4_TD`(139))
+  ,INDEX `obj_store__APQ__51_IDBL_index_4` (`IDBL_4`, `IDBL_4_TD`(139))
+  ,INDEX `obj_store__APQ__51_cre_user_index` (`cre_user`(64), `obj_def_id`(128), `tenant_id`)
 )
 ;
-/* drop/create OBJ_STORE_RB */
-DROP TABLE IF EXISTS `obj_store_rb__APQ__52`;
-CREATE TABLE `obj_store_rb__APQ__52` (
-  `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `rb_id` BIGINT(16) NULL,
-  `rb_date` DATETIME(3) NULL,
-  `rb_user` VARCHAR(64) NULL,
+/* drop/create OBJ_STORE */
+DROP TABLE IF EXISTS `obj_store__APQ__52`;
+CREATE TABLE `obj_store__APQ__52` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -12467,17 +12848,38 @@ CREATE TABLE `obj_store_rb__APQ__52` (
   ,`TS_32` DATETIME(3)
   ,`DBL_16` DOUBLE
   
-  ,PRIMARY KEY (`r_id`, `tenant_id`, `obj_def_id`)
-  ,INDEX `obj_store_rb___APQ__52index1` (`tenant_id`, `obj_def_id`(128), `rb_id`)
+  ,PRIMARY KEY (`tenant_id`, `obj_def_id`, `obj_id`, `obj_ver`, `pg_no`)
+  ,UNIQUE INDEX `obj_store__APQ__52_USTR_unique_1` (`USTR_1_TD`(139), `USTR_1`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__52_UNUM_unique_1` (`UNUM_1_TD`(139), `UNUM_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__52_UTS_unique_1` (`UTS_1_TD`(139), `UTS_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__52_UDBL_unique_1` (`UDBL_1_TD`(139), `UDBL_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__52_USTR_unique_2` (`USTR_2_TD`(139), `USTR_2`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__52_UNUM_unique_2` (`UNUM_2_TD`(139), `UNUM_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__52_UTS_unique_2` (`UTS_2_TD`(139), `UTS_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__52_UDBL_unique_2` (`UDBL_2_TD`(139), `UDBL_2`, `tenant_id`, `obj_def_id`(128))
+  ,INDEX `obj_store__APQ__52_ISTR_index_1` (`ISTR_1`(192), `ISTR_1_TD`(139))
+  ,INDEX `obj_store__APQ__52_INUM_index_1` (`INUM_1`, `INUM_1_TD`(139))
+  ,INDEX `obj_store__APQ__52_ITS_index_1` (`ITS_1`, `ITS_1_TD`(139))
+  ,INDEX `obj_store__APQ__52_IDBL_index_1` (`IDBL_1`, `IDBL_1_TD`(139))
+  ,INDEX `obj_store__APQ__52_ISTR_index_2` (`ISTR_2`(192), `ISTR_2_TD`(139))
+  ,INDEX `obj_store__APQ__52_INUM_index_2` (`INUM_2`, `INUM_2_TD`(139))
+  ,INDEX `obj_store__APQ__52_ITS_index_2` (`ITS_2`, `ITS_2_TD`(139))
+  ,INDEX `obj_store__APQ__52_IDBL_index_2` (`IDBL_2`, `IDBL_2_TD`(139))
+  ,INDEX `obj_store__APQ__52_ISTR_index_3` (`ISTR_3`(192), `ISTR_3_TD`(139))
+  ,INDEX `obj_store__APQ__52_ISTR_index_4` (`ISTR_4`(192), `ISTR_4_TD`(139))
+  ,INDEX `obj_store__APQ__52_INUM_index_3` (`INUM_3`, `INUM_3_TD`(139))
+  ,INDEX `obj_store__APQ__52_ITS_index_3` (`ITS_3`, `ITS_3_TD`(139))
+  ,INDEX `obj_store__APQ__52_IDBL_index_3` (`IDBL_3`, `IDBL_3_TD`(139))
+  ,INDEX `obj_store__APQ__52_ISTR_index_5` (`ISTR_5`(192), `ISTR_5_TD`(139))
+  ,INDEX `obj_store__APQ__52_INUM_index_4` (`INUM_4`, `INUM_4_TD`(139))
+  ,INDEX `obj_store__APQ__52_ITS_index_4` (`ITS_4`, `ITS_4_TD`(139))
+  ,INDEX `obj_store__APQ__52_IDBL_index_4` (`IDBL_4`, `IDBL_4_TD`(139))
+  ,INDEX `obj_store__APQ__52_cre_user_index` (`cre_user`(64), `obj_def_id`(128), `tenant_id`)
 )
 ;
-/* drop/create OBJ_STORE_RB */
-DROP TABLE IF EXISTS `obj_store_rb__APQ__53`;
-CREATE TABLE `obj_store_rb__APQ__53` (
-  `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `rb_id` BIGINT(16) NULL,
-  `rb_date` DATETIME(3) NULL,
-  `rb_user` VARCHAR(64) NULL,
+/* drop/create OBJ_STORE */
+DROP TABLE IF EXISTS `obj_store__APQ__53`;
+CREATE TABLE `obj_store__APQ__53` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -12689,17 +13091,38 @@ CREATE TABLE `obj_store_rb__APQ__53` (
   ,`TS_32` DATETIME(3)
   ,`DBL_16` DOUBLE
   
-  ,PRIMARY KEY (`r_id`, `tenant_id`, `obj_def_id`)
-  ,INDEX `obj_store_rb___APQ__53index1` (`tenant_id`, `obj_def_id`(128), `rb_id`)
+  ,PRIMARY KEY (`tenant_id`, `obj_def_id`, `obj_id`, `obj_ver`, `pg_no`)
+  ,UNIQUE INDEX `obj_store__APQ__53_USTR_unique_1` (`USTR_1_TD`(139), `USTR_1`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__53_UNUM_unique_1` (`UNUM_1_TD`(139), `UNUM_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__53_UTS_unique_1` (`UTS_1_TD`(139), `UTS_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__53_UDBL_unique_1` (`UDBL_1_TD`(139), `UDBL_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__53_USTR_unique_2` (`USTR_2_TD`(139), `USTR_2`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__53_UNUM_unique_2` (`UNUM_2_TD`(139), `UNUM_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__53_UTS_unique_2` (`UTS_2_TD`(139), `UTS_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__53_UDBL_unique_2` (`UDBL_2_TD`(139), `UDBL_2`, `tenant_id`, `obj_def_id`(128))
+  ,INDEX `obj_store__APQ__53_ISTR_index_1` (`ISTR_1`(192), `ISTR_1_TD`(139))
+  ,INDEX `obj_store__APQ__53_INUM_index_1` (`INUM_1`, `INUM_1_TD`(139))
+  ,INDEX `obj_store__APQ__53_ITS_index_1` (`ITS_1`, `ITS_1_TD`(139))
+  ,INDEX `obj_store__APQ__53_IDBL_index_1` (`IDBL_1`, `IDBL_1_TD`(139))
+  ,INDEX `obj_store__APQ__53_ISTR_index_2` (`ISTR_2`(192), `ISTR_2_TD`(139))
+  ,INDEX `obj_store__APQ__53_INUM_index_2` (`INUM_2`, `INUM_2_TD`(139))
+  ,INDEX `obj_store__APQ__53_ITS_index_2` (`ITS_2`, `ITS_2_TD`(139))
+  ,INDEX `obj_store__APQ__53_IDBL_index_2` (`IDBL_2`, `IDBL_2_TD`(139))
+  ,INDEX `obj_store__APQ__53_ISTR_index_3` (`ISTR_3`(192), `ISTR_3_TD`(139))
+  ,INDEX `obj_store__APQ__53_ISTR_index_4` (`ISTR_4`(192), `ISTR_4_TD`(139))
+  ,INDEX `obj_store__APQ__53_INUM_index_3` (`INUM_3`, `INUM_3_TD`(139))
+  ,INDEX `obj_store__APQ__53_ITS_index_3` (`ITS_3`, `ITS_3_TD`(139))
+  ,INDEX `obj_store__APQ__53_IDBL_index_3` (`IDBL_3`, `IDBL_3_TD`(139))
+  ,INDEX `obj_store__APQ__53_ISTR_index_5` (`ISTR_5`(192), `ISTR_5_TD`(139))
+  ,INDEX `obj_store__APQ__53_INUM_index_4` (`INUM_4`, `INUM_4_TD`(139))
+  ,INDEX `obj_store__APQ__53_ITS_index_4` (`ITS_4`, `ITS_4_TD`(139))
+  ,INDEX `obj_store__APQ__53_IDBL_index_4` (`IDBL_4`, `IDBL_4_TD`(139))
+  ,INDEX `obj_store__APQ__53_cre_user_index` (`cre_user`(64), `obj_def_id`(128), `tenant_id`)
 )
 ;
-/* drop/create OBJ_STORE_RB */
-DROP TABLE IF EXISTS `obj_store_rb__APQ__54`;
-CREATE TABLE `obj_store_rb__APQ__54` (
-  `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `rb_id` BIGINT(16) NULL,
-  `rb_date` DATETIME(3) NULL,
-  `rb_user` VARCHAR(64) NULL,
+/* drop/create OBJ_STORE */
+DROP TABLE IF EXISTS `obj_store__APQ__54`;
+CREATE TABLE `obj_store__APQ__54` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -12911,17 +13334,38 @@ CREATE TABLE `obj_store_rb__APQ__54` (
   ,`TS_32` DATETIME(3)
   ,`DBL_16` DOUBLE
   
-  ,PRIMARY KEY (`r_id`, `tenant_id`, `obj_def_id`)
-  ,INDEX `obj_store_rb___APQ__54index1` (`tenant_id`, `obj_def_id`(128), `rb_id`)
+  ,PRIMARY KEY (`tenant_id`, `obj_def_id`, `obj_id`, `obj_ver`, `pg_no`)
+  ,UNIQUE INDEX `obj_store__APQ__54_USTR_unique_1` (`USTR_1_TD`(139), `USTR_1`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__54_UNUM_unique_1` (`UNUM_1_TD`(139), `UNUM_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__54_UTS_unique_1` (`UTS_1_TD`(139), `UTS_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__54_UDBL_unique_1` (`UDBL_1_TD`(139), `UDBL_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__54_USTR_unique_2` (`USTR_2_TD`(139), `USTR_2`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__54_UNUM_unique_2` (`UNUM_2_TD`(139), `UNUM_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__54_UTS_unique_2` (`UTS_2_TD`(139), `UTS_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__54_UDBL_unique_2` (`UDBL_2_TD`(139), `UDBL_2`, `tenant_id`, `obj_def_id`(128))
+  ,INDEX `obj_store__APQ__54_ISTR_index_1` (`ISTR_1`(192), `ISTR_1_TD`(139))
+  ,INDEX `obj_store__APQ__54_INUM_index_1` (`INUM_1`, `INUM_1_TD`(139))
+  ,INDEX `obj_store__APQ__54_ITS_index_1` (`ITS_1`, `ITS_1_TD`(139))
+  ,INDEX `obj_store__APQ__54_IDBL_index_1` (`IDBL_1`, `IDBL_1_TD`(139))
+  ,INDEX `obj_store__APQ__54_ISTR_index_2` (`ISTR_2`(192), `ISTR_2_TD`(139))
+  ,INDEX `obj_store__APQ__54_INUM_index_2` (`INUM_2`, `INUM_2_TD`(139))
+  ,INDEX `obj_store__APQ__54_ITS_index_2` (`ITS_2`, `ITS_2_TD`(139))
+  ,INDEX `obj_store__APQ__54_IDBL_index_2` (`IDBL_2`, `IDBL_2_TD`(139))
+  ,INDEX `obj_store__APQ__54_ISTR_index_3` (`ISTR_3`(192), `ISTR_3_TD`(139))
+  ,INDEX `obj_store__APQ__54_ISTR_index_4` (`ISTR_4`(192), `ISTR_4_TD`(139))
+  ,INDEX `obj_store__APQ__54_INUM_index_3` (`INUM_3`, `INUM_3_TD`(139))
+  ,INDEX `obj_store__APQ__54_ITS_index_3` (`ITS_3`, `ITS_3_TD`(139))
+  ,INDEX `obj_store__APQ__54_IDBL_index_3` (`IDBL_3`, `IDBL_3_TD`(139))
+  ,INDEX `obj_store__APQ__54_ISTR_index_5` (`ISTR_5`(192), `ISTR_5_TD`(139))
+  ,INDEX `obj_store__APQ__54_INUM_index_4` (`INUM_4`, `INUM_4_TD`(139))
+  ,INDEX `obj_store__APQ__54_ITS_index_4` (`ITS_4`, `ITS_4_TD`(139))
+  ,INDEX `obj_store__APQ__54_IDBL_index_4` (`IDBL_4`, `IDBL_4_TD`(139))
+  ,INDEX `obj_store__APQ__54_cre_user_index` (`cre_user`(64), `obj_def_id`(128), `tenant_id`)
 )
 ;
-/* drop/create OBJ_STORE_RB */
-DROP TABLE IF EXISTS `obj_store_rb__APQ__55`;
-CREATE TABLE `obj_store_rb__APQ__55` (
-  `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `rb_id` BIGINT(16) NULL,
-  `rb_date` DATETIME(3) NULL,
-  `rb_user` VARCHAR(64) NULL,
+/* drop/create OBJ_STORE */
+DROP TABLE IF EXISTS `obj_store__APQ__55`;
+CREATE TABLE `obj_store__APQ__55` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -13133,17 +13577,38 @@ CREATE TABLE `obj_store_rb__APQ__55` (
   ,`TS_32` DATETIME(3)
   ,`DBL_16` DOUBLE
   
-  ,PRIMARY KEY (`r_id`, `tenant_id`, `obj_def_id`)
-  ,INDEX `obj_store_rb___APQ__55index1` (`tenant_id`, `obj_def_id`(128), `rb_id`)
+  ,PRIMARY KEY (`tenant_id`, `obj_def_id`, `obj_id`, `obj_ver`, `pg_no`)
+  ,UNIQUE INDEX `obj_store__APQ__55_USTR_unique_1` (`USTR_1_TD`(139), `USTR_1`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__55_UNUM_unique_1` (`UNUM_1_TD`(139), `UNUM_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__55_UTS_unique_1` (`UTS_1_TD`(139), `UTS_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__55_UDBL_unique_1` (`UDBL_1_TD`(139), `UDBL_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__55_USTR_unique_2` (`USTR_2_TD`(139), `USTR_2`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__55_UNUM_unique_2` (`UNUM_2_TD`(139), `UNUM_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__55_UTS_unique_2` (`UTS_2_TD`(139), `UTS_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__55_UDBL_unique_2` (`UDBL_2_TD`(139), `UDBL_2`, `tenant_id`, `obj_def_id`(128))
+  ,INDEX `obj_store__APQ__55_ISTR_index_1` (`ISTR_1`(192), `ISTR_1_TD`(139))
+  ,INDEX `obj_store__APQ__55_INUM_index_1` (`INUM_1`, `INUM_1_TD`(139))
+  ,INDEX `obj_store__APQ__55_ITS_index_1` (`ITS_1`, `ITS_1_TD`(139))
+  ,INDEX `obj_store__APQ__55_IDBL_index_1` (`IDBL_1`, `IDBL_1_TD`(139))
+  ,INDEX `obj_store__APQ__55_ISTR_index_2` (`ISTR_2`(192), `ISTR_2_TD`(139))
+  ,INDEX `obj_store__APQ__55_INUM_index_2` (`INUM_2`, `INUM_2_TD`(139))
+  ,INDEX `obj_store__APQ__55_ITS_index_2` (`ITS_2`, `ITS_2_TD`(139))
+  ,INDEX `obj_store__APQ__55_IDBL_index_2` (`IDBL_2`, `IDBL_2_TD`(139))
+  ,INDEX `obj_store__APQ__55_ISTR_index_3` (`ISTR_3`(192), `ISTR_3_TD`(139))
+  ,INDEX `obj_store__APQ__55_ISTR_index_4` (`ISTR_4`(192), `ISTR_4_TD`(139))
+  ,INDEX `obj_store__APQ__55_INUM_index_3` (`INUM_3`, `INUM_3_TD`(139))
+  ,INDEX `obj_store__APQ__55_ITS_index_3` (`ITS_3`, `ITS_3_TD`(139))
+  ,INDEX `obj_store__APQ__55_IDBL_index_3` (`IDBL_3`, `IDBL_3_TD`(139))
+  ,INDEX `obj_store__APQ__55_ISTR_index_5` (`ISTR_5`(192), `ISTR_5_TD`(139))
+  ,INDEX `obj_store__APQ__55_INUM_index_4` (`INUM_4`, `INUM_4_TD`(139))
+  ,INDEX `obj_store__APQ__55_ITS_index_4` (`ITS_4`, `ITS_4_TD`(139))
+  ,INDEX `obj_store__APQ__55_IDBL_index_4` (`IDBL_4`, `IDBL_4_TD`(139))
+  ,INDEX `obj_store__APQ__55_cre_user_index` (`cre_user`(64), `obj_def_id`(128), `tenant_id`)
 )
 ;
-/* drop/create OBJ_STORE_RB */
-DROP TABLE IF EXISTS `obj_store_rb__APQ__56`;
-CREATE TABLE `obj_store_rb__APQ__56` (
-  `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `rb_id` BIGINT(16) NULL,
-  `rb_date` DATETIME(3) NULL,
-  `rb_user` VARCHAR(64) NULL,
+/* drop/create OBJ_STORE */
+DROP TABLE IF EXISTS `obj_store__APQ__56`;
+CREATE TABLE `obj_store__APQ__56` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -13355,17 +13820,38 @@ CREATE TABLE `obj_store_rb__APQ__56` (
   ,`TS_32` DATETIME(3)
   ,`DBL_16` DOUBLE
   
-  ,PRIMARY KEY (`r_id`, `tenant_id`, `obj_def_id`)
-  ,INDEX `obj_store_rb___APQ__56index1` (`tenant_id`, `obj_def_id`(128), `rb_id`)
+  ,PRIMARY KEY (`tenant_id`, `obj_def_id`, `obj_id`, `obj_ver`, `pg_no`)
+  ,UNIQUE INDEX `obj_store__APQ__56_USTR_unique_1` (`USTR_1_TD`(139), `USTR_1`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__56_UNUM_unique_1` (`UNUM_1_TD`(139), `UNUM_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__56_UTS_unique_1` (`UTS_1_TD`(139), `UTS_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__56_UDBL_unique_1` (`UDBL_1_TD`(139), `UDBL_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__56_USTR_unique_2` (`USTR_2_TD`(139), `USTR_2`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__56_UNUM_unique_2` (`UNUM_2_TD`(139), `UNUM_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__56_UTS_unique_2` (`UTS_2_TD`(139), `UTS_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__56_UDBL_unique_2` (`UDBL_2_TD`(139), `UDBL_2`, `tenant_id`, `obj_def_id`(128))
+  ,INDEX `obj_store__APQ__56_ISTR_index_1` (`ISTR_1`(192), `ISTR_1_TD`(139))
+  ,INDEX `obj_store__APQ__56_INUM_index_1` (`INUM_1`, `INUM_1_TD`(139))
+  ,INDEX `obj_store__APQ__56_ITS_index_1` (`ITS_1`, `ITS_1_TD`(139))
+  ,INDEX `obj_store__APQ__56_IDBL_index_1` (`IDBL_1`, `IDBL_1_TD`(139))
+  ,INDEX `obj_store__APQ__56_ISTR_index_2` (`ISTR_2`(192), `ISTR_2_TD`(139))
+  ,INDEX `obj_store__APQ__56_INUM_index_2` (`INUM_2`, `INUM_2_TD`(139))
+  ,INDEX `obj_store__APQ__56_ITS_index_2` (`ITS_2`, `ITS_2_TD`(139))
+  ,INDEX `obj_store__APQ__56_IDBL_index_2` (`IDBL_2`, `IDBL_2_TD`(139))
+  ,INDEX `obj_store__APQ__56_ISTR_index_3` (`ISTR_3`(192), `ISTR_3_TD`(139))
+  ,INDEX `obj_store__APQ__56_ISTR_index_4` (`ISTR_4`(192), `ISTR_4_TD`(139))
+  ,INDEX `obj_store__APQ__56_INUM_index_3` (`INUM_3`, `INUM_3_TD`(139))
+  ,INDEX `obj_store__APQ__56_ITS_index_3` (`ITS_3`, `ITS_3_TD`(139))
+  ,INDEX `obj_store__APQ__56_IDBL_index_3` (`IDBL_3`, `IDBL_3_TD`(139))
+  ,INDEX `obj_store__APQ__56_ISTR_index_5` (`ISTR_5`(192), `ISTR_5_TD`(139))
+  ,INDEX `obj_store__APQ__56_INUM_index_4` (`INUM_4`, `INUM_4_TD`(139))
+  ,INDEX `obj_store__APQ__56_ITS_index_4` (`ITS_4`, `ITS_4_TD`(139))
+  ,INDEX `obj_store__APQ__56_IDBL_index_4` (`IDBL_4`, `IDBL_4_TD`(139))
+  ,INDEX `obj_store__APQ__56_cre_user_index` (`cre_user`(64), `obj_def_id`(128), `tenant_id`)
 )
 ;
-/* drop/create OBJ_STORE_RB */
-DROP TABLE IF EXISTS `obj_store_rb__APQ__57`;
-CREATE TABLE `obj_store_rb__APQ__57` (
-  `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `rb_id` BIGINT(16) NULL,
-  `rb_date` DATETIME(3) NULL,
-  `rb_user` VARCHAR(64) NULL,
+/* drop/create OBJ_STORE */
+DROP TABLE IF EXISTS `obj_store__APQ__57`;
+CREATE TABLE `obj_store__APQ__57` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -13577,17 +14063,38 @@ CREATE TABLE `obj_store_rb__APQ__57` (
   ,`TS_32` DATETIME(3)
   ,`DBL_16` DOUBLE
   
-  ,PRIMARY KEY (`r_id`, `tenant_id`, `obj_def_id`)
-  ,INDEX `obj_store_rb___APQ__57index1` (`tenant_id`, `obj_def_id`(128), `rb_id`)
+  ,PRIMARY KEY (`tenant_id`, `obj_def_id`, `obj_id`, `obj_ver`, `pg_no`)
+  ,UNIQUE INDEX `obj_store__APQ__57_USTR_unique_1` (`USTR_1_TD`(139), `USTR_1`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__57_UNUM_unique_1` (`UNUM_1_TD`(139), `UNUM_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__57_UTS_unique_1` (`UTS_1_TD`(139), `UTS_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__57_UDBL_unique_1` (`UDBL_1_TD`(139), `UDBL_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__57_USTR_unique_2` (`USTR_2_TD`(139), `USTR_2`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__57_UNUM_unique_2` (`UNUM_2_TD`(139), `UNUM_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__57_UTS_unique_2` (`UTS_2_TD`(139), `UTS_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__57_UDBL_unique_2` (`UDBL_2_TD`(139), `UDBL_2`, `tenant_id`, `obj_def_id`(128))
+  ,INDEX `obj_store__APQ__57_ISTR_index_1` (`ISTR_1`(192), `ISTR_1_TD`(139))
+  ,INDEX `obj_store__APQ__57_INUM_index_1` (`INUM_1`, `INUM_1_TD`(139))
+  ,INDEX `obj_store__APQ__57_ITS_index_1` (`ITS_1`, `ITS_1_TD`(139))
+  ,INDEX `obj_store__APQ__57_IDBL_index_1` (`IDBL_1`, `IDBL_1_TD`(139))
+  ,INDEX `obj_store__APQ__57_ISTR_index_2` (`ISTR_2`(192), `ISTR_2_TD`(139))
+  ,INDEX `obj_store__APQ__57_INUM_index_2` (`INUM_2`, `INUM_2_TD`(139))
+  ,INDEX `obj_store__APQ__57_ITS_index_2` (`ITS_2`, `ITS_2_TD`(139))
+  ,INDEX `obj_store__APQ__57_IDBL_index_2` (`IDBL_2`, `IDBL_2_TD`(139))
+  ,INDEX `obj_store__APQ__57_ISTR_index_3` (`ISTR_3`(192), `ISTR_3_TD`(139))
+  ,INDEX `obj_store__APQ__57_ISTR_index_4` (`ISTR_4`(192), `ISTR_4_TD`(139))
+  ,INDEX `obj_store__APQ__57_INUM_index_3` (`INUM_3`, `INUM_3_TD`(139))
+  ,INDEX `obj_store__APQ__57_ITS_index_3` (`ITS_3`, `ITS_3_TD`(139))
+  ,INDEX `obj_store__APQ__57_IDBL_index_3` (`IDBL_3`, `IDBL_3_TD`(139))
+  ,INDEX `obj_store__APQ__57_ISTR_index_5` (`ISTR_5`(192), `ISTR_5_TD`(139))
+  ,INDEX `obj_store__APQ__57_INUM_index_4` (`INUM_4`, `INUM_4_TD`(139))
+  ,INDEX `obj_store__APQ__57_ITS_index_4` (`ITS_4`, `ITS_4_TD`(139))
+  ,INDEX `obj_store__APQ__57_IDBL_index_4` (`IDBL_4`, `IDBL_4_TD`(139))
+  ,INDEX `obj_store__APQ__57_cre_user_index` (`cre_user`(64), `obj_def_id`(128), `tenant_id`)
 )
 ;
-/* drop/create OBJ_STORE_RB */
-DROP TABLE IF EXISTS `obj_store_rb__APQ__58`;
-CREATE TABLE `obj_store_rb__APQ__58` (
-  `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `rb_id` BIGINT(16) NULL,
-  `rb_date` DATETIME(3) NULL,
-  `rb_user` VARCHAR(64) NULL,
+/* drop/create OBJ_STORE */
+DROP TABLE IF EXISTS `obj_store__APQ__58`;
+CREATE TABLE `obj_store__APQ__58` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -13799,17 +14306,38 @@ CREATE TABLE `obj_store_rb__APQ__58` (
   ,`TS_32` DATETIME(3)
   ,`DBL_16` DOUBLE
   
-  ,PRIMARY KEY (`r_id`, `tenant_id`, `obj_def_id`)
-  ,INDEX `obj_store_rb___APQ__58index1` (`tenant_id`, `obj_def_id`(128), `rb_id`)
+  ,PRIMARY KEY (`tenant_id`, `obj_def_id`, `obj_id`, `obj_ver`, `pg_no`)
+  ,UNIQUE INDEX `obj_store__APQ__58_USTR_unique_1` (`USTR_1_TD`(139), `USTR_1`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__58_UNUM_unique_1` (`UNUM_1_TD`(139), `UNUM_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__58_UTS_unique_1` (`UTS_1_TD`(139), `UTS_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__58_UDBL_unique_1` (`UDBL_1_TD`(139), `UDBL_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__58_USTR_unique_2` (`USTR_2_TD`(139), `USTR_2`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__58_UNUM_unique_2` (`UNUM_2_TD`(139), `UNUM_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__58_UTS_unique_2` (`UTS_2_TD`(139), `UTS_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__58_UDBL_unique_2` (`UDBL_2_TD`(139), `UDBL_2`, `tenant_id`, `obj_def_id`(128))
+  ,INDEX `obj_store__APQ__58_ISTR_index_1` (`ISTR_1`(192), `ISTR_1_TD`(139))
+  ,INDEX `obj_store__APQ__58_INUM_index_1` (`INUM_1`, `INUM_1_TD`(139))
+  ,INDEX `obj_store__APQ__58_ITS_index_1` (`ITS_1`, `ITS_1_TD`(139))
+  ,INDEX `obj_store__APQ__58_IDBL_index_1` (`IDBL_1`, `IDBL_1_TD`(139))
+  ,INDEX `obj_store__APQ__58_ISTR_index_2` (`ISTR_2`(192), `ISTR_2_TD`(139))
+  ,INDEX `obj_store__APQ__58_INUM_index_2` (`INUM_2`, `INUM_2_TD`(139))
+  ,INDEX `obj_store__APQ__58_ITS_index_2` (`ITS_2`, `ITS_2_TD`(139))
+  ,INDEX `obj_store__APQ__58_IDBL_index_2` (`IDBL_2`, `IDBL_2_TD`(139))
+  ,INDEX `obj_store__APQ__58_ISTR_index_3` (`ISTR_3`(192), `ISTR_3_TD`(139))
+  ,INDEX `obj_store__APQ__58_ISTR_index_4` (`ISTR_4`(192), `ISTR_4_TD`(139))
+  ,INDEX `obj_store__APQ__58_INUM_index_3` (`INUM_3`, `INUM_3_TD`(139))
+  ,INDEX `obj_store__APQ__58_ITS_index_3` (`ITS_3`, `ITS_3_TD`(139))
+  ,INDEX `obj_store__APQ__58_IDBL_index_3` (`IDBL_3`, `IDBL_3_TD`(139))
+  ,INDEX `obj_store__APQ__58_ISTR_index_5` (`ISTR_5`(192), `ISTR_5_TD`(139))
+  ,INDEX `obj_store__APQ__58_INUM_index_4` (`INUM_4`, `INUM_4_TD`(139))
+  ,INDEX `obj_store__APQ__58_ITS_index_4` (`ITS_4`, `ITS_4_TD`(139))
+  ,INDEX `obj_store__APQ__58_IDBL_index_4` (`IDBL_4`, `IDBL_4_TD`(139))
+  ,INDEX `obj_store__APQ__58_cre_user_index` (`cre_user`(64), `obj_def_id`(128), `tenant_id`)
 )
 ;
-/* drop/create OBJ_STORE_RB */
-DROP TABLE IF EXISTS `obj_store_rb__APQ__59`;
-CREATE TABLE `obj_store_rb__APQ__59` (
-  `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `rb_id` BIGINT(16) NULL,
-  `rb_date` DATETIME(3) NULL,
-  `rb_user` VARCHAR(64) NULL,
+/* drop/create OBJ_STORE */
+DROP TABLE IF EXISTS `obj_store__APQ__59`;
+CREATE TABLE `obj_store__APQ__59` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -14021,17 +14549,38 @@ CREATE TABLE `obj_store_rb__APQ__59` (
   ,`TS_32` DATETIME(3)
   ,`DBL_16` DOUBLE
   
-  ,PRIMARY KEY (`r_id`, `tenant_id`, `obj_def_id`)
-  ,INDEX `obj_store_rb___APQ__59index1` (`tenant_id`, `obj_def_id`(128), `rb_id`)
+  ,PRIMARY KEY (`tenant_id`, `obj_def_id`, `obj_id`, `obj_ver`, `pg_no`)
+  ,UNIQUE INDEX `obj_store__APQ__59_USTR_unique_1` (`USTR_1_TD`(139), `USTR_1`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__59_UNUM_unique_1` (`UNUM_1_TD`(139), `UNUM_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__59_UTS_unique_1` (`UTS_1_TD`(139), `UTS_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__59_UDBL_unique_1` (`UDBL_1_TD`(139), `UDBL_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__59_USTR_unique_2` (`USTR_2_TD`(139), `USTR_2`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__59_UNUM_unique_2` (`UNUM_2_TD`(139), `UNUM_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__59_UTS_unique_2` (`UTS_2_TD`(139), `UTS_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__59_UDBL_unique_2` (`UDBL_2_TD`(139), `UDBL_2`, `tenant_id`, `obj_def_id`(128))
+  ,INDEX `obj_store__APQ__59_ISTR_index_1` (`ISTR_1`(192), `ISTR_1_TD`(139))
+  ,INDEX `obj_store__APQ__59_INUM_index_1` (`INUM_1`, `INUM_1_TD`(139))
+  ,INDEX `obj_store__APQ__59_ITS_index_1` (`ITS_1`, `ITS_1_TD`(139))
+  ,INDEX `obj_store__APQ__59_IDBL_index_1` (`IDBL_1`, `IDBL_1_TD`(139))
+  ,INDEX `obj_store__APQ__59_ISTR_index_2` (`ISTR_2`(192), `ISTR_2_TD`(139))
+  ,INDEX `obj_store__APQ__59_INUM_index_2` (`INUM_2`, `INUM_2_TD`(139))
+  ,INDEX `obj_store__APQ__59_ITS_index_2` (`ITS_2`, `ITS_2_TD`(139))
+  ,INDEX `obj_store__APQ__59_IDBL_index_2` (`IDBL_2`, `IDBL_2_TD`(139))
+  ,INDEX `obj_store__APQ__59_ISTR_index_3` (`ISTR_3`(192), `ISTR_3_TD`(139))
+  ,INDEX `obj_store__APQ__59_ISTR_index_4` (`ISTR_4`(192), `ISTR_4_TD`(139))
+  ,INDEX `obj_store__APQ__59_INUM_index_3` (`INUM_3`, `INUM_3_TD`(139))
+  ,INDEX `obj_store__APQ__59_ITS_index_3` (`ITS_3`, `ITS_3_TD`(139))
+  ,INDEX `obj_store__APQ__59_IDBL_index_3` (`IDBL_3`, `IDBL_3_TD`(139))
+  ,INDEX `obj_store__APQ__59_ISTR_index_5` (`ISTR_5`(192), `ISTR_5_TD`(139))
+  ,INDEX `obj_store__APQ__59_INUM_index_4` (`INUM_4`, `INUM_4_TD`(139))
+  ,INDEX `obj_store__APQ__59_ITS_index_4` (`ITS_4`, `ITS_4_TD`(139))
+  ,INDEX `obj_store__APQ__59_IDBL_index_4` (`IDBL_4`, `IDBL_4_TD`(139))
+  ,INDEX `obj_store__APQ__59_cre_user_index` (`cre_user`(64), `obj_def_id`(128), `tenant_id`)
 )
 ;
-/* drop/create OBJ_STORE_RB */
-DROP TABLE IF EXISTS `obj_store_rb__APQ__60`;
-CREATE TABLE `obj_store_rb__APQ__60` (
-  `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `rb_id` BIGINT(16) NULL,
-  `rb_date` DATETIME(3) NULL,
-  `rb_user` VARCHAR(64) NULL,
+/* drop/create OBJ_STORE */
+DROP TABLE IF EXISTS `obj_store__APQ__60`;
+CREATE TABLE `obj_store__APQ__60` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -14243,17 +14792,38 @@ CREATE TABLE `obj_store_rb__APQ__60` (
   ,`TS_32` DATETIME(3)
   ,`DBL_16` DOUBLE
   
-  ,PRIMARY KEY (`r_id`, `tenant_id`, `obj_def_id`)
-  ,INDEX `obj_store_rb___APQ__60index1` (`tenant_id`, `obj_def_id`(128), `rb_id`)
+  ,PRIMARY KEY (`tenant_id`, `obj_def_id`, `obj_id`, `obj_ver`, `pg_no`)
+  ,UNIQUE INDEX `obj_store__APQ__60_USTR_unique_1` (`USTR_1_TD`(139), `USTR_1`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__60_UNUM_unique_1` (`UNUM_1_TD`(139), `UNUM_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__60_UTS_unique_1` (`UTS_1_TD`(139), `UTS_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__60_UDBL_unique_1` (`UDBL_1_TD`(139), `UDBL_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__60_USTR_unique_2` (`USTR_2_TD`(139), `USTR_2`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__60_UNUM_unique_2` (`UNUM_2_TD`(139), `UNUM_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__60_UTS_unique_2` (`UTS_2_TD`(139), `UTS_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__60_UDBL_unique_2` (`UDBL_2_TD`(139), `UDBL_2`, `tenant_id`, `obj_def_id`(128))
+  ,INDEX `obj_store__APQ__60_ISTR_index_1` (`ISTR_1`(192), `ISTR_1_TD`(139))
+  ,INDEX `obj_store__APQ__60_INUM_index_1` (`INUM_1`, `INUM_1_TD`(139))
+  ,INDEX `obj_store__APQ__60_ITS_index_1` (`ITS_1`, `ITS_1_TD`(139))
+  ,INDEX `obj_store__APQ__60_IDBL_index_1` (`IDBL_1`, `IDBL_1_TD`(139))
+  ,INDEX `obj_store__APQ__60_ISTR_index_2` (`ISTR_2`(192), `ISTR_2_TD`(139))
+  ,INDEX `obj_store__APQ__60_INUM_index_2` (`INUM_2`, `INUM_2_TD`(139))
+  ,INDEX `obj_store__APQ__60_ITS_index_2` (`ITS_2`, `ITS_2_TD`(139))
+  ,INDEX `obj_store__APQ__60_IDBL_index_2` (`IDBL_2`, `IDBL_2_TD`(139))
+  ,INDEX `obj_store__APQ__60_ISTR_index_3` (`ISTR_3`(192), `ISTR_3_TD`(139))
+  ,INDEX `obj_store__APQ__60_ISTR_index_4` (`ISTR_4`(192), `ISTR_4_TD`(139))
+  ,INDEX `obj_store__APQ__60_INUM_index_3` (`INUM_3`, `INUM_3_TD`(139))
+  ,INDEX `obj_store__APQ__60_ITS_index_3` (`ITS_3`, `ITS_3_TD`(139))
+  ,INDEX `obj_store__APQ__60_IDBL_index_3` (`IDBL_3`, `IDBL_3_TD`(139))
+  ,INDEX `obj_store__APQ__60_ISTR_index_5` (`ISTR_5`(192), `ISTR_5_TD`(139))
+  ,INDEX `obj_store__APQ__60_INUM_index_4` (`INUM_4`, `INUM_4_TD`(139))
+  ,INDEX `obj_store__APQ__60_ITS_index_4` (`ITS_4`, `ITS_4_TD`(139))
+  ,INDEX `obj_store__APQ__60_IDBL_index_4` (`IDBL_4`, `IDBL_4_TD`(139))
+  ,INDEX `obj_store__APQ__60_cre_user_index` (`cre_user`(64), `obj_def_id`(128), `tenant_id`)
 )
 ;
-/* drop/create OBJ_STORE_RB */
-DROP TABLE IF EXISTS `obj_store_rb__APQ__61`;
-CREATE TABLE `obj_store_rb__APQ__61` (
-  `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `rb_id` BIGINT(16) NULL,
-  `rb_date` DATETIME(3) NULL,
-  `rb_user` VARCHAR(64) NULL,
+/* drop/create OBJ_STORE */
+DROP TABLE IF EXISTS `obj_store__APQ__61`;
+CREATE TABLE `obj_store__APQ__61` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -14465,17 +15035,38 @@ CREATE TABLE `obj_store_rb__APQ__61` (
   ,`TS_32` DATETIME(3)
   ,`DBL_16` DOUBLE
   
-  ,PRIMARY KEY (`r_id`, `tenant_id`, `obj_def_id`)
-  ,INDEX `obj_store_rb___APQ__61index1` (`tenant_id`, `obj_def_id`(128), `rb_id`)
+  ,PRIMARY KEY (`tenant_id`, `obj_def_id`, `obj_id`, `obj_ver`, `pg_no`)
+  ,UNIQUE INDEX `obj_store__APQ__61_USTR_unique_1` (`USTR_1_TD`(139), `USTR_1`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__61_UNUM_unique_1` (`UNUM_1_TD`(139), `UNUM_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__61_UTS_unique_1` (`UTS_1_TD`(139), `UTS_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__61_UDBL_unique_1` (`UDBL_1_TD`(139), `UDBL_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__61_USTR_unique_2` (`USTR_2_TD`(139), `USTR_2`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__61_UNUM_unique_2` (`UNUM_2_TD`(139), `UNUM_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__61_UTS_unique_2` (`UTS_2_TD`(139), `UTS_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__61_UDBL_unique_2` (`UDBL_2_TD`(139), `UDBL_2`, `tenant_id`, `obj_def_id`(128))
+  ,INDEX `obj_store__APQ__61_ISTR_index_1` (`ISTR_1`(192), `ISTR_1_TD`(139))
+  ,INDEX `obj_store__APQ__61_INUM_index_1` (`INUM_1`, `INUM_1_TD`(139))
+  ,INDEX `obj_store__APQ__61_ITS_index_1` (`ITS_1`, `ITS_1_TD`(139))
+  ,INDEX `obj_store__APQ__61_IDBL_index_1` (`IDBL_1`, `IDBL_1_TD`(139))
+  ,INDEX `obj_store__APQ__61_ISTR_index_2` (`ISTR_2`(192), `ISTR_2_TD`(139))
+  ,INDEX `obj_store__APQ__61_INUM_index_2` (`INUM_2`, `INUM_2_TD`(139))
+  ,INDEX `obj_store__APQ__61_ITS_index_2` (`ITS_2`, `ITS_2_TD`(139))
+  ,INDEX `obj_store__APQ__61_IDBL_index_2` (`IDBL_2`, `IDBL_2_TD`(139))
+  ,INDEX `obj_store__APQ__61_ISTR_index_3` (`ISTR_3`(192), `ISTR_3_TD`(139))
+  ,INDEX `obj_store__APQ__61_ISTR_index_4` (`ISTR_4`(192), `ISTR_4_TD`(139))
+  ,INDEX `obj_store__APQ__61_INUM_index_3` (`INUM_3`, `INUM_3_TD`(139))
+  ,INDEX `obj_store__APQ__61_ITS_index_3` (`ITS_3`, `ITS_3_TD`(139))
+  ,INDEX `obj_store__APQ__61_IDBL_index_3` (`IDBL_3`, `IDBL_3_TD`(139))
+  ,INDEX `obj_store__APQ__61_ISTR_index_5` (`ISTR_5`(192), `ISTR_5_TD`(139))
+  ,INDEX `obj_store__APQ__61_INUM_index_4` (`INUM_4`, `INUM_4_TD`(139))
+  ,INDEX `obj_store__APQ__61_ITS_index_4` (`ITS_4`, `ITS_4_TD`(139))
+  ,INDEX `obj_store__APQ__61_IDBL_index_4` (`IDBL_4`, `IDBL_4_TD`(139))
+  ,INDEX `obj_store__APQ__61_cre_user_index` (`cre_user`(64), `obj_def_id`(128), `tenant_id`)
 )
 ;
-/* drop/create OBJ_STORE_RB */
-DROP TABLE IF EXISTS `obj_store_rb__APQ__62`;
-CREATE TABLE `obj_store_rb__APQ__62` (
-  `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `rb_id` BIGINT(16) NULL,
-  `rb_date` DATETIME(3) NULL,
-  `rb_user` VARCHAR(64) NULL,
+/* drop/create OBJ_STORE */
+DROP TABLE IF EXISTS `obj_store__APQ__62`;
+CREATE TABLE `obj_store__APQ__62` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -14687,17 +15278,38 @@ CREATE TABLE `obj_store_rb__APQ__62` (
   ,`TS_32` DATETIME(3)
   ,`DBL_16` DOUBLE
   
-  ,PRIMARY KEY (`r_id`, `tenant_id`, `obj_def_id`)
-  ,INDEX `obj_store_rb___APQ__62index1` (`tenant_id`, `obj_def_id`(128), `rb_id`)
+  ,PRIMARY KEY (`tenant_id`, `obj_def_id`, `obj_id`, `obj_ver`, `pg_no`)
+  ,UNIQUE INDEX `obj_store__APQ__62_USTR_unique_1` (`USTR_1_TD`(139), `USTR_1`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__62_UNUM_unique_1` (`UNUM_1_TD`(139), `UNUM_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__62_UTS_unique_1` (`UTS_1_TD`(139), `UTS_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__62_UDBL_unique_1` (`UDBL_1_TD`(139), `UDBL_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__62_USTR_unique_2` (`USTR_2_TD`(139), `USTR_2`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__62_UNUM_unique_2` (`UNUM_2_TD`(139), `UNUM_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__62_UTS_unique_2` (`UTS_2_TD`(139), `UTS_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__62_UDBL_unique_2` (`UDBL_2_TD`(139), `UDBL_2`, `tenant_id`, `obj_def_id`(128))
+  ,INDEX `obj_store__APQ__62_ISTR_index_1` (`ISTR_1`(192), `ISTR_1_TD`(139))
+  ,INDEX `obj_store__APQ__62_INUM_index_1` (`INUM_1`, `INUM_1_TD`(139))
+  ,INDEX `obj_store__APQ__62_ITS_index_1` (`ITS_1`, `ITS_1_TD`(139))
+  ,INDEX `obj_store__APQ__62_IDBL_index_1` (`IDBL_1`, `IDBL_1_TD`(139))
+  ,INDEX `obj_store__APQ__62_ISTR_index_2` (`ISTR_2`(192), `ISTR_2_TD`(139))
+  ,INDEX `obj_store__APQ__62_INUM_index_2` (`INUM_2`, `INUM_2_TD`(139))
+  ,INDEX `obj_store__APQ__62_ITS_index_2` (`ITS_2`, `ITS_2_TD`(139))
+  ,INDEX `obj_store__APQ__62_IDBL_index_2` (`IDBL_2`, `IDBL_2_TD`(139))
+  ,INDEX `obj_store__APQ__62_ISTR_index_3` (`ISTR_3`(192), `ISTR_3_TD`(139))
+  ,INDEX `obj_store__APQ__62_ISTR_index_4` (`ISTR_4`(192), `ISTR_4_TD`(139))
+  ,INDEX `obj_store__APQ__62_INUM_index_3` (`INUM_3`, `INUM_3_TD`(139))
+  ,INDEX `obj_store__APQ__62_ITS_index_3` (`ITS_3`, `ITS_3_TD`(139))
+  ,INDEX `obj_store__APQ__62_IDBL_index_3` (`IDBL_3`, `IDBL_3_TD`(139))
+  ,INDEX `obj_store__APQ__62_ISTR_index_5` (`ISTR_5`(192), `ISTR_5_TD`(139))
+  ,INDEX `obj_store__APQ__62_INUM_index_4` (`INUM_4`, `INUM_4_TD`(139))
+  ,INDEX `obj_store__APQ__62_ITS_index_4` (`ITS_4`, `ITS_4_TD`(139))
+  ,INDEX `obj_store__APQ__62_IDBL_index_4` (`IDBL_4`, `IDBL_4_TD`(139))
+  ,INDEX `obj_store__APQ__62_cre_user_index` (`cre_user`(64), `obj_def_id`(128), `tenant_id`)
 )
 ;
-/* drop/create OBJ_STORE_RB */
-DROP TABLE IF EXISTS `obj_store_rb__APQ__63`;
-CREATE TABLE `obj_store_rb__APQ__63` (
-  `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `rb_id` BIGINT(16) NULL,
-  `rb_date` DATETIME(3) NULL,
-  `rb_user` VARCHAR(64) NULL,
+/* drop/create OBJ_STORE */
+DROP TABLE IF EXISTS `obj_store__APQ__63`;
+CREATE TABLE `obj_store__APQ__63` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -14909,17 +15521,38 @@ CREATE TABLE `obj_store_rb__APQ__63` (
   ,`TS_32` DATETIME(3)
   ,`DBL_16` DOUBLE
   
-  ,PRIMARY KEY (`r_id`, `tenant_id`, `obj_def_id`)
-  ,INDEX `obj_store_rb___APQ__63index1` (`tenant_id`, `obj_def_id`(128), `rb_id`)
+  ,PRIMARY KEY (`tenant_id`, `obj_def_id`, `obj_id`, `obj_ver`, `pg_no`)
+  ,UNIQUE INDEX `obj_store__APQ__63_USTR_unique_1` (`USTR_1_TD`(139), `USTR_1`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__63_UNUM_unique_1` (`UNUM_1_TD`(139), `UNUM_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__63_UTS_unique_1` (`UTS_1_TD`(139), `UTS_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__63_UDBL_unique_1` (`UDBL_1_TD`(139), `UDBL_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__63_USTR_unique_2` (`USTR_2_TD`(139), `USTR_2`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__63_UNUM_unique_2` (`UNUM_2_TD`(139), `UNUM_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__63_UTS_unique_2` (`UTS_2_TD`(139), `UTS_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__63_UDBL_unique_2` (`UDBL_2_TD`(139), `UDBL_2`, `tenant_id`, `obj_def_id`(128))
+  ,INDEX `obj_store__APQ__63_ISTR_index_1` (`ISTR_1`(192), `ISTR_1_TD`(139))
+  ,INDEX `obj_store__APQ__63_INUM_index_1` (`INUM_1`, `INUM_1_TD`(139))
+  ,INDEX `obj_store__APQ__63_ITS_index_1` (`ITS_1`, `ITS_1_TD`(139))
+  ,INDEX `obj_store__APQ__63_IDBL_index_1` (`IDBL_1`, `IDBL_1_TD`(139))
+  ,INDEX `obj_store__APQ__63_ISTR_index_2` (`ISTR_2`(192), `ISTR_2_TD`(139))
+  ,INDEX `obj_store__APQ__63_INUM_index_2` (`INUM_2`, `INUM_2_TD`(139))
+  ,INDEX `obj_store__APQ__63_ITS_index_2` (`ITS_2`, `ITS_2_TD`(139))
+  ,INDEX `obj_store__APQ__63_IDBL_index_2` (`IDBL_2`, `IDBL_2_TD`(139))
+  ,INDEX `obj_store__APQ__63_ISTR_index_3` (`ISTR_3`(192), `ISTR_3_TD`(139))
+  ,INDEX `obj_store__APQ__63_ISTR_index_4` (`ISTR_4`(192), `ISTR_4_TD`(139))
+  ,INDEX `obj_store__APQ__63_INUM_index_3` (`INUM_3`, `INUM_3_TD`(139))
+  ,INDEX `obj_store__APQ__63_ITS_index_3` (`ITS_3`, `ITS_3_TD`(139))
+  ,INDEX `obj_store__APQ__63_IDBL_index_3` (`IDBL_3`, `IDBL_3_TD`(139))
+  ,INDEX `obj_store__APQ__63_ISTR_index_5` (`ISTR_5`(192), `ISTR_5_TD`(139))
+  ,INDEX `obj_store__APQ__63_INUM_index_4` (`INUM_4`, `INUM_4_TD`(139))
+  ,INDEX `obj_store__APQ__63_ITS_index_4` (`ITS_4`, `ITS_4_TD`(139))
+  ,INDEX `obj_store__APQ__63_IDBL_index_4` (`IDBL_4`, `IDBL_4_TD`(139))
+  ,INDEX `obj_store__APQ__63_cre_user_index` (`cre_user`(64), `obj_def_id`(128), `tenant_id`)
 )
 ;
-/* drop/create OBJ_STORE_RB */
-DROP TABLE IF EXISTS `obj_store_rb__APQ__64`;
-CREATE TABLE `obj_store_rb__APQ__64` (
-  `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `rb_id` BIGINT(16) NULL,
-  `rb_date` DATETIME(3) NULL,
-  `rb_user` VARCHAR(64) NULL,
+/* drop/create OBJ_STORE */
+DROP TABLE IF EXISTS `obj_store__APQ__64`;
+CREATE TABLE `obj_store__APQ__64` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -15131,17 +15764,38 @@ CREATE TABLE `obj_store_rb__APQ__64` (
   ,`TS_32` DATETIME(3)
   ,`DBL_16` DOUBLE
   
-  ,PRIMARY KEY (`r_id`, `tenant_id`, `obj_def_id`)
-  ,INDEX `obj_store_rb___APQ__64index1` (`tenant_id`, `obj_def_id`(128), `rb_id`)
+  ,PRIMARY KEY (`tenant_id`, `obj_def_id`, `obj_id`, `obj_ver`, `pg_no`)
+  ,UNIQUE INDEX `obj_store__APQ__64_USTR_unique_1` (`USTR_1_TD`(139), `USTR_1`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__64_UNUM_unique_1` (`UNUM_1_TD`(139), `UNUM_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__64_UTS_unique_1` (`UTS_1_TD`(139), `UTS_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__64_UDBL_unique_1` (`UDBL_1_TD`(139), `UDBL_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__64_USTR_unique_2` (`USTR_2_TD`(139), `USTR_2`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__64_UNUM_unique_2` (`UNUM_2_TD`(139), `UNUM_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__64_UTS_unique_2` (`UTS_2_TD`(139), `UTS_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__64_UDBL_unique_2` (`UDBL_2_TD`(139), `UDBL_2`, `tenant_id`, `obj_def_id`(128))
+  ,INDEX `obj_store__APQ__64_ISTR_index_1` (`ISTR_1`(192), `ISTR_1_TD`(139))
+  ,INDEX `obj_store__APQ__64_INUM_index_1` (`INUM_1`, `INUM_1_TD`(139))
+  ,INDEX `obj_store__APQ__64_ITS_index_1` (`ITS_1`, `ITS_1_TD`(139))
+  ,INDEX `obj_store__APQ__64_IDBL_index_1` (`IDBL_1`, `IDBL_1_TD`(139))
+  ,INDEX `obj_store__APQ__64_ISTR_index_2` (`ISTR_2`(192), `ISTR_2_TD`(139))
+  ,INDEX `obj_store__APQ__64_INUM_index_2` (`INUM_2`, `INUM_2_TD`(139))
+  ,INDEX `obj_store__APQ__64_ITS_index_2` (`ITS_2`, `ITS_2_TD`(139))
+  ,INDEX `obj_store__APQ__64_IDBL_index_2` (`IDBL_2`, `IDBL_2_TD`(139))
+  ,INDEX `obj_store__APQ__64_ISTR_index_3` (`ISTR_3`(192), `ISTR_3_TD`(139))
+  ,INDEX `obj_store__APQ__64_ISTR_index_4` (`ISTR_4`(192), `ISTR_4_TD`(139))
+  ,INDEX `obj_store__APQ__64_INUM_index_3` (`INUM_3`, `INUM_3_TD`(139))
+  ,INDEX `obj_store__APQ__64_ITS_index_3` (`ITS_3`, `ITS_3_TD`(139))
+  ,INDEX `obj_store__APQ__64_IDBL_index_3` (`IDBL_3`, `IDBL_3_TD`(139))
+  ,INDEX `obj_store__APQ__64_ISTR_index_5` (`ISTR_5`(192), `ISTR_5_TD`(139))
+  ,INDEX `obj_store__APQ__64_INUM_index_4` (`INUM_4`, `INUM_4_TD`(139))
+  ,INDEX `obj_store__APQ__64_ITS_index_4` (`ITS_4`, `ITS_4_TD`(139))
+  ,INDEX `obj_store__APQ__64_IDBL_index_4` (`IDBL_4`, `IDBL_4_TD`(139))
+  ,INDEX `obj_store__APQ__64_cre_user_index` (`cre_user`(64), `obj_def_id`(128), `tenant_id`)
 )
 ;
-/* drop/create OBJ_STORE_RB */
-DROP TABLE IF EXISTS `obj_store_rb__APQ__65`;
-CREATE TABLE `obj_store_rb__APQ__65` (
-  `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `rb_id` BIGINT(16) NULL,
-  `rb_date` DATETIME(3) NULL,
-  `rb_user` VARCHAR(64) NULL,
+/* drop/create OBJ_STORE */
+DROP TABLE IF EXISTS `obj_store__APQ__65`;
+CREATE TABLE `obj_store__APQ__65` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -15353,17 +16007,38 @@ CREATE TABLE `obj_store_rb__APQ__65` (
   ,`TS_32` DATETIME(3)
   ,`DBL_16` DOUBLE
   
-  ,PRIMARY KEY (`r_id`, `tenant_id`, `obj_def_id`)
-  ,INDEX `obj_store_rb___APQ__65index1` (`tenant_id`, `obj_def_id`(128), `rb_id`)
+  ,PRIMARY KEY (`tenant_id`, `obj_def_id`, `obj_id`, `obj_ver`, `pg_no`)
+  ,UNIQUE INDEX `obj_store__APQ__65_USTR_unique_1` (`USTR_1_TD`(139), `USTR_1`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__65_UNUM_unique_1` (`UNUM_1_TD`(139), `UNUM_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__65_UTS_unique_1` (`UTS_1_TD`(139), `UTS_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__65_UDBL_unique_1` (`UDBL_1_TD`(139), `UDBL_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__65_USTR_unique_2` (`USTR_2_TD`(139), `USTR_2`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__65_UNUM_unique_2` (`UNUM_2_TD`(139), `UNUM_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__65_UTS_unique_2` (`UTS_2_TD`(139), `UTS_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__65_UDBL_unique_2` (`UDBL_2_TD`(139), `UDBL_2`, `tenant_id`, `obj_def_id`(128))
+  ,INDEX `obj_store__APQ__65_ISTR_index_1` (`ISTR_1`(192), `ISTR_1_TD`(139))
+  ,INDEX `obj_store__APQ__65_INUM_index_1` (`INUM_1`, `INUM_1_TD`(139))
+  ,INDEX `obj_store__APQ__65_ITS_index_1` (`ITS_1`, `ITS_1_TD`(139))
+  ,INDEX `obj_store__APQ__65_IDBL_index_1` (`IDBL_1`, `IDBL_1_TD`(139))
+  ,INDEX `obj_store__APQ__65_ISTR_index_2` (`ISTR_2`(192), `ISTR_2_TD`(139))
+  ,INDEX `obj_store__APQ__65_INUM_index_2` (`INUM_2`, `INUM_2_TD`(139))
+  ,INDEX `obj_store__APQ__65_ITS_index_2` (`ITS_2`, `ITS_2_TD`(139))
+  ,INDEX `obj_store__APQ__65_IDBL_index_2` (`IDBL_2`, `IDBL_2_TD`(139))
+  ,INDEX `obj_store__APQ__65_ISTR_index_3` (`ISTR_3`(192), `ISTR_3_TD`(139))
+  ,INDEX `obj_store__APQ__65_ISTR_index_4` (`ISTR_4`(192), `ISTR_4_TD`(139))
+  ,INDEX `obj_store__APQ__65_INUM_index_3` (`INUM_3`, `INUM_3_TD`(139))
+  ,INDEX `obj_store__APQ__65_ITS_index_3` (`ITS_3`, `ITS_3_TD`(139))
+  ,INDEX `obj_store__APQ__65_IDBL_index_3` (`IDBL_3`, `IDBL_3_TD`(139))
+  ,INDEX `obj_store__APQ__65_ISTR_index_5` (`ISTR_5`(192), `ISTR_5_TD`(139))
+  ,INDEX `obj_store__APQ__65_INUM_index_4` (`INUM_4`, `INUM_4_TD`(139))
+  ,INDEX `obj_store__APQ__65_ITS_index_4` (`ITS_4`, `ITS_4_TD`(139))
+  ,INDEX `obj_store__APQ__65_IDBL_index_4` (`IDBL_4`, `IDBL_4_TD`(139))
+  ,INDEX `obj_store__APQ__65_cre_user_index` (`cre_user`(64), `obj_def_id`(128), `tenant_id`)
 )
 ;
-/* drop/create OBJ_STORE_RB */
-DROP TABLE IF EXISTS `obj_store_rb__APQ__66`;
-CREATE TABLE `obj_store_rb__APQ__66` (
-  `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `rb_id` BIGINT(16) NULL,
-  `rb_date` DATETIME(3) NULL,
-  `rb_user` VARCHAR(64) NULL,
+/* drop/create OBJ_STORE */
+DROP TABLE IF EXISTS `obj_store__APQ__66`;
+CREATE TABLE `obj_store__APQ__66` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -15575,17 +16250,38 @@ CREATE TABLE `obj_store_rb__APQ__66` (
   ,`TS_32` DATETIME(3)
   ,`DBL_16` DOUBLE
   
-  ,PRIMARY KEY (`r_id`, `tenant_id`, `obj_def_id`)
-  ,INDEX `obj_store_rb___APQ__66index1` (`tenant_id`, `obj_def_id`(128), `rb_id`)
+  ,PRIMARY KEY (`tenant_id`, `obj_def_id`, `obj_id`, `obj_ver`, `pg_no`)
+  ,UNIQUE INDEX `obj_store__APQ__66_USTR_unique_1` (`USTR_1_TD`(139), `USTR_1`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__66_UNUM_unique_1` (`UNUM_1_TD`(139), `UNUM_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__66_UTS_unique_1` (`UTS_1_TD`(139), `UTS_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__66_UDBL_unique_1` (`UDBL_1_TD`(139), `UDBL_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__66_USTR_unique_2` (`USTR_2_TD`(139), `USTR_2`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__66_UNUM_unique_2` (`UNUM_2_TD`(139), `UNUM_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__66_UTS_unique_2` (`UTS_2_TD`(139), `UTS_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__66_UDBL_unique_2` (`UDBL_2_TD`(139), `UDBL_2`, `tenant_id`, `obj_def_id`(128))
+  ,INDEX `obj_store__APQ__66_ISTR_index_1` (`ISTR_1`(192), `ISTR_1_TD`(139))
+  ,INDEX `obj_store__APQ__66_INUM_index_1` (`INUM_1`, `INUM_1_TD`(139))
+  ,INDEX `obj_store__APQ__66_ITS_index_1` (`ITS_1`, `ITS_1_TD`(139))
+  ,INDEX `obj_store__APQ__66_IDBL_index_1` (`IDBL_1`, `IDBL_1_TD`(139))
+  ,INDEX `obj_store__APQ__66_ISTR_index_2` (`ISTR_2`(192), `ISTR_2_TD`(139))
+  ,INDEX `obj_store__APQ__66_INUM_index_2` (`INUM_2`, `INUM_2_TD`(139))
+  ,INDEX `obj_store__APQ__66_ITS_index_2` (`ITS_2`, `ITS_2_TD`(139))
+  ,INDEX `obj_store__APQ__66_IDBL_index_2` (`IDBL_2`, `IDBL_2_TD`(139))
+  ,INDEX `obj_store__APQ__66_ISTR_index_3` (`ISTR_3`(192), `ISTR_3_TD`(139))
+  ,INDEX `obj_store__APQ__66_ISTR_index_4` (`ISTR_4`(192), `ISTR_4_TD`(139))
+  ,INDEX `obj_store__APQ__66_INUM_index_3` (`INUM_3`, `INUM_3_TD`(139))
+  ,INDEX `obj_store__APQ__66_ITS_index_3` (`ITS_3`, `ITS_3_TD`(139))
+  ,INDEX `obj_store__APQ__66_IDBL_index_3` (`IDBL_3`, `IDBL_3_TD`(139))
+  ,INDEX `obj_store__APQ__66_ISTR_index_5` (`ISTR_5`(192), `ISTR_5_TD`(139))
+  ,INDEX `obj_store__APQ__66_INUM_index_4` (`INUM_4`, `INUM_4_TD`(139))
+  ,INDEX `obj_store__APQ__66_ITS_index_4` (`ITS_4`, `ITS_4_TD`(139))
+  ,INDEX `obj_store__APQ__66_IDBL_index_4` (`IDBL_4`, `IDBL_4_TD`(139))
+  ,INDEX `obj_store__APQ__66_cre_user_index` (`cre_user`(64), `obj_def_id`(128), `tenant_id`)
 )
 ;
-/* drop/create OBJ_STORE_RB */
-DROP TABLE IF EXISTS `obj_store_rb__APQ__67`;
-CREATE TABLE `obj_store_rb__APQ__67` (
-  `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `rb_id` BIGINT(16) NULL,
-  `rb_date` DATETIME(3) NULL,
-  `rb_user` VARCHAR(64) NULL,
+/* drop/create OBJ_STORE */
+DROP TABLE IF EXISTS `obj_store__APQ__67`;
+CREATE TABLE `obj_store__APQ__67` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -15797,17 +16493,38 @@ CREATE TABLE `obj_store_rb__APQ__67` (
   ,`TS_32` DATETIME(3)
   ,`DBL_16` DOUBLE
   
-  ,PRIMARY KEY (`r_id`, `tenant_id`, `obj_def_id`)
-  ,INDEX `obj_store_rb___APQ__67index1` (`tenant_id`, `obj_def_id`(128), `rb_id`)
+  ,PRIMARY KEY (`tenant_id`, `obj_def_id`, `obj_id`, `obj_ver`, `pg_no`)
+  ,UNIQUE INDEX `obj_store__APQ__67_USTR_unique_1` (`USTR_1_TD`(139), `USTR_1`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__67_UNUM_unique_1` (`UNUM_1_TD`(139), `UNUM_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__67_UTS_unique_1` (`UTS_1_TD`(139), `UTS_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__67_UDBL_unique_1` (`UDBL_1_TD`(139), `UDBL_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__67_USTR_unique_2` (`USTR_2_TD`(139), `USTR_2`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__67_UNUM_unique_2` (`UNUM_2_TD`(139), `UNUM_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__67_UTS_unique_2` (`UTS_2_TD`(139), `UTS_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__67_UDBL_unique_2` (`UDBL_2_TD`(139), `UDBL_2`, `tenant_id`, `obj_def_id`(128))
+  ,INDEX `obj_store__APQ__67_ISTR_index_1` (`ISTR_1`(192), `ISTR_1_TD`(139))
+  ,INDEX `obj_store__APQ__67_INUM_index_1` (`INUM_1`, `INUM_1_TD`(139))
+  ,INDEX `obj_store__APQ__67_ITS_index_1` (`ITS_1`, `ITS_1_TD`(139))
+  ,INDEX `obj_store__APQ__67_IDBL_index_1` (`IDBL_1`, `IDBL_1_TD`(139))
+  ,INDEX `obj_store__APQ__67_ISTR_index_2` (`ISTR_2`(192), `ISTR_2_TD`(139))
+  ,INDEX `obj_store__APQ__67_INUM_index_2` (`INUM_2`, `INUM_2_TD`(139))
+  ,INDEX `obj_store__APQ__67_ITS_index_2` (`ITS_2`, `ITS_2_TD`(139))
+  ,INDEX `obj_store__APQ__67_IDBL_index_2` (`IDBL_2`, `IDBL_2_TD`(139))
+  ,INDEX `obj_store__APQ__67_ISTR_index_3` (`ISTR_3`(192), `ISTR_3_TD`(139))
+  ,INDEX `obj_store__APQ__67_ISTR_index_4` (`ISTR_4`(192), `ISTR_4_TD`(139))
+  ,INDEX `obj_store__APQ__67_INUM_index_3` (`INUM_3`, `INUM_3_TD`(139))
+  ,INDEX `obj_store__APQ__67_ITS_index_3` (`ITS_3`, `ITS_3_TD`(139))
+  ,INDEX `obj_store__APQ__67_IDBL_index_3` (`IDBL_3`, `IDBL_3_TD`(139))
+  ,INDEX `obj_store__APQ__67_ISTR_index_5` (`ISTR_5`(192), `ISTR_5_TD`(139))
+  ,INDEX `obj_store__APQ__67_INUM_index_4` (`INUM_4`, `INUM_4_TD`(139))
+  ,INDEX `obj_store__APQ__67_ITS_index_4` (`ITS_4`, `ITS_4_TD`(139))
+  ,INDEX `obj_store__APQ__67_IDBL_index_4` (`IDBL_4`, `IDBL_4_TD`(139))
+  ,INDEX `obj_store__APQ__67_cre_user_index` (`cre_user`(64), `obj_def_id`(128), `tenant_id`)
 )
 ;
-/* drop/create OBJ_STORE_RB */
-DROP TABLE IF EXISTS `obj_store_rb__APQ__68`;
-CREATE TABLE `obj_store_rb__APQ__68` (
-  `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `rb_id` BIGINT(16) NULL,
-  `rb_date` DATETIME(3) NULL,
-  `rb_user` VARCHAR(64) NULL,
+/* drop/create OBJ_STORE */
+DROP TABLE IF EXISTS `obj_store__APQ__68`;
+CREATE TABLE `obj_store__APQ__68` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -16019,17 +16736,38 @@ CREATE TABLE `obj_store_rb__APQ__68` (
   ,`TS_32` DATETIME(3)
   ,`DBL_16` DOUBLE
   
-  ,PRIMARY KEY (`r_id`, `tenant_id`, `obj_def_id`)
-  ,INDEX `obj_store_rb___APQ__68index1` (`tenant_id`, `obj_def_id`(128), `rb_id`)
+  ,PRIMARY KEY (`tenant_id`, `obj_def_id`, `obj_id`, `obj_ver`, `pg_no`)
+  ,UNIQUE INDEX `obj_store__APQ__68_USTR_unique_1` (`USTR_1_TD`(139), `USTR_1`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__68_UNUM_unique_1` (`UNUM_1_TD`(139), `UNUM_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__68_UTS_unique_1` (`UTS_1_TD`(139), `UTS_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__68_UDBL_unique_1` (`UDBL_1_TD`(139), `UDBL_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__68_USTR_unique_2` (`USTR_2_TD`(139), `USTR_2`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__68_UNUM_unique_2` (`UNUM_2_TD`(139), `UNUM_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__68_UTS_unique_2` (`UTS_2_TD`(139), `UTS_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__68_UDBL_unique_2` (`UDBL_2_TD`(139), `UDBL_2`, `tenant_id`, `obj_def_id`(128))
+  ,INDEX `obj_store__APQ__68_ISTR_index_1` (`ISTR_1`(192), `ISTR_1_TD`(139))
+  ,INDEX `obj_store__APQ__68_INUM_index_1` (`INUM_1`, `INUM_1_TD`(139))
+  ,INDEX `obj_store__APQ__68_ITS_index_1` (`ITS_1`, `ITS_1_TD`(139))
+  ,INDEX `obj_store__APQ__68_IDBL_index_1` (`IDBL_1`, `IDBL_1_TD`(139))
+  ,INDEX `obj_store__APQ__68_ISTR_index_2` (`ISTR_2`(192), `ISTR_2_TD`(139))
+  ,INDEX `obj_store__APQ__68_INUM_index_2` (`INUM_2`, `INUM_2_TD`(139))
+  ,INDEX `obj_store__APQ__68_ITS_index_2` (`ITS_2`, `ITS_2_TD`(139))
+  ,INDEX `obj_store__APQ__68_IDBL_index_2` (`IDBL_2`, `IDBL_2_TD`(139))
+  ,INDEX `obj_store__APQ__68_ISTR_index_3` (`ISTR_3`(192), `ISTR_3_TD`(139))
+  ,INDEX `obj_store__APQ__68_ISTR_index_4` (`ISTR_4`(192), `ISTR_4_TD`(139))
+  ,INDEX `obj_store__APQ__68_INUM_index_3` (`INUM_3`, `INUM_3_TD`(139))
+  ,INDEX `obj_store__APQ__68_ITS_index_3` (`ITS_3`, `ITS_3_TD`(139))
+  ,INDEX `obj_store__APQ__68_IDBL_index_3` (`IDBL_3`, `IDBL_3_TD`(139))
+  ,INDEX `obj_store__APQ__68_ISTR_index_5` (`ISTR_5`(192), `ISTR_5_TD`(139))
+  ,INDEX `obj_store__APQ__68_INUM_index_4` (`INUM_4`, `INUM_4_TD`(139))
+  ,INDEX `obj_store__APQ__68_ITS_index_4` (`ITS_4`, `ITS_4_TD`(139))
+  ,INDEX `obj_store__APQ__68_IDBL_index_4` (`IDBL_4`, `IDBL_4_TD`(139))
+  ,INDEX `obj_store__APQ__68_cre_user_index` (`cre_user`(64), `obj_def_id`(128), `tenant_id`)
 )
 ;
-/* drop/create OBJ_STORE_RB */
-DROP TABLE IF EXISTS `obj_store_rb__APQ__69`;
-CREATE TABLE `obj_store_rb__APQ__69` (
-  `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `rb_id` BIGINT(16) NULL,
-  `rb_date` DATETIME(3) NULL,
-  `rb_user` VARCHAR(64) NULL,
+/* drop/create OBJ_STORE */
+DROP TABLE IF EXISTS `obj_store__APQ__69`;
+CREATE TABLE `obj_store__APQ__69` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -16241,17 +16979,38 @@ CREATE TABLE `obj_store_rb__APQ__69` (
   ,`TS_32` DATETIME(3)
   ,`DBL_16` DOUBLE
   
-  ,PRIMARY KEY (`r_id`, `tenant_id`, `obj_def_id`)
-  ,INDEX `obj_store_rb___APQ__69index1` (`tenant_id`, `obj_def_id`(128), `rb_id`)
+  ,PRIMARY KEY (`tenant_id`, `obj_def_id`, `obj_id`, `obj_ver`, `pg_no`)
+  ,UNIQUE INDEX `obj_store__APQ__69_USTR_unique_1` (`USTR_1_TD`(139), `USTR_1`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__69_UNUM_unique_1` (`UNUM_1_TD`(139), `UNUM_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__69_UTS_unique_1` (`UTS_1_TD`(139), `UTS_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__69_UDBL_unique_1` (`UDBL_1_TD`(139), `UDBL_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__69_USTR_unique_2` (`USTR_2_TD`(139), `USTR_2`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__69_UNUM_unique_2` (`UNUM_2_TD`(139), `UNUM_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__69_UTS_unique_2` (`UTS_2_TD`(139), `UTS_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__69_UDBL_unique_2` (`UDBL_2_TD`(139), `UDBL_2`, `tenant_id`, `obj_def_id`(128))
+  ,INDEX `obj_store__APQ__69_ISTR_index_1` (`ISTR_1`(192), `ISTR_1_TD`(139))
+  ,INDEX `obj_store__APQ__69_INUM_index_1` (`INUM_1`, `INUM_1_TD`(139))
+  ,INDEX `obj_store__APQ__69_ITS_index_1` (`ITS_1`, `ITS_1_TD`(139))
+  ,INDEX `obj_store__APQ__69_IDBL_index_1` (`IDBL_1`, `IDBL_1_TD`(139))
+  ,INDEX `obj_store__APQ__69_ISTR_index_2` (`ISTR_2`(192), `ISTR_2_TD`(139))
+  ,INDEX `obj_store__APQ__69_INUM_index_2` (`INUM_2`, `INUM_2_TD`(139))
+  ,INDEX `obj_store__APQ__69_ITS_index_2` (`ITS_2`, `ITS_2_TD`(139))
+  ,INDEX `obj_store__APQ__69_IDBL_index_2` (`IDBL_2`, `IDBL_2_TD`(139))
+  ,INDEX `obj_store__APQ__69_ISTR_index_3` (`ISTR_3`(192), `ISTR_3_TD`(139))
+  ,INDEX `obj_store__APQ__69_ISTR_index_4` (`ISTR_4`(192), `ISTR_4_TD`(139))
+  ,INDEX `obj_store__APQ__69_INUM_index_3` (`INUM_3`, `INUM_3_TD`(139))
+  ,INDEX `obj_store__APQ__69_ITS_index_3` (`ITS_3`, `ITS_3_TD`(139))
+  ,INDEX `obj_store__APQ__69_IDBL_index_3` (`IDBL_3`, `IDBL_3_TD`(139))
+  ,INDEX `obj_store__APQ__69_ISTR_index_5` (`ISTR_5`(192), `ISTR_5_TD`(139))
+  ,INDEX `obj_store__APQ__69_INUM_index_4` (`INUM_4`, `INUM_4_TD`(139))
+  ,INDEX `obj_store__APQ__69_ITS_index_4` (`ITS_4`, `ITS_4_TD`(139))
+  ,INDEX `obj_store__APQ__69_IDBL_index_4` (`IDBL_4`, `IDBL_4_TD`(139))
+  ,INDEX `obj_store__APQ__69_cre_user_index` (`cre_user`(64), `obj_def_id`(128), `tenant_id`)
 )
 ;
-/* drop/create OBJ_STORE_RB */
-DROP TABLE IF EXISTS `obj_store_rb__APQ__70`;
-CREATE TABLE `obj_store_rb__APQ__70` (
-  `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `rb_id` BIGINT(16) NULL,
-  `rb_date` DATETIME(3) NULL,
-  `rb_user` VARCHAR(64) NULL,
+/* drop/create OBJ_STORE */
+DROP TABLE IF EXISTS `obj_store__APQ__70`;
+CREATE TABLE `obj_store__APQ__70` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -16463,17 +17222,38 @@ CREATE TABLE `obj_store_rb__APQ__70` (
   ,`TS_32` DATETIME(3)
   ,`DBL_16` DOUBLE
   
-  ,PRIMARY KEY (`r_id`, `tenant_id`, `obj_def_id`)
-  ,INDEX `obj_store_rb___APQ__70index1` (`tenant_id`, `obj_def_id`(128), `rb_id`)
+  ,PRIMARY KEY (`tenant_id`, `obj_def_id`, `obj_id`, `obj_ver`, `pg_no`)
+  ,UNIQUE INDEX `obj_store__APQ__70_USTR_unique_1` (`USTR_1_TD`(139), `USTR_1`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__70_UNUM_unique_1` (`UNUM_1_TD`(139), `UNUM_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__70_UTS_unique_1` (`UTS_1_TD`(139), `UTS_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__70_UDBL_unique_1` (`UDBL_1_TD`(139), `UDBL_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__70_USTR_unique_2` (`USTR_2_TD`(139), `USTR_2`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__70_UNUM_unique_2` (`UNUM_2_TD`(139), `UNUM_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__70_UTS_unique_2` (`UTS_2_TD`(139), `UTS_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__70_UDBL_unique_2` (`UDBL_2_TD`(139), `UDBL_2`, `tenant_id`, `obj_def_id`(128))
+  ,INDEX `obj_store__APQ__70_ISTR_index_1` (`ISTR_1`(192), `ISTR_1_TD`(139))
+  ,INDEX `obj_store__APQ__70_INUM_index_1` (`INUM_1`, `INUM_1_TD`(139))
+  ,INDEX `obj_store__APQ__70_ITS_index_1` (`ITS_1`, `ITS_1_TD`(139))
+  ,INDEX `obj_store__APQ__70_IDBL_index_1` (`IDBL_1`, `IDBL_1_TD`(139))
+  ,INDEX `obj_store__APQ__70_ISTR_index_2` (`ISTR_2`(192), `ISTR_2_TD`(139))
+  ,INDEX `obj_store__APQ__70_INUM_index_2` (`INUM_2`, `INUM_2_TD`(139))
+  ,INDEX `obj_store__APQ__70_ITS_index_2` (`ITS_2`, `ITS_2_TD`(139))
+  ,INDEX `obj_store__APQ__70_IDBL_index_2` (`IDBL_2`, `IDBL_2_TD`(139))
+  ,INDEX `obj_store__APQ__70_ISTR_index_3` (`ISTR_3`(192), `ISTR_3_TD`(139))
+  ,INDEX `obj_store__APQ__70_ISTR_index_4` (`ISTR_4`(192), `ISTR_4_TD`(139))
+  ,INDEX `obj_store__APQ__70_INUM_index_3` (`INUM_3`, `INUM_3_TD`(139))
+  ,INDEX `obj_store__APQ__70_ITS_index_3` (`ITS_3`, `ITS_3_TD`(139))
+  ,INDEX `obj_store__APQ__70_IDBL_index_3` (`IDBL_3`, `IDBL_3_TD`(139))
+  ,INDEX `obj_store__APQ__70_ISTR_index_5` (`ISTR_5`(192), `ISTR_5_TD`(139))
+  ,INDEX `obj_store__APQ__70_INUM_index_4` (`INUM_4`, `INUM_4_TD`(139))
+  ,INDEX `obj_store__APQ__70_ITS_index_4` (`ITS_4`, `ITS_4_TD`(139))
+  ,INDEX `obj_store__APQ__70_IDBL_index_4` (`IDBL_4`, `IDBL_4_TD`(139))
+  ,INDEX `obj_store__APQ__70_cre_user_index` (`cre_user`(64), `obj_def_id`(128), `tenant_id`)
 )
 ;
-/* drop/create OBJ_STORE_RB */
-DROP TABLE IF EXISTS `obj_store_rb__APQ__71`;
-CREATE TABLE `obj_store_rb__APQ__71` (
-  `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `rb_id` BIGINT(16) NULL,
-  `rb_date` DATETIME(3) NULL,
-  `rb_user` VARCHAR(64) NULL,
+/* drop/create OBJ_STORE */
+DROP TABLE IF EXISTS `obj_store__APQ__71`;
+CREATE TABLE `obj_store__APQ__71` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -16685,17 +17465,38 @@ CREATE TABLE `obj_store_rb__APQ__71` (
   ,`TS_32` DATETIME(3)
   ,`DBL_16` DOUBLE
   
-  ,PRIMARY KEY (`r_id`, `tenant_id`, `obj_def_id`)
-  ,INDEX `obj_store_rb___APQ__71index1` (`tenant_id`, `obj_def_id`(128), `rb_id`)
+  ,PRIMARY KEY (`tenant_id`, `obj_def_id`, `obj_id`, `obj_ver`, `pg_no`)
+  ,UNIQUE INDEX `obj_store__APQ__71_USTR_unique_1` (`USTR_1_TD`(139), `USTR_1`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__71_UNUM_unique_1` (`UNUM_1_TD`(139), `UNUM_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__71_UTS_unique_1` (`UTS_1_TD`(139), `UTS_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__71_UDBL_unique_1` (`UDBL_1_TD`(139), `UDBL_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__71_USTR_unique_2` (`USTR_2_TD`(139), `USTR_2`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__71_UNUM_unique_2` (`UNUM_2_TD`(139), `UNUM_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__71_UTS_unique_2` (`UTS_2_TD`(139), `UTS_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__71_UDBL_unique_2` (`UDBL_2_TD`(139), `UDBL_2`, `tenant_id`, `obj_def_id`(128))
+  ,INDEX `obj_store__APQ__71_ISTR_index_1` (`ISTR_1`(192), `ISTR_1_TD`(139))
+  ,INDEX `obj_store__APQ__71_INUM_index_1` (`INUM_1`, `INUM_1_TD`(139))
+  ,INDEX `obj_store__APQ__71_ITS_index_1` (`ITS_1`, `ITS_1_TD`(139))
+  ,INDEX `obj_store__APQ__71_IDBL_index_1` (`IDBL_1`, `IDBL_1_TD`(139))
+  ,INDEX `obj_store__APQ__71_ISTR_index_2` (`ISTR_2`(192), `ISTR_2_TD`(139))
+  ,INDEX `obj_store__APQ__71_INUM_index_2` (`INUM_2`, `INUM_2_TD`(139))
+  ,INDEX `obj_store__APQ__71_ITS_index_2` (`ITS_2`, `ITS_2_TD`(139))
+  ,INDEX `obj_store__APQ__71_IDBL_index_2` (`IDBL_2`, `IDBL_2_TD`(139))
+  ,INDEX `obj_store__APQ__71_ISTR_index_3` (`ISTR_3`(192), `ISTR_3_TD`(139))
+  ,INDEX `obj_store__APQ__71_ISTR_index_4` (`ISTR_4`(192), `ISTR_4_TD`(139))
+  ,INDEX `obj_store__APQ__71_INUM_index_3` (`INUM_3`, `INUM_3_TD`(139))
+  ,INDEX `obj_store__APQ__71_ITS_index_3` (`ITS_3`, `ITS_3_TD`(139))
+  ,INDEX `obj_store__APQ__71_IDBL_index_3` (`IDBL_3`, `IDBL_3_TD`(139))
+  ,INDEX `obj_store__APQ__71_ISTR_index_5` (`ISTR_5`(192), `ISTR_5_TD`(139))
+  ,INDEX `obj_store__APQ__71_INUM_index_4` (`INUM_4`, `INUM_4_TD`(139))
+  ,INDEX `obj_store__APQ__71_ITS_index_4` (`ITS_4`, `ITS_4_TD`(139))
+  ,INDEX `obj_store__APQ__71_IDBL_index_4` (`IDBL_4`, `IDBL_4_TD`(139))
+  ,INDEX `obj_store__APQ__71_cre_user_index` (`cre_user`(64), `obj_def_id`(128), `tenant_id`)
 )
 ;
-/* drop/create OBJ_STORE_RB */
-DROP TABLE IF EXISTS `obj_store_rb__APQ__72`;
-CREATE TABLE `obj_store_rb__APQ__72` (
-  `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `rb_id` BIGINT(16) NULL,
-  `rb_date` DATETIME(3) NULL,
-  `rb_user` VARCHAR(64) NULL,
+/* drop/create OBJ_STORE */
+DROP TABLE IF EXISTS `obj_store__APQ__72`;
+CREATE TABLE `obj_store__APQ__72` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -16907,17 +17708,38 @@ CREATE TABLE `obj_store_rb__APQ__72` (
   ,`TS_32` DATETIME(3)
   ,`DBL_16` DOUBLE
   
-  ,PRIMARY KEY (`r_id`, `tenant_id`, `obj_def_id`)
-  ,INDEX `obj_store_rb___APQ__72index1` (`tenant_id`, `obj_def_id`(128), `rb_id`)
+  ,PRIMARY KEY (`tenant_id`, `obj_def_id`, `obj_id`, `obj_ver`, `pg_no`)
+  ,UNIQUE INDEX `obj_store__APQ__72_USTR_unique_1` (`USTR_1_TD`(139), `USTR_1`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__72_UNUM_unique_1` (`UNUM_1_TD`(139), `UNUM_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__72_UTS_unique_1` (`UTS_1_TD`(139), `UTS_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__72_UDBL_unique_1` (`UDBL_1_TD`(139), `UDBL_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__72_USTR_unique_2` (`USTR_2_TD`(139), `USTR_2`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__72_UNUM_unique_2` (`UNUM_2_TD`(139), `UNUM_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__72_UTS_unique_2` (`UTS_2_TD`(139), `UTS_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__72_UDBL_unique_2` (`UDBL_2_TD`(139), `UDBL_2`, `tenant_id`, `obj_def_id`(128))
+  ,INDEX `obj_store__APQ__72_ISTR_index_1` (`ISTR_1`(192), `ISTR_1_TD`(139))
+  ,INDEX `obj_store__APQ__72_INUM_index_1` (`INUM_1`, `INUM_1_TD`(139))
+  ,INDEX `obj_store__APQ__72_ITS_index_1` (`ITS_1`, `ITS_1_TD`(139))
+  ,INDEX `obj_store__APQ__72_IDBL_index_1` (`IDBL_1`, `IDBL_1_TD`(139))
+  ,INDEX `obj_store__APQ__72_ISTR_index_2` (`ISTR_2`(192), `ISTR_2_TD`(139))
+  ,INDEX `obj_store__APQ__72_INUM_index_2` (`INUM_2`, `INUM_2_TD`(139))
+  ,INDEX `obj_store__APQ__72_ITS_index_2` (`ITS_2`, `ITS_2_TD`(139))
+  ,INDEX `obj_store__APQ__72_IDBL_index_2` (`IDBL_2`, `IDBL_2_TD`(139))
+  ,INDEX `obj_store__APQ__72_ISTR_index_3` (`ISTR_3`(192), `ISTR_3_TD`(139))
+  ,INDEX `obj_store__APQ__72_ISTR_index_4` (`ISTR_4`(192), `ISTR_4_TD`(139))
+  ,INDEX `obj_store__APQ__72_INUM_index_3` (`INUM_3`, `INUM_3_TD`(139))
+  ,INDEX `obj_store__APQ__72_ITS_index_3` (`ITS_3`, `ITS_3_TD`(139))
+  ,INDEX `obj_store__APQ__72_IDBL_index_3` (`IDBL_3`, `IDBL_3_TD`(139))
+  ,INDEX `obj_store__APQ__72_ISTR_index_5` (`ISTR_5`(192), `ISTR_5_TD`(139))
+  ,INDEX `obj_store__APQ__72_INUM_index_4` (`INUM_4`, `INUM_4_TD`(139))
+  ,INDEX `obj_store__APQ__72_ITS_index_4` (`ITS_4`, `ITS_4_TD`(139))
+  ,INDEX `obj_store__APQ__72_IDBL_index_4` (`IDBL_4`, `IDBL_4_TD`(139))
+  ,INDEX `obj_store__APQ__72_cre_user_index` (`cre_user`(64), `obj_def_id`(128), `tenant_id`)
 )
 ;
-/* drop/create OBJ_STORE_RB */
-DROP TABLE IF EXISTS `obj_store_rb__APQ__73`;
-CREATE TABLE `obj_store_rb__APQ__73` (
-  `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `rb_id` BIGINT(16) NULL,
-  `rb_date` DATETIME(3) NULL,
-  `rb_user` VARCHAR(64) NULL,
+/* drop/create OBJ_STORE */
+DROP TABLE IF EXISTS `obj_store__APQ__73`;
+CREATE TABLE `obj_store__APQ__73` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -17129,17 +17951,38 @@ CREATE TABLE `obj_store_rb__APQ__73` (
   ,`TS_32` DATETIME(3)
   ,`DBL_16` DOUBLE
   
-  ,PRIMARY KEY (`r_id`, `tenant_id`, `obj_def_id`)
-  ,INDEX `obj_store_rb___APQ__73index1` (`tenant_id`, `obj_def_id`(128), `rb_id`)
+  ,PRIMARY KEY (`tenant_id`, `obj_def_id`, `obj_id`, `obj_ver`, `pg_no`)
+  ,UNIQUE INDEX `obj_store__APQ__73_USTR_unique_1` (`USTR_1_TD`(139), `USTR_1`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__73_UNUM_unique_1` (`UNUM_1_TD`(139), `UNUM_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__73_UTS_unique_1` (`UTS_1_TD`(139), `UTS_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__73_UDBL_unique_1` (`UDBL_1_TD`(139), `UDBL_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__73_USTR_unique_2` (`USTR_2_TD`(139), `USTR_2`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__73_UNUM_unique_2` (`UNUM_2_TD`(139), `UNUM_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__73_UTS_unique_2` (`UTS_2_TD`(139), `UTS_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__73_UDBL_unique_2` (`UDBL_2_TD`(139), `UDBL_2`, `tenant_id`, `obj_def_id`(128))
+  ,INDEX `obj_store__APQ__73_ISTR_index_1` (`ISTR_1`(192), `ISTR_1_TD`(139))
+  ,INDEX `obj_store__APQ__73_INUM_index_1` (`INUM_1`, `INUM_1_TD`(139))
+  ,INDEX `obj_store__APQ__73_ITS_index_1` (`ITS_1`, `ITS_1_TD`(139))
+  ,INDEX `obj_store__APQ__73_IDBL_index_1` (`IDBL_1`, `IDBL_1_TD`(139))
+  ,INDEX `obj_store__APQ__73_ISTR_index_2` (`ISTR_2`(192), `ISTR_2_TD`(139))
+  ,INDEX `obj_store__APQ__73_INUM_index_2` (`INUM_2`, `INUM_2_TD`(139))
+  ,INDEX `obj_store__APQ__73_ITS_index_2` (`ITS_2`, `ITS_2_TD`(139))
+  ,INDEX `obj_store__APQ__73_IDBL_index_2` (`IDBL_2`, `IDBL_2_TD`(139))
+  ,INDEX `obj_store__APQ__73_ISTR_index_3` (`ISTR_3`(192), `ISTR_3_TD`(139))
+  ,INDEX `obj_store__APQ__73_ISTR_index_4` (`ISTR_4`(192), `ISTR_4_TD`(139))
+  ,INDEX `obj_store__APQ__73_INUM_index_3` (`INUM_3`, `INUM_3_TD`(139))
+  ,INDEX `obj_store__APQ__73_ITS_index_3` (`ITS_3`, `ITS_3_TD`(139))
+  ,INDEX `obj_store__APQ__73_IDBL_index_3` (`IDBL_3`, `IDBL_3_TD`(139))
+  ,INDEX `obj_store__APQ__73_ISTR_index_5` (`ISTR_5`(192), `ISTR_5_TD`(139))
+  ,INDEX `obj_store__APQ__73_INUM_index_4` (`INUM_4`, `INUM_4_TD`(139))
+  ,INDEX `obj_store__APQ__73_ITS_index_4` (`ITS_4`, `ITS_4_TD`(139))
+  ,INDEX `obj_store__APQ__73_IDBL_index_4` (`IDBL_4`, `IDBL_4_TD`(139))
+  ,INDEX `obj_store__APQ__73_cre_user_index` (`cre_user`(64), `obj_def_id`(128), `tenant_id`)
 )
 ;
-/* drop/create OBJ_STORE_RB */
-DROP TABLE IF EXISTS `obj_store_rb__APQ__74`;
-CREATE TABLE `obj_store_rb__APQ__74` (
-  `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `rb_id` BIGINT(16) NULL,
-  `rb_date` DATETIME(3) NULL,
-  `rb_user` VARCHAR(64) NULL,
+/* drop/create OBJ_STORE */
+DROP TABLE IF EXISTS `obj_store__APQ__74`;
+CREATE TABLE `obj_store__APQ__74` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -17351,17 +18194,38 @@ CREATE TABLE `obj_store_rb__APQ__74` (
   ,`TS_32` DATETIME(3)
   ,`DBL_16` DOUBLE
   
-  ,PRIMARY KEY (`r_id`, `tenant_id`, `obj_def_id`)
-  ,INDEX `obj_store_rb___APQ__74index1` (`tenant_id`, `obj_def_id`(128), `rb_id`)
+  ,PRIMARY KEY (`tenant_id`, `obj_def_id`, `obj_id`, `obj_ver`, `pg_no`)
+  ,UNIQUE INDEX `obj_store__APQ__74_USTR_unique_1` (`USTR_1_TD`(139), `USTR_1`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__74_UNUM_unique_1` (`UNUM_1_TD`(139), `UNUM_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__74_UTS_unique_1` (`UTS_1_TD`(139), `UTS_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__74_UDBL_unique_1` (`UDBL_1_TD`(139), `UDBL_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__74_USTR_unique_2` (`USTR_2_TD`(139), `USTR_2`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__74_UNUM_unique_2` (`UNUM_2_TD`(139), `UNUM_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__74_UTS_unique_2` (`UTS_2_TD`(139), `UTS_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__74_UDBL_unique_2` (`UDBL_2_TD`(139), `UDBL_2`, `tenant_id`, `obj_def_id`(128))
+  ,INDEX `obj_store__APQ__74_ISTR_index_1` (`ISTR_1`(192), `ISTR_1_TD`(139))
+  ,INDEX `obj_store__APQ__74_INUM_index_1` (`INUM_1`, `INUM_1_TD`(139))
+  ,INDEX `obj_store__APQ__74_ITS_index_1` (`ITS_1`, `ITS_1_TD`(139))
+  ,INDEX `obj_store__APQ__74_IDBL_index_1` (`IDBL_1`, `IDBL_1_TD`(139))
+  ,INDEX `obj_store__APQ__74_ISTR_index_2` (`ISTR_2`(192), `ISTR_2_TD`(139))
+  ,INDEX `obj_store__APQ__74_INUM_index_2` (`INUM_2`, `INUM_2_TD`(139))
+  ,INDEX `obj_store__APQ__74_ITS_index_2` (`ITS_2`, `ITS_2_TD`(139))
+  ,INDEX `obj_store__APQ__74_IDBL_index_2` (`IDBL_2`, `IDBL_2_TD`(139))
+  ,INDEX `obj_store__APQ__74_ISTR_index_3` (`ISTR_3`(192), `ISTR_3_TD`(139))
+  ,INDEX `obj_store__APQ__74_ISTR_index_4` (`ISTR_4`(192), `ISTR_4_TD`(139))
+  ,INDEX `obj_store__APQ__74_INUM_index_3` (`INUM_3`, `INUM_3_TD`(139))
+  ,INDEX `obj_store__APQ__74_ITS_index_3` (`ITS_3`, `ITS_3_TD`(139))
+  ,INDEX `obj_store__APQ__74_IDBL_index_3` (`IDBL_3`, `IDBL_3_TD`(139))
+  ,INDEX `obj_store__APQ__74_ISTR_index_5` (`ISTR_5`(192), `ISTR_5_TD`(139))
+  ,INDEX `obj_store__APQ__74_INUM_index_4` (`INUM_4`, `INUM_4_TD`(139))
+  ,INDEX `obj_store__APQ__74_ITS_index_4` (`ITS_4`, `ITS_4_TD`(139))
+  ,INDEX `obj_store__APQ__74_IDBL_index_4` (`IDBL_4`, `IDBL_4_TD`(139))
+  ,INDEX `obj_store__APQ__74_cre_user_index` (`cre_user`(64), `obj_def_id`(128), `tenant_id`)
 )
 ;
-/* drop/create OBJ_STORE_RB */
-DROP TABLE IF EXISTS `obj_store_rb__APQ__75`;
-CREATE TABLE `obj_store_rb__APQ__75` (
-  `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `rb_id` BIGINT(16) NULL,
-  `rb_date` DATETIME(3) NULL,
-  `rb_user` VARCHAR(64) NULL,
+/* drop/create OBJ_STORE */
+DROP TABLE IF EXISTS `obj_store__APQ__75`;
+CREATE TABLE `obj_store__APQ__75` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -17573,17 +18437,38 @@ CREATE TABLE `obj_store_rb__APQ__75` (
   ,`TS_32` DATETIME(3)
   ,`DBL_16` DOUBLE
   
-  ,PRIMARY KEY (`r_id`, `tenant_id`, `obj_def_id`)
-  ,INDEX `obj_store_rb___APQ__75index1` (`tenant_id`, `obj_def_id`(128), `rb_id`)
+  ,PRIMARY KEY (`tenant_id`, `obj_def_id`, `obj_id`, `obj_ver`, `pg_no`)
+  ,UNIQUE INDEX `obj_store__APQ__75_USTR_unique_1` (`USTR_1_TD`(139), `USTR_1`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__75_UNUM_unique_1` (`UNUM_1_TD`(139), `UNUM_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__75_UTS_unique_1` (`UTS_1_TD`(139), `UTS_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__75_UDBL_unique_1` (`UDBL_1_TD`(139), `UDBL_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__75_USTR_unique_2` (`USTR_2_TD`(139), `USTR_2`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__75_UNUM_unique_2` (`UNUM_2_TD`(139), `UNUM_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__75_UTS_unique_2` (`UTS_2_TD`(139), `UTS_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__75_UDBL_unique_2` (`UDBL_2_TD`(139), `UDBL_2`, `tenant_id`, `obj_def_id`(128))
+  ,INDEX `obj_store__APQ__75_ISTR_index_1` (`ISTR_1`(192), `ISTR_1_TD`(139))
+  ,INDEX `obj_store__APQ__75_INUM_index_1` (`INUM_1`, `INUM_1_TD`(139))
+  ,INDEX `obj_store__APQ__75_ITS_index_1` (`ITS_1`, `ITS_1_TD`(139))
+  ,INDEX `obj_store__APQ__75_IDBL_index_1` (`IDBL_1`, `IDBL_1_TD`(139))
+  ,INDEX `obj_store__APQ__75_ISTR_index_2` (`ISTR_2`(192), `ISTR_2_TD`(139))
+  ,INDEX `obj_store__APQ__75_INUM_index_2` (`INUM_2`, `INUM_2_TD`(139))
+  ,INDEX `obj_store__APQ__75_ITS_index_2` (`ITS_2`, `ITS_2_TD`(139))
+  ,INDEX `obj_store__APQ__75_IDBL_index_2` (`IDBL_2`, `IDBL_2_TD`(139))
+  ,INDEX `obj_store__APQ__75_ISTR_index_3` (`ISTR_3`(192), `ISTR_3_TD`(139))
+  ,INDEX `obj_store__APQ__75_ISTR_index_4` (`ISTR_4`(192), `ISTR_4_TD`(139))
+  ,INDEX `obj_store__APQ__75_INUM_index_3` (`INUM_3`, `INUM_3_TD`(139))
+  ,INDEX `obj_store__APQ__75_ITS_index_3` (`ITS_3`, `ITS_3_TD`(139))
+  ,INDEX `obj_store__APQ__75_IDBL_index_3` (`IDBL_3`, `IDBL_3_TD`(139))
+  ,INDEX `obj_store__APQ__75_ISTR_index_5` (`ISTR_5`(192), `ISTR_5_TD`(139))
+  ,INDEX `obj_store__APQ__75_INUM_index_4` (`INUM_4`, `INUM_4_TD`(139))
+  ,INDEX `obj_store__APQ__75_ITS_index_4` (`ITS_4`, `ITS_4_TD`(139))
+  ,INDEX `obj_store__APQ__75_IDBL_index_4` (`IDBL_4`, `IDBL_4_TD`(139))
+  ,INDEX `obj_store__APQ__75_cre_user_index` (`cre_user`(64), `obj_def_id`(128), `tenant_id`)
 )
 ;
-/* drop/create OBJ_STORE_RB */
-DROP TABLE IF EXISTS `obj_store_rb__APQ__76`;
-CREATE TABLE `obj_store_rb__APQ__76` (
-  `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `rb_id` BIGINT(16) NULL,
-  `rb_date` DATETIME(3) NULL,
-  `rb_user` VARCHAR(64) NULL,
+/* drop/create OBJ_STORE */
+DROP TABLE IF EXISTS `obj_store__APQ__76`;
+CREATE TABLE `obj_store__APQ__76` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -17795,17 +18680,38 @@ CREATE TABLE `obj_store_rb__APQ__76` (
   ,`TS_32` DATETIME(3)
   ,`DBL_16` DOUBLE
   
-  ,PRIMARY KEY (`r_id`, `tenant_id`, `obj_def_id`)
-  ,INDEX `obj_store_rb___APQ__76index1` (`tenant_id`, `obj_def_id`(128), `rb_id`)
+  ,PRIMARY KEY (`tenant_id`, `obj_def_id`, `obj_id`, `obj_ver`, `pg_no`)
+  ,UNIQUE INDEX `obj_store__APQ__76_USTR_unique_1` (`USTR_1_TD`(139), `USTR_1`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__76_UNUM_unique_1` (`UNUM_1_TD`(139), `UNUM_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__76_UTS_unique_1` (`UTS_1_TD`(139), `UTS_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__76_UDBL_unique_1` (`UDBL_1_TD`(139), `UDBL_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__76_USTR_unique_2` (`USTR_2_TD`(139), `USTR_2`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__76_UNUM_unique_2` (`UNUM_2_TD`(139), `UNUM_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__76_UTS_unique_2` (`UTS_2_TD`(139), `UTS_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__76_UDBL_unique_2` (`UDBL_2_TD`(139), `UDBL_2`, `tenant_id`, `obj_def_id`(128))
+  ,INDEX `obj_store__APQ__76_ISTR_index_1` (`ISTR_1`(192), `ISTR_1_TD`(139))
+  ,INDEX `obj_store__APQ__76_INUM_index_1` (`INUM_1`, `INUM_1_TD`(139))
+  ,INDEX `obj_store__APQ__76_ITS_index_1` (`ITS_1`, `ITS_1_TD`(139))
+  ,INDEX `obj_store__APQ__76_IDBL_index_1` (`IDBL_1`, `IDBL_1_TD`(139))
+  ,INDEX `obj_store__APQ__76_ISTR_index_2` (`ISTR_2`(192), `ISTR_2_TD`(139))
+  ,INDEX `obj_store__APQ__76_INUM_index_2` (`INUM_2`, `INUM_2_TD`(139))
+  ,INDEX `obj_store__APQ__76_ITS_index_2` (`ITS_2`, `ITS_2_TD`(139))
+  ,INDEX `obj_store__APQ__76_IDBL_index_2` (`IDBL_2`, `IDBL_2_TD`(139))
+  ,INDEX `obj_store__APQ__76_ISTR_index_3` (`ISTR_3`(192), `ISTR_3_TD`(139))
+  ,INDEX `obj_store__APQ__76_ISTR_index_4` (`ISTR_4`(192), `ISTR_4_TD`(139))
+  ,INDEX `obj_store__APQ__76_INUM_index_3` (`INUM_3`, `INUM_3_TD`(139))
+  ,INDEX `obj_store__APQ__76_ITS_index_3` (`ITS_3`, `ITS_3_TD`(139))
+  ,INDEX `obj_store__APQ__76_IDBL_index_3` (`IDBL_3`, `IDBL_3_TD`(139))
+  ,INDEX `obj_store__APQ__76_ISTR_index_5` (`ISTR_5`(192), `ISTR_5_TD`(139))
+  ,INDEX `obj_store__APQ__76_INUM_index_4` (`INUM_4`, `INUM_4_TD`(139))
+  ,INDEX `obj_store__APQ__76_ITS_index_4` (`ITS_4`, `ITS_4_TD`(139))
+  ,INDEX `obj_store__APQ__76_IDBL_index_4` (`IDBL_4`, `IDBL_4_TD`(139))
+  ,INDEX `obj_store__APQ__76_cre_user_index` (`cre_user`(64), `obj_def_id`(128), `tenant_id`)
 )
 ;
-/* drop/create OBJ_STORE_RB */
-DROP TABLE IF EXISTS `obj_store_rb__APQ__77`;
-CREATE TABLE `obj_store_rb__APQ__77` (
-  `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `rb_id` BIGINT(16) NULL,
-  `rb_date` DATETIME(3) NULL,
-  `rb_user` VARCHAR(64) NULL,
+/* drop/create OBJ_STORE */
+DROP TABLE IF EXISTS `obj_store__APQ__77`;
+CREATE TABLE `obj_store__APQ__77` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -18017,17 +18923,38 @@ CREATE TABLE `obj_store_rb__APQ__77` (
   ,`TS_32` DATETIME(3)
   ,`DBL_16` DOUBLE
   
-  ,PRIMARY KEY (`r_id`, `tenant_id`, `obj_def_id`)
-  ,INDEX `obj_store_rb___APQ__77index1` (`tenant_id`, `obj_def_id`(128), `rb_id`)
+  ,PRIMARY KEY (`tenant_id`, `obj_def_id`, `obj_id`, `obj_ver`, `pg_no`)
+  ,UNIQUE INDEX `obj_store__APQ__77_USTR_unique_1` (`USTR_1_TD`(139), `USTR_1`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__77_UNUM_unique_1` (`UNUM_1_TD`(139), `UNUM_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__77_UTS_unique_1` (`UTS_1_TD`(139), `UTS_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__77_UDBL_unique_1` (`UDBL_1_TD`(139), `UDBL_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__77_USTR_unique_2` (`USTR_2_TD`(139), `USTR_2`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__77_UNUM_unique_2` (`UNUM_2_TD`(139), `UNUM_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__77_UTS_unique_2` (`UTS_2_TD`(139), `UTS_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__77_UDBL_unique_2` (`UDBL_2_TD`(139), `UDBL_2`, `tenant_id`, `obj_def_id`(128))
+  ,INDEX `obj_store__APQ__77_ISTR_index_1` (`ISTR_1`(192), `ISTR_1_TD`(139))
+  ,INDEX `obj_store__APQ__77_INUM_index_1` (`INUM_1`, `INUM_1_TD`(139))
+  ,INDEX `obj_store__APQ__77_ITS_index_1` (`ITS_1`, `ITS_1_TD`(139))
+  ,INDEX `obj_store__APQ__77_IDBL_index_1` (`IDBL_1`, `IDBL_1_TD`(139))
+  ,INDEX `obj_store__APQ__77_ISTR_index_2` (`ISTR_2`(192), `ISTR_2_TD`(139))
+  ,INDEX `obj_store__APQ__77_INUM_index_2` (`INUM_2`, `INUM_2_TD`(139))
+  ,INDEX `obj_store__APQ__77_ITS_index_2` (`ITS_2`, `ITS_2_TD`(139))
+  ,INDEX `obj_store__APQ__77_IDBL_index_2` (`IDBL_2`, `IDBL_2_TD`(139))
+  ,INDEX `obj_store__APQ__77_ISTR_index_3` (`ISTR_3`(192), `ISTR_3_TD`(139))
+  ,INDEX `obj_store__APQ__77_ISTR_index_4` (`ISTR_4`(192), `ISTR_4_TD`(139))
+  ,INDEX `obj_store__APQ__77_INUM_index_3` (`INUM_3`, `INUM_3_TD`(139))
+  ,INDEX `obj_store__APQ__77_ITS_index_3` (`ITS_3`, `ITS_3_TD`(139))
+  ,INDEX `obj_store__APQ__77_IDBL_index_3` (`IDBL_3`, `IDBL_3_TD`(139))
+  ,INDEX `obj_store__APQ__77_ISTR_index_5` (`ISTR_5`(192), `ISTR_5_TD`(139))
+  ,INDEX `obj_store__APQ__77_INUM_index_4` (`INUM_4`, `INUM_4_TD`(139))
+  ,INDEX `obj_store__APQ__77_ITS_index_4` (`ITS_4`, `ITS_4_TD`(139))
+  ,INDEX `obj_store__APQ__77_IDBL_index_4` (`IDBL_4`, `IDBL_4_TD`(139))
+  ,INDEX `obj_store__APQ__77_cre_user_index` (`cre_user`(64), `obj_def_id`(128), `tenant_id`)
 )
 ;
-/* drop/create OBJ_STORE_RB */
-DROP TABLE IF EXISTS `obj_store_rb__APQ__78`;
-CREATE TABLE `obj_store_rb__APQ__78` (
-  `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `rb_id` BIGINT(16) NULL,
-  `rb_date` DATETIME(3) NULL,
-  `rb_user` VARCHAR(64) NULL,
+/* drop/create OBJ_STORE */
+DROP TABLE IF EXISTS `obj_store__APQ__78`;
+CREATE TABLE `obj_store__APQ__78` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -18239,17 +19166,38 @@ CREATE TABLE `obj_store_rb__APQ__78` (
   ,`TS_32` DATETIME(3)
   ,`DBL_16` DOUBLE
   
-  ,PRIMARY KEY (`r_id`, `tenant_id`, `obj_def_id`)
-  ,INDEX `obj_store_rb___APQ__78index1` (`tenant_id`, `obj_def_id`(128), `rb_id`)
+  ,PRIMARY KEY (`tenant_id`, `obj_def_id`, `obj_id`, `obj_ver`, `pg_no`)
+  ,UNIQUE INDEX `obj_store__APQ__78_USTR_unique_1` (`USTR_1_TD`(139), `USTR_1`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__78_UNUM_unique_1` (`UNUM_1_TD`(139), `UNUM_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__78_UTS_unique_1` (`UTS_1_TD`(139), `UTS_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__78_UDBL_unique_1` (`UDBL_1_TD`(139), `UDBL_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__78_USTR_unique_2` (`USTR_2_TD`(139), `USTR_2`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__78_UNUM_unique_2` (`UNUM_2_TD`(139), `UNUM_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__78_UTS_unique_2` (`UTS_2_TD`(139), `UTS_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__78_UDBL_unique_2` (`UDBL_2_TD`(139), `UDBL_2`, `tenant_id`, `obj_def_id`(128))
+  ,INDEX `obj_store__APQ__78_ISTR_index_1` (`ISTR_1`(192), `ISTR_1_TD`(139))
+  ,INDEX `obj_store__APQ__78_INUM_index_1` (`INUM_1`, `INUM_1_TD`(139))
+  ,INDEX `obj_store__APQ__78_ITS_index_1` (`ITS_1`, `ITS_1_TD`(139))
+  ,INDEX `obj_store__APQ__78_IDBL_index_1` (`IDBL_1`, `IDBL_1_TD`(139))
+  ,INDEX `obj_store__APQ__78_ISTR_index_2` (`ISTR_2`(192), `ISTR_2_TD`(139))
+  ,INDEX `obj_store__APQ__78_INUM_index_2` (`INUM_2`, `INUM_2_TD`(139))
+  ,INDEX `obj_store__APQ__78_ITS_index_2` (`ITS_2`, `ITS_2_TD`(139))
+  ,INDEX `obj_store__APQ__78_IDBL_index_2` (`IDBL_2`, `IDBL_2_TD`(139))
+  ,INDEX `obj_store__APQ__78_ISTR_index_3` (`ISTR_3`(192), `ISTR_3_TD`(139))
+  ,INDEX `obj_store__APQ__78_ISTR_index_4` (`ISTR_4`(192), `ISTR_4_TD`(139))
+  ,INDEX `obj_store__APQ__78_INUM_index_3` (`INUM_3`, `INUM_3_TD`(139))
+  ,INDEX `obj_store__APQ__78_ITS_index_3` (`ITS_3`, `ITS_3_TD`(139))
+  ,INDEX `obj_store__APQ__78_IDBL_index_3` (`IDBL_3`, `IDBL_3_TD`(139))
+  ,INDEX `obj_store__APQ__78_ISTR_index_5` (`ISTR_5`(192), `ISTR_5_TD`(139))
+  ,INDEX `obj_store__APQ__78_INUM_index_4` (`INUM_4`, `INUM_4_TD`(139))
+  ,INDEX `obj_store__APQ__78_ITS_index_4` (`ITS_4`, `ITS_4_TD`(139))
+  ,INDEX `obj_store__APQ__78_IDBL_index_4` (`IDBL_4`, `IDBL_4_TD`(139))
+  ,INDEX `obj_store__APQ__78_cre_user_index` (`cre_user`(64), `obj_def_id`(128), `tenant_id`)
 )
 ;
-/* drop/create OBJ_STORE_RB */
-DROP TABLE IF EXISTS `obj_store_rb__APQ__79`;
-CREATE TABLE `obj_store_rb__APQ__79` (
-  `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `rb_id` BIGINT(16) NULL,
-  `rb_date` DATETIME(3) NULL,
-  `rb_user` VARCHAR(64) NULL,
+/* drop/create OBJ_STORE */
+DROP TABLE IF EXISTS `obj_store__APQ__79`;
+CREATE TABLE `obj_store__APQ__79` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -18461,17 +19409,38 @@ CREATE TABLE `obj_store_rb__APQ__79` (
   ,`TS_32` DATETIME(3)
   ,`DBL_16` DOUBLE
   
-  ,PRIMARY KEY (`r_id`, `tenant_id`, `obj_def_id`)
-  ,INDEX `obj_store_rb___APQ__79index1` (`tenant_id`, `obj_def_id`(128), `rb_id`)
+  ,PRIMARY KEY (`tenant_id`, `obj_def_id`, `obj_id`, `obj_ver`, `pg_no`)
+  ,UNIQUE INDEX `obj_store__APQ__79_USTR_unique_1` (`USTR_1_TD`(139), `USTR_1`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__79_UNUM_unique_1` (`UNUM_1_TD`(139), `UNUM_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__79_UTS_unique_1` (`UTS_1_TD`(139), `UTS_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__79_UDBL_unique_1` (`UDBL_1_TD`(139), `UDBL_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__79_USTR_unique_2` (`USTR_2_TD`(139), `USTR_2`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__79_UNUM_unique_2` (`UNUM_2_TD`(139), `UNUM_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__79_UTS_unique_2` (`UTS_2_TD`(139), `UTS_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__79_UDBL_unique_2` (`UDBL_2_TD`(139), `UDBL_2`, `tenant_id`, `obj_def_id`(128))
+  ,INDEX `obj_store__APQ__79_ISTR_index_1` (`ISTR_1`(192), `ISTR_1_TD`(139))
+  ,INDEX `obj_store__APQ__79_INUM_index_1` (`INUM_1`, `INUM_1_TD`(139))
+  ,INDEX `obj_store__APQ__79_ITS_index_1` (`ITS_1`, `ITS_1_TD`(139))
+  ,INDEX `obj_store__APQ__79_IDBL_index_1` (`IDBL_1`, `IDBL_1_TD`(139))
+  ,INDEX `obj_store__APQ__79_ISTR_index_2` (`ISTR_2`(192), `ISTR_2_TD`(139))
+  ,INDEX `obj_store__APQ__79_INUM_index_2` (`INUM_2`, `INUM_2_TD`(139))
+  ,INDEX `obj_store__APQ__79_ITS_index_2` (`ITS_2`, `ITS_2_TD`(139))
+  ,INDEX `obj_store__APQ__79_IDBL_index_2` (`IDBL_2`, `IDBL_2_TD`(139))
+  ,INDEX `obj_store__APQ__79_ISTR_index_3` (`ISTR_3`(192), `ISTR_3_TD`(139))
+  ,INDEX `obj_store__APQ__79_ISTR_index_4` (`ISTR_4`(192), `ISTR_4_TD`(139))
+  ,INDEX `obj_store__APQ__79_INUM_index_3` (`INUM_3`, `INUM_3_TD`(139))
+  ,INDEX `obj_store__APQ__79_ITS_index_3` (`ITS_3`, `ITS_3_TD`(139))
+  ,INDEX `obj_store__APQ__79_IDBL_index_3` (`IDBL_3`, `IDBL_3_TD`(139))
+  ,INDEX `obj_store__APQ__79_ISTR_index_5` (`ISTR_5`(192), `ISTR_5_TD`(139))
+  ,INDEX `obj_store__APQ__79_INUM_index_4` (`INUM_4`, `INUM_4_TD`(139))
+  ,INDEX `obj_store__APQ__79_ITS_index_4` (`ITS_4`, `ITS_4_TD`(139))
+  ,INDEX `obj_store__APQ__79_IDBL_index_4` (`IDBL_4`, `IDBL_4_TD`(139))
+  ,INDEX `obj_store__APQ__79_cre_user_index` (`cre_user`(64), `obj_def_id`(128), `tenant_id`)
 )
 ;
-/* drop/create OBJ_STORE_RB */
-DROP TABLE IF EXISTS `obj_store_rb__APQ__80`;
-CREATE TABLE `obj_store_rb__APQ__80` (
-  `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `rb_id` BIGINT(16) NULL,
-  `rb_date` DATETIME(3) NULL,
-  `rb_user` VARCHAR(64) NULL,
+/* drop/create OBJ_STORE */
+DROP TABLE IF EXISTS `obj_store__APQ__80`;
+CREATE TABLE `obj_store__APQ__80` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -18683,17 +19652,38 @@ CREATE TABLE `obj_store_rb__APQ__80` (
   ,`TS_32` DATETIME(3)
   ,`DBL_16` DOUBLE
   
-  ,PRIMARY KEY (`r_id`, `tenant_id`, `obj_def_id`)
-  ,INDEX `obj_store_rb___APQ__80index1` (`tenant_id`, `obj_def_id`(128), `rb_id`)
+  ,PRIMARY KEY (`tenant_id`, `obj_def_id`, `obj_id`, `obj_ver`, `pg_no`)
+  ,UNIQUE INDEX `obj_store__APQ__80_USTR_unique_1` (`USTR_1_TD`(139), `USTR_1`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__80_UNUM_unique_1` (`UNUM_1_TD`(139), `UNUM_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__80_UTS_unique_1` (`UTS_1_TD`(139), `UTS_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__80_UDBL_unique_1` (`UDBL_1_TD`(139), `UDBL_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__80_USTR_unique_2` (`USTR_2_TD`(139), `USTR_2`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__80_UNUM_unique_2` (`UNUM_2_TD`(139), `UNUM_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__80_UTS_unique_2` (`UTS_2_TD`(139), `UTS_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__80_UDBL_unique_2` (`UDBL_2_TD`(139), `UDBL_2`, `tenant_id`, `obj_def_id`(128))
+  ,INDEX `obj_store__APQ__80_ISTR_index_1` (`ISTR_1`(192), `ISTR_1_TD`(139))
+  ,INDEX `obj_store__APQ__80_INUM_index_1` (`INUM_1`, `INUM_1_TD`(139))
+  ,INDEX `obj_store__APQ__80_ITS_index_1` (`ITS_1`, `ITS_1_TD`(139))
+  ,INDEX `obj_store__APQ__80_IDBL_index_1` (`IDBL_1`, `IDBL_1_TD`(139))
+  ,INDEX `obj_store__APQ__80_ISTR_index_2` (`ISTR_2`(192), `ISTR_2_TD`(139))
+  ,INDEX `obj_store__APQ__80_INUM_index_2` (`INUM_2`, `INUM_2_TD`(139))
+  ,INDEX `obj_store__APQ__80_ITS_index_2` (`ITS_2`, `ITS_2_TD`(139))
+  ,INDEX `obj_store__APQ__80_IDBL_index_2` (`IDBL_2`, `IDBL_2_TD`(139))
+  ,INDEX `obj_store__APQ__80_ISTR_index_3` (`ISTR_3`(192), `ISTR_3_TD`(139))
+  ,INDEX `obj_store__APQ__80_ISTR_index_4` (`ISTR_4`(192), `ISTR_4_TD`(139))
+  ,INDEX `obj_store__APQ__80_INUM_index_3` (`INUM_3`, `INUM_3_TD`(139))
+  ,INDEX `obj_store__APQ__80_ITS_index_3` (`ITS_3`, `ITS_3_TD`(139))
+  ,INDEX `obj_store__APQ__80_IDBL_index_3` (`IDBL_3`, `IDBL_3_TD`(139))
+  ,INDEX `obj_store__APQ__80_ISTR_index_5` (`ISTR_5`(192), `ISTR_5_TD`(139))
+  ,INDEX `obj_store__APQ__80_INUM_index_4` (`INUM_4`, `INUM_4_TD`(139))
+  ,INDEX `obj_store__APQ__80_ITS_index_4` (`ITS_4`, `ITS_4_TD`(139))
+  ,INDEX `obj_store__APQ__80_IDBL_index_4` (`IDBL_4`, `IDBL_4_TD`(139))
+  ,INDEX `obj_store__APQ__80_cre_user_index` (`cre_user`(64), `obj_def_id`(128), `tenant_id`)
 )
 ;
-/* drop/create OBJ_STORE_RB */
-DROP TABLE IF EXISTS `obj_store_rb__APQ__81`;
-CREATE TABLE `obj_store_rb__APQ__81` (
-  `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `rb_id` BIGINT(16) NULL,
-  `rb_date` DATETIME(3) NULL,
-  `rb_user` VARCHAR(64) NULL,
+/* drop/create OBJ_STORE */
+DROP TABLE IF EXISTS `obj_store__APQ__81`;
+CREATE TABLE `obj_store__APQ__81` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -18905,17 +19895,38 @@ CREATE TABLE `obj_store_rb__APQ__81` (
   ,`TS_32` DATETIME(3)
   ,`DBL_16` DOUBLE
   
-  ,PRIMARY KEY (`r_id`, `tenant_id`, `obj_def_id`)
-  ,INDEX `obj_store_rb___APQ__81index1` (`tenant_id`, `obj_def_id`(128), `rb_id`)
+  ,PRIMARY KEY (`tenant_id`, `obj_def_id`, `obj_id`, `obj_ver`, `pg_no`)
+  ,UNIQUE INDEX `obj_store__APQ__81_USTR_unique_1` (`USTR_1_TD`(139), `USTR_1`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__81_UNUM_unique_1` (`UNUM_1_TD`(139), `UNUM_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__81_UTS_unique_1` (`UTS_1_TD`(139), `UTS_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__81_UDBL_unique_1` (`UDBL_1_TD`(139), `UDBL_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__81_USTR_unique_2` (`USTR_2_TD`(139), `USTR_2`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__81_UNUM_unique_2` (`UNUM_2_TD`(139), `UNUM_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__81_UTS_unique_2` (`UTS_2_TD`(139), `UTS_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__81_UDBL_unique_2` (`UDBL_2_TD`(139), `UDBL_2`, `tenant_id`, `obj_def_id`(128))
+  ,INDEX `obj_store__APQ__81_ISTR_index_1` (`ISTR_1`(192), `ISTR_1_TD`(139))
+  ,INDEX `obj_store__APQ__81_INUM_index_1` (`INUM_1`, `INUM_1_TD`(139))
+  ,INDEX `obj_store__APQ__81_ITS_index_1` (`ITS_1`, `ITS_1_TD`(139))
+  ,INDEX `obj_store__APQ__81_IDBL_index_1` (`IDBL_1`, `IDBL_1_TD`(139))
+  ,INDEX `obj_store__APQ__81_ISTR_index_2` (`ISTR_2`(192), `ISTR_2_TD`(139))
+  ,INDEX `obj_store__APQ__81_INUM_index_2` (`INUM_2`, `INUM_2_TD`(139))
+  ,INDEX `obj_store__APQ__81_ITS_index_2` (`ITS_2`, `ITS_2_TD`(139))
+  ,INDEX `obj_store__APQ__81_IDBL_index_2` (`IDBL_2`, `IDBL_2_TD`(139))
+  ,INDEX `obj_store__APQ__81_ISTR_index_3` (`ISTR_3`(192), `ISTR_3_TD`(139))
+  ,INDEX `obj_store__APQ__81_ISTR_index_4` (`ISTR_4`(192), `ISTR_4_TD`(139))
+  ,INDEX `obj_store__APQ__81_INUM_index_3` (`INUM_3`, `INUM_3_TD`(139))
+  ,INDEX `obj_store__APQ__81_ITS_index_3` (`ITS_3`, `ITS_3_TD`(139))
+  ,INDEX `obj_store__APQ__81_IDBL_index_3` (`IDBL_3`, `IDBL_3_TD`(139))
+  ,INDEX `obj_store__APQ__81_ISTR_index_5` (`ISTR_5`(192), `ISTR_5_TD`(139))
+  ,INDEX `obj_store__APQ__81_INUM_index_4` (`INUM_4`, `INUM_4_TD`(139))
+  ,INDEX `obj_store__APQ__81_ITS_index_4` (`ITS_4`, `ITS_4_TD`(139))
+  ,INDEX `obj_store__APQ__81_IDBL_index_4` (`IDBL_4`, `IDBL_4_TD`(139))
+  ,INDEX `obj_store__APQ__81_cre_user_index` (`cre_user`(64), `obj_def_id`(128), `tenant_id`)
 )
 ;
-/* drop/create OBJ_STORE_RB */
-DROP TABLE IF EXISTS `obj_store_rb__APQ__82`;
-CREATE TABLE `obj_store_rb__APQ__82` (
-  `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `rb_id` BIGINT(16) NULL,
-  `rb_date` DATETIME(3) NULL,
-  `rb_user` VARCHAR(64) NULL,
+/* drop/create OBJ_STORE */
+DROP TABLE IF EXISTS `obj_store__APQ__82`;
+CREATE TABLE `obj_store__APQ__82` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -19127,17 +20138,38 @@ CREATE TABLE `obj_store_rb__APQ__82` (
   ,`TS_32` DATETIME(3)
   ,`DBL_16` DOUBLE
   
-  ,PRIMARY KEY (`r_id`, `tenant_id`, `obj_def_id`)
-  ,INDEX `obj_store_rb___APQ__82index1` (`tenant_id`, `obj_def_id`(128), `rb_id`)
+  ,PRIMARY KEY (`tenant_id`, `obj_def_id`, `obj_id`, `obj_ver`, `pg_no`)
+  ,UNIQUE INDEX `obj_store__APQ__82_USTR_unique_1` (`USTR_1_TD`(139), `USTR_1`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__82_UNUM_unique_1` (`UNUM_1_TD`(139), `UNUM_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__82_UTS_unique_1` (`UTS_1_TD`(139), `UTS_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__82_UDBL_unique_1` (`UDBL_1_TD`(139), `UDBL_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__82_USTR_unique_2` (`USTR_2_TD`(139), `USTR_2`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__82_UNUM_unique_2` (`UNUM_2_TD`(139), `UNUM_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__82_UTS_unique_2` (`UTS_2_TD`(139), `UTS_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__82_UDBL_unique_2` (`UDBL_2_TD`(139), `UDBL_2`, `tenant_id`, `obj_def_id`(128))
+  ,INDEX `obj_store__APQ__82_ISTR_index_1` (`ISTR_1`(192), `ISTR_1_TD`(139))
+  ,INDEX `obj_store__APQ__82_INUM_index_1` (`INUM_1`, `INUM_1_TD`(139))
+  ,INDEX `obj_store__APQ__82_ITS_index_1` (`ITS_1`, `ITS_1_TD`(139))
+  ,INDEX `obj_store__APQ__82_IDBL_index_1` (`IDBL_1`, `IDBL_1_TD`(139))
+  ,INDEX `obj_store__APQ__82_ISTR_index_2` (`ISTR_2`(192), `ISTR_2_TD`(139))
+  ,INDEX `obj_store__APQ__82_INUM_index_2` (`INUM_2`, `INUM_2_TD`(139))
+  ,INDEX `obj_store__APQ__82_ITS_index_2` (`ITS_2`, `ITS_2_TD`(139))
+  ,INDEX `obj_store__APQ__82_IDBL_index_2` (`IDBL_2`, `IDBL_2_TD`(139))
+  ,INDEX `obj_store__APQ__82_ISTR_index_3` (`ISTR_3`(192), `ISTR_3_TD`(139))
+  ,INDEX `obj_store__APQ__82_ISTR_index_4` (`ISTR_4`(192), `ISTR_4_TD`(139))
+  ,INDEX `obj_store__APQ__82_INUM_index_3` (`INUM_3`, `INUM_3_TD`(139))
+  ,INDEX `obj_store__APQ__82_ITS_index_3` (`ITS_3`, `ITS_3_TD`(139))
+  ,INDEX `obj_store__APQ__82_IDBL_index_3` (`IDBL_3`, `IDBL_3_TD`(139))
+  ,INDEX `obj_store__APQ__82_ISTR_index_5` (`ISTR_5`(192), `ISTR_5_TD`(139))
+  ,INDEX `obj_store__APQ__82_INUM_index_4` (`INUM_4`, `INUM_4_TD`(139))
+  ,INDEX `obj_store__APQ__82_ITS_index_4` (`ITS_4`, `ITS_4_TD`(139))
+  ,INDEX `obj_store__APQ__82_IDBL_index_4` (`IDBL_4`, `IDBL_4_TD`(139))
+  ,INDEX `obj_store__APQ__82_cre_user_index` (`cre_user`(64), `obj_def_id`(128), `tenant_id`)
 )
 ;
-/* drop/create OBJ_STORE_RB */
-DROP TABLE IF EXISTS `obj_store_rb__APQ__83`;
-CREATE TABLE `obj_store_rb__APQ__83` (
-  `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `rb_id` BIGINT(16) NULL,
-  `rb_date` DATETIME(3) NULL,
-  `rb_user` VARCHAR(64) NULL,
+/* drop/create OBJ_STORE */
+DROP TABLE IF EXISTS `obj_store__APQ__83`;
+CREATE TABLE `obj_store__APQ__83` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -19349,17 +20381,38 @@ CREATE TABLE `obj_store_rb__APQ__83` (
   ,`TS_32` DATETIME(3)
   ,`DBL_16` DOUBLE
   
-  ,PRIMARY KEY (`r_id`, `tenant_id`, `obj_def_id`)
-  ,INDEX `obj_store_rb___APQ__83index1` (`tenant_id`, `obj_def_id`(128), `rb_id`)
+  ,PRIMARY KEY (`tenant_id`, `obj_def_id`, `obj_id`, `obj_ver`, `pg_no`)
+  ,UNIQUE INDEX `obj_store__APQ__83_USTR_unique_1` (`USTR_1_TD`(139), `USTR_1`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__83_UNUM_unique_1` (`UNUM_1_TD`(139), `UNUM_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__83_UTS_unique_1` (`UTS_1_TD`(139), `UTS_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__83_UDBL_unique_1` (`UDBL_1_TD`(139), `UDBL_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__83_USTR_unique_2` (`USTR_2_TD`(139), `USTR_2`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__83_UNUM_unique_2` (`UNUM_2_TD`(139), `UNUM_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__83_UTS_unique_2` (`UTS_2_TD`(139), `UTS_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__83_UDBL_unique_2` (`UDBL_2_TD`(139), `UDBL_2`, `tenant_id`, `obj_def_id`(128))
+  ,INDEX `obj_store__APQ__83_ISTR_index_1` (`ISTR_1`(192), `ISTR_1_TD`(139))
+  ,INDEX `obj_store__APQ__83_INUM_index_1` (`INUM_1`, `INUM_1_TD`(139))
+  ,INDEX `obj_store__APQ__83_ITS_index_1` (`ITS_1`, `ITS_1_TD`(139))
+  ,INDEX `obj_store__APQ__83_IDBL_index_1` (`IDBL_1`, `IDBL_1_TD`(139))
+  ,INDEX `obj_store__APQ__83_ISTR_index_2` (`ISTR_2`(192), `ISTR_2_TD`(139))
+  ,INDEX `obj_store__APQ__83_INUM_index_2` (`INUM_2`, `INUM_2_TD`(139))
+  ,INDEX `obj_store__APQ__83_ITS_index_2` (`ITS_2`, `ITS_2_TD`(139))
+  ,INDEX `obj_store__APQ__83_IDBL_index_2` (`IDBL_2`, `IDBL_2_TD`(139))
+  ,INDEX `obj_store__APQ__83_ISTR_index_3` (`ISTR_3`(192), `ISTR_3_TD`(139))
+  ,INDEX `obj_store__APQ__83_ISTR_index_4` (`ISTR_4`(192), `ISTR_4_TD`(139))
+  ,INDEX `obj_store__APQ__83_INUM_index_3` (`INUM_3`, `INUM_3_TD`(139))
+  ,INDEX `obj_store__APQ__83_ITS_index_3` (`ITS_3`, `ITS_3_TD`(139))
+  ,INDEX `obj_store__APQ__83_IDBL_index_3` (`IDBL_3`, `IDBL_3_TD`(139))
+  ,INDEX `obj_store__APQ__83_ISTR_index_5` (`ISTR_5`(192), `ISTR_5_TD`(139))
+  ,INDEX `obj_store__APQ__83_INUM_index_4` (`INUM_4`, `INUM_4_TD`(139))
+  ,INDEX `obj_store__APQ__83_ITS_index_4` (`ITS_4`, `ITS_4_TD`(139))
+  ,INDEX `obj_store__APQ__83_IDBL_index_4` (`IDBL_4`, `IDBL_4_TD`(139))
+  ,INDEX `obj_store__APQ__83_cre_user_index` (`cre_user`(64), `obj_def_id`(128), `tenant_id`)
 )
 ;
-/* drop/create OBJ_STORE_RB */
-DROP TABLE IF EXISTS `obj_store_rb__APQ__84`;
-CREATE TABLE `obj_store_rb__APQ__84` (
-  `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `rb_id` BIGINT(16) NULL,
-  `rb_date` DATETIME(3) NULL,
-  `rb_user` VARCHAR(64) NULL,
+/* drop/create OBJ_STORE */
+DROP TABLE IF EXISTS `obj_store__APQ__84`;
+CREATE TABLE `obj_store__APQ__84` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -19571,17 +20624,38 @@ CREATE TABLE `obj_store_rb__APQ__84` (
   ,`TS_32` DATETIME(3)
   ,`DBL_16` DOUBLE
   
-  ,PRIMARY KEY (`r_id`, `tenant_id`, `obj_def_id`)
-  ,INDEX `obj_store_rb___APQ__84index1` (`tenant_id`, `obj_def_id`(128), `rb_id`)
+  ,PRIMARY KEY (`tenant_id`, `obj_def_id`, `obj_id`, `obj_ver`, `pg_no`)
+  ,UNIQUE INDEX `obj_store__APQ__84_USTR_unique_1` (`USTR_1_TD`(139), `USTR_1`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__84_UNUM_unique_1` (`UNUM_1_TD`(139), `UNUM_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__84_UTS_unique_1` (`UTS_1_TD`(139), `UTS_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__84_UDBL_unique_1` (`UDBL_1_TD`(139), `UDBL_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__84_USTR_unique_2` (`USTR_2_TD`(139), `USTR_2`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__84_UNUM_unique_2` (`UNUM_2_TD`(139), `UNUM_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__84_UTS_unique_2` (`UTS_2_TD`(139), `UTS_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__84_UDBL_unique_2` (`UDBL_2_TD`(139), `UDBL_2`, `tenant_id`, `obj_def_id`(128))
+  ,INDEX `obj_store__APQ__84_ISTR_index_1` (`ISTR_1`(192), `ISTR_1_TD`(139))
+  ,INDEX `obj_store__APQ__84_INUM_index_1` (`INUM_1`, `INUM_1_TD`(139))
+  ,INDEX `obj_store__APQ__84_ITS_index_1` (`ITS_1`, `ITS_1_TD`(139))
+  ,INDEX `obj_store__APQ__84_IDBL_index_1` (`IDBL_1`, `IDBL_1_TD`(139))
+  ,INDEX `obj_store__APQ__84_ISTR_index_2` (`ISTR_2`(192), `ISTR_2_TD`(139))
+  ,INDEX `obj_store__APQ__84_INUM_index_2` (`INUM_2`, `INUM_2_TD`(139))
+  ,INDEX `obj_store__APQ__84_ITS_index_2` (`ITS_2`, `ITS_2_TD`(139))
+  ,INDEX `obj_store__APQ__84_IDBL_index_2` (`IDBL_2`, `IDBL_2_TD`(139))
+  ,INDEX `obj_store__APQ__84_ISTR_index_3` (`ISTR_3`(192), `ISTR_3_TD`(139))
+  ,INDEX `obj_store__APQ__84_ISTR_index_4` (`ISTR_4`(192), `ISTR_4_TD`(139))
+  ,INDEX `obj_store__APQ__84_INUM_index_3` (`INUM_3`, `INUM_3_TD`(139))
+  ,INDEX `obj_store__APQ__84_ITS_index_3` (`ITS_3`, `ITS_3_TD`(139))
+  ,INDEX `obj_store__APQ__84_IDBL_index_3` (`IDBL_3`, `IDBL_3_TD`(139))
+  ,INDEX `obj_store__APQ__84_ISTR_index_5` (`ISTR_5`(192), `ISTR_5_TD`(139))
+  ,INDEX `obj_store__APQ__84_INUM_index_4` (`INUM_4`, `INUM_4_TD`(139))
+  ,INDEX `obj_store__APQ__84_ITS_index_4` (`ITS_4`, `ITS_4_TD`(139))
+  ,INDEX `obj_store__APQ__84_IDBL_index_4` (`IDBL_4`, `IDBL_4_TD`(139))
+  ,INDEX `obj_store__APQ__84_cre_user_index` (`cre_user`(64), `obj_def_id`(128), `tenant_id`)
 )
 ;
-/* drop/create OBJ_STORE_RB */
-DROP TABLE IF EXISTS `obj_store_rb__APQ__85`;
-CREATE TABLE `obj_store_rb__APQ__85` (
-  `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `rb_id` BIGINT(16) NULL,
-  `rb_date` DATETIME(3) NULL,
-  `rb_user` VARCHAR(64) NULL,
+/* drop/create OBJ_STORE */
+DROP TABLE IF EXISTS `obj_store__APQ__85`;
+CREATE TABLE `obj_store__APQ__85` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -19793,17 +20867,38 @@ CREATE TABLE `obj_store_rb__APQ__85` (
   ,`TS_32` DATETIME(3)
   ,`DBL_16` DOUBLE
   
-  ,PRIMARY KEY (`r_id`, `tenant_id`, `obj_def_id`)
-  ,INDEX `obj_store_rb___APQ__85index1` (`tenant_id`, `obj_def_id`(128), `rb_id`)
+  ,PRIMARY KEY (`tenant_id`, `obj_def_id`, `obj_id`, `obj_ver`, `pg_no`)
+  ,UNIQUE INDEX `obj_store__APQ__85_USTR_unique_1` (`USTR_1_TD`(139), `USTR_1`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__85_UNUM_unique_1` (`UNUM_1_TD`(139), `UNUM_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__85_UTS_unique_1` (`UTS_1_TD`(139), `UTS_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__85_UDBL_unique_1` (`UDBL_1_TD`(139), `UDBL_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__85_USTR_unique_2` (`USTR_2_TD`(139), `USTR_2`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__85_UNUM_unique_2` (`UNUM_2_TD`(139), `UNUM_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__85_UTS_unique_2` (`UTS_2_TD`(139), `UTS_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__85_UDBL_unique_2` (`UDBL_2_TD`(139), `UDBL_2`, `tenant_id`, `obj_def_id`(128))
+  ,INDEX `obj_store__APQ__85_ISTR_index_1` (`ISTR_1`(192), `ISTR_1_TD`(139))
+  ,INDEX `obj_store__APQ__85_INUM_index_1` (`INUM_1`, `INUM_1_TD`(139))
+  ,INDEX `obj_store__APQ__85_ITS_index_1` (`ITS_1`, `ITS_1_TD`(139))
+  ,INDEX `obj_store__APQ__85_IDBL_index_1` (`IDBL_1`, `IDBL_1_TD`(139))
+  ,INDEX `obj_store__APQ__85_ISTR_index_2` (`ISTR_2`(192), `ISTR_2_TD`(139))
+  ,INDEX `obj_store__APQ__85_INUM_index_2` (`INUM_2`, `INUM_2_TD`(139))
+  ,INDEX `obj_store__APQ__85_ITS_index_2` (`ITS_2`, `ITS_2_TD`(139))
+  ,INDEX `obj_store__APQ__85_IDBL_index_2` (`IDBL_2`, `IDBL_2_TD`(139))
+  ,INDEX `obj_store__APQ__85_ISTR_index_3` (`ISTR_3`(192), `ISTR_3_TD`(139))
+  ,INDEX `obj_store__APQ__85_ISTR_index_4` (`ISTR_4`(192), `ISTR_4_TD`(139))
+  ,INDEX `obj_store__APQ__85_INUM_index_3` (`INUM_3`, `INUM_3_TD`(139))
+  ,INDEX `obj_store__APQ__85_ITS_index_3` (`ITS_3`, `ITS_3_TD`(139))
+  ,INDEX `obj_store__APQ__85_IDBL_index_3` (`IDBL_3`, `IDBL_3_TD`(139))
+  ,INDEX `obj_store__APQ__85_ISTR_index_5` (`ISTR_5`(192), `ISTR_5_TD`(139))
+  ,INDEX `obj_store__APQ__85_INUM_index_4` (`INUM_4`, `INUM_4_TD`(139))
+  ,INDEX `obj_store__APQ__85_ITS_index_4` (`ITS_4`, `ITS_4_TD`(139))
+  ,INDEX `obj_store__APQ__85_IDBL_index_4` (`IDBL_4`, `IDBL_4_TD`(139))
+  ,INDEX `obj_store__APQ__85_cre_user_index` (`cre_user`(64), `obj_def_id`(128), `tenant_id`)
 )
 ;
-/* drop/create OBJ_STORE_RB */
-DROP TABLE IF EXISTS `obj_store_rb__APQ__86`;
-CREATE TABLE `obj_store_rb__APQ__86` (
-  `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `rb_id` BIGINT(16) NULL,
-  `rb_date` DATETIME(3) NULL,
-  `rb_user` VARCHAR(64) NULL,
+/* drop/create OBJ_STORE */
+DROP TABLE IF EXISTS `obj_store__APQ__86`;
+CREATE TABLE `obj_store__APQ__86` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -20015,17 +21110,38 @@ CREATE TABLE `obj_store_rb__APQ__86` (
   ,`TS_32` DATETIME(3)
   ,`DBL_16` DOUBLE
   
-  ,PRIMARY KEY (`r_id`, `tenant_id`, `obj_def_id`)
-  ,INDEX `obj_store_rb___APQ__86index1` (`tenant_id`, `obj_def_id`(128), `rb_id`)
+  ,PRIMARY KEY (`tenant_id`, `obj_def_id`, `obj_id`, `obj_ver`, `pg_no`)
+  ,UNIQUE INDEX `obj_store__APQ__86_USTR_unique_1` (`USTR_1_TD`(139), `USTR_1`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__86_UNUM_unique_1` (`UNUM_1_TD`(139), `UNUM_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__86_UTS_unique_1` (`UTS_1_TD`(139), `UTS_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__86_UDBL_unique_1` (`UDBL_1_TD`(139), `UDBL_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__86_USTR_unique_2` (`USTR_2_TD`(139), `USTR_2`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__86_UNUM_unique_2` (`UNUM_2_TD`(139), `UNUM_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__86_UTS_unique_2` (`UTS_2_TD`(139), `UTS_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__86_UDBL_unique_2` (`UDBL_2_TD`(139), `UDBL_2`, `tenant_id`, `obj_def_id`(128))
+  ,INDEX `obj_store__APQ__86_ISTR_index_1` (`ISTR_1`(192), `ISTR_1_TD`(139))
+  ,INDEX `obj_store__APQ__86_INUM_index_1` (`INUM_1`, `INUM_1_TD`(139))
+  ,INDEX `obj_store__APQ__86_ITS_index_1` (`ITS_1`, `ITS_1_TD`(139))
+  ,INDEX `obj_store__APQ__86_IDBL_index_1` (`IDBL_1`, `IDBL_1_TD`(139))
+  ,INDEX `obj_store__APQ__86_ISTR_index_2` (`ISTR_2`(192), `ISTR_2_TD`(139))
+  ,INDEX `obj_store__APQ__86_INUM_index_2` (`INUM_2`, `INUM_2_TD`(139))
+  ,INDEX `obj_store__APQ__86_ITS_index_2` (`ITS_2`, `ITS_2_TD`(139))
+  ,INDEX `obj_store__APQ__86_IDBL_index_2` (`IDBL_2`, `IDBL_2_TD`(139))
+  ,INDEX `obj_store__APQ__86_ISTR_index_3` (`ISTR_3`(192), `ISTR_3_TD`(139))
+  ,INDEX `obj_store__APQ__86_ISTR_index_4` (`ISTR_4`(192), `ISTR_4_TD`(139))
+  ,INDEX `obj_store__APQ__86_INUM_index_3` (`INUM_3`, `INUM_3_TD`(139))
+  ,INDEX `obj_store__APQ__86_ITS_index_3` (`ITS_3`, `ITS_3_TD`(139))
+  ,INDEX `obj_store__APQ__86_IDBL_index_3` (`IDBL_3`, `IDBL_3_TD`(139))
+  ,INDEX `obj_store__APQ__86_ISTR_index_5` (`ISTR_5`(192), `ISTR_5_TD`(139))
+  ,INDEX `obj_store__APQ__86_INUM_index_4` (`INUM_4`, `INUM_4_TD`(139))
+  ,INDEX `obj_store__APQ__86_ITS_index_4` (`ITS_4`, `ITS_4_TD`(139))
+  ,INDEX `obj_store__APQ__86_IDBL_index_4` (`IDBL_4`, `IDBL_4_TD`(139))
+  ,INDEX `obj_store__APQ__86_cre_user_index` (`cre_user`(64), `obj_def_id`(128), `tenant_id`)
 )
 ;
-/* drop/create OBJ_STORE_RB */
-DROP TABLE IF EXISTS `obj_store_rb__APQ__87`;
-CREATE TABLE `obj_store_rb__APQ__87` (
-  `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `rb_id` BIGINT(16) NULL,
-  `rb_date` DATETIME(3) NULL,
-  `rb_user` VARCHAR(64) NULL,
+/* drop/create OBJ_STORE */
+DROP TABLE IF EXISTS `obj_store__APQ__87`;
+CREATE TABLE `obj_store__APQ__87` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -20237,17 +21353,38 @@ CREATE TABLE `obj_store_rb__APQ__87` (
   ,`TS_32` DATETIME(3)
   ,`DBL_16` DOUBLE
   
-  ,PRIMARY KEY (`r_id`, `tenant_id`, `obj_def_id`)
-  ,INDEX `obj_store_rb___APQ__87index1` (`tenant_id`, `obj_def_id`(128), `rb_id`)
+  ,PRIMARY KEY (`tenant_id`, `obj_def_id`, `obj_id`, `obj_ver`, `pg_no`)
+  ,UNIQUE INDEX `obj_store__APQ__87_USTR_unique_1` (`USTR_1_TD`(139), `USTR_1`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__87_UNUM_unique_1` (`UNUM_1_TD`(139), `UNUM_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__87_UTS_unique_1` (`UTS_1_TD`(139), `UTS_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__87_UDBL_unique_1` (`UDBL_1_TD`(139), `UDBL_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__87_USTR_unique_2` (`USTR_2_TD`(139), `USTR_2`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__87_UNUM_unique_2` (`UNUM_2_TD`(139), `UNUM_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__87_UTS_unique_2` (`UTS_2_TD`(139), `UTS_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__87_UDBL_unique_2` (`UDBL_2_TD`(139), `UDBL_2`, `tenant_id`, `obj_def_id`(128))
+  ,INDEX `obj_store__APQ__87_ISTR_index_1` (`ISTR_1`(192), `ISTR_1_TD`(139))
+  ,INDEX `obj_store__APQ__87_INUM_index_1` (`INUM_1`, `INUM_1_TD`(139))
+  ,INDEX `obj_store__APQ__87_ITS_index_1` (`ITS_1`, `ITS_1_TD`(139))
+  ,INDEX `obj_store__APQ__87_IDBL_index_1` (`IDBL_1`, `IDBL_1_TD`(139))
+  ,INDEX `obj_store__APQ__87_ISTR_index_2` (`ISTR_2`(192), `ISTR_2_TD`(139))
+  ,INDEX `obj_store__APQ__87_INUM_index_2` (`INUM_2`, `INUM_2_TD`(139))
+  ,INDEX `obj_store__APQ__87_ITS_index_2` (`ITS_2`, `ITS_2_TD`(139))
+  ,INDEX `obj_store__APQ__87_IDBL_index_2` (`IDBL_2`, `IDBL_2_TD`(139))
+  ,INDEX `obj_store__APQ__87_ISTR_index_3` (`ISTR_3`(192), `ISTR_3_TD`(139))
+  ,INDEX `obj_store__APQ__87_ISTR_index_4` (`ISTR_4`(192), `ISTR_4_TD`(139))
+  ,INDEX `obj_store__APQ__87_INUM_index_3` (`INUM_3`, `INUM_3_TD`(139))
+  ,INDEX `obj_store__APQ__87_ITS_index_3` (`ITS_3`, `ITS_3_TD`(139))
+  ,INDEX `obj_store__APQ__87_IDBL_index_3` (`IDBL_3`, `IDBL_3_TD`(139))
+  ,INDEX `obj_store__APQ__87_ISTR_index_5` (`ISTR_5`(192), `ISTR_5_TD`(139))
+  ,INDEX `obj_store__APQ__87_INUM_index_4` (`INUM_4`, `INUM_4_TD`(139))
+  ,INDEX `obj_store__APQ__87_ITS_index_4` (`ITS_4`, `ITS_4_TD`(139))
+  ,INDEX `obj_store__APQ__87_IDBL_index_4` (`IDBL_4`, `IDBL_4_TD`(139))
+  ,INDEX `obj_store__APQ__87_cre_user_index` (`cre_user`(64), `obj_def_id`(128), `tenant_id`)
 )
 ;
-/* drop/create OBJ_STORE_RB */
-DROP TABLE IF EXISTS `obj_store_rb__APQ__88`;
-CREATE TABLE `obj_store_rb__APQ__88` (
-  `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `rb_id` BIGINT(16) NULL,
-  `rb_date` DATETIME(3) NULL,
-  `rb_user` VARCHAR(64) NULL,
+/* drop/create OBJ_STORE */
+DROP TABLE IF EXISTS `obj_store__APQ__88`;
+CREATE TABLE `obj_store__APQ__88` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -20459,17 +21596,38 @@ CREATE TABLE `obj_store_rb__APQ__88` (
   ,`TS_32` DATETIME(3)
   ,`DBL_16` DOUBLE
   
-  ,PRIMARY KEY (`r_id`, `tenant_id`, `obj_def_id`)
-  ,INDEX `obj_store_rb___APQ__88index1` (`tenant_id`, `obj_def_id`(128), `rb_id`)
+  ,PRIMARY KEY (`tenant_id`, `obj_def_id`, `obj_id`, `obj_ver`, `pg_no`)
+  ,UNIQUE INDEX `obj_store__APQ__88_USTR_unique_1` (`USTR_1_TD`(139), `USTR_1`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__88_UNUM_unique_1` (`UNUM_1_TD`(139), `UNUM_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__88_UTS_unique_1` (`UTS_1_TD`(139), `UTS_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__88_UDBL_unique_1` (`UDBL_1_TD`(139), `UDBL_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__88_USTR_unique_2` (`USTR_2_TD`(139), `USTR_2`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__88_UNUM_unique_2` (`UNUM_2_TD`(139), `UNUM_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__88_UTS_unique_2` (`UTS_2_TD`(139), `UTS_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__88_UDBL_unique_2` (`UDBL_2_TD`(139), `UDBL_2`, `tenant_id`, `obj_def_id`(128))
+  ,INDEX `obj_store__APQ__88_ISTR_index_1` (`ISTR_1`(192), `ISTR_1_TD`(139))
+  ,INDEX `obj_store__APQ__88_INUM_index_1` (`INUM_1`, `INUM_1_TD`(139))
+  ,INDEX `obj_store__APQ__88_ITS_index_1` (`ITS_1`, `ITS_1_TD`(139))
+  ,INDEX `obj_store__APQ__88_IDBL_index_1` (`IDBL_1`, `IDBL_1_TD`(139))
+  ,INDEX `obj_store__APQ__88_ISTR_index_2` (`ISTR_2`(192), `ISTR_2_TD`(139))
+  ,INDEX `obj_store__APQ__88_INUM_index_2` (`INUM_2`, `INUM_2_TD`(139))
+  ,INDEX `obj_store__APQ__88_ITS_index_2` (`ITS_2`, `ITS_2_TD`(139))
+  ,INDEX `obj_store__APQ__88_IDBL_index_2` (`IDBL_2`, `IDBL_2_TD`(139))
+  ,INDEX `obj_store__APQ__88_ISTR_index_3` (`ISTR_3`(192), `ISTR_3_TD`(139))
+  ,INDEX `obj_store__APQ__88_ISTR_index_4` (`ISTR_4`(192), `ISTR_4_TD`(139))
+  ,INDEX `obj_store__APQ__88_INUM_index_3` (`INUM_3`, `INUM_3_TD`(139))
+  ,INDEX `obj_store__APQ__88_ITS_index_3` (`ITS_3`, `ITS_3_TD`(139))
+  ,INDEX `obj_store__APQ__88_IDBL_index_3` (`IDBL_3`, `IDBL_3_TD`(139))
+  ,INDEX `obj_store__APQ__88_ISTR_index_5` (`ISTR_5`(192), `ISTR_5_TD`(139))
+  ,INDEX `obj_store__APQ__88_INUM_index_4` (`INUM_4`, `INUM_4_TD`(139))
+  ,INDEX `obj_store__APQ__88_ITS_index_4` (`ITS_4`, `ITS_4_TD`(139))
+  ,INDEX `obj_store__APQ__88_IDBL_index_4` (`IDBL_4`, `IDBL_4_TD`(139))
+  ,INDEX `obj_store__APQ__88_cre_user_index` (`cre_user`(64), `obj_def_id`(128), `tenant_id`)
 )
 ;
-/* drop/create OBJ_STORE_RB */
-DROP TABLE IF EXISTS `obj_store_rb__APQ__89`;
-CREATE TABLE `obj_store_rb__APQ__89` (
-  `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `rb_id` BIGINT(16) NULL,
-  `rb_date` DATETIME(3) NULL,
-  `rb_user` VARCHAR(64) NULL,
+/* drop/create OBJ_STORE */
+DROP TABLE IF EXISTS `obj_store__APQ__89`;
+CREATE TABLE `obj_store__APQ__89` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -20681,17 +21839,38 @@ CREATE TABLE `obj_store_rb__APQ__89` (
   ,`TS_32` DATETIME(3)
   ,`DBL_16` DOUBLE
   
-  ,PRIMARY KEY (`r_id`, `tenant_id`, `obj_def_id`)
-  ,INDEX `obj_store_rb___APQ__89index1` (`tenant_id`, `obj_def_id`(128), `rb_id`)
+  ,PRIMARY KEY (`tenant_id`, `obj_def_id`, `obj_id`, `obj_ver`, `pg_no`)
+  ,UNIQUE INDEX `obj_store__APQ__89_USTR_unique_1` (`USTR_1_TD`(139), `USTR_1`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__89_UNUM_unique_1` (`UNUM_1_TD`(139), `UNUM_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__89_UTS_unique_1` (`UTS_1_TD`(139), `UTS_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__89_UDBL_unique_1` (`UDBL_1_TD`(139), `UDBL_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__89_USTR_unique_2` (`USTR_2_TD`(139), `USTR_2`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__89_UNUM_unique_2` (`UNUM_2_TD`(139), `UNUM_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__89_UTS_unique_2` (`UTS_2_TD`(139), `UTS_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__89_UDBL_unique_2` (`UDBL_2_TD`(139), `UDBL_2`, `tenant_id`, `obj_def_id`(128))
+  ,INDEX `obj_store__APQ__89_ISTR_index_1` (`ISTR_1`(192), `ISTR_1_TD`(139))
+  ,INDEX `obj_store__APQ__89_INUM_index_1` (`INUM_1`, `INUM_1_TD`(139))
+  ,INDEX `obj_store__APQ__89_ITS_index_1` (`ITS_1`, `ITS_1_TD`(139))
+  ,INDEX `obj_store__APQ__89_IDBL_index_1` (`IDBL_1`, `IDBL_1_TD`(139))
+  ,INDEX `obj_store__APQ__89_ISTR_index_2` (`ISTR_2`(192), `ISTR_2_TD`(139))
+  ,INDEX `obj_store__APQ__89_INUM_index_2` (`INUM_2`, `INUM_2_TD`(139))
+  ,INDEX `obj_store__APQ__89_ITS_index_2` (`ITS_2`, `ITS_2_TD`(139))
+  ,INDEX `obj_store__APQ__89_IDBL_index_2` (`IDBL_2`, `IDBL_2_TD`(139))
+  ,INDEX `obj_store__APQ__89_ISTR_index_3` (`ISTR_3`(192), `ISTR_3_TD`(139))
+  ,INDEX `obj_store__APQ__89_ISTR_index_4` (`ISTR_4`(192), `ISTR_4_TD`(139))
+  ,INDEX `obj_store__APQ__89_INUM_index_3` (`INUM_3`, `INUM_3_TD`(139))
+  ,INDEX `obj_store__APQ__89_ITS_index_3` (`ITS_3`, `ITS_3_TD`(139))
+  ,INDEX `obj_store__APQ__89_IDBL_index_3` (`IDBL_3`, `IDBL_3_TD`(139))
+  ,INDEX `obj_store__APQ__89_ISTR_index_5` (`ISTR_5`(192), `ISTR_5_TD`(139))
+  ,INDEX `obj_store__APQ__89_INUM_index_4` (`INUM_4`, `INUM_4_TD`(139))
+  ,INDEX `obj_store__APQ__89_ITS_index_4` (`ITS_4`, `ITS_4_TD`(139))
+  ,INDEX `obj_store__APQ__89_IDBL_index_4` (`IDBL_4`, `IDBL_4_TD`(139))
+  ,INDEX `obj_store__APQ__89_cre_user_index` (`cre_user`(64), `obj_def_id`(128), `tenant_id`)
 )
 ;
-/* drop/create OBJ_STORE_RB */
-DROP TABLE IF EXISTS `obj_store_rb__APQ__90`;
-CREATE TABLE `obj_store_rb__APQ__90` (
-  `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `rb_id` BIGINT(16) NULL,
-  `rb_date` DATETIME(3) NULL,
-  `rb_user` VARCHAR(64) NULL,
+/* drop/create OBJ_STORE */
+DROP TABLE IF EXISTS `obj_store__APQ__90`;
+CREATE TABLE `obj_store__APQ__90` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -20903,17 +22082,38 @@ CREATE TABLE `obj_store_rb__APQ__90` (
   ,`TS_32` DATETIME(3)
   ,`DBL_16` DOUBLE
   
-  ,PRIMARY KEY (`r_id`, `tenant_id`, `obj_def_id`)
-  ,INDEX `obj_store_rb___APQ__90index1` (`tenant_id`, `obj_def_id`(128), `rb_id`)
+  ,PRIMARY KEY (`tenant_id`, `obj_def_id`, `obj_id`, `obj_ver`, `pg_no`)
+  ,UNIQUE INDEX `obj_store__APQ__90_USTR_unique_1` (`USTR_1_TD`(139), `USTR_1`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__90_UNUM_unique_1` (`UNUM_1_TD`(139), `UNUM_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__90_UTS_unique_1` (`UTS_1_TD`(139), `UTS_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__90_UDBL_unique_1` (`UDBL_1_TD`(139), `UDBL_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__90_USTR_unique_2` (`USTR_2_TD`(139), `USTR_2`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__90_UNUM_unique_2` (`UNUM_2_TD`(139), `UNUM_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__90_UTS_unique_2` (`UTS_2_TD`(139), `UTS_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__90_UDBL_unique_2` (`UDBL_2_TD`(139), `UDBL_2`, `tenant_id`, `obj_def_id`(128))
+  ,INDEX `obj_store__APQ__90_ISTR_index_1` (`ISTR_1`(192), `ISTR_1_TD`(139))
+  ,INDEX `obj_store__APQ__90_INUM_index_1` (`INUM_1`, `INUM_1_TD`(139))
+  ,INDEX `obj_store__APQ__90_ITS_index_1` (`ITS_1`, `ITS_1_TD`(139))
+  ,INDEX `obj_store__APQ__90_IDBL_index_1` (`IDBL_1`, `IDBL_1_TD`(139))
+  ,INDEX `obj_store__APQ__90_ISTR_index_2` (`ISTR_2`(192), `ISTR_2_TD`(139))
+  ,INDEX `obj_store__APQ__90_INUM_index_2` (`INUM_2`, `INUM_2_TD`(139))
+  ,INDEX `obj_store__APQ__90_ITS_index_2` (`ITS_2`, `ITS_2_TD`(139))
+  ,INDEX `obj_store__APQ__90_IDBL_index_2` (`IDBL_2`, `IDBL_2_TD`(139))
+  ,INDEX `obj_store__APQ__90_ISTR_index_3` (`ISTR_3`(192), `ISTR_3_TD`(139))
+  ,INDEX `obj_store__APQ__90_ISTR_index_4` (`ISTR_4`(192), `ISTR_4_TD`(139))
+  ,INDEX `obj_store__APQ__90_INUM_index_3` (`INUM_3`, `INUM_3_TD`(139))
+  ,INDEX `obj_store__APQ__90_ITS_index_3` (`ITS_3`, `ITS_3_TD`(139))
+  ,INDEX `obj_store__APQ__90_IDBL_index_3` (`IDBL_3`, `IDBL_3_TD`(139))
+  ,INDEX `obj_store__APQ__90_ISTR_index_5` (`ISTR_5`(192), `ISTR_5_TD`(139))
+  ,INDEX `obj_store__APQ__90_INUM_index_4` (`INUM_4`, `INUM_4_TD`(139))
+  ,INDEX `obj_store__APQ__90_ITS_index_4` (`ITS_4`, `ITS_4_TD`(139))
+  ,INDEX `obj_store__APQ__90_IDBL_index_4` (`IDBL_4`, `IDBL_4_TD`(139))
+  ,INDEX `obj_store__APQ__90_cre_user_index` (`cre_user`(64), `obj_def_id`(128), `tenant_id`)
 )
 ;
-/* drop/create OBJ_STORE_RB */
-DROP TABLE IF EXISTS `obj_store_rb__APQ__91`;
-CREATE TABLE `obj_store_rb__APQ__91` (
-  `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `rb_id` BIGINT(16) NULL,
-  `rb_date` DATETIME(3) NULL,
-  `rb_user` VARCHAR(64) NULL,
+/* drop/create OBJ_STORE */
+DROP TABLE IF EXISTS `obj_store__APQ__91`;
+CREATE TABLE `obj_store__APQ__91` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -21125,17 +22325,38 @@ CREATE TABLE `obj_store_rb__APQ__91` (
   ,`TS_32` DATETIME(3)
   ,`DBL_16` DOUBLE
   
-  ,PRIMARY KEY (`r_id`, `tenant_id`, `obj_def_id`)
-  ,INDEX `obj_store_rb___APQ__91index1` (`tenant_id`, `obj_def_id`(128), `rb_id`)
+  ,PRIMARY KEY (`tenant_id`, `obj_def_id`, `obj_id`, `obj_ver`, `pg_no`)
+  ,UNIQUE INDEX `obj_store__APQ__91_USTR_unique_1` (`USTR_1_TD`(139), `USTR_1`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__91_UNUM_unique_1` (`UNUM_1_TD`(139), `UNUM_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__91_UTS_unique_1` (`UTS_1_TD`(139), `UTS_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__91_UDBL_unique_1` (`UDBL_1_TD`(139), `UDBL_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__91_USTR_unique_2` (`USTR_2_TD`(139), `USTR_2`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__91_UNUM_unique_2` (`UNUM_2_TD`(139), `UNUM_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__91_UTS_unique_2` (`UTS_2_TD`(139), `UTS_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__91_UDBL_unique_2` (`UDBL_2_TD`(139), `UDBL_2`, `tenant_id`, `obj_def_id`(128))
+  ,INDEX `obj_store__APQ__91_ISTR_index_1` (`ISTR_1`(192), `ISTR_1_TD`(139))
+  ,INDEX `obj_store__APQ__91_INUM_index_1` (`INUM_1`, `INUM_1_TD`(139))
+  ,INDEX `obj_store__APQ__91_ITS_index_1` (`ITS_1`, `ITS_1_TD`(139))
+  ,INDEX `obj_store__APQ__91_IDBL_index_1` (`IDBL_1`, `IDBL_1_TD`(139))
+  ,INDEX `obj_store__APQ__91_ISTR_index_2` (`ISTR_2`(192), `ISTR_2_TD`(139))
+  ,INDEX `obj_store__APQ__91_INUM_index_2` (`INUM_2`, `INUM_2_TD`(139))
+  ,INDEX `obj_store__APQ__91_ITS_index_2` (`ITS_2`, `ITS_2_TD`(139))
+  ,INDEX `obj_store__APQ__91_IDBL_index_2` (`IDBL_2`, `IDBL_2_TD`(139))
+  ,INDEX `obj_store__APQ__91_ISTR_index_3` (`ISTR_3`(192), `ISTR_3_TD`(139))
+  ,INDEX `obj_store__APQ__91_ISTR_index_4` (`ISTR_4`(192), `ISTR_4_TD`(139))
+  ,INDEX `obj_store__APQ__91_INUM_index_3` (`INUM_3`, `INUM_3_TD`(139))
+  ,INDEX `obj_store__APQ__91_ITS_index_3` (`ITS_3`, `ITS_3_TD`(139))
+  ,INDEX `obj_store__APQ__91_IDBL_index_3` (`IDBL_3`, `IDBL_3_TD`(139))
+  ,INDEX `obj_store__APQ__91_ISTR_index_5` (`ISTR_5`(192), `ISTR_5_TD`(139))
+  ,INDEX `obj_store__APQ__91_INUM_index_4` (`INUM_4`, `INUM_4_TD`(139))
+  ,INDEX `obj_store__APQ__91_ITS_index_4` (`ITS_4`, `ITS_4_TD`(139))
+  ,INDEX `obj_store__APQ__91_IDBL_index_4` (`IDBL_4`, `IDBL_4_TD`(139))
+  ,INDEX `obj_store__APQ__91_cre_user_index` (`cre_user`(64), `obj_def_id`(128), `tenant_id`)
 )
 ;
-/* drop/create OBJ_STORE_RB */
-DROP TABLE IF EXISTS `obj_store_rb__APQ__92`;
-CREATE TABLE `obj_store_rb__APQ__92` (
-  `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `rb_id` BIGINT(16) NULL,
-  `rb_date` DATETIME(3) NULL,
-  `rb_user` VARCHAR(64) NULL,
+/* drop/create OBJ_STORE */
+DROP TABLE IF EXISTS `obj_store__APQ__92`;
+CREATE TABLE `obj_store__APQ__92` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -21347,17 +22568,38 @@ CREATE TABLE `obj_store_rb__APQ__92` (
   ,`TS_32` DATETIME(3)
   ,`DBL_16` DOUBLE
   
-  ,PRIMARY KEY (`r_id`, `tenant_id`, `obj_def_id`)
-  ,INDEX `obj_store_rb___APQ__92index1` (`tenant_id`, `obj_def_id`(128), `rb_id`)
+  ,PRIMARY KEY (`tenant_id`, `obj_def_id`, `obj_id`, `obj_ver`, `pg_no`)
+  ,UNIQUE INDEX `obj_store__APQ__92_USTR_unique_1` (`USTR_1_TD`(139), `USTR_1`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__92_UNUM_unique_1` (`UNUM_1_TD`(139), `UNUM_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__92_UTS_unique_1` (`UTS_1_TD`(139), `UTS_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__92_UDBL_unique_1` (`UDBL_1_TD`(139), `UDBL_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__92_USTR_unique_2` (`USTR_2_TD`(139), `USTR_2`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__92_UNUM_unique_2` (`UNUM_2_TD`(139), `UNUM_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__92_UTS_unique_2` (`UTS_2_TD`(139), `UTS_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__92_UDBL_unique_2` (`UDBL_2_TD`(139), `UDBL_2`, `tenant_id`, `obj_def_id`(128))
+  ,INDEX `obj_store__APQ__92_ISTR_index_1` (`ISTR_1`(192), `ISTR_1_TD`(139))
+  ,INDEX `obj_store__APQ__92_INUM_index_1` (`INUM_1`, `INUM_1_TD`(139))
+  ,INDEX `obj_store__APQ__92_ITS_index_1` (`ITS_1`, `ITS_1_TD`(139))
+  ,INDEX `obj_store__APQ__92_IDBL_index_1` (`IDBL_1`, `IDBL_1_TD`(139))
+  ,INDEX `obj_store__APQ__92_ISTR_index_2` (`ISTR_2`(192), `ISTR_2_TD`(139))
+  ,INDEX `obj_store__APQ__92_INUM_index_2` (`INUM_2`, `INUM_2_TD`(139))
+  ,INDEX `obj_store__APQ__92_ITS_index_2` (`ITS_2`, `ITS_2_TD`(139))
+  ,INDEX `obj_store__APQ__92_IDBL_index_2` (`IDBL_2`, `IDBL_2_TD`(139))
+  ,INDEX `obj_store__APQ__92_ISTR_index_3` (`ISTR_3`(192), `ISTR_3_TD`(139))
+  ,INDEX `obj_store__APQ__92_ISTR_index_4` (`ISTR_4`(192), `ISTR_4_TD`(139))
+  ,INDEX `obj_store__APQ__92_INUM_index_3` (`INUM_3`, `INUM_3_TD`(139))
+  ,INDEX `obj_store__APQ__92_ITS_index_3` (`ITS_3`, `ITS_3_TD`(139))
+  ,INDEX `obj_store__APQ__92_IDBL_index_3` (`IDBL_3`, `IDBL_3_TD`(139))
+  ,INDEX `obj_store__APQ__92_ISTR_index_5` (`ISTR_5`(192), `ISTR_5_TD`(139))
+  ,INDEX `obj_store__APQ__92_INUM_index_4` (`INUM_4`, `INUM_4_TD`(139))
+  ,INDEX `obj_store__APQ__92_ITS_index_4` (`ITS_4`, `ITS_4_TD`(139))
+  ,INDEX `obj_store__APQ__92_IDBL_index_4` (`IDBL_4`, `IDBL_4_TD`(139))
+  ,INDEX `obj_store__APQ__92_cre_user_index` (`cre_user`(64), `obj_def_id`(128), `tenant_id`)
 )
 ;
-/* drop/create OBJ_STORE_RB */
-DROP TABLE IF EXISTS `obj_store_rb__APQ__93`;
-CREATE TABLE `obj_store_rb__APQ__93` (
-  `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `rb_id` BIGINT(16) NULL,
-  `rb_date` DATETIME(3) NULL,
-  `rb_user` VARCHAR(64) NULL,
+/* drop/create OBJ_STORE */
+DROP TABLE IF EXISTS `obj_store__APQ__93`;
+CREATE TABLE `obj_store__APQ__93` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -21569,17 +22811,38 @@ CREATE TABLE `obj_store_rb__APQ__93` (
   ,`TS_32` DATETIME(3)
   ,`DBL_16` DOUBLE
   
-  ,PRIMARY KEY (`r_id`, `tenant_id`, `obj_def_id`)
-  ,INDEX `obj_store_rb___APQ__93index1` (`tenant_id`, `obj_def_id`(128), `rb_id`)
+  ,PRIMARY KEY (`tenant_id`, `obj_def_id`, `obj_id`, `obj_ver`, `pg_no`)
+  ,UNIQUE INDEX `obj_store__APQ__93_USTR_unique_1` (`USTR_1_TD`(139), `USTR_1`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__93_UNUM_unique_1` (`UNUM_1_TD`(139), `UNUM_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__93_UTS_unique_1` (`UTS_1_TD`(139), `UTS_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__93_UDBL_unique_1` (`UDBL_1_TD`(139), `UDBL_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__93_USTR_unique_2` (`USTR_2_TD`(139), `USTR_2`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__93_UNUM_unique_2` (`UNUM_2_TD`(139), `UNUM_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__93_UTS_unique_2` (`UTS_2_TD`(139), `UTS_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__93_UDBL_unique_2` (`UDBL_2_TD`(139), `UDBL_2`, `tenant_id`, `obj_def_id`(128))
+  ,INDEX `obj_store__APQ__93_ISTR_index_1` (`ISTR_1`(192), `ISTR_1_TD`(139))
+  ,INDEX `obj_store__APQ__93_INUM_index_1` (`INUM_1`, `INUM_1_TD`(139))
+  ,INDEX `obj_store__APQ__93_ITS_index_1` (`ITS_1`, `ITS_1_TD`(139))
+  ,INDEX `obj_store__APQ__93_IDBL_index_1` (`IDBL_1`, `IDBL_1_TD`(139))
+  ,INDEX `obj_store__APQ__93_ISTR_index_2` (`ISTR_2`(192), `ISTR_2_TD`(139))
+  ,INDEX `obj_store__APQ__93_INUM_index_2` (`INUM_2`, `INUM_2_TD`(139))
+  ,INDEX `obj_store__APQ__93_ITS_index_2` (`ITS_2`, `ITS_2_TD`(139))
+  ,INDEX `obj_store__APQ__93_IDBL_index_2` (`IDBL_2`, `IDBL_2_TD`(139))
+  ,INDEX `obj_store__APQ__93_ISTR_index_3` (`ISTR_3`(192), `ISTR_3_TD`(139))
+  ,INDEX `obj_store__APQ__93_ISTR_index_4` (`ISTR_4`(192), `ISTR_4_TD`(139))
+  ,INDEX `obj_store__APQ__93_INUM_index_3` (`INUM_3`, `INUM_3_TD`(139))
+  ,INDEX `obj_store__APQ__93_ITS_index_3` (`ITS_3`, `ITS_3_TD`(139))
+  ,INDEX `obj_store__APQ__93_IDBL_index_3` (`IDBL_3`, `IDBL_3_TD`(139))
+  ,INDEX `obj_store__APQ__93_ISTR_index_5` (`ISTR_5`(192), `ISTR_5_TD`(139))
+  ,INDEX `obj_store__APQ__93_INUM_index_4` (`INUM_4`, `INUM_4_TD`(139))
+  ,INDEX `obj_store__APQ__93_ITS_index_4` (`ITS_4`, `ITS_4_TD`(139))
+  ,INDEX `obj_store__APQ__93_IDBL_index_4` (`IDBL_4`, `IDBL_4_TD`(139))
+  ,INDEX `obj_store__APQ__93_cre_user_index` (`cre_user`(64), `obj_def_id`(128), `tenant_id`)
 )
 ;
-/* drop/create OBJ_STORE_RB */
-DROP TABLE IF EXISTS `obj_store_rb__APQ__94`;
-CREATE TABLE `obj_store_rb__APQ__94` (
-  `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `rb_id` BIGINT(16) NULL,
-  `rb_date` DATETIME(3) NULL,
-  `rb_user` VARCHAR(64) NULL,
+/* drop/create OBJ_STORE */
+DROP TABLE IF EXISTS `obj_store__APQ__94`;
+CREATE TABLE `obj_store__APQ__94` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -21791,17 +23054,38 @@ CREATE TABLE `obj_store_rb__APQ__94` (
   ,`TS_32` DATETIME(3)
   ,`DBL_16` DOUBLE
   
-  ,PRIMARY KEY (`r_id`, `tenant_id`, `obj_def_id`)
-  ,INDEX `obj_store_rb___APQ__94index1` (`tenant_id`, `obj_def_id`(128), `rb_id`)
+  ,PRIMARY KEY (`tenant_id`, `obj_def_id`, `obj_id`, `obj_ver`, `pg_no`)
+  ,UNIQUE INDEX `obj_store__APQ__94_USTR_unique_1` (`USTR_1_TD`(139), `USTR_1`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__94_UNUM_unique_1` (`UNUM_1_TD`(139), `UNUM_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__94_UTS_unique_1` (`UTS_1_TD`(139), `UTS_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__94_UDBL_unique_1` (`UDBL_1_TD`(139), `UDBL_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__94_USTR_unique_2` (`USTR_2_TD`(139), `USTR_2`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__94_UNUM_unique_2` (`UNUM_2_TD`(139), `UNUM_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__94_UTS_unique_2` (`UTS_2_TD`(139), `UTS_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__94_UDBL_unique_2` (`UDBL_2_TD`(139), `UDBL_2`, `tenant_id`, `obj_def_id`(128))
+  ,INDEX `obj_store__APQ__94_ISTR_index_1` (`ISTR_1`(192), `ISTR_1_TD`(139))
+  ,INDEX `obj_store__APQ__94_INUM_index_1` (`INUM_1`, `INUM_1_TD`(139))
+  ,INDEX `obj_store__APQ__94_ITS_index_1` (`ITS_1`, `ITS_1_TD`(139))
+  ,INDEX `obj_store__APQ__94_IDBL_index_1` (`IDBL_1`, `IDBL_1_TD`(139))
+  ,INDEX `obj_store__APQ__94_ISTR_index_2` (`ISTR_2`(192), `ISTR_2_TD`(139))
+  ,INDEX `obj_store__APQ__94_INUM_index_2` (`INUM_2`, `INUM_2_TD`(139))
+  ,INDEX `obj_store__APQ__94_ITS_index_2` (`ITS_2`, `ITS_2_TD`(139))
+  ,INDEX `obj_store__APQ__94_IDBL_index_2` (`IDBL_2`, `IDBL_2_TD`(139))
+  ,INDEX `obj_store__APQ__94_ISTR_index_3` (`ISTR_3`(192), `ISTR_3_TD`(139))
+  ,INDEX `obj_store__APQ__94_ISTR_index_4` (`ISTR_4`(192), `ISTR_4_TD`(139))
+  ,INDEX `obj_store__APQ__94_INUM_index_3` (`INUM_3`, `INUM_3_TD`(139))
+  ,INDEX `obj_store__APQ__94_ITS_index_3` (`ITS_3`, `ITS_3_TD`(139))
+  ,INDEX `obj_store__APQ__94_IDBL_index_3` (`IDBL_3`, `IDBL_3_TD`(139))
+  ,INDEX `obj_store__APQ__94_ISTR_index_5` (`ISTR_5`(192), `ISTR_5_TD`(139))
+  ,INDEX `obj_store__APQ__94_INUM_index_4` (`INUM_4`, `INUM_4_TD`(139))
+  ,INDEX `obj_store__APQ__94_ITS_index_4` (`ITS_4`, `ITS_4_TD`(139))
+  ,INDEX `obj_store__APQ__94_IDBL_index_4` (`IDBL_4`, `IDBL_4_TD`(139))
+  ,INDEX `obj_store__APQ__94_cre_user_index` (`cre_user`(64), `obj_def_id`(128), `tenant_id`)
 )
 ;
-/* drop/create OBJ_STORE_RB */
-DROP TABLE IF EXISTS `obj_store_rb__APQ__95`;
-CREATE TABLE `obj_store_rb__APQ__95` (
-  `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `rb_id` BIGINT(16) NULL,
-  `rb_date` DATETIME(3) NULL,
-  `rb_user` VARCHAR(64) NULL,
+/* drop/create OBJ_STORE */
+DROP TABLE IF EXISTS `obj_store__APQ__95`;
+CREATE TABLE `obj_store__APQ__95` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -22013,17 +23297,38 @@ CREATE TABLE `obj_store_rb__APQ__95` (
   ,`TS_32` DATETIME(3)
   ,`DBL_16` DOUBLE
   
-  ,PRIMARY KEY (`r_id`, `tenant_id`, `obj_def_id`)
-  ,INDEX `obj_store_rb___APQ__95index1` (`tenant_id`, `obj_def_id`(128), `rb_id`)
+  ,PRIMARY KEY (`tenant_id`, `obj_def_id`, `obj_id`, `obj_ver`, `pg_no`)
+  ,UNIQUE INDEX `obj_store__APQ__95_USTR_unique_1` (`USTR_1_TD`(139), `USTR_1`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__95_UNUM_unique_1` (`UNUM_1_TD`(139), `UNUM_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__95_UTS_unique_1` (`UTS_1_TD`(139), `UTS_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__95_UDBL_unique_1` (`UDBL_1_TD`(139), `UDBL_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__95_USTR_unique_2` (`USTR_2_TD`(139), `USTR_2`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__95_UNUM_unique_2` (`UNUM_2_TD`(139), `UNUM_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__95_UTS_unique_2` (`UTS_2_TD`(139), `UTS_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__95_UDBL_unique_2` (`UDBL_2_TD`(139), `UDBL_2`, `tenant_id`, `obj_def_id`(128))
+  ,INDEX `obj_store__APQ__95_ISTR_index_1` (`ISTR_1`(192), `ISTR_1_TD`(139))
+  ,INDEX `obj_store__APQ__95_INUM_index_1` (`INUM_1`, `INUM_1_TD`(139))
+  ,INDEX `obj_store__APQ__95_ITS_index_1` (`ITS_1`, `ITS_1_TD`(139))
+  ,INDEX `obj_store__APQ__95_IDBL_index_1` (`IDBL_1`, `IDBL_1_TD`(139))
+  ,INDEX `obj_store__APQ__95_ISTR_index_2` (`ISTR_2`(192), `ISTR_2_TD`(139))
+  ,INDEX `obj_store__APQ__95_INUM_index_2` (`INUM_2`, `INUM_2_TD`(139))
+  ,INDEX `obj_store__APQ__95_ITS_index_2` (`ITS_2`, `ITS_2_TD`(139))
+  ,INDEX `obj_store__APQ__95_IDBL_index_2` (`IDBL_2`, `IDBL_2_TD`(139))
+  ,INDEX `obj_store__APQ__95_ISTR_index_3` (`ISTR_3`(192), `ISTR_3_TD`(139))
+  ,INDEX `obj_store__APQ__95_ISTR_index_4` (`ISTR_4`(192), `ISTR_4_TD`(139))
+  ,INDEX `obj_store__APQ__95_INUM_index_3` (`INUM_3`, `INUM_3_TD`(139))
+  ,INDEX `obj_store__APQ__95_ITS_index_3` (`ITS_3`, `ITS_3_TD`(139))
+  ,INDEX `obj_store__APQ__95_IDBL_index_3` (`IDBL_3`, `IDBL_3_TD`(139))
+  ,INDEX `obj_store__APQ__95_ISTR_index_5` (`ISTR_5`(192), `ISTR_5_TD`(139))
+  ,INDEX `obj_store__APQ__95_INUM_index_4` (`INUM_4`, `INUM_4_TD`(139))
+  ,INDEX `obj_store__APQ__95_ITS_index_4` (`ITS_4`, `ITS_4_TD`(139))
+  ,INDEX `obj_store__APQ__95_IDBL_index_4` (`IDBL_4`, `IDBL_4_TD`(139))
+  ,INDEX `obj_store__APQ__95_cre_user_index` (`cre_user`(64), `obj_def_id`(128), `tenant_id`)
 )
 ;
-/* drop/create OBJ_STORE_RB */
-DROP TABLE IF EXISTS `obj_store_rb__APQ__96`;
-CREATE TABLE `obj_store_rb__APQ__96` (
-  `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `rb_id` BIGINT(16) NULL,
-  `rb_date` DATETIME(3) NULL,
-  `rb_user` VARCHAR(64) NULL,
+/* drop/create OBJ_STORE */
+DROP TABLE IF EXISTS `obj_store__APQ__96`;
+CREATE TABLE `obj_store__APQ__96` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -22235,17 +23540,38 @@ CREATE TABLE `obj_store_rb__APQ__96` (
   ,`TS_32` DATETIME(3)
   ,`DBL_16` DOUBLE
   
-  ,PRIMARY KEY (`r_id`, `tenant_id`, `obj_def_id`)
-  ,INDEX `obj_store_rb___APQ__96index1` (`tenant_id`, `obj_def_id`(128), `rb_id`)
+  ,PRIMARY KEY (`tenant_id`, `obj_def_id`, `obj_id`, `obj_ver`, `pg_no`)
+  ,UNIQUE INDEX `obj_store__APQ__96_USTR_unique_1` (`USTR_1_TD`(139), `USTR_1`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__96_UNUM_unique_1` (`UNUM_1_TD`(139), `UNUM_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__96_UTS_unique_1` (`UTS_1_TD`(139), `UTS_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__96_UDBL_unique_1` (`UDBL_1_TD`(139), `UDBL_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__96_USTR_unique_2` (`USTR_2_TD`(139), `USTR_2`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__96_UNUM_unique_2` (`UNUM_2_TD`(139), `UNUM_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__96_UTS_unique_2` (`UTS_2_TD`(139), `UTS_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__96_UDBL_unique_2` (`UDBL_2_TD`(139), `UDBL_2`, `tenant_id`, `obj_def_id`(128))
+  ,INDEX `obj_store__APQ__96_ISTR_index_1` (`ISTR_1`(192), `ISTR_1_TD`(139))
+  ,INDEX `obj_store__APQ__96_INUM_index_1` (`INUM_1`, `INUM_1_TD`(139))
+  ,INDEX `obj_store__APQ__96_ITS_index_1` (`ITS_1`, `ITS_1_TD`(139))
+  ,INDEX `obj_store__APQ__96_IDBL_index_1` (`IDBL_1`, `IDBL_1_TD`(139))
+  ,INDEX `obj_store__APQ__96_ISTR_index_2` (`ISTR_2`(192), `ISTR_2_TD`(139))
+  ,INDEX `obj_store__APQ__96_INUM_index_2` (`INUM_2`, `INUM_2_TD`(139))
+  ,INDEX `obj_store__APQ__96_ITS_index_2` (`ITS_2`, `ITS_2_TD`(139))
+  ,INDEX `obj_store__APQ__96_IDBL_index_2` (`IDBL_2`, `IDBL_2_TD`(139))
+  ,INDEX `obj_store__APQ__96_ISTR_index_3` (`ISTR_3`(192), `ISTR_3_TD`(139))
+  ,INDEX `obj_store__APQ__96_ISTR_index_4` (`ISTR_4`(192), `ISTR_4_TD`(139))
+  ,INDEX `obj_store__APQ__96_INUM_index_3` (`INUM_3`, `INUM_3_TD`(139))
+  ,INDEX `obj_store__APQ__96_ITS_index_3` (`ITS_3`, `ITS_3_TD`(139))
+  ,INDEX `obj_store__APQ__96_IDBL_index_3` (`IDBL_3`, `IDBL_3_TD`(139))
+  ,INDEX `obj_store__APQ__96_ISTR_index_5` (`ISTR_5`(192), `ISTR_5_TD`(139))
+  ,INDEX `obj_store__APQ__96_INUM_index_4` (`INUM_4`, `INUM_4_TD`(139))
+  ,INDEX `obj_store__APQ__96_ITS_index_4` (`ITS_4`, `ITS_4_TD`(139))
+  ,INDEX `obj_store__APQ__96_IDBL_index_4` (`IDBL_4`, `IDBL_4_TD`(139))
+  ,INDEX `obj_store__APQ__96_cre_user_index` (`cre_user`(64), `obj_def_id`(128), `tenant_id`)
 )
 ;
-/* drop/create OBJ_STORE_RB */
-DROP TABLE IF EXISTS `obj_store_rb__APQ__97`;
-CREATE TABLE `obj_store_rb__APQ__97` (
-  `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `rb_id` BIGINT(16) NULL,
-  `rb_date` DATETIME(3) NULL,
-  `rb_user` VARCHAR(64) NULL,
+/* drop/create OBJ_STORE */
+DROP TABLE IF EXISTS `obj_store__APQ__97`;
+CREATE TABLE `obj_store__APQ__97` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -22457,17 +23783,38 @@ CREATE TABLE `obj_store_rb__APQ__97` (
   ,`TS_32` DATETIME(3)
   ,`DBL_16` DOUBLE
   
-  ,PRIMARY KEY (`r_id`, `tenant_id`, `obj_def_id`)
-  ,INDEX `obj_store_rb___APQ__97index1` (`tenant_id`, `obj_def_id`(128), `rb_id`)
+  ,PRIMARY KEY (`tenant_id`, `obj_def_id`, `obj_id`, `obj_ver`, `pg_no`)
+  ,UNIQUE INDEX `obj_store__APQ__97_USTR_unique_1` (`USTR_1_TD`(139), `USTR_1`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__97_UNUM_unique_1` (`UNUM_1_TD`(139), `UNUM_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__97_UTS_unique_1` (`UTS_1_TD`(139), `UTS_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__97_UDBL_unique_1` (`UDBL_1_TD`(139), `UDBL_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__97_USTR_unique_2` (`USTR_2_TD`(139), `USTR_2`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__97_UNUM_unique_2` (`UNUM_2_TD`(139), `UNUM_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__97_UTS_unique_2` (`UTS_2_TD`(139), `UTS_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__97_UDBL_unique_2` (`UDBL_2_TD`(139), `UDBL_2`, `tenant_id`, `obj_def_id`(128))
+  ,INDEX `obj_store__APQ__97_ISTR_index_1` (`ISTR_1`(192), `ISTR_1_TD`(139))
+  ,INDEX `obj_store__APQ__97_INUM_index_1` (`INUM_1`, `INUM_1_TD`(139))
+  ,INDEX `obj_store__APQ__97_ITS_index_1` (`ITS_1`, `ITS_1_TD`(139))
+  ,INDEX `obj_store__APQ__97_IDBL_index_1` (`IDBL_1`, `IDBL_1_TD`(139))
+  ,INDEX `obj_store__APQ__97_ISTR_index_2` (`ISTR_2`(192), `ISTR_2_TD`(139))
+  ,INDEX `obj_store__APQ__97_INUM_index_2` (`INUM_2`, `INUM_2_TD`(139))
+  ,INDEX `obj_store__APQ__97_ITS_index_2` (`ITS_2`, `ITS_2_TD`(139))
+  ,INDEX `obj_store__APQ__97_IDBL_index_2` (`IDBL_2`, `IDBL_2_TD`(139))
+  ,INDEX `obj_store__APQ__97_ISTR_index_3` (`ISTR_3`(192), `ISTR_3_TD`(139))
+  ,INDEX `obj_store__APQ__97_ISTR_index_4` (`ISTR_4`(192), `ISTR_4_TD`(139))
+  ,INDEX `obj_store__APQ__97_INUM_index_3` (`INUM_3`, `INUM_3_TD`(139))
+  ,INDEX `obj_store__APQ__97_ITS_index_3` (`ITS_3`, `ITS_3_TD`(139))
+  ,INDEX `obj_store__APQ__97_IDBL_index_3` (`IDBL_3`, `IDBL_3_TD`(139))
+  ,INDEX `obj_store__APQ__97_ISTR_index_5` (`ISTR_5`(192), `ISTR_5_TD`(139))
+  ,INDEX `obj_store__APQ__97_INUM_index_4` (`INUM_4`, `INUM_4_TD`(139))
+  ,INDEX `obj_store__APQ__97_ITS_index_4` (`ITS_4`, `ITS_4_TD`(139))
+  ,INDEX `obj_store__APQ__97_IDBL_index_4` (`IDBL_4`, `IDBL_4_TD`(139))
+  ,INDEX `obj_store__APQ__97_cre_user_index` (`cre_user`(64), `obj_def_id`(128), `tenant_id`)
 )
 ;
-/* drop/create OBJ_STORE_RB */
-DROP TABLE IF EXISTS `obj_store_rb__APQ__98`;
-CREATE TABLE `obj_store_rb__APQ__98` (
-  `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `rb_id` BIGINT(16) NULL,
-  `rb_date` DATETIME(3) NULL,
-  `rb_user` VARCHAR(64) NULL,
+/* drop/create OBJ_STORE */
+DROP TABLE IF EXISTS `obj_store__APQ__98`;
+CREATE TABLE `obj_store__APQ__98` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -22679,17 +24026,38 @@ CREATE TABLE `obj_store_rb__APQ__98` (
   ,`TS_32` DATETIME(3)
   ,`DBL_16` DOUBLE
   
-  ,PRIMARY KEY (`r_id`, `tenant_id`, `obj_def_id`)
-  ,INDEX `obj_store_rb___APQ__98index1` (`tenant_id`, `obj_def_id`(128), `rb_id`)
+  ,PRIMARY KEY (`tenant_id`, `obj_def_id`, `obj_id`, `obj_ver`, `pg_no`)
+  ,UNIQUE INDEX `obj_store__APQ__98_USTR_unique_1` (`USTR_1_TD`(139), `USTR_1`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__98_UNUM_unique_1` (`UNUM_1_TD`(139), `UNUM_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__98_UTS_unique_1` (`UTS_1_TD`(139), `UTS_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__98_UDBL_unique_1` (`UDBL_1_TD`(139), `UDBL_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__98_USTR_unique_2` (`USTR_2_TD`(139), `USTR_2`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__98_UNUM_unique_2` (`UNUM_2_TD`(139), `UNUM_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__98_UTS_unique_2` (`UTS_2_TD`(139), `UTS_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__98_UDBL_unique_2` (`UDBL_2_TD`(139), `UDBL_2`, `tenant_id`, `obj_def_id`(128))
+  ,INDEX `obj_store__APQ__98_ISTR_index_1` (`ISTR_1`(192), `ISTR_1_TD`(139))
+  ,INDEX `obj_store__APQ__98_INUM_index_1` (`INUM_1`, `INUM_1_TD`(139))
+  ,INDEX `obj_store__APQ__98_ITS_index_1` (`ITS_1`, `ITS_1_TD`(139))
+  ,INDEX `obj_store__APQ__98_IDBL_index_1` (`IDBL_1`, `IDBL_1_TD`(139))
+  ,INDEX `obj_store__APQ__98_ISTR_index_2` (`ISTR_2`(192), `ISTR_2_TD`(139))
+  ,INDEX `obj_store__APQ__98_INUM_index_2` (`INUM_2`, `INUM_2_TD`(139))
+  ,INDEX `obj_store__APQ__98_ITS_index_2` (`ITS_2`, `ITS_2_TD`(139))
+  ,INDEX `obj_store__APQ__98_IDBL_index_2` (`IDBL_2`, `IDBL_2_TD`(139))
+  ,INDEX `obj_store__APQ__98_ISTR_index_3` (`ISTR_3`(192), `ISTR_3_TD`(139))
+  ,INDEX `obj_store__APQ__98_ISTR_index_4` (`ISTR_4`(192), `ISTR_4_TD`(139))
+  ,INDEX `obj_store__APQ__98_INUM_index_3` (`INUM_3`, `INUM_3_TD`(139))
+  ,INDEX `obj_store__APQ__98_ITS_index_3` (`ITS_3`, `ITS_3_TD`(139))
+  ,INDEX `obj_store__APQ__98_IDBL_index_3` (`IDBL_3`, `IDBL_3_TD`(139))
+  ,INDEX `obj_store__APQ__98_ISTR_index_5` (`ISTR_5`(192), `ISTR_5_TD`(139))
+  ,INDEX `obj_store__APQ__98_INUM_index_4` (`INUM_4`, `INUM_4_TD`(139))
+  ,INDEX `obj_store__APQ__98_ITS_index_4` (`ITS_4`, `ITS_4_TD`(139))
+  ,INDEX `obj_store__APQ__98_IDBL_index_4` (`IDBL_4`, `IDBL_4_TD`(139))
+  ,INDEX `obj_store__APQ__98_cre_user_index` (`cre_user`(64), `obj_def_id`(128), `tenant_id`)
 )
 ;
-/* drop/create OBJ_STORE_RB */
-DROP TABLE IF EXISTS `obj_store_rb__APQ__99`;
-CREATE TABLE `obj_store_rb__APQ__99` (
-  `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `rb_id` BIGINT(16) NULL,
-  `rb_date` DATETIME(3) NULL,
-  `rb_user` VARCHAR(64) NULL,
+/* drop/create OBJ_STORE */
+DROP TABLE IF EXISTS `obj_store__APQ__99`;
+CREATE TABLE `obj_store__APQ__99` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -22901,17 +24269,38 @@ CREATE TABLE `obj_store_rb__APQ__99` (
   ,`TS_32` DATETIME(3)
   ,`DBL_16` DOUBLE
   
-  ,PRIMARY KEY (`r_id`, `tenant_id`, `obj_def_id`)
-  ,INDEX `obj_store_rb___APQ__99index1` (`tenant_id`, `obj_def_id`(128), `rb_id`)
+  ,PRIMARY KEY (`tenant_id`, `obj_def_id`, `obj_id`, `obj_ver`, `pg_no`)
+  ,UNIQUE INDEX `obj_store__APQ__99_USTR_unique_1` (`USTR_1_TD`(139), `USTR_1`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__99_UNUM_unique_1` (`UNUM_1_TD`(139), `UNUM_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__99_UTS_unique_1` (`UTS_1_TD`(139), `UTS_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__99_UDBL_unique_1` (`UDBL_1_TD`(139), `UDBL_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__99_USTR_unique_2` (`USTR_2_TD`(139), `USTR_2`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__99_UNUM_unique_2` (`UNUM_2_TD`(139), `UNUM_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__99_UTS_unique_2` (`UTS_2_TD`(139), `UTS_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__99_UDBL_unique_2` (`UDBL_2_TD`(139), `UDBL_2`, `tenant_id`, `obj_def_id`(128))
+  ,INDEX `obj_store__APQ__99_ISTR_index_1` (`ISTR_1`(192), `ISTR_1_TD`(139))
+  ,INDEX `obj_store__APQ__99_INUM_index_1` (`INUM_1`, `INUM_1_TD`(139))
+  ,INDEX `obj_store__APQ__99_ITS_index_1` (`ITS_1`, `ITS_1_TD`(139))
+  ,INDEX `obj_store__APQ__99_IDBL_index_1` (`IDBL_1`, `IDBL_1_TD`(139))
+  ,INDEX `obj_store__APQ__99_ISTR_index_2` (`ISTR_2`(192), `ISTR_2_TD`(139))
+  ,INDEX `obj_store__APQ__99_INUM_index_2` (`INUM_2`, `INUM_2_TD`(139))
+  ,INDEX `obj_store__APQ__99_ITS_index_2` (`ITS_2`, `ITS_2_TD`(139))
+  ,INDEX `obj_store__APQ__99_IDBL_index_2` (`IDBL_2`, `IDBL_2_TD`(139))
+  ,INDEX `obj_store__APQ__99_ISTR_index_3` (`ISTR_3`(192), `ISTR_3_TD`(139))
+  ,INDEX `obj_store__APQ__99_ISTR_index_4` (`ISTR_4`(192), `ISTR_4_TD`(139))
+  ,INDEX `obj_store__APQ__99_INUM_index_3` (`INUM_3`, `INUM_3_TD`(139))
+  ,INDEX `obj_store__APQ__99_ITS_index_3` (`ITS_3`, `ITS_3_TD`(139))
+  ,INDEX `obj_store__APQ__99_IDBL_index_3` (`IDBL_3`, `IDBL_3_TD`(139))
+  ,INDEX `obj_store__APQ__99_ISTR_index_5` (`ISTR_5`(192), `ISTR_5_TD`(139))
+  ,INDEX `obj_store__APQ__99_INUM_index_4` (`INUM_4`, `INUM_4_TD`(139))
+  ,INDEX `obj_store__APQ__99_ITS_index_4` (`ITS_4`, `ITS_4_TD`(139))
+  ,INDEX `obj_store__APQ__99_IDBL_index_4` (`IDBL_4`, `IDBL_4_TD`(139))
+  ,INDEX `obj_store__APQ__99_cre_user_index` (`cre_user`(64), `obj_def_id`(128), `tenant_id`)
 )
 ;
-/* drop/create OBJ_STORE_RB */
-DROP TABLE IF EXISTS `obj_store_rb__APQ__100`;
-CREATE TABLE `obj_store_rb__APQ__100` (
-  `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `rb_id` BIGINT(16) NULL,
-  `rb_date` DATETIME(3) NULL,
-  `rb_user` VARCHAR(64) NULL,
+/* drop/create OBJ_STORE */
+DROP TABLE IF EXISTS `obj_store__APQ__100`;
+CREATE TABLE `obj_store__APQ__100` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -23123,17 +24512,38 @@ CREATE TABLE `obj_store_rb__APQ__100` (
   ,`TS_32` DATETIME(3)
   ,`DBL_16` DOUBLE
   
-  ,PRIMARY KEY (`r_id`, `tenant_id`, `obj_def_id`)
-  ,INDEX `obj_store_rb___APQ__100index1` (`tenant_id`, `obj_def_id`(128), `rb_id`)
+  ,PRIMARY KEY (`tenant_id`, `obj_def_id`, `obj_id`, `obj_ver`, `pg_no`)
+  ,UNIQUE INDEX `obj_store__APQ__100_USTR_unique_1` (`USTR_1_TD`(139), `USTR_1`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__100_UNUM_unique_1` (`UNUM_1_TD`(139), `UNUM_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__100_UTS_unique_1` (`UTS_1_TD`(139), `UTS_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__100_UDBL_unique_1` (`UDBL_1_TD`(139), `UDBL_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__100_USTR_unique_2` (`USTR_2_TD`(139), `USTR_2`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__100_UNUM_unique_2` (`UNUM_2_TD`(139), `UNUM_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__100_UTS_unique_2` (`UTS_2_TD`(139), `UTS_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__100_UDBL_unique_2` (`UDBL_2_TD`(139), `UDBL_2`, `tenant_id`, `obj_def_id`(128))
+  ,INDEX `obj_store__APQ__100_ISTR_index_1` (`ISTR_1`(192), `ISTR_1_TD`(139))
+  ,INDEX `obj_store__APQ__100_INUM_index_1` (`INUM_1`, `INUM_1_TD`(139))
+  ,INDEX `obj_store__APQ__100_ITS_index_1` (`ITS_1`, `ITS_1_TD`(139))
+  ,INDEX `obj_store__APQ__100_IDBL_index_1` (`IDBL_1`, `IDBL_1_TD`(139))
+  ,INDEX `obj_store__APQ__100_ISTR_index_2` (`ISTR_2`(192), `ISTR_2_TD`(139))
+  ,INDEX `obj_store__APQ__100_INUM_index_2` (`INUM_2`, `INUM_2_TD`(139))
+  ,INDEX `obj_store__APQ__100_ITS_index_2` (`ITS_2`, `ITS_2_TD`(139))
+  ,INDEX `obj_store__APQ__100_IDBL_index_2` (`IDBL_2`, `IDBL_2_TD`(139))
+  ,INDEX `obj_store__APQ__100_ISTR_index_3` (`ISTR_3`(192), `ISTR_3_TD`(139))
+  ,INDEX `obj_store__APQ__100_ISTR_index_4` (`ISTR_4`(192), `ISTR_4_TD`(139))
+  ,INDEX `obj_store__APQ__100_INUM_index_3` (`INUM_3`, `INUM_3_TD`(139))
+  ,INDEX `obj_store__APQ__100_ITS_index_3` (`ITS_3`, `ITS_3_TD`(139))
+  ,INDEX `obj_store__APQ__100_IDBL_index_3` (`IDBL_3`, `IDBL_3_TD`(139))
+  ,INDEX `obj_store__APQ__100_ISTR_index_5` (`ISTR_5`(192), `ISTR_5_TD`(139))
+  ,INDEX `obj_store__APQ__100_INUM_index_4` (`INUM_4`, `INUM_4_TD`(139))
+  ,INDEX `obj_store__APQ__100_ITS_index_4` (`ITS_4`, `ITS_4_TD`(139))
+  ,INDEX `obj_store__APQ__100_IDBL_index_4` (`IDBL_4`, `IDBL_4_TD`(139))
+  ,INDEX `obj_store__APQ__100_cre_user_index` (`cre_user`(64), `obj_def_id`(128), `tenant_id`)
 )
 ;
-/* drop/create OBJ_STORE_RB */
-DROP TABLE IF EXISTS `obj_store_rb__APQ__101`;
-CREATE TABLE `obj_store_rb__APQ__101` (
-  `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `rb_id` BIGINT(16) NULL,
-  `rb_date` DATETIME(3) NULL,
-  `rb_user` VARCHAR(64) NULL,
+/* drop/create OBJ_STORE */
+DROP TABLE IF EXISTS `obj_store__APQ__101`;
+CREATE TABLE `obj_store__APQ__101` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -23345,17 +24755,38 @@ CREATE TABLE `obj_store_rb__APQ__101` (
   ,`TS_32` DATETIME(3)
   ,`DBL_16` DOUBLE
   
-  ,PRIMARY KEY (`r_id`, `tenant_id`, `obj_def_id`)
-  ,INDEX `obj_store_rb___APQ__101index1` (`tenant_id`, `obj_def_id`(128), `rb_id`)
+  ,PRIMARY KEY (`tenant_id`, `obj_def_id`, `obj_id`, `obj_ver`, `pg_no`)
+  ,UNIQUE INDEX `obj_store__APQ__101_USTR_unique_1` (`USTR_1_TD`(139), `USTR_1`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__101_UNUM_unique_1` (`UNUM_1_TD`(139), `UNUM_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__101_UTS_unique_1` (`UTS_1_TD`(139), `UTS_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__101_UDBL_unique_1` (`UDBL_1_TD`(139), `UDBL_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__101_USTR_unique_2` (`USTR_2_TD`(139), `USTR_2`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__101_UNUM_unique_2` (`UNUM_2_TD`(139), `UNUM_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__101_UTS_unique_2` (`UTS_2_TD`(139), `UTS_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__101_UDBL_unique_2` (`UDBL_2_TD`(139), `UDBL_2`, `tenant_id`, `obj_def_id`(128))
+  ,INDEX `obj_store__APQ__101_ISTR_index_1` (`ISTR_1`(192), `ISTR_1_TD`(139))
+  ,INDEX `obj_store__APQ__101_INUM_index_1` (`INUM_1`, `INUM_1_TD`(139))
+  ,INDEX `obj_store__APQ__101_ITS_index_1` (`ITS_1`, `ITS_1_TD`(139))
+  ,INDEX `obj_store__APQ__101_IDBL_index_1` (`IDBL_1`, `IDBL_1_TD`(139))
+  ,INDEX `obj_store__APQ__101_ISTR_index_2` (`ISTR_2`(192), `ISTR_2_TD`(139))
+  ,INDEX `obj_store__APQ__101_INUM_index_2` (`INUM_2`, `INUM_2_TD`(139))
+  ,INDEX `obj_store__APQ__101_ITS_index_2` (`ITS_2`, `ITS_2_TD`(139))
+  ,INDEX `obj_store__APQ__101_IDBL_index_2` (`IDBL_2`, `IDBL_2_TD`(139))
+  ,INDEX `obj_store__APQ__101_ISTR_index_3` (`ISTR_3`(192), `ISTR_3_TD`(139))
+  ,INDEX `obj_store__APQ__101_ISTR_index_4` (`ISTR_4`(192), `ISTR_4_TD`(139))
+  ,INDEX `obj_store__APQ__101_INUM_index_3` (`INUM_3`, `INUM_3_TD`(139))
+  ,INDEX `obj_store__APQ__101_ITS_index_3` (`ITS_3`, `ITS_3_TD`(139))
+  ,INDEX `obj_store__APQ__101_IDBL_index_3` (`IDBL_3`, `IDBL_3_TD`(139))
+  ,INDEX `obj_store__APQ__101_ISTR_index_5` (`ISTR_5`(192), `ISTR_5_TD`(139))
+  ,INDEX `obj_store__APQ__101_INUM_index_4` (`INUM_4`, `INUM_4_TD`(139))
+  ,INDEX `obj_store__APQ__101_ITS_index_4` (`ITS_4`, `ITS_4_TD`(139))
+  ,INDEX `obj_store__APQ__101_IDBL_index_4` (`IDBL_4`, `IDBL_4_TD`(139))
+  ,INDEX `obj_store__APQ__101_cre_user_index` (`cre_user`(64), `obj_def_id`(128), `tenant_id`)
 )
 ;
-/* drop/create OBJ_STORE_RB */
-DROP TABLE IF EXISTS `obj_store_rb__APQ__102`;
-CREATE TABLE `obj_store_rb__APQ__102` (
-  `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `rb_id` BIGINT(16) NULL,
-  `rb_date` DATETIME(3) NULL,
-  `rb_user` VARCHAR(64) NULL,
+/* drop/create OBJ_STORE */
+DROP TABLE IF EXISTS `obj_store__APQ__102`;
+CREATE TABLE `obj_store__APQ__102` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -23567,17 +24998,38 @@ CREATE TABLE `obj_store_rb__APQ__102` (
   ,`TS_32` DATETIME(3)
   ,`DBL_16` DOUBLE
   
-  ,PRIMARY KEY (`r_id`, `tenant_id`, `obj_def_id`)
-  ,INDEX `obj_store_rb___APQ__102index1` (`tenant_id`, `obj_def_id`(128), `rb_id`)
+  ,PRIMARY KEY (`tenant_id`, `obj_def_id`, `obj_id`, `obj_ver`, `pg_no`)
+  ,UNIQUE INDEX `obj_store__APQ__102_USTR_unique_1` (`USTR_1_TD`(139), `USTR_1`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__102_UNUM_unique_1` (`UNUM_1_TD`(139), `UNUM_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__102_UTS_unique_1` (`UTS_1_TD`(139), `UTS_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__102_UDBL_unique_1` (`UDBL_1_TD`(139), `UDBL_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__102_USTR_unique_2` (`USTR_2_TD`(139), `USTR_2`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__102_UNUM_unique_2` (`UNUM_2_TD`(139), `UNUM_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__102_UTS_unique_2` (`UTS_2_TD`(139), `UTS_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__102_UDBL_unique_2` (`UDBL_2_TD`(139), `UDBL_2`, `tenant_id`, `obj_def_id`(128))
+  ,INDEX `obj_store__APQ__102_ISTR_index_1` (`ISTR_1`(192), `ISTR_1_TD`(139))
+  ,INDEX `obj_store__APQ__102_INUM_index_1` (`INUM_1`, `INUM_1_TD`(139))
+  ,INDEX `obj_store__APQ__102_ITS_index_1` (`ITS_1`, `ITS_1_TD`(139))
+  ,INDEX `obj_store__APQ__102_IDBL_index_1` (`IDBL_1`, `IDBL_1_TD`(139))
+  ,INDEX `obj_store__APQ__102_ISTR_index_2` (`ISTR_2`(192), `ISTR_2_TD`(139))
+  ,INDEX `obj_store__APQ__102_INUM_index_2` (`INUM_2`, `INUM_2_TD`(139))
+  ,INDEX `obj_store__APQ__102_ITS_index_2` (`ITS_2`, `ITS_2_TD`(139))
+  ,INDEX `obj_store__APQ__102_IDBL_index_2` (`IDBL_2`, `IDBL_2_TD`(139))
+  ,INDEX `obj_store__APQ__102_ISTR_index_3` (`ISTR_3`(192), `ISTR_3_TD`(139))
+  ,INDEX `obj_store__APQ__102_ISTR_index_4` (`ISTR_4`(192), `ISTR_4_TD`(139))
+  ,INDEX `obj_store__APQ__102_INUM_index_3` (`INUM_3`, `INUM_3_TD`(139))
+  ,INDEX `obj_store__APQ__102_ITS_index_3` (`ITS_3`, `ITS_3_TD`(139))
+  ,INDEX `obj_store__APQ__102_IDBL_index_3` (`IDBL_3`, `IDBL_3_TD`(139))
+  ,INDEX `obj_store__APQ__102_ISTR_index_5` (`ISTR_5`(192), `ISTR_5_TD`(139))
+  ,INDEX `obj_store__APQ__102_INUM_index_4` (`INUM_4`, `INUM_4_TD`(139))
+  ,INDEX `obj_store__APQ__102_ITS_index_4` (`ITS_4`, `ITS_4_TD`(139))
+  ,INDEX `obj_store__APQ__102_IDBL_index_4` (`IDBL_4`, `IDBL_4_TD`(139))
+  ,INDEX `obj_store__APQ__102_cre_user_index` (`cre_user`(64), `obj_def_id`(128), `tenant_id`)
 )
 ;
-/* drop/create OBJ_STORE_RB */
-DROP TABLE IF EXISTS `obj_store_rb__APQ__103`;
-CREATE TABLE `obj_store_rb__APQ__103` (
-  `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `rb_id` BIGINT(16) NULL,
-  `rb_date` DATETIME(3) NULL,
-  `rb_user` VARCHAR(64) NULL,
+/* drop/create OBJ_STORE */
+DROP TABLE IF EXISTS `obj_store__APQ__103`;
+CREATE TABLE `obj_store__APQ__103` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -23789,17 +25241,38 @@ CREATE TABLE `obj_store_rb__APQ__103` (
   ,`TS_32` DATETIME(3)
   ,`DBL_16` DOUBLE
   
-  ,PRIMARY KEY (`r_id`, `tenant_id`, `obj_def_id`)
-  ,INDEX `obj_store_rb___APQ__103index1` (`tenant_id`, `obj_def_id`(128), `rb_id`)
+  ,PRIMARY KEY (`tenant_id`, `obj_def_id`, `obj_id`, `obj_ver`, `pg_no`)
+  ,UNIQUE INDEX `obj_store__APQ__103_USTR_unique_1` (`USTR_1_TD`(139), `USTR_1`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__103_UNUM_unique_1` (`UNUM_1_TD`(139), `UNUM_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__103_UTS_unique_1` (`UTS_1_TD`(139), `UTS_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__103_UDBL_unique_1` (`UDBL_1_TD`(139), `UDBL_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__103_USTR_unique_2` (`USTR_2_TD`(139), `USTR_2`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__103_UNUM_unique_2` (`UNUM_2_TD`(139), `UNUM_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__103_UTS_unique_2` (`UTS_2_TD`(139), `UTS_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__103_UDBL_unique_2` (`UDBL_2_TD`(139), `UDBL_2`, `tenant_id`, `obj_def_id`(128))
+  ,INDEX `obj_store__APQ__103_ISTR_index_1` (`ISTR_1`(192), `ISTR_1_TD`(139))
+  ,INDEX `obj_store__APQ__103_INUM_index_1` (`INUM_1`, `INUM_1_TD`(139))
+  ,INDEX `obj_store__APQ__103_ITS_index_1` (`ITS_1`, `ITS_1_TD`(139))
+  ,INDEX `obj_store__APQ__103_IDBL_index_1` (`IDBL_1`, `IDBL_1_TD`(139))
+  ,INDEX `obj_store__APQ__103_ISTR_index_2` (`ISTR_2`(192), `ISTR_2_TD`(139))
+  ,INDEX `obj_store__APQ__103_INUM_index_2` (`INUM_2`, `INUM_2_TD`(139))
+  ,INDEX `obj_store__APQ__103_ITS_index_2` (`ITS_2`, `ITS_2_TD`(139))
+  ,INDEX `obj_store__APQ__103_IDBL_index_2` (`IDBL_2`, `IDBL_2_TD`(139))
+  ,INDEX `obj_store__APQ__103_ISTR_index_3` (`ISTR_3`(192), `ISTR_3_TD`(139))
+  ,INDEX `obj_store__APQ__103_ISTR_index_4` (`ISTR_4`(192), `ISTR_4_TD`(139))
+  ,INDEX `obj_store__APQ__103_INUM_index_3` (`INUM_3`, `INUM_3_TD`(139))
+  ,INDEX `obj_store__APQ__103_ITS_index_3` (`ITS_3`, `ITS_3_TD`(139))
+  ,INDEX `obj_store__APQ__103_IDBL_index_3` (`IDBL_3`, `IDBL_3_TD`(139))
+  ,INDEX `obj_store__APQ__103_ISTR_index_5` (`ISTR_5`(192), `ISTR_5_TD`(139))
+  ,INDEX `obj_store__APQ__103_INUM_index_4` (`INUM_4`, `INUM_4_TD`(139))
+  ,INDEX `obj_store__APQ__103_ITS_index_4` (`ITS_4`, `ITS_4_TD`(139))
+  ,INDEX `obj_store__APQ__103_IDBL_index_4` (`IDBL_4`, `IDBL_4_TD`(139))
+  ,INDEX `obj_store__APQ__103_cre_user_index` (`cre_user`(64), `obj_def_id`(128), `tenant_id`)
 )
 ;
-/* drop/create OBJ_STORE_RB */
-DROP TABLE IF EXISTS `obj_store_rb__APQ__104`;
-CREATE TABLE `obj_store_rb__APQ__104` (
-  `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `rb_id` BIGINT(16) NULL,
-  `rb_date` DATETIME(3) NULL,
-  `rb_user` VARCHAR(64) NULL,
+/* drop/create OBJ_STORE */
+DROP TABLE IF EXISTS `obj_store__APQ__104`;
+CREATE TABLE `obj_store__APQ__104` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -24011,17 +25484,38 @@ CREATE TABLE `obj_store_rb__APQ__104` (
   ,`TS_32` DATETIME(3)
   ,`DBL_16` DOUBLE
   
-  ,PRIMARY KEY (`r_id`, `tenant_id`, `obj_def_id`)
-  ,INDEX `obj_store_rb___APQ__104index1` (`tenant_id`, `obj_def_id`(128), `rb_id`)
+  ,PRIMARY KEY (`tenant_id`, `obj_def_id`, `obj_id`, `obj_ver`, `pg_no`)
+  ,UNIQUE INDEX `obj_store__APQ__104_USTR_unique_1` (`USTR_1_TD`(139), `USTR_1`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__104_UNUM_unique_1` (`UNUM_1_TD`(139), `UNUM_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__104_UTS_unique_1` (`UTS_1_TD`(139), `UTS_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__104_UDBL_unique_1` (`UDBL_1_TD`(139), `UDBL_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__104_USTR_unique_2` (`USTR_2_TD`(139), `USTR_2`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__104_UNUM_unique_2` (`UNUM_2_TD`(139), `UNUM_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__104_UTS_unique_2` (`UTS_2_TD`(139), `UTS_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__104_UDBL_unique_2` (`UDBL_2_TD`(139), `UDBL_2`, `tenant_id`, `obj_def_id`(128))
+  ,INDEX `obj_store__APQ__104_ISTR_index_1` (`ISTR_1`(192), `ISTR_1_TD`(139))
+  ,INDEX `obj_store__APQ__104_INUM_index_1` (`INUM_1`, `INUM_1_TD`(139))
+  ,INDEX `obj_store__APQ__104_ITS_index_1` (`ITS_1`, `ITS_1_TD`(139))
+  ,INDEX `obj_store__APQ__104_IDBL_index_1` (`IDBL_1`, `IDBL_1_TD`(139))
+  ,INDEX `obj_store__APQ__104_ISTR_index_2` (`ISTR_2`(192), `ISTR_2_TD`(139))
+  ,INDEX `obj_store__APQ__104_INUM_index_2` (`INUM_2`, `INUM_2_TD`(139))
+  ,INDEX `obj_store__APQ__104_ITS_index_2` (`ITS_2`, `ITS_2_TD`(139))
+  ,INDEX `obj_store__APQ__104_IDBL_index_2` (`IDBL_2`, `IDBL_2_TD`(139))
+  ,INDEX `obj_store__APQ__104_ISTR_index_3` (`ISTR_3`(192), `ISTR_3_TD`(139))
+  ,INDEX `obj_store__APQ__104_ISTR_index_4` (`ISTR_4`(192), `ISTR_4_TD`(139))
+  ,INDEX `obj_store__APQ__104_INUM_index_3` (`INUM_3`, `INUM_3_TD`(139))
+  ,INDEX `obj_store__APQ__104_ITS_index_3` (`ITS_3`, `ITS_3_TD`(139))
+  ,INDEX `obj_store__APQ__104_IDBL_index_3` (`IDBL_3`, `IDBL_3_TD`(139))
+  ,INDEX `obj_store__APQ__104_ISTR_index_5` (`ISTR_5`(192), `ISTR_5_TD`(139))
+  ,INDEX `obj_store__APQ__104_INUM_index_4` (`INUM_4`, `INUM_4_TD`(139))
+  ,INDEX `obj_store__APQ__104_ITS_index_4` (`ITS_4`, `ITS_4_TD`(139))
+  ,INDEX `obj_store__APQ__104_IDBL_index_4` (`IDBL_4`, `IDBL_4_TD`(139))
+  ,INDEX `obj_store__APQ__104_cre_user_index` (`cre_user`(64), `obj_def_id`(128), `tenant_id`)
 )
 ;
-/* drop/create OBJ_STORE_RB */
-DROP TABLE IF EXISTS `obj_store_rb__APQ__105`;
-CREATE TABLE `obj_store_rb__APQ__105` (
-  `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `rb_id` BIGINT(16) NULL,
-  `rb_date` DATETIME(3) NULL,
-  `rb_user` VARCHAR(64) NULL,
+/* drop/create OBJ_STORE */
+DROP TABLE IF EXISTS `obj_store__APQ__105`;
+CREATE TABLE `obj_store__APQ__105` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -24233,17 +25727,38 @@ CREATE TABLE `obj_store_rb__APQ__105` (
   ,`TS_32` DATETIME(3)
   ,`DBL_16` DOUBLE
   
-  ,PRIMARY KEY (`r_id`, `tenant_id`, `obj_def_id`)
-  ,INDEX `obj_store_rb___APQ__105index1` (`tenant_id`, `obj_def_id`(128), `rb_id`)
+  ,PRIMARY KEY (`tenant_id`, `obj_def_id`, `obj_id`, `obj_ver`, `pg_no`)
+  ,UNIQUE INDEX `obj_store__APQ__105_USTR_unique_1` (`USTR_1_TD`(139), `USTR_1`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__105_UNUM_unique_1` (`UNUM_1_TD`(139), `UNUM_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__105_UTS_unique_1` (`UTS_1_TD`(139), `UTS_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__105_UDBL_unique_1` (`UDBL_1_TD`(139), `UDBL_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__105_USTR_unique_2` (`USTR_2_TD`(139), `USTR_2`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__105_UNUM_unique_2` (`UNUM_2_TD`(139), `UNUM_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__105_UTS_unique_2` (`UTS_2_TD`(139), `UTS_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__105_UDBL_unique_2` (`UDBL_2_TD`(139), `UDBL_2`, `tenant_id`, `obj_def_id`(128))
+  ,INDEX `obj_store__APQ__105_ISTR_index_1` (`ISTR_1`(192), `ISTR_1_TD`(139))
+  ,INDEX `obj_store__APQ__105_INUM_index_1` (`INUM_1`, `INUM_1_TD`(139))
+  ,INDEX `obj_store__APQ__105_ITS_index_1` (`ITS_1`, `ITS_1_TD`(139))
+  ,INDEX `obj_store__APQ__105_IDBL_index_1` (`IDBL_1`, `IDBL_1_TD`(139))
+  ,INDEX `obj_store__APQ__105_ISTR_index_2` (`ISTR_2`(192), `ISTR_2_TD`(139))
+  ,INDEX `obj_store__APQ__105_INUM_index_2` (`INUM_2`, `INUM_2_TD`(139))
+  ,INDEX `obj_store__APQ__105_ITS_index_2` (`ITS_2`, `ITS_2_TD`(139))
+  ,INDEX `obj_store__APQ__105_IDBL_index_2` (`IDBL_2`, `IDBL_2_TD`(139))
+  ,INDEX `obj_store__APQ__105_ISTR_index_3` (`ISTR_3`(192), `ISTR_3_TD`(139))
+  ,INDEX `obj_store__APQ__105_ISTR_index_4` (`ISTR_4`(192), `ISTR_4_TD`(139))
+  ,INDEX `obj_store__APQ__105_INUM_index_3` (`INUM_3`, `INUM_3_TD`(139))
+  ,INDEX `obj_store__APQ__105_ITS_index_3` (`ITS_3`, `ITS_3_TD`(139))
+  ,INDEX `obj_store__APQ__105_IDBL_index_3` (`IDBL_3`, `IDBL_3_TD`(139))
+  ,INDEX `obj_store__APQ__105_ISTR_index_5` (`ISTR_5`(192), `ISTR_5_TD`(139))
+  ,INDEX `obj_store__APQ__105_INUM_index_4` (`INUM_4`, `INUM_4_TD`(139))
+  ,INDEX `obj_store__APQ__105_ITS_index_4` (`ITS_4`, `ITS_4_TD`(139))
+  ,INDEX `obj_store__APQ__105_IDBL_index_4` (`IDBL_4`, `IDBL_4_TD`(139))
+  ,INDEX `obj_store__APQ__105_cre_user_index` (`cre_user`(64), `obj_def_id`(128), `tenant_id`)
 )
 ;
-/* drop/create OBJ_STORE_RB */
-DROP TABLE IF EXISTS `obj_store_rb__APQ__106`;
-CREATE TABLE `obj_store_rb__APQ__106` (
-  `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `rb_id` BIGINT(16) NULL,
-  `rb_date` DATETIME(3) NULL,
-  `rb_user` VARCHAR(64) NULL,
+/* drop/create OBJ_STORE */
+DROP TABLE IF EXISTS `obj_store__APQ__106`;
+CREATE TABLE `obj_store__APQ__106` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -24455,17 +25970,38 @@ CREATE TABLE `obj_store_rb__APQ__106` (
   ,`TS_32` DATETIME(3)
   ,`DBL_16` DOUBLE
   
-  ,PRIMARY KEY (`r_id`, `tenant_id`, `obj_def_id`)
-  ,INDEX `obj_store_rb___APQ__106index1` (`tenant_id`, `obj_def_id`(128), `rb_id`)
+  ,PRIMARY KEY (`tenant_id`, `obj_def_id`, `obj_id`, `obj_ver`, `pg_no`)
+  ,UNIQUE INDEX `obj_store__APQ__106_USTR_unique_1` (`USTR_1_TD`(139), `USTR_1`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__106_UNUM_unique_1` (`UNUM_1_TD`(139), `UNUM_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__106_UTS_unique_1` (`UTS_1_TD`(139), `UTS_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__106_UDBL_unique_1` (`UDBL_1_TD`(139), `UDBL_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__106_USTR_unique_2` (`USTR_2_TD`(139), `USTR_2`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__106_UNUM_unique_2` (`UNUM_2_TD`(139), `UNUM_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__106_UTS_unique_2` (`UTS_2_TD`(139), `UTS_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__106_UDBL_unique_2` (`UDBL_2_TD`(139), `UDBL_2`, `tenant_id`, `obj_def_id`(128))
+  ,INDEX `obj_store__APQ__106_ISTR_index_1` (`ISTR_1`(192), `ISTR_1_TD`(139))
+  ,INDEX `obj_store__APQ__106_INUM_index_1` (`INUM_1`, `INUM_1_TD`(139))
+  ,INDEX `obj_store__APQ__106_ITS_index_1` (`ITS_1`, `ITS_1_TD`(139))
+  ,INDEX `obj_store__APQ__106_IDBL_index_1` (`IDBL_1`, `IDBL_1_TD`(139))
+  ,INDEX `obj_store__APQ__106_ISTR_index_2` (`ISTR_2`(192), `ISTR_2_TD`(139))
+  ,INDEX `obj_store__APQ__106_INUM_index_2` (`INUM_2`, `INUM_2_TD`(139))
+  ,INDEX `obj_store__APQ__106_ITS_index_2` (`ITS_2`, `ITS_2_TD`(139))
+  ,INDEX `obj_store__APQ__106_IDBL_index_2` (`IDBL_2`, `IDBL_2_TD`(139))
+  ,INDEX `obj_store__APQ__106_ISTR_index_3` (`ISTR_3`(192), `ISTR_3_TD`(139))
+  ,INDEX `obj_store__APQ__106_ISTR_index_4` (`ISTR_4`(192), `ISTR_4_TD`(139))
+  ,INDEX `obj_store__APQ__106_INUM_index_3` (`INUM_3`, `INUM_3_TD`(139))
+  ,INDEX `obj_store__APQ__106_ITS_index_3` (`ITS_3`, `ITS_3_TD`(139))
+  ,INDEX `obj_store__APQ__106_IDBL_index_3` (`IDBL_3`, `IDBL_3_TD`(139))
+  ,INDEX `obj_store__APQ__106_ISTR_index_5` (`ISTR_5`(192), `ISTR_5_TD`(139))
+  ,INDEX `obj_store__APQ__106_INUM_index_4` (`INUM_4`, `INUM_4_TD`(139))
+  ,INDEX `obj_store__APQ__106_ITS_index_4` (`ITS_4`, `ITS_4_TD`(139))
+  ,INDEX `obj_store__APQ__106_IDBL_index_4` (`IDBL_4`, `IDBL_4_TD`(139))
+  ,INDEX `obj_store__APQ__106_cre_user_index` (`cre_user`(64), `obj_def_id`(128), `tenant_id`)
 )
 ;
-/* drop/create OBJ_STORE_RB */
-DROP TABLE IF EXISTS `obj_store_rb__APQ__107`;
-CREATE TABLE `obj_store_rb__APQ__107` (
-  `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `rb_id` BIGINT(16) NULL,
-  `rb_date` DATETIME(3) NULL,
-  `rb_user` VARCHAR(64) NULL,
+/* drop/create OBJ_STORE */
+DROP TABLE IF EXISTS `obj_store__APQ__107`;
+CREATE TABLE `obj_store__APQ__107` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -24677,17 +26213,38 @@ CREATE TABLE `obj_store_rb__APQ__107` (
   ,`TS_32` DATETIME(3)
   ,`DBL_16` DOUBLE
   
-  ,PRIMARY KEY (`r_id`, `tenant_id`, `obj_def_id`)
-  ,INDEX `obj_store_rb___APQ__107index1` (`tenant_id`, `obj_def_id`(128), `rb_id`)
+  ,PRIMARY KEY (`tenant_id`, `obj_def_id`, `obj_id`, `obj_ver`, `pg_no`)
+  ,UNIQUE INDEX `obj_store__APQ__107_USTR_unique_1` (`USTR_1_TD`(139), `USTR_1`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__107_UNUM_unique_1` (`UNUM_1_TD`(139), `UNUM_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__107_UTS_unique_1` (`UTS_1_TD`(139), `UTS_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__107_UDBL_unique_1` (`UDBL_1_TD`(139), `UDBL_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__107_USTR_unique_2` (`USTR_2_TD`(139), `USTR_2`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__107_UNUM_unique_2` (`UNUM_2_TD`(139), `UNUM_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__107_UTS_unique_2` (`UTS_2_TD`(139), `UTS_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__107_UDBL_unique_2` (`UDBL_2_TD`(139), `UDBL_2`, `tenant_id`, `obj_def_id`(128))
+  ,INDEX `obj_store__APQ__107_ISTR_index_1` (`ISTR_1`(192), `ISTR_1_TD`(139))
+  ,INDEX `obj_store__APQ__107_INUM_index_1` (`INUM_1`, `INUM_1_TD`(139))
+  ,INDEX `obj_store__APQ__107_ITS_index_1` (`ITS_1`, `ITS_1_TD`(139))
+  ,INDEX `obj_store__APQ__107_IDBL_index_1` (`IDBL_1`, `IDBL_1_TD`(139))
+  ,INDEX `obj_store__APQ__107_ISTR_index_2` (`ISTR_2`(192), `ISTR_2_TD`(139))
+  ,INDEX `obj_store__APQ__107_INUM_index_2` (`INUM_2`, `INUM_2_TD`(139))
+  ,INDEX `obj_store__APQ__107_ITS_index_2` (`ITS_2`, `ITS_2_TD`(139))
+  ,INDEX `obj_store__APQ__107_IDBL_index_2` (`IDBL_2`, `IDBL_2_TD`(139))
+  ,INDEX `obj_store__APQ__107_ISTR_index_3` (`ISTR_3`(192), `ISTR_3_TD`(139))
+  ,INDEX `obj_store__APQ__107_ISTR_index_4` (`ISTR_4`(192), `ISTR_4_TD`(139))
+  ,INDEX `obj_store__APQ__107_INUM_index_3` (`INUM_3`, `INUM_3_TD`(139))
+  ,INDEX `obj_store__APQ__107_ITS_index_3` (`ITS_3`, `ITS_3_TD`(139))
+  ,INDEX `obj_store__APQ__107_IDBL_index_3` (`IDBL_3`, `IDBL_3_TD`(139))
+  ,INDEX `obj_store__APQ__107_ISTR_index_5` (`ISTR_5`(192), `ISTR_5_TD`(139))
+  ,INDEX `obj_store__APQ__107_INUM_index_4` (`INUM_4`, `INUM_4_TD`(139))
+  ,INDEX `obj_store__APQ__107_ITS_index_4` (`ITS_4`, `ITS_4_TD`(139))
+  ,INDEX `obj_store__APQ__107_IDBL_index_4` (`IDBL_4`, `IDBL_4_TD`(139))
+  ,INDEX `obj_store__APQ__107_cre_user_index` (`cre_user`(64), `obj_def_id`(128), `tenant_id`)
 )
 ;
-/* drop/create OBJ_STORE_RB */
-DROP TABLE IF EXISTS `obj_store_rb__APQ__108`;
-CREATE TABLE `obj_store_rb__APQ__108` (
-  `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `rb_id` BIGINT(16) NULL,
-  `rb_date` DATETIME(3) NULL,
-  `rb_user` VARCHAR(64) NULL,
+/* drop/create OBJ_STORE */
+DROP TABLE IF EXISTS `obj_store__APQ__108`;
+CREATE TABLE `obj_store__APQ__108` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -24899,17 +26456,38 @@ CREATE TABLE `obj_store_rb__APQ__108` (
   ,`TS_32` DATETIME(3)
   ,`DBL_16` DOUBLE
   
-  ,PRIMARY KEY (`r_id`, `tenant_id`, `obj_def_id`)
-  ,INDEX `obj_store_rb___APQ__108index1` (`tenant_id`, `obj_def_id`(128), `rb_id`)
+  ,PRIMARY KEY (`tenant_id`, `obj_def_id`, `obj_id`, `obj_ver`, `pg_no`)
+  ,UNIQUE INDEX `obj_store__APQ__108_USTR_unique_1` (`USTR_1_TD`(139), `USTR_1`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__108_UNUM_unique_1` (`UNUM_1_TD`(139), `UNUM_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__108_UTS_unique_1` (`UTS_1_TD`(139), `UTS_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__108_UDBL_unique_1` (`UDBL_1_TD`(139), `UDBL_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__108_USTR_unique_2` (`USTR_2_TD`(139), `USTR_2`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__108_UNUM_unique_2` (`UNUM_2_TD`(139), `UNUM_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__108_UTS_unique_2` (`UTS_2_TD`(139), `UTS_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__108_UDBL_unique_2` (`UDBL_2_TD`(139), `UDBL_2`, `tenant_id`, `obj_def_id`(128))
+  ,INDEX `obj_store__APQ__108_ISTR_index_1` (`ISTR_1`(192), `ISTR_1_TD`(139))
+  ,INDEX `obj_store__APQ__108_INUM_index_1` (`INUM_1`, `INUM_1_TD`(139))
+  ,INDEX `obj_store__APQ__108_ITS_index_1` (`ITS_1`, `ITS_1_TD`(139))
+  ,INDEX `obj_store__APQ__108_IDBL_index_1` (`IDBL_1`, `IDBL_1_TD`(139))
+  ,INDEX `obj_store__APQ__108_ISTR_index_2` (`ISTR_2`(192), `ISTR_2_TD`(139))
+  ,INDEX `obj_store__APQ__108_INUM_index_2` (`INUM_2`, `INUM_2_TD`(139))
+  ,INDEX `obj_store__APQ__108_ITS_index_2` (`ITS_2`, `ITS_2_TD`(139))
+  ,INDEX `obj_store__APQ__108_IDBL_index_2` (`IDBL_2`, `IDBL_2_TD`(139))
+  ,INDEX `obj_store__APQ__108_ISTR_index_3` (`ISTR_3`(192), `ISTR_3_TD`(139))
+  ,INDEX `obj_store__APQ__108_ISTR_index_4` (`ISTR_4`(192), `ISTR_4_TD`(139))
+  ,INDEX `obj_store__APQ__108_INUM_index_3` (`INUM_3`, `INUM_3_TD`(139))
+  ,INDEX `obj_store__APQ__108_ITS_index_3` (`ITS_3`, `ITS_3_TD`(139))
+  ,INDEX `obj_store__APQ__108_IDBL_index_3` (`IDBL_3`, `IDBL_3_TD`(139))
+  ,INDEX `obj_store__APQ__108_ISTR_index_5` (`ISTR_5`(192), `ISTR_5_TD`(139))
+  ,INDEX `obj_store__APQ__108_INUM_index_4` (`INUM_4`, `INUM_4_TD`(139))
+  ,INDEX `obj_store__APQ__108_ITS_index_4` (`ITS_4`, `ITS_4_TD`(139))
+  ,INDEX `obj_store__APQ__108_IDBL_index_4` (`IDBL_4`, `IDBL_4_TD`(139))
+  ,INDEX `obj_store__APQ__108_cre_user_index` (`cre_user`(64), `obj_def_id`(128), `tenant_id`)
 )
 ;
-/* drop/create OBJ_STORE_RB */
-DROP TABLE IF EXISTS `obj_store_rb__APQ__109`;
-CREATE TABLE `obj_store_rb__APQ__109` (
-  `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `rb_id` BIGINT(16) NULL,
-  `rb_date` DATETIME(3) NULL,
-  `rb_user` VARCHAR(64) NULL,
+/* drop/create OBJ_STORE */
+DROP TABLE IF EXISTS `obj_store__APQ__109`;
+CREATE TABLE `obj_store__APQ__109` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -25121,17 +26699,38 @@ CREATE TABLE `obj_store_rb__APQ__109` (
   ,`TS_32` DATETIME(3)
   ,`DBL_16` DOUBLE
   
-  ,PRIMARY KEY (`r_id`, `tenant_id`, `obj_def_id`)
-  ,INDEX `obj_store_rb___APQ__109index1` (`tenant_id`, `obj_def_id`(128), `rb_id`)
+  ,PRIMARY KEY (`tenant_id`, `obj_def_id`, `obj_id`, `obj_ver`, `pg_no`)
+  ,UNIQUE INDEX `obj_store__APQ__109_USTR_unique_1` (`USTR_1_TD`(139), `USTR_1`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__109_UNUM_unique_1` (`UNUM_1_TD`(139), `UNUM_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__109_UTS_unique_1` (`UTS_1_TD`(139), `UTS_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__109_UDBL_unique_1` (`UDBL_1_TD`(139), `UDBL_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__109_USTR_unique_2` (`USTR_2_TD`(139), `USTR_2`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__109_UNUM_unique_2` (`UNUM_2_TD`(139), `UNUM_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__109_UTS_unique_2` (`UTS_2_TD`(139), `UTS_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__109_UDBL_unique_2` (`UDBL_2_TD`(139), `UDBL_2`, `tenant_id`, `obj_def_id`(128))
+  ,INDEX `obj_store__APQ__109_ISTR_index_1` (`ISTR_1`(192), `ISTR_1_TD`(139))
+  ,INDEX `obj_store__APQ__109_INUM_index_1` (`INUM_1`, `INUM_1_TD`(139))
+  ,INDEX `obj_store__APQ__109_ITS_index_1` (`ITS_1`, `ITS_1_TD`(139))
+  ,INDEX `obj_store__APQ__109_IDBL_index_1` (`IDBL_1`, `IDBL_1_TD`(139))
+  ,INDEX `obj_store__APQ__109_ISTR_index_2` (`ISTR_2`(192), `ISTR_2_TD`(139))
+  ,INDEX `obj_store__APQ__109_INUM_index_2` (`INUM_2`, `INUM_2_TD`(139))
+  ,INDEX `obj_store__APQ__109_ITS_index_2` (`ITS_2`, `ITS_2_TD`(139))
+  ,INDEX `obj_store__APQ__109_IDBL_index_2` (`IDBL_2`, `IDBL_2_TD`(139))
+  ,INDEX `obj_store__APQ__109_ISTR_index_3` (`ISTR_3`(192), `ISTR_3_TD`(139))
+  ,INDEX `obj_store__APQ__109_ISTR_index_4` (`ISTR_4`(192), `ISTR_4_TD`(139))
+  ,INDEX `obj_store__APQ__109_INUM_index_3` (`INUM_3`, `INUM_3_TD`(139))
+  ,INDEX `obj_store__APQ__109_ITS_index_3` (`ITS_3`, `ITS_3_TD`(139))
+  ,INDEX `obj_store__APQ__109_IDBL_index_3` (`IDBL_3`, `IDBL_3_TD`(139))
+  ,INDEX `obj_store__APQ__109_ISTR_index_5` (`ISTR_5`(192), `ISTR_5_TD`(139))
+  ,INDEX `obj_store__APQ__109_INUM_index_4` (`INUM_4`, `INUM_4_TD`(139))
+  ,INDEX `obj_store__APQ__109_ITS_index_4` (`ITS_4`, `ITS_4_TD`(139))
+  ,INDEX `obj_store__APQ__109_IDBL_index_4` (`IDBL_4`, `IDBL_4_TD`(139))
+  ,INDEX `obj_store__APQ__109_cre_user_index` (`cre_user`(64), `obj_def_id`(128), `tenant_id`)
 )
 ;
-/* drop/create OBJ_STORE_RB */
-DROP TABLE IF EXISTS `obj_store_rb__APQ__110`;
-CREATE TABLE `obj_store_rb__APQ__110` (
-  `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `rb_id` BIGINT(16) NULL,
-  `rb_date` DATETIME(3) NULL,
-  `rb_user` VARCHAR(64) NULL,
+/* drop/create OBJ_STORE */
+DROP TABLE IF EXISTS `obj_store__APQ__110`;
+CREATE TABLE `obj_store__APQ__110` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -25343,17 +26942,38 @@ CREATE TABLE `obj_store_rb__APQ__110` (
   ,`TS_32` DATETIME(3)
   ,`DBL_16` DOUBLE
   
-  ,PRIMARY KEY (`r_id`, `tenant_id`, `obj_def_id`)
-  ,INDEX `obj_store_rb___APQ__110index1` (`tenant_id`, `obj_def_id`(128), `rb_id`)
+  ,PRIMARY KEY (`tenant_id`, `obj_def_id`, `obj_id`, `obj_ver`, `pg_no`)
+  ,UNIQUE INDEX `obj_store__APQ__110_USTR_unique_1` (`USTR_1_TD`(139), `USTR_1`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__110_UNUM_unique_1` (`UNUM_1_TD`(139), `UNUM_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__110_UTS_unique_1` (`UTS_1_TD`(139), `UTS_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__110_UDBL_unique_1` (`UDBL_1_TD`(139), `UDBL_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__110_USTR_unique_2` (`USTR_2_TD`(139), `USTR_2`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__110_UNUM_unique_2` (`UNUM_2_TD`(139), `UNUM_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__110_UTS_unique_2` (`UTS_2_TD`(139), `UTS_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__110_UDBL_unique_2` (`UDBL_2_TD`(139), `UDBL_2`, `tenant_id`, `obj_def_id`(128))
+  ,INDEX `obj_store__APQ__110_ISTR_index_1` (`ISTR_1`(192), `ISTR_1_TD`(139))
+  ,INDEX `obj_store__APQ__110_INUM_index_1` (`INUM_1`, `INUM_1_TD`(139))
+  ,INDEX `obj_store__APQ__110_ITS_index_1` (`ITS_1`, `ITS_1_TD`(139))
+  ,INDEX `obj_store__APQ__110_IDBL_index_1` (`IDBL_1`, `IDBL_1_TD`(139))
+  ,INDEX `obj_store__APQ__110_ISTR_index_2` (`ISTR_2`(192), `ISTR_2_TD`(139))
+  ,INDEX `obj_store__APQ__110_INUM_index_2` (`INUM_2`, `INUM_2_TD`(139))
+  ,INDEX `obj_store__APQ__110_ITS_index_2` (`ITS_2`, `ITS_2_TD`(139))
+  ,INDEX `obj_store__APQ__110_IDBL_index_2` (`IDBL_2`, `IDBL_2_TD`(139))
+  ,INDEX `obj_store__APQ__110_ISTR_index_3` (`ISTR_3`(192), `ISTR_3_TD`(139))
+  ,INDEX `obj_store__APQ__110_ISTR_index_4` (`ISTR_4`(192), `ISTR_4_TD`(139))
+  ,INDEX `obj_store__APQ__110_INUM_index_3` (`INUM_3`, `INUM_3_TD`(139))
+  ,INDEX `obj_store__APQ__110_ITS_index_3` (`ITS_3`, `ITS_3_TD`(139))
+  ,INDEX `obj_store__APQ__110_IDBL_index_3` (`IDBL_3`, `IDBL_3_TD`(139))
+  ,INDEX `obj_store__APQ__110_ISTR_index_5` (`ISTR_5`(192), `ISTR_5_TD`(139))
+  ,INDEX `obj_store__APQ__110_INUM_index_4` (`INUM_4`, `INUM_4_TD`(139))
+  ,INDEX `obj_store__APQ__110_ITS_index_4` (`ITS_4`, `ITS_4_TD`(139))
+  ,INDEX `obj_store__APQ__110_IDBL_index_4` (`IDBL_4`, `IDBL_4_TD`(139))
+  ,INDEX `obj_store__APQ__110_cre_user_index` (`cre_user`(64), `obj_def_id`(128), `tenant_id`)
 )
 ;
-/* drop/create OBJ_STORE_RB */
-DROP TABLE IF EXISTS `obj_store_rb__APQ__111`;
-CREATE TABLE `obj_store_rb__APQ__111` (
-  `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `rb_id` BIGINT(16) NULL,
-  `rb_date` DATETIME(3) NULL,
-  `rb_user` VARCHAR(64) NULL,
+/* drop/create OBJ_STORE */
+DROP TABLE IF EXISTS `obj_store__APQ__111`;
+CREATE TABLE `obj_store__APQ__111` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -25565,17 +27185,38 @@ CREATE TABLE `obj_store_rb__APQ__111` (
   ,`TS_32` DATETIME(3)
   ,`DBL_16` DOUBLE
   
-  ,PRIMARY KEY (`r_id`, `tenant_id`, `obj_def_id`)
-  ,INDEX `obj_store_rb___APQ__111index1` (`tenant_id`, `obj_def_id`(128), `rb_id`)
+  ,PRIMARY KEY (`tenant_id`, `obj_def_id`, `obj_id`, `obj_ver`, `pg_no`)
+  ,UNIQUE INDEX `obj_store__APQ__111_USTR_unique_1` (`USTR_1_TD`(139), `USTR_1`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__111_UNUM_unique_1` (`UNUM_1_TD`(139), `UNUM_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__111_UTS_unique_1` (`UTS_1_TD`(139), `UTS_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__111_UDBL_unique_1` (`UDBL_1_TD`(139), `UDBL_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__111_USTR_unique_2` (`USTR_2_TD`(139), `USTR_2`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__111_UNUM_unique_2` (`UNUM_2_TD`(139), `UNUM_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__111_UTS_unique_2` (`UTS_2_TD`(139), `UTS_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__111_UDBL_unique_2` (`UDBL_2_TD`(139), `UDBL_2`, `tenant_id`, `obj_def_id`(128))
+  ,INDEX `obj_store__APQ__111_ISTR_index_1` (`ISTR_1`(192), `ISTR_1_TD`(139))
+  ,INDEX `obj_store__APQ__111_INUM_index_1` (`INUM_1`, `INUM_1_TD`(139))
+  ,INDEX `obj_store__APQ__111_ITS_index_1` (`ITS_1`, `ITS_1_TD`(139))
+  ,INDEX `obj_store__APQ__111_IDBL_index_1` (`IDBL_1`, `IDBL_1_TD`(139))
+  ,INDEX `obj_store__APQ__111_ISTR_index_2` (`ISTR_2`(192), `ISTR_2_TD`(139))
+  ,INDEX `obj_store__APQ__111_INUM_index_2` (`INUM_2`, `INUM_2_TD`(139))
+  ,INDEX `obj_store__APQ__111_ITS_index_2` (`ITS_2`, `ITS_2_TD`(139))
+  ,INDEX `obj_store__APQ__111_IDBL_index_2` (`IDBL_2`, `IDBL_2_TD`(139))
+  ,INDEX `obj_store__APQ__111_ISTR_index_3` (`ISTR_3`(192), `ISTR_3_TD`(139))
+  ,INDEX `obj_store__APQ__111_ISTR_index_4` (`ISTR_4`(192), `ISTR_4_TD`(139))
+  ,INDEX `obj_store__APQ__111_INUM_index_3` (`INUM_3`, `INUM_3_TD`(139))
+  ,INDEX `obj_store__APQ__111_ITS_index_3` (`ITS_3`, `ITS_3_TD`(139))
+  ,INDEX `obj_store__APQ__111_IDBL_index_3` (`IDBL_3`, `IDBL_3_TD`(139))
+  ,INDEX `obj_store__APQ__111_ISTR_index_5` (`ISTR_5`(192), `ISTR_5_TD`(139))
+  ,INDEX `obj_store__APQ__111_INUM_index_4` (`INUM_4`, `INUM_4_TD`(139))
+  ,INDEX `obj_store__APQ__111_ITS_index_4` (`ITS_4`, `ITS_4_TD`(139))
+  ,INDEX `obj_store__APQ__111_IDBL_index_4` (`IDBL_4`, `IDBL_4_TD`(139))
+  ,INDEX `obj_store__APQ__111_cre_user_index` (`cre_user`(64), `obj_def_id`(128), `tenant_id`)
 )
 ;
-/* drop/create OBJ_STORE_RB */
-DROP TABLE IF EXISTS `obj_store_rb__APQ__112`;
-CREATE TABLE `obj_store_rb__APQ__112` (
-  `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `rb_id` BIGINT(16) NULL,
-  `rb_date` DATETIME(3) NULL,
-  `rb_user` VARCHAR(64) NULL,
+/* drop/create OBJ_STORE */
+DROP TABLE IF EXISTS `obj_store__APQ__112`;
+CREATE TABLE `obj_store__APQ__112` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -25787,17 +27428,38 @@ CREATE TABLE `obj_store_rb__APQ__112` (
   ,`TS_32` DATETIME(3)
   ,`DBL_16` DOUBLE
   
-  ,PRIMARY KEY (`r_id`, `tenant_id`, `obj_def_id`)
-  ,INDEX `obj_store_rb___APQ__112index1` (`tenant_id`, `obj_def_id`(128), `rb_id`)
+  ,PRIMARY KEY (`tenant_id`, `obj_def_id`, `obj_id`, `obj_ver`, `pg_no`)
+  ,UNIQUE INDEX `obj_store__APQ__112_USTR_unique_1` (`USTR_1_TD`(139), `USTR_1`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__112_UNUM_unique_1` (`UNUM_1_TD`(139), `UNUM_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__112_UTS_unique_1` (`UTS_1_TD`(139), `UTS_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__112_UDBL_unique_1` (`UDBL_1_TD`(139), `UDBL_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__112_USTR_unique_2` (`USTR_2_TD`(139), `USTR_2`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__112_UNUM_unique_2` (`UNUM_2_TD`(139), `UNUM_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__112_UTS_unique_2` (`UTS_2_TD`(139), `UTS_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__112_UDBL_unique_2` (`UDBL_2_TD`(139), `UDBL_2`, `tenant_id`, `obj_def_id`(128))
+  ,INDEX `obj_store__APQ__112_ISTR_index_1` (`ISTR_1`(192), `ISTR_1_TD`(139))
+  ,INDEX `obj_store__APQ__112_INUM_index_1` (`INUM_1`, `INUM_1_TD`(139))
+  ,INDEX `obj_store__APQ__112_ITS_index_1` (`ITS_1`, `ITS_1_TD`(139))
+  ,INDEX `obj_store__APQ__112_IDBL_index_1` (`IDBL_1`, `IDBL_1_TD`(139))
+  ,INDEX `obj_store__APQ__112_ISTR_index_2` (`ISTR_2`(192), `ISTR_2_TD`(139))
+  ,INDEX `obj_store__APQ__112_INUM_index_2` (`INUM_2`, `INUM_2_TD`(139))
+  ,INDEX `obj_store__APQ__112_ITS_index_2` (`ITS_2`, `ITS_2_TD`(139))
+  ,INDEX `obj_store__APQ__112_IDBL_index_2` (`IDBL_2`, `IDBL_2_TD`(139))
+  ,INDEX `obj_store__APQ__112_ISTR_index_3` (`ISTR_3`(192), `ISTR_3_TD`(139))
+  ,INDEX `obj_store__APQ__112_ISTR_index_4` (`ISTR_4`(192), `ISTR_4_TD`(139))
+  ,INDEX `obj_store__APQ__112_INUM_index_3` (`INUM_3`, `INUM_3_TD`(139))
+  ,INDEX `obj_store__APQ__112_ITS_index_3` (`ITS_3`, `ITS_3_TD`(139))
+  ,INDEX `obj_store__APQ__112_IDBL_index_3` (`IDBL_3`, `IDBL_3_TD`(139))
+  ,INDEX `obj_store__APQ__112_ISTR_index_5` (`ISTR_5`(192), `ISTR_5_TD`(139))
+  ,INDEX `obj_store__APQ__112_INUM_index_4` (`INUM_4`, `INUM_4_TD`(139))
+  ,INDEX `obj_store__APQ__112_ITS_index_4` (`ITS_4`, `ITS_4_TD`(139))
+  ,INDEX `obj_store__APQ__112_IDBL_index_4` (`IDBL_4`, `IDBL_4_TD`(139))
+  ,INDEX `obj_store__APQ__112_cre_user_index` (`cre_user`(64), `obj_def_id`(128), `tenant_id`)
 )
 ;
-/* drop/create OBJ_STORE_RB */
-DROP TABLE IF EXISTS `obj_store_rb__APQ__113`;
-CREATE TABLE `obj_store_rb__APQ__113` (
-  `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `rb_id` BIGINT(16) NULL,
-  `rb_date` DATETIME(3) NULL,
-  `rb_user` VARCHAR(64) NULL,
+/* drop/create OBJ_STORE */
+DROP TABLE IF EXISTS `obj_store__APQ__113`;
+CREATE TABLE `obj_store__APQ__113` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -26009,17 +27671,38 @@ CREATE TABLE `obj_store_rb__APQ__113` (
   ,`TS_32` DATETIME(3)
   ,`DBL_16` DOUBLE
   
-  ,PRIMARY KEY (`r_id`, `tenant_id`, `obj_def_id`)
-  ,INDEX `obj_store_rb___APQ__113index1` (`tenant_id`, `obj_def_id`(128), `rb_id`)
+  ,PRIMARY KEY (`tenant_id`, `obj_def_id`, `obj_id`, `obj_ver`, `pg_no`)
+  ,UNIQUE INDEX `obj_store__APQ__113_USTR_unique_1` (`USTR_1_TD`(139), `USTR_1`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__113_UNUM_unique_1` (`UNUM_1_TD`(139), `UNUM_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__113_UTS_unique_1` (`UTS_1_TD`(139), `UTS_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__113_UDBL_unique_1` (`UDBL_1_TD`(139), `UDBL_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__113_USTR_unique_2` (`USTR_2_TD`(139), `USTR_2`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__113_UNUM_unique_2` (`UNUM_2_TD`(139), `UNUM_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__113_UTS_unique_2` (`UTS_2_TD`(139), `UTS_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__113_UDBL_unique_2` (`UDBL_2_TD`(139), `UDBL_2`, `tenant_id`, `obj_def_id`(128))
+  ,INDEX `obj_store__APQ__113_ISTR_index_1` (`ISTR_1`(192), `ISTR_1_TD`(139))
+  ,INDEX `obj_store__APQ__113_INUM_index_1` (`INUM_1`, `INUM_1_TD`(139))
+  ,INDEX `obj_store__APQ__113_ITS_index_1` (`ITS_1`, `ITS_1_TD`(139))
+  ,INDEX `obj_store__APQ__113_IDBL_index_1` (`IDBL_1`, `IDBL_1_TD`(139))
+  ,INDEX `obj_store__APQ__113_ISTR_index_2` (`ISTR_2`(192), `ISTR_2_TD`(139))
+  ,INDEX `obj_store__APQ__113_INUM_index_2` (`INUM_2`, `INUM_2_TD`(139))
+  ,INDEX `obj_store__APQ__113_ITS_index_2` (`ITS_2`, `ITS_2_TD`(139))
+  ,INDEX `obj_store__APQ__113_IDBL_index_2` (`IDBL_2`, `IDBL_2_TD`(139))
+  ,INDEX `obj_store__APQ__113_ISTR_index_3` (`ISTR_3`(192), `ISTR_3_TD`(139))
+  ,INDEX `obj_store__APQ__113_ISTR_index_4` (`ISTR_4`(192), `ISTR_4_TD`(139))
+  ,INDEX `obj_store__APQ__113_INUM_index_3` (`INUM_3`, `INUM_3_TD`(139))
+  ,INDEX `obj_store__APQ__113_ITS_index_3` (`ITS_3`, `ITS_3_TD`(139))
+  ,INDEX `obj_store__APQ__113_IDBL_index_3` (`IDBL_3`, `IDBL_3_TD`(139))
+  ,INDEX `obj_store__APQ__113_ISTR_index_5` (`ISTR_5`(192), `ISTR_5_TD`(139))
+  ,INDEX `obj_store__APQ__113_INUM_index_4` (`INUM_4`, `INUM_4_TD`(139))
+  ,INDEX `obj_store__APQ__113_ITS_index_4` (`ITS_4`, `ITS_4_TD`(139))
+  ,INDEX `obj_store__APQ__113_IDBL_index_4` (`IDBL_4`, `IDBL_4_TD`(139))
+  ,INDEX `obj_store__APQ__113_cre_user_index` (`cre_user`(64), `obj_def_id`(128), `tenant_id`)
 )
 ;
-/* drop/create OBJ_STORE_RB */
-DROP TABLE IF EXISTS `obj_store_rb__APQ__114`;
-CREATE TABLE `obj_store_rb__APQ__114` (
-  `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `rb_id` BIGINT(16) NULL,
-  `rb_date` DATETIME(3) NULL,
-  `rb_user` VARCHAR(64) NULL,
+/* drop/create OBJ_STORE */
+DROP TABLE IF EXISTS `obj_store__APQ__114`;
+CREATE TABLE `obj_store__APQ__114` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -26231,17 +27914,38 @@ CREATE TABLE `obj_store_rb__APQ__114` (
   ,`TS_32` DATETIME(3)
   ,`DBL_16` DOUBLE
   
-  ,PRIMARY KEY (`r_id`, `tenant_id`, `obj_def_id`)
-  ,INDEX `obj_store_rb___APQ__114index1` (`tenant_id`, `obj_def_id`(128), `rb_id`)
+  ,PRIMARY KEY (`tenant_id`, `obj_def_id`, `obj_id`, `obj_ver`, `pg_no`)
+  ,UNIQUE INDEX `obj_store__APQ__114_USTR_unique_1` (`USTR_1_TD`(139), `USTR_1`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__114_UNUM_unique_1` (`UNUM_1_TD`(139), `UNUM_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__114_UTS_unique_1` (`UTS_1_TD`(139), `UTS_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__114_UDBL_unique_1` (`UDBL_1_TD`(139), `UDBL_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__114_USTR_unique_2` (`USTR_2_TD`(139), `USTR_2`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__114_UNUM_unique_2` (`UNUM_2_TD`(139), `UNUM_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__114_UTS_unique_2` (`UTS_2_TD`(139), `UTS_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__114_UDBL_unique_2` (`UDBL_2_TD`(139), `UDBL_2`, `tenant_id`, `obj_def_id`(128))
+  ,INDEX `obj_store__APQ__114_ISTR_index_1` (`ISTR_1`(192), `ISTR_1_TD`(139))
+  ,INDEX `obj_store__APQ__114_INUM_index_1` (`INUM_1`, `INUM_1_TD`(139))
+  ,INDEX `obj_store__APQ__114_ITS_index_1` (`ITS_1`, `ITS_1_TD`(139))
+  ,INDEX `obj_store__APQ__114_IDBL_index_1` (`IDBL_1`, `IDBL_1_TD`(139))
+  ,INDEX `obj_store__APQ__114_ISTR_index_2` (`ISTR_2`(192), `ISTR_2_TD`(139))
+  ,INDEX `obj_store__APQ__114_INUM_index_2` (`INUM_2`, `INUM_2_TD`(139))
+  ,INDEX `obj_store__APQ__114_ITS_index_2` (`ITS_2`, `ITS_2_TD`(139))
+  ,INDEX `obj_store__APQ__114_IDBL_index_2` (`IDBL_2`, `IDBL_2_TD`(139))
+  ,INDEX `obj_store__APQ__114_ISTR_index_3` (`ISTR_3`(192), `ISTR_3_TD`(139))
+  ,INDEX `obj_store__APQ__114_ISTR_index_4` (`ISTR_4`(192), `ISTR_4_TD`(139))
+  ,INDEX `obj_store__APQ__114_INUM_index_3` (`INUM_3`, `INUM_3_TD`(139))
+  ,INDEX `obj_store__APQ__114_ITS_index_3` (`ITS_3`, `ITS_3_TD`(139))
+  ,INDEX `obj_store__APQ__114_IDBL_index_3` (`IDBL_3`, `IDBL_3_TD`(139))
+  ,INDEX `obj_store__APQ__114_ISTR_index_5` (`ISTR_5`(192), `ISTR_5_TD`(139))
+  ,INDEX `obj_store__APQ__114_INUM_index_4` (`INUM_4`, `INUM_4_TD`(139))
+  ,INDEX `obj_store__APQ__114_ITS_index_4` (`ITS_4`, `ITS_4_TD`(139))
+  ,INDEX `obj_store__APQ__114_IDBL_index_4` (`IDBL_4`, `IDBL_4_TD`(139))
+  ,INDEX `obj_store__APQ__114_cre_user_index` (`cre_user`(64), `obj_def_id`(128), `tenant_id`)
 )
 ;
-/* drop/create OBJ_STORE_RB */
-DROP TABLE IF EXISTS `obj_store_rb__APQ__115`;
-CREATE TABLE `obj_store_rb__APQ__115` (
-  `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `rb_id` BIGINT(16) NULL,
-  `rb_date` DATETIME(3) NULL,
-  `rb_user` VARCHAR(64) NULL,
+/* drop/create OBJ_STORE */
+DROP TABLE IF EXISTS `obj_store__APQ__115`;
+CREATE TABLE `obj_store__APQ__115` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -26453,17 +28157,38 @@ CREATE TABLE `obj_store_rb__APQ__115` (
   ,`TS_32` DATETIME(3)
   ,`DBL_16` DOUBLE
   
-  ,PRIMARY KEY (`r_id`, `tenant_id`, `obj_def_id`)
-  ,INDEX `obj_store_rb___APQ__115index1` (`tenant_id`, `obj_def_id`(128), `rb_id`)
+  ,PRIMARY KEY (`tenant_id`, `obj_def_id`, `obj_id`, `obj_ver`, `pg_no`)
+  ,UNIQUE INDEX `obj_store__APQ__115_USTR_unique_1` (`USTR_1_TD`(139), `USTR_1`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__115_UNUM_unique_1` (`UNUM_1_TD`(139), `UNUM_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__115_UTS_unique_1` (`UTS_1_TD`(139), `UTS_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__115_UDBL_unique_1` (`UDBL_1_TD`(139), `UDBL_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__115_USTR_unique_2` (`USTR_2_TD`(139), `USTR_2`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__115_UNUM_unique_2` (`UNUM_2_TD`(139), `UNUM_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__115_UTS_unique_2` (`UTS_2_TD`(139), `UTS_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__115_UDBL_unique_2` (`UDBL_2_TD`(139), `UDBL_2`, `tenant_id`, `obj_def_id`(128))
+  ,INDEX `obj_store__APQ__115_ISTR_index_1` (`ISTR_1`(192), `ISTR_1_TD`(139))
+  ,INDEX `obj_store__APQ__115_INUM_index_1` (`INUM_1`, `INUM_1_TD`(139))
+  ,INDEX `obj_store__APQ__115_ITS_index_1` (`ITS_1`, `ITS_1_TD`(139))
+  ,INDEX `obj_store__APQ__115_IDBL_index_1` (`IDBL_1`, `IDBL_1_TD`(139))
+  ,INDEX `obj_store__APQ__115_ISTR_index_2` (`ISTR_2`(192), `ISTR_2_TD`(139))
+  ,INDEX `obj_store__APQ__115_INUM_index_2` (`INUM_2`, `INUM_2_TD`(139))
+  ,INDEX `obj_store__APQ__115_ITS_index_2` (`ITS_2`, `ITS_2_TD`(139))
+  ,INDEX `obj_store__APQ__115_IDBL_index_2` (`IDBL_2`, `IDBL_2_TD`(139))
+  ,INDEX `obj_store__APQ__115_ISTR_index_3` (`ISTR_3`(192), `ISTR_3_TD`(139))
+  ,INDEX `obj_store__APQ__115_ISTR_index_4` (`ISTR_4`(192), `ISTR_4_TD`(139))
+  ,INDEX `obj_store__APQ__115_INUM_index_3` (`INUM_3`, `INUM_3_TD`(139))
+  ,INDEX `obj_store__APQ__115_ITS_index_3` (`ITS_3`, `ITS_3_TD`(139))
+  ,INDEX `obj_store__APQ__115_IDBL_index_3` (`IDBL_3`, `IDBL_3_TD`(139))
+  ,INDEX `obj_store__APQ__115_ISTR_index_5` (`ISTR_5`(192), `ISTR_5_TD`(139))
+  ,INDEX `obj_store__APQ__115_INUM_index_4` (`INUM_4`, `INUM_4_TD`(139))
+  ,INDEX `obj_store__APQ__115_ITS_index_4` (`ITS_4`, `ITS_4_TD`(139))
+  ,INDEX `obj_store__APQ__115_IDBL_index_4` (`IDBL_4`, `IDBL_4_TD`(139))
+  ,INDEX `obj_store__APQ__115_cre_user_index` (`cre_user`(64), `obj_def_id`(128), `tenant_id`)
 )
 ;
-/* drop/create OBJ_STORE_RB */
-DROP TABLE IF EXISTS `obj_store_rb__APQ__116`;
-CREATE TABLE `obj_store_rb__APQ__116` (
-  `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `rb_id` BIGINT(16) NULL,
-  `rb_date` DATETIME(3) NULL,
-  `rb_user` VARCHAR(64) NULL,
+/* drop/create OBJ_STORE */
+DROP TABLE IF EXISTS `obj_store__APQ__116`;
+CREATE TABLE `obj_store__APQ__116` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -26675,17 +28400,38 @@ CREATE TABLE `obj_store_rb__APQ__116` (
   ,`TS_32` DATETIME(3)
   ,`DBL_16` DOUBLE
   
-  ,PRIMARY KEY (`r_id`, `tenant_id`, `obj_def_id`)
-  ,INDEX `obj_store_rb___APQ__116index1` (`tenant_id`, `obj_def_id`(128), `rb_id`)
+  ,PRIMARY KEY (`tenant_id`, `obj_def_id`, `obj_id`, `obj_ver`, `pg_no`)
+  ,UNIQUE INDEX `obj_store__APQ__116_USTR_unique_1` (`USTR_1_TD`(139), `USTR_1`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__116_UNUM_unique_1` (`UNUM_1_TD`(139), `UNUM_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__116_UTS_unique_1` (`UTS_1_TD`(139), `UTS_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__116_UDBL_unique_1` (`UDBL_1_TD`(139), `UDBL_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__116_USTR_unique_2` (`USTR_2_TD`(139), `USTR_2`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__116_UNUM_unique_2` (`UNUM_2_TD`(139), `UNUM_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__116_UTS_unique_2` (`UTS_2_TD`(139), `UTS_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__116_UDBL_unique_2` (`UDBL_2_TD`(139), `UDBL_2`, `tenant_id`, `obj_def_id`(128))
+  ,INDEX `obj_store__APQ__116_ISTR_index_1` (`ISTR_1`(192), `ISTR_1_TD`(139))
+  ,INDEX `obj_store__APQ__116_INUM_index_1` (`INUM_1`, `INUM_1_TD`(139))
+  ,INDEX `obj_store__APQ__116_ITS_index_1` (`ITS_1`, `ITS_1_TD`(139))
+  ,INDEX `obj_store__APQ__116_IDBL_index_1` (`IDBL_1`, `IDBL_1_TD`(139))
+  ,INDEX `obj_store__APQ__116_ISTR_index_2` (`ISTR_2`(192), `ISTR_2_TD`(139))
+  ,INDEX `obj_store__APQ__116_INUM_index_2` (`INUM_2`, `INUM_2_TD`(139))
+  ,INDEX `obj_store__APQ__116_ITS_index_2` (`ITS_2`, `ITS_2_TD`(139))
+  ,INDEX `obj_store__APQ__116_IDBL_index_2` (`IDBL_2`, `IDBL_2_TD`(139))
+  ,INDEX `obj_store__APQ__116_ISTR_index_3` (`ISTR_3`(192), `ISTR_3_TD`(139))
+  ,INDEX `obj_store__APQ__116_ISTR_index_4` (`ISTR_4`(192), `ISTR_4_TD`(139))
+  ,INDEX `obj_store__APQ__116_INUM_index_3` (`INUM_3`, `INUM_3_TD`(139))
+  ,INDEX `obj_store__APQ__116_ITS_index_3` (`ITS_3`, `ITS_3_TD`(139))
+  ,INDEX `obj_store__APQ__116_IDBL_index_3` (`IDBL_3`, `IDBL_3_TD`(139))
+  ,INDEX `obj_store__APQ__116_ISTR_index_5` (`ISTR_5`(192), `ISTR_5_TD`(139))
+  ,INDEX `obj_store__APQ__116_INUM_index_4` (`INUM_4`, `INUM_4_TD`(139))
+  ,INDEX `obj_store__APQ__116_ITS_index_4` (`ITS_4`, `ITS_4_TD`(139))
+  ,INDEX `obj_store__APQ__116_IDBL_index_4` (`IDBL_4`, `IDBL_4_TD`(139))
+  ,INDEX `obj_store__APQ__116_cre_user_index` (`cre_user`(64), `obj_def_id`(128), `tenant_id`)
 )
 ;
-/* drop/create OBJ_STORE_RB */
-DROP TABLE IF EXISTS `obj_store_rb__APQ__117`;
-CREATE TABLE `obj_store_rb__APQ__117` (
-  `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `rb_id` BIGINT(16) NULL,
-  `rb_date` DATETIME(3) NULL,
-  `rb_user` VARCHAR(64) NULL,
+/* drop/create OBJ_STORE */
+DROP TABLE IF EXISTS `obj_store__APQ__117`;
+CREATE TABLE `obj_store__APQ__117` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -26897,17 +28643,38 @@ CREATE TABLE `obj_store_rb__APQ__117` (
   ,`TS_32` DATETIME(3)
   ,`DBL_16` DOUBLE
   
-  ,PRIMARY KEY (`r_id`, `tenant_id`, `obj_def_id`)
-  ,INDEX `obj_store_rb___APQ__117index1` (`tenant_id`, `obj_def_id`(128), `rb_id`)
+  ,PRIMARY KEY (`tenant_id`, `obj_def_id`, `obj_id`, `obj_ver`, `pg_no`)
+  ,UNIQUE INDEX `obj_store__APQ__117_USTR_unique_1` (`USTR_1_TD`(139), `USTR_1`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__117_UNUM_unique_1` (`UNUM_1_TD`(139), `UNUM_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__117_UTS_unique_1` (`UTS_1_TD`(139), `UTS_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__117_UDBL_unique_1` (`UDBL_1_TD`(139), `UDBL_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__117_USTR_unique_2` (`USTR_2_TD`(139), `USTR_2`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__117_UNUM_unique_2` (`UNUM_2_TD`(139), `UNUM_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__117_UTS_unique_2` (`UTS_2_TD`(139), `UTS_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__117_UDBL_unique_2` (`UDBL_2_TD`(139), `UDBL_2`, `tenant_id`, `obj_def_id`(128))
+  ,INDEX `obj_store__APQ__117_ISTR_index_1` (`ISTR_1`(192), `ISTR_1_TD`(139))
+  ,INDEX `obj_store__APQ__117_INUM_index_1` (`INUM_1`, `INUM_1_TD`(139))
+  ,INDEX `obj_store__APQ__117_ITS_index_1` (`ITS_1`, `ITS_1_TD`(139))
+  ,INDEX `obj_store__APQ__117_IDBL_index_1` (`IDBL_1`, `IDBL_1_TD`(139))
+  ,INDEX `obj_store__APQ__117_ISTR_index_2` (`ISTR_2`(192), `ISTR_2_TD`(139))
+  ,INDEX `obj_store__APQ__117_INUM_index_2` (`INUM_2`, `INUM_2_TD`(139))
+  ,INDEX `obj_store__APQ__117_ITS_index_2` (`ITS_2`, `ITS_2_TD`(139))
+  ,INDEX `obj_store__APQ__117_IDBL_index_2` (`IDBL_2`, `IDBL_2_TD`(139))
+  ,INDEX `obj_store__APQ__117_ISTR_index_3` (`ISTR_3`(192), `ISTR_3_TD`(139))
+  ,INDEX `obj_store__APQ__117_ISTR_index_4` (`ISTR_4`(192), `ISTR_4_TD`(139))
+  ,INDEX `obj_store__APQ__117_INUM_index_3` (`INUM_3`, `INUM_3_TD`(139))
+  ,INDEX `obj_store__APQ__117_ITS_index_3` (`ITS_3`, `ITS_3_TD`(139))
+  ,INDEX `obj_store__APQ__117_IDBL_index_3` (`IDBL_3`, `IDBL_3_TD`(139))
+  ,INDEX `obj_store__APQ__117_ISTR_index_5` (`ISTR_5`(192), `ISTR_5_TD`(139))
+  ,INDEX `obj_store__APQ__117_INUM_index_4` (`INUM_4`, `INUM_4_TD`(139))
+  ,INDEX `obj_store__APQ__117_ITS_index_4` (`ITS_4`, `ITS_4_TD`(139))
+  ,INDEX `obj_store__APQ__117_IDBL_index_4` (`IDBL_4`, `IDBL_4_TD`(139))
+  ,INDEX `obj_store__APQ__117_cre_user_index` (`cre_user`(64), `obj_def_id`(128), `tenant_id`)
 )
 ;
-/* drop/create OBJ_STORE_RB */
-DROP TABLE IF EXISTS `obj_store_rb__APQ__118`;
-CREATE TABLE `obj_store_rb__APQ__118` (
-  `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `rb_id` BIGINT(16) NULL,
-  `rb_date` DATETIME(3) NULL,
-  `rb_user` VARCHAR(64) NULL,
+/* drop/create OBJ_STORE */
+DROP TABLE IF EXISTS `obj_store__APQ__118`;
+CREATE TABLE `obj_store__APQ__118` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -27119,17 +28886,38 @@ CREATE TABLE `obj_store_rb__APQ__118` (
   ,`TS_32` DATETIME(3)
   ,`DBL_16` DOUBLE
   
-  ,PRIMARY KEY (`r_id`, `tenant_id`, `obj_def_id`)
-  ,INDEX `obj_store_rb___APQ__118index1` (`tenant_id`, `obj_def_id`(128), `rb_id`)
+  ,PRIMARY KEY (`tenant_id`, `obj_def_id`, `obj_id`, `obj_ver`, `pg_no`)
+  ,UNIQUE INDEX `obj_store__APQ__118_USTR_unique_1` (`USTR_1_TD`(139), `USTR_1`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__118_UNUM_unique_1` (`UNUM_1_TD`(139), `UNUM_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__118_UTS_unique_1` (`UTS_1_TD`(139), `UTS_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__118_UDBL_unique_1` (`UDBL_1_TD`(139), `UDBL_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__118_USTR_unique_2` (`USTR_2_TD`(139), `USTR_2`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__118_UNUM_unique_2` (`UNUM_2_TD`(139), `UNUM_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__118_UTS_unique_2` (`UTS_2_TD`(139), `UTS_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__118_UDBL_unique_2` (`UDBL_2_TD`(139), `UDBL_2`, `tenant_id`, `obj_def_id`(128))
+  ,INDEX `obj_store__APQ__118_ISTR_index_1` (`ISTR_1`(192), `ISTR_1_TD`(139))
+  ,INDEX `obj_store__APQ__118_INUM_index_1` (`INUM_1`, `INUM_1_TD`(139))
+  ,INDEX `obj_store__APQ__118_ITS_index_1` (`ITS_1`, `ITS_1_TD`(139))
+  ,INDEX `obj_store__APQ__118_IDBL_index_1` (`IDBL_1`, `IDBL_1_TD`(139))
+  ,INDEX `obj_store__APQ__118_ISTR_index_2` (`ISTR_2`(192), `ISTR_2_TD`(139))
+  ,INDEX `obj_store__APQ__118_INUM_index_2` (`INUM_2`, `INUM_2_TD`(139))
+  ,INDEX `obj_store__APQ__118_ITS_index_2` (`ITS_2`, `ITS_2_TD`(139))
+  ,INDEX `obj_store__APQ__118_IDBL_index_2` (`IDBL_2`, `IDBL_2_TD`(139))
+  ,INDEX `obj_store__APQ__118_ISTR_index_3` (`ISTR_3`(192), `ISTR_3_TD`(139))
+  ,INDEX `obj_store__APQ__118_ISTR_index_4` (`ISTR_4`(192), `ISTR_4_TD`(139))
+  ,INDEX `obj_store__APQ__118_INUM_index_3` (`INUM_3`, `INUM_3_TD`(139))
+  ,INDEX `obj_store__APQ__118_ITS_index_3` (`ITS_3`, `ITS_3_TD`(139))
+  ,INDEX `obj_store__APQ__118_IDBL_index_3` (`IDBL_3`, `IDBL_3_TD`(139))
+  ,INDEX `obj_store__APQ__118_ISTR_index_5` (`ISTR_5`(192), `ISTR_5_TD`(139))
+  ,INDEX `obj_store__APQ__118_INUM_index_4` (`INUM_4`, `INUM_4_TD`(139))
+  ,INDEX `obj_store__APQ__118_ITS_index_4` (`ITS_4`, `ITS_4_TD`(139))
+  ,INDEX `obj_store__APQ__118_IDBL_index_4` (`IDBL_4`, `IDBL_4_TD`(139))
+  ,INDEX `obj_store__APQ__118_cre_user_index` (`cre_user`(64), `obj_def_id`(128), `tenant_id`)
 )
 ;
-/* drop/create OBJ_STORE_RB */
-DROP TABLE IF EXISTS `obj_store_rb__APQ__119`;
-CREATE TABLE `obj_store_rb__APQ__119` (
-  `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `rb_id` BIGINT(16) NULL,
-  `rb_date` DATETIME(3) NULL,
-  `rb_user` VARCHAR(64) NULL,
+/* drop/create OBJ_STORE */
+DROP TABLE IF EXISTS `obj_store__APQ__119`;
+CREATE TABLE `obj_store__APQ__119` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -27341,17 +29129,38 @@ CREATE TABLE `obj_store_rb__APQ__119` (
   ,`TS_32` DATETIME(3)
   ,`DBL_16` DOUBLE
   
-  ,PRIMARY KEY (`r_id`, `tenant_id`, `obj_def_id`)
-  ,INDEX `obj_store_rb___APQ__119index1` (`tenant_id`, `obj_def_id`(128), `rb_id`)
+  ,PRIMARY KEY (`tenant_id`, `obj_def_id`, `obj_id`, `obj_ver`, `pg_no`)
+  ,UNIQUE INDEX `obj_store__APQ__119_USTR_unique_1` (`USTR_1_TD`(139), `USTR_1`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__119_UNUM_unique_1` (`UNUM_1_TD`(139), `UNUM_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__119_UTS_unique_1` (`UTS_1_TD`(139), `UTS_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__119_UDBL_unique_1` (`UDBL_1_TD`(139), `UDBL_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__119_USTR_unique_2` (`USTR_2_TD`(139), `USTR_2`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__119_UNUM_unique_2` (`UNUM_2_TD`(139), `UNUM_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__119_UTS_unique_2` (`UTS_2_TD`(139), `UTS_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__119_UDBL_unique_2` (`UDBL_2_TD`(139), `UDBL_2`, `tenant_id`, `obj_def_id`(128))
+  ,INDEX `obj_store__APQ__119_ISTR_index_1` (`ISTR_1`(192), `ISTR_1_TD`(139))
+  ,INDEX `obj_store__APQ__119_INUM_index_1` (`INUM_1`, `INUM_1_TD`(139))
+  ,INDEX `obj_store__APQ__119_ITS_index_1` (`ITS_1`, `ITS_1_TD`(139))
+  ,INDEX `obj_store__APQ__119_IDBL_index_1` (`IDBL_1`, `IDBL_1_TD`(139))
+  ,INDEX `obj_store__APQ__119_ISTR_index_2` (`ISTR_2`(192), `ISTR_2_TD`(139))
+  ,INDEX `obj_store__APQ__119_INUM_index_2` (`INUM_2`, `INUM_2_TD`(139))
+  ,INDEX `obj_store__APQ__119_ITS_index_2` (`ITS_2`, `ITS_2_TD`(139))
+  ,INDEX `obj_store__APQ__119_IDBL_index_2` (`IDBL_2`, `IDBL_2_TD`(139))
+  ,INDEX `obj_store__APQ__119_ISTR_index_3` (`ISTR_3`(192), `ISTR_3_TD`(139))
+  ,INDEX `obj_store__APQ__119_ISTR_index_4` (`ISTR_4`(192), `ISTR_4_TD`(139))
+  ,INDEX `obj_store__APQ__119_INUM_index_3` (`INUM_3`, `INUM_3_TD`(139))
+  ,INDEX `obj_store__APQ__119_ITS_index_3` (`ITS_3`, `ITS_3_TD`(139))
+  ,INDEX `obj_store__APQ__119_IDBL_index_3` (`IDBL_3`, `IDBL_3_TD`(139))
+  ,INDEX `obj_store__APQ__119_ISTR_index_5` (`ISTR_5`(192), `ISTR_5_TD`(139))
+  ,INDEX `obj_store__APQ__119_INUM_index_4` (`INUM_4`, `INUM_4_TD`(139))
+  ,INDEX `obj_store__APQ__119_ITS_index_4` (`ITS_4`, `ITS_4_TD`(139))
+  ,INDEX `obj_store__APQ__119_IDBL_index_4` (`IDBL_4`, `IDBL_4_TD`(139))
+  ,INDEX `obj_store__APQ__119_cre_user_index` (`cre_user`(64), `obj_def_id`(128), `tenant_id`)
 )
 ;
-/* drop/create OBJ_STORE_RB */
-DROP TABLE IF EXISTS `obj_store_rb__APQ__120`;
-CREATE TABLE `obj_store_rb__APQ__120` (
-  `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `rb_id` BIGINT(16) NULL,
-  `rb_date` DATETIME(3) NULL,
-  `rb_user` VARCHAR(64) NULL,
+/* drop/create OBJ_STORE */
+DROP TABLE IF EXISTS `obj_store__APQ__120`;
+CREATE TABLE `obj_store__APQ__120` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -27563,17 +29372,38 @@ CREATE TABLE `obj_store_rb__APQ__120` (
   ,`TS_32` DATETIME(3)
   ,`DBL_16` DOUBLE
   
-  ,PRIMARY KEY (`r_id`, `tenant_id`, `obj_def_id`)
-  ,INDEX `obj_store_rb___APQ__120index1` (`tenant_id`, `obj_def_id`(128), `rb_id`)
+  ,PRIMARY KEY (`tenant_id`, `obj_def_id`, `obj_id`, `obj_ver`, `pg_no`)
+  ,UNIQUE INDEX `obj_store__APQ__120_USTR_unique_1` (`USTR_1_TD`(139), `USTR_1`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__120_UNUM_unique_1` (`UNUM_1_TD`(139), `UNUM_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__120_UTS_unique_1` (`UTS_1_TD`(139), `UTS_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__120_UDBL_unique_1` (`UDBL_1_TD`(139), `UDBL_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__120_USTR_unique_2` (`USTR_2_TD`(139), `USTR_2`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__120_UNUM_unique_2` (`UNUM_2_TD`(139), `UNUM_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__120_UTS_unique_2` (`UTS_2_TD`(139), `UTS_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__120_UDBL_unique_2` (`UDBL_2_TD`(139), `UDBL_2`, `tenant_id`, `obj_def_id`(128))
+  ,INDEX `obj_store__APQ__120_ISTR_index_1` (`ISTR_1`(192), `ISTR_1_TD`(139))
+  ,INDEX `obj_store__APQ__120_INUM_index_1` (`INUM_1`, `INUM_1_TD`(139))
+  ,INDEX `obj_store__APQ__120_ITS_index_1` (`ITS_1`, `ITS_1_TD`(139))
+  ,INDEX `obj_store__APQ__120_IDBL_index_1` (`IDBL_1`, `IDBL_1_TD`(139))
+  ,INDEX `obj_store__APQ__120_ISTR_index_2` (`ISTR_2`(192), `ISTR_2_TD`(139))
+  ,INDEX `obj_store__APQ__120_INUM_index_2` (`INUM_2`, `INUM_2_TD`(139))
+  ,INDEX `obj_store__APQ__120_ITS_index_2` (`ITS_2`, `ITS_2_TD`(139))
+  ,INDEX `obj_store__APQ__120_IDBL_index_2` (`IDBL_2`, `IDBL_2_TD`(139))
+  ,INDEX `obj_store__APQ__120_ISTR_index_3` (`ISTR_3`(192), `ISTR_3_TD`(139))
+  ,INDEX `obj_store__APQ__120_ISTR_index_4` (`ISTR_4`(192), `ISTR_4_TD`(139))
+  ,INDEX `obj_store__APQ__120_INUM_index_3` (`INUM_3`, `INUM_3_TD`(139))
+  ,INDEX `obj_store__APQ__120_ITS_index_3` (`ITS_3`, `ITS_3_TD`(139))
+  ,INDEX `obj_store__APQ__120_IDBL_index_3` (`IDBL_3`, `IDBL_3_TD`(139))
+  ,INDEX `obj_store__APQ__120_ISTR_index_5` (`ISTR_5`(192), `ISTR_5_TD`(139))
+  ,INDEX `obj_store__APQ__120_INUM_index_4` (`INUM_4`, `INUM_4_TD`(139))
+  ,INDEX `obj_store__APQ__120_ITS_index_4` (`ITS_4`, `ITS_4_TD`(139))
+  ,INDEX `obj_store__APQ__120_IDBL_index_4` (`IDBL_4`, `IDBL_4_TD`(139))
+  ,INDEX `obj_store__APQ__120_cre_user_index` (`cre_user`(64), `obj_def_id`(128), `tenant_id`)
 )
 ;
-/* drop/create OBJ_STORE_RB */
-DROP TABLE IF EXISTS `obj_store_rb__APQ__121`;
-CREATE TABLE `obj_store_rb__APQ__121` (
-  `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `rb_id` BIGINT(16) NULL,
-  `rb_date` DATETIME(3) NULL,
-  `rb_user` VARCHAR(64) NULL,
+/* drop/create OBJ_STORE */
+DROP TABLE IF EXISTS `obj_store__APQ__121`;
+CREATE TABLE `obj_store__APQ__121` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -27785,17 +29615,38 @@ CREATE TABLE `obj_store_rb__APQ__121` (
   ,`TS_32` DATETIME(3)
   ,`DBL_16` DOUBLE
   
-  ,PRIMARY KEY (`r_id`, `tenant_id`, `obj_def_id`)
-  ,INDEX `obj_store_rb___APQ__121index1` (`tenant_id`, `obj_def_id`(128), `rb_id`)
+  ,PRIMARY KEY (`tenant_id`, `obj_def_id`, `obj_id`, `obj_ver`, `pg_no`)
+  ,UNIQUE INDEX `obj_store__APQ__121_USTR_unique_1` (`USTR_1_TD`(139), `USTR_1`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__121_UNUM_unique_1` (`UNUM_1_TD`(139), `UNUM_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__121_UTS_unique_1` (`UTS_1_TD`(139), `UTS_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__121_UDBL_unique_1` (`UDBL_1_TD`(139), `UDBL_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__121_USTR_unique_2` (`USTR_2_TD`(139), `USTR_2`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__121_UNUM_unique_2` (`UNUM_2_TD`(139), `UNUM_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__121_UTS_unique_2` (`UTS_2_TD`(139), `UTS_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__121_UDBL_unique_2` (`UDBL_2_TD`(139), `UDBL_2`, `tenant_id`, `obj_def_id`(128))
+  ,INDEX `obj_store__APQ__121_ISTR_index_1` (`ISTR_1`(192), `ISTR_1_TD`(139))
+  ,INDEX `obj_store__APQ__121_INUM_index_1` (`INUM_1`, `INUM_1_TD`(139))
+  ,INDEX `obj_store__APQ__121_ITS_index_1` (`ITS_1`, `ITS_1_TD`(139))
+  ,INDEX `obj_store__APQ__121_IDBL_index_1` (`IDBL_1`, `IDBL_1_TD`(139))
+  ,INDEX `obj_store__APQ__121_ISTR_index_2` (`ISTR_2`(192), `ISTR_2_TD`(139))
+  ,INDEX `obj_store__APQ__121_INUM_index_2` (`INUM_2`, `INUM_2_TD`(139))
+  ,INDEX `obj_store__APQ__121_ITS_index_2` (`ITS_2`, `ITS_2_TD`(139))
+  ,INDEX `obj_store__APQ__121_IDBL_index_2` (`IDBL_2`, `IDBL_2_TD`(139))
+  ,INDEX `obj_store__APQ__121_ISTR_index_3` (`ISTR_3`(192), `ISTR_3_TD`(139))
+  ,INDEX `obj_store__APQ__121_ISTR_index_4` (`ISTR_4`(192), `ISTR_4_TD`(139))
+  ,INDEX `obj_store__APQ__121_INUM_index_3` (`INUM_3`, `INUM_3_TD`(139))
+  ,INDEX `obj_store__APQ__121_ITS_index_3` (`ITS_3`, `ITS_3_TD`(139))
+  ,INDEX `obj_store__APQ__121_IDBL_index_3` (`IDBL_3`, `IDBL_3_TD`(139))
+  ,INDEX `obj_store__APQ__121_ISTR_index_5` (`ISTR_5`(192), `ISTR_5_TD`(139))
+  ,INDEX `obj_store__APQ__121_INUM_index_4` (`INUM_4`, `INUM_4_TD`(139))
+  ,INDEX `obj_store__APQ__121_ITS_index_4` (`ITS_4`, `ITS_4_TD`(139))
+  ,INDEX `obj_store__APQ__121_IDBL_index_4` (`IDBL_4`, `IDBL_4_TD`(139))
+  ,INDEX `obj_store__APQ__121_cre_user_index` (`cre_user`(64), `obj_def_id`(128), `tenant_id`)
 )
 ;
-/* drop/create OBJ_STORE_RB */
-DROP TABLE IF EXISTS `obj_store_rb__APQ__122`;
-CREATE TABLE `obj_store_rb__APQ__122` (
-  `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `rb_id` BIGINT(16) NULL,
-  `rb_date` DATETIME(3) NULL,
-  `rb_user` VARCHAR(64) NULL,
+/* drop/create OBJ_STORE */
+DROP TABLE IF EXISTS `obj_store__APQ__122`;
+CREATE TABLE `obj_store__APQ__122` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -28007,17 +29858,38 @@ CREATE TABLE `obj_store_rb__APQ__122` (
   ,`TS_32` DATETIME(3)
   ,`DBL_16` DOUBLE
   
-  ,PRIMARY KEY (`r_id`, `tenant_id`, `obj_def_id`)
-  ,INDEX `obj_store_rb___APQ__122index1` (`tenant_id`, `obj_def_id`(128), `rb_id`)
+  ,PRIMARY KEY (`tenant_id`, `obj_def_id`, `obj_id`, `obj_ver`, `pg_no`)
+  ,UNIQUE INDEX `obj_store__APQ__122_USTR_unique_1` (`USTR_1_TD`(139), `USTR_1`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__122_UNUM_unique_1` (`UNUM_1_TD`(139), `UNUM_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__122_UTS_unique_1` (`UTS_1_TD`(139), `UTS_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__122_UDBL_unique_1` (`UDBL_1_TD`(139), `UDBL_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__122_USTR_unique_2` (`USTR_2_TD`(139), `USTR_2`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__122_UNUM_unique_2` (`UNUM_2_TD`(139), `UNUM_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__122_UTS_unique_2` (`UTS_2_TD`(139), `UTS_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__122_UDBL_unique_2` (`UDBL_2_TD`(139), `UDBL_2`, `tenant_id`, `obj_def_id`(128))
+  ,INDEX `obj_store__APQ__122_ISTR_index_1` (`ISTR_1`(192), `ISTR_1_TD`(139))
+  ,INDEX `obj_store__APQ__122_INUM_index_1` (`INUM_1`, `INUM_1_TD`(139))
+  ,INDEX `obj_store__APQ__122_ITS_index_1` (`ITS_1`, `ITS_1_TD`(139))
+  ,INDEX `obj_store__APQ__122_IDBL_index_1` (`IDBL_1`, `IDBL_1_TD`(139))
+  ,INDEX `obj_store__APQ__122_ISTR_index_2` (`ISTR_2`(192), `ISTR_2_TD`(139))
+  ,INDEX `obj_store__APQ__122_INUM_index_2` (`INUM_2`, `INUM_2_TD`(139))
+  ,INDEX `obj_store__APQ__122_ITS_index_2` (`ITS_2`, `ITS_2_TD`(139))
+  ,INDEX `obj_store__APQ__122_IDBL_index_2` (`IDBL_2`, `IDBL_2_TD`(139))
+  ,INDEX `obj_store__APQ__122_ISTR_index_3` (`ISTR_3`(192), `ISTR_3_TD`(139))
+  ,INDEX `obj_store__APQ__122_ISTR_index_4` (`ISTR_4`(192), `ISTR_4_TD`(139))
+  ,INDEX `obj_store__APQ__122_INUM_index_3` (`INUM_3`, `INUM_3_TD`(139))
+  ,INDEX `obj_store__APQ__122_ITS_index_3` (`ITS_3`, `ITS_3_TD`(139))
+  ,INDEX `obj_store__APQ__122_IDBL_index_3` (`IDBL_3`, `IDBL_3_TD`(139))
+  ,INDEX `obj_store__APQ__122_ISTR_index_5` (`ISTR_5`(192), `ISTR_5_TD`(139))
+  ,INDEX `obj_store__APQ__122_INUM_index_4` (`INUM_4`, `INUM_4_TD`(139))
+  ,INDEX `obj_store__APQ__122_ITS_index_4` (`ITS_4`, `ITS_4_TD`(139))
+  ,INDEX `obj_store__APQ__122_IDBL_index_4` (`IDBL_4`, `IDBL_4_TD`(139))
+  ,INDEX `obj_store__APQ__122_cre_user_index` (`cre_user`(64), `obj_def_id`(128), `tenant_id`)
 )
 ;
-/* drop/create OBJ_STORE_RB */
-DROP TABLE IF EXISTS `obj_store_rb__APQ__123`;
-CREATE TABLE `obj_store_rb__APQ__123` (
-  `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `rb_id` BIGINT(16) NULL,
-  `rb_date` DATETIME(3) NULL,
-  `rb_user` VARCHAR(64) NULL,
+/* drop/create OBJ_STORE */
+DROP TABLE IF EXISTS `obj_store__APQ__123`;
+CREATE TABLE `obj_store__APQ__123` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -28229,17 +30101,38 @@ CREATE TABLE `obj_store_rb__APQ__123` (
   ,`TS_32` DATETIME(3)
   ,`DBL_16` DOUBLE
   
-  ,PRIMARY KEY (`r_id`, `tenant_id`, `obj_def_id`)
-  ,INDEX `obj_store_rb___APQ__123index1` (`tenant_id`, `obj_def_id`(128), `rb_id`)
+  ,PRIMARY KEY (`tenant_id`, `obj_def_id`, `obj_id`, `obj_ver`, `pg_no`)
+  ,UNIQUE INDEX `obj_store__APQ__123_USTR_unique_1` (`USTR_1_TD`(139), `USTR_1`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__123_UNUM_unique_1` (`UNUM_1_TD`(139), `UNUM_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__123_UTS_unique_1` (`UTS_1_TD`(139), `UTS_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__123_UDBL_unique_1` (`UDBL_1_TD`(139), `UDBL_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__123_USTR_unique_2` (`USTR_2_TD`(139), `USTR_2`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__123_UNUM_unique_2` (`UNUM_2_TD`(139), `UNUM_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__123_UTS_unique_2` (`UTS_2_TD`(139), `UTS_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__123_UDBL_unique_2` (`UDBL_2_TD`(139), `UDBL_2`, `tenant_id`, `obj_def_id`(128))
+  ,INDEX `obj_store__APQ__123_ISTR_index_1` (`ISTR_1`(192), `ISTR_1_TD`(139))
+  ,INDEX `obj_store__APQ__123_INUM_index_1` (`INUM_1`, `INUM_1_TD`(139))
+  ,INDEX `obj_store__APQ__123_ITS_index_1` (`ITS_1`, `ITS_1_TD`(139))
+  ,INDEX `obj_store__APQ__123_IDBL_index_1` (`IDBL_1`, `IDBL_1_TD`(139))
+  ,INDEX `obj_store__APQ__123_ISTR_index_2` (`ISTR_2`(192), `ISTR_2_TD`(139))
+  ,INDEX `obj_store__APQ__123_INUM_index_2` (`INUM_2`, `INUM_2_TD`(139))
+  ,INDEX `obj_store__APQ__123_ITS_index_2` (`ITS_2`, `ITS_2_TD`(139))
+  ,INDEX `obj_store__APQ__123_IDBL_index_2` (`IDBL_2`, `IDBL_2_TD`(139))
+  ,INDEX `obj_store__APQ__123_ISTR_index_3` (`ISTR_3`(192), `ISTR_3_TD`(139))
+  ,INDEX `obj_store__APQ__123_ISTR_index_4` (`ISTR_4`(192), `ISTR_4_TD`(139))
+  ,INDEX `obj_store__APQ__123_INUM_index_3` (`INUM_3`, `INUM_3_TD`(139))
+  ,INDEX `obj_store__APQ__123_ITS_index_3` (`ITS_3`, `ITS_3_TD`(139))
+  ,INDEX `obj_store__APQ__123_IDBL_index_3` (`IDBL_3`, `IDBL_3_TD`(139))
+  ,INDEX `obj_store__APQ__123_ISTR_index_5` (`ISTR_5`(192), `ISTR_5_TD`(139))
+  ,INDEX `obj_store__APQ__123_INUM_index_4` (`INUM_4`, `INUM_4_TD`(139))
+  ,INDEX `obj_store__APQ__123_ITS_index_4` (`ITS_4`, `ITS_4_TD`(139))
+  ,INDEX `obj_store__APQ__123_IDBL_index_4` (`IDBL_4`, `IDBL_4_TD`(139))
+  ,INDEX `obj_store__APQ__123_cre_user_index` (`cre_user`(64), `obj_def_id`(128), `tenant_id`)
 )
 ;
-/* drop/create OBJ_STORE_RB */
-DROP TABLE IF EXISTS `obj_store_rb__APQ__124`;
-CREATE TABLE `obj_store_rb__APQ__124` (
-  `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `rb_id` BIGINT(16) NULL,
-  `rb_date` DATETIME(3) NULL,
-  `rb_user` VARCHAR(64) NULL,
+/* drop/create OBJ_STORE */
+DROP TABLE IF EXISTS `obj_store__APQ__124`;
+CREATE TABLE `obj_store__APQ__124` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -28451,17 +30344,38 @@ CREATE TABLE `obj_store_rb__APQ__124` (
   ,`TS_32` DATETIME(3)
   ,`DBL_16` DOUBLE
   
-  ,PRIMARY KEY (`r_id`, `tenant_id`, `obj_def_id`)
-  ,INDEX `obj_store_rb___APQ__124index1` (`tenant_id`, `obj_def_id`(128), `rb_id`)
+  ,PRIMARY KEY (`tenant_id`, `obj_def_id`, `obj_id`, `obj_ver`, `pg_no`)
+  ,UNIQUE INDEX `obj_store__APQ__124_USTR_unique_1` (`USTR_1_TD`(139), `USTR_1`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__124_UNUM_unique_1` (`UNUM_1_TD`(139), `UNUM_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__124_UTS_unique_1` (`UTS_1_TD`(139), `UTS_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__124_UDBL_unique_1` (`UDBL_1_TD`(139), `UDBL_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__124_USTR_unique_2` (`USTR_2_TD`(139), `USTR_2`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__124_UNUM_unique_2` (`UNUM_2_TD`(139), `UNUM_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__124_UTS_unique_2` (`UTS_2_TD`(139), `UTS_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__124_UDBL_unique_2` (`UDBL_2_TD`(139), `UDBL_2`, `tenant_id`, `obj_def_id`(128))
+  ,INDEX `obj_store__APQ__124_ISTR_index_1` (`ISTR_1`(192), `ISTR_1_TD`(139))
+  ,INDEX `obj_store__APQ__124_INUM_index_1` (`INUM_1`, `INUM_1_TD`(139))
+  ,INDEX `obj_store__APQ__124_ITS_index_1` (`ITS_1`, `ITS_1_TD`(139))
+  ,INDEX `obj_store__APQ__124_IDBL_index_1` (`IDBL_1`, `IDBL_1_TD`(139))
+  ,INDEX `obj_store__APQ__124_ISTR_index_2` (`ISTR_2`(192), `ISTR_2_TD`(139))
+  ,INDEX `obj_store__APQ__124_INUM_index_2` (`INUM_2`, `INUM_2_TD`(139))
+  ,INDEX `obj_store__APQ__124_ITS_index_2` (`ITS_2`, `ITS_2_TD`(139))
+  ,INDEX `obj_store__APQ__124_IDBL_index_2` (`IDBL_2`, `IDBL_2_TD`(139))
+  ,INDEX `obj_store__APQ__124_ISTR_index_3` (`ISTR_3`(192), `ISTR_3_TD`(139))
+  ,INDEX `obj_store__APQ__124_ISTR_index_4` (`ISTR_4`(192), `ISTR_4_TD`(139))
+  ,INDEX `obj_store__APQ__124_INUM_index_3` (`INUM_3`, `INUM_3_TD`(139))
+  ,INDEX `obj_store__APQ__124_ITS_index_3` (`ITS_3`, `ITS_3_TD`(139))
+  ,INDEX `obj_store__APQ__124_IDBL_index_3` (`IDBL_3`, `IDBL_3_TD`(139))
+  ,INDEX `obj_store__APQ__124_ISTR_index_5` (`ISTR_5`(192), `ISTR_5_TD`(139))
+  ,INDEX `obj_store__APQ__124_INUM_index_4` (`INUM_4`, `INUM_4_TD`(139))
+  ,INDEX `obj_store__APQ__124_ITS_index_4` (`ITS_4`, `ITS_4_TD`(139))
+  ,INDEX `obj_store__APQ__124_IDBL_index_4` (`IDBL_4`, `IDBL_4_TD`(139))
+  ,INDEX `obj_store__APQ__124_cre_user_index` (`cre_user`(64), `obj_def_id`(128), `tenant_id`)
 )
 ;
-/* drop/create OBJ_STORE_RB */
-DROP TABLE IF EXISTS `obj_store_rb__APQ__125`;
-CREATE TABLE `obj_store_rb__APQ__125` (
-  `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `rb_id` BIGINT(16) NULL,
-  `rb_date` DATETIME(3) NULL,
-  `rb_user` VARCHAR(64) NULL,
+/* drop/create OBJ_STORE */
+DROP TABLE IF EXISTS `obj_store__APQ__125`;
+CREATE TABLE `obj_store__APQ__125` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -28673,17 +30587,38 @@ CREATE TABLE `obj_store_rb__APQ__125` (
   ,`TS_32` DATETIME(3)
   ,`DBL_16` DOUBLE
   
-  ,PRIMARY KEY (`r_id`, `tenant_id`, `obj_def_id`)
-  ,INDEX `obj_store_rb___APQ__125index1` (`tenant_id`, `obj_def_id`(128), `rb_id`)
+  ,PRIMARY KEY (`tenant_id`, `obj_def_id`, `obj_id`, `obj_ver`, `pg_no`)
+  ,UNIQUE INDEX `obj_store__APQ__125_USTR_unique_1` (`USTR_1_TD`(139), `USTR_1`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__125_UNUM_unique_1` (`UNUM_1_TD`(139), `UNUM_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__125_UTS_unique_1` (`UTS_1_TD`(139), `UTS_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__125_UDBL_unique_1` (`UDBL_1_TD`(139), `UDBL_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__125_USTR_unique_2` (`USTR_2_TD`(139), `USTR_2`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__125_UNUM_unique_2` (`UNUM_2_TD`(139), `UNUM_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__125_UTS_unique_2` (`UTS_2_TD`(139), `UTS_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__125_UDBL_unique_2` (`UDBL_2_TD`(139), `UDBL_2`, `tenant_id`, `obj_def_id`(128))
+  ,INDEX `obj_store__APQ__125_ISTR_index_1` (`ISTR_1`(192), `ISTR_1_TD`(139))
+  ,INDEX `obj_store__APQ__125_INUM_index_1` (`INUM_1`, `INUM_1_TD`(139))
+  ,INDEX `obj_store__APQ__125_ITS_index_1` (`ITS_1`, `ITS_1_TD`(139))
+  ,INDEX `obj_store__APQ__125_IDBL_index_1` (`IDBL_1`, `IDBL_1_TD`(139))
+  ,INDEX `obj_store__APQ__125_ISTR_index_2` (`ISTR_2`(192), `ISTR_2_TD`(139))
+  ,INDEX `obj_store__APQ__125_INUM_index_2` (`INUM_2`, `INUM_2_TD`(139))
+  ,INDEX `obj_store__APQ__125_ITS_index_2` (`ITS_2`, `ITS_2_TD`(139))
+  ,INDEX `obj_store__APQ__125_IDBL_index_2` (`IDBL_2`, `IDBL_2_TD`(139))
+  ,INDEX `obj_store__APQ__125_ISTR_index_3` (`ISTR_3`(192), `ISTR_3_TD`(139))
+  ,INDEX `obj_store__APQ__125_ISTR_index_4` (`ISTR_4`(192), `ISTR_4_TD`(139))
+  ,INDEX `obj_store__APQ__125_INUM_index_3` (`INUM_3`, `INUM_3_TD`(139))
+  ,INDEX `obj_store__APQ__125_ITS_index_3` (`ITS_3`, `ITS_3_TD`(139))
+  ,INDEX `obj_store__APQ__125_IDBL_index_3` (`IDBL_3`, `IDBL_3_TD`(139))
+  ,INDEX `obj_store__APQ__125_ISTR_index_5` (`ISTR_5`(192), `ISTR_5_TD`(139))
+  ,INDEX `obj_store__APQ__125_INUM_index_4` (`INUM_4`, `INUM_4_TD`(139))
+  ,INDEX `obj_store__APQ__125_ITS_index_4` (`ITS_4`, `ITS_4_TD`(139))
+  ,INDEX `obj_store__APQ__125_IDBL_index_4` (`IDBL_4`, `IDBL_4_TD`(139))
+  ,INDEX `obj_store__APQ__125_cre_user_index` (`cre_user`(64), `obj_def_id`(128), `tenant_id`)
 )
 ;
-/* drop/create OBJ_STORE_RB */
-DROP TABLE IF EXISTS `obj_store_rb__APQ__126`;
-CREATE TABLE `obj_store_rb__APQ__126` (
-  `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `rb_id` BIGINT(16) NULL,
-  `rb_date` DATETIME(3) NULL,
-  `rb_user` VARCHAR(64) NULL,
+/* drop/create OBJ_STORE */
+DROP TABLE IF EXISTS `obj_store__APQ__126`;
+CREATE TABLE `obj_store__APQ__126` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -28895,17 +30830,38 @@ CREATE TABLE `obj_store_rb__APQ__126` (
   ,`TS_32` DATETIME(3)
   ,`DBL_16` DOUBLE
   
-  ,PRIMARY KEY (`r_id`, `tenant_id`, `obj_def_id`)
-  ,INDEX `obj_store_rb___APQ__126index1` (`tenant_id`, `obj_def_id`(128), `rb_id`)
+  ,PRIMARY KEY (`tenant_id`, `obj_def_id`, `obj_id`, `obj_ver`, `pg_no`)
+  ,UNIQUE INDEX `obj_store__APQ__126_USTR_unique_1` (`USTR_1_TD`(139), `USTR_1`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__126_UNUM_unique_1` (`UNUM_1_TD`(139), `UNUM_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__126_UTS_unique_1` (`UTS_1_TD`(139), `UTS_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__126_UDBL_unique_1` (`UDBL_1_TD`(139), `UDBL_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__126_USTR_unique_2` (`USTR_2_TD`(139), `USTR_2`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__126_UNUM_unique_2` (`UNUM_2_TD`(139), `UNUM_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__126_UTS_unique_2` (`UTS_2_TD`(139), `UTS_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__126_UDBL_unique_2` (`UDBL_2_TD`(139), `UDBL_2`, `tenant_id`, `obj_def_id`(128))
+  ,INDEX `obj_store__APQ__126_ISTR_index_1` (`ISTR_1`(192), `ISTR_1_TD`(139))
+  ,INDEX `obj_store__APQ__126_INUM_index_1` (`INUM_1`, `INUM_1_TD`(139))
+  ,INDEX `obj_store__APQ__126_ITS_index_1` (`ITS_1`, `ITS_1_TD`(139))
+  ,INDEX `obj_store__APQ__126_IDBL_index_1` (`IDBL_1`, `IDBL_1_TD`(139))
+  ,INDEX `obj_store__APQ__126_ISTR_index_2` (`ISTR_2`(192), `ISTR_2_TD`(139))
+  ,INDEX `obj_store__APQ__126_INUM_index_2` (`INUM_2`, `INUM_2_TD`(139))
+  ,INDEX `obj_store__APQ__126_ITS_index_2` (`ITS_2`, `ITS_2_TD`(139))
+  ,INDEX `obj_store__APQ__126_IDBL_index_2` (`IDBL_2`, `IDBL_2_TD`(139))
+  ,INDEX `obj_store__APQ__126_ISTR_index_3` (`ISTR_3`(192), `ISTR_3_TD`(139))
+  ,INDEX `obj_store__APQ__126_ISTR_index_4` (`ISTR_4`(192), `ISTR_4_TD`(139))
+  ,INDEX `obj_store__APQ__126_INUM_index_3` (`INUM_3`, `INUM_3_TD`(139))
+  ,INDEX `obj_store__APQ__126_ITS_index_3` (`ITS_3`, `ITS_3_TD`(139))
+  ,INDEX `obj_store__APQ__126_IDBL_index_3` (`IDBL_3`, `IDBL_3_TD`(139))
+  ,INDEX `obj_store__APQ__126_ISTR_index_5` (`ISTR_5`(192), `ISTR_5_TD`(139))
+  ,INDEX `obj_store__APQ__126_INUM_index_4` (`INUM_4`, `INUM_4_TD`(139))
+  ,INDEX `obj_store__APQ__126_ITS_index_4` (`ITS_4`, `ITS_4_TD`(139))
+  ,INDEX `obj_store__APQ__126_IDBL_index_4` (`IDBL_4`, `IDBL_4_TD`(139))
+  ,INDEX `obj_store__APQ__126_cre_user_index` (`cre_user`(64), `obj_def_id`(128), `tenant_id`)
 )
 ;
-/* drop/create OBJ_STORE_RB */
-DROP TABLE IF EXISTS `obj_store_rb__APQ__127`;
-CREATE TABLE `obj_store_rb__APQ__127` (
-  `r_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `rb_id` BIGINT(16) NULL,
-  `rb_date` DATETIME(3) NULL,
-  `rb_user` VARCHAR(64) NULL,
+/* drop/create OBJ_STORE */
+DROP TABLE IF EXISTS `obj_store__APQ__127`;
+CREATE TABLE `obj_store__APQ__127` (
   `tenant_id` INT(7) NOT NULL,
   `obj_def_id` VARCHAR(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `pg_no` INT(2) NOT NULL,
@@ -29117,8 +31073,32 @@ CREATE TABLE `obj_store_rb__APQ__127` (
   ,`TS_32` DATETIME(3)
   ,`DBL_16` DOUBLE
   
-  ,PRIMARY KEY (`r_id`, `tenant_id`, `obj_def_id`)
-  ,INDEX `obj_store_rb___APQ__127index1` (`tenant_id`, `obj_def_id`(128), `rb_id`)
+  ,PRIMARY KEY (`tenant_id`, `obj_def_id`, `obj_id`, `obj_ver`, `pg_no`)
+  ,UNIQUE INDEX `obj_store__APQ__127_USTR_unique_1` (`USTR_1_TD`(139), `USTR_1`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__127_UNUM_unique_1` (`UNUM_1_TD`(139), `UNUM_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__127_UTS_unique_1` (`UTS_1_TD`(139), `UTS_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__127_UDBL_unique_1` (`UDBL_1_TD`(139), `UDBL_1`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__127_USTR_unique_2` (`USTR_2_TD`(139), `USTR_2`(192), `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__127_UNUM_unique_2` (`UNUM_2_TD`(139), `UNUM_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__127_UTS_unique_2` (`UTS_2_TD`(139), `UTS_2`, `tenant_id`, `obj_def_id`(128))
+  ,UNIQUE INDEX `obj_store__APQ__127_UDBL_unique_2` (`UDBL_2_TD`(139), `UDBL_2`, `tenant_id`, `obj_def_id`(128))
+  ,INDEX `obj_store__APQ__127_ISTR_index_1` (`ISTR_1`(192), `ISTR_1_TD`(139))
+  ,INDEX `obj_store__APQ__127_INUM_index_1` (`INUM_1`, `INUM_1_TD`(139))
+  ,INDEX `obj_store__APQ__127_ITS_index_1` (`ITS_1`, `ITS_1_TD`(139))
+  ,INDEX `obj_store__APQ__127_IDBL_index_1` (`IDBL_1`, `IDBL_1_TD`(139))
+  ,INDEX `obj_store__APQ__127_ISTR_index_2` (`ISTR_2`(192), `ISTR_2_TD`(139))
+  ,INDEX `obj_store__APQ__127_INUM_index_2` (`INUM_2`, `INUM_2_TD`(139))
+  ,INDEX `obj_store__APQ__127_ITS_index_2` (`ITS_2`, `ITS_2_TD`(139))
+  ,INDEX `obj_store__APQ__127_IDBL_index_2` (`IDBL_2`, `IDBL_2_TD`(139))
+  ,INDEX `obj_store__APQ__127_ISTR_index_3` (`ISTR_3`(192), `ISTR_3_TD`(139))
+  ,INDEX `obj_store__APQ__127_ISTR_index_4` (`ISTR_4`(192), `ISTR_4_TD`(139))
+  ,INDEX `obj_store__APQ__127_INUM_index_3` (`INUM_3`, `INUM_3_TD`(139))
+  ,INDEX `obj_store__APQ__127_ITS_index_3` (`ITS_3`, `ITS_3_TD`(139))
+  ,INDEX `obj_store__APQ__127_IDBL_index_3` (`IDBL_3`, `IDBL_3_TD`(139))
+  ,INDEX `obj_store__APQ__127_ISTR_index_5` (`ISTR_5`(192), `ISTR_5_TD`(139))
+  ,INDEX `obj_store__APQ__127_INUM_index_4` (`INUM_4`, `INUM_4_TD`(139))
+  ,INDEX `obj_store__APQ__127_ITS_index_4` (`ITS_4`, `ITS_4_TD`(139))
+  ,INDEX `obj_store__APQ__127_IDBL_index_4` (`IDBL_4`, `IDBL_4_TD`(139))
+  ,INDEX `obj_store__APQ__127_cre_user_index` (`cre_user`(64), `obj_def_id`(128), `tenant_id`)
 )
 ;
-
