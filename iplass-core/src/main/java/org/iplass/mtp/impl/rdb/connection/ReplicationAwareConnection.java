@@ -36,13 +36,13 @@ import java.sql.SQLXML;
 import java.sql.Savepoint;
 import java.sql.Statement;
 import java.sql.Struct;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.Executor;
 import java.util.function.Function;
 
-import org.apache.commons.collections4.map.SingletonMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -299,7 +299,7 @@ public class ReplicationAwareConnection implements Connection {
 		try {
 			getCon().setClientInfo(name, value);
 		} catch (SQLException e) {
-			throw new SQLClientInfoException("Failed Create Connecton on setClientInfo()", new SingletonMap<String, ClientInfoStatus>(name, ClientInfoStatus.REASON_UNKNOWN), e);
+			throw new SQLClientInfoException("Failed Create Connecton on setClientInfo()", Collections.singletonMap(name, ClientInfoStatus.REASON_UNKNOWN), e);
 		}
 	}
 
