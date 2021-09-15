@@ -295,10 +295,10 @@ public abstract class RegistrationCommandBase<T extends RegistrationCommandConte
 	/**
 	 * UpdateOptionのチェックを行う。
 	 * @param context コンテキスト
-	 * @param entity 画面で入力したデータ
+	 * @param option 更新する際のオプション
 	 */
 	protected void checkUpdateOption(T context, UpdateOption option){
-		// デフォルトではなにもせず、必要に応じてサブクラスを実装
+		// デフォルトでは何もしない。必要に応じてサブクラスでオーバーライドする
 
 	}
 

@@ -246,9 +246,8 @@ public class MultiBulkUpdateListCommand extends MultiBulkCommandBase {
 	@Override
 	protected void checkUpdateOption(MultiBulkCommandContext context, UpdateOption option) {
 		List<String> updatePropNames = option.getUpdateProperties();
-		for (PropertyItem prop : context.getPropBlankList()) {
+		for (PropertyItem prop : context.getBlankPropList()) {
 			updatePropNames.remove(prop.getPropertyName());
 		}
-		super.checkUpdateOption(context, option);
 	}
 }

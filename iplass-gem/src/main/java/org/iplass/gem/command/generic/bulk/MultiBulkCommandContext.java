@@ -94,7 +94,7 @@ public class MultiBulkCommandContext extends RegistrationCommandContext {
 	private List<PropertyItem> propList = null;
 
 	/** 一括更新時未入力のプロパティリスト*/
-	private List<PropertyItem> propBlankList = null;
+	private List<PropertyItem> blankPropList = null;
 	/**
 	 * クライアントから配列で受け取ったパラメータは自動設定する対象外
 	 */
@@ -777,12 +777,22 @@ public class MultiBulkCommandContext extends RegistrationCommandContext {
 	 * @param entity
 	 */
 	private void removePropIfBlank(Entity entity) {
+		// ブランク項目のリストを作成
+		setBlankPropList(entity);
+
+		getProperty().removeIf(pi -> entity.getValue(pi.getPropertyName()) == null);
+	}
+
+	/**
+	 * ブランクの項目のリストを作成
+	 * @param entity
+	 */
+	private void setBlankPropList(Entity entity) {
 		// カスタム登録処理で指定した項目が未入力の場合、未入力項目を更新対象から除外する際に使用
-		if (propBlankList == null) {
-			propBlankList = (getProperty().stream().filter(pi -> entity.getValue(pi.getPropertyName()) == null)
+		if (blankPropList == null) {
+			blankPropList = (getProperty().stream().filter(pi -> entity.getValue(pi.getPropertyName()) == null)
 					.collect(Collectors.toList()));
 		}
-		getProperty().removeIf(pi -> entity.getValue(pi.getPropertyName()) == null);
 	}
 
 	/**
@@ -972,8 +982,8 @@ public class MultiBulkCommandContext extends RegistrationCommandContext {
 	 * 一括更新時空白のプロパティリストを取得します。
 	 * @return propBlankList
 	 */
-	public List<PropertyItem> getPropBlankList() {
-		return propBlankList;
+	public List<PropertyItem> getBlankPropList() {
+		return blankPropList;
 	}
 
 	@SuppressWarnings("unused")
