@@ -344,7 +344,7 @@ public class MultiBulkCommandContext extends RegistrationCommandContext {
 
 		// ネストテーブル用の登録処理を追加
 		Optional<PropertyItem> ret = getProperty().stream().filter(pc -> pc.getPropertyName().equals(p.getName())).findFirst();
-		if (ret.isPresent()) {
+		if (ret.isPresent() && !list.isEmpty()) {
 			addNestTableRegistHandler(p, list, red, ret.get());
 		}
 
