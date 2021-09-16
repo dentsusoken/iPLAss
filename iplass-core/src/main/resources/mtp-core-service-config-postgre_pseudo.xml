@@ -14,10 +14,12 @@
 				<property name="decimalColumns" value="32" />
 				<property name="timestampColumns" value="32" />
 				<property name="doubleColumns" value="32" />
+				<property name="useIndexedTable" value="true" />
 				<property name="indexedVarcharColumns" value="8" />
 				<property name="indexedDecimalColumns" value="4" />
 				<property name="indexedTimestampColumns" value="4" />
 				<property name="indexedDoubleColumns" value="4" />
+				<property name="useUniqueIndexedTable" value="true" />
 				<property name="uniqueIndexedVarcharColumns" value="2" />
 				<property name="uniqueIndexedDecimalColumns" value="2" />
 				<property name="uniqueIndexedTimestampColumns" value="2" />
@@ -30,10 +32,12 @@
 				<property name="decimalColumns" value="32" />
 				<property name="timestampColumns" value="32" />
 				<property name="doubleColumns" value="32" />
+				<property name="useIndexedTable" value="false" />
 				<property name="indexedVarcharColumns" value="8" />
 				<property name="indexedDecimalColumns" value="4" />
 				<property name="indexedTimestampColumns" value="4" />
 				<property name="indexedDoubleColumns" value="4" />
+				<property name="useUniqueIndexedTable" value="false" />
 				<property name="uniqueIndexedVarcharColumns" value="2" />
 				<property name="uniqueIndexedDecimalColumns" value="2" />
 				<property name="uniqueIndexedTimestampColumns" value="2" />
@@ -46,10 +50,12 @@
 				<property name="decimalColumns" value="32" />
 				<property name="timestampColumns" value="32" />
 				<property name="doubleColumns" value="32" />
+				<property name="useIndexedTable" value="false" />
 				<property name="indexedVarcharColumns" value="8" />
 				<property name="indexedDecimalColumns" value="4" />
 				<property name="indexedTimestampColumns" value="4" />
 				<property name="indexedDoubleColumns" value="4" />
+				<property name="useUniqueIndexedTable" value="false" />
 				<property name="uniqueIndexedVarcharColumns" value="2" />
 				<property name="uniqueIndexedDecimalColumns" value="2" />
 				<property name="uniqueIndexedTimestampColumns" value="2" />

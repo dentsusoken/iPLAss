@@ -86,6 +86,22 @@ public class StorageSpaceServiceImpl implements StorageSpaceService {
 			"obj_unique_str",
 			"obj_unique_ts"
 	};
+	
+	private static final String[] INDEX_TABLES = {
+			"obj_index_date",
+			"obj_index_dbl",
+			"obj_index_num",
+			"obj_index_str",
+			"obj_index_ts"
+	};
+	
+	private static final String[] UNIQUE_TABLES = {
+			"obj_unique_date",
+			"obj_unique_dbl",
+			"obj_unique_num",
+			"obj_unique_str",
+			"obj_unique_ts"
+	};
 
 	private StoreService storeService;
 	private RdbAdapterService rdbAdapterService;
@@ -180,7 +196,7 @@ public class StorageSpaceServiceImpl implements StorageSpaceService {
 
 		final String objDefId = metaEntity.getId();
 		final List<String> objIdList = findObjId(tenantId, objDefId, postfixList, rdbAdapterService.getRdbAdapter());
-		final List<String> cleanupTableList = makeCleanupTableList(postfixList);
+		final List<String> cleanupTableList = makeCleanupTableList(postfixList, ssm.isUseIndexedTable(), ssm.isUseUniqueIndexedTable());
 
 		// Entityデータ削除処理
 		int index = 0;
@@ -302,7 +318,7 @@ public class StorageSpaceServiceImpl implements StorageSpaceService {
 		return exec.execute(rdbAdapterService.getRdbAdapter(), true);
 	}
 
-	private List<String> makeCleanupTableList(List<String> postfixList) {
+	private List<String> makeCleanupTableList(List<String> postfixList, boolean useIndexedTable, boolean useUniqueIndexedTable) {
 		if (postfixList.isEmpty()) {
 			return Arrays.asList(CLEANUP_TABLES);
 		}
@@ -312,6 +328,13 @@ public class StorageSpaceServiceImpl implements StorageSpaceService {
 		postfixList.forEach(postfix -> {
 			for (String table : CLEANUP_TABLES) {
 				if (StringUtil.isNotBlank(postfix)) {
+					if(!useIndexedTable && Arrays.asList(INDEX_TABLES).contains(table)) {
+						//接尾語付きIndexテーブルを利用しない場合は削除対象のテーブルに含まない。
+						continue;
+					} else if(!useUniqueIndexedTable && Arrays.asList(UNIQUE_TABLES).contains(table)) {
+						//接尾語付きUnique Indexテーブルを利用しない場合は削除対象のテーブルに含まない。
+						continue;
+					}
 					list.add(table + StorageSpaceMap.TABLE_NAME_SEPARATOR + postfix);
 				} else {
 					list.add(table);
