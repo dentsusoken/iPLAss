@@ -38,12 +38,14 @@ import org.iplass.mtp.command.annotation.action.Result;
 import org.iplass.mtp.command.annotation.action.Result.Type;
 import org.iplass.mtp.command.annotation.action.TokenCheck;
 import org.iplass.mtp.entity.Entity;
+import org.iplass.mtp.entity.UpdateOption;
 import org.iplass.mtp.entity.ValidateError;
 import org.iplass.mtp.transaction.Transaction;
 import org.iplass.mtp.transaction.TransactionListener;
 import org.iplass.mtp.transaction.TransactionManager;
 import org.iplass.mtp.view.generic.BulkFormView;
 import org.iplass.mtp.view.generic.BulkOperationContext;
+import org.iplass.mtp.view.generic.element.property.PropertyItem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -239,5 +241,13 @@ public class MultiBulkUpdateListCommand extends MultiBulkCommandBase {
 	private void countUp(RequestContext request) {
 		Integer updated = (Integer) request.getAttribute(Constants.BULK_UPDATED_COUNT);
 		request.setAttribute(Constants.BULK_UPDATED_COUNT, updated + 1);
+	}
+
+	@Override
+	protected void checkUpdateOption(MultiBulkCommandContext context, UpdateOption option) {
+		List<String> updatePropNames = option.getUpdateProperties();
+		for (PropertyItem prop : context.getBlankPropList()) {
+			updatePropNames.remove(prop.getPropertyName());
+		}
 	}
 }

@@ -92,6 +92,9 @@ public class MultiBulkCommandContext extends RegistrationCommandContext {
 
 	/** 一括更新プロパティリスト*/
 	private List<PropertyItem> propList = null;
+
+	/** 一括更新時未入力のプロパティリスト*/
+	private List<PropertyItem> blankPropList = null;
 	/**
 	 * クライアントから配列で受け取ったパラメータは自動設定する対象外
 	 */
@@ -341,7 +344,7 @@ public class MultiBulkCommandContext extends RegistrationCommandContext {
 
 		// ネストテーブル用の登録処理を追加
 		Optional<PropertyItem> ret = getProperty().stream().filter(pc -> pc.getPropertyName().equals(p.getName())).findFirst();
-		if (ret.isPresent()) {
+		if (ret.isPresent() && !list.isEmpty()) {
 			addNestTableRegistHandler(p, list, red, ret.get());
 		}
 
@@ -584,6 +587,12 @@ public class MultiBulkCommandContext extends RegistrationCommandContext {
 //		setVirtualPropertyValue(entity);
 		getRegistrationInterrupterHandler().dataMapping(entity);
 		validate(entity);
+
+		// カスタム登録処理に対応する為、入力値が空のプロパティリストを保持しておく
+		if (blankPropList == null) {
+			blankPropList = createBlankPropList(entity);
+		}
+
 		//更新しないプロパティを外す。
 		removePropIfBlank(entity);
 
@@ -778,6 +787,15 @@ public class MultiBulkCommandContext extends RegistrationCommandContext {
 	}
 
 	/**
+	 * ブランクの項目のリストを作成
+	 * @param entity
+	 */
+	private List<PropertyItem> createBlankPropList(Entity entity) {
+			return (getProperty().stream().filter(pi -> entity.getValue(pi.getPropertyName()) == null)
+					.collect(Collectors.toList()));
+	}
+
+	/**
 	 * 一括更新するプロパティを取得します。 組み合わせで使うプロパティである場合、通常のプロパティ扱いにします。
 	 *
 	 * @return 一括更新するプロパティ
@@ -958,6 +976,14 @@ public class MultiBulkCommandContext extends RegistrationCommandContext {
 			interrupter = new BulkOperationInterrupter() { };
 		}
 		return interrupter;
+	}
+
+	/**
+	 * 一括更新時空白のプロパティリストを取得します。
+	 * @return propBlankList
+	 */
+	public List<PropertyItem> getBlankPropList() {
+		return blankPropList;
 	}
 
 	@SuppressWarnings("unused")

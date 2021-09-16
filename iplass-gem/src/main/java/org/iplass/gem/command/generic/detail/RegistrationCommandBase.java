@@ -273,6 +273,7 @@ public abstract class RegistrationCommandBase<T extends RegistrationCommandConte
 			option.setPurgeCompositionedEntity(context.isPurgeCompositionedEntity());
 			option.setLocalized(context.isLocalizationData());
 			option.setForceUpdate(context.isForceUpadte());
+			checkUpdateOption(context, option);
 			try {
 				em.update(entity, option);
 			} catch (EntityValidationException e) {
@@ -289,6 +290,16 @@ public abstract class RegistrationCommandBase<T extends RegistrationCommandConte
 			}
 		}
 		return errors;
+	}
+
+	/**
+	 * UpdateOptionのチェックを行う。
+	 * @param context コンテキスト
+	 * @param option 更新する際のオプション
+	 */
+	protected void checkUpdateOption(T context, UpdateOption option){
+		// デフォルトでは何もしない。必要に応じてサブクラスでオーバーライドする
+
 	}
 
 	/**
