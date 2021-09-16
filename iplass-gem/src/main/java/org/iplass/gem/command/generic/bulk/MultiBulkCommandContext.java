@@ -587,6 +587,12 @@ public class MultiBulkCommandContext extends RegistrationCommandContext {
 //		setVirtualPropertyValue(entity);
 		getRegistrationInterrupterHandler().dataMapping(entity);
 		validate(entity);
+
+		// カスタム登録処理に対応する為、入力値が空のプロパティリストを保持しておく
+		if (blankPropList == null) {
+			blankPropList = createBlankPropList(entity);
+		}
+
 		//更新しないプロパティを外す。
 		removePropIfBlank(entity);
 
@@ -777,9 +783,6 @@ public class MultiBulkCommandContext extends RegistrationCommandContext {
 	 * @param entity
 	 */
 	private void removePropIfBlank(Entity entity) {
-		// ブランク項目のリストを作成
-		setBlankPropList(entity);
-
 		getProperty().removeIf(pi -> entity.getValue(pi.getPropertyName()) == null);
 	}
 
@@ -787,12 +790,9 @@ public class MultiBulkCommandContext extends RegistrationCommandContext {
 	 * ブランクの項目のリストを作成
 	 * @param entity
 	 */
-	private void setBlankPropList(Entity entity) {
-		// カスタム登録処理で指定した項目が未入力の場合、未入力項目を更新対象から除外する際に使用
-		if (blankPropList == null) {
-			blankPropList = (getProperty().stream().filter(pi -> entity.getValue(pi.getPropertyName()) == null)
+	private List<PropertyItem> createBlankPropList(Entity entity) {
+			return (getProperty().stream().filter(pi -> entity.getValue(pi.getPropertyName()) == null)
 					.collect(Collectors.toList()));
-		}
 	}
 
 	/**
