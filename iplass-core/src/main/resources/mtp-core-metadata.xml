@@ -571,7 +571,7 @@ return true</script>
         <inheritedEntityMetaDataId>/entity/Entity</inheritedEntityMetaDataId>
     </metaData>
 </metaDataEntry>
-<metaDataEntry name="/entity/mtp/auth/EntityPermission" overwritable="false" sharable="true" dataSharable="false" permissionSharable="false">
+<metaDataEntry name="/entity/mtp/auth/EntityPermission" overwritable="true" sharable="true" dataSharable="false" permissionSharable="false">
     <metaData xsi:type="metaEntity" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
         <description>Entityに対する権限定義です。</description>
         <displayName>Entity権限</displayName>
@@ -1635,7 +1635,7 @@ return true</script>
         </mapping>
     </metaData>
 </metaDataEntry>
-<metaDataEntry name="/entity/mtp/auth/Role" overwritable="false" sharable="true" dataSharable="false" permissionSharable="false">
+<metaDataEntry name="/entity/mtp/auth/Role" overwritable="true" sharable="true" dataSharable="false" permissionSharable="false">
     <metaData xsi:type="metaEntity" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
         <description>権限設定時に利用するロール定義です。
 ロール条件を利用して対象範囲を定義します。</description>
@@ -1837,7 +1837,7 @@ return true</script>
         <inheritedEntityMetaDataId>/entity/Entity</inheritedEntityMetaDataId>
     </metaData>
 </metaDataEntry>
-<metaDataEntry name="/entity/mtp/auth/RoleCondition" overwritable="false" sharable="true" dataSharable="false" permissionSharable="false">
+<metaDataEntry name="/entity/mtp/auth/RoleCondition" overwritable="true" sharable="true" dataSharable="false" permissionSharable="false">
     <metaData xsi:type="metaEntity" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
         <description>ロールに適用する条件定義です。</description>
         <displayName>ロール条件</displayName>

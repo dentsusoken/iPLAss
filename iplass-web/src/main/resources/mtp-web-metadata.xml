@@ -2,7 +2,7 @@
 <!DOCTYPE metaDataList>
 <metaDataList>
 <contextPath name="/entity">
-<metaDataEntry name="/entity/mtp/auth/ActionPermission" overwritable="false" sharable="true" dataSharable="false" permissionSharable="false">
+<metaDataEntry name="/entity/mtp/auth/ActionPermission" overwritable="true" sharable="true" dataSharable="false" permissionSharable="false">
     <metaData xsi:type="metaEntity" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
         <description>Actionに対する権限定義です。</description>
         <displayName>Action権限</displayName>
@@ -164,7 +164,7 @@
         <versionControlType>NONE</versionControlType>
     </metaData>
 </metaDataEntry>
-<metaDataEntry name="/entity/mtp/auth/Role" overwritable="false" sharable="true" dataSharable="false" permissionSharable="false">
+<metaDataEntry name="/entity/mtp/auth/Role" overwritable="true" sharable="true" dataSharable="false" permissionSharable="false">
     <metaData xsi:type="metaEntity" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
         <description>権限設定時に利用するロール定義です。
 ロール条件を利用して対象範囲を定義します。</description>
@@ -431,7 +431,7 @@
     </metaData>
 </metaDataEntry>
 
-<metaDataEntry name="/entity/mtp/auth/WebApiPermission" overwritable="false" sharable="true" dataSharable="false" permissionSharable="false">
+<metaDataEntry name="/entity/mtp/auth/WebApiPermission" overwritable="true" sharable="true" dataSharable="false" permissionSharable="false">
     <metaData xsi:type="metaEntity" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
         <description>WebApiに対する権限定義です。</description>
         <displayName>WebApi権限</displayName>
