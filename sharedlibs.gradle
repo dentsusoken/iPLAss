@@ -72,7 +72,7 @@ ext {
 		
 		'org.bouncycastle:bcmail-jdk15on': '1.69',
 		
-		'org.jgroups:jgroups': '4.0.19.Final',
+		'org.jgroups:jgroups': '4.2.16.Final',
 		
 		'com.googlecode.gwtupload:gwtupload': '1.0.3',
 		
