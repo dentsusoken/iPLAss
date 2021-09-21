@@ -37,12 +37,12 @@ public class StorageSpaceMap {
 	private int decimalColumns;
 	private int timestampColumns;
 	private int doubleColumns;
-	private boolean useIndexedTable = true;
+	private boolean useExternalIndexedTable = true;
 	private int indexedVarcharColumns;
 	private int indexedDecimalColumns;
 	private int indexedTimestampColumns;
 	private int indexedDoubleColumns;
-	private boolean useUniqueIndexedTable = true;;
+	private boolean useExternalUniqueIndexedTable = true;;
 	private int uniqueIndexedVarcharColumns;
 	private int uniqueIndexedDecimalColumns;
 	private int uniqueIndexedTimestampColumns;
@@ -211,12 +211,12 @@ public class StorageSpaceMap {
 		this.doubleColumns = doubleColumns;
 	}
 	
-	public boolean isUseIndexedTable() {
-		return useIndexedTable;
+	public boolean isUseExternalIndexedTable() {
+		return useExternalIndexedTable;
 	}
 
-	public void setUseIndexedTable(boolean useIndexedTable) {
-		this.useIndexedTable = useIndexedTable;
+	public void setUseExternalIndexedTable(boolean useExternalIndexedTable) {
+		this.useExternalIndexedTable = useExternalIndexedTable;
 	}
 
 	public int getIndexedVarcharColumns() {
@@ -251,12 +251,12 @@ public class StorageSpaceMap {
 		this.indexedDoubleColumns = indexedDoubleColumns;
 	}
 
-	public boolean isUseUniqueIndexedTable() {
-		return useUniqueIndexedTable;
+	public boolean isUseExternalUniqueIndexedTable() {
+		return useExternalUniqueIndexedTable;
 	}
 
-	public void setUseUniqueIndexedTable(boolean useUniqueIndexedTable) {
-		this.useUniqueIndexedTable = useUniqueIndexedTable;
+	public void setUseExternalUniqueIndexedTable(boolean useExternalUniqueIndexedTable) {
+		this.useExternalUniqueIndexedTable = useExternalUniqueIndexedTable;
 	}
 	public int getUniqueIndexedVarcharColumns() {
 		return uniqueIndexedVarcharColumns;

@@ -196,7 +196,7 @@ public class StorageSpaceServiceImpl implements StorageSpaceService {
 
 		final String objDefId = metaEntity.getId();
 		final List<String> objIdList = findObjId(tenantId, objDefId, postfixList, rdbAdapterService.getRdbAdapter());
-		final List<String> cleanupTableList = makeCleanupTableList(postfixList, ssm.isUseIndexedTable(), ssm.isUseUniqueIndexedTable());
+		final List<String> cleanupTableList = makeCleanupTableList(postfixList, ssm.isUseExternalIndexedTable(), ssm.isUseExternalUniqueIndexedTable());
 
 		// Entityデータ削除処理
 		int index = 0;
@@ -318,7 +318,7 @@ public class StorageSpaceServiceImpl implements StorageSpaceService {
 		return exec.execute(rdbAdapterService.getRdbAdapter(), true);
 	}
 
-	private List<String> makeCleanupTableList(List<String> postfixList, boolean useIndexedTable, boolean useUniqueIndexedTable) {
+	private List<String> makeCleanupTableList(List<String> postfixList, boolean useExternalIndexedTable, boolean useExternalUniqueIndexedTable) {
 		if (postfixList.isEmpty()) {
 			return Arrays.asList(CLEANUP_TABLES);
 		}
@@ -328,10 +328,10 @@ public class StorageSpaceServiceImpl implements StorageSpaceService {
 		postfixList.forEach(postfix -> {
 			for (String table : CLEANUP_TABLES) {
 				if (StringUtil.isNotBlank(postfix)) {
-					if(!useIndexedTable && Arrays.asList(INDEX_TABLES).contains(table)) {
+					if(!useExternalIndexedTable && Arrays.asList(INDEX_TABLES).contains(table)) {
 						//接尾語付きIndexテーブルを利用しない場合は削除対象のテーブルに含まない。
 						continue;
-					} else if(!useUniqueIndexedTable && Arrays.asList(UNIQUE_TABLES).contains(table)) {
+					} else if(!useExternalUniqueIndexedTable && Arrays.asList(UNIQUE_TABLES).contains(table)) {
 						//接尾語付きUnique Indexテーブルを利用しない場合は削除対象のテーブルに含まない。
 						continue;
 					}

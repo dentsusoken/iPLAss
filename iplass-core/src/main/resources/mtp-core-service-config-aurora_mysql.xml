@@ -15,12 +15,12 @@
 				<property name="decimalColumns" value="32" />
 				<property name="timestampColumns" value="32" />
 				<property name="doubleColumns" value="16" />
-				<property name="useIndexedTable" value="true" />
+				<property name="useExternalIndexedTable" value="true" />
 				<property name="indexedVarcharColumns" value="5" />
 				<property name="indexedDecimalColumns" value="4" />
 				<property name="indexedTimestampColumns" value="4" />
 				<property name="indexedDoubleColumns" value="4" />
-				<property name="useUniqueIndexedTable" value="true" />
+				<property name="useExternalUniqueIndexedTable" value="true" />
 				<property name="uniqueIndexedVarcharColumns" value="2" />
 				<property name="uniqueIndexedDecimalColumns" value="2" />
 				<property name="uniqueIndexedTimestampColumns" value="2" />
