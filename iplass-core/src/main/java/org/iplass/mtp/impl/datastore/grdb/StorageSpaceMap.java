@@ -37,10 +37,12 @@ public class StorageSpaceMap {
 	private int decimalColumns;
 	private int timestampColumns;
 	private int doubleColumns;
+	private boolean useExternalIndexedTable = true;
 	private int indexedVarcharColumns;
 	private int indexedDecimalColumns;
 	private int indexedTimestampColumns;
 	private int indexedDoubleColumns;
+	private boolean useExternalUniqueIndexedTable = true;;
 	private int uniqueIndexedVarcharColumns;
 	private int uniqueIndexedDecimalColumns;
 	private int uniqueIndexedTimestampColumns;
@@ -208,6 +210,14 @@ public class StorageSpaceMap {
 	public void setDoubleColumns(int doubleColumns) {
 		this.doubleColumns = doubleColumns;
 	}
+	
+	public boolean isUseExternalIndexedTable() {
+		return useExternalIndexedTable;
+	}
+
+	public void setUseExternalIndexedTable(boolean useExternalIndexedTable) {
+		this.useExternalIndexedTable = useExternalIndexedTable;
+	}
 
 	public int getIndexedVarcharColumns() {
 		return indexedVarcharColumns;
@@ -241,6 +251,13 @@ public class StorageSpaceMap {
 		this.indexedDoubleColumns = indexedDoubleColumns;
 	}
 
+	public boolean isUseExternalUniqueIndexedTable() {
+		return useExternalUniqueIndexedTable;
+	}
+
+	public void setUseExternalUniqueIndexedTable(boolean useExternalUniqueIndexedTable) {
+		this.useExternalUniqueIndexedTable = useExternalUniqueIndexedTable;
+	}
 	public int getUniqueIndexedVarcharColumns() {
 		return uniqueIndexedVarcharColumns;
 	}
