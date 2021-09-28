@@ -1508,14 +1508,18 @@ public class EntityHandler extends BaseMetaDataRuntime {
 		new EntityQueryInvocationImpl(searchCond, new SearchOption().unnotifyListeners(), new Predicate<Entity>() {
 			@Override
 			public boolean test(Entity val) {
-				result[0] = val;
-
-				if (refList.size() != 0) {
-					for (ReferencePropertyHandler refProp: refList) {
-						setLoadRef(val, refProp, mtfContext, entityContext);
+				if (result[0] == null) {
+					result[0] = val;
+					if (refList.size() != 0) {
+						for (ReferencePropertyHandler refProp: refList) {
+							setLoadRef(val, refProp, mtfContext, entityContext);
+						}
 					}
+					return true;
+				} else {
+					log.warn("The multiplicity of the reference property is defined to be 1, but in fact, multiple references are associated with Entity:" + getMetaData().getName() + "(oid=" + val.getOid() + ")");
+					return false;
 				}
-				return true;
 			}
 		}, InvocationType.SEARCH_ENTITY, getService().getInterceptors(), this).proceed();
 
