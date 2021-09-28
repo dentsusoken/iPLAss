@@ -290,6 +290,7 @@ public class RecycleBinSql extends UpdateSqlHandler {
 				+ " AND " + ObjStoreTable.RB_ID + "=A." + ObjStoreTable.RB_ID
 				+ " AND " + ObjStoreTable.OBJ_ID + "=A." + ObjStoreTable.OBJ_ID
 				+ ")");
+		sb.append(" ORDER BY " + ObjStoreTable.RB_ID + " DESC");
 		return sb.toString();
 	}
 
