@@ -231,7 +231,9 @@ public interface Transaction {
 	 * これは、<br>
 	 * TransactionOption.propagation=REQUIRED<br>
 	 * TransactionOption.readOnly=true<br>
-	 * でトランザクションを起動することを示します。
+	 * でトランザクションを起動することを示します。<br>
+	 * readOnlyモードでトランザクションが新規に起動した場合、
+	 * そのトランザクションは最終的にロールバックされます。
 	 * 
 	 * @param func
 	 */
@@ -246,7 +248,9 @@ public interface Transaction {
 	 * これは、<br>
 	 * TransactionOption.propagation=REQUIRED<br>
 	 * TransactionOption.readOnly=true<br>
-	 * でトランザクションを起動することを示します。
+	 * でトランザクションを起動することを示します。<br>
+	 * readOnlyモードでトランザクションが新規に起動した場合、
+	 * そのトランザクションは最終的にロールバックされます。
 	 * 
 	 * @param func
 	 * @return funcが返却する値
@@ -255,6 +259,37 @@ public interface Transaction {
 		return with(new TransactionOption().readOnly(), func);
 	}
 	
+	/**
+	 * トランザクションをreadOnlyモードで新規に起動します。
+	 * これは、<br>
+	 * TransactionOption.propagation=REQUIRES_NEW<br>
+	 * TransactionOption.readOnly=true<br>
+	 * でトランザクションを起動することを示します。<br>
+	 * readOnlyモードでトランザクションが新規に起動した場合、
+	 * そのトランザクションは最終的にロールバックされます。
+	 * 
+	 * @param func
+	 */
+	public static void requiresNewReadOnly(Consumer<Transaction> func) {
+		with(new TransactionOption(Propagation.REQUIRES_NEW).readOnly(), func);
+	}
+	
+	/**
+	 * トランザクションをreadOnlyモードで新規に起動します。
+	 * これは、<br>
+	 * TransactionOption.propagation=REQUIRES_NEW<br>
+	 * TransactionOption.readOnly=true<br>
+	 * でトランザクションを起動することを示します。<br>
+	 * readOnlyモードでトランザクションが新規に起動した場合、
+	 * そのトランザクションは最終的にロールバックされます。
+	 * 
+	 * @param func
+	 * @return funcが返却する値
+	 */
+	public static <R> R requiresNewReadOnly(Function<Transaction, R> func) {
+		return with(new TransactionOption(Propagation.REQUIRES_NEW).readOnly(), func);
+	}
+
 	/**
 	 * 指定のpropagationで、トランザクションを起動しfuncを実行します。
 	 * 
