@@ -20,12 +20,13 @@
 
 package org.iplass.mtp.impl.view.generic.editor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.xml.bind.annotation.XmlSeeAlso;
 
 import org.iplass.mtp.view.generic.editor.DatePropertyEditor;
-import org.iplass.mtp.view.generic.editor.DateTimeFormatProperty;
+import org.iplass.mtp.view.generic.editor.DateTimeFormatSetting;
 import org.iplass.mtp.view.generic.editor.DateTimePropertyEditor;
 import org.iplass.mtp.view.generic.editor.DateTimePropertyEditor.DateTimeDisplayType;
 import org.iplass.mtp.view.generic.editor.PropertyEditor;
@@ -57,7 +58,7 @@ public abstract class MetaDateTimePropertyEditor extends MetaPrimitivePropertyEd
 	private DateTimeDisplayType displayType;
 
 	/** 日付/時刻のフォーマット設定 */
-	private List<DateTimeFormatProperty> datetimeFormatList;
+	private List<MetaDateTimeFormatSetting> datetimeFormatList;
 
 	/** 検索条件の単一日指定 */
 	private boolean singleDayCondition;
@@ -94,7 +95,7 @@ public abstract class MetaDateTimePropertyEditor extends MetaPrimitivePropertyEd
 	 * 日付/時刻のフォーマット設定を取得します。
 	 * @return datetimeFormatList フォーマット設定
 	 */
-	public List<DateTimeFormatProperty> getDatetimeFormatList() {
+	public List<MetaDateTimeFormatSetting> getDatetimeFormatList() {
 		return datetimeFormatList;
 	}
 
@@ -102,7 +103,7 @@ public abstract class MetaDateTimePropertyEditor extends MetaPrimitivePropertyEd
 	 * 日付/時刻のフォーマット設定を設定します。
 	 * @param datetimeFormatList フォーマット設定
 	 */
-	public void setDatetimeFormatList(List<DateTimeFormatProperty> datetimeFormatList) {
+	public void setDatetimeFormatList(List<MetaDateTimeFormatSetting> datetimeFormatList) {
 		this.datetimeFormatList = datetimeFormatList;
 	}
 
@@ -201,7 +202,16 @@ public abstract class MetaDateTimePropertyEditor extends MetaPrimitivePropertyEd
 		hideSearchConditionTo = e.isHideSearchConditionTo();
 		insertWithLabelValue = e.isInsertWithLabelValue();
 		updateWithLabelValue = e.isUpdateWithLabelValue();
-		datetimeFormatList = e.getDatetimeFormatList();
+		if (e.getDatetimeFormatList() != null) {
+			List<MetaDateTimeFormatSetting> metaList = new ArrayList<>();
+			for (DateTimeFormatSetting dtf : e.getDatetimeFormatList()) {
+				MetaDateTimeFormatSetting meta = new MetaDateTimeFormatSetting();
+				meta.setDatetimeFormat(dtf.getDatetimeFormat());
+				meta.setDatetimeLocale(dtf.getDatetimeLocale());
+				metaList.add(meta);
+			}
+			datetimeFormatList = metaList;
+		}
 	}
 
 	@Override
@@ -215,7 +225,16 @@ public abstract class MetaDateTimePropertyEditor extends MetaPrimitivePropertyEd
 		pe.setHideSearchConditionTo(hideSearchConditionTo);
 		pe.setInsertWithLabelValue(insertWithLabelValue);
 		pe.setUpdateWithLabelValue(updateWithLabelValue);
-		pe.setDatetimeFormatList(datetimeFormatList);
+		if(datetimeFormatList != null) {
+			List<DateTimeFormatSetting> defList = new ArrayList<>();
+			for(MetaDateTimeFormatSetting metaDtf : datetimeFormatList) {
+				DateTimeFormatSetting def = new DateTimeFormatSetting();
+				def.setDatetimeFormat(metaDtf.getDatetimeFormat());
+				def.setDatetimeLocale(metaDtf.getDatetimeLocale());
+				defList.add(def);
+			}
+			pe.setDatetimeFormatList(defList);
+		}
 	}
 
 }

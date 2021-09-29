@@ -33,12 +33,13 @@
 <%@ page import="org.iplass.mtp.view.generic.EntityViewUtil"%>
 <%@ page import="org.iplass.mtp.view.generic.OutputType"%>
 <%@ page import="org.iplass.mtp.view.generic.editor.DatePropertyEditor" %>
-<%@ page import="org.iplass.mtp.view.generic.editor.DateTimeFormatProperty"%>
+<%@ page import="org.iplass.mtp.view.generic.editor.DateTimeFormatSetting"%>
 <%@ page import="org.iplass.mtp.view.generic.editor.DateTimePropertyEditor.DateTimeDisplayType"%>
 <%@ page import="org.iplass.mtp.web.template.TemplateUtil" %>
 <%@ page import="org.iplass.mtp.util.DateUtil" %>
 <%@ page import="org.iplass.mtp.util.StringUtil"%>
 <%@ page import="org.iplass.gem.command.Constants"%>
+<%@ page import="org.iplass.gem.command.ViewUtil"%>
 
 <%!String displayFormat(Date date, String datetimeFormatPattern, String datetimeLocale, boolean showWeekday) {
 		if (date == null) return "";
@@ -115,26 +116,10 @@
 
 		String datetimeFormatPattern = null;
 		String datetimeLocale = null;
-		if(editor.getDatetimeFormatList() != null && editor.getDatetimeFormatList().size() > 0){
-			boolean defaultFlag = true;
-			for(DateTimeFormatProperty dfp : editor.getDatetimeFormatList()){
-				if(dfp.getDatetimeLocale() == null){
-					break;
-				}
-				String[] langInfo = dfp.getDatetimeLocale().split("_", 0);
-				String localLang = langInfo[0];
-				String tenantLang = ExecuteContext.getCurrentContext().getLanguage();
-				if((tenantLang.equals(localLang))){
-					datetimeFormatPattern = dfp.getDatetimeFormat();
-					datetimeLocale = dfp.getDatetimeLocale();
-					defaultFlag = false;
-					break;
-				}
-			}
-			if(defaultFlag){
-				datetimeFormatPattern = editor.getDatetimeFormatList().get(0).getDatetimeFormat();
-				datetimeLocale = editor.getDatetimeFormatList().get(0).getDatetimeLocale();
-			}
+		DateTimeFormatSetting dtf = ViewUtil.getDateTimeFormatSetting(editor.getDatetimeFormatList());
+		if (dtf != null) {
+			datetimeFormatPattern = dtf.getDatetimeFormat();
+			datetimeLocale = dtf.getDatetimeLocale();
 		}
 
 		if (isMultiple) {
@@ -148,7 +133,6 @@
 %>
 <li>
 <c:out value="<%=displayFormat(array[i], datetimeFormatPattern, datetimeLocale, editor.isShowWeekday()) %>" />
-<%-- <c:out value="<%=displayFormat(array[i], null, null, editor.isShowWeekday()) %>" /> --%>
 <%
 					if (outputHidden) {
 						String strHidden = format(array[i]);

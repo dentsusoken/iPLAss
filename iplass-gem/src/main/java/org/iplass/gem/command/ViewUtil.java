@@ -35,6 +35,7 @@ import org.iplass.gem.Theme;
 import org.iplass.gem.command.generic.detail.DetailFormViewData;
 import org.iplass.mtp.ManagerLocator;
 import org.iplass.mtp.command.RequestContext;
+import org.iplass.mtp.impl.core.ExecuteContext;
 import org.iplass.mtp.impl.core.TenantContextService;
 import org.iplass.mtp.spi.ServiceRegistry;
 import org.iplass.mtp.tenant.Tenant;
@@ -44,6 +45,7 @@ import org.iplass.mtp.view.generic.EntityView;
 import org.iplass.mtp.view.generic.EntityViewManager;
 import org.iplass.mtp.view.generic.FormView;
 import org.iplass.mtp.view.generic.common.WebApiAutocompletionSetting;
+import org.iplass.mtp.view.generic.editor.DateTimeFormatSetting;
 import org.iplass.mtp.view.generic.element.Element;
 import org.iplass.mtp.view.generic.element.Element.EditDisplayType;
 import org.iplass.mtp.view.generic.element.property.PropertyColumn;
@@ -516,5 +518,33 @@ public class ViewUtil {
 			list = searchCondMap.get(key);
 		}
 		return list.size() > 0 ? list.toArray(new String[list.size()]) : null;
+	}
+
+
+
+	/**
+	 * 日付、時刻のフォーマットの設定を取得
+	 *
+	 * @param list フォーマット設定一覧
+	 * @return フォーマットの設定
+	 */
+	public static DateTimeFormatSetting getDateTimeFormatSetting(List<DateTimeFormatSetting> list) {
+		if (list == null || list.isEmpty()) {
+			return null;
+		}
+		DateTimeFormatSetting defaultSetting = null;
+		for (DateTimeFormatSetting dtf : list) {
+			if (dtf.getDatetimeLocale() == null) {
+				defaultSetting = dtf;
+				continue;
+			}
+			String[] langInfo = dtf.getDatetimeLocale().split("_", 0);
+			String localLang = langInfo[0];
+			String tenantLang = ExecuteContext.getCurrentContext().getLanguage();
+			if ((tenantLang.equals(localLang))) {
+				return dtf;
+			}
+		}
+		return defaultSetting;
 	}
 }

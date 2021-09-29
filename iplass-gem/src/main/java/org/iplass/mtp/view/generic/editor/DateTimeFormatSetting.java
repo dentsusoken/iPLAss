@@ -30,7 +30,7 @@ import org.iplass.adminconsole.view.annotation.generic.FieldReferenceType;
  * 日付・時間型のフォーマットのプロパティ
  * @author ISID Shojima
  */
-public class DateTimeFormatProperty implements Refrectable{
+public class DateTimeFormatSetting implements Refrectable{
 
 	/** シリアルバージョンUID */
 	private static final long serialVersionUID = -4963345852735862575L;
@@ -38,12 +38,12 @@ public class DateTimeFormatProperty implements Refrectable{
 	/** 日付/時刻のフォーマット設定 */
 	@MetaFieldInfo(
 			displayName="日付/時刻のフォーマット設定",
-			displayNameKey="generic_editor_DateTimePropertyEditor_DatetimeFormatDisplaNameKey",
+			displayNameKey="generic_editor_DateTimePropertyEditor_dateTimeFormatDisplaNameKey",
 			description="検索結果、詳細画面で表示する日付/時刻のフォーマットを設定する。",
 			required=true,
 			inputType=InputType.TEXT,
 			displayOrder=100,
-			descriptionKey="generic_editor_DateTimePropertyEditor_DatetimeFormatDescriptionKey"
+			descriptionKey="generic_editor_DateTimePropertyEditor_dateTimeFormatDescriptionKey"
 	)
 	@EntityViewField(
 			referenceTypes={FieldReferenceType.ALL}
@@ -53,11 +53,11 @@ public class DateTimeFormatProperty implements Refrectable{
 	/** 日付/時刻のロケール設定 */
 	@MetaFieldInfo(
 			displayName="日付/時刻のロケール設定",
-			displayNameKey="generic_editor_DateTimePropertyEditor_DatetimeLocaleDisplaNameKey",
+			displayNameKey="generic_editor_DateTimePropertyEditor_dateTimeLocaleDisplaNameKey",
 			description="検索結果、詳細画面で表示する日付/時刻のロケールを設定する。",
 			inputType=InputType.TEXT,
 			displayOrder=110,
-			descriptionKey="generic_editor_DateTimePropertyEditor_DatetimeLocaleDescriptionKey"
+			descriptionKey="generic_editor_DateTimePropertyEditor_dateTimeLocaleDescriptionKey"
 	)
 	@EntityViewField(
 			referenceTypes={FieldReferenceType.ALL}

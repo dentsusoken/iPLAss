@@ -28,7 +28,6 @@ import javax.xml.bind.annotation.XmlEnumValue;
 import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlType;
 
-import org.iplass.adminconsole.annotation.MultiLang;
 import org.iplass.adminconsole.view.annotation.InputType;
 import org.iplass.adminconsole.view.annotation.MetaFieldInfo;
 import org.iplass.adminconsole.view.annotation.generic.EntityViewField;
@@ -170,19 +169,18 @@ public abstract class DateTimePropertyEditor extends PrimitivePropertyEditor imp
 	/** 日付/時刻のフォーマット設定 */
 	@MetaFieldInfo(
 			displayName="日付/時刻のフォーマット設定",
-			displayNameKey="generic_editor_DateTimePropertyEditor_DatetimeFormatListDisplaNameKey",
+			displayNameKey="generic_editor_DateTimePropertyEditor_dateTimeFormatListDisplaNameKey",
 			description="検索結果、詳細画面で表示する日付/時刻のフォーマットを設定する。",
 			inputType=InputType.REFERENCE,
 			multiple=true,
-			referenceClass=DateTimeFormatProperty.class,
+			referenceClass=DateTimeFormatSetting.class,
 			displayOrder=105,
-			descriptionKey="generic_editor_DateTimePropertyEditor_DatetimeFormatListDescriptionKey"
+			descriptionKey="generic_editor_DateTimePropertyEditor_dateTimeFormatListDescriptionKey"
 	)
-	@MultiLang(isMultiLangValue = false)
 	@EntityViewField(
 			referenceTypes={FieldReferenceType.DETAIL, FieldReferenceType.SEARCHRESULT}
 	)
-	private List<DateTimeFormatProperty>  datetimeFormatList;
+	private List<DateTimeFormatSetting>  datetimeFormatList;
 
 	/** 検索条件の単一日指定 */
 	@MetaFieldInfo(
@@ -276,7 +274,7 @@ public abstract class DateTimePropertyEditor extends PrimitivePropertyEditor imp
 	 * 日付/時刻のフォーマット設定を取得します。
 	 * @return datetimeFormatList フォーマット設定
 	 */
-	public List<DateTimeFormatProperty> getDatetimeFormatList() {
+	public List<DateTimeFormatSetting> getDatetimeFormatList() {
 		return datetimeFormatList;
 	}
 
@@ -284,7 +282,7 @@ public abstract class DateTimePropertyEditor extends PrimitivePropertyEditor imp
 	 * 日付/時刻のフォーマット設定を取得します。
 	 * @return datetimeFormatList フォーマット設定
 	 */
-	public void setDatetimeFormatList(List<DateTimeFormatProperty> datetimeFormatList) {
+	public void setDatetimeFormatList(List<DateTimeFormatSetting> datetimeFormatList) {
 		this.datetimeFormatList = datetimeFormatList;
 	}
 

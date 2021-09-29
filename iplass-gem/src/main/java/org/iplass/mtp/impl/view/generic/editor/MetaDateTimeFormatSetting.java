@@ -22,13 +22,13 @@ package org.iplass.mtp.impl.view.generic.editor;
 
 import org.iplass.mtp.impl.metadata.MetaData;
 import org.iplass.mtp.impl.util.ObjectUtil;
-import org.iplass.mtp.view.generic.editor.DateTimeFormatProperty;
+import org.iplass.mtp.view.generic.editor.DateTimeFormatSetting;
 
 /**
 * 日付・時間型のフォーマットのプロパティのメタデータ
 * @author ISID Shojima
 */
-public class MetaDateTimeFormatProperty implements MetaData {
+public class MetaDateTimeFormatSetting implements MetaData {
 
 	/** SerialVersionUID */
 	private static final long serialVersionUID = -72521373464536611L;
@@ -76,13 +76,13 @@ public class MetaDateTimeFormatProperty implements MetaData {
 		return ObjectUtil.deepCopy(this);
 	}
 
-	public void applyConfig(DateTimeFormatProperty property) {
+	public void applyConfig(DateTimeFormatSetting property) {
 		datetimeFormat = property.getDatetimeFormat();
 		datetimeLocale = property.getDatetimeLocale();
 	}
 
-	public DateTimeFormatProperty currentConfig() {
-		DateTimeFormatProperty property = new DateTimeFormatProperty();
+	public DateTimeFormatSetting currentConfig() {
+		DateTimeFormatSetting property = new DateTimeFormatSetting();
 		property.setDatetimeFormat(datetimeFormat);
 		property.setDatetimeLocale(datetimeLocale);
 

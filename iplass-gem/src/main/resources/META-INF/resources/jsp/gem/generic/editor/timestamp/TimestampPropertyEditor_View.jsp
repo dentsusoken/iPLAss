@@ -27,7 +27,7 @@
 <%@ page import="org.iplass.mtp.impl.core.ExecuteContext"%>
 <%@ page import="org.iplass.mtp.entity.Entity"%>
 <%@ page import="org.iplass.mtp.entity.definition.PropertyDefinition"%>
-<%@ page import="org.iplass.mtp.view.generic.editor.DateTimeFormatProperty" %>
+<%@ page import="org.iplass.mtp.view.generic.editor.DateTimeFormatSetting" %>
 <%@ page import="org.iplass.mtp.util.DateUtil" %>
 <%@ page import="org.iplass.mtp.util.StringUtil"%>
 <%@ page import="org.iplass.mtp.view.generic.EntityViewUtil"%>
@@ -37,6 +37,7 @@
 <%@ page import="org.iplass.mtp.view.generic.editor.TimestampPropertyEditor" %>
 <%@ page import="org.iplass.mtp.web.template.TemplateUtil" %>
 <%@ page import="org.iplass.gem.command.Constants"%>
+<%@ page import="org.iplass.gem.command.ViewUtil"%>
 
 <%!
 	String displayFormat(Timestamp time, TimeDispRange dispRange, String datetimeFormatPattern, String datetimeLocale, boolean showWeekday) {
@@ -129,26 +130,10 @@
 
 		String datetimeFormatPattern = null;
 		String datetimeLocale = null;
-		if(editor.getDatetimeFormatList() != null && editor.getDatetimeFormatList().size() > 0){
-			boolean defaultFlag = true;
-			for(DateTimeFormatProperty dfp : editor.getDatetimeFormatList()){
-				if(dfp.getDatetimeLocale() == null){
-					break;
-				}
-				String[] langInfo = dfp.getDatetimeLocale().split("_", 0);
-				String localLang = langInfo[0];
-				String tenantLang = ExecuteContext.getCurrentContext().getLanguage();
-				if((tenantLang.equals(localLang))){
-					datetimeFormatPattern = dfp.getDatetimeFormat();
-					datetimeLocale = dfp.getDatetimeLocale();
-					defaultFlag = false;
-					break;
-				}
-			}
-			if(defaultFlag){
-				datetimeFormatPattern = editor.getDatetimeFormatList().get(0).getDatetimeFormat();
-				datetimeLocale = editor.getDatetimeFormatList().get(0).getDatetimeLocale();
-			}
+		DateTimeFormatSetting dtf = ViewUtil.getDateTimeFormatSetting(editor.getDatetimeFormatList());
+		if (dtf != null) {
+			datetimeFormatPattern = dtf.getDatetimeFormat();
+			datetimeLocale = dtf.getDatetimeLocale();
 		}
 
 		if (isMultiple) {

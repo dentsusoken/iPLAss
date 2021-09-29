@@ -380,7 +380,7 @@ task copyGwtTransSrc(type: Sync) {
 		include 'mtp/view/generic/editor/DatePropertyEditor.java'
 		include 'mtp/view/generic/editor/DateRangePropertyEditor.java'
 		include 'mtp/view/generic/editor/DateTimePropertyEditor.java'
-		include 'mtp/view/generic/editor/DateTimeFormatProperty.java'
+		include 'mtp/view/generic/editor/DateTimeFormatSetting.java'
 		include 'mtp/view/generic/editor/DecimalPropertyEditor.java'
 		include 'mtp/view/generic/editor/EditorValue.java'
 		include 'mtp/view/generic/editor/ExpressionPropertyEditor.java'
