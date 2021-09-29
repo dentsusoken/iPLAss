@@ -23,12 +23,15 @@
 <%@ page import="java.sql.Time" %>
 <%@ page import="java.text.*" %>
 <%@ page import="java.util.Calendar" %>
+<%@ page import="java.util.Locale"%>
 <%@ page import="org.iplass.mtp.entity.Entity"%>
 <%@ page import="org.iplass.mtp.entity.definition.PropertyDefinition"%>
 <%@ page import="org.iplass.mtp.util.DateUtil" %>
 <%@ page import="org.iplass.mtp.util.StringUtil"%>
+<%@ page import="org.iplass.mtp.impl.core.ExecuteContext"%>
 <%@ page import="org.iplass.mtp.view.generic.EntityViewUtil"%>
 <%@ page import="org.iplass.mtp.view.generic.OutputType"%>
+<%@ page import="org.iplass.mtp.view.generic.editor.DateTimeFormatProperty"%>
 <%@ page import="org.iplass.mtp.view.generic.editor.DateTimePropertyEditor.DateTimeDisplayType"%>
 <%@ page import="org.iplass.mtp.view.generic.editor.DateTimePropertyEditor.TimeDispRange"%>
 <%@ page import="org.iplass.mtp.view.generic.editor.TimePropertyEditor" %>
@@ -36,13 +39,15 @@
 <%@ page import="org.iplass.gem.command.Constants"%>
 
 <%!
-	String displayFormat(Time time, TimeDispRange dispRange) {
+	String displayFormat(Time time, String datetimeFoematPattern, String datetimeLocale, TimeDispRange dispRange) {
 		if (time == null) {
 			return "";
 		}
 
 		DateFormat format = null;
-		if (TimeDispRange.isDispSec(dispRange)) {
+		if(datetimeFoematPattern != null){
+			format = getSimpleDateFormat(datetimeFoematPattern, datetimeLocale);
+		} else if (TimeDispRange.isDispSec(dispRange)) {
 			format = DateUtil.getSimpleDateFormat(TemplateUtil.getLocaleFormat().getOutputTimeSecFormat(), false);
 		} else if (TimeDispRange.isDispMin(dispRange)) {
 			format = DateUtil.getSimpleDateFormat(TemplateUtil.getLocaleFormat().getOutputTimeMinFormat(), false);
@@ -60,6 +65,25 @@
 // 		SimpleDateFormat format = new SimpleDateFormat("HHmmssSSS");
 		SimpleDateFormat format = DateUtil.getSimpleDateFormat("HHmmssSSS", false);
 		return time != null ? format.format(time) : "";
+	}
+
+	DateFormat getSimpleDateFormat(String pattern, String datetimeLocale) {
+		//指定されたフォーマットで、ロケール設定がない場合はデフォルトで指定されているロケールのものを使用する
+		Locale locale = ExecuteContext.getCurrentContext().getLocale();
+		if (datetimeLocale != null) {
+			String[] localeValue = datetimeLocale.split("_", 0);
+			if (localeValue.length <= 1) {
+				locale = new Locale(localeValue[0]);
+			} else if (localeValue.length <= 2) {
+				locale = new Locale(localeValue[0], localeValue[1]);
+			} else if (localeValue.length <= 3) {
+				locale = new Locale(localeValue[0], localeValue[1], localeValue[2]);
+			}
+		}
+
+		DateFormat format = new SimpleDateFormat(pattern, locale);
+
+		return format;
 	}
 %>
 <%
@@ -93,6 +117,29 @@
 				customStyle = EntityViewUtil.getCustomStyle(rootDefName, scriptKey, editor.getInputCustomStyleScriptKey(), entity, propValue);
 			}
 		}
+		String datetimeFormatPattern = null;
+		String datetimeLocale = null;
+		if(editor.getDatetimeFormatList() != null && editor.getDatetimeFormatList().size() > 0){
+			boolean defaultFlag = true;
+			for(DateTimeFormatProperty dfp : editor.getDatetimeFormatList()){
+				if(dfp.getDatetimeLocale() == null){
+					break;
+				}
+				String[] langInfo = dfp.getDatetimeLocale().split("_", 0);
+				String localLang = langInfo[0];
+				String tenantLang = ExecuteContext.getCurrentContext().getLanguage();
+				if((tenantLang.equals(localLang))){
+					datetimeFormatPattern = dfp.getDatetimeFormat();
+					datetimeLocale = dfp.getDatetimeLocale();
+					defaultFlag = false;
+					break;
+				}
+			}
+			if(defaultFlag){
+				datetimeFormatPattern = editor.getDatetimeFormatList().get(0).getDatetimeFormat();
+				datetimeLocale = editor.getDatetimeFormatList().get(0).getDatetimeLocale();
+			}
+		}
 
 		if (isMultiple) {
 			//複数
@@ -105,7 +152,7 @@
 					Time t = array[i];
 %>
 <li>
-<c:out value="<%=displayFormat(t, editor.getDispRange()) %>"/>
+<c:out value="<%=displayFormat(t, datetimeFormatPattern, datetimeLocale, editor.getDispRange()) %>"/>
 <%
 					if (outputHidden) {
 						String strHidden = format(t);
@@ -126,7 +173,7 @@
 			Time t = propValue instanceof Time ? (Time) propValue : null;
 %>
 <span class="data-label" style="<c:out value="<%=customStyle %>"/>" data-time-range="<c:out value="<%=editor.getDispRange() %>"/>">
-<c:out value="<%=displayFormat(t, editor.getDispRange()) %>"/>
+<c:out value="<%=displayFormat(t, datetimeFormatPattern, datetimeLocale, editor.getDispRange()) %>"/>
 <%
 			if (outputHidden) {
 				String strHidden = format(t);

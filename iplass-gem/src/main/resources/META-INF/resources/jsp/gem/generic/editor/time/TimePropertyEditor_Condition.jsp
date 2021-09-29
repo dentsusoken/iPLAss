@@ -24,9 +24,12 @@
 <%@ page import="java.sql.Time"%>
 <%@ page import="java.text.*" %>
 <%@ page import="java.util.List" %>
+<%@ page import="java.util.Locale"%>
 <%@ page import="java.util.Map" %>
+<%@ page import="org.iplass.mtp.impl.core.ExecuteContext"%>
 <%@ page import="org.iplass.mtp.util.DateUtil"%>
 <%@ page import="org.iplass.mtp.util.StringUtil"%>
+<%@ page import="org.iplass.mtp.view.generic.editor.DateTimeFormatProperty"%>
 <%@ page import="org.iplass.mtp.view.generic.editor.DateTimePropertyEditor.DateTimeDisplayType"%>
 <%@ page import="org.iplass.mtp.view.generic.editor.DateTimePropertyEditor.TimeDispRange" %>
 <%@ page import="org.iplass.mtp.view.generic.editor.TimePropertyEditor" %>
@@ -48,7 +51,7 @@
 	}
 %>
 <%!
-	String displayFormat(String time, TimeDispRange dispRange) {
+	String displayFormat(String time, String datetimeFoematPattern, String datetimeLocale, TimeDispRange dispRange) {
 		if (time == null) {
 			return "";
 		}
@@ -70,6 +73,25 @@
 		} catch (ParseException e) {
 			return "";
 		}
+	}
+
+	DateFormat getSimpleDateFormat(String pattern, String datetimeLocale) {
+		//指定されたフォーマットで、ロケール設定がない場合はデフォルトで指定されているロケールのものを使用する
+		Locale locale = ExecuteContext.getCurrentContext().getLocale();
+		if (datetimeLocale != null) {
+			String[] localeValue = datetimeLocale.split("_", 0);
+			if (localeValue.length <= 1) {
+				locale = new Locale(localeValue[0]);
+			} else if (localeValue.length <= 2) {
+				locale = new Locale(localeValue[0], localeValue[1]);
+			} else if (localeValue.length <= 3) {
+				locale = new Locale(localeValue[0], localeValue[1], localeValue[2]);
+			}
+		}
+
+		DateFormat format = new SimpleDateFormat(pattern, locale);
+
+		return format;
 	}
 %>
 <%
@@ -153,6 +175,30 @@
 			style = style + customStyle;
 		}
 
+		String datetimeFormatPattern = null;
+		String datetimeLocale = null;
+		if(editor.getDatetimeFormatList() != null && editor.getDatetimeFormatList().size() > 0){
+			boolean defaultFlag = true;
+			for(DateTimeFormatProperty dfp : editor.getDatetimeFormatList()){
+				if(dfp.getDatetimeLocale() == null){
+					break;
+				}
+				String[] langInfo = dfp.getDatetimeLocale().split("_", 0);
+				String localLang = langInfo[0];
+				String tenantLang = ExecuteContext.getCurrentContext().getLanguage();
+				if((tenantLang.equals(localLang))){
+					datetimeFormatPattern = dfp.getDatetimeFormat();
+					datetimeLocale = dfp.getDatetimeLocale();
+					defaultFlag = false;
+					break;
+				}
+			}
+			if(defaultFlag){
+				datetimeFormatPattern = editor.getDatetimeFormatList().get(0).getDatetimeFormat();
+				datetimeLocale = editor.getDatetimeFormatList().get(0).getDatetimeLocale();
+			}
+		}
+
 		if ((editor.getDisplayType() != DateTimeDisplayType.LABEL) && (isUseTimePicker)) {
 %>
 <span class="timepicker-field" style="<c:out value="<%=style %>"/>">
@@ -160,7 +206,7 @@
 </span>
 <%
 		} else if (editor.getDisplayType() == DateTimeDisplayType.LABEL) {
-			String timeFromDisplayValue = displayFormat(propValueFrom, editor.getDispRange());
+			String timeFromDisplayValue = displayFormat(propValueFrom, datetimeFormatPattern, datetimeLocale, editor.getDispRange());
 			String timeFromHiddenName = Constants.SEARCH_COND_PREFIX + propName + "From";
 %>
 <span class="timeselect-field" style="<c:out value="<%=style %>"/>">
@@ -210,7 +256,7 @@
 </span>
 <%
 		} else if (editor.getDisplayType() == DateTimeDisplayType.LABEL) {
-			String timeToDisplayValue = displayFormat(propValueTo, editor.getDispRange());
+			String timeToDisplayValue = displayFormat(propValueTo, datetimeFormatPattern, datetimeLocale, editor.getDispRange());
 			String timeToHiddenName = Constants.SEARCH_COND_PREFIX + propName + "To";
 %>
 <span class="timeselect-field" style="<c:out value="<%=style %>"/>">

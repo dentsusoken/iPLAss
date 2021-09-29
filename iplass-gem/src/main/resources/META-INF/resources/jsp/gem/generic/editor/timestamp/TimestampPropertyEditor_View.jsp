@@ -23,8 +23,11 @@
 <%@ page import="java.sql.Timestamp" %>
 <%@ page import="java.text.*" %>
 <%@ page import="java.util.Calendar" %>
+<%@ page import="java.util.Locale"%>
+<%@ page import="org.iplass.mtp.impl.core.ExecuteContext"%>
 <%@ page import="org.iplass.mtp.entity.Entity"%>
 <%@ page import="org.iplass.mtp.entity.definition.PropertyDefinition"%>
+<%@ page import="org.iplass.mtp.view.generic.editor.DateTimeFormatProperty" %>
 <%@ page import="org.iplass.mtp.util.DateUtil" %>
 <%@ page import="org.iplass.mtp.util.StringUtil"%>
 <%@ page import="org.iplass.mtp.view.generic.EntityViewUtil"%>
@@ -36,28 +39,33 @@
 <%@ page import="org.iplass.gem.command.Constants"%>
 
 <%!
-	String displayFormat(Timestamp time, TimeDispRange dispRange, boolean showWeekday) {
+	String displayFormat(Timestamp time, TimeDispRange dispRange, String datetimeFormatPattern, String datetimeLocale, boolean showWeekday) {
 		if (time == null) {
 			return "";
 		}
-
-		String timeFormat = "";
-		if (TimeDispRange.isDispSec(dispRange)) {
-			timeFormat = " " + TemplateUtil.getLocaleFormat().getOutputTimeSecFormat();
-		} else if (TimeDispRange.isDispMin(dispRange)) {
-			timeFormat = " " + TemplateUtil.getLocaleFormat().getOutputTimeMinFormat();
-		} else if (TimeDispRange.isDispHour(dispRange)) {
-			timeFormat = " " + TemplateUtil.getLocaleFormat().getOutputTimeHourFormat();
-		}
-
 		DateFormat format = null;
-		if (showWeekday) {
-			String dateFormat = TemplateUtil.getLocaleFormat().getOutputDateWeekdayFormat();
-			//テナントのロケールと言語が違う場合、編集画面と曜日の表記が変わるため、LangLocaleを利用
-			format = DateUtil.getSimpleDateFormat(dateFormat + timeFormat, true, true);
+
+		if (datetimeFormatPattern != null) {
+			//フォーマットの指定がある場合、指定されたフォーマットで表記する
+			format = getSimpleDateFormat(datetimeFormatPattern, datetimeLocale);
 		} else {
-			String dateFormat = TemplateUtil.getLocaleFormat().getOutputDateFormat();
-			format = DateUtil.getSimpleDateFormat(dateFormat + timeFormat, true);
+			String timeFormat = "";
+			if (TimeDispRange.isDispSec(dispRange)) {
+				timeFormat = " " + TemplateUtil.getLocaleFormat().getOutputTimeSecFormat();
+			} else if (TimeDispRange.isDispMin(dispRange)) {
+				timeFormat = " " + TemplateUtil.getLocaleFormat().getOutputTimeMinFormat();
+			} else if (TimeDispRange.isDispHour(dispRange)) {
+				timeFormat = " " + TemplateUtil.getLocaleFormat().getOutputTimeHourFormat();
+			}
+
+			if (showWeekday) {
+				String dateFormat = TemplateUtil.getLocaleFormat().getOutputDateWeekdayFormat();
+				//テナントのロケールと言語が違う場合、編集画面と曜日の表記が変わるため、LangLocaleを利用
+				format = DateUtil.getSimpleDateFormat(dateFormat + timeFormat, true, true);
+			} else {
+				String dateFormat = TemplateUtil.getLocaleFormat().getOutputDateFormat();
+				format = DateUtil.getSimpleDateFormat(dateFormat + timeFormat, true);
+			}
 		}
 		return format.format(time);
 	}
@@ -65,6 +73,25 @@
 	String format(Timestamp time) {
 		SimpleDateFormat format = DateUtil.getSimpleDateFormat(TemplateUtil.getLocaleFormat().getServerDateTimeFormat(), true);
 		return time != null ? format.format(time) : "";
+	}
+
+	DateFormat getSimpleDateFormat(String pattern, String datetimeLocale) {
+		//指定されたフォーマットで、ロケール設定がない場合はデフォルトで指定されているロケールのものを使用する
+		Locale locale = ExecuteContext.getCurrentContext().getLocale();
+		if (datetimeLocale != null) {
+			String[] localeValue = datetimeLocale.split("_", 0);
+			if (localeValue.length <= 1) {
+				locale = new Locale(localeValue[0]);
+			} else if (localeValue.length <= 2) {
+				locale = new Locale(localeValue[0], localeValue[1]);
+			} else if (localeValue.length <= 3) {
+				locale = new Locale(localeValue[0], localeValue[1], localeValue[2]);
+			}
+		}
+
+		DateFormat format = new SimpleDateFormat(pattern, locale);
+
+		return format;
 	}
 %>
 
@@ -84,9 +111,9 @@
 	String propName = editor.getPropertyName();
 
 	boolean isMultiple = pd.getMultiplicity() != 1;
-	
+
 	if (editor.getDisplayType() != DateTimeDisplayType.HIDDEN) {
-	
+
 		//カスタムスタイル
 		String customStyle = "";
 		if (type == OutputType.VIEW) {
@@ -97,6 +124,30 @@
 			//入力不可の場合
 			if (StringUtil.isNotEmpty(editor.getInputCustomStyle())) {
 				customStyle = EntityViewUtil.getCustomStyle(rootDefName, scriptKey, editor.getInputCustomStyleScriptKey(), entity, propValue);
+			}
+		}
+
+		String datetimeFormatPattern = null;
+		String datetimeLocale = null;
+		if(editor.getDatetimeFormatList() != null && editor.getDatetimeFormatList().size() > 0){
+			boolean defaultFlag = true;
+			for(DateTimeFormatProperty dfp : editor.getDatetimeFormatList()){
+				if(dfp.getDatetimeLocale() == null){
+					break;
+				}
+				String[] langInfo = dfp.getDatetimeLocale().split("_", 0);
+				String localLang = langInfo[0];
+				String tenantLang = ExecuteContext.getCurrentContext().getLanguage();
+				if((tenantLang.equals(localLang))){
+					datetimeFormatPattern = dfp.getDatetimeFormat();
+					datetimeLocale = dfp.getDatetimeLocale();
+					defaultFlag = false;
+					break;
+				}
+			}
+			if(defaultFlag){
+				datetimeFormatPattern = editor.getDatetimeFormatList().get(0).getDatetimeFormat();
+				datetimeLocale = editor.getDatetimeFormatList().get(0).getDatetimeLocale();
 			}
 		}
 
@@ -111,7 +162,7 @@
 					Timestamp t = array[i];
 %>
 <li>
-<c:out value="<%=displayFormat(t, editor.getDispRange(), editor.isShowWeekday()) %>"/>
+<c:out value="<%=displayFormat(t, editor.getDispRange(), datetimeFormatPattern , datetimeLocale, editor.isShowWeekday()) %>"/>
 <%
 					if (outputHidden) {
 						String strHidden = format(t);
@@ -132,7 +183,7 @@
 			Timestamp t = propValue instanceof Timestamp ? (Timestamp) propValue : null;
 %>
 <span class="data-label" style="<c:out value="<%=customStyle %>"/>" data-time-range="<c:out value="<%=editor.getDispRange() %>"/>" data-show-weekday="<c:out value="<%=editor.isShowWeekday() %>"/>">
-<c:out value="<%=displayFormat(t, editor.getDispRange(), editor.isShowWeekday()) %>"/>
+<c:out value="<%=displayFormat(t, editor.getDispRange(), datetimeFormatPattern, datetimeLocale, editor.isShowWeekday()) %>"/>
 <%
 			if (outputHidden) {
 				String strHidden = format(t);

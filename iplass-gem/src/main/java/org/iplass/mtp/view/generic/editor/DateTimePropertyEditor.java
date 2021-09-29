@@ -20,12 +20,15 @@
 
 package org.iplass.mtp.view.generic.editor;
 
+import java.util.List;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlEnumValue;
 import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlType;
 
+import org.iplass.adminconsole.annotation.MultiLang;
 import org.iplass.adminconsole.view.annotation.InputType;
 import org.iplass.adminconsole.view.annotation.MetaFieldInfo;
 import org.iplass.adminconsole.view.annotation.generic.EntityViewField;
@@ -164,6 +167,23 @@ public abstract class DateTimePropertyEditor extends PrimitivePropertyEditor imp
 	)
 	private DateTimeDisplayType displayType;
 
+	/** 日付/時刻のフォーマット設定 */
+	@MetaFieldInfo(
+			displayName="日付/時刻のフォーマット設定",
+			displayNameKey="generic_editor_DateTimePropertyEditor_DatetimeFormatListDisplaNameKey",
+			description="検索結果、詳細画面で表示する日付/時刻のフォーマットを設定する。",
+			inputType=InputType.REFERENCE,
+			multiple=true,
+			referenceClass=DateTimeFormatProperty.class,
+			displayOrder=105,
+			descriptionKey="generic_editor_DateTimePropertyEditor_DatetimeFormatListDescriptionKey"
+	)
+	@MultiLang(isMultiLangValue = false)
+	@EntityViewField(
+			referenceTypes={FieldReferenceType.DETAIL, FieldReferenceType.SEARCHRESULT}
+	)
+	private List<DateTimeFormatProperty>  datetimeFormatList;
+
 	/** 検索条件の単一日指定 */
 	@MetaFieldInfo(
 			displayName="検索条件の単一日指定",
@@ -250,6 +270,22 @@ public abstract class DateTimePropertyEditor extends PrimitivePropertyEditor imp
 	@Override
 	public DateTimeDisplayType getDisplayType() {
 		return displayType;
+	}
+
+	/**
+	 * 日付/時刻のフォーマット設定を取得します。
+	 * @return datetimeFormatList フォーマット設定
+	 */
+	public List<DateTimeFormatProperty> getDatetimeFormatList() {
+		return datetimeFormatList;
+	}
+
+	/**
+	 * 日付/時刻のフォーマット設定を取得します。
+	 * @return datetimeFormatList フォーマット設定
+	 */
+	public void setDatetimeFormatList(List<DateTimeFormatProperty> datetimeFormatList) {
+		this.datetimeFormatList = datetimeFormatList;
 	}
 
 	@Override
