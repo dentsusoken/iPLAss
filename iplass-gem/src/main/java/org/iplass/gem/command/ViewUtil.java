@@ -520,8 +520,6 @@ public class ViewUtil {
 		return list.size() > 0 ? list.toArray(new String[list.size()]) : null;
 	}
 
-
-
 	/**
 	 * 日付、時刻のフォーマットの設定を取得
 	 *
