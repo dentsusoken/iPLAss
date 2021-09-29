@@ -1814,10 +1814,10 @@ LocaleInfo.generic_editor_DateTimePropertyEditor_hideSearchConditionToDisplaName
 LocaleInfo.generic_editor_DateTimePropertyEditor_hideSearchConditionToDescriptionKey = "Hide To of search condition.";
 LocaleInfo.generic_editor_DateTimePropertyEditor_dateTimeFormatListDisplaNameKey = "Date / time formatting";
 LocaleInfo.generic_editor_DateTimePropertyEditor_dateTimeFormatListDescriptionKey = "Set the date / time format and locale to be displayed on the search results and details screen.";
-LocaleInfo.generic_editor_DateTimePropertySetting_dateTimeFormatDisplaNameKey = "Date / time formatting";
-LocaleInfo.generic_editor_DateTimePropertySetting_dateTimeFormatDescriptionKey = "Set the date and time format as a character string.";
-LocaleInfo.generic_editor_DateTimePropertySetting_dateTimeLocaleDisplaNameKey = "Date / time locale setting";
-LocaleInfo.generic_editor_DateTimePropertySetting_dateTimeLocaleDescriptionKey = "Set the locale that determines the display of the date and time formats as a character string.";
+LocaleInfo.generic_editor_DateTimeFormatSetting_dateTimeFormatDisplaNameKey = "Date / time formatting";
+LocaleInfo.generic_editor_DateTimeFormatSetting_dateTimeFormatDescriptionKey = "Set the date and time format as a character string.";
+LocaleInfo.generic_editor_DateTimeFormatSetting_dateTimeLocaleDisplaNameKey = "Date / time locale setting";
+LocaleInfo.generic_editor_DateTimeFormatSetting_dateTimeLocaleDescriptionKey = "Set the locale that determines the display of the date and time formats as a character string.";
 LocaleInfo.generic_editor_EditorValue_labelDisplaNameKey = "Display name";
 LocaleInfo.generic_editor_EditorValue_labelDescriptionKey = "Set the label of choice.";
 LocaleInfo.generic_editor_EditorValue_valueDisplaNameKey = "Value";

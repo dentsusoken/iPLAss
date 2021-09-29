@@ -1814,10 +1814,10 @@ LocaleInfo.generic_editor_DateTimePropertyEditor_hideSearchConditionToDisplaName
 LocaleInfo.generic_editor_DateTimePropertyEditor_hideSearchConditionToDescriptionKey = "検索条件のToを非表示にします。";
 LocaleInfo.generic_editor_DateTimePropertyEditor_dateTimeFormatListDisplaNameKey = "日付/時刻のフォーマット設定";
 LocaleInfo.generic_editor_DateTimePropertyEditor_dateTimeFormatListDescriptionKey = "検索結果、詳細画面で表示する日付/時刻のフォーマットとロケールを設定します。";
-LocaleInfo.generic_editor_DateTimePropertySetting_dateTimeFormatDisplaNameKey = "日付/時刻のフォーマット設定";
-LocaleInfo.generic_editor_DateTimePropertySetting_dateTimeFormatDescriptionKey = "日付、時刻のフォーマットを文字列で設定します。";
-LocaleInfo.generic_editor_DateTimePropertySetting_dateTimeLocaleDisplaNameKey = "日付/時刻のロケール設定";
-LocaleInfo.generic_editor_DateTimePropertySetting_dateTimeLocaleDescriptionKey = "日付、時刻のフォーマットの表示を決定するロケールを文字列で設定します。";
+LocaleInfo.generic_editor_DateTimeFormatSetting_dateTimeFormatDisplaNameKey = "日付/時刻のフォーマット設定";
+LocaleInfo.generic_editor_DateTimeFormatSetting_dateTimeFormatDescriptionKey = "日付、時刻のフォーマットを文字列で設定します。";
+LocaleInfo.generic_editor_DateTimeFormatSetting_dateTimeLocaleDisplaNameKey = "日付/時刻のロケール設定";
+LocaleInfo.generic_editor_DateTimeFormatSetting_dateTimeLocaleDescriptionKey = "日付、時刻のフォーマットの表示を決定するロケールを文字列で設定します。";
 LocaleInfo.generic_editor_EditorValue_labelDisplaNameKey = "表示名";
 LocaleInfo.generic_editor_EditorValue_labelDescriptionKey = "選択肢のラベルを設定します。";
 LocaleInfo.generic_editor_EditorValue_valueDisplaNameKey = "値";
