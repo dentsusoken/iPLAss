@@ -154,7 +154,6 @@
 %>
 <span class="data-label" style="<c:out value="<%=customStyle %>"/>" data-show-weekday="<c:out value="<%=editor.isShowWeekday() %>"/>">
 <c:out value="<%=displayFormat(date, datetimeFormatPattern, datetimeLocale, editor.isShowWeekday()) %>" />
-<%-- <c:out value="<%=displayFormat(date, null, null, editor.isShowWeekday()) %>" /> --%>
 <%
 			if (outputHidden) {
 				String strHidden = format(date);
