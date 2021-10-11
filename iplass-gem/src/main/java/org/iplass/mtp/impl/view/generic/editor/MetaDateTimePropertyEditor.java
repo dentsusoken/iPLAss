@@ -29,6 +29,7 @@ import org.iplass.mtp.view.generic.editor.DatePropertyEditor;
 import org.iplass.mtp.view.generic.editor.DateTimeFormatSetting;
 import org.iplass.mtp.view.generic.editor.DateTimePropertyEditor;
 import org.iplass.mtp.view.generic.editor.DateTimePropertyEditor.DateTimeDisplayType;
+import org.iplass.mtp.view.generic.editor.LocalizedDateTimeFormatSetting;
 import org.iplass.mtp.view.generic.editor.PropertyEditor;
 import org.iplass.mtp.view.generic.editor.TimePropertyEditor;
 import org.iplass.mtp.view.generic.editor.TimestampPropertyEditor;
@@ -58,7 +59,10 @@ public abstract class MetaDateTimePropertyEditor extends MetaPrimitivePropertyEd
 	private DateTimeDisplayType displayType;
 
 	/** 日付/時刻のフォーマット設定 */
-	private List<MetaDateTimeFormatSetting> datetimeFormatList;
+	private MetaDateTimeFormatSetting datetimeFormat;
+
+	/** 日付/時刻のフォーマットの多言語設定情報 */
+	private List<MetaLocalizedDateTimeFormatSetting> LocalizedDateTimeFormatList;
 
 	/** 検索条件の単一日指定 */
 	private boolean singleDayCondition;
@@ -93,18 +97,34 @@ public abstract class MetaDateTimePropertyEditor extends MetaPrimitivePropertyEd
 
 	/**
 	 * 日付/時刻のフォーマット設定を取得します。
-	 * @return datetimeFormatList フォーマット設定
+	 * @return datetimeFormat フォーマット設定
 	 */
-	public List<MetaDateTimeFormatSetting> getDatetimeFormatList() {
-		return datetimeFormatList;
+	public MetaDateTimeFormatSetting getDatetimeFormat() {
+		return datetimeFormat;
 	}
 
 	/**
 	 * 日付/時刻のフォーマット設定を設定します。
 	 * @param datetimeFormatList フォーマット設定
 	 */
-	public void setDatetimeFormatList(List<MetaDateTimeFormatSetting> datetimeFormatList) {
-		this.datetimeFormatList = datetimeFormatList;
+	public void setDatetimeFormat(MetaDateTimeFormatSetting datetimeFormatList) {
+		this.datetimeFormat = datetimeFormatList;
+	}
+
+	/**
+	 * 日付/時刻のフォーマットの多言語設定情報を取得します。
+	 * @return datetimeFormatList の多言語設定情報
+	 */
+	public List<MetaLocalizedDateTimeFormatSetting> getLocalizedDateTimeFormatList() {
+		return LocalizedDateTimeFormatList;
+	}
+
+	/**
+	 * 日付/時刻のフォーマットの多言語設定情報を設定します。
+	 * @param datetimeFormatList フォーマットの多言語設定情報
+	 */
+	public void setLocalizedDateTimeFormatList(List<MetaLocalizedDateTimeFormatSetting> localizedDateTimeFormatList) {
+		LocalizedDateTimeFormatList = localizedDateTimeFormatList;
 	}
 
 	/**
@@ -202,15 +222,26 @@ public abstract class MetaDateTimePropertyEditor extends MetaPrimitivePropertyEd
 		hideSearchConditionTo = e.isHideSearchConditionTo();
 		insertWithLabelValue = e.isInsertWithLabelValue();
 		updateWithLabelValue = e.isUpdateWithLabelValue();
-		if (e.getDatetimeFormatList() != null) {
-			List<MetaDateTimeFormatSetting> metaList = new ArrayList<>();
-			for (DateTimeFormatSetting dtf : e.getDatetimeFormatList()) {
-				MetaDateTimeFormatSetting meta = new MetaDateTimeFormatSetting();
-				meta.setDatetimeFormat(dtf.getDatetimeFormat());
-				meta.setDatetimeLocale(dtf.getDatetimeLocale());
-				metaList.add(meta);
+
+		if (e.getDatetimeFormat() != null) {
+			MetaDateTimeFormatSetting metaDtf = new MetaDateTimeFormatSetting();
+			metaDtf.setDatetimeFormat(e.getDatetimeFormat().getDatetimeFormat());
+			if (e.getDatetimeFormat().getDatetimeLocale() != null) {
+				metaDtf.setDatetimeLocale(e.getDatetimeFormat().getDatetimeLocale());
 			}
-			datetimeFormatList = metaList;
+			datetimeFormat = metaDtf;
+		}
+
+		if (e.getLocalizedDatetimeFormatList() != null) {
+			List<MetaLocalizedDateTimeFormatSetting> metaList = new ArrayList<>();
+			for (LocalizedDateTimeFormatSetting ldf : e.getLocalizedDatetimeFormatList()) {
+				MetaLocalizedDateTimeFormatSetting metaLdf = new MetaLocalizedDateTimeFormatSetting();
+				metaLdf.setLangage(ldf.getLangage());
+				metaLdf.setDateTimeFormat(ldf.getDateTimeFormat());
+				metaLdf.setDateTimeFormatLocale(ldf.getDateTimeFormatLocale());
+				metaList.add(metaLdf);
+			}
+			LocalizedDateTimeFormatList = metaList;
 		}
 	}
 
@@ -225,15 +256,26 @@ public abstract class MetaDateTimePropertyEditor extends MetaPrimitivePropertyEd
 		pe.setHideSearchConditionTo(hideSearchConditionTo);
 		pe.setInsertWithLabelValue(insertWithLabelValue);
 		pe.setUpdateWithLabelValue(updateWithLabelValue);
-		if(datetimeFormatList != null) {
-			List<DateTimeFormatSetting> defList = new ArrayList<>();
-			for(MetaDateTimeFormatSetting metaDtf : datetimeFormatList) {
-				DateTimeFormatSetting def = new DateTimeFormatSetting();
-				def.setDatetimeFormat(metaDtf.getDatetimeFormat());
-				def.setDatetimeLocale(metaDtf.getDatetimeLocale());
-				defList.add(def);
+
+		if(datetimeFormat != null){
+			DateTimeFormatSetting defDtf = new DateTimeFormatSetting();
+			defDtf.setDatetimeFormat(datetimeFormat.getDatetimeFormat());
+			if(datetimeFormat.getDatetimeLocale() != null) {
+				defDtf.setDatetimeLocale(datetimeFormat.getDatetimeLocale());
 			}
-			pe.setDatetimeFormatList(defList);
+			pe.setDatetimeFormat(defDtf);
+		}
+
+		if(LocalizedDateTimeFormatList != null) {
+			List<LocalizedDateTimeFormatSetting> defList = new ArrayList<>();
+			for(MetaLocalizedDateTimeFormatSetting metaLdf : LocalizedDateTimeFormatList) {
+				LocalizedDateTimeFormatSetting defLdf = new LocalizedDateTimeFormatSetting();
+				defLdf.setLangage(metaLdf.getLangage());
+				defLdf.setDateTimeFormat(metaLdf.getDateTimeFormat());
+				defLdf.setDateTimeFormatLocale(metaLdf.getDateTimeFormatLocale());
+				defList.add(defLdf);
+			}
+			pe.setLocalizedDatetimeFormatList(defList);
 		}
 	}
 

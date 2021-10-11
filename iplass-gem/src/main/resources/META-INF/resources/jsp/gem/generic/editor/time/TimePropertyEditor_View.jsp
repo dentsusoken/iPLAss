@@ -47,7 +47,7 @@
 
 		DateFormat format = null;
 		if(datetimeFoematPattern != null){
-			format = getSimpleDateFormat(datetimeFoematPattern, datetimeLocale);
+			format = ViewUtil.getDateTimeFormat(datetimeFoematPattern, datetimeLocale);
 		} else if (TimeDispRange.isDispSec(dispRange)) {
 			format = DateUtil.getSimpleDateFormat(TemplateUtil.getLocaleFormat().getOutputTimeSecFormat(), false);
 		} else if (TimeDispRange.isDispMin(dispRange)) {
@@ -68,24 +68,6 @@
 		return time != null ? format.format(time) : "";
 	}
 
-	DateFormat getSimpleDateFormat(String pattern, String datetimeLocale) {
-		//指定されたフォーマットで、ロケール設定がない場合はデフォルトで指定されているロケールのものを使用する
-		Locale locale = ExecuteContext.getCurrentContext().getLocale();
-		if (datetimeLocale != null) {
-			String[] localeValue = datetimeLocale.split("_", 0);
-			if (localeValue.length <= 1) {
-				locale = new Locale(localeValue[0]);
-			} else if (localeValue.length <= 2) {
-				locale = new Locale(localeValue[0], localeValue[1]);
-			} else if (localeValue.length <= 3) {
-				locale = new Locale(localeValue[0], localeValue[1], localeValue[2]);
-			}
-		}
-
-		DateFormat format = new SimpleDateFormat(pattern, locale);
-
-		return format;
-	}
 %>
 <%
 	TimePropertyEditor editor = (TimePropertyEditor) request.getAttribute(Constants.EDITOR_EDITOR);
@@ -119,13 +101,7 @@
 			}
 		}
 
-		String datetimeFormatPattern = null;
-		String datetimeLocale = null;
-		DateTimeFormatSetting dtf = ViewUtil.getDateTimeFormatSetting(editor.getDatetimeFormatList());
-		if (dtf != null) {
-			datetimeFormatPattern = dtf.getDatetimeFormat();
-			datetimeLocale = dtf.getDatetimeLocale();
-		}
+		DateTimeFormatSetting formatInfo = ViewUtil.setFormatInfo(editor.getLocalizedDatetimeFormatList(), editor.getDatetimeFormat());
 
 		if (isMultiple) {
 			//複数
@@ -138,7 +114,7 @@
 					Time t = array[i];
 %>
 <li>
-<c:out value="<%=displayFormat(t, datetimeFormatPattern, datetimeLocale, editor.getDispRange()) %>"/>
+<c:out value="<%=displayFormat(t, formatInfo.getDatetimeFormat(), formatInfo.getDatetimeLocale(), editor.getDispRange()) %>"/>
 <%
 					if (outputHidden) {
 						String strHidden = format(t);
@@ -159,7 +135,7 @@
 			Time t = propValue instanceof Time ? (Time) propValue : null;
 %>
 <span class="data-label" style="<c:out value="<%=customStyle %>"/>" data-time-range="<c:out value="<%=editor.getDispRange() %>"/>">
-<c:out value="<%=displayFormat(t, datetimeFormatPattern, datetimeLocale, editor.getDispRange()) %>"/>
+<c:out value="<%=displayFormat(t, formatInfo.getDatetimeFormat(), formatInfo.getDatetimeLocale(), editor.getDispRange()) %>"/>
 <%
 			if (outputHidden) {
 				String strHidden = format(t);

@@ -48,7 +48,7 @@
 
 		if (datetimeFormatPattern != null) {
 			//フォーマットの指定がある場合、指定されたフォーマットで表記する
-			format = getSimpleDateFormat(datetimeFormatPattern, datetimeLocale);
+			format = ViewUtil.getDateTimeFormat(datetimeFormatPattern, datetimeLocale);
 		} else {
 			String timeFormat = "";
 			if (TimeDispRange.isDispSec(dispRange)) {
@@ -76,24 +76,6 @@
 		return time != null ? format.format(time) : "";
 	}
 
-	DateFormat getSimpleDateFormat(String pattern, String datetimeLocale) {
-		//指定されたフォーマットで、ロケール設定がない場合はデフォルトで指定されているロケールのものを使用する
-		Locale locale = ExecuteContext.getCurrentContext().getLocale();
-		if (datetimeLocale != null) {
-			String[] localeValue = datetimeLocale.split("_", 0);
-			if (localeValue.length <= 1) {
-				locale = new Locale(localeValue[0]);
-			} else if (localeValue.length <= 2) {
-				locale = new Locale(localeValue[0], localeValue[1]);
-			} else if (localeValue.length <= 3) {
-				locale = new Locale(localeValue[0], localeValue[1], localeValue[2]);
-			}
-		}
-
-		DateFormat format = new SimpleDateFormat(pattern, locale);
-
-		return format;
-	}
 %>
 
 <%
@@ -128,13 +110,7 @@
 			}
 		}
 
-		String datetimeFormatPattern = null;
-		String datetimeLocale = null;
-		DateTimeFormatSetting dtf = ViewUtil.getDateTimeFormatSetting(editor.getDatetimeFormatList());
-		if (dtf != null) {
-			datetimeFormatPattern = dtf.getDatetimeFormat();
-			datetimeLocale = dtf.getDatetimeLocale();
-		}
+		DateTimeFormatSetting formatInfo = ViewUtil.setFormatInfo(editor.getLocalizedDatetimeFormatList(), editor.getDatetimeFormat());
 
 		if (isMultiple) {
 			//複数
@@ -147,7 +123,7 @@
 					Timestamp t = array[i];
 %>
 <li>
-<c:out value="<%=displayFormat(t, editor.getDispRange(), datetimeFormatPattern , datetimeLocale, editor.isShowWeekday()) %>"/>
+<c:out value="<%=displayFormat(t, editor.getDispRange(), formatInfo.getDatetimeFormat(), formatInfo.getDatetimeLocale(), editor.isShowWeekday()) %>"/>
 <%
 					if (outputHidden) {
 						String strHidden = format(t);
@@ -168,7 +144,7 @@
 			Timestamp t = propValue instanceof Timestamp ? (Timestamp) propValue : null;
 %>
 <span class="data-label" style="<c:out value="<%=customStyle %>"/>" data-time-range="<c:out value="<%=editor.getDispRange() %>"/>" data-show-weekday="<c:out value="<%=editor.isShowWeekday() %>"/>">
-<c:out value="<%=displayFormat(t, editor.getDispRange(), datetimeFormatPattern, datetimeLocale, editor.isShowWeekday()) %>"/>
+<c:out value="<%=displayFormat(t, editor.getDispRange(), formatInfo.getDatetimeFormat(), formatInfo.getDatetimeLocale(), editor.isShowWeekday()) %>"/>
 <%
 			if (outputHidden) {
 				String strHidden = format(t);

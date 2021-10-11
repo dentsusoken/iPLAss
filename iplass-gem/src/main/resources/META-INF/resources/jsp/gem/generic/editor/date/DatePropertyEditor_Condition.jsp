@@ -33,6 +33,7 @@
 <%@ page import="org.iplass.mtp.view.generic.EntityViewUtil"%>
 <%@ page import="org.iplass.mtp.view.generic.editor.DatePropertyEditor" %>
 <%@ page import="org.iplass.mtp.view.generic.editor.DateTimeFormatSetting"%>
+<%@ page import="org.iplass.mtp.view.generic.editor.LocalizedDateTimeFormatSetting"%>
 <%@ page import="org.iplass.mtp.view.generic.editor.DateTimePropertyEditor.DateTimeDisplayType"%>
 <%@ page import="org.iplass.mtp.web.template.TemplateUtil"%>
 <%@ page import="org.iplass.gem.command.Constants" %>
@@ -58,7 +59,7 @@
 
 		try {
 			if(datetimeFormatPattern != null){
-				DateFormat format = getSimpleDateFormat(datetimeFormatPattern, datetimeLocale);
+				DateFormat format = ViewUtil.getDateTimeFormat(datetimeFormatPattern, datetimeLocale);
 				return format.format(format);
 			} else {
 				SimpleDateFormat serverFormat = DateUtil.getSimpleDateFormat(TemplateUtil.getLocaleFormat().getServerDateFormat(), false);
@@ -74,25 +75,6 @@
 		} catch (ParseException e) {
 			return "";
 		}
-	}
-
-	DateFormat getSimpleDateFormat(String pattern, String datetimeLocale) {
-		//指定されたフォーマットで、ロケール設定がない場合はデフォルトで指定されているロケールのものを使用する
-		Locale locale = ExecuteContext.getCurrentContext().getLocale();
-		if (datetimeLocale != null) {
-			String[] localeValue = datetimeLocale.split("_", 0);
-			if (localeValue.length <= 1) {
-				locale = new Locale(localeValue[0]);
-			} else if (localeValue.length <= 2) {
-				locale = new Locale(localeValue[0], localeValue[1]);
-			} else if (localeValue.length <= 3) {
-				locale = new Locale(localeValue[0], localeValue[1], localeValue[2]);
-			}
-		}
-
-		DateFormat format = new SimpleDateFormat(pattern, locale);
-
-		return format;
 	}
 %>
 <%
@@ -173,13 +155,7 @@
 			fromDisp = "display: none;";
 		}
 
-		String datetimeFormatPattern = null;
-		String datetimeLocale = null;
-		DateTimeFormatSetting dtf = ViewUtil.getDateTimeFormatSetting(editor.getDatetimeFormatList());
-		if (dtf != null) {
-			datetimeFormatPattern = dtf.getDatetimeFormat();
-			datetimeLocale = dtf.getDatetimeLocale();
-		}
+		DateTimeFormatSetting formatInfo = ViewUtil.setFormatInfo(editor.getLocalizedDatetimeFormatList(), editor.getDatetimeFormat());
 
 		if (editor.getDisplayType() == DateTimeDisplayType.LABEL) {
 			String dateFromDisplayLabel = displayFormat(propValueFrom, datetimeFormatPattern, datetimeLocale, editor.isShowWeekday());
@@ -217,7 +193,7 @@
 			toDisp = "display: none;";
 		}
 		if (editor.getDisplayType() == DateTimeDisplayType.LABEL) {
-			String dateToDisplayLabel = displayFormat(propValueTo, datetimeFormatPattern, datetimeLocale, editor.isShowWeekday());
+			String dateToDisplayLabel = displayFormat(propValueTo, formatInfo.getDatetimeFormat(), formatInfo.getDatetimeLocale(), editor.isShowWeekday());
 			toDisp = toDisp + customStyle;
 %>
 <span style="<c:out value="<%=toDisp%>"/>">

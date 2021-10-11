@@ -388,6 +388,7 @@ task copyGwtTransSrc(type: Sync) {
 		include 'mtp/view/generic/editor/IntegerPropertyEditor.java'
 		include 'mtp/view/generic/editor/JoinPropertyEditor.java'
 		include 'mtp/view/generic/editor/LabelablePropertyEditor.java'
+		include 'mtp/view/generic/editor/LocalizedDateTimeFormatSetting.java'
 		include 'mtp/view/generic/editor/LinkProperty.java'
 		include 'mtp/view/generic/editor/LongTextPropertyEditor.java'
 		include 'mtp/view/generic/editor/NestProperty.java'
