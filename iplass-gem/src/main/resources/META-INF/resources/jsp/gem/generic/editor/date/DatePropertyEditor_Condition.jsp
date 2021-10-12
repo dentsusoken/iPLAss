@@ -155,7 +155,7 @@
 			fromDisp = "display: none;";
 		}
 
-		DateTimeFormatSetting formatInfo = ViewUtil.setFormatInfo(editor.getLocalizedDatetimeFormatList(), editor.getDatetimeFormat());
+		DateTimeFormatSetting formatInfo = ViewUtil.getFormatInfo(editor.getLocalizedDatetimeFormatList(), editor.getDatetimeFormat());
 
 		if (editor.getDisplayType() == DateTimeDisplayType.LABEL) {
 			String dateFromDisplayLabel = displayFormat(propValueFrom, formatInfo.getDatetimeFormat(), formatInfo.getDatetimeLocale(), editor.isShowWeekday());

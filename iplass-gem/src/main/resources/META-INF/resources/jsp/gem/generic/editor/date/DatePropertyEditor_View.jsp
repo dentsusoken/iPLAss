@@ -97,7 +97,7 @@
 			}
 		}
 
-	DateTimeFormatSetting formatInfo = ViewUtil.setFormatInfo(editor.getLocalizedDatetimeFormatList(), editor.getDatetimeFormat());
+	DateTimeFormatSetting formatInfo = ViewUtil.getFormatInfo(editor.getLocalizedDatetimeFormatList(), editor.getDatetimeFormat());
 
 		if (isMultiple) {
 			//複数

@@ -574,7 +574,7 @@ public class ViewUtil {
 	 * @param dtfInfo 日付/時刻フォーマットのデフォルト設定
 	 * @return settingInfo 日付/時刻フォーマットの設定
 	 */
-	public static DateTimeFormatSetting setFormatInfo(List<LocalizedDateTimeFormatSetting> ldtInfoList, DateTimeFormatSetting dtfInfo){
+	public static DateTimeFormatSetting getFormatInfo(List<LocalizedDateTimeFormatSetting> ldtInfoList, DateTimeFormatSetting dtfInfo){
 		DateTimeFormatSetting settingInfo = new DateTimeFormatSetting();
 
 		if (ldtInfoList != null) {

@@ -159,7 +159,7 @@
 			style = style + customStyle;
 		}
 
-		DateTimeFormatSetting formatInfo = ViewUtil.setFormatInfo(editor.getLocalizedDatetimeFormatList(), editor.getDatetimeFormat());
+		DateTimeFormatSetting formatInfo = ViewUtil.getFormatInfo(editor.getLocalizedDatetimeFormatList(), editor.getDatetimeFormat());
 
 		if ((editor.getDisplayType() != DateTimeDisplayType.LABEL) && (isUseTimePicker)) {
 %>
