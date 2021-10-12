@@ -158,7 +158,7 @@
 		DateTimeFormatSetting formatInfo = ViewUtil.setFormatInfo(editor.getLocalizedDatetimeFormatList(), editor.getDatetimeFormat());
 
 		if (editor.getDisplayType() == DateTimeDisplayType.LABEL) {
-			String dateFromDisplayLabel = displayFormat(propValueFrom, datetimeFormatPattern, datetimeLocale, editor.isShowWeekday());
+			String dateFromDisplayLabel = displayFormat(propValueFrom, formatInfo.getDatetimeFormat(), formatInfo.getDatetimeLocale(), editor.isShowWeekday());
 			fromDisp = fromDisp + customStyle;
 %>
 <span style="<c:out value="<%=fromDisp %>"/>">
