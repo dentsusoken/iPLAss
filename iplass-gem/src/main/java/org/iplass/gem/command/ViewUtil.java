@@ -556,7 +556,7 @@ public class ViewUtil {
 	 * @param list フォーマット設定一覧
 	 * @return フォーマットの設定
 	 */
-	public static LocalizedDateTimeFormatSetting getDateTimeFormatSetting(List<LocalizedDateTimeFormatSetting> list) {
+	private static LocalizedDateTimeFormatSetting getDateTimeFormatSetting(List<LocalizedDateTimeFormatSetting> list) {
 		for (LocalizedDateTimeFormatSetting ldt : list) {
 			String localLang = ldt.getLangage();
 			String tenantLang = ExecuteContext.getCurrentContext().getLanguage();
@@ -579,7 +579,7 @@ public class ViewUtil {
 
 		if (ldtInfoList != null) {
 			// 多言語設定がある場合
-			LocalizedDateTimeFormatSetting ldf = ViewUtil.getDateTimeFormatSetting(ldtInfoList);
+			LocalizedDateTimeFormatSetting ldf = getDateTimeFormatSetting(ldtInfoList);
 			if (ldf != null) {
 				settingInfo.setDatetimeFormat(ldf.getDateTimeFormat());
 				settingInfo.setDatetimeLocale(ldf.getDateTimeFormatLocale());
